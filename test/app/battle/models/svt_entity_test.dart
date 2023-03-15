@@ -1,8 +1,8 @@
-import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
+import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
@@ -96,5 +96,27 @@ void main() async {
 
     battle.playerTurn([CombatAction(altria, altria.getCards()[4])]);
     expect(altria.np, 3000);
+  });
+
+  test('Test traits', () {
+    final List<PlayerSvtData> melusineAndFeihu = [
+      PlayerSvtData(304800)
+        ..ascensionPhase = 0
+        ..lv = 90,
+      PlayerSvtData(404900)..lv = 80,
+    ];
+
+    final battle = BattleData();
+    battle.init(db.gameData.questPhases[9300040603]!, melusineAndFeihu, null);
+
+    final melusine = battle.onFieldAllyServants[0]!;
+    final feihu = battle.onFieldAllyServants[1]!;
+    expect(melusine.getTraits(battle).map((e) => e.signedId).contains(Trait.knightsOfTheRound.id), isTrue);
+    expect(feihu.getTraits(battle).map((e) => e.signedId).contains(301), isTrue);
+    expect(feihu.getTraits(battle).map((e) => e.signedId).contains(300), isFalse);
+
+    battle.activateSvtSkill(1, 0);
+    expect(feihu.getTraits(battle).map((e) => e.signedId).contains(301), isFalse);
+    expect(feihu.getTraits(battle).map((e) => e.signedId).contains(300), isTrue);
   });
 }

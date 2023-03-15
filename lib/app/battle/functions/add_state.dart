@@ -68,7 +68,7 @@ class AddState {
         capBuffValue(buffChanceDetails, 0, Maths.min(buffChanceDetails.maxRate));
 
     final functionRate = dataVals.Rate ?? 1000;
-    final activationProbability = functionRate + buffChance + buffReceiveChance;
+    final activationProbability = functionRate + buffChance - buffReceiveChance;
 
     return activationProbability >= battleData.probabilityThreshold;
   }

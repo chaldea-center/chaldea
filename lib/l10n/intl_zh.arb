@@ -70,7 +70,7 @@
   "battle_no_servant": "未选择从者",
   "battle_not_found": "未找到",
   "battle_not_limit_break": "未满破",
-  "battle_np_card": "指令卡",
+  "battle_np_card": "宝具卡",
   "battle_probability_threshold": "概率阈值",
   "battle_quest_from": "选择",
   "battle_quest_not_found": "未找到关卡{questId}",

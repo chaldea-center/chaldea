@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:chaldea/generated/l10n.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/battle/models/battle.dart';
@@ -14,6 +13,7 @@ import 'package:chaldea/app/modules/battle/simulation_preview.dart';
 import 'package:chaldea/app/modules/battle/svt_option_editor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -105,8 +105,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         ));
       }
     } else {
-      topListChildren
-          .add(Center(child: Text(S.current.filter_match_all, style: const TextStyle(fontWeight: FontWeight.bold))));
+      topListChildren.add(
+          Center(child: Text(S.current.battle_ally_servants, style: const TextStyle(fontWeight: FontWeight.bold))));
       for (int i = 0; i < battleData.onFieldAllyServants.length; i += 1) {
         topListChildren.add(buildBattleSvtData(battleData.onFieldAllyServants[i], i));
       }
@@ -446,7 +446,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         onLongPress: () {},
         child: ImageWithText(
           image: db.getIconImage(skillInfo.skill.icon, width: 35, aspectRatio: 1),
-          textBuilder: canUseSkill ? null : cdTextBuilder,
+          textBuilder: cd == 0 ? null : cdTextBuilder,
           option: ImageWithTextOption(
             shadowSize: 8,
             textStyle: const TextStyle(fontSize: 20, color: Colors.black),

@@ -280,20 +280,46 @@ class BattleServantData {
     }
   }
 
-  List<NiceTrait> getTraits() {
-    // TODO (battle): account for add & remove traits & ascension specific traits & extra traits
-    final List<NiceTrait> results = [];
-    final svtTraits = isPlayer ? niceSvt!.traits : niceEnemy!.traits;
-    results.addAll(svtTraits);
-    return results;
+  List<NiceTrait> getTraits(final BattleData battleData) {
+    final List<NiceTrait> allTraits = [];
+    if (isEnemy) {
+      allTraits.addAll(niceEnemy!.traits);
+    } else {
+      if (niceSvt!.ascensionAdd.individuality.all.containsKey(ascensionPhase)) {
+        allTraits.addAll(niceSvt!.ascensionAdd.individuality.all[ascensionPhase]!);
+      } else {
+        allTraits.addAll(niceSvt!.traits);
+      }
+      niceSvt!.traitAdd.map((e) => allTraits.addAll(e.trait));
+    }
+
+    final List<int> removeTraitIds = [];
+    battleData.setActivator(this);
+    for (final buff in battleBuff.allBuffs) {
+      if (buff.buff.type == BuffType.addIndividuality && buff.shouldApplyBuff(battleData, false)) {
+        allTraits.add(NiceTrait(id: buff.param));
+      } else if (buff.buff.type == BuffType.subIndividuality && buff.shouldApplyBuff(battleData, false)) {
+        removeTraitIds.add(buff.param);
+      }
+    }
+    battleData.unsetActivator();
+
+    allTraits.removeWhere((trait) => removeTraitIds.contains(trait.id));
+
+    return allTraits;
   }
 
-  bool checkTrait(final NiceTrait requiredTrait, {final bool checkBuff = false}) {
-    return checkTraits([requiredTrait], checkBuff: checkBuff);
+  bool checkTrait(final BattleData battleData, final NiceTrait requiredTrait, {final bool checkBuff = false}) {
+    return checkTraits(battleData, [requiredTrait], checkBuff: checkBuff);
   }
 
-  bool checkTraits(final Iterable<NiceTrait> requiredTraits, {final bool checkBuff = false}) {
-    return containsAnyTraits(getTraits(), requiredTraits) || (checkBuff && battleBuff.checkTraits(requiredTraits));
+  bool checkTraits(
+    final BattleData battleData,
+    final Iterable<NiceTrait> requiredTraits, {
+    final bool checkBuff = false,
+  }) {
+    return containsAnyTraits(getTraits(battleData), requiredTraits) ||
+        (checkBuff && battleBuff.checkTraits(requiredTraits));
   }
 
   void changeNPLineCount(final int change) {
@@ -391,8 +417,7 @@ class BattleServantData {
 
   bool canUseSkillIgnoreCoolDown(final BattleData battleData, final int skillIndex) {
     // TODO (battle): skill specific check
-    return canAttack(battleData) &&
-        !hasBuffOnAction(battleData, BuffAction.donotSkill);
+    return canAttack(battleData) && !hasBuffOnAction(battleData, BuffAction.donotSkill);
   }
 
   void activateSkill(final BattleData battleData, final int skillIndex) {

@@ -1,10 +1,10 @@
-import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
+import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
@@ -348,10 +348,8 @@ void main() async {
           ..ce = db.gameData.craftEssencesById[9401850] // Magical Girl of Sapphire
           ..ceLv = 100
           ..ceLimitBreak = true,
-        PlayerSvtData(504500)
-          ..lv = 90,
-        PlayerSvtData(504500)
-          ..lv = 90,
+        PlayerSvtData(504500)..lv = 90,
+        PlayerSvtData(504500)..lv = 90,
       ];
       final battle = BattleData();
       battle.init(db.gameData.questPhases[9300040603]!, kamaWithDoubleCastoria, null);
@@ -415,18 +413,16 @@ void main() async {
 
   test('Activate skill checks buff status', () {
     final List<PlayerSvtData> lipAndJinako = [
-      PlayerSvtData(1000100)
-        ..lv = 80,
-      PlayerSvtData(2300300)
-        ..lv = 90,
+      PlayerSvtData(1000100)..lv = 80,
+      PlayerSvtData(2300300)..lv = 90,
     ];
     final battle = BattleData();
     battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
 
     battle.activateSvtSkill(0, 0);
 
-    final avoidStateBuff = collectBuffsPerType(battle.onFieldAllyServants[0]!.battleBuff.allBuffs, BuffType.avoidState)
-        .first;
+    final avoidStateBuff =
+        collectBuffsPerType(battle.onFieldAllyServants[0]!.battleBuff.allBuffs, BuffType.avoidState).first;
 
     expect(avoidStateBuff.count, 3);
 
@@ -439,14 +435,26 @@ void main() async {
     expect(avoidStateBuff.count, 1);
   });
 
+  test('Nitocris (Alter) bug', () {
+    final List<PlayerSvtData> lipAndJinako = [
+      PlayerSvtData(1101500)..lv = 90,
+    ];
+    final battle = BattleData();
+    battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
+
+    final nito = battle.onFieldAllyServants[0]!;
+    expect(nito.battleBuff.allBuffs.length, 5);
+    battle.activateSvtSkill(0, 1);
+    expect(nito.battleBuff.allBuffs.length, 7);
+    battle.activateSvtSkill(0, 2);
+    expect(nito.battleBuff.allBuffs.length, 11);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
-      PlayerSvtData(504900)
-        ..lv = 90,
-      PlayerSvtData(503900)
-        ..lv = 90,
-      PlayerSvtData(503900)
-        ..lv = 90,
+      PlayerSvtData(504900)..lv = 90,
+      PlayerSvtData(503900)..lv = 90,
+      PlayerSvtData(503900)..lv = 90,
     ];
 
     test('Test checkTargetTraits & checkActivatorTraits', () {

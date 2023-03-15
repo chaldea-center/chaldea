@@ -325,13 +325,15 @@ class BattleData {
 
     final List<int> removeTraitIds = [];
     for (final svt in nonnullActors) {
+      setActivator(svt);
       for (final buff in svt.battleBuff.allBuffs) {
-        if (buff.buff.type == BuffType.fieldIndividuality) {
+        if (buff.buff.type == BuffType.fieldIndividuality && buff.shouldApplyBuff(this, false)) {
           allTraits.addAll(buff.traits.where((trait) => fieldTraitCheck(trait)));
-        } else if (buff.buff.type == BuffType.subFieldIndividuality) {
+        } else if (buff.buff.type == BuffType.subFieldIndividuality && buff.shouldApplyBuff(this, false)) {
           removeTraitIds.addAll(buff.vals.TargetList!.map((traitId) => traitId));
         }
       }
+      unsetActivator();
     }
 
     fieldBuffs
@@ -349,7 +351,7 @@ class BattleData {
     }
 
     final List<NiceTrait> currentTraits = [];
-    currentTraits.addAll(target?.getTraits() ?? []);
+    currentTraits.addAll(target?.getTraits(this) ?? []);
     currentTraits.addAll(currentBuff?.traits ?? []);
     currentTraits.addAll(currentCard?.traits ?? []);
 
@@ -366,7 +368,7 @@ class BattleData {
     }
 
     final List<NiceTrait> currentTraits = [];
-    currentTraits.addAll(activator?.getTraits() ?? []);
+    currentTraits.addAll(activator?.getTraits(this) ?? []);
     currentTraits.addAll(currentBuff?.traits ?? []);
     currentTraits.addAll(currentCard?.traits ?? []);
 
@@ -578,13 +580,11 @@ class BattleData {
   ) {
     actor.activateCommandCode(this, card.cardIndex);
 
-    actor.activateBuffOnActions(
-        this,
-        [
-          BuffAction.functionAttackBefore,
-          BuffAction.functionCommandattackBefore,
-          BuffAction.functionCommandcodeattackBefore,
-        ]);
+    actor.activateBuffOnActions(this, [
+      BuffAction.functionAttackBefore,
+      BuffAction.functionCommandattackBefore,
+      BuffAction.functionCommandcodeattackBefore,
+    ]);
 
     setActivator(actor);
 
@@ -598,13 +598,11 @@ class BattleData {
 
     unsetActivator();
 
-    actor.activateBuffOnActions(
-        this,
-        [
-          BuffAction.functionAttackAfter,
-          BuffAction.functionCommandattackAfter,
-          BuffAction.functionCommandcodeattackAfter,
-        ]);
+    actor.activateBuffOnActions(this, [
+      BuffAction.functionAttackAfter,
+      BuffAction.functionCommandattackAfter,
+      BuffAction.functionCommandcodeattackAfter,
+    ]);
 
     actor.clearCommandCodeBuffs();
 

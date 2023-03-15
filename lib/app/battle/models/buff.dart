@@ -155,9 +155,9 @@ class BuffData {
     return '${buffRate != 1000 ? '${(buffRate / 10).toStringAsFixed(1)} %' : ''} '
         '${buff.lName.l} '
         '${buff.ckSelfIndv.isNotEmpty ? '${S.current.battle_require_self_traits} '
-        '${buff.ckSelfIndv.map((trait) => trait.shownName())} ' : ''}'
+            '${buff.ckSelfIndv.map((trait) => trait.shownName())} ' : ''}'
         '${buff.ckOpIndv.isNotEmpty ? '${S.current.battle_require_opponent_traits} '
-        '${buff.ckOpIndv.map((trait) => trait.shownName())} ' : ''}'
+            '${buff.ckOpIndv.map((trait) => trait.shownName())} ' : ''}'
         '${getParamString()}'
         '${isOnField ? S.current.battle_require_actor_on_field(actorName) : ''}';
   }
