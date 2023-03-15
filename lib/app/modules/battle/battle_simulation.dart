@@ -213,6 +213,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             for (int i = 0; i < svt.skillInfoList.length; i += 1)
               buildSkillInfo(
                   skillInfo: svt.skillInfoList[i],
+                  canUseSkill: battleData.canUseSvtSkillIgnoreCoolDown(index, i),
                   onTap: () {
                     battleData.activateSvtSkill(index, i);
                     if (mounted) setState(() {});
@@ -305,6 +306,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                               for (int i = 0; i < battleData.masterSkillInfo.length; i += 1)
                                 buildSkillInfo(
                                     skillInfo: battleData.masterSkillInfo[i],
+                                    canUseSkill: battleData.canUseMysticCodeSkillIgnoreCoolDown(i),
                                     onTap: () {
                                       battleData.activateMysticCodeSKill(i);
                                       if (mounted) setState(() {});
@@ -421,11 +423,15 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     );
   }
 
-  Widget buildSkillInfo({required final BattleSkillInfoData skillInfo, required final VoidCallback onTap}) {
+  Widget buildSkillInfo({
+    required final BattleSkillInfoData skillInfo,
+    required bool canUseSkill,
+    required final VoidCallback onTap,
+  }) {
     final cd = skillInfo.chargeTurn;
     Widget cdTextBuilder(final TextStyle style) {
       return Text.rich(
-        TextSpan(style: style, text: cd.toString()),
+        TextSpan(style: style, text: !canUseSkill ? 'X' : cd.toString()),
         textScaleFactor: 1,
       );
     }
@@ -436,14 +442,14 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         onLongPress: () {},
         child: ImageWithText(
           image: db.getIconImage(skillInfo.skill.icon, width: 35, aspectRatio: 1),
-          textBuilder: skillInfo.canActivate ? null : cdTextBuilder,
+          textBuilder: canUseSkill ? null : cdTextBuilder,
           option: ImageWithTextOption(
             shadowSize: 8,
             textStyle: const TextStyle(fontSize: 20, color: Colors.black),
             shadowColor: Colors.white,
             alignment: AlignmentDirectional.center,
           ),
-          onTap: skillInfo.canActivate ? onTap : null,
+          onTap: canUseSkill ? onTap : null,
         ),
       ),
     );

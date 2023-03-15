@@ -65,6 +65,8 @@ class BattleSkillInfoData {
         isCommandCode: isCommandCode,
       );
     }
+
+    battleData.checkBuffStatus();
   }
 
   BattleSkillInfoData copy() {

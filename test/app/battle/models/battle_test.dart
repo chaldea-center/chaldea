@@ -1,3 +1,4 @@
+import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chaldea/app/battle/models/battle.dart';
@@ -347,8 +348,10 @@ void main() async {
           ..ce = db.gameData.craftEssencesById[9401850] // Magical Girl of Sapphire
           ..ceLv = 100
           ..ceLimitBreak = true,
-        PlayerSvtData(504500)..lv = 90,
-        PlayerSvtData(504500)..lv = 90,
+        PlayerSvtData(504500)
+          ..lv = 90,
+        PlayerSvtData(504500)
+          ..lv = 90,
       ];
       final battle = BattleData();
       battle.init(db.gameData.questPhases[9300040603]!, kamaWithDoubleCastoria, null);
@@ -410,11 +413,40 @@ void main() async {
     });
   });
 
+  test('Activate skill checks buff status', () {
+    final List<PlayerSvtData> lipAndJinako = [
+      PlayerSvtData(1000100)
+        ..lv = 80,
+      PlayerSvtData(2300300)
+        ..lv = 90,
+    ];
+    final battle = BattleData();
+    battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
+
+    battle.activateSvtSkill(0, 0);
+
+    final avoidStateBuff = collectBuffsPerType(battle.onFieldAllyServants[0]!.battleBuff.allBuffs, BuffType.avoidState)
+        .first;
+
+    expect(avoidStateBuff.count, 3);
+
+    battle.activateSvtSkill(0, 2);
+
+    expect(avoidStateBuff.count, 2);
+
+    battle.activateSvtSkill(1, 2);
+
+    expect(avoidStateBuff.count, 1);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
-      PlayerSvtData(504900)..lv = 90,
-      PlayerSvtData(503900)..lv = 90,
-      PlayerSvtData(503900)..lv = 90,
+      PlayerSvtData(504900)
+        ..lv = 90,
+      PlayerSvtData(503900)
+        ..lv = 90,
+      PlayerSvtData(503900)
+        ..lv = 90,
     ];
 
     test('Test checkTargetTraits & checkActivatorTraits', () {

@@ -396,12 +396,12 @@ class BattleData {
     return onFieldAllyServants[servantIndex]!.canNP(this);
   }
 
-  bool canUseSkill(final int servantIndex, final int skillIndex) {
+  bool canUseSvtSkillIgnoreCoolDown(final int servantIndex, final int skillIndex) {
     if (onFieldAllyServants[servantIndex] == null) {
       return false;
     }
 
-    return onFieldAllyServants[servantIndex]!.canActivateSkill(this, skillIndex);
+    return onFieldAllyServants[servantIndex]!.canUseSkillIgnoreCoolDown(this, skillIndex);
   }
 
   void activateSvtSkill(final int servantIndex, final int skillIndex) {
@@ -416,13 +416,13 @@ class BattleData {
     svt.activateSkill(this, skillIndex);
   }
 
-  bool canUseMysticCodeSkill(final int skillIndex) {
+  bool canUseMysticCodeSkillIgnoreCoolDown(final int skillIndex) {
     if (masterSkillInfo.length <= skillIndex) {
       return false;
     }
 
     // TODO (battle): condition checking
-    return masterSkillInfo[skillIndex].canActivate;
+    return true;
   }
 
   void activateMysticCodeSKill(final int skillIndex) {

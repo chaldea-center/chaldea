@@ -389,11 +389,10 @@ class BattleServantData {
     return collectBuffsPerTypes(battleBuff.allBuffs, gutsTypes).isNotEmpty;
   }
 
-  bool canActivateSkill(final BattleData battleData, final int skillIndex) {
+  bool canUseSkillIgnoreCoolDown(final BattleData battleData, final int skillIndex) {
     // TODO (battle): skill specific check
     return canAttack(battleData) &&
-        !hasBuffOnAction(battleData, BuffAction.donotSkill) &&
-        skillInfoList[skillIndex].canActivate;
+        !hasBuffOnAction(battleData, BuffAction.donotSkill);
   }
 
   void activateSkill(final BattleData battleData, final int skillIndex) {
