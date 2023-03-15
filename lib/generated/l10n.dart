@@ -514,6 +514,17 @@ class S {
     );
   }
 
+  /// `Change Ascension`
+  String get battle_change_ascension {
+    return Intl.message(
+      'Change Ascension',
+      name: 'battle_change_ascension',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Click icon to select CE`
   String get battle_click_to_select_ce {
     return Intl.message(
@@ -530,6 +541,28 @@ class S {
     return Intl.message(
       'Click icon to select servant',
       name: 'battle_click_to_select_servants',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Edit Craft Essence Option`
+  String get battle_edit_ce_option {
+    return Intl.message(
+      'Edit Craft Essence Option',
+      name: 'battle_edit_ce_option',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Edit Servant Option`
+  String get battle_edit_servant_option {
+    return Intl.message(
+      'Edit Servant Option',
+      name: 'battle_edit_servant_option',
       desc: '',
       locale: localeName,
       args: [],
@@ -1014,6 +1047,17 @@ class S {
     return Intl.message(
       'Owned',
       name: 'card_status_owned',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Card Strengthen`
+  String get card_strengthen {
+    return Intl.message(
+      'Card Strengthen',
+      name: 'card_strengthen',
       desc: '',
       locale: localeName,
       args: [],
@@ -6475,6 +6519,17 @@ class S {
     return Intl.message(
       'Related Traits',
       name: 'related_traits',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Remove`
+  String get remove {
+    return Intl.message(
+      'Remove',
+      name: 'remove',
       desc: '',
       locale: localeName,
       args: [],

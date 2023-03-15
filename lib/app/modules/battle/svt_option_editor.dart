@@ -83,7 +83,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       },
     ));
     topListChildren.add(ServantOptionEditPage.buildSlider(
-      leadingText: 'ATK Fou',
+      leadingText: 'ATK ${S.current.foukun}',
       min: 0,
       max: 200,
       value: playerSvtData.atkFou ~/ 10,
@@ -99,7 +99,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       },
     ));
     topListChildren.add(ServantOptionEditPage.buildSlider(
-      leadingText: 'HP Fou',
+      leadingText: 'HP ${S.current.foukun}',
       min: 0,
       max: 200,
       value: playerSvtData.hpFou ~/ 10,
@@ -127,7 +127,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        title: const AutoSizeText('Edit Servant Option', maxLines: 1),
+        title: AutoSizeText(S.current.battle_edit_servant_option, maxLines: 1),
         centerTitle: false,
       ),
       body: ListView(
@@ -224,7 +224,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                   }
 
                   return SimpleCancelOkDialog(
-                    title: const Text('Change Ascension'),
+                    title: Text(S.current.battle_change_ascension),
                     content: SingleChildScrollView(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -250,7 +250,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ServantOptionEditPage.buildSlider(
-          leadingText: 'NP Lv',
+          leadingText: S.current.noble_phantasm_level,
           min: 1,
           max: 5,
           value: playerSvtData.npLv,
@@ -358,7 +358,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ServantOptionEditPage.buildSlider(
-          leadingText: 'Active Skill ${skillGroupIndex + 1} Lv',
+          leadingText: '${S.current.active_skill} ${skillGroupIndex + 1} ${S.current.level}',
           min: 1,
           max: 10,
           value: playerSvtData.skillLvs[skillGroupIndex],
@@ -450,7 +450,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ServantOptionEditPage.buildSlider(
-          leadingText: 'Append Skill ${skillGroupIndex + 1} Lv',
+          leadingText: '${S.current.append_skill} ${skillGroupIndex + 1} ${S.current.level}',
           min: 0,
           max: 10,
           value: playerSvtData.appendLvs[skillGroupIndex],
@@ -488,7 +488,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                 Column(
                   children: [
                     ServantOptionEditPage.buildSlider(
-                      leadingText: 'Card Strengthen',
+                      leadingText: S.current.card_strengthen,
                       min: 0,
                       max: 25,
                       value: playerSvtData.cardStrengthens[index] ~/ 20,
@@ -536,7 +536,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                                 });
                               },
                               icon: const Icon(Icons.remove_circle_outline, size: 18),
-                              tooltip: 'Remove',
+                              tooltip: S.current.remove,
                             ),
                           ],
                         ),
@@ -611,14 +611,14 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
           _updateState();
         },
         isSelected: [!playerSvtData.ceLimitBreak, playerSvtData.ceLimitBreak],
-        children: const [
+        children: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text('Not Limit Break'),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(S.current.battle_not_limit_break),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text('Limit Break'),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(S.current.battle_limit_break),
           )
         ],
       ),
@@ -627,7 +627,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        title: const AutoSizeText('Edit Craft Essence Option', maxLines: 1),
+        title: AutoSizeText(S.current.battle_edit_ce_option, maxLines: 1),
         centerTitle: false,
       ),
       body: ListView(

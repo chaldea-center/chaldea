@@ -624,7 +624,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                     });
                   },
                   icon: const Icon(Icons.remove_circle_outline, size: 18),
-                  tooltip: 'Remove',
+                  tooltip: S.current.remove,
                 )
               ]);
             }),
