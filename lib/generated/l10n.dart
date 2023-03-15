@@ -514,6 +514,226 @@ class S {
     );
   }
 
+  /// `Click icon to select CE`
+  String get battle_click_to_select_ce {
+    return Intl.message(
+      'Click icon to select CE',
+      name: 'battle_click_to_select_ce',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Click icon to select servant`
+  String get battle_click_to_select_servants {
+    return Intl.message(
+      'Click icon to select servant',
+      name: 'battle_click_to_select_servants',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Fetch`
+  String get battle_fetch {
+    return Intl.message(
+      'Fetch',
+      name: 'battle_fetch',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `fetch quest phase failed`
+  String get battle_fetch_quest_failed {
+    return Intl.message(
+      'fetch quest phase failed',
+      name: 'battle_fetch_quest_failed',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Invalid quest id or url`
+  String get battle_invalid_quest_input {
+    return Intl.message(
+      'Invalid quest id or url',
+      name: 'battle_invalid_quest_input',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `LB`
+  String get battle_limit_break {
+    return Intl.message(
+      'LB',
+      name: 'battle_limit_break',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `MC Lv`
+  String get battle_mc_lv {
+    return Intl.message(
+      'MC Lv',
+      name: 'battle_mc_lv',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Misc Configs`
+  String get battle_misc_config {
+    return Intl.message(
+      'Misc Configs',
+      name: 'battle_misc_config',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `No quest phase selected.`
+  String get battle_no_quest_phase {
+    return Intl.message(
+      'No quest phase selected.',
+      name: 'battle_no_quest_phase',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `No servant selected.`
+  String get battle_no_servant {
+    return Intl.message(
+      'No servant selected.',
+      name: 'battle_no_servant',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Not found`
+  String get battle_not_found {
+    return Intl.message(
+      'Not found',
+      name: 'battle_not_found',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `not LB`
+  String get battle_not_limit_break {
+    return Intl.message(
+      'not LB',
+      name: 'battle_not_limit_break',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Probability Threshold`
+  String get battle_probability_threshold {
+    return Intl.message(
+      'Probability Threshold',
+      name: 'battle_probability_threshold',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `From`
+  String get battle_quest_from {
+    return Intl.message(
+      'From',
+      name: 'battle_quest_from',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Quest {questId} not found`
+  String battle_quest_not_found(Object questId) {
+    return Intl.message(
+      'Quest $questId not found',
+      name: 'battle_quest_not_found',
+      desc: '',
+      locale: localeName,
+      args: [questId],
+    );
+  }
+
+  /// `Select Backup Servants`
+  String get battle_select_backup_servants {
+    return Intl.message(
+      'Select Backup Servants',
+      name: 'battle_select_backup_servants',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Select Battle Servants`
+  String get battle_select_battle_servants {
+    return Intl.message(
+      'Select Battle Servants',
+      name: 'battle_select_battle_servants',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Battle Simulation`
+  String get battle_simulation {
+    return Intl.message(
+      'Battle Simulation',
+      name: 'battle_simulation',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Simulation Setup`
+  String get battle_simulation_setup {
+    return Intl.message(
+      'Simulation Setup',
+      name: 'battle_simulation_setup',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Start Simulation`
+  String get battle_start_simulation {
+    return Intl.message(
+      'Start Simulation',
+      name: 'battle_start_simulation',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `BGM`
   String get bgm {
     return Intl.message(

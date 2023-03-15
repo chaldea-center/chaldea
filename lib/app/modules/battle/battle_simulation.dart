@@ -549,6 +549,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
               alignment: AlignmentDirectional.center,
             ),
             onTap: () {
+              // TODO (battle): allow for selection if np > 10000
               if (!svt.canNP(widget.battleData)) {
                 return;
               }

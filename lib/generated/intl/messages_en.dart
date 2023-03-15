@@ -23,6 +23,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(curVersion, newVersion, releaseNote) =>
       "Current version: ${curVersion}\nLatest version: ${newVersion}\nRelease Note:\n${releaseNote}";
 
+  static String m15(questId) => "Quest ${questId} not found";
+
   static String m1(url) =>
       "Chaldea - A cross-platform utility for Fate/GO. Supporting game data review, servant/event/item planning, master mission planning, summon simulator and so on.\n\nFor details: \n${url}\n";
 
@@ -32,12 +34,12 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m4(n, total) => "Grail to crystal: ${n}/${total}";
 
-  static String m15(filename, hash, localHash) =>
+  static String m16(filename, hash, localHash) =>
       "File ${filename} not found or mismatched hash: ${hash} - ${localHash}";
 
-  static String m16(rarity) => "${rarity}☆ CE Pick Up";
+  static String m17(rarity) => "${rarity}☆ CE Pick Up";
 
-  static String m17(rarity) => "${rarity}☆ SVT Pick Up";
+  static String m18(rarity) => "${rarity}☆ SVT Pick Up";
 
   static String m5(error) => "Import failed. Error:\n${error}";
 
@@ -45,9 +47,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m7(site) => "Jump to ${site}";
 
-  static String m18(shown, total) => "${shown} shown (total ${total})";
+  static String m19(shown, total) => "${shown} shown (total ${total})";
 
-  static String m19(shown, ignore, total) => "${shown} shown, ${ignore} ignored (total ${total})";
+  static String m20(shown, ignore, total) => "${shown} shown, ${ignore} ignored (total ${total})";
 
   static String m8(first) => "${Intl.select(first, {
             'true': 'Already the first one',
@@ -55,17 +57,17 @@ class MessageLookup extends MessageLookupByLibrary {
             'other': 'No more',
           })}";
 
-  static String m20(layer) => "Layer ${layer}";
+  static String m21(layer) => "Layer ${layer}";
 
   static String m9(n) => "Section ${n}";
 
-  static String m21(region) => "Something went wrong or ${region} doesn\'t have this quest\'s data";
+  static String m22(region) => "Something went wrong or ${region} doesn\'t have this quest\'s data";
 
-  static String m22(runs) => "${runs} Runs";
+  static String m23(runs) => "${runs} Runs";
 
-  static String m23(index, total, enemy) => "Version ${index}/${total} (${enemy} enemies)";
+  static String m24(index, total, enemy) => "Version ${index}/${total} (${enemy} enemies)";
 
-  static String m24(unknown, dup, valid, total, selected) =>
+  static String m25(unknown, dup, valid, total, selected) =>
       "${unknown} unknown, ${dup} dup, ${valid}/${total} valid, ${selected} selected";
 
   static String m10(region) => "${region} Notice";
@@ -74,14 +76,14 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "Reset Plan ${n}(Shown)";
 
-  static String m25(battles, ap) => "Total ${battles} battles, ${ap} AP";
+  static String m26(battles, ap) => "Total ${battles} battles, ${ap} AP";
 
   static String m13(n) => "Profile ${n}";
 
-  static String m26(color, trait) =>
+  static String m27(color, trait) =>
       "This Nobel Phantasm is displayed as a ${color} card, but doesn\'t have [${trait}] trait.";
 
-  static String m27(trait) => "This is a Nobel Phantasm, but doesn\'t have [${trait}] trait.";
+  static String m28(trait) => "This is a Nobel Phantasm, but doesn\'t have [${trait}] trait.";
 
   static String m14(a, b) => "${a} ${b}";
 
@@ -130,6 +132,26 @@ class MessageLookup extends MessageLookupByLibrary {
         "backup": MessageLookupByLibrary.simpleMessage("Backup"),
         "backup_failed": MessageLookupByLibrary.simpleMessage("Backup failed"),
         "backup_history": MessageLookupByLibrary.simpleMessage("Backup History"),
+        "battle_click_to_select_ce": MessageLookupByLibrary.simpleMessage("Click icon to select CE"),
+        "battle_click_to_select_servants": MessageLookupByLibrary.simpleMessage("Click icon to select servant"),
+        "battle_fetch": MessageLookupByLibrary.simpleMessage("Fetch"),
+        "battle_fetch_quest_failed": MessageLookupByLibrary.simpleMessage("fetch quest phase failed"),
+        "battle_invalid_quest_input": MessageLookupByLibrary.simpleMessage("Invalid quest id or url"),
+        "battle_limit_break": MessageLookupByLibrary.simpleMessage("LB"),
+        "battle_mc_lv": MessageLookupByLibrary.simpleMessage("MC Lv"),
+        "battle_misc_config": MessageLookupByLibrary.simpleMessage("Misc Configs"),
+        "battle_no_quest_phase": MessageLookupByLibrary.simpleMessage("No quest phase selected."),
+        "battle_no_servant": MessageLookupByLibrary.simpleMessage("No servant selected."),
+        "battle_not_found": MessageLookupByLibrary.simpleMessage("Not found"),
+        "battle_not_limit_break": MessageLookupByLibrary.simpleMessage("not LB"),
+        "battle_probability_threshold": MessageLookupByLibrary.simpleMessage("Probability Threshold"),
+        "battle_quest_from": MessageLookupByLibrary.simpleMessage("From"),
+        "battle_quest_not_found": m15,
+        "battle_select_backup_servants": MessageLookupByLibrary.simpleMessage("Select Backup Servants"),
+        "battle_select_battle_servants": MessageLookupByLibrary.simpleMessage("Select Battle Servants"),
+        "battle_simulation": MessageLookupByLibrary.simpleMessage("Battle Simulation"),
+        "battle_simulation_setup": MessageLookupByLibrary.simpleMessage("Simulation Setup"),
+        "battle_start_simulation": MessageLookupByLibrary.simpleMessage("Start Simulation"),
         "bgm": MessageLookupByLibrary.simpleMessage("BGM"),
         "blacklist": MessageLookupByLibrary.simpleMessage("Blacklist"),
         "bond": MessageLookupByLibrary.simpleMessage("Bond"),
@@ -345,7 +367,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ffo_same_svt": MessageLookupByLibrary.simpleMessage("Same Servant"),
         "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("Domus Aurea"),
         "field_ai": MessageLookupByLibrary.simpleMessage("Field AI"),
-        "file_not_found_or_mismatched_hash": m15,
+        "file_not_found_or_mismatched_hash": m16,
         "filename": MessageLookupByLibrary.simpleMessage("filename"),
         "fill_email_warning": MessageLookupByLibrary.simpleMessage("Please fill in email address. Otherwise NO reply."),
         "filter": MessageLookupByLibrary.simpleMessage("Filter"),
@@ -372,11 +394,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "free_quest_calculator": MessageLookupByLibrary.simpleMessage("Free Quest"),
         "free_quest_calculator_short": MessageLookupByLibrary.simpleMessage("Free Quest"),
         "gacha_prob_calc": MessageLookupByLibrary.simpleMessage("Gacha Prob Calc"),
-        "gacha_prob_ce_pickup": m16,
+        "gacha_prob_ce_pickup": m17,
         "gacha_prob_custom_rate": MessageLookupByLibrary.simpleMessage("Custom Rate"),
         "gacha_prob_precision_hint": MessageLookupByLibrary.simpleMessage(
             "If the value is too large or too small, the calculation result is inaccurate due to the double precision problem."),
-        "gacha_prob_svt_pickup": m17,
+        "gacha_prob_svt_pickup": m18,
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("Home"),
         "game_account": MessageLookupByLibrary.simpleMessage("Game Account"),
         "game_data_not_found":
@@ -518,8 +540,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "limited_event": MessageLookupByLibrary.simpleMessage("Limited Event"),
         "limited_time": MessageLookupByLibrary.simpleMessage("Limited Time"),
         "link": MessageLookupByLibrary.simpleMessage("link"),
-        "list_count_shown_all": m18,
-        "list_count_shown_hidden_all": m19,
+        "list_count_shown_all": m19,
+        "list_count_shown_hidden_all": m20,
         "list_end_hint": m8,
         "load_ffo_data": MessageLookupByLibrary.simpleMessage("Load FFO Data"),
         "logic_type": MessageLookupByLibrary.simpleMessage("Logic Type"),
@@ -559,7 +581,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_story": MessageLookupByLibrary.simpleMessage("Main Record"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("Chapter"),
         "map_gimmicks": MessageLookupByLibrary.simpleMessage("Gimmicks"),
-        "map_layer_n": m20,
+        "map_layer_n": m21,
         "map_show_fq_spots_only": MessageLookupByLibrary.simpleMessage("FQ spots only"),
         "map_show_header_image": MessageLookupByLibrary.simpleMessage("Show Header Image"),
         "map_show_roads": MessageLookupByLibrary.simpleMessage("Show Roads"),
@@ -652,7 +674,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_fields": MessageLookupByLibrary.simpleMessage("Fields"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("Drops"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("Drops"),
-        "quest_not_found_error": m21,
+        "quest_not_found_error": m22,
         "quest_prefer_region": MessageLookupByLibrary.simpleMessage("Preferred Region"),
         "quest_prefer_region_hint": MessageLookupByLibrary.simpleMessage(
             "If the related event of the quest has not started at chosen region, it will fallback to JP"),
@@ -661,10 +683,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_restriction": MessageLookupByLibrary.simpleMessage("Restrictions"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("Quest Rewards"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("Rewards"),
-        "quest_runs": m22,
+        "quest_runs": m23,
         "quest_timeline_sort_campaign_open": MessageLookupByLibrary.simpleMessage("AP Cost Event Time"),
         "quest_timeline_sort_quest_open": MessageLookupByLibrary.simpleMessage("Quest Open Time"),
-        "quest_version": m23,
+        "quest_version": m24,
         "quit": MessageLookupByLibrary.simpleMessage("Quit"),
         "raid_quest": MessageLookupByLibrary.simpleMessage("Raid Quest"),
         "random": MessageLookupByLibrary.simpleMessage("Random"),
@@ -676,7 +698,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rarity": MessageLookupByLibrary.simpleMessage("Rarity"),
         "rate_app_store": MessageLookupByLibrary.simpleMessage("Rate on App Store"),
         "rate_play_store": MessageLookupByLibrary.simpleMessage("Rate on Google Play"),
-        "recognizer_result_count": m24,
+        "recognizer_result_count": m25,
         "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
         "refresh_data_no_update": MessageLookupByLibrary.simpleMessage("No new card found"),
         "region_cn": MessageLookupByLibrary.simpleMessage("CN"),
@@ -768,7 +790,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("Skills Max(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("Battle Count"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("Target Count"),
-        "solution_total_battles_ap": m25,
+        "solution_total_battles_ap": m26,
         "sort_order": MessageLookupByLibrary.simpleMessage("Sort"),
         "sound_effect": MessageLookupByLibrary.simpleMessage("Sound Effect"),
         "special_reward_hide": MessageLookupByLibrary.simpleMessage("Hide Special Rewards"),
@@ -828,8 +850,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "td_animation": MessageLookupByLibrary.simpleMessage("NP Animation"),
         "td_base_hits_hint": MessageLookupByLibrary.simpleMessage(
             "For the same NP id, different owners may have different card type and hit distributions."),
-        "td_cardcolor_hint": m26,
-        "td_cardnp_hint": m27,
+        "td_cardcolor_hint": m27,
+        "td_cardnp_hint": m28,
         "td_rankup": MessageLookupByLibrary.simpleMessage("NP Upgrade"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("Test Info Pad"),
         "testing": MessageLookupByLibrary.simpleMessage("Testing"),

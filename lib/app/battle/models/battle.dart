@@ -445,6 +445,7 @@ class BattleData {
 
     // assumption: only Quick, Arts, and Buster are ever listed as viable actions
     final cardTypesSet = actions.map((action) => action.cardData.cardType).toSet();
+    // TODO: (battle) check for stun etc.
     final isTypeChain = actions.length == 3 && cardTypesSet.length == 1;
     final isMightyChain = cardTypesSet.length == 3 && isAfter7thAnni;
     final CardType firstCardType = actions[0].cardData.cardType;

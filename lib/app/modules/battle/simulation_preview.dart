@@ -93,10 +93,10 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Center(
+        Center(
           child: Text(
-            'Select Battle Servants',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            S.current.battle_select_battle_servants,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
         Row(
@@ -120,10 +120,10 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Center(
+        Center(
           child: Text(
-            'Select Backup Servants',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            S.current.battle_select_backup_servants,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
         Row(
@@ -147,7 +147,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        title: const AutoSizeText('Battle Simulation Preview', maxLines: 1),
+        title: AutoSizeText(S.current.battle_simulation_setup, maxLines: 1),
         centerTitle: false,
       ),
       body: Column(
@@ -183,7 +183,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                           QuestPhaseWidget.removePhaseSelectCallback(_questSelectCallback);
                           _startSimulation();
                         },
-                        child: const Text('Start Simulation'),
+                        child: Text(S.current.battle_start_simulation),
                       ),
                     ],
                   ),
@@ -211,8 +211,8 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             decoration: InputDecoration(
               isDense: true,
               border: const OutlineInputBorder(),
-              hintText: '93031014/3 or **/JP/quest/93031014/3'.breakWord,
-              labelText: 'questId/phase or chaldea/AADB quest url',
+              hintText: '93031014/3 ${S.current.logic_type_or} **/JP/quest/93031014/3'.breakWord,
+              labelText: 'questId/phase ${S.current.logic_type_or} chaldea/AADB quest url',
               hintStyle: const TextStyle(overflow: TextOverflow.visible),
               floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
@@ -243,22 +243,22 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                 try {
                   await _fetchQuestPhase();
                 } catch (e, s) {
-                  logger.e('fetch quest phase failed', e, s);
+                  logger.e(S.current.battle_fetch_quest_failed, e, s);
                   questErrorMsg = escapeDioError(e);
                 } finally {
                   EasyLoading.dismiss();
                   if (mounted) setState(() {});
                 }
               },
-              child: const Text('Fetch'),
+              child: Text(S.current.battle_fetch),
             ),
           ],
         ),
         ListTile(
           dense: true,
-          title: Text('From ${S.current.event}/${S.current.main_story}'),
+          title: Text('${S.current.battle_quest_from} ${S.current.event}/${S.current.main_story}'),
           subtitle: Text.rich(TextSpan(
-            text: 'Event→War→Quest→',
+            text: '${S.current.event}→${S.current.war}→${S.current.quest}→',
             children: [
               CenterWidgetSpan(
                 child: Icon(
@@ -309,7 +309,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     // quest id and phase
     final match = RegExp(r'(\d+)(?:/(\d+))?').firstMatch(text);
     if (match == null) {
-      questErrorMsg = 'Invalid quest id or url';
+      questErrorMsg = S.current.battle_invalid_quest_input;
       return;
     }
     final questId = int.parse(match.group(1)!);
@@ -324,7 +324,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     if (region == Region.jp) quest = db.gameData.quests[questId];
     quest ??= await AtlasApi.quest(questId, region: region);
     if (quest == null) {
-      questErrorMsg = 'Quest $questId not found';
+      questErrorMsg = S.current.battle_quest_not_found(questId);
       return;
     }
     if (phase == null || !quest.phases.contains(phase)) {
@@ -333,7 +333,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     }
     questPhase = await AtlasApi.questPhase(questId, phase, hash: hash, region: region);
     if (questPhase == null) {
-      questErrorMsg = 'Not found: /${region.upper}/quest/$questId/$phase';
+      questErrorMsg = '${S.current.battle_not_found}: /${region.upper}/quest/$questId/$phase';
       if (hash != null) questErrorMsg = '${questErrorMsg!}?hash=$hash';
     }
   }
@@ -354,10 +354,10 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Center(
+        Center(
           child: Text(
-            'Misc Configs',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            S.current.battle_misc_config,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
         Row(
@@ -406,7 +406,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ServantOptionEditPage.buildSlider(
-                    leadingText: 'MC Lv',
+                    leadingText: S.current.battle_mc_lv,
                     min: 1,
                     max: 10,
                     value: mysticCodeData.level,
@@ -417,7 +417,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                     },
                   ),
                   ServantOptionEditPage.buildSlider(
-                    leadingText: 'Rate',
+                    leadingText: S.current.battle_probability_threshold,
                     min: 0,
                     max: 10,
                     value: probabilityThreshold ~/ 100,
@@ -438,12 +438,12 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
   bool _isPreviewReady() {
     if (questPhase == null) {
-      errorMsg = 'No quest phase selected.';
+      errorMsg = S.current.battle_no_quest_phase;
       return false;
     }
     if (onFieldSvtDataList.every((setting) => setting.svt == null) &&
         backupSvtDataList.every((setting) => setting.svt == null)) {
-      errorMsg = 'No servant selected.';
+      errorMsg = S.current.battle_no_servant;
       return false;
     }
 
@@ -512,7 +512,8 @@ class ServantSelector extends StatelessWidget {
       return Text.rich(
         TextSpan(
           style: style,
-          text: 'Lv${playerSvtData.ceLv}-${playerSvtData.ceLimitBreak ? 'LB' : 'not LB'}',
+          text: 'Lv${playerSvtData.ceLv}-'
+              '${playerSvtData.ceLimitBreak ? S.current.battle_limit_break : S.current.battle_not_limit_break}',
         ),
         textScaleFactor: 1,
       );
@@ -566,7 +567,7 @@ class ServantSelector extends StatelessWidget {
             ),
             AutoSizeText(
               playerSvtData.svt == null
-                  ? 'Click icon to select servant'
+                  ? S.current.battle_click_to_select_servants
                   : Transl.svtNames(getSvtName(playerSvtData.svt!, playerSvtData.ascensionPhase)).l,
               maxLines: 2,
               textAlign: TextAlign.center,
@@ -626,7 +627,7 @@ class ServantSelector extends StatelessWidget {
               ),
             ),
             AutoSizeText(
-              playerSvtData.ce == null ? 'Click icon to select CE' : playerSvtData.ce!.lName.l,
+              playerSvtData.ce == null ? S.current.battle_click_to_select_ce : playerSvtData.ce!.lName.l,
               maxLines: 2,
               textAlign: TextAlign.center,
             ),

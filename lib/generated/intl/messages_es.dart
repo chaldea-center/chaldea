@@ -32,7 +32,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m4(n, total) => "Griales a Lore: ${n}/${total}";
 
-  static String m15(filename, hash, localHash) =>
+  static String m16(filename, hash, localHash) =>
       "Archivo ${filename} no encontrado o el hash no coincide: ${hash} - ${localHash}";
 
   static String m5(error) => "La importación ha fallado. Error:\n${error}";
@@ -41,9 +41,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m7(site) => "Ir a ${site}";
 
-  static String m18(shown, total) => "${shown} mostrado (total ${total})";
+  static String m19(shown, total) => "${shown} mostrado (total ${total})";
 
-  static String m19(shown, ignore, total) => "${shown} mostrado, ${ignore} ignorado (total ${total})";
+  static String m20(shown, ignore, total) => "${shown} mostrado, ${ignore} ignorado (total ${total})";
 
   static String m8(first) => "${Intl.select(first, {
             'true': 'Ya es el primero',
@@ -59,7 +59,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m12(n) => "Restablecer plan ${n} (Mostrado)";
 
-  static String m25(battles, ap) => "Total de batallas: ${battles}, ${ap} AP";
+  static String m26(battles, ap) => "Total de batallas: ${battles}, ${ap} AP";
 
   static String m13(n) => "Perfil ${n}";
 
@@ -249,7 +249,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ffo_missing_data_hint": MessageLookupByLibrary.simpleMessage("Primero descargue o importe los datos de FFO↗"),
         "ffo_same_svt": MessageLookupByLibrary.simpleMessage("Mismo Servant"),
         "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("Domus Áurea"),
-        "file_not_found_or_mismatched_hash": m15,
+        "file_not_found_or_mismatched_hash": m16,
         "filename": MessageLookupByLibrary.simpleMessage("nombre del archivo"),
         "fill_email_warning": MessageLookupByLibrary.simpleMessage(
             "Por favor, rellene la dirección de correo. De lo contrario NO hay respuesta."),
@@ -397,8 +397,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "level": MessageLookupByLibrary.simpleMessage("Nivel"),
         "limited_event": MessageLookupByLibrary.simpleMessage("Evento Limitado"),
         "link": MessageLookupByLibrary.simpleMessage("enlace"),
-        "list_count_shown_all": m18,
-        "list_count_shown_hidden_all": m19,
+        "list_count_shown_all": m19,
+        "list_count_shown_hidden_all": m20,
         "list_end_hint": m8,
         "login_change_name": MessageLookupByLibrary.simpleMessage("Cambiar nombre"),
         "login_change_password": MessageLookupByLibrary.simpleMessage("Cambiar contraseña"),
@@ -572,7 +572,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skilled_max10": MessageLookupByLibrary.simpleMessage("Skills Máx(310)"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("Conteo de Batallas"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("Conteo de Objetivos"),
-        "solution_total_battles_ap": m25,
+        "solution_total_battles_ap": m26,
         "sort_order": MessageLookupByLibrary.simpleMessage("Ordenar"),
         "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
         "sq_fragment_convert": MessageLookupByLibrary.simpleMessage("21 Fragmentos = 3 SQ"),

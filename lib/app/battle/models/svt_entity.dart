@@ -521,7 +521,7 @@ class BattleServantData {
   void activateBuffs(final BattleData battleData, final Iterable<BuffData> buffs) {
     battleData.setActivator(this);
 
-    for (final buff in buffs) {
+    for (final buff in buffs.toList()) {
       if (buff.shouldApplyBuff(battleData, false)) {
         final skill = db.gameData.baseSkills[buff.param];
         if (skill == null) {

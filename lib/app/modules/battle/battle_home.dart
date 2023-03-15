@@ -1,5 +1,6 @@
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/battle/simulation_preview.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'np_damage_calculator.dart';
 
@@ -31,7 +32,7 @@ class BattleHomePage extends StatelessWidget {
             onTap: () {},
           ),
           ListTile(
-            title: const Text('Simulation'),
+            title: Text(S.current.battle_simulation),
             onTap: () {
               router.popDetailAndPush(child: const SimulationPreview());
             },
