@@ -44,7 +44,8 @@ class FunctionExecutor {
     final dataVals = getDataVals(function, skillLevel, overchargeLvl);
 
     final checkDead = dataVals.CheckDead != null && dataVals.CheckDead! > 0;
-    targets.retainWhere((svt) => (svt.isAlive() || checkDead) && svt.checkTraits(battleData, function.functvals));
+    targets.retainWhere(
+        (svt) => (svt.isAlive(battleData) || checkDead) && svt.checkTraits(battleData, function.functvals));
 
     bool functionSuccess = true;
     switch (function.funcType) {

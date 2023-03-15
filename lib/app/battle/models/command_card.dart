@@ -1,4 +1,4 @@
-import 'package:chaldea/app/battle/models/buff.dart';
+import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
@@ -9,8 +9,10 @@ class BattleCommandData {
   int svtlimit = 0;
   int attri = 0;
   int follower = 0;
+
   // ignore: unused_field
   final int _loadSvtLimit = -1;
+
   // static const PASS_STAR_DENOMINATOR = 100;
   int uniqueId = 0;
   int markindex = 0;
@@ -55,4 +57,8 @@ class CombatAction {
   CommandCardData cardData;
 
   CombatAction(this.actor, this.cardData);
+
+  bool isValid(final BattleData battleData) {
+    return cardData.isNP ? actor.canNP(battleData) : actor.canCommandCard(battleData);
+  }
 }

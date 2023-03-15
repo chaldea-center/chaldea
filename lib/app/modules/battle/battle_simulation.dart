@@ -568,7 +568,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
                   return;
                 }
 
-                widget.combatActions[nextIndex] = CombatAction(svt, svt.getNPCard()!);
+                widget.combatActions[nextIndex] = CombatAction(svt, svt.getNPCard(widget.battleData)!);
                 if (mounted) setState(() {});
               }
             },
@@ -579,7 +579,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       final npIndex = getNpCardIndex(svt, widget.combatActions);
       npCardColumn.add(Text(npIndex == -1 ? '' : '${S.current.battle_action} ${npIndex + 1}'));
 
-      final cards = svt.getCards();
+      final cards = svt.getCards(widget.battleData);
       commandCardColumn.add(Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(

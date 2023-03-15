@@ -192,7 +192,7 @@ class BattleServantData {
     return skillInfoList[index].skill.lName.l;
   }
 
-  List<CommandCardData> getCards() {
+  List<CommandCardData> getCards(final BattleData battleData) {
     if (isEnemy) {
       return [];
     }
@@ -204,19 +204,19 @@ class BattleServantData {
         ..cardIndex = i
         ..isNP = false
         ..cardStrengthen = playerSvtData!.cardStrengthens[i]
-        ..npGain = getNPGain(cardType)
-        ..traits = [mapCardTypeToTrait(cardType), NiceTrait(id: Trait.faceCard.id)];
+        ..npGain = getNPGain(battleData, cardType)
+        ..traits = ConstData.cardInfo[cardType]![1]!.individuality;
       builtCards.add(card);
     }
     return builtCards;
   }
 
-  CommandCardData? getNPCard() {
+  CommandCardData? getNPCard(final BattleData battleData) {
     if (isEnemy) {
       return null;
     }
 
-    final currentNP = getCurrentNP();
+    final currentNP = getCurrentNP(battleData);
     final cardDetail = CardDetail(
       attackIndividuality: currentNP.individuality,
       hitsDistribution: currentNP.npDistribution,
@@ -231,50 +231,30 @@ class BattleServantData {
       ..traits = currentNP.individuality;
   }
 
-  CommandCardData? getExtraCard() {
+  CommandCardData? getExtraCard(final BattleData battleData) {
     if (isEnemy) {
       return null;
     }
 
     return CommandCardData(CardType.extra, niceSvt!.cardDetails[CardType.extra]!)
       ..isNP = false
-      ..npGain = getNPGain(CardType.extra)
-      ..traits = [mapCardTypeToTrait(CardType.extra), NiceTrait(id: Trait.faceCard.id)];
+      ..npGain = getNPGain(battleData, CardType.extra)
+      ..traits = ConstData.cardInfo[CardType.extra]![1]!.individuality;
   }
 
-  static NiceTrait mapCardTypeToTrait(final CardType cardType) {
-    switch (cardType) {
-      case CardType.buster:
-        return NiceTrait(id: Trait.cardBuster.id);
-      case CardType.arts:
-        return NiceTrait(id: Trait.cardArts.id);
-      case CardType.quick:
-        return NiceTrait(id: Trait.cardQuick.id);
-      case CardType.extra:
-        return NiceTrait(id: Trait.cardExtra.id);
-      case CardType.weak:
-        return NiceTrait(id: Trait.cardWeak.id);
-      case CardType.strength:
-        return NiceTrait(id: Trait.cardStrong.id);
-      case CardType.none:
-      case CardType.blank:
-        throw 'Invalid Card Type: $cardType';
-    }
-  }
-
-  int getNPGain(final CardType cardType) {
+  int getNPGain(final BattleData battleData, final CardType cardType) {
     if (!isPlayer) {
       return 0;
     }
     switch (cardType) {
       case CardType.buster:
-        return getCurrentNP().npGain.buster[playerSvtData!.npLv - 1];
+        return getCurrentNP(battleData).npGain.buster[playerSvtData!.npLv - 1];
       case CardType.arts:
-        return getCurrentNP().npGain.arts[playerSvtData!.npLv - 1];
+        return getCurrentNP(battleData).npGain.arts[playerSvtData!.npLv - 1];
       case CardType.quick:
-        return getCurrentNP().npGain.quick[playerSvtData!.npLv - 1];
+        return getCurrentNP(battleData).npGain.quick[playerSvtData!.npLv - 1];
       case CardType.extra:
-        return getCurrentNP().npGain.extra[playerSvtData!.npLv - 1];
+        return getCurrentNP(battleData).npGain.extra[playerSvtData!.npLv - 1];
       default:
         return 0;
     }
@@ -402,7 +382,7 @@ class BattleServantData {
     init(battleData);
   }
 
-  bool isAlive() {
+  bool isAlive(final BattleData battleData) {
     if (hp > 0) {
       return true;
     }
@@ -411,8 +391,12 @@ class BattleServantData {
       return true;
     }
 
-    // TODO (battle): check for conditional guts?
-    return collectBuffsPerTypes(battleBuff.allBuffs, gutsTypes).isNotEmpty;
+    battleData.setActivator(this);
+    final result = collectBuffsPerTypes(battleBuff.allBuffs, gutsTypes)
+        .where((buff) => buff.shouldApplyBuff(battleData, false))
+        .isNotEmpty;
+    battleData.unsetActivator();
+    return result;
   }
 
   bool canUseSkillIgnoreCoolDown(final BattleData battleData, final int skillIndex) {
@@ -466,7 +450,7 @@ class BattleServantData {
     return true;
   }
 
-  NiceTd getCurrentNP() {
+  NiceTd getCurrentNP(final BattleData battleData) {
     return isPlayer
         ? niceSvt!.groupedNoblePhantasms[0][playerSvtData!.npStrengthenLv - 1]
         : niceEnemy!.noblePhantasm.noblePhantasm!;
@@ -483,7 +467,7 @@ class BattleServantData {
     np = 0;
     npLineCount = 0;
 
-    final niceTD = getCurrentNP();
+    final niceTD = getCurrentNP(battleData);
     for (final function in niceTD.functions) {
       FunctionExecutor.executeFunction(battleData, function, npLvl, overchargeLvl: overchargeLvl);
     }
@@ -591,7 +575,9 @@ class BattleServantData {
       buff.useOnce();
     });
 
-    battleBuff.allBuffs.removeWhere((buff) => !buff.isActive);
+    battleBuff.passiveList.removeWhere((buff) => !buff.isActive);
+    battleBuff.activeList.removeWhere((buff) => !buff.isActive);
+    battleBuff.commandCodeList.removeWhere((buff) => !buff.isActive);
   }
 
   void enterField(final BattleData battleData) {
@@ -684,6 +670,7 @@ class BattleServantData {
 
   bool activateGuts(final BattleData battleData) {
     BuffData? gutsToApply;
+    battleData.setActivator(this);
     for (final buff in collectBuffsPerTypes(battleBuff.allBuffs, gutsTypes)) {
       if (buff.shouldApplyBuff(battleData, false)) {
         if (gutsToApply == null || (gutsToApply.irremovable && !buff.irremovable)) {
@@ -691,6 +678,7 @@ class BattleServantData {
         }
       }
     }
+    battleData.unsetActivator();
 
     if (gutsToApply != null) {
       gutsToApply.setUsed();

@@ -237,7 +237,9 @@ void main() async {
       battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
       battle.activateSvtSkill(2, 2); // Kama skill 2, just to guarantee kill
       final buffCountBefore = battle.onFieldEnemies[2]!.battleBuff.activeList.length;
-      final npActions = [CombatAction(battle.onFieldAllyServants[2]!, battle.onFieldAllyServants[2]!.getNPCard()!)];
+      final npActions = [
+        CombatAction(battle.onFieldAllyServants[2]!, battle.onFieldAllyServants[2]!.getNPCard(battle)!)
+      ];
       battle.playerTurn(npActions);
       final buffCountAfter = battle.onFieldEnemies[2]!.battleBuff.activeList.length;
       expect(buffCountAfter, buffCountBefore);
@@ -265,7 +267,7 @@ void main() async {
       expect(mash.battleBuff.activeList.first.buff.type, BuffType.upDefence);
       expect(mash.battleBuff.activeList.first.turn, 3);
 
-      battle.playerTurn([CombatAction(mash, mash.getCards()[0])]);
+      battle.playerTurn([CombatAction(mash, mash.getCards(battle)[0])]);
       expect(mash.battleBuff.activeList.length, 1);
       expect(mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
       expect(mash.battleBuff.activeList.first.buff.type, BuffType.upDefence);
@@ -295,16 +297,16 @@ void main() async {
 
       expect(battle.getFieldTraits().map((e) => e.id).contains(Trait.milleniumCastle.id), isFalse);
 
-      battle.playerTurn([CombatAction(archType1, archType1.getNPCard()!)]);
+      battle.playerTurn([CombatAction(archType1, archType1.getNPCard(battle)!)]);
 
       expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 1);
 
-      battle.playerTurn([CombatAction(archType2, archType1.getNPCard()!)]);
+      battle.playerTurn([CombatAction(archType2, archType1.getNPCard(battle)!)]);
 
       expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 2);
 
       battle.activateSvtSkill(0, 1);
-      battle.playerTurn([CombatAction(archType1, archType1.getNPCard()!)]);
+      battle.playerTurn([CombatAction(archType1, archType1.getNPCard(battle)!)]);
 
       expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 2);
 
@@ -316,13 +318,13 @@ void main() async {
 
       expect(battle.getFieldTraits().map((e) => e.id).contains(Trait.milleniumCastle.id), isFalse);
 
-      battle.playerTurn([CombatAction(archType3, archType3.getNPCard()!)]);
+      battle.playerTurn([CombatAction(archType3, archType3.getNPCard(battle)!)]);
 
       expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 1);
 
       archType3.hp = 0;
 
-      battle.playerTurn([CombatAction(archType4, archType4.getNPCard()!)]);
+      battle.playerTurn([CombatAction(archType4, archType4.getNPCard(battle)!)]);
 
       expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 1);
     });
@@ -400,7 +402,7 @@ void main() async {
       expect(yuyu2.np, 7200);
       expect(enemy.npLineCount, 0);
 
-      battle.playerTurn([CombatAction(yuyu2, yuyu2.getCards().last)]); // buster card
+      battle.playerTurn([CombatAction(yuyu2, yuyu2.getCards(battle).last)]); // buster card
 
       expect(lambda.np, 4800);
       expect(yuyu1.np, 0);

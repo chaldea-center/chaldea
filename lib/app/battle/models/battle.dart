@@ -446,11 +446,12 @@ class BattleData {
     criticalStars = 0;
 
     // assumption: only Quick, Arts, and Buster are ever listed as viable actions
-    final cardTypesSet = actions.map((action) => action.cardData.cardType).toSet();
+    final cardTypesSet =
+        actions.where((action) => action.isValid(this)).map((action) => action.cardData.cardType).toSet();
     // TODO: (battle) check for stun etc.
     final isTypeChain = actions.length == 3 && cardTypesSet.length == 1;
     final isMightyChain = cardTypesSet.length == 3 && isAfter7thAnni;
-    final CardType firstCardType = actions[0].cardData.cardType;
+    final CardType firstCardType = actions[0].isValid(this) ? actions[0].cardData.cardType : CardType.blank;
     if (isTypeChain) {
       applyTypeChain(firstCardType, actions);
     }
@@ -463,17 +464,19 @@ class BattleData {
         currentCard = action.cardData;
         allyTargetIndex = onFieldAllyServants.indexOf(action.actor); // help damageFunction identify attacker
 
-        if (currentCard!.isNP && action.actor.canNP(this)) {
-          action.actor.activateBuffOnActions(this, [BuffAction.functionAttackBefore, BuffAction.functionNpattack]);
-          action.actor.activateNP(this, extraOvercharge);
-          extraOvercharge += 1;
+        if (action.isValid(this)) {
+          if (currentCard!.isNP) {
+            action.actor.activateBuffOnActions(this, [BuffAction.functionAttackBefore, BuffAction.functionNpattack]);
+            action.actor.activateNP(this, extraOvercharge);
+            extraOvercharge += 1;
 
-          nonnullEnemies.forEach((svt) {
-            if (svt.attacked) svt.activateBuffOnAction(this, BuffAction.functionDamage);
-          });
-        } else if (!currentCard!.isNP && action.actor.canCommandCard(this)) {
-          extraOvercharge = 0;
-          executePlayerCard(action.actor, currentCard!, i + 1, isTypeChain, isMightyChain, firstCardType);
+            nonnullEnemies.forEach((svt) {
+              if (svt.attacked) svt.activateBuffOnAction(this, BuffAction.functionDamage);
+            });
+          } else {
+            extraOvercharge = 0;
+            executePlayerCard(action.actor, currentCard!, i + 1, isTypeChain, isMightyChain, firstCardType);
+          }
         }
 
         if (shouldRemoveDeadActors(actions, i)) {
@@ -488,7 +491,7 @@ class BattleData {
 
     if (isBraveChain(actions) && targetedEnemy != null) {
       final actor = actions[0].actor;
-      currentCard = actor.getExtraCard();
+      currentCard = actor.getExtraCard(this);
 
       executePlayerCard(actor, currentCard!, 4, isTypeChain, isMightyChain, firstCardType);
 

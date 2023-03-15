@@ -38,7 +38,7 @@ void main() async {
 
         final altria = battle.targetedAlly!;
         altria.np = 10000;
-        final npActions = [CombatAction(altria, altria.getNPCard()!)];
+        final npActions = [CombatAction(altria, altria.getNPCard(battle)!)];
 
         final hpBeforeDamage = battle.onFieldEnemies[1]!.hp;
         battle.playerTurn(npActions);
@@ -53,7 +53,10 @@ void main() async {
 
         final altria = battle.targetedAlly!;
         altria.np = 10000;
-        final npActions = [CombatAction(altria, altria.getCards()[4]), CombatAction(altria, altria.getNPCard()!)];
+        final npActions = [
+          CombatAction(altria, altria.getCards(battle)[4]),
+          CombatAction(altria, altria.getNPCard(battle)!)
+        ];
 
         final hpBeforeDamage = battle.onFieldEnemies[1]!.hp;
         battle.playerTurn(npActions);
@@ -68,9 +71,9 @@ void main() async {
 
         final altria = battle.targetedAlly!;
         final busterArtsBuster = [
-          CombatAction(altria, altria.getCards()[4]),
-          CombatAction(altria, altria.getCards()[1]),
-          CombatAction(altria, altria.getCards()[3]),
+          CombatAction(altria, altria.getCards(battle)[4]),
+          CombatAction(altria, altria.getCards(battle)[1]),
+          CombatAction(altria, altria.getCards(battle)[3]),
         ];
 
         battle.enemyTargetIndex = 1;
@@ -118,7 +121,7 @@ void main() async {
         battle.activateSvtSkill(2, 0);
         battle.activateSvtSkill(2, 2);
         final altria = battle.targetedAlly!;
-        final npActions = [CombatAction(altria, altria.getNPCard()!)];
+        final npActions = [CombatAction(altria, altria.getNPCard(battle)!)];
 
         final skyCaster = battle.onFieldEnemies[1]!;
         final hpBeforeDamage = skyCaster.hp;
@@ -148,7 +151,7 @@ void main() async {
         battle.init(db.gameData.questPhases[9300040603]!, yuyuSettings, null);
 
         final yuyu = battle.targetedAlly!;
-        final npActions = [CombatAction(yuyu, yuyu.getNPCard()!)];
+        final npActions = [CombatAction(yuyu, yuyu.getNPCard(battle)!)];
 
         battle.enemyTargetIndex = 1;
         final skyCaster = battle.targetedEnemy!;
@@ -167,9 +170,9 @@ void main() async {
 
         final yuyu = battle.targetedAlly!;
         final artsQuickArts = [
-          CombatAction(yuyu, yuyu.getCards()[3]),
-          CombatAction(yuyu, yuyu.getCards()[0]),
-          CombatAction(yuyu, yuyu.getCards()[2]),
+          CombatAction(yuyu, yuyu.getCards(battle)[3]),
+          CombatAction(yuyu, yuyu.getCards(battle)[0]),
+          CombatAction(yuyu, yuyu.getCards(battle)[2]),
         ];
 
         battle.enemyTargetIndex = 1;
@@ -220,7 +223,7 @@ void main() async {
         battle.activateSvtSkill(2, 1);
         battle.activateSvtSkill(2, 2);
         final yuyu = battle.targetedAlly!;
-        final npActions = [CombatAction(yuyu, yuyu.getNPCard()!)];
+        final npActions = [CombatAction(yuyu, yuyu.getNPCard(battle)!)];
 
         battle.enemyTargetIndex = 1;
         final skyCaster = battle.targetedEnemy!;
@@ -253,7 +256,7 @@ void main() async {
         battle.init(db.gameData.questPhases[9300040603]!, okuniSettings, null);
 
         final okuni = battle.targetedAlly!;
-        final npActions = [CombatAction(okuni, okuni.getNPCard()!)];
+        final npActions = [CombatAction(okuni, okuni.getNPCard(battle)!)];
 
         battle.enemyTargetIndex = 1;
         final skyCaster = battle.targetedEnemy!;
@@ -272,9 +275,9 @@ void main() async {
 
         final okuni = battle.targetedAlly!;
         final quickBusterQuick = [
-          CombatAction(okuni, okuni.getCards()[0]),
-          CombatAction(okuni, okuni.getCards()[4]),
-          CombatAction(okuni, okuni.getCards()[1]),
+          CombatAction(okuni, okuni.getCards(battle)[0]),
+          CombatAction(okuni, okuni.getCards(battle)[4]),
+          CombatAction(okuni, okuni.getCards(battle)[1]),
         ];
 
         battle.enemyTargetIndex = 1;
@@ -323,7 +326,7 @@ void main() async {
         battle.activateSvtSkill(2, 0);
         battle.activateSvtSkill(2, 2);
         final okuni = battle.targetedAlly!;
-        final npActions = [CombatAction(okuni, okuni.getNPCard()!)];
+        final npActions = [CombatAction(okuni, okuni.getNPCard(battle)!)];
 
         battle.enemyTargetIndex = 1;
         final skyCaster = battle.targetedEnemy!;
@@ -360,7 +363,7 @@ void main() async {
       battle.activateSvtSkill(2, 1);
       battle.activateSvtSkill(2, 2);
       final kama = battle.targetedAlly!;
-      final npActions = [CombatAction(kama, kama.getNPCard()!)];
+      final npActions = [CombatAction(kama, kama.getNPCard(battle)!)];
 
       battle.enemyTargetIndex = 1;
       final skyCaster = battle.targetedEnemy!;
@@ -433,6 +436,56 @@ void main() async {
     battle.activateSvtSkill(1, 2);
 
     expect(avoidStateBuff.count, 1);
+  });
+
+  test('Stun does not provide firstCardBonus', () {
+    final List<PlayerSvtData> lipAndJinako = [
+      PlayerSvtData(1000100)..lv = 80,
+      PlayerSvtData(2300300)..lv = 90,
+    ];
+    final battle = BattleData();
+    battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
+
+    final lip = battle.onFieldAllyServants[0]!;
+    final jinako = battle.onFieldAllyServants[1]!;
+
+    battle.activateSvtSkill(0, 2); // lip is stunned
+
+    expect(jinako.np, 0);
+    battle.playerTurn([CombatAction(lip, lip.getCards(battle)[1]), CombatAction(jinako, jinako.getCards(battle)[4])]);
+    expect(jinako.np, 0);
+    expect(lip.canCommandCard(battle), isTrue);
+    battle.playerTurn([CombatAction(lip, lip.getCards(battle)[1]), CombatAction(jinako, jinako.getCards(battle)[4])]);
+    expect(jinako.np, greaterThan(0));
+  });
+
+  test('Stun does not provide typeChain', () {
+    final List<PlayerSvtData> lipAndJinako = [
+      PlayerSvtData(1000100)..lv = 80,
+      PlayerSvtData(2300300)..lv = 90,
+    ];
+    final battle = BattleData();
+    battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
+
+    final lip = battle.onFieldAllyServants[0]!;
+    final jinako = battle.onFieldAllyServants[1]!;
+
+    battle.activateSvtSkill(0, 2); // lip is stunned
+
+    expect(lip.np, 0);
+    battle.playerTurn([
+      CombatAction(lip, lip.getCards(battle)[1]),
+      CombatAction(jinako, jinako.getCards(battle)[1]),
+      CombatAction(jinako, jinako.getCards(battle)[2])
+    ]);
+    expect(lip.np, 0);
+
+    battle.playerTurn([
+      CombatAction(lip, lip.getCards(battle)[1]),
+      CombatAction(jinako, jinako.getCards(battle)[1]),
+      CombatAction(jinako, jinako.getCards(battle)[2])
+    ]);
+    expect(lip.np, greaterThan(20));
   });
 
   test('Nitocris (Alter) bug', () {

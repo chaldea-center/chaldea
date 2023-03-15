@@ -52,15 +52,15 @@ void main() async {
 
     expect(okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
 
-    battle.currentCard = okuni.getNPCard();
+    battle.currentCard = okuni.getNPCard(battle);
     expect(okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
 
-    battle.currentCard = okuni.getCards()[2]; // arts
+    battle.currentCard = okuni.getCards(battle)[2]; // arts
     expect(okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1040);
     expect(okuni.hasBuffOnAction(battle, BuffAction.avoidance), isFalse);
 
     okuni.activateSkill(battle, 0);
-    battle.currentCard = okuni.getNPCard();
+    battle.currentCard = okuni.getNPCard(battle);
     expect(okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1300);
     expect(okuni.hasBuffOnAction(battle, BuffAction.avoidance), isTrue);
   });
@@ -85,16 +85,17 @@ void main() async {
     final altria = battle.onFieldAllyServants[0]!;
     expect(altria.np, 0);
 
-    battle.playerTurn([CombatAction(altria, altria.getCards()[4])]);
+    battle.playerTurn([CombatAction(altria, altria.getCards(battle)[4])]);
     expect(altria.np, 1000);
 
-    battle.playerTurn([CombatAction(altria, altria.getCards()[4])]);
+    battle.playerTurn([CombatAction(altria, altria.getCards(battle)[4])]);
     expect(altria.np, 1000);
 
-    battle.playerTurn([CombatAction(altria, altria.getCards()[4]), CombatAction(altria, altria.getCards()[3])]);
+    battle.playerTurn(
+        [CombatAction(altria, altria.getCards(battle)[4]), CombatAction(altria, altria.getCards(battle)[3])]);
     expect(altria.np, 2000);
 
-    battle.playerTurn([CombatAction(altria, altria.getCards()[4])]);
+    battle.playerTurn([CombatAction(altria, altria.getCards(battle)[4])]);
     expect(altria.np, 3000);
   });
 
