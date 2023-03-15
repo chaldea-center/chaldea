@@ -488,6 +488,28 @@ void main() async {
     expect(lip.np, greaterThan(20));
   });
 
+  test('Stun does not provide braveChain', () {
+    final List<PlayerSvtData> lipAndJinako = [
+      PlayerSvtData(1000100)..lv = 80,
+      PlayerSvtData(2300300)..lv = 90,
+    ];
+    final battle = BattleData();
+    battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
+
+    final lip = battle.onFieldAllyServants[0]!;
+    final enemy = battle.onFieldEnemies[0]!;
+
+    battle.activateSvtSkill(0, 2); // lip is stunned
+
+    final previousHp = enemy.hp;
+    battle.playerTurn([
+      CombatAction(lip, lip.getCards(battle)[1]),
+      CombatAction(lip, lip.getCards(battle)[2]),
+      CombatAction(lip, lip.getCards(battle)[3])
+    ]);
+    expect(enemy.hp, previousHp);
+  });
+
   test('Nitocris (Alter) bug', () {
     final List<PlayerSvtData> lipAndJinako = [
       PlayerSvtData(1101500)..lv = 90,

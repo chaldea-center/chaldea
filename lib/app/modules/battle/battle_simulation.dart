@@ -553,7 +553,6 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
               alignment: AlignmentDirectional.center,
             ),
             onTap: () {
-              // TODO (battle): allow for selection if np > 10000
               if (!svt.canNP(widget.battleData)) {
                 return;
               }
@@ -620,9 +619,6 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
                       alignment: AlignmentDirectional.center,
                     ),
                     onTap: () {
-                      if (!svt.canCommandCard(widget.battleData)) {
-                        return;
-                      }
                       final cardIndex = getCardIndex(svt, cardData, widget.combatActions);
                       if (cardIndex != -1) {
                         final combatAction = widget.combatActions[cardIndex];

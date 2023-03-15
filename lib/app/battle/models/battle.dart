@@ -493,7 +493,9 @@ class BattleData {
       final actor = actions[0].actor;
       currentCard = actor.getExtraCard(this);
 
-      executePlayerCard(actor, currentCard!, 4, isTypeChain, isMightyChain, firstCardType);
+      if (actor.canCommandCard(this)) {
+        executePlayerCard(actor, currentCard!, 4, isTypeChain, isMightyChain, firstCardType);
+      }
 
       currentCard = null;
 
