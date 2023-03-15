@@ -161,13 +161,13 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         ? svt.niceSvt!.iconBuilder(
             context: context,
             jumpToDetail: false,
-            width: 72,
+            width: 100,
             overrideIcon: ServantSelector.getSvtAscensionBorderedIconUrl(svt.niceSvt!, svt.ascensionPhase),
           )
         : svt.niceEnemy!.iconBuilder(
             context: context,
             jumpToDetail: false,
-            width: 72,
+            width: 100,
           );
     children.add(InkWell(
       child: iconImage,
@@ -532,13 +532,13 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
             image: svt.niceSvt!.iconBuilder(
               context: context,
               jumpToDetail: false,
-              height: 60,
+              height: 100,
               overrideIcon: ServantSelector.getSvtAscensionBorderedIconUrl(svt.niceSvt!, svt.ascensionPhase),
             ),
             textBuilder: svt.canNP(widget.battleData) ? null : unableTextBuilder,
             option: ImageWithTextOption(
               shadowSize: 20,
-              textStyle: const TextStyle(fontSize: 50, color: Colors.black),
+              textStyle: const TextStyle(fontSize: 72, color: Colors.black),
               shadowColor: Colors.white,
               alignment: AlignmentDirectional.center,
             ),
@@ -568,56 +568,77 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       final npIndex = getNpCardIndex(svt, widget.combatActions);
       npCardColumn.add(Text(npIndex == -1 ? '' : 'Card ${npIndex + 1}'));
 
+      final cards = svt.getCards();
       commandCardColumn.add(Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          for (final cardData in svt.getCards())
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: InkWell(
-                    child: ImageWithText(
-                      image: CommandCardWidget(card: cardData.cardType, width: 60),
-                      textBuilder: svt.canCommandCard(widget.battleData) ? null : unableTextBuilder,
-                      option: ImageWithTextOption(
-                        shadowSize: 12,
-                        textStyle: const TextStyle(fontSize: 50, color: Colors.black),
-                        shadowColor: Colors.white,
-                        alignment: AlignmentDirectional.center,
-                      ),
-                      onTap: () {
-                        if (!svt.canCommandCard(widget.battleData)) {
+        children: List.generate(
+          cards.length,
+          (index) {
+            final cardData = cards[index];
+            final commandCode = svt.playerSvtData?.commandCodes[index];
+            return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Padding(
+                padding: const EdgeInsets.all(4),
+                child: InkWell(
+                  child: ImageWithText(
+                    image: Stack(children: [
+                      CommandCardWidget(card: cardData.cardType, width: 100),
+                      if (cardData.cardStrengthen != 0)
+                        Text(
+                          cardData.cardStrengthen.toString(),
+                          style: const TextStyle(
+                              fontSize: 18, shadows: [Shadow(color: Colors.white, offset: Offset(3, 3))]),
+                        ),
+                      if (commandCode != null)
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: commandCode.iconBuilder(
+                            context: context,
+                            width: 50,
+                            jumpToDetail: false,
+                            overrideIcon: commandCode.icon,
+                          ),
+                        ),
+                    ]),
+                    textBuilder: svt.canCommandCard(widget.battleData) ? null : unableTextBuilder,
+                    option: ImageWithTextOption(
+                      shadowSize: 20,
+                      textStyle: const TextStyle(fontSize: 72, color: Colors.black),
+                      shadowColor: Colors.white,
+                      alignment: AlignmentDirectional.center,
+                    ),
+                    onTap: () {
+                      if (!svt.canCommandCard(widget.battleData)) {
+                        return;
+                      }
+                      final cardIndex = getCardIndex(svt, cardData, widget.combatActions);
+                      if (cardIndex != -1) {
+                        final combatAction = widget.combatActions[cardIndex];
+                        if (combatAction!.cardData.isCritical) {
+                          widget.combatActions[cardIndex] = null;
+                        } else {
+                          combatAction.cardData.isCritical = true;
+                        }
+                        if (mounted) setState(() {});
+                      } else {
+                        final nextIndex = widget.combatActions.indexOf(null);
+                        if (nextIndex == -1) {
                           return;
                         }
-                        final cardIndex = getCardIndex(svt, cardData, widget.combatActions);
-                        if (cardIndex != -1) {
-                          final combatAction = widget.combatActions[cardIndex];
-                          if (combatAction!.cardData.isCritical) {
-                            widget.combatActions[cardIndex] = null;
-                          } else {
-                            combatAction.cardData.isCritical = true;
-                          }
-                          if (mounted) setState(() {});
-                        } else {
-                          final nextIndex = widget.combatActions.indexOf(null);
-                          if (nextIndex == -1) {
-                            return;
-                          }
 
-                          widget.combatActions[nextIndex] = CombatAction(svt, cardData);
-                          if (mounted) setState(() {});
-                        }
-                      },
-                    ),
-                    onLongPress: () {},
+                        widget.combatActions[nextIndex] = CombatAction(svt, cardData);
+                        if (mounted) setState(() {});
+                      }
+                    },
                   ),
+                  onLongPress: () {},
                 ),
-                getCardIndexWidget(svt, cardData, widget.combatActions),
-              ],
-            )
-        ],
+              ),
+              getCardIndexWidget(svt, cardData, widget.combatActions),
+            ]);
+          },
+        ),
       ));
     }
 

@@ -1,3 +1,7 @@
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/command_code/cmd_code_list.dart';
+import 'package:chaldea/app/modules/common/misc.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -118,6 +122,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       topListChildren.add(_buildAppendSkillSection(context, i));
     }
 
+    topListChildren.add(_buildCmdCodePlanner());
+
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -127,7 +133,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       body: ListView(
         children: divideTiles(
           topListChildren,
-          divider: const Divider(height: 10, thickness: 4),
+          divider: const Divider(height: 10, thickness: 2),
         ),
       ),
     );
@@ -458,6 +464,99 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           skill: svt.appendPassive[skillGroupIndex].skill,
           level: playerSvtData.appendLvs[skillGroupIndex],
           showEnemy: !svt.isUserSvt,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCmdCodePlanner() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SHeader(S.current.command_code),
+        Material(
+          color: Theme.of(context).cardColor,
+          child: Table(
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children: List.generate(svt.cards.length, (index) {
+              final code = playerSvtData.commandCodes[index];
+              return TableRow(children: [
+                Center(
+                  child: CommandCardWidget(card: svt.cards[index], width: 60),
+                ),
+                Column(
+                  children: [
+                    ServantOptionEditPage.buildSlider(
+                      leadingText: 'Card Strengthen',
+                      min: 0,
+                      max: 25,
+                      value: playerSvtData.cardStrengthens[index] ~/ 20,
+                      label: playerSvtData.cardStrengthens[index].toString(),
+                      onChange: (v) {
+                        playerSvtData.cardStrengthens[index] = v.round() * 20;
+                        _updateState();
+                      },
+                    ),
+                    Table(
+                      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                      children: [
+                        TableRow(
+                          children: [
+                            InkWell(
+                              onTap: () async {
+                                router.pushBuilder(
+                                  builder: (context) => CmdCodeListPage(
+                                    onSelected: (selectedCode) {
+                                      playerSvtData.commandCodes[index] =
+                                          db.gameData.commandCodes[selectedCode.collectionNo];
+                                      _updateState();
+                                    },
+                                  ),
+                                  detail: false,
+                                );
+                              },
+                              child: db.getIconImage(code?.icon ?? Atlas.asset('SkillIcons/skill_999999.png'),
+                                  height: 60, aspectRatio: 132 / 144, padding: const EdgeInsets.all(4)),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: GestureDetector(
+                                onTap: code?.routeTo,
+                                child: Text(
+                                  code?.skills.getOrNull(0)?.lDetail ?? '',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  playerSvtData.commandCodes[index] = null;
+                                });
+                              },
+                              icon: const Icon(Icons.remove_circle_outline, size: 18),
+                              tooltip: 'Remove',
+                            ),
+                          ],
+                        ),
+                      ],
+                      columnWidths: const {
+                        0: FixedColumnWidth(68),
+                        // 1:
+                        2: FixedColumnWidth(32)
+                      },
+                      border: TableBorder.all(color: const Color.fromRGBO(58, 61, 61, 1.0), width: 0.25),
+                    )
+                  ],
+                ),
+              ]);
+            }),
+            columnWidths: const {
+              0: FixedColumnWidth(68),
+            },
+            border: TableBorder.all(color: const Color.fromRGBO(58, 61, 61, 1.0), width: 0.25),
+          ),
         ),
       ],
     );

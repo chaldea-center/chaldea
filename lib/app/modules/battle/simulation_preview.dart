@@ -677,19 +677,22 @@ class ServantSelector extends StatelessWidget {
   void _onSelectServant(final Servant selectedSvt) {
     if (selectedSvt.isUserSvt) {
       playerSvtData.svt = selectedSvt;
-      final status = db.curUser.svtStatusOf(selectedSvt.collectionNo).cur;
-      if (status.favorite) {
+      final status = db.curUser.svtStatusOf(selectedSvt.collectionNo);
+      final curStatus = status.cur;
+      if (curStatus.favorite) {
         playerSvtData
-          ..ascensionPhase = status.ascension
-          ..lv = selectedSvt.grailedLv(status.grail)
+          ..ascensionPhase = curStatus.ascension
+          ..lv = selectedSvt.grailedLv(curStatus.grail)
           ..npStrengthenLv = getShownTds(selectedSvt, playerSvtData.ascensionPhase).length
-          ..npLv = status.npLv
-          ..skillLvs = status.skills.toList()
-          ..appendLvs = status.appendSkills.toList()
-          ..atkFou = status.fouAtk > 0 ? 1000 + status.fouAtk * 20 : status.fouAtk3 * 50
-          ..hpFou = status.fouHp > 0 ? 1000 + status.fouHp * 20 : status.fouHp3 * 50
+          ..npLv = curStatus.npLv
+          ..skillLvs = curStatus.skills.toList()
+          ..appendLvs = curStatus.appendSkills.toList()
+          ..atkFou = curStatus.fouAtk > 0 ? 1000 + curStatus.fouAtk * 20 : curStatus.fouAtk3 * 50
+          ..hpFou = curStatus.fouHp > 0 ? 1000 + curStatus.fouHp * 20 : curStatus.fouHp3 * 50
           ..cardStrengthens = [0, 0, 0, 0, 0]
-          ..commandCodes = [null, null, null, null, null];
+          ..commandCodes = List.generate(selectedSvt.cards.length, (index) {
+            return db.gameData.commandCodes[status.getCmdCode(index)];
+          });
       } else {
         playerSvtData
           ..ascensionPhase = 4
