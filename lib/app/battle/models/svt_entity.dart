@@ -312,8 +312,14 @@ class BattleServantData {
     final Iterable<NiceTrait> requiredTraits, {
     final bool checkBuff = false,
   }) {
-    return containsAnyTraits(getTraits(battleData), requiredTraits) ||
-        (checkBuff && battleBuff.checkTraits(requiredTraits));
+    final List<NiceTrait> myTraits = getTraits(battleData);
+    if (checkBuff) {
+      battleBuff.allBuffs.forEach((element) {
+        myTraits.addAll(element.traits);
+      });
+    }
+
+    return containsAnyTraits(myTraits, requiredTraits);
   }
 
   void changeNPLineCount(final int change) {

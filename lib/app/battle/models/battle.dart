@@ -352,30 +352,20 @@ class BattleData {
     return allTraits;
   }
 
-  bool checkTargetTraits(final Iterable<NiceTrait> requiredTraits, {final int? checkIndivType}) {
+  bool checkTraits(
+    final Iterable<NiceTrait> requiredTraits,
+    final bool checkTarget, {
+    final int? checkIndivType,
+    final int? includeIgnoredTrait,
+  }) {
     if (requiredTraits.isEmpty) {
       return true;
     }
 
+    final actor = checkTarget ? target : activator;
     final List<NiceTrait> currentTraits = [];
-    currentTraits.addAll(target?.getTraits(this) ?? []);
-    currentTraits.addAll(currentBuff?.traits ?? []);
-    currentTraits.addAll(currentCard?.traits ?? []);
-
-    if (checkIndivType == 1 || checkIndivType == 3) {
-      return containsAllTraits(currentTraits, requiredTraits);
-    } else {
-      return containsAnyTraits(currentTraits, requiredTraits);
-    }
-  }
-
-  bool checkActivatorTraits(final Iterable<NiceTrait> requiredTraits, {final int? checkIndivType}) {
-    if (requiredTraits.isEmpty) {
-      return true;
-    }
-
-    final List<NiceTrait> currentTraits = [];
-    currentTraits.addAll(activator?.getTraits(this) ?? []);
+    currentTraits.addAll(actor?.getTraits(this) ?? []);
+    if (includeIgnoredTrait == 1) currentTraits.addAll(actor?.getNPCard(this)?.traits ?? []);
     currentTraits.addAll(currentBuff?.traits ?? []);
     currentTraits.addAll(currentCard?.traits ?? []);
 

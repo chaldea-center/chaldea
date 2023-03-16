@@ -543,18 +543,18 @@ void main() async {
       battle.setTarget(okuni);
 
       final divinityCheck = [NiceTrait(id: Trait.divine.id)];
-      expect(battle.checkActivatorTraits(divinityCheck), isTrue);
-      expect(battle.checkTargetTraits(divinityCheck), isFalse);
+      expect(battle.checkTraits(divinityCheck, false), isTrue);
+      expect(battle.checkTraits(divinityCheck, true), isFalse);
 
       final buff = BuffData(Buff(id: -1, name: '', detail: '', vals: divinityCheck), DataVals());
       battle.setCurrentBuff(buff);
       battle.setActivator(okuni);
-      expect(battle.checkActivatorTraits(divinityCheck), isTrue);
-      expect(battle.checkTargetTraits(divinityCheck), isTrue);
+      expect(battle.checkTraits(divinityCheck, false), isTrue);
+      expect(battle.checkTraits(divinityCheck, true), isTrue);
 
       battle.unsetCurrentBuff();
-      expect(battle.checkActivatorTraits(divinityCheck), isFalse);
-      expect(battle.checkTargetTraits(divinityCheck), isFalse);
+      expect(battle.checkTraits(divinityCheck, false), isFalse);
+      expect(battle.checkTraits(divinityCheck, true), isFalse);
     });
 
     test('Check isActorOnField', () async {

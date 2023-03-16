@@ -144,7 +144,30 @@ void main() async {
     expect(battle.canUseSvtSkillIgnoreCoolDown(0, 2), true);
 
     battle.criticalStars = 20;
-    
+
     expect(battle.canUseNp(1), true);
+  });
+
+  test('Chen Gong NP', () async {
+    final List<PlayerSvtData> playerSettings = [
+      PlayerSvtData(504400)
+        ..lv = 80
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+      PlayerSvtData(2800100)..lv = 90,
+    ];
+
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    expect(battle.canUseNp(0), true);
+
+    battle.allyTargetIndex = 1;
+    await battle.activateSvtSkill(1, 2);
+
+    await battle.skipWave();
+
+    expect(battle.canUseNp(0), false);
   });
 }

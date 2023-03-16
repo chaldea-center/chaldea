@@ -1,4 +1,5 @@
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -103,11 +104,19 @@ class BuffData {
 
   bool shouldApplyBuff(final BattleData battleData, final bool isTarget) {
     final int? checkIndvType = buff.script?.checkIndvType;
-    final targetCheck = isTarget
-        ? battleData.checkActivatorTraits(buff.ckOpIndv, checkIndivType: checkIndvType) &&
-            battleData.checkTargetTraits(buff.ckSelfIndv, checkIndivType: checkIndvType)
-        : battleData.checkTargetTraits(buff.ckOpIndv, checkIndivType: checkIndvType) &&
-            battleData.checkActivatorTraits(buff.ckSelfIndv, checkIndivType: checkIndvType);
+    final int? includeIgnoredTrait = buff.script?.IncludeIgnoreIndividuality;
+    final targetCheck = battleData.checkTraits(
+          buff.ckOpIndv,
+          !isTarget,
+          checkIndivType: checkIndvType,
+          includeIgnoredTrait: includeIgnoredTrait,
+        ) &&
+        battleData.checkTraits(
+          buff.ckSelfIndv,
+          isTarget,
+          checkIndivType: checkIndvType,
+          includeIgnoredTrait: includeIgnoredTrait,
+        );
 
     final onFieldCheck = !isOnField || battleData.isActorOnField(actorUniqueId);
 
@@ -124,6 +133,20 @@ class BuffData {
     }
 
     final script = buff.script!;
+
+    if (vals.OnFieldCount == -1) {
+      final includeIgnoredTrait = script.IncludeIgnoreIndividuality! == 1;
+      final List<BattleServantData> allies =
+          battleData.activator?.isPlayer ?? true ? battleData.nonnullAllies : battleData.nonnullEnemies;
+
+      if (allies
+          .where((svt) =>
+              svt != battleData.activator &&
+              svt.checkTrait(battleData, script.TargetIndiv!, checkBuff: includeIgnoredTrait))
+          .isNotEmpty) {
+        return false;
+      }
+    }
 
     if (script.UpBuffRateBuffIndiv != null &&
         battleData.currentBuff != null &&

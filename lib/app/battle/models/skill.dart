@@ -91,7 +91,7 @@ class BattleSkillInfoData {
     final bool notActorSkill = false,
     final bool isCommandCode = false,
   }) async {
-    if (!battleData.checkActivatorTraits(skill.actIndividuality)) {
+    if (!battleData.checkTraits(skill.actIndividuality, false)) {
       return;
     }
 
