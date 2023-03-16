@@ -5,6 +5,7 @@ import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'buff.dart';
@@ -199,7 +200,7 @@ class BattleData {
     turnCount += 1;
     totalTurnCount += 1;
 
-    logger.action('Turn $totalTurnCount start');
+    logger.action('${S.current.battle_turn} $totalTurnCount');
 
     replenishActors();
 
@@ -380,8 +381,7 @@ class BattleData {
   }
 
   bool isActorOnField(final int actorUniqueId) {
-    return nonnullAllies.any((svt) => svt.uniqueId == actorUniqueId) ||
-        nonnullEnemies.any((svt) => svt.uniqueId == actorUniqueId);
+    return nonnullActors.any((svt) => svt.uniqueId == actorUniqueId);
   }
 
   void checkBuffStatus() {
@@ -412,8 +412,7 @@ class BattleData {
     }
 
     final svt = onFieldAllyServants[servantIndex]!;
-    logger.action('Activate ${svt.lBattleName} (Pos ${servantIndex + 1}) skill ${skillIndex + 1}: '
-        '${svt.getSkillName(skillIndex)}');
+    logger.action('${svt.lBattleName} - ${S.current.active_skill} ${skillIndex + 1}: ${svt.getSkillName(skillIndex)}');
     copy();
     svt.activateSkill(this, skillIndex);
   }
@@ -432,7 +431,8 @@ class BattleData {
       return;
     }
 
-    logger.action('Activate master skill ${skillIndex + 1}: ${masterSkillInfo[skillIndex].skill.lName.l}');
+    logger.action('${S.current.mystic_code} - ${S.current.active_skill} ${skillIndex + 1}: '
+        '${masterSkillInfo[skillIndex].skill.lName.l}');
     copy();
     masterSkillInfo[skillIndex].activate(this);
   }
@@ -448,7 +448,6 @@ class BattleData {
     // assumption: only Quick, Arts, and Buster are ever listed as viable actions
     final cardTypesSet =
         actions.where((action) => action.isValid(this)).map((action) => action.cardData.cardType).toSet();
-    // TODO: (battle) check for stun etc.
     final isTypeChain = actions.length == 3 && cardTypesSet.length == 1;
     final isMightyChain = cardTypesSet.length == 3 && isAfter7thAnni;
     final CardType firstCardType = actions[0].isValid(this) ? actions[0].cardData.cardType : CardType.blank;
@@ -519,7 +518,7 @@ class BattleData {
       return;
     }
 
-    logger.action('Skip current wave ($waveCount)');
+    logger.action('${S.current.battle_skip_current_wave} ($waveCount)');
     copy();
 
     onFieldEnemies.clear();
@@ -617,6 +616,7 @@ class BattleData {
   }
 
   void applyTypeChain(final CardType cardType, final List<CombatAction> actions) {
+    logger.action('${cardType.name} Chain');
     if (cardType == CardType.quick) {
       final dataValToUse = isAfter7thAnni ? quickChainAfter7thAnni : quickChainBefore7thAnni;
       GainStar.gainStar(this, dataValToUse);
@@ -631,7 +631,7 @@ class BattleData {
       return;
     }
 
-    logger.action('CUSTOM ACTION: charge 100% NP for all allies');
+    logger.action(S.current.battle_charge_party);
     copy();
 
     GainNP.gainNP(this, DataVals({'Rate': 5000, 'Value': 10000}), nonnullAllies);
@@ -728,7 +728,7 @@ class BattleData {
       return;
     }
 
-    logger.action('Undo previous action');
+    logger.action(S.current.battle_undo);
     final BattleData copy = copies.removeLast();
     this
       ..niceQuest = copy.niceQuest

@@ -2,6 +2,7 @@ import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -187,25 +188,22 @@ class Damage {
       if (activator.isPlayer) {
         battleData.logger.debug(atkNpParameters.toString());
         battleData.logger.debug(starParameters.toString());
-        battleData.logger.action('${activator.lBattleName} activates ${currentCard.cardType.name.toUpperCase()} '
-            '${currentCard.isNP ? 'NP' : ''} card, '
-            'targeting ${target.lBattleName}, '
-            'dealt $totalDamage damage, '
-            'gained ${(Maths.sum(hitNpGains) / 100).toStringAsFixed(2)} % NP, '
-            'gained ${(Maths.sum(hitStars) / 1000).toStringAsFixed(3)} stars, '
-            'overkill: $overkillCount/${currentCard.cardDetail.hitsDistribution.length}');
-        battleData.logger.debug('Detailed hits: Damage: $hitDamages, NP: $hitNpGains, Star: $hitStars');
       } else {
         battleData.logger.debug(defNpParameters.toString());
-        battleData.logger.action('${activator.lBattleName} activates ${currentCard.cardType.name.toUpperCase()} '
-            '${currentCard.isNP ? 'NP' : ''} card, '
-            'targeting ${target.lBattleName}, '
-            'dealt $totalDamage damage, '
-            '${target.lBattleName} '
-            'gained ${Maths.sum(hitNpGains)} NP, '
-            'overkill: $overkillCount/${currentCard.cardDetail.hitsDistribution.length}');
-        battleData.logger.debug('Detailed hits: Damage: $hitDamages, NP: $hitNpGains');
       }
+      final starString = activator.isPlayer
+          ? '${S.current.battle_critical_star}: ${(Maths.sum(hitStars) / 1000).toStringAsFixed(3)} - '
+          : '';
+      battleData.logger.action('${activator.lBattleName} - ${currentCard.cardType.name.toUpperCase()} - '
+          '${currentCard.isNP ? S.current.battle_np_card : S.current.battle_command_card} - '
+          '${S.current.effect_target}: ${target.lBattleName} - '
+          '${S.current.battle_damage}: $totalDamage - '
+          'NP: ${(Maths.sum(hitNpGains) / 100).toStringAsFixed(2)}% - '
+          '$starString'
+          'Overkill: $overkillCount/${currentCard.cardDetail.hitsDistribution.length}');
+      final hitStarString = activator.isPlayer ? ', ${S.current.battle_critical_star}: $hitStars' : '';
+      battleData.logger
+          .debug('${S.current.details}: ${S.current.battle_damage}: $hitDamages, NP: $hitNpGains$hitStarString');
 
       battleData.changeStar(toModifier(Maths.sum(hitStars)));
 

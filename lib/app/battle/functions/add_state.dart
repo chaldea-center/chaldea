@@ -2,6 +2,7 @@ import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -59,6 +60,7 @@ class AddState {
     }
 
     if (target.hasBuffOnAction(battleData, BuffAction.avoidState)) {
+      battleData.logger.debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.battle_invalid}');
       return false;
     }
 
@@ -68,8 +70,18 @@ class AddState {
         capBuffValue(buffChanceDetails, 0, Maths.min(buffChanceDetails.maxRate));
 
     final functionRate = dataVals.Rate ?? 1000;
-    final activationProbability = functionRate + buffChance - buffReceiveChance;
+    final activationRate = functionRate + buffChance;
+    final resistRate = battleData.probabilityThreshold + buffReceiveChance;
+    final success = activationRate >= resistRate;
+    final resultsString = success
+        ? S.current.success
+        : resistRate > 1000
+            ? 'GUARD'
+            : 'MISS';
 
-    return activationProbability >= battleData.probabilityThreshold;
+    battleData.logger.debug('${S.current.effect_target}: ${target.lBattleName} - '
+        '$resultsString ($activationRate vs $resistRate)');
+
+    return success;
   }
 }

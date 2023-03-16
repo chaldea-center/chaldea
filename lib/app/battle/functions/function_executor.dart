@@ -8,6 +8,7 @@ import 'package:chaldea/app/battle/functions/hasten_npturn.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/extension.dart';
 
@@ -29,21 +30,34 @@ class FunctionExecutor {
     final bool isCommandCode = false,
   }) {
     final BattleServantData? activator = battleData.activator;
-    final List<BattleServantData> targets = acquireFunctionTarget(
-      battleData,
-      function.funcTargetType,
-      function.funcId,
-      activator,
-    );
-    if (!validateFunctionTargetTeam(function, activator) ||
-        !containsAnyTraits(battleData.getFieldTraits(), function.funcquestTvals)) {
-      battleData.previousFunctionResult = false;
+    if (!validateFunctionTargetTeam(function, activator)) {
+      return;
+    }
+
+    final fieldTraitString = function.funcquestTvals.isNotEmpty
+        ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName())}'
+        : '';
+    final targetTraitString = function.functvals.isNotEmpty
+        ? ' - ${S.current.battle_require_opponent_traits} ${function.funcquestTvals.map((e) => e.shownName())}'
+        : '';
+    battleData.logger.function('${activator?.lBattleName ?? S.current.battle_no_source} - '
+        '${Transl.funcTargetType(function.funcTargetType).l} -  ${function.lPopupText.l}'
+        '$fieldTraitString'
+        '$targetTraitString');
+
+    if (!containsAnyTraits(battleData.getFieldTraits(), function.funcquestTvals)) {
       return;
     }
 
     final dataVals = getDataVals(function, skillLevel, overchargeLvl);
 
     final checkDead = dataVals.CheckDead != null && dataVals.CheckDead! > 0;
+    final List<BattleServantData> targets = acquireFunctionTarget(
+      battleData,
+      function.funcTargetType,
+      function.funcId,
+      activator,
+    );
     targets.retainWhere(
         (svt) => (svt.isAlive(battleData) || checkDead) && svt.checkTraits(battleData, function.functvals));
 
@@ -137,14 +151,16 @@ class FunctionExecutor {
       case FuncType.servantFriendshipUp:
       case FuncType.eventDropUp:
       case FuncType.eventPointUp:
+      case FuncType.none:
         break;
       default:
-        battleData.logger.debug('Unimplemented FuncType: ${function.funcType}, '
-            'function ID: ${function.funcId}, '
-            'activator: ${activator?.lBattleName}, '
-            'quest ID: ${battleData.niceQuest?.id}, '
-            'phase: ${battleData.niceQuest?.phase}');
+        battleData.logger.debug('${S.current.not_implemented}: ${function.funcType}, '
+            'Function ID: ${function.funcId}, '
+            'Activator: ${activator?.lBattleName}, '
+            'Quest ID: ${battleData.niceQuest?.id}, '
+            'Phase: ${battleData.niceQuest?.phase}');
     }
+
     battleData.previousFunctionResult = functionSuccess;
   }
 
@@ -201,6 +217,7 @@ class FunctionExecutor {
 
     switch (funcTargetType) {
       case FuncTargetType.self:
+      case FuncTargetType.commandTypeSelfTreasureDevice: // TODO (battle): svt 11 svt 268 uses this
         if (activator != null) {
           targets.add(activator);
         }
@@ -308,12 +325,11 @@ class FunctionExecutor {
       case FuncTargetType.ptOneAnotherRandom:
       case FuncTargetType.ptSelfAnotherRandom: // TODO (battle): svt 251 skill 3 uses this
       case FuncTargetType.enemyOneAnotherRandom:
-      case FuncTargetType.commandTypeSelfTreasureDevice: // TODO (battle): svt 11 svt 268 uses this
-        battleData.logger.debug('Unimplemented FuncTargetType: $funcTargetType, '
-            'function ID: $funcId, '
-            'activator: ${activator?.lBattleName}, '
-            'quest ID: ${battleData.niceQuest?.id}, '
-            'phase: ${battleData.niceQuest?.phase}');
+        battleData.logger.debug('${S.current.not_implemented}: $funcTargetType, '
+            'Function ID: $funcId, '
+            'Activator: ${activator?.lBattleName}, '
+            'Quest ID: ${battleData.niceQuest?.id}, '
+            'Phase: ${battleData.niceQuest?.phase}');
         break;
     }
 

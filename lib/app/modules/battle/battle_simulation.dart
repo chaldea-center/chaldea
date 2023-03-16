@@ -361,6 +361,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                                 size: 30,
                                 color: Colors.red,
                               ),
+                              tooltip: S.current.battle_attack,
                             ),
                             IconButton(
                               onPressed: () async {
@@ -379,6 +380,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                                 size: 30,
                                 color: Theme.of(context).colorScheme.primary,
                               ),
+                              tooltip: S.current.battle_battle_log,
                             ),
                             IconButton(
                               onPressed: () {
@@ -390,6 +392,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                                 size: 30,
                                 color: Theme.of(context).colorScheme.primary,
                               ),
+                              tooltip: S.current.battle_charge_party,
                             ),
                             IconButton(
                               onPressed: () {
@@ -401,6 +404,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                                 size: 30,
                                 color: Theme.of(context).colorScheme.primary,
                               ),
+                              tooltip: S.current.battle_skip_current_wave,
                             ),
                             IconButton(
                               onPressed: () {
@@ -412,6 +416,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                                 size: 30,
                                 color: Theme.of(context).colorScheme.primary,
                               ),
+                              tooltip: S.current.battle_undo,
                             ),
                           ],
                         )

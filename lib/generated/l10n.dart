@@ -558,6 +558,17 @@ class S {
     );
   }
 
+  /// `Attack`
+  String get battle_attack {
+    return Intl.message(
+      'Attack',
+      name: 'battle_attack',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Battle Log`
   String get battle_battle_log {
     return Intl.message(
@@ -635,6 +646,17 @@ class S {
     );
   }
 
+  /// `Charge 100% NP to party`
+  String get battle_charge_party {
+    return Intl.message(
+      'Charge 100% NP to party',
+      name: 'battle_charge_party',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Click icon to select CE`
   String get battle_click_to_select_ce {
     return Intl.message(
@@ -679,6 +701,17 @@ class S {
     );
   }
 
+  /// `Damage`
+  String get battle_damage {
+    return Intl.message(
+      'Damage',
+      name: 'battle_damage',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Edit Craft Essence Option`
   String get battle_edit_ce_option {
     return Intl.message(
@@ -717,6 +750,17 @@ class S {
     return Intl.message(
       'Field Traits',
       name: 'battle_field_trait',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Invalid `
+  String get battle_invalid {
+    return Intl.message(
+      'Invalid ',
+      name: 'battle_invalid',
       desc: '',
       locale: localeName,
       args: [],
@@ -772,6 +816,17 @@ class S {
     return Intl.message(
       'No servant selected.',
       name: 'battle_no_servant',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `No Source`
+  String get battle_no_source {
+    return Intl.message(
+      'No Source',
+      name: 'battle_no_source',
       desc: '',
       locale: localeName,
       args: [],
@@ -844,10 +899,21 @@ class S {
     );
   }
 
-  /// `Requried opponent traits`
+  /// `Required field traits `
+  String get battle_require_field_traits {
+    return Intl.message(
+      'Required field traits ',
+      name: 'battle_require_field_traits',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Required opponent traits`
   String get battle_require_opponent_traits {
     return Intl.message(
-      'Requried opponent traits',
+      'Required opponent traits',
       name: 'battle_require_opponent_traits',
       desc: '',
       locale: localeName,
@@ -855,10 +921,10 @@ class S {
     );
   }
 
-  /// `Requried self traits`
+  /// `Required self traits`
   String get battle_require_self_traits {
     return Intl.message(
-      'Requried self traits',
+      'Required self traits',
       name: 'battle_require_self_traits',
       desc: '',
       locale: localeName,
@@ -921,6 +987,17 @@ class S {
     );
   }
 
+  /// `Skip current stage`
+  String get battle_skip_current_wave {
+    return Intl.message(
+      'Skip current stage',
+      name: 'battle_skip_current_wave',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Stage`
   String get battle_stage {
     return Intl.message(
@@ -948,6 +1025,17 @@ class S {
     return Intl.message(
       'Turn',
       name: 'battle_turn',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Undo last action`
+  String get battle_undo {
+    return Intl.message(
+      'Undo last action',
+      name: 'battle_undo',
       desc: '',
       locale: localeName,
       args: [],

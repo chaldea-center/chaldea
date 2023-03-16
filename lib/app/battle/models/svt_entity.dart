@@ -7,6 +7,7 @@ import 'package:chaldea/app/battle/models/craft_essence_entity.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/app/modules/battle/simulation_preview.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'buff.dart';
@@ -417,6 +418,7 @@ class BattleServantData {
 
     battleData.setActivator(this);
     commandCodeSkills[cardIndex].forEach((skill) {
+      battleData.logger.action('$lBattleName - ${S.current.command_code}: ${skill.skill.lName.l}');
       skill.activate(battleData);
     });
     battleData.unsetActivator();
@@ -534,10 +536,12 @@ class BattleServantData {
       if (buff.shouldApplyBuff(battleData, false)) {
         final skill = db.gameData.baseSkills[buff.param];
         if (skill == null) {
-          battleData.logger.debug('Unknown skill ID [${buff.param}] referenced in buff [${buff.buff.id}].');
+          battleData.logger
+              .debug('Buff ID [${buff.buff.id}]: ${S.current.skill} [${buff.param}] ${S.current.not_found}');
           continue;
         }
 
+        battleData.logger.function('$lBattleName - ${buff.buff.lName.l} ${S.current.skill} [${buff.param}]');
         BattleSkillInfoData.activateSkill(battleData, skill, buff.additionalParam);
         buff.setUsed();
       }
