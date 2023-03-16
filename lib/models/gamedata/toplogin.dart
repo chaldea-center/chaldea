@@ -33,14 +33,14 @@ int? _toIntNull(dynamic v, [int? k]) {
   return _toInt(v, k);
 }
 
-List<int> _toIntList(dynamic v) {
+List<int> _toIntList(dynamic v, [int? k = 0]) {
   if (v == null) return [];
   if (v is String) {
     if (v.trim().isEmpty) return [];
     v = jsonDecode(v);
   }
   if (v is List) {
-    return v.map((e) => _toInt(e)).toList();
+    return v.map((e) => _toInt(e, k)).toList();
   }
   throw ArgumentError('${v.runtimeType}: $v cannot be converted to List<int>');
 }
@@ -132,6 +132,7 @@ class UserMstData {
   List<UserCommandCodeCollection> userCommandCodeCollection;
   List<UserCommandCode> userCommandCode;
   List<UserSvtCommandCode> userSvtCommandCode;
+  List<UserSvtCommandCard> userSvtCommandCard;
   // items
   List<UserItem> userItem;
   List<UserSvtCoin> userSvtCoin;
@@ -168,6 +169,7 @@ class UserMstData {
     List<UserCommandCodeCollection>? userCommandCodeCollection,
     List<UserCommandCode>? userCommandCode,
     List<UserSvtCommandCode>? userSvtCommandCode,
+    List<UserSvtCommandCard>? userSvtCommandCard,
     List<UserItem>? userItem,
     List<UserSvtCoin>? userSvtCoin,
     List<UserEquip>? userEquip,
@@ -182,6 +184,7 @@ class UserMstData {
         userCommandCodeCollection = userCommandCodeCollection ?? [],
         userCommandCode = userCommandCode ?? [],
         userSvtCommandCode = userSvtCommandCode ?? [],
+        userSvtCommandCard = userSvtCommandCard ?? [],
         userItem = userItem ?? [],
         userSvtCoin = userSvtCoin ?? [],
         userEquip = userEquip ?? [],
@@ -414,22 +417,20 @@ class UserSvtCollection {
   /// include mash's story costume.
   List<int> costumeIds;
 
-  // List<int> releasedCostumeIds; // jp only now
-
   UserSvtCollection({
     required dynamic svtId,
     required dynamic status,
     required dynamic friendship,
     required dynamic friendshipRank,
     required dynamic friendshipExceedCount,
-    required List<int> costumeIds,
+    required dynamic costumeIds,
     // required List<int> releasedCostumeIds,
   })  : svtId = _toInt(svtId),
         status = _toInt(status),
         friendship = _toInt(friendship),
         friendshipRank = _toInt(friendshipRank),
         friendshipExceedCount = _toInt(friendshipExceedCount),
-        costumeIds = costumeIds..sort((a, b) => a.abs() - b.abs());
+        costumeIds = _toIntList(costumeIds)..sort((a, b) => a.abs() - b.abs());
 
   bool get isOwned => status == 2;
 
@@ -671,6 +672,20 @@ class UserSvtCommandCode {
   })  : userCommandCodeIds = _toIntList(userCommandCodeIds),
         svtId = _toInt(svtId);
   factory UserSvtCommandCode.fromJson(Map<String, dynamic> data) => _$UserSvtCommandCodeFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserSvtCommandCard {
+  // int userId;
+  List<int> commandCardParam;
+  int svtId;
+  // createdAt
+  UserSvtCommandCard({
+    dynamic commandCardParam,
+    dynamic svtId,
+  })  : commandCardParam = _toIntList(commandCardParam),
+        svtId = _toInt(svtId);
+  factory UserSvtCommandCard.fromJson(Map<String, dynamic> data) => _$UserSvtCommandCardFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)

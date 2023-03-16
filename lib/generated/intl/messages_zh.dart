@@ -176,6 +176,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_start_simulation": MessageLookupByLibrary.simpleMessage("开始模拟"),
         "battle_turn": MessageLookupByLibrary.simpleMessage("回合"),
         "battle_undo": MessageLookupByLibrary.simpleMessage("撤销上个行动"),
+        "beast_footprint": MessageLookupByLibrary.simpleMessage("兽之足迹"),
         "bgm": MessageLookupByLibrary.simpleMessage("BGM"),
         "blacklist": MessageLookupByLibrary.simpleMessage("黑名单"),
         "bond": MessageLookupByLibrary.simpleMessage("羁绊"),

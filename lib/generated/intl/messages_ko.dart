@@ -115,6 +115,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backup": MessageLookupByLibrary.simpleMessage("백업"),
         "backup_failed": MessageLookupByLibrary.simpleMessage("백업 불러오기를 실패하였습니다"),
         "backup_history": MessageLookupByLibrary.simpleMessage("백업 기록"),
+        "beast_footprint": MessageLookupByLibrary.simpleMessage("짐승의 발자국"),
         "bgm": MessageLookupByLibrary.simpleMessage("BGM"),
         "blacklist": MessageLookupByLibrary.simpleMessage("블랙리스트"),
         "bond": MessageLookupByLibrary.simpleMessage("인연"),

@@ -1053,6 +1053,17 @@ class S {
     );
   }
 
+  /// `Beast's Footprint`
+  String get beast_footprint {
+    return Intl.message(
+      'Beast\'s Footprint',
+      name: 'beast_footprint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `BGM`
   String get bgm {
     return Intl.message(

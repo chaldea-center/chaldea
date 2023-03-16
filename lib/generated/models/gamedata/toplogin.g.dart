@@ -57,6 +57,9 @@ UserMstData _$UserMstDataFromJson(Map json) => UserMstData(
       userSvtCommandCode: (json['userSvtCommandCode'] as List<dynamic>?)
           ?.map((e) => UserSvtCommandCode.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      userSvtCommandCard: (json['userSvtCommandCard'] as List<dynamic>?)
+          ?.map((e) => UserSvtCommandCard.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
       userItem: (json['userItem'] as List<dynamic>?)
           ?.map((e) => UserItem.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
@@ -106,7 +109,7 @@ UserSvtCollection _$UserSvtCollectionFromJson(Map json) => UserSvtCollection(
       friendship: json['friendship'],
       friendshipRank: json['friendshipRank'],
       friendshipExceedCount: json['friendshipExceedCount'],
-      costumeIds: (json['costumeIds'] as List<dynamic>).map((e) => e as int).toList(),
+      costumeIds: json['costumeIds'],
     );
 
 UserGame _$UserGameFromJson(Map json) => UserGame(
@@ -168,6 +171,11 @@ UserCommandCode _$UserCommandCodeFromJson(Map json) => UserCommandCode(
 
 UserSvtCommandCode _$UserSvtCommandCodeFromJson(Map json) => UserSvtCommandCode(
       userCommandCodeIds: json['userCommandCodeIds'],
+      svtId: json['svtId'],
+    );
+
+UserSvtCommandCard _$UserSvtCommandCardFromJson(Map json) => UserSvtCommandCard(
+      commandCardParam: json['commandCardParam'],
       svtId: json['svtId'],
     );
 

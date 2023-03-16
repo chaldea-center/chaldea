@@ -103,6 +103,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "backup": MessageLookupByLibrary.simpleMessage("バックアップ"),
         "backup_failed": MessageLookupByLibrary.simpleMessage("バックアップ失敗"),
         "backup_history": MessageLookupByLibrary.simpleMessage("バックアップ履歴"),
+        "beast_footprint": MessageLookupByLibrary.simpleMessage("獣の足跡"),
         "blacklist": MessageLookupByLibrary.simpleMessage("ブラックリスト"),
         "bond": MessageLookupByLibrary.simpleMessage("絆"),
         "bond_craft": MessageLookupByLibrary.simpleMessage("絆礼装"),

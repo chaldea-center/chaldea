@@ -364,14 +364,18 @@ class SvtStatus {
   /// current bond, 5.5=5
   int bond;
   List<int?> equipCmdCodes;
+  List<int>? cmdCardStrengthen;
 
   SvtStatus({
     SvtPlan? cur,
     this.priority = 1,
     this.bond = 0,
     List<int?>? equipCmdCodes,
+    List<int>? cmdCardStrengthen,
   })  : cur = cur ?? SvtPlan(),
-        equipCmdCodes = List.generate(5, (index) => equipCmdCodes?.getOrNull(index));
+        equipCmdCodes = List.generate(5, (index) => equipCmdCodes?.getOrNull(index)),
+        cmdCardStrengthen =
+            cmdCardStrengthen == null ? null : List.generate(5, (index) => cmdCardStrengthen.getOrNull(index) ?? 0);
 
   factory SvtStatus.fromJson(Map<String, dynamic> json) => _$SvtStatusFromJson(json);
 
@@ -383,6 +387,11 @@ class SvtStatus {
     cur.bondLimit = cur.bondLimit.clamp2(bond, 15);
     cur.validate(null, svt);
     // equipCmdCodes
+    if (cmdCardStrengthen != null) {
+      for (int index = 0; index < cmdCardStrengthen!.length; index++) {
+        cmdCardStrengthen![index] = cmdCardStrengthen![index].clamp(0, 25);
+      }
+    }
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -399,6 +408,12 @@ class SvtStatus {
     if (index >= 0 && index < 5) {
       equipCmdCodes[index] = collectionNo;
     }
+  }
+
+  void setCmdCard(int index, int strengthen) {
+    if (strengthen < 0 || strengthen > 25) return;
+    cmdCardStrengthen ??= List.generate(5, (index) => 0);
+    cmdCardStrengthen![index] = strengthen;
   }
 }
 
@@ -461,9 +476,7 @@ class SvtPlan {
 
   // set it later according to rarity and event svt?
   int? _npLv;
-
   int get npLv => _npLv ?? 1;
-
   set npLv(int v) => _npLv = v;
 
   SvtPlan({

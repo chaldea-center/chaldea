@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/services.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_picker/flutter_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/app.dart';
@@ -581,17 +582,61 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SHeader(S.current.command_code),
+        SHeader('${S.current.command_code}/${S.current.beast_footprint}'),
         Material(
           color: Theme.of(context).cardColor,
           child: Table(
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: List.generate(svt.cards.length, (index) {
               final code = db.gameData.commandCodes[status.getCmdCode(index)];
+              final footprint = status.cmdCardStrengthen?.getOrNull(index) ?? 0;
+              Widget footWidget = GameCardMixin.cardIconBuilder(
+                context: context,
+                icon: Atlas.assetItem(ItemIconId.beastFootprint),
+                aspectRatio: 1,
+                width: 32,
+                padding: const EdgeInsets.all(2),
+                text: footprint > 0 ? (footprint * 20).toString() : null,
+              );
+              if (footprint <= 0) {
+                footWidget = Opacity(opacity: 0.6, child: footWidget);
+              }
+              footWidget = InkWell(
+                onTap: () {
+                  Picker(
+                    title: Text(S.current.beast_footprint),
+                    itemExtent: 36,
+                    height: min(250, MediaQuery.of(context).size.height - 220),
+                    hideHeader: true,
+                    cancelText: S.current.cancel,
+                    confirmText: S.current.confirm,
+                    backgroundColor: null,
+                    textStyle: Theme.of(context).textTheme.titleLarge,
+                    adapter: NumberPickerAdapter(
+                      data: [
+                        NumberPickerColumn(
+                          items: List.generate(26, (i) => i),
+                          initValue: footprint,
+                          onFormatValue: (v) {
+                            return (v * 20).toString();
+                          },
+                        ),
+                      ],
+                    ),
+                    onConfirm: (picker, values) {
+                      final v = picker.getSelectedValues()[0] as int;
+                      status.setCmdCard(index, v);
+                      if (mounted) setState(() {});
+                    },
+                  ).showDialog(context);
+                },
+                child: footWidget,
+              );
               return TableRow(children: [
                 Center(
                   child: CommandCardWidget(card: svt.cards[index], width: 48),
                 ),
+                Center(child: footWidget),
                 InkWell(
                   onTap: () async {
                     router.pushBuilder(
@@ -605,7 +650,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                     );
                   },
                   child: db.getIconImage(code?.icon ?? Atlas.asset('SkillIcons/skill_999999.png'),
-                      height: 48, aspectRatio: 132 / 144, padding: const EdgeInsets.all(4)),
+                      height: code?.icon == null ? 42 : 48, aspectRatio: 1, padding: const EdgeInsets.all(4)),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(4),
@@ -630,9 +675,10 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             }),
             columnWidths: const {
               0: FixedColumnWidth(56),
-              1: FixedColumnWidth(56),
-              // 2:
-              3: FixedColumnWidth(32)
+              1: FixedColumnWidth(48),
+              2: FixedColumnWidth(56),
+              // 3: cc skill
+              4: FixedColumnWidth(32)
             },
             border: TableBorder.all(color: const Color.fromRGBO(162, 169, 177, 1), width: 0.25),
           ),

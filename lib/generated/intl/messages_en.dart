@@ -181,6 +181,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_start_simulation": MessageLookupByLibrary.simpleMessage("Start Simulation"),
         "battle_turn": MessageLookupByLibrary.simpleMessage("Turn"),
         "battle_undo": MessageLookupByLibrary.simpleMessage("Undo last action"),
+        "beast_footprint": MessageLookupByLibrary.simpleMessage("Beast\'s Footprint"),
         "bgm": MessageLookupByLibrary.simpleMessage("BGM"),
         "blacklist": MessageLookupByLibrary.simpleMessage("Blacklist"),
         "bond": MessageLookupByLibrary.simpleMessage("Bond"),

@@ -633,6 +633,12 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             status.setCmdCode(index, cc?.collectionNo);
           }
         }
+        for (final card in mstData!.userSvtCommandCard) {
+          final svtNo = db.gameData.servantsById[card.svtId]?.collectionNo;
+          if (svtNo == null || svtNo == 0) continue;
+          final status = user.svtStatusOf(svtNo);
+          status.cmdCardStrengthen = List.generate(5, (index) => card.commandCardParam.getOrNull(index) ?? 0);
+        }
       }
     }
     // 不删除原本信息
