@@ -30,6 +30,11 @@ class BattleSkillInfoData {
     skillId = rawSkill.id;
   }
 
+  void shortenSkill(final int turns) {
+    chargeTurn -= turns;
+    chargeTurn = chargeTurn.clamp(0, skill.coolDown[skillLv - 1]);
+  }
+
   void turnEnd() {
     if (chargeTurn > 0) {
       chargeTurn -= 1;

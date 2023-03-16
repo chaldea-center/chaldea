@@ -5,6 +5,7 @@ import 'package:chaldea/app/battle/functions/gain_np.dart';
 import 'package:chaldea/app/battle/functions/gain_np_from_targets.dart';
 import 'package:chaldea/app/battle/functions/gain_star.dart';
 import 'package:chaldea/app/battle/functions/hasten_npturn.dart';
+import 'package:chaldea/app/battle/functions/shorten_skill.dart';
 import 'package:chaldea/app/battle/functions/sub_state.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
@@ -141,21 +142,31 @@ class FunctionExecutor {
     if (!validateFunctionTargetTeam(function, activator)) {
       return;
     }
+
+    switch (function.funcType) {
+      case FuncType.servantFriendshipUp:
+      case FuncType.eventDropUp:
+      case FuncType.eventPointUp:
+      case FuncType.none:
+        return;
+      default:
+        final fieldTraitString = function.funcquestTvals.isNotEmpty
+            ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName())}'
+            : '';
+        final targetTraitString = function.functvals.isNotEmpty
+            ? ' - ${S.current.battle_require_opponent_traits} ${function.funcquestTvals.map((e) => e.shownName())}'
+            : '';
+        battleData.logger.function('${activator?.lBattleName ?? S.current.battle_no_source} - '
+            '${Transl.funcTargetType(function.funcTargetType).l} -  ${function.lPopupText.l}'
+            '$fieldTraitString'
+            '$targetTraitString');
+        break;
+    }
+
     final dataVals = getDataVals(function, skillLevel, overchargeLvl);
     if (dataVals.ActSelectIndex != null && dataVals.ActSelectIndex != selectedActionIndex) {
       return;
     }
-
-    final fieldTraitString = function.funcquestTvals.isNotEmpty
-        ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName())}'
-        : '';
-    final targetTraitString = function.functvals.isNotEmpty
-        ? ' - ${S.current.battle_require_opponent_traits} ${function.funcquestTvals.map((e) => e.shownName())}'
-        : '';
-    battleData.logger.function('${activator?.lBattleName ?? S.current.battle_no_source} - '
-        '${Transl.funcTargetType(function.funcTargetType).l} -  ${function.lPopupText.l}'
-        '$fieldTraitString'
-        '$targetTraitString');
 
     if (!containsAnyTraits(battleData.getFieldTraits(), function.funcquestTvals)) {
       return;
@@ -224,6 +235,9 @@ class FunctionExecutor {
       case FuncType.lossStar:
         functionSuccess = GainStar.gainStar(battleData, dataVals, isNegative: true);
         break;
+      case FuncType.shortenSkill:
+        functionSuccess = ShortenSkill.shortenSkill(battleData, dataVals, targets);
+        break;
       case FuncType.damage:
       case FuncType.damageNp:
       case FuncType.damageNpIndividual:
@@ -260,11 +274,6 @@ class FunctionExecutor {
           firstCardType,
           isPierceDefense: true,
         ).then((value) => functionSuccess = value);
-        break;
-      case FuncType.servantFriendshipUp:
-      case FuncType.eventDropUp:
-      case FuncType.eventPointUp:
-      case FuncType.none:
         break;
       default:
         battleData.logger.debug('${S.current.not_implemented}: ${function.funcType}, '
