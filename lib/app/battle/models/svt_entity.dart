@@ -163,26 +163,26 @@ class BattleServantData {
     return svt;
   }
 
-  void init(final BattleData battleData) {
+  Future<void> init(final BattleData battleData) async {
     final List<NiceSkill> passives = isPlayer
         ? [...niceSvt!.classPassive, ...niceSvt!.extraPassive]
         : [...niceEnemy!.classPassive.classPassive, ...niceEnemy!.classPassive.addPassive];
 
     battleData.setActivator(this);
     for (final skill in passives) {
-      BattleSkillInfoData.activateSkill(battleData, skill, 1, isPassive: true); // passives default to level 1
+      await BattleSkillInfoData.activateSkill(battleData, skill, 1, isPassive: true); // passives default to level 1
     }
 
     if (isPlayer) {
       for (int i = 0; i < niceSvt!.appendPassive.length; i += 1) {
         final appendLv = playerSvtData!.appendLvs.length > i ? playerSvtData!.appendLvs[i] : 0;
         if (appendLv > 0) {
-          BattleSkillInfoData.activateSkill(battleData, niceSvt!.appendPassive[i].skill, appendLv);
+          await BattleSkillInfoData.activateSkill(battleData, niceSvt!.appendPassive[i].skill, appendLv);
         }
       }
     }
 
-    equip?.activateCE(battleData);
+    await equip?.activateCE(battleData);
 
     battleData.unsetActivator();
   }
@@ -371,7 +371,7 @@ class BattleServantData {
     return shiftNpcIds.isNotEmpty && shiftNpcIds.length > shiftIndex;
   }
 
-  void shift(final BattleData battleData) {
+  Future<void> shift(final BattleData battleData) async {
     if (!hasNextShift()) {
       return;
     }
@@ -386,7 +386,7 @@ class BattleServantData {
     level = nextShift.lv;
     battleBuff.clearPassive(uniqueId);
 
-    init(battleData);
+    await init(battleData);
   }
 
   bool isAlive(final BattleData battleData) {
@@ -417,7 +417,7 @@ class BattleServantData {
     battleData.unsetActivator();
   }
 
-  activateCommandCode(final BattleData battleData, final int cardIndex) {
+  Future<void> activateCommandCode(final BattleData battleData, final int cardIndex) async {
     if (cardIndex < 0 || commandCodeSkills.length <= cardIndex) {
       return;
     }
@@ -425,7 +425,7 @@ class BattleServantData {
     battleData.setActivator(this);
     for (final skill in commandCodeSkills[cardIndex]) {
       battleData.logger.action('$lBattleName - ${S.current.command_code}: ${skill.skill.lName.l}');
-      skill.activate(battleData);
+      await skill.activate(battleData);
     }
     battleData.unsetActivator();
   }
@@ -464,7 +464,7 @@ class BattleServantData {
         : niceEnemy!.noblePhantasm.noblePhantasm!;
   }
 
-  void activateNP(final BattleData battleData, final int extraOverchargeLvl) {
+  Future<void> activateNP(final BattleData battleData, final int extraOverchargeLvl) async {
     battleData.setActivator(this);
 
     // TODO (battle): account for OC buff
@@ -477,7 +477,7 @@ class BattleServantData {
 
     final niceTD = getCurrentNP(battleData);
     for (final function in niceTD.functions) {
-      FunctionExecutor.executeFunction(battleData, function, npLvl, overchargeLvl: overchargeLvl);
+      await FunctionExecutor.executeFunction(battleData, function, npLvl, overchargeLvl: overchargeLvl);
     }
     battleData.unsetActivator();
   }
@@ -527,15 +527,15 @@ class BattleServantData {
     return false;
   }
 
-  void activateBuffOnAction(final BattleData battleData, final BuffAction buffAction) {
-    activateBuffOnActions(battleData, [buffAction]);
+  Future<void> activateBuffOnAction(final BattleData battleData, final BuffAction buffAction) async {
+    await activateBuffOnActions(battleData, [buffAction]);
   }
 
-  void activateBuffOnActions(final BattleData battleData, final Iterable<BuffAction> buffActions) {
-    activateBuffs(battleData, collectBuffsPerActions(battleBuff.allBuffs, buffActions));
+  Future<void> activateBuffOnActions(final BattleData battleData, final Iterable<BuffAction> buffActions) async {
+    await activateBuffs(battleData, collectBuffsPerActions(battleBuff.allBuffs, buffActions));
   }
 
-  void activateBuffs(final BattleData battleData, final Iterable<BuffData> buffs) {
+  Future<void> activateBuffs(final BattleData battleData, final Iterable<BuffData> buffs) async {
     battleData.setActivator(this);
 
     for (final buff in buffs.toList()) {
@@ -548,7 +548,7 @@ class BattleServantData {
         }
 
         battleData.logger.function('$lBattleName - ${buff.buff.lName.l} ${S.current.skill} [${buff.param}]');
-        BattleSkillInfoData.activateSkill(battleData, skill, buff.additionalParam);
+        await BattleSkillInfoData.activateSkill(battleData, skill, buff.additionalParam);
         buff.setUsed();
       }
     }
@@ -590,22 +590,22 @@ class BattleServantData {
     battleBuff.commandCodeList.removeWhere((buff) => !buff.isActive);
   }
 
-  void enterField(final BattleData battleData) {
-    activateBuffOnAction(battleData, BuffAction.functionEntry);
+  Future<void> enterField(final BattleData battleData) async {
+    await activateBuffOnAction(battleData, BuffAction.functionEntry);
   }
 
-  void death(final BattleData battleData) {
-    activateBuffOnAction(battleData, BuffAction.functionDead);
+  Future<void> death(final BattleData battleData) async {
+    await activateBuffOnAction(battleData, BuffAction.functionDead);
 
     battleData.fieldBuffs
         .removeWhere((buff) => buff.vals.RemoveFieldBuffActorDeath == 1 && buff.actorUniqueId == uniqueId);
   }
 
-  void startOfMyTurn(final BattleData battleData) {
-    activateBuffOnAction(battleData, BuffAction.functionSelfturnstart);
+  Future<void> startOfMyTurn(final BattleData battleData) async {
+    await activateBuffOnAction(battleData, BuffAction.functionSelfturnstart);
   }
 
-  void endOfMyTurn(final BattleData battleData) {
+  Future<void> endOfMyTurn(final BattleData battleData) async {
     if (isEnemy) {
       final npSealed = hasBuffOnActions(battleData, doNotNPTypes);
       if (!npSealed) {
@@ -655,13 +655,13 @@ class BattleServantData {
     battleData.unsetActivator();
 
     final delayedFunctions = collectBuffsPerType(battleBuff.allBuffs, BuffType.delayFunction);
-    activateBuffs(battleData, delayedFunctions.where((buff) => buff.turn == 0));
-    activateBuffOnAction(battleData, BuffAction.functionSelfturnend);
+    await activateBuffs(battleData, delayedFunctions.where((buff) => buff.turn == 0));
+    await activateBuffOnAction(battleData, BuffAction.functionSelfturnend);
 
     battleData.checkBuffStatus();
   }
 
-  void endOfYourTurn(final BattleData battleData) {
+  Future<void> endOfYourTurn(final BattleData battleData) async {
     clearAccumulationDamage();
 
     battleData.setActivator(this);
@@ -673,12 +673,12 @@ class BattleServantData {
     battleData.unsetActivator();
 
     final delayedFunctions = collectBuffsPerType(battleBuff.allBuffs, BuffType.delayFunction);
-    activateBuffs(battleData, delayedFunctions.where((buff) => buff.turn == 0));
+    await activateBuffs(battleData, delayedFunctions.where((buff) => buff.turn == 0));
 
     battleData.checkBuffStatus();
   }
 
-  bool activateGuts(final BattleData battleData) {
+  Future<bool> activateGuts(final BattleData battleData) async {
     BuffData? gutsToApply;
     battleData.setActivator(this);
     for (final buff in collectBuffsPerTypes(battleBuff.allBuffs, gutsTypes)) {
@@ -700,7 +700,7 @@ class BattleServantData {
       }
       killedByCard = null;
       killedBy = null;
-      activateBuffOnAction(battleData, BuffAction.functionGuts);
+      await activateBuffOnAction(battleData, BuffAction.functionGuts);
       return true;
     }
 

@@ -10,13 +10,12 @@ import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
-import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/extension.dart';
 
 class FunctionExecutor {
   FunctionExecutor._();
 
-  static void executeFunction(
+  static Future<void> executeFunction(
     final BattleData battleData,
     final NiceFunction function,
     final int skillLevel, {
@@ -30,14 +29,13 @@ class FunctionExecutor {
     final bool notActorFunction = false,
     final bool isCommandCode = false,
     final int? selectedActionIndex,
-  }) {
+  }) async {
     final BattleServantData? activator = battleData.activator;
     if (!validateFunctionTargetTeam(function, activator)) {
       return;
     }
     final dataVals = getDataVals(function, skillLevel, overchargeLvl);
     if (dataVals.ActSelectIndex != null && dataVals.ActSelectIndex != selectedActionIndex) {
-      logger.d('${dataVals.ActSelectIndex} vs $selectedActionIndex');
       return;
     }
 
@@ -70,7 +68,7 @@ class FunctionExecutor {
     switch (function.funcType) {
       case FuncType.absorbNpturn:
       case FuncType.gainNpFromTargets:
-        functionSuccess = GainNpFromTargets.gainNpFromTargets(battleData, dataVals, targets);
+        GainNpFromTargets.gainNpFromTargets(battleData, dataVals, targets).then((value) => functionSuccess = value);
         break;
       case FuncType.addState:
         functionSuccess = AddState.addState(
@@ -119,7 +117,7 @@ class FunctionExecutor {
       case FuncType.damage:
       case FuncType.damageNp:
       case FuncType.damageNpIndividual:
-        functionSuccess = Damage.damage(
+        await Damage.damage(
           battleData,
           dataVals,
           targets,
@@ -127,10 +125,10 @@ class FunctionExecutor {
           isTypeChain,
           isMightyChain,
           firstCardType,
-        );
+        ).then((value) => functionSuccess = value);
         break;
       case FuncType.damageNpStateIndividualFix:
-        functionSuccess = Damage.damage(
+        await Damage.damage(
           battleData,
           dataVals,
           targets,
@@ -139,10 +137,10 @@ class FunctionExecutor {
           isMightyChain,
           firstCardType,
           checkBuffTraits: true,
-        );
+        ).then((value) => functionSuccess = value);
         break;
       case FuncType.damageNpPierce:
-        functionSuccess = Damage.damage(
+        await Damage.damage(
           battleData,
           dataVals,
           targets,
@@ -151,7 +149,7 @@ class FunctionExecutor {
           isMightyChain,
           firstCardType,
           isPierceDefense: true,
-        );
+        ).then((value) => functionSuccess = value);
         break;
       case FuncType.servantFriendshipUp:
       case FuncType.eventDropUp:

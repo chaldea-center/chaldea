@@ -143,7 +143,7 @@ class BattleData {
     _target.removeLast();
   }
 
-  void init(final QuestPhase quest, final List<PlayerSvtData?> playerSettings, final MysticCodeData? mysticCodeData) {
+  Future<void> init(final QuestPhase quest, final List<PlayerSvtData?> playerSettings, final MysticCodeData? mysticCodeData) async {
     niceQuest = quest;
     waveCount = 1;
     turnCount = 0;
@@ -169,16 +169,16 @@ class BattleData {
         .toList();
     _fetchWaveEnemies();
 
-    playerDataList.forEach((svt) {
+    for (final svt in playerDataList) {
       svt?.uniqueId = uniqueIndex;
-      svt?.init(this);
+      await svt?.init(this);
       uniqueIndex += 1;
-    });
-    enemyDataList.forEach((enemy) {
+    }
+    for (final enemy in enemyDataList) {
       enemy?.uniqueId = uniqueIndex;
-      enemy?.init(this);
+      await enemy?.init(this);
       uniqueIndex += 1;
-    });
+    }
 
     mysticCode = mysticCodeData?.mysticCode;
     mysticCodeLv = mysticCodeData?.level ?? 10;
@@ -191,59 +191,59 @@ class BattleData {
     allyTargetIndex = getNonNullTargetIndex(onFieldAllyServants, allyTargetIndex);
     enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
 
-    nonnullActors.forEach((element) {
-      element.enterField(this);
-    });
+    for (final svt in nonnullActors) {
+      await svt.enterField(this);
+    }
 
-    nextTurn();
+    await nextTurn();
   }
 
-  void nextTurn() {
+  Future<void> nextTurn() async {
     turnCount += 1;
     totalTurnCount += 1;
 
     logger.action('${S.current.battle_turn} $totalTurnCount');
 
-    replenishActors();
+    await replenishActors();
 
     if (enemyDataList.isEmpty && nonnullEnemies.isEmpty) {
-      nextWave();
+      await nextWave();
     }
     // start of ally turn
-    nonnullAllies.forEach((svt) {
-      svt.startOfMyTurn(this);
-    });
+    for (final svt in nonnullAllies) {
+      await svt.startOfMyTurn(this);
+    }
   }
 
-  void nextWave() {
+  Future<void> nextWave() async {
     waveCount += 1;
     turnCount = 1;
 
     _fetchWaveEnemies();
-    enemyDataList.forEach((enemy) {
-      enemy?.init(this);
+    for (final enemy in enemyDataList) {
       enemy?.uniqueId = uniqueIndex;
+      await enemy?.init(this);
       uniqueIndex += 1;
-    });
+    }
 
     onFieldEnemies.clear();
     _initOnField(enemyDataList, onFieldEnemies, enemyOnFieldCount);
     enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
 
-    nonnullEnemies.forEach((element) {
-      element.enterField(this);
-    });
+    for (final enemy in nonnullEnemies) {
+      await enemy.enterField(this);
+    }
   }
 
-  void replenishActors() {
+  Future<void> replenishActors() async {
     final List<BattleServantData> newActors = [
       ..._populateListAndReturnNewActors(onFieldEnemies, enemyDataList),
       ..._populateListAndReturnNewActors(onFieldAllyServants, playerDataList)
     ];
 
-    newActors.forEach((actor) {
-      actor.enterField(this);
-    });
+    for (final svt in newActors) {
+      await svt.enterField(this);
+    }
   }
 
   static List<BattleServantData> _populateListAndReturnNewActors(
@@ -439,7 +439,7 @@ class BattleData {
     await masterSkillInfo[skillIndex].activate(this);
   }
 
-  playerTurn(final List<CombatAction> actions) {
+  Future<void> playerTurn(final List<CombatAction> actions) async {
     if (actions.isEmpty || isBattleFinished) {
       return;
     }
@@ -467,21 +467,21 @@ class BattleData {
 
         if (action.isValid(this)) {
           if (currentCard!.isNP) {
-            action.actor.activateBuffOnActions(this, [BuffAction.functionAttackBefore, BuffAction.functionNpattack]);
-            action.actor.activateNP(this, extraOvercharge);
+            await action.actor.activateBuffOnActions(this, [BuffAction.functionAttackBefore, BuffAction.functionNpattack]);
+            await action.actor.activateNP(this, extraOvercharge);
             extraOvercharge += 1;
 
-            nonnullEnemies.forEach((svt) {
-              if (svt.attacked) svt.activateBuffOnAction(this, BuffAction.functionDamage);
-            });
+            for (final svt in nonnullEnemies) {
+              if (svt.attacked) await svt.activateBuffOnAction(this, BuffAction.functionDamage);
+            }
           } else {
             extraOvercharge = 0;
-            executePlayerCard(action.actor, currentCard!, i + 1, isTypeChain, isMightyChain, firstCardType);
+            await executePlayerCard(action.actor, currentCard!, i + 1, isTypeChain, isMightyChain, firstCardType);
           }
         }
 
         if (shouldRemoveDeadActors(actions, i)) {
-          removeDeadActors();
+          await removeDeadActors();
         }
 
         currentCard = null;
@@ -495,27 +495,27 @@ class BattleData {
       currentCard = actor.getExtraCard(this);
 
       if (actor.canCommandCard(this)) {
-        executePlayerCard(actor, currentCard!, 4, isTypeChain, isMightyChain, firstCardType);
+        await executePlayerCard(actor, currentCard!, 4, isTypeChain, isMightyChain, firstCardType);
       }
 
       currentCard = null;
 
-      removeDeadActors();
+      await removeDeadActors();
       checkBuffStatus();
     }
 
     // end player turn
-    endPlayerTurn();
+    await endPlayerTurn();
 
-    startEnemyTurn();
-    endEnemyTurn();
+    await startEnemyTurn();
+    await endEnemyTurn();
 
-    nextTurn();
+    await nextTurn();
 
     allyTargetIndex = previousTargetIndex;
   }
 
-  void skipWave() {
+  Future<void> skipWave() async {
     if (isBattleFinished) {
       return;
     }
@@ -526,49 +526,49 @@ class BattleData {
     onFieldEnemies.clear();
     enemyDataList.clear();
 
-    endPlayerTurn();
+    await endPlayerTurn();
 
-    startEnemyTurn();
-    endEnemyTurn();
+    await startEnemyTurn();
+    await endEnemyTurn();
 
-    nextTurn();
+    await nextTurn();
   }
 
-  void endPlayerTurn() {
-    nonnullAllies.forEach((svt) {
-      svt.endOfMyTurn(this);
-    });
+  Future<void> endPlayerTurn() async {
+    for (final svt in nonnullAllies) {
+      await svt.endOfMyTurn(this);
+    }
 
-    nonnullEnemies.forEach((svt) {
-      svt.endOfYourTurn(this);
-    });
+    for (final svt in nonnullEnemies) {
+      await svt.endOfYourTurn(this);
+    }
 
     masterSkillInfo.forEach((skill) {
       skill.turnEnd();
     });
 
-    removeDeadActors();
+    await removeDeadActors();
   }
 
-  void startEnemyTurn() {
-    nonnullEnemies.forEach((svt) {
+  Future<void> startEnemyTurn() async {
+    for (final svt in nonnullEnemies) {
       if (svt.hp <= 0) {
-        svt.shift(this);
+        await svt.shift(this);
       }
-      svt.startOfMyTurn(this);
-    });
+      await svt.startOfMyTurn(this);
+    }
   }
 
-  void endEnemyTurn() {
-    nonnullEnemies.forEach((svt) {
-      svt.endOfMyTurn(this);
-    });
+  Future<void> endEnemyTurn() async {
+    for (final svt in nonnullEnemies) {
+      await svt.endOfMyTurn(this);
+    }
 
-    nonnullAllies.forEach((svt) {
-      svt.endOfYourTurn(this);
-    });
+    for (final svt in nonnullAllies) {
+      await svt.endOfYourTurn(this);
+    }
 
-    removeDeadActors();
+    await removeDeadActors();
 
     fieldBuffs.forEach((buff) {
       buff.turnPass();
@@ -576,17 +576,17 @@ class BattleData {
     fieldBuffs.removeWhere((buff) => !buff.isActive);
   }
 
-  executePlayerCard(
+  Future<void> executePlayerCard(
     final BattleServantData actor,
     final CommandCardData card,
     final int chainPos,
     final bool isTypeChain,
     final bool isMightyChain,
     final CardType firstCardType,
-  ) {
-    actor.activateCommandCode(this, card.cardIndex);
+  ) async {
+    await actor.activateCommandCode(this, card.cardIndex);
 
-    actor.activateBuffOnActions(this, [
+    await actor.activateBuffOnActions(this, [
       BuffAction.functionAttackBefore,
       BuffAction.functionCommandattackBefore,
       BuffAction.functionCommandcodeattackBefore,
@@ -604,7 +604,7 @@ class BattleData {
 
     unsetActivator();
 
-    actor.activateBuffOnActions(this, [
+    await actor.activateBuffOnActions(this, [
       BuffAction.functionAttackAfter,
       BuffAction.functionCommandattackAfter,
       BuffAction.functionCommandcodeattackAfter,
@@ -612,9 +612,9 @@ class BattleData {
 
     actor.clearCommandCodeBuffs();
 
-    targets.forEach((svt) {
-      svt.activateBuffOnAction(this, BuffAction.functionDamage);
-    });
+    for (final svt in targets) {
+      await svt.activateBuffOnAction(this, BuffAction.functionDamage);
+    }
   }
 
   void applyTypeChain(final CardType cardType, final List<CombatAction> actions) {
@@ -639,14 +639,14 @@ class BattleData {
     GainNP.gainNP(this, DataVals({'Rate': 5000, 'Value': 10000}), nonnullAllies);
   }
 
-  void removeDeadActors() {
-    removeDeadActorsFromList(onFieldAllyServants);
-    removeDeadActorsFromList(onFieldEnemies);
+  Future<void> removeDeadActors() async {
+    await removeDeadActorsFromList(onFieldAllyServants);
+    await removeDeadActorsFromList(onFieldEnemies);
     allyTargetIndex = getNonNullTargetIndex(onFieldAllyServants, allyTargetIndex);
     enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
   }
 
-  void removeDeadActorsFromList(final List<BattleServantData?> actorList) {
+  Future<void> removeDeadActorsFromList(final List<BattleServantData?> actorList) async {
     for (int i = 0; i < actorList.length; i += 1) {
       if (actorList[i] == null) {
         continue;
@@ -654,10 +654,12 @@ class BattleData {
 
       final actor = actorList[i]!;
       if (actor.hp <= 0 && !actor.hasNextShift()) {
-        if (!actor.activateGuts(this)) {
+        bool hasGuts = false;
+        await actor.activateGuts(this).then((value) => hasGuts = value);
+        if (!hasGuts) {
           // TODO (battle): There is a bug that will reset accumulation damage when deathEffect is triggered
           // not verified for gutsEffect
-          actor.death(this);
+          await actor.death(this);
           actorList[i] = null;
         }
       }

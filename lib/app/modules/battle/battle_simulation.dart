@@ -50,11 +50,18 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     super.initState();
 
     battleData
-      ..init(widget.questPhase, [...widget.onFieldSvtDataList, ...widget.backupSvtDataList], widget.mysticCodeData)
       ..probabilityThreshold = widget.probabilityThreshold
       ..fixedRandom = widget.fixedRandom
       ..isAfter7thAnni = widget.isAfter7thAnni
       ..context = context;
+
+    _initBattle();
+  }
+
+  Future<void> _initBattle() async {
+    await battleData.init(
+        widget.questPhase, [...widget.onFieldSvtDataList, ...widget.backupSvtDataList], widget.mysticCodeData);
+    if (mounted) setState(() {});
   }
 
   @override
@@ -396,8 +403,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                               tooltip: S.current.battle_charge_party,
                             ),
                             IconButton(
-                              onPressed: () {
-                                battleData.skipWave();
+                              onPressed: () async {
+                                await battleData.skipWave();
                                 if (mounted) setState(() {});
                               },
                               icon: Icon(

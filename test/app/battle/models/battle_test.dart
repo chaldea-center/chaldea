@@ -31,9 +31,9 @@ void main() async {
           ..hpFou = 0
       ];
 
-      test('NP 1 OC 1 no fou as base', () {
+      test('NP 1 OC 1 no fou as base', () async {
         final battle = BattleData();
-        battle.init(db.gameData.questPhases[9300040603]!, altriaSettings,
+        await battle.init(db.gameData.questPhases[9300040603]!, altriaSettings,
             null); // this stage has a sky caster in wave 1 at index 1
 
         final altria = battle.targetedAlly!;
@@ -41,15 +41,15 @@ void main() async {
         final npActions = [CombatAction(altria, altria.getNPCard(battle)!)];
 
         final hpBeforeDamage = battle.onFieldEnemies[1]!.hp;
-        battle.playerTurn(npActions);
+        await battle.playerTurn(npActions);
         final hpAfterDamage = battle.onFieldEnemies[1]!.hp;
 
         expect(hpBeforeDamage - hpAfterDamage, equals(12542));
       });
 
-      test('chainPos does not affect NP', () {
+      test('chainPos does not affect NP', () async {
         final battle = BattleData();
-        battle.init(db.gameData.questPhases[9300040603]!, altriaSettings, null);
+        await battle.init(db.gameData.questPhases[9300040603]!, altriaSettings, null);
 
         final altria = battle.targetedAlly!;
         altria.np = 10000;
@@ -59,15 +59,15 @@ void main() async {
         ];
 
         final hpBeforeDamage = battle.onFieldEnemies[1]!.hp;
-        battle.playerTurn(npActions);
+        await battle.playerTurn(npActions);
         final hpAfterDamage = battle.onFieldEnemies[1]!.hp;
 
         expect(hpBeforeDamage - hpAfterDamage, equals(12542));
       });
 
-      test('B A B EX', () {
+      test('B A B EX', () async {
         final battle = BattleData();
-        battle.init(db.gameData.questPhases[9300040603]!, altriaSettings, null);
+        await battle.init(db.gameData.questPhases[9300040603]!, altriaSettings, null);
 
         final altria = battle.targetedAlly!;
         final busterArtsBuster = [
@@ -79,7 +79,7 @@ void main() async {
         battle.enemyTargetIndex = 1;
         final skyCaster = battle.onFieldEnemies[1]!;
         final hpBeforeDamage = skyCaster.hp;
-        battle.playerTurn(busterArtsBuster);
+        await battle.playerTurn(busterArtsBuster);
         final hpAfterDamage = skyCaster.hp;
 
         expect(hpBeforeDamage - hpAfterDamage, equals(4180 + 3553 + 5435 + 6271));
@@ -87,7 +87,7 @@ void main() async {
         expect(battle.criticalStars, moreOrLessEquals(5.20, epsilon: 0.001));
       });
 
-      test('with 1000 Fou & double Koyanskaya of Light', () {
+      test('with 1000 Fou & double Koyanskaya of Light', () async {
         final List<PlayerSvtData> altriaWithDoubleKoyan = [
           PlayerSvtData(100100)
             ..skillStrengthenLvs = [1, 2, 1]
@@ -112,20 +112,20 @@ void main() async {
             ..hpFou = 0
         ];
         final battle = BattleData();
-        battle.init(db.gameData.questPhases[9300040603]!, altriaWithDoubleKoyan, null);
+        await battle.init(db.gameData.questPhases[9300040603]!, altriaWithDoubleKoyan, null);
 
-        battle.activateSvtSkill(0, 0);
-        battle.activateSvtSkill(0, 1);
-        battle.activateSvtSkill(1, 0);
-        battle.activateSvtSkill(1, 2);
-        battle.activateSvtSkill(2, 0);
-        battle.activateSvtSkill(2, 2);
+        await  battle.activateSvtSkill(0, 0);
+        await battle.activateSvtSkill(0, 1);
+        await battle.activateSvtSkill(1, 0);
+        await battle.activateSvtSkill(1, 2);
+        await battle.activateSvtSkill(2, 0);
+        await battle.activateSvtSkill(2, 2);
         final altria = battle.targetedAlly!;
         final npActions = [CombatAction(altria, altria.getNPCard(battle)!)];
 
         final skyCaster = battle.onFieldEnemies[1]!;
         final hpBeforeDamage = skyCaster.hp;
-        battle.playerTurn(npActions);
+        await battle.playerTurn(npActions);
         final hpAfterDamage = skyCaster.hp;
 
         expect(hpBeforeDamage - hpAfterDamage, equals(52388));
@@ -146,9 +146,9 @@ void main() async {
           ..ceLimitBreak = true
       ];
 
-      test('NP 5 OC 1 as base', () {
+      test('NP 5 OC 1 as base', () async {
         final battle = BattleData();
-        battle.init(db.gameData.questPhases[9300040603]!, yuyuSettings, null);
+        await battle.init(db.gameData.questPhases[9300040603]!, yuyuSettings, null);
 
         final yuyu = battle.targetedAlly!;
         final npActions = [CombatAction(yuyu, yuyu.getNPCard(battle)!)];
@@ -156,7 +156,7 @@ void main() async {
         battle.enemyTargetIndex = 1;
         final skyCaster = battle.targetedEnemy!;
         final hpBeforeDamage = skyCaster.hp;
-        battle.playerTurn(npActions);
+        await battle.playerTurn(npActions);
         final hpAfterDamage = skyCaster.hp;
 
         expect(hpBeforeDamage - hpAfterDamage, equals(52575));
@@ -164,9 +164,9 @@ void main() async {
         expect(battle.criticalStars, moreOrLessEquals(3.20, epsilon: 0.001)); // include okuni's passive
       });
 
-      test('A Q A EX', () {
+      test('A Q A EX', () async {
         final battle = BattleData();
-        battle.init(db.gameData.questPhases[9300040603]!, yuyuSettings, null);
+        await battle.init(db.gameData.questPhases[9300040603]!, yuyuSettings, null);
 
         final yuyu = battle.targetedAlly!;
         final artsQuickArts = [
@@ -178,7 +178,7 @@ void main() async {
         battle.enemyTargetIndex = 1;
         final skyCaster = battle.targetedEnemy!;
         final hpBeforeDamage = skyCaster.hp;
-        battle.playerTurn(artsQuickArts);
+        await battle.playerTurn(artsQuickArts);
         final hpAfterDamage = skyCaster.hp;
 
         expect(hpBeforeDamage - hpAfterDamage, equals(3668 + 3528 + 5065 + 7161));
@@ -186,7 +186,7 @@ void main() async {
         expect(battle.criticalStars, moreOrLessEquals(15.10, epsilon: 0.001)); // include okuni's passive
       });
 
-      test('with 1000 Fou & double Altria Caster', () {
+      test('with 1000 Fou & double Altria Caster', () async {
         final List<PlayerSvtData> yuyuWithDoubleCastoria = [
           PlayerSvtData(2500400)
             ..skillStrengthenLvs = [2, 1, 1]
@@ -214,21 +214,21 @@ void main() async {
             ..hpFou = 0
         ];
         final battle = BattleData();
-        battle.init(db.gameData.questPhases[9300040603]!, yuyuWithDoubleCastoria, null);
+        await battle.init(db.gameData.questPhases[9300040603]!, yuyuWithDoubleCastoria, null);
 
-        battle.activateSvtSkill(1, 0);
-        battle.activateSvtSkill(1, 1);
-        battle.activateSvtSkill(1, 2);
-        battle.activateSvtSkill(2, 0);
-        battle.activateSvtSkill(2, 1);
-        battle.activateSvtSkill(2, 2);
+        await battle.activateSvtSkill(1, 0);
+        await battle.activateSvtSkill(1, 1);
+        await battle.activateSvtSkill(1, 2);
+        await battle.activateSvtSkill(2, 0);
+        await battle.activateSvtSkill(2, 1);
+        await battle.activateSvtSkill(2, 2);
         final yuyu = battle.targetedAlly!;
         final npActions = [CombatAction(yuyu, yuyu.getNPCard(battle)!)];
 
         battle.enemyTargetIndex = 1;
         final skyCaster = battle.targetedEnemy!;
         final hpBeforeDamage = skyCaster.hp;
-        battle.playerTurn(npActions);
+        await battle.playerTurn(npActions);
         final hpAfterDamage = skyCaster.hp;
 
         expect(hpBeforeDamage - hpAfterDamage, equals(146896));
@@ -251,9 +251,9 @@ void main() async {
           ..ceLimitBreak = true
       ];
 
-      test('NP 5 OC 1 as base', () {
+      test('NP 5 OC 1 as base', () async {
         final battle = BattleData();
-        battle.init(db.gameData.questPhases[9300040603]!, okuniSettings, null);
+        await battle.init(db.gameData.questPhases[9300040603]!, okuniSettings, null);
 
         final okuni = battle.targetedAlly!;
         final npActions = [CombatAction(okuni, okuni.getNPCard(battle)!)];
@@ -261,7 +261,7 @@ void main() async {
         battle.enemyTargetIndex = 1;
         final skyCaster = battle.targetedEnemy!;
         final hpBeforeDamage = skyCaster.hp;
-        battle.playerTurn(npActions);
+        await battle.playerTurn(npActions);
         final hpAfterDamage = skyCaster.hp;
 
         expect(hpBeforeDamage - hpAfterDamage, equals(56556));
@@ -269,9 +269,9 @@ void main() async {
         expect(battle.criticalStars, moreOrLessEquals(14.19, epsilon: 0.001)); // include okuni's passive
       });
 
-      test('Q B Q EX', () {
+      test('Q B Q EX', () async {
         final battle = BattleData();
-        battle.init(db.gameData.questPhases[9300040603]!, okuniSettings, null);
+        await battle.init(db.gameData.questPhases[9300040603]!, okuniSettings, null);
 
         final okuni = battle.targetedAlly!;
         final quickBusterQuick = [
@@ -283,7 +283,7 @@ void main() async {
         battle.enemyTargetIndex = 1;
         final skyCaster = battle.targetedEnemy!;
         final hpBeforeDamage = skyCaster.hp;
-        battle.playerTurn(quickBusterQuick);
+        await battle.playerTurn(quickBusterQuick);
         final hpAfterDamage = skyCaster.hp;
 
         expect(hpBeforeDamage - hpAfterDamage, equals(2356 + 5302 + 3299 + 5891));
@@ -291,7 +291,7 @@ void main() async {
         expect(battle.criticalStars, moreOrLessEquals(24.594, epsilon: 0.001)); // include okuni's passive
       });
 
-      test('with 1000 Fou & double Scathach-Skadi (Caster)', () {
+      test('with 1000 Fou & double Scathach-Skadi (Caster)', () async {
         final List<PlayerSvtData> okuniWithDoubleCba = [
           PlayerSvtData(504900)
             ..skillStrengthenLvs = [1, 1, 1]
@@ -319,19 +319,19 @@ void main() async {
             ..hpFou = 0
         ];
         final battle = BattleData();
-        battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
+        await battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
 
-        battle.activateSvtSkill(1, 0);
-        battle.activateSvtSkill(1, 2);
-        battle.activateSvtSkill(2, 0);
-        battle.activateSvtSkill(2, 2);
+        await battle.activateSvtSkill(1, 0);
+        await battle.activateSvtSkill(1, 2);
+        await battle.activateSvtSkill(2, 0);
+        await battle.activateSvtSkill(2, 2);
         final okuni = battle.targetedAlly!;
         final npActions = [CombatAction(okuni, okuni.getNPCard(battle)!)];
 
         battle.enemyTargetIndex = 1;
         final skyCaster = battle.targetedEnemy!;
         final hpBeforeDamage = skyCaster.hp;
-        battle.playerTurn(npActions);
+        await battle.playerTurn(npActions);
         final hpAfterDamage = skyCaster.hp;
 
         expect(hpBeforeDamage - hpAfterDamage, equals(103687));
@@ -340,7 +340,7 @@ void main() async {
       });
     });
 
-    test('Kama 3 turn loop & double Castoria', () {
+    test('Kama 3 turn loop & double Castoria', () async {
       final List<PlayerSvtData> kamaWithDoubleCastoria = [
         PlayerSvtData(1101100)
           ..npLv = 5
@@ -355,20 +355,20 @@ void main() async {
         PlayerSvtData(504500)..lv = 90,
       ];
       final battle = BattleData();
-      battle.init(db.gameData.questPhases[9300040603]!, kamaWithDoubleCastoria, null);
+      await battle.init(db.gameData.questPhases[9300040603]!, kamaWithDoubleCastoria, null);
 
-      battle.activateSvtSkill(0, 0);
-      battle.activateSvtSkill(1, 1);
-      battle.activateSvtSkill(1, 2);
-      battle.activateSvtSkill(2, 1);
-      battle.activateSvtSkill(2, 2);
+      await battle.activateSvtSkill(0, 0);
+      await battle.activateSvtSkill(1, 1);
+      await battle.activateSvtSkill(1, 2);
+      await battle.activateSvtSkill(2, 1);
+      await battle.activateSvtSkill(2, 2);
       final kama = battle.targetedAlly!;
       final npActions = [CombatAction(kama, kama.getNPCard(battle)!)];
 
       battle.enemyTargetIndex = 1;
       final skyCaster = battle.targetedEnemy!;
       final hpBeforeDamage = skyCaster.hp;
-      battle.playerTurn(npActions);
+      await battle.playerTurn(npActions);
       final hpAfterDamage = skyCaster.hp;
 
       expect(hpBeforeDamage - hpAfterDamage, 82618);
@@ -383,7 +383,7 @@ void main() async {
       final wave2enemy = battle.targetedEnemy!;
       expect(wave2enemy.uniqueId, 7);
       final hpBeforeDamageWave2 = wave2enemy.hp;
-      battle.playerTurn(npActions);
+      await battle.playerTurn(npActions);
       final hpAfterDamageWave2 = wave2enemy.hp;
 
       expect(hpBeforeDamageWave2 - hpAfterDamageWave2, 82618);
@@ -395,15 +395,15 @@ void main() async {
       expect(battle.totalTurnCount, 3);
       expect(battle.turnCount, 1);
 
-      battle.activateSvtSkill(0, 1);
-      battle.activateSvtSkill(0, 2);
-      battle.activateSvtSkill(1, 0);
-      battle.activateSvtSkill(2, 0);
+      await battle.activateSvtSkill(0, 1);
+      await battle.activateSvtSkill(0, 2);
+      await battle.activateSvtSkill(1, 0);
+      await battle.activateSvtSkill(2, 0);
 
       final wave3enemy = battle.targetedEnemy!;
       expect(wave3enemy.uniqueId, 10);
       final hpBeforeDamageWave3 = wave3enemy.hp;
-      battle.playerTurn(npActions);
+      await battle.playerTurn(npActions);
       final hpAfterDamageWave3 = wave3enemy.hp;
 
       expect(hpBeforeDamageWave3 - hpAfterDamageWave3, 225160);
@@ -414,73 +414,73 @@ void main() async {
     });
   });
 
-  test('Activate skill checks buff status', () {
+  test('Activate skill checks buff status', () async {
     final List<PlayerSvtData> lipAndJinako = [
       PlayerSvtData(1000100)..lv = 80,
       PlayerSvtData(2300300)..lv = 90,
     ];
     final battle = BattleData();
-    battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
+    await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
 
-    battle.activateSvtSkill(0, 0);
+    await battle.activateSvtSkill(0, 0);
 
     final avoidStateBuff =
         collectBuffsPerType(battle.onFieldAllyServants[0]!.battleBuff.allBuffs, BuffType.avoidState).first;
 
     expect(avoidStateBuff.count, 3);
 
-    battle.activateSvtSkill(0, 2);
+    await battle.activateSvtSkill(0, 2);
 
     expect(avoidStateBuff.count, 2);
 
-    battle.activateSvtSkill(1, 2);
+    await battle.activateSvtSkill(1, 2);
 
     expect(avoidStateBuff.count, 1);
   });
 
-  test('Stun does not provide firstCardBonus', () {
+  test('Stun does not provide firstCardBonus', () async {
     final List<PlayerSvtData> lipAndJinako = [
       PlayerSvtData(1000100)..lv = 80,
       PlayerSvtData(2300300)..lv = 90,
     ];
     final battle = BattleData();
-    battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
+    await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
 
     final lip = battle.onFieldAllyServants[0]!;
     final jinako = battle.onFieldAllyServants[1]!;
 
-    battle.activateSvtSkill(0, 2); // lip is stunned
+    await battle.activateSvtSkill(0, 2); // lip is stunned
 
     expect(jinako.np, 0);
-    battle.playerTurn([CombatAction(lip, lip.getCards(battle)[1]), CombatAction(jinako, jinako.getCards(battle)[4])]);
+    await battle.playerTurn([CombatAction(lip, lip.getCards(battle)[1]), CombatAction(jinako, jinako.getCards(battle)[4])]);
     expect(jinako.np, 0);
     expect(lip.canCommandCard(battle), isTrue);
-    battle.playerTurn([CombatAction(lip, lip.getCards(battle)[1]), CombatAction(jinako, jinako.getCards(battle)[4])]);
+    await battle.playerTurn([CombatAction(lip, lip.getCards(battle)[1]), CombatAction(jinako, jinako.getCards(battle)[4])]);
     expect(jinako.np, greaterThan(0));
   });
 
-  test('Stun does not provide typeChain', () {
+  test('Stun does not provide typeChain', () async {
     final List<PlayerSvtData> lipAndJinako = [
       PlayerSvtData(1000100)..lv = 80,
       PlayerSvtData(2300300)..lv = 90,
     ];
     final battle = BattleData();
-    battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
+    await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
 
     final lip = battle.onFieldAllyServants[0]!;
     final jinako = battle.onFieldAllyServants[1]!;
 
-    battle.activateSvtSkill(0, 2); // lip is stunned
+    await battle.activateSvtSkill(0, 2); // lip is stunned
 
     expect(lip.np, 0);
-    battle.playerTurn([
+    await battle.playerTurn([
       CombatAction(lip, lip.getCards(battle)[1]),
       CombatAction(jinako, jinako.getCards(battle)[1]),
       CombatAction(jinako, jinako.getCards(battle)[2])
     ]);
     expect(lip.np, 0);
 
-    battle.playerTurn([
+    await battle.playerTurn([
       CombatAction(lip, lip.getCards(battle)[1]),
       CombatAction(jinako, jinako.getCards(battle)[1]),
       CombatAction(jinako, jinako.getCards(battle)[2])
@@ -488,21 +488,21 @@ void main() async {
     expect(lip.np, greaterThan(20));
   });
 
-  test('Stun does not provide braveChain', () {
+  test('Stun does not provide braveChain', () async {
     final List<PlayerSvtData> lipAndJinako = [
       PlayerSvtData(1000100)..lv = 80,
       PlayerSvtData(2300300)..lv = 90,
     ];
     final battle = BattleData();
-    battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
+    await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
 
     final lip = battle.onFieldAllyServants[0]!;
     final enemy = battle.onFieldEnemies[0]!;
 
-    battle.activateSvtSkill(0, 2); // lip is stunned
+    await battle.activateSvtSkill(0, 2); // lip is stunned
 
     final previousHp = enemy.hp;
-    battle.playerTurn([
+    await battle.playerTurn([
       CombatAction(lip, lip.getCards(battle)[1]),
       CombatAction(lip, lip.getCards(battle)[2]),
       CombatAction(lip, lip.getCards(battle)[3])
@@ -510,18 +510,18 @@ void main() async {
     expect(enemy.hp, previousHp);
   });
 
-  test('Nitocris (Alter) bug', () {
+  test('Nitocris (Alter) bug', () async {
     final List<PlayerSvtData> lipAndJinako = [
       PlayerSvtData(1101500)..lv = 90,
     ];
     final battle = BattleData();
-    battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
+    await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
 
     final nito = battle.onFieldAllyServants[0]!;
     expect(nito.battleBuff.allBuffs.length, 5);
-    battle.activateSvtSkill(0, 1);
+    await battle.activateSvtSkill(0, 1);
     expect(nito.battleBuff.allBuffs.length, 7);
-    battle.activateSvtSkill(0, 2);
+    await battle.activateSvtSkill(0, 2);
     expect(nito.battleBuff.allBuffs.length, 11);
   });
 
@@ -532,9 +532,9 @@ void main() async {
       PlayerSvtData(503900)..lv = 90,
     ];
 
-    test('Test checkTargetTraits & checkActivatorTraits', () {
+    test('Test checkTargetTraits & checkActivatorTraits', () async {
       final battle = BattleData();
-      battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
+      await battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
       final okuni = battle.onFieldAllyServants[0]!;
       final cba = battle.onFieldAllyServants[1]!;
       battle.setActivator(cba);
@@ -555,15 +555,15 @@ void main() async {
       expect(battle.checkTargetTraits(divinityCheck), isFalse);
     });
 
-    test('Check isActorOnField', () {
+    test('Check isActorOnField', () async {
       final battle = BattleData();
-      battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
+      await battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
       expect(battle.isActorOnField(1), isTrue);
       expect(battle.isActorOnField(3), isTrue);
       expect(battle.isActorOnField(7), isFalse);
 
       battle.onFieldEnemies.clear();
-      battle.nextWave();
+      await battle.nextWave();
       expect(battle.isActorOnField(7), isTrue);
       expect(battle.isActorOnField(10), isFalse);
     });

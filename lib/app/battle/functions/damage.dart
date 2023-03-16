@@ -17,7 +17,7 @@ class Damage {
     BuffAction.damageEventPoint
   ];
 
-  static bool damage(
+  static Future<bool> damage(
     final BattleData battleData,
     final DataVals dataVals,
     final Iterable<BattleServantData> targets,
@@ -27,7 +27,7 @@ class Damage {
     final CardType firstCardType, {
     final bool isPierceDefense = false,
     final bool checkBuffTraits = false,
-  }) {
+  }) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.probabilityThreshold) {
       return false;
@@ -152,7 +152,7 @@ class Damage {
         }
 
         if (target.hp <= 0) {
-          activator.activateBuffOnAction(battleData, BuffAction.functionDeadattack);
+          await activator.activateBuffOnAction(battleData, BuffAction.functionDeadattack);
           target.killedBy = activator;
           target.killedByCard = currentCard;
         }

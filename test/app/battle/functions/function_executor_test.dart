@@ -39,7 +39,7 @@ void main() async {
       ..lv = 90
   ];
 
-  battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+  await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
   final BattleServantData ally = battle.targetedAlly!;
   final BattleServantData enemy = battle.targetedEnemy!;
@@ -205,26 +205,26 @@ void main() async {
         ..lv = 120,
     ];
 
-    test('Field traits tests', () {
-      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null); // no field traits
+    test('Field traits tests', () async {
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null); // no field traits
       final buffCountBefore = battle.onFieldAllyServants[2]!.battleBuff.activeList.length;
-      battle.activateSvtSkill(0, 2); // nemo skill 3, check field shore
+      await battle.activateSvtSkill(0, 2); // nemo skill 3, check field shore
       final buffCountAfter = battle.onFieldAllyServants[2]!.battleBuff.activeList.length;
       expect(buffCountAfter, buffCountBefore + 1);
 
-      battle.init(db.gameData.questPhases[9300030103]!, playerSettings, null); // field shore
+      await battle.init(db.gameData.questPhases[9300030103]!, playerSettings, null); // field shore
       final buffCountBeforeShore = battle.onFieldAllyServants[2]!.battleBuff.activeList.length;
-      battle.activateSvtSkill(0, 2); // nemo skill 3, check field shore
+      await battle.activateSvtSkill(0, 2); // nemo skill 3, check field shore
       final buffCountAfterShore = battle.onFieldAllyServants[2]!.battleBuff.activeList.length;
       expect(buffCountAfterShore, buffCountBeforeShore + 2);
     });
 
-    test('Function checks target trait', () {
-      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+    test('Function checks target trait', () async {
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
       final buffCountNemoBefore = battle.onFieldAllyServants[0]!.battleBuff.activeList.length;
       final buffCountEliBefore = battle.onFieldAllyServants[1]!.battleBuff.activeList.length;
       final buffCountKamaBefore = battle.onFieldAllyServants[2]!.battleBuff.activeList.length;
-      battle.activateSvtSkill(1, 0); // Eli skill 1, check female
+      await battle.activateSvtSkill(1, 0); // Eli skill 1, check female
       final buffCountNemoAfter = battle.onFieldAllyServants[0]!.battleBuff.activeList.length;
       final buffCountEliAfter = battle.onFieldAllyServants[1]!.battleBuff.activeList.length;
       final buffCountKamaAfter = battle.onFieldAllyServants[2]!.battleBuff.activeList.length;
@@ -233,21 +233,21 @@ void main() async {
       expect(buffCountKamaAfter, buffCountKamaBefore + 2);
     });
 
-    test('Function checks target alive', () {
-      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
-      battle.activateSvtSkill(2, 2); // Kama skill 2, just to guarantee kill
+    test('Function checks target alive', () async {
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      await battle.activateSvtSkill(2, 2); // Kama skill 2, just to guarantee kill
       final buffCountBefore = battle.onFieldEnemies[2]!.battleBuff.activeList.length;
       final npActions = [
         CombatAction(battle.onFieldAllyServants[2]!, battle.onFieldAllyServants[2]!.getNPCard(battle)!)
       ];
-      battle.playerTurn(npActions);
+      await battle.playerTurn(npActions);
       final buffCountAfter = battle.onFieldEnemies[2]!.battleBuff.activeList.length;
       expect(buffCountAfter, buffCountBefore);
     });
   });
 
   group('Individual function types', () {
-    test('addState', () {
+    test('addState', () async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData(800100)
@@ -255,26 +255,26 @@ void main() async {
           ..npLv = 3
           ..lv = 80,
       ];
-      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final mash = battle.onFieldAllyServants[0]!;
       expect(mash.battleBuff.activeList.length, 0);
       expect(mash.getBuffValueOnAction(battle, BuffAction.defence), 1000);
 
-      battle.activateSvtSkill(0, 0);
+      await battle.activateSvtSkill(0, 0);
       expect(mash.battleBuff.activeList.length, 1);
       expect(mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
       expect(mash.battleBuff.activeList.first.buff.type, BuffType.upDefence);
       expect(mash.battleBuff.activeList.first.turn, 3);
 
-      battle.playerTurn([CombatAction(mash, mash.getCards(battle)[0])]);
+      await battle.playerTurn([CombatAction(mash, mash.getCards(battle)[0])]);
       expect(mash.battleBuff.activeList.length, 1);
       expect(mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
       expect(mash.battleBuff.activeList.first.buff.type, BuffType.upDefence);
       expect(mash.battleBuff.activeList.first.turn, 2);
     });
 
-    test('addFieldChangeToField', () {
+    test('addFieldChangeToField', () async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData(2300500)
@@ -290,46 +290,46 @@ void main() async {
           ..ceLv = 100
           ..ceLimitBreak = true,
       ];
-      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final archType1 = battle.onFieldAllyServants[0]!;
       final archType2 = battle.onFieldAllyServants[1]!;
 
       expect(battle.getFieldTraits().map((e) => e.id).contains(Trait.milleniumCastle.id), isFalse);
 
-      battle.playerTurn([CombatAction(archType1, archType1.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(archType1, archType1.getNPCard(battle)!)]);
 
       expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 1);
 
-      battle.playerTurn([CombatAction(archType2, archType1.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(archType2, archType1.getNPCard(battle)!)]);
 
       expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 2);
 
-      battle.activateSvtSkill(0, 1);
-      battle.playerTurn([CombatAction(archType1, archType1.getNPCard(battle)!)]);
+      await battle.activateSvtSkill(0, 1);
+      await battle.playerTurn([CombatAction(archType1, archType1.getNPCard(battle)!)]);
 
       expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 2);
 
       // kill one to remove buff
-      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final archType3 = battle.onFieldAllyServants[0]!;
       final archType4 = battle.onFieldAllyServants[1]!;
 
       expect(battle.getFieldTraits().map((e) => e.id).contains(Trait.milleniumCastle.id), isFalse);
 
-      battle.playerTurn([CombatAction(archType3, archType3.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(archType3, archType3.getNPCard(battle)!)]);
 
       expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 1);
 
       archType3.hp = 0;
 
-      battle.playerTurn([CombatAction(archType4, archType4.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(archType4, archType4.getNPCard(battle)!)]);
 
       expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 1);
     });
 
-    test('gainStar', () {
+    test('gainStar', () async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData(501500)
@@ -345,18 +345,18 @@ void main() async {
           ..npLv = 3
           ..lv = 60,
       ];
-      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       expect(battle.criticalStars, moreOrLessEquals(0, epsilon: 0.001));
-      battle.activateSvtSkill(0, 2);
+      await battle.activateSvtSkill(0, 2);
       expect(battle.criticalStars, moreOrLessEquals(50, epsilon: 0.001));
-      battle.activateSvtSkill(1, 2);
+      await battle.activateSvtSkill(1, 2);
       expect(battle.criticalStars, moreOrLessEquals(99, epsilon: 0.001));
-      battle.activateSvtSkill(2, 2);
+      await battle.activateSvtSkill(2, 2);
       expect(battle.criticalStars, moreOrLessEquals(99, epsilon: 0.001));
     });
 
-    test('gainNpFromTargets', () {
+    test('gainNpFromTargets', () async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData(304000)
@@ -376,7 +376,7 @@ void main() async {
           ..ceLv = 100
           ..ceLimitBreak = true,
       ];
-      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final lambda = battle.onFieldAllyServants[0]!;
       final yuyu1 = battle.onFieldAllyServants[1]!;
@@ -388,28 +388,28 @@ void main() async {
       expect(yuyu2.np, 10000);
       expect(enemy.npLineCount, 0);
 
-      battle.activateSvtSkill(0, 2);
+      await battle.activateSvtSkill(0, 2);
 
       expect(lambda.np, 4800);
       expect(yuyu1.np, 0);
       expect(yuyu2.np, 7200);
       expect(enemy.npLineCount, 0);
 
-      battle.activateSvtSkill(1, 1);
+      await battle.activateSvtSkill(1, 1);
 
       expect(lambda.np, 4800);
       expect(yuyu1.np, 0);
       expect(yuyu2.np, 7200);
       expect(enemy.npLineCount, 0);
 
-      battle.playerTurn([CombatAction(yuyu2, yuyu2.getCards(battle).last)]); // buster card
+      await battle.playerTurn([CombatAction(yuyu2, yuyu2.getCards(battle).last)]); // buster card
 
       expect(lambda.np, 4800);
       expect(yuyu1.np, 0);
       expect(yuyu2.np, 7200);
       expect(enemy.npLineCount, 1);
 
-      battle.activateSvtSkill(2, 1);
+      await battle.activateSvtSkill(2, 1);
 
       expect(lambda.np, 4800);
       expect(yuyu1.np, 0);

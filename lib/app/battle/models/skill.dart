@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'battle.dart';
 
 class BattleSkillInfoData {
@@ -58,64 +61,14 @@ class BattleSkillInfoData {
 
     int? selectedActionIndex;
     if (skill.script != null && skill.script!.SelectAddInfo != null) {
-      final selectAddInfo = skill.script!.SelectAddInfo![skillLevel - 1];
-      final buttons = selectAddInfo.btn;
-      final transl = Transl.miscScope('SelectAddInfo');
       if (battleData.context != null) {
-        await showDialog(
-          context: battleData.context!,
-          useRootNavigator: false,
-          barrierDismissible: false,
-          builder: (context) {
-            return SimpleCancelOkDialog(
-              title: Text(S.current.battle_select_effect),
-              contentPadding: const EdgeInsets.all(8),
-              content: SingleChildScrollView(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: divideTiles([
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Text(
-                        '${transl('Optional').l}: ${transl(selectAddInfo.title).l}',
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    ),
-                    ...List.generate(buttons.length, (index) {
-                      final button = buttons[index];
-                      final textWidget = Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Text(
-                          '${transl('Option').l} ${index + 1}: ${transl(button.name).l}',
-                          style: const TextStyle(fontSize: 18),
-                        ),
-                      );
-                      return button.conds.every((cond) => !checkSkillScripCondition(battleData, cond.cond, cond.value))
-                          ? textWidget
-                          : TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop(true);
-                                selectedActionIndex = index;
-                              },
-                              child: textWidget,
-                            );
-                    })
-                  ]),
-                ),
-              ),
-              hideOk: true,
-              hideCancel: true,
-            );
-          },
-        );
+        await getSelectedIndex(battleData, skill, skillLevel).then((value) => selectedActionIndex = value);
       }
     }
 
     // TODO (battle): account for random skills (check func.svals.ActSet)
     for (final func in skill.functions) {
-      FunctionExecutor.executeFunction(battleData, func, skillLevel,
+      await FunctionExecutor.executeFunction(battleData, func, skillLevel,
           isPassive: isPassive,
           notActorFunction: notActorSkill,
           isCommandCode: isCommandCode,
@@ -133,6 +86,65 @@ class BattleSkillInfoData {
       ..skillLv = skillLv
       ..chargeTurn = chargeTurn
       ..strengthStatus = strengthStatus;
+  }
+
+  static Future<int> getSelectedIndex(
+    final BattleData battleData,
+    final BaseSkill skill,
+    final int skillLevel,
+  ) async {
+    final selectAddInfo = skill.script!.SelectAddInfo![skillLevel - 1];
+    final buttons = selectAddInfo.btn;
+    final transl = Transl.miscScope('SelectAddInfo');
+    return await showDialog(
+      context: battleData.context!,
+      useRootNavigator: false,
+      barrierDismissible: false,
+      builder: (context) {
+        return SimpleCancelOkDialog(
+          title: Text(S.current.battle_select_effect),
+          contentPadding: const EdgeInsets.all(8),
+          content: SingleChildScrollView(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: divideTiles([
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Text(
+                    '${transl('Optional').l}: ${transl(selectAddInfo.title).l}',
+                    style: const TextStyle(fontSize: 18),
+                  ),
+                ),
+                ...List.generate(buttons.length, (index) {
+                  final button = buttons[index];
+                  final textWidget = Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(
+                      '${transl('Option').l} ${index + 1}: ${transl(button.name).l}',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  );
+                  return button.conds.every((cond) => !checkSkillScripCondition(battleData, cond.cond, cond.value))
+                      ? textWidget
+                      : TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(index);
+                            battleData.logger
+                                .debug('${S.current.battle_select_effect}: ${transl('Option').l} ${index + 1}');
+                          },
+                          child: textWidget,
+                        );
+                })
+              ]),
+            ),
+          ),
+          hideOk: true,
+          hideCancel: true,
+        );
+      },
+    );
   }
 
   static bool checkSkillScripCondition(

@@ -131,7 +131,7 @@ void main() async {
   });
 
   group('Individual buff types', () {
-    test('upDefence', () {
+    test('upDefence', () async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData(800100)
@@ -139,19 +139,19 @@ void main() async {
           ..npLv = 3
           ..lv = 80,
       ];
-      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final mash = battle.onFieldAllyServants[0]!;
       expect(mash.battleBuff.activeList.length, 0);
       expect(mash.getBuffValueOnAction(battle, BuffAction.defence), 1000);
 
-      battle.activateSvtSkill(0, 0);
+      await battle.activateSvtSkill(0, 0);
       expect(mash.battleBuff.activeList.length, 1);
       expect(mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
       expect(mash.getBuffValueOnAction(battle, BuffAction.defencePierce), 1000);
     });
 
-    test('subSelfdamage', () {
+    test('subSelfdamage', () async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData(800100)
@@ -159,15 +159,15 @@ void main() async {
           ..npLv = 3
           ..lv = 80,
       ];
-      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final mash = battle.onFieldAllyServants[0]!;
 
-      battle.activateSvtSkill(0, 0);
+      await battle.activateSvtSkill(0, 0);
       expect(mash.getBuffValueOnAction(battle, BuffAction.receiveDamage), -2000);
     });
 
-    test('fieldIndividuality & subFieldIndividuality', () {
+    test('fieldIndividuality & subFieldIndividuality', () async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData(100700)
@@ -179,38 +179,38 @@ void main() async {
           ..lv = 90,
       ];
 
-      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
       expect(battle.getFieldTraits().isEmpty, isTrue);
 
-      battle.activateSvtSkill(0, 1);
+      await battle.activateSvtSkill(0, 1);
       expect(battle.getFieldTraits().isNotEmpty, isTrue);
 
-      battle.activateSvtSkill(1, 2);
+      await battle.activateSvtSkill(1, 2);
       expect(battle.getFieldTraits().isEmpty, isTrue);
 
       // reset to test order does not affect subFieldIndiv
-      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
       expect(battle.getFieldTraits().isEmpty, isTrue);
 
-      battle.activateSvtSkill(1, 2);
+      await battle.activateSvtSkill(1, 2);
       expect(battle.getFieldTraits().isEmpty, isTrue);
 
-      battle.activateSvtSkill(0, 1);
+      await battle.activateSvtSkill(0, 1);
       expect(battle.getFieldTraits().isEmpty, isTrue);
     });
 
-    test('downGrant', () {
+    test('downGrant', () async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData(2800100)..lv = 90,
         PlayerSvtData(500800)..lv = 90,
       ];
-      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final merlin = battle.onFieldAllyServants[1]!;
 
       final buffCount = merlin.battleBuff.allBuffs.length;
-      battle.activateSvtSkill(1, 0);
+      await battle.activateSvtSkill(1, 0);
       expect(merlin.battleBuff.allBuffs.length, buffCount);
     });
   });

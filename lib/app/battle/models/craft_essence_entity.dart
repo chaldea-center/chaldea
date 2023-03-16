@@ -14,7 +14,7 @@ class BattleCEData {
 
   BattleCEData(this.craftEssence, this.isLimitBreak, this.level);
 
-  void activateCE(final BattleData battleData) {
+  Future<void> activateCE(final BattleData battleData) async {
     final Map<int, List<NiceSkill>> dividedSkills = {};
     for (final skill in craftEssence.skills) {
       dividedSkills.putIfAbsent(skill.num, () => []).add(skill);
@@ -24,7 +24,7 @@ class BattleCEData {
     for (final skillNum in dividedSkills.keys.toList()..sort()) {
       final skillsForNum = dividedSkills[skillNum]!;
       final skillToUse = skillsForNum.firstWhereOrNull((skill) => skill.priority == priority) ?? skillsForNum.first;
-      BattleSkillInfoData.activateSkill(battleData, skillToUse, 1, notActorSkill: true);
+      await BattleSkillInfoData.activateSkill(battleData, skillToUse, 1, notActorSkill: true);
     }
   }
 }

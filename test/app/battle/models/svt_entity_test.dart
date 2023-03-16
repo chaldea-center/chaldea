@@ -25,9 +25,9 @@ void main() async {
     PlayerSvtData(503900)..lv = 90,
   ];
 
-  test('Test changeNP', () {
+  test('Test changeNP', () async {
     final battle = BattleData();
-    battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
+    await battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
     final okuni = battle.onFieldAllyServants[0]!;
 
     expect(okuni.np, 0);
@@ -45,9 +45,9 @@ void main() async {
     expect(okuni.np, 9995);
   });
 
-  test('Test get buff value', () {
+  test('Test get buff value', () async {
     final battle = BattleData();
-    battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
+    await battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
     final okuni = battle.onFieldAllyServants[0]!;
 
     expect(okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
@@ -59,13 +59,13 @@ void main() async {
     expect(okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1040);
     expect(okuni.hasBuffOnAction(battle, BuffAction.avoidance), isFalse);
 
-    okuni.activateSkill(battle, 0);
+    await okuni.activateSkill(battle, 0);
     battle.currentCard = okuni.getNPCard(battle);
     expect(okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1300);
     expect(okuni.hasBuffOnAction(battle, BuffAction.avoidance), isTrue);
   });
 
-  test('Test commandCode', () {
+  test('Test commandCode', () async {
     final List<PlayerSvtData> okuniCommandCode = [
       PlayerSvtData(100100)
         ..npLv = 3
@@ -80,26 +80,26 @@ void main() async {
     ];
 
     final battle = BattleData();
-    battle.init(db.gameData.questPhases[9300040603]!, okuniCommandCode, null);
+    await battle.init(db.gameData.questPhases[9300040603]!, okuniCommandCode, null);
 
     final altria = battle.onFieldAllyServants[0]!;
     expect(altria.np, 0);
 
-    battle.playerTurn([CombatAction(altria, altria.getCards(battle)[4])]);
+    await battle.playerTurn([CombatAction(altria, altria.getCards(battle)[4])]);
     expect(altria.np, 1000);
 
-    battle.playerTurn([CombatAction(altria, altria.getCards(battle)[4])]);
+    await battle.playerTurn([CombatAction(altria, altria.getCards(battle)[4])]);
     expect(altria.np, 1000);
 
-    battle.playerTurn(
+    await battle.playerTurn(
         [CombatAction(altria, altria.getCards(battle)[4]), CombatAction(altria, altria.getCards(battle)[3])]);
     expect(altria.np, 2000);
 
-    battle.playerTurn([CombatAction(altria, altria.getCards(battle)[4])]);
+    await battle.playerTurn([CombatAction(altria, altria.getCards(battle)[4])]);
     expect(altria.np, 3000);
   });
 
-  test('Test traits', () {
+  test('Test traits', () async {
     final List<PlayerSvtData> melusineAndFeihu = [
       PlayerSvtData(304800)
         ..ascensionPhase = 0
@@ -108,7 +108,7 @@ void main() async {
     ];
 
     final battle = BattleData();
-    battle.init(db.gameData.questPhases[9300040603]!, melusineAndFeihu, null);
+    await battle.init(db.gameData.questPhases[9300040603]!, melusineAndFeihu, null);
 
     final melusine = battle.onFieldAllyServants[0]!;
     final feihu = battle.onFieldAllyServants[1]!;
@@ -116,7 +116,7 @@ void main() async {
     expect(feihu.getTraits(battle).map((e) => e.signedId).contains(301), isTrue);
     expect(feihu.getTraits(battle).map((e) => e.signedId).contains(300), isFalse);
 
-    battle.activateSvtSkill(1, 0);
+    await battle.activateSvtSkill(1, 0);
     expect(feihu.getTraits(battle).map((e) => e.signedId).contains(301), isFalse);
     expect(feihu.getTraits(battle).map((e) => e.signedId).contains(300), isTrue);
   });

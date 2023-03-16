@@ -7,11 +7,11 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 class GainNpFromTargets {
   GainNpFromTargets._();
 
-  static bool gainNpFromTargets(
+  static Future<bool> gainNpFromTargets(
     final BattleData battleData,
     final DataVals dataVals,
     final Iterable<BattleServantData> targets,
-  ) {
+  ) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.probabilityThreshold) {
       return false;
@@ -66,7 +66,7 @@ class GainNpFromTargets {
           DataVals({'Rate': functionRate, 'Value': checkValue})
         ]);
 
-    FunctionExecutor.executeFunction(battleData, niceFunction, 1); // we provisioned only one dataVal
+    await FunctionExecutor.executeFunction(battleData, niceFunction, 1); // we provisioned only one dataVal
 
     return true;
   }
