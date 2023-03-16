@@ -82,6 +82,7 @@
   "battle_select_backup_servants": null,
   "battle_select_battle_servants": null,
   "battle_select_card": null,
+  "battle_select_effect": null,
   "battle_simulation": null,
   "battle_simulation_setup": null,
   "battle_skip_current_wave": null,

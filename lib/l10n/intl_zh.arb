@@ -82,6 +82,7 @@
   "battle_select_backup_servants": "选择后排从者",
   "battle_select_battle_servants": "选择前排从者",
   "battle_select_card": "选择指令卡",
+  "battle_select_effect": "选择效果",
   "battle_simulation": "战斗模拟",
   "battle_simulation_setup": "模拟配置",
   "battle_skip_current_wave": "跳过当前场次",

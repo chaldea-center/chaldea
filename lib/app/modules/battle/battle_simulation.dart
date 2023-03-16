@@ -53,7 +53,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       ..init(widget.questPhase, [...widget.onFieldSvtDataList, ...widget.backupSvtDataList], widget.mysticCodeData)
       ..probabilityThreshold = widget.probabilityThreshold
       ..fixedRandom = widget.fixedRandom
-      ..isAfter7thAnni = widget.isAfter7thAnni;
+      ..isAfter7thAnni = widget.isAfter7thAnni
+      ..context = context;
   }
 
   @override
@@ -208,8 +209,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               buildSkillInfo(
                   skillInfo: svt.skillInfoList[i],
                   canUseSkill: battleData.canUseSvtSkillIgnoreCoolDown(index, i),
-                  onTap: () {
-                    battleData.activateSvtSkill(index, i);
+                  onTap: () async {
+                    await battleData.activateSvtSkill(index, i);
                     if (mounted) setState(() {});
                   }),
           ],
@@ -301,8 +302,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                                 buildSkillInfo(
                                     skillInfo: battleData.masterSkillInfo[i],
                                     canUseSkill: battleData.canUseMysticCodeSkillIgnoreCoolDown(i),
-                                    onTap: () {
-                                      battleData.activateMysticCodeSKill(i);
+                                    onTap: () async {
+                                      await battleData.activateMysticCodeSKill(i);
                                       if (mounted) setState(() {});
                                     }),
                             ],
@@ -493,7 +494,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             scrollDirection: Axis.horizontal,
             child: CombatActionSelector(battleData: battleData, combatActions: combatActions),
           ),
-          onTapOk: () {
+          onTapOk: () async {
             final List<CombatAction> nonnullActions = [];
             for (final action in combatActions) {
               if (action != null) {
@@ -505,7 +506,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               return;
             }
 
-            battleData.playerTurn(nonnullActions);
+            await battleData.playerTurn(nonnullActions);
             if (mounted) setState(() {});
           },
         );

@@ -168,6 +168,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_select_backup_servants": MessageLookupByLibrary.simpleMessage("选择后排从者"),
         "battle_select_battle_servants": MessageLookupByLibrary.simpleMessage("选择前排从者"),
         "battle_select_card": MessageLookupByLibrary.simpleMessage("选择指令卡"),
+        "battle_select_effect": MessageLookupByLibrary.simpleMessage("选择效果"),
         "battle_simulation": MessageLookupByLibrary.simpleMessage("战斗模拟"),
         "battle_simulation_setup": MessageLookupByLibrary.simpleMessage("模拟配置"),
         "battle_skip_current_wave": MessageLookupByLibrary.simpleMessage("跳过当前场次"),

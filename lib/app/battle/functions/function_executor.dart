@@ -10,6 +10,7 @@ import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/extension.dart';
 
 class FunctionExecutor {
@@ -28,9 +29,15 @@ class FunctionExecutor {
     final bool isPassive = false,
     final bool notActorFunction = false,
     final bool isCommandCode = false,
+    final int? selectedActionIndex,
   }) {
     final BattleServantData? activator = battleData.activator;
     if (!validateFunctionTargetTeam(function, activator)) {
+      return;
+    }
+    final dataVals = getDataVals(function, skillLevel, overchargeLvl);
+    if (dataVals.ActSelectIndex != null && dataVals.ActSelectIndex != selectedActionIndex) {
+      logger.d('${dataVals.ActSelectIndex} vs $selectedActionIndex');
       return;
     }
 
@@ -49,7 +56,6 @@ class FunctionExecutor {
       return;
     }
 
-    final dataVals = getDataVals(function, skillLevel, overchargeLvl);
 
     final checkDead = dataVals.CheckDead != null && dataVals.CheckDead! > 0;
     final List<BattleServantData> targets = acquireFunctionTarget(

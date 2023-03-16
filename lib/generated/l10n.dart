@@ -965,6 +965,17 @@ class S {
     );
   }
 
+  /// `Select Effect `
+  String get battle_select_effect {
+    return Intl.message(
+      'Select Effect ',
+      name: 'battle_select_effect',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Battle Simulation`
   String get battle_simulation {
     return Intl.message(

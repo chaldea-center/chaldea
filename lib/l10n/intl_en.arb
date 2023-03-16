@@ -82,6 +82,7 @@
   "battle_select_backup_servants": "Select Backup Servants",
   "battle_select_battle_servants": "Select Battle Servants",
   "battle_select_card": "Select Card",
+  "battle_select_effect": "Select Effect ",
   "battle_simulation": "Battle Simulation",
   "battle_simulation_setup": "Simulation Setup",
   "battle_skip_current_wave": "Skip current stage",

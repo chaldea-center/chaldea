@@ -173,6 +173,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_select_backup_servants": MessageLookupByLibrary.simpleMessage("Select Backup Servants"),
         "battle_select_battle_servants": MessageLookupByLibrary.simpleMessage("Select Battle Servants"),
         "battle_select_card": MessageLookupByLibrary.simpleMessage("Select Card"),
+        "battle_select_effect": MessageLookupByLibrary.simpleMessage("Select Effect "),
         "battle_simulation": MessageLookupByLibrary.simpleMessage("Battle Simulation"),
         "battle_simulation_setup": MessageLookupByLibrary.simpleMessage("Simulation Setup"),
         "battle_skip_current_wave": MessageLookupByLibrary.simpleMessage("Skip current stage"),

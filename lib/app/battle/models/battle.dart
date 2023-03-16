@@ -8,6 +8,7 @@ import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import 'buff.dart';
 import 'skill.dart';
 import 'svt_entity.dart';
@@ -72,6 +73,7 @@ class BattleData {
   bool isAfter7thAnni = true;
 
   final BattleLogger logger = BattleLogger();
+  BuildContext? context;
 
   // unused fields
   // int countEnemyAttack = 0;
@@ -406,7 +408,7 @@ class BattleData {
     return onFieldAllyServants[servantIndex]!.canUseSkillIgnoreCoolDown(this, skillIndex);
   }
 
-  void activateSvtSkill(final int servantIndex, final int skillIndex) {
+  Future<void> activateSvtSkill(final int servantIndex, final int skillIndex) async {
     if (onFieldAllyServants[servantIndex] == null || isBattleFinished) {
       return;
     }
@@ -414,7 +416,7 @@ class BattleData {
     final svt = onFieldAllyServants[servantIndex]!;
     logger.action('${svt.lBattleName} - ${S.current.active_skill} ${skillIndex + 1}: ${svt.getSkillName(skillIndex)}');
     copy();
-    svt.activateSkill(this, skillIndex);
+    await svt.activateSkill(this, skillIndex);
   }
 
   bool canUseMysticCodeSkillIgnoreCoolDown(final int skillIndex) {
@@ -426,7 +428,7 @@ class BattleData {
     return true;
   }
 
-  void activateMysticCodeSKill(final int skillIndex) {
+  Future<void> activateMysticCodeSKill(final int skillIndex) async {
     if (masterSkillInfo.length <= skillIndex || isBattleFinished) {
       return;
     }
@@ -434,10 +436,10 @@ class BattleData {
     logger.action('${S.current.mystic_code} - ${S.current.active_skill} ${skillIndex + 1}: '
         '${masterSkillInfo[skillIndex].skill.lName.l}');
     copy();
-    masterSkillInfo[skillIndex].activate(this);
+    await masterSkillInfo[skillIndex].activate(this);
   }
 
-  void playerTurn(final List<CombatAction> actions) {
+  playerTurn(final List<CombatAction> actions) {
     if (actions.isEmpty || isBattleFinished) {
       return;
     }
@@ -574,7 +576,7 @@ class BattleData {
     fieldBuffs.removeWhere((buff) => !buff.isActive);
   }
 
-  void executePlayerCard(
+  executePlayerCard(
     final BattleServantData actor,
     final CommandCardData card,
     final int chainPos,

@@ -1,5 +1,7 @@
 import 'package:chaldea/app/battle/functions/function_executor.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import 'battle.dart';
 
 class BattleSkillInfoData {
@@ -34,36 +36,90 @@ class BattleSkillInfoData {
     }
   }
 
-  void activate(final BattleData battleData) {
+  Future<void> activate(final BattleData battleData) async {
     if (chargeTurn > 0 || battleData.isBattleFinished) {
       return;
     }
     chargeTurn = skill.coolDown[skillLv - 1];
-    activateSkill(battleData, skill, skillLv, isCommandCode: isCommandCode);
+    await activateSkill(battleData, skill, skillLv, isCommandCode: isCommandCode);
   }
 
-  static void activateSkill(
+  static Future<void> activateSkill(
     final BattleData battleData,
     final BaseSkill skill,
     final int skillLevel, {
     final bool isPassive = false,
     final bool notActorSkill = false,
     final bool isCommandCode = false,
-  }) {
+  }) async {
     if (!battleData.checkActivatorTraits(skill.actIndividuality)) {
       return;
     }
 
+    int? selectedActionIndex;
+    if (skill.script != null && skill.script!.SelectAddInfo != null) {
+      final selectAddInfo = skill.script!.SelectAddInfo![skillLevel - 1];
+      final buttons = selectAddInfo.btn;
+      final transl = Transl.miscScope('SelectAddInfo');
+      if (battleData.context != null) {
+        await showDialog(
+          context: battleData.context!,
+          useRootNavigator: false,
+          barrierDismissible: false,
+          builder: (context) {
+            return SimpleCancelOkDialog(
+              title: Text(S.current.battle_select_effect),
+              contentPadding: const EdgeInsets.all(8),
+              content: SingleChildScrollView(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: divideTiles([
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Text(
+                        '${transl('Optional').l}: ${transl(selectAddInfo.title).l}',
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    ),
+                    ...List.generate(buttons.length, (index) {
+                      final button = buttons[index];
+                      final textWidget = Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Text(
+                          '${transl('Option').l} ${index + 1}: ${transl(button.name).l}',
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                      );
+                      return button.conds.every((cond) => !checkSkillScripCondition(battleData, cond.cond, cond.value))
+                          ? textWidget
+                          : TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(true);
+                                selectedActionIndex = index;
+                              },
+                              child: textWidget,
+                            );
+                    })
+                  ]),
+                ),
+              ),
+              hideOk: true,
+              hideCancel: true,
+            );
+          },
+        );
+      }
+    }
+
     // TODO (battle): account for random skills (check func.svals.ActSet)
     for (final func in skill.functions) {
-      FunctionExecutor.executeFunction(
-        battleData,
-        func,
-        skillLevel,
-        isPassive: isPassive,
-        notActorFunction: notActorSkill,
-        isCommandCode: isCommandCode,
-      );
+      FunctionExecutor.executeFunction(battleData, func, skillLevel,
+          isPassive: isPassive,
+          notActorFunction: notActorSkill,
+          isCommandCode: isCommandCode,
+          selectedActionIndex: selectedActionIndex);
     }
 
     battleData.checkBuffStatus();
@@ -77,5 +133,32 @@ class BattleSkillInfoData {
       ..skillLv = skillLv
       ..chargeTurn = chargeTurn
       ..strengthStatus = strengthStatus;
+  }
+
+  static bool checkSkillScripCondition(
+    final BattleData battleData,
+    final SkillScriptCond cond,
+    final int? value,
+  ) {
+    switch (cond) {
+      case SkillScriptCond.none:
+        return true;
+      case SkillScriptCond.npHigher:
+        return battleData.activator!.np >= value!;
+      case SkillScriptCond.npLower:
+        return battleData.activator!.np <= value!;
+      case SkillScriptCond.starHigher:
+        return battleData.criticalStars >= value!;
+      case SkillScriptCond.starLower:
+        return battleData.criticalStars <= value!;
+      case SkillScriptCond.hpValHigher:
+        return battleData.activator!.hp >= value!;
+      case SkillScriptCond.hpValLower:
+        return battleData.activator!.hp >= value!;
+      case SkillScriptCond.hpPerHigher:
+        return battleData.activator!.hp / battleData.activator!.getMaxHp(battleData) >= value! / 1000;
+      case SkillScriptCond.hpPerLower:
+        return battleData.activator!.hp / battleData.activator!.getMaxHp(battleData) <= value! / 1000;
+    }
   }
 }

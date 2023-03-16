@@ -214,6 +214,10 @@ class BattleServantData {
     return builtCards;
   }
 
+  int getMaxHp(final BattleData battleData) {
+    return maxHp;
+  }
+
   CommandCardData? getNPCard(final BattleData battleData) {
     if (isEnemy) {
       return null;
@@ -407,22 +411,22 @@ class BattleServantData {
     return canAttack(battleData) && !hasBuffOnAction(battleData, BuffAction.donotSkill);
   }
 
-  void activateSkill(final BattleData battleData, final int skillIndex) {
+  Future<void> activateSkill(final BattleData battleData, final int skillIndex) async {
     battleData.setActivator(this);
-    skillInfoList[skillIndex].activate(battleData);
+    await skillInfoList[skillIndex].activate(battleData);
     battleData.unsetActivator();
   }
 
-  void activateCommandCode(final BattleData battleData, final int cardIndex) {
+  activateCommandCode(final BattleData battleData, final int cardIndex) {
     if (cardIndex < 0 || commandCodeSkills.length <= cardIndex) {
       return;
     }
 
     battleData.setActivator(this);
-    commandCodeSkills[cardIndex].forEach((skill) {
+    for (final skill in commandCodeSkills[cardIndex]) {
       battleData.logger.action('$lBattleName - ${S.current.command_code}: ${skill.skill.lName.l}');
       skill.activate(battleData);
-    });
+    }
     battleData.unsetActivator();
   }
 
