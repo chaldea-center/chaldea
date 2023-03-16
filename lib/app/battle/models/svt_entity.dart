@@ -344,9 +344,9 @@ class BattleServantData {
     return activator != null && currentCard != null && killedBy == activator && killedByCard == currentCard;
   }
 
-  void heal(final int heal) {
+  void heal(final BattleData battleData, final int heal) {
     hp += heal;
-    hp = hp.clamp(0, maxHp);
+    hp = hp.clamp(0, getMaxHp(battleData));
   }
 
   void receiveDamage(final int hitDamage) {
@@ -598,6 +598,7 @@ class BattleServantData {
 
     battleData.fieldBuffs
         .removeWhere((buff) => buff.vals.RemoveFieldBuffActorDeath == 1 && buff.actorUniqueId == uniqueId);
+    battleData.logger.action('$lBattleName ${S.current.battle_death}');
   }
 
   Future<void> startOfMyTurn(final BattleData battleData) async {
@@ -628,8 +629,13 @@ class BattleServantData {
 
     battleData.setActivator(this);
     battleData.setTarget(this);
+
+    String turnEndLog = '';
     final turnEndDamage = getBuffValueOnAction(battleData, BuffAction.turnendHpReduce);
-    if (turnEndDamage != 0) receiveDamage(turnEndDamage);
+    if (turnEndDamage != 0) {
+      receiveDamage(turnEndDamage);
+      turnEndLog += ' - dot ${S.current.battle_damage}: $turnEndDamage';
+    }
 
     if (hp <= 0 && hasNextShift()) {
       hp = 1;
@@ -639,14 +645,29 @@ class BattleServantData {
     if (turnEndHeal != 0) {
       final healGrantEff = toModifier(getBuffValueOnAction(battleData, BuffAction.giveGainHp));
       final healReceiveEff = toModifier(getBuffValueOnAction(battleData, BuffAction.gainHp));
-      heal((turnEndHeal * healReceiveEff * healGrantEff).toInt());
+      final finalHeal = (turnEndHeal * healReceiveEff * healGrantEff).toInt();
+      heal(battleData, finalHeal);
+
+      turnEndLog += ' - ${S.current.battle_heal} HP: $finalHeal';
     }
 
     final turnEndStar = getBuffValueOnAction(battleData, BuffAction.turnendStar);
-    if (turnEndStar != 0) battleData.changeStar(turnEndStar);
+    if (turnEndStar != 0) {
+      battleData.changeStar(turnEndStar);
+
+      turnEndLog += ' - ${S.current.battle_critical_star}: $turnEndStar';
+    }
 
     final turnEndNP = getBuffValueOnAction(battleData, BuffAction.turnendNp);
-    if (turnEndNP != 0) changeNP(turnEndNP);
+    if (turnEndNP != 0) {
+      changeNP(turnEndNP);
+
+      turnEndLog += ' - NP: ${(turnEndNP / 100).toStringAsFixed(2)}%';
+    }
+
+    if (turnEndLog.isNotEmpty) {
+      battleData.logger.debug('$lBattleName - ${S.current.battle_turn_end}$turnEndLog');
+    }
 
     battleBuff.turnEndShort();
 
@@ -692,11 +713,17 @@ class BattleServantData {
     if (gutsToApply != null) {
       gutsToApply.setUsed();
       final value = gutsToApply.param;
-      if (gutsToApply.buff.type == BuffType.gutsRatio) {
-        hp = (value * maxHp).floor();
+      final isRatio = gutsToApply.buff.type == BuffType.gutsRatio;
+      if (isRatio) {
+        hp = (toModifier(value) * getMaxHp(battleData)).floor();
       } else {
         hp = value;
       }
+      hp = hp.clamp(0, getMaxHp(battleData));
+
+      battleData.logger.action('$lBattleName - ${gutsToApply.buff.lName.l} - '
+          '${isRatio ? value : '${(value / 10).toStringAsFixed(1)}%'}');
+
       killedByCard = null;
       killedBy = null;
       await activateBuffOnAction(battleData, BuffAction.functionGuts);

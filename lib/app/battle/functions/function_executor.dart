@@ -409,7 +409,7 @@ class FunctionExecutor {
 
         BattleServantData hpLowestRate = aliveAllies.first;
         for (final svt in aliveAllies) {
-          if (svt.hp / svt.maxHp < hpLowestRate.hp / hpLowestRate.maxHp) {
+          if (svt.hp / svt.getMaxHp(battleData) < hpLowestRate.hp / hpLowestRate.getMaxHp(battleData)) {
             hpLowestRate = svt;
           }
         }

@@ -712,6 +712,17 @@ class S {
     );
   }
 
+  /// `Defeated`
+  String get battle_death {
+    return Intl.message(
+      'Defeated',
+      name: 'battle_death',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Edit Craft Essence Option`
   String get battle_edit_ce_option {
     return Intl.message(
@@ -750,6 +761,17 @@ class S {
     return Intl.message(
       'Field Traits',
       name: 'battle_field_trait',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Heal`
+  String get battle_heal {
+    return Intl.message(
+      'Heal',
+      name: 'battle_heal',
       desc: '',
       locale: localeName,
       args: [],
@@ -1036,6 +1058,17 @@ class S {
     return Intl.message(
       'Turn',
       name: 'battle_turn',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Turn End`
+  String get battle_turn_end {
+    return Intl.message(
+      'Turn End',
+      name: 'battle_turn_end',
       desc: '',
       locale: localeName,
       args: [],
