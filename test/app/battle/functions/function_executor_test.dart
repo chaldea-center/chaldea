@@ -105,12 +105,6 @@ void main() async {
       final enemyList = FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.enemy, -1, ally);
       expect(enemyList.length, 1);
       expect(enemyList.first, enemy);
-
-      final ptSelectOneSubOnEnemy =
-          FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptselectOneSub, -1, battle.onFieldEnemies[1]);
-      expect(ptSelectOneSubOnEnemy.length, 1);
-      expect(ptSelectOneSubOnEnemy.first, enemy);
-      expect(ptSelectOneSubOnEnemy.first, isNot(battle.onFieldEnemies[1]!));
     });
 
     test('Select all types', () {

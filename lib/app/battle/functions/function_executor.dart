@@ -11,9 +11,111 @@ import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/extension.dart';
+import 'package:chaldea/widgets/widgets.dart';
 
 class FunctionExecutor {
   FunctionExecutor._();
+
+  static Future<void> executeFunctions(
+    final BattleData battleData,
+    final List<NiceFunction> functions,
+    final int skillLevel, {
+    final int overchargeLvl = 1,
+    final bool isPassive = false,
+    final bool notActorFunction = false,
+    final bool isCommandCode = false,
+    final int? selectedActionIndex,
+  }) async {
+    for (int i = 0; i < functions.length; i += 1) {
+      NiceFunction func = functions[i];
+      final dataVal = FunctionExecutor.getDataVals(func, skillLevel, 1);
+      if (dataVal.ActSet != null && dataVal.ActSet! > 0) {
+        final List<NiceFunction> actFunctions = getGroupedFunctions(functions, skillLevel, i);
+        i += actFunctions.length - 1;
+
+        if (battleData.context != null) {
+          await getSelectedFunction(
+                  battleData,
+                  actFunctions
+                      .where((func) => FunctionExecutor.validateFunctionTargetTeam(func, battleData.activator))
+                      .toList())
+              .then((value) => func = value);
+        }
+      }
+
+      await FunctionExecutor.executeFunction(battleData, func, skillLevel,
+          isPassive: isPassive,
+          notActorFunction: notActorFunction,
+          isCommandCode: isCommandCode,
+          selectedActionIndex: selectedActionIndex);
+    }
+
+    battleData.checkBuffStatus();
+  }
+
+  static List<NiceFunction> getGroupedFunctions(
+      final List<NiceFunction> functions,
+      final int skillLevel,
+      final int startIndex, {
+        final int overchargeLv = 1,
+      }) {
+    final List<NiceFunction> groupedFunctions = [];
+    int index = startIndex;
+    int? curAct = 0;
+    do {
+      final func = functions[index];
+      index += 1;
+      final nextAct = FunctionExecutor.getDataVals(func, skillLevel, overchargeLv).ActSet;
+      curAct = nextAct != null && curAct != null && nextAct >= curAct ? nextAct : null;
+      if (curAct != null) {
+        groupedFunctions.add(func);
+      }
+    } while (index < functions.length && curAct != null);
+    return groupedFunctions;
+  }
+
+  static Future<NiceFunction> getSelectedFunction(
+      final BattleData battleData,
+      final List<NiceFunction> functions,
+      ) async {
+    final transl = Transl.miscScope('SelectAddInfo');
+    return await showDialog(
+      context: battleData.context!,
+      useRootNavigator: false,
+      barrierDismissible: false,
+      builder: (context) {
+        return SimpleCancelOkDialog(
+          title: Text(S.current.battle_select_effect),
+          contentPadding: const EdgeInsets.all(8),
+          content: SingleChildScrollView(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: divideTiles(List.generate(functions.length, (index) {
+                return TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(functions[index]);
+                    battleData.logger.debug('${S.current.battle_select_effect}: ${transl('Option').l} ${index + 1}');
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(
+                      '${transl('Option').l} ${index + 1}: ${functions[index].lPopupText.l}',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  ),
+                );
+              })),
+            ),
+          ),
+          hideOk: true,
+          hideCancel: true,
+        );
+      },
+    );
+  }
+
 
   static Future<void> executeFunction(
     final BattleData battleData,
@@ -24,7 +126,6 @@ class FunctionExecutor {
     final bool isTypeChain = false,
     final bool isMightyChain = false,
     final CardType firstCardType = CardType.none,
-    final bool isDefensePierce = false,
     final bool isPassive = false,
     final bool notActorFunction = false,
     final bool isCommandCode = false,
@@ -226,7 +327,6 @@ class FunctionExecutor {
         }
         break;
       case FuncTargetType.ptOne:
-      case FuncTargetType.ptselectOneSub:
         if (targetedAlly != null) {
           targets.add(targetedAlly);
         }
@@ -317,6 +417,7 @@ class FunctionExecutor {
           targets.add(aliveAllies.first);
         }
         break;
+      case FuncTargetType.ptselectOneSub: //  used by replace member
       case FuncTargetType.ptAnother:
       case FuncTargetType.enemyAnother:
       case FuncTargetType.ptSelfBefore:

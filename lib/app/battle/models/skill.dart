@@ -21,8 +21,6 @@ class BattleSkillInfoData {
 
   bool get isPassive => skill.type == SkillType.passive;
 
-  bool get canActivate => chargeTurn == 0;
-
   int skillId = 0;
   int skillLv = 0;
   int chargeTurn = 0;
@@ -66,16 +64,15 @@ class BattleSkillInfoData {
       }
     }
 
-    // TODO (battle): account for random skills (check func.svals.ActSet)
-    for (final func in skill.functions) {
-      await FunctionExecutor.executeFunction(battleData, func, skillLevel,
-          isPassive: isPassive,
-          notActorFunction: notActorSkill,
-          isCommandCode: isCommandCode,
-          selectedActionIndex: selectedActionIndex);
-    }
-
-    battleData.checkBuffStatus();
+    await FunctionExecutor.executeFunctions(
+      battleData,
+      skill.functions,
+      skillLevel,
+      isPassive: isPassive,
+      notActorFunction: notActorSkill,
+      isCommandCode: isCommandCode,
+      selectedActionIndex: selectedActionIndex,
+    );
   }
 
   BattleSkillInfoData copy() {
