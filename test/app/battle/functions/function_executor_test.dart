@@ -1,3 +1,4 @@
+import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chaldea/app/battle/functions/function_executor.dart';
@@ -348,6 +349,56 @@ void main() async {
       expect(battle.criticalStars, moreOrLessEquals(99, epsilon: 0.001));
       await battle.activateSvtSkill(2, 2);
       expect(battle.criticalStars, moreOrLessEquals(99, epsilon: 0.001));
+    });
+
+    test('subState affectTraits', () async {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(701600)
+          ..lv = 80
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+        PlayerSvtData(2800100)
+          ..lv = 90,
+      ];
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      final cat = battle.onFieldAllyServants[0]!;
+
+      await battle.activateSvtSkill(1, 2);
+
+      expect(collectBuffsPerType(cat.battleBuff.allBuffs, BuffType.donotAct).length, 0);
+
+      await battle.playerTurn([CombatAction(cat, cat.getNPCard(battle)!)]);
+
+      expect(collectBuffsPerType(cat.battleBuff.allBuffs, BuffType.donotAct).length, 2);
+    });
+
+    test('subState count', () async {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(1000100)
+          ..lv = 80,
+        PlayerSvtData(2300300)
+          ..lv = 90,
+        PlayerSvtData(203900)
+          ..lv = 80,
+      ];
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      final lip = battle.onFieldAllyServants[0]!;
+
+      await battle.activateSvtSkill(0, 2);
+      await battle.activateSvtSkill(1, 2);
+
+      expect(collectBuffsPerType(lip.battleBuff.allBuffs, BuffType.donotAct).length, 1);
+      expect(collectBuffsPerType(lip.battleBuff.allBuffs, BuffType.donotSkill).length, 1);
+
+      await battle.activateSvtSkill(2, 0);
+
+      expect(collectBuffsPerType(lip.battleBuff.allBuffs, BuffType.donotAct).length, 1);
+      expect(collectBuffsPerType(lip.battleBuff.allBuffs, BuffType.donotSkill).length, 0);
     });
 
     test('gainNpFromTargets', () async {
