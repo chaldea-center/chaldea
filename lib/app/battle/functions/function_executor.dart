@@ -5,6 +5,7 @@ import 'package:chaldea/app/battle/functions/gain_np.dart';
 import 'package:chaldea/app/battle/functions/gain_np_from_targets.dart';
 import 'package:chaldea/app/battle/functions/gain_star.dart';
 import 'package:chaldea/app/battle/functions/hasten_npturn.dart';
+import 'package:chaldea/app/battle/functions/sub_state.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
@@ -198,6 +199,9 @@ class FunctionExecutor {
           notActorPassive: notActorFunction,
           isShortBuff: true,
         );
+        break;
+      case FuncType.subState:
+        functionSuccess = SubState.subState(battleData, function.traitVals, dataVals, targets);
         break;
       case FuncType.addFieldChangeToField:
         functionSuccess = AddFieldChangeToField.addFieldChangeToField(battleData, function.buff!, dataVals);

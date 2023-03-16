@@ -32,7 +32,7 @@ class AddState {
 
       battleData.setCurrentBuff(buffData);
       battleData.setTarget(target);
-      if (shouldAddState(battleData, dataVals, activator, target, buffData) &&
+      if (shouldAddState(battleData, dataVals, activator, target) &&
           target.isBuffStackable(buffData.buff.buffGroup)) {
         target.addBuff(
           buffData,
@@ -53,7 +53,6 @@ class AddState {
     final DataVals dataVals,
     final BattleServantData? activator,
     final BattleServantData target,
-    final BuffData buffData,
   ) {
     if (dataVals.ForceAddState == 1) {
       return true;

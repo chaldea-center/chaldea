@@ -177,7 +177,12 @@ class BattleServantData {
       for (int i = 0; i < niceSvt!.appendPassive.length; i += 1) {
         final appendLv = playerSvtData!.appendLvs.length > i ? playerSvtData!.appendLvs[i] : 0;
         if (appendLv > 0) {
-          await BattleSkillInfoData.activateSkill(battleData, niceSvt!.appendPassive[i].skill, appendLv);
+          await BattleSkillInfoData.activateSkill(
+            battleData,
+            niceSvt!.appendPassive[i].skill,
+            appendLv,
+            isPassive: true,
+          );
         }
       }
     }

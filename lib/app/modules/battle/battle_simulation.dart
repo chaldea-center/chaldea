@@ -459,7 +459,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         onLongPress: () {},
         child: ImageWithText(
           image: db.getIconImage(skillInfo.skill.icon, width: 35, aspectRatio: 1),
-          textBuilder: cd == 0 ? null : cdTextBuilder,
+          textBuilder: canUseSkill && cd == 0 ? null : cdTextBuilder,
           option: ImageWithTextOption(
             shadowSize: 8,
             textStyle: const TextStyle(fontSize: 20, color: Colors.black),

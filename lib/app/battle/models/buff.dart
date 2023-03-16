@@ -92,7 +92,10 @@ class BuffData {
 
   BuffData.makeCopy(this.buff, this.vals);
 
-  List<NiceTrait> get traits => buff.vals;
+  List<NiceTrait> get traits => [
+        ...buff.vals,
+        if (vals.AddIndividualty != null && vals.AddIndividualty! > 0) NiceTrait(id: vals.AddIndividualty!)
+      ];
 
   bool checkTraits(final Iterable<NiceTrait> requiredTraits) {
     return containsAnyTraits(traits, requiredTraits);
