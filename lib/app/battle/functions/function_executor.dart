@@ -56,7 +56,6 @@ class FunctionExecutor {
       return;
     }
 
-
     final checkDead = dataVals.CheckDead != null && dataVals.CheckDead! > 0;
     final List<BattleServantData> targets = acquireFunctionTarget(
       battleData,

@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 import 'file_plus.dart';
 
-class FilePlusNative implements FilePlus {
+class FilePlusNative with FilePlus {
   final File _file;
 
   FilePlusNative(String fp) : _file = File(fp);
@@ -72,4 +72,10 @@ class FilePlusNative implements FilePlus {
 
   @override
   Future<void> delete() => _file.delete();
+
+  @override
+  Future<void> deleteSafe() {
+    // TODO: implement deleteSafe
+    throw UnimplementedError();
+  }
 }

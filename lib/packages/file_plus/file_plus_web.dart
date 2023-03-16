@@ -11,7 +11,7 @@ import 'file_plus.dart';
 const fsName = 'webfs';
 
 /// all async methods are not async actually
-class FilePlusWeb implements FilePlus {
+class FilePlusWeb with FilePlus {
   static late LazyBox<Uint8List> _defaultBox;
 
   final String _path;

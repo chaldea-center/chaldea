@@ -143,8 +143,8 @@ class ApiCacheManager {
     try {
       final fp = _data[key]?.fp;
       if (fp != null) {
-        await _getCacheFile(key)?.delete();
         _data.remove(key);
+        await _getCacheFile(key)?.deleteSafe();
         saveCacheInfo();
       }
     } catch (e, s) {
@@ -250,7 +250,7 @@ class ApiCacheManager {
         }
 
         _data.remove(key);
-        await file?.delete().catchError((e, s) => null);
+        await file?.deleteSafe().catchError((e, s) => null);
       }
       var prevTask = _downloading[url];
       if (prevTask != null) {

@@ -91,7 +91,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                       label: Text('${S.current.quest} (${phases.length}/${widget.quests.length})'),
                       fixedWidth: 150,
                     ),
-                    const DataColumn2(label: Text('Lv/AP', textScaleFactor: 0.9), fixedWidth: 48),
+                    const DataColumn2(label: Text('Lv/AP', textScaleFactor: 0.9), fixedWidth: 56),
                     if (!widget.isMainStory)
                       DataColumn2(label: Text(S.current.quest_runs("").trim(), textScaleFactor: 0.9), fixedWidth: 48),
                     DataColumn2(label: Text(S.current.svt_class), fixedWidth: 64),
@@ -147,7 +147,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
         'Lv.${(phase ?? quest).recommendLv}',
         if ((phase ?? quest).consumeType.useAp) '${(phase ?? quest).consume}AP',
       ].join('\n'),
-      maxLines: 3,
+      maxLines: 2,
       minFontSize: 10,
       style: Theme.of(context).textTheme.bodySmall,
     )));

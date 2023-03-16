@@ -314,7 +314,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
     final drops = enemy.drops.toList();
     drops.sort((a, b) => Item.compare2(a.objectId, b.objectId));
     List<Widget> children = [];
-    for (final drop in drops.reversed) {
+    for (final drop in drops) {
       String? text;
       if (drop.runs != 0) {
         double dropRate = drop.dropCount / drop.runs;

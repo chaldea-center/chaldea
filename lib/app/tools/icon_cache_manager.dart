@@ -202,7 +202,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     if (fp != null) {
       final file = FilePlus(fp);
       if (file.existsSync()) {
-        await FilePlus(fp).delete();
+        await FilePlus(fp).deleteSafe();
       }
     }
     evict(url);

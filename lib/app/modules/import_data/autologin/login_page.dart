@@ -307,8 +307,10 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     final resp = response?.src;
     if (resp == null) return const Text('No response');
     final buffer = StringBuffer();
-    buffer.writeln('status: ${resp.statusCode}');
-    buffer.writeln('statusText: ${resp.statusMessage}');
+    if (resp.statusCode != 200) {
+      buffer.writeln('status: ${resp.statusCode}');
+      buffer.writeln('statusText: ${resp.statusMessage}');
+    }
     // buffer.writeln('data type: ${data.runtimeType}');
     buffer.writeln('server time: ${response?.serverTime ?? "unknown"}');
     buffer.writeln();
