@@ -690,7 +690,12 @@ class ServantSelector extends StatelessWidget {
           ..appendLvs = curStatus.appendSkills.toList()
           ..atkFou = curStatus.fouAtk > 0 ? 1000 + curStatus.fouAtk * 20 : curStatus.fouAtk3 * 50
           ..hpFou = curStatus.fouHp > 0 ? 1000 + curStatus.fouHp * 20 : curStatus.fouHp3 * 50
-          ..cardStrengthens = [0, 0, 0, 0, 0]
+          ..cardStrengthens = List.generate(selectedSvt.cards.length, (index) {
+            if (status.cmdCardStrengthen == null || status.cmdCardStrengthen!.length <= index) {
+              return 0;
+            }
+            return status.cmdCardStrengthen![index] * 20;
+          })
           ..commandCodes = List.generate(selectedSvt.cards.length, (index) {
             return db.gameData.commandCodes[status.getCmdCode(index)];
           });
