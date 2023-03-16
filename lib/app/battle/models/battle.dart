@@ -167,13 +167,13 @@ class BattleData {
     _fetchWaveEnemies();
 
     playerDataList.forEach((svt) {
-      svt?.init(this);
       svt?.uniqueId = uniqueIndex;
+      svt?.init(this);
       uniqueIndex += 1;
     });
     enemyDataList.forEach((enemy) {
-      enemy?.init(this);
       enemy?.uniqueId = uniqueIndex;
+      enemy?.init(this);
       uniqueIndex += 1;
     });
 

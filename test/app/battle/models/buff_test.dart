@@ -198,5 +198,20 @@ void main() async {
       battle.activateSvtSkill(0, 1);
       expect(battle.getFieldTraits().isEmpty, isTrue);
     });
+
+    test('downGrant', () {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(2800100)..lv = 90,
+        PlayerSvtData(500800)..lv = 90,
+      ];
+      battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      final merlin = battle.onFieldAllyServants[1]!;
+
+      final buffCount = merlin.battleBuff.allBuffs.length;
+      battle.activateSvtSkill(1, 0);
+      expect(merlin.battleBuff.allBuffs.length, buffCount);
+    });
   });
 }
