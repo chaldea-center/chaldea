@@ -110,6 +110,8 @@ class BattleServantData {
 
   bool get isBuggedOverkill => accumulationDamage > hp;
 
+  int get deathRate => isEnemy ? niceEnemy!.deathRate : niceSvt!.instantDeathChance;
+
   static BattleServantData fromEnemy(final QuestEnemy enemy) {
     final svt = BattleServantData();
     svt

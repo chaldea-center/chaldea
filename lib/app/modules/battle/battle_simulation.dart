@@ -226,15 +226,15 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AutoSizeText(
-                'ATK: ${svt.attack}',
-                minFontSize: 8,
-              ),
+              if (svt.isPlayer) AutoSizeText('ATK: ${svt.attack}', minFontSize: 8),
               AutoSizeText('HP: ${svt.hp}', minFontSize: 8),
               if (svt.isPlayer)
                 AutoSizeText('NP: ${(svt.np / 100).toStringAsFixed(2)}%', minFontSize: 8)
               else
                 AutoSizeText('NP: ${svt.npLineCount}/${svt.niceEnemy!.chargeTurn}', minFontSize: 8),
+              if (svt.isEnemy) AutoSizeText('${S.current.np_gain_mod}: ${(svt.enemyTdRate / 10).toStringAsFixed(1)}%'),
+              if (svt.isEnemy)
+                AutoSizeText('${S.current.info_death_rate}: ${(svt.deathRate / 10).toStringAsFixed(1)}%'),
             ],
           ),
         )
