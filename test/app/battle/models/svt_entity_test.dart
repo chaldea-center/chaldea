@@ -120,4 +120,31 @@ void main() async {
     expect(feihu.getTraits(battle).map((e) => e.signedId).contains(301), isFalse);
     expect(feihu.getTraits(battle).map((e) => e.signedId).contains(300), isTrue);
   });
+
+  test('Test skill scripts', () async {
+    final List<PlayerSvtData> playerSettings = [
+      PlayerSvtData(101000)..lv = 80,
+      PlayerSvtData(504600)
+        ..lv = 90
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+    ];
+
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    expect(battle.canUseSvtSkillIgnoreCoolDown(0, 2), false);
+    expect(battle.canUseNp(1), false);
+
+    final eli = battle.onFieldAllyServants[0]!;
+
+    eli.np = 10000;
+
+    expect(battle.canUseSvtSkillIgnoreCoolDown(0, 2), true);
+
+    battle.criticalStars = 20;
+    
+    expect(battle.canUseNp(1), true);
+  });
 }

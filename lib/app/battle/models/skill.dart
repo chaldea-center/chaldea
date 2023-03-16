@@ -41,6 +41,40 @@ class BattleSkillInfoData {
     }
   }
 
+  bool checkSkillScript(final BattleData battleData) {
+    return skillScriptConditionCheck(battleData, skill.script, skillLv);
+  }
+
+  static bool skillScriptConditionCheck(
+    final BattleData battleData,
+    final SkillScript? skillScript,
+    final int skillLv,
+  ) {
+    if (skillScript == null) {
+      return true;
+    }
+
+    if (skillScript.NP_HIGHER != null) {
+      return checkSkillScripCondition(battleData, SkillScriptCond.npHigher, skillScript.NP_HIGHER![skillLv - 1]);
+    } else if (skillScript.NP_LOWER != null) {
+      return checkSkillScripCondition(battleData, SkillScriptCond.npLower, skillScript.NP_LOWER![skillLv - 1]);
+    } else if (skillScript.STAR_HIGHER != null) {
+      return checkSkillScripCondition(battleData, SkillScriptCond.starHigher, skillScript.STAR_HIGHER![skillLv - 1]);
+    } else if (skillScript.STAR_LOWER != null) {
+      return checkSkillScripCondition(battleData, SkillScriptCond.starLower, skillScript.STAR_LOWER![skillLv - 1]);
+    } else if (skillScript.HP_VAL_HIGHER != null) {
+      return checkSkillScripCondition(battleData, SkillScriptCond.hpValHigher, skillScript.HP_VAL_HIGHER![skillLv - 1]);
+    } else if (skillScript.HP_VAL_LOWER != null) {
+      return checkSkillScripCondition(battleData, SkillScriptCond.hpValLower, skillScript.HP_VAL_LOWER![skillLv - 1]);
+    } else if (skillScript.HP_PER_HIGHER != null) {
+      return checkSkillScripCondition(battleData, SkillScriptCond.hpPerHigher, skillScript.HP_PER_HIGHER![skillLv - 1]);
+    } else if (skillScript.HP_PER_LOWER != null) {
+      return checkSkillScripCondition(battleData, SkillScriptCond.hpPerLower, skillScript.HP_PER_LOWER![skillLv - 1]);
+    }
+
+    return true;
+  }
+
   Future<void> activate(final BattleData battleData) async {
     if (chargeTurn > 0 || battleData.isBattleFinished) {
       return;

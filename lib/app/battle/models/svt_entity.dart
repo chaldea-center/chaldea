@@ -89,6 +89,8 @@ class BattleServantData {
 
   bool get selectable => battleBuff.isSelectable;
 
+  int get npLv => isPlayer ? playerSvtData!.npLv : niceEnemy!.noblePhantasm.noblePhantasmLv;
+
   int get attack => isPlayer ? atk + (equip?.atk ?? 0) : atk;
 
   int get rarity => isPlayer ? niceSvt!.rarity : niceEnemy!.svt.rarity;
@@ -412,8 +414,16 @@ class BattleServantData {
   }
 
   bool canUseSkillIgnoreCoolDown(final BattleData battleData, final int skillIndex) {
-    // TODO (battle): skill specific check
-    return canAttack(battleData) && !hasBuffOnAction(battleData, BuffAction.donotSkill);
+    if (skillInfoList.length < skillIndex || skillIndex < 0) {
+      return false;
+    }
+
+    battleData.setActivator(this);
+    final result = canAttack(battleData) &&
+        !hasBuffOnAction(battleData, BuffAction.donotSkill) &&
+        skillInfoList[skillIndex].checkSkillScript(battleData);
+    battleData.unsetActivator();
+    return result;
   }
 
   Future<void> activateSkill(final BattleData battleData, final int skillIndex) async {
@@ -457,9 +467,11 @@ class BattleServantData {
   }
 
   bool checkNPScript(final BattleData battleData) {
+    battleData.setActivator(this);
     if (isPlayer) {
-      // TODO (battle): check script
-    } else {}
+      return BattleSkillInfoData.skillScriptConditionCheck(battleData, getCurrentNP(battleData).script, npLv);
+    }
+    battleData.unsetActivator();
     return true;
   }
 
@@ -475,13 +487,11 @@ class BattleServantData {
     // TODO (battle): account for OC buff
     final overchargeLvl = isPlayer ? np ~/ ConstData.constants.fullTdPoint + extraOverchargeLvl : 1;
 
-    final npLvl = isPlayer ? playerSvtData!.npLv : niceEnemy!.noblePhantasm.noblePhantasmLv;
-
     np = 0;
     npLineCount = 0;
 
     final niceTD = getCurrentNP(battleData);
-    await FunctionExecutor.executeFunctions(battleData, niceTD.functions, npLvl, overchargeLvl: overchargeLvl);
+    await FunctionExecutor.executeFunctions(battleData, niceTD.functions, npLv, overchargeLvl: overchargeLvl);
 
     battleData.unsetActivator();
   }
