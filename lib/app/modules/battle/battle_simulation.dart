@@ -466,7 +466,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             shadowColor: Colors.white,
             alignment: AlignmentDirectional.center,
           ),
-          onTap: canUseSkill ? onTap : null,
+          onTap: canUseSkill && cd == 0 ? onTap : null,
         ),
       ),
     );

@@ -4,7 +4,6 @@ import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
-
 import 'battle.dart';
 
 class BattleSkillInfoData {

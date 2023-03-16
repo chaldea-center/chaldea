@@ -28,9 +28,14 @@ class FunctionExecutor {
   }) async {
     for (int i = 0; i < functions.length; i += 1) {
       NiceFunction func = functions[i];
-      final dataVal = FunctionExecutor.getDataVals(func, skillLevel, 1);
+      final dataVal = FunctionExecutor.getDataVals(func, skillLevel, overchargeLvl);
       if (dataVal.ActSet != null && dataVal.ActSet! > 0) {
-        final List<NiceFunction> actFunctions = getGroupedFunctions(functions, skillLevel, i);
+        final List<NiceFunction> actFunctions = getGroupedFunctions(
+          functions,
+          skillLevel,
+          i,
+          overchargeLv: overchargeLvl,
+        );
         i += actFunctions.length - 1;
 
         if (battleData.context != null) {
@@ -44,6 +49,7 @@ class FunctionExecutor {
       }
 
       await FunctionExecutor.executeFunction(battleData, func, skillLevel,
+          overchargeLvl: overchargeLvl,
           isPassive: isPassive,
           notActorFunction: notActorFunction,
           isCommandCode: isCommandCode,
@@ -54,11 +60,11 @@ class FunctionExecutor {
   }
 
   static List<NiceFunction> getGroupedFunctions(
-      final List<NiceFunction> functions,
-      final int skillLevel,
-      final int startIndex, {
-        final int overchargeLv = 1,
-      }) {
+    final List<NiceFunction> functions,
+    final int skillLevel,
+    final int startIndex, {
+    final int overchargeLv = 1,
+  }) {
     final List<NiceFunction> groupedFunctions = [];
     int index = startIndex;
     int? curAct = 0;
@@ -75,9 +81,9 @@ class FunctionExecutor {
   }
 
   static Future<NiceFunction> getSelectedFunction(
-      final BattleData battleData,
-      final List<NiceFunction> functions,
-      ) async {
+    final BattleData battleData,
+    final List<NiceFunction> functions,
+  ) async {
     final transl = Transl.miscScope('SelectAddInfo');
     return await showDialog(
       context: battleData.context!,
@@ -115,7 +121,6 @@ class FunctionExecutor {
       },
     );
   }
-
 
   static Future<void> executeFunction(
     final BattleData battleData,

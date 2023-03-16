@@ -476,12 +476,7 @@ class BattleServantData {
     npLineCount = 0;
 
     final niceTD = getCurrentNP(battleData);
-    await FunctionExecutor.executeFunctions(
-        battleData,
-        niceTD.functions,
-        npLvl,
-        overchargeLvl: overchargeLvl
-    );
+    await FunctionExecutor.executeFunctions(battleData, niceTD.functions, npLvl, overchargeLvl: overchargeLvl);
 
     battleData.unsetActivator();
   }

@@ -114,7 +114,7 @@ void main() async {
         final battle = BattleData();
         await battle.init(db.gameData.questPhases[9300040603]!, altriaWithDoubleKoyan, null);
 
-        await  battle.activateSvtSkill(0, 0);
+        await battle.activateSvtSkill(0, 0);
         await battle.activateSvtSkill(0, 1);
         await battle.activateSvtSkill(1, 0);
         await battle.activateSvtSkill(1, 2);
@@ -452,10 +452,12 @@ void main() async {
     await battle.activateSvtSkill(0, 2); // lip is stunned
 
     expect(jinako.np, 0);
-    await battle.playerTurn([CombatAction(lip, lip.getCards(battle)[1]), CombatAction(jinako, jinako.getCards(battle)[4])]);
+    await battle
+        .playerTurn([CombatAction(lip, lip.getCards(battle)[1]), CombatAction(jinako, jinako.getCards(battle)[4])]);
     expect(jinako.np, 0);
     expect(lip.canCommandCard(battle), isTrue);
-    await battle.playerTurn([CombatAction(lip, lip.getCards(battle)[1]), CombatAction(jinako, jinako.getCards(battle)[4])]);
+    await battle
+        .playerTurn([CombatAction(lip, lip.getCards(battle)[1]), CombatAction(jinako, jinako.getCards(battle)[4])]);
     expect(jinako.np, greaterThan(0));
   });
 

@@ -143,7 +143,11 @@ class BattleData {
     _target.removeLast();
   }
 
-  Future<void> init(final QuestPhase quest, final List<PlayerSvtData?> playerSettings, final MysticCodeData? mysticCodeData) async {
+  Future<void> init(
+    final QuestPhase quest,
+    final List<PlayerSvtData?> playerSettings,
+    final MysticCodeData? mysticCodeData,
+  ) async {
     niceQuest = quest;
     waveCount = 1;
     turnCount = 0;
@@ -467,7 +471,8 @@ class BattleData {
 
         if (action.isValid(this)) {
           if (currentCard!.isNP) {
-            await action.actor.activateBuffOnActions(this, [BuffAction.functionAttackBefore, BuffAction.functionNpattack]);
+            await action.actor
+                .activateBuffOnActions(this, [BuffAction.functionAttackBefore, BuffAction.functionNpattack]);
             await action.actor.activateNP(this, extraOvercharge);
             extraOvercharge += 1;
 
