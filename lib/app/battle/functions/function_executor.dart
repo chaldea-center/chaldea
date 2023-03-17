@@ -329,7 +329,19 @@ class FunctionExecutor {
           isMightyChain,
           firstCardType,
           checkBuffTraits: dataVals.IncludeIgnoreIndividuality == 1,
-          individualSum: true,
+          npSpecificMode: NpSpecificMode.individualSum,
+        ).then((value) => functionSuccess = value);
+        break;
+      case FuncType.damageNpRare:
+        await Damage.damage(
+          battleData,
+          dataVals,
+          targets,
+          chainPos,
+          isTypeChain,
+          isMightyChain,
+          firstCardType,
+          npSpecificMode: NpSpecificMode.rarity,
         ).then((value) => functionSuccess = value);
         break;
       case FuncType.damageNpStateIndividualFix:

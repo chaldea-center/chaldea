@@ -10,6 +10,10 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
 
+enum NpSpecificMode {
+  normal, individualSum, rarity
+}
+
 class Damage {
   Damage._();
 
@@ -31,7 +35,7 @@ class Damage {
     final bool isPierceDefense = false,
     final bool checkHpRatio = false,
     final bool checkBuffTraits = false,
-    final bool individualSum = false,
+    final NpSpecificMode npSpecificMode = NpSpecificMode.normal,
   }) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.probabilityThreshold) {
@@ -52,18 +56,14 @@ class Damage {
 
       int specificAttackRate = 1000;
       if (!checkHpRatio && dataVals.Target != null) {
-        if (!individualSum) {
-          final requiredTraits = [NiceTrait(id: dataVals.Target!)];
-          final useCorrection = checkBuffTraits
-              ? containsAnyTraits(
-                  target.getBuffTraits(battleData, ignoreIrremovable: dataVals.IgnoreIndivUnreleaseable == 1),
-                  requiredTraits)
-              : containsAnyTraits(target.getTraits(battleData), requiredTraits);
-
+        if (npSpecificMode == NpSpecificMode.rarity) {
+          final countTarget = dataVals.Target! == 1 ? activator : target; // need more sample
+          final targetRarities = dataVals.TargetRarityList!;
+          final useCorrection = targetRarities.contains(countTarget.rarity);
           if (useCorrection) {
             specificAttackRate = dataVals.Correction!;
           }
-        } else {
+        } else if (npSpecificMode == NpSpecificMode.individualSum) {
           final countTarget = dataVals.Target! == 1 ? target : activator;
           final requiredTraits = dataVals.TargetList!.map((traitId) => NiceTrait(id: traitId)).toList();
           int useCount = checkBuffTraits
@@ -73,6 +73,17 @@ class Damage {
             useCount = min(useCount, dataVals.ParamAddMaxCount!);
           }
           specificAttackRate = dataVals.Value2! + useCount * dataVals.Correction!;
+        } else {
+          final requiredTraits = [NiceTrait(id: dataVals.Target!)];
+          final useCorrection = checkBuffTraits
+              ? containsAnyTraits(
+              target.getBuffTraits(battleData, ignoreIrremovable: dataVals.IgnoreIndivUnreleaseable == 1),
+              requiredTraits)
+              : containsAnyTraits(target.getTraits(battleData), requiredTraits);
+
+          if (useCorrection) {
+            specificAttackRate = dataVals.Correction!;
+          }
         }
       }
 

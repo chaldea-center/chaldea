@@ -710,4 +710,29 @@ void main() async {
     await battle.playerTurn([CombatAction(bunyan, bunyan.getNPCard(battle)!)]);
     expect(prevHp3 - enemy3.hp, 24387);
   });
+
+  test('damageNpRare', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(403400)
+        ..lv = 60
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final roberts = battle.onFieldAllyServants[0]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final enemy2 = battle.onFieldEnemies[1]!;
+    final enemy3 = battle.onFieldEnemies[2]!;
+
+    final prevHp1 = enemy1.hp;
+    final prevHp2 = enemy2.hp;
+    final prevHp3 = enemy3.hp;
+    await battle.playerTurn([CombatAction(roberts, roberts.getNPCard(battle)!)]);
+    expect(prevHp1 - enemy1.hp, 24043);
+    expect(prevHp2 - enemy2.hp, 48087);
+    expect(prevHp3 - enemy3.hp, 24043);
+  });
 }

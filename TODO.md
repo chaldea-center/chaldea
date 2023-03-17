@@ -10,6 +10,7 @@ There are plenty of work need to do.
 - [ ] There is a bug that will reset accumulation damage when deathEffect is triggered
 not verified for gutsEffect
 - [ ] FuncType damageNpCounter
+- [ ] FuncType damageNpRate Target == 0 is target, verify if Target ==1 is activator?
 - [ ] DataVals AddLinkageTargetIndividualty & BehaveAsFamilyBuff & UnSubStateWhileLinkedToOthers
 - [ ] DataVals CounterId CounterLv CounterOc SkillReaction UseTreasureDevice
 - [ ] DataVals TriggeredFuncPosition ignored, only checking previous function success for now
