@@ -85,64 +85,19 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
   @override
   Widget build(final BuildContext context) {
+    checkPreviewReady();
     final List<Widget> topListChildren = [];
 
     topListChildren.add(questSelector());
 
-    topListChildren.add(Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
+    topListChildren.add(ResponsiveLayout(
       children: [
-        Center(
-          child: Text(
-            S.current.battle_select_battle_servants,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: onFieldSvtDataList
-              .map((playerSvtData) => Expanded(
-                    child: ServantSelector(
-                      playerSvtData: playerSvtData,
-                      onChange: () {
-                        if (mounted) setState(() {});
-                      },
-                    ),
-                  ))
-              .toList(),
-        ),
+        partyOrganization(onFieldSvtDataList, S.current.battle_select_battle_servants),
+        partyOrganization(backupSvtDataList, S.current.battle_select_backup_servants),
       ],
     ));
 
-    topListChildren.add(Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Center(
-          child: Text(
-            S.current.battle_select_backup_servants,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: backupSvtDataList
-              .map((playerSvtData) => Expanded(
-                    child: ServantSelector(
-                      playerSvtData: playerSvtData,
-                      onChange: () {
-                        if (mounted) setState(() {});
-                      },
-                    ),
-                  ))
-              .toList(),
-        ),
-      ],
-    ));
-    topListChildren.add(buildMiscController());
+    topListChildren.add(buildMisc());
 
     return Scaffold(
       appBar: AppBar(
@@ -160,37 +115,13 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               ),
             ),
           ),
-          DecoratedBox(
-            decoration: BoxDecoration(border: Border(top: Divider.createBorderSide(context, width: 0.5))),
-            child: SafeArea(
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: ButtonBar(
-                    buttonPadding: const EdgeInsets.symmetric(horizontal: 2),
-                    children: [
-                      if (errorMsg != null)
-                        SFooter.rich(
-                          TextSpan(text: errorMsg, style: TextStyle(color: Theme.of(context).colorScheme.error)),
-                        ),
-                      TextButton(
-                        onPressed: () {
-                          if (!_isPreviewReady()) {
-                            if (mounted) setState(() {});
-                            return;
-                          }
-                          QuestPhaseWidget.removePhaseSelectCallback(_questSelectCallback);
-                          _startSimulation();
-                        },
-                        child: Text(S.current.battle_start_simulation),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+          kDefaultDivider,
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              child: buttonBar(),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -275,9 +206,15 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             router.push(url: Routes.events);
           },
         ),
-        kDefaultDivider,
+        // kDefaultDivider,
         if (questErrorMsg != null)
           SFooter.rich(TextSpan(text: questErrorMsg, style: TextStyle(color: Theme.of(context).colorScheme.error))),
+        if (questPhase == null)
+          Text(
+            S.current.battle_no_quest_phase,
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+            textAlign: TextAlign.center,
+          ),
         if (questPhase != null)
           TextButton(
             onPressed: () {
@@ -299,6 +236,57 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             battleOnly: true,
             preferredPhases: [questPhase!],
           ),
+      ],
+    );
+  }
+
+  Responsive partyOrganization(List<PlayerSvtData> svts, String title) {
+    return Responsive(
+      small: 12,
+      middle: 6,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(title),
+          Row(
+            children: [
+              for (final svt in svts)
+                Expanded(
+                  child: ServantSelector(
+                    playerSvtData: svt,
+                    onChange: () {
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                )
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buttonBar() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Text(
+            errorMsg ?? "",
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        FilledButton.icon(
+          onPressed: errorMsg != null
+              ? null
+              : () {
+                  QuestPhaseWidget.removePhaseSelectCallback(_questSelectCallback);
+                  _startSimulation();
+                },
+          icon: const Icon(Icons.arrow_right_rounded),
+          label: Text(S.current.battle_start_simulation),
+        ),
       ],
     );
   }
@@ -349,10 +337,44 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     setState(() {});
   }
 
-  Widget buildMiscController() {
-    return Column(
+  Widget buildMisc() {
+    Widget mysticCode = Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        mysticCodeData.mysticCode.iconBuilder(context: context, width: 48, jumpToDetail: false),
+        AutoSizeText(
+          mysticCodeData.mysticCode.lName.l,
+          maxLines: 2,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        IconButton(
+          onPressed: () => setState(() => db.curUser.isGirl = !db.curUser.isGirl),
+          color: Theme.of(context).colorScheme.primaryContainer,
+          icon: FaIcon(
+            db.curUser.isGirl ? FontAwesomeIcons.venus : FontAwesomeIcons.mars,
+          ),
+          iconSize: 20,
+        ),
+      ],
+    );
+    mysticCode = InkWell(
+      onTap: () {
+        router.pushPage(
+          MysticCodeListPage(
+            onSelected: (selectedMC) {
+              mysticCodeData.mysticCode = selectedMC;
+              if (mounted) setState(() {});
+            },
+          ),
+          detail: true,
+        );
+      },
+      child: SizedBox(width: 64, child: mysticCode),
+    );
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Center(
           child: Text(
@@ -360,47 +382,14 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
+        // use Responsible if more settings
         Row(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onLongPress: () {},
-                    child: mysticCodeData.mysticCode.iconBuilder(context: context, width: 100, jumpToDetail: false),
-                    onTap: () {
-                      router.pushPage(
-                        MysticCodeListPage(
-                          onSelected: (selectedMC) {
-                            mysticCodeData.mysticCode = selectedMC;
-                            if (mounted) setState(() {});
-                          },
-                        ),
-                        detail: true,
-                      );
-                    },
-                  ),
-                  AutoSizeText(
-                    mysticCodeData.mysticCode.lName.l,
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                  ),
-                  IconButton(
-                    onPressed: () => setState(() => db.curUser.isGirl = !db.curUser.isGirl),
-                    color: Theme.of(context).colorScheme.primaryContainer,
-                    icon: FaIcon(
-                      db.curUser.isGirl ? FontAwesomeIcons.venus : FontAwesomeIcons.mars,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
+            const SizedBox(width: 16),
+            mysticCode,
+            Flexible(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -436,7 +425,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     );
   }
 
-  bool _isPreviewReady() {
+  bool checkPreviewReady() {
     if (questPhase == null) {
       errorMsg = S.current.battle_no_quest_phase;
       return false;
@@ -466,12 +455,13 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
 class ServantSelector extends StatelessWidget {
   // ce empty icon
-  // https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/CommonUIAtlas/img_blankbg.png
+  static const emptyCeIcon =
+      "https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/BattleResult/PartyOrganizationAtlas/formation_blank_02.png";
   // svt empty icon
-  // https://static.atlasacademy.io/JP/Faces/f_1000000.png
+  static const emptySvtIcon = "https://static.atlasacademy.io/JP/Faces/f_1000000.png";
   // svt/enemy unknown icon
-  // https://static.atlasacademy.io/JP/Faces/f_1000011.png
-  static const emptyIconUrl = 'https://static.atlasacademy.io/JP/SkillIcons/skill_999999.png';
+  static const unknownEnemyIcon = "https://static.atlasacademy.io/JP/Faces/f_1000011.png";
+  // static const emptyIconUrl = 'https://static.atlasacademy.io/JP/SkillIcons/skill_999999.png';
   final PlayerSvtData playerSvtData;
   final VoidCallback onChange;
 
@@ -479,190 +469,202 @@ class ServantSelector extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    Widget svtTextBuilder(final TextStyle style) {
-      return Text.rich(
-        TextSpan(style: style, children: [
-          TextSpan(text: 'Lv${playerSvtData.lv}'),
-          WidgetSpan(
-            style: style,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.white,
-                    blurRadius: 3,
-                    spreadRadius: 1,
-                  )
-                ],
-              ),
-              child: db.getIconImage(Atlas.asset('Terminal/Info/CommonUIAtlas/icon_nplv.png'), width: 15, height: 15),
-            ),
+    List<Widget> children = [];
+
+    TextStyle notSelectedStyle = TextStyle(color: Theme.of(context).textTheme.bodySmall?.color);
+
+    // svt icon
+    String svtInfo = '';
+    if (playerSvtData.svt != null) {
+      svtInfo = ' Lv.${playerSvtData.lv} NP${playerSvtData.npLv}\n'
+          ' ${playerSvtData.skillLvs.join("/")}\n'
+          ' ${playerSvtData.appendLvs.map((e) => e == 0 ? "-" : e).join("/")}';
+    }
+    Widget svtIcon = GameCardMixin.cardIconBuilder(
+      context: context,
+      icon: playerSvtData.svt?.ascendIcon(playerSvtData.ascensionPhase, true) ?? emptySvtIcon,
+      width: 80,
+      aspectRatio: 132 / 144,
+      text: svtInfo,
+      option: ImageWithTextOption(
+        textAlign: TextAlign.left,
+        fontSize: 11,
+        alignment: Alignment.bottomLeft,
+        // padding: const EdgeInsets.fromLTRB(22, 0, 2, 4),
+      ),
+    );
+
+    svtIcon = InkWell(
+      onTap: () {
+        router.pushPage(
+          ServantListPage(
+            planMode: false,
+            onSelected: (selectedSvt) {
+              _onSelectServant(selectedSvt);
+            },
           ),
-          TextSpan(text: playerSvtData.npLv.toString()),
-          TextSpan(text: '\n${playerSvtData.skillLvs.join('/')}'),
-          if (playerSvtData.appendLvs.any((lv) => lv > 0))
-            TextSpan(text: "\n${playerSvtData.appendLvs.map((e) => e == 0 ? '-' : e.toString()).join('/')}"),
-        ]),
-        textScaleFactor: 1,
-      );
-    }
+          detail: true,
+        );
+      },
+      child: svtIcon,
+    );
+    children.add(svtIcon);
 
-    Widget ceTextBuilder(final TextStyle style) {
-      return Text.rich(
-        TextSpan(
-          style: style,
-          text: 'Lv${playerSvtData.ceLv}-'
-              '${playerSvtData.ceLimitBreak ? S.current.battle_limit_break : S.current.battle_not_limit_break}',
+    // svt name+btn
+    children.addAll([
+      SizedBox(
+        height: 18,
+        child: AutoSizeText(
+          playerSvtData.svt?.lBattleName(playerSvtData.ascensionPhase).l ?? S.current.servant,
+          maxLines: 1,
+          minFontSize: 10,
+          textAlign: TextAlign.center,
+          textScaleFactor: 0.9,
+          style: playerSvtData.svt == null ? notSelectedStyle : null,
         ),
-        textScaleFactor: 1,
-      );
-    }
-
-    final playerIconImage = playerSvtData.svt == null
-        ? db.getIconImage(emptyIconUrl, width: 100, aspectRatio: 132 / 144)
-        : playerSvtData.svt!.iconBuilder(
-            context: context,
-            jumpToDetail: false,
-            width: 100,
-            overrideIcon: getSvtAscensionBorderedIconUrl(playerSvtData.svt!, playerSvtData.ascensionPhase),
-          );
-
-    final ceIconImage = playerSvtData.ce == null
-        ? db.getIconImage(emptyIconUrl, width: 100, aspectRatio: 132 / 144)
-        : playerSvtData.ce!.iconBuilder(context: context, jumpToDetail: false, width: 100);
-
-    return Padding(
-      padding: const EdgeInsets.all(3),
-      child: Material(
-        borderRadius: BorderRadius.circular(8),
-        child: Column(
+      ),
+      SizedBox(
+        height: 24,
+        child: Row(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            InkWell(
-              onLongPress: () {},
-              child: ImageWithText(
-                image: playerIconImage,
-                textBuilder: playerSvtData.svt != null ? svtTextBuilder : null,
-                option: ImageWithTextOption(
-                  shadowSize: 4,
-                  textStyle: const TextStyle(fontSize: 11, color: Colors.black),
-                  shadowColor: Colors.white,
-                  alignment: AlignmentDirectional.bottomStart,
-                  padding: const EdgeInsets.fromLTRB(4, 0, 2, 4),
-                ),
-                onTap: () {
-                  router.pushPage(
-                    ServantListPage(
-                      planMode: false,
-                      onSelected: (selectedSvt) {
-                        _onSelectServant(selectedSvt);
-                      },
-                    ),
-                    detail: true,
-                  );
-                },
-              ),
-            ),
-            AutoSizeText(
-              playerSvtData.svt == null
-                  ? S.current.battle_click_to_select_servants
-                  : Transl.svtNames(getSvtName(playerSvtData.svt!, playerSvtData.ascensionPhase)).l,
-              maxLines: 2,
-              textAlign: TextAlign.center,
-            ),
             if (playerSvtData.svt != null)
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      router.pushPage(ServantOptionEditPage(
-                        playerSvtData: playerSvtData,
-                        onChange: onChange,
-                      ));
-                    },
-                    icon: const Icon(Icons.edit, size: 20),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    color: Theme.of(context).colorScheme.primaryContainer,
-                  ),
-                  const SizedBox(width: 10),
-                  IconButton(
-                    onPressed: () {
-                      playerSvtData.svt = null;
-                      onChange();
-                    },
-                    icon: const Icon(Icons.person_off, size: 20),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    color: Theme.of(context).colorScheme.primaryContainer,
-                  ),
-                ],
-              ),
-            InkWell(
-              onLongPress: () {},
-              child: ImageWithText(
-                image: ceIconImage,
-                textBuilder: playerSvtData.ce != null ? ceTextBuilder : null,
-                option: ImageWithTextOption(
-                  shadowSize: 4,
-                  textStyle: const TextStyle(fontSize: 11, color: Colors.black),
-                  shadowColor: Colors.white,
-                  alignment: AlignmentDirectional.bottomStart,
-                  padding: const EdgeInsets.fromLTRB(4, 0, 2, 4),
-                ),
-                onTap: () {
-                  router.pushPage(
-                    CraftListPage(
-                      onSelected: (selectedCe) {
-                        _onSelectCE(selectedCe);
-                      },
-                    ),
-                    detail: true,
-                  );
+              IconButton(
+                onPressed: () {
+                  router.pushPage(ServantOptionEditPage(
+                    playerSvtData: playerSvtData,
+                    onChange: onChange,
+                  ));
                 },
+                icon: const Icon(Icons.edit, size: 20),
+                padding: const EdgeInsets.all(2),
+                constraints: const BoxConstraints(),
+                color: Theme.of(context).colorScheme.primaryContainer,
               ),
-            ),
-            AutoSizeText(
-              playerSvtData.ce == null ? S.current.battle_click_to_select_ce : playerSvtData.ce!.lName.l,
-              maxLines: 2,
-              textAlign: TextAlign.center,
-            ),
-            if (playerSvtData.ce != null)
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      router.pushPage(CraftEssenceOptionEditPage(
-                        playerSvtData: playerSvtData,
-                        onChange: onChange,
-                      ));
-                    },
-                    icon: const Icon(Icons.edit, size: 20),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    color: Theme.of(context).colorScheme.primaryContainer,
-                  ),
-                  const SizedBox(width: 10),
-                  IconButton(
-                    onPressed: () {
-                      playerSvtData.ce = null;
-                      onChange();
-                    },
-                    icon: const Icon(Icons.extension_off_rounded, size: 20),
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                    color: Theme.of(context).colorScheme.primaryContainer,
-                  ),
-                ],
+            const SizedBox(width: 10),
+            if (playerSvtData.svt != null)
+              IconButton(
+                onPressed: () {
+                  playerSvtData.svt = null;
+                  onChange();
+                },
+                icon: const Icon(Icons.person_off, size: 20),
+                padding: const EdgeInsets.all(2),
+                constraints: const BoxConstraints(),
+                color: Theme.of(context).colorScheme.primaryContainer,
               ),
           ],
         ),
+      )
+    ]);
+    children.add(const SizedBox(height: 8));
+
+    // ce icon
+    Widget ceIcon = db.getIconImage(
+      playerSvtData.ce?.extraAssets.equipFace.equip?[playerSvtData.ce?.id] ?? emptyCeIcon,
+      width: 80,
+      aspectRatio: 150 / 68,
+    );
+    if (playerSvtData.ce != null && playerSvtData.ceLimitBreak) {
+      ceIcon = Stack(
+        alignment: Alignment.bottomRight,
+        children: [
+          ceIcon,
+          Positioned(
+            right: 4,
+            bottom: 4,
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.yellow)),
+              padding: const EdgeInsets.all(2),
+              child: Icon(Icons.auto_awesome, color: Colors.yellow[900], size: 14),
+            ),
+          )
+        ],
+      );
+    }
+    ceIcon = InkWell(
+      onTap: () {
+        router.pushPage(
+          CraftListPage(
+            onSelected: (selectedCe) {
+              _onSelectCE(selectedCe);
+            },
+          ),
+          detail: true,
+        );
+      },
+      child: ceIcon,
+    );
+    children.add(Center(child: ceIcon));
+
+    // ce btn
+    String ceInfo = '';
+    if (playerSvtData.ce != null) {
+      ceInfo = 'Lv.${playerSvtData.ceLv}';
+      if (playerSvtData.ceLimitBreak) {
+        ceInfo += ' ${S.current.ce_max_limit_break}';
+      }
+    } else {
+      ceInfo = 'Lv.-';
+    }
+    children.addAll([
+      SizedBox(
+        height: 18,
+        child: AutoSizeText(
+          ceInfo.breakWord,
+          maxLines: 1,
+          minFontSize: 10,
+          textAlign: TextAlign.center,
+          textScaleFactor: 0.9,
+          style: playerSvtData.ce == null ? notSelectedStyle : null,
+        ),
+      ),
+      SizedBox(
+        height: 24,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (playerSvtData.ce != null)
+              IconButton(
+                onPressed: () {
+                  router.pushPage(CraftEssenceOptionEditPage(
+                    playerSvtData: playerSvtData,
+                    onChange: onChange,
+                  ));
+                },
+                icon: const Icon(Icons.edit, size: 20),
+                padding: const EdgeInsets.all(2),
+                constraints: const BoxConstraints(),
+                color: Theme.of(context).colorScheme.primaryContainer,
+              ),
+            const SizedBox(width: 10),
+            if (playerSvtData.ce != null)
+              IconButton(
+                onPressed: () {
+                  playerSvtData.ce = null;
+                  onChange();
+                },
+                icon: const Icon(Icons.extension_off_rounded, size: 20),
+                padding: const EdgeInsets.all(2),
+                constraints: const BoxConstraints(),
+                color: Theme.of(context).colorScheme.primaryContainer,
+              ),
+          ],
+        ),
+      ),
+    ]);
+
+    return Padding(
+      padding: const EdgeInsets.all(4),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: children,
       ),
     );
   }
@@ -702,7 +704,7 @@ class ServantSelector extends StatelessWidget {
       } else {
         playerSvtData
           ..ascensionPhase = 4
-          ..lv = getDefaultSvtLv(selectedSvt.rarity)
+          ..lv = selectedSvt.lvMax
           ..npStrengthenLv = getShownTds(selectedSvt, playerSvtData.ascensionPhase).length
           ..npLv = 5
           ..skillLvs = [10, 10, 10]
@@ -717,36 +719,6 @@ class ServantSelector extends StatelessWidget {
       }
       onChange();
     }
-  }
-
-  static int getDefaultSvtLv(final int rarity) {
-    switch (rarity) {
-      case 5:
-        return 90;
-      case 4:
-        return 80;
-      case 3:
-        return 70;
-      case 2:
-      case 0:
-        return 65;
-      case 1:
-        return 60;
-      default:
-        return -1;
-    }
-  }
-
-  static String? getSvtAscensionBorderedIconUrl(final Servant svt, final int ascension) {
-    final ascensions = svt.extraAssets.faces.ascension;
-    if (ascensions != null && ascensions.containsKey(ascension)) {
-      return svt.bordered(ascensions[ascension]);
-    }
-    final costumes = svt.extraAssets.faces.costume;
-    if (costumes != null && costumes.containsKey(ascension)) {
-      return svt.bordered(costumes[ascension]);
-    }
-    return null;
   }
 
   static final List<int> costumeOrtinaxIds = [800140, 800150];
@@ -823,29 +795,5 @@ class ServantSelector extends StatelessWidget {
 
     shownSkills.removeWhere((niceSkill) => removeSkillIdList.contains(niceSkill.id));
     return shownSkills;
-  }
-
-  static String getSvtName(final Servant svt, final int ascension) {
-    final overrideName = svt.ascensionAdd.overWriteServantName;
-    if (overrideName.ascension.containsKey(ascension)) {
-      return overrideName.ascension[ascension]!;
-    }
-    final costumes = svt.profile.costume;
-    if (costumes.containsKey(ascension) && overrideName.costume.containsKey(costumes[ascension]!.id)) {
-      return overrideName.costume[costumes[ascension]!.id]!;
-    }
-    return svt.name;
-  }
-
-  static String getSvtBattleName(final Servant svt, final int ascension) {
-    final overrideName = svt.ascensionAdd.overWriteServantBattleName;
-    if (overrideName.ascension.containsKey(ascension)) {
-      return overrideName.ascension[ascension]!;
-    }
-    final costumes = svt.profile.costume;
-    if (costumes.containsKey(ascension) && overrideName.costume.containsKey(costumes[ascension]!.id)) {
-      return overrideName.costume[costumes[ascension]!.id]!;
-    }
-    return svt.battleName;
   }
 }
