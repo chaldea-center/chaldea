@@ -1,3 +1,4 @@
+import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chaldea/app/battle/models/battle.dart';
@@ -235,5 +236,25 @@ void main() async {
 
     await battle.skipWave();
     expect(okita.getBuffValueOnAction(battle, BuffAction.defencePierce), 500);
+  });
+
+  test('Check buffTrait', () async {
+    final battle = BattleData();
+    final playerSettings = [
+      PlayerSvtData(703300)
+        ..npLv = 5
+        ..lv = 90
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+    ];
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    await battle.activateSvtSkill(0, 0);
+    final arjuna = battle.onFieldAllyServants[0]!;
+    final enemy = battle.onFieldEnemies[0]!;
+    final prevHp = enemy.hp;
+    await battle.playerTurn([CombatAction(arjuna, arjuna.getNPCard(battle)!)]);
+    expect(prevHp - enemy.hp, 96971);
   });
 }

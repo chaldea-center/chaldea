@@ -355,6 +355,9 @@ class BattleData {
   bool checkTraits(
     final Iterable<NiceTrait> requiredTraits,
     final bool checkTarget, {
+    final bool checkTargetBuff = false,
+    final bool activeOnly = false,
+    final bool ignoreIrremovable = false,
     final int? checkIndivType,
     final int? includeIgnoredTrait,
   }) {
@@ -364,7 +367,16 @@ class BattleData {
 
     final actor = checkTarget ? target : activator;
     final List<NiceTrait> currentTraits = [];
-    currentTraits.addAll(actor?.getTraits(this) ?? []);
+    if (!checkTargetBuff) {
+      currentTraits.addAll(actor?.getTraits(this) ?? []);
+    } else {
+      currentTraits.addAll(actor?.getBuffTraits(
+            this,
+            activeOnly: activeOnly,
+            ignoreIrremovable: ignoreIrremovable,
+          ) ??
+          []);
+    }
     if (includeIgnoredTrait == 1) currentTraits.addAll(actor?.getNPCard(this)?.traits ?? []);
     currentTraits.addAll(currentBuff?.traits ?? []);
     currentTraits.addAll(currentCard?.traits ?? []);
@@ -430,8 +442,7 @@ class BattleData {
 
     final skill = masterSkillInfo[skillIndex].skill;
     if (skill.functions.any((func) => func.funcType == FuncType.replaceMember)) {
-      return nonnullBackupAllies.isNotEmpty &&
-          nonnullAllies.where((svt) => svt.canOrderChange(this)).isNotEmpty;
+      return nonnullBackupAllies.isNotEmpty && nonnullAllies.where((svt) => svt.canOrderChange(this)).isNotEmpty;
     }
 
     return true;

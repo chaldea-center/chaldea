@@ -101,18 +101,38 @@ class BuffData {
     return containsAnyTraits(traits, requiredTraits);
   }
 
+  static final List<BuffType> activeOnlyTypes = [
+    BuffType.upDamageIndividualityActiveonly,
+    BuffType.downDamageIndividualityActiveonly,
+  ];
+
+  static final List<BuffType> buffTraitCheckTypes = [
+    BuffType.upDamageIndividuality,
+    BuffType.downDamageIndividuality,
+    ...activeOnlyTypes,
+  ];
+
   bool shouldApplyBuff(final BattleData battleData, final bool isTarget) {
     final int? checkIndvType = buff.script?.checkIndvType;
     final int? includeIgnoredTrait = buff.script?.IncludeIgnoreIndividuality;
+    final bool checkTargetBuff = buffTraitCheckTypes.contains(buff.type);
+    final bool activeOnly = activeOnlyTypes.contains(buff.type);
+    final bool ignoreIrremovable = vals.IgnoreIndivUnreleaseable == 1;
     final targetCheck = battleData.checkTraits(
           buff.ckOpIndv,
           !isTarget,
+          checkTargetBuff: checkTargetBuff,
+          activeOnly: activeOnly,
+          ignoreIrremovable: ignoreIrremovable,
           checkIndivType: checkIndvType,
           includeIgnoredTrait: includeIgnoredTrait,
         ) &&
         battleData.checkTraits(
           buff.ckSelfIndv,
           isTarget,
+          checkTargetBuff: checkTargetBuff,
+          activeOnly: activeOnly,
+          ignoreIrremovable: ignoreIrremovable,
           checkIndivType: checkIndvType,
           includeIgnoredTrait: includeIgnoredTrait,
         );

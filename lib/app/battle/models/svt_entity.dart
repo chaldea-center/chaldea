@@ -300,6 +300,22 @@ class BattleServantData {
     return allTraits;
   }
 
+  List<NiceTrait> getBuffTraits(
+    final BattleData battleData, {
+    final bool activeOnly = false,
+    final bool ignoreIrremovable = false,
+  }) {
+    final List<NiceTrait> myTraits = [];
+    final List<BuffData> buffs = activeOnly ? battleBuff.activeList : battleBuff.allBuffs;
+    buffs.forEach((buff) {
+      if(!ignoreIrremovable || !buff.irremovable) {
+        myTraits.addAll(buff.traits);
+      }
+    });
+
+    return myTraits;
+  }
+
   bool checkTrait(final BattleData battleData, final NiceTrait requiredTrait, {final bool checkBuff = false}) {
     return checkTraits(battleData, [requiredTrait], checkBuff: checkBuff);
   }
@@ -311,8 +327,8 @@ class BattleServantData {
   }) {
     final List<NiceTrait> myTraits = getTraits(battleData);
     if (checkBuff) {
-      battleBuff.allBuffs.forEach((element) {
-        myTraits.addAll(element.traits);
+      battleBuff.allBuffs.forEach((buff) {
+        myTraits.addAll(buff.traits);
       });
     }
 
@@ -447,7 +463,6 @@ class BattleServantData {
     }
     battleData.unsetActivator();
   }
-
 
   bool canOrderChange(final BattleData battleData) {
     battleData.setActivator(this);

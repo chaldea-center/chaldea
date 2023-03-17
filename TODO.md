@@ -5,7 +5,7 @@ There are plenty of work need to do.
 ## Battles
 
 ### Ally Function Logic:
-- [ ] TargetType commandTypeSelfTreasureDevice for svt 11 svt 268 uses this
+- [ ] Move all checkTrait logic into battle and remove individual checkTrait methods in models
 - [ ] Account for OC buff
 - [ ] There is a bug that will reset accumulation damage when deathEffect is triggered
 not verified for gutsEffect
