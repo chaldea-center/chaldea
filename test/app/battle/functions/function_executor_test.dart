@@ -735,4 +735,50 @@ void main() async {
     expect(prevHp2 - enemy2.hp, 48087);
     expect(prevHp3 - enemy3.hp, 24043);
   });
+
+  test('instantDeath', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(2300400)
+        ..lv = 1
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final kiara = battle.onFieldAllyServants[0]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final enemy2 = battle.onFieldEnemies[1]!;
+    final enemy3 = battle.onFieldEnemies[2]!;
+    await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
+    expect(battle.nonnullEnemies.length, 3);
+
+    battle.probabilityThreshold = 960;
+    await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
+    expect(enemy1.hp, 0);
+    expect(enemy2.hp, 0);
+    expect(enemy3.hp, 0);
+  });
+
+  test('forceInstantDeath', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(201300)
+        ..lv = 60
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+      PlayerSvtData(701400)
+        ..lv = 90
+        ..skillStrengthenLvs = [2, 1, 1],
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final arash = battle.onFieldAllyServants[0]!;
+    await battle.activateSvtSkill(1, 0);
+    await battle.playerTurn([CombatAction(arash, arash.getNPCard(battle)!)]);
+
+    expect(arash.hp, 0);
+  });
 }

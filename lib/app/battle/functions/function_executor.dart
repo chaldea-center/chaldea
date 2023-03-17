@@ -5,6 +5,7 @@ import 'package:chaldea/app/battle/functions/gain_np.dart';
 import 'package:chaldea/app/battle/functions/gain_np_from_targets.dart';
 import 'package:chaldea/app/battle/functions/gain_star.dart';
 import 'package:chaldea/app/battle/functions/hasten_npturn.dart';
+import 'package:chaldea/app/battle/functions/instant_death.dart';
 import 'package:chaldea/app/battle/functions/replace_member.dart';
 import 'package:chaldea/app/battle/functions/shorten_skill.dart';
 import 'package:chaldea/app/battle/functions/sub_state.dart';
@@ -380,16 +381,25 @@ class FunctionExecutor {
           isPierceDefense: true,
         ).then((value) => functionSuccess = value);
         break;
-      case FuncType.cardReset:
-        battleData.nonnullAllies.forEach((svt) {
-          svt.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
-        });
+      case FuncType.instantDeath:
+        functionSuccess = InstantDeath.instantDeath(battleData, dataVals, targets);
+        break;
+      case FuncType.forceInstantDeath:
+        functionSuccess = InstantDeath.instantDeath(battleData, dataVals, targets, force: true);
         break;
       case FuncType.moveToLastSubmember:
         functionSuccess = MoveToLastSubMember.moveToLastSubMember(battleData, dataVals, targets);
         break;
       case FuncType.replaceMember:
         await ReplaceMember.replaceMember(battleData, dataVals).then((value) => functionSuccess = value);
+        break;
+      case FuncType.cardReset:
+        battleData.nonnullAllies.forEach((svt) {
+          svt.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
+        });
+        break;
+      case FuncType.fixCommandcard:
+        // do nothing
         break;
       default:
         battleData.logger.debug('${S.current.not_implemented}: ${function.funcType}, '

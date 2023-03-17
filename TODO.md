@@ -9,6 +9,7 @@ There are plenty of work need to do.
 - [ ] Account for OC buff
 - [ ] There is a bug that will reset accumulation damage when deathEffect is triggered
 not verified for gutsEffect
+- [ ] Chen Gong OC NP Gain?
 - [ ] FuncType damageNpCounter
 - [ ] FuncType damageNpRate Target == 0 is target, verify if Target ==1 is activator?
 - [ ] DataVals AddLinkageTargetIndividualty & BehaveAsFamilyBuff & UnSubStateWhileLinkedToOthers

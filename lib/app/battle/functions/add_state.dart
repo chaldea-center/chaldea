@@ -87,7 +87,7 @@ class AddState {
     }
 
     final buffReceiveChance = target.getBuffValueOnAction(battleData, BuffAction.resistanceState);
-    final buffChanceDetails = ConstData.buffActions[BuffAction.resistanceState]!;
+    final buffChanceDetails = ConstData.buffActions[BuffAction.grantState]!;
     final buffChance = activator?.getBuffValueOnAction(battleData, BuffAction.grantState) ??
         capBuffValue(buffChanceDetails, 0, Maths.min(buffChanceDetails.maxRate));
     final activationRate = functionRate + buffChance;
