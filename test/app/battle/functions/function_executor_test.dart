@@ -560,8 +560,7 @@ void main() async {
     test('DataVals StarHigher', () async {
       final battle = BattleData();
       final playerSettings = [
-        PlayerSvtData(203700)
-          ..lv = 80,
+        PlayerSvtData(203700)..lv = 80,
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
       final jane = battle.onFieldAllyServants[0]!;
@@ -586,6 +585,28 @@ void main() async {
       final afterCount3 = jane3.battleBuff.allBuffs.length;
       expect(afterCount3, prevCount3 + 5);
       expect(jane3.np, 2000);
+    });
+
+    test('DataVals Negative Rates', () async {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(501100)..lv = 70,
+        PlayerSvtData(2300100)..lv = 80,
+      ];
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      final babbage = battle.onFieldAllyServants[0]!;
+      final prevCount = babbage.battleBuff.allBuffs.length;
+      await battle.activateSvtSkill(0, 2);
+      final afterCount = babbage.battleBuff.allBuffs.length;
+      expect(afterCount, prevCount + 3);
+
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      final babbage2 = battle.onFieldAllyServants[0]!;
+      final prevCount2 = babbage2.battleBuff.allBuffs.length;
+      await battle.activateSvtSkill(1, 0);
+      await battle.activateSvtSkill(0, 2);
+      final afterCount2 = babbage2.battleBuff.allBuffs.length;
+      expect(afterCount2, prevCount2 + 1);
     });
   });
 }

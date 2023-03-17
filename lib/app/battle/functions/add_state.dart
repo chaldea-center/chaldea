@@ -76,6 +76,13 @@ class AddState {
       return true;
     }
 
+    int functionRate = dataVals.Rate ?? 1000;
+    if ((functionRate < 0 || dataVals.TriggeredFuncPosition != null) && !battleData.previousFunctionResult) {
+      return false;
+    }
+
+    functionRate = functionRate.abs();
+
     if (target.hasBuffOnAction(battleData, BuffAction.avoidState)) {
       battleData.logger.debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.battle_invalid}');
       return false;
@@ -85,8 +92,6 @@ class AddState {
     final buffChanceDetails = ConstData.buffActions[BuffAction.resistanceState]!;
     final buffChance = activator?.getBuffValueOnAction(battleData, BuffAction.grantState) ??
         capBuffValue(buffChanceDetails, 0, Maths.min(buffChanceDetails.maxRate));
-
-    final functionRate = dataVals.Rate ?? 1000;
     final activationRate = functionRate + buffChance;
     final resistRate = battleData.probabilityThreshold + buffReceiveChance;
     final success = activationRate >= resistRate;
