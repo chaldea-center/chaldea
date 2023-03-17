@@ -160,7 +160,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             context: context,
             jumpToDetail: false,
             width: 100,
-            overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase),
+            overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase, true),
           )
         : svt.niceEnemy!.iconBuilder(
             context: context,
@@ -552,7 +552,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
               context: context,
               jumpToDetail: false,
               height: 100,
-              overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase),
+              overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase, true),
             ),
             textBuilder: svt.canSelectNP(widget.battleData) ? null : unableTextBuilder,
             option: ImageWithTextOption(

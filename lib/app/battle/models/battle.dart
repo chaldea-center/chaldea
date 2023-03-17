@@ -430,7 +430,8 @@ class BattleData {
 
     final skill = masterSkillInfo[skillIndex].skill;
     if (skill.functions.any((func) => func.funcType == FuncType.replaceMember)) {
-      return nonnullBackupAllies.isNotEmpty;
+      return nonnullBackupAllies.isNotEmpty &&
+          nonnullAllies.where((svt) => svt.canOrderChange(this)).isNotEmpty;
     }
 
     return true;

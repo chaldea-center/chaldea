@@ -448,20 +448,37 @@ class BattleServantData {
     battleData.unsetActivator();
   }
 
+
+  bool canOrderChange(final BattleData battleData) {
+    battleData.setActivator(this);
+    final result = !hasBuffOnAction(battleData, BuffAction.donotReplace);
+    battleData.unsetActivator();
+    return result;
+  }
+
   bool canAttack(final BattleData battleData) {
     if (hp <= 0) {
       return false;
     }
 
-    return !hasBuffOnAction(battleData, BuffAction.donotAct);
+    battleData.setActivator(this);
+    final result = !hasBuffOnAction(battleData, BuffAction.donotAct);
+    battleData.unsetActivator();
+    return result;
   }
 
   bool canCommandCard(final BattleData battleData) {
-    return canAttack(battleData) && !hasBuffOnAction(battleData, BuffAction.donotActCommandtype);
+    battleData.setActivator(this);
+    final result = canAttack(battleData) && !hasBuffOnAction(battleData, BuffAction.donotActCommandtype);
+    battleData.unsetActivator();
+    return result;
   }
 
   bool canSelectNP(final BattleData battleData) {
-    return canNP(battleData) && checkNPScript(battleData);
+    battleData.setActivator(this);
+    final result = canNP(battleData) && checkNPScript(battleData);
+    battleData.unsetActivator();
+    return result;
   }
 
   bool canNP(final BattleData battleData) {

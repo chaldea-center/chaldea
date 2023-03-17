@@ -16,12 +16,13 @@ class ReplaceMember {
       return false;
     }
 
-    final List<BattleServantData?> onFieldList = battleData.onFieldAllyServants;
-    final List<BattleServantData?> backupList = battleData.playerDataList;
-
-    if (onFieldList.isEmpty || backupList.isEmpty) {
+    if (battleData.nonnullAllies.where((svt) => svt.canOrderChange(battleData)).isEmpty ||
+        battleData.nonnullBackupAllies.where((svt) => svt.canOrderChange(battleData)).isEmpty) {
       return false;
     }
+
+    final List<BattleServantData?> onFieldList = battleData.onFieldAllyServants;
+    final List<BattleServantData?> backupList = battleData.playerDataList;
 
     final List<BattleServantData> selections = [];
     await getSelectedServants(battleData).then((value) => selections.addAll(value));
@@ -65,6 +66,8 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
   Widget build(final BuildContext context) {
     final List<Widget> children = [];
 
+    final List<BattleServantData> selectableOnField =
+        battleData.nonnullAllies.where((svt) => svt.canOrderChange(battleData)).toList();
     children.add(
       Column(
         mainAxisSize: MainAxisSize.min,
@@ -77,8 +80,8 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
           Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: List.generate(battleData.nonnullAllies.length, (index) {
-              final svt = battleData.nonnullAllies[index];
+            children: List.generate(selectableOnField.length, (index) {
+              final svt = selectableOnField[index];
               return DecoratedBox(
                 decoration: onFieldSelection == svt
                     ? BoxDecoration(
@@ -106,6 +109,8 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
       ),
     );
 
+    final List<BattleServantData> selectableBackup =
+        battleData.nonnullBackupAllies.where((svt) => svt.canOrderChange(battleData)).toList();
     children.add(
       Column(
         mainAxisSize: MainAxisSize.min,
@@ -118,8 +123,8 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
           Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: List.generate(battleData.nonnullBackupAllies.length, (index) {
-              final svt = battleData.nonnullBackupAllies[index];
+            children: List.generate(selectableBackup.length, (index) {
+              final svt = selectableBackup[index];
               return DecoratedBox(
                 decoration: backupSelection == svt
                     ? BoxDecoration(

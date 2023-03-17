@@ -9,8 +9,8 @@ There are plenty of work need to do.
 - [ ] Account for OC buff
 - [ ] There is a bug that will reset accumulation damage when deathEffect is triggered
 not verified for gutsEffect
-- [ ] DataVals AddLinkageTargetIndividualty & BehaveAsFamilyBuff
-- [ ] DataVals CounterId CounterLv CounterOc SkillReaction
+- [ ] DataVals AddLinkageTargetIndividualty & BehaveAsFamilyBuff & UnSubStateWhileLinkedToOthers
+- [ ] DataVals CounterId CounterLv CounterOc SkillReaction UseTreasureDevice
 #### Unknowns:
 - [ ] DataVals ProgressSelfTurn
 - [ ] DataVals CheckDuplicate
