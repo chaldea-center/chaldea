@@ -679,6 +679,11 @@ class BattleData {
         if (!hasGuts) {
           await actor.death(this);
           actorList[i] = null;
+          if (actor.isPlayer) {
+            nonnullAllies.forEach((svt) {
+              svt.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
+            });
+          }
         }
       }
     }

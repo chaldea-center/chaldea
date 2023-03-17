@@ -21,6 +21,10 @@ class ReplaceMember {
       return false;
     }
 
+    battleData.nonnullAllies.forEach((svt) {
+      svt.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
+    });
+
     final List<BattleServantData?> onFieldList = battleData.onFieldAllyServants;
     final List<BattleServantData?> backupList = battleData.playerDataList;
 

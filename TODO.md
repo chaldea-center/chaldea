@@ -9,6 +9,7 @@ There are plenty of work need to do.
 - [ ] Account for OC buff
 - [ ] There is a bug that will reset accumulation damage when deathEffect is triggered
 not verified for gutsEffect
+- [ ] FuncType damageNpCounter
 - [ ] DataVals AddLinkageTargetIndividualty & BehaveAsFamilyBuff & UnSubStateWhileLinkedToOthers
 - [ ] DataVals CounterId CounterLv CounterOc SkillReaction UseTreasureDevice
 - [ ] DataVals ParamAddOpIndividuality & ParamAddSelfIndividuality only checking first trait, may need to convert to list trait checking

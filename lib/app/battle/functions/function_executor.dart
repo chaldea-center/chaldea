@@ -331,6 +331,18 @@ class FunctionExecutor {
           checkBuffTraits: true,
         ).then((value) => functionSuccess = value);
         break;
+      case FuncType.damageNpHpratioLow:
+        await Damage.damage(
+          battleData,
+          dataVals,
+          targets,
+          chainPos,
+          isTypeChain,
+          isMightyChain,
+          firstCardType,
+          checkHpRatio: true,
+        ).then((value) => functionSuccess = value);
+        break;
       case FuncType.damageNpPierce:
         await Damage.damage(
           battleData,
@@ -342,6 +354,11 @@ class FunctionExecutor {
           firstCardType,
           isPierceDefense: true,
         ).then((value) => functionSuccess = value);
+        break;
+      case FuncType.cardReset:
+        battleData.nonnullAllies.forEach((svt) {
+          svt.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
+        });
         break;
       case FuncType.moveToLastSubmember:
         functionSuccess = MoveToLastSubMember.moveToLastSubMember(battleData, dataVals, targets);

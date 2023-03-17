@@ -26,6 +26,7 @@ class Damage {
     final bool isMightyChain,
     final CardType firstCardType, {
     final bool isPierceDefense = false,
+    final bool checkHpRatio = false,
     final bool checkBuffTraits = false,
   }) async {
     final functionRate = dataVals.Rate ?? 1000;
@@ -41,11 +42,16 @@ class Damage {
 
       final classAdvantage = getClassRelation(battleData, activator, target, currentCard);
 
+      final additionDamageRate = checkHpRatio && dataVals.Target != null
+          ? ((1 - activator.hp / activator.getMaxHp(battleData)) * dataVals.Target!).toInt()
+          : 0;
+
       final damageParameters = DamageParameters()
         ..attack = activator.attack + currentCard.cardStrengthen
         ..totalHits = Maths.sum(currentCard.cardDetail.hitsDistribution)
-        ..damageRate = currentCard.isNP ? dataVals.Value! : 1000
+        ..damageRate = currentCard.isNP ? dataVals.Value! + additionDamageRate : 1000
         ..npSpecificAttackRate = dataVals.Target != null &&
+                !checkHpRatio &&
                 target.checkTrait(battleData, NiceTrait(id: dataVals.Target!), checkBuff: checkBuffTraits)
             ? dataVals.Correction!
             : 1000

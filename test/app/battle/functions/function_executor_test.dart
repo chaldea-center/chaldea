@@ -609,4 +609,45 @@ void main() async {
       expect(afterCount2, prevCount2 + 1);
     });
   });
+
+  test('damageNpHpratioLow', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(702500)
+        ..lv = 90
+        ..npStrengthenLv = 2
+        ..lv = 90
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final toshizo = battle.onFieldAllyServants[0]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final enemy2 = battle.onFieldEnemies[1]!;
+    final enemy3 = battle.onFieldEnemies[2]!;
+
+    final prevHp1 = enemy1.hp;
+    await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);
+    expect(prevHp1 - enemy1.hp, 107144);
+
+    toshizo.hp = toshizo.getMaxHp(battle) ~/ 2;
+    toshizo.np = 10000;
+    final prevHp2 = enemy2.hp;
+    await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);
+    expect((prevHp2 - enemy2.hp).toDouble(), moreOrLessEquals(142859, epsilon: 5));
+
+    toshizo.hp = 1;
+    toshizo.np = 10000;
+    final prevHp3 = enemy3.hp;
+    await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);
+    expect((prevHp3 - enemy3.hp).toDouble(), moreOrLessEquals(178567, epsilon: 5));
+
+    final enemy4 = battle.onFieldEnemies[0]!;
+    toshizo.np = 30000;
+    final prevHp4 = enemy4.hp;
+    await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);
+    expect((prevHp4 - enemy4.hp).toDouble(), moreOrLessEquals(196424, epsilon: 5));
+  });
 }
