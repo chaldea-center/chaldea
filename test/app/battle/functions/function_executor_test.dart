@@ -615,7 +615,6 @@ void main() async {
       PlayerSvtData(702500)
         ..lv = 90
         ..npStrengthenLv = 2
-        ..lv = 90
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
@@ -649,5 +648,66 @@ void main() async {
     final prevHp4 = enemy4.hp;
     await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);
     expect((prevHp4 - enemy4.hp).toDouble(), moreOrLessEquals(196424, epsilon: 5));
+  });
+
+  test('damageNpIndividualSum enemyBuff', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(2300400)
+        ..lv = 90
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+      PlayerSvtData(2500700)..lv = 90,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    await battle.activateSvtSkill(0, 2);
+    await battle.activateSvtSkill(1, 0);
+    await battle.activateSvtSkill(1, 1);
+
+    final kiara = battle.onFieldAllyServants[0]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final enemy2 = battle.onFieldEnemies[1]!;
+    final enemy3 = battle.onFieldEnemies[2]!;
+
+    final prevHp1 = enemy1.hp;
+    final prevHp2 = enemy2.hp;
+    final prevHp3 = enemy3.hp;
+    await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
+    expect(prevHp1 - enemy1.hp, 88719);
+    expect(prevHp2 - enemy2.hp, 57200);
+    expect(prevHp3 - enemy3.hp, 57200);
+  });
+
+  test('damageNpIndividualSum selfTrait', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(1001300)
+        ..lv = 90
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final bunyan = battle.onFieldAllyServants[0]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final prevHp1 = enemy1.hp;
+    await battle.playerTurn([CombatAction(bunyan, bunyan.getNPCard(battle)!)]);
+    expect(prevHp1 - enemy1.hp, 20323);
+
+    await battle.playerTurn([
+      CombatAction(bunyan, bunyan.getCards(battle)[0]),
+      CombatAction(bunyan, bunyan.getCards(battle)[1]),
+      CombatAction(bunyan, bunyan.getCards(battle)[2]),
+    ]);
+
+    final enemy3 = battle.onFieldEnemies[2]!;
+
+    final prevHp3 = enemy3.hp;
+    bunyan.np = 10000;
+    await battle.playerTurn([CombatAction(bunyan, bunyan.getNPCard(battle)!)]);
+    expect(prevHp3 - enemy3.hp, 24387);
   });
 }

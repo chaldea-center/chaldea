@@ -642,12 +642,12 @@ class BattleServantData {
     battleBuff.activeList.removeWhere((buff) => buff.checkTraits([trait]));
   }
 
-  int countTrait(final BattleData battleData, final NiceTrait trait) {
-    return countAnyTraits(getTraits(battleData), [trait]);
+  int countTrait(final BattleData battleData, final List<NiceTrait> traits) {
+    return countAnyTraits(getTraits(battleData), traits);
   }
 
-  int countBuffWithTrait(final NiceTrait trait) {
-    return battleBuff.allBuffs.where((buff) => containsAnyTraits(buff.traits, [trait])).length;
+  int countBuffWithTrait(final List<NiceTrait> traits) {
+    return battleBuff.allBuffs.where((buff) => containsAnyTraits(buff.traits, traits)).length;
   }
 
   bool isBuffStackable(final int buffGroup) {

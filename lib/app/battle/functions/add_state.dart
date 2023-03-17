@@ -40,9 +40,7 @@ class AddState {
       battleData.setTarget(target);
       if (shouldAddState(battleData, dataVals, activator, target) &&
           target.isBuffStackable(buffData.buff.buffGroup) &&
-          (dataVals.SameBuffLimitNum == null ||
-              dataVals.SameBuffLimitNum! >
-                  target.countBuffWithTrait(NiceTrait(id: dataVals.SameBuffLimitTargetIndividuality!)))) {
+          checkSameBuffLimitNum(target, dataVals)) {
         target.addBuff(
           buffData,
           isPassive: isPassive || notActorPassive,
@@ -63,7 +61,7 @@ class AddState {
   ) {
     return dataVals.SameBuffLimitNum == null ||
         dataVals.SameBuffLimitNum! >
-            target.countBuffWithTrait(NiceTrait(id: dataVals.SameBuffLimitTargetIndividuality!));
+            target.countBuffWithTrait([NiceTrait(id: dataVals.SameBuffLimitTargetIndividuality!)]);
   }
 
   static bool shouldAddState(

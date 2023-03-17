@@ -12,8 +12,8 @@ not verified for gutsEffect
 - [ ] FuncType damageNpCounter
 - [ ] DataVals AddLinkageTargetIndividualty & BehaveAsFamilyBuff & UnSubStateWhileLinkedToOthers
 - [ ] DataVals CounterId CounterLv CounterOc SkillReaction UseTreasureDevice
-- [ ] DataVals ParamAddOpIndividuality & ParamAddSelfIndividuality only checking first trait, may need to convert to list trait checking
 - [ ] DataVals TriggeredFuncPosition ignored, only checking previous function success for now
+- [ ] Group npDamageIndividualSum & buff ParamAddCount's counting logic together?
 #### Unknowns:
 - [ ] DataVals ProgressSelfTurn
 - [ ] DataVals CheckDuplicate

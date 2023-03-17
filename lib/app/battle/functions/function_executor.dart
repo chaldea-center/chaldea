@@ -319,6 +319,19 @@ class FunctionExecutor {
           firstCardType,
         ).then((value) => functionSuccess = value);
         break;
+      case FuncType.damageNpIndividualSum:
+        await Damage.damage(
+          battleData,
+          dataVals,
+          targets,
+          chainPos,
+          isTypeChain,
+          isMightyChain,
+          firstCardType,
+          checkBuffTraits: dataVals.IncludeIgnoreIndividuality == 1,
+          individualSum: true,
+        ).then((value) => functionSuccess = value);
+        break;
       case FuncType.damageNpStateIndividualFix:
         await Damage.damage(
           battleData,

@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
+import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
@@ -28,6 +31,7 @@ class Damage {
     final bool isPierceDefense = false,
     final bool checkHpRatio = false,
     final bool checkBuffTraits = false,
+    final bool individualSum = false,
   }) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.probabilityThreshold) {
@@ -46,15 +50,37 @@ class Damage {
           ? ((1 - activator.hp / activator.getMaxHp(battleData)) * dataVals.Target!).toInt()
           : 0;
 
+      int specificAttackRate = 1000;
+      if (!checkHpRatio && dataVals.Target != null) {
+        if (!individualSum) {
+          final requiredTraits = [NiceTrait(id: dataVals.Target!)];
+          final useCorrection = checkBuffTraits
+              ? containsAnyTraits(
+                  target.getBuffTraits(battleData, ignoreIrremovable: dataVals.IgnoreIndivUnreleaseable == 1),
+                  requiredTraits)
+              : containsAnyTraits(target.getTraits(battleData), requiredTraits);
+
+          if (useCorrection) {
+            specificAttackRate = dataVals.Correction!;
+          }
+        } else {
+          final countTarget = dataVals.Target! == 1 ? target : activator;
+          final requiredTraits = dataVals.TargetList!.map((traitId) => NiceTrait(id: traitId)).toList();
+          int useCount = checkBuffTraits
+              ? countTarget.countBuffWithTrait(requiredTraits)
+              : countTarget.countTrait(battleData, requiredTraits);
+          if (dataVals.ParamAddMaxCount != null && dataVals.ParamAddMaxCount! > 0) {
+            useCount = min(useCount, dataVals.ParamAddMaxCount!);
+          }
+          specificAttackRate = dataVals.Value2! + useCount * dataVals.Correction!;
+        }
+      }
+
       final damageParameters = DamageParameters()
         ..attack = activator.attack + currentCard.cardStrengthen
         ..totalHits = Maths.sum(currentCard.cardDetail.hitsDistribution)
         ..damageRate = currentCard.isNP ? dataVals.Value! + additionDamageRate : 1000
-        ..npSpecificAttackRate = dataVals.Target != null &&
-                !checkHpRatio &&
-                target.checkTrait(battleData, NiceTrait(id: dataVals.Target!), checkBuff: checkBuffTraits)
-            ? dataVals.Correction!
-            : 1000
+        ..npSpecificAttackRate = specificAttackRate
         ..attackerClass = activator.svtClass
         ..defenderClass = target.svtClass
         ..classAdvantage = classAdvantage

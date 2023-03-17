@@ -124,16 +124,16 @@ class BuffData {
     if (vals.ParamAddValue != null) {
       int addCount = 0;
       if (vals.ParamAddSelfIndividuality != null) {
-        final targetTrait = NiceTrait(id: vals.ParamAddSelfIndividuality!.first);
+        final targetTraits = vals.ParamAddSelfIndividuality!.map((e) => NiceTrait(id: e)).toList();
         addCount += isTarget
-            ? battleData.target!.countTrait(battleData, targetTrait)
-            : battleData.activator!.countTrait(battleData, targetTrait);
+            ? battleData.target!.countTrait(battleData, targetTraits)
+            : battleData.activator!.countTrait(battleData, targetTraits);
       }
       if (vals.ParamAddOpIndividuality != null) {
-        final targetTrait = NiceTrait(id: vals.ParamAddOpIndividuality!.first);
+        final targetTraits = vals.ParamAddOpIndividuality!.map((e) => NiceTrait(id: e)).toList();
         addCount += isTarget
-            ? battleData.activator!.countTrait(battleData, targetTrait)
-            : battleData.target!.countTrait(battleData, targetTrait);
+            ? battleData.activator!.countTrait(battleData, targetTraits)
+            : battleData.target!.countTrait(battleData, targetTraits);
       }
       if (vals.ParamAddMaxCount != null) {
         addCount = min(addCount, vals.ParamAddMaxCount!);
