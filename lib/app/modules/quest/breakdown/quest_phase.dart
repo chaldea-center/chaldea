@@ -533,7 +533,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       children: [
         Expanded(child: header),
         if (spotImage != null) db.getIconImage(spotImage, height: 42, aspectRatio: 1),
-        if (curPhase != null && curPhase.stages.isNotEmpty && !widget.battleOnly)
+        if (curPhase != null && curPhase.stages.isNotEmpty && !widget.battleOnly && db.runtimeData.enableDebugTools)
           IconButton(
             onPressed: () {
               _PhaseSelectCbInfo? found;

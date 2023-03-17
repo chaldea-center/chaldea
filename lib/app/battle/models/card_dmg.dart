@@ -33,6 +33,8 @@ class PlayerSvtData {
   bool ceLimitBreak = false;
   int ceLv = 0;
 
+  SupportSvtType supportSvtType = SupportSvtType.none;
+
   List<int> cardStrengthens = [0, 0, 0, 0, 0];
   List<CommandCode?> commandCodes = [null, null, null, null, null];
 
@@ -50,4 +52,13 @@ class MysticCodeData {
 
 class BuffPreset {
   int addAtk = 0;
+}
+
+// Follower.Type
+enum SupportSvtType {
+  none,
+  friend,
+  notFriend,
+  npc,
+  npcNoTd,
 }

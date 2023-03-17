@@ -42,19 +42,25 @@ class ServantOptionEditPage extends StatefulWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 24, top: 10),
+          padding: const EdgeInsets.only(left: 24, top: 8),
           child: Text('$leadingText: $label'),
         ),
-        Slider(
-          min: min.toDouble(),
-          max: max.toDouble(),
-          divisions: max - min,
-          value: value.toDouble(),
-          label: label,
-          onChanged: (v) {
-            onChange(v);
-          },
-        ),
+        ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxHeight: 24,
+            maxWidth: 300,
+          ),
+          child: Slider(
+            min: min.toDouble(),
+            max: max.toDouble(),
+            divisions: max - min,
+            value: value.toDouble(),
+            label: label,
+            onChanged: (v) {
+              onChange(v);
+            },
+          ),
+        )
       ],
     );
   }
@@ -149,13 +155,13 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         context: context,
         height: 72,
         jumpToDetail: true,
-        overrideIcon: ServantSelector.getSvtAscensionBorderedIconUrl(svt, playerSvtData.ascensionPhase),
+        overrideIcon: svt.ascendIcon(playerSvtData.ascensionPhase),
       ),
       title: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(Transl.svtNames(ServantSelector.getSvtName(svt, playerSvtData.ascensionPhase)).l),
+          Text(svt.lBattleName(playerSvtData.ascensionPhase).l),
           Text(
             'No.${svt.collectionNo > 0 ? svt.collectionNo : svt.id}'
             '  ${Transl.svtClassId(svt.classId).l}',

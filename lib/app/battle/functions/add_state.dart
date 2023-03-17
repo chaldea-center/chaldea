@@ -32,8 +32,7 @@ class AddState {
 
       battleData.setCurrentBuff(buffData);
       battleData.setTarget(target);
-      if (shouldAddState(battleData, dataVals, activator, target) &&
-          target.isBuffStackable(buffData.buff.buffGroup)) {
+      if (shouldAddState(battleData, dataVals, activator, target) && target.isBuffStackable(buffData.buff.buffGroup)) {
         target.addBuff(
           buffData,
           isPassive: isPassive || notActorPassive,

@@ -9,7 +9,6 @@ import 'package:chaldea/app/battle/models/skill.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
-import 'package:chaldea/app/modules/battle/simulation_preview.dart';
 import 'package:chaldea/app/modules/battle/svt_option_editor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
@@ -151,10 +150,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                 },
               ),
               alignment: PlaceholderAlignment.middle),
-          TextSpan(
-              text: svt.isPlayer
-                  ? Transl.svtNames(ServantSelector.getSvtBattleName(svt.niceSvt!, svt.ascensionPhase)).l
-                  : svt.niceEnemy!.lShownName),
+          TextSpan(text: svt.isPlayer ? svt.niceSvt!.lBattleName(svt.ascensionPhase).l : svt.niceEnemy!.lShownName),
         ],
       ),
       textAlign: TextAlign.center,
@@ -164,7 +160,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             context: context,
             jumpToDetail: false,
             width: 100,
-            overrideIcon: ServantSelector.getSvtAscensionBorderedIconUrl(svt.niceSvt!, svt.ascensionPhase),
+            overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase),
           )
         : svt.niceEnemy!.iconBuilder(
             context: context,
@@ -556,7 +552,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
               context: context,
               jumpToDetail: false,
               height: 100,
-              overrideIcon: ServantSelector.getSvtAscensionBorderedIconUrl(svt.niceSvt!, svt.ascensionPhase),
+              overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase),
             ),
             textBuilder: svt.canNP(widget.battleData) ? null : unableTextBuilder,
             option: ImageWithTextOption(

@@ -449,6 +449,22 @@ class Servant with GameCardMixin {
     return '${Hosts.kAtlasAssetHostGlobal}/JP/FFO/Atlas/Sprite_bordered/icon_servant_${padded}_bordered.png';
   }
 
+  String? ascendIcon(int ascOrCostumeIdOrCharaId, [bool bordered = false]) {
+    final idx = ascOrCostumeIdOrCharaId;
+    final ascs = extraAssets.faces.ascension ?? {};
+    final costumes = extraAssets.faces.costume ?? {};
+    String? _icon;
+    if (idx < 10) {
+      _icon = ascs[ascOrCostumeIdOrCharaId] ?? ascs[1];
+    } else if (idx < 100) {
+      final charaId = profile.costume.values.firstWhereOrNull((e) => e.id == idx);
+      _icon = costumes[charaId] ?? ascs[1];
+    }
+    _icon ??= costumes[idx];
+    if (bordered && collectionNo > 0) _icon = this.bordered(_icon);
+    return _icon;
+  }
+
   String get classCard {
     int imageId = db.gameData.constData.svtClassCardImageIdRemap[collectionNo] ??
         db.gameData.constData.classInfo[className.id]?.imageId ??
@@ -509,6 +525,12 @@ class Servant with GameCardMixin {
     int asc = db.userData.svtAscensionIcon == -1 && isUserSvt ? status.cur.ascension : db.userData.svtAscensionIcon;
     String _name = ascensionAdd.overWriteServantName.ascension[asc] ?? name;
     return Transl.svtNames(_name);
+  }
+
+  Transl<String, String> lBattleName([int ascOrCostumeIdOrCharaId = 0]) {
+    final _battleName =
+        ascensionAdd.getAscended(ascOrCostumeIdOrCharaId, (add) => add.overWriteServantBattleName, profile.costume);
+    return Transl.svtNames(_battleName ?? battleName);
   }
 
   Set<String> get allNames {
@@ -923,6 +945,14 @@ class AscensionAdd {
   });
 
   factory AscensionAdd.fromJson(Map<String, dynamic> json) => _$AscensionAddFromJson(json);
+
+  T? getAscended<T>(
+      int ascOrCostumeId, AscensionAddEntry<T> Function(AscensionAdd add) attri, Map<int, NiceCostume> costumes) {
+    final entries = attri(this);
+    return entries.ascension[ascOrCostumeId] ??
+        entries.costume[ascOrCostumeId] ??
+        entries.costume[costumes.values.firstWhereOrNull((c) => c.id == ascOrCostumeId)?.battleCharaId];
+  }
 }
 
 @JsonSerializable()

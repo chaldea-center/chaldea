@@ -6,7 +6,6 @@ import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/battle/models/craft_essence_entity.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
-import 'package:chaldea/app/modules/battle/simulation_preview.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/basic.dart';
@@ -28,8 +27,7 @@ class BattleServantData {
 
   bool get isEnemy => niceEnemy != null;
 
-  String get lBattleName =>
-      isPlayer ? Transl.svtNames(ServantSelector.getSvtBattleName(niceSvt!, ascensionPhase)).l : niceEnemy!.lShownName;
+  String get lBattleName => isPlayer ? niceSvt!.lBattleName(ascensionPhase).l : niceEnemy!.lShownName;
 
   int get limitCount => niceEnemy?.limit?.limitCount ?? 0;
 

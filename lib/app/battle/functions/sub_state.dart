@@ -51,7 +51,7 @@ class SubState {
           if (!containsAnyTraits(buff.traits, affectTraits)) {
             continue;
           }
-          
+
           battleData.setCurrentBuff(buff);
           if (shouldSubState(battleData, dataVals, activator, target)) {
             buffRemoved = true;
