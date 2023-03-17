@@ -347,7 +347,7 @@ class FunctionExecutor {
 
     switch (funcTargetType) {
       case FuncTargetType.self:
-      case FuncTargetType.commandTypeSelfTreasureDevice: // TODO (battle): svt 11 svt 268 uses this
+      case FuncTargetType.commandTypeSelfTreasureDevice:
         if (activator != null) {
           targets.add(activator);
         }
@@ -454,7 +454,7 @@ class FunctionExecutor {
       case FuncTargetType.ptRandom:
       case FuncTargetType.enemyRandom:
       case FuncTargetType.ptOneAnotherRandom:
-      case FuncTargetType.ptSelfAnotherRandom: // TODO (battle): svt 251 skill 3 uses this
+      case FuncTargetType.ptSelfAnotherRandom:
       case FuncTargetType.enemyOneAnotherRandom:
         battleData.logger.debug('${S.current.not_implemented}: $funcTargetType, '
             'Function ID: $funcId, '

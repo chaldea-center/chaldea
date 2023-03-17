@@ -2,6 +2,20 @@
 
 There are plenty of work need to do.
 
+## Battles
+
+### Ally Function Logic:
+- [ ] TargetType commandTypeSelfTreasureDevice for svt 11 svt 268 uses this
+- [ ] Account for OC buff
+- [ ] There is a bug that will reset accumulation damage when deathEffect is triggered
+not verified for gutsEffect
+- [ ] DataVals field AddLinkageTargetIndividualty & BehaveAsFamilyBuff
+### NPC Simulation
+- [ ] Account for NP disabled NPCs (they don't gain any NP)
+### Enemy Simulation
+- [ ] build enemy active skills & cards & NP
+- [ ] TargetType ptSelfAnotherRandom for svt 251 skill 3
+
 
 ## Misc
 
@@ -59,10 +73,6 @@ There are plenty of work need to do.
 - [x] account system: server or cloudflare?
   - [ ] ~~auto-backup user data~~: must manually backup
 - [ ] recognizer: invalid image error
-
-## Battles
-
-???
 
 ## Translation
 

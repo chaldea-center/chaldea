@@ -122,7 +122,6 @@ class BattleServantData {
       ..level = enemy.lv
       ..atk = enemy.atk
       ..shiftNpcIds = enemy.enemyScript.shift ?? [];
-    // TODO (battle): build enemy active skills & cards & NP
     return svt;
   }
 
@@ -495,7 +494,6 @@ class BattleServantData {
     battleData.setActivator(this);
     battleData.logger.action('$lBattleName ${S.current.battle_np_card}');
 
-    // TODO (battle): account for OC buff
     final overchargeLvl = isPlayer ? np ~/ ConstData.constants.fullTdPoint + extraOverchargeLvl : 1;
 
     np = 0;

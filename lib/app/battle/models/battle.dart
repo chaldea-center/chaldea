@@ -665,8 +665,6 @@ class BattleData {
         bool hasGuts = false;
         await actor.activateGuts(this).then((value) => hasGuts = value);
         if (!hasGuts) {
-          // TODO (battle): There is a bug that will reset accumulation damage when deathEffect is triggered
-          // not verified for gutsEffect
           await actor.death(this);
           actorList[i] = null;
         }
