@@ -68,8 +68,6 @@ class BuffData {
 
   // ignore: unused_field
   bool isDecide = false;
-  int paramAdd = 0;
-  int paramMax = 0;
   int userCommandCodeId = -1;
   List<int> targetSkill = [];
   int state = 0;
@@ -173,6 +171,10 @@ class BuffData {
   }
 
   void turnPass() {
+    if (vals.ParamAdd != null) {
+      param += vals.ParamAdd!;
+      param = param.clamp(0, vals.ParamMax!);
+    }
     if (turn > 0) {
       turn -= 1;
     }

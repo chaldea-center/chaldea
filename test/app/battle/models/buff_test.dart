@@ -214,4 +214,26 @@ void main() async {
       expect(merlin.battleBuff.allBuffs.length, buffCount);
     });
   });
+
+  test('ParamAdd & ParamMax', () async {
+    final battle = BattleData();
+    final playerSettings = [
+      PlayerSvtData(604000)
+        ..npLv = 3
+        ..lv = 80,
+    ];
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    final okita = battle.onFieldAllyServants[0]!;
+    expect(okita.getBuffValueOnAction(battle, BuffAction.defence), 1000);
+
+    await battle.activateSvtSkill(0, 2);
+    expect(okita.getBuffValueOnAction(battle, BuffAction.defencePierce), 900);
+
+    await battle.skipWave();
+    expect(okita.getBuffValueOnAction(battle, BuffAction.defencePierce), 700);
+
+    await battle.skipWave();
+    expect(okita.getBuffValueOnAction(battle, BuffAction.defencePierce), 500);
+  });
 }
