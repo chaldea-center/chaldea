@@ -141,7 +141,22 @@ class BuffData {
       }
     }
 
-    return param + addValue;
+    int baseParam = param;
+    if (vals.RatioHPLow != null || vals.RatioHPHigh != null) {
+      final lowerBound = vals.RatioHPHigh ?? 0;
+      final upperBound = vals.RatioHPLow ?? 0;
+      final addition = upperBound - lowerBound;
+      final maxHpRatio = vals.RatioHPRangeHigh ?? 1000;
+      final minHpRatio = vals.RatioHPRangeLow ?? 0;
+      final currentHpRatio = ((battleData.activator!.hp / battleData.activator!.getMaxHp(battleData)) * 1000).toInt();
+
+      final appliedBase = currentHpRatio > maxHpRatio ? 0 : lowerBound;
+      final additionPercent = (maxHpRatio - currentHpRatio.clamp(minHpRatio, maxHpRatio)) / (maxHpRatio - minHpRatio);
+
+      baseParam += appliedBase + (addition * additionPercent).toInt();
+    }
+
+    return baseParam + addValue;
   }
 
   bool shouldApplyBuff(final BattleData battleData, final bool isTarget) {

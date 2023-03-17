@@ -1,9 +1,9 @@
-import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
+import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/db.dart';
@@ -256,5 +256,31 @@ void main() async {
     final prevHp = enemy.hp;
     await battle.playerTurn([CombatAction(arjuna, arjuna.getNPCard(battle)!)]);
     expect(prevHp - enemy.hp, 96971);
+  });
+
+  test('HpRatio', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(1000100)
+        ..lv = 80
+        ..skillStrengthenLvs = [2, 2, 1],
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+    await battle.activateSvtSkill(0, 1);
+
+    final lip = battle.onFieldAllyServants[0]!;
+    battle.setActivator(lip);
+
+    lip.hp = lip.getMaxHp(battle) ~/ 2 + 13;
+    expect(lip.getBuffValueOnAction(battle, BuffAction.atk), 1000);
+
+    lip.hp = lip.getMaxHp(battle) ~/ 2 - 1;
+    expect(lip.getBuffValueOnAction(battle, BuffAction.atk).toDouble(), moreOrLessEquals(1300, epsilon: 1));
+
+    lip.hp = lip.getMaxHp(battle) ~/ 4;
+    expect(lip.getBuffValueOnAction(battle, BuffAction.atk).toDouble(), moreOrLessEquals(1400, epsilon: 1));
+
+    lip.hp = 1;
+    expect(lip.getBuffValueOnAction(battle, BuffAction.atk).toDouble(), moreOrLessEquals(1500, epsilon: 1));
   });
 }

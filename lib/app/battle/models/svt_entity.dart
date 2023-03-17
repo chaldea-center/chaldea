@@ -308,7 +308,7 @@ class BattleServantData {
     final List<NiceTrait> myTraits = [];
     final List<BuffData> buffs = activeOnly ? battleBuff.activeList : battleBuff.allBuffs;
     buffs.forEach((buff) {
-      if(!ignoreIrremovable || !buff.irremovable) {
+      if (!ignoreIrremovable || !buff.irremovable) {
         myTraits.addAll(buff.traits);
       }
     });
