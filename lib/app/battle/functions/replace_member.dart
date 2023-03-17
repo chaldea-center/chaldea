@@ -1,6 +1,5 @@
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
-import 'package:chaldea/app/modules/battle/simulation_preview.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/widgets/widgets.dart';

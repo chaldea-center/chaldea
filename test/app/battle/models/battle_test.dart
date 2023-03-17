@@ -569,5 +569,15 @@ void main() async {
       expect(battle.isActorOnField(7), isTrue);
       expect(battle.isActorOnField(10), isFalse);
     });
+
+    test('Critical Trait', () async {
+      final battle = BattleData();
+      await battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
+
+      battle.currentCard = battle.onFieldAllyServants[0]!.getCards(battle)[0];
+      battle.currentCard!.isCritical = true;
+
+      expect(battle.checkTraits([NiceTrait(id: Trait.criticalHit.id)], false), true);
+    });
   });
 }

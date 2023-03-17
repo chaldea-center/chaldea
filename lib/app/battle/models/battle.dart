@@ -368,6 +368,7 @@ class BattleData {
     if (includeIgnoredTrait == 1) currentTraits.addAll(actor?.getNPCard(this)?.traits ?? []);
     currentTraits.addAll(currentBuff?.traits ?? []);
     currentTraits.addAll(currentCard?.traits ?? []);
+    if (currentCard != null && currentCard!.isCritical) currentTraits.add(NiceTrait(id: Trait.criticalHit.id));
 
     if (checkIndivType == 1 || checkIndivType == 3) {
       return containsAllTraits(currentTraits, requiredTraits);
