@@ -556,5 +556,36 @@ void main() async {
 
       expect(afterCount2, prevCount + 20);
     });
+
+    test('DataVals StarHigher', () async {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(203700)
+          ..lv = 80,
+      ];
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      final jane = battle.onFieldAllyServants[0]!;
+      final prevCount = jane.battleBuff.allBuffs.length;
+      await battle.activateSvtSkill(0, 2);
+      final afterCount = jane.battleBuff.allBuffs.length;
+      expect(afterCount, prevCount + 1);
+
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      battle.criticalStars = 20;
+      final jane2 = battle.onFieldAllyServants[0]!;
+      final prevCount2 = jane2.battleBuff.allBuffs.length;
+      await battle.activateSvtSkill(0, 2);
+      final afterCount2 = jane2.battleBuff.allBuffs.length;
+      expect(afterCount2, prevCount2 + 3);
+
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      battle.criticalStars = 50;
+      final jane3 = battle.onFieldAllyServants[0]!;
+      final prevCount3 = jane3.battleBuff.allBuffs.length;
+      await battle.activateSvtSkill(0, 2);
+      final afterCount3 = jane3.battleBuff.allBuffs.length;
+      expect(afterCount3, prevCount3 + 5);
+      expect(jane3.np, 2000);
+    });
   });
 }

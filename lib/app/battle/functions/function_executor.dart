@@ -196,7 +196,7 @@ class FunctionExecutor {
             ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName())}'
             : '';
         final targetTraitString = function.functvals.isNotEmpty
-            ? ' - ${S.current.battle_require_opponent_traits} ${function.funcquestTvals.map((e) => e.shownName())}'
+            ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName())}'
             : '';
         battleData.logger.function('${activator?.lBattleName ?? S.current.battle_no_source} - '
             '${Transl.funcTargetType(function.funcTargetType).l} -  ${function.lPopupText.l}'
@@ -211,6 +211,14 @@ class FunctionExecutor {
     }
 
     if (!containsAnyTraits(battleData.getFieldTraits(), function.funcquestTvals)) {
+      battleData.logger.function('${S.current.battle_require_field_traits} ${S.current.failed}');
+      return;
+    }
+
+    if (dataVals.StarHigher != null && battleData.criticalStars < dataVals.StarHigher!) {
+      battleData.previousFunctionResult = false;
+      battleData.logger.function('${S.current.battle_critical_star} ${battleData.criticalStars.toStringAsFixed(3)} < '
+          '${dataVals.StarHigher}');
       return;
     }
 

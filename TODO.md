@@ -10,7 +10,7 @@ There are plenty of work need to do.
 - [ ] There is a bug that will reset accumulation damage when deathEffect is triggered
 not verified for gutsEffect
 - [ ] DataVals AddLinkageTargetIndividualty & BehaveAsFamilyBuff
-- [ ] DataVals CounterId CounterLv CounterOc
+- [ ] DataVals CounterId CounterLv CounterOc SkillReaction
 #### Unknowns:
 - [ ] DataVals ProgressSelfTurn
 - [ ] DataVals CheckDuplicate
