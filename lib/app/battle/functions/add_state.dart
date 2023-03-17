@@ -15,6 +15,7 @@ class AddState {
     final Buff buff,
     final DataVals dataVals,
     final List<BattleServantData> targets, {
+    final List<NiceTd>? tdSelections,
     final bool isPassive = false,
     final bool notActorPassive = false,
     final bool isCommandCode = false,
@@ -22,13 +23,18 @@ class AddState {
   }) {
     final activator = battleData.activator;
     bool buffAdded = false;
-    for (final target in targets) {
+    for (int i = 0; i < targets.length; i += 1) {
+      final target = targets[i];
       final buffData = BuffData(buff, dataVals)
         ..actorUniqueId = activator?.uniqueId ?? 0
         ..actorName = activator?.lBattleName ?? ''
         ..notActorPassive = notActorPassive
         ..isShortBuff = isShortBuff
         ..irremovable |= isPassive || notActorPassive;
+
+      if (buff.type == BuffType.tdTypeChange) {
+        buffData.tdSelection = tdSelections![i];
+      }
 
       battleData.setCurrentBuff(buffData);
       battleData.setTarget(target);

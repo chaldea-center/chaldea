@@ -54,6 +54,7 @@ class BuffData {
   int turn = -1;
   int param = 0;
   int additionalParam = 0;
+  NiceTd? tdSelection;
 
   bool get isActive => count != 0 && turn != 0;
 
@@ -218,6 +219,7 @@ class BuffData {
       ..turn = turn
       ..param = param
       ..additionalParam = additionalParam
+      ..tdSelection = tdSelection
       ..actorUniqueId = actorUniqueId
       ..actorName = actorName
       ..isUsed = isUsed

@@ -484,7 +484,32 @@ class BattleServantData {
     return true;
   }
 
+  List<NiceTd> getTdsById(final List<int> tdIds) {
+    if (isEnemy) {
+      return [niceEnemy!.noblePhantasm.noblePhantasm!];
+    }
+
+    final List<NiceTd> result = [];
+
+    for (final td in niceSvt!.noblePhantasms) {
+      if (tdIds.contains(td.id)) {
+        result.add(td);
+      }
+    }
+
+    return result;
+  }
+
   NiceTd getCurrentNP(final BattleData battleData) {
+    final buffs = collectBuffsPerAction(battleBuff.allBuffs, BuffAction.tdTypeChange);
+    battleData.setActivator(this);
+    for (final buff in buffs) {
+      if (buff.shouldApplyBuff(battleData, false)) {
+        return buff.tdSelection!;
+      }
+    }
+    battleData.unsetActivator();
+
     return isPlayer
         ? niceSvt!.groupedNoblePhantasms[0][playerSvtData!.npStrengthenLv - 1]
         : niceEnemy!.noblePhantasm.noblePhantasm!;

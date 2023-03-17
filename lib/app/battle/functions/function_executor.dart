@@ -11,6 +11,7 @@ import 'package:chaldea/app/battle/functions/sub_state.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
+import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/extension.dart';
@@ -42,13 +43,12 @@ class FunctionExecutor {
         );
         i += actFunctions.length - 1;
 
-        if (battleData.context != null) {
-          await getSelectedFunction(
-                  battleData,
-                  actFunctions
-                      .where((func) => FunctionExecutor.validateFunctionTargetTeam(func, battleData.activator))
-                      .toList())
-              .then((value) => func = value);
+        final validFuncs = actFunctions
+            .where((func) => FunctionExecutor.validateFunctionTargetTeam(func, battleData.activator))
+            .toList();
+
+        if (battleData.context != null && validFuncs.isNotEmpty) {
+          await getSelectedFunction(battleData, validFuncs).then((value) => func = value);
         }
       }
 
@@ -126,6 +126,46 @@ class FunctionExecutor {
     );
   }
 
+  static Future<NiceTd> getSelectedTd(
+    final BattleData battleData,
+    final List<NiceTd> tds,
+  ) async {
+    tds.sort((a, b) => (a.card.index % 3).compareTo(b.card.index % 3)); // Q A B
+
+    return await showDialog(
+      context: battleData.context!,
+      useRootNavigator: false,
+      barrierDismissible: false,
+      builder: (context) {
+        return SimpleCancelOkDialog(
+          title: Text(S.current.battle_select_effect),
+          contentPadding: const EdgeInsets.all(8),
+          content: SingleChildScrollView(
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: divideTiles(List.generate(tds.length, (index) {
+                return InkWell(
+                  onLongPress: () {},
+                  onTap: () {
+                    Navigator.of(context).pop(tds[index]);
+                    battleData.logger.action('${S.current.battle_select_effect}: ${tds[index].card.name.toUpperCase()}'
+                        ' ${S.current.battle_np_card}');
+                  },
+                  child: CommandCardWidget(card: tds[index].card, width: 100),
+                );
+              })),
+            ),
+          ),
+          hideOk: true,
+          hideCancel: true,
+        );
+      },
+    );
+  }
+
   static Future<void> executeFunction(
     final BattleData battleData,
     final NiceFunction function,
@@ -184,6 +224,20 @@ class FunctionExecutor {
     targets.retainWhere(
         (svt) => (svt.isAlive(battleData) || checkDead) && svt.checkTraits(battleData, function.functvals));
 
+    List<NiceTd> tdSelections = [];
+    if (function.funcTargetType == FuncTargetType.commandTypeSelfTreasureDevice) {
+      for (final svt in targets) {
+        NiceTd tdSelection = svt.getCurrentNP(battleData);
+        if (tdSelection.script != null && tdSelection.script!.tdTypeChangeIDs != null) {
+          final List<NiceTd> tds = svt.getTdsById(tdSelection.script!.tdTypeChangeIDs!);
+          if (tds.isNotEmpty && battleData.context != null) {
+            await getSelectedTd(battleData, tds).then((value) => tdSelection = value);
+          }
+        }
+        tdSelections.add(tdSelection);
+      }
+    }
+
     bool functionSuccess = true;
     switch (function.funcType) {
       case FuncType.absorbNpturn:
@@ -196,6 +250,7 @@ class FunctionExecutor {
           function.buff!,
           dataVals,
           targets,
+          tdSelections: tdSelections,
           isPassive: isPassive,
           isCommandCode: isCommandCode,
           notActorPassive: notActorFunction,
@@ -207,6 +262,7 @@ class FunctionExecutor {
           function.buff!,
           dataVals,
           targets,
+          tdSelections: tdSelections,
           isPassive: isPassive,
           isCommandCode: isCommandCode,
           notActorPassive: notActorFunction,
