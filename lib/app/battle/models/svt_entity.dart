@@ -420,7 +420,7 @@ class BattleServantData {
   }
 
   bool canUseSkillIgnoreCoolDown(final BattleData battleData, final int skillIndex) {
-    if (skillInfoList.length < skillIndex || skillIndex < 0) {
+    if (skillInfoList.length <= skillIndex || skillIndex < 0) {
       return false;
     }
 
@@ -463,13 +463,19 @@ class BattleServantData {
     return canAttack(battleData) && !hasBuffOnAction(battleData, BuffAction.donotActCommandtype);
   }
 
+  bool canSelectNP(final BattleData battleData) {
+    return canNP(battleData) && checkNPScript(battleData);
+  }
+
   bool canNP(final BattleData battleData) {
     if ((isPlayer && np < ConstData.constants.fullTdPoint) ||
         (isEnemy && (npLineCount < niceEnemy!.chargeTurn || niceEnemy!.chargeTurn == 0))) {
       return false;
     }
-
-    return canAttack(battleData) && !hasBuffOnActions(battleData, doNotNPTypes) && checkNPScript(battleData);
+    battleData.setActivator(this);
+    final result = canAttack(battleData) && !hasBuffOnActions(battleData, doNotNPTypes);
+    battleData.unsetActivator();
+    return result;
   }
 
   bool checkNPScript(final BattleData battleData) {
@@ -489,6 +495,7 @@ class BattleServantData {
 
   Future<void> activateNP(final BattleData battleData, final int extraOverchargeLvl) async {
     battleData.setActivator(this);
+    battleData.logger.action('$lBattleName ${S.current.battle_np_card}');
 
     // TODO (battle): account for OC buff
     final overchargeLvl = isPlayer ? np ~/ ConstData.constants.fullTdPoint + extraOverchargeLvl : 1;

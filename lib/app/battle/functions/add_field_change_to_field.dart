@@ -10,6 +10,11 @@ class AddFieldChangeToField {
     final Buff buff,
     final DataVals dataVals,
   ) {
+    final functionRate = dataVals.Rate ?? 1000;
+    if (functionRate < battleData.probabilityThreshold) {
+      return false;
+    }
+
     final activator = battleData.activator;
     final buffData = BuffData(buff, dataVals)
       ..actorUniqueId = activator?.uniqueId ?? 0

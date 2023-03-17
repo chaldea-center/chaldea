@@ -386,6 +386,15 @@ class BattleData {
     });
   }
 
+  bool canSelectNp(final int servantIndex) {
+    if (onFieldAllyServants[servantIndex] == null) {
+      return false;
+    }
+
+    return onFieldAllyServants[servantIndex]!.canSelectNP(this);
+  }
+
+  // NOTE: this is different from canSelectNP
   bool canUseNp(final int servantIndex) {
     if (onFieldAllyServants[servantIndex] == null) {
       return false;
@@ -414,11 +423,15 @@ class BattleData {
   }
 
   bool canUseMysticCodeSkillIgnoreCoolDown(final int skillIndex) {
-    if (masterSkillInfo.length <= skillIndex) {
+    if (masterSkillInfo.length <= skillIndex || skillIndex < 0) {
       return false;
     }
 
-    // TODO (battle): condition checking
+    final skill = masterSkillInfo[skillIndex].skill;
+    if (skill.functions.any((func) => func.funcType == FuncType.replaceMember)) {
+      return nonnullBackupAllies.isNotEmpty;
+    }
+
     return true;
   }
 
@@ -450,7 +463,6 @@ class BattleData {
     if (isTypeChain) {
       applyTypeChain(firstCardType, actions);
     }
-
     final previousTargetIndex = allyTargetIndex;
     int extraOvercharge = 0;
     for (int i = 0; i < actions.length; i += 1) {

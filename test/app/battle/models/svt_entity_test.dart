@@ -135,7 +135,8 @@ void main() async {
     await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
     expect(battle.canUseSvtSkillIgnoreCoolDown(0, 2), false);
-    expect(battle.canUseNp(1), false);
+    expect(battle.canUseNp(1), true);
+    expect(battle.canSelectNp(1), false);
 
     final eli = battle.onFieldAllyServants[0]!;
 
@@ -146,6 +147,7 @@ void main() async {
     battle.criticalStars = 20;
 
     expect(battle.canUseNp(1), true);
+    expect(battle.canSelectNp(1), true);
   });
 
   test('Chen Gong NP', () async {

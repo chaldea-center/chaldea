@@ -5,6 +5,7 @@ import 'package:chaldea/app/battle/functions/gain_np.dart';
 import 'package:chaldea/app/battle/functions/gain_np_from_targets.dart';
 import 'package:chaldea/app/battle/functions/gain_star.dart';
 import 'package:chaldea/app/battle/functions/hasten_npturn.dart';
+import 'package:chaldea/app/battle/functions/replace_member.dart';
 import 'package:chaldea/app/battle/functions/shorten_skill.dart';
 import 'package:chaldea/app/battle/functions/sub_state.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
@@ -14,6 +15,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import 'move_to_last_sub_member.dart';
 
 class FunctionExecutor {
   FunctionExecutor._();
@@ -104,7 +106,7 @@ class FunctionExecutor {
                 return TextButton(
                   onPressed: () {
                     Navigator.of(context).pop(functions[index]);
-                    battleData.logger.debug('${S.current.battle_select_effect}: ${transl('Option').l} ${index + 1}');
+                    battleData.logger.action('${S.current.battle_select_effect}: ${transl('Option').l} ${index + 1}');
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
@@ -275,6 +277,12 @@ class FunctionExecutor {
           isPierceDefense: true,
         ).then((value) => functionSuccess = value);
         break;
+      case FuncType.moveToLastSubmember:
+        functionSuccess = MoveToLastSubMember.moveToLastSubMember(battleData, dataVals, targets);
+        break;
+      case FuncType.replaceMember:
+        await ReplaceMember.replaceMember(battleData, dataVals).then((value) => functionSuccess = value);
+        break;
       default:
         battleData.logger.debug('${S.current.not_implemented}: ${function.funcType}, '
             'Function ID: ${function.funcId}, '
@@ -436,6 +444,7 @@ class FunctionExecutor {
         }
         break;
       case FuncTargetType.ptselectOneSub: //  used by replace member
+        break;
       case FuncTargetType.ptAnother:
       case FuncTargetType.enemyAnother:
       case FuncTargetType.ptSelfBefore:

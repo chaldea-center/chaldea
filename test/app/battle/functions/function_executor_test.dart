@@ -1,4 +1,3 @@
-import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chaldea/app/battle/functions/function_executor.dart';
@@ -7,6 +6,7 @@ import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
+import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
@@ -359,8 +359,7 @@ void main() async {
           ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
-        PlayerSvtData(2800100)
-          ..lv = 90,
+        PlayerSvtData(2800100)..lv = 90,
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -378,12 +377,9 @@ void main() async {
     test('subState count', () async {
       final battle = BattleData();
       final playerSettings = [
-        PlayerSvtData(1000100)
-          ..lv = 80,
-        PlayerSvtData(2300300)
-          ..lv = 90,
-        PlayerSvtData(203900)
-          ..lv = 80,
+        PlayerSvtData(1000100)..lv = 80,
+        PlayerSvtData(2300300)..lv = 90,
+        PlayerSvtData(203900)..lv = 80,
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -460,6 +456,35 @@ void main() async {
       expect(yuyu1.np, 0);
       expect(yuyu2.np, 7200 + 1800 * 3);
       expect(enemy.npLineCount, 0);
+    });
+
+    test('moveToLastSubMember', () async {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(1000100)..lv = 80,
+        PlayerSvtData(2300300)
+          ..lv = 90
+          ..ce = db.gameData.craftEssencesById[9404120] // 20 star on entry
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+        PlayerSvtData(504600)
+          ..lv = 80
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+        PlayerSvtData(504500)..lv = 80,
+        PlayerSvtData(504900)..lv = 90,
+        PlayerSvtData(503900)..lv = 80,
+      ];
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      final crane = battle.onFieldAllyServants[2]!;
+      expect(battle.canUseNp(2), true);
+
+      await battle.playerTurn([CombatAction(crane, crane.getNPCard(battle)!)]);
+
+      expect(battle.playerDataList.length, 3);
+      expect(battle.playerDataList.last, crane);
     });
   });
 }

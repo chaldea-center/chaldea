@@ -558,7 +558,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
               height: 100,
               overrideIcon: ServantSelector.getSvtAscensionBorderedIconUrl(svt.niceSvt!, svt.ascensionPhase),
             ),
-            textBuilder: svt.canNP(widget.battleData) ? null : unableTextBuilder,
+            textBuilder: svt.canSelectNP(widget.battleData) ? null : unableTextBuilder,
             option: ImageWithTextOption(
               shadowSize: 20,
               textStyle: const TextStyle(fontSize: 72, color: Colors.black),
@@ -566,7 +566,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
               alignment: AlignmentDirectional.center,
             ),
             onTap: () {
-              if (!svt.canNP(widget.battleData)) {
+              if (!svt.canSelectNP(widget.battleData)) {
                 return;
               }
 

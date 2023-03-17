@@ -10,6 +10,11 @@ class ShortenSkill {
     final DataVals dataVals,
     final List<BattleServantData> targets,
   ) {
+    final functionRate = dataVals.Rate ?? 1000;
+    if (functionRate < battleData.probabilityThreshold) {
+      return false;
+    }
+
     for (final svt in targets) {
       svt.skillInfoList.forEach((element) {
         element.shortenSkill(dataVals.Value!);
