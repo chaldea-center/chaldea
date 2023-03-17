@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
@@ -111,6 +113,36 @@ class BuffData {
     BuffType.downDamageIndividuality,
     ...activeOnlyTypes,
   ];
+
+  int getValue(final BattleData battleData, final bool isTarget) {
+    int addValue = 0;
+    if (vals.ParamAddValue != null) {
+      int addCount = 0;
+      if (vals.ParamAddSelfIndividuality != null) {
+        final targetTrait = NiceTrait(id: vals.ParamAddSelfIndividuality!.first);
+        addCount += isTarget
+            ? battleData.target!.countTrait(battleData, targetTrait)
+            : battleData.activator!.countTrait(battleData, targetTrait);
+      }
+      if (vals.ParamAddOpIndividuality != null) {
+        final targetTrait = NiceTrait(id: vals.ParamAddOpIndividuality!.first);
+        addCount += isTarget
+            ? battleData.activator!.countTrait(battleData, targetTrait)
+            : battleData.target!.countTrait(battleData, targetTrait);
+      }
+      if (vals.ParamAddMaxCount != null) {
+        addCount = min(addCount, vals.ParamAddMaxCount!);
+      }
+
+      addValue = addCount * vals.ParamAddValue!;
+
+      if (vals.ParamAddValue != null) {
+        addValue = min(addValue, vals.ParamAddMaxValue!);
+      }
+    }
+
+    return param + addValue;
+  }
 
   bool shouldApplyBuff(final BattleData battleData, final bool isTarget) {
     final int? checkIndvType = buff.script?.checkIndvType;

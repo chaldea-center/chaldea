@@ -403,12 +403,16 @@ void main() async {
       final wave3enemy = battle.targetedEnemy!;
       expect(wave3enemy.uniqueId, 10);
       final hpBeforeDamageWave3 = wave3enemy.hp;
-      await battle.playerTurn(npActions);
+      await battle.playerTurn([
+        CombatAction(kama, kama.getCards(battle)[3]),
+        CombatAction(kama, kama.getCards(battle)[2]..isCritical = true),
+        CombatAction(kama, kama.getNPCard(battle)!),
+      ]);
       final hpAfterDamageWave3 = wave3enemy.hp;
 
-      expect(hpBeforeDamageWave3 - hpAfterDamageWave3, 225160);
-      expect(kama.np, 3404 + 380);
-      expect(battle.criticalStars, moreOrLessEquals(0.844, epsilon: 0.001));
+      expect(hpBeforeDamageWave3 - hpAfterDamageWave3, 15605 + 44520 + 282836);
+      expect(kama.np, 3744 + 380);
+      expect(battle.criticalStars, moreOrLessEquals(0.184 + 0.784 + 1.143, epsilon: 0.001));
       expect(battle.isActorOnField(wave3enemy.uniqueId), isFalse);
       expect(battle.isBattleFinished, isTrue);
     });

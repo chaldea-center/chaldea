@@ -579,7 +579,7 @@ class BattleServantData {
                 : 0;
         battleData.unsetCurrentBuff();
 
-        final value = (toModifier(totalEffectiveness) * buff.param).toInt();
+        final value = (toModifier(totalEffectiveness) * buff.getValue(battleData, isTarget)).toInt();
         if (actionDetails.plusTypes.contains(buff.buff.type)) {
           totalVal += value;
         } else {
@@ -640,6 +640,10 @@ class BattleServantData {
 
   void removeBuffWithTrait(final NiceTrait trait) {
     battleBuff.activeList.removeWhere((buff) => buff.checkTraits([trait]));
+  }
+
+  int countTrait(final BattleData battleData, final NiceTrait trait) {
+    return countAnyTraits(getTraits(battleData), [trait]);
   }
 
   int countBuffWithTrait(final NiceTrait trait) {
@@ -797,7 +801,7 @@ class BattleServantData {
 
     if (gutsToApply != null) {
       gutsToApply.setUsed();
-      final value = gutsToApply.param;
+      final value = gutsToApply.getValue(battleData, false);
       final isRatio = gutsToApply.buff.type == BuffType.gutsRatio;
       if (isRatio) {
         hp = (toModifier(value) * getMaxHp(battleData)).floor();
