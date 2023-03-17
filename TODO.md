@@ -11,6 +11,8 @@ There are plenty of work need to do.
 not verified for gutsEffect
 - [ ] DataVals AddLinkageTargetIndividualty & BehaveAsFamilyBuff & UnSubStateWhileLinkedToOthers
 - [ ] DataVals CounterId CounterLv CounterOc SkillReaction UseTreasureDevice
+- [ ] DataVals ParamAddOpIndividuality & ParamAddSelfIndividuality only checking first trait, may need to convert to list trait checking
+- [ ] DataVals TriggeredFuncPosition ignored, only checking previous function success for now
 #### Unknowns:
 - [ ] DataVals ProgressSelfTurn
 - [ ] DataVals CheckDuplicate
