@@ -221,8 +221,10 @@ class FunctionExecutor {
       function.funcId,
       activator,
     );
-    targets.retainWhere(
-        (svt) => (svt.isAlive(battleData) || checkDead) && svt.checkTraits(battleData, function.functvals));
+    final checkBuff = dataVals.IncludePassiveIndividuality == 1;
+    targets.retainWhere((svt) =>
+        (svt.isAlive(battleData) || checkDead) &&
+        svt.checkTraits(battleData, function.functvals, checkBuff: checkBuff));
 
     List<NiceTd> tdSelections = [];
     if (function.funcTargetType == FuncTargetType.commandTypeSelfTreasureDevice) {

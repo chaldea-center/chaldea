@@ -486,5 +486,41 @@ void main() async {
       expect(battle.playerDataList.length, 3);
       expect(battle.playerDataList.last, crane);
     });
+
+    test('DataVals IncludePassiveIndividuality', () async {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(105200)
+          ..lv = 90
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+        PlayerSvtData(105200)
+          ..lv = 90
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+      ];
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      final charlie1 = battle.onFieldAllyServants[0]!;
+      final charlie2 = battle.onFieldAllyServants[1]!;
+      final prevCount1 = charlie1.battleBuff.allBuffs.length;
+      final prevCount2 = charlie2.battleBuff.allBuffs.length;
+
+      await battle.activateSvtSkill(0, 0);
+
+      final afterCount1 = charlie1.battleBuff.allBuffs.length;
+
+      expect(afterCount1, prevCount1 + 2);
+      expect(charlie1.canNP(battle), false);
+
+      await battle.activateSvtSkill(1, 0);
+
+      final afterCount2 = charlie2.battleBuff.allBuffs.length;
+
+      expect(afterCount2, prevCount2 + 2);
+      expect(charlie2.canNP(battle), true);
+    });
   });
 }
