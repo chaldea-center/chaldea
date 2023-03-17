@@ -522,5 +522,39 @@ void main() async {
       expect(afterCount2, prevCount2 + 2);
       expect(charlie2.canNP(battle), true);
     });
+
+    test('DataVals SameBuffLimitNum', () async {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(1000900)
+          ..skillStrengthenLvs = [2, 1, 2]
+          ..lv = 90,
+      ];
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      final kingprotea = battle.onFieldAllyServants[0]!;
+
+      final prevCount = kingprotea.battleBuff.allBuffs.length;
+
+      await battle.activateSvtSkill(0, 0);
+
+      for (int i = 0; i < 10; i += 1) {
+        await battle.playerTurn([CombatAction(kingprotea, kingprotea.getCards(battle)[0])]);
+      }
+
+      final afterCount = kingprotea.battleBuff.allBuffs.length;
+
+      expect(afterCount, prevCount + 20);
+
+      await battle.activateSvtSkill(0, 0);
+
+      for (int i = 0; i < 10; i += 1) {
+        await battle.playerTurn([CombatAction(kingprotea, kingprotea.getCards(battle)[0])]);
+      }
+
+      final afterCount2 = kingprotea.battleBuff.allBuffs.length;
+
+      expect(afterCount2, prevCount + 20);
+    });
   });
 }
