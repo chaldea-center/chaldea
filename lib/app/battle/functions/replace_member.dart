@@ -93,7 +93,7 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
                     context: context,
                     jumpToDetail: false,
                     width: 100,
-                    overrideIcon: ServantSelector.getSvtAscensionBorderedIconUrl(svt.niceSvt!, svt.ascensionPhase),
+                    overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase, true),
                   ),
                   onTap: () {
                     onFieldSelection = svt;
@@ -134,7 +134,7 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
                     context: context,
                     jumpToDetail: false,
                     width: 100,
-                    overrideIcon: ServantSelector.getSvtAscensionBorderedIconUrl(svt.niceSvt!, svt.ascensionPhase),
+                    overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase, true),
                   ),
                   onTap: () {
                     backupSelection = svt;
