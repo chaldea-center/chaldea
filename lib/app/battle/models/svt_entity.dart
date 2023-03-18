@@ -891,14 +891,19 @@ class BattleServantData {
       battleData.logger.debug('$lBattleName - ${S.current.battle_turn_end}$turnEndLog');
     }
 
-    battleBuff.turnEndShort();
+    if (isPlayer) {
+      battleBuff.turnEndShort();
+    } else {
+      battleBuff.turnEndShort();
+      battleBuff.turnEndLong();
+    }
 
     battleData.unsetTarget();
     battleData.unsetActivator();
 
     final delayedFunctions = collectBuffsPerType(battleBuff.allBuffs, BuffType.delayFunction);
-    await activateBuffs(battleData, delayedFunctions.where((buff) => buff.turn == 0));
     await activateBuffOnAction(battleData, BuffAction.functionSelfturnend);
+    await activateBuffs(battleData, delayedFunctions.where((buff) => buff.turn == 0));
 
     battleData.checkBuffStatus();
   }
@@ -909,7 +914,9 @@ class BattleServantData {
     battleData.setActivator(this);
     battleData.setTarget(this);
 
-    battleBuff.turnEndLong();
+    if (isPlayer) {
+      battleBuff.turnEndLong();
+    }
 
     battleData.unsetTarget();
     battleData.unsetActivator();

@@ -566,11 +566,7 @@ void main() async {
 
   test('skillRankUp correctly updated', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(2300400)
-        ..lv = 90
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
-        ..ceLv = 100
-        ..ceLimitBreak = true,
+      PlayerSvtData(2300400)..lv = 90,
     ];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
@@ -581,8 +577,104 @@ void main() async {
     await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
     await battle.activateSvtSkill(0, 2);
     await battle.activateSvtSkill(0, 1);
-    expect(kiara.np, 13000);
-    final enemy2 = battle.onFieldEnemies[1]!;
-    final enemy3 = battle.onFieldEnemies[2]!;
+    expect(kiara.np, 3000);
+  });
+
+  test('funcHpReduce with multiple types', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(1001500)
+        ..lv = 1
+        ..npLv = 1,
+      PlayerSvtData(1001500)
+        ..lv = 1
+        ..npLv = 1,
+      PlayerSvtData(1001500)
+        ..lv = 1
+        ..npLv = 1,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+    await battle.skipWave();
+    await battle.skipWave();
+
+    final kirei1 = battle.onFieldAllyServants[0]!;
+    final kirei2 = battle.onFieldAllyServants[1]!;
+    final kirei3 = battle.onFieldAllyServants[2]!;
+
+    final enemy = battle.onFieldEnemies[0]!;
+    final prevHp1 = enemy.hp;
+    kirei1.np = 10000;
+    kirei2.np = 10000;
+    kirei3.np = 10000;
+    await battle.playerTurn([
+      CombatAction(kirei1, kirei1.getNPCard(battle)!),
+      CombatAction(kirei2, kirei2.getNPCard(battle)!),
+      CombatAction(kirei3, kirei3.getNPCard(battle)!)
+    ]);
+    expect(prevHp1 - enemy.hp, 1457 + 1514 + 1571 + 1000 * 3 * (1 + 3) * 2);
+
+    final prevHp2 = enemy.hp;
+    kirei1.np = 10000;
+    kirei2.np = 10000;
+    kirei3.np = 10000;
+    await battle.playerTurn([
+      CombatAction(kirei1, kirei1.getNPCard(battle)!),
+      CombatAction(kirei2, kirei2.getNPCard(battle)!),
+      CombatAction(kirei3, kirei3.getNPCard(battle)!)
+    ]);
+    expect(prevHp2 - enemy.hp, 1457 + 1514 + 1571 + 1000 * 6 * (1 + 3 + 3) * 2);
+
+    enemy.hp = 100000;
+    kirei1.np = 10000;
+    kirei2.np = 10000;
+    kirei3.np = 10000;
+    await battle.playerTurn([
+      CombatAction(kirei1, kirei1.getNPCard(battle)!),
+      CombatAction(kirei2, kirei2.getNPCard(battle)!),
+      CombatAction(kirei3, kirei3.getNPCard(battle)!)
+    ]);
+    expect(100000 - enemy.hp, 1457 + 1514 + 1571 + 1000 * 9 * (1 + 3 + 3 + 3) * 2);
+  });
+
+  test('delay & turnend', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(404200)..lv = 80,
+      PlayerSvtData(2800100)..lv = 90,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final habetrot = battle.onFieldAllyServants[0]!;
+    await battle.activateSvtSkill(0, 1);
+    await battle.activateSvtSkill(0, 2);
+    await battle.activateSvtSkill(1, 2);
+    await battle.activateSvtSkill(1, 1);
+    expect(habetrot.np, 13000);
+    await battle.skipWave();
+    expect(habetrot.np, 11000);
+    expect(habetrot.hp, 0);
+    expect(battle.nonnullAllies.length, 1);
+  });
+
+  test('guts function', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(403700)..lv = 90,
+      PlayerSvtData(504400)
+        ..lv = 65
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final nemo = battle.onFieldAllyServants[0]!;
+    final chenGong = battle.onFieldAllyServants[1]!;
+    await battle.activateSvtSkill(0, 1);
+    expect(nemo.hp, 14680);
+    expect(nemo.np, 3000);
+    await battle.playerTurn([CombatAction(chenGong, chenGong.getNPCard(battle)!)]);
+    expect(nemo.np, 8000);
+    expect(nemo.hp, 3000);
   });
 }
