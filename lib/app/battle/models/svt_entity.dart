@@ -440,6 +440,7 @@ class BattleServantData {
     battleBuff.clearPassive(uniqueId);
 
     await init(battleData);
+    shiftIndex += 1;
   }
 
   bool isAlive(final BattleData battleData) {
@@ -831,11 +832,20 @@ class BattleServantData {
       turnEndLog += ' - ${S.current.battle_critical_star}: $turnEndStar';
     }
 
-    final turnEndNP = getBuffValueOnAction(battleData, BuffAction.turnendNp);
-    if (turnEndNP != 0) {
-      changeNP(turnEndNP);
+    if (isPlayer) {
+      final turnEndNP = getBuffValueOnAction(battleData, BuffAction.turnendNp);
+      if (turnEndNP != 0) {
+        changeNP(turnEndNP);
 
-      turnEndLog += ' - NP: ${(turnEndNP / 100).toStringAsFixed(2)}%';
+        turnEndLog += ' - NP: ${(turnEndNP / 100).toStringAsFixed(2)}%';
+      }
+    } else {
+      final turnEndNP = getBuffValueOnAction(battleData, BuffAction.turnvalNp);
+      if (turnEndNP != 0) {
+        changeNP(turnEndNP);
+
+        turnEndLog += ' - NP: ${(turnEndNP / 100).toStringAsFixed(2)}%';
+      }
     }
 
     if (turnEndLog.isNotEmpty) {
