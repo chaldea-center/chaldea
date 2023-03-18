@@ -297,8 +297,7 @@ class FunctionExecutor {
         functionSuccess = GainNP.gainNP(battleData, dataVals, targets);
         break;
       case FuncType.gainNpIndividualSum:
-        functionSuccess =
-            GainNP.gainNP(battleData, dataVals, targets, targetTraits: function.traitVals);
+        functionSuccess = GainNP.gainNP(battleData, dataVals, targets, targetTraits: function.traitVals);
         break;
       case FuncType.gainNpBuffIndividualSum:
         functionSuccess =

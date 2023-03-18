@@ -10,9 +10,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
 
-enum NpSpecificMode {
-  normal, individualSum, rarity
-}
+enum NpSpecificMode { normal, individualSum, rarity }
 
 class Damage {
   Damage._();
@@ -77,8 +75,8 @@ class Damage {
           final requiredTraits = [NiceTrait(id: dataVals.Target!)];
           final useCorrection = checkBuffTraits
               ? containsAnyTraits(
-              target.getBuffTraits(battleData, ignoreIrremovable: dataVals.IgnoreIndivUnreleaseable == 1),
-              requiredTraits)
+                  target.getBuffTraits(battleData, ignoreIrremovable: dataVals.IgnoreIndivUnreleaseable == 1),
+                  requiredTraits)
               : containsAnyTraits(target.getTraits(battleData), requiredTraits);
 
           if (useCorrection) {
