@@ -263,7 +263,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                           final List<NiceSkill> shownSkills = ServantSelector.getShownSkills(svt, ascensionPhase, i);
                           if (!listEquals(previousShownSkills, shownSkills)) {
                             playerSvtData.skillId[i] = shownSkills.last.id;
-                            logger.d('Changing skillStrengthenLv: ${playerSvtData.skillId[i]}');
+                            logger.d('Changing skill ID: ${playerSvtData.skillId[i]}');
                           }
                         }
 
@@ -691,9 +691,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         selectedSvt.groupedNoblePhantasms.first
             .indexOf(ServantSelector.getShownTds(selectedSvt, playerSvtData.ascensionPhase).last);
     for (int i = 0; i < selectedSvt.groupedActiveSkills.length; i += 1) {
-      playerSvtData.skillStrengthenLvs[i] = 1 +
-          selectedSvt.groupedActiveSkills[i]
-              .indexOf(ServantSelector.getShownSkills(selectedSvt, playerSvtData.ascensionPhase, i).last);
+      playerSvtData.skillId[i] = ServantSelector.getShownSkills(selectedSvt, playerSvtData.ascensionPhase, i).last.id;
     }
   }
 }

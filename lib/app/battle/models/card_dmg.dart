@@ -22,7 +22,6 @@ class PlayerSvtData {
   int ascensionPhase = 4;
   List<int> skillLvs = [10, 10, 10];
   List<int> skillId = [0, 0, 0];
-  List<int> skillStrengthenLvs = [1, 1, 1];
   List<int> appendLvs = [0, 0, 0];
   int npLv = 5;
   int npStrengthenLv = 1;
