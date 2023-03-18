@@ -75,12 +75,12 @@ class BattleSkillInfoData {
     return true;
   }
 
-  Future<void> activate(final BattleData battleData) async {
+  Future<void> activate(final BattleData battleData, {final int? effectiveness}) async {
     if (chargeTurn > 0 || battleData.isBattleFinished) {
       return;
     }
     chargeTurn = skill.coolDown[skillLv - 1];
-    await activateSkill(battleData, skill, skillLv, isCommandCode: isCommandCode);
+    await activateSkill(battleData, skill, skillLv, isCommandCode: isCommandCode, effectiveness: effectiveness);
   }
 
   static Future<void> activateSkill(
@@ -90,6 +90,7 @@ class BattleSkillInfoData {
     final bool isPassive = false,
     final bool notActorSkill = false,
     final bool isCommandCode = false,
+    final int? effectiveness,
   }) async {
     if (!battleData.checkTraits(skill.actIndividuality, false)) {
       return;
@@ -110,6 +111,7 @@ class BattleSkillInfoData {
       notActorFunction: notActorSkill,
       isCommandCode: isCommandCode,
       selectedActionIndex: selectedActionIndex,
+      effectiveness: effectiveness
     );
   }
 

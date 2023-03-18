@@ -531,6 +531,34 @@ void main() async {
     expect(nito.battleBuff.allBuffs.length, 11);
   });
 
+  test('Tezcatlipoca passive', () async {
+    final List<PlayerSvtData> lipAndJinako = [
+      PlayerSvtData(604700)..lv = 90,
+      PlayerSvtData(604700)..lv = 90,
+    ];
+    final mysticCode = MysticCodeData()
+      ..mysticCode = db.gameData.mysticCodes[130]!
+      ..level = 10;
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, mysticCode);
+
+    final tezcatlipoca = battle.onFieldAllyServants[0]!;
+    expect(tezcatlipoca.hp, 15535);
+    expect(tezcatlipoca.np, 0);
+    expect(battle.criticalStars, moreOrLessEquals(0, epsilon: 0.001));
+    await battle.activateMysticCodeSKill(0);
+    await battle.activateMysticCodeSKill(1);
+    await battle.activateMysticCodeSKill(2);
+    expect(tezcatlipoca.hp, 15535 + 3600);
+    expect(tezcatlipoca.np, 1200);
+    expect(battle.criticalStars, moreOrLessEquals(18, epsilon: 0.001));
+
+    battle.setActivator(tezcatlipoca);
+    battle.setTarget(battle.onFieldEnemies[0]!);
+    battle.currentCard = tezcatlipoca.getNPCard(battle);
+    expect(tezcatlipoca.getBuffValueOnAction(battle, BuffAction.npdamage), 420);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData(504900)..lv = 90,

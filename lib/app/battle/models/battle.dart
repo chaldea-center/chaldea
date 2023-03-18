@@ -458,7 +458,14 @@ class BattleData {
     logger.action('${S.current.mystic_code} - ${S.current.active_skill} ${skillIndex + 1}: '
         '${masterSkillInfo[skillIndex].skill.lName.l}');
     copy();
-    await masterSkillInfo[skillIndex].activate(this);
+
+    int effectiveness = 1000;
+    for (final svt in nonnullAllies) {
+      effectiveness += svt.getBuffValueOnAction(this, BuffAction.masterSkillValueUp);
+    }
+
+
+    await masterSkillInfo[skillIndex].activate(this, effectiveness: effectiveness != 1000 ? effectiveness : null);
   }
 
   Future<void> playerTurn(final List<CombatAction> actions) async {

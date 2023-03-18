@@ -15,6 +15,7 @@ import 'package:chaldea/app/battle/functions/sub_state.dart';
 import 'package:chaldea/app/battle/functions/transform_servant.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
+import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -35,6 +36,7 @@ class FunctionExecutor {
     final bool notActorFunction = false,
     final bool isCommandCode = false,
     final int? selectedActionIndex,
+    final int? effectiveness,
   }) async {
     for (int i = 0; i < functions.length; i += 1) {
       NiceFunction func = functions[i];
@@ -57,12 +59,17 @@ class FunctionExecutor {
         }
       }
 
-      await FunctionExecutor.executeFunction(battleData, func, skillLevel,
-          overchargeLvl: overchargeLvl,
-          isPassive: isPassive,
-          notActorFunction: notActorFunction,
-          isCommandCode: isCommandCode,
-          selectedActionIndex: selectedActionIndex);
+      await FunctionExecutor.executeFunction(
+        battleData,
+        func,
+        skillLevel,
+        overchargeLvl: overchargeLvl,
+        isPassive: isPassive,
+        notActorFunction: notActorFunction,
+        isCommandCode: isCommandCode,
+        selectedActionIndex: selectedActionIndex,
+        effectiveness: effectiveness
+      );
     }
 
     battleData.checkBuffStatus();
@@ -184,6 +191,7 @@ class FunctionExecutor {
     final bool notActorFunction = false,
     final bool isCommandCode = false,
     final int? selectedActionIndex,
+    final int? effectiveness,
   }) async {
     final BattleServantData? activator = battleData.activator;
     if (!validateFunctionTargetTeam(function, activator)) {
@@ -210,9 +218,15 @@ class FunctionExecutor {
         break;
     }
 
-    final dataVals = getDataVals(function, skillLevel, overchargeLvl);
+    DataVals dataVals = getDataVals(function, skillLevel, overchargeLvl);
     if (dataVals.ActSelectIndex != null && dataVals.ActSelectIndex != selectedActionIndex) {
       return;
+    }
+
+    if (effectiveness != null && dataVals.Value != null && dataVals.Value2 == null) {
+      final dataJson = dataVals.toJson();
+      dataJson['Value'] = (dataVals.Value! * toModifier(effectiveness)).toInt();
+      dataVals = DataVals.fromJson(dataJson);
     }
 
     if (!containsAnyTraits(battleData.getFieldTraits(), function.funcquestTvals)) {

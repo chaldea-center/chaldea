@@ -31,6 +31,7 @@ There are plenty of work need to do.
 - [ ] INDIVIDUALITIE seen on fields, buffTraits, servantId
 - [ ] includeIgnoredTrait only adds NP card traits for now
 - [ ] more sample on convertBuff's scripts
+- [ ] prepare a dummy BattleServantData as Master
 
 #### Unknowns:
 

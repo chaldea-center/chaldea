@@ -13,7 +13,9 @@ class GainStar {
       return false;
     }
 
-    for (int i = 0; i < times; i += 1) {
+    final gainTimes = battleData.activator == null && times == 0 ? 1 : times;
+
+    for (int i = 0; i < gainTimes; i += 1) {
       battleData.changeStar(isNegative ? -dataVals.Value! : dataVals.Value!);
     }
 
