@@ -291,6 +291,14 @@ class FunctionExecutor {
       case FuncType.gainNp:
         functionSuccess = GainNP.gainNP(battleData, dataVals, targets);
         break;
+      case FuncType.gainNpIndividualSum:
+        functionSuccess =
+            GainNP.gainNP(battleData, dataVals, targets, targetTraits: function.traitVals);
+        break;
+      case FuncType.gainNpBuffIndividualSum:
+        functionSuccess =
+            GainNP.gainNP(battleData, dataVals, targets, targetTraits: function.traitVals, checkBuff: true);
+        break;
       case FuncType.lossNp:
         functionSuccess = GainNP.gainNP(battleData, dataVals, targets, isNegative: true);
         break;
@@ -301,10 +309,10 @@ class FunctionExecutor {
         functionSuccess = HastenNpturn.hastenNpturn(battleData, dataVals, targets, isNegative: true);
         break;
       case FuncType.gainStar:
-        functionSuccess = GainStar.gainStar(battleData, dataVals);
+        functionSuccess = GainStar.gainStar(battleData, dataVals, times: targets.length);
         break;
       case FuncType.lossStar:
-        functionSuccess = GainStar.gainStar(battleData, dataVals, isNegative: true);
+        functionSuccess = GainStar.gainStar(battleData, dataVals, times: targets.length, isNegative: true);
         break;
       case FuncType.shortenSkill:
         functionSuccess = ShortenSkill.shortenSkill(battleData, dataVals, targets);

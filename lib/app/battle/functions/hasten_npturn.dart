@@ -19,7 +19,7 @@ class HastenNpturn {
     targets.forEach((target) {
       battleData.setTarget(target);
 
-      target.changeNPLineCount(dataVals.Value! * (isNegative ? -1 : 1));
+      target.changeNPLineCount(isNegative ? -dataVals.Value! : dataVals.Value!);
 
       battleData.unsetTarget();
     });

@@ -1,6 +1,6 @@
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
-import 'package:chaldea/models/gamedata/vals.dart';
+import 'package:chaldea/models/gamedata/gamedata.dart';
 
 class GainNP {
   GainNP._();
@@ -9,6 +9,8 @@ class GainNP {
     final BattleData battleData,
     final DataVals dataVals,
     final Iterable<BattleServantData> targets, {
+    final List<NiceTrait>? targetTraits,
+    final bool checkBuff = false,
     final bool isNegative = false,
   }) {
     final functionRate = dataVals.Rate ?? 1000;
@@ -19,7 +21,13 @@ class GainNP {
     targets.forEach((target) {
       battleData.setTarget(target);
 
-      target.changeNP(dataVals.Value! * (isNegative ? -1 : 1));
+      int change = isNegative ? -dataVals.Value! : dataVals.Value!;
+      if (targetTraits != null) {
+        final count = checkBuff ? target.countBuffWithTrait(targetTraits) : target.countTrait(battleData, targetTraits);
+        change *= count;
+      }
+
+      target.changeNP(change);
 
       battleData.unsetTarget();
     });

@@ -351,6 +351,20 @@ void main() async {
       expect(battle.criticalStars, moreOrLessEquals(99, epsilon: 0.001));
     });
 
+    test('gainStar Per target', () async {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData(501500)..lv = 60,
+        PlayerSvtData(504600)..lv = 60,
+        PlayerSvtData(100100)..lv = 60,
+      ];
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      expect(battle.criticalStars, moreOrLessEquals(0, epsilon: 0.001));
+      await battle.activateSvtSkill(1, 0);
+      expect(battle.criticalStars, moreOrLessEquals(10, epsilon: 0.001));
+    });
+
     test('subState affectTraits', () async {
       final battle = BattleData();
       final playerSettings = [
@@ -784,8 +798,7 @@ void main() async {
 
   test('lossHpSafe & gainHp', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(604200)
-        ..lv = 90,
+      PlayerSvtData(604200)..lv = 90,
       PlayerSvtData(701400)
         ..lv = 90
         ..skillStrengthenLvs = [2, 1, 1],
@@ -809,8 +822,7 @@ void main() async {
 
   test('gainHpPerTarget', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(403600)
-        ..lv = 80,
+      PlayerSvtData(403600)..lv = 80,
     ];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
@@ -829,5 +841,27 @@ void main() async {
     expect(prevHp1 - enemy1.hp, 2000);
     expect(enemy2.hp, 1);
     expect(prevHp3 - enemy3.hp, 2000);
+  });
+
+  test('gainNpBuffIndividualSum', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(2500600)..lv = 90,
+      PlayerSvtData(1000900)..lv = 90,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final vanGogh = battle.onFieldAllyServants[0]!;
+    final kingprotea = battle.onFieldAllyServants[1]!;
+    expect(vanGogh.np, 0);
+    expect(kingprotea.np, 0);
+
+    await battle.activateSvtSkill(0, 0);
+    expect(vanGogh.np, 3000);
+    expect(kingprotea.np, 0);
+
+    await battle.activateSvtSkill(1, 1);
+    expect(vanGogh.np, 3000);
+    expect(kingprotea.np, 0);
   });
 }

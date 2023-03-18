@@ -5,6 +5,7 @@ class GainStar {
   static bool gainStar(
     final BattleData battleData,
     final DataVals dataVals, {
+    final int times = 1,
     final bool isNegative = false,
   }) {
     final functionRate = dataVals.Rate ?? 1000;
@@ -12,7 +13,9 @@ class GainStar {
       return false;
     }
 
-    battleData.changeStar(dataVals.Value! * (isNegative ? -1 : 1));
+    for (int i = 0; i < times; i += 1) {
+      battleData.changeStar(isNegative ? -dataVals.Value! : dataVals.Value!);
+    }
 
     return true;
   }
