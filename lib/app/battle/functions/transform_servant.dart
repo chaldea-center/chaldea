@@ -29,7 +29,7 @@ class TransformServant {
       if (targetSvtId == 304800) {
         // lazy transform svt 312
         target.ascensionPhase = dataVals.SetLimitCount!;
-        target.skillInfoList[2].skillId = 888575;
+        target.skillInfoList[2].baseSkillId = 888575;
         target.npId = 304802;
       } else {
         final targetSvt = await AtlasApi.svt(targetSvtId);
@@ -45,13 +45,12 @@ class TransformServant {
               final curSkillInfo = target.skillInfoList[i];
               curSkillInfo.provisionedSkills = skills;
               if (curSkillInfo.proximateSkill == null) {
-                curSkillInfo.skillId = skills.last.id;
-                curSkillInfo.skillScript = skills.last.script;
+                curSkillInfo.setBaseSkillId(skills.last.id);
               }
             }
           }
           for (int i = targetSvt.groupedActiveSkills.length; i < target.skillInfoList.length; i += 1) {
-            target.skillInfoList[i].skillId = 0;
+            target.skillInfoList[i].baseSkillId = 0;
           }
           if (targetSvt.noblePhantasms.firstWhereOrNull((e) => e.id == target.npId) == null) {
             target.npId = targetSvt.noblePhantasms.last.id;

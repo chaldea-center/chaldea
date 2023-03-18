@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
@@ -132,7 +133,7 @@ class BattleServantData {
     final svt = BattleServantData();
     svt
       ..playerSvtData = settings
-      ..niceSvt = settings.svt
+      ..niceSvt = settings.svt!
       ..svtId = settings.svt?.id ?? 0
       ..level = settings.lv
       ..npId = settings.npId
@@ -147,10 +148,31 @@ class BattleServantData {
       svt.maxHp += svt.equip!.hp;
     }
 
+    final script = settings.svt!.script;
     for (int i = 0; i <= settings.skillId.length; i += 1) {
       if (settings.svt!.groupedActiveSkills.length > i) {
-        svt.skillInfoList.add(BattleSkillInfoData(settings.svt!.groupedActiveSkills[i], settings.skillId[i])
-          ..skillLv = settings.skillLvs[i]);
+        final List<BaseSkill> provisionedSkills = [];
+        provisionedSkills.addAll(settings.svt!.groupedActiveSkills[i]);
+        List<int>? rankUps;
+        if (script != null && script.skillRankUp != null) {
+          rankUps = script.skillRankUp![settings.skillId[i]];
+          if (rankUps != null && rankUps.isNotEmpty) {
+            for (final skillId in rankUps) {
+              final rankUpSkill = db.gameData.baseSkills[skillId];
+              if (rankUpSkill != null) {
+                provisionedSkills.add(rankUpSkill);
+              }
+            }
+          }
+        }
+
+        final skillInfo = BattleSkillInfoData(provisionedSkills, settings.skillId[i])..skillLv = settings.skillLvs[i];
+
+        if (rankUps != null) {
+          skillInfo.rankUps = rankUps;
+        }
+
+        svt.skillInfoList.add(skillInfo);
       }
     }
 
@@ -465,18 +487,26 @@ class BattleServantData {
       return false;
     }
 
+    final skillInfo = skillInfoList[skillIndex];
     battleData.setActivator(this);
+    final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
+    skillInfo.setRankUp(rankUp);
+
     final result = canAttack(battleData) &&
         !hasBuffOnAction(battleData, BuffAction.donotSkill) &&
-        skillInfoList[skillIndex].skillId != 0 &&
-        skillInfoList[skillIndex].checkSkillScript(battleData);
+        skillInfo.skillId != 0 &&
+        skillInfo.checkSkillScript(battleData);
     battleData.unsetActivator();
     return result;
   }
 
   Future<void> activateSkill(final BattleData battleData, final int skillIndex) async {
+    final skillInfo = skillInfoList[skillIndex];
     battleData.setActivator(this);
-    await skillInfoList[skillIndex].activate(battleData);
+    final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
+    skillInfo.setRankUp(rankUp);
+
+    await skillInfo.activate(battleData);
     battleData.unsetActivator();
   }
 
@@ -663,14 +693,15 @@ class BattleServantData {
 
     for (final buff in buffs.toList()) {
       if (buff.shouldApplyBuff(battleData, false)) {
-        final skill = db.gameData.baseSkills[buff.param];
+        final skillId = buff.param;
+        BaseSkill? skill = db.gameData.baseSkills[skillId];
+        skill ??= await AtlasApi.skill(skillId);
         if (skill == null) {
-          battleData.logger
-              .debug('Buff ID [${buff.buff.id}]: ${S.current.skill} [${buff.param}] ${S.current.not_found}');
+          battleData.logger.debug('Buff ID [${buff.buff.id}]: ${S.current.skill} [$skillId] ${S.current.not_found}');
           continue;
         }
 
-        battleData.logger.function('$lBattleName - ${buff.buff.lName.l} ${S.current.skill} [${buff.param}]');
+        battleData.logger.function('$lBattleName - ${buff.buff.lName.l} ${S.current.skill} [$skillId]');
         await BattleSkillInfoData.activateSkill(battleData, skill, buff.additionalParam);
         buff.setUsed();
       }

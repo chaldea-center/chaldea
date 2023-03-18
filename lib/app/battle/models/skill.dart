@@ -19,16 +19,34 @@ class BattleSkillInfoData {
 
   String get lName => proximateSkill?.lName.l ?? '???';
 
-  NiceSkill? get proximateSkill => provisionedSkills.firstWhereOrNull((skill) => skill.id == skillId);
+  BaseSkill? get proximateSkill => provisionedSkills.firstWhereOrNull((skill) => skill.id == skillId);
 
-  List<NiceSkill> provisionedSkills;
-  int skillId = 0;
+  List<BaseSkill> provisionedSkills;
+  int rankUp = 0;
+  List<int>? rankUps;
+  int baseSkillId = 0;
+
+  int get skillId => rankUp == 0 || rankUps == null || rankUps!.isEmpty
+      ? baseSkillId
+      : rankUp > rankUps!.length
+          ? rankUps!.last
+          : rankUps![rankUp - 1];
   int skillLv = 0;
   SkillScript? skillScript;
   int chargeTurn = 0;
   bool isCommandCode;
 
-  BattleSkillInfoData(this.provisionedSkills, this.skillId, {this.isCommandCode = false}) {
+  BattleSkillInfoData(this.provisionedSkills, this.baseSkillId, {this.isCommandCode = false}) {
+    skillScript = proximateSkill?.script;
+  }
+
+  void setBaseSkillId(final int newId) {
+    baseSkillId = newId;
+    skillScript = proximateSkill?.script;
+  }
+
+  void setRankUp(final int newRank) {
+    rankUp = newRank;
     skillScript = proximateSkill?.script;
   }
 
@@ -131,10 +149,12 @@ class BattleSkillInfoData {
   }
 
   BattleSkillInfoData copy() {
-    return BattleSkillInfoData(provisionedSkills, skillId)
+    return BattleSkillInfoData(provisionedSkills, baseSkillId)
       ..isCommandCode = isCommandCode
+      ..rankUps = rankUps
+      ..rankUp = rankUp
       ..skillLv = skillLv
-      ..skillScript = proximateSkill?.script
+      ..skillScript = skillScript
       ..chargeTurn = chargeTurn;
   }
 

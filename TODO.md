@@ -15,7 +15,7 @@ There are plenty of work need to do.
 - [ ] FuncType gainHpPer figure out if Percentage heal benefits from healGrant buff
 - [ ] FuncType gainHp/NpFromTargets & moveState can probably be implemented in the dependedFunc with an additional
   receiver argument to receive what's lost from absorbTargets
-- [ ] FuncType transformServant may need a local copy of Hyde data
+- [ ] FuncType transformServant may need a local copy of Hyde data, and figure out how to disable Hyde's NP
 - [ ] DataVals AddLinkageTargetIndividualty & BehaveAsFamilyBuff & UnSubStateWhileLinkedToOthers
 - [ ] DataVals CounterId CounterLv CounterOc SkillReaction UseTreasureDevice
 - [ ] DataVals TriggeredFuncPosition ignored, only checking previous function success for now
@@ -28,7 +28,7 @@ There are plenty of work need to do.
   on which buff comes last?
 - [ ] BuffType preventDeathByDamage works if Van Gogh has burn?
 - [ ] BuffType reflectionFunction
-- [ ] BuffType skillRankUp
+- [ ] BuffType skillRankUp has a maxRate of 0, so it's probably not a ValuedBuff? Currently only counting by buffTrait
 - [ ] INDIVIDUALITIE seen on fields, buffTraits, servantId
 - [ ] includeIgnoredTrait only adds NP card traits for now
 - [ ] more sample on convertBuff's scripts

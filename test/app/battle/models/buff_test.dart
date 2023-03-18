@@ -531,4 +531,58 @@ void main() async {
     await battle.skipWave();
     expect(vanGogh.hp, 1);
   });
+
+  test('skillRankUp', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(2300400)
+        ..lv = 90
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final kiara = battle.onFieldAllyServants[0]!;
+    await battle.activateSvtSkill(0, 0);
+    await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
+    await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
+    await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
+    await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
+    await battle.activateSvtSkill(0, 1);
+    expect(kiara.np, 15000);
+
+    await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
+    await battle.activateSvtSkill(0, 2);
+    final enemy2 = battle.onFieldEnemies[1]!;
+    final enemy3 = battle.onFieldEnemies[2]!;
+
+    final prevHp2 = enemy2.hp;
+    final prevHp3 = enemy3.hp;
+    await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
+    expect(prevHp2 - enemy2.hp, 53006);
+    expect(prevHp3 - enemy3.hp, 53006);
+  });
+
+  test('skillRankUp correctly updated', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(2300400)
+        ..lv = 90
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final kiara = battle.onFieldAllyServants[0]!;
+    await battle.activateSvtSkill(0, 0);
+    await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
+    await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
+    await battle.activateSvtSkill(0, 2);
+    await battle.activateSvtSkill(0, 1);
+    expect(kiara.np, 13000);
+    final enemy2 = battle.onFieldEnemies[1]!;
+    final enemy3 = battle.onFieldEnemies[2]!;
+  });
 }
