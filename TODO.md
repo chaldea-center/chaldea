@@ -16,6 +16,7 @@ There are plenty of work need to do.
 - [ ] FuncType gainHpPer figure out if Percentage heal benefits from healGrant buff
 - [ ] FuncType gainHp/NpFromTargets & moveState can probably be implemented in the dependedFunc with an additional
   receiver argument to receive what's lost from absorbTargets
+- [ ] FuncType transformServant may need a local copy of Hyde data
 - [ ] DataVals AddLinkageTargetIndividualty & BehaveAsFamilyBuff & UnSubStateWhileLinkedToOthers
 - [ ] DataVals CounterId CounterLv CounterOc SkillReaction UseTreasureDevice
 - [ ] DataVals TriggeredFuncPosition ignored, only checking previous function success for now
@@ -35,6 +36,7 @@ There are plenty of work need to do.
 - [ ] build enemy active skills & cards & NP
 - [ ] TargetType ptSelfAnotherRandom for svt 251 skill 3
 - [ ] TargetType enemyOneNoTargetNoAction for svt 311 skill 3
+- [ ] FuncType transformServant on enemies
 
 ## Misc
 
