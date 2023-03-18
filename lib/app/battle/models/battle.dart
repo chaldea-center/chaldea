@@ -187,7 +187,8 @@ class BattleData {
     mysticCode = mysticCodeData?.mysticCode;
     mysticCodeLv = mysticCodeData?.level ?? 10;
     if (mysticCode != null) {
-      masterSkillInfo = mysticCode!.skills.map((skill) => BattleSkillInfoData(skill)..skillLv = mysticCodeLv).toList();
+      masterSkillInfo =
+          mysticCode!.skills.map((skill) => BattleSkillInfoData([skill], skill.id)..skillLv = mysticCodeLv).toList();
     }
 
     _initOnField(playerDataList, onFieldAllyServants, playerOnFieldCount);
@@ -442,7 +443,11 @@ class BattleData {
       return false;
     }
 
-    final skill = masterSkillInfo[skillIndex].skill;
+    final skill = masterSkillInfo[skillIndex].proximateSkill;
+    if (skill == null) {
+      return true; // enable update
+    }
+
     if (skill.functions.any((func) => func.funcType == FuncType.replaceMember)) {
       return nonnullBackupAllies.isNotEmpty && nonnullAllies.where((svt) => svt.canOrderChange(this)).isNotEmpty;
     }
@@ -456,14 +461,13 @@ class BattleData {
     }
 
     logger.action('${S.current.mystic_code} - ${S.current.active_skill} ${skillIndex + 1}: '
-        '${masterSkillInfo[skillIndex].skill.lName.l}');
+        '${masterSkillInfo[skillIndex].lName}');
     copy();
 
     int effectiveness = 1000;
     for (final svt in nonnullAllies) {
       effectiveness += svt.getBuffValueOnAction(this, BuffAction.masterSkillValueUp);
     }
-
 
     await masterSkillInfo[skillIndex].activate(this, effectiveness: effectiveness != 1000 ? effectiveness : null);
   }

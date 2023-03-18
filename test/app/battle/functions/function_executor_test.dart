@@ -192,7 +192,7 @@ void main() async {
         ..npLv = 1
         ..lv = 90,
       PlayerSvtData(300500) // eli
-        ..skillStrengthenLvs = [2, 1, 1]
+        ..setSkillStrengthenLvs([2, 1, 1])
         ..npLv = 2
         ..lv = 80,
       PlayerSvtData(1101100) // kama
@@ -246,7 +246,7 @@ void main() async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData(800100)
-          ..skillStrengthenLvs = [1, 1, 1]
+          ..setSkillStrengthenLvs([1, 1, 1])
           ..npLv = 3
           ..lv = 80,
       ];
@@ -328,15 +328,15 @@ void main() async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData(501500)
-          ..skillStrengthenLvs = [1, 1, 1]
+          ..setSkillStrengthenLvs([1, 1, 1])
           ..npLv = 3
           ..lv = 60,
         PlayerSvtData(501500)
-          ..skillStrengthenLvs = [1, 1, 1]
+          ..setSkillStrengthenLvs([1, 1, 1])
           ..npLv = 3
           ..lv = 60,
         PlayerSvtData(501500)
-          ..skillStrengthenLvs = [1, 1, 1]
+          ..setSkillStrengthenLvs([1, 1, 1])
           ..npLv = 3
           ..lv = 60,
       ];
@@ -541,7 +541,7 @@ void main() async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData(1000900)
-          ..skillStrengthenLvs = [2, 1, 2]
+          ..setSkillStrengthenLvs([2, 1, 2])
           ..lv = 90,
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
@@ -784,7 +784,7 @@ void main() async {
         ..ceLimitBreak = true,
       PlayerSvtData(701400)
         ..lv = 90
-        ..skillStrengthenLvs = [2, 1, 1],
+        ..setSkillStrengthenLvs([2, 1, 1]),
     ];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
@@ -801,7 +801,7 @@ void main() async {
       PlayerSvtData(604200)..lv = 90,
       PlayerSvtData(701400)
         ..lv = 90
-        ..skillStrengthenLvs = [2, 1, 1],
+        ..setSkillStrengthenLvs([2, 1, 1]),
     ];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, setting, null);

@@ -1,16 +1,15 @@
 import 'dart:async';
+import 'dart:math';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'battle.dart';
 
 class BattleSkillInfoData {
-  NiceSkill rawSkill;
-  BaseSkill? overrideSkill; // SkillRankUp
-  BaseSkill get skill => overrideSkill ?? rawSkill;
-
   // BattleSkillType type = BattleSkillType.none;
   // late int index = rawSkill.num;
   // int svtUniqueId = 0;
@@ -18,21 +17,32 @@ class BattleSkillInfoData {
   // bool isUseSkill = false;
   // int userCommandCodeId = -1;
 
-  bool get isPassive => skill.type == SkillType.passive;
+  String get lName => proximateSkill?.lName.l ?? '???';
 
+  NiceSkill? get proximateSkill => provisionedSkills.firstWhereOrNull((skill) => skill.id == skillId);
+
+  List<NiceSkill> provisionedSkills;
   int skillId = 0;
   int skillLv = 0;
+  SkillScript? skillScript;
   int chargeTurn = 0;
-  int strengthStatus = 0;
   bool isCommandCode;
 
-  BattleSkillInfoData(this.rawSkill, {this.isCommandCode = false}) {
-    skillId = rawSkill.id;
+  BattleSkillInfoData(this.provisionedSkills, this.skillId, {this.isCommandCode = false}) {
+    skillScript = proximateSkill?.script;
+  }
+
+  Future<BaseSkill?> getSkill() async {
+    BaseSkill? skill = provisionedSkills.firstWhereOrNull((skill) => skill.id == skillId);
+    skill ??= db.gameData.baseSkills[skillId];
+    skill ??= await AtlasApi.skill(skillId);
+
+    return skill;
   }
 
   void shortenSkill(final int turns) {
     chargeTurn -= turns;
-    chargeTurn = chargeTurn.clamp(0, skill.coolDown[skillLv - 1]);
+    chargeTurn = max(0, chargeTurn);
   }
 
   void turnEnd() {
@@ -42,7 +52,7 @@ class BattleSkillInfoData {
   }
 
   bool checkSkillScript(final BattleData battleData) {
-    return skillScriptConditionCheck(battleData, skill.script, skillLv);
+    return skillScriptConditionCheck(battleData, skillScript, skillLv);
   }
 
   static bool skillScriptConditionCheck(
@@ -79,8 +89,13 @@ class BattleSkillInfoData {
     if (chargeTurn > 0 || battleData.isBattleFinished) {
       return;
     }
-    chargeTurn = skill.coolDown[skillLv - 1];
-    await activateSkill(battleData, skill, skillLv, isCommandCode: isCommandCode, effectiveness: effectiveness);
+    final curSkill = await getSkill();
+    if (curSkill == null) {
+      return;
+    }
+    chargeTurn = curSkill.coolDown[skillLv - 1];
+    skillScript = curSkill.script;
+    await activateSkill(battleData, curSkill, skillLv, isCommandCode: isCommandCode, effectiveness: effectiveness);
   }
 
   static Future<void> activateSkill(
@@ -103,26 +118,20 @@ class BattleSkillInfoData {
       }
     }
 
-    await FunctionExecutor.executeFunctions(
-      battleData,
-      skill.functions,
-      skillLevel,
-      isPassive: isPassive,
-      notActorFunction: notActorSkill,
-      isCommandCode: isCommandCode,
-      selectedActionIndex: selectedActionIndex,
-      effectiveness: effectiveness
-    );
+    await FunctionExecutor.executeFunctions(battleData, skill.functions, skillLevel,
+        isPassive: isPassive,
+        notActorFunction: notActorSkill,
+        isCommandCode: isCommandCode,
+        selectedActionIndex: selectedActionIndex,
+        effectiveness: effectiveness);
   }
 
   BattleSkillInfoData copy() {
-    return BattleSkillInfoData(rawSkill)
-      ..overrideSkill = overrideSkill
+    return BattleSkillInfoData(provisionedSkills, skillId)
       ..isCommandCode = isCommandCode
-      ..skillId = skillId
       ..skillLv = skillLv
-      ..chargeTurn = chargeTurn
-      ..strengthStatus = strengthStatus;
+      ..skillScript = proximateSkill?.script
+      ..chargeTurn = chargeTurn;
   }
 
   static Future<int> getSelectedIndex(

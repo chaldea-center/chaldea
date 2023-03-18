@@ -23,7 +23,7 @@ void main() async {
     group('Altria (100100) vs Sky caster', () {
       final List<PlayerSvtData> altriaSettings = [
         PlayerSvtData(100100)
-          ..skillStrengthenLvs = [1, 2, 1]
+          ..setSkillStrengthenLvs([1, 2, 1])
           ..npLv = 1
           ..npStrengthenLv = 2
           ..lv = 90
@@ -90,21 +90,21 @@ void main() async {
       test('with 1000 Fou & double Koyanskaya of Light', () async {
         final List<PlayerSvtData> altriaWithDoubleKoyan = [
           PlayerSvtData(100100)
-            ..skillStrengthenLvs = [1, 2, 1]
+            ..setSkillStrengthenLvs([1, 2, 1])
             ..npLv = 1
             ..npStrengthenLv = 2
             ..lv = 90
             ..atkFou = 1000
             ..hpFou = 0,
           PlayerSvtData(604200)
-            ..skillStrengthenLvs = [1, 1, 1]
+            ..setSkillStrengthenLvs([1, 1, 1])
             ..npLv = 1
             ..npStrengthenLv = 1
             ..lv = 90
             ..atkFou = 0
             ..hpFou = 0,
           PlayerSvtData(604200)
-            ..skillStrengthenLvs = [1, 1, 1]
+            ..setSkillStrengthenLvs([1, 1, 1])
             ..npLv = 1
             ..npStrengthenLv = 1
             ..lv = 90
@@ -135,7 +135,7 @@ void main() async {
     group('Yang Guifei (2500400) vs Sky caster', () {
       final List<PlayerSvtData> yuyuSettings = [
         PlayerSvtData(2500400)
-          ..skillStrengthenLvs = [2, 1, 1]
+          ..setSkillStrengthenLvs([2, 1, 1])
           ..npLv = 5
           ..npStrengthenLv = 1
           ..lv = 90
@@ -189,7 +189,7 @@ void main() async {
       test('with 1000 Fou & double Altria Caster', () async {
         final List<PlayerSvtData> yuyuWithDoubleCastoria = [
           PlayerSvtData(2500400)
-            ..skillStrengthenLvs = [2, 1, 1]
+            ..setSkillStrengthenLvs([2, 1, 1])
             ..npLv = 5
             ..npStrengthenLv = 1
             ..lv = 90
@@ -199,14 +199,14 @@ void main() async {
             ..ceLv = 100
             ..ceLimitBreak = true,
           PlayerSvtData(504500)
-            ..skillStrengthenLvs = [1, 1, 1]
+            ..setSkillStrengthenLvs([1, 1, 1])
             ..npLv = 1
             ..npStrengthenLv = 1
             ..lv = 90
             ..atkFou = 0
             ..hpFou = 0,
           PlayerSvtData(504500)
-            ..skillStrengthenLvs = [1, 1, 1]
+            ..setSkillStrengthenLvs([1, 1, 1])
             ..npLv = 1
             ..npStrengthenLv = 1
             ..lv = 90
@@ -240,7 +240,7 @@ void main() async {
     group('Izumo no Okuni (504900) vs Sky caster', () {
       final List<PlayerSvtData> okuniSettings = [
         PlayerSvtData(504900)
-          ..skillStrengthenLvs = [1, 1, 1]
+          ..setSkillStrengthenLvs([1, 1, 1])
           ..npLv = 5
           ..npStrengthenLv = 1
           ..lv = 90
@@ -294,7 +294,7 @@ void main() async {
       test('with 1000 Fou & double Scathach-Skadi (Caster)', () async {
         final List<PlayerSvtData> okuniWithDoubleCba = [
           PlayerSvtData(504900)
-            ..skillStrengthenLvs = [1, 1, 1]
+            ..setSkillStrengthenLvs([1, 1, 1])
             ..npLv = 5
             ..npStrengthenLv = 1
             ..lv = 90
@@ -304,14 +304,14 @@ void main() async {
             ..ceLv = 100
             ..ceLimitBreak = true,
           PlayerSvtData(503900)
-            ..skillStrengthenLvs = [1, 1, 1]
+            ..setSkillStrengthenLvs([1, 1, 1])
             ..npLv = 1
             ..npStrengthenLv = 1
             ..lv = 90
             ..atkFou = 0
             ..hpFou = 0,
           PlayerSvtData(503900)
-            ..skillStrengthenLvs = [1, 1, 1]
+            ..setSkillStrengthenLvs([1, 1, 1])
             ..npLv = 1
             ..npStrengthenLv = 1
             ..lv = 90

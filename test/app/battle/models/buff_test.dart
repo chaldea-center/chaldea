@@ -1,3 +1,5 @@
+import 'package:flutter_test/flutter_test.dart';
+
 import 'package:chaldea/app/battle/functions/damage.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/buff.dart';
@@ -7,8 +9,6 @@ import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
-import 'package:flutter_test/flutter_test.dart';
-
 import '../../../test_init.dart';
 
 void main() async {
@@ -137,7 +137,7 @@ void main() async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData(800100)
-          ..skillStrengthenLvs = [1, 1, 1]
+          ..setSkillStrengthenLvs([1, 1, 1])
           ..npLv = 3
           ..lv = 80,
       ];
@@ -157,7 +157,7 @@ void main() async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData(800100)
-          ..skillStrengthenLvs = [2, 1, 1]
+          ..setSkillStrengthenLvs([2, 1, 1])
           ..npLv = 3
           ..lv = 80,
       ];
@@ -173,7 +173,7 @@ void main() async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData(100700)
-          ..skillStrengthenLvs = [1, 2, 1]
+          ..setSkillStrengthenLvs([1, 2, 1])
           ..npLv = 3
           ..lv = 80,
         PlayerSvtData(604700)
@@ -263,7 +263,7 @@ void main() async {
     final List<PlayerSvtData> setting = [
       PlayerSvtData(1000100)
         ..lv = 80
-        ..skillStrengthenLvs = [2, 2, 1],
+        ..setSkillStrengthenLvs([2, 2, 1]),
     ];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
@@ -380,7 +380,7 @@ void main() async {
     final playerSettings = [
       PlayerSvtData(100100)
         ..lv = 90
-        ..skillStrengthenLvs = [1, 2, 2],
+        ..setSkillStrengthenLvs([1, 2, 2]),
     ];
     await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -481,7 +481,8 @@ void main() async {
     final battle = BattleData();
     final playerSettings = [
       PlayerSvtData(603700)..lv = 90,
-      PlayerSvtData(403200)..lv = 80
+      PlayerSvtData(403200)
+        ..lv = 80
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,

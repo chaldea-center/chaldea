@@ -59,17 +59,13 @@ class FunctionExecutor {
         }
       }
 
-      await FunctionExecutor.executeFunction(
-        battleData,
-        func,
-        skillLevel,
-        overchargeLvl: overchargeLvl,
-        isPassive: isPassive,
-        notActorFunction: notActorFunction,
-        isCommandCode: isCommandCode,
-        selectedActionIndex: selectedActionIndex,
-        effectiveness: effectiveness
-      );
+      await FunctionExecutor.executeFunction(battleData, func, skillLevel,
+          overchargeLvl: overchargeLvl,
+          isPassive: isPassive,
+          notActorFunction: notActorFunction,
+          isCommandCode: isCommandCode,
+          selectedActionIndex: selectedActionIndex,
+          effectiveness: effectiveness);
     }
 
     battleData.checkBuffStatus();

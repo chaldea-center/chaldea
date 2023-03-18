@@ -454,7 +454,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       child: InkWell(
         onLongPress: () {},
         child: ImageWithText(
-          image: db.getIconImage(skillInfo.skill.icon, width: 35, aspectRatio: 1),
+          image: db.getIconImage(skillInfo.proximateSkill?.icon, width: 35, aspectRatio: 1),
           textBuilder: canUseSkill && cd == 0 ? null : cdTextBuilder,
           option: ImageWithTextOption(
             shadowSize: 8,

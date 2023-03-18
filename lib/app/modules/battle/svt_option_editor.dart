@@ -195,9 +195,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                               ServantSelector.getShownSkills(svt, playerSvtData.ascensionPhase, i);
                           final List<NiceSkill> shownSkills = ServantSelector.getShownSkills(svt, ascensionPhase, i);
                           if (!listEquals(previousShownSkills, shownSkills)) {
-                            playerSvtData.skillStrengthenLvs[i] =
-                                svt.groupedActiveSkills[i].indexOf(shownSkills.last) + 1;
-                            logger.d('Changing skillStrengthenLv: ${playerSvtData.skillStrengthenLvs[i]}');
+                            playerSvtData.skillId[i] = shownSkills.last.id;
+                            logger.d('Changing skillStrengthenLv: ${playerSvtData.skillId[i]}');
                           }
                         }
 
@@ -391,7 +390,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       );
     }
 
-    final skill = svt.groupedActiveSkills[skillGroupIndex][playerSvtData.skillStrengthenLvs[skillGroupIndex] - 1];
+    final skill = svt.groupedActiveSkills[skillGroupIndex]
+        .firstWhere((activeSkill) => activeSkill.id == playerSvtData.skillId[skillGroupIndex]);
 
     final toggle = Row(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -411,9 +411,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             },
             values: FilterRadioData.nonnull(skill),
             onFilterChanged: (v, _) {
-              playerSvtData.skillStrengthenLvs[skillGroupIndex] =
-                  svt.groupedActiveSkills[skillGroupIndex].indexOf(v.radioValue!) + 1;
-              logger.d('Changing skillStrengthenLv: ${playerSvtData.skillStrengthenLvs[skillGroupIndex]}');
+              playerSvtData.skillId[skillGroupIndex] = v.radioValue!.id;
+              logger.d('Changing skillId: ${playerSvtData.skillId[skillGroupIndex]}');
               _updateState();
             },
           ),

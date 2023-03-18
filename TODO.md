@@ -26,7 +26,7 @@ There are plenty of work need to do.
 - [ ] BuffType overwriteClassRelation, atkSide first or defSide first? When two overwriteForce type interact, is it
   based on buff order? E.g. Kama skill3 & Reinis NP vs alterego attacker, is the final relation 500 or 1000 or depends
   on which buff comes last?
-- [ ] BuffType preventDeathByDamage
+- [ ] BuffType preventDeathByDamage works if Van Gogh has burn?
 - [ ] BuffType reflectionFunction
 - [ ] BuffType skillRankUp
 - [ ] INDIVIDUALITIE seen on fields, buffTraits, servantId

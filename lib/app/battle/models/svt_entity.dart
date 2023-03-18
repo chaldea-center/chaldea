@@ -146,19 +146,18 @@ class BattleServantData {
       svt.maxHp += svt.equip!.hp;
     }
 
-    for (int i = 0; i <= settings.skillStrengthenLvs.length; i += 1) {
+    for (int i = 0; i <= settings.skillId.length; i += 1) {
       if (settings.svt!.groupedActiveSkills.length > i) {
-        svt.skillInfoList
-            .add(BattleSkillInfoData(settings.svt!.groupedActiveSkills[i][settings.skillStrengthenLvs[i] - 1])
-              ..skillLv = settings.skillLvs[i]
-              ..strengthStatus = settings.skillStrengthenLvs[i]);
+        svt.skillInfoList.add(BattleSkillInfoData(settings.svt!.groupedActiveSkills[i], settings.skillId[i])
+          ..skillLv = settings.skillLvs[i]);
       }
     }
 
     for (final commandCode in settings.commandCodes) {
       if (commandCode != null) {
-        svt.commandCodeSkills.add(
-            commandCode.skills.map((skill) => BattleSkillInfoData(skill, isCommandCode: true)..skillLv = 1).toList());
+        svt.commandCodeSkills.add(commandCode.skills
+            .map((skill) => BattleSkillInfoData([skill], skill.id, isCommandCode: true)..skillLv = 1)
+            .toList());
       } else {
         svt.commandCodeSkills.add([]);
       }
@@ -200,7 +199,7 @@ class BattleServantData {
       return 'Invalid skill index: $index';
     }
 
-    return skillInfoList[index].skill.lName.l;
+    return skillInfoList[index].lName;
   }
 
   List<CommandCardData> getCards(final BattleData battleData) {
@@ -468,6 +467,7 @@ class BattleServantData {
     battleData.setActivator(this);
     final result = canAttack(battleData) &&
         !hasBuffOnAction(battleData, BuffAction.donotSkill) &&
+        skillInfoList[skillIndex].skillId != 0 &&
         skillInfoList[skillIndex].checkSkillScript(battleData);
     battleData.unsetActivator();
     return result;
@@ -486,7 +486,7 @@ class BattleServantData {
 
     battleData.setActivator(this);
     for (final skill in commandCodeSkills[cardIndex]) {
-      battleData.logger.action('$lBattleName - ${S.current.command_code}: ${skill.skill.lName.l}');
+      battleData.logger.action('$lBattleName - ${S.current.command_code}: ${skill.lName}');
       await skill.activate(battleData);
     }
     battleData.unsetActivator();
