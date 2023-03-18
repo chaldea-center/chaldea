@@ -29,7 +29,7 @@ There are plenty of work need to do.
 - [ ] BuffType preventDeathByDamage works if Van Gogh has burn?
 - [ ] BuffType reflectionFunction
 - [ ] BuffType skillRankUp has a maxRate of 0, so it's probably not a ValuedBuff? Currently only counting by buffTrait
-- [ ] INDIVIDUALITIE seen on fields, buffTraits, servantId
+- [ ] INDIVIDUALITIE seen on fields, buffTraits, servantId, are other traits included as well?
 - [ ] includeIgnoredTrait only adds NP card traits for now
 - [ ] more sample on convertBuff's scripts
 - [ ] prepare a dummy BattleServantData as Master
@@ -38,6 +38,7 @@ There are plenty of work need to do.
 
 - [ ] DataVals ProgressSelfTurn
 - [ ] DataVals CheckDuplicate
+- [ ] BuffType upNpturnval not sure what this is
 
 ### NPC Simulation
 
@@ -49,8 +50,7 @@ There are plenty of work need to do.
 - [ ] TargetType ptSelfAnotherRandom for svt 251 skill 3
 - [ ] TargetType enemyOneNoTargetNoAction for svt 311 skill 3
 - [ ] FuncType transformServant on enemies
-- [ ] BuffType upNpturnval
-- [ ] Check Atlas for enemy trigger functions
+- [X] Check Atlas for enemy trigger functions
 
 ## Misc
 
