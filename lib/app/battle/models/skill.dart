@@ -111,7 +111,7 @@ class BattleSkillInfoData {
       notActorFunction: notActorSkill,
       isCommandCode: isCommandCode,
       selectedActionIndex: selectedActionIndex,
-      effectiveness: effectiveness
+      effectiveness: effectiveness,
     );
   }
 

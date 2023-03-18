@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
-import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/basic.dart';
@@ -9,12 +8,6 @@ import '../../../test_init.dart';
 
 void main() async {
   await initiateForTest();
-
-  // test without ui, [silent] must set to silent
-  final data = await GameDataLoader.instance.reload(offline: true, silent: true);
-  print('Data version: ${data?.version.dateTime.toString()}');
-
-  db.gameData = data!;
 
   group('calculateDamage', () {
     group('Altria (100100) vs Sky caster', () {

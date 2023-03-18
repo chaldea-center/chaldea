@@ -2,10 +2,11 @@ import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 
-Future<void> initiateForTest() async {
+Future<void> initiateForTest({bool loadData = true}) async {
   // - flutter test ** --dart-define=APP_PATH=/path/to/root
   // - for vsc, add
   //    "dart.flutterTestAdditionalArgs": ["--dart-define=APP_PATH=/path/to/app"]
@@ -17,6 +18,12 @@ Future<void> initiateForTest() async {
   CustomTestBindings();
   await S.load(const Locale('en'));
   await db.initiateForTest(testAppPath: appPath);
+  if (loadData) {
+    final data = await GameDataLoader.instance.reload(offline: true, silent: true);
+    print('Data version: ${data?.version.dateTime.toString()}');
+    assert(data != null && data.version.timestamp > 0);
+    db.gameData = data!;
+  }
 }
 
 class CustomTestBindings extends AutomatedTestWidgetsFlutterBinding {

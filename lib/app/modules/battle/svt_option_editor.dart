@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 
@@ -17,7 +18,6 @@ import 'package:chaldea/models/userdata/filter_data.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/scheduler.dart';
 import '../servant/servant_list.dart';
 import 'simulation_preview.dart';
 
@@ -327,16 +327,16 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
     SimpleAccordion(
       headerBuilder: (context, _) {
-        Widget subtitle;
-        if (shownTds.length == 1) {
-          subtitle = Text(td.lName.l);
-        } else {
-          subtitle = FilterGroup<int>(
-            combined: true,
-            options: [],
-            values: FilterRadioData.nonnull(playerSvtData.npStrengthenLv),
-          );
-        }
+        // Widget subtitle;
+        // if (shownTds.length == 1) {
+        //   subtitle = Text(td.lName.l);
+        // } else {
+        //   subtitle = FilterGroup<int>(
+        //     combined: true,
+        //     options: [],
+        //     values: FilterRadioData.nonnull(playerSvtData.npStrengthenLv),
+        //   );
+        // }
         return ListTile(
           dense: true,
           title: Text('${S.current.noble_phantasm} Lv.${playerSvtData.npLv}'),

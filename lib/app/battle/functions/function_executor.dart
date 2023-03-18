@@ -68,7 +68,7 @@ class FunctionExecutor {
         notActorFunction: notActorFunction,
         isCommandCode: isCommandCode,
         selectedActionIndex: selectedActionIndex,
-        effectiveness: effectiveness
+        effectiveness: effectiveness,
       );
     }
 

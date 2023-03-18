@@ -464,7 +464,6 @@ class BattleData {
       effectiveness += svt.getBuffValueOnAction(this, BuffAction.masterSkillValueUp);
     }
 
-
     await masterSkillInfo[skillIndex].activate(this, effectiveness: effectiveness != 1000 ? effectiveness : null);
   }
 

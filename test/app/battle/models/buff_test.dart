@@ -1,24 +1,17 @@
+import 'package:flutter_test/flutter_test.dart';
+
 import 'package:chaldea/app/battle/functions/damage.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
-import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
-import 'package:flutter_test/flutter_test.dart';
-
 import '../../../test_init.dart';
 
 void main() async {
   await initiateForTest();
-
-  // test without ui, [silent] must set to silent
-  final data = await GameDataLoader.instance.reload(offline: true, silent: true);
-  print('Data version: ${data?.version.dateTime.toString()}');
-
-  db.gameData = data!;
 
   group('Test shouldApplyBuff', () {
     final battle = BattleData();
@@ -481,7 +474,8 @@ void main() async {
     final battle = BattleData();
     final playerSettings = [
       PlayerSvtData(603700)..lv = 90,
-      PlayerSvtData(403200)..lv = 80
+      PlayerSvtData(403200)
+        ..lv = 80
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,

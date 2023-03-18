@@ -5,19 +5,12 @@ import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
-import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import '../../../test_init.dart';
 
 void main() async {
   await initiateForTest();
-
-  // test without ui, [silent] must set to silent
-  final data = await GameDataLoader.instance.reload(offline: true, silent: true);
-  print('Data version: ${data?.version.dateTime.toString()}');
-
-  db.gameData = data!;
 
   group('Combat integration', () {
     group('Altria (100100) vs Sky caster', () {

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import '../test_init.dart';
@@ -8,11 +7,6 @@ import '../test_init.dart';
 void main() async {
   await initiateForTest();
 
-  // test without ui, [silent] must set to silent
-  final data = await GameDataLoader.instance.reload(offline: true, silent: true);
-  print('Data version: ${data?.version.dateTime.toString()}');
-
-  db.gameData = data!;
   // const path = '<Path to a folder>';
   // for (final Servant svt in db.gameData.servantsById.values) {
   //   checkSvtData(path, svt);
