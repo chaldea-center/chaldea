@@ -174,14 +174,24 @@ class Damage {
       final List<int> hitDamages = [];
       final List<int> hitNpGains = [];
       final List<int> hitStars = [];
-      for (int i = 0; i < currentCard.cardDetail.hitsDistribution.length; i += 1) {
+      final List<int> cardHits = [];
+      if (activator.hasBuffOnAction(battleData, BuffAction.multiattack)) {
+        currentCard.cardDetail.hitsDistribution.forEach((hit) {
+          cardHits.add(hit);
+          cardHits.add(hit);
+        });
+      } else {
+        cardHits.addAll(currentCard.cardDetail.hitsDistribution);
+      }
+      final totalHits = Maths.sum(cardHits);
+      for (int i = 0; i < cardHits.length; i += 1) {
         if (skipDamage) {
           hitDamages.add(0);
         } else {
-          final hitsPercentage = currentCard.cardDetail.hitsDistribution[i];
+          final hitsPercentage = cardHits[i];
           final int hitDamage;
-          if (i < currentCard.cardDetail.hitsDistribution.length - 1) {
-            hitDamage = totalDamage * hitsPercentage ~/ 100;
+          if (i < cardHits.length - 1) {
+            hitDamage = totalDamage * hitsPercentage ~/ totalHits;
           } else {
             hitDamage = remainingDamage;
           }

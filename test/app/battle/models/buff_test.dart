@@ -388,4 +388,37 @@ void main() async {
     await battle.activateSvtSkill(0, 1);
     expect(altria.getCards(battle).where((element) => element.cardType == CardType.buster).length, 5);
   });
+
+  test('multiAttack', () async {
+    final battle = BattleData();
+    final playerSettings = [
+      PlayerSvtData(703600)..lv = 90,
+    ];
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    final musashi = battle.onFieldAllyServants[0]!;
+    battle.setActivator(musashi);
+    battle.setTarget(battle.onFieldEnemies[0]!);
+    battle.currentCard = musashi.getNPCard(battle);
+    expect(musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
+    battle.currentCard = musashi.getCards(battle)[0];
+    expect(musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
+    battle.currentCard = musashi.getCards(battle)[1];
+    expect(musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
+
+    await battle.activateSvtSkill(0, 1);
+    battle.currentCard = musashi.getNPCard(battle);
+    expect(musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
+    battle.currentCard = musashi.getCards(battle)[0];
+    expect(musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
+    battle.currentCard = musashi.getCards(battle)[1];
+    expect(musashi.hasBuffOnAction(battle, BuffAction.multiattack), true);
+
+    battle.unsetActivator();
+    battle.unsetTarget();
+    battle.currentCard = null;
+
+    await battle.playerTurn([CombatAction(musashi, musashi.getCards(battle)[1])]);
+    expect(musashi.np, 1836);
+  });
 }
