@@ -22,6 +22,8 @@ There are plenty of work need to do.
 - [ ] DataVals TriggeredFuncPosition ignored, only checking previous function success for now
 - [ ] Group npDamageIndividualSum & buff ParamAddCount's counting logic together?
 - [ ] BuffType doNotGainNp & upGiveNp
+- [ ] BuffType doNotRecovery interacts with maxHp?
+- [ ] BuffType doNotSelectCommandCard
 - [ ] INDIVIDUALITIE seen on fields, buffTraits, servantId
 - [ ] includeIgnoredTrait only adds NP card traits for now
 - [ ] more sample on convertBuff's scripts

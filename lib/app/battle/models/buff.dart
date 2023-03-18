@@ -229,6 +229,20 @@ class BuffData {
       }
     }
 
+    if (script.HP_HIGHER != null && battleData.activator != null) {
+      final int hpRatio = (battleData.activator!.hp / battleData.activator!.getMaxHp(battleData) * 1000).toInt();
+      if (hpRatio < script.HP_HIGHER!) {
+        return false;
+      }
+    }
+
+    if (script.HP_LOWER != null && battleData.activator != null) {
+      final int hpRatio = (battleData.activator!.hp / battleData.activator!.getMaxHp(battleData) * 1000).toInt();
+      if (hpRatio > script.HP_LOWER!) {
+        return false;
+      }
+    }
+
     if (script.convert != null &&
         battleData.currentBuff != null &&
         script.convert!.convertType == BuffConvertType.buff) {

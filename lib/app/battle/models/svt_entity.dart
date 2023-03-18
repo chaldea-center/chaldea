@@ -384,6 +384,10 @@ class BattleServantData {
   }
 
   void heal(final BattleData battleData, final int heal) {
+    if (hasBuffOnAction(battleData, BuffAction.donotRecovery)) {
+      return;
+    }
+
     hp += heal;
     hp = hp.clamp(0, getMaxHp(battleData));
   }
