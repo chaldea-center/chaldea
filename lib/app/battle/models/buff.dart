@@ -223,11 +223,22 @@ class BuffData {
       }
     }
 
-    if (script.UpBuffRateBuffIndiv != null &&
-        battleData.currentBuff != null &&
-        battleData.currentBuff!.checkTraits(script.UpBuffRateBuffIndiv!)) {
-      return true;
+    if (script.UpBuffRateBuffIndiv != null && battleData.currentBuff != null) {
+      if (!battleData.currentBuff!.checkTraits(script.UpBuffRateBuffIndiv!)) {
+        return false;
+      }
     }
+
+    if (script.convert != null &&
+        battleData.currentBuff != null &&
+        script.convert!.convertType == BuffConvertType.buff) {
+      final Map<String, dynamic> targetBuffs = script.convert!.targets.first;
+      final int buffId = targetBuffs.values.first;
+      if (buffId != battleData.currentBuff!.buff.id) {
+        return false;
+      }
+    }
+
     return true;
   }
 

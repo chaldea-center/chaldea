@@ -326,4 +326,51 @@ void main() async {
     expect(kama.hp, 12889 + 1000 - 1000 + 3000);
     expect(kama.getMaxHp(battle), 12889 + 1000 - 1000 + 3000);
   });
+
+  test('convert', () async {
+    final battle = BattleData();
+    final playerSettings = [
+      PlayerSvtData(2501100)..lv = 90,
+      PlayerSvtData(504500)..lv = 80,
+    ];
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    final kukulcan = battle.onFieldAllyServants[0]!;
+    battle.setActivator(battle.onFieldEnemies[0]!);
+    battle.setTarget(kukulcan);
+
+    expect(kukulcan.hasBuffOnAction(battle, BuffAction.specialInvincible), false);
+    expect(kukulcan.hasBuffOnAction(battle, BuffAction.invincible), false);
+
+    await battle.activateSvtSkill(1, 2);
+
+    expect(kukulcan.hasBuffOnAction(battle, BuffAction.specialInvincible), true);
+    expect(kukulcan.hasBuffOnAction(battle, BuffAction.invincible), false);
+  });
+
+  test('buffRate', () async {
+    final battle = BattleData();
+    final playerSettings = [
+      PlayerSvtData(2800100)..lv = 90,
+    ];
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    final oberon = battle.onFieldAllyServants[0]!;
+    battle.setActivator(oberon);
+    battle.setTarget(battle.onFieldEnemies[0]!);
+    battle.currentCard = oberon.getNPCard(battle);
+
+    expect(oberon.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
+    expect(oberon.getBuffValueOnAction(battle, BuffAction.npdamage), 0);
+
+    await battle.activateSvtSkill(0, 0);
+
+    expect(oberon.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
+    expect(oberon.getBuffValueOnAction(battle, BuffAction.npdamage), 300);
+
+    await battle.activateSvtSkill(0, 2);
+
+    expect(oberon.getBuffValueOnAction(battle, BuffAction.commandAtk), 1500);
+    expect(oberon.getBuffValueOnAction(battle, BuffAction.npdamage), 600);
+  });
 }

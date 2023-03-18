@@ -38,6 +38,11 @@ class AddState {
       }
 
       battleData.setCurrentBuff(buffData);
+      final convertBuff = target.getFirstBuffOnActions(battleData, [BuffAction.buffConvert]);
+      if (convertBuff != null) {
+        buffData.buff = convertBuff.buff.script!.convert!.convertBuffs.first;
+      }
+
       battleData.setTarget(target);
       if (shouldAddState(battleData, dataVals, activator, target) &&
           target.isBuffStackable(buffData.buff.buffGroup) &&

@@ -24,6 +24,7 @@ There are plenty of work need to do.
 - [ ] BuffType doNotGainNp & upGiveNp
 - [ ] INDIVIDUALITIE seen on fields, buffTraits, servantId
 - [ ] includeIgnoredTrait only adds NP card traits for now
+- [ ] more sample on convertBuff's scripts
 
 #### Unknowns:
 

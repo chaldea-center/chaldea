@@ -591,7 +591,7 @@ class BattleServantData {
             ? getBuffValueOnAction(battleData, BuffAction.funcHpReduce)
             : buffAction != BuffAction.buffRate
                 ? getBuffValueOnAction(battleData, BuffAction.buffRate)
-                : 0;
+                : 1000;
         battleData.unsetCurrentBuff();
 
         final value = (toModifier(totalEffectiveness) * buff.getValue(battleData, isTarget)).toInt();
@@ -604,6 +604,18 @@ class BattleServantData {
       }
     }
     return capBuffValue(actionDetails, totalVal, maxRate);
+  }
+
+  BuffData? getFirstBuffOnActions(final BattleData battleData, final List<BuffAction> buffActions) {
+    final isTarget = battleData.target == this;
+
+    for (final buff in collectBuffsPerActions(battleBuff.allBuffs, buffActions)) {
+      if (buff.shouldApplyBuff(battleData, isTarget)) {
+        buff.setUsed();
+        return buff;
+      }
+    }
+    return null;
   }
 
   bool hasBuffOnAction(final BattleData battleData, final BuffAction buffAction) {
