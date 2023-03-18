@@ -576,7 +576,9 @@ class BattleServantData {
     battleData.setActivator(this);
     battleData.logger.action('$lBattleName ${S.current.battle_np_card}');
 
-    final overchargeLvl = isPlayer ? np ~/ ConstData.constants.fullTdPoint + extraOverchargeLvl : 1;
+    final upOverCharge = getBuffValueOnAction(battleData, BuffAction.chagetd);
+    int overchargeLvl = upOverCharge + (isPlayer ? np ~/ ConstData.constants.fullTdPoint + extraOverchargeLvl : 1);
+    overchargeLvl = overchargeLvl.clamp(1, 5);
 
     np = 0;
     npLineCount = 0;

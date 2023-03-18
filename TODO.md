@@ -7,7 +7,6 @@ There are plenty of work need to do.
 ### Ally Function Logic:
 
 - [ ] Move all checkTrait logic into battle and remove individual checkTrait methods in models
-- [ ] Account for OC buff
 - [ ] There is a bug that will reset accumulation damage when deathEffect is triggered
   not verified for gutsEffect
 - [ ] Chen Gong OC NP Gain?
@@ -24,6 +23,11 @@ There are plenty of work need to do.
 - [ ] BuffType doNotGainNp & upGiveNp
 - [ ] BuffType doNotRecovery interacts with maxHp?
 - [ ] BuffType doNotSelectCommandCard
+- [ ] BuffType masterSkillValueUp
+- [ ] BuffType overwriteClassRelation
+- [ ] BuffType preventDeathByDamage
+- [ ] BuffType reflectionFunction
+- [ ] BuffType skillRankUp
 - [ ] INDIVIDUALITIE seen on fields, buffTraits, servantId
 - [ ] includeIgnoredTrait only adds NP card traits for now
 - [ ] more sample on convertBuff's scripts

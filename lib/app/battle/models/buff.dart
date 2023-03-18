@@ -176,7 +176,7 @@ class BuffData {
     final targetCheck = battleData.checkTraits(
           buff.ckOpIndv,
           !isTarget,
-          checkTargetBuff: checkTargetBuff,
+          checkTargetBuff: checkTargetBuff || buff.script?.CheckOpponentBuffTypes != null,
           activeOnly: activeOnly,
           ignoreIrremovable: ignoreIrremovable,
           checkIndivType: checkIndvType,

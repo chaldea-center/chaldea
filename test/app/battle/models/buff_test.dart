@@ -1,5 +1,3 @@
-import 'package:flutter_test/flutter_test.dart';
-
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
@@ -8,6 +6,8 @@ import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:flutter_test/flutter_test.dart';
+
 import '../../../test_init.dart';
 
 void main() async {
@@ -420,5 +420,59 @@ void main() async {
 
     await battle.playerTurn([CombatAction(musashi, musashi.getCards(battle)[1])]);
     expect(musashi.np, 1836);
+  });
+
+  test('overchargeBuff', () async {
+    final battle = BattleData();
+    final playerSettings = [
+      PlayerSvtData(901000)
+        ..lv = 90
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+      PlayerSvtData(901000)
+        ..lv = 90
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+      PlayerSvtData(500300)..lv = 90,
+    ];
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    final himiko1 = battle.onFieldAllyServants[0]!;
+    final himiko2 = battle.onFieldAllyServants[1]!;
+    final tamamo = battle.onFieldAllyServants[2]!;
+    await battle.playerTurn([
+      CombatAction(himiko1, himiko1.getNPCard(battle)!),
+      CombatAction(himiko2, himiko2.getNPCard(battle)!),
+    ]);
+    tamamo.np = 30000;
+    await battle.playerTurn([CombatAction(tamamo, tamamo.getNPCard(battle)!)]);
+    expect(himiko1.np, 5000);
+    expect(himiko2.np, 5000);
+    expect(tamamo.np, 5000);
+  });
+
+  test('CheckOpponentBuffTypes', () async {
+    final battle = BattleData();
+    final playerSettings = [
+      PlayerSvtData(104900)..lv = 90,
+      PlayerSvtData(504500)..lv = 80,
+    ];
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    final murasama = battle.onFieldAllyServants[0]!;
+    final castoria = battle.onFieldAllyServants[1]!;
+    battle.allyTargetIndex = 1;
+
+    await battle.activateSvtSkill(0, 1);
+
+    battle.setActivator(murasama);
+    battle.setTarget(castoria);
+    battle.currentCard = murasama.getCards(battle)[0];
+    expect(murasama.getBuffValueOnAction(battle, BuffAction.criticalDamage), 1050);
+
+    await battle.activateSvtSkill(1, 2);
+    expect(murasama.getBuffValueOnAction(battle, BuffAction.criticalDamage), 2050);
   });
 }
