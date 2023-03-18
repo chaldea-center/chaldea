@@ -8,6 +8,7 @@ import 'package:chaldea/app/battle/functions/gain_np_from_targets.dart';
 import 'package:chaldea/app/battle/functions/gain_star.dart';
 import 'package:chaldea/app/battle/functions/hasten_npturn.dart';
 import 'package:chaldea/app/battle/functions/instant_death.dart';
+import 'package:chaldea/app/battle/functions/move_state.dart';
 import 'package:chaldea/app/battle/functions/replace_member.dart';
 import 'package:chaldea/app/battle/functions/shorten_skill.dart';
 import 'package:chaldea/app/battle/functions/sub_state.dart';
@@ -285,6 +286,9 @@ class FunctionExecutor {
       case FuncType.subState:
         functionSuccess = SubState.subState(battleData, function.traitVals, dataVals, targets);
         break;
+      case FuncType.moveState:
+        await MoveState.moveState(battleData, dataVals, targets).then((value) => functionSuccess = value);
+        break;
       case FuncType.addFieldChangeToField:
         functionSuccess = AddFieldChangeToField.addFieldChangeToField(battleData, function.buff!, dataVals);
         break;
@@ -542,6 +546,11 @@ class FunctionExecutor {
         targets.addAll(backupEnemies);
         targets.remove(targetedEnemy);
         break;
+      case FuncTargetType.fieldOther:
+        targets.addAll(aliveAllies);
+        targets.addAll(aliveEnemies);
+        targets.remove(activator);
+        break;
       case FuncTargetType.ptSelfAnotherFirst:
         final firstOtherSelectable = aliveAllies.firstWhereOrNull((svt) => svt != activator && svt.selectable);
         if (firstOtherSelectable != null) {
@@ -593,7 +602,6 @@ class FunctionExecutor {
       case FuncTargetType.enemyAnother:
       case FuncTargetType.ptSelfBefore:
       case FuncTargetType.ptSelfAfter:
-      case FuncTargetType.fieldOther:
       case FuncTargetType.enemyOneNoTargetNoAction:
       case FuncTargetType.ptRandom:
       case FuncTargetType.enemyRandom:

@@ -843,10 +843,11 @@ void main() async {
     expect(prevHp3 - enemy3.hp, 2000);
   });
 
-  test('gainNpBuffIndividualSum', () async {
+  test('gainNpBuffIndividualSum & moveState', () async {
     final List<PlayerSvtData> setting = [
       PlayerSvtData(2500600)..lv = 90,
       PlayerSvtData(1000900)..lv = 90,
+      PlayerSvtData(1001000)..lv = 90,
     ];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
@@ -856,12 +857,16 @@ void main() async {
     expect(vanGogh.np, 0);
     expect(kingprotea.np, 0);
 
+    await battle.activateSvtSkill(2, 0);
+    await battle.activateSvtSkill(2, 2);
+    await battle.activateSvtSkill(0, 1);
+    await battle.activateSvtSkill(0, 2);
     await battle.activateSvtSkill(0, 0);
-    expect(vanGogh.np, 3000);
+    expect(vanGogh.np, 12000);
     expect(kingprotea.np, 0);
 
     await battle.activateSvtSkill(1, 1);
-    expect(vanGogh.np, 3000);
+    expect(vanGogh.np, 12000);
     expect(kingprotea.np, 0);
   });
 }

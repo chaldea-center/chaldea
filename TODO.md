@@ -5,35 +5,43 @@ There are plenty of work need to do.
 ## Battles
 
 ### Ally Function Logic:
+
 - [ ] Move all checkTrait logic into battle and remove individual checkTrait methods in models
 - [ ] Account for OC buff
 - [ ] There is a bug that will reset accumulation damage when deathEffect is triggered
-not verified for gutsEffect
+  not verified for gutsEffect
 - [ ] Chen Gong OC NP Gain?
 - [ ] FuncType damageNpCounter
 - [ ] FuncType damageNpRate Target == 0 is target, verify if Target ==1 is activator?
 - [ ] FuncType gainHpPer figure out if Percentage heal benefits from healGrant buff
+- [ ] FuncType gainHp/NpFromTargets & moveState can probably be implemented in the dependedFunc with an additional
+  receiver argument to receive what's lost from absorbTargets
 - [ ] DataVals AddLinkageTargetIndividualty & BehaveAsFamilyBuff & UnSubStateWhileLinkedToOthers
 - [ ] DataVals CounterId CounterLv CounterOc SkillReaction UseTreasureDevice
 - [ ] DataVals TriggeredFuncPosition ignored, only checking previous function success for now
 - [ ] Group npDamageIndividualSum & buff ParamAddCount's counting logic together?
+
 #### Unknowns:
+
 - [ ] DataVals ProgressSelfTurn
 - [ ] DataVals CheckDuplicate
+
 ### NPC Simulation
+
 - [ ] Account for NP disabled NPCs (they don't gain any NP)
+
 ### Enemy Simulation
+
 - [ ] build enemy active skills & cards & NP
 - [ ] TargetType ptSelfAnotherRandom for svt 251 skill 3
 - [ ] TargetType enemyOneNoTargetNoAction for svt 311 skill 3
-
 
 ## Misc
 
 - [ ] Integrate Sentry
 - [ ] Adding crash log review
 - [ ] command card: add svt assets
-- [ ] userdata: make all constructor params nullable, catch error when converting token 
+- [ ] userdata: make all constructor params nullable, catch error when converting token
 - [ ] remember svt tabs
 - [ ] logger.level
 - [ ] l10n: related_card->related_card_on_stage
@@ -51,7 +59,7 @@ not verified for gutsEffect
 - [ ] class icon+name
 - [ ] breaking change: FixedDrop
 - [ ] filter_group: add onReset
-- [ ] separate cn proxy 
+- [ ] separate cn proxy
 - [ ] free quest drop table
 - [ ] parser: check summon prob correct
 - [ ] summon: add wiki prob edit util
@@ -63,26 +71,25 @@ not verified for gutsEffect
 
 - [x] Duplicated servant support
 - [ ] Plan:
-  - [ ] support TextField input
+    - [ ] support TextField input
 - [x] skill/np/quest/voice/profile condition
 
 ## Adding more pages
 
 - [x] Summon list and detail page
-  - [ ] summon plan: ?
+    - [ ] summon plan: ?
 - [x] Saint Quartz estimate
-  - [ ] poor performance
+    - [ ] poor performance
 - [ ] Events
-  - [ ] War Map
+    - [ ] War Map
 - [ ] Buff/Function reversing
 - [ ] Support Party generation
-
 
 ## Server side
 
 - [x] item/skill recognition
 - [x] account system: server or cloudflare?
-  - [ ] ~~auto-backup user data~~: must manually backup
+    - [ ] ~~auto-backup user data~~: must manually backup
 - [ ] recognizer: invalid image error
 
 ## Translation

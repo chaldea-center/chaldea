@@ -657,7 +657,11 @@ class BattleServantData {
   }
 
   int countBuffWithTrait(final List<NiceTrait> traits) {
-    return battleBuff.allBuffs.where((buff) => containsAnyTraits(buff.traits, traits)).length;
+    return getBuffsWithTraits(traits).length;
+  }
+
+  List<BuffData> getBuffsWithTraits(final List<NiceTrait> traits) {
+    return battleBuff.allBuffs.where((buff) => containsAnyTraits(buff.traits, traits)).toList();
   }
 
   bool isBuffStackable(final int buffGroup) {
