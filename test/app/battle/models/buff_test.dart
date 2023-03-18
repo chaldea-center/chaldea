@@ -521,4 +521,20 @@ void main() async {
     expect(Damage.getClassRelation(battle, kirei, kama), 1000);
     expect(Damage.getClassRelation(battle, kirei, reinis), 1000);
   });
+
+  test('preventDeathByDamage', () async {
+    final battle = BattleData();
+    final playerSettings = [
+      PlayerSvtData(2500600)..lv = 90,
+    ];
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    final vanGogh = battle.onFieldAllyServants[0]!;
+    battle.allyTargetIndex = 1;
+
+    await battle.activateSvtSkill(0, 0);
+    vanGogh.hp = 200;
+    await battle.skipWave();
+    expect(vanGogh.hp, 1);
+  });
 }

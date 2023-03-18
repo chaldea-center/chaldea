@@ -117,6 +117,7 @@ class BuffData {
     BuffType.upDamageIndividuality,
     BuffType.downDamageIndividuality,
     ...activeOnlyTypes,
+    BuffType.preventDeathByDamage,
   ];
 
   int getValue(final BattleData battleData, final bool isTarget) {

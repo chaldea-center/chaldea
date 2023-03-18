@@ -805,8 +805,13 @@ class BattleServantData {
     battleData.setTarget(this);
 
     String turnEndLog = '';
-    final turnEndDamage = getBuffValueOnAction(battleData, BuffAction.turnendHpReduce);
+    int turnEndDamage = getBuffValueOnAction(battleData, BuffAction.turnendHpReduce);
     if (turnEndDamage != 0) {
+      final List<BuffData> preventDeaths = getBuffsOfType(BuffType.preventDeathByDamage);
+      turnEndDamage = preventDeaths.any((buff) => buff.shouldApplyBuff(battleData, true))
+          ? min(hp - 1, turnEndDamage)
+          : turnEndDamage;
+
       receiveDamage(turnEndDamage);
       turnEndLog += ' - dot ${S.current.battle_damage}: $turnEndDamage';
     }
