@@ -12,6 +12,7 @@ not verified for gutsEffect
 - [ ] Chen Gong OC NP Gain?
 - [ ] FuncType damageNpCounter
 - [ ] FuncType damageNpRate Target == 0 is target, verify if Target ==1 is activator?
+- [ ] FuncType gainHpPer figure out if Percentage heal benefits from healGrant buff
 - [ ] DataVals AddLinkageTargetIndividualty & BehaveAsFamilyBuff & UnSubStateWhileLinkedToOthers
 - [ ] DataVals CounterId CounterLv CounterOc SkillReaction UseTreasureDevice
 - [ ] DataVals TriggeredFuncPosition ignored, only checking previous function success for now

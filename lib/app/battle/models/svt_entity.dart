@@ -375,6 +375,16 @@ class BattleServantData {
     hp = hp.clamp(0, getMaxHp(battleData));
   }
 
+  void lossHp(
+    final int loss, {
+    final bool lethal = false,
+  }) {
+    hp -= loss;
+    if (hp <= 0 && !lethal) {
+      hp = 1;
+    }
+  }
+
   void receiveDamage(final int hitDamage) {
     hp -= hitDamage;
   }

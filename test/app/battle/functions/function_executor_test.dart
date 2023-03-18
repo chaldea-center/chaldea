@@ -781,4 +781,29 @@ void main() async {
 
     expect(arash.hp, 0);
   });
+
+  test('lossHpSafe & gainHp', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(604200)
+        ..lv = 90,
+      PlayerSvtData(701400)
+        ..lv = 90
+        ..skillStrengthenLvs = [2, 1, 1],
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final koyan = battle.onFieldAllyServants[0]!;
+    final nightingale = battle.onFieldAllyServants[1]!;
+
+    koyan.hp = 501;
+    final prevNightingaleHp = nightingale.hp;
+    await battle.activateSvtSkill(0, 0);
+    expect(koyan.hp, 1);
+    expect(prevNightingaleHp - nightingale.hp, 1000);
+
+    await battle.activateSvtSkill(1, 0);
+    expect(koyan.hp, 4001);
+    expect(prevNightingaleHp - nightingale.hp, 1000);
+  });
 }

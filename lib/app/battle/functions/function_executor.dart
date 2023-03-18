@@ -1,6 +1,7 @@
 import 'package:chaldea/app/battle/functions/add_field_change_to_field.dart';
 import 'package:chaldea/app/battle/functions/add_state.dart';
 import 'package:chaldea/app/battle/functions/damage.dart';
+import 'package:chaldea/app/battle/functions/gain_hp.dart';
 import 'package:chaldea/app/battle/functions/gain_np.dart';
 import 'package:chaldea/app/battle/functions/gain_np_from_targets.dart';
 import 'package:chaldea/app/battle/functions/gain_star.dart';
@@ -386,6 +387,18 @@ class FunctionExecutor {
         break;
       case FuncType.forceInstantDeath:
         functionSuccess = InstantDeath.instantDeath(battleData, dataVals, targets, force: true);
+        break;
+      case FuncType.gainHp:
+        functionSuccess = GainHP.gainHP(battleData, dataVals, targets);
+        break;
+      case FuncType.gainHpPer:
+        functionSuccess = GainHP.gainHP(battleData, dataVals, targets, isPercent: true);
+        break;
+      case FuncType.lossHpSafe:
+        functionSuccess = GainHP.gainHP(battleData, dataVals, targets, isNegative: true);
+        break;
+      case FuncType.lossHp:
+        functionSuccess = GainHP.gainHP(battleData, dataVals, targets, isNegative: true, isLethal: true);
         break;
       case FuncType.moveToLastSubmember:
         functionSuccess = MoveToLastSubMember.moveToLastSubMember(battleData, dataVals, targets);
