@@ -208,9 +208,15 @@ class BattleServantData {
       return [];
     }
 
+    final changeCardType = getFirstBuffOnActions(battleData, [BuffAction.changeCommandCardType]);
+    final List<CardType> cards = changeCardType == null
+        ? niceSvt!.cards
+        : List.generate(niceSvt!.cards.length,
+            (index) => CardType.values.firstWhere((cardType) => cardType.id == changeCardType.param));
+
     final List<CommandCardData> builtCards = [];
-    for (int i = 0; i < niceSvt!.cards.length; i += 1) {
-      final cardType = niceSvt!.cards[i];
+    for (int i = 0; i < cards.length; i += 1) {
+      final cardType = cards[i];
       final card = CommandCardData(cardType, niceSvt!.cardDetails[cardType]!)
         ..cardIndex = i
         ..isNP = false

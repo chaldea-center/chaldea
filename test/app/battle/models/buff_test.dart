@@ -373,4 +373,19 @@ void main() async {
     expect(oberon.getBuffValueOnAction(battle, BuffAction.commandAtk), 1500);
     expect(oberon.getBuffValueOnAction(battle, BuffAction.npdamage), 600);
   });
+
+  test('changeCommandCardType', () async {
+    final battle = BattleData();
+    final playerSettings = [
+      PlayerSvtData(100100)
+        ..lv = 90
+        ..skillStrengthenLvs = [1, 2, 2],
+    ];
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    final altria = battle.onFieldAllyServants[0]!;
+
+    await battle.activateSvtSkill(0, 1);
+    expect(altria.getCards(battle).where((element) => element.cardType == CardType.buster).length, 5);
+  });
 }
