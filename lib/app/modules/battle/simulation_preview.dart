@@ -74,6 +74,15 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       }
     }
     questIdTextController = TextEditingController(text: initText);
+    if (db.settings.battleSim.previousQuestPhase != null) {
+      fetchInitial();
+    }
+  }
+
+  Future<void> fetchInitial() async {
+    questIdTextController.text = db.settings.battleSim.previousQuestPhase!;
+    await _fetchQuestPhase();
+    if (mounted) setState(() {});
   }
 
   @override
@@ -441,6 +450,8 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   void _startSimulation() {
+    db.settings.battleSim.previousQuestPhase = '${questPhase!.id}/${questPhase!.phase}';
+    db.saveSettings();
     router.pushPage(BattleSimulationPage(
       questPhase: questPhase!,
       onFieldSvtDataList: onFieldSvtDataList,
@@ -457,10 +468,13 @@ class ServantSelector extends StatelessWidget {
   // ce empty icon
   static const emptyCeIcon =
       "https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/BattleResult/PartyOrganizationAtlas/formation_blank_02.png";
+
   // svt empty icon
   static const emptySvtIcon = "https://static.atlasacademy.io/JP/Faces/f_1000000.png";
+
   // svt/enemy unknown icon
   static const unknownEnemyIcon = "https://static.atlasacademy.io/JP/Faces/f_1000011.png";
+
   // static const emptyIconUrl = 'https://static.atlasacademy.io/JP/SkillIcons/skill_999999.png';
   final PlayerSvtData playerSvtData;
   final VoidCallback onChange;

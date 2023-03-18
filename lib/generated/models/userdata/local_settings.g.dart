@@ -60,6 +60,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               'github', (v) => v == null ? null : GithubSetting.fromJson(Map<String, dynamic>.from(v as Map))),
           tips: $checkedConvert(
               'tips', (v) => v == null ? null : TipsSetting.fromJson(Map<String, dynamic>.from(v as Map))),
+          battleSim: $checkedConvert(
+              'battleSim', (v) => v == null ? null : BattleSimSetting.fromJson(Map<String, dynamic>.from(v as Map))),
           spoilerRegion: $checkedConvert(
               'spoilerRegion', (v) => v == null ? Region.jp : const RegionConverter().fromJson(v as String)),
           svtFilterData: $checkedConvert(
@@ -118,6 +120,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'carousel': instance.carousel.toJson(),
       'github': instance.github.toJson(),
       'tips': instance.tips.toJson(),
+      'battleSim': instance.battleSim.toJson(),
       'useAndroidExternal': instance.useAndroidExternal,
       'spoilerRegion': const RegionConverter().toJson(instance.spoilerRegion),
       'svtFilterData': instance.svtFilterData.toJson(),
@@ -395,4 +398,19 @@ Map<String, dynamic> _$TipsSettingToJson(TipsSetting instance) => <String, dynam
       'starter': instance.starter,
       'servantList': instance.servantList,
       'servantDetail': instance.servantDetail,
+    };
+
+BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
+      'BattleSimSetting',
+      json,
+      ($checkedConvert) {
+        final val = BattleSimSetting(
+          previousQuestPhase: $checkedConvert('previousQuestPhase', (v) => v as String?),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <String, dynamic>{
+      'previousQuestPhase': instance.previousQuestPhase,
     };

@@ -55,6 +55,7 @@ class LocalSettings {
   CarouselSetting carousel;
   GithubSetting github;
   TipsSetting tips;
+  BattleSimSetting battleSim;
 
   // TODO: move to persist storage
   bool useAndroidExternal = false;
@@ -103,6 +104,7 @@ class LocalSettings {
     CarouselSetting? carousel,
     GithubSetting? github,
     TipsSetting? tips,
+    BattleSimSetting? battleSim,
     this.spoilerRegion = Region.jp,
     SvtFilterData? svtFilterData,
     CraftFilterData? craftFilterData,
@@ -121,6 +123,7 @@ class LocalSettings {
         carousel = carousel ?? CarouselSetting(),
         github = github ?? GithubSetting(),
         tips = tips ?? TipsSetting(),
+        battleSim = battleSim ?? BattleSimSetting(),
         svtFilterData = svtFilterData ?? SvtFilterData(),
         craftFilterData = craftFilterData ?? CraftFilterData(),
         cmdCodeFilterData = cmdCodeFilterData ?? CmdCodeFilterData(),
@@ -204,6 +207,7 @@ class DisplaySettings {
         hideSvtPlanDetails = hideSvtPlanDetails?.whereType<SvtPlanDetail>().toList() ?? [] {
     validateSvtTabs();
   }
+
   void validateSvtTabs() {
     final _unsorted = List.of(sortedSvtTabs);
     sortedSvtTabs = List.of(SvtTab.values);
@@ -385,6 +389,19 @@ class TipsSetting {
   factory TipsSetting.fromJson(Map<String, dynamic> json) => _$TipsSettingFromJson(json);
 
   Map<String, dynamic> toJson() => _$TipsSettingToJson(this);
+}
+
+@JsonSerializable()
+class BattleSimSetting {
+  String? previousQuestPhase;
+
+  BattleSimSetting({
+    this.previousQuestPhase,
+  });
+
+  factory BattleSimSetting.fromJson(Map<String, dynamic> json) => _$BattleSimSettingFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BattleSimSettingToJson(this);
 }
 
 enum SvtListClassFilterStyle {
