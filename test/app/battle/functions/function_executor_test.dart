@@ -621,7 +621,7 @@ void main() async {
     final List<PlayerSvtData> setting = [
       PlayerSvtData(702500)
         ..lv = 90
-        ..npStrengthenLv = 2
+        ..setNpStrengthenLv(2)
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,

@@ -5,6 +5,7 @@ import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/gamedata/vals.dart';
+import 'package:chaldea/utils/extension.dart';
 
 class TransformServant {
   TransformServant._();
@@ -29,7 +30,7 @@ class TransformServant {
         // lazy transform svt 312
         target.ascensionPhase = dataVals.SetLimitCount!;
         target.skillInfoList[2].skillId = 888575;
-        target.npStrengthenLv = 2;
+        target.npId = 304802;
       } else {
         final targetSvt = await AtlasApi.svt(targetSvtId);
         if (targetSvt == null) {
@@ -51,6 +52,9 @@ class TransformServant {
           }
           for (int i = targetSvt.groupedActiveSkills.length; i < target.skillInfoList.length; i += 1) {
             target.skillInfoList[i].skillId = 0;
+          }
+          if (targetSvt.noblePhantasms.firstWhereOrNull((e) => e.id == target.npId) == null) {
+            target.npId = targetSvt.noblePhantasms.last.id;
           }
         }
       }

@@ -24,7 +24,7 @@ class PlayerSvtData {
   List<int> skillId = [0, 0, 0];
   List<int> appendLvs = [0, 0, 0];
   int npLv = 5;
-  int npStrengthenLv = 1;
+  int npId = 0;
   int lv = -1; // -1=mlb, 90, 100, 120
   int atkFou = 1000;
   int hpFou = 1000;
@@ -43,11 +43,16 @@ class PlayerSvtData {
   PlayerSvtData(final int svtId) {
     svt = db.gameData.servantsById[svtId];
     skillId = svt!.groupedActiveSkills.map((e) => e.first.id).toList();
+    npId = svt!.groupedNoblePhantasms.first.first.id;
   }
 
   void setSkillStrengthenLvs(final List<int> skillStrengthenLvs) {
     skillId = List.generate(
         skillStrengthenLvs.length, (index) => svt!.groupedActiveSkills[index][skillStrengthenLvs[index] - 1].id);
+  }
+
+  void setNpStrengthenLv(final int npStrengthenLv) {
+    npId = svt!.groupedNoblePhantasms.first[npStrengthenLv - 1].id;
   }
 }
 

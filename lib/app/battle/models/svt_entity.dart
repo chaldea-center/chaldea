@@ -65,7 +65,7 @@ class BattleServantData {
   int uniqueId = 0;
   int svtId = -1;
   int level = 0;
-  int npStrengthenLv = 1;
+  int npId = 1;
   int atk = 0;
   int hp = 0;
   int maxHp = 0;
@@ -101,8 +101,9 @@ class BattleServantData {
 
   int get starGen => isPlayer ? niceSvt!.starGen : 0;
 
-  int get defenceNpGain =>
-      isPlayer ? niceSvt!.noblePhantasms[npStrengthenLv - 1].npGain.defence[playerSvtData!.npLv - 1] : 0;
+  int get defenceNpGain => isPlayer
+      ? niceSvt!.noblePhantasms.firstWhere((niceTd) => niceTd.id == npId).npGain.defence[playerSvtData!.npLv - 1]
+      : 0;
 
   int get enemyTdRate => isEnemy ? niceEnemy!.serverMod.tdRate : 0;
 
@@ -134,7 +135,7 @@ class BattleServantData {
       ..niceSvt = settings.svt
       ..svtId = settings.svt?.id ?? 0
       ..level = settings.lv
-      ..npStrengthenLv = settings.npStrengthenLv
+      ..npId = settings.npId
       ..ascensionPhase = settings.ascensionPhase
       ..hp = settings.svt!.hpGrowth[settings.lv - 1] + settings.hpFou
       ..maxHp = settings.svt!.hpGrowth[settings.lv - 1] + settings.hpFou
@@ -519,7 +520,7 @@ class BattleServantData {
 
   bool canSelectNP(final BattleData battleData) {
     battleData.setActivator(this);
-    final result = canNP(battleData) && checkNPScript(battleData);
+    final result = canNP(battleData) && npId != 0 && checkNPScript(battleData);
     battleData.unsetActivator();
     return result;
   }
@@ -570,7 +571,9 @@ class BattleServantData {
     }
     battleData.unsetActivator();
 
-    return isPlayer ? niceSvt!.groupedNoblePhantasms[0][npStrengthenLv - 1] : niceEnemy!.noblePhantasm.noblePhantasm!;
+    return isPlayer
+        ? niceSvt!.groupedNoblePhantasms[0].firstWhere((niceTd) => niceTd.id == npId)
+        : niceEnemy!.noblePhantasm.noblePhantasm!;
   }
 
   Future<void> activateNP(final BattleData battleData, final int extraOverchargeLvl) async {
@@ -930,7 +933,7 @@ class BattleServantData {
       ..uniqueId = uniqueId
       ..svtId = svtId
       ..level = level
-      ..npStrengthenLv = npStrengthenLv
+      ..npId = npId
       ..atk = atk
       ..hp = hp
       ..maxHp = maxHp

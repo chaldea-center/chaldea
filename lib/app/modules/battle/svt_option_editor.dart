@@ -272,8 +272,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                         final List<NiceTd> shownTds = ServantSelector.getShownTds(svt, ascensionPhase);
                         playerSvtData.ascensionPhase = ascensionPhase;
                         if (!listEquals(previousShownTds, shownTds)) {
-                          playerSvtData.npStrengthenLv = svt.groupedNoblePhantasms.first.indexOf(shownTds.last) + 1;
-                          logger.d('Capping npStrengthenLv: ${playerSvtData.npStrengthenLv}');
+                          playerSvtData.npId = shownTds.last.id;
+                          logger.d('Capping npId: ${playerSvtData.npId}');
                         }
                         Navigator.pop(context);
                         _updateState();
@@ -322,7 +322,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     final List<NiceTd> shownTds = ServantSelector.getShownTds(svt, ascension);
 
     // NiceTd? td;
-    final td = svt.groupedNoblePhantasms.first[playerSvtData.npStrengthenLv - 1];
+    final td = svt.groupedNoblePhantasms.first.firstWhere((niceTd) => niceTd.id == playerSvtData.npId);
 
     SimpleAccordion(
       headerBuilder: (context, _) {
@@ -382,8 +382,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             },
             values: FilterRadioData.nonnull(td),
             onFilterChanged: (v, _) {
-              playerSvtData.npStrengthenLv = svt.groupedNoblePhantasms.first.indexOf(v.radioValue!) + 1;
-              logger.d('Changing npStrengthenLv: ${playerSvtData.npStrengthenLv}');
+              playerSvtData.npId = v.radioValue!.id;
+              logger.d('Changing npId: ${playerSvtData.npId}');
               _updateState();
             },
           ),
@@ -687,9 +687,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         ..commandCodes = [null, null, null, null, null];
     }
 
-    playerSvtData.npStrengthenLv = 1 +
-        selectedSvt.groupedNoblePhantasms.first
-            .indexOf(ServantSelector.getShownTds(selectedSvt, playerSvtData.ascensionPhase).last);
+    playerSvtData.npId = ServantSelector.getShownTds(selectedSvt, playerSvtData.ascensionPhase).last.id;
     for (int i = 0; i < selectedSvt.groupedActiveSkills.length; i += 1) {
       playerSvtData.skillId[i] = ServantSelector.getShownSkills(selectedSvt, playerSvtData.ascensionPhase, i).last.id;
     }

@@ -727,9 +727,7 @@ class ServantSelector extends StatelessWidget {
           ..commandCodes = [null, null, null, null, null];
       }
 
-      playerSvtData.npStrengthenLv = 1 +
-          selectedSvt.groupedNoblePhantasms.first
-              .indexOf(ServantSelector.getShownTds(selectedSvt, playerSvtData.ascensionPhase).last);
+      playerSvtData.npId = ServantSelector.getShownTds(selectedSvt, playerSvtData.ascensionPhase).last.id;
       for (int i = 0; i < selectedSvt.groupedActiveSkills.length; i += 1) {
         playerSvtData.skillId[i] = getShownSkills(selectedSvt, playerSvtData.ascensionPhase, i).last.id;
       }

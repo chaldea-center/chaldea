@@ -18,7 +18,7 @@ void main() async {
         PlayerSvtData(100100)
           ..setSkillStrengthenLvs([1, 2, 1])
           ..npLv = 1
-          ..npStrengthenLv = 2
+          ..setNpStrengthenLv(2)
           ..lv = 90
           ..atkFou = 0
           ..hpFou = 0
@@ -85,21 +85,21 @@ void main() async {
           PlayerSvtData(100100)
             ..setSkillStrengthenLvs([1, 2, 1])
             ..npLv = 1
-            ..npStrengthenLv = 2
+            ..setNpStrengthenLv(2)
             ..lv = 90
             ..atkFou = 1000
             ..hpFou = 0,
           PlayerSvtData(604200)
             ..setSkillStrengthenLvs([1, 1, 1])
             ..npLv = 1
-            ..npStrengthenLv = 1
+            ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 0
             ..hpFou = 0,
           PlayerSvtData(604200)
             ..setSkillStrengthenLvs([1, 1, 1])
             ..npLv = 1
-            ..npStrengthenLv = 1
+            ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 0
             ..hpFou = 0
@@ -130,7 +130,7 @@ void main() async {
         PlayerSvtData(2500400)
           ..setSkillStrengthenLvs([2, 1, 1])
           ..npLv = 5
-          ..npStrengthenLv = 1
+          ..setNpStrengthenLv(1)
           ..lv = 90
           ..atkFou = 1000
           ..hpFou = 1000
@@ -184,7 +184,7 @@ void main() async {
           PlayerSvtData(2500400)
             ..setSkillStrengthenLvs([2, 1, 1])
             ..npLv = 5
-            ..npStrengthenLv = 1
+            ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 1000
             ..hpFou = 1000
@@ -194,14 +194,14 @@ void main() async {
           PlayerSvtData(504500)
             ..setSkillStrengthenLvs([1, 1, 1])
             ..npLv = 1
-            ..npStrengthenLv = 1
+            ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 0
             ..hpFou = 0,
           PlayerSvtData(504500)
             ..setSkillStrengthenLvs([1, 1, 1])
             ..npLv = 1
-            ..npStrengthenLv = 1
+            ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 0
             ..hpFou = 0
@@ -235,7 +235,7 @@ void main() async {
         PlayerSvtData(504900)
           ..setSkillStrengthenLvs([1, 1, 1])
           ..npLv = 5
-          ..npStrengthenLv = 1
+          ..setNpStrengthenLv(1)
           ..lv = 90
           ..atkFou = 1000
           ..hpFou = 1000
@@ -289,7 +289,7 @@ void main() async {
           PlayerSvtData(504900)
             ..setSkillStrengthenLvs([1, 1, 1])
             ..npLv = 5
-            ..npStrengthenLv = 1
+            ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 1000
             ..hpFou = 1000
@@ -299,14 +299,14 @@ void main() async {
           PlayerSvtData(503900)
             ..setSkillStrengthenLvs([1, 1, 1])
             ..npLv = 1
-            ..npStrengthenLv = 1
+            ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 0
             ..hpFou = 0,
           PlayerSvtData(503900)
             ..setSkillStrengthenLvs([1, 1, 1])
             ..npLv = 1
-            ..npStrengthenLv = 1
+            ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 0
             ..hpFou = 0
