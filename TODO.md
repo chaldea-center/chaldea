@@ -21,6 +21,9 @@ There are plenty of work need to do.
 - [ ] DataVals CounterId CounterLv CounterOc SkillReaction UseTreasureDevice
 - [ ] DataVals TriggeredFuncPosition ignored, only checking previous function success for now
 - [ ] Group npDamageIndividualSum & buff ParamAddCount's counting logic together?
+- [ ] BuffType doNotGainNp & upGiveNp
+- [ ] INDIVIDUALITIE seen on fields, buffTraits, servantId
+- [ ] includeIgnoredTrait only adds NP card traits for now
 
 #### Unknowns:
 
@@ -37,6 +40,8 @@ There are plenty of work need to do.
 - [ ] TargetType ptSelfAnotherRandom for svt 251 skill 3
 - [ ] TargetType enemyOneNoTargetNoAction for svt 311 skill 3
 - [ ] FuncType transformServant on enemies
+- [ ] BuffType upNpturnval
+- [ ] Check Atlas for enemy trigger functions
 
 ## Misc
 

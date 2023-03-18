@@ -360,6 +360,7 @@ class BattleData {
     final bool ignoreIrremovable = false,
     final int? checkIndivType,
     final int? includeIgnoredTrait,
+    final bool includeFieldTrait = false,
   }) {
     if (requiredTraits.isEmpty) {
       return true;
@@ -380,6 +381,7 @@ class BattleData {
     if (includeIgnoredTrait == 1) currentTraits.addAll(actor?.getNPCard(this)?.traits ?? []);
     currentTraits.addAll(currentBuff?.traits ?? []);
     currentTraits.addAll(currentCard?.traits ?? []);
+    if (includeFieldTrait) currentTraits.addAll(getFieldTraits());
     if (currentCard != null && currentCard!.isCritical) currentTraits.add(NiceTrait(id: Trait.criticalHit.id));
 
     if (checkIndivType == 1 || checkIndivType == 3) {

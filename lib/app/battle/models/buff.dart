@@ -170,6 +170,9 @@ class BuffData {
     final bool checkTargetBuff = buffTraitCheckTypes.contains(buff.type);
     final bool activeOnly = activeOnlyTypes.contains(buff.type);
     final bool ignoreIrremovable = vals.IgnoreIndivUnreleaseable == 1;
+    final NiceTrait? iTieTrait = buff.script?.INDIVIDUALITIE;
+    final List<NiceTrait> selfIndv = buff.ckSelfIndv.toList();
+    if (iTieTrait != null) selfIndv.add(iTieTrait);
     final targetCheck = battleData.checkTraits(
           buff.ckOpIndv,
           !isTarget,
@@ -180,13 +183,14 @@ class BuffData {
           includeIgnoredTrait: includeIgnoredTrait,
         ) &&
         battleData.checkTraits(
-          buff.ckSelfIndv,
+          selfIndv,
           isTarget,
-          checkTargetBuff: checkTargetBuff,
+          checkTargetBuff: checkTargetBuff || iTieTrait != null,
           activeOnly: activeOnly,
           ignoreIrremovable: ignoreIrremovable,
           checkIndivType: checkIndvType,
           includeIgnoredTrait: includeIgnoredTrait,
+          includeFieldTrait: iTieTrait != null,
         );
 
     final onFieldCheck = !isOnField || battleData.isActorOnField(actorUniqueId);

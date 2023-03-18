@@ -283,4 +283,23 @@ void main() async {
     lip.hp = 1;
     expect(lip.getBuffValueOnAction(battle, BuffAction.atk).toDouble(), moreOrLessEquals(1500, epsilon: 1));
   });
+
+  test('INDIVIDUALITIE', () async {
+    final battle = BattleData();
+    final playerSettings = [
+      PlayerSvtData(203200)..lv = 90,
+      PlayerSvtData(304000)..lv = 80,
+    ];
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    final jeanne  = battle.onFieldAllyServants[0]!;
+
+    expect(jeanne.np, 0);
+    await battle.skipWave();
+    expect(jeanne.np, 0);
+
+    await battle.activateSvtSkill(1, 1);
+    await battle.skipWave();
+    expect(jeanne.np, 300);
+  });
 }
