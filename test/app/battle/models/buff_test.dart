@@ -292,7 +292,7 @@ void main() async {
     ];
     await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
-    final jeanne  = battle.onFieldAllyServants[0]!;
+    final jeanne = battle.onFieldAllyServants[0]!;
 
     expect(jeanne.np, 0);
     await battle.skipWave();
@@ -301,5 +301,29 @@ void main() async {
     await battle.activateSvtSkill(1, 1);
     await battle.skipWave();
     expect(jeanne.np, 300);
+  });
+
+  test('maxhp', () async {
+    final battle = BattleData();
+    final playerSettings = [
+      PlayerSvtData(603700)..lv = 90,
+      PlayerSvtData(500800)..lv = 80,
+    ];
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    final kama = battle.onFieldAllyServants[0]!;
+
+    expect(kama.hp, 12889 + 1000);
+    expect(kama.getMaxHp(battle), 12889 + 1000);
+
+    await battle.activateSvtSkill(0, 0);
+
+    expect(kama.hp, 12889 + 1000 - 1000);
+    expect(kama.getMaxHp(battle), 12889 + 1000 - 1000);
+
+    await battle.activateSvtSkill(1, 2);
+
+    expect(kama.hp, 12889 + 1000 - 1000 + 3000);
+    expect(kama.getMaxHp(battle), 12889 + 1000 - 1000 + 3000);
   });
 }

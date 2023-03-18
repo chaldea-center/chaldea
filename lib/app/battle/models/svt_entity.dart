@@ -223,7 +223,10 @@ class BattleServantData {
   }
 
   int getMaxHp(final BattleData battleData) {
-    return maxHp;
+    final addition = getBuffValueOnAction(battleData, BuffAction.maxhpValue);
+    final percentAddition = toModifier(getBuffValueOnAction(battleData, BuffAction.maxhpRate) * maxHp).toInt();
+
+    return maxHp + addition + percentAddition;
   }
 
   CommandCardData? getNPCard(final BattleData battleData) {

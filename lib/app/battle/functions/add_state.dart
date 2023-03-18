@@ -1,6 +1,7 @@
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
+import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
@@ -47,6 +48,16 @@ class AddState {
           isCommandCode: isCommandCode,
         );
         buffAdded = true;
+
+        if (buff.type == BuffType.addMaxhp) {
+          target.heal(battleData, dataVals.Value!);
+        } else if (buff.type == BuffType.subMaxhp) {
+          target.lossHp(dataVals.Value!);
+        } else if (buff.type == BuffType.upMaxhp) {
+          target.heal(battleData, toModifier(target.maxHp * dataVals.Value!).toInt());
+        } else if (buff.type == BuffType.downMaxhp) {
+          target.lossHp(toModifier(target.maxHp * dataVals.Value!).toInt());
+        }
       }
       battleData.unsetTarget();
       battleData.unsetCurrentBuff();
