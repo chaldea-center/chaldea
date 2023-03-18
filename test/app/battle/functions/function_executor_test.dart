@@ -806,4 +806,28 @@ void main() async {
     expect(koyan.hp, 4001);
     expect(prevNightingaleHp - nightingale.hp, 1000);
   });
+
+  test('gainHpPerTarget', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(403600)
+        ..lv = 80,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final carmilla = battle.onFieldAllyServants[0]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final enemy2 = battle.onFieldEnemies[1]!;
+    final enemy3 = battle.onFieldEnemies[2]!;
+
+    carmilla.hp = 1000;
+    final prevHp1 = enemy1.hp;
+    enemy2.hp = 1500;
+    final prevHp3 = enemy3.hp;
+    await battle.activateSvtSkill(0, 2);
+    expect(carmilla.hp, 1499 + 2000 + 2000 + 1000);
+    expect(prevHp1 - enemy1.hp, 2000);
+    expect(enemy2.hp, 1);
+    expect(prevHp3 - enemy3.hp, 2000);
+  });
 }

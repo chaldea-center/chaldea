@@ -25,6 +25,7 @@ not verified for gutsEffect
 ### Enemy Simulation
 - [ ] build enemy active skills & cards & NP
 - [ ] TargetType ptSelfAnotherRandom for svt 251 skill 3
+- [ ] TargetType enemyOneNoTargetNoAction for svt 311 skill 3
 
 
 ## Misc
