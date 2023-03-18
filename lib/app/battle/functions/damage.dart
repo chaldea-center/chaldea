@@ -261,6 +261,7 @@ class Damage {
       target.removeBuffWithTrait(NiceTrait(id: Trait.buffSleep.id));
 
       target.addAccumulationDamage(totalDamage - remainingDamage);
+      target.attacked = true;
 
       battleData.unsetTarget();
     }

@@ -525,7 +525,7 @@ void main() async {
   });
 
   test('Tezcatlipoca passive', () async {
-    final List<PlayerSvtData> lipAndJinako = [
+    final List<PlayerSvtData> setting = [
       PlayerSvtData(604700)..lv = 90,
       PlayerSvtData(604700)..lv = 90,
     ];
@@ -533,7 +533,7 @@ void main() async {
       ..mysticCode = db.gameData.mysticCodes[130]!
       ..level = 10;
     final battle = BattleData();
-    await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, mysticCode);
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, mysticCode);
 
     final tezcatlipoca = battle.onFieldAllyServants[0]!;
     expect(tezcatlipoca.hp, 15535);
@@ -550,6 +550,28 @@ void main() async {
     battle.setTarget(battle.onFieldEnemies[0]!);
     battle.currentCard = tezcatlipoca.getNPCard(battle);
     expect(tezcatlipoca.getBuffValueOnAction(battle, BuffAction.npdamage), 420);
+  });
+
+  test('deathEffect clear accumulation damage', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(702800)
+        ..lv = 60
+        ..setNpStrengthenLv(2)
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9303101303]!, setting, null);
+
+    final bunyan = battle.onFieldAllyServants[0]!;
+    await battle.skipWave();
+    await battle.activateSvtSkill(0, 0);
+    await battle.playerTurn([
+      CombatAction(bunyan, bunyan.getNPCard(battle)!),
+      CombatAction(bunyan, bunyan.getCards(battle)[1]),
+    ]);
+    expect(bunyan.np, 993);
   });
 
   group('Method tests', () {

@@ -5,6 +5,7 @@ import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'battle.dart';
@@ -53,7 +54,11 @@ class BattleSkillInfoData {
   Future<BaseSkill?> getSkill() async {
     BaseSkill? skill = provisionedSkills.firstWhereOrNull((skill) => skill.id == skillId);
     skill ??= db.gameData.baseSkills[skillId];
-    skill ??= await AtlasApi.skill(skillId);
+    try {
+      skill ??= await AtlasApi.skill(skillId);
+    } catch (e) {
+      logger.e('Exception while fetch AtlasApi for skill $skillId', e);
+    }
 
     return skill;
   }

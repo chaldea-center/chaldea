@@ -9,6 +9,7 @@ import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'buff.dart';
 import 'card_dmg.dart';
@@ -429,12 +430,10 @@ class BattleServantData {
   }
 
   void addAccumulationDamage(final int damage) {
-    attacked = true;
     accumulationDamage += damage;
   }
 
   void clearAccumulationDamage() {
-    attacked = false;
     accumulationDamage = 0;
   }
 
@@ -695,7 +694,11 @@ class BattleServantData {
       if (buff.shouldApplyBuff(battleData, false)) {
         final skillId = buff.param;
         BaseSkill? skill = db.gameData.baseSkills[skillId];
-        skill ??= await AtlasApi.skill(skillId);
+        try {
+          skill ??= await AtlasApi.skill(skillId);
+        } catch (e) {
+          logger.e('Exception while fetch AtlasApi for skill $skillId', e);
+        }
         if (skill == null) {
           battleData.logger.debug('Buff ID [${buff.buff.id}]: ${S.current.skill} [$skillId] ${S.current.not_found}');
           continue;
@@ -802,6 +805,12 @@ class BattleServantData {
   }
 
   Future<void> death(final BattleData battleData) async {
+    if (hasBuffOnAction(battleData, BuffAction.functionDead)) {
+      battleData.nonnullActors.forEach((svt) {
+        svt.clearAccumulationDamage();
+      });
+    }
+
     await activateBuffOnAction(battleData, BuffAction.functionDead);
 
     battleData.fieldBuffs
@@ -910,6 +919,7 @@ class BattleServantData {
 
   Future<void> endOfYourTurn(final BattleData battleData) async {
     clearAccumulationDamage();
+    attacked = false;
 
     battleData.setActivator(this);
     battleData.setTarget(this);

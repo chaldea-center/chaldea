@@ -5,6 +5,7 @@ import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/gamedata/vals.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/extension.dart';
 
 class TransformServant {
@@ -32,7 +33,12 @@ class TransformServant {
         target.skillInfoList[2].baseSkillId = 888575;
         target.npId = 304802;
       } else {
-        final targetSvt = await AtlasApi.svt(targetSvtId);
+        Servant? targetSvt;
+        try {
+          targetSvt = await AtlasApi.svt(targetSvtId);
+        } catch (e) {
+          logger.e('Exception while fetch AtlasApi for servant $targetSvtId', e);
+        }
         if (targetSvt == null) {
           battleData.logger.debug('${S.current.not_found}: $targetSvtId');
         } else {
