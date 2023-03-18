@@ -1,3 +1,4 @@
+import 'package:chaldea/app/battle/functions/damage.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
@@ -474,5 +475,50 @@ void main() async {
 
     await battle.activateSvtSkill(1, 2);
     expect(murasama.getBuffValueOnAction(battle, BuffAction.criticalDamage), 2050);
+  });
+
+  test('overwriteClassRelation', () async {
+    final battle = BattleData();
+    final playerSettings = [
+      PlayerSvtData(603700)..lv = 90,
+      PlayerSvtData(403200)..lv = 80
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+      PlayerSvtData(1001500)..lv = 80,
+    ];
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    final kama = battle.onFieldAllyServants[0]!;
+    final reinis = battle.onFieldAllyServants[1]!;
+    final kirei = battle.onFieldAllyServants[2]!;
+
+    battle.setActivator(kama);
+    battle.setTarget(kirei);
+
+    expect(Damage.getClassRelation(battle, kama, reinis), 2000);
+    expect(Damage.getClassRelation(battle, kama, kirei), 1000);
+    expect(Damage.getClassRelation(battle, reinis, kama), 500);
+    expect(Damage.getClassRelation(battle, reinis, kirei), 1000);
+    expect(Damage.getClassRelation(battle, kirei, kama), 1500);
+    expect(Damage.getClassRelation(battle, kirei, reinis), 1500);
+
+    await battle.activateSvtSkill(0, 2);
+
+    expect(Damage.getClassRelation(battle, kama, reinis), 2000);
+    expect(Damage.getClassRelation(battle, kama, kirei), 2000);
+    expect(Damage.getClassRelation(battle, reinis, kama), 500);
+    expect(Damage.getClassRelation(battle, reinis, kirei), 1000);
+    expect(Damage.getClassRelation(battle, kirei, kama), 500);
+    expect(Damage.getClassRelation(battle, kirei, reinis), 1500);
+
+    await battle.playerTurn([CombatAction(reinis, reinis.getNPCard(battle)!)]);
+
+    expect(Damage.getClassRelation(battle, kama, reinis), 1000);
+    expect(Damage.getClassRelation(battle, kama, kirei), 1000);
+    expect(Damage.getClassRelation(battle, reinis, kama), 500);
+    expect(Damage.getClassRelation(battle, reinis, kirei), 1000);
+    expect(Damage.getClassRelation(battle, kirei, kama), 1000);
+    expect(Damage.getClassRelation(battle, kirei, reinis), 1000);
   });
 }

@@ -23,8 +23,9 @@ There are plenty of work need to do.
 - [ ] BuffType doNotGainNp & upGiveNp
 - [ ] BuffType doNotRecovery interacts with maxHp?
 - [ ] BuffType doNotSelectCommandCard
-- [ ] BuffType masterSkillValueUp
-- [ ] BuffType overwriteClassRelation
+- [ ] BuffType overwriteClassRelation, atkSide first or defSide first? When two overwriteForce type interact, is it
+  based on buff order? E.g. Kama skill3 & Reinis NP vs alterego attacker, is the final relation 500 or 1000 or depends
+  on which buff comes last?
 - [ ] BuffType preventDeathByDamage
 - [ ] BuffType reflectionFunction
 - [ ] BuffType skillRankUp

@@ -693,6 +693,47 @@ class BattleServantData {
     return battleBuff.allBuffs.where((buff) => containsAnyTraits(buff.traits, traits)).toList();
   }
 
+  List<BuffData> getBuffsOfType(final BuffType buffType) {
+    return battleBuff.allBuffs.where((buff) => buff.buff.type == buffType).toList();
+  }
+
+  int getClassRelation(
+    final BattleData battleData,
+    final int baseRelation,
+    final SvtClass opponentClass,
+    final isTarget,
+  ) {
+    int relation = baseRelation;
+    for (final buff in collectBuffsPerType(battleBuff.allBuffs, BuffType.overwriteClassRelation)) {
+      if (buff.shouldApplyBuff(battleData, isTarget)) {
+        buff.setUsed();
+        final relationOverwrite = buff.buff.script!.relationId!;
+        final overwrite = isTarget
+            ? relationOverwrite.defSide.containsKey(opponentClass)
+                ? relationOverwrite.defSide[opponentClass]![svtClass]
+                : null
+            : relationOverwrite.atkSide.containsKey(svtClass)
+                ? relationOverwrite.atkSide[svtClass]![opponentClass]
+                : null;
+        if (overwrite != null) {
+          final overwriteValue = overwrite.damageRate;
+          switch (overwrite.type) {
+            case ClassRelationOverwriteType.overwriteForce:
+              relation = overwriteValue;
+              break;
+            case ClassRelationOverwriteType.overwriteMoreThanTarget:
+              relation = min(overwriteValue, relation);
+              break;
+            case ClassRelationOverwriteType.overwriteLessThanTarget:
+              relation = max(overwriteValue, relation);
+              break;
+          }
+        }
+      }
+    }
+    return relation;
+  }
+
   bool isBuffStackable(final int buffGroup) {
     return battleBuff.allBuffs.every((buff) => buff.canStack(buffGroup));
   }

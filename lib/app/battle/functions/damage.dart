@@ -46,7 +46,7 @@ class Damage {
     for (final target in targets) {
       battleData.setTarget(target);
 
-      final classAdvantage = getClassRelation(battleData, activator, target, currentCard);
+      final classAdvantage = getClassRelation(battleData, activator, target);
 
       final additionDamageRate = checkHpRatio && dataVals.Target != null
           ? ((1 - activator.hp / activator.getMaxHp(battleData)) * dataVals.Target!).toInt()
@@ -296,8 +296,11 @@ class Damage {
     final BattleData battleData,
     final BattleServantData activator,
     final BattleServantData target,
-    final CommandCardData currentCard,
   ) {
-    return ConstData.getClassRelation(activator.svtClass, target.svtClass);
+    int relation = ConstData.getClassRelation(activator.svtClass, target.svtClass);
+    relation = activator.getClassRelation(battleData, relation, target.svtClass, false);
+    relation = target.getClassRelation(battleData, relation, activator.svtClass, true);
+
+    return relation;
   }
 }
