@@ -21,6 +21,7 @@ class BattleServantData {
 
   QuestEnemy? niceEnemy;
   Servant? niceSvt;
+  BasicServant? overrideSvt;
   PlayerSvtData? playerSvtData;
 
   bool get isPlayer => niceSvt != null;
@@ -64,6 +65,7 @@ class BattleServantData {
   int uniqueId = 0;
   int svtId = -1;
   int level = 0;
+  int npStrengthenLv = 1;
   int atk = 0;
   int hp = 0;
   int maxHp = 0;
@@ -100,7 +102,7 @@ class BattleServantData {
   int get starGen => isPlayer ? niceSvt!.starGen : 0;
 
   int get defenceNpGain =>
-      isPlayer ? niceSvt!.noblePhantasms[playerSvtData!.npStrengthenLv - 1].npGain.defence[playerSvtData!.npLv - 1] : 0;
+      isPlayer ? niceSvt!.noblePhantasms[npStrengthenLv - 1].npGain.defence[playerSvtData!.npLv - 1] : 0;
 
   int get enemyTdRate => isEnemy ? niceEnemy!.serverMod.tdRate : 0;
 
@@ -131,6 +133,8 @@ class BattleServantData {
       ..playerSvtData = settings
       ..niceSvt = settings.svt
       ..svtId = settings.svt?.id ?? 0
+      ..level = settings.lv
+      ..npStrengthenLv = settings.npStrengthenLv
       ..ascensionPhase = settings.ascensionPhase
       ..hp = settings.svt!.hpGrowth[settings.lv - 1] + settings.hpFou
       ..maxHp = settings.svt!.hpGrowth[settings.lv - 1] + settings.hpFou
@@ -552,9 +556,7 @@ class BattleServantData {
     }
     battleData.unsetActivator();
 
-    return isPlayer
-        ? niceSvt!.groupedNoblePhantasms[0][playerSvtData!.npStrengthenLv - 1]
-        : niceEnemy!.noblePhantasm.noblePhantasm!;
+    return isPlayer ? niceSvt!.groupedNoblePhantasms[0][npStrengthenLv - 1] : niceEnemy!.noblePhantasm.noblePhantasm!;
   }
 
   Future<void> activateNP(final BattleData battleData, final int extraOverchargeLvl) async {
@@ -845,6 +847,7 @@ class BattleServantData {
       ..uniqueId = uniqueId
       ..svtId = svtId
       ..level = level
+      ..npStrengthenLv = npStrengthenLv
       ..atk = atk
       ..hp = hp
       ..maxHp = maxHp

@@ -700,7 +700,6 @@ class ServantSelector extends StatelessWidget {
         playerSvtData
           ..ascensionPhase = curStatus.ascension
           ..lv = selectedSvt.grailedLv(curStatus.grail)
-          ..npStrengthenLv = getShownTds(selectedSvt, playerSvtData.ascensionPhase).length
           ..npLv = curStatus.npLv
           ..skillLvs = curStatus.skills.toList()
           ..appendLvs = curStatus.appendSkills.toList()
@@ -719,7 +718,6 @@ class ServantSelector extends StatelessWidget {
         playerSvtData
           ..ascensionPhase = 4
           ..lv = selectedSvt.lvMax
-          ..npStrengthenLv = getShownTds(selectedSvt, playerSvtData.ascensionPhase).length
           ..npLv = 5
           ..skillLvs = [10, 10, 10]
           ..appendLvs = [0, 0, 0]
@@ -728,8 +726,14 @@ class ServantSelector extends StatelessWidget {
           ..cardStrengthens = [0, 0, 0, 0, 0]
           ..commandCodes = [null, null, null, null, null];
       }
+
+      playerSvtData.npStrengthenLv = 1 +
+          selectedSvt.groupedNoblePhantasms.first
+              .indexOf(ServantSelector.getShownTds(selectedSvt, playerSvtData.ascensionPhase).last);
       for (int i = 0; i < selectedSvt.groupedActiveSkills.length; i += 1) {
-        playerSvtData.skillStrengthenLvs[i] = getShownSkills(selectedSvt, playerSvtData.ascensionPhase, i).length;
+        playerSvtData.skillStrengthenLvs[i] = 1 +
+            selectedSvt.groupedActiveSkills[i]
+                .indexOf(getShownSkills(selectedSvt, playerSvtData.ascensionPhase, i).last);
       }
       onChange();
     }

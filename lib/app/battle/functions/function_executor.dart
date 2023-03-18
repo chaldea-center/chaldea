@@ -12,6 +12,7 @@ import 'package:chaldea/app/battle/functions/move_state.dart';
 import 'package:chaldea/app/battle/functions/replace_member.dart';
 import 'package:chaldea/app/battle/functions/shorten_skill.dart';
 import 'package:chaldea/app/battle/functions/sub_state.dart';
+import 'package:chaldea/app/battle/functions/transform_servant.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
@@ -416,6 +417,9 @@ class FunctionExecutor {
       case FuncType.gainHpFromTargets:
         await GainHpFromTargets.gainHpFromTargets(battleData, dataVals, targets)
             .then((value) => functionSuccess = value);
+        break;
+      case FuncType.transformServant:
+        functionSuccess = await TransformServant.transformServant(battleData, dataVals, targets);
         break;
       case FuncType.moveToLastSubmember:
         functionSuccess = MoveToLastSubMember.moveToLastSubMember(battleData, dataVals, targets);
