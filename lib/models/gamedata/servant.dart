@@ -370,9 +370,10 @@ class Servant with GameCardMixin {
     ];
     // groupedNoblePhantasms
     Map<int, List<NiceTd>> dividedTds = {};
+    List<int> excludeSvtChangeTds = [for (final change in svtChange) ...change.beforeTreasureDeviceIds];
     for (final td in noblePhantasms) {
-      // Columbus temp td during scenario chapter 11-14
-      if (collectionNo == 172 && [402501, 402504].contains(td.id)) continue;
+      // 151-154
+      if (excludeSvtChangeTds.contains(td.id)) continue;
       dividedTds.putIfAbsent(td.num, () => []).add(td);
     }
     groupedNoblePhantasms = [
@@ -542,6 +543,11 @@ class Servant with GameCardMixin {
       ...svtChange.map((e) => e.name),
       ...svtChange.map((e) => e.battleName)
     };
+  }
+
+  NiceCostume? getCostume(int costumeIdOrCharaId) {
+    return profile.costume[costumeIdOrCharaId] ??
+        profile.costume.values.firstWhereOrNull((c) => c.id == costumeIdOrCharaId);
   }
 
   ServantExtra get extra {

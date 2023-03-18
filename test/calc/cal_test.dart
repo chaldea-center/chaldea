@@ -4,7 +4,7 @@ import 'package:chaldea/app/tools/gamedata_loader.dart';
 import '../test_init.dart';
 
 void main() async {
-  await initiateForTest();
+  await initiateForTest(loadData: false);
   test('Load Game Data', () async {
     // test without ui, [silent] must set to silent
     final data = await GameDataLoader.instance.reload(offline: true, silent: true);

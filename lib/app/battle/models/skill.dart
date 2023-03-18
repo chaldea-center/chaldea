@@ -118,12 +118,16 @@ class BattleSkillInfoData {
       }
     }
 
-    await FunctionExecutor.executeFunctions(battleData, skill.functions, skillLevel,
-        isPassive: isPassive,
-        notActorFunction: notActorSkill,
-        isCommandCode: isCommandCode,
-        selectedActionIndex: selectedActionIndex,
-        effectiveness: effectiveness);
+    await FunctionExecutor.executeFunctions(
+      battleData,
+      skill.functions,
+      skillLevel,
+      isPassive: isPassive,
+      notActorFunction: notActorSkill,
+      isCommandCode: isCommandCode,
+      selectedActionIndex: selectedActionIndex,
+      effectiveness: effectiveness,
+    );
   }
 
   BattleSkillInfoData copy() {
