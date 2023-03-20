@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
+import 'package:chaldea/app/descriptors/func/vals.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 
@@ -299,11 +300,9 @@ class BuffData {
   }
 
   String getParamString() {
-    return param != 0
-        ? buff.type == BuffType.regainStar || additionalParam != 0 //  use to check skill related buff
-            ? param.toString()
-            : '${(param / 10).toStringAsFixed(1)} % '
-        : '';
+    final List<String> effectString = [];
+    ValDsc.describeBuff(effectString, buff, vals, inList: false, ignoreCount: true);
+    return effectString.join(' ');
   }
 
   String durationString() {

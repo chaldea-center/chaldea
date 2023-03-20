@@ -128,7 +128,7 @@ class ValDsc extends StatelessWidget {
     );
   }
 
-  void _addInt(int? value, [String Function(String)? post]) {
+  static void _addInt(final List<String> parts, int? value, [String Function(String)? post]) {
     if (value == null || value == 0) return;
     if (value == 966756) {
       logger.e(value.toString());
@@ -138,7 +138,7 @@ class ValDsc extends StatelessWidget {
     parts.add(text);
   }
 
-  String? _toPercent(int? value, [int base = 1]) {
+  static String? _toPercent(int? value, [int base = 1]) {
     if (value == null) return null;
     int _intValue = value ~/ base;
     double _floatValue = value / base;
@@ -149,7 +149,7 @@ class ValDsc extends StatelessWidget {
     }
   }
 
-  void _addPercent(int? value, int base, [String Function(String)? post]) {
+  static void _addPercent(final List<String> parts, int? value, int base, [String Function(String)? post]) {
     if (value == null || value == 0) return;
     if (value == 966756) {
       logger.e(value.toString());
@@ -168,25 +168,25 @@ class ValDsc extends StatelessWidget {
     if (func.funcType == FuncType.addState ||
         func.funcType == FuncType.addStateShort ||
         func.funcType == FuncType.addFieldChangeToField) {
-      describeBuff(func.buffs.first);
+      describeBuff(parts, func.buffs.first, vals, inList: inList, ignoreCount: ignoreCount);
       if (vals.UseRate != null) {
-        _addPercent(vals.UseRate, 10, (v) => Transl.special.funcValActChance(v));
+        _addPercent(parts, vals.UseRate, 10, (v) => Transl.special.funcValActChance(v));
       }
     } else if (func.funcType == FuncType.gainHpFromTargets) {
-      _addInt(vals.DependFuncVals?.Value);
+      _addInt(parts, vals.DependFuncVals?.Value);
     } else if (func.funcType == FuncType.gainNpFromTargets) {
       // Absorb Value, charge Value2
-      _addPercent(vals.DependFuncVals?.Value2 ?? vals.DependFuncVals?.Value, 100);
+      _addPercent(parts, vals.DependFuncVals?.Value2 ?? vals.DependFuncVals?.Value, 100);
     } else if (func.funcType == FuncType.absorbNpturn) {
       final v2 = vals.DependFuncVals?.Value2 ?? vals.DependFuncVals?.Value;
       if (v2 != null) {
-        _addInt(v2 ~/ 100);
+        _addInt(parts, v2 ~/ 100);
       }
     } else if (func.funcType == FuncType.subState) {
       if (vals.Value != null && vals.Value! > 0) {
-        _addInt(vals.Value);
+        _addInt(parts, vals.Value);
       } else if (vals.Value2 != null && vals.Value2! > 0) {
-        _addInt(vals.Value2);
+        _addInt(parts, vals.Value2);
       } else {
         parts.add('All');
       }
@@ -204,12 +204,12 @@ class ValDsc extends StatelessWidget {
           case FuncType.damageNpCounter:
           case FuncType.gainHpPer:
           case FuncType.qpDropUp:
-            _addPercent(vals.Value, 10);
+            _addPercent(parts, vals.Value, 10);
             break;
           case FuncType.gainNp:
           case FuncType.gainNpBuffIndividualSum:
           case FuncType.lossNp:
-            _addPercent(vals.Value, 100);
+            _addPercent(parts, vals.Value, 100);
             break;
           case FuncType.lossHp:
           case FuncType.lossHpSafe:
@@ -239,13 +239,13 @@ class ValDsc extends StatelessWidget {
           case FuncType.damageNpIndividual:
           case FuncType.damageNpRare:
           case FuncType.damageNpStateIndividualFix:
-            _addPercent(vals.Correction, 10, (s) => '×$s');
+            _addPercent(parts, vals.Correction, 10, (s) => '×$s');
             break;
           case FuncType.damageNpIndividualSum:
             if (vals.Value2 != null) {
               parts.add('${_toPercent(vals.Value2, 10)}%+N×${_toPercent(vals.Correction, 10)}%');
             } else {
-              _addPercent(vals.Correction, 10, (s) => '×$s');
+              _addPercent(parts, vals.Correction, 10, (s) => '×$s');
             }
             break;
           default:
@@ -256,7 +256,7 @@ class ValDsc extends StatelessWidget {
       if (vals.Target != null) {
         switch (func.funcType) {
           case FuncType.damageNpHpratioLow:
-            _addPercent(vals.Target, 10);
+            _addPercent(parts, vals.Target, 10);
             break;
           case FuncType.damageNpIndividual:
           case FuncType.damageNpRare:
@@ -270,17 +270,17 @@ class ValDsc extends StatelessWidget {
         }
       }
       if (!ignoreCount && vals.Count != null && vals.Count! > 0) {
-        _addInt(vals.Count, (v) => Transl.special.funcValCountTimes(vals.Count!));
+        _addInt(parts, vals.Count, (v) => Transl.special.funcValCountTimes(vals.Count!));
       }
       if (vals.AddCount != null) {
         if (func.funcType == FuncType.eventDropRateUp) {
-          _addPercent(vals.AddCount, 10);
+          _addPercent(parts, vals.AddCount, 10);
         } else {
-          _addInt(vals.AddCount);
+          _addInt(parts, vals.AddCount);
         }
       }
       if (vals.UseRate != null) {
-        _addPercent(vals.UseRate, 10, (v) => Transl.special.funcValActChance(v));
+        _addPercent(parts, vals.UseRate, 10, (v) => Transl.special.funcValActChance(v));
       }
       if (vals.RateCount != null) {
         switch (func.funcType) {
@@ -290,18 +290,18 @@ class ValDsc extends StatelessWidget {
           case FuncType.eventPointUp:
           case FuncType.eventFortificationPointUp:
           case FuncType.expUp:
-            _addPercent(vals.RateCount, 10);
+            _addPercent(parts, vals.RateCount, 10);
             break;
           case FuncType.enemyEncountRateUp:
           case FuncType.enemyEncountCopyRateUp:
-            _addPercent(vals.RateCount, 10);
+            _addPercent(parts, vals.RateCount, 10);
             break;
           default:
-            _addInt(vals.RateCount);
+            _addInt(parts, vals.RateCount);
         }
       }
       if (vals.DropRateCount != null) {
-        _addPercent(vals.DropRateCount, 10);
+        _addPercent(parts, vals.DropRateCount, 10);
       }
       if (vals.Individuality != null) {
         // if ([].contains(func.funcType)) {
@@ -313,7 +313,14 @@ class ValDsc extends StatelessWidget {
   }
 
   final empty = '';
-  void describeBuff(Buff buff) {
+
+  static void describeBuff(
+    final List<String> parts,
+    final Buff buff,
+    final DataVals vals, {
+    final bool inList = false,
+    final bool ignoreCount = false,
+  }) {
     final base = kBuffActionPercentTypes[buff.buffAction] ?? kBuffTypePercentType[buff.type];
     final trigger = kBuffValueTriggerTypes[buff.type];
     String _val(int? v) {
@@ -333,7 +340,7 @@ class ValDsc extends StatelessWidget {
       _valueUsed = true;
     }
     if (base != null) {
-      if (!_valueUsed) _addPercent(vals.Value, base);
+      if (!_valueUsed) _addPercent(parts, vals.Value, base);
       // return;
     } else if (trigger != null) {
       final triggerVal = trigger(vals);
@@ -369,7 +376,7 @@ class ValDsc extends StatelessWidget {
       parts.add('');
       return;
     } else {
-      if (!_valueUsed) _addInt(vals.Value);
+      if (!_valueUsed) _addInt(parts, vals.Value);
     }
     if (vals.RatioHPHigh != null || vals.RatioHPLow != null) {
       final ratios = [vals.RatioHPHigh ?? 0, vals.RatioHPLow ?? 0].toList();
@@ -387,7 +394,7 @@ class ValDsc extends StatelessWidget {
     }
 
     if (!ignoreCount && vals.Count != null && vals.Count! > 0) {
-      _addInt(vals.Count, (v) => Transl.special.funcValCountTimes(vals.Count!));
+      _addInt(parts, vals.Count, (v) => Transl.special.funcValCountTimes(vals.Count!));
     }
   }
 
@@ -398,12 +405,12 @@ class ValDsc extends StatelessWidget {
       if ((_jsonVals.length == 1 && _jsonVals.first == 'Rate' && ignoreRate != true) ||
           vals.Rate != 1000 ||
           [FuncType.instantDeath, FuncType.forceInstantDeath].contains(func.funcType)) {
-        _addPercent(vals.Rate, 10, (v) => Transl.special.funcValChance(v));
+        _addPercent(parts, vals.Rate, 10, (v) => Transl.special.funcValChance(v));
       }
     }
 
     if (vals.ActSetWeight != null) {
-      _addPercent(vals.ActSetWeight, 1, (v) {
+      _addPercent(parts, vals.ActSetWeight, 1, (v) {
         String s = Transl.special.funcValWeight(v);
         if (vals.ActSet != null) {
           s = '[${vals.ActSet}]$s';
