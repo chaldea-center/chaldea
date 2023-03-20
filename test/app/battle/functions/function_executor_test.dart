@@ -48,11 +48,11 @@ void main() async {
     });
 
     test('FuncApplyTarget.player', () {
-      final BaseFunction allyFunciton =
+      final BaseFunction allyFunction =
           BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.player);
-      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunciton, ally), isTrue);
-      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunciton, enemy), isFalse);
-      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunciton, null), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunction, ally), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunction, enemy), isFalse);
+      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunction, null), isTrue);
     });
 
     test('FuncApplyTarget.playerAndEnemy', () {

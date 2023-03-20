@@ -23,13 +23,13 @@ class BattleBuff {
 
   void turnEndShort() {
     allBuffs.forEach((buff) {
-      if (buff.isShortBuff) buff.turnPass();
+      if (buff.isShortBuff && buff.shouldDecreaseTurn) buff.turnPass();
     });
   }
 
   void turnEndLong() {
     allBuffs.forEach((buff) {
-      if (!buff.isShortBuff) buff.turnPass();
+      if (!buff.isShortBuff && buff.shouldDecreaseTurn) buff.turnPass();
     });
   }
 
@@ -54,6 +54,7 @@ class BuffData {
   int buffRate = 1000;
   int count = -1;
   int turn = -1;
+  bool shouldDecreaseTurn = false;
   int param = 0;
   int additionalParam = 0;
   NiceTd? tdSelection;
@@ -321,6 +322,7 @@ class BuffData {
       ..buffRate = buffRate
       ..count = count
       ..turn = turn
+      ..shouldDecreaseTurn = shouldDecreaseTurn
       ..param = param
       ..additionalParam = additionalParam
       ..tdSelection = tdSelection

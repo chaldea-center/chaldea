@@ -74,6 +74,7 @@ class BattleServantData {
   int np = 0;
   int npLineCount = 0;
   int accumulationDamage = 0;
+  bool myTurn = false;
 
   // BattleServantData.Status status
   int ascensionPhase = 0;
@@ -777,6 +778,7 @@ class BattleServantData {
   }
 
   void addBuff(final BuffData buffData, {final bool isPassive = false, final bool isCommandCode = false}) {
+    buffData.shouldDecreaseTurn = myTurn;
     if (isCommandCode) {
       battleBuff.commandCodeList.add(buffData);
     } else if (isPassive) {
@@ -819,6 +821,10 @@ class BattleServantData {
   }
 
   Future<void> startOfMyTurn(final BattleData battleData) async {
+    myTurn = true;
+    for (final buff in battleBuff.allBuffs) {
+      buff.shouldDecreaseTurn = true;
+    }
     await activateBuffOnAction(battleData, BuffAction.functionSelfturnstart);
   }
 
@@ -900,12 +906,7 @@ class BattleServantData {
       battleData.logger.debug('$lBattleName - ${S.current.battle_turn_end}$turnEndLog');
     }
 
-    if (isPlayer) {
-      battleBuff.turnEndShort();
-    } else {
-      battleBuff.turnEndShort();
-      battleBuff.turnEndLong();
-    }
+    battleBuff.turnEndShort();
 
     battleData.unsetTarget();
     battleData.unsetActivator();
@@ -915,6 +916,8 @@ class BattleServantData {
     await activateBuffs(battleData, delayedFunctions.where((buff) => buff.turn == 0));
 
     battleData.checkBuffStatus();
+
+    myTurn = false;
   }
 
   Future<void> endOfYourTurn(final BattleData battleData) async {
@@ -924,9 +927,7 @@ class BattleServantData {
     battleData.setActivator(this);
     battleData.setTarget(this);
 
-    if (isPlayer) {
-      battleBuff.turnEndLong();
-    }
+    battleBuff.turnEndLong();
 
     battleData.unsetTarget();
     battleData.unsetActivator();
@@ -988,6 +989,7 @@ class BattleServantData {
       ..np = np
       ..npLineCount = npLineCount
       ..accumulationDamage = accumulationDamage
+      ..myTurn = myTurn
       ..ascensionPhase = ascensionPhase
       ..skillInfoList = skillInfoList.map((e) => e.copy()).toList() // copy
       ..equip = equip

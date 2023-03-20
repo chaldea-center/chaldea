@@ -350,12 +350,16 @@ void main() async {
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, kamaWithDoubleCastoria, null);
 
+      final kama = battle.targetedAlly!;
+      expect(kama.battleBuff.allBuffs.length, 13);
       await battle.activateSvtSkill(0, 0);
+      expect(kama.battleBuff.allBuffs.length, 15);
       await battle.activateSvtSkill(1, 1);
       await battle.activateSvtSkill(1, 2);
+      expect(kama.battleBuff.allBuffs.length, 19);
       await battle.activateSvtSkill(2, 1);
       await battle.activateSvtSkill(2, 2);
-      final kama = battle.targetedAlly!;
+      expect(kama.battleBuff.allBuffs.length, 22);
       final npActions = [CombatAction(kama, kama.getNPCard(battle)!)];
 
       battle.enemyTargetIndex = 1;
@@ -364,6 +368,7 @@ void main() async {
       await battle.playerTurn(npActions);
       final hpAfterDamage = skyCaster.hp;
 
+      expect(kama.battleBuff.allBuffs.length, 21);
       expect(hpBeforeDamage - hpAfterDamage, 82618);
       expect(kama.np, 12422); // np from each hit is added one by one, so would trigger np pity (> 9900) immediately
       expect(battle.criticalStars, moreOrLessEquals(3.432, epsilon: 0.001));
@@ -379,6 +384,7 @@ void main() async {
       await battle.playerTurn(npActions);
       final hpAfterDamageWave2 = wave2enemy.hp;
 
+      expect(kama.battleBuff.allBuffs.length, 21);
       expect(hpBeforeDamageWave2 - hpAfterDamageWave2, 82618);
       expect(kama.np, 11584 + 380);
       expect(battle.criticalStars, moreOrLessEquals(2.532, epsilon: 0.001));
@@ -392,6 +398,7 @@ void main() async {
       await battle.activateSvtSkill(0, 2);
       await battle.activateSvtSkill(1, 0);
       await battle.activateSvtSkill(2, 0);
+      expect(kama.battleBuff.allBuffs.length, 26);
 
       final wave3enemy = battle.targetedEnemy!;
       expect(wave3enemy.uniqueId, 10);
@@ -403,6 +410,7 @@ void main() async {
       ]);
       final hpAfterDamageWave3 = wave3enemy.hp;
 
+      expect(kama.battleBuff.allBuffs.length, 18);
       expect(hpBeforeDamageWave3 - hpAfterDamageWave3, 15605 + 44520 + 282836);
       expect(kama.np, 3744 + 380);
       expect(battle.criticalStars, moreOrLessEquals(0.184 + 0.784 + 1.143, epsilon: 0.001));
