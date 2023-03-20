@@ -97,6 +97,9 @@ void main() async {
       PlayerSvtData(304800)
         ..ascensionPhase = 0
         ..lv = 90,
+      PlayerSvtData(304800)
+        ..ascensionPhase = 3
+        ..lv = 90,
       PlayerSvtData(404900)..lv = 80,
     ];
 
@@ -104,14 +107,20 @@ void main() async {
     await battle.init(db.gameData.questPhases[9300040603]!, melusineAndFeihu, null);
 
     final melusine = battle.onFieldAllyServants[0]!;
-    final feihu = battle.onFieldAllyServants[1]!;
-    expect(melusine.getTraits(battle).map((e) => e.signedId).contains(Trait.knightsOfTheRound.id), isTrue);
-    expect(feihu.getTraits(battle).map((e) => e.signedId).contains(301), isTrue);
-    expect(feihu.getTraits(battle).map((e) => e.signedId).contains(300), isFalse);
+    final melusine2 = battle.onFieldAllyServants[1]!;
+    final feihu = battle.onFieldAllyServants[2]!;
+    expect(melusine.getTraits(battle).map((e) => e.signedId).contains(Trait.fae.id), true);
+    expect(melusine2.getTraits(battle).map((e) => e.signedId).contains(Trait.fae.id), true);
+    expect(melusine.getTraits(battle).map((e) => e.signedId).contains(Trait.havingAnimalsCharacteristics.id), true);
+    expect(melusine2.getTraits(battle).map((e) => e.signedId).contains(Trait.havingAnimalsCharacteristics.id), true);
+    expect(melusine.getTraits(battle).map((e) => e.signedId).contains(Trait.knightsOfTheRound.id), true);
+    expect(melusine2.getTraits(battle).map((e) => e.signedId).contains(Trait.knightsOfTheRound.id), false);
+    expect(feihu.getTraits(battle).map((e) => e.signedId).contains(301), true);
+    expect(feihu.getTraits(battle).map((e) => e.signedId).contains(300), false);
 
-    await battle.activateSvtSkill(1, 0);
-    expect(feihu.getTraits(battle).map((e) => e.signedId).contains(301), isFalse);
-    expect(feihu.getTraits(battle).map((e) => e.signedId).contains(300), isTrue);
+    await battle.activateSvtSkill(2, 0);
+    expect(feihu.getTraits(battle).map((e) => e.signedId).contains(301), false);
+    expect(feihu.getTraits(battle).map((e) => e.signedId).contains(300), true);
   });
 
   test('Test skill scripts', () async {

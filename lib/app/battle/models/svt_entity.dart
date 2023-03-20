@@ -318,7 +318,7 @@ class BattleServantData {
       } else {
         allTraits.addAll(niceSvt!.traits);
       }
-      niceSvt!.traitAdd.map((e) => allTraits.addAll(e.trait));
+      niceSvt!.traitAdd.forEach((e) => allTraits.addAll(e.trait));
     }
 
     final List<int> removeTraitIds = [];
