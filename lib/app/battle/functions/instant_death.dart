@@ -19,10 +19,12 @@ class InstantDeath {
     final activator = battleData.activator;
     bool success = false;
     for (final target in targets) {
+      battleData.setTarget(target);
       if (force || await shouldInstantDeath(battleData, dataVals, activator, target)) {
         target.hp = 0;
         success = true;
       }
+      battleData.unsetTarget();
     }
 
     return success;
@@ -48,7 +50,7 @@ class InstantDeath {
     final functionRate = dataVals.Rate ?? 1000;
     final resistRate = resistInstantDeath - nonResistInstantDeath;
     final activationRate =
-        (functionRate * toModifier(target.deathRate) * (1000 + grantInstantDeath - resistRate)).toInt();
+        (functionRate * toModifier(target.deathRate) * toModifier(1000 + grantInstantDeath - resistRate)).toInt();
     final success = await battleData.canActivateFunction(activationRate);
     final resultsString = success
         ? S.current.success
@@ -56,8 +58,7 @@ class InstantDeath {
             ? 'GUARD'
             : 'MISS';
 
-    battleData.logger.debug('${S.current.effect_target}: ${target.lBattleName}'
-        ' - ${S.current.info_death_rate}'
+    battleData.logger.debug('${S.current.effect_target}: ${target.lBattleName} - '
         '$resultsString'
         '${battleData.tailoredExecution ? '' : ' [($activationRate - $resistRate) vs ${battleData.probabilityThreshold}]'}');
 

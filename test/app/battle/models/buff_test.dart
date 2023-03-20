@@ -162,6 +162,32 @@ void main() async {
       expect(mash.getBuffValueOnAction(battle, BuffAction.receiveDamage), -2000);
     });
 
+    test('instantDeath grant', () async {
+      final List<PlayerSvtData> setting = [
+        PlayerSvtData(1001000)
+          ..lv = 1
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+      ];
+      final mysticCodeData = MysticCodeData()..mysticCode = db.gameData.mysticCodes[240]!;
+      final battle = BattleData();
+      await battle.init(db.gameData.questPhases[9300040603]!, setting, mysticCodeData);
+
+      await battle.skipWave();
+      await battle.skipWave();
+      final douman = battle.onFieldAllyServants[0]!;
+      final enemy1 = battle.onFieldEnemies[0]!;
+      await battle.playerTurn([CombatAction(douman, douman.getNPCard(battle)!)]);
+      expect(battle.nonnullEnemies.length, 1);
+
+      douman.np = 10000;
+      await battle.activateMysticCodeSKill(1);
+      await battle.playerTurn([CombatAction(douman, douman.getNPCard(battle)!)]);
+      expect(enemy1.hp, 0);
+      expect(battle.nonnullEnemies.length, 0);
+    });
+
     test('fieldIndividuality & subFieldIndividuality', () async {
       final battle = BattleData();
       final playerSettings = [

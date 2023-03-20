@@ -26,6 +26,7 @@ class TransformServant {
         continue;
       }
 
+      battleData.setTarget(target);
       final targetSvtId = dataVals.Value!;
       if (targetSvtId == 304800) {
         // lazy transform svt 312
@@ -63,6 +64,7 @@ class TransformServant {
           }
         }
       }
+      battleData.unsetTarget();
     }
 
     return true;

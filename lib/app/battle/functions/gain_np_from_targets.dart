@@ -22,6 +22,7 @@ class GainNpFromTargets {
     final checkValue = dependVal.Value!;
 
     for (final receiver in targets) {
+      battleData.setTarget(receiver);
       //  denoting who should receive the absorbed np
       int gainValue = 0;
       for (final absorbTarget in FunctionExecutor.acquireFunctionTarget(
@@ -47,6 +48,7 @@ class GainNpFromTargets {
       } else {
         receiver.changeNP(gainValue);
       }
+      battleData.unsetTarget();
     }
 
     final NiceFunction niceFunction = NiceFunction(

@@ -24,6 +24,7 @@ class GainHpFromTargets {
     final checkValue = dependVal.Value!;
 
     for (final receiver in targets) {
+      battleData.setTarget(receiver);
       //  denoting who should receive the absorbed hp
       int gainValue = 0;
       for (final absorbTarget in FunctionExecutor.acquireFunctionTarget(
@@ -36,6 +37,7 @@ class GainHpFromTargets {
       }
 
       receiver.heal(battleData, gainValue);
+      battleData.unsetTarget();
     }
 
     final NiceFunction niceFunction = NiceFunction(

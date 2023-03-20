@@ -101,8 +101,7 @@ class SubState {
             ? 'GUARD'
             : 'MISS';
 
-    battleData.logger.debug('${S.current.effect_target}: ${target.lBattleName}'
-        ' - ${buff.buff.lName.l}'
+    battleData.logger.debug('${S.current.effect_target}: ${target.lBattleName} - ${buff.buff.lName.l}'
         '$resultsString'
         '${battleData.tailoredExecution ? '' : ' [($activationRate - $resistRate) vs ${battleData.probabilityThreshold}]'}');
 

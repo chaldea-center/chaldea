@@ -23,6 +23,7 @@ class MoveState {
 
     for (final receiver in targets) {
       //  denoting who should receive the absorbed hp
+      battleData.setTarget(receiver);
       for (final absorbTarget in FunctionExecutor.acquireFunctionTarget(
         battleData,
         dependFunction.funcTargetType,
@@ -33,6 +34,7 @@ class MoveState {
           receiver.addBuff(buff.copy());
         }
       }
+      battleData.unsetTarget();
     }
 
     final NiceFunction niceFunction = NiceFunction(

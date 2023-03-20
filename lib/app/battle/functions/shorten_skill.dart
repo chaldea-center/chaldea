@@ -15,10 +15,12 @@ class ShortenSkill {
       return false;
     }
 
-    for (final svt in targets) {
-      svt.skillInfoList.forEach((element) {
-        element.shortenSkill(dataVals.Value!);
+    for (final target in targets) {
+      battleData.setTarget(target);
+      target.skillInfoList.forEach((skill) {
+        skill.shortenSkill(dataVals.Value!);
       });
+      battleData.unsetTarget();
     }
     return true;
   }

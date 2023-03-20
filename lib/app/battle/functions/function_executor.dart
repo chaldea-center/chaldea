@@ -213,7 +213,7 @@ class FunctionExecutor {
             ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName())}'
             : '';
         battleData.logger.function('${activator?.lBattleName ?? S.current.battle_no_source} - '
-            '${FuncDescriptor.buildFuncText(function)} - '
+            '${FuncDescriptor.buildFuncText(function)}'
             '$fieldTraitString'
             '$targetTraitString');
         break;

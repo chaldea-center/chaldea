@@ -759,9 +759,14 @@ void main() async {
     final enemy2 = battle.onFieldEnemies[1]!;
     final enemy3 = battle.onFieldEnemies[2]!;
     await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
+    expect(battle.waveCount, 1);
+    expect(enemy1.hp, greaterThan(0));
+    expect(enemy2.hp, greaterThan(0));
+    expect(enemy3.hp, greaterThan(0));
     expect(battle.nonnullEnemies.length, 3);
 
-    battle.probabilityThreshold = 960;
+    battle.probabilityThreshold = 800;
+    kiara.np = 10000;
     await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
     expect(enemy1.hp, 0);
     expect(enemy2.hp, 0);

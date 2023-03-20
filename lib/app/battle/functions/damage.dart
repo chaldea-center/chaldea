@@ -349,7 +349,9 @@ class _DamageAdjustorState extends State<DamageAdjustor> {
             [
               Padding(
                 padding: const EdgeInsets.all(4.0),
-                child: Text('${widget.battleData.activator!.lBattleName} vs '
+                child: Text('${widget.battleData.activator!.lBattleName} - '
+                    '${widget.damageParameters.currentCardType.name.toUpperCase()} - '
+                    '${widget.damageParameters.isNp ? S.current.battle_np_card : S.current.battle_command_card} vs '
                     '${widget.battleData.target!.lBattleName} (HP: ${widget.battleData.target!.hp})'),
               ),
               Padding(

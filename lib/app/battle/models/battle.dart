@@ -810,7 +810,7 @@ class BattleData {
         : '';
     final targetString = target != null ? ' vs ${target!.lBattleName}' : '';
     final funcString = '${activator?.lBattleName ?? S.current.battle_no_source} - '
-        '${FuncDescriptor.buildFuncText(function)} - '
+        '${FuncDescriptor.buildFuncText(function)}'
         '$fieldTraitString'
         '$targetTraitString'
         '$targetString';
