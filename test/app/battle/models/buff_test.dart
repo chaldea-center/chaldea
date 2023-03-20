@@ -94,7 +94,7 @@ void main() async {
       battle.unsetActivator();
     });
 
-    test('probability check', () {
+    test('probability check', () async {
       final buff = BuffData(
           Buff(id: -1, name: '', detail: '', ckOpIndv: [NiceTrait(id: Trait.king.id), NiceTrait(id: Trait.divine.id)]),
           DataVals({'UseRate': 500}));
@@ -102,11 +102,11 @@ void main() async {
       battle.setTarget(cba);
       battle.setActivator(okuni);
 
-      expect(buff.shouldApplyBuff(battle, false), isFalse);
+      expect(await buff.shouldActivateBuff(battle, false), isFalse);
 
       battle.probabilityThreshold = 500;
 
-      expect(buff.shouldApplyBuff(battle, false), isTrue);
+      expect(await buff.shouldActivateBuff(battle, false), isTrue);
 
       battle.unsetTarget();
       battle.unsetActivator();

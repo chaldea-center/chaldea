@@ -5,6 +5,7 @@ import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
+import 'package:chaldea/app/descriptors/func/func.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -71,6 +72,7 @@ class BattleData {
   int fixedRandom = ConstData.constants.attackRateRandomMin;
   int probabilityThreshold = 1000;
   bool isAfter7thAnni = true;
+  bool tailoredExecution = false;
 
   final BattleLogger logger = BattleLogger();
   BuildContext? context;
@@ -112,6 +114,9 @@ class BattleData {
   final List<BuffData?> _currentBuff = [];
   final List<BattleServantData> _activator = [];
   final List<BattleServantData> _target = [];
+
+  // Just for logging
+  NiceFunction? curFunc;
 
   void setCurrentBuff(final BuffData buff) {
     _currentBuff.add(buff);
@@ -715,7 +720,7 @@ class BattleData {
     return 0;
   }
 
-  static bool shouldRemoveDeadActors(final List<CombatAction> actions, final int index) {
+  bool shouldRemoveDeadActors(final List<CombatAction> actions, final int index) {
     final action = actions[index];
     if (action.cardData.isNP) {
       return true;
@@ -729,8 +734,87 @@ class BattleData {
     }
   }
 
-  static bool isBraveChain(final List<CombatAction> actions) {
-    return actions.length == kMaxCommand && actions.map((action) => action.actor).toSet().length == 1;
+  bool isBraveChain(final List<CombatAction> actions) {
+    return actions.where((action) => action.isValid(this)).length == kMaxCommand &&
+        actions.map((action) => action.actor).toSet().length == 1;
+  }
+
+  Future<bool> canActivate(final int activationRate, final String description) async {
+    if (activationRate < 1000 && activationRate > 0 && tailoredExecution && context != null) {
+      final curResult = probabilityThreshold <= activationRate ? S.current.success : S.current.failed;
+      return await showDialog(
+        context: context!,
+        useRootNavigator: false,
+        barrierDismissible: false,
+        builder: (context) {
+          return SimpleCancelOkDialog(
+            title: Text(S.current.battle_select_effect),
+            contentPadding: const EdgeInsets.all(8),
+            content: SingleChildScrollView(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: divideTiles(
+                  [
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Text(description),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Text('${S.current.results}: $curResult => '
+                          '${S.current.battle_activate_probability}: '
+                          '${(activationRate / 10).toStringAsFixed(1)}% '
+                          'vs ${S.current.probability_expectation}: '
+                          '${(probabilityThreshold / 10).toStringAsFixed(1)}%'),
+                    ),
+                    Row(
+                      children: [
+                        Text('${S.current.battle_should_activate}: '),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
+                          child: const Text('Yes'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                          child: const Text('No'),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+            hideOk: true,
+            hideCancel: true,
+          );
+        },
+      );
+    }
+
+    return probabilityThreshold <= activationRate;
+  }
+
+  Future<bool> canActivateFunction(final int activationRate) async {
+    final function = curFunc!;
+    final fieldTraitString = function.funcquestTvals.isNotEmpty
+        ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName())}'
+        : '';
+    final targetTraitString = function.functvals.isNotEmpty
+        ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName())}'
+        : '';
+    final targetString = target != null ? ' vs ${target!.lBattleName}' : '';
+    final funcString = '${activator?.lBattleName ?? S.current.battle_no_source} - '
+        '${FuncDescriptor.buildFuncText(function)} - '
+        '$fieldTraitString'
+        '$targetTraitString'
+        '$targetString';
+    return await canActivate(activationRate, funcString);
   }
 
   final List<BattleData> copies = [];
@@ -758,7 +842,8 @@ class BattleData {
       ..uniqueIndex = uniqueIndex
       ..fixedRandom = fixedRandom
       ..probabilityThreshold = probabilityThreshold
-      ..isAfter7thAnni = isAfter7thAnni;
+      ..isAfter7thAnni = isAfter7thAnni
+      ..tailoredExecution = tailoredExecution;
 
     copies.add(copy);
   }
@@ -792,7 +877,8 @@ class BattleData {
       ..uniqueIndex = copy.uniqueIndex
       ..fixedRandom = copy.fixedRandom
       ..probabilityThreshold = copy.probabilityThreshold
-      ..isAfter7thAnni = copy.isAfter7thAnni;
+      ..isAfter7thAnni = copy.isAfter7thAnni
+      ..tailoredExecution = tailoredExecution;
   }
 }
 

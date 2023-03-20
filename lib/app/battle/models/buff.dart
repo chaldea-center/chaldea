@@ -197,11 +197,15 @@ class BuffData {
 
     final onFieldCheck = !isOnField || battleData.isActorOnField(actorUniqueId);
 
-    final probabilityCheck = buffRate >= battleData.probabilityThreshold;
-
     final scriptCheck = checkScript(battleData, targetCheck);
 
-    return targetCheck && onFieldCheck && probabilityCheck && scriptCheck;
+    return targetCheck && onFieldCheck && scriptCheck;
+  }
+
+  Future<bool> shouldActivateBuff(final BattleData battleData, final bool isTarget) async {
+    final probabilityCheck =
+        await battleData.canActivate(buffRate, '${battleData.activator!.lBattleName} - ${buff.lName.l}');
+    return shouldApplyBuff(battleData, isTarget) && probabilityCheck;
   }
 
   bool checkScript(final BattleData battleData, final bool isTarget) {

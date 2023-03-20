@@ -692,7 +692,7 @@ class BattleServantData {
     battleData.setActivator(this);
 
     for (final buff in buffs.toList()) {
-      if (buff.shouldApplyBuff(battleData, false)) {
+      if (await buff.shouldActivateBuff(battleData, false)) {
         final skillId = buff.param;
         BaseSkill? skill = db.gameData.baseSkills[skillId];
         try {

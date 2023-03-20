@@ -17,6 +17,7 @@ import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
+import 'package:chaldea/app/descriptors/func/func.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
@@ -212,7 +213,7 @@ class FunctionExecutor {
             ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName())}'
             : '';
         battleData.logger.function('${activator?.lBattleName ?? S.current.battle_no_source} - '
-            '${Transl.funcTargetType(function.funcTargetType).l} -  ${function.lPopupText.l}'
+            '${FuncDescriptor.buildFuncText(function)} - '
             '$fieldTraitString'
             '$targetTraitString');
         break;
@@ -267,6 +268,7 @@ class FunctionExecutor {
       }
     }
 
+    battleData.curFunc = function;
     bool functionSuccess = true;
     switch (function.funcType) {
       case FuncType.absorbNpturn:
@@ -274,7 +276,7 @@ class FunctionExecutor {
         GainNpFromTargets.gainNpFromTargets(battleData, dataVals, targets).then((value) => functionSuccess = value);
         break;
       case FuncType.addState:
-        functionSuccess = AddState.addState(
+        functionSuccess = await AddState.addState(
           battleData,
           function.buff!,
           dataVals,
@@ -286,7 +288,7 @@ class FunctionExecutor {
         );
         break;
       case FuncType.addStateShort:
-        functionSuccess = AddState.addState(
+        functionSuccess = await AddState.addState(
           battleData,
           function.buff!,
           dataVals,
@@ -299,7 +301,7 @@ class FunctionExecutor {
         );
         break;
       case FuncType.subState:
-        functionSuccess = SubState.subState(battleData, function.traitVals, dataVals, targets);
+        functionSuccess = await SubState.subState(battleData, function.traitVals, dataVals, targets);
         break;
       case FuncType.moveState:
         await MoveState.moveState(battleData, dataVals, targets).then((value) => functionSuccess = value);
@@ -410,10 +412,10 @@ class FunctionExecutor {
         ).then((value) => functionSuccess = value);
         break;
       case FuncType.instantDeath:
-        functionSuccess = InstantDeath.instantDeath(battleData, dataVals, targets);
+        functionSuccess = await InstantDeath.instantDeath(battleData, dataVals, targets);
         break;
       case FuncType.forceInstantDeath:
-        functionSuccess = InstantDeath.instantDeath(battleData, dataVals, targets, force: true);
+        functionSuccess = await InstantDeath.instantDeath(battleData, dataVals, targets, force: true);
         break;
       case FuncType.gainHp:
         functionSuccess = GainHP.gainHP(battleData, dataVals, targets);

@@ -10,16 +10,16 @@ import 'package:chaldea/utils/basic.dart';
 class InstantDeath {
   InstantDeath._();
 
-  static bool instantDeath(
+  static Future<bool> instantDeath(
     final BattleData battleData,
     final DataVals dataVals,
     final List<BattleServantData> targets, {
     final bool force = false,
-  }) {
+  }) async {
     final activator = battleData.activator;
     bool success = false;
     for (final target in targets) {
-      if (force || shouldInstantDeath(battleData, dataVals, activator, target)) {
+      if (force || await shouldInstantDeath(battleData, dataVals, activator, target)) {
         target.hp = 0;
         success = true;
       }
@@ -28,12 +28,12 @@ class InstantDeath {
     return success;
   }
 
-  static bool shouldInstantDeath(
+  static Future<bool> shouldInstantDeath(
     final BattleData battleData,
     final DataVals dataVals,
     final BattleServantData? activator,
     final BattleServantData target,
-  ) {
+  ) async {
     if (target.hasBuffOnAction(battleData, BuffAction.avoidInstantdeath)) {
       battleData.logger.debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.battle_invalid}');
       return false;
@@ -49,16 +49,17 @@ class InstantDeath {
     final resistRate = resistInstantDeath - nonResistInstantDeath;
     final activationRate =
         (functionRate * toModifier(target.deathRate) * (1000 + grantInstantDeath - resistRate)).toInt();
-    final success = activationRate >= battleData.probabilityThreshold;
+    final success = await battleData.canActivateFunction(activationRate);
     final resultsString = success
         ? S.current.success
-        : resistRate > 1000
+        : resistRate > 0
             ? 'GUARD'
             : 'MISS';
 
     battleData.logger.debug('${S.current.effect_target}: ${target.lBattleName}'
         ' - ${S.current.info_death_rate}'
-        ' - $resultsString ($activationRate vs ${battleData.probabilityThreshold})');
+        '$resultsString'
+        '${battleData.tailoredExecution ? '' : ' [($activationRate - $resistRate) vs ${battleData.probabilityThreshold}]'}');
 
     return success;
   }

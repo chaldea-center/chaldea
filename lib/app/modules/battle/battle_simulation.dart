@@ -422,6 +422,20 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                               ),
                               tooltip: S.current.battle_undo,
                             ),
+                            IconButton(
+                              onPressed: () {
+                                battleData.tailoredExecution = !battleData.tailoredExecution;
+                                if (mounted) setState(() {});
+                              },
+                              icon: Icon(
+                                battleData.tailoredExecution
+                                    ? Icons.fiber_smart_record
+                                    : Icons.fiber_smart_record_outlined,
+                                size: 30,
+                                color: battleData.tailoredExecution ? Colors.red : Colors.grey,
+                              ),
+                              tooltip: S.current.battle_tailored_execution,
+                            ),
                           ],
                         )
                       ],

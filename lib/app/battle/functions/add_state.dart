@@ -11,7 +11,7 @@ import 'package:chaldea/utils/utils.dart';
 class AddState {
   AddState._();
 
-  static bool addState(
+  static Future<bool> addState(
     final BattleData battleData,
     final Buff buff,
     final DataVals dataVals,
@@ -21,7 +21,7 @@ class AddState {
     final bool notActorPassive = false,
     final bool isCommandCode = false,
     final bool isShortBuff = false,
-  }) {
+  }) async {
     final activator = battleData.activator;
     bool buffAdded = false;
     for (int i = 0; i < targets.length; i += 1) {
@@ -44,7 +44,7 @@ class AddState {
       }
 
       battleData.setTarget(target);
-      if (shouldAddState(battleData, dataVals, activator, target) &&
+      if (await shouldAddState(battleData, dataVals, activator, target) &&
           target.isBuffStackable(buffData.buff.buffGroup) &&
           checkSameBuffLimitNum(target, dataVals)) {
         target.addBuff(
@@ -80,12 +80,12 @@ class AddState {
             target.countBuffWithTrait([NiceTrait(id: dataVals.SameBuffLimitTargetIndividuality!)]);
   }
 
-  static bool shouldAddState(
+  static Future<bool> shouldAddState(
     final BattleData battleData,
     final DataVals dataVals,
     final BattleServantData? activator,
     final BattleServantData target,
-  ) {
+  ) async {
     if (dataVals.ForceAddState == 1) {
       return true;
     }
@@ -106,17 +106,21 @@ class AddState {
     final buffChanceDetails = ConstData.buffActions[BuffAction.grantState]!;
     final buffChance = activator?.getBuffValueOnAction(battleData, BuffAction.grantState) ??
         capBuffValue(buffChanceDetails, 0, Maths.min(buffChanceDetails.maxRate));
+
     final activationRate = functionRate + buffChance;
-    final resistRate = battleData.probabilityThreshold + buffReceiveChance;
-    final success = activationRate >= resistRate;
+    final resistRate = buffReceiveChance;
+
+    final success = await battleData.canActivateFunction(activationRate - resistRate);
+
     final resultsString = success
         ? S.current.success
-        : resistRate > 1000
+        : resistRate > 0
             ? 'GUARD'
             : 'MISS';
 
     battleData.logger.debug('${S.current.effect_target}: ${target.lBattleName} - '
-        '$resultsString ($activationRate vs $resistRate)');
+        '$resultsString'
+        '${battleData.tailoredExecution ? '' : ' [($activationRate - $resistRate) vs ${battleData.probabilityThreshold}]'}');
 
     return success;
   }

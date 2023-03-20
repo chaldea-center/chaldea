@@ -536,6 +536,17 @@ class S {
     );
   }
 
+  /// `Activation Probability`
+  String get battle_activate_probability {
+    return Intl.message(
+      'Activation Probability',
+      name: 'battle_activate_probability',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `After 7th`
   String get battle_after_7th {
     return Intl.message(
@@ -668,10 +679,10 @@ class S {
     );
   }
 
-  /// `Click icon to select servant`
+  /// `Click to select servant`
   String get battle_click_to_select_servants {
     return Intl.message(
-      'Click icon to select servant',
+      'Click to select servant',
       name: 'battle_click_to_select_servants',
       desc: '',
       locale: localeName,
@@ -998,6 +1009,17 @@ class S {
     );
   }
 
+  /// `Should Activate`
+  String get battle_should_activate {
+    return Intl.message(
+      'Should Activate',
+      name: 'battle_should_activate',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Battle Simulation`
   String get battle_simulation {
     return Intl.message(
@@ -1047,6 +1069,17 @@ class S {
     return Intl.message(
       'Start Simulation',
       name: 'battle_start_simulation',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Manual random value mode`
+  String get battle_tailored_execution {
+    return Intl.message(
+      'Manual random value mode',
+      name: 'battle_tailored_execution',
       desc: '',
       locale: localeName,
       args: [],

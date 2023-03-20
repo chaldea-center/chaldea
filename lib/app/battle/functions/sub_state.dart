@@ -11,12 +11,12 @@ import 'package:chaldea/utils/basic.dart';
 class SubState {
   SubState._();
 
-  static bool subState(
+  static Future<bool> subState(
     final BattleData battleData,
     final List<NiceTrait> affectTraits,
     final DataVals dataVals,
     final List<BattleServantData> targets,
-  ) {
+  ) async {
     final activator = battleData.activator;
     bool buffRemoved = false;
     for (final target in targets) {
@@ -33,7 +33,7 @@ class SubState {
           }
 
           battleData.setCurrentBuff(buff);
-          if (shouldSubState(battleData, dataVals, activator, target)) {
+          if (await shouldSubState(battleData, dataVals, activator, target)) {
             buffRemoved = true;
             target.battleBuff.activeList.removeAt(i);
             removeCount += 1;
@@ -53,7 +53,7 @@ class SubState {
           }
 
           battleData.setCurrentBuff(buff);
-          if (shouldSubState(battleData, dataVals, activator, target)) {
+          if (await shouldSubState(battleData, dataVals, activator, target)) {
             buffRemoved = true;
             target.battleBuff.activeList.removeAt(i);
             removeCount += 1;
@@ -71,12 +71,12 @@ class SubState {
     return buffRemoved;
   }
 
-  static bool shouldSubState(
+  static Future<bool> shouldSubState(
     final BattleData battleData,
     final DataVals dataVals,
     final BattleServantData? activator,
     final BattleServantData target,
-  ) {
+  ) async {
     if (dataVals.ForceSubState == 1) {
       return true;
     }
@@ -93,17 +93,18 @@ class SubState {
 
     final functionRate = dataVals.Rate ?? 1000;
     final activationRate = functionRate + grantSubState;
-    final resistRate = battleData.probabilityThreshold + toleranceSubState;
-    final success = activationRate >= resistRate;
+    final resistRate = toleranceSubState;
+    final success = await battleData.canActivateFunction(activationRate - resistRate);
     final resultsString = success
         ? S.current.success
-        : resistRate > 1000
+        : resistRate > 0
             ? 'GUARD'
             : 'MISS';
 
     battleData.logger.debug('${S.current.effect_target}: ${target.lBattleName}'
         ' - ${buff.buff.lName.l}'
-        ' - $resultsString ($activationRate vs $resistRate)');
+        '$resultsString'
+        '${battleData.tailoredExecution ? '' : ' [($activationRate - $resistRate) vs ${battleData.probabilityThreshold}]'}');
 
     return success;
   }
