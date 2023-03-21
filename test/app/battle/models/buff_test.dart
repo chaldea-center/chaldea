@@ -703,4 +703,25 @@ void main() async {
     expect(nemo.np, 8000);
     expect(nemo.hp, 3000);
   });
+
+  test('INDIVIDUALITIE svtId', () async {
+    final battle = BattleData();
+    final playerSettings = [
+      PlayerSvtData(600700)
+        ..lv = 70
+        ..appendLvs = [10, 10, 10],
+    ];
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    final henry = battle.onFieldAllyServants[0]!;
+    battle.setTarget(battle.onFieldEnemies[0]!);
+    battle.setActivator(henry);
+
+    expect(await henry.getBuffValueOnAction(battle, BuffAction.atk), 1300);
+
+    battle.setTarget(battle.onFieldEnemies[1]!);
+    battle.setActivator(henry);
+
+    expect(await henry.getBuffValueOnAction(battle, BuffAction.atk), 1000);
+  });
 }

@@ -184,7 +184,6 @@ class BuffData {
           ignoreIrremovable: ignoreIrremovable,
           checkIndivType: checkIndvType,
           includeIgnoredTrait: includeIgnoredTrait,
-          individualitie: iTieTrait != null,
         ) &&
         battleData.checkTraits(
           selfIndv,
