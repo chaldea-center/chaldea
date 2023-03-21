@@ -247,17 +247,17 @@ void main() async {
 
       final mash = battle.onFieldAllyServants[0]!;
       expect(mash.battleBuff.activeList.length, 0);
-      expect(mash.getBuffValueOnAction(battle, BuffAction.defence), 1000);
+      expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1000);
 
       await battle.activateSvtSkill(0, 0);
       expect(mash.battleBuff.activeList.length, 1);
-      expect(mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
+      expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
       expect(mash.battleBuff.activeList.first.buff.type, BuffType.upDefence);
       expect(mash.battleBuff.activeList.first.turn, 3);
 
       await battle.playerTurn([CombatAction(mash, mash.getCards(battle)[0])]);
       expect(mash.battleBuff.activeList.length, 1);
-      expect(mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
+      expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
       expect(mash.battleBuff.activeList.first.buff.type, BuffType.upDefence);
       expect(mash.battleBuff.activeList.first.turn, 2);
     });

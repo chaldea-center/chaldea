@@ -7,35 +7,35 @@ import 'package:chaldea/models/gamedata/vals.dart';
 class GainHP {
   GainHP._();
 
-  static bool gainHP(
+  static Future<bool> gainHP(
     final BattleData battleData,
     final DataVals dataVals,
     final Iterable<BattleServantData> targets, {
     final bool isPercent = false,
     final bool isNegative = false,
     final bool isLethal = false,
-  }) {
+  }) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.probabilityThreshold) {
       return false;
     }
 
-    targets.forEach((target) {
+    for (final target in targets) {
       battleData.setTarget(target);
 
       if (isNegative) {
         target.lossHp(dataVals.Value!, lethal: isLethal);
       } else {
         final healGrantEff =
-            toModifier(battleData.activator?.getBuffValueOnAction(battleData, BuffAction.giveGainHp) ?? 1000);
-        final healReceiveEff = toModifier(target.getBuffValueOnAction(battleData, BuffAction.gainHp));
+            toModifier(await battleData.activator?.getBuffValueOnAction(battleData, BuffAction.giveGainHp) ?? 1000);
+        final healReceiveEff = toModifier(await target.getBuffValueOnAction(battleData, BuffAction.gainHp));
         final baseHeal = isPercent ? target.getMaxHp(battleData) * toModifier(dataVals.Value!) : dataVals.Value!;
         final finalHeal = (baseHeal * healReceiveEff * healGrantEff).toInt();
         target.heal(battleData, finalHeal);
       }
 
       battleData.unsetTarget();
-    });
+    }
 
     return true;
   }

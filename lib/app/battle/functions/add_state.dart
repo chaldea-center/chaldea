@@ -97,14 +97,14 @@ class AddState {
 
     functionRate = functionRate.abs();
 
-    if (target.hasBuffOnAction(battleData, BuffAction.avoidState)) {
+    if (await target.hasBuffOnAction(battleData, BuffAction.avoidState)) {
       battleData.logger.debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.battle_invalid}');
       return false;
     }
 
-    final buffReceiveChance = target.getBuffValueOnAction(battleData, BuffAction.resistanceState);
+    final buffReceiveChance = await target.getBuffValueOnAction(battleData, BuffAction.resistanceState);
     final buffChanceDetails = ConstData.buffActions[BuffAction.grantState]!;
-    final buffChance = activator?.getBuffValueOnAction(battleData, BuffAction.grantState) ??
+    final buffChance = await activator?.getBuffValueOnAction(battleData, BuffAction.grantState) ??
         capBuffValue(buffChanceDetails, 0, Maths.min(buffChanceDetails.maxRate));
 
     final activationRate = functionRate + buffChance;

@@ -366,7 +366,7 @@ class BattleData {
     final bool ignoreIrremovable = false,
     final int? checkIndivType,
     final int? includeIgnoredTrait,
-    final bool includeFieldTrait = false,
+    final bool individualitie = false,
   }) {
     if (requiredTraits.isEmpty) {
       return true;
@@ -374,20 +374,23 @@ class BattleData {
 
     final actor = checkTarget ? target : activator;
     final List<NiceTrait> currentTraits = [];
-    if (!checkTargetBuff) {
-      currentTraits.addAll(actor?.getTraits(this) ?? []);
-    } else {
+    if (checkTargetBuff || individualitie) {
       currentTraits.addAll(actor?.getBuffTraits(
             this,
             activeOnly: activeOnly,
             ignoreIrremovable: ignoreIrremovable,
           ) ??
           []);
+    } else {
+      currentTraits.addAll(actor?.getTraits(this) ?? []);
     }
     if (includeIgnoredTrait == 1) currentTraits.addAll(actor?.getNPCard(this)?.traits ?? []);
     currentTraits.addAll(currentBuff?.traits ?? []);
     currentTraits.addAll(currentCard?.traits ?? []);
-    if (includeFieldTrait) currentTraits.addAll(getFieldTraits());
+    if (individualitie) {
+      currentTraits.addAll(getFieldTraits());
+      currentTraits.add(NiceTrait(id: actor?.svtId ?? 0));
+    }
     if (currentCard != null && currentCard!.isCritical) currentTraits.add(NiceTrait(id: Trait.criticalHit.id));
 
     if (checkIndivType == 1 || checkIndivType == 3) {
@@ -471,7 +474,7 @@ class BattleData {
 
     int effectiveness = 1000;
     for (final svt in nonnullAllies) {
-      effectiveness += svt.getBuffValueOnAction(this, BuffAction.masterSkillValueUp);
+      effectiveness += await svt.getBuffValueOnAction(this, BuffAction.masterSkillValueUp);
     }
 
     await masterSkillInfo[skillIndex].activate(this, effectiveness: effectiveness != 1000 ? effectiveness : null);
@@ -638,7 +641,7 @@ class BattleData {
     } else {
       targets.add(targetedEnemy!);
     }
-    Damage.damage(this, cardDamage, targets, chainPos, isTypeChain, isMightyChain, firstCardType);
+    await Damage.damage(this, cardDamage, targets, chainPos, isTypeChain, isMightyChain, firstCardType);
 
     unsetActivator();
 

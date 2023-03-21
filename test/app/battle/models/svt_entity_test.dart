@@ -43,19 +43,19 @@ void main() async {
     await battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
     final okuni = battle.onFieldAllyServants[0]!;
 
-    expect(okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
+    expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
 
     battle.currentCard = okuni.getNPCard(battle);
-    expect(okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
+    expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
 
     battle.currentCard = okuni.getCards(battle)[2]; // arts
-    expect(okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1040);
-    expect(okuni.hasBuffOnAction(battle, BuffAction.avoidance), isFalse);
+    expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1040);
+    expect(await okuni.hasBuffOnAction(battle, BuffAction.avoidance), isFalse);
 
     await okuni.activateSkill(battle, 0);
     battle.currentCard = okuni.getNPCard(battle);
-    expect(okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1300);
-    expect(okuni.hasBuffOnAction(battle, BuffAction.avoidance), isTrue);
+    expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1300);
+    expect(await okuni.hasBuffOnAction(battle, BuffAction.avoidance), isTrue);
   });
 
   test('Test commandCode', () async {

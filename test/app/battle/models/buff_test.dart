@@ -138,12 +138,12 @@ void main() async {
 
       final mash = battle.onFieldAllyServants[0]!;
       expect(mash.battleBuff.activeList.length, 0);
-      expect(mash.getBuffValueOnAction(battle, BuffAction.defence), 1000);
+      expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1000);
 
       await battle.activateSvtSkill(0, 0);
       expect(mash.battleBuff.activeList.length, 1);
-      expect(mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
-      expect(mash.getBuffValueOnAction(battle, BuffAction.defencePierce), 1000);
+      expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
+      expect(await mash.getBuffValueOnAction(battle, BuffAction.defencePierce), 1000);
     });
 
     test('subSelfdamage', () async {
@@ -159,7 +159,7 @@ void main() async {
       final mash = battle.onFieldAllyServants[0]!;
 
       await battle.activateSvtSkill(0, 0);
-      expect(mash.getBuffValueOnAction(battle, BuffAction.receiveDamage), -2000);
+      expect(await mash.getBuffValueOnAction(battle, BuffAction.receiveDamage), -2000);
     });
 
     test('instantDeath grant', () async {
@@ -246,16 +246,16 @@ void main() async {
     await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
     final okita = battle.onFieldAllyServants[0]!;
-    expect(okita.getBuffValueOnAction(battle, BuffAction.defence), 1000);
+    expect(await okita.getBuffValueOnAction(battle, BuffAction.defence), 1000);
 
     await battle.activateSvtSkill(0, 2);
-    expect(okita.getBuffValueOnAction(battle, BuffAction.defencePierce), 900);
+    expect(await okita.getBuffValueOnAction(battle, BuffAction.defencePierce), 900);
 
     await battle.skipWave();
-    expect(okita.getBuffValueOnAction(battle, BuffAction.defencePierce), 700);
+    expect(await okita.getBuffValueOnAction(battle, BuffAction.defencePierce), 700);
 
     await battle.skipWave();
-    expect(okita.getBuffValueOnAction(battle, BuffAction.defencePierce), 500);
+    expect(await okita.getBuffValueOnAction(battle, BuffAction.defencePierce), 500);
   });
 
   test('Check buffTrait', () async {
@@ -292,16 +292,16 @@ void main() async {
     battle.setActivator(lip);
 
     lip.hp = lip.getMaxHp(battle) ~/ 2 + 13;
-    expect(lip.getBuffValueOnAction(battle, BuffAction.atk), 1000);
+    expect(await lip.getBuffValueOnAction(battle, BuffAction.atk), 1000);
 
     lip.hp = lip.getMaxHp(battle) ~/ 2 - 1;
-    expect(lip.getBuffValueOnAction(battle, BuffAction.atk).toDouble(), moreOrLessEquals(1300, epsilon: 1));
+    expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1300, epsilon: 1));
 
     lip.hp = lip.getMaxHp(battle) ~/ 4;
-    expect(lip.getBuffValueOnAction(battle, BuffAction.atk).toDouble(), moreOrLessEquals(1400, epsilon: 1));
+    expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1400, epsilon: 1));
 
     lip.hp = 1;
-    expect(lip.getBuffValueOnAction(battle, BuffAction.atk).toDouble(), moreOrLessEquals(1500, epsilon: 1));
+    expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1500, epsilon: 1));
   });
 
   test('INDIVIDUALITIE', () async {
@@ -359,13 +359,13 @@ void main() async {
     battle.setActivator(battle.onFieldEnemies[0]!);
     battle.setTarget(kukulcan);
 
-    expect(kukulcan.hasBuffOnAction(battle, BuffAction.specialInvincible), false);
-    expect(kukulcan.hasBuffOnAction(battle, BuffAction.invincible), false);
+    expect(await kukulcan.hasBuffOnAction(battle, BuffAction.specialInvincible), false);
+    expect(await kukulcan.hasBuffOnAction(battle, BuffAction.invincible), false);
 
     await battle.activateSvtSkill(1, 2);
 
-    expect(kukulcan.hasBuffOnAction(battle, BuffAction.specialInvincible), true);
-    expect(kukulcan.hasBuffOnAction(battle, BuffAction.invincible), false);
+    expect(await kukulcan.hasBuffOnAction(battle, BuffAction.specialInvincible), true);
+    expect(await kukulcan.hasBuffOnAction(battle, BuffAction.invincible), false);
   });
 
   test('buffRate', () async {
@@ -380,18 +380,18 @@ void main() async {
     battle.setTarget(battle.onFieldEnemies[0]!);
     battle.currentCard = oberon.getNPCard(battle);
 
-    expect(oberon.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
-    expect(oberon.getBuffValueOnAction(battle, BuffAction.npdamage), 0);
+    expect(await oberon.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
+    expect(await oberon.getBuffValueOnAction(battle, BuffAction.npdamage), 0);
 
     await battle.activateSvtSkill(0, 0);
 
-    expect(oberon.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
-    expect(oberon.getBuffValueOnAction(battle, BuffAction.npdamage), 300);
+    expect(await oberon.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
+    expect(await oberon.getBuffValueOnAction(battle, BuffAction.npdamage), 300);
 
     await battle.activateSvtSkill(0, 2);
 
-    expect(oberon.getBuffValueOnAction(battle, BuffAction.commandAtk), 1500);
-    expect(oberon.getBuffValueOnAction(battle, BuffAction.npdamage), 600);
+    expect(await oberon.getBuffValueOnAction(battle, BuffAction.commandAtk), 1500);
+    expect(await oberon.getBuffValueOnAction(battle, BuffAction.npdamage), 600);
   });
 
   test('changeCommandCardType', () async {
@@ -420,19 +420,19 @@ void main() async {
     battle.setActivator(musashi);
     battle.setTarget(battle.onFieldEnemies[0]!);
     battle.currentCard = musashi.getNPCard(battle);
-    expect(musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
+    expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
     battle.currentCard = musashi.getCards(battle)[0];
-    expect(musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
+    expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
     battle.currentCard = musashi.getCards(battle)[1];
-    expect(musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
+    expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
 
     await battle.activateSvtSkill(0, 1);
     battle.currentCard = musashi.getNPCard(battle);
-    expect(musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
+    expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
     battle.currentCard = musashi.getCards(battle)[0];
-    expect(musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
+    expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
     battle.currentCard = musashi.getCards(battle)[1];
-    expect(musashi.hasBuffOnAction(battle, BuffAction.multiattack), true);
+    expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), true);
 
     battle.unsetActivator();
     battle.unsetTarget();
@@ -490,10 +490,10 @@ void main() async {
     battle.setActivator(murasama);
     battle.setTarget(castoria);
     battle.currentCard = murasama.getCards(battle)[0];
-    expect(murasama.getBuffValueOnAction(battle, BuffAction.criticalDamage), 1050);
+    expect(await murasama.getBuffValueOnAction(battle, BuffAction.criticalDamage), 1050);
 
     await battle.activateSvtSkill(1, 2);
-    expect(murasama.getBuffValueOnAction(battle, BuffAction.criticalDamage), 2050);
+    expect(await murasama.getBuffValueOnAction(battle, BuffAction.criticalDamage), 2050);
   });
 
   test('overwriteClassRelation', () async {
@@ -516,30 +516,30 @@ void main() async {
     battle.setActivator(kama);
     battle.setTarget(kirei);
 
-    expect(Damage.getClassRelation(battle, kama, reinis), 2000);
-    expect(Damage.getClassRelation(battle, kama, kirei), 1000);
-    expect(Damage.getClassRelation(battle, reinis, kama), 500);
-    expect(Damage.getClassRelation(battle, reinis, kirei), 1000);
-    expect(Damage.getClassRelation(battle, kirei, kama), 1500);
-    expect(Damage.getClassRelation(battle, kirei, reinis), 1500);
+    expect(await Damage.getClassRelation(battle, kama, reinis), 2000);
+    expect(await Damage.getClassRelation(battle, kama, kirei), 1000);
+    expect(await Damage.getClassRelation(battle, reinis, kama), 500);
+    expect(await Damage.getClassRelation(battle, reinis, kirei), 1000);
+    expect(await Damage.getClassRelation(battle, kirei, kama), 1500);
+    expect(await Damage.getClassRelation(battle, kirei, reinis), 1500);
 
     await battle.activateSvtSkill(0, 2);
 
-    expect(Damage.getClassRelation(battle, kama, reinis), 2000);
-    expect(Damage.getClassRelation(battle, kama, kirei), 2000);
-    expect(Damage.getClassRelation(battle, reinis, kama), 500);
-    expect(Damage.getClassRelation(battle, reinis, kirei), 1000);
-    expect(Damage.getClassRelation(battle, kirei, kama), 500);
-    expect(Damage.getClassRelation(battle, kirei, reinis), 1500);
+    expect(await Damage.getClassRelation(battle, kama, reinis), 2000);
+    expect(await Damage.getClassRelation(battle, kama, kirei), 2000);
+    expect(await Damage.getClassRelation(battle, reinis, kama), 500);
+    expect(await Damage.getClassRelation(battle, reinis, kirei), 1000);
+    expect(await Damage.getClassRelation(battle, kirei, kama), 500);
+    expect(await Damage.getClassRelation(battle, kirei, reinis), 1500);
 
     await battle.playerTurn([CombatAction(reinis, reinis.getNPCard(battle)!)]);
 
-    expect(Damage.getClassRelation(battle, kama, reinis), 1000);
-    expect(Damage.getClassRelation(battle, kama, kirei), 1000);
-    expect(Damage.getClassRelation(battle, reinis, kama), 500);
-    expect(Damage.getClassRelation(battle, reinis, kirei), 1000);
-    expect(Damage.getClassRelation(battle, kirei, kama), 1000);
-    expect(Damage.getClassRelation(battle, kirei, reinis), 1000);
+    expect(await Damage.getClassRelation(battle, kama, reinis), 1000);
+    expect(await Damage.getClassRelation(battle, kama, kirei), 1000);
+    expect(await Damage.getClassRelation(battle, reinis, kama), 500);
+    expect(await Damage.getClassRelation(battle, reinis, kirei), 1000);
+    expect(await Damage.getClassRelation(battle, kirei, kama), 1000);
+    expect(await Damage.getClassRelation(battle, kirei, reinis), 1000);
   });
 
   test('preventDeathByDamage', () async {

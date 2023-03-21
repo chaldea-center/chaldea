@@ -6,6 +6,8 @@ There are plenty of work need to do.
 
 ### Ally Function Logic:
 
+- [ ] Unify buff execution, eliminate unnecessary calls to buff.shouldApply and switch to buff.shouldActivate to check
+  for buffRate
 - [ ] Move all checkTrait logic into battle and remove individual checkTrait methods in models
 - [ ] There is a bug that will reset accumulation damage when deathEffect is triggered
   not verified for gutsEffect

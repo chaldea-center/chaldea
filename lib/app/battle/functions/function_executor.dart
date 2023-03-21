@@ -418,16 +418,16 @@ class FunctionExecutor {
         functionSuccess = await InstantDeath.instantDeath(battleData, dataVals, targets, force: true);
         break;
       case FuncType.gainHp:
-        functionSuccess = GainHP.gainHP(battleData, dataVals, targets);
+        functionSuccess = await GainHP.gainHP(battleData, dataVals, targets);
         break;
       case FuncType.gainHpPer:
-        functionSuccess = GainHP.gainHP(battleData, dataVals, targets, isPercent: true);
+        functionSuccess = await GainHP.gainHP(battleData, dataVals, targets, isPercent: true);
         break;
       case FuncType.lossHpSafe:
-        functionSuccess = GainHP.gainHP(battleData, dataVals, targets, isNegative: true);
+        functionSuccess = await GainHP.gainHP(battleData, dataVals, targets, isNegative: true);
         break;
       case FuncType.lossHp:
-        functionSuccess = GainHP.gainHP(battleData, dataVals, targets, isNegative: true, isLethal: true);
+        functionSuccess = await GainHP.gainHP(battleData, dataVals, targets, isNegative: true, isLethal: true);
         break;
       case FuncType.gainHpFromTargets:
         await GainHpFromTargets.gainHpFromTargets(battleData, dataVals, targets)

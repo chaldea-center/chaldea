@@ -557,7 +557,7 @@ void main() async {
     battle.setActivator(tezcatlipoca);
     battle.setTarget(battle.onFieldEnemies[0]!);
     battle.currentCard = tezcatlipoca.getNPCard(battle);
-    expect(tezcatlipoca.getBuffValueOnAction(battle, BuffAction.npdamage), 420);
+    expect(await tezcatlipoca.getBuffValueOnAction(battle, BuffAction.npdamage), 420);
   });
 
   test('deathEffect clear accumulation damage', () async {

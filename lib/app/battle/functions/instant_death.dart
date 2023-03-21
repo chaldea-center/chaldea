@@ -36,15 +36,15 @@ class InstantDeath {
     final BattleServantData? activator,
     final BattleServantData target,
   ) async {
-    if (target.hasBuffOnAction(battleData, BuffAction.avoidInstantdeath)) {
+    if (await target.hasBuffOnAction(battleData, BuffAction.avoidInstantdeath)) {
       battleData.logger.debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.battle_invalid}');
       return false;
     }
 
-    final resistInstantDeath = target.getBuffValueOnAction(battleData, BuffAction.resistInstantdeath);
-    final nonResistInstantDeath = target.getBuffValueOnAction(battleData, BuffAction.nonresistInstantdeath);
+    final resistInstantDeath = await target.getBuffValueOnAction(battleData, BuffAction.resistInstantdeath);
+    final nonResistInstantDeath = await target.getBuffValueOnAction(battleData, BuffAction.nonresistInstantdeath);
     final grantInstantDeathDetails = ConstData.buffActions[BuffAction.grantInstantdeath]!;
-    final grantInstantDeath = activator?.getBuffValueOnAction(battleData, BuffAction.grantInstantdeath) ??
+    final grantInstantDeath = await activator?.getBuffValueOnAction(battleData, BuffAction.grantInstantdeath) ??
         capBuffValue(grantInstantDeathDetails, 0, Maths.min(grantInstantDeathDetails.maxRate));
 
     final functionRate = dataVals.Rate ?? 1000;
