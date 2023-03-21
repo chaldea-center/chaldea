@@ -34,6 +34,7 @@ There are plenty of work need to do.
 - [ ] includeIgnoredTrait only adds NP card traits for now
 - [ ] more sample on convertBuff's scripts
 - [ ] prepare a dummy BattleServantData as Master
+- [ ] Figure out how to write reasonable test cases for UI required effects like randomEffect & changeTdType
 
 #### Unknowns:
 

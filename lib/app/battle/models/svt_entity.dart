@@ -907,7 +907,6 @@ class BattleServantData {
       });
     }
 
-
     String turnEndLog = '';
     int turnEndDamage = await getBuffValueOnAction(battleData, BuffAction.turnendHpReduce);
     if (turnEndDamage != 0) {
