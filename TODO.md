@@ -8,18 +8,18 @@ There are plenty of work need to do.
 
 - [ ] After 7th anni, donotAct will not stop first card from contributing to FirstCardType
 - [ ] Unify buff execution, eliminate unnecessary calls to buff.shouldApply and switch to buff.shouldActivate to check
-  for buff useRate
-- [  ] disable NP if NP has no functions
+      for buff useRate
+- [ ] disable NP if NP has no functions
 - [ ] BuffScript should only be checked when buffType matches
 - [ ] Move all checkTrait logic into battle and remove individual checkTrait methods in models
 - [ ] There is a bug that will reset accumulation damage when deathEffect is triggered
-  not verified for gutsEffect
+      not verified for gutsEffect
 - [ ] Damage should remove buff with buffScript field damageRelease: 1
 - [ ] FuncType damageNpCounter
 - [ ] FuncType damageNpRate Target == 0 is target, verify if Target ==1 is activator?
 - [ ] FuncType gainHpPer figure out if Percentage heal benefits from healGrant buff
 - [ ] FuncType gainHp/NpFromTargets & moveState can probably be implemented in the dependedFunc with an additional
-  receiver argument to receive what's lost from absorbTargets
+      receiver argument to receive what's lost from absorbTargets
 - [ ] FuncType transformServant may need a local copy of Hyde data
 - [ ] DataVals AddLinkageTargetIndividualty & BehaveAsFamilyBuff & UnSubStateWhileLinkedToOthers
 - [ ] DataVals CounterId CounterLv CounterOc SkillReaction UseTreasureDevice
@@ -31,8 +31,8 @@ There are plenty of work need to do.
 - [ ] BuffType doNotSelectCommandCard
 - [ ] BuffType tdTypeChange: if there are multiple instances of this buff, the last one dominates
 - [ ] BuffType overwriteClassRelation, atkSide first or defSide first? When two overwriteForce type interact, is it
-  based on buff order? E.g. Kama skill3 & Reinis NP vs alterego attacker, is the final relation 500 or 1000 or depends
-  on which buff comes last?
+      based on buff order? E.g. Kama skill3 & Reinis NP vs alterego attacker, is the final relation 500 or 1000 or depends
+      on which buff comes last?
 - [ ] BuffType preventDeathByDamage works if Van Gogh has burn?
 - [ ] BuffType reflectionFunction
 - [ ] BuffType skillRankUp has a maxRate of 0, so it's probably not a ValuedBuff? Currently only counting by buffTrait
@@ -48,6 +48,16 @@ There are plenty of work need to do.
 - [ ] DataVals ProgressSelfTurn
 - [ ] DataVals CheckDuplicate
 
+### Team setup
+
+- [ ] select svt from support(guest svt)
+- [ ] svt/enemy: edit indivs, skills, tds
+
+### Common Simulation
+
+- [ ] manually remove/add buff
+- [ ] manually apply skill(custom activator/target)
+
 ### NPC Simulation
 
 - [ ] Account for NP disabled NPCs (they don't gain any NP)
@@ -59,7 +69,7 @@ There are plenty of work need to do.
 - [ ] TargetType ptSelfAnotherRandom for svt 251 skill 3
 - [ ] TargetType enemyOneNoTargetNoAction for svt 311 skill 3
 - [ ] FuncType transformServant on enemies
-- [X] Check Atlas for enemy trigger functions
+- [x] Check Atlas for enemy trigger functions
 
 ## Misc
 
@@ -96,17 +106,17 @@ There are plenty of work need to do.
 
 - [x] Duplicated servant support
 - [ ] Plan:
-    - [ ] support TextField input
+  - [ ] support TextField input
 - [x] skill/np/quest/voice/profile condition
 
 ## Adding more pages
 
 - [x] Summon list and detail page
-    - [ ] summon plan: ?
+  - [ ] summon plan: ?
 - [x] Saint Quartz estimate
-    - [ ] poor performance
+  - [ ] poor performance
 - [ ] Events
-    - [ ] War Map
+  - [ ] War Map
 - [ ] Buff/Function reversing
 - [ ] Support Party generation
 
@@ -114,7 +124,7 @@ There are plenty of work need to do.
 
 - [x] item/skill recognition
 - [x] account system: server or cloudflare?
-    - [ ] ~~auto-backup user data~~: must manually backup
+  - [ ] ~~auto-backup user data~~: must manually backup
 - [ ] recognizer: invalid image error
 
 ## Translation
