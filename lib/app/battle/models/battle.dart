@@ -382,6 +382,8 @@ class BattleData {
           ) ??
           []);
     } else {
+      // Note: when individualitie do not add svt traits or would result in stack overflow due to repeatedly checking
+      // addTrait with individualitie
       currentTraits.addAll(actor?.getTraits(this) ?? []);
     }
     if (includeIgnoredTrait == 1) currentTraits.addAll(actor?.getNPCard(this)?.traits ?? []);

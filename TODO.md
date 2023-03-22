@@ -6,11 +6,13 @@ There are plenty of work need to do.
 
 ### Ally Function Logic:
 
+- [ ] After 7th anni, donotAct will not stop first card from contributing to FirstCardType
 - [ ] Unify buff execution, eliminate unnecessary calls to buff.shouldApply and switch to buff.shouldActivate to check
-  for buffRate
+  for buff useRate
 - [ ] Move all checkTrait logic into battle and remove individual checkTrait methods in models
 - [ ] There is a bug that will reset accumulation damage when deathEffect is triggered
   not verified for gutsEffect
+- [ ] Damage should remove buff with buffScript field damageRelease: 1
 - [ ] FuncType damageNpCounter
 - [ ] FuncType damageNpRate Target == 0 is target, verify if Target ==1 is activator?
 - [ ] FuncType gainHpPer figure out if Percentage heal benefits from healGrant buff
@@ -23,7 +25,9 @@ There are plenty of work need to do.
 - [ ] Group npDamageIndividualSum & buff ParamAddCount's counting logic together?
 - [ ] BuffType doNotGainNp & upGiveNp
 - [ ] BuffType doNotRecovery interacts with maxHp?
+- [ ] BuffType doNotActCommandType
 - [ ] BuffType doNotSelectCommandCard
+- [ ] BuffType tdTypeChange: if there are multiple instances of this buff, the last one dominates
 - [ ] BuffType overwriteClassRelation, atkSide first or defSide first? When two overwriteForce type interact, is it
   based on buff order? E.g. Kama skill3 & Reinis NP vs alterego attacker, is the final relation 500 or 1000 or depends
   on which buff comes last?
@@ -31,6 +35,7 @@ There are plenty of work need to do.
 - [ ] BuffType reflectionFunction
 - [ ] BuffType skillRankUp has a maxRate of 0, so it's probably not a ValuedBuff? Currently only counting by buffTrait
 - [ ] INDIVIDUALITIE seen on fields, buffTraits, servantId, are other traits included as well?
+- [ ] update INDIVIDUALITIE to only check its state in certain situations, perhaps in checkBuffStatus()?
 - [ ] includeIgnoredTrait only adds NP card traits for now
 - [ ] more sample on convertBuff's scripts
 - [ ] prepare a dummy BattleServantData as Master
