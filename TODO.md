@@ -9,6 +9,8 @@ There are plenty of work need to do.
 - [ ] After 7th anni, donotAct will not stop first card from contributing to FirstCardType
 - [ ] Unify buff execution, eliminate unnecessary calls to buff.shouldApply and switch to buff.shouldActivate to check
   for buff useRate
+- [  ] disable NP if NP has no functions
+- [ ] BuffScript should only be checked when buffType matches
 - [ ] Move all checkTrait logic into battle and remove individual checkTrait methods in models
 - [ ] There is a bug that will reset accumulation damage when deathEffect is triggered
   not verified for gutsEffect
@@ -18,7 +20,7 @@ There are plenty of work need to do.
 - [ ] FuncType gainHpPer figure out if Percentage heal benefits from healGrant buff
 - [ ] FuncType gainHp/NpFromTargets & moveState can probably be implemented in the dependedFunc with an additional
   receiver argument to receive what's lost from absorbTargets
-- [ ] FuncType transformServant may need a local copy of Hyde data, and figure out how to disable Hyde's NP
+- [ ] FuncType transformServant may need a local copy of Hyde data
 - [ ] DataVals AddLinkageTargetIndividualty & BehaveAsFamilyBuff & UnSubStateWhileLinkedToOthers
 - [ ] DataVals CounterId CounterLv CounterOc SkillReaction UseTreasureDevice
 - [ ] DataVals TriggeredFuncPosition ignored, only checking previous function success for now
@@ -45,7 +47,6 @@ There are plenty of work need to do.
 
 - [ ] DataVals ProgressSelfTurn
 - [ ] DataVals CheckDuplicate
-- [ ] BuffType upNpturnval not sure what this is
 
 ### NPC Simulation
 
@@ -54,6 +55,7 @@ There are plenty of work need to do.
 ### Enemy Simulation
 
 - [ ] build enemy active skills & cards & NP
+- [ ] BuffType upNpturnval & downTurnval (if not npsealed, npCount += 1 + upTurnval - downTurnval)
 - [ ] TargetType ptSelfAnotherRandom for svt 251 skill 3
 - [ ] TargetType enemyOneNoTargetNoAction for svt 311 skill 3
 - [ ] FuncType transformServant on enemies
