@@ -1,9 +1,12 @@
+import 'package:chaldea/utils/extension.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 import 'image_viewer.dart';
+
+double get _kBackGestureWidth => 40.0;
 
 class FullscreenImageViewer extends StatefulWidget {
   final List<Widget> children;
@@ -82,6 +85,7 @@ class FullscreenImageViewer extends StatefulWidget {
 
 class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
   // int? _curIndex = 0;
+  bool showAppBar = false;
 
   @override
   void initState() {
@@ -102,15 +106,62 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // why?
-        Navigator.maybeOf(context)?.pop();
-      },
-      child: Scaffold(
-        body: Padding(
-          padding: MediaQuery.of(context).padding.add(const EdgeInsets.all(6)),
-          child: gallery,
+    final bgColor =
+        Theme.of(context).isDarkMode ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.primary;
+    return Scaffold(
+      appBar: showAppBar
+          ? AppBar(
+              title: const Text('Image'),
+              backgroundColor: bgColor.withOpacity(0.4),
+            )
+          : null,
+      extendBodyBehindAppBar: true,
+      body: GestureDetector(
+        onTap: () {
+          Navigator.maybeOf(context)?.pop();
+        },
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Padding(
+                padding: MediaQuery.of(context).padding.add(const EdgeInsets.all(6)),
+                child: gallery,
+              ),
+            ),
+            barrier(right: null, width: _kBackGestureWidth),
+            barrier(left: null, width: _kBackGestureWidth),
+            barrier(top: null, height: _kBackGestureWidth),
+            barrier(bottom: null, height: _kBackGestureWidth),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget barrier({
+    double? left = 0,
+    double? top = 0,
+    double? right = 0,
+    double? bottom = 0,
+    double width = double.infinity,
+    double height = double.infinity,
+  }) {
+    return Positioned(
+      left: left,
+      top: top,
+      right: right,
+      bottom: bottom,
+      child: GestureDetector(
+        onTap: () {
+          print('press barrier: ${[left, top, right, bottom]}');
+          // Navigator.pop(context);
+          setState(() {
+            showAppBar = !showAppBar;
+          });
+        },
+        child: SizedBox(
+          width: width,
+          height: height,
         ),
       ),
     );
