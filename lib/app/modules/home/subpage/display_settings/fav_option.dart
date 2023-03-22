@@ -26,36 +26,21 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
                 value: null,
                 groupValue: db.settings.favoritePreferred,
                 title: Text(S.current.svt_fav_btn_remember),
-                onChanged: (v) {
-                  setState(() {
-                    db.settings.favoritePreferred = null;
-                    db.saveSettings();
-                  });
-                },
+                onChanged: null,
               ),
               RadioListTile<FavoriteState?>(
                 value: FavoriteState.owned,
                 groupValue: db.settings.favoritePreferred,
                 title: Text(S.current.svt_fav_btn_show_favorite),
                 secondary: const Icon(Icons.favorite),
-                onChanged: (v) {
-                  setState(() {
-                    db.settings.favoritePreferred = FavoriteState.owned;
-                    db.saveSettings();
-                  });
-                },
+                onChanged: null,
               ),
               RadioListTile<FavoriteState?>(
                 value: FavoriteState.all,
                 groupValue: db.settings.favoritePreferred,
                 title: Text(S.current.svt_fav_btn_show_all),
                 secondary: const Icon(Icons.remove_circle_outline),
-                onChanged: (v) {
-                  setState(() {
-                    db.settings.favoritePreferred = FavoriteState.all;
-                    db.saveSettings();
-                  });
-                },
+                onChanged: null,
               ),
             ],
           ),
@@ -64,7 +49,8 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
               onPressed: db.gameData.isValid ? () => router.push(url: Routes.servants) : null,
               child: Text(S.current.preview),
             ),
-          )
+          ),
+          const SFooter('To keep people from asking why they couldn\'t find xxx'),
         ],
       ),
     );

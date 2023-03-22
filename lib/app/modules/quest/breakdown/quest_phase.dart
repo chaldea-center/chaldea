@@ -200,7 +200,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     }
 
     if (curPhase.individuality.isNotEmpty &&
-        (curPhase.stages.isNotEmpty || (curPhase.consume != 0 && curPhase.consumeItem.isNotEmpty))) {
+        (curPhase.stages.isNotEmpty || (curPhase.consume != 0 || curPhase.consumeItem.isNotEmpty))) {
       children.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 3),
         child: Row(

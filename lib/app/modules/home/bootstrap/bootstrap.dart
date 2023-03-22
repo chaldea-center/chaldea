@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:chaldea/packages/file_plus/file_plus_web.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -458,30 +460,59 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
             textAlign: TextAlign.end,
           ),
         ),
-        Center(
-          child: ElevatedButton(
-            onPressed: () async {
-              try {
-                setState(() {
-                  success = false;
-                });
-                final gamedata = await _loader.reload(
-                  offline: false,
-                  silent: false,
-                );
-                if (gamedata != null) {
-                  db.gameData = gamedata;
-                  success = true;
+        Wrap(
+          spacing: 16,
+          alignment: WrapAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () async {
+                try {
+                  setState(() {
+                    success = false;
+                  });
+                  final gamedata = await _loader.reload(force: true, offline: false, silent: false);
+                  if (gamedata != null) {
+                    db.gameData = gamedata;
+                    success = true;
+                  }
+                } on UpdateError {
+                  //
+                } catch (e, s) {
+                  logger.e('download gamedata error', e, s);
                 }
-              } on UpdateError {
-                //
-              } catch (e, s) {
-                logger.e('download gamedata error', e, s);
-              }
-              if (mounted) setState(() {});
-            },
-            child: Text(S.current.update),
-          ),
+                if (mounted) setState(() {});
+              },
+              child: Text(S.current.update),
+            ),
+            if (_loader.error != null)
+              TextButton(
+                onPressed: () async {
+                  if (kIsWeb) {
+                    final prefix = FilePlusWeb.normalizePath(db.paths.gameDir);
+                    for (final key in FilePlusWeb.list()) {
+                      if (key.startsWith(prefix)) {
+                        await FilePlusWeb(key).delete();
+                        print('deleting $key');
+                      }
+                    }
+                  } else {
+                    final dir = Directory(db.paths.gameDir);
+                    try {
+                      dir.deleteSync(recursive: true);
+                    } catch (e, s) {
+                      logger.e('delete game folder folder', e, s);
+                    } finally {
+                      dir.createSync(recursive: true);
+                    }
+                  }
+                  EasyLoading.showSuccess(S.current.clear_cache_finish);
+                },
+                child: Text(
+                  S.current.clear_cache,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              )
+          ],
         ),
         progressIcon,
         if (_loader.error != null)

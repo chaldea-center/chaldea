@@ -43,7 +43,8 @@ class LocalSettings {
   bool autoRotate;
   bool autoResetFilter;
   bool hideUnreleasedCard;
-  FavoriteState? favoritePreferred;
+  // ignore: unused_field
+  FavoriteState? _favoritePreferred;
   bool preferApRate;
   Region? preferredQuestRegion;
   bool alertUploadUserData;
@@ -93,7 +94,7 @@ class LocalSettings {
     this.autoRotate = true,
     this.autoResetFilter = true,
     this.hideUnreleasedCard = false,
-    this.favoritePreferred,
+    FavoriteState? favoritePreferred,
     this.preferApRate = true,
     this.preferredQuestRegion,
     this.alertUploadUserData = false,
@@ -114,6 +115,7 @@ class LocalSettings {
     ScriptReaderFilterData? scriptReaderFilterData,
     List<AutoLoginData>? autologins,
   })  : _language = language,
+        _favoritePreferred = favoritePreferred,
         preferredRegions = preferredRegions == null
             ? null
             : (List.of(Region.values)..sort2((e) => preferredRegions.indexOf(e) % Region.values.length)),
@@ -140,6 +142,9 @@ class LocalSettings {
     _language = Intl.defaultLocale = lang.code;
     return S.load(lang.locale, override: true);
   }
+
+  FavoriteState? get favoritePreferred => FavoriteState.all;
+  set favoritePreferred(FavoriteState? v) => _favoritePreferred = v;
 
   bool get hideApple => PlatformU.isApple && launchTimes < 5;
 

@@ -156,8 +156,6 @@ class PathManager {
 
   String get gameDir => join(appPath, 'game');
 
-  String get gameDataPath => join(gameDir, 'gamedata.json');
-
   String get userDir => join(appPath, 'user');
 
   String get tempDir => join(appPath, 'temp');

@@ -72,10 +72,4 @@ class FilePlusNative with FilePlus {
 
   @override
   Future<void> delete() => _file.delete();
-
-  @override
-  Future<void> deleteSafe() {
-    // TODO: implement deleteSafe
-    throw UnimplementedError();
-  }
 }
