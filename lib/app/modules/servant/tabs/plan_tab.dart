@@ -107,8 +107,9 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     //skill part
     if (showDetail(SvtPlanDetail.activeSkill)) {
       List<Widget> skillWidgets = [];
-      for (int index = 0; index < 3; index++) {
-        final skills = svt.groupedActiveSkills.getOrNull(index) ?? [];
+      for (final skillNum in kActiveSkillNums) {
+        final index = skillNum - 1;
+        final skills = svt.groupedActiveSkills[skillNum] ?? [];
         if (skills.isEmpty) continue;
         final skill = svt.getDefaultSkill(skills, db.curUser.region) ?? skills.last;
         skillWidgets.add(buildPlanRow(
@@ -127,7 +128,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           },
           detailPageBuilder: (context) => LevelingCostPage(
             costList: svt.skillMaterials,
-            title: '${S.current.skill} ${index + 1} - ${Transl.skillNames(skill.name).l}',
+            title: '${S.current.skill} $skillNum - ${Transl.skillNames(skill.name).l}',
             curLv: curVal.skills[index],
             targetLv: targetVal.skills[index],
           ),

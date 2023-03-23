@@ -80,7 +80,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
     final status = db.curUser.svtStatusOf(svt.collectionNo).cur;
     List<Widget> children = [];
     children.add(SHeader(S.current.active_skill));
-    for (final skills in svt.groupedActiveSkills) {
+    for (final skills in svt.groupedActiveSkills.values) {
       List<NiceSkill> shownSkills = [];
       for (final skill in skills) {
         if (shownSkills.every((e) => e.id != skill.id)) {

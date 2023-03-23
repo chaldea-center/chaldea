@@ -63,6 +63,8 @@ There are plenty of work need to do.
 - [ ] Servant skill.num=1 means Skill 1, don't use index in list. `groupedActiveSkill[1/2/3]`
 - [ ] change `groupedActiveSkill` from list to dict
 - [ ] Auto select extraPassive (event bonus)
+- [ ] Transform: what if skill/td has upgrades?
+- [ ] SkillRankUp: get skill from api if not in db, make init async
 
 ### NPC Simulation
 

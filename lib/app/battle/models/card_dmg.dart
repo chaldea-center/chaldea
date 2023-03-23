@@ -1,4 +1,6 @@
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/extension.dart';
+import '../../../widgets/widgets.dart';
 
 class CardDmgOption {
   EnemyData? enemyData;
@@ -19,12 +21,12 @@ class EnemyData {
 
 class PlayerSvtData {
   Servant? svt;
-  int ascensionPhase = 4;
+  int limitCount = 4;
   List<int> skillLvs = [10, 10, 10];
-  List<int> skillId = [0, 0, 0];
+  List<NiceSkill?> skills = [null, null, null];
   List<int> appendLvs = [0, 0, 0];
-  int npLv = 5;
-  int npId = 0;
+  int tdLv = 5;
+  NiceTd? td;
   int lv = -1; // -1=mlb, 90, 100, 120
   int atkFou = 1000;
   int hpFou = 1000;
@@ -42,17 +44,18 @@ class PlayerSvtData {
 
   PlayerSvtData(final int svtId) {
     svt = db.gameData.servantsById[svtId];
-    skillId = svt!.groupedActiveSkills.map((e) => e.first.id).toList();
-    npId = svt!.groupedNoblePhantasms.first.first.id;
+    skills = kActiveSkillNums.map((e) => svt!.groupedActiveSkills[e]?.first).toList();
+    td = svt!.groupedNoblePhantasms[1]?.first;
   }
 
+  @visibleForTesting
   void setSkillStrengthenLvs(final List<int> skillStrengthenLvs) {
-    skillId = List.generate(
-        skillStrengthenLvs.length, (index) => svt!.groupedActiveSkills[index][skillStrengthenLvs[index] - 1].id);
+    skills =
+        kActiveSkillNums.map((e) => svt!.groupedActiveSkills[e]?.getOrNull(skillStrengthenLvs[e - 1] - 1)).toList();
   }
 
   void setNpStrengthenLv(final int npStrengthenLv) {
-    npId = svt!.groupedNoblePhantasms.first[npStrengthenLv - 1].id;
+    td = svt!.groupedNoblePhantasms[1]?[npStrengthenLv - 1];
   }
 }
 

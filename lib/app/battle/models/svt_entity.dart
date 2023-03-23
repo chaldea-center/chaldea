@@ -67,7 +67,7 @@ class BattleServantData {
   int uniqueId = 0;
   int svtId = -1;
   int level = 0;
-  int npId = 1;
+  NiceTd? td;
   int atk = 0;
   int hp = 0;
   int maxHp = 0;
@@ -92,7 +92,7 @@ class BattleServantData {
 
   bool get selectable => battleBuff.isSelectable;
 
-  int get npLv => isPlayer ? playerSvtData!.npLv : niceEnemy!.noblePhantasm.noblePhantasmLv;
+  int get tdLv => isPlayer ? playerSvtData!.tdLv : niceEnemy!.noblePhantasm.noblePhantasmLv;
 
   int get attack => isPlayer ? atk + (equip?.atk ?? 0) : atk;
 
@@ -104,9 +104,7 @@ class BattleServantData {
 
   int get starGen => isPlayer ? niceSvt!.starGen : 0;
 
-  int get defenceNpGain => isPlayer
-      ? niceSvt!.noblePhantasms.firstWhere((niceTd) => niceTd.id == npId).npGain.defence[playerSvtData!.npLv - 1]
-      : 0;
+  int get defenceNpGain => isPlayer ? td?.npGain.defence[playerSvtData!.tdLv - 1] ?? 0 : 0;
 
   int get enemyTdRate => isEnemy ? niceEnemy!.serverMod.tdRate : 0;
 
@@ -138,8 +136,8 @@ class BattleServantData {
       ..niceSvt = settings.svt!
       ..svtId = settings.svt?.id ?? 0
       ..level = settings.lv
-      ..npId = settings.npId
-      ..ascensionPhase = settings.ascensionPhase
+      ..td = settings.td
+      ..ascensionPhase = settings.limitCount
       ..hp = settings.svt!.hpGrowth[settings.lv - 1] + settings.hpFou
       ..maxHp = settings.svt!.hpGrowth[settings.lv - 1] + settings.hpFou
       ..atk = settings.svt!.atkGrowth[settings.lv - 1] + settings.atkFou;
@@ -151,37 +149,33 @@ class BattleServantData {
     }
 
     final script = settings.svt!.script;
-    for (int i = 0; i <= settings.skillId.length; i += 1) {
-      if (settings.svt!.groupedActiveSkills.length > i) {
-        final List<BaseSkill> provisionedSkills = [];
-        provisionedSkills.addAll(settings.svt!.groupedActiveSkills[i]);
-        List<int>? rankUps;
-        if (script != null && script.skillRankUp != null) {
-          rankUps = script.skillRankUp![settings.skillId[i]];
-          if (rankUps != null && rankUps.isNotEmpty) {
-            for (final skillId in rankUps) {
-              final rankUpSkill = db.gameData.baseSkills[skillId];
-              if (rankUpSkill != null) {
-                provisionedSkills.add(rankUpSkill);
-              }
-            }
-          }
+    for (final skillNum in kActiveSkillNums) {
+      final List<BaseSkill> provisionedSkills = [];
+      provisionedSkills.addAll(settings.svt!.groupedActiveSkills[skillNum] ?? []);
+      List<BaseSkill?>? rankUps;
+      if (script != null && script.skillRankUp != null) {
+        rankUps = [
+          for (final id in script.skillRankUp![settings.skills[skillNum - 1]?.id] ?? <int>[]) db.gameData.baseSkills[id]
+        ];
+        if (rankUps.isNotEmpty) {
+          provisionedSkills.addAll(rankUps.whereType());
         }
-
-        final skillInfo = BattleSkillInfoData(provisionedSkills, settings.skillId[i])..skillLv = settings.skillLvs[i];
-
-        if (rankUps != null) {
-          skillInfo.rankUps = rankUps;
-        }
-
-        svt.skillInfoList.add(skillInfo);
       }
+
+      final skillInfo = BattleSkillInfoData(provisionedSkills, settings.skills[skillNum - 1])
+        ..skillLv = settings.skillLvs[skillNum - 1];
+
+      if (rankUps != null) {
+        skillInfo.rankUps = rankUps;
+      }
+
+      svt.skillInfoList.add(skillInfo);
     }
 
     for (final commandCode in settings.commandCodes) {
       if (commandCode != null) {
         svt.commandCodeSkills.add(commandCode.skills
-            .map((skill) => BattleSkillInfoData([skill], skill.id, isCommandCode: true)..skillLv = 1)
+            .map((skill) => BattleSkillInfoData([skill], skill, isCommandCode: true)..skillLv = 1)
             .toList());
       } else {
         svt.commandCodeSkills.add([]);
@@ -270,12 +264,12 @@ class BattleServantData {
       hitsDistribution: currentNP.npDistribution,
       attackType:
           currentNP.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
-      attackNpRate: currentNP.npGain.np[playerSvtData!.npLv - 1],
+      attackNpRate: currentNP.npGain.np[playerSvtData!.tdLv - 1],
     );
 
     return CommandCardData(currentNP.card, cardDetail)
       ..isNP = true
-      ..npGain = currentNP.npGain.np[playerSvtData!.npLv - 1]
+      ..npGain = currentNP.npGain.np[playerSvtData!.tdLv - 1]
       ..traits = currentNP.individuality;
   }
 
@@ -296,13 +290,13 @@ class BattleServantData {
     }
     switch (cardType) {
       case CardType.buster:
-        return getCurrentNP(battleData).npGain.buster[playerSvtData!.npLv - 1];
+        return getCurrentNP(battleData).npGain.buster[playerSvtData!.tdLv - 1];
       case CardType.arts:
-        return getCurrentNP(battleData).npGain.arts[playerSvtData!.npLv - 1];
+        return getCurrentNP(battleData).npGain.arts[playerSvtData!.tdLv - 1];
       case CardType.quick:
-        return getCurrentNP(battleData).npGain.quick[playerSvtData!.npLv - 1];
+        return getCurrentNP(battleData).npGain.quick[playerSvtData!.tdLv - 1];
       case CardType.extra:
-        return getCurrentNP(battleData).npGain.extra[playerSvtData!.npLv - 1];
+        return getCurrentNP(battleData).npGain.extra[playerSvtData!.tdLv - 1];
       default:
         return 0;
     }
@@ -388,7 +382,7 @@ class BattleServantData {
 
     np += change;
 
-    np = np.clamp(0, getNPCap(playerSvtData!.npLv));
+    np = np.clamp(0, getNPCap(playerSvtData!.tdLv));
     if (change > 0 && np >= npPityThreshold) {
       np = max(np, ConstData.constants.fullTdPoint);
     }
@@ -494,7 +488,7 @@ class BattleServantData {
 
     final result = canAttack(battleData) &&
         !hasDoNotBuffOnActionForUI(battleData, BuffAction.donotSkill) &&
-        skillInfo.skillId != 0 &&
+        skillInfo.proximateSkill != null &&
         skillInfo.checkSkillScript(battleData);
     battleData.unsetActivator();
     return result;
@@ -550,7 +544,7 @@ class BattleServantData {
 
   bool canSelectNP(final BattleData battleData) {
     battleData.setActivator(this);
-    final result = canNP(battleData) && npId != 0 && checkNPScript(battleData);
+    final result = canNP(battleData) && td != null && checkNPScript(battleData);
     battleData.unsetActivator();
     return result;
   }
@@ -569,7 +563,7 @@ class BattleServantData {
   bool checkNPScript(final BattleData battleData) {
     battleData.setActivator(this);
     if (isPlayer) {
-      return BattleSkillInfoData.skillScriptConditionCheck(battleData, getCurrentNP(battleData).script, npLv);
+      return BattleSkillInfoData.skillScriptConditionCheck(battleData, getCurrentNP(battleData).script, tdLv);
     }
     battleData.unsetActivator();
     return true;
@@ -591,6 +585,7 @@ class BattleServantData {
     return result;
   }
 
+  // TODO: nullable TD
   NiceTd getCurrentNP(final BattleData battleData) {
     final buffs = collectBuffsPerAction(battleBuff.allBuffs, BuffAction.tdTypeChange);
     battleData.setActivator(this);
@@ -601,9 +596,7 @@ class BattleServantData {
     }
     battleData.unsetActivator();
 
-    return isPlayer
-        ? niceSvt!.groupedNoblePhantasms[0].firstWhere((niceTd) => niceTd.id == npId)
-        : niceEnemy!.noblePhantasm.noblePhantasm!;
+    return isPlayer ? td! : niceEnemy!.noblePhantasm.noblePhantasm!;
   }
 
   Future<void> activateNP(final BattleData battleData, final int extraOverchargeLvl) async {
@@ -618,7 +611,7 @@ class BattleServantData {
     npLineCount = 0;
 
     final niceTD = getCurrentNP(battleData);
-    await FunctionExecutor.executeFunctions(battleData, niceTD.functions, npLv, overchargeLvl: overchargeLvl);
+    await FunctionExecutor.executeFunctions(battleData, niceTD.functions, tdLv, overchargeLvl: overchargeLvl);
 
     battleData.unsetActivator();
   }
@@ -1036,7 +1029,7 @@ class BattleServantData {
       ..uniqueId = uniqueId
       ..svtId = svtId
       ..level = level
-      ..npId = npId
+      ..td = td
       ..atk = atk
       ..hp = hp
       ..maxHp = maxHp

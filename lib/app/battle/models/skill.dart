@@ -1,12 +1,9 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/logger.dart';
-import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'battle.dart';
 
@@ -20,15 +17,15 @@ class BattleSkillInfoData {
 
   String get lName => proximateSkill?.lName.l ?? '???';
 
-  BaseSkill? get proximateSkill => provisionedSkills.firstWhereOrNull((skill) => skill.id == skillId);
+  BaseSkill? get proximateSkill => _skill;
 
   List<BaseSkill> provisionedSkills;
   int rankUp = 0;
-  List<int>? rankUps;
-  int baseSkillId = 0;
+  List<BaseSkill?>? rankUps;
+  NiceSkill? baseSkill;
 
-  int get skillId => rankUp == 0 || rankUps == null || rankUps!.isEmpty
-      ? baseSkillId
+  BaseSkill? get _skill => rankUp == 0 || rankUps == null || rankUps!.isEmpty
+      ? baseSkill
       : rankUp > rankUps!.length
           ? rankUps!.last
           : rankUps![rankUp - 1];
@@ -37,12 +34,15 @@ class BattleSkillInfoData {
   int chargeTurn = 0;
   bool isCommandCode;
 
-  BattleSkillInfoData(this.provisionedSkills, this.baseSkillId, {this.isCommandCode = false}) {
+  BattleSkillInfoData(this.provisionedSkills, this.baseSkill, {this.isCommandCode = false}) {
+    if (baseSkill != null && !provisionedSkills.contains(baseSkill)) {
+      provisionedSkills.add(baseSkill!);
+    }
     skillScript = proximateSkill?.script;
   }
 
-  void setBaseSkillId(final int newId) {
-    baseSkillId = newId;
+  void setBaseSkillId(final NiceSkill? newSkill) {
+    baseSkill = newSkill;
     skillScript = proximateSkill?.script;
   }
 
@@ -52,15 +52,7 @@ class BattleSkillInfoData {
   }
 
   Future<BaseSkill?> getSkill() async {
-    BaseSkill? skill = provisionedSkills.firstWhereOrNull((skill) => skill.id == skillId);
-    skill ??= db.gameData.baseSkills[skillId];
-    try {
-      skill ??= await AtlasApi.skill(skillId);
-    } catch (e) {
-      logger.e('Exception while fetch AtlasApi for skill $skillId', e);
-    }
-
-    return skill;
+    return _skill;
   }
 
   void shortenSkill(final int turns) {
@@ -154,7 +146,7 @@ class BattleSkillInfoData {
   }
 
   BattleSkillInfoData copy() {
-    return BattleSkillInfoData(provisionedSkills, baseSkillId)
+    return BattleSkillInfoData(provisionedSkills, baseSkill)
       ..isCommandCode = isCommandCode
       ..rankUps = rankUps
       ..rankUp = rankUp

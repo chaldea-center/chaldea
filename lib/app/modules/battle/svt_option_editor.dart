@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
@@ -10,8 +11,6 @@ import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/command_code/cmd_code_list.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
-import 'package:chaldea/app/modules/servant/tabs/skill_tab.dart';
-import 'package:chaldea/app/modules/servant/tabs/td_tab.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
@@ -87,11 +86,10 @@ class ServantOptionEditPage extends StatefulWidget {
   }) {
     return Row(
       children: [
-        const SizedBox(width: 8),
         SizedBox(
           width: leadingWidth,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               AutoSizeText(
                 label,
@@ -105,21 +103,33 @@ class ServantOptionEditPage extends StatefulWidget {
           ),
         ),
         Flexible(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxHeight: 24,
-              maxWidth: 300,
-            ),
-            child: Slider(
-              min: min.toDouble(),
-              max: max.toDouble(),
-              divisions: max - min,
-              value: value.toDouble(),
-              label: label,
-              onChanged: (v) {
-                onChange(v);
-              },
-            ),
+          child: Stack(
+            children: [
+              Positioned(
+                left: -16,
+                right: -16,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxHeight: 24,
+                    maxWidth: 320,
+                  ),
+                  child: SliderTheme(
+                    data: SliderTheme.of(context)
+                        .copyWith(thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8)),
+                    child: Slider(
+                      min: min.toDouble(),
+                      max: max.toDouble(),
+                      divisions: max - min,
+                      value: value.toDouble(),
+                      label: label,
+                      onChanged: (v) {
+                        onChange(v);
+                      },
+                    ),
+                  ),
+                ),
+              )
+            ],
           ),
         )
       ],
@@ -155,31 +165,32 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         ),
       );
     }
-
-    final List<Widget> topListChildren = [];
-    topListChildren.add(_header(context));
-    topListChildren.add(_buildSliderGroup());
-    topListChildren.add(_buildTdDescriptor(context));
-    for (int i = 0; i < svt.groupedActiveSkills.length; i += 1) {
-      topListChildren.add(_buildSkillSection(context, i));
-    }
-    for (int i = 0; i < svt.appendPassive.length; i += 1) {
-      topListChildren.add(_buildAppendSkillSection(context, i));
-    }
-
-    topListChildren.add(_buildCmdCodePlanner());
+    const divider = Divider(height: 8, thickness: 1);
+    final List<Widget> children = [
+      _header(context),
+      divider,
+      Padding(
+        padding: const EdgeInsetsDirectional.only(start: 16),
+        child: _buildSliderGroup(),
+      ),
+      divider,
+      SHeader(S.current.details),
+      const Divider(thickness: 1, height: 1),
+      _buildTdDescriptor(context),
+      kDefaultDivider,
+      for (final skillNum in kActiveSkillNums) _buildActiveSkill(context, skillNum),
+      kDefaultDivider,
+      for (final skillNum in kAppendSkillNums) _buildAppendSkill(context, skillNum),
+      divider,
+      _buildCmdCodePlanner()
+    ];
 
     return Scaffold(
       appBar: AppBar(title: Text(S.current.battle_edit_servant_option)),
       body: Column(
         children: [
           Expanded(
-            child: ListView(
-              children: divideTiles(
-                topListChildren,
-                divider: const Divider(height: 10, thickness: 2),
-              ),
-            ),
+            child: ListView(children: children),
           ),
           kDefaultDivider,
           SafeArea(child: buttonBar),
@@ -195,10 +206,10 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         label: S.current.noble_phantasm_level,
         min: 1,
         max: 5,
-        value: playerSvtData.npLv,
-        valueText: 'Lv.${playerSvtData.npLv}',
+        value: playerSvtData.tdLv,
+        valueText: 'Lv.${playerSvtData.tdLv}',
         onChange: (v) {
-          playerSvtData.npLv = v.round();
+          playerSvtData.tdLv = v.round();
           _updateState();
         },
       ),
@@ -250,37 +261,38 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       ),
     ];
     final activeSkills = [
-      for (int skillGroupIndex in [0, 1, 2])
+      for (int skillNum in kActiveSkillNums)
         ServantOptionEditPage.buildSlider2(
           context: context,
-          label: '${S.current.active_skill_short} ${skillGroupIndex + 1}',
+          label: '${S.current.active_skill_short} $skillNum',
           min: 1,
           max: 10,
-          value: playerSvtData.skillLvs[skillGroupIndex],
-          valueText: 'Lv.${playerSvtData.skillLvs[skillGroupIndex]}',
+          value: playerSvtData.skillLvs[skillNum - 1],
+          valueText: 'Lv.${playerSvtData.skillLvs[skillNum - 1]}',
           onChange: (v) {
-            playerSvtData.skillLvs[skillGroupIndex] = v.round();
+            playerSvtData.skillLvs[skillNum - 1] = v.round();
             _updateState();
           },
         ),
     ];
     final appendSkills = [
-      for (int skillGroupIndex in [0, 1, 2])
+      for (int skillNum in kAppendSkillNums)
         ServantOptionEditPage.buildSlider2(
           context: context,
-          label: '${S.current.append_skill_short} ${skillGroupIndex + 1}',
+          label: '${S.current.append_skill_short} $skillNum',
           min: 0,
           max: 10,
-          value: playerSvtData.appendLvs[skillGroupIndex],
-          valueText: 'Lv.${playerSvtData.appendLvs[skillGroupIndex]}',
+          value: playerSvtData.appendLvs[skillNum - 1],
+          valueText: 'Lv.${playerSvtData.appendLvs[skillNum - 1]}',
           onChange: (v) {
-            playerSvtData.appendLvs[skillGroupIndex] = v.round();
+            playerSvtData.appendLvs[skillNum - 1] = v.round();
             _updateState();
           },
         )
     ];
 
     return ResponsiveLayout.builder(
+      sm: 480,
       builder: (context, type) {
         List<Widget> children = [...commonSliders];
         switch (type) {
@@ -333,8 +345,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
   Widget _header(final BuildContext context) {
     final faces = svt.extraAssets.faces;
-    final ascensionText = svt.getCostume(playerSvtData.ascensionPhase)?.lName.l ??
-        '${S.current.ascension} ${playerSvtData.ascensionPhase == 0 ? 1 : playerSvtData.ascensionPhase}';
+    final ascensionText = svt.getCostume(playerSvtData.limitCount)?.lName.l ??
+        '${S.current.ascension} ${playerSvtData.limitCount == 0 ? 1 : playerSvtData.limitCount}';
     final atk = svt.atkGrowth[playerSvtData.lv - 1] + playerSvtData.atkFou,
         hp = svt.hpGrowth[playerSvtData.lv - 1] + playerSvtData.hpFou;
     return CustomTile(
@@ -342,317 +354,304 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         context: context,
         height: 72,
         jumpToDetail: true,
-        overrideIcon: svt.ascendIcon(playerSvtData.ascensionPhase, true),
+        overrideIcon: svt.ascendIcon(playerSvtData.limitCount, true),
       ),
       title: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(svt.lBattleName(playerSvtData.ascensionPhase).l),
+          Text(svt.lBattleName(playerSvtData.limitCount).l),
           Text(
             'No.${svt.collectionNo > 0 ? svt.collectionNo : svt.id}'
             '  ${Transl.svtClassId(svt.classId).l}',
           ),
           Text('ATK $atk  HP $hp'),
-          TextButton(
-            child: Text(ascensionText, textScaleFactor: 0.9),
-            onPressed: () async {
-              showDialog(
-                context: context,
-                useRootNavigator: false,
-                builder: (context) {
-                  final List<Widget> children = [];
-                  void _addOne(final int ascension, final String name, final String? icon) {
-                    if (icon == null) return;
-                    final borderedIcon = svt.bordered(icon);
-                    children.add(ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: db.getIconImage(
-                        borderedIcon,
-                        width: 36,
-                        padding: const EdgeInsets.symmetric(vertical: 2),
-                      ),
-                      title: Text(name, textScaleFactor: 0.9),
-                      onTap: () {
-                        final ascensionPhase = ascension == 1 ? 0 : ascension;
-
-                        for (int i = 0; i < svt.groupedActiveSkills.length; i += 1) {
-                          final List<NiceSkill> previousShownSkills =
-                              ServantSelector.getShownSkills(svt, playerSvtData.ascensionPhase, i);
-                          final List<NiceSkill> shownSkills = ServantSelector.getShownSkills(svt, ascensionPhase, i);
-                          if (!listEquals(previousShownSkills, shownSkills)) {
-                            playerSvtData.skillId[i] = shownSkills.last.id;
-                            logger.d('Changing skill ID: ${playerSvtData.skillId[i]}');
-                          }
-                        }
-
-                        final List<NiceTd> previousShownTds =
-                            ServantSelector.getShownTds(svt, playerSvtData.ascensionPhase);
-                        final List<NiceTd> shownTds = ServantSelector.getShownTds(svt, ascensionPhase);
-                        playerSvtData.ascensionPhase = ascensionPhase;
-                        if (!listEquals(previousShownTds, shownTds)) {
-                          playerSvtData.npId = shownTds.last.id;
-                          logger.d('Capping npId: ${playerSvtData.npId}');
-                        }
-                        Navigator.pop(context);
-                        _updateState();
-                      },
-                    ));
-                  }
-
-                  if (faces.ascension != null) {
-                    faces.ascension!.forEach((key, value) {
-                      _addOne(key, '${S.current.ascension} $key', value);
-                    });
-                  }
-                  if (faces.costume != null) {
-                    faces.costume!.forEach((key, value) {
-                      _addOne(
-                        key,
-                        svt.profile.costume[key]?.lName.l ?? '${S.current.costume} $key',
-                        value,
-                      );
-                    });
-                  }
-
-                  return SimpleCancelOkDialog(
-                    title: Text(S.current.battle_change_ascension),
-                    content: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: children,
-                      ),
-                    ),
-                    hideOk: true,
-                  );
-                },
-              );
-              _updateState();
-            },
-          ),
           const SizedBox(height: 4),
         ],
+      ),
+      trailing: TextButton(
+        child: Text(ascensionText, textScaleFactor: 0.9),
+        onPressed: () async {
+          showDialog(
+            context: context,
+            useRootNavigator: false,
+            builder: (context) {
+              final List<Widget> children = [];
+              void _addOne(final int ascension, final String name, final String? icon) {
+                if (icon == null) return;
+                final borderedIcon = svt.bordered(icon);
+                children.add(ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: db.getIconImage(
+                    borderedIcon,
+                    width: 36,
+                    padding: const EdgeInsets.symmetric(vertical: 2),
+                  ),
+                  title: Text(name, textScaleFactor: 0.9),
+                  onTap: () {
+                    final ascensionPhase = ascension == 1 ? 0 : ascension;
+
+                    for (final skillNum in kActiveSkillNums) {
+                      final List<NiceSkill> previousShownSkills =
+                          ServantSelector.getShownSkills(svt, playerSvtData.limitCount, skillNum);
+                      final List<NiceSkill> shownSkills = ServantSelector.getShownSkills(svt, ascensionPhase, skillNum);
+                      if (!listEquals(previousShownSkills, shownSkills)) {
+                        playerSvtData.skills[skillNum - 1] = shownSkills.lastOrNull;
+                        logger.d('Changing skill ID: ${playerSvtData.skills[skillNum - 1]?.id}');
+                      }
+                    }
+
+                    final List<NiceTd> previousShownTds = ServantSelector.getShownTds(svt, playerSvtData.limitCount);
+                    final List<NiceTd> shownTds = ServantSelector.getShownTds(svt, ascensionPhase);
+                    playerSvtData.limitCount = ascensionPhase;
+                    if (!listEquals(previousShownTds, shownTds)) {
+                      playerSvtData.td = shownTds.last;
+                      logger.d('Capping npId: ${playerSvtData.td?.id}');
+                    }
+                    Navigator.pop(context);
+                    _updateState();
+                  },
+                ));
+              }
+
+              if (faces.ascension != null) {
+                faces.ascension!.forEach((key, value) {
+                  _addOne(key, '${S.current.ascension} $key', value);
+                });
+              }
+              if (faces.costume != null) {
+                faces.costume!.forEach((key, value) {
+                  _addOne(
+                    key,
+                    svt.profile.costume[key]?.lName.l ?? '${S.current.costume} $key',
+                    value,
+                  );
+                });
+              }
+
+              return SimpleCancelOkDialog(
+                title: Text(S.current.battle_change_ascension),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: children,
+                  ),
+                ),
+                hideOk: true,
+              );
+            },
+          );
+          _updateState();
+        },
       ),
     );
   }
 
   Widget _buildTdDescriptor(final BuildContext context) {
-    final int ascension = playerSvtData.ascensionPhase;
+    final int ascension = playerSvtData.limitCount;
     final List<NiceTd> shownTds = ServantSelector.getShownTds(svt, ascension);
+    if (playerSvtData.td != null && !shownTds.contains(playerSvtData.td)) {
+      // custom td
+      shownTds.add(playerSvtData.td!);
+    }
 
-    // NiceTd? td;
-    final td = svt.groupedNoblePhantasms.first.firstWhere((niceTd) => niceTd.id == playerSvtData.npId);
-
-    SimpleAccordion(
+    return SimpleAccordion(
       headerBuilder: (context, _) {
-        // Widget subtitle;
-        // if (shownTds.length == 1) {
-        //   subtitle = Text(td.lName.l);
-        // } else {
-        //   subtitle = FilterGroup<int>(
-        //     combined: true,
-        //     options: [],
-        //     values: FilterRadioData.nonnull(playerSvtData.npStrengthenLv),
-        //   );
-        // }
+        final td = playerSvtData.td;
+        String title = S.current.noble_phantasm;
+        if (td != null) {
+          title += ' Lv.${playerSvtData.tdLv}';
+        }
+        String subtitle = td == null ? Transl.tdTypes('なし').l : '${td.id} ${td.lName.l}';
         return ListTile(
           dense: true,
-          title: Text('${S.current.noble_phantasm} Lv.${playerSvtData.npLv}'),
-          subtitle: Text(td.lName.l),
+          horizontalTitleGap: 0,
+          leading: td == null ? db.getIconImage(null, width: 24) : CommandCardWidget(card: td.card, width: 28),
+          title: Text(title),
+          subtitle: Text(subtitle),
         );
       },
       contentBuilder: (context) {
-        return TdDescriptor(
-          td: td,
-          showEnemy: !svt.isUserSvt,
-          level: playerSvtData.npLv,
+        return Column(
+          children: [
+            Row(
+              children: [
+                Flexible(
+                  child: FilterGroup<NiceTd?>(
+                    options: [null, ...shownTds],
+                    values: FilterRadioData(playerSvtData.td),
+                    combined: true,
+                    optionBuilder: (td) {
+                      if (td == null) {
+                        return const Text('Disable');
+                      }
+                      return Text('${td.id} ${td.nameWithRank}');
+                    },
+                    onFilterChanged: (v, _) {
+                      playerSvtData.td = v.radioValue;
+                      _updateState();
+                    },
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    InputCancelOkDialog(
+                      title: '${S.current.noble_phantasm} ID',
+                      validate: (s) {
+                        final v = int.tryParse(s);
+                        return v != null && v > 0;
+                      },
+                      onSubmit: (s) async {
+                        final v = int.tryParse(s);
+                        NiceTd? td;
+                        if (v != null && v > 0) {
+                          EasyLoading.show();
+                          td = await AtlasApi.td(v);
+                          EasyLoading.dismiss();
+                        }
+                        if (td == null) {
+                          EasyLoading.showError(S.current.not_found);
+                          return;
+                        }
+                        playerSvtData.td = td;
+                        _updateState();
+                      },
+                    ).showDialog(context);
+                  },
+                  child: Text(S.current.general_custom),
+                )
+              ],
+            ),
+            if (playerSvtData.td != null)
+              TdDescriptor(
+                td: playerSvtData.td!,
+                showEnemy: !svt.isUserSvt,
+                level: playerSvtData.tdLv,
+              )
+          ],
         );
       },
     );
+  }
 
-    if (shownTds.length == 1) {
-      return TdDescriptor(
-        td: shownTds.first,
-        showEnemy: !svt.isUserSvt,
-        level: playerSvtData.npLv,
-      );
+  Widget _buildActiveSkill(final BuildContext context, final int skillNum) {
+    final index = skillNum - 1;
+    final int ascension = playerSvtData.limitCount;
+    final List<NiceSkill> shownSkills = ServantSelector.getShownSkills(svt, ascension, skillNum);
+
+    if (playerSvtData.skills[index] != null && !shownSkills.contains(playerSvtData.skills[index])) {
+      // custom skill
+      shownSkills.add(playerSvtData.skills[index]!);
     }
 
-    final toggle = Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Expanded(
-          child: FilterGroup<NiceTd>(
-            shrinkWrap: true,
-            combined: true,
-            options: shownTds,
-            optionBuilder: (selectedTd) {
-              String name = selectedTd.name;
-              name = Transl.tdNames(name).l;
-              final rank = selectedTd.rank;
-              if (!['なし', '无', 'None', '無', '없음'].contains(rank)) {
-                name = '$name $rank';
-              }
-              if (name.trim().isEmpty) name = '???';
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                child: Text(name),
-              );
-            },
-            values: FilterRadioData.nonnull(td),
-            onFilterChanged: (v, _) {
-              playerSvtData.npId = v.radioValue!.id;
-              logger.d('Changing npId: ${playerSvtData.npId}');
-              _updateState();
-            },
-          ),
-        ),
-        if (td.condQuestId > 0)
-          IconButton(
-            padding: const EdgeInsets.all(2),
-            constraints: const BoxConstraints(
-              minWidth: 48,
-              minHeight: 24,
+    return SimpleAccordion(
+      headerBuilder: (context, _) {
+        final skill = playerSvtData.skills[index];
+        String title = '${S.current.active_skill_short} $skillNum';
+        if (skill != null) {
+          title += ' Lv.${playerSvtData.skillLvs[index]}';
+        }
+        String subtitle = skill == null ? Transl.tdTypes('なし').l : '${skill.id} ${skill.lName.l}';
+        return ListTile(
+          dense: true,
+          horizontalTitleGap: 0,
+          leading: db.getIconImage(skill?.icon, width: 24),
+          title: Text(title),
+          subtitle: Text(subtitle),
+        );
+      },
+      contentBuilder: (context) {
+        return Column(
+          children: [
+            Row(
+              children: [
+                Flexible(
+                  child: FilterGroup<NiceSkill?>(
+                    options: [null, ...shownSkills],
+                    values: FilterRadioData(playerSvtData.skills[index]),
+                    combined: true,
+                    optionBuilder: (skill) {
+                      if (skill == null) {
+                        return const Text('Disable');
+                      }
+                      return Text('${skill.id} ${skill.lName.l}');
+                    },
+                    onFilterChanged: (v, _) {
+                      playerSvtData.skills[index] = v.radioValue;
+                      _updateState();
+                    },
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    InputCancelOkDialog(
+                      title: '${S.current.skill} ID',
+                      validate: (s) {
+                        final v = int.tryParse(s);
+                        return v != null && v > 0;
+                      },
+                      onSubmit: (s) async {
+                        final v = int.tryParse(s);
+                        NiceSkill? skill;
+                        if (v != null && v > 0) {
+                          EasyLoading.show();
+                          skill = await AtlasApi.skill(v);
+                          if (skill?.type != SkillType.active) {
+                            skill = null;
+                          }
+                          EasyLoading.dismiss();
+                        }
+                        if (skill == null) {
+                          EasyLoading.showError('${S.current.not_found} or not active skill');
+                          return;
+                        }
+                        playerSvtData.skills[index] = skill;
+                        _updateState();
+                      },
+                    ).showDialog(context);
+                  },
+                  child: Text(S.current.general_custom),
+                )
+              ],
             ),
-            onPressed: () => showDialog(
-              context: context,
-              useRootNavigator: false,
-              builder: (context) => SvtTdTab.releaseCondition(svt, td, null),
-            ),
-            icon: const Icon(Icons.info_outline),
-            color: Theme.of(context).hintColor,
-            tooltip: S.current.open_condition,
-          ),
-      ],
-    );
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const SizedBox(height: 4),
-        toggle,
-        TdDescriptor(
-          td: td,
-          showEnemy: !svt.isUserSvt,
-          level: playerSvtData.npLv,
-        ),
-      ],
+            if (playerSvtData.skills[index] != null)
+              SkillDescriptor(
+                skill: playerSvtData.skills[index]!,
+                showEnemy: !svt.isUserSvt,
+                level: playerSvtData.skillLvs[index],
+              )
+          ],
+        );
+      },
     );
   }
 
-  Widget _buildSkillSection(final BuildContext context, final int skillGroupIndex) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ServantOptionEditPage.buildSlider(
-          leadingText: '${S.current.active_skill} ${skillGroupIndex + 1} ${S.current.level}',
-          min: 1,
-          max: 10,
-          value: playerSvtData.skillLvs[skillGroupIndex],
-          label: playerSvtData.skillLvs[skillGroupIndex].toString(),
-          onChange: (v) {
-            playerSvtData.skillLvs[skillGroupIndex] = v.round();
-            _updateState();
-          },
-        ),
-        _buildSkillDescriptor(context, skillGroupIndex),
-      ],
-    );
-  }
-
-  Widget _buildSkillDescriptor(final BuildContext context, final int skillGroupIndex) {
-    final int ascension = playerSvtData.ascensionPhase;
-    final List<NiceSkill> shownSkills = ServantSelector.getShownSkills(svt, ascension, skillGroupIndex);
-
-    if (shownSkills.length == 1 && shownSkills.first.condQuestId <= 0) {
-      return SkillDescriptor(
-        skill: shownSkills.first,
-        level: playerSvtData.skillLvs[skillGroupIndex],
-        showEnemy: !svt.isUserSvt,
-      );
-    }
-
-    final skill = svt.groupedActiveSkills[skillGroupIndex]
-        .firstWhere((activeSkill) => activeSkill.id == playerSvtData.skillId[skillGroupIndex]);
-
-    final toggle = Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Expanded(
-          child: FilterGroup<NiceSkill>(
-            shrinkWrap: true,
-            combined: true,
-            options: shownSkills,
-            optionBuilder: (niceSkill) {
-              String name = Transl.skillNames(niceSkill.name).l;
-              if (name.trim().isEmpty) name = '???';
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                child: Text(name),
-              );
-            },
-            values: FilterRadioData.nonnull(skill),
-            onFilterChanged: (v, _) {
-              playerSvtData.skillId[skillGroupIndex] = v.radioValue!.id;
-              logger.d('Changing skillId: ${playerSvtData.skillId[skillGroupIndex]}');
-              _updateState();
-            },
-          ),
-        ),
-        if (skill.condQuestId > 0 || SvtSkillTab.hasUnusualLimitCond(skill))
-          IconButton(
-            padding: const EdgeInsets.all(2),
-            constraints: const BoxConstraints(
-              minWidth: 48,
-              minHeight: 24,
-            ),
-            onPressed: () => showDialog(
-              context: context,
-              useRootNavigator: false,
-              builder: (_) => SvtSkillTab.releaseCondition(skill),
-            ),
-            icon: const Icon(Icons.info_outline),
-            color: Theme.of(context).hintColor,
-            tooltip: S.current.open_condition,
-          ),
-      ],
-    );
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const SizedBox(height: 4),
-        toggle,
-        SkillDescriptor(
+  Widget _buildAppendSkill(final BuildContext context, final int skillNum) {
+    final index = skillNum - 1;
+    final skill = playerSvtData.svt?.appendPassive.firstWhereOrNull((e) => e.num == skillNum + 99)?.skill;
+    return SimpleAccordion(
+      headerBuilder: (context, _) {
+        String title = '${S.current.append_skill_short} $skillNum';
+        if (skill != null) {
+          title += ' Lv.${playerSvtData.appendLvs[index]}';
+        }
+        String subtitle = skill == null ? Transl.tdTypes('なし').l : '${skill.id} ${skill.lName.l}';
+        return ListTile(
+          dense: true,
+          horizontalTitleGap: 0,
+          leading: db.getIconImage(skill?.icon, width: 24),
+          title: Text(title),
+          subtitle: Text(subtitle),
+        );
+      },
+      contentBuilder: (context) {
+        if (skill == null) return Center(child: Text('\n${S.current.not_found}\n'));
+        return SkillDescriptor(
           skill: skill,
-          level: playerSvtData.skillLvs[skillGroupIndex],
           showEnemy: !svt.isUserSvt,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAppendSkillSection(final BuildContext context, final int skillGroupIndex) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ServantOptionEditPage.buildSlider(
-          leadingText: '${S.current.append_skill} ${skillGroupIndex + 1} ${S.current.level}',
-          min: 0,
-          max: 10,
-          value: playerSvtData.appendLvs[skillGroupIndex],
-          label: playerSvtData.appendLvs[skillGroupIndex].toString(),
-          onChange: (v) {
-            playerSvtData.appendLvs[skillGroupIndex] = v.round();
-            _updateState();
-          },
-        ),
-        SkillDescriptor(
-          skill: svt.appendPassive[skillGroupIndex].skill,
-          level: playerSvtData.appendLvs[skillGroupIndex],
-          showEnemy: !svt.isUserSvt,
-        ),
-      ],
+          level: playerSvtData.appendLvs[index],
+        );
+      },
     );
   }
 
@@ -669,80 +668,52 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             children: List.generate(svt.cards.length, (index) {
               final code = playerSvtData.commandCodes[index];
               return TableRow(children: [
-                Center(
-                  child: CommandCardWidget(card: svt.cards[index], width: 60),
+                Center(child: CommandCardWidget(card: svt.cards[index], width: 60)),
+                InkWell(
+                  onTap: () async {
+                    router.pushBuilder(
+                      builder: (context) => CmdCodeListPage(
+                        onSelected: (selectedCode) {
+                          playerSvtData.commandCodes[index] = db.gameData.commandCodes[selectedCode.collectionNo];
+                          _updateState();
+                        },
+                      ),
+                      detail: false,
+                    );
+                  },
+                  onLongPress: code?.routeTo,
+                  child: db.getIconImage(code?.icon ?? Atlas.asset('SkillIcons/skill_999999.png'),
+                      height: 60, aspectRatio: 132 / 144, padding: const EdgeInsets.all(4)),
                 ),
-                Column(
-                  children: [
-                    ServantOptionEditPage.buildSlider(
-                      leadingText: S.current.card_strengthen,
-                      min: 0,
-                      max: 25,
-                      value: playerSvtData.cardStrengthens[index] ~/ 20,
-                      label: playerSvtData.cardStrengthens[index].toString(),
-                      onChange: (v) {
-                        playerSvtData.cardStrengthens[index] = v.round() * 20;
-                        _updateState();
-                      },
-                    ),
-                    Table(
-                      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                      children: [
-                        TableRow(
-                          children: [
-                            InkWell(
-                              onTap: () async {
-                                router.pushBuilder(
-                                  builder: (context) => CmdCodeListPage(
-                                    onSelected: (selectedCode) {
-                                      playerSvtData.commandCodes[index] =
-                                          db.gameData.commandCodes[selectedCode.collectionNo];
-                                      _updateState();
-                                    },
-                                  ),
-                                  detail: false,
-                                );
-                              },
-                              child: db.getIconImage(code?.icon ?? Atlas.asset('SkillIcons/skill_999999.png'),
-                                  height: 60, aspectRatio: 132 / 144, padding: const EdgeInsets.all(4)),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(4),
-                              child: GestureDetector(
-                                onTap: code?.routeTo,
-                                child: Text(
-                                  code?.skills.getOrNull(0)?.lDetail ?? '',
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  playerSvtData.commandCodes[index] = null;
-                                });
-                              },
-                              icon: const Icon(Icons.remove_circle_outline, size: 18),
-                              tooltip: S.current.remove,
-                            ),
-                          ],
-                        ),
-                      ],
-                      columnWidths: const {
-                        0: FixedColumnWidth(68),
-                        // 1:
-                        2: FixedColumnWidth(32)
-                      },
-                      border: TableBorder.all(color: const Color.fromRGBO(58, 61, 61, 1.0), width: 0.25),
-                    )
-                  ],
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      playerSvtData.commandCodes[index] = null;
+                    });
+                  },
+                  icon: const Icon(Icons.remove_circle_outline, size: 18),
+                  tooltip: S.current.remove,
+                ),
+                ServantOptionEditPage.buildSlider(
+                  leadingText: S.current.card_strengthen,
+                  min: 0,
+                  max: 25,
+                  value: playerSvtData.cardStrengthens[index] ~/ 20,
+                  label: playerSvtData.cardStrengthens[index].toString(),
+                  onChange: (v) {
+                    playerSvtData.cardStrengthens[index] = v.round() * 20;
+                    _updateState();
+                  },
                 ),
               ]);
             }),
             columnWidths: const {
-              0: FixedColumnWidth(68),
+              0: FixedColumnWidth(56),
+              1: FixedColumnWidth(56),
+              2: FixedColumnWidth(32)
+              // 3:
             },
-            border: TableBorder.all(color: const Color.fromRGBO(58, 61, 61, 1.0), width: 0.25),
+            border: TableBorder.all(color: const Color.fromRGBO(162, 169, 177, 1), width: 0.25),
           ),
         ),
       ],
@@ -804,9 +775,9 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     final curStatus = status.cur;
     if (curStatus.favorite) {
       playerSvtData
-        ..ascensionPhase = curStatus.ascension
+        ..limitCount = curStatus.ascension
         ..lv = selectedSvt.grailedLv(curStatus.grail)
-        ..npLv = curStatus.npLv
+        ..tdLv = curStatus.npLv
         ..skillLvs = curStatus.skills.toList()
         ..appendLvs = curStatus.appendSkills.toList()
         ..atkFou = curStatus.fouAtk > 0 ? 1000 + curStatus.fouAtk * 20 : curStatus.fouAtk3 * 50
@@ -822,9 +793,9 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         });
     } else {
       playerSvtData
-        ..ascensionPhase = 4
+        ..limitCount = 4
         ..lv = selectedSvt.lvMax
-        ..npLv = 5
+        ..tdLv = 5
         ..skillLvs = [10, 10, 10]
         ..appendLvs = [0, 0, 0]
         ..atkFou = 1000
@@ -833,9 +804,10 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         ..commandCodes = [null, null, null, null, null];
     }
 
-    playerSvtData.npId = ServantSelector.getShownTds(selectedSvt, playerSvtData.ascensionPhase).last.id;
-    for (int i = 0; i < selectedSvt.groupedActiveSkills.length; i += 1) {
-      playerSvtData.skillId[i] = ServantSelector.getShownSkills(selectedSvt, playerSvtData.ascensionPhase, i).last.id;
+    playerSvtData.td = ServantSelector.getShownTds(selectedSvt, playerSvtData.limitCount).last;
+    for (final skillNum in kActiveSkillNums) {
+      playerSvtData.skills[skillNum] =
+          ServantSelector.getShownSkills(selectedSvt, playerSvtData.limitCount, skillNum).lastOrNull;
     }
   }
 
@@ -853,16 +825,16 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       ..rarity = support.svt.rarity
       ..attribute = support.svt.attribute;
     playerSvtData
-      ..ascensionPhase = support.limit.limitCount
+      ..limitCount = support.limit.limitCount
       ..hpFou = 0
       ..atkFou = 0;
     // skill & td
     svt.skills = support.skills.skills.whereType<NiceSkill>().toList();
-    playerSvtData.skillId = support.skills.skillIds.toList();
+    playerSvtData.skills = support.skills.skills;
     playerSvtData.skillLvs = support.skills.skillLvs.map((e) => e ?? 0).toList();
     svt.noblePhantasms = [if (support.noblePhantasm.noblePhantasm != null) support.noblePhantasm.noblePhantasm!];
-    playerSvtData.npId = support.noblePhantasm.noblePhantasmId;
-    playerSvtData.npLv = support.noblePhantasm.noblePhantasmLv;
+    playerSvtData.td = support.noblePhantasm.noblePhantasm;
+    playerSvtData.tdLv = support.noblePhantasm.noblePhantasmLv;
     // ce
     final ce = support.equips.getOrNull(0);
     playerSvtData

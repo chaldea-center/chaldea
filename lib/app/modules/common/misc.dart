@@ -15,6 +15,8 @@ class CommandCardWidget extends StatelessWidget {
       return Text(' ${card.name.toTitle()} ');
     }
     final cardName = card.name;
+    final width2 = width * 0.8;
+    final dx = (width - width2) / 2;
     return SizedBox(
       width: width,
       height: width,
@@ -24,10 +26,10 @@ class CommandCardWidget extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             Positioned.fill(
-              left: width * 0.1,
-              right: width * 0.1,
-              top: width * 0.1,
-              bottom: width * 0.1,
+              left: dx,
+              right: dx,
+              top: dx,
+              bottom: dx,
               child: Image.asset(
                 'res/assets/card_bg_$cardName.png',
                 // width: 100,
@@ -42,8 +44,8 @@ class CommandCardWidget extends StatelessWidget {
               ),
             ),
             Positioned.fill(
-              left: 6,
-              right: 6,
+              left: dx,
+              right: dx,
               bottom: 0,
               child: Image.asset(
                 'res/assets/card_txt_$cardName.png',

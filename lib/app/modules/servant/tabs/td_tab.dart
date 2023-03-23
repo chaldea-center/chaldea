@@ -20,7 +20,7 @@ class SvtTdTab extends StatelessWidget {
     List<Widget> children = [];
     final status = db.curUser.svtStatusOf(svt.collectionNo).cur;
     final overrideData = OverrideTDData.fromAscensionAdd(svt.ascensionAdd);
-    for (final tds in svt.groupedNoblePhantasms) {
+    for (final tds in svt.groupedNoblePhantasms.values) {
       List<NiceTd> shownTds = [];
       List<OverrideTDData?> overrideTds = [];
       for (final td in tds) {

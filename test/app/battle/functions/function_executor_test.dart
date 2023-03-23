@@ -17,19 +17,19 @@ void main() async {
   final battle = BattleData();
   final playerSettings = [
     PlayerSvtData(504900)
-      ..npLv = 1
+      ..tdLv = 1
       ..lv = 90,
     PlayerSvtData(504900)
-      ..npLv = 2
+      ..tdLv = 2
       ..lv = 90,
     PlayerSvtData(503900)
-      ..npLv = 2
+      ..tdLv = 2
       ..lv = 90,
     PlayerSvtData(503300)
-      ..npLv = 2
+      ..tdLv = 2
       ..lv = 90,
     PlayerSvtData(503200)
-      ..npLv = 2
+      ..tdLv = 2
       ..lv = 90
   ];
 
@@ -182,14 +182,14 @@ void main() async {
     final battle = BattleData();
     final playerSettings = [
       PlayerSvtData(403700) // nemo
-        ..npLv = 1
+        ..tdLv = 1
         ..lv = 90,
       PlayerSvtData(300500) // eli
         ..setSkillStrengthenLvs([2, 1, 1])
-        ..npLv = 2
+        ..tdLv = 2
         ..lv = 80,
       PlayerSvtData(1101100) // kama
-        ..npLv = 5
+        ..tdLv = 5
         ..lv = 120,
     ];
 
@@ -240,7 +240,7 @@ void main() async {
       final playerSettings = [
         PlayerSvtData(800100)
           ..setSkillStrengthenLvs([1, 1, 1])
-          ..npLv = 3
+          ..tdLv = 3
           ..lv = 80,
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
@@ -266,13 +266,13 @@ void main() async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData(2300500)
-          ..npLv = 3
+          ..tdLv = 3
           ..lv = 90
           ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
         PlayerSvtData(2300500)
-          ..npLv = 3
+          ..tdLv = 3
           ..lv = 90
           ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
@@ -322,15 +322,15 @@ void main() async {
       final playerSettings = [
         PlayerSvtData(501500)
           ..setSkillStrengthenLvs([1, 1, 1])
-          ..npLv = 3
+          ..tdLv = 3
           ..lv = 60,
         PlayerSvtData(501500)
           ..setSkillStrengthenLvs([1, 1, 1])
-          ..npLv = 3
+          ..tdLv = 3
           ..lv = 60,
         PlayerSvtData(501500)
           ..setSkillStrengthenLvs([1, 1, 1])
-          ..npLv = 3
+          ..tdLv = 3
           ..lv = 60,
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
@@ -409,16 +409,16 @@ void main() async {
       final playerSettings = [
         PlayerSvtData(304000)
           ..skillLvs = [9, 9, 9]
-          ..npLv = 3
+          ..tdLv = 3
           ..lv = 80,
         PlayerSvtData(2500400)
           ..skillLvs = [9, 9, 9]
           ..appendLvs = [0, 10, 0]
-          ..npLv = 3
+          ..tdLv = 3
           ..lv = 90,
         PlayerSvtData(2500400)
           ..skillLvs = [9, 9, 9]
-          ..npLv = 3
+          ..tdLv = 3
           ..lv = 90
           ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100

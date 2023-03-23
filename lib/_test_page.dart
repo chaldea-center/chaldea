@@ -33,6 +33,7 @@ void loadSvtIconRemap() async {
   final reg = RegExp(r'\d+');
   Map<int, int> remap = {};
   for (final svt in db.gameData.entities.values) {
+    // ignore: invalid_use_of_protected_member
     final iconId = int.parse(reg.firstMatch(svt.face)!.group(0)!);
     if (validIcons.contains(iconId)) continue;
     final icons = mapping[svt.id];

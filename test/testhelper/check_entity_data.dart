@@ -24,10 +24,10 @@ void checkSvtData(final String path, final Servant svtData) async {
   }
   checkStrings.add('');
 
-  for (int i = 1; i <= svtData.groupedActiveSkills.length; i += 1) {
+  for (final i in svtData.groupedActiveSkills.keys) {
     checkStrings.add('===============================================================');
     checkStrings.add('Checking skill group [$i]');
-    final groupedSkills = svtData.groupedActiveSkills[i - 1];
+    final groupedSkills = svtData.groupedActiveSkills[i]!;
     for (int j = 1; j <= groupedSkills.length; j += 1) {
       checkStrings.add('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
       checkStrings.add('Checking skill [$j] in group [$i]');
@@ -162,8 +162,8 @@ void checkByType(final String path) async {
       }
     }
 
-    for (int i = 1; i <= svtData.groupedActiveSkills.length; i += 1) {
-      final groupedSkills = svtData.groupedActiveSkills[i - 1];
+    for (final i in svtData.groupedActiveSkills.keys) {
+      final groupedSkills = svtData.groupedActiveSkills[i]!;
       for (int j = 1; j <= groupedSkills.length; j += 1) {
         final skill = groupedSkills[j - 1];
         logSkills(

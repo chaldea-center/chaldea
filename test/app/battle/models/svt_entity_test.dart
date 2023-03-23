@@ -12,7 +12,7 @@ void main() async {
 
   final List<PlayerSvtData> okuniWithDoubleCba = [
     PlayerSvtData(504900)
-      ..npLv = 3
+      ..tdLv = 3
       ..lv = 90,
     PlayerSvtData(503900)..lv = 90,
     PlayerSvtData(503900)..lv = 90,
@@ -61,7 +61,7 @@ void main() async {
   test('Test commandCode', () async {
     final List<PlayerSvtData> okuniCommandCode = [
       PlayerSvtData(100100)
-        ..npLv = 3
+        ..tdLv = 3
         ..lv = 90
         ..commandCodes = [
           null,
@@ -95,10 +95,10 @@ void main() async {
   test('Test traits', () async {
     final List<PlayerSvtData> melusineAndFeihu = [
       PlayerSvtData(304800)
-        ..ascensionPhase = 0
+        ..limitCount = 0
         ..lv = 90,
       PlayerSvtData(304800)
-        ..ascensionPhase = 3
+        ..limitCount = 3
         ..lv = 90,
       PlayerSvtData(404900)..lv = 80,
     ];

@@ -492,13 +492,13 @@ class ServantSelector extends StatelessWidget {
     // svt icon
     String svtInfo = '';
     if (playerSvtData.svt != null) {
-      svtInfo = ' Lv.${playerSvtData.lv} NP${playerSvtData.npLv}\n'
+      svtInfo = ' Lv.${playerSvtData.lv} NP${playerSvtData.tdLv}\n'
           ' ${playerSvtData.skillLvs.join("/")}\n'
           ' ${playerSvtData.appendLvs.map((e) => e == 0 ? "-" : e).join("/")}';
     }
     Widget svtIcon = GameCardMixin.cardIconBuilder(
       context: context,
-      icon: playerSvtData.svt?.ascendIcon(playerSvtData.ascensionPhase, true) ?? emptySvtIcon,
+      icon: playerSvtData.svt?.ascendIcon(playerSvtData.limitCount, true) ?? emptySvtIcon,
       width: 80,
       aspectRatio: 132 / 144,
       text: svtInfo,
@@ -531,7 +531,7 @@ class ServantSelector extends StatelessWidget {
       SizedBox(
         height: 18,
         child: AutoSizeText(
-          playerSvtData.svt?.lBattleName(playerSvtData.ascensionPhase).l ?? S.current.servant,
+          playerSvtData.svt?.lBattleName(playerSvtData.limitCount).l ?? S.current.servant,
           maxLines: 1,
           minFontSize: 10,
           textAlign: TextAlign.center,
@@ -701,9 +701,9 @@ class ServantSelector extends StatelessWidget {
       final curStatus = status.cur;
       if (curStatus.favorite) {
         playerSvtData
-          ..ascensionPhase = curStatus.ascension
+          ..limitCount = curStatus.ascension
           ..lv = selectedSvt.grailedLv(curStatus.grail)
-          ..npLv = curStatus.npLv
+          ..tdLv = curStatus.npLv
           ..skillLvs = curStatus.skills.toList()
           ..appendLvs = curStatus.appendSkills.toList()
           ..atkFou = curStatus.fouAtk > 0 ? 1000 + curStatus.fouAtk * 20 : curStatus.fouAtk3 * 50
@@ -719,9 +719,9 @@ class ServantSelector extends StatelessWidget {
           });
       } else {
         playerSvtData
-          ..ascensionPhase = 4
+          ..limitCount = 4
           ..lv = selectedSvt.lvMax
-          ..npLv = 5
+          ..tdLv = 5
           ..skillLvs = [10, 10, 10]
           ..appendLvs = [0, 0, 0]
           ..atkFou = 1000
@@ -730,21 +730,21 @@ class ServantSelector extends StatelessWidget {
           ..commandCodes = [null, null, null, null, null];
       }
 
-      playerSvtData.npId = ServantSelector.getShownTds(selectedSvt, playerSvtData.ascensionPhase).last.id;
-      for (int i = 0; i < selectedSvt.groupedActiveSkills.length; i += 1) {
-        playerSvtData.skillId[i] = getShownSkills(selectedSvt, playerSvtData.ascensionPhase, i).last.id;
+      playerSvtData.td = ServantSelector.getShownTds(selectedSvt, playerSvtData.limitCount).last;
+      for (final skillNum in kActiveSkillNums) {
+        playerSvtData.skills[skillNum - 1] = getShownSkills(selectedSvt, playerSvtData.limitCount, skillNum).lastOrNull;
       }
       onChange();
     }
   }
 
-  static final List<int> costumeOrtinaxIds = [800140, 800150];
-  static final List<int> melusineDragonIds = [3, 4, 304850];
+  static final List<int> costumeOrtinaxIds = [12, 800140, 13, 800150];
+  static final List<int> melusineDragonIds = [3, 4, 13, 304850];
 
   static List<NiceTd> getShownTds(final Servant svt, final int ascension) {
     final List<NiceTd> shownTds = [];
     // only case where we different groups of noblePhantasms exist are for npCardTypeChange
-    for (final td in svt.groupedNoblePhantasms.first) {
+    for (final td in svt.groupedNoblePhantasms[1] ?? <NiceTd>[]) {
       if (shownTds.every((storedTd) => storedTd.id != td.id)) {
         shownTds.add(td);
       }
@@ -772,9 +772,9 @@ class ServantSelector extends StatelessWidget {
     return shownTds;
   }
 
-  static List<NiceSkill> getShownSkills(final Servant svt, final int ascension, final int skillGroupIndex) {
+  static List<NiceSkill> getShownSkills(final Servant svt, final int ascension, final int skillNum) {
     final List<NiceSkill> shownSkills = [];
-    for (final skill in svt.groupedActiveSkills[skillGroupIndex]) {
+    for (final skill in svt.groupedActiveSkills[skillNum] ?? <NiceSkill>[]) {
       if (shownSkills.every((storeSkill) => storeSkill.id != skill.id)) {
         shownSkills.add(skill);
       }
@@ -785,23 +785,23 @@ class ServantSelector extends StatelessWidget {
     if (svt.collectionNo == 1) {
       // Mash
       if (costumeOrtinaxIds.contains(ascension)) {
-        if (skillGroupIndex == 0) {
+        if (skillNum == 1) {
           removeSkillIdList.addAll([1000, 236000]);
-        } else if (skillGroupIndex == 1) {
+        } else if (skillNum == 2) {
           removeSkillIdList.addAll([2000]);
         } else {
           removeSkillIdList.addAll([133000]);
         }
       } else {
-        if (skillGroupIndex == 0) {
+        if (skillNum == 1) {
           removeSkillIdList.addAll([459550, 744450]);
-        } else if (skillGroupIndex == 1) {
+        } else if (skillNum == 2) {
           removeSkillIdList.addAll([460250]);
         } else {
           removeSkillIdList.addAll([457000, 2162350]);
         }
       }
-    } else if (svt.collectionNo == 312 && skillGroupIndex == 2) {
+    } else if (svt.collectionNo == 312 && skillNum == 3) {
       // Melusine
       if (melusineDragonIds.contains(ascension)) {
         removeSkillIdList.add(888550);

@@ -15,6 +15,10 @@ export 'func.dart';
 export 'vals.dart';
 part '../../generated/models/gamedata/skill.g.dart';
 
+const kActiveSkillNums = [1, 2, 3];
+// actual num is 100,101,102
+const kAppendSkillNums = [1, 2, 3];
+
 abstract class SkillOrTd implements RouteInfo {
   int get id;
   String get name;

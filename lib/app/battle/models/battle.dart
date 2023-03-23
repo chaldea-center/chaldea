@@ -193,7 +193,7 @@ class BattleData {
     mysticCodeLv = mysticCodeData?.level ?? 10;
     if (mysticCode != null) {
       masterSkillInfo =
-          mysticCode!.skills.map((skill) => BattleSkillInfoData([skill], skill.id)..skillLv = mysticCodeLv).toList();
+          mysticCode!.skills.map((skill) => BattleSkillInfoData([skill], skill)..skillLv = mysticCodeLv).toList();
     }
 
     _initOnField(playerDataList, onFieldAllyServants, playerOnFieldCount);

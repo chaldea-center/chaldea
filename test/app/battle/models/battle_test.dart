@@ -17,7 +17,7 @@ void main() async {
       final List<PlayerSvtData> altriaSettings = [
         PlayerSvtData(100100)
           ..setSkillStrengthenLvs([1, 2, 1])
-          ..npLv = 1
+          ..tdLv = 1
           ..setNpStrengthenLv(2)
           ..lv = 90
           ..atkFou = 0
@@ -84,21 +84,21 @@ void main() async {
         final List<PlayerSvtData> altriaWithDoubleKoyan = [
           PlayerSvtData(100100)
             ..setSkillStrengthenLvs([1, 2, 1])
-            ..npLv = 1
+            ..tdLv = 1
             ..setNpStrengthenLv(2)
             ..lv = 90
             ..atkFou = 1000
             ..hpFou = 0,
           PlayerSvtData(604200)
             ..setSkillStrengthenLvs([1, 1, 1])
-            ..npLv = 1
+            ..tdLv = 1
             ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 0
             ..hpFou = 0,
           PlayerSvtData(604200)
             ..setSkillStrengthenLvs([1, 1, 1])
-            ..npLv = 1
+            ..tdLv = 1
             ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 0
@@ -129,7 +129,7 @@ void main() async {
       final List<PlayerSvtData> yuyuSettings = [
         PlayerSvtData(2500400)
           ..setSkillStrengthenLvs([2, 1, 1])
-          ..npLv = 5
+          ..tdLv = 5
           ..setNpStrengthenLv(1)
           ..lv = 90
           ..atkFou = 1000
@@ -183,7 +183,7 @@ void main() async {
         final List<PlayerSvtData> yuyuWithDoubleCastoria = [
           PlayerSvtData(2500400)
             ..setSkillStrengthenLvs([2, 1, 1])
-            ..npLv = 5
+            ..tdLv = 5
             ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 1000
@@ -193,14 +193,14 @@ void main() async {
             ..ceLimitBreak = true,
           PlayerSvtData(504500)
             ..setSkillStrengthenLvs([1, 1, 1])
-            ..npLv = 1
+            ..tdLv = 1
             ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 0
             ..hpFou = 0,
           PlayerSvtData(504500)
             ..setSkillStrengthenLvs([1, 1, 1])
-            ..npLv = 1
+            ..tdLv = 1
             ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 0
@@ -234,7 +234,7 @@ void main() async {
       final List<PlayerSvtData> okuniSettings = [
         PlayerSvtData(504900)
           ..setSkillStrengthenLvs([1, 1, 1])
-          ..npLv = 5
+          ..tdLv = 5
           ..setNpStrengthenLv(1)
           ..lv = 90
           ..atkFou = 1000
@@ -288,7 +288,7 @@ void main() async {
         final List<PlayerSvtData> okuniWithDoubleCba = [
           PlayerSvtData(504900)
             ..setSkillStrengthenLvs([1, 1, 1])
-            ..npLv = 5
+            ..tdLv = 5
             ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 1000
@@ -298,14 +298,14 @@ void main() async {
             ..ceLimitBreak = true,
           PlayerSvtData(503900)
             ..setSkillStrengthenLvs([1, 1, 1])
-            ..npLv = 1
+            ..tdLv = 1
             ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 0
             ..hpFou = 0,
           PlayerSvtData(503900)
             ..setSkillStrengthenLvs([1, 1, 1])
-            ..npLv = 1
+            ..tdLv = 1
             ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 0
@@ -336,7 +336,7 @@ void main() async {
     test('Kama 3 turn loop & double Castoria', () async {
       final List<PlayerSvtData> kamaWithDoubleCastoria = [
         PlayerSvtData(1101100)
-          ..npLv = 5
+          ..tdLv = 5
           ..lv = 120
           ..atkFou = 2000
           ..hpFou = 2000

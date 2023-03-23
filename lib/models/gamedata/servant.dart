@@ -354,31 +354,28 @@ class Servant with GameCardMixin {
 
   factory Servant.fromJson(Map<String, dynamic> json) => _$ServantFromJson(json);
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late List<List<NiceSkill>> groupedActiveSkills;
+  Map<int, List<NiceSkill>> groupedActiveSkills = {};
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late List<List<NiceTd>> groupedNoblePhantasms;
+  Map<int, List<NiceTd>> groupedNoblePhantasms = {};
 
   void preprocess() {
     appendPassive.sort2((e) => e.num * 100 + e.priority);
     // groupedActiveSkills
-    Map<int, List<NiceSkill>> dividedSkills = {};
-    for (final skill in skills) {
-      dividedSkills.putIfAbsent(skill.num, () => []).add(skill);
+    groupedActiveSkills.clear();
+    for (final skill in List.of(skills)..sort2((e) => e.priority)) {
+      groupedActiveSkills.putIfAbsent(skill.num, () => []).add(skill);
     }
-    groupedActiveSkills = [
-      for (final key in dividedSkills.keys.toList()..sort()) dividedSkills[key]!..sort2((e) => e.priority)
-    ];
+    groupedActiveSkills = sortDict(groupedActiveSkills);
+
     // groupedNoblePhantasms
-    Map<int, List<NiceTd>> dividedTds = {};
+    groupedNoblePhantasms.clear();
     List<int> excludeSvtChangeTds = [for (final change in svtChange) ...change.beforeTreasureDeviceIds];
-    for (final td in noblePhantasms) {
+    for (final td in List.of(noblePhantasms)..sort2((e) => e.priority)) {
       // 151-154
       if (excludeSvtChangeTds.contains(td.id)) continue;
-      dividedTds.putIfAbsent(td.num, () => []).add(td);
+      groupedNoblePhantasms.putIfAbsent(td.num, () => []).add(td);
     }
-    groupedNoblePhantasms = [
-      for (final key in dividedTds.keys.toList()..sort()) dividedTds[key]!..sort2((e) => e.priority)
-    ];
+    groupedNoblePhantasms = sortDict(groupedNoblePhantasms);
   }
 
   @override
