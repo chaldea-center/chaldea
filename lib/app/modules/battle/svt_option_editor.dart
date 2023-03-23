@@ -84,6 +84,19 @@ class ServantOptionEditPage extends StatefulWidget {
     required ValueChanged<double> onChange,
     double leadingWidth = 48,
   }) {
+    Widget slider = SliderTheme(
+      data: SliderTheme.of(context).copyWith(thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8)),
+      child: Slider(
+        min: min.toDouble(),
+        max: max.toDouble(),
+        divisions: max - min,
+        value: value.toDouble(),
+        label: label,
+        onChanged: (v) {
+          onChange(v);
+        },
+      ),
+    );
     return Row(
       children: [
         SizedBox(
@@ -98,38 +111,31 @@ class ServantOptionEditPage extends StatefulWidget {
                 maxFontSize: 16,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
-              if (valueText != null) AutoSizeText(valueText, maxLines: 1, minFontSize: 10),
+              if (valueText != null)
+                AutoSizeText(
+                  valueText,
+                  maxLines: 1,
+                  minFontSize: 10,
+                  maxFontSize: 14,
+                ),
             ],
           ),
         ),
         Flexible(
-          child: Stack(
-            children: [
-              Positioned(
-                left: -16,
-                right: -16,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxHeight: 24,
-                    maxWidth: 320,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 320, maxHeight: 24),
+            child: Stack(
+              children: [
+                Positioned(
+                  left: -16,
+                  right: -16,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxHeight: 24),
+                    child: slider,
                   ),
-                  child: SliderTheme(
-                    data: SliderTheme.of(context)
-                        .copyWith(thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8)),
-                    child: Slider(
-                      min: min.toDouble(),
-                      max: max.toDouble(),
-                      divisions: max - min,
-                      value: value.toDouble(),
-                      label: label,
-                      onChanged: (v) {
-                        onChange(v);
-                      },
-                    ),
-                  ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         )
       ],
