@@ -172,7 +172,7 @@ class _QuestCardState extends State<QuestCard> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   InkWell(
-                    onTap: quest.war?.routeTo,
+                    onTap: widget.battleOnly ? null : quest.war?.routeTo,
                     child: AutoSizeText(
                       warName,
                       maxLines: 2,

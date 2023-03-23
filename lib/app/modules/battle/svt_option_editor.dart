@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
@@ -18,14 +19,21 @@ import 'package:chaldea/models/userdata/filter_data.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../enemy/support_servant.dart';
 import '../servant/servant_list.dart';
 import 'simulation_preview.dart';
 
 class ServantOptionEditPage extends StatefulWidget {
   final PlayerSvtData playerSvtData;
+  final List<SupportServant> supportServants;
   final VoidCallback onChange;
 
-  ServantOptionEditPage({super.key, required this.playerSvtData, required this.onChange});
+  ServantOptionEditPage({
+    super.key,
+    required this.playerSvtData,
+    required this.supportServants,
+    required this.onChange,
+  });
 
   @override
   State<ServantOptionEditPage> createState() => _ServantOptionEditPageState();
@@ -66,6 +74,57 @@ class ServantOptionEditPage extends StatefulWidget {
       ],
     );
   }
+
+  static Widget buildSlider2({
+    required BuildContext context,
+    required String label,
+    required String? valueText,
+    required int min,
+    required int max,
+    required int value,
+    required ValueChanged<double> onChange,
+    double leadingWidth = 48,
+  }) {
+    return Row(
+      children: [
+        const SizedBox(width: 8),
+        SizedBox(
+          width: leadingWidth,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              AutoSizeText(
+                label,
+                maxLines: 1,
+                minFontSize: 10,
+                maxFontSize: 16,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              if (valueText != null) AutoSizeText(valueText, maxLines: 1, minFontSize: 10),
+            ],
+          ),
+        ),
+        Flexible(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxHeight: 24,
+              maxWidth: 300,
+            ),
+            child: Slider(
+              min: min.toDouble(),
+              max: max.toDouble(),
+              divisions: max - min,
+              value: value.toDouble(),
+              label: label,
+              onChanged: (v) {
+                onChange(v);
+              },
+            ),
+          ),
+        )
+      ],
+    );
+  }
 }
 
 class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
@@ -78,7 +137,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     super.initState();
     if (playerSvtData.svt == null) {
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        changeSvt();
+        selectSvt();
       });
     }
   }
@@ -88,97 +147,18 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     if (playerSvtData.svt == null) {
       return Scaffold(
         appBar: AppBar(title: Text(S.current.battle_edit_servant_option)),
-        body: Center(
-          child: TextButton(onPressed: changeSvt, child: Text(S.current.battle_click_to_select_servants)),
+        body: Column(
+          children: [
+            const Spacer(),
+            SafeArea(child: buttonBar),
+          ],
         ),
       );
     }
 
     final List<Widget> topListChildren = [];
     topListChildren.add(_header(context));
-    final sliders = <Widget>[
-      ServantOptionEditPage.buildSlider(
-        leadingText: S.current.noble_phantasm_level,
-        min: 1,
-        max: 5,
-        value: playerSvtData.npLv,
-        label: playerSvtData.npLv.toString(),
-        onChange: (v) {
-          playerSvtData.npLv = v.round();
-          _updateState();
-        },
-      ),
-      ServantOptionEditPage.buildSlider(
-        leadingText: 'Lv',
-        min: 1,
-        max: 120,
-        value: playerSvtData.lv,
-        label: playerSvtData.lv.toString(),
-        onChange: (v) {
-          playerSvtData.lv = v.round();
-          _updateState();
-        },
-      ),
-      ServantOptionEditPage.buildSlider(
-        leadingText: 'ATK ${S.current.foukun}',
-        min: 0,
-        max: 200,
-        value: playerSvtData.atkFou ~/ 10,
-        label: playerSvtData.atkFou.toString(),
-        onChange: (v) {
-          final int fou = v.round() * 10;
-          if (fou > 1000 && fou % 20 == 10) {
-            playerSvtData.atkFou = fou - 10;
-          } else {
-            playerSvtData.atkFou = fou;
-          }
-          _updateState();
-        },
-      ),
-      ServantOptionEditPage.buildSlider(
-        leadingText: 'HP ${S.current.foukun}',
-        min: 0,
-        max: 200,
-        value: playerSvtData.hpFou ~/ 10,
-        label: playerSvtData.hpFou.toString(),
-        onChange: (v) {
-          final int fou = v.round() * 10;
-          if (fou > 1000 && fou % 20 == 10) {
-            playerSvtData.hpFou = fou - 10;
-          } else {
-            playerSvtData.hpFou = fou;
-          }
-          _updateState();
-        },
-      ),
-      for (int skillGroupIndex in [0, 1, 2])
-        ServantOptionEditPage.buildSlider(
-          leadingText: '${S.current.active_skill} ${skillGroupIndex + 1} ${S.current.level}',
-          min: 1,
-          max: 10,
-          value: playerSvtData.skillLvs[skillGroupIndex],
-          label: playerSvtData.skillLvs[skillGroupIndex].toString(),
-          onChange: (v) {
-            playerSvtData.skillLvs[skillGroupIndex] = v.round();
-            _updateState();
-          },
-        ),
-      for (int skillGroupIndex in [0, 1, 2])
-        ServantOptionEditPage.buildSlider(
-          leadingText: '${S.current.append_skill} ${skillGroupIndex + 1} ${S.current.level}',
-          min: 0,
-          max: 10,
-          value: playerSvtData.appendLvs[skillGroupIndex],
-          label: playerSvtData.appendLvs[skillGroupIndex].toString(),
-          onChange: (v) {
-            playerSvtData.appendLvs[skillGroupIndex] = v.round();
-            _updateState();
-          },
-        )
-    ];
-    topListChildren
-        .add(ResponsiveLayout(children: [for (final child in sliders) Responsive(small: 12, middle: 6, child: child)]));
-
+    topListChildren.add(_buildSliderGroup());
     topListChildren.add(_buildTdDescriptor(context));
     for (int i = 0; i < svt.groupedActiveSkills.length; i += 1) {
       topListChildren.add(_buildSkillSection(context, i));
@@ -190,28 +170,164 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     topListChildren.add(_buildCmdCodePlanner());
 
     return Scaffold(
-      appBar: AppBar(
-        titleSpacing: 0,
-        title: AutoSizeText(S.current.battle_edit_servant_option, maxLines: 1),
-        centerTitle: false,
-        actions: [
-          TextButton(
-            onPressed: () {
-              playerSvtData.svt = null;
-              _updateState();
-              Navigator.pop(context);
-            },
-            child: Text(S.current.clear),
+      appBar: AppBar(title: Text(S.current.battle_edit_servant_option)),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              children: divideTiles(
+                topListChildren,
+                divider: const Divider(height: 10, thickness: 2),
+              ),
+            ),
           ),
-          TextButton(onPressed: changeSvt, child: const Text('Change')),
+          kDefaultDivider,
+          SafeArea(child: buttonBar),
         ],
       ),
-      body: ListView(
-        children: divideTiles(
-          topListChildren,
-          divider: const Divider(height: 10, thickness: 2),
-        ),
+    );
+  }
+
+  Widget _buildSliderGroup() {
+    final commonSliders = <Widget>[
+      ServantOptionEditPage.buildSlider2(
+        context: context,
+        label: S.current.noble_phantasm_level,
+        min: 1,
+        max: 5,
+        value: playerSvtData.npLv,
+        valueText: 'Lv.${playerSvtData.npLv}',
+        onChange: (v) {
+          playerSvtData.npLv = v.round();
+          _updateState();
+        },
       ),
+      ServantOptionEditPage.buildSlider2(
+        context: context,
+        label: 'Lv',
+        min: 1,
+        max: svt.atkGrowth.length,
+        value: playerSvtData.lv,
+        valueText: playerSvtData.lv.toString(),
+        onChange: (v) {
+          playerSvtData.lv = v.round();
+          _updateState();
+        },
+      ),
+      ServantOptionEditPage.buildSlider2(
+        context: context,
+        label: 'ATK ${S.current.foukun}',
+        min: 0,
+        max: 200,
+        value: playerSvtData.atkFou ~/ 10,
+        valueText: '+${playerSvtData.atkFou}',
+        onChange: (v) {
+          final int fou = v.round() * 10;
+          if (fou > 1000 && fou % 20 == 10) {
+            playerSvtData.atkFou = fou - 10;
+          } else {
+            playerSvtData.atkFou = fou;
+          }
+          _updateState();
+        },
+      ),
+      ServantOptionEditPage.buildSlider2(
+        context: context,
+        label: 'HP ${S.current.foukun}',
+        min: 0,
+        max: 200,
+        value: playerSvtData.hpFou ~/ 10,
+        valueText: '+${playerSvtData.hpFou}',
+        onChange: (v) {
+          final int fou = v.round() * 10;
+          if (fou > 1000 && fou % 20 == 10) {
+            playerSvtData.hpFou = fou - 10;
+          } else {
+            playerSvtData.hpFou = fou;
+          }
+          _updateState();
+        },
+      ),
+    ];
+    final activeSkills = [
+      for (int skillGroupIndex in [0, 1, 2])
+        ServantOptionEditPage.buildSlider2(
+          context: context,
+          label: '${S.current.active_skill_short} ${skillGroupIndex + 1}',
+          min: 1,
+          max: 10,
+          value: playerSvtData.skillLvs[skillGroupIndex],
+          valueText: 'Lv.${playerSvtData.skillLvs[skillGroupIndex]}',
+          onChange: (v) {
+            playerSvtData.skillLvs[skillGroupIndex] = v.round();
+            _updateState();
+          },
+        ),
+    ];
+    final appendSkills = [
+      for (int skillGroupIndex in [0, 1, 2])
+        ServantOptionEditPage.buildSlider2(
+          context: context,
+          label: '${S.current.append_skill_short} ${skillGroupIndex + 1}',
+          min: 0,
+          max: 10,
+          value: playerSvtData.appendLvs[skillGroupIndex],
+          valueText: 'Lv.${playerSvtData.appendLvs[skillGroupIndex]}',
+          onChange: (v) {
+            playerSvtData.appendLvs[skillGroupIndex] = v.round();
+            _updateState();
+          },
+        )
+    ];
+
+    return ResponsiveLayout.builder(
+      builder: (context, type) {
+        List<Widget> children = [...commonSliders];
+        switch (type) {
+          case ResponsiveSizeType.small:
+            children
+              ..addAll(activeSkills)
+              ..addAll(appendSkills);
+            break;
+          case ResponsiveSizeType.middle:
+          case ResponsiveSizeType.large:
+            for (int index in [0, 1, 2]) {
+              children
+                ..add(activeSkills[index])
+                ..add(appendSkills[index]);
+            }
+            break;
+        }
+        return children.map((e) => Responsive(small: 12, middle: 6, child: e)).toList();
+      },
+    );
+  }
+
+  Widget get buttonBar {
+    return ButtonBar(
+      children: [
+        TextButton(
+          onPressed: playerSvtData.svt == null
+              ? null
+              : () {
+                  playerSvtData.svt = null;
+                  _updateState();
+                },
+          child: Text(
+            S.current.clear,
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
+        ),
+        TextButton(
+          onPressed: selectSvt,
+          child: const Text('Select Servant'),
+        ),
+        if (widget.supportServants.isNotEmpty)
+          TextButton(
+            onPressed: selectSupport,
+            child: const Text('Select Support'),
+          ),
+      ],
     );
   }
 
@@ -219,6 +335,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     final faces = svt.extraAssets.faces;
     final ascensionText = svt.getCostume(playerSvtData.ascensionPhase)?.lName.l ??
         '${S.current.ascension} ${playerSvtData.ascensionPhase == 0 ? 1 : playerSvtData.ascensionPhase}';
+    final atk = svt.atkGrowth[playerSvtData.lv - 1] + playerSvtData.atkFou,
+        hp = svt.hpGrowth[playerSvtData.lv - 1] + playerSvtData.hpFou;
     return CustomTile(
       leading: svt.iconBuilder(
         context: context,
@@ -235,6 +353,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             'No.${svt.collectionNo > 0 ? svt.collectionNo : svt.id}'
             '  ${Transl.svtClassId(svt.classId).l}',
           ),
+          Text('ATK $atk  HP $hp'),
           TextButton(
             child: Text(ascensionText, textScaleFactor: 0.9),
             onPressed: () async {
@@ -637,7 +756,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     }
   }
 
-  void changeSvt() {
+  void selectSvt() {
     router.pushPage(
       ServantListPage(
         planMode: false,
@@ -647,6 +766,33 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         },
       ),
       detail: true,
+    );
+  }
+
+  void selectSupport() {
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text(S.current.support_servant),
+          children: [
+            for (final svt in widget.supportServants)
+              SimpleDialogOption(
+                child: SupportServantTile(
+                  svt: svt,
+                  onTap: null,
+                  hasLv100: widget.supportServants.any((e) => e.lv >= 100),
+                ),
+                onPressed: () async {
+                  Navigator.pop(context);
+                  await _onSelectSupport(svt);
+                  _updateState();
+                },
+              )
+          ],
+        );
+      },
     );
   }
 
@@ -691,6 +837,41 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     for (int i = 0; i < selectedSvt.groupedActiveSkills.length; i += 1) {
       playerSvtData.skillId[i] = ServantSelector.getShownSkills(selectedSvt, playerSvtData.ascensionPhase, i).last.id;
     }
+  }
+
+  Future<void> _onSelectSupport(final SupportServant support) async {
+    final svt = await AtlasApi.svt(support.svt.id);
+    if (svt == null) return;
+    // if collected battle data didn't choose support svt,
+    // no trait info and passive skills
+    if (support.traits.isNotEmpty) {
+      svt.traits = support.traits.toList();
+    }
+    svt
+      ..classId = support.svt.classId
+      ..className = support.svt.className
+      ..rarity = support.svt.rarity
+      ..attribute = support.svt.attribute;
+    playerSvtData
+      ..ascensionPhase = support.limit.limitCount
+      ..hpFou = 0
+      ..atkFou = 0;
+    // skill & td
+    svt.skills = support.skills.skills.whereType<NiceSkill>().toList();
+    playerSvtData.skillId = support.skills.skillIds.toList();
+    playerSvtData.skillLvs = support.skills.skillLvs.map((e) => e ?? 0).toList();
+    svt.noblePhantasms = [if (support.noblePhantasm.noblePhantasm != null) support.noblePhantasm.noblePhantasm!];
+    playerSvtData.npId = support.noblePhantasm.noblePhantasmId;
+    playerSvtData.npLv = support.noblePhantasm.noblePhantasmLv;
+    // ce
+    final ce = support.equips.getOrNull(0);
+    playerSvtData
+      ..ce = ce?.equip
+      ..ceLimitBreak = ce?.limitCount == 4
+      ..ceLv = ce?.lv ?? 1;
+
+    svt.preprocess();
+    playerSvtData.svt = svt;
   }
 }
 

@@ -731,6 +731,8 @@ class SupportServant {
     }
     return name;
   }
+
+  Transl<String, String> get lName => Transl.svtNames(shownName);
 }
 
 @JsonSerializable()
@@ -762,6 +764,8 @@ class SupportServantTd {
   });
 
   factory SupportServantTd.fromJson(Map<String, dynamic> json) => _$SupportServantTdFromJson(json);
+
+  int? get lv => noblePhantasm == null ? null : noblePhantasmLv;
 }
 
 @JsonSerializable()
@@ -1133,7 +1137,15 @@ class EnemySkill {
     this.skillLv3 = 0,
   });
 
+  List<NiceSkill?> get skills => [skill1, skill2, skill3];
+
   List<int> get skillIds => [skillId1, skillId2, skillId3].where((e) => e != 0).toList();
+
+  List<int?> get skillLvs => [
+        skill1 == null ? null : skillLv1,
+        skill2 == null ? null : skillLv2,
+        skill3 == null ? null : skillLv3,
+      ];
 
   factory EnemySkill.fromJson(Map<String, dynamic> json) => _$EnemySkillFromJson(json);
 }

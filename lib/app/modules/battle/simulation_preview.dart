@@ -263,6 +263,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                 Expanded(
                   child: ServantSelector(
                     playerSvtData: svt,
+                    supportServants: questPhase?.supportServants ?? [],
                     onChange: () {
                       if (mounted) setState(() {});
                     },
@@ -477,9 +478,10 @@ class ServantSelector extends StatelessWidget {
 
   // static const emptyIconUrl = 'https://static.atlasacademy.io/JP/SkillIcons/skill_999999.png';
   final PlayerSvtData playerSvtData;
+  final List<SupportServant> supportServants;
   final VoidCallback onChange;
 
-  ServantSelector({super.key, required this.playerSvtData, required this.onChange});
+  ServantSelector({super.key, required this.playerSvtData, required this.supportServants, required this.onChange});
 
   @override
   Widget build(final BuildContext context) {
@@ -502,7 +504,7 @@ class ServantSelector extends StatelessWidget {
       text: svtInfo,
       option: ImageWithTextOption(
         textAlign: TextAlign.left,
-        fontSize: 11,
+        fontSize: 10,
         alignment: Alignment.bottomLeft,
         // padding: const EdgeInsets.fromLTRB(22, 0, 2, 4),
       ),
@@ -548,6 +550,7 @@ class ServantSelector extends StatelessWidget {
                 onPressed: () {
                   router.pushPage(ServantOptionEditPage(
                     playerSvtData: playerSvtData,
+                    supportServants: supportServants,
                     onChange: onChange,
                   ));
                 },

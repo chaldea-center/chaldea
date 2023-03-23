@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../utils/basic.dart';
 import 'tile_items.dart';
 
-enum _SizeType {
+enum ResponsiveSizeType {
   small,
   middle,
   large,
@@ -11,6 +11,7 @@ enum _SizeType {
 
 class ResponsiveLayout extends StatelessWidget {
   final List<Responsive> children;
+  final List<Responsive> Function(BuildContext context, ResponsiveSizeType type)? builder;
   final Widget? horizontalDivider;
   final Widget? verticalDivider;
   final double sm;
@@ -33,21 +34,33 @@ class ResponsiveLayout extends StatelessWidget {
     this.maxFlex = 12,
     this.verticalAlign = CrossAxisAlignment.start,
     this.horizontalAlign = CrossAxisAlignment.center,
-  });
+  }) : builder = null;
+  const ResponsiveLayout.builder({
+    super.key,
+    required this.builder,
+    this.horizontalDivider = _defaultHorizontalDivider,
+    this.verticalDivider,
+    this.sm = 576.0,
+    this.ml = 768.0,
+    this.maxFlex = 12,
+    this.verticalAlign = CrossAxisAlignment.start,
+    this.horizontalAlign = CrossAxisAlignment.center,
+  }) : children = const [];
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      final _SizeType type;
+      final ResponsiveSizeType type;
       if (constraints.maxWidth > ml) {
-        type = _SizeType.large;
+        type = ResponsiveSizeType.large;
       } else if (constraints.maxWidth > sm) {
-        type = _SizeType.middle;
+        type = ResponsiveSizeType.middle;
       } else {
-        type = _SizeType.small;
+        type = ResponsiveSizeType.small;
       }
       List<Widget> rows = [];
       List<Responsive> cells = [];
+      final children = builder != null ? builder!(context, type) : this.children;
       for (final child in children) {
         if (Maths.sum(cells.map((e) => e.getFlex(type))) + (child.getFlex(type) ?? 0) > maxFlex) {
           // insert one row
@@ -71,7 +84,7 @@ class ResponsiveLayout extends StatelessWidget {
     });
   }
 
-  Widget insertRow(List<Responsive> cells, _SizeType type) {
+  Widget insertRow(List<Responsive> cells, ResponsiveSizeType type) {
     List<Widget> children = [];
     for (int index = 0; index < cells.length; index++) {
       final cell = cells[index];
@@ -94,13 +107,13 @@ class Responsive extends StatelessWidget {
 
   const Responsive({super.key, this.small, this.middle, this.large, required this.child});
 
-  int? getFlex(_SizeType type) {
+  int? getFlex(ResponsiveSizeType type) {
     switch (type) {
-      case _SizeType.small:
+      case ResponsiveSizeType.small:
         return small ?? middle ?? large;
-      case _SizeType.middle:
+      case ResponsiveSizeType.middle:
         return middle ?? small ?? large;
-      case _SizeType.large:
+      case ResponsiveSizeType.large:
         return large ?? middle ?? small;
     }
   }

@@ -199,8 +199,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       ));
     }
 
-    if (curPhase.individuality.isNotEmpty &&
-        (curPhase.stages.isNotEmpty || (curPhase.consume != 0 || curPhase.consumeItem.isNotEmpty))) {
+    if (curPhase.individuality.isNotEmpty && !curPhase.flags.contains(QuestFlag.noBattle)) {
       children.add(Padding(
         padding: const EdgeInsets.symmetric(vertical: 3),
         child: Row(
@@ -633,58 +632,15 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   }
 
   Widget getSupportServants(QuestPhase curPhase) {
-    TextSpan _mono(dynamic v, int width) => TextSpan(text: v.toString().padRight(width), style: kMonoStyle);
-    String _nullLevel(int lv, dynamic skill) {
-      return skill == null ? '-' : lv.toString();
-    }
-
     List<Widget> supports = [];
     for (final svt in curPhase.supportServants) {
-      Widget support = Text.rich(
-        TextSpan(children: [
-          CenterWidgetSpan(
-            child: svt.svt.iconBuilder(
-              context: context,
-              width: 32,
-              onTap: () {
-                router.pushPage(SupportServantPage(svt, region: widget.region));
-              },
-            ),
-          ),
-          TextSpan(
-            children: [
-              const TextSpan(text: ' Lv.'),
-              _mono(svt.lv, curPhase.supportServants.any((e) => e.lv >= 100) ? 3 : 2),
-              TextSpan(text: ' ${S.current.np_short} Lv.'),
-              _mono(_nullLevel(svt.noblePhantasm.noblePhantasmLv, svt.noblePhantasm.noblePhantasm), 1),
-              TextSpan(text: ' ${S.current.skill} Lv.'),
-              _mono(
-                  '${_nullLevel(svt.skills.skillLv1, svt.skills.skill1)}'
-                  '/${_nullLevel(svt.skills.skillLv2, svt.skills.skill2)}'
-                  '/${_nullLevel(svt.skills.skillLv3, svt.skills.skill3)}',
-                  8),
-              const TextSpan(text: '  ')
-            ],
-            style: svt.script?.eventDeckIndex == null ? null : TextStyle(color: Theme.of(context).colorScheme.error),
-          ),
-          for (final ce in svt.equips) ...[
-            CenterWidgetSpan(child: ce.equip.iconBuilder(context: context, width: 32)),
-            TextSpan(
-              children: [
-                const TextSpan(text: ' Lv.'),
-                _mono(ce.lv, 2),
-              ],
-              style: ce.limitCount == 4 ? TextStyle(color: Theme.of(context).colorScheme.error) : null,
-            ),
-          ]
-        ]),
-        textScaleFactor: 0.9,
-      );
-      supports.add(InkWell(
-        child: support,
+      supports.add(SupportServantTile(
+        svt: svt,
         onTap: () {
           router.pushPage(SupportServantPage(svt, region: widget.region));
         },
+        region: widget.region,
+        hasLv100: curPhase.supportServants.any((e) => e.lv >= 100),
       ));
     }
     return Padding(
