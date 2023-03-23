@@ -58,12 +58,12 @@ There are plenty of work need to do.
 - [ ] manually remove/add buff
 - [ ] manually apply skill(custom activator/target)
 - [ ] Servant/Enemy without TD:
-  - [ ] tdId=0, or NiceTd=null, or td.functions.isEmpty
-  - [ ] player side: no gain NP; enemy side: no charge bar
+  - [ ] tdId=0
 - [ ] Servant skill.num=1 means Skill 1, don't use index in list. `groupedActiveSkill[1/2/3]`
 - [ ] change `groupedActiveSkill` from list to dict
 - [ ] Auto select extraPassive (event bonus)
-- [ ] Transform: what if skill/td has upgrades?
+- [ ] Transform: what if skill/td has upgrades or disabled?
+  - Currently matching id for upgrades.
 - [ ] SkillRankUp: get skill from api if not in db, make init async
 
 ### NPC Simulation

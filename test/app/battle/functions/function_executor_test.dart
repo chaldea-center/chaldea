@@ -7,8 +7,10 @@ import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
+import 'package:chaldea/app/modules/battle/simulation_preview.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/utils/extension.dart';
 import '../../../test_init.dart';
 
 void main() async {
@@ -866,5 +868,78 @@ void main() async {
     await battle.activateSvtSkill(1, 1);
     expect(vanGogh.np, 12000);
     expect(kingprotea.np, 0);
+  });
+
+  test('transformSvt 304800 asc 4', () async {
+    final playerSvtData = PlayerSvtData(304800)..lv = 90;
+    for (final skillNum in kActiveSkillNums) {
+      final List<NiceSkill> shownSkills =
+          ServantSelector.getShownSkills(playerSvtData.svt!, playerSvtData.limitCount, skillNum);
+      playerSvtData.skills[skillNum - 1] = shownSkills.lastOrNull;
+    }
+
+    final List<NiceTd> shownTds = ServantSelector.getShownTds(playerSvtData.svt!, playerSvtData.limitCount);
+    playerSvtData.td = shownTds.last;
+
+    final List<PlayerSvtData> setting = [
+      playerSvtData,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final melusine = battle.onFieldAllyServants[0]!;
+    expect(melusine.np, 0);
+    expect(melusine.getCurrentNP(battle)!.card, CardType.buster);
+    await battle.activateSvtSkill(0, 2);
+    expect(melusine.np, 0);
+    expect(melusine.getCurrentNP(battle)!.card, CardType.buster);
+  });
+
+  test('transformSvt 304800 asc 11', () async {
+    final playerSvtData = PlayerSvtData(304800)
+      ..lv = 90
+      ..limitCount = 304830;
+    for (final skillNum in kActiveSkillNums) {
+      final List<NiceSkill> shownSkills =
+          ServantSelector.getShownSkills(playerSvtData.svt!, playerSvtData.limitCount, skillNum);
+      playerSvtData.skills[skillNum - 1] = shownSkills.lastOrNull;
+    }
+
+    final List<NiceTd> shownTds = ServantSelector.getShownTds(playerSvtData.svt!, playerSvtData.limitCount);
+    playerSvtData.td = shownTds.last;
+    final List<PlayerSvtData> setting = [
+      playerSvtData,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final melusine = battle.onFieldAllyServants[0]!;
+    expect(melusine.np, 0);
+    expect(melusine.getCurrentNP(battle)!.card, CardType.arts);
+    await battle.activateSvtSkill(0, 2);
+    expect(melusine.np, 10000);
+    expect(melusine.getCurrentNP(battle)!.card, CardType.buster);
+  });
+
+  test('transformSvt preserve CD & upgrades', () async {
+    final playerSvtData = PlayerSvtData(600700)
+      ..lv = 70
+      ..setSkillStrengthenLvs([1, 1, 1]);
+    final List<PlayerSvtData> setting = [
+      playerSvtData,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final henry = battle.onFieldAllyServants[0]!;
+    await battle.activateSvtSkill(0, 0);
+    henry.np = 10000;
+    expect(henry.svtClass, SvtClass.assassin);
+    expect(henry.skillInfoList[0].chargeTurn, 5);
+    expect(henry.skillInfoList[2].baseSkill!.id, 71255);
+    await battle.playerTurn([CombatAction(henry, henry.getNPCard(battle)!)]);
+    expect(henry.svtClass, SvtClass.berserker);
+    expect(henry.skillInfoList[0].chargeTurn, 5 - 1);
+    expect(henry.skillInfoList[2].baseSkill!.id, 71255);
   });
 }

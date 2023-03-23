@@ -562,6 +562,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         padding: const EdgeInsets.all(4),
         child: InkWell(
           child: ImageWithText(
+            // Note currentNp can have CardType none for disabled NP
             image: svt.niceSvt!.iconBuilder(
               context: context,
               jumpToDetail: false,

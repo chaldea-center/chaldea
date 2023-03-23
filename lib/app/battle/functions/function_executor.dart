@@ -257,14 +257,18 @@ class FunctionExecutor {
     List<NiceTd> tdSelections = [];
     if (function.funcTargetType == FuncTargetType.commandTypeSelfTreasureDevice) {
       for (final svt in targets) {
-        NiceTd tdSelection = svt.getCurrentNP(battleData);
+        NiceTd? tdSelection = svt.getCurrentNP(battleData);
+        if (tdSelection == null) {
+          return;
+        }
+
         if (tdSelection.script != null && tdSelection.script!.tdTypeChangeIDs != null) {
           final List<NiceTd> tds = svt.getTdsById(tdSelection.script!.tdTypeChangeIDs!);
           if (tds.isNotEmpty && battleData.context != null) {
             await getSelectedTd(battleData, tds).then((value) => tdSelection = value);
           }
         }
-        tdSelections.add(tdSelection);
+        tdSelections.add(tdSelection!);
       }
     }
 

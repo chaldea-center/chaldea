@@ -260,17 +260,17 @@ class BattleServantData {
 
     final currentNP = getCurrentNP(battleData);
     final cardDetail = CardDetail(
-      attackIndividuality: currentNP.individuality,
-      hitsDistribution: currentNP.npDistribution,
+      attackIndividuality: currentNP?.individuality ?? [],
+      hitsDistribution: currentNP?.npDistribution ?? [100],
       attackType:
-          currentNP.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
-      attackNpRate: currentNP.npGain.np[playerSvtData!.tdLv - 1],
+          currentNP?.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
+      attackNpRate: currentNP?.npGain.np[playerSvtData!.tdLv - 1] ?? 0,
     );
 
-    return CommandCardData(currentNP.card, cardDetail)
+    return CommandCardData(currentNP?.card ?? CardType.none, cardDetail)
       ..isNP = true
-      ..npGain = currentNP.npGain.np[playerSvtData!.tdLv - 1]
-      ..traits = currentNP.individuality;
+      ..npGain = currentNP?.npGain.np[playerSvtData!.tdLv - 1] ?? 0
+      ..traits = currentNP?.individuality ?? [];
   }
 
   CommandCardData? getExtraCard(final BattleData battleData) {
@@ -288,15 +288,20 @@ class BattleServantData {
     if (!isPlayer) {
       return 0;
     }
+    final currentNp = getCurrentNP(battleData);
+    if (currentNp == null) {
+      return 0;
+    }
+
     switch (cardType) {
       case CardType.buster:
-        return getCurrentNP(battleData).npGain.buster[playerSvtData!.tdLv - 1];
+        return currentNp.npGain.buster[playerSvtData!.tdLv - 1];
       case CardType.arts:
-        return getCurrentNP(battleData).npGain.arts[playerSvtData!.tdLv - 1];
+        return currentNp.npGain.arts[playerSvtData!.tdLv - 1];
       case CardType.quick:
-        return getCurrentNP(battleData).npGain.quick[playerSvtData!.tdLv - 1];
+        return currentNp.npGain.quick[playerSvtData!.tdLv - 1];
       case CardType.extra:
-        return getCurrentNP(battleData).npGain.extra[playerSvtData!.tdLv - 1];
+        return currentNp.npGain.extra[playerSvtData!.tdLv - 1];
       default:
         return 0;
     }
@@ -376,7 +381,7 @@ class BattleServantData {
   }
 
   void changeNP(final int change) {
-    if (!isPlayer) {
+    if (!isPlayer || td == null) {
       return;
     }
 
@@ -544,7 +549,9 @@ class BattleServantData {
 
   bool canSelectNP(final BattleData battleData) {
     battleData.setActivator(this);
-    final result = canNP(battleData) && td != null && checkNPScript(battleData);
+    final currentNp = getCurrentNP(battleData);
+    final result =
+        canNP(battleData) && currentNp != null && currentNp.functions.isNotEmpty && checkNPScript(battleData);
     battleData.unsetActivator();
     return result;
   }
@@ -563,7 +570,7 @@ class BattleServantData {
   bool checkNPScript(final BattleData battleData) {
     battleData.setActivator(this);
     if (isPlayer) {
-      return BattleSkillInfoData.skillScriptConditionCheck(battleData, getCurrentNP(battleData).script, tdLv);
+      return BattleSkillInfoData.skillScriptConditionCheck(battleData, getCurrentNP(battleData)?.script, tdLv);
     }
     battleData.unsetActivator();
     return true;
@@ -585,8 +592,7 @@ class BattleServantData {
     return result;
   }
 
-  // TODO: nullable TD
-  NiceTd getCurrentNP(final BattleData battleData) {
+  NiceTd? getCurrentNP(final BattleData battleData) {
     final buffs = collectBuffsPerAction(battleBuff.allBuffs, BuffAction.tdTypeChange);
     battleData.setActivator(this);
     for (final buff in buffs) {
@@ -596,22 +602,23 @@ class BattleServantData {
     }
     battleData.unsetActivator();
 
-    return isPlayer ? td! : niceEnemy!.noblePhantasm.noblePhantasm!;
+    return isPlayer ? td : niceEnemy!.noblePhantasm.noblePhantasm;
   }
 
   Future<void> activateNP(final BattleData battleData, final int extraOverchargeLvl) async {
     battleData.setActivator(this);
     battleData.logger.action('$lBattleName ${S.current.battle_np_card}');
 
-    final upOverCharge = await getBuffValueOnAction(battleData, BuffAction.chagetd);
-    int overchargeLvl = upOverCharge + (isPlayer ? np ~/ ConstData.constants.fullTdPoint + extraOverchargeLvl : 1);
-    overchargeLvl = overchargeLvl.clamp(1, 5);
-
-    np = 0;
-    npLineCount = 0;
-
     final niceTD = getCurrentNP(battleData);
-    await FunctionExecutor.executeFunctions(battleData, niceTD.functions, tdLv, overchargeLvl: overchargeLvl);
+    if (niceTD != null) {
+      final upOverCharge = await getBuffValueOnAction(battleData, BuffAction.chagetd);
+      int overchargeLvl = upOverCharge + (isPlayer ? np ~/ ConstData.constants.fullTdPoint + extraOverchargeLvl : 1);
+      overchargeLvl = overchargeLvl.clamp(1, 5);
+
+      np = 0;
+      npLineCount = 0;
+      await FunctionExecutor.executeFunctions(battleData, niceTD.functions, tdLv, overchargeLvl: overchargeLvl);
+    }
 
     battleData.unsetActivator();
   }
@@ -881,7 +888,7 @@ class BattleServantData {
     battleData.setTarget(this);
     if (isEnemy) {
       final npSealed = await hasBuffOnActions(battleData, doNotNPTypes);
-      if (!npSealed) {
+      if (!npSealed && niceEnemy!.chargeTurn > 0) {
         npLineCount += 1;
         npLineCount = npLineCount.clamp(0, niceEnemy!.chargeTurn);
       }

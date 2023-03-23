@@ -46,28 +46,25 @@ class TransformServant {
         } else {
           target.niceSvt = targetSvt;
 
-          // TODO: failed to refactor transform
-          target.skillInfoList.clear();
+          final List<BattleSkillInfoData> newSkillInfos = [];
           for (final skillNum in kActiveSkillNums) {
-            final skills = targetSvt.groupedActiveSkills[skillNum];
-            if (skills == null || skills.isEmpty) continue;
-            target.skillInfoList.add(BattleSkillInfoData(skills, skills.last));
+            final newSkills = targetSvt.groupedActiveSkills[skillNum];
+            if (newSkills == null || newSkills.isEmpty) continue;
+
+            final oldInfoData =
+                target.skillInfoList.firstWhereOrNull((infoData) => infoData.baseSkill?.num == skillNum);
+            final baseSkill =
+                newSkills.firstWhereOrNull((skill) => skill.id == oldInfoData?.baseSkill?.id) ?? newSkills.last;
+            final newInfoData = BattleSkillInfoData(newSkills, baseSkill);
+            newInfoData.skillLv = target.playerSvtData != null && target.playerSvtData!.skillLvs.length >= skillNum
+                ? target.playerSvtData!.skillLvs[skillNum - 1]
+                : 1;
+            if (oldInfoData != null) {
+              newInfoData.chargeTurn = oldInfoData.chargeTurn;
+            }
+            newSkillInfos.add(newInfoData);
           }
-          // for (final skillNum in [1,2,3]) {
-          //   final skills = targetSvt.groupedActiveSkills[skillNum]??[];
-          //   if (target.skillInfoList.length <= i) {
-          //     target.skillInfoList.add(BattleSkillInfoData(skills, skills.last.id));
-          //   } else {
-          //     final curSkillInfo = target.skillInfoList[i];
-          //     curSkillInfo.provisionedSkills = skills;
-          //     if (curSkillInfo.proximateSkill == null) {
-          //       curSkillInfo.setBaseSkillId(skills.last.id);
-          //     }
-          //   }
-          // }
-          // for (int i = targetSvt.groupedActiveSkills.length; i < target.skillInfoList.length; i += 1) {
-          //   target.skillInfoList[i].baseSkillId = 0;
-          // }
+          target.skillInfoList = newSkillInfos;
 
           if (!targetSvt.noblePhantasms.contains(target.td)) {
             target.td = targetSvt.noblePhantasms.last;
