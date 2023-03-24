@@ -21,8 +21,9 @@ import 'servant.dart';
 class ServantListPage extends StatefulWidget {
   final bool planMode;
   final void Function(Servant)? onSelected;
+  final SvtFilterData? filterData;
 
-  ServantListPage({super.key, this.planMode = false, this.onSelected});
+  ServantListPage({super.key, this.planMode = false, this.onSelected, this.filterData});
 
   @override
   State<StatefulWidget> createState() => ServantListPageState();
@@ -34,7 +35,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
 
   Set<Servant> hiddenPlanServants = {};
 
-  SvtFilterData get filterData => db.settings.svtFilterData;
+  SvtFilterData get filterData => widget.filterData ?? db.settings.svtFilterData;
 
   FavoriteState get favoriteState => widget.planMode ? filterData.planFavorite : filterData.favorite;
 
@@ -52,7 +53,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
   @override
   void initState() {
     super.initState();
-    if (db.settings.autoResetFilter) {
+    if (db.settings.autoResetFilter && widget.filterData == null) {
       filterData.reset();
     }
     if (db.settings.favoritePreferred != null) {

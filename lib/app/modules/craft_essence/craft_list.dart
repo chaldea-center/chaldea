@@ -14,9 +14,10 @@ import 'craft.dart';
 import 'filter.dart';
 
 class CraftListPage extends StatefulWidget {
+  final CraftFilterData? filterData;
   final void Function(CraftEssence)? onSelected;
 
-  CraftListPage({super.key, this.onSelected});
+  CraftListPage({super.key, this.onSelected, this.filterData});
 
   @override
   State<StatefulWidget> createState() => CraftListPageState();
@@ -26,7 +27,7 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
   @override
   Iterable<CraftEssence> get wholeData => db.gameData.craftEssences.values;
 
-  CraftFilterData get filterData => db.settings.craftFilterData;
+  CraftFilterData get filterData => widget.filterData ?? db.settings.craftFilterData;
 
   @override
   final bool prototypeExtent = true;
@@ -34,7 +35,7 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
   @override
   void initState() {
     super.initState();
-    if (db.settings.autoResetFilter) {
+    if (db.settings.autoResetFilter && widget.filterData == null) {
       filterData.reset();
     }
     options = _CraftSearchOptions(onChanged: (_) {

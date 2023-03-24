@@ -570,6 +570,7 @@ class ServantSelector extends StatelessWidget {
             onSelected: (selectedCe) {
               _onSelectCE(selectedCe);
             },
+            filterData: db.settings.craftFilterData,
           ),
           detail: true,
         );

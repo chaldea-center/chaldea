@@ -15,8 +15,9 @@ import 'filter.dart';
 
 class CmdCodeListPage extends StatefulWidget {
   final void Function(CommandCode)? onSelected;
+  final CmdCodeFilterData? filterData;
 
-  CmdCodeListPage({super.key, this.onSelected});
+  CmdCodeListPage({super.key, this.onSelected, this.filterData});
 
   @override
   State<StatefulWidget> createState() => CmdCodeListPageState();
@@ -26,7 +27,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> with SearchableListSta
   @override
   Iterable<CommandCode> get wholeData => db.gameData.commandCodes.values;
 
-  CmdCodeFilterData get filterData => db.settings.cmdCodeFilterData;
+  CmdCodeFilterData get filterData => widget.filterData ?? db.settings.cmdCodeFilterData;
 
   @override
   final bool prototypeExtent = true;
@@ -34,7 +35,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> with SearchableListSta
   @override
   void initState() {
     super.initState();
-    if (db.settings.autoResetFilter) {
+    if (db.settings.autoResetFilter && widget.filterData == null) {
       filterData.reset();
     }
     options = _CmdCodeSearchOptions(onChanged: (_) {
