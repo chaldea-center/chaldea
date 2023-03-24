@@ -1,8 +1,4 @@
-import 'package:flutter/foundation.dart';
-
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/packages/app_info.dart';
-import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../models/db.dart';
@@ -21,29 +17,23 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with AfterLayoutMixin {
   int _curIndex = 0;
-  bool get showBattle =>
-      kDebugMode ||
-      AppInfo.isDebugDevice ||
-      db.runtimeData.enableDebugTools ||
-      (kIsWeb && kPlatformMethods.href.contains('battle.'));
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
-        index: _curIndex.clamp(0, showBattle ? 2 : 1),
+        index: _curIndex,
         children: [
           GalleryPage(),
-          if (showBattle) BattleHomePage(),
+          BattleHomePage(),
           SettingsPage(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _curIndex,
         items: [
-          BottomNavigationBarItem(icon: const SafeArea(child: Icon(Icons.layers)), label: S.current.gallery_tab_name),
-          if (showBattle)
-            const BottomNavigationBarItem(icon: SafeArea(child: Icon(Icons.blur_on_sharp)), label: 'Chaldeas'),
+          const BottomNavigationBarItem(icon: SafeArea(child: Icon(Icons.layers)), label: 'Chaldeas'),
+          const BottomNavigationBarItem(icon: SafeArea(child: Icon(Icons.blur_on_sharp)), label: 'Laplace'),
           BottomNavigationBarItem(
               icon: const SafeArea(child: Icon(Icons.settings)), label: S.current.settings_tab_name),
         ],

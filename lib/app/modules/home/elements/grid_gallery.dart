@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -79,9 +78,6 @@ class _GridGalleryState extends State<GridGallery> {
     if (widget.isHome && active) {
       items.addAll([GalleryItem.lostRoom, _editMode ? GalleryItem.done : GalleryItem.edit]);
     }
-    if (!widget.isHome && active) {
-      items.add(GalleryItem.chaldeas);
-    }
 
     List<Widget> children = List.generate(items.length, (index) {
       final item = items[index];
@@ -158,8 +154,6 @@ class _GridGalleryState extends State<GridGallery> {
                 child: item.page,
                 detail: item.isDetail,
               );
-            } else if (item == GalleryItem.chaldeas) {
-              EasyLoading.showToast('・観測中・');
             }
           }
         },
