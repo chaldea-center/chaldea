@@ -264,6 +264,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
       widget.onSelected!(svt);
     } else {
       router.popDetailAndPush(
+        context: context,
         url: svt.route,
         child: ServantDetailPage(id: svt.id, svt: svt),
         detail: true,

@@ -127,10 +127,7 @@ class _FuncListPageState extends State<FuncListPage> with SearchableListState<Ba
       onTap: () {
         final id = func?.funcId ?? _searchFuncId;
         if (id != null) {
-          router.popDetailAndPush(
-            url: Routes.funcI(id),
-            popDetail: SplitRoute.of(context)?.detail == false,
-          );
+          router.popDetailAndPush(context: context, url: Routes.funcI(id));
         }
       },
     );

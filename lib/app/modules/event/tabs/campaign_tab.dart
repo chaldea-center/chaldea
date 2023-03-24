@@ -61,7 +61,7 @@ class CampaignEventTab extends StatelessWidget {
         textScaleFactor: 0.9,
       ),
       onTap: () {
-        router.popDetailAndPush(url: Routes.eventI(event.id), detail: true);
+        router.popDetailAndPush(context: context, url: Routes.eventI(event.id), detail: true);
       },
     );
     return tile;

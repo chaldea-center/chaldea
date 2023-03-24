@@ -153,6 +153,7 @@ class _GridGalleryState extends State<GridGallery> {
           } else {
             if (item.url != null || item.page != null) {
               router.popDetailAndPush(
+                context: context,
                 url: item.url,
                 child: item.page,
                 detail: item.isDetail,

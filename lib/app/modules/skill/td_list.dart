@@ -118,7 +118,7 @@ class _TdListPageState extends State<TdListPage> with SearchableListState<BaseTd
       ),
       onTap: () {
         final id = td?.id ?? _searchTdId;
-        if (id != null) router.popDetailAndPush(url: Routes.tdI(id));
+        if (id != null) router.popDetailAndPush(context: context, url: Routes.tdI(id));
       },
     );
   }

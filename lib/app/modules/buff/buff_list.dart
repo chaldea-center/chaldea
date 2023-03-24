@@ -131,8 +131,8 @@ class _BuffListPageState extends State<BuffListPage> with SearchableListState<Bu
         final id = buff?.id ?? _searchBuffId;
         if (id != null) {
           router.popDetailAndPush(
+            context: context,
             url: Routes.buffI(id),
-            popDetail: SplitRoute.of(context)?.detail == false,
           );
         }
       },

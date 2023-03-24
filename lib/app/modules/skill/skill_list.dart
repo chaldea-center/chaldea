@@ -113,7 +113,7 @@ class _SkillListPageState extends State<SkillListPage> with SearchableListState<
       ),
       onTap: () {
         final id = skill?.id ?? _searchSkillId;
-        if (id != null) router.popDetailAndPush(url: Routes.skillI(id));
+        if (id != null) router.popDetailAndPush(context: context, url: Routes.skillI(id));
       },
     );
   }

@@ -10,7 +10,6 @@ import 'package:chaldea/app/modules/battle/svt_option_editor.dart';
 import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/quest/quest_card.dart';
-import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
@@ -512,15 +511,11 @@ class ServantSelector extends StatelessWidget {
 
     svtIcon = InkWell(
       onTap: () {
-        router.pushPage(
-          ServantListPage(
-            planMode: false,
-            onSelected: (selectedSvt) {
-              _onSelectServant(selectedSvt);
-            },
-          ),
-          detail: true,
-        );
+        router.pushPage(ServantOptionEditPage(
+          playerSvtData: playerSvtData,
+          supportServants: supportServants,
+          onChange: onChange,
+        ));
       },
       child: svtIcon,
     );
@@ -539,41 +534,6 @@ class ServantSelector extends StatelessWidget {
           style: playerSvtData.svt == null ? notSelectedStyle : null,
         ),
       ),
-      SizedBox(
-        height: 24,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (playerSvtData.svt != null)
-              IconButton(
-                onPressed: () {
-                  router.pushPage(ServantOptionEditPage(
-                    playerSvtData: playerSvtData,
-                    supportServants: supportServants,
-                    onChange: onChange,
-                  ));
-                },
-                icon: const Icon(Icons.edit, size: 20),
-                padding: const EdgeInsets.all(2),
-                constraints: const BoxConstraints(),
-                color: Theme.of(context).colorScheme.primaryContainer,
-              ),
-            const SizedBox(width: 10),
-            if (playerSvtData.svt != null)
-              IconButton(
-                onPressed: () {
-                  playerSvtData.svt = null;
-                  onChange();
-                },
-                icon: const Icon(Icons.person_off, size: 20),
-                padding: const EdgeInsets.all(2),
-                constraints: const BoxConstraints(),
-                color: Theme.of(context).colorScheme.primaryContainer,
-              ),
-          ],
-        ),
-      )
     ]);
     children.add(const SizedBox(height: 8));
 
@@ -692,50 +652,6 @@ class ServantSelector extends StatelessWidget {
       ..ceLimitBreak = true
       ..ceLv = selectedCE.lvMax;
     onChange();
-  }
-
-  void _onSelectServant(final Servant selectedSvt) {
-    if (selectedSvt.isUserSvt) {
-      playerSvtData.svt = selectedSvt;
-      final status = db.curUser.svtStatusOf(selectedSvt.collectionNo);
-      final curStatus = status.cur;
-      if (curStatus.favorite) {
-        playerSvtData
-          ..limitCount = curStatus.ascension
-          ..lv = selectedSvt.grailedLv(curStatus.grail)
-          ..tdLv = curStatus.npLv
-          ..skillLvs = curStatus.skills.toList()
-          ..appendLvs = curStatus.appendSkills.toList()
-          ..atkFou = curStatus.fouAtk > 0 ? 1000 + curStatus.fouAtk * 20 : curStatus.fouAtk3 * 50
-          ..hpFou = curStatus.fouHp > 0 ? 1000 + curStatus.fouHp * 20 : curStatus.fouHp3 * 50
-          ..cardStrengthens = List.generate(selectedSvt.cards.length, (index) {
-            if (status.cmdCardStrengthen == null || status.cmdCardStrengthen!.length <= index) {
-              return 0;
-            }
-            return status.cmdCardStrengthen![index] * 20;
-          })
-          ..commandCodes = List.generate(selectedSvt.cards.length, (index) {
-            return db.gameData.commandCodes[status.getCmdCode(index)];
-          });
-      } else {
-        playerSvtData
-          ..limitCount = 4
-          ..lv = selectedSvt.lvMax
-          ..tdLv = 5
-          ..skillLvs = [10, 10, 10]
-          ..appendLvs = [0, 0, 0]
-          ..atkFou = 1000
-          ..hpFou = 1000
-          ..cardStrengthens = [0, 0, 0, 0, 0]
-          ..commandCodes = [null, null, null, null, null];
-      }
-
-      playerSvtData.td = ServantSelector.getShownTds(selectedSvt, playerSvtData.limitCount).last;
-      for (final skillNum in kActiveSkillNums) {
-        playerSvtData.skills[skillNum - 1] = getShownSkills(selectedSvt, playerSvtData.limitCount, skillNum).lastOrNull;
-      }
-      onChange();
-    }
   }
 
   static final List<int> costumeOrtinaxIds = [12, 800140, 13, 800150];

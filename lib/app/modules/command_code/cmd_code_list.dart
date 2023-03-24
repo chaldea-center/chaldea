@@ -181,6 +181,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> with SearchableListSta
       widget.onSelected!(cc);
     } else {
       router.popDetailAndPush(
+        context: context,
         url: cc.route,
         child: CmdCodeDetailPage(
           cc: cc,

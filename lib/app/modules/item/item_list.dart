@@ -720,7 +720,7 @@ class _ItemListTabState extends State<ItemListTab> {
       trailing: isQp ? null : SizedBox(width: 64, child: textField),
       onTap: () {
         FocusScope.of(context).unfocus();
-        router.popDetailAndPush(url: Routes.itemI(itemId));
+        router.popDetailAndPush(context: context, url: Routes.itemI(itemId));
       },
     );
   }
@@ -735,7 +735,7 @@ class _ItemListTabState extends State<ItemListTab> {
       subtitle: Text('No. $itemId'),
       onTap: () {
         FocusScope.of(context).unfocus();
-        router.popDetailAndPush(url: Routes.itemI(itemId));
+        router.popDetailAndPush(context: context, url: Routes.itemI(itemId));
       },
     );
   }

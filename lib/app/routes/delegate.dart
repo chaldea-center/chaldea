@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/models/gamedata/common.dart';
 import 'package:chaldea/utils/extension.dart';
+import '../../packages/split_route/split_route.dart';
 import 'root_delegate.dart';
 import 'routes.dart';
 
@@ -133,13 +134,17 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
   }
 
   void popDetailAndPush({
+    BuildContext? context,
     String? url,
     Widget? child,
     dynamic arguments,
     bool? detail,
-    bool popDetail = true,
+    bool? popDetail,
   }) {
-    if (popDetail) popDetails();
+    if (popDetail == null && context != null && context.mounted) {
+      popDetail = !SplitRoute.isDetail(context);
+    }
+    if (popDetail ?? true) popDetails();
     push(
       url: url,
       child: child,

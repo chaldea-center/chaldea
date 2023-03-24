@@ -75,7 +75,7 @@ class _TraitListPageState extends State<TraitListPage> with SearchableListState<
         if (widget.onSelected != null) {
           widget.onSelected!(id);
         } else {
-          router.popDetailAndPush(url: Routes.traitI(id));
+          router.popDetailAndPush(context: context, url: Routes.traitI(id));
         }
       },
     );

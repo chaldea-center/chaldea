@@ -96,6 +96,7 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
       widget.onSelected!(mc);
     } else {
       router.popDetailAndPush(
+        context: context,
         url: mc.route,
         child: MysticCodePage(id: mc.id),
         detail: true,

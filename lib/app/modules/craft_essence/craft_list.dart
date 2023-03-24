@@ -201,6 +201,7 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
       widget.onSelected!(ce);
     } else {
       router.popDetailAndPush(
+        context: context,
         url: ce.route,
         child: CraftDetailPage(
           ce: ce,

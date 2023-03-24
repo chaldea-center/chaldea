@@ -176,7 +176,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       _header(context),
       divider,
       Padding(
-        padding: const EdgeInsetsDirectional.only(start: 16),
+        padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
         child: _buildSliderGroup(),
       ),
       divider,
@@ -812,7 +812,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
     playerSvtData.td = ServantSelector.getShownTds(selectedSvt, playerSvtData.limitCount).last;
     for (final skillNum in kActiveSkillNums) {
-      playerSvtData.skills[skillNum] =
+      playerSvtData.skills[skillNum - 1] =
           ServantSelector.getShownSkills(selectedSvt, playerSvtData.limitCount, skillNum).lastOrNull;
     }
   }
