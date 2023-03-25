@@ -26,6 +26,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
   final allData = db.settings.autologins;
   AutoLoginData args = AutoLoginData();
   ServerResponse? response;
+  dynamic _error;
 
   late final _userAgentCtrl = TextEditingController();
   late final _deviceInfoCtrl = TextEditingController();
@@ -304,27 +305,31 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
   }
 
   Widget buildResp() {
-    final resp = response?.src;
-    if (resp == null) return const Text('No response');
     final buffer = StringBuffer();
-    if (resp.statusCode != 200) {
-      buffer.writeln('status: ${resp.statusCode}');
-      buffer.writeln('statusText: ${resp.statusMessage}');
+
+    if (_error != null) {
+      buffer.writeln('Error:\n\n$_error');
+    } else {
+      final resp = response?.src;
+      if (resp == null) return const Text('No response');
+      if (resp.statusCode != 200) {
+        buffer.writeln('status: ${resp.statusCode}');
+        buffer.writeln('statusText: ${resp.statusMessage}');
+      }
+      // buffer.writeln('data type: ${data.runtimeType}');
+      buffer.writeln('server time: ${response?.serverTime ?? "unknown"}');
+      buffer.writeln();
+      final userGame = response?.userGame;
+      buffer.writeln('server: ${response?.src.requestOptions.uri.host}');
+      buffer.writeln('userId: ${userGame?.userId}');
+      buffer.writeln('friendCode: ${userGame?.friendCode}');
+      buffer.writeln('player name: ${userGame?.name}');
+      buffer.writeln();
+
+      dynamic data = response?.json?['response'];
+      if (data != null) data = jsonEncode(data);
+      buffer.writeln((data ?? resp.data).toString().substring2(0, 2000));
     }
-    // buffer.writeln('data type: ${data.runtimeType}');
-    buffer.writeln('server time: ${response?.serverTime ?? "unknown"}');
-    buffer.writeln();
-    final userGame = response?.userGame;
-    buffer.writeln('server: ${response?.src.requestOptions.uri.host}');
-    buffer.writeln('userId: ${userGame?.userId}');
-    buffer.writeln('friendCode: ${userGame?.friendCode}');
-    buffer.writeln('player name: ${userGame?.name}');
-    buffer.writeln();
-
-    dynamic data = response?.json?['response'];
-    if (data != null) data = jsonEncode(data);
-    buffer.writeln((data ?? resp.data).toString().substring2(0, 2000));
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       // crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -363,6 +368,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
   }
 
   Future doLogin() async {
+    _error = null;
     gameTops ??= await AtlasApi.gametops();
     final top = gameTops?.of(args.region);
     if (top == null) {
@@ -377,6 +383,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     final agent = LoginAgent(auth: args.auth!, gameTop: top, args: args);
     try {
       EasyLoading.show(status: 'Login...');
+      await agent.gamedata();
       response = ServerResponse(await agent.topLogin());
       if (response?.success == true) {
         await Future.delayed(const Duration(seconds: 1));
@@ -388,7 +395,8 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       }
     } catch (e, s) {
       logger.e('toplogin failed', e, s);
-      EasyLoading.showError('Login failed\n${escapeDioError(e)}');
+      _error = escapeDioError(e);
+      EasyLoading.showError('Login failed\n$_error');
     } finally {
       if (mounted) setState(() {});
     }

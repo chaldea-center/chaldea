@@ -70,7 +70,7 @@ class Transl<K, V> {
       : _m = m,
         mappings = {key: m};
 
-  static Transl<int, String> trait(int id, {bool addSvtId = true, bool field = true}) {
+  static Transl<int, String> trait(int id, {bool addSvtId = true, bool field = false}) {
     final eventTrait = md.eventTrait[id];
     if (eventTrait != null) {
       return Transl({id: eventTrait.convert((v, r) => v == null ? v : '"$v"')}, id, '$id');

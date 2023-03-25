@@ -19,7 +19,12 @@ class CheckboxWithLabel extends StatelessWidget {
     Widget child = Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Checkbox(value: value, onChanged: onChanged),
+        Checkbox(
+          value: value,
+          onChanged: onChanged,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          visualDensity: VisualDensity.compact,
+        ),
         label,
       ],
     );
@@ -59,6 +64,7 @@ class RadioWithLabel<T> extends StatelessWidget {
           groupValue: groupValue,
           onChanged: onChanged,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          visualDensity: VisualDensity.compact,
         ),
         label,
       ],

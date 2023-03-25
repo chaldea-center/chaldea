@@ -186,7 +186,8 @@ class BattleServantData {
 
   Future<void> init(final BattleData battleData) async {
     final List<NiceSkill> passives = isPlayer
-        ? [...niceSvt!.classPassive, ...niceSvt!.extraPassive]
+        // TODO: niceSvt!.extraPassive should be manually added in battle setup
+        ? [...niceSvt!.classPassive]
         : [...niceEnemy!.classPassive.classPassive, ...niceEnemy!.classPassive.addPassive];
 
     battleData.setActivator(this);
@@ -937,7 +938,7 @@ class BattleServantData {
     if (turnEndStar != 0) {
       battleData.changeStar(turnEndStar);
 
-      turnEndLog += ' - ${S.current.battle_critical_star}: $turnEndStar';
+      turnEndLog += ' - ${S.current.critical_star}: $turnEndStar';
     }
 
     if (isPlayer) {

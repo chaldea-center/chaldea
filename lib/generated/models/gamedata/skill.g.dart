@@ -26,6 +26,9 @@ BaseSkill _$BaseSkillFromJson(Map json) => BaseSkill(
       aiIds: (json['aiIds'] as Map?)?.map(
         (k, e) => MapEntry($enumDecode(_$AiTypeEnumMap, k), (e as List<dynamic>).map((e) => e as int).toList()),
       ),
+      groupOverwrites: (json['groupOverwrites'] as List<dynamic>?)
+          ?.map((e) => SkillGroupOverwrite.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
       functions: (json['functions'] as List<dynamic>)
           .map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
@@ -54,10 +57,6 @@ NiceSkill _$NiceSkillFromJson(Map json) => NiceSkill(
               .toList() ??
           const [],
       script: json['script'] == null ? null : SkillScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
-      extraPassive: (json['extraPassive'] as List<dynamic>?)
-              ?.map((e) => ExtraPassive.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
       skillAdd: (json['skillAdd'] as List<dynamic>?)
               ?.map((e) => SkillAdd.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -65,6 +64,9 @@ NiceSkill _$NiceSkillFromJson(Map json) => NiceSkill(
       aiIds: (json['aiIds'] as Map?)?.map(
         (k, e) => MapEntry($enumDecode(_$AiTypeEnumMap, k), (e as List<dynamic>).map((e) => e as int).toList()),
       ),
+      groupOverwrites: (json['groupOverwrites'] as List<dynamic>?)
+          ?.map((e) => SkillGroupOverwrite.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
       functions: (json['functions'] as List<dynamic>?)
               ?.map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -76,6 +78,10 @@ NiceSkill _$NiceSkillFromJson(Map json) => NiceSkill(
       condQuestPhase: json['condQuestPhase'] as int? ?? 0,
       condLv: json['condLv'] as int? ?? 0,
       condLimitCount: json['condLimitCount'] as int? ?? 0,
+      extraPassive: (json['extraPassive'] as List<dynamic>?)
+              ?.map((e) => ExtraPassive.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );
 
 BaseTd _$BaseTdFromJson(Map json) => BaseTd(
@@ -230,6 +236,19 @@ SkillAdd _$SkillAddFromJson(Map json) => SkillAdd(
           .toList(),
       name: json['name'] as String,
       ruby: json['ruby'] as String,
+    );
+
+SkillGroupOverwrite _$SkillGroupOverwriteFromJson(Map json) => SkillGroupOverwrite(
+      level: json['level'] as int,
+      skillGroupId: json['skillGroupId'] as int,
+      startedAt: json['startedAt'] as int,
+      endedAt: json['endedAt'] as int,
+      icon: json['icon'] as String?,
+      unmodifiedDetail: json['unmodifiedDetail'] as String? ?? '',
+      functions: (json['functions'] as List<dynamic>?)
+              ?.map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );
 
 NpGain _$NpGainFromJson(Map json) => NpGain(

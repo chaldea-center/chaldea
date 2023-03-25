@@ -4,7 +4,6 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/builders.dart';
 import '../home/subpage/feedback_page.dart';
-import 'np_damage_calculator.dart';
 
 class BattleHomePage extends StatelessWidget {
   BattleHomePage({super.key});

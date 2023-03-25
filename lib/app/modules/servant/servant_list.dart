@@ -20,7 +20,7 @@ import 'servant.dart';
 
 class ServantListPage extends StatefulWidget {
   final bool planMode;
-  final void Function(Servant)? onSelected;
+  final void Function(Servant svt)? onSelected;
   final SvtFilterData? filterData;
 
   ServantListPage({super.key, this.planMode = false, this.onSelected, this.filterData});

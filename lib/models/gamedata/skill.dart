@@ -70,6 +70,7 @@ class BaseSkill with SkillOrTd, RouteInfo {
   SkillScript? script;
   List<SkillAdd> skillAdd;
   Map<AiType, List<int>>? aiIds;
+  List<SkillGroupOverwrite>? groupOverwrites;
   @override
   List<NiceFunction> functions;
 
@@ -86,6 +87,7 @@ class BaseSkill with SkillOrTd, RouteInfo {
     this.script,
     this.skillAdd = const [],
     this.aiIds,
+    this.groupOverwrites,
     required this.functions,
   });
 
@@ -101,6 +103,7 @@ class BaseSkill with SkillOrTd, RouteInfo {
     SkillScript? script,
     List<SkillAdd> skillAdd = const [],
     Map<AiType, List<int>>? aiIds,
+    List<SkillGroupOverwrite>? groupOverwrites,
     required List<NiceFunction> functions,
   }) =>
       GameDataLoader.instance.tmp.getBaseSkill(
@@ -117,6 +120,7 @@ class BaseSkill with SkillOrTd, RouteInfo {
                 script: script,
                 skillAdd: skillAdd,
                 aiIds: aiIds,
+                groupOverwrites: groupOverwrites,
                 functions: functions,
               ));
 
@@ -212,11 +216,12 @@ class NiceSkill extends BaseSkill {
   List<NiceTrait> get actIndividuality => _baseSkill.actIndividuality;
   @override
   SkillScript? get script => _baseSkill.script;
-  List<ExtraPassive> extraPassive;
   @override
   List<SkillAdd> get skillAdd => _baseSkill.skillAdd;
   @override
   Map<AiType, List<int>>? get aiIds => _baseSkill.aiIds;
+  @override
+  List<SkillGroupOverwrite>? get groupOverwrites => _baseSkill.groupOverwrites;
   @override
   List<NiceFunction> get functions => _baseSkill.functions;
 
@@ -227,6 +232,7 @@ class NiceSkill extends BaseSkill {
   int condQuestPhase;
   int condLv;
   int condLimitCount;
+  List<ExtraPassive> extraPassive;
 
   NiceSkill({
     required super.id,
@@ -238,9 +244,9 @@ class NiceSkill extends BaseSkill {
     super.coolDown = const [],
     super.actIndividuality = const [],
     super.script,
-    this.extraPassive = const [],
     super.skillAdd = const [],
     super.aiIds,
+    super.groupOverwrites,
     super.functions = const [],
     this.num = 0,
     this.strengthStatus = 0,
@@ -249,6 +255,7 @@ class NiceSkill extends BaseSkill {
     this.condQuestPhase = 0,
     this.condLv = 0,
     this.condLimitCount = 0,
+    this.extraPassive = const [],
   })  : _baseSkill = BaseSkill(
           id: id,
           name: name,
@@ -261,6 +268,7 @@ class NiceSkill extends BaseSkill {
           script: script,
           skillAdd: skillAdd,
           aiIds: aiIds,
+          groupOverwrites: groupOverwrites,
           functions: functions,
         ),
         super.create();
@@ -654,6 +662,31 @@ class SkillAdd {
   });
 
   factory SkillAdd.fromJson(Map<String, dynamic> json) => _$SkillAddFromJson(json);
+}
+
+@JsonSerializable()
+class SkillGroupOverwrite {
+  int level;
+  int skillGroupId;
+  int startedAt;
+  int endedAt;
+  String? icon;
+  // String detail;
+  String unmodifiedDetail;
+  // Since each skill level has their own group overwrite, the svals field only contains data for 1 level.
+  List<NiceFunction> functions;
+
+  SkillGroupOverwrite({
+    required this.level,
+    required this.skillGroupId,
+    required this.startedAt,
+    required this.endedAt,
+    this.icon,
+    this.unmodifiedDetail = '',
+    this.functions = const [],
+  });
+
+  factory SkillGroupOverwrite.fromJson(Map<String, dynamic> json) => _$SkillGroupOverwriteFromJson(json);
 }
 
 @JsonSerializable()

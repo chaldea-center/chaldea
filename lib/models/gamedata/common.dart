@@ -79,7 +79,7 @@ class NiceTrait with RouteInfo {
     return '$runtimeType($signedId)';
   }
 
-  String shownName({bool addSvtId = true, bool field = true}) {
+  String shownName({bool addSvtId = true, bool field = false}) {
     final s = Transl.trait(id, addSvtId: addSvtId, field: field).l;
     if (negative == true) {
       return '${M.of(jp: null, cn: '非', tw: null, na: 'Not', kr: null)} $s';
@@ -203,6 +203,8 @@ enum CardType {
 
   final int id;
   const CardType(this.id);
+
+  bool get isQAB => [CardType.quick, CardType.arts, CardType.buster].contains(this);
 }
 
 final kCardTypeMapping = {for (final card in CardType.values) card.id: card};

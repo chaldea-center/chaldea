@@ -15,6 +15,12 @@ class BattleBuff {
 
   List<BuffData> get allBuffs => [...passiveList, ...activeList, ...commandCodeList];
 
+  List<BuffData> get shownBuffs => [
+        for (final buff in passiveList)
+          if (buff.vals.SetPassiveFrame == 1 || (buff.vals.ShowState ?? 0) >= 1) buff,
+        ...activeList,
+      ];
+
   bool get isSelectable =>
       allBuffs.every((buff) => !buff.traits.map((trait) => trait.id).contains(Trait.cantBeSacrificed.id));
 

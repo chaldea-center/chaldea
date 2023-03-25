@@ -161,13 +161,12 @@ class FunctionExecutor {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: divideTiles(List.generate(tds.length, (index) {
                 return InkWell(
-                  onLongPress: () {},
                   onTap: () {
                     Navigator.of(context).pop(tds[index]);
                     battleData.logger.action('${S.current.battle_select_effect}: ${tds[index].card.name.toUpperCase()}'
                         ' ${S.current.battle_np_card}');
                   },
-                  child: CommandCardWidget(card: tds[index].card, width: 100),
+                  child: CommandCardWidget(card: tds[index].card, width: 80),
                 );
               })),
             ),
@@ -237,7 +236,7 @@ class FunctionExecutor {
 
     if (dataVals.StarHigher != null && battleData.criticalStars < dataVals.StarHigher!) {
       battleData.previousFunctionResult = false;
-      battleData.logger.function('${S.current.battle_critical_star} ${battleData.criticalStars.toStringAsFixed(3)} < '
+      battleData.logger.function('${S.current.critical_star} ${battleData.criticalStars.toStringAsFixed(3)} < '
           '${dataVals.StarHigher}');
       return;
     }
@@ -265,10 +264,10 @@ class FunctionExecutor {
         if (tdSelection.script != null && tdSelection.script!.tdTypeChangeIDs != null) {
           final List<NiceTd> tds = svt.getTdsById(tdSelection.script!.tdTypeChangeIDs!);
           if (tds.isNotEmpty && battleData.context != null) {
-            await getSelectedTd(battleData, tds).then((value) => tdSelection = value);
+            tdSelection = await getSelectedTd(battleData, tds);
           }
         }
-        tdSelections.add(tdSelection!);
+        tdSelections.add(tdSelection);
       }
     }
 
@@ -277,7 +276,7 @@ class FunctionExecutor {
     switch (function.funcType) {
       case FuncType.absorbNpturn:
       case FuncType.gainNpFromTargets:
-        GainNpFromTargets.gainNpFromTargets(battleData, dataVals, targets).then((value) => functionSuccess = value);
+        functionSuccess = await GainNpFromTargets.gainNpFromTargets(battleData, dataVals, targets);
         break;
       case FuncType.addState:
         functionSuccess = await AddState.addState(
@@ -308,7 +307,8 @@ class FunctionExecutor {
         functionSuccess = await SubState.subState(battleData, function.traitVals, dataVals, targets);
         break;
       case FuncType.moveState:
-        await MoveState.moveState(battleData, dataVals, targets).then((value) => functionSuccess = value);
+        functionSuccess =
+            await MoveState.moveState(battleData, dataVals, targets).then((value) => functionSuccess = value);
         break;
       case FuncType.addFieldChangeToField:
         functionSuccess = AddFieldChangeToField.addFieldChangeToField(battleData, function.buff!, dataVals);
@@ -344,7 +344,7 @@ class FunctionExecutor {
       case FuncType.damage:
       case FuncType.damageNp:
       case FuncType.damageNpIndividual:
-        await Damage.damage(
+        functionSuccess = await Damage.damage(
           battleData,
           dataVals,
           targets,
@@ -352,10 +352,10 @@ class FunctionExecutor {
           isTypeChain,
           isMightyChain,
           firstCardType,
-        ).then((value) => functionSuccess = value);
+        );
         break;
       case FuncType.damageNpIndividualSum:
-        await Damage.damage(
+        functionSuccess = await Damage.damage(
           battleData,
           dataVals,
           targets,
@@ -365,10 +365,10 @@ class FunctionExecutor {
           firstCardType,
           checkBuffTraits: dataVals.IncludeIgnoreIndividuality == 1,
           npSpecificMode: NpSpecificMode.individualSum,
-        ).then((value) => functionSuccess = value);
+        );
         break;
       case FuncType.damageNpRare:
-        await Damage.damage(
+        functionSuccess = await Damage.damage(
           battleData,
           dataVals,
           targets,
@@ -377,10 +377,10 @@ class FunctionExecutor {
           isMightyChain,
           firstCardType,
           npSpecificMode: NpSpecificMode.rarity,
-        ).then((value) => functionSuccess = value);
+        );
         break;
       case FuncType.damageNpStateIndividualFix:
-        await Damage.damage(
+        functionSuccess = await Damage.damage(
           battleData,
           dataVals,
           targets,
@@ -389,10 +389,10 @@ class FunctionExecutor {
           isMightyChain,
           firstCardType,
           checkBuffTraits: true,
-        ).then((value) => functionSuccess = value);
+        );
         break;
       case FuncType.damageNpHpratioLow:
-        await Damage.damage(
+        functionSuccess = await Damage.damage(
           battleData,
           dataVals,
           targets,
@@ -401,10 +401,10 @@ class FunctionExecutor {
           isMightyChain,
           firstCardType,
           checkHpRatio: true,
-        ).then((value) => functionSuccess = value);
+        );
         break;
       case FuncType.damageNpPierce:
-        await Damage.damage(
+        functionSuccess = await Damage.damage(
           battleData,
           dataVals,
           targets,
@@ -413,7 +413,7 @@ class FunctionExecutor {
           isMightyChain,
           firstCardType,
           isPierceDefense: true,
-        ).then((value) => functionSuccess = value);
+        );
         break;
       case FuncType.instantDeath:
         functionSuccess = await InstantDeath.instantDeath(battleData, dataVals, targets);
@@ -434,8 +434,7 @@ class FunctionExecutor {
         functionSuccess = await GainHP.gainHP(battleData, dataVals, targets, isNegative: true, isLethal: true);
         break;
       case FuncType.gainHpFromTargets:
-        await GainHpFromTargets.gainHpFromTargets(battleData, dataVals, targets)
-            .then((value) => functionSuccess = value);
+        functionSuccess = await GainHpFromTargets.gainHpFromTargets(battleData, dataVals, targets);
         break;
       case FuncType.transformServant:
         functionSuccess = await TransformServant.transformServant(battleData, dataVals, targets);
@@ -444,12 +443,14 @@ class FunctionExecutor {
         functionSuccess = MoveToLastSubMember.moveToLastSubMember(battleData, dataVals, targets);
         break;
       case FuncType.replaceMember:
-        await ReplaceMember.replaceMember(battleData, dataVals).then((value) => functionSuccess = value);
+        functionSuccess =
+            await ReplaceMember.replaceMember(battleData, dataVals).then((value) => functionSuccess = value);
         break;
       case FuncType.cardReset:
         battleData.nonnullAllies.forEach((svt) {
           svt.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
         });
+        // functionSuccess = true; ?
         break;
       case FuncType.fixCommandcard:
         // do nothing

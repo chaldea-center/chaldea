@@ -993,6 +993,7 @@ class FuncDescriptor extends StatelessWidget {
           SharedBuilder.traitSpans(
             context: context,
             traits: func.funcquestTvals,
+            format: (v) => v.shownName(field: true),
           ),
         ));
       }

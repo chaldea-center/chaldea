@@ -47,7 +47,7 @@ List<int> _toIntList(dynamic v, [int? k = 0]) {
 
 @JsonSerializable(createToJson: false)
 class FateTopLogin {
-  List<_ResponseDetail> response;
+  List<FateResponseDetail> response;
   UserMstCache cache;
   String sign;
 
@@ -71,7 +71,7 @@ class FateTopLogin {
 }
 
 @JsonSerializable(createToJson: false)
-class _ResponseDetail {
+class FateResponseDetail {
   String? resCode;
   Map? success;
   Map? fail;
@@ -79,14 +79,14 @@ class _ResponseDetail {
 
   int? get code => resCode == null ? null : int.tryParse(resCode!);
 
-  _ResponseDetail({
+  FateResponseDetail({
     this.resCode,
     this.success,
     this.fail,
     this.nid,
   });
 
-  factory _ResponseDetail.fromJson(Map<String, dynamic> data) => _$ResponseDetailFromJson(data);
+  factory FateResponseDetail.fromJson(Map<String, dynamic> data) => _$FateResponseDetailFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)

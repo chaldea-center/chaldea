@@ -7,7 +7,6 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/modules/battle/battle_simulation.dart';
 import 'package:chaldea/app/modules/battle/svt_option_editor.dart';
-import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/quest/quest_card.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -211,7 +210,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           onTap: () {
             QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
-            router.push(url: Routes.events);
+            router.push(url: Routes.events, detail: true);
           },
         ),
         // kDefaultDivider,
@@ -451,7 +450,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
   void _startSimulation() {
     db.settings.battleSim.previousQuestPhase = '${questPhase!.id}/${questPhase!.phase}';
-    db.saveSettings();
     router.pushPage(BattleSimulationPage(
       questPhase: questPhase!,
       onFieldSvtDataList: onFieldSvtDataList,
@@ -465,17 +463,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 }
 
 class ServantSelector extends StatelessWidget {
-  // ce empty icon
-  static const emptyCeIcon =
-      "https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/BattleResult/PartyOrganizationAtlas/formation_blank_02.png";
-
-  // svt empty icon
-  static const emptySvtIcon = "https://static.atlasacademy.io/JP/Faces/f_1000000.png";
-
-  // svt/enemy unknown icon
-  static const unknownEnemyIcon = "https://static.atlasacademy.io/JP/Faces/f_1000011.png";
-
-  // static const emptyIconUrl = 'https://static.atlasacademy.io/JP/SkillIcons/skill_999999.png';
   final PlayerSvtData playerSvtData;
   final List<SupportServant> supportServants;
   final VoidCallback onChange;
@@ -497,7 +484,7 @@ class ServantSelector extends StatelessWidget {
     }
     Widget svtIcon = GameCardMixin.cardIconBuilder(
       context: context,
-      icon: playerSvtData.svt?.ascendIcon(playerSvtData.limitCount, true) ?? emptySvtIcon,
+      icon: playerSvtData.svt?.ascendIcon(playerSvtData.limitCount, true) ?? Atlas.common.emptySvtIcon,
       width: 80,
       aspectRatio: 132 / 144,
       text: svtInfo,
@@ -522,24 +509,22 @@ class ServantSelector extends StatelessWidget {
     children.add(svtIcon);
 
     // svt name+btn
-    children.addAll([
-      SizedBox(
-        height: 18,
-        child: AutoSizeText(
-          playerSvtData.svt?.lBattleName(playerSvtData.limitCount).l ?? S.current.servant,
-          maxLines: 1,
-          minFontSize: 10,
-          textAlign: TextAlign.center,
-          textScaleFactor: 0.9,
-          style: playerSvtData.svt == null ? notSelectedStyle : null,
-        ),
+    children.add(SizedBox(
+      height: 18,
+      child: AutoSizeText(
+        playerSvtData.svt?.lBattleName(playerSvtData.limitCount).l ?? S.current.servant,
+        maxLines: 1,
+        minFontSize: 10,
+        textAlign: TextAlign.center,
+        textScaleFactor: 0.9,
+        style: playerSvtData.svt == null ? notSelectedStyle : null,
       ),
-    ]);
+    ));
     children.add(const SizedBox(height: 8));
 
     // ce icon
     Widget ceIcon = db.getIconImage(
-      playerSvtData.ce?.extraAssets.equipFace.equip?[playerSvtData.ce?.id] ?? emptyCeIcon,
+      playerSvtData.ce?.extraAssets.equipFace.equip?[playerSvtData.ce?.id] ?? Atlas.common.emptyCeIcon,
       width: 80,
       aspectRatio: 150 / 68,
     );
@@ -565,15 +550,10 @@ class ServantSelector extends StatelessWidget {
     }
     ceIcon = InkWell(
       onTap: () {
-        router.pushPage(
-          CraftListPage(
-            onSelected: (selectedCe) {
-              _onSelectCE(selectedCe);
-            },
-            filterData: db.settings.craftFilterData,
-          ),
-          detail: true,
-        );
+        router.pushPage(CraftEssenceOptionEditPage(
+          playerSvtData: playerSvtData,
+          onChange: onChange,
+        ));
       },
       child: ceIcon,
     );
@@ -589,53 +569,17 @@ class ServantSelector extends StatelessWidget {
     } else {
       ceInfo = 'Lv.-';
     }
-    children.addAll([
-      SizedBox(
-        height: 18,
-        child: AutoSizeText(
-          ceInfo.breakWord,
-          maxLines: 1,
-          minFontSize: 10,
-          textAlign: TextAlign.center,
-          textScaleFactor: 0.9,
-          style: playerSvtData.ce == null ? notSelectedStyle : null,
-        ),
+    children.add(SizedBox(
+      height: 18,
+      child: AutoSizeText(
+        ceInfo.breakWord,
+        maxLines: 1,
+        minFontSize: 10,
+        textAlign: TextAlign.center,
+        textScaleFactor: 0.9,
+        style: playerSvtData.ce == null ? notSelectedStyle : null,
       ),
-      SizedBox(
-        height: 24,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (playerSvtData.ce != null)
-              IconButton(
-                onPressed: () {
-                  router.pushPage(CraftEssenceOptionEditPage(
-                    playerSvtData: playerSvtData,
-                    onChange: onChange,
-                  ));
-                },
-                icon: const Icon(Icons.edit, size: 20),
-                padding: const EdgeInsets.all(2),
-                constraints: const BoxConstraints(),
-                color: Theme.of(context).colorScheme.primaryContainer,
-              ),
-            const SizedBox(width: 10),
-            if (playerSvtData.ce != null)
-              IconButton(
-                onPressed: () {
-                  playerSvtData.ce = null;
-                  onChange();
-                },
-                icon: const Icon(Icons.extension_off_rounded, size: 20),
-                padding: const EdgeInsets.all(2),
-                constraints: const BoxConstraints(),
-                color: Theme.of(context).colorScheme.primaryContainer,
-              ),
-          ],
-        ),
-      ),
-    ]);
+    ));
 
     return Padding(
       padding: const EdgeInsets.all(4),
@@ -645,14 +589,6 @@ class ServantSelector extends StatelessWidget {
         children: children,
       ),
     );
-  }
-
-  void _onSelectCE(final CraftEssence selectedCE) {
-    playerSvtData
-      ..ce = selectedCE
-      ..ceLimitBreak = true
-      ..ceLv = selectedCE.lvMax;
-    onChange();
   }
 
   static final List<int> costumeOrtinaxIds = [12, 800140, 13, 800150];

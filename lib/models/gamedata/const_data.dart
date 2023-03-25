@@ -236,7 +236,7 @@ class SvtExpData {
 @JsonSerializable()
 class GameConstants {
   final int attackRate; // 230
-  final int attackRateRandomMax; // 1100
+  final int attackRateRandomMax; // 1100, min<=randomInt(min,max)<max
   final int attackRateRandomMin; // 900
   final int backsideClassImageId; // 102
   final int backsideSvtEquipImageId; // 103

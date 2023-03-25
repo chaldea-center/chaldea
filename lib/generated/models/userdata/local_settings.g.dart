@@ -108,7 +108,6 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'autoRotate': instance.autoRotate,
       'autoResetFilter': instance.autoResetFilter,
       'hideUnreleasedCard': instance.hideUnreleasedCard,
-      'favoritePreferred': _$FavoriteStateEnumMap[instance.favoritePreferred],
       'preferApRate': instance.preferApRate,
       'preferredQuestRegion':
           _$JsonConverterToJson<String, Region>(instance.preferredQuestRegion, const RegionConverter().toJson),
@@ -131,6 +130,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'scriptReaderFilterData': instance.scriptReaderFilterData.toJson(),
       'autologins': instance.autologins.map((e) => e.toJson()).toList(),
       'language': instance.language,
+      'favoritePreferred': _$FavoriteStateEnumMap[instance.favoritePreferred],
     };
 
 const _$ThemeModeEnumMap = {
