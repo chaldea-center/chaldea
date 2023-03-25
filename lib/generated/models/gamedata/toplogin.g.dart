@@ -8,14 +8,14 @@ part of '../../../models/gamedata/toplogin.dart';
 
 FateTopLogin _$FateTopLoginFromJson(Map json) => FateTopLogin(
       response: (json['response'] as List<dynamic>?)
-              ?.map((e) => _ResponseDetail.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => FateResponseDetail.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       cache: json['cache'] == null ? null : UserMstCache.fromJson(Map<String, dynamic>.from(json['cache'] as Map)),
       sign: json['sign'] as String?,
     );
 
-_ResponseDetail _$ResponseDetailFromJson(Map json) => _ResponseDetail(
+FateResponseDetail _$FateResponseDetailFromJson(Map json) => FateResponseDetail(
       resCode: json['resCode'] as String?,
       success: json['success'] as Map?,
       fail: json['fail'] as Map?,

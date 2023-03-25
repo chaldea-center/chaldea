@@ -11,9 +11,8 @@ import 'package:uuid/uuid.dart';
 
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/utils/utils.dart';
-
-// ignore: depend_on_referenced_packages
 
 enum ParamType {
   userId('userId'),
@@ -204,6 +203,32 @@ class LoginAgent {
     return resp;
   }
 
+  Future<Response> gamedata({bool allowAppVer = true}) async {
+    final srcResp = await Dio().get(
+        '${gameTop.host}/gamedata/top?appVer=${gameTop.appVer}&dataVer=${gameTop.dataVer}&dateVer=${gameTop.dateVer}');
+    final resp = FateResponseDetail.fromJson(srcResp.json()['response'][0]);
+    if (resp.code == 0) {
+      int dataVer = resp.success!['dataVer']!;
+      int dateVer = resp.success!['dateVer']!;
+      // String assetbundle = resp.success!['assetbundle']!;
+      // String assetbundleKey = resp.success!['assetbundleKey']!;
+      if (dataVer > gameTop.dataVer) gameTop.dataVer = dataVer;
+      if (dateVer > gameTop.dateVer) gameTop.dateVer = dateVer;
+      return srcResp;
+    }
+    final detail = resp.fail?['detail'] as String?;
+    if (resp.fail?['action'] == 'app_version_up' && allowAppVer) {
+      final versions =
+          RegExp(r'\D(\d+\.\d+\.\d+)\D').allMatches(detail ?? '').map((e) => AppVersion.parse(e.group(1)!)).toList();
+      versions.sort((a, b) => b.compareTo(a));
+      if (versions.isNotEmpty && versions.first > AppVersion.parse(gameTop.appVer)) {
+        gameTop.appVer = versions.first.versionString;
+        return gamedata(allowAppVer: false);
+      }
+    }
+    throw StateError(detail ?? resp.fail.toString());
+  }
+
   Future<Response> topLogin() async {
     reset();
     int lastAccessTime = int.parse(_params[ParamType.lastAccessTime]!);
@@ -226,7 +251,7 @@ class LoginAgent {
     return resp;
   }
 
-  Future topHome() async {
+  Future<Response> topHome() async {
     final resp = await post('${gameTop.host}/home/top?_userId=${auth.userId}');
     reset();
     return resp;
