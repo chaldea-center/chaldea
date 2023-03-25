@@ -701,17 +701,6 @@ class S {
     );
   }
 
-  /// `Critical Star`
-  String get battle_critical_star {
-    return Intl.message(
-      'Critical Star',
-      name: 'battle_critical_star',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Damage`
   String get battle_damage {
     return Intl.message(
@@ -761,17 +750,6 @@ class S {
     return Intl.message(
       'Enemy Remaining',
       name: 'battle_enemy_remaining',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Field Traits`
-  String get battle_field_trait {
-    return Intl.message(
-      'Field Traits',
-      name: 'battle_field_trait',
       desc: '',
       locale: localeName,
       args: [],
@@ -1047,17 +1025,6 @@ class S {
     return Intl.message(
       'Skip current stage',
       name: 'battle_skip_current_wave',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Stage`
-  String get battle_stage {
-    return Intl.message(
-      'Stage',
-      name: 'battle_stage',
       desc: '',
       locale: localeName,
       args: [],
@@ -1883,6 +1850,28 @@ class S {
     return Intl.message(
       'Crit Star Mod',
       name: 'crit_star_mod',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Critical`
+  String get critical_attack {
+    return Intl.message(
+      'Critical',
+      name: 'critical_attack',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Critical Star`
+  String get critical_star {
+    return Intl.message(
+      'Critical Star',
+      name: 'critical_star',
       desc: '',
       locale: localeName,
       args: [],
@@ -6665,6 +6654,17 @@ class S {
       desc: '',
       locale: localeName,
       args: [index, total, enemy],
+    );
+  }
+
+  /// `Wave`
+  String get quest_wave {
+    return Intl.message(
+      'Wave',
+      name: 'quest_wave',
+      desc: '',
+      locale: localeName,
+      args: [],
     );
   }
 

@@ -249,9 +249,8 @@ class Damage {
       } else {
         battleData.logger.debug(defNpParameters.toString());
       }
-      final starString = activator.isPlayer
-          ? '${S.current.battle_critical_star}: ${(Maths.sum(hitStars) / 1000).toStringAsFixed(3)} - '
-          : '';
+      final starString =
+          activator.isPlayer ? '${S.current.critical_star}: ${(Maths.sum(hitStars) / 1000).toStringAsFixed(3)} - ' : '';
       battleData.logger.action('${activator.lBattleName} - ${currentCard.cardType.name.toUpperCase()} - '
           '${currentCard.isNP ? S.current.battle_np_card : S.current.battle_command_card} - '
           '${S.current.effect_target}: ${target.lBattleName} - '
@@ -259,7 +258,7 @@ class Damage {
           'NP: ${(Maths.sum(hitNpGains) / 100).toStringAsFixed(2)}% - '
           '$starString'
           'Overkill: $overkillCount/${currentCard.cardDetail.hitsDistribution.length}');
-      final hitStarString = activator.isPlayer ? ', ${S.current.battle_critical_star}: $hitStars' : '';
+      final hitStarString = activator.isPlayer ? ', ${S.current.critical_star}: $hitStars' : '';
       battleData.logger
           .debug('${S.current.details}: ${S.current.battle_damage}: $hitDamages, NP: $hitNpGains$hitStarString');
 
@@ -366,7 +365,7 @@ class _DamageAdjustorState extends State<DamageAdjustor> {
               ServantOptionEditPage.buildSlider(
                 leadingText: S.current.battle_random,
                 min: ConstData.constants.attackRateRandomMin,
-                max: ConstData.constants.attackRateRandomMax,
+                max: ConstData.constants.attackRateRandomMax - 1,
                 value: widget.damageParameters.fixedRandom,
                 label: toModifier(widget.damageParameters.fixedRandom).toStringAsFixed(3),
                 onChange: (v) {

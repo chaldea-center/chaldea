@@ -203,6 +203,8 @@ enum CardType {
 
   final int id;
   const CardType(this.id);
+
+  bool get isQAB => [CardType.quick, CardType.arts, CardType.buster].contains(this);
 }
 
 final kCardTypeMapping = {for (final card in CardType.values) card.id: card};

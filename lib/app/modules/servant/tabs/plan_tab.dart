@@ -588,6 +588,14 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           color: Theme.of(context).cardColor,
           child: Table(
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            columnWidths: const {
+              0: FixedColumnWidth(56),
+              1: FixedColumnWidth(28),
+              2: FixedColumnWidth(36),
+              // 3: cc skill
+              4: FixedColumnWidth(32)
+            },
+            border: TableBorder.all(color: const Color.fromRGBO(162, 169, 177, 1), width: 0.25),
             children: List.generate(svt.cards.length, (index) {
               final code = db.gameData.commandCodes[status.getCmdCode(index)];
               final footprint = status.cmdCardStrengthen?.getOrNull(index) ?? 0;
@@ -650,8 +658,8 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                       detail: false,
                     );
                   },
-                  child: db.getIconImage(code?.icon ?? Atlas.asset('SkillIcons/skill_999999.png'),
-                      height: code?.icon == null ? 42 : 48, aspectRatio: 1, padding: const EdgeInsets.all(4)),
+                  child: db.getIconImage(code?.icon ?? Atlas.common.emptySkillIcon,
+                      height: 36, aspectRatio: 1, padding: const EdgeInsets.all(4)),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(4),
@@ -674,14 +682,6 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                 )
               ]);
             }),
-            columnWidths: const {
-              0: FixedColumnWidth(56),
-              1: FixedColumnWidth(48),
-              2: FixedColumnWidth(56),
-              // 3: cc skill
-              4: FixedColumnWidth(32)
-            },
-            border: TableBorder.all(color: const Color.fromRGBO(162, 169, 177, 1), width: 0.25),
           ),
         ),
       ],

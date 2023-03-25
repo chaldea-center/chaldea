@@ -9,6 +9,8 @@ class Atlas {
   static const String appHost = 'https://apps.atlasacademy.io/db/';
   static const String _dbAssetHost = 'https://cdn.jsdelivr.net/gh/atlasacademy/apps/packages/db/src/Assets/';
 
+  static const _CommonAssets common = _CommonAssets();
+
   static bool isAtlasAsset(String url) {
     return url.startsWith(Hosts.kAtlasAssetHostGlobal) || url.startsWith(Hosts.kAtlasAssetHostCN);
   }
@@ -217,4 +219,16 @@ class AssetURL {
   String movie(String itemId) => "$baseUrl/$region/Movie/$itemId.mp4";
   String marks(String itemId) => "$baseUrl/$region/Marks/$itemId.png";
   String svtTexture(dynamic battleCharaId) => "$baseUrl/$region/Servants/$battleCharaId/textures/$battleCharaId.png";
+}
+
+const _assetHost = Hosts.kAtlasAssetHostGlobal;
+
+class _CommonAssets {
+  final emptyCeIcon =
+      "$_assetHost/file/aa-fgo-extract-jp/Battle/BattleResult/PartyOrganizationAtlas/formation_blank_02.png";
+  final emptySvtIcon = "$_assetHost/JP/Faces/f_1000000.png";
+  final unknownEnemyIcon = "$_assetHost/JP/Faces/f_1000011.png";
+  final emptySkillIcon = '$_assetHost/JP/SkillIcons/skill_999999.png';
+
+  const _CommonAssets();
 }

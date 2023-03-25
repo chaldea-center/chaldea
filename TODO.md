@@ -2,6 +2,8 @@
 
 There are plenty of work need to do.
 
+Request gametop first!
+
 ## Battles
 
 ### Ally Function Logic:
@@ -42,6 +44,8 @@ There are plenty of work need to do.
 - [ ] more sample on convertBuff's scripts
 - [ ] prepare a dummy BattleServantData as Master
 - [ ] Figure out how to write reasonable test cases for UI required effects like randomEffect & changeTdType
+- [ ] funcSuccess for some wired function types
+- [ ] `DataVals.ProcPassive` will add buff to passive list, even if it's called from an active skill. Same for `ProcActive`
 
 #### Unknowns:
 
@@ -65,6 +69,14 @@ There are plenty of work need to do.
 - [ ] Transform: what if skill/td has upgrades or disabled?
   - Currently matching id for upgrades.
 - [ ] SkillRankUp: get skill from api if not in db, make init async
+
+- [ ] add svt.extraPassive on/off
+- [ ] add ce event skill on/off
+- [ ] Let user choose event point buff(s) and save to battle global params, used for addState.upDamageEventPoint, 
+  buff.parma=vals.Value+pointBuff.value
+- [ ] Custom skill! (passive or active)
+- [ ] Player side `allyTargetIndex` could be null or -1, let user to choose manually
+- [ ] WIN toast!
 
 ### NPC Simulation
 

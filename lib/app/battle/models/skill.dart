@@ -128,7 +128,7 @@ class BattleSkillInfoData {
 
     int? selectedActionIndex;
     if (skill.script != null && skill.script!.SelectAddInfo != null) {
-      if (battleData.context != null) {
+      if (battleData.context?.mounted == true) {
         await getSelectedIndex(battleData, skill, skillLevel).then((value) => selectedActionIndex = value);
       }
     }

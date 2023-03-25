@@ -745,7 +745,7 @@ class BattleData {
   }
 
   Future<bool> canActivate(final int activationRate, final String description) async {
-    if (activationRate < 1000 && activationRate > 0 && tailoredExecution && context != null) {
+    if (activationRate < 1000 && activationRate > 0 && tailoredExecution && context?.mounted == true) {
       final curResult = probabilityThreshold <= activationRate ? S.current.success : S.current.failed;
       return await showDialog(
         context: context!,

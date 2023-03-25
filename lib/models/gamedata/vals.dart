@@ -54,6 +54,11 @@ class DataVals {
   int? get OnField => _vals['OnField'];
   int? get HideNoEffect => _vals['HideNoEffect'];
   int? get Unaffected => _vals['Unaffected'];
+  // SHOW_STATE = 1;
+  // HIDE_STATE = -1;
+  // SHOW_DEFF_STATE = -2;
+  // SHOW_STATE_STATUS_BUFF_ONLY = 2;
+  // SHOW_STATE_DAMAGE_AND_COMMANDCARD_BUFF = 3;
   int? get ShowState => _vals['ShowState'];
   int? get AuraEffectId => _vals['AuraEffectId'];
   int? get ActSet => _vals['ActSet'];

@@ -47,6 +47,7 @@ class ServantOptionEditPage extends StatefulWidget {
     required final int value,
     required final String label,
     required final ValueChanged<double> onChange,
+    EdgeInsetsGeometry padding = const EdgeInsets.only(left: 24, top: 8),
   }) {
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -54,7 +55,7 @@ class ServantOptionEditPage extends StatefulWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 24, top: 8),
+          padding: padding,
           child: Text('$leadingText: $label'),
         ),
         ConstrainedBox(

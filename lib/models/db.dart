@@ -244,8 +244,12 @@ class _Database {
     List<String> _saved = [];
     Future<void> _saveBytes(List<int> bytes, String fn) async {
       final fp = joinPaths(paths.backupDir, fn);
-      await FilePlus(fp).writeAsBytes(bytes);
-      _saved.add(fp);
+      try {
+        await FilePlus(fp).writeAsBytes(bytes);
+        _saved.add(fp);
+      } catch (e, s) {
+        logger.e('backup userdata failed', e, s);
+      }
     }
 
     final _lastSavedFile = FilePlus(paths.userDataPath);

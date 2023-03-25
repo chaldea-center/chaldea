@@ -29,7 +29,7 @@ class ReplaceMember {
     final List<BattleServantData?> backupList = battleData.playerDataList;
 
     final List<BattleServantData> selections = [];
-    await getSelectedServants(battleData).then((value) => selections.addAll(value));
+    selections.addAll(await getSelectedServants(battleData));
 
     onFieldList[onFieldList.indexOf(selections.first)] = selections.last;
     backupList[backupList.indexOf(selections.last)] = selections.first;
@@ -40,6 +40,7 @@ class ReplaceMember {
   }
 
   static Future<List<BattleServantData>> getSelectedServants(final BattleData battleData) async {
+    if (battleData.context?.mounted != true) return [];
     return await showDialog(
       context: battleData.context!,
       useRootNavigator: false,

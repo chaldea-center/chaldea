@@ -210,7 +210,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           onTap: () {
             QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
-            router.push(url: Routes.events);
+            router.push(url: Routes.events, detail: true);
           },
         ),
         // kDefaultDivider,
@@ -450,7 +450,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
   void _startSimulation() {
     db.settings.battleSim.previousQuestPhase = '${questPhase!.id}/${questPhase!.phase}';
-    db.saveSettings();
     router.pushPage(BattleSimulationPage(
       questPhase: questPhase!,
       onFieldSvtDataList: onFieldSvtDataList,
@@ -464,17 +463,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 }
 
 class ServantSelector extends StatelessWidget {
-  // ce empty icon
-  static const emptyCeIcon =
-      "https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/BattleResult/PartyOrganizationAtlas/formation_blank_02.png";
-
-  // svt empty icon
-  static const emptySvtIcon = "https://static.atlasacademy.io/JP/Faces/f_1000000.png";
-
-  // svt/enemy unknown icon
-  static const unknownEnemyIcon = "https://static.atlasacademy.io/JP/Faces/f_1000011.png";
-
-  // static const emptyIconUrl = 'https://static.atlasacademy.io/JP/SkillIcons/skill_999999.png';
   final PlayerSvtData playerSvtData;
   final List<SupportServant> supportServants;
   final VoidCallback onChange;
@@ -496,7 +484,7 @@ class ServantSelector extends StatelessWidget {
     }
     Widget svtIcon = GameCardMixin.cardIconBuilder(
       context: context,
-      icon: playerSvtData.svt?.ascendIcon(playerSvtData.limitCount, true) ?? emptySvtIcon,
+      icon: playerSvtData.svt?.ascendIcon(playerSvtData.limitCount, true) ?? Atlas.common.emptySvtIcon,
       width: 80,
       aspectRatio: 132 / 144,
       text: svtInfo,
@@ -536,7 +524,7 @@ class ServantSelector extends StatelessWidget {
 
     // ce icon
     Widget ceIcon = db.getIconImage(
-      playerSvtData.ce?.extraAssets.equipFace.equip?[playerSvtData.ce?.id] ?? emptyCeIcon,
+      playerSvtData.ce?.extraAssets.equipFace.equip?[playerSvtData.ce?.id] ?? Atlas.common.emptyCeIcon,
       width: 80,
       aspectRatio: 150 / 68,
     );
