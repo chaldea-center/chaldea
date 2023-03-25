@@ -582,7 +582,6 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
 
     return db.onUserData(
       (context, snapshot) => InkWell(
-        onLongPress: () {},
         child: ImageWithText(
           image: svt.iconBuilder(context: context, jumpToDetail: false, width: 72),
           textBuilder: status.cur.favorite ? textBuilder : null,

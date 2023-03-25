@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/constants.dart';
 
 class FrameRateLayer extends StatefulWidget {
@@ -67,16 +68,23 @@ class _FrameRateLayerState extends State<FrameRateLayer> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.maybeOf(context)?.size;
     return PositionedDirectional(
       start: 0,
       top: MediaQuery.of(context).padding.top,
       child: IgnorePointer(
-        child: Text(
-          '${fps.toStringAsFixed(2).padLeft(6)} ',
-          style: const TextStyle(
-            backgroundColor: Colors.black26,
-            color: Colors.white70,
-            fontFamily: kMonoFont,
+        child: DecoratedBox(
+          decoration: const BoxDecoration(color: Colors.black26),
+          child: Text(
+            [
+              if (size != null && !PlatformU.isMobile) '${size.width.toInt()}×${size.height.toInt()}',
+              fps.toStringAsFixed(2).padLeft(6),
+            ].join(' '),
+            style: const TextStyle(
+              // backgroundColor: Colors.black26,
+              color: Colors.white70,
+              fontFamily: kMonoFont,
+            ),
           ),
         ),
       ),

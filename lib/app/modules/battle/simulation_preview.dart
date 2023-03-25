@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
@@ -70,17 +69,12 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       if (widget.region != null) {
         initText = '/${widget.region!.upper}/quest/$initText';
       }
+      questIdTextController = TextEditingController(text: initText);
+    } else if (db.settings.battleSim.previousQuestPhase != null) {
+      initText = db.settings.battleSim.previousQuestPhase;
+      questIdTextController = TextEditingController(text: initText);
+      _fetchQuestPhase();
     }
-    questIdTextController = TextEditingController(text: initText);
-    if (db.settings.battleSim.previousQuestPhase != null) {
-      fetchInitial();
-    }
-  }
-
-  Future<void> fetchInitial() async {
-    questIdTextController.text = db.settings.battleSim.previousQuestPhase!;
-    await _fetchQuestPhase();
-    if (mounted) setState(() {});
   }
 
   @override
@@ -222,7 +216,8 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             style: TextStyle(color: Theme.of(context).colorScheme.error),
             textAlign: TextAlign.center,
           ),
-        if (questPhase != null)
+        if (questPhase != null) ...[
+          kDefaultDivider,
           TextButton(
             onPressed: () {
               QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
@@ -234,7 +229,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             },
             child: Text('>>> ${S.current.quest_detail_btn} >>>'),
           ),
-        if (questPhase != null)
           QuestCard(
             region: region,
             offline: false,
@@ -243,6 +237,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             battleOnly: true,
             preferredPhases: [questPhase!],
           ),
+        ]
       ],
     );
   }
@@ -357,14 +352,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodySmall,
         ),
-        IconButton(
-          onPressed: () => setState(() => db.curUser.isGirl = !db.curUser.isGirl),
-          color: Theme.of(context).colorScheme.primaryContainer,
-          icon: FaIcon(
-            db.curUser.isGirl ? FontAwesomeIcons.venus : FontAwesomeIcons.mars,
-          ),
-          iconSize: 20,
-        ),
       ],
     );
     mysticCode = InkWell(
@@ -393,7 +380,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         // use Responsible if more settings
         Row(
           mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(width: 16),
             mysticCode,

@@ -73,100 +73,83 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
 
     final List<BattleServantData> selectableOnField =
         battleData.nonnullAllies.where((svt) => svt.canOrderChange(battleData)).toList();
-    children.add(
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            S.current.battle_select_battle_servants,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: List.generate(selectableOnField.length, (index) {
-              final svt = selectableOnField[index];
-              return DecoratedBox(
-                decoration: onFieldSelection == svt
-                    ? BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(color: Colors.redAccent, width: 5),
-                      )
-                    : const BoxDecoration(),
-                child: InkWell(
-                  onLongPress: () {},
-                  child: svt.niceSvt!.iconBuilder(
-                    context: context,
-                    jumpToDetail: false,
-                    width: 100,
-                    overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase, true),
-                  ),
-                  onTap: () {
-                    onFieldSelection = svt;
-                    if (mounted) setState(() {});
-                  },
-                ),
-              );
-            }),
-          )
-        ],
+    children.addAll([
+      SHeader(
+        S.current.battle_select_battle_servants,
+        padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
       ),
-    );
+      Wrap(
+        children: List.generate(selectableOnField.length, (index) {
+          final svt = selectableOnField[index];
+          return Flexible(
+            child: DecoratedBox(
+              decoration: onFieldSelection == svt
+                  ? BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(color: Colors.redAccent, width: 4),
+                    )
+                  : const BoxDecoration(),
+              child: InkWell(
+                child: svt.niceSvt!.iconBuilder(
+                  context: context,
+                  jumpToDetail: false,
+                  width: 56,
+                  overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase, true),
+                ),
+                onTap: () {
+                  onFieldSelection = svt;
+                  if (mounted) setState(() {});
+                },
+              ),
+            ),
+          );
+        }),
+      )
+    ]);
 
     final List<BattleServantData> selectableBackup =
         battleData.nonnullBackupAllies.where((svt) => svt.canOrderChange(battleData)).toList();
-    children.add(
-      Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            S.current.battle_select_backup_servants,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: List.generate(selectableBackup.length, (index) {
-              final svt = selectableBackup[index];
-              return DecoratedBox(
-                decoration: backupSelection == svt
-                    ? BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(color: Colors.redAccent, width: 5),
-                      )
-                    : const BoxDecoration(),
-                child: InkWell(
-                  onLongPress: () {},
-                  child: svt.niceSvt!.iconBuilder(
-                    context: context,
-                    jumpToDetail: false,
-                    width: 100,
-                    overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase, true),
-                  ),
-                  onTap: () {
-                    backupSelection = svt;
-                    if (mounted) setState(() {});
-                  },
-                ),
-              );
-            }),
-          )
-        ],
+    children.addAll([
+      SHeader(
+        S.current.battle_select_backup_servants,
+        padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
       ),
-    );
+      Wrap(
+        children: List.generate(selectableBackup.length, (index) {
+          final svt = selectableBackup[index];
+          return Flexible(
+            child: DecoratedBox(
+              decoration: backupSelection == svt
+                  ? BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(color: Colors.redAccent, width: 4),
+                    )
+                  : const BoxDecoration(),
+              child: InkWell(
+                child: svt.niceSvt!.iconBuilder(
+                  context: context,
+                  jumpToDetail: false,
+                  width: 56,
+                  overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase, true),
+                ),
+                onTap: () {
+                  backupSelection = svt;
+                  if (mounted) setState(() {});
+                },
+              ),
+            ),
+          );
+        }),
+      )
+    ]);
 
     return SimpleCancelOkDialog(
       title: Text(S.current.battle_click_to_select_servants),
-      contentPadding: const EdgeInsets.all(8),
-      content: SingleChildScrollView(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: divideTiles(children),
-        ),
+      scrollable: true,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
       ),
       hideCancel: true,
       hideOk: true,

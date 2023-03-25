@@ -39,24 +39,24 @@ class FunctionExecutor {
     final int? selectedActionIndex,
     final int? effectiveness,
   }) async {
-    for (int i = 0; i < functions.length; i += 1) {
-      NiceFunction func = functions[i];
+    for (int index = 0; index < functions.length; index += 1) {
+      NiceFunction func = functions[index];
       final dataVal = FunctionExecutor.getDataVals(func, skillLevel, overchargeLvl);
       if (dataVal.ActSet != null && dataVal.ActSet! > 0) {
         final List<NiceFunction> actFunctions = getGroupedFunctions(
           functions,
           skillLevel,
-          i,
+          index,
           overchargeLv: overchargeLvl,
         );
-        i += actFunctions.length - 1;
+        index += actFunctions.length - 1;
 
         final validFuncs = actFunctions
             .where((func) => FunctionExecutor.validateFunctionTargetTeam(func, battleData.activator))
             .toList();
 
         if (battleData.context != null && validFuncs.isNotEmpty) {
-          await getSelectedFunction(battleData, validFuncs).then((value) => func = value);
+          func = await getSelectedFunction(battleData, validFuncs);
         }
       }
 
@@ -109,28 +109,25 @@ class FunctionExecutor {
       builder: (context) {
         return SimpleCancelOkDialog(
           title: Text(S.current.battle_select_effect),
-          contentPadding: const EdgeInsets.all(8),
-          content: SingleChildScrollView(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: divideTiles(List.generate(functions.length, (index) {
-                return TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(functions[index]);
-                    battleData.logger.action('${S.current.battle_select_effect}: ${transl('Option').l} ${index + 1}');
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Text(
-                      '${transl('Option').l} ${index + 1}: ${functions[index].lPopupText.l}',
-                      style: const TextStyle(fontSize: 18),
-                    ),
+          scrollable: true,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: List.generate(functions.length, (index) {
+              return TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(functions[index]);
+                  battleData.logger.action('${S.current.battle_select_effect}: ${transl('Option').l} ${index + 1}');
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Text(
+                    '${transl('Option').l} ${index + 1}: ${functions[index].lPopupText.l}',
+                    style: const TextStyle(fontSize: 18),
                   ),
-                );
-              })),
-            ),
+                ),
+              );
+            }),
           ),
           hideOk: true,
           hideCancel: true,
@@ -152,24 +149,19 @@ class FunctionExecutor {
       builder: (context) {
         return SimpleCancelOkDialog(
           title: Text(S.current.battle_select_effect),
-          contentPadding: const EdgeInsets.all(8),
-          content: SingleChildScrollView(
-            padding: const EdgeInsets.all(8),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: divideTiles(List.generate(tds.length, (index) {
-                return InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop(tds[index]);
-                    battleData.logger.action('${S.current.battle_select_effect}: ${tds[index].card.name.toUpperCase()}'
-                        ' ${S.current.battle_np_card}');
-                  },
-                  child: CommandCardWidget(card: tds[index].card, width: 80),
-                );
-              })),
-            ),
+          scrollable: true,
+          content: Wrap(
+            alignment: WrapAlignment.center,
+            children: List.generate(tds.length, (index) {
+              return InkWell(
+                onTap: () {
+                  Navigator.of(context).pop(tds[index]);
+                  battleData.logger.action('${S.current.battle_select_effect}: ${tds[index].card.name.toUpperCase()}'
+                      ' ${S.current.battle_np_card}');
+                },
+                child: CommandCardWidget(card: tds[index].card, width: 80),
+              );
+            }),
           ),
           hideOk: true,
           hideCancel: true,

@@ -2,8 +2,6 @@
 
 There are plenty of work need to do.
 
-Request gametop first!
-
 ## Battles
 
 ### Ally Function Logic:

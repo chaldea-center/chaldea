@@ -47,7 +47,7 @@ class ServantOptionEditPage extends StatefulWidget {
     required final int value,
     required final String label,
     required final ValueChanged<double> onChange,
-    EdgeInsetsGeometry padding = const EdgeInsets.only(left: 24, top: 8),
+    EdgeInsetsGeometry padding = const EdgeInsets.only(left: 0, top: 8),
   }) {
     return Column(
       mainAxisSize: MainAxisSize.min,

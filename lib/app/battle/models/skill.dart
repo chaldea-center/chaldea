@@ -170,42 +170,39 @@ class BattleSkillInfoData {
       builder: (context) {
         return SimpleCancelOkDialog(
           title: Text(S.current.battle_select_effect),
-          contentPadding: const EdgeInsets.all(8),
-          content: SingleChildScrollView(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: divideTiles([
-                Padding(
+          scrollable: true,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: divideTiles([
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Text(
+                  '${transl('Optional').l}: ${transl(selectAddInfo.title).l}',
+                  textScaleFactor: 0.85,
+                ),
+              ),
+              ...List.generate(buttons.length, (index) {
+                final button = buttons[index];
+                final textWidget = Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: Text(
-                    '${transl('Optional').l}: ${transl(selectAddInfo.title).l}',
+                    '${transl('Option').l} ${index + 1}: ${transl(button.name).l}',
                     style: const TextStyle(fontSize: 18),
                   ),
-                ),
-                ...List.generate(buttons.length, (index) {
-                  final button = buttons[index];
-                  final textWidget = Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Text(
-                      '${transl('Option').l} ${index + 1}: ${transl(button.name).l}',
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  );
-                  return button.conds.every((cond) => !checkSkillScripCondition(battleData, cond.cond, cond.value))
-                      ? textWidget
-                      : TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(index);
-                            battleData.logger
-                                .action('${S.current.battle_select_effect}: ${transl('Option').l} ${index + 1}');
-                          },
-                          child: textWidget,
-                        );
-                })
-              ]),
-            ),
+                );
+                return TextButton(
+                  onPressed: button.conds.every((cond) => !checkSkillScripCondition(battleData, cond.cond, cond.value))
+                      ? null
+                      : () {
+                          Navigator.of(context).pop(index);
+                          battleData.logger
+                              .action('${S.current.battle_select_effect}: ${transl('Option').l} ${index + 1}');
+                        },
+                  child: textWidget,
+                );
+              })
+            ]),
           ),
           hideOk: true,
           hideCancel: true,

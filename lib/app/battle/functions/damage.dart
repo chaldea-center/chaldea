@@ -343,48 +343,44 @@ class _DamageAdjustorState extends State<DamageAdjustor> {
     final totalDamage = calculateDamage(widget.damageParameters);
     return SimpleCancelOkDialog(
       title: Text(S.current.battle_select_effect),
-      contentPadding: const EdgeInsets.all(8),
-      content: SingleChildScrollView(
-        padding: const EdgeInsets.all(8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: divideTiles(
-            [
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Text('${widget.battleData.activator!.lBattleName} - '
-                    '${widget.damageParameters.currentCardType.name.toUpperCase()} - '
-                    '${widget.damageParameters.isNp ? S.current.battle_np_card : S.current.battle_command_card} vs '
-                    '${widget.battleData.target!.lBattleName} (HP: ${widget.battleData.target!.hp})'),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Text('${S.current.battle_damage}: $totalDamage'),
-              ),
-              ServantOptionEditPage.buildSlider(
-                leadingText: S.current.battle_random,
-                min: ConstData.constants.attackRateRandomMin,
-                max: ConstData.constants.attackRateRandomMax - 1,
-                value: widget.damageParameters.fixedRandom,
-                label: toModifier(widget.damageParameters.fixedRandom).toStringAsFixed(3),
-                onChange: (v) {
-                  widget.damageParameters.fixedRandom = v.round();
-                  if (mounted) setState(() {});
-                },
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(totalDamage);
-                },
-                child: Text(S.current.confirm),
-              )
-            ],
+      scrollable: true,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            '${widget.battleData.activator!.lBattleName} - '
+            '${widget.damageParameters.currentCardType.name.toTitle()} - '
+            '${widget.damageParameters.isNp ? S.current.battle_np_card : S.current.battle_command_card}'
+            '\nvs ${widget.battleData.target!.lBattleName} (HP: ${widget.battleData.target!.hp})',
+            style: Theme.of(context).textTheme.bodyMedium,
+            textScaleFactor: 0.9,
           ),
-        ),
+          const SizedBox(height: 8),
+          Text('${S.current.battle_damage}: $totalDamage'),
+          ServantOptionEditPage.buildSlider(
+            leadingText: S.current.battle_random,
+            min: ConstData.constants.attackRateRandomMin,
+            max: ConstData.constants.attackRateRandomMax - 1,
+            value: widget.damageParameters.fixedRandom,
+            label: toModifier(widget.damageParameters.fixedRandom).toStringAsFixed(3),
+            onChange: (v) {
+              widget.damageParameters.fixedRandom = v.round();
+              if (mounted) setState(() {});
+            },
+          ),
+        ],
       ),
       hideOk: true,
       hideCancel: true,
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(totalDamage);
+          },
+          child: Text(S.current.confirm),
+        )
+      ],
     );
   }
 }

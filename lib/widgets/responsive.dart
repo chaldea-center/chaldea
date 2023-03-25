@@ -20,6 +20,7 @@ class ResponsiveLayout extends StatelessWidget {
   // styles
   final CrossAxisAlignment verticalAlign;
   final CrossAxisAlignment horizontalAlign;
+  final FlexFit flexFit;
 
   static const _defaultHorizontalDivider = Divider(thickness: 1, height: 8);
   // static const _defaultVerticalDivider = VerticalDivider(thickness: 1, width: 8);
@@ -34,7 +35,9 @@ class ResponsiveLayout extends StatelessWidget {
     this.maxFlex = 12,
     this.verticalAlign = CrossAxisAlignment.start,
     this.horizontalAlign = CrossAxisAlignment.center,
+    this.flexFit = FlexFit.tight,
   }) : builder = null;
+
   const ResponsiveLayout.builder({
     super.key,
     required this.builder,
@@ -45,6 +48,7 @@ class ResponsiveLayout extends StatelessWidget {
     this.maxFlex = 12,
     this.verticalAlign = CrossAxisAlignment.start,
     this.horizontalAlign = CrossAxisAlignment.center,
+    this.flexFit = FlexFit.tight,
   }) : children = const [];
 
   @override
@@ -89,7 +93,7 @@ class ResponsiveLayout extends StatelessWidget {
     for (int index = 0; index < cells.length; index++) {
       final cell = cells[index];
       final flex = cell.getFlex(type);
-      children.add(flex == null ? cell : Expanded(flex: flex, child: cell));
+      children.add(flex == null ? cell : Flexible(flex: flex, fit: flexFit, child: cell));
       if (verticalDivider != null) children.add(verticalDivider!);
     }
     return Row(

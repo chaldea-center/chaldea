@@ -148,6 +148,11 @@ class BattleData {
     _target.removeLast();
   }
 
+  bool get isBattleWin {
+    return waveCount >= Maths.max(niceQuest?.stages.map((e) => e.wave) ?? [], -1) &&
+        (curStage == null || (enemyDataList.isEmpty && onFieldEnemies.isEmpty));
+  }
+
   Future<void> init(
     final QuestPhase quest,
     final List<PlayerSvtData?> playerSettings,
@@ -209,23 +214,28 @@ class BattleData {
   }
 
   Future<void> nextTurn() async {
-    turnCount += 1;
-    totalTurnCount += 1;
-
-    logger.action('${S.current.battle_turn} $totalTurnCount');
-
     await replenishActors();
+    bool addTurn = true;
 
     if (enemyDataList.isEmpty && nonnullEnemies.isEmpty) {
-      await nextWave();
+      addTurn = await nextWave();
     }
+    if (addTurn) {
+      turnCount += 1;
+      totalTurnCount += 1;
+      logger.action('${S.current.battle_turn} $totalTurnCount');
+    }
+
     // start of ally turn
     for (final svt in nonnullAllies) {
       await svt.startOfMyTurn(this);
     }
   }
 
-  Future<void> nextWave() async {
+  Future<bool> nextWave() async {
+    if (niceQuest?.stages.every((s) => s.wave < waveCount + 1) == true) {
+      return false;
+    }
     waveCount += 1;
     turnCount = 1;
 
@@ -243,6 +253,7 @@ class BattleData {
     for (final enemy in nonnullEnemies) {
       await enemy.enterField(this);
     }
+    return true;
   }
 
   Future<void> replenishActors() async {
@@ -754,45 +765,45 @@ class BattleData {
         builder: (context) {
           return SimpleCancelOkDialog(
             title: Text(S.current.battle_select_effect),
-            contentPadding: const EdgeInsets.all(8),
-            content: SingleChildScrollView(
-              padding: const EdgeInsets.all(8),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: divideTiles(
-                  [
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Text(description),
+            scrollable: true,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: divideTiles(
+                [
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(description, textScaleFactor: 0.85),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(
+                      '${S.current.results}: $curResult => '
+                      '${S.current.battle_activate_probability}: '
+                      '${(activationRate / 10).toStringAsFixed(1)}% '
+                      'vs ${S.current.probability_expectation}: '
+                      '${(probabilityThreshold / 10).toStringAsFixed(1)}%',
+                      textScaleFactor: 0.85,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Text('${S.current.results}: $curResult => '
-                          '${S.current.battle_activate_probability}: '
-                          '${(activationRate / 10).toStringAsFixed(1)}% '
-                          'vs ${S.current.probability_expectation}: '
-                          '${(probabilityThreshold / 10).toStringAsFixed(1)}%'),
-                    ),
-                    Row(
-                      children: [
-                        Text('${S.current.battle_should_activate}: '),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(true);
-                          },
-                          child: const Text('Yes'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop(false);
-                          },
-                          child: const Text('No'),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
+                  ),
+                  Row(
+                    children: [
+                      Text('${S.current.battle_should_activate}: '),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        child: const Text('Yes'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                        child: const Text('No'),
+                      ),
+                    ],
+                  )
+                ],
               ),
             ),
             hideOk: true,

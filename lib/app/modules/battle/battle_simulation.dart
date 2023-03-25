@@ -142,15 +142,15 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         buildBattleSvtData(battleData.onFieldAllyServants.getOrNull(index), index)
     ];
     List<Widget> enemies = [
-      for (int index = 0; index < max(3, (battleData.onFieldEnemies.length / 3).ceil()); index++)
+      for (int index = 0; index < max(3, (battleData.onFieldEnemies.length / 3).ceil() * 3); index++)
         buildBattleSvtData(battleData.onFieldEnemies.getOrNull(index), index)
     ];
 
     Widget allyParty, enemyParty;
-    allyParty = ResponsiveLayout(children: [
+    allyParty = ResponsiveLayout(verticalAlign: CrossAxisAlignment.center, children: [
       for (final svt in allies) Responsive(small: 4, child: svt),
     ]);
-    enemyParty = ResponsiveLayout(children: [
+    enemyParty = ResponsiveLayout(verticalAlign: CrossAxisAlignment.center, children: [
       for (final enemy in enemies) Responsive(small: 4, child: enemy),
     ]);
 
@@ -185,7 +185,11 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
 
   Widget buildBattleSvtData(final BattleServantData? svt, final int index) {
     if (svt == null) {
-      return const SizedBox.shrink();
+      return CachedImage(
+        imageUrl: 'https://static.atlasacademy.io/JP/Enemys/0.png',
+        height: 72,
+        placeholder: (context, url) => const SizedBox.shrink(),
+      );
     }
 
     final List<Widget> children = [];
@@ -381,7 +385,13 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                     children: SharedBuilder.traitSpans(
                       context: context,
                       traits: battleData.getFieldTraits(),
-                      format: (trait) => trait.shownName().split(':').skip(1).join(':'),
+                      format: (trait) {
+                        final name = trait.shownName();
+                        if (name.contains(':')) {
+                          return name.split(':').skip(1).join(':');
+                        }
+                        return name;
+                      },
                     ),
                   )
                 ],
@@ -442,10 +452,17 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           constraints: const BoxConstraints(),
         ),
         FilledButton(
-          onPressed: () {
-            showDialog(context: context, useRootNavigator: false, builder: showCommandCards);
-          },
-          child: Text(S.current.battle_attack),
+          onPressed: battleData.isBattleWin
+              ? null
+              : () {
+                  final List<CombatAction?> combatActions = [null, null, null];
+                  showDialog(
+                    context: context,
+                    useRootNavigator: false,
+                    builder: (context) => showCommandCards(context, combatActions),
+                  );
+                },
+          child: Text(battleData.isBattleWin ? 'Win' : S.current.battle_attack),
         )
       ],
     );
@@ -459,29 +476,36 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     final cd = skillInfo.chargeTurn;
     final _canUseSkill = canUseSkill && cd <= 0;
 
+    Widget child = Stack(
+      alignment: Alignment.center,
+      children: [
+        db.getIconImage(skillInfo.proximateSkill?.icon ?? Atlas.common.emptySkillIcon, width: 32, aspectRatio: 1),
+        if (!_canUseSkill)
+          AspectRatio(
+            aspectRatio: 1,
+            child: Container(
+              width: 32,
+              height: 32,
+              color: Colors.black54,
+              child: Center(
+                child: Text(
+                  !canUseSkill ? '×' : cd.toString(),
+                  style: const TextStyle(fontSize: 18, color: Colors.white),
+                  textScaleFactor: 1,
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2),
       child: InkWell(
         onTap: _canUseSkill ? onTap : null,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            db.getIconImage(skillInfo.proximateSkill?.icon ?? Atlas.common.emptySkillIcon, width: 24, aspectRatio: 1),
-            if (!_canUseSkill) ...[
-              Container(
-                width: 24,
-                height: 24,
-                color: Colors.black54,
-                child: Center(
-                  child: Text(
-                    !canUseSkill ? '×' : cd.toString(),
-                    style: const TextStyle(fontSize: 18, color: Colors.white),
-                    textScaleFactor: 1,
-                  ),
-                ),
-              ),
-            ],
-          ],
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 32),
+          child: child,
         ),
       ),
     );
@@ -502,8 +526,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     );
   }
 
-  Widget showCommandCards(BuildContext context) {
-    final List<CombatAction?> combatActions = [null, null, null];
+  Widget showCommandCards(BuildContext context, List<CombatAction?> combatActions) {
     return SimpleCancelOkDialog(
       title: Text(S.current.battle_select_card),
       contentPadding: const EdgeInsets.all(8),
@@ -541,7 +564,7 @@ class CombatActionSelector extends StatefulWidget {
 class _CombatActionSelectorState extends State<CombatActionSelector> {
   BattleData get battleData => widget.battleData;
 
-  final double cardWidth = 48;
+  final double cardSize = 48;
 
   @override
   Widget build(BuildContext context) {
@@ -549,7 +572,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       Row(
         children: [
           SizedBox(
-            width: cardWidth,
+            width: cardSize,
             child: Text(
               S.current.np_short,
               textAlign: TextAlign.center,
@@ -571,13 +594,18 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
     for (final svt in battleData.nonnullAllies) {
       final tdIcon = buildTdIcon(svt);
       final cards = svt.getCards(battleData);
-      List<Widget> cells = [tdIcon];
+      List<Widget> cells = [tdIcon, const SizedBox(width: 4)];
       for (int index = 0; index < max(5, cards.length); index++) {
         final card = cards.getOrNull(index);
         if (card == null) {
           cells.add(const Flexible(child: SizedBox.shrink()));
         } else {
-          cells.add(Flexible(child: buildCardIcon(svt, card, index)));
+          cells.add(Flexible(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 1),
+              child: buildCardIcon(svt, card, index),
+            ),
+          ));
         }
       }
       children.add(Row(
@@ -627,14 +655,17 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
     Widget cardIcon = Stack(
       alignment: Alignment.center,
       children: [
-        CommandCardWidget(card: card.cardType, width: cardWidth),
+        AspectRatio(
+          aspectRatio: 1,
+          child: CommandCardWidget(card: card.cardType, width: cardSize),
+        ),
         if (commandCode != null)
           Positioned(
             top: 0,
             right: 0,
             child: commandCode.iconBuilder(
               context: context,
-              width: cardWidth * 0.5,
+              width: cardSize * 0.5,
               jumpToDetail: false,
               overrideIcon: commandCode.icon,
             ),
@@ -645,18 +676,21 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
             right: 8,
             child: ImageWithText.paintOutline(
               text: card.cardStrengthen.toString(),
-              textStyle: TextStyle(fontSize: cardWidth * 0.25, color: Colors.white),
+              textStyle: TextStyle(fontSize: cardSize * 0.25, color: Colors.white),
               shadowColor: Colors.grey.shade700,
               shadowSize: 3,
             ),
           ),
         if (!svt.canCommandCard(battleData)) ...[
-          Container(
-            width: cardWidth,
-            height: cardWidth,
-            color: Colors.black54,
+          AspectRatio(
+            aspectRatio: 1,
+            child: Container(
+              width: cardSize,
+              height: cardSize,
+              color: Colors.black54,
+            ),
           ),
-          Text('×', style: TextStyle(fontSize: cardWidth * 0.8, color: Colors.white))
+          Text('×', style: TextStyle(fontSize: cardSize * 0.8, color: Colors.white))
         ]
       ],
     );
@@ -693,7 +727,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
     Widget tdIcon = svt.niceSvt!.iconBuilder(
       context: context,
       // width: tdWidth,
-      height: cardWidth,
+      height: cardSize,
       overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase, true),
       jumpToDetail: false,
     );
@@ -706,26 +740,33 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
             bottom: 0,
             child: Image.asset(
               'res/assets/card_icon_${curTd?.card.name}.png',
-              width: cardWidth * 0.8,
+              width: cardSize * 0.8,
             ),
           ),
           Positioned(
-            bottom: cardWidth * 0.5 * 0.2,
+            bottom: cardSize * 0.5 * 0.2,
             child: Image.asset(
               'res/assets/card_txt_${curTd?.card.name}.png',
-              width: cardWidth * 0.8,
+              width: cardSize * 0.8,
             ),
           ),
         ],
         if (!tdValid) ...[
-          Container(
-            width: cardWidth,
-            height: cardWidth * 144 / 132,
-            color: Colors.black54,
+          AspectRatio(
+            aspectRatio: 132 / 144,
+            child: Container(
+              width: cardSize,
+              height: cardSize * 144 / 132,
+              color: Colors.black54,
+            ),
           ),
-          Text('×', style: TextStyle(fontSize: cardWidth * 0.8, color: Colors.white))
+          Text('×', style: TextStyle(fontSize: cardSize * 0.8, color: Colors.white))
         ]
       ],
+    );
+    tdIcon = ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: cardSize),
+      child: tdIcon,
     );
     tdIcon = GestureDetector(
       onTap: () {
@@ -749,13 +790,15 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       },
       child: tdIcon,
     );
-    tdIcon = wrapAttackIndex(tdIcon, getNpCardIndex(svt, widget.combatActions), false);
+    tdIcon = wrapAttackIndex(
+        Padding(padding: const EdgeInsets.all(1), child: tdIcon), getNpCardIndex(svt, widget.combatActions), false);
     return tdIcon;
   }
 
   Widget wrapAttackIndex(Widget child, int? index, bool isCritical) {
     String text = '';
-    if (index != null && index >= 0) {
+    bool selected = index != null && index >= 0;
+    if (selected) {
       text = {
             1: '1st',
             2: '2nd',
@@ -766,16 +809,24 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         // text += ' ${S.current.critical_attack}';
       }
     }
+    final colorScheme = Theme.of(context).colorScheme;
+    final color = isCritical ? colorScheme.error : colorScheme.primary;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        child,
+        DecoratedBox(
+          decoration: BoxDecoration(
+            border: selected ? Border.all(color: color, width: 2) : null,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: child,
+        ),
         SizedBox(
           height: 20,
           child: Text(
             text,
-            style: isCritical ? TextStyle(color: Theme.of(context).colorScheme.error) : null,
+            style: TextStyle(color: color),
             textScaleFactor: 0.8,
             maxLines: 1,
           ),
