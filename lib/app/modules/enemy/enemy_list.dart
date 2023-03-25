@@ -13,7 +13,9 @@ import 'filter.dart';
 import 'quest_enemy_summary.dart';
 
 class EnemyListPage extends StatefulWidget {
-  EnemyListPage({super.key});
+  final void Function(BasicServant svt)? onSelected;
+  final EnemyFilterData? filterData;
+  EnemyListPage({super.key, this.onSelected, this.filterData});
 
   @override
   State<StatefulWidget> createState() => EnemyListPageState();
@@ -27,7 +29,7 @@ class EnemyListPageState extends State<EnemyListPage> with SearchableListState<B
       });
   Map<int, List<QuestEnemy>> _allEnemies = {};
 
-  final filterData = EnemyFilterData()..reset();
+  late final EnemyFilterData filterData = widget.filterData ?? EnemyFilterData();
 
   @override
   final bool prototypeExtent = true;
@@ -35,7 +37,7 @@ class EnemyListPageState extends State<EnemyListPage> with SearchableListState<B
   @override
   void initState() {
     super.initState();
-    if (db.settings.autoResetFilter) {
+    if (db.settings.autoResetFilter && widget.filterData == null) {
       filterData.reset();
     }
     _allEnemies = ReverseGameData.questEnemies(
@@ -185,16 +187,21 @@ class EnemyListPageState extends State<EnemyListPage> with SearchableListState<B
   }
 
   void _onTapCard(BasicServant svt, [bool forcePush = false]) {
-    final enemies = _allEnemies[svt.id] ?? [];
-    if (enemies.isEmpty) {
-      svt.routeTo(popDetails: true);
+    if (widget.onSelected != null && !forcePush) {
+      Navigator.pop(context);
+      widget.onSelected!(svt);
     } else {
-      router.pushPage(
-        QuestEnemySummaryPage(svt: enemies.first.svt, enemies: enemies),
-        popDetail: true,
-      );
+      final enemies = _allEnemies[svt.id] ?? [];
+      if (enemies.isEmpty) {
+        svt.routeTo(popDetails: true);
+      } else {
+        router.pushPage(
+          QuestEnemySummaryPage(svt: enemies.first.svt, enemies: enemies),
+          popDetail: true,
+        );
+      }
+      selected = svt;
     }
-    selected = svt;
     setState(() {});
   }
 }

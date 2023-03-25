@@ -14,7 +14,7 @@ import 'cmd_code.dart';
 import 'filter.dart';
 
 class CmdCodeListPage extends StatefulWidget {
-  final void Function(CommandCode)? onSelected;
+  final void Function(CommandCode cc)? onSelected;
   final CmdCodeFilterData? filterData;
 
   CmdCodeListPage({super.key, this.onSelected, this.filterData});

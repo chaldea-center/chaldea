@@ -11,13 +11,16 @@ import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/command_code/cmd_code_list.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
+import 'package:chaldea/app/modules/enemy/enemy_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/userdata/filter_data.dart';
+import 'package:chaldea/models/userdata/userdata.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../craft_essence/craft_list.dart';
 import '../enemy/support_servant.dart';
 import '../servant/servant_list.dart';
 import 'simulation_preview.dart';
@@ -57,7 +60,7 @@ class ServantOptionEditPage extends StatefulWidget {
         ConstrainedBox(
           constraints: const BoxConstraints(
             maxHeight: 24,
-            maxWidth: 300,
+            maxWidth: 360,
           ),
           child: Slider(
             min: min.toDouble(),
@@ -160,44 +163,11 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
   @override
   Widget build(final BuildContext context) {
-    if (playerSvtData.svt == null) {
-      return Scaffold(
-        appBar: AppBar(title: Text(S.current.battle_edit_servant_option)),
-        body: Column(
-          children: [
-            const Spacer(),
-            SafeArea(child: buttonBar),
-          ],
-        ),
-      );
-    }
-    const divider = Divider(height: 8, thickness: 1);
-    final List<Widget> children = [
-      _header(context),
-      divider,
-      Padding(
-        padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
-        child: _buildSliderGroup(),
-      ),
-      divider,
-      SHeader(S.current.details),
-      const Divider(thickness: 1, height: 1),
-      _buildTdDescriptor(context),
-      kDefaultDivider,
-      for (final skillNum in kActiveSkillNums) _buildActiveSkill(context, skillNum),
-      kDefaultDivider,
-      for (final skillNum in kAppendSkillNums) _buildAppendSkill(context, skillNum),
-      divider,
-      _buildCmdCodePlanner()
-    ];
-
     return Scaffold(
       appBar: AppBar(title: Text(S.current.battle_edit_servant_option)),
       body: Column(
         children: [
-          Expanded(
-            child: ListView(children: children),
-          ),
+          Expanded(child: body),
           kDefaultDivider,
           SafeArea(child: buttonBar),
         ],
@@ -321,6 +291,32 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     );
   }
 
+  Widget get body {
+    if (playerSvtData.svt == null) {
+      return const Center(child: Text('None'));
+    }
+    const divider = Divider(height: 8, thickness: 1);
+    final List<Widget> children = [
+      _header(context),
+      divider,
+      Padding(
+        padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
+        child: _buildSliderGroup(),
+      ),
+      divider,
+      SHeader(S.current.details),
+      const Divider(thickness: 1, height: 1),
+      _buildTdDescriptor(context),
+      kDefaultDivider,
+      for (final skillNum in kActiveSkillNums) _buildActiveSkill(context, skillNum),
+      kDefaultDivider,
+      for (final skillNum in kAppendSkillNums) _buildAppendSkill(context, skillNum),
+      divider,
+      _buildCmdCodePlanner()
+    ];
+    return ListView(children: children);
+  }
+
   Widget get buttonBar {
     return ButtonBar(
       children: [
@@ -372,7 +368,6 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             '  ${Transl.svtClassId(svt.classId).l}',
           ),
           Text('ATK $atk  HP $hp'),
-          const SizedBox(height: 4),
         ],
       ),
       trailing: TextButton(
@@ -776,8 +771,6 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   }
 
   void _onSelectServant(final Servant selectedSvt) {
-    if (!selectedSvt.isUserSvt) return;
-
     playerSvtData.svt = selectedSvt;
     final status = db.curUser.svtStatusOf(selectedSvt.collectionNo);
     final curStatus = status.cur;
@@ -791,10 +784,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         ..atkFou = curStatus.fouAtk > 0 ? 1000 + curStatus.fouAtk * 20 : curStatus.fouAtk3 * 50
         ..hpFou = curStatus.fouHp > 0 ? 1000 + curStatus.fouHp * 20 : curStatus.fouHp3 * 50
         ..cardStrengthens = List.generate(selectedSvt.cards.length, (index) {
-          if (status.cmdCardStrengthen == null || status.cmdCardStrengthen!.length <= index) {
-            return 0;
-          }
-          return status.cmdCardStrengthen![index] * 20;
+          return (status.cmdCardStrengthen?.getOrNull(index) ?? 0) * 20;
         })
         ..commandCodes = List.generate(selectedSvt.cards.length, (index) {
           return db.gameData.commandCodes[status.getCmdCode(index)];
@@ -803,7 +793,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       playerSvtData
         ..limitCount = 4
         ..lv = selectedSvt.lvMax
-        ..tdLv = 5
+        ..tdLv = selectedSvt.rarity > 3 ? 1 : 5
         ..skillLvs = [10, 10, 10]
         ..appendLvs = [0, 0, 0]
         ..atkFou = 1000
@@ -870,13 +860,36 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
 
   CraftEssence get ce => playerSvtData.ce!;
 
-  VoidCallback get onChange => widget.onChange;
+  @override
+  void initState() {
+    super.initState();
+    if (playerSvtData.ce == null) {
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        selectCE();
+      });
+    }
+  }
 
   @override
   Widget build(final BuildContext context) {
-    final List<Widget> topListChildren = [];
-    topListChildren.add(_header(context));
-    topListChildren.add(ServantOptionEditPage.buildSlider(
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.battle_edit_ce_option)),
+      body: Column(children: [
+        Expanded(child: body),
+        kDefaultDivider,
+        SafeArea(child: buttonBar),
+      ]),
+    );
+  }
+
+  Widget get body {
+    if (playerSvtData.ce == null) {
+      return const Center(child: Text("None"));
+    }
+    final List<Widget> children = [];
+    children.add(_header(context));
+
+    children.add(ServantOptionEditPage.buildSlider(
       leadingText: 'Lv',
       min: 1,
       max: ce.lvMax,
@@ -884,10 +897,14 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
       label: playerSvtData.ceLv.toString(),
       onChange: (v) {
         playerSvtData.ceLv = v.round();
+        final mlbLv = ce.ascensionAdd.lvMax.ascension[3];
+        if (mlbLv != null && mlbLv > 0 && playerSvtData.ceLv > mlbLv) {
+          playerSvtData.ceLimitBreak = true;
+        }
         _updateState();
       },
     ));
-    topListChildren.add(Padding(
+    children.add(Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: ToggleButtons(
         borderRadius: const BorderRadius.all(Radius.circular(8)),
@@ -908,23 +925,45 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
         ],
       ),
     ));
-
-    return Scaffold(
-      appBar: AppBar(
-        titleSpacing: 0,
-        title: AutoSizeText(S.current.battle_edit_ce_option, maxLines: 1),
-        centerTitle: false,
-      ),
-      body: ListView(
-        children: divideTiles(
-          topListChildren,
-          divider: const Divider(height: 10, thickness: 4),
-        ),
+    return ListView(
+      children: divideTiles(
+        children,
+        divider: const Divider(height: 8, thickness: 1),
       ),
     );
   }
 
+  Widget get buttonBar {
+    return ButtonBar(
+      children: [
+        TextButton(
+          onPressed: playerSvtData.ce == null
+              ? null
+              : () {
+                  playerSvtData.ce = null;
+                  _updateState();
+                },
+          child: Text(
+            S.current.clear,
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
+        ),
+        TextButton(
+          onPressed: selectCE,
+          child: const Text('Select CE'),
+        ),
+        TextButton(
+          onPressed: selectStoryCE,
+          child: const Text('Story CE'),
+        ),
+      ],
+    );
+  }
+
   Widget _header(final BuildContext context) {
+    final atk = ce.atkGrowth.getOrNull(playerSvtData.ceLv - 1) ?? 0,
+        hp = ce.hpGrowth.getOrNull(playerSvtData.ceLv - 1) ?? 0;
+
     return CustomTile(
       leading: playerSvtData.ce!.iconBuilder(
         context: context,
@@ -932,6 +971,8 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
         jumpToDetail: true,
         overrideIcon: ce.borderedIcon,
       ),
+      trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+      onTap: ce.routeTo,
       title: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -941,7 +982,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
             'No.${ce.collectionNo > 0 ? ce.collectionNo : ce.id}'
             '  ${Transl.ceObtain(ce.obtain).l}',
           ),
-          const SizedBox(height: 4),
+          Text('ATK $atk  HP $hp'),
         ],
       ),
     );
@@ -950,7 +991,54 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
   void _updateState() {
     if (mounted) {
       setState(() {});
-      onChange();
+      widget.onChange();
     }
+  }
+
+  void selectCE() {
+    router.pushPage(
+      CraftListPage(
+        onSelected: (selectedCe) {
+          _onSelectCE(selectedCe);
+        },
+        filterData: db.settings.craftFilterData,
+      ),
+      detail: true,
+    );
+  }
+
+  void selectStoryCE() {
+    router.pushPage(
+      EnemyListPage(
+        onSelected: (card) async {
+          if (card.type != SvtType.servantEquip) {
+            EasyLoading.showError(S.current.invalid_input);
+            return;
+          }
+          EasyLoading.show();
+          CraftEssence? ce = await AtlasApi.ce(card.id);
+          EasyLoading.dismiss();
+          if (ce == null) {
+            EasyLoading.showError(S.current.not_found);
+            return;
+          }
+          _onSelectCE(ce);
+        },
+        filterData: EnemyFilterData()..svtType.options.add(SvtType.servantEquip),
+      ),
+      detail: true,
+    );
+  }
+
+  void _onSelectCE(final CraftEssence selectedCE) {
+    playerSvtData.ce = selectedCE;
+    final status = db.curUser.ceStatusOf(selectedCE.collectionNo);
+    if (selectedCE.collectionNo > 0 && status.status == CraftStatus.owned) {
+      playerSvtData.ceLv = status.lv;
+      playerSvtData.ceLimitBreak = status.limitCount == 4;
+    } else {
+      playerSvtData.ceLv = 1;
+    }
+    _updateState();
   }
 }

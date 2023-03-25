@@ -15,7 +15,7 @@ import 'filter.dart';
 
 class CraftListPage extends StatefulWidget {
   final CraftFilterData? filterData;
-  final void Function(CraftEssence)? onSelected;
+  final void Function(CraftEssence ce)? onSelected;
 
   CraftListPage({super.key, this.onSelected, this.filterData});
 
