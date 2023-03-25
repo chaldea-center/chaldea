@@ -157,6 +157,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     super.initState();
     if (playerSvtData.svt == null) {
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        if (mounted) Navigator.pop(context);
         selectSvt();
       });
     }
@@ -724,9 +725,9 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   }
 
   void _updateState() {
+    widget.onChange();
     if (mounted) {
       setState(() {});
-      widget.onChange();
     }
   }
 
@@ -866,6 +867,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     super.initState();
     if (playerSvtData.ce == null) {
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        if (mounted) Navigator.pop(context);
         selectCE();
       });
     }
@@ -990,9 +992,9 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
   }
 
   void _updateState() {
+    widget.onChange();
     if (mounted) {
       setState(() {});
-      widget.onChange();
     }
   }
 

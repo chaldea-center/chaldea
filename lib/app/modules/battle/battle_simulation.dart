@@ -150,9 +150,13 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     allyParty = ResponsiveLayout(verticalAlign: CrossAxisAlignment.center, children: [
       for (final svt in allies) Responsive(small: 4, child: svt),
     ]);
-    enemyParty = ResponsiveLayout(verticalAlign: CrossAxisAlignment.center, children: [
-      for (final enemy in enemies) Responsive(small: 4, child: enemy),
-    ]);
+    enemyParty = ResponsiveLayout(
+      textDirection: TextDirection.rtl,
+      verticalAlign: CrossAxisAlignment.center,
+      children: [
+        for (final enemy in enemies) Responsive(small: 4, child: enemy),
+      ],
+    );
 
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 8),
