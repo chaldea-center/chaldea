@@ -316,6 +316,7 @@ class SharedBuilder {
     required NiceTrait trait,
     TextStyle? style,
     double? textScaleFactor,
+    String Function(NiceTrait trait)? format,
   }) {
     return InkWell(
       onTap: () {
@@ -324,7 +325,7 @@ class SharedBuilder {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
         child: Text(
-          trait.shownName(),
+          format?.call(trait) ?? trait.shownName(),
           style: style ?? TextStyle(color: Theme.of(context).colorScheme.secondaryContainer),
           textScaleFactor: textScaleFactor,
         ),

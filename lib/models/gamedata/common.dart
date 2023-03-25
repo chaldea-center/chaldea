@@ -79,7 +79,7 @@ class NiceTrait with RouteInfo {
     return '$runtimeType($signedId)';
   }
 
-  String shownName({bool addSvtId = true, bool field = true}) {
+  String shownName({bool addSvtId = true, bool field = false}) {
     final s = Transl.trait(id, addSvtId: addSvtId, field: field).l;
     if (negative == true) {
       return '${M.of(jp: null, cn: '非', tw: null, na: 'Not', kr: null)} $s';

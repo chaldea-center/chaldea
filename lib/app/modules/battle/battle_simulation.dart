@@ -381,7 +381,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                     children: SharedBuilder.traitSpans(
                       context: context,
                       traits: battleData.getFieldTraits(),
-                      format: (trait) => trait.shownName(field: false).split(':').skip(1).join(':'),
+                      format: (trait) => trait.shownName().split(':').skip(1).join(':'),
                     ),
                   )
                 ],
