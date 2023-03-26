@@ -49,7 +49,7 @@ class AddState {
       }
 
       battleData.setTarget(target);
-      if (await shouldAddState(battleData, dataVals, activator, target) &&
+      if (await shouldAddState(battleData, dataVals, activator, target, isCommandCode) &&
           target.isBuffStackable(buffData.buff.buffGroup) &&
           checkSameBuffLimitNum(target, dataVals)) {
         target.addBuff(
@@ -90,8 +90,9 @@ class AddState {
     final DataVals dataVals,
     final BattleServantData? activator,
     final BattleServantData target,
+    final bool isCommandCode,
   ) async {
-    if (dataVals.ForceAddState == 1) {
+    if (dataVals.ForceAddState == 1 || isCommandCode) {
       return true;
     }
 
