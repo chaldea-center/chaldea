@@ -27,7 +27,7 @@ class PlayerSvtData {
   List<int> appendLvs = [0, 0, 0];
   int tdLv = 5;
   NiceTd? td;
-  int lv = -1; // -1=mlb, 90, 100, 120
+  int lv = 1; // -1=mlb, 90, 100, 120
   int atkFou = 1000;
   int hpFou = 1000;
 

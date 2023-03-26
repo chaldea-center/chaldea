@@ -326,6 +326,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       questErrorMsg = '${S.current.not_found}: /${region.upper}/quest/$questId/$phase';
       if (hash != null) questErrorMsg = '${questErrorMsg!}?hash=$hash';
     }
+    if (mounted) setState(() {});
   }
 
   void _questSelectCallback(final QuestPhase selected) {

@@ -101,6 +101,14 @@ class NiceTrait with RouteInfo {
 
   @override
   String get route => Routes.traitI(id);
+
+  @override
+  int get hashCode => Object.hashAll(['NiceTrait', id, negative]);
+
+  @override
+  bool operator ==(Object other) {
+    return other.runtimeType == runtimeType && other.hashCode == hashCode;
+  }
 }
 
 mixin DataScriptBase {

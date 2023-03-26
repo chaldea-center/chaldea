@@ -323,10 +323,10 @@ class BuffData {
   String durationString() {
     final List<String> durationString = [];
     if (count > 0) {
-      durationString.add('$count ${S.current.battle_buff_times}');
+      durationString.add(Transl.special.funcValCountTimes(count));
     }
     if (turn > 0) {
-      durationString.add('$turn ${S.current.battle_buff_turns}');
+      durationString.add(Transl.special.funcValTurns(turn));
     }
     if (durationString.isEmpty) {
       durationString.add(S.current.battle_buff_permanent);

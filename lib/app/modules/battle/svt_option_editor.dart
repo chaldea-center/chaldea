@@ -155,7 +155,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   @override
   void initState() {
     super.initState();
-    if (playerSvtData.svt == null) {
+    if (playerSvtData.svt == null && widget.supportServants.isEmpty) {
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         if (mounted) Navigator.pop(context);
         selectSvt();
@@ -351,8 +351,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     final faces = svt.extraAssets.faces;
     final ascensionText = svt.getCostume(playerSvtData.limitCount)?.lName.l ??
         '${S.current.ascension} ${playerSvtData.limitCount == 0 ? 1 : playerSvtData.limitCount}';
-    final atk = svt.atkGrowth[playerSvtData.lv - 1] + playerSvtData.atkFou,
-        hp = svt.hpGrowth[playerSvtData.lv - 1] + playerSvtData.hpFou;
+    final atk = (svt.atkGrowth.getOrNull(playerSvtData.lv - 1) ?? 0) + playerSvtData.atkFou,
+        hp = (svt.hpGrowth.getOrNull(playerSvtData.lv - 1) ?? 0) + playerSvtData.hpFou;
     return CustomTile(
       leading: svt.iconBuilder(
         context: context,
@@ -795,7 +795,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       playerSvtData
         ..limitCount = 4
         ..lv = selectedSvt.lvMax
-        ..tdLv = selectedSvt.rarity > 3 ? 1 : 5
+        ..tdLv = selectedSvt.rarity > 3 || selectedSvt.extra.obtains.contains(SvtObtain.eventReward) ? 1 : 5
         ..skillLvs = [10, 10, 10]
         ..appendLvs = [0, 0, 0]
         ..atkFou = 1000
@@ -812,8 +812,13 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   }
 
   Future<void> _onSelectSupport(final SupportServant support) async {
+    EasyLoading.show();
     final svt = await AtlasApi.svt(support.svt.id);
-    if (svt == null) return;
+    EasyLoading.dismiss();
+    if (svt == null) {
+      EasyLoading.showError('Servant ${support.svt.id} not found');
+      return;
+    }
     // if collected battle data didn't choose support svt,
     // no trait info and passive skills
     if (support.traits.isNotEmpty) {

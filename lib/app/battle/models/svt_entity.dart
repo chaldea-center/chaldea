@@ -10,7 +10,7 @@ import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
-import 'package:chaldea/utils/basic.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'buff.dart';
 import 'card_dmg.dart';
 import 'skill.dart';
@@ -32,7 +32,7 @@ class BattleServantData {
 
   String get lBattleName => isPlayer ? niceSvt!.lBattleName(ascensionPhase).l : niceEnemy!.lShownName;
 
-  int get limitCount => niceEnemy?.limit?.limitCount ?? 0;
+  int get limitCount => niceEnemy?.limit?.limitCount ?? ascensionPhase;
 
   // int index = 0;
   // int exceedCount = 0;
@@ -59,7 +59,7 @@ class BattleServantData {
   // int overkillTargetId = 0;
   // int resultHp = 0;
   // List<int> userCommandCodeIds = [];
-  // List<int> svtIndividuality = [];
+  // List<NiceTrait> svtIndividuality = [];
   // int tdId = 0;
   // int tdLv = 0;
 
@@ -138,9 +138,9 @@ class BattleServantData {
       ..level = settings.lv
       ..td = settings.td
       ..ascensionPhase = settings.limitCount
-      ..hp = settings.svt!.hpGrowth[settings.lv - 1] + settings.hpFou
-      ..maxHp = settings.svt!.hpGrowth[settings.lv - 1] + settings.hpFou
-      ..atk = settings.svt!.atkGrowth[settings.lv - 1] + settings.atkFou;
+      ..hp = (settings.svt!.hpGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.hpFou
+      ..maxHp = (settings.svt!.hpGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.hpFou
+      ..atk = (settings.svt!.atkGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.atkFou;
 
     if (settings.ce != null) {
       svt.equip = BattleCEData(settings.ce!, settings.ceLimitBreak, settings.ceLv);
@@ -308,18 +308,30 @@ class BattleServantData {
     }
   }
 
+  List<NiceTrait> getBasicSvtTraits({int? eventId}) {
+    Set<NiceTrait> traits = {};
+
+    if (niceEnemy != null) {
+      traits.addAll(niceEnemy!.traits);
+    } else if (niceSvt != null) {
+      if (niceSvt!.ascensionAdd.individuality.all.containsKey(ascensionPhase)) {
+        traits.addAll(niceSvt!.ascensionAdd.individuality.all[ascensionPhase]!);
+      } else {
+        traits.addAll(niceSvt!.traits);
+      }
+      // idx=1,2, or eventId01
+      for (final add in niceSvt!.traitAdd) {
+        if (add.idx < 10 || (add.idx > 100 && (add.idx ~/ 100) == eventId)) {
+          traits.addAll(add.trait);
+        }
+      }
+    }
+    return traits.toList();
+  }
+
   List<NiceTrait> getTraits(final BattleData battleData) {
     final List<NiceTrait> allTraits = [];
-    if (isEnemy) {
-      allTraits.addAll(niceEnemy!.traits);
-    } else {
-      if (niceSvt!.ascensionAdd.individuality.all.containsKey(ascensionPhase)) {
-        allTraits.addAll(niceSvt!.ascensionAdd.individuality.all[ascensionPhase]!);
-      } else {
-        allTraits.addAll(niceSvt!.traits);
-      }
-      niceSvt!.traitAdd.forEach((e) => allTraits.addAll(e.trait));
-    }
+    allTraits.addAll(getBasicSvtTraits(eventId: battleData.niceQuest?.war?.eventId));
 
     final List<int> removeTraitIds = [];
     battleData.setActivator(this);
@@ -451,6 +463,7 @@ class BattleServantData {
       return;
     }
 
+    // TODO: shift deck may not contain target enemy?
     final nextShift =
         battleData.enemyDecks[DeckType.shift]!.firstWhere((questEnemy) => questEnemy.npcId == shiftNpcIds[shiftIndex]);
     niceEnemy = nextShift;

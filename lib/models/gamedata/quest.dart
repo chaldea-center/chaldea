@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/game_card.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -170,6 +171,11 @@ class Quest with RouteInfo {
 
   @override
   String get route => Routes.questI(id);
+
+  @override
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) {
+    super.routeTo(child: child ?? QuestDetailPage(quest: this, region: region), popDetails: popDetails);
+  }
 
   Transl<String, String> get lSpot {
     final spot = this.spot;

@@ -20,6 +20,7 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'details/battle_log.dart';
+import 'details/svt_detail.dart';
 
 class BattleSimulationPage extends StatefulWidget {
   final QuestPhase questPhase;
@@ -118,6 +119,14 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
   List<PopupMenuEntry> popupMenuItemBuilder(BuildContext context) {
     List<PopupMenuEntry> items = [
       PopupMenuItem(
+        enabled: battleData.niceQuest != null,
+        onTap: () async {
+          await null;
+          battleData.niceQuest?.routeTo();
+        },
+        child: Text(S.current.quest),
+      ),
+      PopupMenuItem(
         child: Text(S.current.battle_battle_log),
         onTap: () async {
           await null;
@@ -208,7 +217,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           child: child,
         );
       }
-      child = Padding(padding: const EdgeInsets.only(top: 40), child: child);
+      child = Padding(padding: const EdgeInsets.symmetric(vertical: 40), child: child);
       return child;
     }
 
@@ -270,33 +279,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     children.add(InkWell(
       child: iconImage,
       onTap: () {
-        showDialog(
-          context: context,
-          useRootNavigator: false,
-          builder: (context) {
-            return SimpleCancelOkDialog(
-              title: Text(S.current.battle_buff_details),
-              contentPadding: const EdgeInsets.all(8),
-              content: SingleChildScrollView(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: divideTiles([
-                    for (final buff in svt.battleBuff.allBuffs)
-                      ListTile(
-                        horizontalTitleGap: 5,
-                        minVerticalPadding: 0,
-                        leading: buildBuffIcon(buff),
-                        title: Text(buff.effectString()),
-                        trailing: Text(buff.durationString()),
-                      )
-                  ]),
-                ),
-              ),
-              hideCancel: true,
-            );
-          },
-        );
+        router.pushPage(BattleSvtDetail(svt: svt, battleData: battleData));
       },
     ));
     if (svt.isPlayer) {

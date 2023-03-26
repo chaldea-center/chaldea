@@ -208,7 +208,7 @@ class BuffConvert {
         if (target['detail'] != null) {
           // nice buff or basic buff
           targetBuffs.add(Buff.fromJson(Map.from(target)));
-        } else if (target['id'] != null && target.keys.every((key) => ['id', 'negative', 'name'].contains(key))) {
+        } else if (target['id'] != null) {
           targetTraits.add(NiceTrait.fromJson(Map.from(target)));
         }
       }

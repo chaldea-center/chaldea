@@ -13,6 +13,8 @@ mixin GameCardMixin implements RouteInfo {
 
   int get collectionNo;
 
+  int get shownId => collectionNo > 0 ? collectionNo : id;
+
   String get name;
 
   int get rarity;
