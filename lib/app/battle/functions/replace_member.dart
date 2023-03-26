@@ -81,26 +81,24 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
       Wrap(
         children: List.generate(selectableOnField.length, (index) {
           final svt = selectableOnField[index];
-          return Flexible(
-            child: DecoratedBox(
-              decoration: onFieldSelection == svt
-                  ? BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: Colors.redAccent, width: 4),
-                    )
-                  : const BoxDecoration(),
-              child: InkWell(
-                child: svt.niceSvt!.iconBuilder(
-                  context: context,
-                  jumpToDetail: false,
-                  width: 56,
-                  overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase, true),
-                ),
-                onTap: () {
-                  onFieldSelection = svt;
-                  if (mounted) setState(() {});
-                },
+          return DecoratedBox(
+            decoration: onFieldSelection == svt
+                ? BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(color: Colors.redAccent, width: 4),
+                  )
+                : const BoxDecoration(),
+            child: InkWell(
+              child: svt.niceSvt!.iconBuilder(
+                context: context,
+                jumpToDetail: false,
+                width: 56,
+                overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase, true),
               ),
+              onTap: () {
+                onFieldSelection = svt;
+                if (mounted) setState(() {});
+              },
             ),
           );
         }),
@@ -117,26 +115,24 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
       Wrap(
         children: List.generate(selectableBackup.length, (index) {
           final svt = selectableBackup[index];
-          return Flexible(
-            child: DecoratedBox(
-              decoration: backupSelection == svt
-                  ? BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(color: Colors.redAccent, width: 4),
-                    )
-                  : const BoxDecoration(),
-              child: InkWell(
-                child: svt.niceSvt!.iconBuilder(
-                  context: context,
-                  jumpToDetail: false,
-                  width: 56,
-                  overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase, true),
-                ),
-                onTap: () {
-                  backupSelection = svt;
-                  if (mounted) setState(() {});
-                },
+          return DecoratedBox(
+            decoration: backupSelection == svt
+                ? BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    border: Border.all(color: Colors.redAccent, width: 4),
+                  )
+                : const BoxDecoration(),
+            child: InkWell(
+              child: svt.niceSvt!.iconBuilder(
+                context: context,
+                jumpToDetail: false,
+                width: 56,
+                overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase, true),
               ),
+              onTap: () {
+                backupSelection = svt;
+                if (mounted) setState(() {});
+              },
             ),
           );
         }),
