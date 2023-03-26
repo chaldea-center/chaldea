@@ -59,7 +59,7 @@ class _EffectSearchPageState extends State<EffectSearchPage>
 
   @override
   Widget build(BuildContext context) {
-    filterShownList(compare: (a, b) => a.collectionNo - b.collectionNo);
+    filterShownList(compare: (a, b) => b.collectionNo - a.collectionNo);
     return scrollListener(
       useGrid: filterData.useGrid,
       appBar: AppBar(

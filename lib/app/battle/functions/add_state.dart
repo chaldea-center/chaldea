@@ -17,13 +17,18 @@ class AddState {
     final DataVals dataVals,
     final List<BattleServantData> targets, {
     final List<NiceTd>? tdSelections,
-    final bool isPassive = false,
+    bool isPassive = false,
     final bool notActorPassive = false,
     final bool isCommandCode = false,
     final bool isShortBuff = false,
   }) async {
     final activator = battleData.activator;
     bool buffAdded = false;
+    if (dataVals.ProcActive == 1) {
+      isPassive = false;
+    } else if (dataVals.ProcPassive == 1) {
+      isPassive = true;
+    }
     for (int i = 0; i < targets.length; i += 1) {
       final target = targets[i];
       final buffData = BuffData(buff, dataVals)

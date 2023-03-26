@@ -44,6 +44,7 @@ There are plenty of work need to do.
 - [ ] Figure out how to write reasonable test cases for UI required effects like randomEffect & changeTdType
 - [ ] funcSuccess for some wired function types
 - [ ] `DataVals.ProcPassive` will add buff to passive list, even if it's called from an active skill. Same for `ProcActive`
+- [ ] BuffConvert is converting a buff list to another buff list, (or trait list to another buff list, not used yet)
 
 #### Unknowns:
 
@@ -74,7 +75,6 @@ There are plenty of work need to do.
   buff.parma=vals.Value+pointBuff.value
 - [ ] Custom skill! (passive or active)
 - [ ] Player side `allyTargetIndex` could be null or -1, let user to choose manually
-- [ ] WIN toast!
 
 ### NPC Simulation
 
