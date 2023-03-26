@@ -350,6 +350,9 @@ void main() async {
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, kamaWithDoubleCastoria, null);
 
+      expect(battle.waveCount, 1);
+      expect(battle.totalTurnCount, 1);
+      expect(battle.turnCount, 1);
       final kama = battle.targetedAlly!;
       expect(kama.battleBuff.allBuffs.length, 13);
       await battle.activateSvtSkill(0, 0);

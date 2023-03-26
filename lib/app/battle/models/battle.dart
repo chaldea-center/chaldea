@@ -63,7 +63,7 @@ class BattleData {
   List<BattleSkillInfoData> masterSkillInfo = []; //BattleSkillInfoData
 
   int waveCount = 0;
-  int turnCount = 1;
+  int turnCount = 0;
   int totalTurnCount = 0;
 
   double criticalStars = 0;
@@ -237,7 +237,7 @@ class BattleData {
       return false;
     }
     waveCount += 1;
-    turnCount = 1;
+    turnCount = 0;
 
     _fetchWaveEnemies();
     for (final enemy in enemyDataList) {
