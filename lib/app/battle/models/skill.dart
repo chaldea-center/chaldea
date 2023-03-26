@@ -121,6 +121,7 @@ class BattleSkillInfoData {
     final bool notActorSkill = false,
     final bool isCommandCode = false,
     final int? effectiveness,
+    final bool defaultToAlly = true,
   }) async {
     if (!battleData.checkTraits(skill.actIndividuality, false)) {
       return;
@@ -142,6 +143,7 @@ class BattleSkillInfoData {
       isCommandCode: isCommandCode,
       selectedActionIndex: selectedActionIndex,
       effectiveness: effectiveness,
+      defaultToAlly: defaultToAlly,
     );
   }
 

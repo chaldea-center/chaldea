@@ -20,6 +20,7 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'details/battle_log.dart';
+import 'details/custom_skill_activator.dart';
 import 'details/svt_detail.dart';
 
 class BattleSimulationPage extends StatefulWidget {
@@ -140,7 +141,20 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           if (mounted) setState(() {});
         },
       ),
-      const PopupMenuItem(enabled: false, child: Text('Custom Skill')),
+      PopupMenuItem(
+        child: Text(S.current.battle_activate_custom_skill),
+        onTap: () async {
+          await null;
+          router.pushPage(
+            CustomSkillActivator(
+              battleData: battleData,
+              onActivate: () {
+                if (mounted) setState(() {});
+              },
+            ),
+          );
+        },
+      ),
     ];
     return items;
   }

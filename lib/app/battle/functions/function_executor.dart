@@ -38,6 +38,7 @@ class FunctionExecutor {
     final bool isCommandCode = false,
     final int? selectedActionIndex,
     final int? effectiveness,
+    final bool defaultToAlly = true,
   }) async {
     for (int index = 0; index < functions.length; index += 1) {
       NiceFunction func = functions[index];
@@ -70,6 +71,7 @@ class FunctionExecutor {
         isCommandCode: isCommandCode,
         selectedActionIndex: selectedActionIndex,
         effectiveness: effectiveness,
+        defaultToAlly: defaultToAlly,
       );
     }
 
@@ -184,6 +186,7 @@ class FunctionExecutor {
     final bool isCommandCode = false,
     final int? selectedActionIndex,
     final int? effectiveness,
+    final bool defaultToAlly = true,
   }) async {
     final BattleServantData? activator = battleData.activator;
     if (!validateFunctionTargetTeam(function, activator)) {
@@ -239,6 +242,7 @@ class FunctionExecutor {
       function.funcTargetType,
       function.funcId,
       activator,
+      defaultToAlly: defaultToAlly,
     );
     final checkBuff = dataVals.IncludePassiveIndividuality == 1;
     targets.retainWhere((svt) =>
@@ -494,11 +498,12 @@ class FunctionExecutor {
     final BattleData battleData,
     final FuncTargetType funcTargetType,
     final int funcId,
-    final BattleServantData? activator,
-  ) {
+    final BattleServantData? activator, {
+    final bool defaultToAlly = true,
+  }) {
     final List<BattleServantData> targets = [];
 
-    final isAlly = activator?.isPlayer ?? true;
+    final isAlly = activator?.isPlayer ?? defaultToAlly;
     final List<BattleServantData> backupAllies =
         isAlly ? battleData.nonnullBackupAllies : battleData.nonnullBackupEnemies;
     final List<BattleServantData> aliveAllies = isAlly ? battleData.nonnullAllies : battleData.nonnullEnemies;

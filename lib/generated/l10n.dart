@@ -536,6 +536,17 @@ class S {
     );
   }
 
+  /// `Activate Custom Skill`
+  String get battle_activate_custom_skill {
+    return Intl.message(
+      'Activate Custom Skill',
+      name: 'battle_activate_custom_skill',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Activation Probability`
   String get battle_activate_probability {
     return Intl.message(
@@ -833,6 +844,17 @@ class S {
     );
   }
 
+  /// `No skill selected`
+  String get battle_no_skill_selected {
+    return Intl.message(
+      'No skill selected',
+      name: 'battle_no_skill_selected',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `No Source`
   String get battle_no_source {
     return Intl.message(
@@ -937,6 +959,17 @@ class S {
     return Intl.message(
       'Required self traits',
       name: 'battle_require_self_traits',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Select Activator`
+  String get battle_select_activator {
+    return Intl.message(
+      'Select Activator',
+      name: 'battle_select_activator',
       desc: '',
       locale: localeName,
       args: [],
