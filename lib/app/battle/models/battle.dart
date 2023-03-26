@@ -150,7 +150,7 @@ class BattleData {
 
   bool get isBattleWin {
     return waveCount >= Maths.max(niceQuest?.stages.map((e) => e.wave) ?? [], -1) &&
-        (curStage == null || (enemyDataList.isEmpty && onFieldEnemies.isEmpty));
+        (curStage == null || (enemyDataList.isEmpty && onFieldEnemies.every((e) => e == null)));
   }
 
   Future<void> init(

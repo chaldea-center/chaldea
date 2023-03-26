@@ -37,7 +37,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   String? questErrorMsg;
   String? errorMsg;
 
-  late TextEditingController questIdTextController;
+  TextEditingController questIdTextController = TextEditingController();
 
   final List<PlayerSvtData> onFieldSvtDataList = [
     PlayerSvtData.base(),
@@ -69,10 +69,9 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       if (widget.region != null) {
         initText = '/${widget.region!.upper}/quest/$initText';
       }
-      questIdTextController = TextEditingController(text: initText);
+      questIdTextController.text = initText;
     } else if (db.settings.battleSim.previousQuestPhase != null) {
-      initText = db.settings.battleSim.previousQuestPhase;
-      questIdTextController = TextEditingController(text: initText);
+      questIdTextController.text = db.settings.battleSim.previousQuestPhase!;
       _fetchQuestPhase();
     }
   }
@@ -337,6 +336,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       Navigator.popUntil(context, (route) => route == curRoute);
     }
     questErrorMsg = null;
+    questIdTextController.text = '${selected.id}/${selected.phase}';
     setState(() {});
   }
 

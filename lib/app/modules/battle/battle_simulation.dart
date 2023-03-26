@@ -147,12 +147,13 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     ];
 
     Widget allyParty, enemyParty;
-    allyParty = ResponsiveLayout(verticalAlign: CrossAxisAlignment.center, children: [
+    allyParty = ResponsiveLayout(verticalAlign: CrossAxisAlignment.start, children: [
       for (final svt in allies) Responsive(small: 4, child: svt),
     ]);
     enemyParty = ResponsiveLayout(
-      textDirection: TextDirection.rtl,
-      verticalAlign: CrossAxisAlignment.center,
+      rowDirection: TextDirection.rtl,
+      reversedColumn: true,
+      verticalAlign: CrossAxisAlignment.start,
       children: [
         for (final enemy in enemies) Responsive(small: 4, child: enemy),
       ],
@@ -189,11 +190,26 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
 
   Widget buildBattleSvtData(final BattleServantData? svt, final int index) {
     if (svt == null) {
-      return CachedImage(
+      Widget child = CachedImage(
         imageUrl: 'https://static.atlasacademy.io/JP/Enemys/0.png',
         height: 72,
         placeholder: (context, url) => const SizedBox.shrink(),
       );
+      if (!Theme.of(context).isDarkMode) {
+        // invert color
+        child = ColorFiltered(
+          colorFilter: const ColorFilter.matrix([
+            //R G  B  A  Const
+            -1, 0, 0, 0, 255,
+            0, -1, 0, 0, 255,
+            0, 0, -1, 0, 255,
+            0, 0, 0, 1, 0,
+          ]),
+          child: child,
+        );
+      }
+      child = Padding(padding: const EdgeInsets.only(top: 40), child: child);
+      return child;
     }
 
     final List<Widget> children = [];
@@ -466,7 +482,9 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                     builder: (context) => showCommandCards(context, combatActions),
                   );
                 },
-          child: Text(battleData.isBattleWin ? 'Win' : S.current.battle_attack),
+          child: battleData.isBattleWin
+              ? Text('Win', style: TextStyle(color: Theme.of(context).colorScheme.secondary))
+              : Text(S.current.battle_attack),
         )
       ],
     );
