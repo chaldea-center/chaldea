@@ -11,6 +11,7 @@ import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -338,28 +339,33 @@ class __ClearCacheDialogState extends State<_ClearCacheDialog> {
         ],
       ),
       onTapOk: () async {
-        if (memory) {
-          AtlasIconLoader.i.clearAll();
-          imageCache.clear();
-          imageCache.clearLiveImages();
-          await AtlasApi.clear();
-        }
-        if (app) {
-          await DefaultCacheManager().emptyCache();
-          await ImageViewerCacheManager().emptyCache();
-        }
-        if (temp) {
-          await AtlasApi.clear();
-          if (!kIsWeb) {
-            Directory(db.paths.tempDir)
-              ..deleteSync(recursive: true)
-              ..createSync(recursive: true);
+        try {
+          if (memory) {
+            AtlasIconLoader.i.clearAll();
+            imageCache.clear();
+            imageCache.clearLiveImages();
+            await AtlasApi.clear();
           }
+          if (app) {
+            await DefaultCacheManager().emptyCache();
+            await ImageViewerCacheManager().emptyCache();
+          }
+          if (temp) {
+            await AtlasApi.clear();
+            if (!kIsWeb) {
+              Directory(db.paths.tempDir)
+                ..deleteSync(recursive: true)
+                ..createSync(recursive: true);
+            }
+          }
+          if (atlas) {
+            //
+          }
+          EasyLoading.showToast(S.current.clear_cache_finish);
+        } catch (e, s) {
+          EasyLoading.showError(e.toString());
+          logger.e('clear cache failed', e, s);
         }
-        if (atlas) {
-          //
-        }
-        EasyLoading.showToast(S.current.clear_cache_finish);
         db.notifyAppUpdate();
       },
     );

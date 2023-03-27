@@ -33,6 +33,11 @@ class _AboutPageState extends State<AboutPage> {
         S.current.fgo_domus_aurea: 'https://sites.google.com/view/fgo-domus-aurea',
         '茹西教王的理想鄉': 'http://kazemai.github.io/fgo-vz/'
       };
+  Map<String, String> get inspiredBy => {
+        "Guda@iOS": "https://ngabbs.com/read.php?tid=12082000",
+        "素材规划小程序": "https://ngabbs.com/read.php?tid=12570313",
+        "Teamup": "https://www.fgo-teamup.com",
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -183,6 +188,17 @@ class _AboutPageState extends State<AboutPage> {
                 title: Text('icyalala@NGA'),
                 subtitle: AutoSizeText('Fate/Freedom Order data', maxLines: 1),
               ),
+            ],
+          ),
+          TileGroup(
+            header: 'Inspired by',
+            children: <Widget>[
+              for (var ref in inspiredBy.entries)
+                ListTile(
+                  title: Text(ref.key),
+                  subtitle: AutoSizeText(ref.value, maxLines: 1),
+                  onTap: () => launch(ref.value),
+                ),
             ],
           ),
           TileGroup(
