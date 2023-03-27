@@ -45,6 +45,7 @@ There are plenty of work need to do.
 - [ ] funcSuccess for some wired function types
 - [ ] `DataVals.ProcPassive` will add buff to passive list, even if it's called from an active skill. Same for `ProcActive`
 - [ ] BuffConvert is converting a buff list to another buff list, (or trait list to another buff list, not used yet)
+- [ ] Enemy shift target may not exist
 
 #### Unknowns:
 

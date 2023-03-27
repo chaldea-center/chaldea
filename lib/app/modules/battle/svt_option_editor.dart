@@ -23,17 +23,18 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../craft_essence/craft_list.dart';
 import '../enemy/support_servant.dart';
 import '../servant/servant_list.dart';
+import 'details/add_extra_passive.dart';
 import 'simulation_preview.dart';
 
 class ServantOptionEditPage extends StatefulWidget {
   final PlayerSvtData playerSvtData;
-  final List<SupportServant> supportServants;
+  final QuestPhase? questPhase;
   final VoidCallback onChange;
 
   ServantOptionEditPage({
     super.key,
     required this.playerSvtData,
-    required this.supportServants,
+    required this.questPhase,
     required this.onChange,
   });
 
@@ -149,13 +150,13 @@ class ServantOptionEditPage extends StatefulWidget {
 
 class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   PlayerSvtData get playerSvtData => widget.playerSvtData;
-
   Servant get svt => playerSvtData.svt!;
+  QuestPhase? get questPhase => widget.questPhase;
 
   @override
   void initState() {
     super.initState();
-    if (playerSvtData.svt == null && widget.supportServants.isEmpty) {
+    if (playerSvtData.svt == null && questPhase?.supportServants.isNotEmpty != true) {
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         if (mounted) Navigator.pop(context);
         selectSvt();
@@ -306,14 +307,38 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         child: _buildSliderGroup(),
       ),
       divider,
-      SHeader(S.current.details),
-      const Divider(thickness: 1, height: 1),
-      _buildTdDescriptor(context),
-      kDefaultDivider,
-      for (final skillNum in kActiveSkillNums) _buildActiveSkill(context, skillNum),
-      kDefaultDivider,
-      for (final skillNum in kAppendSkillNums) _buildAppendSkill(context, skillNum),
-      divider,
+      TileGroup(
+        header: S.current.noble_phantasm,
+        children: [
+          _buildTdDescriptor(context),
+        ],
+      ),
+      TileGroup(
+        header: S.current.active_skill,
+        children: [
+          for (final skillNum in kActiveSkillNums) _buildActiveSkill(context, skillNum),
+        ],
+      ),
+      TileGroup(
+        header: S.current.append_skill,
+        children: [
+          for (final skillNum in kAppendSkillNums) _buildAppendSkill(context, skillNum),
+        ],
+      ),
+      TileGroup(
+        header: 'Extra Passive',
+        children: [
+          for (int index = 0; index < playerSvtData.extraPassives.length; index++) _buildExtraPassive(index),
+          Center(
+            child: TextButton(
+              onPressed: () {
+                router.pushPage(AddExtraPassivePage(svtData: playerSvtData));
+              },
+              child: const Text('Add Extra Passive'),
+            ),
+          )
+        ],
+      ),
       _buildCmdCodePlanner()
     ];
     return ListView(children: children);
@@ -338,7 +363,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           onPressed: selectSvt,
           child: const Text('Select Servant'),
         ),
-        if (widget.supportServants.isNotEmpty)
+        if (questPhase?.supportServants.isNotEmpty == true)
           TextButton(
             onPressed: selectSupport,
             child: const Text('Select Support'),
@@ -642,7 +667,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         return ListTile(
           dense: true,
           horizontalTitleGap: 0,
-          leading: db.getIconImage(skill?.icon, width: 24),
+          leading: db.getIconImage(skill?.icon ?? Atlas.common.emptySkillIcon, width: 24),
           title: Text(title),
           subtitle: Text(subtitle),
         );
@@ -653,6 +678,70 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           skill: skill,
           showEnemy: !svt.isUserSvt,
           level: playerSvtData.appendLvs[index],
+        );
+      },
+    );
+  }
+
+  Widget _buildExtraPassive(int index) {
+    final skill = playerSvtData.extraPassives[index];
+    final lv = playerSvtData.extraPassiveLvs[index];
+    final maxLv = skill.maxLv;
+    return SimpleAccordion(
+      headerBuilder: (context, _) {
+        String title = skill.lName.l;
+        if (maxLv > 1) {
+          title += ' Lv.$lv';
+        }
+        String subtitle = skill.lDetail ?? '???';
+        return ListTile(
+          dense: true,
+          horizontalTitleGap: 0,
+          leading: db.getIconImage(skill.icon ?? Atlas.common.emptySkillIcon, width: 24),
+          title: Text(title),
+          subtitle: Text(subtitle, textScaleFactor: 0.85, maxLines: 2, overflow: TextOverflow.ellipsis),
+        );
+      },
+      contentBuilder: (context) {
+        return Column(
+          children: [
+            Wrap(
+              spacing: 8,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      playerSvtData.extraPassives.removeAt(index);
+                      playerSvtData.extraPassiveLvs.removeAt(index);
+                    });
+                  },
+                  child: Text(
+                    S.current.remove,
+                    // style: TextStyle(color: Theme.of(context).colorScheme.error),
+                  ),
+                ),
+                if (maxLv > 1)
+                  DropdownButton<int>(
+                    items: [
+                      for (int lv2 = 1; lv2 <= maxLv; lv2++) DropdownMenuItem(value: lv2, child: Text('Lv.$lv2')),
+                    ],
+                    onChanged: (v) {
+                      setState(() {
+                        if (v != null) {
+                          playerSvtData.extraPassiveLvs[index] = v;
+                        }
+                      });
+                    },
+                  ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            SkillDescriptor(
+              skill: skill,
+              showEnemy: !svt.isUserSvt,
+              level: playerSvtData.appendLvs[index],
+            ),
+          ],
         );
       },
     );
@@ -746,6 +835,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   }
 
   void selectSupport() {
+    final supports = questPhase?.supportServants ?? [];
     showDialog(
       context: context,
       useRootNavigator: false,
@@ -753,12 +843,12 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         return SimpleDialog(
           title: Text(S.current.support_servant),
           children: [
-            for (final svt in widget.supportServants)
+            for (final svt in supports)
               SimpleDialogOption(
                 child: SupportServantTile(
                   svt: svt,
                   onTap: null,
-                  hasLv100: widget.supportServants.any((e) => e.lv >= 100),
+                  hasLv100: supports.any((e) => e.lv >= 100),
                 ),
                 onPressed: () async {
                   Navigator.pop(context);
@@ -802,6 +892,15 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         ..hpFou = 1000
         ..cardStrengthens = [0, 0, 0, 0, 0]
         ..commandCodes = [null, null, null, null, null];
+    }
+
+    for (final skill in selectedSvt.extraPassive) {
+      for (final cond in skill.extraPassive) {
+        if (cond.eventId == 0 || cond.eventId == questPhase?.war?.eventId) {
+          if (skill.maxLv <= 0) continue;
+          playerSvtData.addExtraPassive(skill, skill.maxLv);
+        }
+      }
     }
 
     playerSvtData.td = ServantSelector.getShownTds(selectedSvt, playerSvtData.limitCount).last;

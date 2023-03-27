@@ -186,7 +186,6 @@ class BattleServantData {
 
   Future<void> init(final BattleData battleData) async {
     final List<NiceSkill> passives = isPlayer
-        // TODO: niceSvt!.extraPassive should be manually added in battle setup
         ? [...niceSvt!.classPassive]
         : [...niceEnemy!.classPassive.classPassive, ...niceEnemy!.classPassive.addPassive];
 
@@ -196,16 +195,24 @@ class BattleServantData {
     }
 
     if (isPlayer) {
-      for (int i = 0; i < niceSvt!.appendPassive.length; i += 1) {
-        final appendLv = playerSvtData!.appendLvs.length > i ? playerSvtData!.appendLvs[i] : 0;
+      for (int index = 0; index < niceSvt!.appendPassive.length; index += 1) {
+        final appendLv = playerSvtData!.appendLvs.length > index ? playerSvtData!.appendLvs[index] : 0;
         if (appendLv > 0) {
           await BattleSkillInfoData.activateSkill(
             battleData,
-            niceSvt!.appendPassive[i].skill,
+            niceSvt!.appendPassive[index].skill,
             appendLv,
             isPassive: true,
           );
         }
+      }
+      for (int index = 0; index < playerSvtData!.extraPassives.length; index++) {
+        await BattleSkillInfoData.activateSkill(
+          battleData,
+          playerSvtData!.extraPassives[index],
+          playerSvtData!.appendLvs[index],
+          isPassive: true,
+        );
       }
     }
 

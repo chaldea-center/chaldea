@@ -25,8 +25,11 @@ class PlayerSvtData {
   List<int> skillLvs = [10, 10, 10];
   List<NiceSkill?> skills = [null, null, null];
   List<int> appendLvs = [0, 0, 0];
+  List<BaseSkill> extraPassives = [];
+  List<int> extraPassiveLvs = [];
   int tdLv = 5;
   NiceTd? td;
+
   int lv = 1; // -1=mlb, 90, 100, 120
   int atkFou = 1000;
   int hpFou = 1000;
@@ -56,6 +59,12 @@ class PlayerSvtData {
 
   void setNpStrengthenLv(final int npStrengthenLv) {
     td = svt!.groupedNoblePhantasms[1]?[npStrengthenLv - 1];
+  }
+
+  void addExtraPassive(BaseSkill skill, int lv) {
+    if (skill.maxLv <= 0) return;
+    extraPassives.add(skill);
+    extraPassiveLvs.add(lv);
   }
 }
 

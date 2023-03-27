@@ -129,6 +129,8 @@ class BaseSkill with SkillOrTd, RouteInfo {
   @override
   Transl<String, String> get lName => Transl.skillNames(name);
 
+  int get maxLv => functions.firstOrNull?.svals.length ?? 0;
+
   @override
   String? get lDetail {
     if (unmodifiedDetail == null) return null;

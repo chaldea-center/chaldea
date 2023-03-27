@@ -255,7 +255,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                 Expanded(
                   child: ServantSelector(
                     playerSvtData: svt,
-                    supportServants: questPhase?.supportServants ?? [],
+                    questPhase: questPhase,
                     onChange: () {
                       if (mounted) setState(() {});
                     },
@@ -337,7 +337,10 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       Navigator.popUntil(context, (route) => route == curRoute);
     }
     questErrorMsg = null;
-    questIdTextController.text = '${selected.id}/${selected.phase}';
+    db.settings.battleSim.previousQuestPhase = '${selected.id}/${selected.phase}';
+    if (mounted) {
+      questIdTextController.text = db.settings.battleSim.previousQuestPhase!;
+    }
     setState(() {});
   }
 
@@ -452,10 +455,10 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
 class ServantSelector extends StatelessWidget {
   final PlayerSvtData playerSvtData;
-  final List<SupportServant> supportServants;
+  final QuestPhase? questPhase;
   final VoidCallback onChange;
 
-  ServantSelector({super.key, required this.playerSvtData, required this.supportServants, required this.onChange});
+  ServantSelector({super.key, required this.playerSvtData, required this.questPhase, required this.onChange});
 
   @override
   Widget build(final BuildContext context) {
@@ -488,7 +491,7 @@ class ServantSelector extends StatelessWidget {
       onTap: () {
         router.pushPage(ServantOptionEditPage(
           playerSvtData: playerSvtData,
-          supportServants: supportServants,
+          questPhase: questPhase,
           onChange: onChange,
         ));
       },

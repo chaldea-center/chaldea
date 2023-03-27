@@ -8,7 +8,8 @@ import '../common/filter_page_base.dart';
 import 'skill_filter.dart';
 
 class SkillListPage extends StatefulWidget {
-  const SkillListPage({super.key});
+  final void Function(BaseSkill? skill, int? skillId)? onSelected;
+  const SkillListPage({super.key, this.onSelected});
 
   @override
   _SkillListPageState createState() => _SkillListPageState();
@@ -112,6 +113,11 @@ class _SkillListPageState extends State<SkillListPage> with SearchableListState<
         ),
       ),
       onTap: () {
+        if (widget.onSelected != null) {
+          Navigator.pop(context, skill);
+          widget.onSelected!(skill, _searchSkillId);
+          return;
+        }
         final id = skill?.id ?? _searchSkillId;
         if (id != null) router.popDetailAndPush(context: context, url: Routes.skillI(id));
       },
