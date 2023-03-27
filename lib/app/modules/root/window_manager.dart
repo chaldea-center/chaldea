@@ -265,7 +265,7 @@ class MultipleWindow extends StatelessWidget {
       body: ListView.builder(
         padding: const EdgeInsets.symmetric(vertical: 8),
         itemBuilder: (context, index) {
-          final url = AppRouterDelegate.history[AppRouterDelegate.history.length - 1 - index];
+          final url = AppRouterDelegate.urlHistory[AppRouterDelegate.urlHistory.length - 1 - index];
           return ListTile(
             dense: true,
             title: Text(url),
@@ -275,7 +275,7 @@ class MultipleWindow extends StatelessWidget {
             },
           );
         },
-        itemCount: AppRouterDelegate.history.length,
+        itemCount: AppRouterDelegate.urlHistory.length,
       ),
     );
   }

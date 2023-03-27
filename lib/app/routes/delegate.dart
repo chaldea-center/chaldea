@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -37,7 +39,7 @@ class _AppShellState extends State<AppShell> {
 
 class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin<RouteConfiguration> {
-  static List<String> history = [];
+  static List<String> urlHistory = [];
 
   // final RootAppRouterDelegate _parent;
   final RootAppRouterDelegate _parent;
@@ -46,14 +48,15 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     addListener(_parent.notifyListeners);
   }
 
-  final List<Page> _pages = [];
+  final List<_PageEntry> _history = [];
 
-  List<Page> get pages => List.unmodifiable(_pages);
+  List<Page> get pages => List.unmodifiable(_history.map((e) => e.page));
 
   @override
-  RouteConfiguration? get currentConfiguration => _pages.isNotEmpty && _pages.last.arguments is RouteConfiguration
-      ? _pages.last.arguments as RouteConfiguration
-      : null;
+  RouteConfiguration? get currentConfiguration =>
+      _history.isNotEmpty && _history.last.page.arguments is RouteConfiguration
+          ? _history.last.page.arguments as RouteConfiguration
+          : null;
 
   @override
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
@@ -66,52 +69,102 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
 
   @override
   Widget build(BuildContext context) {
-    if (_pages.isEmpty) {
-      _pages.add(RouteConfiguration.home().createPage());
+    if (_history.isEmpty) {
+      _history.add(_PageEntry(RouteConfiguration.home().createPage(), Completer()));
     }
     return SizedBox(
       key: _uniqueKey,
       child: Navigator(
         key: navigatorKey,
-        pages: List.of(_pages),
+        pages: pages,
         onPopPage: onPopPage,
       ),
     );
   }
 
-  Widget buildSpecific(BuildContext context, List<Page> pages) {
-    _pages
-      ..clear()
-      ..addAll(pages);
-    return build(context);
-  }
-
   // only called when [Page] found
   bool onPopPage(Route route, dynamic result) {
     if (!route.didPop(result)) return false;
+    assert(_history.any((p) => p.page == route.settings));
+    bool handled = true;
     if (canPop()) {
-      _pages.removeLast();
+      for (int index = _history.length - 1; index >= 0; index--) {
+        if (_history[index].page == route.settings) {
+          _history.removeAt(index).complete(result);
+        }
+      }
+    } else {
+      handled = false;
     }
     notifyListeners();
-    return true;
+    return handled;
   }
 
   bool canPop() {
-    return _pages.length > 1;
+    return _history.length > 1;
   }
 
-  void popAll() {
-    _pages.clear();
+  void _doPop([dynamic result]) {
+    _history.removeLast().complete(result);
+  }
+
+  void pop([dynamic result]) {
+    if (canPop()) {
+      _doPop(result);
+    }
     notifyListeners();
   }
 
-  void pushPage(
+  void popAll() {
+    while (canPop()) {
+      _doPop();
+    }
+    notifyListeners();
+  }
+
+  void popUntil(bool Function(Page<dynamic> page) predicate) {
+    while (canPop()) {
+      final candidate = _history.last;
+      if (predicate(candidate.page)) {
+        return;
+      }
+      pop();
+    }
+  }
+
+  Future<T?> push<T extends Object?>({
+    String? url,
+    Widget? child,
+    dynamic arguments,
+    bool? detail,
+    // bool popDetail = false,
+    Region? region,
+  }) {
+    assert(url != null || child != null);
+    // if (popDetail) popDetails();
+    final page = RouteConfiguration(
+      url: url,
+      child: child,
+      detail: detail,
+      arguments: arguments,
+      region: region,
+    ).createPage();
+    final completer = Completer<T>();
+    _history.add(_PageEntry(page, completer));
+    if (url != null && url.trim().trimChar('/').isNotEmpty) {
+      urlHistory.add(url);
+    }
+    notifyListeners();
+    return completer.future;
+  }
+
+  Future<T?> pushPage<T extends Object?>(
     Widget child, {
     dynamic arguments,
     bool? detail,
     bool popDetail = false,
   }) {
-    popDetailAndPush(
+    return popDetailAndPush(
       child: child,
       arguments: arguments,
       detail: detail,
@@ -119,13 +172,13 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     );
   }
 
-  void pushBuilder({
+  Future<T?> pushBuilder<T extends Object?>({
     required WidgetBuilder builder,
     dynamic arguments,
     bool? detail,
     bool popDetail = false,
   }) {
-    popDetailAndPush(
+    return popDetailAndPush(
       child: Builder(builder: builder),
       arguments: arguments,
       detail: detail,
@@ -133,7 +186,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     );
   }
 
-  void popDetailAndPush({
+  Future<T?> popDetailAndPush<T extends Object?>({
     BuildContext? context,
     String? url,
     Widget? child,
@@ -145,7 +198,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
       popDetail = !SplitRoute.isDetail(context);
     }
     if (popDetail ?? true) popDetails();
-    push(
+    return push(
       url: url,
       child: child,
       arguments: arguments,
@@ -153,65 +206,19 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     );
   }
 
-  void push({
-    String? url,
-    Widget? child,
-    dynamic arguments,
-    bool? detail,
-    // bool popDetail = false,
-    Region? region,
-  }) {
-    assert(url != null || child != null);
-    // if (popDetail) popDetails();
-    _pages.add(RouteConfiguration(
-      url: url,
-      child: child,
-      detail: detail,
-      arguments: arguments,
-      region: region,
-    ).createPage());
-    if (url != null && url.trim().trimChar('/').isNotEmpty) {
-      history.add(url);
-    }
-    notifyListeners();
-  }
-
   // better to check current route is [master] before pop details
   // use `SplitRoute.isMaster`
   void popDetails() {
     while (canPop()) {
-      final lastRoute = _pages.last;
-      if (lastRoute is SplitPage && lastRoute.detail == true) {
-        _pages.removeLast();
+      final lastEntry = _history.last;
+      final page = lastEntry.page;
+      if (page is SplitPage && page.detail == true) {
+        _history.remove(lastEntry);
+        lastEntry.complete(null);
       } else {
         return;
       }
     }
-  }
-
-  void pop() {
-    if (canPop()) {
-      _pages.removeLast();
-    }
-  }
-
-  void replace({
-    String? url,
-    Widget? child,
-    dynamic arguments,
-    bool? detail,
-  }) {
-    if (_pages.isNotEmpty) {
-      _pages.removeLast();
-    }
-    assert(() {
-      if (_pages.isEmpty && detail == true) {
-        throw FlutterError('The bottom route should not be detail layout!\n'
-            '${_pages.last.arguments}');
-      }
-      return true;
-    }());
-    push(url: url, child: child, arguments: arguments, detail: detail);
   }
 
   @override
@@ -219,12 +226,27 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     if (Routes.masterRoutes.contains(configuration.first)) {
       configuration = configuration.copyWith(detail: false);
     }
-    if (_pages.isEmpty || _pages.first.name != Routes.home) {
-      _pages.insert(0, RouteConfiguration.home().createPage());
+    if (_history.isEmpty || _history.first.page.name != Routes.home) {
+      _history.insert(0, _PageEntry.config(RouteConfiguration.home()));
     }
-    if (configuration.url != _pages.last.name) {
-      _pages.add(configuration.createPage());
+    if (configuration.url != _history.last.page.name) {
+      _history.add(_PageEntry.config(configuration));
     }
     return SynchronousFuture(null);
+  }
+}
+
+class _PageEntry<T> {
+  final Page page;
+  final Completer<T?> _completer;
+
+  _PageEntry(this.page, [Completer<T?>? completer]) : _completer = completer ?? Completer();
+
+  _PageEntry.config(RouteConfiguration config, [Completer<T?>? completer])
+      : page = config.createPage(),
+        _completer = completer ?? Completer();
+
+  void complete([T? result]) {
+    _completer.complete(result);
   }
 }

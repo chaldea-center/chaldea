@@ -535,7 +535,8 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
     if (link != null) {
       const routePrefix = 'chaldea://';
       if (link.toLowerCase().startsWith(routePrefix) && link.length > routePrefix.length + 1) {
-        return router.push(url: link.substring(routePrefix.length));
+        router.push(url: link.substring(routePrefix.length));
+        return;
       }
     }
     String? shownLink = link;
