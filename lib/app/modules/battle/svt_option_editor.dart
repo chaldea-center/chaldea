@@ -337,7 +337,14 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       TileGroup(
         header: S.current.extra_passive,
         children: [
-          for (int index = 0; index < playerSvtData.extraPassives.length; index++) _buildExtraPassive(index),
+          for (final passive in playerSvtData.extraPassives)
+            if (passive.isEnabledForEvent(questPhase?.war?.eventId ?? 0)) _buildExtraPassive(passive),
+        ],
+      ),
+      TileGroup(
+        header: '${S.current.extra_passive} (${S.current.general_custom})',
+        children: [
+          for (int index = 0; index < playerSvtData.additionalPassives.length; index++) _buildAdditionalPassive(index),
           Center(
             child: TextButton(
               onPressed: () async {
@@ -693,9 +700,58 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     );
   }
 
-  Widget _buildExtraPassive(int index) {
-    final skill = playerSvtData.extraPassives[index];
-    final lv = playerSvtData.extraPassiveLvs[index];
+  Widget _buildExtraPassive(NiceSkill skill) {
+    return SimpleAccordion(
+      headerBuilder: (context, _) {
+        String title = skill.lName.l;
+        String subtitle = skill.lDetail ?? '???';
+        return ListTile(
+          dense: true,
+          horizontalTitleGap: 0,
+          leading: db.getIconImage(skill.icon ?? Atlas.common.emptySkillIcon, width: 24),
+          title: Text(title),
+          subtitle: Text(subtitle, textScaleFactor: 0.85, maxLines: 2, overflow: TextOverflow.ellipsis),
+        );
+      },
+      contentBuilder: (context) {
+        return Column(
+          children: [
+            Wrap(
+              spacing: 8,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      playerSvtData.extraPassives.remove(skill);
+                    });
+                  },
+                  child: Text(
+                    S.current.remove,
+                    // style: TextStyle(color: Theme.of(context).colorScheme.error),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Material(
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: SkillDescriptor(
+                  skill: skill,
+                  showEnemy: !svt.isUserSvt,
+                ),
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildAdditionalPassive(int index) {
+    final skill = playerSvtData.additionalPassives[index];
+    final lv = playerSvtData.additionalPassiveLvs[index];
     final maxLv = skill.maxLv;
     return SimpleAccordion(
       headerBuilder: (context, _) {
@@ -721,8 +777,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                 TextButton(
                   onPressed: () {
                     setState(() {
-                      playerSvtData.extraPassives.removeAt(index);
-                      playerSvtData.extraPassiveLvs.removeAt(index);
+                      playerSvtData.additionalPassives.removeAt(index);
+                      playerSvtData.additionalPassiveLvs.removeAt(index);
                     });
                   },
                   child: Text(
@@ -732,14 +788,14 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                 ),
                 if (maxLv > 1)
                   DropdownButton<int>(
-                    value: playerSvtData.extraPassiveLvs[index],
+                    value: playerSvtData.additionalPassiveLvs[index],
                     items: [
                       for (int lv2 = 1; lv2 <= maxLv; lv2++) DropdownMenuItem(value: lv2, child: Text('Lv.$lv2')),
                     ],
                     onChanged: (v) {
                       setState(() {
                         if (v != null) {
-                          playerSvtData.extraPassiveLvs[index] = v;
+                          playerSvtData.additionalPassiveLvs[index] = v;
                         }
                       });
                     },
@@ -911,14 +967,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         ..commandCodes = [null, null, null, null, null];
     }
 
-    for (final skill in selectedSvt.extraPassive) {
-      for (final cond in skill.extraPassive) {
-        if (cond.eventId == 0 || cond.eventId == questPhase?.war?.eventId) {
-          if (skill.maxLv <= 0) continue;
-          playerSvtData.addExtraPassive(skill, skill.maxLv);
-        }
-      }
-    }
+    playerSvtData.extraPassives = selectedSvt.extraPassive.toList();
 
     playerSvtData.td = ServantSelector.getShownTds(selectedSvt, playerSvtData.limitCount).last;
     for (final skillNum in kActiveSkillNums) {

@@ -282,6 +282,10 @@ class NiceSkill extends BaseSkill {
     }
     return _$NiceSkillFromJson(json);
   }
+
+  bool isEnabledForEvent(int eventId) {
+    return extraPassive.any((e) => e.eventId == 0 || e.eventId == eventId);
+  }
 }
 
 @JsonSerializable()

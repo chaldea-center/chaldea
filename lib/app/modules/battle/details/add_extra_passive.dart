@@ -21,8 +21,7 @@ class AddExtraPassivePage extends StatefulWidget {
 class _AddExtraPassivePageState extends State<AddExtraPassivePage> with SingleTickerProviderStateMixin {
   PlayerSvtData get svtData => widget.svtData;
 
-  late final bool hasSvtExtraPassive = svtData.svt?.extraPassive.isNotEmpty == true;
-  late final _tabController = TabController(length: hasSvtExtraPassive ? 3 : 2, vsync: this);
+  late final _tabController = TabController(length: 2, vsync: this);
 
   @override
   void dispose() {
@@ -36,14 +35,13 @@ class _AddExtraPassivePageState extends State<AddExtraPassivePage> with SingleTi
       appBar: AppBar(
         title: Text(S.current.add_skill),
         bottom: FixedHeight.tabBar(TabBar(controller: _tabController, tabs: [
-          if (hasSvtExtraPassive) Tab(text: S.current.extra_passive),
           const Tab(text: 'ID'),
           Tab(text: S.current.general_custom),
         ])),
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [fromSvtTab, fromDBTab, customSkillTab],
+        children: [fromDBTab, customSkillTab],
       ),
     );
   }
@@ -75,7 +73,7 @@ class _AddExtraPassivePageState extends State<AddExtraPassivePage> with SingleTi
             onPressed: hasAdded
                 ? null
                 : () {
-                    svtData.addExtraPassive(skill, skill.maxLv);
+                    svtData.addCustomPassive(skill, skill.maxLv);
                     Navigator.pop(context);
                   },
             icon: const Icon(Icons.add),
@@ -106,7 +104,7 @@ class _AddExtraPassivePageState extends State<AddExtraPassivePage> with SingleTi
                   }
                 }
                 if (skill != null) {
-                  svtData.addExtraPassive(skill, skill.maxLv);
+                  svtData.addCustomPassive(skill, skill.maxLv);
                   if (mounted) Navigator.pop(context);
                 }
               },

@@ -1,5 +1,4 @@
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/modules/battle/simulation_preview.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/builders.dart';
@@ -39,7 +38,7 @@ class BattleHomePage extends StatelessWidget {
                 title: Text(S.current.battle_simulation),
                 // horizontalTitleGap: 0,
                 onTap: () {
-                  router.popDetailAndPush(child: const SimulationPreview());
+                  router.push(url: Routes.laplace);
                 },
               ),
               const ListTile(

@@ -27,6 +27,7 @@ import 'package:chaldea/models/gamedata/event.dart';
 import '../../models/gamedata/const_data.dart';
 import '../../packages/split_route/split_route.dart';
 import '../../utils/extension.dart';
+import '../modules/battle/simulation_preview.dart';
 import '../modules/bgm/bgm.dart';
 import '../modules/bgm/bgm_list.dart';
 import '../modules/buff/buff_detail.dart';
@@ -168,6 +169,9 @@ class Routes {
   static const String ffo = '/ffo';
   static const String effectSearch = '/effect-search';
   static const String apk = '/apk';
+
+  static const String laplace = '/laplace';
+
   static const String notFound = '/404';
   static const String routes = '/routes';
 
@@ -416,6 +420,8 @@ class RouteConfiguration {
       case Routes.td:
       case 'NP':
         return TdDetailPage(id: _secondInt, region: region);
+      case Routes.laplace:
+        return const SimulationPreview();
       case Routes.apk:
         return const ApkListPage();
       case Routes.routes:

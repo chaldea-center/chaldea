@@ -206,12 +206,22 @@ class BattleServantData {
           );
         }
       }
-      for (int index = 0; index < playerSvtData!.extraPassives.length; index++) {
-        final extraPassiveLv =
-            playerSvtData!.extraPassiveLvs.length > index ? playerSvtData!.extraPassiveLvs[index] : 0;
+      for (final skill in playerSvtData!.extraPassives) {
+        if (skill.isEnabledForEvent(battleData.niceQuest?.war?.eventId ?? 0)) {
+          await BattleSkillInfoData.activateSkill(
+            battleData,
+            skill,
+            1,
+            isPassive: true,
+          );
+        }
+      }
+      for (int index = 0; index < playerSvtData!.additionalPassives.length; index++) {
+        final skill = playerSvtData!.additionalPassives[index];
+        final extraPassiveLv = playerSvtData!.additionalPassiveLvs[index];
         await BattleSkillInfoData.activateSkill(
           battleData,
-          playerSvtData!.extraPassives[index],
+          skill,
           extraPassiveLv,
           isPassive: true,
         );

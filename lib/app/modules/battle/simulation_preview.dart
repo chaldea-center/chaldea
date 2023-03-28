@@ -457,15 +457,18 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
   void _startSimulation() {
     db.settings.battleSim.previousQuestPhase = '${questPhase!.id}/${questPhase!.phase}';
-    router.pushPage(BattleSimulationPage(
-      questPhase: questPhase!,
-      onFieldSvtDataList: onFieldSvtDataList,
-      backupSvtDataList: backupSvtDataList,
-      mysticCodeData: mysticCodeData,
-      fixedRandom: fixedRandom,
-      probabilityThreshold: probabilityThreshold,
-      isAfter7thAnni: isAfter7thAnni,
-    ));
+    router.push(
+      url: Routes.laplace,
+      child: BattleSimulationPage(
+        questPhase: questPhase!,
+        onFieldSvtDataList: onFieldSvtDataList,
+        backupSvtDataList: backupSvtDataList,
+        mysticCodeData: mysticCodeData,
+        fixedRandom: fixedRandom,
+        probabilityThreshold: probabilityThreshold,
+        isAfter7thAnni: isAfter7thAnni,
+      ),
+    );
   }
 }
 
