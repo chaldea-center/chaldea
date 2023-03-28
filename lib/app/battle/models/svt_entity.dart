@@ -207,10 +207,12 @@ class BattleServantData {
         }
       }
       for (int index = 0; index < playerSvtData!.extraPassives.length; index++) {
+        final extraPassiveLv =
+            playerSvtData!.extraPassiveLvs.length > index ? playerSvtData!.extraPassiveLvs[index] : 0;
         await BattleSkillInfoData.activateSkill(
           battleData,
           playerSvtData!.extraPassives[index],
-          playerSvtData!.appendLvs[index],
+          extraPassiveLv,
           isPassive: true,
         );
       }
