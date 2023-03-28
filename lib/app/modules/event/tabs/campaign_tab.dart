@@ -25,13 +25,26 @@ class CampaignEventTab extends StatelessWidget {
       events.removeWhere((e) => e.isOutdated());
     }
     events.sort2((e) => e.startedAt, reversed: reversed);
+    List<Widget> children = [];
+
+    if (db.curUser.region != Region.jp) {
+      for (final event in events) {
+        if (event.isOnGoing(db.curUser.region)) {
+          children.add(buildOne(context, event, true));
+        }
+      }
+    }
+    for (final event in events) {
+      children.add(buildOne(context, event, false));
+    }
+
     return ListView.builder(
-      itemCount: events.length,
-      itemBuilder: (context, index) => buildOne(context, events[index]),
+      itemCount: children.length,
+      itemBuilder: (context, index) => children[index],
     );
   }
 
-  Widget buildOne(BuildContext context, Event event) {
+  Widget buildOne(BuildContext context, Event event, bool highlight) {
     bool outdated = event.isOutdated();
     final region = db.curUser.region;
     Map<Region, int?> dates = {
@@ -57,7 +70,10 @@ class CampaignEventTab extends StatelessWidget {
       subtitle: AutoSizeText(
         subtitle,
         maxLines: 1,
-        style: outdated ? TextStyle(color: _outdatedColor?.withAlpha(200)) : null,
+        style: TextStyle(
+          color: outdated ? _outdatedColor?.withAlpha(200) : null,
+          decoration: highlight ? TextDecoration.underline : null,
+        ),
         textScaleFactor: 0.9,
       ),
       onTap: () {

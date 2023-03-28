@@ -65,6 +65,7 @@ class EventListPageState extends State<EventListPage>
   Widget build(BuildContext context) {
     filterShownList();
     List<Event> limitEvents = [], campaignEvents = [];
+
     for (final event in shownList) {
       if (const [EventType.eventQuest, EventType.warBoard].contains(event.type)) {
         limitEvents.add(event);
@@ -72,6 +73,7 @@ class EventListPageState extends State<EventListPage>
         campaignEvents.add(event);
       }
     }
+
     return Scaffold(
       appBar: AppBar(
         leading: const MasterBackButton(),
