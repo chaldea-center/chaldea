@@ -31,6 +31,7 @@ For more details or usage, please check our document: [English](https://docs.cha
   - all needed account data from captured https traffic when login to CN/TW/JP/NA server
   - import item/active skill/append skill data from game screenshots (realized on server side)
   - from [https://fgosim.github.io/Material](https://fgosim.github.io/Material)
+- battle simulation on free quests with controllable random value for damage & np calculation
 
 ## Supported Platforms
 
@@ -102,5 +103,10 @@ And the dataset is powered by
 - The Chinese wiki - [Mooncell](https://fgo.wiki)
 - The English wiki - [Fandom - Fate/Grand Order Wiki](https://fategrandorder.fandom.com/wiki/)
 - [FGO 効率劇場](https://sites.google.com/view/fgo-domus-aurea)
+
+Battle simulation built with inspiration of
+
+- [FGO Teamup](https://www.fgo-teamup.com)
+- [FGO Simulator](https://github.com/SharpnelXu/FGOSimulator)
 
 Thanks for all above communities and contributors.
