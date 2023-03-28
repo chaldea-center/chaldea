@@ -732,6 +732,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                 ),
                 if (maxLv > 1)
                   DropdownButton<int>(
+                    value: playerSvtData.extraPassiveLvs[index],
                     items: [
                       for (int lv2 = 1; lv2 <= maxLv; lv2++) DropdownMenuItem(value: lv2, child: Text('Lv.$lv2')),
                     ],
