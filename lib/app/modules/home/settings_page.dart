@@ -138,21 +138,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   router.popDetailAndPush(child: TranslationSetting());
                 },
               ),
-              db.onUserData(
-                (context, snapshot) => SwitchListTile.adaptive(
-                  title: Text(S.current.new_drop_data_6th),
-                  subtitle:
-                      Text('~2.5.5, 6th(${S.current.region_jp})/5th(${S.current.region_na}) ${S.current.anniversary}'),
-                  value: true, // db.curUser.freeLPParams.use6th,
-                  controlAffinity: ListTileControlAffinity.trailing,
-                  onChanged: null,
-                  // onChanged: (v) {
-                  //   setState(() {
-                  //     db.curUser.freeLPParams.use6th = v;
-                  //   });
-                  // },
-                ),
-              )
             ],
           ),
           SliverTileGroup(

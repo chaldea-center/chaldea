@@ -23,19 +23,6 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
     return SimpleDialog(
       title: Text(S.current.settings_tab_name),
       children: [
-        SwitchListTile.adaptive(
-          dense: true,
-          value: true, // params.use6th,
-          title: Text(S.current.new_drop_data_6th),
-          subtitle: const Text('6th Anniversary(~2.5.5)'),
-          controlAffinity: ListTileControlAffinity.trailing,
-          onChanged: null,
-          // onChanged: (v) {
-          //   setState(() {
-          //     params.use6th = v;
-          //   });
-          // },
-        ),
         ListTile(
           dense: true,
           title: Text(S.current.free_progress),
