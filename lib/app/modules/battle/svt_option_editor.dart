@@ -331,8 +331,9 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           for (int index = 0; index < playerSvtData.extraPassives.length; index++) _buildExtraPassive(index),
           Center(
             child: TextButton(
-              onPressed: () {
-                router.pushPage(AddExtraPassivePage(svtData: playerSvtData));
+              onPressed: () async {
+                await router.pushPage(AddExtraPassivePage(svtData: playerSvtData));
+                if (mounted) setState(() {});
               },
               child: const Text('Add Extra Passive'),
             ),
@@ -736,11 +737,17 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               ],
             ),
             const SizedBox(height: 8),
-            SkillDescriptor(
-              skill: skill,
-              showEnemy: !svt.isUserSvt,
-              level: playerSvtData.appendLvs[index],
-            ),
+            Material(
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: SkillDescriptor(
+                  skill: skill,
+                  showEnemy: !svt.isUserSvt,
+                  level: lv,
+                ),
+              ),
+            )
           ],
         );
       },
