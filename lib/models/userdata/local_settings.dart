@@ -399,9 +399,11 @@ class TipsSetting {
 @JsonSerializable()
 class BattleSimSetting {
   String? previousQuestPhase;
+  bool preferPlayerData;
 
   BattleSimSetting({
     this.previousQuestPhase,
+    this.preferPlayerData = true,
   });
 
   factory BattleSimSetting.fromJson(Map<String, dynamic> json) => _$BattleSimSettingFromJson(json);

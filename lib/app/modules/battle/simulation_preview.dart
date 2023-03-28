@@ -97,6 +97,21 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       ],
     ));
 
+    topListChildren.add(Wrap(
+      alignment: WrapAlignment.center,
+      children: [
+        CheckboxWithLabel(
+          value: db.settings.battleSim.preferPlayerData,
+          label: Text(S.current.battle_prefer_player_data),
+          onChanged: (v) {
+            setState(() {
+              if (v != null) db.settings.battleSim.preferPlayerData = v;
+            });
+          },
+        )
+      ],
+    ));
+
     topListChildren.add(buildMisc());
 
     return Scaffold(
@@ -226,6 +241,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                 detail: true,
               );
             },
+            style: kTextButtonDenseStyle,
             child: Text('>>> ${S.current.quest_detail_btn} >>>'),
           ),
           QuestCard(

@@ -175,6 +175,17 @@ class _AboutPageState extends State<AboutPage> {
             title: Text(S.current.about_app_declaration_text),
           ),
           TileGroup(
+            children: [
+              ListTile(
+                title: const Text('Yome/FGO Simulator'),
+                subtitle: const Text('https://github.com/SharpnelXu/FGOSimulator'),
+                onTap: () {
+                  launch('https://github.com/SharpnelXu/FGOSimulator');
+                },
+              )
+            ],
+          ),
+          TileGroup(
             header: S.current.about_data_source,
             footer: S.current.about_data_source_footer,
             children: <Widget>[

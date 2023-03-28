@@ -123,10 +123,10 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                     showNone: true,
                     jumpToDetail: false,
                   ),
-                if (skill != null)
+                if (skill != null && skill!.maxLv > 1)
                   ServantOptionEditPage.buildSlider(
                     padding: EdgeInsets.zero,
-                    leadingText: S.current.battle_random,
+                    leadingText: S.current.level,
                     min: 1,
                     max: skill!.functions.first.svals.length,
                     value: skillLv,

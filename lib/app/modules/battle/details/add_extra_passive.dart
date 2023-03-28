@@ -34,10 +34,10 @@ class _AddExtraPassivePageState extends State<AddExtraPassivePage> with SingleTi
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Extra Passive'),
+        title: Text(S.current.add_skill),
         bottom: FixedHeight.tabBar(TabBar(controller: _tabController, tabs: [
-          if (hasSvtExtraPassive) const Tab(text: 'From Servant'),
-          const Tab(text: 'From DB'),
+          if (hasSvtExtraPassive) Tab(text: S.current.extra_passive),
+          const Tab(text: 'ID'),
           Tab(text: S.current.general_custom),
         ])),
       ),

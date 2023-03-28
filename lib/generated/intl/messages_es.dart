@@ -69,7 +69,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about_app": MessageLookupByLibrary.simpleMessage("Acerca de"),
         "about_app_declaration_text": MessageLookupByLibrary.simpleMessage(
-            "Los datos utilizados en esta aplicación provienen del juego Fate/GO y de los siguientes sitios web. Los derechos de autor de los textos, imágenes y voces originales del juego pertenecen a TYPE MOON/FGO PROJECT.\n\nEl diseño del programa se basa en el miniprograma WeChat \"Material Programe\" y la aplicación para iOS \"Guda\".\n"),
+            "Los datos utilizados en esta aplicación provienen del juego Fate/GO y de los siguientes sitios web. Los derechos de autor de los textos, imágenes y voces originales del juego pertenecen a TYPE MOON/FGO PROJECT.\n\nEl diseño del programa se basa en el miniprograma WeChat \"Material Programe\" y la aplicación para iOS \"Guda\"."),
         "about_data_source": MessageLookupByLibrary.simpleMessage("Fuente de datos"),
         "about_data_source_footer": MessageLookupByLibrary.simpleMessage(
             "Por favor, infórmenos si hay una fuente no acreditada o una infracción"),

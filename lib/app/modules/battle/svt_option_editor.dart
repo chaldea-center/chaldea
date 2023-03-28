@@ -67,7 +67,7 @@ class ServantOptionEditPage extends StatefulWidget {
           child: Slider(
             min: min.toDouble(),
             max: max.toDouble(),
-            divisions: max - min,
+            divisions: max > min ? max - min : null,
             value: value.toDouble(),
             label: label,
             onChanged: (v) {
@@ -94,7 +94,7 @@ class ServantOptionEditPage extends StatefulWidget {
       child: Slider(
         min: min.toDouble(),
         max: max.toDouble(),
-        divisions: max - min,
+        divisions: max > min ? max - min : null,
         value: value.toDouble(),
         label: label,
         onChanged: (v) {
@@ -167,7 +167,16 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   @override
   Widget build(final BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(S.current.battle_edit_servant_option)),
+      appBar: AppBar(
+        title: Text(S.current.battle_edit_servant_option),
+        actions: [
+          IconButton(
+            onPressed: selectSvt,
+            icon: const Icon(Icons.change_circle_outlined),
+            tooltip: S.current.select_servant,
+          )
+        ],
+      ),
       body: Column(
         children: [
           Expanded(child: body),
@@ -326,7 +335,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         ],
       ),
       TileGroup(
-        header: 'Extra Passive',
+        header: S.current.extra_passive,
         children: [
           for (int index = 0; index < playerSvtData.extraPassives.length; index++) _buildExtraPassive(index),
           Center(
@@ -335,7 +344,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                 await router.pushPage(AddExtraPassivePage(svtData: playerSvtData));
                 if (mounted) setState(() {});
               },
-              child: const Text('Add Extra Passive'),
+              child: Text(S.current.add_skill),
             ),
           )
         ],
@@ -362,12 +371,12 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         ),
         TextButton(
           onPressed: selectSvt,
-          child: const Text('Select Servant'),
+          child: Text(S.current.select_servant),
         ),
         if (questPhase?.supportServants.isNotEmpty == true)
           TextButton(
             onPressed: selectSupport,
-            child: const Text('Select Support'),
+            child: Text(S.current.select_support_servant),
           ),
       ],
     );
@@ -873,7 +882,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     playerSvtData.svt = selectedSvt;
     final status = db.curUser.svtStatusOf(selectedSvt.collectionNo);
     final curStatus = status.cur;
-    if (curStatus.favorite) {
+    if (db.settings.battleSim.preferPlayerData && curStatus.favorite) {
       playerSvtData
         ..limitCount = curStatus.ascension
         ..lv = selectedSvt.grailedLv(curStatus.grail)
@@ -987,7 +996,16 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
   @override
   Widget build(final BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(S.current.battle_edit_ce_option)),
+      appBar: AppBar(
+        title: Text(S.current.battle_edit_ce_option),
+        actions: [
+          IconButton(
+            onPressed: selectCE,
+            icon: const Icon(Icons.change_circle_outlined),
+            tooltip: S.current.select_ce,
+          )
+        ],
+      ),
       body: Column(children: [
         Expanded(child: body),
         kDefaultDivider,
@@ -1003,42 +1021,50 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     final List<Widget> children = [];
     children.add(_header(context));
 
-    children.add(ServantOptionEditPage.buildSlider(
-      leadingText: 'Lv',
-      min: 1,
-      max: ce.lvMax,
-      value: playerSvtData.ceLv,
-      label: playerSvtData.ceLv.toString(),
-      onChange: (v) {
-        playerSvtData.ceLv = v.round();
-        final mlbLv = ce.ascensionAdd.lvMax.ascension[3];
-        if (mlbLv != null && mlbLv > 0 && playerSvtData.ceLv > mlbLv) {
-          playerSvtData.ceLimitBreak = true;
-        }
-        _updateState();
-      },
-    ));
     children.add(Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: ToggleButtons(
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
-        onPressed: (final int index) {
-          playerSvtData.ceLimitBreak = index == 1;
+      padding: const EdgeInsetsDirectional.only(start: 16),
+      child: ServantOptionEditPage.buildSlider(
+        leadingText: 'Lv',
+        min: 1,
+        max: ce.lvMax,
+        value: playerSvtData.ceLv,
+        label: playerSvtData.ceLv.toString(),
+        onChange: (v) {
+          playerSvtData.ceLv = v.round();
+          final mlbLv = ce.ascensionAdd.lvMax.ascension[3];
+          if (mlbLv != null && mlbLv > 0 && playerSvtData.ceLv > mlbLv) {
+            playerSvtData.ceLimitBreak = true;
+          }
           _updateState();
         },
-        isSelected: [!playerSvtData.ceLimitBreak, playerSvtData.ceLimitBreak],
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(S.current.battle_not_limit_break),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(S.current.battle_limit_break),
-          )
-        ],
       ),
     ));
+    children.add(SwitchListTile.adaptive(
+      value: playerSvtData.ceLimitBreak,
+      title: Text(S.current.ce_max_limit_break),
+      onChanged: (v) {
+        setState(() {
+          playerSvtData.ceLimitBreak = v;
+        });
+      },
+    ));
+
+    Map<int, List<NiceSkill>> group = {};
+    for (final skill in ce.skills) {
+      group.putIfAbsent(skill.num, () => []).add(skill);
+    }
+    group = sortDict(group);
+    for (final skills in group.values) {
+      skills.sort2((e) => e.priority);
+      NiceSkill skill;
+      if (playerSvtData.ceLimitBreak) {
+        skill = skills.lastWhereOrNull((e) => e.condLimitCount == 4) ?? skills.last;
+      } else {
+        skill = skills.lastWhereOrNull((e) => e.condLimitCount < 4) ?? skills.last;
+      }
+      children.add(SkillDescriptor(skill: skill));
+    }
+
     return ListView(
       children: divideTiles(
         children,
@@ -1064,11 +1090,11 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
         ),
         TextButton(
           onPressed: selectCE,
-          child: const Text('Select CE'),
+          child: Text(S.current.select_ce),
         ),
         TextButton(
           onPressed: selectStoryCE,
-          child: const Text('Story CE'),
+          child: Text(S.current.story_ce),
         ),
       ],
     );
@@ -1147,7 +1173,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
   void _onSelectCE(final CraftEssence selectedCE) {
     playerSvtData.ce = selectedCE;
     final status = db.curUser.ceStatusOf(selectedCE.collectionNo);
-    if (selectedCE.collectionNo > 0 && status.status == CraftStatus.owned) {
+    if (db.settings.battleSim.preferPlayerData && selectedCE.collectionNo > 0 && status.status == CraftStatus.owned) {
       playerSvtData.ceLv = status.lv;
       playerSvtData.ceLimitBreak = status.limitCount == 4;
     } else {

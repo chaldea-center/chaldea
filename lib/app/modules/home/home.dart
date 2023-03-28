@@ -32,8 +32,8 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _curIndex,
         items: [
-          const BottomNavigationBarItem(icon: SafeArea(child: Icon(Icons.layers)), label: 'Chaldeas'),
-          const BottomNavigationBarItem(icon: SafeArea(child: Icon(Icons.blur_on_sharp)), label: 'Laplace'),
+          const BottomNavigationBarItem(icon: SafeArea(child: Icon(Icons.blur_on_sharp)), label: 'Chaldeas'),
+          const BottomNavigationBarItem(icon: SafeArea(child: Icon(Icons.bubble_chart)), label: 'Laplace'),
           BottomNavigationBarItem(
               icon: const SafeArea(child: Icon(Icons.settings)), label: S.current.settings_tab_name),
         ],

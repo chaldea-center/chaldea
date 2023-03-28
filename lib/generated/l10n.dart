@@ -96,10 +96,10 @@ class S {
     );
   }
 
-  /// `The data used in this application comes from game Fate/GO and the following websites. The copyright of the original texts, pictures and voices of game belongs to TYPE MOON/FGO PROJECT.\n\nThe design of program is based on the WeChat mini program "Material Programe" and the iOS application "Guda".\n`
+  /// `The data used in this application comes from game Fate/GO and the following websites. The copyright of the original texts, pictures and voices of game belongs to TYPE MOON/FGO PROJECT.\n\nThe design of program is based on the WeChat mini program "Material Programe" and the iOS application "Guda".\n\nBattle Simulator "Laplace" is implemented by Yome - the author of "FGO Simulator" which is also inspired by FGO teamup.`
   String get about_app_declaration_text {
     return Intl.message(
-      'The data used in this application comes from game Fate/GO and the following websites. The copyright of the original texts, pictures and voices of game belongs to TYPE MOON/FGO PROJECT.\n\nThe design of program is based on the WeChat mini program "Material Programe" and the iOS application "Guda".\n',
+      'The data used in this application comes from game Fate/GO and the following websites. The copyright of the original texts, pictures and voices of game belongs to TYPE MOON/FGO PROJECT.\n\nThe design of program is based on the WeChat mini program "Material Programe" and the iOS application "Guda".\n\nBattle Simulator "Laplace" is implemented by Yome - the author of "FGO Simulator" which is also inspired by FGO teamup.',
       name: 'about_app_declaration_text',
       desc: '',
       locale: localeName,
@@ -222,6 +222,17 @@ class S {
     return Intl.message(
       'Add Mission',
       name: 'add_mission',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Add Skill`
+  String get add_skill {
+    return Intl.message(
+      'Add Skill',
+      name: 'add_skill',
       desc: '',
       locale: localeName,
       args: [],
@@ -789,17 +800,6 @@ class S {
     );
   }
 
-  /// `LB`
-  String get battle_limit_break {
-    return Intl.message(
-      'LB',
-      name: 'battle_limit_break',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `MC Lv`
   String get battle_mc_lv {
     return Intl.message(
@@ -866,22 +866,22 @@ class S {
     );
   }
 
-  /// `not LB`
-  String get battle_not_limit_break {
+  /// `NP Card`
+  String get battle_np_card {
     return Intl.message(
-      'not LB',
-      name: 'battle_not_limit_break',
+      'NP Card',
+      name: 'battle_np_card',
       desc: '',
       locale: localeName,
       args: [],
     );
   }
 
-  /// `NP Card`
-  String get battle_np_card {
+  /// `Prefer Player Data`
+  String get battle_prefer_player_data {
     return Intl.message(
-      'NP Card',
-      name: 'battle_np_card',
+      'Prefer Player Data',
+      name: 'battle_prefer_player_data',
       desc: '',
       locale: localeName,
       args: [],
@@ -1042,10 +1042,10 @@ class S {
     );
   }
 
-  /// `Simulation Setup`
+  /// `Team Setup`
   String get battle_simulation_setup {
     return Intl.message(
-      'Simulation Setup',
+      'Team Setup',
       name: 'battle_simulation_setup',
       desc: '',
       locale: localeName,
@@ -3192,6 +3192,17 @@ class S {
     return Intl.message(
       'Exp Card',
       name: 'exp_card_title',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Extra Passive`
+  String get extra_passive {
+    return Intl.message(
+      'Extra Passive',
+      name: 'extra_passive',
       desc: '',
       locale: localeName,
       args: [],
@@ -7262,6 +7273,17 @@ class S {
     );
   }
 
+  /// `Select CE`
+  String get select_ce {
+    return Intl.message(
+      'Select CE',
+      name: 'select_ce',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Select copy source`
   String get select_copy_plan_source {
     return Intl.message(
@@ -7300,6 +7322,28 @@ class S {
     return Intl.message(
       'Select Plan',
       name: 'select_plan',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Select Servant`
+  String get select_servant {
+    return Intl.message(
+      'Select Servant',
+      name: 'select_servant',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Select Support`
+  String get select_support_servant {
+    return Intl.message(
+      'Select Support',
+      name: 'select_support_servant',
       desc: '',
       locale: localeName,
       args: [],
@@ -7949,6 +7993,17 @@ class S {
     return Intl.message(
       'Still Send',
       name: 'still_send',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Story CE`
+  String get story_ce {
+    return Intl.message(
+      'Story CE',
+      name: 'story_ce',
       desc: '',
       locale: localeName,
       args: [],

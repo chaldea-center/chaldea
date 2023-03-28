@@ -478,20 +478,8 @@ class FunctionExecutor {
     final int skillLevel,
     final int overchargeLevel,
   ) {
-    switch (overchargeLevel) {
-      case 1:
-        return function.svals[skillLevel - 1];
-      case 2:
-        return function.svals2![skillLevel - 1];
-      case 3:
-        return function.svals3![skillLevel - 1];
-      case 4:
-        return function.svals4![skillLevel - 1];
-      case 5:
-        return function.svals5![skillLevel - 1];
-      default:
-        throw 'Illegal overcharge level: $overchargeLevel}';
-    }
+    return (function.svalsList.getOrNull(overchargeLevel - 1) ?? function.svals).getOrNull(skillLevel - 1) ??
+        DataVals();
   }
 
   static List<BattleServantData> acquireFunctionTarget(

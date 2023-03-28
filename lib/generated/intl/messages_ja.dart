@@ -71,7 +71,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about_app": MessageLookupByLibrary.simpleMessage("ついて"),
         "about_app_declaration_text": MessageLookupByLibrary.simpleMessage(
-            "　このアプリケーションで使用されるデータは、ゲームおよび次のサイトからのものです。ゲーム画像およびその他のテキストの著作権はTYPE MOON / FGO PROJECTに帰属します。\n　プログラムの機能と設計はWeChatアプリ「素材规划」とiOSアプリのGudaを参照しています。\n"),
+            "　このアプリケーションで使用されるデータは、ゲームおよび次のサイトからのものです。ゲーム画像およびその他のテキストの著作権はTYPE MOON / FGO PROJECTに帰属します。\n　プログラムの機能と設計はWeChatアプリ「素材规划」とiOSアプリのGudaを参照しています。"),
         "about_data_source": MessageLookupByLibrary.simpleMessage("データソース"),
         "about_data_source_footer": MessageLookupByLibrary.simpleMessage("マークされていないソースまたは侵害がある場合はお知らせください"),
         "about_feedback": MessageLookupByLibrary.simpleMessage("フィードバック"),

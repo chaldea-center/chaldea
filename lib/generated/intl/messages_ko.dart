@@ -77,7 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about_app": MessageLookupByLibrary.simpleMessage("에 관해"),
         "about_app_declaration_text": MessageLookupByLibrary.simpleMessage(
-            "이 어플리케이션에 사용되는 데이터는 게임 Fate/GO 및 게임 사이트에서 가져왔습니다. 게임의 텍스트, 그림, 음성의 저작권은 TYPE MOON/FGO PROJECT에 있습니다.\n\n프로그램의 설계는 WeChat의 프로그램인  \"Material Programe\" 과 IOS 앱인  \"Guda\"를 기반으로 제작되었습니다.\n"),
+            "이 어플리케이션에 사용되는 데이터는 게임 Fate/GO 및 게임 사이트에서 가져왔습니다. 게임의 텍스트, 그림, 음성의 저작권은 TYPE MOON/FGO PROJECT에 있습니다.\n\n프로그램의 설계는 WeChat의 프로그램인  \"Material Programe\" 과 IOS 앱인  \"Guda\"를 기반으로 제작되었습니다."),
         "about_data_source": MessageLookupByLibrary.simpleMessage("데이터 소스"),
         "about_data_source_footer": MessageLookupByLibrary.simpleMessage("출처가 표시되어 있지 않거나 침해가 있는 경우 알려주세요"),
         "about_feedback": MessageLookupByLibrary.simpleMessage("피드백"),
