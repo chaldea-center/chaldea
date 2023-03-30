@@ -124,7 +124,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
           CheckboxWithLabel(
             value: params.cropNormalizedSize,
             label: Text(S.current.ffo_crop),
-            onChanged: (v) async {
+            onChanged: (v) {
               if (v != null) {
                 params.cropNormalizedSize = v;
               }

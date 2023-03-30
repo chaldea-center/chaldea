@@ -98,7 +98,7 @@ class _ScreenshotsTabState extends State<ScreenshotsTab> with ScrollControllerMi
     );
   }
 
-  void importImages() async {
+  void importImages() {
     SharedBuilder.pickImageOrFiles(context: context).then((result) {
       final files = result?.files;
       if (files != null) {
@@ -111,7 +111,7 @@ class _ScreenshotsTabState extends State<ScreenshotsTab> with ScrollControllerMi
       if (mounted) {
         setState(() {});
       }
-    }).catchError((e, s) async {
+    }).catchError((e, s) {
       logger.e('import images error', e, s);
       EasyLoading.showError(e.toString());
     });

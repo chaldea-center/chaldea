@@ -122,6 +122,7 @@ class FilterRadioData<T> extends FilterGroupData<T> {
 
   @override
   T? get radioValue {
+    // ignore: avoid-unnecessary-type-assertions
     assert(!(_selected == null && _nonnull && null is! T));
     return _selected;
   }

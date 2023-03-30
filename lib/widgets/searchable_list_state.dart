@@ -192,7 +192,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
         ),
         itemExtent: itemExtent!,
       ));
-    } else if (prototypeExtent == true) {
+    } else if (prototypeExtent) {
       slivers.add(SliverPrototypeExtentList(
         delegate: SliverChildBuilderDelegate(
           _itemBuilder,

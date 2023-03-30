@@ -141,7 +141,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
 
     bool? _last = _lastSplitCache;
     bool _current = _lastSplitCache = isSplit(context);
-    if (!isCurrent && _last == false && _current == true && _nextRouteCache != null) {
+    if (!isCurrent && _last == false && _current && _nextRouteCache != null) {
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         didChangeNext(_nextRouteCache!);
         _nextRouteCache!.didChangePrevious(this);

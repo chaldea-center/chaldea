@@ -39,7 +39,7 @@ class _GalleryPageState extends State<GalleryPage> {
       //     background: true, download: db.appSetting.autoUpdateApp);
       // final _iconCache = IconCacheManager();
       // _iconCache.start(interval: const Duration(seconds: 1));
-    }).onError((e, s) async {
+    }).onError((e, s) {
       logger.e('init app extras', e, s);
     });
   }

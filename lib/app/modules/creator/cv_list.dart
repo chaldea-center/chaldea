@@ -22,7 +22,7 @@ class _CvListPageState extends State<CvListPage> with SearchableListState<String
 
   bool _initiated = false;
 
-  void _parse() async {
+  void _parse() {
     cvs.clear();
     svtMap.clear();
     ceMap.clear();

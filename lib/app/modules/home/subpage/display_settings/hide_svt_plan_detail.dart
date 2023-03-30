@@ -36,7 +36,7 @@ class _HideSvtPlanDetailSettingPageState extends State<HideSvtPlanDetailSettingP
       value: checked,
       title: Text(_getName(option)),
       onChanged: enabled
-          ? (v) async {
+          ? (v) {
               if (v != null) {
                 if (v) {
                   settings.remove(option);

@@ -172,7 +172,7 @@ class _SkillResultTabState extends State<SkillResultTab> with ScrollControllerMi
       alignment: MainAxisAlignment.center,
       children: [
         ElevatedButton(
-          onPressed: result.details.isNotEmpty == true ? _doImportResult : null,
+          onPressed: result.details.isNotEmpty ? _doImportResult : null,
           child: Text(S.current.update),
         ),
       ],

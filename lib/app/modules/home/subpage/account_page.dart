@@ -172,7 +172,7 @@ class _AccountPageState extends State<AccountPage> {
     ).showDialog(context);
   }
 
-  void updateData([bool needCalc = false]) async {
+  void updateData([bool needCalc = false]) {
     if (mounted) setState(() {});
     if (needCalc) {
       EasyDebounce.debounce('itemCenter.init', const Duration(seconds: 1), () {

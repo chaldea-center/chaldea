@@ -139,13 +139,13 @@ class _AboutPageState extends State<AboutPage> {
                 ),
               ListTile(
                 title: Text(S.current.change_log),
-                onTap: () async {
+                onTap: () {
                   launch(ChaldeaUrl.doc('releases'));
                 },
               ),
               ListTile(
                 title: const Text('README'),
-                onTap: () async {
+                onTap: () {
                   router.pushPage(
                     const _GithubMarkdownPage(
                       title: 'README',
@@ -158,7 +158,7 @@ class _AboutPageState extends State<AboutPage> {
               ),
               ListTile(
                 title: const Text('CONTRIBUTORS'),
-                onTap: () async {
+                onTap: () {
                   router.pushPage(
                     const _GithubMarkdownPage(
                       title: 'CONTRIBUTORS',

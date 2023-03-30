@@ -1103,7 +1103,7 @@ class EnemyScript with DataScriptBase {
 
   factory EnemyScript.fromJson(Map<String, dynamic> json) => _$EnemyScriptFromJson(json)..setSource(json);
 
-  bool get isRare => source.containsKey('probability_type') == true;
+  bool get isRare => source['probability_type'] == 1;
 
   int? get dispBreakShift => source['dispBreakShift'] as int?;
 }

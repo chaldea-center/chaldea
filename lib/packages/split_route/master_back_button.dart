@@ -13,7 +13,7 @@ class MasterBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BackButton(
       color: color,
-      onPressed: () async {
+      onPressed: () {
         if (SplitRoute.of(context)?.detail == false) {
           SplitRoute.popDetailRoutes(context);
         }

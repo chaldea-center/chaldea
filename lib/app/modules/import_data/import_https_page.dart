@@ -694,14 +694,14 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           ListTile(
             leading: const Icon(Icons.paste),
             title: Text(S.current.import_from_clipboard),
-            onTap: () async {
+            onTap: () {
               Navigator.of(context).pop(false);
             },
           ),
           ListTile(
             leading: const Icon(Icons.file_present),
             title: Text(S.current.import_from_file),
-            onTap: () async {
+            onTap: () {
               Navigator.of(context).pop(true);
             },
           ),

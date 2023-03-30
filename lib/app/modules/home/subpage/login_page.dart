@@ -444,7 +444,7 @@ class _LoginPageState extends State<LoginPage> {
     SimpleCancelOkDialog(
       title: const Text('Delete User Account'),
       content: const Text('Including backups on server'),
-      onTapOk: () async {
+      onTapOk: () {
         ChaldeaResponse.request(
           caller: (dio) => dio.post('/account/delete', data: {
             'username': name,
@@ -488,11 +488,11 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<void> doChangeName() async {
+  Future<void> doChangeName() {
     String name = _nameController.text;
     String pwd = _pwdController.text;
     String newName = _newNameController.text;
-    ChaldeaResponse.request(
+    return ChaldeaResponse.request(
       caller: (dio) => dio.post('/account/changename', data: {
         'username': name,
         'pwd': pwd,

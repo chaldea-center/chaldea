@@ -22,7 +22,7 @@ class _CharaListPageState extends State<CharaListPage> with SearchableListState<
 
   bool _initiated = false;
 
-  void _parse() async {
+  void _parse() {
     charas.clear();
     ceMap.clear();
     ccMap.clear();

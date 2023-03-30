@@ -647,7 +647,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                 ),
                 Center(child: footWidget),
                 InkWell(
-                  onTap: () async {
+                  onTap: () {
                     router.pushBuilder(
                       builder: (context) => CmdCodeListPage(
                         onSelected: (selectedCode) {

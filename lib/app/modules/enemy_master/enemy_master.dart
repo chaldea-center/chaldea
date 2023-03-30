@@ -72,12 +72,12 @@ class _EnemyMasterDetailPageState extends State<EnemyMasterDetailPage> {
           ExtraAssetsPage.oneGroup(S.current.command_spell, master.battles.map((e) => e.commandSpellIcon).toSet(), 160),
           ExtraAssetsPage.oneGroup(
               S.current.card_asset_chara_figure,
-              {
+              <String>{
                 for (final battle in master.battles) ...[
                   battle.figure,
                   ...battle.cutin,
                 ],
-              }.whereType<String>().toSet(),
+              }.toSet(),
               300),
         ].whereType<Widget>().map((e) => Padding(padding: const EdgeInsetsDirectional.only(start: 16), child: e))
       ],

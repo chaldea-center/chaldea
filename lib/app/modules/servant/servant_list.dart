@@ -246,7 +246,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                 ),
                 PopupMenuItem(
                   child: Text(S.current.help),
-                  onTap: () async {
+                  onTap: () {
                     launch(ChaldeaUrl.doc('servant_plan'));
                   },
                 ),

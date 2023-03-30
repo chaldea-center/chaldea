@@ -835,7 +835,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               return TableRow(children: [
                 Center(child: CommandCardWidget(card: svt.cards[index], width: 60)),
                 InkWell(
-                  onTap: () async {
+                  onTap: () {
                     router.pushBuilder(
                       builder: (context) => CmdCodeListPage(
                         onSelected: (selectedCode) {

@@ -483,7 +483,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
           return;
         }
       }
-      final validQuests = quests.whereType<QuestPhase>().toList();
+      final validQuests = quests.toList();
       if (validQuests.isEmpty) {
         EasyLoading.showError('No Valid Quests');
         return;

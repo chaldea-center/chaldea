@@ -551,8 +551,7 @@ class AtlasApi {
   }
 
   // export
-  static Future<List<BasicServant>?> basicServants(
-      {Region region = Region.jp, Duration? expireAfter = Duration.zero}) async {
+  static Future<List<BasicServant>?> basicServants({Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
     return cacheManager.getModel(
       '$_atlasApiHost/export/${region.upper}/basic_servant.json',
       (data) => (data as List).map((e) => BasicServant.fromJson(e)).toList(),
@@ -561,7 +560,7 @@ class AtlasApi {
   }
 
   static Future<List<BasicCraftEssence>?> basicCraftEssences(
-      {Region region = Region.jp, Duration? expireAfter = Duration.zero}) async {
+      {Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
     return cacheManager.getModel(
       '$_atlasApiHost/export/${region.upper}/basic_equip.json',
       (data) => (data as List).map((e) => BasicCraftEssence.fromJson(e)).toList(),
@@ -570,7 +569,7 @@ class AtlasApi {
   }
 
   static Future<List<BasicCommandCode>?> basicCommandCodes(
-      {Region region = Region.jp, Duration? expireAfter = Duration.zero}) async {
+      {Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
     return cacheManager.getModel(
       '$_atlasApiHost/export/${region.upper}/basic_command_code.json',
       (data) => (data as List).map((e) => BasicCommandCode.fromJson(e)).toList(),
@@ -578,7 +577,7 @@ class AtlasApi {
     );
   }
 
-  static Future<List<Item>?> niceItems({Region region = Region.jp, Duration? expireAfter = Duration.zero}) async {
+  static Future<List<Item>?> niceItems({Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
     return cacheManager.getModel(
       '$_atlasApiHost/export/${region.upper}/nice_items.json',
       (data) => (data as List).map((e) => Item.fromJson(e)).toList(),

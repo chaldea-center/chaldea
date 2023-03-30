@@ -89,7 +89,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     }
   }
 
-  void _init() async {
+  void _init() {
     _fetchData();
   }
 

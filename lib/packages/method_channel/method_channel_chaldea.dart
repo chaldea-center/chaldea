@@ -26,7 +26,7 @@ class MethodChannelChaldea {
   /// Send app to background rather exit when pop root route
   ///
   /// only available on Android
-  static Future<void> sendBackground() async {
+  static Future<void> sendBackground() {
     return kMethodChannel.invokeMethod('sendBackground');
   }
 

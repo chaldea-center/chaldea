@@ -156,7 +156,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
     for (int index = 0; index < widget.children.length; index++) {
       final cell = widget.children[index];
       late Widget _child;
-      if (_needRebuild && cell.fitHeight == true) {
+      if (_needRebuild && cell.fitHeight) {
         // if fitHeight, render the child at second frame
         _child = const SizedBox();
       } else {
@@ -246,7 +246,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
 
   void calculateConstraints() {
     // if all children don't need to fit, don't calculate
-    if (widget.children.where((data) => data.fitHeight == true).isEmpty) {
+    if (widget.children.where((data) => data.fitHeight).isEmpty) {
       _needRebuild = false;
       _calculatedConstraints = null;
       return;
@@ -255,7 +255,7 @@ class _CustomTableRowState extends State<CustomTableRow> {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       double _maxHeight = -1;
       widget.children.forEach((cell) {
-        if (cell.fitHeight != true) {
+        if (!cell.fitHeight) {
           RenderBox? box = cell.key?.currentContext?.findRenderObject() as RenderBox?;
           _maxHeight = max(_maxHeight, box?.size.height ?? _maxHeight);
         }
@@ -316,7 +316,7 @@ class TableCellData {
     this.padding = const EdgeInsets.all(4),
     this.fitHeight = false,
   }) : assert(text == null || child == null) {
-    if (isHeader == true) {
+    if (isHeader) {
       maxLines ??= 1;
     }
   }

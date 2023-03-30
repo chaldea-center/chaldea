@@ -34,7 +34,6 @@ import '../modules/buff/buff_detail.dart';
 import '../modules/command_code/cmd_code.dart';
 import '../modules/command_code/cmd_code_list.dart';
 import '../modules/common/not_found.dart';
-import '../modules/common/splash.dart';
 import '../modules/costume/costume_detail.dart';
 import '../modules/costume/costume_list.dart';
 import '../modules/event/event_detail_page.dart';
@@ -209,9 +208,6 @@ class RouteConfiguration {
   RouteConfiguration.fromUri({Uri? uri, this.child, this.detail, this.arguments, Region? region}) {
     _init(null, uri, region);
   }
-
-  factory RouteConfiguration.slash({required String nextPageUrl}) =>
-      RouteConfiguration(child: SplashPage(nextPageUrl: nextPageUrl));
 
   void _init(String? url, Uri? uri, Region? region) {
     if (url != null) uri ??= Uri.tryParse(url);

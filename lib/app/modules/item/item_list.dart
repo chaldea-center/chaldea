@@ -94,7 +94,7 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
         actions: <Widget>[
           SharedBuilder.buildSwitchPlanButton(
             context: context,
-            onChange: (index) async {
+            onChange: (index) {
               db.curUser.curSvtPlanNo = index;
               db.itemCenter.calculate();
               if (mounted) setState(() {});

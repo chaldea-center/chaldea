@@ -319,7 +319,7 @@ class GameDataLoader {
     Options? options,
     bool t = false,
     Duration? timeout,
-  }) async {
+  }) {
     String url = '${Hosts.dataHost}/$filename';
     if (t) {
       final uri = Uri.parse(url);

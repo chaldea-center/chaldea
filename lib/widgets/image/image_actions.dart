@@ -66,7 +66,7 @@ class ImageActions {
             ListTile(
               leading: const Icon(Icons.face_retouching_natural_outlined),
               title: Text(S.current.custom_chara_figure),
-              onTap: () async {
+              onTap: () {
                 router.pushPage(CustomCharaFigurePage(figure: url));
               },
             ),

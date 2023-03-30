@@ -79,7 +79,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               SwitchListTile.adaptive(
                 value: db.settings.autoResetFilter,
                 title: Text(S.current.auto_reset),
-                onChanged: (v) async {
+                onChanged: (v) {
                   db.settings.autoResetFilter = v;
                   db.saveSettings();
                   setState(() {});
@@ -270,7 +270,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 SwitchListTile.adaptive(
                   value: db.settings.alwaysOnTop,
                   title: Text(S.current.setting_always_on_top),
-                  onChanged: (v) async {
+                  onChanged: (v) {
                     db.settings.alwaysOnTop = v;
                     db.saveSettings();
                     MethodChannelChaldea.setAlwaysOnTop(v);
@@ -280,7 +280,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               SwitchListTile.adaptive(
                 value: db.settings.display.showWindowFab,
                 title: Text(S.current.display_show_window_fab),
-                onChanged: (v) async {
+                onChanged: (v) {
                   db.settings.display.showWindowFab = v;
                   db.saveSettings();
                   if (v) {

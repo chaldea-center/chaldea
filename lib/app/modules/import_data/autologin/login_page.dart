@@ -150,14 +150,13 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
                     'dateVer=${top.dateVer}'),
             trailing: IconButton(
               onPressed: () async {
-                AtlasApi.gametops().then((value) {
-                  if (value != null) {
-                    gameTops = value;
-                  } else {
-                    EasyLoading.showError(S.current.failed);
-                  }
-                  if (mounted) setState(() {});
-                });
+                final value = await AtlasApi.gametops();
+                if (value != null) {
+                  gameTops = value;
+                } else {
+                  EasyLoading.showError(S.current.failed);
+                }
+                if (mounted) setState(() {});
               },
               icon: const Icon(Icons.refresh),
               tooltip: S.current.refresh,

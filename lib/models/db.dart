@@ -142,7 +142,7 @@ class _Database {
     }
 
     await loadSettings();
-    await loadUserData().then((value) async {
+    await loadUserData().then((value) {
       if (value != null) userData = value;
     });
     if (settings.splitMasterRatio != null) {
@@ -159,7 +159,7 @@ class _Database {
   }
 
   /// return the [UserData] instance, don't assign to [userData]
-  Future<UserData?> loadUserData([String? fp]) async {
+  Future<UserData?> loadUserData([String? fp]) {
     return _loadWithBak<UserData?>(
       fp: fp ?? paths.userDataPath,
       fromJson: (data) => UserData.fromJson(data),
@@ -181,7 +181,7 @@ class _Database {
     required String fp,
     required T Function(dynamic) fromJson,
     T Function()? onError,
-  }) async {
+  }) {
     return JsonHelper.loadModel<T>(
       fp: fp,
       fromJson: fromJson,

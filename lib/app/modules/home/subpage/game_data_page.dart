@@ -97,7 +97,7 @@ class _GameDataPageState extends State<GameDataPage> {
                               content: Text('Current: ${db.gameData.version.text(false)}\n'
                                   'Latest : ${data.version.text(false)}'),
                               hideOk: data.version.timestamp <= db.gameData.version.timestamp,
-                              onTapOk: () async {
+                              onTapOk: () {
                                 db.gameData = data;
                                 db.notifyAppUpdate();
                               },
@@ -194,7 +194,7 @@ class _GameDataPageState extends State<GameDataPage> {
                 value: db.settings.hideUnreleasedCard,
                 title: Text(S.current.hide_unreleased_card),
                 subtitle: Text(S.current.filter),
-                onChanged: (v) async {
+                onChanged: (v) {
                   db.settings.hideUnreleasedCard = v;
                   db.saveSettings();
                   setState(() {});

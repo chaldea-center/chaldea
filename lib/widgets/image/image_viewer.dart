@@ -218,8 +218,9 @@ class _CachedImageState extends State<CachedImage> {
 
   Widget resolveChild() {
     if (widget.imageProvider != null) {
-      return _withProvider(widget.imageProvider!, onClearCache: () async {
+      return _withProvider(widget.imageProvider!, onClearCache: () {
         imageCache.evict(widget.imageProvider!);
+        return Future.value();
       });
     }
     String? url = widget.imageUrl;

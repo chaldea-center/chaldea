@@ -12,6 +12,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'models/models.dart';
 
 void testFunction([BuildContext? context]) async {
+  assert(context == null || context.mounted);
   if (kReleaseMode) return;
 }
 

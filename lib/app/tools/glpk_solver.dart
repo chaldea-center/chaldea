@@ -27,7 +27,7 @@ abstract class BaseLPSolver {
       print('loading solver.js ...');
       await engine.eval(await rootBundle.loadString('res/js/glpk_solver.js'), name: '<glpk_solver.js>');
       print('=========js libs loaded.=========');
-    }).catchError((e, s) async {
+    }).catchError((e, s) {
       logger.e('initiate js libs error', e, s);
       Catcher.reportCheckedError(e, s);
       EasyLoading.showToast('initiation error\n$e');
@@ -62,7 +62,7 @@ class FreeLPSolver {
       print('loading solver.js ...');
       await engine.eval(await rootBundle.loadString('res/js/glpk_solver.js'), name: '<glpk_solver.js>');
       print('=========js libs loaded.=========');
-    }).catchError((e, s) async {
+    }).catchError((e, s) {
       logger.e('initiate js libs error', e, s);
       Catcher.reportCheckedError(e, s);
       EasyLoading.showToast('initiation error\n$e');

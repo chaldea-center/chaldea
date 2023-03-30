@@ -87,6 +87,7 @@ class CustomMission {
           case CustomMissionType.trait:
             if (detail.missionCondType == DetailCondType.enemyIndividualityKillNum) {
               useAnd = false;
+              // ignore: no-equal-then-else
             } else if (detail.missionCondType == DetailCondType.defeatEnemyIndividuality) {
               useAnd = true;
             } else {

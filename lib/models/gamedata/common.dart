@@ -81,7 +81,7 @@ class NiceTrait with RouteInfo {
 
   String shownName({bool addSvtId = true, bool field = false}) {
     final s = Transl.trait(id, addSvtId: addSvtId, field: field).l;
-    if (negative == true) {
+    if (negative) {
       return '${M.of(jp: null, cn: '非', tw: null, na: 'Not', kr: null)} $s';
     }
     return s;

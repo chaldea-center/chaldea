@@ -22,7 +22,7 @@ class _IllustratorListPageState extends State<IllustratorListPage>
   Map<String, List<CommandCode>> codeMap = {};
   List<String> illustrators = [];
 
-  void _parse() async {
+  void _parse() {
     illustrators.clear();
     svtMap.clear();
     ceMap.clear();

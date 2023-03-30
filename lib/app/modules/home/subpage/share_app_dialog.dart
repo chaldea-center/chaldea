@@ -57,7 +57,7 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
           onPressed: () {
             Clipboard.setData(ClipboardData(text: _controller.text)).then((_) {
               EasyLoading.showSuccess(S.current.copied);
-            }).catchError((e, s) async {
+            }).catchError((e, s) {
               logger.e('copy share msg failed', e, s);
               EasyLoading.showError('Copy failed');
             });

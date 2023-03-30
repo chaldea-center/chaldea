@@ -15,7 +15,7 @@ void main() async {
 }
 
 /// helper method to list important bit of a servant, so scripts not yet implemented can be easily spotted.
-void checkSvtData(final String path, final Servant svtData) async {
+void checkSvtData(final String path, final Servant svtData) {
   final file = File('$path/${svtData.collectionNo}.txt');
   final List<String> checkStrings = [];
   checkStrings.add('Checking data for servant [${svtData.id}] - [${svtData.collectionNo}]: ${svtData.lName.cn}');
@@ -82,7 +82,7 @@ void checkSvtData(final String path, final Servant svtData) async {
   file.writeAsString(checkStrings.join('\n'));
 }
 
-void checkByType(final String path) async {
+void checkByType(final String path) {
   final Map<String, List<String>> servantScripts = {};
   final Map<String, List<String>> skillScripts = {};
   final Map<String, List<String>> funcTargets = {};

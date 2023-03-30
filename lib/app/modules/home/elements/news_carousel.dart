@@ -110,7 +110,7 @@ class AppNewsCarousel extends StatefulWidget {
         return <CarouselItem>[];
       });
 
-      Future<Response> _getUrl(String url, {Map<String, String>? headers}) async {
+      Future<Response> _getUrl(String url, {Map<String, String>? headers}) {
         Map<String, String>? queryParameters;
         if (kIsWeb) {
           queryParameters = {'url': url};
