@@ -1,7 +1,7 @@
 {
   "configurations": [
     {
-      "name": "Flutter",
+      "name": "Debug",
       "program": "lib/main.dart",
       "request": "launch",
       "type": "dart",
@@ -11,21 +11,21 @@
       ]
     },
     {
-      "name": "Flutter (profile)",
+      "name": "Profile",
       "program": "lib/main.dart",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
     },
     {
-      "name": "Flutter (release)",
+      "name": "Release",
       "program": "lib/main.dart",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"
     },
     {
-      "name": "Flutter: Run all Tests",
+      "name": "Test All",
       "type": "dart",
       "request": "launch",
       "program": "./test/"

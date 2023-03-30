@@ -185,8 +185,8 @@ SPEC CHECKSUMS:
   SwiftyGif: 93a1cc87bf3a51916001cf8f3d63835fb64c819f
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
-  video_player_avfoundation: 6d971a232d72e6ee25368378d48a079dea01f1cf
-  webview_flutter_wkwebview: d08f59cde5e8402c345c0bdda35ac0031352dcae
+  video_player_avfoundation: 81e49bb3d9fb63dccf9fa0f6d877dc3ddbeac126
+  webview_flutter_wkwebview: 2e2d318f21a5e036e2c3f26171342e95908bd60a
 
 PODFILE CHECKSUM: b185c4a0badf4ebd21f0816527f9186ec47e9a68
 
