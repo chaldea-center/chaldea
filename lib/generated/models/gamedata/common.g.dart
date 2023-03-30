@@ -266,4 +266,5 @@ const _$CondTypeEnumMap = {
   CondType.allSvtTargetSkillLvNum: 'allSvtTargetSkillLvNum',
   CondType.superBossDamageAbove: 'superBossDamageAbove',
   CondType.superBossDamageBelow: 'superBossDamageBelow',
+  CondType.notWarClear: 'notWarClear',
 };

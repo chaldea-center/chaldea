@@ -451,6 +451,7 @@ enum ItemType {
   friendshipUpItem,
   pp,
   tradeAp,
+  ri,
 }
 
 enum ItemBGType {

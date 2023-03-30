@@ -176,7 +176,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
       if (enemy.ai != null) ...[
         CustomTableRow.fromTexts(texts: [
           'AI ID',
-          if (enemy.ai!.minActNum != null) 'Min Act',
+          if (enemy.ai!.minActNum != null && enemy.ai!.minActNum != 0) 'Min Act',
           'Max Act',
           'Act Priority',
         ], isHeader: true),
@@ -207,7 +207,8 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
                 textAlign: TextAlign.center,
               ),
             ),
-            if (enemy.ai!.minActNum != null) TableCellData(text: enemy.ai!.minActNum.toString()),
+            if (enemy.ai!.minActNum != null && enemy.ai!.minActNum != 0)
+              TableCellData(text: enemy.ai!.minActNum.toString()),
             TableCellData(text: enemy.ai!.maxActNum.toString()),
             TableCellData(text: enemy.ai!.actPriority.toString()),
           ],

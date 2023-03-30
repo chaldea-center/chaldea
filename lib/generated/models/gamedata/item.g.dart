@@ -60,6 +60,7 @@ const _$ItemTypeEnumMap = {
   ItemType.friendshipUpItem: 'friendshipUpItem',
   ItemType.pp: 'pp',
   ItemType.tradeAp: 'tradeAp',
+  ItemType.ri: 'ri',
 };
 
 const _$ItemUseEnumMap = {

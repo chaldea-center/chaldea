@@ -859,4 +859,5 @@ enum CondType {
   allSvtTargetSkillLvNum,
   superBossDamageAbove,
   superBossDamageBelow,
+  notWarClear,
 }

@@ -1314,6 +1314,7 @@ enum ShopType {
   startUpSummon,
   shop13,
   tradeAp,
+  shop15,
 }
 
 enum MissionProgressType {
