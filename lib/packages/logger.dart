@@ -10,8 +10,6 @@ import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 
-import 'package:logger/src/outputs/file_output.dart'; // ignore: implementation_imports
-
 /// default logger
 Logger _logger = Logger(
   filter: ProductionFilter(),
