@@ -44,7 +44,7 @@ class LocalSettings {
   bool autoResetFilter;
   bool hideUnreleasedCard;
   // ignore: unused_field
-  FavoriteState? _favoritePreferred;
+  FavoriteState? _preferredFavorite;
   bool preferApRate;
   Region? preferredQuestRegion;
   bool alertUploadUserData;
@@ -94,7 +94,7 @@ class LocalSettings {
     this.autoRotate = true,
     this.autoResetFilter = true,
     this.hideUnreleasedCard = false,
-    FavoriteState? favoritePreferred,
+    FavoriteState? preferredFavorite,
     this.preferApRate = true,
     this.preferredQuestRegion,
     this.alertUploadUserData = false,
@@ -115,7 +115,7 @@ class LocalSettings {
     ScriptReaderFilterData? scriptReaderFilterData,
     List<AutoLoginData>? autologins,
   })  : _language = language,
-        _favoritePreferred = favoritePreferred,
+        _preferredFavorite = preferredFavorite ?? (launchTimes == 0 ? FavoriteState.all : null),
         preferredRegions = preferredRegions == null
             ? null
             : (List.of(Region.values)..sort2((e) => preferredRegions.indexOf(e) % Region.values.length)),
@@ -143,8 +143,9 @@ class LocalSettings {
     return S.load(lang.locale, override: true);
   }
 
-  FavoriteState? get favoritePreferred => FavoriteState.all;
-  set favoritePreferred(FavoriteState? v) => _favoritePreferred = v;
+  // ignore: unnecessary_getters_setters
+  FavoriteState? get preferredFavorite => _preferredFavorite;
+  set preferredFavorite(FavoriteState? v) => _preferredFavorite = v;
 
   bool get hideApple => PlatformU.isApple && launchTimes < 5;
 
@@ -166,7 +167,13 @@ class LocalSettings {
     }
   }
 
-  factory LocalSettings.fromJson(Map<String, dynamic> json) => _$LocalSettingsFromJson(json);
+  factory LocalSettings.fromJson(Map<String, dynamic> json) {
+    if (!json.containsKey('preferredFavorite')) {
+      json = Map.of(json);
+      json['preferredFavorite'] = _$FavoriteStateEnumMap[FavoriteState.all];
+    }
+    return _$LocalSettingsFromJson(json);
+  }
 
   Map<String, dynamic> toJson() => _$LocalSettingsToJson(this);
 

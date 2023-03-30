@@ -397,7 +397,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "feedback_content_hint": MessageLookupByLibrary.simpleMessage("Feedback or Suggestion"),
         "feedback_form_alert": MessageLookupByLibrary.simpleMessage("Feedback form is not empty, still exit?"),
         "feedback_info": MessageLookupByLibrary.simpleMessage(
-            "Please check <**FAQ**> first before sending feedback. And following detail is desired:\n- How to reproduce, expected behaviour\n- App/dataset version, device system and version\n- Attach screenshots and logs\n- It\'s better to provide contact info (e.g. Email)"),
+            "Please check <**FAQ**> first before sending feedback. And following detail is desired:\n- How to reproduce, expected behaviour\n- App/dataset version, device system and version\n- Attach screenshots and logs\n- It\'s better to provide contact info (e.g. Email)\n- DO NOT ask me why cannot find servant xxx"),
         "feedback_send": MessageLookupByLibrary.simpleMessage("Send"),
         "feedback_subject": MessageLookupByLibrary.simpleMessage("Subject"),
         "ffo_body": MessageLookupByLibrary.simpleMessage("Body"),

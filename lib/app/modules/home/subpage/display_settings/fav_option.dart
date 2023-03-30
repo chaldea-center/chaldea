@@ -24,23 +24,38 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
             children: [
               RadioListTile<FavoriteState?>(
                 value: null,
-                groupValue: db.settings.favoritePreferred,
+                groupValue: db.settings.preferredFavorite,
                 title: Text(S.current.svt_fav_btn_remember),
-                onChanged: null,
+                onChanged: (v) {
+                  setState(() {
+                    db.settings.preferredFavorite = null;
+                    db.saveSettings();
+                  });
+                },
               ),
               RadioListTile<FavoriteState?>(
                 value: FavoriteState.owned,
-                groupValue: db.settings.favoritePreferred,
+                groupValue: db.settings.preferredFavorite,
                 title: Text(S.current.svt_fav_btn_show_favorite),
                 secondary: const Icon(Icons.favorite),
-                onChanged: null,
+                onChanged: (v) {
+                  setState(() {
+                    db.settings.preferredFavorite = FavoriteState.owned;
+                    db.saveSettings();
+                  });
+                },
               ),
               RadioListTile<FavoriteState?>(
                 value: FavoriteState.all,
-                groupValue: db.settings.favoritePreferred,
+                groupValue: db.settings.preferredFavorite,
                 title: Text(S.current.svt_fav_btn_show_all),
                 secondary: const Icon(Icons.remove_circle_outline),
-                onChanged: null,
+                onChanged: (v) {
+                  setState(() {
+                    db.settings.preferredFavorite = FavoriteState.all;
+                    db.saveSettings();
+                  });
+                },
               ),
             ],
           ),
@@ -49,8 +64,7 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
               onPressed: db.gameData.isValid ? () => router.push(url: Routes.servants) : null,
               child: Text(S.current.preview),
             ),
-          ),
-          const SFooter('To keep people from asking why they couldn\'t find xxx'),
+          )
         ],
       ),
     );

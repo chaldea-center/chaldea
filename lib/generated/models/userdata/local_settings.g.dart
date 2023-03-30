@@ -35,8 +35,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
           autoRotate: $checkedConvert('autoRotate', (v) => v as bool? ?? true),
           autoResetFilter: $checkedConvert('autoResetFilter', (v) => v as bool? ?? true),
           hideUnreleasedCard: $checkedConvert('hideUnreleasedCard', (v) => v as bool? ?? false),
-          favoritePreferred:
-              $checkedConvert('favoritePreferred', (v) => $enumDecodeNullable(_$FavoriteStateEnumMap, v)),
+          preferredFavorite:
+              $checkedConvert('preferredFavorite', (v) => $enumDecodeNullable(_$FavoriteStateEnumMap, v)),
           preferApRate: $checkedConvert('preferApRate', (v) => v as bool? ?? true),
           preferredQuestRegion: $checkedConvert('preferredQuestRegion',
               (v) => _$JsonConverterFromJson<String, Region>(v, const RegionConverter().fromJson)),
@@ -130,7 +130,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'scriptReaderFilterData': instance.scriptReaderFilterData.toJson(),
       'autologins': instance.autologins.map((e) => e.toJson()).toList(),
       'language': instance.language,
-      'favoritePreferred': _$FavoriteStateEnumMap[instance.favoritePreferred],
+      'preferredFavorite': _$FavoriteStateEnumMap[instance.preferredFavorite],
     };
 
 const _$ThemeModeEnumMap = {

@@ -56,8 +56,8 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
     if (db.settings.autoResetFilter && widget.filterData == null) {
       filterData.reset();
     }
-    if (db.settings.favoritePreferred != null) {
-      filterData.favorite = db.settings.favoritePreferred!;
+    if (db.settings.preferredFavorite != null) {
+      filterData.favorite = db.settings.preferredFavorite!;
     }
     if (widget.planMode) {
       filterData.planFavorite = FavoriteState.owned;

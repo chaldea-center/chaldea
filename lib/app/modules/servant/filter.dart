@@ -23,12 +23,19 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
 }
 
 class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilterPage> {
+  int _lastResetTime = 0;
+
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
       title: Text(S.current.filter, textScaleFactor: 0.8),
       actions: getDefaultActions(onTapReset: () {
         filterData.reset();
+        final now = DateTime.now().timestamp;
+        if (now - _lastResetTime < 2) {
+          filterData.favorite = FavoriteState.all;
+        }
+        _lastResetTime = now;
         update();
       }),
       content: getListViewBody(restorationId: 'svt_list_filter', children: [
