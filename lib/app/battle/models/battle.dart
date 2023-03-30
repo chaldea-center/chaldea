@@ -518,7 +518,7 @@ class BattleData {
         currentCard = action.cardData;
         allyTargetIndex = onFieldAllyServants.indexOf(action.actor); // help damageFunction identify attacker
 
-        if (action.isValid(this)) {
+        if (allyTargetIndex != -1 && action.isValid(this)) {
           if (currentCard!.isNP) {
             await action.actor
                 .activateBuffOnActions(this, [BuffAction.functionAttackBefore, BuffAction.functionNpattack]);
@@ -724,7 +724,7 @@ class BattleData {
   }
 
   int getNonNullTargetIndex(final List<BattleServantData?> actorList, final int targetIndex) {
-    if (actorList.length > targetIndex && actorList[targetIndex] != null) {
+    if (actorList.length > targetIndex && targetIndex >= 0 && actorList[targetIndex] != null) {
       return targetIndex;
     }
 
