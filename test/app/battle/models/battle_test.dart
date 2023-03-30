@@ -585,6 +585,36 @@ void main() async {
     expect(bunyan.np, 993);
   });
 
+  test('attacker must be on field', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(201300)
+        ..lv = 1
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+      PlayerSvtData(701400)
+        ..lv = 90
+        ..setSkillStrengthenLvs([2, 1, 1]),
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final arash = battle.onFieldAllyServants[0]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final enemy2 = battle.onFieldEnemies[0]!;
+    final previousHp1 = enemy1.hp;
+    final previousHp2 = enemy2.hp;
+    await battle.activateSvtSkill(1, 0);
+    await battle.playerTurn([
+      CombatAction(arash, arash.getNPCard(battle)!),
+      CombatAction(arash, arash.getCards(battle)[0]),
+      CombatAction(arash, arash.getCards(battle)[1]),
+    ]);
+
+    expect(arash.hp, 0);
+    expect(previousHp1 - enemy1.hp, previousHp2 - enemy2.hp);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData(504900)..lv = 90,
