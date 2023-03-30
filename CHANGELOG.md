@@ -1,3 +1,11 @@
+# 2.3.0
+
+- Welcome "Laplace"! The new Battle Simulator
+- Add material efficiency of event free quests
+- Show quest's all possible enemy decks
+- Add Beat's footprint into planner
+- Fix bugs: import wrong file with same filename, EXP cards calc, etc.
+
 # 2.2.6
 
 - Fix auth file auto login

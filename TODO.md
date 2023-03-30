@@ -4,6 +4,11 @@ There are plenty of work need to do.
 
 ## Battles
 
+### High Priority
+
+- [ ] catch error for user interaction (skill/attack)
+- [ ] better battle log
+
 ### Ally Function Logic:
 
 - [ ] After 7th anni, donotAct will not stop first card from contributing to FirstCardType
@@ -43,9 +48,11 @@ There are plenty of work need to do.
 - [ ] prepare a dummy BattleServantData as Master
 - [ ] Figure out how to write reasonable test cases for UI required effects like randomEffect & changeTdType
 - [ ] funcSuccess for some wired function types
-- [ ] `DataVals.ProcPassive` will add buff to passive list, even if it's called from an active skill. Same for `ProcActive`
+- [x] `DataVals.ProcPassive` will add buff to passive list, even if it's called from an active skill. Same for `ProcActive`
 - [ ] BuffConvert is converting a buff list to another buff list, (or trait list to another buff list, not used yet)
 - [ ] Enemy shift target may not exist
+- [ ] cardDetail.damageRate/tdRate (U-Olga Marie buster/extra attack on all enemies)
+- [ ] dispBreakShift
 
 #### Unknowns:
 
@@ -71,8 +78,8 @@ There are plenty of work need to do.
 
 - [x] add svt.extraPassive on/off
 - [ ] add ce event skill on/off
-- [ ] Let user choose event point buff(s) and save to battle global params, used for addState.upDamageEventPoint, 
-  buff.parma=vals.Value+pointBuff.value
+- [ ] Let user choose event point buff(s) and save to battle global params, used for addState.upDamageEventPoint,
+      buff.parma=vals.Value+pointBuff.value
 - [ ] Custom skill! (passive or active)
 - [ ] Player side `allyTargetIndex` could be null or -1, let user to choose manually
 

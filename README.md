@@ -7,12 +7,14 @@
 [![license AGPL-3.0](https://img.shields.io/github/license/chaldea-center/chaldea.svg?style=flat)](https://github.com/chaldea-center/chaldea/blob/main/LICENSE)
 [![stars](https://img.shields.io/github/stars/chaldea-center/chaldea?style=social)](https://github.com/chaldea-center/chaldea/stargazers)
 
-Chaldea is a cross-platform tool for [Fate/Grand Order](https://www.fate-go.jp) to help masters planning materials, servants, events and their trip of taking back the future.
+Chaldea is a cross-platform tool for [Fate/Grand Order](https://www.fate-go.jp), composed of `Chaldeas` and `Laplace`. `Chaldeas` is a planner to help masters planning materials, servants, events. While `Laplace` is a novel battle simulator to help building your team.
 
 For more details or usage, please check our document: [English](https://docs.chaldea.center)
 | [中文](https://docs.chaldea.center/zh/)
 
 ## Features
+
+### Chaldeas
 
 - support all platforms: Android, iOS, Windows, macOS, Linux and Web.
 - profiles of **Servants**, **Craft Essences**, **Command Codes**, **Mystic Codes**, **Events**,
@@ -31,18 +33,24 @@ For more details or usage, please check our document: [English](https://docs.cha
   - all needed account data from captured https traffic when login to CN/TW/JP/NA server
   - import item/active skill/append skill data from game screenshots (realized on server side)
   - from [https://fgosim.github.io/Material](https://fgosim.github.io/Material)
-- battle simulation on free quests with controllable random value for damage & np calculation
+
+### Laplace
+
+- battle simulation on any quest (ally only yet)
+- up-to-date quest data for new JP events - powered by AADB/Rayshift
+- controllable random number for damage and NP calculation
+- support custom skill to simulate some enemy/field AI effects
 
 ## Supported Platforms
 
-| Platform | Minimum Version                      |
-| -------- | ------------------------------------ |
-| Android  | Android 6.0 (API level 23)           |
-| iOS      | iOS 11.0                             |
-| Windows  | Windows 8 (64-bit), x86-64 based     |
-| macOS    | macOS 10.14                          |
-| Linux    | Debian 10 & above                    |
-| Web      | Any modern browser                   |
+| Platform | Minimum Version                  |
+| -------- | -------------------------------- |
+| Android  | Android 6.0 (API level 23)       |
+| iOS      | iOS 11.0                         |
+| Windows  | Windows 8 (64-bit), x86-64 based |
+| macOS    | macOS 10.14                      |
+| Linux    | Debian 10 & above                |
+| Web      | Any modern browser               |
 
 More about [Supported Platforms](https://docs.flutter.dev/development/tools/sdk/release-notes/supported-platforms)
 
@@ -61,7 +69,7 @@ More about [Supported Platforms](https://docs.flutter.dev/development/tools/sdk/
 
 ### Installer
 
-For Android, Windows and Linux, you can download binary assets in releases page on [Github](https://github.com/chaldea-center/chaldea/releases) 
+For Android, Windows and Linux, you can download binary assets in releases page on [Github](https://github.com/chaldea-center/chaldea/releases)
 or our [document](https://docs.chaldea.center/releases) site.
 
 ### Web
@@ -88,9 +96,10 @@ If you have any bug report, feature request, question or want to contribute to t
 This project is built with [Flutter](https://flutter.dev). For help getting started with Flutter, view the online [documentation](https://docs.flutter.dev/).
 
 Thanks all contributors and translators help developing the app!
+
 - [CONTRIBUTORS](./CONTRIBUTORS)
 
-Chaldea is greatly inspired from
+Chaldea is greatly inspired by
 
 - iOS app [Guda](https://bbs.nga.cn/read.php?tid=12082000)
 - WeChat mini program [FGO material programe](https://github.com/lacus87/fgo)
@@ -104,7 +113,7 @@ And the dataset is powered by
 - The English wiki - [Fandom - Fate/Grand Order Wiki](https://fategrandorder.fandom.com/wiki/)
 - [FGO 効率劇場](https://sites.google.com/view/fgo-domus-aurea)
 
-Battle simulation built with inspiration of
+Laplace is built with inspiration of
 
 - [FGO Teamup](https://www.fgo-teamup.com)
 - [FGO Simulator](https://github.com/SharpnelXu/FGOSimulator)
