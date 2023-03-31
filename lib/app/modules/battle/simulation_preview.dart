@@ -275,6 +275,12 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                     onChange: () {
                       if (mounted) setState(() {});
                     },
+                    onDragSvt: (svtFrom) {
+                      onDrag(svtFrom, svt, false);
+                    },
+                    onDragCE: (svtFrom) {
+                      onDrag(svtFrom, svt, true);
+                    },
                   ),
                 )
             ],
@@ -282,6 +288,30 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         ],
       ),
     );
+  }
+
+  void onDrag(PlayerSvtData from, PlayerSvtData to, bool isCE) {
+    final allSvts = [...onFieldSvtDataList, ...backupSvtDataList];
+    final fromIndex = allSvts.indexOf(from), toIndex = allSvts.indexOf(to);
+    if (fromIndex < 0 || toIndex < 0 || fromIndex == toIndex) return;
+    if (isCE) {
+      final ce = from.ce, ceLv = from.ceLv, ceLimitBreak = from.ceLimitBreak;
+      from
+        ..ce = to.ce
+        ..ceLv = to.ceLv
+        ..ceLimitBreak = to.ceLimitBreak;
+      to
+        ..ce = ce
+        ..ceLv = ceLv
+        ..ceLimitBreak = ceLimitBreak;
+    } else {
+      allSvts[fromIndex] = to;
+      allSvts[toIndex] = from;
+      onFieldSvtDataList.setAll(0, allSvts.sublist(0, onFieldSvtDataList.length));
+      backupSvtDataList.setAll(0, allSvts.sublist(onFieldSvtDataList.length));
+    }
+
+    if (mounted) setState(() {});
   }
 
   Widget buttonBar() {
@@ -472,12 +502,30 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 }
 
+class _DragSvtData {
+  final PlayerSvtData svt;
+  _DragSvtData(this.svt);
+}
+
+class _DragCEData {
+  final PlayerSvtData svt;
+  _DragCEData(this.svt);
+}
+
 class ServantSelector extends StatelessWidget {
   final PlayerSvtData playerSvtData;
   final QuestPhase? questPhase;
   final VoidCallback onChange;
+  final DragTargetAccept<PlayerSvtData> onDragSvt;
+  final DragTargetAccept<PlayerSvtData> onDragCE;
 
-  ServantSelector({super.key, required this.playerSvtData, required this.questPhase, required this.onChange});
+  ServantSelector(
+      {super.key,
+      required this.playerSvtData,
+      required this.questPhase,
+      required this.onChange,
+      required this.onDragSvt,
+      required this.onDragCE});
 
   @override
   Widget build(final BuildContext context) {
@@ -516,6 +564,21 @@ class ServantSelector extends StatelessWidget {
       },
       child: svtIcon,
     );
+
+    final svtDraggable = Draggable<_DragSvtData>(
+      feedback: svtIcon,
+      data: _DragSvtData(playerSvtData),
+      child: svtIcon,
+    );
+    svtIcon = DragTarget<_DragSvtData>(
+      builder: (context, candidateData, rejectedData) {
+        return svtDraggable;
+      },
+      onAccept: (data) {
+        onDragSvt(data.svt);
+      },
+    );
+
     children.add(svtIcon);
 
     // svt name+btn
@@ -567,6 +630,21 @@ class ServantSelector extends StatelessWidget {
       },
       child: ceIcon,
     );
+
+    final ceDraggable = Draggable<_DragCEData>(
+      feedback: ceIcon,
+      data: _DragCEData(playerSvtData),
+      child: ceIcon,
+    );
+    ceIcon = DragTarget<_DragCEData>(
+      builder: (context, candidateData, rejectedData) {
+        return ceDraggable;
+      },
+      onAccept: (data) {
+        onDragCE(data.svt);
+      },
+    );
+
     children.add(Center(child: ceIcon));
 
     // ce btn

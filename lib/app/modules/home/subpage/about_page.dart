@@ -213,6 +213,17 @@ class _AboutPageState extends State<AboutPage> {
             ],
           ),
           TileGroup(
+            header: 'Policy',
+            children: [
+              ListTile(
+                title: const Text('Privacy Policy'),
+                onTap: () {
+                  launch(ChaldeaUrl.doc('/privacy'));
+                },
+              )
+            ],
+          ),
+          TileGroup(
             header: MaterialLocalizations.of(context).licensesPageTitle,
             children: [
               ListTile(
