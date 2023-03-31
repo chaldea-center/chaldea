@@ -1,5 +1,7 @@
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/db.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/builders.dart';
 import '../home/subpage/feedback_page.dart';
@@ -9,47 +11,69 @@ class BattleHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget body = getBody(context);
+    if (!db.gameData.isValid) {
+      body = GestureDetector(
+        onTap: () {
+          SimpleCancelOkDialog(
+            title: Text(S.current.warning),
+            content: Text(S.current.game_data_not_found),
+            hideCancel: true,
+          ).showDialog(context);
+        },
+        child: AbsorbPointer(
+          child: Opacity(
+            opacity: 0.5,
+            child: body,
+          ),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         titleSpacing: NavigationToolbar.kMiddleSpacing,
         toolbarHeight: kToolbarHeight,
         title: const Text('Laplace'),
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        children: [
-          const Center(
-            child: Text('Testing/测试中...'),
+      body: body,
+    );
+  }
+
+  Widget getBody(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      children: [
+        const Center(
+          child: Text('Testing/测试中...'),
+        ),
+        const SizedBox(height: 8),
+        TileGroup(
+          children: [
+            ListTile(
+              leading: const Icon(Icons.calculate),
+              title: Text(S.current.battle_simulation),
+              // horizontalTitleGap: 0,
+              onTap: () {
+                router.push(url: Routes.laplace);
+              },
+            ),
+            const ListTile(
+              enabled: false,
+              leading: Icon(Icons.snowing),
+              title: Text('· · ·'),
+            )
+          ],
+        ),
+        SFooter.rich(TextSpan(children: [
+          const TextSpan(text: 'Bug? '),
+          SharedBuilder.textButtonSpan(
+            context: context,
+            text: S.current.about_feedback,
+            onTap: () => router.pushPage(FeedbackPage()),
           ),
-          const SizedBox(height: 8),
-          TileGroup(
-            footerWidget: SFooter.rich(TextSpan(children: [
-              const TextSpan(text: 'Bug? '),
-              SharedBuilder.textButtonSpan(
-                context: context,
-                text: S.current.about_feedback,
-                onTap: () => router.pushPage(FeedbackPage()),
-              ),
-              const TextSpan(text: '!'),
-            ])),
-            children: [
-              ListTile(
-                leading: const Icon(Icons.calculate),
-                title: Text(S.current.battle_simulation),
-                // horizontalTitleGap: 0,
-                onTap: () {
-                  router.push(url: Routes.laplace);
-                },
-              ),
-              const ListTile(
-                enabled: false,
-                leading: Icon(Icons.snowing),
-                title: Text('· · ·'),
-              )
-            ],
-          )
-        ],
-      ),
+          const TextSpan(text: '!'),
+        ]))
+      ],
     );
   }
 }
