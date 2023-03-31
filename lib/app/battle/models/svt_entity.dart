@@ -92,7 +92,7 @@ class BattleServantData {
 
   bool get selectable => battleBuff.isSelectable;
 
-  int get tdLv => isPlayer ? playerSvtData!.tdLv : niceEnemy!.noblePhantasm.noblePhantasmLv;
+  int get tdLv => (isPlayer ? playerSvtData!.tdLv : niceEnemy!.noblePhantasm.noblePhantasmLv).clamp(0, 5);
 
   int get attack => isPlayer ? atk + (equip?.atk ?? 0) : atk;
 

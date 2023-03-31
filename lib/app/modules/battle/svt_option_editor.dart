@@ -945,7 +945,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       playerSvtData
         ..limitCount = curStatus.ascension
         ..lv = selectedSvt.grailedLv(curStatus.grail)
-        ..tdLv = max(curStatus.npLv, 1)
+        ..tdLv = curStatus.npLv.clamp(0, 5)
         ..skillLvs = curStatus.skills.toList()
         ..appendLvs = curStatus.appendSkills.toList()
         ..atkFou = curStatus.fouAtk > 0 ? 1000 + curStatus.fouAtk * 20 : curStatus.fouAtk3 * 50
@@ -1006,7 +1006,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     playerSvtData.skillLvs = support.skills.skillLvs.map((e) => e ?? 0).toList();
     svt.noblePhantasms = [if (support.noblePhantasm.noblePhantasm != null) support.noblePhantasm.noblePhantasm!];
     playerSvtData.td = support.noblePhantasm.noblePhantasm;
-    playerSvtData.tdLv = support.noblePhantasm.noblePhantasmLv;
+    playerSvtData.tdLv = support.noblePhantasm.noblePhantasmLv.clamp(1, 5);
     // ce
     final ce = support.equips.getOrNull(0);
     playerSvtData
