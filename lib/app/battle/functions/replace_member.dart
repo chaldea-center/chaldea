@@ -3,6 +3,7 @@ import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../utils/_dialogs.dart';
 
 class ReplaceMember {
   ReplaceMember._();
@@ -41,13 +42,9 @@ class ReplaceMember {
 
   static Future<List<BattleServantData>> getSelectedServants(final BattleData battleData) async {
     if (battleData.context?.mounted != true) return [];
-    return await showDialog(
+    return showUserConfirm<List<BattleServantData>>(
       context: battleData.context!,
-      useRootNavigator: false,
-      barrierDismissible: false,
-      builder: (context) {
-        return ReplaceMemberSelectionDialog(battleData: battleData);
-      },
+      builder: (context) => ReplaceMemberSelectionDialog(battleData: battleData),
     );
   }
 }

@@ -10,6 +10,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../utils/_dialogs.dart';
 import 'buff.dart';
 import 'skill.dart';
 import 'svt_entity.dart';
@@ -758,10 +759,8 @@ class BattleData {
   Future<bool> canActivate(final int activationRate, final String description) async {
     if (activationRate < 1000 && activationRate > 0 && tailoredExecution && context?.mounted == true) {
       final curResult = probabilityThreshold <= activationRate ? S.current.success : S.current.failed;
-      return await showDialog(
+      return showUserConfirm<bool>(
         context: context!,
-        useRootNavigator: false,
-        barrierDismissible: false,
         builder: (context) {
           return SimpleCancelOkDialog(
             title: Text(S.current.battle_select_effect),

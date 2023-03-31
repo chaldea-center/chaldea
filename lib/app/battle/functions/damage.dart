@@ -11,6 +11,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../utils/_dialogs.dart';
 
 enum NpSpecificMode { normal, individualSum, rarity }
 
@@ -313,9 +314,8 @@ class Damage {
 
   static Future<int> adjustTotalDamage(final BattleData battleData, final DamageParameters damageParameters) async {
     if (battleData.tailoredExecution && battleData.context != null) {
-      return await showDialog(
+      return showUserConfirm<int>(
         context: battleData.context!,
-        useRootNavigator: false,
         barrierDismissible: false,
         builder: (context) {
           return DamageAdjustor(battleData: battleData, damageParameters: damageParameters);

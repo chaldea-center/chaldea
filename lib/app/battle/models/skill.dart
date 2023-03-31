@@ -5,6 +5,7 @@ import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../utils/_dialogs.dart';
 import 'battle.dart';
 
 class BattleSkillInfoData {
@@ -165,10 +166,8 @@ class BattleSkillInfoData {
     final selectAddInfo = skill.script!.SelectAddInfo![skillLevel - 1];
     final buttons = selectAddInfo.btn;
     final transl = Transl.miscScope('SelectAddInfo');
-    return await showDialog(
+    return showUserConfirm<int>(
       context: battleData.context!,
-      useRootNavigator: false,
-      barrierDismissible: false,
       builder: (context) {
         return SimpleCancelOkDialog(
           title: Text(S.current.battle_select_effect),

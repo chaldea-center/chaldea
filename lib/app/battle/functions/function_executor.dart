@@ -23,6 +23,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../utils/_dialogs.dart';
 import 'move_to_last_sub_member.dart';
 
 class FunctionExecutor {
@@ -104,10 +105,8 @@ class FunctionExecutor {
     final List<NiceFunction> functions,
   ) async {
     final transl = Transl.miscScope('SelectAddInfo');
-    return await showDialog(
+    return await showUserConfirm<NiceFunction>(
       context: battleData.context!,
-      useRootNavigator: false,
-      barrierDismissible: false,
       builder: (context) {
         return SimpleCancelOkDialog(
           title: Text(S.current.battle_select_effect),
@@ -144,10 +143,8 @@ class FunctionExecutor {
   ) async {
     tds.sort((a, b) => (a.card.index % 3).compareTo(b.card.index % 3)); // Q A B
 
-    return await showDialog(
+    return showUserConfirm<NiceTd>(
       context: battleData.context!,
-      useRootNavigator: false,
-      barrierDismissible: false,
       builder: (context) {
         return SimpleCancelOkDialog(
           title: Text(S.current.battle_select_effect),
