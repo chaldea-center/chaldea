@@ -130,6 +130,7 @@ jobs:
       - name: Compress build for Linux
         if: matrix.target == 'linux'
         run: |
+          cp $GITHUB_WORKSPACE/linux/README.md ./README.txt
           mv ../plugins/flutter_js/bundle/lib/libquickjs_c_bridge_plugin.so ./lib/libquickjs_c_bridge_plugin.so
           tar czf $GITHUB_WORKSPACE/chaldea-$VERSION-${{ matrix.target }}.tar.gz *
         working-directory: ${{ matrix.build_path }}
