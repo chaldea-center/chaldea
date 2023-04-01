@@ -135,8 +135,29 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         },
       ),
       PopupMenuItem(
+        child: Text('${S.current.command_spell}: ${Transl.skillNames('霊基修復').l}'),
+        onTap: () async {
+          await null;
+          battleData.copy();
+          battleData.logger.action('${S.current.command_spell}: ${Transl.skillNames('霊基修復').l}');
+          await battleData.commandSpellRepairHp();
+          if (mounted) setState(() {});
+        },
+      ),
+      PopupMenuItem(
+        child: Text('${S.current.command_spell}: ${Transl.skillNames('宝具解放').l}'),
+        onTap: () async {
+          await null;
+          battleData.copy();
+          battleData.logger.action('${S.current.command_spell}: ${Transl.skillNames('宝具解放').l}');
+          await battleData.commandSpellReleaseNP();
+          if (mounted) setState(() {});
+        },
+      ),
+      PopupMenuItem(
         child: Text(S.current.battle_charge_party),
         onTap: () {
+          battleData.copy();
           battleData.chargeAllyNP();
           if (mounted) setState(() {});
         },
@@ -145,14 +166,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         child: Text(S.current.battle_activate_custom_skill),
         onTap: () async {
           await null;
-          router.pushPage(
-            CustomSkillActivator(
-              battleData: battleData,
-              onActivate: () {
-                if (mounted) setState(() {});
-              },
-            ),
-          );
+          await router.pushPage(CustomSkillActivator(battleData: battleData));
+          if (mounted) setState(() {});
         },
       ),
     ];

@@ -694,6 +694,71 @@ class BattleData {
     GainNP.gainNP(this, DataVals({'Rate': 5000, 'Value': 10000}), nonnullAllies);
   }
 
+  Future<void> commandSpellRepairHp() {
+    final skill = NiceSkill(
+      id: 10000000001,
+      type: SkillType.active,
+      name: '霊基修復',
+      unmodifiedDetail: 'サーヴァント1騎のHPを全回復する',
+      coolDown: [0],
+      functions: [
+        NiceFunction(
+          funcId: 452,
+          funcType: FuncType.gainHpPer,
+          funcTargetType: FuncTargetType.ptOne,
+          funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+          svals: [
+            DataVals({
+              'Rate': 1000,
+              'Value': 1000,
+              'Unaffected': 1,
+            })
+          ],
+        )
+      ],
+    );
+
+    return BattleSkillInfoData.activateSkill(
+      this,
+      skill,
+      1,
+      defaultToAlly: true,
+    );
+  }
+
+  Future<void> commandSpellReleaseNP() {
+    final skill = NiceSkill(
+      id: 10000000009,
+      type: SkillType.active,
+      name: '宝具解放',
+      unmodifiedDetail: 'サーヴァント1騎のNPを100％増加させる',
+      coolDown: [0],
+      functions: [
+        NiceFunction(
+          funcId: 464,
+          funcType: FuncType.gainNp,
+          funcTargetType: FuncTargetType.ptOne,
+          funcTargetTeam: FuncApplyTarget.player,
+          funcPopupText: 'NP増加',
+          svals: [
+            DataVals({
+              'Rate': 3000,
+              'Value': 10000,
+              'Unaffected': 1,
+            })
+          ],
+        )
+      ],
+    );
+
+    return BattleSkillInfoData.activateSkill(
+      this,
+      skill,
+      1,
+      defaultToAlly: true,
+    );
+  }
+
   Future<void> removeDeadActors() async {
     await removeDeadActorsFromList(onFieldAllyServants);
     await removeDeadActorsFromList(onFieldEnemies);

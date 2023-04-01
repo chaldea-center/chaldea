@@ -19,9 +19,8 @@ import 'package:chaldea/widgets/widgets.dart';
 
 class CustomSkillActivator extends StatefulWidget {
   final BattleData battleData;
-  final VoidCallback onActivate;
 
-  const CustomSkillActivator({super.key, required this.battleData, required this.onActivate});
+  const CustomSkillActivator({super.key, required this.battleData});
 
   @override
   State<CustomSkillActivator> createState() => _CustomSkillActivatorState();
@@ -190,6 +189,7 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                     onPressed: errorMsg != null
                         ? null
                         : () {
+                            widget.battleData.copy();
                             if (activator != null) widget.battleData.setActivator(activator!);
                             widget.battleData.logger
                                 .action('${activator == null ? S.current.battle_no_source : activator!.lBattleName}'
@@ -200,8 +200,7 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                               skillLv,
                               defaultToAlly: isAlly,
                             );
-                            widget.onActivate();
-                            Navigator.of(context).pop();
+                            Navigator.of(context).pop(skill);
                           },
                     icon: const Icon(Icons.arrow_right_rounded),
                     label: Text(S.current.battle_activate_custom_skill),
