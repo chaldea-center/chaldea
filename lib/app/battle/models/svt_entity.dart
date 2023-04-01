@@ -590,14 +590,23 @@ class BattleServantData {
   }
 
   bool canNP(final BattleData battleData) {
-    if ((isPlayer && np < ConstData.constants.fullTdPoint) ||
-        (isEnemy && (npLineCount < niceEnemy!.chargeTurn || niceEnemy!.chargeTurn == 0))) {
+    if (!isNpFull(battleData)) {
       return false;
     }
     battleData.setActivator(this);
     final result = canAttack(battleData) && !hasDoNotBuffOnActionsForUI(battleData, doNotNPTypes);
     battleData.unsetActivator();
     return result;
+  }
+
+  bool isNpFull(BattleData battleData) {
+    if (isPlayer && np < ConstData.constants.fullTdPoint) {
+      return false;
+    }
+    if (isEnemy && (npLineCount < niceEnemy!.chargeTurn || niceEnemy!.chargeTurn == 0)) {
+      return false;
+    }
+    return true;
   }
 
   bool checkNPScript(final BattleData battleData) {

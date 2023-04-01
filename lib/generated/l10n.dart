@@ -1603,6 +1603,17 @@ class S {
     );
   }
 
+  /// `Charge to {count}?`
+  String charge_np_to(Object count) {
+    return Intl.message(
+      'Charge to $count?',
+      name: 'charge_np_to',
+      desc: '',
+      locale: localeName,
+      args: [count],
+    );
+  }
+
   /// `Verify file integrity`
   String get check_file_hash {
     return Intl.message(
@@ -6123,6 +6134,17 @@ class S {
     return Intl.message(
       'NP Gain Mod',
       name: 'np_gain_mod',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `NP Not Enough`
+  String get np_not_enough {
+    return Intl.message(
+      'NP Not Enough',
+      name: 'np_not_enough',
       desc: '',
       locale: localeName,
       args: [],

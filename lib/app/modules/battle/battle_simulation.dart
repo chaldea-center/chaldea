@@ -471,13 +471,14 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         FilledButton(
           onPressed: battleData.isBattleWin
               ? null
-              : () {
+              : () async {
                   final List<CombatAction?> combatActions = [null, null, null];
-                  showDialog(
+                  await showDialog(
                     context: context,
                     useRootNavigator: false,
                     builder: (context) => showCommandCards(context, combatActions),
                   );
+                  if (mounted) setState(() {});
                 },
           child: battleData.isBattleWin
               ? Text('Win', style: TextStyle(color: Theme.of(context).colorScheme.secondary))
@@ -789,6 +790,24 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
     );
     tdIcon = GestureDetector(
       onTap: () {
+        final canCharge = svt.td != null && !(svt.isEnemy && svt.niceEnemy!.chargeTurn == 0);
+        if (canCharge && !svt.isNpFull(battleData)) {
+          SimpleCancelOkDialog(
+            title: Text(S.current.np_not_enough),
+            content: Text(S.current
+                .charge_np_to(svt.isPlayer ? ConstData.constants.fullTdPoint ~/ 100 : svt.niceEnemy!.chargeTurn)),
+            onTapOk: () {
+              if (svt.isPlayer) {
+                svt.np = ConstData.constants.fullTdPoint;
+              } else if (svt.isEnemy) {
+                svt.npLineCount = svt.niceEnemy!.chargeTurn;
+              }
+              if (mounted) setState(() {});
+            },
+          ).showDialog(context);
+          return;
+        }
+
         if (!svt.canSelectNP(battleData)) {
           return;
         }
