@@ -44,6 +44,7 @@ import '../modules/home/home.dart';
 import '../modules/misc/apk_list.dart';
 import '../modules/misc/app_route_entrance.dart';
 import '../modules/misc/common_release.dart';
+import '../modules/misc/discord_page.dart';
 import '../modules/script/reader_entry.dart';
 import '../modules/servant/servant_list.dart';
 import '../modules/shop/shop.dart';
@@ -171,6 +172,7 @@ class Routes {
 
   static const String laplace = '/laplace';
 
+  static const String discord = '/discord';
   static const String notFound = '/404';
   static const String routes = '/routes';
 
@@ -422,6 +424,8 @@ class RouteConfiguration {
         return const ApkListPage();
       case Routes.routes:
         return const AppRouteEntrancePage();
+      case Routes.discord:
+        return const DiscordPage();
     }
     return null;
   }
