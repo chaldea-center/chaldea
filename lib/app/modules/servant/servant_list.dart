@@ -22,8 +22,9 @@ class ServantListPage extends StatefulWidget {
   final bool planMode;
   final void Function(Servant svt)? onSelected;
   final SvtFilterData? filterData;
+  final List<int>? pinged;
 
-  ServantListPage({super.key, this.planMode = false, this.onSelected, this.filterData});
+  ServantListPage({super.key, this.planMode = false, this.onSelected, this.filterData, this.pinged});
 
   @override
   State<StatefulWidget> createState() => ServantListPageState();
@@ -76,12 +77,18 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
     });
   }
 
+  int _compareSvt(Servant a, Servant b) {
+    return SvtFilterData.compare(a, b, keys: filterData.sortKeys, reversed: filterData.sortReversed, user: db.curUser);
+  }
+
   @override
   Widget build(BuildContext context) {
-    filterShownList(
-      compare: (a, b) =>
-          SvtFilterData.compare(a, b, keys: filterData.sortKeys, reversed: filterData.sortReversed, user: db.curUser),
-    );
+    filterShownList(compare: _compareSvt);
+    if (widget.pinged != null) {
+      final pinged = shownList.where((e) => widget.pinged!.contains(e.collectionNo)).toList();
+      shownList.insertAll(0, pinged);
+    }
+
     return scrollListener(
       useGrid: widget.planMode ? false : filterData.useGrid,
       appBar: appBar,

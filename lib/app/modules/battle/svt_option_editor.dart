@@ -902,6 +902,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           _updateState();
         },
         filterData: db.settings.svtFilterData,
+        pinged: db.settings.battleSim.pingedSvts.toList(),
       ),
       detail: true,
     );
@@ -1192,6 +1193,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
           _onSelectCE(selectedCe);
         },
         filterData: db.settings.craftFilterData,
+        pinged: db.settings.battleSim.pingedCEs.toList(),
       ),
       detail: true,
     );

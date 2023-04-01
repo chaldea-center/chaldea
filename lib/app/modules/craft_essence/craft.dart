@@ -173,11 +173,29 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
   Widget get _popupButton {
     return PopupMenuButton(
       itemBuilder: (context) {
-        return SharedBuilder.websitesPopupMenuItems(
-          atlas: Atlas.dbCraftEssence(ce.id),
-          mooncell: ce.extra.mcLink,
-          fandom: ce.extra.fandomLink,
-        );
+        return [
+          if (ce.collectionNo > 0)
+            PopupMenuItem(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: CheckboxWithLabel(
+                ink: false,
+                value: db.settings.battleSim.pingedCEs.contains(ce.collectionNo),
+                label: Text('Laplace: ${S.current.ping_to_top}'),
+                onChanged: (v) {
+                  db.settings.battleSim.pingedCEs.toggle(ce.collectionNo);
+                  Navigator.pop(context);
+                },
+              ),
+              onTap: () {
+                db.settings.battleSim.pingedCEs.toggle(ce.collectionNo);
+              },
+            ),
+          ...SharedBuilder.websitesPopupMenuItems(
+            atlas: Atlas.dbCraftEssence(ce.id),
+            mooncell: ce.extra.mcLink,
+            fandom: ce.extra.fandomLink,
+          ),
+        ];
       },
     );
   }

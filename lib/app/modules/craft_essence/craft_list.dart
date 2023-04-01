@@ -16,8 +16,9 @@ import 'filter.dart';
 class CraftListPage extends StatefulWidget {
   final CraftFilterData? filterData;
   final void Function(CraftEssence ce)? onSelected;
+  final List<int>? pinged;
 
-  CraftListPage({super.key, this.onSelected, this.filterData});
+  CraftListPage({super.key, this.onSelected, this.filterData, this.pinged});
 
   @override
   State<StatefulWidget> createState() => CraftListPageState();
@@ -43,11 +44,17 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
     });
   }
 
+  int _compareCE(CraftEssence a, CraftEssence b) {
+    return CraftFilterData.compare(a, b, keys: filterData.sortKeys, reversed: filterData.sortReversed);
+  }
+
   @override
   Widget build(BuildContext context) {
-    filterShownList(
-      compare: (a, b) => CraftFilterData.compare(a, b, keys: filterData.sortKeys, reversed: filterData.sortReversed),
-    );
+    filterShownList(compare: _compareCE);
+    if (widget.pinged != null) {
+      final pinged = shownList.where((e) => widget.pinged!.contains(e.collectionNo)).toList();
+      shownList.insertAll(0, pinged);
+    }
     return scrollListener(
       useGrid: filterData.useGrid,
       appBar: AppBar(

@@ -567,6 +567,7 @@
   "passive_skill": "Passive Skill",
   "passive_skill_short": "Passive",
   "permanent": null,
+  "ping_to_top": null,
   "plan": "Plan",
   "plan_list_only_unlock_append": null,
   "plan_list_set_all": "Establecer todos",

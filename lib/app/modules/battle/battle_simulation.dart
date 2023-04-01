@@ -812,6 +812,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
             content: Text(S.current
                 .charge_np_to(svt.isPlayer ? ConstData.constants.fullTdPoint ~/ 100 : svt.niceEnemy!.chargeTurn)),
             onTapOk: () {
+              battleData.copy();
               if (svt.isPlayer) {
                 svt.np = ConstData.constants.fullTdPoint;
               } else if (svt.isEnemy) {

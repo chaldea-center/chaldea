@@ -5,6 +5,7 @@ class CheckboxWithLabel extends StatelessWidget {
   final ValueChanged<bool?>? onChanged;
   final Widget label;
   final EdgeInsetsGeometry? padding;
+  final bool ink;
 
   const CheckboxWithLabel({
     super.key,
@@ -12,6 +13,7 @@ class CheckboxWithLabel extends StatelessWidget {
     required this.label,
     required this.onChanged,
     this.padding = const EdgeInsets.only(right: 8),
+    this.ink = true,
   });
 
   @override
@@ -31,10 +33,13 @@ class CheckboxWithLabel extends StatelessWidget {
     if (padding != null) {
       child = Padding(padding: padding!, child: child);
     }
-    return InkWell(
-      onTap: onChanged == null ? null : () => onChanged!(!value),
-      child: child,
-    );
+    if (ink) {
+      child = InkWell(
+        onTap: onChanged == null ? null : () => onChanged!(!value),
+        child: child,
+      );
+    }
+    return child;
   }
 }
 

@@ -567,6 +567,7 @@
   "passive_skill": "被動技能",
   "passive_skill_short": "被動",
   "permanent": "永久",
+  "ping_to_top": null,
   "plan": "規劃",
   "plan_list_only_unlock_append": "僅已解鎖追加",
   "plan_list_set_all": "批量設置",

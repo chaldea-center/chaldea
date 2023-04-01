@@ -407,6 +407,8 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
         final val = BattleSimSetting(
           previousQuestPhase: $checkedConvert('previousQuestPhase', (v) => v as String?),
           preferPlayerData: $checkedConvert('preferPlayerData', (v) => v as bool? ?? true),
+          pingedCEs: $checkedConvert('pingedCEs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
+          pingedSvts: $checkedConvert('pingedSvts', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
         );
         return val;
       },
@@ -415,4 +417,6 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <String, dynamic>{
       'previousQuestPhase': instance.previousQuestPhase,
       'preferPlayerData': instance.preferPlayerData,
+      'pingedCEs': instance.pingedCEs.toList(),
+      'pingedSvts': instance.pingedSvts.toList(),
     };

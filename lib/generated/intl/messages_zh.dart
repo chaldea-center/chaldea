@@ -660,6 +660,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "passive_skill": MessageLookupByLibrary.simpleMessage("被动技能"),
         "passive_skill_short": MessageLookupByLibrary.simpleMessage("被动"),
         "permanent": MessageLookupByLibrary.simpleMessage("永久"),
+        "ping_to_top": MessageLookupByLibrary.simpleMessage("置顶"),
         "plan": MessageLookupByLibrary.simpleMessage("规划"),
         "plan_list_only_unlock_append": MessageLookupByLibrary.simpleMessage("仅已解锁追加"),
         "plan_list_set_all": MessageLookupByLibrary.simpleMessage("批量设置"),

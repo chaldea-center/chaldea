@@ -567,6 +567,7 @@
   "passive_skill": "クラススキル",
   "passive_skill_short": "クラス",
   "permanent": null,
+  "ping_to_top": null,
   "plan": "プラン",
   "plan_list_only_unlock_append": null,
   "plan_list_set_all": "一括設定",

@@ -567,6 +567,7 @@
   "passive_skill": "클래스 스킬",
   "passive_skill_short": "클래스",
   "permanent": null,
+  "ping_to_top": null,
   "plan": "계획",
   "plan_list_only_unlock_append": "잠금 해제된 어펜드 만",
   "plan_list_set_all": "일괄 설정",

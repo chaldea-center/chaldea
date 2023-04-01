@@ -579,6 +579,22 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
             ),
           // if (_tabController.index == 0)
           if (svt.isUserSvt)
+            PopupMenuItem(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: CheckboxWithLabel(
+                ink: false,
+                value: db.settings.battleSim.pingedSvts.contains(svt.collectionNo),
+                label: Text('Laplace: ${S.current.ping_to_top}'),
+                onChanged: (v) {
+                  db.settings.battleSim.pingedSvts.toggle(svt.collectionNo);
+                  Navigator.pop(context);
+                },
+              ),
+              onTap: () {
+                db.settings.battleSim.pingedSvts.toggle(svt.collectionNo);
+              },
+            ),
+          if (svt.isUserSvt)
             PopupMenuItem<String>(
               value: 'switch_slider_dropdown',
               onTap: () {

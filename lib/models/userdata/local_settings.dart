@@ -407,11 +407,16 @@ class TipsSetting {
 class BattleSimSetting {
   String? previousQuestPhase;
   bool preferPlayerData;
+  Set<int> pingedCEs;
+  Set<int> pingedSvts;
 
   BattleSimSetting({
     this.previousQuestPhase,
     this.preferPlayerData = true,
-  });
+    Set<int>? pingedCEs,
+    Set<int>? pingedSvts,
+  })  : pingedCEs = pingedCEs ?? {28, 34, 48},
+        pingedSvts = pingedSvts ?? {37, 62, 150, 215, 241, 284, 314, 316, 353, 357};
 
   factory BattleSimSetting.fromJson(Map<String, dynamic> json) => _$BattleSimSettingFromJson(json);
 

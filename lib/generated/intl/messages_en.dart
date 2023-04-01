@@ -688,6 +688,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "passive_skill": MessageLookupByLibrary.simpleMessage("Passive Skill"),
         "passive_skill_short": MessageLookupByLibrary.simpleMessage("Passive"),
         "permanent": MessageLookupByLibrary.simpleMessage("Permanent"),
+        "ping_to_top": MessageLookupByLibrary.simpleMessage("Ping to Top"),
         "plan": MessageLookupByLibrary.simpleMessage("Plan"),
         "plan_list_only_unlock_append": MessageLookupByLibrary.simpleMessage("Unlocked Append"),
         "plan_list_set_all": MessageLookupByLibrary.simpleMessage("Set All"),

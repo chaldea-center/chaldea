@@ -520,13 +520,14 @@ class ServantSelector extends StatelessWidget {
   final DragTargetAccept<PlayerSvtData> onDragSvt;
   final DragTargetAccept<PlayerSvtData> onDragCE;
 
-  ServantSelector(
-      {super.key,
-      required this.playerSvtData,
-      required this.questPhase,
-      required this.onChange,
-      required this.onDragSvt,
-      required this.onDragCE});
+  ServantSelector({
+    super.key,
+    required this.playerSvtData,
+    required this.questPhase,
+    required this.onChange,
+    required this.onDragSvt,
+    required this.onDragCE,
+  });
 
   @override
   Widget build(final BuildContext context) {

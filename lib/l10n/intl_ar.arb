@@ -567,6 +567,7 @@
   "passive_skill": "باسيڨ سكل",
   "passive_skill_short": null,
   "permanent": null,
+  "ping_to_top": null,
   "plan": "الخطة",
   "plan_list_only_unlock_append": null,
   "plan_list_set_all": "وضع الكل",
