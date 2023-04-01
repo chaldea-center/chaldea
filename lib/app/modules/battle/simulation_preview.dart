@@ -395,9 +395,10 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        mysticCodeData.mysticCode.iconBuilder(context: context, width: 48, jumpToDetail: false),
+        mysticCodeData.mysticCode?.iconBuilder(context: context, width: 48, jumpToDetail: false) ??
+            db.getIconImage(null, width: 48),
         AutoSizeText(
-          mysticCodeData.mysticCode.lName.l,
+          mysticCodeData.mysticCode?.lName.l ?? S.current.mystic_code,
           maxLines: 2,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodySmall,
