@@ -943,7 +943,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       playerSvtData
         ..limitCount = curStatus.ascension
         ..lv = selectedSvt.grailedLv(curStatus.grail)
-        ..tdLv = curStatus.npLv.clamp(0, 5)
+        ..tdLv = curStatus.npLv.clamp(1, 5)
         ..skillLvs = curStatus.skills.toList()
         ..appendLvs = curStatus.appendSkills.toList()
         ..atkFou = curStatus.fouAtk > 0 ? 1000 + curStatus.fouAtk * 20 : curStatus.fouAtk3 * 50
@@ -969,7 +969,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
     playerSvtData.extraPassives = selectedSvt.extraPassive.toList();
 
-    playerSvtData.td = ServantSelector.getShownTds(selectedSvt, playerSvtData.limitCount).last;
+    playerSvtData.td = ServantSelector.getShownTds(selectedSvt, playerSvtData.limitCount).lastOrNull;
     for (final skillNum in kActiveSkillNums) {
       playerSvtData.skills[skillNum - 1] =
           ServantSelector.getShownSkills(selectedSvt, playerSvtData.limitCount, skillNum).lastOrNull;
