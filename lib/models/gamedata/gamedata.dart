@@ -380,7 +380,7 @@ class GameTop {
   String verCode;
   int dataVer;
   int dateVer;
-  String assetbundle;
+  // String assetbundle;
   String assetbundleFolder;
 
   GameTop({
@@ -390,7 +390,7 @@ class GameTop {
     required this.verCode,
     required this.dataVer,
     required this.dateVer,
-    required this.assetbundle,
+    // required this.assetbundle,
     required this.assetbundleFolder,
   });
 
@@ -405,6 +405,20 @@ class GameTop {
   int get folderCrc => Crc32().convert(utf8.encode(assetbundleFolder)).toBigInt().toInt();
 
   factory GameTop.fromJson(Map<String, dynamic> json) => _$GameTopFromJson(json);
+}
+
+@JsonSerializable()
+class AssetBundleDecrypt {
+  String folderName;
+  String animalName;
+  String zooName;
+
+  AssetBundleDecrypt({
+    required this.folderName,
+    required this.animalName,
+    required this.zooName,
+  });
+  factory AssetBundleDecrypt.fromJson(Map<String, dynamic> json) => _$AssetBundleDecryptFromJson(json);
 }
 
 class _ProcessedData {

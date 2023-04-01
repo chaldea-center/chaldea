@@ -91,7 +91,7 @@ class AppNewsCarousel extends StatefulWidget {
         List<CarouselItem> items = [];
         final data = (await _dio.get('${Hosts.dataHost}/version.json')).data as Map;
         final minVer = AppVersion.parse(data['minimalApp']);
-        if (minVer > AppInfo.version || kDebugMode) {
+        if (minVer > AppInfo.version) {
           items.add(CarouselItem(
             type: 1,
             title: S.current.update,
@@ -519,7 +519,11 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
         }
       }
       if (child == null) continue;
-      if (item.link != null || item.eventIds.isNotEmpty || item.warIds.isNotEmpty || item.summonIds.isNotEmpty) {
+      if (item.link != null ||
+          item.content != null ||
+          item.eventIds.isNotEmpty ||
+          item.warIds.isNotEmpty ||
+          item.summonIds.isNotEmpty) {
         child = GestureDetector(
           onTap: () => onTap(item),
           child: child,

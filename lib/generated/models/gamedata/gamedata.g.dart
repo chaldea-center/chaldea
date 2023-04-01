@@ -135,6 +135,11 @@ GameTop _$GameTopFromJson(Map json) => GameTop(
       verCode: json['verCode'] as String,
       dataVer: json['dataVer'] as int,
       dateVer: json['dateVer'] as int,
-      assetbundle: json['assetbundle'] as String,
       assetbundleFolder: json['assetbundleFolder'] as String,
+    );
+
+AssetBundleDecrypt _$AssetBundleDecryptFromJson(Map json) => AssetBundleDecrypt(
+      folderName: json['folderName'] as String,
+      animalName: json['animalName'] as String,
+      zooName: json['zooName'] as String,
     );

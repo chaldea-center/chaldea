@@ -27,4 +27,11 @@ class Hosts {
   static const kAtlasAssetHostGlobal = 'https://static.atlasacademy.io';
   static const kAtlasAssetHostCN = 'https://static.atlas.chaldea.center';
   static String get atlasAssetHost => cn ? kAtlasAssetHostCN : kAtlasAssetHostGlobal;
+
+  static String proxyWorker(String url, {bool onlyCN = true}) {
+    if (onlyCN && !cn) {
+      return url;
+    }
+    return Uri.https(workerHost, '/proxy/custom', {'url': url}).toString();
+  }
 }

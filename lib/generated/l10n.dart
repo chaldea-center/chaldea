@@ -448,6 +448,17 @@ class S {
     );
   }
 
+  /// `Auto Login`
+  String get auto_login {
+    return Intl.message(
+      'Auto Login',
+      name: 'auto_login',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Auto reset`
   String get auto_reset {
     return Intl.message(

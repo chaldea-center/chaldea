@@ -56,7 +56,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     final top = gameTops?.of(args.region);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Auto Login'),
+        title: Text(S.current.auto_login),
         actions: [
           IconButton(
             onPressed: () {
@@ -143,11 +143,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
           ListTile(
             title: const Text('Game Info'),
             dense: true,
-            subtitle: Text(top == null
-                ? 'Not loaded'
-                : 'appVer=${top.appVer},'
-                    'dataVer=${top.dataVer},'
-                    'dateVer=${top.dateVer}'),
+            subtitle: Text(top == null ? 'Not loaded' : 'appVer=${top.appVer},dataVer=${top.dataVer}'),
             trailing: IconButton(
               onPressed: () async {
                 final value = await AtlasApi.gametops();

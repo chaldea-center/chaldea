@@ -35,6 +35,7 @@
   "attachment": "附件",
   "attack_np_rate": "攻擊NP率",
   "auth_data_hints": "提醒:\n- 此處userId並非登入/好友頁看到的用戶ID(py碼)\n- 請勿分享上述金鑰(keys)或截圖給其他任何人!!!\n- 以下3種方法選擇其一導入",
+  "auto_login": null,
   "auto_reset": "自動重設",
   "auto_update": "自動更新",
   "autoplay": "自動播放",

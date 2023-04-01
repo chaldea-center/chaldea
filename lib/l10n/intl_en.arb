@@ -35,6 +35,7 @@
   "attachment": "Attachment",
   "attack_np_rate": "Attack NP Rate",
   "auth_data_hints": "Hints:\n- userId here is not friend code you saw on login/friend page\n- DO NOT share above keys or screenshot to others!!!\n- choose one of following methods to import",
+  "auto_login": "Auto Login",
   "auto_reset": "Auto reset",
   "auto_update": "Auto Update",
   "autoplay": "Autoplay",

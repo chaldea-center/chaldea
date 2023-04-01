@@ -639,10 +639,26 @@ class AtlasApi {
   }
 
   // game top
-  static Future<GameTops?> gametops({Duration? expireAfter = Duration.zero}) {
-    return cacheManager.getModel(
+  static Future<GameTops?> gametops({Duration? expireAfter = Duration.zero}) async {
+    final tops = await cacheManager.getModel(
       '${Hosts.dataHost}/gametop.json',
       (data) => GameTops.fromJson(data),
+      expireAfter: expireAfter,
+    );
+    if (tops != null) {
+      final jpFolder = (await assetbundle(Region.jp, expireAfter: expireAfter))?.folderName;
+      final naFolder = (await assetbundle(Region.na, expireAfter: expireAfter))?.folderName;
+      tops.jp.assetbundleFolder = jpFolder ?? tops.jp.assetbundleFolder;
+      tops.na.assetbundleFolder = naFolder ?? tops.na.assetbundleFolder;
+    }
+    return tops;
+  }
+
+  static Future<AssetBundleDecrypt?> assetbundle(Region region, {Duration? expireAfter = Duration.zero}) {
+    return cacheManager.getModel(
+      Hosts.proxyWorker(
+          'https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/metadata/assetbundle.json'),
+      (data) => AssetBundleDecrypt.fromJson(data),
       expireAfter: expireAfter,
     );
   }

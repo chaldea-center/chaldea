@@ -121,6 +121,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "attack_np_rate": MessageLookupByLibrary.simpleMessage("攻击NP率"),
         "auth_data_hints": MessageLookupByLibrary.simpleMessage(
             "提醒:\n- 此处userId并非登陆/好友页看到的用户ID(py码)\n- 请勿分享上述密钥(keys)或截图给其他任何人!!!\n- 以下3种方法选择其一导入"),
+        "auto_login": MessageLookupByLibrary.simpleMessage("自动登录"),
         "auto_reset": MessageLookupByLibrary.simpleMessage("自动重置"),
         "auto_update": MessageLookupByLibrary.simpleMessage("自动更新"),
         "autoplay": MessageLookupByLibrary.simpleMessage("自动播放"),
