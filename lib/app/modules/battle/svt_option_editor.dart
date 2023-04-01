@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -943,7 +945,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       playerSvtData
         ..limitCount = curStatus.ascension
         ..lv = selectedSvt.grailedLv(curStatus.grail)
-        ..tdLv = curStatus.npLv
+        ..tdLv = curStatus.npLv.clamp(0, 5)
         ..skillLvs = curStatus.skills.toList()
         ..appendLvs = curStatus.appendSkills.toList()
         ..atkFou = curStatus.fouAtk > 0 ? 1000 + curStatus.fouAtk * 20 : curStatus.fouAtk3 * 50
@@ -958,7 +960,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       playerSvtData
         ..limitCount = 4
         ..lv = selectedSvt.lvMax
-        ..tdLv = selectedSvt.rarity > 3 || selectedSvt.extra.obtains.contains(SvtObtain.eventReward) ? 1 : 5
+        ..tdLv = selectedSvt.rarity <= 3 || selectedSvt.extra.obtains.contains(SvtObtain.eventReward) ? 5 : 1
         ..skillLvs = [10, 10, 10]
         ..appendLvs = [0, 0, 0]
         ..atkFou = 1000
@@ -1004,7 +1006,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     playerSvtData.skillLvs = support.skills.skillLvs.map((e) => e ?? 0).toList();
     svt.noblePhantasms = [if (support.noblePhantasm.noblePhantasm != null) support.noblePhantasm.noblePhantasm!];
     playerSvtData.td = support.noblePhantasm.noblePhantasm;
-    playerSvtData.tdLv = support.noblePhantasm.noblePhantasmLv;
+    playerSvtData.tdLv = support.noblePhantasm.noblePhantasmLv.clamp(1, 5);
     // ce
     final ce = support.equips.getOrNull(0);
     playerSvtData

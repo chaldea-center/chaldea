@@ -24,7 +24,7 @@ jobs:
           flutter pub get
 
       - name: Verify dart formatting
-        run: dart format --output=none --set-exit-if-changed .
+        run: dart format --line-length 120 --output=none --set-exit-if-changed .
 
       - name: Dart Analyze
         if: always()
