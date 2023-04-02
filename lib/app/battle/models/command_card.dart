@@ -50,6 +50,16 @@ class CommandCardData {
   bool checkTraits(final Iterable<NiceTrait> requiredTraits) {
     return containsAnyTraits(traits, requiredTraits);
   }
+
+  CommandCardData copy() {
+    return CommandCardData(cardType, cardDetail)
+      ..cardStrengthen = cardStrengthen
+      ..npGain = npGain
+      ..traits = traits.toList()
+      ..isNP = isNP
+      ..cardIndex = cardIndex
+      ..isCritical = isCritical;
+  }
 }
 
 class CombatAction {
