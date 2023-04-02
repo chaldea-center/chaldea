@@ -1,9 +1,16 @@
+# 2.3.1
+
+- Drag svt/ce when building team
+- Ping preferred svt/ce to top when building team
+- Add command spell effects
+
 # 2.3.0
 
 - Welcome "Laplace"! The new Battle Simulator
 - Add material efficiency of event free quests
 - Show quest's all possible enemy decks
 - Add Beat's footprint into planner
+- Custom face for chara figure
 - Fix bugs: import wrong file with same filename, EXP cards calc, etc.
 
 # 2.2.6

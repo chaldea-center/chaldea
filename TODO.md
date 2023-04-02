@@ -7,7 +7,7 @@ There are plenty of work need to do.
 ### High Priority
 
 - [ ] catch error for user interaction (skill/attack)
-- [ ] better battle log
+- [ ] add battle records to button bar
 
 ### Ally Function Logic:
 
