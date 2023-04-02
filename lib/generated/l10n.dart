@@ -1702,6 +1702,17 @@ class S {
     );
   }
 
+  /// `Collapse`
+  String get collapse {
+    return Intl.message(
+      'Collapse',
+      name: 'collapse',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Command Code`
   String get command_code {
     return Intl.message(
@@ -3225,6 +3236,17 @@ class S {
     return Intl.message(
       'Exp Card',
       name: 'exp_card_title',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Expand`
+  String get expand {
+    return Intl.message(
+      'Expand',
+      name: 'expand',
       desc: '',
       locale: localeName,
       args: [],
@@ -5892,6 +5914,17 @@ class S {
     return Intl.message(
       'Move up',
       name: 'move_up',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `My Room Background`
+  String get my_room_background {
+    return Intl.message(
+      'My Room Background',
+      name: 'my_room_background',
       desc: '',
       locale: localeName,
       args: [],

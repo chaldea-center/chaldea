@@ -562,7 +562,7 @@ class __PlayButtonState<T> extends State<_PlayButton<T>> {
     }
     if (PlatformU.isLinux && !_linuxValid) {
       // if linux mpv is support in the future
-      if (Process.runSync("which", ["mpv"]).exitCode == 0) {
+      if (Process.runSync("which", ["mpv"], runInShell: true).exitCode == 0) {
         _linuxValid = true;
         return true;
       } else {

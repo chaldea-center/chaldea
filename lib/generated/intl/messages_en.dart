@@ -243,6 +243,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear_cache_hint": MessageLookupByLibrary.simpleMessage("Including illustrations, voices"),
         "clear_data": MessageLookupByLibrary.simpleMessage("Clear Data"),
         "coin_summon_num": MessageLookupByLibrary.simpleMessage("Summon Coins"),
+        "collapse": MessageLookupByLibrary.simpleMessage("Collapse"),
         "command_code": MessageLookupByLibrary.simpleMessage("Command Code"),
         "command_spell": MessageLookupByLibrary.simpleMessage("Command Spell"),
         "common_release_group_hint":
@@ -393,6 +394,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "exp_card_plan_next": MessageLookupByLibrary.simpleMessage("NEXT"),
         "exp_card_same_class": MessageLookupByLibrary.simpleMessage("Same Class"),
         "exp_card_title": MessageLookupByLibrary.simpleMessage("Exp Card"),
+        "expand": MessageLookupByLibrary.simpleMessage("Expand"),
         "extra_passive": MessageLookupByLibrary.simpleMessage("Extra Passive"),
         "failed": MessageLookupByLibrary.simpleMessage("Failed"),
         "faq": MessageLookupByLibrary.simpleMessage("FAQ"),
@@ -649,6 +651,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "mission": MessageLookupByLibrary.simpleMessage("Mission"),
         "move_down": MessageLookupByLibrary.simpleMessage("Move down"),
         "move_up": MessageLookupByLibrary.simpleMessage("Move up"),
+        "my_room_background": MessageLookupByLibrary.simpleMessage("My Room Background"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("Mystic Code"),
         "network_cur_connection": MessageLookupByLibrary.simpleMessage("Connection"),
         "network_force_online": MessageLookupByLibrary.simpleMessage("Force Online Mode"),

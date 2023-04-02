@@ -16,7 +16,7 @@ class ToolListPage extends StatelessWidget {
     Map<String, Widget> pages = {
       if (db.runtimeData.enableDebugTools) 'AA Explorer': const AtlasExplorerPreview(),
       S.current.custom_chara_figure: const CustomCharaFigureIntro(),
-      'My Room Background': const MyRoomBGAssetsPage(),
+      S.current.my_room_background: const MyRoomBGAssetsPage(),
       'Combine Images': const CombineImagePage(),
     };
     return Scaffold(
