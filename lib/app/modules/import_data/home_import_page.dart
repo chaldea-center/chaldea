@@ -70,15 +70,6 @@ class _ImportPageHomeState extends State<ImportPageHome> {
               router.popDetailAndPush(child: ImportHttpPage());
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.compare_arrows),
-            title: const Text('FGO Simulator-Material'),
-            subtitle: const Text('https://fgosim.github.io/Material/'),
-            trailing: const Icon(Icons.keyboard_arrow_right),
-            onTap: () {
-              router.popDetailAndPush(child: ImportFgoSimuMaterialPage());
-            },
-          ),
           // SHeader(S.current.testing),
           ListTile(
             leading: const Icon(Icons.screenshot),
@@ -108,15 +99,6 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.table_view),
-            title: Text(S.current.import_csv_title),
-            subtitle: const Text('Edit in Excel/Google Sheet'),
-            trailing: const Icon(Icons.keyboard_arrow_right),
-            onTap: () {
-              router.pushPage(const ImportCSVPage(), popDetail: true);
-            },
-          ),
-          ListTile(
             leading: const Icon(Icons.manage_accounts),
             title: Text(S.current.import_auth_file),
             trailing: const Icon(Icons.keyboard_arrow_right),
@@ -127,7 +109,25 @@ class _ImportPageHomeState extends State<ImportPageHome> {
                 : () {
                     router.pushPage(const AutoLoginPage());
                   },
-          )
+          ),
+          ListTile(
+            leading: const Icon(Icons.compare_arrows),
+            title: const Text('FGO Simulator-Material'),
+            subtitle: const Text('https://fgosim.github.io/Material/'),
+            trailing: const Icon(Icons.keyboard_arrow_right),
+            onTap: () {
+              router.popDetailAndPush(child: ImportFgoSimuMaterialPage());
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.table_view),
+            title: Text(S.current.import_csv_title),
+            subtitle: const Text('Edit in Excel/Google Sheet'),
+            trailing: const Icon(Icons.keyboard_arrow_right),
+            onTap: () {
+              router.pushPage(const ImportCSVPage(), popDetail: true);
+            },
+          ),
         ],
       ),
     );

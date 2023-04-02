@@ -129,12 +129,16 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
     Widget _getSummary(SvtPlan plan) {
       String text = '${plan.ascension}-';
       text += plan.skills.map((e) => e.toString().padLeft(2)).join('/');
+      text += '\n';
+      text += plan.appendSkills.map((e) => e.toString().padLeft(2)).join('/');
       return Center(
         child: AutoSizeText(
           text,
-          maxLines: 1,
+          maxLines: 2,
           minFontSize: 2,
           style: kMonoStyle,
+          maxFontSize: 14,
+          textAlign: TextAlign.end,
         ),
       );
     }
@@ -142,6 +146,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
     for (final record in svtResult) {
       children.add(ListTile(
         leading: record.svt.iconBuilder(context: context),
+        horizontalTitleGap: 4,
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -278,6 +283,8 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
       if (data is List) {
         // svt: [8,  0,4,  10,10,  8,10,  8,10,  1,0]
         //       0   1 2   3  4    5 6    7 8    9 10
+        // [235 ,0,4, 1,1, 1,2, 1,3, <1,0>, 4,5, 5,6, 6,7]
+        //  0    1 2  3 4  5 6  7 8         11-12 13-14 15-16
         _ignoredSvtIds.clear();
         svtResult.clear();
         for (final List row in data) {
@@ -291,6 +298,16 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
             _ignoredSvtIds.add(webcrowId);
             continue;
           }
+          if (row.length < 17) {
+            row.addAll(List.generate(17 - row.length, (index) => 0));
+          }
+          for (int start in [11, 13, 15]) {
+            final from = row[start], to = row[start + 1];
+            if (from <= 1 && to <= 1) {
+              row[start] = row[start + 1] = 0;
+            }
+          }
+
           svtResult.add(_OneServantData(
             webcrowId: webcrowId,
             svt: svt,
@@ -298,11 +315,13 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
               favorite: true,
               ascension: row[1],
               skills: [row[3], row[5], row[7]],
+              appendSkills: [row[11], row[13], row[15]],
             ),
             target: SvtPlan(
               favorite: true,
               ascension: row[2],
               skills: [row[4], row[6], row[8]],
+              appendSkills: [row[12], row[14], row[16]],
             ),
           ));
         }
