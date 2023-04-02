@@ -19,11 +19,12 @@ class ShopListHome extends StatefulWidget {
 }
 
 class _ShopListHomeState extends State<ShopListHome> {
-  late Region region = db.curUser.region;
+  Region region = Region.jp;
   List<ShopType> get _kShownShopTypes => [
         ShopType.mana,
         ShopType.rarePri,
-        ShopType.shop13,
+        ShopType.shop15, // 巡霊の葉
+        ShopType.shop13, // pure prism
         ShopType.svtCostume,
         ShopType.startUpSummon,
         ShopType.svtAnonymous,

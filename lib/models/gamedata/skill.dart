@@ -284,7 +284,17 @@ class NiceSkill extends BaseSkill {
   }
 
   bool isEnabledForEvent(int eventId) {
-    return extraPassive.any((e) => e.eventId == 0 || e.eventId == eventId);
+    return extraPassive.any((e) {
+      if (e.eventId == 0) {
+        if (e.endedAt - e.startedAt > 90 * kSecsPerDay && e.endedAt > kNeverClosedTimestamp) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+      if (e.eventId == eventId) return true;
+      return false;
+    });
   }
 }
 

@@ -40,7 +40,7 @@ class Item {
   Item({
     required this.id,
     required this.name,
-    required this.type,
+    this.type = ItemType.none,
     this.uses = const [],
     required this.detail,
     this.individuality = const [],

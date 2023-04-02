@@ -9,7 +9,7 @@ part of '../../../models/gamedata/item.dart';
 Item _$ItemFromJson(Map json) => Item(
       id: json['id'] as int,
       name: json['name'] as String,
-      type: $enumDecode(_$ItemTypeEnumMap, json['type']),
+      type: $enumDecodeNullable(_$ItemTypeEnumMap, json['type']) ?? ItemType.none,
       uses: (json['uses'] as List<dynamic>?)?.map((e) => $enumDecode(_$ItemUseEnumMap, e)).toList() ?? const [],
       detail: json['detail'] as String,
       individuality: (json['individuality'] as List<dynamic>?)
