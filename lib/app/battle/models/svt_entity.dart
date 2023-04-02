@@ -549,7 +549,7 @@ class BattleServantData {
 
     battleData.setActivator(this);
     for (final skill in commandCodeSkills[cardIndex]) {
-      battleData.logger.action('$lBattleName - ${S.current.command_code}: ${skill.lName}');
+      battleData.battleLogger.action('$lBattleName - ${S.current.command_code}: ${skill.lName}');
       await skill.activate(battleData);
     }
     battleData.unsetActivator();
@@ -649,7 +649,7 @@ class BattleServantData {
 
   Future<void> activateNP(final BattleData battleData, final int extraOverchargeLvl) async {
     battleData.setActivator(this);
-    battleData.logger.action('$lBattleName ${S.current.battle_np_card}');
+    battleData.battleLogger.action('$lBattleName ${S.current.battle_np_card}');
 
     final niceTD = getCurrentNP(battleData);
     if (niceTD != null) {
@@ -796,11 +796,12 @@ class BattleServantData {
           logger.e('Exception while fetch AtlasApi for skill $skillId', e);
         }
         if (skill == null) {
-          battleData.logger.debug('Buff ID [${buff.buff.id}]: ${S.current.skill} [$skillId] ${S.current.not_found}');
+          battleData.battleLogger
+              .debug('Buff ID [${buff.buff.id}]: ${S.current.skill} [$skillId] ${S.current.not_found}');
           continue;
         }
 
-        battleData.logger.function('$lBattleName - ${buff.buff.lName.l} ${S.current.skill} [$skillId]');
+        battleData.battleLogger.function('$lBattleName - ${buff.buff.lName.l} ${S.current.skill} [$skillId]');
         await BattleSkillInfoData.activateSkill(battleData, skill, buff.additionalParam);
         buff.setUsed();
       }
@@ -914,7 +915,7 @@ class BattleServantData {
 
     battleData.fieldBuffs
         .removeWhere((buff) => buff.vals.RemoveFieldBuffActorDeath == 1 && buff.actorUniqueId == uniqueId);
-    battleData.logger.action('$lBattleName ${S.current.battle_death}');
+    battleData.battleLogger.action('$lBattleName ${S.current.battle_death}');
   }
 
   Future<void> startOfMyTurn(final BattleData battleData) async {
@@ -999,7 +1000,7 @@ class BattleServantData {
     }
 
     if (turnEndLog.isNotEmpty) {
-      battleData.logger.debug('$lBattleName - ${S.current.battle_turn_end}$turnEndLog');
+      battleData.battleLogger.debug('$lBattleName - ${S.current.battle_turn_end}$turnEndLog');
     }
 
     battleBuff.turnEndShort();
@@ -1057,7 +1058,7 @@ class BattleServantData {
       }
       hp = hp.clamp(0, getMaxHp(battleData));
 
-      battleData.logger.action('$lBattleName - ${gutsToApply.buff.lName.l} - '
+      battleData.battleLogger.action('$lBattleName - ${gutsToApply.buff.lName.l} - '
           '${!isRatio ? value : '${(value / 10).toStringAsFixed(1)}%'}');
 
       killedByCard = null;

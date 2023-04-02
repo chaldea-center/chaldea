@@ -28,6 +28,12 @@ class BattleData {
   static final DataVals quickChainAfter7thAnni = DataVals({'Rate': 5000, 'Value': 20});
   static final DataVals cardDamage = DataVals({'Rate': 1000, 'Value': 1000});
 
+  /// Log all action histories, pop/undo/copy should not involve this filed!
+  final List<BattleData> snapshots = [];
+
+  /// User action records, should be copied/saved to snapshots
+  final List<BattleRecord> records = [];
+
   QuestPhase? niceQuest;
   Stage? curStage;
 
@@ -75,7 +81,7 @@ class BattleData {
   bool isAfter7thAnni = true;
   bool tailoredExecution = false;
 
-  final BattleLogger logger = BattleLogger();
+  final BattleLogger battleLogger = BattleLogger();
   BuildContext? context;
 
   // unused fields
@@ -224,7 +230,7 @@ class BattleData {
     if (addTurn) {
       turnCount += 1;
       totalTurnCount += 1;
-      logger.action('${S.current.battle_turn} $totalTurnCount');
+      battleLogger.action('${S.current.battle_turn} $totalTurnCount');
     }
 
     // start of ally turn
@@ -455,8 +461,9 @@ class BattleData {
     }
 
     final svt = onFieldAllyServants[servantIndex]!;
-    logger.action('${svt.lBattleName} - ${S.current.active_skill} ${skillIndex + 1}: ${svt.getSkillName(skillIndex)}');
-    copy();
+    battleLogger
+        .action('${svt.lBattleName} - ${S.current.active_skill} ${skillIndex + 1}: ${svt.getSkillName(skillIndex)}');
+    pushSnapshot();
     await svt.activateSkill(this, skillIndex);
   }
 
@@ -482,9 +489,9 @@ class BattleData {
       return;
     }
 
-    logger.action('${S.current.mystic_code} - ${S.current.active_skill} ${skillIndex + 1}: '
+    battleLogger.action('${S.current.mystic_code} - ${S.current.active_skill} ${skillIndex + 1}: '
         '${masterSkillInfo[skillIndex].lName}');
-    copy();
+    pushSnapshot();
 
     int effectiveness = 1000;
     for (final svt in nonnullAllies) {
@@ -499,7 +506,7 @@ class BattleData {
       return;
     }
 
-    copy();
+    pushSnapshot();
     criticalStars = 0;
 
     // assumption: only Quick, Arts, and Buster are ever listed as viable actions
@@ -575,8 +582,8 @@ class BattleData {
       return;
     }
 
-    logger.action('${S.current.battle_skip_current_wave} ($waveCount)');
-    copy();
+    battleLogger.action('${S.current.battle_skip_current_wave} ($waveCount)');
+    pushSnapshot();
 
     onFieldEnemies.clear();
     enemyDataList.clear();
@@ -673,7 +680,7 @@ class BattleData {
   }
 
   void applyTypeChain(final CardType cardType, final List<CombatAction> actions) {
-    logger.action('${cardType.name} Chain');
+    battleLogger.action('${cardType.name} Chain');
     if (cardType == CardType.quick) {
       final dataValToUse = isAfter7thAnni ? quickChainAfter7thAnni : quickChainBefore7thAnni;
       GainStar.gainStar(this, dataValToUse);
@@ -688,8 +695,8 @@ class BattleData {
       return;
     }
 
-    logger.action(S.current.battle_charge_party);
-    copy();
+    battleLogger.action(S.current.battle_charge_party);
+    pushSnapshot();
 
     GainNP.gainNP(this, DataVals({'Rate': 5000, 'Value': 10000}), nonnullAllies);
   }
@@ -897,9 +904,7 @@ class BattleData {
     return await canActivate(activationRate, funcString);
   }
 
-  final List<BattleData> copies = [];
-
-  void copy() {
+  void pushSnapshot() {
     final BattleData copy = BattleData()
       ..niceQuest = niceQuest
       ..curStage = curStage
@@ -925,16 +930,16 @@ class BattleData {
       ..isAfter7thAnni = isAfter7thAnni
       ..tailoredExecution = tailoredExecution;
 
-    copies.add(copy);
+    snapshots.add(copy);
   }
 
-  void undo() {
-    if (copies.isEmpty) {
+  void popSnapshot() {
+    if (snapshots.isEmpty) {
       return;
     }
 
-    logger.action(S.current.battle_undo);
-    final BattleData copy = copies.removeLast();
+    battleLogger.action(S.current.battle_undo);
+    final BattleData copy = snapshots.removeLast();
     this
       ..niceQuest = copy.niceQuest
       ..curStage = copy.curStage

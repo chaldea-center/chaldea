@@ -131,15 +131,15 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         child: Text(S.current.battle_battle_log),
         onTap: () async {
           await null;
-          router.pushPage(BattleLogPage(logger: battleData.logger));
+          router.pushPage(BattleLogPage(logger: battleData.battleLogger));
         },
       ),
       PopupMenuItem(
         child: Text('${S.current.command_spell}: ${Transl.skillNames('霊基修復').l}'),
         onTap: () async {
           await null;
-          battleData.copy();
-          battleData.logger.action('${S.current.command_spell}: ${Transl.skillNames('霊基修復').l}');
+          battleData.pushSnapshot();
+          battleData.battleLogger.action('${S.current.command_spell}: ${Transl.skillNames('霊基修復').l}');
           await battleData.commandSpellRepairHp();
           if (mounted) setState(() {});
         },
@@ -148,8 +148,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         child: Text('${S.current.command_spell}: ${Transl.skillNames('宝具解放').l}'),
         onTap: () async {
           await null;
-          battleData.copy();
-          battleData.logger.action('${S.current.command_spell}: ${Transl.skillNames('宝具解放').l}');
+          battleData.pushSnapshot();
+          battleData.battleLogger.action('${S.current.command_spell}: ${Transl.skillNames('宝具解放').l}');
           await battleData.commandSpellReleaseNP();
           if (mounted) setState(() {});
         },
@@ -157,7 +157,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       PopupMenuItem(
         child: Text(S.current.battle_charge_party),
         onTap: () {
-          battleData.copy();
+          battleData.pushSnapshot();
           battleData.chargeAllyNP();
           if (mounted) setState(() {});
         },
@@ -456,7 +456,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         ),
         IconButton(
           onPressed: () {
-            battleData.undo();
+            battleData.popSnapshot();
             EasyLoading.showToast(S.current.battle_undo, duration: const Duration(seconds: 1));
             if (mounted) setState(() {});
           },
@@ -812,7 +812,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
             content: Text(S.current
                 .charge_np_to(svt.isPlayer ? ConstData.constants.fullTdPoint ~/ 100 : svt.niceEnemy!.chargeTurn)),
             onTapOk: () {
-              battleData.copy();
+              battleData.pushSnapshot();
               if (svt.isPlayer) {
                 svt.np = ConstData.constants.fullTdPoint;
               } else if (svt.isEnemy) {

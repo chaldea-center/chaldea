@@ -37,7 +37,7 @@ class InstantDeath {
     final BattleServantData target,
   ) async {
     if (await target.hasBuffOnAction(battleData, BuffAction.avoidInstantdeath)) {
-      battleData.logger.debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.battle_invalid}');
+      battleData.battleLogger.debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.battle_invalid}');
       return false;
     }
 
@@ -58,7 +58,7 @@ class InstantDeath {
             ? 'GUARD'
             : 'MISS';
 
-    battleData.logger.debug('${S.current.effect_target}: ${target.lBattleName} - '
+    battleData.battleLogger.debug('${S.current.effect_target}: ${target.lBattleName} - '
         '$resultsString'
         '${battleData.tailoredExecution ? '' : ' [$activationRate vs ${battleData.probabilityThreshold}]'}');
 

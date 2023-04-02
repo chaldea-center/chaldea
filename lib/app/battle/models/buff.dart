@@ -216,7 +216,7 @@ class BuffData {
         ' - ${buff.lName.l}');
 
     if (buffRate < 1000) {
-      battleData.logger.debug('${battleData.activator?.lBattleName ?? S.current.battle_no_source}'
+      battleData.battleLogger.debug('${battleData.activator?.lBattleName ?? S.current.battle_no_source}'
           ' - ${buff.lName.l}: ${probabilityCheck ? S.current.success : S.current.failed}'
           '${battleData.tailoredExecution ? '' : ' [$buffRate vs ${battleData.probabilityThreshold}]'}');
     }

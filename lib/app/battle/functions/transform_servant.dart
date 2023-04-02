@@ -42,7 +42,7 @@ class TransformServant {
           logger.e('Exception while fetch AtlasApi for servant $targetSvtId', e);
         }
         if (targetSvt == null) {
-          battleData.logger.debug('${S.current.not_found}: $targetSvtId');
+          battleData.battleLogger.debug('${S.current.not_found}: $targetSvtId');
         } else {
           target.niceSvt = targetSvt;
 

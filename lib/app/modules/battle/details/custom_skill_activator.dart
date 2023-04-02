@@ -189,9 +189,9 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                     onPressed: errorMsg != null
                         ? null
                         : () {
-                            widget.battleData.copy();
+                            widget.battleData.pushSnapshot();
                             if (activator != null) widget.battleData.setActivator(activator!);
-                            widget.battleData.logger
+                            widget.battleData.battleLogger
                                 .action('${activator == null ? S.current.battle_no_source : activator!.lBattleName}'
                                     ' - ${S.current.skill}: ${skill!.lName.l}');
                             BattleSkillInfoData.activateSkill(

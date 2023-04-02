@@ -104,7 +104,7 @@ class AddState {
     functionRate = functionRate.abs();
 
     if (await target.hasBuffOnAction(battleData, BuffAction.avoidState)) {
-      battleData.logger.debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.battle_invalid}');
+      battleData.battleLogger.debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.battle_invalid}');
       return false;
     }
 
@@ -124,7 +124,7 @@ class AddState {
             ? 'GUARD'
             : 'MISS';
 
-    battleData.logger.debug('${S.current.effect_target}: ${target.lBattleName} - '
+    battleData.battleLogger.debug('${S.current.effect_target}: ${target.lBattleName} - '
         '$resultsString'
         '${battleData.tailoredExecution ? '' : ' [($activationRate - $resistRate) vs ${battleData.probabilityThreshold}]'}');
 

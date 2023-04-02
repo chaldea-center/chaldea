@@ -243,16 +243,16 @@ class Damage {
         }
       }
 
-      battleData.logger.debug(damageParameters.toString());
+      battleData.battleLogger.debug(damageParameters.toString());
       if (activator.isPlayer) {
-        battleData.logger.debug(atkNpParameters.toString());
-        battleData.logger.debug(starParameters.toString());
+        battleData.battleLogger.debug(atkNpParameters.toString());
+        battleData.battleLogger.debug(starParameters.toString());
       } else {
-        battleData.logger.debug(defNpParameters.toString());
+        battleData.battleLogger.debug(defNpParameters.toString());
       }
       final starString =
           activator.isPlayer ? '${S.current.critical_star}: ${(Maths.sum(hitStars) / 1000).toStringAsFixed(3)} - ' : '';
-      battleData.logger.action('${activator.lBattleName} - ${currentCard.cardType.name.toUpperCase()} - '
+      battleData.battleLogger.action('${activator.lBattleName} - ${currentCard.cardType.name.toUpperCase()} - '
           '${currentCard.isNP ? S.current.battle_np_card : S.current.battle_command_card} - '
           '${S.current.effect_target}: ${target.lBattleName} - '
           '${S.current.battle_damage}: $totalDamage - '
@@ -261,7 +261,7 @@ class Damage {
           '$starString'
           'Overkill: $overkillCount/${currentCard.cardDetail.hitsDistribution.length}');
       final hitStarString = activator.isPlayer ? ', ${S.current.critical_star}: $hitStars' : '';
-      battleData.logger
+      battleData.battleLogger
           .debug('${S.current.details}: ${S.current.battle_damage}: $hitDamages, NP: $hitNpGains$hitStarString');
 
       battleData.changeStar(toModifier(Maths.sum(hitStars)));

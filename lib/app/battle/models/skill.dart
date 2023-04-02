@@ -197,7 +197,7 @@ class BattleSkillInfoData {
                       ? null
                       : () {
                           Navigator.of(context).pop(index);
-                          battleData.logger
+                          battleData.battleLogger
                               .action('${S.current.battle_select_effect}: ${transl('Option').l} ${index + 1}');
                         },
                   child: textWidget,

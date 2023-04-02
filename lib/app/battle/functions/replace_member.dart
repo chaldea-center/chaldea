@@ -157,8 +157,9 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
             results.add(onFieldSelection!);
             results.add(backupSelection!);
 
-            battleData.logger.action('${S.current.battle_select_battle_servants}: ${onFieldSelection!.lBattleName} - '
-                '${S.current.battle_select_backup_servants}: ${backupSelection!.lBattleName}');
+            battleData.battleLogger
+                .action('${S.current.battle_select_battle_servants}: ${onFieldSelection!.lBattleName} - '
+                    '${S.current.battle_select_backup_servants}: ${backupSelection!.lBattleName}');
             Navigator.of(context).pop(results);
           },
           child: Text(S.current.confirm),

@@ -118,7 +118,8 @@ class FunctionExecutor {
               return TextButton(
                 onPressed: () {
                   Navigator.of(context).pop(functions[index]);
-                  battleData.logger.action('${S.current.battle_select_effect}: ${transl('Option').l} ${index + 1}');
+                  battleData.battleLogger
+                      .action('${S.current.battle_select_effect}: ${transl('Option').l} ${index + 1}');
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(4.0),
@@ -155,8 +156,9 @@ class FunctionExecutor {
               return InkWell(
                 onTap: () {
                   Navigator.of(context).pop(tds[index]);
-                  battleData.logger.action('${S.current.battle_select_effect}: ${tds[index].card.name.toUpperCase()}'
-                      ' ${S.current.battle_np_card}');
+                  battleData.battleLogger
+                      .action('${S.current.battle_select_effect}: ${tds[index].card.name.toUpperCase()}'
+                          ' ${S.current.battle_np_card}');
                 },
                 child: CommandCardWidget(card: tds[index].card, width: 80),
               );
@@ -203,7 +205,7 @@ class FunctionExecutor {
         final targetTraitString = function.functvals.isNotEmpty
             ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName())}'
             : '';
-        battleData.logger.function('${activator?.lBattleName ?? S.current.battle_no_source} - '
+        battleData.battleLogger.function('${activator?.lBattleName ?? S.current.battle_no_source} - '
             '${FuncDescriptor.buildFuncText(function)}'
             '$fieldTraitString'
             '$targetTraitString');
@@ -222,13 +224,13 @@ class FunctionExecutor {
     }
 
     if (!containsAnyTraits(battleData.getFieldTraits(), function.funcquestTvals)) {
-      battleData.logger.function('${S.current.battle_require_field_traits} ${S.current.failed}');
+      battleData.battleLogger.function('${S.current.battle_require_field_traits} ${S.current.failed}');
       return;
     }
 
     if (dataVals.StarHigher != null && battleData.criticalStars < dataVals.StarHigher!) {
       battleData.previousFunctionResult = false;
-      battleData.logger.function('${S.current.critical_star} ${battleData.criticalStars.toStringAsFixed(3)} < '
+      battleData.battleLogger.function('${S.current.critical_star} ${battleData.criticalStars.toStringAsFixed(3)} < '
           '${dataVals.StarHigher}');
       return;
     }
@@ -449,7 +451,7 @@ class FunctionExecutor {
         // do nothing
         break;
       default:
-        battleData.logger.debug('${S.current.not_implemented}: ${function.funcType}, '
+        battleData.battleLogger.debug('${S.current.not_implemented}: ${function.funcType}, '
             'Function ID: ${function.funcId}, '
             'Activator: ${activator?.lBattleName}, '
             'Quest ID: ${battleData.niceQuest?.id}, '
@@ -614,7 +616,7 @@ class FunctionExecutor {
       case FuncTargetType.ptOneAnotherRandom:
       case FuncTargetType.ptSelfAnotherRandom:
       case FuncTargetType.enemyOneAnotherRandom:
-        battleData.logger.debug('${S.current.not_implemented}: $funcTargetType, '
+        battleData.battleLogger.debug('${S.current.not_implemented}: $funcTargetType, '
             'Function ID: $funcId, '
             'Activator: ${activator?.lBattleName}, '
             'Quest ID: ${battleData.niceQuest?.id}, '
