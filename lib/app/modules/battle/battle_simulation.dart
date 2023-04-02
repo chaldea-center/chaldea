@@ -64,8 +64,12 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
   }
 
   Future<void> _initBattle() async {
-    await battleData.init(
-        widget.questPhase, [...widget.onFieldSvtDataList, ...widget.backupSvtDataList], widget.mysticCodeData);
+    await battleData.recordError(
+      save: false,
+      action: 'battle_init',
+      task: () => battleData.init(
+          widget.questPhase, [...widget.onFieldSvtDataList, ...widget.backupSvtDataList], widget.mysticCodeData),
+    );
     if (mounted) setState(() {});
   }
 
@@ -138,8 +142,6 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         child: Text('${S.current.command_spell}: ${Transl.skillNames('霊基修復').l}'),
         onTap: () async {
           await null;
-          battleData.pushSnapshot();
-          battleData.battleLogger.action('${S.current.command_spell}: ${Transl.skillNames('霊基修復').l}');
           await battleData.commandSpellRepairHp();
           if (mounted) setState(() {});
         },
@@ -148,16 +150,14 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         child: Text('${S.current.command_spell}: ${Transl.skillNames('宝具解放').l}'),
         onTap: () async {
           await null;
-          battleData.pushSnapshot();
-          battleData.battleLogger.action('${S.current.command_spell}: ${Transl.skillNames('宝具解放').l}');
           await battleData.commandSpellReleaseNP();
           if (mounted) setState(() {});
         },
       ),
       PopupMenuItem(
         child: Text(S.current.battle_charge_party),
-        onTap: () {
-          battleData.pushSnapshot();
+        onTap: () async {
+          await null;
           battleData.chargeAllyNP();
           if (mounted) setState(() {});
         },

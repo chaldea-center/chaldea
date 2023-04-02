@@ -1,3 +1,5 @@
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:chaldea/app/battle/functions/damage.dart';
 import 'package:chaldea/app/battle/functions/gain_np.dart';
 import 'package:chaldea/app/battle/functions/gain_star.dart';
@@ -8,6 +10,7 @@ import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/app/descriptors/func/func.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../utils/_dialogs.dart';
@@ -455,6 +458,23 @@ class BattleData {
     return onFieldAllyServants[servantIndex]!.canUseSkillIgnoreCoolDown(this, skillIndex);
   }
 
+  Future<T> recordError<T>({
+    required bool save,
+    required String action,
+    required Future<T> Function() task,
+  }) async {
+    try {
+      if (save) pushSnapshot();
+      return await task();
+    } catch (e, s) {
+      battleLogger.error("Failed: $action");
+      logger.e('Battle action failed: $action', e, s);
+      EasyLoading.showError('${S.current.failed}\n\n$e');
+      if (save) popSnapshot();
+      rethrow;
+    }
+  }
+
   Future<void> activateSvtSkill(final int servantIndex, final int skillIndex) async {
     if (onFieldAllyServants[servantIndex] == null || isBattleFinished) {
       return;
@@ -463,8 +483,11 @@ class BattleData {
     final svt = onFieldAllyServants[servantIndex]!;
     battleLogger
         .action('${svt.lBattleName} - ${S.current.active_skill} ${skillIndex + 1}: ${svt.getSkillName(skillIndex)}');
-    pushSnapshot();
-    await svt.activateSkill(this, skillIndex);
+    return recordError(
+      save: true,
+      action: 'svt_skill-${servantIndex + 1}-${skillIndex + 1}',
+      task: () => svt.activateSkill(this, skillIndex),
+    );
   }
 
   bool canUseMysticCodeSkillIgnoreCoolDown(final int skillIndex) {
@@ -491,14 +514,19 @@ class BattleData {
 
     battleLogger.action('${S.current.mystic_code} - ${S.current.active_skill} ${skillIndex + 1}: '
         '${masterSkillInfo[skillIndex].lName}');
-    pushSnapshot();
+    return recordError(
+      save: true,
+      action: 'mystic_code_skill-${skillIndex + 1}',
+      task: () async {
+        int effectiveness = 1000;
+        for (final svt in nonnullAllies) {
+          effectiveness += await svt.getBuffValueOnAction(this, BuffAction.masterSkillValueUp);
+        }
 
-    int effectiveness = 1000;
-    for (final svt in nonnullAllies) {
-      effectiveness += await svt.getBuffValueOnAction(this, BuffAction.masterSkillValueUp);
-    }
-
-    await masterSkillInfo[skillIndex].activate(this, effectiveness: effectiveness != 1000 ? effectiveness : null);
+        return await masterSkillInfo[skillIndex]
+            .activate(this, effectiveness: effectiveness != 1000 ? effectiveness : null);
+      },
+    );
   }
 
   Future<void> playerTurn(final List<CombatAction> actions) async {
@@ -506,75 +534,80 @@ class BattleData {
       return;
     }
 
-    pushSnapshot();
-    criticalStars = 0;
+    return recordError(
+      save: true,
+      action: 'play_turn-${actions.length} cards',
+      task: () async {
+        criticalStars = 0;
 
-    // assumption: only Quick, Arts, and Buster are ever listed as viable actions
-    final cardTypesSet =
-        actions.where((action) => action.isValid(this)).map((action) => action.cardData.cardType).toSet();
-    final isTypeChain = actions.length == 3 && cardTypesSet.length == 1;
-    final isMightyChain = cardTypesSet.length == 3 && isAfter7thAnni;
-    final CardType firstCardType = actions[0].isValid(this) ? actions[0].cardData.cardType : CardType.blank;
-    if (isTypeChain) {
-      applyTypeChain(firstCardType, actions);
-    }
-    final previousTargetIndex = allyTargetIndex;
-    int extraOvercharge = 0;
-    for (int i = 0; i < actions.length; i += 1) {
-      if (nonnullEnemies.isNotEmpty) {
-        final action = actions[i];
-        currentCard = action.cardData;
-        allyTargetIndex = onFieldAllyServants.indexOf(action.actor); // help damageFunction identify attacker
+        // assumption: only Quick, Arts, and Buster are ever listed as viable actions
+        final cardTypesSet =
+            actions.where((action) => action.isValid(this)).map((action) => action.cardData.cardType).toSet();
+        final isTypeChain = actions.length == 3 && cardTypesSet.length == 1;
+        final isMightyChain = cardTypesSet.length == 3 && isAfter7thAnni;
+        final CardType firstCardType = actions[0].isValid(this) ? actions[0].cardData.cardType : CardType.blank;
+        if (isTypeChain) {
+          applyTypeChain(firstCardType, actions);
+        }
+        final previousTargetIndex = allyTargetIndex;
+        int extraOvercharge = 0;
+        for (int i = 0; i < actions.length; i += 1) {
+          if (nonnullEnemies.isNotEmpty) {
+            final action = actions[i];
+            currentCard = action.cardData;
+            allyTargetIndex = onFieldAllyServants.indexOf(action.actor); // help damageFunction identify attacker
 
-        if (allyTargetIndex != -1 && action.isValid(this)) {
-          if (currentCard!.isNP) {
-            await action.actor
-                .activateBuffOnActions(this, [BuffAction.functionAttackBefore, BuffAction.functionNpattack]);
-            await action.actor.activateNP(this, extraOvercharge);
-            extraOvercharge += 1;
+            if (allyTargetIndex != -1 && action.isValid(this)) {
+              if (currentCard!.isNP) {
+                await action.actor
+                    .activateBuffOnActions(this, [BuffAction.functionAttackBefore, BuffAction.functionNpattack]);
+                await action.actor.activateNP(this, extraOvercharge);
+                extraOvercharge += 1;
 
-            for (final svt in nonnullEnemies) {
-              if (svt.attacked) await svt.activateBuffOnAction(this, BuffAction.functionDamage);
+                for (final svt in nonnullEnemies) {
+                  if (svt.attacked) await svt.activateBuffOnAction(this, BuffAction.functionDamage);
+                }
+              } else {
+                extraOvercharge = 0;
+                await executePlayerCard(action.actor, currentCard!, i + 1, isTypeChain, isMightyChain, firstCardType);
+              }
             }
-          } else {
-            extraOvercharge = 0;
-            await executePlayerCard(action.actor, currentCard!, i + 1, isTypeChain, isMightyChain, firstCardType);
+
+            if (shouldRemoveDeadActors(actions, i)) {
+              await removeDeadActors();
+            }
+
+            currentCard = null;
           }
+
+          checkBuffStatus();
         }
 
-        if (shouldRemoveDeadActors(actions, i)) {
+        if (isBraveChain(actions) && targetedEnemy != null) {
+          final actor = actions[0].actor;
+          currentCard = actor.getExtraCard(this);
+
+          if (actor.canCommandCard(this)) {
+            await executePlayerCard(actor, currentCard!, 4, isTypeChain, isMightyChain, firstCardType);
+          }
+
+          currentCard = null;
+
           await removeDeadActors();
+          checkBuffStatus();
         }
 
-        currentCard = null;
-      }
+        // end player turn
+        await endPlayerTurn();
 
-      checkBuffStatus();
-    }
+        await startEnemyTurn();
+        await endEnemyTurn();
 
-    if (isBraveChain(actions) && targetedEnemy != null) {
-      final actor = actions[0].actor;
-      currentCard = actor.getExtraCard(this);
+        await nextTurn();
 
-      if (actor.canCommandCard(this)) {
-        await executePlayerCard(actor, currentCard!, 4, isTypeChain, isMightyChain, firstCardType);
-      }
-
-      currentCard = null;
-
-      await removeDeadActors();
-      checkBuffStatus();
-    }
-
-    // end player turn
-    await endPlayerTurn();
-
-    await startEnemyTurn();
-    await endEnemyTurn();
-
-    await nextTurn();
-
-    allyTargetIndex = previousTargetIndex;
+        allyTargetIndex = previousTargetIndex;
+      },
+    );
   }
 
   Future<void> skipWave() async {
@@ -690,15 +723,17 @@ class BattleData {
     }
   }
 
-  void chargeAllyNP() {
+  Future<void> chargeAllyNP() async {
     if (isBattleFinished) {
       return;
     }
 
     battleLogger.action(S.current.battle_charge_party);
-    pushSnapshot();
-
-    GainNP.gainNP(this, DataVals({'Rate': 5000, 'Value': 10000}), nonnullAllies);
+    return recordError(
+      save: true,
+      action: S.current.battle_charge_party,
+      task: () async => GainNP.gainNP(this, DataVals({'Rate': 5000, 'Value': 10000}), nonnullAllies),
+    );
   }
 
   Future<void> commandSpellRepairHp() {
@@ -724,12 +759,12 @@ class BattleData {
         )
       ],
     );
+    final csRepairHpName = '${S.current.command_spell}: ${Transl.skillNames('霊基修復').l}';
 
-    return BattleSkillInfoData.activateSkill(
-      this,
-      skill,
-      1,
-      defaultToAlly: true,
+    return recordError(
+      save: true,
+      action: csRepairHpName,
+      task: () => BattleSkillInfoData.activateSkill(this, skill, 1, defaultToAlly: true),
     );
   }
 
@@ -757,12 +792,13 @@ class BattleData {
         )
       ],
     );
+    final csReleaseNpName = '${S.current.command_spell}: ${Transl.skillNames('宝具解放').l}';
+    battleLogger.action(csReleaseNpName);
 
-    return BattleSkillInfoData.activateSkill(
-      this,
-      skill,
-      1,
-      defaultToAlly: true,
+    return recordError(
+      save: true,
+      action: csReleaseNpName,
+      task: () => BattleSkillInfoData.activateSkill(this, skill, 1, defaultToAlly: true),
     );
   }
 

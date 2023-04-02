@@ -21,6 +21,10 @@ class BattleLogger {
   void debug(final String log) {
     _log(BattleLogType.debug, log);
   }
+
+  void error(String log) {
+    _log(BattleLogType.error, log);
+  }
 }
 
 class BattleLog {
@@ -30,7 +34,7 @@ class BattleLog {
   BattleLog(this.type, this.log);
 }
 
-enum BattleLogType { debug, function, action }
+enum BattleLogType { debug, function, action, error }
 
 /// Only record user visible actions
 /// make sealed when dart 2.19 enabled

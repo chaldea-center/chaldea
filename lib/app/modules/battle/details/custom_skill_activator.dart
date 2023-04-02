@@ -188,19 +188,24 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                   FilledButton.icon(
                     onPressed: errorMsg != null
                         ? null
-                        : () {
-                            widget.battleData.pushSnapshot();
-                            if (activator != null) widget.battleData.setActivator(activator!);
-                            widget.battleData.battleLogger
-                                .action('${activator == null ? S.current.battle_no_source : activator!.lBattleName}'
-                                    ' - ${S.current.skill}: ${skill!.lName.l}');
-                            BattleSkillInfoData.activateSkill(
-                              widget.battleData,
-                              skill!,
-                              skillLv,
-                              defaultToAlly: isAlly,
+                        : () async {
+                            await widget.battleData.recordError(
+                              save: true,
+                              action: 'custom_skill-${skill?.id}',
+                              task: () async {
+                                if (activator != null) widget.battleData.setActivator(activator!);
+                                widget.battleData.battleLogger
+                                    .action('${activator == null ? S.current.battle_no_source : activator!.lBattleName}'
+                                        ' - ${S.current.skill}: ${skill!.lName.l}');
+                                BattleSkillInfoData.activateSkill(
+                                  widget.battleData,
+                                  skill!,
+                                  skillLv,
+                                  defaultToAlly: isAlly,
+                                );
+                              },
                             );
-                            Navigator.of(context).pop(skill);
+                            if (mounted) Navigator.of(context).pop(skill);
                           },
                     icon: const Icon(Icons.arrow_right_rounded),
                     label: Text(S.current.battle_activate_custom_skill),

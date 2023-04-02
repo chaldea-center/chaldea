@@ -32,6 +32,9 @@ class _BattleLogPageState extends State<BattleLogPage> {
         case BattleLogType.action:
           icon = const Icon(Icons.circle, size: 8, color: Colors.red);
           break;
+        case BattleLogType.error:
+          icon = Icon(Icons.error_outline, size: 8, color: Colors.red.shade900);
+          break;
       }
       children.add(ListTile(
         dense: true,
