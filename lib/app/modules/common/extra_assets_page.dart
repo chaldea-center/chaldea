@@ -73,6 +73,14 @@ class ExtraAssetsPage extends StatelessWidget {
         showMerge: true,
         placeholder: charaGraphPlaceholder,
       ),
+      if (aprilFoolAssets.isNotEmpty)
+        _oneGroup(
+          S.current.april_fool,
+          aprilFoolAssets,
+          300,
+          showMerge: true,
+          placeholder: charaGraphPlaceholder,
+        ),
       _oneGroup(
           S.current.card_asset_face,
           bordered([

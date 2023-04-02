@@ -17,7 +17,7 @@ class _SvtIllustrationTabState extends State<SvtIllustrationTab> {
   Servant get svt => widget.svt;
   final filter = FilterRadioData<int>();
   static const int _costumeKey = -1;
-  static const int _aprilKey = -4;
+  // static const int _aprilKey = -4;
   @override
   Widget build(BuildContext context) {
     final ascensions = svt.extraAssets.faces.ascension?.keys.toList() ?? [];
@@ -25,7 +25,7 @@ class _SvtIllustrationTabState extends State<SvtIllustrationTab> {
     final List<int> options = [
       ...ascensions,
       if (hasCostume) _costumeKey,
-      if (svt.extra.aprilFoolAssets.isNotEmpty) _aprilKey,
+      // if (svt.extra.aprilFoolAssets.isNotEmpty) _aprilKey,
     ];
     return Column(
       children: [
@@ -37,7 +37,7 @@ class _SvtIllustrationTabState extends State<SvtIllustrationTab> {
             combined: true,
             optionBuilder: (key) {
               if (key == _costumeKey) return Text(S.current.costume);
-              if (key == _aprilKey) return Text(S.current.april_fool);
+              // if (key == _aprilKey) return Text(S.current.april_fool);
               return Text('$key');
             },
             onFilterChanged: (v, _) {
@@ -47,8 +47,9 @@ class _SvtIllustrationTabState extends State<SvtIllustrationTab> {
         Expanded(
           child: ExtraAssetsPage(
             assets: svt.extraAssets,
-            aprilFoolAssets:
-                filter.options.isEmpty || filter.options.contains(_aprilKey) ? svt.extra.aprilFoolAssets : [],
+            // aprilFoolAssets:
+            //     filter.options.isEmpty || filter.options.contains(_aprilKey) ? svt.extra.aprilFoolAssets : [],
+            aprilFoolAssets: svt.extra.aprilFoolAssets,
             mcSprites: svt.extra.mcSprites,
             fandomSprites: svt.extra.fandomSprites,
             getUrls: filter.options.isEmpty ? null : getUrls,
