@@ -94,10 +94,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
       ));
     }
     children.add(SHeader(S.current.passive_skill));
-    for (final skill in [
-      ...svt.classPassive,
-      ...svt.extraPassive.where((e) => e.extraPassive.any((cond) => cond.eventId == 0))
-    ]) {
+    for (final skill in [...svt.classPassive, ...svt.extraPassive.where((e) => e.isEnabledForEvent(0))]) {
       children.add(SkillDescriptor(
         skill: skill,
         showEnemy: !svt.isUserSvt,
@@ -112,11 +109,11 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
         level: status.favorite ? status.appendSkills.getOrNull(appendSkill.num - 100) : -1,
       ));
     }
-    final extraPassives = svt.extraPassive.where((e) => e.extraPassive.any((cond) => cond.eventId != 0)).toList();
+    final extraPassives = svt.extraPassive.where((e) => !e.isEnabledForEvent(0)).toList();
     if (extraPassives.isNotEmpty) {
       children.add(SimpleAccordion(
         headerBuilder: (context, expanded) {
-          return SHeader('${extraPassives.length} ${S.current.event_skill}');
+          return SHeader('${extraPassives.length} ${S.current.extra_passive}');
         },
         contentBuilder: (context) {
           return Column(

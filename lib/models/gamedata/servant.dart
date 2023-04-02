@@ -453,12 +453,12 @@ class Servant with GameCardMixin {
     final costumes = extraAssets.faces.costume ?? {};
     String? _icon;
     if (idx < 10) {
-      _icon = ascs[ascOrCostumeIdOrCharaId] ?? ascs[1];
+      _icon = ascs[ascOrCostumeIdOrCharaId];
     } else if (idx < 100) {
       final charaId = profile.costume.values.firstWhereOrNull((e) => e.id == idx);
-      _icon = costumes[charaId] ?? ascs[1];
+      _icon = costumes[charaId];
     }
-    _icon ??= costumes[idx];
+    _icon ??= costumes[idx] ?? ascs.values.firstOrNull;
     if (bordered && collectionNo > 0) _icon = this.bordered(_icon);
     return _icon;
   }

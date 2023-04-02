@@ -515,7 +515,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       alignment: Alignment.center,
       children: [
         db.getIconImage(skillInfo.proximateSkill?.icon ?? Atlas.common.emptySkillIcon, width: 32, aspectRatio: 1),
-        if (!_canUseSkill)
+        if (!_canUseSkill && skillInfo.proximateSkill != null)
           AspectRatio(
             aspectRatio: 1,
             child: Container(
