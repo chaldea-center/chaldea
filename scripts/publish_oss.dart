@@ -13,7 +13,7 @@ void main(List<String> args) async {
     throw ArgumentError('must provide bucket name');
   }
   final bucketName = args.first;
-  final listResult = await Process.run(ossutil, ['ls', 'oss://${args.first}']);
+  final listResult = await Process.run(ossutil, ['ls', 'oss://${args.first}'], runInShell: true);
   if (listResult.exitCode != 0) {
     throw 'Failed to list bucket objects.\n${listResult.stderr}\n${listResult.stdout}';
   }
@@ -50,13 +50,17 @@ void main(List<String> args) async {
     }
 
     print('>>> Uploading $key ...');
-    final res = await Process.run(ossutil, [
-      'cp',
-      file.absolute.path,
-      'oss://$bucketName/$key',
-      '-f',
-      if (key.endsWith('.html')) ...['--meta', 'Cache-Control:no-cache']
-    ]);
+    final res = await Process.run(
+      ossutil,
+      [
+        'cp',
+        file.absolute.path,
+        'oss://$bucketName/$key',
+        '-f',
+        if (key.endsWith('.html')) ...['--meta', 'Cache-Control:no-cache']
+      ],
+      runInShell: true,
+    );
     if (res.exitCode == 0) {
       uploaded += 1;
       print(res.stdout);
@@ -68,7 +72,7 @@ void main(List<String> args) async {
 
   for (final key in remoteFiles.keys) {
     print('>>> Deleting $key ...');
-    final res = await Process.run(ossutil, ['rm', 'oss://$bucketName/$key']);
+    final res = await Process.run(ossutil, ['rm', 'oss://$bucketName/$key'], runInShell: true);
     if (res.exitCode == 0) {
       deleted += 1;
       print(res.stdout);
