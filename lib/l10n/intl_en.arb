@@ -79,6 +79,7 @@
   "battle_probability_threshold": "Probability Threshold",
   "battle_quest_from": "From",
   "battle_random": "Random",
+  "battle_remaining_hp": "Remaining HP",
   "battle_require_actor_on_field": "require {actorName} on field",
   "battle_require_field_traits": "Required field traits ",
   "battle_require_opponent_traits": "Required opponent traits",

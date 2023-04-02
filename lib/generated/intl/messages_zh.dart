@@ -165,6 +165,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_probability_threshold": MessageLookupByLibrary.simpleMessage("概率阈值"),
         "battle_quest_from": MessageLookupByLibrary.simpleMessage("选择"),
         "battle_random": MessageLookupByLibrary.simpleMessage("随机数"),
+        "battle_remaining_hp": MessageLookupByLibrary.simpleMessage("剩余HP"),
         "battle_require_actor_on_field": m15,
         "battle_require_field_traits": MessageLookupByLibrary.simpleMessage("要求的场地特性"),
         "battle_require_opponent_traits": MessageLookupByLibrary.simpleMessage("要求的对方特性"),

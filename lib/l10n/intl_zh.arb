@@ -79,6 +79,7 @@
   "battle_probability_threshold": "概率阈值",
   "battle_quest_from": "选择",
   "battle_random": "随机数",
+  "battle_remaining_hp": "剩余HP",
   "battle_require_actor_on_field": "需要{actorName}在场",
   "battle_require_field_traits": "要求的场地特性",
   "battle_require_opponent_traits": "要求的对方特性",

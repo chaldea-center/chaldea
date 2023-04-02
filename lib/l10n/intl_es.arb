@@ -79,6 +79,7 @@
   "battle_probability_threshold": null,
   "battle_quest_from": null,
   "battle_random": null,
+  "battle_remaining_hp": null,
   "battle_require_actor_on_field": null,
   "battle_require_field_traits": null,
   "battle_require_opponent_traits": null,

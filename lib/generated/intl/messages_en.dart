@@ -170,6 +170,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_probability_threshold": MessageLookupByLibrary.simpleMessage("Probability Threshold"),
         "battle_quest_from": MessageLookupByLibrary.simpleMessage("From"),
         "battle_random": MessageLookupByLibrary.simpleMessage("Random"),
+        "battle_remaining_hp": MessageLookupByLibrary.simpleMessage("Remaining HP"),
         "battle_require_actor_on_field": m15,
         "battle_require_field_traits": MessageLookupByLibrary.simpleMessage("Required field traits "),
         "battle_require_opponent_traits": MessageLookupByLibrary.simpleMessage("Required opponent traits"),

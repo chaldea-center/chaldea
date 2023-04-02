@@ -932,6 +932,17 @@ class S {
     );
   }
 
+  /// `Remaining HP`
+  String get battle_remaining_hp {
+    return Intl.message(
+      'Remaining HP',
+      name: 'battle_remaining_hp',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `require {actorName} on field`
   String battle_require_actor_on_field(Object actorName) {
     return Intl.message(
