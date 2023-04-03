@@ -4,6 +4,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/builders.dart';
+import '../home/elements/random_image.dart';
 import '../home/subpage/feedback_page.dart';
 
 class BattleHomePage extends StatelessWidget {
@@ -72,7 +73,8 @@ class BattleHomePage extends StatelessWidget {
             onTap: () => router.pushPage(FeedbackPage()),
           ),
           const TextSpan(text: '!'),
-        ]))
+        ])),
+        const RandomImageSurprise(),
       ],
     );
   }

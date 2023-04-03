@@ -15,6 +15,7 @@ import 'package:chaldea/widgets/tile_items.dart';
 import '../../../packages/packages.dart';
 import 'elements/grid_gallery.dart';
 import 'elements/news_carousel.dart';
+import 'elements/random_image.dart';
 import 'subpage/account_page.dart';
 
 class GalleryPage extends StatefulWidget {
@@ -128,6 +129,7 @@ class _GalleryPageState extends State<GalleryPage> {
                 ],
               ),
             ),
+            const RandomImageSurprise(),
             const ListTile(
               subtitle: Center(
                   child: AutoSizeText(
