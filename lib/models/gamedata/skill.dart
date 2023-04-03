@@ -55,6 +55,7 @@ abstract class SkillOrTd implements RouteInfo {
 class BaseSkill with SkillOrTd, RouteInfo {
   @override
   int id;
+  int num;
   @override
   String name;
   @override
@@ -76,6 +77,7 @@ class BaseSkill with SkillOrTd, RouteInfo {
 
   BaseSkill.create({
     required this.id,
+    this.num = -1,
     required this.name,
     this.ruby = '',
     // this.detail,
@@ -93,6 +95,7 @@ class BaseSkill with SkillOrTd, RouteInfo {
 
   factory BaseSkill({
     required int id,
+    int num = -1,
     required String name,
     String ruby = '',
     String? unmodifiedDetail,
@@ -110,6 +113,7 @@ class BaseSkill with SkillOrTd, RouteInfo {
           id,
           () => BaseSkill.create(
                 id: id,
+                num: num,
                 name: name,
                 ruby: ruby,
                 unmodifiedDetail: unmodifiedDetail,
@@ -227,7 +231,6 @@ class NiceSkill extends BaseSkill {
   @override
   List<NiceFunction> get functions => _baseSkill.functions;
 
-  int num;
   int strengthStatus;
   int priority;
   int condQuestId;
@@ -250,7 +253,8 @@ class NiceSkill extends BaseSkill {
     super.aiIds,
     super.groupOverwrites,
     super.functions = const [],
-    this.num = 0,
+    // ignore: avoid_types_as_parameter_names
+    super.num = 0,
     this.strengthStatus = 0,
     this.priority = 0,
     this.condQuestId = 0,
@@ -260,6 +264,7 @@ class NiceSkill extends BaseSkill {
     this.extraPassive = const [],
   })  : _baseSkill = BaseSkill(
           id: id,
+          num: num,
           name: name,
           ruby: ruby,
           unmodifiedDetail: unmodifiedDetail,

@@ -436,3 +436,22 @@ class StarParameters {
       ..isOverkill = isOverkill;
   }
 }
+
+class DamageResult {
+  List<int> cardHits = [];
+  List<int> damages = [];
+  List<int> npGains = [];
+  List<int> defNpGains = [];
+  List<int> stars = [];
+  List<bool> overkillStates = [];
+
+  DamageResult copy() {
+    return DamageResult()
+      ..stars = stars.toList()
+      ..damages = damages.toList()
+      ..npGains = npGains.toList()
+      ..defNpGains = defNpGains.toList()
+      ..cardHits = cardHits.toList()
+      ..overkillStates = overkillStates.toList();
+  }
+}

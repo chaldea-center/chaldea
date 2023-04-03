@@ -1,5 +1,7 @@
 import 'package:chaldea/app/battle/models/skill.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
+import 'package:chaldea/utils/utils.dart';
+import '../models/battle.dart';
 import '../models/command_card.dart';
 import '../models/svt_entity.dart';
 
@@ -36,6 +38,61 @@ class BattleLog {
 
 enum BattleLogType { debug, function, action, error }
 
+class BattleRecordManager {
+  List<BattleRecord> records = [];
+  BattleRecordManager();
+
+  BattleRecordManager copy() {
+    return BattleRecordManager()..records = records.toList();
+  }
+
+  void progressWave(int wave) {
+    records.add(BattleProgressWaveRecord(wave));
+  }
+
+  void skipWave(int wave) {
+    records.add(BattleSkipWaveRecord(wave));
+  }
+
+  void progressTurn(int turn) {
+    records.add(BattleProgressTurnRecord(turn));
+  }
+
+  void skill({
+    required BattleData battleData,
+    required BattleServantData? activator,
+    required BattleSkillInfoData skill,
+  }) {
+    records.add(BattleSkillRecord(
+      activator: activator,
+      ally: battleData.targetedAlly,
+      enemy: battleData.targetedEnemy,
+      skill: skill,
+    ));
+  }
+
+  BattleServantData? _attacker;
+  CommandCardData? _card;
+  void startPlayerCard(BattleServantData activator, CommandCardData card) {
+    assert(_attacker == null && _card == null);
+    _attacker = activator;
+    _card = card;
+  }
+
+  void attack(BattleServantData activator, BattleAttackRecord record) {
+    if (_attacker == activator && _card != null && record.card == null) {
+      record.card = _card?.copy();
+    }
+    records.add(record);
+  }
+
+  void endPlayerCard(BattleServantData activator, CommandCardData card) {
+    assert(_attacker == activator && _card == card);
+    _attacker = null;
+    _card = null;
+  }
+}
+
 /// Only record user visible actions
 /// make sealed when dart 2.19 enabled
 abstract class BattleRecord {
@@ -47,32 +104,61 @@ class BattleSkipWaveRecord extends BattleRecord {
   // skip [wave], then start [wave+1]
   final int wave;
   BattleSkipWaveRecord(this.wave, {super.message});
+
+  @override
+  String toString() {
+    return 'Skip Wave $wave';
+  }
 }
 
 class BattleProgressWaveRecord extends BattleRecord {
   // start [wave]
   final int wave;
   BattleProgressWaveRecord(this.wave, {super.message});
+
+  @override
+  String toString() {
+    return 'Start Wave $wave';
+  }
+}
+
+class BattleProgressTurnRecord extends BattleRecord {
+  // start [wave]
+  final int turn;
+  BattleProgressTurnRecord(this.turn, {super.message});
+
+  @override
+  String toString() {
+    return 'Start Turn $turn';
+  }
 }
 
 class BattleSkillRecord extends BattleRecord {
   final BattleServantData? activator;
-  final List<BattleServantData> targets;
+  final BattleServantData? ally;
+  final BattleServantData? enemy;
   final BattleSkillInfoData skill;
 
   BattleSkillRecord({
     required BattleServantData? activator,
-    required List<BattleServantData> targets,
+    required BattleServantData? ally,
+    required BattleServantData? enemy,
     required BattleSkillInfoData skill,
     super.message,
   })  : activator = activator?.copy(),
-        targets = targets.map((e) => e.copy()).toList(),
+        ally = ally?.copy(),
+        enemy = enemy?.copy(),
         skill = skill.copy();
+
+  @override
+  String toString() {
+    return '${activator?.lBattleName} Skill: ${skill.lName}';
+  }
 }
 
 class BattleAttackRecord extends BattleRecord {
   final BattleServantData activator;
-  final CommandCardData card;
+  CommandCardData? card;
   final List<AttackResultDetail> targets;
   final int damage;
   final int attackNp;
@@ -81,7 +167,7 @@ class BattleAttackRecord extends BattleRecord {
 
   BattleAttackRecord({
     required BattleServantData activator,
-    required CommandCardData card,
+    required CommandCardData? card,
     required this.targets,
     required this.damage,
     required this.attackNp,
@@ -89,37 +175,33 @@ class BattleAttackRecord extends BattleRecord {
     required this.star,
     super.message,
   })  : activator = activator.copy(),
-        card = card.copy();
+        card = card?.copy();
+  @override
+  String toString() {
+    return '${activator.lBattleName} Play ${card?.cardType.name.toTitle()} Card.'
+        ' damage=$damage, NP=$attackNp, defNp=$defenseNp, star=$star';
+  }
 }
 
 class AttackResultDetail {
   final BattleServantData target;
-  final List<int> damageList;
   final DamageParameters damageParams;
-  final List<int> attackNpList;
   final AttackNpGainParameters attackNpParams;
-  final List<int> defenseNpList;
   final DefendNpGainParameters defenseNpParams;
-  final List<int> starList;
   final StarParameters starParams;
+  final DamageResult result;
 
   AttackResultDetail({
     required BattleServantData target,
-    required List<int> damageList,
     required DamageParameters damageParams,
-    required List<int> attackNpList,
     required AttackNpGainParameters attackNpParams,
-    required List<int> defenseNpList,
     required DefendNpGainParameters defenseNpParams,
-    required List<int> starList,
     required StarParameters starParams,
+    required DamageResult result,
   })  : target = target.copy(),
-        damageList = damageList.toList(),
         damageParams = damageParams.copy(),
-        attackNpList = attackNpList.toList(),
         attackNpParams = attackNpParams.copy(),
-        defenseNpList = defenseNpList.toList(),
         defenseNpParams = defenseNpParams.copy(),
-        starList = starList.toList(),
-        starParams = starParams.copy();
+        starParams = starParams.copy(),
+        result = result.copy();
 }

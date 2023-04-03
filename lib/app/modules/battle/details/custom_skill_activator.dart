@@ -197,12 +197,16 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                                 widget.battleData.battleLogger
                                     .action('${activator == null ? S.current.battle_no_source : activator!.lBattleName}'
                                         ' - ${S.current.skill}: ${skill!.lName.l}');
-                                BattleSkillInfoData.activateSkill(
+                                await BattleSkillInfoData.activateSkill(
                                   widget.battleData,
                                   skill!,
                                   skillLv,
                                   defaultToAlly: isAlly,
                                 );
+                                widget.battleData.recorder.skill(
+                                    battleData: widget.battleData,
+                                    activator: activator,
+                                    skill: BattleSkillInfoData([], skill!));
                               },
                             );
                             if (mounted) Navigator.of(context).pop(skill);

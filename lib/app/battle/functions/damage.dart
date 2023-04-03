@@ -12,6 +12,7 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../utils/_dialogs.dart';
+import '../utils/battle_logger.dart';
 
 enum NpSpecificMode { normal, individualSum, rarity }
 
@@ -45,7 +46,7 @@ class Damage {
 
     final activator = battleData.activator!;
     final currentCard = battleData.currentCard!;
-
+    final List<AttackResultDetail> targetResults = [];
     for (final target in targets) {
       battleData.setTarget(target);
 
@@ -179,32 +180,29 @@ class Damage {
       int remainingDamage = totalDamage;
 
       int overkillCount = 0;
-      final List<int> hitDamages = [];
-      final List<int> hitNpGains = [];
-      final List<int> hitStars = [];
-      final List<int> cardHits = [];
+      final result = DamageResult();
       if (await activator.hasBuffOnAction(battleData, BuffAction.multiattack)) {
         currentCard.cardDetail.hitsDistribution.forEach((hit) {
-          cardHits.add(hit);
-          cardHits.add(hit);
+          result.cardHits.add(hit);
+          result.cardHits.add(hit);
         });
       } else {
-        cardHits.addAll(currentCard.cardDetail.hitsDistribution);
+        result.cardHits.addAll(currentCard.cardDetail.hitsDistribution);
       }
-      final totalHits = Maths.sum(cardHits);
-      for (int i = 0; i < cardHits.length; i += 1) {
+      final totalHits = Maths.sum(result.cardHits);
+      for (int i = 0; i < result.cardHits.length; i += 1) {
         if (skipDamage) {
-          hitDamages.add(0);
+          result.damages.add(0);
         } else {
-          final hitsPercentage = cardHits[i];
+          final hitsPercentage = result.cardHits[i];
           final int hitDamage;
-          if (i < cardHits.length - 1) {
+          if (i < result.cardHits.length - 1) {
             hitDamage = totalDamage * hitsPercentage ~/ totalHits;
           } else {
             hitDamage = remainingDamage;
           }
 
-          hitDamages.add(hitDamage);
+          result.damages.add(hitDamage);
           remainingDamage -= hitDamage;
 
           target.receiveDamage(hitDamage);
@@ -217,6 +215,7 @@ class Damage {
         }
 
         final isOverkill = target.hp < 0 || (!currentCard.isNP && target.isBuggedOverkill);
+        result.overkillStates.add(isOverkill);
         if (isOverkill) {
           overkillCount += 1;
         }
@@ -227,10 +226,10 @@ class Damage {
           final hitNpGain = calculateAttackNpGain(atkNpParameters);
           final previousNP = activator.np;
           activator.changeNP(hitNpGain);
-          hitNpGains.add(activator.np - previousNP);
+          result.npGains.add(activator.np - previousNP);
 
           final hitStar = calculateStar(starParameters);
-          hitStars.add(hitStar);
+          result.stars.add(hitStar);
         }
 
         if (target.isPlayer) {
@@ -239,7 +238,7 @@ class Damage {
 
           final previousNP = activator.np;
           target.changeNP(hitNpGain);
-          hitNpGains.add(activator.np - previousNP);
+          result.defNpGains.add(activator.np - previousNP);
         }
       }
 
@@ -250,21 +249,22 @@ class Damage {
       } else {
         battleData.battleLogger.debug(defNpParameters.toString());
       }
-      final starString =
-          activator.isPlayer ? '${S.current.critical_star}: ${(Maths.sum(hitStars) / 1000).toStringAsFixed(3)} - ' : '';
+      final starString = activator.isPlayer
+          ? '${S.current.critical_star}: ${(Maths.sum(result.stars) / 1000).toStringAsFixed(3)} - '
+          : '';
       battleData.battleLogger.action('${activator.lBattleName} - ${currentCard.cardType.name.toUpperCase()} - '
           '${currentCard.isNP ? S.current.battle_np_card : S.current.battle_command_card} - '
           '${S.current.effect_target}: ${target.lBattleName} - '
           '${S.current.battle_damage}: $totalDamage - '
           '${S.current.battle_remaining_hp}: ${target.hp}/${target.maxHp} - '
-          'NP: ${(Maths.sum(hitNpGains) / 100).toStringAsFixed(2)}% - '
+          'NP: ${(Maths.sum(result.npGains) / 100).toStringAsFixed(2)}% - '
           '$starString'
           'Overkill: $overkillCount/${currentCard.cardDetail.hitsDistribution.length}');
-      final hitStarString = activator.isPlayer ? ', ${S.current.critical_star}: $hitStars' : '';
-      battleData.battleLogger
-          .debug('${S.current.details}: ${S.current.battle_damage}: $hitDamages, NP: $hitNpGains$hitStarString');
+      final hitStarString = activator.isPlayer ? ', ${S.current.critical_star}: ${result.stars}' : '';
+      battleData.battleLogger.debug(
+          '${S.current.details}: ${S.current.battle_damage}: ${result.damages}, NP: ${result.npGains}$hitStarString');
 
-      battleData.changeStar(toModifier(Maths.sum(hitStars)));
+      battleData.changeStar(toModifier(Maths.sum(result.stars)));
 
       target.removeBuffWithTrait(NiceTrait(id: Trait.buffSleep.id));
 
@@ -272,7 +272,28 @@ class Damage {
       target.attacked = true;
 
       battleData.unsetTarget();
+      targetResults.add(AttackResultDetail(
+        target: target,
+        damageParams: damageParameters,
+        attackNpParams: atkNpParameters,
+        starParams: starParameters,
+        defenseNpParams: defNpParameters,
+        result: result,
+      ));
     }
+
+    battleData.recorder.attack(
+      activator,
+      BattleAttackRecord(
+        activator: activator,
+        card: null,
+        targets: targetResults,
+        damage: Maths.sum(targetResults.map((e) => Maths.sum(e.result.damages))),
+        attackNp: Maths.sum(targetResults.map((e) => Maths.sum(e.result.npGains))),
+        defenseNp: Maths.sum(targetResults.map((e) => Maths.sum(e.result.defNpGains))),
+        star: Maths.sum(targetResults.map((e) => Maths.sum(e.result.stars))),
+      ),
+    );
 
     return true;
   }

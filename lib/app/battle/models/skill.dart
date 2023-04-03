@@ -23,7 +23,7 @@ class BattleSkillInfoData {
   List<BaseSkill> provisionedSkills;
   int rankUp = 0;
   List<BaseSkill?>? rankUps;
-  NiceSkill? baseSkill;
+  BaseSkill? baseSkill;
 
   BaseSkill? get _skill => rankUp == 0 || rankUps == null || rankUps!.isEmpty
       ? baseSkill

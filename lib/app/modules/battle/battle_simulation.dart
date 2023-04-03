@@ -21,6 +21,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'details/battle_log.dart';
 import 'details/custom_skill_activator.dart';
+import 'details/recorder.dart';
 import 'details/svt_detail.dart';
 
 class BattleSimulationPage extends StatefulWidget {
@@ -84,7 +85,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       ),
       body: Column(
         children: [
-          Expanded(child: buildSvts()),
+          Expanded(child: buildBody()),
           Material(
             elevation: 8,
             color: Theme.of(context).cardColor,
@@ -174,7 +175,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     return items;
   }
 
-  Widget buildSvts() {
+  Widget buildBody() {
     List<Widget> allies = [
       for (int index = 0; index < max(3, battleData.onFieldAllyServants.length); index++)
         buildBattleSvtData(battleData.onFieldAllyServants.getOrNull(index), index)
@@ -222,6 +223,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           ],
         ),
         const Divider(thickness: 1, height: 8),
+        BattleRecorderPanel(recorder: battleData.recorder),
       ],
     );
   }

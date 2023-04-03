@@ -96,7 +96,7 @@ class ServantOptionEditPage extends StatefulWidget {
         max: max.toDouble(),
         divisions: max > min ? max - min : null,
         value: value.toDouble(),
-        label: label,
+        label: valueText,
         onChanged: (v) {
           onChange(v);
         },

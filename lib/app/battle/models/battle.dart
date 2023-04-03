@@ -35,7 +35,7 @@ class BattleData {
   final List<BattleData> snapshots = [];
 
   /// User action records, should be copied/saved to snapshots
-  final List<BattleRecord> records = [];
+  BattleRecordManager recorder = BattleRecordManager();
 
   QuestPhase? niceQuest;
   Stage? curStage;
@@ -171,6 +171,7 @@ class BattleData {
     niceQuest = quest;
     waveCount = 1;
     turnCount = 0;
+    recorder.progressWave(waveCount);
     totalTurnCount = 0;
     criticalStars = 0;
 
@@ -233,6 +234,7 @@ class BattleData {
     if (addTurn) {
       turnCount += 1;
       totalTurnCount += 1;
+      recorder.progressTurn(totalTurnCount);
       battleLogger.action('${S.current.battle_turn} $totalTurnCount');
     }
 
@@ -247,6 +249,7 @@ class BattleData {
       return false;
     }
     waveCount += 1;
+    recorder.progressWave(waveCount);
     turnCount = 0;
 
     _fetchWaveEnemies();
@@ -522,9 +525,9 @@ class BattleData {
         for (final svt in nonnullAllies) {
           effectiveness += await svt.getBuffValueOnAction(this, BuffAction.masterSkillValueUp);
         }
-
-        return await masterSkillInfo[skillIndex]
-            .activate(this, effectiveness: effectiveness != 1000 ? effectiveness : null);
+        await masterSkillInfo[skillIndex].activate(this, effectiveness: effectiveness != 1000 ? effectiveness : null);
+        recorder.skill(battleData: this, activator: null, skill: masterSkillInfo[skillIndex]);
+        return;
       },
     );
   }
@@ -555,6 +558,7 @@ class BattleData {
           if (nonnullEnemies.isNotEmpty) {
             final action = actions[i];
             currentCard = action.cardData;
+            recorder.startPlayerCard(action.actor, action.cardData);
             allyTargetIndex = onFieldAllyServants.indexOf(action.actor); // help damageFunction identify attacker
 
             if (allyTargetIndex != -1 && action.isValid(this)) {
@@ -578,6 +582,7 @@ class BattleData {
             }
 
             currentCard = null;
+            recorder.endPlayerCard(action.actor, action.cardData);
           }
 
           checkBuffStatus();
@@ -586,6 +591,7 @@ class BattleData {
         if (isBraveChain(actions) && targetedEnemy != null) {
           final actor = actions[0].actor;
           currentCard = actor.getExtraCard(this);
+          recorder.startPlayerCard(actor, currentCard!);
 
           if (actor.canCommandCard(this)) {
             await executePlayerCard(actor, currentCard!, 4, isTypeChain, isMightyChain, firstCardType);
@@ -595,6 +601,7 @@ class BattleData {
 
           await removeDeadActors();
           checkBuffStatus();
+          recorder.endPlayerCard(actor, currentCard!);
         }
 
         // end player turn
@@ -614,7 +621,7 @@ class BattleData {
     if (isBattleFinished) {
       return;
     }
-
+    recorder.skipWave(waveCount);
     battleLogger.action('${S.current.battle_skip_current_wave} ($waveCount)');
     pushSnapshot();
 
@@ -964,7 +971,8 @@ class BattleData {
       ..fixedRandom = fixedRandom
       ..probabilityThreshold = probabilityThreshold
       ..isAfter7thAnni = isAfter7thAnni
-      ..tailoredExecution = tailoredExecution;
+      ..tailoredExecution = tailoredExecution
+      ..recorder = recorder.copy();
 
     snapshots.add(copy);
   }
@@ -999,7 +1007,8 @@ class BattleData {
       ..fixedRandom = copy.fixedRandom
       ..probabilityThreshold = copy.probabilityThreshold
       ..isAfter7thAnni = copy.isAfter7thAnni
-      ..tailoredExecution = tailoredExecution;
+      ..tailoredExecution = tailoredExecution
+      ..recorder = copy.recorder;
   }
 }
 
