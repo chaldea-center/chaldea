@@ -615,6 +615,33 @@ void main() async {
     expect(previousHp1 - enemy1.hp, previousHp2 - enemy2.hp);
   });
 
+  test('brave chain bug on kill', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(901400)
+        ..lv = 90
+        ..tdLv = 1
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+      PlayerSvtData(701400)
+        ..lv = 90
+        ..setSkillStrengthenLvs([2, 1, 1]),
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final rba = battle.onFieldAllyServants[0]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final previousHp1 = enemy1.hp;
+    await battle.playerTurn([
+      CombatAction(rba, rba.getNPCard(battle)!),
+      CombatAction(rba, rba.getCards(battle)[0]),
+      CombatAction(rba, rba.getCards(battle)[1]),
+    ]);
+
+    expect(previousHp1 - enemy1.hp, 15407 + 3281 + 3786 + 11302);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData(504900)..lv = 90,

@@ -39,7 +39,7 @@ int calculateDamage(final DamageParameters param) {
   final criticalModifier = param.isCritical ? toModifier(ConstData.constants.criticalAttackRate) : 1;
 
   final extraRate = param.currentCardType == CardType.extra
-      ? param.isTypeChain && param.firstCardType == CardType.buster
+      ? param.isTypeChain
           ? ConstData.constants.extraAttackRateGrand
           : ConstData.constants.extraAttackRateSingle
       : 1000;
