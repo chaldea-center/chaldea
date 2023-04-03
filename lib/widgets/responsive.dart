@@ -104,8 +104,8 @@ class ResponsiveLayout extends StatelessWidget {
       final cell = cells[index];
       final flex = cell.getFlex(type);
       children.add(flex == null ? cell : Flexible(flex: flex, fit: flexFit, child: cell));
-      if (verticalDivider != null) children.add(verticalDivider!);
     }
+    if (verticalDivider != null) children = divideList(children, verticalDivider!);
     return Row(
       textDirection: rowDirection,
       crossAxisAlignment: verticalAlign,

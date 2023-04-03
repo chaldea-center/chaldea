@@ -54,6 +54,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   int fixedRandom = ConstData.constants.attackRateRandomMin;
   int probabilityThreshold = 1000;
   bool isAfter7thAnni = true;
+  static const _validRegions = [Region.jp, Region.na];
 
   @override
   void initState() {
@@ -86,18 +87,14 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   @override
   Widget build(final BuildContext context) {
     checkPreviewReady();
-    final List<Widget> topListChildren = [];
+    final List<Widget> children = [];
 
-    topListChildren.add(questSelector());
+    children.add(questSelector());
+    children.add(header(S.current.quest));
+    children.add(questDetail());
 
-    topListChildren.add(ResponsiveLayout(
-      children: [
-        partyOrganization(onFieldSvtDataList, S.current.battle_select_battle_servants),
-        partyOrganization(backupSvtDataList, S.current.battle_select_backup_servants),
-      ],
-    ));
-
-    topListChildren.add(Wrap(
+    children.add(header(S.current.battle_simulation_setup));
+    children.add(Wrap(
       alignment: WrapAlignment.center,
       children: [
         CheckboxWithLabel(
@@ -111,8 +108,16 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         )
       ],
     ));
-
-    topListChildren.add(buildMisc());
+    children.add(kIndentDivider);
+    children.add(ResponsiveLayout(
+      horizontalDivider: kIndentDivider,
+      children: [
+        partyOrganization(onFieldSvtDataList, S.current.battle_select_battle_servants),
+        partyOrganization(backupSvtDataList, S.current.battle_select_backup_servants),
+      ],
+    ));
+    children.add(header(S.current.battle_misc_config));
+    children.add(buildMisc());
 
     return Scaffold(
       appBar: AppBar(
@@ -121,15 +126,9 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         centerTitle: false,
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(
-            child: ListView(
-              children: divideTiles(
-                topListChildren,
-                divider: const Divider(height: 8, thickness: 2),
-              ),
-            ),
-          ),
+          Expanded(child: ListView(children: children)),
           kDefaultDivider,
           SafeArea(
             child: Padding(
@@ -142,7 +141,14 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     );
   }
 
-  static const _validRegions = [Region.jp, Region.na];
+  Widget header(String title) {
+    return DividerWithTitle(
+      title: S.current.quest,
+      titleWidget: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+      thickness: 2,
+      padding: const EdgeInsets.only(top: 8),
+    );
+  }
 
   Widget questSelector() {
     if (region != null && !_validRegions.contains(region)) {
@@ -158,7 +164,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               isDense: true,
               border: const OutlineInputBorder(),
               hintText: '93031014/3 ${S.current.logic_type_or} **/JP/quest/93031014/3'.breakWord,
-              labelText: 'questId/phase ${S.current.logic_type_or} chaldea/AADB quest url',
+              labelText: '① questId/phase ${S.current.logic_type_or} chaldea/AADB quest url',
               hintStyle: const TextStyle(overflow: TextOverflow.visible),
               floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
@@ -200,9 +206,10 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             ),
           ],
         ),
+        kDefaultDivider,
         ListTile(
           dense: true,
-          title: Text('${S.current.battle_quest_from} ${S.current.event}/${S.current.main_story}'),
+          title: Text('② ${S.current.battle_quest_from} ${S.current.event}/${S.current.main_story}'),
           subtitle: Text.rich(TextSpan(
             text: '${S.current.event}→${S.current.war}→${S.current.quest}→',
             children: [
@@ -221,7 +228,30 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             router.push(url: Routes.events, detail: true);
           },
         ),
-        // kDefaultDivider,
+        kDefaultDivider,
+        _SelectFreeDropdowns(
+          initQuestId: questPhase?.id,
+          onChanged: (Quest quest) async {
+            EasyLoading.show();
+            final phase = await AtlasApi.questPhase(quest.id, quest.phases.last);
+            EasyLoading.dismiss();
+            if (mounted) {
+              if (phase != null) {
+                questPhase = phase;
+                questIdTextController.text = '${phase.id}/${phase.phase}';
+              }
+              setState(() {});
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget questDetail() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
         if (questErrorMsg != null)
           SFooter.rich(TextSpan(text: questErrorMsg, style: TextStyle(color: Theme.of(context).colorScheme.error))),
         if (questPhase == null)
@@ -231,7 +261,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             textAlign: TextAlign.center,
           ),
         if (questPhase != null) ...[
-          kDefaultDivider,
+          // kDefaultDivider,
           TextButton(
             onPressed: () {
               QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
@@ -422,12 +452,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Center(
-          child: Text(
-            S.current.battle_misc_config,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
         // use Responsible if more settings
         Row(
           mainAxisSize: MainAxisSize.max,
@@ -499,6 +523,118 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         probabilityThreshold: probabilityThreshold,
         isAfter7thAnni: isAfter7thAnni,
       ),
+    );
+  }
+}
+
+class _SelectFreeDropdowns extends StatefulWidget {
+  final int? initQuestId;
+  final ValueChanged<Quest> onChanged;
+  const _SelectFreeDropdowns({this.initQuestId, required this.onChanged});
+
+  @override
+  State<_SelectFreeDropdowns> createState() => __SelectFreeDropdownsState();
+}
+
+class __SelectFreeDropdownsState extends State<_SelectFreeDropdowns> {
+  int? warId = 308;
+  Quest? quest;
+  Map<int, NiceWar> wars = {};
+
+  @override
+  void initState() {
+    super.initState();
+    quest = db.gameData.quests[widget.initQuestId];
+    warId = quest?.warId ?? warId;
+    final warList = db.gameData.wars.values.where((e) => e.quests.any((q) => q.isAnyFree)).toList();
+    warList.sort2((e) => e.id < 1000 ? 1000 - e.id : kNeverClosedTimestamp - (e.event?.startedAt ?? e.id));
+    wars = {for (final war in warList) war.id: war};
+    if (wars[warId] == null) {
+      warId = wars.keys.firstOrNull;
+      quest = null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      // alignment: WrapAlignment.center,
+      // spacing: 8,
+      children: [
+        const SizedBox(width: 16),
+        const Text('③ '),
+        Flexible(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 250),
+            child: warBtn(),
+          ),
+        ),
+        const SizedBox(width: 8),
+        Flexible(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 250),
+            child: questBtn(),
+          ),
+        ),
+        const SizedBox(width: 16),
+      ],
+    );
+  }
+
+  Widget warBtn() {
+    return DropdownButton<int>(
+      // isDense: true,
+      isExpanded: true,
+      value: warId,
+      hint: Text(S.current.war, style: const TextStyle(fontSize: 14)),
+      items: [
+        for (final war in wars.values)
+          DropdownMenuItem(
+            value: war.id,
+            child: Text(
+              (war.id < 1000 ? war.lShortName : war.event?.lShortName.l ?? war.lShortName).setMaxLines(1).breakWord,
+              maxLines: 2,
+              style: const TextStyle(fontSize: 12),
+              overflow: TextOverflow.ellipsis,
+            ),
+          )
+      ],
+      onChanged: (v) {
+        setState(() {
+          warId = v;
+        });
+      },
+    );
+  }
+
+  Widget questBtn() {
+    final quests = wars[warId]?.quests.where((q) => q.isAnyFree && q.phases.isNotEmpty).toList() ?? [];
+    if (!quests.contains(quest)) quest = null;
+    return DropdownButton<Quest>(
+      // isDense: true,
+      isExpanded: true,
+      value: quest,
+      hint: Text(S.current.quest, style: const TextStyle(fontSize: 14)),
+      items: [
+        for (final quest in quests)
+          DropdownMenuItem(
+            value: quest,
+            child: Text(
+              quest.lDispName.setMaxLines(1).breakWord,
+              maxLines: 1,
+              style: const TextStyle(fontSize: 12),
+              overflow: TextOverflow.ellipsis,
+            ),
+          )
+      ],
+      onChanged: (v) {
+        setState(() {
+          quest = v;
+          if (v != null) widget.onChanged(v);
+        });
+      },
     );
   }
 }
