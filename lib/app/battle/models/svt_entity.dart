@@ -34,7 +34,6 @@ class BattleServantData {
 
   int get limitCount => niceEnemy?.limit?.limitCount ?? ascensionPhase;
 
-  // int index = 0;
   // int exceedCount = 0;
   // int transformSvtId = -1;
   // int transformIndex = -1;
@@ -63,6 +62,7 @@ class BattleServantData {
   // int tdId = 0;
   // int tdLv = 0;
 
+  int index = -1;
   int deckIndex = -1;
   int uniqueId = 0;
   int svtId = -1;
@@ -1076,6 +1076,7 @@ class BattleServantData {
       ..niceEnemy = niceEnemy
       ..niceSvt = niceSvt
       ..playerSvtData = playerSvtData
+      ..index = index
       ..deckIndex = deckIndex
       ..uniqueId = uniqueId
       ..svtId = svtId

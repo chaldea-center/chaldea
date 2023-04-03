@@ -434,6 +434,19 @@ class BattleData {
     nonnullActors.forEach((svt) {
       svt.checkBuffStatus();
     });
+
+    for (int index = 0; index < onFieldAllyServants.length; index += 1) {
+      onFieldAllyServants[index]?.index = index;
+    }
+    for (int index = 0; index < playerDataList.length; index += 1) {
+      playerDataList[index]?.index = onFieldAllyServants.length + index;
+    }
+    for (int index = 0; index < onFieldEnemies.length; index += 1) {
+      onFieldEnemies[index]?.index = index;
+    }
+    for (int index = 0; index < enemyDataList.length; index += 1) {
+      enemyDataList[index]?.index = onFieldEnemies.length + index;
+    }
   }
 
   bool canSelectNp(final int servantIndex) {
@@ -830,6 +843,7 @@ class BattleData {
         if (!hasGuts) {
           await actor.death(this);
           actorList[i] = null;
+          actor.index = -1;
           if (actor.isPlayer) {
             nonnullAllies.forEach((svt) {
               svt.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));

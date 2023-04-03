@@ -354,6 +354,7 @@ void main() async {
       expect(battle.totalTurnCount, 1);
       expect(battle.turnCount, 1);
       final kama = battle.targetedAlly!;
+      expect(kama.index, 0);
       expect(kama.battleBuff.allBuffs.length, 13);
       await battle.activateSvtSkill(0, 0);
       expect(kama.battleBuff.allBuffs.length, 15);
@@ -367,6 +368,7 @@ void main() async {
 
       battle.enemyTargetIndex = 1;
       final skyCaster = battle.targetedEnemy!;
+      expect(skyCaster.index, 1);
       final hpBeforeDamage = skyCaster.hp;
       await battle.playerTurn(npActions);
       final hpAfterDamage = skyCaster.hp;
@@ -380,8 +382,10 @@ void main() async {
       expect(battle.waveCount, 2);
       expect(battle.totalTurnCount, 2);
       expect(battle.turnCount, 1);
+      expect(skyCaster.index, -1);
 
       final wave2enemy = battle.targetedEnemy!;
+      expect(wave2enemy.index, 0);
       expect(wave2enemy.uniqueId, 7);
       final hpBeforeDamageWave2 = wave2enemy.hp;
       await battle.playerTurn(npActions);
@@ -396,6 +400,7 @@ void main() async {
       expect(battle.waveCount, 3);
       expect(battle.totalTurnCount, 3);
       expect(battle.turnCount, 1);
+      expect(wave2enemy.index, -1);
 
       await battle.activateSvtSkill(0, 1);
       await battle.activateSvtSkill(0, 2);
@@ -404,6 +409,7 @@ void main() async {
       expect(kama.battleBuff.allBuffs.length, 26);
 
       final wave3enemy = battle.targetedEnemy!;
+      expect(wave3enemy.index, 0);
       expect(wave3enemy.uniqueId, 10);
       final hpBeforeDamageWave3 = wave3enemy.hp;
       await battle.playerTurn([
@@ -419,6 +425,7 @@ void main() async {
       expect(battle.criticalStars, moreOrLessEquals(0.184 + 0.784 + 1.143, epsilon: 0.001));
       expect(battle.isActorOnField(wave3enemy.uniqueId), isFalse);
       expect(battle.isBattleFinished, isTrue);
+      expect(wave3enemy.index, -1);
     });
   });
 
