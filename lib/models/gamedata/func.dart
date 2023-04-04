@@ -385,9 +385,9 @@ class BaseFunction with RouteInfo {
 
   bool get isPlayerOnlyFunc =>
       (funcTargetTeam == FuncApplyTarget.enemy && funcTargetType.isEnemy) ||
-      (funcTargetTeam == FuncApplyTarget.player && !funcTargetType.isEnemy);
+      (funcTargetTeam == FuncApplyTarget.player && funcTargetType.isAlly);
   bool get isEnemyOnlyFunc =>
-      (funcTargetTeam == FuncApplyTarget.enemy && !funcTargetType.isEnemy) ||
+      (funcTargetTeam == FuncApplyTarget.enemy && funcTargetType.isAlly) ||
       (funcTargetTeam == FuncApplyTarget.player && funcTargetType.isEnemy);
   EffectTarget get effectTarget => EffectTarget.fromFunc(funcTargetType);
 }
@@ -528,10 +528,6 @@ enum FuncType {
   const FuncType(this.id);
 }
 
-extension FuncTargetTypeX on FuncTargetType {
-  bool get isEnemy => name.toLowerCase().contains('enemy');
-}
-
 enum FuncTargetType {
   self,
   ptOne,
@@ -563,6 +559,12 @@ enum FuncTargetType {
   enemyOneNoTargetNoAction,
   ptOneHpLowestValue,
   ptOneHpLowestRate,
+  ;
+
+  bool get isEnemy => name.toLowerCase().startsWith('enemy');
+  bool get isAlly =>
+      name.toLowerCase().startsWith('pt') ||
+      const [FuncTargetType.self, FuncTargetType.commandTypeSelfTreasureDevice].contains(this);
 }
 
 enum FuncApplyTarget {
