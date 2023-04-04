@@ -827,10 +827,17 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
                 .charge_np_to(svt.isPlayer ? ConstData.constants.fullTdPoint ~/ 100 : svt.niceEnemy!.chargeTurn)),
             onTapOk: () {
               battleData.pushSnapshot();
+              String? msg;
               if (svt.isPlayer) {
                 svt.np = ConstData.constants.fullTdPoint;
+                msg = 'Charge ${svt.index + 1}-${svt.lBattleName} NP to ${svt.np ~/ 100}%';
               } else if (svt.isEnemy) {
                 svt.npLineCount = svt.niceEnemy!.chargeTurn;
+                msg = 'Charge ${svt.index + 1}-${svt.lBattleName} NP to ${svt.npLineCount}';
+              }
+              if (msg != null) {
+                battleData.battleLogger.action(msg);
+                battleData.recorder.message(msg);
               }
               if (mounted) setState(() {});
             },

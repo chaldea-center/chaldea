@@ -150,7 +150,7 @@ class BuffData {
 
       addValue = addCount * vals.ParamAddValue!;
 
-      if (vals.ParamAddValue != null) {
+      if (vals.ParamAddMaxValue != null) {
         addValue = min(addValue, vals.ParamAddMaxValue!);
       }
     }

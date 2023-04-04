@@ -367,6 +367,13 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
       subtitle: Text(buff.buff.lDetail.l),
       trailing: InkWell(
         onTap: () {
+          Map<String, dynamic> vals = buff.vals.toJson(sort: false);
+          if (vals['Value'] != buff.param) {
+            vals = {
+              'param': buff.param,
+              ...vals,
+            };
+          }
           showDialog(
             context: context,
             useRootNavigator: false,
@@ -375,7 +382,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
                 data: ThemeData.light(),
                 child: SimpleCancelOkDialog(
                   title: const Text('Data Vals'),
-                  content: JsonViewer(buff.vals.toJson(sort: false), defaultOpen: true),
+                  content: JsonViewer(vals, defaultOpen: true),
                   scrollable: true,
                   hideCancel: true,
                   contentPadding: const EdgeInsetsDirectional.fromSTEB(10.0, 10.0, 12.0, 24.0),

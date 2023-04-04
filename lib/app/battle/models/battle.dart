@@ -740,8 +740,10 @@ class BattleData {
     if (isBattleFinished) {
       return;
     }
+    // 宝具充填
+    // 出撃中のサーヴァント全員の宝具ゲージを+100％する
     final skill = NiceSkill(
-      id: 10000000001,
+      id: 10000000003,
       type: SkillType.active,
       name: S.current.battle_charge_party,
       unmodifiedDetail: S.current.battle_charge_party,

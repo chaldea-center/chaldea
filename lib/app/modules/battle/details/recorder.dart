@@ -416,11 +416,11 @@ class _AttackDetailWidget extends StatelessWidget {
           ),
           text('HP: ${detail.target.hp}', null),
           text('DMG: ${Maths.sum(result.damages)}', Colors.red,
-              () => showParams(context, DamageParamDialog(detail.damageParams))),
+              () => showParams(context, DamageParamDialog(detail.damageParams, detail.result))),
           text('NP: ${Maths.sum(result.npGains) / 100}', Colors.blue,
-              () => showParams(context, AttackerNpParamDialog(detail.attackNpParams))),
+              () => showParams(context, AttackerNpParamDialog(detail.attackNpParams, detail.result))),
           text('Star: ${Maths.sum(result.stars) / 1000}', Colors.green,
-              () => showParams(context, StarParamDialog(detail.starParams))),
+              () => showParams(context, StarParamDialog(detail.starParams, detail.result))),
           text('Overkill: ${result.overkillStates.where((e) => e).length}/${result.overkillStates.length}',
               Colors.yellow.shade900),
         ],
@@ -476,6 +476,32 @@ mixin _ParamDialogMixin {
     );
   }
 
+  Widget listValueWithOverkill(List<int> values, List<bool> overskills, String Function(int v) format) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 2, bottom: 4),
+      child: Align(
+        alignment: AlignmentDirectional.centerEnd,
+        child: Text.rich(
+          TextSpan(
+            children: divideList(
+              List.generate(values.length, (index) {
+                final value = values[index], ok = overskills.getOrNull(index);
+                assert(ok != null, [values, overskills]);
+                return TextSpan(
+                  text: format(value),
+                  style: ok == true ? TextStyle(color: Colors.yellow.shade900) : null,
+                );
+              }),
+              const TextSpan(text: ','),
+            ),
+          ),
+          style: const TextStyle(fontSize: 13),
+          textAlign: TextAlign.end,
+        ),
+      ),
+    );
+  }
+
   String buffIcon(int id) => 'https://static.atlasacademy.io/JP/BuffIcons/bufficon_$id.png';
   String skillIcon(int id) => 'https://static.atlasacademy.io/JP/SkillIcons/skill_${id.toString().padLeft(5, '0')}.png';
 
@@ -485,6 +511,7 @@ mixin _ParamDialogMixin {
       title: Text(title),
       scrollable: true,
       contentPadding: const EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 24.0),
+      hideCancel: true,
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -502,7 +529,8 @@ mixin _ParamDialogMixin {
 
 class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
   final DamageParameters params;
-  const DamageParamDialog(this.params, {super.key});
+  final DamageResult result;
+  const DamageParamDialog(this.params, this.result, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -510,6 +538,9 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
       context: context,
       title: 'Damage Params',
       children: [
+        oneParam('Damage', Maths.sum(result.damages).toString()),
+        if (result.damages.any((e) => e > 0))
+          listValueWithOverkill(result.damages, result.overkillStates, (v) => v.toString()),
         oneParam('ATK', params.attack.toString()),
         oneParam('RNG', (params.fixedRandom / 1000).toStringAsFixed(3)),
         oneParam('Class Advantage', toModifier(params.classAdvantage).toString()),
@@ -523,7 +554,8 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
 
 class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
   final AttackNpGainParameters params;
-  const AttackerNpParamDialog(this.params, {super.key});
+  final DamageResult result;
+  const AttackerNpParamDialog(this.params, this.result, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -531,6 +563,9 @@ class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
       context: context,
       title: 'Attack NP Params',
       children: [
+        oneParam('NP Gain', (Maths.sum(result.npGains) / 100).toString()),
+        if (result.npGains.any((e) => e > 0))
+          listValueWithOverkill(result.npGains, result.overkillStates, (v) => (v / 100).toString()),
         oneParam(
             'Card Performance', toModifier(params.cardBuff - 1000).format(percent: true, precision: 2), skillIcon(317)),
       ],
@@ -540,7 +575,8 @@ class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
 
 class StarParamDialog extends StatelessWidget with _ParamDialogMixin {
   final StarParameters params;
-  const StarParamDialog(this.params, {super.key});
+  final DamageResult result;
+  const StarParamDialog(this.params, this.result, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -548,7 +584,9 @@ class StarParamDialog extends StatelessWidget with _ParamDialogMixin {
       context: context,
       title: 'Star Params',
       children: [
-        oneParam('StarGen', toModifier(params.attackerStarGen).toString()),
+        oneParam('NP Gain', (Maths.sum(result.stars) / 1000).toString()),
+        if (result.stars.any((e) => e > 0))
+          listValueWithOverkill(result.stars, result.overkillStates, (v) => (v / 1000).toString()),
         oneParam(
             'Card Performance', toModifier(params.cardBuff - 1000).format(percent: true, precision: 2), skillIcon(317)),
       ],
