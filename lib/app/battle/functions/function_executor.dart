@@ -41,25 +41,22 @@ class FunctionExecutor {
     final int? effectiveness,
     final bool defaultToAlly = true,
   }) async {
+    Map<int, List<NiceFunction>> actSets = {};
+    for (final func in functions) {
+      final dataVal = FunctionExecutor.getDataVals(func, skillLevel, overchargeLvl);
+      if ((dataVal.ActSet ?? 0) != 0 && (dataVal.ActSetWeight ?? 0) > 0) {
+        actSets.putIfAbsent(dataVal.ActSet!, () => []).add(func);
+      }
+    }
+    int? selectedActSet;
+    if (actSets.isNotEmpty) {
+      selectedActSet = await getSelectedFunction(battleData, actSets);
+    }
     for (int index = 0; index < functions.length; index += 1) {
       NiceFunction func = functions[index];
       final dataVal = FunctionExecutor.getDataVals(func, skillLevel, overchargeLvl);
-      if (dataVal.ActSet != null && dataVal.ActSet! > 0) {
-        final List<NiceFunction> actFunctions = getGroupedFunctions(
-          functions,
-          skillLevel,
-          index,
-          overchargeLv: overchargeLvl,
-        );
-        index += actFunctions.length - 1;
-
-        final validFuncs = actFunctions
-            .where((func) => FunctionExecutor.validateFunctionTargetTeam(func, battleData.activator))
-            .toList();
-
-        if (battleData.context != null && validFuncs.isNotEmpty) {
-          func = await getSelectedFunction(battleData, validFuncs);
-        }
+      if ((dataVal.ActSet ?? 0) != 0 && dataVal.ActSet != selectedActSet) {
+        continue;
       }
 
       await FunctionExecutor.executeFunction(
@@ -79,57 +76,55 @@ class FunctionExecutor {
     battleData.checkBuffStatus();
   }
 
-  static List<NiceFunction> getGroupedFunctions(
-    final List<NiceFunction> functions,
-    final int skillLevel,
-    final int startIndex, {
-    final int overchargeLv = 1,
-  }) {
-    final List<NiceFunction> groupedFunctions = [];
-    int index = startIndex;
-    int? curAct = 0;
-    do {
-      final func = functions[index];
-      index += 1;
-      final nextAct = FunctionExecutor.getDataVals(func, skillLevel, overchargeLv).ActSet;
-      curAct = nextAct != null && curAct != null && nextAct >= curAct ? nextAct : null;
-      if (curAct != null) {
-        groupedFunctions.add(func);
-      }
-    } while (index < functions.length && curAct != null);
-    return groupedFunctions;
-  }
-
-  static Future<NiceFunction> getSelectedFunction(
+  static Future<int?> getSelectedFunction(
     final BattleData battleData,
-    final List<NiceFunction> functions,
+    final Map<int, List<NiceFunction>> actSets,
   ) async {
     final transl = Transl.miscScope('SelectAddInfo');
-    return await showUserConfirm<NiceFunction>(
+    return await showUserConfirm<int?>(
       context: battleData.context!,
+      allowNull: true,
       builder: (context) {
+        List<Widget> children = [];
+        final setIds = actSets.keys.toList();
+        for (int index = 0; index < setIds.length; index++) {
+          final setId = setIds[index];
+          final funcs = actSets[setId]!;
+          children.add(TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(setId);
+              battleData.battleLogger.action('${S.current.battle_select_effect}: ${transl('Option').l} $setId');
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text(
+                '${transl('Option').l} $setId: ${funcs.map((e) => e.lPopupText.l).join(', ')}',
+                style: const TextStyle(fontSize: 18),
+              ),
+            ),
+          ));
+        }
+        children.add(TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(null);
+            battleData.battleLogger
+                .action('${S.current.battle_select_effect}: ${transl('Option').l} ${S.current.skip}');
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Text(
+              S.current.skip,
+              style: const TextStyle(fontSize: 18),
+            ),
+          ),
+        ));
         return SimpleCancelOkDialog(
           title: Text(S.current.battle_select_effect),
           scrollable: true,
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(functions.length, (index) {
-              return TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(functions[index]);
-                  battleData.battleLogger
-                      .action('${S.current.battle_select_effect}: ${transl('Option').l} ${index + 1}');
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Text(
-                    '${transl('Option').l} ${index + 1}: ${functions[index].lPopupText.l}',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                ),
-              );
-            }),
+            children: children,
           ),
           hideOk: true,
           hideCancel: true,
