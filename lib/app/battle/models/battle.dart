@@ -467,6 +467,22 @@ class BattleData {
     return onFieldAllyServants[servantIndex]!.canNP(this);
   }
 
+  bool isSkillSealed(final int servantIndex, final int skillIndex) {
+    if (onFieldAllyServants[servantIndex] == null) {
+      return false;
+    }
+
+    return onFieldAllyServants[servantIndex]!.isSkillSealed(this, skillIndex);
+  }
+
+  bool isSkillCondFailed(final int servantIndex, final int skillIndex) {
+    if (onFieldAllyServants[servantIndex] == null) {
+      return false;
+    }
+
+    return onFieldAllyServants[servantIndex]!.isCondFailed(this, skillIndex);
+  }
+
   bool canUseSvtSkillIgnoreCoolDown(final int servantIndex, final int skillIndex) {
     if (onFieldAllyServants[servantIndex] == null) {
       return false;

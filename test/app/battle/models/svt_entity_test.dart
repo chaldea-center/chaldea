@@ -137,17 +137,28 @@ void main() async {
     await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
     expect(battle.canUseSvtSkillIgnoreCoolDown(0, 2), false);
-    expect(battle.canUseNp(1), true);
-    expect(battle.canSelectNp(1), false);
+    expect(battle.isSkillSealed(0, 2), false);
+    expect(battle.isSkillCondFailed(0, 2), true);
 
     final eli = battle.onFieldAllyServants[0]!;
+    expect(battle.canUseSvtSkillIgnoreCoolDown(0, 2), false);
+    expect(battle.isSkillSealed(0, 2), false);
+    expect(battle.isSkillCondFailed(0, 2), true);
+
+    eli.np = 100;
+    expect(battle.canUseSvtSkillIgnoreCoolDown(0, 2), false);
+    expect(battle.isSkillSealed(0, 2), false);
+    expect(battle.isSkillCondFailed(0, 2), true);
 
     eli.np = 10000;
-
     expect(battle.canUseSvtSkillIgnoreCoolDown(0, 2), true);
+    expect(battle.isSkillSealed(0, 2), false);
+    expect(battle.isSkillCondFailed(0, 2), false);
 
+    expect(battle.canUseNp(1), true);
+    expect(battle.canSelectNp(1), false);
+    
     battle.criticalStars = 20;
-
     expect(battle.canUseNp(1), true);
     expect(battle.canSelectNp(1), true);
   });

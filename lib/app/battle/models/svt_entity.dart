@@ -515,6 +515,36 @@ class BattleServantData {
     return result;
   }
 
+  bool isSkillSealed(final BattleData battleData, final int skillIndex) {
+    if (skillInfoList.length <= skillIndex || skillIndex < 0) {
+      return false;
+    }
+
+    final skillInfo = skillInfoList[skillIndex];
+    battleData.setActivator(this);
+    final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
+    skillInfo.setRankUp(rankUp);
+
+    final result = !canAttack(battleData) || hasDoNotBuffOnActionForUI(battleData, BuffAction.donotSkill);
+    battleData.unsetActivator();
+    return result;
+  }
+
+  bool isCondFailed(final BattleData battleData, final int skillIndex) {
+    if (skillInfoList.length <= skillIndex || skillIndex < 0) {
+      return false;
+    }
+
+    final skillInfo = skillInfoList[skillIndex];
+    battleData.setActivator(this);
+    final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
+    skillInfo.setRankUp(rankUp);
+
+    final result = skillInfo.proximateSkill == null || !skillInfo.checkSkillScript(battleData);
+    battleData.unsetActivator();
+    return result;
+  }
+
   bool canUseSkillIgnoreCoolDown(final BattleData battleData, final int skillIndex) {
     if (skillInfoList.length <= skillIndex || skillIndex < 0) {
       return false;
@@ -525,10 +555,7 @@ class BattleServantData {
     final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
     skillInfo.setRankUp(rankUp);
 
-    final result = canAttack(battleData) &&
-        !hasDoNotBuffOnActionForUI(battleData, BuffAction.donotSkill) &&
-        skillInfo.proximateSkill != null &&
-        skillInfo.checkSkillScript(battleData);
+    final result = !isSkillSealed(battleData, skillIndex) && !isCondFailed(battleData, skillIndex);
     battleData.unsetActivator();
     return result;
   }
