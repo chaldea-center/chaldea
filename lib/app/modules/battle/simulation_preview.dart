@@ -55,6 +55,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   int probabilityThreshold = 1000;
   bool isAfter7thAnni = true;
   static const _validRegions = [Region.jp, Region.na];
+  late Region playerRegion = db.curUser.region;
 
   @override
   void initState() {
@@ -94,20 +95,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     children.add(questDetail());
 
     children.add(header(S.current.battle_simulation_setup));
-    children.add(Wrap(
-      alignment: WrapAlignment.center,
-      children: [
-        CheckboxWithLabel(
-          value: db.settings.battleSim.preferPlayerData,
-          label: Text(S.current.battle_prefer_player_data),
-          onChanged: (v) {
-            setState(() {
-              if (v != null) db.settings.battleSim.preferPlayerData = v;
-            });
-          },
-        )
-      ],
-    ));
+    children.add(partyOption());
     children.add(kIndentDivider);
     children.add(ResponsiveLayout(
       horizontalDivider: kIndentDivider,
@@ -287,6 +275,54 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     );
   }
 
+  Widget partyOption() {
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 4,
+      children: [
+        CheckboxWithLabel(
+          value: db.settings.battleSim.preferPlayerData,
+          label: Text(S.current.battle_prefer_player_data),
+          onChanged: (v) {
+            setState(() {
+              if (v != null) db.settings.battleSim.preferPlayerData = v;
+            });
+          },
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DropdownButton<Region>(
+              isDense: true,
+              value: playerRegion,
+              items: [
+                for (final r in Region.values)
+                  DropdownMenuItem(
+                    value: r,
+                    child: Text.rich(
+                      TextSpan(children: [
+                        TextSpan(
+                          text: '${S.current.strength_status}:',
+                          style: TextStyle(fontSize: 15, color: Theme.of(context).textTheme.bodySmall?.color),
+                        ),
+                        TextSpan(text: r.localName),
+                      ]),
+                      textScaleFactor: 0.9,
+                    ),
+                  ),
+              ],
+              onChanged: (v) {
+                setState(() {
+                  if (v != null) playerRegion = v;
+                });
+              },
+            )
+          ],
+        ),
+      ],
+    );
+  }
+
   Responsive partyOrganization(List<PlayerSvtData> svts, String title) {
     return Responsive(
       small: 12,
@@ -301,6 +337,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                 Expanded(
                   child: ServantSelector(
                     playerSvtData: svt,
+                    playerRegion: playerRegion,
                     questPhase: questPhase,
                     onChange: () {
                       if (mounted) setState(() {});
@@ -651,6 +688,7 @@ class _DragCEData {
 
 class ServantSelector extends StatelessWidget {
   final PlayerSvtData playerSvtData;
+  final Region playerRegion;
   final QuestPhase? questPhase;
   final VoidCallback onChange;
   final DragTargetAccept<PlayerSvtData> onDragSvt;
@@ -659,6 +697,7 @@ class ServantSelector extends StatelessWidget {
   ServantSelector({
     super.key,
     required this.playerSvtData,
+    required this.playerRegion,
     required this.questPhase,
     required this.onChange,
     required this.onDragSvt,
@@ -697,6 +736,7 @@ class ServantSelector extends StatelessWidget {
         router.pushPage(ServantOptionEditPage(
           playerSvtData: playerSvtData,
           questPhase: questPhase,
+          playerRegion: playerRegion,
           onChange: onChange,
         ));
       },
@@ -821,13 +861,8 @@ class ServantSelector extends StatelessWidget {
   static final List<int> melusineDragonIds = [3, 4, 13, 304850];
 
   static List<NiceTd> getShownTds(final Servant svt, final int ascension) {
-    final List<NiceTd> shownTds = [];
+    final List<NiceTd> shownTds = svt.groupedNoblePhantasms[1]?.toList() ?? <NiceTd>[];
     // only case where we different groups of noblePhantasms exist are for npCardTypeChange
-    for (final td in svt.groupedNoblePhantasms[1] ?? <NiceTd>[]) {
-      if (shownTds.every((storedTd) => storedTd.id != td.id)) {
-        shownTds.add(td);
-      }
-    }
 
     // Servant specific
     final List<int> removeTdIdList = [];

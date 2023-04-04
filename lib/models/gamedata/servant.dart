@@ -363,7 +363,9 @@ class Servant with GameCardMixin {
     // groupedActiveSkills
     groupedActiveSkills.clear();
     for (final skill in List.of(skills)..sort2((e) => e.priority)) {
-      groupedActiveSkills.putIfAbsent(skill.num, () => []).add(skill);
+      final _skills = groupedActiveSkills.putIfAbsent(skill.num, () => []);
+      _skills.removeWhere((e) => e.id == skill.id && e.priority < skill.priority);
+      _skills.add(skill);
     }
     groupedActiveSkills = sortDict(groupedActiveSkills);
 
@@ -373,7 +375,9 @@ class Servant with GameCardMixin {
     for (final td in List.of(noblePhantasms)..sort2((e) => e.priority)) {
       // 151-154
       if (excludeSvtChangeTds.contains(td.id)) continue;
-      groupedNoblePhantasms.putIfAbsent(td.num, () => []).add(td);
+      final tds = groupedNoblePhantasms.putIfAbsent(td.num, () => []);
+      tds.removeWhere((e) => e.id == td.id && e.priority < td.priority);
+      tds.add(td);
     }
     groupedNoblePhantasms = sortDict(groupedNoblePhantasms);
   }

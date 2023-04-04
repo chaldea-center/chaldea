@@ -832,6 +832,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "statistics_title": MessageLookupByLibrary.simpleMessage("統計"),
         "still_send": MessageLookupByLibrary.simpleMessage("仍然發送"),
         "story_ce": MessageLookupByLibrary.simpleMessage("劇情禮裝"),
+        "strength_status": MessageLookupByLibrary.simpleMessage("强化状态"),
         "success": MessageLookupByLibrary.simpleMessage("成功"),
         "summon": MessageLookupByLibrary.simpleMessage("卡池"),
         "summon_daily": MessageLookupByLibrary.simpleMessage("日替"),

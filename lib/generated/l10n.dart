@@ -8131,6 +8131,17 @@ class S {
     );
   }
 
+  /// `Strength Status`
+  String get strength_status {
+    return Intl.message(
+      'Strength Status',
+      name: 'strength_status',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Success`
   String get success {
     return Intl.message(

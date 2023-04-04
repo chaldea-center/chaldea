@@ -863,6 +863,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "statistics_title": MessageLookupByLibrary.simpleMessage("Statistics"),
         "still_send": MessageLookupByLibrary.simpleMessage("Still Send"),
         "story_ce": MessageLookupByLibrary.simpleMessage("Story CE"),
+        "strength_status": MessageLookupByLibrary.simpleMessage("Strength Status"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),
         "summon": MessageLookupByLibrary.simpleMessage("Summon"),
         "summon_daily": MessageLookupByLibrary.simpleMessage("Daily"),

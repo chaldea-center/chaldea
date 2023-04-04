@@ -28,12 +28,14 @@ import 'simulation_preview.dart';
 
 class ServantOptionEditPage extends StatefulWidget {
   final PlayerSvtData playerSvtData;
+  final Region playerRegion;
   final QuestPhase? questPhase;
   final VoidCallback onChange;
 
   ServantOptionEditPage({
     super.key,
     required this.playerSvtData,
+    required this.playerRegion,
     required this.questPhase,
     required this.onChange,
   });
@@ -969,11 +971,31 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     }
 
     playerSvtData.extraPassives = selectedSvt.extraPassive.toList();
+    final region = widget.playerRegion;
 
-    playerSvtData.td = ServantSelector.getShownTds(selectedSvt, playerSvtData.limitCount).lastOrNull;
+    final tds = ServantSelector.getShownTds(selectedSvt, playerSvtData.limitCount);
+    if (region != Region.jp) {
+      final releasedTds = tds
+          .where((td) => db.gameData.mappingData.tdPriority[selectedSvt.id]?.ofRegion(region)?[td.id] != null)
+          .toList();
+      print(['TD', releasedTds.length, tds.length]);
+      playerSvtData.td = releasedTds.lastOrNull ?? tds.lastOrNull;
+    } else {
+      playerSvtData.td = tds.lastOrNull;
+    }
+
     for (final skillNum in kActiveSkillNums) {
-      playerSvtData.skills[skillNum - 1] =
-          ServantSelector.getShownSkills(selectedSvt, playerSvtData.limitCount, skillNum).lastOrNull;
+      final skills = ServantSelector.getShownSkills(selectedSvt, playerSvtData.limitCount, skillNum);
+      if (region != Region.jp) {
+        final releaseSkills = skills
+            .where(
+                (skill) => db.gameData.mappingData.skillPriority[selectedSvt.id]?.ofRegion(region)?[skill.id] != null)
+            .toList();
+        print(['Skill $skillNum', releaseSkills.length, skills.length]);
+        playerSvtData.skills[skillNum - 1] = releaseSkills.lastOrNull ?? skills.lastOrNull;
+      } else {
+        playerSvtData.skills[skillNum - 1] = skills.lastOrNull;
+      }
     }
   }
 
