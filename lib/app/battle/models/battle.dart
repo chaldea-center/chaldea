@@ -563,6 +563,11 @@ class BattleData {
         final isMightyChain = cardTypesSet.length == 3 && isAfter7thAnni;
         final isBraveChain = actions.where((action) => action.isValid(this)).length == kMaxCommand &&
             actions.map((action) => action.actor).toSet().length == 1;
+        if (isBraveChain) {
+          final actor = actions[0].actor;
+          actions.add(CombatAction(actor, actor.getExtraCard(this)!));
+        }
+
         final CardType firstCardType = actions[0].isValid(this) ? actions[0].cardData.cardType : CardType.blank;
         if (isTypeChain) {
           applyTypeChain(firstCardType, actions);
@@ -592,7 +597,7 @@ class BattleData {
               }
             }
 
-            if (shouldRemoveDeadActors(actions, i, isBraveChain)) {
+            if (shouldRemoveDeadActors(actions, i)) {
               await removeDeadActors();
             }
 
@@ -601,21 +606,6 @@ class BattleData {
           }
 
           checkBuffStatus();
-        }
-
-        if (isBraveChain && targetedEnemy != null) {
-          final actor = actions[0].actor;
-          currentCard = actor.getExtraCard(this);
-          recorder.startPlayerCard(actor, currentCard!);
-
-          if (actor.canCommandCard(this)) {
-            await executePlayerCard(actor, currentCard!, 4, isTypeChain, isMightyChain, firstCardType);
-          }
-
-          await removeDeadActors();
-          checkBuffStatus();
-          recorder.endPlayerCard(actor, currentCard!);
-          currentCard = null;
         }
 
         // end player turn
@@ -867,18 +857,14 @@ class BattleData {
     return 0;
   }
 
-  bool shouldRemoveDeadActors(final List<CombatAction> actions, final int index, final bool isBraveChain) {
+  bool shouldRemoveDeadActors(final List<CombatAction> actions, final int index) {
     final action = actions[index];
-    if (action.cardData.isNP) {
+    if (action.cardData.isNP || index == actions.length - 1) {
       return true;
     }
 
-    if (index < actions.length - 1) {
-      final nextAction = actions[index + 1];
-      return nextAction.cardData.isNP || nextAction.actor != action.actor;
-    } else {
-      return !isBraveChain;
-    }
+    final nextAction = actions[index + 1];
+    return nextAction.cardData.isNP || nextAction.actor != action.actor;
   }
 
   Future<bool> canActivate(final int activationRate, final String description) async {

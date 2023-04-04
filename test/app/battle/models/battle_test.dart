@@ -592,10 +592,12 @@ void main() async {
     expect(bunyan.np, 993);
   });
 
-  test('attacker must be on field', () async {
+  test('attacker must be on field (dead)', () async {
     final List<PlayerSvtData> setting = [
       PlayerSvtData(201300)
         ..lv = 1
+        ..setNpStrengthenLv(2)
+        ..atkFou = 1000
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
@@ -608,7 +610,7 @@ void main() async {
 
     final arash = battle.onFieldAllyServants[0]!;
     final enemy1 = battle.onFieldEnemies[0]!;
-    final enemy2 = battle.onFieldEnemies[0]!;
+    final enemy2 = battle.onFieldEnemies[1]!;
     final previousHp1 = enemy1.hp;
     final previousHp2 = enemy2.hp;
     await battle.activateSvtSkill(1, 0);
@@ -619,7 +621,37 @@ void main() async {
     ]);
 
     expect(arash.hp, 0);
-    expect(previousHp1 - enemy1.hp, previousHp2 - enemy2.hp);
+    expect(previousHp1 - enemy1.hp, 25849);
+    expect(previousHp2 - enemy2.hp, 12924);
+  });
+
+  test('attacker must be on field (crane)', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(201300)..lv = 1,
+      PlayerSvtData(2300300)
+        ..lv = 90
+        ..ce = db.gameData.craftEssencesById[9404120] // 20 star on entry
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+      PlayerSvtData(504600)
+        ..lv = 80
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final crane = battle.onFieldAllyServants[2]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final previousHp1 = enemy1.hp;
+    await battle.playerTurn([
+      CombatAction(crane, crane.getNPCard(battle)!),
+      CombatAction(crane, crane.getCards(battle)[0]),
+      CombatAction(crane, crane.getCards(battle)[1]),
+    ]);
+
+    expect(previousHp1 , enemy1.hp);
   });
 
   test('brave chain bug on kill', () async {
