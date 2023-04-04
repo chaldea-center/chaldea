@@ -1,8 +1,10 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'battle_logger.dart';
 
 /// Referencing:
 /// https://apps.atlasacademy.io/fgo-docs/deeper/battle/damage.html
@@ -454,4 +456,16 @@ class DamageResult {
       ..cardHits = cardHits.toList()
       ..overkillStates = overkillStates.toList();
   }
+}
+
+Future<BaseFunction> getDependFunc(BattleLogger logger, DataVals dataVals) async {
+  BaseFunction? dependFunction;
+  if (dataVals.DependFuncId != null) {
+    dependFunction = db.gameData.baseFunctions[dataVals.DependFuncId!] ?? await AtlasApi.func(dataVals.DependFuncId!);
+  }
+  if (dependFunction == null) {
+    logger.error('DependFunctionId=${dataVals.DependFuncId} not found');
+    throw ArgumentError('DependFunctionId=${dataVals.DependFuncId} not found');
+  }
+  return dependFunction;
 }

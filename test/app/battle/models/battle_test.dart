@@ -651,7 +651,7 @@ void main() async {
       CombatAction(crane, crane.getCards(battle)[1]),
     ]);
 
-    expect(previousHp1 , enemy1.hp);
+    expect(previousHp1, enemy1.hp);
   });
 
   test('brave chain bug on kill', () async {

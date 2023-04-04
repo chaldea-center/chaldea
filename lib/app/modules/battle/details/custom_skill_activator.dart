@@ -43,7 +43,6 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
     skillIdTextController.dispose();
   }
 
-
   @override
   Widget build(final BuildContext context) {
     errorMsg = skill == null ? S.current.battle_no_skill_selected : null;

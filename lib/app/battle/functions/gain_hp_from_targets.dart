@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
-import 'package:chaldea/models/db.dart';
+import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 
 class GainHpFromTargets {
@@ -19,7 +19,7 @@ class GainHpFromTargets {
       return false;
     }
 
-    final BaseFunction dependFunction = db.gameData.baseFunctions[dataVals.DependFuncId!]!;
+    final dependFunction = await getDependFunc(battleData.battleLogger, dataVals);
     final dependVal = dataVals.DependFuncVals!;
     final checkValue = dependVal.Value!;
 
