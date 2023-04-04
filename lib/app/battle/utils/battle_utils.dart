@@ -14,16 +14,12 @@ int calculateDamage(final DamageParameters param) {
     throw 'Invalid class: ${param.attackerClass}';
   }
 
-  final classAttackCorrection = toModifier(ConstData.classInfo[param.attackerClass.id]!.attackRate);
+  final classAttackCorrection = toModifier(ConstData.classInfo[param.attackerClass.id]?.attackRate ?? 1000);
   final classAdvantage =
       toModifier(param.classAdvantage); // class relation is provisioned due to overwriteClassRelation
 
-  if (!ConstData.attributeRelation.containsKey(param.attackerAttribute) ||
-      !ConstData.attributeRelation[param.attackerAttribute]!.containsKey(param.defenderAttribute)) {
-    throw 'Invalid attributes: attacker: ${param.attackerAttribute}, defender: ${param.defenderAttribute}';
-  }
   final attributeAdvantage =
-      toModifier(ConstData.attributeRelation[param.attackerAttribute]![param.defenderAttribute]!);
+      toModifier(ConstData.getAttributeRelation(param.attackerAttribute, param.defenderAttribute));
 
   if (!ConstData.cardInfo.containsKey(param.currentCardType)) {
     throw 'Invalid current card type: ${param.currentCardType}';

@@ -502,6 +502,23 @@ mixin _ParamDialogMixin {
     );
   }
 
+  String cardBuffIcon(final CardType cardType) {
+    switch (cardType) {
+      case CardType.arts:
+        return buffIcon(313);
+      case CardType.buster:
+        return buffIcon(314);
+      case CardType.quick:
+        return buffIcon(312);
+      case CardType.extra:
+      case CardType.none:
+      case CardType.blank:
+      case CardType.weak:
+      case CardType.strength:
+        return buffIcon(302);
+    }
+  }
+
   String buffIcon(int id) => 'https://static.atlasacademy.io/JP/BuffIcons/bufficon_$id.png';
   String skillIcon(int id) => 'https://static.atlasacademy.io/JP/SkillIcons/skill_${id.toString().padLeft(5, '0')}.png';
 
@@ -534,6 +551,26 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
 
   @override
   Widget build(BuildContext context) {
+    final classAttackCorrection = toModifier(ConstData.classInfo[params.attackerClass.id]?.attackRate ?? 1000);
+    final damageRate = toModifier(params.damageRate);
+    final npSpecificAttackRate = toModifier(params.npSpecificAttackRate);
+    final hitsPercent = params.totalHits / 100.0;
+    final fixedRandom = toModifier(params.fixedRandom);
+    final classAdvantage = toModifier(params.classAdvantage);
+    final attributeAdvantage =
+        toModifier(ConstData.getAttributeRelation(params.attackerAttribute, params.defenderAttribute));
+    final atkSum = max(toModifier(params.attackBuff - params.defenseBuff), -1);
+    final cardSum = max(toModifier(params.cardBuff - params.cardResist), -1);
+    final specificSum = max(
+        toModifier(params.specificAttackBuff -
+            params.specificDefenseBuff +
+            (params.isCritical ? params.criticalDamageBuff : 0) +
+            (params.isNp ? params.npDamageBuff : 0)),
+        0.001 - 1);
+    final percentAttack = max(toModifier(params.percentAttackBuff), 0.01 - 1);
+    final percentDefense = min(toModifier(params.percentDefenseBuff), 1);
+    final damageAdd = params.damageAdditionBuff - params.damageReductionBuff;
+
     return buildDialog(
       context: context,
       title: 'Damage Params',
@@ -542,11 +579,20 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
         if (result.damages.any((e) => e > 0))
           listValueWithOverkill(result.damages, result.overkillStates, (v) => v.toString()),
         oneParam('ATK', params.attack.toString()),
-        oneParam('RNG', (params.fixedRandom / 1000).toStringAsFixed(3)),
-        oneParam('Class Advantage', toModifier(params.classAdvantage).toString()),
-        oneParam('Atk Up', toModifier(params.attackBuff).format(percent: true, precision: 2), buffIcon(300)),
-        oneParam(
-            'Card Performance', toModifier(params.cardBuff - 1000).format(percent: true, precision: 2), skillIcon(317)),
+        oneParam('ATK Correction', classAttackCorrection.format(precision: 3)),
+        if (params.damageRate != 1000) oneParam('Rate', damageRate.format(percent: true, precision: 3)),
+        if (params.isNp && params.npSpecificAttackRate != 1000)
+          oneParam('Td SP Rate', npSpecificAttackRate.format(percent: true, precision: 3)),
+        if (params.totalHits != 100) oneParam('Hits', hitsPercent.format(percent: true, precision: 3)),
+        oneParam('RNG', fixedRandom.toStringAsFixed(3)),
+        oneParam('Class Advantage', classAdvantage.format(precision: 3)),
+        oneParam('Attribute Advantage', attributeAdvantage.format(precision: 3)),
+        oneParam('Atk Mods', atkSum.format(percent: true, precision: 3), buffIcon(300)),
+        oneParam('Card Mods', cardSum.format(percent: true, precision: 3), cardBuffIcon(params.currentCardType)),
+        oneParam('Power Mods', specificSum.format(percent: true, precision: 3), buffIcon(302)),
+        oneParam('SP ATK', percentAttack.format(percent: true, precision: 3), buffIcon(359)),
+        oneParam('SP DEF', percentDefense.format(percent: true, precision: 3), buffIcon(334)),
+        oneParam('Dmg Plus', damageAdd.toString(), buffIcon(302)),
       ],
     );
   }
@@ -559,15 +605,24 @@ class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
 
   @override
   Widget build(BuildContext context) {
+    final attackerNpCharge = params.attackerNpCharge / 10000;
+    final defenderNpRate = toModifier(params.defenderNpRate);
+    final cardRate = toModifier(params.cardAttackNpRate);
+    final cardSum = max(toModifier(params.cardBuff - params.cardResist), -1);
+    final npGainBuff = toModifier(params.npGainBuff - 1000);
+
     return buildDialog(
       context: context,
       title: 'Attack NP Params',
       children: [
-        oneParam('NP Gain', (Maths.sum(result.npGains) / 100).toString()),
+        oneParam('NP Gain', (Maths.sum(result.npGains) / 100).format(precision: 2)),
         if (result.npGains.any((e) => e > 0))
-          listValueWithOverkill(result.npGains, result.overkillStates, (v) => (v / 100).toString()),
-        oneParam(
-            'Card Performance', toModifier(params.cardBuff - 1000).format(percent: true, precision: 2), skillIcon(317)),
+          listValueWithOverkill(result.npGains, result.overkillStates, (v) => (v / 100).format(precision: 2)),
+        oneParam('NP Charge', attackerNpCharge.format(percent: true, precision: 2)),
+        oneParam('Defender NP Mod', defenderNpRate.format(precision: 3)),
+        if (params.cardAttackNpRate != 1000) oneParam('Card NP Rate', cardRate.format(percent: true, precision: 3)),
+        oneParam('Card Mods', cardSum.format(percent: true, precision: 3), cardBuffIcon(params.currentCardType)),
+        oneParam('NP Charge Mods', npGainBuff.format(percent: true, precision: 3), buffIcon(303)),
       ],
     );
   }
@@ -580,15 +635,24 @@ class StarParamDialog extends StatelessWidget with _ParamDialogMixin {
 
   @override
   Widget build(BuildContext context) {
+    final attackerStarGen = toModifier(params.attackerStarGen);
+    final defenderStarRate = toModifier(params.defenderStarRate);
+    final cardRate = toModifier(params.cardDropStarRate);
+    final cardSum = max(toModifier(params.cardBuff - params.cardResist), -1);
+    final starGenBuff = toModifier(params.starGenBuff - params.enemyStarGenResist);
+
     return buildDialog(
       context: context,
       title: 'Star Params',
       children: [
-        oneParam('NP Gain', (Maths.sum(result.stars) / 1000).toString()),
+        oneParam('Star Gain', (Maths.sum(result.stars) / 1000).format(precision: 3)),
         if (result.stars.any((e) => e > 0))
-          listValueWithOverkill(result.stars, result.overkillStates, (v) => (v / 1000).toString()),
-        oneParam(
-            'Card Performance', toModifier(params.cardBuff - 1000).format(percent: true, precision: 2), skillIcon(317)),
+          listValueWithOverkill(result.stars, result.overkillStates, (v) => (v / 1000).format(precision: 3)),
+        oneParam('Star Gen', attackerStarGen.format(precision: 3)),
+        oneParam('Defender Star Mod', defenderStarRate.format(precision: 3)),
+        if (params.cardDropStarRate != 1000) oneParam('Card Star Rate', cardRate.format(percent: true, precision: 3)),
+        oneParam('Card Mods', cardSum.format(percent: true, precision: 3), cardBuffIcon(params.currentCardType)),
+        oneParam('Star Gen Mods', starGenBuff.format(precision: 3), buffIcon(321)),
       ],
     );
   }

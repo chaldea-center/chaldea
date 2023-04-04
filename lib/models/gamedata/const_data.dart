@@ -62,6 +62,10 @@ class ConstGameData {
   int getClassRelation(SvtClass attacker, SvtClass defender) {
     return classRelation[attacker.id]?[defender.id] ?? 1000;
   }
+
+  int getAttributeRelation(final Attribute attacker, final Attribute defender) {
+    return attributeRelation[attacker]?[defender] ?? 1000;
+  }
 }
 
 @JsonSerializable(converters: [BuffTypeConverter()])
