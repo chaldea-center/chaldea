@@ -97,7 +97,8 @@ class Damage {
       final damageParameters = DamageParameters()
         ..attack = activator.attack + currentCard.cardStrengthen
         ..totalHits = Maths.sum(currentCard.cardDetail.hitsDistribution)
-        ..damageRate = currentCard.isNP ? dataVals.Value! + additionDamageRate : 1000
+        ..damageRate =
+            currentCard.isNP ? dataVals.Value! + additionDamageRate : currentCard.cardDetail.damageRate ?? 1000
         ..npSpecificAttackRate = specificAttackRate
         ..attackerClass = activator.svtClass
         ..defenderClass = target.svtClass
@@ -129,6 +130,7 @@ class Damage {
         atkNpParameters
           ..attackerNpCharge = currentCard.npGain
           ..defenderNpRate = target.enemyTdRate
+          ..cardAttackNpRate = currentCard.cardDetail.damageRate ?? 1000
           ..isNp = currentCard.isNP
           ..chainPos = chainPos
           ..currentCardType = currentCard.cardType
@@ -141,6 +143,7 @@ class Damage {
         starParameters
           ..attackerStarGen = activator.starGen
           ..defenderStarRate = target.enemyStarRate
+          ..cardDropStarRate = currentCard.cardDetail.damageRate ?? 1000
           ..isNp = currentCard.isNP
           ..chainPos = chainPos
           ..currentCardType = currentCard.cardType
@@ -153,6 +156,7 @@ class Damage {
         defNpParameters
           ..defenderNpCharge = target.defenceNpGain
           ..attackerNpRate = activator.enemyTdAttackRate
+          ..cardDefNpRate = currentCard.cardDetail.damageRate ?? 1000
           ..npGainBuff = await target.getBuffValueOnAction(battleData, BuffAction.dropNp)
           ..defenseNpGainBuff = await target.getBuffValueOnAction(battleData, BuffAction.dropNpDamage);
       }

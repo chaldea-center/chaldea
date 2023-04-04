@@ -124,11 +124,13 @@ int calculateAttackNpGain(final AttackNpGainParameters param) {
   final npBonusGain = float.getFloat32(0);
 
   final defenderNpRate = toModifier(param.defenderNpRate);
+  final cardAttackNpRate = toModifier(param.cardAttackNpRate);
 
   float.setFloat32(0, param.attackerNpCharge * criticalModifier);
   float.setFloat32(0, defenderNpRate * float.getFloat32(0));
   float.setFloat32(0, cardGain * float.getFloat32(0));
   float.setFloat32(0, npBonusGain * float.getFloat32(0));
+  float.setFloat32(0, cardAttackNpRate * float.getFloat32(0));
   final beforeOverkill = float.getFloat32(0).floor();
 
   final overkillModifier = param.isOverkill ? toModifier(ConstData.constants.overKillNpRate) : 1.0;
@@ -152,9 +154,12 @@ int calculateDefendNpGain(final DefendNpGainParameters param) {
   float.setFloat32(0, defenseNpGainBuff);
   final defNpBonusGain = float.getFloat32(0);
 
+  final cardDefenseNpRate = toModifier(param.cardDefNpRate);
+
   float.setFloat32(0, param.defenderNpCharge * attackerNpRate);
   float.setFloat32(0, npBonusGain * float.getFloat32(0));
   float.setFloat32(0, defNpBonusGain * float.getFloat32(0));
+  float.setFloat32(0, cardDefenseNpRate * float.getFloat32(0));
   final beforeOverkill = float.getFloat32(0);
 
   final overkillModifier = param.isOverkill ? toModifier(ConstData.constants.overKillNpRate) : 1.0;
@@ -184,6 +189,8 @@ int calculateStar(final StarParameters param) {
   final cardBuff = toModifier(param.cardBuff);
   final cardResist = toModifier(param.cardResist);
 
+  final cardDropStarRate = toModifier(param.cardDropStarRate);
+
   final overkillModifier = param.isOverkill ? toModifier(ConstData.constants.overKillStarRate) : 1;
   final overkillAdd = param.isOverkill ? ConstData.constants.overKillStarAdd : 0;
 
@@ -195,6 +202,7 @@ int calculateStar(final StarParameters param) {
                   param.starGenBuff -
                   param.enemyStarGenResist +
                   criticalModifier) *
+              cardDropStarRate *
               overkillModifier +
           overkillAdd)
       .toInt();
@@ -314,6 +322,7 @@ class DamageParameters {
 class AttackNpGainParameters {
   int attackerNpCharge = 0;
   int defenderNpRate = 0;
+  int cardAttackNpRate = 1000;
   bool isNp = false;
   int chainPos = 1;
   CardType currentCardType = CardType.none;
@@ -330,6 +339,7 @@ class AttackNpGainParameters {
     return 'AttackNpGainParameters: {'
         'attackerNpCharge: $attackerNpCharge, '
         'defenderNpRate: $defenderNpRate, '
+        'cardAttackNpRate: $cardAttackNpRate, '
         'isNp: $isNp, '
         'chainPos: $chainPos, '
         'currentCardType: $currentCardType, '
@@ -347,6 +357,7 @@ class AttackNpGainParameters {
     return AttackNpGainParameters()
       ..attackerNpCharge = attackerNpCharge
       ..defenderNpRate = defenderNpRate
+      ..cardAttackNpRate = cardAttackNpRate
       ..isNp = isNp
       ..chainPos = chainPos
       ..currentCardType = currentCardType
@@ -363,6 +374,7 @@ class AttackNpGainParameters {
 class DefendNpGainParameters {
   int defenderNpCharge = 0;
   int attackerNpRate = 0;
+  int cardDefNpRate = 1000;
   int npGainBuff = 1000; // npChargeRateMod = defSvt.dropNp
   int defenseNpGainBuff = 1000; // defensiveChargeRateMod = defSvt.dropNpDamage
   bool isOverkill = false;
@@ -372,6 +384,7 @@ class DefendNpGainParameters {
     return 'DefendNpGainParameters: {'
         'defenderNpCharge: $defenderNpCharge, '
         'attackerNpRate: $attackerNpRate, '
+        'cardDefNpRate: $cardDefNpRate, '
         'npGainBuff: $npGainBuff, '
         'defenseNpGainBuff: $defenseNpGainBuff, '
         'isOverkill: $isOverkill'
@@ -382,6 +395,7 @@ class DefendNpGainParameters {
     return DefendNpGainParameters()
       ..defenderNpCharge = defenderNpCharge
       ..attackerNpRate = attackerNpRate
+      ..cardDefNpRate = cardDefNpRate
       ..npGainBuff = npGainBuff
       ..defenseNpGainBuff = defenseNpGainBuff
       ..isOverkill = isOverkill;
@@ -391,6 +405,7 @@ class DefendNpGainParameters {
 class StarParameters {
   int attackerStarGen = 0;
   int defenderStarRate = 0;
+  int cardDropStarRate = 1000;
   bool isNp = false;
   int chainPos = 1;
   CardType currentCardType = CardType.none;
@@ -408,6 +423,7 @@ class StarParameters {
     return 'StarParameters: {'
         'attackerStarGen: $attackerStarGen, '
         'defenderStarRate: $defenderStarRate, '
+        'cardDropStarRate: $cardDropStarRate, '
         'isNp: $isNp, '
         'chainPos: $chainPos, '
         'currentCardType: $currentCardType, '
@@ -426,6 +442,7 @@ class StarParameters {
     return StarParameters()
       ..attackerStarGen = attackerStarGen
       ..defenderStarRate = defenderStarRate
+      ..cardDropStarRate = cardDropStarRate
       ..isNp = isNp
       ..chainPos = chainPos
       ..currentCardType = currentCardType

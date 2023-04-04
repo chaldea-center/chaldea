@@ -157,7 +157,7 @@ void main() async {
 
     expect(battle.canUseNp(1), true);
     expect(battle.canSelectNp(1), false);
-    
+
     battle.criticalStars = 20;
     expect(battle.canUseNp(1), true);
     expect(battle.canSelectNp(1), true);
