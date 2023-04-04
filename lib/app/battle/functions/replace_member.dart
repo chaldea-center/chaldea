@@ -1,3 +1,5 @@
+import 'package:tuple/tuple.dart';
+
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -29,20 +31,22 @@ class ReplaceMember {
     final List<BattleServantData?> onFieldList = battleData.onFieldAllyServants;
     final List<BattleServantData?> backupList = battleData.playerDataList;
 
-    final List<BattleServantData> selections = [];
-    selections.addAll(await getSelectedServants(battleData));
+    final selections = await getSelectedServants(battleData);
+    if (selections == null) return false;
 
-    onFieldList[onFieldList.indexOf(selections.first)] = selections.last;
-    backupList[backupList.indexOf(selections.last)] = selections.first;
+    battleData.recorder.orderChange(onField: selections.item1, backup: selections.item2);
 
-    selections.last.enterField(battleData);
+    onFieldList[onFieldList.indexOf(selections.item1)] = selections.item2;
+    backupList[backupList.indexOf(selections.item2)] = selections.item1;
+
+    selections.item2.enterField(battleData);
 
     return true;
   }
 
-  static Future<List<BattleServantData>> getSelectedServants(final BattleData battleData) async {
-    if (battleData.context?.mounted != true) return [];
-    return showUserConfirm<List<BattleServantData>>(
+  static Future<Tuple2<BattleServantData, BattleServantData>?> getSelectedServants(final BattleData battleData) async {
+    if (battleData.context?.mounted != true) return null;
+    return showUserConfirm<Tuple2<BattleServantData, BattleServantData>>(
       context: battleData.context!,
       builder: (context) => ReplaceMemberSelectionDialog(battleData: battleData),
     );
@@ -153,14 +157,12 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
               return;
             }
 
-            final List<BattleServantData> results = [];
-            results.add(onFieldSelection!);
-            results.add(backupSelection!);
+            final result = Tuple2(onFieldSelection!, backupSelection!);
 
             battleData.battleLogger
                 .action('${S.current.battle_select_battle_servants}: ${onFieldSelection!.lBattleName} - '
                     '${S.current.battle_select_backup_servants}: ${backupSelection!.lBattleName}');
-            Navigator.of(context).pop(results);
+            Navigator.of(context).pop(result);
           },
           child: Text(S.current.confirm),
         )

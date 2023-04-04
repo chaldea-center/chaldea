@@ -34,6 +34,9 @@ class PlayerSvtData {
   int lv = 1; // -1=mlb, 90, 100, 120
   int atkFou = 1000;
   int hpFou = 1000;
+  // for support or custom
+  int? fixedAtk;
+  int? fixedHp;
 
   CraftEssence? ce;
   bool ceLimitBreak = false;

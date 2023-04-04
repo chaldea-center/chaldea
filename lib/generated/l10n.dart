@@ -1031,6 +1031,17 @@ class S {
     );
   }
 
+  /// `Repeatedly click Cammand Card and will be Critical Attack when in red`
+  String get battle_select_critical_card_hint {
+    return Intl.message(
+      'Repeatedly click Cammand Card and will be Critical Attack when in red',
+      name: 'battle_select_critical_card_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Select Effect `
   String get battle_select_effect {
     return Intl.message(
@@ -7922,6 +7933,17 @@ class S {
     );
   }
 
+  /// `Skip`
+  String get skip {
+    return Intl.message(
+      'Skip',
+      name: 'skip',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Battle Count`
   String get solution_battle_count {
     return Intl.message(
@@ -8543,6 +8565,17 @@ class S {
     return Intl.message(
       'Minimize window for close button',
       name: 'system_tray_close_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Target`
+  String get target {
+    return Intl.message(
+      'Target',
+      name: 'target',
       desc: '',
       locale: localeName,
       args: [],

@@ -181,6 +181,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_select_backup_servants": MessageLookupByLibrary.simpleMessage("Select Backup Servants"),
         "battle_select_battle_servants": MessageLookupByLibrary.simpleMessage("Select Battle Servants"),
         "battle_select_card": MessageLookupByLibrary.simpleMessage("Select Card"),
+        "battle_select_critical_card_hint": MessageLookupByLibrary.simpleMessage(
+            "Repeatedly click Cammand Card and will be Critical Attack when in red"),
         "battle_select_effect": MessageLookupByLibrary.simpleMessage("Select Effect "),
         "battle_should_activate": MessageLookupByLibrary.simpleMessage("Should Activate"),
         "battle_simulation": MessageLookupByLibrary.simpleMessage("Battle Simulation"),
@@ -843,6 +845,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skill_rankup": MessageLookupByLibrary.simpleMessage("Skill Upgrade"),
         "skill_up": MessageLookupByLibrary.simpleMessage("Skill Up"),
         "skilled_max10": MessageLookupByLibrary.simpleMessage("Skills Max(310)"),
+        "skip": MessageLookupByLibrary.simpleMessage("Skip"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("Battle Count"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("Target Count"),
         "solution_total_battles_ap": m27,
@@ -903,6 +906,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_switch_slider_dropdown": MessageLookupByLibrary.simpleMessage("Switch Slider/Dropdown"),
         "switch_region": MessageLookupByLibrary.simpleMessage("Switch Region"),
         "system_tray_close_hint": MessageLookupByLibrary.simpleMessage("Minimize window for close button"),
+        "target": MessageLookupByLibrary.simpleMessage("Target"),
         "td_animation": MessageLookupByLibrary.simpleMessage("NP Animation"),
         "td_base_hits_hint": MessageLookupByLibrary.simpleMessage(
             "For the same NP id, different owners may have different card type and hit distributions."),

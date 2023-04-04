@@ -86,6 +86,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       body: Column(
         children: [
           Expanded(child: buildBody()),
+          const SizedBox(height: 4),
           Material(
             elevation: 8,
             color: Theme.of(context).cardColor,
@@ -223,7 +224,29 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           ],
         ),
         const Divider(thickness: 1, height: 8),
-        BattleRecorderPanel(recorder: battleData.recorder),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Text.rich(TextSpan(
+            children: [
+              TextSpan(text: '${S.current.quest_fields}: ', style: const TextStyle(fontWeight: FontWeight.bold)),
+              TextSpan(
+                children: SharedBuilder.traitSpans(
+                  context: context,
+                  traits: battleData.getFieldTraits(),
+                  format: (trait) {
+                    final name = trait.shownName();
+                    if (name.contains(':')) {
+                      return name.split(':').skip(1).join(':');
+                    }
+                    return name;
+                  },
+                ),
+              )
+            ],
+          )),
+        ),
+        const Divider(thickness: 1, height: 8),
+        BattleRecorderPanel(battleData: battleData),
       ],
     );
   }
@@ -339,7 +362,9 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         'HP: ${svt.hp}',
         svt.isPlayer
             ? 'NP: ${(svt.np / 100).toStringAsFixed(2)}'
-            : '${S.current.info_charge}: ${svt.npLineCount}/${svt.niceEnemy!.chargeTurn}',
+            : svt.niceEnemy!.chargeTurn != 0
+                ? '${S.current.info_charge}: ${svt.npLineCount}/${svt.niceEnemy!.chargeTurn}'
+                : '${S.current.info_charge}: -',
       ].map((e) => AutoSizeText(e, maxLines: 1, minFontSize: 6, style: Theme.of(context).textTheme.bodySmall)).toList(),
     ));
 
@@ -410,24 +435,6 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                 children: [
                   TextSpan(text: '${S.current.critical_star}: ', style: const TextStyle(fontWeight: FontWeight.bold)),
                   TextSpan(text: '${battleData.criticalStars.toStringAsFixed(3)}  '),
-                ],
-              )),
-              Text.rich(TextSpan(
-                children: [
-                  TextSpan(text: '${S.current.quest_fields}: ', style: const TextStyle(fontWeight: FontWeight.bold)),
-                  TextSpan(
-                    children: SharedBuilder.traitSpans(
-                      context: context,
-                      traits: battleData.getFieldTraits(),
-                      format: (trait) {
-                        final name = trait.shownName();
-                        if (name.contains(':')) {
-                          return name.split(':').skip(1).join(':');
-                        }
-                        return name;
-                      },
-                    ),
-                  )
                 ],
               )),
             ],
@@ -678,6 +685,11 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
           },
         ),
       ],
+    ));
+    children.add(Text(
+      S.current.battle_select_critical_card_hint,
+      style: TextStyle(color: Theme.of(context).colorScheme.error),
+      textScaleFactor: 0.9,
     ));
 
     return Column(

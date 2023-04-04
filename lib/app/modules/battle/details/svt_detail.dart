@@ -6,18 +6,20 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/app/battle/models/svt_entity.dart';
+import 'package:chaldea/app/descriptors/func/func.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/json_viewer/json_viewer.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../enemy/quest_enemy.dart';
 
 class BattleSvtDetail extends StatefulWidget {
   final BattleServantData svt;
-  final BattleData battleData;
+  final BattleData? battleData;
   const BattleSvtDetail({super.key, required this.svt, required this.battleData});
 
   @override
@@ -29,7 +31,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
   late final TabController _tabController;
 
   BattleServantData get svt => widget.svt;
-  BattleData get battleData => widget.battleData;
+  BattleData? get battleData => widget.battleData;
 
   @override
   void initState() {
@@ -56,7 +58,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
           removeTop: true,
           child: TabBarView(
             controller: _tabController,
-            children: [infoTab, buffTab],
+            children: [buffTab, infoTab],
           ),
         ),
       ),
@@ -132,7 +134,8 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
           Text(
             'No.${svt.niceEnemy?.shownId ?? svt.niceSvt?.shownId ?? svt.svtId}'
             '  ${Transl.svtClassId(svt.svtClass.id).l}'
-            '\nATK ${svt.atk}  HP ${svt.hp}',
+            '\nATK ${svt.atk}  HP ${svt.hp}'
+            '\nPosition ${svt.index + 1}',
             style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
           ),
           const SizedBox(height: 4),
@@ -160,7 +163,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         indicatorSize: TabBarIndicatorSize.tab,
         labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
         // unselectedLabelColor: Colors.grey,
-        tabs: [Tab(text: S.current.card_info), const Tab(text: 'Buff')],
+        tabs: [const Tab(text: 'Buff'), Tab(text: S.current.card_info)],
         indicatorColor: Theme.of(context).isDarkMode ? null : Colors.white.withAlpha(210),
       ),
     ));
@@ -184,7 +187,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
       shiftNpcs.add(Text('Init HP ${enemy?.hp ?? "???"}', style: enemy == null ? null : curEnemyStyle));
     }
     for (final npcId in svt.shiftNpcIds) {
-      final enemy = battleData.enemyDecks[DeckType.shift]?.firstWhereOrNull((e) => e.npcId == npcId);
+      final enemy = battleData?.enemyDecks[DeckType.shift]?.firstWhereOrNull((e) => e.npcId == npcId);
       if (enemy == null) {
         shiftNpcs.add(Text('NPC $npcId'));
       } else {
@@ -254,7 +257,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
     ];
 
     children.add(DividerWithTitle(title: S.current.noble_phantasm, indent: 16, padding: const EdgeInsets.only(top: 8)));
-    final td = svt.getCurrentNP(battleData);
+    final td = battleData == null ? svt.td : svt.getCurrentNP(battleData!);
     children.add(SimpleAccordion(
       headerBuilder: (context, _) {
         return ListTile(
@@ -325,9 +328,22 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
   }
 
   Widget buildBuff(BuffData buff) {
+    final valueSpans = <InlineSpan>[
+      if (buff.count >= 0) TextSpan(text: Transl.special.funcValCountTimes(buff.count)),
+      if (buff.turn >= 0) TextSpan(text: Transl.special.funcValTurns(buff.turn)),
+      // else S.current.battle_buff_permanent,
+      if (buff.param != 0 && !kBuffValueTriggerTypes.containsKey(buff.buff.type))
+        TextSpan(
+          text: Buff.formatRate(buff.buff.type, buff.param),
+          style: ((kBuffActionPercentTypes[buff.buff.buffAction] ?? kBuffTypePercentType[buff.buff.type]) == null)
+              ? const TextStyle(fontStyle: FontStyle.italic)
+              : null,
+        ),
+    ];
+    if (valueSpans.isEmpty) valueSpans.add(const TextSpan(text: ' - '));
     return ListTile(
       dense: true,
-      horizontalTitleGap: 8,
+      horizontalTitleGap: 4,
       leading: Container(
         decoration: buff.irremovable
             ? BoxDecoration(
@@ -338,15 +354,41 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         padding: const EdgeInsets.all(1),
         child: db.getIconImage(buff.buff.icon, width: 24, aspectRatio: 1),
       ),
-      title: Text(buff.buff.lName.l),
+      title: Text(buff.buff.name.isEmpty
+          ? FuncDescriptor.buildBasicFuncText(NiceFunction(
+              funcId: 0,
+              funcType: FuncType.addState,
+              funcTargetType: FuncTargetType.self,
+              funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+              buffs: [buff.buff],
+              svals: [DataVals(buff.vals.toJson(sort: false)..['Value'] = buff.param)],
+            )).toString()
+          : buff.buff.lName.l),
       subtitle: Text(buff.buff.lDetail.l),
-      trailing: Text(
-        <String>[
-          if (buff.count >= 0) Transl.special.funcValCountTimes(buff.count),
-          if (buff.turn >= 0) Transl.special.funcValTurns(buff.turn) else S.current.battle_buff_permanent,
-        ].join('\n'),
-        textAlign: TextAlign.end,
-        textScaleFactor: 0.9,
+      trailing: InkWell(
+        onTap: () {
+          showDialog(
+            context: context,
+            useRootNavigator: false,
+            builder: (context) {
+              return Theme(
+                data: ThemeData.light(),
+                child: SimpleCancelOkDialog(
+                  title: const Text('Data Vals'),
+                  content: JsonViewer(buff.vals.toJson(sort: false), defaultOpen: true),
+                  scrollable: true,
+                  hideCancel: true,
+                  contentPadding: const EdgeInsetsDirectional.fromSTEB(10.0, 10.0, 12.0, 24.0),
+                ),
+              );
+            },
+          );
+        },
+        child: Text.rich(
+          TextSpan(children: divideList(valueSpans, const TextSpan(text: '\n'))),
+          textAlign: TextAlign.end,
+          textScaleFactor: 0.9,
+        ),
       ),
       onTap: () {
         buff.buff.routeTo();

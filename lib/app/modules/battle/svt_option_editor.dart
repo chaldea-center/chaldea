@@ -998,7 +998,10 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     playerSvtData
       ..limitCount = support.limit.limitCount
       ..hpFou = 0
-      ..atkFou = 0;
+      ..atkFou = 0
+      ..lv = support.lv
+      ..fixedHp = support.hp
+      ..fixedAtk = support.atk;
     // skill & td
     svt.skills = support.skills.skills.whereType<NiceSkill>().toList();
     playerSvtData.skills = support.skills.skills;

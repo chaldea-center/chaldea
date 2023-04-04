@@ -246,6 +246,7 @@ class BattleData {
 
   Future<bool> nextWave() async {
     if (niceQuest?.stages.every((s) => s.wave < waveCount + 1) == true) {
+      recorder.message('End');
       return false;
     }
     waveCount += 1;
@@ -539,7 +540,7 @@ class BattleData {
           effectiveness += await svt.getBuffValueOnAction(this, BuffAction.masterSkillValueUp);
         }
         await masterSkillInfo[skillIndex].activate(this, effectiveness: effectiveness != 1000 ? effectiveness : null);
-        recorder.skill(battleData: this, activator: null, skill: masterSkillInfo[skillIndex]);
+        recorder.skill(battleData: this, activator: null, skill: masterSkillInfo[skillIndex], fromPlayer: true);
         return;
       },
     );
@@ -565,7 +566,8 @@ class BattleData {
             actions.map((action) => action.actor).toSet().length == 1;
         if (isBraveChain) {
           final actor = actions[0].actor;
-          actions.add(CombatAction(actor, actor.getExtraCard(this)!));
+          final extraCard = actor.getExtraCard(this);
+          if (extraCard != null) actions.add(CombatAction(actor, extraCard));
         }
 
         final CardType firstCardType = actions[0].isValid(this) ? actions[0].cardData.cardType : CardType.blank;
@@ -738,12 +740,38 @@ class BattleData {
     if (isBattleFinished) {
       return;
     }
+    final skill = NiceSkill(
+      id: 10000000001,
+      type: SkillType.active,
+      name: S.current.battle_charge_party,
+      unmodifiedDetail: S.current.battle_charge_party,
+      coolDown: [0],
+      functions: [
+        NiceFunction(
+          funcId: 1,
+          funcType: FuncType.gainNp,
+          funcTargetType: FuncTargetType.ptAll,
+          funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+          svals: [
+            DataVals({
+              'Rate': 5000,
+              'Value': 10000,
+              'Unaffected': 1,
+            })
+          ],
+        )
+      ],
+    );
 
     battleLogger.action(S.current.battle_charge_party);
+
     return recordError(
       save: true,
       action: S.current.battle_charge_party,
-      task: () async => GainNP.gainNP(this, DataVals({'Rate': 5000, 'Value': 10000}), nonnullAllies),
+      task: () async {
+        await BattleSkillInfoData.activateSkill(this, skill, 1, defaultToAlly: true);
+        recorder.skill(battleData: this, activator: null, skill: BattleSkillInfoData([], skill), fromPlayer: true);
+      },
     );
   }
 
@@ -775,7 +803,10 @@ class BattleData {
     return recordError(
       save: true,
       action: csRepairHpName,
-      task: () => BattleSkillInfoData.activateSkill(this, skill, 1, defaultToAlly: true),
+      task: () async {
+        await BattleSkillInfoData.activateSkill(this, skill, 1, defaultToAlly: true);
+        recorder.skill(battleData: this, activator: null, skill: BattleSkillInfoData([], skill), fromPlayer: true);
+      },
     );
   }
 
@@ -809,7 +840,10 @@ class BattleData {
     return recordError(
       save: true,
       action: csReleaseNpName,
-      task: () => BattleSkillInfoData.activateSkill(this, skill, 1, defaultToAlly: true),
+      task: () async {
+        await BattleSkillInfoData.activateSkill(this, skill, 1, defaultToAlly: true);
+        recorder.skill(battleData: this, activator: null, skill: BattleSkillInfoData([], skill), fromPlayer: true);
+      },
     );
   }
 
@@ -929,10 +963,10 @@ class BattleData {
   Future<bool> canActivateFunction(final int activationRate) async {
     final function = curFunc!;
     final fieldTraitString = function.funcquestTvals.isNotEmpty
-        ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName())}'
+        ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName()).toList()}'
         : '';
     final targetTraitString = function.functvals.isNotEmpty
-        ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName())}'
+        ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName()).toList()}'
         : '';
     final targetString = target != null ? ' vs ${target!.lBattleName}' : '';
     final funcString = '${activator?.lBattleName ?? S.current.battle_no_source} - '

@@ -43,13 +43,9 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
     skillIdTextController.dispose();
   }
 
-  static const _validRegions = [Region.jp, Region.na];
 
   @override
   Widget build(final BuildContext context) {
-    if (region != null && !_validRegions.contains(region)) {
-      region = Region.jp;
-    }
     errorMsg = skill == null ? S.current.battle_no_skill_selected : null;
     if (skill != null) skillLv = min(skillLv, skill!.functions.first.svals.length);
     final List<BattleServantData> actors = isAlly ? widget.battleData.nonnullAllies : widget.battleData.nonnullEnemies;
@@ -85,7 +81,7 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                       isDense: true,
                       value: region,
                       items: [
-                        for (final r in _validRegions)
+                        for (final r in Region.values)
                           DropdownMenuItem(value: r, child: Text(r.localName, textScaleFactor: 0.9)),
                       ],
                       hint: Text(Region.jp.localName),
@@ -121,6 +117,7 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                     showEnemy: true,
                     showNone: true,
                     jumpToDetail: false,
+                    level: skillLv,
                   ),
                 if (skill != null && skill!.maxLv > 1)
                   ServantOptionEditPage.buildSlider(
@@ -204,9 +201,11 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                                   defaultToAlly: isAlly,
                                 );
                                 widget.battleData.recorder.skill(
-                                    battleData: widget.battleData,
-                                    activator: activator,
-                                    skill: BattleSkillInfoData([], skill!));
+                                  battleData: widget.battleData,
+                                  activator: activator,
+                                  skill: BattleSkillInfoData([], skill!),
+                                  fromPlayer: isAlly,
+                                );
                               },
                             );
                             if (mounted) Navigator.of(context).pop(skill);

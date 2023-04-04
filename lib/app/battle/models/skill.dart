@@ -30,7 +30,17 @@ class BattleSkillInfoData {
       : rankUp > rankUps!.length
           ? rankUps!.last
           : rankUps![rankUp - 1];
-  int skillLv = 0;
+  int _skillLv = 0;
+  int get skillLv {
+    final maxLv = proximateSkill?.maxLv;
+    if (maxLv == null || maxLv == 0) return _skillLv;
+    return _skillLv.clamp(1, maxLv);
+  }
+
+  set skillLv(int v) {
+    _skillLv = v;
+  }
+
   SkillScript? skillScript;
   int chargeTurn = 0;
   bool isCommandCode;

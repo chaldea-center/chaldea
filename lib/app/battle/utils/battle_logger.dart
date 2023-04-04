@@ -46,6 +46,10 @@ class BattleRecordManager {
     return BattleRecordManager()..records = records.toList();
   }
 
+  void message(String msg) {
+    records.add(BattleMessageRecord(msg));
+  }
+
   void progressWave(int wave) {
     records.add(BattleProgressWaveRecord(wave));
   }
@@ -62,13 +66,19 @@ class BattleRecordManager {
     required BattleData battleData,
     required BattleServantData? activator,
     required BattleSkillInfoData skill,
+    required bool fromPlayer,
   }) {
     records.add(BattleSkillRecord(
       activator: activator,
-      ally: battleData.targetedAlly,
-      enemy: battleData.targetedEnemy,
+      targetPlayerSvt: battleData.targetedAlly,
+      targetEnemySvt: battleData.targetedEnemy,
       skill: skill,
+      fromPlayer: fromPlayer,
     ));
+  }
+
+  void orderChange({required BattleServantData onField, required BattleServantData backup}) {
+    records.add(BattleOrderChangeRecord(onField: onField, backup: backup));
   }
 
   BattleServantData? _attacker;
@@ -96,14 +106,18 @@ class BattleRecordManager {
 /// Only record user visible actions
 /// make sealed when dart 2.19 enabled
 abstract class BattleRecord {
-  final String? message;
-  BattleRecord({this.message});
+  BattleRecord();
+}
+
+class BattleMessageRecord extends BattleRecord {
+  final String message;
+  BattleMessageRecord(this.message);
 }
 
 class BattleSkipWaveRecord extends BattleRecord {
   // skip [wave], then start [wave+1]
   final int wave;
-  BattleSkipWaveRecord(this.wave, {super.message});
+  BattleSkipWaveRecord(this.wave);
 
   @override
   String toString() {
@@ -114,7 +128,7 @@ class BattleSkipWaveRecord extends BattleRecord {
 class BattleProgressWaveRecord extends BattleRecord {
   // start [wave]
   final int wave;
-  BattleProgressWaveRecord(this.wave, {super.message});
+  BattleProgressWaveRecord(this.wave);
 
   @override
   String toString() {
@@ -125,7 +139,7 @@ class BattleProgressWaveRecord extends BattleRecord {
 class BattleProgressTurnRecord extends BattleRecord {
   // start [wave]
   final int turn;
-  BattleProgressTurnRecord(this.turn, {super.message});
+  BattleProgressTurnRecord(this.turn);
 
   @override
   String toString() {
@@ -135,19 +149,20 @@ class BattleProgressTurnRecord extends BattleRecord {
 
 class BattleSkillRecord extends BattleRecord {
   final BattleServantData? activator;
-  final BattleServantData? ally;
-  final BattleServantData? enemy;
+  final BattleServantData? targetPlayerSvt;
+  final BattleServantData? targetEnemySvt;
   final BattleSkillInfoData skill;
+  final bool fromPlayer;
 
   BattleSkillRecord({
     required BattleServantData? activator,
-    required BattleServantData? ally,
-    required BattleServantData? enemy,
+    required BattleServantData? targetPlayerSvt,
+    required BattleServantData? targetEnemySvt,
     required BattleSkillInfoData skill,
-    super.message,
+    required this.fromPlayer,
   })  : activator = activator?.copy(),
-        ally = ally?.copy(),
-        enemy = enemy?.copy(),
+        targetPlayerSvt = targetPlayerSvt?.copy(),
+        targetEnemySvt = targetEnemySvt?.copy(),
         skill = skill.copy();
 
   @override
@@ -156,8 +171,21 @@ class BattleSkillRecord extends BattleRecord {
   }
 }
 
+class BattleOrderChangeRecord extends BattleRecord {
+  final BattleServantData onField;
+  final BattleServantData backup;
+  BattleOrderChangeRecord({
+    required this.onField,
+    required this.backup,
+  });
+  @override
+  String toString() {
+    return 'Order Change: ${onField.lBattleName} ↔ ${backup.lBattleName}';
+  }
+}
+
 class BattleAttackRecord extends BattleRecord {
-  final BattleServantData activator;
+  final BattleServantData attacker;
   CommandCardData? card;
   final List<AttackResultDetail> targets;
   final int damage;
@@ -173,12 +201,11 @@ class BattleAttackRecord extends BattleRecord {
     required this.attackNp,
     required this.defenseNp,
     required this.star,
-    super.message,
-  })  : activator = activator.copy(),
+  })  : attacker = activator.copy(),
         card = card?.copy();
   @override
   String toString() {
-    return '${activator.lBattleName} Play ${card?.cardType.name.toTitle()} Card.'
+    return '${attacker.lBattleName} Play ${card?.cardType.name.toTitle()} Card.'
         ' damage=$damage, NP=$attackNp, defNp=$defenseNp, star=$star';
   }
 }

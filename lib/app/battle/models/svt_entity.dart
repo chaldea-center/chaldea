@@ -138,10 +138,9 @@ class BattleServantData {
       ..level = settings.lv
       ..td = settings.td
       ..ascensionPhase = settings.limitCount
-      ..hp = (settings.svt!.hpGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.hpFou
-      ..maxHp = (settings.svt!.hpGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.hpFou
-      ..atk = (settings.svt!.atkGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.atkFou;
-
+      ..maxHp = settings.fixedHp ?? ((settings.svt!.hpGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.hpFou)
+      ..atk = settings.fixedAtk ?? ((settings.svt!.atkGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.atkFou);
+    svt.hp = svt.maxHp;
     if (settings.ce != null) {
       svt.equip = BattleCEData(settings.ce!, settings.ceLimitBreak, settings.ceLv);
       svt.hp += svt.equip!.hp;
@@ -539,7 +538,7 @@ class BattleServantData {
     skillInfo.setRankUp(rankUp);
 
     await skillInfo.activate(battleData);
-    battleData.recorder.skill(battleData: battleData, activator: this, skill: skillInfo);
+    battleData.recorder.skill(battleData: battleData, activator: this, skill: skillInfo, fromPlayer: true);
     battleData.unsetActivator();
   }
 
