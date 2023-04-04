@@ -243,6 +243,24 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                   },
                 ),
                 PopupMenuItem(
+                  child: Text(S.current.favorite_all_shown_svt),
+                  onTap: () async {
+                    await null;
+                    if (!mounted) return;
+                    SimpleCancelOkDialog(
+                      title: Text(S.current.confirm),
+                      content: Text('${S.current.favorite_all_shown_svt}\n${S.current.total} ${shownList.length}'),
+                      onTapOk: () {
+                        for (final svt in shownList) {
+                          svt.status.favorite = true;
+                        }
+                        db.itemCenter.updateSvts();
+                        if (mounted) setState(() {});
+                      },
+                    ).showDialog(context);
+                  },
+                ),
+                PopupMenuItem(
                   enabled: SplitRoute.isSplit(context),
                   onTap: () {
                     db.settings.display.planPageFullScreen = !db.settings.display.planPageFullScreen;

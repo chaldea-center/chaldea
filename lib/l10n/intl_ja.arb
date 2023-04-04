@@ -295,6 +295,7 @@
   "failed": "失敗",
   "faq": "FAQ",
   "favorite": "フォロー",
+  "favorite_all_shown_svt": null,
   "feedback_add_attachments": "e.g. スクショとその他のファイル",
   "feedback_contact": "連絡先情報",
   "feedback_content_hint": "フィードバックと提案",

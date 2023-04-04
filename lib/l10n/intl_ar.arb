@@ -295,6 +295,7 @@
   "failed": "فشل",
   "faq": "FAQ",
   "favorite": "مفضل",
+  "favorite_all_shown_svt": null,
   "feedback_add_attachments": "أضف لقطات شاشة او ملف مرفق",
   "feedback_contact": "معلومات التواصل",
   "feedback_content_hint": "المرجعية والاقتراحات",

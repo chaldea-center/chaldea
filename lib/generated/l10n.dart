@@ -3308,6 +3308,17 @@ class S {
     );
   }
 
+  /// `Favorite All Shown Svts`
+  String get favorite_all_shown_svt {
+    return Intl.message(
+      'Favorite All Shown Svts',
+      name: 'favorite_all_shown_svt',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `e.g. screenshots, files.`
   String get feedback_add_attachments {
     return Intl.message(

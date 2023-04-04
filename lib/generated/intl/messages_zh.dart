@@ -383,6 +383,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "failed": MessageLookupByLibrary.simpleMessage("失败"),
         "faq": MessageLookupByLibrary.simpleMessage("FAQ"),
         "favorite": MessageLookupByLibrary.simpleMessage("关注"),
+        "favorite_all_shown_svt": MessageLookupByLibrary.simpleMessage("关注全部已显示从者"),
         "feedback_add_attachments": MessageLookupByLibrary.simpleMessage("e.g. 截图等文件"),
         "feedback_contact": MessageLookupByLibrary.simpleMessage("联系方式"),
         "feedback_content_hint": MessageLookupByLibrary.simpleMessage("反馈与建议"),

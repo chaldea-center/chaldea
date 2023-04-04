@@ -295,6 +295,7 @@
   "failed": "실패",
   "faq": "FAQ",
   "favorite": "즐겨찾기",
+  "favorite_all_shown_svt": null,
   "feedback_add_attachments": "e.g. 스크린샷, 기타 파일",
   "feedback_contact": "연락처 정보",
   "feedback_content_hint": "피드백 또는 제안",

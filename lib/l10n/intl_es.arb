@@ -295,6 +295,7 @@
   "failed": "Falló",
   "faq": "FAQ",
   "favorite": "Favorito",
+  "favorite_all_shown_svt": null,
   "feedback_add_attachments": "Ej. capturas de pantalla, archivos",
   "feedback_contact": "Información de contacto",
   "feedback_content_hint": "Comentarios o Sugerencias",

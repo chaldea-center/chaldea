@@ -7,7 +7,6 @@ There are plenty of work need to do.
 ### High Priority
 
 - [ ] catch error for user interaction (skill/attack)
-- [ ] add battle records to button bar
 
 ### Ally Function Logic:
 
@@ -53,6 +52,7 @@ There are plenty of work need to do.
 - [ ] Enemy shift target may not exist
 - [ ] cardDetail.damageRate/tdRate (U-Olga Marie buster/extra attack on all enemies)
 - [ ] dispBreakShift
+- [ ] shiftGuts(Ratio)
 
 #### Unknowns:
 
@@ -82,6 +82,7 @@ There are plenty of work need to do.
       buff.parma=vals.Value+pointBuff.value
 - [ ] Custom skill! (passive or active)
 - [ ] Player side `allyTargetIndex` could be null or -1, let user to choose manually
+- [ ] skill cd/sealed/cond hint: sealed(×)>cd(n)>cond(*, only shown when cd=0&not sealed)
 
 ### NPC Simulation
 
@@ -98,6 +99,7 @@ There are plenty of work need to do.
 
 ## Misc
 
+- [ ] Extra Mission descriptor
 - [ ] Integrate Sentry
 - [ ] Adding crash log review
 - [ ] command card: add svt assets

@@ -62,6 +62,21 @@ class ImageActions {
                 child: const Icon(Icons.copy, size: 18),
               ),
             ),
+          if (data != null || srcFp != null)
+            ListTile(
+              leading: const Icon(Icons.preview),
+              title: Text(S.current.preview),
+              onTap: () {
+                ImageProvider? provider;
+                if (data != null) {
+                  provider = MemoryImage(data);
+                } else if (!kIsWeb && srcFp != null) {
+                  provider = FileImage(File(srcFp));
+                }
+                if (provider == null) return;
+                router.pushPage(FullscreenImageViewer(children: [Image(image: provider)]));
+              },
+            ),
           if (url != null && RegExp(r'/CharaFigure/\d+/').hasMatch(url))
             ListTile(
               leading: const Icon(Icons.face_retouching_natural_outlined),

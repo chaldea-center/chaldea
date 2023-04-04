@@ -401,6 +401,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "failed": MessageLookupByLibrary.simpleMessage("Failed"),
         "faq": MessageLookupByLibrary.simpleMessage("FAQ"),
         "favorite": MessageLookupByLibrary.simpleMessage("Favorite"),
+        "favorite_all_shown_svt": MessageLookupByLibrary.simpleMessage("Favorite All Shown Svts"),
         "feedback_add_attachments": MessageLookupByLibrary.simpleMessage("e.g. screenshots, files."),
         "feedback_contact": MessageLookupByLibrary.simpleMessage("Contact information"),
         "feedback_content_hint": MessageLookupByLibrary.simpleMessage("Feedback or Suggestion"),

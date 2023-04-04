@@ -3,6 +3,7 @@
 - Drag svt/ce when building team
 - Ping preferred svt/ce to top when building team
 - Add command spell effects
+- Add battle records
 
 # 2.3.0
 
