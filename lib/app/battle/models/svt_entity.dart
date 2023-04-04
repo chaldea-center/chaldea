@@ -667,11 +667,36 @@ class BattleServantData {
     battleData.unsetActivator();
   }
 
+  Future<int?> getConfirmationBuffValueOnAction(final BattleData battleData, final BuffAction buffAction) async {
+    final actionDetails = ConstData.buffActions[buffAction];
+    if (actionDetails == null) {
+      return null;
+    }
+    final isTarget = battleData.target == this;
+
+    for (final buff in collectBuffsPerAction(battleBuff.allBuffs, buffAction)) {
+      if (await buff.shouldActivateBuff(battleData, isTarget)) {
+        buff.setUsed();
+        final value = buff.getValue(battleData, isTarget);
+        if (actionDetails.plusTypes.contains(buff.buff.type)) {
+          return value;
+        } else {
+          return -value;
+        }
+      }
+    }
+    return null;
+  }
+
   Future<int> getBuffValueOnAction(final BattleData battleData, final BuffAction buffAction) async {
     final actionDetails = ConstData.buffActions[buffAction];
+    if (actionDetails == null) {
+      return 0;
+    }
+
     final isTarget = battleData.target == this;
     int totalVal = 0;
-    int maxRate = Maths.min(actionDetails!.maxRate);
+    int maxRate = Maths.min(actionDetails.maxRate);
 
     for (final buff in collectBuffsPerAction(battleBuff.allBuffs, buffAction)) {
       if (await buff.shouldActivateBuff(battleData, isTarget)) {

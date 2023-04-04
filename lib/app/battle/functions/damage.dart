@@ -181,10 +181,12 @@ class Damage {
 
       int overkillCount = 0;
       final result = DamageResult();
-      if (await activator.hasBuffOnAction(battleData, BuffAction.multiattack)) {
+      final multiAttack = await activator.getConfirmationBuffValueOnAction(battleData, BuffAction.multiattack);
+      if (multiAttack != null && multiAttack > 0) {
         currentCard.cardDetail.hitsDistribution.forEach((hit) {
-          result.cardHits.add(hit);
-          result.cardHits.add(hit);
+          for (int count = 1; count <= multiAttack; count += 1) {
+            result.cardHits.add(hit);
+          }
         });
       } else {
         result.cardHits.addAll(currentCard.cardDetail.hitsDistribution);
