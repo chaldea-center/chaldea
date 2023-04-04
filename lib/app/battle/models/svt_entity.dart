@@ -254,7 +254,9 @@ class BattleServantData {
     final List<CommandCardData> builtCards = [];
     for (int i = 0; i < cards.length; i += 1) {
       final cardType = cards[i];
-      final card = CommandCardData(cardType, niceSvt!.cardDetails[cardType]!)
+      final detail = niceSvt!.cardDetails[cardType];
+      if (detail == null) continue;
+      final card = CommandCardData(cardType, detail)
         ..cardIndex = i
         ..isNP = false
         ..cardStrengthen = playerSvtData!.cardStrengthens[i]

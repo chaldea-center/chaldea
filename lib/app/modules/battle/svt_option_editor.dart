@@ -978,7 +978,6 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       final releasedTds = tds
           .where((td) => db.gameData.mappingData.tdPriority[selectedSvt.id]?.ofRegion(region)?[td.id] != null)
           .toList();
-      print(['TD', releasedTds.length, tds.length]);
       playerSvtData.td = releasedTds.lastOrNull ?? tds.lastOrNull;
     } else {
       playerSvtData.td = tds.lastOrNull;
@@ -991,7 +990,6 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             .where(
                 (skill) => db.gameData.mappingData.skillPriority[selectedSvt.id]?.ofRegion(region)?[skill.id] != null)
             .toList();
-        print(['Skill $skillNum', releaseSkills.length, skills.length]);
         playerSvtData.skills[skillNum - 1] = releaseSkills.lastOrNull ?? skills.lastOrNull;
       } else {
         playerSvtData.skills[skillNum - 1] = skills.lastOrNull;

@@ -6,7 +6,7 @@ There are plenty of work need to do.
 
 ### High Priority
 
-- [ ] catch error for user interaction (skill/attack)
+- [x] catch error for user interaction (skill/attack)
 
 ### Ally Function Logic:
 
@@ -18,7 +18,7 @@ There are plenty of work need to do.
 - [ ] Move all checkTrait logic into battle and remove individual checkTrait methods in models
 - [ ] There is a bug that will reset accumulation damage when deathEffect is triggered
       not verified for gutsEffect
-- [ ] Damage should remove buff with buffScript field damageRelease: 1
+- [x] Damage should remove buff with buffScript field damageRelease: 1
 - [ ] FuncType damageNpCounter
 - [ ] FuncType damageNpRate Target == 0 is target, verify if Target ==1 is activator?
 - [ ] FuncType gainHpPer figure out if Percentage heal benefits from healGrant buff

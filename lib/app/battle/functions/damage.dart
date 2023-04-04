@@ -266,7 +266,9 @@ class Damage {
 
       battleData.changeStar(toModifier(Maths.sum(result.stars)));
 
-      target.removeBuffWithTrait(NiceTrait(id: Trait.buffSleep.id));
+      target.battleBuff.activeList.removeWhere((buff) => buff.buff.script?.DamageRelease == 1);
+      // passive should also be checked?
+      target.battleBuff.passiveList.removeWhere((buff) => buff.buff.script?.DamageRelease == 1);
 
       target.addAccumulationDamage(totalDamage - remainingDamage);
       target.attacked = true;
