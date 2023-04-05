@@ -197,7 +197,7 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                                   widget.battleData,
                                   skill!,
                                   skillLv,
-                                  defaultToAlly: isAlly,
+                                  defaultToPlayer: isAlly,
                                 );
                                 widget.battleData.recorder.skill(
                                   battleData: widget.battleData,

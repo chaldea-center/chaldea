@@ -787,7 +787,7 @@ class BattleData {
       save: true,
       action: S.current.battle_charge_party,
       task: () async {
-        await BattleSkillInfoData.activateSkill(this, skill, 1, defaultToAlly: true);
+        await BattleSkillInfoData.activateSkill(this, skill, 1, defaultToPlayer: true);
         recorder.skill(battleData: this, activator: null, skill: BattleSkillInfoData([], skill), fromPlayer: true);
       },
     );
@@ -822,7 +822,7 @@ class BattleData {
       save: true,
       action: csRepairHpName,
       task: () async {
-        await BattleSkillInfoData.activateSkill(this, skill, 1, defaultToAlly: true);
+        await BattleSkillInfoData.activateSkill(this, skill, 1, defaultToPlayer: true);
         recorder.skill(battleData: this, activator: null, skill: BattleSkillInfoData([], skill), fromPlayer: true);
       },
     );
@@ -859,7 +859,7 @@ class BattleData {
       save: true,
       action: csReleaseNpName,
       task: () async {
-        await BattleSkillInfoData.activateSkill(this, skill, 1, defaultToAlly: true);
+        await BattleSkillInfoData.activateSkill(this, skill, 1, defaultToPlayer: true);
         recorder.skill(battleData: this, activator: null, skill: BattleSkillInfoData([], skill), fromPlayer: true);
       },
     );

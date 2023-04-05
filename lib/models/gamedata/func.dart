@@ -384,11 +384,11 @@ class BaseFunction with RouteInfo {
   Transl<String, String> get lPopupText => Transl.funcPopuptextBase(funcPopupText, funcType);
 
   bool get isPlayerOnlyFunc =>
-      (funcTargetTeam == FuncApplyTarget.enemy && funcTargetType.isEnemy) ||
-      (funcTargetTeam == FuncApplyTarget.player && funcTargetType.isAlly);
+      (funcTargetTeam == FuncApplyTarget.enemy && funcTargetType.canTargetEnemy) ||
+      (funcTargetTeam == FuncApplyTarget.player && funcTargetType.canTargetAlly);
   bool get isEnemyOnlyFunc =>
-      (funcTargetTeam == FuncApplyTarget.enemy && funcTargetType.isAlly) ||
-      (funcTargetTeam == FuncApplyTarget.player && funcTargetType.isEnemy);
+      (funcTargetTeam == FuncApplyTarget.enemy && funcTargetType.canTargetAlly) ||
+      (funcTargetTeam == FuncApplyTarget.player && funcTargetType.canTargetEnemy);
   EffectTarget get effectTarget => EffectTarget.fromFunc(funcTargetType);
 }
 
@@ -561,10 +561,15 @@ enum FuncTargetType {
   ptOneHpLowestRate,
   ;
 
-  bool get isEnemy => name.toLowerCase().startsWith('enemy');
+  bool get isEnemy => name.toLowerCase().startsWith('enemy') && this != FuncTargetType.enemyOneNoTargetNoAction;
   bool get isAlly =>
       name.toLowerCase().startsWith('pt') ||
       const [FuncTargetType.self, FuncTargetType.commandTypeSelfTreasureDevice].contains(this);
+  bool get isField => this == FuncTargetType.fieldOther;
+  bool get isDynamic => this == FuncTargetType.enemyOneNoTargetNoAction;
+
+  bool get canTargetAlly => isAlly || isField || isDynamic;
+  bool get canTargetEnemy => isEnemy || isField || isDynamic;
 }
 
 enum FuncApplyTarget {

@@ -44,25 +44,46 @@ void main() async {
     test('FuncApplyTarget.enemy', () {
       final BaseFunction enemyFunction =
           BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.enemy);
-      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, ally), isFalse);
-      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, enemy), isTrue);
-      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, null), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, ally.isPlayer), isFalse);
+      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, enemy.isPlayer), isTrue);
     });
 
     test('FuncApplyTarget.player', () {
       final BaseFunction allyFunction =
           BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.player);
-      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunction, ally), isTrue);
-      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunction, enemy), isFalse);
-      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunction, null), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunction, ally.isPlayer), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunction, enemy.isPlayer), isFalse);
     });
 
     test('FuncApplyTarget.playerAndEnemy', () {
       final BaseFunction playerAndEnemyFunction =
           BaseFunction(funcId: -1, funcTargetType: FuncTargetType.self, funcTargetTeam: FuncApplyTarget.playerAndEnemy);
-      expect(FunctionExecutor.validateFunctionTargetTeam(playerAndEnemyFunction, ally), isTrue);
-      expect(FunctionExecutor.validateFunctionTargetTeam(playerAndEnemyFunction, enemy), isTrue);
-      expect(FunctionExecutor.validateFunctionTargetTeam(playerAndEnemyFunction, null), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(playerAndEnemyFunction, ally.isPlayer), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(playerAndEnemyFunction, enemy.isPlayer), isTrue);
+    });
+
+    test('FuncTargetType.fieldOther', () {
+      final BaseFunction allyFunction =
+          BaseFunction(funcId: -1, funcTargetType: FuncTargetType.fieldOther, funcTargetTeam: FuncApplyTarget.player);
+      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunction, ally.isPlayer), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunction, enemy.isPlayer), isTrue);
+
+      final BaseFunction enemyFunction =
+          BaseFunction(funcId: -1, funcTargetType: FuncTargetType.fieldOther, funcTargetTeam: FuncApplyTarget.enemy);
+      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, ally.isPlayer), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, enemy.isPlayer), isTrue);
+    });
+
+    test('FuncTargetType.enemyOneNoTargetNoAction', () {
+      final BaseFunction allyFunction = BaseFunction(
+          funcId: -1, funcTargetType: FuncTargetType.enemyOneNoTargetNoAction, funcTargetTeam: FuncApplyTarget.player);
+      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunction, ally.isPlayer), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(allyFunction, enemy.isPlayer), isTrue);
+
+      final BaseFunction enemyFunction = BaseFunction(
+          funcId: -1, funcTargetType: FuncTargetType.enemyOneNoTargetNoAction, funcTargetTeam: FuncApplyTarget.enemy);
+      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, ally.isPlayer), isTrue);
+      expect(FunctionExecutor.validateFunctionTargetTeam(enemyFunction, enemy.isPlayer), isTrue);
     });
   });
 

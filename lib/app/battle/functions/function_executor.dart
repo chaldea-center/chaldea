@@ -39,17 +39,19 @@ class FunctionExecutor {
     final bool isCommandCode = false,
     final int? selectedActionIndex,
     final int? effectiveness,
-    final bool defaultToAlly = true,
+    final bool defaultToPlayer = true,
   }) async {
     Map<int, List<NiceFunction>> actSets = {};
     for (final func in functions) {
+      if (!validateFunctionTargetTeam(func, battleData.activator?.isPlayer ?? defaultToPlayer)) continue;
+
       final dataVal = FunctionExecutor.getDataVals(func, skillLevel, overchargeLvl);
       if ((dataVal.ActSet ?? 0) != 0 && (dataVal.ActSetWeight ?? 0) > 0) {
         actSets.putIfAbsent(dataVal.ActSet!, () => []).add(func);
       }
     }
     int? selectedActSet;
-    if (actSets.isNotEmpty) {
+    if (actSets.isNotEmpty && battleData.context?.mounted == true) {
       selectedActSet = await getSelectedFunction(battleData, actSets);
     }
     for (int index = 0; index < functions.length; index += 1) {
@@ -69,7 +71,7 @@ class FunctionExecutor {
         isCommandCode: isCommandCode,
         selectedActionIndex: selectedActionIndex,
         effectiveness: effectiveness,
-        defaultToAlly: defaultToAlly,
+        defaultToPlayer: defaultToPlayer,
       );
     }
 
@@ -180,10 +182,10 @@ class FunctionExecutor {
     final bool isCommandCode = false,
     final int? selectedActionIndex,
     final int? effectiveness,
-    final bool defaultToAlly = true,
+    final bool defaultToPlayer = true,
   }) async {
     final BattleServantData? activator = battleData.activator;
-    if (!validateFunctionTargetTeam(function, activator)) {
+    if (!validateFunctionTargetTeam(function, activator?.isPlayer ?? defaultToPlayer)) {
       return;
     }
 
@@ -236,7 +238,7 @@ class FunctionExecutor {
       function.funcTargetType,
       function.funcId,
       activator,
-      defaultToAlly: defaultToAlly,
+      defaultToPlayer: defaultToPlayer,
     );
     final checkBuff = dataVals.IncludePassiveIndividuality == 1;
     targets.retainWhere((svt) =>
@@ -458,13 +460,11 @@ class FunctionExecutor {
 
   static bool validateFunctionTargetTeam(
     final BaseFunction function,
-    final BattleServantData? activator,
+    final bool isPlayer,
   ) {
-    if (activator == null || function.funcTargetTeam == FuncApplyTarget.playerAndEnemy) {
-      return true;
-    }
-
-    return function.isPlayerOnlyFunc ? activator.isPlayer : activator.isEnemy;
+    return function.funcTargetTeam == FuncApplyTarget.playerAndEnemy ||
+        (function.isPlayerOnlyFunc && isPlayer) ||
+        (function.isEnemyOnlyFunc && !isPlayer);
   }
 
   static DataVals getDataVals(
@@ -481,11 +481,11 @@ class FunctionExecutor {
     final FuncTargetType funcTargetType,
     final int funcId,
     final BattleServantData? activator, {
-    final bool defaultToAlly = true,
+    final bool defaultToPlayer = true,
   }) {
     final List<BattleServantData> targets = [];
 
-    final isAlly = activator?.isPlayer ?? defaultToAlly;
+    final isAlly = activator?.isPlayer ?? defaultToPlayer;
     final List<BattleServantData> backupAllies =
         isAlly ? battleData.nonnullBackupAllies : battleData.nonnullBackupEnemies;
     final List<BattleServantData> aliveAllies = isAlly ? battleData.nonnullAllies : battleData.nonnullEnemies;
