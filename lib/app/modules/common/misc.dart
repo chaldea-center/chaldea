@@ -17,9 +17,8 @@ class CommandCardWidget extends StatelessWidget {
     final cardName = card.name;
     final width2 = width * 0.8;
     final dx = (width - width2) / 2;
-    return SizedBox(
-      width: width,
-      height: width,
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: width, maxHeight: width),
       child: AspectRatio(
         aspectRatio: 1,
         child: Stack(

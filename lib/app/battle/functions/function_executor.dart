@@ -146,18 +146,18 @@ class FunctionExecutor {
       builder: (context) {
         return SimpleCancelOkDialog(
           title: Text(S.current.battle_select_effect),
-          scrollable: true,
-          content: Wrap(
-            alignment: WrapAlignment.center,
+          content: Row(
             children: List.generate(tds.length, (index) {
-              return InkWell(
-                onTap: () {
-                  Navigator.of(context).pop(tds[index]);
-                  battleData.battleLogger
-                      .action('${S.current.battle_select_effect}: ${tds[index].card.name.toUpperCase()}'
-                          ' ${S.current.battle_np_card}');
-                },
-                child: CommandCardWidget(card: tds[index].card, width: 80),
+              return Flexible(
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).pop(tds[index]);
+                    battleData.battleLogger
+                        .action('${S.current.battle_select_effect}: ${tds[index].card.name.toUpperCase()}'
+                            ' ${S.current.battle_np_card}');
+                  },
+                  child: CommandCardWidget(card: tds[index].card, width: 80),
+                ),
               );
             }),
           ),

@@ -391,10 +391,12 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
             },
           );
         },
-        child: Text.rich(
+        child: AutoSizeText.rich(
           TextSpan(children: divideList(valueSpans, const TextSpan(text: '\n'))),
           textAlign: TextAlign.end,
           textScaleFactor: 0.9,
+          maxLines: valueSpans.length,
+          minFontSize: 10,
         ),
       ),
       onTap: () {

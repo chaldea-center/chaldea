@@ -33,6 +33,18 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
     return Scaffold(
       appBar: AppBar(
         title: Text('[${widget.overrideTitle ?? S.current.enemy}] ${enemy.lShownName}'),
+        actions: [
+          PopupMenuButton(itemBuilder: (context) {
+            return [
+              PopupMenuItem(
+                child: Text(S.current.copy),
+                onTap: () {
+                  db.runtimeData.clipBoard.questEnemy = enemy;
+                },
+              )
+            ];
+          })
+        ],
       ),
       body: ListView(
         children: [

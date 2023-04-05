@@ -101,7 +101,7 @@ class BaseSkill with SkillOrTd, RouteInfo {
     String? unmodifiedDetail,
     required SkillType type,
     String? icon,
-    List<int> coolDown = const [],
+    List<int> coolDown = const [0],
     List<NiceTrait> actIndividuality = const [],
     SkillScript? script,
     List<SkillAdd> skillAdd = const [],

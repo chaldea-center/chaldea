@@ -39,7 +39,7 @@ class DividerWithTitle extends StatelessWidget {
     this.indent,
     this.endIndent,
     this.color,
-    this.padding,
+    this.padding = const EdgeInsets.fromLTRB(0, 6, 0, 4),
   });
 
   @override

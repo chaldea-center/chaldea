@@ -52,4 +52,10 @@ class RuntimeData {
   WebRenderMode? webRendererCanvasKit;
 
   bool svtPlanTabButtonBarUseActive = true;
+
+  final AppClipBoard clipBoard = AppClipBoard();
+}
+
+class AppClipBoard {
+  QuestEnemy? questEnemy;
 }

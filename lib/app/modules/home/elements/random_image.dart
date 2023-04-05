@@ -26,8 +26,11 @@ class _RandomImageSurpriseState extends State<RandomImageSurprise> {
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(widget.duration * 2, (timer) {
-      if (mounted) setState(() {});
+    Future.delayed(Duration(seconds: Random().nextInt(widget.duration.inSeconds)), () {
+      if (!mounted) return;
+      _timer = Timer.periodic(widget.duration * 2, (timer) {
+        if (mounted) setState(() {});
+      });
     });
   }
 

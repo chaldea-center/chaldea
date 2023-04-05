@@ -63,7 +63,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
     required int funcId,
     FuncType funcType = FuncType.unknown,
     required FuncTargetType funcTargetType,
-    required FuncApplyTarget funcTargetTeam,
+    FuncApplyTarget funcTargetTeam = FuncApplyTarget.playerAndEnemy,
     String funcPopupText = '',
     String? funcPopupIcon,
     List<NiceTrait> functvals = const [],

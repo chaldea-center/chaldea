@@ -8,12 +8,13 @@ part of '../../../models/gamedata/skill.dart';
 
 BaseSkill _$BaseSkillFromJson(Map json) => BaseSkill(
       id: json['id'] as int,
+      num: json['num'] as int? ?? -1,
       name: json['name'] as String,
       ruby: json['ruby'] as String? ?? '',
       unmodifiedDetail: json['unmodifiedDetail'] as String?,
       type: $enumDecode(_$SkillTypeEnumMap, json['type']),
       icon: json['icon'] as String?,
-      coolDown: (json['coolDown'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      coolDown: (json['coolDown'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [0],
       actIndividuality: (json['actIndividuality'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
