@@ -601,11 +601,15 @@ class FunctionExecutor {
         break;
       case FuncTargetType.ptselectOneSub: //  used by replace member
         break;
+      case FuncTargetType.enemyOneNoTargetNoAction:
+        if (activator != null && activator.lastHitBy != null) {
+          targets.add(activator.lastHitBy!);
+        }
+        break;
       case FuncTargetType.ptAnother:
       case FuncTargetType.enemyAnother:
       case FuncTargetType.ptSelfBefore:
       case FuncTargetType.ptSelfAfter:
-      case FuncTargetType.enemyOneNoTargetNoAction:
       case FuncTargetType.ptRandom:
       case FuncTargetType.enemyRandom:
       case FuncTargetType.ptOneAnotherRandom:

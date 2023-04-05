@@ -709,6 +709,44 @@ void main() async {
     expect(previousHp2 - enemy2.hp, 37595);
   });
 
+  test('Chen Gong vs 500 year', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(501900)
+        ..lv = 90
+        ..tdLv = 5
+        ..ce = db.gameData.craftEssencesById[9400730] // 500 Year
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+      PlayerSvtData(504400)
+        ..lv = 90
+        ..tdLv = 5
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+      PlayerSvtData(500300)..lv = 90,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final chenGong = battle.onFieldAllyServants[1]!;
+    expect(battle.canSelectNp(1), true);
+    expect(chenGong.hp, 11210);
+
+    await battle.playerTurn([
+      CombatAction(chenGong, chenGong.getNPCard(battle)!),
+    ]);
+
+    chenGong.np = 10000;
+    expect(battle.canSelectNp(1), false);
+    expect(battle.canUseNp(1), false);
+    expect(chenGong.hp, 9210);
+
+    await battle.skipWave();
+    expect(battle.canSelectNp(1), true);
+    expect(battle.canUseNp(1), true);
+    expect(chenGong.hp, 7210);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData(504900)..lv = 90,
