@@ -884,6 +884,9 @@ class BattleData {
         await actor.activateGuts(this).then((value) => hasGuts = value);
         if (!hasGuts) {
           await actor.death(this);
+          if (actor.lastHitBy != null) {
+            await actor.lastHitBy!.activateBuffOnAction(this, BuffAction.functionDeadattack);
+          }
           actorList[i] = null;
           actor.index = -1;
           if (actor.isPlayer) {

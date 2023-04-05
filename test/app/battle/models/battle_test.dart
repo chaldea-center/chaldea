@@ -681,6 +681,34 @@ void main() async {
     expect(previousHp1 - enemy1.hp, 15407 + 3281 + 3786 + 11302);
   });
 
+  test('Buffs status should be updated only after aoe np damage calculation', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(1100900)
+        ..lv = 90
+        ..tdLv = 5
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    await battle.activateSvtSkill(0, 1);
+    final spaceIshtar = battle.onFieldAllyServants[0]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final enemy2 = battle.onFieldEnemies[1]!;
+    final previousHp1 = enemy1.hp;
+    final previousHp2 = enemy2.hp;
+    await battle.playerTurn([
+      CombatAction(spaceIshtar, spaceIshtar.getNPCard(battle)!),
+      CombatAction(spaceIshtar, spaceIshtar.getCards(battle)[0]),
+      CombatAction(spaceIshtar, spaceIshtar.getCards(battle)[1]),
+    ]);
+
+    expect(previousHp1 - enemy1.hp, 37595);
+    expect(previousHp2 - enemy2.hp, 37595);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData(504900)..lv = 90,

@@ -87,8 +87,8 @@ class BattleServantData {
   int shiftIndex = 0;
 
   bool attacked = false;
-  BattleServantData? killedBy;
-  CommandCardData? killedByCard;
+  BattleServantData? lastHitBy;
+  CommandCardData? lastHitByCard;
 
   bool get selectable => battleBuff.isSelectable;
 
@@ -436,7 +436,7 @@ class BattleServantData {
   }
 
   bool isKilledBy(final BattleServantData? activator, final CommandCardData? currentCard) {
-    return activator != null && currentCard != null && killedBy == activator && killedByCard == currentCard;
+    return activator != null && currentCard != null && lastHitBy == activator && lastHitByCard == currentCard;
   }
 
   void heal(final BattleData battleData, final int heal) {
@@ -1115,8 +1115,8 @@ class BattleServantData {
       battleData.battleLogger.action('$lBattleName - ${gutsToApply.buff.lName.l} - '
           '${!isRatio ? value : '${(value / 10).toStringAsFixed(1)}%'}');
 
-      killedByCard = null;
-      killedBy = null;
+      lastHitByCard = null;
+      lastHitBy = null;
       await activateBuffOnAction(battleData, BuffAction.functionGuts);
       return true;
     }

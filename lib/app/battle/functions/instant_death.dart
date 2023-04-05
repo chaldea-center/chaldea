@@ -22,6 +22,7 @@ class InstantDeath {
       battleData.setTarget(target);
       if (force || await shouldInstantDeath(battleData, dataVals, activator, target)) {
         target.hp = 0;
+        target.lastHitBy = activator;
         success = true;
       }
       battleData.unsetTarget();

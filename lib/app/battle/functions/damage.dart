@@ -26,6 +26,8 @@ class Damage {
     BuffAction.damageEventPoint
   ];
 
+  /// during damage calculation, due to buffs potentially having only one count remaining, checkBuffStatus should
+  /// not be called to avoid removing applied buffs
   static Future<bool> damage(
     final BattleData battleData,
     final DataVals dataVals,
@@ -214,11 +216,8 @@ class Damage {
           target.receiveDamage(hitDamage);
         }
 
-        if (target.hp <= 0) {
-          await activator.activateBuffOnAction(battleData, BuffAction.functionDeadattack);
-          target.killedBy = activator;
-          target.killedByCard = currentCard;
-        }
+        target.lastHitBy = activator;
+        target.lastHitByCard = currentCard;
 
         final isOverkill = target.hp < 0 || (!currentCard.isNP && target.isBuggedOverkill);
         result.overkillStates.add(isOverkill);
