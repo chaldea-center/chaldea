@@ -160,6 +160,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_command_card": MessageLookupByLibrary.simpleMessage("Command Card"),
         "battle_damage": MessageLookupByLibrary.simpleMessage("Damage"),
         "battle_damage_parameters": MessageLookupByLibrary.simpleMessage("Damage Parameters"),
+        "battle_damage_rate": MessageLookupByLibrary.simpleMessage("Damage Rate"),
         "battle_death": MessageLookupByLibrary.simpleMessage("Defeated"),
         "battle_edit_ce_option": MessageLookupByLibrary.simpleMessage("Edit Craft Essence Option"),
         "battle_edit_servant_option": MessageLookupByLibrary.simpleMessage("Edit Servant Option"),

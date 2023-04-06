@@ -800,6 +800,17 @@ class S {
     );
   }
 
+  /// `Damage Rate`
+  String get battle_damage_rate {
+    return Intl.message(
+      'Damage Rate',
+      name: 'battle_damage_rate',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Defeated`
   String get battle_death {
     return Intl.message(

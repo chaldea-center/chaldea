@@ -67,6 +67,7 @@
   "battle_command_card": null,
   "battle_damage": null,
   "battle_damage_parameters": null,
+  "battle_damage_rate": null,
   "battle_death": null,
   "battle_edit_ce_option": null,
   "battle_edit_servant_option": null,

@@ -389,6 +389,7 @@ class _AttackDetailWidget extends StatelessWidget {
             Text([
               if (record.card?.isNP == true) S.current.np_short,
               record.card!.cardType.name.toTitle(),
+              if (record.card?.isCritical == true) S.current.critical_attack
             ].join(' ')),
           text('DMG: ${record.damage}', Colors.red),
           text('NP: ${record.attackNp / 100}', Colors.blue),
@@ -580,7 +581,8 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
           listValueWithOverkill(result.damages, result.overkillStates, (v) => v.toString()),
         oneParam('ATK', params.attack.toString()),
         oneParam(S.current.class_attack_rate, classAttackCorrection.format(precision: 3)),
-        if (params.damageRate != 1000) oneParam(S.current.damage_rate, damageRate.format(percent: true, precision: 3)),
+        if (params.damageRate != 1000)
+          oneParam(S.current.battle_damage_rate, damageRate.format(percent: true, precision: 3)),
         if (params.isNp && params.npSpecificAttackRate != 1000)
           oneParam(S.current.np_sp_damage_rate, npSpecificAttackRate.format(percent: true, precision: 3)),
         if (params.totalHits != 100) oneParam('Hits', hitsPercent.format(percent: true, precision: 3)),

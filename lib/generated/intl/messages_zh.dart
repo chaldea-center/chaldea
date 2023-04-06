@@ -121,7 +121,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "attach_help": MessageLookupByLibrary.simpleMessage("如果图片模式存在问题，请使用文件模式"),
         "attachment": MessageLookupByLibrary.simpleMessage("附件"),
         "attack_np_rate": MessageLookupByLibrary.simpleMessage("攻击NP率"),
-        "attribute_advantage": MessageLookupByLibrary.simpleMessage("隐藏属性克制"),
+        "attribute_advantage": MessageLookupByLibrary.simpleMessage("阵营克制"),
         "auth_data_hints": MessageLookupByLibrary.simpleMessage(
             "提醒:\n- 此处userId并非登陆/好友页看到的用户ID(py码)\n- 请勿分享上述密钥(keys)或截图给其他任何人!!!\n- 以下3种方法选择其一导入"),
         "auto_login": MessageLookupByLibrary.simpleMessage("自动登录"),
@@ -155,6 +155,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_command_card": MessageLookupByLibrary.simpleMessage("指令卡"),
         "battle_damage": MessageLookupByLibrary.simpleMessage("伤害"),
         "battle_damage_parameters": MessageLookupByLibrary.simpleMessage("伤害参数"),
+        "battle_damage_rate": MessageLookupByLibrary.simpleMessage("伤害倍率"),
         "battle_death": MessageLookupByLibrary.simpleMessage("退场"),
         "battle_edit_ce_option": MessageLookupByLibrary.simpleMessage("调整礼装选项"),
         "battle_edit_servant_option": MessageLookupByLibrary.simpleMessage("调整从者选项"),

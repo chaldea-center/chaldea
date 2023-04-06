@@ -67,6 +67,7 @@
   "battle_command_card": "Command Card",
   "battle_damage": "Damage",
   "battle_damage_parameters": "Damage Parameters",
+  "battle_damage_rate": "Damage Rate",
   "battle_death": "Defeated",
   "battle_edit_ce_option": "Edit Craft Essence Option",
   "battle_edit_servant_option": "Edit Servant Option",

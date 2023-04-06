@@ -67,6 +67,7 @@
   "battle_command_card": "コマンドカード",
   "battle_damage": "ダメージ",
   "battle_damage_parameters": null,
+  "battle_damage_rate": null,
   "battle_death": "退場",
   "battle_edit_ce_option": "礼装オプション調整",
   "battle_edit_servant_option": "サーヴァントオプション調整",
