@@ -437,6 +437,17 @@ class S {
     );
   }
 
+  /// `Attribute Advantage`
+  String get attribute_advantage {
+    return Intl.message(
+      'Attribute Advantage',
+      name: 'attribute_advantage',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Hints:\n- userId here is not friend code you saw on login/friend page\n- DO NOT share above keys or screenshot to others!!!\n- choose one of following methods to import`
   String get auth_data_hints {
     return Intl.message(
@@ -602,6 +613,17 @@ class S {
     );
   }
 
+  /// `Attack NP Parameters`
+  String get battle_atk_np_parameters {
+    return Intl.message(
+      'Attack NP Parameters',
+      name: 'battle_atk_np_parameters',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Attack`
   String get battle_attack {
     return Intl.message(
@@ -679,6 +701,28 @@ class S {
     );
   }
 
+  /// `Card NP Rate`
+  String get battle_card_np_rate {
+    return Intl.message(
+      'Card NP Rate',
+      name: 'battle_card_np_rate',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Card Star Rate`
+  String get battle_card_star_rate {
+    return Intl.message(
+      'Card Star Rate',
+      name: 'battle_card_star_rate',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Change Ascension`
   String get battle_change_ascension {
     return Intl.message(
@@ -739,6 +783,17 @@ class S {
     return Intl.message(
       'Damage',
       name: 'battle_damage',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Damage Parameters`
+  String get battle_damage_parameters {
+    return Intl.message(
+      'Damage Parameters',
+      name: 'battle_damage_parameters',
       desc: '',
       locale: localeName,
       args: [],
@@ -1091,6 +1146,17 @@ class S {
     return Intl.message(
       'Skip current stage',
       name: 'battle_skip_current_wave',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Star Parameters`
+  String get battle_star_parameters {
+    return Intl.message(
+      'Star Parameters',
+      name: 'battle_star_parameters',
       desc: '',
       locale: localeName,
       args: [],
@@ -1641,6 +1707,28 @@ class S {
     return Intl.message(
       'Check update',
       name: 'check_update',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Class Advantage`
+  String get class_advantage {
+    return Intl.message(
+      'Class Advantage',
+      name: 'class_advantage',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Class Damage Multiplier`
+  String get class_attack_rate {
+    return Intl.message(
+      'Class Damage Multiplier',
+      name: 'class_attack_rate',
       desc: '',
       locale: localeName,
       args: [],
@@ -6211,6 +6299,17 @@ class S {
     return Intl.message(
       'NP',
       name: 'np_short',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `NP Special Damage Rate`
+  String get np_sp_damage_rate {
+    return Intl.message(
+      'NP Special Damage Rate',
+      name: 'np_sp_damage_rate',
       desc: '',
       locale: localeName,
       args: [],

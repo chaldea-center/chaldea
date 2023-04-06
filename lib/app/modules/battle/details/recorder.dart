@@ -573,26 +573,29 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
 
     return buildDialog(
       context: context,
-      title: 'Damage Params',
+      title: S.current.battle_damage_parameters,
       children: [
-        oneParam('Damage', Maths.sum(result.damages).toString()),
+        oneParam(S.current.battle_damage, Maths.sum(result.damages).toString()),
         if (result.damages.any((e) => e > 0))
           listValueWithOverkill(result.damages, result.overkillStates, (v) => v.toString()),
         oneParam('ATK', params.attack.toString()),
-        oneParam('ATK Correction', classAttackCorrection.format(precision: 3)),
-        if (params.damageRate != 1000) oneParam('Rate', damageRate.format(percent: true, precision: 3)),
+        oneParam(S.current.class_attack_rate, classAttackCorrection.format(precision: 3)),
+        if (params.damageRate != 1000) oneParam(S.current.damage_rate, damageRate.format(percent: true, precision: 3)),
         if (params.isNp && params.npSpecificAttackRate != 1000)
-          oneParam('Td SP Rate', npSpecificAttackRate.format(percent: true, precision: 3)),
+          oneParam(S.current.np_sp_damage_rate, npSpecificAttackRate.format(percent: true, precision: 3)),
         if (params.totalHits != 100) oneParam('Hits', hitsPercent.format(percent: true, precision: 3)),
-        oneParam('RNG', fixedRandom.toStringAsFixed(3)),
-        oneParam('Class Advantage', classAdvantage.format(precision: 3)),
-        oneParam('Attribute Advantage', attributeAdvantage.format(precision: 3)),
-        oneParam('Atk Mods', atkSum.format(percent: true, precision: 3), buffIcon(300)),
-        oneParam('Card Mods', cardSum.format(percent: true, precision: 3), cardBuffIcon(params.currentCardType)),
-        oneParam('Power Mods', specificSum.format(percent: true, precision: 3), buffIcon(302)),
-        oneParam('SP ATK', percentAttack.format(percent: true, precision: 3), buffIcon(359)),
-        oneParam('SP DEF', percentDefense.format(percent: true, precision: 3), buffIcon(334)),
-        oneParam('Dmg Plus', damageAdd.toString(), buffIcon(302)),
+        oneParam(S.current.battle_random, fixedRandom.toStringAsFixed(3)),
+        oneParam(S.current.class_advantage, classAdvantage.format(precision: 3)),
+        oneParam(S.current.attribute_advantage, attributeAdvantage.format(precision: 3)),
+        oneParam(Transl.buffNames('攻撃力アップ').l, atkSum.format(percent: true, precision: 3), buffIcon(300)),
+        oneParam(Transl.buffNames('カード性能アップ').l, cardSum.format(percent: true, precision: 3),
+            cardBuffIcon(params.currentCardType)),
+        oneParam(Transl.buffNames('威力アップ').l, specificSum.format(percent: true, precision: 3), buffIcon(302)),
+        if (params.percentAttackBuff != 0)
+          oneParam(Transl.buffNames('特殊威力アップ').l, percentAttack.format(percent: true, precision: 3), buffIcon(359)),
+        if (params.percentDefenseBuff != 0)
+          oneParam(Transl.buffNames('特殊耐性アップ').l, percentDefense.format(percent: true, precision: 3), buffIcon(334)),
+        oneParam(Transl.buffNames('ダメージプラス').l, damageAdd.toString(), buffIcon(302)),
       ],
     );
   }
@@ -613,16 +616,18 @@ class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
 
     return buildDialog(
       context: context,
-      title: 'Attack NP Params',
+      title: S.current.battle_atk_np_parameters,
       children: [
-        oneParam('NP Gain', (Maths.sum(result.npGains) / 100).format(precision: 2)),
+        oneParam('NP', (Maths.sum(result.npGains) / 100).format(precision: 2)),
         if (result.npGains.any((e) => e > 0))
           listValueWithOverkill(result.npGains, result.overkillStates, (v) => (v / 100).format(precision: 2)),
-        oneParam('NP Charge', attackerNpCharge.format(percent: true, precision: 2)),
-        oneParam('Defender NP Mod', defenderNpRate.format(precision: 3)),
-        if (params.cardAttackNpRate != 1000) oneParam('Card NP Rate', cardRate.format(percent: true, precision: 3)),
-        oneParam('Card Mods', cardSum.format(percent: true, precision: 3), cardBuffIcon(params.currentCardType)),
-        oneParam('NP Charge Mods', npGainBuff.format(percent: true, precision: 3), buffIcon(303)),
+        oneParam(S.current.attack_np_rate, attackerNpCharge.format(percent: true, precision: 2)),
+        oneParam(S.current.np_gain_mod, defenderNpRate.format(precision: 3)),
+        if (params.cardAttackNpRate != 1000)
+          oneParam(S.current.battle_card_np_rate, cardRate.format(percent: true, precision: 3)),
+        oneParam(Transl.buffNames('カード性能アップ').l, cardSum.format(percent: true, precision: 3),
+            cardBuffIcon(params.currentCardType)),
+        oneParam(Transl.buffNames('NP獲得アップ').l, npGainBuff.format(percent: true, precision: 3), buffIcon(303)),
       ],
     );
   }
@@ -643,16 +648,18 @@ class StarParamDialog extends StatelessWidget with _ParamDialogMixin {
 
     return buildDialog(
       context: context,
-      title: 'Star Params',
+      title: S.current.battle_star_parameters,
       children: [
-        oneParam('Star Gain', (Maths.sum(result.stars) / 1000).format(precision: 3)),
+        oneParam(S.current.critical_star, (Maths.sum(result.stars) / 1000).format(precision: 3)),
         if (result.stars.any((e) => e > 0))
           listValueWithOverkill(result.stars, result.overkillStates, (v) => (v / 1000).format(precision: 3)),
-        oneParam('Star Gen', attackerStarGen.format(precision: 3)),
-        oneParam('Defender Star Mod', defenderStarRate.format(precision: 3)),
-        if (params.cardDropStarRate != 1000) oneParam('Card Star Rate', cardRate.format(percent: true, precision: 3)),
-        oneParam('Card Mods', cardSum.format(percent: true, precision: 3), cardBuffIcon(params.currentCardType)),
-        oneParam('Star Gen Mods', starGenBuff.format(precision: 3), buffIcon(321)),
+        oneParam(S.current.info_star_rate, attackerStarGen.format(precision: 3)),
+        oneParam(S.current.crit_star_mod, defenderStarRate.format(precision: 3)),
+        if (params.cardDropStarRate != 1000)
+          oneParam(S.current.battle_card_star_rate, cardRate.format(percent: true, precision: 3)),
+        oneParam(Transl.buffNames('カード性能アップ').l, cardSum.format(percent: true, precision: 3),
+            cardBuffIcon(params.currentCardType)),
+        oneParam(Transl.buffNames('スター発生アップ').l, starGenBuff.format(precision: 3), buffIcon(321)),
       ],
     );
   }
