@@ -140,7 +140,9 @@ jobs:
         working-directory: ${{ matrix.build_path }}
       - name: Compress build for Windows
         if: matrix.target == 'windows'
-        run: compress-archive -Path * -DestinationPath ${env:GITHUB_WORKSPACE}\chaldea-${env:VERSION}-${{ matrix.target }}.zip
+        run: |
+          cp $GITHUB_WORKSPACE/windows/README.md ./README.txt
+          compress-archive -Path * -DestinationPath ${env:GITHUB_WORKSPACE}\chaldea-${env:VERSION}-${{ matrix.target }}.zip
         working-directory: ${{ matrix.build_path }}
 
       - name: Generate SHA1

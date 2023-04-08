@@ -12,13 +12,21 @@ you have to install it manually first.
 sudo apt install libappindicator3-1
 ```
 
+## Upgrade
+
+Simply override old files with new extracted files.
+
 ## 安装
 
 更多关于安装与启动的问题请参考文档: https://docs.chaldea.center/zh/guide/installation.html
 
-应用需 `libappindicator` 来启用系统托盘功能，若Linux系统中未安装，可以尝试以下方法安装
+应用需 `libappindicator` 来启用系统托盘功能，若 Linux 系统中未安装，可以尝试以下方法安装
 
 ```sh
 # Debian
 sudo apt install libappindicator3-1
 ```
+
+## 升级
+
+直接解压并覆盖旧文件即可。
