@@ -364,6 +364,7 @@ class SvtStatus {
   /// current bond, 5.5=5
   int bond;
   List<int?> equipCmdCodes;
+  // 0~25 -> 0~500
   List<int>? cmdCardStrengthen;
 
   SvtStatus({
@@ -465,9 +466,10 @@ class SvtPlan {
 
   int grail; // 0~
 
-  // 0-50, only ★4 fou-kun planned
+  // 0-50, ★4 fou-kun
   int fouHp;
   int fouAtk;
+  // 0-20, ★3 fou-kun
   int fouHp3;
   int fouAtk3;
 

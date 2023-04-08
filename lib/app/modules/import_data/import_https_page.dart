@@ -12,7 +12,6 @@ import 'package:sliver_tools/sliver_tools.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -86,7 +85,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
 
   @override
   Widget build(BuildContext context) {
-    final url = '$kProjectDocRoot${Language.isZH ? "/zh" : ""}/import_https/';
+    final url = ChaldeaUrl.doc('import_https/');
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -208,6 +207,11 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   }
 
   Widget itemSliver(BoxConstraints constraints) {
+    final shownItems = items.where((item) {
+      final dbItem = db.gameData.items[item.itemId];
+      if (dbItem != null && dbItem.category == ItemCategory.event) return false;
+      return true;
+    }).toList();
     return MultiSliver(
       pushPinnedChildren: true,
       children: [
@@ -242,7 +246,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                   crossAxisSpacing: 2,
                 ),
                 delegate: SliverChildBuilderDelegate((context, index) {
-                  final item = items[index];
+                  final item = shownItems[index];
                   return Item.iconBuilder(
                     context: context,
                     item: null,
@@ -250,7 +254,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                     width: _with,
                     text: item.num.toString(),
                   );
-                }, childCount: items.length),
+                }, childCount: shownItems.length),
               ),
             ),
           ),
@@ -498,7 +502,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                 _includeCmdCode = v ?? _includeCmdCode;
               }),
             ),
-            title: Text(S.current.command_code),
+            title: Text('${S.current.command_code} & ${S.current.beast_footprint}'),
             trailing: ExpandIcon(onPressed: null, isExpanded: _showCmdCode),
             onTap: () {
               setState(() {
@@ -511,14 +515,27 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           SliverClip(
             child: MultiSliver(
               children: [
+                SHeader(S.current.command_code),
                 ListTile(
                   leading: const Text(''),
-                  title: Text('${CmdCodeStatus.shownText(CmdCodeStatus.owned)}: $owned\n'
-                      '${CmdCodeStatus.shownText(CmdCodeStatus.met)}: $met\n'
-                      '${CmdCodeStatus.shownText(CmdCodeStatus.notMet)}: $notMet\n'
-                      'ALL:   ${cmdCodes.length}\n'
-                      '${S.current.cc_equipped_svt}: $svtCount ${S.current.servant}, $ccCount ${S.current.command_code}.'),
-                )
+                  title: Text(
+                    '${CmdCodeStatus.shownText(CmdCodeStatus.owned)}: $owned\n'
+                    '${CmdCodeStatus.shownText(CmdCodeStatus.met)}: $met\n'
+                    '${CmdCodeStatus.shownText(CmdCodeStatus.notMet)}: $notMet\n'
+                    'ALL:   ${cmdCodes.length}\n'
+                    '${S.current.cc_equipped_svt}: $svtCount ${S.current.servant}, $ccCount ${S.current.command_code}.',
+                    textScaleFactor: 0.8,
+                  ),
+                ),
+                if (mstData!.userSvtCommandCard.isNotEmpty) SHeader(S.current.beast_footprint),
+                for (final svt in mstData!.userSvtCommandCard)
+                  if (svt.commandCardParam.any((e) => e > 0))
+                    ListTile(
+                      dense: true,
+                      leading: db.gameData.servantsById[svt.svtId]?.iconBuilder(context: context, width: 32),
+                      title: Text(db.gameData.servantsById[svt.svtId]?.lName.l ?? 'SVT ${svt.svtId}'),
+                      subtitle: Text(svt.commandCardParam.join(", ")),
+                    ),
               ],
             ),
           )
@@ -637,7 +654,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           final svtNo = db.gameData.servantsById[card.svtId]?.collectionNo;
           if (svtNo == null || svtNo == 0) continue;
           final status = user.svtStatusOf(svtNo);
-          status.cmdCardStrengthen = List.generate(5, (index) => card.commandCardParam.getOrNull(index) ?? 0);
+          status.cmdCardStrengthen = List.generate(5, (index) => (card.commandCardParam.getOrNull(index) ?? 0) ~/ 20);
         }
       }
     }
