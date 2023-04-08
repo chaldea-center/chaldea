@@ -3,10 +3,8 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:cookie_jar/cookie_jar.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:chaldea/models/gamedata/toplogin.dart';
@@ -130,7 +128,7 @@ class LoginAgent {
     ).._lastPostTime = _lastPostTime;
   }
 
-  final dio = Dio()..interceptors.add(CookieManager(CookieJar()));
+  final dio = Dio();
 
   Map<ParamType, String> defaultParams() {
     return {
