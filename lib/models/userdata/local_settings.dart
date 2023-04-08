@@ -415,7 +415,7 @@ class BattleSimSetting {
     this.preferPlayerData = true,
     Set<int>? pingedCEs,
     Set<int>? pingedSvts,
-  })  : pingedCEs = pingedCEs ?? {28, 34, 48},
+  })  : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
         pingedSvts = pingedSvts ?? {37, 62, 150, 215, 241, 284, 314, 316, 353, 357};
 
   factory BattleSimSetting.fromJson(Map<String, dynamic> json) => _$BattleSimSettingFromJson(json);
