@@ -261,7 +261,7 @@ class BattleServantData {
         ..isNP = false
         ..cardStrengthen = playerSvtData!.cardStrengthens[i]
         ..npGain = getNPGain(battleData, cardType)
-        ..traits = ConstData.cardInfo[cardType]![1]!.individuality;
+        ..traits = ConstData.cardInfo[cardType]![1]!.individuality.toList();
       builtCards.add(card);
     }
     return builtCards;
@@ -298,11 +298,13 @@ class BattleServantData {
     if (isEnemy) {
       return null;
     }
+    final detail = niceSvt!.cardDetails[CardType.extra];
+    if (detail == null) return null;
 
-    return CommandCardData(CardType.extra, niceSvt!.cardDetails[CardType.extra]!)
+    return CommandCardData(CardType.extra, detail)
       ..isNP = false
       ..npGain = getNPGain(battleData, CardType.extra)
-      ..traits = ConstData.cardInfo[CardType.extra]![1]!.individuality;
+      ..traits = ConstData.cardInfo[CardType.extra]![1]!.individuality.toList();
   }
 
   int getNPGain(final BattleData battleData, final CardType cardType) {
