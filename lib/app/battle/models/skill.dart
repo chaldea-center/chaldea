@@ -253,3 +253,13 @@ class BattleSkillInfoData {
     }
   }
 }
+
+enum SkillInfoType {
+  none,
+  svtSelf,
+  svtPassive,
+  svtEquip,
+  mysticCode,
+  commandSpell,
+  custom,
+}

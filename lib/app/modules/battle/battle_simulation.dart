@@ -141,18 +141,18 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         },
       ),
       PopupMenuItem(
-        child: Text('${S.current.command_spell}: ${Transl.skillNames('霊基修復').l}'),
-        onTap: () async {
-          await null;
-          await battleData.commandSpellRepairHp();
-          if (mounted) setState(() {});
-        },
-      ),
-      PopupMenuItem(
         child: Text('${S.current.command_spell}: ${Transl.skillNames('宝具解放').l}'),
         onTap: () async {
           await null;
           await battleData.commandSpellReleaseNP();
+          if (mounted) setState(() {});
+        },
+      ),
+      PopupMenuItem(
+        child: Text('${S.current.command_spell}: ${Transl.skillNames('霊基修復').l}'),
+        onTap: () async {
+          await null;
+          await battleData.commandSpellRepairHp();
           if (mounted) setState(() {});
         },
       ),
@@ -241,7 +241,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                     return name;
                   },
                 ),
-              )
+              ),
+              const TextSpan(text: ' '),
             ],
           )),
         ),
@@ -344,7 +345,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             Flexible(
               child: buildSkillInfo(
                 skillInfo: svt.skillInfoList[skillIndex],
-                canUseSkill: battleData.canUseSvtSkillIgnoreCoolDown(index, skillIndex),
+                isSealed: battleData.isSkillSealed(index, skillIndex),
+                isCondFailed: battleData.isSkillCondFailed(index, skillIndex),
                 onTap: () async {
                   await battleData.activateSvtSkill(index, skillIndex);
                   if (mounted) setState(() {});
@@ -404,7 +406,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                     for (int i = 0; i < battleData.masterSkillInfo.length; i += 1)
                       buildSkillInfo(
                         skillInfo: battleData.masterSkillInfo[i],
-                        canUseSkill: battleData.canUseMysticCodeSkillIgnoreCoolDown(i),
+                        isSealed: false,
+                        isCondFailed: !battleData.canUseMysticCodeSkillIgnoreCoolDown(i),
                         onTap: () async {
                           await battleData.activateMysticCodeSKill(i);
                           if (mounted) setState(() {});
@@ -514,31 +517,47 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
 
   Widget buildSkillInfo({
     required final BattleSkillInfoData skillInfo,
-    required bool canUseSkill,
+    required bool isSealed,
+    required bool isCondFailed,
     required final VoidCallback onTap,
   }) {
     final cd = skillInfo.chargeTurn;
-    final _canUseSkill = canUseSkill && cd <= 0;
+    Widget cdText = Text(
+      cd.toString(),
+      style: TextStyle(fontSize: isSealed ? 14 : 18, color: Colors.white.withOpacity(0.8)),
+      textScaleFactor: 1,
+    );
+    if (isSealed && cd > 0) {
+      cdText = Positioned(right: 0, bottom: 0, child: cdText);
+    }
 
     Widget child = Stack(
       alignment: Alignment.center,
       children: [
         db.getIconImage(skillInfo.proximateSkill?.icon ?? Atlas.common.emptySkillIcon, width: 32, aspectRatio: 1),
-        if (!_canUseSkill && skillInfo.proximateSkill != null)
+        if (isSealed || isCondFailed || cd > 0)
           AspectRatio(
             aspectRatio: 1,
             child: Container(
               width: 32,
               height: 32,
               color: Colors.black54,
-              child: Center(
-                child: Text(
-                  !canUseSkill ? '×' : cd.toString(),
-                  style: const TextStyle(fontSize: 18, color: Colors.white),
-                  textScaleFactor: 1,
-                ),
-              ),
             ),
+          ),
+        if (cd > 0) cdText,
+        if (isSealed)
+          Opacity(
+            opacity: 0.8,
+            child: db.getIconImage(
+              'https://static.atlasacademy.io/JP/BuffIcons/bufficon_511.png',
+              width: 18,
+              aspectRatio: 1,
+            ),
+          ),
+        if (isCondFailed && !isSealed && cd <= 0)
+          const Text(
+            '×',
+            style: TextStyle(fontSize: 24, color: Colors.white),
           ),
       ],
     );
@@ -546,7 +565,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2),
       child: InkWell(
-        onTap: _canUseSkill ? onTap : null,
+        onTap: isSealed || isCondFailed ? null : onTap,
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxHeight: 32),
           child: child,

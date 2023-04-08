@@ -66,6 +66,7 @@ class BattleRecordManager {
     required BattleData battleData,
     required BattleServantData? activator,
     required BattleSkillInfoData skill,
+    required SkillInfoType type,
     required bool fromPlayer,
   }) {
     records.add(BattleSkillRecord(
@@ -73,6 +74,7 @@ class BattleRecordManager {
       targetPlayerSvt: battleData.targetedAlly,
       targetEnemySvt: battleData.targetedEnemy,
       skill: skill,
+      type: type,
       fromPlayer: fromPlayer,
     ));
   }
@@ -152,6 +154,7 @@ class BattleSkillRecord extends BattleRecord {
   final BattleServantData? targetPlayerSvt;
   final BattleServantData? targetEnemySvt;
   final BattleSkillInfoData skill;
+  final SkillInfoType type;
   final bool fromPlayer;
 
   BattleSkillRecord({
@@ -159,6 +162,7 @@ class BattleSkillRecord extends BattleRecord {
     required BattleServantData? targetPlayerSvt,
     required BattleServantData? targetEnemySvt,
     required BattleSkillInfoData skill,
+    required this.type,
     required this.fromPlayer,
   })  : activator = activator?.copy(),
         targetPlayerSvt = targetPlayerSvt?.copy(),
@@ -167,7 +171,7 @@ class BattleSkillRecord extends BattleRecord {
 
   @override
   String toString() {
-    return '${activator?.lBattleName} Skill: ${skill.lName}';
+    return '${type.name}: ${activator?.lBattleName} Skill: ${skill.lName}';
   }
 }
 

@@ -17,6 +17,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../../battle/models/skill.dart';
 import 'svt_detail.dart';
 
 class BattleRecorderPanel extends StatefulWidget {
@@ -174,6 +175,9 @@ class BattleRecorderPanelBase extends StatelessWidget {
 
   Widget createWave(BuildContext context, List<Widget> children) {
     return Card(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         child: Column(
@@ -207,9 +211,24 @@ class BattleRecorderPanelBase extends StatelessWidget {
       spans.addAll(drawSvt(context, actor));
     }
     final pskill = skill.proximateSkill;
+    String? prefix;
+    switch (record.type) {
+      case SkillInfoType.mysticCode:
+        prefix = S.current.mystic_code;
+        break;
+      case SkillInfoType.commandSpell:
+        prefix = S.current.command_spell;
+        break;
+      case SkillInfoType.custom:
+        prefix = S.current.general_custom;
+        break;
+      default:
+        break;
+    }
     spans.addAll([
+      if (prefix != null) TextSpan(text: '$prefix: '),
       TextSpan(text: '${S.current.skill} '),
-      if ((pskill?.num ?? 0) > 0) TextSpan(text: '${pskill?.num} '),
+      if ((pskill?.num ?? 0) > 0) TextSpan(text: '${pskill?.num} ', style: kMonoStyle),
       if (pskill?.icon != null)
         CenterWidgetSpan(
           child: db.getIconImage(
@@ -221,7 +240,10 @@ class BattleRecorderPanelBase extends StatelessWidget {
             placeholder: (context) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
           ),
         ),
-      if (pskill != null && (pskill.icon == null || complete))
+      if (pskill != null &&
+          (pskill.icon == null ||
+              complete ||
+              !const [SkillInfoType.svtSelf, SkillInfoType.mysticCode].contains(record.type)))
         SharedBuilder.textButtonSpan(
           context: context,
           text: '${pskill.lName.l} ',
@@ -245,7 +267,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
     final TextStyle? style = svt.isEnemy ? const TextStyle(fontStyle: FontStyle.italic) : null;
 
     return <InlineSpan>[
-      TextSpan(text: '${svt.index + 1}-', style: style),
+      TextSpan(text: '${svt.index + 1}-', style: const TextStyle(fontFamily: kMonoFont).merge(style)),
       CenterWidgetSpan(child: svt.iconBuilder(context: context, height: 32, battleData: battleData)),
       if (complete)
         TextSpan(
@@ -331,7 +353,7 @@ class _AttackDetailWidget extends StatelessWidget {
     Widget enemyParty = ResponsiveLayout(
       rowDirection: TextDirection.rtl,
       reversedColumn: true,
-      verticalAlign: CrossAxisAlignment.start,
+      verticalAlign: CrossAxisAlignment.center,
       children: [
         for (final enemy in enemies) Responsive(small: 4, child: enemy),
       ],
@@ -401,7 +423,26 @@ class _AttackDetailWidget extends StatelessWidget {
 
   Widget buildDefender(BuildContext context, AttackResultDetail? detail) {
     if (detail == null) {
-      return const SizedBox.shrink();
+      Widget child = CachedImage(
+        imageUrl: 'https://static.atlasacademy.io/JP/Enemys/0.png',
+        height: 72,
+        placeholder: (context, url) => const SizedBox.shrink(),
+      );
+      if (!Theme.of(context).isDarkMode) {
+        // invert color
+        child = ColorFiltered(
+          colorFilter: const ColorFilter.matrix([
+            //R G  B  A  Const
+            -1, 0, 0, 0, 255,
+            0, -1, 0, 0, 255,
+            0, 0, -1, 0, 255,
+            0, 0, 0, 1, 0,
+          ]),
+          child: child,
+        );
+      }
+      // child = Padding(padding: const EdgeInsets.symmetric(vertical: 40), child: child);
+      return child;
     }
     final result = detail.result;
     return Center(
@@ -478,26 +519,24 @@ mixin _ParamDialogMixin {
   }
 
   Widget listValueWithOverkill(List<int> values, List<bool> overskills, String Function(int v) format) {
+    const style = TextStyle(fontSize: 13);
     return Padding(
       padding: const EdgeInsets.only(top: 2, bottom: 4),
       child: Align(
         alignment: AlignmentDirectional.centerEnd,
-        child: Text.rich(
-          TextSpan(
-            children: divideList(
-              List.generate(values.length, (index) {
-                final value = values[index], ok = overskills.getOrNull(index);
-                assert(ok != null, [values, overskills]);
-                return TextSpan(
-                  text: format(value),
-                  style: ok == true ? TextStyle(color: Colors.yellow.shade900) : null,
-                );
-              }),
-              const TextSpan(text: ','),
-            ),
+        child: Wrap(
+          alignment: WrapAlignment.end,
+          children: divideList(
+            List.generate(values.length, (index) {
+              final value = values[index], ok = overskills.getOrNull(index);
+              assert(ok != null, [values, overskills]);
+              return Text(
+                format(value),
+                style: style.merge(ok == true ? TextStyle(color: Colors.yellow.shade900) : null),
+              );
+            }),
+            const Text(',', style: style),
           ),
-          style: const TextStyle(fontSize: 13),
-          textAlign: TextAlign.end,
         ),
       ),
     );
@@ -661,7 +700,7 @@ class StarParamDialog extends StatelessWidget with _ParamDialogMixin {
           oneParam(S.current.battle_card_star_rate, cardRate.format(percent: true, precision: 3)),
         oneParam(Transl.buffNames('カード性能アップ').l, cardSum.format(percent: true, precision: 3),
             cardBuffIcon(params.currentCardType)),
-        oneParam(Transl.buffNames('スター発生アップ').l, starGenBuff.format(precision: 3), buffIcon(321)),
+        oneParam(Transl.buffNames('スター発生アップ').l, starGenBuff.format(percent: true, precision: 3), buffIcon(321)),
       ],
     );
   }

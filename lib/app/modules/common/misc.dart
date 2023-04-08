@@ -19,39 +19,43 @@ class CommandCardWidget extends StatelessWidget {
     final dx = (width - width2) / 2;
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: width, maxHeight: width),
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Positioned.fill(
-              left: dx,
-              right: dx,
-              top: dx,
-              bottom: dx,
-              child: Image.asset(
-                'res/assets/card_bg_$cardName.png',
-                // width: 100,
-                // height: 100,
-                fit: BoxFit.fill,
+      child: SizedBox(
+        width: width,
+        height: width,
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Positioned.fill(
+                left: dx,
+                right: dx,
+                top: dx,
+                bottom: dx,
+                child: Image.asset(
+                  'res/assets/card_bg_$cardName.png',
+                  // width: 100,
+                  // height: 100,
+                  fit: BoxFit.fill,
+                ),
               ),
-            ),
-            Positioned.fill(
-              child: Image.asset(
-                'res/assets/card_icon_$cardName.png',
-                fit: BoxFit.fitWidth,
+              Positioned.fill(
+                child: Image.asset(
+                  'res/assets/card_icon_$cardName.png',
+                  fit: BoxFit.fitWidth,
+                ),
               ),
-            ),
-            Positioned.fill(
-              left: dx,
-              right: dx,
-              bottom: 0,
-              child: Image.asset(
-                'res/assets/card_txt_$cardName.png',
-                fit: BoxFit.fitWidth,
+              Positioned.fill(
+                left: dx,
+                right: dx,
+                bottom: 0,
+                child: Image.asset(
+                  'res/assets/card_txt_$cardName.png',
+                  fit: BoxFit.fitWidth,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

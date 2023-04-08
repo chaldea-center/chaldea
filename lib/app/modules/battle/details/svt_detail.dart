@@ -206,6 +206,12 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
     shiftNpcs = divideList(shiftNpcs, const Text(' → '));
     List<Widget> children = [
       CustomTable(children: [
+        CustomTableRow.fromTexts(texts: [
+          <String>[
+            svt.lBattleName,
+            if (svt.niceEnemy != null) '(${svt.niceEnemy!.svt.lName.l})',
+          ].join(' ')
+        ]),
         if (shiftNpcs.isNotEmpty) ...[
           CustomTableRow.fromTexts(texts: const ['Shift'], isHeader: true),
           CustomTableRow.fromChildren(children: [

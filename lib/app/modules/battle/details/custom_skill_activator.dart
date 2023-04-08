@@ -203,6 +203,7 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                                   battleData: widget.battleData,
                                   activator: activator,
                                   skill: BattleSkillInfoData([], skill!),
+                                  type: SkillInfoType.custom,
                                   fromPlayer: isAlly,
                                 );
                               },

@@ -117,7 +117,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_after_7th": MessageLookupByLibrary.simpleMessage("7周年後"),
         "battle_ally_servants": MessageLookupByLibrary.simpleMessage("味方サーヴァント"),
         "battle_attack": MessageLookupByLibrary.simpleMessage("攻撃"),
-        "battle_battle_log": MessageLookupByLibrary.simpleMessage("戦闘記録"),
+        "battle_battle_log": MessageLookupByLibrary.simpleMessage("戦闘日誌"),
         "battle_before_7th": MessageLookupByLibrary.simpleMessage("7周年前"),
         "battle_buff_details": MessageLookupByLibrary.simpleMessage("バフ・リスト"),
         "battle_buff_permanent": MessageLookupByLibrary.simpleMessage("永久"),

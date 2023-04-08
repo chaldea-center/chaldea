@@ -567,7 +567,8 @@ class BattleServantData {
     skillInfo.setRankUp(rankUp);
 
     await skillInfo.activate(battleData);
-    battleData.recorder.skill(battleData: battleData, activator: this, skill: skillInfo, fromPlayer: true);
+    battleData.recorder.skill(
+        battleData: battleData, activator: this, skill: skillInfo, type: SkillInfoType.svtSelf, fromPlayer: true);
     battleData.unsetActivator();
   }
 

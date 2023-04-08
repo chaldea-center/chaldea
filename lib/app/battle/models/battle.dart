@@ -556,7 +556,13 @@ class BattleData {
           effectiveness += await svt.getBuffValueOnAction(this, BuffAction.masterSkillValueUp);
         }
         await masterSkillInfo[skillIndex].activate(this, effectiveness: effectiveness != 1000 ? effectiveness : null);
-        recorder.skill(battleData: this, activator: null, skill: masterSkillInfo[skillIndex], fromPlayer: true);
+        recorder.skill(
+          battleData: this,
+          activator: null,
+          skill: masterSkillInfo[skillIndex],
+          type: SkillInfoType.mysticCode,
+          fromPlayer: true,
+        );
         return;
       },
     );
@@ -788,7 +794,13 @@ class BattleData {
       action: S.current.battle_charge_party,
       task: () async {
         await BattleSkillInfoData.activateSkill(this, skill, 1, defaultToPlayer: true);
-        recorder.skill(battleData: this, activator: null, skill: BattleSkillInfoData([], skill), fromPlayer: true);
+        recorder.skill(
+          battleData: this,
+          activator: null,
+          skill: BattleSkillInfoData([], skill),
+          type: SkillInfoType.commandSpell,
+          fromPlayer: true,
+        );
       },
     );
   }
@@ -823,7 +835,13 @@ class BattleData {
       action: csRepairHpName,
       task: () async {
         await BattleSkillInfoData.activateSkill(this, skill, 1, defaultToPlayer: true);
-        recorder.skill(battleData: this, activator: null, skill: BattleSkillInfoData([], skill), fromPlayer: true);
+        recorder.skill(
+          battleData: this,
+          activator: null,
+          skill: BattleSkillInfoData([], skill),
+          type: SkillInfoType.commandSpell,
+          fromPlayer: true,
+        );
       },
     );
   }
@@ -860,7 +878,13 @@ class BattleData {
       action: csReleaseNpName,
       task: () async {
         await BattleSkillInfoData.activateSkill(this, skill, 1, defaultToPlayer: true);
-        recorder.skill(battleData: this, activator: null, skill: BattleSkillInfoData([], skill), fromPlayer: true);
+        recorder.skill(
+          battleData: this,
+          activator: null,
+          skill: BattleSkillInfoData([], skill),
+          type: SkillInfoType.commandSpell,
+          fromPlayer: true,
+        );
       },
     );
   }

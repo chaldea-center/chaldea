@@ -140,7 +140,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_ally_servants": MessageLookupByLibrary.simpleMessage("友方从者"),
         "battle_atk_np_parameters": MessageLookupByLibrary.simpleMessage("攻击NP参数"),
         "battle_attack": MessageLookupByLibrary.simpleMessage("攻击"),
-        "battle_battle_log": MessageLookupByLibrary.simpleMessage("战斗记录"),
+        "battle_battle_log": MessageLookupByLibrary.simpleMessage("战斗日志"),
         "battle_before_7th": MessageLookupByLibrary.simpleMessage("七周年前"),
         "battle_buff_details": MessageLookupByLibrary.simpleMessage("Buff列表"),
         "battle_buff_permanent": MessageLookupByLibrary.simpleMessage("永久"),
