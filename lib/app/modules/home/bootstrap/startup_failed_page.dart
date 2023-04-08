@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
@@ -38,19 +40,23 @@ class StartupFailedPage extends StatelessWidget {
           children: [
             TextButton(
               onPressed: () {
-                launch('$kProjectDocRoot/faq', external: true);
+                launch('$kProjectDocRoot/guide/faq', external: true);
               },
               child: const Text('FAQ(English)'),
             ),
             TextButton(
               onPressed: () {
-                launch('$kProjectDocRoot/zh/faq', external: true);
+                launch('$kProjectDocRoot/zh/guide/faq', external: true);
               },
               child: const Text('FAQ(中文)'),
             ),
           ],
         ),
         const SizedBox(height: 8),
+        if (kIsWeb)
+          const Text(
+              'Web? InPrivate or "Clear history when close" in some browsers (e.g. FireFox) may block IndexedDB which app needed.\n'
+              '部分浏览器如FireFox在无痕模式下或开启退出时清楚历史记录时会禁用IndexedDB而使app无法启动\n'),
         Text('Error: $error', style: Theme.of(context).textTheme.titleMedium),
         if (stackTrace != null) Text('\n\n$stackTrace', style: Theme.of(context).textTheme.bodySmall),
         const SafeArea(child: SizedBox())

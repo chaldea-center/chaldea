@@ -281,7 +281,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               ListTile(
                 title: Text(S.current.settings_documents),
-                subtitle: const Text(kProjectDocRoot),
+                subtitle: Text(ChaldeaUrl.docHome),
                 trailing: const Icon(Icons.menu_book),
                 onTap: () {
                   launch(ChaldeaUrl.docHome);

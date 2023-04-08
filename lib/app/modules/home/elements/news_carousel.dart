@@ -370,7 +370,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
     if (pages.isEmpty) {
       pages.add(GestureDetector(
         onTap: () {
-          launch(kProjectDocRoot);
+          launch(ChaldeaUrl.docHome);
         },
         child: const AspectRatio(
           aspectRatio: 8 / 3,

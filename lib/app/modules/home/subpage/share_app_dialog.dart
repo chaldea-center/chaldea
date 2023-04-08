@@ -4,11 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/packages/sharex.dart';
-import 'package:chaldea/utils/constants.dart';
+import 'package:chaldea/utils/url.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 
 class ShareAppDialog extends StatefulWidget {
@@ -24,7 +23,7 @@ class _ShareAppDialogState extends State<ShareAppDialog> {
   @override
   void initState() {
     super.initState();
-    String msg = S.current.chaldea_share_msg(Language.isZH ? '$kProjectDocRoot/zh/' : kProjectDocRoot);
+    String msg = S.current.chaldea_share_msg(ChaldeaUrl.docHome);
     _controller = TextEditingController(text: msg);
   }
 
