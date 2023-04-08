@@ -143,10 +143,14 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
           ListTile(
             title: const Text('Game Info'),
             dense: true,
+            selected: gameTops == null,
+            selectedColor: Theme.of(context).colorScheme.error,
             subtitle: Text(top == null ? 'Not loaded' : 'appVer=${top.appVer},dataVer=${top.dataVer}'),
             trailing: IconButton(
               onPressed: () async {
-                final value = await AtlasApi.gametops();
+                EasyLoading.show();
+                final value = await AtlasApi.gametops(expireAfter: Duration.zero);
+                EasyLoading.dismiss();
                 if (value != null) {
                   gameTops = value;
                 } else {
@@ -177,6 +181,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
               tooltip: S.current.edit,
             ),
             selected: args.auth?.userId == null,
+            selectedColor: Theme.of(context).colorScheme.error,
           ),
           if (args.auth?.userCreateServer != null &&
               !UserAuth.checkGameServer(args.region, args.auth!.userCreateServer!))

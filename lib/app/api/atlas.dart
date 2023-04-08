@@ -327,6 +327,27 @@ class ApiCacheManager {
     }
   }
 
+  Future<T?> getModelRaw<T>(String url, T Function(String data) fromText,
+      {Duration? expireAfter, bool cacheOnly = false}) async {
+    try {
+      final text = await getText(url, expireAfter: expireAfter, cacheOnly: true);
+      if (text != null) return fromText(text);
+    } catch (e, s) {
+      removeUrl(url);
+      logger.e('load model($T) failed', e, s);
+      cacheOnly = false;
+    }
+    if (cacheOnly) return null;
+    try {
+      final obj = await getText(url, expireAfter: Duration.zero, cacheOnly: cacheOnly);
+      if (obj != null) return fromText(obj);
+    } catch (e, s) {
+      removeUrl(url);
+      logger.e('load model($T) failed', e, s);
+    }
+    return null;
+  }
+
   Future<T?> getModel<T>(String url, T Function(dynamic data) fromJson,
       {Duration? expireAfter, bool cacheOnly = false}) async {
     try {
@@ -646,10 +667,15 @@ class AtlasApi {
       expireAfter: expireAfter,
     );
     if (tops != null) {
-      final jpFolder = (await assetbundle(Region.jp, expireAfter: expireAfter))?.folderName;
-      final naFolder = (await assetbundle(Region.na, expireAfter: expireAfter))?.folderName;
-      tops.jp.assetbundleFolder = jpFolder ?? tops.jp.assetbundleFolder;
-      tops.na.assetbundleFolder = naFolder ?? tops.na.assetbundleFolder;
+      final tasks = <Future>[
+        assetbundle(Region.jp, expireAfter: expireAfter)
+            .then((v) => tops.jp.assetbundleFolder = v?.folderName ?? tops.jp.assetbundleFolder),
+        assetbundle(Region.na, expireAfter: expireAfter)
+            .then((v) => tops.na.assetbundleFolder = v?.folderName ?? tops.na.assetbundleFolder),
+        gPlayVer(Region.jp).then((v) => tops.jp.appVer = v ?? tops.jp.appVer),
+        gPlayVer(Region.na).then((v) => tops.na.appVer = v ?? tops.na.appVer),
+      ];
+      await Future.wait(tasks);
     }
     return tops;
   }
@@ -659,6 +685,37 @@ class AtlasApi {
       Hosts.proxyWorker(
           'https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/metadata/assetbundle.json'),
       (data) => AssetBundleDecrypt.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+
+  static Future<String?> gPlayVer(Region region, {Duration? expireAfter = Duration.zero}) {
+    assert(region == Region.jp || region == Region.na);
+    String bundleId;
+    switch (region) {
+      case Region.jp:
+        bundleId = 'com.aniplex.fategrandorder';
+        break;
+      case Region.cn:
+        return Future.value(null);
+      case Region.tw:
+        bundleId = 'com.xiaomeng.fategrandorder';
+        break;
+      case Region.na:
+        bundleId = 'com.aniplex.fategrandorder.en';
+        break;
+      case Region.kr:
+        bundleId = 'com.netmarble.fgok';
+        break;
+    }
+    return cacheManager.getModelRaw(
+      '${Hosts.workerHost}/proxy/gplay-ver?id=$bundleId',
+      (data) {
+        if (RegExp(r'^\d+\.\d+\.\d+$').hasMatch(data)) {
+          return data;
+        }
+        throw ArgumentError(data);
+      },
       expireAfter: expireAfter,
     );
   }

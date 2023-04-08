@@ -32,6 +32,6 @@ class Hosts {
     if (onlyCN && !cn) {
       return url;
     }
-    return Uri.https(workerHost, '/proxy/custom', {'url': url}).toString();
+    return Uri.parse(workerHost).replace(path: '/proxy/custom', queryParameters: {'url': url}).toString();
   }
 }
