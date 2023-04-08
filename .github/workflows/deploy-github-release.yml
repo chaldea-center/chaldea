@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  FLUTTER_VERSION: "3.7.8"
+  FLUTTER_VERSION: "3.7.10"
 
 jobs:
   create-build:
