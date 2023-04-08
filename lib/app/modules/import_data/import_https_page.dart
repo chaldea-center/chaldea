@@ -695,6 +695,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         status.cur.costumes = collection.costumeIdsTo01();
       }
     }
+    for (final equip in mstData!.userEquip) {
+      user.mysticCodes[equip.equipId] = equip.lv;
+    }
 
     EasyLoading.showSuccess(S.current.success);
     db.itemCenter.init();

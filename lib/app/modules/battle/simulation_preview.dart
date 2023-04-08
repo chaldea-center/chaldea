@@ -61,6 +61,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   void initState() {
     super.initState();
     region = widget.region;
+    mysticCodeData.level = db.curUser.mysticCodes[mysticCodeData.mysticCode?.id] ?? 10;
     questPhase = widget.questPhase;
     String? initText;
     if (questPhase != null) {
@@ -477,7 +478,9 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         router.pushPage(
           MysticCodeListPage(
             onSelected: (selectedMC) {
-              mysticCodeData.mysticCode = selectedMC;
+              mysticCodeData
+                ..mysticCode = selectedMC
+                ..level = db.curUser.mysticCodes[selectedMC.id] ?? 10;
               if (mounted) setState(() {});
             },
           ),
