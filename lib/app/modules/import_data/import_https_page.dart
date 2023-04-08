@@ -754,9 +754,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       if (mounted) {
         SimpleCancelOkDialog(
           title: const Text('Error'),
-          content: Text('$e\n'
-              '\nhttps://docs.chaldea.center/import_https/'
-              '\nhttps://docs.chaldea.center/zh/import_https/'),
+          content: Text('$e\n\n${ChaldeaUrl.doc("import_https/")}'),
         ).showDialog(context);
       }
     } finally {

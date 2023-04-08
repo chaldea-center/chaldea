@@ -3,7 +3,7 @@ Attention:
 - CN/TW: support Android&iOS
 - JP/NA: need modified APK on Android, not support iOS
 
-Tutorial: [https://docs.chaldea.center/import_https/](https://docs.chaldea.center/import_https/)
+Tutorial: [https://docs.chaldea.center/guide/import_https/](https://docs.chaldea.center/guide/import_https/)
 
 Tutorial contents:
 - **HttpCanary-Android**: JP/NA/CN/TW on Android 

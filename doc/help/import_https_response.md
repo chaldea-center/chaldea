@@ -4,7 +4,7 @@
 
 注意：日服/美服需要使用修改版apk安装包(且仅Android，不支持iOS)，国服和台服均可(Android&iOS)
 
-[https://docs.chaldea.center/zh/import_https/](https://docs.chaldea.center/zh/import_https/)
+[https://docs.chaldea.center/zh/guide/import_https/](https://docs.chaldea.center/zh/guide/import_https/)
 
 目录:
 - **Stream-iOS**: 国服/台服iOS抓包教程
