@@ -1,9 +1,10 @@
 # 2.3.1
 
+- Add more readable battle records
 - Drag svt/ce when building team
 - Ping preferred svt/ce to top when building team
 - Add command spell effects
-- Add battle records
+- Fix several battle simulator bugs
 
 # 2.3.0
 
