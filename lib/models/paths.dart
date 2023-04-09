@@ -19,6 +19,8 @@ class PathManager {
   /// persistent data/config store path
   String? _persistentPath;
 
+  bool androidUseExternalStorage = false;
+
   // ignore: unused_element
   Future<String?> _debugPath(String key, Future<dynamic> Function() getter) async {
     dynamic _path;
@@ -69,12 +71,12 @@ class PathManager {
       // enhancement: startup check, if SD card not exists and set to use external, raise a warning
       _persistentPath = (await getApplicationDocumentsDirectory()).path;
       final sp = await SharedPreferences.getInstance();
-      bool useExternal = sp.get('android_use_external') == true;
+      androidUseExternalStorage = sp.get('android_use_external') == true;
       List<String> externalPaths =
           (await getExternalStorageDirectories(type: StorageDirectory.documents))!.map((e) => dirname(e.path)).toList();
       // don't use getApplicationDocumentsDirectory, it is hidden to user.
       // android external storages: [emulated, external SD]
-      if (useExternal && externalPaths.length >= 2) {
+      if (androidUseExternalStorage && externalPaths.length >= 2) {
         _appPath = externalPaths[1];
       } else {
         _appPath = externalPaths[0];

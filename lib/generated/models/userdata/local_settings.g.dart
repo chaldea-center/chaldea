@@ -82,7 +82,6 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
                   ?.map((e) => AutoLoginData.fromJson(Map<String, dynamic>.from(e as Map)))
                   .toList()),
         );
-        $checkedConvert('useAndroidExternal', (v) => val.useAndroidExternal = v as bool);
         return val;
       },
     );
@@ -120,7 +119,6 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'github': instance.github.toJson(),
       'tips': instance.tips.toJson(),
       'battleSim': instance.battleSim.toJson(),
-      'useAndroidExternal': instance.useAndroidExternal,
       'spoilerRegion': const RegionConverter().toJson(instance.spoilerRegion),
       'svtFilterData': instance.svtFilterData.toJson(),
       'craftFilterData': instance.craftFilterData.toJson(),

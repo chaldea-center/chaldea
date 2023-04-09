@@ -66,19 +66,6 @@ Map<K, V> sortDict<K, V>(
   }
 }
 
-// TODO: change to List extension
-void fillListValue<T>(List<T> list, int length, T Function(int index) fill) {
-  if (length <= list.length) {
-    list.length = length;
-  } else {
-    list.addAll(List.generate(length - list.length, (i) => fill(list.length + i)));
-  }
-  // fill null if T is nullable
-  for (int i = 0; i < length; i++) {
-    list[i] ??= fill(i);
-  }
-}
-
 class Maths {
   const Maths._();
 

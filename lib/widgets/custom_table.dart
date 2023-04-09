@@ -1,7 +1,4 @@
-import 'dart:math' show max;
-
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 import '../utils/utils.dart';
 import 'inherit_selection_area.dart';
@@ -140,65 +137,55 @@ class CustomTableRow extends StatefulWidget {
 class _CustomTableRowState extends State<CustomTableRow> {
   /// first build without constraints, then calculated the max height
   /// of children, then rebuild to fit the constraints
-  BoxConstraints? _calculatedConstraints;
-  bool _needRebuild = true;
-  final bool _fit = false;
+  // BoxConstraints? _calculatedConstraints;
+  // bool _needRebuild = false;
+  // final bool _fit = false;
 
   @override
   Widget build(BuildContext context) {
-    BoxConstraints? constraints;
-    if (_needRebuild) {
-      calculateConstraints();
-    } else {
-      constraints = _calculatedConstraints;
-    }
     List<Widget> children = [];
     for (int index = 0; index < widget.children.length; index++) {
       final cell = widget.children[index];
       late Widget _child;
-      if (_needRebuild && cell.fitHeight) {
-        // if fitHeight, render the child at second frame
-        _child = const SizedBox();
+
+      if (cell.child != null) {
+        _child = cell.child!;
       } else {
-        if (cell.child != null) {
-          _child = cell.child!;
-        } else {
-          /// TODO: AutoSizeText supported here:
-          /// LayoutBuilder does not support returning intrinsic dimensions
-          /// see https://github.com/leisim/auto_size_text/issues/77
-          String text = cell.text ?? "";
-          if (cell.maxLines == null || text.isEmpty) {
-            _child = Text(
+        /// TODO: AutoSizeText supported here:
+        /// LayoutBuilder does not support returning intrinsic dimensions
+        /// see https://github.com/leisim/auto_size_text/issues/77
+        String text = cell.text ?? "";
+        if (cell.maxLines == null || text.isEmpty) {
+          _child = Text(
+            text,
+            textAlign: cell.textAlign,
+            style: cell.style,
+          );
+        } else if (cell.maxLines == 1) {
+          // empty string->Text has no size->cannot place in FittedBox
+          _child = FittedBox(
+            child: Text(
               text,
+              maxLines: cell.maxLines,
               textAlign: cell.textAlign,
               style: cell.style,
-            );
-          } else if (cell.maxLines == 1) {
-            // empty string->Text has no size->cannot place in FittedBox
-            _child = FittedBox(
-              child: Text(
-                text,
-                maxLines: cell.maxLines,
-                textAlign: cell.textAlign,
-                style: cell.style,
-              ),
-            );
-          } else {
-            assert(false, 'CustomTable: maxLines=${cell.maxLines} > 1 not supported yet!!!');
-            _child = FittedBox(
-              child: Text(
-                text,
-                maxLines: cell.maxLines,
-                textAlign: cell.textAlign,
-                style: cell.style,
-              ),
-            );
-            // _child = AutoSizeText(
-            //   cell.text,
-            //   maxLines: cell.maxLines,
-            //   textAlign: cell.textAlign,
-            // );
-          }
+            ),
+          );
+        } else {
+          assert(false, 'CustomTable: maxLines=${cell.maxLines} > 1 not supported yet!!!');
+          _child = FittedBox(
+            child: Text(
+              text,
+              maxLines: cell.maxLines,
+              textAlign: cell.textAlign,
+              style: cell.style,
+            ),
+          );
+          // _child = AutoSizeText(
+          //   cell.text,
+          //   maxLines: cell.maxLines,
+          //   textAlign: cell.textAlign,
+          // );
         }
       }
       _child = Padding(
@@ -212,7 +199,6 @@ class _CustomTableRowState extends State<CustomTableRow> {
         );
       }
       _child = Container(
-        constraints: constraints,
         color: cell.resolveColor(context) ?? widget.color,
         child: _child,
       );
@@ -229,45 +215,12 @@ class _CustomTableRowState extends State<CustomTableRow> {
         children.add(widget.divider!);
       }
     }
-    if (!_needRebuild) _needRebuild = true;
     Widget body = Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: children,
     );
     body = IntrinsicHeight(child: body);
-    if (constraints != null) {
-      body = ConstrainedBox(
-        constraints: constraints,
-        child: body,
-      );
-    }
     return body;
-  }
-
-  void calculateConstraints() {
-    // if all children don't need to fit, don't calculate
-    if (widget.children.where((data) => data.fitHeight).isEmpty) {
-      _needRebuild = false;
-      _calculatedConstraints = null;
-      return;
-    }
-
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      double _maxHeight = -1;
-      widget.children.forEach((cell) {
-        if (!cell.fitHeight) {
-          RenderBox? box = cell.key?.currentContext?.findRenderObject() as RenderBox?;
-          _maxHeight = max(_maxHeight, box?.size.height ?? _maxHeight);
-        }
-      });
-      if (_maxHeight > 0) {
-        setState(() {
-          if (_fit) print('set to false');
-          _needRebuild = false;
-          _calculatedConstraints = BoxConstraints.expand(height: _maxHeight);
-        });
-      }
-    });
   }
 }
 
@@ -283,8 +236,6 @@ class TableCellData {
   TextAlign? textAlign;
   EdgeInsets padding;
 
-  /// TODO: whether to remove it?
-  bool fitHeight;
   GlobalKey? key;
 
   static const headerColorLight = Color.fromRGBO(234, 235, 238, 1);
@@ -314,7 +265,6 @@ class TableCellData {
     this.alignment = Alignment.center,
     this.textAlign,
     this.padding = const EdgeInsets.all(4),
-    this.fitHeight = false,
   }) : assert(text == null || child == null) {
     if (isHeader) {
       maxLines ??= 1;
@@ -381,7 +331,6 @@ class TableCellData {
       data.alignment = alignment ?? alignmentList?.elementAt(index) ?? data.alignment;
       data.textAlign = textAlign ?? textAlignList?.elementAt(index) ?? data.textAlign;
       data.padding = padding ?? paddingList?.elementAt(index) ?? data.padding;
-      data.fitHeight = fitHeight ?? fitHeightList?.elementAt(index) ?? data.fitHeight;
       rowDataList[index] = data;
     }
     return rowDataList;
@@ -413,7 +362,6 @@ class TableCellData {
       alignment: alignment ?? this.alignment,
       textAlign: textAlign ?? this.textAlign,
       padding: padding ?? this.padding,
-      fitHeight: fitHeight ?? this.fitHeight,
     );
   }
 }

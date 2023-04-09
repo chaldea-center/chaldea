@@ -94,7 +94,6 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   ThemeData _getThemeData({required bool dark}) {
     final themeData = ThemeData(
       brightness: dark ? Brightness.dark : Brightness.light,
-      // TODO: fontFamilyFallback:
     );
     return themeData.copyWith(
       appBarTheme: themeData.appBarTheme.copyWith(

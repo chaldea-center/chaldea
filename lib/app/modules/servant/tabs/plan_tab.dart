@@ -550,7 +550,6 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                 },
         );
       } else {
-        // TODO: add divisions
         final items =
             List.generate((maxVal - minVal) ~/ (divisions ?? 1) + 1, (index) => minVal + index * (divisions ?? 1));
         selector = RangeSelector<int>(

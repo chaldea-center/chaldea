@@ -153,7 +153,6 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
   }
 
   double? itemExtent;
-  // TODO: move to func param somewhere
   bool get prototypeExtent => false;
 
   Widget buildListView({

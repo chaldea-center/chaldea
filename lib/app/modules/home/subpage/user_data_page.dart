@@ -10,6 +10,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/backup_backend/chaldea_backend.dart';
@@ -257,15 +258,16 @@ class _UserDataPageState extends State<UserDataPage> {
             child: Text(S.current.cancel),
           ),
           TextButton(
-            onPressed: () {
-              db.settings.useAndroidExternal = useExternal;
-              db.saveSettings();
+            onPressed: () async {
+              db.paths.androidUseExternalStorage = useExternal;
               Navigator.of(context).pop();
               SimpleCancelOkDialog(
                 title: Text('⚠️ ${S.current.warning}'),
                 content: Text(S.current.migrate_external_storage_manual_warning),
                 hideCancel: true,
               ).showDialog(context);
+              final sp = await SharedPreferences.getInstance();
+              sp.setBool('android_use_external', useExternal);
             },
             child: Text(S.current.migrate_external_storage_btn_no),
           ),
@@ -275,7 +277,8 @@ class _UserDataPageState extends State<UserDataPage> {
               try {
                 Navigator.of(context).pop();
                 await _copyDirectory(from, to);
-                db.settings.useAndroidExternal = useExternal;
+                final sp = await SharedPreferences.getInstance();
+                sp.setBool('android_use_external', useExternal);
                 if (mounted) {
                   SimpleCancelOkDialog(
                     title: const Text('⚠️ Warning'),
@@ -283,7 +286,6 @@ class _UserDataPageState extends State<UserDataPage> {
                     hideCancel: true,
                   ).showDialog(context);
                 }
-                db.saveSettings();
                 EasyLoading.dismiss();
               } catch (e, s) {
                 logger.e('migrate android data to external failed', e, s);

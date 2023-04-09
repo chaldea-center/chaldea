@@ -58,9 +58,6 @@ class LocalSettings {
   TipsSetting tips;
   BattleSimSetting battleSim;
 
-  // TODO: move to persist storage
-  bool useAndroidExternal = false;
-
   // filters
   Region spoilerRegion;
   SvtFilterData svtFilterData;
