@@ -20,6 +20,34 @@ class DropCalcInputTab extends StatefulWidget {
   _DropCalcInputTabState createState() => _DropCalcInputTabState();
 }
 
+enum _InputMode {
+  count,
+  weight,
+  bonus;
+
+  String get shownName {
+    switch (this) {
+      case _InputMode.count:
+        return S.current.counts;
+      case _InputMode.weight:
+        return S.current.calc_weight;
+      case _InputMode.bonus:
+        return S.current.event_bonus;
+    }
+  }
+
+  num getValue(FreeLPParams params, int itemId) {
+    switch (this) {
+      case _InputMode.count:
+        return params.getPlanItemCount(itemId);
+      case _InputMode.weight:
+        return params.getPlanItemWeight(itemId);
+      case _InputMode.bonus:
+        return params.getPlanItemBonus(itemId);
+    }
+  }
+}
+
 class _DropCalcInputTabState extends State<DropCalcInputTab> {
   late ScrollController _scrollController;
 
@@ -28,6 +56,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
   // category - itemKey
   final FreeLPSolver solver = FreeLPSolver();
   bool running = false;
+  _InputMode inputMode = _InputMode.count;
 
   @override
   void initState() {
@@ -74,7 +103,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                 SizedBox(
                   width: 65,
                   child: Center(
-                    child: Text(planOrEff ? S.current.counts : S.current.calc_weight),
+                    child: Text(inputMode.shownName),
                   ),
                 ),
                 IconButton(
@@ -154,13 +183,20 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
             );
           },
         );
+        List<String> subtitles = [];
+        for (final mode in _InputMode.values) {
+          if (mode == inputMode) continue;
+          final v = mode.getValue(params, itemId);
+          if (mode == _InputMode.bonus) {
+            if (v == 0) continue;
+            subtitles.add('${mode.shownName} $v%');
+          } else {
+            subtitles.add('${mode.shownName} $v');
+          }
+        }
         Widget subtitle = Padding(
           padding: const EdgeInsetsDirectional.only(start: 8),
-          child: Text(
-            planOrEff
-                ? S.current.words_separate(S.current.calc_weight, params.getPlanItemWeight(itemId))
-                : S.current.words_separate(S.current.counts, params.getPlanItemCount(itemId)),
-          ),
+          child: Text(subtitles.join(', ')),
         );
         return CustomTile(
           contentPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
@@ -175,22 +211,26 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                 width: 65,
                 child: TextFormField(
                   key: Key('calc_input_$itemId'),
-                  controller: TextEditingController(
-                      text: planOrEff
-                          ? params.getPlanItemCount(itemId).toString()
-                          : params.getPlanItemWeight(itemId).toString()),
-                  keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: true),
+                  controller: TextEditingController(text: inputMode.getValue(params, itemId).toString()),
+                  keyboardType: TextInputType.numberWithOptions(
+                    signed: inputMode == _InputMode.count,
+                    decimal: inputMode == _InputMode.weight,
+                  ),
                   textAlign: TextAlign.center,
                   // textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(isDense: true),
                   // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   onChanged: (s) {
-                    if (planOrEff) {
-                      int? v = int.tryParse(s);
-                      if (v != null) params.planItemCounts[itemId] = v;
-                    } else {
-                      double? v = double.tryParse(s);
-                      if (v != null) params.planItemWeights[itemId] = v;
+                    switch (inputMode) {
+                      case _InputMode.count:
+                        params.planItemCounts[itemId] = int.tryParse(s) ?? 0;
+                        break;
+                      case _InputMode.weight:
+                        params.planItemWeights[itemId] = double.tryParse(s) ?? 0;
+                        break;
+                      case _InputMode.bonus:
+                        params.planItemBonus[itemId] = int.tryParse(s) ?? 0;
+                        break;
                     }
                   },
                 ),
@@ -224,14 +264,13 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               crossAxisAlignment: WrapCrossAlignment.center,
               spacing: 4,
               children: <Widget>[
-                DropdownButton<bool>(
-                  value: planOrEff,
+                DropdownButton<_InputMode>(
+                  value: inputMode,
                   isDense: true,
                   items: [
-                    DropdownMenuItem(value: true, child: Text(S.current.plan)),
-                    DropdownMenuItem(value: false, child: Text(S.current.efficiency))
+                    for (final mode in _InputMode.values) DropdownMenuItem(value: mode, child: Text(mode.shownName)),
                   ],
-                  onChanged: (v) => setState(() => planOrEff = v ?? planOrEff),
+                  onChanged: (v) => setState(() => inputMode = v ?? inputMode),
                 ),
               ],
             ),
@@ -307,8 +346,6 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     if (itemId != null) params.rows.add(itemId);
   }
 
-  bool planOrEff = true;
-
   void solve() async {
     FocusScope.of(context).unfocus();
     if (Maths.max(params.counts, 0) <= 0) {
@@ -320,7 +357,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     });
     final solution = await solver.calculate(params: params);
     running = false;
-    solution.destination = planOrEff ? 1 : 2;
+    solution.destination = inputMode == _InputMode.weight ? 2 : 1;
     solution.params = params;
     if (widget.onSolved != null) {
       widget.onSolved!(solution);

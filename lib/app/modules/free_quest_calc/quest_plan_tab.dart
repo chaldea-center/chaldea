@@ -49,7 +49,30 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
         ),
       ));
     }
-    for (final v in widget.solution?.countVars ?? []) {
+    final allBonus = widget.solution?.params?.validBonuses ?? {};
+    allBonus.removeWhere((key, value) => ignoredItems.contains(key));
+    if (allBonus.isNotEmpty) {
+      children.add(Card(
+        margin: const EdgeInsets.all(8),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Wrap(
+            spacing: 3,
+            runSpacing: 4,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(S.current.event_bonus),
+              const SizedBox(width: 4),
+              for (final itemId in allBonus.keys) ...[
+                Item.iconBuilder(context: context, item: db.gameData.items[itemId], width: 32),
+                Text('+${allBonus[itemId]}%', style: Theme.of(context).textTheme.bodySmall)
+              ],
+            ],
+          ),
+        ),
+      ));
+    }
+    for (final v in widget.solution?.countVars ?? <LPVariable>[]) {
       children.add(buildQuest(v));
     }
     if (widget.solution?.countVars.isNotEmpty == true) {

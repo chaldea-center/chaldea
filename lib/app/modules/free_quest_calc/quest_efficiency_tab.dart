@@ -81,7 +81,31 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     filterItems.removeWhere((element) => !allItems.contains(element));
 
     List<Widget> children = [];
-    solutionVars.forEach((variable) {
+
+    final allBonus = widget.solution?.params?.validBonuses ?? {};
+    if (allBonus.isNotEmpty) {
+      children.add(Card(
+        margin: const EdgeInsets.all(8),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Wrap(
+            spacing: 3,
+            runSpacing: 4,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(S.current.event_bonus),
+              const SizedBox(width: 4),
+              for (final itemId in allBonus.keys) ...[
+                Item.iconBuilder(context: context, item: db.gameData.items[itemId], width: 32),
+                Text('+${allBonus[itemId]}%', style: Theme.of(context).textTheme.bodySmall)
+              ],
+            ],
+          ),
+        ),
+      ));
+    }
+
+    for (final variable in solutionVars) {
       final int questId = variable.name;
       final Map<int, double> drops = variable.detail;
       final Quest? quest = db.gameData.getQuestPhase(questId) ?? db.gameData.quests[questId];
@@ -127,7 +151,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
           ),
         ));
       }
-    });
+    }
 
     return Column(
       children: [

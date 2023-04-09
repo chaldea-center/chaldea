@@ -13,6 +13,7 @@ class FreeLPParams {
 
   Map<int, int> planItemCounts;
   Map<int, double> planItemWeights;
+  Map<int, int> planItemBonus; // 5->5%
 
   List<int> get counts => rows.map((e) => getPlanItemCount(e)).toList();
 
@@ -56,9 +57,16 @@ class FreeLPParams {
 
   Map<int, double> get objectiveWeights => Map.fromIterable(rows, value: (k) => getPlanItemWeight(k));
 
+  Map<int, int> get validBonuses => {
+        for (final e in rows)
+          if (getPlanItemBonus(e) > 0) e: getPlanItemBonus(e)
+      };
+
   int getPlanItemCount(int id, [int? _default]) => planItemCounts[id] ??= _default ?? 50;
 
   double getPlanItemWeight(int id, [double? _default]) => planItemWeights[id] ??= _default ?? 1.0;
+
+  int getPlanItemBonus(int id) => planItemBonus[id] ?? 0;
 
   FreeLPParams({
     List<int>? rows,
@@ -74,11 +82,13 @@ class FreeLPParams {
     this.bondBonusCount = 0,
     Map<int, int>? planItemCounts,
     Map<int, double>? planItemWeights,
+    Map<int, int>? planItemBonus,
   })  : rows = rows ?? [],
         blacklist = blacklist ?? {},
         extraCols = extraCols ?? [],
         planItemCounts = planItemCounts ?? {},
-        planItemWeights = planItemWeights ?? {};
+        planItemWeights = planItemWeights ?? {},
+        planItemBonus = planItemBonus ?? {};
 
   FreeLPParams.from(FreeLPParams other)
       : rows = List.of(other.rows),
@@ -93,7 +103,8 @@ class FreeLPParams {
         bondBonusPercent = other.bondBonusPercent,
         bondBonusCount = other.bondBonusCount,
         planItemCounts = Map.of(other.planItemCounts),
-        planItemWeights = Map.of(other.planItemWeights);
+        planItemWeights = Map.of(other.planItemWeights),
+        planItemBonus = Map.of(other.planItemBonus);
 
   DropRateSheet get sheet => db.gameData.dropData.domusAurea;
 

@@ -99,10 +99,18 @@ class FreeLPSolver {
       BasicLPParams glpkParams = BasicLPParams();
       glpkParams.colNames = data.questIds;
       glpkParams.rowNames = data.itemIds;
-      glpkParams.matA = data.matrix;
       glpkParams.bVec = data.itemIds.map((e) => params.getPlanItemCount(e, 0)).toList();
       glpkParams.cVec = params.costMinimize ? data.apCosts : List.filled(data.apCosts.length, 1, growable: true);
       glpkParams.integer = false;
+      final matrix = data.matrix.map((e) => e.toList()).toList();
+      for (int i = 0; i < data.itemIds.length; i++) {
+        final itemId = data.itemIds[i];
+        final bonus = params.getPlanItemBonus(itemId);
+        if (bonus > 0) {
+          matrix[i] = matrix[i].map((e) => e * (1 + bonus / 100)).toList();
+        }
+      }
+      glpkParams.matA = matrix;
       final _debugParams = FreeLPParams.from(params)
         ..planItemCounts.clear()
         ..planItemWeights.clear();
@@ -129,7 +137,7 @@ class FreeLPSolver {
             continue;
           }
           if (data.matrix[row][col] > 0) {
-            details[itemId] = data.matrix[row][col] * count;
+            details[itemId] = matrix[row][col] * count;
           }
         }
         solution.countVars.add(LPVariable<int>(
@@ -164,8 +172,10 @@ class FreeLPSolver {
       for (int row = 0; row < data.itemIds.length; row++) {
         int itemId = data.itemIds[row];
         if (objectiveWeights.keys.contains(itemId) && data.matrix[row][col] > 0) {
-          dropWeights[itemId] =
-              (params.useAP20 ? 20 / data.apCosts[col] : 1) * data.matrix[row][col] * objectiveWeights[itemId]!;
+          dropWeights[itemId] = (params.useAP20 ? 20 / data.apCosts[col] : 1) *
+              data.matrix[row][col] *
+              objectiveWeights[itemId]! *
+              (1 + params.getPlanItemBonus(itemId) / 100);
           sortDict<int, double>(
             dropWeights,
             compare: (a, b) => a.value.compareTo(b.value),
