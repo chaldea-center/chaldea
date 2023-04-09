@@ -14,16 +14,14 @@ import 'package:chaldea/app/battle/functions/shorten_skill.dart';
 import 'package:chaldea/app/battle/functions/sub_state.dart';
 import 'package:chaldea/app/battle/functions/transform_servant.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
-import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/app/descriptors/func/func.dart';
-import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/extension.dart';
-import 'package:chaldea/widgets/widgets.dart';
-import '../utils/_dialogs.dart';
+import '../interactions/act_set_select.dart';
+import '../interactions/td_type_change_selector.dart';
 import 'move_to_last_sub_member.dart';
 
 class FunctionExecutor {
@@ -52,7 +50,7 @@ class FunctionExecutor {
     }
     int? selectedActSet;
     if (actSets.isNotEmpty && battleData.context?.mounted == true) {
-      selectedActSet = await getSelectedFunction(battleData, actSets);
+      selectedActSet = await FuncActSetSelector.show(battleData, actSets);
     }
     for (int index = 0; index < functions.length; index += 1) {
       NiceFunction func = functions[index];
@@ -76,96 +74,6 @@ class FunctionExecutor {
     }
 
     battleData.checkBuffStatus();
-  }
-
-  static Future<int?> getSelectedFunction(
-    final BattleData battleData,
-    final Map<int, List<NiceFunction>> actSets,
-  ) async {
-    final transl = Transl.miscScope('SelectAddInfo');
-    return await showUserConfirm<int?>(
-      context: battleData.context!,
-      allowNull: true,
-      builder: (context) {
-        List<Widget> children = [];
-        final setIds = actSets.keys.toList();
-        for (int index = 0; index < setIds.length; index++) {
-          final setId = setIds[index];
-          final funcs = actSets[setId]!;
-          children.add(TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(setId);
-              battleData.battleLogger.action('${S.current.battle_select_effect}: ${transl('Option').l} $setId');
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Text(
-                '${transl('Option').l} $setId: ${funcs.map((e) => e.lPopupText.l).join(', ')}',
-                style: const TextStyle(fontSize: 18),
-              ),
-            ),
-          ));
-        }
-        children.add(TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(null);
-            battleData.battleLogger
-                .action('${S.current.battle_select_effect}: ${transl('Option').l} ${S.current.skip}');
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Text(
-              S.current.skip,
-              style: const TextStyle(fontSize: 18),
-            ),
-          ),
-        ));
-        return SimpleCancelOkDialog(
-          title: Text(S.current.battle_select_effect),
-          scrollable: true,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: children,
-          ),
-          hideOk: true,
-          hideCancel: true,
-        );
-      },
-    );
-  }
-
-  static Future<NiceTd> getSelectedTd(
-    final BattleData battleData,
-    final List<NiceTd> tds,
-  ) async {
-    tds.sort((a, b) => (a.card.index % 3).compareTo(b.card.index % 3)); // Q A B
-
-    return showUserConfirm<NiceTd>(
-      context: battleData.context!,
-      builder: (context) {
-        return SimpleCancelOkDialog(
-          title: Text(S.current.battle_select_effect),
-          content: Row(
-            children: List.generate(tds.length, (index) {
-              return Flexible(
-                child: InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop(tds[index]);
-                    battleData.battleLogger
-                        .action('${S.current.battle_select_effect}: ${tds[index].card.name.toUpperCase()}'
-                            ' ${S.current.battle_np_card}');
-                  },
-                  child: CommandCardWidget(card: tds[index].card, width: 80),
-                ),
-              );
-            }),
-          ),
-          hideOk: true,
-          hideCancel: true,
-        );
-      },
-    );
   }
 
   static Future<void> executeFunction(
@@ -256,7 +164,7 @@ class FunctionExecutor {
         if (tdSelection.script != null && tdSelection.script!.tdTypeChangeIDs != null) {
           final List<NiceTd> tds = svt.getTdsById(tdSelection.script!.tdTypeChangeIDs!);
           if (tds.isNotEmpty && battleData.context != null) {
-            tdSelection = await getSelectedTd(battleData, tds);
+            tdSelection = await TdTypeChangeSelector.show(battleData, tds);
           }
         }
         tdSelections.add(tdSelection);

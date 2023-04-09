@@ -1,6 +1,4 @@
 import 'package:chaldea/app/battle/models/battle.dart';
-import 'package:chaldea/app/battle/models/card_dmg.dart';
-import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/extension.dart';

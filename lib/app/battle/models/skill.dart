@@ -2,10 +2,8 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:chaldea/app/battle/functions/function_executor.dart';
-import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/widgets/widgets.dart';
-import '../utils/_dialogs.dart';
+import '../interactions/skill_act_select.dart';
 import 'battle.dart';
 
 class BattleSkillInfoData {
@@ -141,7 +139,7 @@ class BattleSkillInfoData {
     int? selectedActionIndex;
     if (skill.script != null && skill.script!.SelectAddInfo != null && skill.script!.SelectAddInfo!.isNotEmpty) {
       if (battleData.context?.mounted == true) {
-        selectedActionIndex = await getSelectedIndex(battleData, skill, skillLevel);
+        selectedActionIndex = await SkillActSelectDialog.show(battleData, skill, skillLevel);
       }
     }
 
@@ -166,60 +164,6 @@ class BattleSkillInfoData {
       ..skillLv = skillLv
       ..skillScript = skillScript
       ..chargeTurn = chargeTurn;
-  }
-
-  static Future<int> getSelectedIndex(
-    final BattleData battleData,
-    final BaseSkill skill,
-    final int skillLevel,
-  ) async {
-    final selectAddInfo = skill.script!.SelectAddInfo![skillLevel - 1];
-    final buttons = selectAddInfo.btn;
-    final transl = Transl.miscScope('SelectAddInfo');
-    return showUserConfirm<int>(
-      context: battleData.context!,
-      builder: (context) {
-        return SimpleCancelOkDialog(
-          title: Text(S.current.battle_select_effect),
-          scrollable: true,
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: divideTiles([
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Text(
-                  '${transl('Optional').l}: ${transl(selectAddInfo.title).l}',
-                  textScaleFactor: 0.85,
-                ),
-              ),
-              ...List.generate(buttons.length, (index) {
-                final button = buttons[index];
-                final textWidget = Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Text(
-                    '${transl('Option').l} ${index + 1}: ${transl(button.name).l}',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                );
-                return TextButton(
-                  onPressed: button.conds.every((cond) => !checkSkillScripCondition(battleData, cond.cond, cond.value))
-                      ? null
-                      : () {
-                          Navigator.of(context).pop(index);
-                          battleData.battleLogger
-                              .action('${S.current.battle_select_effect}: ${transl('Option').l} ${index + 1}');
-                        },
-                  child: textWidget,
-                );
-              })
-            ]),
-          ),
-          hideOk: true,
-          hideCancel: true,
-        );
-      },
-    );
   }
 
   static bool checkSkillScripCondition(

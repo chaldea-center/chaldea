@@ -1,5 +1,4 @@
 import 'package:chaldea/app/battle/models/battle.dart';
-import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/models/gamedata/vals.dart';
 
 class HastenNpturn {

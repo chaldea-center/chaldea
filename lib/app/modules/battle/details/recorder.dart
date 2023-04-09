@@ -8,7 +8,6 @@ import 'package:screenshot/screenshot.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
-import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -17,7 +16,6 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../../../battle/models/skill.dart';
 import 'svt_detail.dart';
 
 class BattleRecorderPanel extends StatefulWidget {

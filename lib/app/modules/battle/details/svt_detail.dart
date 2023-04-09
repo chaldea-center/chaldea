@@ -4,8 +4,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
-import 'package:chaldea/app/battle/models/buff.dart';
-import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/descriptors/func/func.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';

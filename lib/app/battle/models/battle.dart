@@ -13,10 +13,17 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../utils/_dialogs.dart';
+import '../interactions/tailored_execution_confirm.dart';
 import 'buff.dart';
 import 'skill.dart';
 import 'svt_entity.dart';
+
+export 'buff.dart';
+export 'skill.dart';
+export 'svt_entity.dart';
+export 'craft_essence_entity.dart';
+export 'card_dmg.dart';
+export 'command_card.dart';
 
 class BattleData {
   static const kValidTotalStarMax = 99;
@@ -949,57 +956,12 @@ class BattleData {
   Future<bool> canActivate(final int activationRate, final String description) async {
     if (activationRate < 1000 && activationRate > 0 && tailoredExecution && context?.mounted == true) {
       final curResult = probabilityThreshold <= activationRate ? S.current.success : S.current.failed;
-      return showUserConfirm<bool>(
-        context: context!,
-        builder: (context) {
-          return SimpleCancelOkDialog(
-            title: Text(S.current.battle_select_effect),
-            scrollable: true,
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: divideTiles(
-                [
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Text(description, textScaleFactor: 0.85),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Text(
-                      '${S.current.results}: $curResult => '
-                      '${S.current.battle_activate_probability}: '
-                      '${(activationRate / 10).toStringAsFixed(1)}% '
-                      'vs ${S.current.probability_expectation}: '
-                      '${(probabilityThreshold / 10).toStringAsFixed(1)}%',
-                      textScaleFactor: 0.85,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Text('${S.current.battle_should_activate}: '),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(true);
-                        },
-                        child: const Text('Yes'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(false);
-                        },
-                        child: const Text('No'),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            hideOk: true,
-            hideCancel: true,
-          );
-        },
-      );
+      final String details = '${S.current.results}: $curResult => '
+          '${S.current.battle_activate_probability}: '
+          '${(activationRate / 10).toStringAsFixed(1)}% '
+          'vs ${S.current.probability_expectation}: '
+          '${(probabilityThreshold / 10).toStringAsFixed(1)}%';
+      return TailoredExecutionConfirm.show(context: context!, description: description, details: details);
     }
 
     return probabilityThreshold <= activationRate;

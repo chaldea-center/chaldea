@@ -1,17 +1,13 @@
 import 'dart:math';
 
 import 'package:chaldea/app/battle/models/battle.dart';
-import 'package:chaldea/app/battle/models/command_card.dart';
-import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
-import 'package:chaldea/app/modules/battle/svt_option_editor.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/widgets/widgets.dart';
-import '../utils/_dialogs.dart';
+import '../interactions/damage_adjustor.dart';
 import '../utils/battle_logger.dart';
 
 enum NpSpecificMode { normal, individualSum, rarity }
@@ -182,7 +178,7 @@ class Damage {
           ..enemyStarGenResist = await target.getBuffValueOnAction(battleData, BuffAction.criticalStarDamageTaken);
       }
 
-      final totalDamage = await adjustTotalDamage(battleData, damageParameters);
+      final totalDamage = await DamageAdjustor.show(battleData, damageParameters);
       int remainingDamage = totalDamage;
 
       int overkillCount = 0;
@@ -339,77 +335,5 @@ class Damage {
     relation = await target.getClassRelation(battleData, relation, activator.svtClass, true);
 
     return relation;
-  }
-
-  static Future<int> adjustTotalDamage(final BattleData battleData, final DamageParameters damageParameters) async {
-    if (battleData.tailoredExecution && battleData.context != null) {
-      return showUserConfirm<int>(
-        context: battleData.context!,
-        barrierDismissible: false,
-        builder: (context) {
-          return DamageAdjustor(battleData: battleData, damageParameters: damageParameters);
-        },
-      );
-    }
-
-    return calculateDamage(damageParameters);
-  }
-}
-
-class DamageAdjustor extends StatefulWidget {
-  final BattleData battleData;
-  final DamageParameters damageParameters;
-
-  const DamageAdjustor({super.key, required this.battleData, required this.damageParameters});
-
-  @override
-  State<DamageAdjustor> createState() => _DamageAdjustorState();
-}
-
-class _DamageAdjustorState extends State<DamageAdjustor> {
-  @override
-  Widget build(BuildContext context) {
-    final totalDamage = calculateDamage(widget.damageParameters);
-    return SimpleCancelOkDialog(
-      title: Text(S.current.battle_select_effect),
-      scrollable: true,
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '${widget.battleData.activator!.lBattleName} - '
-            '${widget.damageParameters.currentCardType.name.toTitle()} - '
-            '${widget.damageParameters.isNp ? S.current.battle_np_card : S.current.battle_command_card}'
-            '\nvs ${widget.battleData.target!.lBattleName} (HP: ${widget.battleData.target!.hp})',
-            style: Theme.of(context).textTheme.bodyMedium,
-            textScaleFactor: 0.9,
-          ),
-          const SizedBox(height: 8),
-          Text('${S.current.battle_damage}: $totalDamage'),
-          ServantOptionEditPage.buildSlider(
-            leadingText: S.current.battle_random,
-            min: ConstData.constants.attackRateRandomMin,
-            max: ConstData.constants.attackRateRandomMax - 1,
-            value: widget.damageParameters.fixedRandom,
-            label: toModifier(widget.damageParameters.fixedRandom).toStringAsFixed(3),
-            onChange: (v) {
-              widget.damageParameters.fixedRandom = v.round();
-              if (mounted) setState(() {});
-            },
-          ),
-        ],
-      ),
-      hideOk: true,
-      hideCancel: true,
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(totalDamage);
-          },
-          child: Text(S.current.confirm),
-        )
-      ],
-    );
   }
 }

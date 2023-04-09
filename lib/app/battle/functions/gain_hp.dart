@@ -1,5 +1,4 @@
 import 'package:chaldea/app/battle/models/battle.dart';
-import 'package:chaldea/app/battle/models/svt_entity.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/models/gamedata/const_data.dart';
 import 'package:chaldea/models/gamedata/vals.dart';

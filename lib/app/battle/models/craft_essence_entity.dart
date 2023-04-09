@@ -1,5 +1,4 @@
 import 'package:chaldea/app/battle/models/battle.dart';
-import 'package:chaldea/app/battle/models/skill.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/extension.dart';
 

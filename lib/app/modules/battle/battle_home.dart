@@ -56,6 +56,7 @@ class BattleHomePage extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.calculate),
               title: Text(S.current.battle_simulation),
+              subtitle: const Text('3T Simulator'),
               // horizontalTitleGap: 0,
               onTap: () {
                 router.push(url: Routes.laplace);

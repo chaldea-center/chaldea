@@ -67,7 +67,6 @@ class ExtraAssetsPage extends StatelessWidget {
           ..._getUrls(assets.charaGraph),
           ..._getUrls(extraAssets?.charaGraphEx),
           ..._getUrls(extraAssets?.charaGraphChange),
-          ...aprilFoolAssets
         ],
         300,
         showMerge: true,
