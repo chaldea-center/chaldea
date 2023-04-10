@@ -70,14 +70,21 @@ class GameData with _GameDataExtra {
   _GameDataAdd? addData;
   Region? spoilerRegion;
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  Map<int, Servant> servantsById;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  Map<int, CraftEssence> craftEssencesById;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  Map<int, CommandCode> commandCodesById;
+
   Map<int, Servant> get servantsNoDup => servants;
   bool get isValid => version.timestamp > 0 && servantsById.isNotEmpty && items.length > 1;
 
   GameData({
     DataVersion? version,
-    Map<int, Servant>? servants,
-    Map<int, CraftEssence>? craftEssences,
-    Map<int, CommandCode>? commandCodes,
+    List<Servant> servants = const [],
+    List<CraftEssence> craftEssences = const [],
+    List<CommandCode> commandCodes = const [],
     Map<int, MysticCode>? mysticCodes,
     Map<int, Event>? events,
     Map<int, NiceWar>? wars,
@@ -97,9 +104,21 @@ class GameData with _GameDataExtra {
     this.addData,
     this.spoilerRegion,
   })  : version = version ?? DataVersion(),
-        servants = servants ?? {},
-        craftEssences = craftEssences ?? {},
-        commandCodes = commandCodes ?? {},
+        servants = {
+          for (final svt in servants)
+            if (svt.collectionNo > 0) svt.collectionNo: svt
+        },
+        servantsById = {for (final svt in servants) svt.id: svt},
+        craftEssences = {
+          for (final ce in craftEssences)
+            if (ce.collectionNo > 0) ce.collectionNo: ce
+        },
+        craftEssencesById = {for (final ce in craftEssences) ce.id: ce},
+        commandCodes = {
+          for (final cc in commandCodes)
+            if (cc.collectionNo > 0) cc.collectionNo: cc
+        },
+        commandCodesById = {for (final cc in commandCodes) cc.id: cc},
         mysticCodes = mysticCodes ?? {},
         events = events ?? {},
         wars = wars ?? {},
@@ -274,12 +293,6 @@ mixin _GameDataExtra {
   late Map<int, WarMap> maps;
   @JsonKey(includeFromJson: false, includeToJson: false)
   late Map<int, Quest> quests;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  late Map<int, Servant> servantsById;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  late Map<int, CraftEssence> craftEssencesById;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  late Map<int, CommandCode> commandCodesById;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, Servant> servantsWithDup = {};
   @JsonKey(includeFromJson: false, includeToJson: false)

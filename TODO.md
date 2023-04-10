@@ -7,6 +7,7 @@ There are plenty of work need to do.
 ### High Priority
 
 - [x] catch error for user interaction (skill/attack)
+- [ ] show loading toast when fetch api
 
 ### Ally Function Logic:
 
@@ -24,7 +25,7 @@ There are plenty of work need to do.
 - [ ] FuncType gainHpPer figure out if Percentage heal benefits from healGrant buff
 - [ ] FuncType gainHp/NpFromTargets & moveState can probably be implemented in the dependedFunc with an additional
       receiver argument to receive what's lost from absorbTargets
-- [ ] FuncType transformServant may need a local copy of Hyde data
+- [x] FuncType transformServant may need a local copy of Hyde data
 - [ ] DataVals AddLinkageTargetIndividualty & BehaveAsFamilyBuff & UnSubStateWhileLinkedToOthers
 - [ ] DataVals CounterId CounterLv CounterOc SkillReaction UseTreasureDevice
 - [ ] DataVals TriggeredFuncPosition ignored, only checking previous function success for now
@@ -106,13 +107,11 @@ There are plenty of work need to do.
 - [ ] userdata: make all constructor params nullable, catch error when converting token
 - [ ] remember svt tabs
 - [ ] logger.level
-- [ ] l10n: related_card->related_card_on_stage
-- [ ] android: external SD card
+- [x] android: external SD card
 - [ ] filter_group_data: default value
 - [ ] svt icon: custom image
 - [ ] plan_tab: append/active/all
 - [ ] cards: weak/strength
-- [ ] huntingId=any
 - [ ] func/buff/skill/td: factory fromJson(json,{cached=true})
 - [ ] routeTo: add this as argument
 - [ ] generate skill/np in one image
@@ -127,7 +126,12 @@ There are plenty of work need to do.
 - [ ] summon: add wiki prob edit util
 - [ ] add daily quests' enemy traits for missions
 - [ ] improve audio player
-- [ ] enhanced spoiler
+- [ ] desktop: exit may not work, system_tray?
+- [ ] home buttons: update, upload, download
+- [ ] svt lv
+- [ ] sort by svt lv/nplv, ce lv
+- [ ] ce: chara on illust + related chara
+- [ ] shop: another pay type (api)
 
 ## Servant
 
@@ -142,8 +146,6 @@ There are plenty of work need to do.
   - [ ] summon plan: ?
 - [x] Saint Quartz estimate
   - [ ] poor performance
-- [ ] Events
-  - [ ] War Map
 - [ ] Buff/Function reversing
 - [ ] Support Party generation
 

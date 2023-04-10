@@ -8,15 +8,18 @@ part of '../../../models/gamedata/gamedata.dart';
 
 GameData _$GameDataFromJson(Map json) => GameData(
       version: json['version'] == null ? null : DataVersion.fromJson(Map<String, dynamic>.from(json['version'] as Map)),
-      servants: (json['servants'] as Map?)?.map(
-        (k, e) => MapEntry(int.parse(k as String), Servant.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
-      craftEssences: (json['craftEssences'] as Map?)?.map(
-        (k, e) => MapEntry(int.parse(k as String), CraftEssence.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
-      commandCodes: (json['commandCodes'] as Map?)?.map(
-        (k, e) => MapEntry(int.parse(k as String), CommandCode.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
+      servants: (json['servants'] as List<dynamic>?)
+              ?.map((e) => Servant.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      craftEssences: (json['craftEssences'] as List<dynamic>?)
+              ?.map((e) => CraftEssence.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      commandCodes: (json['commandCodes'] as List<dynamic>?)
+              ?.map((e) => CommandCode.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       mysticCodes: (json['mysticCodes'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), MysticCode.fromJson(Map<String, dynamic>.from(e as Map))),
       ),

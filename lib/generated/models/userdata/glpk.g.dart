@@ -32,6 +32,11 @@ FreeLPParams _$FreeLPParamsFromJson(Map json) => $checkedCreate(
               (v) => (v as Map?)?.map(
                     (k, e) => MapEntry(int.parse(k as String), (e as num).toDouble()),
                   )),
+          planItemBonus: $checkedConvert(
+              'planItemBonus',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                  )),
         );
         return val;
       },
@@ -41,6 +46,7 @@ Map<String, dynamic> _$FreeLPParamsToJson(FreeLPParams instance) => <String, dyn
       'rows': instance.rows,
       'planItemCounts': instance.planItemCounts.map((k, e) => MapEntry(k.toString(), e)),
       'planItemWeights': instance.planItemWeights.map((k, e) => MapEntry(k.toString(), e)),
+      'planItemBonus': instance.planItemBonus.map((k, e) => MapEntry(k.toString(), e)),
       'progress': instance.progress,
       'blacklist': instance.blacklist.toList(),
       'minCost': instance.minCost,

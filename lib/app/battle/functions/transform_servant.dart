@@ -2,7 +2,6 @@ import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
-import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../../../models/db.dart';
 
@@ -33,12 +32,7 @@ class TransformServant {
         target.skillInfoList[2].baseSkill = svt?.skills.firstWhereOrNull((e) => e.id == 888575);
         target.td = svt?.noblePhantasms.firstWhereOrNull((e) => e.id == 304802);
       } else {
-        Servant? targetSvt;
-        try {
-          targetSvt = await AtlasApi.svt(targetSvtId);
-        } catch (e) {
-          logger.e('Exception while fetch AtlasApi for servant $targetSvtId', e);
-        }
+        Servant? targetSvt = db.gameData.servantsById[targetSvtId] ?? await AtlasApi.svt(targetSvtId);
         if (targetSvt == null) {
           battleData.battleLogger.debug('${S.current.not_found}: $targetSvtId');
         } else {

@@ -223,13 +223,16 @@ class GameDataLoader {
     List<Future> futures = [];
     final _pool = Pool(offline ? 30 : 5);
     Map<String, String> keys = {
+      // keep list
+      // 'servants': 'collectionNo',
+      // 'craftEssences': 'collectionNo',
+      // 'commandCodes': 'collectionNo',
+
       'baseFunctions': 'funcId',
       'baseSkills': 'id',
       'baseTds': 'id',
       'bgms': 'id',
-      'commandCodes': 'collectionNo',
       // constData
-      'craftEssences': 'collectionNo',
       // dropRate
       'entities': 'id',
       'events': 'id',
@@ -240,7 +243,6 @@ class GameDataLoader {
       // mappingPatch
       'mysticCodes': 'id',
       // 'questPhases':'',
-      'servants': 'collectionNo',
       'wars': 'id',
       'extraMasterMission': 'id',
       'wiki.commandCodes': 'collectionNo',
