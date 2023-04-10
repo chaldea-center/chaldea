@@ -51,6 +51,34 @@ NiceWar _$NiceWarFromJson(Map json) => NiceWar(
           const [],
     );
 
+Map<String, dynamic> _$NiceWarToJson(NiceWar instance) => <String, dynamic>{
+      'id': instance.id,
+      'coordinates': instance.coordinates,
+      'age': instance.age,
+      'flags': instance.flags.map(const WarFlagConverter().toJson).toList(),
+      'banner': instance.banner,
+      'headerImage': instance.headerImage,
+      'priority': instance.priority,
+      'parentWarId': instance.parentWarId,
+      'materialParentWarId': instance.materialParentWarId,
+      'emptyMessage': instance.emptyMessage,
+      'bgm': instance.bgm.toJson(),
+      'scriptId': instance.scriptId,
+      'script': instance.script,
+      'startType': _$WarStartTypeEnumMap[instance.startType]!,
+      'targetId': instance.targetId,
+      'eventName': instance.eventName,
+      'lastQuestId': instance.lastQuestId,
+      'warAdds': instance.warAdds.map((e) => e.toJson()).toList(),
+      'maps': instance.maps.map((e) => e.toJson()).toList(),
+      'spots': instance.spots.map((e) => e.toJson()).toList(),
+      'spotRoads': instance.spotRoads.map((e) => e.toJson()).toList(),
+      'questSelections': instance.questSelections.map((e) => e.toJson()).toList(),
+      'eventId': instance.eventId,
+      'name': instance.name,
+      'longName': instance.longName,
+    };
+
 const _$WarStartTypeEnumMap = {
   WarStartType.none: 'none',
   WarStartType.script: 'script',
@@ -70,6 +98,16 @@ WarMap _$WarMapFromJson(Map json) => WarMap(
       bgm: Bgm.fromJson(Map<String, dynamic>.from(json['bgm'] as Map)),
     );
 
+Map<String, dynamic> _$WarMapToJson(WarMap instance) => <String, dynamic>{
+      'id': instance.id,
+      'mapImage': instance.mapImage,
+      'mapImageW': instance.mapImageW,
+      'mapImageH': instance.mapImageH,
+      'mapGimmicks': instance.mapGimmicks.map((e) => e.toJson()).toList(),
+      'headerImage': instance.headerImage,
+      'bgm': instance.bgm.toJson(),
+    };
+
 MapGimmick _$MapGimmickFromJson(Map json) => MapGimmick(
       id: json['id'] as int,
       image: json['image'] as String?,
@@ -88,6 +126,21 @@ MapGimmick _$MapGimmickFromJson(Map json) => MapGimmick(
       dispTargetId2: json['dispTargetId2'] as int? ?? 0,
       dispTargetValue2: json['dispTargetValue2'] as int? ?? 0,
     );
+
+Map<String, dynamic> _$MapGimmickToJson(MapGimmick instance) => <String, dynamic>{
+      'id': instance.id,
+      'image': instance.image,
+      'x': instance.x,
+      'y': instance.y,
+      'depthOffset': instance.depthOffset,
+      'scale': instance.scale,
+      'dispCondType': const CondTypeConverter().toJson(instance.dispCondType),
+      'dispTargetId': instance.dispTargetId,
+      'dispTargetValue': instance.dispTargetValue,
+      'dispCondType2': const CondTypeConverter().toJson(instance.dispCondType2),
+      'dispTargetId2': instance.dispTargetId2,
+      'dispTargetValue2': instance.dispTargetValue2,
+    };
 
 NiceSpot _$NiceSpotFromJson(Map json) => NiceSpot(
       id: json['id'] as int,
@@ -116,6 +169,27 @@ NiceSpot _$NiceSpotFromJson(Map json) => NiceSpot(
           const [],
     );
 
+Map<String, dynamic> _$NiceSpotToJson(NiceSpot instance) => <String, dynamic>{
+      'id': instance.id,
+      'joinSpotIds': instance.joinSpotIds,
+      'mapId': instance.mapId,
+      'name': instance.name,
+      'image': instance.image,
+      'x': instance.x,
+      'y': instance.y,
+      'imageOfsX': instance.imageOfsX,
+      'imageOfsY': instance.imageOfsY,
+      'nameOfsX': instance.nameOfsX,
+      'nameOfsY': instance.nameOfsY,
+      'questOfsX': instance.questOfsX,
+      'questOfsY': instance.questOfsY,
+      'nextOfsX': instance.nextOfsX,
+      'nextOfsY': instance.nextOfsY,
+      'closedMessage': instance.closedMessage,
+      'spotAdds': instance.spotAdds.map((e) => e.toJson()).toList(),
+      'quests': instance.quests.map((e) => e.toJson()).toList(),
+    };
+
 SpotAdd _$SpotAddFromJson(Map json) => SpotAdd(
       priority: json['priority'] as int? ?? 0,
       overrideType: $enumDecodeNullable(_$SpotOverwriteTypeEnumMap, json['overrideType']) ?? SpotOverwriteType.none,
@@ -126,6 +200,16 @@ SpotAdd _$SpotAddFromJson(Map json) => SpotAdd(
       condTargetId: json['condTargetId'] as int,
       condNum: json['condNum'] as int? ?? 0,
     );
+
+Map<String, dynamic> _$SpotAddToJson(SpotAdd instance) => <String, dynamic>{
+      'priority': instance.priority,
+      'overrideType': _$SpotOverwriteTypeEnumMap[instance.overrideType]!,
+      'targetId': instance.targetId,
+      'targetText': instance.targetText,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'condTargetId': instance.condTargetId,
+      'condNum': instance.condNum,
+    };
 
 const _$SpotOverwriteTypeEnumMap = {
   SpotOverwriteType.none: 'none',
@@ -161,6 +245,24 @@ SpotRoad _$SpotRoadFromJson(Map json) => SpotRoad(
       activeTargetValue: json['activeTargetValue'] as int? ?? 0,
     );
 
+Map<String, dynamic> _$SpotRoadToJson(SpotRoad instance) => <String, dynamic>{
+      'id': instance.id,
+      'warId': instance.warId,
+      'mapId': instance.mapId,
+      'image': instance.image,
+      'srcSpotId': instance.srcSpotId,
+      'dstSpotId': instance.dstSpotId,
+      'dispCondType': const CondTypeConverter().toJson(instance.dispCondType),
+      'dispTargetId': instance.dispTargetId,
+      'dispTargetValue': instance.dispTargetValue,
+      'dispCondType2': const CondTypeConverter().toJson(instance.dispCondType2),
+      'dispTargetId2': instance.dispTargetId2,
+      'dispTargetValue2': instance.dispTargetValue2,
+      'activeCondType': const CondTypeConverter().toJson(instance.activeCondType),
+      'activeTargetId': instance.activeTargetId,
+      'activeTargetValue': instance.activeTargetValue,
+    };
+
 WarAdd _$WarAddFromJson(Map json) => WarAdd(
       warId: json['warId'] as int,
       type: $enumDecodeNullable(_$WarOverwriteTypeEnumMap, json['type']) ?? WarOverwriteType.unknown,
@@ -174,6 +276,20 @@ WarAdd _$WarAddFromJson(Map json) => WarAdd(
       startedAt: json['startedAt'] as int,
       endedAt: json['endedAt'] as int,
     );
+
+Map<String, dynamic> _$WarAddToJson(WarAdd instance) => <String, dynamic>{
+      'warId': instance.warId,
+      'type': _$WarOverwriteTypeEnumMap[instance.type]!,
+      'priority': instance.priority,
+      'overwriteId': instance.overwriteId,
+      'overwriteStr': instance.overwriteStr,
+      'overwriteBanner': instance.overwriteBanner,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'targetId': instance.targetId,
+      'value': instance.value,
+      'startedAt': instance.startedAt,
+      'endedAt': instance.endedAt,
+    };
 
 const _$WarOverwriteTypeEnumMap = {
   WarOverwriteType.unknown: 'unknown',
@@ -205,6 +321,12 @@ WarQuestSelection _$WarQuestSelectionFromJson(Map json) => WarQuestSelection(
       shortcutBanner: json['shortcutBanner'] as String?,
       priority: json['priority'] as int,
     );
+
+Map<String, dynamic> _$WarQuestSelectionToJson(WarQuestSelection instance) => <String, dynamic>{
+      'quest': instance.quest.toJson(),
+      'shortcutBanner': instance.shortcutBanner,
+      'priority': instance.priority,
+    };
 
 const _$WarFlagEnumMap = {
   WarFlag.none: 'none',

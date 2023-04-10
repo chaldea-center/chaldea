@@ -20,6 +20,8 @@ class DropData {
   }) : domusAurea = domusAurea ?? DropRateSheet();
 
   factory DropData.fromJson(Map<String, dynamic> json) => _$DropDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DropDataToJson(this);
 }
 
 @JsonSerializable()
@@ -47,8 +49,6 @@ class DropRateSheet {
     this.sparseMatrix = const {},
   }) : matrix = List.generate(
             itemIds.length, (i) => List.generate(questIds.length, (j) => (sparseMatrix[i]?[j] ?? 0) / 100));
-
-  factory DropRateSheet.fromJson(Map<String, dynamic> json) => _$DropRateSheetFromJson(json);
 
   DropRateSheet copy() {
     return DropRateSheet(
@@ -106,6 +106,10 @@ class DropRateSheet {
     exps.removeAt(index);
     matrix.forEach((row) => row.removeAt(index));
   }
+
+  factory DropRateSheet.fromJson(Map<String, dynamic> json) => _$DropRateSheetFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DropRateSheetToJson(this);
 }
 
 @JsonSerializable()
@@ -119,4 +123,6 @@ class QuestDropData {
   });
 
   factory QuestDropData.fromJson(Map<String, dynamic> json) => _$QuestDropDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestDropDataToJson(this);
 }

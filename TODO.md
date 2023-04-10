@@ -19,13 +19,11 @@ There are plenty of work need to do.
 - [ ] Move all checkTrait logic into battle and remove individual checkTrait methods in models
 - [ ] There is a bug that will reset accumulation damage when deathEffect is triggered
       not verified for gutsEffect
-- [x] Damage should remove buff with buffScript field damageRelease: 1
 - [ ] FuncType damageNpCounter
 - [ ] FuncType damageNpRate Target == 0 is target, verify if Target ==1 is activator?
 - [ ] FuncType gainHpPer figure out if Percentage heal benefits from healGrant buff
 - [ ] FuncType gainHp/NpFromTargets & moveState can probably be implemented in the dependedFunc with an additional
       receiver argument to receive what's lost from absorbTargets
-- [x] FuncType transformServant may need a local copy of Hyde data
 - [ ] DataVals AddLinkageTargetIndividualty & BehaveAsFamilyBuff & UnSubStateWhileLinkedToOthers
 - [ ] DataVals CounterId CounterLv CounterOc SkillReaction UseTreasureDevice
 - [ ] DataVals TriggeredFuncPosition ignored, only checking previous function success for now
@@ -48,12 +46,14 @@ There are plenty of work need to do.
 - [ ] prepare a dummy BattleServantData as Master
 - [ ] Figure out how to write reasonable test cases for UI required effects like randomEffect & changeTdType
 - [ ] funcSuccess for some wired function types
-- [x] `DataVals.ProcPassive` will add buff to passive list, even if it's called from an active skill. Same for `ProcActive`
 - [ ] BuffConvert is converting a buff list to another buff list, (or trait list to another buff list, not used yet)
 - [ ] Enemy shift target may not exist
 - [ ] cardDetail.damageRate/tdRate (U-Olga Marie buster/extra attack on all enemies)
 - [ ] dispBreakShift
 - [ ] shiftGuts(Ratio)
+- [x] Damage should remove buff with buffScript field damageRelease: 1
+- [x] FuncType transformServant may need a local copy of Hyde data
+- [x] `DataVals.ProcPassive` will add buff to passive list, even if it's called from an active skill. Same for `ProcActive`
 
 #### Unknowns:
 
@@ -68,22 +68,21 @@ There are plenty of work need to do.
 
 - [ ] manually remove/add buff
 - [ ] manually apply skill(custom activator/target)
-- [x] Servant/Enemy without TD:
-  - [x] tdId=0
-- [x] Servant skill.num=1 means Skill 1, don't use index in list. `groupedActiveSkill[1/2/3]`
-- [x] change `groupedActiveSkill` from list to dict
-- [x] Auto select extraPassive (event bonus)
 - [ ] Transform: what if skill/td has upgrades or disabled?
   - Currently matching id for upgrades.
-- [x] SkillRankUp: get skill from api if not in db, make init async
-
-- [x] add svt.extraPassive on/off
 - [ ] add ce event skill on/off
 - [ ] Let user choose event point buff(s) and save to battle global params, used for addState.upDamageEventPoint,
       buff.parma=vals.Value+pointBuff.value
 - [ ] Custom skill! (passive or active)
 - [ ] Player side `allyTargetIndex` could be null or -1, let user to choose manually
 - [ ] skill cd/sealed/cond hint: sealed(×)>cd(n)>cond(*, only shown when cd=0&not sealed)
+- [x] Servant/Enemy without TD:
+  - [x] tdId=0
+- [x] Servant skill.num=1 means Skill 1, don't use index in list. `groupedActiveSkill[1/2/3]`
+- [x] change `groupedActiveSkill` from list to dict
+- [x] Auto select extraPassive (event bonus)
+- [x] SkillRankUp: get skill from api if not in db, make init async
+- [x] add svt.extraPassive on/off
 
 ### NPC Simulation
 
@@ -107,7 +106,6 @@ There are plenty of work need to do.
 - [ ] userdata: make all constructor params nullable, catch error when converting token
 - [ ] remember svt tabs
 - [ ] logger.level
-- [x] android: external SD card
 - [ ] filter_group_data: default value
 - [ ] svt icon: custom image
 - [ ] plan_tab: append/active/all
@@ -132,12 +130,13 @@ There are plenty of work need to do.
 - [ ] sort by svt lv/nplv, ce lv
 - [ ] ce: chara on illust + related chara
 - [ ] shop: another pay type (api)
+- [x] android: external SD card
 
 ## Servant
 
-- [x] Duplicated servant support
 - [ ] Plan:
   - [ ] support TextField input
+- [x] Duplicated servant support
 - [x] skill/np/quest/voice/profile condition
 
 ## Adding more pages
@@ -146,7 +145,7 @@ There are plenty of work need to do.
   - [ ] summon plan: ?
 - [x] Saint Quartz estimate
   - [ ] poor performance
-- [ ] Buff/Function reversing
+- [ ] Buff/Function reversing with remote data
 - [ ] Support Party generation
 
 ## Server side

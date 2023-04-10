@@ -29,6 +29,20 @@ Buff _$BuffFromJson(Map json) => Buff(
       maxRate: json['maxRate'] as int? ?? 0,
     );
 
+Map<String, dynamic> _$BuffToJson(Buff instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'detail': instance.detail,
+      'icon': instance.icon,
+      'type': const BuffTypeConverter().toJson(instance.type),
+      'buffGroup': instance.buffGroup,
+      'script': instance.script?.toJson(),
+      'vals': instance.vals.map((e) => e.toJson()).toList(),
+      'ckSelfIndv': instance.ckSelfIndv.map((e) => e.toJson()).toList(),
+      'ckOpIndv': instance.ckOpIndv.map((e) => e.toJson()).toList(),
+      'maxRate': instance.maxRate,
+    };
+
 BuffRelationOverwrite _$BuffRelationOverwriteFromJson(Map json) => BuffRelationOverwrite(
       atkSide: (json['atkSide'] as Map).map(
         (k, e) => MapEntry(
@@ -48,10 +62,22 @@ BuffRelationOverwrite _$BuffRelationOverwriteFromJson(Map json) => BuffRelationO
       ),
     );
 
+Map<String, dynamic> _$BuffRelationOverwriteToJson(BuffRelationOverwrite instance) => <String, dynamic>{
+      'atkSide': instance.atkSide.map((k, e) => MapEntry(const SvtClassConverter().toJson(k),
+          e.map((k, e) => MapEntry(const SvtClassConverter().toJson(k), e.toJson())))),
+      'defSide': instance.defSide.map((k, e) => MapEntry(const SvtClassConverter().toJson(k),
+          e.map((k, e) => MapEntry(const SvtClassConverter().toJson(k), e.toJson())))),
+    };
+
 RelationOverwriteDetail _$RelationOverwriteDetailFromJson(Map json) => RelationOverwriteDetail(
       damageRate: json['damageRate'] as int,
       type: $enumDecode(_$ClassRelationOverwriteTypeEnumMap, json['type']),
     );
+
+Map<String, dynamic> _$RelationOverwriteDetailToJson(RelationOverwriteDetail instance) => <String, dynamic>{
+      'damageRate': instance.damageRate,
+      'type': _$ClassRelationOverwriteTypeEnumMap[instance.type]!,
+    };
 
 const _$ClassRelationOverwriteTypeEnumMap = {
   ClassRelationOverwriteType.overwriteForce: 'overwriteForce',
@@ -92,6 +118,29 @@ BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
       convert: json['convert'] == null ? null : BuffConvert.fromJson(Map<String, dynamic>.from(json['convert'] as Map)),
     );
 
+Map<String, dynamic> _$BuffScriptToJson(BuffScript instance) => <String, dynamic>{
+      'checkIndvType': instance.checkIndvType,
+      'CheckOpponentBuffTypes': instance.CheckOpponentBuffTypes?.map(const BuffTypeConverter().toJson).toList(),
+      'relationId': instance.relationId?.toJson(),
+      'INDIVIDUALITIE': instance.INDIVIDUALITIE?.toJson(),
+      'UpBuffRateBuffIndiv': instance.UpBuffRateBuffIndiv?.map((e) => e.toJson()).toList(),
+      'TargetIndiv': instance.TargetIndiv?.toJson(),
+      'convert': instance.convert?.toJson(),
+      'ReleaseText': instance.ReleaseText,
+      'DamageRelease': instance.DamageRelease,
+      'INDIVIDUALITIE_COUNT_ABOVE': instance.INDIVIDUALITIE_COUNT_ABOVE,
+      'HP_LOWER': instance.HP_LOWER,
+      'HP_HIGHER': instance.HP_HIGHER,
+      'CounterMessage': instance.CounterMessage,
+      'avoidanceText': instance.avoidanceText,
+      'gutsText': instance.gutsText,
+      'missText': instance.missText,
+      'AppId': instance.AppId,
+      'IncludeIgnoreIndividuality': instance.IncludeIgnoreIndividuality,
+      'ProgressSelfTurn': instance.ProgressSelfTurn,
+      'extendLowerLimit': instance.extendLowerLimit,
+    };
+
 BuffConvert _$BuffConvertFromJson(Map json) => BuffConvert(
       targetLimit: $enumDecodeNullable(_$BuffConvertLimitTypeEnumMap, json['targetLimit']) ?? BuffConvertLimitType.all,
       convertType: $enumDecodeNullable(_$BuffConvertTypeEnumMap, json['convertType']) ?? BuffConvertType.none,
@@ -104,6 +153,15 @@ BuffConvert _$BuffConvertFromJson(Map json) => BuffConvert(
           json['script'] == null ? null : BuffConvertScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
       effectId: json['effectId'] as int? ?? 0,
     );
+
+Map<String, dynamic> _$BuffConvertToJson(BuffConvert instance) => <String, dynamic>{
+      'targetLimit': _$BuffConvertLimitTypeEnumMap[instance.targetLimit]!,
+      'convertType': _$BuffConvertTypeEnumMap[instance.convertType]!,
+      'targets': instance.targets,
+      'convertBuffs': instance.convertBuffs.map((e) => e.toJson()).toList(),
+      'script': instance.script?.toJson(),
+      'effectId': instance.effectId,
+    };
 
 const _$BuffConvertLimitTypeEnumMap = {
   BuffConvertLimitType.all: 'all',
@@ -119,6 +177,10 @@ const _$BuffConvertTypeEnumMap = {
 BuffConvertScript _$BuffConvertScriptFromJson(Map json) => BuffConvertScript(
       OverwritePopupText: (json['OverwritePopupText'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
+
+Map<String, dynamic> _$BuffConvertScriptToJson(BuffConvertScript instance) => <String, dynamic>{
+      'OverwritePopupText': instance.OverwritePopupText,
+    };
 
 const _$BuffTypeEnumMap = {
   BuffType.unknown: 'unknown',

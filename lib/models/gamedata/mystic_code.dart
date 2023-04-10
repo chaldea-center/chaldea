@@ -49,6 +49,8 @@ class MysticCode with GameCardMixin {
 
   @override
   String get route => Routes.mysticCodeI(id);
+
+  Map<String, dynamic> toJson() => _$MysticCodeToJson(this);
 }
 
 @JsonSerializable()
@@ -64,6 +66,8 @@ class MCAssets {
   String get masterGender => db.curUser.isGirl ? female : male;
 
   factory MCAssets.fromJson(Map<String, dynamic> json) => _$MCAssetsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MCAssetsToJson(this);
 }
 
 @JsonSerializable()
@@ -79,6 +83,8 @@ class ExtraMCAssets {
   });
 
   factory ExtraMCAssets.fromJson(Map<String, dynamic> json) => _$ExtraMCAssetsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ExtraMCAssetsToJson(this);
 }
 
 @JsonSerializable()
@@ -94,4 +100,6 @@ class MysticCodeCostume {
   });
 
   factory MysticCodeCostume.fromJson(Map<String, dynamic> json) => _$MysticCodeCostumeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MysticCodeCostumeToJson(this);
 }

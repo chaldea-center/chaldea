@@ -42,10 +42,6 @@ class ConstGameData {
             for (final type in [...entry.value.plusTypes, ...entry.value.minusTypes]) type: entry.key
         };
 
-  factory ConstGameData.fromJson(Map<String, dynamic> json) {
-    return _$ConstGameDataFromJson(json);
-  }
-
   List<int> getSvtCurve(int growthCurve, int baseValue, int maxValue, int? maxLv) {
     final expData = svtExp[growthCurve];
     if (expData == null) return [];
@@ -66,6 +62,12 @@ class ConstGameData {
   int getAttributeRelation(final Attribute attacker, final Attribute defender) {
     return attributeRelation[attacker]?[defender] ?? 1000;
   }
+
+  factory ConstGameData.fromJson(Map<String, dynamic> json) {
+    return _$ConstGameDataFromJson(json);
+  }
+
+  Map<String, dynamic> toJson() => _$ConstGameDataToJson(this);
 }
 
 @JsonSerializable(converters: [BuffTypeConverter()])
@@ -91,6 +93,8 @@ class BuffActionDetail {
   });
 
   factory BuffActionDetail.fromJson(Map<String, dynamic> json) => _$BuffActionDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BuffActionDetailToJson(this);
 }
 
 @JsonSerializable()
@@ -127,6 +131,8 @@ class SvtClassInfo {
   });
 
   factory SvtClassInfo.fromJson(Map<String, dynamic> json) => _$SvtClassInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SvtClassInfoToJson(this);
 }
 
 @JsonSerializable()
@@ -150,6 +156,8 @@ class CardInfo {
   });
 
   factory CardInfo.fromJson(Map<String, dynamic> json) => _$CardInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CardInfoToJson(this);
 }
 
 @JsonSerializable()
@@ -165,6 +173,8 @@ class GrailCostDetail {
   });
 
   factory GrailCostDetail.fromJson(Map<String, dynamic> json) => _$GrailCostDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GrailCostDetailToJson(this);
 }
 
 @JsonSerializable()
@@ -184,6 +194,8 @@ class MasterUserLvDetail {
   });
 
   factory MasterUserLvDetail.fromJson(Map<String, dynamic> json) => _$MasterUserLvDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MasterUserLvDetailToJson(this);
 }
 
 @JsonSerializable()
@@ -201,6 +213,8 @@ class SvtExpCurve {
   });
 
   factory SvtExpCurve.fromJson(Map<String, dynamic> json) => _$SvtExpCurveFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SvtExpCurveToJson(this);
 }
 
 class SvtExpData {
@@ -438,6 +452,7 @@ class GameConstants {
     this.userAct = 20,
     this.userCost = 56,
   }); // 56
+
   factory GameConstants.fromJson(Map<String, dynamic> json) {
     Map<String, dynamic> json2 = {};
     for (final key in json.keys) {
@@ -451,6 +466,8 @@ class GameConstants {
     }
     return _$GameConstantsFromJson(json2);
   }
+
+  Map<String, dynamic> toJson() => _$GameConstantsToJson(this);
 }
 
 enum SvtFrameType {

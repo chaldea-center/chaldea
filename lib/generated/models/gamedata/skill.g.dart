@@ -35,6 +35,23 @@ BaseSkill _$BaseSkillFromJson(Map json) => BaseSkill(
           .toList(),
     );
 
+Map<String, dynamic> _$BaseSkillToJson(BaseSkill instance) => <String, dynamic>{
+      'id': instance.id,
+      'num': instance.num,
+      'name': instance.name,
+      'ruby': instance.ruby,
+      'unmodifiedDetail': instance.unmodifiedDetail,
+      'type': _$SkillTypeEnumMap[instance.type]!,
+      'icon': instance.icon,
+      'coolDown': instance.coolDown,
+      'actIndividuality': instance.actIndividuality.map((e) => e.toJson()).toList(),
+      'script': instance.script?.toJson(),
+      'skillAdd': instance.skillAdd.map((e) => e.toJson()).toList(),
+      'aiIds': instance.aiIds?.map((k, e) => MapEntry(_$AiTypeEnumMap[k]!, e)),
+      'groupOverwrites': instance.groupOverwrites?.map((e) => e.toJson()).toList(),
+      'functions': instance.functions.map((e) => e.toJson()).toList(),
+    };
+
 const _$SkillTypeEnumMap = {
   SkillType.active: 'active',
   SkillType.passive: 'passive',
@@ -85,6 +102,30 @@ NiceSkill _$NiceSkillFromJson(Map json) => NiceSkill(
           const [],
     );
 
+Map<String, dynamic> _$NiceSkillToJson(NiceSkill instance) => <String, dynamic>{
+      'num': instance.num,
+      'id': instance.id,
+      'name': instance.name,
+      'ruby': instance.ruby,
+      'unmodifiedDetail': instance.unmodifiedDetail,
+      'type': _$SkillTypeEnumMap[instance.type]!,
+      'icon': instance.icon,
+      'coolDown': instance.coolDown,
+      'actIndividuality': instance.actIndividuality.map((e) => e.toJson()).toList(),
+      'script': instance.script?.toJson(),
+      'skillAdd': instance.skillAdd.map((e) => e.toJson()).toList(),
+      'aiIds': instance.aiIds?.map((k, e) => MapEntry(_$AiTypeEnumMap[k]!, e)),
+      'groupOverwrites': instance.groupOverwrites?.map((e) => e.toJson()).toList(),
+      'functions': instance.functions.map((e) => e.toJson()).toList(),
+      'strengthStatus': instance.strengthStatus,
+      'priority': instance.priority,
+      'condQuestId': instance.condQuestId,
+      'condQuestPhase': instance.condQuestPhase,
+      'condLv': instance.condLv,
+      'condLimitCount': instance.condLimitCount,
+      'extraPassive': instance.extraPassive.map((e) => e.toJson()).toList(),
+    };
+
 BaseTd _$BaseTdFromJson(Map json) => BaseTd(
       id: json['id'] as int,
       card: $enumDecode(_$CardTypeEnumMap, json['card']),
@@ -108,6 +149,23 @@ BaseTd _$BaseTdFromJson(Map json) => BaseTd(
           .map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
     );
+
+Map<String, dynamic> _$BaseTdToJson(BaseTd instance) => <String, dynamic>{
+      'id': instance.id,
+      'card': _$CardTypeEnumMap[instance.card]!,
+      'name': instance.name,
+      'ruby': instance.ruby,
+      'icon': instance.icon,
+      'rank': instance.rank,
+      'type': instance.type,
+      'effectFlags': instance.effectFlags.map((e) => _$TdEffectFlagEnumMap[e]!).toList(),
+      'unmodifiedDetail': instance.unmodifiedDetail,
+      'npGain': instance.npGain.toJson(),
+      'npDistribution': instance.npDistribution,
+      'individuality': instance.individuality.map((e) => e.toJson()).toList(),
+      'script': instance.script?.toJson(),
+      'functions': instance.functions.map((e) => e.toJson()).toList(),
+    };
 
 const _$CardTypeEnumMap = {
   CardType.none: 'none',
@@ -155,6 +213,28 @@ NiceTd _$NiceTdFromJson(Map json) => NiceTd(
       condQuestPhase: json['condQuestPhase'] as int? ?? 0,
     );
 
+Map<String, dynamic> _$NiceTdToJson(NiceTd instance) => <String, dynamic>{
+      'card': _$CardTypeEnumMap[instance.card]!,
+      'icon': instance.icon,
+      'effectFlags': instance.effectFlags.map((e) => _$TdEffectFlagEnumMap[e]!).toList(),
+      'npDistribution': instance.npDistribution,
+      'id': instance.id,
+      'name': instance.name,
+      'ruby': instance.ruby,
+      'rank': instance.rank,
+      'type': instance.type,
+      'unmodifiedDetail': instance.unmodifiedDetail,
+      'npGain': instance.npGain.toJson(),
+      'individuality': instance.individuality.map((e) => e.toJson()).toList(),
+      'script': instance.script?.toJson(),
+      'functions': instance.functions.map((e) => e.toJson()).toList(),
+      'num': instance.num,
+      'strengthStatus': instance.strengthStatus,
+      'priority': instance.priority,
+      'condQuestId': instance.condQuestId,
+      'condQuestPhase': instance.condQuestPhase,
+    };
+
 CommonRelease _$CommonReleaseFromJson(Map json) => CommonRelease(
       id: json['id'] as int,
       priority: json['priority'] as int,
@@ -163,6 +243,15 @@ CommonRelease _$CommonReleaseFromJson(Map json) => CommonRelease(
       condId: json['condId'] as int,
       condNum: json['condNum'] as int,
     );
+
+Map<String, dynamic> _$CommonReleaseToJson(CommonRelease instance) => <String, dynamic>{
+      'id': instance.id,
+      'priority': instance.priority,
+      'condGroup': instance.condGroup,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'condId': instance.condId,
+      'condNum': instance.condNum,
+    };
 
 ExtraPassive _$ExtraPassiveFromJson(Map json) => ExtraPassive(
       num: json['num'] as int,
@@ -177,6 +266,20 @@ ExtraPassive _$ExtraPassiveFromJson(Map json) => ExtraPassive(
       startedAt: json['startedAt'] as int,
       endedAt: json['endedAt'] as int,
     );
+
+Map<String, dynamic> _$ExtraPassiveToJson(ExtraPassive instance) => <String, dynamic>{
+      'num': instance.num,
+      'priority': instance.priority,
+      'condQuestId': instance.condQuestId,
+      'condQuestPhase': instance.condQuestPhase,
+      'condLv': instance.condLv,
+      'condLimitCount': instance.condLimitCount,
+      'condFriendshipRank': instance.condFriendshipRank,
+      'eventId': instance.eventId,
+      'flag': instance.flag,
+      'startedAt': instance.startedAt,
+      'endedAt': instance.endedAt,
+    };
 
 SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
       NP_HIGHER: (json['NP_HIGHER'] as List<dynamic>?)?.map((e) => e as int).toList(),
@@ -197,6 +300,23 @@ SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
           .toList(),
     );
 
+Map<String, dynamic> _$SkillScriptToJson(SkillScript instance) => <String, dynamic>{
+      'NP_HIGHER': instance.NP_HIGHER,
+      'NP_LOWER': instance.NP_LOWER,
+      'STAR_HIGHER': instance.STAR_HIGHER,
+      'STAR_LOWER': instance.STAR_LOWER,
+      'HP_VAL_HIGHER': instance.HP_VAL_HIGHER,
+      'HP_VAL_LOWER': instance.HP_VAL_LOWER,
+      'HP_PER_HIGHER': instance.HP_PER_HIGHER,
+      'HP_PER_LOWER': instance.HP_PER_LOWER,
+      'additionalSkillId': instance.additionalSkillId,
+      'additionalSkillLv': instance.additionalSkillLv,
+      'additionalSkillActorType': instance.additionalSkillActorType,
+      'tdTypeChangeIDs': instance.tdTypeChangeIDs,
+      'excludeTdChangeTypes': instance.excludeTdChangeTypes,
+      'SelectAddInfo': instance.SelectAddInfo?.map((e) => e.toJson()).toList(),
+    };
+
 SkillSelectAddInfo _$SkillSelectAddInfoFromJson(Map json) => SkillSelectAddInfo(
       title: json['title'] as String? ?? '',
       btn: (json['btn'] as List<dynamic>?)
@@ -204,6 +324,11 @@ SkillSelectAddInfo _$SkillSelectAddInfoFromJson(Map json) => SkillSelectAddInfo(
               .toList() ??
           const [],
     );
+
+Map<String, dynamic> _$SkillSelectAddInfoToJson(SkillSelectAddInfo instance) => <String, dynamic>{
+      'title': instance.title,
+      'btn': instance.btn.map((e) => e.toJson()).toList(),
+    };
 
 SkillSelectAddInfoBtn _$SkillSelectAddInfoBtnFromJson(Map json) => SkillSelectAddInfoBtn(
       name: json['name'] as String? ?? '',
@@ -213,10 +338,20 @@ SkillSelectAddInfoBtn _$SkillSelectAddInfoBtnFromJson(Map json) => SkillSelectAd
           const [],
     );
 
+Map<String, dynamic> _$SkillSelectAddInfoBtnToJson(SkillSelectAddInfoBtn instance) => <String, dynamic>{
+      'name': instance.name,
+      'conds': instance.conds.map((e) => e.toJson()).toList(),
+    };
+
 SkillSelectAddInfoBtnCond _$SkillSelectAddInfoBtnCondFromJson(Map json) => SkillSelectAddInfoBtnCond(
       cond: $enumDecodeNullable(_$SkillScriptCondEnumMap, json['cond']) ?? SkillScriptCond.none,
       value: json['value'] as int?,
     );
+
+Map<String, dynamic> _$SkillSelectAddInfoBtnCondToJson(SkillSelectAddInfoBtnCond instance) => <String, dynamic>{
+      'cond': _$SkillScriptCondEnumMap[instance.cond]!,
+      'value': instance.value,
+    };
 
 const _$SkillScriptCondEnumMap = {
   SkillScriptCond.none: 'NONE',
@@ -239,6 +374,13 @@ SkillAdd _$SkillAddFromJson(Map json) => SkillAdd(
       ruby: json['ruby'] as String,
     );
 
+Map<String, dynamic> _$SkillAddToJson(SkillAdd instance) => <String, dynamic>{
+      'priority': instance.priority,
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+      'name': instance.name,
+      'ruby': instance.ruby,
+    };
+
 SkillGroupOverwrite _$SkillGroupOverwriteFromJson(Map json) => SkillGroupOverwrite(
       level: json['level'] as int,
       skillGroupId: json['skillGroupId'] as int,
@@ -252,6 +394,16 @@ SkillGroupOverwrite _$SkillGroupOverwriteFromJson(Map json) => SkillGroupOverwri
           const [],
     );
 
+Map<String, dynamic> _$SkillGroupOverwriteToJson(SkillGroupOverwrite instance) => <String, dynamic>{
+      'level': instance.level,
+      'skillGroupId': instance.skillGroupId,
+      'startedAt': instance.startedAt,
+      'endedAt': instance.endedAt,
+      'icon': instance.icon,
+      'unmodifiedDetail': instance.unmodifiedDetail,
+      'functions': instance.functions.map((e) => e.toJson()).toList(),
+    };
+
 NpGain _$NpGainFromJson(Map json) => NpGain(
       buster: (json['buster'] as List<dynamic>).map((e) => e as int).toList(),
       arts: (json['arts'] as List<dynamic>).map((e) => e as int).toList(),
@@ -260,3 +412,12 @@ NpGain _$NpGainFromJson(Map json) => NpGain(
       np: (json['np'] as List<dynamic>).map((e) => e as int).toList(),
       defence: (json['defence'] as List<dynamic>).map((e) => e as int).toList(),
     );
+
+Map<String, dynamic> _$NpGainToJson(NpGain instance) => <String, dynamic>{
+      'buster': instance.buster,
+      'arts': instance.arts,
+      'quick': instance.quick,
+      'extra': instance.extra,
+      'np': instance.np,
+      'defence': instance.defence,
+    };

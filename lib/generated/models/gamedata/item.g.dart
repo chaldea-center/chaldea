@@ -26,6 +26,20 @@ Item _$ItemFromJson(Map json) => Item(
           const [],
     );
 
+Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'type': _$ItemTypeEnumMap[instance.type]!,
+      'uses': instance.uses.map((e) => _$ItemUseEnumMap[e]!).toList(),
+      'detail': instance.detail,
+      'individuality': instance.individuality.map((e) => e.toJson()).toList(),
+      'icon': instance.icon,
+      'background': _$ItemBGTypeEnumMap[instance.background]!,
+      'priority': instance.priority,
+      'dropPriority': instance.dropPriority,
+      'itemSelects': instance.itemSelects.map((e) => e.toJson()).toList(),
+    };
+
 const _$ItemTypeEnumMap = {
   ItemType.none: 'none',
   ItemType.qp: 'qp',
@@ -86,11 +100,23 @@ ItemSelect _$ItemSelectFromJson(Map json) => ItemSelect(
       requireNum: json['requireNum'] as int? ?? 1,
     );
 
+Map<String, dynamic> _$ItemSelectToJson(ItemSelect instance) => <String, dynamic>{
+      'idx': instance.idx,
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'requireNum': instance.requireNum,
+    };
+
 ItemAmount _$ItemAmountFromJson(Map json) => ItemAmount(
       item: json['item'] == null ? null : Item.fromJson(Map<String, dynamic>.from(json['item'] as Map)),
       itemId: json['itemId'] as int?,
       amount: json['amount'] as int,
     );
+
+Map<String, dynamic> _$ItemAmountToJson(ItemAmount instance) => <String, dynamic>{
+      'itemId': instance.itemId,
+      'amount': instance.amount,
+      'item': instance.item?.toJson(),
+    };
 
 LvlUpMaterial _$LvlUpMaterialFromJson(Map json) => LvlUpMaterial(
       items: (json['items'] as List<dynamic>)
@@ -98,3 +124,8 @@ LvlUpMaterial _$LvlUpMaterialFromJson(Map json) => LvlUpMaterial(
           .toList(),
       qp: json['qp'] as int,
     );
+
+Map<String, dynamic> _$LvlUpMaterialToJson(LvlUpMaterial instance) => <String, dynamic>{
+      'items': instance.items.map((e) => e.toJson()).toList(),
+      'qp': instance.qp,
+    };

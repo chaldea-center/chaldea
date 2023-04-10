@@ -13,13 +13,16 @@ class EnemyMaster {
     this.name = "",
     this.battles = const [],
   });
-  factory EnemyMaster.fromJson(Map<String, dynamic> json) => _$EnemyMasterFromJson(json);
 
   Transl<String, String> get lName {
     String name = this.name;
     if (name.isEmpty) name = 'Master $id';
     return Transl.miscScope('master_name')(name);
   }
+
+  factory EnemyMaster.fromJson(Map<String, dynamic> json) => _$EnemyMasterFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EnemyMasterToJson(this);
 }
 
 @JsonSerializable()
@@ -44,4 +47,6 @@ class EnemyMasterBattle {
   });
 
   factory EnemyMasterBattle.fromJson(Map<String, dynamic> json) => _$EnemyMasterBattleFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EnemyMasterBattleToJson(this);
 }

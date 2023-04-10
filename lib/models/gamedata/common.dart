@@ -72,8 +72,6 @@ class NiceTrait with RouteInfo {
 
   int get signedId => negative ? -id : id;
 
-  factory NiceTrait.fromJson(Map<String, dynamic> json) => _$NiceTraitFromJson(json);
-
   @override
   String toString() {
     return '$runtimeType($signedId)';
@@ -109,6 +107,10 @@ class NiceTrait with RouteInfo {
   bool operator ==(Object other) {
     return other.runtimeType == runtimeType && other.hashCode == hashCode;
   }
+
+  factory NiceTrait.fromJson(Map<String, dynamic> json) => _$NiceTraitFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NiceTraitToJson(this);
 }
 
 mixin DataScriptBase {
@@ -140,6 +142,8 @@ class BgmRelease {
   });
 
   factory BgmRelease.fromJson(Map<String, dynamic> json) => _$BgmReleaseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BgmReleaseToJson(this);
 }
 
 @JsonSerializable()
@@ -164,6 +168,9 @@ class BgmEntity extends Bgm {
   });
 
   factory BgmEntity.fromJson(Map<String, dynamic> json) => _$BgmEntityFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$BgmEntityToJson(this);
 }
 
 @JsonSerializable()
@@ -186,6 +193,9 @@ class Bgm with RouteInfo {
 
   String get tooltip => name.isEmpty ? fileName : lName.l;
 
+  @override
+  String get route => Routes.bgmI(id);
+
   factory Bgm.fromJson(Map<String, dynamic> json) {
     final bgm = GameDataLoader.instance.tmp.gameJson?['bgms']?[json['id'].toString()];
     if (bgm != null) {
@@ -194,8 +204,7 @@ class Bgm with RouteInfo {
     return _$BgmFromJson(json);
   }
 
-  @override
-  String get route => Routes.bgmI(id);
+  Map<String, dynamic> toJson() => _$BgmToJson(this);
 }
 
 enum CardType {

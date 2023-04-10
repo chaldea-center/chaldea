@@ -77,8 +77,6 @@ class Buff with RouteInfo {
                 maxRate: maxRate,
               ));
 
-  factory Buff.fromJson(Map<String, dynamic> json) => _$BuffFromJson(json);
-
   @override
   String get route => Routes.buffI(id);
   @override
@@ -99,6 +97,10 @@ class Buff with RouteInfo {
     if (base == null) return rate.toString();
     return rate.format(percent: true, base: base);
   }
+
+  factory Buff.fromJson(Map<String, dynamic> json) => _$BuffFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BuffToJson(this);
 }
 
 @JsonSerializable(converters: [SvtClassConverter()])
@@ -112,6 +114,8 @@ class BuffRelationOverwrite {
   });
 
   factory BuffRelationOverwrite.fromJson(Map<String, dynamic> json) => _$BuffRelationOverwriteFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BuffRelationOverwriteToJson(this);
 }
 
 @JsonSerializable()
@@ -125,6 +129,8 @@ class RelationOverwriteDetail {
   });
 
   factory RelationOverwriteDetail.fromJson(Map<String, dynamic> json) => _$RelationOverwriteDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RelationOverwriteDetailToJson(this);
 }
 
 @JsonSerializable()
@@ -176,6 +182,8 @@ class BuffScript with DataScriptBase {
   });
 
   factory BuffScript.fromJson(Map<String, dynamic> json) => _$BuffScriptFromJson(json)..setSource(json);
+
+  Map<String, dynamic> toJson() => _$BuffScriptToJson(this);
 }
 
 /// Convert [targets] to [convertBuffs]
@@ -215,6 +223,8 @@ class BuffConvert {
     }
   }
   factory BuffConvert.fromJson(Map<String, dynamic> json) => _$BuffConvertFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BuffConvertToJson(this);
 }
 
 @JsonSerializable()
@@ -224,6 +234,8 @@ class BuffConvertScript {
     this.OverwritePopupText,
   });
   factory BuffConvertScript.fromJson(Map<String, dynamic> json) => _$BuffConvertScriptFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BuffConvertScriptToJson(this);
 }
 
 enum BuffConvertType {

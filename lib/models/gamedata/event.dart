@@ -359,6 +359,8 @@ class Event {
       }
     }
   }
+
+  Map<String, dynamic> toJson() => _$EventToJson(this);
 }
 
 @JsonSerializable()
@@ -383,6 +385,8 @@ class MasterMission {
 
   bool get isWeekly => id >= 1e5 && id < 2e5;
   bool get isLimited => id >= 2e5 && id < 3e5;
+
+  Map<String, dynamic> toJson() => _$MasterMissionToJson(this);
 }
 
 @JsonSerializable()
@@ -402,6 +406,8 @@ class ItemSet {
   });
 
   factory ItemSet.fromJson(Map<String, dynamic> json) => _$ItemSetFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ItemSetToJson(this);
 }
 
 @JsonSerializable()
@@ -483,6 +489,8 @@ class NiceShop with RouteInfo {
       popDetails: popDetails,
     );
   }
+
+  Map<String, dynamic> toJson() => _$NiceShopToJson(this);
 }
 
 @JsonSerializable()
@@ -508,6 +516,8 @@ class ShopRelease {
   });
 
   factory ShopRelease.fromJson(Map<String, dynamic> json) => _$ShopReleaseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ShopReleaseToJson(this);
 }
 
 @JsonSerializable()
@@ -528,6 +538,8 @@ class EventPointReward {
   });
 
   factory EventPointReward.fromJson(Map<String, dynamic> json) => _$EventPointRewardFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventPointRewardToJson(this);
 }
 
 @JsonSerializable()
@@ -543,6 +555,8 @@ class EventPointGroup {
   });
 
   factory EventPointGroup.fromJson(Map<String, dynamic> json) => _$EventPointGroupFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventPointGroupToJson(this);
 }
 
 @JsonSerializable()
@@ -571,6 +585,8 @@ class EventPointBuff {
   });
 
   factory EventPointBuff.fromJson(Map<String, dynamic> json) => _$EventPointBuffFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventPointBuffToJson(this);
 }
 
 @JsonSerializable()
@@ -603,6 +619,8 @@ class EventMissionConditionDetail {
 
   factory EventMissionConditionDetail.fromJson(Map<String, dynamic> json) =>
       _$EventMissionConditionDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventMissionConditionDetailToJson(this);
 }
 
 @JsonSerializable()
@@ -639,6 +657,8 @@ class EventMissionCondition {
   });
 
   factory EventMissionCondition.fromJson(Map<String, dynamic> json) => _$EventMissionConditionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventMissionConditionToJson(this);
 }
 
 @JsonSerializable()
@@ -688,6 +708,8 @@ class EventMission {
   });
 
   factory EventMission.fromJson(Map<String, dynamic> json) => _$EventMissionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventMissionToJson(this);
 }
 
 @JsonSerializable()
@@ -709,6 +731,8 @@ class EventRandomMission {
   });
 
   factory EventRandomMission.fromJson(Map<String, dynamic> json) => _$EventRandomMissionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventRandomMissionToJson(this);
 }
 
 @JsonSerializable()
@@ -729,6 +753,8 @@ class EventTowerReward {
   });
 
   factory EventTowerReward.fromJson(Map<String, dynamic> json) => _$EventTowerRewardFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventTowerRewardToJson(this);
 }
 
 @JsonSerializable()
@@ -744,6 +770,8 @@ class EventTower {
   });
 
   factory EventTower.fromJson(Map<String, dynamic> json) => _$EventTowerFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventTowerToJson(this);
 }
 
 @JsonSerializable()
@@ -779,6 +807,8 @@ class EventLotteryBox {
   });
 
   factory EventLotteryBox.fromJson(Map<String, dynamic> json) => _$EventLotteryBoxFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventLotteryBoxToJson(this);
 }
 
 @JsonSerializable()
@@ -824,6 +854,8 @@ class EventLottery {
   }
 
   Map<int, int>? _lastBoxItems;
+
+  Map<String, dynamic> toJson() => _$EventLotteryToJson(this);
 }
 
 @JsonSerializable()
@@ -845,6 +877,8 @@ class EventLotteryTalk {
   });
 
   factory EventLotteryTalk.fromJson(Map<String, dynamic> json) => _$EventLotteryTalkFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventLotteryTalkToJson(this);
 }
 
 @JsonSerializable()
@@ -864,6 +898,8 @@ class CommonConsume {
   });
 
   factory CommonConsume.fromJson(Map<String, dynamic> json) => _$CommonConsumeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CommonConsumeToJson(this);
 }
 
 @JsonSerializable()
@@ -881,6 +917,8 @@ class EventTreasureBoxGift {
   });
 
   factory EventTreasureBoxGift.fromJson(Map<String, dynamic> json) => _$EventTreasureBoxGiftFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventTreasureBoxGiftToJson(this);
 }
 
 @JsonSerializable()
@@ -904,6 +942,8 @@ class EventTreasureBox {
   });
 
   factory EventTreasureBox.fromJson(Map<String, dynamic> json) => _$EventTreasureBoxFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventTreasureBoxToJson(this);
 }
 
 @JsonSerializable()
@@ -927,6 +967,8 @@ class EventRewardSceneGuide {
   });
 
   factory EventRewardSceneGuide.fromJson(Map<String, dynamic> json) => _$EventRewardSceneGuideFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventRewardSceneGuideToJson(this);
 }
 
 @JsonSerializable()
@@ -958,6 +1000,8 @@ class EventRewardScene {
   });
 
   factory EventRewardScene.fromJson(Map<String, dynamic> json) => _$EventRewardSceneFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventRewardSceneToJson(this);
 }
 
 @JsonSerializable()
@@ -985,6 +1029,8 @@ class EventVoicePlay {
   });
 
   factory EventVoicePlay.fromJson(Map<String, dynamic> json) => _$EventVoicePlayFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventVoicePlayToJson(this);
 }
 
 @JsonSerializable()
@@ -1008,6 +1054,8 @@ class EventDigging {
   });
 
   factory EventDigging.fromJson(Map<String, dynamic> json) => _$EventDiggingFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventDiggingToJson(this);
 }
 
 @JsonSerializable()
@@ -1029,6 +1077,8 @@ class EventDiggingBlock {
   });
 
   factory EventDiggingBlock.fromJson(Map<String, dynamic> json) => _$EventDiggingBlockFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventDiggingBlockToJson(this);
 }
 
 @JsonSerializable()
@@ -1044,6 +1094,8 @@ class EventDiggingReward {
   });
 
   factory EventDiggingReward.fromJson(Map<String, dynamic> json) => _$EventDiggingRewardFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventDiggingRewardToJson(this);
 }
 
 @JsonSerializable()
@@ -1070,6 +1122,8 @@ class EventCooltimeReward {
   });
 
   factory EventCooltimeReward.fromJson(Map<String, dynamic> json) => _$EventCooltimeRewardFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventCooltimeRewardToJson(this);
 }
 
 @JsonSerializable()
@@ -1081,6 +1135,8 @@ class EventCooltime {
   });
 
   factory EventCooltime.fromJson(Map<String, dynamic> json) => _$EventCooltimeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventCooltimeToJson(this);
 }
 
 @JsonSerializable()
@@ -1098,6 +1154,8 @@ class EventRecipeGift {
   });
 
   factory EventRecipeGift.fromJson(Map<String, dynamic> json) => _$EventRecipeGiftFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventRecipeGiftToJson(this);
 }
 
 @JsonSerializable()
@@ -1127,6 +1185,8 @@ class EventRecipe {
   });
 
   factory EventRecipe.fromJson(Map<String, dynamic> json) => _$EventRecipeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventRecipeToJson(this);
 }
 
 @JsonSerializable()
@@ -1144,6 +1204,8 @@ class EventFortificationDetail {
   });
 
   factory EventFortificationDetail.fromJson(Map<String, dynamic> json) => _$EventFortificationDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventFortificationDetailToJson(this);
 }
 
 @JsonSerializable()
@@ -1165,6 +1227,8 @@ class EventFortificationSvt {
   });
 
   factory EventFortificationSvt.fromJson(Map<String, dynamic> json) => _$EventFortificationSvtFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventFortificationSvtToJson(this);
 }
 
 @JsonSerializable()
@@ -1198,6 +1262,8 @@ class EventFortification {
   });
 
   factory EventFortification.fromJson(Map<String, dynamic> json) => _$EventFortificationFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventFortificationToJson(this);
 }
 
 @JsonSerializable()
@@ -1215,6 +1281,8 @@ class EventBulletinBoard {
   });
 
   factory EventBulletinBoard.fromJson(Map<String, dynamic> json) => _$EventBulletinBoardFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventBulletinBoardToJson(this);
 }
 
 @JsonSerializable()
@@ -1233,6 +1301,8 @@ class EventBulletinBoardRelease {
   });
 
   factory EventBulletinBoardRelease.fromJson(Map<String, dynamic> json) => _$EventBulletinBoardReleaseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventBulletinBoardReleaseToJson(this);
 }
 
 @JsonSerializable()
@@ -1256,6 +1326,8 @@ class EventCampaign {
   });
 
   factory EventCampaign.fromJson(Map<String, dynamic> json) => _$EventCampaignFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventCampaignToJson(this);
 }
 
 /// If [questId]=0 and [phase]=0, means all quests
@@ -1270,6 +1342,8 @@ class EventQuest {
   });
 
   factory EventQuest.fromJson(Map<String, dynamic> json) => _$EventQuestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventQuestToJson(this);
 }
 
 enum PurchaseType {

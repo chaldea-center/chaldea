@@ -11,6 +11,11 @@ NiceTrait _$NiceTraitFromJson(Map json) => NiceTrait(
       negative: json['negative'] as bool? ?? false,
     );
 
+Map<String, dynamic> _$NiceTraitToJson(NiceTrait instance) => <String, dynamic>{
+      'id': instance.id,
+      'negative': instance.negative,
+    };
+
 BgmRelease _$BgmReleaseFromJson(Map json) => BgmRelease(
       id: json['id'] as int,
       type: const CondTypeConverter().fromJson(json['type'] as String),
@@ -20,6 +25,16 @@ BgmRelease _$BgmReleaseFromJson(Map json) => BgmRelease(
       priority: json['priority'] as int,
       closedMessage: json['closedMessage'] as String,
     );
+
+Map<String, dynamic> _$BgmReleaseToJson(BgmRelease instance) => <String, dynamic>{
+      'id': instance.id,
+      'type': const CondTypeConverter().toJson(instance.type),
+      'condGroup': instance.condGroup,
+      'targetIds': instance.targetIds,
+      'vals': instance.vals,
+      'priority': instance.priority,
+      'closedMessage': instance.closedMessage,
+    };
 
 BgmEntity _$BgmEntityFromJson(Map json) => BgmEntity(
       id: json['id'] as int,
@@ -37,6 +52,19 @@ BgmEntity _$BgmEntityFromJson(Map json) => BgmEntity(
           const [],
     );
 
+Map<String, dynamic> _$BgmEntityToJson(BgmEntity instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'fileName': instance.fileName,
+      'notReleased': instance.notReleased,
+      'audioAsset': instance.audioAsset,
+      'priority': instance.priority,
+      'detail': instance.detail,
+      'shop': instance.shop?.toJson(),
+      'logo': instance.logo,
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+    };
+
 Bgm _$BgmFromJson(Map json) => Bgm(
       id: json['id'] as int,
       name: json['name'] as String? ?? '',
@@ -44,6 +72,14 @@ Bgm _$BgmFromJson(Map json) => Bgm(
       notReleased: json['notReleased'] as bool,
       audioAsset: json['audioAsset'] as String?,
     );
+
+Map<String, dynamic> _$BgmToJson(Bgm instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'fileName': instance.fileName,
+      'notReleased': instance.notReleased,
+      'audioAsset': instance.audioAsset,
+    };
 
 const _$RegionEnumMap = {
   Region.jp: 'jp',

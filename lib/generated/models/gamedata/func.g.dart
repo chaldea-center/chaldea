@@ -53,6 +53,26 @@ NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
           .toList(),
     );
 
+Map<String, dynamic> _$NiceFunctionToJson(NiceFunction instance) => <String, dynamic>{
+      'funcId': instance.funcId,
+      'funcType': _$FuncTypeEnumMap[instance.funcType]!,
+      'funcTargetType': _$FuncTargetTypeEnumMap[instance.funcTargetType]!,
+      'funcTargetTeam': _$FuncApplyTargetEnumMap[instance.funcTargetTeam]!,
+      'funcPopupText': instance.funcPopupText,
+      'funcPopupIcon': instance.funcPopupIcon,
+      'functvals': instance.functvals.map((e) => e.toJson()).toList(),
+      'funcquestTvals': instance.funcquestTvals.map((e) => e.toJson()).toList(),
+      'funcGroup': instance.funcGroup.map((e) => e.toJson()).toList(),
+      'traitVals': instance.traitVals.map((e) => e.toJson()).toList(),
+      'buffs': instance.buffs.map((e) => e.toJson()).toList(),
+      'svals': instance.svals.map((e) => e.toJson()).toList(),
+      'svals2': instance.svals2?.map((e) => e.toJson()).toList(),
+      'svals3': instance.svals3?.map((e) => e.toJson()).toList(),
+      'svals4': instance.svals4?.map((e) => e.toJson()).toList(),
+      'svals5': instance.svals5?.map((e) => e.toJson()).toList(),
+      'followerVals': instance.followerVals?.map((e) => e.toJson()).toList(),
+    };
+
 const _$FuncTypeEnumMap = {
   FuncType.unknown: 'unknown',
   FuncType.none: 'none',
@@ -221,6 +241,20 @@ BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
               const [],
     );
 
+Map<String, dynamic> _$BaseFunctionToJson(BaseFunction instance) => <String, dynamic>{
+      'funcId': instance.funcId,
+      'funcType': _$FuncTypeEnumMap[instance.funcType]!,
+      'funcTargetType': _$FuncTargetTypeEnumMap[instance.funcTargetType]!,
+      'funcTargetTeam': _$FuncApplyTargetEnumMap[instance.funcTargetTeam]!,
+      'funcPopupText': instance.funcPopupText,
+      'funcPopupIcon': instance.funcPopupIcon,
+      'functvals': instance.functvals.map((e) => e.toJson()).toList(),
+      'funcquestTvals': instance.funcquestTvals.map((e) => e.toJson()).toList(),
+      'funcGroup': instance.funcGroup.map((e) => e.toJson()).toList(),
+      'traitVals': instance.traitVals.map((e) => e.toJson()).toList(),
+      'buffs': instance.buffs.map((e) => e.toJson()).toList(),
+    };
+
 FuncGroup _$FuncGroupFromJson(Map json) => FuncGroup(
       eventId: json['eventId'] as int,
       baseFuncId: json['baseFuncId'] as int,
@@ -230,3 +264,13 @@ FuncGroup _$FuncGroupFromJson(Map json) => FuncGroup(
       priority: json['priority'] as int,
       isDispValue: json['isDispValue'] as bool,
     );
+
+Map<String, dynamic> _$FuncGroupToJson(FuncGroup instance) => <String, dynamic>{
+      'eventId': instance.eventId,
+      'baseFuncId': instance.baseFuncId,
+      'nameTotal': instance.nameTotal,
+      'name': instance.name,
+      'icon': instance.icon,
+      'priority': instance.priority,
+      'isDispValue': instance.isDispValue,
+    };

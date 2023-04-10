@@ -15,6 +15,12 @@ EnemyMaster _$EnemyMasterFromJson(Map json) => EnemyMaster(
           const [],
     );
 
+Map<String, dynamic> _$EnemyMasterToJson(EnemyMaster instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'battles': instance.battles.map((e) => e.toJson()).toList(),
+    };
+
 EnemyMasterBattle _$EnemyMasterBattleFromJson(Map json) => EnemyMasterBattle(
       id: json['id'] as int,
       face: json['face'] as String,
@@ -23,3 +29,12 @@ EnemyMasterBattle _$EnemyMasterBattleFromJson(Map json) => EnemyMasterBattle(
       maxCommandSpell: json['maxCommandSpell'] as int,
       cutin: (json['cutin'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
     );
+
+Map<String, dynamic> _$EnemyMasterBattleToJson(EnemyMasterBattle instance) => <String, dynamic>{
+      'id': instance.id,
+      'face': instance.face,
+      'figure': instance.figure,
+      'commandSpellIcon': instance.commandSpellIcon,
+      'maxCommandSpell': instance.maxCommandSpell,
+      'cutin': instance.cutin,
+    };

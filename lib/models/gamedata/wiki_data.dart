@@ -9,7 +9,7 @@ import 'mappings.dart';
 
 part '../../generated/models/gamedata/wiki_data.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class WikiData {
   final Map<int, ServantExtra> servants;
   final Map<int, CraftEssenceExtra> craftEssences;
@@ -37,7 +37,7 @@ class WikiData {
   factory WikiData.fromJson(Map<String, dynamic> json) => _$WikiDataFromJson(json);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class ServantExtra {
   int collectionNo;
   MappingList<String> nicknames;
@@ -71,7 +71,7 @@ class ServantExtra {
   factory ServantExtra.fromJson(Map<String, dynamic> json) => _$ServantExtraFromJson(json);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class BiliVideo {
   int? av;
   int? p;
@@ -102,7 +102,7 @@ class BiliVideo {
   }
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class CraftEssenceExtra {
   int collectionNo;
   CEObtain obtain;
@@ -125,7 +125,7 @@ class CraftEssenceExtra {
   factory CraftEssenceExtra.fromJson(Map<String, dynamic> json) => _$CraftEssenceExtraFromJson(json);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class CommandCodeExtra {
   int collectionNo;
   MappingBase<String> profile;
@@ -146,7 +146,7 @@ class CommandCodeExtra {
   factory CommandCodeExtra.fromJson(Map<String, dynamic> json) => _$CommandCodeExtraFromJson(json);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class EventExtraItems {
   int id;
   MappingBase<String> detail;
@@ -162,7 +162,7 @@ class EventExtraItems {
   factory EventExtraItems.fromJson(Map<String, dynamic> json) => _$EventExtraItemsFromJson(json);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class EventExtraFixedItems {
   int id;
   MappingBase<String> detail;
@@ -178,7 +178,7 @@ class EventExtraFixedItems {
   factory EventExtraFixedItems.fromJson(Map<String, dynamic> json) => _$EventExtraFixedItemsFromJson(json);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class EventExtra {
   int id;
   String? name;
@@ -236,7 +236,7 @@ class EventExtra {
   factory EventExtra.fromJson(Map<String, dynamic> json) => _$EventExtraFromJson(json);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class WarExtra {
   int id;
   String? mcLink;
@@ -273,7 +273,7 @@ class WarExtra {
   factory WarExtra.fromJson(Map<String, dynamic> json) => _$WarExtraFromJson(json);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class ExchangeTicket {
   final int id;
   final int year;
@@ -332,7 +332,7 @@ class ExchangeTicket {
   int get maxCount => days * multiplier;
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class FixedDrop {
   final int id;
   final Map<int, int> items;
@@ -345,7 +345,7 @@ class FixedDrop {
   factory FixedDrop.fromJson(Map<String, dynamic> json) => _$FixedDropFromJson(json);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class LimitedSummon with RouteInfo {
   String id;
   String? mcLink;
@@ -462,7 +462,7 @@ class LimitedSummon with RouteInfo {
   }
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class SubSummon {
   String title;
   List<ProbGroup> probs;
@@ -478,7 +478,7 @@ class SubSummon {
   Iterable<ProbGroup> get crafts => probs.where((e) => !e.isSvt);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class ProbGroup {
   bool isSvt;
   int rarity;

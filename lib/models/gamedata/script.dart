@@ -25,6 +25,9 @@ class NiceScript extends ScriptLink {
   });
 
   factory NiceScript.fromJson(Map<String, dynamic> json) => _$NiceScriptFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$NiceScriptToJson(this);
 }
 
 @JsonSerializable()
@@ -80,6 +83,8 @@ class ScriptLink with RouteInfo {
     }
     super.routeTo(child: child, popDetails: popDetails);
   }
+
+  Map<String, dynamic> toJson() => _$ScriptLinkToJson(this);
 }
 
 @JsonSerializable()
@@ -93,6 +98,9 @@ class ValentineScript extends ScriptLink {
   });
 
   factory ValentineScript.fromJson(Map<String, dynamic> json) => _$ValentineScriptFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$ValentineScriptToJson(this);
 }
 
 @JsonSerializable()
@@ -108,4 +116,6 @@ class StageLink {
   });
 
   factory StageLink.fromJson(Map<String, dynamic> json) => _$StageLinkFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StageLinkToJson(this);
 }

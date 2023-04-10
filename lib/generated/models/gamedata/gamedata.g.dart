@@ -131,6 +131,11 @@ GameTops _$GameTopsFromJson(Map json) => GameTops(
       na: GameTop.fromJson(Map<String, dynamic>.from(json['NA'] as Map)),
     );
 
+Map<String, dynamic> _$GameTopsToJson(GameTops instance) => <String, dynamic>{
+      'JP': instance.jp.toJson(),
+      'NA': instance.na.toJson(),
+    };
+
 GameTop _$GameTopFromJson(Map json) => GameTop(
       region: const RegionConverter().fromJson(json['region'] as String),
       gameServer: json['gameServer'] as String,
@@ -141,8 +146,24 @@ GameTop _$GameTopFromJson(Map json) => GameTop(
       assetbundleFolder: json['assetbundleFolder'] as String,
     );
 
+Map<String, dynamic> _$GameTopToJson(GameTop instance) => <String, dynamic>{
+      'region': const RegionConverter().toJson(instance.region),
+      'gameServer': instance.gameServer,
+      'appVer': instance.appVer,
+      'verCode': instance.verCode,
+      'dataVer': instance.dataVer,
+      'dateVer': instance.dateVer,
+      'assetbundleFolder': instance.assetbundleFolder,
+    };
+
 AssetBundleDecrypt _$AssetBundleDecryptFromJson(Map json) => AssetBundleDecrypt(
       folderName: json['folderName'] as String,
       animalName: json['animalName'] as String,
       zooName: json['zooName'] as String,
     );
+
+Map<String, dynamic> _$AssetBundleDecryptToJson(AssetBundleDecrypt instance) => <String, dynamic>{
+      'folderName': instance.folderName,
+      'animalName': instance.animalName,
+      'zooName': instance.zooName,
+    };

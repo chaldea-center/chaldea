@@ -53,6 +53,8 @@ class BasicQuest {
   });
 
   factory BasicQuest.fromJson(Map<String, dynamic> json) => _$BasicQuestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BasicQuestToJson(this);
 }
 
 @JsonSerializable()
@@ -247,6 +249,8 @@ class Quest with RouteInfo {
   List<String> get allScriptIds {
     return [for (final phase in phaseScripts) ...phase.scripts.map((e) => e.scriptId)];
   }
+
+  Map<String, dynamic> toJson() => _$QuestToJson(this);
 }
 
 @JsonSerializable(converters: [SvtClassConverter()])
@@ -356,6 +360,9 @@ class QuestPhase extends Quest {
   }
 
   factory QuestPhase.fromJson(Map<String, dynamic> json) => _$QuestPhaseFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$QuestPhaseToJson(this);
 }
 
 @JsonSerializable()
@@ -487,6 +494,8 @@ class BaseGift {
       router.push(url: route);
     }
   }
+
+  Map<String, dynamic> toJson() => _$BaseGiftToJson(this);
 }
 
 @JsonSerializable()
@@ -509,6 +518,8 @@ class GiftAdd {
   });
 
   factory GiftAdd.fromJson(Map<String, dynamic> json) => _$GiftAddFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GiftAddToJson(this);
 }
 
 @JsonSerializable()
@@ -545,6 +556,9 @@ class Gift extends BaseGift {
     }
     stat.addDict(repls);
   }
+
+  @override
+  Map<String, dynamic> toJson() => _$GiftToJson(this);
 }
 
 @JsonSerializable()
@@ -588,6 +602,8 @@ class Stage {
         enemyActCount != null ||
         waveStartMovies.isNotEmpty;
   }
+
+  Map<String, dynamic> toJson() => _$StageToJson(this);
 }
 
 @JsonSerializable()
@@ -597,6 +613,8 @@ class StageStartMovie {
   StageStartMovie({required this.waveStartMovie});
 
   factory StageStartMovie.fromJson(Map<String, dynamic> json) => _$StageStartMovieFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StageStartMovieToJson(this);
 }
 
 @JsonSerializable()
@@ -615,6 +633,8 @@ class QuestRelease {
   });
 
   factory QuestRelease.fromJson(Map<String, dynamic> json) => _$QuestReleaseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestReleaseToJson(this);
 }
 
 @JsonSerializable()
@@ -628,6 +648,8 @@ class QuestPhaseScript {
   });
 
   factory QuestPhaseScript.fromJson(Map<String, dynamic> json) => _$QuestPhaseScriptFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestPhaseScriptToJson(this);
 }
 
 @JsonSerializable()
@@ -648,6 +670,8 @@ class QuestMessage {
   });
 
   factory QuestMessage.fromJson(Map<String, dynamic> json) => _$QuestMessageFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestMessageToJson(this);
 }
 
 @JsonSerializable()
@@ -663,6 +687,8 @@ class QuestHint {
   });
 
   factory QuestHint.fromJson(Map<String, dynamic> json) => _$QuestHintFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestHintToJson(this);
 }
 
 @JsonSerializable()
@@ -692,6 +718,8 @@ class NpcServant {
   });
 
   factory NpcServant.fromJson(Map<String, dynamic> json) => _$NpcServantFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NpcServantToJson(this);
 }
 
 @JsonSerializable()
@@ -739,6 +767,8 @@ class SupportServant {
   }
 
   Transl<String, String> get lName => Transl.svtNames(shownName);
+
+  Map<String, dynamic> toJson() => _$SupportServantToJson(this);
 }
 
 @JsonSerializable()
@@ -755,6 +785,8 @@ class SupportServantRelease {
   });
 
   factory SupportServantRelease.fromJson(Map<String, dynamic> json) => _$SupportServantReleaseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SupportServantReleaseToJson(this);
 }
 
 @JsonSerializable()
@@ -772,6 +804,8 @@ class SupportServantTd {
   factory SupportServantTd.fromJson(Map<String, dynamic> json) => _$SupportServantTdFromJson(json);
 
   int? get lv => noblePhantasm == null ? null : noblePhantasmLv;
+
+  Map<String, dynamic> toJson() => _$SupportServantTdToJson(this);
 }
 
 @JsonSerializable()
@@ -787,6 +821,8 @@ class SupportServantEquip {
   });
 
   factory SupportServantEquip.fromJson(Map<String, dynamic> json) => _$SupportServantEquipFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SupportServantEquipToJson(this);
 }
 
 @JsonSerializable()
@@ -800,6 +836,8 @@ class SupportServantScript {
   });
 
   factory SupportServantScript.fromJson(Map<String, dynamic> json) => _$SupportServantScriptFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SupportServantScriptToJson(this);
 }
 
 @JsonSerializable()
@@ -811,6 +849,8 @@ class SupportServantLimit {
   });
 
   factory SupportServantLimit.fromJson(Map<String, dynamic> json) => _$SupportServantLimitFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SupportServantLimitToJson(this);
 }
 
 @JsonSerializable()
@@ -833,6 +873,9 @@ class EnemyDrop extends BaseGift {
   });
 
   factory EnemyDrop.fromJson(Map<String, dynamic> json) => _$EnemyDropFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$EnemyDropToJson(this);
 }
 
 @JsonSerializable()
@@ -858,6 +901,8 @@ class EnemyLimit {
   });
 
   factory EnemyLimit.fromJson(Map<String, dynamic> json) => _$EnemyLimitFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EnemyLimitToJson(this);
 }
 
 @JsonSerializable()
@@ -890,6 +935,8 @@ class EnemyMisc {
   });
 
   factory EnemyMisc.fromJson(Map<String, dynamic> json) => _$EnemyMiscFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EnemyMiscToJson(this);
 }
 
 @JsonSerializable()
@@ -1021,6 +1068,8 @@ class QuestEnemy with GameCardMixin {
       popDetails: popDetails,
     );
   }
+
+  Map<String, dynamic> toJson() => _$QuestEnemyToJson(this);
 }
 
 @JsonSerializable()
@@ -1038,6 +1087,8 @@ class EnemyServerMod {
   });
 
   factory EnemyServerMod.fromJson(Map<String, dynamic> json) => _$EnemyServerModFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EnemyServerModToJson(this);
 }
 
 // appear
@@ -1106,6 +1157,8 @@ class EnemyScript with DataScriptBase {
   bool get isRare => source['probability_type'] == 1;
 
   int? get dispBreakShift => source['dispBreakShift'] as int?;
+
+  Map<String, dynamic> toJson() => _$EnemyScriptToJson(this);
 }
 
 @JsonSerializable()
@@ -1117,6 +1170,8 @@ class EnemyInfoScript with DataScriptBase {
   });
 
   factory EnemyInfoScript.fromJson(Map<String, dynamic> json) => _$EnemyInfoScriptFromJson(json)..setSource(json);
+
+  Map<String, dynamic> toJson() => _$EnemyInfoScriptToJson(this);
 }
 
 @JsonSerializable()
@@ -1154,6 +1209,8 @@ class EnemySkill {
       ];
 
   factory EnemySkill.fromJson(Map<String, dynamic> json) => _$EnemySkillFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EnemySkillToJson(this);
 }
 
 @JsonSerializable()
@@ -1175,6 +1232,8 @@ class EnemyTd {
   });
 
   factory EnemyTd.fromJson(Map<String, dynamic> json) => _$EnemyTdFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EnemyTdToJson(this);
 }
 
 @JsonSerializable()
@@ -1200,6 +1259,8 @@ class EnemyPassive {
         addPassive.any((e) => e.id == skillId) ||
         appendPassiveSkillIds?.contains(skillId) == true;
   }
+
+  Map<String, dynamic> toJson() => _$EnemyPassiveToJson(this);
 }
 
 // class EnemyLimit{}
@@ -1219,6 +1280,8 @@ class EnemyAi {
   });
 
   factory EnemyAi.fromJson(Map<String, dynamic> json) => _$EnemyAiFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EnemyAiToJson(this);
 }
 
 @JsonSerializable()
@@ -1234,6 +1297,8 @@ class FieldAi {
   });
 
   factory FieldAi.fromJson(Map<String, dynamic> json) => _$FieldAiFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FieldAiToJson(this);
 }
 
 @JsonSerializable()
@@ -1249,6 +1314,8 @@ class QuestPhaseAiNpc {
   });
 
   factory QuestPhaseAiNpc.fromJson(Map<String, dynamic> json) => _$QuestPhaseAiNpcFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestPhaseAiNpcToJson(this);
 }
 
 @JsonSerializable()
@@ -1270,6 +1337,8 @@ class QuestPhaseExtraDetail {
   });
 
   factory QuestPhaseExtraDetail.fromJson(Map<String, dynamic> json) => _$QuestPhaseExtraDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestPhaseExtraDetailToJson(this);
 }
 
 @JsonSerializable()
@@ -1291,6 +1360,8 @@ class Restriction {
   });
 
   factory Restriction.fromJson(Map<String, dynamic> json) => _$RestrictionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RestrictionToJson(this);
 }
 
 @JsonSerializable()
@@ -1310,6 +1381,8 @@ class QuestPhaseRestriction {
   });
 
   factory QuestPhaseRestriction.fromJson(Map<String, dynamic> json) => _$QuestPhaseRestrictionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestPhaseRestrictionToJson(this);
 }
 
 ///

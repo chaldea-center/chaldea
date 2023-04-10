@@ -39,8 +39,6 @@ class CommandCode with GameCardMixin {
     required this.comment,
   });
 
-  factory CommandCode.fromJson(Map<String, dynamic> json) => _$CommandCodeFromJson(json);
-
   @override
   Transl<String, String> get lName => Transl.ccNames(name);
 
@@ -59,6 +57,10 @@ class CommandCode with GameCardMixin {
   String get route => Routes.commandCodeI(id);
 
   CmdCodeStatus get status => db.curUser.ccStatusOf(collectionNo);
+
+  factory CommandCode.fromJson(Map<String, dynamic> json) => _$CommandCodeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CommandCodeToJson(this);
 }
 
 @JsonSerializable()
@@ -81,8 +83,6 @@ class BasicCommandCode with GameCardMixin {
     required this.face,
   });
 
-  factory BasicCommandCode.fromJson(Map<String, dynamic> json) => _$BasicCommandCodeFromJson(json);
-
   @override
   String get icon => face;
 
@@ -91,4 +91,8 @@ class BasicCommandCode with GameCardMixin {
 
   @override
   String get route => Routes.commandCodeI(id);
+
+  factory BasicCommandCode.fromJson(Map<String, dynamic> json) => _$BasicCommandCodeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BasicCommandCodeToJson(this);
 }

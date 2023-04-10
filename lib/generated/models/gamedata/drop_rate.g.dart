@@ -21,6 +21,13 @@ DropData _$DropDataFromJson(Map json) => DropData(
           const {},
     );
 
+Map<String, dynamic> _$DropDataToJson(DropData instance) => <String, dynamic>{
+      'domusVer': instance.domusVer,
+      'domusAurea': instance.domusAurea.toJson(),
+      'fixedDrops': instance.fixedDrops.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'freeDrops': instance.freeDrops.map((k, e) => MapEntry(k.toString(), e.toJson())),
+    };
+
 DropRateSheet _$DropRateSheetFromJson(Map json) => DropRateSheet(
       itemIds: (json['itemIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       questIds: (json['questIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
@@ -38,6 +45,17 @@ DropRateSheet _$DropRateSheetFromJson(Map json) => DropRateSheet(
           const {},
     );
 
+Map<String, dynamic> _$DropRateSheetToJson(DropRateSheet instance) => <String, dynamic>{
+      'itemIds': instance.itemIds,
+      'questIds': instance.questIds,
+      'apCosts': instance.apCosts,
+      'runs': instance.runs,
+      'bonds': instance.bonds,
+      'exps': instance.exps,
+      'sparseMatrix':
+          instance.sparseMatrix.map((k, e) => MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
+    };
+
 QuestDropData _$QuestDropDataFromJson(Map json) => QuestDropData(
       runs: json['runs'] as int? ?? 0,
       items: (json['items'] as Map?)?.map(
@@ -45,3 +63,8 @@ QuestDropData _$QuestDropDataFromJson(Map json) => QuestDropData(
           ) ??
           const {},
     );
+
+Map<String, dynamic> _$QuestDropDataToJson(QuestDropData instance) => <String, dynamic>{
+      'runs': instance.runs,
+      'items': instance.items.map((k, e) => MapEntry(k.toString(), e)),
+    };

@@ -361,6 +361,8 @@ class MappingData {
   factory MappingData.fromJson(Map<String, dynamic> json) {
     return _$MappingDataFromJson(json);
   }
+
+  Map<String, dynamic> toJson() => _$MappingDataToJson(this);
 }
 
 /// Shortcut for [MappingBase]
@@ -506,6 +508,9 @@ class MappingList<T> extends MappingBase<List<T>> {
   });
 
   factory MappingList.fromJson(Map<String, dynamic> json) => _$MappingListFromJson(json, _fromJsonT);
+
+  @override
+  Map<String, dynamic> toJson() => _$MappingListToJson(this, _toJsonT);
 }
 
 @JsonSerializable(genericArgumentFactories: true)
@@ -519,6 +524,9 @@ class MappingDict<V> extends MappingBase<Map<int, V>> {
   });
 
   factory MappingDict.fromJson(Map<String, dynamic> json) => _$MappingDictFromJson(json, _fromJsonT);
+
+  @override
+  Map<String, dynamic> toJson() => _$MappingDictToJson(this, _toJsonT);
 }
 
 @JsonSerializable()
@@ -537,6 +545,9 @@ class EventTraitMapping extends MappingBase<String> {
   });
 
   factory EventTraitMapping.fromJson(Map<String, dynamic> json) => _$EventTraitMappingFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$EventTraitMappingToJson(this);
 }
 
 @JsonSerializable()
@@ -553,6 +564,9 @@ class FieldTraitMapping extends MappingBase<String> {
   });
 
   factory FieldTraitMapping.fromJson(Map<String, dynamic> json) => _$FieldTraitMappingFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$FieldTraitMappingToJson(this);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -614,6 +628,8 @@ class EnumMapping {
   factory EnumMapping.fromJson(Map<String, dynamic> json) {
     return _$EnumMappingFromJson(json);
   }
+
+  Map<String, dynamic> toJson() => _$EnumMappingToJson(this);
 }
 
 class _SpecialTransl {

@@ -23,6 +23,22 @@ BasicQuest _$BasicQuestFromJson(Map json) => BasicQuest(
       closedAt: json['closedAt'] as int,
     );
 
+Map<String, dynamic> _$BasicQuestToJson(BasicQuest instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'type': _$QuestTypeEnumMap[instance.type]!,
+      'flags': instance.flags.map(const QuestFlagConverter().toJson).toList(),
+      'consumeType': _$ConsumeTypeEnumMap[instance.consumeType]!,
+      'consume': instance.consume,
+      'spotId': instance.spotId,
+      'warId': instance.warId,
+      'warLongName': instance.warLongName,
+      'priority': instance.priority,
+      'noticeAt': instance.noticeAt,
+      'openedAt': instance.openedAt,
+      'closedAt': instance.closedAt,
+    };
+
 const _$QuestTypeEnumMap = {
   QuestType.main: 'main',
   QuestType.free: 'free',
@@ -81,6 +97,36 @@ Quest _$QuestFromJson(Map json) => Quest(
       openedAt: json['openedAt'] as int? ?? 0,
       closedAt: json['closedAt'] as int? ?? 0,
     );
+
+Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'type': _$QuestTypeEnumMap[instance.type]!,
+      'flags': instance.flags.map(const QuestFlagConverter().toJson).toList(),
+      'consumeType': _$ConsumeTypeEnumMap[instance.consumeType]!,
+      'consume': instance.consume,
+      'consumeItem': instance.consumeItem.map((e) => e.toJson()).toList(),
+      'afterClear': _$QuestAfterClearTypeEnumMap[instance.afterClear]!,
+      'recommendLv': instance.recommendLv,
+      'spotId': instance.spotId,
+      'spotName': instance.spotName,
+      'warId': instance.warId,
+      'warLongName': instance.warLongName,
+      'chapterId': instance.chapterId,
+      'chapterSubId': instance.chapterSubId,
+      'chapterSubStr': instance.chapterSubStr,
+      'giftIcon': instance.giftIcon,
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+      'phases': instance.phases,
+      'phasesWithEnemies': instance.phasesWithEnemies,
+      'phasesNoBattle': instance.phasesNoBattle,
+      'phaseScripts': instance.phaseScripts.map((e) => e.toJson()).toList(),
+      'priority': instance.priority,
+      'noticeAt': instance.noticeAt,
+      'openedAt': instance.openedAt,
+      'closedAt': instance.closedAt,
+    };
 
 const _$QuestAfterClearTypeEnumMap = {
   QuestAfterClearType.close: 'close',
@@ -175,11 +221,66 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
           const [],
     )..giftIcon = json['giftIcon'] as String?;
 
+Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'type': _$QuestTypeEnumMap[instance.type]!,
+      'flags': instance.flags.map(const QuestFlagConverter().toJson).toList(),
+      'consumeType': _$ConsumeTypeEnumMap[instance.consumeType]!,
+      'consume': instance.consume,
+      'consumeItem': instance.consumeItem.map((e) => e.toJson()).toList(),
+      'afterClear': _$QuestAfterClearTypeEnumMap[instance.afterClear]!,
+      'recommendLv': instance.recommendLv,
+      'spotId': instance.spotId,
+      'spotName': instance.spotName,
+      'warId': instance.warId,
+      'warLongName': instance.warLongName,
+      'chapterId': instance.chapterId,
+      'chapterSubId': instance.chapterSubId,
+      'chapterSubStr': instance.chapterSubStr,
+      'giftIcon': instance.giftIcon,
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+      'phases': instance.phases,
+      'phasesWithEnemies': instance.phasesWithEnemies,
+      'phasesNoBattle': instance.phasesNoBattle,
+      'phaseScripts': instance.phaseScripts.map((e) => e.toJson()).toList(),
+      'priority': instance.priority,
+      'noticeAt': instance.noticeAt,
+      'openedAt': instance.openedAt,
+      'closedAt': instance.closedAt,
+      'phase': instance.phase,
+      'className': instance.className.map(const SvtClassConverter().toJson).toList(),
+      'individuality': instance.individuality.map((e) => e.toJson()).toList(),
+      'qp': instance.qp,
+      'exp': instance.exp,
+      'bond': instance.bond,
+      'isNpcOnly': instance.isNpcOnly,
+      'battleBgId': instance.battleBgId,
+      'enemyHash': instance.enemyHash,
+      'availableEnemyHashes': instance.enemyHashes,
+      'dropsFromAllHashes': instance.dropsFromAllHashes,
+      'extraDetail': instance.extraDetail?.toJson(),
+      'scripts': instance.scripts.map((e) => e.toJson()).toList(),
+      'messages': instance.messages.map((e) => e.toJson()).toList(),
+      'hints': instance.hints.map((e) => e.toJson()).toList(),
+      'restrictions': instance.restrictions.map((e) => e.toJson()).toList(),
+      'supportServants': instance.supportServants.map((e) => e.toJson()).toList(),
+      'stages': instance.stages.map((e) => e.toJson()).toList(),
+      'drops': instance.drops.map((e) => e.toJson()).toList(),
+    };
+
 BaseGift _$BaseGiftFromJson(Map json) => BaseGift(
       type: $enumDecodeNullable(_$GiftTypeEnumMap, json['type']) ?? GiftType.item,
       objectId: json['objectId'] as int,
       num: json['num'] as int,
     );
+
+Map<String, dynamic> _$BaseGiftToJson(BaseGift instance) => <String, dynamic>{
+      'type': _$GiftTypeEnumMap[instance.type]!,
+      'objectId': instance.objectId,
+      'num': instance.num,
+    };
 
 const _$GiftTypeEnumMap = {
   GiftType.servant: 'servant',
@@ -208,6 +309,15 @@ GiftAdd _$GiftAddFromJson(Map json) => GiftAdd(
           .toList(),
     );
 
+Map<String, dynamic> _$GiftAddToJson(GiftAdd instance) => <String, dynamic>{
+      'priority': instance.priority,
+      'replacementGiftIcon': instance.replacementGiftIcon,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'targetId': instance.targetId,
+      'targetNum': instance.targetNum,
+      'replacementGifts': instance.replacementGifts.map((e) => e.toJson()).toList(),
+    };
+
 Gift _$GiftFromJson(Map json) => Gift(
       type: $enumDecodeNullable(_$GiftTypeEnumMap, json['type']) ?? GiftType.item,
       objectId: json['objectId'] as int,
@@ -217,6 +327,13 @@ Gift _$GiftFromJson(Map json) => Gift(
               .toList() ??
           const [],
     );
+
+Map<String, dynamic> _$GiftToJson(Gift instance) => <String, dynamic>{
+      'type': _$GiftTypeEnumMap[instance.type]!,
+      'objectId': instance.objectId,
+      'num': instance.num,
+      'giftAdds': instance.giftAdds.map((e) => e.toJson()).toList(),
+    };
 
 Stage _$StageFromJson(Map json) => Stage(
       wave: json['wave'] as int,
@@ -238,6 +355,19 @@ Stage _$StageFromJson(Map json) => Stage(
           .toList(),
     );
 
+Map<String, dynamic> _$StageToJson(Stage instance) => <String, dynamic>{
+      'wave': instance.wave,
+      'bgm': instance.bgm?.toJson(),
+      'fieldAis': instance.fieldAis.map((e) => e.toJson()).toList(),
+      'call': instance.call,
+      'turn': instance.turn,
+      'limitAct': _$StageLimitActTypeEnumMap[instance.limitAct],
+      'enemyFieldPosCount': instance.enemyFieldPosCount,
+      'enemyActCount': instance.enemyActCount,
+      'waveStartMovies': instance.waveStartMovies.map((e) => e.toJson()).toList(),
+      'enemies': instance.enemies.map((e) => e.toJson()).toList(),
+    };
+
 const _$StageLimitActTypeEnumMap = {
   StageLimitActType.win: 'win',
   StageLimitActType.lose: 'lose',
@@ -247,6 +377,10 @@ StageStartMovie _$StageStartMovieFromJson(Map json) => StageStartMovie(
       waveStartMovie: json['waveStartMovie'] as String,
     );
 
+Map<String, dynamic> _$StageStartMovieToJson(StageStartMovie instance) => <String, dynamic>{
+      'waveStartMovie': instance.waveStartMovie,
+    };
+
 QuestRelease _$QuestReleaseFromJson(Map json) => QuestRelease(
       type: const CondTypeConverter().fromJson(json['type'] as String),
       targetId: json['targetId'] as int,
@@ -254,12 +388,24 @@ QuestRelease _$QuestReleaseFromJson(Map json) => QuestRelease(
       closedMessage: json['closedMessage'] as String? ?? "",
     );
 
+Map<String, dynamic> _$QuestReleaseToJson(QuestRelease instance) => <String, dynamic>{
+      'type': const CondTypeConverter().toJson(instance.type),
+      'targetId': instance.targetId,
+      'value': instance.value,
+      'closedMessage': instance.closedMessage,
+    };
+
 QuestPhaseScript _$QuestPhaseScriptFromJson(Map json) => QuestPhaseScript(
       phase: json['phase'] as int,
       scripts: (json['scripts'] as List<dynamic>)
           .map((e) => ScriptLink.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
     );
+
+Map<String, dynamic> _$QuestPhaseScriptToJson(QuestPhaseScript instance) => <String, dynamic>{
+      'phase': instance.phase,
+      'scripts': instance.scripts.map((e) => e.toJson()).toList(),
+    };
 
 QuestMessage _$QuestMessageFromJson(Map json) => QuestMessage(
       idx: json['idx'] as int,
@@ -269,11 +415,25 @@ QuestMessage _$QuestMessageFromJson(Map json) => QuestMessage(
       targetNum: json['targetNum'] as int,
     );
 
+Map<String, dynamic> _$QuestMessageToJson(QuestMessage instance) => <String, dynamic>{
+      'idx': instance.idx,
+      'message': instance.message,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'targetId': instance.targetId,
+      'targetNum': instance.targetNum,
+    };
+
 QuestHint _$QuestHintFromJson(Map json) => QuestHint(
       title: json['title'] as String? ?? '',
       message: json['message'] as String? ?? '',
       leftIndent: json['leftIndent'] as int? ?? 0,
     );
+
+Map<String, dynamic> _$QuestHintToJson(QuestHint instance) => <String, dynamic>{
+      'title': instance.title,
+      'message': instance.message,
+      'leftIndent': instance.leftIndent,
+    };
 
 NpcServant _$NpcServantFromJson(Map json) => NpcServant(
       npcId: json['npcId'] as int?,
@@ -292,6 +452,19 @@ NpcServant _$NpcServantFromJson(Map json) => NpcServant(
           : SupportServantTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
       limit: SupportServantLimit.fromJson(Map<String, dynamic>.from(json['limit'] as Map)),
     );
+
+Map<String, dynamic> _$NpcServantToJson(NpcServant instance) => <String, dynamic>{
+      'npcId': instance.npcId,
+      'name': instance.name,
+      'svt': instance.svt.toJson(),
+      'lv': instance.lv,
+      'atk': instance.atk,
+      'hp': instance.hp,
+      'traits': instance.traits.map((e) => e.toJson()).toList(),
+      'skills': instance.skills?.toJson(),
+      'noblePhantasm': instance.noblePhantasm?.toJson(),
+      'limit': instance.limit.toJson(),
+    };
 
 SupportServant _$SupportServantFromJson(Map json) => SupportServant(
       id: json['id'] as int,
@@ -320,11 +493,34 @@ SupportServant _$SupportServantFromJson(Map json) => SupportServant(
       limit: SupportServantLimit.fromJson(Map<String, dynamic>.from(json['limit'] as Map)),
     );
 
+Map<String, dynamic> _$SupportServantToJson(SupportServant instance) => <String, dynamic>{
+      'id': instance.id,
+      'priority': instance.priority,
+      'name': instance.name,
+      'svt': instance.svt.toJson(),
+      'lv': instance.lv,
+      'atk': instance.atk,
+      'hp': instance.hp,
+      'traits': instance.traits.map((e) => e.toJson()).toList(),
+      'skills': instance.skills.toJson(),
+      'noblePhantasm': instance.noblePhantasm.toJson(),
+      'equips': instance.equips.map((e) => e.toJson()).toList(),
+      'script': instance.script?.toJson(),
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+      'limit': instance.limit.toJson(),
+    };
+
 SupportServantRelease _$SupportServantReleaseFromJson(Map json) => SupportServantRelease(
       type: json['type'] == null ? CondType.none : const CondTypeConverter().fromJson(json['type'] as String),
       targetId: json['targetId'] as int,
       value: json['value'] as int,
     );
+
+Map<String, dynamic> _$SupportServantReleaseToJson(SupportServantRelease instance) => <String, dynamic>{
+      'type': const CondTypeConverter().toJson(instance.type),
+      'targetId': instance.targetId,
+      'value': instance.value,
+    };
 
 SupportServantTd _$SupportServantTdFromJson(Map json) => SupportServantTd(
       noblePhantasmId: json['noblePhantasmId'] as int,
@@ -334,20 +530,41 @@ SupportServantTd _$SupportServantTdFromJson(Map json) => SupportServantTd(
       noblePhantasmLv: json['noblePhantasmLv'] as int,
     );
 
+Map<String, dynamic> _$SupportServantTdToJson(SupportServantTd instance) => <String, dynamic>{
+      'noblePhantasmId': instance.noblePhantasmId,
+      'noblePhantasm': instance.noblePhantasm?.toJson(),
+      'noblePhantasmLv': instance.noblePhantasmLv,
+    };
+
 SupportServantEquip _$SupportServantEquipFromJson(Map json) => SupportServantEquip(
       equip: CraftEssence.fromJson(Map<String, dynamic>.from(json['equip'] as Map)),
       lv: json['lv'] as int,
       limitCount: json['limitCount'] as int,
     );
 
+Map<String, dynamic> _$SupportServantEquipToJson(SupportServantEquip instance) => <String, dynamic>{
+      'equip': instance.equip.toJson(),
+      'lv': instance.lv,
+      'limitCount': instance.limitCount,
+    };
+
 SupportServantScript _$SupportServantScriptFromJson(Map json) => SupportServantScript(
       dispLimitCount: json['dispLimitCount'] as int?,
       eventDeckIndex: json['eventDeckIndex'] as int?,
     );
 
+Map<String, dynamic> _$SupportServantScriptToJson(SupportServantScript instance) => <String, dynamic>{
+      'dispLimitCount': instance.dispLimitCount,
+      'eventDeckIndex': instance.eventDeckIndex,
+    };
+
 SupportServantLimit _$SupportServantLimitFromJson(Map json) => SupportServantLimit(
       limitCount: json['limitCount'] as int,
     );
+
+Map<String, dynamic> _$SupportServantLimitToJson(SupportServantLimit instance) => <String, dynamic>{
+      'limitCount': instance.limitCount,
+    };
 
 EnemyDrop _$EnemyDropFromJson(Map json) => EnemyDrop(
       type: $enumDecodeNullable(_$GiftTypeEnumMap, json['type']) ?? GiftType.item,
@@ -356,6 +573,14 @@ EnemyDrop _$EnemyDropFromJson(Map json) => EnemyDrop(
       dropCount: json['dropCount'] as int,
       runs: json['runs'] as int,
     );
+
+Map<String, dynamic> _$EnemyDropToJson(EnemyDrop instance) => <String, dynamic>{
+      'type': _$GiftTypeEnumMap[instance.type]!,
+      'objectId': instance.objectId,
+      'num': instance.num,
+      'dropCount': instance.dropCount,
+      'runs': instance.runs,
+    };
 
 EnemyLimit _$EnemyLimitFromJson(Map json) => EnemyLimit(
       limitCount: json['limitCount'] as int? ?? 0,
@@ -368,6 +593,17 @@ EnemyLimit _$EnemyLimitFromJson(Map json) => EnemyLimit(
       exceedCount: json['exceedCount'] as int? ?? 0,
     );
 
+Map<String, dynamic> _$EnemyLimitToJson(EnemyLimit instance) => <String, dynamic>{
+      'limitCount': instance.limitCount,
+      'imageLimitCount': instance.imageLimitCount,
+      'dispLimitCount': instance.dispLimitCount,
+      'commandCardLimitCount': instance.commandCardLimitCount,
+      'iconLimitCount': instance.iconLimitCount,
+      'portraitLimitCount': instance.portraitLimitCount,
+      'battleVoice': instance.battleVoice,
+      'exceedCount': instance.exceedCount,
+    };
+
 EnemyMisc _$EnemyMiscFromJson(Map json) => EnemyMisc(
       displayType: json['displayType'] as int? ?? 1,
       npcSvtType: json['npcSvtType'] as int? ?? 2,
@@ -379,6 +615,18 @@ EnemyMisc _$EnemyMiscFromJson(Map json) => EnemyMisc(
       commandCardParam: (json['commandCardParam'] as List<dynamic>?)?.map((e) => e as int).toList(),
       status: json['status'] as int? ?? 0,
     );
+
+Map<String, dynamic> _$EnemyMiscToJson(EnemyMisc instance) => <String, dynamic>{
+      'displayType': instance.displayType,
+      'npcSvtType': instance.npcSvtType,
+      'passiveSkill': instance.passiveSkill,
+      'equipTargetId1': instance.equipTargetId1,
+      'equipTargetIds': instance.equipTargetIds,
+      'npcSvtClassId': instance.npcSvtClassId,
+      'overwriteSvtId': instance.overwriteSvtId,
+      'commandCardParam': instance.commandCardParam,
+      'status': instance.status,
+    };
 
 QuestEnemy _$QuestEnemyFromJson(Map json) => QuestEnemy(
       deck: $enumDecodeNullable(_$DeckTypeEnumMap, json['deck']) ?? DeckType.enemy,
@@ -433,6 +681,40 @@ QuestEnemy _$QuestEnemyFromJson(Map json) => QuestEnemy(
       misc: json['misc'] == null ? null : EnemyMisc.fromJson(Map<String, dynamic>.from(json['misc'] as Map)),
     );
 
+Map<String, dynamic> _$QuestEnemyToJson(QuestEnemy instance) => <String, dynamic>{
+      'deck': _$DeckTypeEnumMap[instance.deck]!,
+      'deckId': instance.deckId,
+      'userSvtId': instance.userSvtId,
+      'uniqueId': instance.uniqueId,
+      'npcId': instance.npcId,
+      'roleType': _$EnemyRoleTypeEnumMap[instance.roleType]!,
+      'name': instance.name,
+      'svt': instance.svt.toJson(),
+      'drops': instance.drops.map((e) => e.toJson()).toList(),
+      'lv': instance.lv,
+      'exp': instance.exp,
+      'atk': instance.atk,
+      'hp': instance.hp,
+      'adjustAtk': instance.adjustAtk,
+      'adjustHp': instance.adjustHp,
+      'deathRate': instance.deathRate,
+      'criticalRate': instance.criticalRate,
+      'recover': instance.recover,
+      'chargeTurn': instance.chargeTurn,
+      'traits': instance.traits.map((e) => e.toJson()).toList(),
+      'skills': instance.skills.toJson(),
+      'classPassive': instance.classPassive.toJson(),
+      'noblePhantasm': instance.noblePhantasm.toJson(),
+      'serverMod': instance.serverMod.toJson(),
+      'ai': instance.ai?.toJson(),
+      'enemyScript': instance.enemyScript.toJson(),
+      'originalEnemyScript': instance.originalEnemyScript,
+      'infoScript': instance.infoScript?.toJson(),
+      'originalInfoScript': instance.originalInfoScript,
+      'limit': instance.limit?.toJson(),
+      'misc': instance.misc?.toJson(),
+    };
+
 const _$DeckTypeEnumMap = {
   DeckType.enemy: 'enemy',
   DeckType.call: 'call',
@@ -456,6 +738,12 @@ EnemyServerMod _$EnemyServerModFromJson(Map json) => EnemyServerMod(
       starRate: json['starRate'] as int? ?? 0,
     );
 
+Map<String, dynamic> _$EnemyServerModToJson(EnemyServerMod instance) => <String, dynamic>{
+      'tdRate': instance.tdRate,
+      'tdAttackRate': instance.tdAttackRate,
+      'starRate': instance.starRate,
+    };
+
 EnemyScript _$EnemyScriptFromJson(Map json) => EnemyScript(
       deathType: $enumDecodeNullable(_$EnemyDeathTypeEnumMap, json['deathType']),
       hpBarType: json['hpBarType'] as int?,
@@ -466,6 +754,15 @@ EnemyScript _$EnemyScriptFromJson(Map json) => EnemyScript(
           ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
     );
+
+Map<String, dynamic> _$EnemyScriptToJson(EnemyScript instance) => <String, dynamic>{
+      'deathType': _$EnemyDeathTypeEnumMap[instance.deathType],
+      'hpBarType': instance.hpBarType,
+      'leader': instance.leader,
+      'call': instance.call,
+      'shift': instance.shift,
+      'shiftClear': instance.shiftClear?.map((e) => e.toJson()).toList(),
+    };
 
 const _$EnemyDeathTypeEnumMap = {
   EnemyDeathType.escape: 'escape',
@@ -479,6 +776,10 @@ EnemyInfoScript _$EnemyInfoScriptFromJson(Map json) => EnemyInfoScript(
       isAddition: json['isAddition'] as bool?,
     );
 
+Map<String, dynamic> _$EnemyInfoScriptToJson(EnemyInfoScript instance) => <String, dynamic>{
+      'isAddition': instance.isAddition,
+    };
+
 EnemySkill _$EnemySkillFromJson(Map json) => EnemySkill(
       skillId1: json['skillId1'] as int? ?? 0,
       skillId2: json['skillId2'] as int? ?? 0,
@@ -491,6 +792,18 @@ EnemySkill _$EnemySkillFromJson(Map json) => EnemySkill(
       skillLv3: json['skillLv3'] as int? ?? 0,
     );
 
+Map<String, dynamic> _$EnemySkillToJson(EnemySkill instance) => <String, dynamic>{
+      'skillId1': instance.skillId1,
+      'skillId2': instance.skillId2,
+      'skillId3': instance.skillId3,
+      'skill1': instance.skill1?.toJson(),
+      'skill2': instance.skill2?.toJson(),
+      'skill3': instance.skill3?.toJson(),
+      'skillLv1': instance.skillLv1,
+      'skillLv2': instance.skillLv2,
+      'skillLv3': instance.skillLv3,
+    };
+
 EnemyTd _$EnemyTdFromJson(Map json) => EnemyTd(
       noblePhantasmId: json['noblePhantasmId'] as int? ?? 0,
       noblePhantasm: json['noblePhantasm'] == null
@@ -501,6 +814,15 @@ EnemyTd _$EnemyTdFromJson(Map json) => EnemyTd(
       noblePhantasmLv2: json['noblePhantasmLv2'] as int?,
       noblePhantasmLv3: json['noblePhantasmLv3'] as int?,
     );
+
+Map<String, dynamic> _$EnemyTdToJson(EnemyTd instance) => <String, dynamic>{
+      'noblePhantasmId': instance.noblePhantasmId,
+      'noblePhantasm': instance.noblePhantasm?.toJson(),
+      'noblePhantasmLv': instance.noblePhantasmLv,
+      'noblePhantasmLv1': instance.noblePhantasmLv1,
+      'noblePhantasmLv2': instance.noblePhantasmLv2,
+      'noblePhantasmLv3': instance.noblePhantasmLv3,
+    };
 
 EnemyPassive _$EnemyPassiveFromJson(Map json) => EnemyPassive(
       classPassive: (json['classPassive'] as List<dynamic>?)
@@ -513,6 +835,14 @@ EnemyPassive _$EnemyPassiveFromJson(Map json) => EnemyPassive(
       appendPassiveSkillLvs: (json['appendPassiveSkillLvs'] as List<dynamic>?)?.map((e) => e as int).toList(),
     )..addPassiveLvs = (json['addPassiveLvs'] as List<dynamic>?)?.map((e) => e as int).toList();
 
+Map<String, dynamic> _$EnemyPassiveToJson(EnemyPassive instance) => <String, dynamic>{
+      'classPassive': instance.classPassive.map((e) => e.toJson()).toList(),
+      'addPassive': instance.addPassive.map((e) => e.toJson()).toList(),
+      'addPassiveLvs': instance.addPassiveLvs,
+      'appendPassiveSkillIds': instance.appendPassiveSkillIds,
+      'appendPassiveSkillLvs': instance.appendPassiveSkillLvs,
+    };
+
 EnemyAi _$EnemyAiFromJson(Map json) => EnemyAi(
       aiId: json['aiId'] as int,
       actPriority: json['actPriority'] as int,
@@ -520,17 +850,36 @@ EnemyAi _$EnemyAiFromJson(Map json) => EnemyAi(
       minActNum: json['minActNum'] as int?,
     );
 
+Map<String, dynamic> _$EnemyAiToJson(EnemyAi instance) => <String, dynamic>{
+      'aiId': instance.aiId,
+      'actPriority': instance.actPriority,
+      'maxActNum': instance.maxActNum,
+      'minActNum': instance.minActNum,
+    };
+
 FieldAi _$FieldAiFromJson(Map json) => FieldAi(
       raid: json['raid'] as int?,
       day: json['day'] as int?,
       id: json['id'] as int,
     );
 
+Map<String, dynamic> _$FieldAiToJson(FieldAi instance) => <String, dynamic>{
+      'raid': instance.raid,
+      'day': instance.day,
+      'id': instance.id,
+    };
+
 QuestPhaseAiNpc _$QuestPhaseAiNpcFromJson(Map json) => QuestPhaseAiNpc(
       npc: NpcServant.fromJson(Map<String, dynamic>.from(json['npc'] as Map)),
       detail: json['detail'] == null ? null : QuestEnemy.fromJson(Map<String, dynamic>.from(json['detail'] as Map)),
       aiIds: (json['aiIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
     );
+
+Map<String, dynamic> _$QuestPhaseAiNpcToJson(QuestPhaseAiNpc instance) => <String, dynamic>{
+      'npc': instance.npc.toJson(),
+      'detail': instance.detail?.toJson(),
+      'aiIds': instance.aiIds,
+    };
 
 QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) => QuestPhaseExtraDetail(
       questSelect: (json['questSelect'] as List<dynamic>?)?.map((e) => e as int).toList(),
@@ -543,6 +892,15 @@ QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) => QuestPhaseExt
           .toList(),
     );
 
+Map<String, dynamic> _$QuestPhaseExtraDetailToJson(QuestPhaseExtraDetail instance) => <String, dynamic>{
+      'questSelect': instance.questSelect,
+      'singleForceSvtId': instance.singleForceSvtId,
+      'hintTitle': instance.hintTitle,
+      'hintMessage': instance.hintMessage,
+      'aiNpc': instance.aiNpc?.toJson(),
+      'aiMultiNpc': instance.aiMultiNpc?.map((e) => e.toJson()).toList(),
+    };
+
 Restriction _$RestrictionFromJson(Map json) => Restriction(
       id: json['id'] as int,
       name: json['name'] as String? ?? '',
@@ -551,6 +909,15 @@ Restriction _$RestrictionFromJson(Map json) => Restriction(
       targetVals: (json['targetVals'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       targetVals2: (json['targetVals2'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
     );
+
+Map<String, dynamic> _$RestrictionToJson(Restriction instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'type': _$RestrictionTypeEnumMap[instance.type]!,
+      'rangeType': _$RestrictionRangeTypeEnumMap[instance.rangeType]!,
+      'targetVals': instance.targetVals,
+      'targetVals2': instance.targetVals2,
+    };
 
 const _$RestrictionTypeEnumMap = {
   RestrictionType.none: 'none',
@@ -589,6 +956,14 @@ QuestPhaseRestriction _$QuestPhaseRestrictionFromJson(Map json) => QuestPhaseRes
       noticeMessage: json['noticeMessage'] as String? ?? '',
       title: json['title'] as String? ?? '',
     );
+
+Map<String, dynamic> _$QuestPhaseRestrictionToJson(QuestPhaseRestriction instance) => <String, dynamic>{
+      'restriction': instance.restriction.toJson(),
+      'frequencyType': _$FrequencyTypeEnumMap[instance.frequencyType]!,
+      'dialogMessage': instance.dialogMessage,
+      'noticeMessage': instance.noticeMessage,
+      'title': instance.title,
+    };
 
 const _$FrequencyTypeEnumMap = {
   FrequencyType.once: 'once',

@@ -49,8 +49,14 @@ class PlayerSvtData {
 
   PlayerSvtData.base();
 
+  @visibleForTesting
   PlayerSvtData(final int svtId) {
-    svt = db.gameData.servantsById[svtId];
+    svt = db.gameData.servantsById[svtId]!;
+    skills = kActiveSkillNums.map((e) => svt!.groupedActiveSkills[e]?.first).toList();
+    td = svt!.groupedNoblePhantasms[1]?.first;
+  }
+
+  PlayerSvtData.svt(this.svt) {
     skills = kActiveSkillNums.map((e) => svt!.groupedActiveSkills[e]?.first).toList();
     td = svt!.groupedNoblePhantasms[1]?.first;
   }

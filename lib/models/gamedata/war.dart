@@ -256,6 +256,8 @@ class NiceWar with RouteInfo {
     }
     return quest.phases.length;
   }
+
+  Map<String, dynamic> toJson() => _$NiceWarToJson(this);
 }
 
 @JsonSerializable()
@@ -279,6 +281,8 @@ class WarMap {
   });
 
   factory WarMap.fromJson(Map<String, dynamic> json) => _$WarMapFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WarMapToJson(this);
 }
 
 @JsonSerializable(converters: [CondTypeConverter()])
@@ -316,6 +320,8 @@ class MapGimmick {
   });
 
   factory MapGimmick.fromJson(Map<String, dynamic> json) => _$MapGimmickFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MapGimmickToJson(this);
 }
 
 @JsonSerializable()
@@ -370,6 +376,8 @@ class NiceSpot {
     if (_map != null && _map.mapImageW == 0 && _map.mapImageH == 0) return null;
     return image;
   }
+
+  Map<String, dynamic> toJson() => _$NiceSpotToJson(this);
 }
 
 @JsonSerializable(converters: [CondTypeConverter()])
@@ -401,6 +409,8 @@ class SpotAdd {
     }
     return null;
   }
+
+  Map<String, dynamic> toJson() => _$SpotAddToJson(this);
 }
 
 @JsonSerializable(converters: [CondTypeConverter()])
@@ -440,6 +450,8 @@ class SpotRoad {
   });
 
   factory SpotRoad.fromJson(Map<String, dynamic> json) => _$SpotRoadFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SpotRoadToJson(this);
 }
 
 @JsonSerializable()
@@ -472,6 +484,8 @@ class WarAdd {
   });
 
   factory WarAdd.fromJson(Map<String, dynamic> json) => _$WarAddFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WarAddToJson(this);
 }
 
 @JsonSerializable()
@@ -487,6 +501,8 @@ class WarQuestSelection {
   });
 
   factory WarQuestSelection.fromJson(Map<String, dynamic> json) => _$WarQuestSelectionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WarQuestSelectionToJson(this);
 }
 
 class WarFlagConverter extends JsonConverter<WarFlag, String> {

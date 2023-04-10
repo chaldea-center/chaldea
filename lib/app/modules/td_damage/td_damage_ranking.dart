@@ -249,7 +249,7 @@ class _TdDamageRankingState extends State<TdDamageRanking> {
 
   Future<void> calcOneSvt(Servant svt) async {
     final battle = BattleData();
-    final attacker = PlayerSvtData(svt.id)
+    final attacker = PlayerSvtData.svt(svt)
       ..tdLv = 1
       ..lv = svt.lvMax;
     if (attacker.td == null || !attacker.td!.functions.any((func) => func.funcType.name.startsWith('damageNp'))) {
@@ -291,7 +291,7 @@ class _TdDamageRankingState extends State<TdDamageRanking> {
     await battle.activateSvtSkill(0, 1);
     await battle.activateSvtSkill(0, 2);
     for (final support in options.supports) {
-      final sdata = PlayerSvtData(support.id);
+      final sdata = PlayerSvtData.svt(support);
       // ignore: unused_local_variable
       BattleServantData battleServantData = BattleServantData.fromPlayerSvtData(sdata);
       // await battle.entrySvt(battleServantData, 1);
@@ -313,7 +313,7 @@ class _TdDamageRankingState extends State<TdDamageRanking> {
   }
 
   PlayerSvtData getSvtData(Servant svt) {
-    final data = PlayerSvtData(svt.id);
+    final data = PlayerSvtData.svt(svt);
     data.lv = svt.lvMax;
     if (svt.rarity <= 3 || svt.extra.obtains.contains(SvtObtain.eventReward)) {
       data.tdLv = options.tdR3;

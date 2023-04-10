@@ -199,6 +199,8 @@ class BaseSkill with SkillOrTd, RouteInfo {
       popDetails: popDetails,
     );
   }
+
+  Map<String, dynamic> toJson() => _$BaseSkillToJson(this);
 }
 
 @JsonSerializable()
@@ -301,6 +303,9 @@ class NiceSkill extends BaseSkill {
       return false;
     });
   }
+
+  @override
+  Map<String, dynamic> toJson() => _$NiceSkillToJson(this);
 }
 
 @JsonSerializable()
@@ -316,7 +321,8 @@ class BaseTd extends SkillOrTd with RouteInfo {
   String? icon;
   String rank;
   String type;
-  @Deprecated('The support flag is not accurate')
+  // The support flag is not accurate
+  @protected
   List<TdEffectFlag> effectFlags;
   @override
   String? unmodifiedDetail;
@@ -439,6 +445,8 @@ class BaseTd extends SkillOrTd with RouteInfo {
       popDetails: popDetails,
     );
   }
+
+  Map<String, dynamic> toJson() => _$BaseTdToJson(this);
 }
 
 @JsonSerializable()
@@ -518,6 +526,9 @@ class NiceTd extends BaseTd {
     }
     return _$NiceTdFromJson(json);
   }
+
+  @override
+  Map<String, dynamic> toJson() => _$NiceTdToJson(this);
 }
 
 @JsonSerializable()
@@ -543,6 +554,8 @@ class CommonRelease with RouteInfo {
 
   @override
   String get route => Routes.commonRelease(id);
+
+  Map<String, dynamic> toJson() => _$CommonReleaseToJson(this);
 }
 
 @JsonSerializable()
@@ -574,6 +587,8 @@ class ExtraPassive {
   });
 
   factory ExtraPassive.fromJson(Map<String, dynamic> json) => _$ExtraPassiveFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ExtraPassiveToJson(this);
 }
 
 @JsonSerializable()
@@ -627,6 +642,8 @@ class SkillScript with DataScriptBase {
   });
 
   factory SkillScript.fromJson(Map<String, dynamic> json) => _$SkillScriptFromJson(json)..setSource(json);
+
+  Map<String, dynamic> toJson() => _$SkillScriptToJson(this);
 }
 
 @JsonSerializable()
@@ -640,6 +657,8 @@ class SkillSelectAddInfo {
   });
 
   factory SkillSelectAddInfo.fromJson(Map<String, dynamic> json) => _$SkillSelectAddInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SkillSelectAddInfoToJson(this);
 }
 
 @JsonSerializable()
@@ -653,6 +672,8 @@ class SkillSelectAddInfoBtn {
   });
 
   factory SkillSelectAddInfoBtn.fromJson(Map<String, dynamic> json) => _$SkillSelectAddInfoBtnFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SkillSelectAddInfoBtnToJson(this);
 }
 
 @JsonSerializable()
@@ -666,6 +687,8 @@ class SkillSelectAddInfoBtnCond {
   });
 
   factory SkillSelectAddInfoBtnCond.fromJson(Map<String, dynamic> json) => _$SkillSelectAddInfoBtnCondFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SkillSelectAddInfoBtnCondToJson(this);
 }
 
 @JsonSerializable()
@@ -683,6 +706,8 @@ class SkillAdd {
   });
 
   factory SkillAdd.fromJson(Map<String, dynamic> json) => _$SkillAddFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SkillAddToJson(this);
 }
 
 @JsonSerializable()
@@ -708,6 +733,8 @@ class SkillGroupOverwrite {
   });
 
   factory SkillGroupOverwrite.fromJson(Map<String, dynamic> json) => _$SkillGroupOverwriteFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SkillGroupOverwriteToJson(this);
 }
 
 @JsonSerializable()
@@ -738,6 +765,8 @@ class NpGain {
       ];
 
   factory NpGain.fromJson(Map<String, dynamic> json) => _$NpGainFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NpGainToJson(this);
 }
 
 enum SkillType {

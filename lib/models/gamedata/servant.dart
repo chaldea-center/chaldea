@@ -32,6 +32,8 @@ class BasicCostume {
   });
 
   factory BasicCostume.fromJson(Map<String, dynamic> json) => _$BasicCostumeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BasicCostumeToJson(this);
 }
 
 const kSvtDefAscenRemap = <int, int>{
@@ -167,6 +169,8 @@ class BasicServant with GameCardMixin {
     if (Items.specialSvtMat.contains(id)) return Routes.itemI(id);
     return route;
   }
+
+  Map<String, dynamic> toJson() => _$BasicServantToJson(this);
 }
 
 @JsonSerializable(converters: [SvtClassConverter()])
@@ -623,6 +627,8 @@ class Servant with GameCardMixin {
 
   SvtStatus get status => db.curUser.svtStatusOf(collectionNo);
   SvtPlan get curPlan => db.curUser.svtPlanOf(collectionNo);
+
+  Map<String, dynamic> toJson() => _$ServantToJson(this);
 }
 
 @JsonSerializable()
@@ -663,6 +669,8 @@ class BasicCraftEssence with GameCardMixin {
 
   @override
   String get route => Routes.craftEssenceI(id);
+
+  Map<String, dynamic> toJson() => _$BasicCraftEssenceToJson(this);
 }
 
 @JsonSerializable()
@@ -783,6 +791,8 @@ class CraftEssence with GameCardMixin {
   String get route => Routes.craftEssenceI(id);
 
   CraftStatus get status => db.curUser.ceStatusOf(collectionNo);
+
+  Map<String, dynamic> toJson() => _$CraftEssenceToJson(this);
 }
 
 @JsonSerializable()
@@ -810,6 +820,8 @@ class ExtraAssetsUrl {
   }
 
   factory ExtraAssetsUrl.fromJson(Map<String, dynamic> json) => _$ExtraAssetsUrlFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ExtraAssetsUrlToJson(this);
 }
 
 @JsonSerializable()
@@ -823,6 +835,8 @@ class ExtraCCAssets {
   });
 
   factory ExtraCCAssets.fromJson(Map<String, dynamic> json) => _$ExtraCCAssetsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ExtraCCAssetsToJson(this);
 }
 
 @JsonSerializable()
@@ -862,6 +876,9 @@ class ExtraAssets extends ExtraCCAssets {
   });
 
   factory ExtraAssets.fromJson(Map<String, dynamic> json) => _$ExtraAssetsFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$ExtraAssetsToJson(this);
 }
 
 @JsonSerializable()
@@ -885,6 +902,8 @@ class CardDetail {
   });
 
   factory CardDetail.fromJson(Map<String, dynamic> json) => _$CardDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CardDetailToJson(this);
 }
 
 @JsonSerializable(genericArgumentFactories: true)
@@ -915,6 +934,21 @@ class AscensionAddEntry<T> {
     }
     throw FormatException('unknown type: ${obj.runtimeType}');
   }
+
+  static Object? _toJsonT<T>(T value) {
+    if (value == null) {
+      return null;
+    } else if (value is int || value is double || value is String) {
+      return value;
+    } else if (value is List<NiceTrait>) {
+      return value.map((e) => e.toJson()).toList();
+    } else if (value is List<CommonRelease>) {
+      return value.map((e) => e.toJson()).toList();
+    }
+    throw FormatException('unknown type: ${value.runtimeType} : $T');
+  }
+
+  Map<String, dynamic> toJson() => _$AscensionAddEntryToJson(this, _toJsonT);
 }
 
 @JsonSerializable()
@@ -960,6 +994,8 @@ class AscensionAdd {
         entries.costume[ascOrCostumeId] ??
         entries.costume[costumes.values.firstWhereOrNull((c) => c.id == ascOrCostumeId)?.battleCharaId];
   }
+
+  Map<String, dynamic> toJson() => _$AscensionAddToJson(this);
 }
 
 @JsonSerializable()
@@ -998,6 +1034,8 @@ class ServantChange {
   });
 
   factory ServantChange.fromJson(Map<String, dynamic> json) => _$ServantChangeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServantChangeToJson(this);
 }
 
 @JsonSerializable()
@@ -1020,6 +1058,8 @@ class ServantLimitImage {
   });
 
   factory ServantLimitImage.fromJson(Map<String, dynamic> json) => _$ServantLimitImageFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServantLimitImageToJson(this);
 }
 
 @JsonSerializable()
@@ -1037,6 +1077,8 @@ class ServantAppendPassiveSkill {
   });
 
   factory ServantAppendPassiveSkill.fromJson(Map<String, dynamic> json) => _$ServantAppendPassiveSkillFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServantAppendPassiveSkillToJson(this);
 }
 
 @JsonSerializable()
@@ -1050,6 +1092,8 @@ class ServantCoin {
   });
 
   factory ServantCoin.fromJson(Map<String, dynamic> json) => _$ServantCoinFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServantCoinToJson(this);
 }
 
 @JsonSerializable()
@@ -1072,6 +1116,8 @@ class ServantTrait {
   });
 
   factory ServantTrait.fromJson(Map<String, dynamic> json) => _$ServantTraitFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServantTraitToJson(this);
 }
 
 @JsonSerializable()
@@ -1090,6 +1136,8 @@ class LoreCommentAdd {
   });
 
   factory LoreCommentAdd.fromJson(Map<String, dynamic> json) => _$LoreCommentAddFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LoreCommentAddToJson(this);
 }
 
 @JsonSerializable()
@@ -1116,6 +1164,8 @@ class LoreComment {
   });
 
   factory LoreComment.fromJson(Map<String, dynamic> json) => _$LoreCommentFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LoreCommentToJson(this);
 }
 
 @JsonSerializable()
@@ -1143,6 +1193,8 @@ class LoreStatus {
   });
 
   factory LoreStatus.fromJson(Map<String, dynamic> json) => _$LoreStatusFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LoreStatusToJson(this);
 }
 
 @JsonSerializable()
@@ -1182,6 +1234,8 @@ class NiceCostume with RouteInfo {
 
   @override
   String get route => Routes.costumeI(costumeCollectionNo);
+
+  Map<String, dynamic> toJson() => _$NiceCostumeToJson(this);
 }
 
 @JsonSerializable()
@@ -1199,6 +1253,8 @@ class VoiceCond {
   });
 
   factory VoiceCond.fromJson(Map<String, dynamic> json) => _$VoiceCondFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VoiceCondToJson(this);
 }
 
 @JsonSerializable()
@@ -1219,6 +1275,8 @@ class VoicePlayCond {
   });
 
   factory VoicePlayCond.fromJson(Map<String, dynamic> json) => _$VoicePlayCondFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VoicePlayCondToJson(this);
 }
 
 @JsonSerializable()
@@ -1261,6 +1319,8 @@ class VoiceLine {
   });
 
   factory VoiceLine.fromJson(Map<String, dynamic> json) => _$VoiceLineFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VoiceLineToJson(this);
 }
 
 @JsonSerializable()
@@ -1278,6 +1338,8 @@ class VoiceGroup {
   });
 
   factory VoiceGroup.fromJson(Map<String, dynamic> json) => _$VoiceGroupFromJson(json);
+
+  Map<String, dynamic> toJson() => _$VoiceGroupToJson(this);
 }
 
 @JsonSerializable()
@@ -1299,6 +1361,8 @@ class NiceLore {
   });
 
   factory NiceLore.fromJson(Map<String, dynamic> json) => _$NiceLoreFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NiceLoreToJson(this);
 }
 
 @JsonSerializable()
@@ -1313,6 +1377,8 @@ class ServantScript with DataScriptBase {
   });
 
   factory ServantScript.fromJson(Map<String, dynamic> json) => _$ServantScriptFromJson(json)..setSource(json);
+
+  Map<String, dynamic> toJson() => _$ServantScriptToJson(this);
 }
 
 @JsonSerializable()
@@ -1347,6 +1413,8 @@ class SvtScript {
   bool get isHeight768 => (extendData?.faceSize ?? 256) == 256;
 
   factory SvtScript.fromJson(Map<String, dynamic> json) => _$SvtScriptFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SvtScriptToJson(this);
 }
 
 @JsonSerializable()
@@ -1370,6 +1438,8 @@ class SvtScriptExtendData {
     this.photoSvtScale,
   });
   factory SvtScriptExtendData.fromJson(Map<String, dynamic> json) => _$SvtScriptExtendDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SvtScriptExtendDataToJson(this);
 }
 
 enum SvtType {

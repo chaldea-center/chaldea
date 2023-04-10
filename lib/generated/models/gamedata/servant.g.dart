@@ -13,6 +13,13 @@ BasicCostume _$BasicCostumeFromJson(Map json) => BasicCostume(
       shortName: json['shortName'] as String,
     );
 
+Map<String, dynamic> _$BasicCostumeToJson(BasicCostume instance) => <String, dynamic>{
+      'id': instance.id,
+      'costumeCollectionNo': instance.costumeCollectionNo,
+      'battleCharaId': instance.battleCharaId,
+      'shortName': instance.shortName,
+    };
+
 BasicServant _$BasicServantFromJson(Map json) => BasicServant(
       id: json['id'] as int,
       collectionNo: json['collectionNo'] as int,
@@ -33,6 +40,23 @@ BasicServant _$BasicServantFromJson(Map json) => BasicServant(
           ) ??
           const {},
     );
+
+Map<String, dynamic> _$BasicServantToJson(BasicServant instance) => <String, dynamic>{
+      'id': instance.id,
+      'collectionNo': instance.collectionNo,
+      'name': instance.name,
+      'overwriteName': instance.overwriteName,
+      'type': _$SvtTypeEnumMap[instance.type]!,
+      'flag': _$SvtFlagEnumMap[instance.flag]!,
+      'className': const SvtClassConverter().toJson(instance.className),
+      'classId': instance.classId,
+      'attribute': _$AttributeEnumMap[instance.attribute]!,
+      'rarity': instance.rarity,
+      'atkMax': instance.atkMax,
+      'hpMax': instance.hpMax,
+      'face': instance.face,
+      'costume': instance.costume.map((k, e) => MapEntry(k.toString(), e.toJson())),
+    };
 
 const _$SvtTypeEnumMap = {
   SvtType.normal: 'normal',
@@ -171,6 +195,60 @@ Servant _$ServantFromJson(Map json) => Servant(
       profile: json['profile'] == null ? null : NiceLore.fromJson(Map<String, dynamic>.from(json['profile'] as Map)),
     );
 
+Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
+      'id': instance.id,
+      'collectionNo': instance.collectionNo,
+      'name': instance.name,
+      'ruby': instance.ruby,
+      'battleName': instance.battleName,
+      'className': const SvtClassConverter().toJson(instance.className),
+      'classId': instance.classId,
+      'type': _$SvtTypeEnumMap[instance.type]!,
+      'flag': _$SvtFlagEnumMap[instance.flag]!,
+      'rarity': instance.rarity,
+      'cost': instance.cost,
+      'lvMax': instance.lvMax,
+      'extraAssets': instance.extraAssets.toJson(),
+      'gender': _$GenderEnumMap[instance.gender]!,
+      'attribute': _$AttributeEnumMap[instance.attribute]!,
+      'traits': instance.traits.map((e) => e.toJson()).toList(),
+      'starAbsorb': instance.starAbsorb,
+      'starGen': instance.starGen,
+      'instantDeathChance': instance.instantDeathChance,
+      'cards': instance.cards.map((e) => _$CardTypeEnumMap[e]!).toList(),
+      'cardDetails': instance.cardDetails.map((k, e) => MapEntry(_$CardTypeEnumMap[k]!, e.toJson())),
+      'atkBase': instance.atkBase,
+      'atkMax': instance.atkMax,
+      'hpBase': instance.hpBase,
+      'hpMax': instance.hpMax,
+      'relateQuestIds': instance.relateQuestIds,
+      'trialQuestIds': instance.trialQuestIds,
+      'growthCurve': instance.growthCurve,
+      'bondGrowth': instance.bondGrowth,
+      'expFeed': instance.expFeed,
+      'bondEquip': instance.bondEquip,
+      'valentineEquip': instance.valentineEquip,
+      'valentineScript': instance.valentineScript.map((e) => e.toJson()).toList(),
+      'bondEquipOwner': instance.bondEquipOwner,
+      'valentineEquipOwner': instance.valentineEquipOwner,
+      'ascensionAdd': instance.ascensionAdd.toJson(),
+      'traitAdd': instance.traitAdd.map((e) => e.toJson()).toList(),
+      'svtChange': instance.svtChange.map((e) => e.toJson()).toList(),
+      'ascensionImage': instance.ascensionImage.map((e) => e.toJson()).toList(),
+      'ascensionMaterials': instance.ascensionMaterials.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'skillMaterials': instance.skillMaterials.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'appendSkillMaterials': instance.appendSkillMaterials.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'costumeMaterials': instance.costumeMaterials.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'coin': instance.coin?.toJson(),
+      'script': instance.script?.toJson(),
+      'skills': instance.skills.map((e) => e.toJson()).toList(),
+      'classPassive': instance.classPassive.map((e) => e.toJson()).toList(),
+      'extraPassive': instance.extraPassive.map((e) => e.toJson()).toList(),
+      'appendPassive': instance.appendPassive.map((e) => e.toJson()).toList(),
+      'noblePhantasms': instance.noblePhantasms.map((e) => e.toJson()).toList(),
+      'profile': instance.profile.toJson(),
+    };
+
 const _$GenderEnumMap = {
   Gender.male: 'male',
   Gender.female: 'female',
@@ -199,6 +277,18 @@ BasicCraftEssence _$BasicCraftEssenceFromJson(Map json) => BasicCraftEssence(
       hpMax: json['hpMax'] as int,
       face: json['face'] as String,
     );
+
+Map<String, dynamic> _$BasicCraftEssenceToJson(BasicCraftEssence instance) => <String, dynamic>{
+      'id': instance.id,
+      'collectionNo': instance.collectionNo,
+      'name': instance.name,
+      'type': _$SvtTypeEnumMap[instance.type]!,
+      'flag': _$SvtFlagEnumMap[instance.flag]!,
+      'rarity': instance.rarity,
+      'atkMax': instance.atkMax,
+      'hpMax': instance.hpMax,
+      'face': instance.face,
+    };
 
 CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
       id: json['id'] as int,
@@ -235,6 +325,32 @@ CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
       profile: json['profile'] == null ? null : NiceLore.fromJson(Map<String, dynamic>.from(json['profile'] as Map)),
     );
 
+Map<String, dynamic> _$CraftEssenceToJson(CraftEssence instance) => <String, dynamic>{
+      'id': instance.id,
+      'sortId': instance.sortId,
+      'collectionNo': instance.collectionNo,
+      'name': instance.name,
+      'ruby': instance.ruby,
+      'type': _$SvtTypeEnumMap[instance.type]!,
+      'flag': _$SvtFlagEnumMap[instance.flag]!,
+      'rarity': instance.rarity,
+      'cost': instance.cost,
+      'lvMax': instance.lvMax,
+      'extraAssets': instance.extraAssets.toJson(),
+      'atkBase': instance.atkBase,
+      'atkMax': instance.atkMax,
+      'hpBase': instance.hpBase,
+      'hpMax': instance.hpMax,
+      'growthCurve': instance.growthCurve,
+      'expFeed': instance.expFeed,
+      'bondEquipOwner': instance.bondEquipOwner,
+      'valentineEquipOwner': instance.valentineEquipOwner,
+      'valentineScript': instance.valentineScript.map((e) => e.toJson()).toList(),
+      'ascensionAdd': instance.ascensionAdd.toJson(),
+      'skills': instance.skills.map((e) => e.toJson()).toList(),
+      'profile': instance.profile.toJson(),
+    };
+
 ExtraAssetsUrl _$ExtraAssetsUrlFromJson(Map json) => ExtraAssetsUrl(
       ascension: (json['ascension'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), e as String),
@@ -253,10 +369,23 @@ ExtraAssetsUrl _$ExtraAssetsUrlFromJson(Map json) => ExtraAssetsUrl(
       ),
     );
 
+Map<String, dynamic> _$ExtraAssetsUrlToJson(ExtraAssetsUrl instance) => <String, dynamic>{
+      'ascension': instance.ascension?.map((k, e) => MapEntry(k.toString(), e)),
+      'story': instance.story?.map((k, e) => MapEntry(k.toString(), e)),
+      'costume': instance.costume?.map((k, e) => MapEntry(k.toString(), e)),
+      'equip': instance.equip?.map((k, e) => MapEntry(k.toString(), e)),
+      'cc': instance.cc?.map((k, e) => MapEntry(k.toString(), e)),
+    };
+
 ExtraCCAssets _$ExtraCCAssetsFromJson(Map json) => ExtraCCAssets(
       charaGraph: ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['charaGraph'] as Map)),
       faces: ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['faces'] as Map)),
     );
+
+Map<String, dynamic> _$ExtraCCAssetsToJson(ExtraCCAssets instance) => <String, dynamic>{
+      'charaGraph': instance.charaGraph.toJson(),
+      'faces': instance.faces.toJson(),
+    };
 
 ExtraAssets _$ExtraAssetsFromJson(Map json) => ExtraAssets(
       charaGraph: json['charaGraph'] == null
@@ -311,6 +440,25 @@ ExtraAssets _$ExtraAssetsFromJson(Map json) => ExtraAssets(
           : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['facesChange'] as Map)),
     );
 
+Map<String, dynamic> _$ExtraAssetsToJson(ExtraAssets instance) => <String, dynamic>{
+      'charaGraph': instance.charaGraph.toJson(),
+      'faces': instance.faces.toJson(),
+      'charaGraphEx': instance.charaGraphEx.toJson(),
+      'charaGraphName': instance.charaGraphName.toJson(),
+      'narrowFigure': instance.narrowFigure.toJson(),
+      'charaFigure': instance.charaFigure.toJson(),
+      'charaFigureForm': instance.charaFigureForm.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'charaFigureMulti': instance.charaFigureMulti.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'commands': instance.commands.toJson(),
+      'status': instance.status.toJson(),
+      'equipFace': instance.equipFace.toJson(),
+      'image': instance.image.toJson(),
+      'spriteModel': instance.spriteModel.toJson(),
+      'charaGraphChange': instance.charaGraphChange.toJson(),
+      'narrowFigureChange': instance.narrowFigureChange.toJson(),
+      'facesChange': instance.facesChange.toJson(),
+    };
+
 CardDetail _$CardDetailFromJson(Map json) => CardDetail(
       hitsDistribution: (json['hitsDistribution'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       attackIndividuality: (json['attackIndividuality'] as List<dynamic>)
@@ -322,6 +470,16 @@ CardDetail _$CardDetailFromJson(Map json) => CardDetail(
       defenseNpRate: json['defenseNpRate'] as int?,
       dropStarRate: json['dropStarRate'] as int?,
     );
+
+Map<String, dynamic> _$CardDetailToJson(CardDetail instance) => <String, dynamic>{
+      'hitsDistribution': instance.hitsDistribution,
+      'attackIndividuality': instance.attackIndividuality.map((e) => e.toJson()).toList(),
+      'attackType': _$CommandCardAttackTypeEnumMap[instance.attackType]!,
+      'damageRate': instance.damageRate,
+      'attackNpRate': instance.attackNpRate,
+      'defenseNpRate': instance.defenseNpRate,
+      'dropStarRate': instance.dropStarRate,
+    };
 
 const _$CommandCardAttackTypeEnumMap = {
   CommandCardAttackType.one: 'one',
@@ -342,6 +500,15 @@ AscensionAddEntry<T> _$AscensionAddEntryFromJson<T>(
           ) ??
           const {},
     );
+
+Map<String, dynamic> _$AscensionAddEntryToJson<T>(
+  AscensionAddEntry<T> instance,
+  Object? Function(T value) toJsonT,
+) =>
+    <String, dynamic>{
+      'ascension': instance.ascension.map((k, e) => MapEntry(k.toString(), toJsonT(e))),
+      'costume': instance.costume.map((k, e) => MapEntry(k.toString(), toJsonT(e))),
+    };
 
 AscensionAdd _$AscensionAddFromJson(Map json) => AscensionAdd(
       individuality: json['individuality'] == null
@@ -390,6 +557,23 @@ AscensionAdd _$AscensionAddFromJson(Map json) => AscensionAdd(
               Map<String, dynamic>.from(json['faceChangeCommonRelease'] as Map)),
     );
 
+Map<String, dynamic> _$AscensionAddToJson(AscensionAdd instance) => <String, dynamic>{
+      'individuality': instance.individuality.toJson(),
+      'voicePrefix': instance.voicePrefix.toJson(),
+      'overWriteServantName': instance.overWriteServantName.toJson(),
+      'overWriteServantBattleName': instance.overWriteServantBattleName.toJson(),
+      'overWriteTDName': instance.overWriteTDName.toJson(),
+      'overWriteTDRuby': instance.overWriteTDRuby.toJson(),
+      'overWriteTDFileName': instance.overWriteTDFileName.toJson(),
+      'overWriteTDRank': instance.overWriteTDRank.toJson(),
+      'overWriteTDTypeText': instance.overWriteTDTypeText.toJson(),
+      'lvMax': instance.lvMax.toJson(),
+      'charaGraphChange': instance.charaGraphChange.toJson(),
+      'faceChange': instance.faceChange.toJson(),
+      'charaGraphChangeCommonRelease': instance.charaGraphChangeCommonRelease.toJson(),
+      'faceChangeCommonRelease': instance.faceChangeCommonRelease.toJson(),
+    };
+
 ServantChange _$ServantChangeFromJson(Map json) => ServantChange(
       beforeTreasureDeviceIds: (json['beforeTreasureDeviceIds'] as List<dynamic>).map((e) => e as int).toList(),
       afterTreasureDeviceIds: (json['afterTreasureDeviceIds'] as List<dynamic>).map((e) => e as int).toList(),
@@ -407,6 +591,23 @@ ServantChange _$ServantChangeFromJson(Map json) => ServantChange(
       battleSvtId: json['battleSvtId'] as int,
     );
 
+Map<String, dynamic> _$ServantChangeToJson(ServantChange instance) => <String, dynamic>{
+      'beforeTreasureDeviceIds': instance.beforeTreasureDeviceIds,
+      'afterTreasureDeviceIds': instance.afterTreasureDeviceIds,
+      'svtId': instance.svtId,
+      'priority': instance.priority,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'condTargetId': instance.condTargetId,
+      'condValue': instance.condValue,
+      'name': instance.name,
+      'ruby': instance.ruby,
+      'battleName': instance.battleName,
+      'svtVoiceId': instance.svtVoiceId,
+      'limitCount': instance.limitCount,
+      'flag': instance.flag,
+      'battleSvtId': instance.battleSvtId,
+    };
+
 ServantLimitImage _$ServantLimitImageFromJson(Map json) => ServantLimitImage(
       limitCount: json['limitCount'] as int,
       priority: json['priority'] as int? ?? 0,
@@ -415,6 +616,15 @@ ServantLimitImage _$ServantLimitImageFromJson(Map json) => ServantLimitImage(
       condTargetId: json['condTargetId'] as int,
       condNum: json['condNum'] as int,
     );
+
+Map<String, dynamic> _$ServantLimitImageToJson(ServantLimitImage instance) => <String, dynamic>{
+      'limitCount': instance.limitCount,
+      'priority': instance.priority,
+      'defaultLimitCount': instance.defaultLimitCount,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'condTargetId': instance.condTargetId,
+      'condNum': instance.condNum,
+    };
 
 ServantAppendPassiveSkill _$ServantAppendPassiveSkillFromJson(Map json) => ServantAppendPassiveSkill(
       num: json['num'] as int,
@@ -425,10 +635,22 @@ ServantAppendPassiveSkill _$ServantAppendPassiveSkillFromJson(Map json) => Serva
           .toList(),
     );
 
+Map<String, dynamic> _$ServantAppendPassiveSkillToJson(ServantAppendPassiveSkill instance) => <String, dynamic>{
+      'num': instance.num,
+      'priority': instance.priority,
+      'skill': instance.skill.toJson(),
+      'unlockMaterials': instance.unlockMaterials.map((e) => e.toJson()).toList(),
+    };
+
 ServantCoin _$ServantCoinFromJson(Map json) => ServantCoin(
       summonNum: json['summonNum'] as int,
       item: Item.fromJson(Map<String, dynamic>.from(json['item'] as Map)),
     );
+
+Map<String, dynamic> _$ServantCoinToJson(ServantCoin instance) => <String, dynamic>{
+      'summonNum': instance.summonNum,
+      'item': instance.item.toJson(),
+    };
 
 ServantTrait _$ServantTraitFromJson(Map json) => ServantTrait(
       idx: json['idx'] as int,
@@ -440,11 +662,26 @@ ServantTrait _$ServantTraitFromJson(Map json) => ServantTrait(
       condNum: json['condNum'] as int?,
     );
 
+Map<String, dynamic> _$ServantTraitToJson(ServantTrait instance) => <String, dynamic>{
+      'idx': instance.idx,
+      'trait': instance.trait.map((e) => e.toJson()).toList(),
+      'limitCount': instance.limitCount,
+      'condType': _$JsonConverterToJson<String, CondType>(instance.condType, const CondTypeConverter().toJson),
+      'condId': instance.condId,
+      'condNum': instance.condNum,
+    };
+
 Value? _$JsonConverterFromJson<Json, Value>(
   Object? json,
   Value? Function(Json json) fromJson,
 ) =>
     json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) =>
+    value == null ? null : toJson(value);
 
 LoreCommentAdd _$LoreCommentAddFromJson(Map json) => LoreCommentAdd(
       idx: json['idx'] as int,
@@ -452,6 +689,13 @@ LoreCommentAdd _$LoreCommentAddFromJson(Map json) => LoreCommentAdd(
       condValues: (json['condValues'] as List<dynamic>).map((e) => e as int).toList(),
       condValue2: json['condValue2'] as int? ?? 0,
     );
+
+Map<String, dynamic> _$LoreCommentAddToJson(LoreCommentAdd instance) => <String, dynamic>{
+      'idx': instance.idx,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'condValues': instance.condValues,
+      'condValue2': instance.condValue2,
+    };
 
 LoreComment _$LoreCommentFromJson(Map json) => LoreComment(
       id: json['id'] as int,
@@ -468,6 +712,17 @@ LoreComment _$LoreCommentFromJson(Map json) => LoreComment(
           const [],
     );
 
+Map<String, dynamic> _$LoreCommentToJson(LoreComment instance) => <String, dynamic>{
+      'id': instance.id,
+      'priority': instance.priority,
+      'condMessage': instance.condMessage,
+      'comment': instance.comment,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'condValues': instance.condValues,
+      'condValue2': instance.condValue2,
+      'additionalConds': instance.additionalConds.map((e) => e.toJson()).toList(),
+    };
+
 LoreStatus _$LoreStatusFromJson(Map json) => LoreStatus(
       strength: json['strength'] as String?,
       endurance: json['endurance'] as String?,
@@ -479,6 +734,18 @@ LoreStatus _$LoreStatusFromJson(Map json) => LoreStatus(
       personality: $enumDecodeNullable(_$ServantPersonalityEnumMap, json['personality']),
       deity: json['deity'] as String?,
     );
+
+Map<String, dynamic> _$LoreStatusToJson(LoreStatus instance) => <String, dynamic>{
+      'strength': instance.strength,
+      'endurance': instance.endurance,
+      'agility': instance.agility,
+      'magic': instance.magic,
+      'luck': instance.luck,
+      'np': instance.np,
+      'policy': _$ServantPolicyEnumMap[instance.policy],
+      'personality': _$ServantPersonalityEnumMap[instance.personality],
+      'deity': instance.deity,
+    };
 
 const _$ServantPolicyEnumMap = {
   ServantPolicy.none: 'none',
@@ -510,12 +777,29 @@ NiceCostume _$NiceCostumeFromJson(Map json) => NiceCostume(
       priority: json['priority'] as int,
     );
 
+Map<String, dynamic> _$NiceCostumeToJson(NiceCostume instance) => <String, dynamic>{
+      'id': instance.id,
+      'costumeCollectionNo': instance.costumeCollectionNo,
+      'battleCharaId': instance.battleCharaId,
+      'name': instance.name,
+      'shortName': instance.shortName,
+      'detail': instance.detail,
+      'priority': instance.priority,
+    };
+
 VoiceCond _$VoiceCondFromJson(Map json) => VoiceCond(
       condType: $enumDecodeNullable(_$VoiceCondTypeEnumMap, json['condType']) ?? VoiceCondType.unknown,
       value: json['value'] as int,
       valueList: (json['valueList'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       eventId: json['eventId'] as int? ?? 0,
     );
+
+Map<String, dynamic> _$VoiceCondToJson(VoiceCond instance) => <String, dynamic>{
+      'condType': _$VoiceCondTypeEnumMap[instance.condType]!,
+      'value': instance.value,
+      'valueList': instance.valueList,
+      'eventId': instance.eventId,
+    };
 
 const _$VoiceCondTypeEnumMap = {
   VoiceCondType.birthDay: 'birthDay',
@@ -555,6 +839,14 @@ VoicePlayCond _$VoicePlayCondFromJson(Map json) => VoicePlayCond(
       condValues: (json['condValues'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
     );
 
+Map<String, dynamic> _$VoicePlayCondToJson(VoicePlayCond instance) => <String, dynamic>{
+      'condGroup': instance.condGroup,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'targetId': instance.targetId,
+      'condValue': instance.condValue,
+      'condValues': instance.condValues,
+    };
+
 VoiceLine _$VoiceLineFromJson(Map json) => VoiceLine(
       name: json['name'] as String?,
       condType: _$JsonConverterFromJson<String, CondType>(json['condType'], const CondTypeConverter().fromJson),
@@ -581,6 +873,25 @@ VoiceLine _$VoiceLineFromJson(Map json) => VoiceLine(
               .toList() ??
           const [],
     );
+
+Map<String, dynamic> _$VoiceLineToJson(VoiceLine instance) => <String, dynamic>{
+      'name': instance.name,
+      'condType': _$JsonConverterToJson<String, CondType>(instance.condType, const CondTypeConverter().toJson),
+      'condValue': instance.condValue,
+      'priority': instance.priority,
+      'svtVoiceType': _$SvtVoiceTypeEnumMap[instance.svtVoiceType],
+      'overwriteName': instance.overwriteName,
+      'summonScript': instance.summonScript?.toJson(),
+      'id': instance.id,
+      'audioAssets': instance.audioAssets,
+      'delay': instance.delay,
+      'face': instance.face,
+      'form': instance.form,
+      'text': instance.text,
+      'subtitle': instance.subtitle,
+      'conds': instance.conds.map((e) => e.toJson()).toList(),
+      'playConds': instance.playConds.map((e) => e.toJson()).toList(),
+    };
 
 const _$SvtVoiceTypeEnumMap = {
   SvtVoiceType.unknown: 'unknown',
@@ -620,6 +931,13 @@ VoiceGroup _$VoiceGroupFromJson(Map json) => VoiceGroup(
           const [],
     );
 
+Map<String, dynamic> _$VoiceGroupToJson(VoiceGroup instance) => <String, dynamic>{
+      'svtId': instance.svtId,
+      'voicePrefix': instance.voicePrefix,
+      'type': _$SvtVoiceTypeEnumMap[instance.type]!,
+      'voiceLines': instance.voiceLines.map((e) => e.toJson()).toList(),
+    };
+
 NiceLore _$NiceLoreFromJson(Map json) => NiceLore(
       cv: json['cv'] as String? ?? '',
       illustrator: json['illustrator'] as String? ?? '',
@@ -638,12 +956,26 @@ NiceLore _$NiceLoreFromJson(Map json) => NiceLore(
           const [],
     );
 
+Map<String, dynamic> _$NiceLoreToJson(NiceLore instance) => <String, dynamic>{
+      'cv': instance.cv,
+      'illustrator': instance.illustrator,
+      'stats': instance.stats?.toJson(),
+      'costume': instance.costume.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'comments': instance.comments.map((e) => e.toJson()).toList(),
+      'voices': instance.voices.map((e) => e.toJson()).toList(),
+    };
+
 ServantScript _$ServantScriptFromJson(Map json) => ServantScript(
       skillRankUp: (json['SkillRankUp'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), (e as List<dynamic>).map((e) => e as int).toList()),
       ),
       svtBuffTurnExtend: json['svtBuffTurnExtend'] as bool?,
     );
+
+Map<String, dynamic> _$ServantScriptToJson(ServantScript instance) => <String, dynamic>{
+      'SkillRankUp': instance.skillRankUp?.map((k, e) => MapEntry(k.toString(), e)),
+      'svtBuffTurnExtend': instance.svtBuffTurnExtend,
+    };
 
 SvtScript _$SvtScriptFromJson(Map json) => SvtScript(
       extendData: json['extendData'] == null
@@ -661,6 +993,20 @@ SvtScript _$SvtScriptFromJson(Map json) => SvtScript(
       offsetYMyroom: json['offsetYMyroom'] as int? ?? 0,
     );
 
+Map<String, dynamic> _$SvtScriptToJson(SvtScript instance) => <String, dynamic>{
+      'extendData': instance.extendData?.toJson(),
+      'id': instance.id,
+      'form': instance.form,
+      'faceX': instance.faceX,
+      'faceY': instance.faceY,
+      'bgImageId': instance.bgImageId,
+      'scale': instance.scale,
+      'offsetX': instance.offsetX,
+      'offsetY': instance.offsetY,
+      'offsetXMyroom': instance.offsetXMyroom,
+      'offsetYMyroom': instance.offsetYMyroom,
+    };
+
 SvtScriptExtendData _$SvtScriptExtendDataFromJson(Map json) => SvtScriptExtendData(
       faceSize: json['faceSize'] as int?,
       myroomForm: json['myroomForm'] as int?,
@@ -668,3 +1014,11 @@ SvtScriptExtendData _$SvtScriptExtendDataFromJson(Map json) => SvtScriptExtendDa
       photoSvtPosition: (json['photoSvtPosition'] as List<dynamic>?)?.map((e) => e as int).toList(),
       photoSvtScale: (json['photoSvtScale'] as num?)?.toDouble(),
     );
+
+Map<String, dynamic> _$SvtScriptExtendDataToJson(SvtScriptExtendData instance) => <String, dynamic>{
+      'faceSize': instance.faceSize,
+      'myroomForm': instance.myroomForm,
+      'combineResultMultipleForm': instance.combineResultMultipleForm,
+      'photoSvtPosition': instance.photoSvtPosition,
+      'photoSvtScale': instance.photoSvtScale,
+    };

@@ -257,6 +257,8 @@ class Item {
       for (final type in ItemCategory.values) type: sortMapByPriority(result[type]!),
     };
   }
+
+  Map<String, dynamic> toJson() => _$ItemToJson(this);
 }
 
 class Items {
@@ -369,6 +371,8 @@ class ItemSelect {
     // required this.detail,
   });
   factory ItemSelect.fromJson(Map<String, dynamic> json) => _$ItemSelectFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ItemSelectToJson(this);
 }
 
 @JsonSerializable()
@@ -388,6 +392,8 @@ class ItemAmount {
   Item? get item => _item ?? db.gameData.items[itemId];
 
   factory ItemAmount.fromJson(Map<String, dynamic> json) => _$ItemAmountFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ItemAmountToJson(this);
 }
 
 @JsonSerializable()
@@ -408,6 +414,8 @@ class LvlUpMaterial {
       Items.qpId: qp,
     };
   }
+
+  Map<String, dynamic> toJson() => _$LvlUpMaterialToJson(this);
 }
 
 enum ItemUse {

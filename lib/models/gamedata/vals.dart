@@ -1,15 +1,28 @@
 // ignore_for_file: non_constant_identifier_names
 
+import '_helper.dart';
+
+@JsonSerializable(createFactory: false, createToJson: false)
 class DataVals {
   Map<String, dynamic> _vals;
   DataVals? get DependFuncVals => _vals['DependFuncVals'] == null ? null : DataVals(_vals['DependFuncVals']);
 
   DataVals([Map<String, dynamic>? sourceVals]) : _vals = sourceVals ?? {};
 
-  factory DataVals.fromJson(Map<String, dynamic> json) => DataVals(Map.from(json));
+  static _deepCopy(dynamic value) {
+    if (value is List) {
+      return value.map((e) => _deepCopy(e)).toList();
+    } else if (value is Map) {
+      return value.map((k, v) => MapEntry(k, _deepCopy(v)));
+    } else {
+      return value;
+    }
+  }
+
+  factory DataVals.fromJson(Map<String, dynamic> json) => DataVals(Map.from(_deepCopy(json)));
 
   Map<String, dynamic> toJson({bool sort = true}) {
-    final entries = _vals.entries.toList();
+    final entries = Map<String, dynamic>.from(_deepCopy(_vals)).entries.toList();
     if (sort) {
       entries.sort((a, b) => a.key.compareTo(b.key));
     }

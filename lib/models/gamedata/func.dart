@@ -307,6 +307,9 @@ class NiceFunction with RouteInfo implements BaseFunction {
       includeTrigger: false, // avoid regression
     );
   }
+
+  @override
+  Map<String, dynamic> toJson() => _$NiceFunctionToJson(this);
 }
 
 @JsonSerializable()
@@ -390,6 +393,8 @@ class BaseFunction with RouteInfo {
       (funcTargetTeam == FuncApplyTarget.enemy && funcTargetType.canTargetAlly) ||
       (funcTargetTeam == FuncApplyTarget.player && funcTargetType.canTargetEnemy);
   EffectTarget get effectTarget => EffectTarget.fromFunc(funcTargetType);
+
+  Map<String, dynamic> toJson() => _$BaseFunctionToJson(this);
 }
 
 @JsonSerializable()
@@ -413,6 +418,8 @@ class FuncGroup {
   });
 
   factory FuncGroup.fromJson(Map<String, dynamic> json) => _$FuncGroupFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FuncGroupToJson(this);
 }
 
 const kEventFuncTypes = [

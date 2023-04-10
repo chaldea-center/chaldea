@@ -96,6 +96,43 @@ Event _$EventFromJson(Map json) => Event(
           const [],
     );
 
+Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
+      'id': instance.id,
+      'type': _$EventTypeEnumMap[instance.type]!,
+      'name': instance.name,
+      'detail': instance.detail,
+      'noticeBanner': instance.noticeBanner,
+      'banner': instance.banner,
+      'icon': instance.icon,
+      'bannerPriority': instance.bannerPriority,
+      'noticeAt': instance.noticeAt,
+      'startedAt': instance.startedAt,
+      'endedAt': instance.endedAt,
+      'finishedAt': instance.finishedAt,
+      'materialOpenedAt': instance.materialOpenedAt,
+      'shop': instance.shop.map((e) => e.toJson()).toList(),
+      'rewardScenes': instance.rewardScenes.map((e) => e.toJson()).toList(),
+      'rewards': instance.pointRewards.map((e) => e.toJson()).toList(),
+      'pointGroups': instance.pointGroups.map((e) => e.toJson()).toList(),
+      'pointBuffs': instance.pointBuffs.map((e) => e.toJson()).toList(),
+      'missions': instance.missions.map((e) => e.toJson()).toList(),
+      'randomMissions': instance.randomMissions.map((e) => e.toJson()).toList(),
+      'towers': instance.towers.map((e) => e.toJson()).toList(),
+      'lotteries': instance.lotteries.map((e) => e.toJson()).toList(),
+      'treasureBoxes': instance.treasureBoxes.map((e) => e.toJson()).toList(),
+      'recipes': instance.recipes.map((e) => e.toJson()).toList(),
+      'bulletinBoards': instance.bulletinBoards.map((e) => e.toJson()).toList(),
+      'digging': instance.digging?.toJson(),
+      'cooltime': instance.cooltime?.toJson(),
+      'fortifications': instance.fortifications.map((e) => e.toJson()).toList(),
+      'campaigns': instance.campaigns.map((e) => e.toJson()).toList(),
+      'campaignQuests': instance.campaignQuests.map((e) => e.toJson()).toList(),
+      'voicePlays': instance.voicePlays.map((e) => e.toJson()).toList(),
+      'voices': instance.voices.map((e) => e.toJson()).toList(),
+      'warIds': instance.warIds,
+      'shortName': instance.shortName,
+    };
+
 const _$EventTypeEnumMap = {
   EventType.none: 'none',
   EventType.raidBoss: 'raidBoss',
@@ -139,6 +176,15 @@ MasterMission _$MasterMissionFromJson(Map json) => MasterMission(
           const [],
     );
 
+Map<String, dynamic> _$MasterMissionToJson(MasterMission instance) => <String, dynamic>{
+      'id': instance.id,
+      'startedAt': instance.startedAt,
+      'endedAt': instance.endedAt,
+      'closedAt': instance.closedAt,
+      'missions': instance.missions.map((e) => e.toJson()).toList(),
+      'quests': instance.quests.map((e) => e.toJson()).toList(),
+    };
+
 ItemSet _$ItemSetFromJson(Map json) => ItemSet(
       id: json['id'] as int,
       purchaseType: $enumDecodeNullable(_$PurchaseTypeEnumMap, json['purchaseType']) ?? PurchaseType.none,
@@ -148,6 +194,14 @@ ItemSet _$ItemSetFromJson(Map json) => ItemSet(
           (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
               const [],
     );
+
+Map<String, dynamic> _$ItemSetToJson(ItemSet instance) => <String, dynamic>{
+      'id': instance.id,
+      'purchaseType': _$PurchaseTypeEnumMap[instance.purchaseType]!,
+      'targetId': instance.targetId,
+      'setNum': instance.setNum,
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+    };
 
 const _$PurchaseTypeEnumMap = {
   PurchaseType.none: 'none',
@@ -215,6 +269,35 @@ NiceShop _$NiceShopFromJson(Map json) => NiceShop(
       closedAt: json['closedAt'] as int? ?? 0,
     );
 
+Map<String, dynamic> _$NiceShopToJson(NiceShop instance) => <String, dynamic>{
+      'id': instance.id,
+      'shopType': _$ShopTypeEnumMap[instance.shopType]!,
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+      'slot': instance.slot,
+      'priority': instance.priority,
+      'name': instance.name,
+      'detail': instance.detail,
+      'infoMessage': instance.infoMessage,
+      'warningMessage': instance.warningMessage,
+      'payType': _$PayTypeEnumMap[instance.payType]!,
+      'cost': instance.cost?.toJson(),
+      'consumes': instance.consumes.map((e) => e.toJson()).toList(),
+      'purchaseType': _$PurchaseTypeEnumMap[instance.purchaseType]!,
+      'targetIds': instance.targetIds,
+      'itemSet': instance.itemSet.map((e) => e.toJson()).toList(),
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'setNum': instance.setNum,
+      'limitNum': instance.limitNum,
+      'defaultLv': instance.defaultLv,
+      'defaultLimitCount': instance.defaultLimitCount,
+      'scriptName': instance.scriptName,
+      'scriptId': instance.scriptId,
+      'script': instance.script,
+      'image': instance.image,
+      'openedAt': instance.openedAt,
+      'closedAt': instance.closedAt,
+    };
+
 const _$ShopTypeEnumMap = {
   ShopType.none: 'none',
   ShopType.eventItem: 'eventItem',
@@ -262,17 +345,39 @@ ShopRelease _$ShopReleaseFromJson(Map json) => ShopRelease(
       closedItemName: json['closedItemName'] as String? ?? "",
     );
 
+Map<String, dynamic> _$ShopReleaseToJson(ShopRelease instance) => <String, dynamic>{
+      'condValues': instance.condValues,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'condNum': instance.condNum,
+      'priority': instance.priority,
+      'isClosedDisp': instance.isClosedDisp,
+      'closedMessage': instance.closedMessage,
+      'closedItemName': instance.closedItemName,
+    };
+
 EventPointReward _$EventPointRewardFromJson(Map json) => EventPointReward(
       groupId: json['groupId'] as int,
       point: json['point'] as int,
       gifts: (json['gifts'] as List<dynamic>).map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
     );
 
+Map<String, dynamic> _$EventPointRewardToJson(EventPointReward instance) => <String, dynamic>{
+      'groupId': instance.groupId,
+      'point': instance.point,
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+    };
+
 EventPointGroup _$EventPointGroupFromJson(Map json) => EventPointGroup(
       groupId: json['groupId'] as int,
       name: json['name'] as String,
       icon: json['icon'] as String,
     );
+
+Map<String, dynamic> _$EventPointGroupToJson(EventPointGroup instance) => <String, dynamic>{
+      'groupId': instance.groupId,
+      'name': instance.name,
+      'icon': instance.icon,
+    };
 
 EventPointBuff _$EventPointBuffFromJson(Map json) => EventPointBuff(
       id: json['id'] as int,
@@ -284,6 +389,17 @@ EventPointBuff _$EventPointBuffFromJson(Map json) => EventPointBuff(
       background: $enumDecode(_$ItemBGTypeEnumMap, json['background']),
       value: json['value'] as int,
     );
+
+Map<String, dynamic> _$EventPointBuffToJson(EventPointBuff instance) => <String, dynamic>{
+      'id': instance.id,
+      'funcIds': instance.funcIds,
+      'groupId': instance.groupId,
+      'eventPoint': instance.eventPoint,
+      'name': instance.name,
+      'icon': instance.icon,
+      'background': _$ItemBGTypeEnumMap[instance.background]!,
+      'value': instance.value,
+    };
 
 const _$ItemBGTypeEnumMap = {
   ItemBGType.zero: 'zero',
@@ -308,6 +424,18 @@ EventMissionConditionDetail _$EventMissionConditionDetailFromJson(Map json) => E
       targetEventIds: (json['targetEventIds'] as List<dynamic>?)?.map((e) => e as int).toList(),
     );
 
+Map<String, dynamic> _$EventMissionConditionDetailToJson(EventMissionConditionDetail instance) => <String, dynamic>{
+      'id': instance.id,
+      'missionTargetId': instance.missionTargetId,
+      'missionCondType': instance.missionCondType,
+      'logicType': instance.logicType,
+      'targetIds': instance.targetIds,
+      'addTargetIds': instance.addTargetIds,
+      'targetQuestIndividualities': instance.targetQuestIndividualities.map((e) => e.toJson()).toList(),
+      'conditionLinkType': _$DetailMissionCondLinkTypeEnumMap[instance.conditionLinkType]!,
+      'targetEventIds': instance.targetEventIds,
+    };
+
 const _$DetailMissionCondLinkTypeEnumMap = {
   DetailMissionCondLinkType.eventStart: 'eventStart',
   DetailMissionCondLinkType.missionStart: 'missionStart',
@@ -330,6 +458,20 @@ EventMissionCondition _$EventMissionConditionFromJson(Map json) => EventMissionC
           ?.map((e) => EventMissionConditionDetail.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
     );
+
+Map<String, dynamic> _$EventMissionConditionToJson(EventMissionCondition instance) => <String, dynamic>{
+      'id': instance.id,
+      'missionProgressType': _$MissionProgressTypeEnumMap[instance.missionProgressType]!,
+      'priority': instance.priority,
+      'condGroup': instance.condGroup,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'targetIds': instance.targetIds,
+      'targetNum': instance.targetNum,
+      'conditionMessage': instance.conditionMessage,
+      'closedMessage': instance.closedMessage,
+      'flag': instance.flag,
+      'details': instance.details?.map((e) => e.toJson()).toList(),
+    };
 
 const _$MissionProgressTypeEnumMap = {
   MissionProgressType.none: 'none',
@@ -358,6 +500,21 @@ EventMission _$EventMissionFromJson(Map json) => EventMission(
           const [],
     );
 
+Map<String, dynamic> _$EventMissionToJson(EventMission instance) => <String, dynamic>{
+      'id': instance.id,
+      'type': _$MissionTypeEnumMap[instance.type]!,
+      'dispNo': instance.dispNo,
+      'name': instance.name,
+      'startedAt': instance.startedAt,
+      'endedAt': instance.endedAt,
+      'closedAt': instance.closedAt,
+      'rewardType': _$MissionRewardTypeEnumMap[instance.rewardType]!,
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'bannerGroup': instance.bannerGroup,
+      'priority': instance.priority,
+      'conds': instance.conds.map((e) => e.toJson()).toList(),
+    };
+
 const _$MissionTypeEnumMap = {
   MissionType.none: 'none',
   MissionType.event: 'event',
@@ -384,10 +541,23 @@ EventRandomMission _$EventRandomMissionFromJson(Map json) => EventRandomMission(
       condNum: json['condNum'] as int,
     );
 
+Map<String, dynamic> _$EventRandomMissionToJson(EventRandomMission instance) => <String, dynamic>{
+      'missionId': instance.missionId,
+      'missionRank': instance.missionRank,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'condId': instance.condId,
+      'condNum': instance.condNum,
+    };
+
 EventTowerReward _$EventTowerRewardFromJson(Map json) => EventTowerReward(
       floor: json['floor'] as int,
       gifts: (json['gifts'] as List<dynamic>).map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
     );
+
+Map<String, dynamic> _$EventTowerRewardToJson(EventTowerReward instance) => <String, dynamic>{
+      'floor': instance.floor,
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+    };
 
 EventTower _$EventTowerFromJson(Map json) => EventTower(
       towerId: json['towerId'] as int,
@@ -396,6 +566,12 @@ EventTower _$EventTowerFromJson(Map json) => EventTower(
           .map((e) => EventTowerReward.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
     );
+
+Map<String, dynamic> _$EventTowerToJson(EventTower instance) => <String, dynamic>{
+      'towerId': instance.towerId,
+      'name': instance.name,
+      'rewards': instance.rewards.map((e) => e.toJson()).toList(),
+    };
 
 EventLotteryBox _$EventLotteryBoxFromJson(Map json) => EventLotteryBox(
       boxIndex: json['boxIndex'] as int? ?? 0,
@@ -408,6 +584,16 @@ EventLotteryBox _$EventLotteryBoxFromJson(Map json) => EventLotteryBox(
       maxNum: json['maxNum'] as int,
       isRare: json['isRare'] as bool? ?? false,
     );
+
+Map<String, dynamic> _$EventLotteryBoxToJson(EventLotteryBox instance) => <String, dynamic>{
+      'boxIndex': instance.boxIndex,
+      'talkId': instance.talkId,
+      'no': instance.no,
+      'type': instance.type,
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'maxNum': instance.maxNum,
+      'isRare': instance.isRare,
+    };
 
 EventLottery _$EventLotteryFromJson(Map json) => EventLottery(
       id: json['id'] as int,
@@ -425,6 +611,17 @@ EventLottery _$EventLotteryFromJson(Map json) => EventLottery(
           const [],
     );
 
+Map<String, dynamic> _$EventLotteryToJson(EventLottery instance) => <String, dynamic>{
+      'id': instance.id,
+      'slot': instance.slot,
+      'payType': _$PayTypeEnumMap[instance.payType]!,
+      'cost': instance.cost.toJson(),
+      'priority': instance.priority,
+      'limited': instance.limited,
+      'boxes': instance.boxes.map((e) => e.toJson()).toList(),
+      'talks': instance.talks.map((e) => e.toJson()).toList(),
+    };
+
 EventLotteryTalk _$EventLotteryTalkFromJson(Map json) => EventLotteryTalk(
       talkId: json['talkId'] as int,
       no: json['no'] as int,
@@ -440,6 +637,15 @@ EventLotteryTalk _$EventLotteryTalkFromJson(Map json) => EventLotteryTalk(
       isRare: json['isRare'] as bool,
     );
 
+Map<String, dynamic> _$EventLotteryTalkToJson(EventLotteryTalk instance) => <String, dynamic>{
+      'talkId': instance.talkId,
+      'no': instance.no,
+      'guideImageId': instance.guideImageId,
+      'beforeVoiceLines': instance.beforeVoiceLines.map((e) => e.toJson()).toList(),
+      'afterVoiceLines': instance.afterVoiceLines.map((e) => e.toJson()).toList(),
+      'isRare': instance.isRare,
+    };
+
 CommonConsume _$CommonConsumeFromJson(Map json) => CommonConsume(
       id: json['id'] as int,
       priority: json['priority'] as int,
@@ -447,6 +653,14 @@ CommonConsume _$CommonConsumeFromJson(Map json) => CommonConsume(
       objectId: json['objectId'] as int,
       num: json['num'] as int,
     );
+
+Map<String, dynamic> _$CommonConsumeToJson(CommonConsume instance) => <String, dynamic>{
+      'id': instance.id,
+      'priority': instance.priority,
+      'type': _$CommonConsumeTypeEnumMap[instance.type]!,
+      'objectId': instance.objectId,
+      'num': instance.num,
+    };
 
 const _$CommonConsumeTypeEnumMap = {
   CommonConsumeType.item: 'item',
@@ -459,6 +673,13 @@ EventTreasureBoxGift _$EventTreasureBoxGiftFromJson(Map json) => EventTreasureBo
       gifts: (json['gifts'] as List<dynamic>).map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
       collateralUpperLimit: json['collateralUpperLimit'] as int,
     );
+
+Map<String, dynamic> _$EventTreasureBoxGiftToJson(EventTreasureBoxGift instance) => <String, dynamic>{
+      'id': instance.id,
+      'idx': instance.idx,
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'collateralUpperLimit': instance.collateralUpperLimit,
+    };
 
 EventTreasureBox _$EventTreasureBoxFromJson(Map json) => EventTreasureBox(
       slot: json['slot'] as int,
@@ -476,6 +697,16 @@ EventTreasureBox _$EventTreasureBoxFromJson(Map json) => EventTreasureBox(
           const [],
     );
 
+Map<String, dynamic> _$EventTreasureBoxToJson(EventTreasureBox instance) => <String, dynamic>{
+      'slot': instance.slot,
+      'id': instance.id,
+      'idx': instance.idx,
+      'treasureBoxGifts': instance.treasureBoxGifts.map((e) => e.toJson()).toList(),
+      'maxDrawNumOnce': instance.maxDrawNumOnce,
+      'extraGifts': instance.extraGifts.map((e) => e.toJson()).toList(),
+      'consumes': instance.consumes.map((e) => e.toJson()).toList(),
+    };
+
 EventRewardSceneGuide _$EventRewardSceneGuideFromJson(Map json) => EventRewardSceneGuide(
       imageId: json['imageId'] as int,
       limitCount: json['limitCount'] as int? ?? 0,
@@ -485,6 +716,16 @@ EventRewardSceneGuide _$EventRewardSceneGuideFromJson(Map json) => EventRewardSc
       weight: json['weight'] as int?,
       unselectedMax: json['unselectedMax'] as int?,
     );
+
+Map<String, dynamic> _$EventRewardSceneGuideToJson(EventRewardSceneGuide instance) => <String, dynamic>{
+      'imageId': instance.imageId,
+      'limitCount': instance.limitCount,
+      'image': instance.image,
+      'faceId': instance.faceId,
+      'displayName': instance.displayName,
+      'weight': instance.weight,
+      'unselectedMax': instance.unselectedMax,
+    };
 
 EventRewardScene _$EventRewardSceneFromJson(Map json) => EventRewardScene(
       slot: json['slot'] as int,
@@ -503,6 +744,20 @@ EventRewardScene _$EventRewardSceneFromJson(Map json) => EventRewardScene(
       flags: (json['flags'] as List<dynamic>?)?.map((e) => $enumDecode(_$EventRewardSceneFlagEnumMap, e)).toList() ??
           const [],
     );
+
+Map<String, dynamic> _$EventRewardSceneToJson(EventRewardScene instance) => <String, dynamic>{
+      'slot': instance.slot,
+      'groupId': instance.groupId,
+      'type': instance.type,
+      'guides': instance.guides.map((e) => e.toJson()).toList(),
+      'tabOnImage': instance.tabOnImage,
+      'tabOffImage': instance.tabOffImage,
+      'image': instance.image,
+      'bg': instance.bg,
+      'bgm': instance.bgm.toJson(),
+      'afterBgm': instance.afterBgm.toJson(),
+      'flags': instance.flags.map((e) => _$EventRewardSceneFlagEnumMap[e]!).toList(),
+    };
 
 const _$EventRewardSceneFlagEnumMap = {
   EventRewardSceneFlag.npcGuide: 'npcGuide',
@@ -528,6 +783,18 @@ EventVoicePlay _$EventVoicePlayFromJson(Map json) => EventVoicePlay(
       endedAt: json['endedAt'] as int,
     );
 
+Map<String, dynamic> _$EventVoicePlayToJson(EventVoicePlay instance) => <String, dynamic>{
+      'slot': instance.slot,
+      'idx': instance.idx,
+      'guideImageId': instance.guideImageId,
+      'voiceLines': instance.voiceLines.map((e) => e.toJson()).toList(),
+      'confirmVoiceLines': instance.confirmVoiceLines.map((e) => e.toJson()).toList(),
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'condValue': instance.condValue,
+      'startedAt': instance.startedAt,
+      'endedAt': instance.endedAt,
+    };
+
 EventDigging _$EventDiggingFromJson(Map json) => EventDigging(
       sizeX: json['sizeX'] as int,
       sizeY: json['sizeY'] as int,
@@ -544,6 +811,16 @@ EventDigging _$EventDiggingFromJson(Map json) => EventDigging(
           const [],
     );
 
+Map<String, dynamic> _$EventDiggingToJson(EventDigging instance) => <String, dynamic>{
+      'sizeX': instance.sizeX,
+      'sizeY': instance.sizeY,
+      'bgImage': instance.bgImage,
+      'eventPointItem': instance.eventPointItem.toJson(),
+      'resettableDiggedNum': instance.resettableDiggedNum,
+      'blocks': instance.blocks.map((e) => e.toJson()).toList(),
+      'rewards': instance.rewards.map((e) => e.toJson()).toList(),
+    };
+
 EventDiggingBlock _$EventDiggingBlockFromJson(Map json) => EventDiggingBlock(
       id: json['id'] as int,
       image: json['image'] as String,
@@ -556,6 +833,15 @@ EventDiggingBlock _$EventDiggingBlockFromJson(Map json) => EventDiggingBlock(
       blockNum: json['blockNum'] as int,
     );
 
+Map<String, dynamic> _$EventDiggingBlockToJson(EventDiggingBlock instance) => <String, dynamic>{
+      'id': instance.id,
+      'image': instance.image,
+      'consumes': instance.consumes.map((e) => e.toJson()).toList(),
+      'objectId': instance.objectId,
+      'diggingEventPoint': instance.diggingEventPoint,
+      'blockNum': instance.blockNum,
+    };
+
 EventDiggingReward _$EventDiggingRewardFromJson(Map json) => EventDiggingReward(
       id: json['id'] as int,
       gifts:
@@ -563,6 +849,12 @@ EventDiggingReward _$EventDiggingRewardFromJson(Map json) => EventDiggingReward(
               const [],
       rewardSize: json['rewardSize'] as int,
     );
+
+Map<String, dynamic> _$EventDiggingRewardToJson(EventDiggingReward instance) => <String, dynamic>{
+      'id': instance.id,
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'rewardSize': instance.rewardSize,
+    };
 
 EventCooltimeReward _$EventCooltimeRewardFromJson(Map json) => EventCooltimeReward(
       spotId: json['spotId'] as int,
@@ -578,12 +870,27 @@ EventCooltimeReward _$EventCooltimeRewardFromJson(Map json) => EventCooltimeRewa
       upperLimitGiftNum: json['upperLimitGiftNum'] as int,
     );
 
+Map<String, dynamic> _$EventCooltimeRewardToJson(EventCooltimeReward instance) => <String, dynamic>{
+      'spotId': instance.spotId,
+      'lv': instance.lv,
+      'name': instance.name,
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+      'cooltime': instance.cooltime,
+      'addEventPointRate': instance.addEventPointRate,
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'upperLimitGiftNum': instance.upperLimitGiftNum,
+    };
+
 EventCooltime _$EventCooltimeFromJson(Map json) => EventCooltime(
       rewards: (json['rewards'] as List<dynamic>?)
               ?.map((e) => EventCooltimeReward.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
     );
+
+Map<String, dynamic> _$EventCooltimeToJson(EventCooltime instance) => <String, dynamic>{
+      'rewards': instance.rewards.map((e) => e.toJson()).toList(),
+    };
 
 EventRecipeGift _$EventRecipeGiftFromJson(Map json) => EventRecipeGift(
       idx: json['idx'] as int,
@@ -593,6 +900,13 @@ EventRecipeGift _$EventRecipeGiftFromJson(Map json) => EventRecipeGift(
           (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
               const [],
     );
+
+Map<String, dynamic> _$EventRecipeGiftToJson(EventRecipeGift instance) => <String, dynamic>{
+      'idx': instance.idx,
+      'displayOrder': instance.displayOrder,
+      'topIconId': instance.topIconId,
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+    };
 
 EventRecipe _$EventRecipeFromJson(Map json) => EventRecipe(
       id: json['id'] as int,
@@ -616,6 +930,19 @@ EventRecipe _$EventRecipeFromJson(Map json) => EventRecipe(
           const [],
     );
 
+Map<String, dynamic> _$EventRecipeToJson(EventRecipe instance) => <String, dynamic>{
+      'id': instance.id,
+      'icon': instance.icon,
+      'name': instance.name,
+      'maxNum': instance.maxNum,
+      'eventPointItem': instance.eventPointItem.toJson(),
+      'eventPointNum': instance.eventPointNum,
+      'consumes': instance.consumes.map((e) => e.toJson()).toList(),
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+      'closedMessage': instance.closedMessage,
+      'recipeGifts': instance.recipeGifts.map((e) => e.toJson()).toList(),
+    };
+
 EventFortificationDetail _$EventFortificationDetailFromJson(Map json) => EventFortificationDetail(
       position: json['position'] as int,
       name: json['name'] as String,
@@ -626,6 +953,13 @@ EventFortificationDetail _$EventFortificationDetailFromJson(Map json) => EventFo
               .toList() ??
           const [],
     );
+
+Map<String, dynamic> _$EventFortificationDetailToJson(EventFortificationDetail instance) => <String, dynamic>{
+      'position': instance.position,
+      'name': instance.name,
+      'className': _$SvtClassSupportGroupTypeEnumMap[instance.className]!,
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+    };
 
 const _$SvtClassSupportGroupTypeEnumMap = {
   SvtClassSupportGroupType.all: 'all',
@@ -652,6 +986,15 @@ EventFortificationSvt _$EventFortificationSvtFromJson(Map json) => EventFortific
               .toList() ??
           const [],
     );
+
+Map<String, dynamic> _$EventFortificationSvtToJson(EventFortificationSvt instance) => <String, dynamic>{
+      'position': instance.position,
+      'type': _$EventFortificationSvtTypeEnumMap[instance.type]!,
+      'svtId': instance.svtId,
+      'limitCount': instance.limitCount,
+      'lv': instance.lv,
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+    };
 
 const _$EventFortificationSvtTypeEnumMap = {
   EventFortificationSvtType.userSvt: 'userSvt',
@@ -685,6 +1028,21 @@ EventFortification _$EventFortificationFromJson(Map json) => EventFortification(
           const [],
     );
 
+Map<String, dynamic> _$EventFortificationToJson(EventFortification instance) => <String, dynamic>{
+      'idx': instance.idx,
+      'name': instance.name,
+      'x': instance.x,
+      'y': instance.y,
+      'rewardSceneX': instance.rewardSceneX,
+      'rewardSceneY': instance.rewardSceneY,
+      'maxFortificationPoint': instance.maxFortificationPoint,
+      'workType': _$EventWorkTypeEnumMap[instance.workType]!,
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+      'details': instance.details.map((e) => e.toJson()).toList(),
+      'servants': instance.servants.map((e) => e.toJson()).toList(),
+    };
+
 const _$EventWorkTypeEnumMap = {
   EventWorkType.militsryAffairs: 'militsryAffairs',
   EventWorkType.internalAffairs: 'internalAffairs',
@@ -702,12 +1060,26 @@ EventBulletinBoard _$EventBulletinBoardFromJson(Map json) => EventBulletinBoard(
           const [],
     );
 
+Map<String, dynamic> _$EventBulletinBoardToJson(EventBulletinBoard instance) => <String, dynamic>{
+      'bulletinBoardId': instance.bulletinBoardId,
+      'message': instance.message,
+      'probability': instance.probability,
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+    };
+
 EventBulletinBoardRelease _$EventBulletinBoardReleaseFromJson(Map json) => EventBulletinBoardRelease(
       condGroup: json['condGroup'] as int,
       condType: const CondTypeConverter().fromJson(json['condType'] as String),
       condTargetId: json['condTargetId'] as int,
       condNum: json['condNum'] as int,
     );
+
+Map<String, dynamic> _$EventBulletinBoardReleaseToJson(EventBulletinBoardRelease instance) => <String, dynamic>{
+      'condGroup': instance.condGroup,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'condTargetId': instance.condTargetId,
+      'condNum': instance.condNum,
+    };
 
 EventCampaign _$EventCampaignFromJson(Map json) => EventCampaign(
       targetIds: (json['targetIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
@@ -717,6 +1089,15 @@ EventCampaign _$EventCampaignFromJson(Map json) => EventCampaign(
       value: json['value'] as int,
       calcType: $enumDecode(_$EventCombineCalcEnumMap, json['calcType']),
     );
+
+Map<String, dynamic> _$EventCampaignToJson(EventCampaign instance) => <String, dynamic>{
+      'targetIds': instance.targetIds,
+      'warIds': instance.warIds,
+      'target': _$CombineAdjustTargetEnumMap[instance.target]!,
+      'idx': instance.idx,
+      'value': instance.value,
+      'calcType': _$EventCombineCalcEnumMap[instance.calcType]!,
+    };
 
 const _$CombineAdjustTargetEnumMap = {
   CombineAdjustTarget.none: 'none',
@@ -764,3 +1145,7 @@ const _$EventCombineCalcEnumMap = {
 EventQuest _$EventQuestFromJson(Map json) => EventQuest(
       questId: json['questId'] as int,
     );
+
+Map<String, dynamic> _$EventQuestToJson(EventQuest instance) => <String, dynamic>{
+      'questId': instance.questId,
+    };

@@ -63,6 +63,22 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
           const {},
     );
 
+Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, dynamic>{
+      'attributeRelation': instance.attributeRelation
+          .map((k, e) => MapEntry(_$AttributeEnumMap[k]!, e.map((k, e) => MapEntry(_$AttributeEnumMap[k]!, e)))),
+      'buffActions': instance.buffActions.map((k, e) => MapEntry(const BuffActionConverter().toJson(k), e.toJson())),
+      'cardInfo': instance.cardInfo
+          .map((k, e) => MapEntry(_$CardTypeEnumMap[k]!, e.map((k, e) => MapEntry(k.toString(), e.toJson())))),
+      'classInfo': instance.classInfo.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'classRelation':
+          instance.classRelation.map((k, e) => MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
+      'constants': instance.constants.toJson(),
+      'svtGrailCost': instance.svtGrailCost
+          .map((k, e) => MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e.toJson())))),
+      'userLevel': instance.userLevel.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'svtExp': instance.svtExp.map((k, e) => MapEntry(k.toString(), e.toJson())),
+    };
+
 const _$AttributeEnumMap = {
   Attribute.human: 'human',
   Attribute.sky: 'sky',
@@ -96,6 +112,17 @@ BuffActionDetail _$BuffActionDetailFromJson(Map json) => BuffActionDetail(
       maxRate: (json['maxRate'] as List<dynamic>).map((e) => e as int).toList(),
     );
 
+Map<String, dynamic> _$BuffActionDetailToJson(BuffActionDetail instance) => <String, dynamic>{
+      'limit': _$BuffLimitEnumMap[instance.limit]!,
+      'plusTypes': instance.plusTypes.map(const BuffTypeConverter().toJson).toList(),
+      'minusTypes': instance.minusTypes.map(const BuffTypeConverter().toJson).toList(),
+      'baseParam': instance.baseParam,
+      'baseValue': instance.baseValue,
+      'isRec': instance.isRec,
+      'plusAction': instance.plusAction,
+      'maxRate': instance.maxRate,
+    };
+
 const _$BuffLimitEnumMap = {
   BuffLimit.none: 'none',
   BuffLimit.upper: 'upper',
@@ -119,6 +146,22 @@ SvtClassInfo _$SvtClassInfoFromJson(Map json) => SvtClassInfo(
       autoSelSupportType: json['autoSelSupportType'] as int,
     );
 
+Map<String, dynamic> _$SvtClassInfoToJson(SvtClassInfo instance) => <String, dynamic>{
+      'id': instance.id,
+      'attri': instance.attri,
+      'name': instance.name,
+      'individuality': instance.individuality,
+      'attackRate': instance.attackRate,
+      'imageId': instance.imageId,
+      'iconImageId': instance.iconImageId,
+      'frameId': instance.frameId,
+      'priority': instance.priority,
+      'groupType': instance.groupType,
+      'relationId': instance.relationId,
+      'supportGroup': instance.supportGroup,
+      'autoSelSupportType': instance.autoSelSupportType,
+    };
+
 CardInfo _$CardInfoFromJson(Map json) => CardInfo(
       individuality: (json['individuality'] as List<dynamic>)
           .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -131,11 +174,27 @@ CardInfo _$CardInfoFromJson(Map json) => CardInfo(
       addCritical: json['addCritical'] as int,
     );
 
+Map<String, dynamic> _$CardInfoToJson(CardInfo instance) => <String, dynamic>{
+      'individuality': instance.individuality.map((e) => e.toJson()).toList(),
+      'adjustAtk': instance.adjustAtk,
+      'adjustTdGauge': instance.adjustTdGauge,
+      'adjustCritical': instance.adjustCritical,
+      'addAtk': instance.addAtk,
+      'addTdGauge': instance.addTdGauge,
+      'addCritical': instance.addCritical,
+    };
+
 GrailCostDetail _$GrailCostDetailFromJson(Map json) => GrailCostDetail(
       qp: json['qp'] as int,
       addLvMax: json['addLvMax'] as int,
       frameType: $enumDecodeNullable(_$SvtFrameTypeEnumMap, json['frameType']) ?? SvtFrameType.gold,
     );
+
+Map<String, dynamic> _$GrailCostDetailToJson(GrailCostDetail instance) => <String, dynamic>{
+      'qp': instance.qp,
+      'addLvMax': instance.addLvMax,
+      'frameType': _$SvtFrameTypeEnumMap[instance.frameType]!,
+    };
 
 const _$SvtFrameTypeEnumMap = {
   SvtFrameType.black: 'black',
@@ -156,12 +215,27 @@ MasterUserLvDetail _$MasterUserLvDetailFromJson(Map json) => MasterUserLvDetail(
       gift: json['gift'] == null ? null : Gift.fromJson(Map<String, dynamic>.from(json['gift'] as Map)),
     );
 
+Map<String, dynamic> _$MasterUserLvDetailToJson(MasterUserLvDetail instance) => <String, dynamic>{
+      'requiredExp': instance.requiredExp,
+      'maxAp': instance.maxAp,
+      'maxCost': instance.maxCost,
+      'maxFriend': instance.maxFriend,
+      'gift': instance.gift?.toJson(),
+    };
+
 SvtExpCurve _$SvtExpCurveFromJson(Map json) => SvtExpCurve(
       type: json['type'] as int,
       lv: (json['lv'] as List<dynamic>).map((e) => e as int).toList(),
       exp: (json['exp'] as List<dynamic>).map((e) => e as int).toList(),
       curve: (json['curve'] as List<dynamic>).map((e) => e as int).toList(),
     );
+
+Map<String, dynamic> _$SvtExpCurveToJson(SvtExpCurve instance) => <String, dynamic>{
+      'type': instance.type,
+      'lv': instance.lv,
+      'exp': instance.exp,
+      'curve': instance.curve,
+    };
 
 GameConstants _$GameConstantsFromJson(Map json) => GameConstants(
       attackRate: json['attackRate'] as int? ?? 230,
@@ -265,6 +339,107 @@ GameConstants _$GameConstantsFromJson(Map json) => GameConstants(
       userAct: json['userAct'] as int? ?? 20,
       userCost: json['userCost'] as int? ?? 56,
     );
+
+Map<String, dynamic> _$GameConstantsToJson(GameConstants instance) => <String, dynamic>{
+      'attackRate': instance.attackRate,
+      'attackRateRandomMax': instance.attackRateRandomMax,
+      'attackRateRandomMin': instance.attackRateRandomMin,
+      'backsideClassImageId': instance.backsideClassImageId,
+      'backsideSvtEquipImageId': instance.backsideSvtEquipImageId,
+      'backsideSvtImageId': instance.backsideSvtImageId,
+      'battleEffectIdAvoidance': instance.battleEffectIdAvoidance,
+      'battleEffectIdAvoidancePierce': instance.battleEffectIdAvoidancePierce,
+      'battleEffectIdInvincible': instance.battleEffectIdInvincible,
+      'battleEffectIdInvinciblePierce': instance.battleEffectIdInvinciblePierce,
+      'battleItemDispColumn': instance.battleItemDispColumn,
+      'bpExpression': instance.bpExpression,
+      'chainbonusArtsRate': instance.chainbonusArtsRate,
+      'chainbonusBusterRate': instance.chainbonusBusterRate,
+      'chainbonusQuick': instance.chainbonusQuick,
+      'commandArts': instance.commandArts,
+      'commandBuster': instance.commandBuster,
+      'commandCardPrmUpMax': instance.commandCardPrmUpMax,
+      'commandCodeDetachingItemId': instance.commandCodeDetachingItemId,
+      'commandQuick': instance.commandQuick,
+      'criticalAttackRate': instance.criticalAttackRate,
+      'criticalIndividuality': instance.criticalIndividuality,
+      'criticalRatePerStar': instance.criticalRatePerStar,
+      'criticalStarRate': instance.criticalStarRate,
+      'criticalTdPointRate': instance.criticalTdPointRate,
+      'deckMax': instance.deckMax,
+      'enemyAttackRateArts': instance.enemyAttackRateArts,
+      'enemyAttackRateBuster': instance.enemyAttackRateBuster,
+      'enemyAttackRateQuick': instance.enemyAttackRateQuick,
+      'enemyMaxBattleCount': instance.enemyMaxBattleCount,
+      'extraAttackRateGrand': instance.extraAttackRateGrand,
+      'extraAttackRateSingle': instance.extraAttackRateSingle,
+      'extraCriticalRate': instance.extraCriticalRate,
+      'followerListExpireAt': instance.followerListExpireAt,
+      'followerRefreshResetTime': instance.followerRefreshResetTime,
+      'followFriendPoint': instance.followFriendPoint,
+      'friendNum': instance.friendNum,
+      'fullTdPoint': instance.fullTdPoint,
+      'heroineChangecardvoice': instance.heroineChangecardvoice,
+      'hydeSvtId': instance.hydeSvtId,
+      'jekyllSvtId': instance.jekyllSvtId,
+      'largeSuccessMultExp': instance.largeSuccessMultExp,
+      'largeSuccessRate': instance.largeSuccessRate,
+      'mashuChangeQuestId': instance.mashuChangeQuestId,
+      'mashuChangeWarId': instance.mashuChangeWarId,
+      'mashuSvtId1': instance.mashuSvtId1,
+      'mashuSvtId2': instance.mashuSvtId2,
+      'maxBlackListNum': instance.maxBlackListNum,
+      'maxCommandSpell': instance.maxCommandSpell,
+      'maxDropFactor': instance.maxDropFactor,
+      'maxEventPoint': instance.maxEventPoint,
+      'maxExpFactor': instance.maxExpFactor,
+      'maxFriendpoint': instance.maxFriendpoint,
+      'maxFriendpointBoostItemDailyReceive': instance.maxFriendpointBoostItemDailyReceive,
+      'maxFriendpointBoostItemUse': instance.maxFriendpointBoostItemUse,
+      'maxFriendshipRank': instance.maxFriendshipRank,
+      'maxFriendCode': instance.maxFriendCode,
+      'maxFriendHistoryNum': instance.maxFriendHistoryNum,
+      'maxFriendShipUpRatio': instance.maxFriendShipUpRatio,
+      'maxMana': instance.maxMana,
+      'maxNearPresentOffsetNum': instance.maxNearPresentOffsetNum,
+      'maxPresentBoxHistoryNum': instance.maxPresentBoxHistoryNum,
+      'maxPresentBoxNum': instance.maxPresentBoxNum,
+      'maxPresentReceiveNum': instance.maxPresentReceiveNum,
+      'maxQp': instance.maxQp,
+      'maxQpDropUpRatio': instance.maxQpDropUpRatio,
+      'maxQpFactor': instance.maxQpFactor,
+      'maxRarePri': instance.maxRarePri,
+      'maxRp': instance.maxRp,
+      'maxStone': instance.maxStone,
+      'maxUserCommandCode': instance.maxUserCommandCode,
+      'maxUserEquipExpUpRatio': instance.maxUserEquipExpUpRatio,
+      'maxUserItem': instance.maxUserItem,
+      'maxUserLv': instance.maxUserLv,
+      'maxUserSvt': instance.maxUserSvt,
+      'maxUserSvtEquip': instance.maxUserSvtEquip,
+      'maxUserSvtEquipStorage': instance.maxUserSvtEquipStorage,
+      'maxUserSvtStorage': instance.maxUserSvtStorage,
+      'menuChange': instance.menuChange,
+      'overKillNpRate': instance.overKillNpRate,
+      'overKillStarAdd': instance.overKillStarAdd,
+      'overKillStarRate': instance.overKillStarRate,
+      'starRateMax': instance.starRateMax,
+      'statusUpAdjustAtk': instance.statusUpAdjustAtk,
+      'statusUpAdjustHp': instance.statusUpAdjustHp,
+      'statusUpBuff': instance.statusUpBuff,
+      'superSuccessMultExp': instance.superSuccessMultExp,
+      'superSuccessRate': instance.superSuccessRate,
+      'supportDeckMax': instance.supportDeckMax,
+      'swimsuitMeltSvtId': instance.swimsuitMeltSvtId,
+      'tamamocatStunBuffId': instance.tamamocatStunBuffId,
+      'tamamocatTreasureDeviceId1': instance.tamamocatTreasureDeviceId1,
+      'tamamocatTreasureDeviceId2': instance.tamamocatTreasureDeviceId2,
+      'temporaryIgnoreSleepModeForTreasureDeviceSvtId1': instance.temporaryIgnoreSleepModeForTreasureDeviceSvtId1,
+      'temporaryIgnoreSleepModeForTreasureDeviceSvtId2': instance.temporaryIgnoreSleepModeForTreasureDeviceSvtId2,
+      'treasuredeviceIdMashu3': instance.treasuredeviceIdMashu3,
+      'userAct': instance.userAct,
+      'userCost': instance.userCost,
+    };
 
 const _$BuffActionEnumMap = {
   BuffAction.unknown: 'unknown',

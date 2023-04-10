@@ -44,7 +44,7 @@ part '../../generated/models/gamedata/gamedata.g.dart';
 
 // part 'helpers/adapters.dart';
 
-@JsonSerializable(converters: [RegionConverter()])
+@JsonSerializable(converters: [RegionConverter()], createToJson: false)
 class GameData with _GameDataExtra {
   DataVersion version;
   @protected
@@ -257,7 +257,7 @@ class GameData with _GameDataExtra {
   factory GameData.fromJson(Map<String, dynamic> json) => _$GameDataFromJson(json);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class _GameDataAdd {
   Map<int, Servant> svt;
   Map<int, CraftEssence> ce;
@@ -382,6 +382,8 @@ class GameTops {
         return null;
     }
   }
+
+  Map<String, dynamic> toJson() => _$GameTopsToJson(this);
 }
 
 @JsonSerializable()
@@ -418,6 +420,8 @@ class GameTop {
   int get folderCrc => Crc32().convert(utf8.encode(assetbundleFolder)).toBigInt().toInt();
 
   factory GameTop.fromJson(Map<String, dynamic> json) => _$GameTopFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GameTopToJson(this);
 }
 
 @JsonSerializable()
@@ -432,6 +436,8 @@ class AssetBundleDecrypt {
     required this.zooName,
   });
   factory AssetBundleDecrypt.fromJson(Map<String, dynamic> json) => _$AssetBundleDecryptFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AssetBundleDecryptToJson(this);
 }
 
 class _ProcessedData {
