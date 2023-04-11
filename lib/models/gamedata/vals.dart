@@ -7,7 +7,7 @@ class DataVals {
   Map<String, dynamic> _vals;
   DataVals? get DependFuncVals => _vals['DependFuncVals'] == null ? null : DataVals(_vals['DependFuncVals']);
 
-  DataVals([Map<String, dynamic>? sourceVals]) : _vals = sourceVals ?? {};
+  DataVals([Map<dynamic, dynamic>? sourceVals]) : _vals = Map.from(sourceVals ?? {});
 
   static _deepCopy(dynamic value) {
     if (value is List) {

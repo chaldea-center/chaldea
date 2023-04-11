@@ -207,9 +207,6 @@ class GameData with _GameDataExtra {
       for (final spot in spots.values)
         for (final quest in spot.quests) quest.id: quest
     };
-    servantsById = servants.map((key, value) => MapEntry(value.id, value));
-    craftEssencesById = craftEssences.map((key, value) => MapEntry(value.id, value));
-    commandCodesById = commandCodes.map((key, value) => MapEntry(value.id, value));
     // calculation at last
     for (final war in wars.values) {
       war.calcItems(this);
