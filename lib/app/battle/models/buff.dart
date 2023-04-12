@@ -178,9 +178,6 @@ class BuffData {
     final bool checkTargetBuff = buffTraitCheckTypes.contains(buff.type);
     final bool activeOnly = activeOnlyTypes.contains(buff.type);
     final bool ignoreIrremovable = vals.IgnoreIndivUnreleaseable == 1;
-    final NiceTrait? iTieTrait = buff.script?.INDIVIDUALITIE;
-    final List<NiceTrait> selfIndv = buff.ckSelfIndv.toList();
-    if (iTieTrait != null) selfIndv.add(iTieTrait);
     final targetCheck = battleData.checkTraits(
           buff.ckOpIndv,
           !isTarget,
@@ -191,19 +188,18 @@ class BuffData {
           includeIgnoredTrait: includeIgnoredTrait,
         ) &&
         battleData.checkTraits(
-          selfIndv,
+          buff.ckSelfIndv,
           isTarget,
           checkTargetBuff: checkTargetBuff,
           activeOnly: activeOnly,
           ignoreIrremovable: ignoreIrremovable,
           checkIndivType: checkIndvType,
           includeIgnoredTrait: includeIgnoredTrait,
-          individualitie: iTieTrait != null,
         );
 
     final onFieldCheck = !isOnField || battleData.isActorOnField(actorUniqueId);
 
-    final scriptCheck = checkScript(battleData, targetCheck);
+    final scriptCheck = checkScript(battleData, isTarget);
 
     return targetCheck && onFieldCheck && scriptCheck;
   }
@@ -229,6 +225,11 @@ class BuffData {
     }
 
     final script = buff.script!;
+
+    final NiceTrait? iTieTrait = script.INDIVIDUALITIE;
+    if (iTieTrait != null && !battleData.checkTraits([iTieTrait], isTarget, individualitie: true)) {
+      return false;
+    }
 
     if (vals.OnFieldCount == -1) {
       final includeIgnoredTrait = script.IncludeIgnoreIndividuality! == 1;

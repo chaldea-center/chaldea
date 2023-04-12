@@ -744,6 +744,51 @@ void main() async {
     expect(chenGong.hp, 7210);
   });
 
+  test('Archtype: Earth passive', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData(2300500)
+        ..lv = 90
+        ..tdLv = 5
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+    ];
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+    final archtypeEarth = battle.onFieldAllyServants[0]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final previousHp1 = enemy1.hp;
+    await battle.playerTurn([
+      CombatAction(archtypeEarth, archtypeEarth.getCards(battle)[4]),
+      CombatAction(archtypeEarth, archtypeEarth.getCards(battle)[2]),
+      CombatAction(archtypeEarth, archtypeEarth.getCards(battle)[0]),
+    ]);
+
+    expect(previousHp1 - enemy1.hp, 6044 + 5573 + 4896 + 9067);
+
+    final enemy2 = battle.onFieldEnemies[1]!;
+    final enemy3 = battle.onFieldEnemies[2]!;
+    final previousHp2 = enemy2.hp;
+    final previousHp3 = enemy3.hp;
+    await battle.playerTurn([
+      CombatAction(archtypeEarth, archtypeEarth.getNPCard(battle)!),
+    ]);
+
+    expect(previousHp2 - enemy2.hp, 29468);
+    expect(previousHp3 - enemy3.hp, 29468);
+
+    final enemy4 = battle.onFieldEnemies[0]!;
+    final previousHp4 = enemy4.hp;
+    await battle.playerTurn([
+      CombatAction(archtypeEarth, archtypeEarth.getCards(battle)[4]),
+      CombatAction(archtypeEarth, archtypeEarth.getCards(battle)[2]),
+      CombatAction(archtypeEarth, archtypeEarth.getCards(battle)[0]),
+    ]);
+
+    expect(previousHp4 - enemy4.hp, 7404 + 6661 + 5911 + 9067);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData(504900)..lv = 90,
