@@ -35,6 +35,11 @@ void main() {
       // jsMap = _FileInfo('main.dart.js.map'),
       sw = _FileInfo('flutter_service_worker.js');
 
+  final flutterVersion = Platform.environment['FLUTTER_VERSION'];
+  if (flutterVersion != null && RegExp(r'').hasMatch(flutterVersion)) {
+    indexHtml.content = indexHtml.content.replaceAll('?v=FLUTTER_VERSION', '?v=$flutterVersion');
+  }
+
   // change google fonts url for cn
   print('[patch-web] patching "${mainJs.fn}"');
   int patched = 0;
