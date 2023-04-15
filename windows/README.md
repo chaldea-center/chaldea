@@ -2,6 +2,8 @@
 
 ## Installation
 
+Check in docs for more about installation and startup: https://docs.chaldea.center/guide/installation.html
+
 Please
 
 - Run app after extract the zip file, otherwise there may be unknown error
@@ -16,6 +18,8 @@ If there is such an error message on startup, please install [Microsoft Visual C
 Simply override old files with new extracted files.
 
 ## 安装与启动
+
+更多关于安装与启动的问题请参考文档: https://docs.chaldea.center/zh/guide/installation.html
 
 请务必:
 

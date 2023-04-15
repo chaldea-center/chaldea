@@ -20,7 +20,7 @@ There are plenty of work need to do.
 - [ ] There is a bug that will reset accumulation damage when deathEffect is triggered
       not verified for gutsEffect
 - [ ] FuncType damageNpCounter
-- [ ] FuncType damageNpRate Target == 0 is target, verify if Target ==1 is activator?
+- [ ] FuncType damageNpRare Target == 0 is target, verify if Target ==1 is activator?
 - [ ] FuncType gainHpPer figure out if Percentage heal benefits from healGrant buff
 - [ ] FuncType gainHp/NpFromTargets & moveState can probably be implemented in the dependedFunc with an additional
       receiver argument to receive what's lost from absorbTargets
@@ -75,7 +75,7 @@ There are plenty of work need to do.
       buff.parma=vals.Value+pointBuff.value
 - [ ] Custom skill! (passive or active)
 - [ ] Player side `allyTargetIndex` could be null or -1, let user to choose manually
-- [ ] skill cd/sealed/cond hint: sealed(×)>cd(n)>cond(*, only shown when cd=0&not sealed)
+- [x] skill cd/sealed/cond hint: sealed(×)>cd(n)>cond(*, only shown when cd=0&not sealed)
 - [x] Servant/Enemy without TD:
   - [x] tdId=0
 - [x] Servant skill.num=1 means Skill 1, don't use index in list. `groupedActiveSkill[1/2/3]`
