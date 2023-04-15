@@ -95,14 +95,14 @@ class EventBonusTab extends HookWidget {
       ));
     }
     List<Widget> tabs = [
+      if (svtWidgets.isNotEmpty)
+        Tab(
+          child: Text(S.current.servant, style: Theme.of(context).textTheme.bodyMedium),
+        ),
       if (ceWidgets.isNotEmpty)
         Tab(
           child: Text(S.current.craft_essence, style: Theme.of(context).textTheme.bodyMedium),
         ),
-      if (svtWidgets.isNotEmpty)
-        Tab(
-          child: Text(S.current.servant, style: Theme.of(context).textTheme.bodyMedium),
-        )
     ];
     if (tabs.isEmpty) return const SizedBox();
     return DefaultTabController(
@@ -113,7 +113,7 @@ class EventBonusTab extends HookWidget {
           Expanded(
             child: TabBarView(
               children: [
-                for (var children in [ceWidgets, svtWidgets].where((e) => e.isNotEmpty))
+                for (var children in [svtWidgets, ceWidgets].where((e) => e.isNotEmpty))
                   ListView.builder(
                     controller: useScrollController(),
                     itemBuilder: (context, index) => children[index],

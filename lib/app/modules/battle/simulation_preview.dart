@@ -806,6 +806,7 @@ class ServantSelector extends StatelessWidget {
       onTap: () {
         router.pushPage(CraftEssenceOptionEditPage(
           playerSvtData: playerSvtData,
+          questPhase: questPhase,
           onChange: onChange,
         ));
       },

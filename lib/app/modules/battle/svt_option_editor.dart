@@ -1043,9 +1043,15 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
 class CraftEssenceOptionEditPage extends StatefulWidget {
   final PlayerSvtData playerSvtData;
+  final QuestPhase? questPhase;
   final VoidCallback onChange;
 
-  CraftEssenceOptionEditPage({super.key, required this.playerSvtData, required this.onChange});
+  CraftEssenceOptionEditPage({
+    super.key,
+    required this.playerSvtData,
+    required this.questPhase,
+    required this.onChange,
+  });
 
   @override
   State<CraftEssenceOptionEditPage> createState() => _CraftEssenceOptionEditPageState();
@@ -1210,13 +1216,23 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
   }
 
   void selectCE() {
+    final event = widget.questPhase?.war?.event;
+    Set<int> pinged = db.settings.battleSim.pingedCEs.toSet();
+    if (event != null) {
+      for (final ce in db.gameData.craftEssences.values) {
+        if (pinged.contains(ce.collectionNo)) continue;
+        if (ce.skills.any((skill) => skill.isEventSkill(event))) {
+          pinged.add(ce.collectionNo);
+        }
+      }
+    }
     router.pushPage(
       CraftListPage(
         onSelected: (selectedCe) {
           _onSelectCE(selectedCe);
         },
         filterData: db.settings.craftFilterData,
-        pinged: db.settings.battleSim.pingedCEs.toList(),
+        pinged: pinged.toList(),
       ),
       detail: true,
     );
