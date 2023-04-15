@@ -56,7 +56,7 @@ class StartupFailedPage extends StatelessWidget {
         if (kIsWeb)
           const Text(
               'Web? InPrivate or "Clear history when close" in some browsers (e.g. FireFox) may block IndexedDB which app needed.\n'
-              '部分浏览器如FireFox在无痕模式下或开启退出时清楚历史记录时会禁用IndexedDB而使app无法启动\n'),
+              '部分浏览器如FireFox在无痕模式下或开启退出时清除历史记录时会禁用IndexedDB而使app无法启动\n'),
         Text('Error: $error', style: Theme.of(context).textTheme.titleMedium),
         if (stackTrace != null) Text('\n\n$stackTrace', style: Theme.of(context).textTheme.bodySmall),
         const SafeArea(child: SizedBox())

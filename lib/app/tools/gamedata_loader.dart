@@ -42,6 +42,8 @@ class GameDataLoader {
   void interrupt() {
     if (_completer?.isCompleted == false) {
       _completer?.complete(null);
+      progress.value = null;
+      downloading.value = 0;
       error = 'manual interrupted';
     }
   }

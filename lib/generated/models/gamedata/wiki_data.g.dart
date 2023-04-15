@@ -90,15 +90,15 @@ CraftEssenceExtra _$CraftEssenceExtraFromJson(Map json) => CraftEssenceExtra(
     );
 
 const _$CEObtainEnumMap = {
-  CEObtain.exp: 'exp',
-  CEObtain.shop: 'shop',
-  CEObtain.story: 'story',
   CEObtain.permanent: 'permanent',
-  CEObtain.valentine: 'valentine',
-  CEObtain.limited: 'limited',
+  CEObtain.story: 'story',
   CEObtain.eventReward: 'eventReward',
-  CEObtain.campaign: 'campaign',
+  CEObtain.limited: 'limited',
+  CEObtain.shop: 'shop',
   CEObtain.bond: 'bond',
+  CEObtain.valentine: 'valentine',
+  CEObtain.exp: 'exp',
+  CEObtain.campaign: 'campaign',
   CEObtain.drop: 'drop',
   CEObtain.unknown: 'unknown',
 };

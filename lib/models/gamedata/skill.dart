@@ -290,7 +290,7 @@ class NiceSkill extends BaseSkill {
     return _$NiceSkillFromJson(json);
   }
 
-  bool isEnabledForEvent(int eventId) {
+  bool isExtraPassiveEnabledForEvent(int eventId) {
     return extraPassive.any((e) {
       if (e.eventId == 0) {
         if (e.endedAt - e.startedAt > 90 * kSecsPerDay && e.endedAt > kNeverClosedTimestamp) {

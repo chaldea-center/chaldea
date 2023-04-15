@@ -9,7 +9,7 @@ class DataVals {
 
   DataVals([Map<dynamic, dynamic>? sourceVals]) : _vals = Map.from(sourceVals ?? {});
 
-  static _deepCopy(dynamic value) {
+  static dynamic _deepCopy(dynamic value) {
     if (value is List) {
       return value.map((e) => _deepCopy(e)).toList();
     } else if (value is Map) {
@@ -19,7 +19,7 @@ class DataVals {
     }
   }
 
-  factory DataVals.fromJson(Map<String, dynamic> json) => DataVals(Map.from(_deepCopy(json)));
+  factory DataVals.fromJson(Map<String, dynamic> json) => DataVals(_deepCopy(json));
 
   Map<String, dynamic> toJson({bool sort = true}) {
     final entries = Map<String, dynamic>.from(_deepCopy(_vals)).entries.toList();

@@ -358,8 +358,10 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         if (svt.isPlayer) 'ATK: ${svt.attack}',
         'HP: ${svt.hp}',
         svt.isPlayer
-            ? 'NP: ${(svt.np / 100).toStringAsFixed(2)}'
-            : svt.niceEnemy!.chargeTurn != 0
+            ? svt.td == null
+                ? 'NP: -'
+                : 'NP: ${(svt.np / 100).toStringAsFixed(2)}'
+            : svt.niceEnemy!.chargeTurn != 0 && (svt.niceEnemy?.noblePhantasm.noblePhantasm?.functions.length ?? 0) > 0
                 ? '${S.current.info_charge}: ${svt.npLineCount}/${svt.niceEnemy!.chargeTurn}'
                 : '${S.current.info_charge}: -',
       ].map((e) => AutoSizeText(e, maxLines: 1, minFontSize: 6, style: Theme.of(context).textTheme.bodySmall)).toList(),

@@ -518,15 +518,15 @@ enum SvtObtain {
 }
 
 enum CEObtain {
-  exp,
-  shop,
-  story,
   permanent,
-  valentine,
-  limited,
+  story,
   eventReward,
-  campaign,
+  limited,
+  shop,
   bond,
+  valentine,
+  exp,
+  campaign,
   drop,
   unknown,
 }

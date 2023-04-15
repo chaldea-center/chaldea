@@ -262,9 +262,9 @@ class ApiCacheManager {
         prevTask.cancel();
       }
 
-      print('api get: $url');
       if (cacheOnly) return null;
 
+      print('api get: $url');
       final task = _downloading[url] = _DownloadingTask(url: url, completer: Completer());
       _failed.remove(url);
       _rateLimiter.limited<List<int>?>(() => _download(url)).then((value) {

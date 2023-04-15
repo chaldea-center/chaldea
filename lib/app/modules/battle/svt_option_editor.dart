@@ -340,7 +340,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         header: S.current.extra_passive,
         children: [
           for (final passive in playerSvtData.extraPassives)
-            if (passive.isEnabledForEvent(questPhase?.war?.eventId ?? 0)) _buildExtraPassive(passive),
+            if (passive.isExtraPassiveEnabledForEvent(questPhase?.war?.eventId ?? 0)) _buildExtraPassive(passive),
         ],
       ),
       TileGroup(
