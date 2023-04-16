@@ -93,6 +93,7 @@ class BattleData {
 
   final BattleLogger battleLogger = BattleLogger();
   BuildContext? context;
+  bool get mounted => context != null && context!.mounted;
 
   // unused fields
   // int countEnemyAttack = 0;
@@ -954,7 +955,7 @@ class BattleData {
   }
 
   Future<bool> canActivate(final int activationRate, final String description) async {
-    if (activationRate < 1000 && activationRate > 0 && tailoredExecution && context?.mounted == true) {
+    if (activationRate < 1000 && activationRate > 0 && tailoredExecution && mounted) {
       final curResult = probabilityThreshold <= activationRate ? S.current.success : S.current.failed;
       final String details = '${S.current.results}: $curResult => '
           '${S.current.battle_activate_probability}: '

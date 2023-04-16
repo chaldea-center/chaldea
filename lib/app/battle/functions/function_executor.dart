@@ -49,7 +49,7 @@ class FunctionExecutor {
       }
     }
     int? selectedActSet;
-    if (actSets.isNotEmpty && battleData.context?.mounted == true) {
+    if (actSets.isNotEmpty && battleData.mounted) {
       selectedActSet = await FuncActSetSelector.show(battleData, actSets);
     }
     for (int index = 0; index < functions.length; index += 1) {
@@ -156,18 +156,18 @@ class FunctionExecutor {
     List<NiceTd> tdSelections = [];
     if (function.funcTargetType == FuncTargetType.commandTypeSelfTreasureDevice) {
       for (final svt in targets) {
-        NiceTd? tdSelection = svt.getCurrentNP(battleData);
-        if (tdSelection == null) {
+        final NiceTd? baseTd = svt.td;
+        if (baseTd == null) {
           return;
         }
-
-        if (tdSelection.script != null && tdSelection.script!.tdTypeChangeIDs != null) {
-          final List<NiceTd> tds = svt.getTdsById(tdSelection.script!.tdTypeChangeIDs!);
-          if (tds.isNotEmpty && battleData.context != null) {
+        NiceTd? tdSelection;
+        if (baseTd.script != null && baseTd.script!.tdTypeChangeIDs != null) {
+          final List<NiceTd> tds = svt.getTdsById(baseTd.script!.tdTypeChangeIDs!);
+          if (tds.isNotEmpty && battleData.mounted) {
             tdSelection = await TdTypeChangeSelector.show(battleData, tds);
           }
         }
-        tdSelections.add(tdSelection);
+        if (tdSelection != null) tdSelections.add(tdSelection);
       }
     }
 

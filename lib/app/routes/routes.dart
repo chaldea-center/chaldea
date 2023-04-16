@@ -171,6 +171,7 @@ class Routes {
   static const String apk = '/apk';
 
   static const String laplace = '/laplace';
+  static const String laplaceBattle = '/laplace/battle';
 
   static const String discord = '/discord';
   static const String notFound = '/404';

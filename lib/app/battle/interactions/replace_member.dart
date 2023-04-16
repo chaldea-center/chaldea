@@ -14,7 +14,7 @@ class ReplaceMemberSelectionDialog extends StatefulWidget {
   State<ReplaceMemberSelectionDialog> createState() => _ReplaceMemberSelectionDialogState();
 
   static Future<Tuple2<BattleServantData, BattleServantData>?> show(final BattleData battleData) async {
-    if (battleData.context?.mounted != true) return null;
+    if (!battleData.mounted) return null;
     return showUserConfirm<Tuple2<BattleServantData, BattleServantData>>(
       context: battleData.context!,
       builder: (context) => ReplaceMemberSelectionDialog(battleData: battleData),

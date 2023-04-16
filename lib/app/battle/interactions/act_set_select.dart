@@ -10,6 +10,7 @@ class FuncActSetSelector extends StatelessWidget {
   const FuncActSetSelector({super.key, required this.battleData, required this.actSets});
 
   static Future<int?> show(BattleData battleData, final Map<int, List<NiceFunction>> actSets) {
+    if (!battleData.mounted) return Future.value();
     return showUserConfirm<int?>(
       context: battleData.context!,
       allowNull: true,

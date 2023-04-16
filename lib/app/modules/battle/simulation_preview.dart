@@ -554,7 +554,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   void _startSimulation() {
     db.settings.battleSim.previousQuestPhase = '${questPhase!.id}/${questPhase!.phase}';
     router.push(
-      url: Routes.laplace,
+      url: Routes.laplaceBattle,
       child: BattleSimulationPage(
         questPhase: questPhase!,
         onFieldSvtDataList: onFieldSvtDataList,

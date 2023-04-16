@@ -312,7 +312,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
       if (result != null) {
         warId = result;
       }
-      setState(() {});
+      if (mounted) setState(() {});
     }
 
     return ListTile(

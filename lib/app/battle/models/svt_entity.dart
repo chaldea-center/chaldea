@@ -646,6 +646,7 @@ class BattleServantData {
   }
 
   List<NiceTd> getTdsById(final List<int> tdIds) {
+    // TODO: enemy(svt?) doesn't contain type changed TDs and fetch remote TDs
     if (isEnemy) {
       return [niceEnemy!.noblePhantasm.noblePhantasm!];
     }

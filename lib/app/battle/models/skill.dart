@@ -138,7 +138,7 @@ class BattleSkillInfoData {
 
     int? selectedActionIndex;
     if (skill.script != null && skill.script!.SelectAddInfo != null && skill.script!.SelectAddInfo!.isNotEmpty) {
-      if (battleData.context?.mounted == true) {
+      if (battleData.mounted) {
         selectedActionIndex = await SkillActSelectDialog.show(battleData, skill, skillLevel);
       }
     }

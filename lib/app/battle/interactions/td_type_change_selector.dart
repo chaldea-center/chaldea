@@ -10,7 +10,8 @@ class TdTypeChangeSelector extends StatelessWidget {
   final List<NiceTd> tds;
   const TdTypeChangeSelector({super.key, required this.battleData, required this.tds});
 
-  static Future<NiceTd> show(BattleData battleData, List<NiceTd> tds) {
+  static Future<NiceTd?> show(BattleData battleData, List<NiceTd> tds) {
+    if (!battleData.mounted) return Future.value();
     tds = tds.toList();
     tds.sort((a, b) => (a.card.index % 3).compareTo(b.card.index % 3)); // Q A B
     return showUserConfirm<NiceTd>(
