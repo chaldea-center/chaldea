@@ -100,6 +100,10 @@ class BattleRecordManager {
     _attacker = null;
     _card = null;
   }
+
+  void instantDeath(BattleInstantDeathRecord record) {
+    records.add(record);
+  }
 }
 
 /// Only record user visible actions
@@ -232,4 +236,30 @@ class AttackResultDetail {
         defenseNpParams = defenseNpParams.copy(),
         starParams = starParams.copy(),
         result = result.copy();
+}
+
+class BattleLossHpRecord extends BattleRecord {}
+
+class BattleReduceHpRecord extends BattleRecord {}
+
+class BattleInstantDeathRecord extends BattleRecord {
+  final bool forceInstantDeath;
+  final BattleServantData? activator;
+  final List<InstantDeathResultDetail> targets;
+
+  BattleInstantDeathRecord({
+    required this.forceInstantDeath,
+    required this.activator,
+    required this.targets,
+  });
+}
+
+class InstantDeathResultDetail {
+  final BattleServantData target;
+  final InstantDeathParameters params;
+
+  InstantDeathResultDetail({
+    required this.target,
+    required this.params,
+  });
 }

@@ -8,6 +8,10 @@ There are plenty of work need to do.
 
 - [x] catch error for user interaction (skill/attack)
 - [ ] show loading toast when fetch api
+- [ ] `Map<TargetId, bool> lastFuncSuccess` is a map
+
+### Recorder
+- [ ] BattleServantActionHistory.TYPE: HPLOSS,INSTANT_DEATH,REDUCE_HP,DAMAGE_REFLECTION,DAMAGE_VALUE
 
 ### Ally Function Logic:
 
@@ -33,6 +37,7 @@ There are plenty of work need to do.
 - [ ] BuffType doNotActCommandType
 - [ ] BuffType doNotSelectCommandCard
 - [ ] BuffType tdTypeChange: if there are multiple instances of this buff, the last one dominates
+  - [ ] the max addOrder, should be safe to use the last effective one
 - [ ] BuffType overwriteClassRelation, atkSide first or defSide first? When two overwriteForce type interact, is it
       based on buff order? E.g. Kama skill3 & Reinis NP vs alterego attacker, is the final relation 500 or 1000 or depends
       on which buff comes last?
@@ -43,12 +48,12 @@ There are plenty of work need to do.
 - [ ] update INDIVIDUALITIE to only check its state in certain situations, perhaps in checkBuffStatus()?
 - [ ] includeIgnoredTrait only adds NP card traits for now
 - [ ] more sample on convertBuff's scripts
+  - [ ] BuffConvert is converting a buff list to another buff list, (or trait list to another buff list, not used yet)
 - [ ] prepare a dummy BattleServantData as Master
 - [ ] Figure out how to write reasonable test cases for UI required effects like randomEffect & changeTdType
 - [ ] funcSuccess for some wired function types
-- [ ] BuffConvert is converting a buff list to another buff list, (or trait list to another buff list, not used yet)
 - [ ] Enemy shift target may not exist
-- [ ] cardDetail.damageRate/tdRate (U-Olga Marie buster/extra attack on all enemies)
+- [x] cardDetail.damageRate/tdRate (U-Olga Marie buster/extra attack on all enemies)
 - [ ] dispBreakShift
 - [ ] shiftGuts(Ratio)
 - [x] Damage should remove buff with buffScript field damageRelease: 1

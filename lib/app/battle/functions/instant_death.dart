@@ -1,4 +1,5 @@
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -16,16 +17,21 @@ class InstantDeath {
     final bool force = false,
   }) async {
     final activator = battleData.activator;
+    final record = BattleInstantDeathRecord(forceInstantDeath: force, activator: activator, targets: []);
     bool success = false;
     for (final target in targets) {
       battleData.setTarget(target);
-      if (force || await shouldInstantDeath(battleData, dataVals, activator, target)) {
+      final params = InstantDeathParameters();
+
+      if (await shouldInstantDeath(battleData, dataVals, activator, target, force, params)) {
         target.hp = 0;
         target.lastHitBy = activator;
         success = true;
       }
       battleData.unsetTarget();
+      record.targets.add(InstantDeathResultDetail(target: target, params: params));
     }
+    battleData.recorder.instantDeath(record);
 
     return success;
   }
@@ -35,8 +41,17 @@ class InstantDeath {
     final DataVals dataVals,
     final BattleServantData? activator,
     final BattleServantData target,
+    final bool force,
+    InstantDeathParameters? params,
   ) async {
+    params ??= InstantDeathParameters();
+    params.isForce = force || (activator == target && dataVals.ForceSelfInstantDeath == 1);
+    if (params.isForce) return true;
+
     if (await target.hasBuffOnAction(battleData, BuffAction.avoidInstantdeath)) {
+      params.immune = true;
+      params.result = false;
+      params.resultString = kBattleFuncNoEffect;
       battleData.battleLogger.debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.battle_invalid}');
       return false;
     }
@@ -49,15 +64,22 @@ class InstantDeath {
 
     final functionRate = dataVals.Rate ?? 1000;
     final resistRate = resistInstantDeath - nonResistInstantDeath;
-    final activationRate =
-        (functionRate * toModifier(target.deathRate) * toModifier(1000 + grantInstantDeath - resistRate)).toInt();
+    final buffRate = grantInstantDeath - resistRate;
+    final activationRate = (functionRate * toModifier(target.deathRate) * toModifier(1000 + buffRate)).toInt();
     final success = await battleData.canActivateFunction(activationRate);
     final resultsString = success
         ? S.current.success
         : resistRate > 0
-            ? 'GUARD'
-            : 'MISS';
+            ? kBattleFuncGUARD
+            : kBattleFuncMiss;
 
+    params
+      ..functionRate = functionRate
+      ..deathRate = target.deathRate
+      ..buffRate = buffRate
+      ..activateRate = activationRate
+      ..result = success
+      ..resultString = resultsString;
     battleData.battleLogger.debug('${S.current.effect_target}: ${target.lBattleName} - '
         '$resultsString'
         '${battleData.tailoredExecution ? '' : ' [$activationRate vs ${battleData.probabilityThreshold}]'}');

@@ -6,6 +6,10 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'battle_logger.dart';
 
+const kBattleFuncMiss = 'MISS';
+const kBattleFuncNoEffect = 'NO EFFECT';
+const kBattleFuncGUARD = 'GUARD';
+
 /// Referencing:
 /// https://apps.atlasacademy.io/fgo-docs/deeper/battle/damage.html
 /// DamageMod caps are applied when gathering the parameters.
@@ -468,6 +472,30 @@ class DamageResult {
       ..defNpGains = defNpGains.toList()
       ..cardHits = cardHits.toList()
       ..overkillStates = overkillStates.toList();
+  }
+}
+
+class InstantDeathParameters {
+  bool isForce = false;
+  bool immune = false;
+  int functionRate = 0;
+  int deathRate = 0;
+  int buffRate = 0;
+
+  int activateRate = 0;
+  bool result = false;
+  String resultString = '';
+
+  InstantDeathParameters copy() {
+    return InstantDeathParameters()
+      ..isForce = isForce
+      ..immune = immune
+      ..functionRate = functionRate
+      ..deathRate = deathRate
+      ..buffRate = buffRate
+      ..activateRate = activateRate
+      ..result = result
+      ..resultString = resultString;
   }
 }
 

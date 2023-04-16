@@ -1,3 +1,14 @@
+# 2.3.2
+
+- Free quest solver supports item drop rate (bonus CE from Advanced Quests)
+- Ping event CEs to top when building team
+- Fix app bugs
+  - Simplified Chinese characters rendered with Traditional/Japanese font
+  - Failed to download data in some browsers
+- Fix battle bugs
+  - Archctype:Earth field check
+  - force instant death should fail if immune
+
 # 2.3.1
 
 - Add more readable battle records
