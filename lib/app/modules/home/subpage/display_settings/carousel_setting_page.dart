@@ -98,7 +98,7 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
             value: carousel.enableNA,
             title: const Text('NA News'),
             subtitle: const Text('https://webview.fate-go.us/'),
-            onChanged: carousel.enabled && !PlatformU.isWindows
+            onChanged: carousel.enabled
                 ? (v) => setState(() {
                       carousel.needUpdate = true;
                       carousel.enableNA = v ?? carousel.enableNA;
@@ -110,7 +110,7 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
             value: carousel.enableKR,
             title: const Text('KR News'),
             subtitle: const Text('https://cafe.naver.com/fategokr'),
-            onChanged: carousel.enabled && !PlatformU.isWindows
+            onChanged: carousel.enabled
                 ? (v) => setState(() {
                       carousel.needUpdate = true;
                       carousel.enableKR = v ?? carousel.enableKR;

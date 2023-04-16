@@ -110,9 +110,10 @@ class AppNewsCarousel extends StatefulWidget {
         return <CarouselItem>[];
       });
 
-      Future<Response> _getUrl(String url, {Map<String, String>? headers}) {
+      Future<Response> _getUrl(String url, {Map<String, String>? headers, bool? proxy}) {
         Map<String, String>? queryParameters;
-        if (kIsWeb) {
+        proxy ??= kIsWeb;
+        if (proxy) {
           queryParameters = {'url': url};
           url = '${Hosts.workerHost}/corsproxy/';
         }
@@ -288,8 +289,8 @@ class AppNewsCarousel extends StatefulWidget {
 
       if (carouselSetting.enableKR) {
         const krUrl = 'https://cafe.naver.com/MyCafeIntro.nhn?clubid=29199987';
-        taskKR =
-            _getUrl(krUrl, headers: {HttpHeaders.refererHeader: 'https://cafe.naver.com/fategokr'}).then((response) {
+        taskKR = _getUrl(krUrl, headers: {HttpHeaders.refererHeader: 'https://cafe.naver.com/fategokr'}, proxy: true)
+            .then((response) {
           var doc = parser.parse(response.data.toString());
           var ele = doc.getElementsByTagName('table').getOrNull(0);
           updated = true;
