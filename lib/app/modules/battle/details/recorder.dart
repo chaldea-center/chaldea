@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:tuple/tuple.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
@@ -155,6 +156,8 @@ class BattleRecorderPanelBase extends StatelessWidget {
         ));
       } else if (record is BattleAttackRecord) {
         cardChildren.add(_AttackDetailWidget(record: record, battleData: battleData));
+      } else if (record is BattleInstantDeathRecord) {
+        cardChildren.add(_InstantDeathDetailWidget(record: record, battleData: battleData));
       } else if (record is BattleMessageRecord) {
         cardChildren.add(Text(record.message, style: const TextStyle(fontWeight: FontWeight.bold)));
       } else {
@@ -334,26 +337,50 @@ class BattleRecorderPanelBase extends StatelessWidget {
   }
 }
 
-class _AttackDetailWidget extends StatelessWidget {
-  final BattleData? battleData;
-  final BattleAttackRecord record;
-  const _AttackDetailWidget({required this.battleData, required this.record});
+mixin MultiTargetsWrapper {
+  Widget buildContent({
+    required BuildContext context,
+    required bool isActorEnemy,
+    required bool isTargetEnemy,
+    required WidgetBuilder actorBuilder,
+    // <isEnemy, index, builder>
+    required List<Tuple3<bool, int, WidgetBuilder>> targets,
+    WidgetBuilder placeholder = _defaultPlaceholder,
+  }) {
+    Map<int, WidgetBuilder> enemyBuilders = {
+      for (final target in targets)
+        if (target.item1) target.item2: target.item3
+    };
+    final maxEnemyIndex = Maths.max(enemyBuilders.keys, -1);
 
-  @override
-  Widget build(BuildContext context) {
-    Map<int, AttackResultDetail> targets = {for (final target in record.targets) target.target.index: target};
-    final maxIndex = Maths.max(targets.keys, 0);
     List<Widget> enemies = [
-      for (int index = 0; index < max(3, ((maxIndex + 1) / 3).ceil() * 3); index++)
-        buildDefender(context, targets[index])
+      for (int index = 0; index < ((maxEnemyIndex + 1) / 3).ceil() * 3; index++)
+        enemyBuilders[index]?.call(context) ?? placeholder(context),
     ];
 
+    Map<int, WidgetBuilder> playerBuilders = {
+      for (final target in targets)
+        if (!target.item1) target.item2: target.item3
+    };
+    final maxPlayerIndex = Maths.max(playerBuilders.keys, -1);
+
+    List<Widget> players = [
+      for (int index = 0; index < ((maxPlayerIndex + 1) / 3).ceil() * 3; index++)
+        playerBuilders[index]?.call(context) ?? placeholder(context),
+    ];
+
+    List<Widget> allEntities = [
+      ...enemies,
+      ...players.reversed,
+    ];
+    if (allEntities.isEmpty) allEntities.addAll(List.generate(3, (index) => placeholder(context)));
+
     Widget enemyParty = ResponsiveLayout(
-      rowDirection: TextDirection.rtl,
-      reversedColumn: true,
+      rowDirection: TextDirection.rtl, // enemy rtl
+      verticalDirection: VerticalDirection.up,
       verticalAlign: CrossAxisAlignment.center,
       children: [
-        for (final enemy in enemies) Responsive(small: 4, child: enemy),
+        for (final enemy in allEntities) Responsive(small: 4, child: enemy),
       ],
     );
     return Container(
@@ -363,24 +390,51 @@ class _AttackDetailWidget extends StatelessWidget {
       ),
       margin: const EdgeInsets.all(2),
       child: Row(
+        textDirection: isActorEnemy ? TextDirection.ltr : TextDirection.rtl,
         children: [
           Expanded(
-            flex: 3,
+            flex: 1,
             child: DecoratedBox(
-              decoration: BoxDecoration(border: Border(right: Divider.createBorderSide(context))),
-              child: enemyParty,
+              decoration: BoxDecoration(border: Border.fromBorderSide(Divider.createBorderSide(context))),
+              child: actorBuilder(context),
             ),
           ),
           Expanded(
-            flex: 1,
-            child: buildAttacker(context),
+            flex: 3,
+            child: DecoratedBox(
+              decoration: BoxDecoration(border: Border.fromBorderSide(Divider.createBorderSide(context))),
+              child: enemyParty,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget text(String data, Color? color, [VoidCallback? onTap]) {
+  static Widget _defaultPlaceholder(BuildContext context) {
+    Widget child = CachedImage(
+      imageUrl: 'https://static.atlasacademy.io/JP/Enemys/0.png',
+      height: 72,
+      placeholder: (context, url) => const SizedBox.shrink(),
+    );
+    if (!Theme.of(context).isDarkMode) {
+      // invert color
+      child = ColorFiltered(
+        colorFilter: const ColorFilter.matrix([
+          //R G  B  A  Const
+          -1, 0, 0, 0, 255,
+          0, -1, 0, 0, 255,
+          0, 0, -1, 0, 255,
+          0, 0, 0, 1, 0,
+        ]),
+        child: child,
+      );
+    }
+    // child = Padding(padding: const EdgeInsets.symmetric(vertical: 40), child: child);
+    return child;
+  }
+
+  Widget coloredText(String data, Color? color, [VoidCallback? onTap]) {
     Widget child = Text(
       data,
       style: TextStyle(color: color),
@@ -391,6 +445,26 @@ class _AttackDetailWidget extends StatelessWidget {
       child = InkWell(onTap: onTap, child: child);
     }
     return child;
+  }
+}
+
+class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
+  final BattleData? battleData;
+  final BattleAttackRecord record;
+  const _AttackDetailWidget({required this.battleData, required this.record});
+
+  @override
+  Widget build(BuildContext context) {
+    return buildContent(
+      context: context,
+      isActorEnemy: record.attacker.isEnemy,
+      isTargetEnemy: record.targets.any((e) => e.target.isEnemy),
+      actorBuilder: buildAttacker,
+      targets: [
+        for (final target in record.targets)
+          Tuple3(target.target.isEnemy, target.target.index, (context) => buildDefender(context, target))
+      ],
+    );
   }
 
   Widget buildAttacker(BuildContext context) {
@@ -406,42 +480,36 @@ class _AttackDetailWidget extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           if (record.card != null)
-            Text([
-              if (record.card?.isNP == true) S.current.np_short,
-              record.card!.cardType.name.toTitle(),
-              if (record.card?.isCritical == true) S.current.critical_attack
-            ].join(' ')),
-          text('DMG: ${record.damage}', Colors.red),
-          text('NP: ${record.attackNp / 100}', Colors.blue),
-          text('Star: ${record.star / 1000}', Colors.green),
+            Text.rich(
+              TextSpan(
+                children: divideList([
+                  if (record.card?.isNP == true) TextSpan(text: S.current.np_short),
+                  TextSpan(
+                    text: record.card!.cardType.name.toTitle(),
+                    style: TextStyle(
+                      color: {
+                        CardType.quick: Colors.green,
+                        CardType.arts: Colors.blue,
+                        CardType.buster: Colors.red,
+                      }[record.card!.cardType],
+                    ),
+                  ),
+                  if (record.card?.isCritical == true) TextSpan(text: S.current.critical_attack)
+                ], const TextSpan(text: ' ')),
+              ),
+              style: const TextStyle(decoration: TextDecoration.underline),
+              textAlign: TextAlign.center,
+              textScaleFactor: 0.9,
+            ),
+          coloredText('DMG: ${record.damage}', Colors.red),
+          coloredText('NP: ${record.attackNp / 100}', Colors.blue),
+          coloredText('Star: ${record.star / 1000}', Colors.green),
         ],
       ),
     );
   }
 
-  Widget buildDefender(BuildContext context, AttackResultDetail? detail) {
-    if (detail == null) {
-      Widget child = CachedImage(
-        imageUrl: 'https://static.atlasacademy.io/JP/Enemys/0.png',
-        height: 72,
-        placeholder: (context, url) => const SizedBox.shrink(),
-      );
-      if (!Theme.of(context).isDarkMode) {
-        // invert color
-        child = ColorFiltered(
-          colorFilter: const ColorFilter.matrix([
-            //R G  B  A  Const
-            -1, 0, 0, 0, 255,
-            0, -1, 0, 0, 255,
-            0, 0, -1, 0, 255,
-            0, 0, 0, 1, 0,
-          ]),
-          child: child,
-        );
-      }
-      // child = Padding(padding: const EdgeInsets.symmetric(vertical: 40), child: child);
-      return child;
-    }
+  Widget buildDefender(BuildContext context, AttackResultDetail detail) {
     final result = detail.result;
     return Center(
       child: Column(
@@ -454,14 +522,14 @@ class _AttackDetailWidget extends StatelessWidget {
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.center,
           ),
-          text('HP: ${detail.target.hp}', null),
-          text('DMG: ${Maths.sum(result.damages)}', Colors.red,
+          coloredText('HP: ${detail.target.hp}', null),
+          coloredText('DMG: ${Maths.sum(result.damages)}', Colors.red,
               () => showParams(context, DamageParamDialog(detail.damageParams, detail.result))),
-          text('NP: ${Maths.sum(result.npGains) / 100}', Colors.blue,
+          coloredText('NP: ${Maths.sum(result.npGains) / 100}', Colors.blue,
               () => showParams(context, AttackerNpParamDialog(detail.attackNpParams, detail.result))),
-          text('Star: ${Maths.sum(result.stars) / 1000}', Colors.green,
+          coloredText('Star: ${Maths.sum(result.stars) / 1000}', Colors.green,
               () => showParams(context, StarParamDialog(detail.starParams, detail.result))),
-          text('Overkill: ${result.overkillStates.where((e) => e).length}/${result.overkillStates.length}',
+          coloredText('Overkill: ${result.overkillStates.where((e) => e).length}/${result.overkillStates.length}',
               Colors.yellow.shade900),
         ],
       ),
@@ -510,7 +578,7 @@ mixin _ParamDialogMixin {
             const SizedBox(width: 6),
           ],
           Expanded(child: Text(key, style: const TextStyle(fontSize: 14))),
-          Text(value, style: const TextStyle(fontSize: 14)),
+          Text(value, style: const TextStyle(fontSize: 14), textAlign: TextAlign.end),
         ],
       ),
     );
@@ -699,6 +767,116 @@ class StarParamDialog extends StatelessWidget with _ParamDialogMixin {
         oneParam(Transl.buffNames('カード性能アップ').l, cardSum.format(percent: true, precision: 3),
             cardBuffIcon(params.currentCardType)),
         oneParam(Transl.buffNames('スター発生アップ').l, starGenBuff.format(percent: true, precision: 3), buffIcon(321)),
+      ],
+    );
+  }
+}
+
+class _InstantDeathDetailWidget extends StatelessWidget with MultiTargetsWrapper {
+  final BattleData? battleData;
+  final BattleInstantDeathRecord record;
+
+  const _InstantDeathDetailWidget({this.battleData, required this.record});
+
+  @override
+  Widget build(BuildContext context) {
+    return buildContent(
+      context: context,
+      isActorEnemy: record.activator?.isEnemy == true,
+      isTargetEnemy: record.targets.any((e) => e.target.isEnemy),
+      actorBuilder: buildActor,
+      targets: [
+        for (final target in record.targets)
+          Tuple3(target.target.isEnemy, target.target.index, (context) => buildTarget(context, target))
+      ],
+    );
+  }
+
+  Widget buildActor(BuildContext context) {
+    final actor = record.activator;
+    if (actor == null) return MultiTargetsWrapper._defaultPlaceholder(context);
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Center(child: actor.iconBuilder(context: context, width: 48, battleData: battleData)),
+          Text(
+            actor.lBattleName,
+            maxLines: 1,
+            style: Theme.of(context).textTheme.bodySmall,
+            textAlign: TextAlign.center,
+          ),
+          coloredText(S.current.instant_death, null),
+        ],
+      ),
+    );
+  }
+
+  Widget buildTarget(BuildContext context, InstantDeathResultDetail detail) {
+    final params = detail.params;
+
+    VoidCallback? onTap;
+    if (!params.isForce) {
+      onTap = () {
+        showDialog(
+          context: context,
+          useRootNavigator: false,
+          builder: (context) => InstantDeathParamDialog(params),
+        );
+      };
+    }
+
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Center(child: detail.target.iconBuilder(context: context, width: 48, battleData: battleData)),
+          Text(
+            detail.target.lBattleName,
+            maxLines: 1,
+            style: Theme.of(context).textTheme.bodySmall,
+            textAlign: TextAlign.center,
+          ),
+          if (params.success)
+            coloredText(
+              params.isForce
+                  ? S.current.force_instant_death
+                  : params.isManualSuccess
+                      ? '${S.current.instant_death}※'
+                      : S.current.instant_death,
+              Colors.red,
+              onTap,
+            )
+          else
+            coloredText(params.resultString, Colors.blue, onTap),
+          if (!params.isForce) coloredText('${detail.params.activateRate / 10}%', null, onTap),
+        ],
+      ),
+    );
+  }
+}
+
+class InstantDeathParamDialog extends StatelessWidget with _ParamDialogMixin {
+  final InstantDeathParameters params;
+  const InstantDeathParamDialog(this.params, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return buildDialog(
+      context: context,
+      title: S.current.instant_death_params,
+      children: [
+        oneParam('[${S.current.target}]${S.current.info_death_rate}',
+            params.deathRate.format(percent: true, precision: 3, base: 10)),
+        oneParam(S.current.death_effect_rate, params.functionRate.format(percent: true, precision: 3, base: 10)),
+        oneParam(Transl.buffNames('即死付与率アップ').l, params.buffRate.format(percent: true, precision: 3, base: 10),
+            buffIcon(337)),
+        DividerWithTitle(title: S.current.results, height: 12),
+        oneParam(S.current.death_chance, params.activateRate.format(percent: true, precision: 3, base: 10)),
+        oneParam(
+          '',
+          [params.resultString, if (params.isManualSuccess) '(${S.current.battle_tailored_execution})'].join('\n'),
+        ),
       ],
     );
   }

@@ -57,7 +57,7 @@ class BattleServantData {
   // int tdId = 0;
   // int tdLv = 0;
 
-  int index = -1;
+  int index = -1; // start from 0
   int deckIndex = -1;
   int uniqueId = 0;
   int svtId = -1;

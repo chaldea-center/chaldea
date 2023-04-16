@@ -92,7 +92,7 @@ class BattleRecordManager {
     if (_attacker == activator && _card != null && record.card == null) {
       record.card = _card?.copy();
     }
-    records.add(record);
+    if (record.targets.isNotEmpty) records.add(record);
   }
 
   void endPlayerCard(BattleServantData activator, CommandCardData card) {
@@ -249,9 +249,9 @@ class BattleInstantDeathRecord extends BattleRecord {
 
   BattleInstantDeathRecord({
     required this.forceInstantDeath,
-    required this.activator,
+    required BattleServantData? activator,
     required this.targets,
-  });
+  }) : activator = activator?.copy();
 }
 
 class InstantDeathResultDetail {
@@ -259,7 +259,7 @@ class InstantDeathResultDetail {
   final InstantDeathParameters params;
 
   InstantDeathResultDetail({
-    required this.target,
+    required BattleServantData target,
     required this.params,
-  });
+  }) : target = target.copy();
 }

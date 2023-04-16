@@ -109,6 +109,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
   final Widget? content;
   final EdgeInsetsGeometry contentPadding;
   final String? confirmText;
+  final String? cancelText;
   final VoidCallback? onTapOk;
   final VoidCallback? onTapCancel;
 
@@ -125,6 +126,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
     this.content,
     this.contentPadding = const EdgeInsetsDirectional.fromSTEB(24.0, 20.0, 24.0, 24.0),
     this.confirmText,
+    this.cancelText,
     this.onTapOk,
     this.onTapCancel,
     this.hideOk = false,
@@ -139,7 +141,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
     List<Widget> children = <Widget>[
       if (!hideCancel)
         TextButton(
-          child: Text(S.current.cancel),
+          child: Text(cancelText ?? S.current.cancel),
           onPressed: () {
             Navigator.of(context).pop(false);
             if (onTapCancel != null) {

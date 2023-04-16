@@ -2296,6 +2296,28 @@ class S {
     );
   }
 
+  /// `Death Chance`
+  String get death_chance {
+    return Intl.message(
+      'Death Chance',
+      name: 'death_chance',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Death Effect Rate`
+  String get death_effect_rate {
+    return Intl.message(
+      'Death Effect Rate',
+      name: 'death_effect_rate',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Debug`
   String get debug {
     return Intl.message(
@@ -3770,6 +3792,17 @@ class S {
     );
   }
 
+  /// `Force Death`
+  String get force_instant_death {
+    return Intl.message(
+      'Force Death',
+      name: 'force_instant_death',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Fou`
   String get foukun {
     return Intl.message(
@@ -4886,6 +4919,28 @@ class S {
     return Intl.message(
       'Install',
       name: 'install',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Instant Death`
+  String get instant_death {
+    return Intl.message(
+      'Instant Death',
+      name: 'instant_death',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Instant Death Params`
+  String get instant_death_params {
+    return Intl.message(
+      'Instant Death Params',
+      name: 'instant_death_params',
       desc: '',
       locale: localeName,
       args: [],

@@ -187,7 +187,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     ]);
     enemyParty = ResponsiveLayout(
       rowDirection: TextDirection.rtl,
-      reversedColumn: true,
+      verticalDirection: VerticalDirection.up,
       verticalAlign: CrossAxisAlignment.start,
       children: [
         for (final enemy in enemies) Responsive(small: 4, child: enemy),

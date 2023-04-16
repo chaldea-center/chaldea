@@ -483,7 +483,7 @@ class InstantDeathParameters {
   int buffRate = 0;
 
   int activateRate = 0;
-  bool result = false;
+  bool success = false;
   String resultString = '';
 
   InstantDeathParameters copy() {
@@ -494,9 +494,11 @@ class InstantDeathParameters {
       ..deathRate = deathRate
       ..buffRate = buffRate
       ..activateRate = activateRate
-      ..result = result
+      ..success = success
       ..resultString = resultString;
   }
+
+  bool get isManualSuccess => success && activateRate > 0 && activateRate < 1000;
 }
 
 Future<BaseFunction> getDependFunc(BattleLogger logger, DataVals dataVals) async {

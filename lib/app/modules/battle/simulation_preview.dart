@@ -219,6 +219,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         ),
         kDefaultDivider,
         _SelectFreeDropdowns(
+          key: Key('_SelectFreeDropdowns_${questPhase?.id}'),
           initQuestId: questPhase?.id,
           onChanged: (Quest quest) async {
             EasyLoading.show();
@@ -570,7 +571,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 class _SelectFreeDropdowns extends StatefulWidget {
   final int? initQuestId;
   final ValueChanged<Quest> onChanged;
-  const _SelectFreeDropdowns({this.initQuestId, required this.onChanged});
+  const _SelectFreeDropdowns({super.key, this.initQuestId, required this.onChanged});
 
   @override
   State<_SelectFreeDropdowns> createState() => __SelectFreeDropdownsState();

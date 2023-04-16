@@ -22,7 +22,7 @@ class ResponsiveLayout extends StatelessWidget {
   final CrossAxisAlignment horizontalAlign;
   final FlexFit flexFit;
   final TextDirection? rowDirection;
-  final bool reversedColumn;
+  final VerticalDirection verticalDirection;
 
   static const _defaultHorizontalDivider = Divider(thickness: 1, height: 8);
   // static const _defaultVerticalDivider = VerticalDivider(thickness: 1, width: 8);
@@ -39,7 +39,7 @@ class ResponsiveLayout extends StatelessWidget {
     this.horizontalAlign = CrossAxisAlignment.center,
     this.flexFit = FlexFit.tight,
     this.rowDirection,
-    this.reversedColumn = false,
+    this.verticalDirection = VerticalDirection.down,
   }) : builder = null;
 
   const ResponsiveLayout.builder({
@@ -54,7 +54,7 @@ class ResponsiveLayout extends StatelessWidget {
     this.horizontalAlign = CrossAxisAlignment.center,
     this.flexFit = FlexFit.tight,
     this.rowDirection,
-    this.reversedColumn = false,
+    this.verticalDirection = VerticalDirection.down,
   }) : children = const [];
 
   @override
@@ -84,15 +84,13 @@ class ResponsiveLayout extends StatelessWidget {
         rows.add(insertRow(cells, type));
         cells = [];
       }
-      if (reversedColumn) {
-        rows = rows.reversed.toList();
-      }
       if (horizontalDivider != null) {
         rows = divideList(rows, horizontalDivider!);
       }
       return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
+        verticalDirection: verticalDirection,
         children: rows,
       );
     });

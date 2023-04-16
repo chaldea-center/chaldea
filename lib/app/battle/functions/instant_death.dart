@@ -1,11 +1,8 @@
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
-import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
-import 'package:chaldea/utils/basic.dart';
 
 class InstantDeath {
   InstantDeath._();
@@ -46,11 +43,17 @@ class InstantDeath {
   ) async {
     params ??= InstantDeathParameters();
     params.isForce = force || (activator == target && dataVals.ForceSelfInstantDeath == 1);
-    if (params.isForce) return true;
+    if (params.isForce) {
+      params.success = true;
+      params.resultString = S.current.success;
+      battleData.battleLogger
+          .debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.force_instant_death}');
+      return true;
+    }
 
     if (await target.hasBuffOnAction(battleData, BuffAction.avoidInstantdeath)) {
       params.immune = true;
-      params.result = false;
+      params.success = false;
       params.resultString = kBattleFuncNoEffect;
       battleData.battleLogger.debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.battle_invalid}');
       return false;
@@ -58,9 +61,7 @@ class InstantDeath {
 
     final resistInstantDeath = await target.getBuffValueOnAction(battleData, BuffAction.resistInstantdeath);
     final nonResistInstantDeath = await target.getBuffValueOnAction(battleData, BuffAction.nonresistInstantdeath);
-    final grantInstantDeathDetails = ConstData.buffActions[BuffAction.grantInstantdeath]!;
-    final grantInstantDeath = await activator?.getBuffValueOnAction(battleData, BuffAction.grantInstantdeath) ??
-        capBuffValue(grantInstantDeathDetails, 0, Maths.min(grantInstantDeathDetails.maxRate));
+    final grantInstantDeath = await activator?.getBuffValueOnAction(battleData, BuffAction.grantInstantdeath) ?? 0;
 
     final functionRate = dataVals.Rate ?? 1000;
     final resistRate = resistInstantDeath - nonResistInstantDeath;
@@ -78,7 +79,7 @@ class InstantDeath {
       ..deathRate = target.deathRate
       ..buffRate = buffRate
       ..activateRate = activationRate
-      ..result = success
+      ..success = success
       ..resultString = resultsString;
     battleData.battleLogger.debug('${S.current.effect_target}: ${target.lBattleName} - '
         '$resultsString'

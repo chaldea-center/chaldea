@@ -36,28 +36,29 @@ class TailoredExecutionConfirm extends StatelessWidget {
               padding: const EdgeInsets.all(4.0),
               child: Text(details, textScaleFactor: 0.85),
             ),
-            Row(
-              children: [
-                Text('${S.current.battle_should_activate}: '),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                  },
-                  child: const Text('Yes'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                  child: const Text('No'),
-                ),
-              ],
-            )
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text('${S.current.battle_should_activate}?'),
+            ),
           ],
         ),
       ),
       hideOk: true,
       hideCancel: true,
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(true);
+          },
+          child: const Text('Yes'),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop(false);
+          },
+          child: const Text('No'),
+        ),
+      ],
     );
   }
 }
