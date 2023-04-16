@@ -14,7 +14,8 @@ class Language {
   const Language(this.code, this.name, this.nameEn, this.locale);
 
   static const jp = Language('ja', '日本語', 'Japanese', Locale('ja', ''));
-  static const chs = Language('zh', '简体中文', 'Simplified Chinese', Locale.fromSubtags(languageCode: 'zh'));
+  static const chs = Language('zh', '简体中文', 'Simplified Chinese',
+      Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'cn'));
   static const cht =
       Language('zh_Hant', '繁體中文', 'Traditional Chinese', Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'));
   static const en = Language('en', 'English', 'English', Locale('en', ''));
