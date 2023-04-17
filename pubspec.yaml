@@ -28,7 +28,7 @@ dependencies:
     sdk: flutter
 
   android_id: ^0.2.0
-  archive: ^3.3.1
+  archive: ^3.3.7
   args: ^2.3.1
   auto_size_text: ^3.0.0
   cached_network_image: ^3.2.3
@@ -37,7 +37,7 @@ dependencies:
   catcher: # ^0.7.0
     git:
       url: https://github.com/narumi147/catcher.git
-  connectivity_plus: ^3.0.2
+  connectivity_plus: ^3.0.4
   # cookie_jar: ^4.0.1
   crclib: ^3.0.0
   cross_file: ^0.3.3+2
@@ -50,8 +50,8 @@ dependencies:
   dio: ^5.1.0
   # dio_cookie_manager: ^3.0.0
   dots_indicator: ^2.0.0
-  file_picker: ^5.2.6
-  fl_chart: ^0.61.0
+  file_picker: ^5.2.9
+  fl_chart: ^0.62.0
   flutter_cache_manager: ^3.2.0
   flutter_easyloading: ^3.0.5
   flutter_email_sender: ^5.0.2
@@ -85,7 +85,7 @@ dependencies:
       ref: d3779be7d661481cc0d99090d6356a286ae4f86b
       path: modal_bottom_sheet
   octo_image: ^1.0.2
-  package_info_plus: ^3.0.2
+  package_info_plus: ^3.1.0
   path: ^1.8.2
   path_provider: ^2.0.14
   permission_handler: ^10.1.0
@@ -94,10 +94,10 @@ dependencies:
   rfc_6902: ^0.1.0
   ruby_text: ^3.0.1
   screenshot: ^1.2.3
-  share_plus: ^6.3.0
+  share_plus: ^6.3.2
   shared_preferences: ^2.0.20
   sliver_tools: ^0.2.6
-  smooth_page_indicator: ^1.0.0+2
+  smooth_page_indicator: ^1.1.0
   string_validator: ^1.0.0
   system_tray: ^2.0.2
   table_sticky_headers: ^2.0.1
