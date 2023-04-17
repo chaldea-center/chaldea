@@ -14,7 +14,7 @@ class AddState {
     final Buff buff,
     final DataVals dataVals,
     final List<BattleServantData> targets, {
-    final List<NiceTd>? tdSelections,
+    final List<NiceTd?>? tdSelections,
     bool isPassive = false,
     final bool notActorPassive = false,
     final bool isCommandCode = false,

@@ -153,21 +153,20 @@ class FunctionExecutor {
         (svt.isAlive(battleData) || checkDead) &&
         svt.checkTraits(battleData, function.functvals, checkBuff: checkBuff));
 
-    List<NiceTd> tdSelections = [];
+    List<NiceTd?> tdSelections = [];
     if (function.funcTargetType == FuncTargetType.commandTypeSelfTreasureDevice) {
       for (final svt in targets) {
-        final NiceTd? baseTd = svt.td;
-        if (baseTd == null) {
-          return;
-        }
         NiceTd? tdSelection;
-        if (baseTd.script != null && baseTd.script!.tdTypeChangeIDs != null) {
-          final List<NiceTd> tds = svt.getTdsById(baseTd.script!.tdTypeChangeIDs!);
-          if (tds.isNotEmpty && battleData.mounted) {
-            tdSelection = await TdTypeChangeSelector.show(battleData, tds);
+        final NiceTd? baseTd = svt.td;
+        if (baseTd != null) {
+          if (baseTd.script != null && baseTd.script!.tdTypeChangeIDs != null) {
+            final List<NiceTd> tds = svt.getTdsById(baseTd.script!.tdTypeChangeIDs!);
+            if (tds.isNotEmpty && battleData.mounted) {
+              tdSelection = await TdTypeChangeSelector.show(battleData, tds);
+            }
           }
         }
-        if (tdSelection != null) tdSelections.add(tdSelection);
+        tdSelections.add(tdSelection);
       }
     }
 

@@ -666,7 +666,7 @@ class BattleServantData {
     final buffs = collectBuffsPerAction(battleBuff.allBuffs, BuffAction.tdTypeChange);
     battleData.setActivator(this);
     for (final buff in buffs) {
-      if (buff.shouldApplyBuff(battleData, false)) {
+      if (buff.tdSelection != null && buff.shouldApplyBuff(battleData, false)) {
         return buff.tdSelection!;
       }
     }
