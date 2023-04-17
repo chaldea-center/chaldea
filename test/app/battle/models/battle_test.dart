@@ -12,7 +12,7 @@ void main() async {
   group('Combat integration', () {
     group('Altria (100100) vs Sky caster', () {
       final List<PlayerSvtData> altriaSettings = [
-        PlayerSvtData(100100)
+        PlayerSvtData.id(100100)
           ..setSkillStrengthenLvs([1, 2, 1])
           ..tdLv = 1
           ..setNpStrengthenLv(2)
@@ -79,21 +79,21 @@ void main() async {
 
       test('with 1000 Fou & double Koyanskaya of Light', () async {
         final List<PlayerSvtData> altriaWithDoubleKoyan = [
-          PlayerSvtData(100100)
+          PlayerSvtData.id(100100)
             ..setSkillStrengthenLvs([1, 2, 1])
             ..tdLv = 1
             ..setNpStrengthenLv(2)
             ..lv = 90
             ..atkFou = 1000
             ..hpFou = 0,
-          PlayerSvtData(604200)
+          PlayerSvtData.id(604200)
             ..setSkillStrengthenLvs([1, 1, 1])
             ..tdLv = 1
             ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 0
             ..hpFou = 0,
-          PlayerSvtData(604200)
+          PlayerSvtData.id(604200)
             ..setSkillStrengthenLvs([1, 1, 1])
             ..tdLv = 1
             ..setNpStrengthenLv(1)
@@ -124,7 +124,7 @@ void main() async {
 
     group('Yang Guifei (2500400) vs Sky caster', () {
       final List<PlayerSvtData> yuyuSettings = [
-        PlayerSvtData(2500400)
+        PlayerSvtData.id(2500400)
           ..setSkillStrengthenLvs([2, 1, 1])
           ..tdLv = 5
           ..setNpStrengthenLv(1)
@@ -178,7 +178,7 @@ void main() async {
 
       test('with 1000 Fou & double Altria Caster', () async {
         final List<PlayerSvtData> yuyuWithDoubleCastoria = [
-          PlayerSvtData(2500400)
+          PlayerSvtData.id(2500400)
             ..setSkillStrengthenLvs([2, 1, 1])
             ..tdLv = 5
             ..setNpStrengthenLv(1)
@@ -188,14 +188,14 @@ void main() async {
             ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
             ..ceLv = 100
             ..ceLimitBreak = true,
-          PlayerSvtData(504500)
+          PlayerSvtData.id(504500)
             ..setSkillStrengthenLvs([1, 1, 1])
             ..tdLv = 1
             ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 0
             ..hpFou = 0,
-          PlayerSvtData(504500)
+          PlayerSvtData.id(504500)
             ..setSkillStrengthenLvs([1, 1, 1])
             ..tdLv = 1
             ..setNpStrengthenLv(1)
@@ -229,7 +229,7 @@ void main() async {
 
     group('Izumo no Okuni (504900) vs Sky caster', () {
       final List<PlayerSvtData> okuniSettings = [
-        PlayerSvtData(504900)
+        PlayerSvtData.id(504900)
           ..setSkillStrengthenLvs([1, 1, 1])
           ..tdLv = 5
           ..setNpStrengthenLv(1)
@@ -283,7 +283,7 @@ void main() async {
 
       test('with 1000 Fou & double Scathach-Skadi (Caster)', () async {
         final List<PlayerSvtData> okuniWithDoubleCba = [
-          PlayerSvtData(504900)
+          PlayerSvtData.id(504900)
             ..setSkillStrengthenLvs([1, 1, 1])
             ..tdLv = 5
             ..setNpStrengthenLv(1)
@@ -293,14 +293,14 @@ void main() async {
             ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
             ..ceLv = 100
             ..ceLimitBreak = true,
-          PlayerSvtData(503900)
+          PlayerSvtData.id(503900)
             ..setSkillStrengthenLvs([1, 1, 1])
             ..tdLv = 1
             ..setNpStrengthenLv(1)
             ..lv = 90
             ..atkFou = 0
             ..hpFou = 0,
-          PlayerSvtData(503900)
+          PlayerSvtData.id(503900)
             ..setSkillStrengthenLvs([1, 1, 1])
             ..tdLv = 1
             ..setNpStrengthenLv(1)
@@ -332,7 +332,7 @@ void main() async {
 
     test('Kama 3 turn loop & double Castoria', () async {
       final List<PlayerSvtData> kamaWithDoubleCastoria = [
-        PlayerSvtData(1101100)
+        PlayerSvtData.id(1101100)
           ..tdLv = 5
           ..lv = 120
           ..atkFou = 2000
@@ -341,8 +341,8 @@ void main() async {
           ..ce = db.gameData.craftEssencesById[9401850] // Magical Girl of Sapphire
           ..ceLv = 100
           ..ceLimitBreak = true,
-        PlayerSvtData(504500)..lv = 90,
-        PlayerSvtData(504500)..lv = 90,
+        PlayerSvtData.id(504500)..lv = 90,
+        PlayerSvtData.id(504500)..lv = 90,
       ];
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, kamaWithDoubleCastoria, null);
@@ -428,8 +428,8 @@ void main() async {
 
   test('Activate skill checks buff status', () async {
     final List<PlayerSvtData> lipAndJinako = [
-      PlayerSvtData(1000100)..lv = 80,
-      PlayerSvtData(2300300)..lv = 90,
+      PlayerSvtData.id(1000100)..lv = 80,
+      PlayerSvtData.id(2300300)..lv = 90,
     ];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
@@ -452,8 +452,8 @@ void main() async {
 
   test('Stun does not provide firstCardBonus', () async {
     final List<PlayerSvtData> lipAndJinako = [
-      PlayerSvtData(1000100)..lv = 80,
-      PlayerSvtData(2300300)..lv = 90,
+      PlayerSvtData.id(1000100)..lv = 80,
+      PlayerSvtData.id(2300300)..lv = 90,
     ];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
@@ -475,8 +475,8 @@ void main() async {
 
   test('Stun does not provide typeChain', () async {
     final List<PlayerSvtData> lipAndJinako = [
-      PlayerSvtData(1000100)..lv = 80,
-      PlayerSvtData(2300300)..lv = 90,
+      PlayerSvtData.id(1000100)..lv = 80,
+      PlayerSvtData.id(2300300)..lv = 90,
     ];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
@@ -504,8 +504,8 @@ void main() async {
 
   test('Stun does not provide braveChain', () async {
     final List<PlayerSvtData> lipAndJinako = [
-      PlayerSvtData(1000100)..lv = 80,
-      PlayerSvtData(2300300)..lv = 90,
+      PlayerSvtData.id(1000100)..lv = 80,
+      PlayerSvtData.id(2300300)..lv = 90,
     ];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
@@ -526,7 +526,7 @@ void main() async {
 
   test('Nitocris (Alter) bug', () async {
     final List<PlayerSvtData> lipAndJinako = [
-      PlayerSvtData(1101500)..lv = 90,
+      PlayerSvtData.id(1101500)..lv = 90,
     ];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
@@ -541,8 +541,8 @@ void main() async {
 
   test('Tezcatlipoca passive', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(604700)..lv = 90,
-      PlayerSvtData(604700)..lv = 90,
+      PlayerSvtData.id(604700)..lv = 90,
+      PlayerSvtData.id(604700)..lv = 90,
     ];
     final mysticCode = MysticCodeData()
       ..mysticCode = db.gameData.mysticCodes[130]!
@@ -569,7 +569,7 @@ void main() async {
 
   test('deathEffect clear accumulation damage', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(702800)
+      PlayerSvtData.id(702800)
         ..lv = 60
         ..setNpStrengthenLv(2)
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
@@ -591,14 +591,14 @@ void main() async {
 
   test('attacker must be on field (dead)', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(201300)
+      PlayerSvtData.id(201300)
         ..lv = 1
         ..setNpStrengthenLv(2)
         ..atkFou = 1000
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
-      PlayerSvtData(701400)
+      PlayerSvtData.id(701400)
         ..lv = 90
         ..setSkillStrengthenLvs([2, 1, 1]),
     ];
@@ -624,13 +624,13 @@ void main() async {
 
   test('attacker must be on field (crane)', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(201300)..lv = 1,
-      PlayerSvtData(2300300)
+      PlayerSvtData.id(201300)..lv = 1,
+      PlayerSvtData.id(2300300)
         ..lv = 90
         ..ce = db.gameData.craftEssencesById[9404120] // 20 star on entry
         ..ceLv = 100
         ..ceLimitBreak = true,
-      PlayerSvtData(504600)
+      PlayerSvtData.id(504600)
         ..lv = 80
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
@@ -653,13 +653,13 @@ void main() async {
 
   test('brave chain bug on kill', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(901400)
+      PlayerSvtData.id(901400)
         ..lv = 90
         ..tdLv = 1
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
-      PlayerSvtData(701400)
+      PlayerSvtData.id(701400)
         ..lv = 90
         ..setSkillStrengthenLvs([2, 1, 1]),
     ];
@@ -680,7 +680,7 @@ void main() async {
 
   test('Buffs status should be updated only after aoe np damage calculation', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(1100900)
+      PlayerSvtData.id(1100900)
         ..lv = 90
         ..tdLv = 5
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
@@ -708,19 +708,19 @@ void main() async {
 
   test('Chen Gong vs 500 year', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(501900)
+      PlayerSvtData.id(501900)
         ..lv = 90
         ..tdLv = 5
         ..ce = db.gameData.craftEssencesById[9400730] // 500 Year
         ..ceLv = 100
         ..ceLimitBreak = true,
-      PlayerSvtData(504400)
+      PlayerSvtData.id(504400)
         ..lv = 90
         ..tdLv = 5
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
-      PlayerSvtData(500300)..lv = 90,
+      PlayerSvtData.id(500300)..lv = 90,
     ];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
@@ -746,7 +746,7 @@ void main() async {
 
   test('Archtype: Earth passive', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(2300500)
+      PlayerSvtData.id(2300500)
         ..lv = 90
         ..tdLv = 5
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
@@ -791,9 +791,9 @@ void main() async {
 
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
-      PlayerSvtData(504900)..lv = 90,
-      PlayerSvtData(503900)..lv = 90,
-      PlayerSvtData(503900)..lv = 90,
+      PlayerSvtData.id(504900)..lv = 90,
+      PlayerSvtData.id(503900)..lv = 90,
+      PlayerSvtData.id(503900)..lv = 90,
     ];
 
     test('Test checkTargetTraits & checkActivatorTraits', () async {

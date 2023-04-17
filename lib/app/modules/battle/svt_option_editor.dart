@@ -6,7 +6,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/command_code/cmd_code_list.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
@@ -1016,6 +1015,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       ..rarity = support.svt.rarity
       ..attribute = support.svt.attribute;
     playerSvtData
+      ..isSupportSvt = true
       ..limitCount = support.limit.limitCount
       ..hpFou = 0
       ..atkFou = 0

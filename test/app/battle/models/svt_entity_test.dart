@@ -9,11 +9,11 @@ void main() async {
   await initiateForTest();
 
   final List<PlayerSvtData> okuniWithDoubleCba = [
-    PlayerSvtData(504900)
+    PlayerSvtData.id(504900)
       ..tdLv = 3
       ..lv = 90,
-    PlayerSvtData(503900)..lv = 90,
-    PlayerSvtData(503900)..lv = 90,
+    PlayerSvtData.id(503900)..lv = 90,
+    PlayerSvtData.id(503900)..lv = 90,
   ];
 
   test('Test changeNP', () async {
@@ -58,7 +58,7 @@ void main() async {
 
   test('Test commandCode', () async {
     final List<PlayerSvtData> okuniCommandCode = [
-      PlayerSvtData(100100)
+      PlayerSvtData.id(100100)
         ..tdLv = 3
         ..lv = 90
         ..commandCodes = [
@@ -92,13 +92,13 @@ void main() async {
 
   test('Test traits', () async {
     final List<PlayerSvtData> melusineAndFeihu = [
-      PlayerSvtData(304800)
+      PlayerSvtData.id(304800)
         ..limitCount = 0
         ..lv = 90,
-      PlayerSvtData(304800)
+      PlayerSvtData.id(304800)
         ..limitCount = 3
         ..lv = 90,
-      PlayerSvtData(404900)..lv = 80,
+      PlayerSvtData.id(404900)..lv = 80,
     ];
 
     final battle = BattleData();
@@ -123,8 +123,8 @@ void main() async {
 
   test('Test skill scripts', () async {
     final List<PlayerSvtData> playerSettings = [
-      PlayerSvtData(101000)..lv = 80,
-      PlayerSvtData(504600)
+      PlayerSvtData.id(101000)..lv = 80,
+      PlayerSvtData.id(504600)
         ..lv = 90
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
@@ -163,12 +163,12 @@ void main() async {
 
   test('Chen Gong NP', () async {
     final List<PlayerSvtData> playerSettings = [
-      PlayerSvtData(504400)
+      PlayerSvtData.id(504400)
         ..lv = 80
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
-      PlayerSvtData(2800100)..lv = 90,
+      PlayerSvtData.id(2800100)..lv = 90,
     ];
 
     final battle = BattleData();

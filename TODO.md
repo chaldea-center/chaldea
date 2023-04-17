@@ -9,6 +9,7 @@ There are plenty of work need to do.
 - [x] catch error for user interaction (skill/attack)
 - [ ] show loading toast when fetch api
 - [ ] `Map<TargetId, bool> lastFuncSuccess` is a map
+- [ ] build team: disable event
 
 ### Recorder
 - [ ] BattleServantActionHistory.TYPE: HPLOSS,INSTANT_DEATH,REDUCE_HP,DAMAGE_REFLECTION,DAMAGE_VALUE

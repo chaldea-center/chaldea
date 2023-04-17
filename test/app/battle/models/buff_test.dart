@@ -11,8 +11,8 @@ void main() async {
 
   group('Test shouldApplyBuff', () {
     final battle = BattleData();
-    final okuni = BattleServantData.fromPlayerSvtData(PlayerSvtData(504900)..lv = 90);
-    final cba = BattleServantData.fromPlayerSvtData(PlayerSvtData(503900)..lv = 90);
+    final okuni = BattleServantData.fromPlayerSvtData(PlayerSvtData.id(504900)..lv = 90);
+    final cba = BattleServantData.fromPlayerSvtData(PlayerSvtData.id(503900)..lv = 90);
 
     test('target check', () {
       final buff = BuffData(
@@ -125,7 +125,7 @@ void main() async {
     test('upDefence', () async {
       final battle = BattleData();
       final playerSettings = [
-        PlayerSvtData(800100)
+        PlayerSvtData.id(800100)
           ..setSkillStrengthenLvs([1, 1, 1])
           ..tdLv = 3
           ..lv = 80,
@@ -145,7 +145,7 @@ void main() async {
     test('subSelfdamage', () async {
       final battle = BattleData();
       final playerSettings = [
-        PlayerSvtData(800100)
+        PlayerSvtData.id(800100)
           ..setSkillStrengthenLvs([2, 1, 1])
           ..tdLv = 3
           ..lv = 80,
@@ -160,7 +160,7 @@ void main() async {
 
     test('instantDeath grant', () async {
       final List<PlayerSvtData> setting = [
-        PlayerSvtData(1001000)
+        PlayerSvtData.id(1001000)
           ..lv = 1
           ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
@@ -187,11 +187,11 @@ void main() async {
     test('fieldIndividuality & subFieldIndividuality', () async {
       final battle = BattleData();
       final playerSettings = [
-        PlayerSvtData(100700)
+        PlayerSvtData.id(100700)
           ..setSkillStrengthenLvs([1, 2, 1])
           ..tdLv = 3
           ..lv = 80,
-        PlayerSvtData(604700)
+        PlayerSvtData.id(604700)
           ..tdLv = 3
           ..lv = 90,
       ];
@@ -219,8 +219,8 @@ void main() async {
     test('downGrant', () async {
       final battle = BattleData();
       final playerSettings = [
-        PlayerSvtData(2800100)..lv = 90,
-        PlayerSvtData(500800)..lv = 90,
+        PlayerSvtData.id(2800100)..lv = 90,
+        PlayerSvtData.id(500800)..lv = 90,
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -235,7 +235,7 @@ void main() async {
   test('ParamAdd & ParamMax', () async {
     final battle = BattleData();
     final playerSettings = [
-      PlayerSvtData(604000)
+      PlayerSvtData.id(604000)
         ..tdLv = 3
         ..lv = 80,
     ];
@@ -257,7 +257,7 @@ void main() async {
   test('Check buffTrait', () async {
     final battle = BattleData();
     final playerSettings = [
-      PlayerSvtData(703300)
+      PlayerSvtData.id(703300)
         ..tdLv = 5
         ..lv = 90
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
@@ -276,7 +276,7 @@ void main() async {
 
   test('HpRatio', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(1000100)
+      PlayerSvtData.id(1000100)
         ..lv = 80
         ..setSkillStrengthenLvs([2, 2, 1]),
     ];
@@ -303,8 +303,8 @@ void main() async {
   test('INDIVIDUALITIE', () async {
     final battle = BattleData();
     final playerSettings = [
-      PlayerSvtData(203200)..lv = 90,
-      PlayerSvtData(304000)..lv = 80,
+      PlayerSvtData.id(203200)..lv = 90,
+      PlayerSvtData.id(304000)..lv = 80,
     ];
     await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -322,8 +322,8 @@ void main() async {
   test('maxhp', () async {
     final battle = BattleData();
     final playerSettings = [
-      PlayerSvtData(603700)..lv = 90,
-      PlayerSvtData(500800)..lv = 80,
+      PlayerSvtData.id(603700)..lv = 90,
+      PlayerSvtData.id(500800)..lv = 80,
     ];
     await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -346,8 +346,8 @@ void main() async {
   test('convert', () async {
     final battle = BattleData();
     final playerSettings = [
-      PlayerSvtData(2501100)..lv = 90,
-      PlayerSvtData(504500)..lv = 80,
+      PlayerSvtData.id(2501100)..lv = 90,
+      PlayerSvtData.id(504500)..lv = 80,
     ];
     await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -367,7 +367,7 @@ void main() async {
   test('buffRate', () async {
     final battle = BattleData();
     final playerSettings = [
-      PlayerSvtData(2800100)..lv = 90,
+      PlayerSvtData.id(2800100)..lv = 90,
     ];
     await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -393,7 +393,7 @@ void main() async {
   test('changeCommandCardType', () async {
     final battle = BattleData();
     final playerSettings = [
-      PlayerSvtData(100100)
+      PlayerSvtData.id(100100)
         ..lv = 90
         ..setSkillStrengthenLvs([1, 2, 2]),
     ];
@@ -408,7 +408,7 @@ void main() async {
   test('multiAttack', () async {
     final battle = BattleData();
     final playerSettings = [
-      PlayerSvtData(703600)..lv = 90,
+      PlayerSvtData.id(703600)..lv = 90,
     ];
     await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -441,17 +441,17 @@ void main() async {
   test('overchargeBuff', () async {
     final battle = BattleData();
     final playerSettings = [
-      PlayerSvtData(901000)
+      PlayerSvtData.id(901000)
         ..lv = 90
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
-      PlayerSvtData(901000)
+      PlayerSvtData.id(901000)
         ..lv = 90
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
-      PlayerSvtData(500300)..lv = 90,
+      PlayerSvtData.id(500300)..lv = 90,
     ];
     await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -472,8 +472,8 @@ void main() async {
   test('CheckOpponentBuffTypes', () async {
     final battle = BattleData();
     final playerSettings = [
-      PlayerSvtData(104900)..lv = 90,
-      PlayerSvtData(504500)..lv = 80,
+      PlayerSvtData.id(104900)..lv = 90,
+      PlayerSvtData.id(504500)..lv = 80,
     ];
     await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -495,13 +495,13 @@ void main() async {
   test('overwriteClassRelation', () async {
     final battle = BattleData();
     final playerSettings = [
-      PlayerSvtData(603700)..lv = 90,
-      PlayerSvtData(403200)
+      PlayerSvtData.id(603700)..lv = 90,
+      PlayerSvtData.id(403200)
         ..lv = 80
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
-      PlayerSvtData(1001500)..lv = 80,
+      PlayerSvtData.id(1001500)..lv = 80,
     ];
     await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -541,7 +541,7 @@ void main() async {
   test('preventDeathByDamage', () async {
     final battle = BattleData();
     final playerSettings = [
-      PlayerSvtData(2500600)..lv = 90,
+      PlayerSvtData.id(2500600)..lv = 90,
     ];
     await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -556,7 +556,7 @@ void main() async {
 
   test('skillRankUp', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(2300400)
+      PlayerSvtData.id(2300400)
         ..lv = 90
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
@@ -588,7 +588,7 @@ void main() async {
 
   test('skillRankUp correctly updated', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(2300400)..lv = 90,
+      PlayerSvtData.id(2300400)..lv = 90,
     ];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
@@ -604,13 +604,13 @@ void main() async {
 
   test('funcHpReduce with multiple types', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(1001500)
+      PlayerSvtData.id(1001500)
         ..lv = 1
         ..tdLv = 1,
-      PlayerSvtData(1001500)
+      PlayerSvtData.id(1001500)
         ..lv = 1
         ..tdLv = 1,
-      PlayerSvtData(1001500)
+      PlayerSvtData.id(1001500)
         ..lv = 1
         ..tdLv = 1,
     ];
@@ -660,8 +660,8 @@ void main() async {
 
   test('delay & turnend', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(404200)..lv = 80,
-      PlayerSvtData(2800100)..lv = 90,
+      PlayerSvtData.id(404200)..lv = 80,
+      PlayerSvtData.id(2800100)..lv = 90,
     ];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
@@ -680,8 +680,8 @@ void main() async {
 
   test('guts function', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(403700)..lv = 90,
-      PlayerSvtData(504400)
+      PlayerSvtData.id(403700)..lv = 90,
+      PlayerSvtData.id(504400)
         ..lv = 65
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
@@ -703,7 +703,7 @@ void main() async {
   test('INDIVIDUALITIE svtId', () async {
     final battle = BattleData();
     final playerSettings = [
-      PlayerSvtData(600700)
+      PlayerSvtData.id(600700)
         ..lv = 70
         ..appendLvs = [10, 10, 10],
     ];

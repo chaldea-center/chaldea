@@ -14,19 +14,19 @@ void main() async {
 
   final battle = BattleData();
   final playerSettings = [
-    PlayerSvtData(504900)
+    PlayerSvtData.id(504900)
       ..tdLv = 1
       ..lv = 90,
-    PlayerSvtData(504900)
+    PlayerSvtData.id(504900)
       ..tdLv = 2
       ..lv = 90,
-    PlayerSvtData(503900)
+    PlayerSvtData.id(503900)
       ..tdLv = 2
       ..lv = 90,
-    PlayerSvtData(503300)
+    PlayerSvtData.id(503300)
       ..tdLv = 2
       ..lv = 90,
-    PlayerSvtData(503200)
+    PlayerSvtData.id(503200)
       ..tdLv = 2
       ..lv = 90
   ];
@@ -200,14 +200,14 @@ void main() async {
   group('Integration', () {
     final battle = BattleData();
     final playerSettings = [
-      PlayerSvtData(403700) // nemo
+      PlayerSvtData.id(403700) // nemo
         ..tdLv = 1
         ..lv = 90,
-      PlayerSvtData(300500) // eli
+      PlayerSvtData.id(300500) // eli
         ..setSkillStrengthenLvs([2, 1, 1])
         ..tdLv = 2
         ..lv = 80,
-      PlayerSvtData(1101100) // kama
+      PlayerSvtData.id(1101100) // kama
         ..tdLv = 5
         ..lv = 120,
     ];
@@ -257,7 +257,7 @@ void main() async {
     test('addState', () async {
       final battle = BattleData();
       final playerSettings = [
-        PlayerSvtData(800100)
+        PlayerSvtData.id(800100)
           ..setSkillStrengthenLvs([1, 1, 1])
           ..tdLv = 3
           ..lv = 80,
@@ -284,13 +284,13 @@ void main() async {
     test('addFieldChangeToField', () async {
       final battle = BattleData();
       final playerSettings = [
-        PlayerSvtData(2300500)
+        PlayerSvtData.id(2300500)
           ..tdLv = 3
           ..lv = 90
           ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
-        PlayerSvtData(2300500)
+        PlayerSvtData.id(2300500)
           ..tdLv = 3
           ..lv = 90
           ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
@@ -339,15 +339,15 @@ void main() async {
     test('gainStar', () async {
       final battle = BattleData();
       final playerSettings = [
-        PlayerSvtData(501500)
+        PlayerSvtData.id(501500)
           ..setSkillStrengthenLvs([1, 1, 1])
           ..tdLv = 3
           ..lv = 60,
-        PlayerSvtData(501500)
+        PlayerSvtData.id(501500)
           ..setSkillStrengthenLvs([1, 1, 1])
           ..tdLv = 3
           ..lv = 60,
-        PlayerSvtData(501500)
+        PlayerSvtData.id(501500)
           ..setSkillStrengthenLvs([1, 1, 1])
           ..tdLv = 3
           ..lv = 60,
@@ -366,9 +366,9 @@ void main() async {
     test('gainStar Per target', () async {
       final battle = BattleData();
       final playerSettings = [
-        PlayerSvtData(501500)..lv = 60,
-        PlayerSvtData(504600)..lv = 60,
-        PlayerSvtData(100100)..lv = 60,
+        PlayerSvtData.id(501500)..lv = 60,
+        PlayerSvtData.id(504600)..lv = 60,
+        PlayerSvtData.id(100100)..lv = 60,
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -380,12 +380,12 @@ void main() async {
     test('subState affectTraits', () async {
       final battle = BattleData();
       final playerSettings = [
-        PlayerSvtData(701600)
+        PlayerSvtData.id(701600)
           ..lv = 80
           ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
-        PlayerSvtData(2800100)..lv = 90,
+        PlayerSvtData.id(2800100)..lv = 90,
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -403,9 +403,9 @@ void main() async {
     test('subState count', () async {
       final battle = BattleData();
       final playerSettings = [
-        PlayerSvtData(1000100)..lv = 80,
-        PlayerSvtData(2300300)..lv = 90,
-        PlayerSvtData(203900)..lv = 80,
+        PlayerSvtData.id(1000100)..lv = 80,
+        PlayerSvtData.id(2300300)..lv = 90,
+        PlayerSvtData.id(203900)..lv = 80,
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -426,16 +426,16 @@ void main() async {
     test('gainNpFromTargets', () async {
       final battle = BattleData();
       final playerSettings = [
-        PlayerSvtData(304000)
+        PlayerSvtData.id(304000)
           ..skillLvs = [9, 9, 9]
           ..tdLv = 3
           ..lv = 80,
-        PlayerSvtData(2500400)
+        PlayerSvtData.id(2500400)
           ..skillLvs = [9, 9, 9]
           ..appendLvs = [0, 10, 0]
           ..tdLv = 3
           ..lv = 90,
-        PlayerSvtData(2500400)
+        PlayerSvtData.id(2500400)
           ..skillLvs = [9, 9, 9]
           ..tdLv = 3
           ..lv = 90
@@ -487,20 +487,20 @@ void main() async {
     test('moveToLastSubMember', () async {
       final battle = BattleData();
       final playerSettings = [
-        PlayerSvtData(1000100)..lv = 80,
-        PlayerSvtData(2300300)
+        PlayerSvtData.id(1000100)..lv = 80,
+        PlayerSvtData.id(2300300)
           ..lv = 90
           ..ce = db.gameData.craftEssencesById[9404120] // 20 star on entry
           ..ceLv = 100
           ..ceLimitBreak = true,
-        PlayerSvtData(504600)
+        PlayerSvtData.id(504600)
           ..lv = 80
           ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
-        PlayerSvtData(504500)..lv = 80,
-        PlayerSvtData(504900)..lv = 90,
-        PlayerSvtData(503900)..lv = 80,
+        PlayerSvtData.id(504500)..lv = 80,
+        PlayerSvtData.id(504900)..lv = 90,
+        PlayerSvtData.id(503900)..lv = 80,
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -533,12 +533,12 @@ void main() async {
     test('DataVals IncludePassiveIndividuality', () async {
       final battle = BattleData();
       final playerSettings = [
-        PlayerSvtData(105200)
+        PlayerSvtData.id(105200)
           ..lv = 90
           ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
           ..ceLimitBreak = true,
-        PlayerSvtData(105200)
+        PlayerSvtData.id(105200)
           ..lv = 90
           ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
           ..ceLv = 100
@@ -569,7 +569,7 @@ void main() async {
     test('DataVals SameBuffLimitNum', () async {
       final battle = BattleData();
       final playerSettings = [
-        PlayerSvtData(1000900)
+        PlayerSvtData.id(1000900)
           ..setSkillStrengthenLvs([2, 1, 2])
           ..lv = 90,
       ];
@@ -603,7 +603,7 @@ void main() async {
     test('DataVals StarHigher', () async {
       final battle = BattleData();
       final playerSettings = [
-        PlayerSvtData(203700)..lv = 80,
+        PlayerSvtData.id(203700)..lv = 80,
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
       final jane = battle.onFieldAllyServants[0]!;
@@ -633,8 +633,8 @@ void main() async {
     test('DataVals Negative Rates', () async {
       final battle = BattleData();
       final playerSettings = [
-        PlayerSvtData(501100)..lv = 70,
-        PlayerSvtData(2300100)..lv = 80,
+        PlayerSvtData.id(501100)..lv = 70,
+        PlayerSvtData.id(2300100)..lv = 80,
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
       final babbage = battle.onFieldAllyServants[0]!;
@@ -655,7 +655,7 @@ void main() async {
 
   test('damageNpHpratioLow', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(702500)
+      PlayerSvtData.id(702500)
         ..lv = 90
         ..setNpStrengthenLv(2)
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
@@ -695,12 +695,12 @@ void main() async {
 
   test('damageNpIndividualSum enemyBuff', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(2300400)
+      PlayerSvtData.id(2300400)
         ..lv = 90
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
-      PlayerSvtData(2500700)..lv = 90,
+      PlayerSvtData.id(2500700)..lv = 90,
     ];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
@@ -725,7 +725,7 @@ void main() async {
 
   test('damageNpIndividualSum selfTrait', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(1001300)
+      PlayerSvtData.id(1001300)
         ..lv = 90
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
@@ -756,7 +756,7 @@ void main() async {
 
   test('damageNpRare', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(403400)
+      PlayerSvtData.id(403400)
         ..lv = 60
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
@@ -781,7 +781,7 @@ void main() async {
 
   test('instantDeath', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(2300400)
+      PlayerSvtData.id(2300400)
         ..lv = 1
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
@@ -811,21 +811,21 @@ void main() async {
 
   test('forceInstantDeath', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(201300)
+      PlayerSvtData.id(201300)
         ..lv = 60
         ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
         ..ceLv = 100
         ..ceLimitBreak = true,
-      PlayerSvtData(701400)
+      PlayerSvtData.id(701400)
         ..lv = 90
         ..setSkillStrengthenLvs([2, 1, 1]),
-      PlayerSvtData(701400)
+      PlayerSvtData.id(701400)
         ..lv = 90
         ..setSkillStrengthenLvs([2, 1, 1]),
-      PlayerSvtData(701400)
+      PlayerSvtData.id(701400)
         ..lv = 90
         ..setSkillStrengthenLvs([2, 1, 1]),
-      PlayerSvtData(701400)
+      PlayerSvtData.id(701400)
         ..lv = 90
         ..setSkillStrengthenLvs([2, 1, 1]),
     ];
@@ -856,8 +856,8 @@ void main() async {
 
   test('lossHpSafe & gainHp', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(604200)..lv = 90,
-      PlayerSvtData(701400)
+      PlayerSvtData.id(604200)..lv = 90,
+      PlayerSvtData.id(701400)
         ..lv = 90
         ..setSkillStrengthenLvs([2, 1, 1]),
     ];
@@ -880,7 +880,7 @@ void main() async {
 
   test('gainHpPerTarget', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(403600)..lv = 80,
+      PlayerSvtData.id(403600)..lv = 80,
     ];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
@@ -903,9 +903,9 @@ void main() async {
 
   test('gainNpBuffIndividualSum & moveState', () async {
     final List<PlayerSvtData> setting = [
-      PlayerSvtData(2500600)..lv = 90,
-      PlayerSvtData(1000900)..lv = 90,
-      PlayerSvtData(1001000)..lv = 90,
+      PlayerSvtData.id(2500600)..lv = 90,
+      PlayerSvtData.id(1000900)..lv = 90,
+      PlayerSvtData.id(1001000)..lv = 90,
     ];
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
@@ -929,7 +929,7 @@ void main() async {
   });
 
   test('transformSvt 304800 asc 4', () async {
-    final playerSvtData = PlayerSvtData(304800)..lv = 90;
+    final playerSvtData = PlayerSvtData.id(304800)..lv = 90;
     for (final skillNum in kActiveSkillNums) {
       final List<NiceSkill> shownSkills =
           ServantSelector.getShownSkills(playerSvtData.svt!, playerSvtData.limitCount, skillNum);
@@ -954,7 +954,7 @@ void main() async {
   });
 
   test('transformSvt 304800 asc 11', () async {
-    final playerSvtData = PlayerSvtData(304800)
+    final playerSvtData = PlayerSvtData.id(304800)
       ..lv = 90
       ..limitCount = 304830;
     for (final skillNum in kActiveSkillNums) {
@@ -980,7 +980,7 @@ void main() async {
   });
 
   test('transformSvt preserve CD & upgrades', () async {
-    final playerSvtData = PlayerSvtData(600700)
+    final playerSvtData = PlayerSvtData.id(600700)
       ..lv = 70
       ..setSkillStrengthenLvs([1, 1, 1]);
     final List<PlayerSvtData> setting = [
