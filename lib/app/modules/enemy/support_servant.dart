@@ -195,7 +195,7 @@ class _SupportServantPageState extends State<SupportServantPage> {
       children.add(ListTile(
         leading: ce.equip.iconBuilder(context: context, width: 48),
         title: Text(ce.equip.lName.l),
-        subtitle: Text('Lv.${ce.lv} ${ce.limitCount == 4 ? S.current.ce_max_limit_break : ""}'),
+        subtitle: Text('Lv.${ce.lv} ${ce.limitCount == 4 ? S.current.max_limit_break : ""}'),
         onTap: () {
           router.push(url: ce.equip.route, child: CraftDetailPage(ce: ce.equip));
         },

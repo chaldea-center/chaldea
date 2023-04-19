@@ -194,7 +194,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_strengthen": MessageLookupByLibrary.simpleMessage("コマンドカード強化"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("カルーセル設定"),
         "cc_equipped_svt": MessageLookupByLibrary.simpleMessage("装備されたサーヴァント"),
-        "ce_max_limit_break": MessageLookupByLibrary.simpleMessage("最終再臨"),
         "chaldea_account": MessageLookupByLibrary.simpleMessage("Chaldea アカウント"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
             "V1データとの互換性はありません。\nユーザデータのバックアップ及びマルチデバイス同期を行うためのシンプルなアカウントシステムです。\nセキュリティ保証がなければ、常用パスワードを設定しないでください。\n上記のサービスが要らなければ、登録することは必要がありません。"),
@@ -535,6 +534,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "master_mission_solution": MessageLookupByLibrary.simpleMessage("対策"),
         "master_mission_tasklist": MessageLookupByLibrary.simpleMessage("ミッションリスト"),
         "master_mission_weekly": MessageLookupByLibrary.simpleMessage("ウィークリーミッション"),
+        "max_limit_break": MessageLookupByLibrary.simpleMessage("最終再臨"),
         "migrate_external_storage_btn_no": MessageLookupByLibrary.simpleMessage("移行しない"),
         "migrate_external_storage_btn_yes": MessageLookupByLibrary.simpleMessage("移行"),
         "migrate_external_storage_manual_warning":

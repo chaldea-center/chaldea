@@ -1559,17 +1559,6 @@ class S {
     );
   }
 
-  /// `MLB`
-  String get ce_max_limit_break {
-    return Intl.message(
-      'MLB',
-      name: 'ce_max_limit_break',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Chaldea Account`
   String get chaldea_account {
     return Intl.message(
@@ -2356,6 +2345,28 @@ class S {
     return Intl.message(
       'Def NP Gain Mod',
       name: 'def_np_gain_mod',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Default Lvs`
+  String get default_lvs {
+    return Intl.message(
+      'Default Lvs',
+      name: 'default_lvs',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Default lv setting is used only if "Prefer Player Data" turned off or servant not favorite.`
+  String get default_lvs_hint {
+    return Intl.message(
+      'Default lv setting is used only if "Prefer Player Data" turned off or servant not favorite.',
+      name: 'default_lvs_hint',
       desc: '',
       locale: localeName,
       args: [],
@@ -5991,6 +6002,17 @@ class S {
     return Intl.message(
       'Max enemies on stage',
       name: 'max_enemy_on_stage',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `MLB`
+  String get max_limit_break {
+    return Intl.message(
+      'MLB',
+      name: 'max_limit_break',
       desc: '',
       locale: localeName,
       args: [],

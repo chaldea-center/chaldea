@@ -230,7 +230,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_strengthen": MessageLookupByLibrary.simpleMessage("Card Strengthen"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("Carousel Setting"),
         "cc_equipped_svt": MessageLookupByLibrary.simpleMessage("Equipped Servants"),
-        "ce_max_limit_break": MessageLookupByLibrary.simpleMessage("MLB"),
         "chaldea_account": MessageLookupByLibrary.simpleMessage("Chaldea Account"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
             "  Not compatible with V1 data.\n  A simple account system for userdata backup to server and multi-device synchronization\n  NO security guarantee, PLEASE DON\'T set frequently used passwords!!!\n  No need to register if you do not need these two features."),
@@ -309,6 +308,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "debug_fab": MessageLookupByLibrary.simpleMessage("Debug FAB"),
         "debug_menu": MessageLookupByLibrary.simpleMessage("Debug Menu"),
         "def_np_gain_mod": MessageLookupByLibrary.simpleMessage("Def NP Gain Mod"),
+        "default_lvs": MessageLookupByLibrary.simpleMessage("Default Lvs"),
+        "default_lvs_hint": MessageLookupByLibrary.simpleMessage(
+            "Default lv setting is used only if \"Prefer Player Data\" turned off or servant not favorite."),
         "defense_np_rate": MessageLookupByLibrary.simpleMessage("Defense NP Rate"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "delete_unreleased_card": MessageLookupByLibrary.simpleMessage("Delete Unreleased Cards"),
@@ -658,6 +660,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "master_mission_weekly": MessageLookupByLibrary.simpleMessage("Weekly Mission"),
         "max_enemy_act_count": MessageLookupByLibrary.simpleMessage("Max enemy act count"),
         "max_enemy_on_stage": MessageLookupByLibrary.simpleMessage("Max enemies on stage"),
+        "max_limit_break": MessageLookupByLibrary.simpleMessage("MLB"),
         "media_assets": MessageLookupByLibrary.simpleMessage("Assets"),
         "merge_same_drop": MessageLookupByLibrary.simpleMessage("Merge Same Drop Item"),
         "migrate_external_storage_btn_no": MessageLookupByLibrary.simpleMessage("NOT MIGRATE"),

@@ -144,7 +144,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_status_owned": MessageLookupByLibrary.simpleMessage("계약자"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("배너 설정"),
         "cc_equipped_svt": MessageLookupByLibrary.simpleMessage("장착된 서번트"),
-        "ce_max_limit_break": MessageLookupByLibrary.simpleMessage("최종 재림"),
         "chaldea_account": MessageLookupByLibrary.simpleMessage("Chaldea 계정"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
             "V1 데이터와 호환되지 않습니다\n사용자 데이터 백업 및 다중 장치 동기화를 위한 간단한 계정 시스템입니다\n보안이 보장되지 않는 한 일반 비밀번호를 설정하지 마십시오\n위의 서비스가 필요하지 않으시면 회원가입을 하지 않으셔도 됩니다"),
@@ -494,6 +493,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "master_mission_solution": MessageLookupByLibrary.simpleMessage("풀이"),
         "master_mission_tasklist": MessageLookupByLibrary.simpleMessage("미션"),
         "master_mission_weekly": MessageLookupByLibrary.simpleMessage("주간 미션"),
+        "max_limit_break": MessageLookupByLibrary.simpleMessage("최종 재림"),
         "migrate_external_storage_btn_no": MessageLookupByLibrary.simpleMessage("이동시키지 않음"),
         "migrate_external_storage_btn_yes": MessageLookupByLibrary.simpleMessage("이동"),
         "migrate_external_storage_manual_warning":

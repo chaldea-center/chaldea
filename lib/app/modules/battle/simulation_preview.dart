@@ -15,6 +15,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../quest/breakdown/quest_phase.dart';
 import '../quest/quest.dart';
+import 'options/default_lvs.dart';
 import 'options/svt_option_editor.dart';
 
 class SimulationPreview extends StatefulWidget {
@@ -280,6 +281,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   Widget partyOption() {
     return Wrap(
       alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
       spacing: 4,
       children: [
         DropdownButton<Region>(
@@ -316,6 +318,12 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             });
           },
         ),
+        TextButton(
+          onPressed: () {
+            router.pushPage(const PlayerSvtDefaultLvEditPage());
+          },
+          child: Text(S.current.default_lvs),
+        )
       ],
     );
   }
@@ -830,7 +838,7 @@ class ServantSelector extends StatelessWidget {
     if (playerSvtData.ce != null) {
       ceInfo = 'Lv.${playerSvtData.ceLv}';
       if (playerSvtData.ceLimitBreak) {
-        ceInfo += ' ${S.current.ce_max_limit_break}';
+        ceInfo += ' ${S.current.max_limit_break}';
       }
     } else {
       ceInfo = 'Lv.-';

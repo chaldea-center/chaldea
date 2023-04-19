@@ -1,3 +1,4 @@
+import '../../utils/extension.dart';
 import '_helper.dart';
 
 part '../../generated/models/userdata/battle.g.dart';
@@ -27,29 +28,50 @@ class BattleSimSetting {
 
 @JsonSerializable()
 class PlayerSvtDefaultData {
+  bool useMaxLv;
+  int lv;
+  bool useDefaultTdLv;
+  int tdLv;
   int limitCount;
-  List<int> skillLvs;
+  int activeSkillLv;
   List<int> appendLvs;
-  int? tdLv;
-  int? lv; // null=mlb
-  int atkFou;
+  // Not exposed to user yet
+  int atkFou; // 0-100-200
   int hpFou;
   List<int> cardStrengthens;
 
   PlayerSvtDefaultData({
-    this.limitCount = 4,
-    List<int>? skillLvs,
-    List<int>? appendLvs,
+    this.lv = 90,
+    this.useMaxLv = true,
     this.tdLv = 5,
-    this.lv,
-    this.atkFou = 1000,
-    this.hpFou = 1000,
+    this.useDefaultTdLv = true,
+    this.limitCount = 4,
+    this.activeSkillLv = 10,
+    List<int>? appendLvs,
+    this.atkFou = 100,
+    this.hpFou = 100,
     List<int>? cardStrengthens,
-  })  : skillLvs = skillLvs ?? [10, 10, 10],
-        appendLvs = appendLvs ?? [0, 0, 0],
-        cardStrengthens = cardStrengthens ?? [0, 0, 0, 0, 0];
+  })  : appendLvs = List.generate(3, (index) => appendLvs?.getOrNull(index) ?? 0),
+        cardStrengthens = List.generate(5, (index) => cardStrengthens?.getOrNull(index) ?? 0) {
+    validate();
+  }
 
   factory PlayerSvtDefaultData.fromJson(Map<String, dynamic> json) => _$PlayerSvtDefaultDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$PlayerSvtDefaultDataToJson(this);
+
+  void validate() {
+    lv = lv.clamp(1, 120);
+    tdLv = tdLv.clamp(1, 5);
+    limitCount = limitCount.clamp(0, 4);
+    atkFou = atkFou.clamp(0, 200);
+    hpFou = hpFou.clamp(0, 200);
+    activeSkillLv = activeSkillLv.clamp(1, 10);
+    for (int index = 0; index < appendLvs.length; index++) {
+      appendLvs[index] = appendLvs[index].clamp(0, 10);
+    }
+    for (int index = 0; index < cardStrengthens.length; index++) {
+      cardStrengthens[index] = cardStrengthens[index].clamp(0, 25);
+    }
+  }
 }

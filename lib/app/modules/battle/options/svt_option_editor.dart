@@ -134,6 +134,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           playerSvtData.tdLv = v.round();
           _updateState();
         },
+        endOffset: -16,
       ),
       SliderWithPrefix(
         label: 'Lv',
@@ -145,6 +146,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           playerSvtData.lv = v.round();
           _updateState();
         },
+        endOffset: -16,
       ),
       SliderWithPrefix(
         label: 'ATK ${S.current.foukun}',
@@ -161,6 +163,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           }
           _updateState();
         },
+        endOffset: -16,
       ),
       SliderWithPrefix(
         label: 'HP ${S.current.foukun}',
@@ -177,6 +180,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           }
           _updateState();
         },
+        endOffset: -16,
       ),
     ];
     final activeSkills = [
@@ -191,6 +195,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             playerSvtData.skillLvs[skillNum - 1] = v.round();
             _updateState();
           },
+          endOffset: -16,
         ),
     ];
     final appendSkills = [
@@ -205,6 +210,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             playerSvtData.appendLvs[skillNum - 1] = v.round();
             _updateState();
           },
+          endOffset: -16,
         )
     ];
 
@@ -885,12 +891,31 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           return db.gameData.commandCodes[status.getCmdCode(index)];
         });
     } else {
+      final defaults = db.settings.battleSim.defaultLvs;
+      int lv, tdLv;
+      if (defaults.useMaxLv) {
+        lv = selectedSvt.lvMax;
+      } else {
+        lv = defaults.lv.clamp(1, min(120, selectedSvt.atkGrowth.length));
+      }
+      if (defaults.useDefaultTdLv) {
+        if (selectedSvt.rarity <= 3 ||
+            selectedSvt.extra.obtains.any((e) => const [SvtObtain.eventReward, SvtObtain.friendPoint].contains(e))) {
+          tdLv = 5;
+        } else if (selectedSvt.rarity == 4) {
+          tdLv = 2;
+        } else {
+          tdLv = 1;
+        }
+      } else {
+        tdLv = defaults.tdLv;
+      }
       playerSvtData
-        ..limitCount = 4
-        ..lv = selectedSvt.lvMax
-        ..tdLv = selectedSvt.rarity <= 3 || selectedSvt.extra.obtains.contains(SvtObtain.eventReward) ? 5 : 1
-        ..skillLvs = [10, 10, 10]
-        ..appendLvs = [0, 0, 0]
+        ..limitCount = defaults.limitCount
+        ..lv = lv
+        ..tdLv = tdLv
+        ..skillLvs = List.generate(3, (index) => defaults.activeSkillLv)
+        ..appendLvs = defaults.appendLvs.toList()
         ..atkFou = 1000
         ..hpFou = 1000
         ..cardStrengthens = [0, 0, 0, 0, 0]
@@ -1049,7 +1074,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     ));
     children.add(SwitchListTile.adaptive(
       value: playerSvtData.ceLimitBreak,
-      title: Text(S.current.ce_max_limit_break),
+      title: Text(S.current.max_limit_break),
       onChanged: (v) {
         setState(() {
           playerSvtData.ceLimitBreak = v;

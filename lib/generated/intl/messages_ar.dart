@@ -124,7 +124,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_status_owned": MessageLookupByLibrary.simpleMessage("مملوك"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("اعدادات المكتبة"),
         "cc_equipped_svt": MessageLookupByLibrary.simpleMessage("الخدم المجهزين"),
-        "ce_max_limit_break": MessageLookupByLibrary.simpleMessage("MLB"),
         "chaldea_account": MessageLookupByLibrary.simpleMessage("حساب كاليديا"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
             "غير متوافق مع بيانات الاصدار V1.\n نظام الحساب البسيط للنسخ الاحتياطي لبيانات المستخدم إلى الخادم والتزامن متعدد الأجهزة\n لا يوجد ضمان أمني ، يرجى عدم تعيين كلمات المرور التي تستخدمها بشكل متكرر !!!\n لا حاجة للتسجيل إذا كنت لا تحتاج إلى هاتين الميزتين."),
@@ -418,6 +417,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "master_mission_related_quest": MessageLookupByLibrary.simpleMessage("مهام ذات صلة"),
         "master_mission_solution": MessageLookupByLibrary.simpleMessage("التسهيل"),
         "master_mission_tasklist": MessageLookupByLibrary.simpleMessage("المهام"),
+        "max_limit_break": MessageLookupByLibrary.simpleMessage("MLB"),
         "move_down": MessageLookupByLibrary.simpleMessage("تحرك لأسفل"),
         "move_up": MessageLookupByLibrary.simpleMessage("تحرك لأعلى"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("الميستك كود"),

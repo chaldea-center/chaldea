@@ -62,6 +62,7 @@ class SliderWithPrefix extends StatelessWidget {
   final int value;
   final ValueChanged<double> onChange;
   final double leadingWidth;
+  final double endOffset;
 
   const SliderWithPrefix({
     super.key,
@@ -72,6 +73,7 @@ class SliderWithPrefix extends StatelessWidget {
     required this.value,
     required this.onChange,
     this.leadingWidth = 48,
+    this.endOffset = 0,
   });
 
   @override
@@ -83,7 +85,7 @@ class SliderWithPrefix extends StatelessWidget {
         max: max.toDouble(),
         divisions: max > min ? max - min : null,
         value: value.toDouble(),
-        label: valueText,
+        label: valueText ?? value.toString(),
         onChanged: (v) {
           onChange(v);
         },
@@ -118,9 +120,9 @@ class SliderWithPrefix extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: 320, maxHeight: 24),
             child: Stack(
               children: [
-                Positioned(
-                  left: -16,
-                  right: -16,
+                PositionedDirectional(
+                  start: -16,
+                  end: endOffset,
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxHeight: 24),
                     child: slider,

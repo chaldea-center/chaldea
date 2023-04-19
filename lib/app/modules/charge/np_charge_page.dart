@@ -321,8 +321,8 @@ class _NpChargePageState extends State<NpChargePage> {
           if (filterData.ceMax.options.isNotEmpty)
             optionBuilder(
               text: [
-                if (filterData.ceMax.options.contains(false)) 'NOT ${S.current.ce_max_limit_break}',
-                if (filterData.ceMax.options.contains(true)) S.current.ce_max_limit_break
+                if (filterData.ceMax.options.contains(false)) 'NOT ${S.current.max_limit_break}',
+                if (filterData.ceMax.options.contains(true)) S.current.max_limit_break
               ].join(' & '),
             ),
           if (filterData.ceAtkType.options.isNotEmpty)

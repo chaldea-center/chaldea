@@ -259,10 +259,10 @@ class _NpChargeFilterPageState extends FilterPageState<NpFilterData, NpChargeFil
           ]),
         if (!filterData.isSvt)
           FilterGroup<bool>(
-            title: Text(S.current.ce_max_limit_break),
+            title: Text(S.current.max_limit_break),
             options: const [false, true],
             values: filterData.ceMax,
-            optionBuilder: (v) => Text(v ? S.current.ce_max_limit_break : 'NOT ${S.current.ce_max_limit_break}'),
+            optionBuilder: (v) => Text(v ? S.current.max_limit_break : 'NOT ${S.current.max_limit_break}'),
             onFilterChanged: (value, _) {
               update();
             },
