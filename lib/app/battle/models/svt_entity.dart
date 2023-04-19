@@ -441,7 +441,11 @@ class BattleServantData {
       return;
     }
 
-    hp += heal;
+    gainHp(battleData, heal);
+  }
+
+  void gainHp(final BattleData battleData, final int gain) {
+    hp += gain;
     hp = hp.clamp(0, getMaxHp(battleData));
   }
 
@@ -985,8 +989,7 @@ class BattleServantData {
     if (isEnemy) {
       final npSealed = await hasBuffOnActions(battleData, doNotNPTypes);
       if (!npSealed && niceEnemy!.chargeTurn > 0) {
-        npLineCount += 1;
-        npLineCount = npLineCount.clamp(0, niceEnemy!.chargeTurn);
+        changeNPLineCount(1);
       }
     } else {
       final skillSealed = await hasBuffOnAction(battleData, BuffAction.donotSkill);
@@ -1046,9 +1049,9 @@ class BattleServantData {
     } else {
       final turnEndNP = await getBuffValueOnAction(battleData, BuffAction.turnvalNp);
       if (turnEndNP != 0) {
-        changeNP(turnEndNP);
+        changeNPLineCount(turnEndNP);
 
-        turnEndLog += ' - NP: ${(turnEndNP / 100).toStringAsFixed(2)}%';
+        turnEndLog += ' - NP: $turnEndNP';
       }
     }
 

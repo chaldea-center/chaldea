@@ -720,4 +720,23 @@ void main() async {
 
     expect(await henry.getBuffValueOnAction(battle, BuffAction.atk), 1000);
   });
+
+  test('BuffAction turnvalNp', () async {
+    final battle = BattleData();
+    final playerSettings = [
+      PlayerSvtData.id(2800300)..lv = 70
+    ];
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    final protoMerlin = battle.onFieldAllyServants[0]!;
+    final enemy = battle.onFieldEnemies[0]!;
+    expect(enemy.npLineCount, 0);
+
+    await battle.playerTurn([CombatAction(protoMerlin, protoMerlin.getCards(battle)[0])]);
+    expect(enemy.npLineCount, 1);
+
+    await battle.activateSvtSkill(0, 2);
+    await battle.playerTurn([CombatAction(protoMerlin, protoMerlin.getCards(battle)[0])]);
+    expect(enemy.npLineCount, 1);
+  });
 }

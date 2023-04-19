@@ -58,11 +58,11 @@ class AddState {
         buffAdded = true;
 
         if (buff.type == BuffType.addMaxhp) {
-          target.heal(battleData, dataVals.Value!);
+          target.gainHp(battleData, dataVals.Value!);
         } else if (buff.type == BuffType.subMaxhp) {
           target.lossHp(dataVals.Value!);
         } else if (buff.type == BuffType.upMaxhp) {
-          target.heal(battleData, toModifier(target.maxHp * dataVals.Value!).toInt());
+          target.gainHp(battleData, toModifier(target.maxHp * dataVals.Value!).toInt());
         } else if (buff.type == BuffType.downMaxhp) {
           target.lossHp(toModifier(target.maxHp * dataVals.Value!).toInt());
         }

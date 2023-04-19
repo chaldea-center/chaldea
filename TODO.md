@@ -19,11 +19,11 @@ There are plenty of work need to do.
 - [ ] After 7th anni, donotAct will not stop first card from contributing to FirstCardType
 - [ ] Unify buff execution, eliminate unnecessary calls to buff.shouldApply and switch to buff.shouldActivate to check
       for buff useRate
-- [ ] disable NP if NP has no functions
+- [X] disable NP if NP has no functions
 - [ ] BuffScript should only be checked when buffType matches
 - [ ] Move all checkTrait logic into battle and remove individual checkTrait methods in models
-- [ ] There is a bug that will reset accumulation damage when deathEffect is triggered
-      not verified for gutsEffect
+- [ ] There is a bug that will reset other enemies' accumulation damage when deathEffect is triggered,
+  ~~not verified for gutsEffect~~ Verified for gutsEffect as well, need to add that
 - [ ] FuncType damageNpCounter
 - [ ] FuncType damageNpRare Target == 0 is target, verify if Target ==1 is activator?
 - [ ] FuncType gainHpPer figure out if Percentage heal benefits from healGrant buff
@@ -34,7 +34,7 @@ There are plenty of work need to do.
 - [ ] DataVals TriggeredFuncPosition ignored, only checking previous function success for now
 - [ ] Group npDamageIndividualSum & buff ParamAddCount's counting logic together?
 - [ ] BuffType doNotGainNp & upGiveNp
-- [ ] BuffType doNotRecovery interacts with maxHp?
+- [ ] BuffType doNotRecovery interacts with maxHp? Treating as no interaction for now
 - [ ] BuffType doNotActCommandType
 - [ ] BuffType doNotSelectCommandCard
 - [ ] BuffType tdTypeChange: if there are multiple instances of this buff, the last one dominates
@@ -42,7 +42,7 @@ There are plenty of work need to do.
 - [ ] BuffType overwriteClassRelation, atkSide first or defSide first? When two overwriteForce type interact, is it
       based on buff order? E.g. Kama skill3 & Reinis NP vs alterego attacker, is the final relation 500 or 1000 or depends
       on which buff comes last?
-- [ ] BuffType preventDeathByDamage works if Van Gogh has burn?
+- [ ] BuffType preventDeathByDamage works if Van Gogh has both curse and burn?
 - [ ] BuffType reflectionFunction
 - [ ] BuffType skillRankUp has a maxRate of 0, so it's probably not a ValuedBuff? Currently only counting by buffTrait
 - [ ] INDIVIDUALITIE seen on fields, buffTraits, servantId, are other traits included as well?
@@ -54,7 +54,7 @@ There are plenty of work need to do.
 - [ ] Figure out how to write reasonable test cases for UI required effects like randomEffect & changeTdType
 - [ ] funcSuccess for some wired function types
 - [ ] Enemy shift target may not exist
-- [x] cardDetail.damageRate/tdRate (U-Olga Marie buster/extra attack on all enemies)
+- [X] cardDetail.damageRate/tdRate (U-Olga Marie buster/extra attack on all enemies)
 - [ ] dispBreakShift
 - [ ] shiftGuts(Ratio)
 - [x] Damage should remove buff with buffScript field damageRelease: 1
@@ -97,7 +97,7 @@ There are plenty of work need to do.
 ### Enemy Simulation
 
 - [ ] build enemy active skills & cards & NP
-- [ ] BuffType upNpturnval & downTurnval (if not npsealed, npCount += 1 + upTurnval - downTurnval)
+- [X] BuffType upNpturnval & downNpturnval
 - [ ] TargetType ptSelfAnotherRandom for svt 251 skill 3
 - [ ] TargetType enemyOneNoTargetNoAction for svt 311 skill 3
 - [ ] FuncType transformServant on enemies
