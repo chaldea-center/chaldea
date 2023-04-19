@@ -3,7 +3,6 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../../modules/battle/svt_option_editor.dart';
 import '../models/battle.dart';
 import '_dialog.dart';
 
@@ -52,7 +51,7 @@ class _DamageAdjustorState extends State<DamageAdjustor> {
           ),
           const SizedBox(height: 8),
           Text('${S.current.battle_damage}: $totalDamage'),
-          ServantOptionEditPage.buildSlider(
+          SliderWithTitle(
             leadingText: S.current.battle_random,
             min: ConstData.constants.attackRateRandomMin,
             max: ConstData.constants.attackRateRandomMax - 1,

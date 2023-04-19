@@ -5,7 +5,6 @@ import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/modules/battle/battle_simulation.dart';
-import 'package:chaldea/app/modules/battle/svt_option_editor.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/quest/quest_card.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -16,6 +15,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../quest/breakdown/quest_phase.dart';
 import '../quest/quest.dart';
+import 'options/svt_option_editor.dart';
 
 class SimulationPreview extends StatefulWidget {
   final Region? region;
@@ -282,6 +282,31 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       alignment: WrapAlignment.center,
       spacing: 4,
       children: [
+        DropdownButton<Region>(
+          isDense: true,
+          value: playerRegion,
+          items: [
+            for (final r in Region.values)
+              DropdownMenuItem(
+                value: r,
+                child: Text.rich(
+                  TextSpan(children: [
+                    TextSpan(
+                      text: '${S.current.strength_status}:',
+                      style: TextStyle(fontSize: 15, color: Theme.of(context).textTheme.bodySmall?.color),
+                    ),
+                    TextSpan(text: r.localName),
+                  ]),
+                  textScaleFactor: 0.9,
+                ),
+              ),
+          ],
+          onChanged: (v) {
+            setState(() {
+              if (v != null) playerRegion = v;
+            });
+          },
+        ),
         CheckboxWithLabel(
           value: db.settings.battleSim.preferPlayerData,
           label: Text(S.current.battle_prefer_player_data),
@@ -290,36 +315,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               if (v != null) db.settings.battleSim.preferPlayerData = v;
             });
           },
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            DropdownButton<Region>(
-              isDense: true,
-              value: playerRegion,
-              items: [
-                for (final r in Region.values)
-                  DropdownMenuItem(
-                    value: r,
-                    child: Text.rich(
-                      TextSpan(children: [
-                        TextSpan(
-                          text: '${S.current.strength_status}:',
-                          style: TextStyle(fontSize: 15, color: Theme.of(context).textTheme.bodySmall?.color),
-                        ),
-                        TextSpan(text: r.localName),
-                      ]),
-                      textScaleFactor: 0.9,
-                    ),
-                  ),
-              ],
-              onChanged: (v) {
-                setState(() {
-                  if (v != null) playerRegion = v;
-                });
-              },
-            )
-          ],
         ),
       ],
     );
@@ -505,7 +500,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ServantOptionEditPage.buildSlider(
+                  SliderWithTitle(
                     leadingText: S.current.battle_mc_lv,
                     min: 1,
                     max: 10,
@@ -516,7 +511,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                       if (mounted) setState(() {});
                     },
                   ),
-                  ServantOptionEditPage.buildSlider(
+                  SliderWithTitle(
                     leadingText: S.current.battle_probability_threshold,
                     min: 0,
                     max: 10,

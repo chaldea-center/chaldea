@@ -1,7 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -19,11 +20,11 @@ import 'package:chaldea/models/userdata/userdata.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../craft_essence/craft_list.dart';
-import '../enemy/support_servant.dart';
-import '../servant/servant_list.dart';
-import 'details/add_extra_passive.dart';
-import 'simulation_preview.dart';
+import '../../craft_essence/craft_list.dart';
+import '../../enemy/support_servant.dart';
+import '../../servant/servant_list.dart';
+import '../details/add_extra_passive.dart';
+import '../simulation_preview.dart';
 
 class ServantOptionEditPage extends StatefulWidget {
   final PlayerSvtData playerSvtData;
@@ -42,7 +43,7 @@ class ServantOptionEditPage extends StatefulWidget {
   @override
   State<ServantOptionEditPage> createState() => _ServantOptionEditPageState();
 
-  static Widget buildSlider({
+  static Widget buildSlider2({
     required final String leadingText,
     required final int min,
     required final int max,
@@ -74,74 +75,6 @@ class ServantOptionEditPage extends StatefulWidget {
             onChanged: (v) {
               onChange(v);
             },
-          ),
-        )
-      ],
-    );
-  }
-
-  static Widget buildSlider2({
-    required BuildContext context,
-    required String label,
-    required String? valueText,
-    required int min,
-    required int max,
-    required int value,
-    required ValueChanged<double> onChange,
-    double leadingWidth = 48,
-  }) {
-    Widget slider = SliderTheme(
-      data: SliderTheme.of(context).copyWith(thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8)),
-      child: Slider(
-        min: min.toDouble(),
-        max: max.toDouble(),
-        divisions: max > min ? max - min : null,
-        value: value.toDouble(),
-        label: valueText,
-        onChanged: (v) {
-          onChange(v);
-        },
-      ),
-    );
-    return Row(
-      children: [
-        SizedBox(
-          width: leadingWidth,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              AutoSizeText(
-                label,
-                maxLines: 1,
-                minFontSize: 10,
-                maxFontSize: 16,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              if (valueText != null)
-                AutoSizeText(
-                  valueText,
-                  maxLines: 1,
-                  minFontSize: 10,
-                  maxFontSize: 14,
-                ),
-            ],
-          ),
-        ),
-        Flexible(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 320, maxHeight: 24),
-            child: Stack(
-              children: [
-                Positioned(
-                  left: -16,
-                  right: -16,
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxHeight: 24),
-                    child: slider,
-                  ),
-                )
-              ],
-            ),
           ),
         )
       ],
@@ -189,9 +122,9 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   }
 
   Widget _buildSliderGroup() {
+    playerSvtData.lv = playerSvtData.lv.clamp(1, min(120, svt.atkGrowth.length));
     final commonSliders = <Widget>[
-      ServantOptionEditPage.buildSlider2(
-        context: context,
+      SliderWithPrefix(
         label: S.current.noble_phantasm_level,
         min: 1,
         max: 5,
@@ -202,11 +135,10 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           _updateState();
         },
       ),
-      ServantOptionEditPage.buildSlider2(
-        context: context,
+      SliderWithPrefix(
         label: 'Lv',
         min: 1,
-        max: svt.atkGrowth.length,
+        max: min(120, svt.atkGrowth.length),
         value: playerSvtData.lv,
         valueText: playerSvtData.lv.toString(),
         onChange: (v) {
@@ -214,8 +146,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           _updateState();
         },
       ),
-      ServantOptionEditPage.buildSlider2(
-        context: context,
+      SliderWithPrefix(
         label: 'ATK ${S.current.foukun}',
         min: 0,
         max: 200,
@@ -231,8 +162,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           _updateState();
         },
       ),
-      ServantOptionEditPage.buildSlider2(
-        context: context,
+      SliderWithPrefix(
         label: 'HP ${S.current.foukun}',
         min: 0,
         max: 200,
@@ -251,8 +181,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     ];
     final activeSkills = [
       for (int skillNum in kActiveSkillNums)
-        ServantOptionEditPage.buildSlider2(
-          context: context,
+        SliderWithPrefix(
           label: '${S.current.active_skill_short} $skillNum',
           min: 1,
           max: 10,
@@ -266,8 +195,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     ];
     final appendSkills = [
       for (int skillNum in kAppendSkillNums)
-        ServantOptionEditPage.buildSlider2(
-          context: context,
+        SliderWithPrefix(
           label: '${S.current.append_skill_short} $skillNum',
           min: 0,
           max: 10,
@@ -861,7 +789,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                   icon: const Icon(Icons.remove_circle_outline, size: 18),
                   tooltip: S.current.remove,
                 ),
-                ServantOptionEditPage.buildSlider(
+                SliderWithTitle(
                   leadingText: S.current.card_strengthen,
                   min: 0,
                   max: 25,
@@ -1103,7 +1031,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
 
     children.add(Padding(
       padding: const EdgeInsetsDirectional.only(start: 16),
-      child: ServantOptionEditPage.buildSlider(
+      child: SliderWithTitle(
         leadingText: 'Lv',
         min: 1,
         max: ce.lvMax,

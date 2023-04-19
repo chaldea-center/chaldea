@@ -6,7 +6,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
-import 'package:chaldea/app/modules/battle/svt_option_editor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -419,7 +418,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ServantOptionEditPage.buildSlider(
+              SliderWithTitle(
                 leadingText: S.current.battle_probability_threshold,
                 min: 0,
                 max: 10,
@@ -675,7 +674,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
     }
     children.add(ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 360),
-      child: ServantOptionEditPage.buildSlider(
+      child: SliderWithTitle(
         padding: EdgeInsets.zero,
         leadingText: S.current.battle_random,
         min: ConstData.constants.attackRateRandomMin,

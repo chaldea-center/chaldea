@@ -5,7 +5,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
-import 'package:chaldea/app/modules/battle/svt_option_editor.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
@@ -117,7 +116,7 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                     level: skillLv,
                   ),
                 if (skill != null && skill!.maxLv > 1)
-                  ServantOptionEditPage.buildSlider(
+                  SliderWithTitle(
                     padding: EdgeInsets.zero,
                     leadingText: S.current.level,
                     min: 1,

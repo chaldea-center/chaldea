@@ -13,10 +13,12 @@ import '../../packages/language.dart';
 import '../gamedata/common.dart';
 import '_helper.dart';
 import 'autologin.dart';
+import 'battle.dart';
 import 'filter_data.dart';
 import 'version.dart';
 
 export 'filter_data.dart';
+export 'battle.dart';
 
 part '../../generated/models/userdata/local_settings.g.dart';
 
@@ -398,26 +400,6 @@ class TipsSetting {
   factory TipsSetting.fromJson(Map<String, dynamic> json) => _$TipsSettingFromJson(json);
 
   Map<String, dynamic> toJson() => _$TipsSettingToJson(this);
-}
-
-@JsonSerializable()
-class BattleSimSetting {
-  String? previousQuestPhase;
-  bool preferPlayerData;
-  Set<int> pingedCEs;
-  Set<int> pingedSvts;
-
-  BattleSimSetting({
-    this.previousQuestPhase,
-    this.preferPlayerData = true,
-    Set<int>? pingedCEs,
-    Set<int>? pingedSvts,
-  })  : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
-        pingedSvts = pingedSvts ?? {37, 62, 150, 215, 241, 284, 314, 316, 353, 357};
-
-  factory BattleSimSetting.fromJson(Map<String, dynamic> json) => _$BattleSimSettingFromJson(json);
-
-  Map<String, dynamic> toJson() => _$BattleSimSettingToJson(this);
 }
 
 enum SvtListClassFilterStyle {

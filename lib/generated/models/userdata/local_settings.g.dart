@@ -397,24 +397,3 @@ Map<String, dynamic> _$TipsSettingToJson(TipsSetting instance) => <String, dynam
       'servantList': instance.servantList,
       'servantDetail': instance.servantDetail,
     };
-
-BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
-      'BattleSimSetting',
-      json,
-      ($checkedConvert) {
-        final val = BattleSimSetting(
-          previousQuestPhase: $checkedConvert('previousQuestPhase', (v) => v as String?),
-          preferPlayerData: $checkedConvert('preferPlayerData', (v) => v as bool? ?? true),
-          pingedCEs: $checkedConvert('pingedCEs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
-          pingedSvts: $checkedConvert('pingedSvts', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
-        );
-        return val;
-      },
-    );
-
-Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <String, dynamic>{
-      'previousQuestPhase': instance.previousQuestPhase,
-      'preferPlayerData': instance.preferPlayerData,
-      'pingedCEs': instance.pingedCEs.toList(),
-      'pingedSvts': instance.pingedSvts.toList(),
-    };
