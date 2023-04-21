@@ -160,6 +160,7 @@ class Routes {
   static const String illustrators = '/illustrators';
   static const String characters = '/characters';
   static const String enemyMasters = '/enemy-masters';
+  static const String myroom = '/myroom';
   static const String plans = '/plans';
   static const String freeCalc = '/free-calc';
   static const String expCard = '/expCard';

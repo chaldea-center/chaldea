@@ -6,7 +6,6 @@ import 'package:chaldea/widgets/widgets.dart';
 import 'aa_explorer_preview.dart';
 import 'combine_image_page.dart';
 import 'custom_chara_figure.dart';
-import 'myroom_background.dart';
 
 class ToolListPage extends StatelessWidget {
   const ToolListPage({super.key});
@@ -16,7 +15,6 @@ class ToolListPage extends StatelessWidget {
     Map<String, Widget> pages = {
       if (db.runtimeData.enableDebugTools) 'AA Explorer': const AtlasExplorerPreview(),
       S.current.custom_chara_figure: const CustomCharaFigureIntro(),
-      S.current.my_room_background: const MyRoomBGAssetsPage(),
       'Combine Images': const CombineImagePage(),
     };
     return Scaffold(

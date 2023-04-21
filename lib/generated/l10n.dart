@@ -6118,11 +6118,11 @@ class S {
     );
   }
 
-  /// `My Room Background`
-  String get my_room_background {
+  /// `My Room`
+  String get my_room {
     return Intl.message(
-      'My Room Background',
-      name: 'my_room_background',
+      'My Room',
+      name: 'my_room',
       desc: '',
       locale: localeName,
       args: [],

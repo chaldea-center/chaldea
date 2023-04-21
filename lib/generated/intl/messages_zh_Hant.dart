@@ -646,7 +646,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "mission": MessageLookupByLibrary.simpleMessage("任務"),
         "move_down": MessageLookupByLibrary.simpleMessage("下移"),
         "move_up": MessageLookupByLibrary.simpleMessage("上移"),
-        "my_room_background": MessageLookupByLibrary.simpleMessage("个人空间背景"),
+        "my_room": MessageLookupByLibrary.simpleMessage("个人空间"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("魔術禮裝"),
         "network_cur_connection": MessageLookupByLibrary.simpleMessage("當前連接"),
         "network_force_online": MessageLookupByLibrary.simpleMessage("強制在線模式"),

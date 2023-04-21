@@ -550,7 +550,7 @@
   "mission": "미션",
   "move_down": "다운",
   "move_up": "업",
-  "my_room_background": null,
+  "my_room": null,
   "mystic_code": "마술예장",
   "network_cur_connection": "코넥션",
   "network_force_online": "강제 온라인 모드",

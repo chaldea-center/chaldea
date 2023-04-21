@@ -550,7 +550,7 @@
   "mission": "Misión",
   "move_down": "Mover hacia abajo",
   "move_up": "Mover hacia arriba",
-  "my_room_background": null,
+  "my_room": null,
   "mystic_code": "Mystic Code",
   "network_cur_connection": null,
   "network_force_online": null,

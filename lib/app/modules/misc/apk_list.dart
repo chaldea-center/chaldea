@@ -76,7 +76,6 @@ class _ApkListPageState extends State<ApkListPage> {
           data.version = RegExp(r'FateGO[_\-](\d+\.\d+\.\d+)[_\-]').firstMatch(url)?.group(1);
         }
       } else {
-        // 'https://gplay-ver.atlasacademy.workers.dev/'
         final workerHost = proxy || Language.isCHS ? Hosts.kWorkerHostCN : Hosts.kWorkerHostGlobal;
         final resp = await DioE().get('$workerHost/proxy/gplay-ver/', queryParameters: {
           "id": data.packageId,

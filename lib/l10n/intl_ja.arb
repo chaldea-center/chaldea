@@ -550,7 +550,7 @@
   "mission": "ミッション",
   "move_down": "ダウン",
   "move_up": "アップ",
-  "my_room_background": null,
+  "my_room": null,
   "mystic_code": "魔術礼装",
   "network_cur_connection": null,
   "network_force_online": null,

@@ -37,6 +37,7 @@ export 'script.dart';
 export 'servant.dart';
 export 'skill.dart';
 export 'war.dart';
+export 'misc.dart';
 export 'wiki_data.dart';
 export 'reverse.dart';
 export 'battle.dart';

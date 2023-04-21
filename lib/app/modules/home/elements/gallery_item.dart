@@ -9,6 +9,7 @@ import 'package:chaldea/app/modules/enemy_master/enemy_master_list.dart';
 import 'package:chaldea/app/modules/quest/svt_quest_timeline.dart';
 import 'package:chaldea/app/modules/script/reader_entry.dart';
 import 'package:chaldea/app/modules/svt_class/svt_class_list.dart';
+import 'package:chaldea/app/modules/tools/myroom_assets_page.dart';
 import 'package:chaldea/app/modules/tools/tool_list_page.dart';
 import 'package:chaldea/app/modules/trait/trait_list.dart';
 import 'package:chaldea/app/modules/war/wars_page.dart';
@@ -136,7 +137,6 @@ class GalleryItem {
         cvList,
         illustratorList,
         charaList,
-        enemyMasters,
         svtQuestTimeline,
         svtClass,
         traits,
@@ -144,6 +144,8 @@ class GalleryItem {
         tds,
         funcs,
         buffs,
+        enemyMasters,
+        myRoom,
         appRoutes,
         toolbox,
       ];
@@ -458,6 +460,16 @@ class GalleryItem {
     isDetail: false,
     shownDefault: false,
   );
+  static GalleryItem myRoom = GalleryItem(
+    name: 'myroom',
+    titleBuilder: () => S.current.my_room,
+    icon: FontAwesomeIcons.bedPulse,
+    url: Routes.myroom,
+    page: const MyRoomAssetsPage(),
+    isDetail: true,
+    shownDefault: false,
+  );
+
   static GalleryItem appRoutes = GalleryItem(
     name: 'app_routes',
     titleBuilder: () => 'Routes',
