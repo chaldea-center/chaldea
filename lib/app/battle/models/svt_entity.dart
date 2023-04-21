@@ -984,12 +984,19 @@ class BattleServantData {
   }
 
   Future<void> endOfMyTurn(final BattleData battleData) async {
+    String turnEndLog = '';
+
     battleData.setActivator(this);
     battleData.setTarget(this);
     if (isEnemy) {
       final npSealed = await hasBuffOnActions(battleData, doNotNPTypes);
       if (!npSealed && niceEnemy!.chargeTurn > 0) {
-        changeNPLineCount(1);
+        final turnEndNP = await getBuffValueOnAction(battleData, BuffAction.turnvalNp);
+        changeNPLineCount(1 + turnEndNP);
+
+        if (turnEndNP != 0) {
+          turnEndLog += ' - NP: $turnEndNP';
+        }
       }
     } else {
       final skillSealed = await hasBuffOnAction(battleData, BuffAction.donotSkill);
@@ -1006,7 +1013,6 @@ class BattleServantData {
       });
     }
 
-    String turnEndLog = '';
     int turnEndDamage = await getBuffValueOnAction(battleData, BuffAction.turnendHpReduce);
     if (turnEndDamage != 0) {
       final List<BuffData> preventDeaths = getBuffsOfType(BuffType.preventDeathByDamage);
@@ -1045,13 +1051,6 @@ class BattleServantData {
         changeNP(turnEndNP);
 
         turnEndLog += ' - NP: ${(turnEndNP / 100).toStringAsFixed(2)}%';
-      }
-    } else {
-      final turnEndNP = await getBuffValueOnAction(battleData, BuffAction.turnvalNp);
-      if (turnEndNP != 0) {
-        changeNPLineCount(turnEndNP);
-
-        turnEndLog += ' - NP: $turnEndNP';
       }
     }
 

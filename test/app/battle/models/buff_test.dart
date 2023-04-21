@@ -724,7 +724,8 @@ void main() async {
   test('BuffAction turnvalNp', () async {
     final battle = BattleData();
     final playerSettings = [
-      PlayerSvtData.id(2800300)..lv = 70
+      PlayerSvtData.id(2800300)..lv = 70,
+      PlayerSvtData.id(504200)..lv = 70
     ];
     await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
@@ -736,7 +737,15 @@ void main() async {
     expect(enemy.npLineCount, 1);
 
     await battle.activateSvtSkill(0, 2);
+    battle.probabilityThreshold = 500;
+    await battle.activateSvtSkill(1, 1);
     await battle.playerTurn([CombatAction(protoMerlin, protoMerlin.getCards(battle)[0])]);
     expect(enemy.npLineCount, 1);
+
+    await battle.playerTurn([CombatAction(protoMerlin, protoMerlin.getCards(battle)[0])]);
+    expect(enemy.npLineCount, 1);
+    
+    await battle.playerTurn([CombatAction(protoMerlin, protoMerlin.getCards(battle)[0])]);
+    expect(enemy.npLineCount, 2);
   });
 }
