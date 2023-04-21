@@ -50,7 +50,7 @@ dependencies:
   dio: ^5.1.0
   # dio_cookie_manager: ^3.0.0
   dots_indicator: ^2.0.0
-  file_picker: ^5.2.9
+  file_picker: ^5.2.10
   fl_chart: ^0.62.0
   flutter_cache_manager: ^3.2.0
   flutter_easyloading: ^3.0.5
@@ -99,7 +99,7 @@ dependencies:
   sliver_tools: ^0.2.6
   smooth_page_indicator: ^1.1.0
   string_validator: ^1.0.0
-  system_tray: ^2.0.2
+  system_tray: ^2.0.3
   table_sticky_headers: ^2.0.1
   tuple: ^2.0.1
   url_launcher: ^6.1.5
@@ -111,7 +111,7 @@ dependencies:
       url: https://github.com/ollydixon/flutter_macos_video_player
       path: packages/video_player/video_player_macos
       ref: bae932d006e9171fcb57becc7000513cea78076e
-  webview_flutter: ^4.0.7
+  webview_flutter: ^4.1.0
   webview_flutter_web: ^0.2.2+1
   worker_manager: ^5.0.3
   window_size:

@@ -10,6 +10,8 @@ you have to install it manually first.
 ```sh
 # Debian
 sudo apt install libappindicator3-1
+# Ubuntu 22.04 or higher
+sudo apt-get install libayatana-appindicator3-dev
 ```
 
 ## Upgrade
@@ -25,6 +27,8 @@ Simply override old files with new extracted files.
 ```sh
 # Debian
 sudo apt install libappindicator3-1
+# Ubuntu 22.04 或更高
+sudo apt-get install libayatana-appindicator3-dev
 ```
 
 ## 升级
