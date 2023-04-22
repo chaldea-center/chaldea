@@ -78,6 +78,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       questIdTextController.text = db.settings.battleSim.previousQuestPhase!;
       _fetchQuestPhase();
     }
+    initFormation();
   }
 
   @override
@@ -98,7 +99,10 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
     children.add(header(S.current.battle_simulation_setup));
     children.add(partyOption());
-    children.add(kIndentDivider);
+    children.add(DividerWithTitle(
+      indent: 16,
+      title: db.settings.battleSim.curFormation.shownName(db.settings.battleSim.curFormationIndex),
+    ));
     children.add(ResponsiveLayout(
       horizontalDivider: kIndentDivider,
       children: [
@@ -122,6 +126,15 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         children: [
           Expanded(child: ListView(children: children)),
           kDefaultDivider,
+          if (errorMsg?.isNotEmpty == true)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                errorMsg ?? "",
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error),
+                textAlign: TextAlign.center,
+              ),
+            ),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -391,18 +404,13 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   Widget buttonBar() {
     return Wrap(
       spacing: 4,
-      alignment: WrapAlignment.end,
+      alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        Text(
-          errorMsg ?? "",
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error),
-          textAlign: TextAlign.center,
-        ),
         FilledButton.icon(
           onPressed: () => _editFormations(),
           icon: const Icon(Icons.people),
-          label: const Text('Formations'),
+          label: Text(S.current.team),
         ),
         FilledButton.icon(
           onPressed: errorMsg != null
@@ -411,7 +419,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                   QuestPhaseWidget.removePhaseSelectCallback(_questSelectCallback);
                   _startSimulation();
                 },
-          icon: const Icon(Icons.arrow_right_rounded),
+          icon: const Icon(Icons.play_arrow_rounded),
           label: Text(S.current.battle_start_simulation),
         ),
       ],
@@ -608,6 +616,17 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     }
 
     if (mounted) setState(() {});
+  }
+
+  Future<void> initFormation() async {
+    EasyLoading.show();
+    try {
+      await restoreFormation(db.settings.battleSim.curFormation);
+    } catch (e) {
+      rethrow;
+    } finally {
+      EasyLoading.dismiss();
+    }
   }
 
   Future<void> restoreFormation(BattleTeamFormation formation) async {

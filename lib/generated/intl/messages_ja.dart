@@ -575,8 +575,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "plan_title": MessageLookupByLibrary.simpleMessage("プラン"),
         "planning_free_quest_btn": MessageLookupByLibrary.simpleMessage("クエストをプラン"),
         "preferred_translation": MessageLookupByLibrary.simpleMessage("お気に入りの訳文"),
-        "preferred_translation_footer": MessageLookupByLibrary.simpleMessage(
-            "ドラッグしてオーダー変更してください。\nUIの言語ではなく、ゲームのデータ記述で使用されます。すべてのゲームデータは、5つの公用語へ翻訳されたことがありません。"),
+        "preferred_translation_footer":
+            MessageLookupByLibrary.simpleMessage("UIの言語ではなく、ゲームのデータ記述で使用されます。すべてのゲームデータは、5つの公用語へ翻訳されたことがありません。"),
         "prev_page": MessageLookupByLibrary.simpleMessage("前のページ"),
         "preview": MessageLookupByLibrary.simpleMessage("プレビュー"),
         "previous_card": MessageLookupByLibrary.simpleMessage("前のカード"),

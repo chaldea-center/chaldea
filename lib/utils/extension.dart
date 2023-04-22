@@ -399,6 +399,11 @@ extension ThemeDataX on ThemeData {
   }
 }
 
+extension TargetPlatformX on TargetPlatform {
+  bool get isMobile => const [TargetPlatform.iOS, TargetPlatform.android].contains(this);
+  bool get isDesktop => !isMobile;
+}
+
 extension ColorX on Color {
   Color get inverted {
     return Color.fromARGB(alpha, alpha - red, alpha - green, alpha - blue);

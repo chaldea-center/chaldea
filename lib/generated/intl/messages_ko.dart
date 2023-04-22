@@ -545,8 +545,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "planning_free_quest_btn": MessageLookupByLibrary.simpleMessage("퀘스트 계획"),
         "prefer_april_fool_icon": MessageLookupByLibrary.simpleMessage("만우절 아이콘 우선"),
         "preferred_translation": MessageLookupByLibrary.simpleMessage("선호하는 번역"),
-        "preferred_translation_footer": MessageLookupByLibrary.simpleMessage(
-            "드래그하여 주문을 변경합니다.\nUI 언어가 아닌 게임 데이터 설명에 사용됩니다. 일부 언어에는 번역되지 않은 부분이 있다."),
+        "preferred_translation_footer":
+            MessageLookupByLibrary.simpleMessage("UI 언어가 아닌 게임 데이터 설명에 사용됩니다. 일부 언어에는 번역되지 않은 부분이 있다."),
         "prev_page": MessageLookupByLibrary.simpleMessage("이전 페이지"),
         "preview": MessageLookupByLibrary.simpleMessage("미리보기"),
         "previous_card": MessageLookupByLibrary.simpleMessage("이전"),

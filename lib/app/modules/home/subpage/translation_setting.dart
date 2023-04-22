@@ -34,7 +34,7 @@ class _TranslationSettingState extends State<TranslationSetting> {
             textAlign: TextAlign.center,
             // style: ,
           ),
-          SFooter(S.current.preferred_translation_footer),
+          SFooter([S.current.drag_to_sort, S.current.preferred_translation_footer].join('/')),
           Center(
             child: ElevatedButton(
               child: Text(S.current.reset),

@@ -452,8 +452,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "plan_objective": MessageLookupByLibrary.simpleMessage("هدف الخطة"),
         "plan_title": MessageLookupByLibrary.simpleMessage("الخطة"),
         "planning_free_quest_btn": MessageLookupByLibrary.simpleMessage("مهام التخطيط"),
-        "preferred_translation_footer": MessageLookupByLibrary.simpleMessage(
-            "اسحب لتغيير الأسبقية في اللغة المستخدمة في التوضيحات لبيانات اللعبة،اللغات الخمسة الرسمية غير متوفره بالكامل في بيانات اللعبة"),
         "preview": MessageLookupByLibrary.simpleMessage("عرض"),
         "previous_card": MessageLookupByLibrary.simpleMessage("السابق"),
         "priority": MessageLookupByLibrary.simpleMessage("أفضلية"),

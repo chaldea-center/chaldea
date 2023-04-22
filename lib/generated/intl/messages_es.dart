@@ -477,7 +477,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "planning_free_quest_btn": MessageLookupByLibrary.simpleMessage("Planificación de Quests"),
         "preferred_translation": MessageLookupByLibrary.simpleMessage("Traducción preferida"),
         "preferred_translation_footer": MessageLookupByLibrary.simpleMessage(
-            "Arrastre para cambiar el orden.\nSe utiliza para la descripción de los datos del juego, no para el idioma de la interfaz de usuario. No todos los datos del juego están traducidos para los 5 idiomas oficiales."),
+            "Se utiliza para la descripción de los datos del juego, no para el idioma de la interfaz de usuario. No todos los datos del juego están traducidos para los 5 idiomas oficiales."),
         "prev_page": MessageLookupByLibrary.simpleMessage("ANT."),
         "preview": MessageLookupByLibrary.simpleMessage("Vista previa"),
         "previous_card": MessageLookupByLibrary.simpleMessage("Anterior"),

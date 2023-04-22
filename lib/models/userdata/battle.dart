@@ -1,3 +1,4 @@
+import 'package:chaldea/generated/l10n.dart';
 import '../../utils/extension.dart';
 import '../gamedata/skill.dart';
 import '_helper.dart';
@@ -64,13 +65,21 @@ class BattleTeamFormation {
     List<SvtSaveData?>? onFieldSvts,
     List<SvtSaveData?>? backupSvts,
     MysticCodeSaveData? mysticCode,
-  })  : onFieldSvts = onFieldSvts ?? [],
-        backupSvts = backupSvts ?? [],
+  })  : onFieldSvts = List.generate(3, (index) => onFieldSvts?.getOrNull(index)),
+        backupSvts = List.generate(3, (index) => backupSvts?.getOrNull(index)),
         mysticCode = mysticCode ?? MysticCodeSaveData();
 
   factory BattleTeamFormation.fromJson(Map<String, dynamic> json) => _$BattleTeamFormationFromJson(json);
 
   Map<String, dynamic> toJson() => _$BattleTeamFormationToJson(this);
+
+  String shownName(int index) {
+    String text = '${S.current.team} ${index + 1}';
+    if (name != null && name!.isNotEmpty) {
+      text += ': $name';
+    }
+    return text;
+  }
 }
 
 @JsonSerializable()
@@ -142,7 +151,7 @@ class MysticCodeSaveData {
   int level;
 
   MysticCodeSaveData({
-    this.mysticCodeId,
+    this.mysticCodeId = 210,
     this.level = 10,
   });
 

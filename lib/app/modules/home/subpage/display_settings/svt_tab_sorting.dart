@@ -21,7 +21,7 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
       body: ListView(
         children: [
           reorderableList(),
-          const SFooter('Drag to change order'),
+          SFooter(S.current.drag_to_sort),
           ButtonBar(
             alignment: MainAxisAlignment.center,
             children: [

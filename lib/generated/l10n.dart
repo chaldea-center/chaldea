@@ -2593,6 +2593,17 @@ class S {
     );
   }
 
+  /// `Drag to sort`
+  String get drag_to_sort {
+    return Intl.message(
+      'Drag to sort',
+      name: 'drag_to_sort',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Click + to add items`
   String get drop_calc_empty_hint {
     return Intl.message(
@@ -6712,10 +6723,10 @@ class S {
     );
   }
 
-  /// `Drag to change the order.\nUsed for game data description, not UI language. Not all game data is translated for all 5 official languages.`
+  /// `Used for game data description, not UI language. Not all game data is translated for all 5 official languages.`
   String get preferred_translation_footer {
     return Intl.message(
-      'Drag to change the order.\nUsed for game data description, not UI language. Not all game data is translated for all 5 official languages.',
+      'Used for game data description, not UI language. Not all game data is translated for all 5 official languages.',
       name: 'preferred_translation_footer',
       desc: '',
       locale: localeName,
@@ -8873,6 +8884,17 @@ class S {
     return Intl.message(
       'NP Upgrade',
       name: 'td_rankup',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Team`
+  String get team {
+    return Intl.message(
+      'Team',
+      name: 'team',
       desc: '',
       locale: localeName,
       args: [],

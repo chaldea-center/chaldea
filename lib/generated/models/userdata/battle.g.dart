@@ -22,7 +22,7 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
               (v) => (v as List<dynamic>?)
                   ?.map((e) => BattleTeamFormation.fromJson(Map<String, dynamic>.from(e as Map)))
                   .toList()),
-          curFormationIndex: $checkedConvert('curFormation', (v) => v as int? ?? 0),
+          curFormationIndex: $checkedConvert('curFormationIndex', (v) => v as int? ?? 0),
         );
         return val;
       },
@@ -35,7 +35,7 @@ Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <Str
       'pingedSvts': instance.pingedSvts.toList(),
       'defaultLvs': instance.defaultLvs.toJson(),
       'formations': instance.formations.map((e) => e.toJson()).toList(),
-      'curFormation': instance.curFormationIndex,
+      'curFormationIndex': instance.curFormationIndex,
     };
 
 BattleTeamFormation _$BattleTeamFormationFromJson(Map json) => $checkedCreate(
@@ -132,7 +132,7 @@ MysticCodeSaveData _$MysticCodeSaveDataFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = MysticCodeSaveData(
-          mysticCodeId: $checkedConvert('mysticCodeId', (v) => v as int?),
+          mysticCodeId: $checkedConvert('mysticCodeId', (v) => v as int? ?? 210),
           level: $checkedConvert('level', (v) => v as int? ?? 10),
         );
         return val;
