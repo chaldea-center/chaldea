@@ -789,6 +789,46 @@ void main() async {
     expect(previousHp4 - enemy4.hp, 7404 + 6661 + 5911 + 9067);
   });
 
+  test('PointBuff', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(2300500)
+        ..lv = 90
+        ..tdLv = 5
+        ..ce = db.gameData.craftEssencesById[9405160] // crane event point buff ce
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    quest.individuality = quest.individuality.toList();
+    quest.individuality.add(NiceTrait(id: 94000119));
+
+    battle.options.pointBuffs = {
+      0: EventPointBuff(
+          id: 0, funcIds: [6912], eventPoint: 0, name: '', icon: '', background: ItemBGType.zero, value: 100),
+      1: EventPointBuff(
+          id: 1, funcIds: [6913], eventPoint: 0, name: '', icon: '', background: ItemBGType.zero, value: 200),
+    };
+
+    await battle.init(quest, setting, null);
+
+    final archtypeEarth = battle.onFieldAllyServants[0]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final previousHp1 = enemy1.hp;
+    await battle.playerTurn([
+      CombatAction(archtypeEarth, archtypeEarth.getCards(battle)[0]),
+    ]);
+
+    expect(previousHp1 - enemy1.hp, 2659);
+
+    final previousHp2 = enemy1.hp;
+    await battle.playerTurn([
+      CombatAction(archtypeEarth, archtypeEarth.getCards(battle)[2]),
+    ]);
+
+    expect(previousHp2 - enemy1.hp, 4062);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,
