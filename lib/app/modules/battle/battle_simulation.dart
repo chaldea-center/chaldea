@@ -553,7 +553,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2),
       child: InkWell(
-        onTap: isSealed || isCondFailed ? null : onTap,
+        onTap: isSealed || isCondFailed || cd > 0 ? null : onTap,
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxHeight: 32),
           child: child,

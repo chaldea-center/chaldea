@@ -10,6 +10,7 @@ There are plenty of work need to do.
 - [ ] show loading toast when fetch api
 - [ ] `Map<TargetId, bool> lastFuncSuccess` is a map
 - [x] build team: disable event
+- [ ] battle delegate
 
 ### Recorder
 
