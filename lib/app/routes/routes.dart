@@ -19,6 +19,7 @@ import 'package:chaldea/app/modules/mystic_code/mystic_code.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/app/modules/servant/servant.dart';
+import 'package:chaldea/app/modules/tools/myroom_assets_page.dart';
 import 'package:chaldea/app/modules/trait/trait.dart';
 import 'package:chaldea/app/modules/trait/trait_list.dart';
 import 'package:chaldea/app/modules/war/wars_page.dart';
@@ -387,6 +388,8 @@ class RouteConfiguration {
         return CharaListPage();
       case Routes.enemyMasters:
         return const EnemyMasterListPage();
+      case Routes.myroom:
+        return const MyRoomAssetsPage();
       case Routes.stats:
         return GameStatisticsPage();
       case Routes.traits:

@@ -28,6 +28,9 @@ class AppUpdater {
     if (network.unavailable) return;
     final detail = await check();
     if (detail == null) return;
+    if (DateTime.now().difference(detail.release.publishedAt).inHours < 2) {
+      return;
+    }
     if (PlatformU.isAndroid) {
       showUpdateAlert(detail);
       return;

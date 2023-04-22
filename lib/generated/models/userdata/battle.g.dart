@@ -19,8 +19,10 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
               (v) => v == null ? null : PlayerSvtDefaultData.fromJson(Map<String, dynamic>.from(v as Map))),
           formations: $checkedConvert(
               'formations',
-              (v) =>
-                  (v as List<dynamic>?)?.map((e) => Formation.fromJson(Map<String, dynamic>.from(e as Map))).toList()),
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => BattleTeamFormation.fromJson(Map<String, dynamic>.from(e as Map)))
+                  .toList()),
+          curFormationIndex: $checkedConvert('curFormation', (v) => v as int? ?? 0),
         );
         return val;
       },
@@ -33,50 +35,49 @@ Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <Str
       'pingedSvts': instance.pingedSvts.toList(),
       'defaultLvs': instance.defaultLvs.toJson(),
       'formations': instance.formations.map((e) => e.toJson()).toList(),
+      'curFormation': instance.curFormationIndex,
     };
 
-Formation _$FormationFromJson(Map json) => $checkedCreate(
-      'Formation',
+BattleTeamFormation _$BattleTeamFormationFromJson(Map json) => $checkedCreate(
+      'BattleTeamFormation',
       json,
       ($checkedConvert) {
-        final val = Formation(
+        final val = BattleTeamFormation(
           name: $checkedConvert('name', (v) => v as String?),
-          onFieldSvtDataList: $checkedConvert(
-              'onFieldSvtDataList',
+          onFieldSvts: $checkedConvert(
+              'onFieldSvts',
               (v) => (v as List<dynamic>?)
-                  ?.map((e) => StoredSvtData.fromJson(Map<String, dynamic>.from(e as Map)))
+                  ?.map((e) => e == null ? null : SvtSaveData.fromJson(Map<String, dynamic>.from(e as Map)))
                   .toList()),
-          backupSvtDataList: $checkedConvert(
-              'backupSvtDataList',
+          backupSvts: $checkedConvert(
+              'backupSvts',
               (v) => (v as List<dynamic>?)
-                  ?.map((e) => StoredSvtData.fromJson(Map<String, dynamic>.from(e as Map)))
+                  ?.map((e) => e == null ? null : SvtSaveData.fromJson(Map<String, dynamic>.from(e as Map)))
                   .toList()),
-          mysticCodeData: $checkedConvert('mysticCodeData',
-              (v) => v == null ? null : StoredMysticCodeData.fromJson(Map<String, dynamic>.from(v as Map))),
+          mysticCode: $checkedConvert(
+              'mysticCode', (v) => v == null ? null : MysticCodeSaveData.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         return val;
       },
     );
 
-Map<String, dynamic> _$FormationToJson(Formation instance) => <String, dynamic>{
+Map<String, dynamic> _$BattleTeamFormationToJson(BattleTeamFormation instance) => <String, dynamic>{
       'name': instance.name,
-      'onFieldSvtDataList': instance.onFieldSvtDataList.map((e) => e.toJson()).toList(),
-      'backupSvtDataList': instance.backupSvtDataList.map((e) => e.toJson()).toList(),
-      'mysticCodeData': instance.mysticCodeData.toJson(),
+      'onFieldSvts': instance.onFieldSvts.map((e) => e?.toJson()).toList(),
+      'backupSvts': instance.backupSvts.map((e) => e?.toJson()).toList(),
+      'mysticCode': instance.mysticCode.toJson(),
     };
 
-StoredSvtData _$StoredPlayerSvtDataFromJson(Map json) => $checkedCreate(
-      'StoredPlayerSvtData',
+SvtSaveData _$SvtSaveDataFromJson(Map json) => $checkedCreate(
+      'SvtSaveData',
       json,
       ($checkedConvert) {
-        final val = StoredSvtData(
+        final val = SvtSaveData(
           svtId: $checkedConvert('svtId', (v) => v as int?),
           limitCount: $checkedConvert('limitCount', (v) => v as int? ?? 4),
           skillLvs: $checkedConvert('skillLvs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
           skillIds: $checkedConvert('skillIds', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
           appendLvs: $checkedConvert('appendLvs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          extraPassiveIds:
-              $checkedConvert('extraPassiveIds', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
           additionalPassives: $checkedConvert(
               'additionalPassives',
               (v) =>
@@ -103,13 +104,12 @@ StoredSvtData _$StoredPlayerSvtDataFromJson(Map json) => $checkedCreate(
       },
     );
 
-Map<String, dynamic> _$StoredPlayerSvtDataToJson(StoredSvtData instance) => <String, dynamic>{
+Map<String, dynamic> _$SvtSaveDataToJson(SvtSaveData instance) => <String, dynamic>{
       'svtId': instance.svtId,
       'limitCount': instance.limitCount,
       'skillLvs': instance.skillLvs,
       'skillIds': instance.skillIds,
       'appendLvs': instance.appendLvs,
-      'extraPassiveIds': instance.extraPassiveIds,
       'additionalPassives': instance.additionalPassives.map((e) => e.toJson()).toList(),
       'additionalPassiveLvs': instance.additionalPassiveLvs,
       'tdLv': instance.tdLv,
@@ -127,11 +127,11 @@ Map<String, dynamic> _$StoredPlayerSvtDataToJson(StoredSvtData instance) => <Str
       'commandCodeIds': instance.commandCodeIds,
     };
 
-StoredMysticCodeData _$StoredMysticCodeDataFromJson(Map json) => $checkedCreate(
-      'StoredMysticCodeData',
+MysticCodeSaveData _$MysticCodeSaveDataFromJson(Map json) => $checkedCreate(
+      'MysticCodeSaveData',
       json,
       ($checkedConvert) {
-        final val = StoredMysticCodeData(
+        final val = MysticCodeSaveData(
           mysticCodeId: $checkedConvert('mysticCodeId', (v) => v as int?),
           level: $checkedConvert('level', (v) => v as int? ?? 10),
         );
@@ -139,7 +139,7 @@ StoredMysticCodeData _$StoredMysticCodeDataFromJson(Map json) => $checkedCreate(
       },
     );
 
-Map<String, dynamic> _$StoredMysticCodeDataToJson(StoredMysticCodeData instance) => <String, dynamic>{
+Map<String, dynamic> _$MysticCodeSaveDataToJson(MysticCodeSaveData instance) => <String, dynamic>{
       'mysticCodeId': instance.mysticCodeId,
       'level': instance.level,
     };

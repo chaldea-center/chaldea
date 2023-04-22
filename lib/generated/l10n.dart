@@ -6547,6 +6547,17 @@ class S {
     );
   }
 
+  /// `Paste`
+  String get paste {
+    return Intl.message(
+      'Paste',
+      name: 'paste',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Permanent`
   String get permanent {
     return Intl.message(
@@ -7575,6 +7586,17 @@ class S {
     return Intl.message(
       'Search Scopes',
       name: 'search_options',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Select`
+  String get select {
+    return Intl.message(
+      'Select',
+      name: 'select',
       desc: '',
       locale: localeName,
       args: [],

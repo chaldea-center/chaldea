@@ -1,7 +1,5 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/extension.dart';
@@ -49,6 +47,8 @@ class PlayerSvtData {
     td = svt!.groupedNoblePhantasms[1]?.first;
   }
 
+  bool get isEmpty => svt == null && ce == null;
+
   @visibleForTesting
   void setSkillStrengthenLvs(final List<int> skillStrengthenLvs) {
     skills =
@@ -65,9 +65,11 @@ class PlayerSvtData {
     additionalPassiveLvs.add(lv);
   }
 
-  static Future<PlayerSvtData> fromStoredData(final StoredSvtData storedData) async {
+  static Future<PlayerSvtData> fromStoredData(final SvtSaveData? storedData) async {
+    if (storedData == null) return PlayerSvtData.base();
+    final svt = db.gameData.servantsById[storedData.svtId];
     final PlayerSvtData playerSvtData = PlayerSvtData.base()
-      ..svt = db.gameData.servantsById[storedData.svtId]
+      ..svt = svt
       ..limitCount = storedData.limitCount
       ..skillLvs = storedData.skillLvs.toList()
       ..appendLvs = storedData.appendLvs.toList()
@@ -84,52 +86,33 @@ class PlayerSvtData {
       ..isSupportSvt = storedData.isSupportSvt
       ..cardStrengthens = storedData.cardStrengthens.toList();
 
-    if (playerSvtData.svt != null) {
+    if (svt != null) {
       playerSvtData.skills = [];
-      for (final skillId in storedData.skillIds) {
-        if (skillId == null) {
-          playerSvtData.skills.add(null);
-          continue;
+      for (int index = 0; index < kActiveSkillNums.length; index++) {
+        NiceSkill? targetSkill;
+        final skillId = storedData.skillIds.getOrNull(index);
+        if (skillId != null) {
+          targetSkill = svt.skills.lastWhereOrNull((skill) => skill.id == skillId);
+          targetSkill ??= await AtlasApi.skill(skillId);
         }
-
-        NiceSkill? storedSkill = playerSvtData.svt!.skills.firstWhereOrNull((svtSkill) => svtSkill.id == skillId);
-        if (storedSkill == null) {
-          EasyLoading.show();
-          storedSkill = await AtlasApi.skill(skillId);
-          EasyLoading.dismiss();
-        }
-        playerSvtData.skills.add(storedSkill);
+        playerSvtData.skills.add(targetSkill);
       }
 
-      playerSvtData.extraPassives = [];
-      for (final skillId in storedData.extraPassiveIds) {
-        NiceSkill? storedSkill = playerSvtData.svt!.extraPassive.firstWhereOrNull((svtSkill) => svtSkill.id == skillId);
-        if (storedSkill == null) {
-          EasyLoading.show();
-          storedSkill = await AtlasApi.skill(skillId);
-          EasyLoading.dismiss();
-        }
-        if (storedSkill != null) {
-          playerSvtData.extraPassives.add(storedSkill);
-        }
+      playerSvtData.extraPassives = svt.extraPassive.toList();
+
+      for (final storedSkill in storedData.additionalPassives) {
+        final targetSkill =
+            db.gameData.baseSkills[storedSkill.id] ?? await AtlasApi.skill(storedSkill.id) ?? storedSkill;
+        playerSvtData.additionalPassives.add(targetSkill);
       }
 
       if (storedData.tdId != null) {
-        playerSvtData.td = playerSvtData.svt!.noblePhantasms.firstWhereOrNull((td) => td.id == storedData.tdId);
-        if (playerSvtData.td == null) {
-          EasyLoading.show();
-          playerSvtData.td = await AtlasApi.td(storedData.tdId!);
-          EasyLoading.dismiss();
-        }
+        playerSvtData.td = playerSvtData.svt!.noblePhantasms.lastWhereOrNull((td) => td.id == storedData.tdId);
+        playerSvtData.td ??= await AtlasApi.td(storedData.tdId!);
       }
 
       playerSvtData.commandCodes = [];
       for (final commandCodeId in storedData.commandCodeIds) {
-        if (commandCodeId == null) {
-          playerSvtData.commandCodes.add(null);
-          continue;
-        }
-
         CommandCode? storedCommandCode = db.gameData.commandCodesById[commandCodeId];
         playerSvtData.commandCodes.add(storedCommandCode);
       }
@@ -142,16 +125,16 @@ class PlayerSvtData {
     return playerSvtData;
   }
 
-  StoredSvtData toStoredData() {
-    return StoredSvtData(
+  SvtSaveData? toStoredData() {
+    if (isSupportSvt) return null;
+    return SvtSaveData(
       svtId: isSupportSvt ? null : svt?.id,
       limitCount: limitCount,
-      skillLvs: skillLvs,
+      skillLvs: skillLvs.toList(),
       skillIds: skills.map((skill) => skill?.id).toList(),
-      appendLvs: appendLvs,
-      extraPassiveIds: extraPassives.map((extraPassive) => extraPassive.id).toList(),
-      additionalPassives: additionalPassives,
-      additionalPassiveLvs: additionalPassiveLvs,
+      appendLvs: appendLvs.toList(),
+      additionalPassives: additionalPassives.toList(),
+      additionalPassiveLvs: additionalPassiveLvs.toList(),
       tdLv: tdLv,
       tdId: td?.id,
       lv: lv,
@@ -163,7 +146,7 @@ class PlayerSvtData {
       ceLimitBreak: ceLimitBreak,
       ceLv: ceLv,
       isSupportSvt: isSupportSvt,
-      cardStrengthens: cardStrengthens,
+      cardStrengthens: cardStrengthens.toList(),
       commandCodeIds: commandCodes.map((commandCode) => commandCode?.id).toList(),
     );
   }
@@ -182,11 +165,11 @@ class MysticCodeData {
   MysticCode? mysticCode = db.gameData.mysticCodes[210];
   int level = 10;
 
-  StoredMysticCodeData toStoredData() {
-    return StoredMysticCodeData(mysticCodeId: mysticCode?.id, level: level);
+  MysticCodeSaveData toStoredData() {
+    return MysticCodeSaveData(mysticCodeId: mysticCode?.id, level: level);
   }
 
-  void fromStoredData(final StoredMysticCodeData storedData) {
+  void fromStoredData(final MysticCodeSaveData storedData) {
     mysticCode = db.gameData.mysticCodes[storedData.mysticCodeId];
     level = storedData.level;
   }

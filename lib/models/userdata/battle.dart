@@ -11,7 +11,8 @@ class BattleSimSetting {
   Set<int> pingedCEs;
   Set<int> pingedSvts;
   PlayerSvtDefaultData defaultLvs;
-  List<Formation> formations;
+  List<BattleTeamFormation> formations;
+  int curFormationIndex;
 
   BattleSimSetting({
     this.previousQuestPhase,
@@ -19,47 +20,66 @@ class BattleSimSetting {
     Set<int>? pingedCEs,
     Set<int>? pingedSvts,
     PlayerSvtDefaultData? defaultLvs,
-    List<Formation>? formations,
+    List<BattleTeamFormation>? formations,
+    this.curFormationIndex = 0,
   })  : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
         pingedSvts = pingedSvts ?? {37, 62, 150, 215, 241, 284, 314, 316, 353, 357},
         defaultLvs = defaultLvs ?? PlayerSvtDefaultData(),
-        formations = formations ?? [];
+        formations = formations ?? [] {
+    validate();
+  }
+
+  void validate() {
+    if (formations.isEmpty) {
+      formations.add(BattleTeamFormation());
+    }
+    curFormationIndex = curFormationIndex.clamp(0, formations.length - 1);
+  }
 
   factory BattleSimSetting.fromJson(Map<String, dynamic> json) => _$BattleSimSettingFromJson(json);
 
   Map<String, dynamic> toJson() => _$BattleSimSettingToJson(this);
+
+  BattleTeamFormation get curFormation {
+    validate();
+    return formations[curFormationIndex];
+  }
+
+  set(BattleTeamFormation formation) {
+    validate();
+    formations[curFormationIndex] = formation;
+  }
 }
 
 @JsonSerializable()
-class Formation {
+class BattleTeamFormation {
   String? name;
 
-  List<StoredSvtData> onFieldSvtDataList;
-  List<StoredSvtData> backupSvtDataList;
-  StoredMysticCodeData mysticCodeData;
+  List<SvtSaveData?> onFieldSvts;
+  List<SvtSaveData?> backupSvts;
+  MysticCodeSaveData mysticCode;
 
-  Formation({
+  BattleTeamFormation({
     this.name,
-    List<StoredSvtData>? onFieldSvtDataList,
-    List<StoredSvtData>? backupSvtDataList,
-    StoredMysticCodeData? mysticCodeData,
-  })  : onFieldSvtDataList = onFieldSvtDataList ?? [],
-        backupSvtDataList = backupSvtDataList ?? [],
-        mysticCodeData = mysticCodeData ?? StoredMysticCodeData();
+    List<SvtSaveData?>? onFieldSvts,
+    List<SvtSaveData?>? backupSvts,
+    MysticCodeSaveData? mysticCode,
+  })  : onFieldSvts = onFieldSvts ?? [],
+        backupSvts = backupSvts ?? [],
+        mysticCode = mysticCode ?? MysticCodeSaveData();
 
-  factory Formation.fromJson(Map<String, dynamic> json) => _$FormationFromJson(json);
+  factory BattleTeamFormation.fromJson(Map<String, dynamic> json) => _$BattleTeamFormationFromJson(json);
 
-  Map<String, dynamic> toJson() => _$FormationToJson(this);
+  Map<String, dynamic> toJson() => _$BattleTeamFormationToJson(this);
 }
 
 @JsonSerializable()
-class StoredSvtData {
+class SvtSaveData {
   int? svtId;
   int limitCount;
   List<int> skillLvs;
   List<int?> skillIds;
   List<int> appendLvs;
-  List<int> extraPassiveIds;
   List<BaseSkill> additionalPassives;
   List<int> additionalPassiveLvs;
   int tdLv;
@@ -82,13 +102,12 @@ class StoredSvtData {
   List<int> cardStrengthens;
   List<int?> commandCodeIds;
 
-  StoredSvtData({
+  SvtSaveData({
     this.svtId,
     this.limitCount = 4,
     List<int>? skillLvs,
     List<int?>? skillIds,
     List<int>? appendLvs,
-    List<int>? extraPassiveIds,
     List<BaseSkill>? additionalPassives,
     List<int>? additionalPassiveLvs,
     this.tdLv = 5,
@@ -107,30 +126,29 @@ class StoredSvtData {
   })  : skillLvs = skillLvs ?? [10, 10, 10],
         skillIds = skillIds ?? [null, null, null],
         appendLvs = appendLvs ?? [0, 0, 0],
-        extraPassiveIds = extraPassiveIds ?? [],
         additionalPassives = additionalPassives ?? [],
         additionalPassiveLvs = additionalPassiveLvs ?? [],
         cardStrengthens = cardStrengthens ?? [0, 0, 0, 0, 0],
         commandCodeIds = commandCodeIds ?? [null, null, null, null, null];
 
-  factory StoredSvtData.fromJson(Map<String, dynamic> json) => _$StoredPlayerSvtDataFromJson(json);
+  factory SvtSaveData.fromJson(Map<String, dynamic> json) => _$SvtSaveDataFromJson(json);
 
-  Map<String, dynamic> toJson() => _$StoredPlayerSvtDataToJson(this);
+  Map<String, dynamic> toJson() => _$SvtSaveDataToJson(this);
 }
 
 @JsonSerializable()
-class StoredMysticCodeData {
+class MysticCodeSaveData {
   int? mysticCodeId;
   int level;
 
-  StoredMysticCodeData({
+  MysticCodeSaveData({
     this.mysticCodeId,
     this.level = 10,
   });
 
-  factory StoredMysticCodeData.fromJson(Map<String, dynamic> json) => _$StoredMysticCodeDataFromJson(json);
+  factory MysticCodeSaveData.fromJson(Map<String, dynamic> json) => _$MysticCodeSaveDataFromJson(json);
 
-  Map<String, dynamic> toJson() => _$StoredMysticCodeDataToJson(this);
+  Map<String, dynamic> toJson() => _$MysticCodeSaveDataToJson(this);
 }
 
 @JsonSerializable()

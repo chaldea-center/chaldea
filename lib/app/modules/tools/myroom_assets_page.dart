@@ -163,8 +163,15 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
                   final bgm = db.gameData.bgms[room.overwriteId];
                   children.add(ListTile(
                     dense: true,
-                    leading: const Icon(Icons.music_note, size: 18),
                     minLeadingWidth: 0,
+                    contentPadding: const EdgeInsetsDirectional.fromSTEB(4, 0, 4, 0),
+                    leading: db.getIconImage(
+                      bgm?.logo,
+                      aspectRatio: 124 / 60,
+                      width: 56,
+                      placeholder: (context) => const SizedBox.shrink(),
+                    ),
+                    horizontalTitleGap: 8,
                     title: Text(bgm?.tooltip ?? '${S.current.bgm} ${room.overwriteId}'),
                     selected: true,
                     onTap: () {

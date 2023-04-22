@@ -13,8 +13,8 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../quest/breakdown/quest_phase.dart';
 import '../quest/quest.dart';
-import 'formation_storage.dart';
 import 'options/default_lvs.dart';
+import 'options/formation_storage.dart';
 import 'options/svt_option_editor.dart';
 
 class SimulationPreview extends StatefulWidget {
@@ -49,8 +49,8 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     PlayerSvtData.base(),
     PlayerSvtData.base(),
   ];
-
   final MysticCodeData mysticCodeData = MysticCodeData();
+
   int fixedRandom = ConstData.constants.attackRateRandomMin;
   int probabilityThreshold = 1000;
   bool isAfter7thAnni = true;
@@ -389,20 +389,20 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   Widget buttonBar() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+    return Wrap(
+      spacing: 4,
+      alignment: WrapAlignment.end,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        Expanded(
-          child: Text(
-            errorMsg ?? "",
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error),
-            textAlign: TextAlign.center,
-          ),
+        Text(
+          errorMsg ?? "",
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error),
+          textAlign: TextAlign.center,
         ),
         FilledButton.icon(
           onPressed: () => _editFormations(),
           icon: const Icon(Icons.people),
-          label: const Text('Edit Formations'),
+          label: const Text('Formations'),
         ),
         FilledButton.icon(
           onPressed: errorMsg != null
@@ -578,6 +578,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
   void _startSimulation() {
     db.settings.battleSim.previousQuestPhase = '${questPhase!.id}/${questPhase!.phase}';
+    saveFormation();
     final questCopy = QuestPhase.fromJson(questPhase!.toJson());
     if (disableEvent) {
       questCopy.warId = 0;
@@ -597,42 +598,32 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     );
   }
 
-  void _editFormations() {
-    final allSvts = [...onFieldSvtDataList, ...backupSvtDataList];
-    final curFormation = allSvts.where((svtData) => svtData.svt != null || svtData.ce != null).isNotEmpty
-        ? Formation(
-            onFieldSvtDataList: onFieldSvtDataList.map((e) => e.toStoredData()).toList(),
-            backupSvtDataList: backupSvtDataList.map((e) => e.toStoredData()).toList(),
-            mysticCodeData: mysticCodeData.toStoredData(),
-          )
-        : null;
-    router.pushPage(FormationEditor(
-      onSelected: (final Formation formation) async {
-        onFieldSvtDataList.clear();
-        for (int index = 0; index < 3; index += 1) {
-          if (formation.onFieldSvtDataList.length > index) {
-            final storedSvt = formation.onFieldSvtDataList[index];
-            onFieldSvtDataList.add(await PlayerSvtData.fromStoredData(storedSvt));
-          } else {
-            onFieldSvtDataList.add(PlayerSvtData.base());
-          }
-        }
+  void _editFormations() async {
+    saveFormation();
+    final prevFormation = db.settings.battleSim.curFormation;
+    await router.pushPage(const FormationEditor());
+    final formation = db.settings.battleSim.curFormation;
+    if (formation != prevFormation) {
+      await restoreFormation(formation);
+    }
 
-        backupSvtDataList.clear();
-        for (int index = 0; index < 3; index += 1) {
-          if (formation.backupSvtDataList.length > index) {
-            final storedSvt = formation.backupSvtDataList[index];
-            backupSvtDataList.add(await PlayerSvtData.fromStoredData(storedSvt));
-          } else {
-            backupSvtDataList.add(PlayerSvtData.base());
-          }
-        }
+    if (mounted) setState(() {});
+  }
 
-        mysticCodeData.fromStoredData(formation.mysticCodeData);
-        if (mounted) setState(() {});
-      },
-      currentFormation: curFormation,
-    ));
+  Future<void> restoreFormation(BattleTeamFormation formation) async {
+    for (int index = 0; index < 3; index++) {
+      onFieldSvtDataList[index] = await PlayerSvtData.fromStoredData(formation.onFieldSvts.getOrNull(index));
+      backupSvtDataList[index] = await PlayerSvtData.fromStoredData(formation.backupSvts.getOrNull(index));
+    }
+
+    mysticCodeData.fromStoredData(formation.mysticCode);
+  }
+
+  void saveFormation() {
+    final curFormation = db.settings.battleSim.curFormation;
+    curFormation.onFieldSvts = onFieldSvtDataList.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
+    curFormation.backupSvts = backupSvtDataList.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
+    curFormation.mysticCode = mysticCodeData.toStoredData();
   }
 }
 
