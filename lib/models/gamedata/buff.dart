@@ -101,6 +101,10 @@ class Buff with RouteInfo {
   factory Buff.fromJson(Map<String, dynamic> json) => _$BuffFromJson(json);
 
   Map<String, dynamic> toJson() => _$BuffToJson(this);
+
+  int? get percentBase {
+    return kBuffTypePercentType[type] ?? kBuffActionPercentTypes[buffAction];
+  }
 }
 
 @JsonSerializable(converters: [SvtClassConverter()])

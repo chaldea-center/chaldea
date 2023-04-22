@@ -117,7 +117,7 @@ class _FormationEditorState extends State<FormationEditor> {
                     if (index == settings.curFormationIndex)
                       const TextSpan(text: '● ', style: TextStyle(color: Colors.green)),
                     TextSpan(text: title),
-                    if (sorting) ...[
+                    if (!sorting) ...[
                       const TextSpan(text: ' '),
                       CenterWidgetSpan(
                         child: Icon(

@@ -1,3 +1,5 @@
+import 'package:tuple/tuple.dart';
+
 import 'package:chaldea/utils/utils.dart';
 import '../app/api/hosts.dart';
 import '../models/models.dart';
@@ -117,6 +119,17 @@ class Atlas {
     }
     return '$_dbAssetHost$path';
   }
+
+  static Tuple2<Region, int?> resolveRegionInt(String path) {
+    final match = RegExp(r'(\d+)').firstMatch(path);
+    if (match == null) {
+      return const Tuple2(Region.jp, null);
+    }
+    final id = int.parse(match.group(1)!);
+    final regionText = RegExp(r'(JP|NA|CN|TW|KR)/').firstMatch(path)?.group(1);
+    Region region = const RegionConverter().fromJson(regionText ?? "");
+    return Tuple2(region, id);
+  }
 }
 
 class AssetURL {
@@ -229,6 +242,7 @@ class _CommonAssets {
   final emptySvtIcon = "$_assetHost/JP/Faces/f_1000000.png";
   final unknownEnemyIcon = "$_assetHost/JP/Faces/f_1000011.png";
   final emptySkillIcon = '$_assetHost/JP/SkillIcons/skill_999999.png';
+  final unknownSkillIcon = '$_assetHost/JP/SkillIcons/skill_00001.png';
 
   const _CommonAssets();
 }

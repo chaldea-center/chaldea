@@ -690,3 +690,21 @@ const kBuffTypePercentType = <BuffType, int>{
   BuffType.shiftGutsRatio: 10,
   BuffType.gutsRatio: 10,
 };
+
+const kFuncValPercentType = <FuncType, int>{
+  FuncType.gainNpFromTargets: 100,
+  FuncType.gainNp: 100,
+  FuncType.gainNpBuffIndividualSum: 100,
+  FuncType.lossNp: 100,
+  FuncType.damageNp: 10,
+  FuncType.damageNpSafe: 10,
+  FuncType.damageNpHpratioLow: 10,
+  FuncType.damageNpIndividual: 10,
+  FuncType.damageNpIndividualSum: 10,
+  FuncType.damageNpPierce: 10,
+  FuncType.damageNpRare: 10,
+  FuncType.damageNpStateIndividualFix: 10,
+  FuncType.damageNpCounter: 10,
+  FuncType.gainHpPer: 10,
+  FuncType.qpDropUp: 10,
+};

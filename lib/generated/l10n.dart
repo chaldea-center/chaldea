@@ -228,17 +228,6 @@ class S {
     );
   }
 
-  /// `Add Skill`
-  String get add_skill {
-    return Intl.message(
-      'Add Skill',
-      name: 'add_skill',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Add to blacklist`
   String get add_to_blacklist {
     return Intl.message(
@@ -602,11 +591,11 @@ class S {
     );
   }
 
-  /// `Ally Servants`
-  String get battle_ally_servants {
+  /// `Ally`
+  String get battle_ally {
     return Intl.message(
-      'Ally Servants',
-      name: 'battle_ally_servants',
+      'Ally',
+      name: 'battle_ally',
       desc: '',
       locale: localeName,
       args: [],
@@ -7685,6 +7674,17 @@ class S {
     return Intl.message(
       'Select Servant',
       name: 'select_servant',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Select Skill`
+  String get select_skill {
+    return Intl.message(
+      'Select Skill',
+      name: 'select_skill',
       desc: '',
       locale: localeName,
       args: [],

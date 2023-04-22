@@ -24,7 +24,7 @@ import 'package:chaldea/models/userdata/userdata.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'add_extra_passive.dart';
+import 'select_skill_page.dart';
 
 class ServantOptionEditPage extends StatefulWidget {
   final PlayerSvtData playerSvtData;
@@ -286,10 +286,15 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           Center(
             child: TextButton(
               onPressed: () async {
-                await router.pushPage(AddExtraPassivePage(svtData: playerSvtData));
+                await router.pushPage(SkillSelectPage(
+                  skillType: SkillType.passive,
+                  onSelected: (skill) {
+                    playerSvtData.addCustomPassive(skill, skill.maxLv);
+                  },
+                ));
                 if (mounted) setState(() {});
               },
-              child: Text(S.current.add_skill),
+              child: Text(S.current.select_skill),
             ),
           )
         ],
@@ -711,6 +716,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           children: [
             Wrap(
               spacing: 8,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 TextButton(
                   onPressed: () {
@@ -726,6 +732,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                 ),
                 if (maxLv > 1)
                   DropdownButton<int>(
+                    isDense: true,
                     value: playerSvtData.additionalPassiveLvs[index],
                     items: [
                       for (int lv2 = 1; lv2 <= maxLv; lv2++) DropdownMenuItem(value: lv2, child: Text('Lv.$lv2')),
@@ -1079,9 +1086,8 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
       value: playerSvtData.ceLimitBreak,
       title: Text(S.current.max_limit_break),
       onChanged: (v) {
-        setState(() {
-          playerSvtData.ceLimitBreak = v;
-        });
+        playerSvtData.ceLimitBreak = v;
+        _updateState();
       },
     ));
 

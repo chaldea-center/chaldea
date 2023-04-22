@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/modules/skill/skill_detail.dart';
 import 'package:chaldea/app/modules/skill/td_detail.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../app/app.dart';
 import '../../app/tools/gamedata_loader.dart';
@@ -84,7 +85,7 @@ class BaseSkill with SkillOrTd, RouteInfo {
     this.unmodifiedDetail,
     required this.type,
     this.icon,
-    this.coolDown = const [],
+    this.coolDown = const [0],
     this.actIndividuality = const [],
     this.script,
     this.skillAdd = const [],
@@ -772,6 +773,16 @@ class NpGain {
 enum SkillType {
   active,
   passive,
+  ;
+
+  String get shortName {
+    switch (this) {
+      case SkillType.active:
+        return S.current.active_skill_short;
+      case SkillType.passive:
+        return S.current.passive_skill_short;
+    }
+  }
 }
 
 enum TdEffectFlag {

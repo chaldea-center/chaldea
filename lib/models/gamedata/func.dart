@@ -330,7 +330,7 @@ class BaseFunction with RouteInfo {
     required this.funcId,
     this.funcType = FuncType.unknown,
     required this.funcTargetType,
-    required this.funcTargetTeam,
+    this.funcTargetTeam = FuncApplyTarget.playerAndEnemy,
     this.funcPopupText = "",
     this.funcPopupIcon,
     this.functvals = const [],

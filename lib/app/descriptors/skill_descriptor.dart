@@ -80,7 +80,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
 
     final header = CustomTile(
       contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 6, 16, 6),
-      leading: db.getIconImage(skill.icon, width: 33, aspectRatio: 1),
+      leading: db.getIconImage(skill.icon ?? Atlas.common.unknownSkillIcon, width: 33, aspectRatio: 1),
       title: Text.rich(TextSpan(text: skill.lName.l, children: [
         if (skill.skillAdd.isNotEmpty)
           CenterWidgetSpan(

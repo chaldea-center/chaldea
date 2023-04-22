@@ -207,7 +207,11 @@ class BattleRecorderPanelBase extends StatelessWidget {
   Widget buildSkillLog(BuildContext context, BattleSkillRecord record) {
     final actor = record.activator;
     final skill = record.skill;
-    List<InlineSpan> spans = [];
+    List<InlineSpan> spans = [
+      const CenterWidgetSpan(
+        child: SizedBox(height: 32, width: 1),
+      )
+    ];
     if (actor != null) {
       spans.addAll(drawSvt(context, actor));
     }

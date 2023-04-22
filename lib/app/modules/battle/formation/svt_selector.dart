@@ -65,13 +65,14 @@ class ServantSelector extends StatelessWidget {
     );
 
     svtIcon = InkWell(
-      onTap: () {
-        router.pushPage(ServantOptionEditPage(
+      onTap: () async {
+        await router.pushPage(ServantOptionEditPage(
           playerSvtData: playerSvtData,
           questPhase: questPhase,
           playerRegion: playerRegion,
           onChange: onChange,
         ));
+        onChange();
       },
       child: svtIcon,
     );
@@ -133,12 +134,13 @@ class ServantSelector extends StatelessWidget {
       );
     }
     ceIcon = InkWell(
-      onTap: () {
-        router.pushPage(CraftEssenceOptionEditPage(
+      onTap: () async {
+        await router.pushPage(CraftEssenceOptionEditPage(
           playerSvtData: playerSvtData,
           questPhase: questPhase,
           onChange: onChange,
         ));
+        onChange();
       },
       child: ceIcon,
     );

@@ -654,14 +654,14 @@ class _SpecialTransl {
         na: '$v Weight',
         kr: '$v 무게',
       );
-  String funcValCountTimes(int count) => M.of(
+  String funcValCountTimes(Object count) => M.of(
         jp: '$count回',
         cn: '$count次',
         tw: '$count次',
         na: '$count Times',
         kr: '$count 회',
       );
-  String funcValTurns(int turn) => M.of(
+  String funcValTurns(Object turn) => M.of(
         jp: '$turnターン',
         cn: '$turn回合',
         tw: '$turn回合',

@@ -1,18 +1,15 @@
 import 'dart:math';
 
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-
-import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/userdata/filter_data.dart';
-import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../formation/select_skill_page.dart';
 
 class CustomSkillActivator extends StatefulWidget {
   final BattleData battleData;
@@ -28,17 +25,10 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
   int skillLv = 1;
   BattleServantData? activator;
   bool isAlly = true;
+  SkillType skillType = SkillType.active;
   String? skillErrorMsg;
   String? errorMsg;
   Region? region;
-
-  TextEditingController skillIdTextController = TextEditingController();
-
-  @override
-  void dispose() {
-    super.dispose();
-    skillIdTextController.dispose();
-  }
 
   @override
   Widget build(final BuildContext context) {
@@ -54,59 +44,25 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
           Expanded(
             child: ListView(
               children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                  child: TextFormField(
-                    controller: skillIdTextController,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      border: const OutlineInputBorder(),
-                      hintText: '969756 ${S.current.logic_type_or} **/JP/skill/969756'.breakWord,
-                      labelText: 'skillId ${S.current.logic_type_or} chaldea/AADB skill url',
-                      hintStyle: const TextStyle(overflow: TextOverflow.visible),
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                    ),
-                  ),
-                ),
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 8,
-                  children: [
-                    DropdownButton<Region>(
-                      isDense: true,
-                      value: region,
-                      items: [
-                        for (final r in Region.values)
-                          DropdownMenuItem(value: r, child: Text(r.localName, textScaleFactor: 0.9)),
-                      ],
-                      hint: Text(Region.jp.localName),
-                      onChanged: (v) {
-                        setState(() {
-                          if (v != null) region = v;
-                        });
+                ListTile(
+                  title: Text(S.current.select_skill),
+                  trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                  onTap: () {
+                    router.pushPage(SkillSelectPage(
+                      skillType: null,
+                      onSelected: (selected) {
+                        skill = BaseSkill.fromJson(selected.toJson());
+                        skillLv = selected.maxLv;
+                        skillType = selected.type;
+                        if (mounted) setState(() {});
                       },
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        EasyLoading.show();
-                        try {
-                          await _fetchSkill();
-                        } catch (e, s) {
-                          logger.e('fetch skill failed', e, s);
-                          skillErrorMsg = escapeDioError(e);
-                        } finally {
-                          EasyLoading.dismiss();
-                          if (mounted) setState(() {});
-                        }
-                      },
-                      child: Text(S.current.search),
-                    ),
-                  ],
+                    ));
+                  },
                 ),
                 if (skillErrorMsg != null)
                   SFooter.rich(
                       TextSpan(text: skillErrorMsg, style: TextStyle(color: Theme.of(context).colorScheme.error))),
+                const SizedBox(height: 8),
                 if (skill != null)
                   SkillDescriptor(
                     skill: skill!,
@@ -116,34 +72,57 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                     level: skillLv,
                   ),
                 if (skill != null && skill!.maxLv > 1)
-                  SliderWithTitle(
-                    padding: EdgeInsets.zero,
-                    leadingText: S.current.level,
-                    min: 1,
-                    max: skill!.functions.first.svals.length,
-                    value: skillLv,
-                    label: skillLv.toString(),
-                    onChange: (v) {
-                      skillLv = v.toInt();
-                      if (mounted) setState(() {});
-                    },
-                  ),
-                const Divider(),
-                ButtonBar(
-                  alignment: MainAxisAlignment.start,
-                  children: [
-                    Text(S.current.battle_select_activator),
-                    FilterGroup<bool>(
-                      combined: true,
-                      options: const [true, false],
-                      values: FilterRadioData.nonnull(isAlly),
-                      optionBuilder: (value) => Text(value ? S.current.battle_ally_servants : S.current.enemy),
-                      onFilterChanged: (v, _) {
-                        isAlly = v.radioValue!;
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(start: 16),
+                    child: SliderWithTitle(
+                      padding: EdgeInsets.zero,
+                      leadingText: S.current.level,
+                      min: 1,
+                      max: skill!.maxLv,
+                      value: skillLv.clamp(1, skill!.maxLv),
+                      label: skillLv.toString(),
+                      onChange: (v) {
+                        skillLv = v.toInt();
                         if (mounted) setState(() {});
                       },
                     ),
-                  ],
+                  ),
+                const Divider(),
+                ListTile(
+                  dense: true,
+                  title: Text(S.current.general_type),
+                  trailing: FilterGroup<SkillType>(
+                    combined: true,
+                    options: SkillType.values,
+                    values: FilterRadioData.nonnull(skillType),
+                    optionBuilder: (value) =>
+                        Text(value == SkillType.active ? S.current.active_skill_short : S.current.passive_skill_short),
+                    onFilterChanged: (v, _) {
+                      skillType = v.radioValue!;
+                      skill?.type = skillType;
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                ),
+                const Divider(),
+                ListTile(
+                  dense: true,
+                  title: Text(S.current.battle_select_activator),
+                  trailing: FilterGroup<bool>(
+                    combined: true,
+                    options: const [true, false],
+                    values: FilterRadioData.nonnull(isAlly),
+                    optionBuilder: (value) => Text(value ? S.current.battle_ally : S.current.enemy),
+                    onFilterChanged: (v, _) {
+                      isAlly = v.radioValue!;
+                      if (activator != null) {
+                        if ((activator!.isPlayer && isAlly) || (activator!.isEnemy && !isAlly)) {
+                          activator = null;
+                        }
+                      }
+                      if (mounted) setState(() {});
+                    },
+                  ),
                 ),
                 ButtonBar(
                   alignment: MainAxisAlignment.start,
@@ -207,7 +186,7 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                             );
                             if (mounted) Navigator.of(context).pop(skill);
                           },
-                    icon: const Icon(Icons.arrow_right_rounded),
+                    icon: const Icon(Icons.play_arrow_rounded),
                     label: Text(S.current.battle_activate_custom_skill),
                   ),
                 ],
@@ -217,30 +196,5 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
         ],
       ),
     );
-  }
-
-  Future<void> _fetchSkill() async {
-    skillErrorMsg = null;
-    final text = skillIdTextController.text.trim();
-    // quest id and phase
-    final match = RegExp(r'(\d+)').firstMatch(text);
-    if (match == null) {
-      skillErrorMsg = S.current.invalid_input;
-      return;
-    }
-    final skillId = int.parse(match.group(1)!);
-    // region
-    final regionText = RegExp(r'(JP|NA|CN|TW|KR)/').firstMatch(text)?.group(1);
-    Region region = this.region ??= const RegionConverter().fromJson(regionText ?? "");
-    // hash
-    final hash = RegExp(r'\?hash=([0-9a-zA-Z_\-]{14})$').firstMatch(text)?.group(1);
-
-    if (region == Region.jp) skill = db.gameData.baseSkills[skillId];
-    skill ??= await AtlasApi.skill(skillId, region: region);
-    if (skill == null) {
-      skillErrorMsg = '${S.current.not_found}: /${region.upper}/quest/$skillId';
-      if (hash != null) skillErrorMsg = '${skillErrorMsg!}?hash=$hash';
-    }
-    if (mounted) setState(() {});
   }
 }
