@@ -1,3 +1,4 @@
+import 'package:chaldea/packages/app_info.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:chaldea/app/app.dart';
@@ -62,7 +63,7 @@ class BattleHomePage extends StatelessWidget {
                 router.push(url: Routes.laplace);
               },
             ),
-            if (kDebugMode)
+            if (kDebugMode || AppInfo.isDebugDevice)
               ListTile(
                 leading: const Icon(Icons.radar),
                 title: const Text('NP Damage'),

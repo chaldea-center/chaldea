@@ -2461,6 +2461,17 @@ class S {
     );
   }
 
+  /// `Disable Event Effects`
+  String get disable_event_effects {
+    return Intl.message(
+      'Disable Event Effects',
+      name: 'disable_event_effects',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Grid`
   String get display_grid {
     return Intl.message(

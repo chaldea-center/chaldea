@@ -111,6 +111,8 @@ class NiceTrait with RouteInfo {
   factory NiceTrait.fromJson(Map<String, dynamic> json) => _$NiceTraitFromJson(json);
 
   Map<String, dynamic> toJson() => _$NiceTraitToJson(this);
+
+  bool get isEventField => id >= 94000000 && id <= 96000000;
 }
 
 mixin DataScriptBase {

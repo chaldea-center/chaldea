@@ -319,6 +319,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "details": MessageLookupByLibrary.simpleMessage("Details"),
         "detective_mission": MessageLookupByLibrary.simpleMessage("Detective Missions"),
         "detective_rank": MessageLookupByLibrary.simpleMessage("Detective Rank"),
+        "disable_event_effects": MessageLookupByLibrary.simpleMessage("Disable Event Effects"),
         "display_grid": MessageLookupByLibrary.simpleMessage("Grid"),
         "display_list": MessageLookupByLibrary.simpleMessage("List"),
         "display_setting": MessageLookupByLibrary.simpleMessage("Display Settings"),

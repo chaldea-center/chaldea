@@ -9,7 +9,7 @@
   - Ping event CEs to top
   - Custom default servant lvs
   - Show Instant Death in battle records
-  - Fix Archctype:Earth field check
+  - Fix Archetype:Earth field check
   - Fix Lady Avalon skill 3 downNpturnval
 
 # 2.3.1

@@ -243,6 +243,9 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       return const Center(child: Text('None'));
     }
     const divider = Divider(height: 8, thickness: 1);
+    final extraPassives = playerSvtData.extraPassives
+        .where((passive) => passive.isExtraPassiveEnabledForEvent(questPhase?.war?.eventId ?? 0))
+        .toList();
     final List<Widget> children = [
       _header(context),
       divider,
@@ -272,8 +275,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       TileGroup(
         header: S.current.extra_passive,
         children: [
-          for (final passive in playerSvtData.extraPassives)
-            if (passive.isExtraPassiveEnabledForEvent(questPhase?.war?.eventId ?? 0)) _buildExtraPassive(passive),
+          if (extraPassives.isEmpty) const ListTile(dense: true, title: Text('NONE')),
+          for (final passive in extraPassives) _buildExtraPassive(passive),
         ],
       ),
       TileGroup(

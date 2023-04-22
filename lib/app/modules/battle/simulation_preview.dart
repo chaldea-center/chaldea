@@ -56,6 +56,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   bool isAfter7thAnni = true;
   static const _validRegions = [Region.jp, Region.na];
   late Region playerRegion = db.curUser.region;
+  bool disableEvent = false;
 
   @override
   void initState() {
@@ -105,6 +106,8 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         partyOrganization(backupSvtDataList, S.current.battle_select_backup_servants),
       ],
     ));
+    children.add(header(S.current.mystic_code));
+    children.add(buildMysticCode());
     children.add(header(S.current.battle_misc_config));
     children.add(buildMisc());
 
@@ -308,6 +311,12 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             });
           },
         ),
+        TextButton(
+          onPressed: () {
+            router.pushPage(const PlayerSvtDefaultLvEditPage());
+          },
+          child: Text(S.current.default_lvs),
+        ),
         CheckboxWithLabel(
           value: db.settings.battleSim.preferPlayerData,
           label: Text(S.current.battle_prefer_player_data),
@@ -317,12 +326,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             });
           },
         ),
-        TextButton(
-          onPressed: () {
-            router.pushPage(const PlayerSvtDefaultLvEditPage());
-          },
-          child: Text(S.current.default_lvs),
-        )
       ],
     );
   }
@@ -466,22 +469,24 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     setState(() {});
   }
 
-  Widget buildMisc() {
-    Widget mysticCode = Column(
+  Widget buildMysticCode() {
+    Widget mcIcon = Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         mysticCodeData.mysticCode?.iconBuilder(context: context, width: 48, jumpToDetail: false) ??
             db.getIconImage(null, width: 48),
-        AutoSizeText(
-          mysticCodeData.mysticCode?.lName.l ?? S.current.mystic_code,
-          maxLines: 2,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
+        if (mysticCodeData.mysticCode != null)
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final skill in mysticCodeData.mysticCode!.skills)
+                db.getIconImage(skill.icon, width: 24, aspectRatio: 1, padding: const EdgeInsets.all(1)),
+            ],
+          ),
       ],
     );
-    mysticCode = InkWell(
+    mcIcon = InkWell(
       onTap: () {
         router.pushPage(
           MysticCodeListPage(
@@ -495,50 +500,63 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           detail: true,
         );
       },
-      child: SizedBox(width: 64, child: mysticCode),
+      child: SizedBox(width: 88, child: mcIcon),
     );
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const SizedBox(width: 8),
+        mcIcon,
+        Flexible(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SliderWithTitle(
+                leadingText: mysticCodeData.mysticCode?.lName.l ?? S.current.mystic_code,
+                min: 1,
+                max: 10,
+                value: mysticCodeData.level,
+                label: 'Lv.${mysticCodeData.level}',
+                onChange: (v) {
+                  mysticCodeData.level = v.round();
+                  if (mounted) setState(() {});
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildMisc() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // use Responsible if more settings
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(width: 16),
-            mysticCode,
-            Flexible(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SliderWithTitle(
-                    leadingText: S.current.battle_mc_lv,
-                    min: 1,
-                    max: 10,
-                    value: mysticCodeData.level,
-                    label: mysticCodeData.level.toString(),
-                    onChange: (v) {
-                      mysticCodeData.level = v.round();
-                      if (mounted) setState(() {});
-                    },
-                  ),
-                  SliderWithTitle(
-                    leadingText: S.current.battle_probability_threshold,
-                    min: 0,
-                    max: 10,
-                    value: probabilityThreshold ~/ 100,
-                    label: '${probabilityThreshold ~/ 10} %',
-                    onChange: (v) {
-                      probabilityThreshold = v.round() * 100;
-                      if (mounted) setState(() {});
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
+        SliderWithTitle(
+          leadingText: S.current.battle_probability_threshold,
+          min: 0,
+          max: 10,
+          value: probabilityThreshold ~/ 100,
+          label: '${probabilityThreshold ~/ 10} %',
+          onChange: (v) {
+            probabilityThreshold = v.round() * 100;
+            if (mounted) setState(() {});
+          },
+          padding: const EdgeInsetsDirectional.only(top: 8, start: 8),
         ),
+        CheckboxListTile(
+          dense: true,
+          value: disableEvent,
+          title: Text(S.current.disable_event_effects),
+          onChanged: (v) {
+            setState(() {
+              disableEvent = v ?? disableEvent;
+            });
+          },
+        )
       ],
     );
   }
@@ -560,10 +578,15 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
   void _startSimulation() {
     db.settings.battleSim.previousQuestPhase = '${questPhase!.id}/${questPhase!.phase}';
+    final questCopy = QuestPhase.fromJson(questPhase!.toJson());
+    if (disableEvent) {
+      questCopy.warId = 0;
+      questCopy.individuality.removeWhere((e) => e.isEventField);
+    }
     router.push(
       url: Routes.laplaceBattle,
       child: BattleSimulationPage(
-        questPhase: questPhase!,
+        questPhase: questCopy,
         onFieldSvtDataList: onFieldSvtDataList,
         backupSvtDataList: backupSvtDataList,
         mysticCodeData: mysticCodeData,

@@ -308,6 +308,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "details": MessageLookupByLibrary.simpleMessage("詳細"),
         "detective_mission": MessageLookupByLibrary.simpleMessage("偵探任務"),
         "detective_rank": MessageLookupByLibrary.simpleMessage("偵探等級"),
+        "disable_event_effects": MessageLookupByLibrary.simpleMessage("禁用活动效果"),
         "display_grid": MessageLookupByLibrary.simpleMessage("網格"),
         "display_list": MessageLookupByLibrary.simpleMessage("列表"),
         "display_setting": MessageLookupByLibrary.simpleMessage("顯示設置"),

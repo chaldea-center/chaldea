@@ -218,6 +218,7 @@
   "details": "التفاصيل",
   "detective_mission": null,
   "detective_rank": null,
+  "disable_event_effects": null,
   "display_grid": "شبكة",
   "display_list": "قائمة",
   "display_setting": "إعدادات العرض",

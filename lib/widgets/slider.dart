@@ -19,7 +19,7 @@ class SliderWithTitle extends StatelessWidget {
     required this.value,
     required this.label,
     required this.onChange,
-    this.padding = const EdgeInsets.only(left: 0, top: 8),
+    this.padding = const EdgeInsets.only(top: 8),
   });
 
   @override

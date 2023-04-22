@@ -218,6 +218,7 @@
   "details": null,
   "detective_mission": "탐정 미션",
   "detective_rank": "탐정 랭크",
+  "disable_event_effects": null,
   "display_grid": "그리드",
   "display_list": "리스트",
   "display_setting": "화면 설정",

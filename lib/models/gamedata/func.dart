@@ -191,7 +191,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
         if (svals is! List) continue;
         for (int index = 0; index < svals.length; index++) {
           if (key1 == 'svals' && index == 0) continue;
-          svals[index] = first.deepCopy()..addAll(svals[index] as Map);
+          svals[index] = Map<String, dynamic>.from(first.deepCopy()..addAll(svals[index] as Map));
         }
       }
       firstVals = DataVals.fromJson(Map<String, dynamic>.from(first));
