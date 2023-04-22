@@ -100,10 +100,17 @@ class PlayerSvtData {
 
       playerSvtData.extraPassives = svt.extraPassive.toList();
 
-      for (final storedSkill in storedData.additionalPassives) {
+      playerSvtData.additionalPassives.clear();
+      playerSvtData.additionalPassiveLvs.clear();
+      for (int index = 0; index < storedData.additionalPassives.length; index++) {
+        final storedSkill = storedData.additionalPassives[index];
         final targetSkill =
             db.gameData.baseSkills[storedSkill.id] ?? await AtlasApi.skill(storedSkill.id) ?? storedSkill;
+
+        int lv = storedData.additionalPassiveLvs.getOrNull(index) ?? targetSkill.maxLv;
+        lv = lv.clamp(1, targetSkill.maxLv);
         playerSvtData.additionalPassives.add(targetSkill);
+        playerSvtData.additionalPassiveLvs.add(lv);
       }
 
       if (storedData.tdId != null) {

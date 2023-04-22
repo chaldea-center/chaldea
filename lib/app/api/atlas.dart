@@ -532,6 +532,7 @@ class AtlasApi {
   }
 
   static Future<NiceSkill?> skill(int skillId, {Region region = Region.jp, Duration? expireAfter}) {
+    if (skillId <= 0) return Future.value();
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/skill/$skillId',
       (data) => NiceSkill.fromJson(data),
