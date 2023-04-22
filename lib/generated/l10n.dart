@@ -2472,6 +2472,17 @@ class S {
     );
   }
 
+  /// `Disabled`
+  String get disabled {
+    return Intl.message(
+      'Disabled',
+      name: 'disabled',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Grid`
   String get display_grid {
     return Intl.message(

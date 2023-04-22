@@ -1,4 +1,13 @@
-# 2.3.2
+# Changelog
+
+## 2.3.3
+
+- Laplace
+  - Save teams
+  - Support event point buff (Grail Live & Oniland)
+  - Disable event effect: event field trait
+
+## 2.3.2
 
 - Free quest solver supports item drop rate (bonus CE from Advanced Quests)
 - Add BGM to MyRoom
@@ -12,7 +21,7 @@
   - Fix Archetype:Earth field check
   - Fix Lady Avalon skill 3 downNpturnval
 
-# 2.3.1
+## 2.3.1
 
 - Add more readable battle records
 - Drag svt/ce when building team
@@ -20,7 +29,7 @@
 - Add command spell effects
 - Fix several battle simulator bugs
 
-# 2.3.0
+## 2.3.0
 
 - Welcome "Laplace"! The new Battle Simulator
 - Add material efficiency of event free quests
@@ -29,12 +38,12 @@
 - Custom face for chara figure
 - Fix bugs: import wrong file with same filename, EXP cards calc, etc.
 
-# 2.2.6
+## 2.2.6
 
 - Fix auth file auto login
 - Add bili video player
 
-# 2.2.5
+## 2.2.5
 
 - Add wars to home page
 - Import command code from http sniffing
@@ -44,7 +53,7 @@
 - Support system tray for desktop
 - Tool - combine images
 
-# 2.2.4
+## 2.2.4
 
 - Add free quest drop item table
 - Add servant class info page
@@ -55,13 +64,13 @@
 - Export bond detail to csv (https sniffing)
 - Split shops by pay item
 
-# 2.2.3
+## 2.2.3
 
 - Fix auth file decode for auto login
 - Fix image didn't shown
 - Add skill CD filter for NP charge list
 
-# 2.2.2
+## 2.2.2
 
 - Add new import method for JP/NA: auto login
 - Add war assets listing
@@ -71,14 +80,14 @@
 - Support sort by AP campaign time in RankUp&Interlude timeline
 - Revert engine to avoid crash on iOS
 
-# 2.2.1
+## 2.2.1
 
 - New: Da Vinci shop
 - Event plan: customize getable items
 - Fix and improve master mission/custom mission
 - Fix missing linux plugin which crash free quest or mission solver
 
-# 2.2.0
+## 2.2.0
 
 - custom mission: support multiple conditions
 - add event reward scenes, event voices, random missions

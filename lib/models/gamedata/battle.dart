@@ -178,9 +178,13 @@ class MysticCodeData {
 // won't change in entire battle
 class BattleOptionsEnv {
   bool disableEvent = false;
+  // <groupId, pointBuff>
+  Map<int, EventPointBuff> pointBuffs = {};
 
   BattleOptionsEnv copy() {
-    return BattleOptionsEnv()..disableEvent = disableEvent;
+    return BattleOptionsEnv()
+      ..disableEvent = disableEvent
+      ..pointBuffs = Map.of(pointBuffs);
   }
 }
 
@@ -194,6 +198,7 @@ class BattleOptionsRuntime extends BattleOptionsEnv {
   BattleOptionsRuntime copy() {
     return BattleOptionsRuntime()
       ..disableEvent = disableEvent
+      ..pointBuffs = Map.of(pointBuffs)
       ..fixedRandom = fixedRandom
       ..probabilityThreshold = probabilityThreshold
       ..isAfter7thAnni = isAfter7thAnni

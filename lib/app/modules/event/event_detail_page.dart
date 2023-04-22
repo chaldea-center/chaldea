@@ -154,7 +154,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
       EventPointGroup? pointGroup = event.pointGroups.firstWhereOrNull((e) => e.groupId == groupId);
       String? pointName;
       if (pointGroup != null) {
-        pointName = db.gameData.mappingData.itemNames[pointGroup.name]?.ofRegion() ?? pointGroup.name;
+        pointName = Transl.itemNames(pointGroup.name).l;
       }
       pointName ??= S.current.event_point_reward + (rewardGroups.length > 1 ? ' $groupId' : '');
       tabs.add(Tab(

@@ -219,6 +219,7 @@
   "detective_mission": "探偵ミッション",
   "detective_rank": "探偵ランク",
   "disable_event_effects": null,
+  "disabled": null,
   "display_grid": "グリッド",
   "display_list": "リスト",
   "display_setting": "設定表示",

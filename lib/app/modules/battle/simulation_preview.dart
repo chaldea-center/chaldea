@@ -459,6 +459,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           },
           padding: const EdgeInsetsDirectional.only(top: 8, start: 8),
         ),
+        kIndentDivider,
         CheckboxListTile(
           dense: true,
           value: options.disableEvent,
@@ -468,9 +469,75 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               options.disableEvent = v ?? options.disableEvent;
             });
           },
-        )
+        ),
+        kIndentDivider,
+        ...buildPointBuffs(),
       ],
     );
+  }
+
+  List<Widget> buildPointBuffs() {
+    List<Widget> rows = [];
+    final event = questPhase?.war?.event;
+    if (event == null) return rows;
+    Map<int, List<EventPointBuff>> grouped = {};
+    for (final buff in event.pointBuffs) {
+      grouped.putIfAbsent(buff.groupId, () => []).add(buff);
+    }
+    for (final buffs in grouped.values) {
+      buffs.sort2((e) => e.eventPoint);
+    }
+    for (final groupId in grouped.keys) {
+      final groupDetail = event.pointGroups.firstWhereOrNull((e) => e.groupId == groupId);
+      final buffs = grouped[groupId]!;
+      final cur = options.pointBuffs[groupId];
+      if (!buffs.contains(cur)) {
+        options.pointBuffs.remove(groupId);
+      }
+      rows.add(ListTile(
+        dense: true,
+        leading: groupDetail == null ? null : db.getIconImage(groupDetail.icon, width: 24, aspectRatio: 1),
+        horizontalTitleGap: 0,
+        title: Text(Transl.itemNames(groupDetail?.name ?? S.current.event_point).l),
+        trailing: DropdownButton<EventPointBuff?>(
+          isDense: true,
+          value: options.pointBuffs[groupId],
+          hint: Text(S.current.event_bonus, textScaleFactor: 0.8),
+          items: [
+            DropdownMenuItem(
+              value: null,
+              child: Text(
+                S.current.disabled,
+                textScaleFactor: 0.8,
+              ),
+            ),
+            for (final buff in buffs)
+              DropdownMenuItem(
+                value: buff,
+                child: Text(
+                  '${buff.eventPoint}(+${buff.value.format(base: 10, percent: true)})',
+                  textScaleFactor: 0.8,
+                ),
+              )
+          ],
+          onChanged: options.disableEvent
+              ? null
+              : (v) {
+                  setState(() {
+                    if (v == null) {
+                      options.pointBuffs.remove(groupId);
+                    } else {
+                      options.pointBuffs[groupId] = v;
+                    }
+                  });
+                },
+        ),
+      ));
+    }
+    if (rows.isNotEmpty) {
+      rows.add(kIndentDivider);
+    }
+    return rows;
   }
 
   Widget buttonBar() {
@@ -569,7 +636,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   bool checkPreviewReady() {
-    if (questPhase == null) {
+    if (questPhase == null || questPhase!.allEnemies.isEmpty) {
       errorMsg = S.current.battle_no_quest_phase;
       return false;
     }
@@ -583,13 +650,20 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   void _startSimulation() {
-    db.settings.battleSim.previousQuestPhase = '${questPhase!.id}/${questPhase!.phase}';
-    saveFormation();
+    // pre-check
     final questCopy = QuestPhase.fromJson(questPhase!.toJson());
     if (options.disableEvent) {
       questCopy.warId = 0;
       questCopy.individuality.removeWhere((e) => e.isEventField);
     }
+
+    final event = questCopy.war?.event;
+    options.pointBuffs.removeWhere((key, pointBuff) {
+      return event?.pointBuffs.contains(pointBuff) != true;
+    });
+    //
+    db.settings.battleSim.previousQuestPhase = '${questCopy.id}/${questCopy.phase}';
+    saveFormation();
     router.push(
       url: Routes.laplaceBattle,
       child: BattleSimulationPage(

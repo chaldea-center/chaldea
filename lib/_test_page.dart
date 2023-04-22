@@ -14,6 +14,11 @@ import 'models/models.dart';
 void testFunction([BuildContext? context]) async {
   assert(context == null || context.mounted);
   if (kReleaseMode) return;
+  for (final event in db.gameData.events.values) {
+    if (event.pointBuffs.isNotEmpty) {
+      print([event.id, event.pointBuffs.length, event.pointGroups.length, event.lName.l.setMaxLines(1)]);
+    }
+  }
 }
 
 void loadSvtIconRemap() async {

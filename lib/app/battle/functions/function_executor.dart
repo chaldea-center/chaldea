@@ -180,6 +180,7 @@ class FunctionExecutor {
       case FuncType.addState:
         functionSuccess = await AddState.addState(
           battleData,
+          function,
           function.buff!,
           dataVals,
           targets,
@@ -192,6 +193,7 @@ class FunctionExecutor {
       case FuncType.addStateShort:
         functionSuccess = await AddState.addState(
           battleData,
+          function,
           function.buff!,
           dataVals,
           targets,

@@ -219,6 +219,7 @@
   "detective_mission": "偵探任務",
   "detective_rank": "偵探等級",
   "disable_event_effects": null,
+  "disabled": null,
   "display_grid": "網格",
   "display_list": "列表",
   "display_setting": "顯示設置",
