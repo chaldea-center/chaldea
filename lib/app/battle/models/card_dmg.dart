@@ -17,11 +17,6 @@ class EnemyData {
   int hp = 0;
 }
 
-class MysticCodeData {
-  MysticCode? mysticCode = db.gameData.mysticCodes[210];
-  int level = 10;
-}
-
 class BuffPreset {
   int addAtk = 0;
 }

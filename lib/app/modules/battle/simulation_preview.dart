@@ -3,18 +3,17 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/battle/models/card_dmg.dart';
 import 'package:chaldea/app/modules/battle/battle_simulation.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/quest/quest_card.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/db.dart';
-import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../quest/breakdown/quest_phase.dart';
 import '../quest/quest.dart';
+import 'formation_storage.dart';
 import 'options/default_lvs.dart';
 import 'options/svt_option_editor.dart';
 
@@ -398,6 +397,11 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           ),
         ),
         FilledButton.icon(
+          onPressed: () => _editFormations(),
+          icon: const Icon(Icons.people),
+          label: const Text('Edit Formations'),
+        ),
+        FilledButton.icon(
           onPressed: errorMsg != null
               ? null
               : () {
@@ -569,11 +573,50 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       ),
     );
   }
+
+  void _editFormations() {
+    final allSvts = [...onFieldSvtDataList, ...backupSvtDataList];
+    final curFormation = allSvts.where((svtData) => svtData.svt != null || svtData.ce != null).isNotEmpty
+        ? Formation(
+            onFieldSvtDataList: onFieldSvtDataList.map((e) => e.toStoredData()).toList(),
+            backupSvtDataList: backupSvtDataList.map((e) => e.toStoredData()).toList(),
+            mysticCodeData: mysticCodeData.toStoredData(),
+          )
+        : null;
+    router.pushPage(FormationEditor(
+      onSelected: (final Formation formation) async {
+        onFieldSvtDataList.clear();
+        for (int index = 0; index < 3; index += 1) {
+          if (formation.onFieldSvtDataList.length > index) {
+            final storedSvt = formation.onFieldSvtDataList[index];
+            onFieldSvtDataList.add(await PlayerSvtData.fromStoredData(storedSvt));
+          } else {
+            onFieldSvtDataList.add(PlayerSvtData.base());
+          }
+        }
+
+        backupSvtDataList.clear();
+        for (int index = 0; index < 3; index += 1) {
+          if (formation.backupSvtDataList.length > index) {
+            final storedSvt = formation.backupSvtDataList[index];
+            backupSvtDataList.add(await PlayerSvtData.fromStoredData(storedSvt));
+          } else {
+            backupSvtDataList.add(PlayerSvtData.base());
+          }
+        }
+
+        mysticCodeData.fromStoredData(formation.mysticCodeData);
+        if (mounted) setState(() {});
+      },
+      currentFormation: curFormation,
+    ));
+  }
 }
 
 class _SelectFreeDropdowns extends StatefulWidget {
   final int? initQuestId;
   final ValueChanged<Quest> onChanged;
+
   const _SelectFreeDropdowns({super.key, this.initQuestId, required this.onChanged});
 
   @override
@@ -685,11 +728,13 @@ class __SelectFreeDropdownsState extends State<_SelectFreeDropdowns> {
 
 class _DragSvtData {
   final PlayerSvtData svt;
+
   _DragSvtData(this.svt);
 }
 
 class _DragCEData {
   final PlayerSvtData svt;
+
   _DragCEData(this.svt);
 }
 
