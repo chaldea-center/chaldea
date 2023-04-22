@@ -85,10 +85,6 @@ class BattleData {
   double criticalStars = 0;
   int uniqueIndex = 1;
 
-  // int fixedRandom = ConstData.constants.attackRateRandomMin;
-  // int probabilityThreshold = 1000;
-  // bool isAfter7thAnni = true;
-  // bool tailoredExecution = false;
   BattleOptionsRuntime options = BattleOptionsRuntime();
   final BattleLogger battleLogger = BattleLogger();
   BuildContext? context;

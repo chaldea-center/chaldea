@@ -651,16 +651,25 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
   void _startSimulation() {
     // pre-check
+    final war = questPhase?.war;
+    final event = war?.event;
+
+    if (war != null && war.id > 1000 && event != null && event.startedAt < DateTime(2022, 7, 31).timestamp) {
+      options.isAfter7thAnni = false;
+    } else {
+      options.isAfter7thAnni = true;
+    }
+
     final questCopy = QuestPhase.fromJson(questPhase!.toJson());
     if (options.disableEvent) {
       questCopy.warId = 0;
       questCopy.individuality.removeWhere((e) => e.isEventField);
     }
 
-    final event = questCopy.war?.event;
     options.pointBuffs.removeWhere((key, pointBuff) {
-      return event?.pointBuffs.contains(pointBuff) != true;
+      return options.disableEvent || event?.pointBuffs.contains(pointBuff) != true;
     });
+
     //
     db.settings.battleSim.previousQuestPhase = '${questCopy.id}/${questCopy.phase}';
     saveFormation();

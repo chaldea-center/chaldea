@@ -545,7 +545,6 @@ class BattleUtils {
     return shownTds;
   }
 
-  // TODO: move to battle utils
   static List<NiceSkill> getShownSkills(final Servant svt, final int ascension, final int skillNum) {
     final List<NiceSkill> shownSkills = [];
     for (final skill in svt.groupedActiveSkills[skillNum] ?? <NiceSkill>[]) {
