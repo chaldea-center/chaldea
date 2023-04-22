@@ -2,8 +2,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
-import 'package:chaldea/app/modules/battle/simulation_preview.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/extension.dart';
@@ -932,11 +932,11 @@ void main() async {
     final playerSvtData = PlayerSvtData.id(304800)..lv = 90;
     for (final skillNum in kActiveSkillNums) {
       final List<NiceSkill> shownSkills =
-          ServantSelector.getShownSkills(playerSvtData.svt!, playerSvtData.limitCount, skillNum);
+          BattleUtils.getShownSkills(playerSvtData.svt!, playerSvtData.limitCount, skillNum);
       playerSvtData.skills[skillNum - 1] = shownSkills.lastOrNull;
     }
 
-    final List<NiceTd> shownTds = ServantSelector.getShownTds(playerSvtData.svt!, playerSvtData.limitCount);
+    final List<NiceTd> shownTds = BattleUtils.getShownTds(playerSvtData.svt!, playerSvtData.limitCount);
     playerSvtData.td = shownTds.last;
 
     final List<PlayerSvtData> setting = [
@@ -959,11 +959,11 @@ void main() async {
       ..limitCount = 304830;
     for (final skillNum in kActiveSkillNums) {
       final List<NiceSkill> shownSkills =
-          ServantSelector.getShownSkills(playerSvtData.svt!, playerSvtData.limitCount, skillNum);
+          BattleUtils.getShownSkills(playerSvtData.svt!, playerSvtData.limitCount, skillNum);
       playerSvtData.skills[skillNum - 1] = shownSkills.lastOrNull;
     }
 
-    final List<NiceTd> shownTds = ServantSelector.getShownTds(playerSvtData.svt!, playerSvtData.limitCount);
+    final List<NiceTd> shownTds = BattleUtils.getShownTds(playerSvtData.svt!, playerSvtData.limitCount);
     playerSvtData.td = shownTds.last;
     final List<PlayerSvtData> setting = [
       playerSvtData,

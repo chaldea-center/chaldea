@@ -7,11 +7,15 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/command_code/cmd_code_list.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
+import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
 import 'package:chaldea/app/modules/enemy/enemy_list.dart';
+import 'package:chaldea/app/modules/enemy/support_servant.dart';
+import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
@@ -20,11 +24,7 @@ import 'package:chaldea/models/userdata/userdata.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../../craft_essence/craft_list.dart';
-import '../../enemy/support_servant.dart';
-import '../../servant/servant_list.dart';
-import '../details/add_extra_passive.dart';
-import '../simulation_preview.dart';
+import 'add_extra_passive.dart';
 
 class ServantOptionEditPage extends StatefulWidget {
   final PlayerSvtData playerSvtData;
@@ -376,16 +376,16 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
                     for (final skillNum in kActiveSkillNums) {
                       final List<NiceSkill> previousShownSkills =
-                          ServantSelector.getShownSkills(svt, playerSvtData.limitCount, skillNum);
-                      final List<NiceSkill> shownSkills = ServantSelector.getShownSkills(svt, ascensionPhase, skillNum);
+                          BattleUtils.getShownSkills(svt, playerSvtData.limitCount, skillNum);
+                      final List<NiceSkill> shownSkills = BattleUtils.getShownSkills(svt, ascensionPhase, skillNum);
                       if (!listEquals(previousShownSkills, shownSkills)) {
                         playerSvtData.skills[skillNum - 1] = shownSkills.lastOrNull;
                         logger.d('Changing skill ID: ${playerSvtData.skills[skillNum - 1]?.id}');
                       }
                     }
 
-                    final List<NiceTd> previousShownTds = ServantSelector.getShownTds(svt, playerSvtData.limitCount);
-                    final List<NiceTd> shownTds = ServantSelector.getShownTds(svt, ascensionPhase);
+                    final List<NiceTd> previousShownTds = BattleUtils.getShownTds(svt, playerSvtData.limitCount);
+                    final List<NiceTd> shownTds = BattleUtils.getShownTds(svt, ascensionPhase);
                     playerSvtData.limitCount = ascensionPhase;
                     if (!listEquals(previousShownTds, shownTds)) {
                       playerSvtData.td = shownTds.last;
@@ -432,7 +432,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
   Widget _buildTdDescriptor(final BuildContext context) {
     final int ascension = playerSvtData.limitCount;
-    final List<NiceTd> shownTds = ServantSelector.getShownTds(svt, ascension);
+    final List<NiceTd> shownTds = BattleUtils.getShownTds(svt, ascension);
     if (playerSvtData.td != null && !shownTds.contains(playerSvtData.td)) {
       // custom td
       shownTds.add(playerSvtData.td!);
@@ -520,7 +520,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   Widget _buildActiveSkill(final BuildContext context, final int skillNum) {
     final index = skillNum - 1;
     final int ascension = playerSvtData.limitCount;
-    final List<NiceSkill> shownSkills = ServantSelector.getShownSkills(svt, ascension, skillNum);
+    final List<NiceSkill> shownSkills = BattleUtils.getShownSkills(svt, ascension, skillNum);
 
     if (playerSvtData.skills[index] != null && !shownSkills.contains(playerSvtData.skills[index])) {
       // custom skill
@@ -928,7 +928,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     playerSvtData.extraPassives = selectedSvt.extraPassive.toList();
     final region = widget.playerRegion;
 
-    final tds = ServantSelector.getShownTds(selectedSvt, playerSvtData.limitCount);
+    final tds = BattleUtils.getShownTds(selectedSvt, playerSvtData.limitCount);
     if (region != Region.jp) {
       final releasedTds = tds
           .where((td) => db.gameData.mappingData.tdPriority[selectedSvt.id]?.ofRegion(region)?[td.id] != null)
@@ -939,7 +939,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     }
 
     for (final skillNum in kActiveSkillNums) {
-      final skills = ServantSelector.getShownSkills(selectedSvt, playerSvtData.limitCount, skillNum);
+      final skills = BattleUtils.getShownSkills(selectedSvt, playerSvtData.limitCount, skillNum);
       if (region != Region.jp) {
         final releaseSkills = skills
             .where(

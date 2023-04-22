@@ -8,12 +8,12 @@ import 'package:chaldea/app/descriptors/func/func.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
+import 'package:chaldea/app/modules/enemy/quest_enemy.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/json_viewer/json_viewer.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../../enemy/quest_enemy.dart';
 
 class BattleSvtDetail extends StatefulWidget {
   final BattleServantData svt;

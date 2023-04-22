@@ -512,3 +512,79 @@ Future<BaseFunction> getDependFunc(BattleLogger logger, DataVals dataVals) async
   }
   return dependFunction;
 }
+
+class BattleUtils {
+  const BattleUtils._();
+
+  static final List<int> costumeOrtinaxIds = [12, 800140, 13, 800150];
+  static final List<int> melusineDragonIds = [3, 4, 13, 304850];
+
+  static List<NiceTd> getShownTds(final Servant svt, final int ascension) {
+    final List<NiceTd> shownTds = svt.groupedNoblePhantasms[1]?.toList() ?? <NiceTd>[];
+    // only case where we different groups of noblePhantasms exist are for npCardTypeChange
+
+    // Servant specific
+    final List<int> removeTdIdList = [];
+    if (svt.collectionNo == 1) {
+      // Mash
+      if (costumeOrtinaxIds.contains(ascension)) {
+        removeTdIdList.addAll([800100, 800101, 800104]);
+      } else {
+        removeTdIdList.add(800105);
+      }
+    } else if (svt.collectionNo == 312) {
+      // Melusine
+      if (melusineDragonIds.contains(ascension)) {
+        removeTdIdList.add(304801);
+      } else {
+        removeTdIdList.add(304802);
+      }
+    }
+
+    shownTds.removeWhere((niceTd) => removeTdIdList.contains(niceTd.id));
+    return shownTds;
+  }
+
+  // TODO: move to battle utils
+  static List<NiceSkill> getShownSkills(final Servant svt, final int ascension, final int skillNum) {
+    final List<NiceSkill> shownSkills = [];
+    for (final skill in svt.groupedActiveSkills[skillNum] ?? <NiceSkill>[]) {
+      if (shownSkills.every((storeSkill) => storeSkill.id != skill.id)) {
+        shownSkills.add(skill);
+      }
+    }
+
+    // Servant specific
+    final List<int> removeSkillIdList = [];
+    if (svt.collectionNo == 1) {
+      // Mash
+      if (costumeOrtinaxIds.contains(ascension)) {
+        if (skillNum == 1) {
+          removeSkillIdList.addAll([1000, 236000]);
+        } else if (skillNum == 2) {
+          removeSkillIdList.addAll([2000]);
+        } else {
+          removeSkillIdList.addAll([133000]);
+        }
+      } else {
+        if (skillNum == 1) {
+          removeSkillIdList.addAll([459550, 744450]);
+        } else if (skillNum == 2) {
+          removeSkillIdList.addAll([460250]);
+        } else {
+          removeSkillIdList.addAll([457000, 2162350]);
+        }
+      }
+    } else if (svt.collectionNo == 312 && skillNum == 3) {
+      // Melusine
+      if (melusineDragonIds.contains(ascension)) {
+        removeSkillIdList.add(888550);
+      } else {
+        removeSkillIdList.add(888575);
+      }
+    }
+
+    shownSkills.removeWhere((niceSkill) => removeSkillIdList.contains(niceSkill.id));
+    return shownSkills;
+  }
+}
