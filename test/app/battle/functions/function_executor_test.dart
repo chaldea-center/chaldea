@@ -801,7 +801,7 @@ void main() async {
     expect(enemy3.hp, greaterThan(0));
     expect(battle.nonnullEnemies.length, 3);
 
-    battle.probabilityThreshold = 800;
+    battle.options.probabilityThreshold = 800;
     kiara.np = 10000;
     await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
     expect(enemy1.hp, 0);

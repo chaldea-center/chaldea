@@ -100,7 +100,7 @@ void main() async {
 
       expect(await buff.shouldActivateBuff(battle, false), isFalse);
 
-      battle.probabilityThreshold = 500;
+      battle.options.probabilityThreshold = 500;
 
       expect(await buff.shouldActivateBuff(battle, false), isTrue);
 
@@ -737,7 +737,7 @@ void main() async {
     expect(enemy.npLineCount, 1);
 
     await battle.activateSvtSkill(0, 2);
-    battle.probabilityThreshold = 500;
+    battle.options.probabilityThreshold = 500;
     await battle.activateSvtSkill(1, 1);
     await battle.playerTurn([CombatAction(protoMerlin, protoMerlin.getCards(battle)[0])]);
     expect(enemy.npLineCount, 1);

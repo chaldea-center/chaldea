@@ -32,37 +32,25 @@ class SimulationPreview extends StatefulWidget {
 }
 
 class _SimulationPreviewState extends State<SimulationPreview> {
-  Region? region;
+  static const _validQuestRegions = [Region.jp, Region.na];
+
+  Region? region; // region for quest selector
   QuestPhase? questPhase;
   String? questErrorMsg;
   String? errorMsg;
 
   TextEditingController questIdTextController = TextEditingController();
 
-  final List<PlayerSvtData> onFieldSvtDataList = [
-    PlayerSvtData.base(),
-    PlayerSvtData.base(),
-    PlayerSvtData.base(),
-  ];
-  final List<PlayerSvtData> backupSvtDataList = [
-    PlayerSvtData.base(),
-    PlayerSvtData.base(),
-    PlayerSvtData.base(),
-  ];
-  final MysticCodeData mysticCodeData = MysticCodeData();
+  final BattleOptions options = BattleOptions();
 
-  int fixedRandom = ConstData.constants.attackRateRandomMin;
-  int probabilityThreshold = 1000;
-  bool isAfter7thAnni = true;
-  static const _validRegions = [Region.jp, Region.na];
-  late Region playerRegion = db.curUser.region;
-  bool disableEvent = false;
+  List<PlayerSvtData> get onFieldSvts => options.onFieldSvtDataList;
+  List<PlayerSvtData> get backupSvts => options.backupSvtDataList;
 
   @override
   void initState() {
     super.initState();
     region = widget.region;
-    mysticCodeData.level = db.curUser.mysticCodes[mysticCodeData.mysticCode?.id] ?? 10;
+    options.mysticCodeData.level = db.curUser.mysticCodes[options.mysticCodeData.mysticCode?.id] ?? 10;
     questPhase = widget.questPhase;
     String? initText;
     if (questPhase != null) {
@@ -106,8 +94,8 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     children.add(ResponsiveLayout(
       horizontalDivider: kIndentDivider,
       children: [
-        partyOrganization(onFieldSvtDataList, S.current.battle_select_battle_servants),
-        partyOrganization(backupSvtDataList, S.current.battle_select_backup_servants),
+        partyOrganization(onFieldSvts, S.current.battle_select_battle_servants),
+        partyOrganization(backupSvts, S.current.battle_select_backup_servants),
       ],
     ));
     children.add(header(S.current.mystic_code));
@@ -156,7 +144,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   Widget questSelector() {
-    if (region != null && !_validRegions.contains(region)) {
+    if (region != null && !_validQuestRegions.contains(region)) {
       region = Region.jp;
     }
     return Column(
@@ -184,7 +172,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               isDense: true,
               value: region,
               items: [
-                for (final r in _validRegions)
+                for (final r in _validQuestRegions)
                   DropdownMenuItem(value: r, child: Text(r.localName, textScaleFactor: 0.9)),
               ],
               hint: Text(Region.jp.localName),
@@ -301,7 +289,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       children: [
         DropdownButton<Region>(
           isDense: true,
-          value: playerRegion,
+          value: options.playerRegion,
           items: [
             for (final r in Region.values)
               DropdownMenuItem(
@@ -320,7 +308,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           ],
           onChanged: (v) {
             setState(() {
-              if (v != null) playerRegion = v;
+              if (v != null) options.playerRegion = v;
             });
           },
         ),
@@ -357,7 +345,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                 Expanded(
                   child: ServantSelector(
                     playerSvtData: svt,
-                    playerRegion: playerRegion,
+                    playerRegion: options.playerRegion,
                     questPhase: questPhase,
                     onChange: () {
                       if (mounted) setState(() {});
@@ -378,7 +366,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   void onDrag(PlayerSvtData from, PlayerSvtData to, bool isCE) {
-    final allSvts = [...onFieldSvtDataList, ...backupSvtDataList];
+    final allSvts = [...onFieldSvts, ...backupSvts];
     final fromIndex = allSvts.indexOf(from), toIndex = allSvts.indexOf(to);
     if (fromIndex < 0 || toIndex < 0 || fromIndex == toIndex) return;
     if (isCE) {
@@ -394,8 +382,8 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     } else {
       allSvts[fromIndex] = to;
       allSvts[toIndex] = from;
-      onFieldSvtDataList.setAll(0, allSvts.sublist(0, onFieldSvtDataList.length));
-      backupSvtDataList.setAll(0, allSvts.sublist(onFieldSvtDataList.length));
+      onFieldSvts.setAll(0, allSvts.sublist(0, onFieldSvts.length));
+      backupSvts.setAll(0, allSvts.sublist(onFieldSvts.length));
     }
 
     if (mounted) setState(() {});
@@ -482,13 +470,13 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        mysticCodeData.mysticCode?.iconBuilder(context: context, width: 48, jumpToDetail: false) ??
+        options.mysticCodeData.mysticCode?.iconBuilder(context: context, width: 48, jumpToDetail: false) ??
             db.getIconImage(null, width: 48),
-        if (mysticCodeData.mysticCode != null)
+        if (options.mysticCodeData.mysticCode != null)
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              for (final skill in mysticCodeData.mysticCode!.skills)
+              for (final skill in options.mysticCodeData.mysticCode!.skills)
                 db.getIconImage(skill.icon, width: 24, aspectRatio: 1, padding: const EdgeInsets.all(1)),
             ],
           ),
@@ -499,7 +487,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         router.pushPage(
           MysticCodeListPage(
             onSelected: (selectedMC) {
-              mysticCodeData
+              options.mysticCodeData
                 ..mysticCode = selectedMC
                 ..level = db.curUser.mysticCodes[selectedMC.id] ?? 10;
               if (mounted) setState(() {});
@@ -522,13 +510,13 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SliderWithTitle(
-                leadingText: mysticCodeData.mysticCode?.lName.l ?? S.current.mystic_code,
+                leadingText: options.mysticCodeData.mysticCode?.lName.l ?? S.current.mystic_code,
                 min: 1,
                 max: 10,
-                value: mysticCodeData.level,
-                label: 'Lv.${mysticCodeData.level}',
+                value: options.mysticCodeData.level,
+                label: 'Lv.${options.mysticCodeData.level}',
                 onChange: (v) {
-                  mysticCodeData.level = v.round();
+                  options.mysticCodeData.level = v.round();
                   if (mounted) setState(() {});
                 },
               ),
@@ -547,21 +535,21 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           leadingText: S.current.battle_probability_threshold,
           min: 0,
           max: 10,
-          value: probabilityThreshold ~/ 100,
-          label: '${probabilityThreshold ~/ 10} %',
+          value: options.probabilityThreshold ~/ 100,
+          label: '${options.probabilityThreshold ~/ 10} %',
           onChange: (v) {
-            probabilityThreshold = v.round() * 100;
+            options.probabilityThreshold = v.round() * 100;
             if (mounted) setState(() {});
           },
           padding: const EdgeInsetsDirectional.only(top: 8, start: 8),
         ),
         CheckboxListTile(
           dense: true,
-          value: disableEvent,
+          value: options.disableEvent,
           title: Text(S.current.disable_event_effects),
           onChanged: (v) {
             setState(() {
-              disableEvent = v ?? disableEvent;
+              options.disableEvent = v ?? options.disableEvent;
             });
           },
         )
@@ -574,8 +562,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       errorMsg = S.current.battle_no_quest_phase;
       return false;
     }
-    if (onFieldSvtDataList.every((setting) => setting.svt == null) &&
-        backupSvtDataList.every((setting) => setting.svt == null)) {
+    if (onFieldSvts.every((setting) => setting.svt == null) && backupSvts.every((setting) => setting.svt == null)) {
       errorMsg = S.current.battle_no_servant;
       return false;
     }
@@ -588,7 +575,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     db.settings.battleSim.previousQuestPhase = '${questPhase!.id}/${questPhase!.phase}';
     saveFormation();
     final questCopy = QuestPhase.fromJson(questPhase!.toJson());
-    if (disableEvent) {
+    if (options.disableEvent) {
       questCopy.warId = 0;
       questCopy.individuality.removeWhere((e) => e.isEventField);
     }
@@ -596,12 +583,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       url: Routes.laplaceBattle,
       child: BattleSimulationPage(
         questPhase: questCopy,
-        onFieldSvtDataList: onFieldSvtDataList,
-        backupSvtDataList: backupSvtDataList,
-        mysticCodeData: mysticCodeData,
-        fixedRandom: fixedRandom,
-        probabilityThreshold: probabilityThreshold,
-        isAfter7thAnni: isAfter7thAnni,
+        options: options,
       ),
     );
   }
@@ -626,23 +608,24 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       rethrow;
     } finally {
       EasyLoading.dismiss();
+      if (mounted) setState(() {});
     }
   }
 
   Future<void> restoreFormation(BattleTeamFormation formation) async {
     for (int index = 0; index < 3; index++) {
-      onFieldSvtDataList[index] = await PlayerSvtData.fromStoredData(formation.onFieldSvts.getOrNull(index));
-      backupSvtDataList[index] = await PlayerSvtData.fromStoredData(formation.backupSvts.getOrNull(index));
+      onFieldSvts[index] = await PlayerSvtData.fromStoredData(formation.onFieldSvts.getOrNull(index));
+      backupSvts[index] = await PlayerSvtData.fromStoredData(formation.backupSvts.getOrNull(index));
     }
 
-    mysticCodeData.fromStoredData(formation.mysticCode);
+    options.mysticCodeData.loadStoredData(formation.mysticCode);
   }
 
   void saveFormation() {
     final curFormation = db.settings.battleSim.curFormation;
-    curFormation.onFieldSvts = onFieldSvtDataList.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
-    curFormation.backupSvts = backupSvtDataList.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
-    curFormation.mysticCode = mysticCodeData.toStoredData();
+    curFormation.onFieldSvts = onFieldSvts.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
+    curFormation.backupSvts = backupSvts.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
+    curFormation.mysticCode = options.mysticCodeData.toStoredData();
   }
 }
 

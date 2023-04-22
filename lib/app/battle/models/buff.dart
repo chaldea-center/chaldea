@@ -213,7 +213,7 @@ class BuffData {
     if (buffRate < 1000) {
       battleData.battleLogger.debug('${battleData.activator?.lBattleName ?? S.current.battle_no_source}'
           ' - ${buff.lName.l}: ${probabilityCheck ? S.current.success : S.current.failed}'
-          '${battleData.tailoredExecution ? '' : ' [$buffRate vs ${battleData.probabilityThreshold}]'}');
+          '${battleData.options.tailoredExecution ? '' : ' [$buffRate vs ${battleData.options.probabilityThreshold}]'}');
     }
 
     return shouldApplyBuff(battleData, isTarget) && probabilityCheck;

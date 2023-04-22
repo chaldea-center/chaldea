@@ -85,11 +85,11 @@ class BattleData {
   double criticalStars = 0;
   int uniqueIndex = 1;
 
-  int fixedRandom = ConstData.constants.attackRateRandomMin;
-  int probabilityThreshold = 1000;
-  bool isAfter7thAnni = true;
-  bool tailoredExecution = false;
-
+  // int fixedRandom = ConstData.constants.attackRateRandomMin;
+  // int probabilityThreshold = 1000;
+  // bool isAfter7thAnni = true;
+  // bool tailoredExecution = false;
+  BattleOptionsRuntime options = BattleOptionsRuntime();
   final BattleLogger battleLogger = BattleLogger();
   BuildContext? context;
   bool get mounted => context != null && context!.mounted;
@@ -184,9 +184,6 @@ class BattleData {
 
     previousFunctionResult = true;
     uniqueIndex = 1;
-    fixedRandom = ConstData.constants.attackRateRandomMin;
-    probabilityThreshold = 1000;
-    isAfter7thAnni = true;
     enemyDecks.clear();
     enemyTargetIndex = 0;
     allyTargetIndex = 0;
@@ -590,7 +587,7 @@ class BattleData {
         final cardTypesSet =
             actions.where((action) => action.isValid(this)).map((action) => action.cardData.cardType).toSet();
         final isTypeChain = actions.length == 3 && cardTypesSet.length == 1;
-        final isMightyChain = cardTypesSet.length == 3 && isAfter7thAnni;
+        final isMightyChain = cardTypesSet.length == 3 && options.isAfter7thAnni;
         final isBraveChain = actions.where((action) => action.isValid(this)).length == kMaxCommand &&
             actions.map((action) => action.actor).toSet().length == 1;
         if (isBraveChain) {
@@ -757,7 +754,7 @@ class BattleData {
   void applyTypeChain(final CardType cardType, final List<CombatAction> actions) {
     battleLogger.action('${cardType.name} Chain');
     if (cardType == CardType.quick) {
-      final dataValToUse = isAfter7thAnni ? quickChainAfter7thAnni : quickChainBefore7thAnni;
+      final dataValToUse = options.isAfter7thAnni ? quickChainAfter7thAnni : quickChainBefore7thAnni;
       GainStar.gainStar(this, dataValToUse);
     } else if (cardType == CardType.arts) {
       final targets = actions.map((action) => action.actor).toSet();
@@ -954,17 +951,17 @@ class BattleData {
   }
 
   Future<bool> canActivate(final int activationRate, final String description) async {
-    if (activationRate < 1000 && activationRate > 0 && tailoredExecution && mounted) {
-      final curResult = probabilityThreshold <= activationRate ? S.current.success : S.current.failed;
+    if (activationRate < 1000 && activationRate > 0 && options.tailoredExecution && mounted) {
+      final curResult = options.probabilityThreshold <= activationRate ? S.current.success : S.current.failed;
       final String details = '${S.current.results}: $curResult => '
           '${S.current.battle_activate_probability}: '
           '${(activationRate / 10).toStringAsFixed(1)}% '
           'vs ${S.current.probability_expectation}: '
-          '${(probabilityThreshold / 10).toStringAsFixed(1)}%';
+          '${(options.probabilityThreshold / 10).toStringAsFixed(1)}%';
       return TailoredExecutionConfirm.show(context: context!, description: description, details: details);
     }
 
-    return probabilityThreshold <= activationRate;
+    return options.probabilityThreshold <= activationRate;
   }
 
   Future<bool> canActivateFunction(final int activationRate) async {
@@ -1005,10 +1002,7 @@ class BattleData {
       ..totalTurnCount = totalTurnCount
       ..criticalStars = criticalStars
       ..uniqueIndex = uniqueIndex
-      ..fixedRandom = fixedRandom
-      ..probabilityThreshold = probabilityThreshold
-      ..isAfter7thAnni = isAfter7thAnni
-      ..tailoredExecution = tailoredExecution
+      ..options = options.copy()
       ..recorder = recorder.copy();
 
     snapshots.add(copy);
@@ -1041,10 +1035,7 @@ class BattleData {
       ..totalTurnCount = copy.totalTurnCount
       ..criticalStars = copy.criticalStars
       ..uniqueIndex = copy.uniqueIndex
-      ..fixedRandom = copy.fixedRandom
-      ..probabilityThreshold = copy.probabilityThreshold
-      ..isAfter7thAnni = copy.isAfter7thAnni
-      ..tailoredExecution = tailoredExecution
+      ..options = copy.options.copy()
       ..recorder = copy.recorder;
   }
 }

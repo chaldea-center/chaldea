@@ -16,7 +16,7 @@ class DamageAdjustor extends StatefulWidget {
   State<DamageAdjustor> createState() => _DamageAdjustorState();
 
   static Future<int> show(final BattleData battleData, final DamageParameters damageParameters) async {
-    if (battleData.tailoredExecution && battleData.mounted) {
+    if (battleData.options.tailoredExecution && battleData.mounted) {
       return showUserConfirm<int>(
         context: battleData.context!,
         barrierDismissible: false,

@@ -10,7 +10,7 @@ class MoveToLastSubMember {
     final List<BattleServantData> targets,
   ) {
     final functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < battleData.probabilityThreshold) {
+    if (functionRate < battleData.options.probabilityThreshold) {
       return false;
     }
 

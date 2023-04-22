@@ -124,7 +124,7 @@ class AddState {
 
     battleData.battleLogger.debug('${S.current.effect_target}: ${target.lBattleName} - '
         '$resultsString'
-        '${battleData.tailoredExecution ? '' : ' [($activationRate - $resistRate) vs ${battleData.probabilityThreshold}]'}');
+        '${battleData.options.tailoredExecution ? '' : ' [($activationRate - $resistRate) vs ${battleData.options.probabilityThreshold}]'}');
 
     return success;
   }

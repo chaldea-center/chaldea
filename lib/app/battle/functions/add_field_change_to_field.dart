@@ -10,7 +10,7 @@ class AddFieldChangeToField {
     final DataVals dataVals,
   ) {
     final functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < battleData.probabilityThreshold) {
+    if (functionRate < battleData.options.probabilityThreshold) {
       return false;
     }
 

@@ -10,7 +10,7 @@ class ReplaceMember {
     final DataVals dataVals,
   ) async {
     final functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < battleData.probabilityThreshold) {
+    if (functionRate < battleData.options.probabilityThreshold) {
       return false;
     }
 

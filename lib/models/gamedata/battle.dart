@@ -169,8 +169,54 @@ class MysticCodeData {
     return MysticCodeSaveData(mysticCodeId: mysticCode?.id, level: level);
   }
 
-  void fromStoredData(final MysticCodeSaveData storedData) {
+  void loadStoredData(final MysticCodeSaveData storedData) {
     mysticCode = db.gameData.mysticCodes[storedData.mysticCodeId];
     level = storedData.level;
   }
+}
+
+// won't change in entire battle
+class BattleOptionsEnv {
+  bool disableEvent = false;
+
+  BattleOptionsEnv copy() {
+    return BattleOptionsEnv()..disableEvent = disableEvent;
+  }
+}
+
+class BattleOptionsRuntime extends BattleOptionsEnv {
+  int fixedRandom = ConstData.constants.attackRateRandomMin;
+  int probabilityThreshold = 1000;
+  bool isAfter7thAnni = true;
+  bool tailoredExecution = false;
+
+  @override
+  BattleOptionsRuntime copy() {
+    return BattleOptionsRuntime()
+      ..disableEvent = disableEvent
+      ..fixedRandom = fixedRandom
+      ..probabilityThreshold = probabilityThreshold
+      ..isAfter7thAnni = isAfter7thAnni
+      ..tailoredExecution = tailoredExecution;
+  }
+}
+
+// only used before simulation started and initiation
+class BattleOptionsInit {
+  final List<PlayerSvtData> onFieldSvtDataList = [
+    PlayerSvtData.base(),
+    PlayerSvtData.base(),
+    PlayerSvtData.base(),
+  ];
+  final List<PlayerSvtData> backupSvtDataList = [
+    PlayerSvtData.base(),
+    PlayerSvtData.base(),
+    PlayerSvtData.base(),
+  ];
+  final MysticCodeData mysticCodeData = MysticCodeData();
+  late Region playerRegion = db.curUser.region;
+}
+
+class BattleOptions extends BattleOptionsRuntime with BattleOptionsInit {
+  // won't support copy
 }

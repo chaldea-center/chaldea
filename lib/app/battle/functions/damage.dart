@@ -38,7 +38,7 @@ class Damage {
     final NpSpecificMode npSpecificMode = NpSpecificMode.normal,
   }) async {
     final functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < battleData.probabilityThreshold) {
+    if (functionRate < battleData.options.probabilityThreshold) {
       return false;
     }
 
@@ -118,7 +118,7 @@ class Damage {
         ..npDamageBuff = currentCard.isNP ? await activator.getBuffValueOnAction(battleData, BuffAction.npdamage) : 0
         ..percentAttackBuff = await activator.getBuffValueOnAction(battleData, BuffAction.damageSpecial)
         ..damageAdditionBuff = await activator.getBuffValueOnAction(battleData, BuffAction.givenDamage)
-        ..fixedRandom = battleData.fixedRandom;
+        ..fixedRandom = battleData.options.fixedRandom;
 
       final atkNpParameters = AttackNpGainParameters();
       final defNpParameters = DefendNpGainParameters();

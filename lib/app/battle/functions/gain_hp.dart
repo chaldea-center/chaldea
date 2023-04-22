@@ -15,7 +15,7 @@ class GainHP {
     final bool isLethal = false,
   }) async {
     final functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < battleData.probabilityThreshold) {
+    if (functionRate < battleData.options.probabilityThreshold) {
       return false;
     }
 

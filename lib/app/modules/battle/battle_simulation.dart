@@ -20,22 +20,12 @@ import 'details/svt_detail.dart';
 
 class BattleSimulationPage extends StatefulWidget {
   final QuestPhase questPhase;
-  final List<PlayerSvtData> onFieldSvtDataList;
-  final List<PlayerSvtData> backupSvtDataList;
-  final MysticCodeData mysticCodeData;
-  final int fixedRandom;
-  final int probabilityThreshold;
-  final bool isAfter7thAnni;
+  final BattleOptions options;
 
   BattleSimulationPage({
     super.key,
     required this.questPhase,
-    required this.onFieldSvtDataList,
-    required this.backupSvtDataList,
-    required this.mysticCodeData,
-    required this.fixedRandom,
-    required this.probabilityThreshold,
-    required this.isAfter7thAnni,
+    required this.options,
   });
 
   @override
@@ -45,14 +35,14 @@ class BattleSimulationPage extends StatefulWidget {
 class _BattleSimulationPageState extends State<BattleSimulationPage> {
   final BattleData battleData = BattleData();
 
+  BattleOptionsRuntime get options => battleData.options;
+
   @override
   void initState() {
     super.initState();
 
     battleData
-      ..probabilityThreshold = widget.probabilityThreshold
-      ..fixedRandom = widget.fixedRandom
-      ..isAfter7thAnni = widget.isAfter7thAnni
+      ..options = options
       ..context = context;
 
     _initBattle();
@@ -63,7 +53,10 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       save: false,
       action: 'battle_init',
       task: () => battleData.init(
-          widget.questPhase, [...widget.onFieldSvtDataList, ...widget.backupSvtDataList], widget.mysticCodeData),
+        widget.questPhase,
+        [...widget.options.onFieldSvtDataList, ...widget.options.backupSvtDataList],
+        widget.options.mysticCodeData,
+      ),
     );
     if (mounted) setState(() {});
   }
@@ -422,10 +415,10 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                 leadingText: S.current.battle_probability_threshold,
                 min: 0,
                 max: 10,
-                value: battleData.probabilityThreshold ~/ 100,
-                label: '${battleData.probabilityThreshold ~/ 10}',
+                value: options.probabilityThreshold ~/ 100,
+                label: '${options.probabilityThreshold ~/ 10}',
                 onChange: (v) {
-                  battleData.probabilityThreshold = v.round() * 100;
+                  options.probabilityThreshold = v.round() * 100;
                   if (mounted) setState(() {});
                 },
                 padding: EdgeInsets.zero,
@@ -478,14 +471,14 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         ),
         IconButton(
           onPressed: () {
-            battleData.tailoredExecution = !battleData.tailoredExecution;
+            options.tailoredExecution = !options.tailoredExecution;
             EasyLoading.showToast(
-                '${S.current.battle_tailored_execution}: ${battleData.tailoredExecution ? 'On' : 'Off'}');
+                '${S.current.battle_tailored_execution}: ${options.tailoredExecution ? 'On' : 'Off'}');
             if (mounted) setState(() {});
           },
           icon: Icon(
-            battleData.tailoredExecution ? Icons.casino : Icons.casino_outlined,
-            color: battleData.tailoredExecution ? Colors.red : Colors.grey,
+            options.tailoredExecution ? Icons.casino : Icons.casino_outlined,
+            color: options.tailoredExecution ? Colors.red : Colors.grey,
           ),
           tooltip: S.current.battle_tailored_execution,
           iconSize: 24,
@@ -679,10 +672,10 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         leadingText: S.current.battle_random,
         min: ConstData.constants.attackRateRandomMin,
         max: ConstData.constants.attackRateRandomMax - 1,
-        value: battleData.fixedRandom,
-        label: toModifier(battleData.fixedRandom).toStringAsFixed(3),
+        value: battleData.options.fixedRandom,
+        label: toModifier(battleData.options.fixedRandom).toStringAsFixed(3),
         onChange: (v) {
-          battleData.fixedRandom = v.round();
+          battleData.options.fixedRandom = v.round();
           if (mounted) setState(() {});
         },
       ),
@@ -691,11 +684,11 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         CheckboxWithLabel(
-          value: battleData.isAfter7thAnni,
+          value: battleData.options.isAfter7thAnni,
           label: Text('${S.current.battle_after_7th} (QAB Chain)'),
           onChanged: (v) {
             setState(() {
-              battleData.isAfter7thAnni = v!;
+              battleData.options.isAfter7thAnni = v!;
             });
           },
         ),
