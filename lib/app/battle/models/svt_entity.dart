@@ -650,7 +650,7 @@ class BattleServantData {
   NiceTd? getCurrentNP(final BattleData battleData) {
     final buffs = collectBuffsPerAction(battleBuff.allBuffs, BuffAction.tdTypeChange);
     battleData.setActivator(this);
-    for (final buff in buffs) {
+    for (final buff in buffs.reversed) {
       if (buff.tdSelection != null && buff.shouldApplyBuff(battleData, false)) {
         return buff.tdSelection!;
       }
@@ -877,7 +877,8 @@ class BattleServantData {
     final isTarget,
   ) async {
     int relation = baseRelation;
-    for (final buff in collectBuffsPerType(battleBuff.allBuffs, BuffType.overwriteClassRelation)) {
+    final List<BuffData> buffs = collectBuffsPerType(battleBuff.allBuffs, BuffType.overwriteClassRelation);
+    for (final buff in buffs.reversed) {
       if (await buff.shouldActivateBuff(battleData, isTarget)) {
         buff.setUsed();
         final relationOverwrite = buff.buff.script!.relationId!;

@@ -39,11 +39,15 @@ There are plenty of work need to do.
 - [ ] BuffType doNotRecovery interacts with maxHp? Treating as no interaction for now
 - [ ] BuffType doNotActCommandType
 - [ ] BuffType doNotSelectCommandCard
-- [ ] BuffType tdTypeChange: if there are multiple instances of this buff, the last one dominates
-  - [ ] the max addOrder, should be safe to use the last effective one
-- [ ] BuffType overwriteClassRelation, atkSide first or defSide first? When two overwriteForce type interact, is it
+- [x] BuffType tdTypeChange: if there are multiple instances of this buff, the last one dominates
+  - [x] the max addOrder, should be safe to use the last effective one
+- [x] BuffType overwriteClassRelation, atkSide first or defSide first? When two overwriteForce type interact, is it
       based on buff order? E.g. Kama skill3 & Reinis NP vs alterego attacker, is the final relation 500 or 1000 or depends
       on which buff comes last?
+  - Def side takes priority.
+  - For the same servant, first applied overwrite buff takes priority.
+  - In conclusion, first applied defender side buff takes priority. Therefore, evaluation order goes from attacker to
+    defender, from most recent buff to lease recent buff.
 - [ ] BuffType preventDeathByDamage works if Van Gogh has both curse and burn?
 - [ ] BuffType reflectionFunction
 - [ ] BuffType skillRankUp has a maxRate of 0, so it's probably not a ValuedBuff? Currently only counting by buffTrait
