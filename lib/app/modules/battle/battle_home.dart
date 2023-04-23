@@ -72,6 +72,13 @@ class BattleHomePage extends StatelessWidget {
                   router.pushPage(const TdDamageRanking());
                 },
               ),
+            ListTile(
+              title: const Text('Bugs'),
+              leading: const Icon(Icons.bug_report),
+              onTap: () {
+                launch(ChaldeaUrl.laplace('bugs'));
+              },
+            ),
             const ListTile(
               enabled: false,
               leading: Icon(Icons.snowing),

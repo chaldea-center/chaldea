@@ -4,8 +4,9 @@
 
 - Laplace
   - Save teams
+  - Support custom skill: svt extra passive + activate custom skill during battle
   - Support event point buff (Grail Live & Oniland)
-  - Disable event effect: event field trait
+  - Support disable event effect: event field trait
 
 ## 2.3.2
 

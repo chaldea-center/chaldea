@@ -19,8 +19,8 @@ class ChaldeaUrl {
     return kProjectDocRoot + (isZh ? '/zh/' : '/') + dir + (path.startsWith('/') ? path.substring(1) : path);
   }
 
-  static String chaldeas(String path, {bool? isZh}) {
-    return doc(path, isZh: isZh, dir: 'chaldeas/');
+  static String laplace(String path, {bool? isZh}) {
+    return doc(path, isZh: isZh, dir: 'laplace/');
   }
 
   static String app(String path, [bool? useCN]) {
