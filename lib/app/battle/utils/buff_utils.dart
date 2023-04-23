@@ -94,8 +94,6 @@ class CheckTraitParameters {
   bool checkCurrentCardTraits;
   bool checkQuestTraits;
 
-  bool tempAddSvtId;
-
   CheckTraitParameters({
     required final Iterable<NiceTrait> requiredTraits,
     this.actor,
@@ -108,6 +106,5 @@ class CheckTraitParameters {
     this.checkCurrentBuffTraits = false,
     this.checkCurrentCardTraits = false,
     this.checkQuestTraits = false,
-    this.tempAddSvtId = false,
   }) : requiredTraits = requiredTraits.toList();
 }

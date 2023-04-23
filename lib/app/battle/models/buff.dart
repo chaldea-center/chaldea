@@ -70,6 +70,7 @@ class BuffData {
 
   bool passive = false;
   bool irremovable = false;
+  bool individualitiesActive = true;
 
   // ignore: unused_field
   bool isDecide = false;
@@ -193,7 +194,7 @@ class BuffData {
 
     final scriptCheck = checkScript(battleData, isTarget);
 
-    return selfCheck && opponentCheck && onFieldCheck && scriptCheck;
+    return selfCheck && opponentCheck && onFieldCheck && scriptCheck && individualitiesActive;
   }
 
   Future<bool> shouldActivateBuff(final BattleData battleData, final bool isTarget) async {
@@ -217,20 +218,6 @@ class BuffData {
     }
 
     final script = buff.script!;
-
-    if (script.INDIVIDUALITIE != null) {
-      final individualITieMatch = battleData.checkTraits(CheckTraitParameters(
-        requiredTraits: [script.INDIVIDUALITIE!],
-        actor: isTarget ? battleData.target : battleData.activator,
-        checkActorBuffTraits: true,
-        checkQuestTraits: true,
-        tempAddSvtId: true,
-      ));
-
-      if (!individualITieMatch) {
-        return false;
-      }
-    }
 
     if (vals.OnFieldCount == -1 && script.TargetIndiv != null) {
       final List<BattleServantData> allies =

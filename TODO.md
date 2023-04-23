@@ -23,7 +23,7 @@ There are plenty of work need to do.
       for buff useRate
 - [x] disable NP if NP has no functions
 - [ ] BuffScript should only be checked when buffType matches
-- [ ] Move all checkTrait logic into battle and remove individual checkTrait methods in models
+- [x] Move all checkTrait logic into battle and remove individual checkTrait methods in models
 - [ ] There is a bug that will reset other enemies' accumulation damage when deathEffect is triggered,
       ~~not verified for gutsEffect~~ Verified for gutsEffect as well, need to add that
 - [ ] FuncType damageNpCounter
@@ -48,7 +48,7 @@ There are plenty of work need to do.
 - [ ] BuffType reflectionFunction
 - [ ] BuffType skillRankUp has a maxRate of 0, so it's probably not a ValuedBuff? Currently only counting by buffTrait
 - [ ] INDIVIDUALITIE seen on fields, buffTraits, servantId, are other traits included as well?
-- [ ] update INDIVIDUALITIE to only check its state in certain situations, perhaps in checkBuffStatus()?
+- [x] update INDIVIDUALITIE to only check its state in certain situations, perhaps in checkBuffStatus()?
 - [ ] includeIgnoredTrait only adds NP card traits for now
 - [ ] more sample on convertBuff's scripts
   - [ ] BuffConvert is converting a buff list to another buff list, (or trait list to another buff list, not used yet)

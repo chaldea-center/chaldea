@@ -926,9 +926,21 @@ class BattleServantData {
     battleBuff.commandCodeList.clear();
   }
 
-  void checkBuffStatus() {
-    battleBuff.allBuffs.where((buff) => buff.isUsed).forEach((buff) {
-      buff.useOnce();
+  void checkBuffStatus(final BattleData battleData) {
+    battleBuff.allBuffs.forEach((buff) {
+      if (buff.isUsed) {
+        buff.useOnce();
+      }
+
+      if (buff.buff.script?.INDIVIDUALITIE != null) {
+        buff.individualitiesActive = battleData.checkTraits(CheckTraitParameters(
+          requiredTraits: [buff.buff.script!.INDIVIDUALITIE!],
+          actor: this,
+          checkActorTraits: true,
+          checkActorBuffTraits: true,
+          checkQuestTraits: true,
+        ));
+      }
     });
 
     battleBuff.passiveList.removeWhere((buff) => !buff.isActive);

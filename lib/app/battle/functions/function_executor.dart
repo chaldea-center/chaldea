@@ -72,8 +72,6 @@ class FunctionExecutor {
         defaultToPlayer: defaultToPlayer,
       );
     }
-
-    battleData.checkBuffStatus();
   }
 
   static Future<void> executeFunction(
@@ -375,6 +373,8 @@ class FunctionExecutor {
     }
 
     battleData.previousFunctionResult = functionSuccess;
+
+    battleData.checkBuffStatus();
   }
 
   static bool validateFunctionTargetTeam(

@@ -411,10 +411,6 @@ class BattleData {
           currentTraits.addAll(currentNp.traits);
         }
       }
-
-      if (params.tempAddSvtId) {
-        currentTraits.add(NiceTrait(id: actor.svtId));
-      }
     }
 
     if (params.checkCurrentBuffTraits && currentBuff != null) {
@@ -445,7 +441,7 @@ class BattleData {
 
   void checkBuffStatus() {
     nonnullActors.forEach((svt) {
-      svt.checkBuffStatus();
+      svt.checkBuffStatus(this);
     });
 
     for (int index = 0; index < onFieldAllyServants.length; index += 1) {
