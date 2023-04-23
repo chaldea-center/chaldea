@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:chaldea/app/battle/functions/function_executor.dart';
+import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/models.dart';
 import '../interactions/skill_act_select.dart';
 import 'battle.dart';
@@ -29,6 +30,7 @@ class BattleSkillInfoData {
           ? rankUps!.last
           : rankUps![rankUp - 1];
   int _skillLv = 0;
+
   int get skillLv {
     final maxLv = proximateSkill?.maxLv;
     if (maxLv == null || maxLv == 0) return _skillLv;
@@ -132,7 +134,13 @@ class BattleSkillInfoData {
     final int? effectiveness,
     final bool defaultToPlayer = true,
   }) async {
-    if (!battleData.checkTraits(skill.actIndividuality, false)) {
+    final actorTraitMatch = battleData.checkTraits(CheckTraitParameters(
+      requiredTraits: skill.actIndividuality,
+      actor: battleData.activator,
+      checkActorTraits: true,
+    ));
+
+    if (!actorTraitMatch) {
       return;
     }
 

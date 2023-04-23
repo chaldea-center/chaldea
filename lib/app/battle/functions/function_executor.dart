@@ -128,7 +128,12 @@ class FunctionExecutor {
       dataVals = DataVals.fromJson(dataJson);
     }
 
-    if (!containsAnyTraits(battleData.getFieldTraits(), function.funcquestTvals)) {
+    final funcQuestTvalsMatch = battleData.checkTraits(CheckTraitParameters(
+      requiredTraits: function.funcquestTvals,
+      checkQuestTraits: true,
+    ));
+
+    if (!funcQuestTvalsMatch) {
       battleData.battleLogger.function('${S.current.battle_require_field_traits} ${S.current.failed}');
       return;
     }
@@ -148,10 +153,15 @@ class FunctionExecutor {
       activator,
       defaultToPlayer: defaultToPlayer,
     );
-    final checkBuff = dataVals.IncludePassiveIndividuality == 1;
+
     targets.retainWhere((svt) =>
         (svt.isAlive(battleData) || checkDead) &&
-        svt.checkTraits(battleData, function.functvals, checkBuff: checkBuff));
+        battleData.checkTraits(CheckTraitParameters(
+          requiredTraits: function.functvals,
+          actor: svt,
+          checkActorTraits: true,
+          checkActorBuffTraits: dataVals.IncludePassiveIndividuality == 1,
+        )));
 
     List<NiceTd?> tdSelections = [];
     if (function.funcTargetType == FuncTargetType.commandTypeSelfTreasureDevice) {

@@ -46,10 +46,6 @@ class CommandCardData {
 
   CommandCardData(this.cardType, this.cardDetail);
 
-  bool checkTraits(final Iterable<NiceTrait> requiredTraits) {
-    return containsAnyTraits(traits, requiredTraits);
-  }
-
   CommandCardData copy() {
     return CommandCardData(cardType, cardDetail)
       ..cardStrengthen = cardStrengthen

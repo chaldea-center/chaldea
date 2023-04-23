@@ -88,6 +88,7 @@ class BattleData {
   BattleOptionsRuntime options = BattleOptionsRuntime();
   final BattleLogger battleLogger = BattleLogger();
   BuildContext? context;
+
   bool get mounted => context != null && context!.mounted;
 
   // unused fields
@@ -383,47 +384,58 @@ class BattleData {
     return allTraits;
   }
 
-  bool checkTraits(
-    final Iterable<NiceTrait> requiredTraits,
-    final bool checkTarget, {
-    final bool checkTargetBuff = false,
-    final bool activeOnly = false,
-    final bool ignoreIrremovable = false,
-    final int? checkIndivType,
-    final int? includeIgnoredTrait,
-    final bool individualitie = false,
-  }) {
-    if (requiredTraits.isEmpty) {
+  bool checkTraits(final CheckTraitParameters params) {
+    if (params.requiredTraits.isEmpty) {
       return true;
     }
 
-    final actor = checkTarget ? target : activator;
     final List<NiceTrait> currentTraits = [];
-    if (checkTargetBuff || individualitie) {
-      currentTraits.addAll(actor?.getBuffTraits(
-            this,
-            activeOnly: activeOnly,
-            ignoreIrremovable: ignoreIrremovable,
-          ) ??
-          []);
-    } else {
-      // Note: when individualitie do not add svt traits or would result in stack overflow due to repeatedly checking
-      // addTrait with individualitie
-      currentTraits.addAll(actor?.getTraits(this) ?? []);
-    }
-    if (includeIgnoredTrait == 1) currentTraits.addAll(actor?.getNPCard(this)?.traits ?? []);
-    currentTraits.addAll(currentBuff?.traits ?? []);
-    currentTraits.addAll(currentCard?.traits ?? []);
-    if (individualitie) {
-      currentTraits.addAll(getFieldTraits());
-      currentTraits.add(NiceTrait(id: actor?.svtId ?? 0));
-    }
-    if (currentCard != null && currentCard!.isCritical) currentTraits.add(NiceTrait(id: Trait.criticalHit.id));
 
-    if (checkIndivType == 1 || checkIndivType == 3) {
-      return containsAllTraits(currentTraits, requiredTraits);
+    final actor = params.actor;
+    if (actor != null) {
+      if (params.checkActorTraits) {
+        currentTraits.addAll(actor.getTraits(this));
+      }
+
+      if (params.checkActorBuffTraits) {
+        currentTraits.addAll(actor.getBuffTraits(
+          this,
+          activeOnly: params.checkActiveBuffOnly,
+          ignoreIrremovable: params.ignoreIrremovableBuff,
+        ));
+      }
+
+      if (params.checkActorNpTraits) {
+        final currentNp = actor.getNPCard(this);
+        if (currentNp != null) {
+          currentTraits.addAll(currentNp.traits);
+        }
+      }
+
+      if (params.tempAddSvtId) {
+        currentTraits.add(NiceTrait(id: actor.svtId));
+      }
+    }
+
+    if (params.checkCurrentBuffTraits && currentBuff != null) {
+      currentTraits.addAll(currentBuff!.traits);
+    }
+
+    if (params.checkCurrentCardTraits && currentCard != null) {
+      currentTraits.addAll(currentCard!.traits);
+      if (currentCard!.isCritical) {
+        currentTraits.add(NiceTrait(id: Trait.criticalHit.id));
+      }
+    }
+
+    if (params.checkQuestTraits) {
+      currentTraits.addAll(getFieldTraits());
+    }
+
+    if (params.checkIndivType == 1 || params.checkIndivType == 3) {
+      return containsAllTraits(currentTraits, params.requiredTraits);
     } else {
-      return containsAnyTraits(currentTraits, requiredTraits);
+      return containsAnyTraits(currentTraits, params.requiredTraits);
     }
   }
 

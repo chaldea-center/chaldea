@@ -27,12 +27,9 @@ class SubState {
       if (removeFromStart) {
         for (int i = 0; i < target.battleBuff.activeList.length; i += 1) {
           final buff = target.battleBuff.activeList[i];
-          if (!containsAnyTraits(buff.traits, affectTraits)) {
-            continue;
-          }
 
           battleData.setCurrentBuff(buff);
-          if (await shouldSubState(battleData, dataVals, activator, target)) {
+          if (await shouldSubState(battleData, affectTraits, dataVals, activator, target)) {
             buffRemoved = true;
             target.battleBuff.activeList.removeAt(i);
             removeCount += 1;
@@ -47,12 +44,9 @@ class SubState {
       } else {
         for (int i = target.battleBuff.activeList.length - 1; i >= 0; i -= 1) {
           final buff = target.battleBuff.activeList[i];
-          if (!containsAnyTraits(buff.traits, affectTraits)) {
-            continue;
-          }
 
           battleData.setCurrentBuff(buff);
-          if (await shouldSubState(battleData, dataVals, activator, target)) {
+          if (await shouldSubState(battleData, affectTraits, dataVals, activator, target)) {
             buffRemoved = true;
             target.battleBuff.activeList.removeAt(i);
             removeCount += 1;
@@ -72,10 +66,15 @@ class SubState {
 
   static Future<bool> shouldSubState(
     final BattleData battleData,
+    final Iterable<NiceTrait> affectTraits,
     final DataVals dataVals,
     final BattleServantData? activator,
     final BattleServantData target,
   ) async {
+    if (!battleData.checkTraits(CheckTraitParameters(requiredTraits: affectTraits, checkCurrentBuffTraits: true))) {
+      return false;
+    }
+
     if (dataVals.ForceSubState == 1) {
       return true;
     }

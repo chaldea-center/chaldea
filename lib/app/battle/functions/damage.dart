@@ -74,12 +74,13 @@ class Damage {
           }
           specificAttackRate = dataVals.Value2! + useCount * dataVals.Correction!;
         } else {
-          final requiredTraits = [NiceTrait(id: dataVals.Target!)];
-          final useCorrection = checkBuffTraits
-              ? containsAnyTraits(
-                  target.getBuffTraits(battleData, ignoreIrremovable: dataVals.IgnoreIndivUnreleaseable == 1),
-                  requiredTraits)
-              : containsAnyTraits(target.getTraits(battleData), requiredTraits);
+          final useCorrection = battleData.checkTraits(CheckTraitParameters(
+            requiredTraits: [NiceTrait(id: dataVals.Target!)],
+            actor: battleData.target,
+            checkActorTraits: !checkBuffTraits,
+            checkActorBuffTraits: checkBuffTraits,
+            ignoreIrremovableBuff: dataVals.IgnoreIndivUnreleaseable == 1,
+          ));
 
           if (useCorrection) {
             specificAttackRate = dataVals.Correction!;

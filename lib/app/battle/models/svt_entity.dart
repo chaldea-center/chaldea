@@ -382,25 +382,6 @@ class BattleServantData {
     return myTraits;
   }
 
-  bool checkTrait(final BattleData battleData, final NiceTrait requiredTrait, {final bool checkBuff = false}) {
-    return checkTraits(battleData, [requiredTrait], checkBuff: checkBuff);
-  }
-
-  bool checkTraits(
-    final BattleData battleData,
-    final Iterable<NiceTrait> requiredTraits, {
-    final bool checkBuff = false,
-  }) {
-    final List<NiceTrait> myTraits = getTraits(battleData);
-    if (checkBuff) {
-      battleBuff.allBuffs.forEach((buff) {
-        myTraits.addAll(buff.traits);
-      });
-    }
-
-    return containsAnyTraits(myTraits, requiredTraits);
-  }
-
   void changeNPLineCount(final int change) {
     if (!isEnemy) {
       return;
@@ -870,7 +851,7 @@ class BattleServantData {
   }
 
   void removeBuffWithTrait(final NiceTrait trait) {
-    battleBuff.activeList.removeWhere((buff) => buff.checkTraits([trait]));
+    battleBuff.activeList.removeWhere((buff) => containsAnyTraits(buff.traits, [trait]));
   }
 
   int countTrait(final BattleData battleData, final List<NiceTrait> traits) {

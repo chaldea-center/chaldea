@@ -829,6 +829,34 @@ void main() async {
     expect(previousHp2 - enemy1.hp, 4062);
   });
 
+  test('Imperial Consort of the Heavenly Emperor', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(502600)
+        ..lv = 80
+        ..commandCodes = [null, db.gameData.commandCodesById[8400770], null, null, null]
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final eliz = battle.onFieldAllyServants[0]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final previousHp1 = enemy1.hp;
+    await battle.playerTurn([
+      CombatAction(eliz, eliz.getCards(battle)[2]..isCritical = true),
+    ]);
+
+    expect(previousHp1 - enemy1.hp, 4256);
+
+    battle.activateSvtSkill(0, 1);
+    final previousHp2 = enemy1.hp;
+    await battle.playerTurn([
+      CombatAction(eliz, eliz.getCards(battle)[1]..isCritical = true),
+    ]);
+
+    expect(previousHp2 - enemy1.hp, 5533 + 300); // 300 burn damage
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,
@@ -845,18 +873,64 @@ void main() async {
       battle.setTarget(okuni);
 
       final divinityCheck = [NiceTrait(id: Trait.divine.id)];
-      expect(battle.checkTraits(divinityCheck, false), isTrue);
-      expect(battle.checkTraits(divinityCheck, true), isFalse);
+      expect(
+        battle.checkTraits(CheckTraitParameters(
+          requiredTraits: divinityCheck,
+          actor: cba,
+          checkActorTraits: true,
+        )),
+        true,
+      );
+      expect(
+        battle.checkTraits(CheckTraitParameters(
+          requiredTraits: divinityCheck,
+          actor: okuni,
+          checkActorTraits: true,
+        )),
+        false,
+      );
 
       final buff = BuffData(Buff(id: -1, name: '', detail: '', vals: divinityCheck), DataVals());
       battle.setCurrentBuff(buff);
       battle.setActivator(okuni);
-      expect(battle.checkTraits(divinityCheck, false), isTrue);
-      expect(battle.checkTraits(divinityCheck, true), isTrue);
+      expect(
+        battle.checkTraits(CheckTraitParameters(
+          requiredTraits: divinityCheck,
+          actor: okuni,
+          checkActorTraits: true,
+          checkCurrentBuffTraits: true,
+        )),
+        true,
+      );
+      expect(
+        battle.checkTraits(CheckTraitParameters(
+          requiredTraits: divinityCheck,
+          actor: okuni,
+          checkActorTraits: true,
+          checkCurrentBuffTraits: true,
+        )),
+        true,
+      );
 
       battle.unsetCurrentBuff();
-      expect(battle.checkTraits(divinityCheck, false), isFalse);
-      expect(battle.checkTraits(divinityCheck, true), isFalse);
+      expect(
+        battle.checkTraits(CheckTraitParameters(
+          requiredTraits: divinityCheck,
+          actor: okuni,
+          checkActorTraits: true,
+          checkCurrentBuffTraits: true,
+        )),
+        false,
+      );
+      expect(
+        battle.checkTraits(CheckTraitParameters(
+          requiredTraits: divinityCheck,
+          actor: okuni,
+          checkActorTraits: true,
+          checkCurrentBuffTraits: true,
+        )),
+        false,
+      );
     });
 
     test('Check isActorOnField', () async {
@@ -879,7 +953,13 @@ void main() async {
       battle.currentCard = battle.onFieldAllyServants[0]!.getCards(battle)[0];
       battle.currentCard!.isCritical = true;
 
-      expect(battle.checkTraits([NiceTrait(id: Trait.criticalHit.id)], false), true);
+      expect(
+        battle.checkTraits(CheckTraitParameters(
+          requiredTraits: [NiceTrait(id: Trait.criticalHit.id)],
+          checkCurrentCardTraits: true,
+        )),
+        true,
+      );
     });
   });
 }

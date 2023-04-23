@@ -69,21 +69,32 @@ void main() async {
             ],
             script: BuffScript(checkIndvType: 1),
           ),
-          DataVals({'UseRate': 1000}));
+          DataVals(
+            {'UseRate': 1000},
+          ));
 
-      final currentBuff = BuffData(
+      final negativeBuff = BuffData(
           Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.buffNegativeEffect.id)]),
-          DataVals({'UseRate': 1000}));
+          DataVals(
+            {'UseRate': 1000},
+          ));
 
       battle.setTarget(cba);
       battle.setActivator(okuni);
-      cba.addBuff(currentBuff); // make sure we are not checking servant's buffs' traits
+      expect(buff.shouldApplyBuff(battle, false), false);
 
-      expect(buff.shouldApplyBuff(battle, false), isFalse);
+      battle.setCurrentBuff(negativeBuff);
+      expect(buff.shouldApplyBuff(battle, false), true);
+      battle.unsetCurrentBuff();
 
-      battle.setCurrentBuff(currentBuff);
-
-      expect(buff.shouldApplyBuff(battle, false), isTrue);
+      final positiveBuff = BuffData(
+          Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.buffPositiveEffect.id)]),
+          DataVals(
+            {'UseRate': 1000},
+          ));
+      battle.setCurrentBuff(positiveBuff);
+      cba.addBuff(negativeBuff); // make sure we are not checking servant's buffs' traits
+      expect(buff.shouldApplyBuff(battle, false), false);
 
       battle.unsetCurrentBuff();
       battle.unsetTarget();

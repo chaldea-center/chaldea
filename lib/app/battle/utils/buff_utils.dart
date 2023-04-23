@@ -4,6 +4,8 @@ import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 
+import '../models/svt_entity.dart';
+
 int capBuffValue(final BuffActionDetail buffAction, final int totalVal, final int maxRate) {
   int adjustValue = buffAction.baseParam + totalVal;
 
@@ -76,4 +78,36 @@ List<BuffData> collectBuffsPerActions(final Iterable<BuffData> buffs, final Iter
 
 List<BuffData> collectBuffsPerTypes(final Iterable<BuffData> buffs, final Iterable<BuffType> buffTypes) {
   return buffs.where((buff) => buffTypes.contains(buff.buff.type)).toList();
+}
+
+class CheckTraitParameters {
+  Iterable<NiceTrait> requiredTraits;
+  BattleServantData? actor;
+  int checkIndivType;
+
+  bool checkActorTraits;
+  bool checkActorBuffTraits;
+  bool checkActiveBuffOnly;
+  bool ignoreIrremovableBuff;
+  bool checkActorNpTraits;
+  bool checkCurrentBuffTraits;
+  bool checkCurrentCardTraits;
+  bool checkQuestTraits;
+
+  bool tempAddSvtId;
+
+  CheckTraitParameters({
+    required final Iterable<NiceTrait> requiredTraits,
+    this.actor,
+    this.checkIndivType = 0,
+    this.checkActorTraits = false,
+    this.checkActorBuffTraits = false,
+    this.checkActiveBuffOnly = false,
+    this.ignoreIrremovableBuff = false,
+    this.checkActorNpTraits = false,
+    this.checkCurrentBuffTraits = false,
+    this.checkCurrentCardTraits = false,
+    this.checkQuestTraits = false,
+    this.tempAddSvtId = false,
+  }) : requiredTraits = requiredTraits.toList();
 }
