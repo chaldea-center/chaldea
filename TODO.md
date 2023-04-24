@@ -24,7 +24,7 @@ There are plenty of work need to do.
 - [x] disable NP if NP has no functions
 - [ ] BuffScript should only be checked when buffType matches
 - [x] Move all checkTrait logic into battle and remove individual checkTrait methods in models
-- [ ] There is a bug that will reset other enemies' accumulation damage when deathEffect is triggered,
+- [x] There is a bug that will reset other enemies' accumulation damage when deathEffect is triggered,
       ~~not verified for gutsEffect~~ Verified for gutsEffect as well, need to add that
 - [ ] FuncType damageNpCounter
 - [ ] FuncType damageNpRare Target == 0 is target, verify if Target ==1 is activator?

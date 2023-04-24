@@ -813,17 +813,18 @@ class BattleServantData {
     return false;
   }
 
-  Future<void> activateBuffOnAction(final BattleData battleData, final BuffAction buffAction) async {
-    await activateBuffOnActions(battleData, [buffAction]);
+  Future<bool> activateBuffOnAction(final BattleData battleData, final BuffAction buffAction) async {
+    return await activateBuffOnActions(battleData, [buffAction]);
   }
 
-  Future<void> activateBuffOnActions(final BattleData battleData, final Iterable<BuffAction> buffActions) async {
-    await activateBuffs(battleData, collectBuffsPerActions(battleBuff.allBuffs, buffActions));
+  Future<bool> activateBuffOnActions(final BattleData battleData, final Iterable<BuffAction> buffActions) async {
+    return await activateBuffs(battleData, collectBuffsPerActions(battleBuff.allBuffs, buffActions));
   }
 
-  Future<void> activateBuffs(final BattleData battleData, final Iterable<BuffData> buffs) async {
+  Future<bool> activateBuffs(final BattleData battleData, final Iterable<BuffData> buffs) async {
     battleData.setActivator(this);
 
+    bool activated = false;
     for (final buff in buffs.toList()) {
       if (await buff.shouldActivateBuff(battleData, false)) {
         final skillId = buff.param;
@@ -842,12 +843,14 @@ class BattleServantData {
         battleData.battleLogger.function('$lBattleName - ${buff.buff.lName.l} ${S.current.skill} [$skillId]');
         await BattleSkillInfoData.activateSkill(battleData, skill, buff.additionalParam);
         buff.setUsed();
+        activated = true;
       }
     }
 
     battleData.unsetActivator();
 
     battleData.checkBuffStatus();
+    return activated;
   }
 
   void removeBuffWithTrait(final NiceTrait trait) {
@@ -954,15 +957,11 @@ class BattleServantData {
   }
 
   Future<void> death(final BattleData battleData) async {
-    battleData.setActivator(this);
-    if (await hasBuffOnAction(battleData, BuffAction.functionDead)) {
+    if (await activateBuffOnAction(battleData, BuffAction.functionDead)) {
       battleData.nonnullActors.forEach((svt) {
         svt.clearAccumulationDamage();
       });
     }
-    battleData.unsetActivator();
-
-    await activateBuffOnAction(battleData, BuffAction.functionDead);
 
     battleData.fieldBuffs
         .removeWhere((buff) => buff.vals.RemoveFieldBuffActorDeath == 1 && buff.actorUniqueId == uniqueId);
@@ -1112,7 +1111,12 @@ class BattleServantData {
 
       lastHitByCard = null;
       lastHitBy = null;
-      await activateBuffOnAction(battleData, BuffAction.functionGuts);
+
+      if (await activateBuffOnAction(battleData, BuffAction.functionGuts)) {
+        battleData.nonnullActors.forEach((svt) {
+          svt.clearAccumulationDamage();
+        });
+      }
       return true;
     }
 
