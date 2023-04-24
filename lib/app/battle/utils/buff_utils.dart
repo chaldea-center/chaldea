@@ -3,7 +3,6 @@ import 'dart:collection';
 import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
-
 import '../models/svt_entity.dart';
 
 int capBuffValue(final BuffActionDetail buffAction, final int totalVal, final int maxRate) {

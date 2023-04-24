@@ -264,11 +264,6 @@ class ItemCenter {
         result.addNum(itemId, setNum * (plan.treasureBoxItems[box.id]?[itemId] ?? 0));
       });
     }
-    if (event.digging != null) {
-      event.itemDigging.forEach((itemId, setNum) {
-        result.addNum(itemId, setNum * (plan.digging[itemId] ?? 0));
-      });
-    }
     if (plan.fixedDrop) {
       result.addDict(event.itemWarDrop);
     }

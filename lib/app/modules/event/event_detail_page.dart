@@ -581,27 +581,6 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       ]);
     }
 
-    if (event.digging != null) {
-      final items = Item.sortMapByPriority(event.itemDigging, reversed: false, category: true);
-      children.add(ListTile(title: Text(S.current.event_digging)));
-      children.add(TileGroup(
-        children: [
-          for (final itemId in items.keys)
-            ListTile(
-              leading: GameCardMixin.anyCardItemBuilder(context: context, id: itemId, width: 36),
-              title: Text(GameCardMixin.anyCardItemName(itemId).l + (items[itemId] == 1 ? '' : ' x ${items[itemId]}')),
-              trailing: _inputGroup(
-                value: () => plan.digging[itemId],
-                onChanged: (value) {
-                  plan.digging[itemId] = value;
-                },
-                tag: 'event_digging_$itemId',
-              ),
-            )
-        ],
-      ));
-    }
-
     for (final extraItems in event.extra.extraFixedItems) {
       children.addAll(_buildSwitchGroup(
         value: () => plan.extraFixedItems[extraItems.id] ?? false,

@@ -603,7 +603,6 @@ class LimitEventPlan {
   bool tower;
   Map<int, int> lotteries;
   Map<int, Map<int, int>> treasureBoxItems;
-  Map<int, int> digging;
   bool fixedDrop;
   bool questReward;
   Map<int, bool> extraFixedItems;
@@ -621,7 +620,6 @@ class LimitEventPlan {
     this.tower = true,
     Map<int, int>? lotteries,
     Map<int, Map<int, int>>? treasureBoxItems,
-    Map<int, int>? digging,
     this.fixedDrop = true,
     this.questReward = true,
     Map<int, bool>? extraFixedItems,
@@ -630,7 +628,6 @@ class LimitEventPlan {
   })  : shopBuyCount = shopBuyCount ?? {},
         lotteries = lotteries ?? {},
         treasureBoxItems = treasureBoxItems ?? {},
-        digging = digging ?? {},
         extraFixedItems = extraFixedItems ?? {},
         extraItems = extraItems ?? {},
         customItems = customItems ?? {};
@@ -648,7 +645,6 @@ class LimitEventPlan {
     tower = true;
     lotteries.clear();
     treasureBoxItems.clear();
-    digging.clear();
     fixedDrop = true;
     questReward = true;
     extraItems.clear();
@@ -681,7 +677,6 @@ class LimitEventPlan {
       tower: tower,
       lotteries: Map.of(lotteries),
       treasureBoxItems: treasureBoxItems.map((key, value) => MapEntry(key, Map.of(value))),
-      digging: Map.of(digging),
       fixedDrop: fixedDrop,
       questReward: questReward,
       extraFixedItems: Map.of(extraFixedItems),

@@ -1056,6 +1056,30 @@ class EventDigging {
   factory EventDigging.fromJson(Map<String, dynamic> json) => _$EventDiggingFromJson(json);
 
   Map<String, dynamic> toJson() => _$EventDiggingToJson(this);
+
+  // eventId, blockId, rewardId
+  static Map<int, Map<int, List<int>>> blockRewards = const {
+    80367: {
+      // white
+      3: [10, 5, 6],
+      12: [19, 20, 21],
+      13: [28, 29, 30],
+      14: [38, 39, 41],
+      15: [46, 47, 48],
+      // grey
+      1: [4, 8],
+      4: [13, 14, 15],
+      5: [22, 23, 24],
+      6: [31, 32, 33],
+      7: [35, 40, 42],
+      //
+      2: [7, 11],
+      8: [16, 17, 18],
+      9: [25, 26, 27],
+      10: [34, 37, 36],
+      11: [43, 44, 45],
+    }
+  };
 }
 
 @JsonSerializable()
