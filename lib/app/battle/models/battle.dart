@@ -600,7 +600,8 @@ class BattleData {
           if (extraCard != null) actions.add(CombatAction(actor, extraCard));
         }
 
-        final CardType firstCardType = actions[0].isValid(this) ? actions[0].cardData.cardType : CardType.blank;
+        final CardType firstCardType =
+            options.isAfter7thAnni || actions[0].isValid(this) ? actions[0].cardData.cardType : CardType.blank;
         if (isTypeChain) {
           applyTypeChain(firstCardType, actions);
         }

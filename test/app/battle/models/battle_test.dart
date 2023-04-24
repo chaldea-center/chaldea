@@ -450,12 +450,13 @@ void main() async {
     expect(avoidStateBuff.count, 1);
   });
 
-  test('Stun does not provide firstCardBonus', () async {
+  test('Stun does not provide firstCardBonus before 7th anni', () async {
     final List<PlayerSvtData> lipAndJinako = [
       PlayerSvtData.id(1000100)..lv = 80,
       PlayerSvtData.id(2300300)..lv = 90,
     ];
     final battle = BattleData();
+    battle.options.isAfter7thAnni = false;
     await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
 
     final lip = battle.onFieldAllyServants[0]!;
@@ -473,7 +474,28 @@ void main() async {
     expect(jinako.np, greaterThan(0));
   });
 
-  test('Stun does not provide typeChain', () async {
+  test('Stun provides firstCardBonus after 7th anni', () async {
+    final List<PlayerSvtData> lipAndJinako = [
+      PlayerSvtData.id(1000100)..lv = 80,
+      PlayerSvtData.id(2300300)..lv = 90,
+    ];
+    final battle = BattleData();
+    battle.options.isAfter7thAnni = true;
+    await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
+
+    final lip = battle.onFieldAllyServants[0]!;
+    final jinako = battle.onFieldAllyServants[1]!;
+
+    await battle.activateSvtSkill(0, 2); // lip is stunned
+
+    expect(jinako.np, 0);
+    expect(lip.canCommandCard(battle), false);
+    await battle
+        .playerTurn([CombatAction(lip, lip.getCards(battle)[1]), CombatAction(jinako, jinako.getCards(battle)[4])]);
+    expect(jinako.np, greaterThan(0));
+  });
+
+  test('Stun does not provide typeChain before 7th anni', () async {
     final List<PlayerSvtData> lipAndJinako = [
       PlayerSvtData.id(1000100)..lv = 80,
       PlayerSvtData.id(2300300)..lv = 90,
@@ -481,6 +503,7 @@ void main() async {
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
 
+    battle.options.isAfter7thAnni = false;
     final lip = battle.onFieldAllyServants[0]!;
     final jinako = battle.onFieldAllyServants[1]!;
 

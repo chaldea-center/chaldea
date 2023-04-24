@@ -18,7 +18,7 @@ There are plenty of work need to do.
 
 ### Ally Function Logic:
 
-- [ ] After 7th anni, donotAct will not stop first card from contributing to FirstCardType
+- [x] After 7th anni, donotAct will not stop first card from contributing to FirstCardType
 - [ ] Unify buff execution, eliminate unnecessary calls to buff.shouldApply and switch to buff.shouldActivate to check
       for buff useRate
 - [x] disable NP if NP has no functions
