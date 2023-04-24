@@ -348,6 +348,7 @@ class BuffData {
       ..isUsed = isUsed
       ..irremovable = irremovable
       ..passive = passive
+      ..individualitiesActive = individualitiesActive
       ..isShortBuff = isShortBuff;
     return copy;
   }
