@@ -2450,6 +2450,17 @@ class S {
     );
   }
 
+  /// `Disable`
+  String get disable {
+    return Intl.message(
+      'Disable',
+      name: 'disable',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Disable Event Effects`
   String get disable_event_effects {
     return Intl.message(
@@ -2829,6 +2840,17 @@ class S {
     return Intl.message(
       'Empty',
       name: 'empty_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Enable`
+  String get enable {
+    return Intl.message(
+      'Enable',
+      name: 'enable',
       desc: '',
       locale: localeName,
       args: [],

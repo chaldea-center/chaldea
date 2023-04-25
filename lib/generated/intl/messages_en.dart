@@ -318,6 +318,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "details": MessageLookupByLibrary.simpleMessage("Details"),
         "detective_mission": MessageLookupByLibrary.simpleMessage("Detective Missions"),
         "detective_rank": MessageLookupByLibrary.simpleMessage("Detective Rank"),
+        "disable": MessageLookupByLibrary.simpleMessage("Disable"),
         "disable_event_effects": MessageLookupByLibrary.simpleMessage("Disable Event Effects"),
         "disabled": MessageLookupByLibrary.simpleMessage("Disabled"),
         "display_grid": MessageLookupByLibrary.simpleMessage("Grid"),
@@ -356,6 +357,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "efficiency_type_drop": MessageLookupByLibrary.simpleMessage("Drop Rate"),
         "email": MessageLookupByLibrary.simpleMessage("Email"),
         "empty_hint": MessageLookupByLibrary.simpleMessage("Empty"),
+        "enable": MessageLookupByLibrary.simpleMessage("Enable"),
         "enemy": MessageLookupByLibrary.simpleMessage("Enemy"),
         "enemy_filter_trait_hint":
             MessageLookupByLibrary.simpleMessage("Trait filter is only used for enemies in Main Story\'s free quests"),

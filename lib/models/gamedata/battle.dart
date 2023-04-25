@@ -11,6 +11,7 @@ class PlayerSvtData {
   List<NiceSkill?> skills = [null, null, null];
   List<int> appendLvs = [0, 0, 0];
   List<NiceSkill> extraPassives = [];
+  Set<int> disabledExtraSkills = {};
   List<BaseSkill> additionalPassives = [];
   List<int> additionalPassiveLvs = [];
   int tdLv = 5;
@@ -73,6 +74,7 @@ class PlayerSvtData {
       ..limitCount = storedData.limitCount
       ..skillLvs = storedData.skillLvs.toList()
       ..appendLvs = storedData.appendLvs.toList()
+      ..disabledExtraSkills = storedData.disabledExtraSkills.toSet()
       ..additionalPassives = storedData.additionalPassives.toList()
       ..additionalPassiveLvs = storedData.additionalPassiveLvs.toList()
       ..tdLv = storedData.tdLv
@@ -140,6 +142,7 @@ class PlayerSvtData {
       skillLvs: skillLvs.toList(),
       skillIds: skills.map((skill) => skill?.id).toList(),
       appendLvs: appendLvs.toList(),
+      disabledExtraSkills: disabledExtraSkills.toSet(),
       additionalPassives: additionalPassives.toList(),
       additionalPassiveLvs: additionalPassiveLvs.toList(),
       tdLv: tdLv,

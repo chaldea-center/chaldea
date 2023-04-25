@@ -451,6 +451,43 @@ class BaseTd extends SkillOrTd with RouteInfo {
 }
 
 @JsonSerializable()
+class TdSvt {
+  int svtId;
+  int num;
+  int priority;
+  List<int> damage;
+  int strengthStatus;
+  int flag;
+  int imageIndex;
+  int condQuestId;
+  int condQuestPhase;
+  int condLv;
+  int condFriendshipRank;
+  int motion;
+  CardType card;
+
+  TdSvt({
+    required this.svtId,
+    this.num = -1,
+    this.priority = 0,
+    this.damage = const [],
+    this.strengthStatus = 0,
+    this.flag = 0,
+    this.imageIndex = 0,
+    this.condQuestId = 0,
+    this.condQuestPhase = 0,
+    this.condLv = 0,
+    this.condFriendshipRank = 0,
+    this.motion = 0,
+    this.card = CardType.none,
+  });
+
+  factory TdSvt.fromJson(Map<String, dynamic> json) => _$TdSvtFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TdSvtToJson(this);
+}
+
+@JsonSerializable()
 class NiceTd extends BaseTd {
   BaseTd _baseTd;
 
@@ -475,6 +512,9 @@ class NiceTd extends BaseTd {
   @override
   List<NiceFunction> get functions => _baseTd.functions;
 
+  // use it only for td fetched from api
+  List<TdSvt> npSvts;
+
   int num;
   int strengthStatus;
   int priority;
@@ -498,6 +538,7 @@ class NiceTd extends BaseTd {
     required super.individuality,
     super.script,
     required super.functions,
+    this.npSvts = const [],
     this.strengthStatus = 0,
     required this.priority,
     this.condQuestId = 0,

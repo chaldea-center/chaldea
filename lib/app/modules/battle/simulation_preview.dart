@@ -507,7 +507,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             DropdownMenuItem(
               value: null,
               child: Text(
-                S.current.disabled,
+                S.current.disable,
                 textScaleFactor: 0.8,
               ),
             ),
@@ -700,8 +700,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     EasyLoading.show();
     try {
       await restoreFormation(db.settings.battleSim.curFormation);
-    } catch (e) {
-      rethrow;
     } finally {
       EasyLoading.dismiss();
       if (mounted) setState(() {});

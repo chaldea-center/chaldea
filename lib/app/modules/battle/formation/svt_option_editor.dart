@@ -466,12 +466,12 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               children: [
                 Flexible(
                   child: FilterGroup<NiceTd?>(
-                    options: [null, ...shownTds],
+                    options: [...shownTds, null],
                     values: FilterRadioData(playerSvtData.td),
                     combined: true,
                     optionBuilder: (td) {
                       if (td == null) {
-                        return const Text('Disable');
+                        return Text(S.current.disable);
                       }
                       return Text('${td.id} ${td.nameWithRank}');
                     },
@@ -543,7 +543,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         return ListTile(
           dense: true,
           horizontalTitleGap: 0,
-          leading: db.getIconImage(skill?.icon, width: 24),
+          leading: db.getIconImage(skill?.icon ?? Atlas.common.emptySkillIcon, width: 28),
           title: Text(title),
           subtitle: Text(subtitle),
         );
@@ -555,12 +555,12 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               children: [
                 Flexible(
                   child: FilterGroup<NiceSkill?>(
-                    options: [null, ...shownSkills],
+                    options: [...shownSkills, null],
                     values: FilterRadioData(playerSvtData.skills[index]),
                     combined: true,
                     optionBuilder: (skill) {
                       if (skill == null) {
-                        return const Text('Disable');
+                        return Text(S.current.disable);
                       }
                       return Text('${skill.id} ${skill.lName.l}');
                     },
@@ -572,31 +572,13 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                 ),
                 TextButton(
                   onPressed: () {
-                    InputCancelOkDialog(
-                      title: '${S.current.skill} ID',
-                      validate: (s) {
-                        final v = int.tryParse(s);
-                        return v != null && v > 0;
-                      },
-                      onSubmit: (s) async {
-                        final v = int.tryParse(s);
-                        NiceSkill? skill;
-                        if (v != null && v > 0) {
-                          EasyLoading.show();
-                          skill = await AtlasApi.skill(v);
-                          if (skill?.type != SkillType.active) {
-                            skill = null;
-                          }
-                          EasyLoading.dismiss();
-                        }
-                        if (skill == null) {
-                          EasyLoading.showError('${S.current.not_found} or not active skill');
-                          return;
-                        }
-                        playerSvtData.skills[index] = skill;
+                    router.pushPage(SkillSelectPage(
+                      skillType: SkillType.active,
+                      onSelected: (skill) {
+                        playerSvtData.skills[index] = skill.toNice()..num = skillNum;
                         _updateState();
                       },
-                    ).showDialog(context);
+                    ));
                   },
                   child: Text(S.current.general_custom),
                 )
@@ -627,7 +609,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         return ListTile(
           dense: true,
           horizontalTitleGap: 0,
-          leading: db.getIconImage(skill?.icon ?? Atlas.common.emptySkillIcon, width: 24),
+          leading: db.getIconImage(skill?.icon ?? Atlas.common.emptySkillIcon, width: 28),
           title: Text(title),
           subtitle: Text(subtitle),
         );
@@ -644,6 +626,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   }
 
   Widget _buildExtraPassive(NiceSkill skill) {
+    final disabled = playerSvtData.disabledExtraSkills.contains(skill.id);
     return SimpleAccordion(
       headerBuilder: (context, _) {
         String title = skill.lName.l;
@@ -651,9 +634,15 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         return ListTile(
           dense: true,
           horizontalTitleGap: 0,
-          leading: db.getIconImage(skill.icon ?? Atlas.common.emptySkillIcon, width: 24),
-          title: Text(title),
-          subtitle: Text(subtitle, textScaleFactor: 0.85, maxLines: 2, overflow: TextOverflow.ellipsis),
+          leading: db.getIconImage(skill.icon ?? Atlas.common.emptySkillIcon, width: 28),
+          title: Text(title, style: disabled ? const TextStyle(decoration: TextDecoration.lineThrough) : null),
+          subtitle: Text(
+            subtitle,
+            textScaleFactor: 0.85,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: disabled ? const TextStyle(decoration: TextDecoration.lineThrough) : null,
+          ),
         );
       },
       contentBuilder: (context) {
@@ -665,13 +654,12 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                 TextButton(
                   onPressed: () {
                     setState(() {
-                      playerSvtData.extraPassives.remove(skill);
+                      playerSvtData.disabledExtraSkills.toggle(skill.id);
                     });
                   },
-                  child: Text(
-                    S.current.remove,
-                    // style: TextStyle(color: Theme.of(context).colorScheme.error),
-                  ),
+                  child: disabled
+                      ? Text(S.current.enable)
+                      : Text(S.current.disable, style: TextStyle(color: Theme.of(context).colorScheme.error)),
                 ),
               ],
             ),
@@ -706,7 +694,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         return ListTile(
           dense: true,
           horizontalTitleGap: 0,
-          leading: db.getIconImage(skill.icon ?? Atlas.common.emptySkillIcon, width: 24),
+          leading: db.getIconImage(skill.icon ?? Atlas.common.emptySkillIcon, width: 28),
           title: Text(title),
           subtitle: Text(subtitle, textScaleFactor: 0.85, maxLines: 2, overflow: TextOverflow.ellipsis),
         );

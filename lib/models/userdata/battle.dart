@@ -89,6 +89,7 @@ class SvtSaveData {
   List<int> skillLvs;
   List<int?> skillIds;
   List<int> appendLvs;
+  Set<int> disabledExtraSkills;
   List<BaseSkill> additionalPassives;
   List<int> additionalPassiveLvs;
   int tdLv;
@@ -117,6 +118,7 @@ class SvtSaveData {
     List<int>? skillLvs,
     List<int?>? skillIds,
     List<int>? appendLvs,
+    Set<int>? disabledExtraSkills,
     List<BaseSkill>? additionalPassives,
     List<int>? additionalPassiveLvs,
     this.tdLv = 5,
@@ -135,6 +137,7 @@ class SvtSaveData {
   })  : skillLvs = skillLvs ?? [10, 10, 10],
         skillIds = skillIds ?? [null, null, null],
         appendLvs = appendLvs ?? [0, 0, 0],
+        disabledExtraSkills = disabledExtraSkills ?? {},
         additionalPassives = additionalPassives ?? [],
         additionalPassiveLvs = additionalPassiveLvs ?? [],
         cardStrengthens = cardStrengthens ?? [0, 0, 0, 0, 0],

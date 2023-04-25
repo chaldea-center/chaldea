@@ -78,6 +78,8 @@ SvtSaveData _$SvtSaveDataFromJson(Map json) => $checkedCreate(
           skillLvs: $checkedConvert('skillLvs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
           skillIds: $checkedConvert('skillIds', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
           appendLvs: $checkedConvert('appendLvs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          disabledExtraSkills:
+              $checkedConvert('disabledExtraSkills', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
           additionalPassives: $checkedConvert(
               'additionalPassives',
               (v) =>
@@ -110,6 +112,7 @@ Map<String, dynamic> _$SvtSaveDataToJson(SvtSaveData instance) => <String, dynam
       'skillLvs': instance.skillLvs,
       'skillIds': instance.skillIds,
       'appendLvs': instance.appendLvs,
+      'disabledExtraSkills': instance.disabledExtraSkills.toList(),
       'additionalPassives': instance.additionalPassives.map((e) => e.toJson()).toList(),
       'additionalPassiveLvs': instance.additionalPassiveLvs,
       'tdLv': instance.tdLv,

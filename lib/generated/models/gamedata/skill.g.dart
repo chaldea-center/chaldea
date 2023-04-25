@@ -184,6 +184,38 @@ const _$TdEffectFlagEnumMap = {
   TdEffectFlag.attackEnemyOne: 'attackEnemyOne',
 };
 
+TdSvt _$TdSvtFromJson(Map json) => TdSvt(
+      svtId: json['svtId'] as int,
+      num: json['num'] as int? ?? -1,
+      priority: json['priority'] as int? ?? 0,
+      damage: (json['damage'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      strengthStatus: json['strengthStatus'] as int? ?? 0,
+      flag: json['flag'] as int? ?? 0,
+      imageIndex: json['imageIndex'] as int? ?? 0,
+      condQuestId: json['condQuestId'] as int? ?? 0,
+      condQuestPhase: json['condQuestPhase'] as int? ?? 0,
+      condLv: json['condLv'] as int? ?? 0,
+      condFriendshipRank: json['condFriendshipRank'] as int? ?? 0,
+      motion: json['motion'] as int? ?? 0,
+      card: $enumDecodeNullable(_$CardTypeEnumMap, json['card']) ?? CardType.none,
+    );
+
+Map<String, dynamic> _$TdSvtToJson(TdSvt instance) => <String, dynamic>{
+      'svtId': instance.svtId,
+      'num': instance.num,
+      'priority': instance.priority,
+      'damage': instance.damage,
+      'strengthStatus': instance.strengthStatus,
+      'flag': instance.flag,
+      'imageIndex': instance.imageIndex,
+      'condQuestId': instance.condQuestId,
+      'condQuestPhase': instance.condQuestPhase,
+      'condLv': instance.condLv,
+      'condFriendshipRank': instance.condFriendshipRank,
+      'motion': instance.motion,
+      'card': _$CardTypeEnumMap[instance.card]!,
+    };
+
 NiceTd _$NiceTdFromJson(Map json) => NiceTd(
       id: json['id'] as int,
       num: json['num'] as int,
@@ -207,6 +239,10 @@ NiceTd _$NiceTdFromJson(Map json) => NiceTd(
       functions: (json['functions'] as List<dynamic>)
           .map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      npSvts: (json['npSvts'] as List<dynamic>?)
+              ?.map((e) => TdSvt.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       strengthStatus: json['strengthStatus'] as int? ?? 0,
       priority: json['priority'] as int,
       condQuestId: json['condQuestId'] as int? ?? 0,
@@ -228,6 +264,7 @@ Map<String, dynamic> _$NiceTdToJson(NiceTd instance) => <String, dynamic>{
       'individuality': instance.individuality.map((e) => e.toJson()).toList(),
       'script': instance.script?.toJson(),
       'functions': instance.functions.map((e) => e.toJson()).toList(),
+      'npSvts': instance.npSvts.map((e) => e.toJson()).toList(),
       'num': instance.num,
       'strengthStatus': instance.strengthStatus,
       'priority': instance.priority,
