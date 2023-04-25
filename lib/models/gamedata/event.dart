@@ -126,6 +126,16 @@ class Event {
       extra.extraFixedItems.isEmpty &&
       extra.extraItems.isEmpty;
 
+  bool get isInfinite =>
+      extra.extraItems.any((e) => e.infinite) ||
+      extra.huntingQuestIds.isNotEmpty ||
+      lotteries.any((e) => !e.limited) ||
+      treasureBoxes.isNotEmpty ||
+      randomMissions.isNotEmpty ||
+      digging != null ||
+      fortifications.isNotEmpty ||
+      recipes.isNotEmpty;
+
   bool isOutdated([Duration diff = const Duration(days: 10)]) {
     if (db.curUser.region == Region.jp) {
       return DateTime.now().difference(startedAt.sec2date()) > const Duration(days: 31 * 13);

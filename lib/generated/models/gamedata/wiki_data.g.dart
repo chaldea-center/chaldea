@@ -116,6 +116,7 @@ CommandCodeExtra _$CommandCodeExtraFromJson(Map json) => CommandCodeExtra(
 
 EventExtraItems _$EventExtraItemsFromJson(Map json) => EventExtraItems(
       id: json['id'] as int,
+      infinite: json['infinite'] as bool? ?? false,
       detail: json['detail'] == null
           ? null
           : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['detail'] as Map)),

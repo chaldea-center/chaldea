@@ -149,11 +149,13 @@ class CommandCodeExtra {
 @JsonSerializable(createToJson: false)
 class EventExtraItems {
   int id;
+  bool infinite;
   MappingBase<String> detail;
   Map<int, MappingBase<String>> items;
 
   EventExtraItems({
     required this.id,
+    this.infinite = false,
     MappingBase<String>? detail,
     Map<int, MappingBase<String>?> items = const {},
   })  : detail = detail ?? MappingBase(),
