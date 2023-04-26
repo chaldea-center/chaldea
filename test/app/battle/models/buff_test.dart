@@ -798,4 +798,25 @@ void main() async {
     await battle.playerTurn([CombatAction(protoMerlin, protoMerlin.getCards(battle)[0])]);
     expect(enemy.npLineCount, 2);
   });
+
+  test('BuffAction turnendHpReduceToRegain', () async {
+    final battle = BattleData();
+    final playerSettings = [
+      PlayerSvtData.id(604800)..lv = 70,
+      PlayerSvtData.id(2500600)..lv = 70,
+    ];
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    final locusta = battle.onFieldAllyServants[0]!;
+    final vanGogh = battle.onFieldAllyServants[1]!;
+    locusta.hp = 5000;
+    vanGogh.hp = 5000;
+
+    await battle.activateSvtSkill(0, 1);
+    await battle.activateSvtSkill(0, 2);
+    await battle.activateSvtSkill(1, 1);
+    await battle.playerTurn([CombatAction(locusta, locusta.getCards(battle)[0])]);
+    expect(locusta.hp, 5000 + 1000 + 300 - 100);
+    expect(vanGogh.hp, 5000 + 300 - 100);
+  });
 }

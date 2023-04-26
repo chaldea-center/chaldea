@@ -192,7 +192,7 @@ class BuffData {
 
     final onFieldCheck = !isOnField || battleData.isActorOnField(actorUniqueId);
 
-    final scriptCheck = checkScript(battleData, isTarget);
+    final scriptCheck = checkDataVals(battleData) && checkBuffScript(battleData, isTarget);
 
     return selfCheck && opponentCheck && onFieldCheck && scriptCheck && individualitiesActive;
   }
@@ -209,10 +209,24 @@ class BuffData {
           '${battleData.options.tailoredExecution ? '' : ' [$buffRate vs ${battleData.options.probabilityThreshold}]'}');
     }
 
-    return shouldApplyBuff(battleData, isTarget) && probabilityCheck;
+    return probabilityCheck && shouldApplyBuff(battleData, isTarget) ;
   }
 
-  bool checkScript(final BattleData battleData, final bool isTarget) {
+  bool checkDataVals(final BattleData battleData) {
+    if (vals.HpReduceToRegainIndiv != null) {
+      final currentBuffMatch = battleData.checkTraits(CheckTraitParameters(
+        requiredTraits: [NiceTrait(id: vals.HpReduceToRegainIndiv!)],
+        checkCurrentBuffTraits: true,
+      ));
+      if (!currentBuffMatch) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  bool checkBuffScript(final BattleData battleData, final bool isTarget) {
     if (buff.script == null) {
       return true;
     }
