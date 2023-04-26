@@ -661,7 +661,7 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
 
   @override
   Widget build(BuildContext context) {
-    final classAttackCorrection = toModifier(ConstData.classInfo[params.attackerClass.id]?.attackRate ?? 1000);
+    final classAttackCorrection = toModifier(ConstData.classInfo[params.attackerClass]?.attackRate ?? 1000);
     final damageRate = toModifier(params.damageRate);
     final npSpecificAttackRate = toModifier(params.npSpecificAttackRate);
     final hitsPercent = params.totalHits / 100.0;

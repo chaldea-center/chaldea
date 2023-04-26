@@ -24,8 +24,8 @@ void main() async {
 
       final baseParam = DamageParameters()
         ..attack = altria.atkGrowth[level - 1]
-        ..attackerClass = altria.className
-        ..defenderClass = defenderClass
+        ..attackerClass = altria.classId
+        ..defenderClass = defenderClass.id
         ..classAdvantage = classAdvantage
         ..attackerAttribute = altria.attribute
         ..defenderAttribute = defenderAttribute
@@ -282,7 +282,7 @@ void main() async {
 
       final baseParam = DamageParameters()
         ..attack = altria.atkGrowth[level - 1] + 1000
-        ..attackerClass = altria.className
+        ..attackerClass = altria.classId
         ..attackerAttribute = altria.attribute
         ..totalHits = Maths.sum(busterCard.hitsDistribution)
         ..chainPos = 1
@@ -296,7 +296,7 @@ void main() async {
         final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
         final damageParameters = baseParam.copy()
-          ..defenderClass = defenderClass
+          ..defenderClass = defenderClass.id
           ..classAdvantage = classAdvantage
           ..defenderAttribute = defenderAttribute;
 
@@ -309,7 +309,7 @@ void main() async {
         final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
         final damageParameters = baseParam.copy()
-          ..defenderClass = defenderClass
+          ..defenderClass = defenderClass.id
           ..classAdvantage = classAdvantage
           ..defenderAttribute = defenderAttribute;
 
@@ -322,7 +322,7 @@ void main() async {
         final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
         final damageParameters = baseParam.copy()
-          ..defenderClass = defenderClass
+          ..defenderClass = defenderClass.id
           ..classAdvantage = classAdvantage
           ..defenderAttribute = defenderAttribute;
 
@@ -340,7 +340,7 @@ void main() async {
           ..chainPos = 4
           ..currentCardType = CardType.extra
           ..firstCardType = CardType.buster
-          ..defenderClass = defenderClass
+          ..defenderClass = defenderClass.id
           ..classAdvantage = classAdvantage
           ..defenderAttribute = defenderAttribute;
 
@@ -361,8 +361,8 @@ void main() async {
 
       final baseParam = DamageParameters()
         ..attack = yuyu.atkGrowth[level - 1] + 1000
-        ..attackerClass = yuyu.className
-        ..defenderClass = defenderClass
+        ..attackerClass = yuyu.classId
+        ..defenderClass = defenderClass.id
         ..classAdvantage = classAdvantage
         ..attackerAttribute = yuyu.attribute
         ..defenderAttribute = defenderAttribute

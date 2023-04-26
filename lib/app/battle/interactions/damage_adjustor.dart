@@ -26,14 +26,31 @@ class DamageAdjustor extends StatefulWidget {
       );
     }
 
-    return calculateDamage(damageParameters);
+    int damage = 0;
+    try {
+      damage = calculateDamage(damageParameters);
+    } catch (e) {
+      battleData.battleLogger.error(e.toString());
+    }
+    return damage;
   }
 }
 
 class _DamageAdjustorState extends State<DamageAdjustor> {
+  bool exceptionThrown = false;
+
   @override
   Widget build(BuildContext context) {
-    final totalDamage = calculateDamage(widget.damageParameters);
+    int totalDamage = 0;
+    if (!exceptionThrown) {
+      try {
+        totalDamage = calculateDamage(widget.damageParameters);
+      } catch (e) {
+        exceptionThrown = true;
+        widget.battleData.battleLogger.error(e.toString());
+      }
+    }
+
     return SimpleCancelOkDialog(
       title: Text(S.current.battle_select_effect),
       scrollable: true,

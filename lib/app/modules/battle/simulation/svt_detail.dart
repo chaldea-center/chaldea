@@ -131,7 +131,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         children: [
           Text(
             'No.${svt.niceEnemy?.shownId ?? svt.niceSvt?.shownId ?? svt.svtId}'
-            '  ${Transl.svtClassId(svt.svtClass.id).l}'
+            '  ${Transl.svtClassId(svt.classId).l}'
             '\nATK ${svt.atk}  HP ${svt.hp}'
             '\nPosition ${svt.index + 1}',
             style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),

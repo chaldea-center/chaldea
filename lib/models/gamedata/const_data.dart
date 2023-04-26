@@ -59,6 +59,10 @@ class ConstGameData {
     return classRelation[attacker.id]?[defender.id] ?? 1000;
   }
 
+  int getClassIdRelation(final int attacker, final int defender) {
+    return classRelation[attacker]?[defender] ?? 1000;
+  }
+
   int getAttributeRelation(final Attribute attacker, final Attribute defender) {
     return attributeRelation[attacker]?[defender] ?? 1000;
   }

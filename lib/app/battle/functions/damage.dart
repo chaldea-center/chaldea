@@ -99,8 +99,8 @@ class Damage {
         ..damageRate =
             currentCard.isNP ? dataVals.Value! + additionDamageRate : currentCard.cardDetail.damageRate ?? 1000
         ..npSpecificAttackRate = specificAttackRate
-        ..attackerClass = activator.svtClass
-        ..defenderClass = target.svtClass
+        ..attackerClass = activator.classId
+        ..defenderClass = target.classId
         ..classAdvantage = classAdvantage
         ..attackerAttribute = activator.attribute
         ..defenderAttribute = target.attribute
@@ -331,7 +331,7 @@ class Damage {
     final BattleServantData activator,
     final BattleServantData target,
   ) async {
-    int relation = ConstData.getClassRelation(activator.svtClass, target.svtClass);
+    int relation = ConstData.getClassIdRelation(activator.classId, target.classId);
     relation = await activator.getClassRelation(battleData, relation, target.svtClass, false);
     relation = await target.getClassRelation(battleData, relation, activator.svtClass, true);
 

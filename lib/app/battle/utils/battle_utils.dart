@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/battle/utils/battle_exception.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'battle_logger.dart';
@@ -14,13 +15,11 @@ const kBattleFuncGUARD = 'GUARD';
 /// https://apps.atlasacademy.io/fgo-docs/deeper/battle/damage.html
 /// DamageMod caps are applied when gathering the parameters.
 int calculateDamage(final DamageParameters param) {
-  // TODO: use classId, log error and return 0
-  if (!ConstData.classInfo.containsKey(param.attackerClass.id)) {
-    // throw 'Invalid class: ${param.attackerClass}';
-    return 0;
+  if (!ConstData.classInfo.containsKey(param.attackerClass)) {
+    throw BattleException('Invalid class: ${param.attackerClass}');
   }
 
-  final classAttackCorrection = toModifier(ConstData.classInfo[param.attackerClass.id]?.attackRate ?? 1000);
+  final classAttackCorrection = toModifier(ConstData.classInfo[param.attackerClass]?.attackRate ?? 1000);
   final classAdvantage =
       toModifier(param.classAdvantage); // class relation is provisioned due to overwriteClassRelation
 
@@ -28,7 +27,7 @@ int calculateDamage(final DamageParameters param) {
       toModifier(ConstData.getAttributeRelation(param.attackerAttribute, param.defenderAttribute));
 
   if (!ConstData.cardInfo.containsKey(param.currentCardType)) {
-    throw 'Invalid current card type: ${param.currentCardType}';
+    throw BattleException('Invalid current card type: ${param.currentCardType}');
   }
 
   final chainPos = param.isNp ? 1 : param.chainPos;
@@ -225,8 +224,8 @@ class DamageParameters {
   int damageRate = 1000; // npDamageMultiplier
   int totalHits = 100;
   int npSpecificAttackRate = 1000; // superEffectiveModifier = function Correction value
-  SvtClass attackerClass = SvtClass.none;
-  SvtClass defenderClass = SvtClass.none;
+  int attackerClass = 0;
+  int defenderClass = 0;
   int classAdvantage = 0;
   Attribute attackerAttribute = Attribute.void_;
   Attribute defenderAttribute = Attribute.void_;
