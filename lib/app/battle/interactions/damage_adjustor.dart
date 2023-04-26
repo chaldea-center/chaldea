@@ -1,9 +1,11 @@
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/catcher/catcher_util.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../models/battle.dart';
+import '../utils/battle_exception.dart';
 import '_dialog.dart';
 
 class DamageAdjustor extends StatefulWidget {
@@ -42,13 +44,19 @@ class _DamageAdjustorState extends State<DamageAdjustor> {
   @override
   Widget build(BuildContext context) {
     int totalDamage = 0;
-    if (!exceptionThrown) {
-      try {
-        totalDamage = calculateDamage(widget.damageParameters);
-      } catch (e) {
-        exceptionThrown = true;
+    try {
+      totalDamage = calculateDamage(widget.damageParameters);
+    } on BattleException catch (e) {
+      if (!exceptionThrown) {
         widget.battleData.battleLogger.error(e.toString());
       }
+      exceptionThrown = true;
+    } catch (e, s) {
+      if (!exceptionThrown) {
+        widget.battleData.battleLogger.error(e.toString());
+        CatcherUtil.reportError(e, s);
+      }
+      exceptionThrown = true;
     }
 
     return SimpleCancelOkDialog(

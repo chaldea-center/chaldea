@@ -28,4 +28,13 @@ class CatcherUtil {
   static bool reportFilter(Report report) {
     return true;
   }
+
+  static void reportError(dynamic error, StackTrace? stacktrace) {
+    try {
+      Catcher.getInstance();
+      Catcher.reportCheckedError(error, stacktrace);
+    } catch (e) {
+      FlutterError.reportError(FlutterErrorDetails(exception: error, stack: stacktrace));
+    }
+  }
 }
