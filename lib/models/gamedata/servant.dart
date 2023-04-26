@@ -109,8 +109,8 @@ class BasicServant with GameCardMixin {
   String? overwriteName;
   SvtType type;
   SvtFlag flag;
-  SvtClass className;
   int classId;
+  SvtClass get className => kSvtClassIds[classId] ?? SvtClass.none;
   Attribute attribute;
   @override
   int rarity;
@@ -127,7 +127,6 @@ class BasicServant with GameCardMixin {
     this.overwriteName,
     required this.type,
     required this.flag,
-    this.className = SvtClass.none,
     this.classId = 0,
     required this.attribute,
     required this.rarity,
@@ -183,7 +182,7 @@ class Servant with GameCardMixin {
   String name;
   String ruby;
   String battleName;
-  SvtClass className;
+  SvtClass get className => kSvtClassIds[classId] ?? SvtClass.none;
   int classId;
   SvtType type;
   SvtFlag flag;
@@ -247,7 +246,6 @@ class Servant with GameCardMixin {
     required this.name,
     this.ruby = "",
     this.battleName = "",
-    this.className = SvtClass.none,
     this.classId = 0,
     required this.type,
     required this.flag,
@@ -308,7 +306,6 @@ class Servant with GameCardMixin {
       name: name,
       ruby: ruby,
       battleName: battleName,
-      className: className,
       type: type,
       flag: flag,
       rarity: rarity,
@@ -473,7 +470,7 @@ class Servant with GameCardMixin {
 
   String get classCard {
     int imageId = db.gameData.constData.svtClassCardImageIdRemap[collectionNo] ??
-        db.gameData.constData.classInfo[className.id]?.imageId ??
+        db.gameData.constData.classInfo[classId]?.imageId ??
         13;
     int subId = 1;
     if (imageId == 9999) imageId = 13;

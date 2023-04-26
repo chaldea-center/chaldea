@@ -962,7 +962,6 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     }
     svt
       ..classId = support.svt.classId
-      ..className = support.svt.className
       ..rarity = support.svt.rarity
       ..attribute = support.svt.attribute;
     playerSvtData

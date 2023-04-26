@@ -263,6 +263,7 @@ enum SvtClass {
   beastILost(30, '獸I?'),
   uOlgaMarieAlienGod(31, '獸?'),
   uOlgaMarie(32, '?'),
+  beast(33, '獸'),
   unknown(97),
   // 98
   // 99
@@ -301,7 +302,7 @@ class SvtClassConverter implements JsonConverter<SvtClass, String> {
 const _kSvtClassRarityMap = {0: 0, 1: 1, 2: 1, 3: 2, 4: 3, 5: 3};
 
 extension SvtClassX on SvtClass {
-  static const beast = SvtClass.uOlgaMarieAlienGod;
+  static const beast = SvtClass.beast;
 
   SvtClassInfo? get info => db.gameData.constData.classInfo[id];
   int get iconId => info?.iconImageId ?? 12;
@@ -329,7 +330,7 @@ extension SvtClassX on SvtClass {
     ...extra,
   ];
 
-  static List<SvtClass> regularAllWithOlga = [
+  static List<SvtClass> regularAllWithBeast = [
     ...regular,
     ...extra,
     SvtClassX.beast,
@@ -359,6 +360,7 @@ extension SvtClassX on SvtClass {
     SvtClass.shielder,
   ];
   static const beasts = <SvtClass>[
+    SvtClass.beast,
     SvtClass.beastI,
     SvtClass.beastII,
     SvtClass.beastIIIR,
@@ -366,6 +368,7 @@ extension SvtClassX on SvtClass {
     SvtClass.beastIV,
     SvtClass.beastUnknown,
     SvtClass.uOlgaMarieAlienGod,
+    // SvtClass.uOlgaMarie,
     SvtClass.beastILost,
   ];
 
@@ -870,5 +873,6 @@ enum CondType {
   allSvtTargetSkillLvNum,
   superBossDamageAbove,
   superBossDamageBelow,
+  eventMissionGroupAchieve,
   notWarClear,
 }

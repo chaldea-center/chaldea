@@ -77,7 +77,8 @@ class SvtInfoTab extends StatelessWidget {
                   child: Text.rich(
                     TextSpan(children: [
                       CenterWidgetSpan(
-                          child: db.getIconImage(svt.className.icon(svt.rarity), width: 20, aspectRatio: 1)),
+                          child:
+                              db.getIconImage(SvtClassX.clsIcon(svt.rarity, svt.classId), width: 20, aspectRatio: 1)),
                       SharedBuilder.textButtonSpan(
                         context: context,
                         text: ' ${Transl.svtClassId(svt.classId).l}',
@@ -175,7 +176,7 @@ class SvtInfoTab extends StatelessWidget {
                 svt.atkGrowth.getOrNull(99),
                 svt.atkGrowth.getOrNull(119),
               ],
-              db.gameData.constData.classInfo[svt.className.id]?.attackRate,
+              db.gameData.constData.classInfo[svt.classId]?.attackRate,
             ),
             _addAtkHpRow(context, 'HP', [
               svt.hpBase,

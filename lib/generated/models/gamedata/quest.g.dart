@@ -296,6 +296,7 @@ const _$GiftTypeEnumMap = {
   GiftType.commandCode: 'commandCode',
   GiftType.eventPointBuff: 'eventPointBuff',
   GiftType.eventBoardGameToken: 'eventBoardGameToken',
+  GiftType.eventCommandAssist: 'eventCommandAssist',
 };
 
 GiftAdd _$GiftAddFromJson(Map json) => GiftAdd(

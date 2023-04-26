@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
-import 'package:chaldea/utils/img_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../models/models.dart';
 
@@ -230,7 +229,7 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
     bool showUnknown = false,
   }) {
     final shownClasses = [
-      ...SvtClassX.regularAllWithOlga,
+      ...SvtClassX.regularAllWithBeast,
       if (showUnknown) SvtClass.unknown,
     ];
     int crossCount = (shownClasses.length / 2).ceil();
@@ -276,12 +275,6 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
                     children: shownClasses.map((className) {
                       final selected = data.options.contains(className);
                       Widget icon = db.getIconImage(className.icon(selected ? 5 : 1), aspectRatio: 1);
-                      if (className == SvtClassX.beast && !selected) {
-                        icon = ColorFiltered(
-                          colorFilter: ImageUtil.greyscalBeast,
-                          child: icon,
-                        );
-                      }
                       return GestureDetector(
                         child: icon,
                         onTap: () {

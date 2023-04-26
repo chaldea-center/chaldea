@@ -14,8 +14,10 @@ const kBattleFuncGUARD = 'GUARD';
 /// https://apps.atlasacademy.io/fgo-docs/deeper/battle/damage.html
 /// DamageMod caps are applied when gathering the parameters.
 int calculateDamage(final DamageParameters param) {
+  // TODO: use classId, log error and return 0
   if (!ConstData.classInfo.containsKey(param.attackerClass.id)) {
-    throw 'Invalid class: ${param.attackerClass}';
+    // throw 'Invalid class: ${param.attackerClass}';
+    return 0;
   }
 
   final classAttackCorrection = toModifier(ConstData.classInfo[param.attackerClass.id]?.attackRate ?? 1000);

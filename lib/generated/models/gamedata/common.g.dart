@@ -117,6 +117,7 @@ const _$SvtClassEnumMap = {
   SvtClass.beastILost: 'beastILost',
   SvtClass.uOlgaMarieAlienGod: 'uOlgaMarieAlienGod',
   SvtClass.uOlgaMarie: 'uOlgaMarie',
+  SvtClass.beast: 'beast',
   SvtClass.unknown: 'unknown',
   SvtClass.agarthaPenth: 'agarthaPenth',
   SvtClass.cccFinaleEmiyaAlter: 'cccFinaleEmiyaAlter',
@@ -302,5 +303,6 @@ const _$CondTypeEnumMap = {
   CondType.allSvtTargetSkillLvNum: 'allSvtTargetSkillLvNum',
   CondType.superBossDamageAbove: 'superBossDamageAbove',
   CondType.superBossDamageBelow: 'superBossDamageBelow',
+  CondType.eventMissionGroupAchieve: 'eventMissionGroupAchieve',
   CondType.notWarClear: 'notWarClear',
 };

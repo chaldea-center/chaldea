@@ -445,7 +445,7 @@ class SharedBuilder {
       int rarity = 1;
       if (clsName == SvtClass.ALL) {
         rarity =
-            data.isEmptyOrContain(SvtClassX.regularAllWithOlga) || data.isAll(SvtClassX.regularAllWithOlga) ? 5 : 1;
+            data.isEmptyOrContain(SvtClassX.regularAllWithBeast) || data.isAll(SvtClassX.regularAllWithBeast) ? 5 : 1;
       } else if (clsName == SvtClass.EXTRA) {
         if (data.isAll(extraClasses)) {
           rarity = 5;
@@ -462,13 +462,6 @@ class SharedBuilder {
         aspectRatio: 1,
         width: 32,
       );
-      if (rarity != 5 && clsName == SvtClassX.beast) {
-        icon = ColorFiltered(
-          colorFilter: ImageUtil.greyscalBeast,
-          child: icon,
-        );
-        // icon = Opacity(opacity: 0.7, child: icon);
-      }
       return InkWell(
         child: Padding(
           padding: const EdgeInsets.all(1),

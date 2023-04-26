@@ -436,6 +436,8 @@ class BaseGift {
         break;
       case GiftType.eventBoardGameToken:
         break;
+      case GiftType.eventCommandAssist:
+        break;
     }
     return GameCardMixin.anyCardItemBuilder(
       context: context,
@@ -487,6 +489,8 @@ class BaseGift {
       case GiftType.eventPointBuff:
         break;
       case GiftType.eventBoardGameToken:
+        break;
+      case GiftType.eventCommandAssist:
         break;
     }
     route ??= GameCardMixin.getRoute(objectId);
@@ -1521,6 +1525,7 @@ enum GiftType {
   commandCode,
   eventPointBuff,
   eventBoardGameToken,
+  eventCommandAssist,
 }
 
 enum EnemyRoleType {

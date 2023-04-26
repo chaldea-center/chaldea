@@ -27,8 +27,6 @@ BasicServant _$BasicServantFromJson(Map json) => BasicServant(
       overwriteName: json['overwriteName'] as String?,
       type: $enumDecode(_$SvtTypeEnumMap, json['type']),
       flag: $enumDecode(_$SvtFlagEnumMap, json['flag']),
-      className:
-          json['className'] == null ? SvtClass.none : const SvtClassConverter().fromJson(json['className'] as String),
       classId: json['classId'] as int? ?? 0,
       attribute: $enumDecode(_$AttributeEnumMap, json['attribute']),
       rarity: json['rarity'] as int,
@@ -48,7 +46,6 @@ Map<String, dynamic> _$BasicServantToJson(BasicServant instance) => <String, dyn
       'overwriteName': instance.overwriteName,
       'type': _$SvtTypeEnumMap[instance.type]!,
       'flag': _$SvtFlagEnumMap[instance.flag]!,
-      'className': const SvtClassConverter().toJson(instance.className),
       'classId': instance.classId,
       'attribute': _$AttributeEnumMap[instance.attribute]!,
       'rarity': instance.rarity,
@@ -99,8 +96,6 @@ Servant _$ServantFromJson(Map json) => Servant(
       name: json['name'] as String,
       ruby: json['ruby'] as String? ?? "",
       battleName: json['battleName'] as String? ?? "",
-      className:
-          json['className'] == null ? SvtClass.none : const SvtClassConverter().fromJson(json['className'] as String),
       classId: json['classId'] as int? ?? 0,
       type: $enumDecode(_$SvtTypeEnumMap, json['type']),
       flag: $enumDecode(_$SvtFlagEnumMap, json['flag']),
@@ -201,7 +196,6 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'name': instance.name,
       'ruby': instance.ruby,
       'battleName': instance.battleName,
-      'className': const SvtClassConverter().toJson(instance.className),
       'classId': instance.classId,
       'type': _$SvtTypeEnumMap[instance.type]!,
       'flag': _$SvtFlagEnumMap[instance.flag]!,
