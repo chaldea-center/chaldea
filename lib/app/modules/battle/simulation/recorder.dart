@@ -663,6 +663,13 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
   Widget build(BuildContext context) {
     final classAttackCorrection = toModifier(ConstData.classInfo[params.attackerClass]?.attackRate ?? 1000);
     final damageRate = toModifier(params.damageRate);
+    final isNpSpecificDamage = params.isNp &&
+        {
+          FuncType.damageNpIndividual,
+          FuncType.damageNpIndividualSum,
+          FuncType.damageNpStateIndividualFix,
+          FuncType.damageNpRare,
+        }.contains(params.damageFunction?.funcType);
     final npSpecificAttackRate = toModifier(params.npSpecificAttackRate);
     final hitsPercent = params.totalHits / 100.0;
     final fixedRandom = toModifier(params.fixedRandom);
@@ -692,7 +699,7 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
         oneParam(S.current.class_attack_rate, classAttackCorrection.format(precision: 3)),
         if (params.damageRate != 1000)
           oneParam(S.current.battle_damage_rate, damageRate.format(percent: true, precision: 3)),
-        if (params.isNp && params.npSpecificAttackRate != 1000)
+        if (isNpSpecificDamage)
           oneParam(S.current.np_sp_damage_rate, npSpecificAttackRate.format(percent: true, precision: 3)),
         if (params.totalHits != 100) oneParam('Hits', hitsPercent.format(percent: true, precision: 3)),
         oneParam(S.current.battle_random, fixedRandom.toStringAsFixed(3)),

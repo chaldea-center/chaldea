@@ -209,7 +209,7 @@ class BuffData {
           '${battleData.options.tailoredExecution ? '' : ' [$buffRate vs ${battleData.options.probabilityThreshold}]'}');
     }
 
-    return probabilityCheck && shouldApplyBuff(battleData, isTarget) ;
+    return probabilityCheck && shouldApplyBuff(battleData, isTarget);
   }
 
   bool checkDataVals(final BattleData battleData) {

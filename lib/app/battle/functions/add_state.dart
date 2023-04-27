@@ -19,7 +19,6 @@ class AddState {
     bool isPassive = false,
     final bool notActorPassive = false,
     final bool isCommandCode = false,
-    final bool isShortBuff = false,
   }) async {
     final activator = battleData.activator;
     bool buffAdded = false;
@@ -34,7 +33,7 @@ class AddState {
         ..actorUniqueId = activator?.uniqueId ?? 0
         ..actorName = activator?.lBattleName ?? ''
         ..notActorPassive = notActorPassive
-        ..isShortBuff = isShortBuff
+        ..isShortBuff = func.funcType == FuncType.addStateShort
         ..irremovable |= isPassive || notActorPassive;
 
       if (buff.type == BuffType.tdTypeChange) {

@@ -186,18 +186,6 @@ class FunctionExecutor {
         functionSuccess = await GainNpFromTargets.gainNpFromTargets(battleData, dataVals, targets);
         break;
       case FuncType.addState:
-        functionSuccess = await AddState.addState(
-          battleData,
-          function,
-          function.buff!,
-          dataVals,
-          targets,
-          tdSelections: tdSelections,
-          isPassive: isPassive,
-          isCommandCode: isCommandCode,
-          notActorPassive: notActorFunction,
-        );
-        break;
       case FuncType.addStateShort:
         functionSuccess = await AddState.addState(
           battleData,
@@ -209,7 +197,6 @@ class FunctionExecutor {
           isPassive: isPassive,
           isCommandCode: isCommandCode,
           notActorPassive: notActorFunction,
-          isShortBuff: true,
         );
         break;
       case FuncType.subState:
@@ -253,41 +240,11 @@ class FunctionExecutor {
       case FuncType.damage:
       case FuncType.damageNp:
       case FuncType.damageNpIndividual:
-        functionSuccess = await Damage.damage(
-          battleData,
-          dataVals,
-          targets,
-          chainPos,
-          isTypeChain,
-          isMightyChain,
-          firstCardType,
-        );
-        break;
-      case FuncType.damageNpIndividualSum:
-        functionSuccess = await Damage.damage(
-          battleData,
-          dataVals,
-          targets,
-          chainPos,
-          isTypeChain,
-          isMightyChain,
-          firstCardType,
-          checkBuffTraits: dataVals.IncludeIgnoreIndividuality == 1,
-          npSpecificMode: NpSpecificMode.individualSum,
-        );
-        break;
+      case FuncType.damageNpPierce:
+      case FuncType.damageNpHpratioLow:
+      case FuncType.damageNpHpratioHigh: // no real example yet
       case FuncType.damageNpRare:
-        functionSuccess = await Damage.damage(
-          battleData,
-          dataVals,
-          targets,
-          chainPos,
-          isTypeChain,
-          isMightyChain,
-          firstCardType,
-          npSpecificMode: NpSpecificMode.rarity,
-        );
-        break;
+      case FuncType.damageNpIndividualSum:
       case FuncType.damageNpStateIndividualFix:
         functionSuccess = await Damage.damage(
           battleData,
@@ -297,31 +254,7 @@ class FunctionExecutor {
           isTypeChain,
           isMightyChain,
           firstCardType,
-          checkBuffTraits: true,
-        );
-        break;
-      case FuncType.damageNpHpratioLow:
-        functionSuccess = await Damage.damage(
-          battleData,
-          dataVals,
-          targets,
-          chainPos,
-          isTypeChain,
-          isMightyChain,
-          firstCardType,
-          checkHpRatio: true,
-        );
-        break;
-      case FuncType.damageNpPierce:
-        functionSuccess = await Damage.damage(
-          battleData,
-          dataVals,
-          targets,
-          chainPos,
-          isTypeChain,
-          isMightyChain,
-          firstCardType,
-          isPierceDefense: true,
+          damageFunction: function,
         );
         break;
       case FuncType.instantDeath:

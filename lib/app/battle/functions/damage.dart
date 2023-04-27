@@ -32,10 +32,7 @@ class Damage {
     final bool isTypeChain,
     final bool isMightyChain,
     final CardType firstCardType, {
-    final bool isPierceDefense = false,
-    final bool checkHpRatio = false,
-    final bool checkBuffTraits = false,
-    final NpSpecificMode npSpecificMode = NpSpecificMode.normal,
+    final NiceFunction? damageFunction,
   }) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.probabilityThreshold) {
@@ -45,35 +42,45 @@ class Damage {
     final activator = battleData.activator!;
     final currentCard = battleData.currentCard!;
     final List<AttackResultDetail> targetResults = [];
+
+    final checkHpRatioHigh = damageFunction?.funcType == FuncType.damageNpHpratioHigh;
+    final checkHpRatioLow = damageFunction?.funcType == FuncType.damageNpHpratioLow;
+    final checkHpRatio = checkHpRatioHigh || checkHpRatioLow;
     for (final target in targets) {
       battleData.setTarget(target);
 
       final classAdvantage = await getClassRelation(battleData, activator, target);
 
-      final additionDamageRate = checkHpRatio && dataVals.Target != null
+      final hpRatioDamageLow = checkHpRatioLow && dataVals.Target != null
           ? ((1 - activator.hp / activator.getMaxHp(battleData)) * dataVals.Target!).toInt()
+          : 0;
+
+      final hpRatioDamageHigh = checkHpRatioHigh && dataVals.Target != null
+          ? ((activator.hp / activator.getMaxHp(battleData)) * dataVals.Target!).toInt()
           : 0;
 
       int specificAttackRate = 1000;
       if (!checkHpRatio && dataVals.Target != null) {
-        if (npSpecificMode == NpSpecificMode.rarity) {
+        if (damageFunction?.funcType == FuncType.damageNpRare) {
           final countTarget = dataVals.Target! == 1 ? activator : target; // need more sample
           final targetRarities = dataVals.TargetRarityList!;
           final useCorrection = targetRarities.contains(countTarget.rarity);
           if (useCorrection) {
             specificAttackRate = dataVals.Correction!;
           }
-        } else if (npSpecificMode == NpSpecificMode.individualSum) {
+        } else if (damageFunction?.funcType == FuncType.damageNpIndividualSum) {
           final countTarget = dataVals.Target! == 1 ? target : activator;
           final requiredTraits = dataVals.TargetList!.map((traitId) => NiceTrait(id: traitId)).toList();
-          int useCount = checkBuffTraits
+          int useCount = dataVals.IncludeIgnoreIndividuality == 1
               ? countTarget.countBuffWithTrait(requiredTraits)
               : countTarget.countTrait(battleData, requiredTraits);
           if (dataVals.ParamAddMaxCount != null && dataVals.ParamAddMaxCount! > 0) {
             useCount = min(useCount, dataVals.ParamAddMaxCount!);
           }
           specificAttackRate = dataVals.Value2! + useCount * dataVals.Correction!;
-        } else {
+        } else if (damageFunction?.funcType == FuncType.damageNpIndividual ||
+            damageFunction?.funcType == FuncType.damageNpStateIndividualFix) {
+          final checkBuffTraits = damageFunction?.funcType == FuncType.damageNpStateIndividualFix;
           final useCorrection = battleData.checkTraits(CheckTraitParameters(
             requiredTraits: [NiceTrait(id: dataVals.Target!)],
             actor: battleData.target,
@@ -96,8 +103,9 @@ class Damage {
       final damageParameters = DamageParameters()
         ..attack = activator.attack + currentCard.cardStrengthen
         ..totalHits = Maths.sum(currentCard.cardDetail.hitsDistribution)
-        ..damageRate =
-            currentCard.isNP ? dataVals.Value! + additionDamageRate : currentCard.cardDetail.damageRate ?? 1000
+        ..damageRate = currentCard.isNP
+            ? dataVals.Value! + hpRatioDamageLow + hpRatioDamageHigh
+            : currentCard.cardDetail.damageRate ?? 1000
         ..npSpecificAttackRate = specificAttackRate
         ..attackerClass = activator.classId
         ..defenderClass = target.classId
@@ -119,7 +127,8 @@ class Damage {
         ..npDamageBuff = currentCard.isNP ? await activator.getBuffValueOnAction(battleData, BuffAction.npdamage) : 0
         ..percentAttackBuff = await activator.getBuffValueOnAction(battleData, BuffAction.damageSpecial)
         ..damageAdditionBuff = await activator.getBuffValueOnAction(battleData, BuffAction.givenDamage)
-        ..fixedRandom = battleData.options.fixedRandom;
+        ..fixedRandom = battleData.options.fixedRandom
+        ..damageFunction = damageFunction;
 
       final atkNpParameters = AttackNpGainParameters();
       final defNpParameters = DefendNpGainParameters();
@@ -165,7 +174,7 @@ class Damage {
       if (!skipDamage) {
         damageParameters
           ..cardResist = await target.getBuffValueOnAction(battleData, BuffAction.commandDef)
-          ..defenseBuff = isPierceDefense || hasPierceDefense
+          ..defenseBuff = damageFunction?.funcType == FuncType.damageNpPierce || hasPierceDefense
               ? await target.getBuffValueOnAction(battleData, BuffAction.defencePierce)
               : await target.getBuffValueOnAction(battleData, BuffAction.defence)
           ..specificDefenseBuff = await target.getBuffValueOnAction(battleData, BuffAction.selfdamage)

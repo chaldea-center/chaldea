@@ -251,6 +251,8 @@ class DamageParameters {
   int damageReductionBuff = 0; // selfDmgCutAdd = target.receiveDamage
   int fixedRandom = 0;
 
+  NiceFunction? damageFunction;
+
   @override
   String toString() {
     return 'DamageParameters: {'
@@ -316,7 +318,8 @@ class DamageParameters {
       ..percentDefenseBuff = percentDefenseBuff
       ..damageAdditionBuff = damageAdditionBuff
       ..damageReductionBuff = damageReductionBuff
-      ..fixedRandom = fixedRandom;
+      ..fixedRandom = fixedRandom
+      ..damageFunction = damageFunction;
   }
 }
 
