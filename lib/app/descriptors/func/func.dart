@@ -623,6 +623,7 @@ class FuncDescriptor extends StatelessWidget {
         func: func,
         vals: mVals,
         originVals: oVals,
+        ignoreRate: false,
         color: index == 5 || index == 9 ? Theme.of(context).colorScheme.secondary : null,
         inList: true,
         supportOnly: support,

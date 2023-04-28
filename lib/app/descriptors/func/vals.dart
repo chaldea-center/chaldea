@@ -35,6 +35,7 @@ class ValListDsc extends StatelessWidget {
               func: func,
               vals: vals,
               originVals: originVals.getOrNull(j),
+              ignoreRate: false,
               color: j == 5 || j == 9 ? Theme.of(context).colorScheme.secondary : null,
               inList: true,
             );
@@ -402,7 +403,8 @@ class ValDsc extends StatelessWidget {
     if (vals.Rate != null) {
       final _jsonVals = vals.toJson().keys.toSet();
       // _jsonVals.removeAll(['Turn', 'Count']);
-      if ((_jsonVals.length == 1 && _jsonVals.first == 'Rate' && ignoreRate != true) ||
+      if (ignoreRate == false ||
+          (_jsonVals.length == 1 && _jsonVals.first == 'Rate' && ignoreRate != true) ||
           vals.Rate != 1000 ||
           [FuncType.instantDeath, FuncType.forceInstantDeath].contains(func.funcType)) {
         _addPercent(parts, vals.Rate, 10, (v) => Transl.special.funcValChance(v));
