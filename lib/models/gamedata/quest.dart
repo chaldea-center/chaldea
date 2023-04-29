@@ -716,6 +716,7 @@ class NpcServant {
   EnemySkill? skills;
   SupportServantTd? noblePhantasm;
   SupportServantLimit limit;
+  List<NpcServantFollowerFlag> flags;
 
   NpcServant({
     this.npcId,
@@ -728,6 +729,7 @@ class NpcServant {
     this.skills,
     this.noblePhantasm,
     required this.limit,
+    this.flags = const [],
   });
 
   factory NpcServant.fromJson(Map<String, dynamic> json) => _$NpcServantFromJson(json);
@@ -1604,4 +1606,18 @@ enum FrequencyType {
 enum StageLimitActType {
   win,
   lose,
+}
+
+enum NpcServantFollowerFlag {
+  unknown,
+  npc,
+  hideSupport,
+  notUsedTreasureDevice,
+  noDisplayBonusIcon,
+  applySvtChange,
+  hideEquip,
+  noDisplayBonusIconEquip,
+  hideTreasureDeviceLv,
+  hideTreasureDeviceDetail,
+  hideRarity,
 }

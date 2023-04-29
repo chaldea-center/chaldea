@@ -452,6 +452,8 @@ NpcServant _$NpcServantFromJson(Map json) => NpcServant(
           ? null
           : SupportServantTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
       limit: SupportServantLimit.fromJson(Map<String, dynamic>.from(json['limit'] as Map)),
+      flags: (json['flags'] as List<dynamic>?)?.map((e) => $enumDecode(_$NpcServantFollowerFlagEnumMap, e)).toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$NpcServantToJson(NpcServant instance) => <String, dynamic>{
@@ -465,7 +467,22 @@ Map<String, dynamic> _$NpcServantToJson(NpcServant instance) => <String, dynamic
       'skills': instance.skills?.toJson(),
       'noblePhantasm': instance.noblePhantasm?.toJson(),
       'limit': instance.limit.toJson(),
+      'flags': instance.flags.map((e) => _$NpcServantFollowerFlagEnumMap[e]!).toList(),
     };
+
+const _$NpcServantFollowerFlagEnumMap = {
+  NpcServantFollowerFlag.unknown: 'unknown',
+  NpcServantFollowerFlag.npc: 'npc',
+  NpcServantFollowerFlag.hideSupport: 'hideSupport',
+  NpcServantFollowerFlag.notUsedTreasureDevice: 'notUsedTreasureDevice',
+  NpcServantFollowerFlag.noDisplayBonusIcon: 'noDisplayBonusIcon',
+  NpcServantFollowerFlag.applySvtChange: 'applySvtChange',
+  NpcServantFollowerFlag.hideEquip: 'hideEquip',
+  NpcServantFollowerFlag.noDisplayBonusIconEquip: 'noDisplayBonusIconEquip',
+  NpcServantFollowerFlag.hideTreasureDeviceLv: 'hideTreasureDeviceLv',
+  NpcServantFollowerFlag.hideTreasureDeviceDetail: 'hideTreasureDeviceDetail',
+  NpcServantFollowerFlag.hideRarity: 'hideRarity',
+};
 
 SupportServant _$SupportServantFromJson(Map json) => SupportServant(
       id: json['id'] as int,

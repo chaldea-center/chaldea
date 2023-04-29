@@ -411,13 +411,15 @@ extension ColorX on Color {
 }
 
 extension ResponseX<T> on Response<T> {
-  Map<String, dynamic> json() {
+  dynamic json() {
     if (data is Map) {
-      return Map.from(data as Map);
+      return Map<String, dynamic>.from(data as Map);
+    } else if (data is List) {
+      return data as List<dynamic>;
     } else if (data is String) {
       return jsonDecode(data as String);
     } else {
-      return {};
+      return null;
     }
   }
 }
