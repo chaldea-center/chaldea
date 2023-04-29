@@ -11,6 +11,7 @@ import 'package:chaldea/utils/extension.dart';
 import '../../app/modules/home/elements/gallery_item.dart';
 import '../../packages/language.dart';
 import '../gamedata/common.dart';
+import '../gamedata/drop_rate.dart';
 import '_helper.dart';
 import 'autologin.dart';
 import 'battle.dart';
@@ -59,6 +60,7 @@ class LocalSettings {
   GithubSetting github;
   TipsSetting tips;
   BattleSimSetting battleSim;
+  Map<int, EventItemCalcParams> eventItemCalc;
 
   // filters
   Region spoilerRegion;
@@ -105,6 +107,7 @@ class LocalSettings {
     GithubSetting? github,
     TipsSetting? tips,
     BattleSimSetting? battleSim,
+    Map<int, EventItemCalcParams>? eventItemCalc,
     this.spoilerRegion = Region.jp,
     SvtFilterData? svtFilterData,
     CraftFilterData? craftFilterData,
@@ -125,6 +128,7 @@ class LocalSettings {
         github = github ?? GithubSetting(),
         tips = tips ?? TipsSetting(),
         battleSim = battleSim ?? BattleSimSetting(),
+        eventItemCalc = eventItemCalc ?? {},
         svtFilterData = svtFilterData ?? SvtFilterData(),
         craftFilterData = craftFilterData ?? CraftFilterData(),
         cmdCodeFilterData = cmdCodeFilterData ?? CmdCodeFilterData(),
@@ -400,6 +404,47 @@ class TipsSetting {
   factory TipsSetting.fromJson(Map<String, dynamic> json) => _$TipsSettingFromJson(json);
 
   Map<String, dynamic> toJson() => _$TipsSettingToJson(this);
+}
+
+// key: warId
+@JsonSerializable()
+class EventItemCalcParams {
+  Map<int, int> itemCounts;
+  Map<int, QuestBonusPlan> quests;
+
+  EventItemCalcParams({
+    Map<int, int>? itemCounts,
+    Map<int, QuestBonusPlan>? quests,
+  })  : itemCounts = itemCounts ?? {},
+        quests = quests ?? {};
+
+  factory EventItemCalcParams.fromJson(Map<String, dynamic> json) => _$EventItemCalcParamsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventItemCalcParamsToJson(this);
+}
+
+@JsonSerializable()
+class QuestBonusPlan {
+  bool enabled = true;
+  Map<int, int> bonus = {};
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  late int ap;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  late int questId;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  late QuestDropData drops;
+
+  QuestBonusPlan({
+    this.enabled = true,
+    Map<int, int>? bonus,
+  }) : bonus = bonus ?? {};
+
+  int getBonus(int itemId) => bonus[itemId] ?? 0;
+
+  factory QuestBonusPlan.fromJson(Map<String, dynamic> json) => _$QuestBonusPlanFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestBonusPlanToJson(this);
 }
 
 enum SvtListClassFilterStyle {

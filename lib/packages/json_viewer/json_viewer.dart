@@ -39,7 +39,8 @@ class JsonObjectViewer extends StatefulWidget {
   final bool notRoot;
   final bool defaultOpen;
 
-  JsonObjectViewer(this.jsonObj, {super.key, this.notRoot = false, this.defaultOpen = false});
+  JsonObjectViewer(Map<dynamic, dynamic> jsonObj, {super.key, this.notRoot = false, this.defaultOpen = false})
+      : jsonObj = jsonObj.map((key, value) => MapEntry(key.toString(), value));
 
   @override
   JsonObjectViewerState createState() => JsonObjectViewerState();

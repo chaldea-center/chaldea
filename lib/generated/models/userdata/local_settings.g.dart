@@ -62,6 +62,12 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               'tips', (v) => v == null ? null : TipsSetting.fromJson(Map<String, dynamic>.from(v as Map))),
           battleSim: $checkedConvert(
               'battleSim', (v) => v == null ? null : BattleSimSetting.fromJson(Map<String, dynamic>.from(v as Map))),
+          eventItemCalc: $checkedConvert(
+              'eventItemCalc',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(
+                        int.parse(k as String), EventItemCalcParams.fromJson(Map<String, dynamic>.from(e as Map))),
+                  )),
           spoilerRegion: $checkedConvert(
               'spoilerRegion', (v) => v == null ? Region.jp : const RegionConverter().fromJson(v as String)),
           svtFilterData: $checkedConvert(
@@ -119,6 +125,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'github': instance.github.toJson(),
       'tips': instance.tips.toJson(),
       'battleSim': instance.battleSim.toJson(),
+      'eventItemCalc': instance.eventItemCalc.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'spoilerRegion': const RegionConverter().toJson(instance.spoilerRegion),
       'svtFilterData': instance.svtFilterData.toJson(),
       'craftFilterData': instance.craftFilterData.toJson(),
@@ -396,4 +403,51 @@ Map<String, dynamic> _$TipsSettingToJson(TipsSetting instance) => <String, dynam
       'starter': instance.starter,
       'servantList': instance.servantList,
       'servantDetail': instance.servantDetail,
+    };
+
+EventItemCalcParams _$EventItemCalcParamsFromJson(Map json) => $checkedCreate(
+      'EventItemCalcParams',
+      json,
+      ($checkedConvert) {
+        final val = EventItemCalcParams(
+          itemCounts: $checkedConvert(
+              'itemCounts',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                  )),
+          quests: $checkedConvert(
+              'quests',
+              (v) => (v as Map?)?.map(
+                    (k, e) =>
+                        MapEntry(int.parse(k as String), QuestBonusPlan.fromJson(Map<String, dynamic>.from(e as Map))),
+                  )),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$EventItemCalcParamsToJson(EventItemCalcParams instance) => <String, dynamic>{
+      'itemCounts': instance.itemCounts.map((k, e) => MapEntry(k.toString(), e)),
+      'quests': instance.quests.map((k, e) => MapEntry(k.toString(), e.toJson())),
+    };
+
+QuestBonusPlan _$QuestBonusPlanFromJson(Map json) => $checkedCreate(
+      'QuestBonusPlan',
+      json,
+      ($checkedConvert) {
+        final val = QuestBonusPlan(
+          enabled: $checkedConvert('enabled', (v) => v as bool? ?? true),
+          bonus: $checkedConvert(
+              'bonus',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                  )),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$QuestBonusPlanToJson(QuestBonusPlan instance) => <String, dynamic>{
+      'enabled': instance.enabled,
+      'bonus': instance.bonus.map((k, e) => MapEntry(k.toString(), e)),
     };

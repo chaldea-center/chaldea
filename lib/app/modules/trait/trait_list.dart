@@ -23,13 +23,26 @@ class _TraitListPageState extends State<TraitListPage> with SearchableListState<
 
   @override
   Iterable<int> get wholeData {
-    Set<int> ids = Trait.values.map((e) => e.id).toSet();
-    ids.addAll(db.gameData.mappingData.trait.keys);
-    ids.addAll(db.gameData.mappingData.eventTrait.keys);
+    List<int> sortedIds = [];
+    Set<int> knownIds = {
+      ...Trait.values.map((e) => e.id),
+      ...db.gameData.mappingData.trait.keys,
+      ...db.gameData.mappingData.eventTrait.keys,
+      ...db.gameData.mappingData.fieldTrait.keys,
+    };
+    sortedIds = knownIds.toList()..sort();
     int? _searchInt = int.tryParse(searchEditingController.text);
-    if (_searchInt != null) ids.add(_searchInt);
-    ids.remove(Trait.unknown.id);
-    return ids.toList();
+    if (_searchInt != null) {
+      if (sortedIds.contains(_searchInt)) {
+        sortedIds.remove(_searchInt);
+        sortedIds.insert(0, _searchInt);
+      } else {
+        sortedIds.insert(0, _searchInt);
+      }
+    }
+    if (_searchInt != null && !sortedIds.contains(_searchInt)) sortedIds.insert(0, _searchInt);
+    sortedIds.remove(Trait.unknown.id);
+    return knownIds;
   }
 
   Trait? getTrait(int id) => kTraitIdMapping[id];
