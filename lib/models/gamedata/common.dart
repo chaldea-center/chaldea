@@ -266,6 +266,7 @@ enum SvtClass {
   uOlgaMarieAlienGod(31, '獸?'),
   uOlgaMarie(32, '?'),
   beast(33, '獸'),
+  beastVI(34, '獸Ⅵ'),
   unknown(97),
   // 98
   // 99

@@ -1801,6 +1801,17 @@ class S {
     );
   }
 
+  /// `Command Assist`
+  String get command_assist {
+    return Intl.message(
+      'Command Assist',
+      name: 'command_assist',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Command Code`
   String get command_code {
     return Intl.message(

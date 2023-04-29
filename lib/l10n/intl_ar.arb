@@ -158,6 +158,7 @@
   "clear_data": "حذف البيانات",
   "coin_summon_num": "عملات الاستدعاء",
   "collapse": null,
+  "command_assist": null,
   "command_code": "كوماند كود",
   "command_spell": null,
   "common_release_group_hint": null,

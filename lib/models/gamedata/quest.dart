@@ -389,7 +389,12 @@ class BaseGift {
   factory BaseGift.fromJson(Map<String, dynamic> json) => _$BaseGiftFromJson(json);
 
   bool get isStatItem {
-    if ([GiftType.equip, GiftType.eventSvtJoin, GiftType.eventPointBuff].contains(type)) return false;
+    if ([
+      GiftType.equip,
+      GiftType.eventSvtJoin,
+      GiftType.eventPointBuff,
+      GiftType.eventCommandAssist,
+    ].contains(type)) return false;
     return true;
   }
 

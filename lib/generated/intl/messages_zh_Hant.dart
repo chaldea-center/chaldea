@@ -247,6 +247,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear_data": MessageLookupByLibrary.simpleMessage("清除資料"),
         "coin_summon_num": MessageLookupByLibrary.simpleMessage("召喚所得"),
         "collapse": MessageLookupByLibrary.simpleMessage("折叠"),
+        "command_assist": MessageLookupByLibrary.simpleMessage("指令支援"),
         "command_code": MessageLookupByLibrary.simpleMessage("指令紋章"),
         "command_spell": MessageLookupByLibrary.simpleMessage("令咒"),
         "common_release_group_hint": MessageLookupByLibrary.simpleMessage("當存在多組(Group)時，僅需滿足其中一組(Group)條件即可"),

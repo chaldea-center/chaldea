@@ -213,6 +213,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear_cache_hint": MessageLookupByLibrary.simpleMessage("イラスト、ボイスなど"),
         "clear_data": MessageLookupByLibrary.simpleMessage("データの消去"),
         "coin_summon_num": MessageLookupByLibrary.simpleMessage("召喚所得"),
+        "command_assist": MessageLookupByLibrary.simpleMessage("コマンドサポート"),
         "command_code": MessageLookupByLibrary.simpleMessage("指令紋章"),
         "command_spell": MessageLookupByLibrary.simpleMessage("令呪"),
         "common_release_group_hint": MessageLookupByLibrary.simpleMessage("条件(Group)が複数ある時、そのうち一つの(Group)を満たせばよい"),

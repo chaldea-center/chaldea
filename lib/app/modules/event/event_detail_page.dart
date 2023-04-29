@@ -19,6 +19,7 @@ import '../quest/quest_list.dart';
 import 'detail/bonus.dart';
 import 'detail/bulletin_board.dart';
 import 'detail/campaign.dart';
+import 'detail/command_assist.dart';
 import 'detail/cooltime.dart';
 import 'detail/digging.dart';
 import 'detail/fortification.dart';
@@ -175,6 +176,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
         S.current.shop + (shopSlots.length > 1 ? ' ${index + 1}' : ''),
         EventShopsPage(event: event, shops: shops),
       );
+    }
+    if (event.commandAssists.isNotEmpty) {
+      _addTab(S.current.command_assist, EventCommandAssistPage(event: event));
     }
     if (db.gameData.craftEssences.values.any((ce) => ce.skills.any((skill) => skill.isEventSkill(event))) ||
         db.gameData.servantsNoDup.values.any((svt) => svt.eventSkills(event.id).isNotEmpty)) {

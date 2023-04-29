@@ -158,6 +158,7 @@
   "clear_data": "Borrar Datos",
   "coin_summon_num": "Summon Coins",
   "collapse": null,
+  "command_assist": null,
   "command_code": "Command Code",
   "command_spell": null,
   "common_release_group_hint": null,

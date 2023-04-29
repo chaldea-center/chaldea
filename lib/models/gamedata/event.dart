@@ -34,6 +34,7 @@ class Event {
   List<EventPointBuff> pointBuffs;
   List<EventMission> missions;
   List<EventRandomMission> randomMissions;
+  List<NiceEventMissionGroup> missionGroups;
   List<EventTower> towers;
   List<EventLottery> lotteries;
   List<EventTreasureBox> treasureBoxes;
@@ -44,6 +45,7 @@ class Event {
   List<EventFortification> fortifications;
   List<EventCampaign> campaigns;
   List<EventQuest> campaignQuests;
+  List<EventCommandAssist> commandAssists;
   List<EventVoicePlay> voicePlays;
   List<VoiceGroup> voices;
 
@@ -79,6 +81,7 @@ class Event {
     this.pointBuffs = const [],
     this.missions = const [],
     this.randomMissions = const [],
+    this.missionGroups = const [],
     this.towers = const [],
     this.lotteries = const [],
     this.treasureBoxes = const [],
@@ -89,6 +92,7 @@ class Event {
     this.fortifications = const [],
     this.campaigns = const [],
     this.campaignQuests = const [],
+    this.commandAssists = const [],
     this.voicePlays = const [],
     this.voices = const [],
   })  : _shortName = ['', '-'].contains(shortName) ? null : shortName,
@@ -743,6 +747,51 @@ class EventRandomMission {
   factory EventRandomMission.fromJson(Map<String, dynamic> json) => _$EventRandomMissionFromJson(json);
 
   Map<String, dynamic> toJson() => _$EventRandomMissionToJson(this);
+}
+
+@JsonSerializable()
+class NiceEventMissionGroup {
+  // int  eventId;
+  int id;
+  List<int> missionIds;
+
+  NiceEventMissionGroup({
+    required this.id,
+    this.missionIds = const [],
+  });
+
+  factory NiceEventMissionGroup.fromJson(Map<String, dynamic> json) => _$NiceEventMissionGroupFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NiceEventMissionGroupToJson(this);
+}
+
+@JsonSerializable()
+class EventCommandAssist {
+  int id;
+  int priority;
+  int lv;
+  String name;
+  CardType assistCard;
+  String image;
+  NiceSkill skill;
+  int skillLv;
+  List<CommonRelease> releaseConditions;
+
+  EventCommandAssist({
+    required this.id,
+    this.priority = 0,
+    required this.lv,
+    required this.name,
+    this.assistCard = CardType.none,
+    required this.image,
+    required this.skill,
+    required this.skillLv,
+    this.releaseConditions = const [],
+  });
+
+  factory EventCommandAssist.fromJson(Map<String, dynamic> json) => _$EventCommandAssistFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventCommandAssistToJson(this);
 }
 
 @JsonSerializable()

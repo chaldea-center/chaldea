@@ -50,6 +50,10 @@ Event _$EventFromJson(Map json) => Event(
               ?.map((e) => EventRandomMission.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      missionGroups: (json['missionGroups'] as List<dynamic>?)
+              ?.map((e) => NiceEventMissionGroup.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       towers: (json['towers'] as List<dynamic>?)
               ?.map((e) => EventTower.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -86,6 +90,10 @@ Event _$EventFromJson(Map json) => Event(
               ?.map((e) => EventQuest.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      commandAssists: (json['commandAssists'] as List<dynamic>?)
+              ?.map((e) => EventCommandAssist.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       voicePlays: (json['voicePlays'] as List<dynamic>?)
               ?.map((e) => EventVoicePlay.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -117,6 +125,7 @@ Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
       'pointBuffs': instance.pointBuffs.map((e) => e.toJson()).toList(),
       'missions': instance.missions.map((e) => e.toJson()).toList(),
       'randomMissions': instance.randomMissions.map((e) => e.toJson()).toList(),
+      'missionGroups': instance.missionGroups.map((e) => e.toJson()).toList(),
       'towers': instance.towers.map((e) => e.toJson()).toList(),
       'lotteries': instance.lotteries.map((e) => e.toJson()).toList(),
       'treasureBoxes': instance.treasureBoxes.map((e) => e.toJson()).toList(),
@@ -127,6 +136,7 @@ Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
       'fortifications': instance.fortifications.map((e) => e.toJson()).toList(),
       'campaigns': instance.campaigns.map((e) => e.toJson()).toList(),
       'campaignQuests': instance.campaignQuests.map((e) => e.toJson()).toList(),
+      'commandAssists': instance.commandAssists.map((e) => e.toJson()).toList(),
       'voicePlays': instance.voicePlays.map((e) => e.toJson()).toList(),
       'voices': instance.voices.map((e) => e.toJson()).toList(),
       'warIds': instance.warIds,
@@ -548,6 +558,54 @@ Map<String, dynamic> _$EventRandomMissionToJson(EventRandomMission instance) => 
       'condId': instance.condId,
       'condNum': instance.condNum,
     };
+
+NiceEventMissionGroup _$NiceEventMissionGroupFromJson(Map json) => NiceEventMissionGroup(
+      id: json['id'] as int,
+      missionIds: (json['missionIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+    );
+
+Map<String, dynamic> _$NiceEventMissionGroupToJson(NiceEventMissionGroup instance) => <String, dynamic>{
+      'id': instance.id,
+      'missionIds': instance.missionIds,
+    };
+
+EventCommandAssist _$EventCommandAssistFromJson(Map json) => EventCommandAssist(
+      id: json['id'] as int,
+      priority: json['priority'] as int? ?? 0,
+      lv: json['lv'] as int,
+      name: json['name'] as String,
+      assistCard: $enumDecodeNullable(_$CardTypeEnumMap, json['assistCard']) ?? CardType.none,
+      image: json['image'] as String,
+      skill: NiceSkill.fromJson(Map<String, dynamic>.from(json['skill'] as Map)),
+      skillLv: json['skillLv'] as int,
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+Map<String, dynamic> _$EventCommandAssistToJson(EventCommandAssist instance) => <String, dynamic>{
+      'id': instance.id,
+      'priority': instance.priority,
+      'lv': instance.lv,
+      'name': instance.name,
+      'assistCard': _$CardTypeEnumMap[instance.assistCard]!,
+      'image': instance.image,
+      'skill': instance.skill.toJson(),
+      'skillLv': instance.skillLv,
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+    };
+
+const _$CardTypeEnumMap = {
+  CardType.none: 'none',
+  CardType.arts: 'arts',
+  CardType.buster: 'buster',
+  CardType.quick: 'quick',
+  CardType.extra: 'extra',
+  CardType.blank: 'blank',
+  CardType.weak: 'weak',
+  CardType.strength: 'strength',
+};
 
 EventTowerReward _$EventTowerRewardFromJson(Map json) => EventTowerReward(
       floor: json['floor'] as int,

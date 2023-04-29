@@ -253,6 +253,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "clear_data": MessageLookupByLibrary.simpleMessage("Clear Data"),
         "coin_summon_num": MessageLookupByLibrary.simpleMessage("Summon Coins"),
         "collapse": MessageLookupByLibrary.simpleMessage("Collapse"),
+        "command_assist": MessageLookupByLibrary.simpleMessage("Command Assist"),
         "command_code": MessageLookupByLibrary.simpleMessage("Command Code"),
         "command_spell": MessageLookupByLibrary.simpleMessage("Command Spell"),
         "common_release_group_hint":

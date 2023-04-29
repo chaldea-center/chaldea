@@ -158,6 +158,7 @@
   "clear_data": "데이터 클리어",
   "coin_summon_num": "소환 소득",
   "collapse": null,
+  "command_assist": null,
   "command_code": "커맨드 코드",
   "command_spell": null,
   "common_release_group_hint": null,

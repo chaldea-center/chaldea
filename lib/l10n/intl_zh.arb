@@ -158,6 +158,7 @@
   "clear_data": "清除数据",
   "coin_summon_num": "召唤所得",
   "collapse": "折叠",
+  "command_assist": "指令支援",
   "command_code": "指令纹章",
   "command_spell": "令咒",
   "common_release_group_hint": "当存在多组(Group)时，仅需满足其中一组(Group)条件即可",

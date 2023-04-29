@@ -158,6 +158,7 @@
   "clear_data": "データの消去",
   "coin_summon_num": "召喚所得",
   "collapse": null,
+  "command_assist": "コマンドサポート",
   "command_code": "指令紋章",
   "command_spell": "令呪",
   "common_release_group_hint": "条件(Group)が複数ある時、そのうち一つの(Group)を満たせばよい",
