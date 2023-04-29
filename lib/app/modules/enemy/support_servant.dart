@@ -72,10 +72,7 @@ class _SupportServantPageState extends State<SupportServantPage> {
                     child: Text.rich(
                       TextSpan(children: [
                         CenterWidgetSpan(
-                          child: db.getIconImage(
-                            svt.svt.className.icon(svt.svt.rarity),
-                            width: 24,
-                          ),
+                          child: db.getIconImage(svt.svt.clsIcon, width: 24),
                         ),
                         TextSpan(text: Transl.svtClassId(svt.svt.classId).l)
                       ]),

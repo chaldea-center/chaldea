@@ -268,7 +268,7 @@ class QuestEnemyWidget extends StatelessWidget {
       icon: showIcon ? enemy.svt.icon : null,
       hidden: enemy.misc?.displayType == 2 && !showTrueName,
       name: showTrueName ? enemy.svt.lName.l : enemy.lShownName,
-      className: enemy.svt.className,
+      classId: enemy.svt.classId,
       rarity: enemy.svt.rarity,
       hp: enemy.hp,
       deck: [if (showDeck) '[${enemy.deck.name}]', if (enemy.deck != DeckType.enemy) '*'].join(),
@@ -301,7 +301,7 @@ class QuestPhaseAiNpcWidget extends StatelessWidget {
       icon: enemy?.icon ?? aiNpc.npc.svt.icon,
       hidden: enemy?.misc?.displayType == 2 && !showTrueName,
       name: (showTrueName ? enemy?.svt.lName.l : enemy?.lShownName) ?? aiNpc.npc.svt.lName.l,
-      className: enemy?.svt.className ?? aiNpc.npc.svt.className,
+      classId: enemy?.svt.classId ?? aiNpc.npc.svt.classId,
       rarity: enemy?.svt.rarity ?? aiNpc.npc.svt.rarity,
       hp: enemy?.atk ?? aiNpc.npc.hp,
       deck: [if (showDeck) '[${DeckType.aiNpc.name}]', '*'].join(),
@@ -325,7 +325,7 @@ class EnemyThumbBase extends StatelessWidget {
   final String? icon;
   final bool hidden;
   final String name;
-  final SvtClass? className;
+  final int? classId;
   final int? rarity;
   final int hp;
   final String? deck;
@@ -337,7 +337,7 @@ class EnemyThumbBase extends StatelessWidget {
     this.icon,
     required this.hidden,
     required this.name,
-    this.className,
+    this.classId,
     this.rarity,
     required this.hp,
     this.deck,
@@ -347,6 +347,7 @@ class EnemyThumbBase extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final clsName = kSvtClassIds[classId];
     Widget? face;
     if (icon != null) {
       face = db.getIconImage(icon, width: 42, placeholder: (_) => const SizedBox());
@@ -377,10 +378,10 @@ class EnemyThumbBase extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        if (className != null) db.getIconImage(className?.icon(rarity ?? 5), width: 20),
+        if (classId != null) db.getIconImage(SvtClassX.clsIcon(classId!, rarity ?? 5), width: 20),
         Flexible(
           child: AutoSizeText(
-            '${className?.shortName ?? ""} $hp',
+            '${clsName?.shortName ?? "?"} $hp',
             maxFontSize: 12,
             // ensure HP is shown completely
             minFontSize: 1,

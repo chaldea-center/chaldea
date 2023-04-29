@@ -310,9 +310,10 @@ extension SvtClassX on SvtClass {
   SvtClassInfo? get info => db.gameData.constData.classInfo[id];
   int get iconId => info?.iconImageId ?? 12;
 
-  String icon(int svtRarity) => clsIcon(svtRarity, iconId);
+  String icon(int svtRarity) => clsIcon(id, svtRarity, iconId);
 
-  static String clsIcon(int svtRarity, int? iconId) {
+  static String clsIcon(int clsId, int svtRarity, [int? iconId]) {
+    iconId ??= ConstData.classInfo[clsId]?.iconImageId;
     int rarity = _kSvtClassRarityMap[svtRarity] ?? svtRarity;
     rarity = const <int, int>{
           1003: 2,

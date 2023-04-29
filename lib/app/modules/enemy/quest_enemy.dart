@@ -91,10 +91,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
                     child: Text.rich(
                       TextSpan(children: [
                         CenterWidgetSpan(
-                          child: db.getIconImage(
-                            enemy.svt.className.icon(enemy.svt.rarity),
-                            width: 24,
-                          ),
+                          child: db.getIconImage(enemy.svt.clsIcon, width: 24),
                         ),
                         TextSpan(text: Transl.svtClassId(enemy.svt.classId).l)
                       ]),

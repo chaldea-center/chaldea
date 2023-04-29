@@ -313,7 +313,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               Positioned(
                 left: 2,
                 top: 4,
-                child: db.getIconImage(svt.svtClass.icon(svt.rarity), width: 20),
+                child: db.getIconImage(SvtClassX.clsIcon(svt.classId, svt.rarity), width: 20),
               ),
             ],
           );

@@ -121,10 +121,7 @@ class QuestEnemySummaryPage extends StatelessWidget {
                     child: Text.rich(
                       TextSpan(children: [
                         CenterWidgetSpan(
-                          child: db.getIconImage(
-                            svt.className.icon(svt.rarity),
-                            width: 24,
-                          ),
+                          child: db.getIconImage(svt.clsIcon, width: 24),
                         ),
                         TextSpan(text: Transl.svtClassId(svt.classId).l)
                       ]),

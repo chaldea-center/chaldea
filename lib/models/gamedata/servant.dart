@@ -110,7 +110,6 @@ class BasicServant with GameCardMixin {
   SvtType type;
   SvtFlag flag;
   int classId;
-  SvtClass get className => kSvtClassIds[classId] ?? SvtClass.none;
   Attribute attribute;
   @override
   int rarity;
@@ -161,6 +160,9 @@ class BasicServant with GameCardMixin {
     return icon;
   }
 
+  SvtClass get className => kSvtClassIds[classId] ?? SvtClass.none;
+  String get clsIcon => SvtClassX.clsIcon(classId, rarity);
+
   @override
   String get route => collectionNo > 0 ? Routes.servantI(id) : Routes.enemyI(id);
 
@@ -182,7 +184,6 @@ class Servant with GameCardMixin {
   String name;
   String ruby;
   String battleName;
-  SvtClass get className => kSvtClassIds[classId] ?? SvtClass.none;
   int classId;
   SvtType type;
   SvtFlag flag;
@@ -467,6 +468,9 @@ class Servant with GameCardMixin {
     if (bordered && collectionNo > 0) _icon = this.bordered(_icon);
     return _icon;
   }
+
+  SvtClass get className => kSvtClassIds[classId] ?? SvtClass.none;
+  String get clsIcon => SvtClassX.clsIcon(classId, rarity);
 
   String get classCard {
     int imageId = db.gameData.constData.svtClassCardImageIdRemap[collectionNo] ??

@@ -76,9 +76,7 @@ class SvtInfoTab extends StatelessWidget {
                   },
                   child: Text.rich(
                     TextSpan(children: [
-                      CenterWidgetSpan(
-                          child:
-                              db.getIconImage(SvtClassX.clsIcon(svt.rarity, svt.classId), width: 20, aspectRatio: 1)),
+                      CenterWidgetSpan(child: db.getIconImage(svt.clsIcon, width: 20, aspectRatio: 1)),
                       SharedBuilder.textButtonSpan(
                         context: context,
                         text: ' ${Transl.svtClassId(svt.classId).l}',

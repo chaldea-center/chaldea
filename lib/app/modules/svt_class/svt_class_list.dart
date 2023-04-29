@@ -32,7 +32,7 @@ class SvtClassListPage extends StatelessWidget {
           final clsId = clsIds[index];
           final clsInfo = db.gameData.constData.classInfo[clsId];
           return ListTile(
-            leading: db.getIconImage(SvtClassX.clsIcon(5, clsInfo?.iconImageId), width: 36),
+            leading: db.getIconImage(SvtClassX.clsIcon(clsId, 5, clsInfo?.iconImageId), width: 36),
             title: Text(Transl.svtClassId(clsId).l),
             subtitle: Text('No.$clsId'),
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),

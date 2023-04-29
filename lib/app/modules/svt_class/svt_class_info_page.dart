@@ -25,7 +25,7 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
   @override
   Widget build(BuildContext context) {
     final info = db.gameData.constData.classInfo[clsId];
-    final rarities = cls == null ? [5] : [if (cls == SvtClass.avenger) 0, 1, 3, 5];
+    final rarities = info == null ? [5] : [if (cls == SvtClass.avenger) 0, 1, 3, 5];
     Set<String> cardImages = {};
     if (info != null) {
       cardImages.addAll(rarities.map((e) => Atlas.classCard(e, info.imageId)));
@@ -47,7 +47,7 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
             child: Wrap(
               alignment: WrapAlignment.center,
               children: rarities
-                  .map((e) => SvtClassX.clsIcon(e, info?.iconImageId))
+                  .map((e) => SvtClassX.clsIcon(clsId, e, info?.iconImageId))
                   .toSet()
                   .map((e) => CachedImage(
                         imageUrl: e,
@@ -132,7 +132,7 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
             ? Tooltip(
                 message: cls?.lName ?? 'Class $_clsId',
                 child: db.getIconImage(
-                  SvtClassX.clsIcon(5, info?.iconImageId),
+                  SvtClassX.clsIcon(clsId, 5, info?.iconImageId),
                   height: 24,
                   aspectRatio: 1,
                   errorWidget: (context, url, error) => Text(_clsId.toString()),
