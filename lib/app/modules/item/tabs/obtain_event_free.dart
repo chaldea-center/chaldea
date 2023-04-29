@@ -22,21 +22,21 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
   _SortType sortType = _SortType.openTime;
 
   Map<int, Quest> getEventQuests() {
-    List<int> questsKeys = [];
+    List<int> questsIds = [];
     for (final questId in db.gameData.dropData.freeDrops.keys) {
-      final drops = db.gameData.dropData.freeDrops[questId]!;
+      final drops = db.gameData.dropData.freeDrops2[questId]!;
       final count = drops.items[widget.itemId] ?? 0;
       if (drops.runs < 10 || count <= 0) continue;
-      questsKeys.add(questId);
+      questsIds.add(questId);
     }
-    questsKeys.sort2((e) => -(db.gameData.quests[e ~/ 100]?.openedAt ?? e));
+    questsIds.sort2((e) => -(db.gameData.quests[e]?.openedAt ?? e));
     Map<int, Quest> quests = {};
-    for (final key in questsKeys) {
-      final quest = db.gameData.quests[key ~/ 100];
+    for (final questId in questsIds) {
+      final quest = db.gameData.quests[questId];
       if (quest == null || !quest.isAnyFree || quest.phases.isEmpty) continue;
       if (quest.warId == WarId.chaldeaGate || quest.warId >= 8000) {
         // Hunting quests or event quests
-        quests[key] = quest;
+        quests[questId] = quest;
       }
     }
     return quests;

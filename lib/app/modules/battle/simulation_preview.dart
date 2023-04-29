@@ -36,7 +36,16 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   static const _validQuestRegions = [Region.jp, Region.na];
 
   Region? questRegion; // region for quest selector
-  QuestPhase? questPhase;
+  QuestPhase? _questPhase;
+  QuestPhase? get questPhase => _questPhase;
+  set questPhase(QuestPhase? v) {
+    if (v == null) {
+      _questPhase = v;
+    } else {
+      _questPhase = QuestPhase.fromJson(v.toJson());
+    }
+  }
+
   String? questErrorMsg;
   String? errorMsg;
 

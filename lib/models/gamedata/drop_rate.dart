@@ -10,14 +10,17 @@ class DropData {
   DropRateSheet domusAurea;
   // key=questId*100+phase
   Map<int, QuestDropData> fixedDrops; // one-off quest
-  Map<int, QuestDropData> freeDrops; // event free quest
+  final Map<int, QuestDropData> freeDrops; // event free quest
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final Map<int, QuestDropData> freeDrops2;
 
   DropData({
     this.domusVer = 0,
     DropRateSheet? domusAurea,
     this.fixedDrops = const {},
     this.freeDrops = const {},
-  }) : domusAurea = domusAurea ?? DropRateSheet();
+  })  : domusAurea = domusAurea ?? DropRateSheet(),
+        freeDrops2 = freeDrops.map((key, value) => MapEntry(key ~/ 100, value));
 
   factory DropData.fromJson(Map<String, dynamic> json) => _$DropDataFromJson(json);
 
@@ -117,10 +120,20 @@ class QuestDropData {
   int runs;
   // itemId: dropCount=num*count
   Map<int, int> items;
+  Map<int, int> groups; // default 1
+
   QuestDropData({
     this.runs = 0,
     this.items = const {},
+    this.groups = const {},
   });
+
+  double getBase(int itemId) => (items[itemId] ?? 0) / runs;
+
+  double getGroup(int itemId) {
+    if ((items[itemId] ?? 0) <= 0) return 0;
+    return groups.containsKey(itemId) ? groups[itemId]! / runs : 1;
+  }
 
   factory QuestDropData.fromJson(Map<String, dynamic> json) => _$QuestDropDataFromJson(json);
 

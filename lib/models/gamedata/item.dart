@@ -70,6 +70,7 @@ class Item {
     if (type == ItemType.eventItem) {
       return uses.contains(ItemUse.ascension) ? ItemCategory.eventAscension : ItemCategory.event;
     }
+    if (type == ItemType.eventPoint) return ItemCategory.event;
     if (type == ItemType.svtCoin) return ItemCategory.coin;
     return ItemCategory.other;
   }

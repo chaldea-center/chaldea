@@ -49,6 +49,8 @@ enum Region {
     if (r == null) return null;
     return _$RegionEnumMap.entries.firstWhereOrNull((e) => e.value.toLowerCase() == r.toLowerCase())?.key;
   }
+
+  static const validQuestRegions = [Region.jp, Region.na];
 }
 
 @JsonSerializable()

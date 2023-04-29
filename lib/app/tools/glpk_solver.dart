@@ -13,7 +13,7 @@ import 'package:chaldea/packages/js_engine/js_engine.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 
-abstract class BaseLPSolver {
+class BaseLPSolver {
   final JsEngine engine = JsEngine();
 
   /// ensure libs loaded
@@ -43,6 +43,10 @@ abstract class BaseLPSolver {
     final resultString = await engine.eval('''glpk_solver(`${jsonEncode(params)}`)''', name: 'solver_caller');
     logger.i('result: $resultString');
     return Map<String, num>.from(jsonDecode(resultString!)).map((key, value) => MapEntry(int.parse(key), value));
+  }
+
+  void dispose() {
+    engine.dispose();
   }
 }
 

@@ -1,6 +1,8 @@
 import 'package:flutter/services.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/modules/free_quest_calc/event_item_calc_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -253,6 +255,17 @@ class _EventShopsPageState extends State<EventShopsPage> {
             ),
           ),
         ),
+        if (event != null && event!.warIds.isNotEmpty)
+          IconButton(
+            onPressed: () {
+              router.pushPage(EventItemCalcPage(
+                warId: event!.warIds.first,
+                objectiveCounts: items,
+              ));
+            },
+            icon: const Icon(Icons.calculate),
+            tooltip: S.current.drop_calc_solve,
+          ),
         IconButton(
           onPressed: () {
             showDialog(

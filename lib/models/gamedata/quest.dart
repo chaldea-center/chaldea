@@ -148,6 +148,10 @@ class Quest with RouteInfo {
     return compare(qa, qb, spotLayer: spotLayer);
   }
 
+  static String getName(int questId) {
+    return db.gameData.quests[questId]?.lDispName ?? 'Quest $questId';
+  }
+
   factory Quest.fromJson(Map<String, dynamic> json) => _$QuestFromJson(json);
 
   int getPhaseKey(int phase) => id * 100 + phase;

@@ -62,9 +62,14 @@ QuestDropData _$QuestDropDataFromJson(Map json) => QuestDropData(
             (k, e) => MapEntry(int.parse(k as String), e as int),
           ) ??
           const {},
+      groups: (json['groups'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String), e as int),
+          ) ??
+          const {},
     );
 
 Map<String, dynamic> _$QuestDropDataToJson(QuestDropData instance) => <String, dynamic>{
       'runs': instance.runs,
       'items': instance.items.map((k, e) => MapEntry(k.toString(), e)),
+      'groups': instance.groups.map((k, e) => MapEntry(k.toString(), e)),
     };
