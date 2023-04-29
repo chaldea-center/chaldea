@@ -37,14 +37,19 @@ class QuestWave extends StatelessWidget {
     Widget _buildEnemyWithShift(QuestEnemy? enemy, {bool showDeck = false}) {
       if (enemy == null) return const SizedBox();
       List<Widget> parts = [];
-      final dispBreakShift = enemy.enemyScript.dispBreakShift ?? -1;
-      const lineThrough = TextStyle(decoration: TextDecoration.lineThrough);
+      int dispBreakShift = enemy.enemyScript.dispBreakShift ?? 0;
+      if (dispBreakShift > 0) {
+        dispBreakShift = min(dispBreakShift, enemy.enemyScript.shift?.length ?? 0);
+      }
+
+      final lineThrough =
+          TextStyle(decoration: TextDecoration.lineThrough, color: Theme.of(context).textTheme.bodySmall?.color);
       parts.add(QuestEnemyWidget(
         enemy: enemy,
         showTrueName: showTrueName,
         showDeck: showDeck,
         region: region,
-        textStyle: dispBreakShift > 1 ? lineThrough : null,
+        textStyle: dispBreakShift > 0 ? lineThrough : null,
       ));
       if (enemy.enemyScript.shift != null) {
         QuestEnemy prev = enemy;
@@ -56,7 +61,7 @@ class QuestWave extends StatelessWidget {
             showTrueName: showTrueName,
             showDeck: showDeck,
             showIcon: shiftEnemy.svt.icon != prev.svt.icon,
-            textStyle: index + 2 < dispBreakShift ? lineThrough : null,
+            textStyle: index + 1 < dispBreakShift ? lineThrough : null,
             region: region,
           ));
           prev = shiftEnemy;
