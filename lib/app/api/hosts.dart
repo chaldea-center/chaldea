@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../models/db.dart';
 
 class Hosts {
@@ -16,7 +18,7 @@ class Hosts {
   static const kWorkerHostCN = 'https://worker-cn.chaldea.center';
   static String get workerHost => cn ? kWorkerHostCN : kWorkerHostGlobal;
 
-  static const kDataHostGlobal = 'https://data.chaldea.center';
+  static const kDataHostGlobal = kIsWeb ? 'https://data.chaldea.center/web' : 'https://data.chaldea.center';
   static const kDataHostCN = 'https://data-cn.chaldea.center';
   static String get dataHost => cn ? kDataHostCN : kDataHostGlobal;
 
