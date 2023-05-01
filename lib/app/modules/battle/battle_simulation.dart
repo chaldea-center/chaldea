@@ -300,7 +300,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             jumpToDetail: false,
             height: 72,
             overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase, true),
-          )
+            option: ImageWithTextOption(
+                errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon)))
         : Stack(
             children: [
               CachedImage(

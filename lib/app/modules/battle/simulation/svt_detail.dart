@@ -87,10 +87,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
                 child: CachedImage(
                   imageUrl: icon,
                   placeholder: (context, url) => const SizedBox(),
-                  cachedOption: const CachedImageOption(
-                    fit: BoxFit.fitWidth,
-                    alignment: Alignment(0.0, 0.0),
-                  ),
+                  cachedOption: const CachedImageOption(fit: BoxFit.fitWidth),
                 ),
               ),
             if (icon != null)
@@ -116,15 +113,13 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
 
   Widget get header {
     return CustomTile(
-      leading: svt.niceEnemy?.iconBuilder(
-            context: context,
-            width: 72,
-          ) ??
-          svt.niceSvt?.iconBuilder(
-            context: context,
-            width: 72,
-            overrideIcon: svt.niceSvt?.ascendIcon(svt.limitCount, true),
-          ),
+      leading: (svt.niceEnemy ?? svt.niceSvt)?.iconBuilder(
+        context: context,
+        width: 72,
+        overrideIcon: svt.niceSvt?.ascendIcon(svt.limitCount, true),
+        option: ImageWithTextOption(
+            errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon)),
+      ),
       title: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,

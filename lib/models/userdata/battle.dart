@@ -7,19 +7,24 @@ part '../../generated/models/userdata/battle.g.dart';
 
 @JsonSerializable()
 class BattleSimSetting {
-  String? previousQuestPhase;
+  // settings
   bool preferPlayerData;
   Set<int> pingedCEs;
   Set<int> pingedSvts;
+  bool autoAdd7KnightsTrait;
+
+  // save data
+  String? previousQuestPhase;
   PlayerSvtDefaultData defaultLvs;
   List<BattleTeamFormation> formations;
   int curFormationIndex;
 
   BattleSimSetting({
-    this.previousQuestPhase,
     this.preferPlayerData = true,
     Set<int>? pingedCEs,
     Set<int>? pingedSvts,
+    this.autoAdd7KnightsTrait = true,
+    this.previousQuestPhase,
     PlayerSvtDefaultData? defaultLvs,
     List<BattleTeamFormation>? formations,
     this.curFormationIndex = 0,

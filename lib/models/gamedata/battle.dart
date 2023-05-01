@@ -228,8 +228,20 @@ class BattleOptionsInit {
     PlayerSvtData.base(),
     PlayerSvtData.base(),
   ];
+  List<PlayerSvtData> get allSvts => [...onFieldSvtDataList, ...backupSvtDataList];
+
   final MysticCodeData mysticCodeData = MysticCodeData();
   late Region playerRegion = db.curUser.region;
+
+  // db.settings.battleSim.autoAdd7KnightsTrait
+  bool get isDracoInTeam {
+    for (final svt in allSvts) {
+      if (svt.svt?.id == 3300100) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 class BattleOptions extends BattleOptionsRuntime with BattleOptionsInit {

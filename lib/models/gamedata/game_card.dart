@@ -120,6 +120,8 @@ mixin GameCardMixin implements RouteInfo {
         width: width,
         height: height,
         padding: padding,
+        placeholder: option.placeholder,
+        errorWidget: option.errorWidget,
       ),
       text: text,
       option: option,

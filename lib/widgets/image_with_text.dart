@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'package:cached_network_image/cached_network_image.dart';
+
 class ImageWithTextOption {
   double? width;
   double? height;
@@ -15,6 +17,10 @@ class ImageWithTextOption {
   double? shadowSize;
   Color? shadowColor;
 
+  // for cached image related
+  WidgetBuilder? placeholder;
+  LoadingErrorWidgetBuilder? errorWidget;
+
   ImageWithTextOption({
     this.width,
     this.height,
@@ -26,6 +32,8 @@ class ImageWithTextOption {
     this.textStyle,
     this.shadowSize,
     this.shadowColor,
+    this.placeholder,
+    this.errorWidget,
   });
 
   ImageWithTextOption merge(ImageWithTextOption? other) {
@@ -41,6 +49,8 @@ class ImageWithTextOption {
       textStyle: textStyle == null ? other.textStyle : textStyle?.merge(other.textStyle),
       shadowSize: other.shadowSize ?? shadowSize,
       shadowColor: other.shadowColor ?? shadowColor,
+      placeholder: other.placeholder ?? placeholder,
+      errorWidget: other.errorWidget ?? errorWidget,
     );
   }
 }

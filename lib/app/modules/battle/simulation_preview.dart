@@ -11,6 +11,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../common/builders.dart';
 import '../quest/breakdown/quest_phase.dart';
 import '../quest/quest.dart';
 import 'formation/default_lvs.dart';
@@ -52,6 +53,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   TextEditingController questIdTextController = TextEditingController();
 
   final BattleOptions options = BattleOptions();
+  BattleSimSetting get settings => db.settings.battleSim;
 
   List<PlayerSvtData> get onFieldSvts => options.onFieldSvtDataList;
   List<PlayerSvtData> get backupSvts => options.backupSvtDataList;
@@ -72,8 +74,8 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         initText = '/${widget.region!.upper}/quest/$initText';
       }
       questIdTextController.text = initText;
-    } else if (db.settings.battleSim.previousQuestPhase != null) {
-      questIdTextController.text = db.settings.battleSim.previousQuestPhase!;
+    } else if (settings.previousQuestPhase != null) {
+      questIdTextController.text = settings.previousQuestPhase!;
       _fetchQuestPhase();
     }
     initFormation();
@@ -99,7 +101,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     children.add(partyOption());
     children.add(DividerWithTitle(
       indent: 16,
-      title: db.settings.battleSim.curFormation.shownName(db.settings.battleSim.curFormationIndex),
+      title: settings.curFormation.shownName(settings.curFormationIndex),
     ));
     children.add(ResponsiveLayout(
       horizontalDivider: kIndentDivider,
@@ -320,11 +322,11 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           child: Text(S.current.default_lvs),
         ),
         CheckboxWithLabel(
-          value: db.settings.battleSim.preferPlayerData,
+          value: settings.preferPlayerData,
           label: Text(S.current.battle_prefer_player_data),
           onChanged: (v) {
             setState(() {
-              if (v != null) db.settings.battleSim.preferPlayerData = v;
+              if (v != null) settings.preferPlayerData = v;
             });
           },
         ),
@@ -367,7 +369,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   void onDrag(PlayerSvtData from, PlayerSvtData to, bool isCE) {
-    final allSvts = [...onFieldSvts, ...backupSvts];
+    final allSvts = options.allSvts.toList();
     final fromIndex = allSvts.indexOf(from), toIndex = allSvts.indexOf(to);
     if (fromIndex < 0 || toIndex < 0 || fromIndex == toIndex) return;
     if (isCE) {
@@ -453,35 +455,69 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   Widget buildMisc() {
+    List<Widget> children = [
+      SliderWithTitle(
+        leadingText: S.current.battle_probability_threshold,
+        min: 0,
+        max: 10,
+        value: options.probabilityThreshold ~/ 100,
+        label: '${options.probabilityThreshold ~/ 10} %',
+        onChange: (v) {
+          options.probabilityThreshold = v.round() * 100;
+          if (mounted) setState(() {});
+        },
+        padding: const EdgeInsetsDirectional.only(top: 8, start: 8),
+      ),
+      kIndentDivider,
+      CheckboxListTile(
+        dense: true,
+        value: options.disableEvent,
+        title: Text(S.current.disable_event_effects),
+        onChanged: (v) {
+          setState(() {
+            options.disableEvent = v ?? options.disableEvent;
+          });
+        },
+      ),
+      kIndentDivider,
+      ...buildPointBuffs(),
+    ];
+
+    // Sodom's Beast/Draco in team
+    if (options.isDracoInTeam && questPhase != null) {
+      bool has7Knights = questPhase!.allEnemies.any((enemy) => _isEnemy7Knights(enemy));
+      if (has7Knights) {
+        final draco = db.gameData.servantsNoDup[377];
+        children.addAll([
+          CheckboxListTile(
+            dense: true,
+            value: settings.autoAdd7KnightsTrait,
+            title: Text.rich(TextSpan(text: '${S.current.auto_add_trait}: ', children: [
+              SharedBuilder.traitSpan(context: context, trait: NiceTrait(id: Trait.standardClassServant.id))
+            ])),
+            subtitle: Text.rich(TextSpan(
+              text: 'For ',
+              children: [
+                SharedBuilder.textButtonSpan(
+                  context: context,
+                  text: draco?.lName.l ?? 'SVT 377',
+                  style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer),
+                  onTap: draco?.routeTo,
+                ),
+              ],
+            )),
+            onChanged: (v) {
+              setState(() {
+                settings.autoAdd7KnightsTrait = v ?? settings.autoAdd7KnightsTrait;
+              });
+            },
+          ),
+        ]);
+      }
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: [
-        SliderWithTitle(
-          leadingText: S.current.battle_probability_threshold,
-          min: 0,
-          max: 10,
-          value: options.probabilityThreshold ~/ 100,
-          label: '${options.probabilityThreshold ~/ 10} %',
-          onChange: (v) {
-            options.probabilityThreshold = v.round() * 100;
-            if (mounted) setState(() {});
-          },
-          padding: const EdgeInsetsDirectional.only(top: 8, start: 8),
-        ),
-        kIndentDivider,
-        CheckboxListTile(
-          dense: true,
-          value: options.disableEvent,
-          title: Text(S.current.disable_event_effects),
-          onChanged: (v) {
-            setState(() {
-              options.disableEvent = v ?? options.disableEvent;
-            });
-          },
-        ),
-        kIndentDivider,
-        ...buildPointBuffs(),
-      ],
+      children: children,
     );
   }
 
@@ -637,9 +673,9 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       Navigator.popUntil(context, (route) => route == curRoute);
     }
     questErrorMsg = null;
-    db.settings.battleSim.previousQuestPhase = '${selected.id}/${selected.phase}';
+    settings.previousQuestPhase = '${selected.id}/${selected.phase}';
     if (mounted) {
-      questIdTextController.text = db.settings.battleSim.previousQuestPhase!;
+      questIdTextController.text = settings.previousQuestPhase!;
     }
     setState(() {});
   }
@@ -679,8 +715,15 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       return options.disableEvent || event?.pointBuffs.contains(pointBuff) != true;
     });
 
+    if (options.isDracoInTeam && settings.autoAdd7KnightsTrait) {
+      for (final enemy in questCopy.allEnemies) {
+        if (_isEnemy7Knights(enemy) && enemy.traits.every((e) => e.signedId != Trait.standardClassServant.id)) {
+          enemy.traits = [...enemy.traits, NiceTrait(id: Trait.standardClassServant.id)];
+        }
+      }
+    }
     //
-    db.settings.battleSim.previousQuestPhase = '${questCopy.id}/${questCopy.phase}';
+    settings.previousQuestPhase = '${questCopy.id}/${questCopy.phase}';
     saveFormation();
     router.push(
       url: Routes.laplaceBattle,
@@ -695,9 +738,9 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
   void _editFormations() async {
     saveFormation();
-    final prevFormation = db.settings.battleSim.curFormation;
+    final prevFormation = settings.curFormation;
     await router.pushPage(const FormationEditor());
-    final formation = db.settings.battleSim.curFormation;
+    final formation = settings.curFormation;
     if (formation != prevFormation) {
       await restoreFormation(formation);
     }
@@ -708,7 +751,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   Future<void> initFormation() async {
     EasyLoading.show();
     try {
-      await restoreFormation(db.settings.battleSim.curFormation);
+      await restoreFormation(settings.curFormation);
     } finally {
       EasyLoading.dismiss();
       if (mounted) setState(() {});
@@ -725,9 +768,24 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   void saveFormation() {
-    final curFormation = db.settings.battleSim.curFormation;
+    final curFormation = settings.curFormation;
     curFormation.onFieldSvts = onFieldSvts.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
     curFormation.backupSvts = backupSvts.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
     curFormation.mysticCode = options.mysticCodeData.toStoredData();
   }
 }
+
+bool _isEnemy7Knights(QuestEnemy enemy) {
+  if (!enemy.traits.any((e) => e.signedId == Trait.servant.id)) return false;
+  return enemy.traits.any((e) => _k7KnigntsTraits.contains(e.name));
+}
+
+const _k7KnigntsTraits = [
+  Trait.classSaber,
+  Trait.classArcher,
+  Trait.classLancer,
+  Trait.classRider,
+  Trait.classCaster,
+  Trait.classAssassin,
+  Trait.classBerserker
+];

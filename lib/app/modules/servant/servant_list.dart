@@ -191,6 +191,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                   child: Text(S.current.copy_plan_menu),
                   onTap: () async {
                     await null;
+                    if (!mounted) return;
                     copyPlan();
                   },
                 ),

@@ -11,10 +11,11 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = BattleSimSetting(
-          previousQuestPhase: $checkedConvert('previousQuestPhase', (v) => v as String?),
           preferPlayerData: $checkedConvert('preferPlayerData', (v) => v as bool? ?? true),
           pingedCEs: $checkedConvert('pingedCEs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
           pingedSvts: $checkedConvert('pingedSvts', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
+          autoAdd7KnightsTrait: $checkedConvert('autoAdd7KnightsTrait', (v) => v as bool? ?? true),
+          previousQuestPhase: $checkedConvert('previousQuestPhase', (v) => v as String?),
           defaultLvs: $checkedConvert('defaultLvs',
               (v) => v == null ? null : PlayerSvtDefaultData.fromJson(Map<String, dynamic>.from(v as Map))),
           formations: $checkedConvert(
@@ -29,10 +30,11 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
     );
 
 Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <String, dynamic>{
-      'previousQuestPhase': instance.previousQuestPhase,
       'preferPlayerData': instance.preferPlayerData,
       'pingedCEs': instance.pingedCEs.toList(),
       'pingedSvts': instance.pingedSvts.toList(),
+      'autoAdd7KnightsTrait': instance.autoAdd7KnightsTrait,
+      'previousQuestPhase': instance.previousQuestPhase,
       'defaultLvs': instance.defaultLvs.toJson(),
       'formations': instance.formations.map((e) => e.toJson()).toList(),
       'curFormationIndex': instance.curFormationIndex,

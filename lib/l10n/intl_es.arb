@@ -35,6 +35,7 @@
   "attack_np_rate": null,
   "attribute_advantage": null,
   "auth_data_hints": null,
+  "auto_add_trait": null,
   "auto_login": null,
   "auto_reset": "Reinicio automático",
   "auto_update": "Actualizar automáticamente",

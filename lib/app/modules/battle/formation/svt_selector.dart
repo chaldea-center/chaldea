@@ -61,6 +61,7 @@ class ServantSelector extends StatelessWidget {
         fontSize: 10,
         alignment: Alignment.bottomLeft,
         // padding: const EdgeInsets.fromLTRB(22, 0, 2, 4),
+        errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
       ),
     );
 

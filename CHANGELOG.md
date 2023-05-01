@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.3.5
+
+- Even free calculator for event items (via event shop page)
+- Event command assist
+- Auto add "Seven Knights Servant" trait for enemy if Draco in team
+
+## 2.3.4
+
+- Fix new Beast class
+- Optimize Digging event UI
+
 ## 2.3.3
 
 - Laplace

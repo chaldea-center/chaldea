@@ -35,6 +35,7 @@
   "attack_np_rate": "攻击NP率",
   "attribute_advantage": "阵营克制",
   "auth_data_hints": "提醒:\n- 此处userId并非登陆/好友页看到的用户ID(py码)\n- 请勿分享上述密钥(keys)或截图给其他任何人!!!\n- 以下3种方法选择其一导入",
+  "auto_add_trait": "自动添加特性",
   "auto_login": "自动登录",
   "auto_reset": "自动重置",
   "auto_update": "自动更新",

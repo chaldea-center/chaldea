@@ -448,6 +448,17 @@ class S {
     );
   }
 
+  /// `Auto Add Trait`
+  String get auto_add_trait {
+    return Intl.message(
+      'Auto Add Trait',
+      name: 'auto_add_trait',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Auto Login`
   String get auto_login {
     return Intl.message(

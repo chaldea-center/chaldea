@@ -123,6 +123,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "attribute_advantage": MessageLookupByLibrary.simpleMessage("阵营克制"),
         "auth_data_hints": MessageLookupByLibrary.simpleMessage(
             "提醒:\n- 此處userId並非登入/好友頁看到的用戶ID(py碼)\n- 請勿分享上述金鑰(keys)或截圖給其他任何人!!!\n- 以下3種方法選擇其一導入"),
+        "auto_add_trait": MessageLookupByLibrary.simpleMessage("自动添加特性"),
         "auto_login": MessageLookupByLibrary.simpleMessage("自动登录"),
         "auto_reset": MessageLookupByLibrary.simpleMessage("自動重設"),
         "auto_update": MessageLookupByLibrary.simpleMessage("自動更新"),
