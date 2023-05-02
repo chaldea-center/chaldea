@@ -557,6 +557,7 @@
   "migrate_external_storage_manual_warning": null,
   "migrate_external_storage_title": null,
   "mission": null,
+  "mission_target": null,
   "move_down": "تحرك لأسفل",
   "move_up": "تحرك لأعلى",
   "my_room": null,

@@ -653,6 +653,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "migrate_external_storage_manual_warning": MessageLookupByLibrary.simpleMessage("請手動移動數據, 否則啟動後為空數據"),
         "migrate_external_storage_title": MessageLookupByLibrary.simpleMessage("轉移資料"),
         "mission": MessageLookupByLibrary.simpleMessage("任務"),
+        "mission_target": MessageLookupByLibrary.simpleMessage("任务目标"),
         "move_down": MessageLookupByLibrary.simpleMessage("下移"),
         "move_up": MessageLookupByLibrary.simpleMessage("上移"),
         "my_room": MessageLookupByLibrary.simpleMessage("个人空间"),

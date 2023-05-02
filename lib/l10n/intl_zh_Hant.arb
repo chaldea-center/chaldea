@@ -557,6 +557,7 @@
   "migrate_external_storage_manual_warning": "請手動移動數據, 否則啟動後為空數據",
   "migrate_external_storage_title": "轉移資料",
   "mission": "任務",
+  "mission_target": null,
   "move_down": "下移",
   "move_up": "上移",
   "my_room": null,

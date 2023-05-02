@@ -557,6 +557,7 @@
   "migrate_external_storage_manual_warning": "Please move the data manually, otherwise the data will be empty after startup.",
   "migrate_external_storage_title": "Migrate Data",
   "mission": "Mission",
+  "mission_target": "Mission Targets",
   "move_down": "Move down",
   "move_up": "Move up",
   "my_room": "My Room",

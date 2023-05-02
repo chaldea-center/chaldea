@@ -6195,6 +6195,17 @@ class S {
     );
   }
 
+  /// `Mission Targets`
+  String get mission_target {
+    return Intl.message(
+      'Mission Targets',
+      name: 'mission_target',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Move down`
   String get move_down {
     return Intl.message(

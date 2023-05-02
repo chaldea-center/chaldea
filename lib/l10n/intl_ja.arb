@@ -557,6 +557,7 @@
   "migrate_external_storage_manual_warning": "データを手動で移動してください。そうしないと、起動後にデータが空になります。",
   "migrate_external_storage_title": "データの移行",
   "mission": "ミッション",
+  "mission_target": null,
   "move_down": "ダウン",
   "move_up": "アップ",
   "my_room": null,

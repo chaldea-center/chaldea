@@ -2,12 +2,12 @@
 
 ## 2.3.5
 
-- Even free calculator for event items (via event shop page)
-- Add enemy class filter in event trait tab for event missions
-- Add event command assist
+- Add Event free calculator for event items (via event shop page)
+- Replenish missing enemy class type in event mission target tab
+- Add event command assist (Lilim Harlot)
 - Laplace
   - Support auto add "Seven Knights Servant" trait for enemies if Draco in team
-  - Support add enemy entity to player team
+  - Support add enemy entity to player team (e.g. enemy & boss)
   - Support enemyImmediateAppear quests
   - Support buff hpReduceToRegain
   - bug fix

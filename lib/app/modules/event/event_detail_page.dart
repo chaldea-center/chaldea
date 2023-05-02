@@ -25,13 +25,13 @@ import 'detail/digging.dart';
 import 'detail/fortification.dart';
 import 'detail/lottery.dart';
 import 'detail/mission.dart';
+import 'detail/mission_target.dart';
 import 'detail/points.dart';
 import 'detail/random_mission.dart';
 import 'detail/recipe.dart';
 import 'detail/reward_scene.dart';
 import 'detail/shop.dart';
 import 'detail/towers.dart';
-import 'detail/trait_table.dart';
 import 'detail/treasure_box.dart';
 import 'detail/voice.dart';
 
@@ -141,11 +141,12 @@ class _EventDetailPageState extends State<EventDetailPage> {
       _addTab(S.current.mission, EventMissionsPage(event: event, missions: normalMissions));
     }
     if (event.missions.isNotEmpty && event.warIds.isNotEmpty) {
-      if (event.missions
-          .any((em) => CustomMission.fromEventMission(em)?.conds.any((cond) => cond.type.isTraitType) == true)) {
+      if (event.missions.any((em) =>
+          CustomMission.fromEventMission(em)?.conds.any((cond) => cond.type.isTraitType || cond.type.isClassType) ==
+          true)) {
         _addTab(
-          S.current.trait,
-          KeepAliveBuilder(builder: (context) => EventMissionTablePage(event: event)),
+          S.current.mission_target,
+          KeepAliveBuilder(builder: (context) => EventMissionTargetPage(event: event)),
         );
       }
     }

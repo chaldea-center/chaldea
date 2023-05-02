@@ -11,28 +11,28 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../master_mission/solver/scheme.dart';
 
-class MissionTraitFilterData {
+class MissionTargetFilterData {
   final cond = FilterGroupData<CustomMissionCond>();
   bool hasRare = false;
   bool rareEnemy = true;
 }
 
-class EventMissionTablePage extends StatefulWidget {
+class EventMissionTargetPage extends StatefulWidget {
   final Event event;
-  const EventMissionTablePage({super.key, required this.event});
+  const EventMissionTargetPage({super.key, required this.event});
 
   @override
-  State<EventMissionTablePage> createState() => _EventMissionTablePageState();
+  State<EventMissionTargetPage> createState() => _EventMissionTargetPageState();
 }
 
-class _EventMissionTablePageState extends State<EventMissionTablePage> {
+class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
   Set<CustomMissionCond> conds = {};
   Map<Quest, QuestPhase?> allQuestData = {};
   // List<Quest> freeQuests = [];
   // List<QuestPhase> questPhases = [];
   bool _loading = false;
 
-  final filterData = MissionTraitFilterData();
+  final filterData = MissionTargetFilterData();
   Region? region = Region.jp;
 
   @override

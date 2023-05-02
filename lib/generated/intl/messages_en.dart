@@ -678,6 +678,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please move the data manually, otherwise the data will be empty after startup."),
         "migrate_external_storage_title": MessageLookupByLibrary.simpleMessage("Migrate Data"),
         "mission": MessageLookupByLibrary.simpleMessage("Mission"),
+        "mission_target": MessageLookupByLibrary.simpleMessage("Mission Targets"),
         "move_down": MessageLookupByLibrary.simpleMessage("Move down"),
         "move_up": MessageLookupByLibrary.simpleMessage("Move up"),
         "my_room": MessageLookupByLibrary.simpleMessage("My Room"),

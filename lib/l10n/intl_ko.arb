@@ -557,6 +557,7 @@
   "migrate_external_storage_manual_warning": "데이터를 수동으로 이동시켜주세요. 그렇지않으면 기동 후에 데이터가 날아가버립니다.",
   "migrate_external_storage_title": "데이터 이동",
   "mission": "미션",
+  "mission_target": null,
   "move_down": "다운",
   "move_up": "업",
   "my_room": null,
