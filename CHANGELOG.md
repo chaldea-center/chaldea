@@ -8,6 +8,8 @@
 - Laplace
   - Support auto add "Seven Knights Servant" trait for enemies if Draco in team
   - Support add enemy entity to player team
+  - Support enemyImmediateAppear quests
+  - Support buff hpReduceToRegain
   - bug fix
 
 ## 2.3.4
