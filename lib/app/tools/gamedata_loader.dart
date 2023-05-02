@@ -182,9 +182,7 @@ class GameDataLoader {
         bytes = resp.data;
       }
       String text = utf8.decode(bytes!);
-      for (final key in kDWCharReplace.keys) {
-        text = text.replaceAll(key, kDWCharReplace[key]!);
-      }
+      text = kReplaceDWChars(text);
       dynamic fileJson = await JsonHelper.decodeString(text);
       l2mFn ??= l2mKey == null ? null : (e) => e[l2mKey].toString();
       if (l2mFn != null) {

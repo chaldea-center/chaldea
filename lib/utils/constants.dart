@@ -27,7 +27,17 @@ const kULLeading = ' ꔷ ';
 // 0x01ffffff
 final kOnePixel = base64.decode(
     'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+P//PyMACP0C//k2WXcAAAAASUVORK5CYII=');
-const kDWCharReplace = {"\ue000": "{jin}", "\ue001": "鯖"};
+
+final kDWCharRegExp = RegExp(r'[\ue000-\ue00a]');
+final kDWCharReplace = {
+  "\ue000": "{jin}",
+  "\ue001": "鯖",
+  for (int c = 0xe003; c <= 0xe00a; c++) String.fromCharCode(c): '\u2593', // "▓"
+};
+String kReplaceDWChars(String s) {
+  return s.replaceAllMapped(kDWCharRegExp, (match) => kDWCharReplace[match.group(0)] ?? match.group(0)!);
+}
+
 // 2027-01-15
 const int kNeverClosedTimestamp = 1800000000;
 // 2025-07-01, 1751299200

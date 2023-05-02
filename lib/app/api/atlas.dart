@@ -307,9 +307,7 @@ class ApiCacheManager {
       result = await get(url, expireAfter: expireAfter, cacheOnly: cacheOnly);
       if (result != null) {
         String text = utf8.decode(result);
-        kDWCharReplace.forEach((key, value) {
-          text = text.replaceAll(key, value);
-        });
+        text = kReplaceDWChars(text);
         if (url.contains('/CN/')) {
           String cnText = text;
           db.gameData.mappingData.cnReplace.forEach((key, value) {
