@@ -119,6 +119,7 @@ const _$SvtClassEnumMap = {
   SvtClass.uOlgaMarie: 'uOlgaMarie',
   SvtClass.beast: 'beast',
   SvtClass.beastVI: 'beastVI',
+  SvtClass.beastVIBoss: 'beastVIBoss',
   SvtClass.unknown: 'unknown',
   SvtClass.agarthaPenth: 'agarthaPenth',
   SvtClass.cccFinaleEmiyaAlter: 'cccFinaleEmiyaAlter',

@@ -267,6 +267,7 @@ enum SvtClass {
   uOlgaMarie(32, '?'),
   beast(33, '獸'),
   beastVI(34, '獸Ⅵ'),
+  beastVIBoss(35, '獸Ⅵ'),
   unknown(97),
   // 98
   // 99
@@ -374,6 +375,8 @@ extension SvtClassX on SvtClass {
     SvtClass.uOlgaMarieAlienGod,
     // SvtClass.uOlgaMarie,
     SvtClass.beastILost,
+    SvtClass.beastVI,
+    SvtClass.beastVIBoss,
   ];
 
   static bool match(SvtClass value, SvtClass option) {
@@ -458,6 +461,7 @@ enum Trait {
   classUOlgaMarie(123),
   classBeast(124),
   classBeastVI(125),
+  classBeastVIBoss(126),
   attributeSky(200),
   attributeEarth(201),
   attributeHuman(202),
