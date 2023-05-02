@@ -3,8 +3,12 @@
 ## 2.3.5
 
 - Even free calculator for event items (via event shop page)
-- Event command assist
-- Auto add "Seven Knights Servant" trait for enemy if Draco in team
+- Add enemy class filter in event trait tab for event missions
+- Add event command assist
+- Laplace
+  - Support auto add "Seven Knights Servant" trait for enemies if Draco in team
+  - Support add enemy entity to player team
+  - bug fix
 
 ## 2.3.4
 

@@ -1,6 +1,5 @@
 # TODO
 
-There are plenty of work need to do.
 
 ## Battles
 
@@ -61,8 +60,9 @@ There are plenty of work need to do.
 - [ ] funcSuccess for some wired function types
 - [ ] Enemy shift target may not exist
 - [x] cardDetail.damageRate/tdRate (U-Olga Marie buster/extra attack on all enemies)
-- [ ] dispBreakShift
+- [ ] dispBreakShift(need clamp)
 - [ ] shiftGuts(Ratio)
+- [ ] QuestFlag.enemyImmediateAppear
 - [x] Damage should remove buff with buffScript field damageRelease: 1
 - [x] FuncType transformServant may need a local copy of Hyde data
 - [x] `DataVals.ProcPassive` will add buff to passive list, even if it's called from an active skill. Same for `ProcActive`
