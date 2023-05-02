@@ -1156,8 +1156,8 @@ class EnemyScript with DataScriptBase {
   EnemyDeathType? deathType;
   int? hpBarType;
   bool? leader;
-  List<int>? call;
-  List<int>? shift;
+  List<int>? call; // npcId
+  List<int>? shift; // npcId
   List<NiceTrait>? shiftClear;
 
   EnemyScript({

@@ -29,10 +29,11 @@ class QuestWave extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final stageEnemies = stage?.enemies ?? [];
-    final npcs = {
-      for (final enemy in stageEnemies) enemy.npcId: enemy,
-    };
-    Set<int> _usedNpcIds = {};
+    final npcs = <DeckType, Map<int, QuestEnemy>>{};
+    for (final enemy in stageEnemies) {
+      npcs.putIfAbsent(enemy.deck, () => {})[enemy.npcId] = enemy;
+    }
+    Set<int> _usedUniqueIds = {};
 
     Widget _buildEnemyWithShift(QuestEnemy? enemy, {bool showDeck = false}) {
       if (enemy == null) return const SizedBox();
@@ -54,8 +55,8 @@ class QuestWave extends StatelessWidget {
       if (enemy.enemyScript.shift != null) {
         QuestEnemy prev = enemy;
         for (int index = 0; index < enemy.enemyScript.shift!.length; index++) {
-          final shiftEnemy = npcs[enemy.enemyScript.shift![index]];
-          if (shiftEnemy == null || shiftEnemy.deck != DeckType.shift) continue;
+          final shiftEnemy = npcs[DeckType.shift]?[enemy.enemyScript.shift![index]];
+          if (shiftEnemy == null) continue;
           parts.add(QuestEnemyWidget(
             enemy: shiftEnemy,
             showTrueName: showTrueName,
@@ -125,8 +126,11 @@ class QuestWave extends StatelessWidget {
     final _enemyDeck = stageEnemies.where((e) => e.deck == DeckType.enemy).toList();
     children.addAll(_buildDeck(_enemyDeck, needSort: true));
     for (final e in _enemyDeck) {
-      _usedNpcIds.add(e.npcId);
-      _usedNpcIds.addAll(e.enemyScript.shift ?? []);
+      _usedUniqueIds.add(e.uniqueId);
+      for (final npcId in e.enemyScript.shift ?? <int>[]) {
+        final shift = npcs[DeckType.shift]?[npcId];
+        if (shift != null) _usedUniqueIds.add(shift.uniqueId);
+      }
     }
     // call deck
     final _callDeck = stageEnemies.where((e) => e.deck == DeckType.call).toList();
@@ -134,9 +138,9 @@ class QuestWave extends StatelessWidget {
       children.add(const Text('- Call Deck -', textAlign: TextAlign.center));
       children.addAll(_buildDeck(_callDeck, needSort: true));
     }
-    _usedNpcIds.addAll(_callDeck.map((e) => e.npcId));
+    _usedUniqueIds.addAll(_callDeck.map((e) => e.uniqueId));
     // others
-    final _unknownDeck = stageEnemies.where((e) => !_usedNpcIds.contains(e.npcId));
+    final _unknownDeck = stageEnemies.where((e) => !_usedUniqueIds.contains(e.uniqueId));
     if (_unknownDeck.isNotEmpty) {
       children.add(const Text('- Unknown Deck -', textAlign: TextAlign.center));
       children.addAll(_buildDeck(_unknownDeck, showDeck: true));
