@@ -48,9 +48,15 @@ class AddState {
       }
 
       battleData.setCurrentBuff(buffData);
-      final convertBuff = target.getFirstBuffOnActions(battleData, [BuffAction.buffConvert]);
+      final convertBuff = target
+          .getFirstBuffOnActions(battleData, [BuffAction.buffConvert])
+          ?.buff
+          .script
+          ?.convert
+          ?.convertBuffs
+          .firstOrNull;
       if (convertBuff != null) {
-        buffData.buff = convertBuff.buff.script!.convert!.convertBuffs.first;
+        buffData.buff = convertBuff;
       }
 
       battleData.setTarget(target);

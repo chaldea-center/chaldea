@@ -445,16 +445,16 @@ class BattleData {
     });
 
     for (int index = 0; index < onFieldAllyServants.length; index += 1) {
-      onFieldAllyServants[index]?.index = index;
+      onFieldAllyServants[index]?.fieldIndex = index;
     }
     for (int index = 0; index < playerDataList.length; index += 1) {
-      playerDataList[index]?.index = onFieldAllyServants.length + index;
+      playerDataList[index]?.fieldIndex = onFieldAllyServants.length + index;
     }
     for (int index = 0; index < onFieldEnemies.length; index += 1) {
-      onFieldEnemies[index]?.index = index;
+      onFieldEnemies[index]?.fieldIndex = index;
     }
     for (int index = 0; index < enemyDataList.length; index += 1) {
-      enemyDataList[index]?.index = onFieldEnemies.length + index;
+      enemyDataList[index]?.fieldIndex = onFieldEnemies.length + index;
     }
   }
 
@@ -903,6 +903,10 @@ class BattleData {
     await removeDeadActorsFromList(onFieldEnemies);
     allyTargetIndex = getNonNullTargetIndex(onFieldAllyServants, allyTargetIndex);
     enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
+
+    if (niceQuest != null && niceQuest!.flags.contains(QuestFlag.enemyImmediateAppear)) {
+      await replenishActors();
+    }
   }
 
   Future<void> removeDeadActorsFromList(final List<BattleServantData?> actorList) async {
@@ -921,7 +925,7 @@ class BattleData {
             await actor.lastHitBy!.activateBuffOnAction(this, BuffAction.functionDeadattack);
           }
           actorList[i] = null;
-          actor.index = -1;
+          actor.fieldIndex = -1;
           if (actor.isPlayer) {
             nonnullAllies.forEach((svt) {
               svt.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));

@@ -128,7 +128,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
             'No.${svt.niceEnemy?.shownId ?? svt.niceSvt?.shownId ?? svt.svtId}'
             '  ${Transl.svtClassId(svt.classId).l}'
             '\nATK ${svt.atk}  HP ${svt.hp}'
-            '\nPosition ${svt.index + 1}',
+            '\nPosition ${svt.fieldIndex + 1}',
             style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
           ),
           const SizedBox(height: 4),

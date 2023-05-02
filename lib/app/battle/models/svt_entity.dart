@@ -57,7 +57,7 @@ class BattleServantData {
   // int tdId = 0;
   // int tdLv = 0;
 
-  int index = -1; // start from 0
+  int fieldIndex = -1; // start from 0
   int deckIndex = -1;
   int uniqueId = 0;
   int svtId = -1;
@@ -1189,7 +1189,7 @@ class BattleServantData {
       ..niceEnemy = niceEnemy
       ..niceSvt = niceSvt
       ..playerSvtData = playerSvtData
-      ..index = index
+      ..fieldIndex = fieldIndex
       ..deckIndex = deckIndex
       ..uniqueId = uniqueId
       ..svtId = svtId

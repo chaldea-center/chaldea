@@ -247,10 +247,10 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
               String? msg;
               if (svt.isPlayer) {
                 svt.np = ConstData.constants.fullTdPoint;
-                msg = 'Charge ${svt.index + 1}-${svt.lBattleName} NP to ${svt.np ~/ 100}%';
+                msg = 'Charge ${svt.fieldIndex + 1}-${svt.lBattleName} NP to ${svt.np ~/ 100}%';
               } else if (svt.isEnemy) {
                 svt.npLineCount = svt.niceEnemy!.chargeTurn;
-                msg = 'Charge ${svt.index + 1}-${svt.lBattleName} NP to ${svt.npLineCount}';
+                msg = 'Charge ${svt.fieldIndex + 1}-${svt.lBattleName} NP to ${svt.npLineCount}';
               }
               if (msg != null) {
                 battleData.battleLogger.action(msg);

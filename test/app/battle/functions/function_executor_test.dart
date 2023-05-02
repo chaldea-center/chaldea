@@ -510,24 +510,24 @@ void main() async {
       final backup1 = battle.playerDataList[0]!;
       final backup2 = battle.playerDataList[1]!;
       final backup3 = battle.playerDataList[2]!;
-      expect(onField1.index, 0);
-      expect(onField2.index, 1);
-      expect(crane.index, 2);
-      expect(backup1.index, 3);
-      expect(backup2.index, 4);
-      expect(backup3.index, 5);
+      expect(onField1.fieldIndex, 0);
+      expect(onField2.fieldIndex, 1);
+      expect(crane.fieldIndex, 2);
+      expect(backup1.fieldIndex, 3);
+      expect(backup2.fieldIndex, 4);
+      expect(backup3.fieldIndex, 5);
       expect(battle.canUseNp(2), true);
 
       await battle.playerTurn([CombatAction(crane, crane.getNPCard(battle)!)]);
 
       expect(battle.playerDataList.length, 3);
       expect(battle.playerDataList.last, crane);
-      expect(onField1.index, 0);
-      expect(onField2.index, 1);
-      expect(backup1.index, 2);
-      expect(backup2.index, 3);
-      expect(backup3.index, 4);
-      expect(crane.index, 5);
+      expect(onField1.fieldIndex, 0);
+      expect(onField2.fieldIndex, 1);
+      expect(backup1.fieldIndex, 2);
+      expect(backup2.fieldIndex, 3);
+      expect(backup3.fieldIndex, 4);
+      expect(crane.fieldIndex, 5);
     });
 
     test('DataVals IncludePassiveIndividuality', () async {
@@ -836,21 +836,21 @@ void main() async {
     final onField3 = battle.onFieldAllyServants[2]!;
     final backup1 = battle.playerDataList[0]!;
     final backup2 = battle.playerDataList[1]!;
-    expect(arash.index, 0);
-    expect(onField2.index, 1);
-    expect(onField3.index, 2);
-    expect(backup1.index, 3);
-    expect(backup2.index, 4);
+    expect(arash.fieldIndex, 0);
+    expect(onField2.fieldIndex, 1);
+    expect(onField3.fieldIndex, 2);
+    expect(backup1.fieldIndex, 3);
+    expect(backup2.fieldIndex, 4);
     expect(battle.playerDataList.length, 2);
     await battle.activateSvtSkill(1, 0);
     await battle.playerTurn([CombatAction(arash, arash.getNPCard(battle)!)]);
 
     expect(arash.hp, 0);
-    expect(arash.index, -1);
-    expect(backup1.index, 0);
-    expect(onField2.index, 1);
-    expect(onField3.index, 2);
-    expect(backup2.index, 3);
+    expect(arash.fieldIndex, -1);
+    expect(backup1.fieldIndex, 0);
+    expect(onField2.fieldIndex, 1);
+    expect(onField3.fieldIndex, 2);
+    expect(backup2.fieldIndex, 3);
     expect(battle.playerDataList.length, 1);
   });
 

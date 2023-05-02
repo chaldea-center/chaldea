@@ -272,7 +272,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
     final TextStyle? style = svt.isEnemy ? const TextStyle(fontStyle: FontStyle.italic) : null;
 
     return <InlineSpan>[
-      TextSpan(text: '${svt.index + 1}-', style: const TextStyle(fontFamily: kMonoFont).merge(style)),
+      TextSpan(text: '${svt.fieldIndex + 1}-', style: const TextStyle(fontFamily: kMonoFont).merge(style)),
       CenterWidgetSpan(child: svt.iconBuilder(context: context, height: 32, battleData: battleData)),
       if (complete)
         TextSpan(
@@ -466,7 +466,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
       actorBuilder: buildAttacker,
       targets: [
         for (final target in record.targets)
-          Tuple3(target.target.isEnemy, target.target.index, (context) => buildDefender(context, target))
+          Tuple3(target.target.isEnemy, target.target.fieldIndex, (context) => buildDefender(context, target))
       ],
     );
   }
@@ -798,7 +798,7 @@ class _InstantDeathDetailWidget extends StatelessWidget with MultiTargetsWrapper
       actorBuilder: buildActor,
       targets: [
         for (final target in record.targets)
-          Tuple3(target.target.isEnemy, target.target.index, (context) => buildTarget(context, target))
+          Tuple3(target.target.isEnemy, target.target.fieldIndex, (context) => buildTarget(context, target))
       ],
     );
   }
