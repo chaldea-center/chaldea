@@ -880,6 +880,30 @@ void main() async {
     expect(previousHp2 - enemy1.hp, 5533 + 300); // 300 burn damage
   });
 
+  test('Super Buyan passive, call functionAttackAfter after NP', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(1001300)
+        ..lv = 90
+        ..tdLv = 1
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final buyan = battle.onFieldAllyServants[0]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+
+    final previousHp1 = enemy1.hp;
+    buyan.np = 10000;
+    await battle.playerTurn([CombatAction(buyan, buyan.getNPCard(battle)!)]);
+    expect(previousHp1 - enemy1.hp, 10517);
+
+    final previousHp2 = enemy1.hp;
+    buyan.np = 10000;
+    await battle.playerTurn([CombatAction(buyan, buyan.getNPCard(battle)!)]);
+    expect(previousHp2 - enemy1.hp, 12147);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,

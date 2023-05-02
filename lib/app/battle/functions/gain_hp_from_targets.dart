@@ -35,7 +35,7 @@ class GainHpFromTargets {
         gainValue += min(absorbTarget.hp - 1, checkValue);
       }
 
-      receiver.heal(battleData, gainValue);
+      await receiver.heal(battleData, gainValue);
       battleData.unsetTarget();
     }
 

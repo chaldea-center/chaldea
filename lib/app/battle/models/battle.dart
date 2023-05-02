@@ -619,6 +619,7 @@ class BattleData {
                 await action.actor
                     .activateBuffOnActions(this, [BuffAction.functionAttackBefore, BuffAction.functionNpattack]);
                 await action.actor.activateNP(this, extraOvercharge);
+                await action.actor.activateBuffOnAction(this, BuffAction.functionAttackAfter);
                 extraOvercharge += 1;
 
                 for (final svt in nonnullEnemies) {

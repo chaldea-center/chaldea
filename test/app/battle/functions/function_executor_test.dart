@@ -740,18 +740,21 @@ void main() async {
     await battle.playerTurn([CombatAction(bunyan, bunyan.getNPCard(battle)!)]);
     expect(prevHp1 - enemy1.hp, 20323);
 
+    final enemy2 = battle.onFieldEnemies[1]!;
+    final prevHp2 = enemy2.hp;
     await battle.playerTurn([
       CombatAction(bunyan, bunyan.getCards(battle)[0]),
       CombatAction(bunyan, bunyan.getCards(battle)[1]),
       CombatAction(bunyan, bunyan.getCards(battle)[2]),
     ]);
+    expect(prevHp2 - enemy2.hp, 5283 + 6909 + 10567 + 12193);
 
     final enemy3 = battle.onFieldEnemies[2]!;
 
     final prevHp3 = enemy3.hp;
     bunyan.np = 10000;
     await battle.playerTurn([CombatAction(bunyan, bunyan.getNPCard(battle)!)]);
-    expect(prevHp3 - enemy3.hp, 24387);
+    expect(prevHp3 - enemy3.hp, 25403);
   });
 
   test('damageNpRare', () async {

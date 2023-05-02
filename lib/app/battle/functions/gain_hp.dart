@@ -30,7 +30,7 @@ class GainHP {
         final healReceiveEff = toModifier(await target.getBuffValueOnAction(battleData, BuffAction.gainHp));
         final baseHeal = isPercent ? target.getMaxHp(battleData) * toModifier(dataVals.Value!) : dataVals.Value!;
         final finalHeal = (baseHeal * healReceiveEff * healGrantEff).toInt();
-        target.heal(battleData, finalHeal);
+        await target.heal(battleData, finalHeal);
       }
 
       battleData.unsetTarget();

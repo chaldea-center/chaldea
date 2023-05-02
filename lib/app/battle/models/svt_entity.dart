@@ -441,8 +441,8 @@ class BattleServantData {
     return activator != null && currentCard != null && lastHitBy == activator && lastHitByCard == currentCard;
   }
 
-  void heal(final BattleData battleData, final int heal) {
-    if (hasDoNotBuffOnActionForUI(battleData, BuffAction.donotRecovery)) {
+  Future<void> heal(final BattleData battleData, final int heal) async {
+    if (await hasBuffOnAction(battleData, BuffAction.donotRecovery)) {
       return;
     }
 
@@ -1087,7 +1087,7 @@ class BattleServantData {
       final healGrantEff = toModifier(await getBuffValueOnAction(battleData, BuffAction.giveGainHp));
       final healReceiveEff = toModifier(await getBuffValueOnAction(battleData, BuffAction.gainHp));
       final finalHeal = (turnEndHeal * healReceiveEff * healGrantEff).toInt();
-      heal(battleData, finalHeal);
+      await heal(battleData, finalHeal);
 
       turnEndLog += ' - ${S.current.battle_heal} HP: $finalHeal';
     }
