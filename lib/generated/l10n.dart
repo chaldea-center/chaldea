@@ -2934,6 +2934,17 @@ class S {
     );
   }
 
+  /// `Non-Servant`
+  String get enemy_not_servant {
+    return Intl.message(
+      'Non-Servant',
+      name: 'enemy_not_servant',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Summary`
   String get enemy_summary {
     return Intl.message(

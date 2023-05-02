@@ -351,6 +351,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enemy_leader_hint": MessageLookupByLibrary.simpleMessage("首领: 被击败时战斗结束"),
         "enemy_list": MessageLookupByLibrary.simpleMessage("敌人一览"),
         "enemy_master": MessageLookupByLibrary.simpleMessage("敌方御主"),
+        "enemy_not_servant": MessageLookupByLibrary.simpleMessage("非从者"),
         "enemy_summary": MessageLookupByLibrary.simpleMessage("敌人汇总"),
         "enhance": MessageLookupByLibrary.simpleMessage("强化"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage("强化将扣除以下素材"),

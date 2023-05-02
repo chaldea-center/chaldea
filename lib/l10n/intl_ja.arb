@@ -261,6 +261,7 @@
   "enemy_leader_hint": null,
   "enemy_list": "エネミー",
   "enemy_master": null,
+  "enemy_not_servant": null,
   "enemy_summary": null,
   "enhance": "強化",
   "enhance_warning": "強化すると、次のアイテムが控除されます",

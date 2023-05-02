@@ -201,4 +201,8 @@ enum CustomMissionType {
   bool get isQuestType => this == CustomMissionType.questTrait || this == CustomMissionType.quest;
   bool get isEnemyType => !isQuestType;
   bool get isTraitType => this == CustomMissionType.trait || this == CustomMissionType.questTrait;
+  bool get isClassType =>
+      this == CustomMissionType.enemyClass ||
+      this == CustomMissionType.servantClass ||
+      this == CustomMissionType.enemyNotServantClass;
 }

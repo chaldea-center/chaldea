@@ -43,7 +43,7 @@ class _EventMissionTablePageState extends State<EventMissionTablePage> {
       final mission = CustomMission.fromEventMission(eventMission);
       if (mission == null) continue;
       for (final cond in mission.conds) {
-        if (cond.type.isTraitType) conds.add(cond);
+        if (cond.type.isTraitType || cond.type.isClassType) conds.add(cond);
       }
     }
 
@@ -152,16 +152,24 @@ class _EventMissionTablePageState extends State<EventMissionTablePage> {
     switch (cond.type) {
       case CustomMissionType.trait:
       case CustomMissionType.questTrait:
-        return cond.targetIds
-            .map((e) {
-              final name = Transl.trait(e).l;
-              return name.startsWith('enemy') ? e.toString() : name;
-            })
-            .join(cond.useAnd ? '&' : '/')
-            .trimChar('"');
+        return _describeTraits(cond);
+      case CustomMissionType.enemyClass:
+        return _describeClasses(cond);
+      case CustomMissionType.servantClass:
+        return '${_describeClasses(cond)}(${S.current.servant})';
+      case CustomMissionType.enemyNotServantClass:
+        return '${_describeClasses(cond)}(${S.current.enemy_not_servant})';
       default:
         return 'NotSupport: ${cond.type}';
     }
+  }
+
+  String _describeTraits(CustomMissionCond cond) {
+    return cond.targetIds.map((e) => Transl.trait(e).l.trimChar('"')).join(cond.useAnd ? '&' : '/');
+  }
+
+  String _describeClasses(CustomMissionCond cond) {
+    return cond.targetIds.map((e) => Transl.svtClassId(e).l).join(cond.useAnd ? '&' : '/');
   }
 
   Widget table() {
