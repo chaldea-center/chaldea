@@ -104,6 +104,11 @@ Chaldea is greatly inspired by
 - iOS app [Guda](https://bbs.nga.cn/read.php?tid=12082000)
 - WeChat mini program [FGO material programe](https://github.com/lacus87/fgo)
 
+Laplace is built with inspiration of
+
+- [FGO Teamup](https://www.fgo-teamup.com)
+- [FGO Simulator](https://github.com/SharpnelXu/FGOSimulator)
+
 And the dataset is powered by
 
 - [TYPE-MOON/FGO PROJECT](https://www.fate-go.jp/)
@@ -112,10 +117,5 @@ And the dataset is powered by
 - The Chinese wiki - [Mooncell](https://fgo.wiki)
 - The English wiki - [Fandom - Fate/Grand Order Wiki](https://fategrandorder.fandom.com/wiki/)
 - [FGO 効率劇場](https://sites.google.com/view/fgo-domus-aurea)
-
-Laplace is built with inspiration of
-
-- [FGO Teamup](https://www.fgo-teamup.com)
-- [FGO Simulator](https://github.com/SharpnelXu/FGOSimulator)
 
 Thanks for all above communities and contributors.
