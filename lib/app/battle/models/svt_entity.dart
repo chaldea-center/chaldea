@@ -243,23 +243,38 @@ class BattleServantData {
       return [];
     }
 
+    final cardDetails = niceSvt!.cardDetails;
     final changeCardType = getFirstBuffOnActions(battleData, [BuffAction.changeCommandCardType]);
-    final List<CardType> cards = changeCardType == null
-        ? niceSvt!.cards
-        : List.generate(niceSvt!.cards.length,
-            (index) => CardType.values.firstWhere((cardType) => cardType.id == changeCardType.param));
+    List<CardType> cards = niceSvt!.cards.where((card) => cardDetails.containsKey(card)).toList();
+    if (changeCardType != null) {
+      cards = List.generate(niceSvt!.cards.length,
+          (index) => CardType.values.firstWhere((cardType) => cardType.id == changeCardType.param));
+    }
+    if (cards.isEmpty) {
+      for (final card in [CardType.weak, CardType.strength]) {
+        if (cardDetails.containsKey(card)) {
+          cards.addAll(List.filled(3, card));
+        }
+      }
+    }
 
     final List<CommandCardData> builtCards = [];
     for (int i = 0; i < cards.length; i += 1) {
       final cardType = cards[i];
       final detail = niceSvt!.cardDetails[cardType];
       if (detail == null) continue;
+      final isCardInDeck = niceSvt!.cards.getOrNull(i) == cardType;
       final card = CommandCardData(cardType, detail)
         ..cardIndex = i
         ..isNP = false
-        ..cardStrengthen = playerSvtData!.cardStrengthens[i]
         ..npGain = getNPGain(battleData, cardType)
         ..traits = ConstData.cardInfo[cardType]![1]!.individuality.toList();
+      if (isCardInDeck) {
+        // enemy weak+strength 6 cards
+        card
+          ..cardStrengthen = playerSvtData!.cardStrengthens.getOrNull(i) ?? 0
+          ..commandCode = playerSvtData!.commandCodes.getOrNull(i);
+      }
       builtCards.add(card);
     }
     return builtCards;

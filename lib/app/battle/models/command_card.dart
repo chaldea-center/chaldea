@@ -42,6 +42,7 @@ class CommandCardData {
   bool isNP = false;
   int cardIndex = -1;
   bool isCritical = false;
+  CommandCode? commandCode;
 
   CommandCardData(this.cardType, this.cardDetail);
 
@@ -52,7 +53,8 @@ class CommandCardData {
       ..traits = traits.toList()
       ..isNP = isNP
       ..cardIndex = cardIndex
-      ..isCritical = isCritical;
+      ..isCritical = isCritical
+      ..commandCode = commandCode;
   }
 }
 

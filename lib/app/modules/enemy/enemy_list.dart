@@ -108,22 +108,19 @@ class EnemyListPageState extends State<EnemyListPage> with SearchableListState<B
 
   @override
   Widget listItemBuilder(BasicServant svt) {
+    List<String> subtitles = [if (!Language.isJP) svt.name, 'No.${svt.id} ${Transl.svtClassId(svt.classId).l}'];
     return CustomTile(
       leading: svt.iconBuilder(
         context: context,
-        width: 52,
+        height: 56,
+        aspectRatio: 1,
       ),
       title: AutoSizeText(svt.lName.l, maxLines: 1),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (!Language.isJP) AutoSizeText(svt.name, maxLines: 1),
-          AutoSizeText(
-            'No.${svt.id} ${Transl.svtClassId(svt.classId).l}',
-            minFontSize: 10,
-            maxLines: 1,
-          ),
-        ],
+      titlePadding: const EdgeInsetsDirectional.only(start: 12),
+      subtitle: Text(
+        subtitles.join('\n'),
+        maxLines: subtitles.length,
+        textScaleFactor: 0.8,
       ),
       trailing: IconButton(
         icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
@@ -192,12 +189,13 @@ class EnemyListPageState extends State<EnemyListPage> with SearchableListState<B
       widget.onSelected!(svt);
     } else {
       final enemies = _allEnemies[svt.id] ?? [];
+      final popDetails = SplitRoute.isMaster(context);
       if (enemies.isEmpty) {
-        svt.routeTo(popDetails: true);
+        svt.routeTo(popDetails: popDetails);
       } else {
         router.pushPage(
           QuestEnemySummaryPage(svt: enemies.first.svt, enemies: enemies),
-          popDetail: true,
+          popDetail: popDetails,
         );
       }
       selected = svt;

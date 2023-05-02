@@ -12,7 +12,12 @@ class CommandCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (![CardType.arts, CardType.buster, CardType.quick].contains(card)) {
-      return Text(' ${card.name.toTitle()} ');
+      return Text(
+        card.name.toTitle().breakWord,
+        maxLines: 2,
+        style: const TextStyle(fontSize: 14),
+        textAlign: TextAlign.center,
+      );
     }
     final cardName = card.name;
     final width2 = width * 0.8;

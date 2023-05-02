@@ -60,7 +60,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
           cells.add(Flexible(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 1),
-              child: buildCardIcon(svt, card, index),
+              child: buildCardIcon(svt, card),
             ),
           ));
         }
@@ -112,14 +112,14 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
     );
   }
 
-  Widget buildCardIcon(BattleServantData svt, CommandCardData card, int cardId) {
-    final commandCode = svt.playerSvtData?.commandCodes[cardId];
+  Widget buildCardIcon(BattleServantData svt, CommandCardData card) {
+    final commandCode = card.commandCode;
     Widget cardIcon = Stack(
       alignment: Alignment.center,
       children: [
         AspectRatio(
           aspectRatio: 1,
-          child: CommandCardWidget(card: card.cardType, width: cardSize),
+          child: Center(child: CommandCardWidget(card: card.cardType, width: cardSize)),
         ),
         if (commandCode != null)
           Positioned(
@@ -160,11 +160,15 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       onTap: () {
         final cardIndex = getCardIndex(svt, card, widget.combatActions);
         if (cardIndex != -1) {
-          final combatAction = widget.combatActions[cardIndex];
-          if (combatAction!.cardData.isCritical) {
-            widget.combatActions[cardIndex] = null;
+          final combatAction = widget.combatActions[cardIndex]!;
+          if (combatAction.cardData.cardType.isQAB) {
+            if (combatAction.cardData.isCritical) {
+              widget.combatActions[cardIndex] = null;
+            } else {
+              combatAction.cardData.isCritical = true;
+            }
           } else {
-            combatAction.cardData.isCritical = true;
+            widget.combatActions[cardIndex] = null;
           }
         } else {
           final nextIndex = widget.combatActions.indexOf(null);

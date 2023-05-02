@@ -307,27 +307,38 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   Widget get buttonBar {
     return ButtonBar(
       children: [
-        TextButton(
-          onPressed: playerSvtData.svt == null
-              ? null
-              : () {
-                  playerSvtData.svt = null;
-                  _updateState();
-                },
-          child: Text(
-            S.current.clear,
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
-          ),
-        ),
-        TextButton(
-          onPressed: selectSvt,
-          child: Text(S.current.select_servant),
-        ),
-        if (questPhase?.supportServants.isNotEmpty == true)
-          TextButton(
-            onPressed: selectSupport,
-            child: Text(S.current.select_support_servant),
-          ),
+        Wrap(
+          // spacing: 4,
+          alignment: WrapAlignment.end,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            TextButton(
+              onPressed: playerSvtData.svt == null
+                  ? null
+                  : () {
+                      playerSvtData.svt = null;
+                      _updateState();
+                    },
+              child: Text(
+                S.current.clear,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+            ),
+            TextButton(
+              onPressed: selectSvt,
+              child: Text(S.current.select_servant),
+            ),
+            TextButton(
+              onPressed: selectSvtEntity,
+              child: Text(S.current.enemy),
+            ),
+            if (questPhase?.supportServants.isNotEmpty == true)
+              TextButton(
+                onPressed: selectSupport,
+                child: Text(S.current.support_servant_short),
+              ),
+          ],
+        )
       ],
     );
   }
@@ -767,6 +778,15 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           child: Table(
             defaultVerticalAlignment: TableCellVerticalAlignment.middle,
             children: List.generate(svt.cards.length, (index) {
+              final card = svt.cards[index];
+              if (!svt.cardDetails.containsKey(card)) {
+                return TableRow(children: [
+                  Center(child: CommandCardWidget(card: svt.cards[index], width: 60)),
+                  const SizedBox(),
+                  const SizedBox(),
+                  const SizedBox(),
+                ]);
+              }
               final code = playerSvtData.commandCodes[index];
               return TableRow(children: [
                 Center(child: CommandCardWidget(card: svt.cards[index], width: 60)),
@@ -839,6 +859,44 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         },
         filterData: db.settings.svtFilterData,
         pinged: db.settings.battleSim.pingedSvts.toList(),
+      ),
+      detail: true,
+    );
+  }
+
+  final filterData = EnemyFilterData();
+  void selectSvtEntity() {
+    router.pushPage(
+      EnemyListPage(
+        onSelected: (entity) async {
+          switch (entity.type) {
+            case SvtType.servantEquip:
+            case SvtType.combineMaterial:
+            case SvtType.statusUp:
+            case SvtType.svtEquipMaterial:
+            case SvtType.all:
+            case SvtType.commandCode:
+            case SvtType.svtMaterialTd:
+              EasyLoading.showError(S.current.invalid_input);
+              return;
+            case SvtType.normal:
+            case SvtType.heroine:
+            case SvtType.enemy:
+            case SvtType.enemyCollection:
+            case SvtType.enemyCollectionDetail:
+              break;
+          }
+          EasyLoading.show();
+          final svt = db.gameData.servantsById[entity.id] ?? await AtlasApi.svt(entity.id);
+          EasyLoading.dismiss();
+          if (svt == null) {
+            EasyLoading.showError('${S.current.not_found}: ${entity.id}-${entity.lName.l}');
+            return;
+          }
+          _onSelectServant(svt);
+          _updateState();
+        },
+        filterData: filterData,
       ),
       detail: true,
     );

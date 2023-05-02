@@ -77,7 +77,7 @@ class GameDataLoader {
       }
     }
 
-    if (!offline && network.unavailable) {
+    if (!offline && network.unavailable && silent) {
       _showError(S.current.error_no_internet);
       return null;
     }
