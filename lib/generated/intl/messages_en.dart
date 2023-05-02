@@ -368,6 +368,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enemy_list": MessageLookupByLibrary.simpleMessage("Enemies"),
         "enemy_master": MessageLookupByLibrary.simpleMessage("Enemy Master"),
         "enemy_not_servant": MessageLookupByLibrary.simpleMessage("Non-Servant"),
+        "enemy_only_nps": MessageLookupByLibrary.simpleMessage("Enemy Only NPs"),
         "enemy_summary": MessageLookupByLibrary.simpleMessage("Summary"),
         "enhance": MessageLookupByLibrary.simpleMessage("Enhance"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage("The following items will be consumed for enhancement"),

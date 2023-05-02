@@ -2956,6 +2956,17 @@ class S {
     );
   }
 
+  /// `Enemy Only NPs`
+  String get enemy_only_nps {
+    return Intl.message(
+      'Enemy Only NPs',
+      name: 'enemy_only_nps',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Summary`
   String get enemy_summary {
     return Intl.message(

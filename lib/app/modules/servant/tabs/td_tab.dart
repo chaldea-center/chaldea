@@ -20,7 +20,14 @@ class SvtTdTab extends StatelessWidget {
     List<Widget> children = [];
     final status = db.curUser.svtStatusOf(svt.collectionNo).cur;
     final overrideData = OverrideTDData.fromAscensionAdd(svt.ascensionAdd);
-    for (final tds in svt.groupedNoblePhantasms.values) {
+    for (final tdNum in svt.groupedNoblePhantasms.keys) {
+      final tds = svt.groupedNoblePhantasms[tdNum]!;
+      if (svt.groupedNoblePhantasms.containsKey(1) &&
+          tdNum != 1 &&
+          tds.any((e) => e.script?.tdTypeChangeIDs?.isNotEmpty != true)) {
+        children.add(DividerWithTitle(title: S.current.enemy_only_nps, height: 16));
+      }
+
       List<NiceTd> shownTds = [];
       List<OverrideTDData?> overrideTds = [];
       for (final td in tds) {

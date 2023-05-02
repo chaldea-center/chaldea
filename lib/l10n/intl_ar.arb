@@ -263,6 +263,7 @@
   "enemy_list": "الاعداء",
   "enemy_master": null,
   "enemy_not_servant": null,
+  "enemy_only_nps": null,
   "enemy_summary": "ملخص",
   "enhance": "تطوير",
   "enhance_warning": "سيتم استهلاك العناصر التالية للتطوير",

@@ -263,6 +263,7 @@
   "enemy_list": "적",
   "enemy_master": null,
   "enemy_not_servant": null,
+  "enemy_only_nps": null,
   "enemy_summary": null,
   "enhance": "강화",
   "enhance_warning": "강화하게 되면 다음 아이템이 소비됩니다",

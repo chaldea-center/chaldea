@@ -263,6 +263,7 @@
   "enemy_list": "敵人一覽",
   "enemy_master": "敵方御主",
   "enemy_not_servant": null,
+  "enemy_only_nps": null,
   "enemy_summary": "敵人彙總",
   "enhance": "強化",
   "enhance_warning": "強化將扣除以下素材",

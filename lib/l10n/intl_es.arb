@@ -263,6 +263,7 @@
   "enemy_list": "Enemigos",
   "enemy_master": null,
   "enemy_not_servant": null,
+  "enemy_only_nps": null,
   "enemy_summary": null,
   "enhance": "Mejorar",
   "enhance_warning": "Los siguientes objetos se consumirán para mejorar",

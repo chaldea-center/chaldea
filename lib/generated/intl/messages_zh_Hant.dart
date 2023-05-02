@@ -353,6 +353,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enemy_list": MessageLookupByLibrary.simpleMessage("敵人一覽"),
         "enemy_master": MessageLookupByLibrary.simpleMessage("敵方御主"),
         "enemy_not_servant": MessageLookupByLibrary.simpleMessage("非从者"),
+        "enemy_only_nps": MessageLookupByLibrary.simpleMessage("仅用于敌方宝具"),
         "enemy_summary": MessageLookupByLibrary.simpleMessage("敵人彙總"),
         "enhance": MessageLookupByLibrary.simpleMessage("強化"),
         "enhance_warning": MessageLookupByLibrary.simpleMessage("強化將扣除以下素材"),
