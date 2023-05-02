@@ -10,6 +10,7 @@ class DropData {
   DropRateSheet domusAurea;
   // key=questId*100+phase
   Map<int, QuestDropData> fixedDrops; // one-off quest
+  @protected
   final Map<int, QuestDropData> freeDrops; // event free quest
   @JsonKey(includeFromJson: false, includeToJson: false)
   final Map<int, QuestDropData> freeDrops2;

@@ -23,7 +23,7 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
 
   Map<int, Quest> getEventQuests() {
     List<int> questsIds = [];
-    for (final questId in db.gameData.dropData.freeDrops.keys) {
+    for (final questId in db.gameData.dropData.freeDrops2.keys) {
       final drops = db.gameData.dropData.freeDrops2[questId]!;
       final count = drops.items[widget.itemId] ?? 0;
       if (drops.runs < 10 || count <= 0) continue;
@@ -92,8 +92,8 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
 
   List<Widget> buildEventFree(Map<int, Quest> quests) {
     final tmpData = <Tuple4<double, double, Widget, Quest>>[];
-    for (final key in quests.keys) {
-      final quest = quests[key]!;
+    for (final questId in quests.keys) {
+      final quest = quests[questId]!;
       final event = quest.war?.event;
 
       bool outdated;
@@ -110,7 +110,7 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
       }
       if (!widget.showOutdated && outdated) continue;
 
-      final drops = db.gameData.dropData.freeDrops[key]!;
+      final drops = db.gameData.dropData.freeDrops2[questId]!;
       final dropCount = drops.items[widget.itemId] ?? 0;
       if (drops.runs <= 0) continue;
       final dropRate = dropCount / drops.runs;
@@ -118,7 +118,7 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
           quest.consumeType.useAp && quest.consume > 0 ? quest.consume * drops.runs / dropCount : null;
       final dropRateString = (dropRate * 100).toStringAsFixed(2), apRateString = apRate?.toStringAsFixed(2) ?? '-';
       final child = SimpleAccordion(
-        key: ValueKey('event_free_$key'),
+        key: ValueKey('event_free_$questId'),
         headerBuilder: (context, _) {
           String subtitle = 'Lv${quest.recommendLv} ${quest.consume}AP.  ';
           subtitle += sortType != _SortType.dropRate
@@ -137,7 +137,7 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
           );
         },
         contentBuilder: (context) {
-          return QuestCard(key: ValueKey('quest_card_$key'), quest: quest);
+          return QuestCard(key: ValueKey('quest_card_$questId'), quest: quest);
         },
         expandIconBuilder: (context, _) => const SizedBox.shrink(),
       );
