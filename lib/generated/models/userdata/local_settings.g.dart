@@ -186,6 +186,7 @@ DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate(
               (v) => (v as List<dynamic>?)?.map((e) => $enumDecodeNullable(_$SvtTabEnumMap, e)).toList()),
           hideSvtPlanDetails: $checkedConvert('hideSvtPlanDetails',
               (v) => (v as List<dynamic>?)?.map((e) => $enumDecodeNullable(_$SvtPlanDetailEnumMap, e)).toList()),
+          describeEventMission: $checkedConvert('describeEventMission', (v) => v as bool? ?? true),
         );
         return val;
       },
@@ -205,6 +206,7 @@ Map<String, dynamic> _$DisplaySettingsToJson(DisplaySettings instance) => <Strin
       'planPageFullScreen': instance.planPageFullScreen,
       'sortedSvtTabs': instance.sortedSvtTabs.map((e) => _$SvtTabEnumMap[e]!).toList(),
       'hideSvtPlanDetails': instance.hideSvtPlanDetails.map((e) => _$SvtPlanDetailEnumMap[e]!).toList(),
+      'describeEventMission': instance.describeEventMission,
     };
 
 const _$SvtPlanInputModeEnumMap = {

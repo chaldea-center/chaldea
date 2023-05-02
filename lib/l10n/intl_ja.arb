@@ -215,6 +215,7 @@
   "delete": "削除",
   "delete_unreleased_card": "未実装カードを削除",
   "demands": "要件",
+  "describe_mission": null,
   "desktop_only": "PC版のみ",
   "details": "詳細",
   "detective_mission": "探偵ミッション",

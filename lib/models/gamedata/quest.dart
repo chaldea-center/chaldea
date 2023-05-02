@@ -446,6 +446,8 @@ class BaseGift {
       case GiftType.eventBoardGameToken:
         break;
       case GiftType.eventCommandAssist:
+        icon ??= Atlas.assetItem(objectId);
+        showOne = false;
         break;
     }
     return GameCardMixin.anyCardItemBuilder(

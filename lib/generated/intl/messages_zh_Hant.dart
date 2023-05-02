@@ -305,6 +305,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "delete": MessageLookupByLibrary.simpleMessage("刪除"),
         "delete_unreleased_card": MessageLookupByLibrary.simpleMessage("刪除未實裝卡牌"),
         "demands": MessageLookupByLibrary.simpleMessage("需求"),
+        "describe_mission": MessageLookupByLibrary.simpleMessage("描述任务"),
         "desktop_only": MessageLookupByLibrary.simpleMessage("僅限桌面版"),
         "details": MessageLookupByLibrary.simpleMessage("詳細"),
         "detective_mission": MessageLookupByLibrary.simpleMessage("偵探任務"),

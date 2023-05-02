@@ -217,7 +217,7 @@ class MultiDescriptor {
       (context, id) {
         return inkWell(
           context: context,
-          onTap: null,
+          onTap: () => router.push(url: Routes.svtClassI(id)),
           text: '[${Transl.svtClassId(id).l}]',
         );
       },

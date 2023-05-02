@@ -113,21 +113,22 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
         );
       case CondType.questClear:
         bool all = targetNum == targetIds.length && targetNum != 1 && useAnd != false;
+        bool onlyOne = targetNum == 1 && targetIds.length == 1;
         return localized(
           jp: () => combineToRich(
             context,
-            '${all ? "すべての" : ""}クエストを$targetNum種クリアせよ',
+            '${all ? "すべての" : ""}クエストを${onlyOne ? "" : "$targetNum種"}クリアせよ',
             quests(context),
           ),
           cn: () => combineToRich(
             context,
-            '通关${all ? "所有" : ""}$targetNum个关卡',
+            '通关${all ? "所有" : ""}${onlyOne ? "" : "$targetNum个"}关卡',
             quests(context),
           ),
           tw: null,
           na: () => combineToRich(
             context,
-            'Clear ${all ? "all " : ""}$targetNum quests of ',
+            'Clear ${all ? "all " : ""}${onlyOne ? "quest" : "$targetNum quests"} of ',
             quests(context),
           ),
           kr: null,

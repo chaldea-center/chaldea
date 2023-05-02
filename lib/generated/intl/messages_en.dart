@@ -316,6 +316,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "delete_unreleased_card": MessageLookupByLibrary.simpleMessage("Delete Unreleased Cards"),
         "demands": MessageLookupByLibrary.simpleMessage("Demands"),
+        "describe_mission": MessageLookupByLibrary.simpleMessage("Describe Mission"),
         "desktop_only": MessageLookupByLibrary.simpleMessage("Desktop only"),
         "details": MessageLookupByLibrary.simpleMessage("Details"),
         "detective_mission": MessageLookupByLibrary.simpleMessage("Detective Missions"),

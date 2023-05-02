@@ -4,6 +4,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../../descriptors/cond_target_num.dart';
 import '../../../descriptors/mission_conds.dart';
 import '../../master_mission/solver/scheme.dart';
 
@@ -18,6 +19,7 @@ class EventMissionsPage extends StatefulWidget {
 
 class _EventMissionsPageState extends State<EventMissionsPage> {
   Set<EventMission> selected = {};
+
   @override
   Widget build(BuildContext context) {
     final missions = widget.missions.toList();
@@ -48,8 +50,8 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
       body: ListView.separated(
         itemBuilder: (context, index) {
           if (index == 0) {
-            return Center(
-              child: Padding(
+            return Column(children: [
+              Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(
                   'Menu - ${S.current.switch_region}',
@@ -57,7 +59,17 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
-            );
+              SwitchListTile(
+                dense: true,
+                value: db.settings.display.describeEventMission,
+                title: Text(S.current.describe_mission),
+                onChanged: (v) {
+                  setState(() {
+                    db.settings.display.describeEventMission = v;
+                  });
+                },
+              )
+            ]);
           }
           return missionBuilder(context, index - 1, missions);
         },
@@ -70,11 +82,25 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
   Widget missionBuilder(BuildContext context, int index, List<EventMission> missions) {
     EventMission mission = missions[index];
     final customMission = CustomMission.fromEventMission(mission);
+
+    final clearConds = mission.conds.where((e) => e.missionProgressType == MissionProgressType.clear).toList();
+    final clearCond = db.settings.display.describeEventMission && clearConds.length == 1 ? clearConds.single : null;
+
     return SimpleAccordion(
       key: Key('event_mission_${mission.id}'),
       headerBuilder: (context, _) => ListTile(
         leading: Text(mission.dispNo.toString(), textAlign: TextAlign.center),
-        title: Text(mission.name, textScaleFactor: 0.8),
+        title: clearCond != null
+            ? CondTargetNumDescriptor(
+                condType: clearCond.condType,
+                targetNum: clearCond.targetNum,
+                targetIds: clearCond.targetIds,
+                details: clearCond.details,
+                missions: missions,
+                eventId: widget.event.id,
+                textScaleFactor: 0.8,
+              )
+            : Text(mission.name, textScaleFactor: 0.8),
         horizontalTitleGap: 0,
         contentPadding: const EdgeInsetsDirectional.only(start: 16),
         minLeadingWidth: 32,
@@ -89,14 +115,34 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
                 },
               ),
       ),
-      contentBuilder: (context) => Padding(
-        padding: const EdgeInsetsDirectional.only(start: 24, end: 16),
-        child: MissionCondsDescriptor(
+      contentBuilder: (context) {
+        Widget child = MissionCondsDescriptor(
           mission: mission,
           missions: missions,
           eventId: widget.event.id,
-        ),
-      ),
+        );
+        if (clearCond != null) {
+          child = Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                '~~~ ${S.current.mission} ~~~',
+                textAlign: TextAlign.center,
+                textScaleFactor: 0.9,
+                style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
+              ),
+              Text(mission.name, textScaleFactor: 0.8),
+              const Divider(height: 8),
+              child,
+            ],
+          );
+        }
+        return Padding(
+          padding: const EdgeInsetsDirectional.only(start: 24, end: 16),
+          child: child,
+        );
+      },
     );
   }
 }

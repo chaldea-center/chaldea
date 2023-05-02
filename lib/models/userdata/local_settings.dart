@@ -203,6 +203,7 @@ class DisplaySettings {
   bool planPageFullScreen;
   List<SvtTab> sortedSvtTabs;
   List<SvtPlanDetail> hideSvtPlanDetails;
+  bool describeEventMission;
 
   DisplaySettings({
     this.showAccountAtHome = true,
@@ -218,6 +219,7 @@ class DisplaySettings {
     this.planPageFullScreen = false,
     List<SvtTab?>? sortedSvtTabs,
     List<SvtPlanDetail?>? hideSvtPlanDetails,
+    this.describeEventMission = true,
   })  : sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ?? List.of(SvtTab.values),
         hideSvtPlanDetails = hideSvtPlanDetails?.whereType<SvtPlanDetail>().toList() ?? [] {
     validateSvtTabs();

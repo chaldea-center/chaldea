@@ -2428,6 +2428,17 @@ class S {
     );
   }
 
+  /// `Describe Mission`
+  String get describe_mission {
+    return Intl.message(
+      'Describe Mission',
+      name: 'describe_mission',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Desktop only`
   String get desktop_only {
     return Intl.message(
