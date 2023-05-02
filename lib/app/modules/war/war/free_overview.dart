@@ -42,9 +42,11 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     }
     await Future.wait(widget.quests.reversed.map((quest) async {
       if (quest.phases.isEmpty) return null;
-      final phaseOld = await AtlasApi.questPhase(quest.id, quest.phases.last, expireAfter: kExpireCacheOnly);
-      if (phaseOld != null) phases[quest.id] = phaseOld;
-      if (mounted) setState(() {});
+      if (quest.warId > 1000) {
+        final phaseOld = await AtlasApi.questPhase(quest.id, quest.phases.last, expireAfter: kExpireCacheOnly);
+        if (phaseOld != null) phases[quest.id] = phaseOld;
+        if (mounted) setState(() {});
+      }
       final phase = await AtlasApi.questPhase(quest.id, quest.phases.last);
       if (phase != null) phases[quest.id] = phase;
       if (mounted) setState(() {});

@@ -106,21 +106,27 @@ class GameData with _GameDataExtra {
     this.addData,
     this.spoilerRegion,
   })  : version = version ?? DataVersion(),
+        servantsById = {
+          for (final svt in [...servants, ...?addData?.svt.values]) svt.id: svt
+        },
         servants = {
-          for (final svt in servants)
+          for (final svt in [...servants, ...?addData?.svt.values])
             if (svt.collectionNo > 0) svt.collectionNo: svt
         },
-        servantsById = {for (final svt in servants) svt.id: svt},
+        craftEssencesById = {
+          for (final ce in [...craftEssences, ...?addData?.ce.values]) ce.id: ce
+        },
         craftEssences = {
-          for (final ce in craftEssences)
+          for (final ce in [...craftEssences, ...?addData?.ce.values])
             if (ce.collectionNo > 0) ce.collectionNo: ce
         },
-        craftEssencesById = {for (final ce in craftEssences) ce.id: ce},
+        commandCodesById = {
+          for (final cc in [...commandCodes, ...?addData?.cc.values]) cc.id: cc
+        },
         commandCodes = {
-          for (final cc in commandCodes)
+          for (final cc in [...commandCodes, ...?addData?.cc.values])
             if (cc.collectionNo > 0) cc.collectionNo: cc
         },
-        commandCodesById = {for (final cc in commandCodes) cc.id: cc},
         mysticCodes = mysticCodes ?? {},
         events = events ?? {},
         wars = wars ?? {},
@@ -143,17 +149,7 @@ class GameData with _GameDataExtra {
         baseBuffs[buff.id] = buff;
       }
     }
-    if (addData != null) {
-      for (final svt in addData!.svt.values) {
-        if (svt.collectionNo > 0) this.servants[svt.collectionNo] ??= svt;
-      }
-      for (final ce in addData!.ce.values) {
-        if (ce.collectionNo > 0) this.craftEssences[ce.collectionNo] ??= ce;
-      }
-      for (final cc in addData!.cc.values) {
-        if (cc.collectionNo > 0) this.commandCodes[cc.collectionNo] ??= cc;
-      }
-    }
+
     // remove spoiler
     if (this.version.timestamp > 0 && spoilerRegion != null && spoilerRegion != Region.jp) {
       void _remove<T>(Map<int, T> dict, MappingList<int> releases) {
