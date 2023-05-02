@@ -18,6 +18,8 @@ import 'hosts.dart';
 
 String _url2uuid(String url) => const Uuid().v5(Uuid.NAMESPACE_URL, url);
 
+const kExpireCacheOnly = Duration(days: -999);
+
 class _CachedInfo {
   String url;
   int statusCode;
@@ -237,7 +239,7 @@ class ApiCacheManager {
       final entry = _data[key];
       if (entry != null) {
         FilePlus? file = entry.fp == null ? null : FilePlus(entry.fp!, box: _webBox);
-        if (!_isExpired(key, entry.timestamp, expireAfter)) {
+        if (!_isExpired(key, entry.timestamp, expireAfter) || expireAfter == kExpireCacheOnly) {
           List<int>? bytes = _memoryCache[key];
           if (bytes == null) {
             if (file != null && file.existsSync()) {
@@ -262,7 +264,7 @@ class ApiCacheManager {
         prevTask.cancel();
       }
 
-      if (cacheOnly) return null;
+      if (cacheOnly || expireAfter == kExpireCacheOnly) return null;
 
       print('api get: $url');
       final task = _downloading[url] = _DownloadingTask(url: url, completer: Completer());

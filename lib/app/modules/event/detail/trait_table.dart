@@ -27,8 +27,9 @@ class EventMissionTablePage extends StatefulWidget {
 
 class _EventMissionTablePageState extends State<EventMissionTablePage> {
   Set<CustomMissionCond> conds = {};
-  List<Quest> freeQuests = [];
-  List<QuestPhase> questPhases = [];
+  Map<Quest, QuestPhase?> allQuestData = {};
+  // List<Quest> freeQuests = [];
+  // List<QuestPhase> questPhases = [];
   bool _loading = false;
 
   final filterData = MissionTraitFilterData();
@@ -51,7 +52,7 @@ class _EventMissionTablePageState extends State<EventMissionTablePage> {
       final war = db.gameData.wars[warId];
       if (war == null) continue;
       for (final quest in war.quests) {
-        if (quest.isAnyFree) freeQuests.add(quest);
+        if (quest.isAnyFree) allQuestData[quest] = null;
       }
     }
     fetchData(region);
@@ -60,22 +61,27 @@ class _EventMissionTablePageState extends State<EventMissionTablePage> {
   Future<void> fetchData(Region? region) async {
     // List<QuestPhase> phases = [];
     setState(() {
-      questPhases.clear();
       _loading = true;
       filterData.hasRare = false;
     });
-    await Future.wait(freeQuests.map((e) async {
+    await Future.wait(allQuestData.keys.map((quest) async {
       if (region == null) return null;
-      final q = await AtlasApi.questPhase(e.id, e.phases.last, region: region);
-      if (q != null) {
-        questPhases.add(q);
-        if (!filterData.hasRare && q.allEnemies.any((e) => e.enemyScript.isRare)) {
+      allQuestData[quest] = null;
+      final phaseDataOld =
+          await AtlasApi.questPhase(quest.id, quest.phases.last, region: region, expireAfter: kExpireCacheOnly);
+      if (phaseDataOld != null) {
+        allQuestData[quest] = phaseDataOld;
+      }
+      final phaseData = await AtlasApi.questPhase(quest.id, quest.phases.last, region: region);
+      if (phaseData != null) {
+        allQuestData[quest] = phaseData;
+        if (!filterData.hasRare && phaseData.allEnemies.any((e) => e.enemyScript.isRare)) {
           filterData.hasRare = true;
         }
       }
+
       if (mounted) setState(() {});
     }).toList());
-    questPhases.sort2((e) => -e.priority);
     _loading = false;
     if (mounted) setState(() {});
   }
@@ -87,10 +93,11 @@ class _EventMissionTablePageState extends State<EventMissionTablePage> {
         ListTile(
           dense: true,
           title: Text(S.current.switch_region),
-          subtitle:
-              Text.rich(TextSpan(text: '${S.current.quest}: ${questPhases.length}/${freeQuests.length}', children: [
-            if (_loading) const CenterWidgetSpan(child: CupertinoActivityIndicator()),
-          ])),
+          subtitle: Text.rich(TextSpan(
+              text: '${S.current.quest}: ${allQuestData.values.where((q) => q != null).length}/${allQuestData.length}',
+              children: [
+                if (_loading) const CenterWidgetSpan(child: CupertinoActivityIndicator()),
+              ])),
           trailing: FilterGroup<Region>(
             options: [
               Region.jp,
@@ -143,7 +150,8 @@ class _EventMissionTablePageState extends State<EventMissionTablePage> {
             setState(() {});
           },
           shrinkWrap: true,
-        )
+        ),
+        const SafeArea(child: SizedBox(height: 16)),
       ],
     );
   }
@@ -175,10 +183,14 @@ class _EventMissionTablePageState extends State<EventMissionTablePage> {
   Widget table() {
     List<TableRow> children = [];
     Map<int, int> spotQuestsCount = {};
-    for (final quest in questPhases) {
-      spotQuestsCount.addNum(quest.spotId, 1);
+    final quests = allQuestData.keys.toList();
+    quests.sort2((e) => -e.priority);
+    for (final quest in allQuestData.keys) {
+      spotQuestsCount.addNum((allQuestData[quest] ?? quest).spotId, 1);
     }
-    for (final quest in questPhases) {
+    for (Quest quest in quests) {
+      final phase = allQuestData[quest];
+      quest = phase ?? quest;
       final spotImg = quest.spot?.shownImage;
       String name;
       if (spotQuestsCount[quest.spotId]! > 1) {
@@ -187,12 +199,13 @@ class _EventMissionTablePageState extends State<EventMissionTablePage> {
         name = quest.lSpot.l;
       }
       Map<CustomMissionCond, int> counts = {};
-      for (final cond in filterData.cond.options.isEmpty ? conds : filterData.cond.options) {
-        int count = MissionSolver.countMissionTarget(CustomMission(count: 1, conds: [cond]), quest,
-            includeRare: filterData.rareEnemy);
-        if (count > 0) counts[cond] = count;
+      if (phase != null) {
+        for (final cond in filterData.cond.options.isEmpty ? conds : filterData.cond.options) {
+          int count = MissionSolver.countMissionTarget(CustomMission(count: 1, conds: [cond]), phase,
+              includeRare: filterData.rareEnemy);
+          if (count > 0) counts[cond] = count;
+        }
       }
-
       final rowCells = [
         InkWell(
           onTap: quest.routeTo,
@@ -207,7 +220,7 @@ class _EventMissionTablePageState extends State<EventMissionTablePage> {
         Wrap(
           spacing: 3,
           children: [
-            if (quest.allEnemies.isEmpty)
+            if (phase?.allEnemies.isNotEmpty != true)
               const Text(
                 'No enemy data.',
                 textScaleFactor: 0.85,
