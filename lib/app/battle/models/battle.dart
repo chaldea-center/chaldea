@@ -917,7 +917,7 @@ class BattleData {
       }
 
       final actor = actorList[i]!;
-      if (actor.hp <= 0 && !actor.hasNextShift()) {
+      if (actor.hp <= 0 && !actor.hasNextShift(this)) {
         bool hasGuts = false;
         await actor.activateGuts(this).then((value) => hasGuts = value);
         if (!hasGuts) {

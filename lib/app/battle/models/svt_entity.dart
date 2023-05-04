@@ -181,6 +181,19 @@ class BattleServantData {
   }
 
   Future<void> init(final BattleData battleData) async {
+    if (niceEnemy != null && niceEnemy!.enemyScript.dispBreakShift != null) {
+      shiftIndex = niceEnemy!.enemyScript.dispBreakShift! - 1;
+
+      if (hasNextShift(battleData)) {
+        await shift(battleData);
+        return;
+      }
+    }
+
+    await _init(battleData);
+  }
+
+  Future<void> _init(final BattleData battleData) async {
     final List<NiceSkill> passives = isPlayer
         ? [...niceSvt!.classPassive]
         : [...niceEnemy!.classPassive.classPassive, ...niceEnemy!.classPassive.addPassive];
@@ -476,22 +489,24 @@ class BattleServantData {
     accumulationDamage = 0;
   }
 
-  bool hasNextShift() {
-    if (isPlayer) {
-      return false;
-    }
+  bool hasNextShift(final BattleData battleData) {
+    return getEnemyShift(battleData) != null;
+  }
 
-    return shiftNpcIds.isNotEmpty && shiftNpcIds.length > shiftIndex;
+  QuestEnemy? getEnemyShift(final BattleData battleData) {
+    if (isEnemy && shiftNpcIds.isNotEmpty && shiftNpcIds.length > shiftIndex) {
+      return battleData.enemyDecks[DeckType.shift]
+          ?.firstWhereOrNull((questEnemy) => questEnemy.npcId == shiftNpcIds[shiftIndex]);
+    }
+    return null;
   }
 
   Future<void> shift(final BattleData battleData) async {
-    if (!hasNextShift()) {
+    final nextShift = getEnemyShift(battleData);
+    if (nextShift == null) {
       return;
     }
 
-    // TODO: shift deck may not contain target enemy?
-    final nextShift =
-        battleData.enemyDecks[DeckType.shift]!.firstWhere((questEnemy) => questEnemy.npcId == shiftNpcIds[shiftIndex]);
     niceEnemy = nextShift;
 
     atk = nextShift.atk;
@@ -500,7 +515,7 @@ class BattleServantData {
     level = nextShift.lv;
     battleBuff.clearPassive(uniqueId);
 
-    await init(battleData);
+    await _init(battleData);
     shiftIndex += 1;
   }
 
@@ -509,7 +524,7 @@ class BattleServantData {
       return true;
     }
 
-    if (hasNextShift()) {
+    if (hasNextShift(battleData)) {
       return true;
     }
 
@@ -1077,7 +1092,7 @@ class BattleServantData {
       turnEndLog += ' - dot ${S.current.battle_damage}: $turnEndDamage';
     }
 
-    if (hp <= 0 && hasNextShift()) {
+    if (hp <= 0 && hasNextShift(battleData)) {
       hp = 1;
     }
 
