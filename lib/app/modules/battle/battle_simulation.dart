@@ -299,7 +299,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             context: context,
             jumpToDetail: false,
             height: 72,
-            overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase, true),
+            overrideIcon: svt.niceSvt!.ascendIcon(svt.limitCount, true),
             option: ImageWithTextOption(
                 errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon)))
         : Stack(
@@ -353,7 +353,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           List.generate(svt.shiftNpcIds.length, (index) => svt.shiftNpcIds.length - index > svt.shiftIndex ? '◆' : '◇')
               .join(),
         svt.isPlayer
-            ? svt.td == null
+            ? svt.playerSvtData!.td == null
                 ? 'NP: -'
                 : 'NP: ${(svt.np / 100).toStringAsFixed(2)}'
             : svt.niceEnemy!.chargeTurn != 0 && (svt.niceEnemy?.noblePhantasm.noblePhantasm?.functions.length ?? 0) > 0

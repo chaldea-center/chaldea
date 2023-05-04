@@ -194,7 +194,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       context: context,
       // width: tdWidth,
       height: cardSize,
-      overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase, true),
+      overrideIcon: svt.niceSvt!.ascendIcon(svt.limitCount, true),
       jumpToDetail: false,
     );
     tdIcon = Stack(
@@ -236,7 +236,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
     );
     tdIcon = GestureDetector(
       onTap: () {
-        final canCharge = svt.td != null && !(svt.isEnemy && svt.niceEnemy!.chargeTurn == 0);
+        final canCharge = svt.playerSvtData?.td != null && !(svt.isEnemy && svt.niceEnemy!.chargeTurn == 0);
         if (canCharge && !svt.isNpFull(battleData)) {
           SimpleCancelOkDialog(
             title: Text(S.current.np_not_enough),

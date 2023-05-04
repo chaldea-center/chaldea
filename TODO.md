@@ -10,6 +10,7 @@
 - [ ] `Map<TargetId, bool> lastFuncSuccess` is a map
 - [x] build team: disable event
 - [ ] battle delegate
+- [ ] Skip turn! add to popup menu
 
 ### Recorder
 
@@ -61,6 +62,7 @@
 - [ ] Enemy shift target may not exist
 - [x] cardDetail.damageRate/tdRate (U-Olga Marie buster/extra attack on all enemies)
 - [ ] dispBreakShift(need clamp)
+- [ ] Stage.script.NoEntryIds+Func.updateEntryPositions (DataVals.OnPositions+OffPositions)
 - [ ] shiftGuts(Ratio)
 - [x] QuestFlag.enemyImmediateAppear
 - [x] Damage should remove buff with buffScript field damageRelease: 1
@@ -111,6 +113,7 @@
 
 ## Misc
 
+- [ ] CSV template: coin, rarity
 - [ ] Extra Mission descriptor
 - [ ] Integrate Sentry
 - [ ] Adding crash log review

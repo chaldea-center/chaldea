@@ -28,9 +28,9 @@ class TransformServant {
       if (targetSvtId == 304800) {
         // lazy transform svt 312
         final svt = db.gameData.servantsById[targetSvtId];
-        target.ascensionPhase = dataVals.SetLimitCount!;
+        target.playerSvtData!.limitCount = dataVals.SetLimitCount!;
         target.skillInfoList[2].baseSkill = svt?.skills.firstWhereOrNull((e) => e.id == 888575);
-        target.td = svt?.noblePhantasms.firstWhereOrNull((e) => e.id == 304802);
+        target.playerSvtData!.td = svt?.noblePhantasms.firstWhereOrNull((e) => e.id == 304802);
       } else {
         Servant? targetSvt = db.gameData.servantsById[targetSvtId] ?? await AtlasApi.svt(targetSvtId);
         if (targetSvt == null) {
@@ -58,8 +58,8 @@ class TransformServant {
           }
           target.skillInfoList = newSkillInfos;
 
-          if (!targetSvt.noblePhantasms.contains(target.td)) {
-            target.td = targetSvt.noblePhantasms.last;
+          if (!targetSvt.noblePhantasms.contains(target.playerSvtData!.td)) {
+            target.playerSvtData!.td = targetSvt.noblePhantasms.last;
           }
         }
       }

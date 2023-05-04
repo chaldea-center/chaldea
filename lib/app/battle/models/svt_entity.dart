@@ -25,9 +25,9 @@ class BattleServantData {
 
   bool get isEnemy => niceEnemy != null;
 
-  String get lBattleName => isPlayer ? niceSvt!.lBattleName(ascensionPhase).l : niceEnemy!.lShownName;
+  String get lBattleName => isPlayer ? niceSvt!.lBattleName(playerSvtData!.limitCount).l : niceEnemy!.lShownName;
 
-  int get limitCount => niceEnemy?.limit?.limitCount ?? ascensionPhase;
+  int get limitCount => isPlayer ? playerSvtData!.limitCount : niceEnemy!.limit?.limitCount ?? 0;
 
   // int exceedCount = 0;
   // int transformSvtId = -1;
@@ -71,8 +71,8 @@ class BattleServantData {
   bool myTurn = false;
 
   // BattleServantData.Status status
-  NiceTd? td;
-  int ascensionPhase = 0;
+  // NiceTd? td;
+  // int ascensionPhase = 0;
   List<BattleSkillInfoData> skillInfoList = []; // BattleSkillInfoData, only active skills for now
   BattleCEData? equip;
   BattleBuff battleBuff = BattleBuff();
@@ -101,7 +101,7 @@ class BattleServantData {
 
   int get starGen => isPlayer ? niceSvt!.starGen : 0;
 
-  int get defenceNpGain => isPlayer ? td?.npGain.defence[playerSvtData!.tdLv - 1] ?? 0 : 0;
+  int get defenceNpGain => isPlayer ? playerSvtData?.td?.npGain.defence[playerSvtData!.tdLv - 1] ?? 0 : 0;
 
   int get enemyTdRate => isEnemy ? niceEnemy!.serverMod.tdRate : 0;
 
@@ -129,12 +129,10 @@ class BattleServantData {
   static BattleServantData fromPlayerSvtData(final PlayerSvtData settings) {
     final svt = BattleServantData();
     svt
-      ..playerSvtData = settings
+      ..playerSvtData = settings.copy()
       ..niceSvt = settings.svt!
       ..svtId = settings.svt?.id ?? 0
       ..level = settings.lv
-      ..td = settings.td
-      ..ascensionPhase = settings.limitCount
       ..maxHp = settings.fixedHp ?? ((settings.svt!.hpGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.hpFou)
       ..atk = settings.fixedAtk ?? ((settings.svt!.atkGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.atkFou);
     svt.hp = svt.maxHp;
@@ -374,8 +372,8 @@ class BattleServantData {
     if (niceEnemy != null) {
       traits.addAll(niceEnemy!.traits);
     } else if (niceSvt != null) {
-      if (niceSvt!.ascensionAdd.individuality.all.containsKey(ascensionPhase)) {
-        traits.addAll(niceSvt!.ascensionAdd.individuality.all[ascensionPhase]!);
+      if (niceSvt!.ascensionAdd.individuality.all.containsKey(limitCount)) {
+        traits.addAll(niceSvt!.ascensionAdd.individuality.all[limitCount]!);
       } else {
         traits.addAll(niceSvt!.traits);
       }
@@ -435,7 +433,7 @@ class BattleServantData {
   }
 
   void changeNP(final int change) {
-    if (!isPlayer || td == null) {
+    if (!isPlayer || playerSvtData?.td == null) {
       return;
     }
 
@@ -702,7 +700,7 @@ class BattleServantData {
     }
     battleData.unsetActivator();
 
-    return isPlayer ? td : niceEnemy!.noblePhantasm.noblePhantasm;
+    return isPlayer ? playerSvtData!.td : niceEnemy!.noblePhantasm.noblePhantasm;
   }
 
   Future<void> activateNP(final BattleData battleData, final int extraOverchargeLvl) async {
@@ -1209,13 +1207,12 @@ class BattleServantData {
     return BattleServantData()
       ..niceEnemy = niceEnemy
       ..niceSvt = niceSvt
-      ..playerSvtData = playerSvtData
+      ..playerSvtData = playerSvtData?.copy()
       ..fieldIndex = fieldIndex
       ..deckIndex = deckIndex
       ..uniqueId = uniqueId
       ..svtId = svtId
       ..level = level
-      ..td = td
       ..atk = atk
       ..hp = hp
       ..maxHp = maxHp
@@ -1223,7 +1220,6 @@ class BattleServantData {
       ..npLineCount = npLineCount
       ..accumulationDamage = accumulationDamage
       ..myTurn = myTurn
-      ..ascensionPhase = ascensionPhase
       ..skillInfoList = skillInfoList.map((e) => e.copy()).toList() // copy
       ..equip = equip
       ..battleBuff = battleBuff.copy()

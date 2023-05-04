@@ -54,7 +54,7 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
                 context: context,
                 jumpToDetail: false,
                 width: 56,
-                overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase, true),
+                overrideIcon: svt.niceSvt!.ascendIcon(svt.limitCount, true),
               ),
               onTap: () {
                 onFieldSelection = svt;
@@ -88,7 +88,7 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
                 context: context,
                 jumpToDetail: false,
                 width: 56,
-                overrideIcon: svt.niceSvt!.ascendIcon(svt.ascensionPhase, true),
+                overrideIcon: svt.niceSvt!.ascendIcon(svt.limitCount, true),
               ),
               onTap: () {
                 backupSelection = svt;

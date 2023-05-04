@@ -66,6 +66,32 @@ class PlayerSvtData {
     additionalPassiveLvs.add(lv);
   }
 
+  PlayerSvtData copy() {
+    return PlayerSvtData.base()
+      ..svt = svt
+      ..limitCount = limitCount
+      ..skillLvs = skillLvs.toList()
+      ..skills = skills.toList()
+      ..appendLvs = appendLvs.toList()
+      ..extraPassives = extraPassives.toList()
+      ..disabledExtraSkills = disabledExtraSkills.toSet()
+      ..additionalPassives = additionalPassives.toList()
+      ..additionalPassiveLvs = additionalPassiveLvs.toList()
+      ..tdLv = tdLv
+      ..td = td
+      ..lv = lv
+      ..atkFou = atkFou
+      ..hpFou = hpFou
+      ..fixedAtk = fixedAtk
+      ..fixedHp = fixedHp
+      ..ce = ce
+      ..ceLimitBreak = ceLimitBreak
+      ..ceLv = ceLv
+      ..isSupportSvt = isSupportSvt
+      ..cardStrengthens = cardStrengthens.toList()
+      ..commandCodes = commandCodes.toList();
+  }
+
   static Future<PlayerSvtData> fromStoredData(final SvtSaveData? storedData) async {
     if (storedData == null) return PlayerSvtData.base();
     final svt = db.gameData.servantsById[storedData.svtId];

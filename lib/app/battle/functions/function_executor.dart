@@ -165,7 +165,7 @@ class FunctionExecutor {
     if (function.funcTargetType == FuncTargetType.commandTypeSelfTreasureDevice) {
       for (final svt in targets) {
         NiceTd? tdSelection;
-        final NiceTd? baseTd = svt.td;
+        final NiceTd? baseTd = svt.playerSvtData?.td;
         if (baseTd != null) {
           if (baseTd.script != null && baseTd.script!.tdTypeChangeIDs != null) {
             final List<NiceTd> tds = svt.getTdsById(baseTd.script!.tdTypeChangeIDs!);
