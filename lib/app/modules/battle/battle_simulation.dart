@@ -349,6 +349,9 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       children: <String>[
         if (svt.isPlayer) 'ATK: ${svt.attack}',
         'HP: ${svt.hp}',
+        if (svt.isEnemy && svt.shiftNpcIds.isNotEmpty)
+          List.generate(svt.shiftNpcIds.length, (index) => svt.shiftNpcIds.length - index > svt.shiftIndex ? '◆' : '◇')
+              .join(),
         svt.isPlayer
             ? svt.td == null
                 ? 'NP: -'
