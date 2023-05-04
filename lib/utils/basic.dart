@@ -261,3 +261,7 @@ String escapeDioError(error) {
 Future<void> copyToClipboard(String text) {
   return Clipboard.setData(ClipboardData(text: text));
 }
+
+List<T>? toList<T>(Object? value) {
+  return (value as List<dynamic>?)?.cast();
+}

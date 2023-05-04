@@ -12,6 +12,7 @@ import 'command_code.dart';
 import 'common.dart';
 import 'const_data.dart';
 import 'drop_rate.dart';
+import 'enemy_master.dart';
 import 'event.dart';
 import 'item.dart';
 import 'mappings.dart';
@@ -61,6 +62,7 @@ class GameData with _GameDataExtra {
   Map<int, ExchangeTicket> exchangeTickets;
   Map<int, BasicServant> entities;
   Map<int, BgmEntity> bgms;
+  Map<int, EnemyMaster> enemyMasters;
   Map<int, MasterMission> extraMasterMission;
   WikiData wiki;
   MappingData mappingData;
@@ -95,6 +97,7 @@ class GameData with _GameDataExtra {
     Map<int, ExchangeTicket>? exchangeTickets,
     Map<int, BasicServant>? entities,
     Map<int, BgmEntity>? bgms,
+    Map<int, EnemyMaster>? enemyMasters,
     Map<int, MasterMission>? extraMasterMission,
     WikiData? wiki,
     MappingData? mappingData,
@@ -135,6 +138,7 @@ class GameData with _GameDataExtra {
         exchangeTickets = exchangeTickets ?? {},
         entities = entities ?? {},
         bgms = bgms ?? {},
+        enemyMasters = enemyMasters ?? {},
         extraMasterMission = extraMasterMission ?? {},
         wiki = wiki ?? WikiData(),
         mappingData = mappingData ?? MappingData(),
@@ -437,14 +441,22 @@ class AssetBundleDecrypt {
 
 class _ProcessedData {
   final GameData gameData;
+
   _ProcessedData(this.gameData) {
     for (final svt in gameData.servants.values) {
       for (final costume in svt.profile.costume.values) {
         costumeSvtMap[costume.costumeCollectionNo] = svt;
       }
     }
+    enemyMasterBattles = {
+      for (final master in gameData.enemyMasters.values)
+        for (final battle in master.battles) battle.id: battle
+    };
     _initFuncBuff();
   }
+
+  Map<int, EnemyMasterBattle> enemyMasterBattles = {};
+
   Map<int, Servant> costumeSvtMap = {};
 
   Set<FuncType> svtFuncs = {};

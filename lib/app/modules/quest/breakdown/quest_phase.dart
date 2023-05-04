@@ -147,18 +147,17 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                   [
                     TextSpan(text: '${j + 1}'),
                     if (stage.enemyFieldPosCount != null) TextSpan(text: '(${stage.enemyFieldPosCount})'),
-                    if (stage.hasExtraInfo())
-                      WidgetSpan(
-                        child: IconButton(
-                          onPressed: () {
-                            router.pushPage(WaveInfoPage(stage: stage));
-                          },
-                          icon: const Icon(Icons.music_note, size: 18),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          color: Theme.of(context).colorScheme.primaryContainer,
-                        ),
-                      )
+                    WidgetSpan(
+                      child: IconButton(
+                        onPressed: () {
+                          router.pushPage(WaveInfoPage(stage: stage));
+                        },
+                        icon: const Icon(Icons.music_note, size: 18),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                      ),
+                    )
                   ],
                   const TextSpan(text: '\n'),
                 ),

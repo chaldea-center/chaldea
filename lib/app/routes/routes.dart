@@ -37,6 +37,7 @@ import '../modules/command_code/cmd_code_list.dart';
 import '../modules/common/not_found.dart';
 import '../modules/costume/costume_detail.dart';
 import '../modules/costume/costume_list.dart';
+import '../modules/enemy_master/enemy_master.dart';
 import '../modules/event/event_detail_page.dart';
 import '../modules/free_quest_calc/free_calculator_page.dart';
 import '../modules/func/func_detail.dart';
@@ -112,6 +113,10 @@ class Routes {
   static const String bgm = '/bgm';
   static const String bgms = '/bgms';
 
+  static String enemyMasterI(int id) => '/enemy-master/$id';
+  static const String enemyMaster = '/enemy-master';
+  static const String enemyMasters = '/enemy-masters';
+
   static String traitI(int id) => '/trait/$id';
   static const String trait = '/trait';
   static const String traits = '/traits';
@@ -160,7 +165,6 @@ class Routes {
   static const String cvs = '/cvs';
   static const String illustrators = '/illustrators';
   static const String characters = '/characters';
-  static const String enemyMasters = '/enemy-masters';
   static const String myroom = '/myroom';
   static const String plans = '/plans';
   static const String freeCalc = '/free-calc';
@@ -388,6 +392,8 @@ class RouteConfiguration {
         return CharaListPage();
       case Routes.enemyMasters:
         return const EnemyMasterListPage();
+      case Routes.enemyMaster:
+        return EnemyMasterDetailPage(masterId: _secondInt);
       case Routes.myroom:
         return const MyRoomAssetsPage();
       case Routes.stats:

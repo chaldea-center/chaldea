@@ -212,6 +212,9 @@ class AssetURL {
   String masterFace(int itemId) => "$baseUrl/$region/MasterFace/equip${pad(itemId)}.png";
   String masterFaceImage(int itemId) => "$baseUrl/$region/MasterFace/image${pad(itemId)}.png";
   String masterFigure(int itemId) => "$baseUrl/$region/MasterFigure/equip${pad(itemId)}.png";
+  String enemyMasterFace(int itemId) => "$baseUrl/$region/EnemyMasterFace/enemyMasterFace$itemId.png";
+  String enemyMasterFigure(int itemId) => "$baseUrl/$region/EnemyMasterFigure/figure$itemId.png";
+  String commandSpell(int itemId) => "$baseUrl/$region/CommandSpell/cs_${pad(itemId, 4)}.png";
   String commandCode(int itemId) => "$baseUrl/$region/CommandCodes/c_$itemId.png";
   String commandGraph(int itemId) => "$baseUrl/$region/CommandGraph/${itemId}a.png";
   String audio(String folder, String id) => "$baseUrl/$region/Audio/$folder/$id.mp3";

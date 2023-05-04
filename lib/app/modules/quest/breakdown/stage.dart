@@ -240,10 +240,34 @@ class WaveInfoPage extends StatelessWidget {
                 textAlign: TextAlign.end,
               ),
             ),
+          for (final masterId in [
+            if (stage.enemyMasterBattleId != null) stage.enemyMasterBattleId!,
+            ...?stage.enemyMasterBattleIdByPlayerGender
+          ])
+            buildEnemyMaster(masterId),
           if (stage.waveStartMovies.isNotEmpty) ListTile(title: Text(S.current.stage_opening_movie)),
           for (final movie in stage.waveStartMovies) MyVideoPlayer.url(url: movie.waveStartMovie, autoPlay: false)
         ],
       ),
+    );
+  }
+
+  Widget buildEnemyMaster(int battleId) {
+    final battle = db.gameData.others.enemyMasterBattles[battleId];
+    final master = db.gameData.enemyMasters.values.firstWhereOrNull((e) => e.battles.any((b) => b.id == battleId));
+    String subtitle = 'No.$battleId ';
+    if (master != null) {
+      subtitle += master.lName.l;
+    }
+    print([battleId, battle?.id, master?.id]);
+    return ListTile(
+      title: Text(S.current.enemy_master),
+      subtitle: Text(subtitle),
+      trailing: Transform.rotate(
+        angle: -pi / 4,
+        child: db.getIconImage(battle?.face ?? AssetURL.i.enemyMasterFace(battleId), width: 36),
+      ),
+      onTap: master?.routeTo,
     );
   }
 }

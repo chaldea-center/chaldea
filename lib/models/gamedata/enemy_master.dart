@@ -1,10 +1,11 @@
+import '../../app/app.dart';
 import '_helper.dart';
 import 'mappings.dart';
 
 part '../../generated/models/gamedata/enemy_master.g.dart';
 
 @JsonSerializable()
-class EnemyMaster {
+class EnemyMaster with RouteInfo {
   int id;
   String name;
   List<EnemyMasterBattle> battles;
@@ -23,6 +24,9 @@ class EnemyMaster {
   factory EnemyMaster.fromJson(Map<String, dynamic> json) => _$EnemyMasterFromJson(json);
 
   Map<String, dynamic> toJson() => _$EnemyMasterToJson(this);
+
+  @override
+  String get route => Routes.enemyMasterI(id);
 }
 
 @JsonSerializable()

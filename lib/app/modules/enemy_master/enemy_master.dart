@@ -4,19 +4,37 @@ import 'package:chaldea/app/modules/common/extra_assets_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../routes/routes.dart';
+import '../common/not_found.dart';
 
 class EnemyMasterDetailPage extends StatefulWidget {
-  final EnemyMaster master;
-  const EnemyMasterDetailPage({super.key, required this.master});
+  final int? masterId;
+  final EnemyMaster? master;
+  const EnemyMasterDetailPage({super.key, this.masterId, this.master});
 
   @override
   State<EnemyMasterDetailPage> createState() => _EnemyMasterDetailPageState();
 }
 
 class _EnemyMasterDetailPageState extends State<EnemyMasterDetailPage> {
-  EnemyMaster get master => widget.master;
+  EnemyMaster? _master;
+
+  EnemyMaster get master => _master!;
+
+  @override
+  void initState() {
+    super.initState();
+    _master = widget.master ?? db.gameData.enemyMasters[widget.masterId];
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_master == null) {
+      return NotFoundPage(
+        title: S.current.enemy_master,
+        url: Routes.enemyMasterI(widget.master?.id ?? widget.masterId ?? 0),
+      );
+    }
     return Scaffold(
       appBar: AppBar(title: Text(master.lName.l)),
       body: ListView(
