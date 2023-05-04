@@ -337,22 +337,31 @@ SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
           .toList(),
     );
 
-Map<String, dynamic> _$SkillScriptToJson(SkillScript instance) => <String, dynamic>{
-      'NP_HIGHER': instance.NP_HIGHER,
-      'NP_LOWER': instance.NP_LOWER,
-      'STAR_HIGHER': instance.STAR_HIGHER,
-      'STAR_LOWER': instance.STAR_LOWER,
-      'HP_VAL_HIGHER': instance.HP_VAL_HIGHER,
-      'HP_VAL_LOWER': instance.HP_VAL_LOWER,
-      'HP_PER_HIGHER': instance.HP_PER_HIGHER,
-      'HP_PER_LOWER': instance.HP_PER_LOWER,
-      'additionalSkillId': instance.additionalSkillId,
-      'additionalSkillLv': instance.additionalSkillLv,
-      'additionalSkillActorType': instance.additionalSkillActorType,
-      'tdTypeChangeIDs': instance.tdTypeChangeIDs,
-      'excludeTdChangeTypes': instance.excludeTdChangeTypes,
-      'SelectAddInfo': instance.SelectAddInfo?.map((e) => e.toJson()).toList(),
-    };
+Map<String, dynamic> _$SkillScriptToJson(SkillScript instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('NP_HIGHER', instance.NP_HIGHER);
+  writeNotNull('NP_LOWER', instance.NP_LOWER);
+  writeNotNull('STAR_HIGHER', instance.STAR_HIGHER);
+  writeNotNull('STAR_LOWER', instance.STAR_LOWER);
+  writeNotNull('HP_VAL_HIGHER', instance.HP_VAL_HIGHER);
+  writeNotNull('HP_VAL_LOWER', instance.HP_VAL_LOWER);
+  writeNotNull('HP_PER_HIGHER', instance.HP_PER_HIGHER);
+  writeNotNull('HP_PER_LOWER', instance.HP_PER_LOWER);
+  writeNotNull('additionalSkillId', instance.additionalSkillId);
+  writeNotNull('additionalSkillLv', instance.additionalSkillLv);
+  writeNotNull('additionalSkillActorType', instance.additionalSkillActorType);
+  writeNotNull('tdTypeChangeIDs', instance.tdTypeChangeIDs);
+  writeNotNull('excludeTdChangeTypes', instance.excludeTdChangeTypes);
+  writeNotNull('SelectAddInfo', instance.SelectAddInfo?.map((e) => e.toJson()).toList());
+  return val;
+}
 
 SkillSelectAddInfo _$SkillSelectAddInfoFromJson(Map json) => SkillSelectAddInfo(
       title: json['title'] as String? ?? '',

@@ -587,7 +587,10 @@ class Stage {
   StageLimitActType? limitAct;
   int? enemyFieldPosCount;
   int? enemyActCount;
+  // ignore: non_constant_identifier_names
+  List<int>? NoEntryIds;
   List<StageStartMovie> waveStartMovies;
+  Map<String, dynamic>? originalScript;
   List<QuestEnemy> enemies;
 
   Stage({
@@ -599,7 +602,10 @@ class Stage {
     this.limitAct,
     this.enemyFieldPosCount,
     this.enemyActCount,
+    // ignore: non_constant_identifier_names
+    this.NoEntryIds,
     this.waveStartMovies = const [],
+    this.originalScript,
     List<QuestEnemy>? enemies,
   })  : fieldAis = fieldAis ?? [],
         call = call ?? [],
@@ -607,16 +613,9 @@ class Stage {
 
   factory Stage.fromJson(Map<String, dynamic> json) => _$StageFromJson(json);
 
-  bool hasExtraInfo() {
-    return (bgm != null && bgm?.id != 0) ||
-        fieldAis.isNotEmpty ||
-        call.isNotEmpty ||
-        turn != null ||
-        // limitAct != null ||
-        enemyFieldPosCount != null ||
-        enemyActCount != null ||
-        waveStartMovies.isNotEmpty;
-  }
+  int? get enemyMasterBattleId => originalScript?['enemyMasterBattleId'];
+  List<int>? get enemyMasterBattleIdByPlayerGender => toList(originalScript?['enemyMasterBattleIdByPlayerGender']);
+  int? get battleMasterImageId => originalScript?['battleMasterImageId'];
 
   Map<String, dynamic> toJson() => _$StageToJson(this);
 }
@@ -1035,7 +1034,7 @@ class QuestEnemy with GameCardMixin {
         classPassive = classPassive ?? EnemyPassive(),
         noblePhantasm = noblePhantasm ?? EnemyTd(),
         serverMod = serverMod ?? EnemyServerMod(),
-        enemyScript = (enemyScript ?? EnemyScript())..setSource(originalEnemyScript);
+        enemyScript = (enemyScript ?? EnemyScript())..originalScript = originalEnemyScript ?? {};
 
   factory QuestEnemy.fromJson(Map<String, dynamic> json) {
     final enemy = _$QuestEnemyFromJson(json);
@@ -1150,7 +1149,7 @@ class EnemyServerMod {
 // treasureDeviceName
 // treasureDeviceRuby
 // voice
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false, createToJson: false)
 class EnemyScript with DataScriptBase {
   // lots of fields are skipped
   EnemyDeathType? deathType;
@@ -1159,6 +1158,9 @@ class EnemyScript with DataScriptBase {
   List<int>? call; // npcId
   List<int>? shift; // npcId
   List<NiceTrait>? shiftClear;
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  Map<String, dynamic> originalScript = {};
 
   EnemyScript({
     this.deathType,
@@ -1169,13 +1171,13 @@ class EnemyScript with DataScriptBase {
     this.shiftClear,
   });
 
+  bool get isRare => originalScript['probability_type'] == 1;
+
+  int? get dispBreakShift => originalScript['dispBreakShift'] as int?;
+
   factory EnemyScript.fromJson(Map<String, dynamic> json) => _$EnemyScriptFromJson(json)..setSource(json);
 
-  bool get isRare => source['probability_type'] == 1;
-
-  int? get dispBreakShift => source['dispBreakShift'] as int?;
-
-  Map<String, dynamic> toJson() => _$EnemyScriptToJson(this);
+  Map<String, dynamic> toJson() => Map.from(source);
 }
 
 @JsonSerializable()

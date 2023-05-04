@@ -633,7 +633,7 @@ class ExtraPassive {
   Map<String, dynamic> toJson() => _$ExtraPassiveToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class SkillScript with DataScriptBase {
   final List<int>? NP_HIGHER; // lv, 50->50%
   final List<int>? NP_LOWER;

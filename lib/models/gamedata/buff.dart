@@ -137,7 +137,7 @@ class RelationOverwriteDetail {
   Map<String, dynamic> toJson() => _$RelationOverwriteDetailToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false, includeIfNull: false)
 class BuffScript with DataScriptBase {
   int? checkIndvType; // 1-AND, default-OR
   @BuffTypeConverter()
@@ -187,11 +187,11 @@ class BuffScript with DataScriptBase {
 
   factory BuffScript.fromJson(Map<String, dynamic> json) => _$BuffScriptFromJson(json)..setSource(json);
 
-  Map<String, dynamic> toJson() => _$BuffScriptToJson(this);
+  Map<String, dynamic> toJson() => Map.from(source);
 }
 
 /// Convert [targets] to [convertBuffs]
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class BuffConvert {
   BuffConvertLimitType targetLimit;
   BuffConvertType convertType;

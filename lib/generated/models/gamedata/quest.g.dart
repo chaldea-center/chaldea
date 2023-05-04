@@ -347,10 +347,14 @@ Stage _$StageFromJson(Map json) => Stage(
       limitAct: $enumDecodeNullable(_$StageLimitActTypeEnumMap, json['limitAct']),
       enemyFieldPosCount: json['enemyFieldPosCount'] as int?,
       enemyActCount: json['enemyActCount'] as int?,
+      NoEntryIds: (json['NoEntryIds'] as List<dynamic>?)?.map((e) => e as int).toList(),
       waveStartMovies: (json['waveStartMovies'] as List<dynamic>?)
               ?.map((e) => StageStartMovie.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      originalScript: (json['originalScript'] as Map?)?.map(
+        (k, e) => MapEntry(k as String, e),
+      ),
       enemies: (json['enemies'] as List<dynamic>?)
           ?.map((e) => QuestEnemy.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
@@ -365,7 +369,9 @@ Map<String, dynamic> _$StageToJson(Stage instance) => <String, dynamic>{
       'limitAct': _$StageLimitActTypeEnumMap[instance.limitAct],
       'enemyFieldPosCount': instance.enemyFieldPosCount,
       'enemyActCount': instance.enemyActCount,
+      'NoEntryIds': instance.NoEntryIds,
       'waveStartMovies': instance.waveStartMovies.map((e) => e.toJson()).toList(),
+      'originalScript': instance.originalScript,
       'enemies': instance.enemies.map((e) => e.toJson()).toList(),
     };
 
@@ -772,15 +778,6 @@ EnemyScript _$EnemyScriptFromJson(Map json) => EnemyScript(
           ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
     );
-
-Map<String, dynamic> _$EnemyScriptToJson(EnemyScript instance) => <String, dynamic>{
-      'deathType': _$EnemyDeathTypeEnumMap[instance.deathType],
-      'hpBarType': instance.hpBarType,
-      'leader': instance.leader,
-      'call': instance.call,
-      'shift': instance.shift,
-      'shiftClear': instance.shiftClear?.map((e) => e.toJson()).toList(),
-    };
 
 const _$EnemyDeathTypeEnumMap = {
   EnemyDeathType.escape: 'escape',
