@@ -62,7 +62,6 @@ class BattleServantData {
   int uniqueId = 0;
   int svtId = -1;
   int level = 0;
-  NiceTd? td;
   int atk = 0;
   int hp = 0;
   int maxHp = 0;
@@ -72,6 +71,7 @@ class BattleServantData {
   bool myTurn = false;
 
   // BattleServantData.Status status
+  NiceTd? td;
   int ascensionPhase = 0;
   List<BattleSkillInfoData> skillInfoList = []; // BattleSkillInfoData, only active skills for now
   BattleCEData? equip;
@@ -181,12 +181,18 @@ class BattleServantData {
   }
 
   Future<void> init(final BattleData battleData) async {
-    if (niceEnemy != null && niceEnemy!.enemyScript.dispBreakShift != null) {
-      shiftIndex = niceEnemy!.enemyScript.dispBreakShift! - 1;
-
-      if (hasNextShift(battleData)) {
-        await shift(battleData);
-        return;
+    if (niceEnemy != null) {
+      int dispBreakShift = niceEnemy!.enemyScript.dispBreakShift ?? 0;
+      int shiftLength = niceEnemy!.enemyScript.shift?.length ?? 0;
+      if (dispBreakShift > 0 && shiftLength > 0) {
+        if (dispBreakShift > shiftLength) {
+          dispBreakShift = shiftLength;
+        }
+        shiftIndex = dispBreakShift - 1;
+        if (hasNextShift(battleData)) {
+          await shift(battleData);
+          return;
+        }
       }
     }
 
