@@ -410,6 +410,7 @@ class FuncDescriptor extends StatelessWidget {
   }) {
     StringBuffer funcText = StringBuffer();
     Buff? buff = func.buff;
+    final vals = func.svals.firstOrNull;
 
     if ((func.funcType == FuncType.addState ||
             func.funcType == FuncType.addStateShort ||
@@ -443,6 +444,15 @@ class FuncDescriptor extends StatelessWidget {
       FuncType.enemyEncountCopyRateUp,
     ].contains(func.funcType)) {
       funcText.write(Transl.funcPopuptextBase(func.funcType.name).l);
+    } else if (func.funcType == FuncType.updateEntryPositions) {
+      funcText.write(Transl.enums(func.funcType, (enums) => enums.funcType).l);
+      funcText.write(': ');
+      if (vals?.OnPositions?.isNotEmpty == true) {
+        funcText.write('${S.current.enable} ${vals?.OnPositions} ');
+      }
+      if (vals?.OffPositions?.isNotEmpty == true) {
+        funcText.write('${S.current.disable} ${vals?.OffPositions}');
+      }
     } else {
       funcText.write(Transl.funcPopuptext(func).l);
       String text = NiceFunction.normFuncPopupText(func.funcPopupText);
