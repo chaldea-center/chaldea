@@ -329,7 +329,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
   Widget buildBuff(BuffData buff) {
     final valueSpans = <InlineSpan>[
       if (buff.count >= 0) TextSpan(text: Transl.special.funcValCountTimes(buff.count)),
-      if (buff.turn >= 0) TextSpan(text: Transl.special.funcValTurns(buff.turn)),
+      if (buff.logicTurn >= 0) TextSpan(text: Transl.special.funcValTurns(buff.dispTurn)),
       // else S.current.battle_buff_permanent,
       if (buff.param != 0 && !kBuffValueTriggerTypes.containsKey(buff.buff.type))
         TextSpan(

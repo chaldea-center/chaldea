@@ -294,13 +294,41 @@ void main() async {
       expect(mash.battleBuff.activeList.length, 1);
       expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
       expect(mash.battleBuff.activeList.first.buff.type, BuffType.upDefence);
-      expect(mash.battleBuff.activeList.first.turn, 3);
+      expect(mash.battleBuff.activeList.first.logicTurn, 6);
 
       await battle.playerTurn([CombatAction(mash, mash.getCards(battle)[0])]);
       expect(mash.battleBuff.activeList.length, 1);
       expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
       expect(mash.battleBuff.activeList.first.buff.type, BuffType.upDefence);
-      expect(mash.battleBuff.activeList.first.turn, 2);
+      expect(mash.battleBuff.activeList.first.logicTurn, 4);
+    });
+
+    test('addState&addStateShort', () async {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData.id(200900),
+      ];
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      final orion = battle.onFieldAllyServants[0]!;
+      expect(orion.battleBuff.activeList.length, 0);
+      expect(await orion.getBuffValueOnAction(battle, BuffAction.defence), 1000);
+
+      await battle.activateSvtSkill(0, 0);
+      expect(orion.battleBuff.activeList.length, 3);
+      expect(await orion.getBuffValueOnAction(battle, BuffAction.defence), 1500);
+      expect(orion.battleBuff.activeList.first.buff.type, BuffType.upDefence);
+      expect(orion.battleBuff.activeList.first.logicTurn, 2);
+      expect(await orion.getBuffValueOnAction(battle, BuffAction.atk), 1200);
+      expect(orion.battleBuff.activeList[1].buff.type, BuffType.upAtk);
+      expect(orion.battleBuff.activeList[1].logicTurn, 5);
+
+      await battle.playerTurn([CombatAction(orion, orion.getCards(battle)[0])]);
+      expect(orion.battleBuff.activeList.length, 2);
+      expect(await orion.getBuffValueOnAction(battle, BuffAction.defence), 1000);
+      expect(await orion.getBuffValueOnAction(battle, BuffAction.atk), 1200);
+      expect(orion.battleBuff.activeList[0].buff.type, BuffType.upAtk);
+      expect(orion.battleBuff.activeList[0].logicTurn, 3);
     });
 
     test('addFieldChangeToField', () async {

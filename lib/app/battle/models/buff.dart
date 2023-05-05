@@ -23,16 +23,16 @@ class BattleBuff {
   bool get isSelectable =>
       allBuffs.every((buff) => !buff.traits.map((trait) => trait.id).contains(Trait.cantBeSacrificed.id));
 
-  void turnEndShort() {
-    allBuffs.forEach((buff) {
-      if (buff.isShortBuff && buff.shouldDecreaseTurn) buff.turnPass();
-    });
+  void turnProgress() {
+    for (final buff in allBuffs) {
+      buff.turnPass();
+    }
   }
 
-  void turnEndLong() {
-    allBuffs.forEach((buff) {
-      if (!buff.isShortBuff && buff.shouldDecreaseTurn) buff.turnPass();
-    });
+  void turnPassParamAdd() {
+    for (final buff in allBuffs) {
+      buff.turnPassParamAdd();
+    }
   }
 
   void clearPassive(final int uniqueId) {
@@ -55,18 +55,20 @@ class BuffData {
 
   int buffRate = 1000;
   int count = -1;
-  int turn = -1;
-  bool shouldDecreaseTurn = false;
+  // int turn = -1;
+  int logicTurn = -1;
+  int get dispTurn => logicTurn >= 0 ? (logicTurn + 1) ~/ 2 : logicTurn;
+  // bool shouldDecreaseTurn = false;
   int param = 0;
   int additionalParam = 0;
   NiceTd? tdSelection;
 
-  bool get isActive => count != 0 && turn != 0;
+  bool get isActive => count != 0 && logicTurn != 0;
 
   int actorUniqueId = 0;
   String actorName = '';
   bool isUsed = false;
-  bool isShortBuff = false;
+  // bool isShortBuff = false;
 
   bool passive = false;
   bool irremovable = false;
@@ -89,7 +91,7 @@ class BuffData {
 
   BuffData(this.buff, this.vals) {
     count = vals.Count ?? -1;
-    turn = vals.Turn ?? -1;
+    logicTurn = vals.Turn == null ? -1 : vals.Turn! * 2;
     param = vals.Value ?? 0;
     additionalParam = vals.Value2 ?? 0;
     buffRate = vals.UseRate ?? 1000;
@@ -306,13 +308,16 @@ class BuffData {
     }
   }
 
-  void turnPass() {
+  void turnPassParamAdd() {
     if (vals.ParamAdd != null) {
       param += vals.ParamAdd!;
       param = param.clamp(0, vals.ParamMax!);
     }
-    if (turn > 0) {
-      turn -= 1;
+  }
+
+  void turnPass() {
+    if (logicTurn > 0) {
+      logicTurn -= 1;
     }
   }
 
@@ -338,8 +343,8 @@ class BuffData {
     if (count > 0) {
       durationString.add(Transl.special.funcValCountTimes(count));
     }
-    if (turn > 0) {
-      durationString.add(Transl.special.funcValTurns(turn));
+    if (logicTurn > 0) {
+      durationString.add(Transl.special.funcValTurns(dispTurn));
     }
     if (durationString.isEmpty) {
       durationString.add(S.current.battle_buff_permanent);
@@ -352,8 +357,7 @@ class BuffData {
     final BuffData copy = BuffData.makeCopy(buff, vals)
       ..buffRate = buffRate
       ..count = count
-      ..turn = turn
-      ..shouldDecreaseTurn = shouldDecreaseTurn
+      ..logicTurn = logicTurn
       ..param = param
       ..additionalParam = additionalParam
       ..tdSelection = tdSelection
@@ -362,8 +366,7 @@ class BuffData {
       ..isUsed = isUsed
       ..irremovable = irremovable
       ..passive = passive
-      ..individualitiesActive = individualitiesActive
-      ..isShortBuff = isShortBuff;
+      ..individualitiesActive = individualitiesActive;
     return copy;
   }
 }

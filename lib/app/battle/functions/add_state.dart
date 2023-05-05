@@ -31,8 +31,10 @@ class AddState {
         ..actorUniqueId = activator?.uniqueId ?? 0
         ..actorName = activator?.lBattleName ?? ''
         ..notActorPassive = notActorPassive
-        ..isShortBuff = battleData.curFunc?.funcType == FuncType.addStateShort
         ..irremovable |= isPassive || notActorPassive;
+      if (battleData.curFunc?.funcType == FuncType.addStateShort) {
+        buffData.logicTurn -= 1;
+      }
 
       if (buff.type == BuffType.tdTypeChange) {
         buffData.tdSelection = tdSelections![i];

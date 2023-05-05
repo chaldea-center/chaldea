@@ -632,8 +632,8 @@ void main() async {
     final prevHp2 = enemy2.hp;
     final prevHp3 = enemy3.hp;
     await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
-    expect(prevHp2 - enemy2.hp, 53006);
-    expect(prevHp3 - enemy3.hp, 53006);
+    expect(prevHp2 - enemy2.hp, 65301);
+    expect(prevHp3 - enemy3.hp, 65301);
   });
 
   test('skillRankUp correctly updated', () async {

@@ -68,7 +68,6 @@ class BattleServantData {
   int np = 0;
   int npLineCount = 0;
   int accumulationDamage = 0;
-  bool myTurn = false;
 
   // BattleServantData.Status status
   // NiceTd? td;
@@ -1008,7 +1007,6 @@ class BattleServantData {
   }
 
   void addBuff(final BuffData buffData, {final bool isPassive = false, final bool isCommandCode = false}) {
-    buffData.shouldDecreaseTurn = myTurn;
     if (isCommandCode) {
       battleBuff.commandCodeList.add(buffData);
     } else if (isPassive) {
@@ -1061,10 +1059,6 @@ class BattleServantData {
   }
 
   Future<void> startOfMyTurn(final BattleData battleData) async {
-    myTurn = true;
-    for (final buff in battleBuff.allBuffs) {
-      buff.shouldDecreaseTurn = true;
-    }
     await activateBuffOnAction(battleData, BuffAction.functionSelfturnstart);
   }
 
@@ -1144,18 +1138,18 @@ class BattleServantData {
       battleData.battleLogger.debug('$lBattleName - ${S.current.battle_turn_end}$turnEndLog');
     }
 
-    battleBuff.turnEndShort();
+    battleBuff.turnProgress();
 
     battleData.unsetTarget();
     battleData.unsetActivator();
 
     final delayedFunctions = collectBuffsPerType(battleBuff.allBuffs, BuffType.delayFunction);
     await activateBuffOnAction(battleData, BuffAction.functionSelfturnend);
-    await activateBuffs(battleData, delayedFunctions.where((buff) => buff.turn == 0));
+    await activateBuffs(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));
+
+    battleBuff.turnPassParamAdd();
 
     battleData.checkBuffStatus();
-
-    myTurn = false;
   }
 
   Future<void> endOfYourTurn(final BattleData battleData) async {
@@ -1165,13 +1159,13 @@ class BattleServantData {
     battleData.setActivator(this);
     battleData.setTarget(this);
 
-    battleBuff.turnEndLong();
+    battleBuff.turnProgress();
 
     battleData.unsetTarget();
     battleData.unsetActivator();
 
     final delayedFunctions = collectBuffsPerType(battleBuff.allBuffs, BuffType.delayFunction);
-    await activateBuffs(battleData, delayedFunctions.where((buff) => buff.turn == 0));
+    await activateBuffs(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));
 
     battleData.checkBuffStatus();
   }
@@ -1232,7 +1226,6 @@ class BattleServantData {
       ..np = np
       ..npLineCount = npLineCount
       ..accumulationDamage = accumulationDamage
-      ..myTurn = myTurn
       ..skillInfoList = skillInfoList.map((e) => e.copy()).toList() // copy
       ..equip = equip
       ..battleBuff = battleBuff.copy()

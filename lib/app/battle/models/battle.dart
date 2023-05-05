@@ -693,9 +693,13 @@ class BattleData {
       await svt.endOfYourTurn(this);
     }
 
-    masterSkillInfo.forEach((skill) {
+    for (final buff in fieldBuffs) {
+      buff.turnPass();
+    }
+
+    for (final skill in masterSkillInfo) {
       skill.turnEnd();
-    });
+    }
 
     await removeDeadActors();
   }
@@ -720,9 +724,9 @@ class BattleData {
 
     await removeDeadActors();
 
-    fieldBuffs.forEach((buff) {
+    for (final buff in fieldBuffs) {
       buff.turnPass();
-    });
+    }
     fieldBuffs.removeWhere((buff) => !buff.isActive);
   }
 
