@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/utils.dart';
 import '../interactions/skill_act_select.dart';
 import 'battle.dart';
 
@@ -162,6 +164,15 @@ class BattleSkillInfoData {
       effectiveness: effectiveness,
       defaultToPlayer: defaultToPlayer,
     );
+    if (skill.script?.additionalSkillId != null) {
+      for (int index = 0; index < skill.script!.additionalSkillId!.length; index++) {
+        final skillId = skill.script!.additionalSkillId![index];
+        final skillLv = skill.script!.additionalSkillLv?.getOrNull(index) ?? 1;
+        final askill = await AtlasApi.skill(skillId);
+        if (askill == null) continue;
+        await activateSkill(battleData, askill, skillLv, isPassive: skill.type == SkillType.passive);
+      }
+    }
   }
 
   BattleSkillInfoData copy() {

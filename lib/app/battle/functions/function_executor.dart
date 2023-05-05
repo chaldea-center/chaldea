@@ -23,6 +23,7 @@ import 'package:chaldea/utils/extension.dart';
 import '../interactions/act_set_select.dart';
 import '../interactions/td_type_change_selector.dart';
 import 'move_to_last_sub_member.dart';
+import 'shift_servant.dart';
 
 class FunctionExecutor {
   FunctionExecutor._();
@@ -275,6 +276,9 @@ class FunctionExecutor {
         break;
       case FuncType.transformServant:
         await TransformServant.transformServant(battleData, dataVals, targets);
+        break;
+      case FuncType.shiftServant:
+        await ShiftServant.skillShift(battleData, dataVals, targets);
         break;
       case FuncType.moveToLastSubmember:
         MoveToLastSubMember.moveToLastSubMember(battleData, dataVals, targets);

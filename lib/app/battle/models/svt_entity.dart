@@ -523,6 +523,19 @@ class BattleServantData {
     shiftIndex += 1;
   }
 
+  Future<void> skillShift(final BattleData battleData, QuestEnemy shiftSvt) async {
+    niceEnemy = shiftSvt;
+
+    atk = shiftSvt.atk;
+    hp = shiftSvt.hp;
+    maxHp = shiftSvt.hp;
+    level = shiftSvt.lv;
+    battleBuff.clearPassive(uniqueId);
+
+    await _init(battleData);
+    shiftIndex += 1;
+  }
+
   bool isAlive(final BattleData battleData) {
     if (hp > 0) {
       return true;

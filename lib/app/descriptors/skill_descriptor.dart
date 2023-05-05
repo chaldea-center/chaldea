@@ -209,7 +209,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
         condDetails.add(Text(' ꔷ ${S.current.ascension} ${cond.condLimitCount}', style: style));
       }
       if (cond.condFriendshipRank != 0) {
-        condDetails.add(Text(' ꔷ ${S.current.bond} Lv.${cond.condLimitCount}', style: style));
+        condDetails.add(Text(' ꔷ ${S.current.bond} Lv.${cond.condFriendshipRank}', style: style));
       }
       if (cond.eventId != 0) {
         final event = db.gameData.events[cond.eventId];
