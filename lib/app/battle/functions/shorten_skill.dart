@@ -4,14 +4,14 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 class ShortenSkill {
   ShortenSkill._();
 
-  static bool shortenSkill(
+  static void shortenSkill(
     final BattleData battleData,
     final DataVals dataVals,
     final List<BattleServantData> targets,
   ) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.probabilityThreshold) {
-      return false;
+      return;
     }
 
     for (final target in targets) {
@@ -19,8 +19,8 @@ class ShortenSkill {
       target.skillInfoList.forEach((skill) {
         skill.shortenSkill(dataVals.Value!);
       });
+      battleData.curFuncResults[target.uniqueId] = true;
       battleData.unsetTarget();
     }
-    return true;
   }
 }

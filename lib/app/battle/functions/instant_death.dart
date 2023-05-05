@@ -7,7 +7,7 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 class InstantDeath {
   InstantDeath._();
 
-  static Future<bool> instantDeath(
+  static Future<void> instantDeath(
     final BattleData battleData,
     final DataVals dataVals,
     final List<BattleServantData> targets, {
@@ -15,7 +15,6 @@ class InstantDeath {
   }) async {
     final activator = battleData.activator;
     final record = BattleInstantDeathRecord(forceInstantDeath: force, activator: activator, targets: []);
-    bool success = false;
     for (final target in targets) {
       battleData.setTarget(target);
       final params = InstantDeathParameters();
@@ -23,14 +22,12 @@ class InstantDeath {
       if (await shouldInstantDeath(battleData, dataVals, activator, target, force, params)) {
         target.hp = 0;
         target.lastHitBy = activator;
-        success = true;
+        battleData.curFuncResults[target.uniqueId] = true;
       }
       battleData.unsetTarget();
       record.targets.add(InstantDeathResultDetail(target: target, params: params));
     }
     battleData.recorder.instantDeath(record);
-
-    return success;
   }
 
   static Future<bool> shouldInstantDeath(

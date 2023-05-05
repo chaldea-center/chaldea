@@ -4,7 +4,7 @@ import 'package:chaldea/models/gamedata/vals.dart';
 class HastenNpturn {
   HastenNpturn._();
 
-  static bool hastenNpturn(
+  static void hastenNpturn(
     final BattleData battleData,
     final DataVals dataVals,
     final Iterable<BattleServantData> targets, {
@@ -12,17 +12,16 @@ class HastenNpturn {
   }) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.probabilityThreshold) {
-      return false;
+      return;
     }
 
     targets.forEach((target) {
       battleData.setTarget(target);
 
       target.changeNPLineCount(isNegative ? -dataVals.Value! : dataVals.Value!);
+      battleData.curFuncResults[target.uniqueId] = true;
 
       battleData.unsetTarget();
     });
-
-    return true;
   }
 }

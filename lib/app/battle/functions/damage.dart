@@ -24,19 +24,19 @@ class Damage {
 
   /// during damage calculation, due to buffs potentially having only one count remaining, checkBuffStatus should
   /// not be called to avoid removing applied buffs
-  static Future<bool> damage(
+  static Future<void> damage(
     final BattleData battleData,
     final DataVals dataVals,
     final Iterable<BattleServantData> targets,
     final int chainPos,
     final bool isTypeChain,
     final bool isMightyChain,
-    final CardType firstCardType, {
-    final NiceFunction? damageFunction,
-  }) async {
+    final CardType firstCardType,
+  ) async {
+    final damageFunction = battleData.curFunc;
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.probabilityThreshold) {
-      return false;
+      return;
     }
 
     final activator = battleData.activator!;
@@ -283,6 +283,7 @@ class Damage {
 
       target.addAccumulationDamage(totalDamage - remainingDamage);
       target.attacked = true;
+      battleData.curFuncResults[target.uniqueId] = true;
 
       battleData.unsetTarget();
       targetResults.add(AttackResultDetail(
@@ -307,8 +308,6 @@ class Damage {
         star: Maths.sum(targetResults.map((e) => Maths.sum(e.result.stars))),
       ),
     );
-
-    return true;
   }
 
   static Future<bool> shouldSkipDamage(

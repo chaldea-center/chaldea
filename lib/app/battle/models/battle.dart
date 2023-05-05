@@ -123,14 +123,20 @@ class BattleData {
   // int lastActId = 0;
   // int prevTargetId = 0;
 
-  bool previousFunctionResult = true;
+  // should not be read, as this represent a build-in-progress svtUniqueId to funcResult map for the current function
+  final Map<int, bool> curFuncResults = {};
+
+  final Map<int, bool> uniqueIdToLastFuncResultMap = {};
   CommandCardData? currentCard;
   final List<BuffData?> _currentBuff = [];
   final List<BattleServantData> _activator = [];
   final List<BattleServantData> _target = [];
-
-  // Just for logging
   NiceFunction? curFunc;
+
+  void updateLastFuncResults() {
+    uniqueIdToLastFuncResultMap.clear();
+    uniqueIdToLastFuncResultMap.addAll(curFuncResults);
+  }
 
   void setCurrentBuff(final BuffData buff) {
     _currentBuff.add(buff);
@@ -179,7 +185,11 @@ class BattleData {
     totalTurnCount = 0;
     criticalStars = 0;
 
-    previousFunctionResult = true;
+    uniqueIdToLastFuncResultMap.clear();
+    _currentBuff.clear();
+    _activator.clear();
+    _target.clear();
+
     uniqueIndex = 1;
     enemyDecks.clear();
     enemyTargetIndex = 0;
@@ -975,19 +985,24 @@ class BattleData {
   }
 
   Future<bool> canActivateFunction(final int activationRate) async {
-    final function = curFunc!;
-    final fieldTraitString = function.funcquestTvals.isNotEmpty
-        ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName()).toList()}'
-        : '';
-    final targetTraitString = function.functvals.isNotEmpty
-        ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName()).toList()}'
-        : '';
-    final targetString = target != null ? ' vs ${target!.lBattleName}' : '';
-    final funcString = '${activator?.lBattleName ?? S.current.battle_no_source} - '
-        '${FuncDescriptor.buildFuncText(function)}'
-        '$fieldTraitString'
-        '$targetTraitString'
-        '$targetString';
+    final String funcString;
+    if (curFunc != null) {
+      final function = curFunc!;
+      final fieldTraitString = function.funcquestTvals.isNotEmpty
+          ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName()).toList()}'
+          : '';
+      final targetTraitString = function.functvals.isNotEmpty
+          ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName()).toList()}'
+          : '';
+      final targetString = target != null ? ' vs ${target!.lBattleName}' : '';
+      funcString = '${activator?.lBattleName ?? S.current.battle_no_source} - '
+          '${FuncDescriptor.buildFuncText(function)}'
+          '$fieldTraitString'
+          '$targetTraitString'
+          '$targetString';
+    } else {
+      funcString = '';
+    }
     return await canActivate(activationRate, funcString);
   }
 

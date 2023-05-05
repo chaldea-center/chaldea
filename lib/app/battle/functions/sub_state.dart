@@ -10,58 +10,43 @@ import 'package:chaldea/utils/basic.dart';
 class SubState {
   SubState._();
 
-  static Future<bool> subState(
+  static Future<void> subState(
     final BattleData battleData,
     final List<NiceTrait> affectTraits,
     final DataVals dataVals,
     final List<BattleServantData> targets,
   ) async {
     final activator = battleData.activator;
-    bool buffRemoved = false;
     for (final target in targets) {
       battleData.setTarget(target);
       final removeFromStart = dataVals.Value != null && dataVals.Value! > 0;
       final removeTargetCount =
           dataVals.Value != null && dataVals.Value2 != null ? max(dataVals.Value!, dataVals.Value2!) : null;
       int removeCount = 0;
-      if (removeFromStart) {
-        for (int i = 0; i < target.battleBuff.activeList.length; i += 1) {
-          final buff = target.battleBuff.activeList[i];
+      final List<BuffData> listToInspect =
+          removeFromStart ? target.battleBuff.activeList.reversed.toList() : target.battleBuff.activeList.toList();
 
-          battleData.setCurrentBuff(buff);
-          if (await shouldSubState(battleData, affectTraits, dataVals, activator, target)) {
-            buffRemoved = true;
-            target.battleBuff.activeList.removeAt(i);
-            removeCount += 1;
-            i -= 1;
-          }
-          battleData.unsetCurrentBuff();
+      for (int index = listToInspect.length - 1; index >= 0; index -= 1) {
+        final buff = listToInspect[index];
 
-          if (removeTargetCount != null && removeCount == removeTargetCount) {
-            break;
-          }
+        battleData.setCurrentBuff(buff);
+        if (await shouldSubState(battleData, affectTraits, dataVals, activator, target)) {
+          listToInspect.removeAt(index);
+          removeCount += 1;
         }
-      } else {
-        for (int i = target.battleBuff.activeList.length - 1; i >= 0; i -= 1) {
-          final buff = target.battleBuff.activeList[i];
+        battleData.unsetCurrentBuff();
 
-          battleData.setCurrentBuff(buff);
-          if (await shouldSubState(battleData, affectTraits, dataVals, activator, target)) {
-            buffRemoved = true;
-            target.battleBuff.activeList.removeAt(i);
-            removeCount += 1;
-          }
-          battleData.unsetCurrentBuff();
-
-          if (removeTargetCount != null && removeCount == removeTargetCount) {
-            break;
-          }
+        if (removeTargetCount != null && removeCount == removeTargetCount) {
+          break;
         }
+      }
+
+      target.battleBuff.activeList = removeFromStart ? listToInspect.reversed.toList() : listToInspect.toList();
+      if (removeCount > 0) {
+        battleData.curFuncResults[target.uniqueId] = true;
       }
       battleData.unsetTarget();
     }
-
-    return buffRemoved;
   }
 
   static Future<bool> shouldSubState(

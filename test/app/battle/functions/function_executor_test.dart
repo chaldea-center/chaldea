@@ -214,42 +214,64 @@ void main() async {
 
     test('Field traits tests', () async {
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null); // no field traits
-      final buffCountBefore = battle.onFieldAllyServants[2]!.battleBuff.activeList.length;
+      final nemo1 = battle.onFieldAllyServants[0]!;
+      final buffCountBefore = nemo1.battleBuff.activeList.length;
       await battle.activateSvtSkill(0, 2); // nemo skill 3, check field shore
-      final buffCountAfter = battle.onFieldAllyServants[2]!.battleBuff.activeList.length;
+      final buffCountAfter = nemo1.battleBuff.activeList.length;
       expect(buffCountAfter, buffCountBefore + 1);
+      expect(battle.uniqueIdToLastFuncResultMap[nemo1.uniqueId], true); // last func in skill is gainStar on self
 
       await battle.init(db.gameData.questPhases[9300030103]!, playerSettings, null); // field shore
-      final buffCountBeforeShore = battle.onFieldAllyServants[2]!.battleBuff.activeList.length;
+      final nemo2 = battle.onFieldAllyServants[0]!;
+      final buffCountBeforeShore = nemo2.battleBuff.activeList.length;
       await battle.activateSvtSkill(0, 2); // nemo skill 3, check field shore
-      final buffCountAfterShore = battle.onFieldAllyServants[2]!.battleBuff.activeList.length;
+      final buffCountAfterShore = nemo2.battleBuff.activeList.length;
       expect(buffCountAfterShore, buffCountBeforeShore + 2);
+      expect(battle.uniqueIdToLastFuncResultMap[nemo2.uniqueId], true); // last func in skill is gainStar on self
     });
 
     test('Function checks target trait', () async {
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
-      final buffCountNemoBefore = battle.onFieldAllyServants[0]!.battleBuff.activeList.length;
-      final buffCountEliBefore = battle.onFieldAllyServants[1]!.battleBuff.activeList.length;
-      final buffCountKamaBefore = battle.onFieldAllyServants[2]!.battleBuff.activeList.length;
+      final nemo = battle.onFieldAllyServants[0]!;
+      final eli = battle.onFieldAllyServants[1]!;
+      final kama = battle.onFieldAllyServants[2]!;
+      final buffCountNemoBefore = nemo.battleBuff.activeList.length;
+      final buffCountEliBefore = eli.battleBuff.activeList.length;
+      final buffCountKamaBefore = kama.battleBuff.activeList.length;
       await battle.activateSvtSkill(1, 0); // Eli skill 1, check female
-      final buffCountNemoAfter = battle.onFieldAllyServants[0]!.battleBuff.activeList.length;
-      final buffCountEliAfter = battle.onFieldAllyServants[1]!.battleBuff.activeList.length;
-      final buffCountKamaAfter = battle.onFieldAllyServants[2]!.battleBuff.activeList.length;
+      final buffCountNemoAfter = nemo.battleBuff.activeList.length;
+      final buffCountEliAfter = eli.battleBuff.activeList.length;
+      final buffCountKamaAfter = kama.battleBuff.activeList.length;
       expect(buffCountNemoAfter, buffCountNemoBefore + 1);
       expect(buffCountEliAfter, buffCountEliBefore + 1);
       expect(buffCountKamaAfter, buffCountKamaBefore + 2);
+
+      // last skill is on female targets except self
+      expect(battle.uniqueIdToLastFuncResultMap.length, 2);
+      expect(battle.uniqueIdToLastFuncResultMap[nemo.uniqueId], false);
+      expect(battle.uniqueIdToLastFuncResultMap[eli.uniqueId], null);
+      expect(battle.uniqueIdToLastFuncResultMap[kama.uniqueId], true);
     });
 
     test('Function checks target alive', () async {
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
-      await battle.activateSvtSkill(2, 2); // Kama skill 2, just to guarantee kill
-      final buffCountBefore = battle.onFieldEnemies[2]!.battleBuff.activeList.length;
-      final npActions = [
-        CombatAction(battle.onFieldAllyServants[2]!, battle.onFieldAllyServants[2]!.getNPCard(battle)!)
-      ];
+      final kama = battle.onFieldAllyServants[2]!;
+      kama.np = 10000;
+      final enemy1 = battle.onFieldEnemies[0]!;
+      final enemy2 = battle.onFieldEnemies[1]!;
+      final enemy3 = battle.onFieldEnemies[2]!;
+      await battle.activateSvtSkill(2, 1); // Kama skill 2, just to guarantee kill
+      final buffCountBefore = enemy2.battleBuff.activeList.length;
+      final npActions = [CombatAction(kama, kama.getNPCard(battle)!)];
       await battle.playerTurn(npActions);
-      final buffCountAfter = battle.onFieldEnemies[2]!.battleBuff.activeList.length;
+      final buffCountAfter = enemy2.battleBuff.activeList.length;
       expect(buffCountAfter, buffCountBefore);
+
+      // last func is addState on dead enemies
+      expect(battle.uniqueIdToLastFuncResultMap.length, 3);
+      expect(battle.uniqueIdToLastFuncResultMap[enemy1.uniqueId], false);
+      expect(battle.uniqueIdToLastFuncResultMap[enemy2.uniqueId], false);
+      expect(battle.uniqueIdToLastFuncResultMap[enemy3.uniqueId], false);
     });
   });
 
@@ -375,6 +397,9 @@ void main() async {
       expect(battle.criticalStars, moreOrLessEquals(0, epsilon: 0.001));
       await battle.activateSvtSkill(1, 0);
       expect(battle.criticalStars, moreOrLessEquals(10, epsilon: 0.001));
+      expect(battle.uniqueIdToLastFuncResultMap.length, 2);
+      expect(battle.uniqueIdToLastFuncResultMap[battle.onFieldAllyServants[0]!.uniqueId], false);
+      expect(battle.uniqueIdToLastFuncResultMap[battle.onFieldAllyServants[2]!.uniqueId], true);
     });
 
     test('subState affectTraits', () async {
@@ -651,356 +676,356 @@ void main() async {
       final afterCount2 = babbage2.battleBuff.allBuffs.length;
       expect(afterCount2, prevCount2 + 1);
     });
-  });
 
-  test('damageNpHpratioLow', () async {
-    final List<PlayerSvtData> setting = [
-      PlayerSvtData.id(702500)
+    test('damageNpHpratioLow', () async {
+      final List<PlayerSvtData> setting = [
+        PlayerSvtData.id(702500)
+          ..lv = 90
+          ..setNpStrengthenLv(2)
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+      ];
+      final battle = BattleData();
+      await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+      final toshizo = battle.onFieldAllyServants[0]!;
+      final enemy1 = battle.onFieldEnemies[0]!;
+      final enemy2 = battle.onFieldEnemies[1]!;
+      final enemy3 = battle.onFieldEnemies[2]!;
+
+      final prevHp1 = enemy1.hp;
+      await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);
+      expect(prevHp1 - enemy1.hp, 107144);
+
+      toshizo.hp = toshizo.getMaxHp(battle) ~/ 2;
+      toshizo.np = 10000;
+      final prevHp2 = enemy2.hp;
+      await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);
+      expect((prevHp2 - enemy2.hp).toDouble(), moreOrLessEquals(142859, epsilon: 5));
+
+      toshizo.hp = 1;
+      toshizo.np = 10000;
+      final prevHp3 = enemy3.hp;
+      await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);
+      expect((prevHp3 - enemy3.hp).toDouble(), moreOrLessEquals(178567, epsilon: 5));
+
+      final enemy4 = battle.onFieldEnemies[0]!;
+      toshizo.np = 30000;
+      final prevHp4 = enemy4.hp;
+      await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);
+      expect((prevHp4 - enemy4.hp).toDouble(), moreOrLessEquals(196424, epsilon: 5));
+    });
+
+    test('damageNpIndividualSum enemyBuff', () async {
+      final List<PlayerSvtData> setting = [
+        PlayerSvtData.id(2300400)
+          ..lv = 90
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+        PlayerSvtData.id(2500700)..lv = 90,
+      ];
+      final battle = BattleData();
+      await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+      await battle.activateSvtSkill(0, 2);
+      await battle.activateSvtSkill(1, 0);
+      await battle.activateSvtSkill(1, 1);
+
+      final kiara = battle.onFieldAllyServants[0]!;
+      final enemy1 = battle.onFieldEnemies[0]!;
+      final enemy2 = battle.onFieldEnemies[1]!;
+      final enemy3 = battle.onFieldEnemies[2]!;
+
+      final prevHp1 = enemy1.hp;
+      final prevHp2 = enemy2.hp;
+      final prevHp3 = enemy3.hp;
+      await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
+      expect(prevHp1 - enemy1.hp, 88719);
+      expect(prevHp2 - enemy2.hp, 57200);
+      expect(prevHp3 - enemy3.hp, 57200);
+    });
+
+    test('damageNpIndividualSum selfTrait', () async {
+      final List<PlayerSvtData> setting = [
+        PlayerSvtData.id(1001300)
+          ..lv = 90
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+      ];
+      final battle = BattleData();
+      await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+      final bunyan = battle.onFieldAllyServants[0]!;
+      final enemy1 = battle.onFieldEnemies[0]!;
+      final prevHp1 = enemy1.hp;
+      await battle.playerTurn([CombatAction(bunyan, bunyan.getNPCard(battle)!)]);
+      expect(prevHp1 - enemy1.hp, 20323);
+
+      final enemy2 = battle.onFieldEnemies[1]!;
+      final prevHp2 = enemy2.hp;
+      await battle.playerTurn([
+        CombatAction(bunyan, bunyan.getCards(battle)[0]),
+        CombatAction(bunyan, bunyan.getCards(battle)[1]),
+        CombatAction(bunyan, bunyan.getCards(battle)[2]),
+      ]);
+      expect(prevHp2 - enemy2.hp, 5283 + 6909 + 10567 + 12193);
+
+      final enemy3 = battle.onFieldEnemies[2]!;
+
+      final prevHp3 = enemy3.hp;
+      bunyan.np = 10000;
+      await battle.playerTurn([CombatAction(bunyan, bunyan.getNPCard(battle)!)]);
+      expect(prevHp3 - enemy3.hp, 25403);
+    });
+
+    test('damageNpRare', () async {
+      final List<PlayerSvtData> setting = [
+        PlayerSvtData.id(403400)
+          ..lv = 60
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+      ];
+      final battle = BattleData();
+      await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+      final roberts = battle.onFieldAllyServants[0]!;
+      final enemy1 = battle.onFieldEnemies[0]!;
+      final enemy2 = battle.onFieldEnemies[1]!;
+      final enemy3 = battle.onFieldEnemies[2]!;
+
+      final prevHp1 = enemy1.hp;
+      final prevHp2 = enemy2.hp;
+      final prevHp3 = enemy3.hp;
+      await battle.playerTurn([CombatAction(roberts, roberts.getNPCard(battle)!)]);
+      expect(prevHp1 - enemy1.hp, 24043);
+      expect(prevHp2 - enemy2.hp, 48087);
+      expect(prevHp3 - enemy3.hp, 24043);
+    });
+
+    test('instantDeath', () async {
+      final List<PlayerSvtData> setting = [
+        PlayerSvtData.id(2300400)
+          ..lv = 1
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+      ];
+      final battle = BattleData();
+      await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+      final kiara = battle.onFieldAllyServants[0]!;
+      final enemy1 = battle.onFieldEnemies[0]!;
+      final enemy2 = battle.onFieldEnemies[1]!;
+      final enemy3 = battle.onFieldEnemies[2]!;
+      await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
+      expect(battle.waveCount, 1);
+      expect(enemy1.hp, greaterThan(0));
+      expect(enemy2.hp, greaterThan(0));
+      expect(enemy3.hp, greaterThan(0));
+      expect(battle.nonnullEnemies.length, 3);
+
+      battle.options.probabilityThreshold = 800;
+      kiara.np = 10000;
+      await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
+      expect(enemy1.hp, 0);
+      expect(enemy2.hp, 0);
+      expect(enemy3.hp, 0);
+    });
+
+    test('forceInstantDeath', () async {
+      final List<PlayerSvtData> setting = [
+        PlayerSvtData.id(201300)
+          ..lv = 60
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+        PlayerSvtData.id(701400)
+          ..lv = 90
+          ..setSkillStrengthenLvs([2, 1, 1]),
+        PlayerSvtData.id(701400)
+          ..lv = 90
+          ..setSkillStrengthenLvs([2, 1, 1]),
+        PlayerSvtData.id(701400)
+          ..lv = 90
+          ..setSkillStrengthenLvs([2, 1, 1]),
+        PlayerSvtData.id(701400)
+          ..lv = 90
+          ..setSkillStrengthenLvs([2, 1, 1]),
+      ];
+      final battle = BattleData();
+      await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+      final arash = battle.onFieldAllyServants[0]!;
+      final onField2 = battle.onFieldAllyServants[1]!;
+      final onField3 = battle.onFieldAllyServants[2]!;
+      final backup1 = battle.playerDataList[0]!;
+      final backup2 = battle.playerDataList[1]!;
+      expect(arash.fieldIndex, 0);
+      expect(onField2.fieldIndex, 1);
+      expect(onField3.fieldIndex, 2);
+      expect(backup1.fieldIndex, 3);
+      expect(backup2.fieldIndex, 4);
+      expect(battle.playerDataList.length, 2);
+      await battle.activateSvtSkill(1, 0);
+      await battle.playerTurn([CombatAction(arash, arash.getNPCard(battle)!)]);
+
+      expect(arash.hp, 0);
+      expect(arash.fieldIndex, -1);
+      expect(backup1.fieldIndex, 0);
+      expect(onField2.fieldIndex, 1);
+      expect(onField3.fieldIndex, 2);
+      expect(backup2.fieldIndex, 3);
+      expect(battle.playerDataList.length, 1);
+    });
+
+    test('lossHpSafe & gainHp', () async {
+      final List<PlayerSvtData> setting = [
+        PlayerSvtData.id(604200)..lv = 90,
+        PlayerSvtData.id(701400)
+          ..lv = 90
+          ..setSkillStrengthenLvs([2, 1, 1]),
+      ];
+      final battle = BattleData();
+      await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+      final koyan = battle.onFieldAllyServants[0]!;
+      final nightingale = battle.onFieldAllyServants[1]!;
+
+      koyan.hp = 501;
+      final prevNightingaleHp = nightingale.hp;
+      await battle.activateSvtSkill(0, 0);
+      expect(koyan.hp, 1);
+      expect(prevNightingaleHp - nightingale.hp, 1000);
+
+      await battle.activateSvtSkill(1, 0);
+      expect(koyan.hp, 4001);
+      expect(prevNightingaleHp - nightingale.hp, 1000);
+    });
+
+    test('gainHpPerTarget', () async {
+      final List<PlayerSvtData> setting = [
+        PlayerSvtData.id(403600)..lv = 80,
+      ];
+      final battle = BattleData();
+      await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+      final carmilla = battle.onFieldAllyServants[0]!;
+      final enemy1 = battle.onFieldEnemies[0]!;
+      final enemy2 = battle.onFieldEnemies[1]!;
+      final enemy3 = battle.onFieldEnemies[2]!;
+
+      carmilla.hp = 1000;
+      final prevHp1 = enemy1.hp;
+      enemy2.hp = 1500;
+      final prevHp3 = enemy3.hp;
+      await battle.activateSvtSkill(0, 2);
+      expect(carmilla.hp, 1499 + 2000 + 2000 + 1000);
+      expect(prevHp1 - enemy1.hp, 2000);
+      expect(enemy2.hp, 1);
+      expect(prevHp3 - enemy3.hp, 2000);
+    });
+
+    test('gainNpBuffIndividualSum & moveState', () async {
+      final List<PlayerSvtData> setting = [
+        PlayerSvtData.id(2500600)..lv = 90,
+        PlayerSvtData.id(1000900)..lv = 90,
+        PlayerSvtData.id(1001000)..lv = 90,
+      ];
+      final battle = BattleData();
+      await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+      final vanGogh = battle.onFieldAllyServants[0]!;
+      final kingprotea = battle.onFieldAllyServants[1]!;
+      expect(vanGogh.np, 0);
+      expect(kingprotea.np, 0);
+
+      await battle.activateSvtSkill(2, 0);
+      await battle.activateSvtSkill(2, 2);
+      await battle.activateSvtSkill(0, 1);
+      await battle.activateSvtSkill(0, 2);
+      await battle.activateSvtSkill(0, 0);
+      expect(vanGogh.np, 12000);
+      expect(kingprotea.np, 0);
+
+      await battle.activateSvtSkill(1, 1);
+      expect(vanGogh.np, 12000);
+      expect(kingprotea.np, 0);
+    });
+
+    test('transformSvt 304800 asc 4', () async {
+      final playerSvtData = PlayerSvtData.id(304800)..lv = 90;
+      for (final skillNum in kActiveSkillNums) {
+        final List<NiceSkill> shownSkills =
+            BattleUtils.getShownSkills(playerSvtData.svt!, playerSvtData.limitCount, skillNum);
+        playerSvtData.skills[skillNum - 1] = shownSkills.lastOrNull;
+      }
+
+      final List<NiceTd> shownTds = BattleUtils.getShownTds(playerSvtData.svt!, playerSvtData.limitCount);
+      playerSvtData.td = shownTds.last;
+
+      final List<PlayerSvtData> setting = [
+        playerSvtData,
+      ];
+      final battle = BattleData();
+      await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+      final melusine = battle.onFieldAllyServants[0]!;
+      expect(melusine.np, 0);
+      expect(melusine.getCurrentNP(battle)!.card, CardType.buster);
+      await battle.activateSvtSkill(0, 2);
+      expect(melusine.np, 0);
+      expect(melusine.getCurrentNP(battle)!.card, CardType.buster);
+    });
+
+    test('transformSvt 304800 asc 11', () async {
+      final playerSvtData = PlayerSvtData.id(304800)
         ..lv = 90
-        ..setNpStrengthenLv(2)
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
-        ..ceLv = 100
-        ..ceLimitBreak = true,
-    ];
-    final battle = BattleData();
-    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+        ..limitCount = 304830;
+      for (final skillNum in kActiveSkillNums) {
+        final List<NiceSkill> shownSkills =
+            BattleUtils.getShownSkills(playerSvtData.svt!, playerSvtData.limitCount, skillNum);
+        playerSvtData.skills[skillNum - 1] = shownSkills.lastOrNull;
+      }
 
-    final toshizo = battle.onFieldAllyServants[0]!;
-    final enemy1 = battle.onFieldEnemies[0]!;
-    final enemy2 = battle.onFieldEnemies[1]!;
-    final enemy3 = battle.onFieldEnemies[2]!;
+      final List<NiceTd> shownTds = BattleUtils.getShownTds(playerSvtData.svt!, playerSvtData.limitCount);
+      playerSvtData.td = shownTds.last;
+      final List<PlayerSvtData> setting = [
+        playerSvtData,
+      ];
+      final battle = BattleData();
+      await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
 
-    final prevHp1 = enemy1.hp;
-    await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);
-    expect(prevHp1 - enemy1.hp, 107144);
+      final melusine = battle.onFieldAllyServants[0]!;
+      expect(melusine.np, 0);
+      expect(melusine.getCurrentNP(battle)!.card, CardType.arts);
+      await battle.activateSvtSkill(0, 2);
+      expect(melusine.np, 10000);
+      expect(melusine.getCurrentNP(battle)!.card, CardType.buster);
+    });
 
-    toshizo.hp = toshizo.getMaxHp(battle) ~/ 2;
-    toshizo.np = 10000;
-    final prevHp2 = enemy2.hp;
-    await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);
-    expect((prevHp2 - enemy2.hp).toDouble(), moreOrLessEquals(142859, epsilon: 5));
+    test('transformSvt preserve CD & upgrades', () async {
+      final playerSvtData = PlayerSvtData.id(600700)
+        ..lv = 70
+        ..setSkillStrengthenLvs([1, 1, 1]);
+      final List<PlayerSvtData> setting = [
+        playerSvtData,
+      ];
+      final battle = BattleData();
+      await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
 
-    toshizo.hp = 1;
-    toshizo.np = 10000;
-    final prevHp3 = enemy3.hp;
-    await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);
-    expect((prevHp3 - enemy3.hp).toDouble(), moreOrLessEquals(178567, epsilon: 5));
-
-    final enemy4 = battle.onFieldEnemies[0]!;
-    toshizo.np = 30000;
-    final prevHp4 = enemy4.hp;
-    await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);
-    expect((prevHp4 - enemy4.hp).toDouble(), moreOrLessEquals(196424, epsilon: 5));
-  });
-
-  test('damageNpIndividualSum enemyBuff', () async {
-    final List<PlayerSvtData> setting = [
-      PlayerSvtData.id(2300400)
-        ..lv = 90
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
-        ..ceLv = 100
-        ..ceLimitBreak = true,
-      PlayerSvtData.id(2500700)..lv = 90,
-    ];
-    final battle = BattleData();
-    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
-
-    await battle.activateSvtSkill(0, 2);
-    await battle.activateSvtSkill(1, 0);
-    await battle.activateSvtSkill(1, 1);
-
-    final kiara = battle.onFieldAllyServants[0]!;
-    final enemy1 = battle.onFieldEnemies[0]!;
-    final enemy2 = battle.onFieldEnemies[1]!;
-    final enemy3 = battle.onFieldEnemies[2]!;
-
-    final prevHp1 = enemy1.hp;
-    final prevHp2 = enemy2.hp;
-    final prevHp3 = enemy3.hp;
-    await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
-    expect(prevHp1 - enemy1.hp, 88719);
-    expect(prevHp2 - enemy2.hp, 57200);
-    expect(prevHp3 - enemy3.hp, 57200);
-  });
-
-  test('damageNpIndividualSum selfTrait', () async {
-    final List<PlayerSvtData> setting = [
-      PlayerSvtData.id(1001300)
-        ..lv = 90
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
-        ..ceLv = 100
-        ..ceLimitBreak = true,
-    ];
-    final battle = BattleData();
-    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
-
-    final bunyan = battle.onFieldAllyServants[0]!;
-    final enemy1 = battle.onFieldEnemies[0]!;
-    final prevHp1 = enemy1.hp;
-    await battle.playerTurn([CombatAction(bunyan, bunyan.getNPCard(battle)!)]);
-    expect(prevHp1 - enemy1.hp, 20323);
-
-    final enemy2 = battle.onFieldEnemies[1]!;
-    final prevHp2 = enemy2.hp;
-    await battle.playerTurn([
-      CombatAction(bunyan, bunyan.getCards(battle)[0]),
-      CombatAction(bunyan, bunyan.getCards(battle)[1]),
-      CombatAction(bunyan, bunyan.getCards(battle)[2]),
-    ]);
-    expect(prevHp2 - enemy2.hp, 5283 + 6909 + 10567 + 12193);
-
-    final enemy3 = battle.onFieldEnemies[2]!;
-
-    final prevHp3 = enemy3.hp;
-    bunyan.np = 10000;
-    await battle.playerTurn([CombatAction(bunyan, bunyan.getNPCard(battle)!)]);
-    expect(prevHp3 - enemy3.hp, 25403);
-  });
-
-  test('damageNpRare', () async {
-    final List<PlayerSvtData> setting = [
-      PlayerSvtData.id(403400)
-        ..lv = 60
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
-        ..ceLv = 100
-        ..ceLimitBreak = true,
-    ];
-    final battle = BattleData();
-    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
-
-    final roberts = battle.onFieldAllyServants[0]!;
-    final enemy1 = battle.onFieldEnemies[0]!;
-    final enemy2 = battle.onFieldEnemies[1]!;
-    final enemy3 = battle.onFieldEnemies[2]!;
-
-    final prevHp1 = enemy1.hp;
-    final prevHp2 = enemy2.hp;
-    final prevHp3 = enemy3.hp;
-    await battle.playerTurn([CombatAction(roberts, roberts.getNPCard(battle)!)]);
-    expect(prevHp1 - enemy1.hp, 24043);
-    expect(prevHp2 - enemy2.hp, 48087);
-    expect(prevHp3 - enemy3.hp, 24043);
-  });
-
-  test('instantDeath', () async {
-    final List<PlayerSvtData> setting = [
-      PlayerSvtData.id(2300400)
-        ..lv = 1
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
-        ..ceLv = 100
-        ..ceLimitBreak = true,
-    ];
-    final battle = BattleData();
-    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
-
-    final kiara = battle.onFieldAllyServants[0]!;
-    final enemy1 = battle.onFieldEnemies[0]!;
-    final enemy2 = battle.onFieldEnemies[1]!;
-    final enemy3 = battle.onFieldEnemies[2]!;
-    await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
-    expect(battle.waveCount, 1);
-    expect(enemy1.hp, greaterThan(0));
-    expect(enemy2.hp, greaterThan(0));
-    expect(enemy3.hp, greaterThan(0));
-    expect(battle.nonnullEnemies.length, 3);
-
-    battle.options.probabilityThreshold = 800;
-    kiara.np = 10000;
-    await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
-    expect(enemy1.hp, 0);
-    expect(enemy2.hp, 0);
-    expect(enemy3.hp, 0);
-  });
-
-  test('forceInstantDeath', () async {
-    final List<PlayerSvtData> setting = [
-      PlayerSvtData.id(201300)
-        ..lv = 60
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
-        ..ceLv = 100
-        ..ceLimitBreak = true,
-      PlayerSvtData.id(701400)
-        ..lv = 90
-        ..setSkillStrengthenLvs([2, 1, 1]),
-      PlayerSvtData.id(701400)
-        ..lv = 90
-        ..setSkillStrengthenLvs([2, 1, 1]),
-      PlayerSvtData.id(701400)
-        ..lv = 90
-        ..setSkillStrengthenLvs([2, 1, 1]),
-      PlayerSvtData.id(701400)
-        ..lv = 90
-        ..setSkillStrengthenLvs([2, 1, 1]),
-    ];
-    final battle = BattleData();
-    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
-    final arash = battle.onFieldAllyServants[0]!;
-    final onField2 = battle.onFieldAllyServants[1]!;
-    final onField3 = battle.onFieldAllyServants[2]!;
-    final backup1 = battle.playerDataList[0]!;
-    final backup2 = battle.playerDataList[1]!;
-    expect(arash.fieldIndex, 0);
-    expect(onField2.fieldIndex, 1);
-    expect(onField3.fieldIndex, 2);
-    expect(backup1.fieldIndex, 3);
-    expect(backup2.fieldIndex, 4);
-    expect(battle.playerDataList.length, 2);
-    await battle.activateSvtSkill(1, 0);
-    await battle.playerTurn([CombatAction(arash, arash.getNPCard(battle)!)]);
-
-    expect(arash.hp, 0);
-    expect(arash.fieldIndex, -1);
-    expect(backup1.fieldIndex, 0);
-    expect(onField2.fieldIndex, 1);
-    expect(onField3.fieldIndex, 2);
-    expect(backup2.fieldIndex, 3);
-    expect(battle.playerDataList.length, 1);
-  });
-
-  test('lossHpSafe & gainHp', () async {
-    final List<PlayerSvtData> setting = [
-      PlayerSvtData.id(604200)..lv = 90,
-      PlayerSvtData.id(701400)
-        ..lv = 90
-        ..setSkillStrengthenLvs([2, 1, 1]),
-    ];
-    final battle = BattleData();
-    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
-
-    final koyan = battle.onFieldAllyServants[0]!;
-    final nightingale = battle.onFieldAllyServants[1]!;
-
-    koyan.hp = 501;
-    final prevNightingaleHp = nightingale.hp;
-    await battle.activateSvtSkill(0, 0);
-    expect(koyan.hp, 1);
-    expect(prevNightingaleHp - nightingale.hp, 1000);
-
-    await battle.activateSvtSkill(1, 0);
-    expect(koyan.hp, 4001);
-    expect(prevNightingaleHp - nightingale.hp, 1000);
-  });
-
-  test('gainHpPerTarget', () async {
-    final List<PlayerSvtData> setting = [
-      PlayerSvtData.id(403600)..lv = 80,
-    ];
-    final battle = BattleData();
-    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
-
-    final carmilla = battle.onFieldAllyServants[0]!;
-    final enemy1 = battle.onFieldEnemies[0]!;
-    final enemy2 = battle.onFieldEnemies[1]!;
-    final enemy3 = battle.onFieldEnemies[2]!;
-
-    carmilla.hp = 1000;
-    final prevHp1 = enemy1.hp;
-    enemy2.hp = 1500;
-    final prevHp3 = enemy3.hp;
-    await battle.activateSvtSkill(0, 2);
-    expect(carmilla.hp, 1499 + 2000 + 2000 + 1000);
-    expect(prevHp1 - enemy1.hp, 2000);
-    expect(enemy2.hp, 1);
-    expect(prevHp3 - enemy3.hp, 2000);
-  });
-
-  test('gainNpBuffIndividualSum & moveState', () async {
-    final List<PlayerSvtData> setting = [
-      PlayerSvtData.id(2500600)..lv = 90,
-      PlayerSvtData.id(1000900)..lv = 90,
-      PlayerSvtData.id(1001000)..lv = 90,
-    ];
-    final battle = BattleData();
-    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
-
-    final vanGogh = battle.onFieldAllyServants[0]!;
-    final kingprotea = battle.onFieldAllyServants[1]!;
-    expect(vanGogh.np, 0);
-    expect(kingprotea.np, 0);
-
-    await battle.activateSvtSkill(2, 0);
-    await battle.activateSvtSkill(2, 2);
-    await battle.activateSvtSkill(0, 1);
-    await battle.activateSvtSkill(0, 2);
-    await battle.activateSvtSkill(0, 0);
-    expect(vanGogh.np, 12000);
-    expect(kingprotea.np, 0);
-
-    await battle.activateSvtSkill(1, 1);
-    expect(vanGogh.np, 12000);
-    expect(kingprotea.np, 0);
-  });
-
-  test('transformSvt 304800 asc 4', () async {
-    final playerSvtData = PlayerSvtData.id(304800)..lv = 90;
-    for (final skillNum in kActiveSkillNums) {
-      final List<NiceSkill> shownSkills =
-          BattleUtils.getShownSkills(playerSvtData.svt!, playerSvtData.limitCount, skillNum);
-      playerSvtData.skills[skillNum - 1] = shownSkills.lastOrNull;
-    }
-
-    final List<NiceTd> shownTds = BattleUtils.getShownTds(playerSvtData.svt!, playerSvtData.limitCount);
-    playerSvtData.td = shownTds.last;
-
-    final List<PlayerSvtData> setting = [
-      playerSvtData,
-    ];
-    final battle = BattleData();
-    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
-
-    final melusine = battle.onFieldAllyServants[0]!;
-    expect(melusine.np, 0);
-    expect(melusine.getCurrentNP(battle)!.card, CardType.buster);
-    await battle.activateSvtSkill(0, 2);
-    expect(melusine.np, 0);
-    expect(melusine.getCurrentNP(battle)!.card, CardType.buster);
-  });
-
-  test('transformSvt 304800 asc 11', () async {
-    final playerSvtData = PlayerSvtData.id(304800)
-      ..lv = 90
-      ..limitCount = 304830;
-    for (final skillNum in kActiveSkillNums) {
-      final List<NiceSkill> shownSkills =
-          BattleUtils.getShownSkills(playerSvtData.svt!, playerSvtData.limitCount, skillNum);
-      playerSvtData.skills[skillNum - 1] = shownSkills.lastOrNull;
-    }
-
-    final List<NiceTd> shownTds = BattleUtils.getShownTds(playerSvtData.svt!, playerSvtData.limitCount);
-    playerSvtData.td = shownTds.last;
-    final List<PlayerSvtData> setting = [
-      playerSvtData,
-    ];
-    final battle = BattleData();
-    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
-
-    final melusine = battle.onFieldAllyServants[0]!;
-    expect(melusine.np, 0);
-    expect(melusine.getCurrentNP(battle)!.card, CardType.arts);
-    await battle.activateSvtSkill(0, 2);
-    expect(melusine.np, 10000);
-    expect(melusine.getCurrentNP(battle)!.card, CardType.buster);
-  });
-
-  test('transformSvt preserve CD & upgrades', () async {
-    final playerSvtData = PlayerSvtData.id(600700)
-      ..lv = 70
-      ..setSkillStrengthenLvs([1, 1, 1]);
-    final List<PlayerSvtData> setting = [
-      playerSvtData,
-    ];
-    final battle = BattleData();
-    await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
-
-    final henry = battle.onFieldAllyServants[0]!;
-    await battle.activateSvtSkill(0, 0);
-    henry.np = 10000;
-    expect(henry.svtClass, SvtClass.assassin);
-    expect(henry.skillInfoList[0].chargeTurn, 5);
-    expect(henry.skillInfoList[2].baseSkill!.id, 71255);
-    await battle.playerTurn([CombatAction(henry, henry.getNPCard(battle)!)]);
-    expect(henry.svtClass, SvtClass.berserker);
-    expect(henry.skillInfoList[0].chargeTurn, 5 - 1);
-    expect(henry.skillInfoList[2].baseSkill!.id, 71255);
+      final henry = battle.onFieldAllyServants[0]!;
+      await battle.activateSvtSkill(0, 0);
+      henry.np = 10000;
+      expect(henry.svtClass, SvtClass.assassin);
+      expect(henry.skillInfoList[0].chargeTurn, 5);
+      expect(henry.skillInfoList[2].baseSkill!.id, 71255);
+      await battle.playerTurn([CombatAction(henry, henry.getNPCard(battle)!)]);
+      expect(henry.svtClass, SvtClass.berserker);
+      expect(henry.skillInfoList[0].chargeTurn, 5 - 1);
+      expect(henry.skillInfoList[2].baseSkill!.id, 71255);
+    });
   });
 }

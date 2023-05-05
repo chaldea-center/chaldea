@@ -4,7 +4,7 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 class GainNP {
   GainNP._();
 
-  static bool gainNP(
+  static void gainNP(
     final BattleData battleData,
     final DataVals dataVals,
     final Iterable<BattleServantData> targets, {
@@ -14,7 +14,7 @@ class GainNP {
   }) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.probabilityThreshold) {
-      return false;
+      return;
     }
 
     targets.forEach((target) {
@@ -27,10 +27,9 @@ class GainNP {
       }
 
       target.changeNP(change);
+      battleData.curFuncResults[target.uniqueId] = true;
 
       battleData.unsetTarget();
     });
-
-    return true;
   }
 }

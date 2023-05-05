@@ -4,23 +4,25 @@ import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/utils/utils.dart';
 
 class GainHpFromTargets {
   GainHpFromTargets._();
 
-  static Future<bool> gainHpFromTargets(
+  static Future<void> gainHpFromTargets(
     final BattleData battleData,
     final DataVals dataVals,
     final Iterable<BattleServantData> targets,
   ) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.probabilityThreshold) {
-      return false;
+      return;
     }
 
     final dependFunction = await getDependFunc(battleData.battleLogger, dataVals);
     final dependVal = dataVals.DependFuncVals!;
     final checkValue = dependVal.Value!;
+    final Map<int, bool> currentFunctionResults = battleData.curFuncResults.deepCopy();
 
     for (final receiver in targets) {
       battleData.setTarget(receiver);
@@ -36,6 +38,7 @@ class GainHpFromTargets {
       }
 
       await receiver.heal(battleData, gainValue);
+      currentFunctionResults[receiver.uniqueId] = true;
       battleData.unsetTarget();
     }
 
@@ -58,6 +61,6 @@ class GainHpFromTargets {
 
     await FunctionExecutor.executeFunction(battleData, niceFunction, 1); // we provisioned only one dataVal
 
-    return true;
+    battleData.curFuncResults.addAll(currentFunctionResults);
   }
 }

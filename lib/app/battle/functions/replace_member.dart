@@ -5,18 +5,18 @@ import '../interactions/replace_member.dart';
 class ReplaceMember {
   ReplaceMember._();
 
-  static Future<bool> replaceMember(
+  static Future<void> replaceMember(
     final BattleData battleData,
     final DataVals dataVals,
   ) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.probabilityThreshold) {
-      return false;
+      return;
     }
 
     if (battleData.nonnullAllies.where((svt) => svt.canOrderChange(battleData)).isEmpty ||
         battleData.nonnullBackupAllies.where((svt) => svt.canOrderChange(battleData)).isEmpty) {
-      return false;
+      return;
     }
 
     battleData.nonnullAllies.forEach((svt) {
@@ -27,15 +27,15 @@ class ReplaceMember {
     final List<BattleServantData?> backupList = battleData.playerDataList;
 
     final selections = await ReplaceMemberSelectionDialog.show(battleData);
-    if (selections == null) return false;
+    if (selections == null) return;
 
     battleData.recorder.orderChange(onField: selections.item1, backup: selections.item2);
 
     onFieldList[onFieldList.indexOf(selections.item1)] = selections.item2;
     backupList[backupList.indexOf(selections.item2)] = selections.item1;
+    battleData.curFuncResults[selections.item1.uniqueId] = true;
+    battleData.curFuncResults[selections.item2.uniqueId] = true;
 
     selections.item2.enterField(battleData);
-
-    return true;
   }
 }

@@ -9,9 +9,8 @@ import 'package:chaldea/utils/utils.dart';
 class AddState {
   AddState._();
 
-  static Future<bool> addState(
+  static Future<void> addState(
     final BattleData battleData,
-    final NiceFunction func,
     final Buff buff,
     final DataVals dataVals,
     final List<BattleServantData> targets, {
@@ -21,7 +20,6 @@ class AddState {
     final bool isCommandCode = false,
   }) async {
     final activator = battleData.activator;
-    bool buffAdded = false;
     if (dataVals.ProcActive == 1) {
       isPassive = false;
     } else if (dataVals.ProcPassive == 1) {
@@ -33,14 +31,14 @@ class AddState {
         ..actorUniqueId = activator?.uniqueId ?? 0
         ..actorName = activator?.lBattleName ?? ''
         ..notActorPassive = notActorPassive
-        ..isShortBuff = func.funcType == FuncType.addStateShort
+        ..isShortBuff = battleData.curFunc?.funcType == FuncType.addStateShort
         ..irremovable |= isPassive || notActorPassive;
 
       if (buff.type == BuffType.tdTypeChange) {
         buffData.tdSelection = tdSelections![i];
       } else if (buff.type == BuffType.upDamageEventPoint) {
-        final pointBuff = battleData.options.pointBuffs.values
-            .firstWhereOrNull((pointBuff) => pointBuff.funcIds.isEmpty || pointBuff.funcIds.contains(func.funcId));
+        final pointBuff = battleData.options.pointBuffs.values.firstWhereOrNull(
+            (pointBuff) => pointBuff.funcIds.isEmpty || pointBuff.funcIds.contains(battleData.curFunc?.funcId));
         if (pointBuff == null) {
           continue;
         }
@@ -68,7 +66,7 @@ class AddState {
           isPassive: isPassive || notActorPassive,
           isCommandCode: isCommandCode,
         );
-        buffAdded = true;
+        battleData.curFuncResults[target.uniqueId] = true;
 
         if (buff.type == BuffType.addMaxhp) {
           target.gainHp(battleData, dataVals.Value!);
@@ -83,8 +81,6 @@ class AddState {
       battleData.unsetTarget();
       battleData.unsetCurrentBuff();
     }
-
-    return buffAdded;
   }
 
   static bool checkSameBuffLimitNum(
@@ -108,7 +104,8 @@ class AddState {
     }
 
     int functionRate = dataVals.Rate ?? 1000;
-    if ((functionRate < 0 || dataVals.TriggeredFuncPosition != null) && !battleData.previousFunctionResult) {
+    if ((functionRate < 0 || dataVals.TriggeredFuncPosition != null) &&
+        battleData.uniqueIdToLastFuncResultMap.values.any((succeeded) => !succeeded)) {
       return false;
     }
 

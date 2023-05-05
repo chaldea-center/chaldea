@@ -4,14 +4,15 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 class AddFieldChangeToField {
   AddFieldChangeToField._();
 
-  static bool addFieldChangeToField(
+  static void addFieldChangeToField(
     final BattleData battleData,
     final Buff buff,
     final DataVals dataVals,
+    final List<BattleServantData> targets,
   ) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.probabilityThreshold) {
-      return false;
+      return;
     }
 
     final activator = battleData.activator;
@@ -20,6 +21,8 @@ class AddFieldChangeToField {
       ..actorName = activator?.lBattleName ?? '';
     battleData.fieldBuffs.add(buffData);
 
-    return true;
+    for (final target in targets) {
+      battleData.curFuncResults[target.uniqueId] = true;
+    }
   }
 }

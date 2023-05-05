@@ -8,14 +8,14 @@ import '../../../models/db.dart';
 class TransformServant {
   TransformServant._();
 
-  static Future<bool> transformServant(
+  static Future<void> transformServant(
     final BattleData battleData,
     final DataVals dataVals,
     final Iterable<BattleServantData> targets,
   ) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.probabilityThreshold) {
-      return false;
+      return;
     }
 
     for (final target in targets) {
@@ -63,9 +63,8 @@ class TransformServant {
           }
         }
       }
+      battleData.curFuncResults[target.uniqueId] = true;
       battleData.unsetTarget();
     }
-
-    return true;
   }
 }

@@ -6,7 +6,7 @@ import 'package:chaldea/models/gamedata/vals.dart';
 class GainHP {
   GainHP._();
 
-  static Future<bool> gainHP(
+  static Future<void> gainHP(
     final BattleData battleData,
     final DataVals dataVals,
     final Iterable<BattleServantData> targets, {
@@ -16,7 +16,7 @@ class GainHP {
   }) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.probabilityThreshold) {
-      return false;
+      return;
     }
 
     for (final target in targets) {
@@ -32,10 +32,9 @@ class GainHP {
         final finalHeal = (baseHeal * healReceiveEff * healGrantEff).toInt();
         await target.heal(battleData, finalHeal);
       }
+      battleData.curFuncResults[target.uniqueId] = true;
 
       battleData.unsetTarget();
     }
-
-    return true;
   }
 }
