@@ -13,6 +13,7 @@ import 'package:chaldea/app/battle/functions/replace_member.dart';
 import 'package:chaldea/app/battle/functions/shorten_skill.dart';
 import 'package:chaldea/app/battle/functions/sub_state.dart';
 import 'package:chaldea/app/battle/functions/transform_servant.dart';
+import 'package:chaldea/app/battle/functions/update_entry_positions.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
@@ -305,6 +306,9 @@ class FunctionExecutor {
       case FuncType.extendBuffcount:
         BuffTurnCount.changeBuffValue(battleData, function.funcType, dataVals, targets);
         break;
+      case FuncType.updateEntryPositions:
+        UpdateEntryPositions.updateEntryPositions(battleData, dataVals);
+        break;
       case FuncType.releaseState:
       case FuncType.damageNpStateIndividual:
       case FuncType.damageNpCounter:
@@ -332,7 +336,6 @@ class FunctionExecutor {
       case FuncType.changeBgmCostume:
       case FuncType.func126:
       case FuncType.func127:
-      case FuncType.updateEntryPositions:
       case FuncType.subFieldBuff:
       case FuncType.lastUsePlayerSkillCopy:
         battleData.battleLogger.debug('${S.current.not_implemented}: ${function.funcType}, '

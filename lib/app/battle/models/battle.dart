@@ -1060,6 +1060,7 @@ class BattleData {
       ..niceQuest = niceQuest
       ..curStage = curStage
       ..enemyOnFieldCount = enemyOnFieldCount
+      ..enemyValidAppear = enemyValidAppear.toList()
       ..enemyDataList = enemyDataList.map((e) => e?.copy()).toList()
       ..playerDataList = playerDataList.map((e) => e?.copy()).toList()
       ..onFieldEnemies = onFieldEnemies.map((e) => e?.copy()).toList()
@@ -1093,6 +1094,7 @@ class BattleData {
       ..niceQuest = copy.niceQuest
       ..curStage = copy.curStage
       ..enemyOnFieldCount = copy.enemyOnFieldCount
+      ..enemyValidAppear = copy.enemyValidAppear
       ..enemyDataList = copy.enemyDataList
       ..playerDataList = copy.playerDataList
       ..onFieldEnemies = copy.onFieldEnemies
