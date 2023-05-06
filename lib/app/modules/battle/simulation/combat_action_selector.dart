@@ -235,10 +235,10 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       child: tdIcon,
     );
     tdIcon = GestureDetector(
-      onTap: () {
+      onTap: () async {
         final canCharge = svt.playerSvtData?.td != null && !(svt.isEnemy && svt.niceEnemy!.chargeTurn == 0);
         if (canCharge && !svt.isNpFull(battleData)) {
-          SimpleCancelOkDialog(
+          await SimpleCancelOkDialog(
             title: Text(S.current.np_not_enough),
             content: Text(S.current
                 .charge_np_to(svt.isPlayer ? ConstData.constants.fullTdPoint ~/ 100 : svt.niceEnemy!.chargeTurn)),
@@ -259,9 +259,10 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
               if (mounted) setState(() {});
             },
           ).showDialog(context);
+        }
+        if (!svt.isNpFull(battleData)) {
           return;
         }
-
         if (!svt.canSelectNP(battleData)) {
           return;
         }
