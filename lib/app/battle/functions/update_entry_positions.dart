@@ -1,13 +1,12 @@
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 
-
 class UpdateEntryPositions {
   UpdateEntryPositions._();
 
   static void updateEntryPositions(
-      final BattleData battleData,
-      final DataVals dataVals,
+    final BattleData battleData,
+    final DataVals dataVals,
   ) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.probabilityThreshold) {

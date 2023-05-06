@@ -24,6 +24,7 @@ import 'package:chaldea/utils/extension.dart';
 import '../interactions/act_set_select.dart';
 import '../interactions/td_type_change_selector.dart';
 import 'buff_turn_count.dart';
+import 'call_servant.dart';
 import 'move_to_last_sub_member.dart';
 import 'shift_servant.dart';
 
@@ -286,6 +287,9 @@ class FunctionExecutor {
       case FuncType.shiftServant:
         await ShiftServant.skillShift(battleData, dataVals, targets);
         break;
+      case FuncType.callServant:
+        await CallServant.callServant(battleData, dataVals, targets);
+        break;
       case FuncType.moveToLastSubmember:
         MoveToLastSubMember.moveToLastSubMember(battleData, dataVals, targets);
         break;
@@ -309,40 +313,39 @@ class FunctionExecutor {
       case FuncType.updateEntryPositions:
         UpdateEntryPositions.updateEntryPositions(battleData, dataVals);
         break;
-      case FuncType.releaseState:
-      case FuncType.damageNpStateIndividual:
-      case FuncType.damageNpCounter:
-      case FuncType.damageNpSafe:
-      case FuncType.callServant:
-      case FuncType.ptShuffle:
-      case FuncType.changeServant:
-      case FuncType.changeBg:
+      // TODO: unimplemented FuncTypes
+      case FuncType.lossHpPer:
+      case FuncType.lossHpPerSafe:
       case FuncType.damageValue:
+      case FuncType.shortenUserEquipSkill:
+      case FuncType.damageNpCounter:
+      case FuncType.damageValueSafe:
+      case FuncType.damageNpSafe:
+      case FuncType.changeServant:
+      case FuncType.subFieldBuff:
+      // ↑↑↑ should be implemented ↑↑↑
+      case FuncType.damageNpAndCheckIndividuality:
+      case FuncType.damageNpStateIndividual:
+      case FuncType.releaseState:
+      case FuncType.ptShuffle:
+      case FuncType.changeBg:
       case FuncType.withdraw:
       case FuncType.displayBuffstring:
       case FuncType.resurrection:
-      case FuncType.lossHpPer:
-      case FuncType.lossHpPerSafe:
-      case FuncType.shortenUserEquipSkill:
       case FuncType.quickChangeBg:
-      case FuncType.damageNpAndCheckIndividuality:
       case FuncType.overwriteDeadType:
       case FuncType.forceAllBuffNoact:
       case FuncType.breakGaugeUp:
       case FuncType.breakGaugeDown:
       case FuncType.movePosition:
       case FuncType.revival:
-      case FuncType.damageValueSafe:
       case FuncType.changeBgmCostume:
       case FuncType.func126:
       case FuncType.func127:
-      case FuncType.subFieldBuff:
       case FuncType.lastUsePlayerSkillCopy:
         battleData.battleLogger.debug('${S.current.not_implemented}: ${function.funcType}, '
             'Function ID: ${function.funcId}, '
-            'Activator: ${activator?.lBattleName}, '
-            'Quest ID: ${battleData.niceQuest?.id}, '
-            'Phase: ${battleData.niceQuest?.phase}');
+            'Activator: ${activator?.lBattleName}');
         break;
       case FuncType.unknown:
       case FuncType.none:
@@ -369,6 +372,9 @@ class FunctionExecutor {
       case FuncType.eventFortificationPointUp:
       case FuncType.setQuestRouteFlag:
       case FuncType.setSystemAliveFlag:
+        battleData.battleLogger.debug('${S.current.skip}: ${function.funcType}, '
+            'Function ID: ${function.funcId}, '
+            'Activator: ${activator?.lBattleName}');
         break;
     }
 

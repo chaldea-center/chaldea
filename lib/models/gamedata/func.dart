@@ -512,15 +512,15 @@ enum FuncType {
   enemyProbDown(116),
   getRewardGift(117),
   sendSupportFriendPoint(118),
-  movePosition(119),
+  movePosition(119), // Zeus battle
   revival(120),
   damageNpIndividualSum(121),
   damageValueSafe(122),
   friendPointUpDuplicate(123),
   moveState(124),
   changeBgmCostume(125),
-  func126(126),
-  func127(127),
+  func126(126), // decrease command spell
+  func127(127), // increase?
   updateEntryPositions(128),
   buddyPointUp(129),
   addFieldChangeToField(130),

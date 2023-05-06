@@ -1,5 +1,4 @@
 import 'package:chaldea/models/models.dart';
-
 import '../models/battle.dart';
 
 // FuncType.shortenBuffturn:

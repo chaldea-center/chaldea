@@ -1145,7 +1145,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     for (final skillNum in skills.keys) {
       final skillsForNum = skills[skillNum]!;
       if (skills.length > 1) {
-        children.add(DividerWithTitle(title: 'Skill num $skillNum'));
+        children.add(DividerWithTitle(title: '${S.current.skill} $skillNum'));
       }
       for (final skill in skillsForNum) {
         children.add(SkillDescriptor(skill: skill));
