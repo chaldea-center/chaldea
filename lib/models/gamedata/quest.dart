@@ -1036,12 +1036,7 @@ class QuestEnemy with GameCardMixin {
         serverMod = serverMod ?? EnemyServerMod(),
         enemyScript = (enemyScript ?? EnemyScript())..originalScript = originalEnemyScript ?? {};
 
-  factory QuestEnemy.fromJson(Map<String, dynamic> json) {
-    final enemy = _$QuestEnemyFromJson(json);
-    enemy.enemyScript.setSource(enemy.originalEnemyScript);
-    enemy.infoScript?.setSource(enemy.originalInfoScript);
-    return enemy;
-  }
+  factory QuestEnemy.fromJson(Map<String, dynamic> json) => _$QuestEnemyFromJson(json);
 
   String get lShownName {
     if (name.isEmpty || name == 'NONE') {
@@ -1149,7 +1144,7 @@ class EnemyServerMod {
 // treasureDeviceName
 // treasureDeviceRuby
 // voice
-@JsonSerializable(includeIfNull: false, createToJson: false)
+@JsonSerializable(includeIfNull: false)
 class EnemyScript with DataScriptBase {
   // lots of fields are skipped
   EnemyDeathType? deathType;
@@ -1177,7 +1172,7 @@ class EnemyScript with DataScriptBase {
 
   factory EnemyScript.fromJson(Map<String, dynamic> json) => _$EnemyScriptFromJson(json)..setSource(json);
 
-  Map<String, dynamic> toJson() => Map.from(source);
+  Map<String, dynamic> toJson() => _$EnemyScriptToJson(this);
 }
 
 @JsonSerializable()

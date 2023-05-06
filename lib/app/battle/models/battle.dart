@@ -84,7 +84,7 @@ class BattleData {
   int totalTurnCount = 0;
 
   double criticalStars = 0;
-  int uniqueIndex = 1;
+  int _uniqueIndex = 1;
 
   BattleOptionsRuntime options = BattleOptionsRuntime();
   final BattleLogger battleLogger = BattleLogger();
@@ -191,7 +191,7 @@ class BattleData {
     _activator.clear();
     _target.clear();
 
-    uniqueIndex = 1;
+    _uniqueIndex = 1;
     enemyDecks.clear();
     enemyTargetIndex = 0;
     allyTargetIndex = 0;
@@ -199,19 +199,11 @@ class BattleData {
     fieldBuffs.clear();
 
     playerDataList = playerSettings
-        .map((svtSetting) =>
-            svtSetting == null || svtSetting.svt == null ? null : BattleServantData.fromPlayerSvtData(svtSetting))
+        .map((svtSetting) => svtSetting == null || svtSetting.svt == null
+            ? null
+            : BattleServantData.fromPlayerSvtData(svtSetting, getNextUniqueId()))
         .toList();
     _fetchWaveEnemies();
-
-    for (final svt in playerDataList) {
-      svt?.uniqueId = uniqueIndex;
-      uniqueIndex += 1;
-    }
-    for (final enemy in enemyDataList) {
-      enemy?.uniqueId = uniqueIndex;
-      uniqueIndex += 1;
-    }
 
     mysticCode = mysticCodeData?.mysticCode;
     mysticCodeLv = mysticCodeData?.level ?? 10;
@@ -258,6 +250,10 @@ class BattleData {
     await nextTurn();
   }
 
+  int getNextUniqueId() {
+    return _uniqueIndex++;
+  }
+
   Future<void> nextTurn() async {
     await replenishActors();
     bool addTurn = true;
@@ -288,10 +284,6 @@ class BattleData {
     turnCount = 0;
 
     _fetchWaveEnemies();
-    for (final enemy in enemyDataList) {
-      enemy?.uniqueId = uniqueIndex;
-      uniqueIndex += 1;
-    }
 
     onFieldEnemies = List.filled(enemyOnFieldCount, null);
     for (int index = 0; index < enemyDataList.length; index += 1) {
@@ -381,7 +373,7 @@ class BattleData {
             enemyDataList.length = enemy.deckId;
           }
 
-          enemyDataList[enemy.deckId - 1] = BattleServantData.fromEnemy(enemy);
+          enemyDataList[enemy.deckId - 1] = BattleServantData.fromEnemy(enemy, getNextUniqueId());
         } else {
           if (!enemyDecks.containsKey(enemy.deck)) {
             enemyDecks[enemy.deck] = [];
@@ -1076,7 +1068,7 @@ class BattleData {
       ..turnCount = turnCount
       ..totalTurnCount = totalTurnCount
       ..criticalStars = criticalStars
-      ..uniqueIndex = uniqueIndex
+      .._uniqueIndex = _uniqueIndex
       ..options = options.copy()
       ..recorder = recorder.copy();
 
@@ -1110,7 +1102,7 @@ class BattleData {
       ..turnCount = copy.turnCount
       ..totalTurnCount = copy.totalTurnCount
       ..criticalStars = copy.criticalStars
-      ..uniqueIndex = copy.uniqueIndex
+      .._uniqueIndex = copy._uniqueIndex
       ..options = copy.options.copy()
       ..recorder = copy.recorder;
   }

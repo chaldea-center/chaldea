@@ -293,7 +293,7 @@ class _TdDamageRankingState extends State<TdDamageRanking> {
     for (final support in options.supports) {
       final sdata = PlayerSvtData.svt(support);
       // ignore: unused_local_variable
-      BattleServantData battleServantData = BattleServantData.fromPlayerSvtData(sdata);
+      BattleServantData battleServantData = BattleServantData.fromPlayerSvtData(sdata, battle.getNextUniqueId());
       // await battle.entrySvt(battleServantData, 1);
       await battle.activateSvtSkill(1, 0);
       await battle.activateSvtSkill(1, 1);

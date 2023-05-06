@@ -11,8 +11,8 @@ void main() async {
 
   group('Test shouldApplyBuff', () {
     final battle = BattleData();
-    final okuni = BattleServantData.fromPlayerSvtData(PlayerSvtData.id(504900)..lv = 90);
-    final cba = BattleServantData.fromPlayerSvtData(PlayerSvtData.id(503900)..lv = 90);
+    final okuni = BattleServantData.fromPlayerSvtData(PlayerSvtData.id(504900)..lv = 90, battle.getNextUniqueId());
+    final cba = BattleServantData.fromPlayerSvtData(PlayerSvtData.id(503900)..lv = 90, battle.getNextUniqueId());
 
     test('target check', () {
       final buff = BuffData(

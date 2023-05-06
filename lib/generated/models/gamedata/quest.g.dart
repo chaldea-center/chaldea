@@ -779,6 +779,24 @@ EnemyScript _$EnemyScriptFromJson(Map json) => EnemyScript(
           .toList(),
     );
 
+Map<String, dynamic> _$EnemyScriptToJson(EnemyScript instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('deathType', _$EnemyDeathTypeEnumMap[instance.deathType]);
+  writeNotNull('hpBarType', instance.hpBarType);
+  writeNotNull('leader', instance.leader);
+  writeNotNull('call', instance.call);
+  writeNotNull('shift', instance.shift);
+  writeNotNull('shiftClear', instance.shiftClear?.map((e) => e.toJson()).toList());
+  return val;
+}
+
 const _$EnemyDeathTypeEnumMap = {
   EnemyDeathType.escape: 'escape',
   EnemyDeathType.stand: 'stand',

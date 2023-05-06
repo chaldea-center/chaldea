@@ -112,10 +112,11 @@ class BattleServantData {
 
   int get deathRate => isEnemy ? niceEnemy!.deathRate : niceSvt!.instantDeathChance;
 
-  static BattleServantData fromEnemy(final QuestEnemy enemy) {
+  static BattleServantData fromEnemy(final QuestEnemy enemy, final int uniqueId) {
     final svt = BattleServantData();
     svt
       ..niceEnemy = enemy
+      ..uniqueId = uniqueId
       ..hp = enemy.hp
       ..maxHp = enemy.hp
       ..svtId = enemy.svt.id
@@ -126,10 +127,11 @@ class BattleServantData {
     return svt;
   }
 
-  static BattleServantData fromPlayerSvtData(final PlayerSvtData settings) {
+  static BattleServantData fromPlayerSvtData(final PlayerSvtData settings, final int uniqueId) {
     final svt = BattleServantData();
     svt
       ..playerSvtData = settings.copy()
+      ..uniqueId = uniqueId
       ..niceSvt = settings.svt!
       ..svtId = settings.svt?.id ?? 0
       ..level = settings.lv

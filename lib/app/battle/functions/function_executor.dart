@@ -288,7 +288,7 @@ class FunctionExecutor {
         await ShiftServant.skillShift(battleData, dataVals, targets);
         break;
       case FuncType.callServant:
-        await CallServant.callServant(battleData, dataVals, targets);
+        await CallServant.callServant(battleData, dataVals, activator);
         break;
       case FuncType.moveToLastSubmember:
         MoveToLastSubMember.moveToLastSubMember(battleData, dataVals, targets);

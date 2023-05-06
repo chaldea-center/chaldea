@@ -8,34 +8,32 @@ class CallServant {
   static Future<void> callServant(
     final BattleData battleData,
     final DataVals dataVals,
-    final Iterable<BattleServantData> targets,
+    final BattleServantData? activator,
   ) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.probabilityThreshold) {
       return;
     }
 
-    for (final target in targets) {
-      if (target.isPlayer) {
-        continue;
-      }
+    if (activator != null && activator.isPlayer) {
+      return;
+    }
 
-      battleData.setTarget(target);
-      final callIndex = dataVals.Value!;
-      final callSvtNpcId = target.niceEnemy!.enemyScript.call?.getOrNull(callIndex);
-      final callSvt = battleData.enemyDecks[DeckType.call]?.firstWhereOrNull((e) => e.npcId == callSvtNpcId);
-      if (callSvt != null) {
-        bool called = false;
-        for (int index = 0; index < battleData.enemyOnFieldCount; index++) {
-          if (battleData.onFieldEnemies[index] == null && battleData.enemyValidAppear[index]) {
-            // init & entry enemy
-            called = true;
-            break;
-          }
+    final callIndex = dataVals.Value!;
+    int? callSvtNpcId = activator?.niceEnemy!.enemyScript.call?.getOrNull(callIndex);
+    callSvtNpcId ??= battleData.curStage?.call.getOrNull(callIndex);
+    final callSvt = battleData.enemyDecks[DeckType.call]?.firstWhereOrNull((e) => e.npcId == callSvtNpcId);
+    if (callSvt != null) {
+      for (int index = 0; index < battleData.enemyOnFieldCount; index++) {
+        if (battleData.onFieldEnemies[index] == null && battleData.enemyValidAppear[index]) {
+          // init & entry enemy
+          final actor = BattleServantData.fromEnemy(callSvt, battleData.getNextUniqueId());
+          battleData.onFieldEnemies[index] = actor;
+          await actor.init(battleData);
+          await actor.enterField(battleData);
+          break;
         }
-        battleData.curFuncResults[target.uniqueId] = called;
       }
-      battleData.unsetTarget();
     }
   }
 }
