@@ -1175,7 +1175,7 @@ class EnemyScript with DataScriptBase {
   Map<String, dynamic> toJson() => _$EnemyScriptToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class EnemyInfoScript with DataScriptBase {
   bool? isAddition;
 

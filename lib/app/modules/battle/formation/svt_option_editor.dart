@@ -1228,6 +1228,10 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
         }
       }
     }
+    final bondCE = db.gameData.craftEssencesById[playerSvtData.svt?.bondEquip];
+    if (bondCE != null && bondCE.collectionNo > 0) {
+      pinged.add(bondCE.collectionNo);
+    }
     router.pushPage(
       CraftListPage(
         onSelected: (selectedCe) {

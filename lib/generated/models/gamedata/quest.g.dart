@@ -809,9 +809,18 @@ EnemyInfoScript _$EnemyInfoScriptFromJson(Map json) => EnemyInfoScript(
       isAddition: json['isAddition'] as bool?,
     );
 
-Map<String, dynamic> _$EnemyInfoScriptToJson(EnemyInfoScript instance) => <String, dynamic>{
-      'isAddition': instance.isAddition,
-    };
+Map<String, dynamic> _$EnemyInfoScriptToJson(EnemyInfoScript instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('isAddition', instance.isAddition);
+  return val;
+}
 
 EnemySkill _$EnemySkillFromJson(Map json) => EnemySkill(
       skillId1: json['skillId1'] as int? ?? 0,
