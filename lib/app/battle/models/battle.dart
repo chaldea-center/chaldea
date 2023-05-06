@@ -49,6 +49,7 @@ class BattleData {
   int enemyOnFieldCount = 3;
   List<BattleServantData?> enemyDataList = [];
   List<BattleServantData?> playerDataList = [];
+  List<bool> enemyValidAppear = [];
   List<BattleServantData?> onFieldEnemies = [];
   List<BattleServantData?> onFieldAllyServants = [];
   Map<DeckType, List<QuestEnemy>> enemyDecks = {};
@@ -197,8 +198,6 @@ class BattleData {
 
     fieldBuffs.clear();
 
-    onFieldAllyServants.clear();
-    onFieldEnemies.clear();
     playerDataList = playerSettings
         .map((svtSetting) =>
             svtSetting == null || svtSetting.svt == null ? null : BattleServantData.fromPlayerSvtData(svtSetting))
@@ -207,12 +206,10 @@ class BattleData {
 
     for (final svt in playerDataList) {
       svt?.uniqueId = uniqueIndex;
-      await svt?.init(this);
       uniqueIndex += 1;
     }
     for (final enemy in enemyDataList) {
       enemy?.uniqueId = uniqueIndex;
-      await enemy?.init(this);
       uniqueIndex += 1;
     }
 
@@ -223,10 +220,36 @@ class BattleData {
           mysticCode!.skills.map((skill) => BattleSkillInfoData([skill], skill)..skillLv = mysticCodeLv).toList();
     }
 
-    _initOnField(playerDataList, onFieldAllyServants, playerOnFieldCount);
-    _initOnField(enemyDataList, onFieldEnemies, enemyOnFieldCount);
+    onFieldAllyServants = List.filled(playerOnFieldCount, null);
+    while (playerDataList.isNotEmpty && onFieldAllyServants.contains(null)) {
+      final svt = playerDataList.removeAt(0);
+      final nextIndex = onFieldAllyServants.indexOf(null);
+      svt?.deckIndex = nextIndex + 1;
+      onFieldAllyServants[nextIndex] = svt;
+    }
+
+    onFieldEnemies = List.filled(enemyOnFieldCount, null);
+    for (int index = 0; index < enemyDataList.length; index += 1) {
+      final enemy = enemyDataList[index];
+      if (enemy == null) {
+        enemyDataList.removeAt(index);
+        index -=1;
+        continue;
+      }
+
+      if (enemy.deckIndex <= onFieldEnemies.length) {
+        enemyDataList.removeAt(index);
+        index -= 1;
+        onFieldEnemies[enemy.deckIndex - 1] = enemy;
+      }
+    }
+
     allyTargetIndex = getNonNullTargetIndex(onFieldAllyServants, allyTargetIndex);
     enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
+
+    for (final actor in [...onFieldAllyServants, ...playerDataList, ...onFieldEnemies, ...enemyDataList]) {
+      await actor?.init(this);
+    }
 
     for (final svt in nonnullActors) {
       await svt.enterField(this);
@@ -267,13 +290,30 @@ class BattleData {
     _fetchWaveEnemies();
     for (final enemy in enemyDataList) {
       enemy?.uniqueId = uniqueIndex;
-      await enemy?.init(this);
       uniqueIndex += 1;
     }
 
-    onFieldEnemies.clear();
-    _initOnField(enemyDataList, onFieldEnemies, enemyOnFieldCount);
+    onFieldEnemies = List.filled(enemyOnFieldCount, null);
+    for (int index = 0; index < enemyDataList.length; index += 1) {
+      final enemy = enemyDataList[index];
+      if (enemy == null) {
+        enemyDataList.removeAt(index);
+        index -=1;
+        continue;
+      }
+
+      if (enemy.deckIndex <= onFieldEnemies.length) {
+        enemyDataList.removeAt(index);
+        index -= 1;
+        onFieldEnemies[enemy.deckIndex - 1] = enemy;
+      }
+    }
+
     enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
+
+    for (final actor in [...onFieldEnemies, ...enemyDataList]) {
+      await actor?.init(this);
+    }
 
     for (final enemy in nonnullEnemies) {
       await enemy.enterField(this);
@@ -282,40 +322,56 @@ class BattleData {
   }
 
   Future<void> replenishActors() async {
-    final List<BattleServantData> newActors = [
-      ..._populateListAndReturnNewActors(onFieldEnemies, enemyDataList),
-      ..._populateListAndReturnNewActors(onFieldAllyServants, playerDataList)
-    ];
+    final List<BattleServantData> newActors = [];
+
+    for (int index = 0; index < onFieldAllyServants.length; index += 1) {
+      if (onFieldAllyServants[index] == null && playerDataList.isNotEmpty) {
+        BattleServantData? nextSvt;
+        while (playerDataList.isNotEmpty && nextSvt == null) {
+          nextSvt = playerDataList.removeAt(0);
+        }
+        if (nextSvt != null) {
+          onFieldAllyServants[index] = nextSvt;
+          newActors.add(nextSvt);
+        }
+      }
+    }
+
+    for (int index = 0; index < onFieldEnemies.length; index += 1) {
+      if (!enemyValidAppear[index]) {
+        continue;
+      }
+
+      if (onFieldEnemies[index] == null && enemyDataList.isNotEmpty) {
+        BattleServantData? nextSvt;
+        while (enemyDataList.isNotEmpty && nextSvt == null) {
+          nextSvt = enemyDataList.removeAt(0);
+        }
+        if (nextSvt != null) {
+          onFieldEnemies[index] = nextSvt;
+          newActors.add(nextSvt);
+        }
+      }
+    }
 
     for (final svt in newActors) {
       await svt.enterField(this);
     }
   }
 
-  static List<BattleServantData> _populateListAndReturnNewActors(
-    final List<BattleServantData?> toList,
-    final List<BattleServantData?> fromList,
-  ) {
-    final List<BattleServantData> newActors = [];
-    for (int i = 0; i < toList.length; i += 1) {
-      if (toList[i] == null && fromList.isNotEmpty) {
-        BattleServantData? nextEnemy;
-        while (fromList.isNotEmpty && nextEnemy == null) {
-          nextEnemy = fromList.removeAt(0);
-        }
-        if (nextEnemy != null) {
-          toList[i] = nextEnemy;
-          newActors.add(nextEnemy);
-        }
-      }
-    }
-    return newActors;
-  }
-
   void _fetchWaveEnemies() {
     curStage = niceQuest?.stages.firstWhereOrNull((s) => s.wave == waveCount);
     enemyOnFieldCount = curStage?.enemyFieldPosCount ?? 3;
     enemyDataList = List.filled(enemyOnFieldCount, null, growable: true);
+    enemyValidAppear = List.filled(enemyOnFieldCount, true);
+    final noEntryIds = curStage?.NoEntryIds;
+    if (noEntryIds != null) {
+      for (final noEntryDeckIndex in noEntryIds) {
+        if (noEntryDeckIndex > 0 && noEntryDeckIndex <= enemyValidAppear.length) {
+          enemyValidAppear[noEntryDeckIndex - 1] = false;
+        }
+      }
+    }
     enemyDecks.clear();
 
     if (curStage != null) {
@@ -333,18 +389,6 @@ class BattleData {
           enemyDecks[enemy.deck]!.add(enemy);
         }
       }
-    }
-  }
-
-  void _initOnField(
-    final List<BattleServantData?> dataList,
-    final List<BattleServantData?> onFieldList,
-    final int maxCount,
-  ) {
-    while (dataList.isNotEmpty && onFieldList.length < maxCount) {
-      final svt = dataList.removeAt(0);
-      svt?.deckIndex = onFieldList.length + 1;
-      onFieldList.add(svt);
     }
   }
 
@@ -673,7 +717,7 @@ class BattleData {
     battleLogger.action('${S.current.battle_skip_current_wave} ($waveCount)');
     pushSnapshot();
 
-    onFieldEnemies.clear();
+    onFieldEnemies.fillRange(0, onFieldEnemies.length);
     enemyDataList.clear();
 
     await endPlayerTurn();

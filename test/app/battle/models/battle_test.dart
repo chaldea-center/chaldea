@@ -987,8 +987,7 @@ void main() async {
       expect(battle.isActorOnField(3), isTrue);
       expect(battle.isActorOnField(7), isFalse);
 
-      battle.onFieldEnemies.clear();
-      await battle.nextWave();
+      await battle.skipWave();
       expect(battle.isActorOnField(7), isTrue);
       expect(battle.isActorOnField(10), isFalse);
     });

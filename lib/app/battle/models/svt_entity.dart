@@ -121,6 +121,7 @@ class BattleServantData {
       ..svtId = enemy.svt.id
       ..level = enemy.lv
       ..atk = enemy.atk
+      ..deckIndex = enemy.deckId
       ..shiftNpcIds = enemy.enemyScript.shift ?? [];
     return svt;
   }
