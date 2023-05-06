@@ -521,6 +521,8 @@ Future<BaseFunction> getDependFunc(BattleLogger logger, DataVals dataVals) async
 }
 
 Future<T> showLoading<T>(Future<T> Function() computation) async {
+  final mounted = EasyLoading.instance.overlayEntry?.mounted == true;
+  if (!mounted) return computation();
   try {
     EasyLoading.show();
     return await computation();
