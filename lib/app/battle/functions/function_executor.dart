@@ -267,16 +267,11 @@ class FunctionExecutor {
         break;
       case FuncType.gainHp:
       case FuncType.gainHpPer:
-      case FuncType.lossHpSafe:
       case FuncType.lossHp:
-        await GainHP.gainHP(
-          battleData,
-          dataVals,
-          targets,
-          isPercent: function.funcType == FuncType.gainHpPer,
-          isNegative: function.funcType == FuncType.lossHp || function.funcType == FuncType.lossHpSafe,
-          isLethal: function.funcType == FuncType.lossHp,
-        );
+      case FuncType.lossHpSafe:
+      case FuncType.lossHpPer:
+      case FuncType.lossHpPerSafe:
+        await GainHP.gainHP(battleData, dataVals, targets, function.funcType);
         break;
       case FuncType.gainHpFromTargets:
         await GainHpFromTargets.gainHpFromTargets(battleData, dataVals, targets);
@@ -314,8 +309,6 @@ class FunctionExecutor {
         UpdateEntryPositions.updateEntryPositions(battleData, dataVals);
         break;
       // TODO: unimplemented FuncTypes
-      case FuncType.lossHpPer:
-      case FuncType.lossHpPerSafe:
       case FuncType.damageValue:
       case FuncType.shortenUserEquipSkill:
       case FuncType.damageNpCounter:
