@@ -604,7 +604,7 @@ void main() async {
     expect(vanGogh.hp, 1);
   });
 
-  test('skillRankUp', () async {
+  test('skillRankUp & selfTurnEnd', () async {
     final List<PlayerSvtData> setting = [
       PlayerSvtData.id(2300400)
         ..lv = 90
@@ -617,21 +617,35 @@ void main() async {
 
     final kiara = battle.onFieldAllyServants[0]!;
     await battle.activateSvtSkill(0, 0);
-    await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
-    await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
-    await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
-    await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
-    await battle.activateSvtSkill(0, 1);
-    expect(kiara.np, 15000);
+    expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 0);
 
     await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
+    expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 1);
+
+    await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
+    expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 2);
+
+    await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
+    expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 3);
+
+    await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
+    expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 4);
+
+    await battle.activateSvtSkill(0, 1);
+    expect(kiara.np, 15000);
+    expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 2);
+
+    await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
+    expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 2);
     await battle.activateSvtSkill(0, 2);
+    expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 0);
     final enemy2 = battle.onFieldEnemies[1]!;
     final enemy3 = battle.onFieldEnemies[2]!;
 
     final prevHp2 = enemy2.hp;
     final prevHp3 = enemy3.hp;
     await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
+    expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 0);
     expect(prevHp2 - enemy2.hp, 65301);
     expect(prevHp3 - enemy3.hp, 65301);
   });

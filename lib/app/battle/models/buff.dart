@@ -55,10 +55,8 @@ class BuffData {
 
   int buffRate = 1000;
   int count = -1;
-  // int turn = -1;
   int logicTurn = -1;
   int get dispTurn => logicTurn >= 0 ? (logicTurn + 1) ~/ 2 : logicTurn;
-  // bool shouldDecreaseTurn = false;
   int param = 0;
   int additionalParam = 0;
   NiceTd? tdSelection;
@@ -68,7 +66,6 @@ class BuffData {
   int actorUniqueId = 0;
   String actorName = '';
   bool isUsed = false;
-  // bool isShortBuff = false;
 
   bool passive = false;
   bool irremovable = false;

@@ -16,6 +16,7 @@ class AddState {
     final List<BattleServantData> targets, {
     final List<NiceTd?>? tdSelections,
     bool isPassive = false,
+    final bool isShortBuff = false,
     final bool notActorPassive = false,
     final bool isCommandCode = false,
   }) async {
@@ -32,7 +33,7 @@ class AddState {
         ..actorName = activator?.lBattleName ?? ''
         ..notActorPassive = notActorPassive
         ..irremovable |= isPassive || notActorPassive;
-      if (battleData.curFunc?.funcType == FuncType.addStateShort) {
+      if (isShortBuff) {
         buffData.logicTurn -= 1;
       }
 

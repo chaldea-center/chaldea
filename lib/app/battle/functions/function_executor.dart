@@ -200,6 +200,7 @@ class FunctionExecutor {
           targets,
           tdSelections: tdSelections,
           isPassive: isPassive,
+          isShortBuff: function.funcType == FuncType.addStateShort,
           isCommandCode: isCommandCode,
           notActorPassive: notActorFunction,
         );

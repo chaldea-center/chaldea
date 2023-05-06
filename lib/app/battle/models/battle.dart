@@ -693,15 +693,16 @@ class BattleData {
       await svt.endOfYourTurn(this);
     }
 
-    for (final buff in fieldBuffs) {
-      buff.turnPass();
-    }
-
     for (final skill in masterSkillInfo) {
       skill.turnEnd();
     }
 
     await removeDeadActors();
+
+    for (final buff in fieldBuffs) {
+      buff.turnPass();
+    }
+    fieldBuffs.removeWhere((buff) => !buff.isActive);
   }
 
   Future<void> startEnemyTurn() async {

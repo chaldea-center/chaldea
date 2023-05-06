@@ -303,7 +303,7 @@ void main() async {
       expect(mash.battleBuff.activeList.first.logicTurn, 4);
     });
 
-    test('addState&addStateShort', () async {
+    test('addState & addStateShort', () async {
       final battle = BattleData();
       final playerSettings = [
         PlayerSvtData.id(200900),
