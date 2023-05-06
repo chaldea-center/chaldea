@@ -4,6 +4,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../../../models/db.dart';
+import '../utils/battle_utils.dart';
 
 class TransformServant {
   TransformServant._();
@@ -32,7 +33,8 @@ class TransformServant {
         target.skillInfoList[2].baseSkill = svt?.skills.firstWhereOrNull((e) => e.id == 888575);
         target.playerSvtData!.td = svt?.noblePhantasms.firstWhereOrNull((e) => e.id == 304802);
       } else {
-        Servant? targetSvt = db.gameData.servantsById[targetSvtId] ?? await AtlasApi.svt(targetSvtId);
+        Servant? targetSvt =
+            db.gameData.servantsById[targetSvtId] ?? await showLoading(() => AtlasApi.svt(targetSvtId));
         if (targetSvt == null) {
           battleData.battleLogger.debug('${S.current.not_found}: $targetSvtId');
         } else {

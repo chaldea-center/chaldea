@@ -73,6 +73,11 @@ class BattleSkillInfoData {
     chargeTurn = max(0, chargeTurn);
   }
 
+  void extendSkill(final int turns) {
+    chargeTurn += turns;
+    chargeTurn = min(999, chargeTurn);
+  }
+
   void turnEnd() {
     if (chargeTurn > 0) {
       chargeTurn -= 1;

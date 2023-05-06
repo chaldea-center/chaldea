@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/utils/battle_exception.dart';
 import 'package:chaldea/models/db.dart';
@@ -508,13 +510,23 @@ class InstantDeathParameters {
 Future<BaseFunction> getDependFunc(BattleLogger logger, DataVals dataVals) async {
   BaseFunction? dependFunction;
   if (dataVals.DependFuncId != null) {
-    dependFunction = db.gameData.baseFunctions[dataVals.DependFuncId!] ?? await AtlasApi.func(dataVals.DependFuncId!);
+    dependFunction = db.gameData.baseFunctions[dataVals.DependFuncId!] ??
+        await showLoading(() => AtlasApi.func(dataVals.DependFuncId!));
   }
   if (dependFunction == null) {
     logger.error('DependFunctionId=${dataVals.DependFuncId} not found');
     throw ArgumentError('DependFunctionId=${dataVals.DependFuncId} not found');
   }
   return dependFunction;
+}
+
+Future<T> showLoading<T>(Future<T> Function() computation) async {
+  try {
+    EasyLoading.show();
+    return await computation();
+  } finally {
+    EasyLoading.dismiss();
+  }
 }
 
 class BattleUtils {

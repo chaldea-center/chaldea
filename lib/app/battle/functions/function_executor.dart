@@ -22,6 +22,7 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../interactions/act_set_select.dart';
 import '../interactions/td_type_change_selector.dart';
+import 'buff_turn_count.dart';
 import 'move_to_last_sub_member.dart';
 import 'shift_servant.dart';
 
@@ -239,6 +240,9 @@ class FunctionExecutor {
       case FuncType.shortenSkill:
         ShortenSkill.shortenSkill(battleData, dataVals, targets);
         break;
+      case FuncType.extendSkill:
+        ShortenSkill.extendSkill(battleData, dataVals, targets);
+        break;
       case FuncType.damage:
       case FuncType.damageNp:
       case FuncType.damageNpIndividual:
@@ -295,12 +299,74 @@ class FunctionExecutor {
       case FuncType.fixCommandcard:
         // do nothing
         break;
-      default:
+      case FuncType.shortenBuffturn:
+      case FuncType.extendBuffturn:
+      case FuncType.shortenBuffcount:
+      case FuncType.extendBuffcount:
+        BuffTurnCount.changeBuffValue(battleData, function.funcType, dataVals, targets);
+        break;
+      case FuncType.releaseState:
+      case FuncType.damageNpStateIndividual:
+      case FuncType.damageNpCounter:
+      case FuncType.damageNpSafe:
+      case FuncType.callServant:
+      case FuncType.ptShuffle:
+      case FuncType.changeServant:
+      case FuncType.changeBg:
+      case FuncType.damageValue:
+      case FuncType.withdraw:
+      case FuncType.displayBuffstring:
+      case FuncType.resurrection:
+      case FuncType.lossHpPer:
+      case FuncType.lossHpPerSafe:
+      case FuncType.shortenUserEquipSkill:
+      case FuncType.quickChangeBg:
+      case FuncType.damageNpAndCheckIndividuality:
+      case FuncType.overwriteDeadType:
+      case FuncType.forceAllBuffNoact:
+      case FuncType.breakGaugeUp:
+      case FuncType.breakGaugeDown:
+      case FuncType.movePosition:
+      case FuncType.revival:
+      case FuncType.damageValueSafe:
+      case FuncType.changeBgmCostume:
+      case FuncType.func126:
+      case FuncType.func127:
+      case FuncType.updateEntryPositions:
+      case FuncType.subFieldBuff:
+      case FuncType.lastUsePlayerSkillCopy:
         battleData.battleLogger.debug('${S.current.not_implemented}: ${function.funcType}, '
             'Function ID: ${function.funcId}, '
             'Activator: ${activator?.lBattleName}, '
             'Quest ID: ${battleData.niceQuest?.id}, '
             'Phase: ${battleData.niceQuest?.phase}');
+        break;
+      case FuncType.unknown:
+      case FuncType.none:
+      case FuncType.changeBgm:
+      case FuncType.expUp:
+      case FuncType.qpUp:
+      case FuncType.dropUp:
+      case FuncType.friendPointUp:
+      case FuncType.eventDropUp:
+      case FuncType.eventDropRateUp:
+      case FuncType.eventPointUp:
+      case FuncType.eventPointRateUp:
+      case FuncType.qpDropUp:
+      case FuncType.servantFriendshipUp:
+      case FuncType.userEquipExpUp:
+      case FuncType.classDropUp:
+      case FuncType.enemyEncountCopyRateUp:
+      case FuncType.enemyEncountRateUp:
+      case FuncType.enemyProbDown:
+      case FuncType.getRewardGift:
+      case FuncType.sendSupportFriendPoint:
+      case FuncType.friendPointUpDuplicate:
+      case FuncType.buddyPointUp:
+      case FuncType.eventFortificationPointUp:
+      case FuncType.setQuestRouteFlag:
+      case FuncType.setSystemAliveFlag:
+        break;
     }
 
     battleData.updateLastFuncResults();

@@ -921,7 +921,7 @@ class BattleServantData {
         final skillId = buff.param;
         BaseSkill? skill = db.gameData.baseSkills[skillId];
         try {
-          skill ??= await AtlasApi.skill(skillId);
+          skill ??= await showLoading(() => AtlasApi.skill(skillId));
         } catch (e) {
           logger.e('Exception while fetch AtlasApi for skill $skillId', e);
         }

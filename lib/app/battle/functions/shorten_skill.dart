@@ -16,9 +16,29 @@ class ShortenSkill {
 
     for (final target in targets) {
       battleData.setTarget(target);
-      target.skillInfoList.forEach((skill) {
+      for (final skill in target.skillInfoList) {
         skill.shortenSkill(dataVals.Value!);
-      });
+      }
+      battleData.curFuncResults[target.uniqueId] = true;
+      battleData.unsetTarget();
+    }
+  }
+
+  static void extendSkill(
+    final BattleData battleData,
+    final DataVals dataVals,
+    final List<BattleServantData> targets,
+  ) {
+    final functionRate = dataVals.Rate ?? 1000;
+    if (functionRate < battleData.options.probabilityThreshold) {
+      return;
+    }
+
+    for (final target in targets) {
+      battleData.setTarget(target);
+      for (final skill in target.skillInfoList) {
+        skill.extendSkill(dataVals.Value!);
+      }
       battleData.curFuncResults[target.uniqueId] = true;
       battleData.unsetTarget();
     }
