@@ -14,16 +14,11 @@ class BattleCEData {
   BattleCEData(this.craftEssence, this.isLimitBreak, this.level);
 
   Future<void> activateCE(final BattleData battleData) async {
-    final Map<int, List<NiceSkill>> dividedSkills = {};
-    for (final skill in craftEssence.skills) {
-      dividedSkills.putIfAbsent(skill.num, () => []).add(skill);
-    }
-
-    final priority = isLimitBreak ? 2 : 1;
-    for (final skillNum in dividedSkills.keys.toList()..sort()) {
-      final skillsForNum = dividedSkills[skillNum]!;
-      final skillToUse = skillsForNum.firstWhereOrNull((skill) => skill.priority == priority) ?? skillsForNum.first;
-      await BattleSkillInfoData.activateSkill(battleData, skillToUse, 1, notActorSkill: true);
+    final skills = craftEssence.getActivatedSkills(isLimitBreak);
+    for (final skillNum in skills.keys) {
+      for (final skill in skills[skillNum]!) {
+        await BattleSkillInfoData.activateSkill(battleData, skill, 1, notActorSkill: true);
+      }
     }
   }
 }

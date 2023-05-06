@@ -1109,7 +1109,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     if (playerSvtData.ce == null) {
       return const Center(child: Text("None"));
     }
-    final List<Widget> children = [];
+    List<Widget> children = [];
     children.add(_header(context));
 
     children.add(Padding(
@@ -1139,28 +1139,20 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
       },
     ));
 
-    Map<int, List<NiceSkill>> group = {};
-    for (final skill in ce.skills) {
-      group.putIfAbsent(skill.num, () => []).add(skill);
-    }
-    group = sortDict(group);
-    for (final skills in group.values) {
-      skills.sort2((e) => e.priority);
-      NiceSkill skill;
-      if (playerSvtData.ceLimitBreak) {
-        skill = skills.lastWhereOrNull((e) => e.condLimitCount == 4) ?? skills.last;
-      } else {
-        skill = skills.lastWhereOrNull((e) => e.condLimitCount < 4) ?? skills.last;
+    children = divideTiles(children, divider: const Divider(height: 8, thickness: 1), bottom: true);
+
+    final skills = ce.getActivatedSkills(playerSvtData.ceLimitBreak);
+    for (final skillNum in skills.keys) {
+      final skillsForNum = skills[skillNum]!;
+      if (skills.length > 1) {
+        children.add(DividerWithTitle(title: 'Skill num $skillNum'));
       }
-      children.add(SkillDescriptor(skill: skill));
+      for (final skill in skillsForNum) {
+        children.add(SkillDescriptor(skill: skill));
+      }
     }
 
-    return ListView(
-      children: divideTiles(
-        children,
-        divider: const Divider(height: 8, thickness: 1),
-      ),
-    );
+    return ListView(children: children);
   }
 
   Widget get buttonBar {

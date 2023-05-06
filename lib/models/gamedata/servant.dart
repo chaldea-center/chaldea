@@ -794,6 +794,23 @@ class CraftEssence with GameCardMixin {
   CraftStatus get status => db.curUser.ceStatusOf(collectionNo);
 
   Map<String, dynamic> toJson() => _$CraftEssenceToJson(this);
+
+  Map<int, List<NiceSkill>> getActivatedSkills(bool mlb) {
+    final grouped = <int, List<NiceSkill>>{};
+    for (final skill in skills) {
+      grouped.putIfAbsent(skill.num, () => []).add(skill);
+    }
+    sortDict(grouped, inPlace: true);
+    for (final skillNum in grouped.keys.toList()) {
+      final skillsForNum = grouped[skillNum]!;
+      skillsForNum.sort2((e) => e.priority);
+      final mlbSkills = skillsForNum.where((s) => s.condLimitCount == (mlb ? 4 : 0)).toList();
+      if (mlbSkills.isNotEmpty) {
+        grouped[skillNum] = mlbSkills;
+      }
+    }
+    return grouped;
+  }
 }
 
 @JsonSerializable()

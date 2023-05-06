@@ -233,7 +233,7 @@ class BattleData {
       final enemy = enemyDataList[index];
       if (enemy == null) {
         enemyDataList.removeAt(index);
-        index -=1;
+        index -= 1;
         continue;
       }
 
@@ -298,7 +298,7 @@ class BattleData {
       final enemy = enemyDataList[index];
       if (enemy == null) {
         enemyDataList.removeAt(index);
-        index -=1;
+        index -= 1;
         continue;
       }
 
