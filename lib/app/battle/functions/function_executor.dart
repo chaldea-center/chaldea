@@ -395,8 +395,11 @@ class FunctionExecutor {
   static DataVals getDataVals(
     final NiceFunction function,
     final int skillLevel,
-    final int overchargeLevel,
+    int overchargeLevel,
   ) {
+    if (overchargeLevel > function.svalsList.length) {
+      overchargeLevel = function.svalsList.length;
+    }
     return (function.svalsList.getOrNull(overchargeLevel - 1) ?? function.svals).getOrNull(skillLevel - 1) ??
         DataVals();
   }

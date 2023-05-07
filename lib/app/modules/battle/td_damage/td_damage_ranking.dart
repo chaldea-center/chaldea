@@ -1,3 +1,4 @@
+import 'package:chaldea/app/battle/interactions/_delegate.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -241,7 +242,7 @@ class _TdDamageRankingState extends State<TdDamageRanking> {
           items: List.generate(5, (index) => DropdownMenuItem(value: index + 1, child: Text('Lv.${index + 1}'))),
           onChanged: (v) {
             setState(() {
-              if (v != null) options.tdR3 = v;
+              if (v != null) options.tdR5 = v;
             });
           },
         ),
@@ -270,9 +271,7 @@ class _TdDamageRankingState extends State<TdDamageRanking> {
 
   Future<void> calcOneSvt(Servant svt) async {
     final battleData = BattleData();
-    final attacker = PlayerSvtData.svt(svt)
-      ..tdLv = 1
-      ..lv = svt.lvMax;
+    final attacker = getSvtData(svt);
     if (attacker.td == null || !attacker.td!.functions.any((func) => func.funcType.name.startsWith('damageNp'))) {
       return;
     }
@@ -309,6 +308,7 @@ class _TdDamageRankingState extends State<TdDamageRanking> {
 
     await battleData.init(getQuest(), playerSettings, null);
     final enemy = battleData.onFieldEnemies[0]!;
+    final actor = battleData.onFieldAllyServants[0]!;
     await battleData.activateSvtSkill(0, 0);
     await battleData.activateSvtSkill(0, 1);
     await battleData.activateSvtSkill(0, 2);
@@ -316,13 +316,12 @@ class _TdDamageRankingState extends State<TdDamageRanking> {
       final sdata = PlayerSvtData.svt(svt);
       // ignore: unused_local_variable
       BattleServantData support = BattleServantData.fromPlayerSvtData(sdata, battleData.getNextUniqueId());
-      support.uniqueId = battleData.getNextUniqueId();
       battleData.onFieldAllyServants[1] = support;
       // await support.enterField(battle);
       await battleData.activateSvtSkill(1, 0);
       await battleData.activateSvtSkill(1, 1);
       await battleData.activateSvtSkill(1, 2);
-      battleData.onFieldAllyServants[1] = null;
+      // battleData.onFieldAllyServants[1] = null;
     }
     if (options.doubleActiveSkillIfCD6) {
       // Buster + w-Koyan + skip 2 turns
@@ -333,8 +332,9 @@ class _TdDamageRankingState extends State<TdDamageRanking> {
       // await battle.activateSvtSkill(0, 1);
       // await battle.activateSvtSkill(0, 2);
     }
-    final actor = battleData.onFieldAllyServants[0]!;
     actor.np = ConstData.constants.fullTdPoint;
+    battleData.delegate = BattleDelegate(battleData);
+    battleData.delegate!.decideOC = (_actor, baseOC, upOC) => options.oc;
     final card = actor.getNPCard(battleData);
     if (card == null) {
       print('svt ${svt.collectionNo}-${svt.lName.l}: No NP card');
@@ -346,12 +346,12 @@ class _TdDamageRankingState extends State<TdDamageRanking> {
       if (record.attacker.uniqueId != actor.uniqueId) continue;
       for (final target in record.targets) {
         if (target.target.uniqueId == enemy.uniqueId) {
+          print('svt ${svt.collectionNo}-${svt.lName.l}: DMG ${Maths.sum(target.result.damages)}');
           results.add(target.result);
           break;
         }
       }
     }
-    print('svt ${svt.collectionNo}-${svt.lName.l}: DMG ${results.map((e) => Maths.sum(e.damages)).join("+")}');
   }
 
   PlayerSvtData getSvtData(Servant svt) {

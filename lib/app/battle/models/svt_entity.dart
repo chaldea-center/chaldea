@@ -727,8 +727,16 @@ class BattleServantData {
 
     final niceTD = getCurrentNP(battleData);
     if (niceTD != null) {
-      final upOverCharge = await getBuffValueOnAction(battleData, BuffAction.chagetd);
-      int overchargeLvl = upOverCharge + (isPlayer ? np ~/ ConstData.constants.fullTdPoint + extraOverchargeLvl : 1);
+      final baseOverCharge = isPlayer ? np ~/ ConstData.constants.fullTdPoint : 1;
+      int upOverCharge = await getBuffValueOnAction(battleData, BuffAction.chagetd);
+      if (isPlayer) {
+        upOverCharge += extraOverchargeLvl;
+      }
+      int? overchargeLvl;
+      if (battleData.delegate?.decideOC != null) {
+        overchargeLvl = battleData.delegate!.decideOC!(battleData.activator, baseOverCharge, upOverCharge);
+      }
+      overchargeLvl ??= baseOverCharge + upOverCharge;
       overchargeLvl = overchargeLvl.clamp(1, 5);
 
       np = 0;
