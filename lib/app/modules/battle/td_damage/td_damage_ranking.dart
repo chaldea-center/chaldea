@@ -1,9 +1,10 @@
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/utils/extension.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../../../utils/atlas.dart';
+import '../../../battle/utils/battle_logger.dart';
 import 'options.dart';
 
 class TdDamageRanking extends StatefulWidget {
@@ -22,7 +23,27 @@ class _TdDamageRankingState extends State<TdDamageRanking> {
       appBar: AppBar(
         title: const Text('NP Damage'),
       ),
-      body: buildOptions(),
+      body: Column(
+        children: [
+          Expanded(child: buildOptions()),
+          kDefaultDivider,
+          ButtonBar(
+            alignment: MainAxisAlignment.center,
+            children: [
+              FilledButton(
+                onPressed: () async {
+                  final servants = db.gameData.servantsNoDup.values.toList();
+                  servants.sort2((e) => e.collectionNo);
+                  for (final svt in servants) {
+                    await calcOneSvt(svt);
+                  }
+                },
+                child: const Text('START'),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -248,7 +269,7 @@ class _TdDamageRankingState extends State<TdDamageRanking> {
   }
 
   Future<void> calcOneSvt(Servant svt) async {
-    final battle = BattleData();
+    final battleData = BattleData();
     final attacker = PlayerSvtData.svt(svt)
       ..tdLv = 1
       ..lv = svt.lvMax;
@@ -286,30 +307,51 @@ class _TdDamageRankingState extends State<TdDamageRanking> {
     // if (options.upResistSubState) {}
     final playerSettings = [attacker];
 
-    await battle.init(getQuest(), playerSettings, null);
-    await battle.activateSvtSkill(0, 0);
-    await battle.activateSvtSkill(0, 1);
-    await battle.activateSvtSkill(0, 2);
-    for (final support in options.supports) {
-      final sdata = PlayerSvtData.svt(support);
+    await battleData.init(getQuest(), playerSettings, null);
+    final enemy = battleData.onFieldEnemies[0]!;
+    await battleData.activateSvtSkill(0, 0);
+    await battleData.activateSvtSkill(0, 1);
+    await battleData.activateSvtSkill(0, 2);
+    for (final svt in options.supports) {
+      final sdata = PlayerSvtData.svt(svt);
       // ignore: unused_local_variable
-      BattleServantData battleServantData = BattleServantData.fromPlayerSvtData(sdata, battle.getNextUniqueId());
-      // await battle.entrySvt(battleServantData, 1);
-      await battle.activateSvtSkill(1, 0);
-      await battle.activateSvtSkill(1, 1);
-      await battle.activateSvtSkill(1, 2);
-      battle.onFieldAllyServants[1] = null;
+      BattleServantData support = BattleServantData.fromPlayerSvtData(sdata, battleData.getNextUniqueId());
+      support.uniqueId = battleData.getNextUniqueId();
+      battleData.onFieldAllyServants[1] = support;
+      // await support.enterField(battle);
+      await battleData.activateSvtSkill(1, 0);
+      await battleData.activateSvtSkill(1, 1);
+      await battleData.activateSvtSkill(1, 2);
+      battleData.onFieldAllyServants[1] = null;
     }
     if (options.doubleActiveSkillIfCD6) {
-      battle.onFieldAllyServants[1]!.skillInfoList.forEach((skill) {
-        skill.chargeTurn = 0;
-      });
-      await battle.activateSvtSkill(0, 0);
-      await battle.activateSvtSkill(0, 1);
-      await battle.activateSvtSkill(0, 2);
+      // Buster + w-Koyan + skip 2 turns
+      // battle.onFieldAllyServants[1]!.skillInfoList.forEach((skill) {
+      //   skill.chargeTurn = 0;
+      // });
+      // await battle.activateSvtSkill(0, 0);
+      // await battle.activateSvtSkill(0, 1);
+      // await battle.activateSvtSkill(0, 2);
     }
-    // CommandCardData(cardType, cardDetail);
-    // battle.playerTurn([CombatAction(battle.onFieldAllyServants[0]!, cardData)]);
+    final actor = battleData.onFieldAllyServants[0]!;
+    actor.np = ConstData.constants.fullTdPoint;
+    final card = actor.getNPCard(battleData);
+    if (card == null) {
+      print('svt ${svt.collectionNo}-${svt.lName.l}: No NP card');
+      return;
+    }
+    await battleData.playerTurn([CombatAction(actor, card)]);
+    List<DamageResult> results = [];
+    for (final record in battleData.recorder.records.whereType<BattleAttackRecord>()) {
+      if (record.attacker.uniqueId != actor.uniqueId) continue;
+      for (final target in record.targets) {
+        if (target.target.uniqueId == enemy.uniqueId) {
+          results.add(target.result);
+          break;
+        }
+      }
+    }
+    print('svt ${svt.collectionNo}-${svt.lName.l}: DMG ${results.map((e) => Maths.sum(e.damages)).join("+")}');
   }
 
   PlayerSvtData getSvtData(Servant svt) {

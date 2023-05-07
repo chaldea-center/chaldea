@@ -9,7 +9,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../common/builders.dart';
 import '../home/elements/random_image.dart';
 import '../home/subpage/feedback_page.dart';
-import '../td_damage/td_damage_ranking.dart';
+import 'td_damage/td_damage_ranking.dart';
 
 class BattleHomePage extends StatelessWidget {
   BattleHomePage({super.key});
