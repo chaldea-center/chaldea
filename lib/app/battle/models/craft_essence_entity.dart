@@ -1,6 +1,5 @@
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
-import 'package:chaldea/utils/extension.dart';
 
 class BattleCEData {
   CraftEssence craftEssence;
@@ -11,7 +10,11 @@ class BattleCEData {
 
   int get hp => craftEssence.hpGrowth[level - 1];
 
-  BattleCEData(this.craftEssence, this.isLimitBreak, this.level);
+  BattleCEData(this.craftEssence, this.isLimitBreak, this.level) {
+    if (level > craftEssence.atkGrowth.length) {
+      level = craftEssence.atkGrowth.length;
+    }
+  }
 
   Future<void> activateCE(final BattleData battleData) async {
     final skills = craftEssence.getActivatedSkills(isLimitBreak);

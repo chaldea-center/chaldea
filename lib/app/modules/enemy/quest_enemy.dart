@@ -100,16 +100,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
                   ),
                 ),
               ]),
-              CustomTableRow.fromTextsWithHeader(
-                texts: [
-                  'Deck',
-                  enemy.deck.name,
-                  'DeckId',
-                  enemy.deckId.toString(),
-                ],
-                isHeaders: const [true, false, true, false],
-                defaults: TableCellData(maxLines: 1),
-              ),
+
               CustomTableRow.fromTextsWithHeader(
                 texts: [
                   S.current.rarity,
@@ -146,6 +137,8 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           ),
         )
       ]),
+      CustomTableRow.fromTexts(texts: const ['Deck', 'DeckId', 'NPC ID'], isHeader: true),
+      CustomTableRow.fromTexts(texts: [enemy.deck.name, enemy.deckId.toString(), enemy.npcId.toString()]),
       CustomTableRow.fromTexts(
         texts: [
           'Role Type',

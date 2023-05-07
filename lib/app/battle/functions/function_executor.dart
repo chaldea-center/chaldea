@@ -282,6 +282,9 @@ class FunctionExecutor {
       case FuncType.shiftServant:
         await ShiftServant.skillShift(battleData, dataVals, targets);
         break;
+      case FuncType.changeServant:
+        await ShiftServant.changeServant(battleData, dataVals, activator);
+        break;
       case FuncType.callServant:
         await CallServant.callServant(battleData, dataVals, activator);
         break;
@@ -310,13 +313,12 @@ class FunctionExecutor {
         break;
       // TODO: unimplemented FuncTypes
       case FuncType.damageValue:
-      case FuncType.shortenUserEquipSkill:
       case FuncType.damageNpCounter:
       case FuncType.damageValueSafe:
       case FuncType.damageNpSafe:
-      case FuncType.changeServant:
-      case FuncType.subFieldBuff:
       // ↑↑↑ should be implemented ↑↑↑
+      case FuncType.shortenUserEquipSkill:
+      case FuncType.subFieldBuff:
       case FuncType.damageNpAndCheckIndividuality:
       case FuncType.damageNpStateIndividual:
       case FuncType.releaseState:

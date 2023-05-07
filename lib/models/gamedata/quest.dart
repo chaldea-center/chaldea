@@ -997,6 +997,8 @@ class QuestEnemy with GameCardMixin {
   EnemyLimit? limit;
   EnemyMisc? misc;
 
+  int get runtimeUniqueId => npcId * 10 + deck.index;
+
   QuestEnemy({
     this.deck = DeckType.enemy,
     required this.deckId,
@@ -1153,6 +1155,7 @@ class EnemyScript with DataScriptBase {
   List<int>? call; // npcId
   List<int>? shift; // npcId
   List<NiceTrait>? shiftClear;
+  List<int>? get change => toList(originalScript['change']);
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   Map<String, dynamic> originalScript = {};

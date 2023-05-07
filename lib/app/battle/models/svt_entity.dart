@@ -79,6 +79,8 @@ class BattleServantData {
 
   List<int> shiftNpcIds = [];
   int shiftIndex = 0;
+  List<int> changeNpcIds = [];
+  int changeIndex = 0;
 
   bool attacked = false;
   BattleServantData? lastHitBy;
@@ -123,7 +125,8 @@ class BattleServantData {
       ..level = enemy.lv
       ..atk = enemy.atk
       ..deckIndex = enemy.deckId
-      ..shiftNpcIds = enemy.enemyScript.shift ?? [];
+      ..shiftNpcIds = enemy.enemyScript.shift ?? []
+      ..changeNpcIds = enemy.enemyScript.change ?? [];
     return svt;
   }
 
@@ -1233,7 +1236,9 @@ class BattleServantData {
       ..equip = equip
       ..battleBuff = battleBuff.copy()
       ..commandCodeSkills = commandCodeSkills.map((skills) => skills.map((skill) => skill.copy()).toList()).toList()
-      ..shiftNpcIds = shiftNpcIds
-      ..shiftIndex = shiftIndex; //copy
+      ..shiftNpcIds = shiftNpcIds.toList()
+      ..shiftIndex = shiftIndex
+      ..changeNpcIds = changeNpcIds.toList()
+      ..changeIndex = changeIndex; //copy
   }
 }
