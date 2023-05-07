@@ -53,7 +53,9 @@ class FunctionExecutor {
       }
     }
     int? selectedActSet;
-    if (actSets.isNotEmpty && battleData.mounted) {
+    if (battleData.delegate?.actWeight != null) {
+      selectedActSet = await battleData.delegate!.actWeight!(battleData.activator);
+    } else if (actSets.isNotEmpty && battleData.mounted) {
       selectedActSet = await FuncActSetSelector.show(battleData, actSets);
     }
     for (int index = 0; index < functions.length; index += 1) {
@@ -179,8 +181,12 @@ class FunctionExecutor {
         if (baseTd != null) {
           if (baseTd.script != null && baseTd.script!.tdTypeChangeIDs != null) {
             final List<NiceTd> tds = svt.getTdsById(baseTd.script!.tdTypeChangeIDs!);
-            if (tds.isNotEmpty && battleData.mounted) {
-              tdSelection = await TdTypeChangeSelector.show(battleData, tds);
+            if (tds.isNotEmpty) {
+              if (battleData.delegate?.tdTypeChange != null) {
+                tdSelection = await battleData.delegate!.tdTypeChange!(activator, tds);
+              } else if (battleData.mounted) {
+                tdSelection = await TdTypeChangeSelector.show(battleData, tds);
+              }
             }
           }
         }

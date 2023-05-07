@@ -12,6 +12,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../interactions/_delegate.dart';
 import '../interactions/tailored_execution_confirm.dart';
 import 'buff.dart';
 import 'skill.dart';
@@ -42,6 +43,7 @@ class BattleData {
 
   /// User action records, should be copied/saved to snapshots
   BattleRecordManager recorder = BattleRecordManager();
+  BattleDelegate? delegate;
 
   QuestPhase? niceQuest;
   Stage? curStage;

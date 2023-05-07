@@ -46,7 +46,7 @@ class ShiftServant {
       battleData.battleLogger.error('ChangeServant NpcId=$changeNpcId not found');
       return;
     }
-    battleData.battleLogger.error('ChangeServant to NpcId=$changeNpcId');
+    battleData.battleLogger.function('ChangeServant to NpcId=$changeNpcId');
 
     if (changeSvt.enemyScript.shift?.isNotEmpty == true) {
       actor.shiftNpcIds = changeSvt.enemyScript.shift!.toList();
