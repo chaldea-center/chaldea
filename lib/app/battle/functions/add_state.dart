@@ -108,7 +108,7 @@ class AddState {
 
     int functionRate = dataVals.Rate ?? 1000;
     if ((functionRate < 0 || dataVals.TriggeredFuncPosition != null) &&
-        battleData.uniqueIdToLastFuncResultMap.values.any((succeeded) => !succeeded)) {
+        battleData.uniqueIdToLastFuncResultMap[target.uniqueId] != true) {
       return false;
     }
 
