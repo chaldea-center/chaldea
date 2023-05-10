@@ -90,7 +90,7 @@ class _ApkListPageState extends State<ApkListPage> {
                 : 'https://github.com/chaldea-center/chaldea/releases/download/v$ver/chaldea-$ver-';
           } else {
             url = data.url = '$host/apk/${data.packageId}.v$ver.apk';
-            if (data.region == Region.jp) {
+            if (data.region == Region.jp || data.region == Region.na) {
               data.url32 = '$host/apk/${data.packageId}.v$ver.armeabi_v7a.apk';
             }
           }
@@ -283,7 +283,7 @@ class _ApkListPageState extends State<ApkListPage> {
       region?.upper ?? 'Chaldea App',
       if (ver != null) 'v$ver',
       if (is32) '32-bit/v7a',
-      if (region == Region.jp && !is32) '64-bit/v8a'
+      if ((region == Region.jp || region == Region.na) && !is32) '64-bit/v8a'
     ];
     return ListTile(
       dense: true,
