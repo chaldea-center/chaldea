@@ -96,6 +96,7 @@ const kSvtDefAscenRemap = <int, int>{
   9943860: 1, // 張角
   9943880: 1, // ジェームズ・モリアーティ
   9944220: 2, // 千利休
+  9944690: 2, // ソドムズビースト／ドラコー
 };
 
 @JsonSerializable(converters: [SvtClassConverter()])

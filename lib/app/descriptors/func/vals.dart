@@ -189,29 +189,11 @@ class ValDsc extends StatelessWidget {
       } else if (vals.Value2 != null && vals.Value2! > 0) {
         _addInt(parts, vals.Value2);
       } else {
-        parts.add('All');
+        // parts.add('All');
       }
     } else {
       if (vals.Value != null) {
         switch (func.funcType) {
-          case FuncType.damageNp:
-          case FuncType.damageNpSafe:
-          case FuncType.damageNpHpratioLow:
-          case FuncType.damageNpIndividual:
-          case FuncType.damageNpIndividualSum:
-          case FuncType.damageNpPierce:
-          case FuncType.damageNpRare:
-          case FuncType.damageNpStateIndividualFix:
-          case FuncType.damageNpCounter:
-          case FuncType.gainHpPer:
-          case FuncType.qpDropUp:
-            _addPercent(parts, vals.Value, 10);
-            break;
-          case FuncType.gainNp:
-          case FuncType.gainNpBuffIndividualSum:
-          case FuncType.lossNp:
-            _addPercent(parts, vals.Value, 100);
-            break;
           case FuncType.lossHp:
           case FuncType.lossHpSafe:
           case FuncType.lossHpPer:
@@ -226,7 +208,12 @@ class ValDsc extends StatelessWidget {
             // already added in func text
             break;
           default:
-            parts.add(vals.Value.toString());
+            final base = kFuncValPercentType[func.funcType];
+            if (base != null) {
+              _addPercent(parts, vals.Value, base);
+            } else {
+              parts.add(vals.Value.toString());
+            }
             break;
         }
       }

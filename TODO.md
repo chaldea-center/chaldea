@@ -1,16 +1,19 @@
 # TODO
 
-
 ## Battles
 
 ### High Priority
 
+- [ ] quest phase cache logic
 - [x] catch error for user interaction (skill/attack)
-- [ ] show loading toast when fetch api
-- [ ] `Map<TargetId, bool> lastFuncSuccess` is a map
+- [x] show loading toast when fetch api
+- [x] `Map<TargetId, bool> lastFuncSuccess` is a map
 - [x] build team: disable event
 - [ ] battle delegate
-- [ ] Skip turn! add to popup menu
+- [ ] menu skills
+  - [ ] forceInstantDeath: rn or delayed for 1 target
+  - [ ] reset active skill CD for 1 target.
+  - [ ] Skip turn! add to popup menu
 
 ### Recorder
 
