@@ -29,8 +29,8 @@ class GainNpFromTargets {
       for (final absorbTarget in FunctionExecutor.acquireFunctionTarget(
         battleData,
         dependFunction.funcTargetType,
-        dependFunction.funcId,
         receiver,
+        funcId: dependFunction.funcId,
       )) {
         final targetNP = absorbTarget.isPlayer ? absorbTarget.np : absorbTarget.npLineCount;
         // ignoring Value2 for enemy here as the only usage is in Yuyu (svt 275)'s skill 2

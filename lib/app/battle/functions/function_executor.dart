@@ -140,8 +140,8 @@ class FunctionExecutor {
     final List<BattleServantData> targets = acquireFunctionTarget(
       battleData,
       function.funcTargetType,
-      function.funcId,
       activator,
+      funcId: function.funcId,
       defaultToPlayer: defaultToPlayer,
     );
 
@@ -170,7 +170,8 @@ class FunctionExecutor {
           requiredTraits: function.functvals,
           actor: svt,
           checkActorTraits: true,
-          checkActorBuffTraits: dataVals.IncludePassiveIndividuality == 1,
+          checkActorBuffTraits: true,
+          checkActiveBuffOnly: dataVals.IncludePassiveIndividuality != 1,
         )));
 
     List<NiceTd?> tdSelections = [];
@@ -407,8 +408,8 @@ class FunctionExecutor {
   static List<BattleServantData> acquireFunctionTarget(
     final BattleData battleData,
     final FuncTargetType funcTargetType,
-    final int funcId,
     final BattleServantData? activator, {
+    final int? funcId,
     final bool defaultToPlayer = true,
   }) {
     final List<BattleServantData> targets = [];

@@ -31,8 +31,8 @@ class GainHpFromTargets {
       for (final absorbTarget in FunctionExecutor.acquireFunctionTarget(
         battleData,
         dependFunction.funcTargetType,
-        dependFunction.funcId,
         receiver,
+        funcId: dependFunction.funcId,
       )) {
         gainValue += min(absorbTarget.hp - 1, checkValue);
       }

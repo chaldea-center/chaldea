@@ -28,8 +28,8 @@ class MoveState {
       for (final absorbTarget in FunctionExecutor.acquireFunctionTarget(
         battleData,
         dependFunction.funcTargetType,
-        dependFunction.funcId,
         receiver,
+        funcId: dependFunction.funcId,
       )) {
         for (final buff in absorbTarget.getBuffsWithTraits(affectTraits)) {
           receiver.addBuff(buff.copy());

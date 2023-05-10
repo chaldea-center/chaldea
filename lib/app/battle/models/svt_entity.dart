@@ -966,12 +966,13 @@ class BattleServantData {
     return countAnyTraits(getTraits(battleData), traits);
   }
 
-  int countBuffWithTrait(final List<NiceTrait> traits) {
-    return getBuffsWithTraits(traits).length;
+  int countBuffWithTrait(final List<NiceTrait> traits, {final bool activeOnly = false}) {
+    return getBuffsWithTraits(traits, activeOnly: activeOnly).length;
   }
 
-  List<BuffData> getBuffsWithTraits(final List<NiceTrait> traits) {
-    return battleBuff.allBuffs.where((buff) => containsAnyTraits(buff.traits, traits)).toList();
+  List<BuffData> getBuffsWithTraits(final List<NiceTrait> traits, {final bool activeOnly = false}) {
+    final buffList = activeOnly ? battleBuff.activeList : battleBuff.allBuffs;
+    return buffList.where((buff) => containsAnyTraits(buff.traits, traits)).toList();
   }
 
   List<BuffData> getBuffsOfType(final BuffType buffType) {

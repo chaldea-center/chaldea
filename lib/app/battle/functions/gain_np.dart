@@ -1,3 +1,4 @@
+import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 
@@ -22,7 +23,24 @@ class GainNP {
 
       int change = isNegative ? -dataVals.Value! : dataVals.Value!;
       if (targetTraits != null) {
-        final count = checkBuff ? target.countBuffWithTrait(targetTraits) : target.countTrait(battleData, targetTraits);
+        final List<BattleServantData> countTargets = [];
+        final targetType = dataVals.Target ?? 0;
+        if (targetType == 0) {
+          countTargets.add(target);
+        }
+        if (targetType == 1 || targetType == 3) {
+          countTargets.addAll(FunctionExecutor.acquireFunctionTarget(battleData, FuncTargetType.ptAll, target));
+        }
+        if (targetType == 2 || targetType == 3) {
+          countTargets.addAll(FunctionExecutor.acquireFunctionTarget(battleData, FuncTargetType.enemyAll, target));
+        }
+
+        int count = 0;
+        for (final countTarget in countTargets) {
+          count += checkBuff
+              ? countTarget.countBuffWithTrait(targetTraits, activeOnly: true)
+              : countTarget.countTrait(battleData, targetTraits);
+        }
         change *= count;
       }
 
