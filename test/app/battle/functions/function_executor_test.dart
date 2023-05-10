@@ -109,8 +109,7 @@ void main() async {
     });
 
     test('Targeted types', () {
-      final ptOne =
-          FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptOne, battle.onFieldAllyServants[1]);
+      final ptOne = FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptOne, battle.onFieldAllyServants[1]);
       expect(ptOne.length, 1);
       expect(ptOne.first, ally);
       expect(ptOne.first, isNot(battle.onFieldAllyServants[1]!));
@@ -121,8 +120,7 @@ void main() async {
     });
 
     test('Select all types', () {
-      final ptAll =
-          FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptAll, battle.onFieldAllyServants[1]);
+      final ptAll = FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptAll, battle.onFieldAllyServants[1]);
       expect(ptAll, unorderedEquals(battle.nonnullAllies));
 
       final ptFull =
@@ -1054,6 +1052,39 @@ void main() async {
       expect(henry.svtClass, SvtClass.berserker);
       expect(henry.skillInfoList[0].chargeTurn, 5 - 1);
       expect(henry.skillInfoList[2].baseSkill!.id, 71255);
+    });
+
+    test('gainNpIndividualSum', () async {
+      final List<PlayerSvtData> setting = [
+        PlayerSvtData.id(502600)
+          ..lv = 80
+          ..setSkillStrengthenLvs([2, 1, 1]),
+        PlayerSvtData.id(302500)..lv = 80,
+      ];
+      final battle = BattleData();
+      await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+      final eliz = battle.onFieldAllyServants[0]!;
+      final kyohime = battle.onFieldAllyServants[1]!;
+      expect(eliz.np, 0);
+
+      await battle.activateSvtSkill(1, 2);
+      await battle.activateSvtSkill(0, 0);
+      expect(eliz.np, 2000);
+
+      kyohime.skillInfoList[2].chargeTurn = 0;
+      await battle.activateSvtSkill(1, 2);
+      battle.enemyTargetIndex = 1;
+      kyohime.skillInfoList[2].chargeTurn = 0;
+      await battle.activateSvtSkill(1, 2);
+      battle.enemyTargetIndex = 2;
+      kyohime.skillInfoList[2].chargeTurn = 0;
+      await battle.activateSvtSkill(1, 2);
+      // each enemy should have one buff now
+
+      eliz.skillInfoList[0].chargeTurn = 0;
+      await battle.activateSvtSkill(0, 0);
+      expect(eliz.np, 8000);
     });
   });
 }

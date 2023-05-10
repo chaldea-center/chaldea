@@ -9,6 +9,28 @@ class GainNP {
     final BattleData battleData,
     final DataVals dataVals,
     final Iterable<BattleServantData> targets, {
+    final bool isNegative = false,
+  }) {
+    final functionRate = dataVals.Rate ?? 1000;
+    if (functionRate < battleData.options.probabilityThreshold) {
+      return;
+    }
+
+    targets.forEach((target) {
+      battleData.setTarget(target);
+
+      int change = isNegative ? -dataVals.Value! : dataVals.Value!;
+      target.changeNP(change);
+      battleData.curFuncResults[target.uniqueId] = true;
+
+      battleData.unsetTarget();
+    });
+  }
+
+  static void gainNpPerIndividual(
+    final BattleData battleData,
+    final DataVals dataVals,
+    final Iterable<BattleServantData> targets, {
     final List<NiceTrait>? targetTraits,
     final bool onlyCheckBuff = false,
     final bool isNegative = false,

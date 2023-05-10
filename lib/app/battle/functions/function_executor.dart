@@ -230,7 +230,7 @@ class FunctionExecutor {
         break;
       case FuncType.gainNpIndividualSum:
       case FuncType.gainNpBuffIndividualSum:
-        GainNP.gainNP(
+        GainNP.gainNpPerIndividual(
           battleData,
           dataVals,
           targets,
