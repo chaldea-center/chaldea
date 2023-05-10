@@ -604,6 +604,8 @@ enum Trait {
   servantsWithSkyAttribute(2851),
   holdingHolyGrail(2857),
   standardClassServant(2858),
+  happyHalloween(2859),
+  happyHalloweenFlag(2860),
   attackPhysical(3000),
   attackProjectile(3001),
   attackMagical(3002),
