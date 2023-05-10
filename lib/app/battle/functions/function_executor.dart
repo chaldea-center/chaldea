@@ -235,7 +235,7 @@ class FunctionExecutor {
           dataVals,
           targets,
           targetTraits: function.traitVals,
-          checkBuff: function.funcType == FuncType.gainNpBuffIndividualSum,
+          onlyCheckBuff: function.funcType == FuncType.gainNpBuffIndividualSum,
         );
         break;
       case FuncType.hastenNpturn:

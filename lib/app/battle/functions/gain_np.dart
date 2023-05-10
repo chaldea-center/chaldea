@@ -10,7 +10,7 @@ class GainNP {
     final DataVals dataVals,
     final Iterable<BattleServantData> targets, {
     final List<NiceTrait>? targetTraits,
-    final bool checkBuff = false,
+    final bool onlyCheckBuff = false,
     final bool isNegative = false,
   }) {
     final functionRate = dataVals.Rate ?? 1000;
@@ -24,7 +24,7 @@ class GainNP {
       int change = isNegative ? -dataVals.Value! : dataVals.Value!;
       if (targetTraits != null) {
         final List<BattleServantData> countTargets = [];
-        final targetType = dataVals.Target ?? 0;
+        final targetType = dataVals.Value2 ?? 0;
         if (targetType == 0) {
           countTargets.add(target);
         }
@@ -36,10 +36,13 @@ class GainNP {
         }
 
         int count = 0;
+        final bool activeBuffOnly = onlyCheckBuff || (dataVals.GainNpTargetPassiveIndividuality ?? 0) < 1;
+
         for (final countTarget in countTargets) {
-          count += checkBuff
-              ? countTarget.countBuffWithTrait(targetTraits, activeOnly: true)
-              : countTarget.countTrait(battleData, targetTraits);
+          count += countTarget.countBuffWithTrait(targetTraits, activeOnly: activeBuffOnly);
+          if (!onlyCheckBuff) {
+            count += countTarget.countTrait(battleData, targetTraits);
+          }
         }
         change *= count;
       }
