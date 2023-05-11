@@ -959,8 +959,8 @@ class EnemyMisc {
 class QuestEnemy with GameCardMixin {
   DeckType deck;
   int deckId;
-  int userSvtId;
-  int uniqueId;
+  // int userSvtId;
+  // int uniqueId;
   int npcId;
   EnemyRoleType roleType;
   @override
@@ -997,13 +997,14 @@ class QuestEnemy with GameCardMixin {
   EnemyLimit? limit;
   EnemyMisc? misc;
 
-  int get runtimeUniqueId => npcId * 10 + deck.index;
+  // not unique if summoned from call deck 
+  int get deckNpcId => npcId * 10 + deck.index;
 
   QuestEnemy({
     this.deck = DeckType.enemy,
     required this.deckId,
-    this.userSvtId = -1,
-    this.uniqueId = -1,
+    // this.userSvtId = -1,
+    // this.uniqueId = -1,
     this.npcId = -1,
     this.roleType = EnemyRoleType.normal,
     required this.name,

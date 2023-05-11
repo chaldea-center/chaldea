@@ -126,10 +126,10 @@ class QuestWave extends StatelessWidget {
     final _enemyDeck = stageEnemies.where((e) => e.deck == DeckType.enemy).toList();
     children.addAll(_buildDeck(_enemyDeck, needSort: true));
     for (final e in _enemyDeck) {
-      _usedUniqueIds.add(e.runtimeUniqueId);
+      _usedUniqueIds.add(e.deckNpcId);
       for (final npcId in e.enemyScript.shift ?? <int>[]) {
         final shift = npcs[DeckType.shift]?[npcId];
-        if (shift != null) _usedUniqueIds.add(shift.runtimeUniqueId);
+        if (shift != null) _usedUniqueIds.add(shift.deckNpcId);
       }
     }
     // call deck
@@ -138,9 +138,9 @@ class QuestWave extends StatelessWidget {
       children.add(const Text('- Call Deck -', textAlign: TextAlign.center));
       children.addAll(_buildDeck(_callDeck, needSort: true));
     }
-    _usedUniqueIds.addAll(_callDeck.map((e) => e.runtimeUniqueId));
+    _usedUniqueIds.addAll(_callDeck.map((e) => e.deckNpcId));
     // others
-    final _unknownDeck = stageEnemies.where((e) => !_usedUniqueIds.contains(e.runtimeUniqueId));
+    final _unknownDeck = stageEnemies.where((e) => !_usedUniqueIds.contains(e.deckNpcId));
     if (_unknownDeck.isNotEmpty) {
       children.add(const Text('- Unknown Deck -', textAlign: TextAlign.center));
       children.addAll(_buildDeck(_unknownDeck, showDeck: true));

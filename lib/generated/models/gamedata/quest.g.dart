@@ -655,8 +655,6 @@ Map<String, dynamic> _$EnemyMiscToJson(EnemyMisc instance) => <String, dynamic>{
 QuestEnemy _$QuestEnemyFromJson(Map json) => QuestEnemy(
       deck: $enumDecodeNullable(_$DeckTypeEnumMap, json['deck']) ?? DeckType.enemy,
       deckId: json['deckId'] as int,
-      userSvtId: json['userSvtId'] as int? ?? -1,
-      uniqueId: json['uniqueId'] as int? ?? -1,
       npcId: json['npcId'] as int? ?? -1,
       roleType: $enumDecodeNullable(_$EnemyRoleTypeEnumMap, json['roleType']) ?? EnemyRoleType.normal,
       name: json['name'] as String,
@@ -708,8 +706,6 @@ QuestEnemy _$QuestEnemyFromJson(Map json) => QuestEnemy(
 Map<String, dynamic> _$QuestEnemyToJson(QuestEnemy instance) => <String, dynamic>{
       'deck': _$DeckTypeEnumMap[instance.deck]!,
       'deckId': instance.deckId,
-      'userSvtId': instance.userSvtId,
-      'uniqueId': instance.uniqueId,
       'npcId': instance.npcId,
       'roleType': _$EnemyRoleTypeEnumMap[instance.roleType]!,
       'name': instance.name,
