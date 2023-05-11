@@ -16,6 +16,8 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
   @override
   final InlineSpan? leading;
   final int? eventId;
+  @override
+  final String? unknownMsg;
 
   MissionCondDetailDescriptor({
     super.key,
@@ -26,6 +28,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
     this.leading,
     bool? useAnd,
     this.eventId,
+    this.unknownMsg,
   }) : _useAnd = useAnd;
 
   @override
@@ -234,6 +237,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           kr: () => text('친구 포인트 소환을 $targetNum회 실행'),
         );
     }
+    if (unknownMsg != null) return text(unknownMsg!);
     return localized(
       jp: () => text('不明な条件(${detail.missionCondType}): $targetIds, $targetNum'),
       cn: () => text('未知条件(${detail.missionCondType}): $targetIds, $targetNum'),

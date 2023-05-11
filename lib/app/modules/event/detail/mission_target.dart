@@ -121,7 +121,6 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
             },
           ),
         ),
-        table(),
         if (filterData.hasRare)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -151,6 +150,7 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
           },
           shrinkWrap: true,
         ),
+        table(),
         const SafeArea(child: SizedBox(height: 16)),
       ],
     );

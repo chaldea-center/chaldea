@@ -24,6 +24,8 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
   @override
   final InlineSpan? leading;
   final List<EventMission> missions;
+  @override
+  final String? unknownMsg;
 
   const CondTargetValueDescriptor({
     super.key,
@@ -36,6 +38,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
     this.leading,
     this.missions = const [],
     this.useAnd,
+    this.unknownMsg,
   });
   CondTargetValueDescriptor.commonRelease({
     super.key,
@@ -46,6 +49,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
     this.leading,
     this.missions = const [],
     this.useAnd,
+    this.unknownMsg,
   })  : condType = commonRelease.condType,
         target = commonRelease.condId,
         value = commonRelease.condNum;
@@ -172,6 +176,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           condType: condType,
           targetNum: value,
           targetIds: [target],
+          unknownMsg: unknownMsg,
         ).buildContent(context);
       case CondType.eventEnd:
         return localized(
@@ -316,6 +321,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           targetNum: 1,
           targetIds: [target],
           missions: missions,
+          unknownMsg: unknownMsg,
         ).buildContent(context);
       case CondType.commonRelease:
         return localized(
@@ -338,6 +344,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
       default:
         break;
     }
+    if (unknownMsg != null) return text(unknownMsg!);
     return localized(
       jp: () => text('不明な条件(${condType.name}): $value, $target'),
       cn: () => text('未知条件(${condType.name}): $value, $target'),

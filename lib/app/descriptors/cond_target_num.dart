@@ -25,6 +25,8 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
   @override
   final InlineSpan? leading;
   final int? eventId;
+  @override
+  final String? unknownMsg;
 
   const CondTargetNumDescriptor({
     super.key,
@@ -38,6 +40,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
     this.leading,
     this.useAnd,
     this.eventId,
+    this.unknownMsg,
   }) : details = details ?? const [];
 
   bool _isPlayableAll(List<int> clsIds) {
@@ -57,6 +60,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           leading: leading,
           useAnd: details.first.useAnd,
           eventId: eventId,
+          unknownMsg: unknownMsg,
         );
       }
 
@@ -80,6 +84,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           detail: details[index],
           useAnd: details[index].useAnd,
           eventId: eventId,
+          // unknownMsg: null,
         ).buildContent(context));
         spans.add(const TextSpan(text: '』'));
         if (index != details.length - 1) {
@@ -649,6 +654,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
       default:
         break;
     }
+    if (unknownMsg != null) return text(unknownMsg!);
     return localized(
       jp: () => text('不明な条件(${condType.name}): $targetNum, $targetIds'),
       cn: () => text('未知条件(${condType.name}): $targetNum, $targetIds'),

@@ -19,6 +19,8 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
   final double? textScaleFactor;
   @override
   final InlineSpan? leading;
+  @override
+  final String? unknownMsg;
 
   const VoiceCondDescriptor({
     super.key,
@@ -29,6 +31,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
     this.textScaleFactor,
     this.leading,
     this.useAnd,
+    this.unknownMsg,
   });
 
   @override
@@ -187,6 +190,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
       default:
         break;
     }
+    if (unknownMsg != null) return text(unknownMsg!);
     return localized(
       jp: null,
       cn: () => text('未知条件(${condType.name}): $value'),

@@ -997,7 +997,7 @@ class QuestEnemy with GameCardMixin {
   EnemyLimit? limit;
   EnemyMisc? misc;
 
-  // not unique if summoned from call deck 
+  // not unique if summoned from call deck
   int get deckNpcId => npcId * 10 + deck.index;
 
   QuestEnemy({

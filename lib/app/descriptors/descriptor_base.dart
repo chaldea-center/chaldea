@@ -9,6 +9,7 @@ abstract class DescriptorBase {
   List<int> get targetIds;
   InlineSpan? get leading;
   bool? get useAnd;
+  String? get unknownMsg;
 
   List<InlineSpan> localized({
     required List<InlineSpan> Function()? jp,

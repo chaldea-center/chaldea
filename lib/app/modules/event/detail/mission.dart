@@ -99,6 +99,7 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
                 missions: missions,
                 eventId: widget.event.id,
                 textScaleFactor: 0.8,
+                unknownMsg: mission.name,
               )
             : Text(mission.name, textScaleFactor: 0.8),
         horizontalTitleGap: 0,
