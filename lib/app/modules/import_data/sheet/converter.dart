@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/utils.dart';
 
 // id	name	priority	coin	bond favorite
 // 	ascension	ascension_t	skill1	skill1_t	skill2	skill2_t	skill3	skill3_t
@@ -12,8 +13,9 @@ class PlanDataSheetConverter {
   static const _id = 'id';
   static const _name = 'name';
   static const _priority = 'priority';
+  static const _rarity = 'rarity';
+  static const _svtClass = 'class';
   static const _coin = 'coin';
-  static const _bond = 'bond';
   static const _cmdCode = 'cmdCode';
 
   static const _favorite = 'favorite';
@@ -52,20 +54,22 @@ class PlanDataSheetConverter {
   static final _headers = <String>[
     _id,
     _name,
+    _rarity,
+    _svtClass,
     _favorite,
     _priority,
     _coin,
-    _bond,
     for (final k in _planHeaders) ...[k, '${k}_t'],
     _cmdCode,
   ];
 
   static Map<String, String Function()> titles = {
     _id: () => 'ID',
-    _name: () => 'Name',
+    _name: () => S.current.card_name,
+    _rarity: () => S.current.rarity,
+    _svtClass: () => S.current.svt_class,
     _priority: () => S.current.priority,
     _coin: () => S.current.servant_coin,
-    _bond: () => S.current.bond,
     _cmdCode: () => S.current.command_code,
     _favorite: () => S.current.favorite,
     _ascension: () => S.current.ascension,
@@ -144,13 +148,17 @@ class PlanDataSheetConverter {
     );
   }
 
-  List<String> svtToCsv(int id, String name, SvtStatus status, SvtPlan plan) {
+  List<String> svtToCsv(Servant svt) {
+    SvtStatus status = svt.status;
+    SvtPlan plan = svt.curPlan;
     Map<String, dynamic> data = {
-      _id: id,
-      _name: name,
+      _id: svt.collectionNo,
+      _name: svt.lName.l,
+      _rarity: svt.rarity,
+      _svtClass: Transl.svtClassId(svt.classId).l,
+      _coin: db.curUser.items[svt.coin?.item.id] ?? "",
       _favorite: status.cur.favorite ? 1 : 0,
       _priority: status.priority,
-      _bond: status.bond,
       ..._svtPlanToCsv(status.cur, false),
       ..._svtPlanToCsv(plan, true),
       _cmdCode: jsonEncode(status.equipCmdCodes),
@@ -158,7 +166,7 @@ class PlanDataSheetConverter {
     return _headers.map((e) => data[e]?.toString() ?? "").toList();
   }
 
-  MapEntry<SvtStatus, SvtPlan> csvToSvt(List<String> row, List<String> header) {
+  ParedSvtCsvRow csvToSvt(List<String> row, List<String> header) {
     Map<String, String> rowData = {
       for (int index = 0; index < min(row.length, header.length); index++) header[index]: row[index]
     };
@@ -176,10 +184,12 @@ class PlanDataSheetConverter {
     final status = SvtStatus(
       cur: _svtPlanFromCsv(rowData, false),
       priority: _toInt(_priority) ?? 1,
-      bond: _toInt(_bond) ?? 0,
       equipCmdCodes: List.from(equipCmdCodes),
     );
-    return MapEntry(status, plan);
+
+    final coin = _toInt(_coin);
+
+    return ParedSvtCsvRow(collectionNo: _toInt(_id)!, status: status, plan: plan, coin: coin);
   }
 
   List<List<String>> generateCSV(bool includeAll, bool includeFavorite) {
@@ -196,30 +206,45 @@ class PlanDataSheetConverter {
       notes.add(note);
     }
     data.add(notes);
-    List<int> collections = [];
+    List<Servant> collections = [];
     if (includeAll) {
-      collections = db.gameData.servantsWithDup.keys.toList();
+      collections = db.gameData.servantsWithDup.values.toList();
     } else if (includeFavorite) {
-      collections = db.gameData.servantsWithDup.keys.where((key) => db.curUser.svtStatusOf(key).favorite).toList();
+      collections = db.gameData.servantsWithDup.values.where((svt) => svt.status.favorite).toList();
     }
-    collections.sort();
-    for (final key in collections) {
-      data.add(svtToCsv(key, db.gameData.servantsWithDup[key]?.lName.l ?? "", db.curUser.svtStatusOf(key),
-          db.curUser.svtPlanOf(key)));
+    collections.sort2((e) => e.originalCollectionNo);
+    for (final svt in collections) {
+      data.add(svtToCsv(svt));
     }
     return data;
   }
 
-  void parseFromCSV(Map<int, SvtStatus> statuses, Map<int, SvtPlan> plans, List<List<String>> rawData) {
-    if (rawData.isEmpty) throw ArgumentError('empty CSV');
+  List<ParedSvtCsvRow> parseFromCSV(List<List<String>> rawData) {
+    if (rawData.isEmpty) throw ArgumentError('Empty CSV');
     final header = rawData[0];
+    Map<int, ParedSvtCsvRow> result = {};
     for (final row in rawData.skip(1)) {
       if (row.isEmpty) continue;
       final key = int.tryParse(row.first);
       if (key == null) continue;
-      final parsed = csvToSvt(row, header);
-      statuses[key] = parsed.key;
-      plans[key] = parsed.value;
+      final v = (csvToSvt(row, header));
+      if (v.collectionNo > 0) result[v.collectionNo] = v;
     }
+
+    return result.values.toList();
   }
+}
+
+class ParedSvtCsvRow {
+  int collectionNo;
+  SvtStatus status;
+  SvtPlan plan;
+  int? coin;
+
+  ParedSvtCsvRow({
+    required this.collectionNo,
+    required this.status,
+    required this.plan,
+    this.coin,
+  });
 }

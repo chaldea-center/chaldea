@@ -29,10 +29,10 @@ class ChaldeaUrl {
     return (useCN ? Hosts.kAppHostCN : Hosts.kAppHostGlobal) + path;
   }
 
-  static IconButton docsHelpBtn(String path, {String? zhPath, String? tooltip}) {
+  static IconButton docsHelpBtn(String path, {String? zhPath, String? tooltip, String dir = 'guide/'}) {
     return IconButton(
       onPressed: () {
-        launch(ChaldeaUrl.doc(zhPath != null && Language.isZH ? zhPath : path));
+        launch(ChaldeaUrl.doc(zhPath != null && Language.isZH ? zhPath : path, dir: dir));
       },
       icon: const Icon(Icons.help_outline),
       tooltip: tooltip ?? S.current.help,

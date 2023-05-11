@@ -22,20 +22,24 @@ class ImportCSVPage extends StatefulWidget {
 }
 
 class _ImportCSVPageState extends State<ImportCSVPage> {
-  Map<int, SvtStatus> statuses = {};
-  Map<int, SvtPlan> plans = {};
+  List<ParedSvtCsvRow> parsedRows = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(S.current.import_csv_title)),
+      appBar: AppBar(
+        title: Text(S.current.import_csv_title),
+        actions: [
+          ChaldeaUrl.docsHelpBtn('import_data.html#csv-template', zhPath: 'import_data.html#csv-模板'),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(
             child: ListView(
               children: [
                 ListTile(
-                  title: Text('${statuses.length} records'),
+                  title: Text('${parsedRows.length} records'),
                 ),
               ],
             ),
@@ -58,9 +62,7 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
             if (bytes == null) return;
             try {
               final rawData = const CsvToListConverter().convert<String>(utf8.decode(bytes), shouldParseNumbers: false);
-              statuses.clear();
-              plans.clear();
-              PlanDataSheetConverter().parseFromCSV(statuses, plans, rawData);
+              parsedRows = PlanDataSheetConverter().parseFromCSV(rawData);
             } catch (e, s) {
               logger.e('import chaldea csv failed', e, s);
               EasyLoading.showError(e.toString());
@@ -113,7 +115,7 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
           child: Text(S.current.import_csv_export_template),
         ),
         ElevatedButton(
-          onPressed: statuses.isEmpty
+          onPressed: parsedRows.isEmpty
               ? null
               : () {
                   showDialog(
@@ -123,12 +125,16 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
                       return SimpleCancelOkDialog(
                         title: Text(S.current.confirm),
                         onTapOk: () {
-                          db.curUser.servants
-                            ..clear()
-                            ..addAll(statuses);
-                          db.curUser.curSvtPlan
-                            ..clear()
-                            ..addAll(plans);
+                          for (final row in parsedRows) {
+                            final svt = db.gameData.servantsWithDup[row.collectionNo];
+                            if (svt == null) continue;
+                            db.curUser.servants[row.collectionNo] = row.status;
+                            db.curSvtPlan[row.collectionNo] = row.plan;
+                            final coinId = svt.coin?.item.id;
+                            if (coinId != null && row.coin != null) {
+                              db.curUser.items[coinId] = row.coin!;
+                            }
+                          }
                           db.itemCenter.init();
                           EasyLoading.showSuccess(S.current.import_data_success);
                         },
@@ -145,7 +151,7 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
   void generateTemplate(bool includeAll, bool includeFavorite) async {
     final data = PlanDataSheetConverter().generateCSV(includeAll, includeFavorite);
     final contents = const ListToCsvConverter().convert(data);
-    final t = DateTime.now().toDateString();
+    final t = DateTime.now().toSafeFileName();
     final fn = 'chaldea_data_$t.csv';
     if (kIsWeb) {
       kPlatformMethods.downloadString(contents, fn);
