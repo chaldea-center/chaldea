@@ -15,7 +15,7 @@
   - [ ] reset active skill CD for 1 target.
   - [ ] Skip turn! add to popup menu
 - [ ] add a flag for `final bool BattleServantData.isPlayer`, DO NOT depend on niceSvt/niceEnemy
-  - [ ] ensure init niceSvt/niceEnemy ***in constructor***
+  - [ ] ensure init niceSvt/niceEnemy **_in constructor_**
 - [ ] active/passiveList make private, filter out actor died buffs, INDIV
 - [ ] gainNp/gainHp/gainHpPer related funcs: check DataVals.Unaffected
 
@@ -68,8 +68,8 @@
 - [ ] funcSuccess for some wired function types
 - [ ] Enemy shift target may not exist
 - [x] cardDetail.damageRate/tdRate (U-Olga Marie buster/extra attack on all enemies)
-- [X] dispBreakShift(need clamp)
-- [X] Stage.script.NoEntryIds+Func.updateEntryPositions (DataVals.OnPositions+OffPositions)
+- [x] dispBreakShift(need clamp)
+- [x] Stage.script.NoEntryIds+Func.updateEntryPositions (DataVals.OnPositions+OffPositions)
 - [ ] shiftGuts(Ratio)
 - [x] QuestFlag.enemyImmediateAppear
 - [x] Damage should remove buff with buffScript field damageRelease: 1
