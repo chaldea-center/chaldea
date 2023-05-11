@@ -1234,9 +1234,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     }
     router.pushPage(
       CraftListPage(
-        onSelected: (selectedCe) {
-          _onSelectCE(selectedCe);
-        },
+        onSelected: _onSelectCE,
         filterData: db.settings.craftFilterData,
         pinged: pinged.toList(),
       ),
@@ -1274,7 +1272,8 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
       playerSvtData.ceLv = status.lv;
       playerSvtData.ceLimitBreak = status.limitCount == 4;
     } else {
-      playerSvtData.ceLv = 1;
+      playerSvtData.ceLv = db.settings.battleSim.defaultLvs.ceMaxLv ? ce.lvMax : 1;
+      playerSvtData.ceLimitBreak = db.settings.battleSim.defaultLvs.ceMaxLimitBreak;
     }
     _updateState();
   }

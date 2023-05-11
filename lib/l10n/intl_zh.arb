@@ -210,7 +210,7 @@
   "debug_menu": "Debug Menu",
   "def_np_gain_mod": "敌攻击补正",
   "default_lvs": "默认等级",
-  "default_lvs_hint": "默认等级仅在未开启\"优先玩家数据\"或从者未关注时使用",
+  "default_lvs_hint": "默认等级仅在未开启\"优先玩家数据\"或从者/礼装未关注时使用",
   "defense_np_rate": "受击NP率",
   "delete": "删除",
   "delete_unreleased_card": "删除未实装卡牌",

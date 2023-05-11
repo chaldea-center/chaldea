@@ -111,6 +111,27 @@ class _PlayerSvtDefaultLvEditPageState extends State<PlayerSvtDefaultLvEditPage>
               },
             ),
           const Divider(height: 16),
+          CheckboxListTile(
+            dense: true,
+            title: Text('${S.current.craft_essence}: ${S.current.max_limit_break}'),
+            value: defaultLvs.ceMaxLimitBreak,
+            onChanged: (v) {
+              setState(() {
+                if (v != null) defaultLvs.ceMaxLimitBreak = v;
+              });
+            },
+          ),
+          CheckboxListTile(
+            dense: true,
+            title: Text('${S.current.craft_essence}: Lv. MAX'),
+            value: defaultLvs.ceMaxLv,
+            onChanged: (v) {
+              setState(() {
+                if (v != null) defaultLvs.ceMaxLv = v;
+              });
+            },
+          ),
+          const Divider(height: 16),
           SFooter(S.current.default_lvs_hint)
         ],
       ),

@@ -210,7 +210,7 @@
   "debug_menu": "Debug Menu",
   "def_np_gain_mod": "Def NP Gain Mod",
   "default_lvs": "Default Lvs",
-  "default_lvs_hint": "Default lv setting is used only if \"Prefer Player Data\" turned off or servant not favorite.",
+  "default_lvs_hint": "Default lv setting is used only if \"Prefer Player Data\" turned off or servant/CE not favorite.",
   "defense_np_rate": "Defense NP Rate",
   "delete": "Delete",
   "delete_unreleased_card": "Delete Unreleased Cards",

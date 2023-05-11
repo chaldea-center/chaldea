@@ -300,7 +300,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "debug_menu": MessageLookupByLibrary.simpleMessage("Debug Menu"),
         "def_np_gain_mod": MessageLookupByLibrary.simpleMessage("敌攻击补正"),
         "default_lvs": MessageLookupByLibrary.simpleMessage("默认等级"),
-        "default_lvs_hint": MessageLookupByLibrary.simpleMessage("默认等级仅在未开启\"优先玩家数据\"或从者未关注时使用"),
+        "default_lvs_hint": MessageLookupByLibrary.simpleMessage("默认等级仅在未开启\"优先玩家数据\"或从者/礼装未关注时使用"),
         "defense_np_rate": MessageLookupByLibrary.simpleMessage("受击NP率"),
         "delete": MessageLookupByLibrary.simpleMessage("删除"),
         "delete_unreleased_card": MessageLookupByLibrary.simpleMessage("删除未实装卡牌"),

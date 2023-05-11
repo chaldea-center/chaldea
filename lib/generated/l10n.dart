@@ -2373,10 +2373,10 @@ class S {
     );
   }
 
-  /// `Default lv setting is used only if "Prefer Player Data" turned off or servant not favorite.`
+  /// `Default lv setting is used only if "Prefer Player Data" turned off or servant/CE not favorite.`
   String get default_lvs_hint {
     return Intl.message(
-      'Default lv setting is used only if "Prefer Player Data" turned off or servant not favorite.',
+      'Default lv setting is used only if "Prefer Player Data" turned off or servant/CE not favorite.',
       name: 'default_lvs_hint',
       desc: '',
       locale: localeName,

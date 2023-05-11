@@ -165,6 +165,8 @@ PlayerSvtDefaultData _$PlayerSvtDefaultDataFromJson(Map json) => $checkedCreate(
           hpFou: $checkedConvert('hpFou', (v) => v as int? ?? 100),
           cardStrengthens:
               $checkedConvert('cardStrengthens', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          ceMaxLimitBreak: $checkedConvert('ceMaxLimitBreak', (v) => v as bool? ?? false),
+          ceMaxLv: $checkedConvert('ceMaxLv', (v) => v as bool? ?? false),
         );
         return val;
       },
@@ -181,4 +183,6 @@ Map<String, dynamic> _$PlayerSvtDefaultDataToJson(PlayerSvtDefaultData instance)
       'atkFou': instance.atkFou,
       'hpFou': instance.hpFou,
       'cardStrengthens': instance.cardStrengthens,
+      'ceMaxLimitBreak': instance.ceMaxLimitBreak,
+      'ceMaxLv': instance.ceMaxLv,
     };

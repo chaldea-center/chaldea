@@ -311,7 +311,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "def_np_gain_mod": MessageLookupByLibrary.simpleMessage("Def NP Gain Mod"),
         "default_lvs": MessageLookupByLibrary.simpleMessage("Default Lvs"),
         "default_lvs_hint": MessageLookupByLibrary.simpleMessage(
-            "Default lv setting is used only if \"Prefer Player Data\" turned off or servant not favorite."),
+            "Default lv setting is used only if \"Prefer Player Data\" turned off or servant/CE not favorite."),
         "defense_np_rate": MessageLookupByLibrary.simpleMessage("Defense NP Rate"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "delete_unreleased_card": MessageLookupByLibrary.simpleMessage("Delete Unreleased Cards"),

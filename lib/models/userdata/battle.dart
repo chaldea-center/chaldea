@@ -183,6 +183,9 @@ class PlayerSvtDefaultData {
   int hpFou;
   List<int> cardStrengthens;
 
+  bool ceMaxLimitBreak;
+  bool ceMaxLv;
+
   PlayerSvtDefaultData({
     this.lv = 90,
     this.useMaxLv = true,
@@ -194,6 +197,8 @@ class PlayerSvtDefaultData {
     this.atkFou = 100,
     this.hpFou = 100,
     List<int>? cardStrengthens,
+    this.ceMaxLimitBreak = false,
+    this.ceMaxLv = false,
   })  : appendLvs = List.generate(3, (index) => appendLvs?.getOrNull(index) ?? 0),
         cardStrengthens = List.generate(5, (index) => cardStrengthens?.getOrNull(index) ?? 0) {
     validate();
