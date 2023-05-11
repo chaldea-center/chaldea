@@ -159,7 +159,10 @@ class BattleRecorderPanelBase extends StatelessWidget {
       } else if (record is BattleInstantDeathRecord) {
         cardChildren.add(_InstantDeathDetailWidget(record: record, battleData: battleData));
       } else if (record is BattleMessageRecord) {
-        cardChildren.add(Text(record.message, style: const TextStyle(fontWeight: FontWeight.bold)));
+        cardChildren.add(Text.rich(TextSpan(children: [
+          TextSpan(text: '${record.message}: '),
+          if (record.target != null) ...drawSvt(context, record.target!),
+        ])));
       } else {
         assert(false, record);
       }

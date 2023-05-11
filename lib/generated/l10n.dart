@@ -1680,10 +1680,10 @@ class S {
     );
   }
 
-  /// `Charge to {count}?`
+  /// `Charge NP to {count}`
   String charge_np_to(Object count) {
     return Intl.message(
-      'Charge to $count?',
+      'Charge NP to $count',
       name: 'charge_np_to',
       desc: '',
       locale: localeName,
@@ -7479,6 +7479,17 @@ class S {
       desc: '',
       locale: localeName,
       args: [n],
+    );
+  }
+
+  /// `Reset Skill CD`
+  String get reset_skill_cd {
+    return Intl.message(
+      'Reset Skill CD',
+      name: 'reset_skill_cd',
+      desc: '',
+      locale: localeName,
+      args: [],
     );
   }
 

@@ -674,6 +674,7 @@
   "reset_custom_ascension_icon": "사용자 맞춤 서번트 아이콘 초기화",
   "reset_plan_all": "계획 초기화 {n}(모두)",
   "reset_plan_shown": "계획 초기화 {n}(표시된)",
+  "reset_skill_cd": null,
   "resettable_digged_num": "필요한 파다 수 초기화",
   "restart_to_apply_changes": "다시 시작하여 적용시키기",
   "restart_to_upgrade_hint": "업데이트 후 재시작합니다. 만약 업데이트에 실패했다면 수동으로 소스 파일을 다른곳에 옮겨주시기 바랍니다.",

@@ -110,7 +110,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
   }
 
   List<PopupMenuEntry> popupMenuItemBuilder(BuildContext context) {
-    List<PopupMenuEntry> items = [
+    List<PopupMenuEntry<dynamic>> items = [
       PopupMenuItem(
         enabled: battleData.niceQuest != null,
         onTap: () async {
@@ -126,6 +126,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           router.pushPage(BattleLogPage(logger: battleData.battleLogger));
         },
       ),
+      const PopupMenuDivider(),
       PopupMenuItem(
         child: Text('${S.current.command_spell}: ${Transl.skillNames('宝具解放').l}'),
         onTap: () async {
@@ -150,6 +151,14 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           if (mounted) setState(() {});
         },
       ),
+      PopupMenuItem(
+        child: Text(S.current.reset_skill_cd),
+        onTap: () {
+          battleData.resetAllySkillCD();
+          if (mounted) setState(() {});
+        },
+      ),
+      const PopupMenuDivider(),
       PopupMenuItem(
         child: Text(S.current.battle_activate_custom_skill),
         onTap: () async {
@@ -204,6 +213,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         ResponsiveLayout(
           verticalAlign: CrossAxisAlignment.center,
           verticalDivider: const SizedBox(height: 120, child: VerticalDivider()),
+          horizontalDivider: const DividerWithTitle(thickness: 1, height: 8, title: '楚河  漢界'),
           children: [
             Responsive(small: 12, middle: 6, child: enemyParty),
             Responsive(small: 12, middle: 6, child: allyParty),

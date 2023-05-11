@@ -14,6 +14,8 @@
   - [ ] forceInstantDeath: rn or delayed for 1 target
   - [ ] reset active skill CD for 1 target.
   - [ ] Skip turn! add to popup menu
+- [ ] add a flag for `final bool BattleServantData.isPlayer`, DO NOT depend on niceSvt/niceEnemy
+  - [ ] ensure init niceSvt/niceEnemy ***in constructor***
 
 ### Recorder
 

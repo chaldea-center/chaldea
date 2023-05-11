@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../interactions/skill_act_select.dart';
@@ -232,4 +233,80 @@ enum SkillInfoType {
   mysticCode,
   commandSpell,
   custom,
+}
+
+class CommonCustomSkills {
+  const CommonCustomSkills._();
+
+  static const _idBase = 10000000000;
+
+  static final csRepairHp = NiceSkill(
+    id: _idBase + 1,
+    type: SkillType.active,
+    name: '霊基修復',
+    unmodifiedDetail: 'サーヴァント1騎のHPを全回復する',
+    coolDown: [0],
+    functions: [
+      NiceFunction(
+        funcId: 452,
+        funcType: FuncType.gainHpPer,
+        funcTargetType: FuncTargetType.ptOne,
+        funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+        svals: [
+          DataVals({
+            'Rate': 1000,
+            'Value': 1000,
+            'Unaffected': 1,
+          })
+        ],
+      )
+    ],
+  );
+
+  static final csRepairNp = NiceSkill(
+    id: _idBase + 9,
+    type: SkillType.active,
+    name: '宝具解放',
+    unmodifiedDetail: 'サーヴァント1騎のNPを100％増加させる',
+    coolDown: [0],
+    functions: [
+      NiceFunction(
+        funcId: 464,
+        funcType: FuncType.gainNp,
+        funcTargetType: FuncTargetType.ptOne,
+        funcTargetTeam: FuncApplyTarget.player,
+        funcPopupText: 'NP増加',
+        svals: [
+          DataVals({
+            'Rate': 3000,
+            'Value': 10000,
+            'Unaffected': 1,
+          })
+        ],
+      )
+    ],
+  );
+
+  static NiceSkill get chargeAllAlliesNP => NiceSkill(
+        id: _idBase + 3,
+        type: SkillType.active,
+        name: S.current.battle_charge_party,
+        unmodifiedDetail: S.current.battle_charge_party,
+        coolDown: [0],
+        functions: [
+          NiceFunction(
+            funcId: 1,
+            funcType: FuncType.gainNp,
+            funcTargetType: FuncTargetType.ptAll,
+            funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+            svals: [
+              DataVals({
+                'Rate': 5000,
+                'Value': 10000,
+                'Unaffected': 1,
+              })
+            ],
+          )
+        ],
+      );
 }

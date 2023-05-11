@@ -827,28 +827,7 @@ class BattleData {
     }
     // 宝具充填
     // 出撃中のサーヴァント全員の宝具ゲージを+100％する
-    final skill = NiceSkill(
-      id: 10000000003,
-      type: SkillType.active,
-      name: S.current.battle_charge_party,
-      unmodifiedDetail: S.current.battle_charge_party,
-      coolDown: [0],
-      functions: [
-        NiceFunction(
-          funcId: 1,
-          funcType: FuncType.gainNp,
-          funcTargetType: FuncTargetType.ptAll,
-          funcTargetTeam: FuncApplyTarget.playerAndEnemy,
-          svals: [
-            DataVals({
-              'Rate': 5000,
-              'Value': 10000,
-              'Unaffected': 1,
-            })
-          ],
-        )
-      ],
-    );
+    final skill = CommonCustomSkills.chargeAllAlliesNP;
 
     battleLogger.action(S.current.battle_charge_party);
 
@@ -869,28 +848,7 @@ class BattleData {
   }
 
   Future<void> commandSpellRepairHp() {
-    final skill = NiceSkill(
-      id: 10000000001,
-      type: SkillType.active,
-      name: '霊基修復',
-      unmodifiedDetail: 'サーヴァント1騎のHPを全回復する',
-      coolDown: [0],
-      functions: [
-        NiceFunction(
-          funcId: 452,
-          funcType: FuncType.gainHpPer,
-          funcTargetType: FuncTargetType.ptOne,
-          funcTargetTeam: FuncApplyTarget.playerAndEnemy,
-          svals: [
-            DataVals({
-              'Rate': 1000,
-              'Value': 1000,
-              'Unaffected': 1,
-            })
-          ],
-        )
-      ],
-    );
+    final skill = CommonCustomSkills.csRepairHp;
     final csRepairHpName = '${S.current.command_spell}: ${Transl.skillNames('霊基修復').l}';
 
     return recordError(
@@ -910,29 +868,7 @@ class BattleData {
   }
 
   Future<void> commandSpellReleaseNP() {
-    final skill = NiceSkill(
-      id: 10000000009,
-      type: SkillType.active,
-      name: '宝具解放',
-      unmodifiedDetail: 'サーヴァント1騎のNPを100％増加させる',
-      coolDown: [0],
-      functions: [
-        NiceFunction(
-          funcId: 464,
-          funcType: FuncType.gainNp,
-          funcTargetType: FuncTargetType.ptOne,
-          funcTargetTeam: FuncApplyTarget.player,
-          funcPopupText: 'NP増加',
-          svals: [
-            DataVals({
-              'Rate': 3000,
-              'Value': 10000,
-              'Unaffected': 1,
-            })
-          ],
-        )
-      ],
-    );
+    final skill = CommonCustomSkills.csRepairNp;
     final csReleaseNpName = '${S.current.command_spell}: ${Transl.skillNames('宝具解放').l}';
     battleLogger.action(csReleaseNpName);
 
@@ -948,6 +884,21 @@ class BattleData {
           type: SkillInfoType.commandSpell,
           fromPlayer: true,
         );
+      },
+    );
+  }
+
+  Future<void> resetAllySkillCD() async {
+    final ally = targetedAlly;
+    if (ally == null) return;
+    return recordError(
+      save: true,
+      action: 'resetSkillCD',
+      task: () async {
+        for (final skill in ally.skillInfoList) {
+          skill.chargeTurn = 0;
+        }
+        recorder.message(S.current.reset_skill_cd, ally);
       },
     );
   }

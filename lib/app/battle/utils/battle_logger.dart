@@ -43,8 +43,8 @@ class BattleRecordManager {
     return BattleRecordManager()..records = records.toList();
   }
 
-  void message(String msg) {
-    records.add(BattleMessageRecord(msg));
+  void message(String msg, [BattleServantData? target]) {
+    records.add(BattleMessageRecord(msg, target));
   }
 
   void progressWave(int wave) {
@@ -114,7 +114,8 @@ abstract class BattleRecord {
 
 class BattleMessageRecord extends BattleRecord {
   final String message;
-  BattleMessageRecord(this.message);
+  final BattleServantData? target;
+  BattleMessageRecord(this.message, this.target);
 }
 
 class BattleSkipWaveRecord extends BattleRecord {

@@ -277,6 +277,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
     for (final skillNum in kActiveSkillNums) {
       final skill = svt.skillInfoList.getOrNull(skillNum - 1);
       final baseSkill = skill?.proximateSkill;
+      final cd = skill?.chargeTurn ?? 0;
       children.add(SimpleAccordion(
         headerBuilder: (context, _) {
           return ListTile(
@@ -296,6 +297,8 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
             ),
             title: Text("${S.current.skill} $skillNum  Lv.${baseSkill == null ? '-' : skill?.skillLv}"),
             subtitle: Text(skill?.lName ?? "NONE"),
+            trailing: Text('CD ${cd > 0 ? cd : "-"}', textScaleFactor: 0.8),
+            contentPadding: const EdgeInsetsDirectional.only(start: 16),
           );
         },
         contentBuilder: (context) {

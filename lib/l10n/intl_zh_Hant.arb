@@ -674,6 +674,7 @@
   "reset_custom_ascension_icon": "重置自訂從者頭像",
   "reset_plan_all": "重置規劃{n}(所有)",
   "reset_plan_shown": "重置規劃{n}(已顯示)",
+  "reset_skill_cd": null,
   "resettable_digged_num": "重置所需發掘數目",
   "restart_to_apply_changes": "重啟以使配置生效",
   "restart_to_upgrade_hint": "重啟以更新應用，若更新失敗，請手動複製source文件夾到destination",

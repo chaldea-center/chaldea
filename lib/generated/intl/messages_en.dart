@@ -28,7 +28,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(url) =>
       "Chaldea - A cross-platform utility for Fate/GO. Supporting game data review, servant/event/item planning, master mission planning, summon simulator and so on.\n\nFor details: \n${url}\n";
 
-  static String m16(count) => "Charge to ${count}?";
+  static String m16(count) => "Charge NP to ${count}";
 
   static String m2(version) => "Required app version: ≥ ${version}";
 
@@ -803,6 +803,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "reset_custom_ascension_icon": MessageLookupByLibrary.simpleMessage("Reset custom ascension icons"),
         "reset_plan_all": m11,
         "reset_plan_shown": m12,
+        "reset_skill_cd": MessageLookupByLibrary.simpleMessage("Reset Skill CD"),
         "resettable_digged_num": MessageLookupByLibrary.simpleMessage("Resettable Digged Num"),
         "restart_to_apply_changes": MessageLookupByLibrary.simpleMessage("Restart to take effect"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(

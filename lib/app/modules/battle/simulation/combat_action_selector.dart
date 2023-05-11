@@ -238,24 +238,25 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       onTap: () async {
         final canCharge = svt.playerSvtData?.td != null && !(svt.isEnemy && svt.niceEnemy!.chargeTurn == 0);
         if (canCharge && !svt.isNpFull(battleData)) {
+          int dispCount;
+          if (svt.isPlayer) {
+            dispCount = ConstData.constants.fullTdPoint ~/ 100;
+          } else {
+            dispCount = svt.niceEnemy!.chargeTurn;
+          }
+          final msg = '${S.current.charge_np_to(dispCount)}: ${svt.fieldIndex + 1}-${svt.lBattleName}';
           await SimpleCancelOkDialog(
             title: Text(S.current.np_not_enough),
-            content: Text(S.current
-                .charge_np_to(svt.isPlayer ? ConstData.constants.fullTdPoint ~/ 100 : svt.niceEnemy!.chargeTurn)),
+            content: Text(msg),
             onTapOk: () {
               battleData.pushSnapshot();
-              String? msg;
               if (svt.isPlayer) {
                 svt.np = ConstData.constants.fullTdPoint;
-                msg = 'Charge ${svt.fieldIndex + 1}-${svt.lBattleName} NP to ${svt.np ~/ 100}%';
-              } else if (svt.isEnemy) {
+              } else {
                 svt.npLineCount = svt.niceEnemy!.chargeTurn;
-                msg = 'Charge ${svt.fieldIndex + 1}-${svt.lBattleName} NP to ${svt.npLineCount}';
               }
-              if (msg != null) {
-                battleData.battleLogger.action(msg);
-                battleData.recorder.message(msg);
-              }
+              battleData.battleLogger.action(msg);
+              battleData.recorder.message(S.current.charge_np_to(dispCount), svt);
               if (mounted) setState(() {});
             },
           ).showDialog(context);

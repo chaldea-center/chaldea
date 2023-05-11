@@ -27,7 +27,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m1(url) => "Chaldea——一款跨平台的Fate/GO素材规划客户端，支持游戏信息浏览、从者练度/活动/素材规划、周常规划、抽卡模拟器等功能。\n\n详情请见: \n${url}\n";
 
-  static String m16(count) => "充能至${count}?";
+  static String m16(count) => "充能至${count}";
 
   static String m2(version) => "App版本需不低于${version}";
 
@@ -768,6 +768,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "reset_custom_ascension_icon": MessageLookupByLibrary.simpleMessage("重置自定义从者头像"),
         "reset_plan_all": m11,
         "reset_plan_shown": m12,
+        "reset_skill_cd": MessageLookupByLibrary.simpleMessage("重置技能CD"),
         "resettable_digged_num": MessageLookupByLibrary.simpleMessage("重置所需发掘数目"),
         "restart_to_apply_changes": MessageLookupByLibrary.simpleMessage("重启以使配置生效"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage("重启以更新应用，若更新失败，请手动复制source文件夹到destination"),

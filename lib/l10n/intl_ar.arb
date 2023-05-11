@@ -674,6 +674,7 @@
   "reset_custom_ascension_icon": null,
   "reset_plan_all": "إعادة الخطة {n}(All)",
   "reset_plan_shown": "إعادة الخطة{n}(Shown)",
+  "reset_skill_cd": null,
   "resettable_digged_num": null,
   "restart_to_apply_changes": null,
   "restart_to_upgrade_hint": "أعد التشغيل للتحديث  إذا فشل التحديث ، يرجى نسخ مجلد المصدر يدويًا إلى الوجهة",
