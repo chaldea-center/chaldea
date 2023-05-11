@@ -707,6 +707,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "plan_objective": MessageLookupByLibrary.simpleMessage("規劃目標"),
         "plan_title": MessageLookupByLibrary.simpleMessage("規劃"),
         "planning_free_quest_btn": MessageLookupByLibrary.simpleMessage("規劃FQ"),
+        "player_data": MessageLookupByLibrary.simpleMessage("玩家数据"),
         "prefer_april_fool_icon": MessageLookupByLibrary.simpleMessage("優先愚人節頭像"),
         "preferred_translation": MessageLookupByLibrary.simpleMessage("首選翻譯"),
         "preferred_translation_footer": MessageLookupByLibrary.simpleMessage("用於遊戲數據的顯示而非應用UI語言。部分語言存在未翻譯的部分。"),

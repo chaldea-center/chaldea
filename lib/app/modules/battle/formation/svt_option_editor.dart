@@ -17,10 +17,7 @@ import 'package:chaldea/app/modules/enemy/enemy_list.dart';
 import 'package:chaldea/app/modules/enemy/support_servant.dart';
 import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/db.dart';
-import 'package:chaldea/models/gamedata/gamedata.dart';
-import 'package:chaldea/models/userdata/filter_data.dart';
-import 'package:chaldea/models/userdata/userdata.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -933,16 +930,19 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   void _onSelectServant(final Servant selectedSvt) {
     playerSvtData.svt = selectedSvt;
     final status = db.curUser.svtStatusOf(selectedSvt.collectionNo);
-    final curStatus = status.cur;
-    if (db.settings.battleSim.preferPlayerData && curStatus.favorite) {
+    final plan = db.settings.battleSim.playerDataSource == PreferPlayerSvtDataSource.target
+        ? db.curUser.svtPlanOf(selectedSvt.collectionNo)
+        : status.cur;
+
+    if (!db.settings.battleSim.playerDataSource.isNone && status.cur.favorite && selectedSvt.collectionNo > 0) {
       playerSvtData
-        ..limitCount = curStatus.ascension
-        ..lv = selectedSvt.grailedLv(curStatus.grail)
-        ..tdLv = curStatus.npLv.clamp(1, 5)
-        ..skillLvs = curStatus.skills.toList()
-        ..appendLvs = curStatus.appendSkills.toList()
-        ..atkFou = curStatus.fouAtk > 0 ? 1000 + curStatus.fouAtk * 20 : curStatus.fouAtk3 * 50
-        ..hpFou = curStatus.fouHp > 0 ? 1000 + curStatus.fouHp * 20 : curStatus.fouHp3 * 50
+        ..limitCount = plan.ascension
+        ..lv = selectedSvt.grailedLv(plan.grail)
+        ..tdLv = plan.npLv.clamp(1, 5)
+        ..skillLvs = plan.skills.toList()
+        ..appendLvs = plan.appendSkills.toList()
+        ..atkFou = plan.fouAtk > 0 ? 1000 + plan.fouAtk * 20 : plan.fouAtk3 * 50
+        ..hpFou = plan.fouHp > 0 ? 1000 + plan.fouHp * 20 : plan.fouHp3 * 50
         ..cardStrengthens = List.generate(selectedSvt.cards.length, (index) {
           return (status.cmdCardStrengthen?.getOrNull(index) ?? 0) * 20;
         })
@@ -1268,7 +1268,9 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
   void _onSelectCE(final CraftEssence selectedCE) {
     playerSvtData.ce = selectedCE;
     final status = db.curUser.ceStatusOf(selectedCE.collectionNo);
-    if (db.settings.battleSim.preferPlayerData && selectedCE.collectionNo > 0 && status.status == CraftStatus.owned) {
+    if (!db.settings.battleSim.playerDataSource.isNone &&
+        selectedCE.collectionNo > 0 &&
+        status.status == CraftStatus.owned) {
       playerSvtData.ceLv = status.lv;
       playerSvtData.ceLimitBreak = status.limitCount == 4;
     } else {

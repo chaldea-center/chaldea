@@ -321,12 +321,39 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           },
           child: Text(S.current.default_lvs),
         ),
-        CheckboxWithLabel(
-          value: settings.preferPlayerData,
-          label: Text(S.current.battle_prefer_player_data),
+        DropdownButton<PreferPlayerSvtDataSource>(
+          isDense: true,
+          value: settings.playerDataSource,
+          items: PreferPlayerSvtDataSource.values.map((source) {
+            String text;
+            switch (source) {
+              case PreferPlayerSvtDataSource.none:
+                text = S.current.disabled;
+                break;
+              case PreferPlayerSvtDataSource.current:
+                text = S.current.current_;
+                break;
+              case PreferPlayerSvtDataSource.target:
+                text = S.current.target;
+                break;
+            }
+            return DropdownMenuItem(
+              value: source,
+              child: Text.rich(
+                TextSpan(children: [
+                  TextSpan(
+                    text: '${S.current.player_data}:',
+                    style: TextStyle(fontSize: 15, color: Theme.of(context).textTheme.bodySmall?.color),
+                  ),
+                  TextSpan(text: text),
+                ]),
+                textScaleFactor: 0.9,
+              ),
+            );
+          }).toList(),
           onChanged: (v) {
             setState(() {
-              if (v != null) settings.preferPlayerData = v;
+              if (v != null) settings.playerDataSource = v;
             });
           },
         ),

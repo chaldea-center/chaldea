@@ -6789,6 +6789,17 @@ class S {
     );
   }
 
+  /// `Player Data`
+  String get player_data {
+    return Intl.message(
+      'Player Data',
+      name: 'player_data',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Prefer April Fools' Day icon`
   String get prefer_april_fool_icon {
     return Intl.message(

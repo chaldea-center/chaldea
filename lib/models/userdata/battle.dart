@@ -8,7 +8,7 @@ part '../../generated/models/userdata/battle.g.dart';
 @JsonSerializable()
 class BattleSimSetting {
   // settings
-  bool preferPlayerData;
+  PreferPlayerSvtDataSource playerDataSource;
   Set<int> pingedCEs;
   Set<int> pingedSvts;
   bool autoAdd7KnightsTrait;
@@ -20,7 +20,7 @@ class BattleSimSetting {
   int curFormationIndex;
 
   BattleSimSetting({
-    this.preferPlayerData = true,
+    this.playerDataSource = PreferPlayerSvtDataSource.none,
     Set<int>? pingedCEs,
     Set<int>? pingedSvts,
     this.autoAdd7KnightsTrait = true,
@@ -222,4 +222,13 @@ class PlayerSvtDefaultData {
       cardStrengthens[index] = cardStrengthens[index].clamp(0, 25);
     }
   }
+}
+
+enum PreferPlayerSvtDataSource {
+  none,
+  current,
+  target,
+  ;
+
+  bool get isNone => this == PreferPlayerSvtDataSource.none;
 }

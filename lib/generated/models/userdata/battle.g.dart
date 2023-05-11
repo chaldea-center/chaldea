@@ -11,7 +11,8 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = BattleSimSetting(
-          preferPlayerData: $checkedConvert('preferPlayerData', (v) => v as bool? ?? true),
+          playerDataSource: $checkedConvert('playerDataSource',
+              (v) => $enumDecodeNullable(_$PreferPlayerSvtDataSourceEnumMap, v) ?? PreferPlayerSvtDataSource.none),
           pingedCEs: $checkedConvert('pingedCEs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
           pingedSvts: $checkedConvert('pingedSvts', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
           autoAdd7KnightsTrait: $checkedConvert('autoAdd7KnightsTrait', (v) => v as bool? ?? true),
@@ -30,7 +31,7 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
     );
 
 Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <String, dynamic>{
-      'preferPlayerData': instance.preferPlayerData,
+      'playerDataSource': _$PreferPlayerSvtDataSourceEnumMap[instance.playerDataSource]!,
       'pingedCEs': instance.pingedCEs.toList(),
       'pingedSvts': instance.pingedSvts.toList(),
       'autoAdd7KnightsTrait': instance.autoAdd7KnightsTrait,
@@ -39,6 +40,12 @@ Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <Str
       'formations': instance.formations.map((e) => e.toJson()).toList(),
       'curFormationIndex': instance.curFormationIndex,
     };
+
+const _$PreferPlayerSvtDataSourceEnumMap = {
+  PreferPlayerSvtDataSource.none: 'none',
+  PreferPlayerSvtDataSource.current: 'current',
+  PreferPlayerSvtDataSource.target: 'target',
+};
 
 BattleTeamFormation _$BattleTeamFormationFromJson(Map json) => $checkedCreate(
       'BattleTeamFormation',

@@ -611,6 +611,7 @@
   "plan_objective": "계획 목표",
   "plan_title": "계획표",
   "planning_free_quest_btn": "퀘스트 계획",
+  "player_data": null,
   "prefer_april_fool_icon": "만우절 아이콘 우선",
   "preferred_translation": "선호하는 번역",
   "preferred_translation_footer": "UI 언어가 아닌 게임 데이터 설명에 사용됩니다. 일부 언어에는 번역되지 않은 부분이 있다.",
