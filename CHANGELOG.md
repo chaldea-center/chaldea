@@ -8,17 +8,15 @@
   - Automatically select NP card if asked to charge NP to 100%
   - Ping bond CE for selected servant
   - Show buff activator if buff needs activator on field
-  - Support the following funcitons:
-    - shiftServant
-	- changeServant
-	- updateEntryPosition
-	- extendSkill
-	- shorten/extendBuffTurn/Count
-	- callServant
-	- lossHpPer / lossHpPerSafe
+  - Support the following functions:
+    - shiftServant/callServant/changeServant
+    - updateEntryPosition
+    - extendSkill
+    - shorten/extend Buff Turn/Count
+    - lossHpPer/lossHpPerSafe
   - Bug fix:
     - Proper buff turn duration counting to fix endOfTurn buffs may end too early
-	- gainNpIndividualSum now properly counts traits from specified targets 
+    - gainNpIndividualSum now properly counts traits from specified targets
 
 ## 2.3.5
 
