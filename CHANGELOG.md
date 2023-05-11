@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.3.6
+
+- Laplace
+  - Handle enemy HP bars that are for display only
+  - Handle additional skills in skill activation
+  - Automatically select NP card if asked to charge NP to 100%
+  - Ping bond CE for selected servant
+  - Show buff activator if buff needs activator on field
+  - Support the following funcitons:
+    - shiftServant
+	- changeServant
+	- updateEntryPosition
+	- extendSkill
+	- shorten/extendBuffTurn/Count
+	- callServant
+	- lossHpPer / lossHpPerSafe
+  - Bug fix:
+    - Proper buff turn duration counting to fix endOfTurn buffs may end too early
+	- gainNpIndividualSum now properly counts traits from specified targets 
+
 ## 2.3.5
 
 - Add Event free calculator for event items (via event shop page)

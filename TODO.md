@@ -42,8 +42,8 @@
 - [ ] DataVals CounterId CounterLv CounterOc SkillReaction UseTreasureDevice
 - [ ] DataVals TriggeredFuncPosition ignored, only checking previous function success for now
 - [ ] Group npDamageIndividualSum & buff ParamAddCount's counting logic together?
-- [ ] BuffType doNotGainNp & upGiveNp
-- [ ] BuffType doNotRecovery interacts with maxHp? Treating as no interaction for now
+- [ ] BuffType doNotGainNp & upGiveNp & DataVals Unaffected
+- [ ] BuffType doNotRecovery interacts with maxHp? Treating as no interaction for now & DataVals Unaffected
 - [ ] BuffType doNotActCommandType
 - [ ] BuffType doNotSelectCommandCard
 - [x] BuffType tdTypeChange: if there are multiple instances of this buff, the last one dominates
@@ -68,8 +68,8 @@
 - [ ] funcSuccess for some wired function types
 - [ ] Enemy shift target may not exist
 - [x] cardDetail.damageRate/tdRate (U-Olga Marie buster/extra attack on all enemies)
-- [ ] dispBreakShift(need clamp)
-- [ ] Stage.script.NoEntryIds+Func.updateEntryPositions (DataVals.OnPositions+OffPositions)
+- [X] dispBreakShift(need clamp)
+- [X] Stage.script.NoEntryIds+Func.updateEntryPositions (DataVals.OnPositions+OffPositions)
 - [ ] shiftGuts(Ratio)
 - [x] QuestFlag.enemyImmediateAppear
 - [x] Damage should remove buff with buffScript field damageRelease: 1
