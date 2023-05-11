@@ -449,8 +449,11 @@ class AtlasApi {
     return cacheManager.getModel(
       url,
       (data) {
-        final quest = cachedQuestPhases[url] = QuestPhase.fromJson(data);
+        final quest = QuestPhase.fromJson(data);
         // what if multi-phases are requesting
+        if (expireAfter != kExpireCacheOnly) {
+          cachedQuestPhases[url] = quest;
+        }
         cacheDisabledQuests.remove(questId);
         return quest;
       },
