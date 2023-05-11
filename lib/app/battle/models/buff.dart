@@ -63,8 +63,8 @@ class BuffData {
 
   bool get isActive => count != 0 && logicTurn != 0;
 
-  int actorUniqueId = 0;
-  String actorName = '';
+  int? actorUniqueId;
+  String? actorName;
   bool isUsed = false;
 
   bool passive = false;
@@ -189,7 +189,7 @@ class BuffData {
       checkCurrentCardTraits: true,
     ));
 
-    final onFieldCheck = !isOnField || battleData.isActorOnField(actorUniqueId);
+    final onFieldCheck = !isOnField || actorUniqueId == null || battleData.isActorOnField(actorUniqueId!);
 
     final scriptCheck = checkDataVals(battleData) && checkBuffScript(battleData, isTarget);
 
@@ -326,7 +326,7 @@ class BuffData {
         '${buff.ckOpIndv.isNotEmpty ? '${S.current.battle_require_opponent_traits} '
             '${buff.ckOpIndv.map((trait) => trait.shownName())} ' : ''}'
         '${getParamString()}'
-        '${isOnField ? S.current.battle_require_actor_on_field(actorName) : ''}';
+        '${isOnField ? S.current.battle_require_actor_on_field((actorName ?? actorUniqueId).toString()) : ''}';
   }
 
   String getParamString() {

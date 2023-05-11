@@ -686,10 +686,17 @@ class _SpecialTransl {
       );
   String get funcTraitOnField => M.of(
         jp: '〔{0}〕のあるフィールドにおいてのみ',
-        cn: '仅在〔{0}〕场地上时 ',
+        cn: '仅在〔{0}〕场地上时',
         tw: '僅在〔{0}〕場地上時',
         na: 'When on [{0}] field',
         kr: '〔{0}〕 있는 필드에서만',
+      );
+  String get actorOnField => M.of(
+        jp: '〔{0}〕がフィールドにいる間',
+        cn: '仅当〔{0}〕在场时',
+        tw: '僅在〔{0}〕在場時',
+        na: 'When [{0}] is on the field',
+        kr: null,
       );
   String get funcTargetVals => M.of(
         jp: '目標特性: ',

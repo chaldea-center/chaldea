@@ -331,6 +331,8 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
 
   Widget buildBuff(BuffData buff) {
     final valueSpans = <InlineSpan>[
+      if (buff.vals.UseRate != null)
+        TextSpan(text: Transl.special.funcValChance(buff.vals.UseRate!.format(base: 10, percent: true))),
       if (buff.count >= 0) TextSpan(text: Transl.special.funcValCountTimes(buff.count)),
       if (buff.logicTurn >= 0) TextSpan(text: Transl.special.funcValTurns(buff.dispTurn)),
       // else S.current.battle_buff_permanent,
@@ -343,6 +345,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         ),
     ];
     if (valueSpans.isEmpty) valueSpans.add(const TextSpan(text: ' - '));
+    final bool showActor = buff.vals.OnField == 1;
     return ListTile(
       dense: true,
       horizontalTitleGap: 4,
@@ -366,7 +369,20 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
               svals: [DataVals(buff.vals.toJson(sort: false)..['Value'] = buff.param)],
             )).toString()
           : buff.buff.lName.l),
-      subtitle: Text(buff.buff.lDetail.l),
+      isThreeLine: showActor,
+      subtitle: Text.rich(TextSpan(
+        text: buff.buff.lDetail.l,
+        children: showActor
+            ? [
+                const TextSpan(text: '\n'),
+                TextSpan(
+                  text: Transl.special.actorOnField
+                      .replaceAll('{0}', buff.actorName ?? buff.actorUniqueId?.toString() ?? '???'),
+                  style: const TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ]
+            : null,
+      )),
       trailing: InkWell(
         onTap: () {
           Map<String, dynamic> vals = buff.vals.toJson(sort: false);

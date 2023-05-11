@@ -29,8 +29,8 @@ class AddState {
     for (int i = 0; i < targets.length; i += 1) {
       final target = targets[i];
       final buffData = BuffData(buff, dataVals)
-        ..actorUniqueId = activator?.uniqueId ?? 0
-        ..actorName = activator?.lBattleName ?? ''
+        ..actorUniqueId = activator?.uniqueId
+        ..actorName = activator?.lBattleName
         ..notActorPassive = notActorPassive
         ..irremovable |= isPassive || notActorPassive;
       if (isShortBuff) {

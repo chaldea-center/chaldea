@@ -16,6 +16,8 @@
   - [ ] Skip turn! add to popup menu
 - [ ] add a flag for `final bool BattleServantData.isPlayer`, DO NOT depend on niceSvt/niceEnemy
   - [ ] ensure init niceSvt/niceEnemy ***in constructor***
+- [ ] active/passiveList make private, filter out actor died buffs, INDIV
+- [ ] gainNp/gainHp/gainHpPer related funcs: check DataVals.Unaffected
 
 ### Recorder
 
