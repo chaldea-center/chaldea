@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:io' show FileMode, PathNotFoundException;
+import 'dart:io' show FileMode;
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart' show kIsWeb, protected;
@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart' show kIsWeb, protected;
 import 'package:hive/hive.dart';
 import 'package:path/path.dart' as p;
 
-import '../logger.dart';
 import 'file_plus_io.dart';
 import 'file_plus_web.dart';
 
@@ -61,13 +60,7 @@ abstract class FilePlus {
 
   Future<void> delete();
 
-  Future<void> deleteSafe() async {
-    try {
-      await delete();
-    } on PathNotFoundException catch (e, s) {
-      logger.e('delete failed: $path', e, s);
-    }
-  }
+  Future<void> deleteSafe();
 
   String get path;
 }

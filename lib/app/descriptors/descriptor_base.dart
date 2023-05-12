@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/app/descriptors/multi_entry.dart';
 import 'package:chaldea/models/models.dart';
 
-abstract class DescriptorBase {
+mixin DescriptorBase {
   TextStyle? get style;
   double? get textScaleFactor;
   List<int> get targetIds;

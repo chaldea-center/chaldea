@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import '../logger.dart';
 import 'file_plus.dart';
 
-class FilePlusNative with FilePlus {
+class FilePlusNative implements FilePlus {
   final File _file;
 
   FilePlusNative(String fp) : _file = File(fp);
@@ -72,4 +73,13 @@ class FilePlusNative with FilePlus {
 
   @override
   Future<void> delete() => _file.delete();
+
+  @override
+  Future<void> deleteSafe() async {
+    try {
+      await delete();
+    } on PathNotFoundException catch (e, s) {
+      logger.e('delete failed: $path', e, s);
+    }
+  }
 }

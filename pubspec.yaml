@@ -18,8 +18,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 2.3.6+931
 
 environment:
-  sdk: ">=2.19.0 <3.0.0"
-  flutter: ">=3.7.0 <4.0.0"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -37,7 +37,7 @@ dependencies:
   catcher: # ^0.7.0
     git:
       url: https://github.com/narumi147/catcher.git
-  connectivity_plus: ^3.0.4
+  connectivity_plus: ^4.0.0
   # cookie_jar: ^4.0.1
   crclib: ^3.0.0
   cross_file: ^0.3.3+2
@@ -46,11 +46,11 @@ dependencies:
   cupertino_icons: ^1.0.4
   dart_des: ^1.0.2
   data_table_2: ^2.4.1
-  device_info_plus: ^8.0.0
+  device_info_plus: ^9.0.0
   dio: ^5.1.0
   # dio_cookie_manager: ^3.0.0
-  dots_indicator: ^2.0.0
-  file_picker: ^5.2.10
+  dots_indicator: ^3.0.0
+  file_picker: ^5.3.0
   fl_chart: ^0.62.0
   flutter_cache_manager: ^3.2.0
   flutter_easyloading: ^3.0.5
@@ -59,18 +59,20 @@ dependencies:
   flutter_markdown: ^0.6.14
   flutter_picker: ^2.1.0
   # flutter_qjs: ^0.3.7
-  flutter_js: ^0.6.0
+  flutter_js: # ^0.6.0
+    git:
+      url: https://github.com/chaldea-center/flutter_js.git
   flutter_window_close: ^0.2.2
   font_awesome_flutter: ^10.1.0
   github: ^9.11.0
   hive: ^2.2.3
-  html: ^0.15.2
+  html: ^0.15.3
   http: ^0.13.6
   image: ^4.0.16
   image_gallery_saver: # ^1.7.1
     git:
       url: https://github.com/chaldea-center/image_gallery_saver.git
-  intl: ^0.17.0
+  intl: ^0.18.0
   json_annotation: ^4.8.0
   just_audio: ^0.9.32
   just_audio_windows: ^0.2.0
@@ -85,7 +87,7 @@ dependencies:
       ref: d3779be7d661481cc0d99090d6356a286ae4f86b
       path: modal_bottom_sheet
   octo_image: ^1.0.2
-  package_info_plus: ^3.1.0
+  package_info_plus: ^4.0.0
   path: ^1.8.2
   path_provider: ^2.0.14
   permission_handler: ^10.1.0
@@ -93,8 +95,10 @@ dependencies:
   photo_view: ^0.14.0
   rfc_6902: ^0.1.0
   ruby_text: ^3.0.1
-  screenshot: ^1.2.3
-  share_plus: ^6.3.2
+  screenshot: # ^1.2.3
+    git:
+      url: https://github.com/SachinGanesh/screenshot.git
+  share_plus: ^7.0.0
   shared_preferences: ^2.0.20
   sliver_tools: ^0.2.6
   smooth_page_indicator: ^1.1.0
@@ -113,7 +117,7 @@ dependencies:
       ref: bae932d006e9171fcb57becc7000513cea78076e
   webview_flutter: ^4.1.0
   webview_flutter_web: ^0.2.2+1
-  worker_manager: ^5.0.3
+  worker_manager: ^6.0.0
   window_size:
     git:
       url: https://github.com/google/flutter-desktop-embedding

@@ -11,7 +11,7 @@ import 'file_plus.dart';
 const fsName = 'webfs';
 
 /// all async methods are not async actually
-class FilePlusWeb with FilePlus {
+class FilePlusWeb implements FilePlus {
   static late LazyBox<Uint8List> _defaultBox;
 
   final String _path;
@@ -114,4 +114,7 @@ class FilePlusWeb with FilePlus {
 
   @override
   Future<void> delete() => effectiveBox.delete(_path);
+
+  @override
+  Future<void> deleteSafe() => Future.value();
 }

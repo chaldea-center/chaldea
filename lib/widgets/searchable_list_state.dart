@@ -97,7 +97,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
   }
 
   PreferredSizeWidget get searchBar {
-    return SearchBar(
+    return SearchBar2(
       controller: searchEditingController,
       onChanged: (s) {
         EasyDebounce.debounce('search_onchanged', const Duration(milliseconds: 300), () {

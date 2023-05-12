@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 import 'package:intl/intl.dart';
 
@@ -182,7 +181,7 @@ class LocalSettings {
 
   bool get isResolvedDarkMode {
     if (themeMode == ThemeMode.system) {
-      return SchedulerBinding.instance.window.platformBrightness == Brightness.dark;
+      return WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
     }
     return themeMode == ThemeMode.dark;
   }

@@ -53,7 +53,7 @@ abstract class SkillOrTd implements RouteInfo {
 }
 
 @JsonSerializable()
-class BaseSkill with SkillOrTd, RouteInfo {
+class BaseSkill extends SkillOrTd with RouteInfo {
   @override
   int id;
   int num;

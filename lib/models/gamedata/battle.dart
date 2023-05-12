@@ -243,7 +243,7 @@ class BattleOptionsRuntime extends BattleOptionsEnv {
 }
 
 // only used before simulation started and initiation
-class BattleOptionsInit {
+mixin BattleOptionsInit {
   final List<PlayerSvtData> onFieldSvtDataList = [
     PlayerSvtData.base(),
     PlayerSvtData.base(),

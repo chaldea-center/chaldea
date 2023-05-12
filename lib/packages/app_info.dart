@@ -34,7 +34,7 @@ class AppInfo {
         deviceParams['androidId'] = await const AndroidId().getId();
       } else if (PlatformU.isIOS) {
         final iosInfo = await DeviceInfoPlugin().iosInfo;
-        _isIPad = iosInfo.model?.toLowerCase().contains('ipad') ?? false;
+        _isIPad = iosInfo.model.toLowerCase().contains('ipad');
         deviceParams.addAll(Map.from(iosInfo.data)..remove('name'));
       } else if (PlatformU.isMacOS) {
         final macOsInfo = await DeviceInfoPlugin().macOsInfo;

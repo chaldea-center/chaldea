@@ -262,7 +262,7 @@ const _funcEffectMapping = {
   FuncTargetType.enemyAll: EffectTarget.enemyAll,
 };
 
-abstract class _FilterData {
+mixin _FilterData {
   List<FilterGroupData> get groups;
   void reset() {
     for (final group in groups) {

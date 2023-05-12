@@ -29,7 +29,7 @@ void main() async {
   CatcherOptions? catcherOptions;
   try {
     await _initiateCommon();
-    await Executor().warmUp();
+    await workerManager.init();
     await db.initiate();
     catcherOptions = CatcherUtil.getOptions(
       logPath: db.paths.crashLog,

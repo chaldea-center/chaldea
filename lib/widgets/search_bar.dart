@@ -7,7 +7,7 @@ import '../models/models.dart';
 
 const double _kSearchBarPaddingBottom = 8.0;
 
-class SearchBar extends StatefulWidget with PreferredSizeWidget, RouteAware {
+class SearchBar2 extends StatefulWidget with RouteAware implements PreferredSizeWidget {
   final TextEditingController? controller;
   @override
   final Size preferredSize;
@@ -18,7 +18,7 @@ class SearchBar extends StatefulWidget with PreferredSizeWidget, RouteAware {
   final ValueChanged<String>? onSubmitted;
   final StatefulWidgetBuilder? searchOptionsBuilder;
 
-  const SearchBar({
+  const SearchBar2({
     super.key,
     this.controller,
     this.preferredSize = const Size.fromHeight(36 + _kSearchBarPaddingBottom),
@@ -31,10 +31,10 @@ class SearchBar extends StatefulWidget with PreferredSizeWidget, RouteAware {
   });
 
   @override
-  _SearchBarState createState() => _SearchBarState();
+  _SearchBar2State createState() => _SearchBar2State();
 }
 
-class _SearchBarState extends State<SearchBar> {
+class _SearchBar2State extends State<SearchBar2> {
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
@@ -125,7 +125,7 @@ class _SearchBarState extends State<SearchBar> {
   }
 }
 
-abstract class SearchOptionsMixin<T> {
+mixin SearchOptionsMixin<T> {
   ValueChanged? get onChanged;
 
   Widget builder(BuildContext context, StateSetter setState);

@@ -19,7 +19,7 @@ Future<Uint8List> compressToJpgAsync({
   int? maxWidth,
   int? maxHeight,
 }) async {
-  return Executor().execute(fun4: _compressToJpg, arg1: src, arg2: quality, arg3: maxWidth, arg4: maxHeight);
+  return workerManager.execute(() => _compressToJpg(src, quality, maxWidth, maxHeight));
 }
 
 Uint8List compressToJpg({
@@ -28,9 +28,9 @@ Uint8List compressToJpg({
   int? maxWidth,
   int? maxHeight,
 }) =>
-    _compressToJpg(src, quality, maxWidth, maxHeight, null);
+    _compressToJpg(src, quality, maxWidth, maxHeight);
 
-Uint8List _compressToJpg(Uint8List src, int quality, int? maxWidth, int? maxHeight, TypeSendPort? port) {
+Uint8List _compressToJpg(Uint8List src, int quality, int? maxWidth, int? maxHeight) {
   assert(maxWidth == null || maxWidth > 0);
   assert(maxHeight == null || maxHeight > 0);
   lib_image.Image? srcImage = lib_image.decodeImage(src);

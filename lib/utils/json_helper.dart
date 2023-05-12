@@ -12,7 +12,7 @@ import '../packages/logger.dart';
 class JsonHelper {
   JsonHelper._();
 
-  static final Executor _executor = Executor();
+  static final _executor = workerManager;
 
   static Future<T> loadModel<T>({
     required String fp,
@@ -41,28 +41,28 @@ class JsonHelper {
 
   static Future<dynamic> decodeString<T>(String data) async {
     if (kIsWeb || data.length < 10 * 1024) return jsonDecode(data);
-    return _executor.execute(fun1: _decodeString, arg1: data);
+    return _executor.execute(() => _decodeString(data));
   }
 
   static Future<dynamic> decodeBytes<T>(List<int> bytes) async {
-    if (kIsWeb || bytes.length < 10 * 1024) return _decodeBytes(bytes, null);
-    return _executor.execute(fun1: _decodeBytes, arg1: bytes);
+    if (kIsWeb || bytes.length < 10 * 1024) return _decodeBytes(bytes);
+    return _executor.execute(() => _decodeBytes(bytes));
   }
 
   static Future<dynamic> decodeFile<T>(String fp) async {
     if (kIsWeb) return jsonDecode(await FilePlus(fp).readAsString());
-    return _executor.execute(fun1: _decodeFile, arg1: fp);
+    return _executor.execute(() => _decodeFile(fp));
   }
 
-  static dynamic _decodeBytes<T>(List<int> bytes, TypeSendPort? port) {
+  static dynamic _decodeBytes<T>(List<int> bytes) {
     return jsonDecode(utf8.decode(bytes));
   }
 
-  static dynamic _decodeString<T>(String text, TypeSendPort? port) {
+  static dynamic _decodeString<T>(String text) {
     return jsonDecode(text);
   }
 
-  static Future<dynamic> _decodeFile<T>(String fp, TypeSendPort? port) async {
+  static Future<dynamic> _decodeFile<T>(String fp) async {
     return jsonDecode(utf8.decode(await FilePlus(fp).readAsBytes()));
   }
 }

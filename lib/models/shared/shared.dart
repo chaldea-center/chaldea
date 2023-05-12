@@ -15,8 +15,7 @@ T $checkedCreate<T>(
       _CastFunction<S>, {
       Object? Function(Map, String)? readValue,
     }),
-  )
-      constructor, {
+  ) constructor, {
   Map<String, String> fieldKeyMap = const {},
 }) {
   Q _checkedConvert<Q>(
