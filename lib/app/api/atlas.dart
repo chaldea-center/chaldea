@@ -146,7 +146,10 @@ class ApiCacheManager {
       final fp = _data[key]?.fp;
       if (fp != null) {
         _data.remove(key);
-        await _getCacheFile(key)?.deleteSafe();
+        final file = _getCacheFile(key);
+        if (await file?.exists() == true) {
+          await file?.deleteSafe();
+        }
         saveCacheInfo();
       }
     } catch (e, s) {
@@ -238,12 +241,16 @@ class ApiCacheManager {
       }
       final entry = _data[key];
       if (entry != null) {
+        bool fileExist = false;
         FilePlus? file = entry.fp == null ? null : FilePlus(entry.fp!, box: _webBox);
         if (!_isExpired(key, entry.timestamp, expireAfter) || expireAfter == kExpireCacheOnly) {
           List<int>? bytes = _memoryCache[key];
           if (bytes == null) {
-            if (file != null && file.existsSync()) {
-              bytes = await file.readAsBytes();
+            if (file != null) {
+              fileExist = file.existsSync();
+              if (fileExist) {
+                bytes = await file.readAsBytes();
+              }
             }
           }
           if (bytes != null && Crc32Xz().convert(bytes).toString() == entry.crc) {
@@ -252,7 +259,10 @@ class ApiCacheManager {
         }
 
         _data.remove(key);
-        await file?.deleteSafe().catchError((e, s) => null);
+        if (fileExist) {
+          // may also exist even if it is false when file not checked
+          await file?.deleteSafe();
+        }
       }
       var prevTask = _downloading[url];
       if (prevTask != null) {

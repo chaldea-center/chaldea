@@ -136,6 +136,10 @@ class ServerFeedbackHandler extends ReportHandler {
     }
     resolvedAttachments.addAll(extraAttachments);
 
+    if (kDebugMode) {
+      print('skip sending mail in debug mode');
+      return true;
+    }
     final response = await ChaldeaApi.sendFeedback(
       subject: _getEmailTitle(report),
       senderName: senderName ?? 'Chaldea ${AppInfo.versionString} Crash',

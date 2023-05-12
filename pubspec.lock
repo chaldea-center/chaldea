@@ -1629,10 +1629,11 @@ packages:
   worker_manager:
     dependency: "direct main"
     description:
-      name: worker_manager
-      sha256: "8ca52094a89a304ce703a639439f61b55435fe4b0b9265e393a510be762997d5"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "646fc0c4f45b997bc21a3c682e02969730b144d8"
+      url: "https://github.com/chaldea-center/worker_manager.git"
+    source: git
     version: "6.0.0"
   xdg_directories:
     dependency: transitive
