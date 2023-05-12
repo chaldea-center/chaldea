@@ -33,6 +33,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
+    namespace "cc.narumi.chaldea"
     compileSdkVersion 33
     ndkVersion flutter.ndkVersion
 
