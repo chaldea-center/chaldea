@@ -32,7 +32,7 @@ jobs:
 
       - name: l10n generation
         if: always()
-        run: flutter pub run intl_utils:generate
+        run: dart run intl_utils:generate
 
 
 

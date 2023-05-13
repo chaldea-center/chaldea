@@ -114,9 +114,7 @@ dependencies:
       path: packages/video_player/video_player_macos
   webview_flutter: ^4.1.0
   webview_flutter_web: ^0.2.2+1
-  worker_manager: # ^6.0.0
-    git:
-      url: https://github.com/chaldea-center/worker_manager.git
+  worker_manager: ^6.0.1
   window_size:
     git:
       url: https://github.com/google/flutter-desktop-embedding

@@ -34,8 +34,8 @@ void main(List<String> args) async {
       throw ArgumentError('Unknown arguments:${result.arguments}');
     }
     saveArb(lang, data);
-    // flutter pub run intl_utils:generate
-    // await Process.run('flutter', 'pub run intl_utils:generate'.split(' '));
+    // dart run intl_utils:generate
+    // await Process.run('dart', 'run intl_utils:generate'.split(' '));
   }
 
   sort_l10n.main();

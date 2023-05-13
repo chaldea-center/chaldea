@@ -29,10 +29,10 @@ packages:
     dependency: "direct main"
     description:
       name: android_id
-      sha256: "51acd55055c5494ae262da3aa3423f2024cddc029e20deb3f47601611b2fbf31"
+      sha256: b7c55d9c30a7f02235607bd025e1e20e5573543fedf9f68018088c8535200e79
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.2"
+    version: "0.3.3"
   ansicolor:
     dependency: transitive
     description:
@@ -125,10 +125,10 @@ packages:
     dependency: "direct dev"
     description:
       name: build_runner
-      sha256: "87e06c939450b9b94e3e1bb2d46e0e9780adbff5500d3969f2ba2de6bbb860cb"
+      sha256: "220ae4553e50d7c21a17c051afc7b183d28a24a420502e842f303f8e4e6edced"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.2"
+    version: "2.4.4"
   build_runner_core:
     dependency: transitive
     description:
@@ -1420,10 +1420,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_android
-      sha256: "22f8db4a72be26e9e3a4aa3f194b1f7afbc76d20ec141f84be1d787db2155cbd"
+      sha256: "7aac14be5f4731b923cc697ae2d42043945076cd0dbb8806baecc92c1dc88891"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.31"
+    version: "6.0.33"
   url_launcher_ios:
     dependency: transitive
     description:
@@ -1549,10 +1549,10 @@ packages:
     dependency: transitive
     description:
       name: watcher
-      sha256: "6a7f46926b01ce81bfc339da6a7f20afbe7733eff9846f6d6a5466aa4c6667c0"
+      sha256: "3d2ad6751b3c16cf07c7fca317a1413b3f26530319181b37e3b9039b84fc01d8"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.2"
+    version: "1.1.0"
   web_socket_channel:
     dependency: transitive
     description:
@@ -1629,12 +1629,11 @@ packages:
   worker_manager:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "646fc0c4f45b997bc21a3c682e02969730b144d8"
-      url: "https://github.com/chaldea-center/worker_manager.git"
-    source: git
-    version: "6.0.0"
+      name: worker_manager
+      sha256: "1ac74a95ddf1de0a23decabff84753819cea53213268b52f5a0f093c96f9d629"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.1"
   xdg_directories:
     dependency: transitive
     description:

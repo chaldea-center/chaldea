@@ -10,8 +10,8 @@ void main() async {
   });
   try {
     temp.save();
-    // flutter pub run intl_utils:generate
-    final result = await Process.run('flutter', ['pub', 'run', 'intl_utils:generate'], runInShell: true);
+    // dart run intl_utils:generate
+    final result = await Process.run('dart', ['run', 'intl_utils:generate'], runInShell: true);
     print(result.stdout);
     if (result.exitCode != 0) {
       throw result.stderr;
