@@ -39,50 +39,15 @@ class ServantOptionEditPage extends StatefulWidget {
 
   @override
   State<ServantOptionEditPage> createState() => _ServantOptionEditPageState();
-
-  static Widget buildSlider2({
-    required final String leadingText,
-    required final int min,
-    required final int max,
-    required final int value,
-    required final String label,
-    required final ValueChanged<double> onChange,
-    EdgeInsetsGeometry padding = const EdgeInsets.only(left: 0, top: 8),
-  }) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: padding,
-          child: Text('$leadingText: $label'),
-        ),
-        ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxHeight: 24,
-            maxWidth: 360,
-          ),
-          child: Slider(
-            min: min.toDouble(),
-            max: max.toDouble(),
-            divisions: max > min ? max - min : null,
-            value: value.toDouble(),
-            label: label,
-            onChanged: (v) {
-              onChange(v);
-            },
-          ),
-        )
-      ],
-    );
-  }
 }
 
 class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   PlayerSvtData get playerSvtData => widget.playerSvtData;
   Servant get svt => playerSvtData.svt!;
   QuestPhase? get questPhase => widget.questPhase;
+
+  static SvtFilterData? _svtFilterData;
+  static EnemyFilterData? _enemyFilterData;
 
   @override
   void initState() {
@@ -847,6 +812,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   }
 
   void selectSvt() {
+    _svtFilterData ??= SvtFilterData(useGrid: true);
     router.pushPage(
       ServantListPage(
         planMode: false,
@@ -854,15 +820,15 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           _onSelectServant(selectedSvt);
           _updateState();
         },
-        filterData: db.settings.svtFilterData,
+        filterData: _svtFilterData,
         pinged: db.settings.battleSim.pingedSvts.toList(),
       ),
       detail: true,
     );
   }
 
-  final filterData = EnemyFilterData();
   void selectSvtEntity() {
+    _enemyFilterData ??= EnemyFilterData();
     router.pushPage(
       EnemyListPage(
         onSelected: (entity) async {
@@ -893,7 +859,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           _onSelectServant(svt);
           _updateState();
         },
-        filterData: filterData,
+        filterData: _enemyFilterData,
       ),
       detail: true,
     );
@@ -1073,6 +1039,8 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
 
   CraftEssence get ce => playerSvtData.ce!;
 
+  static CraftFilterData? _craftFilterData;
+
   @override
   void initState() {
     super.initState();
@@ -1218,6 +1186,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
   }
 
   void selectCE() {
+    _craftFilterData ??= CraftFilterData(useGrid: true);
     final event = widget.questPhase?.war?.event;
     Set<int> pinged = db.settings.battleSim.pingedCEs.toSet();
     if (event != null) {
@@ -1235,7 +1204,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     router.pushPage(
       CraftListPage(
         onSelected: _onSelectCE,
-        filterData: db.settings.craftFilterData,
+        filterData: _craftFilterData,
         pinged: pinged.toList(),
       ),
       detail: true,
