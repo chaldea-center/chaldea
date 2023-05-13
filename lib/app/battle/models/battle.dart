@@ -659,10 +659,11 @@ class BattleData {
           if (nonnullEnemies.isNotEmpty) {
             final action = actions[i];
             currentCard = action.cardData;
-            recorder.startPlayerCard(action.actor, action.cardData);
             allyTargetIndex = onFieldAllyServants.indexOf(action.actor); // help damageFunction identify attacker
 
             if (allyTargetIndex != -1 && action.isValid(this)) {
+              recorder.startPlayerCard(action.actor, action.cardData);
+
               if (currentCard!.isNP) {
                 await action.actor
                     .activateBuffOnActions(this, [BuffAction.functionAttackBefore, BuffAction.functionNpattack]);
@@ -677,6 +678,7 @@ class BattleData {
                 extraOvercharge = 0;
                 await executePlayerCard(action.actor, currentCard!, i + 1, isTypeChain, isMightyChain, firstCardType);
               }
+              recorder.endPlayerCard(action.actor, action.cardData);
             }
 
             if (shouldRemoveDeadActors(actions, i)) {
@@ -684,7 +686,6 @@ class BattleData {
             }
 
             currentCard = null;
-            recorder.endPlayerCard(action.actor, action.cardData);
           }
 
           checkBuffStatus();

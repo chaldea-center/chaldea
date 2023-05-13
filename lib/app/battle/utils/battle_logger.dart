@@ -80,30 +80,43 @@ class BattleRecordManager {
     records.add(BattleOrderChangeRecord(onField: onField, backup: backup));
   }
 
-  BattleServantData? _attacker;
-  CommandCardData? _card;
+  final List<_BattleCardTempData> _cardHistory = [];
   void startPlayerCard(BattleServantData activator, CommandCardData card) {
-    assert(_attacker == null && _card == null);
-    _attacker = activator;
-    _card = card;
+    _cardHistory.add(_BattleCardTempData(activator, card));
   }
 
   void attack(BattleServantData activator, BattleAttackRecord record) {
-    if (_attacker == activator && _card != null && record.card == null) {
-      record.card = _card?.copy();
+    final _last = _cardHistory.lastOrNull;
+    assert(_last == null || _last.actor.uniqueId == activator.uniqueId);
+    if (_last != null) {
+      record.card = _last.card;
+      _last.hasAttack = true;
     }
     if (record.targets.isNotEmpty) records.add(record);
   }
 
   void endPlayerCard(BattleServantData activator, CommandCardData card) {
-    assert(_attacker == activator && _card == card);
-    _attacker = null;
-    _card = null;
+    final _last = _cardHistory.removeLast();
+    assert(_last.actor.uniqueId == activator.uniqueId && _last.card?.cardIndex == card.cardIndex);
+    if (!_last.hasAttack) {
+      // supporter TD
+      records.add(BattleAttackRecord(
+          activator: activator, card: card, targets: [], damage: 0, attackNp: 0, defenseNp: 0, star: 0));
+    }
   }
 
   void instantDeath(BattleInstantDeathRecord record) {
     records.add(record);
   }
+}
+
+class _BattleCardTempData {
+  final BattleServantData actor;
+  CommandCardData? card;
+  BattleAttackRecord? attack;
+  bool hasAttack = false;
+
+  _BattleCardTempData(this.actor, this.card);
 }
 
 /// Only record user visible actions

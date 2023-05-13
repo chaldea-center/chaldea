@@ -390,9 +390,10 @@ mixin MultiTargetsWrapper {
         for (final enemy in allEntities) Responsive(small: 4, child: enemy),
       ],
     );
+    final borderSide = Divider.createBorderSide(context);
     return Container(
       decoration: BoxDecoration(
-        border: Border.fromBorderSide(Divider.createBorderSide(context)),
+        border: Border.fromBorderSide(borderSide),
         borderRadius: BorderRadius.circular(8),
       ),
       margin: const EdgeInsets.all(2),
@@ -402,14 +403,14 @@ mixin MultiTargetsWrapper {
           Expanded(
             flex: 1,
             child: DecoratedBox(
-              decoration: BoxDecoration(border: Border.fromBorderSide(Divider.createBorderSide(context))),
+              decoration: BoxDecoration(border: Border.symmetric(vertical: borderSide)),
               child: actorBuilder(context),
             ),
           ),
           Expanded(
             flex: 3,
             child: DecoratedBox(
-              decoration: BoxDecoration(border: Border.fromBorderSide(Divider.createBorderSide(context))),
+              decoration: BoxDecoration(border: Border.symmetric(vertical: borderSide)),
               child: enemyParty,
             ),
           ),
@@ -508,9 +509,11 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
               textAlign: TextAlign.center,
               textScaleFactor: 0.9,
             ),
-          coloredText('DMG: ${record.damage}', Colors.red),
-          coloredText('NP: ${record.attackNp / 100}', Colors.blue),
-          coloredText('Star: ${record.star / 1000}', Colors.green),
+          if (record.targets.isNotEmpty || record.damage != 0) ...[
+            coloredText('DMG: ${record.damage}', Colors.red),
+            coloredText('NP: ${record.attackNp / 100}', Colors.blue),
+            coloredText('Star: ${record.star / 1000}', Colors.green),
+          ],
         ],
       ),
     );
