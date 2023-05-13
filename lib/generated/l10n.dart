@@ -1174,17 +1174,6 @@ class S {
     );
   }
 
-  /// `Start Simulation`
-  String get battle_start_simulation {
-    return Intl.message(
-      'Start Simulation',
-      name: 'battle_start_simulation',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Manual random value mode`
   String get battle_tailored_execution {
     return Intl.message(
@@ -8444,6 +8433,17 @@ class S {
     return Intl.message(
       'Opening Movie',
       name: 'stage_opening_movie',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Start`
+  String get start {
+    return Intl.message(
+      'Start',
+      name: 'start',
       desc: '',
       locale: localeName,
       args: [],

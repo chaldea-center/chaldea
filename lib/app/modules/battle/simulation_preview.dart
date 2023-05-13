@@ -613,11 +613,17 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   Widget buttonBar() {
+    final totalCost =
+        Maths.sum(options.allSvts.map((e) => e.isSupportSvt ? 0 : (e.svt?.cost ?? 0) + (e.ce?.cost ?? 0)));
     Widget child = Wrap(
       spacing: 4,
       alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
+        ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: 90),
+          child: Text(' COST: $totalCost ', textAlign: TextAlign.center),
+        ),
         FilledButton.icon(
           onPressed: () => _editFormations(),
           icon: const Icon(Icons.people),
@@ -631,7 +637,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                   _startSimulation();
                 },
           icon: const Icon(Icons.play_arrow_rounded),
-          label: Text(S.current.battle_start_simulation),
+          label: Text(S.current.start),
         ),
       ],
     );

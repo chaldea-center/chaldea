@@ -64,6 +64,19 @@ class ServantSelector extends StatelessWidget {
         errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
       ),
     );
+    if (playerSvtData.isSupportSvt) {
+      svtIcon = Stack(
+        alignment: Alignment.topRight,
+        children: [
+          svtIcon,
+          Positioned(
+            top: -5,
+            right: -5,
+            child: db.getIconImage(AssetURL.i.items(12), width: 32, aspectRatio: 1),
+          ),
+        ],
+      );
+    }
 
     svtIcon = InkWell(
       onTap: () async {

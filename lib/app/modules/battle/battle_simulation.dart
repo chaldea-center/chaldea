@@ -597,6 +597,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       contentPadding: const EdgeInsets.all(8),
       scrollable: true,
       content: CombatActionSelector(battleData: battleData, combatActions: combatActions),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 24.0),
       onTapOk: () async {
         final List<CombatAction> nonnullActions = [];
         for (final action in combatActions) {

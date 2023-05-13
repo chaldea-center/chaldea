@@ -557,7 +557,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
             color: Theme.of(context).colorScheme.primaryContainer,
-            tooltip: S.current.battle_start_simulation,
+            tooltip: S.current.battle_simulation,
           ),
       ],
     );

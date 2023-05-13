@@ -119,6 +119,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
   final List<Widget> actions;
   final bool scrollable;
   final bool wrapActionsInRow;
+  final EdgeInsets insetPadding;
 
   const SimpleCancelOkDialog({
     super.key,
@@ -134,6 +135,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
     this.actions = const [],
     this.scrollable = false,
     this.wrapActionsInRow = false,
+    this.insetPadding = const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
   });
 
   @override
@@ -178,6 +180,7 @@ class SimpleCancelOkDialog extends StatelessWidget {
       contentPadding: contentPadding,
       scrollable: scrollable,
       actions: children,
+      insetPadding: insetPadding,
     );
   }
 }

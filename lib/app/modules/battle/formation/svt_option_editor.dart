@@ -216,6 +216,17 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         child: _buildSliderGroup(),
       ),
       divider,
+      SwitchListTile.adaptive(
+        dense: true,
+        value: playerSvtData.isSupportSvt,
+        title: Text('${S.current.support_servant_short}/NPC (0 COST)'),
+        onChanged: (v) {
+          setState(() {
+            playerSvtData.isSupportSvt = v;
+          });
+        },
+      ),
+      divider,
       TileGroup(
         header: S.current.noble_phantasm,
         children: [
