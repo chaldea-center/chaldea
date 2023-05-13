@@ -1,9 +1,6 @@
-import 'package:flutter/foundation.dart';
-
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
-import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/builders.dart';
@@ -63,15 +60,14 @@ class BattleHomePage extends StatelessWidget {
                 router.push(url: Routes.laplace);
               },
             ),
-            if (kDebugMode || AppInfo.isDebugDevice)
-              ListTile(
-                leading: const Icon(Icons.radar),
-                title: const Text('NP Damage'),
-                // horizontalTitleGap: 0,
-                onTap: () {
-                  router.pushPage(const TdDamageRanking());
-                },
-              ),
+            ListTile(
+              leading: const Icon(Icons.radar),
+              title: Text(S.current.np_damage),
+              // horizontalTitleGap: 0,
+              onTap: () {
+                router.pushPage(const TdDamageRanking());
+              },
+            ),
             ListTile(
               title: const Text('Bugs'),
               leading: const Icon(Icons.bug_report),

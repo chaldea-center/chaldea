@@ -638,24 +638,32 @@ mixin _ParamDialogMixin {
   String buffIcon(int id) => 'https://static.atlasacademy.io/JP/BuffIcons/bufficon_$id.png';
   String skillIcon(int id) => 'https://static.atlasacademy.io/JP/SkillIcons/skill_${id.toString().padLeft(5, '0')}.png';
 
-  Widget buildDialog({required BuildContext context, required String title, required List<Widget> children}) {
+  Widget buildDialog({
+    required BuildContext context,
+    required String title,
+    required List<Widget> children,
+    bool wrapDialog = true,
+  }) {
     final bgColor = Theme.of(context).hoverColor;
+    final content = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (int index = 0; index < children.length; index++)
+          Container(
+            color: index.isOdd ? bgColor : null,
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: children[index],
+          )
+      ],
+    );
+    if (!wrapDialog) return content;
+
     return SimpleCancelOkDialog(
       title: Text(title),
       scrollable: true,
       contentPadding: const EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 24.0),
       hideCancel: true,
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (int index = 0; index < children.length; index++)
-            Container(
-              color: index.isOdd ? bgColor : null,
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: children[index],
-            )
-        ],
-      ),
+      content: content,
     );
   }
 }
@@ -663,7 +671,8 @@ mixin _ParamDialogMixin {
 class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
   final DamageParameters params;
   final DamageResult result;
-  const DamageParamDialog(this.params, this.result, {super.key});
+  final bool wrapDialog;
+  const DamageParamDialog(this.params, this.result, {super.key, this.wrapDialog = true});
 
   @override
   Widget build(BuildContext context) {
@@ -697,6 +706,7 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
     return buildDialog(
       context: context,
       title: S.current.battle_damage_parameters,
+      wrapDialog: wrapDialog,
       children: [
         oneParam(S.current.battle_damage, Maths.sum(result.damages).toString()),
         if (result.damages.any((e) => e > 0))
@@ -728,7 +738,8 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
 class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
   final AttackNpGainParameters params;
   final DamageResult result;
-  const AttackerNpParamDialog(this.params, this.result, {super.key});
+  final bool wrapDialog;
+  const AttackerNpParamDialog(this.params, this.result, {super.key, this.wrapDialog = true});
 
   @override
   Widget build(BuildContext context) {
@@ -741,6 +752,7 @@ class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
     return buildDialog(
       context: context,
       title: S.current.battle_atk_np_parameters,
+      wrapDialog: wrapDialog,
       children: [
         oneParam('NP', (Maths.sum(result.npGains) / 100).format(precision: 2)),
         if (result.npGains.any((e) => e > 0))
@@ -760,7 +772,8 @@ class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
 class StarParamDialog extends StatelessWidget with _ParamDialogMixin {
   final StarParameters params;
   final DamageResult result;
-  const StarParamDialog(this.params, this.result, {super.key});
+  final bool wrapDialog;
+  const StarParamDialog(this.params, this.result, {super.key, this.wrapDialog = true});
 
   @override
   Widget build(BuildContext context) {
@@ -773,6 +786,7 @@ class StarParamDialog extends StatelessWidget with _ParamDialogMixin {
     return buildDialog(
       context: context,
       title: S.current.battle_star_parameters,
+      wrapDialog: wrapDialog,
       children: [
         oneParam(S.current.critical_star, (Maths.sum(result.stars) / 1000).format(precision: 3)),
         if (result.stars.any((e) => e > 0))

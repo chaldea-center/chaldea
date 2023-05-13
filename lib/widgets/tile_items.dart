@@ -14,13 +14,13 @@ class SHeader extends StatelessWidget {
     String this.label, {
     super.key,
     this.style,
-    this.padding = const EdgeInsetsDirectional.only(start: 16.0, top: 8.0, bottom: 4.0),
+    this.padding = const EdgeInsetsDirectional.only(start: 16.0, top: 8.0, bottom: 4.0, end: 8.0),
   }) : richSpan = null;
   const SHeader.rich(
     InlineSpan this.richSpan, {
     super.key,
     this.style,
-    this.padding = const EdgeInsetsDirectional.only(start: 16.0, top: 8.0, bottom: 4.0),
+    this.padding = const EdgeInsetsDirectional.only(start: 16.0, top: 8.0, bottom: 4.0, end: 8.0),
   }) : label = null;
 
   @override

@@ -1,12 +1,10 @@
-import 'package:chaldea/app/battle/interactions/_delegate.dart';
-import 'package:chaldea/app/battle/models/battle.dart';
-import 'package:chaldea/app/battle/utils/battle_utils.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/models.dart';
-import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../../../battle/utils/battle_logger.dart';
-import 'options.dart';
+import 'model.dart';
+import 'options_tab.dart';
+import 'ranking_tab.dart';
 
 class TdDamageRanking extends StatefulWidget {
   const TdDamageRanking({super.key});
@@ -15,367 +13,44 @@ class TdDamageRanking extends StatefulWidget {
   State<TdDamageRanking> createState() => _TdDamageRankingState();
 }
 
-class _TdDamageRankingState extends State<TdDamageRanking> {
-  TdDamageOption options = TdDamageOption();
+class _TdDamageRankingState extends State<TdDamageRanking> with SingleTickerProviderStateMixin {
+  static TdDmgSolver solver = TdDmgSolver();
+
+  late final _tabController = TabController(length: 2, vsync: this);
+
+  @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('NP Damage'),
+        title: Text(S.current.np_damage),
+        bottom: FixedHeight.tabBar(TabBar(
+          controller: _tabController,
+          tabs: const [Tab(text: 'Options'), Tab(text: 'Ranking')],
+        )),
       ),
-      body: Column(
+      body: TabBarView(
+        controller: _tabController,
         children: [
-          Expanded(child: buildOptions()),
-          kDefaultDivider,
-          ButtonBar(
-            alignment: MainAxisAlignment.center,
-            children: [
-              FilledButton(
-                onPressed: () async {
-                  final servants = db.gameData.servantsNoDup.values.toList();
-                  servants.sort2((e) => e.collectionNo);
-                  for (final svt in servants) {
-                    await calcOneSvt(svt);
-                  }
-                },
-                child: const Text('START'),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget buildOptions() {
-    List<Widget> children = [];
-    children.add(DividerWithTitle(title: S.current.enemy));
-    final enemy = options.enemy;
-    children.add(ListTile(
-      dense: true,
-      isThreeLine: true,
-      leading: db.getIconImage(
-        enemy.icon,
-        width: 40,
-        errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
-      ),
-      title: Text(enemy.lShownName),
-      subtitle: Text('${Transl.svtClassId(enemy.svt.classId).l} ${Transl.svtAttribute(enemy.svt.attribute).l}'
-          '\nHP ${enemy.hp}  DR ${enemy.deathRate.format(percent: true, base: 10)}'
-          ' N/D ${enemy.serverMod.tdRate.format(percent: true, base: 10)}'),
-      trailing: const Icon(Icons.edit),
-      onTap: () {
-        // router.pushPage(child);
-      },
-    ));
-    children.add(TextButton(
-      onPressed: () {
-        final enemy2 = db.runtimeData.clipBoard.questEnemy;
-        if (enemy2 == null) {
-          const SimpleCancelOkDialog(
-            title: Text('Hint'),
-            content: Text('Choose one Quest Enemy and copy in popup menun'),
-          ).showDialog(context);
-        } else {
-          SimpleCancelOkDialog(
-            title: const Text("Paste Enemy"),
-            content: Text("${enemy2.lShownName}(${enemy2.svt.lName.l})\n${Transl.svtClassId(enemy2.svt.classId).l}"),
-            onTapOk: () {
-              options.enemy = TdDamageOption.copyEnemy(enemy2);
-              if (mounted) setState(() {});
-            },
-          ).showDialog(context);
-        }
-      },
-      child: const Text('Paste Enemy'),
-    ));
-    children.add(const DividerWithTitle(title: 'Supports'));
-    children.add(Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 2,
-        children: [
-          if (options.supports.isEmpty) const Text('None'),
-          for (int index = 0; index < options.supports.length; index++)
-            GestureDetector(
-              onLongPress: () {
-                setState(() {
-                  options.supports.removeAt(index);
-                });
-              },
-              child: options.supports[index].iconBuilder(context: context, width: 48),
-            )
-        ],
-      ),
-    ));
-    children.add(TextButton(
-      onPressed: () {
-        showDialog(
-          context: context,
-          useRootNavigator: false,
-          builder: (context) {
-            List<Widget> supports = [];
-            if (options.supports.length >= 5) {
-              supports.add(const Text('Max 5 supports'));
-            } else {
-              for (final int svtId in TdDamageOption.optionalSupports) {
-                final svt = db.gameData.servantsNoDup[svtId];
-                if (svt != null) {
-                  supports.add(svt.iconBuilder(
-                    context: context,
-                    width: 48,
-                    padding: const EdgeInsets.all(2),
-                    onTap: () {
-                      options.supports.add(svt);
-                      Navigator.pop(context);
-                      if (mounted) setState(() {});
-                    },
-                  ));
-                }
+          TdDmgOptionsTab(
+            options: solver.options,
+            onStart: () async {
+              EasyLoading.show();
+              await solver.calculate();
+              EasyLoading.dismiss();
+              if (mounted) {
+                _tabController.index = 1;
               }
-            }
-            return SimpleCancelOkDialog(
-              title: const Text('Support'),
-              scrollable: true,
-              hideOk: true,
-              content: Wrap(
-                children: supports,
-              ),
-            );
-          },
-        );
-      },
-      child: const Text('Add Support'),
-    ));
-    children.add(const SFooter('Long press to remove support.'));
-
-    children.add(const DividerWithTitle(title: 'Additional Buff'));
-    children.add(const Text('TODO'));
-    children.add(const DividerWithTitle(title: "Options"));
-    children.addAll([
-      CheckboxListTile(
-        value: options.usePlayerSvt,
-        dense: true,
-        title: const Text('Use Player Favorite Servants'),
-        onChanged: (value) {
-          setState(() {
-            options.usePlayerSvt = !options.usePlayerSvt;
-          });
-        },
+            },
+          ),
+          TdDmgRankingTab(options: solver.options, results: solver.results, errors: solver.errors),
+        ],
       ),
-      CheckboxListTile(
-        value: options.addDebuffImmune,
-        dense: true,
-        title: const Text('AddDebuffImmune'),
-        onChanged: (value) {
-          setState(() {
-            options.addDebuffImmune = !options.addDebuffImmune;
-          });
-        },
-      ),
-      CheckboxListTile(
-        value: options.upResistSubState,
-        dense: true,
-        title: const Text('Up Resist SubState 500%'),
-        onChanged: (value) {
-          setState(() {
-            options.upResistSubState = !options.upResistSubState;
-          });
-        },
-      ),
-      CheckboxListTile(
-        value: options.doubleActiveSkillIfCD6,
-        dense: true,
-        title: const Text('Twice skills if CD<=6 (pls only if w-koyan)'),
-        onChanged: (value) {
-          setState(() {
-            options.doubleActiveSkillIfCD6 = !options.doubleActiveSkillIfCD6;
-          });
-        },
-      ),
-      // CheckboxListTile(
-      //   value: options.includeRefundAfterTd,
-      //   dense: true,
-      //   title: const Text('Include NP Gain After TD(e.g. Arthur)'),
-      //   onChanged: (value) {
-      //     setState(() {
-      //       options.includeRefundAfterTd = !options.includeRefundAfterTd;
-      //     });
-      //   },
-      // ),
-      ListTile(
-        dense: true,
-        title: const Text('NP Lv: R0-3 or event svt'),
-        trailing: DropdownButton<int>(
-          isDense: true,
-          value: options.tdR3,
-          items: List.generate(5, (index) => DropdownMenuItem(value: index + 1, child: Text('Lv.${index + 1}'))),
-          onChanged: (v) {
-            setState(() {
-              if (v != null) options.tdR3 = v;
-            });
-          },
-        ),
-      ),
-      ListTile(
-        dense: true,
-        title: const Text('NP Lv: R4'),
-        trailing: DropdownButton<int>(
-          value: options.tdR4,
-          isDense: true,
-          items: List.generate(5, (index) => DropdownMenuItem(value: index + 1, child: Text('Lv.${index + 1}'))),
-          onChanged: (v) {
-            setState(() {
-              if (v != null) options.tdR4 = v;
-            });
-          },
-        ),
-      ),
-      ListTile(
-        dense: true,
-        title: const Text('NP Lv: R5'),
-        trailing: DropdownButton<int>(
-          isDense: true,
-          value: options.tdR5,
-          items: List.generate(5, (index) => DropdownMenuItem(value: index + 1, child: Text('Lv.${index + 1}'))),
-          onChanged: (v) {
-            setState(() {
-              if (v != null) options.tdR5 = v;
-            });
-          },
-        ),
-      ),
-      ListTile(
-        dense: true,
-        title: const Text('NP OC'),
-        trailing: DropdownButton<int>(
-          isDense: true,
-          value: options.oc,
-          items: List.generate(5, (index) => DropdownMenuItem(value: index + 1, child: Text('Lv.${index + 1}'))),
-          onChanged: (v) {
-            setState(() {
-              if (v != null) options.oc = v;
-            });
-          },
-        ),
-      ),
-    ]);
-
-    return ListView(
-      padding: const EdgeInsets.only(top: 16, bottom: 64),
-      children: children,
-    );
-  }
-
-  Future<void> calcOneSvt(Servant svt) async {
-    final battleData = BattleData();
-    final attacker = getSvtData(svt);
-    if (attacker.td == null || !attacker.td!.functions.any((func) => func.funcType.name.startsWith('damageNp'))) {
-      return;
-    }
-    if (options.addDebuffImmune) {
-      attacker.addCustomPassive(
-        BaseSkill(
-          id: 1,
-          name: 'Debuff Immune',
-          type: SkillType.passive,
-          coolDown: [0],
-          functions: [
-            NiceFunction(
-              funcId: 1,
-              funcType: FuncType.addState,
-              funcTargetType: FuncTargetType.self,
-              buffs: [
-                Buff(id: 1, name: 'name', detail: '', type: BuffType.avoidState, ckOpIndv: [NiceTrait(id: 3005)])
-              ],
-              svals: [
-                DataVals({
-                  "Rate": 5000,
-                  "Turn": -1,
-                  "Count": -1,
-                })
-              ],
-            )
-          ],
-        ),
-        1,
-      );
-    }
-    // if (options.upResistSubState) {}
-    final playerSettings = [attacker];
-
-    await battleData.init(getQuest(), playerSettings, null);
-    final enemy = battleData.onFieldEnemies[0]!;
-    final actor = battleData.onFieldAllyServants[0]!;
-    await battleData.activateSvtSkill(0, 0);
-    await battleData.activateSvtSkill(0, 1);
-    await battleData.activateSvtSkill(0, 2);
-    for (final svt in options.supports) {
-      final sdata = PlayerSvtData.svt(svt);
-      // ignore: unused_local_variable
-      BattleServantData support = BattleServantData.fromPlayerSvtData(sdata, battleData.getNextUniqueId());
-      battleData.onFieldAllyServants[1] = support;
-      // await support.enterField(battle);
-      await battleData.activateSvtSkill(1, 0);
-      await battleData.activateSvtSkill(1, 1);
-      await battleData.activateSvtSkill(1, 2);
-      // battleData.onFieldAllyServants[1] = null;
-    }
-    if (options.doubleActiveSkillIfCD6) {
-      // Buster + w-Koyan + skip 2 turns
-      // battle.onFieldAllyServants[1]!.skillInfoList.forEach((skill) {
-      //   skill.chargeTurn = 0;
-      // });
-      // await battle.activateSvtSkill(0, 0);
-      // await battle.activateSvtSkill(0, 1);
-      // await battle.activateSvtSkill(0, 2);
-    }
-    actor.np = ConstData.constants.fullTdPoint;
-    battleData.delegate = BattleDelegate(battleData);
-    battleData.delegate!.decideOC = (_actor, baseOC, upOC) => options.oc;
-    final card = actor.getNPCard(battleData);
-    if (card == null) {
-      print('svt ${svt.collectionNo}-${svt.lName.l}: No NP card');
-      return;
-    }
-    await battleData.playerTurn([CombatAction(actor, card)]);
-    List<DamageResult> results = [];
-    for (final record in battleData.recorder.records.whereType<BattleAttackRecord>()) {
-      if (record.attacker.uniqueId != actor.uniqueId) continue;
-      for (final target in record.targets) {
-        if (target.target.uniqueId == enemy.uniqueId) {
-          print('svt ${svt.collectionNo}-${svt.lName.l}: DMG ${Maths.sum(target.result.damages)}');
-          results.add(target.result);
-          break;
-        }
-      }
-    }
-  }
-
-  PlayerSvtData getSvtData(Servant svt) {
-    final data = PlayerSvtData.svt(svt);
-    data.lv = svt.lvMax;
-    if (svt.rarity <= 3 || svt.extra.obtains.contains(SvtObtain.eventReward)) {
-      data.tdLv = options.tdR3;
-    } else if (svt.rarity == 4) {
-      data.tdLv = options.tdR4;
-    } else if (svt.rarity == 5) {
-      data.tdLv = options.tdR5;
-    }
-    // data.skills;
-    return data;
-  }
-
-  QuestPhase getQuest() {
-    return QuestPhase(
-      name: 'Test',
-      phases: [1],
-      phase: 1,
-      stages: [
-        Stage(wave: 1, enemies: [TdDamageOption.copyEnemy(options.enemy)])
-      ],
     );
   }
 }

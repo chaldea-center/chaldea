@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.3.7
+
+- Laplace
+  - Show supporter NP in records
+  - Show total cost
+  - Add NP damage ranking
+
 ## 2.3.6
 
 - Laplace

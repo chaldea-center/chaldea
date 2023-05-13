@@ -65,8 +65,8 @@ class BattleServantData {
   int atk = 0;
   int hp = 0;
   int maxHp = 0;
-  int np = 0;
-  int npLineCount = 0;
+  int np = 0; // player, np/100
+  int npLineCount = 0; // enemy
   int accumulationDamage = 0;
 
   // BattleServantData.Status status

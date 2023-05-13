@@ -533,6 +533,8 @@ enum FuncType {
 
   final int id;
   const FuncType(this.id);
+
+  bool get isDamageNp => name.startsWith('damageNp');
 }
 
 enum FuncTargetType {

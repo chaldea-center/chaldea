@@ -1372,6 +1372,17 @@ class S {
     );
   }
 
+  /// `Calculate`
+  String get calculate {
+    return Intl.message(
+      'Calculate',
+      name: 'calculate',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Cancel`
   String get cancel {
     return Intl.message(
@@ -6453,6 +6464,17 @@ class S {
     return Intl.message(
       'Per Turn',
       name: 'np_charge_type_perturn',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `NP Damage`
+  String get np_damage {
+    return Intl.message(
+      'NP Damage',
+      name: 'np_damage',
       desc: '',
       locale: localeName,
       args: [],
