@@ -343,10 +343,10 @@ packages:
     dependency: "direct main"
     description:
       name: data_table_2
-      sha256: "96f79cbbb038c75f18dfa69835de55a9fa4794f0c94c7b9624148bac0945f154"
+      sha256: ac04091abae6d24b4bee7abc5077b06eae54160d662a8d655e8e43e51537ba82
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.3"
+    version: "2.5.0"
   dbus:
     dependency: transitive
     description:
@@ -491,12 +491,11 @@ packages:
   flutter_js:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: a70aa805bd3116bf5dbc0ce503f7af474a0aa296
-      url: "https://github.com/chaldea-center/flutter_js.git"
-    source: git
-    version: "0.6.0"
+      name: flutter_js
+      sha256: "76f7b459d2d7c8c186528a0219e6b436821a63a1accfb0f4bc4b555761893e56"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -1117,12 +1116,11 @@ packages:
   screenshot:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: ab1d6fa40e6e419272d71e884e9fbb1ac95cba65
-      url: "https://github.com/SachinGanesh/screenshot.git"
-    source: git
-    version: "1.3.0"
+      name: screenshot
+      sha256: "65d4050f542ecccd985b73fadab25730448a00bc6eb9dc40dd164f655ad8efb2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   sentry:
     dependency: transitive
     description:
@@ -1515,11 +1513,10 @@ packages:
   video_player_macos:
     dependency: "direct main"
     description:
-      path: "packages/video_player/video_player_macos"
-      ref: HEAD
-      resolved-ref: "5842c6c8f26017fa27d8baa216cb0f3e977dde66"
-      url: "https://github.com/ollydixon/flutter_macos_video_player"
-    source: git
+      name: video_player_macos
+      sha256: "038aec5bbb3789be4bc12f08e2eb730940350ce5f3ce790cee9d897c0f6aacb7"
+      url: "https://pub.dev"
+    source: hosted
     version: "2.0.1"
   video_player_platform_interface:
     dependency: transitive
