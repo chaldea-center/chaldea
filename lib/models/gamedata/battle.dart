@@ -48,6 +48,27 @@ class PlayerSvtData {
     td = svt!.groupedNoblePhantasms[1]?.first;
   }
 
+  void fromUserSvt({
+    required Servant svt,
+    required SvtStatus status,
+    required SvtPlan plan,
+  }) {
+    this
+      ..limitCount = plan.ascension
+      ..lv = svt.grailedLv(plan.grail)
+      ..tdLv = plan.npLv.clamp(1, 5)
+      ..skillLvs = plan.skills.toList()
+      ..appendLvs = plan.appendSkills.toList()
+      ..atkFou = plan.fouAtk > 0 ? 1000 + plan.fouAtk * 20 : plan.fouAtk3 * 50
+      ..hpFou = plan.fouHp > 0 ? 1000 + plan.fouHp * 20 : plan.fouHp3 * 50
+      ..cardStrengthens = List.generate(svt.cards.length, (index) {
+        return (status.cmdCardStrengthen?.getOrNull(index) ?? 0) * 20;
+      })
+      ..commandCodes = List.generate(svt.cards.length, (index) {
+        return db.gameData.commandCodes[status.getCmdCode(index)];
+      });
+  }
+
   bool get isEmpty => svt == null && ce == null;
 
   @visibleForTesting

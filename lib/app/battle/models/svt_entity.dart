@@ -603,16 +603,19 @@ class BattleServantData {
     return result;
   }
 
-  Future<void> activateSkill(final BattleData battleData, final int skillIndex) async {
+  Future<bool> activateSkill(final BattleData battleData, final int skillIndex) async {
     final skillInfo = skillInfoList[skillIndex];
     battleData.setActivator(this);
     final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
     skillInfo.setRankUp(rankUp);
 
-    await skillInfo.activate(battleData);
-    battleData.recorder.skill(
-        battleData: battleData, activator: this, skill: skillInfo, type: SkillInfoType.svtSelf, fromPlayer: true);
+    final activated = await skillInfo.activate(battleData);
+    if (activated) {
+      battleData.recorder.skill(
+          battleData: battleData, activator: this, skill: skillInfo, type: SkillInfoType.svtSelf, fromPlayer: true);
+    }
     battleData.unsetActivator();
+    return activated;
   }
 
   Future<void> activateCommandCode(final BattleData battleData, final int cardIndex) async {

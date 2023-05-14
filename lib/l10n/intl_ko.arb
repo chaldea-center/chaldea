@@ -585,6 +585,8 @@
   "np_damage": null,
   "np_gain_mod": "적 피격 보정",
   "np_not_enough": null,
+  "np_refund": null,
+  "np_refund_short": null,
   "np_short": "보구",
   "np_sp_damage_rate": null,
   "obtain_time": "시간",

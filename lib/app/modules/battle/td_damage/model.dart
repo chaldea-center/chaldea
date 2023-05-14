@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chaldea/app/battle/interactions/_delegate.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
@@ -22,15 +24,20 @@ class TdDamageOptions {
 
   // only use some fields
   // DamageParameters params = DamageParameters();
-  bool usePlayerSvt = false;
+  int enemyCount = 1;
+  PreferPlayerSvtDataSource usePlayerSvt = PreferPlayerSvtDataSource.none;
   bool addDebuffImmune = true;
+  bool addDebuffImmuneEnemy = false;
   bool upResistSubState = true; // 5000
-  bool doubleActiveSkillIfCD6 = false;
+  bool enableActiveSkills = true;
+  bool twiceActiveSkill = false;
+  bool enableAppendSkills = false;
   // bool includeRefundAfterTd = true; // 重蓄力
   int tdR3 = 5;
   int tdR4 = 2;
   int tdR5 = 1;
   int oc = 1;
+  bool fixedOC = true;
 
   static const List<int> optionalSupports = [37, 150, 215, 241, 284, 314, 316, 353, 357];
 
@@ -39,6 +46,7 @@ class TdDamageOptions {
     enemy2
       ..deck = DeckType.enemy
       ..deckId = 1;
+    enemy.enemyScript.shift = null;
     return enemy2;
   }
 
@@ -103,7 +111,7 @@ class DmgBuffPresets {
 
 class TdDmgResult {
   final Servant svt;
-  BattleServantData? entity;
+  BattleServantData? actor;
   List<BattleAttackRecord> attacks = [];
   int totalDamage = 0;
   int attackNp = 0;
@@ -122,11 +130,14 @@ class TdDmgSolver {
     errors.clear();
     final servants = db.gameData.servantsNoDup.values.toList();
     servants.sort2((e) => e.collectionNo);
+    final quest = getQuest();
+    final t = StopwatchX('calc');
     for (final svt in servants) {
       try {
-        final result = await calcOneSvt(svt);
+        final result = await calcOneSvt(quest, svt);
         if (result != null) results.add(result);
         await Future.delayed(const Duration(milliseconds: 1));
+        t.log('${svt.collectionNo}');
       } catch (e, s) {
         errors.add('SVT: ${svt.collectionNo} - ${svt.lName.l}\nError: $e');
         logger.e('calc svt ${svt.collectionNo} error', e, s);
@@ -134,49 +145,63 @@ class TdDmgSolver {
     }
   }
 
-  Future<TdDmgResult?> calcOneSvt(Servant svt) async {
+  final _debuffImmuneSkill = NiceSkill(
+    id: 1,
+    name: 'Debuff Immune',
+    type: SkillType.passive,
+    coolDown: [0],
+    functions: [
+      NiceFunction(
+        funcId: 1,
+        funcType: FuncType.addState,
+        funcTargetType: FuncTargetType.self,
+        buffs: [
+          Buff(
+            id: 1,
+            name: 'Debuff Immune',
+            detail: 'Manually added',
+            type: BuffType.avoidState,
+            ckOpIndv: [NiceTrait(id: 3005)],
+          )
+        ],
+        svals: [
+          DataVals({
+            "Rate": 5000,
+            "Turn": -1,
+            "Count": -1,
+            "ForceAddState": 1,
+            "UnSubState": 1,
+          })
+        ],
+      )
+    ],
+  );
+
+  Future<TdDmgResult?> calcOneSvt(QuestPhase quest, Servant svt) async {
     final battleData = BattleData();
     final attacker = getSvtData(svt);
+    if (attacker == null) return null;
     if (attacker.td == null || !attacker.td!.functions.any((func) => func.funcType.isDamageNp)) {
       return null;
     }
+
     if (options.addDebuffImmune) {
-      attacker.addCustomPassive(
-        BaseSkill(
-          id: 1,
-          name: 'Debuff Immune',
-          type: SkillType.passive,
-          coolDown: [0],
-          functions: [
-            NiceFunction(
-              funcId: 1,
-              funcType: FuncType.addState,
-              funcTargetType: FuncTargetType.self,
-              buffs: [
-                Buff(id: 1, name: 'name', detail: '', type: BuffType.avoidState, ckOpIndv: [NiceTrait(id: 3005)])
-              ],
-              svals: [
-                DataVals({
-                  "Rate": 5000,
-                  "Turn": -1,
-                  "Count": -1,
-                })
-              ],
-            )
-          ],
-        ),
-        1,
-      );
+      attacker.addCustomPassive(_debuffImmuneSkill, 1);
     }
-    // if (options.upResistSubState) {}
+
     final playerSettings = [attacker];
 
-    await battleData.init(getQuest(), playerSettings, null);
-    final enemy = battleData.onFieldEnemies[0]!;
+    await battleData.init(quest, playerSettings, null);
+    final enemies = battleData.nonnullEnemies.toList();
+    // final enemy = enemies.first;
     final actor = battleData.onFieldAllyServants[0]!;
-    await battleData.activateSvtSkill(0, 0);
-    await battleData.activateSvtSkill(0, 1);
-    await battleData.activateSvtSkill(0, 2);
+    battleData.criticalStars = BattleData.kValidStarMax.toDouble();
+    actor.np = 100 * 100;
+    if (options.enableActiveSkills) {
+      await battleData.activateSvtSkill(0, 0);
+      await battleData.activateSvtSkill(0, 1);
+      await battleData.activateSvtSkill(0, 2);
+    }
     for (final svt in options.supports) {
       final sdata = PlayerSvtData.svt(svt);
       // ignore: unused_local_variable
@@ -188,18 +213,19 @@ class TdDmgSolver {
       await battleData.activateSvtSkill(1, 2);
       // battleData.onFieldAllyServants[1] = null;
     }
-    if (options.doubleActiveSkillIfCD6) {
-      // Buster + w-Koyan + skip 2 turns
-      // battle.onFieldAllyServants[1]!.skillInfoList.forEach((skill) {
-      //   skill.chargeTurn = 0;
-      // });
-      // await battle.activateSvtSkill(0, 0);
-      // await battle.activateSvtSkill(0, 1);
-      // await battle.activateSvtSkill(0, 2);
+    if (options.twiceActiveSkill && options.enableActiveSkills) {
+      for (int index = 0; index < actor.skillInfoList.length; index++) {
+        final skill = actor.skillInfoList[index];
+        skill.chargeTurn -= 2;
+        if (skill.chargeTurn < 0) skill.chargeTurn = 0;
+        if (skill.chargeTurn == 0) {
+          await battleData.activateSvtSkill(0, index);
+        }
+      }
     }
     actor.np = ConstData.constants.fullTdPoint;
     battleData.delegate = BattleDelegate(battleData);
-    battleData.delegate!.decideOC = (_actor, baseOC, upOC) => options.oc;
+    battleData.delegate!.decideOC = (_actor, baseOC, upOC) => options.fixedOC ? options.oc : options.oc + upOC;
     final card = actor.getNPCard(battleData);
     if (card == null) {
       print('svt ${svt.collectionNo}-${svt.lName.l}: No NP card');
@@ -207,23 +233,19 @@ class TdDmgSolver {
     }
     await battleData.playerTurn([CombatAction(actor, card)]);
 
-    final result = TdDmgResult(svt)..entity = actor;
+    final result = TdDmgResult(svt)..actor = actor;
 
     for (final record in battleData.recorder.records.whereType<BattleAttackRecord>()) {
-      if (record.attacker.uniqueId != actor.uniqueId) continue;
-
-      record.targets.removeWhere((target) => target.target.uniqueId != enemy.uniqueId);
-      if (record.targets.isNotEmpty && record.card != null) {
+      if (record.attacker.uniqueId != actor.uniqueId || record.card == null) continue;
+      record.targets.removeWhere((target) => enemies.every((e) => e.uniqueId != target.target.uniqueId));
+      if (record.targets.isNotEmpty) {
         result.attacks.add(record);
         for (final target in record.targets) {
-          result.attackNp = Maths.sum(target.result.npGains);
+          result.attackNp += Maths.sum(target.result.npGains);
+          result.totalDamage += Maths.sum(target.result.damages);
         }
       }
     }
-    result.totalDamage = Maths.sum([
-      for (final attack in result.attacks)
-        for (final target in attack.targets) ...target.result.damages,
-    ]);
     result.totalNp = actor.np;
 
     if (result.attacks.isEmpty) return null;
@@ -231,28 +253,60 @@ class TdDmgSolver {
     return result;
   }
 
-  PlayerSvtData getSvtData(Servant svt) {
+  PlayerSvtData? getSvtData(Servant svt) {
     final data = PlayerSvtData.svt(svt);
-    data.lv = svt.lvMax;
-    if (svt.rarity <= 3 || svt.extra.obtains.contains(SvtObtain.eventReward)) {
-      data.tdLv = options.tdR3;
-    } else if (svt.rarity == 4) {
-      data.tdLv = options.tdR4;
-    } else if (svt.rarity == 5) {
-      data.tdLv = options.tdR5;
+    if (options.usePlayerSvt == PreferPlayerSvtDataSource.none) {
+      data.lv = svt.lvMax;
+      if (svt.rarity <= 3 || svt.extra.obtains.contains(SvtObtain.eventReward)) {
+        data.tdLv = options.tdR3;
+      } else if (svt.rarity == 4) {
+        data.tdLv = options.tdR4;
+      } else if (svt.rarity == 5) {
+        data.tdLv = options.tdR5;
+      }
+    } else {
+      final status = svt.status;
+      if (!status.favorite) return null;
+      data.fromUserSvt(
+        svt: svt,
+        status: status,
+        plan: options.usePlayerSvt == PreferPlayerSvtDataSource.current ? status.cur : svt.curPlan,
+      );
     }
-    // data.skills;
+    if (!options.enableActiveSkills) {
+      data.skills.fillRange(0, 3, null);
+    }
+    if (options.enableAppendSkills) {
+      data.appendLvs.fillRange(0, 3, 10);
+    }
     return data;
   }
 
   QuestPhase getQuest() {
+    List<QuestEnemy> enemies = [];
+    options.enemyCount = options.enemyCount.clamp(1, 6);
+    for (int index = 0; index < options.enemyCount; index++) {
+      final enemy = TdDamageOptions.copyEnemy(options.enemy);
+      enemy
+        ..deckId = index + 1
+        ..npcId = index + 11;
+      if (options.addDebuffImmuneEnemy) {
+        enemy.classPassive.addPassive.add(_debuffImmuneSkill);
+      }
+      enemies.add(enemy);
+    }
+
     return QuestPhase(
       name: 'TD DMG Test',
       id: -1,
       phase: 1,
       phases: [1],
       stages: [
-        Stage(wave: 1, enemies: [TdDamageOptions.copyEnemy(options.enemy)])
+        Stage(
+          wave: 1,
+          enemyFieldPosCount: max(3, enemies.length),
+          enemies: enemies,
+        )
       ],
     );
   }

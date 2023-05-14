@@ -912,20 +912,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         : status.cur;
 
     if (!db.settings.battleSim.playerDataSource.isNone && status.cur.favorite && selectedSvt.collectionNo > 0) {
-      playerSvtData
-        ..limitCount = plan.ascension
-        ..lv = selectedSvt.grailedLv(plan.grail)
-        ..tdLv = plan.npLv.clamp(1, 5)
-        ..skillLvs = plan.skills.toList()
-        ..appendLvs = plan.appendSkills.toList()
-        ..atkFou = plan.fouAtk > 0 ? 1000 + plan.fouAtk * 20 : plan.fouAtk3 * 50
-        ..hpFou = plan.fouHp > 0 ? 1000 + plan.fouHp * 20 : plan.fouHp3 * 50
-        ..cardStrengthens = List.generate(selectedSvt.cards.length, (index) {
-          return (status.cmdCardStrengthen?.getOrNull(index) ?? 0) * 20;
-        })
-        ..commandCodes = List.generate(selectedSvt.cards.length, (index) {
-          return db.gameData.commandCodes[status.getCmdCode(index)];
-        });
+      playerSvtData.fromUserSvt(svt: selectedSvt, status: status, plan: plan);
     } else {
       final defaults = db.settings.battleSim.defaultLvs;
       int lv, tdLv;

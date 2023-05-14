@@ -6503,6 +6503,28 @@ class S {
     );
   }
 
+  /// `NP efund`
+  String get np_refund {
+    return Intl.message(
+      'NP efund',
+      name: 'np_refund',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Refund`
+  String get np_refund_short {
+    return Intl.message(
+      'Refund',
+      name: 'np_refund_short',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `NP`
   String get np_short {
     return Intl.message(

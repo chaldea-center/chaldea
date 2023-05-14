@@ -754,7 +754,7 @@ class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
       title: S.current.battle_atk_np_parameters,
       wrapDialog: wrapDialog,
       children: [
-        oneParam('NP', (Maths.sum(result.npGains) / 100).format(precision: 2)),
+        oneParam(S.current.np_refund, (Maths.sum(result.npGains) / 100).format(precision: 2)),
         if (result.npGains.any((e) => e > 0))
           listValueWithOverkill(result.npGains, result.overkillStates, (v) => (v / 100).format(precision: 2)),
         oneParam(S.current.attack_np_rate, attackerNpCharge.format(percent: true, precision: 2)),

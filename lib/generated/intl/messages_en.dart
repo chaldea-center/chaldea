@@ -707,6 +707,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "np_damage": MessageLookupByLibrary.simpleMessage("NP Damage"),
         "np_gain_mod": MessageLookupByLibrary.simpleMessage("NP Gain Mod"),
         "np_not_enough": MessageLookupByLibrary.simpleMessage("NP Not Enough"),
+        "np_refund": MessageLookupByLibrary.simpleMessage("NP efund"),
+        "np_refund_short": MessageLookupByLibrary.simpleMessage("Refund"),
         "np_short": MessageLookupByLibrary.simpleMessage("NP"),
         "np_sp_damage_rate": MessageLookupByLibrary.simpleMessage("NP Special Damage Rate"),
         "obtain_time": MessageLookupByLibrary.simpleMessage("Time"),

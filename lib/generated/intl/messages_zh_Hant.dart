@@ -681,6 +681,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "np_damage": MessageLookupByLibrary.simpleMessage("宝具伤害"),
         "np_gain_mod": MessageLookupByLibrary.simpleMessage("敵受擊補正"),
         "np_not_enough": MessageLookupByLibrary.simpleMessage("NP不足"),
+        "np_refund": MessageLookupByLibrary.simpleMessage("NP回收"),
+        "np_refund_short": MessageLookupByLibrary.simpleMessage("回收"),
         "np_short": MessageLookupByLibrary.simpleMessage("寶具"),
         "np_sp_damage_rate": MessageLookupByLibrary.simpleMessage("宝具特攻系数"),
         "obtain_time": MessageLookupByLibrary.simpleMessage("時間"),

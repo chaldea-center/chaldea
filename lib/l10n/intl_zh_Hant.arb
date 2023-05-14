@@ -585,6 +585,8 @@
   "np_damage": null,
   "np_gain_mod": "敵受擊補正",
   "np_not_enough": null,
+  "np_refund": null,
+  "np_refund_short": null,
   "np_short": "寶具",
   "np_sp_damage_rate": null,
   "obtain_time": "時間",

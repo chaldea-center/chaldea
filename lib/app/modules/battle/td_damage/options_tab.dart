@@ -15,6 +15,13 @@ class TdDmgOptionsTab extends StatefulWidget {
 
 class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
   TdDamageOptions get options => widget.options;
+  final scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,27 +65,57 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         // router.pushPage(child);
       },
     ));
-    children.add(TextButton(
-      onPressed: () {
-        final enemy2 = db.runtimeData.clipBoard.questEnemy;
-        if (enemy2 == null) {
-          const SimpleCancelOkDialog(
-            title: Text('Hint'),
-            content: Text('Choose one Quest Enemy and copy in popup menun'),
-          ).showDialog(context);
-        } else {
-          SimpleCancelOkDialog(
-            title: const Text("Paste Enemy"),
-            content: Text("${enemy2.lShownName}(${enemy2.svt.lName.l})\n${Transl.svtClassId(enemy2.svt.classId).l}"),
-            onTapOk: () {
-              options.enemy = TdDamageOptions.copyEnemy(enemy2);
-              if (mounted) setState(() {});
-            },
-          ).showDialog(context);
-        }
-      },
-      child: const Text('Paste Enemy'),
-    ));
+    children.addAll([
+      TextButton(
+        onPressed: () {
+          final enemy2 = db.runtimeData.clipBoard.questEnemy;
+          if (enemy2 == null) {
+            const SimpleCancelOkDialog(
+              title: Text('Hint'),
+              content: Text('Choose one Quest Enemy and copy in popup menun'),
+            ).showDialog(context);
+          } else {
+            SimpleCancelOkDialog(
+              title: const Text("Paste Enemy"),
+              content: Text("${enemy2.lShownName}(${enemy2.svt.lName.l})\n${Transl.svtClassId(enemy2.svt.classId).l}"),
+              onTapOk: () {
+                options.enemy = TdDamageOptions.copyEnemy(enemy2);
+                if (mounted) setState(() {});
+              },
+            ).showDialog(context);
+          }
+        },
+        child: const Text('Paste Enemy'),
+      ),
+      kIndentDivider,
+      ListTile(
+        dense: true,
+        title: const Text('Enemy Count'),
+        subtitle: const Text('ST NP will only attack 1st enemy'),
+        trailing: DropdownButton<int>(
+          value: options.enemyCount.clamp(1, 6),
+          items: [
+            for (int count = 1; count <= 6; count++) DropdownMenuItem(value: count, child: Text(count.toString())),
+          ],
+          onChanged: (v) {
+            setState(() {
+              if (v != null) options.enemyCount = v;
+            });
+          },
+        ),
+      ),
+      CheckboxListTile(
+        dense: true,
+        value: options.addDebuffImmuneEnemy,
+        title: const Text('AddDebuffImmune to Enemy'),
+        onChanged: (value) {
+          setState(() {
+            options.addDebuffImmuneEnemy = !options.addDebuffImmuneEnemy;
+          });
+        },
+      ),
+    ]);
+
     children.add(const DividerWithTitle(title: 'Supports'));
     children.add(Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -144,96 +181,87 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
     children.add(const Text('TODO'));
     children.add(const DividerWithTitle(title: "Options"));
     children.addAll([
-      CheckboxListTile(
-        value: options.usePlayerSvt,
-        dense: true,
-        title: const Text('Use Player Favorite Servants'),
-        onChanged: (value) {
-          setState(() {
-            options.usePlayerSvt = !options.usePlayerSvt;
-          });
-        },
-      ),
-      CheckboxListTile(
-        value: options.addDebuffImmune,
-        dense: true,
-        title: const Text('AddDebuffImmune'),
-        onChanged: (value) {
-          setState(() {
-            options.addDebuffImmune = !options.addDebuffImmune;
-          });
-        },
-      ),
-      CheckboxListTile(
-        value: options.upResistSubState,
-        dense: true,
-        title: const Text('Up Resist SubState 500%'),
-        onChanged: (value) {
-          setState(() {
-            options.upResistSubState = !options.upResistSubState;
-          });
-        },
-      ),
-      CheckboxListTile(
-        value: options.doubleActiveSkillIfCD6,
-        dense: true,
-        title: const Text('Twice skills if CD<=6 (pls only if w-koyan)'),
-        onChanged: (value) {
-          setState(() {
-            options.doubleActiveSkillIfCD6 = !options.doubleActiveSkillIfCD6;
-          });
-        },
-      ),
-      // CheckboxListTile(
-      //   value: options.includeRefundAfterTd,
-      //   dense: true,
-      //   title: const Text('Include NP Gain After TD(e.g. Arthur)'),
-      //   onChanged: (value) {
-      //     setState(() {
-      //       options.includeRefundAfterTd = !options.includeRefundAfterTd;
-      //     });
-      //   },
-      // ),
       ListTile(
         dense: true,
+        title: const Text('Use Player Data'),
+        subtitle: const Text('Non-favorite svt will be skipped'),
+        trailing: DropdownButton<PreferPlayerSvtDataSource>(
+          isDense: true,
+          value: options.usePlayerSvt,
+          items: PreferPlayerSvtDataSource.values.map((source) {
+            String text;
+            switch (source) {
+              case PreferPlayerSvtDataSource.none:
+                text = S.current.disabled;
+                break;
+              case PreferPlayerSvtDataSource.current:
+                text = S.current.current_;
+                break;
+              case PreferPlayerSvtDataSource.target:
+                text = S.current.target;
+                break;
+            }
+            return DropdownMenuItem(
+              value: source,
+              child: Text(text, textScaleFactor: 0.9),
+            );
+          }).toList(),
+          onChanged: (v) {
+            setState(() {
+              if (v != null) options.usePlayerSvt = v;
+            });
+          },
+        ),
+      ),
+      ListTile(
+        dense: true,
+        enabled: options.usePlayerSvt.isNone,
         title: const Text('NP Lv: R0-3 or event svt'),
         trailing: DropdownButton<int>(
           isDense: true,
           value: options.tdR3,
           items: List.generate(5, (index) => DropdownMenuItem(value: index + 1, child: Text('Lv.${index + 1}'))),
-          onChanged: (v) {
-            setState(() {
-              if (v != null) options.tdR3 = v;
-            });
-          },
+          onChanged: !options.usePlayerSvt.isNone
+              ? null
+              : (v) {
+                  setState(() {
+                    if (v != null) options.tdR3 = v;
+                  });
+                },
         ),
       ),
       ListTile(
         dense: true,
+        enabled: options.usePlayerSvt.isNone,
         title: const Text('NP Lv: R4'),
         trailing: DropdownButton<int>(
           value: options.tdR4,
           isDense: true,
           items: List.generate(5, (index) => DropdownMenuItem(value: index + 1, child: Text('Lv.${index + 1}'))),
-          onChanged: (v) {
-            setState(() {
-              if (v != null) options.tdR4 = v;
-            });
-          },
+          onChanged: !options.usePlayerSvt.isNone
+              ? null
+              : (v) {
+                  setState(() {
+                    if (v != null) options.tdR4 = v;
+                  });
+                },
         ),
       ),
       ListTile(
         dense: true,
+        enabled: options.usePlayerSvt.isNone,
         title: const Text('NP Lv: R5'),
         trailing: DropdownButton<int>(
           isDense: true,
           value: options.tdR5,
           items: List.generate(5, (index) => DropdownMenuItem(value: index + 1, child: Text('Lv.${index + 1}'))),
-          onChanged: (v) {
-            setState(() {
-              if (v != null) options.tdR5 = v;
-            });
-          },
+          onChanged: !options.usePlayerSvt.isNone
+              ? null
+              : (v) {
+                  setState(() {
+                    if (v != null) options.tdR5 = v;
+                  });
+                },
         ),
       ),
       ListTile(
@@ -250,9 +278,76 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           },
         ),
       ),
+      SwitchListTile.adaptive(
+        dense: true,
+        title: const Text('Fixed OC'),
+        subtitle: const Text('"OC Lv. Up" buff no effect'),
+        value: options.fixedOC,
+        onChanged: (v) {
+          setState(() {
+            options.fixedOC = v;
+          });
+        },
+      ),
+      kIndentDivider,
+      CheckboxListTile(
+        dense: true,
+        value: options.enableActiveSkills,
+        title: const Text('Enable Active Skills'),
+        onChanged: (value) {
+          setState(() {
+            options.enableActiveSkills = !options.enableActiveSkills;
+          });
+        },
+      ),
+      CheckboxListTile(
+        enabled: options.enableActiveSkills,
+        dense: true,
+        value: options.twiceActiveSkill,
+        title: const Text('Twice skills if Cool Down after 2 turns'),
+        subtitle: const Text('Usually for w-Koyan at Turn3'),
+        onChanged: (value) {
+          setState(() {
+            options.twiceActiveSkill = !options.twiceActiveSkill;
+          });
+        },
+      ),
+      CheckboxListTile(
+        dense: true,
+        value: options.enableAppendSkills,
+        title: const Text('Enable Append Passives'),
+        onChanged: (value) {
+          setState(() {
+            options.enableAppendSkills = !options.enableAppendSkills;
+          });
+        },
+      ),
+      kIndentDivider,
+      CheckboxListTile(
+        dense: true,
+        value: options.addDebuffImmune,
+        title: const Text('AddDebuffImmune'),
+        onChanged: (value) {
+          setState(() {
+            options.addDebuffImmune = !options.addDebuffImmune;
+          });
+        },
+      ),
+      CheckboxListTile(
+        enabled: false,
+        dense: true,
+        value: options.upResistSubState,
+        title: const Text('Up Resist SubState 500%'),
+        onChanged: (value) {
+          setState(() {
+            options.upResistSubState = !options.upResistSubState;
+          });
+        },
+      ),
     ]);
 
     return ListView(
+      controller: scrollController,
       padding: const EdgeInsets.only(top: 16, bottom: 64),
       children: children,
     );

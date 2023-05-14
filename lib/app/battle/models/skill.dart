@@ -119,20 +119,21 @@ class BattleSkillInfoData {
     return true;
   }
 
-  Future<void> activate(final BattleData battleData, {final int? effectiveness}) async {
+  Future<bool> activate(final BattleData battleData, {final int? effectiveness}) async {
     if (chargeTurn > 0 || battleData.isBattleFinished) {
-      return;
+      return false;
     }
     final curSkill = await getSkill();
     if (curSkill == null) {
-      return;
+      return false;
     }
     chargeTurn = curSkill.coolDown[skillLv - 1];
     skillScript = curSkill.script;
-    await activateSkill(battleData, curSkill, skillLv, isCommandCode: isCommandCode, effectiveness: effectiveness);
+    return await activateSkill(battleData, curSkill, skillLv,
+        isCommandCode: isCommandCode, effectiveness: effectiveness);
   }
 
-  static Future<void> activateSkill(
+  static Future<bool> activateSkill(
     final BattleData battleData,
     final BaseSkill skill,
     final int skillLevel, {
@@ -149,7 +150,7 @@ class BattleSkillInfoData {
     ));
 
     if (!actorTraitMatch) {
-      return;
+      return false;
     }
 
     int? selectedActionIndex;
@@ -181,6 +182,7 @@ class BattleSkillInfoData {
         await activateSkill(battleData, askill, skillLv, isPassive: skill.type == SkillType.passive);
       }
     }
+    return true;
   }
 
   BattleSkillInfoData copy() {

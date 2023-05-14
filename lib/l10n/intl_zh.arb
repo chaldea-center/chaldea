@@ -585,6 +585,8 @@
   "np_damage": "宝具伤害",
   "np_gain_mod": "敌受击补正",
   "np_not_enough": "NP不足",
+  "np_refund": "NP回收",
+  "np_refund_short": "回收",
   "np_short": "宝具",
   "np_sp_damage_rate": "宝具特攻系数",
   "obtain_time": "时间",

@@ -585,6 +585,8 @@
   "np_damage": "NP Damage",
   "np_gain_mod": "NP Gain Mod",
   "np_not_enough": "NP Not Enough",
+  "np_refund": "NP efund",
+  "np_refund_short": "Refund",
   "np_short": "NP",
   "np_sp_damage_rate": "NP Special Damage Rate",
   "obtain_time": "Time",
