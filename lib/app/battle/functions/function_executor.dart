@@ -17,7 +17,6 @@ import 'package:chaldea/app/battle/functions/update_entry_positions.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
-import 'package:chaldea/app/descriptors/func/func.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/extension.dart';
@@ -115,7 +114,7 @@ class FunctionExecutor {
             ? ' - ${S.current.battle_require_opponent_traits} ${function.functvals.map((e) => e.shownName())}'
             : '';
         battleData.battleLogger.function('${activator?.lBattleName ?? S.current.battle_no_source} - '
-            '${FuncDescriptor.buildFuncText(function)}'
+            '${function.lPopupText.l}'
             '$fieldTraitString'
             '$targetTraitString');
         break;

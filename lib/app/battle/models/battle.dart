@@ -6,7 +6,6 @@ import 'package:chaldea/app/battle/functions/gain_star.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
-import 'package:chaldea/app/descriptors/func/func.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
@@ -44,6 +43,11 @@ class BattleData {
   /// User action records, should be copied/saved to snapshots
   BattleRecordManager recorder = BattleRecordManager();
   BattleDelegate? delegate;
+  BattleOptionsRuntime options = BattleOptionsRuntime();
+  final BattleLogger battleLogger = BattleLogger();
+  BuildContext? context;
+
+  bool get mounted => context != null && context!.mounted;
 
   QuestPhase? niceQuest;
   Stage? curStage;
@@ -87,12 +91,6 @@ class BattleData {
 
   double criticalStars = 0;
   int _uniqueIndex = 1;
-
-  BattleOptionsRuntime options = BattleOptionsRuntime();
-  final BattleLogger battleLogger = BattleLogger();
-  BuildContext? context;
-
-  bool get mounted => context != null && context!.mounted;
 
   // unused fields
   // int countEnemyAttack = 0;
@@ -981,7 +979,7 @@ class BattleData {
 
   Future<bool> canActivateFunction(final int activationRate) async {
     final String funcString;
-    if (curFunc != null) {
+    if (curFunc != null && mounted) {
       final function = curFunc!;
       final fieldTraitString = function.funcquestTvals.isNotEmpty
           ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName()).toList()}'
@@ -991,7 +989,7 @@ class BattleData {
           : '';
       final targetString = target != null ? ' vs ${target!.lBattleName}' : '';
       funcString = '${activator?.lBattleName ?? S.current.battle_no_source} - '
-          '${FuncDescriptor.buildFuncText(function)}'
+          '${function.lPopupText.l}'
           '$fieldTraitString'
           '$targetTraitString'
           '$targetString';
