@@ -52,7 +52,7 @@ For more details or usage, please check our document: [English](https://docs.cha
 | Linux    | Debian 10 & above                |
 | Web      | Any modern browser               |
 
-More about [Supported Platforms](https://docs.flutter.dev/development/tools/sdk/release-notes/supported-platforms)
+More about [Supported Platforms](https://docs.flutter.dev/reference/supported-platforms)
 
 ## Installation
 
