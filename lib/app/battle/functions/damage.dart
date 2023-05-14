@@ -77,7 +77,9 @@ class Damage {
           if (dataVals.ParamAddMaxCount != null && dataVals.ParamAddMaxCount! > 0) {
             useCount = min(useCount, dataVals.ParamAddMaxCount!);
           }
-          specificAttackRate = dataVals.Value2! + useCount * dataVals.Correction!;
+          if (useCount > 0) {
+            specificAttackRate = dataVals.Value2! + useCount * dataVals.Correction!;
+          }
         } else if (damageFunction?.funcType == FuncType.damageNpIndividual ||
             damageFunction?.funcType == FuncType.damageNpStateIndividualFix) {
           final checkBuffTraits = damageFunction?.funcType == FuncType.damageNpStateIndividualFix;

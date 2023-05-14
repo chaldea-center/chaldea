@@ -904,6 +904,28 @@ void main() async {
     expect(previousHp2 - enemy1.hp, 12147);
   });
 
+  test('Musashi NP always super effective bug', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(101700)
+        ..lv = 90
+        ..tdLv = 5
+        ..setNpStrengthenLv(3)
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final musashi = battle.onFieldAllyServants[0]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+
+    final previousHp1 = enemy1.hp;
+    await battle.playerTurn([CombatAction(musashi, musashi.getNPCard(battle)!)]);
+    expect(previousHp1 - enemy1.hp, 80119);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,
