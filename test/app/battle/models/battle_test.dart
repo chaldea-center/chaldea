@@ -924,6 +924,22 @@ void main() async {
     final previousHp1 = enemy1.hp;
     await battle.playerTurn([CombatAction(musashi, musashi.getNPCard(battle)!)]);
     expect(previousHp1 - enemy1.hp, 80119);
+
+    final enemy2 = battle.onFieldEnemies[1]!;
+    final previousHp2 = enemy2.hp;
+    enemy2.niceEnemy!.traits = enemy2.niceEnemy!.traits.toList()..add(NiceTrait(id: 109));
+    musashi.np = 10000;
+    await battle.playerTurn([CombatAction(musashi, musashi.getNPCard(battle)!)]);
+    expect(previousHp2 - enemy2.hp, 120179);
+
+    final enemy3 = battle.onFieldEnemies[2]!;
+    final previousHp3 = enemy3.hp;
+    enemy3.niceEnemy!.traits = enemy3.niceEnemy!.traits.toList()
+      ..add(NiceTrait(id: 115))
+      ..add(NiceTrait(id: 109));
+    musashi.np = 10000;
+    await battle.playerTurn([CombatAction(musashi, musashi.getNPCard(battle)!)]);
+    expect(previousHp3 - enemy3.hp, 120179);
   });
 
   group('Method tests', () {
