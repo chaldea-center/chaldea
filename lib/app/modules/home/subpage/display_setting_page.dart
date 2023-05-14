@@ -265,6 +265,9 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
           ),
           TileGroup(
             header: 'App',
+            footer: PlatformU.isDesktop
+                ? 'If system tray crash, delete settings.json or change "showSystemTray" value from true to false.'
+                : null,
             children: [
               if (PlatformU.isMacOS || PlatformU.isWindows)
                 SwitchListTile.adaptive(
@@ -337,18 +340,6 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                     db.notifyAppUpdate();
                   },
                 ),
-              if (PlatformU.isDesktop)
-                SwitchListTile.adaptive(
-                  value: db.settings.showSystemTray,
-                  title: Text(S.current.show_system_tray),
-                  subtitle: Text(S.current.system_tray_close_hint),
-                  onChanged: (v) {
-                    setState(() {
-                      db.settings.showSystemTray = v;
-                    });
-                    SystemTrayUtil.toggle(v);
-                  },
-                ),
               SwitchListTile.adaptive(
                 value: db.settings.globalSelection,
                 title: Text(S.current.global_text_selection),
@@ -360,6 +351,19 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   db.notifyAppUpdate();
                 },
               ),
+              if (PlatformU.isDesktop) ...[
+                SwitchListTile.adaptive(
+                  value: db.settings.showSystemTray,
+                  title: Text(S.current.show_system_tray),
+                  subtitle: Text(S.current.system_tray_close_hint),
+                  onChanged: (v) {
+                    setState(() {
+                      db.settings.showSystemTray = v;
+                    });
+                    SystemTrayUtil.toggle(v);
+                  },
+                ),
+              ],
             ],
           ),
         ],

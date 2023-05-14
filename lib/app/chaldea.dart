@@ -153,7 +153,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
       }
     }
-    SystemTrayUtil.init();
+    if (db.settings.showSystemTray) SystemTrayUtil.init();
 
     if (db.settings.autoUpdateApp && !kIsWeb) {
       await Future.delayed(const Duration(seconds: 5));
