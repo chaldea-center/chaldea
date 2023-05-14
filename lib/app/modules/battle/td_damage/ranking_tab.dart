@@ -19,16 +19,12 @@ enum _SortType {
 }
 
 class TdDmgRankingTab extends StatefulWidget {
-  final TdDamageOptions options;
-  final List<TdDmgResult> results;
-  final List errors;
+  final TdDmgSolver solver;
   final SvtFilterData svtFilterData;
 
   const TdDmgRankingTab({
     super.key,
-    required this.options,
-    required this.results,
-    required this.errors,
+    required this.solver,
     required this.svtFilterData,
   });
 
@@ -107,7 +103,7 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
   }
 
   Widget get listView {
-    List<TdDmgResult> results = widget.results.where(filter).toList();
+    List<TdDmgResult> results = widget.solver.results.where(filter).toList();
     switch (_sortType) {
       case _SortType.damage:
         results.sortByList((e) => [-e.totalDamage, -e.attackNp, -e.totalNp]);
@@ -128,12 +124,13 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
       separatorBuilder: (context, index) => kDefaultDivider,
       itemBuilder: (context, index) {
         if (index == 0) {
-          if (widget.errors.isEmpty) return const SizedBox.shrink();
+          final errors = widget.solver.errors;
+          if (errors.isEmpty) return const SizedBox.shrink();
           return SimpleAccordion(
             headerBuilder: (context, _) => ListTile(
               dense: true,
               title: Text(
-                '${widget.errors.length} ${S.current.error}',
+                '${errors.length} ${S.current.error}',
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             ),
@@ -141,7 +138,7 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
               return Card(
                 child: Padding(
                   padding: const EdgeInsets.all(8),
-                  child: Text(widget.errors.join('\n\n')),
+                  child: Text(errors.join('\n\n')),
                 ),
               );
             },

@@ -5,16 +5,16 @@ import 'package:chaldea/widgets/widgets.dart';
 import 'model.dart';
 
 class TdDmgOptionsTab extends StatefulWidget {
-  final TdDamageOptions options;
+  final TdDmgSolver solver;
   final VoidCallback onStart;
-  const TdDmgOptionsTab({super.key, required this.options, required this.onStart});
+  const TdDmgOptionsTab({super.key, required this.solver, required this.onStart});
 
   @override
   State<TdDmgOptionsTab> createState() => _TdDmgOptionsTabState();
 }
 
 class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
-  TdDamageOptions get options => widget.options;
+  TdDamageOptions get options => widget.solver.options;
   final scrollController = ScrollController();
 
   @override
@@ -32,9 +32,12 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         ButtonBar(
           alignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: widget.onStart,
-              child: Text(S.current.calculate),
+            ValueListenableBuilder(
+              valueListenable: widget.solver.running,
+              builder: (context, value, child) => ElevatedButton(
+                onPressed: value ? null : widget.onStart,
+                child: Text(S.current.calculate),
+              ),
             ),
           ],
         ),

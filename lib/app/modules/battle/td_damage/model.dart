@@ -1,8 +1,13 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
+
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:chaldea/app/battle/interactions/_delegate.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
+import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -127,7 +132,23 @@ class TdDmgSolver {
   List<TdDmgResult> results = [];
   List errors = [];
 
+  final running = ValueNotifier<bool>(false);
   Future<void> calculate() async {
+    if (running.value) return;
+    try {
+      running.value = true;
+      // let button update
+      // await Future.delayed(const Duration(milliseconds: 200));
+      await _calculate();
+    } catch (e, s) {
+      tryEasyLoading(() => EasyLoading.showError(e.toString()));
+      logger.e('calc NP dmg ranking failed', e, s);
+    } finally {
+      running.value = false;
+    }
+  }
+
+  Future<void> _calculate() async {
     results.clear();
     errors.clear();
     final List<Servant> servants;
@@ -139,7 +160,7 @@ class TdDmgSolver {
     }
     servants.sort2((e) => e.collectionNo);
     final quest = getQuest();
-    final t = StopwatchX('calc');
+    // final t = StopwatchX('calc');
 
     for (final svt in servants) {
       try {
@@ -170,8 +191,8 @@ class TdDmgSolver {
           if (result == null) continue;
           results.add(result);
         }
-        if (svt.collectionNo % 50 == 0) await Future.delayed(const Duration(milliseconds: 1));
-        t.log('${svt.collectionNo}');
+        // if (svt.collectionNo % 100 == 0) await Future.delayed(const Duration(milliseconds: 1));
+        // t.log('${svt.collectionNo}');
       } catch (e, s) {
         errors.add('SVT: ${svt.collectionNo} - ${svt.lName.l}\nError: $e');
         logger.e('calc svt ${svt.collectionNo} error', e, s);

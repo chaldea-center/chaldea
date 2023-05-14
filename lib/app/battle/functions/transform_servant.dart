@@ -34,7 +34,7 @@ class TransformServant {
         target.playerSvtData!.td = svt?.noblePhantasms.firstWhereOrNull((e) => e.id == 304802);
       } else {
         Servant? targetSvt =
-            db.gameData.servantsById[targetSvtId] ?? await showLoading(() => AtlasApi.svt(targetSvtId));
+            db.gameData.servantsById[targetSvtId] ?? await showEasyLoading(() => AtlasApi.svt(targetSvtId));
         if (targetSvt == null) {
           battleData.battleLogger.debug('${S.current.not_found}: $targetSvtId');
         } else {

@@ -1,5 +1,3 @@
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-
 import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/userdata/local_settings.dart';
@@ -14,12 +12,13 @@ class TdDamageRanking extends StatefulWidget {
 
   @override
   State<TdDamageRanking> createState() => _TdDamageRankingState();
+
+  static TdDmgSolver solver = TdDmgSolver();
 }
 
 class _TdDamageRankingState extends State<TdDamageRanking> with SingleTickerProviderStateMixin {
-  static TdDmgSolver solver = TdDmgSolver();
-
   late final TabController _tabController;
+  final solver = TdDamageRanking.solver;
   final svtFilterData = SvtFilterData();
 
   @override
@@ -40,11 +39,9 @@ class _TdDamageRankingState extends State<TdDamageRanking> with SingleTickerProv
       builder: (context, constraints) {
         final pages = [
           TdDmgOptionsTab(
-            options: solver.options,
+            solver: solver,
             onStart: () async {
-              EasyLoading.show();
               await solver.calculate();
-              EasyLoading.dismiss();
               if (mounted) {
                 setState(() {
                   _tabController.index = 1;
@@ -53,9 +50,7 @@ class _TdDamageRankingState extends State<TdDamageRanking> with SingleTickerProv
             },
           ),
           TdDmgRankingTab(
-            options: solver.options,
-            results: solver.results,
-            errors: solver.errors,
+            solver: solver,
             svtFilterData: svtFilterData,
           ),
         ];

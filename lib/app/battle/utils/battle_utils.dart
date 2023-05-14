@@ -511,7 +511,7 @@ Future<BaseFunction> getDependFunc(BattleLogger logger, DataVals dataVals) async
   BaseFunction? dependFunction;
   if (dataVals.DependFuncId != null) {
     dependFunction = db.gameData.baseFunctions[dataVals.DependFuncId!] ??
-        await showLoading(() => AtlasApi.func(dataVals.DependFuncId!));
+        await showEasyLoading(() => AtlasApi.func(dataVals.DependFuncId!));
   }
   if (dependFunction == null) {
     logger.error('DependFunctionId=${dataVals.DependFuncId} not found');
@@ -520,7 +520,13 @@ Future<BaseFunction> getDependFunc(BattleLogger logger, DataVals dataVals) async
   return dependFunction;
 }
 
-Future<T> showLoading<T>(Future<T> Function() computation) async {
+Future<T?> tryEasyLoading<T>(Future<T> Function() task) async {
+  final mounted = EasyLoading.instance.overlayEntry?.mounted == true;
+  if (mounted) return task();
+  return null;
+}
+
+Future<T> showEasyLoading<T>(Future<T> Function() computation) async {
   final mounted = EasyLoading.instance.overlayEntry?.mounted == true;
   if (!mounted) return computation();
   try {
