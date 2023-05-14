@@ -567,7 +567,7 @@ extension BattleSvtDataUI on BattleServantData {
   }) {
     onTap ??= () => router.pushPage(BattleSvtDetail(svt: this, battleData: battleData));
     return db.getIconImage(
-      niceSvt?.ascendIcon(limitCount, true) ?? niceEnemy?.icon ?? Atlas.common.unknownEnemyIcon,
+      niceSvt?.ascendIcon(limitCount) ?? niceEnemy?.icon ?? Atlas.common.unknownEnemyIcon,
       width: width,
       height: height,
       aspectRatio: aspectRatio ?? (isPlayer ? 132 / 144 : 1),

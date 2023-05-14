@@ -176,7 +176,7 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
           result.svt.iconBuilder(
             context: context,
             width: 32,
-            overrideIcon: result.svt.ascendIcon(result.originalSvtData.limitCount, true),
+            overrideIcon: result.svt.ascendIcon(result.originalSvtData.limitCount),
           ),
         ],
       ),

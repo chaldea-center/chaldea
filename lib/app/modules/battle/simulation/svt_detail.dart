@@ -64,7 +64,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
   }
 
   Widget _sliverBuilder(BuildContext context) {
-    final icon = svt.niceEnemy?.icon ?? svt.niceSvt?.ascendIcon(svt.limitCount);
+    final icon = svt.niceEnemy?.icon ?? svt.niceSvt?.ascendIcon(svt.limitCount, false);
     return SliverAppBar(
       title: AutoSizeText(svt.lBattleName, maxLines: 1),
       actions: [
@@ -116,7 +116,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
       leading: (svt.niceEnemy ?? svt.niceSvt)?.iconBuilder(
         context: context,
         width: 72,
-        overrideIcon: svt.niceSvt?.ascendIcon(svt.limitCount, true),
+        overrideIcon: svt.niceSvt?.ascendIcon(svt.limitCount),
         option: ImageWithTextOption(
             errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon)),
       ),

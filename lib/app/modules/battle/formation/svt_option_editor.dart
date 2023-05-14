@@ -327,7 +327,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         context: context,
         height: 72,
         jumpToDetail: true,
-        overrideIcon: svt.ascendIcon(playerSvtData.limitCount, true),
+        overrideIcon: svt.ascendIcon(playerSvtData.limitCount),
         option: ImageWithTextOption(
           errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
         ),

@@ -227,8 +227,7 @@ class _FormationEditorState extends State<FormationEditor> {
     Widget child = Column(
       children: [
         db.getIconImage(
-          db.gameData.servantsById[storedData?.svtId]?.ascendIcon(storedData!.limitCount, true) ??
-              Atlas.common.emptySvtIcon,
+          db.gameData.servantsById[storedData?.svtId]?.ascendIcon(storedData!.limitCount) ?? Atlas.common.emptySvtIcon,
           aspectRatio: 132 / 144,
         ),
         db.getIconImage(

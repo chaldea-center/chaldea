@@ -52,7 +52,7 @@ class ServantSelector extends StatelessWidget {
     }
     Widget svtIcon = GameCardMixin.cardIconBuilder(
       context: context,
-      icon: playerSvtData.svt?.ascendIcon(playerSvtData.limitCount, true) ?? Atlas.common.emptySvtIcon,
+      icon: playerSvtData.svt?.ascendIcon(playerSvtData.limitCount) ?? Atlas.common.emptySvtIcon,
       width: 80,
       aspectRatio: 132 / 144,
       text: svtInfo,

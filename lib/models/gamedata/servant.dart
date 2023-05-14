@@ -454,7 +454,7 @@ class Servant with GameCardMixin {
     return '${Hosts.kAtlasAssetHostGlobal}/JP/FFO/Atlas/Sprite_bordered/icon_servant_${padded}_bordered.png';
   }
 
-  String? ascendIcon(int ascOrCostumeIdOrCharaId, [bool bordered = false]) {
+  String? ascendIcon(int ascOrCostumeIdOrCharaId, [bool bordered = true]) {
     final idx = ascOrCostumeIdOrCharaId;
     final ascs = extraAssets.faces.ascension ?? {};
     final costumes = extraAssets.faces.costume ?? {};

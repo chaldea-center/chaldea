@@ -194,7 +194,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       context: context,
       // width: tdWidth,
       height: cardSize,
-      overrideIcon: svt.niceSvt!.ascendIcon(svt.limitCount, true),
+      overrideIcon: svt.niceSvt!.ascendIcon(svt.limitCount),
       jumpToDetail: false,
     );
     tdIcon = Stack(
