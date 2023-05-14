@@ -25,7 +25,21 @@ class BattleServantData {
 
   bool get isEnemy => niceEnemy != null;
 
-  String get lBattleName => isPlayer ? niceSvt!.lBattleName(playerSvtData!.limitCount).l : niceEnemy!.lShownName;
+  // performance issue,
+  String? _battleNameCache;
+  int? _limitCountCache;
+  String get lBattleName {
+    if (isPlayer) {
+      if (_battleNameCache != null && _limitCountCache == playerSvtData!.limitCount) {
+        return _battleNameCache!;
+      } else {
+        _limitCountCache = playerSvtData!.limitCount;
+        return _battleNameCache = niceSvt!.lBattleName(playerSvtData!.limitCount).l;
+      }
+    } else {
+      return niceEnemy!.lShownName;
+    }
+  }
 
   int get limitCount => isPlayer ? playerSvtData!.limitCount : niceEnemy!.limit?.limitCount ?? 0;
 
@@ -938,7 +952,7 @@ class BattleServantData {
         final skillId = buff.param;
         BaseSkill? skill = db.gameData.baseSkills[skillId];
         try {
-          skill ??= await showLoading(() => AtlasApi.skill(skillId));
+          skill ??= await showEasyLoading(() => AtlasApi.skill(skillId));
         } catch (e) {
           logger.e('Exception while fetch AtlasApi for skill $skillId', e);
         }

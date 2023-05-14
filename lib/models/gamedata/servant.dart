@@ -1011,7 +1011,9 @@ class AscensionAdd {
     final entries = attri(this);
     return entries.ascension[ascOrCostumeId] ??
         entries.costume[ascOrCostumeId] ??
-        entries.costume[costumes.values.firstWhereOrNull((c) => c.id == ascOrCostumeId)?.battleCharaId];
+        (ascOrCostumeId < 100
+            ? entries.costume[costumes.values.firstWhereOrNull((c) => c.id == ascOrCostumeId)?.battleCharaId]
+            : null);
   }
 
   Map<String, dynamic> toJson() => _$AscensionAddToJson(this);
