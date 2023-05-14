@@ -1030,9 +1030,7 @@ class BattleData {
   }
 
   void popSnapshot() {
-    if (snapshots.isEmpty) {
-      return;
-    }
+    if (snapshots.isEmpty) return;
 
     battleLogger.action(S.current.battle_undo);
     final BattleData copy = snapshots.removeLast();

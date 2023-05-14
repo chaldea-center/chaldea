@@ -19,8 +19,14 @@ class TdDamageRanking extends StatefulWidget {
 class _TdDamageRankingState extends State<TdDamageRanking> with SingleTickerProviderStateMixin {
   static TdDmgSolver solver = TdDmgSolver();
 
-  late final _tabController = TabController(length: 2, vsync: this);
+  late final TabController _tabController;
   final svtFilterData = SvtFilterData();
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
 
   @override
   void dispose() {

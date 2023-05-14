@@ -38,6 +38,7 @@ class TdDamageOptions {
   int tdR5 = 1;
   int oc = 1;
   bool fixedOC = true;
+  Region region = Region.jp;
 
   static const List<int> optionalSupports = [37, 150, 215, 241, 284, 314, 316, 353, 357];
 
@@ -110,6 +111,7 @@ class DmgBuffPresets {
 }
 
 class TdDmgResult {
+  final PlayerSvtData originalSvtData;
   final Servant svt;
   BattleServantData? actor;
   List<BattleAttackRecord> attacks = [];
@@ -117,7 +119,7 @@ class TdDmgResult {
   int attackNp = 0;
   int totalNp = 0;
 
-  TdDmgResult(this.svt);
+  TdDmgResult(this.originalSvtData) : svt = originalSvtData.svt!;
 }
 
 class TdDmgSolver {
@@ -128,15 +130,47 @@ class TdDmgSolver {
   Future<void> calculate() async {
     results.clear();
     errors.clear();
-    final servants = db.gameData.servantsNoDup.values.toList();
+    final List<Servant> servants;
+    final releasedSvts = db.gameData.mappingData.svtRelease.ofRegion(options.region) ?? [];
+    if (options.region != Region.jp && releasedSvts.isNotEmpty) {
+      servants = releasedSvts.map((e) => db.gameData.servantsNoDup[e]).whereType<Servant>().toList();
+    } else {
+      servants = db.gameData.servantsNoDup.values.toList();
+    }
     servants.sort2((e) => e.collectionNo);
     final quest = getQuest();
     final t = StopwatchX('calc');
+
     for (final svt in servants) {
       try {
-        final result = await calcOneSvt(quest, svt);
-        if (result != null) results.add(result);
-        await Future.delayed(const Duration(milliseconds: 1));
+        final baseSvt = getSvtData(svt, 4);
+        final variants = <PlayerSvtData?>[baseSvt];
+
+        // Melusine
+        if (svt.collectionNo == 312) {
+          variants.add(getSvtData(svt, 1));
+          variants.add(getSvtData(svt, 1)?..skills[2] = null);
+        }
+
+        // tdTypeChanges
+        final baseTd = baseSvt?.td;
+        if (baseSvt != null && baseTd != null) {
+          final tdTypeChangeIds = baseTd.script?.tdTypeChangeIDs ?? const [];
+          for (final tdId in tdTypeChangeIds) {
+            if (tdId == baseTd.id) continue;
+            final tdChange = baseSvt.svt?.noblePhantasms.firstWhereOrNull((e) => e.id == tdId);
+            if (tdChange != null) {
+              variants.add(baseSvt.copy()..td = tdChange);
+            }
+          }
+        }
+        for (final svtData in variants) {
+          if (svtData == null) continue;
+          final result = await calcOneSvt(TdDmgResult(svtData), quest);
+          if (result == null) continue;
+          results.add(result);
+        }
+        if (svt.collectionNo % 50 == 0) await Future.delayed(const Duration(milliseconds: 1));
         t.log('${svt.collectionNo}');
       } catch (e, s) {
         errors.add('SVT: ${svt.collectionNo} - ${svt.lName.l}\nError: $e');
@@ -177,10 +211,10 @@ class TdDmgSolver {
     ],
   );
 
-  Future<TdDmgResult?> calcOneSvt(QuestPhase quest, Servant svt) async {
+  Future<TdDmgResult?> calcOneSvt(TdDmgResult data, QuestPhase quest) async {
+    final attacker = data.originalSvtData.copy();
     final battleData = BattleData();
-    final attacker = getSvtData(svt);
-    if (attacker == null) return null;
+    final svt = attacker.svt!;
     if (attacker.td == null || !attacker.td!.functions.any((func) => func.funcType.isDamageNp)) {
       return null;
     }
@@ -233,28 +267,28 @@ class TdDmgSolver {
     }
     await battleData.playerTurn([CombatAction(actor, card)]);
 
-    final result = TdDmgResult(svt)..actor = actor;
+    data.actor = actor;
 
     for (final record in battleData.recorder.records.whereType<BattleAttackRecord>()) {
       if (record.attacker.uniqueId != actor.uniqueId || record.card == null) continue;
       record.targets.removeWhere((target) => enemies.every((e) => e.uniqueId != target.target.uniqueId));
       if (record.targets.isNotEmpty) {
-        result.attacks.add(record);
+        data.attacks.add(record);
         for (final target in record.targets) {
-          result.attackNp += Maths.sum(target.result.npGains);
-          result.totalDamage += Maths.sum(target.result.damages);
+          data.attackNp += Maths.sum(target.result.npGains);
+          data.totalDamage += Maths.sum(target.result.damages);
         }
       }
     }
-    result.totalNp = actor.np;
+    data.totalNp = actor.np;
 
-    if (result.attacks.isEmpty) return null;
+    if (data.attacks.isEmpty) return null;
     // print('${svt.collectionNo}-${svt.lName.l}: DMG ${result.totalDamage}');
-    return result;
+    return data;
   }
 
-  PlayerSvtData? getSvtData(Servant svt) {
-    final data = PlayerSvtData.svt(svt);
+  PlayerSvtData? getSvtData(Servant svt, int limitCount) {
+    final data = PlayerSvtData.svt(svt)..limitCount = limitCount;
     if (options.usePlayerSvt == PreferPlayerSvtDataSource.none) {
       data.lv = svt.lvMax;
       if (svt.rarity <= 3 || svt.extra.obtains.contains(SvtObtain.eventReward)) {
@@ -273,6 +307,7 @@ class TdDmgSolver {
         plan: options.usePlayerSvt == PreferPlayerSvtDataSource.current ? status.cur : svt.curPlan,
       );
     }
+    data.updateRankUps(options.region);
     if (!options.enableActiveSkills) {
       data.skills.fillRange(0, 3, null);
     }

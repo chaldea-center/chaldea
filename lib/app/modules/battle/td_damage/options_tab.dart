@@ -183,6 +183,23 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
     children.addAll([
       ListTile(
         dense: true,
+        title: Text(S.current.game_server),
+        trailing: DropdownButton<Region>(
+          isDense: true,
+          value: options.region,
+          items: [
+            for (final region in Region.values)
+              DropdownMenuItem(value: region, child: Text(region.localName, textScaleFactor: 0.9)),
+          ],
+          onChanged: (v) {
+            setState(() {
+              if (v != null) options.region = v;
+            });
+          },
+        ),
+      ),
+      ListTile(
+        dense: true,
         title: const Text('Use Player Data'),
         subtitle: const Text('Non-favorite svt will be skipped'),
         trailing: DropdownButton<PreferPlayerSvtDataSource>(

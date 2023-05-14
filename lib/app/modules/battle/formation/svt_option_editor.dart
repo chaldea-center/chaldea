@@ -946,30 +946,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     }
 
     playerSvtData.extraPassives = selectedSvt.extraPassive.toList();
-    final region = widget.playerRegion;
 
-    final tds = BattleUtils.getShownTds(selectedSvt, playerSvtData.limitCount);
-    if (region != Region.jp) {
-      final releasedTds = tds
-          .where((td) => db.gameData.mappingData.tdPriority[selectedSvt.id]?.ofRegion(region)?[td.id] != null)
-          .toList();
-      playerSvtData.td = releasedTds.lastOrNull ?? tds.lastOrNull;
-    } else {
-      playerSvtData.td = tds.lastOrNull;
-    }
-
-    for (final skillNum in kActiveSkillNums) {
-      final skills = BattleUtils.getShownSkills(selectedSvt, playerSvtData.limitCount, skillNum);
-      if (region != Region.jp) {
-        final releaseSkills = skills
-            .where(
-                (skill) => db.gameData.mappingData.skillPriority[selectedSvt.id]?.ofRegion(region)?[skill.id] != null)
-            .toList();
-        playerSvtData.skills[skillNum - 1] = releaseSkills.lastOrNull ?? skills.lastOrNull;
-      } else {
-        playerSvtData.skills[skillNum - 1] = skills.lastOrNull;
-      }
-    }
+    playerSvtData.updateRankUps(widget.playerRegion);
   }
 
   Future<void> _onSelectSupport(final SupportServant support) async {

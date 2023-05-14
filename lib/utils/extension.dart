@@ -153,21 +153,9 @@ extension IterableX<E> on Iterable<E> {
     }
   }
 
-  E? get firstOrNull {
-    try {
-      return first;
-    } on StateError {
-      return null;
-    }
-  }
+  E? get firstOrNull => isNotEmpty ? first : null;
 
-  E? get lastOrNull {
-    try {
-      return last;
-    } on StateError {
-      return null;
-    }
-  }
+  E? get lastOrNull => isNotEmpty ? last : null;
 }
 
 extension SetX<E> on Set<E> {

@@ -86,9 +86,28 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
     );
   }
 
+  bool filter(TdDmgResult result) {
+    final filterData = widget.svtFilterData;
+    if (!ServantFilterPage.filter(filterData, result.svt)) {
+      return false;
+    }
+
+    final td = result.actor?.playerSvtData?.td;
+    if (filterData.npColor.isNotEmpty || filterData.npType.isNotEmpty) {
+      if (td == null) return false;
+      if (!filterData.npColor.matchOne(td.card)) {
+        return false;
+      }
+      if (!filterData.npType.matchOne(td.damageType)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   Widget get listView {
-    List<TdDmgResult> results =
-        widget.results.where((e) => ServantFilterPage.filter(widget.svtFilterData, e.svt)).toList();
+    List<TdDmgResult> results = widget.results.where(filter).toList();
     switch (_sortType) {
       case _SortType.damage:
         results.sortByList((e) => [-e.totalDamage, -e.attackNp, -e.totalNp]);
@@ -156,8 +175,12 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text('$prefix ', style: kMonoStyle),
-          result.svt.iconBuilder(context: context, width: 32),
+          Text('$prefix ', style: kMonoStyle, textScaleFactor: 0.8),
+          result.svt.iconBuilder(
+            context: context,
+            width: 32,
+            overrideIcon: result.svt.ascendIcon(result.originalSvtData.limitCount, true),
+          ),
         ],
       ),
       title: Text('DMG $dmgStr'),

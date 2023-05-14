@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/extension.dart';
+import '../../app/battle/utils/battle_utils.dart';
 
 class PlayerSvtData {
   Servant? svt;
@@ -67,6 +68,31 @@ class PlayerSvtData {
       ..commandCodes = List.generate(svt.cards.length, (index) {
         return db.gameData.commandCodes[status.getCmdCode(index)];
       });
+  }
+
+  void updateRankUps([Region region = Region.jp]) {
+    final svt = this.svt;
+    if (svt == null) return;
+    final tds = BattleUtils.getShownTds(svt, limitCount);
+    if (region != Region.jp) {
+      final releasedTds =
+          tds.where((td) => db.gameData.mappingData.tdPriority[svt.id]?.ofRegion(region)?[td.id] != null).toList();
+      td = releasedTds.lastOrNull ?? tds.lastOrNull;
+    } else {
+      td = tds.lastOrNull;
+    }
+
+    for (final skillNum in kActiveSkillNums) {
+      final validSkills = BattleUtils.getShownSkills(svt, limitCount, skillNum);
+      if (region != Region.jp) {
+        final releaseSkills = validSkills
+            .where((skill) => db.gameData.mappingData.skillPriority[svt.id]?.ofRegion(region)?[skill.id] != null)
+            .toList();
+        skills[skillNum - 1] = releaseSkills.lastOrNull ?? validSkills.lastOrNull;
+      } else {
+        skills[skillNum - 1] = validSkills.lastOrNull;
+      }
+    }
   }
 
   bool get isEmpty => svt == null && ce == null;
