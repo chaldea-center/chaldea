@@ -8,6 +8,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../quest/enemy_edit.dart';
 import 'model.dart';
 
 class TdDmgOptionsTab extends StatefulWidget {
@@ -70,8 +71,9 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           '\nHP ${enemy.hp}  DR ${enemy.deathRate.format(percent: true, base: 10)}'
           ' N/D ${enemy.serverMod.tdRate.format(percent: true, base: 10)}'),
       trailing: const Icon(Icons.edit),
-      onTap: () {
-        // router.pushPage(child);
+      onTap: () async {
+        await router.pushPage(QuestEnemyEditPage(enemy: enemy));
+        if (mounted) setState(() {});
       },
     ));
     children.addAll([

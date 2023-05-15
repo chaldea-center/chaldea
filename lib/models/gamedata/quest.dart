@@ -974,8 +974,8 @@ class QuestEnemy with GameCardMixin {
   int exp;
   int atk;
   int hp;
-  int adjustAtk;
-  int adjustHp;
+  int adjustAtk; // not used
+  int adjustHp; // not used
   int deathRate;
   int criticalRate;
   int recover;

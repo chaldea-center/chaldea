@@ -12,9 +12,18 @@ class InputCancelOkDialog extends StatefulWidget {
   final String? errorText;
   final bool Function(String s)? validate;
   final ValueChanged<String>? onSubmit;
+  final TextInputType? keyboardType;
 
-  const InputCancelOkDialog(
-      {super.key, this.title, this.text, this.hintText, this.errorText, this.validate, this.onSubmit});
+  const InputCancelOkDialog({
+    super.key,
+    this.title,
+    this.text,
+    this.hintText,
+    this.errorText,
+    this.validate,
+    this.onSubmit,
+    this.keyboardType,
+  });
 
   @override
   State<StatefulWidget> createState() => _InputCancelOkDialogState();
@@ -58,6 +67,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
         controller: _controller,
         autofocus: true,
         autocorrect: false,
+        keyboardType: widget.keyboardType,
         decoration: InputDecoration(hintText: widget.hintText, errorText: validation ? null : S.current.invalid_input),
         onChanged: (v) {
           if (widget.validate != null) {

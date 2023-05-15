@@ -194,8 +194,11 @@ class Transl<K, V> {
   static Transl<String, String> tdDetail(String jp) => Transl(md.tdDetail, jp, jp);
 
   static Transl<int, String> svtClassId(int id) {
-    return Transl(
-        md.enums.svtClass, id, db.gameData.constData.classInfo[id]?.name ?? kSvtClassIds[id]?.name ?? id.toString());
+    String? dftName = ConstData.classInfo[id]?.name;
+    if (const ['', '?', '？'].contains(dftName)) {
+      dftName = null;
+    }
+    return Transl(md.enums.svtClass, id, dftName ?? kSvtClassIds[id]?.name ?? id.toString());
   }
 
   // enums

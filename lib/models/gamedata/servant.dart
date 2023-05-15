@@ -173,6 +173,29 @@ class BasicServant with GameCardMixin {
   }
 
   Map<String, dynamic> toJson() => _$BasicServantToJson(this);
+
+  BasicServant.fromNice(Servant svt)
+      : id = svt.id,
+        collectionNo = svt.collectionNo,
+        name = svt.name,
+        overwriteName = null,
+        type = svt.type,
+        flag = svt.flag,
+        classId = svt.classId,
+        attribute = svt.attribute,
+        rarity = svt.rarity,
+        atkMax = svt.atkMax,
+        hpMax = svt.hpMax,
+        face = svt.icon ?? Atlas.common.unknownEnemyIcon,
+        costume = svt.profile.costume.map((key, c) => MapEntry(
+              key,
+              BasicCostume(
+                id: c.id,
+                costumeCollectionNo: c.costumeCollectionNo,
+                battleCharaId: c.battleCharaId,
+                shortName: c.shortName,
+              ),
+            ));
 }
 
 @JsonSerializable(converters: [SvtClassConverter()])
@@ -1490,13 +1513,17 @@ enum SvtFlag {
 }
 
 enum Attribute {
-  human,
-  sky,
-  earth,
-  star,
-  beast,
+  human(Trait.attributeHuman),
+  sky(Trait.attributeSky),
+  earth(Trait.attributeEarth),
+  star(Trait.attributeStar),
+  beast(Trait.attributeBeast),
   @JsonValue('void')
-  void_,
+  void_(null),
+  ;
+
+  const Attribute(this.trait);
+  final Trait? trait;
 }
 
 enum ServantPolicy {
