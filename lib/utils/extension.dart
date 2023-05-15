@@ -79,7 +79,8 @@ extension ListX<T> on List<T> {
     if (index >= length || index < 0) {
       return null;
     }
-    return elementAt(index % length);
+    // return elementAt(index % length);
+    return elementAt(index);
   }
 
   void fixLength(int length, T Function() k) {

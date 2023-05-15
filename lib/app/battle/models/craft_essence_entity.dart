@@ -1,14 +1,15 @@
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/utils/extension.dart';
 
 class BattleCEData {
   CraftEssence craftEssence;
   bool isLimitBreak;
   int level;
 
-  int get atk => craftEssence.atkGrowth[level - 1];
+  int get atk => craftEssence.atkGrowth.getOrNull(level - 1) ?? 0;
 
-  int get hp => craftEssence.hpGrowth[level - 1];
+  int get hp => craftEssence.hpGrowth.getOrNull(level - 1) ?? 0;
 
   BattleCEData(this.craftEssence, this.isLimitBreak, this.level) {
     if (level > craftEssence.atkGrowth.length) {

@@ -191,7 +191,7 @@ class Servant with GameCardMixin {
   @override
   int rarity;
   int cost;
-  int lvMax;
+  int lvMax; // Mash is at Lv70
   ExtraAssets extraAssets;
   Gender gender;
   Attribute attribute;

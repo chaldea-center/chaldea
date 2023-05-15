@@ -12,6 +12,17 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 
+enum SvtLv {
+  maxLv(null), // Mash's at 70 by default
+  lv90(90),
+  lv100(100),
+  lv120(120),
+  ;
+
+  const SvtLv(this.lv);
+  final int? lv;
+}
+
 // (ATK * 0.23 * 宝具伤害倍率 * 指令卡伤害倍率
 //  * (1 ± 指令卡性能BUFF ∓ 指令卡耐性)
 //  * 职阶补正 * 职阶克制 * 隐藏属性克制
@@ -38,14 +49,21 @@ class TdDamageOptions {
   bool twiceActiveSkill = false;
   bool enableAppendSkills = false;
   // bool includeRefundAfterTd = true; // 重蓄力
+  SvtLv svtLv = SvtLv.maxLv;
   int tdR3 = 5;
   int tdR4 = 2;
   int tdR5 = 1;
   int oc = 1;
   bool fixedOC = true;
   Region region = Region.jp;
+  // CE & MC
+  int? ceId;
+  int ceLv = 0;
+  bool ceMLB = true;
+  int? mcId;
+  int mcLv = 10;
 
-  static const List<int> optionalSupports = [37, 150, 215, 241, 284, 314, 316, 353, 357];
+  static const List<int> optionalSupports = [37, 62, 150, 215, 241, 284, 314, 316, 353, 357];
 
   static QuestEnemy copyEnemy(QuestEnemy enemy) {
     final enemy2 = QuestEnemy.fromJson(enemy.toJson());
@@ -75,7 +93,7 @@ class TdDamageOptions {
       ),
       lv: 1,
       atk: 1000,
-      hp: 1000,
+      hp: 10000000,
       deathRate: 0,
       criticalRate: 0,
       serverMod: EnemyServerMod(),
@@ -160,6 +178,10 @@ class TdDmgSolver {
     }
     servants.sort2((e) => e.collectionNo);
     final quest = getQuest();
+    final mcData = MysticCodeData();
+    mcData
+      ..mysticCode = db.gameData.mysticCodes[options.mcId]
+      ..level = options.mcLv;
     // final t = StopwatchX('calc');
 
     for (final svt in servants) {
@@ -187,7 +209,7 @@ class TdDmgSolver {
         }
         for (final svtData in variants) {
           if (svtData == null) continue;
-          final result = await calcOneSvt(TdDmgResult(svtData), quest);
+          final result = await calcOneSvt(TdDmgResult(svtData), quest, mcData);
           if (result == null) continue;
           results.add(result);
         }
@@ -232,7 +254,7 @@ class TdDmgSolver {
     ],
   );
 
-  Future<TdDmgResult?> calcOneSvt(TdDmgResult data, QuestPhase quest) async {
+  Future<TdDmgResult?> calcOneSvt(TdDmgResult data, QuestPhase quest, MysticCodeData mcData) async {
     final attacker = data.originalSvtData.copy();
     final battleData = BattleData();
     final svt = attacker.svt!;
@@ -246,7 +268,7 @@ class TdDmgSolver {
 
     final playerSettings = [attacker];
 
-    await battleData.init(quest, playerSettings, null);
+    await battleData.init(quest, playerSettings, mcData);
     final enemies = battleData.nonnullEnemies.toList();
     // final enemy = enemies.first;
     final actor = battleData.onFieldAllyServants[0]!;
@@ -311,7 +333,8 @@ class TdDmgSolver {
   PlayerSvtData? getSvtData(Servant svt, int limitCount) {
     final data = PlayerSvtData.svt(svt)..limitCount = limitCount;
     if (options.usePlayerSvt == PreferPlayerSvtDataSource.none) {
-      data.lv = svt.lvMax;
+      data.lv = options.svtLv == SvtLv.maxLv ? svt.lvMax : options.svtLv.lv!;
+
       if (svt.rarity <= 3 || svt.extra.obtains.contains(SvtObtain.eventReward)) {
         data.tdLv = options.tdR3;
       } else if (svt.rarity == 4) {
@@ -334,6 +357,13 @@ class TdDmgSolver {
     }
     if (options.enableAppendSkills) {
       data.appendLvs.fillRange(0, 3, 10);
+    }
+    // CE
+    final ce = db.gameData.craftEssencesById[options.ceId];
+    if (ce != null) {
+      data.ce = ce;
+      data.ceLv = options.ceLv.clamp(0, ce.lvMax); // allow lv0 for ignore CE ATK/HP
+      data.ceLimitBreak = options.ceMLB;
     }
     return data;
   }

@@ -6,6 +6,7 @@ import 'package:chaldea/_test_page.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/platform/platform.dart';
@@ -229,7 +230,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
             db.itemCenter.init();
           },
         ),
-        if (!kReleaseMode)
+        if (!kReleaseMode || AppInfo.isDebugDevice)
           ListTile(
             title: const Text('TestFunc'),
             onTap: () => testFunction(context),

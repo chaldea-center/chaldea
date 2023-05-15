@@ -18,7 +18,7 @@ class PlayerSvtData {
   int tdLv = 5;
   NiceTd? td;
 
-  int lv = 1; // -1=mlb, 90, 100, 120
+  int lv = 1; // -1=mlb, 90, 100, 120, 0=no ATK/HP
   int atkFou = 1000;
   int hpFou = 1000;
 

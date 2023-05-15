@@ -1,3 +1,9 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
+import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
+import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -146,7 +152,8 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           useRootNavigator: false,
           builder: (context) {
             List<Widget> supports = [];
-            if (options.supports.length >= 5) {
+            final supportFull = options.supports.length >= 5;
+            if (supportFull) {
               supports.add(const Text('Max 5 supports'));
             } else {
               for (final int svtId in TdDamageOptions.optionalSupports) {
@@ -168,10 +175,20 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
             return SimpleCancelOkDialog(
               title: const Text('Support'),
               scrollable: true,
-              hideOk: true,
               content: Wrap(
                 children: supports,
               ),
+              hideOk: supportFull,
+              confirmText: S.current.general_custom,
+              onTapOk: () {
+                if (!mounted) return;
+                router.pushPage(ServantListPage(
+                  onSelected: (svt) {
+                    options.supports.add(svt);
+                    if (mounted) setState(() {});
+                  },
+                ));
+              },
             );
           },
         );
@@ -182,6 +199,8 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
 
     children.add(const DividerWithTitle(title: 'Additional Buff'));
     children.add(const Text('TODO'));
+    children.add(_buildCEPart());
+    children.add(_buildMCPart());
     children.add(const DividerWithTitle(title: "Options"));
     children.addAll([
       ListTile(
@@ -235,17 +254,42 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       ),
       ListTile(
         dense: true,
+        title: const Text('Level'),
+        trailing: DropdownButton<SvtLv>(
+          isDense: true,
+          value: options.svtLv,
+          items: [
+            for (final lv in SvtLv.values)
+              DropdownMenuItem(
+                value: lv,
+                child: Text(
+                  lv == SvtLv.maxLv ? 'Lv.MAX' : 'Lv.${lv.lv}',
+                  textScaleFactor: 0.9,
+                ),
+              ),
+          ],
+          onChanged: !options.usePlayerSvt.isNone
+              ? null
+              : (v) {
+                  setState(() {
+                    if (v != null) options.svtLv = v;
+                  });
+                },
+        ),
+      ),
+      ListTile(
+        dense: true,
         enabled: options.usePlayerSvt.isNone,
-        title: const Text('NP Lv: R0-3 or event svt'),
+        title: const Text('NP Lv: R5'),
         trailing: DropdownButton<int>(
           isDense: true,
-          value: options.tdR3,
+          value: options.tdR5,
           items: List.generate(5, (index) => DropdownMenuItem(value: index + 1, child: Text('Lv.${index + 1}'))),
           onChanged: !options.usePlayerSvt.isNone
               ? null
               : (v) {
                   setState(() {
-                    if (v != null) options.tdR3 = v;
+                    if (v != null) options.tdR5 = v;
                   });
                 },
         ),
@@ -270,16 +314,16 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       ListTile(
         dense: true,
         enabled: options.usePlayerSvt.isNone,
-        title: const Text('NP Lv: R5'),
+        title: const Text('NP Lv: R0-3 or event svt'),
         trailing: DropdownButton<int>(
           isDense: true,
-          value: options.tdR5,
+          value: options.tdR3,
           items: List.generate(5, (index) => DropdownMenuItem(value: index + 1, child: Text('Lv.${index + 1}'))),
           onChanged: !options.usePlayerSvt.isNone
               ? null
               : (v) {
                   setState(() {
-                    if (v != null) options.tdR5 = v;
+                    if (v != null) options.tdR3 = v;
                   });
                 },
         ),
@@ -370,6 +414,196 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       controller: scrollController,
       padding: const EdgeInsets.only(top: 16, bottom: 64),
       children: children,
+    );
+  }
+
+  Widget _buildCEPart() {
+    final ce = db.gameData.craftEssencesById[options.ceId];
+    if (ce != null) {
+      options.ceLv = options.ceLv.clamp(0, ce.lvMax);
+    }
+    return SimpleAccordion(
+      headerBuilder: (context, _) {
+        Widget? trailing;
+        if (ce != null) {
+          trailing = Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ce.iconBuilder(context: context, width: 36),
+              Text(' Lv.${options.ceLv}'),
+            ],
+          );
+        }
+        return ListTile(
+          dense: true,
+          leading: const FaIcon(FontAwesomeIcons.streetView),
+          title: Text(S.current.craft_essence),
+          subtitle: ce == null ? null : Text(ce.lName.l),
+          trailing: trailing,
+          horizontalTitleGap: 8,
+          contentPadding: const EdgeInsetsDirectional.only(start: 16),
+        );
+      },
+      contentBuilder: (context) {
+        final skill = ce?.getActivatedSkills(options.ceMLB)[1]?.firstOrNull;
+        return Column(
+          children: [
+            ListTile(
+              dense: true,
+              leading: db.getIconImage(ce?.borderedIcon ?? Atlas.common.emptySvtIcon, width: 32),
+              horizontalTitleGap: 8,
+              title: Text(ce?.lName.l ?? S.current.select_ce),
+              trailing: const Icon(Icons.change_circle),
+              onTap: () {
+                router.pushPage(CraftListPage(
+                  pinged: db.settings.battleSim.pingedCEs.toList(),
+                  filterData: CraftFilterData(useGrid: true),
+                  onSelected: (ce) {
+                    options.ceId = ce.id;
+                    options.ceLv = options.ceLv.clamp(0, ce.lvMax);
+                    if (mounted) setState(() {});
+                  },
+                ));
+              },
+            ),
+            if (skill != null)
+              Card(
+                margin: const EdgeInsets.all(8),
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Text(
+                    skill.lDetail ?? "???",
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+              ),
+            SwitchListTile.adaptive(
+              dense: true,
+              value: options.ceMLB,
+              title: Text(S.current.max_limit_break),
+              onChanged: (v) {
+                setState(() {
+                  options.ceMLB = v;
+                });
+              },
+            ),
+            ListTile(
+              dense: true,
+              title: Text(S.current.level),
+              subtitle: Text('HP ${ce?.hpGrowth.getOrNull(options.ceLv - 1) ?? 0}'
+                  ' / ATK ${ce?.atkGrowth.getOrNull(options.ceLv - 1) ?? 0}'),
+              trailing: Text('Lv.${options.ceLv}'),
+              minVerticalPadding: 0,
+            ),
+            if (ce != null && ce.atkGrowth.isNotEmpty)
+              Slider(
+                value: options.ceLv.toDouble(),
+                min: 0,
+                max: ce.atkGrowth.length.toDouble(),
+                label: options.ceLv.toString(),
+                divisions: ce.atkGrowth.length,
+                onChanged: (v) {
+                  setState(() {
+                    options.ceLv = v.round();
+                  });
+                },
+              ),
+            if (ce != null)
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    options.ceId = null;
+                  });
+                },
+                child: Text(
+                  S.current.remove,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              )
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildMCPart() {
+    final mc = db.gameData.mysticCodes[options.mcId];
+    options.mcLv = options.mcLv.clamp(1, 10);
+    return SimpleAccordion(
+      headerBuilder: (context, _) {
+        Widget? trailing;
+        if (mc != null) {
+          trailing = Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              mc.iconBuilder(context: context, width: 36),
+              Text(' Lv.${options.mcLv}'),
+            ],
+          );
+        }
+        return ListTile(
+          dense: true,
+          leading: const FaIcon(FontAwesomeIcons.personDotsFromLine),
+          title: Text(S.current.mystic_code),
+          subtitle: mc == null ? null : Text(mc.lName.l),
+          trailing: trailing,
+          horizontalTitleGap: 8,
+          contentPadding: const EdgeInsetsDirectional.only(start: 16),
+        );
+      },
+      contentBuilder: (context) {
+        return Column(
+          children: [
+            ListTile(
+              dense: true,
+              leading: db.getIconImage(mc?.borderedIcon ?? Atlas.common.emptySvtIcon, width: 32),
+              horizontalTitleGap: 8,
+              title: Text(mc?.lName.l ?? S.current.select),
+              trailing: const Icon(Icons.change_circle),
+              onTap: () {
+                router.pushPage(MysticCodeListPage(
+                  onSelected: (mc) {
+                    options.mcId = mc.id;
+                    if (mounted) setState(() {});
+                  },
+                ));
+              },
+            ),
+            ListTile(
+              dense: true,
+              title: Text(S.current.level),
+              trailing: Text('Lv.${options.mcLv}'),
+              minVerticalPadding: 0,
+            ),
+            Slider(
+              value: options.mcLv.toDouble(),
+              min: 1,
+              max: 10,
+              label: options.mcLv.toString(),
+              divisions: 9,
+              onChanged: (v) {
+                setState(() {
+                  options.mcLv = v.round();
+                });
+              },
+            ),
+            if (mc != null)
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    options.mcId = null;
+                  });
+                },
+                child: Text(
+                  S.current.remove,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              )
+          ],
+        );
+      },
     );
   }
 }
