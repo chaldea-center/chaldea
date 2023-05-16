@@ -731,7 +731,7 @@ Map<String, dynamic> _$QuestEnemyToJson(QuestEnemy instance) => <String, dynamic
       'originalEnemyScript': instance.originalEnemyScript,
       'infoScript': instance.infoScript?.toJson(),
       'originalInfoScript': instance.originalInfoScript,
-      'limit': instance.limit?.toJson(),
+      'limit': instance.limit.toJson(),
       'misc': instance.misc?.toJson(),
     };
 

@@ -62,7 +62,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
           ),
           FilledButton(
             onPressed: () {
-              router.pushPage(EnemyListPage(onSelected: _onSelectEnemy));
+              router.pushPage(EnemyListPage(onSelected: _onSelectEntity));
             },
             child: Text(S.current.enemy),
           ),
@@ -76,11 +76,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
         itemBuilder: (v) => Text(Transl.svtClassId(v).l.substring2(0, 15), textScaleFactor: 0.8),
         onChanged: (v) {
           enemy.svt.classId = v;
-          enemy.traits.removeWhere((e) => ConstData.classInfo.values.any((cls) => cls.individuality == e.id));
-          final traitId = ConstData.classInfo[v]?.individuality;
-          if (traitId != null && traitId > 0) {
-            enemy.traits.add(NiceTrait(id: traitId));
-          }
+          updateTrait(niceSvt);
         },
       ),
       enumTile<Attribute>(
@@ -90,9 +86,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
         itemBuilder: (v) => Text(Transl.svtAttribute(v).l, textScaleFactor: 0.9),
         onChanged: (v) {
           enemy.svt.attribute = v;
-          enemy.traits.removeWhere((e) => Attribute.values.any((attr) => attr.trait?.id == e.id));
-          final trait = v.trait;
-          if (trait != null) enemy.traits.add(NiceTrait(id: trait.id));
+          updateTrait(niceSvt);
         },
       ),
       ListTile(
@@ -112,26 +106,26 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       if (limits.isEmpty) limits.add(0);
       limits.sort();
       final dftValue = limits.first;
-      if (enemy.limit != null && !limits.contains(enemy.limit!.limitCount)) {
-        enemy.limit!.limitCount = dftValue;
+      if (!limits.contains(enemy.limit.limitCount)) {
+        final costume =
+            enemy.svt.costume.values.firstWhereOrNull((e) => e.id > 10 && e.id < 100 && e.id == enemy.limit.limitCount);
+        enemy.limit.limitCount = costume?.battleCharaId ?? dftValue;
       }
+      final costume = niceSvt?.profile.costume.values
+          .firstWhereOrNull((e) => e.id == enemy.limit.limitCount || e.battleCharaId == enemy.limit.limitCount);
       children.add(enumTile<int>(
         title: Text(S.current.ascension),
-        value: enemy.limit?.limitCount ?? dftValue,
+        subtitle: costume == null ? null : Text(costume.lName.l),
+        value: enemy.limit.limitCount,
         values: limits,
         itemBuilder: (v) {
           if (v < 10) return Text(v.toString());
           return Text(v.toString());
         },
         onChanged: (v) {
-          enemy.limit ??= EnemyLimit();
-          enemy.limit!.limitCount = v;
-          if (niceSvt != null && niceSvt!.id == enemy.svt.id && niceSvt!.collectionNo > 0) {
-            final face = niceSvt!.ascendIcon(v, false);
-            if (face != null) {
-              // ignore: invalid_use_of_protected_member
-              enemy.svt.face = face;
-            }
+          enemy.limit.limitCount = v;
+          if (niceSvt != null && niceSvt!.id == enemy.svt.id) {
+            updateLimitCount(niceSvt!);
           }
         },
       ));
@@ -139,7 +133,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       children.add(ListTile(
         dense: true,
         title: Text(S.current.ascension),
-        trailing: Text((enemy.limit?.limitCount ?? 0).toString()),
+        trailing: Text((enemy.limit.limitCount).toString()),
       ));
     }
 
@@ -218,10 +212,11 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       ..noblePhantasm =
           EnemyTd(noblePhantasmId: td?.id ?? 0, noblePhantasm: td, noblePhantasmLv: 1, noblePhantasmLv1: 1)
       ..limit = EnemyLimit(limitCount: 0);
+    updateLimitCount(svt);
     if (mounted) setState(() {});
   }
 
-  void _onSelectEnemy(BasicServant svt) async {
+  void _onSelectEntity(BasicServant svt) async {
     niceSvt = null;
     if (!const [SvtType.enemy, SvtType.enemyCollection, SvtType.normal].contains(enemy.svt.type)) {
       EasyLoading.showError(S.current.invalid_input);
@@ -242,7 +237,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
               ..skills = EnemySkill.fromJson(qe.skills.toJson())
               ..classPassive = EnemyPassive.fromJson(qe.classPassive.toJson())
               ..noblePhantasm = EnemyTd.fromJson(qe.noblePhantasm.toJson())
-              ..limit = qe.limit == null ? null : EnemyLimit.fromJson(qe.limit!.toJson());
+              ..limit = EnemyLimit.fromJson(qe.limit.toJson());
             break;
           }
         }
@@ -258,6 +253,46 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       }
     }
     if (mounted) setState(() {});
+  }
+
+  void updateLimitCount(Servant svt) {
+    int limitCount = enemy.limit.limitCount;
+    if (svt.extraAssets.faces.ascension?[limitCount] == null && svt.extraAssets.faces.costume?[limitCount] == null) {
+      final costume = svt.profile.costume.values.firstWhereOrNull((e) => e.id > 10 && e.id < 100 && e.id == limitCount);
+      limitCount = costume?.battleCharaId ?? 0;
+    }
+    enemy.limit.limitCount = limitCount;
+    final face = niceSvt!.ascendIcon(limitCount, false);
+    if (face != null) {
+      // ignore: invalid_use_of_protected_member
+      enemy.svt.face = face;
+    }
+    updateTrait(svt);
+  }
+
+  void updateTrait(Servant? svt) {
+    if (svt != null) {
+      final indivAdd = svt.ascensionAdd.individuality.all[enemy.limit.limitCount];
+      if (indivAdd != null && indivAdd.isNotEmpty) {
+        enemy.traits = indivAdd.toList();
+      } else {
+        enemy.traits = svt.traits.toList();
+      }
+    }
+    final removeTraits = <int?>{
+      ...ConstData.classInfo.values.map((e) => e.individuality),
+      ...Attribute.values.map((e) => e.trait?.id),
+    };
+    enemy.traits.removeWhere((e) => removeTraits.any((t) => t == e.id));
+    final traitId = ConstData.classInfo[enemy.svt.classId]?.individuality;
+    if (traitId != null && traitId > 0) {
+      enemy.traits.add(NiceTrait(id: traitId));
+    }
+
+    final attriTrait = enemy.svt.attribute.trait;
+    if (attriTrait != null) {
+      enemy.traits.add(NiceTrait(id: attriTrait.id));
+    }
   }
 
   Widget enumTile<T>({

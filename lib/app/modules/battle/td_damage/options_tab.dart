@@ -37,17 +37,19 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       children: [
         Expanded(child: buildOptions()),
         kDefaultDivider,
-        ButtonBar(
-          alignment: MainAxisAlignment.center,
-          children: [
-            ValueListenableBuilder(
-              valueListenable: widget.solver.running,
-              builder: (context, value, child) => ElevatedButton(
-                onPressed: value ? null : widget.onStart,
-                child: Text(S.current.calculate),
+        SafeArea(
+          child: ButtonBar(
+            alignment: MainAxisAlignment.center,
+            children: [
+              ValueListenableBuilder(
+                valueListenable: widget.solver.running,
+                builder: (context, value, child) => ElevatedButton(
+                  onPressed: value ? null : widget.onStart,
+                  child: Text(S.current.calculate),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );

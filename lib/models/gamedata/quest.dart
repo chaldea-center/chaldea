@@ -994,7 +994,7 @@ class QuestEnemy with GameCardMixin {
   EnemyInfoScript? infoScript;
   Map<String, dynamic>? originalInfoScript;
 
-  EnemyLimit? limit;
+  EnemyLimit limit;
   EnemyMisc? misc;
 
   // not unique if summoned from call deck
@@ -1030,14 +1030,15 @@ class QuestEnemy with GameCardMixin {
     this.originalEnemyScript,
     this.infoScript,
     this.originalInfoScript,
-    this.limit,
+    EnemyLimit? limit,
     this.misc,
   })  : traits = traits ?? [],
         skills = skills ?? EnemySkill(),
         classPassive = classPassive ?? EnemyPassive(),
         noblePhantasm = noblePhantasm ?? EnemyTd(),
         serverMod = serverMod ?? EnemyServerMod(),
-        enemyScript = (enemyScript ?? EnemyScript())..originalScript = originalEnemyScript ?? {};
+        enemyScript = (enemyScript ?? EnemyScript())..originalScript = originalEnemyScript ?? {},
+        limit = limit ?? EnemyLimit();
 
   factory QuestEnemy.fromJson(Map<String, dynamic> json) => _$QuestEnemyFromJson(json);
 

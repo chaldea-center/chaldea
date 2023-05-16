@@ -49,35 +49,37 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
       children: [
         Expanded(child: listView),
         kDefaultDivider,
-        ButtonBar(
-          alignment: MainAxisAlignment.center,
-          children: [
-            Wrap(
-              alignment: WrapAlignment.center,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Text('${S.current.sort_order}: '),
-                DropdownButton<_SortType>(
-                  // https://github.com/flutter/flutter/issues/101575
-                  // isDense: true,
-                  value: _sortType,
-                  items: [
-                    for (final type in _SortType.values)
-                      DropdownMenuItem(
-                        value: type,
-                        child: Text(type.name),
-                      )
-                  ],
-                  onChanged: (v) {
-                    setState(() {
-                      if (v != null) _sortType = v;
-                    });
-                  },
-                )
-              ],
-            )
-          ],
-        )
+        SafeArea(
+          child: ButtonBar(
+            alignment: MainAxisAlignment.center,
+            children: [
+              Wrap(
+                alignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  Text('${S.current.sort_order}: '),
+                  DropdownButton<_SortType>(
+                    // https://github.com/flutter/flutter/issues/101575
+                    // isDense: true,
+                    value: _sortType,
+                    items: [
+                      for (final type in _SortType.values)
+                        DropdownMenuItem(
+                          value: type,
+                          child: Text(type.name),
+                        )
+                    ],
+                    onChanged: (v) {
+                      setState(() {
+                        if (v != null) _sortType = v;
+                      });
+                    },
+                  )
+                ],
+              )
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -175,7 +177,7 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
           Text('$prefix ', style: kMonoStyle, textScaleFactor: 0.8),
           result.svt.iconBuilder(
             context: context,
-            width: 32,
+            width: 36,
             overrideIcon: result.svt.ascendIcon(result.originalSvtData.limitCount),
           ),
         ],
