@@ -241,7 +241,7 @@ CustomFuncData _$CustomFuncDataFromJson(Map json) => $checkedCreate(
           rate: $checkedConvert('rate', (v) => v as int? ?? 5000),
           value: $checkedConvert('value', (v) => v as int? ?? 0),
           enabled: $checkedConvert('enabled', (v) => v as bool? ?? false),
-          hasValue: $checkedConvert('hasValue', (v) => v as bool? ?? true),
+          useValue: $checkedConvert('useValue', (v) => v as bool? ?? true),
           target:
               $checkedConvert('target', (v) => $enumDecodeNullable(_$FuncTargetTypeEnumMap, v) ?? FuncTargetType.self),
         );
@@ -257,7 +257,7 @@ Map<String, dynamic> _$CustomFuncDataToJson(CustomFuncData instance) => <String,
       'rate': instance.rate,
       'value': instance.value,
       'enabled': instance.enabled,
-      'hasValue': instance.hasValue,
+      'useValue': instance.useValue,
       'target': _$FuncTargetTypeEnumMap[instance.target]!,
     };
 

@@ -286,7 +286,8 @@ class CustomFuncData {
 
   int value;
   bool enabled; // for no value, sureHit
-  bool hasValue;
+
+  bool useValue;
 
   FuncTargetType target;
 
@@ -298,7 +299,7 @@ class CustomFuncData {
     this.rate = 5000,
     this.value = 0,
     this.enabled = false,
-    this.hasValue = true,
+    this.useValue = true,
     this.target = FuncTargetType.self,
   });
 
@@ -306,6 +307,7 @@ class CustomFuncData {
 
   Map<String, dynamic> toJson() => _$CustomFuncDataToJson(this);
 
+  bool get isValid => buff != null && baseFunc != null && (useValue ? value != 0 : enabled);
   //
   Buff? get buff => db.gameData.baseBuffs[buffId];
   BaseFunction? get baseFunc => db.gameData.baseFunctions[funcId?.abs()];
@@ -324,8 +326,8 @@ class CustomFuncData {
 
   String getValueText(bool addPercent) {
     final base = percentBase;
-    if (base == null) return value.toString();
-    String valueText = value.format(compact: false, base: base);
+    if (base == null || base == 0) return value.toString();
+    String valueText = (value / base).format(compact: false);
     if (addPercent) valueText += '%';
     return valueText;
   }
@@ -347,12 +349,12 @@ class CustomFuncData {
     Buff? buff = this.buff;
     if (func == null) return null;
     if (buffId != null && buff == null) return null;
-    if ((hasValue && value == 0) || (!hasValue && !enabled)) {
+    if ((useValue && value == 0) || (!useValue && !enabled)) {
       return null;
     }
     Map<String, dynamic> vals = {
       'Rate': rate,
-      if (hasValue) 'Value': value,
+      if (useValue) 'Value': value,
       if (buff != null) 'Turn': hasTurnCount ? turn : -1,
       if (buff != null) 'Count': hasTurnCount ? count : -1,
     };
@@ -374,18 +376,19 @@ class CustomFuncData {
   // common used
 
   static CustomFuncData _buff(int funcId, int buffId, [bool hasValue = true]) =>
-      CustomFuncData(funcId: funcId, buffId: buffId, hasValue: hasValue);
+      CustomFuncData(funcId: funcId, buffId: buffId, useValue: hasValue);
 
   static CustomFuncData get gainNp => CustomFuncData(funcId: -460);
   static CustomFuncData get upDamage => _buff(-1077, 129);
   static CustomFuncData get upAtk => _buff(-146, 126);
-  static CustomFuncData get upNpDamage => _buff(-247, 138);
-  static CustomFuncData get upChargeTd => _buff(-753, 227);
   static CustomFuncData get upQuick => _buff(-100, 100);
   static CustomFuncData get upArts => _buff(-109, 101);
   static CustomFuncData get upBuster => _buff(-118, 102);
-  static CustomFuncData get upDropNp => _buff(-336, 140);
+  static CustomFuncData get upNpDamage => _buff(-247, 138);
+  static CustomFuncData get upChargeTd => _buff(-753, 227);
   static CustomFuncData get upCriticaldamage => _buff(-199, 142);
+  static CustomFuncData get upDropNp => _buff(-336, 140);
+  static CustomFuncData get upCriticalpoint => _buff(-295, 117);
   static CustomFuncData get breakAvoidance => _buff(-288, 154, false);
   static CustomFuncData get pierceInvincible => _buff(-510, 189, false);
 
@@ -393,15 +396,27 @@ class CustomFuncData {
         gainNp,
         upDamage,
         upAtk,
-        upNpDamage,
-        upChargeTd,
         upQuick,
         upArts,
         upBuster,
-        upDropNp,
+        upNpDamage,
+        upChargeTd,
         upCriticaldamage,
+        upDropNp,
+        upCriticalpoint,
         breakAvoidance,
         pierceInvincible,
+      ];
+
+  static List<CustomFuncData> get tdDmgTypes => [
+        upDamage,
+        upAtk,
+        upQuick,
+        upArts,
+        upBuster,
+        upNpDamage,
+        upDropNp,
+        upCriticalpoint,
       ];
 }
 

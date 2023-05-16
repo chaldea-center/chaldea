@@ -194,9 +194,11 @@ class BattleOrderChangeRecord extends BattleRecord {
   final BattleServantData onField;
   final BattleServantData backup;
   BattleOrderChangeRecord({
-    required this.onField,
-    required this.backup,
-  });
+    required BattleServantData onField,
+    required BattleServantData backup,
+  })  : onField = onField.copy(),
+        backup = backup.copy();
+
   @override
   String toString() {
     return 'Order Change: ${onField.lBattleName} ↔ ${backup.lBattleName}';

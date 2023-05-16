@@ -25,6 +25,7 @@ class _TdDamageRankingState extends State<TdDamageRanking> with SingleTickerProv
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    solver.options.initBuffs();
   }
 
   @override

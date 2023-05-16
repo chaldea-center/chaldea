@@ -1,6 +1,7 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/battle/formation/select_skill_page.dart';
 import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/servant/servant_list.dart';
@@ -127,7 +128,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       ),
     ]);
 
-    children.add(const DividerWithTitle(title: 'Supports'));
+    children.add(DividerWithTitle(title: S.current.support_servant));
     children.add(Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Wrap(
@@ -153,38 +154,40 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           context: context,
           useRootNavigator: false,
           builder: (context) {
+            if (options.supports.length >= 5) {
+              return SimpleCancelOkDialog(
+                title: Text(S.current.support_servant),
+                content: const Text('Max 5 supports'),
+                hideCancel: true,
+              );
+            }
             List<Widget> supports = [];
-            final supportFull = options.supports.length >= 5;
-            if (supportFull) {
-              supports.add(const Text('Max 5 supports'));
-            } else {
-              for (final int svtId in TdDamageOptions.optionalSupports) {
-                final svt = db.gameData.servantsNoDup[svtId];
-                if (svt != null) {
-                  supports.add(svt.iconBuilder(
-                    context: context,
-                    width: 48,
-                    padding: const EdgeInsets.all(2),
-                    onTap: () {
-                      options.supports.add(svt);
-                      Navigator.pop(context);
-                      if (mounted) setState(() {});
-                    },
-                  ));
-                }
+            for (final int svtId in TdDamageOptions.optionalSupports) {
+              final svt = db.gameData.servantsNoDup[svtId];
+              if (svt != null) {
+                supports.add(svt.iconBuilder(
+                  context: context,
+                  width: 56,
+                  padding: const EdgeInsets.all(2),
+                  onTap: () {
+                    options.supports.add(svt);
+                    Navigator.pop(context);
+                    if (mounted) setState(() {});
+                  },
+                ));
               }
             }
             return SimpleCancelOkDialog(
-              title: const Text('Support'),
+              title: Text(S.current.support_servant),
               scrollable: true,
               content: Wrap(
                 children: supports,
               ),
-              hideOk: supportFull,
               confirmText: S.current.general_custom,
               onTapOk: () {
                 if (!mounted) return;
                 router.pushPage(ServantListPage(
+                  pinged: db.settings.battleSim.pingedSvts.toList(),
                   onSelected: (svt) {
                     options.supports.add(svt);
                     if (mounted) setState(() {});
@@ -195,12 +198,14 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           },
         );
       },
-      child: const Text('Add Support'),
+      child: Text(S.current.add),
     ));
     children.add(const SFooter('Long press to remove support.'));
 
     children.add(const DividerWithTitle(title: 'Additional Buff'));
-    children.add(const Text('TODO'));
+    children.add(_buildCustomBuff());
+    children.add(const DividerWithTitle());
+
     children.add(_buildCEPart());
     children.add(_buildMCPart());
     children.add(const DividerWithTitle(title: "Options"));
@@ -604,6 +609,45 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
                 ),
               )
           ],
+        );
+      },
+    );
+  }
+
+  Widget _buildCustomBuff() {
+    return SimpleAccordion(
+      headerBuilder: (context, _) {
+        List<InlineSpan> spans = [];
+        for (final effect in options.extraBuffs.effects) {
+          if (!effect.isValid) continue;
+          if (effect.icon != null) {
+            spans.add(CenterWidgetSpan(child: db.getIconImage(effect.icon, width: 18)));
+          } else {
+            spans.add(TextSpan(text: effect.popupText));
+          }
+          spans.add(TextSpan(text: ' ${effect.getValueText(true)}  '));
+        }
+        if (spans.isEmpty) spans.add(const TextSpan(text: 'Buffs'));
+        return ListTile(
+          dense: true,
+          leading: const Icon(Icons.auto_fix_high),
+          title: Text.rich(TextSpan(children: spans)),
+          horizontalTitleGap: 8,
+          contentPadding: const EdgeInsetsDirectional.only(start: 16),
+        );
+      },
+      contentBuilder: (context) {
+        return Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16),
+          child: CustomSkillForm(
+            skillData: options.extraBuffs,
+            valueOnly: true,
+            showInfo: false,
+            showTarget: false,
+            onChanged: () {
+              if (mounted) setState(() {});
+            },
+          ),
         );
       },
     );

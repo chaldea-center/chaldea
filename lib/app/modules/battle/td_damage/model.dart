@@ -63,6 +63,33 @@ class TdDamageOptions {
   int? mcId;
   int mcLv = 10;
 
+  CustomSkillData extraBuffs = CustomSkillData(buffOnly: true, hasTurnCount: false);
+
+  void initBuffs() {
+    final buffMap = {
+      for (final e in extraBuffs.effects) e.buffId: e,
+    };
+    List<CustomFuncData> effects = [];
+    for (final effect in CustomFuncData.tdDmgTypes) {
+      final prevData = buffMap[effect.buffId];
+      if (prevData == null) {
+        effects.add(effect);
+      } else {
+        prevData
+          ..funcId = effect.funcId
+          ..buffId = effect.buffId
+          ..useValue = effect.useValue
+          ..target = FuncTargetType.self;
+        effects.add(prevData);
+      }
+    }
+    extraBuffs
+      ..skillType = SkillType.passive
+      ..hasTurnCount = false
+      ..buffOnly = true
+      ..effects = effects;
+  }
+
   static const List<int> optionalSupports = [37, 62, 150, 215, 241, 284, 314, 316, 353, 357];
 
   static QuestEnemy copyEnemy(QuestEnemy enemy) {

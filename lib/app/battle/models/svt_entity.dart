@@ -8,7 +8,6 @@ import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 
 class BattleServantData {
@@ -957,11 +956,7 @@ class BattleServantData {
       if (await buff.shouldActivateBuff(battleData, false)) {
         final skillId = buff.param;
         BaseSkill? skill = db.gameData.baseSkills[skillId];
-        try {
-          skill ??= await showEasyLoading(() => AtlasApi.skill(skillId));
-        } catch (e) {
-          logger.e('Exception while fetch AtlasApi for skill $skillId', e);
-        }
+        skill ??= await showEasyLoading(() => AtlasApi.skill(skillId));
         if (skill == null) {
           battleData.battleLogger
               .debug('Buff ID [${buff.buff.id}]: ${S.current.skill} [$skillId] ${S.current.not_found}');

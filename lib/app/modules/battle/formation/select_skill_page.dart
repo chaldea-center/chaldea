@@ -162,12 +162,15 @@ class CustomSkillForm extends StatefulWidget {
   final bool showInfo;
   final bool valueOnly;
   final bool showTarget;
+  final VoidCallback? onChanged;
+
   const CustomSkillForm({
     super.key,
     required this.skillData,
     this.valueOnly = false,
     this.showInfo = true,
     this.showTarget = true,
+    this.onChanged,
   });
 
   @override
@@ -250,12 +253,12 @@ class _CustomSkillFormState extends State<CustomSkillForm> {
     ];
     final header = ListTile(
       dense: true,
-      contentPadding: const EdgeInsetsDirectional.only(start: 16),
+      contentPadding: widget.valueOnly ? null : const EdgeInsetsDirectional.only(start: 16),
       leading: effect.icon == null ? null : db.getIconImage(effect.icon, width: 24),
       title: Text(effect.popupText),
       horizontalTitleGap: 8,
       subtitle: subtitles.isEmpty ? null : Text(subtitles.join(' ')),
-      trailing: !effect.hasValue
+      trailing: !effect.useValue
           ? Checkbox(
               visualDensity: VisualDensity.compact,
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -264,6 +267,7 @@ class _CustomSkillFormState extends State<CustomSkillForm> {
                 setState(() {
                   if (v != null) effect.enabled = v;
                 });
+                widget.onChanged?.call();
               },
             )
           : SizedBox(
@@ -282,6 +286,7 @@ class _CustomSkillFormState extends State<CustomSkillForm> {
                   if (v == null) return;
                   effect.value = v;
                   setState(() {});
+                  widget.onChanged?.call();
                 },
               ),
             ),
