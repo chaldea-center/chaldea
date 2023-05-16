@@ -2021,6 +2021,17 @@ class S {
     );
   }
 
+  /// `Create Custom Skill`
+  String get create_custom_skill {
+    return Intl.message(
+      'Create Custom Skill',
+      name: 'create_custom_skill',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Create duplicated`
   String get create_duplicated_svt {
     return Intl.message(
@@ -6250,6 +6261,17 @@ class S {
     );
   }
 
+  /// `Name`
+  String get name {
+    return Intl.message(
+      'Name',
+      name: 'name',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Connection`
   String get network_cur_connection {
     return Intl.message(
@@ -8290,6 +8312,17 @@ class S {
     return Intl.message(
       'Skill',
       name: 'skill',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Skill List`
+  String get skill_list {
+    return Intl.message(
+      'Skill List',
+      name: 'skill_list',
       desc: '',
       locale: localeName,
       args: [],

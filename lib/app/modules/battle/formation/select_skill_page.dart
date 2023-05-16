@@ -6,6 +6,7 @@ import 'package:chaldea/app/modules/skill/skill_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/models/userdata/battle.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
@@ -18,92 +19,23 @@ class SkillSelectPage extends StatefulWidget {
   State<SkillSelectPage> createState() => _SkillSelectPageState();
 }
 
-class _EffectData {
-  BaseFunction func;
-  int turn = -1;
-  int count = -1;
-  int rate = 5000;
-
-  int value = 0;
-  bool enabled = false; // for no value
-  bool hasValue = true;
-
-  FuncTargetType target = FuncTargetType.self;
-
-  _EffectData(this.func);
-  final controller = TextEditingController();
-
-  static const usedTargetTypes = <FuncTargetType>[
-    FuncTargetType.self,
-    FuncTargetType.ptOne,
-    FuncTargetType.ptAll,
-    FuncTargetType.ptFull,
-    FuncTargetType.enemy,
-    FuncTargetType.enemyAll,
-  ];
-}
-
-class _SkillSelectPageState extends State<SkillSelectPage> with SingleTickerProviderStateMixin {
-  late final _tabController = TabController(length: 2, vsync: this);
+class _SkillSelectPageState extends State<SkillSelectPage> {
   late final _skillIdController = TextEditingController();
 
-  final List<_EffectData> _effects = [];
+  final CustomSkillData skillData = CustomSkillData();
 
   @override
   void initState() {
     super.initState();
-
-    BaseFunction? _addState(int funcId, int buffId) {
-      final buff = db.gameData.baseBuffs[buffId];
-      if (buff == null) return null;
-      return BaseFunction.create(
-        funcId: funcId,
-        funcType: FuncType.addStateShort,
-        funcTargetType: FuncTargetType.self,
-        funcPopupText: buff.name,
-        funcPopupIcon: buff.icon,
-        buffs: [buff],
-      );
-    }
-
-    final funcList = <BaseFunction?>[
-      const BaseFunction.create(
-        funcId: -460,
-        funcType: FuncType.gainNp,
-        funcTargetType: FuncTargetType.self,
-        funcPopupText: 'NP増加',
-      ),
-      _addState(-1077, 129), // upDamage
-      _addState(-146, 126), // upAtk
-      _addState(-247, 138), // upNpDamage
-      _addState(-753, 227), // upChargeTd
-      _addState(-100, 100), // upQuick
-      _addState(-109, 101), // upArts
-      _addState(-118, 102), // upBuster
-      // _addState(funcId, buffId),// upExtra
-      _addState(-336, 140), // upDropNp
-      _addState(-199, 142), // upCriticaldamage
-      _addState(-288, 154), // breakAvoidance
-      _addState(-510, 189), // pierceInvincible
-    ];
-    for (final func in funcList) {
-      if (func == null) continue;
-      final effect = _EffectData(func);
-      if ([BuffType.breakAvoidance, BuffType.pierceInvincible].contains(func.buff?.type)) {
-        effect.hasValue = false;
-      }
-      _effects.add(effect);
-    }
+    skillData.getSkillId();
+    skillData.effects.addAll(CustomFuncData.allTypes);
+    if (widget.skillType != null) skillData.skillType = widget.skillType!;
   }
 
   @override
   void dispose() {
     super.dispose();
-    _tabController.dispose();
     _skillIdController.dispose();
-    for (final effect in _effects) {
-      effect.controller.dispose();
-    }
   }
 
   @override
@@ -113,63 +45,84 @@ class _SkillSelectPageState extends State<SkillSelectPage> with SingleTickerProv
       title += '(${widget.skillType!.shortName})';
     }
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        bottom: FixedHeight.tabBar(TabBar(controller: _tabController, tabs: [
-          const Tab(text: 'ID'),
-          Tab(text: S.current.general_custom),
-        ])),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [fromDBTab, customSkillTab],
-      ),
-    );
-  }
-
-  Widget get fromDBTab {
-    return ListView(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-          child: TextFormField(
-            controller: _skillIdController,
-            decoration: InputDecoration(
-              isDense: true,
-              border: const OutlineInputBorder(),
-              hintText: '969756 ${S.current.logic_type_or} **/JP/skill/969756'.breakWord,
-              labelText: 'skillId ${S.current.logic_type_or} chaldea/AADB skill url',
-              hintStyle: const TextStyle(overflow: TextOverflow.visible),
-              floatingLabelBehavior: FloatingLabelBehavior.always,
+      appBar: AppBar(title: Text(title)),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              children: [
+                const DividerWithTitle(title: '1', height: 16),
+                TileGroup(
+                  children: [
+                    ListTile(
+                      tileColor: Theme.of(context).cardColor,
+                      title: Text(S.current.skill_list),
+                      trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                      onTap: () {
+                        router.pushPage(SkillListPage(
+                          onSelected: (skill, skillId) => loadSkill(skill, skillId, Region.jp),
+                        ));
+                      },
+                    ),
+                  ],
+                ),
+                const DividerWithTitle(title: '2', height: 16),
+                Material(
+                  color: Theme.of(context).cardColor,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    child: TextFormField(
+                      controller: _skillIdController,
+                      decoration: InputDecoration(
+                        isDense: true,
+                        border: const OutlineInputBorder(),
+                        hintText: '969756 ${S.current.logic_type_or} **/JP/skill/969756'.breakWord,
+                        labelText: 'skillId ${S.current.logic_type_or} chaldea/AADB skill url',
+                        hintStyle: const TextStyle(overflow: TextOverflow.visible),
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Center(
+                  child: FilledButton(
+                    onPressed: () async {
+                      final result = Atlas.resolveRegionInt(_skillIdController.text.trim());
+                      final region = result.item1;
+                      final skillId = result.item2;
+                      if (skillId == null) {
+                        EasyLoading.showError(S.current.invalid_input);
+                        return;
+                      }
+                      await loadSkill(null, skillId, region);
+                    },
+                    child: Text(S.current.search),
+                  ),
+                ),
+                DividerWithTitle(title: '3 - ${S.current.general_custom}', height: 16),
+                Material(
+                  color: Theme.of(context).cardColor,
+                  child: CustomSkillForm(skillData: skillData),
+                ),
+              ],
             ),
           ),
-        ),
-        Center(
-          child: ElevatedButton(
-              onPressed: () async {
-                final result = Atlas.resolveRegionInt(_skillIdController.text.trim());
-                final region = result.item1;
-                final skillId = result.item2;
-
-                if (skillId == null) {
-                  EasyLoading.showError(S.current.invalid_input);
-                  return;
-                }
-                await loadSkill(null, skillId, region);
-              },
-              child: Text(S.current.search)),
-        ),
-        const Divider(),
-        ListTile(
-          title: const Text('Skill List'),
-          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-          onTap: () {
-            router.pushPage(SkillListPage(
-              onSelected: (skill, skillId) => loadSkill(skill, skillId, Region.jp),
-            ));
-          },
-        ),
-      ],
+          const Divider(height: 8),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Center(
+                child: FilledButton(
+                  onPressed: createCustomSkill,
+                  child: Text(S.current.create_custom_skill),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -191,105 +144,151 @@ class _SkillSelectPageState extends State<SkillSelectPage> with SingleTickerProv
     if (mounted) setState(() {});
   }
 
-  late final BaseSkill _customSkill = BaseSkill.create(
-    id: -(100000000 + DateTime.now().timestamp % 100000000),
-    name: '',
-    type: widget.skillType ?? SkillType.active,
-    functions: [],
-  );
+  void createCustomSkill() {
+    final skill = skillData.buildSkill();
+    if (skill == null) {
+      EasyLoading.showError(S.current.empty_hint);
+      return;
+    }
+    if (skill.name.isEmpty) {
+      skill.name = '${S.current.general_custom} ${skill.id}';
+    }
+    loadSkill(skill, null, Region.jp);
+  }
+}
 
-  Widget get customSkillTab {
+class CustomSkillForm extends StatefulWidget {
+  final CustomSkillData skillData;
+  final bool showInfo;
+  final bool valueOnly;
+  final bool showTarget;
+  const CustomSkillForm({
+    super.key,
+    required this.skillData,
+    this.valueOnly = false,
+    this.showInfo = true,
+    this.showTarget = true,
+  });
+
+  @override
+  State<CustomSkillForm> createState() => _CustomSkillFormState();
+}
+
+class _CustomSkillFormState extends State<CustomSkillForm> {
+  CustomSkillData get skill => widget.skillData;
+
+  final Map<CustomFuncData, TextEditingController> _controllers = {};
+  final usedTargetTypes = const <FuncTargetType>[
+    FuncTargetType.self,
+    FuncTargetType.ptOne,
+    FuncTargetType.ptAll,
+    FuncTargetType.ptFull,
+    FuncTargetType.enemy,
+    FuncTargetType.enemyAll,
+  ];
+
+  @override
+  void dispose() {
+    super.dispose();
+    for (final c in _controllers.values) {
+      c.dispose();
+    }
+  }
+
+  TextEditingController getController(CustomFuncData effect) {
+    final controller = _controllers[effect];
+    if (controller == null) {
+      String text = effect.getValueText(false);
+      if (text == '0') text = '';
+      return _controllers[effect] = TextEditingController(text: text);
+    }
+    final curVal = effect.parseValue(controller.text);
+    if (curVal != null && curVal != effect.value) {
+      controller.text = effect.getValueText(false);
+    }
+    return controller;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(
-          child: ListView(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            children: [
-              ListTile(dense: true, title: const Text('ID'), trailing: Text(_customSkill.id.toString())),
-              ListTile(
-                dense: true,
-                title: const Text('Name'),
-                trailing: SizedBox(
-                  width: 120,
-                  child: TextFormField(
-                    initialValue: _customSkill.name,
-                    decoration: const InputDecoration(isDense: true),
-                    textAlign: TextAlign.center,
-                    onChanged: (s) {
-                      if (s.trim().isNotEmpty) _customSkill.name = s.trim();
-                    },
-                  ),
-                ),
-              ),
-              for (final effect in _effects) buildFunc(effect),
-            ],
-          ),
-        ),
-        kDefaultDivider,
-        SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(4),
-            child: Center(
-              child: FilledButton(
-                onPressed: createCustomSkill,
-                child: Text(S.current.add),
+        if (widget.showInfo) ...[
+          ListTile(dense: true, title: const Text('ID'), trailing: Text(skill.skillId.toString())),
+          ListTile(
+            dense: true,
+            title: Text(S.current.name),
+            trailing: SizedBox(
+              width: 120,
+              child: TextFormField(
+                initialValue: skill.name,
+                decoration: const InputDecoration(isDense: true),
+                textAlign: TextAlign.center,
+                onChanged: (s) {
+                  if (s.trim().isNotEmpty) skill.name = s.trim();
+                },
               ),
             ),
           ),
-        )
+        ],
+        for (final effect in skill.effects) buildFunc(effect),
       ],
     );
   }
 
-  Widget buildFunc(_EffectData effect) {
-    final func = effect.func;
-    int? percentBase = func.buff?.percentBase ?? kFuncValPercentType[func.funcType];
-    return SimpleAccordion(
-      headerBuilder: (context, _) {
-        return ListTile(
-          dense: true,
-          contentPadding: const EdgeInsetsDirectional.only(start: 16),
-          leading: func.funcPopupIcon == null ? null : db.getIconImage(func.funcPopupIcon, width: 24),
-          title: Text(func.lPopupText.l),
-          horizontalTitleGap: 8,
-          subtitle: Text(<String>[
-            if (effect.count > 0) Transl.special.funcValCountTimes(effect.count),
-            if (effect.turn > 0) Transl.special.funcValTurns(effect.turn),
-            Transl.funcTargetType(effect.target).l,
-          ].join(' ')),
-          trailing: !effect.hasValue
-              ? Checkbox(
-                  value: effect.enabled,
-                  onChanged: (v) {
-                    setState(() {
-                      if (v != null) effect.enabled = v;
-                    });
-                  },
-                )
-              : SizedBox(
-                  width: 80,
-                  child: TextFormField(
-                    controller: effect.controller,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      suffixIcon: percentBase == null ? null : Text('%', style: Theme.of(context).textTheme.bodySmall),
-                      suffixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-                    ),
-                    textAlign: TextAlign.end,
-                    onChanged: (s) {
-                      s = s.trim();
-                      double? v = s.isEmpty ? 0 : double.tryParse(s);
-                      if (v == null) return;
-                      if (percentBase != null) {
-                        v *= percentBase;
-                      }
-                      effect.value = v.toInt();
-                      setState(() {});
-                    },
-                  ),
+  Widget buildFunc(CustomFuncData effect) {
+    final func = effect.baseFunc;
+    if (func == null) return ListTile(dense: true, title: Text('Invalid Func ${effect.funcId}'));
+
+    final int? percentBase = effect.percentBase;
+    List<String> subtitles = [
+      if (skill.hasTurnCount) ...[
+        if (effect.count > 0) Transl.special.funcValCountTimes(effect.count),
+        if (effect.turn > 0) Transl.special.funcValTurns(effect.turn),
+      ],
+      if (widget.showTarget) Transl.funcTargetType(effect.target).l,
+    ];
+    final header = ListTile(
+      dense: true,
+      contentPadding: const EdgeInsetsDirectional.only(start: 16),
+      leading: effect.icon == null ? null : db.getIconImage(effect.icon, width: 24),
+      title: Text(effect.popupText),
+      horizontalTitleGap: 8,
+      subtitle: subtitles.isEmpty ? null : Text(subtitles.join(' ')),
+      trailing: !effect.hasValue
+          ? Checkbox(
+              visualDensity: VisualDensity.compact,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              value: effect.enabled,
+              onChanged: (v) {
+                setState(() {
+                  if (v != null) effect.enabled = v;
+                });
+              },
+            )
+          : SizedBox(
+              width: 80,
+              child: TextFormField(
+                controller: getController(effect),
+                decoration: InputDecoration(
+                  isDense: true,
+                  suffixIcon: percentBase == null ? null : Text('%', style: Theme.of(context).textTheme.bodySmall),
+                  suffixIconConstraints: const BoxConstraints(),
                 ),
-        );
-      },
+                keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
+                textAlign: TextAlign.end,
+                onChanged: (s) {
+                  final v = effect.parseValue(s);
+                  if (v == null) return;
+                  effect.value = v;
+                  setState(() {});
+                },
+              ),
+            ),
+    );
+    if (widget.valueOnly) return header;
+    return SimpleAccordion(
+      headerBuilder: (context, _) => header,
       contentBuilder: (context) {
         List<Widget> children = [
           ListTile(
@@ -299,7 +298,7 @@ class _SkillSelectPageState extends State<SkillSelectPage> with SingleTickerProv
               isDense: true,
               value: effect.target,
               items: [
-                for (final type in _EffectData.usedTargetTypes)
+                for (final type in usedTargetTypes)
                   DropdownMenuItem(
                     value: type,
                     child: Text(
@@ -377,38 +376,5 @@ class _SkillSelectPageState extends State<SkillSelectPage> with SingleTickerProv
         );
       },
     );
-  }
-
-  void createCustomSkill() {
-    if (widget.skillType != null) {
-      _customSkill.type = widget.skillType!;
-    }
-    _customSkill.functions.clear();
-    for (final effct in _effects) {
-      Map<String, dynamic> vals = {
-        'Rate': effct.rate,
-        if (effct.hasValue) 'Value': effct.value,
-        if (effct.func.buffs.isNotEmpty) 'Turn': effct.turn,
-        if (effct.func.buffs.isNotEmpty) 'Count': effct.count,
-      };
-
-      if (effct.hasValue) {
-        if (effct.value == 0) continue;
-      } else {
-        if (!effct.enabled) continue;
-      }
-      final data = effct.func.toJson();
-      data['funcTargetType'] = effct.target.name;
-      data['svals'] = [vals];
-      _customSkill.functions.add(NiceFunction.fromJson(data));
-    }
-    if (_customSkill.functions.isEmpty) {
-      EasyLoading.showError(S.current.empty_hint);
-      return;
-    }
-    if (_customSkill.name.isEmpty) {
-      _customSkill.name = '${S.current.general_custom} ${_customSkill.id}';
-    }
-    loadSkill(_customSkill, null, Region.jp);
   }
 }

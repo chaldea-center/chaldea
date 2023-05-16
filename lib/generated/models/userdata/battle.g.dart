@@ -193,3 +193,103 @@ Map<String, dynamic> _$PlayerSvtDefaultDataToJson(PlayerSvtDefaultData instance)
       'ceMaxLimitBreak': instance.ceMaxLimitBreak,
       'ceMaxLv': instance.ceMaxLv,
     };
+
+CustomSkillData _$CustomSkillDataFromJson(Map json) => $checkedCreate(
+      'CustomSkillData',
+      json,
+      ($checkedConvert) {
+        final val = CustomSkillData(
+          skillId: $checkedConvert('skillId', (v) => v as int?),
+          name: $checkedConvert('name', (v) => v as String? ?? ''),
+          skillType:
+              $checkedConvert('skillType', (v) => $enumDecodeNullable(_$SkillTypeEnumMap, v) ?? SkillType.passive),
+          effects: $checkedConvert(
+              'effects',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => CustomFuncData.fromJson(Map<String, dynamic>.from(e as Map)))
+                  .toList()),
+          buffOnly: $checkedConvert('buffOnly', (v) => v as bool? ?? false),
+          hasTurnCount: $checkedConvert('hasTurnCount', (v) => v as bool? ?? true),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$CustomSkillDataToJson(CustomSkillData instance) => <String, dynamic>{
+      'skillId': instance.skillId,
+      'name': instance.name,
+      'skillType': _$SkillTypeEnumMap[instance.skillType]!,
+      'effects': instance.effects.map((e) => e.toJson()).toList(),
+      'buffOnly': instance.buffOnly,
+      'hasTurnCount': instance.hasTurnCount,
+    };
+
+const _$SkillTypeEnumMap = {
+  SkillType.active: 'active',
+  SkillType.passive: 'passive',
+};
+
+CustomFuncData _$CustomFuncDataFromJson(Map json) => $checkedCreate(
+      'CustomFuncData',
+      json,
+      ($checkedConvert) {
+        final val = CustomFuncData(
+          funcId: $checkedConvert('funcId', (v) => v as int?),
+          buffId: $checkedConvert('buffId', (v) => v as int?),
+          turn: $checkedConvert('turn', (v) => v as int? ?? -1),
+          count: $checkedConvert('count', (v) => v as int? ?? -1),
+          rate: $checkedConvert('rate', (v) => v as int? ?? 5000),
+          value: $checkedConvert('value', (v) => v as int? ?? 0),
+          enabled: $checkedConvert('enabled', (v) => v as bool? ?? false),
+          hasValue: $checkedConvert('hasValue', (v) => v as bool? ?? true),
+          target:
+              $checkedConvert('target', (v) => $enumDecodeNullable(_$FuncTargetTypeEnumMap, v) ?? FuncTargetType.self),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$CustomFuncDataToJson(CustomFuncData instance) => <String, dynamic>{
+      'funcId': instance.funcId,
+      'buffId': instance.buffId,
+      'turn': instance.turn,
+      'count': instance.count,
+      'rate': instance.rate,
+      'value': instance.value,
+      'enabled': instance.enabled,
+      'hasValue': instance.hasValue,
+      'target': _$FuncTargetTypeEnumMap[instance.target]!,
+    };
+
+const _$FuncTargetTypeEnumMap = {
+  FuncTargetType.self: 'self',
+  FuncTargetType.ptOne: 'ptOne',
+  FuncTargetType.ptAnother: 'ptAnother',
+  FuncTargetType.ptAll: 'ptAll',
+  FuncTargetType.enemy: 'enemy',
+  FuncTargetType.enemyAnother: 'enemyAnother',
+  FuncTargetType.enemyAll: 'enemyAll',
+  FuncTargetType.ptFull: 'ptFull',
+  FuncTargetType.enemyFull: 'enemyFull',
+  FuncTargetType.ptOther: 'ptOther',
+  FuncTargetType.ptOneOther: 'ptOneOther',
+  FuncTargetType.ptRandom: 'ptRandom',
+  FuncTargetType.enemyOther: 'enemyOther',
+  FuncTargetType.enemyRandom: 'enemyRandom',
+  FuncTargetType.ptOtherFull: 'ptOtherFull',
+  FuncTargetType.enemyOtherFull: 'enemyOtherFull',
+  FuncTargetType.ptselectOneSub: 'ptselectOneSub',
+  FuncTargetType.ptselectSub: 'ptselectSub',
+  FuncTargetType.ptOneAnotherRandom: 'ptOneAnotherRandom',
+  FuncTargetType.ptSelfAnotherRandom: 'ptSelfAnotherRandom',
+  FuncTargetType.enemyOneAnotherRandom: 'enemyOneAnotherRandom',
+  FuncTargetType.ptSelfAnotherFirst: 'ptSelfAnotherFirst',
+  FuncTargetType.ptSelfBefore: 'ptSelfBefore',
+  FuncTargetType.ptSelfAfter: 'ptSelfAfter',
+  FuncTargetType.ptSelfAnotherLast: 'ptSelfAnotherLast',
+  FuncTargetType.commandTypeSelfTreasureDevice: 'commandTypeSelfTreasureDevice',
+  FuncTargetType.fieldOther: 'fieldOther',
+  FuncTargetType.enemyOneNoTargetNoAction: 'enemyOneNoTargetNoAction',
+  FuncTargetType.ptOneHpLowestValue: 'ptOneHpLowestValue',
+  FuncTargetType.ptOneHpLowestRate: 'ptOneHpLowestRate',
+};

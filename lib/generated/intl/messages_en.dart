@@ -276,6 +276,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "craft_essence": MessageLookupByLibrary.simpleMessage("Craft Essence"),
         "create_account_textfield_helper":
             MessageLookupByLibrary.simpleMessage("You can add more accounts later in Settings"),
+        "create_custom_skill": MessageLookupByLibrary.simpleMessage("Create Custom Skill"),
         "create_duplicated_svt": MessageLookupByLibrary.simpleMessage("Create duplicated"),
         "crit_star_mod": MessageLookupByLibrary.simpleMessage("Crit Star Mod"),
         "critical_attack": MessageLookupByLibrary.simpleMessage("Critical"),
@@ -683,6 +684,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "move_up": MessageLookupByLibrary.simpleMessage("Move up"),
         "my_room": MessageLookupByLibrary.simpleMessage("My Room"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("Mystic Code"),
+        "name": MessageLookupByLibrary.simpleMessage("Name"),
         "network_cur_connection": MessageLookupByLibrary.simpleMessage("Connection"),
         "network_force_online": MessageLookupByLibrary.simpleMessage("Force Online Mode"),
         "network_force_online_hint":
@@ -879,6 +881,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "silver": MessageLookupByLibrary.simpleMessage("Silver"),
         "simulator": MessageLookupByLibrary.simpleMessage("Simulator"),
         "skill": MessageLookupByLibrary.simpleMessage("Skill"),
+        "skill_list": MessageLookupByLibrary.simpleMessage("Skill List"),
         "skill_rankup": MessageLookupByLibrary.simpleMessage("Skill Upgrade"),
         "skill_up": MessageLookupByLibrary.simpleMessage("Skill Up"),
         "skilled_max10": MessageLookupByLibrary.simpleMessage("Skills Max(310)"),
