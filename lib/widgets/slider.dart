@@ -10,6 +10,7 @@ class SliderWithTitle extends StatelessWidget {
   final String label;
   final ValueChanged<double> onChange;
   final EdgeInsetsGeometry padding;
+  final double maxWidth;
 
   const SliderWithTitle({
     super.key,
@@ -20,6 +21,7 @@ class SliderWithTitle extends StatelessWidget {
     required this.label,
     required this.onChange,
     this.padding = const EdgeInsets.only(top: 8),
+    this.maxWidth = 360,
   });
 
   @override
@@ -34,9 +36,9 @@ class SliderWithTitle extends StatelessWidget {
           child: Text('$leadingText: $label'),
         ),
         ConstrainedBox(
-          constraints: const BoxConstraints(
+          constraints: BoxConstraints(
             maxHeight: 24,
-            maxWidth: 360,
+            maxWidth: maxWidth,
           ),
           child: Slider(
             min: min.toDouble(),

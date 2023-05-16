@@ -207,7 +207,12 @@ class Transl<K, V> {
     return Transl(mapping(db.gameData.mappingData.enums), value.name, value.name);
   }
 
-  static Transl<String, String> svtAttribute(Attribute key) => Transl(md.enums.attribute, key.name, key.name);
+  static Transl<String, String> svtAttribute(Attribute key) {
+    String name = key.name;
+    if (key == Attribute.void_) name = 'void';
+    return Transl(md.enums.attribute, name, name);
+  }
+
   static Transl<String, String> servantPolicy(ServantPolicy key) => Transl(md.enums.servantPolicy, key.name, key.name);
   static Transl<String, String> servantPersonality(ServantPersonality key) =>
       Transl(md.enums.servantPersonality, key.name, key.name);

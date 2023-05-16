@@ -64,6 +64,8 @@ class TdDamageOptions {
   int mcLv = 10;
 
   CustomSkillData extraBuffs = CustomSkillData(buffOnly: true, hasTurnCount: false);
+  int fixedRandom = 1000;
+  int probabilityThreshold = 1000;
 
   void initBuffs() {
     final buffMap = {
@@ -284,6 +286,9 @@ class TdDmgSolver {
   Future<TdDmgResult?> calcOneSvt(TdDmgResult data, QuestPhase quest, MysticCodeData mcData) async {
     final attacker = data.originalSvtData.copy();
     final battleData = BattleData();
+    battleData.options
+      ..fixedRandom = options.fixedRandom
+      ..probabilityThreshold = options.probabilityThreshold;
     final svt = attacker.svt!;
     if (attacker.td == null || !attacker.td!.functions.any((func) => func.funcType.isDamageNp)) {
       return null;
@@ -384,6 +389,11 @@ class TdDmgSolver {
     }
     if (options.enableAppendSkills) {
       data.appendLvs.fillRange(0, 3, 10);
+    }
+
+    final extraBuffs = options.extraBuffs.buildSkill();
+    if (extraBuffs != null) {
+      data.addCustomPassive(extraBuffs, extraBuffs.maxLv);
     }
     // CE
     final ce = db.gameData.craftEssencesById[options.ceId];

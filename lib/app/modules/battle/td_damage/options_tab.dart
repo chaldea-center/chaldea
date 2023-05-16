@@ -229,7 +229,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       ),
       ListTile(
         dense: true,
-        title: const Text('Use Player Data'),
+        title: Text(S.current.player_data),
         subtitle: const Text('Non-favorite svt will be skipped'),
         trailing: DropdownButton<PreferPlayerSvtDataSource>(
           isDense: true,
@@ -261,7 +261,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       ),
       ListTile(
         dense: true,
-        title: const Text('Level'),
+        title: Text(S.current.level),
         trailing: DropdownButton<SvtLv>(
           isDense: true,
           value: options.svtLv,
@@ -349,14 +349,14 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           },
         ),
       ),
-      SwitchListTile.adaptive(
+      CheckboxListTile(
         dense: true,
         title: const Text('Fixed OC'),
         subtitle: const Text('"OC Lv. Up" buff no effect'),
         value: options.fixedOC,
         onChanged: (v) {
           setState(() {
-            options.fixedOC = v;
+            if (v != null) options.fixedOC = v;
           });
         },
       ),
@@ -364,7 +364,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       CheckboxListTile(
         dense: true,
         value: options.enableActiveSkills,
-        title: const Text('Enable Active Skills'),
+        title: Text(S.current.active_skill),
         onChanged: (value) {
           setState(() {
             options.enableActiveSkills = !options.enableActiveSkills;
@@ -386,7 +386,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       CheckboxListTile(
         dense: true,
         value: options.enableAppendSkills,
-        title: const Text('Enable Append Passives'),
+        title: Text(S.current.append_skill),
         onChanged: (value) {
           setState(() {
             options.enableAppendSkills = !options.enableAppendSkills;
@@ -414,6 +414,34 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
             options.upResistSubState = !options.upResistSubState;
           });
         },
+      ),
+      kIndentDivider,
+      const SizedBox(height: 8),
+      SliderWithTitle(
+        leadingText: S.current.battle_random,
+        min: ConstData.constants.attackRateRandomMin,
+        max: ConstData.constants.attackRateRandomMax - 1,
+        value: options.fixedRandom,
+        label: (options.fixedRandom / 1000).toStringAsFixed(3),
+        onChange: (v) {
+          options.fixedRandom = v.round();
+          if (mounted) setState(() {});
+        },
+        padding: const EdgeInsetsDirectional.only(start: 16),
+        maxWidth: double.infinity,
+      ),
+      SliderWithTitle(
+        leadingText: S.current.battle_probability_threshold,
+        min: 0,
+        max: 10,
+        value: options.probabilityThreshold ~/ 100,
+        label: '${options.probabilityThreshold / 10} %',
+        onChange: (v) {
+          options.probabilityThreshold = v.round() * 100;
+          if (mounted) setState(() {});
+        },
+        padding: const EdgeInsetsDirectional.only(start: 16),
+        maxWidth: double.infinity,
       ),
     ]);
 
