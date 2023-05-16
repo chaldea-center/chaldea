@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/app/battle/utils/battle_exception.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -21,9 +22,8 @@ class BattleServantData {
   BasicServant? overrideSvt;
   PlayerSvtData? playerSvtData;
 
-  bool get isPlayer => niceSvt != null;
-
-  bool get isEnemy => niceEnemy != null;
+  bool isPlayer = false;
+  bool get isEnemy => !isPlayer;
 
   // performance issue,
   String? _battleNameCache;
@@ -132,6 +132,7 @@ class BattleServantData {
     final svt = BattleServantData();
     svt
       ..niceEnemy = enemy
+      ..isPlayer = false
       ..uniqueId = uniqueId
       ..hp = enemy.hp
       ..maxHp = enemy.hp
@@ -145,11 +146,16 @@ class BattleServantData {
   }
 
   static BattleServantData fromPlayerSvtData(final PlayerSvtData settings, final int uniqueId) {
+    if (settings.svt == null) {
+      throw BattleException('Invalid PlayerSvtData: null svt');
+    }
+
     final svt = BattleServantData();
     svt
       ..playerSvtData = settings.copy()
       ..uniqueId = uniqueId
       ..niceSvt = settings.svt!
+      ..isPlayer = true
       ..svtId = settings.svt?.id ?? 0
       ..level = settings.lv
       ..maxHp = settings.fixedHp ?? ((settings.svt!.hpGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.hpFou)
@@ -1246,6 +1252,7 @@ class BattleServantData {
     return BattleServantData()
       ..niceEnemy = niceEnemy
       ..niceSvt = niceSvt
+      ..isPlayer = isPlayer
       ..playerSvtData = playerSvtData?.copy()
       ..fieldIndex = fieldIndex
       ..deckIndex = deckIndex

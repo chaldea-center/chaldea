@@ -14,8 +14,8 @@
   - [ ] forceInstantDeath: rn or delayed for 1 target
   - [ ] reset active skill CD for 1 target.
   - [ ] Skip turn! add to popup menu
-- [ ] add a flag for `final bool BattleServantData.isPlayer`, DO NOT depend on niceSvt/niceEnemy
-  - [ ] ensure init niceSvt/niceEnemy **_in constructor_**
+- [X] add a flag for `final bool BattleServantData.isPlayer`, DO NOT depend on niceSvt/niceEnemy
+  - [X] ensure init niceSvt/niceEnemy **_in constructor_**
 - [ ] active/passiveList make private, filter out actor died buffs, INDIV
 - [ ] gainNp/gainHp/gainHpPer related funcs: check DataVals.Unaffected
 
