@@ -85,6 +85,7 @@ class _TraitListPageState extends State<TraitListPage> with SearchableListState<
       subtitle: hasTransl ? Text(subtitle) : null,
       onTap: () {
         if (widget.onSelected != null) {
+          Navigator.pop(context);
           widget.onSelected!(id);
         } else {
           router.popDetailAndPush(context: context, url: Routes.traitI(id));

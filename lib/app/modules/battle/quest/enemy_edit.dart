@@ -9,6 +9,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import 'trait_edit.dart';
 
 class QuestEnemyEditPage extends StatefulWidget {
   final bool simple;
@@ -76,7 +77,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
         itemBuilder: (v) => Text(Transl.svtClassId(v).l.substring2(0, 15), textScaleFactor: 0.8),
         onChanged: (v) {
           enemy.svt.classId = v;
-          updateTrait(niceSvt);
+          updateTrait(niceSvt, null);
         },
       ),
       enumTile<Attribute>(
@@ -86,7 +87,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
         itemBuilder: (v) => Text(Transl.svtAttribute(v).l, textScaleFactor: 0.9),
         onChanged: (v) {
           enemy.svt.attribute = v;
-          updateTrait(niceSvt);
+          updateTrait(niceSvt, null);
         },
       ),
       ListTile(
@@ -95,6 +96,19 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
         subtitle: enemy.traits.isEmpty
             ? const Text('NONE')
             : SharedBuilder.traitList(context: context, traits: enemy.traits..sort2((e) => e.id)),
+        trailing: IconButton(
+          onPressed: () {
+            router.pushPage(TraitEditPage(
+              traits: enemy.traits,
+              onChanged: (traits) {
+                enemy.traits = traits.toList();
+                if (mounted) setState(() {});
+              },
+            ));
+          },
+          icon: const Icon(Icons.edit),
+          tooltip: S.current.edit,
+        ),
       ),
     ];
 
@@ -267,12 +281,12 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       // ignore: invalid_use_of_protected_member
       enemy.svt.face = face;
     }
-    updateTrait(svt);
+    updateTrait(svt, limitCount);
   }
 
-  void updateTrait(Servant? svt) {
-    if (svt != null) {
-      final indivAdd = svt.ascensionAdd.individuality.all[enemy.limit.limitCount];
+  void updateTrait(Servant? svt, int? limitCount) {
+    if (svt != null && limitCount != null) {
+      final indivAdd = svt.ascensionAdd.individuality.all[limitCount];
       if (indivAdd != null && indivAdd.isNotEmpty) {
         enemy.traits = indivAdd.toList();
       } else {

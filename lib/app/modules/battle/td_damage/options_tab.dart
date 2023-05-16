@@ -485,6 +485,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       contentBuilder: (context) {
         final skill = ce?.getActivatedSkills(options.ceMLB)[1]?.firstOrNull;
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ListTile(
               dense: true,
@@ -506,7 +507,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
             ),
             if (skill != null)
               Card(
-                margin: const EdgeInsets.all(8),
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Text(
@@ -668,7 +669,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       },
       contentBuilder: (context) {
         return Card(
-          margin: const EdgeInsets.symmetric(horizontal: 16),
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: CustomSkillForm(
             skillData: options.extraBuffs,
             valueOnly: true,
