@@ -41,7 +41,6 @@ export 'war.dart';
 export 'misc.dart';
 export 'wiki_data.dart';
 export 'reverse.dart';
-export 'battle.dart';
 
 part '../../generated/models/gamedata/gamedata.g.dart';
 

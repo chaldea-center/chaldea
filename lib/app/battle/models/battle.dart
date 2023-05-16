@@ -16,6 +16,7 @@ import '../interactions/tailored_execution_confirm.dart';
 import 'buff.dart';
 import 'skill.dart';
 import 'svt_entity.dart';
+import 'user.dart';
 
 export 'buff.dart';
 export 'skill.dart';
@@ -23,6 +24,7 @@ export 'svt_entity.dart';
 export 'craft_essence_entity.dart';
 export 'card_dmg.dart';
 export 'command_card.dart';
+export 'user.dart';
 
 class BattleData {
   static const kValidTotalStarMax = 99;

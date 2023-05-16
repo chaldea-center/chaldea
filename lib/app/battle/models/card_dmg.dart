@@ -1,4 +1,5 @@
 import 'package:chaldea/models/models.dart';
+import 'user.dart';
 
 class CardDmgOption {
   EnemyData? enemyData;

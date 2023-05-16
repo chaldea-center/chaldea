@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/extension.dart';
-import '../../app/battle/utils/battle_utils.dart';
+import '../utils/battle_utils.dart';
 
 class PlayerSvtData {
   Servant? svt;
