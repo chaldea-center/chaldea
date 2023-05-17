@@ -142,7 +142,13 @@ class SaintQuartzPlan {
       detail.addApple += (items[Items.goldAppleId] ?? 0) +
           (items[Items.silverAppleId] ?? 0) / 2 +
           (items[Items.bronzeAppleId] ?? 0) / 14.2;
-      if (event != null) detail.events.add(event);
+      if (event != null) {
+        if (event.type != EventType.eventQuest && event.isEmpty && event.campaigns.isNotEmpty) {
+          // pass
+        } else {
+          detail.events.add(event);
+        }
+      }
     }
 
     db.gameData.events.values.forEach((e) => _checkEvent(event: e));

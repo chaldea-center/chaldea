@@ -65,7 +65,7 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning> with SingleTi
         children: [
           SQSettingTab(),
           ExtraMissionTab(),
-          KeepAliveBuilder(builder: (context) => SQTableTab()),
+          SQTableTab(),
         ],
       ),
     );
