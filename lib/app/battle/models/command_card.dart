@@ -65,6 +65,10 @@ class CombatAction {
   CombatAction(this.actor, this.cardData);
 
   bool isValid(final BattleData battleData) {
-    return cardData.isNP ? actor.canNP(battleData) : actor.canCommandCard(battleData);
+    if (cardData.isNP) {
+      return battleData.delegate?.whetherTd?.call(actor) ?? actor.canNP(battleData);
+    } else {
+      return actor.canCommandCard(battleData);
+    }
   }
 }

@@ -98,7 +98,10 @@ class _TdDamageRankingState extends State<TdDamageRanking> with SingleTickerProv
             bottom: useTabView
                 ? FixedHeight.tabBar(TabBar(
                     controller: _tabController,
-                    tabs: const [Tab(text: 'Options'), Tab(text: 'Ranking')],
+                    tabs: [
+                      Tab(text: S.current.options),
+                      Tab(text: S.current.damage),
+                    ],
                   ))
                 : null,
           ),

@@ -57,7 +57,11 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
 
   Widget buildOptions() {
     List<Widget> children = [
-      const SHeader('Testing, feedback/suggestion welcomed!\n测试中，欢迎反馈&建议！'),
+      Text(
+        'Testing, feedback/suggestion welcomed!\n测试中，欢迎反馈&建议！',
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.bodySmall,
+      ),
     ];
     children.add(DividerWithTitle(title: S.current.enemy));
     final enemy = options.enemy;
@@ -70,9 +74,10 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
       ),
       title: Text(enemy.lShownName),
-      subtitle: Text('${Transl.svtClassId(enemy.svt.classId).l} ${Transl.svtAttribute(enemy.svt.attribute).l}'
-          '\nHP ${enemy.hp}  DR ${enemy.deathRate.format(percent: true, base: 10)}'
-          ' N/D ${enemy.serverMod.tdRate.format(percent: true, base: 10)}'),
+      subtitle: Text(
+          '${Transl.svtClassId(enemy.svt.classId).l}  ${Transl.svtAttribute(enemy.svt.attribute).l}  HP ${enemy.hp} '
+          '\n${S.current.info_death_rate} ${enemy.deathRate.format(percent: true, base: 10)}'
+          ' ${S.current.defense_np_rate} ${enemy.serverMod.tdRate.format(percent: true, base: 10)}'),
       trailing: const Icon(Icons.edit),
       onTap: () async {
         await router.pushPage(QuestEnemyEditPage(enemy: enemy));
@@ -84,13 +89,14 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         onPressed: () {
           final enemy2 = db.runtimeData.clipBoard.questEnemy;
           if (enemy2 == null) {
-            const SimpleCancelOkDialog(
-              title: Text('Hint'),
-              content: Text('Choose one Quest Enemy and copy in popup menun'),
+            SimpleCancelOkDialog(
+              title: Text(S.current.paste),
+              content: Text(S.current.paste_enemy_hint),
+              hideCancel: true,
             ).showDialog(context);
           } else {
             SimpleCancelOkDialog(
-              title: const Text("Paste Enemy"),
+              title: Text(S.current.paste),
               content: Text("${enemy2.lShownName}(${enemy2.svt.lName.l})\n${Transl.svtClassId(enemy2.svt.classId).l}"),
               onTapOk: () {
                 options.enemy = TdDamageOptions.copyEnemy(enemy2);
@@ -99,13 +105,13 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
             ).showDialog(context);
           }
         },
-        child: const Text('Paste Enemy'),
+        child: Text(S.current.paste),
       ),
       kIndentDivider,
       ListTile(
         dense: true,
-        title: const Text('Enemy Count'),
-        subtitle: const Text('ST NP will only attack 1st enemy'),
+        title: Text(S.current.enemy_count),
+        subtitle: Text(S.current.only_usuable_for_aoe_np),
         trailing: DropdownButton<int>(
           value: options.enemyCount.clamp(1, 6),
           items: [
@@ -121,7 +127,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       CheckboxListTile(
         dense: true,
         value: options.addDebuffImmuneEnemy,
-        title: const Text('AddDebuffImmune to Enemy'),
+        title: Text("${S.current.debuff_immune} (${S.current.enemy})"),
         onChanged: (value) {
           setState(() {
             options.addDebuffImmuneEnemy = !options.addDebuffImmuneEnemy;
@@ -150,6 +156,8 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         ],
       ),
     ));
+    if (options.supports.isNotEmpty) children.add(SFooter(S.current.long_press_to_remove));
+
     children.add(TextButton(
       onPressed: () {
         showDialog(
@@ -202,15 +210,12 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       },
       child: Text(S.current.add),
     ));
-    children.add(const SFooter('Long press to remove support.'));
 
-    children.add(const DividerWithTitle(title: 'Additional Buff'));
-    children.add(_buildCustomBuff());
-    children.add(const DividerWithTitle());
-
+    children.add(DividerWithTitle(title: '${S.current.craft_essence}/${S.current.mystic_code}'));
     children.add(_buildCEPart());
     children.add(_buildMCPart());
-    children.add(const DividerWithTitle(title: "Options"));
+    children.add(_buildCustomBuff());
+    children.add(DividerWithTitle(title: S.current.servant));
     children.addAll([
       ListTile(
         dense: true,
@@ -232,7 +237,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       ListTile(
         dense: true,
         title: Text(S.current.player_data),
-        subtitle: const Text('Non-favorite svt will be skipped'),
+        subtitle: Text(S.current.non_favorite_svt_be_skipped),
         trailing: DropdownButton<PreferPlayerSvtDataSource>(
           isDense: true,
           value: options.usePlayerSvt,
@@ -286,10 +291,11 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
                 },
         ),
       ),
+      kIndentDivider,
       ListTile(
         dense: true,
         enabled: options.usePlayerSvt.isNone,
-        title: const Text('NP Lv: R5'),
+        title: const Text('NP Lv: ${kStarChar}5'),
         trailing: DropdownButton<int>(
           isDense: true,
           value: options.tdR5,
@@ -306,7 +312,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       ListTile(
         dense: true,
         enabled: options.usePlayerSvt.isNone,
-        title: const Text('NP Lv: R4'),
+        title: const Text('NP Lv: ${kStarChar}4'),
         trailing: DropdownButton<int>(
           value: options.tdR4,
           isDense: true,
@@ -323,7 +329,8 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       ListTile(
         dense: true,
         enabled: options.usePlayerSvt.isNone,
-        title: const Text('NP Lv: R0-3 or event svt'),
+        title: const Text('NP Lv: ${kStarChar}0-3'),
+        subtitle: Text(Transl.svtObtain(SvtObtain.eventReward).l),
         trailing: DropdownButton<int>(
           isDense: true,
           value: options.tdR3,
@@ -337,9 +344,10 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
                 },
         ),
       ),
+      kIndentDivider,
       ListTile(
         dense: true,
-        title: const Text('NP OC'),
+        title: const Text('OverCharge (OC)'),
         trailing: DropdownButton<int>(
           isDense: true,
           value: options.oc,
@@ -353,8 +361,8 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       ),
       CheckboxListTile(
         dense: true,
-        title: const Text('Fixed OC'),
-        subtitle: const Text('"OC Lv. Up" buff no effect'),
+        title: Text(S.current.fixed_oc),
+        subtitle: Text('${S.current.disable}: "${Transl.buffType(BuffType.upChagetd).l}" buff'),
         value: options.fixedOC,
         onChanged: (v) {
           setState(() {
@@ -377,8 +385,8 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         enabled: options.enableActiveSkills,
         dense: true,
         value: options.twiceActiveSkill,
-        title: const Text('Twice skills if Cool Down after 2 turns'),
-        subtitle: const Text('Usually for w-Koyan at Turn3'),
+        title: Text(S.current.twice_skill_if_cd2),
+        subtitle: Text(S.current.twice_skill_hint),
         onChanged: (value) {
           setState(() {
             options.twiceActiveSkill = !options.twiceActiveSkill;
@@ -399,24 +407,24 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       CheckboxListTile(
         dense: true,
         value: options.addDebuffImmune,
-        title: const Text('AddDebuffImmune'),
+        title: Text(S.current.debuff_immune),
         onChanged: (value) {
           setState(() {
             options.addDebuffImmune = !options.addDebuffImmune;
           });
         },
       ),
-      CheckboxListTile(
-        enabled: false,
-        dense: true,
-        value: options.upResistSubState,
-        title: const Text('Up Resist SubState 500%'),
-        onChanged: (value) {
-          setState(() {
-            options.upResistSubState = !options.upResistSubState;
-          });
-        },
-      ),
+      // CheckboxListTile(
+      //   enabled: false,
+      //   dense: true,
+      //   value: options.upResistSubState,
+      //   title: const Text('Up Resist SubState 500%'),
+      //   onChanged: (value) {
+      //     setState(() {
+      //       options.upResistSubState = !options.upResistSubState;
+      //     });
+      //   },
+      // ),
       kIndentDivider,
       const SizedBox(height: 8),
       SliderWithTitle(

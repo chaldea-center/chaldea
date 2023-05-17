@@ -2208,6 +2208,17 @@ class S {
     );
   }
 
+  /// `Damage`
+  String get damage {
+    return Intl.message(
+      'Damage',
+      name: 'damage',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Damage Rate`
   String get damage_rate {
     return Intl.message(
@@ -2323,6 +2334,17 @@ class S {
     return Intl.message(
       'Death Effect Rate',
       name: 'death_effect_rate',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Debuff Immune`
+  String get debuff_immune {
+    return Intl.message(
+      'Debuff Immune',
+      name: 'debuff_immune',
       desc: '',
       locale: localeName,
       args: [],
@@ -2906,6 +2928,17 @@ class S {
     return Intl.message(
       'Enemy',
       name: 'enemy',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Enemy Count`
+  String get enemy_count {
+    return Intl.message(
+      'Enemy Count',
+      name: 'enemy_count',
       desc: '',
       locale: localeName,
       args: [],
@@ -3907,6 +3940,17 @@ class S {
     return Intl.message(
       'Rarity',
       name: 'filter_sort_rarity',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Fixed OC`
+  String get fixed_oc {
+    return Intl.message(
+      'Fixed OC',
+      name: 'fixed_oc',
       desc: '',
       locale: localeName,
       args: [],
@@ -5810,6 +5854,17 @@ class S {
     );
   }
 
+  /// `Long press to remove`
+  String get long_press_to_remove {
+    return Intl.message(
+      'Long press to remove',
+      name: 'long_press_to_remove',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Long press to save`
   String get long_press_to_save_hint {
     return Intl.message(
@@ -6415,6 +6470,17 @@ class S {
     );
   }
 
+  /// `Non-favorite servants will be skipped`
+  String get non_favorite_svt_be_skipped {
+    return Intl.message(
+      'Non-favorite servants will be skipped',
+      name: 'non_favorite_svt_be_skipped',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Not Found`
   String get not_found {
     return Intl.message(
@@ -6525,10 +6591,10 @@ class S {
     );
   }
 
-  /// `NP efund`
+  /// `NP refund`
   String get np_refund {
     return Intl.message(
-      'NP efund',
+      'NP refund',
       name: 'np_refund',
       desc: '',
       locale: localeName,
@@ -6613,6 +6679,17 @@ class S {
     );
   }
 
+  /// `Only used for AoE NP`
+  String get only_usuable_for_aoe_np {
+    return Intl.message(
+      'Only used for AoE NP',
+      name: 'only_usuable_for_aoe_np',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Open`
   String get open {
     return Intl.message(
@@ -6651,6 +6728,17 @@ class S {
     return Intl.message(
       'Opening Time',
       name: 'opening_time',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Options`
+  String get options {
+    return Intl.message(
+      'Options',
+      name: 'options',
       desc: '',
       locale: localeName,
       args: [],
@@ -6706,6 +6794,17 @@ class S {
     return Intl.message(
       'Paste',
       name: 'paste',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Choose one Quest Enemy, open popup menu, then copy it to clipboard.`
+  String get paste_enemy_hint {
+    return Intl.message(
+      'Choose one Quest Enemy, open popup menu, then copy it to clipboard.',
+      name: 'paste_enemy_hint',
       desc: '',
       locale: localeName,
       args: [],
@@ -9220,6 +9319,17 @@ class S {
     );
   }
 
+  /// `Total NP`
+  String get total_np {
+    return Intl.message(
+      'Total NP',
+      name: 'total_np',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Trait`
   String get trait {
     return Intl.message(
@@ -9302,6 +9412,28 @@ class S {
     return Intl.message(
       'Considered Win after turn countdown is over',
       name: 'turn_remain_limit_win',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Usually for w-Koyan team`
+  String get twice_skill_hint {
+    return Intl.message(
+      'Usually for w-Koyan team',
+      name: 'twice_skill_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Twice skills if Cool Down after 2 turns`
+  String get twice_skill_if_cd2 {
+    return Intl.message(
+      'Twice skills if Cool Down after 2 turns',
+      name: 'twice_skill_if_cd2',
       desc: '',
       locale: localeName,
       args: [],

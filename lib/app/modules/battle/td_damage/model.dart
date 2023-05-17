@@ -333,8 +333,9 @@ class TdDmgSolver {
       }
     }
     actor.np = ConstData.constants.fullTdPoint;
-    battleData.delegate = BattleDelegate(battleData);
-    battleData.delegate!.decideOC = (_actor, baseOC, upOC) => options.fixedOC ? options.oc : options.oc + upOC;
+    final delegate = battleData.delegate = BattleDelegate(battleData);
+    delegate.decideOC = (_actor, baseOC, upOC) => options.fixedOC ? options.oc : options.oc + upOC;
+    delegate.whetherTd = (_actor) => true;
     final card = actor.getNPCard(battleData);
     if (card == null) {
       print('svt ${svt.collectionNo}-${svt.lName.l}: No NP card');

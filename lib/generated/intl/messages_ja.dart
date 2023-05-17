@@ -260,6 +260,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "date": MessageLookupByLibrary.simpleMessage("日付"),
         "death_chance": MessageLookupByLibrary.simpleMessage("即死成功率"),
         "death_effect_rate": MessageLookupByLibrary.simpleMessage("即死効果率"),
+        "debuff_immune": MessageLookupByLibrary.simpleMessage("弱体無効"),
         "debug": MessageLookupByLibrary.simpleMessage("ディバッグ"),
         "debug_fab": MessageLookupByLibrary.simpleMessage("Debug FAB"),
         "debug_menu": MessageLookupByLibrary.simpleMessage("Debug Menu"),

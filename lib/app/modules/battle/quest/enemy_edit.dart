@@ -46,10 +46,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
         trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
         onTap: enemy.routeTo,
       ),
-      DividerWithTitle(
-        title: S.current.select,
-        height: 16,
-      ),
+      DividerWithTitle(title: S.current.select, height: 16),
       Wrap(
         alignment: WrapAlignment.center,
         crossAxisAlignment: WrapCrossAlignment.center,

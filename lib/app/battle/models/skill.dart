@@ -149,7 +149,8 @@ class BattleSkillInfoData {
       checkActorTraits: true,
     ));
 
-    if (!actorTraitMatch) {
+    bool canActSkill = battleData.delegate?.whetherSkill?.call(battleData.activator, skill) ?? actorTraitMatch;
+    if (!canActSkill) {
       return false;
     }
 

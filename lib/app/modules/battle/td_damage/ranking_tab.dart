@@ -8,16 +8,6 @@ import '../../servant/filter.dart';
 import '../simulation/recorder.dart';
 import 'model.dart';
 
-enum _SortType {
-  damage,
-  attackNp,
-  totalNp,
-  id,
-  ;
-
-  bool get isNp => this == _SortType.attackNp || this == _SortType.totalNp;
-}
-
 class TdDmgRankingTab extends StatefulWidget {
   final TdDmgSolver solver;
   final SvtFilterData svtFilterData;
@@ -66,7 +56,7 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
                       for (final type in _SortType.values)
                         DropdownMenuItem(
                           value: type,
-                          child: Text(type.name),
+                          child: Text(type.shownName),
                         )
                     ],
                     onChanged: (v) {
@@ -182,7 +172,8 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
           ),
         ],
       ),
-      title: Text('DMG $dmgStr'),
+      // title: Text('${S.current.damage} $dmgStr'),
+      title: Text(dmgStr),
       subtitle: Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: Text(npStr),
@@ -201,15 +192,6 @@ class _ResultDetail extends StatefulWidget {
 
   @override
   State<_ResultDetail> createState() => _ResultDetailState();
-}
-
-enum _ParamType {
-  damage,
-  refund,
-  star,
-  ;
-
-  String get shownName => name;
 }
 
 class _ResultDetailState extends State<_ResultDetail> {
@@ -272,5 +254,46 @@ class _ResultDetailState extends State<_ResultDetail> {
       mainAxisSize: MainAxisSize.min,
       children: children,
     );
+  }
+}
+
+enum _SortType {
+  damage,
+  attackNp,
+  totalNp,
+  id,
+  ;
+
+  bool get isNp => this == _SortType.attackNp || this == _SortType.totalNp;
+
+  String get shownName {
+    switch (this) {
+      case _SortType.damage:
+        return S.current.damage;
+      case _SortType.attackNp:
+        return S.current.np_refund;
+      case _SortType.totalNp:
+        return S.current.total_np;
+      case _SortType.id:
+        return 'ID';
+    }
+  }
+}
+
+enum _ParamType {
+  damage,
+  refund,
+  star,
+  ;
+
+  String get shownName {
+    switch (this) {
+      case _ParamType.damage:
+        return S.current.damage;
+      case _ParamType.refund:
+        return S.current.np_refund_short;
+      case _ParamType.star:
+        return S.current.critical_star;
+    }
   }
 }
