@@ -1,18 +1,21 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 import 'package:video_player/video_player.dart';
 
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/platform/platform.dart';
+import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/utils/url.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import 'logger.dart';
 
 const _kDefaultAspectRatio = 1344 / 576;
 
+// ArgumentError("video file not opened yet")
 extension VideoPlayerControllerX on VideoPlayerController {
   Future<void> playOrPause() {
     return value.isPlaying ? pause() : play();
@@ -237,12 +240,28 @@ class VideoPlayPage extends StatefulWidget {
 }
 
 class _VideoPlayPageState extends State<VideoPlayPage> {
+  Key playerKey = UniqueKey();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title ?? 'Video Player'),
         actions: [
+          if (!kIsWeb)
+            IconButton(
+              onPressed: () {
+                SimpleCancelOkDialog(
+                  title: Text(S.current.refresh),
+                  onTapOk: () async {
+                    await AtlasIconLoader.i.deleteFromDisk(widget.url);
+                    playerKey = UniqueKey();
+                    if (mounted) setState(() {});
+                  },
+                ).showDialog(context);
+              },
+              icon: const Icon(Icons.refresh),
+              tooltip: S.current.refresh,
+            ),
           IconButton(
             onPressed: () {
               launch(widget.url, external: true);
@@ -252,7 +271,7 @@ class _VideoPlayPageState extends State<VideoPlayPage> {
         ],
       ),
       body: Center(
-        child: MyVideoPlayer.url(url: widget.url),
+        child: MyVideoPlayer.url(key: playerKey, url: widget.url),
       ),
     );
   }
