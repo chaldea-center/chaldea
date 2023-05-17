@@ -44,8 +44,8 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
   }) : details = details ?? const [];
 
   bool _isPlayableAll(List<int> clsIds) {
-    return clsIds.toSet().equalTo(kSvtClassIdsPlayable.toSet()) ||
-        clsIds.toSet().equalTo(kSvtClassIdsPlayableNA.toSet());
+    return kSvtClassIdsPlayableAlways.every((e) => clsIds.contains(e)) &&
+        clsIds.every((e) => kSvtClassIdsPlayableAll.contains(e));
   }
 
   @override
