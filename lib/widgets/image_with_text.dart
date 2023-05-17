@@ -142,6 +142,8 @@ class ImageWithText extends StatelessWidget {
     if (shadowSize == null) {
       return style;
     } else {
+      // [Impeller] stroke not implemented
+      // https://github.com/flutter/flutter/issues/126010
       return style.copyWith(
         foreground: style.foreground ?? Paint()
           ..style = PaintingStyle.stroke
