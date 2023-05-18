@@ -276,6 +276,7 @@ class CustomSkillData {
       type: skillType,
       icon: Atlas.common.unknownSkillIcon,
       functions: funcs,
+      priority: 99999,
     );
     return skill;
   }

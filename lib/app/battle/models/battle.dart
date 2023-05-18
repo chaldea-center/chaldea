@@ -241,15 +241,39 @@ class BattleData {
     allyTargetIndex = getNonNullTargetIndex(onFieldAllyServants, allyTargetIndex);
     enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
 
-    for (final actor in [...onFieldAllyServants, ...playerDataList, ...onFieldEnemies, ...enemyDataList]) {
-      await actor?.init(this);
+    final List<BattleServantData?> allActors = [
+      ...onFieldEnemies,
+      ...enemyDataList,
+      ...onFieldAllyServants,
+      ...playerDataList,
+    ];
+
+    for (final actor in allActors) {
+      actor?.initScript(this);
     }
+    await initActorSkills(allActors);
 
     for (final svt in nonnullActors) {
       await svt.enterField(this);
     }
 
     await nextTurn();
+  }
+
+  /// after init or shift, call battleData.initActorSkills to preserve skill order
+  Future<void> initActorSkills(final List<BattleServantData?> allActors) async {
+    for (final actor in allActors) {
+      await actor?.activateClassPassive(this);
+    }
+    for (final actor in allActors) {
+      await actor?.activateEquip(this);
+    }
+    for (final actor in allActors) {
+      await actor?.activateExtraPassive(this);
+    }
+    for (final actor in allActors) {
+      await actor?.activateAdditionalPassive(this);
+    }
   }
 
   int getNextUniqueId() {
@@ -305,9 +329,11 @@ class BattleData {
 
     enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
 
-    for (final actor in [...onFieldEnemies, ...enemyDataList]) {
-      await actor?.init(this);
+    final List<BattleServantData?> newEnemies = [...onFieldEnemies, ...enemyDataList];
+    for (final actor in newEnemies) {
+      actor?.initScript(this);
     }
+    await initActorSkills(newEnemies);
 
     for (final enemy in nonnullEnemies) {
       await enemy.enterField(this);
@@ -747,7 +773,8 @@ class BattleData {
   Future<void> startEnemyTurn() async {
     for (final svt in nonnullEnemies) {
       if (svt.hp <= 0) {
-        await svt.shift(this);
+        svt.shift(this);
+        await initActorSkills([svt]);
       }
       await svt.startOfMyTurn(this);
     }

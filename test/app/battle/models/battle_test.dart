@@ -942,12 +942,99 @@ void main() async {
     expect(previousHp3 - enemy3.hp, 120179);
   });
 
+  test('Svt passive skill & CE skill order', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(901100)
+        ..lv = 90
+        ..ce = db.gameData.craftEssencesById[9405550] // The Dwarf Tailor (debuff immune once)
+        ..ceLv = 15
+        ..ceLimitBreak = true,
+      PlayerSvtData.id(1101100)..lv = 90, // avenger
+      PlayerSvtData.id(901100)
+        ..lv = 90
+        ..ce = db.gameData.craftEssencesById[9405550] // The Dwarf Tailor (debuff immune once)
+        ..ceLv = 15
+        ..ceLimitBreak = true,
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final karen1 = battle.onFieldAllyServants[0]!;
+    final karen2 = battle.onFieldAllyServants[2]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+
+    final previousHp1 = enemy1.hp;
+    await battle.playerTurn([CombatAction(karen2, karen2.getCards(battle)[4])]);
+    expect(previousHp1 - enemy1.hp, 6974);
+
+    final previousHp2 = enemy1.hp;
+    await battle.playerTurn([CombatAction(karen1, karen1.getCards(battle)[4])]);
+    expect(previousHp2 - enemy1.hp, 6974);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,
       PlayerSvtData.id(503900)..lv = 90,
       PlayerSvtData.id(503900)..lv = 90,
     ];
+
+    test('Test checkTrait with no provided traits or no required traits', () async {
+      final battle = BattleData();
+      await battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
+
+      final divinityCheck = [NiceTrait(id: Trait.divine.id)];
+      expect(
+        battle.checkTraits(CheckTraitParameters(
+          requiredTraits: divinityCheck,
+        )),
+        false,
+      );
+
+      expect(
+        battle.checkTraits(CheckTraitParameters(
+          requiredTraits: divinityCheck,
+          checkIndivType: 3,
+        )),
+        false,
+      );
+
+      expect(
+        battle.checkTraits(CheckTraitParameters(
+          requiredTraits: [],
+        )),
+        true,
+      );
+
+      expect(
+        battle.checkTraits(CheckTraitParameters(
+          requiredTraits: [],
+          checkIndivType: 3,
+        )),
+        true,
+      );
+
+      final okuni = battle.onFieldAllyServants[0]!;
+      expect(
+        battle.checkTraits(CheckTraitParameters(
+          requiredTraits: [],
+          actor: okuni,
+          checkActorTraits: true,
+        )),
+        true,
+      );
+
+      expect(
+        battle.checkTraits(CheckTraitParameters(
+          requiredTraits: [],
+          actor: okuni,
+          checkActorTraits: true,
+          checkIndivType: 3,
+        )),
+        true,
+      );
+    });
 
     test('Test checkTargetTraits & checkActivatorTraits', () async {
       final battle = BattleData();

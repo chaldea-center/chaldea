@@ -29,7 +29,8 @@ class CallServant {
           // init & entry enemy
           final actor = BattleServantData.fromEnemy(callSvt, battleData.getNextUniqueId());
           battleData.onFieldEnemies[index] = actor;
-          await actor.init(battleData);
+          actor.initScript(battleData);
+          await battleData.initActorSkills([actor]);
           await actor.enterField(battleData);
           break;
         }

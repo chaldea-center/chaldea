@@ -21,7 +21,8 @@ class ShiftServant {
         battleData.battleLogger.error('SkillShift NpcId=$shiftNpcId not found');
         battleData.curFuncResults[target.uniqueId] = false;
       } else {
-        await target.skillShift(battleData, skillShiftSvt);
+        target.skillShift(battleData, skillShiftSvt);
+        await battleData.initActorSkills([target]);
         battleData.curFuncResults[target.uniqueId] = true;
       }
 
@@ -60,7 +61,8 @@ class ShiftServant {
     actor.maxHp = changeSvt.hp;
     actor.level = changeSvt.lv;
     actor.battleBuff.clearPassive(actor.uniqueId);
-    await actor.init(battleData);
+    actor.initScript(battleData);
+    await battleData.initActorSkills([actor]);
     battleData.unsetTarget();
   }
 }

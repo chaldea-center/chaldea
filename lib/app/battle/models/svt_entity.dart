@@ -202,7 +202,7 @@ class BattleServantData {
     return svt;
   }
 
-  Future<void> init(final BattleData battleData) async {
+  void initScript(final BattleData battleData) {
     if (niceEnemy != null) {
       int dispBreakShift = niceEnemy!.enemyScript.dispBreakShift ?? 0;
       int shiftLength = niceEnemy!.enemyScript.shift?.length ?? 0;
@@ -212,21 +212,19 @@ class BattleServantData {
         }
         shiftIndex = dispBreakShift - 1;
         if (hasNextShift(battleData)) {
-          await shift(battleData);
-          return;
+          shift(battleData);
         }
       }
     }
-
-    await _init(battleData);
   }
 
-  Future<void> _init(final BattleData battleData) async {
+  Future<void> activateClassPassive(final BattleData battleData) async {
     final List<NiceSkill> passives = isPlayer
         ? [...niceSvt!.classPassive]
         : [...niceEnemy!.classPassive.classPassive, ...niceEnemy!.classPassive.addPassive];
 
     battleData.setActivator(this);
+
     for (final skill in passives) {
       await BattleSkillInfoData.activateSkill(battleData, skill, 1, isPassive: true); // passives default to level 1
     }
@@ -243,6 +241,23 @@ class BattleServantData {
           );
         }
       }
+    }
+
+    battleData.unsetActivator();
+  }
+
+  Future<void> activateEquip(final BattleData battleData) async {
+    battleData.setActivator(this);
+
+    await equip?.activateCE(battleData);
+
+    battleData.unsetActivator();
+  }
+
+  Future<void> activateExtraPassive(final BattleData battleData) async {
+    if (isPlayer) {
+      battleData.setActivator(this);
+
       for (final skill in playerSvtData!.extraPassives) {
         if (playerSvtData!.disabledExtraSkills.contains(skill.id)) continue;
         if (skill.isExtraPassiveEnabledForEvent(battleData.niceQuest?.war?.eventId ?? 0)) {
@@ -254,6 +269,15 @@ class BattleServantData {
           );
         }
       }
+
+      battleData.unsetActivator();
+    }
+  }
+
+  Future<void> activateAdditionalPassive(final BattleData battleData) async {
+    if (isPlayer) {
+      battleData.setActivator(this);
+
       for (int index = 0; index < playerSvtData!.additionalPassives.length; index++) {
         final skill = playerSvtData!.additionalPassives[index];
         final extraPassiveLv = playerSvtData!.additionalPassiveLvs[index];
@@ -264,11 +288,9 @@ class BattleServantData {
           isPassive: true,
         );
       }
+
+      battleData.unsetActivator();
     }
-
-    await equip?.activateCE(battleData);
-
-    battleData.unsetActivator();
   }
 
   String getSkillName(final int index) {
@@ -529,7 +551,7 @@ class BattleServantData {
     return null;
   }
 
-  Future<void> shift(final BattleData battleData) async {
+  void shift(final BattleData battleData) {
     final nextShift = getEnemyShift(battleData);
     if (nextShift == null) {
       return;
@@ -542,12 +564,10 @@ class BattleServantData {
     maxHp = nextShift.hp;
     level = nextShift.lv;
     battleBuff.clearPassive(uniqueId);
-
-    await _init(battleData);
     shiftIndex += 1;
   }
 
-  Future<void> skillShift(final BattleData battleData, QuestEnemy shiftSvt) async {
+  void skillShift(final BattleData battleData, QuestEnemy shiftSvt) {
     niceEnemy = shiftSvt;
 
     atk = shiftSvt.atk;
@@ -555,8 +575,6 @@ class BattleServantData {
     maxHp = shiftSvt.hp;
     level = shiftSvt.lv;
     battleBuff.clearPassive(uniqueId);
-
-    await _init(battleData);
     shiftIndex += 1;
   }
 
