@@ -424,6 +424,8 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           });
         },
       ),
+      DividerWithTitle(title: S.current.np_se, indent: 16),
+      ..._buildSEPart(),
       // CheckboxListTile(
       //   enabled: false,
       //   dense: true,
@@ -463,11 +465,20 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         padding: const EdgeInsetsDirectional.only(start: 16),
         maxWidth: double.infinity,
       ),
+      kDefaultDivider,
+      TextButton(
+        onPressed: () {
+          setState(() {
+            db.settings.battleSim.tdDmgOptions = TdDamageOptions();
+          });
+        },
+        child: Text(S.current.reset),
+      ),
     ]);
 
     return ListView(
       controller: scrollController,
-      padding: const EdgeInsets.only(top: 16, bottom: 64),
+      padding: const EdgeInsets.only(top: 16, bottom: 16),
       children: children,
     );
   }
@@ -700,5 +711,81 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         );
       },
     );
+  }
+
+  List<Widget> _buildSEPart() {
+    final List<Servant> indivSumSvts = [], hpRatioSvts = [];
+    for (final svt in db.gameData.servantsNoDup.values) {
+      if (svt.collectionNo != 153 &&
+          svt.noblePhantasms.any((td) => td.functions.any((func) => func.funcType == FuncType.damageNpIndividualSum))) {
+        indivSumSvts.add(svt);
+      }
+      if (svt.noblePhantasms.any((td) => td.functions.any(
+          (func) => func.funcType == FuncType.damageNpHpratioLow || func.funcType == FuncType.damageNpHpratioHigh))) {
+        hpRatioSvts.add(svt);
+      }
+    }
+    indivSumSvts.sort2((e) => e.collectionNo);
+    hpRatioSvts.sort2((e) => e.collectionNo);
+    List<Widget> children = [
+      CheckboxListTile(
+        dense: true,
+        value: options.forceDamageNpSe,
+        title: Text(S.current.force_enable_np_se),
+        onChanged: (value) {
+          setState(() {
+            if (value != null) options.forceDamageNpSe = value;
+          });
+        },
+      ),
+      ListTile(
+        enabled: options.forceDamageNpSe,
+        dense: true,
+        title: Text(S.current.damage_np_indiv_sum_count),
+        subtitle: Text.rich(
+          TextSpan(children: [
+            for (final svt in indivSumSvts) CenterWidgetSpan(child: svt.iconBuilder(context: context, width: 24)),
+          ]),
+          maxLines: 1,
+        ),
+        trailing: DropdownButton<int?>(
+          value: options.damageNpIndivSumCount,
+          items: [
+            for (final count in <int?>[null, ...List.generate(12, (index) => index + 1)])
+              DropdownMenuItem(
+                value: count,
+                child: Text(
+                  count?.toString() ?? "MAX",
+                  textScaleFactor: 0.8,
+                ),
+              )
+          ],
+          onChanged: options.forceDamageNpSe
+              ? (v) {
+                  setState(() {
+                    options.damageNpIndivSumCount = v;
+                  });
+                }
+              : null,
+        ),
+      ),
+      CheckboxListTile(
+        dense: true,
+        value: options.damageNpHpRatioMax,
+        title: Text(S.current.damage_np_hp_ratio_max_rate),
+        subtitle: Text.rich(
+          TextSpan(children: [
+            for (final svt in hpRatioSvts) CenterWidgetSpan(child: svt.iconBuilder(context: context, width: 24)),
+          ]),
+          maxLines: 1,
+        ),
+        onChanged: (value) {
+          setState(() {
+            if (value != null) options.damageNpHpRatioMax = value;
+          });
+        },
+      ),
+    ];
+    return children;
   }
 }

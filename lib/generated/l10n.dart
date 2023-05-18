@@ -2219,6 +2219,28 @@ class S {
     );
   }
 
+  /// `More Powerful with Lower/Higher HP: Use MAX Rate`
+  String get damage_np_hp_ratio_max_rate {
+    return Intl.message(
+      'More Powerful with Lower/Higher HP: Use MAX Rate',
+      name: 'damage_np_hp_ratio_max_rate',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `More powerful with more stackable traits`
+  String get damage_np_indiv_sum_count {
+    return Intl.message(
+      'More powerful with more stackable traits',
+      name: 'damage_np_indiv_sum_count',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Damage Rate`
   String get damage_rate {
     return Intl.message(
@@ -3951,6 +3973,17 @@ class S {
     return Intl.message(
       'Fixed OC',
       name: 'fixed_oc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Force Enable NP S.E.`
+  String get force_enable_np_se {
+    return Intl.message(
+      'Force Enable NP S.E.',
+      name: 'force_enable_np_se',
       desc: '',
       locale: localeName,
       args: [],
@@ -6607,6 +6640,17 @@ class S {
     return Intl.message(
       'Refund',
       name: 'np_refund_short',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `NP S.E.`
+  String get np_se {
+    return Intl.message(
+      'NP S.E.',
+      name: 'np_se',
       desc: '',
       locale: localeName,
       args: [],

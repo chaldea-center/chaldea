@@ -113,6 +113,7 @@ class TdDmgSolver {
     mcData
       ..mysticCode = db.gameData.mysticCodes[options.mcId]
       ..level = options.mcLv;
+    final delegate = getDelegate();
     // final t = StopwatchX('calc');
 
     for (final svt in servants) {
@@ -140,7 +141,7 @@ class TdDmgSolver {
         }
         for (final svtData in variants) {
           if (svtData == null) continue;
-          final result = await calcOneSvt(TdDmgResult(svtData), quest, mcData);
+          final result = await calcOneSvt(TdDmgResult(svtData), quest, mcData, delegate);
           if (result == null) continue;
           results.add(result);
         }
@@ -185,9 +186,11 @@ class TdDmgSolver {
     ],
   );
 
-  Future<TdDmgResult?> calcOneSvt(TdDmgResult data, QuestPhase quest, MysticCodeData mcData) async {
+  Future<TdDmgResult?> calcOneSvt(
+      TdDmgResult data, QuestPhase quest, MysticCodeData mcData, BattleDelegate delegate) async {
     final attacker = data.originalSvtData.copy();
     final battleData = BattleData();
+    battleData.delegate = delegate;
     battleData.options
       ..fixedRandom = options.fixedRandom
       ..probabilityThreshold = options.probabilityThreshold;
@@ -236,9 +239,7 @@ class TdDmgSolver {
       }
     }
     actor.np = ConstData.constants.fullTdPoint;
-    final delegate = battleData.delegate = BattleDelegate(battleData);
-    delegate.decideOC = (_actor, baseOC, upOC) => options.fixedOC ? options.oc : options.oc + upOC;
-    delegate.whetherTd = (_actor) => true;
+
     final card = actor.getNPCard(battleData);
     if (card == null) {
       print('svt ${svt.collectionNo}-${svt.lName.l}: No NP card');
@@ -347,6 +348,42 @@ class TdDmgSolver {
         )
       ],
     );
+  }
+
+  BattleDelegate getDelegate() {
+    final delegate = BattleDelegate();
+    delegate.decideOC = (_actor, baseOC, upOC) => options.fixedOC ? options.oc : options.oc + upOC;
+    delegate.whetherTd = (_actor) => true;
+    if (options.damageNpHpRatioMax) {
+      delegate.hpRatio = (_actor, battleData, func, vals) {
+        if (func?.funcType == FuncType.damageNpHpratioLow) {
+          return 1;
+        } else if (func?.funcType == FuncType.damageNpHpratioHigh) {
+          return _actor.getMaxHp(battleData);
+        }
+        return null;
+      };
+    }
+    if (options.forceDamageNpSe) {
+      delegate.damageNpSE = (_actor, func, vals) {
+        final funcType = func?.funcType;
+        if ([
+          FuncType.damageNpRare,
+          FuncType.damageNpStateIndividualFix,
+          FuncType.damageNpStateIndividual,
+        ].contains(funcType)) {
+          return DamageNpSEDecision(useCorrection: true);
+        } else if (funcType == FuncType.damageNpIndividualSum) {
+          return DamageNpSEDecision(
+            useCorrection: true,
+            indivSumCount: options.damageNpIndivSumCount ?? vals.ParamAddMaxCount,
+          );
+        }
+        return null;
+      };
+    }
+
+    return delegate;
   }
 
   static QuestEnemy copyEnemy(QuestEnemy enemy) {

@@ -106,7 +106,7 @@ class _TraitSPDMGTabState extends State<TraitSPDMGTab> {
                 // case _BuffSEScope.append:
                 //   return Text(S.current.append_skill_short);
                 case _SEScope.tdSE:
-                  return Text('${S.current.np_short}(D)');
+                  return Text(S.current.np_se);
                 case _SEScope.ce:
                   return Text(S.current.craft_essence);
                 case _SEScope.cc:

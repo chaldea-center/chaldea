@@ -2,9 +2,7 @@ import 'package:chaldea/models/models.dart';
 import '../models/battle.dart';
 
 class BattleDelegate {
-  final BattleData battleData;
-
-  BattleDelegate(this.battleData);
+  BattleDelegate();
 
   Future<int?> Function(BattleServantData? actor)? actWeight;
   Future<int?> Function(BattleServantData? actor)? skillActSelect;
@@ -12,4 +10,16 @@ class BattleDelegate {
   int? Function(BattleServantData? actor, int baseOC, int upOC)? decideOC;
   bool? Function(BattleServantData? actor, BaseSkill? skill)? whetherSkill;
   bool? Function(BattleServantData? actor)? whetherTd;
+
+  int? Function(BattleServantData actor, BattleData battleData, NiceFunction? func, DataVals vals)? hpRatio;
+  DamageNpSEDecision? Function(BattleServantData? actor, NiceFunction? func, DataVals vals)? damageNpSE;
+}
+
+class DamageNpSEDecision {
+  bool? useCorrection;
+  int? indivSumCount;
+  DamageNpSEDecision({
+    this.useCorrection,
+    this.indivSumCount,
+  });
 }

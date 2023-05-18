@@ -296,6 +296,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "daily_qp_quest": MessageLookupByLibrary.simpleMessage("Enter the Treasure Vault"),
         "daily_training_quest": MessageLookupByLibrary.simpleMessage("Training Ground"),
         "damage": MessageLookupByLibrary.simpleMessage("Damage"),
+        "damage_np_hp_ratio_max_rate":
+            MessageLookupByLibrary.simpleMessage("More Powerful with Lower/Higher HP: Use MAX Rate"),
+        "damage_np_indiv_sum_count": MessageLookupByLibrary.simpleMessage("More powerful with more stackable traits"),
         "damage_rate": MessageLookupByLibrary.simpleMessage("Damage Rate"),
         "dark_mode": MessageLookupByLibrary.simpleMessage("Dark mode"),
         "dark_mode_dark": MessageLookupByLibrary.simpleMessage("Dark"),
@@ -462,6 +465,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sort_number": MessageLookupByLibrary.simpleMessage("No"),
         "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("Rarity"),
         "fixed_oc": MessageLookupByLibrary.simpleMessage("Fixed OC"),
+        "force_enable_np_se": MessageLookupByLibrary.simpleMessage("Force Enable NP S.E."),
         "force_instant_death": MessageLookupByLibrary.simpleMessage("Force Death"),
         "foukun": MessageLookupByLibrary.simpleMessage("Fou"),
         "fq_plan_decimal_hint": MessageLookupByLibrary.simpleMessage(
@@ -717,6 +721,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "np_not_enough": MessageLookupByLibrary.simpleMessage("NP Not Enough"),
         "np_refund": MessageLookupByLibrary.simpleMessage("NP refund"),
         "np_refund_short": MessageLookupByLibrary.simpleMessage("Refund"),
+        "np_se": MessageLookupByLibrary.simpleMessage("NP S.E."),
         "np_short": MessageLookupByLibrary.simpleMessage("NP"),
         "np_sp_damage_rate": MessageLookupByLibrary.simpleMessage("NP Special Damage Rate"),
         "obtain_time": MessageLookupByLibrary.simpleMessage("Time"),

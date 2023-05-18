@@ -461,6 +461,10 @@ class TdDamageOptions {
   int fixedRandom = 1000;
   int probabilityThreshold = 1000;
 
+  bool forceDamageNpSe;
+  int? damageNpIndivSumCount;
+  bool damageNpHpRatioMax;
+
   TdDamageOptions({
     QuestEnemy? enemy,
     List<int>? supports,
@@ -487,6 +491,9 @@ class TdDamageOptions {
     CustomSkillData? extraBuffs,
     this.fixedRandom = 1000,
     this.probabilityThreshold = 1000,
+    this.forceDamageNpSe = false,
+    this.damageNpIndivSumCount,
+    this.damageNpHpRatioMax = false,
   })  : enemy = enemy ?? QuestEnemy.blankEnemy(),
         supports = supports ?? [],
         extraBuffs = extraBuffs ?? CustomSkillData(buffOnly: true, hasTurnCount: false);

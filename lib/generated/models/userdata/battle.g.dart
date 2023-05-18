@@ -333,6 +333,9 @@ TdDamageOptions _$TdDamageOptionsFromJson(Map json) => $checkedCreate(
               'extraBuffs', (v) => v == null ? null : CustomSkillData.fromJson(Map<String, dynamic>.from(v as Map))),
           fixedRandom: $checkedConvert('fixedRandom', (v) => v as int? ?? 1000),
           probabilityThreshold: $checkedConvert('probabilityThreshold', (v) => v as int? ?? 1000),
+          forceDamageNpSe: $checkedConvert('forceDamageNpSe', (v) => v as bool? ?? false),
+          damageNpIndivSumCount: $checkedConvert('damageNpIndivSumCount', (v) => v as int?),
+          damageNpHpRatioMax: $checkedConvert('damageNpHpRatioMax', (v) => v as bool? ?? false),
         );
         return val;
       },
@@ -364,6 +367,9 @@ Map<String, dynamic> _$TdDamageOptionsToJson(TdDamageOptions instance) => <Strin
       'extraBuffs': instance.extraBuffs.toJson(),
       'fixedRandom': instance.fixedRandom,
       'probabilityThreshold': instance.probabilityThreshold,
+      'forceDamageNpSe': instance.forceDamageNpSe,
+      'damageNpIndivSumCount': instance.damageNpIndivSumCount,
+      'damageNpHpRatioMax': instance.damageNpHpRatioMax,
     };
 
 Value? _$JsonConverterFromJson<Json, Value>(

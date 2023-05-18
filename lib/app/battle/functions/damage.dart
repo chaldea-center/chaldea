@@ -34,62 +34,69 @@ class Damage {
     final CardType firstCardType,
   ) async {
     final damageFunction = battleData.curFunc;
-    final functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < battleData.options.probabilityThreshold) {
-      return;
-    }
-
+    final funcType = damageFunction?.funcType;
     final activator = battleData.activator!;
     final currentCard = battleData.currentCard!;
     final List<AttackResultDetail> targetResults = [];
 
-    final checkHpRatioHigh = damageFunction?.funcType == FuncType.damageNpHpratioHigh;
-    final checkHpRatioLow = damageFunction?.funcType == FuncType.damageNpHpratioLow;
+    final checkHpRatioHigh = funcType == FuncType.damageNpHpratioHigh;
+    final checkHpRatioLow = funcType == FuncType.damageNpHpratioLow;
     final checkHpRatio = checkHpRatioHigh || checkHpRatioLow;
     for (final target in targets) {
       battleData.setTarget(target);
 
       final classAdvantage = await getClassRelation(battleData, activator, target);
 
+      int? decideHp;
+      if (battleData.delegate?.hpRatio != null) {
+        decideHp = battleData.delegate!.hpRatio!(activator, battleData, damageFunction, dataVals);
+      }
+      decideHp ??= activator.hp;
       final hpRatioDamageLow = checkHpRatioLow && dataVals.Target != null
-          ? ((1 - activator.hp / activator.getMaxHp(battleData)) * dataVals.Target!).toInt()
+          ? ((1 - decideHp / activator.getMaxHp(battleData)) * dataVals.Target!).toInt()
           : 0;
 
       final hpRatioDamageHigh = checkHpRatioHigh && dataVals.Target != null
-          ? ((activator.hp / activator.getMaxHp(battleData)) * dataVals.Target!).toInt()
+          ? ((decideHp / activator.getMaxHp(battleData)) * dataVals.Target!).toInt()
           : 0;
 
       int specificAttackRate = 1000;
+
       if (!checkHpRatio && dataVals.Target != null) {
-        if (damageFunction?.funcType == FuncType.damageNpRare) {
+        if (funcType == FuncType.damageNpRare) {
           final countTarget = dataVals.Target! == 1 ? activator : target; // need more sample
           final targetRarities = dataVals.TargetRarityList!;
-          final useCorrection = targetRarities.contains(countTarget.rarity);
+          final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
+          final useCorrection = damageNpSEDecision?.useCorrection ?? targetRarities.contains(countTarget.rarity);
           if (useCorrection) {
             specificAttackRate = dataVals.Correction!;
           }
-        } else if (damageFunction?.funcType == FuncType.damageNpIndividualSum) {
+        } else if (funcType == FuncType.damageNpIndividualSum) {
           final countTarget = dataVals.Target! == 1 ? target : activator;
           final requiredTraits = dataVals.TargetList!.map((traitId) => NiceTrait(id: traitId)).toList();
+          final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
           int useCount = dataVals.IncludeIgnoreIndividuality == 1
               ? countTarget.countBuffWithTrait(requiredTraits)
               : countTarget.countTrait(battleData, requiredTraits);
+          final useCorrection = damageNpSEDecision?.useCorrection ?? useCount > 0;
+          useCount = damageNpSEDecision?.indivSumCount ?? useCount;
           if (dataVals.ParamAddMaxCount != null && dataVals.ParamAddMaxCount! > 0) {
             useCount = min(useCount, dataVals.ParamAddMaxCount!);
           }
-          if (useCount > 0) {
+          if (useCorrection) {
             specificAttackRate = dataVals.Value2! + useCount * dataVals.Correction!;
           }
-        } else if (damageFunction?.funcType == FuncType.damageNpIndividual ||
-            damageFunction?.funcType == FuncType.damageNpStateIndividualFix) {
-          final checkBuffTraits = damageFunction?.funcType == FuncType.damageNpStateIndividualFix;
-          final useCorrection = battleData.checkTraits(CheckTraitParameters(
-            requiredTraits: [NiceTrait(id: dataVals.Target!)],
-            actor: battleData.target,
-            checkActorTraits: !checkBuffTraits,
-            checkActorBuffTraits: checkBuffTraits,
-            ignoreIrremovableBuff: dataVals.IgnoreIndivUnreleaseable == 1,
-          ));
+        } else if (funcType == FuncType.damageNpIndividual || funcType == FuncType.damageNpStateIndividualFix) {
+          final checkBuffTraits = funcType == FuncType.damageNpStateIndividualFix;
+          final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
+          final useCorrection = damageNpSEDecision?.useCorrection ??
+              battleData.checkTraits(CheckTraitParameters(
+                requiredTraits: [NiceTrait(id: dataVals.Target!)],
+                actor: battleData.target,
+                checkActorTraits: !checkBuffTraits,
+                checkActorBuffTraits: checkBuffTraits,
+                ignoreIrremovableBuff: dataVals.IgnoreIndivUnreleaseable == 1,
+              ));
 
           if (useCorrection) {
             specificAttackRate = dataVals.Correction!;
