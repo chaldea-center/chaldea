@@ -1,7 +1,9 @@
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/userdata/local_settings.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../servant/filter.dart';
@@ -98,7 +100,7 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
     List<TdDmgResult> results = widget.solver.results.where(filter).toList();
     switch (_sortType) {
       case _SortType.damage:
-        results.sortByList((e) => [-e.totalDamage, -e.attackNp, -e.totalNp]);
+        results.sortByList((e) => [e.hasInstantDeathSuccess ? 0 : 1, -e.totalDamage, -e.attackNp, -e.totalNp]);
         break;
       case _SortType.attackNp:
         results.sortByList((e) => [-e.attackNp, -e.totalNp, -e.totalDamage]);
@@ -144,7 +146,11 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
           contentBuilder: (context) => _ResultDetail(
             key: Key('ResultDetail_${index}_${_sortType}_${result.svt.id}'),
             result: result,
-            tab: _sortType.isNp ? _ParamType.refund : _ParamType.damage,
+            tab: result.hasInstantDeathSuccess
+                ? _ParamType.instantDeath
+                : _sortType.isNp
+                    ? _ParamType.refund
+                    : _ParamType.damage,
           ),
         );
       },
@@ -158,6 +164,14 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
       npStr += ' → ${result.totalNp / 100}';
     }
     String prefix = (_sortType == _SortType.id ? result.svt.collectionNo : rank).toString().padRight(2);
+    List<Widget> cardIcons = [];
+    for (final record in result.attacks) {
+      if (record is BattleAttackRecord && record.card != null) {
+        cardIcons.add(CommandCardWidget(card: record.card!.cardType, width: 28));
+      } else if (record is BattleInstantDeathRecord) {
+        cardIcons.add(db.getIconImage(AssetURL.i.buffIcon(record.hasSuccess ? 337 : 532), width: 20, height: 20));
+      }
+    }
     return ListTile(
       dense: true,
       leading: Row(
@@ -180,7 +194,12 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
       ),
       horizontalTitleGap: 16,
       contentPadding: const EdgeInsetsDirectional.only(start: 16),
-      trailing: CommandCardWidget(card: result.attacks.first.card!.cardType, width: 28),
+      trailing: Wrap(
+        alignment: WrapAlignment.end,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 4,
+        children: cardIcons,
+      ),
     );
   }
 }
@@ -204,7 +223,9 @@ class _ResultDetailState extends State<_ResultDetail> {
     List<Widget> children = [
       FilterGroup<_ParamType>(
         combined: true,
-        options: _ParamType.values,
+        options: widget.result.hasInstantDeath
+            ? _ParamType.values
+            : (_ParamType.values.toList()..remove(_ParamType.instantDeath)),
         values: FilterRadioData.nonnull(tab),
         optionBuilder: (v) => Text(v.shownName),
         onFilterChanged: (v, _) {
@@ -216,32 +237,43 @@ class _ResultDetailState extends State<_ResultDetail> {
     ];
 
     for (final attack in widget.result.attacks) {
-      final target = attack.targets.first;
-      Widget paramsCard;
-
-      switch (tab) {
-        case _ParamType.damage:
-          paramsCard = DamageParamDialog(
-            target.damageParams,
-            target.result,
+      Widget? paramsCard;
+      if (attack is BattleAttackRecord) {
+        final target = attack.targets.first;
+        switch (tab) {
+          case _ParamType.damage:
+            paramsCard = DamageParamDialog(
+              target.damageParams,
+              target.result,
+              wrapDialog: false,
+            );
+            break;
+          case _ParamType.refund:
+            paramsCard = AttackerNpParamDialog(
+              target.attackNpParams,
+              target.result,
+              wrapDialog: false,
+            );
+            break;
+          case _ParamType.star:
+            paramsCard = StarParamDialog(
+              target.starParams,
+              target.result,
+              wrapDialog: false,
+            );
+            break;
+          case _ParamType.instantDeath:
+            break;
+        }
+      } else if (attack is BattleInstantDeathRecord) {
+        if (tab == _ParamType.instantDeath) {
+          paramsCard = InstantDeathParamDialog(
+            attack.targets.first.params,
             wrapDialog: false,
           );
-          break;
-        case _ParamType.refund:
-          paramsCard = AttackerNpParamDialog(
-            target.attackNpParams,
-            target.result,
-            wrapDialog: false,
-          );
-          break;
-        case _ParamType.star:
-          paramsCard = StarParamDialog(
-            target.starParams,
-            target.result,
-            wrapDialog: false,
-          );
-          break;
+        }
       }
+      if (paramsCard == null) continue;
       children.add(Card(
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Padding(
@@ -250,6 +282,15 @@ class _ResultDetailState extends State<_ResultDetail> {
         ),
       ));
     }
+    children.add(TextButton(
+      onPressed: () {
+        router.pushPage(Scaffold(
+          appBar: AppBar(title: Text(widget.result.svt.lName.l)),
+          body: SingleChildScrollView(child: BattleRecorderPanel(records: widget.result.originalRecords)),
+        ));
+      },
+      child: Text(S.current.details),
+    ));
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: children,
@@ -284,6 +325,7 @@ enum _ParamType {
   damage,
   refund,
   star,
+  instantDeath,
   ;
 
   String get shownName {
@@ -294,6 +336,8 @@ enum _ParamType {
         return S.current.np_refund_short;
       case _ParamType.star:
         return S.current.critical_star;
+      case _ParamType.instantDeath:
+        return S.current.instant_death;
     }
   }
 }

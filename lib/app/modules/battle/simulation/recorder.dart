@@ -20,8 +20,9 @@ import 'package:chaldea/widgets/widgets.dart';
 import 'svt_detail.dart';
 
 class BattleRecorderPanel extends StatefulWidget {
-  final BattleData battleData;
-  const BattleRecorderPanel({super.key, required this.battleData});
+  final BattleData? battleData;
+  final List<BattleRecord>? records;
+  const BattleRecorderPanel({super.key, this.battleData, this.records});
 
   @override
   State<BattleRecorderPanel> createState() => _BattleRecorderPanelState();
@@ -71,7 +72,7 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
                   }
                   EasyLoading.dismiss();
                   if (!mounted) return;
-                  final quest = widget.battleData.niceQuest;
+                  final quest = widget.battleData?.niceQuest;
                   final t = DateTime.now();
                   String fn =
                       [t.month, t.day, t.hour, t.minute, t.second].map((e) => e.toString().padLeft(2, '0')).join('_');
@@ -96,7 +97,7 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
           controller: controller,
           child: DecoratedBox(
             decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
-            child: BattleRecorderPanelBase(battleData: widget.battleData, complete: complete),
+            child: BattleRecorderPanelBase(battleData: widget.battleData, records: widget.records, complete: complete),
           ),
         ),
       ],
@@ -105,15 +106,17 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
 }
 
 class BattleRecorderPanelBase extends StatelessWidget {
-  final BattleData battleData;
+  final BattleData? battleData;
+  final List<BattleRecord>? records;
   final bool complete;
-  const BattleRecorderPanelBase({super.key, required this.battleData, required this.complete});
+  const BattleRecorderPanelBase({super.key, this.battleData, this.records, required this.complete});
 
   @override
   Widget build(BuildContext context) {
     List<Widget> cards = [];
     List<Widget> cardChildren = [];
-    for (final record in battleData.recorder.records) {
+    final records = this.records ?? battleData?.recorder.records ?? [];
+    for (final record in records) {
       if (record is BattleProgressWaveRecord) {
         if (cardChildren.isNotEmpty) {
           cards.add(createWave(context, cardChildren));
@@ -889,13 +892,15 @@ class _InstantDeathDetailWidget extends StatelessWidget with MultiTargetsWrapper
 
 class InstantDeathParamDialog extends StatelessWidget with _ParamDialogMixin {
   final InstantDeathParameters params;
-  const InstantDeathParamDialog(this.params, {super.key});
+  final bool wrapDialog;
+  const InstantDeathParamDialog(this.params, {super.key, this.wrapDialog = true});
 
   @override
   Widget build(BuildContext context) {
     return buildDialog(
       context: context,
       title: S.current.instant_death_params,
+      wrapDialog: wrapDialog,
       children: [
         oneParam('[${S.current.target}]${S.current.info_death_rate}',
             params.deathRate.format(percent: true, precision: 3, base: 10)),

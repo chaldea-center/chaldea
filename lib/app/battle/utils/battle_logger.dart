@@ -81,6 +81,7 @@ class BattleRecordManager {
   }
 
   final List<_BattleCardTempData> _cardHistory = [];
+
   void startPlayerCard(BattleServantData activator, CommandCardData card) {
     _cardHistory.add(_BattleCardTempData(activator, card));
   }
@@ -106,6 +107,8 @@ class BattleRecordManager {
   }
 
   void instantDeath(BattleInstantDeathRecord record) {
+    final card = _cardHistory.lastWhereOrNull((card) => card.actor.uniqueId == record.activator?.uniqueId);
+    record.card = card?.card;
     records.add(record);
   }
 }
@@ -123,12 +126,19 @@ class _BattleCardTempData {
 /// make sealed when dart 2.19 enabled
 abstract class BattleRecord {
   BattleRecord();
+
+  BattleRecord copy();
 }
 
 class BattleMessageRecord extends BattleRecord {
   final String message;
   final BattleServantData? target;
   BattleMessageRecord(this.message, this.target);
+
+  @override
+  BattleMessageRecord copy() {
+    return BattleMessageRecord(message, target?.copy());
+  }
 }
 
 class BattleSkipWaveRecord extends BattleRecord {
@@ -139,6 +149,11 @@ class BattleSkipWaveRecord extends BattleRecord {
   @override
   String toString() {
     return 'Skip Wave $wave';
+  }
+
+  @override
+  BattleSkipWaveRecord copy() {
+    return BattleSkipWaveRecord(wave);
   }
 }
 
@@ -151,6 +166,11 @@ class BattleProgressWaveRecord extends BattleRecord {
   String toString() {
     return 'Start Wave $wave';
   }
+
+  @override
+  BattleProgressWaveRecord copy() {
+    return BattleProgressWaveRecord(wave);
+  }
 }
 
 class BattleProgressTurnRecord extends BattleRecord {
@@ -161,6 +181,11 @@ class BattleProgressTurnRecord extends BattleRecord {
   @override
   String toString() {
     return 'Start Turn $turn';
+  }
+
+  @override
+  BattleProgressWaveRecord copy() {
+    return BattleProgressWaveRecord(turn);
   }
 }
 
@@ -188,6 +213,18 @@ class BattleSkillRecord extends BattleRecord {
   String toString() {
     return '${type.name}: ${activator?.lBattleName} Skill: ${skill.lName}';
   }
+
+  @override
+  BattleSkillRecord copy() {
+    return BattleSkillRecord(
+      activator: activator,
+      targetPlayerSvt: targetPlayerSvt,
+      targetEnemySvt: targetEnemySvt,
+      skill: skill,
+      type: type,
+      fromPlayer: fromPlayer,
+    );
+  }
 }
 
 class BattleOrderChangeRecord extends BattleRecord {
@@ -202,6 +239,11 @@ class BattleOrderChangeRecord extends BattleRecord {
   @override
   String toString() {
     return 'Order Change: ${onField.lBattleName} ↔ ${backup.lBattleName}';
+  }
+
+  @override
+  BattleOrderChangeRecord copy() {
+    return BattleOrderChangeRecord(onField: onField, backup: backup);
   }
 }
 
@@ -229,6 +271,19 @@ class BattleAttackRecord extends BattleRecord {
     return '${attacker.lBattleName} Play ${card?.cardType.name.toTitle()} Card.'
         ' damage=$damage, NP=$attackNp, defNp=$defenseNp, star=$star';
   }
+
+  @override
+  BattleAttackRecord copy() {
+    return BattleAttackRecord(
+      activator: attacker,
+      card: card,
+      targets: targets.map((e) => e.copy()).toList(),
+      damage: damage,
+      attackNp: attackNp,
+      defenseNp: defenseNp,
+      star: star,
+    );
+  }
 }
 
 class AttackResultDetail {
@@ -252,22 +307,56 @@ class AttackResultDetail {
         defenseNpParams = defenseNpParams.copy(),
         starParams = starParams.copy(),
         result = result.copy();
+
+  AttackResultDetail copy() {
+    return AttackResultDetail(
+      target: target,
+      damageParams: damageParams,
+      attackNpParams: attackNpParams,
+      defenseNpParams: defenseNpParams,
+      starParams: starParams,
+      result: result,
+    );
+  }
 }
 
-class BattleLossHpRecord extends BattleRecord {}
+class BattleLossHpRecord extends BattleRecord {
+  @override
+  BattleRecord copy() => this;
+}
 
-class BattleReduceHpRecord extends BattleRecord {}
+class BattleReduceHpRecord extends BattleRecord {
+  @override
+  BattleRecord copy() => this;
+}
 
 class BattleInstantDeathRecord extends BattleRecord {
   final bool forceInstantDeath;
   final BattleServantData? activator;
+  CommandCardData? card;
   final List<InstantDeathResultDetail> targets;
 
   BattleInstantDeathRecord({
     required this.forceInstantDeath,
     required BattleServantData? activator,
+    CommandCardData? card,
     required this.targets,
-  }) : activator = activator?.copy();
+  })  : activator = activator?.copy(),
+        card = card?.copy();
+
+  @override
+  BattleInstantDeathRecord copy() {
+    return BattleInstantDeathRecord(
+      forceInstantDeath: forceInstantDeath,
+      activator: activator?.copy(),
+      card: card,
+      targets: targets.map((e) => e.copy()).toList(),
+    );
+  }
+
+  bool get hasSuccess {
+    return targets.any((e) => e.params.success);
+  }
 }
 
 class InstantDeathResultDetail {
@@ -276,6 +365,11 @@ class InstantDeathResultDetail {
 
   InstantDeathResultDetail({
     required BattleServantData target,
-    required this.params,
-  }) : target = target.copy();
+    required InstantDeathParameters params,
+  })  : target = target.copy(),
+        params = params.copy();
+
+  InstantDeathResultDetail copy() {
+    return InstantDeathResultDetail(target: target, params: params.copy());
+  }
 }

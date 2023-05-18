@@ -166,12 +166,21 @@ class TdDmgResult {
   final PlayerSvtData originalSvtData;
   final Servant svt;
   BattleServantData? actor;
-  List<BattleAttackRecord> attacks = [];
+  List<BattleRecord> attacks = [];
+  List<BattleRecord> originalRecords = [];
   int totalDamage = 0;
   int attackNp = 0;
   int totalNp = 0;
 
   TdDmgResult(this.originalSvtData) : svt = originalSvtData.svt!;
+
+  bool get hasInstantDeath {
+    return attacks.whereType<BattleInstantDeathRecord>().isNotEmpty;
+  }
+
+  bool get hasInstantDeathSuccess {
+    return attacks.whereType<BattleInstantDeathRecord>().any((e) => e.hasSuccess);
+  }
 }
 
 class TdDmgSolver {
@@ -305,7 +314,7 @@ class TdDmgSolver {
     // final enemy = enemies.first;
     final actor = battleData.onFieldAllyServants[0]!;
     battleData.criticalStars = BattleData.kValidStarMax.toDouble();
-    actor.np = 100 * 100;
+    actor.np = ConstData.constants.fullTdPoint;
     if (options.enableActiveSkills) {
       await battleData.activateSvtSkill(0, 0);
       await battleData.activateSvtSkill(0, 1);
@@ -313,14 +322,13 @@ class TdDmgSolver {
     }
     for (final svt in options.supports) {
       final sdata = PlayerSvtData.svt(svt);
-      // ignore: unused_local_variable
       BattleServantData support = BattleServantData.fromPlayerSvtData(sdata, battleData.getNextUniqueId());
       battleData.onFieldAllyServants[1] = support;
       // await support.enterField(battle);
       await battleData.activateSvtSkill(1, 0);
       await battleData.activateSvtSkill(1, 1);
       await battleData.activateSvtSkill(1, 2);
-      // battleData.onFieldAllyServants[1] = null;
+      battleData.onFieldAllyServants[1] = null;
     }
     if (options.twiceActiveSkill && options.enableActiveSkills) {
       for (int index = 0; index < actor.skillInfoList.length; index++) {
@@ -345,17 +353,28 @@ class TdDmgSolver {
 
     data.actor = actor;
 
-    for (final record in battleData.recorder.records.whereType<BattleAttackRecord>()) {
-      if (record.attacker.uniqueId != actor.uniqueId || record.card == null) continue;
-      record.targets.removeWhere((target) => enemies.every((e) => e.uniqueId != target.target.uniqueId));
-      if (record.targets.isNotEmpty) {
-        data.attacks.add(record);
-        for (final target in record.targets) {
-          data.attackNp += Maths.sum(target.result.npGains);
-          data.totalDamage += Maths.sum(target.result.damages);
+    for (final record in battleData.recorder.records) {
+      if (record is BattleAttackRecord) {
+        if (record.attacker.uniqueId != actor.uniqueId || record.card == null) continue;
+        final recordCopy = record.copy();
+        recordCopy.targets.removeWhere((target) => enemies.every((e) => e.uniqueId != target.target.uniqueId));
+        if (recordCopy.targets.isNotEmpty) {
+          data.attacks.add(recordCopy);
+          for (final target in recordCopy.targets) {
+            data.attackNp += Maths.sum(target.result.npGains);
+            data.totalDamage += Maths.sum(target.result.damages);
+          }
+        }
+      } else if (record is BattleInstantDeathRecord) {
+        if (record.activator?.uniqueId != actor.uniqueId) continue;
+        final recordCopy = record.copy();
+        recordCopy.targets.removeWhere((target) => enemies.every((e) => e.uniqueId != target.target.uniqueId));
+        if (recordCopy.targets.isNotEmpty) {
+          data.attacks.add(recordCopy);
         }
       }
     }
+    data.originalRecords = battleData.recorder.records.toList();
     data.totalNp = actor.np;
 
     if (data.attacks.isEmpty) return null;
