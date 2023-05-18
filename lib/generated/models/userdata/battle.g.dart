@@ -25,6 +25,8 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
                   ?.map((e) => BattleTeamFormation.fromJson(Map<String, dynamic>.from(e as Map)))
                   .toList()),
           curFormationIndex: $checkedConvert('curFormationIndex', (v) => v as int? ?? 0),
+          tdDmgOptions: $checkedConvert(
+              'tdDmgOptions', (v) => v == null ? null : TdDamageOptions.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         return val;
       },
@@ -39,6 +41,7 @@ Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <Str
       'defaultLvs': instance.defaultLvs.toJson(),
       'formations': instance.formations.map((e) => e.toJson()).toList(),
       'curFormationIndex': instance.curFormationIndex,
+      'tdDmgOptions': instance.tdDmgOptions.toJson(),
     };
 
 const _$PreferPlayerSvtDataSourceEnumMap = {
@@ -292,4 +295,86 @@ const _$FuncTargetTypeEnumMap = {
   FuncTargetType.enemyOneNoTargetNoAction: 'enemyOneNoTargetNoAction',
   FuncTargetType.ptOneHpLowestValue: 'ptOneHpLowestValue',
   FuncTargetType.ptOneHpLowestRate: 'ptOneHpLowestRate',
+};
+
+TdDamageOptions _$TdDamageOptionsFromJson(Map json) => $checkedCreate(
+      'TdDamageOptions',
+      json,
+      ($checkedConvert) {
+        final val = TdDamageOptions(
+          enemy: $checkedConvert(
+              'enemy',
+              (v) =>
+                  _$JsonConverterFromJson<Map<dynamic, dynamic>, QuestEnemy>(v, const _QuestEnemyConverter().fromJson)),
+          supports: $checkedConvert('supports', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          enemyCount: $checkedConvert('enemyCount', (v) => v as int? ?? 1),
+          usePlayerSvt: $checkedConvert('usePlayerSvt',
+              (v) => $enumDecodeNullable(_$PreferPlayerSvtDataSourceEnumMap, v) ?? PreferPlayerSvtDataSource.none),
+          addDebuffImmune: $checkedConvert('addDebuffImmune', (v) => v as bool? ?? true),
+          addDebuffImmuneEnemy: $checkedConvert('addDebuffImmuneEnemy', (v) => v as bool? ?? false),
+          upResistSubState: $checkedConvert('upResistSubState', (v) => v as bool? ?? true),
+          enableActiveSkills: $checkedConvert('enableActiveSkills', (v) => v as bool? ?? true),
+          twiceActiveSkill: $checkedConvert('twiceActiveSkill', (v) => v as bool? ?? false),
+          enableAppendSkills: $checkedConvert('enableAppendSkills', (v) => v as bool? ?? false),
+          svtLv: $checkedConvert('svtLv', (v) => $enumDecodeNullable(_$SvtLvEnumMap, v) ?? SvtLv.maxLv),
+          tdR3: $checkedConvert('tdR3', (v) => v as int? ?? 5),
+          tdR4: $checkedConvert('tdR4', (v) => v as int? ?? 2),
+          tdR5: $checkedConvert('tdR5', (v) => v as int? ?? 1),
+          oc: $checkedConvert('oc', (v) => v as int? ?? 1),
+          fixedOC: $checkedConvert('fixedOC', (v) => v as bool? ?? true),
+          region:
+              $checkedConvert('region', (v) => v == null ? Region.jp : const RegionConverter().fromJson(v as String)),
+          ceId: $checkedConvert('ceId', (v) => v as int?),
+          ceLv: $checkedConvert('ceLv', (v) => v as int? ?? 0),
+          ceMLB: $checkedConvert('ceMLB', (v) => v as bool? ?? true),
+          mcId: $checkedConvert('mcId', (v) => v as int?),
+          mcLv: $checkedConvert('mcLv', (v) => v as int? ?? 10),
+          extraBuffs: $checkedConvert(
+              'extraBuffs', (v) => v == null ? null : CustomSkillData.fromJson(Map<String, dynamic>.from(v as Map))),
+          fixedRandom: $checkedConvert('fixedRandom', (v) => v as int? ?? 1000),
+          probabilityThreshold: $checkedConvert('probabilityThreshold', (v) => v as int? ?? 1000),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$TdDamageOptionsToJson(TdDamageOptions instance) => <String, dynamic>{
+      'enemy': const _QuestEnemyConverter().toJson(instance.enemy),
+      'supports': instance.supports,
+      'enemyCount': instance.enemyCount,
+      'usePlayerSvt': _$PreferPlayerSvtDataSourceEnumMap[instance.usePlayerSvt]!,
+      'addDebuffImmune': instance.addDebuffImmune,
+      'addDebuffImmuneEnemy': instance.addDebuffImmuneEnemy,
+      'upResistSubState': instance.upResistSubState,
+      'enableActiveSkills': instance.enableActiveSkills,
+      'twiceActiveSkill': instance.twiceActiveSkill,
+      'enableAppendSkills': instance.enableAppendSkills,
+      'svtLv': _$SvtLvEnumMap[instance.svtLv]!,
+      'tdR3': instance.tdR3,
+      'tdR4': instance.tdR4,
+      'tdR5': instance.tdR5,
+      'oc': instance.oc,
+      'fixedOC': instance.fixedOC,
+      'region': const RegionConverter().toJson(instance.region),
+      'ceId': instance.ceId,
+      'ceLv': instance.ceLv,
+      'ceMLB': instance.ceMLB,
+      'mcId': instance.mcId,
+      'mcLv': instance.mcLv,
+      'extraBuffs': instance.extraBuffs.toJson(),
+      'fixedRandom': instance.fixedRandom,
+      'probabilityThreshold': instance.probabilityThreshold,
+    };
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) =>
+    json == null ? null : fromJson(json as Json);
+
+const _$SvtLvEnumMap = {
+  SvtLv.maxLv: 'maxLv',
+  SvtLv.lv90: 'lv90',
+  SvtLv.lv100: 'lv100',
+  SvtLv.lv120: 'lv120',
 };

@@ -2,8 +2,10 @@ import 'package:chaldea/generated/l10n.dart';
 import '../../utils/atlas.dart';
 import '../../utils/extension.dart';
 import '../db.dart';
+import '../gamedata/common.dart';
 import '../gamedata/const_data.dart';
 import '../gamedata/mappings.dart';
+import '../gamedata/quest.dart';
 import '../gamedata/skill.dart';
 import '_helper.dart';
 
@@ -23,6 +25,8 @@ class BattleSimSetting {
   List<BattleTeamFormation> formations;
   int curFormationIndex;
 
+  TdDamageOptions tdDmgOptions;
+
   BattleSimSetting({
     this.playerDataSource = PreferPlayerSvtDataSource.none,
     Set<int>? pingedCEs,
@@ -32,10 +36,12 @@ class BattleSimSetting {
     PlayerSvtDefaultData? defaultLvs,
     List<BattleTeamFormation>? formations,
     this.curFormationIndex = 0,
+    TdDamageOptions? tdDmgOptions,
   })  : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
         pingedSvts = pingedSvts ?? {37, 62, 150, 215, 241, 284, 314, 316, 353, 357},
         defaultLvs = defaultLvs ?? PlayerSvtDefaultData(),
-        formations = formations ?? [] {
+        formations = formations ?? [],
+        tdDmgOptions = tdDmgOptions ?? TdDamageOptions() {
     validate();
   }
 
@@ -418,6 +424,122 @@ class CustomFuncData {
         upDropNp,
         upCriticalpoint,
       ];
+}
+
+@JsonSerializable(converters: [_QuestEnemyConverter(), RegionConverter()])
+class TdDamageOptions {
+  QuestEnemy enemy;
+  List<int> supports = [];
+
+  // only use some fields
+  // DamageParameters params = DamageParameters();
+  int enemyCount = 1;
+  PreferPlayerSvtDataSource usePlayerSvt = PreferPlayerSvtDataSource.none;
+  bool addDebuffImmune = true;
+  bool addDebuffImmuneEnemy = false;
+  bool upResistSubState = true; // 5000
+  bool enableActiveSkills = true;
+  bool twiceActiveSkill = false;
+  bool enableAppendSkills = false;
+  // bool includeRefundAfterTd = true; // 重蓄力
+  SvtLv svtLv = SvtLv.maxLv;
+  int tdR3 = 5;
+  int tdR4 = 2;
+  int tdR5 = 1;
+  int oc = 1;
+  bool fixedOC = true;
+  Region region = Region.jp;
+  // CE & MC
+  int? ceId;
+  int ceLv = 0;
+  bool ceMLB = true;
+  int? mcId;
+  int mcLv = 10;
+
+  CustomSkillData extraBuffs;
+  int fixedRandom = 1000;
+  int probabilityThreshold = 1000;
+
+  TdDamageOptions({
+    QuestEnemy? enemy,
+    List<int>? supports,
+    this.enemyCount = 1,
+    this.usePlayerSvt = PreferPlayerSvtDataSource.none,
+    this.addDebuffImmune = true,
+    this.addDebuffImmuneEnemy = false,
+    this.upResistSubState = true,
+    this.enableActiveSkills = true,
+    this.twiceActiveSkill = false,
+    this.enableAppendSkills = false,
+    this.svtLv = SvtLv.maxLv,
+    this.tdR3 = 5,
+    this.tdR4 = 2,
+    this.tdR5 = 1,
+    this.oc = 1,
+    this.fixedOC = true,
+    this.region = Region.jp,
+    this.ceId,
+    this.ceLv = 0,
+    this.ceMLB = true,
+    this.mcId,
+    this.mcLv = 10,
+    CustomSkillData? extraBuffs,
+    this.fixedRandom = 1000,
+    this.probabilityThreshold = 1000,
+  })  : enemy = enemy ?? QuestEnemy.blankEnemy(),
+        supports = supports ?? [],
+        extraBuffs = extraBuffs ?? CustomSkillData(buffOnly: true, hasTurnCount: false);
+
+  void initBuffs() {
+    final buffMap = {
+      for (final e in extraBuffs.effects) e.buffId: e,
+    };
+    List<CustomFuncData> effects = [];
+    for (final effect in CustomFuncData.tdDmgTypes) {
+      final prevData = buffMap[effect.buffId];
+      if (prevData == null) {
+        effects.add(effect);
+      } else {
+        prevData
+          ..funcId = effect.funcId
+          ..buffId = effect.buffId
+          ..useValue = effect.useValue
+          ..target = FuncTargetType.self;
+        effects.add(prevData);
+      }
+    }
+    extraBuffs
+      ..skillType = SkillType.passive
+      ..hasTurnCount = false
+      ..buffOnly = true
+      ..effects = effects;
+  }
+
+  static const List<int> optionalSupports = [37, 62, 150, 215, 241, 284, 314, 316, 353, 357];
+
+  factory TdDamageOptions.fromJson(Map<String, dynamic> json) => _$TdDamageOptionsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TdDamageOptionsToJson(this);
+}
+
+class _QuestEnemyConverter extends JsonConverter<QuestEnemy, Map> {
+  const _QuestEnemyConverter();
+  @override
+  QuestEnemy fromJson(Map json) => QuestEnemy.fromJson(Map.from(json));
+
+  @override
+  Map toJson(QuestEnemy enemy) => enemy.toJson();
+}
+
+enum SvtLv {
+  maxLv(null), // Mash's at 70 by default
+  lv90(90),
+  lv100(100),
+  lv120(120),
+  ;
+
+  const SvtLv(this.lv);
+  final int? lv;
 }
 
 enum PreferPlayerSvtDataSource {

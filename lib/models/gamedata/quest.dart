@@ -1040,7 +1040,31 @@ class QuestEnemy with GameCardMixin {
         enemyScript = (enemyScript ?? EnemyScript())..originalScript = originalEnemyScript ?? {},
         limit = limit ?? EnemyLimit();
 
-  factory QuestEnemy.fromJson(Map<String, dynamic> json) => _$QuestEnemyFromJson(json);
+  static QuestEnemy blankEnemy() {
+    return QuestEnemy(
+      deckId: 1,
+      name: 'BlankEnemy',
+      svt: BasicServant(
+        id: 988888888,
+        collectionNo: 0,
+        name: 'BlankEnemy',
+        type: SvtType.normal,
+        flag: SvtFlag.normal,
+        classId: SvtClass.ALL.id,
+        attribute: Attribute.void_,
+        rarity: 3,
+        atkMax: 1000,
+        hpMax: 10000,
+        face: Atlas.common.unknownEnemyIcon,
+      ),
+      lv: 1,
+      atk: 1000,
+      hp: 10000000,
+      deathRate: 0,
+      criticalRate: 0,
+      serverMod: EnemyServerMod(),
+    );
+  }
 
   String get lShownName {
     if (name.isEmpty || name == 'NONE') {
@@ -1083,6 +1107,8 @@ class QuestEnemy with GameCardMixin {
       popDetails: popDetails,
     );
   }
+
+  factory QuestEnemy.fromJson(Map<String, dynamic> json) => _$QuestEnemyFromJson(json);
 
   Map<String, dynamic> toJson() => _$QuestEnemyToJson(this);
 }

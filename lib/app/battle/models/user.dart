@@ -44,7 +44,7 @@ class PlayerSvtData {
     td = svt!.groupedNoblePhantasms[1]?.first;
   }
 
-  PlayerSvtData.svt(this.svt) {
+  PlayerSvtData.svt(Servant this.svt) {
     skills = kActiveSkillNums.map((e) => svt!.groupedActiveSkills[e]?.first).toList();
     td = svt!.groupedNoblePhantasms[1]?.first;
   }

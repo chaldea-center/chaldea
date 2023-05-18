@@ -14,14 +14,15 @@ import 'trait_edit.dart';
 class QuestEnemyEditPage extends StatefulWidget {
   final bool simple;
   final QuestEnemy enemy;
-  const QuestEnemyEditPage({super.key, required this.enemy, this.simple = false});
+  final QuestEnemy Function(QuestEnemy enemy)? onReset;
+  const QuestEnemyEditPage({super.key, required this.enemy, this.simple = false, this.onReset});
 
   @override
   State<QuestEnemyEditPage> createState() => _QuestEnemyEditPageState();
 }
 
 class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
-  late final enemy = widget.enemy;
+  late QuestEnemy enemy = widget.enemy;
 
   late Servant? niceSvt = db.gameData.servantsById[enemy.svt.id];
 
@@ -30,6 +31,18 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('[${S.current.edit}] ${S.current.enemy}'),
+        actions: [
+          if (widget.onReset != null)
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  enemy = widget.onReset!(enemy);
+                });
+              },
+              icon: const Icon(Icons.restore),
+              tooltip: S.current.reset,
+            ),
+        ],
       ),
       body: buildContent(context),
     );

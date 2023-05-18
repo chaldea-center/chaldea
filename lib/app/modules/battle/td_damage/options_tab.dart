@@ -80,7 +80,14 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           ' ${S.current.defense_np_rate} ${enemy.serverMod.tdRate.format(percent: true, base: 10)}'),
       trailing: const Icon(Icons.edit),
       onTap: () async {
-        await router.pushPage(QuestEnemyEditPage(enemy: enemy));
+        await router.pushPage(QuestEnemyEditPage(
+          enemy: enemy,
+          onReset: (_) {
+            options.enemy = QuestEnemy.blankEnemy();
+            if (mounted) setState(() {});
+            return options.enemy;
+          },
+        ));
         if (mounted) setState(() {});
       },
     ));
@@ -99,7 +106,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
               title: Text(S.current.paste),
               content: Text("${enemy2.lShownName}(${enemy2.svt.lName.l})\n${Transl.svtClassId(enemy2.svt.classId).l}"),
               onTapOk: () {
-                options.enemy = TdDamageOptions.copyEnemy(enemy2);
+                options.enemy = TdDmgSolver.copyEnemy(enemy2);
                 if (mounted) setState(() {});
               },
             ).showDialog(context);
@@ -144,15 +151,18 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         spacing: 2,
         children: [
           if (options.supports.isEmpty) const Text('None'),
-          for (int index = 0; index < options.supports.length; index++)
-            GestureDetector(
+          ...List.generate(options.supports.length, (index) {
+            final svtId = options.supports[index];
+            final svt = db.gameData.servantsById[svtId];
+            return GestureDetector(
               onLongPress: () {
                 setState(() {
                   options.supports.removeAt(index);
                 });
               },
-              child: options.supports[index].iconBuilder(context: context, width: 48),
-            )
+              child: svt?.iconBuilder(context: context, width: 48) ?? Text("ID $svtId"),
+            );
+          })
         ],
       ),
     ));
@@ -180,7 +190,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
                   width: 56,
                   padding: const EdgeInsets.all(2),
                   onTap: () {
-                    options.supports.add(svt);
+                    options.supports.add(svt.id);
                     Navigator.pop(context);
                     if (mounted) setState(() {});
                   },
@@ -199,7 +209,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
                 router.pushPage(ServantListPage(
                   pinged: db.settings.battleSim.pingedSvts.toList(),
                   onSelected: (svt) {
-                    options.supports.add(svt);
+                    options.supports.add(svt.id);
                     if (mounted) setState(() {});
                   },
                 ));

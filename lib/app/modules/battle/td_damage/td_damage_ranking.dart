@@ -1,6 +1,7 @@
 import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/userdata/local_settings.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../servant/filter.dart';
 import 'model.dart';
@@ -77,6 +78,7 @@ class _TdDamageRankingState extends State<TdDamageRanking> with SingleTickerProv
           appBar: AppBar(
             title: Text(S.current.np_damage),
             actions: [
+              ChaldeaUrl.docsHelpBtn('np_dmg_ranking', dir: 'laplace/'),
               IconButton(
                 icon: const Icon(Icons.filter_alt),
                 tooltip: S.current.filter,
