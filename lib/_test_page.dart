@@ -10,15 +10,11 @@ import 'package:file_picker/file_picker.dart';
 
 import 'package:chaldea/utils/utils.dart';
 import 'models/models.dart';
+import 'packages/app_info.dart';
 
 void testFunction([BuildContext? context]) async {
   assert(context == null || context.mounted);
-  if (kReleaseMode) return;
-  for (final event in db.gameData.events.values) {
-    if (event.pointBuffs.isNotEmpty) {
-      print([event.id, event.pointBuffs.length, event.pointGroups.length, event.lName.l.setMaxLines(1)]);
-    }
-  }
+  if (kReleaseMode && !AppInfo.isDebugDevice) return;
 }
 
 void loadSvtIconRemap() async {
