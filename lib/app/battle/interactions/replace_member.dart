@@ -36,7 +36,7 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
         battleData.nonnullAllies.where((svt) => svt.canOrderChange(battleData)).toList();
     children.addAll([
       SHeader(
-        S.current.battle_select_battle_servants,
+        S.current.team_starting_member,
         padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
       ),
       Wrap(
@@ -70,7 +70,7 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
         battleData.nonnullBackupAllies.where((svt) => svt.canOrderChange(battleData)).toList();
     children.addAll([
       SHeader(
-        S.current.battle_select_backup_servants,
+        S.current.team_backup_member,
         padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
       ),
       Wrap(
@@ -119,9 +119,8 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
 
             final result = Tuple2(onFieldSelection!, backupSelection!);
 
-            battleData.battleLogger
-                .action('${S.current.battle_select_battle_servants}: ${onFieldSelection!.lBattleName} - '
-                    '${S.current.battle_select_backup_servants}: ${backupSelection!.lBattleName}');
+            battleData.battleLogger.action('${S.current.team_starting_member}: ${onFieldSelection!.lBattleName} - '
+                '${S.current.team_backup_member}: ${backupSelection!.lBattleName}');
             Navigator.of(context).pop(result);
           },
           child: Text(S.current.confirm),

@@ -184,8 +184,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_require_opponent_traits": MessageLookupByLibrary.simpleMessage("Required opponent traits"),
         "battle_require_self_traits": MessageLookupByLibrary.simpleMessage("Required self traits"),
         "battle_select_activator": MessageLookupByLibrary.simpleMessage("Select Activator"),
-        "battle_select_backup_servants": MessageLookupByLibrary.simpleMessage("Select Backup Servants"),
-        "battle_select_battle_servants": MessageLookupByLibrary.simpleMessage("Select Battle Servants"),
         "battle_select_card": MessageLookupByLibrary.simpleMessage("Select Card"),
         "battle_select_critical_card_hint": MessageLookupByLibrary.simpleMessage(
             "Repeatedly click Cammand Card and will be Critical Attack when in red"),
@@ -971,6 +969,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "td_cardnp_hint": m29,
         "td_rankup": MessageLookupByLibrary.simpleMessage("NP Upgrade"),
         "team": MessageLookupByLibrary.simpleMessage("Team"),
+        "team_backup_member": MessageLookupByLibrary.simpleMessage("Backup"),
+        "team_starting_member": MessageLookupByLibrary.simpleMessage("Frontline"),
         "test_info_pad": MessageLookupByLibrary.simpleMessage("Test Info Pad"),
         "testing": MessageLookupByLibrary.simpleMessage("Testing"),
         "time": MessageLookupByLibrary.simpleMessage("Time"),

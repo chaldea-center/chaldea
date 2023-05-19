@@ -25,8 +25,9 @@ class ServantSelector extends StatelessWidget {
   final Region playerRegion;
   final QuestPhase? questPhase;
   final VoidCallback onChange;
-  final DragTargetAccept<PlayerSvtData> onDragSvt;
-  final DragTargetAccept<PlayerSvtData> onDragCE;
+  final DragTargetAccept<PlayerSvtData>? onDragSvt;
+  final DragTargetAccept<PlayerSvtData>? onDragCE;
+  final bool enableEdit;
 
   ServantSelector({
     super.key,
@@ -34,8 +35,9 @@ class ServantSelector extends StatelessWidget {
     required this.playerRegion,
     required this.questPhase,
     required this.onChange,
-    required this.onDragSvt,
-    required this.onDragCE,
+    this.onDragSvt,
+    this.onDragCE,
+    this.enableEdit = true,
   });
 
   @override
@@ -82,7 +84,7 @@ class ServantSelector extends StatelessWidget {
     svtIcon = InkWell(
       onTap: () async {
         await router.pushPage(ServantOptionEditPage(
-          playerSvtData: playerSvtData,
+          playerSvtData: enableEdit ? playerSvtData : playerSvtData.copy(),
           questPhase: questPhase,
           playerRegion: playerRegion,
           onChange: onChange,
@@ -91,20 +93,21 @@ class ServantSelector extends StatelessWidget {
       },
       child: svtIcon,
     );
-
-    final svtDraggable = Draggable<_DragSvtData>(
-      feedback: svtIcon,
-      data: _DragSvtData(playerSvtData),
-      child: svtIcon,
-    );
-    svtIcon = DragTarget<_DragSvtData>(
-      builder: (context, candidateData, rejectedData) {
-        return svtDraggable;
-      },
-      onAccept: (data) {
-        onDragSvt(data.svt);
-      },
-    );
+    if (enableEdit && onDragSvt != null) {
+      final svtDraggable = Draggable<_DragSvtData>(
+        feedback: svtIcon,
+        data: _DragSvtData(playerSvtData),
+        child: svtIcon,
+      );
+      svtIcon = DragTarget<_DragSvtData>(
+        builder: (context, candidateData, rejectedData) {
+          return svtDraggable;
+        },
+        onAccept: (data) {
+          onDragSvt?.call(data.svt);
+        },
+      );
+    }
 
     children.add(svtIcon);
 
@@ -148,10 +151,11 @@ class ServantSelector extends StatelessWidget {
         ],
       );
     }
+
     ceIcon = InkWell(
       onTap: () async {
         await router.pushPage(CraftEssenceOptionEditPage(
-          playerSvtData: playerSvtData,
+          playerSvtData: enableEdit ? playerSvtData : playerSvtData.copy(),
           questPhase: questPhase,
           onChange: onChange,
         ));
@@ -159,20 +163,21 @@ class ServantSelector extends StatelessWidget {
       },
       child: ceIcon,
     );
-
-    final ceDraggable = Draggable<_DragCEData>(
-      feedback: ceIcon,
-      data: _DragCEData(playerSvtData),
-      child: ceIcon,
-    );
-    ceIcon = DragTarget<_DragCEData>(
-      builder: (context, candidateData, rejectedData) {
-        return ceDraggable;
-      },
-      onAccept: (data) {
-        onDragCE(data.svt);
-      },
-    );
+    if (enableEdit && onDragCE != null) {
+      final ceDraggable = Draggable<_DragCEData>(
+        feedback: ceIcon,
+        data: _DragCEData(playerSvtData),
+        child: ceIcon,
+      );
+      ceIcon = DragTarget<_DragCEData>(
+        builder: (context, candidateData, rejectedData) {
+          return ceDraggable;
+        },
+        onAccept: (data) {
+          onDragCE?.call(data.svt);
+        },
+      );
+    }
 
     children.add(Center(child: ceIcon));
 

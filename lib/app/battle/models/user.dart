@@ -256,6 +256,12 @@ class MysticCodeData {
     mysticCode = db.gameData.mysticCodes[storedData.mysticCodeId];
     level = storedData.level;
   }
+
+  MysticCodeData copy() {
+    return MysticCodeData()
+      ..mysticCode = mysticCode
+      ..level = level;
+  }
 }
 
 // won't change in entire battle
@@ -290,22 +296,23 @@ class BattleOptionsRuntime extends BattleOptionsEnv {
 }
 
 // only used before simulation started and initiation
-mixin BattleOptionsInit {
-  final List<PlayerSvtData> onFieldSvtDataList = [
-    PlayerSvtData.base(),
-    PlayerSvtData.base(),
-    PlayerSvtData.base(),
-  ];
-  final List<PlayerSvtData> backupSvtDataList = [
-    PlayerSvtData.base(),
-    PlayerSvtData.base(),
-    PlayerSvtData.base(),
-  ];
+class BattleTeamSetup {
+  final List<PlayerSvtData> onFieldSvtDataList;
+  final List<PlayerSvtData> backupSvtDataList;
+
+  final MysticCodeData mysticCodeData;
+  Region playerRegion;
+
+  BattleTeamSetup({
+    List<PlayerSvtData?>? onFieldSvtDataList,
+    List<PlayerSvtData?>? backupSvtDataList,
+    MysticCodeData? mysticCodeData,
+    this.playerRegion = Region.jp,
+  })  : onFieldSvtDataList = List.generate(3, (index) => onFieldSvtDataList?.getOrNull(index) ?? PlayerSvtData.base()),
+        backupSvtDataList = List.generate(3, (index) => backupSvtDataList?.getOrNull(index) ?? PlayerSvtData.base()),
+        mysticCodeData = mysticCodeData ?? MysticCodeData();
+
   List<PlayerSvtData> get allSvts => [...onFieldSvtDataList, ...backupSvtDataList];
-
-  final MysticCodeData mysticCodeData = MysticCodeData();
-  late Region playerRegion = db.curUser.region;
-
   // db.settings.battleSim.autoAdd7KnightsTrait
   bool get isDracoInTeam {
     for (final svt in allSvts) {
@@ -315,8 +322,29 @@ mixin BattleOptionsInit {
     }
     return false;
   }
+
+  BattleTeamSetup copy() {
+    return BattleTeamSetup(
+      onFieldSvtDataList: onFieldSvtDataList.map((e) => e.copy()).toList(),
+      backupSvtDataList: backupSvtDataList.map((e) => e.copy()).toList(),
+      mysticCodeData: mysticCodeData.copy(),
+      playerRegion: playerRegion,
+    );
+  }
 }
 
-class BattleOptions extends BattleOptionsRuntime with BattleOptionsInit {
-  // won't support copy
+class BattleOptions extends BattleOptionsRuntime {
+  BattleTeamSetup team = BattleTeamSetup();
+
+  @override
+  BattleOptions copy() {
+    return BattleOptions()
+      ..disableEvent = disableEvent
+      ..pointBuffs = Map.of(pointBuffs)
+      ..fixedRandom = fixedRandom
+      ..probabilityThreshold = probabilityThreshold
+      ..isAfter7thAnni = isAfter7thAnni
+      ..tailoredExecution = tailoredExecution
+      ..team = team.copy();
+  }
 }

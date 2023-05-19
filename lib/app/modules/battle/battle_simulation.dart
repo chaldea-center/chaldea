@@ -53,8 +53,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       action: 'battle_init',
       task: () => battleData.init(
         widget.questPhase,
-        [...widget.options.onFieldSvtDataList, ...widget.options.backupSvtDataList],
-        widget.options.mysticCodeData,
+        [...widget.options.team.onFieldSvtDataList, ...widget.options.team.backupSvtDataList],
+        widget.options.team.mysticCodeData,
       ),
     );
     if (mounted) setState(() {});
@@ -243,7 +243,11 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           )),
         ),
         const Divider(thickness: 1, height: 8),
-        BattleRecorderPanel(battleData: battleData),
+        BattleRecorderPanel(
+          battleData: battleData,
+          quest: widget.questPhase,
+          team: widget.options.team,
+        ),
       ],
     );
   }

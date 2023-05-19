@@ -1064,28 +1064,6 @@ class S {
     );
   }
 
-  /// `Select Backup Servants`
-  String get battle_select_backup_servants {
-    return Intl.message(
-      'Select Backup Servants',
-      name: 'battle_select_backup_servants',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Select Battle Servants`
-  String get battle_select_battle_servants {
-    return Intl.message(
-      'Select Battle Servants',
-      name: 'battle_select_battle_servants',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Select Card`
   String get battle_select_card {
     return Intl.message(
@@ -9236,6 +9214,28 @@ class S {
     return Intl.message(
       'Team',
       name: 'team',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Backup`
+  String get team_backup_member {
+    return Intl.message(
+      'Backup',
+      name: 'team_backup_member',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Frontline`
+  String get team_starting_member {
+    return Intl.message(
+      'Frontline',
+      name: 'team_starting_member',
       desc: '',
       locale: localeName,
       args: [],

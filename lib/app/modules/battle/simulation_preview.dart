@@ -18,7 +18,7 @@ import '../quest/quest.dart';
 import 'formation/default_lvs.dart';
 import 'formation/formation_storage.dart';
 import 'formation/quest_selector.dart';
-import 'formation/svt_selector.dart';
+import 'formation/team.dart';
 
 class SimulationPreview extends StatefulWidget {
   final Region? region;
@@ -56,14 +56,14 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   final BattleOptions options = BattleOptions();
   BattleSimSetting get settings => db.settings.battleSim;
 
-  List<PlayerSvtData> get onFieldSvts => options.onFieldSvtDataList;
-  List<PlayerSvtData> get backupSvts => options.backupSvtDataList;
+  List<PlayerSvtData> get onFieldSvts => options.team.onFieldSvtDataList;
+  List<PlayerSvtData> get backupSvts => options.team.backupSvtDataList;
 
   @override
   void initState() {
     super.initState();
     questRegion = widget.region;
-    options.mysticCodeData.level = db.curUser.mysticCodes[options.mysticCodeData.mysticCode?.id] ?? 10;
+    options.team.mysticCodeData.level = db.curUser.mysticCodes[options.team.mysticCodeData.mysticCode?.id] ?? 10;
     questPhase = widget.questPhase;
     String? initText;
     if (questPhase != null) {
@@ -104,12 +104,11 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       indent: 16,
       title: settings.curFormation.shownName(settings.curFormationIndex),
     ));
-    children.add(ResponsiveLayout(
-      horizontalDivider: kIndentDivider,
-      children: [
-        partyOrganization(onFieldSvts, S.current.battle_select_battle_servants),
-        partyOrganization(backupSvts, S.current.battle_select_backup_servants),
-      ],
+    children.add(TeamSetupCard(
+      onFieldSvts: onFieldSvts,
+      backupSvts: backupSvts,
+      team: options.team,
+      quest: questPhase,
     ));
     children.add(header(S.current.mystic_code));
     children.add(buildMysticCode());
@@ -293,7 +292,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       children: [
         DropdownButton<Region>(
           isDense: true,
-          value: options.playerRegion,
+          value: options.team.playerRegion,
           items: [
             for (final r in Region.values)
               DropdownMenuItem(
@@ -312,7 +311,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           ],
           onChanged: (v) {
             setState(() {
-              if (v != null) options.playerRegion = v;
+              if (v != null) options.team.playerRegion = v;
             });
           },
         ),
@@ -362,76 +361,18 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     );
   }
 
-  Responsive partyOrganization(List<PlayerSvtData> svts, String title) {
-    return Responsive(
-      small: 12,
-      middle: 6,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(title),
-          Row(
-            children: [
-              for (final svt in svts)
-                Expanded(
-                  child: ServantSelector(
-                    playerSvtData: svt,
-                    playerRegion: options.playerRegion,
-                    questPhase: questPhase,
-                    onChange: () {
-                      if (mounted) setState(() {});
-                    },
-                    onDragSvt: (svtFrom) {
-                      onDrag(svtFrom, svt, false);
-                    },
-                    onDragCE: (svtFrom) {
-                      onDrag(svtFrom, svt, true);
-                    },
-                  ),
-                )
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  void onDrag(PlayerSvtData from, PlayerSvtData to, bool isCE) {
-    final allSvts = options.allSvts.toList();
-    final fromIndex = allSvts.indexOf(from), toIndex = allSvts.indexOf(to);
-    if (fromIndex < 0 || toIndex < 0 || fromIndex == toIndex) return;
-    if (isCE) {
-      final ce = from.ce, ceLv = from.ceLv, ceLimitBreak = from.ceLimitBreak;
-      from
-        ..ce = to.ce
-        ..ceLv = to.ceLv
-        ..ceLimitBreak = to.ceLimitBreak;
-      to
-        ..ce = ce
-        ..ceLv = ceLv
-        ..ceLimitBreak = ceLimitBreak;
-    } else {
-      allSvts[fromIndex] = to;
-      allSvts[toIndex] = from;
-      onFieldSvts.setAll(0, allSvts.sublist(0, onFieldSvts.length));
-      backupSvts.setAll(0, allSvts.sublist(onFieldSvts.length));
-    }
-
-    if (mounted) setState(() {});
-  }
-
   Widget buildMysticCode() {
     Widget mcIcon = Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        options.mysticCodeData.mysticCode?.iconBuilder(context: context, width: 48, jumpToDetail: false) ??
+        options.team.mysticCodeData.mysticCode?.iconBuilder(context: context, width: 48, jumpToDetail: false) ??
             db.getIconImage(null, width: 48),
-        if (options.mysticCodeData.mysticCode != null)
+        if (options.team.mysticCodeData.mysticCode != null)
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              for (final skill in options.mysticCodeData.mysticCode!.skills)
+              for (final skill in options.team.mysticCodeData.mysticCode!.skills)
                 db.getIconImage(skill.icon, width: 24, aspectRatio: 1, padding: const EdgeInsets.all(1)),
             ],
           ),
@@ -442,7 +383,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         router.pushPage(
           MysticCodeListPage(
             onSelected: (selectedMC) {
-              options.mysticCodeData
+              options.team.mysticCodeData
                 ..mysticCode = selectedMC
                 ..level = db.curUser.mysticCodes[selectedMC.id] ?? 10;
               if (mounted) setState(() {});
@@ -465,13 +406,13 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SliderWithTitle(
-                leadingText: options.mysticCodeData.mysticCode?.lName.l ?? S.current.mystic_code,
+                leadingText: options.team.mysticCodeData.mysticCode?.lName.l ?? S.current.mystic_code,
                 min: 1,
                 max: 10,
-                value: options.mysticCodeData.level,
-                label: 'Lv.${options.mysticCodeData.level}',
+                value: options.team.mysticCodeData.level,
+                label: 'Lv.${options.team.mysticCodeData.level}',
                 onChange: (v) {
-                  options.mysticCodeData.level = v.round();
+                  options.team.mysticCodeData.level = v.round();
                   if (mounted) setState(() {});
                 },
               ),
@@ -512,7 +453,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     ];
 
     // Sodom's Beast/Draco in team
-    if (options.isDracoInTeam && questPhase != null) {
+    if (options.team.isDracoInTeam && questPhase != null) {
       bool has7Knights = questPhase!.allEnemies.any((enemy) => _isEnemy7Knights(enemy));
       if (has7Knights) {
         final draco = db.gameData.servantsNoDup[377];
@@ -615,7 +556,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
   Widget buttonBar() {
     final totalCost =
-        Maths.sum(options.allSvts.map((e) => e.isSupportSvt ? 0 : (e.svt?.cost ?? 0) + (e.ce?.cost ?? 0)));
+        Maths.sum(options.team.allSvts.map((e) => e.isSupportSvt ? 0 : (e.svt?.cost ?? 0) + (e.ce?.cost ?? 0)));
     Widget child = Wrap(
       spacing: 4,
       alignment: WrapAlignment.center,
@@ -749,7 +690,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       return options.disableEvent || event?.pointBuffs.contains(pointBuff) != true;
     });
 
-    if (options.isDracoInTeam && settings.autoAdd7KnightsTrait) {
+    if (options.team.isDracoInTeam && settings.autoAdd7KnightsTrait) {
       for (final enemy in questCopy.allEnemies) {
         if (_isEnemy7Knights(enemy) && enemy.traits.every((e) => e.signedId != Trait.standardClassServant.id)) {
           enemy.traits = [...enemy.traits, NiceTrait(id: Trait.standardClassServant.id)];
@@ -798,14 +739,14 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       backupSvts[index] = await PlayerSvtData.fromStoredData(formation.backupSvts.getOrNull(index));
     }
 
-    options.mysticCodeData.loadStoredData(formation.mysticCode);
+    options.team.mysticCodeData.loadStoredData(formation.mysticCode);
   }
 
   void saveFormation() {
     final curFormation = settings.curFormation;
     curFormation.onFieldSvts = onFieldSvts.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
     curFormation.backupSvts = backupSvts.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
-    curFormation.mysticCode = options.mysticCodeData.toStoredData();
+    curFormation.mysticCode = options.team.mysticCodeData.toStoredData();
   }
 }
 

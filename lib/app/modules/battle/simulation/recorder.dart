@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:tuple/tuple.dart';
 
@@ -17,12 +18,16 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../quest/quest_card.dart';
+import '../formation/team.dart';
 import 'svt_detail.dart';
 
 class BattleRecorderPanel extends StatefulWidget {
   final BattleData? battleData;
   final List<BattleRecord>? records;
-  const BattleRecorderPanel({super.key, this.battleData, this.records});
+  final QuestPhase? quest;
+  final BattleTeamSetup? team;
+  const BattleRecorderPanel({super.key, this.battleData, this.records, this.quest, this.team});
 
   @override
   State<BattleRecorderPanel> createState() => _BattleRecorderPanelState();
@@ -30,7 +35,11 @@ class BattleRecorderPanel extends StatefulWidget {
 
 class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
   bool complete = false;
+  bool showQuest = false;
+  bool showTeam = false;
+
   final controller = ScreenshotController();
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -38,14 +47,38 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
       children: [
         Row(
           children: [
-            const SizedBox(width: kMinInteractiveDimension * 2),
+            const SizedBox(width: 16),
             Expanded(
               child: Text(
                 'Records',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(decoration: TextDecoration.underline),
-                textAlign: TextAlign.center,
+                // textAlign: TextAlign.center,
               ),
             ),
+            if (widget.quest != null)
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    showQuest = !showQuest;
+                  });
+                },
+                icon: const FaIcon(FontAwesomeIcons.dragon, size: 16),
+                color: showQuest ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).disabledColor,
+                tooltip: 'Show Quest',
+                visualDensity: VisualDensity.standard,
+              ),
+            if (widget.team != null)
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    showTeam = !showTeam;
+                  });
+                },
+                icon: const Icon(Icons.groups_3),
+                color: showTeam ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).disabledColor,
+                tooltip: 'Show Team',
+                visualDensity: VisualDensity.standard,
+              ),
             IconButton(
               onPressed: () {
                 setState(() {
@@ -97,7 +130,13 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
           controller: controller,
           child: DecoratedBox(
             decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
-            child: BattleRecorderPanelBase(battleData: widget.battleData, records: widget.records, complete: complete),
+            child: BattleRecorderPanelBase(
+              battleData: widget.battleData,
+              records: widget.records,
+              complete: complete,
+              quest: showQuest ? widget.quest : null,
+              team: showTeam ? widget.team : null,
+            ),
           ),
         ),
       ],
@@ -109,10 +148,30 @@ class BattleRecorderPanelBase extends StatelessWidget {
   final BattleData? battleData;
   final List<BattleRecord>? records;
   final bool complete;
-  const BattleRecorderPanelBase({super.key, this.battleData, this.records, required this.complete});
+  final QuestPhase? quest;
+  final BattleTeamSetup? team;
+  const BattleRecorderPanelBase({
+    super.key,
+    this.battleData,
+    this.records,
+    required this.complete,
+    this.quest,
+    this.team,
+  });
 
   @override
   Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (quest != null) getQuest(quest!),
+        if (team != null) getTeam(team!),
+        getRecords(context),
+      ],
+    );
+  }
+
+  Widget getRecords(BuildContext context) {
     List<Widget> cards = [];
     List<Widget> cardChildren = [];
     final records = this.records ?? battleData?.recorder.records ?? [];
@@ -344,6 +403,35 @@ class BattleRecorderPanelBase extends StatelessWidget {
 
   void _onTapSvt(BattleServantData svt) {
     router.pushPage(BattleSvtDetail(svt: svt, battleData: null));
+  }
+
+  Widget getQuest(QuestPhase quest) {
+    return QuestCard(
+      offline: false,
+      quest: quest,
+      displayPhases: [quest.phase],
+      battleOnly: true,
+      preferredPhases: [quest],
+    );
+  }
+
+  Widget getTeam(BattleTeamSetup team) {
+    return Card(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        child: TeamSetupCard(
+          onFieldSvts: team.onFieldSvtDataList,
+          backupSvts: team.backupSvtDataList,
+          team: team,
+          quest: quest,
+          enableEdit: false,
+          showEmptyBackup: false,
+        ),
+      ),
+    );
   }
 }
 
