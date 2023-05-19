@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.4.0
+
+- 2000 commits reached!
+- Temporally disable system tray on Linux
+- Laplace
+  - Add NP Damage Ranking
+  - Show supporter's Noble Phantasm in recorder
+  - Show team total COST
+  - Bug Fix
+    - Musashi(Saber)'s upgraded NP always apply super effective damage
+    - CE passive skills should be activated after all servants' passives
+
 ## 2.3.7
 
 - Laplace
