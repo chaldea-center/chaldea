@@ -286,7 +286,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "daily_qp_quest": MessageLookupByLibrary.simpleMessage("打开宝物库之门"),
         "daily_training_quest": MessageLookupByLibrary.simpleMessage("修炼场"),
         "damage": MessageLookupByLibrary.simpleMessage("伤害"),
-        "damage_np_hp_ratio_max_rate": MessageLookupByLibrary.simpleMessage("HP越少/多威力越高: 使用最大倍率"),
+        "damage_np_hp_ratio_max_rate": MessageLookupByLibrary.simpleMessage("HP越少/多倍率越高: 使用最大倍率"),
         "damage_np_indiv_sum_count": MessageLookupByLibrary.simpleMessage("根据层数倍率提升"),
         "damage_rate": MessageLookupByLibrary.simpleMessage("伤害系数"),
         "dark_mode": MessageLookupByLibrary.simpleMessage("深色模式"),
