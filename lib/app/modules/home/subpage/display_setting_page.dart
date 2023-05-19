@@ -351,7 +351,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   db.notifyAppUpdate();
                 },
               ),
-              if (PlatformU.isDesktop) ...[
+              if (PlatformU.isDesktop && !PlatformU.isLinux) ...[
                 SwitchListTile.adaptive(
                   value: db.settings.showSystemTray,
                   title: Text(S.current.show_system_tray),

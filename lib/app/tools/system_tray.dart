@@ -40,6 +40,7 @@ class SystemTrayUtil {
 
   static Future<void> init() async {
     if (!PlatformU.isDesktop) return;
+    if (PlatformU.isLinux) return;
     try {
       await _systemTray.initSystemTray(iconPath: _getIcon());
       // _systemTray.setTitle(kAppName);
