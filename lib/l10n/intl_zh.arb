@@ -196,7 +196,7 @@
   "daily_qp_quest": "打开宝物库之门",
   "daily_training_quest": "修炼场",
   "damage": "伤害",
-  "damage_np_hp_ratio_max_rate": "HP越少/多威力越高: 使用最大倍率",
+  "damage_np_hp_ratio_max_rate": "HP越少/多倍率越高: 使用最大倍率",
   "damage_np_indiv_sum_count": "根据层数倍率提升",
   "damage_rate": "伤害系数",
   "dark_mode": "深色模式",

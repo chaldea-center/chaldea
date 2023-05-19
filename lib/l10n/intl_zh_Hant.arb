@@ -196,7 +196,7 @@
   "daily_qp_quest": "打開寶物庫之門",
   "daily_training_quest": "修練場",
   "damage": "傷害",
-  "damage_np_hp_ratio_max_rate": "HP愈少(多)傷害愈高: 使用最大倍率",
+  "damage_np_hp_ratio_max_rate": "HP愈少(多)倍率愈高: 使用最大倍率",
   "damage_np_indiv_sum_count": "根據層數倍率提升",
   "damage_rate": "傷害係數",
   "dark_mode": "深色模式",
