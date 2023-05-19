@@ -197,6 +197,7 @@
   "damage_np_hp_ratio_max_rate": null,
   "damage_np_indiv_sum_count": null,
   "damage_rate": null,
+  "damage_recorder_param_hint": null,
   "dark_mode": "Tema",
   "dark_mode_dark": "Oscuro",
   "dark_mode_light": "Claro",

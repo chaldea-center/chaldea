@@ -2230,6 +2230,17 @@ class S {
     );
   }
 
+  /// `Click to show calculation parameters`
+  String get damage_recorder_param_hint {
+    return Intl.message(
+      'Click to show calculation parameters',
+      name: 'damage_recorder_param_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Dark mode`
   String get dark_mode {
     return Intl.message(

@@ -298,6 +298,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("More Powerful with Lower/Higher HP: Use MAX Rate"),
         "damage_np_indiv_sum_count": MessageLookupByLibrary.simpleMessage("More powerful with more stackable traits"),
         "damage_rate": MessageLookupByLibrary.simpleMessage("Damage Rate"),
+        "damage_recorder_param_hint": MessageLookupByLibrary.simpleMessage("Click to show calculation parameters"),
         "dark_mode": MessageLookupByLibrary.simpleMessage("Dark mode"),
         "dark_mode_dark": MessageLookupByLibrary.simpleMessage("Dark"),
         "dark_mode_light": MessageLookupByLibrary.simpleMessage("Light"),

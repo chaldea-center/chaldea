@@ -197,6 +197,7 @@
   "damage_np_hp_ratio_max_rate": "HP愈少(多)倍率愈高: 使用最大倍率",
   "damage_np_indiv_sum_count": "根據層數倍率提升",
   "damage_rate": "傷害係數",
+  "damage_recorder_param_hint": null,
   "dark_mode": "深色模式",
   "dark_mode_dark": "深色",
   "dark_mode_light": "淺色",

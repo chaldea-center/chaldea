@@ -287,6 +287,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "damage_np_hp_ratio_max_rate": MessageLookupByLibrary.simpleMessage("HP愈少(多)倍率愈高: 使用最大倍率"),
         "damage_np_indiv_sum_count": MessageLookupByLibrary.simpleMessage("根據層數倍率提升"),
         "damage_rate": MessageLookupByLibrary.simpleMessage("傷害係數"),
+        "damage_recorder_param_hint": MessageLookupByLibrary.simpleMessage("点击可显示详细计算参数"),
         "dark_mode": MessageLookupByLibrary.simpleMessage("深色模式"),
         "dark_mode_dark": MessageLookupByLibrary.simpleMessage("深色"),
         "dark_mode_light": MessageLookupByLibrary.simpleMessage("淺色"),

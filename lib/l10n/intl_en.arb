@@ -197,6 +197,7 @@
   "damage_np_hp_ratio_max_rate": "More Powerful with Lower/Higher HP: Use MAX Rate",
   "damage_np_indiv_sum_count": "More powerful with more stackable traits",
   "damage_rate": "Damage Rate",
+  "damage_recorder_param_hint": "Click to show calculation parameters",
   "dark_mode": "Dark mode",
   "dark_mode_dark": "Dark",
   "dark_mode_light": "Light",

@@ -139,6 +139,16 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
             ),
           ),
         ),
+        if ((widget.records ?? widget.battleData?.recorder.records)?.any((e) => e is BattleAttackRecord) == true)
+          SFooter.rich(TextSpan(children: [
+            const TextSpan(text: 'DMG', style: TextStyle(color: Colors.red)),
+            const TextSpan(text: '/'),
+            const TextSpan(text: 'NP', style: TextStyle(color: Colors.blue)),
+            const TextSpan(text: '/'),
+            const TextSpan(text: 'Star', style: TextStyle(color: Colors.green)),
+            const TextSpan(text: ': '),
+            TextSpan(text: S.current.damage_recorder_param_hint),
+          ])),
       ],
     );
   }
@@ -165,7 +175,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (quest != null) getQuest(quest!),
-        if (team != null) getTeam(team!),
+        if (team != null) getTeam(context, team!),
         getRecords(context),
       ],
     );
@@ -415,20 +425,49 @@ class BattleRecorderPanelBase extends StatelessWidget {
     );
   }
 
-  Widget getTeam(BattleTeamSetup team) {
+  Widget getTeam(BuildContext context, BattleTeamSetup team) {
     return Card(
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(8.0)),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-        child: TeamSetupCard(
-          onFieldSvts: team.onFieldSvtDataList,
-          backupSvts: team.backupSvtDataList,
-          team: team,
-          quest: quest,
-          enableEdit: false,
-          showEmptyBackup: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TeamSetupCard(
+              onFieldSvts: team.onFieldSvtDataList,
+              backupSvts: team.backupSvtDataList,
+              team: team,
+              quest: quest,
+              enableEdit: false,
+              showEmptyBackup: false,
+            ),
+            if (team.mysticCodeData.mysticCode != null)
+              getMysticCode(context, team.mysticCodeData.mysticCode!, team.mysticCodeData.level),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getMysticCode(BuildContext context, MysticCode mysticCode, int level) {
+    return DecoratedBox(
+      decoration: BoxDecoration(border: Border(top: Divider.createBorderSide(context))),
+      child: ListTile(
+        leading: db.getIconImage(mysticCode.icon, width: 56, aspectRatio: 1),
+        title: Text('${mysticCode.lName.l}  Lv.$level', textScaleFactor: 0.9),
+        subtitle: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final skill in mysticCode.skills)
+              db.getIconImage(
+                skill.icon ?? Atlas.common.unknownSkillIcon,
+                width: 24,
+                height: 24,
+                padding: const EdgeInsets.all(2),
+              )
+          ],
         ),
       ),
     );

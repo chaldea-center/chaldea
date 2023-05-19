@@ -197,6 +197,7 @@
   "damage_np_hp_ratio_max_rate": null,
   "damage_np_indiv_sum_count": null,
   "damage_rate": "攻撃係数",
+  "damage_recorder_param_hint": null,
   "dark_mode": "ダックモード",
   "dark_mode_dark": "ダック",
   "dark_mode_light": "ライト",
