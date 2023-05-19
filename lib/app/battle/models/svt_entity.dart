@@ -16,13 +16,12 @@ class BattleServantData {
   static List<BuffAction> doNotNPTypes = [BuffAction.donotNoble, BuffAction.donotNobleCondMismatch];
   static List<BuffAction> buffEffectivenessTypes = [BuffAction.buffRate, BuffAction.funcHpReduce];
 
+  final bool isPlayer;
+  bool get isEnemy => !isPlayer;
   QuestEnemy? niceEnemy;
   Servant? niceSvt;
   BasicServant? overrideSvt;
   PlayerSvtData? playerSvtData;
-
-  bool isPlayer = false;
-  bool get isEnemy => !isPlayer;
 
   // performance issue,
   String? _battleNameCache;
@@ -99,39 +98,13 @@ class BattleServantData {
   BattleServantData? lastHitBy;
   CommandCardData? lastHitByCard;
 
-  bool get selectable => battleBuff.isSelectable;
+  BattleServantData._({required this.isPlayer});
 
-  int get tdLv => (isPlayer ? playerSvtData!.tdLv : niceEnemy!.noblePhantasm.noblePhantasmLv).clamp(0, 5);
-
-  int get attack => isPlayer ? atk + (equip?.atk ?? 0) : atk;
-
-  int get rarity => isPlayer ? niceSvt!.rarity : niceEnemy!.svt.rarity;
-
-  SvtClass get svtClass => isPlayer ? niceSvt!.className : niceEnemy!.svt.className;
-
-  int get classId => isPlayer ? niceSvt!.classId : niceEnemy!.svt.classId;
-
-  Attribute get attribute => isPlayer ? niceSvt!.attribute : niceEnemy!.svt.attribute;
-
-  int get starGen => isPlayer ? niceSvt!.starGen : 0;
-
-  int get defenceNpGain => isPlayer ? playerSvtData?.td?.npGain.defence[playerSvtData!.tdLv - 1] ?? 0 : 0;
-
-  int get enemyTdRate => isEnemy ? niceEnemy!.serverMod.tdRate : 0;
-
-  int get enemyTdAttackRate => isEnemy ? niceEnemy!.serverMod.tdAttackRate : 0;
-
-  int get enemyStarRate => isEnemy ? niceEnemy!.serverMod.starRate : 0;
-
-  bool get isBuggedOverkill => accumulationDamage > hp;
-
-  int get deathRate => isEnemy ? niceEnemy!.deathRate : niceSvt!.instantDeathChance;
-
-  static BattleServantData fromEnemy(final QuestEnemy enemy, final int uniqueId) {
-    final svt = BattleServantData();
+  factory BattleServantData.fromEnemy(final QuestEnemy enemy, final int uniqueId, {Servant? niceSvt}) {
+    final svt = BattleServantData._(isPlayer: false);
     svt
       ..niceEnemy = enemy
-      ..isPlayer = false
+      ..niceSvt = niceSvt
       ..uniqueId = uniqueId
       ..hp = enemy.hp
       ..maxHp = enemy.hp
@@ -144,21 +117,21 @@ class BattleServantData {
     return svt;
   }
 
-  static BattleServantData fromPlayerSvtData(final PlayerSvtData settings, final int uniqueId) {
-    if (settings.svt == null) {
+  factory BattleServantData.fromPlayerSvtData(final PlayerSvtData settings, final int uniqueId) {
+    final psvt = settings.svt;
+    if (psvt == null) {
       throw BattleException('Invalid PlayerSvtData: null svt');
     }
 
-    final svt = BattleServantData();
+    final svt = BattleServantData._(isPlayer: true);
     svt
       ..playerSvtData = settings.copy()
       ..uniqueId = uniqueId
-      ..niceSvt = settings.svt!
-      ..isPlayer = true
-      ..svtId = settings.svt?.id ?? 0
+      ..niceSvt = psvt
+      ..svtId = psvt.id
       ..level = settings.lv
-      ..maxHp = settings.fixedHp ?? ((settings.svt!.hpGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.hpFou)
-      ..atk = settings.fixedAtk ?? ((settings.svt!.atkGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.atkFou);
+      ..maxHp = settings.fixedHp ?? ((psvt.hpGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.hpFou)
+      ..atk = settings.fixedAtk ?? ((psvt.atkGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.atkFou);
     svt.hp = svt.maxHp;
     if (settings.ce != null) {
       svt.equip = BattleCEData(settings.ce!, settings.ceLimitBreak, settings.ceLv);
@@ -166,10 +139,10 @@ class BattleServantData {
       svt.maxHp += svt.equip!.hp;
     }
 
-    final script = settings.svt!.script;
+    final script = psvt.script;
     for (final skillNum in kActiveSkillNums) {
       final List<BaseSkill> provisionedSkills = [];
-      provisionedSkills.addAll(settings.svt!.groupedActiveSkills[skillNum] ?? []);
+      provisionedSkills.addAll(psvt.groupedActiveSkills[skillNum] ?? []);
       List<BaseSkill?>? rankUps;
       if (script != null && script.skillRankUp != null) {
         rankUps = [
@@ -201,6 +174,34 @@ class BattleServantData {
     }
     return svt;
   }
+
+  bool get selectable => battleBuff.isSelectable;
+
+  int get tdLv => (isPlayer ? playerSvtData!.tdLv : niceEnemy!.noblePhantasm.noblePhantasmLv).clamp(0, 5);
+
+  int get attack => isPlayer ? atk + (equip?.atk ?? 0) : atk;
+
+  int get rarity => isPlayer ? niceSvt!.rarity : niceEnemy!.svt.rarity;
+
+  SvtClass get svtClass => isPlayer ? niceSvt!.className : niceEnemy!.svt.className;
+
+  int get classId => isPlayer ? niceSvt!.classId : niceEnemy!.svt.classId;
+
+  Attribute get attribute => isPlayer ? niceSvt!.attribute : niceEnemy!.svt.attribute;
+
+  int get starGen => isPlayer ? niceSvt!.starGen : 0;
+
+  int get defenceNpGain => isPlayer ? playerSvtData?.td?.npGain.defence[playerSvtData!.tdLv - 1] ?? 0 : 0;
+
+  int get enemyTdRate => isEnemy ? niceEnemy!.serverMod.tdRate : 0;
+
+  int get enemyTdAttackRate => isEnemy ? niceEnemy!.serverMod.tdAttackRate : 0;
+
+  int get enemyStarRate => isEnemy ? niceEnemy!.serverMod.starRate : 0;
+
+  bool get isBuggedOverkill => accumulationDamage > hp;
+
+  int get deathRate => isEnemy ? niceEnemy!.deathRate : niceSvt!.instantDeathChance;
 
   void initScript(final BattleData battleData) {
     if (niceEnemy != null) {
@@ -1262,10 +1263,9 @@ class BattleServantData {
   }
 
   BattleServantData copy() {
-    return BattleServantData()
+    return BattleServantData._(isPlayer: isPlayer)
       ..niceEnemy = niceEnemy
       ..niceSvt = niceSvt
-      ..isPlayer = isPlayer
       ..playerSvtData = playerSvtData?.copy()
       ..fieldIndex = fieldIndex
       ..deckIndex = deckIndex
