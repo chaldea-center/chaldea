@@ -238,6 +238,7 @@ class PlayerSvtDefaultData {
 class CustomSkillData {
   int? skillId;
   String name;
+  int cd;
   SkillType skillType;
   List<CustomFuncData> effects;
   bool buffOnly;
@@ -246,6 +247,7 @@ class CustomSkillData {
   CustomSkillData({
     this.skillId,
     this.name = '',
+    this.cd = 0,
     this.skillType = SkillType.passive,
     List<CustomFuncData>? effects,
     this.buffOnly = false,
@@ -257,7 +259,7 @@ class CustomSkillData {
   Map<String, dynamic> toJson() => _$CustomSkillDataToJson(this);
 
   int getSkillId() {
-    return skillId = -(100000000 + DateTime.now().timestamp % 100000000);
+    return skillId = -(1000000 + DateTime.now().timestamp % 1000000);
   }
 
   NiceSkill? buildSkill() {
@@ -277,6 +279,7 @@ class CustomSkillData {
       icon: Atlas.common.unknownSkillIcon,
       functions: funcs,
       priority: 99999,
+      coolDown: [cd >= 0 ? cd : 0],
     );
     return skill;
   }

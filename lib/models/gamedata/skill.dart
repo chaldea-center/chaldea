@@ -249,7 +249,7 @@ class NiceSkill extends BaseSkill {
     super.unmodifiedDetail,
     required super.type,
     super.icon,
-    super.coolDown = const [],
+    super.coolDown = const [0],
     super.actIndividuality = const [],
     super.script,
     super.skillAdd = const [],

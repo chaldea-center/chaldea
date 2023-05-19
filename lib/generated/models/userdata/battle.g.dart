@@ -204,6 +204,7 @@ CustomSkillData _$CustomSkillDataFromJson(Map json) => $checkedCreate(
         final val = CustomSkillData(
           skillId: $checkedConvert('skillId', (v) => v as int?),
           name: $checkedConvert('name', (v) => v as String? ?? ''),
+          cd: $checkedConvert('cd', (v) => v as int? ?? 0),
           skillType:
               $checkedConvert('skillType', (v) => $enumDecodeNullable(_$SkillTypeEnumMap, v) ?? SkillType.passive),
           effects: $checkedConvert(
@@ -221,6 +222,7 @@ CustomSkillData _$CustomSkillDataFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$CustomSkillDataToJson(CustomSkillData instance) => <String, dynamic>{
       'skillId': instance.skillId,
       'name': instance.name,
+      'cd': instance.cd,
       'skillType': _$SkillTypeEnumMap[instance.skillType]!,
       'effects': instance.effects.map((e) => e.toJson()).toList(),
       'buffOnly': instance.buffOnly,

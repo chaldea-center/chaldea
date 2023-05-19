@@ -233,6 +233,30 @@ class _CustomSkillFormState extends State<CustomSkillForm> {
               ),
             ),
           ),
+          ListTile(
+            dense: true,
+            title: const Text('CD'),
+            trailing: SizedBox(
+              width: 80,
+              child: TextFormField(
+                initialValue: skill.cd.toString(),
+                decoration: InputDecoration(
+                  isDense: true,
+                  suffixIcon: Text(S.current.battle_turn, style: Theme.of(context).textTheme.bodySmall),
+                  suffixIconConstraints: const BoxConstraints(),
+                ),
+                keyboardType: TextInputType.number,
+                textAlign: TextAlign.end,
+                onChanged: (s) {
+                  int? v = int.tryParse(s);
+                  if (v == null || v < 0) return;
+                  skill.cd = v;
+                  setState(() {});
+                  widget.onChanged?.call();
+                },
+              ),
+            ),
+          ),
         ],
         for (final effect in skill.effects) buildFunc(effect),
       ],

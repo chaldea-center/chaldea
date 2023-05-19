@@ -69,7 +69,7 @@ NiceSkill _$NiceSkillFromJson(Map json) => NiceSkill(
       unmodifiedDetail: json['unmodifiedDetail'] as String?,
       type: $enumDecode(_$SkillTypeEnumMap, json['type']),
       icon: json['icon'] as String?,
-      coolDown: (json['coolDown'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      coolDown: (json['coolDown'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [0],
       actIndividuality: (json['actIndividuality'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
