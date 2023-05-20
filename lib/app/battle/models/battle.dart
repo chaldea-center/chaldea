@@ -549,6 +549,7 @@ class BattleData {
     return onFieldAllyServants[servantIndex]!.canNP(this);
   }
 
+  /// Only check skill sealed
   bool isSkillSealed(final int servantIndex, final int skillIndex) {
     if (onFieldAllyServants[servantIndex] == null) {
       return false;
@@ -557,6 +558,7 @@ class BattleData {
     return onFieldAllyServants[servantIndex]!.isSkillSealed(this, skillIndex);
   }
 
+  /// Check canAct and skill script
   bool isSkillCondFailed(final int servantIndex, final int skillIndex) {
     if (onFieldAllyServants[servantIndex] == null) {
       return false;

@@ -381,7 +381,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
 
   @override
   bool filter(Servant svt) {
-    return ServantFilterPage.filter(filterData, svt);
+    return ServantFilterPage.filter(filterData, svt, planMode: widget.planMode);
   }
 
   @override

@@ -606,7 +606,7 @@ class BattleServantData {
     final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
     skillInfo.setRankUp(rankUp);
 
-    final result = !canAttack(battleData) || hasDoNotBuffOnActionForUI(battleData, BuffAction.donotSkill);
+    final result = hasDoNotBuffOnActionForUI(battleData, BuffAction.donotSkill);
     battleData.unsetActivator();
     return result;
   }
@@ -621,7 +621,8 @@ class BattleServantData {
     final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
     skillInfo.setRankUp(rankUp);
 
-    final result = skillInfo.proximateSkill == null || !skillInfo.checkSkillScript(battleData);
+    final result =
+        !canAttack(battleData) || skillInfo.proximateSkill == null || !skillInfo.checkSkillScript(battleData);
     battleData.unsetActivator();
     return result;
   }

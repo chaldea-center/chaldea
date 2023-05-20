@@ -533,7 +533,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       style: TextStyle(fontSize: isSealed ? 14 : 18, color: Colors.white.withOpacity(0.8)),
       textScaleFactor: 1,
     );
-    if (isSealed && cd > 0) {
+    if ((isSealed && cd > 0)||(isCondFailed && !isSealed)) {
       cdText = Positioned(right: 0, bottom: 0, child: cdText);
     }
 
@@ -560,7 +560,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               aspectRatio: 1,
             ),
           ),
-        if (isCondFailed && !isSealed && cd <= 0)
+        if (isCondFailed && !isSealed)
           const Text(
             '×',
             style: TextStyle(fontSize: 24, color: Colors.white),
