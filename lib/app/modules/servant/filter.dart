@@ -73,6 +73,9 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
     if (!filterData.svtDuplicated.matchOne(svt.collectionNo != svt.originalCollectionNo)) {
       return false;
     }
+    if (!filterData.bond.matchOne(svtStat.bond < 5 ? 1 : (svtStat.bond < 10 ? 2 : 3))) {
+      return false;
+    }
 
     // class name
     if (!filterData.svtClass.matchOne(svt.className, compare: SvtClassX.match)) {
@@ -345,6 +348,21 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
           values: filterData.svtDuplicated,
           optionBuilder: (v) =>
               Text(v ? S.current.duplicated_servant_duplicated : S.current.duplicated_servant_primary),
+          onFilterChanged: (v, _) {
+            setState(() {
+              update();
+            });
+          },
+        ),
+        FilterGroup<int>(
+          title: Text(S.current.bond),
+          options: const [1, 2, 3],
+          values: filterData.bond,
+          optionBuilder: (v) {
+            String text = (v * 5).toString();
+            text = (v == 3 ? '≤' : '<') + text;
+            return Text(text);
+          },
           onFilterChanged: (v, _) {
             setState(() {
               update();

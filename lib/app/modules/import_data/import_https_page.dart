@@ -680,6 +680,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
 
         status.cur.npLv = svt.treasureDeviceLv1;
         status.favorite = true;
+        status.bond = collection.friendshipRank;
         status.cur
           ..ascension = svt.limitCount
           ..skills = [svt.skillLv1, svt.skillLv2, svt.skillLv3]

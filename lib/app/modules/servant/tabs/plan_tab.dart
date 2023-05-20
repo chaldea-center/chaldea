@@ -385,7 +385,41 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         buildPlanRow(
           useSlider: sliderMode,
           leading: Item.iconBuilder(context: context, item: Items.lantern, width: 33),
-          title: S.current.game_kizuna,
+          // title: S.current.game_kizuna,
+          titleWidget: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(child: Text('${S.current.game_kizuna}  ', maxLines: 1)),
+              DropdownButtonHideUnderline(
+                child: DropdownButton<int>(
+                  isDense: true,
+                  value: status.bond,
+                  iconSize: 16,
+                  items: [
+                    for (int bond = 0; bond <= 15; bond++)
+                      DropdownMenuItem(
+                        value: bond,
+                        child: Text(
+                          'Lv.$bond',
+                          // textScaleFactor: 0.9,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                  ],
+                  onChanged: enhanceMode
+                      ? null
+                      : (v) {
+                          if (v != null) {
+                            status.bond = v;
+                            curVal.bondLimit = curVal.bondLimit.clamp(v, 15);
+                            targetVal.bondLimit = targetVal.bondLimit.clamp(curVal.bondLimit, 15);
+                            updateState();
+                          }
+                        },
+                ),
+              ),
+            ],
+          ),
           start: curVal.bondLimit,
           end: targetVal.bondLimit,
           minVal: 10,
@@ -394,6 +428,9 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             status.favorite = true;
             curVal.bondLimit = _start;
             targetVal.bondLimit = _end;
+            if (!enhanceMode) {
+              status.bond = status.bond.clamp(0, curVal.bondLimit);
+            }
             updateState();
           },
           detailPageBuilder: (context) => LevelingCostPage(
@@ -437,6 +474,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
   Widget buildPlanRow({
     Widget? leading,
     String? title,
+    Widget? titleWidget,
     String? subtitle,
     required int start,
     int? end,
@@ -461,6 +499,10 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       if (b != null) s += '→${labelFormatter(b).padRight(2)}';
       return s;
     };
+    if (title != null) {
+      titleWidget ??= AutoSizeText(title, maxLines: 1);
+    }
+
     Widget trailingIcon;
     if (detailPageBuilder != null) {
       trailingIcon = IconButton(
@@ -508,11 +550,11 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         contentPadding: const EdgeInsetsDirectional.only(start: 16),
         titlePadding: EdgeInsets.zero,
         leading: leading,
-        title: title == null
+        title: titleWidget == null
             ? null
             : Padding(
                 padding: const EdgeInsetsDirectional.only(start: 6, top: 4),
-                child: AutoSizeText(title, maxLines: 1),
+                child: titleWidget,
               ),
         subtitle: SliderTheme(
           data: SliderThemeData(
@@ -539,7 +581,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             maxVal - minVal + 1,
             (index) => DropdownMenuItem(
               value: minVal + index,
-              child: Text(labelFormatter!(minVal + index)),
+              child: Text(labelFormatter!(minVal + index), textScaleFactor: 0.9),
             ),
           ),
           // disable at enhance mode
@@ -558,7 +600,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           startEnabled: !enhanceMode,
           startItems: items,
           endItems: items,
-          itemBuilder: (context, v) => Text(labelFormatter!(v)),
+          itemBuilder: (context, v) => Text(labelFormatter!(v), textScaleFactor: 0.9),
           onChanged: (_start, _end) {
             onValueChanged(enhanceMode ? start : _start, _end);
           },
@@ -567,7 +609,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       return CustomTile(
         contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
         leading: leading,
-        title: title == null ? null : AutoSizeText(title, maxLines: 1),
+        title: titleWidget,
         subtitle: subtitle == null ? null : AutoSizeText(subtitle, maxLines: 1, minFontSize: 10),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,

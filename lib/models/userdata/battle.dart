@@ -451,7 +451,7 @@ class TdDamageOptions {
   int tdR4 = 2;
   int tdR5 = 1;
   int oc = 1;
-  bool fixedOC = true;
+  bool fixedOC = false;
   Region region = Region.jp;
   // CE & MC
   int? ceId;

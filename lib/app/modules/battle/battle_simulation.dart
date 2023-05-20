@@ -533,7 +533,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       style: TextStyle(fontSize: isSealed ? 14 : 18, color: Colors.white.withOpacity(0.8)),
       textScaleFactor: 1,
     );
-    if ((isSealed && cd > 0)||(isCondFailed && !isSealed)) {
+    if ((isSealed && cd > 0) || (isCondFailed && !isSealed)) {
       cdText = Positioned(right: 0, bottom: 0, child: cdText);
     }
 

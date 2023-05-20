@@ -295,6 +295,7 @@ class SvtFilterData with _FilterData {
   final priority = FilterGroupData<int>(onChanged: () {
     db.itemCenter.updateSvts(all: true);
   });
+  final bond = FilterGroupData<int>();
   final region = FilterRadioData<Region>();
   final obtain = FilterGroupData<SvtObtain>();
   final npColor = FilterGroupData<CardType>();
@@ -329,6 +330,7 @@ class SvtFilterData with _FilterData {
         activeSkillLevel,
         planCompletion,
         svtDuplicated,
+        bond,
         // priority,
         region,
         obtain,
