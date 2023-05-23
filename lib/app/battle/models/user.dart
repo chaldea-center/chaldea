@@ -53,9 +53,10 @@ class PlayerSvtData {
     required Servant svt,
     required SvtStatus status,
     required SvtPlan plan,
+    int? limitCount,
   }) {
     this
-      ..limitCount = plan.ascension
+      ..limitCount = limitCount ?? plan.ascension
       ..lv = svt.grailedLv(plan.grail)
       ..tdLv = plan.npLv.clamp(1, 5)
       ..skillLvs = plan.skills.toList()

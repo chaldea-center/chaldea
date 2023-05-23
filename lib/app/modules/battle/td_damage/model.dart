@@ -279,7 +279,7 @@ class TdDmgSolver {
   }
 
   PlayerSvtData? getSvtData(Servant svt, int limitCount) {
-    final data = PlayerSvtData.svt(svt)..limitCount = limitCount;
+    final data = PlayerSvtData.svt(svt);
     if (options.usePlayerSvt == PreferPlayerSvtDataSource.none) {
       data.lv = options.svtLv == SvtLv.maxLv ? svt.lvMax : options.svtLv.lv!;
 
@@ -297,8 +297,10 @@ class TdDmgSolver {
         svt: svt,
         status: status,
         plan: options.usePlayerSvt == PreferPlayerSvtDataSource.current ? status.cur : svt.curPlan,
+        limitCount: limitCount,
       );
     }
+    data.limitCount = limitCount;
     data.updateRankUps(options.region);
     if (!options.enableActiveSkills) {
       data.skills.fillRange(0, 3, null);
