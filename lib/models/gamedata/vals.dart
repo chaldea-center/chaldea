@@ -188,6 +188,9 @@ class DataVals {
   List<int>? get CopyTargetBuffType => _list('CopyTargetBuffType');
   List<int>? get NotSkillCopyTargetFuncIds => _list('NotSkillCopyTargetFuncIds');
   List<int>? get NotSkillCopyTargetIndividualities => _list('NotSkillCopyTargetIndividualities');
+  int? get IntervalTurn => _vals['IntervalTurn'];
+  int? get IntervalCount => _vals['IntervalCount'];
+  dynamic get TargetEnemyRange => _vals['TargetEnemyRange'];
 
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];

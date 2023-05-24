@@ -494,6 +494,8 @@ enum FuncType {
   breakGaugeUp(59),
   breakGaugeDown(60),
   moveToLastSubmember(61),
+  extendUserEquipSkill(62),
+  updateEnemyEntryMaxCountEachTurn(63),
   expUp(101),
   qpUp(102),
   dropUp(103),
@@ -568,6 +570,7 @@ enum FuncTargetType {
   enemyOneNoTargetNoAction,
   ptOneHpLowestValue,
   ptOneHpLowestRate,
+  enemyRange,
   ;
 
   bool get isEnemy => name.toLowerCase().startsWith('enemy') && this != FuncTargetType.enemyOneNoTargetNoAction;

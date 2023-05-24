@@ -137,6 +137,8 @@ const _$FuncTypeEnumMap = {
   FuncType.breakGaugeUp: 'breakGaugeUp',
   FuncType.breakGaugeDown: 'breakGaugeDown',
   FuncType.moveToLastSubmember: 'moveToLastSubmember',
+  FuncType.extendUserEquipSkill: 'extendUserEquipSkill',
+  FuncType.updateEnemyEntryMaxCountEachTurn: 'updateEnemyEntryMaxCountEachTurn',
   FuncType.expUp: 'expUp',
   FuncType.qpUp: 'qpUp',
   FuncType.dropUp: 'dropUp',
@@ -205,6 +207,7 @@ const _$FuncTargetTypeEnumMap = {
   FuncTargetType.enemyOneNoTargetNoAction: 'enemyOneNoTargetNoAction',
   FuncTargetType.ptOneHpLowestValue: 'ptOneHpLowestValue',
   FuncTargetType.ptOneHpLowestRate: 'ptOneHpLowestRate',
+  FuncTargetType.enemyRange: 'enemyRange',
 };
 
 const _$FuncApplyTargetEnumMap = {

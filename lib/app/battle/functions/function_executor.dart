@@ -317,6 +317,7 @@ class FunctionExecutor {
       case FuncType.updateEntryPositions:
         UpdateEntryPositions.updateEntryPositions(battleData, dataVals);
         break;
+      case FuncType.updateEnemyEntryMaxCountEachTurn:
       // TODO: unimplemented FuncTypes
       case FuncType.damageValue:
       case FuncType.damageNpCounter:
@@ -324,6 +325,7 @@ class FunctionExecutor {
       case FuncType.damageNpSafe:
       // ↑↑↑ should be implemented ↑↑↑
       case FuncType.shortenUserEquipSkill:
+      case FuncType.extendUserEquipSkill:
       case FuncType.subFieldBuff:
       case FuncType.damageNpAndCheckIndividuality:
       case FuncType.damageNpStateIndividual:
@@ -543,11 +545,10 @@ class FunctionExecutor {
       case FuncTargetType.ptOneAnotherRandom:
       case FuncTargetType.ptSelfAnotherRandom:
       case FuncTargetType.enemyOneAnotherRandom:
+      case FuncTargetType.enemyRange:
         battleData.battleLogger.debug('${S.current.not_implemented}: $funcTargetType, '
             'Function ID: $funcId, '
-            'Activator: ${activator?.lBattleName}, '
-            'Quest ID: ${battleData.niceQuest?.id}, '
-            'Phase: ${battleData.niceQuest?.phase}');
+            'Activator: ${activator?.lBattleName}');
         break;
     }
 
