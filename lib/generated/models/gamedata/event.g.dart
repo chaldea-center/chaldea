@@ -1116,6 +1116,9 @@ EventBulletinBoard _$EventBulletinBoardFromJson(Map json) => EventBulletinBoard(
               ?.map((e) => EventBulletinBoardRelease.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      script: (json['script'] as List<dynamic>?)
+          ?.map((e) => EventBulletinBoardScript.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
     );
 
 Map<String, dynamic> _$EventBulletinBoardToJson(EventBulletinBoard instance) => <String, dynamic>{
@@ -1123,6 +1126,17 @@ Map<String, dynamic> _$EventBulletinBoardToJson(EventBulletinBoard instance) => 
       'message': instance.message,
       'probability': instance.probability,
       'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+      'script': instance.script?.map((e) => e.toJson()).toList(),
+    };
+
+EventBulletinBoardScript _$EventBulletinBoardScriptFromJson(Map json) => EventBulletinBoardScript(
+      icon: json['icon'] as String?,
+      name: json['name'] as String?,
+    );
+
+Map<String, dynamic> _$EventBulletinBoardScriptToJson(EventBulletinBoardScript instance) => <String, dynamic>{
+      'icon': instance.icon,
+      'name': instance.name,
     };
 
 EventBulletinBoardRelease _$EventBulletinBoardReleaseFromJson(Map json) => EventBulletinBoardRelease(

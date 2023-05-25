@@ -1355,17 +1355,36 @@ class EventBulletinBoard {
   String message;
   int? probability;
   List<EventBulletinBoardRelease> releaseConditions;
+  // int dispOrder;
+  List<EventBulletinBoardScript>? script;
 
   EventBulletinBoard({
     required this.bulletinBoardId,
     required this.message,
     this.probability,
     this.releaseConditions = const [],
+    this.script,
   });
 
   factory EventBulletinBoard.fromJson(Map<String, dynamic> json) => _$EventBulletinBoardFromJson(json);
 
   Map<String, dynamic> toJson() => _$EventBulletinBoardToJson(this);
+}
+
+@JsonSerializable()
+class EventBulletinBoardScript with DataScriptBase {
+  String? icon;
+  String? name;
+
+  EventBulletinBoardScript({
+    this.icon,
+    this.name,
+  });
+
+  factory EventBulletinBoardScript.fromJson(Map<String, dynamic> json) =>
+      _$EventBulletinBoardScriptFromJson(json)..setSource(json);
+
+  Map<String, dynamic> toJson() => _$EventBulletinBoardScriptToJson(this);
 }
 
 @JsonSerializable()

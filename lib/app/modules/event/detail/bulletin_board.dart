@@ -25,10 +25,36 @@ class EventBulletinBoardPage extends HookWidget {
   }
 
   Widget itemBuilder(BuildContext context, EventBulletinBoard bulletin) {
+    final scripts = bulletin.script ?? const [];
+    Widget title = Text(bulletin.message, textScaleFactor: 0.8);
+
+    List<InlineSpan> spans = [];
+    for (final script in scripts) {
+      if (script.icon != null) {
+        spans.add(CenterWidgetSpan(child: db.getIconImage(script.icon, width: 28, height: 32)));
+      }
+      if (script.name != null) {
+        spans.add(TextSpan(text: ' ${Transl.svtNames(script.name!).l}  '));
+      }
+    }
+    if (spans.isNotEmpty) {
+      title = Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text.rich(
+            TextSpan(children: spans),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          title,
+        ],
+      );
+    }
+
     return ListTile(
       key: Key('event_bulletin_${bulletin.bulletinBoardId}'),
       leading: Text(bulletin.bulletinBoardId.toString(), textAlign: TextAlign.center),
-      title: Text(bulletin.message, textScaleFactor: 0.8),
+      title: title,
       horizontalTitleGap: 4,
       onLongPress: () async {
         await Clipboard.setData(ClipboardData(text: bulletin.message));

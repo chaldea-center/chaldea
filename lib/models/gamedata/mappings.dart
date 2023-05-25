@@ -79,9 +79,13 @@ class Transl<K, V> {
     if (field && fieldTrait != null) {
       if (fieldTrait.warIds.isNotEmpty && fieldTrait.values.every((e) => e == null)) {
         final warId = fieldTrait.warIds.first;
-        final lWarName = db.gameData.wars[warId]?.lName.m;
-        if (((warId > 8000 && warId < 9900) || warId < 1000) && lWarName != null) {
-          return Transl({id: lWarName.convert((v, region) => v?.setMaxLines(1))}, id, '$id');
+        final war = db.gameData.wars[warId];
+        if (war != null) {
+          final lWarName = war.lName.m;
+          if (((warId > 8000 && warId < 9900) || warId < 1000)) {
+            return Transl({if (lWarName != null) id: lWarName.convert((v, region) => v?.setMaxLines(1))}, id,
+                war.name.setMaxLines(1));
+          }
         }
       }
       return Transl(md.fieldTrait, id, '$id');

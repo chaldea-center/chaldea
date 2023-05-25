@@ -673,6 +673,7 @@ enum Trait {
   buffNullifyBuff(3070),
   cantBeSacrificed(3076),
   gutsBlock(3086),
+  buffBound(3087), // 拘束
   cardArts(4001),
   cardBuster(4002),
   cardQuick(4003),
@@ -684,6 +685,7 @@ enum Trait {
   criticalHit(4100),
   aoeNP(4101),
   stNP(4102),
+  // 4103, 迎撃宝具-斬り抉る戦神の剣
   canBeInBattle(5000),
   notBasedOnServant(5010),
   eventSaberWars(94000015),

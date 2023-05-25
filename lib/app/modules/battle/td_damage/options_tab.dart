@@ -468,9 +468,13 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       kDefaultDivider,
       TextButton(
         onPressed: () {
-          setState(() {
-            db.settings.battleSim.tdDmgOptions = TdDamageOptions();
-          });
+          SimpleCancelOkDialog(
+            title: Text(S.current.reset),
+            onTapOk: () {
+              db.settings.battleSim.tdDmgOptions = TdDamageOptions();
+              if (mounted) setState(() {});
+            },
+          ).showDialog(context);
         },
         child: Text(S.current.reset),
       ),
