@@ -81,7 +81,6 @@ class BattleData {
 
   List<BattleServantData> get nonnullBackupAllies => _getNonnull(playerDataList);
 
-  bool get isBattleFinished => nonnullEnemies.isEmpty || nonnullAllies.isEmpty;
   List<BuffData> fieldBuffs = [];
   MysticCode? mysticCode;
   int mysticCodeLv = 10;
@@ -175,6 +174,7 @@ class BattleData {
     return waveCount >= Maths.max(niceQuest?.stages.map((e) => e.wave) ?? [], -1) &&
         (curStage == null || (enemyDataList.isEmpty && onFieldEnemies.every((e) => e == null)));
   }
+  bool get isBattleFinished => nonnullEnemies.isEmpty || nonnullAllies.isEmpty;
 
   Future<void> init(
     final QuestPhase quest,
@@ -341,35 +341,39 @@ class BattleData {
     return true;
   }
 
-  Future<void> replenishActors() async {
+  Future<void> replenishActors({final bool replenishAlly = true, final bool replenishEnemy = true}) async {
     final List<BattleServantData> newActors = [];
 
-    for (int index = 0; index < onFieldAllyServants.length; index += 1) {
-      if (onFieldAllyServants[index] == null && playerDataList.isNotEmpty) {
-        BattleServantData? nextSvt;
-        while (playerDataList.isNotEmpty && nextSvt == null) {
-          nextSvt = playerDataList.removeAt(0);
-        }
-        if (nextSvt != null) {
-          onFieldAllyServants[index] = nextSvt;
-          newActors.add(nextSvt);
+    if (replenishAlly) {
+      for (int index = 0; index < onFieldAllyServants.length; index += 1) {
+        if (onFieldAllyServants[index] == null && playerDataList.isNotEmpty) {
+          BattleServantData? nextSvt;
+          while (playerDataList.isNotEmpty && nextSvt == null) {
+            nextSvt = playerDataList.removeAt(0);
+          }
+          if (nextSvt != null) {
+            onFieldAllyServants[index] = nextSvt;
+            newActors.add(nextSvt);
+          }
         }
       }
     }
 
-    for (int index = 0; index < onFieldEnemies.length; index += 1) {
-      if (!enemyValidAppear[index]) {
-        continue;
-      }
-
-      if (onFieldEnemies[index] == null && enemyDataList.isNotEmpty) {
-        BattleServantData? nextSvt;
-        while (enemyDataList.isNotEmpty && nextSvt == null) {
-          nextSvt = enemyDataList.removeAt(0);
+    if (replenishEnemy) {
+      for (int index = 0; index < onFieldEnemies.length; index += 1) {
+        if (!enemyValidAppear[index]) {
+          continue;
         }
-        if (nextSvt != null) {
-          onFieldEnemies[index] = nextSvt;
-          newActors.add(nextSvt);
+
+        if (onFieldEnemies[index] == null && enemyDataList.isNotEmpty) {
+          BattleServantData? nextSvt;
+          while (enemyDataList.isNotEmpty && nextSvt == null) {
+            nextSvt = enemyDataList.removeAt(0);
+          }
+          if (nextSvt != null) {
+            onFieldEnemies[index] = nextSvt;
+            newActors.add(nextSvt);
+          }
         }
       }
     }
@@ -940,7 +944,7 @@ class BattleData {
     enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
 
     if (niceQuest != null && niceQuest!.flags.contains(QuestFlag.enemyImmediateAppear)) {
-      await replenishActors();
+      await replenishActors(replenishAlly: false);
     }
   }
 
