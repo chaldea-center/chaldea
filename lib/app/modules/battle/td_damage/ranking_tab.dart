@@ -114,7 +114,7 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
     }
     return ListView.separated(
       controller: scrollController,
-      itemCount: results.length,
+      itemCount: results.length + 1,
       separatorBuilder: (context, index) => kDefaultDivider,
       itemBuilder: (context, index) {
         if (index == 0) {
