@@ -570,6 +570,7 @@ class AtlasApi {
   }
 
   static Future<NiceTd?> td(int tdId, {Region region = Region.jp, Duration? expireAfter}) {
+    if (tdId <= 0) return Future.value();
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/NP/$tdId',
       (data) => NiceTd.fromJson(data),

@@ -217,15 +217,21 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         child: _buildSliderGroup(),
       ),
       divider,
-      SwitchListTile.adaptive(
+      ListTile(
         dense: true,
-        value: playerSvtData.isSupportSvt,
-        title: Text('${S.current.support_servant_short}/NPC (0 COST)'),
-        onChanged: (v) {
-          setState(() {
-            playerSvtData.isSupportSvt = v;
-          });
-        },
+        leading: Text(S.current.support_servant_short),
+        trailing: FilterGroup<SupportSvtType>(
+          combined: true,
+          padding: EdgeInsets.zero,
+          options: SupportSvtType.values,
+          values: FilterRadioData.nonnull(playerSvtData.supportType),
+          optionBuilder: (v) => Text(v.shownName, textScaleFactor: 0.9),
+          onFilterChanged: (v, _) {
+            setState(() {
+              playerSvtData.supportType = v.radioValue!;
+            });
+          },
+        ),
       ),
       divider,
       TileGroup(
@@ -907,6 +913,9 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
   void _onSelectServant(final Servant selectedSvt) {
     playerSvtData.svt = selectedSvt;
+    if (playerSvtData.supportType == SupportSvtType.npc) {
+      playerSvtData.supportType = SupportSvtType.none;
+    }
     final status = db.curUser.svtStatusOf(selectedSvt.collectionNo);
     final plan = db.settings.battleSim.playerDataSource == PreferPlayerSvtDataSource.target
         ? db.curUser.svtPlanOf(selectedSvt.collectionNo)
@@ -969,7 +978,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       ..rarity = support.svt.rarity
       ..attribute = support.svt.attribute;
     playerSvtData
-      ..isSupportSvt = true
+      ..supportType = SupportSvtType.npc
       ..limitCount = support.limit.limitCount
       ..hpFou = 0
       ..atkFou = 0

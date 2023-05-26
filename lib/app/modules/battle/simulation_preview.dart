@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
+
+import 'package:archive/archive.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -120,6 +125,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         titleSpacing: 0,
         title: AutoSizeText(S.current.battle_simulation_setup, maxLines: 1),
         centerTitle: false,
+        actions: _buildActions(),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -135,6 +141,51 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         ],
       ),
     );
+  }
+
+  List<Widget> _buildActions() {
+    List<Widget> children = [];
+    final hasSvt = options.team.allSvts.any((e) => e.svt != null);
+    children.add(IconButton.filled(
+      onPressed: hasSvt
+          ? () {
+              saveFormation();
+              BattleQuestInfo? questInfo;
+              if (_questPhase != null && _questPhase!.id > 0) {
+                questInfo = BattleQuestInfo(
+                  id: _questPhase!.id,
+                  phase: _questPhase!.phase,
+                  hash: _questPhase!.enemyHash,
+                  region: questRegion,
+                );
+              }
+              final shareData = jsonEncode(BattleShareData(team: settings.curFormation, quest: questInfo));
+              String data =
+                  base64UrlEncode(GZipEncoder().encode(utf8.encode(shareData), level: Deflate.BEST_COMPRESSION)!);
+              Uri shareUri = Uri.parse('https://chaldea.center/laplace/share');
+              shareUri = shareUri.replace(queryParameters: {"v": "G$data"});
+              String shareString = shareUri.toString();
+              Clipboard.setData(ClipboardData(text: shareString));
+              print(shareString);
+              print(shareData);
+              print(shareString.length);
+              if (shareString.length > 200) {
+                shareString = '${shareString.substring(0, 200)}...';
+              }
+              EasyLoading.showSuccess("${S.current.copied}\n$shareString");
+            }
+          : null,
+      icon: const Icon(Icons.ios_share),
+      tooltip: S.current.share,
+    ));
+    children.add(IconButton(
+      onPressed: () {
+        //
+      },
+      icon: const Icon(Icons.download),
+      tooltip: S.current.import_data,
+    ));
+    return children;
   }
 
   Widget header(String title) {
@@ -555,8 +606,8 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   Widget buttonBar() {
-    final totalCost =
-        Maths.sum(options.team.allSvts.map((e) => e.isSupportSvt ? 0 : (e.svt?.cost ?? 0) + (e.ce?.cost ?? 0)));
+    final totalCost = Maths.sum(
+        options.team.allSvts.map((e) => e.supportType.isSupport ? 0 : (e.svt?.cost ?? 0) + (e.ce?.cost ?? 0)));
     Widget child = Wrap(
       spacing: 4,
       alignment: WrapAlignment.center,

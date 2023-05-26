@@ -30,7 +30,7 @@ class PlayerSvtData {
   bool ceLimitBreak = false;
   int ceLv = 0;
 
-  bool isSupportSvt = false;
+  SupportSvtType supportType = SupportSvtType.none;
 
   List<int> cardStrengthens = [0, 0, 0, 0, 0];
   List<CommandCode?> commandCodes = [null, null, null, null, null];
@@ -135,7 +135,7 @@ class PlayerSvtData {
       ..ce = ce
       ..ceLimitBreak = ceLimitBreak
       ..ceLv = ceLv
-      ..isSupportSvt = isSupportSvt
+      ..supportType = supportType
       ..cardStrengthens = cardStrengthens.toList()
       ..commandCodes = commandCodes.toList();
   }
@@ -159,7 +159,7 @@ class PlayerSvtData {
       ..fixedHp = storedData.fixedHp
       ..ceLimitBreak = storedData.ceLimitBreak
       ..ceLv = storedData.ceLv
-      ..isSupportSvt = storedData.isSupportSvt
+      ..supportType = storedData.supportType
       ..cardStrengthens = storedData.cardStrengthens.toList();
 
     if (svt != null) {
@@ -209,9 +209,9 @@ class PlayerSvtData {
   }
 
   SvtSaveData? toStoredData() {
-    if (isSupportSvt) return null;
+    if (supportType == SupportSvtType.npc) return null;
     return SvtSaveData(
-      svtId: isSupportSvt ? null : svt?.id,
+      svtId: svt?.id,
       limitCount: limitCount,
       skillLvs: skillLvs.toList(),
       skillIds: skills.map((skill) => skill?.id).toList(),
@@ -229,21 +229,21 @@ class PlayerSvtData {
       ceId: ce?.id,
       ceLimitBreak: ceLimitBreak,
       ceLv: ceLv,
-      isSupportSvt: isSupportSvt,
+      supportType: supportType,
       cardStrengthens: cardStrengthens.toList(),
       commandCodeIds: commandCodes.map((commandCode) => commandCode?.id).toList(),
     );
   }
 }
 
-// Follower.Type
-enum SupportSvtType {
-  none,
-  friend,
-  notFriend,
-  npc,
-  npcNoTd,
-}
+// // Follower.Type
+// enum SupportSvtType {
+//   none,
+//   friend,
+//   notFriend,
+//   npc,
+//   npcNoTd,
+// }
 
 class MysticCodeData {
   MysticCode? mysticCode = db.gameData.mysticCodes[210];

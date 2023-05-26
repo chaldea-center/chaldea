@@ -103,7 +103,8 @@ class _FormationEditorState extends State<FormationEditor> {
                 onSubmit: (s) {
                   if (mounted) {
                     setState(() {
-                      formation.name = s.isEmpty ? null : s.trim();
+                      s = s.trim();
+                      formation.name = s.isEmpty ? null : s;
                     });
                   }
                 },

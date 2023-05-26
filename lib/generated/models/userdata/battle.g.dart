@@ -50,6 +50,79 @@ const _$PreferPlayerSvtDataSourceEnumMap = {
   PreferPlayerSvtDataSource.target: 'target',
 };
 
+BattleShareData _$BattleShareDataFromJson(Map json) => $checkedCreate(
+      'BattleShareData',
+      json,
+      ($checkedConvert) {
+        final val = BattleShareData(
+          minVer: $checkedConvert('minVer', (v) => v as String?),
+          quest: $checkedConvert(
+              'quest', (v) => v == null ? null : BattleQuestInfo.fromJson(Map<String, dynamic>.from(v as Map))),
+          team: $checkedConvert('team', (v) => BattleTeamFormation.fromJson(Map<String, dynamic>.from(v as Map))),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$BattleShareDataToJson(BattleShareData instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('minVer', instance.minVer);
+  writeNotNull('quest', instance.quest?.toJson());
+  val['team'] = instance.team.toJson();
+  return val;
+}
+
+BattleQuestInfo _$BattleQuestInfoFromJson(Map json) => $checkedCreate(
+      'BattleQuestInfo',
+      json,
+      ($checkedConvert) {
+        final val = BattleQuestInfo(
+          id: $checkedConvert('id', (v) => v as int),
+          phase: $checkedConvert('phase', (v) => v as int),
+          hash: $checkedConvert('hash', (v) => v as String?),
+          region: $checkedConvert(
+              'region', (v) => _$JsonConverterFromJson<String, Region>(v, const RegionConverter().fromJson)),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$BattleQuestInfoToJson(BattleQuestInfo instance) {
+  final val = <String, dynamic>{
+    'id': instance.id,
+    'phase': instance.phase,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('hash', instance.hash);
+  writeNotNull('region', _$JsonConverterToJson<String, Region>(instance.region, const RegionConverter().toJson));
+  return val;
+}
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) =>
+    json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) =>
+    value == null ? null : toJson(value);
+
 BattleTeamFormation _$BattleTeamFormationFromJson(Map json) => $checkedCreate(
       'BattleTeamFormation',
       json,
@@ -98,8 +171,8 @@ SvtSaveData _$SvtSaveDataFromJson(Map json) => $checkedCreate(
                   (v as List<dynamic>?)?.map((e) => BaseSkill.fromJson(Map<String, dynamic>.from(e as Map))).toList()),
           additionalPassiveLvs:
               $checkedConvert('additionalPassiveLvs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          tdId: $checkedConvert('tdId', (v) => v as int? ?? 0),
           tdLv: $checkedConvert('tdLv', (v) => v as int? ?? 5),
-          tdId: $checkedConvert('tdId', (v) => v as int?),
           lv: $checkedConvert('lv', (v) => v as int? ?? 1),
           atkFou: $checkedConvert('atkFou', (v) => v as int? ?? 1000),
           hpFou: $checkedConvert('hpFou', (v) => v as int? ?? 1000),
@@ -108,7 +181,8 @@ SvtSaveData _$SvtSaveDataFromJson(Map json) => $checkedCreate(
           ceId: $checkedConvert('ceId', (v) => v as int?),
           ceLimitBreak: $checkedConvert('ceLimitBreak', (v) => v as bool? ?? false),
           ceLv: $checkedConvert('ceLv', (v) => v as int? ?? 0),
-          isSupportSvt: $checkedConvert('isSupportSvt', (v) => v as bool? ?? false),
+          supportType: $checkedConvert(
+              'supportType', (v) => $enumDecodeNullable(_$SupportSvtTypeEnumMap, v) ?? SupportSvtType.none),
           cardStrengthens:
               $checkedConvert('cardStrengthens', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
           commandCodeIds:
@@ -118,29 +192,44 @@ SvtSaveData _$SvtSaveDataFromJson(Map json) => $checkedCreate(
       },
     );
 
-Map<String, dynamic> _$SvtSaveDataToJson(SvtSaveData instance) => <String, dynamic>{
-      'svtId': instance.svtId,
-      'limitCount': instance.limitCount,
-      'skillLvs': instance.skillLvs,
-      'skillIds': instance.skillIds,
-      'appendLvs': instance.appendLvs,
-      'disabledExtraSkills': instance.disabledExtraSkills.toList(),
-      'additionalPassives': instance.additionalPassives.map((e) => e.toJson()).toList(),
-      'additionalPassiveLvs': instance.additionalPassiveLvs,
-      'tdLv': instance.tdLv,
-      'tdId': instance.tdId,
-      'lv': instance.lv,
-      'atkFou': instance.atkFou,
-      'hpFou': instance.hpFou,
-      'fixedAtk': instance.fixedAtk,
-      'fixedHp': instance.fixedHp,
-      'ceId': instance.ceId,
-      'ceLimitBreak': instance.ceLimitBreak,
-      'ceLv': instance.ceLv,
-      'isSupportSvt': instance.isSupportSvt,
-      'cardStrengthens': instance.cardStrengthens,
-      'commandCodeIds': instance.commandCodeIds,
-    };
+Map<String, dynamic> _$SvtSaveDataToJson(SvtSaveData instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('svtId', instance.svtId);
+  val['limitCount'] = instance.limitCount;
+  val['skillIds'] = instance.skillIds;
+  val['skillLvs'] = instance.skillLvs;
+  val['appendLvs'] = instance.appendLvs;
+  val['disabledExtraSkills'] = instance.disabledExtraSkills.toList();
+  val['additionalPassives'] = instance.additionalPassives.map((e) => e.toJson()).toList();
+  val['additionalPassiveLvs'] = instance.additionalPassiveLvs;
+  writeNotNull('tdId', instance.tdId);
+  val['tdLv'] = instance.tdLv;
+  val['lv'] = instance.lv;
+  val['atkFou'] = instance.atkFou;
+  val['hpFou'] = instance.hpFou;
+  writeNotNull('fixedAtk', instance.fixedAtk);
+  writeNotNull('fixedHp', instance.fixedHp);
+  writeNotNull('ceId', instance.ceId);
+  val['ceLimitBreak'] = instance.ceLimitBreak;
+  val['ceLv'] = instance.ceLv;
+  val['supportType'] = _$SupportSvtTypeEnumMap[instance.supportType]!;
+  val['cardStrengthens'] = instance.cardStrengthens;
+  val['commandCodeIds'] = instance.commandCodeIds;
+  return val;
+}
+
+const _$SupportSvtTypeEnumMap = {
+  SupportSvtType.none: 'none',
+  SupportSvtType.friend: 'friend',
+  SupportSvtType.npc: 'npc',
+};
 
 MysticCodeSaveData _$MysticCodeSaveDataFromJson(Map json) => $checkedCreate(
       'MysticCodeSaveData',
@@ -374,12 +463,6 @@ Map<String, dynamic> _$TdDamageOptionsToJson(TdDamageOptions instance) => <Strin
       'damageNpIndivSumCount': instance.damageNpIndivSumCount,
       'damageNpHpRatioMax': instance.damageNpHpRatioMax,
     };
-
-Value? _$JsonConverterFromJson<Json, Value>(
-  Object? json,
-  Value? Function(Json json) fromJson,
-) =>
-    json == null ? null : fromJson(json as Json);
 
 const _$SvtLvEnumMap = {
   SvtLv.maxLv: 'maxLv',

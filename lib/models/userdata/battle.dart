@@ -67,6 +67,54 @@ class BattleSimSetting {
   }
 }
 
+@JsonSerializable(includeIfNull: false)
+class BattleShareData {
+  static const kMinVer = '2.4.1';
+  String? minVer;
+  BattleQuestInfo? quest;
+  BattleTeamFormation team;
+
+  BattleShareData({
+    this.minVer,
+    this.quest,
+    required this.team,
+  });
+
+  factory BattleShareData.fromJson(Map<String, dynamic> json) => _$BattleShareDataFromJson(json);
+
+  Map<String, dynamic> toJson() {
+    final team2 = BattleTeamFormation.fromJson(team.toJson());
+    for (final svt in [...team2.onFieldSvts, ...team2.backupSvts]) {
+      svt?.additionalPassives.clear();
+      svt?.additionalPassiveLvs.clear();
+    }
+    return _$BattleShareDataToJson(BattleShareData(
+      minVer: kMinVer,
+      quest: quest,
+      team: team2,
+    ));
+  }
+}
+
+@JsonSerializable(includeIfNull: false, converters: [RegionConverter()])
+class BattleQuestInfo {
+  int id;
+  int phase;
+  String? hash;
+  Region? region;
+
+  BattleQuestInfo({
+    required this.id,
+    required this.phase,
+    this.hash,
+    this.region,
+  });
+
+  factory BattleQuestInfo.fromJson(Map<String, dynamic> json) => _$BattleQuestInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BattleQuestInfoToJson(this);
+}
+
 @JsonSerializable()
 class BattleTeamFormation {
   String? name;
@@ -97,18 +145,18 @@ class BattleTeamFormation {
   }
 }
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class SvtSaveData {
   int? svtId;
   int limitCount;
-  List<int> skillLvs;
   List<int?> skillIds;
+  List<int> skillLvs;
   List<int> appendLvs;
   Set<int> disabledExtraSkills;
   List<BaseSkill> additionalPassives;
   List<int> additionalPassiveLvs;
-  int tdLv;
   int? tdId;
+  int tdLv;
 
   int lv;
   int atkFou;
@@ -122,7 +170,7 @@ class SvtSaveData {
   bool ceLimitBreak;
   int ceLv;
 
-  bool isSupportSvt;
+  SupportSvtType supportType;
 
   List<int> cardStrengthens;
   List<int?> commandCodeIds;
@@ -136,8 +184,8 @@ class SvtSaveData {
     Set<int>? disabledExtraSkills,
     List<BaseSkill>? additionalPassives,
     List<int>? additionalPassiveLvs,
+    this.tdId = 0,
     this.tdLv = 5,
-    this.tdId,
     this.lv = 1,
     this.atkFou = 1000,
     this.hpFou = 1000,
@@ -146,21 +194,24 @@ class SvtSaveData {
     this.ceId,
     this.ceLimitBreak = false,
     this.ceLv = 0,
-    this.isSupportSvt = false,
+    this.supportType = SupportSvtType.none,
     List<int>? cardStrengthens,
     List<int?>? commandCodeIds,
   })  : skillLvs = skillLvs ?? [10, 10, 10],
-        skillIds = skillIds ?? [null, null, null],
+        skillIds = List.generate(3, (index) => skillIds?.getOrNull(index)),
         appendLvs = appendLvs ?? [0, 0, 0],
         disabledExtraSkills = disabledExtraSkills ?? {},
         additionalPassives = additionalPassives ?? [],
         additionalPassiveLvs = additionalPassiveLvs ?? [],
         cardStrengthens = cardStrengthens ?? [0, 0, 0, 0, 0],
-        commandCodeIds = commandCodeIds ?? [null, null, null, null, null];
+        commandCodeIds = List.generate(5, (index) => commandCodeIds?.getOrNull(index));
 
   factory SvtSaveData.fromJson(Map<String, dynamic> json) => _$SvtSaveDataFromJson(json);
 
-  Map<String, dynamic> toJson() => _$SvtSaveDataToJson(this);
+  Map<String, dynamic> toJson() {
+    if (svtId == null || svtId == 0) return {};
+    return _$SvtSaveDataToJson(this);
+  }
 }
 
 @JsonSerializable()
@@ -560,4 +611,24 @@ enum PreferPlayerSvtDataSource {
   ;
 
   bool get isNone => this == PreferPlayerSvtDataSource.none;
+}
+
+enum SupportSvtType {
+  none,
+  friend,
+  npc,
+  ;
+
+  bool get isSupport => this != SupportSvtType.none;
+
+  String get shownName {
+    switch (this) {
+      case SupportSvtType.none:
+        return 'NONE';
+      case SupportSvtType.friend:
+        return S.current.support_servant_short;
+      case SupportSvtType.npc:
+        return 'NPC';
+    }
+  }
 }
