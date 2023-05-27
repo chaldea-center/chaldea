@@ -1,8 +1,6 @@
-import 'dart:convert';
-
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
-import 'package:archive/archive.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -14,6 +12,8 @@ import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/quest/quest_card.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/models/userdata/version.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -28,11 +28,13 @@ import 'formation/team.dart';
 class SimulationPreview extends StatefulWidget {
   final Region? region;
   final QuestPhase? questPhase;
+  final Uri? shareData;
 
   const SimulationPreview({
     super.key,
     this.region,
     this.questPhase,
+    this.shareData,
   });
 
   @override
@@ -68,10 +70,13 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   void initState() {
     super.initState();
     questRegion = widget.region;
-    options.team.mysticCodeData.level = db.curUser.mysticCodes[options.team.mysticCodeData.mysticCode?.id] ?? 10;
     questPhase = widget.questPhase;
     String? initText;
-    if (questPhase != null) {
+    if (widget.shareData != null) {
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+        importShareData(widget.shareData!);
+      });
+    } else if (questPhase != null) {
       initText = '${questPhase!.id}/${questPhase!.phase}';
       if (questPhase!.enemyHash != null && questPhase!.enemyHashes.length > 1) {
         initText += '?hash=${questPhase!.enemyHash}';
@@ -80,11 +85,12 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         initText = '/${widget.region!.upper}/quest/$initText';
       }
       questIdTextController.text = initText;
+      initFormation();
     } else if (settings.previousQuestPhase != null) {
       questIdTextController.text = settings.previousQuestPhase!;
       _fetchQuestPhase();
+      initFormation();
     }
-    initFormation();
   }
 
   @override
@@ -145,44 +151,48 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
   List<Widget> _buildActions() {
     List<Widget> children = [];
-    final hasSvt = options.team.allSvts.any((e) => e.svt != null);
     children.add(IconButton.filled(
-      onPressed: hasSvt
-          ? () {
-              saveFormation();
-              BattleQuestInfo? questInfo;
-              if (_questPhase != null && _questPhase!.id > 0) {
-                questInfo = BattleQuestInfo(
-                  id: _questPhase!.id,
-                  phase: _questPhase!.phase,
-                  hash: _questPhase!.enemyHash,
-                  region: questRegion,
-                );
-              }
-              final shareData = jsonEncode(BattleShareData(team: settings.curFormation, quest: questInfo));
-              String data =
-                  base64UrlEncode(GZipEncoder().encode(utf8.encode(shareData), level: Deflate.BEST_COMPRESSION)!);
-              Uri shareUri = Uri.parse('https://chaldea.center/laplace/share');
-              shareUri = shareUri.replace(queryParameters: {"v": "G$data"});
-              String shareString = shareUri.toString();
-              Clipboard.setData(ClipboardData(text: shareString));
-              print(shareString);
-              print(shareData);
-              print(shareString.length);
-              if (shareString.length > 200) {
-                shareString = '${shareString.substring(0, 200)}...';
-              }
-              EasyLoading.showSuccess("${S.current.copied}\n$shareString");
-            }
-          : null,
+      onPressed: () {
+        saveFormation();
+        if (!settings.curFormation.allSvts.any((e) => e?.svtId != null)) {
+          EasyLoading.showError("No servant in team");
+          return;
+        }
+        BattleQuestInfo? questInfo;
+        if (_questPhase != null && _questPhase!.id > 0) {
+          questInfo = BattleQuestInfo(
+            id: _questPhase!.id,
+            phase: _questPhase!.phase,
+            hash: _questPhase!.enemyHash,
+            region: questRegion,
+          );
+        }
+        final data = BattleShareData(team: settings.curFormation, quest: questInfo).toShareUriGzip();
+        String shareString = data.toString();
+        Clipboard.setData(ClipboardData(text: shareString));
+        if (shareString.length > 200) {
+          shareString = '${shareString.substring(0, 200)}...';
+        }
+        EasyLoading.showSuccess("${S.current.copied}\n$shareString");
+      },
       icon: const Icon(Icons.ios_share),
       tooltip: S.current.share,
     ));
     children.add(IconButton(
-      onPressed: () {
-        //
+      onPressed: () async {
+        final text = (await Clipboard.getData(Clipboard.kTextPlain))?.text;
+        if (text == null || text.isEmpty) {
+          EasyLoading.showError("Please copy share url to clipboard first");
+          return;
+        }
+        final uri = Uri.tryParse(text);
+        if (uri == null) {
+          EasyLoading.showError('Invalid url format');
+          return;
+        }
+        importShareData(uri);
       },
-      icon: const Icon(Icons.download),
+      icon: const Icon(Icons.paste),
       tooltip: S.current.import_data,
     ));
     return children;
@@ -654,6 +664,32 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   ///
+
+  void importShareData(Uri uri) {
+    if (!uri.path.startsWith('/laplace/share')) {
+      EasyLoading.showError("Invalid url");
+      return;
+    }
+    final data = BattleShareData.parse(uri);
+    if (data == null) {
+      EasyLoading.showError('Invalid data');
+      return;
+    }
+    if (data.minVer != null) {
+      final minVer = AppVersion.tryParse(data.minVer!);
+      if (minVer != null && minVer > AppInfo.version) {
+        EasyLoading.showError(S.current.error_required_app_version(data.minVer!));
+        return;
+      }
+    }
+    restoreFormation(data.team);
+    if (data.quest != null) {
+      questIdTextController.text = data.quest!.toUrl();
+      _fetchQuestPhase();
+    }
+    EasyLoading.showSuccess(S.current.import_data_success);
+    if (mounted) setState(() {});
+  }
 
   Future<void> _fetchQuestPhase() async {
     questErrorMsg = null;

@@ -178,6 +178,7 @@ class Routes {
 
   static const String laplace = '/laplace';
   static const String laplaceBattle = '/laplace/battle';
+  static const String laplaceShare = '/laplace/share';
 
   static const String discord = '/discord';
   static const String notFound = '/404';
@@ -430,6 +431,10 @@ class RouteConfiguration {
       case 'NP':
         return TdDetailPage(id: _secondInt, region: region);
       case Routes.laplace:
+        if (path?.startsWith(Routes.laplaceShare) == true && uri?.queryParameters.containsKey('v') == true) {
+          print(uri);
+          return SimulationPreview(shareData: uri);
+        }
         return const SimulationPreview();
       case Routes.apk:
         return const ApkListPage();

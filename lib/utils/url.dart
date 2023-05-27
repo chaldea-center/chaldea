@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:url_launcher/url_launcher.dart' as launcher;
@@ -24,7 +25,13 @@ class ChaldeaUrl {
   }
 
   static String app(String path, [bool? useCN]) {
-    useCN ??= Hosts.cn;
+    if (useCN == null && kIsWeb) {
+      final href = kPlatformMethods.href;
+      if (href.startsWith(Hosts.kAppHostCN)) {
+        useCN = true;
+      }
+    }
+    useCN ??= Hosts.cn || Language.isCHS;
     if (!path.startsWith('/')) path = '/$path';
     return (useCN ? Hosts.kAppHostCN : Hosts.kAppHostGlobal) + path;
   }

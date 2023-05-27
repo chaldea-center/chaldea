@@ -1,4 +1,9 @@
+import 'dart:convert';
+
+import 'package:archive/archive.dart';
+
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/utils/url.dart';
 import '../../utils/atlas.dart';
 import '../../utils/extension.dart';
 import '../db.dart';
@@ -94,6 +99,28 @@ class BattleShareData {
       team: team2,
     ));
   }
+
+  Uri toShareUriGzip() {
+    final shareData = jsonEncode(this);
+    String data = base64UrlEncode(GZipEncoder().encode(utf8.encode(shareData), level: Deflate.BEST_COMPRESSION)!);
+    Uri shareUri = Uri.parse(ChaldeaUrl.app('/laplace/share'));
+    shareUri = shareUri.replace(queryParameters: {"v": "G$data"});
+    return shareUri;
+  }
+
+  static BattleShareData? parse(Uri uri) {
+    final v = uri.queryParameters['v'];
+    if (v == null || v.isEmpty) return null;
+    if (v.substring(0, 1) == 'G') {
+      return parseGzip(v.substring(1));
+    }
+    return null;
+  }
+
+  static BattleShareData parseGzip(String encoded) {
+    final data = jsonDecode(utf8.decode(GZipDecoder().decodeBytes(base64Decode(encoded))));
+    return BattleShareData.fromJson(data);
+  }
 }
 
 @JsonSerializable(includeIfNull: false, converters: [RegionConverter()])
@@ -109,6 +136,17 @@ class BattleQuestInfo {
     this.hash,
     this.region,
   });
+
+  String toUrl() {
+    String url = '$id/$phase';
+    if (hash != null) {
+      url += '?hash=$hash';
+    }
+    if (region == Region.jp || region == Region.cn) {
+      url = '${region?.upper}/$url';
+    }
+    return url;
+  }
 
   factory BattleQuestInfo.fromJson(Map<String, dynamic> json) => _$BattleQuestInfoFromJson(json);
 
@@ -135,6 +173,8 @@ class BattleTeamFormation {
   factory BattleTeamFormation.fromJson(Map<String, dynamic> json) => _$BattleTeamFormationFromJson(json);
 
   Map<String, dynamic> toJson() => _$BattleTeamFormationToJson(this);
+
+  List<SvtSaveData?> get allSvts => [...onFieldSvts, ...backupSvts];
 
   String shownName(int index) {
     String text = '${S.current.team} ${index + 1}';
