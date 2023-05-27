@@ -12,6 +12,7 @@ class TeamSetupCard extends StatefulWidget {
   final QuestPhase? quest;
   final bool enableEdit;
   final bool showEmptyBackup;
+  final VoidCallback? onChanged;
 
   const TeamSetupCard({
     super.key,
@@ -21,6 +22,7 @@ class TeamSetupCard extends StatefulWidget {
     required this.quest,
     this.enableEdit = true,
     this.showEmptyBackup = true,
+    this.onChanged,
   });
 
   @override
@@ -60,8 +62,9 @@ class _TeamSetupCardState extends State<TeamSetupCard> {
                     playerSvtData: svt,
                     playerRegion: team.playerRegion,
                     questPhase: widget.quest,
-                    onChange: () {
+                    onChanged: () {
                       if (mounted) setState(() {});
+                      widget.onChanged?.call();
                     },
                     onDragSvt: widget.enableEdit ? (svtFrom) => onDrag(svtFrom, svt, false) : null,
                     onDragCE: widget.enableEdit ? (svtFrom) => onDrag(svtFrom, svt, true) : null,
@@ -97,5 +100,6 @@ class _TeamSetupCardState extends State<TeamSetupCard> {
     }
 
     if (mounted) setState(() {});
+    widget.onChanged?.call();
   }
 }

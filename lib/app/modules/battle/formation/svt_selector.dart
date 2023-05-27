@@ -24,7 +24,7 @@ class ServantSelector extends StatelessWidget {
   final PlayerSvtData playerSvtData;
   final Region playerRegion;
   final QuestPhase? questPhase;
-  final VoidCallback onChange;
+  final VoidCallback onChanged;
   final DragTargetAccept<PlayerSvtData>? onDragSvt;
   final DragTargetAccept<PlayerSvtData>? onDragCE;
   final bool enableEdit;
@@ -34,7 +34,7 @@ class ServantSelector extends StatelessWidget {
     required this.playerSvtData,
     required this.playerRegion,
     required this.questPhase,
-    required this.onChange,
+    required this.onChanged,
     this.onDragSvt,
     this.onDragCE,
     this.enableEdit = true,
@@ -87,9 +87,9 @@ class ServantSelector extends StatelessWidget {
           playerSvtData: enableEdit ? playerSvtData : playerSvtData.copy(),
           questPhase: questPhase,
           playerRegion: playerRegion,
-          onChange: onChange,
+          onChange: onChanged,
         ));
-        onChange();
+        onChanged();
       },
       child: svtIcon,
     );
@@ -157,9 +157,9 @@ class ServantSelector extends StatelessWidget {
         await router.pushPage(CraftEssenceOptionEditPage(
           playerSvtData: enableEdit ? playerSvtData : playerSvtData.copy(),
           questPhase: questPhase,
-          onChange: onChange,
+          onChange: onChanged,
         ));
-        onChange();
+        onChanged();
       },
       child: ceIcon,
     );

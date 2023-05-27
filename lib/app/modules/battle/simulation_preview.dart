@@ -120,6 +120,9 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       backupSvts: backupSvts,
       team: options.team,
       quest: questPhase,
+      onChanged: () {
+        if (mounted) setState(() {});
+      },
     ));
     children.add(header(S.current.mystic_code));
     children.add(buildMysticCode());
