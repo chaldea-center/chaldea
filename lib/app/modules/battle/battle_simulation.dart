@@ -506,11 +506,18 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           onPressed: battleData.isBattleWin
               ? null
               : () async {
-                  final List<CombatAction?> combatActions = [null, null, null];
                   await showDialog(
                     context: context,
                     useRootNavigator: false,
-                    builder: (context) => showCommandCards(context, combatActions),
+                    builder: (context) => CombatActionSelector(
+                      battleData: battleData,
+                      onSelected: (combatActions) async {
+                        if (combatActions.isNotEmpty) {
+                          await battleData.playerTurn(combatActions);
+                        }
+                        if (mounted) setState(() {});
+                      },
+                    ),
                   );
                   if (mounted) setState(() {});
                 },
@@ -606,31 +613,6 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         padding: const EdgeInsets.all(1),
         child: db.getIconImage(buff.buff.icon, width: 16, height: 16),
       ),
-    );
-  }
-
-  Widget showCommandCards(BuildContext context, List<CombatAction?> combatActions) {
-    return SimpleCancelOkDialog(
-      title: Text(S.current.battle_select_card),
-      contentPadding: const EdgeInsets.all(8),
-      scrollable: true,
-      content: CombatActionSelector(battleData: battleData, combatActions: combatActions),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 24.0),
-      onTapOk: () async {
-        final List<CombatAction> nonnullActions = [];
-        for (final action in combatActions) {
-          if (action != null) {
-            nonnullActions.add(action);
-          }
-        }
-
-        if (nonnullActions.isEmpty) {
-          return;
-        }
-
-        await battleData.playerTurn(nonnullActions);
-        if (mounted) setState(() {});
-      },
     );
   }
 }

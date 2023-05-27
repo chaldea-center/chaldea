@@ -10,9 +10,9 @@ import 'package:chaldea/widgets/widgets.dart';
 
 class CombatActionSelector extends StatefulWidget {
   final BattleData battleData;
-  final List<CombatAction?> combatActions;
+  final Function(List<CombatAction> actions) onSelected;
 
-  CombatActionSelector({super.key, required this.battleData, required this.combatActions});
+  CombatActionSelector({super.key, required this.battleData, required this.onSelected});
 
   @override
   State<CombatActionSelector> createState() => _CombatActionSelectorState();
@@ -23,8 +23,33 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
 
   final double cardSize = 48;
 
+  final List<CombatAction?> combatActions = List.filled(3, null);
+
   @override
   Widget build(BuildContext context) {
+    final validActions = combatActions.whereType<CombatAction>().toList();
+    return SimpleCancelOkDialog(
+      title: Text(S.current.battle_select_card),
+      contentPadding: const EdgeInsets.all(8),
+      scrollable: true,
+      content: buildContent(),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 24.0),
+      hideOk: true,
+      actions: [
+        TextButton(
+          onPressed: validActions.isEmpty
+              ? null
+              : () {
+                  widget.onSelected(validActions);
+                  Navigator.pop(context, validActions);
+                },
+          child: Text(S.current.confirm),
+        )
+      ],
+    );
+  }
+
+  Widget buildContent() {
     List<Widget> children = [
       Row(
         children: [
@@ -158,31 +183,31 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
     );
     cardIcon = GestureDetector(
       onTap: () {
-        final cardIndex = getCardIndex(svt, card, widget.combatActions);
+        final cardIndex = getCardIndex(svt, card);
         if (cardIndex != -1) {
-          final combatAction = widget.combatActions[cardIndex]!;
+          final combatAction = combatActions[cardIndex]!;
           if (combatAction.cardData.cardType.isQAB) {
             if (combatAction.cardData.isCritical) {
-              widget.combatActions[cardIndex] = null;
+              combatActions[cardIndex] = null;
             } else {
               combatAction.cardData.isCritical = true;
             }
           } else {
-            widget.combatActions[cardIndex] = null;
+            combatActions[cardIndex] = null;
           }
         } else {
-          final nextIndex = widget.combatActions.indexOf(null);
+          final nextIndex = combatActions.indexOf(null);
           if (nextIndex == -1) {
             return;
           }
-          widget.combatActions[nextIndex] = CombatAction(svt, card);
+          combatActions[nextIndex] = CombatAction(svt, card);
         }
         if (mounted) setState(() {});
       },
       child: cardIcon,
     );
-    final attackIndex = getCardIndex(svt, card, widget.combatActions);
-    final isCritical = widget.combatActions.getOrNull(attackIndex)?.cardData.isCritical ?? false;
+    final attackIndex = getCardIndex(svt, card);
+    final isCritical = combatActions.getOrNull(attackIndex)?.cardData.isCritical ?? false;
     cardIcon = wrapAttackIndex(cardIcon, attackIndex, isCritical);
     return cardIcon;
   }
@@ -268,24 +293,23 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
           return;
         }
 
-        final npIndex = getNpCardIndex(svt, widget.combatActions);
+        final npIndex = getNpCardIndex(svt);
         if (npIndex != -1) {
-          widget.combatActions[npIndex] = null;
+          combatActions[npIndex] = null;
           if (mounted) setState(() {});
         } else {
-          final nextIndex = widget.combatActions.indexOf(null);
+          final nextIndex = combatActions.indexOf(null);
           if (nextIndex == -1) {
             return;
           }
 
-          widget.combatActions[nextIndex] = CombatAction(svt, svt.getNPCard(battleData)!);
+          combatActions[nextIndex] = CombatAction(svt, svt.getNPCard(battleData)!);
           if (mounted) setState(() {});
         }
       },
       child: tdIcon,
     );
-    tdIcon = wrapAttackIndex(
-        Padding(padding: const EdgeInsets.all(1), child: tdIcon), getNpCardIndex(svt, widget.combatActions), false);
+    tdIcon = wrapAttackIndex(Padding(padding: const EdgeInsets.all(1), child: tdIcon), getNpCardIndex(svt), false);
     return tdIcon;
   }
 
@@ -329,18 +353,14 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
     );
   }
 
-  int getNpCardIndex(final BattleServantData svt, final List<CombatAction?> combatActions) {
+  int getNpCardIndex(final BattleServantData svt) {
     return combatActions
         .map((action) => action != null && action.cardData.isNP ? action.actor : null)
         .toList()
         .indexOf(svt);
   }
 
-  int getCardIndex(
-    final BattleServantData svt,
-    final CommandCardData cardData,
-    final List<CombatAction?> combatActions,
-  ) {
+  int getCardIndex(final BattleServantData svt, final CommandCardData cardData) {
     return combatActions
         .map((action) => action != null && action.cardData.cardIndex == cardData.cardIndex && !action.cardData.isNP
             ? action.actor
