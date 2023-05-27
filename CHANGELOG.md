@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.4.1
+
+- Chaldeas
+  - Add current bond level for servant
+  - Add bulletin board speaker
+  - Fix Plan page favorite button not work
+- Laplace
+  - Support team url share and import
+  - Show team and quest in recorder
+  - Fix skill cd is not defined for custom skill
+  - Fix enemyImmediateAppear should not work on player team
+- NP damage ranking
+  - always use ascension 4 even if using player data
+  - Fix rank last svt is hidden
+
 ## 2.4.0
 
 - 2000 commits reached!
