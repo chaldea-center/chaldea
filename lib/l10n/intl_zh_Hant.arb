@@ -85,6 +85,7 @@
   "battle_probability_threshold": "機率閾值",
   "battle_quest_from": "選擇",
   "battle_random": "隨機",
+  "battle_records": null,
   "battle_remaining_hp": "剩餘HP",
   "battle_require_actor_on_field": "需要{actorName}在場",
   "battle_require_field_traits": "要求的場地特性",

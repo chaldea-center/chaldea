@@ -85,6 +85,7 @@
   "battle_probability_threshold": "確率閾値",
   "battle_quest_from": "選択",
   "battle_random": "ランダム",
+  "battle_records": null,
   "battle_remaining_hp": null,
   "battle_require_actor_on_field": "{actorName}のフィールドにいるが必要",
   "battle_require_field_traits": "必要なフィールド特性",

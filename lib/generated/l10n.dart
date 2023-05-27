@@ -998,6 +998,17 @@ class S {
     );
   }
 
+  /// `Records`
+  String get battle_records {
+    return Intl.message(
+      'Records',
+      name: 'battle_records',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Remaining HP`
   String get battle_remaining_hp {
     return Intl.message(

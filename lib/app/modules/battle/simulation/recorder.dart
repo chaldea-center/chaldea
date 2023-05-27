@@ -50,7 +50,7 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
             const SizedBox(width: 16),
             Expanded(
               child: Text(
-                'Records',
+                S.current.battle_records,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(decoration: TextDecoration.underline),
                 // textAlign: TextAlign.center,
               ),
@@ -185,6 +185,9 @@ class BattleRecorderPanelBase extends StatelessWidget {
     List<Widget> cards = [];
     List<Widget> cardChildren = [];
     final records = this.records ?? battleData?.recorder.records ?? [];
+    if (records.length == 2 && records[0] is BattleProgressWaveRecord && records[1] is BattleProgressTurnRecord) {
+      return const SizedBox.shrink();
+    }
     for (final record in records) {
       if (record is BattleProgressWaveRecord) {
         if (cardChildren.isNotEmpty) {
@@ -232,8 +235,11 @@ class BattleRecorderPanelBase extends StatelessWidget {
         cardChildren.add(_InstantDeathDetailWidget(record: record, battleData: battleData));
       } else if (record is BattleMessageRecord) {
         cardChildren.add(Text.rich(TextSpan(children: [
-          TextSpan(text: '${record.message}: '),
-          if (record.target != null) ...drawSvt(context, record.target!),
+          TextSpan(text: record.message),
+          if (record.target != null) ...[
+            const TextSpan(text: ': '),
+            ...drawSvt(context, record.target!),
+          ],
         ])));
       } else {
         assert(false, record);

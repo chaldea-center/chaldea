@@ -128,7 +128,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
             'No.${svt.niceEnemy?.shownId ?? svt.niceSvt?.shownId ?? svt.svtId}'
             '  ${Transl.svtClassId(svt.classId).l}'
             '\nATK ${svt.atk}  HP ${svt.hp}'
-            '\nPosition ${svt.fieldIndex + 1}',
+            '\n${Transl.svtAttribute(svt.attribute).l}  Pos ${svt.fieldIndex + 1}',
             style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
           ),
           const SizedBox(height: 4),
@@ -278,6 +278,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
       final skill = svt.skillInfoList.getOrNull(skillNum - 1);
       final baseSkill = skill?.proximateSkill;
       final cd = skill?.chargeTurn ?? 0;
+      final baseCd = baseSkill?.coolDown.getOrNull((skill?.skillLv ?? 1) - 1);
       children.add(SimpleAccordion(
         headerBuilder: (context, _) {
           return ListTile(
@@ -297,7 +298,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
             ),
             title: Text("${S.current.skill} $skillNum  Lv.${baseSkill == null ? '-' : skill?.skillLv}"),
             subtitle: Text(skill?.lName ?? "NONE"),
-            trailing: Text('CD ${cd > 0 ? cd : "-"}', textScaleFactor: 0.8),
+            trailing: Text('CD ${cd > 0 ? cd : "-"}/${baseCd ?? "-"}', textScaleFactor: 0.8),
             contentPadding: const EdgeInsetsDirectional.only(start: 16),
           );
         },

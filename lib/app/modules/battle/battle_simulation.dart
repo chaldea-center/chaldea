@@ -11,6 +11,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../descriptors/skill_descriptor.dart';
 import 'simulation/battle_log.dart';
 import 'simulation/combat_action_selector.dart';
 import 'simulation/custom_skill_activator.dart';
@@ -568,10 +569,23 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       ],
     );
 
+    final pskill = skillInfo.proximateSkill;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2),
-      child: InkWell(
+      child: GestureDetector(
         onTap: isSealed || isCondFailed || cd > 0 ? null : onTap,
+        onLongPress: pskill == null
+            ? null
+            : () {
+                SimpleCancelOkDialog(
+                  title: Text(S.current.skill),
+                  content: DisableLayoutBuilder(child: SkillDescriptor(skill: pskill)),
+                  scrollable: true,
+                  hideCancel: true,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 20),
+                ).showDialog(context);
+              },
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxHeight: 32),
           child: child,
