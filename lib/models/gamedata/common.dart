@@ -39,6 +39,20 @@ enum Region {
     }
   }
 
+  int get timezone {
+    switch (this) {
+      case Region.jp:
+        return 9;
+      case Region.cn:
+      case Region.tw:
+        return 8;
+      case Region.na:
+        return -8;
+      case Region.kr:
+        return 9;
+    }
+  }
+
   @override
   String toString() {
     return name.toUpperCase();

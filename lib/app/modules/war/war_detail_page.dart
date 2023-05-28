@@ -14,6 +14,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../common/not_found.dart';
 import '../quest/quest_list.dart';
 import 'war/asset_list.dart';
+import 'war/chaldea_gate_quests.dart';
 import 'war/free_overview.dart';
 import 'war/map_list.dart';
 import 'war/war_bgm_list.dart';
@@ -486,6 +487,16 @@ class _WarDetailPageState extends State<WarDetailPage> {
     _addTile(S.current.interlude, interludeQuests);
     _addTile(S.current.event_quest, eventQuests);
     _addTile('Selections', selectionQuests, needSort: false);
+
+    if (war.id == WarId.chaldeaGate) {
+      children.add(ListTile(
+        title: Text(S.current.general_others),
+        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+        onTap: () {
+          router.push(child: const ChaldeaGateQuestListPage());
+        },
+      ));
+    }
 
     return TileGroup(
       header: S.current.quest,
