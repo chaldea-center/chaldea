@@ -246,6 +246,8 @@ class _ResultDetailState extends State<_ResultDetail> {
               target.damageParams,
               target.result,
               wrapDialog: false,
+              minResult: target.minResult,
+              maxResult: target.maxResult,
             );
             break;
           case _ParamType.refund:
@@ -253,6 +255,8 @@ class _ResultDetailState extends State<_ResultDetail> {
               target.attackNpParams,
               target.result,
               wrapDialog: false,
+              minResult: target.minResult,
+              maxResult: target.maxResult,
             );
             break;
           case _ParamType.star:
@@ -260,6 +264,8 @@ class _ResultDetailState extends State<_ResultDetail> {
               target.starParams,
               target.result,
               wrapDialog: false,
+              minResult: target.minResult,
+              maxResult: target.maxResult,
             );
             break;
           case _ParamType.instantDeath:

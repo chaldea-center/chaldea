@@ -670,12 +670,45 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
             textAlign: TextAlign.center,
           ),
           coloredText('HP: ${detail.target.hp}', null),
-          coloredText('DMG: ${Maths.sum(result.damages)}', Colors.red,
-              () => showParams(context, DamageParamDialog(detail.damageParams, detail.result))),
-          coloredText('NP: ${Maths.sum(result.npGains) / 100}', Colors.blue,
-              () => showParams(context, AttackerNpParamDialog(detail.attackNpParams, detail.result))),
-          coloredText('Star: ${Maths.sum(result.stars) / 1000}', Colors.green,
-              () => showParams(context, StarParamDialog(detail.starParams, detail.result))),
+          coloredText(
+            'DMG: ${Maths.sum(result.damages)}',
+            Colors.red,
+            () => showParams(
+              context,
+              DamageParamDialog(
+                detail.damageParams,
+                detail.result,
+                minResult: detail.minResult,
+                maxResult: detail.maxResult,
+              ),
+            ),
+          ),
+          coloredText(
+            'NP: ${Maths.sum(result.npGains) / 100}',
+            Colors.blue,
+            () => showParams(
+              context,
+              AttackerNpParamDialog(
+                detail.attackNpParams,
+                detail.result,
+                minResult: detail.minResult,
+                maxResult: detail.maxResult,
+              ),
+            ),
+          ),
+          coloredText(
+            'Star: ${Maths.sum(result.stars) / 1000}',
+            Colors.green,
+            () => showParams(
+              context,
+              StarParamDialog(
+                detail.starParams,
+                detail.result,
+                minResult: detail.minResult,
+                maxResult: detail.maxResult,
+              ),
+            ),
+          ),
           coloredText('Overkill: ${result.overkillStates.where((e) => e).length}/${result.overkillStates.length}',
               Colors.yellow.shade900),
         ],
@@ -808,8 +841,12 @@ mixin _ParamDialogMixin {
 class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
   final DamageParameters params;
   final DamageResult result;
+  final DamageResult? minResult;
+  final DamageResult? maxResult;
   final bool wrapDialog;
-  const DamageParamDialog(this.params, this.result, {super.key, this.wrapDialog = true});
+
+  const DamageParamDialog(this.params, this.result,
+      {super.key, this.wrapDialog = true, this.minResult, this.maxResult});
 
   @override
   Widget build(BuildContext context) {
@@ -845,9 +882,12 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
       title: S.current.battle_damage_parameters,
       wrapDialog: wrapDialog,
       children: [
-        oneParam(S.current.battle_damage, Maths.sum(result.damages).toString()),
+        oneParam(S.current.battle_damage, result.totalDamage.toString()),
+        if (minResult != null && maxResult != null)
+          oneParam('', '(${minResult!.totalDamage}~${maxResult!.totalDamage})'),
         if (result.damages.any((e) => e > 0))
           listValueWithOverkill(result.damages, result.overkillStates, (v) => v.toString()),
+        oneParam(S.current.battle_random, fixedRandom.toStringAsFixed(3)),
         oneParam('ATK', params.attack.toString()),
         oneParam(S.current.class_attack_rate, classAttackCorrection.format(precision: 3)),
         if (params.damageRate != 1000)
@@ -855,7 +895,6 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
         if (isNpSpecificDamage)
           oneParam(S.current.np_sp_damage_rate, npSpecificAttackRate.format(percent: true, precision: 3)),
         if (params.totalHits != 100) oneParam('Hits', hitsPercent.format(percent: true, precision: 3)),
-        oneParam(S.current.battle_random, fixedRandom.toStringAsFixed(3)),
         oneParam(S.current.class_advantage, classAdvantage.format(precision: 3)),
         oneParam(S.current.attribute_advantage, attributeAdvantage.format(precision: 3)),
         oneParam(Transl.buffNames('攻撃力アップ').l, atkSum.format(percent: true, precision: 3), buffIcon(300)),
@@ -876,7 +915,11 @@ class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
   final AttackNpGainParameters params;
   final DamageResult result;
   final bool wrapDialog;
-  const AttackerNpParamDialog(this.params, this.result, {super.key, this.wrapDialog = true});
+  final DamageResult? minResult;
+  final DamageResult? maxResult;
+
+  const AttackerNpParamDialog(this.params, this.result,
+      {super.key, this.wrapDialog = true, this.minResult, this.maxResult});
 
   @override
   Widget build(BuildContext context) {
@@ -891,7 +934,11 @@ class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
       title: S.current.battle_atk_np_parameters,
       wrapDialog: wrapDialog,
       children: [
-        oneParam(S.current.np_refund, (Maths.sum(result.npGains) / 100).format(precision: 2)),
+        oneParam(S.current.np_refund, (result.totalNpGains / 100).format(precision: 2)),
+        if (minResult != null &&
+            maxResult != null &&
+            {result.totalNpGains, minResult?.totalNpGains, maxResult?.totalNpGains}.length > 1)
+          oneParam('', '(${minResult!.totalNpGains / 100}~${maxResult!.totalNpGains / 100})'),
         if (result.npGains.any((e) => e > 0))
           listValueWithOverkill(result.npGains, result.overkillStates, (v) => (v / 100).format(precision: 2)),
         oneParam(S.current.attack_np_rate, attackerNpCharge.format(percent: true, precision: 2)),
@@ -910,7 +957,10 @@ class StarParamDialog extends StatelessWidget with _ParamDialogMixin {
   final StarParameters params;
   final DamageResult result;
   final bool wrapDialog;
-  const StarParamDialog(this.params, this.result, {super.key, this.wrapDialog = true});
+  final DamageResult? minResult;
+  final DamageResult? maxResult;
+
+  const StarParamDialog(this.params, this.result, {super.key, this.wrapDialog = true, this.minResult, this.maxResult});
 
   @override
   Widget build(BuildContext context) {
@@ -925,7 +975,11 @@ class StarParamDialog extends StatelessWidget with _ParamDialogMixin {
       title: S.current.battle_star_parameters,
       wrapDialog: wrapDialog,
       children: [
-        oneParam(S.current.critical_star, (Maths.sum(result.stars) / 1000).format(precision: 3)),
+        oneParam(S.current.critical_star, (result.totalStars / 1000).format(precision: 3)),
+        if (minResult != null &&
+            maxResult != null &&
+            {result.totalStars, minResult?.totalStars, maxResult?.totalStars}.length > 1)
+          oneParam('', '(${minResult!.totalStars / 1000}~${maxResult!.totalStars / 1000})'),
         if (result.stars.any((e) => e > 0))
           listValueWithOverkill(result.stars, result.overkillStates, (v) => (v / 1000).format(precision: 3)),
         oneParam(S.current.info_star_rate, attackerStarGen.format(precision: 3)),

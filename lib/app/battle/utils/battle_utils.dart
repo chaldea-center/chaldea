@@ -7,6 +7,7 @@ import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/utils/battle_exception.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import '../../../utils/basic.dart';
 import 'battle_logger.dart';
 
 const kBattleFuncMiss = 'MISS';
@@ -479,6 +480,12 @@ class DamageResult {
   List<int> defNpGains = [];
   List<int> stars = [];
   List<bool> overkillStates = [];
+
+  int get totalDamage => Maths.sum(damages);
+  int get totalNpGains => Maths.sum(npGains);
+  int get totalDefNpGains => Maths.sum(defNpGains);
+  int get totalStars => Maths.sum(stars);
+  int get overkillCount => overkillStates.where((e) => e).length;
 
   DamageResult copy() {
     return DamageResult()
