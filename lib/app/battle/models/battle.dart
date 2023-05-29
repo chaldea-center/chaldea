@@ -923,17 +923,24 @@ class BattleData {
     );
   }
 
-  Future<void> resetAllySkillCD() async {
-    final ally = targetedAlly;
-    if (ally == null) return;
+  Future<void> resetPlayerSkillCD(bool isMysticCode) async {
     return recordError(
       save: true,
       action: 'resetSkillCD',
       task: () async {
-        for (final skill in ally.skillInfoList) {
-          skill.chargeTurn = 0;
+        if (isMysticCode) {
+          for (final skill in masterSkillInfo) {
+            skill.chargeTurn = 0;
+          }
+          recorder.message("${S.current.reset_skill_cd} (${S.current.mystic_code})", null);
+        } else {
+          final ally = targetedAlly;
+          if (ally == null) return;
+          for (final skill in ally.skillInfoList) {
+            skill.chargeTurn = 0;
+          }
+          recorder.message(S.current.reset_skill_cd, ally);
         }
-        recorder.message(S.current.reset_skill_cd, ally);
       },
     );
   }

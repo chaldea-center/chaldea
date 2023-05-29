@@ -281,6 +281,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "custom_mission_mixed_type_hint": MessageLookupByLibrary.simpleMessage("同一任務中敵人類條件與關卡類條件不可一起使用"),
         "custom_mission_nothing_hint": MessageLookupByLibrary.simpleMessage("無任務，點擊+添加"),
         "custom_mission_source_mission": MessageLookupByLibrary.simpleMessage("原任務"),
+        "custom_skill": MessageLookupByLibrary.simpleMessage("自定义技能"),
         "daily_ember_quest": MessageLookupByLibrary.simpleMessage("蒐集種火"),
         "daily_qp_quest": MessageLookupByLibrary.simpleMessage("打開寶物庫之門"),
         "daily_training_quest": MessageLookupByLibrary.simpleMessage("修練場"),

@@ -2164,6 +2164,17 @@ class S {
     );
   }
 
+  /// `Custom Skill`
+  String get custom_skill {
+    return Intl.message(
+      'Custom Skill',
+      name: 'custom_skill',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Ember Gathering`
   String get daily_ember_quest {
     return Intl.message(

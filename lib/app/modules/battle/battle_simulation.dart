@@ -127,9 +127,14 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           router.pushPage(BattleLogPage(logger: battleData.battleLogger));
         },
       ),
-      const PopupMenuDivider(),
       PopupMenuItem(
-        child: Text('${S.current.command_spell}: ${Transl.skillNames('宝具解放').l}'),
+        enabled: false,
+        height: 16,
+        padding: EdgeInsets.zero,
+        child: DividerWithTitle(title: S.current.command_spell),
+      ),
+      PopupMenuItem(
+        child: Text(Transl.skillNames('宝具解放').l),
         onTap: () async {
           await null;
           await battleData.commandSpellReleaseNP();
@@ -137,29 +142,69 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         },
       ),
       PopupMenuItem(
-        child: Text('${S.current.command_spell}: ${Transl.skillNames('霊基修復').l}'),
+        child: Text(Transl.skillNames('霊基修復').l),
         onTap: () async {
           await null;
           await battleData.commandSpellRepairHp();
           if (mounted) setState(() {});
         },
       ),
+      // PopupMenuItem(
+      //   child: Text(S.current.battle_charge_party),
+      //   onTap: () async {
+      //     await null;
+      //     battleData.chargeAllyNP();
+      //     if (mounted) setState(() {});
+      //   },
+      // ),
       PopupMenuItem(
-        child: Text(S.current.battle_charge_party),
-        onTap: () async {
-          await null;
-          battleData.chargeAllyNP();
-          if (mounted) setState(() {});
-        },
+        enabled: false,
+        height: 16,
+        padding: EdgeInsets.zero,
+        child: DividerWithTitle(title: S.current.custom_skill),
       ),
       PopupMenuItem(
         child: Text(S.current.reset_skill_cd),
-        onTap: () {
-          battleData.resetAllySkillCD();
+        onTap: () async {
+          await null;
+          if (!mounted) return;
+          showDialog(
+            context: context,
+            useRootNavigator: false,
+            builder: (context) {
+              final ally = battleData.targetedAlly;
+              return SimpleDialog(
+                title: Text(S.current.reset_skill_cd),
+                children: [
+                  ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    leading: ally?.iconBuilder(context: context, width: 36),
+                    title: Text("${S.current.servant}: ${ally?.lBattleName}"),
+                    enabled: ally != null,
+                    onTap: () async {
+                      Navigator.pop(context);
+                      await battleData.resetPlayerSkillCD(false);
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                  ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    leading: battleData.mysticCode?.iconBuilder(context: context, width: 36),
+                    title: Text(S.current.mystic_code),
+                    enabled: battleData.mysticCode != null,
+                    onTap: () async {
+                      Navigator.pop(context);
+                      await battleData.resetPlayerSkillCD(true);
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                ],
+              );
+            },
+          );
           if (mounted) setState(() {});
         },
       ),
-      const PopupMenuDivider(),
       PopupMenuItem(
         child: Text(S.current.battle_activate_custom_skill),
         onTap: () async {

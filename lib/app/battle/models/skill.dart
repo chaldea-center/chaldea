@@ -312,4 +312,62 @@ class CommonCustomSkills {
           )
         ],
       );
+
+  static BaseSkill get forceInstantDeath => NiceSkill(
+        id: _idBase + 101,
+        type: SkillType.active,
+        name: Transl.funcPopuptextBase('即死').l,
+        unmodifiedDetail: '即死',
+        coolDown: [0],
+        functions: [
+          NiceFunction(
+            funcId: 7196,
+            funcType: FuncType.forceInstantDeath,
+            funcTargetType: FuncTargetType.self,
+            funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+            funcPopupText: '即死',
+            svals: [
+              DataVals({
+                'Rate': 5000,
+              })
+            ],
+          )
+        ],
+      );
+
+  static BaseSkill get forceInstantDeathDelay => NiceSkill(
+        id: _idBase + 101,
+        type: SkillType.active,
+        name: Transl.buffNames('遅延発動(即死)').l,
+        unmodifiedDetail: '自身に「ターン終了時に即死する状態」を付与',
+        coolDown: [0],
+        functions: [
+          NiceFunction(
+            funcId: -7195,
+            funcType: FuncType.addStateShort,
+            funcTargetType: FuncTargetType.self,
+            funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+            funcPopupText: '遅延発動(即死)',
+            buffs: [
+              Buff(
+                id: 3631,
+                name: "遅延発動(即死)",
+                detail: "ターン終了時に即死する状態を付与",
+                icon: "https://static.atlasacademy.io/JP/BuffIcons/bufficon_525.png",
+                type: BuffType.delayFunction,
+                buffGroup: 0,
+              )
+            ],
+            svals: [
+              DataVals({
+                'Rate': 5000,
+                "Turn": 1,
+                "Count": -1,
+                "Value": 966262,
+                "Value2": 1,
+              })
+            ],
+          )
+        ],
+      );
 }

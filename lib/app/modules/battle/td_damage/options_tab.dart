@@ -471,7 +471,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           SimpleCancelOkDialog(
             title: Text(S.current.reset),
             onTapOk: () {
-              db.settings.battleSim.tdDmgOptions = TdDamageOptions();
+              db.settings.battleSim.tdDmgOptions = TdDamageOptions()..initBuffs();
               if (mounted) setState(() {});
             },
           ).showDialog(context);

@@ -30,6 +30,13 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
   String? errorMsg;
   Region? region;
 
+  void onSelectSkill(BaseSkill selected) {
+    skill = BaseSkill.fromJson(selected.toJson());
+    skillLv = selected.maxLv;
+    skillType = selected.type;
+    if (mounted) setState(() {});
+  }
+
   @override
   Widget build(final BuildContext context) {
     errorMsg = skill == null ? S.current.battle_no_skill_selected : null;
@@ -50,13 +57,20 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                   onTap: () {
                     router.pushPage(SkillSelectPage(
                       skillType: null,
-                      onSelected: (selected) {
-                        skill = BaseSkill.fromJson(selected.toJson());
-                        skillLv = selected.maxLv;
-                        skillType = selected.type;
-                        if (mounted) setState(() {});
-                      },
+                      onSelected: onSelectSkill,
                     ));
+                  },
+                ),
+                ListTile(
+                  title: Text(S.current.force_instant_death),
+                  onTap: () {
+                    onSelectSkill(CommonCustomSkills.forceInstantDeath);
+                  },
+                ),
+                ListTile(
+                  title: Text(Transl.buffNames("遅延発動(即死)").l),
+                  onTap: () {
+                    onSelectSkill(CommonCustomSkills.forceInstantDeathDelay);
                   },
                 ),
                 if (skillErrorMsg != null)

@@ -191,6 +191,7 @@
   "custom_mission_mixed_type_hint": "同一任務中敵人類條件與關卡類條件不可一起使用",
   "custom_mission_nothing_hint": "無任務，點擊+添加",
   "custom_mission_source_mission": "原任務",
+  "custom_skill": null,
   "daily_ember_quest": "蒐集種火",
   "daily_qp_quest": "打開寶物庫之門",
   "daily_training_quest": "修練場",

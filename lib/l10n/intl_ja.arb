@@ -191,6 +191,7 @@
   "custom_mission_mixed_type_hint": "一つのクエスト内はエネミー類条件とクエスト類条件が同時使用不可",
   "custom_mission_nothing_hint": "ミッションがありません。＋をクリックして追加しましょう。",
   "custom_mission_source_mission": "元任務",
+  "custom_skill": null,
   "daily_ember_quest": "種火集め",
   "daily_qp_quest": "宝物庫の扉を開け",
   "daily_training_quest": "修練場",

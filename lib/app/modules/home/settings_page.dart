@@ -167,7 +167,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         .toList(),
                     selectedItemBuilder: (context) {
                       return Language.supportLanguages
-                          .map((lang) => Text.rich(
+                          .map((lang) => DropdownMenuItem(
+                                  child: Text.rich(
                                 TextSpan(text: lang.name, children: [
                                   TextSpan(
                                     text: '\n${lang.nameEn}',
@@ -176,7 +177,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 ]),
                                 textScaleFactor: 0.9,
                                 textAlign: TextAlign.end,
-                              ))
+                              )))
                           .toList();
                     },
                     onChanged: (lang) {

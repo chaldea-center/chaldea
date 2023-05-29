@@ -291,6 +291,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Enemy conditions and Quest conditions must not be mixed in one mission"),
         "custom_mission_nothing_hint": MessageLookupByLibrary.simpleMessage("No mission, click + to add mission"),
         "custom_mission_source_mission": MessageLookupByLibrary.simpleMessage("Original Mission"),
+        "custom_skill": MessageLookupByLibrary.simpleMessage("Custom Skill"),
         "daily_ember_quest": MessageLookupByLibrary.simpleMessage("Ember Gathering"),
         "daily_qp_quest": MessageLookupByLibrary.simpleMessage("Enter the Treasure Vault"),
         "daily_training_quest": MessageLookupByLibrary.simpleMessage("Training Ground"),
