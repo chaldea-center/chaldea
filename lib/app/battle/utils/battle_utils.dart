@@ -93,6 +93,16 @@ int calculateDamage(final DamageParameters param) {
   return max(0, totalDamage);
 }
 
+int calculateDamageNoError(final DamageParameters param) {
+  try {
+    return calculateDamage(param);
+  } catch (e, s) {
+    print('calculateDamage failed: $e');
+    print(s);
+    return 0;
+  }
+}
+
 /// Referencing:
 /// https://atlasacademy.github.io/fgo-docs/deeper/battle/np.html
 /// Float arithmetic used due to:

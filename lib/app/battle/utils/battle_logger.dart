@@ -293,6 +293,8 @@ class AttackResultDetail {
   final DefendNpGainParameters defenseNpParams;
   final StarParameters starParams;
   final DamageResult result;
+  final DamageResult? minResult;
+  final DamageResult? maxResult;
 
   AttackResultDetail({
     required BattleServantData target,
@@ -301,12 +303,16 @@ class AttackResultDetail {
     required DefendNpGainParameters defenseNpParams,
     required StarParameters starParams,
     required DamageResult result,
+    required DamageResult? minResult,
+    required DamageResult? maxResult,
   })  : target = target.copy(),
         damageParams = damageParams.copy(),
         attackNpParams = attackNpParams.copy(),
         defenseNpParams = defenseNpParams.copy(),
         starParams = starParams.copy(),
-        result = result.copy();
+        result = result.copy(),
+        minResult = minResult?.copy(),
+        maxResult = maxResult?.copy();
 
   AttackResultDetail copy() {
     return AttackResultDetail(
@@ -316,6 +322,8 @@ class AttackResultDetail {
       defenseNpParams: defenseNpParams,
       starParams: starParams,
       result: result,
+      minResult: minResult,
+      maxResult: maxResult,
     );
   }
 }

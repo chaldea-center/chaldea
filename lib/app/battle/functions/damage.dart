@@ -196,71 +196,48 @@ class Damage {
           ..cardResist = await target.getBuffValueOnAction(battleData, BuffAction.commandStarDef)
           ..enemyStarGenResist = await target.getBuffValueOnAction(battleData, BuffAction.criticalStarDamageTaken);
       }
-
-      final totalDamage = await DamageAdjustor.show(battleData, damageParameters);
-      int remainingDamage = totalDamage;
-
-      int overkillCount = 0;
-      final result = DamageResult();
       final multiAttack = await activator.getConfirmationBuffValueOnAction(battleData, BuffAction.multiattack);
-      if (multiAttack != null && multiAttack > 0) {
-        currentCard.cardDetail.hitsDistribution.forEach((hit) {
-          for (int count = 1; count <= multiAttack; count += 1) {
-            result.cardHits.add(hit);
-          }
-        });
-      } else {
-        result.cardHits.addAll(currentCard.cardDetail.hitsDistribution);
-      }
-      final totalHits = Maths.sum(result.cardHits);
-      for (int i = 0; i < result.cardHits.length; i += 1) {
-        if (skipDamage) {
-          result.damages.add(0);
-        } else {
-          final hitsPercentage = result.cardHits[i];
-          final int hitDamage;
-          if (i < result.cardHits.length - 1) {
-            hitDamage = totalDamage * hitsPercentage ~/ totalHits;
-          } else {
-            hitDamage = remainingDamage;
-          }
 
-          result.damages.add(hitDamage);
-          remainingDamage -= hitDamage;
+      // real
+      final int totalDamage = await DamageAdjustor.show(battleData, damageParameters);
 
-          target.receiveDamage(hitDamage);
-        }
+      // calc min/max first, since it doesn't change original target/activator
+      final minResult = await _calc(
+            totalDamage:
+                calculateDamageNoError(damageParameters.copy()..fixedRandom = ConstData.constants.attackRateRandomMin),
+            atkNpParameters: atkNpParameters.copy(),
+            defNpParameters: defNpParameters.copy(),
+            starParameters: starParameters.copy(),
+            target: target.copy(),
+            activator: activator.copy(),
+            currentCard: currentCard.copy(),
+            multiAttack: multiAttack,
+            skipDamage: skipDamage,
+          ),
+          maxResult = await _calc(
+            totalDamage: calculateDamageNoError(
+                damageParameters.copy()..fixedRandom = ConstData.constants.attackRateRandomMax - 1),
+            atkNpParameters: atkNpParameters.copy(),
+            defNpParameters: defNpParameters.copy(),
+            starParameters: starParameters.copy(),
+            target: target.copy(),
+            activator: activator.copy(),
+            currentCard: currentCard.copy(),
+            multiAttack: multiAttack,
+            skipDamage: skipDamage,
+          );
 
-        target.lastHitBy = activator;
-        target.lastHitByCard = currentCard;
-
-        final isOverkill = target.hp < 0 || (!currentCard.isNP && target.isBuggedOverkill);
-        result.overkillStates.add(isOverkill);
-        if (isOverkill) {
-          overkillCount += 1;
-        }
-
-        if (activator.isPlayer) {
-          atkNpParameters.isOverkill = isOverkill;
-          starParameters.isOverkill = isOverkill;
-          final hitNpGain = calculateAttackNpGain(atkNpParameters);
-          final previousNP = activator.np;
-          activator.changeNP(hitNpGain);
-          result.npGains.add(activator.np - previousNP);
-
-          final hitStar = calculateStar(starParameters);
-          result.stars.add(hitStar);
-        }
-
-        if (target.isPlayer) {
-          defNpParameters.isOverkill = isOverkill;
-          final hitNpGain = calculateDefendNpGain(defNpParameters);
-
-          final previousNP = activator.np;
-          target.changeNP(hitNpGain);
-          result.defNpGains.add(activator.np - previousNP);
-        }
-      }
+      final result = await _calc(
+        totalDamage: totalDamage,
+        atkNpParameters: atkNpParameters,
+        defNpParameters: defNpParameters,
+        starParameters: starParameters,
+        target: target,
+        activator: activator,
+        currentCard: currentCard,
+        multiAttack: multiAttack,
+        skipDamage: skipDamage,
+      );
 
       battleData.battleLogger.debug(damageParameters.toString());
       if (activator.isPlayer) {
@@ -279,7 +256,7 @@ class Damage {
           '${S.current.battle_remaining_hp}: ${target.hp}/${target.maxHp} - '
           'NP: ${(Maths.sum(result.npGains) / 100).toStringAsFixed(2)}% - '
           '$starString'
-          'Overkill: $overkillCount/${currentCard.cardDetail.hitsDistribution.length}');
+          'Overkill: ${result.overkillStates.where((e) => e).length}/${currentCard.cardDetail.hitsDistribution.length}');
       final hitStarString = activator.isPlayer ? ', ${S.current.critical_star}: ${result.stars}' : '';
       battleData.battleLogger.debug(
           '${S.current.details}: ${S.current.battle_damage}: ${result.damages}, NP: ${result.npGains}$hitStarString');
@@ -290,11 +267,10 @@ class Damage {
       // passive should also be checked?
       target.battleBuff.passiveList.removeWhere((buff) => buff.buff.script?.DamageRelease == 1);
 
-      target.addAccumulationDamage(totalDamage - remainingDamage);
-      target.attacked = true;
       battleData.curFuncResults[target.uniqueId] = true;
 
       battleData.unsetTarget();
+
       targetResults.add(AttackResultDetail(
         target: target,
         damageParams: damageParameters,
@@ -302,6 +278,8 @@ class Damage {
         starParams: starParameters,
         defenseNpParams: defNpParameters,
         result: result,
+        minResult: minResult,
+        maxResult: maxResult,
       ));
     }
 
@@ -317,6 +295,81 @@ class Damage {
         star: Maths.sum(targetResults.map((e) => Maths.sum(e.result.stars))),
       ),
     );
+  }
+
+  static Future<DamageResult> _calc({
+    required int totalDamage,
+    required AttackNpGainParameters atkNpParameters,
+    required DefendNpGainParameters defNpParameters,
+    required StarParameters starParameters,
+    required BattleServantData target,
+    required BattleServantData activator,
+    required CommandCardData currentCard,
+    required int? multiAttack,
+    required bool skipDamage,
+  }) async {
+    final result = DamageResult();
+    int remainingDamage = totalDamage;
+
+    if (multiAttack != null && multiAttack > 0) {
+      currentCard.cardDetail.hitsDistribution.forEach((hit) {
+        for (int count = 1; count <= multiAttack; count += 1) {
+          result.cardHits.add(hit);
+        }
+      });
+    } else {
+      result.cardHits.addAll(currentCard.cardDetail.hitsDistribution);
+    }
+    final totalHits = Maths.sum(result.cardHits);
+    for (int i = 0; i < result.cardHits.length; i += 1) {
+      if (skipDamage) {
+        result.damages.add(0);
+      } else {
+        final hitsPercentage = result.cardHits[i];
+        final int hitDamage;
+        if (i < result.cardHits.length - 1) {
+          hitDamage = totalDamage * hitsPercentage ~/ totalHits;
+        } else {
+          hitDamage = remainingDamage;
+        }
+
+        result.damages.add(hitDamage);
+        remainingDamage -= hitDamage;
+
+        target.receiveDamage(hitDamage);
+      }
+
+      target.lastHitBy = activator;
+      target.lastHitByCard = currentCard;
+
+      final isOverkill = target.hp < 0 || (!currentCard.isNP && target.isBuggedOverkill);
+      result.overkillStates.add(isOverkill);
+
+      if (activator.isPlayer) {
+        atkNpParameters.isOverkill = isOverkill;
+        starParameters.isOverkill = isOverkill;
+        final hitNpGain = calculateAttackNpGain(atkNpParameters);
+        final previousNP = activator.np;
+        activator.changeNP(hitNpGain);
+        result.npGains.add(activator.np - previousNP);
+
+        final hitStar = calculateStar(starParameters);
+        result.stars.add(hitStar);
+      }
+
+      if (target.isPlayer) {
+        defNpParameters.isOverkill = isOverkill;
+        final hitNpGain = calculateDefendNpGain(defNpParameters);
+
+        final previousNP = activator.np;
+        target.changeNP(hitNpGain);
+        result.defNpGains.add(activator.np - previousNP);
+      }
+    }
+    target.addAccumulationDamage(totalDamage - remainingDamage);
+    target.attacked = true;
+
+    return result;
   }
 
   static Future<bool> shouldSkipDamage(
