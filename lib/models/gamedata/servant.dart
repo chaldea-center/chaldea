@@ -390,6 +390,7 @@ class Servant with GameCardMixin {
     groupedActiveSkills.clear();
     for (final skill in List.of(skills)..sort2((e) => e.priority)) {
       final _skills = groupedActiveSkills.putIfAbsent(skill.num, () => []);
+      // Mash has two same skill but different priority
       _skills.removeWhere((e) => e.id == skill.id && e.priority < skill.priority);
       _skills.add(skill);
     }
@@ -475,6 +476,10 @@ class Servant with GameCardMixin {
     if (aprilFoolIcon == null) return null;
     final padded = originalCollectionNo.toString().padLeft(3, '0');
     return '${Hosts.kAtlasAssetHostGlobal}/JP/FFO/Atlas/Sprite_bordered/icon_servant_${padded}_bordered.png';
+  }
+
+  int battleCharaToLimitCount(int battleCharaId) {
+    return profile.costume[battleCharaId]?.id ?? battleCharaId;
   }
 
   String? ascendIcon(int ascOrCostumeIdOrCharaId, [bool bordered = true]) {

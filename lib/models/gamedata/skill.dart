@@ -241,6 +241,7 @@ class NiceSkill extends BaseSkill {
   int condLv;
   int condLimitCount;
   List<ExtraPassive> extraPassive;
+  List<SvtSkillRelease> releaseConditions;
 
   NiceSkill({
     required super.id,
@@ -265,6 +266,7 @@ class NiceSkill extends BaseSkill {
     this.condLv = 0,
     this.condLimitCount = 0,
     this.extraPassive = const [],
+    this.releaseConditions = const [],
   })  : _baseSkill = BaseSkill(
           id: id,
           num: num,
@@ -520,6 +522,7 @@ class NiceTd extends BaseTd {
   int priority;
   int condQuestId;
   int condQuestPhase;
+  List<SvtSkillRelease> releaseConditions;
 
   NiceTd({
     required super.id,
@@ -543,6 +546,7 @@ class NiceTd extends BaseTd {
     required this.priority,
     this.condQuestId = 0,
     this.condQuestPhase = 0,
+    this.releaseConditions = const [],
   })  : _baseTd = BaseTd(
           id: id,
           card: card,
@@ -750,6 +754,37 @@ class SkillAdd {
   factory SkillAdd.fromJson(Map<String, dynamic> json) => _$SkillAddFromJson(json);
 
   Map<String, dynamic> toJson() => _$SkillAddToJson(this);
+}
+
+@JsonSerializable(converters: [CondTypeConverter()])
+class SvtSkillRelease {
+  // int svtId;
+  // int num;
+  // int priority;
+  int idx;
+
+  /// [CondType.equipWithTargetCostume] for Mash and Melusine
+  /// [CondType.questClear] or [CondType.questClearPhase] for 151-154 servants and Mysterious X, ignore.
+  /// [CondType.svtLimit] max servant limit (0-4), not current display limitCount, ignore.
+  CondType condType;
+  int condTargetId; // svtId for equipWithTargetCostume
+  int condNum; // display limitCount for equipWithTargetCostume
+  int condGroup;
+
+  SvtSkillRelease({
+    // this.svtId = 0,
+    // this.num = 0,
+    // this.priority = 0,
+    this.idx = 1,
+    this.condType = CondType.none,
+    this.condTargetId = 0,
+    this.condNum = 0,
+    this.condGroup = 0,
+  });
+
+  factory SvtSkillRelease.fromJson(Map<String, dynamic> json) => _$SvtSkillReleaseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SvtSkillReleaseToJson(this);
 }
 
 @JsonSerializable()

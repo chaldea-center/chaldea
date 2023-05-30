@@ -100,6 +100,10 @@ NiceSkill _$NiceSkillFromJson(Map json) => NiceSkill(
               ?.map((e) => ExtraPassive.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) => SvtSkillRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$NiceSkillToJson(NiceSkill instance) => <String, dynamic>{
@@ -124,6 +128,7 @@ Map<String, dynamic> _$NiceSkillToJson(NiceSkill instance) => <String, dynamic>{
       'condLv': instance.condLv,
       'condLimitCount': instance.condLimitCount,
       'extraPassive': instance.extraPassive.map((e) => e.toJson()).toList(),
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
     };
 
 BaseTd _$BaseTdFromJson(Map json) => BaseTd(
@@ -247,6 +252,10 @@ NiceTd _$NiceTdFromJson(Map json) => NiceTd(
       priority: json['priority'] as int,
       condQuestId: json['condQuestId'] as int? ?? 0,
       condQuestPhase: json['condQuestPhase'] as int? ?? 0,
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) => SvtSkillRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$NiceTdToJson(NiceTd instance) => <String, dynamic>{
@@ -270,6 +279,7 @@ Map<String, dynamic> _$NiceTdToJson(NiceTd instance) => <String, dynamic>{
       'priority': instance.priority,
       'condQuestId': instance.condQuestId,
       'condQuestPhase': instance.condQuestPhase,
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
     };
 
 CommonRelease _$CommonReleaseFromJson(Map json) => CommonRelease(
@@ -425,6 +435,23 @@ Map<String, dynamic> _$SkillAddToJson(SkillAdd instance) => <String, dynamic>{
       'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
       'name': instance.name,
       'ruby': instance.ruby,
+    };
+
+SvtSkillRelease _$SvtSkillReleaseFromJson(Map json) => SvtSkillRelease(
+      idx: json['idx'] as int? ?? 1,
+      condType:
+          json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
+      condTargetId: json['condTargetId'] as int? ?? 0,
+      condNum: json['condNum'] as int? ?? 0,
+      condGroup: json['condGroup'] as int? ?? 0,
+    );
+
+Map<String, dynamic> _$SvtSkillReleaseToJson(SvtSkillRelease instance) => <String, dynamic>{
+      'idx': instance.idx,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'condTargetId': instance.condTargetId,
+      'condNum': instance.condNum,
+      'condGroup': instance.condGroup,
     };
 
 SkillGroupOverwrite _$SkillGroupOverwriteFromJson(Map json) => SkillGroupOverwrite(
