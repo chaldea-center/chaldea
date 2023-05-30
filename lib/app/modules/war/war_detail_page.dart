@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
@@ -43,11 +44,18 @@ class _WarDetailPageState extends State<WarDetailPage> {
     _war = widget.war ?? db.gameData.wars[widget.warId];
   }
 
-  Future<void> fetchWar() async {
+  Future<void> fetchWar({bool force = false}) async {
     _war = null;
     _loading = true;
     if (mounted) setState(() {});
-    _war = widget.war ?? db.gameData.wars[widget.warId] ?? await AtlasApi.war(id);
+    if (!force) {
+      _war = widget.war ?? db.gameData.wars[widget.warId];
+    }
+    if (_war == null) {
+      EasyLoading.show();
+      _war = await AtlasApi.war(id, expireAfter: force ? Duration.zero : null);
+      EasyLoading.dismiss();
+    }
     _loading = false;
     if (mounted) setState(() {});
   }
@@ -65,6 +73,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
       return Scaffold(
         appBar: AppBar(
           title: Text('${S.current.war} $id'),
+          actions: [popupMenu],
         ),
         body: Center(
           child: _loading ? const CircularProgressIndicator() : RefreshButton(onPressed: fetchWar),
@@ -331,28 +340,38 @@ class _WarDetailPageState extends State<WarDetailPage> {
           maxLines: 1,
         ),
         centerTitle: false,
-        actions: [
-          PopupMenuButton<dynamic>(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                enabled: false,
-                height: 32,
-                child: Text('No.${widget.war?.id ?? widget.warId}', textScaleFactor: 0.9),
-              ),
-              const PopupMenuDivider(),
-              ...SharedBuilder.websitesPopupMenuItems(
-                atlas: Atlas.dbWar(war.id),
-                mooncell: war.extra.mcLink ?? war.event?.extra.mcLink,
-                fandom: war.extra.fandomLink ?? war.event?.extra.fandomLink,
-              ),
-              ...SharedBuilder.noticeLinkPopupMenuItems(
-                noticeLink: war.extra.noticeLink,
-              ),
-            ],
-          )
-        ],
+        actions: [popupMenu],
       ),
       body: ListView(children: children),
+    );
+  }
+
+  Widget get popupMenu {
+    return PopupMenuButton<dynamic>(
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          enabled: false,
+          height: 32,
+          child: Text('No.${widget.war?.id ?? widget.warId}', textScaleFactor: 0.9),
+        ),
+        const PopupMenuDivider(),
+        if (_war != null)
+          ...SharedBuilder.websitesPopupMenuItems(
+            atlas: Atlas.dbWar(war.id),
+            mooncell: war.extra.mcLink ?? war.event?.extra.mcLink,
+            fandom: war.extra.fandomLink ?? war.event?.extra.fandomLink,
+          ),
+        if (_war != null)
+          ...SharedBuilder.noticeLinkPopupMenuItems(
+            noticeLink: war.extra.noticeLink,
+          ),
+        PopupMenuItem(
+          child: Text(S.current.refresh),
+          onTap: () {
+            fetchWar(force: true);
+          },
+        ),
+      ],
     );
   }
 

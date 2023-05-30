@@ -65,15 +65,21 @@ class _EventDetailPageState extends State<EventDetailPage> {
     }
   }
 
-  Future<void> fetchData(Region region) async {
+  Future<void> fetchData(Region region, {bool force = false}) async {
     if (eventId == null) return;
     Event? newEvent;
-    if (region == Region.jp) {
+    if (region == Region.jp && !force) {
       newEvent = db.gameData.events[eventId];
     } else {
       _loading = true;
       if (mounted) setState(() {});
-      newEvent = await AtlasApi.event(eventId!, region: region);
+      EasyLoading.show();
+      newEvent = await AtlasApi.event(
+        eventId!,
+        region: region,
+        expireAfter: force ? Duration.zero : null,
+      );
+      EasyLoading.dismiss();
       newEvent?.calcItems(db.gameData);
       _loading = false;
     }
@@ -227,7 +233,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
           fandom: event.extra.fandomLink,
         ),
         ...SharedBuilder.noticeLinkPopupMenuItems(noticeLink: event.extra.noticeLink),
-        if (eventId != null && eventId > 0)
+        if (eventId != null && eventId > 0) ...[
           PopupMenuItem(
             child: Text(S.current.switch_region),
             onTap: () async {
@@ -235,6 +241,13 @@ class _EventDetailPageState extends State<EventDetailPage> {
               _showSwitchRegion();
             },
           ),
+          PopupMenuItem(
+            child: Text(S.current.refresh),
+            onTap: () {
+              fetchData(_region, force: true);
+            },
+          ),
+        ],
       ],
     );
   }
@@ -254,9 +267,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
               enabled: startTime?.ofRegion(region) != null,
               onTap: () async {
                 Navigator.pop(context);
-                EasyLoading.show(status: 'Loading', maskType: EasyLoadingMaskType.clear);
-                await fetchData(region);
-                EasyLoading.dismiss();
+                fetchData(region);
               },
             ),
           IconButton(
