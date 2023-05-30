@@ -950,7 +950,22 @@ class FuncDescriptor extends StatelessWidget {
 
     if (buff != null) {
       _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv, buff.script?.checkIndvType == 1);
-      _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv, buff.script?.checkIndvType == 1);
+      if (buff.type == BuffType.upToleranceSubstate &&
+          buff.ckOpIndv
+              .map((e) => e.signedId)
+              .toSet()
+              .equalTo(NiceTrait.upToleranceSubstateBuffTraits.map((e) => e.id).toSet())) {
+        _condSpans.add([
+          TextSpan(text: Transl.special.buffCheckOpposite),
+          SharedBuilder.textButtonSpan(
+            context: context,
+            text: Transl.special.variousPositiveBuffs,
+          ),
+          const TextSpan(text: ' '),
+        ]);
+      } else {
+        _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv, buff.script?.checkIndvType == 1);
+      }
       final script = buff.script;
       if (script?.TargetIndiv != null) {
         _addTraits('Target Indiv: ', [script!.TargetIndiv!]);

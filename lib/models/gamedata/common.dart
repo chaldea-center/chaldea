@@ -129,6 +129,21 @@ class NiceTrait with RouteInfo {
   Map<String, dynamic> toJson() => _$NiceTraitToJson(this);
 
   bool get isEventField => id >= 94000000 && id <= 96000000;
+
+  static Set<Trait> upToleranceSubstateBuffTraits = {
+    Trait.buffPositiveEffect,
+    Trait.buffIncreaseDamage,
+    Trait.buffIncreaseDefence,
+    Trait.buffAtkUp,
+    Trait.buffDefUp,
+    Trait.buffCritDamageUp,
+    Trait.buffEvade,
+    Trait.buffEvadeAndInvincible,
+    Trait.buffGuts,
+    Trait.buffNpDamageUp,
+    Trait.buffCritRateUp,
+    Trait.buffSureHit,
+  };
 }
 
 mixin DataScriptBase {

@@ -709,8 +709,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
               ),
             ),
           ),
-          coloredText('Overkill: ${result.overkillStates.where((e) => e).length}/${result.overkillStates.length}',
-              Colors.yellow.shade900),
+          coloredText('Overkill: ${result.overkillCount}/${result.overkillStates.length}', Colors.yellow.shade900),
         ],
       ),
     );
@@ -935,9 +934,7 @@ class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
       wrapDialog: wrapDialog,
       children: [
         oneParam(S.current.np_refund, (result.totalNpGains / 100).format(precision: 2)),
-        if (minResult != null &&
-            maxResult != null &&
-            {result.totalNpGains, minResult?.totalNpGains, maxResult?.totalNpGains}.length > 1)
+        if (minResult != null && maxResult != null)
           oneParam('', '(${minResult!.totalNpGains / 100}~${maxResult!.totalNpGains / 100})'),
         if (result.npGains.any((e) => e > 0))
           listValueWithOverkill(result.npGains, result.overkillStates, (v) => (v / 100).format(precision: 2)),
@@ -976,9 +973,7 @@ class StarParamDialog extends StatelessWidget with _ParamDialogMixin {
       wrapDialog: wrapDialog,
       children: [
         oneParam(S.current.critical_star, (result.totalStars / 1000).format(precision: 3)),
-        if (minResult != null &&
-            maxResult != null &&
-            {result.totalStars, minResult?.totalStars, maxResult?.totalStars}.length > 1)
+        if (minResult != null && maxResult != null)
           oneParam('', '(${minResult!.totalStars / 1000}~${maxResult!.totalStars / 1000})'),
         if (result.stars.any((e) => e > 0))
           listValueWithOverkill(result.stars, result.overkillStates, (v) => (v / 1000).format(precision: 3)),

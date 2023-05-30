@@ -632,7 +632,12 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             : () {
                 SimpleCancelOkDialog(
                   title: Text(S.current.skill),
-                  content: DisableLayoutBuilder(child: SkillDescriptor(skill: pskill)),
+                  content: DisableLayoutBuilder(
+                    child: SkillDescriptor(
+                      skill: pskill,
+                      level: skillInfo.skillLv,
+                    ),
+                  ),
                   scrollable: true,
                   hideCancel: true,
                   contentPadding: const EdgeInsets.symmetric(vertical: 20),
