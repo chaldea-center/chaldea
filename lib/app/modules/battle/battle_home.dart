@@ -6,7 +6,6 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../common/builders.dart';
 import '../home/elements/random_image.dart';
 import '../home/subpage/feedback_page.dart';
-import 'td_damage/td_damage_ranking.dart';
 
 class BattleHomePage extends StatelessWidget {
   BattleHomePage({super.key});
@@ -43,8 +42,13 @@ class BattleHomePage extends StatelessWidget {
 
   Widget getBody(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.symmetric(vertical: 16),
       children: [
+        const Padding(
+          padding: EdgeInsets.fromLTRB(40, 20, 40, 12),
+          child: Center(
+            child: Icon(Icons.bubble_chart, size: 48),
+          ),
+        ),
         const Center(
           child: Text('Testing/测试中...'),
         ),
@@ -65,7 +69,7 @@ class BattleHomePage extends StatelessWidget {
               title: Text(S.current.np_damage),
               // horizontalTitleGap: 0,
               onTap: () {
-                router.pushPage(const TdDamageRanking());
+                router.push(url: Routes.laplaceNpDmg);
               },
             ),
             ListTile(

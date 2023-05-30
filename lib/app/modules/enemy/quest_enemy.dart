@@ -5,6 +5,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../battle/td_damage/td_damage_ranking.dart';
 
 class QuestEnemyDetail extends StatefulWidget {
   final QuestEnemy enemy;
@@ -41,7 +42,16 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
                 onTap: () {
                   db.runtimeData.clipBoard.questEnemy = enemy;
                 },
-              )
+              ),
+              PopupMenuItem(
+                child: Text(S.current.np_damage),
+                onTap: () {
+                  router.push(
+                    url: Routes.laplaceNpDmg,
+                    child: TdDamageRanking(enemy: enemy),
+                  );
+                },
+              ),
             ];
           })
         ],

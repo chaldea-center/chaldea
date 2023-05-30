@@ -32,8 +32,9 @@ import 'package:chaldea/widgets/image/image_viewer.dart';
 
 class AppNewsCarousel extends StatefulWidget {
   final double? maxWidth;
+  final List<Widget>? pages;
 
-  AppNewsCarousel({super.key, this.maxWidth});
+  AppNewsCarousel({super.key, this.maxWidth, this.pages});
 
   @override
   _AppNewsCarouselState createState() => _AppNewsCarouselState();
@@ -431,7 +432,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
           items: pages,
           options: options,
         ),
-        if (pages.isNotEmpty)
+        if (pages.length > 1)
           FittedBox(
             fit: BoxFit.scaleDown,
             child: DotsIndicator(
@@ -454,6 +455,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
   }
 
   List<Widget> getPages(double? height, double aspectRatio) {
+    if (widget.pages != null) return widget.pages!.toList();
     List<Widget> sliders = [];
     if (carouselSetting.needUpdate) {
       AppNewsCarousel.resolveSliderImageUrls().then((_) {

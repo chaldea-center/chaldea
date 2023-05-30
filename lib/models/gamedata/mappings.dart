@@ -753,7 +753,7 @@ class _SpecialTransl {
         kr: '[서포트 시는]',
       );
   String get variousPositiveBuffs => M.of(
-        jp: "色々な強化状態",
+        jp: "さまざまな強化状態",
         cn: '各种强化状态',
         tw: "各種強化狀態",
         na: 'Various Positive Buffs',

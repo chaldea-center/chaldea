@@ -1,5 +1,6 @@
 import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/gamedata/quest.dart';
 import 'package:chaldea/models/userdata/local_settings.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -9,7 +10,8 @@ import 'options_tab.dart';
 import 'ranking_tab.dart';
 
 class TdDamageRanking extends StatefulWidget {
-  const TdDamageRanking({super.key});
+  final QuestEnemy? enemy;
+  const TdDamageRanking({super.key, this.enemy});
 
   @override
   State<TdDamageRanking> createState() => _TdDamageRankingState();
@@ -27,6 +29,9 @@ class _TdDamageRankingState extends State<TdDamageRanking> with SingleTickerProv
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     solver.options.initBuffs();
+    if (widget.enemy != null) {
+      solver.options.enemy = TdDmgSolver.copyEnemy(widget.enemy!);
+    }
   }
 
   @override

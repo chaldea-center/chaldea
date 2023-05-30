@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/modules/battle/td_damage/td_damage_ranking.dart';
 import 'package:chaldea/app/modules/buff/buff_list.dart';
 import 'package:chaldea/app/modules/craft_essence/craft.dart';
 import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
@@ -179,6 +180,7 @@ class Routes {
   static const String laplace = '/laplace';
   static const String laplaceBattle = '/laplace/battle';
   static const String laplaceShare = '/laplace/share';
+  static const String laplaceNpDmg = '/laplace/np-dmg';
 
   static const String discord = '/discord';
   static const String notFound = '/404';
@@ -432,8 +434,9 @@ class RouteConfiguration {
         return TdDetailPage(id: _secondInt, region: region);
       case Routes.laplace:
         if (path?.startsWith(Routes.laplaceShare) == true && uri?.queryParameters.containsKey('v') == true) {
-          print(uri);
           return SimulationPreview(shareData: uri);
+        } else if (path?.startsWith(Routes.laplaceNpDmg) == true) {
+          return const TdDamageRanking();
         }
         return const SimulationPreview();
       case Routes.apk:
