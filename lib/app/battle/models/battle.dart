@@ -208,8 +208,14 @@ class BattleData {
         .toList();
     _fetchWaveEnemies();
 
-    mysticCode = mysticCodeData?.mysticCode;
-    mysticCodeLv = mysticCodeData?.level ?? 10;
+    final overwriteEquip = quest.extraDetail?.overwriteEquipSkills;
+    if (overwriteEquip != null && overwriteEquip.skillIds.isNotEmpty) {
+      mysticCode = await overwriteEquip.toMysticCode();
+      mysticCodeLv = overwriteEquip.skillLv;
+    } else {
+      mysticCode = mysticCodeData?.mysticCode;
+      mysticCodeLv = mysticCodeData?.level ?? 10;
+    }
     if (mysticCode != null) {
       masterSkillInfo =
           mysticCode!.skills.map((skill) => BattleSkillInfoData([skill], skill)..skillLv = mysticCodeLv).toList();

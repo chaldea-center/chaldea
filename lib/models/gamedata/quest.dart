@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/game_card.dart';
@@ -12,6 +13,7 @@ import '_helper.dart';
 import 'common.dart';
 import 'item.dart';
 import 'mappings.dart';
+import 'mystic_code.dart';
 import 'script.dart';
 import 'servant.dart';
 import 'skill.dart';
@@ -1391,6 +1393,7 @@ class QuestPhaseExtraDetail {
 @JsonSerializable()
 class OverwriteEquipSkills {
   int? iconId;
+  int? cutInView; // 1
   List<Map> skills; // id,lv
 
   OverwriteEquipSkills({
@@ -1413,6 +1416,29 @@ class OverwriteEquipSkills {
   List<int> get skillIds => skills.map((e) => e["id"] as int? ?? 0).toList();
 
   int get skillLv => skills.firstOrNull?["lv"] ?? 1;
+
+  Future<MysticCode> toMysticCode() async {
+    final icon = this.icon;
+    List<NiceSkill> niceSkills = [];
+    for (final skillId in skillIds) {
+      final skill = await AtlasApi.skill(skillId);
+      if (skill != null) {
+        niceSkills.add(skill);
+      }
+    }
+    return MysticCode(
+      id: 0,
+      name: "",
+      detail: "",
+      extraAssets: ExtraMCAssets(
+        item: MCAssets(male: icon, female: icon),
+        masterFace: MCAssets(male: icon, female: icon),
+        masterFigure: MCAssets(male: icon, female: icon),
+      ),
+      skills: niceSkills,
+      expRequired: [0],
+    );
+  }
 
   factory OverwriteEquipSkills.fromJson(Map<String, dynamic> json) => _$OverwriteEquipSkillsFromJson(json);
 
