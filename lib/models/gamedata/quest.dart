@@ -1371,6 +1371,7 @@ class QuestPhaseExtraDetail {
   String? hintMessage;
   QuestPhaseAiNpc? aiNpc;
   List<QuestPhaseAiNpc>? aiMultiNpc;
+  OverwriteEquipSkills? overwriteEquipSkills;
 
   QuestPhaseExtraDetail({
     this.questSelect,
@@ -1379,11 +1380,43 @@ class QuestPhaseExtraDetail {
     this.hintMessage,
     this.aiNpc,
     this.aiMultiNpc,
-  });
+    OverwriteEquipSkills? overwriteEquipSkills,
+  }) : overwriteEquipSkills = overwriteEquipSkills?.skills.isNotEmpty == true ? overwriteEquipSkills : null;
 
   factory QuestPhaseExtraDetail.fromJson(Map<String, dynamic> json) => _$QuestPhaseExtraDetailFromJson(json);
 
   Map<String, dynamic> toJson() => _$QuestPhaseExtraDetailToJson(this);
+}
+
+@JsonSerializable()
+class OverwriteEquipSkills {
+  int? iconId;
+  List<Map> skills; // id,lv
+
+  OverwriteEquipSkills({
+    this.iconId,
+    this.skills = const [],
+  });
+
+  String get icon {
+    final iconId = this.iconId ?? 0;
+    String url = "https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/";
+    if ((iconId) > 2) {
+      url += 'BattleAssetUIAtlas/';
+    } else {
+      url += 'BattleUIAtlas/';
+    }
+    url += "btn_master_skill${iconId == 0 ? "" : iconId}.png";
+    return url;
+  }
+
+  List<int> get skillIds => skills.map((e) => e["id"] as int? ?? 0).toList();
+
+  int get skillLv => skills.firstOrNull?["lv"] ?? 1;
+
+  factory OverwriteEquipSkills.fromJson(Map<String, dynamic> json) => _$OverwriteEquipSkillsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OverwriteEquipSkillsToJson(this);
 }
 
 @JsonSerializable()

@@ -219,6 +219,12 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         ),
       ));
     }
+    if (!widget.battleOnly && curPhase.flags.isNotEmpty) {
+      children.add(getFlags(curPhase.flags));
+    }
+    if (curPhase.extraDetail?.overwriteEquipSkills != null) {
+      children.add(getOvewriteMysticCode(curPhase.extraDetail!.overwriteEquipSkills!));
+    }
     if (!widget.battleOnly && !widget.offline && curPhase.supportServants.isNotEmpty) {
       children.add(getSupportServants(curPhase));
     }
@@ -629,6 +635,71 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     return Text(
       text,
       style: const TextStyle(fontWeight: FontWeight.w600).merge(style),
+    );
+  }
+
+  Widget getFlags(List<QuestFlag> flags) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          _header("Flags "),
+          Expanded(
+            child: Text.rich(
+              TextSpan(
+                children: divideList([
+                  for (final flag in flags)
+                    TextSpan(
+                      text: flag.name,
+                      style: const TextStyle(fontSize: 12),
+                    )
+                ], const TextSpan(text: ' / ')),
+              ),
+              textAlign: TextAlign.center,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget getOvewriteMysticCode(OverwriteEquipSkills equip) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _header(S.current.mystic_code),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              db.getIconImage(equip.icon, width: 36, aspectRatio: 1),
+              const SizedBox(width: 16),
+              for (final skillId in equip.skillIds)
+                FutureBuilder2<int, NiceSkill?>(
+                  id: skillId,
+                  loader: () => AtlasApi.skill(skillId),
+                  builder: (context, skill) {
+                    if (skill == null) {
+                      return Text(
+                        skillId.toString(),
+                        style: const TextStyle(fontStyle: FontStyle.italic),
+                      );
+                    }
+                    return db.getIconImage(
+                      skill.icon ?? Atlas.common.unknownSkillIcon,
+                      width: 32,
+                      aspectRatio: 1,
+                      onTap: skill.routeTo,
+                    );
+                  },
+                ),
+              Text('  Lv.${equip.skillLv}'),
+            ],
+          )
+        ],
+      ),
     );
   }
 

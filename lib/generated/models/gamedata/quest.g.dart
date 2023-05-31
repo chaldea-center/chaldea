@@ -928,6 +928,9 @@ QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) => QuestPhaseExt
       aiMultiNpc: (json['aiMultiNpc'] as List<dynamic>?)
           ?.map((e) => QuestPhaseAiNpc.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      overwriteEquipSkills: json['overwriteEquipSkills'] == null
+          ? null
+          : OverwriteEquipSkills.fromJson(Map<String, dynamic>.from(json['overwriteEquipSkills'] as Map)),
     );
 
 Map<String, dynamic> _$QuestPhaseExtraDetailToJson(QuestPhaseExtraDetail instance) => <String, dynamic>{
@@ -937,6 +940,17 @@ Map<String, dynamic> _$QuestPhaseExtraDetailToJson(QuestPhaseExtraDetail instanc
       'hintMessage': instance.hintMessage,
       'aiNpc': instance.aiNpc?.toJson(),
       'aiMultiNpc': instance.aiMultiNpc?.map((e) => e.toJson()).toList(),
+      'overwriteEquipSkills': instance.overwriteEquipSkills?.toJson(),
+    };
+
+OverwriteEquipSkills _$OverwriteEquipSkillsFromJson(Map json) => OverwriteEquipSkills(
+      iconId: json['iconId'] as int?,
+      skills: (json['skills'] as List<dynamic>?)?.map((e) => e as Map).toList() ?? const [],
+    );
+
+Map<String, dynamic> _$OverwriteEquipSkillsToJson(OverwriteEquipSkills instance) => <String, dynamic>{
+      'iconId': instance.iconId,
+      'skills': instance.skills,
     };
 
 Restriction _$RestrictionFromJson(Map json) => Restriction(
