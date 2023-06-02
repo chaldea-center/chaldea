@@ -309,7 +309,7 @@ class BattleData {
 
   Future<bool> nextWave() async {
     if (niceQuest?.stages.every((s) => s.wave < waveCount + 1) == true) {
-      recorder.message('End');
+      recorder.message('Win');
       return false;
     }
     waveCount += 1;

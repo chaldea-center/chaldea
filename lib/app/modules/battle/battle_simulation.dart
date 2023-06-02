@@ -289,11 +289,16 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           )),
         ),
         const Divider(thickness: 1, height: 8),
-        BattleRecorderPanel(
-          battleData: battleData,
-          quest: widget.questPhase,
-          team: widget.options.team,
-        ),
+        Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 720),
+            child: BattleRecorderPanel(
+              battleData: battleData,
+              quest: widget.questPhase,
+              team: widget.options.team,
+            ),
+          ),
+        )
       ],
     );
   }
