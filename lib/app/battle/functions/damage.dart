@@ -87,14 +87,13 @@ class Damage {
             specificAttackRate = dataVals.Value2! + useCount * dataVals.Correction!;
           }
         } else if (funcType == FuncType.damageNpIndividual || funcType == FuncType.damageNpStateIndividualFix) {
-          final checkBuffTraits = funcType == FuncType.damageNpStateIndividualFix;
           final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
           final useCorrection = damageNpSEDecision?.useCorrection ??
               battleData.checkTraits(CheckTraitParameters(
                 requiredTraits: [NiceTrait(id: dataVals.Target!)],
                 actor: battleData.target,
-                checkActorTraits: !checkBuffTraits,
-                checkActorBuffTraits: checkBuffTraits,
+                checkActorTraits: funcType == FuncType.damageNpIndividual,
+                checkActorBuffTraits: funcType == FuncType.damageNpStateIndividualFix,
                 ignoreIrremovableBuff: dataVals.IgnoreIndivUnreleaseable == 1,
               ));
 

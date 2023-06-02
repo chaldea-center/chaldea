@@ -158,42 +158,53 @@ class BuffData {
   }
 
   bool shouldApplyBuff(final BattleData battleData, final bool isTarget) {
-    final int checkIndvType = buff.script?.checkIndvType ?? 0;
-    final bool activeOnly = activeOnlyTypes.contains(buff.type);
-    final bool ignoreIrremovable = vals.IgnoreIndivUnreleaseable == 1;
-    final bool checkActorNpTraits = buff.script?.IncludeIgnoreIndividuality == 1;
-
-    final selfCheck = battleData.checkTraits(CheckTraitParameters(
-      requiredTraits: buff.ckSelfIndv,
-      actor: isTarget ? battleData.target : battleData.activator,
-      checkIndivType: checkIndvType,
-      checkActorTraits: true,
-      checkActorBuffTraits: battleData.currentBuff == null,
-      checkActiveBuffOnly: activeOnly,
-      ignoreIrremovableBuff: ignoreIrremovable,
-      checkActorNpTraits: checkActorNpTraits,
-      checkCurrentBuffTraits: true,
-      checkCurrentCardTraits: true,
-    ));
-
-    final opponentCheck = battleData.checkTraits(CheckTraitParameters(
-      requiredTraits: buff.ckOpIndv,
-      actor: !isTarget ? battleData.target : battleData.activator,
-      checkIndivType: checkIndvType,
-      checkActorTraits: true,
-      checkActorBuffTraits: battleData.currentBuff == null,
-      checkActiveBuffOnly: activeOnly,
-      ignoreIrremovableBuff: ignoreIrremovable,
-      checkActorNpTraits: checkActorNpTraits,
-      checkCurrentBuffTraits: true,
-      checkCurrentCardTraits: true,
-    ));
-
     final onFieldCheck = !isOnField || actorUniqueId == null || battleData.isActorOnField(actorUniqueId!);
 
     final scriptCheck = checkDataVals(battleData) && checkBuffScript(battleData, isTarget);
 
-    return selfCheck && opponentCheck && onFieldCheck && scriptCheck && individualitiesActive;
+    if (!onFieldCheck || !scriptCheck || !individualitiesActive) {
+      return false;
+    }
+
+    /// dw does not check self / op traits for svtTrait related types
+    switch (buff.type) {
+      case BuffType.addIndividuality:
+      case BuffType.subIndividuality:
+        return true;
+      default:
+        final int checkIndvType = buff.script?.checkIndvType ?? 0;
+        final bool activeOnly = activeOnlyTypes.contains(buff.type);
+        final bool ignoreIrremovable = vals.IgnoreIndivUnreleaseable == 1;
+        final bool checkActorNpTraits = buff.script?.IncludeIgnoreIndividuality == 1;
+
+        final selfCheck = battleData.checkTraits(CheckTraitParameters(
+          requiredTraits: buff.ckSelfIndv,
+          actor: isTarget ? battleData.target : battleData.activator,
+          checkIndivType: checkIndvType,
+          checkActorTraits: true,
+          checkActorBuffTraits: battleData.currentBuff == null,
+          checkActiveBuffOnly: activeOnly,
+          ignoreIrremovableBuff: ignoreIrremovable,
+          checkActorNpTraits: checkActorNpTraits,
+          checkCurrentBuffTraits: true,
+          checkCurrentCardTraits: true,
+        ));
+
+        final opponentCheck = battleData.checkTraits(CheckTraitParameters(
+          requiredTraits: buff.ckOpIndv,
+          actor: !isTarget ? battleData.target : battleData.activator,
+          checkIndivType: checkIndvType,
+          checkActorTraits: true,
+          checkActorBuffTraits: battleData.currentBuff == null,
+          checkActiveBuffOnly: activeOnly,
+          ignoreIrremovableBuff: ignoreIrremovable,
+          checkActorNpTraits: checkActorNpTraits,
+          checkCurrentBuffTraits: true,
+          checkCurrentCardTraits: true,
+        ));
+
+        return selfCheck && opponentCheck;
+    }
   }
 
   Future<bool> shouldActivateBuff(final BattleData battleData, final bool isTarget) async {
