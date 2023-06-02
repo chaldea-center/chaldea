@@ -196,6 +196,10 @@ class _ShopListPageState extends State<ShopListPage> with SearchableListState<Ni
     if (!filterData.type.matchOne(shop.shopType)) {
       return false;
     }
+    final now = DateTime.now().timestamp;
+    if (!filterData.opening.matchOne(shop.openedAt <= now && shop.closedAt >= now)) {
+      return false;
+    }
     if (!filterData.permanent.matchOne(shop.closedAt > kNeverClosedTimestamp)) {
       return false;
     }

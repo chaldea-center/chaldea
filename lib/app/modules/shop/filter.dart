@@ -12,14 +12,15 @@ enum ShopSort {
 }
 
 class ShopFilterData {
-  final type = FilterGroupData<ShopType>();
   final permanent = FilterGroupData<bool>();
+  final opening = FilterGroupData<bool>();
+  final type = FilterGroupData<ShopType>();
   final purchaseType = FilterGroupData<PurchaseType>();
 
   ShopSort sortType = ShopSort.openTime;
   bool reversed = false;
 
-  List<FilterGroupData> get groups => [type, permanent, purchaseType];
+  List<FilterGroupData> get groups => [type, permanent, opening, purchaseType];
 
   void reset() {
     for (final group in groups) {
@@ -73,6 +74,14 @@ class _ShopFilterState extends FilterPageState<ShopFilterData, ShopFilter> {
           options: const [true, false],
           values: filterData.permanent,
           optionBuilder: (v) => Text(v ? S.current.permanent : S.current.limited_time),
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
+        FilterGroup<bool>(
+          options: const [true, false],
+          values: filterData.opening,
+          optionBuilder: (v) => Text(v ? "Opening" : "Closed"),
           onFilterChanged: (value, _) {
             update();
           },
