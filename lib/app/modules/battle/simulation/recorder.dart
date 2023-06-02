@@ -864,6 +864,17 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
     final classAdvantage = toModifier(params.classAdvantage);
     final attributeAdvantage =
         toModifier(ConstData.getAttributeRelation(params.attackerAttribute, params.defenderAttribute));
+    final firstCardBonus = shouldIgnoreFirstCardBonus(params.isNp, params.firstCardType)
+        ? 0
+        : params.isMightyChain
+            ? toModifier(ConstData.cardInfo[CardType.buster]![1]!.addAtk)
+            : toModifier(ConstData.cardInfo[params.firstCardType]![1]!.addAtk);
+    final busterChainMod = (!params.isNp && params.currentCardType == CardType.buster && params.isTypeChain
+            ? toModifier(ConstData.constants.chainbonusBusterRate) * params.attack
+            : 0)
+        .toInt();
+    final extraModifier = toModifier(
+        params.isTypeChain ? ConstData.constants.extraAttackRateGrand : ConstData.constants.extraAttackRateSingle);
     final atkSum = max(toModifier(params.attackBuff - params.defenseBuff), -1);
     final cardSum = max(toModifier(params.cardBuff - params.cardResist), -1);
     final specificSum = max(
@@ -896,6 +907,10 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
         if (params.totalHits != 100) oneParam('Hits', hitsPercent.format(percent: true, precision: 3)),
         oneParam(S.current.class_advantage, classAdvantage.format(precision: 3)),
         oneParam(S.current.attribute_advantage, attributeAdvantage.format(precision: 3)),
+        if (firstCardBonus != 0) oneParam(S.current.battle_first_card_bonus, firstCardBonus.format(precision: 1)),
+        if (busterChainMod != 0) oneParam(S.current.battle_buster_chain, busterChainMod.toString()),
+        if (params.currentCardType == CardType.extra)
+          oneParam(S.current.battle_extra_rate, extraModifier.format(precision: 1)),
         oneParam(Transl.buffNames('攻撃力アップ').l, atkSum.format(percent: true, precision: 3), buffIcon(300)),
         oneParam(Transl.buffNames('カード性能アップ').l, cardSum.format(percent: true, precision: 3),
             cardBuffIcon(params.currentCardType)),

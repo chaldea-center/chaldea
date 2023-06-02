@@ -701,6 +701,17 @@ class S {
     );
   }
 
+  /// `Buster Chain Damage`
+  String get battle_buster_chain {
+    return Intl.message(
+      'Buster Chain Damage',
+      name: 'battle_buster_chain',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Card NP Rate`
   String get battle_card_np_rate {
     return Intl.message(
@@ -849,6 +860,28 @@ class S {
     return Intl.message(
       'Enemy Remaining',
       name: 'battle_enemy_remaining',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Extra Damage Rate`
+  String get battle_extra_rate {
+    return Intl.message(
+      'Extra Damage Rate',
+      name: 'battle_extra_rate',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `First Card Bonus`
+  String get battle_first_card_bonus {
+    return Intl.message(
+      'First Card Bonus',
+      name: 'battle_first_card_bonus',
       desc: '',
       locale: localeName,
       args: [],
