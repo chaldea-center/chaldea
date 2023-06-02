@@ -20,14 +20,9 @@ class SvtTdTab extends StatelessWidget {
     List<Widget> children = [];
     final status = db.curUser.svtStatusOf(svt.collectionNo).cur;
     final overrideData = OverrideTDData.fromAscensionAdd(svt.ascensionAdd);
-    for (final tdNum in svt.groupedNoblePhantasms.keys) {
-      final tds = svt.groupedNoblePhantasms[tdNum]!;
-      if (svt.groupedNoblePhantasms.containsKey(1) &&
-          tdNum != 1 &&
-          tds.any((e) => e.script?.tdTypeChangeIDs?.isNotEmpty != true)) {
-        children.add(DividerWithTitle(title: S.current.enemy_only_nps, height: 16));
-      }
 
+    void addOneGroup(int tdNum, List<NiceTd> tds) {
+      if (tds.isEmpty) return;
       List<NiceTd> shownTds = [];
       List<OverrideTDData?> overrideTds = [];
       for (final td in tds) {
@@ -45,6 +40,30 @@ class SvtTdTab extends StatelessWidget {
         }
       }
       children.add(_buildTds(context, shownTds, status.favorite ? status.npLv : null, overrideTds));
+    }
+
+    for (final tdNum in svt.groupedNoblePhantasms.keys) {
+      final tds = svt.groupedNoblePhantasms[tdNum]!;
+      if (svt.groupedNoblePhantasms.containsKey(1) &&
+          tdNum != 1 &&
+          tds.any((e) => e.script?.tdTypeChangeIDs?.isNotEmpty != true)) {
+        children.add(DividerWithTitle(title: S.current.enemy_only_nps, height: 16));
+      }
+      if (svt.collectionNo == 312) {
+        List<NiceTd> tds1 = [], tds2 = [];
+        for (final td in tds) {
+          // if (td.releaseConditions.any((e) => e.condType == CondType.equipWithTargetCostume)) {
+          if (td.card == CardType.buster) {
+            tds2.add(td);
+          } else {
+            tds1.add(td);
+          }
+        }
+        addOneGroup(tdNum, tds1);
+        addOneGroup(tdNum, tds2);
+      } else {
+        addOneGroup(tdNum, tds);
+      }
     }
 
     if (svt.extra.tdAnimations.isNotEmpty && kDebugMode) {
