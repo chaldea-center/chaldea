@@ -37,7 +37,10 @@ void main() async {
         screenshotController: db.runtimeData.screenshotController,
         screenshotPath: joinPaths(db.paths.tempDir, 'crash.jpg'),
         attachments: [db.paths.appLog, db.paths.crashLog, db.paths.userDataPath],
-        onGenerateAttachments: () => {'userdata.memory.json': Uint8List.fromList(utf8.encode(jsonEncode(db.userData)))},
+        onGenerateAttachments: () => {
+          'userdata.memory.json': Uint8List.fromList(utf8.encode(jsonEncode(db.userData))),
+          'settings.memory.json': Uint8List.fromList(utf8.encode(jsonEncode(db.settings))),
+        },
       ),
     );
   } catch (e, s) {

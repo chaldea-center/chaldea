@@ -31,6 +31,9 @@ class BattleLog {
   final String log;
 
   BattleLog(this.type, this.log);
+
+  @override
+  String toString() => "BattleLog(${type.name}): $log";
 }
 
 enum BattleLogType { debug, function, action, error }

@@ -597,6 +597,7 @@ class BattleData {
     } catch (e, s) {
       battleLogger.error("Failed: $action");
       logger.e('Battle action failed: $action', e, s);
+      logger.i(battleLogger.logs.join("\n"));
       if (mounted) EasyLoading.showError('${S.current.failed}\n\n$e');
       if (save) popSnapshot();
       rethrow;
