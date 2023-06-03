@@ -228,6 +228,9 @@ class TdDmgSolver {
       await battleData.activateSvtSkill(1, 2);
       battleData.onFieldAllyServants[1] = null;
     }
+    for (int index = 0; index < battleData.masterSkillInfo.length; index++) {
+      await battleData.activateMysticCodeSKill(index);
+    }
     if (options.twiceActiveSkill && options.enableActiveSkills) {
       for (int index = 0; index < actor.skillInfoList.length; index++) {
         final skill = actor.skillInfoList[index];
