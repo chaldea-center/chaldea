@@ -77,7 +77,7 @@ class _EnemyMasterDetailPageState extends State<EnemyMasterDetailPage> {
             S.current.card_asset_face,
             master.battles.map((e) => e.face).toSet(),
             120,
-            transform: (child) {
+            transform: (child, _) {
               return Transform.rotate(
                 angle: -pi / 4,
                 child: Padding(

@@ -169,7 +169,7 @@ class ExtraAssetsPage extends StatelessWidget {
     bool showMerge = true,
     PlaceholderWidgetBuilder? placeholder,
     Function(String url)? onTapImage,
-    Widget Function(Widget child)? transform,
+    Widget Function(Widget child, String url)? transform,
   }) {
     final _urls = urls.toList();
     if (_urls.isEmpty) return null;
@@ -268,7 +268,7 @@ class ExtraAssetsPage extends StatelessWidget {
                   ),
                 );
               }
-              if (transform != null) child = transform(child);
+              if (transform != null) child = transform(child, url);
               return child;
             },
             separatorBuilder: (context, index) => const SizedBox(width: 8),

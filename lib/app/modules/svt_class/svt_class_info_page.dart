@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/app.dart';
@@ -22,6 +24,22 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
   int get clsId => widget.clsId;
   late SvtClass? cls = kSvtClassIds[clsId];
 
+  static const beyondTheTaleClasses = <SvtClass>[
+    SvtClass.saber,
+    SvtClass.lancer,
+    SvtClass.archer,
+    SvtClass.rider,
+    SvtClass.caster,
+    SvtClass.assassin,
+    SvtClass.berserker,
+    SvtClass.avenger,
+    SvtClass.alterEgo,
+    SvtClass.moonCancer,
+    SvtClass.foreigner,
+    SvtClass.ruler,
+    SvtClass.pretender,
+  ];
+
   @override
   Widget build(BuildContext context) {
     final info = db.gameData.constData.classInfo[clsId];
@@ -35,6 +53,11 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
         Atlas.classCard(5, 123),
         Atlas.classCard(5, 223),
       ]);
+    }
+    // https://beyond.fate-go.jp/assets/img/teaser/card/01_saber.jpg
+    if (cls != null && beyondTheTaleClasses.contains(cls)) {
+      final index = (beyondTheTaleClasses.indexOf(cls!) + 1).toString().padLeft(2, '0');
+      cardImages.add("https://beyond.fate-go.jp/assets/img/teaser/card/${index}_${cls!.name.toLowerCase()}.jpg");
     }
     return Scaffold(
       appBar: AppBar(
@@ -72,9 +95,10 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
                     ? const Text('')
                     : Text.rich(
                         SharedBuilder.textButtonSpan(
-                            context: context,
-                            text: Transl.trait(info.individuality).l,
-                            onTap: () => router.push(url: Routes.traitI(info.individuality))),
+                          context: context,
+                          text: Transl.trait(info.individuality).l,
+                          onTap: () => router.push(url: Routes.traitI(info.individuality)),
+                        ),
                       ),
               )
             ]),
@@ -84,13 +108,16 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
           if (cardImages.isNotEmpty)
             Padding(
               padding: const EdgeInsetsDirectional.only(start: 16),
-              child: ExtraAssetsPage.oneGroup(
-                'Class Card',
-                cardImages,
-                300,
-                expanded: true,
-                showMerge: true,
-              )!,
+              child: ExtraAssetsPage.oneGroup('Class Card', cardImages, 300, expanded: true, showMerge: true,
+                  transform: (child, url) {
+                if (url.contains('beyond.fate-go.jp')) {
+                  return Transform.rotate(
+                    angle: pi / 2,
+                    child: AspectRatio(aspectRatio: 1, child: child),
+                  );
+                }
+                return child;
+              })!,
             )
         ],
       ),
