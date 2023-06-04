@@ -384,66 +384,24 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       if (showDetail(SvtPlanDetail.bondLimit))
         buildPlanRow(
           useSlider: sliderMode,
-          leading: Item.iconBuilder(context: context, item: Items.lantern, width: 33),
-          // title: S.current.game_kizuna,
-          titleWidget: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Flexible(child: Text('${S.current.game_kizuna}  ', maxLines: 1)),
-              DropdownButtonHideUnderline(
-                child: DropdownButton<int>(
-                  isDense: true,
-                  value: status.bond,
-                  iconSize: 16,
-                  items: [
-                    for (int bond = 0; bond <= 15; bond++)
-                      DropdownMenuItem(
-                        value: bond,
-                        child: Text(
-                          'Lv.$bond',
-                          // textScaleFactor: 0.9,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ),
-                  ],
-                  onChanged: enhanceMode
-                      ? null
-                      : (v) {
-                          if (v != null) {
-                            status.bond = v;
-                            curVal.bondLimit = curVal.bondLimit.clamp(v, 15);
-                            targetVal.bondLimit = targetVal.bondLimit.clamp(curVal.bondLimit, 15);
-                            updateState();
-                          }
-                        },
-                ),
-              ),
-            ],
+          leading: db.getIconImage(
+            "https://static.atlasacademy.io/JP/Terminal/Info/CommonUIAtlas/img_bond_category.png",
+            width: 33,
           ),
-          start: curVal.bondLimit,
-          end: targetVal.bondLimit,
-          minVal: 10,
+          title: S.current.game_kizuna,
+          start: status.bond,
+          minVal: 0,
           maxVal: 15,
-          onValueChanged: (_start, _end) {
+          onValueChanged: (_start, _) {
             status.favorite = true;
-            curVal.bondLimit = _start;
-            targetVal.bondLimit = _end;
-            if (!enhanceMode) {
-              status.bond = status.bond.clamp(0, curVal.bondLimit);
-            }
+            status.bond = _start;
+            curVal.bondLimit = curVal.bondLimit.clamp(_start, 15);
+            targetVal.bondLimit = targetVal.bondLimit.clamp(curVal.bondLimit, 15);
             updateState();
           },
-          detailPageBuilder: (context) => LevelingCostPage(
-            costList: {
-              for (int bond = 10; bond < 15; bond++)
-                bond: LvlUpMaterial(
-                  items: [ItemAmount(itemId: Items.lanternId, amount: 1)],
-                  qp: db.gameData.constData.bondLimitQp[bond] ?? 0,
-                )
-            },
-            curLv: curVal.bondLimit,
-            targetLv: plan.bondLimit,
-            title: S.current.bond_limit,
+          detailPageBuilder: (context) => SimpleCancelOkDialog(
+            title: Text('${S.current.bond} (${S.current.current_})'),
+            hideCancel: true,
           ),
         ),
     ];

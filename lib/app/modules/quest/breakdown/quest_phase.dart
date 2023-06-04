@@ -223,7 +223,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       children.add(getFlags(curPhase.flags));
     }
     if (curPhase.extraDetail?.overwriteEquipSkills != null) {
-      children.add(getOvewriteMysticCode(curPhase.extraDetail!.overwriteEquipSkills!));
+      children.add(getOverwriteMysticCode(curPhase.extraDetail!.overwriteEquipSkills!));
     }
     if (!widget.battleOnly && !widget.offline && curPhase.supportServants.isNotEmpty) {
       children.add(getSupportServants(curPhase));
@@ -664,7 +664,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     );
   }
 
-  Widget getOvewriteMysticCode(OverwriteEquipSkills equip) {
+  Widget getOverwriteMysticCode(OverwriteEquipSkills equip) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Column(
@@ -673,9 +673,10 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
           _header(S.current.mystic_code),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               db.getIconImage(equip.icon, width: 36, aspectRatio: 1),
-              const SizedBox(width: 16),
+              const SizedBox(width: 8),
               for (final skillId in equip.skillIds)
                 FutureBuilder2<int, NiceSkill?>(
                   id: skillId,
@@ -689,9 +690,10 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                     }
                     return db.getIconImage(
                       skill.icon ?? Atlas.common.unknownSkillIcon,
-                      width: 32,
+                      width: 24,
                       aspectRatio: 1,
                       onTap: skill.routeTo,
+                      padding: const EdgeInsets.symmetric(horizontal: 2),
                     );
                   },
                 ),

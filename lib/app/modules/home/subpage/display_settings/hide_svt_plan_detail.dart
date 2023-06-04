@@ -60,7 +60,7 @@ class _HideSvtPlanDetailSettingPageState extends State<HideSvtPlanDetailSettingP
           SvtPlanDetail.noblePhantasm: S.current.noble_phantasm_level,
           SvtPlanDetail.fou4: '${kStarChar}4 ${S.current.foukun}',
           SvtPlanDetail.fou3: '${kStarChar}3 ${S.current.foukun}',
-          SvtPlanDetail.bondLimit: S.current.bond_limit,
+          SvtPlanDetail.bondLimit: S.current.bond,
           SvtPlanDetail.commandCode: S.current.command_code,
         }[value] ??
         value.name;
