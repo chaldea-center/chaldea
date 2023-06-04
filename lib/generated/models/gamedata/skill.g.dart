@@ -90,6 +90,10 @@ NiceSkill _$NiceSkillFromJson(Map json) => NiceSkill(
               .toList() ??
           const [],
       num: json['num'] as int? ?? 0,
+      skillSvts: (json['skillSvts'] as List<dynamic>?)
+              ?.map((e) => SkillSvt.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       strengthStatus: json['strengthStatus'] as int? ?? 0,
       priority: json['priority'] as int? ?? 0,
       condQuestId: json['condQuestId'] as int? ?? 0,
@@ -121,6 +125,7 @@ Map<String, dynamic> _$NiceSkillToJson(NiceSkill instance) => <String, dynamic>{
       'aiIds': instance.aiIds?.map((k, e) => MapEntry(_$AiTypeEnumMap[k]!, e)),
       'groupOverwrites': instance.groupOverwrites?.map((e) => e.toJson()).toList(),
       'functions': instance.functions.map((e) => e.toJson()).toList(),
+      'skillSvts': instance.skillSvts.map((e) => e.toJson()).toList(),
       'strengthStatus': instance.strengthStatus,
       'priority': instance.priority,
       'condQuestId': instance.condQuestId,
@@ -189,6 +194,39 @@ const _$TdEffectFlagEnumMap = {
   TdEffectFlag.attackEnemyOne: 'attackEnemyOne',
 };
 
+SkillSvt _$SkillSvtFromJson(Map json) => SkillSvt(
+      svtId: json['svtId'] as int,
+      num: json['num'] as int? ?? -1,
+      priority: json['priority'] as int? ?? 0,
+      script: json['script'] as Map?,
+      strengthStatus: json['strengthStatus'] as int? ?? 0,
+      condQuestId: json['condQuestId'] as int? ?? 0,
+      condQuestPhase: json['condQuestPhase'] as int? ?? 0,
+      condLv: json['condLv'] as int? ?? 0,
+      condLimitCount: json['condLimitCount'] as int? ?? 0,
+      eventId: json['eventId'] as int? ?? 0,
+      flag: json['flag'] as int? ?? 0,
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) => SvtSkillRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+Map<String, dynamic> _$SkillSvtToJson(SkillSvt instance) => <String, dynamic>{
+      'svtId': instance.svtId,
+      'num': instance.num,
+      'priority': instance.priority,
+      'script': instance.script,
+      'strengthStatus': instance.strengthStatus,
+      'condQuestId': instance.condQuestId,
+      'condQuestPhase': instance.condQuestPhase,
+      'condLv': instance.condLv,
+      'condLimitCount': instance.condLimitCount,
+      'eventId': instance.eventId,
+      'flag': instance.flag,
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+    };
+
 TdSvt _$TdSvtFromJson(Map json) => TdSvt(
       svtId: json['svtId'] as int,
       num: json['num'] as int? ?? -1,
@@ -203,6 +241,10 @@ TdSvt _$TdSvtFromJson(Map json) => TdSvt(
       condFriendshipRank: json['condFriendshipRank'] as int? ?? 0,
       motion: json['motion'] as int? ?? 0,
       card: $enumDecodeNullable(_$CardTypeEnumMap, json['card']) ?? CardType.none,
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) => SvtSkillRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$TdSvtToJson(TdSvt instance) => <String, dynamic>{
@@ -219,6 +261,7 @@ Map<String, dynamic> _$TdSvtToJson(TdSvt instance) => <String, dynamic>{
       'condFriendshipRank': instance.condFriendshipRank,
       'motion': instance.motion,
       'card': _$CardTypeEnumMap[instance.card]!,
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
     };
 
 NiceTd _$NiceTdFromJson(Map json) => NiceTd(
@@ -249,7 +292,7 @@ NiceTd _$NiceTdFromJson(Map json) => NiceTd(
               .toList() ??
           const [],
       strengthStatus: json['strengthStatus'] as int? ?? 0,
-      priority: json['priority'] as int,
+      priority: json['priority'] as int? ?? 0,
       condQuestId: json['condQuestId'] as int? ?? 0,
       condQuestPhase: json['condQuestPhase'] as int? ?? 0,
       releaseConditions: (json['releaseConditions'] as List<dynamic>?)

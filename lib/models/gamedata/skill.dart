@@ -234,6 +234,7 @@ class NiceSkill extends BaseSkill {
   @override
   List<NiceFunction> get functions => _baseSkill.functions;
 
+  List<SkillSvt> skillSvts;
   int strengthStatus;
   int priority;
   int condQuestId;
@@ -259,6 +260,7 @@ class NiceSkill extends BaseSkill {
     super.functions = const [],
     // ignore: avoid_types_as_parameter_names
     super.num = 0,
+    this.skillSvts = const [],
     this.strengthStatus = 0,
     this.priority = 0,
     this.condQuestId = 0,
@@ -453,6 +455,41 @@ class BaseTd extends SkillOrTd with RouteInfo {
 }
 
 @JsonSerializable()
+class SkillSvt {
+  int svtId;
+  int num;
+  int priority;
+  Map? script; // "strengthStatusReleaseId": 40060301, (commonRelease)
+  int strengthStatus;
+  int condQuestId;
+  int condQuestPhase;
+  int condLv;
+  int condLimitCount;
+  int eventId;
+  int flag;
+  List<SvtSkillRelease> releaseConditions;
+
+  SkillSvt({
+    required this.svtId,
+    this.num = -1,
+    this.priority = 0,
+    this.script,
+    this.strengthStatus = 0,
+    this.condQuestId = 0,
+    this.condQuestPhase = 0,
+    this.condLv = 0,
+    this.condLimitCount = 0,
+    this.eventId = 0,
+    this.flag = 0,
+    this.releaseConditions = const [],
+  });
+
+  factory SkillSvt.fromJson(Map<String, dynamic> json) => _$SkillSvtFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SkillSvtToJson(this);
+}
+
+@JsonSerializable()
 class TdSvt {
   int svtId;
   int num;
@@ -467,6 +504,7 @@ class TdSvt {
   int condFriendshipRank;
   int motion;
   CardType card;
+  List<SvtSkillRelease> releaseConditions;
 
   TdSvt({
     required this.svtId,
@@ -482,6 +520,7 @@ class TdSvt {
     this.condFriendshipRank = 0,
     this.motion = 0,
     this.card = CardType.none,
+    this.releaseConditions = const [],
   });
 
   factory TdSvt.fromJson(Map<String, dynamic> json) => _$TdSvtFromJson(json);
@@ -543,7 +582,7 @@ class NiceTd extends BaseTd {
     required super.functions,
     this.npSvts = const [],
     this.strengthStatus = 0,
-    required this.priority,
+    this.priority = 0,
     this.condQuestId = 0,
     this.condQuestPhase = 0,
     this.releaseConditions = const [],

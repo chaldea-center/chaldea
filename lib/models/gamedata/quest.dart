@@ -1393,7 +1393,7 @@ class QuestPhaseExtraDetail {
 @JsonSerializable()
 class OverwriteEquipSkills {
   int? iconId;
-  int? cutInView; // 1
+  // int? cutInView;
   List<Map> skills; // id,lv
 
   OverwriteEquipSkills({
