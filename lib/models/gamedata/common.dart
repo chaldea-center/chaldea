@@ -920,5 +920,11 @@ enum CondType {
   superBossDamageAbove,
   superBossDamageBelow,
   eventMissionGroupAchieve,
+  svtFriendshipClassNumAbove,
   notWarClear,
+  svtSkillLvClassNumAbove,
+  svtClassLvUpCount,
+  svtClassSkillLvUpCount,
+  svtClassLimitUpCount,
+  svtClassFriendshipCount,
 }

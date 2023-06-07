@@ -461,6 +461,7 @@ enum ItemType {
   pp,
   tradeAp,
   ri,
+  stormpod,
 }
 
 enum ItemBGType {

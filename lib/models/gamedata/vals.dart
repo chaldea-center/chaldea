@@ -188,6 +188,8 @@ class DataVals {
   List<int>? get CopyTargetBuffType => _list('CopyTargetBuffType');
   List<int>? get NotSkillCopyTargetFuncIds => _list('NotSkillCopyTargetFuncIds');
   List<int>? get NotSkillCopyTargetIndividualities => _list('NotSkillCopyTargetIndividualities');
+  int? get ClassIconAuraEffectId => _vals['ClassIconAuraEffectId'];
+  int? get ActMasterGenderType => _vals['ActMasterGenderType'];
   int? get IntervalTurn => _vals['IntervalTurn'];
   int? get IntervalCount => _vals['IntervalCount'];
   List<int>? get TargetEnemyRange => _list('TargetEnemyRange');

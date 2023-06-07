@@ -306,5 +306,11 @@ const _$CondTypeEnumMap = {
   CondType.superBossDamageAbove: 'superBossDamageAbove',
   CondType.superBossDamageBelow: 'superBossDamageBelow',
   CondType.eventMissionGroupAchieve: 'eventMissionGroupAchieve',
+  CondType.svtFriendshipClassNumAbove: 'svtFriendshipClassNumAbove',
   CondType.notWarClear: 'notWarClear',
+  CondType.svtSkillLvClassNumAbove: 'svtSkillLvClassNumAbove',
+  CondType.svtClassLvUpCount: 'svtClassLvUpCount',
+  CondType.svtClassSkillLvUpCount: 'svtClassSkillLvUpCount',
+  CondType.svtClassLimitUpCount: 'svtClassLimitUpCount',
+  CondType.svtClassFriendshipCount: 'svtClassFriendshipCount',
 };

@@ -90,6 +90,7 @@ NiceSkill _$NiceSkillFromJson(Map json) => NiceSkill(
               .toList() ??
           const [],
       num: json['num'] as int? ?? 0,
+      svtId: json['svtId'] as int? ?? 0,
       skillSvts: (json['skillSvts'] as List<dynamic>?)
               ?.map((e) => SkillSvt.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -126,6 +127,7 @@ Map<String, dynamic> _$NiceSkillToJson(NiceSkill instance) => <String, dynamic>{
       'groupOverwrites': instance.groupOverwrites?.map((e) => e.toJson()).toList(),
       'functions': instance.functions.map((e) => e.toJson()).toList(),
       'skillSvts': instance.skillSvts.map((e) => e.toJson()).toList(),
+      'svtId': instance.svtId,
       'strengthStatus': instance.strengthStatus,
       'priority': instance.priority,
       'condQuestId': instance.condQuestId,
@@ -291,6 +293,7 @@ NiceTd _$NiceTdFromJson(Map json) => NiceTd(
               ?.map((e) => TdSvt.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      svtId: json['svtId'] as int? ?? 0,
       strengthStatus: json['strengthStatus'] as int? ?? 0,
       priority: json['priority'] as int? ?? 0,
       condQuestId: json['condQuestId'] as int? ?? 0,
@@ -317,6 +320,7 @@ Map<String, dynamic> _$NiceTdToJson(NiceTd instance) => <String, dynamic>{
       'script': instance.script?.toJson(),
       'functions': instance.functions.map((e) => e.toJson()).toList(),
       'npSvts': instance.npSvts.map((e) => e.toJson()).toList(),
+      'svtId': instance.svtId,
       'num': instance.num,
       'strengthStatus': instance.strengthStatus,
       'priority': instance.priority,

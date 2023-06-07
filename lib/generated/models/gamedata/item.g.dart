@@ -75,6 +75,7 @@ const _$ItemTypeEnumMap = {
   ItemType.pp: 'pp',
   ItemType.tradeAp: 'tradeAp',
   ItemType.ri: 'ri',
+  ItemType.stormpod: 'stormpod',
 };
 
 const _$ItemUseEnumMap = {

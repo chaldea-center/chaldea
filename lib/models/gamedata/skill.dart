@@ -235,6 +235,7 @@ class NiceSkill extends BaseSkill {
   List<NiceFunction> get functions => _baseSkill.functions;
 
   List<SkillSvt> skillSvts;
+  int svtId;
   int strengthStatus;
   int priority;
   int condQuestId;
@@ -260,6 +261,7 @@ class NiceSkill extends BaseSkill {
     super.functions = const [],
     // ignore: avoid_types_as_parameter_names
     super.num = 0,
+    this.svtId = 0,
     this.skillSvts = const [],
     this.strengthStatus = 0,
     this.priority = 0,
@@ -556,6 +558,7 @@ class NiceTd extends BaseTd {
   // use it only for td fetched from api
   List<TdSvt> npSvts;
 
+  int svtId;
   int num;
   int strengthStatus;
   int priority;
@@ -581,6 +584,7 @@ class NiceTd extends BaseTd {
     super.script,
     required super.functions,
     this.npSvts = const [],
+    this.svtId = 0,
     this.strengthStatus = 0,
     this.priority = 0,
     this.condQuestId = 0,
