@@ -214,7 +214,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
     enemy.svt = BasicServant.fromNice(svt);
     enemy.name = svt.name;
     // enemy.serverMod
-    final td = svt.noblePhantasms.lastWhereOrNull((e) => e.num == 1);
+    final td = svt.noblePhantasms.lastWhereOrNull((e) => e.svt.num == 1);
     final skill1 = svt.groupedActiveSkills[1]?.lastOrNull,
         skill2 = svt.groupedActiveSkills[2]?.lastOrNull,
         skill3 = svt.groupedActiveSkills[3]?.lastOrNull;

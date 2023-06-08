@@ -365,13 +365,13 @@ class BattleServantData {
     final currentNP = getCurrentNP(battleData);
     final cardDetail = CardDetail(
       attackIndividuality: currentNP?.individuality ?? [],
-      hitsDistribution: currentNP?.npDistribution ?? [100],
+      hitsDistribution: currentNP?.svt.damage ?? [100],
       attackType:
           currentNP?.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
       attackNpRate: currentNP?.npGain.np[playerSvtData!.tdLv - 1] ?? 0,
     );
 
-    return CommandCardData(currentNP?.card ?? CardType.none, cardDetail)
+    return CommandCardData(currentNP?.svt.card ?? CardType.none, cardDetail)
       ..isNP = true
       ..npGain = currentNP?.npGain.np[playerSvtData!.tdLv - 1] ?? 0
       ..traits = currentNP?.individuality ?? [];

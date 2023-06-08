@@ -191,7 +191,7 @@ class SvtInfoTab extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: svt.noblePhantasms
-                          .map((e) => e.card)
+                          .map((e) => e.svt.card)
                           .toSet()
                           .map((e) => CommandCardWidget(card: e, width: 55))
                           .toList(),

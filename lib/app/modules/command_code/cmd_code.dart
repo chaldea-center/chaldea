@@ -274,7 +274,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
           ],
         ),
         CustomTableRow(children: [TableCellData(text: S.current.skill, isHeader: true)]),
-        for (final skill in cc.skills..sort2((e) => e.num * 100 + e.priority)) SkillDescriptor(skill: skill),
+        for (final skill in cc.skills..sort2((e) => e.svt.num * 100 + e.svt.priority)) SkillDescriptor(skill: skill),
         CustomTableRow(children: [TableCellData(text: S.current.characters_in_card, isHeader: true)]),
         CustomTableRow(children: [TableCellData(child: localizeCharacters(context))]),
         CustomTableRow(children: [TableCellData(text: S.current.card_description, isHeader: true)]),

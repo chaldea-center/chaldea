@@ -8,66 +8,10 @@ part of '../../../models/gamedata/skill.dart';
 
 BaseSkill _$BaseSkillFromJson(Map json) => BaseSkill(
       id: json['id'] as int,
-      num: json['num'] as int? ?? -1,
-      name: json['name'] as String,
+      name: json['name'] as String? ?? "",
       ruby: json['ruby'] as String? ?? '',
       unmodifiedDetail: json['unmodifiedDetail'] as String?,
-      type: $enumDecode(_$SkillTypeEnumMap, json['type']),
-      icon: json['icon'] as String?,
-      coolDown: (json['coolDown'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [0],
-      actIndividuality: (json['actIndividuality'] as List<dynamic>?)
-              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      script: json['script'] == null ? null : SkillScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
-      skillAdd: (json['skillAdd'] as List<dynamic>?)
-              ?.map((e) => SkillAdd.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      aiIds: (json['aiIds'] as Map?)?.map(
-        (k, e) => MapEntry($enumDecode(_$AiTypeEnumMap, k), (e as List<dynamic>).map((e) => e as int).toList()),
-      ),
-      groupOverwrites: (json['groupOverwrites'] as List<dynamic>?)
-          ?.map((e) => SkillGroupOverwrite.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-      functions: (json['functions'] as List<dynamic>)
-          .map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
-    );
-
-Map<String, dynamic> _$BaseSkillToJson(BaseSkill instance) => <String, dynamic>{
-      'id': instance.id,
-      'num': instance.num,
-      'name': instance.name,
-      'ruby': instance.ruby,
-      'unmodifiedDetail': instance.unmodifiedDetail,
-      'type': _$SkillTypeEnumMap[instance.type]!,
-      'icon': instance.icon,
-      'coolDown': instance.coolDown,
-      'actIndividuality': instance.actIndividuality.map((e) => e.toJson()).toList(),
-      'script': instance.script?.toJson(),
-      'skillAdd': instance.skillAdd.map((e) => e.toJson()).toList(),
-      'aiIds': instance.aiIds?.map((k, e) => MapEntry(_$AiTypeEnumMap[k]!, e)),
-      'groupOverwrites': instance.groupOverwrites?.map((e) => e.toJson()).toList(),
-      'functions': instance.functions.map((e) => e.toJson()).toList(),
-    };
-
-const _$SkillTypeEnumMap = {
-  SkillType.active: 'active',
-  SkillType.passive: 'passive',
-};
-
-const _$AiTypeEnumMap = {
-  AiType.svt: 'svt',
-  AiType.field: 'field',
-};
-
-NiceSkill _$NiceSkillFromJson(Map json) => NiceSkill(
-      id: json['id'] as int,
-      name: json['name'] as String,
-      ruby: json['ruby'] as String? ?? '',
-      unmodifiedDetail: json['unmodifiedDetail'] as String?,
-      type: $enumDecode(_$SkillTypeEnumMap, json['type']),
+      type: $enumDecodeNullable(_$SkillTypeEnumMap, json['type']) ?? SkillType.active,
       icon: json['icon'] as String?,
       coolDown: (json['coolDown'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [0],
       actIndividuality: (json['actIndividuality'] as List<dynamic>?)
@@ -89,30 +33,13 @@ NiceSkill _$NiceSkillFromJson(Map json) => NiceSkill(
               ?.map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      num: json['num'] as int? ?? 0,
-      svtId: json['svtId'] as int? ?? 0,
       skillSvts: (json['skillSvts'] as List<dynamic>?)
               ?.map((e) => SkillSvt.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      strengthStatus: json['strengthStatus'] as int? ?? 0,
-      priority: json['priority'] as int? ?? 0,
-      condQuestId: json['condQuestId'] as int? ?? 0,
-      condQuestPhase: json['condQuestPhase'] as int? ?? 0,
-      condLv: json['condLv'] as int? ?? 0,
-      condLimitCount: json['condLimitCount'] as int? ?? 0,
-      extraPassive: (json['extraPassive'] as List<dynamic>?)
-              ?.map((e) => ExtraPassive.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
-              ?.map((e) => SvtSkillRelease.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
     );
 
-Map<String, dynamic> _$NiceSkillToJson(NiceSkill instance) => <String, dynamic>{
-      'num': instance.num,
+Map<String, dynamic> _$BaseSkillToJson(BaseSkill instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'ruby': instance.ruby,
@@ -127,78 +54,92 @@ Map<String, dynamic> _$NiceSkillToJson(NiceSkill instance) => <String, dynamic>{
       'groupOverwrites': instance.groupOverwrites?.map((e) => e.toJson()).toList(),
       'functions': instance.functions.map((e) => e.toJson()).toList(),
       'skillSvts': instance.skillSvts.map((e) => e.toJson()).toList(),
-      'svtId': instance.svtId,
-      'strengthStatus': instance.strengthStatus,
-      'priority': instance.priority,
-      'condQuestId': instance.condQuestId,
-      'condQuestPhase': instance.condQuestPhase,
-      'condLv': instance.condLv,
-      'condLimitCount': instance.condLimitCount,
-      'extraPassive': instance.extraPassive.map((e) => e.toJson()).toList(),
-      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
     };
 
-BaseTd _$BaseTdFromJson(Map json) => BaseTd(
+const _$SkillTypeEnumMap = {
+  SkillType.active: 'active',
+  SkillType.passive: 'passive',
+};
+
+const _$AiTypeEnumMap = {
+  AiType.svt: 'svt',
+  AiType.field: 'field',
+};
+
+NiceSkill _$NiceSkillFromJson(Map json) => NiceSkill(
       id: json['id'] as int,
-      card: $enumDecode(_$CardTypeEnumMap, json['card']),
-      name: json['name'] as String,
+      name: json['name'] as String? ?? "",
       ruby: json['ruby'] as String? ?? '',
-      icon: json['icon'] as String?,
-      rank: json['rank'] as String,
-      type: json['type'] as String,
-      effectFlags:
-          (json['effectFlags'] as List<dynamic>?)?.map((e) => $enumDecode(_$TdEffectFlagEnumMap, e)).toList() ??
-              const [],
       unmodifiedDetail: json['unmodifiedDetail'] as String?,
-      npGain: NpGain.fromJson(Map<String, dynamic>.from(json['npGain'] as Map)),
-      npDistribution: (json['npDistribution'] as List<dynamic>).map((e) => e as int).toList(),
-      individuality: (json['individuality'] as List<dynamic>?)
+      type: $enumDecodeNullable(_$SkillTypeEnumMap, json['type']) ?? SkillType.active,
+      icon: json['icon'] as String?,
+      coolDown: (json['coolDown'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [0],
+      actIndividuality: (json['actIndividuality'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       script: json['script'] == null ? null : SkillScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
-      functions: (json['functions'] as List<dynamic>)
-          .map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
+      skillAdd: (json['skillAdd'] as List<dynamic>?)
+              ?.map((e) => SkillAdd.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      aiIds: (json['aiIds'] as Map?)?.map(
+        (k, e) => MapEntry($enumDecode(_$AiTypeEnumMap, k), (e as List<dynamic>).map((e) => e as int).toList()),
+      ),
+      groupOverwrites: (json['groupOverwrites'] as List<dynamic>?)
+          ?.map((e) => SkillGroupOverwrite.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      functions: (json['functions'] as List<dynamic>?)
+              ?.map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      skillSvts: (json['skillSvts'] as List<dynamic>?)
+              ?.map((e) => SkillSvt.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      svtId: json['svtId'] as int? ?? 0,
+      num: json['num'] as int? ?? 0,
+      priority: json['priority'] as int? ?? 0,
+      strengthStatus: json['strengthStatus'] as int? ?? 0,
+      condQuestId: json['condQuestId'] as int? ?? 0,
+      condQuestPhase: json['condQuestPhase'] as int? ?? 0,
+      condLv: json['condLv'] as int? ?? 0,
+      condLimitCount: json['condLimitCount'] as int? ?? 0,
+      extraPassive: (json['extraPassive'] as List<dynamic>?)
+              ?.map((e) => ExtraPassive.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );
 
-Map<String, dynamic> _$BaseTdToJson(BaseTd instance) => <String, dynamic>{
+Map<String, dynamic> _$NiceSkillToJson(NiceSkill instance) => <String, dynamic>{
+      'extraPassive': instance.extraPassive.map((e) => e.toJson()).toList(),
+      'svtId': instance.svtId,
+      'num': instance.num,
+      'priority': instance.priority,
+      'strengthStatus': instance.strengthStatus,
+      'condQuestId': instance.condQuestId,
+      'condQuestPhase': instance.condQuestPhase,
+      'condLv': instance.condLv,
+      'condLimitCount': instance.condLimitCount,
       'id': instance.id,
-      'card': _$CardTypeEnumMap[instance.card]!,
       'name': instance.name,
       'ruby': instance.ruby,
-      'icon': instance.icon,
-      'rank': instance.rank,
-      'type': instance.type,
-      'effectFlags': instance.effectFlags.map((e) => _$TdEffectFlagEnumMap[e]!).toList(),
       'unmodifiedDetail': instance.unmodifiedDetail,
-      'npGain': instance.npGain.toJson(),
-      'npDistribution': instance.npDistribution,
-      'individuality': instance.individuality.map((e) => e.toJson()).toList(),
+      'type': _$SkillTypeEnumMap[instance.type]!,
+      'icon': instance.icon,
+      'coolDown': instance.coolDown,
+      'actIndividuality': instance.actIndividuality.map((e) => e.toJson()).toList(),
       'script': instance.script?.toJson(),
+      'skillAdd': instance.skillAdd.map((e) => e.toJson()).toList(),
+      'aiIds': instance.aiIds?.map((k, e) => MapEntry(_$AiTypeEnumMap[k]!, e)),
+      'groupOverwrites': instance.groupOverwrites?.map((e) => e.toJson()).toList(),
       'functions': instance.functions.map((e) => e.toJson()).toList(),
+      'skillSvts': instance.skillSvts.map((e) => e.toJson()).toList(),
     };
 
-const _$CardTypeEnumMap = {
-  CardType.none: 'none',
-  CardType.arts: 'arts',
-  CardType.buster: 'buster',
-  CardType.quick: 'quick',
-  CardType.extra: 'extra',
-  CardType.blank: 'blank',
-  CardType.weak: 'weak',
-  CardType.strength: 'strength',
-};
-
-const _$TdEffectFlagEnumMap = {
-  TdEffectFlag.support: 'support',
-  TdEffectFlag.attackEnemyAll: 'attackEnemyAll',
-  TdEffectFlag.attackEnemyOne: 'attackEnemyOne',
-};
-
 SkillSvt _$SkillSvtFromJson(Map json) => SkillSvt(
-      svtId: json['svtId'] as int,
-      num: json['num'] as int? ?? -1,
+      svtId: json['svtId'] as int? ?? 0,
+      num: json['num'] as int? ?? 0,
       priority: json['priority'] as int? ?? 0,
       script: json['script'] as Map?,
       strengthStatus: json['strengthStatus'] as int? ?? 0,
@@ -229,9 +170,58 @@ Map<String, dynamic> _$SkillSvtToJson(SkillSvt instance) => <String, dynamic>{
       'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
     };
 
+BaseTd _$BaseTdFromJson(Map json) => BaseTd(
+      id: json['id'] as int,
+      name: json['name'] as String? ?? "",
+      ruby: json['ruby'] as String? ?? "",
+      icon: json['icon'] as String?,
+      rank: json['rank'] as String? ?? "",
+      type: json['type'] as String? ?? "",
+      effectFlags:
+          (json['effectFlags'] as List<dynamic>?)?.map((e) => $enumDecode(_$TdEffectFlagEnumMap, e)).toList() ??
+              const [],
+      unmodifiedDetail: json['unmodifiedDetail'] as String?,
+      npGain: json['npGain'] == null ? null : NpGain.fromJson(Map<String, dynamic>.from(json['npGain'] as Map)),
+      individuality: (json['individuality'] as List<dynamic>?)
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      script: json['script'] == null ? null : SkillScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
+      functions: (json['functions'] as List<dynamic>?)
+              ?.map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      npSvts: (json['npSvts'] as List<dynamic>?)
+              ?.map((e) => TdSvt.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+Map<String, dynamic> _$BaseTdToJson(BaseTd instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'ruby': instance.ruby,
+      'icon': instance.icon,
+      'rank': instance.rank,
+      'type': instance.type,
+      'effectFlags': instance.effectFlags.map((e) => _$TdEffectFlagEnumMap[e]!).toList(),
+      'unmodifiedDetail': instance.unmodifiedDetail,
+      'npGain': instance.npGain.toJson(),
+      'individuality': instance.individuality.map((e) => e.toJson()).toList(),
+      'script': instance.script?.toJson(),
+      'functions': instance.functions.map((e) => e.toJson()).toList(),
+      'npSvts': instance.npSvts.map((e) => e.toJson()).toList(),
+    };
+
+const _$TdEffectFlagEnumMap = {
+  TdEffectFlag.support: 'support',
+  TdEffectFlag.attackEnemyAll: 'attackEnemyAll',
+  TdEffectFlag.attackEnemyOne: 'attackEnemyOne',
+};
+
 TdSvt _$TdSvtFromJson(Map json) => TdSvt(
-      svtId: json['svtId'] as int,
-      num: json['num'] as int? ?? -1,
+      svtId: json['svtId'] as int? ?? 0,
+      num: json['num'] as int? ?? 1,
       priority: json['priority'] as int? ?? 0,
       damage: (json['damage'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       strengthStatus: json['strengthStatus'] as int? ?? 0,
@@ -241,7 +231,6 @@ TdSvt _$TdSvtFromJson(Map json) => TdSvt(
       condQuestPhase: json['condQuestPhase'] as int? ?? 0,
       condLv: json['condLv'] as int? ?? 0,
       condFriendshipRank: json['condFriendshipRank'] as int? ?? 0,
-      motion: json['motion'] as int? ?? 0,
       card: $enumDecodeNullable(_$CardTypeEnumMap, json['card']) ?? CardType.none,
       releaseConditions: (json['releaseConditions'] as List<dynamic>?)
               ?.map((e) => SvtSkillRelease.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -261,43 +250,58 @@ Map<String, dynamic> _$TdSvtToJson(TdSvt instance) => <String, dynamic>{
       'condQuestPhase': instance.condQuestPhase,
       'condLv': instance.condLv,
       'condFriendshipRank': instance.condFriendshipRank,
-      'motion': instance.motion,
       'card': _$CardTypeEnumMap[instance.card]!,
       'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
     };
 
+const _$CardTypeEnumMap = {
+  CardType.none: 'none',
+  CardType.arts: 'arts',
+  CardType.buster: 'buster',
+  CardType.quick: 'quick',
+  CardType.extra: 'extra',
+  CardType.blank: 'blank',
+  CardType.weak: 'weak',
+  CardType.strength: 'strength',
+};
+
 NiceTd _$NiceTdFromJson(Map json) => NiceTd(
       id: json['id'] as int,
-      num: json['num'] as int,
-      card: $enumDecode(_$CardTypeEnumMap, json['card']),
-      name: json['name'] as String,
+      name: json['name'] as String? ?? "",
       ruby: json['ruby'] as String? ?? "",
       icon: json['icon'] as String?,
-      rank: json['rank'] as String,
-      type: json['type'] as String,
+      rank: json['rank'] as String? ?? "",
+      type: json['type'] as String? ?? "",
       effectFlags:
           (json['effectFlags'] as List<dynamic>?)?.map((e) => $enumDecode(_$TdEffectFlagEnumMap, e)).toList() ??
               const [],
       unmodifiedDetail: json['unmodifiedDetail'] as String?,
-      npGain: NpGain.fromJson(Map<String, dynamic>.from(json['npGain'] as Map)),
-      npDistribution: (json['npDistribution'] as List<dynamic>).map((e) => e as int).toList(),
+      npGain: json['npGain'] == null ? null : NpGain.fromJson(Map<String, dynamic>.from(json['npGain'] as Map)),
       individuality: (json['individuality'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       script: json['script'] == null ? null : SkillScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
-      functions: (json['functions'] as List<dynamic>)
-          .map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+      functions: (json['functions'] as List<dynamic>?)
+              ?.map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       npSvts: (json['npSvts'] as List<dynamic>?)
               ?.map((e) => TdSvt.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       svtId: json['svtId'] as int? ?? 0,
-      strengthStatus: json['strengthStatus'] as int? ?? 0,
+      num: json['num'] as int? ?? 1,
       priority: json['priority'] as int? ?? 0,
+      damage: (json['npDistribution'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      strengthStatus: json['strengthStatus'] as int? ?? 0,
+      flag: json['flag'] as int? ?? 0,
+      imageIndex: json['imageIndex'] as int? ?? 0,
       condQuestId: json['condQuestId'] as int? ?? 0,
       condQuestPhase: json['condQuestPhase'] as int? ?? 0,
+      condLv: json['condLv'] as int? ?? 0,
+      condFriendshipRank: json['condFriendshipRank'] as int? ?? 0,
+      card: $enumDecodeNullable(_$CardTypeEnumMap, json['card']) ?? CardType.none,
       releaseConditions: (json['releaseConditions'] as List<dynamic>?)
               ?.map((e) => SvtSkillRelease.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -305,28 +309,32 @@ NiceTd _$NiceTdFromJson(Map json) => NiceTd(
     );
 
 Map<String, dynamic> _$NiceTdToJson(NiceTd instance) => <String, dynamic>{
+      'svtId': instance.svtId,
+      'num': instance.num,
+      'priority': instance.priority,
+      'npDistribution': instance.damage,
+      'strengthStatus': instance.strengthStatus,
+      'flag': instance.flag,
+      'imageIndex': instance.imageIndex,
+      'condQuestId': instance.condQuestId,
+      'condQuestPhase': instance.condQuestPhase,
+      'condLv': instance.condLv,
+      'condFriendshipRank': instance.condFriendshipRank,
       'card': _$CardTypeEnumMap[instance.card]!,
-      'icon': instance.icon,
-      'effectFlags': instance.effectFlags.map((e) => _$TdEffectFlagEnumMap[e]!).toList(),
-      'npDistribution': instance.npDistribution,
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
       'id': instance.id,
       'name': instance.name,
       'ruby': instance.ruby,
+      'icon': instance.icon,
       'rank': instance.rank,
       'type': instance.type,
+      'effectFlags': instance.effectFlags.map((e) => _$TdEffectFlagEnumMap[e]!).toList(),
       'unmodifiedDetail': instance.unmodifiedDetail,
       'npGain': instance.npGain.toJson(),
       'individuality': instance.individuality.map((e) => e.toJson()).toList(),
       'script': instance.script?.toJson(),
       'functions': instance.functions.map((e) => e.toJson()).toList(),
       'npSvts': instance.npSvts.map((e) => e.toJson()).toList(),
-      'svtId': instance.svtId,
-      'num': instance.num,
-      'strengthStatus': instance.strengthStatus,
-      'priority': instance.priority,
-      'condQuestId': instance.condQuestId,
-      'condQuestPhase': instance.condQuestPhase,
-      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
     };
 
 CommonRelease _$CommonReleaseFromJson(Map json) => CommonRelease(
@@ -525,12 +533,12 @@ Map<String, dynamic> _$SkillGroupOverwriteToJson(SkillGroupOverwrite instance) =
     };
 
 NpGain _$NpGainFromJson(Map json) => NpGain(
-      buster: (json['buster'] as List<dynamic>).map((e) => e as int).toList(),
-      arts: (json['arts'] as List<dynamic>).map((e) => e as int).toList(),
-      quick: (json['quick'] as List<dynamic>).map((e) => e as int).toList(),
-      extra: (json['extra'] as List<dynamic>).map((e) => e as int).toList(),
-      np: (json['np'] as List<dynamic>).map((e) => e as int).toList(),
-      defence: (json['defence'] as List<dynamic>).map((e) => e as int).toList(),
+      buster: (json['buster'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      arts: (json['arts'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      quick: (json['quick'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      extra: (json['extra'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      np: (json['np'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      defence: (json['defence'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
     );
 
 Map<String, dynamic> _$NpGainToJson(NpGain instance) => <String, dynamic>{

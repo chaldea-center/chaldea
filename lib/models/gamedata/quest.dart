@@ -302,6 +302,7 @@ class QuestPhase extends Quest {
     super.chapterSubId,
     super.chapterSubStr,
     super.gifts,
+    super.giftIcon,
     super.releaseConditions,
     super.phases,
     super.phasesWithEnemies,
@@ -1294,6 +1295,7 @@ class EnemyPassive {
   EnemyPassive({
     List<NiceSkill>? classPassive,
     List<NiceSkill>? addPassive,
+    this.addPassiveLvs,
     this.appendPassiveSkillIds,
     this.appendPassiveSkillLvs,
   })  : classPassive = classPassive ?? [],

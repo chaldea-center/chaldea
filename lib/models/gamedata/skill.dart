@@ -56,7 +56,6 @@ abstract class SkillOrTd implements RouteInfo {
 class BaseSkill extends SkillOrTd with RouteInfo {
   @override
   int id;
-  int num;
   @override
   String name;
   @override
@@ -75,15 +74,15 @@ class BaseSkill extends SkillOrTd with RouteInfo {
   List<SkillGroupOverwrite>? groupOverwrites;
   @override
   List<NiceFunction> functions;
+  List<SkillSvt> skillSvts;
 
-  BaseSkill.create({
+  BaseSkill({
     required this.id,
-    this.num = -1,
-    required this.name,
+    this.name = "",
     this.ruby = '',
     // this.detail,
     this.unmodifiedDetail,
-    required this.type,
+    this.type = SkillType.active,
     this.icon,
     this.coolDown = const [0],
     this.actIndividuality = const [],
@@ -91,50 +90,18 @@ class BaseSkill extends SkillOrTd with RouteInfo {
     this.skillAdd = const [],
     this.aiIds,
     this.groupOverwrites,
-    required this.functions,
+    this.functions = const [],
+    this.skillSvts = const [],
   });
 
-  factory BaseSkill({
-    required int id,
-    int num = -1,
-    required String name,
-    String ruby = '',
-    String? unmodifiedDetail,
-    required SkillType type,
-    String? icon,
-    List<int> coolDown = const [0],
-    List<NiceTrait> actIndividuality = const [],
-    SkillScript? script,
-    List<SkillAdd> skillAdd = const [],
-    Map<AiType, List<int>>? aiIds,
-    List<SkillGroupOverwrite>? groupOverwrites,
-    required List<NiceFunction> functions,
-  }) =>
-      GameDataLoader.instance.tmp.getBaseSkill(
-          id,
-          () => BaseSkill.create(
-                id: id,
-                num: num,
-                name: name,
-                ruby: ruby,
-                unmodifiedDetail: unmodifiedDetail,
-                type: type,
-                icon: icon,
-                coolDown: coolDown,
-                actIndividuality: actIndividuality,
-                script: script,
-                skillAdd: skillAdd,
-                aiIds: aiIds,
-                groupOverwrites: groupOverwrites,
-                functions: functions,
-              ));
+  factory BaseSkill.fromJson(Map<String, dynamic> json) {
+    return GameDataLoader.instance.tmp.getBaseSkill(json["id"]!, () => _$BaseSkillFromJson(json));
+  }
 
-  factory BaseSkill.fromJson(Map<String, dynamic> json) => _$BaseSkillFromJson(json);
+  SkillSvt get svt => skillSvts.firstOrNull ?? SkillSvt();
 
   @override
   Transl<String, String> get lName => Transl.skillNames(name);
-
-  int get maxLv => functions.firstOrNull?.svals.length ?? 0;
 
   @override
   String? get lDetail {
@@ -152,6 +119,208 @@ class BaseSkill extends SkillOrTd with RouteInfo {
       },
     );
   }
+
+  @override
+  String get route => Routes.skillI(id);
+  @override
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) {
+    return super.routeTo(
+      child: child ?? SkillDetailPage(skill: this, region: region),
+      popDetails: popDetails,
+    );
+  }
+
+  Map<String, dynamic> toJson() => _$BaseSkillToJson(this);
+}
+
+@JsonSerializable()
+class NiceSkill extends SkillOrTd with RouteInfo implements BaseSkill {
+  BaseSkill _base;
+  BaseSkill get base => _base;
+
+  List<ExtraPassive> extraPassive;
+
+  @override
+  @JsonKey(includeFromJson: false)
+  SkillSvt svt;
+
+  // for JsonSerializer
+  @protected
+  int get svtId => svt.svtId;
+  @protected
+  int get num => svt.num;
+  @protected
+  int get priority => svt.priority;
+  // Map? script;
+  int get strengthStatus => svt.strengthStatus;
+  int get condQuestId => svt.condQuestId;
+  int get condQuestPhase => svt.condQuestPhase;
+  int get condLv => svt.condLv;
+  int get condLimitCount => svt.condLimitCount;
+  // int eventId;
+  // int flag;
+  List<SvtSkillRelease> get releaseConditions => svt.releaseConditions;
+
+  NiceSkill({
+    required int id,
+    String name = "",
+    String ruby = '',
+    String? unmodifiedDetail,
+    SkillType type = SkillType.active,
+    String? icon,
+    List<int> coolDown = const [0],
+    List<NiceTrait> actIndividuality = const [],
+    SkillScript? script,
+    List<SkillAdd> skillAdd = const [],
+    Map<AiType, List<int>>? aiIds,
+    List<SkillGroupOverwrite>? groupOverwrites,
+    List<NiceFunction> functions = const [],
+    List<SkillSvt> skillSvts = const [],
+    int svtId = 0,
+    // ignore: avoid_types_as_parameter_names
+    int num = 0,
+    int priority = 0,
+    // this.script,
+    int strengthStatus = 0,
+    int condQuestId = 0,
+    int condQuestPhase = 0,
+    int condLv = 0,
+    int condLimitCount = 0,
+    // int eventId = 0,
+    // int flag = 0,
+    // this.releaseConditions = const [],
+    this.extraPassive = const [],
+  })  : _base = GameDataLoader.instance.tmp.getBaseSkill(
+            id,
+            () => BaseSkill(
+                  id: id,
+                  name: name,
+                  ruby: ruby,
+                  unmodifiedDetail: unmodifiedDetail,
+                  type: type,
+                  icon: icon,
+                  coolDown: coolDown,
+                  actIndividuality: actIndividuality,
+                  script: script,
+                  skillAdd: skillAdd,
+                  aiIds: aiIds,
+                  groupOverwrites: groupOverwrites,
+                  functions: functions,
+                  skillSvts: skillSvts,
+                )),
+        svt = skillSvts.firstWhereOrNull((e) => e.svtId == svtId && e.num == num && e.priority == priority)?.copy() ??
+            SkillSvt(
+              svtId: svtId,
+              num: num,
+              priority: priority,
+              // script: script,
+              strengthStatus: strengthStatus,
+              condQuestId: condQuestId,
+              condQuestPhase: condQuestPhase,
+              condLv: condLv,
+              condLimitCount: condLimitCount,
+              // eventId: eventId,
+              // flag: flag,
+              // releaseConditions: releaseConditions,
+            );
+
+  factory NiceSkill.fromJson(Map<String, dynamic> json) {
+    if (json['type'] == null) {
+      final baseSkill = GameDataLoader.instance.tmp.gameJson!['baseSkills']![json['id'].toString()]!;
+      json.addAll(Map.from(baseSkill));
+    }
+    return _$NiceSkillFromJson(json);
+  }
+
+  bool isExtraPassiveEnabledForEvent(int eventId) {
+    return extraPassive.any((e) {
+      if (e.eventId == 0) {
+        if (e.endedAt - e.startedAt > 90 * kSecsPerDay && e.endedAt > kNeverClosedTimestamp) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+      if (e.eventId == eventId) return true;
+      return false;
+    });
+  }
+
+  @override
+  Map<String, dynamic> toJson() => _$NiceSkillToJson(this);
+
+  /// getters and setters
+  @override
+  int get id => _base.id;
+  @override
+  set id(int v) => _base.id = v;
+  @override
+  String get name => _base.name;
+  @override
+  set name(String v) => _base.name = v;
+  @override
+  String get ruby => _base.ruby;
+  @override
+  set ruby(String v) => _base.ruby = v;
+  @override
+  String? get unmodifiedDetail => _base.unmodifiedDetail;
+  @override
+  set unmodifiedDetail(String? v) => _base.unmodifiedDetail = v;
+  @override
+  SkillType get type => _base.type;
+  @override
+  set type(SkillType v) => _base.type = v;
+  @override
+  String? get icon => _base.icon;
+  @override
+  set icon(String? v) => _base.icon = v;
+  @override
+  List<int> get coolDown => _base.coolDown;
+  @override
+  set coolDown(List<int> v) => _base.coolDown = v;
+  @override
+  List<NiceTrait> get actIndividuality => _base.actIndividuality;
+  @override
+  set actIndividuality(List<NiceTrait> v) => _base.actIndividuality = v;
+  @override
+  SkillScript? get script => _base.script;
+  @override
+  set script(SkillScript? v) => _base.script = v;
+  @override
+  List<SkillAdd> get skillAdd => _base.skillAdd;
+  @override
+  set skillAdd(List<SkillAdd> v) => _base.skillAdd = v;
+  @override
+  Map<AiType, List<int>>? get aiIds => _base.aiIds;
+  @override
+  set aiIds(Map<AiType, List<int>>? v) => _base.aiIds = v;
+  @override
+  List<SkillGroupOverwrite>? get groupOverwrites => _base.groupOverwrites;
+  @override
+  set groupOverwrites(List<SkillGroupOverwrite>? v) => _base.groupOverwrites = v;
+  @override
+  List<NiceFunction> get functions => _base.functions;
+  @override
+  set functions(List<NiceFunction> v) => _base.functions = v;
+  @override
+  List<SkillSvt> get skillSvts => _base.skillSvts;
+  @override
+  set skillSvts(List<SkillSvt> v) => _base.skillSvts = v;
+
+  /// override methods
+  @override
+  String? get lDetail => _base.lDetail;
+  @override
+  Transl<String, String> get lName => _base.lName;
+  @override
+  String get route => _base.route;
+  @override
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) =>
+      _base.routeTo(child: child, popDetails: popDetails, region: region);
+}
+
+extension BaseSkillMethods on BaseSkill {
+  int get maxLv => functions.firstOrNull?.svals.length ?? 0;
 
   bool isEventSkill(Event event) {
     return functions.any((func) {
@@ -180,146 +349,59 @@ class BaseSkill extends SkillOrTd with RouteInfo {
       script: script,
       skillAdd: skillAdd,
       aiIds: aiIds,
+      groupOverwrites: groupOverwrites,
       functions: functions,
-      num: -1,
-      strengthStatus: 0,
-      priority: 0,
-      condQuestId: 0,
-      condQuestPhase: 0,
-      condLv: 0,
-      condLimitCount: 0,
+      skillSvts: skillSvts,
     );
   }
-
-  @override
-  String get route => Routes.skillI(id);
-  @override
-  void routeTo({Widget? child, bool popDetails = false, Region? region}) {
-    return super.routeTo(
-      child: child ?? SkillDetailPage(skill: this, region: region),
-      popDetails: popDetails,
-    );
-  }
-
-  Map<String, dynamic> toJson() => _$BaseSkillToJson(this);
 }
 
 @JsonSerializable()
-class NiceSkill extends BaseSkill {
-  BaseSkill _baseSkill;
-  @override
-  int get id => _baseSkill.id;
-  @override
-  String get name => _baseSkill.name;
-  @override
-  String get ruby => _baseSkill.ruby;
-  @override
-  String? get unmodifiedDetail => _baseSkill.unmodifiedDetail;
-  @override
-  SkillType get type => _baseSkill.type;
-  @override
-  String? get icon => _baseSkill.icon;
-  @override
-  List<int> get coolDown => _baseSkill.coolDown;
-  @override
-  List<NiceTrait> get actIndividuality => _baseSkill.actIndividuality;
-  @override
-  SkillScript? get script => _baseSkill.script;
-  @override
-  List<SkillAdd> get skillAdd => _baseSkill.skillAdd;
-  @override
-  Map<AiType, List<int>>? get aiIds => _baseSkill.aiIds;
-  @override
-  List<SkillGroupOverwrite>? get groupOverwrites => _baseSkill.groupOverwrites;
-  @override
-  List<NiceFunction> get functions => _baseSkill.functions;
-
-  List<SkillSvt> skillSvts;
+class SkillSvt {
   int svtId;
-  int strengthStatus;
+  int num;
   int priority;
+  Map? script; // "strengthStatusReleaseId": 40060301, (commonRelease)
+  int strengthStatus;
   int condQuestId;
   int condQuestPhase;
   int condLv;
   int condLimitCount;
-  List<ExtraPassive> extraPassive;
+  int eventId;
+  int flag;
   List<SvtSkillRelease> releaseConditions;
 
-  NiceSkill({
-    required super.id,
-    required super.name,
-    super.ruby = '',
-    super.unmodifiedDetail,
-    required super.type,
-    super.icon,
-    super.coolDown = const [0],
-    super.actIndividuality = const [],
-    super.script,
-    super.skillAdd = const [],
-    super.aiIds,
-    super.groupOverwrites,
-    super.functions = const [],
-    // ignore: avoid_types_as_parameter_names
-    super.num = 0,
+  SkillSvt({
     this.svtId = 0,
-    this.skillSvts = const [],
-    this.strengthStatus = 0,
+    this.num = 0,
     this.priority = 0,
+    this.script,
+    this.strengthStatus = 0,
     this.condQuestId = 0,
     this.condQuestPhase = 0,
     this.condLv = 0,
     this.condLimitCount = 0,
-    this.extraPassive = const [],
+    this.eventId = 0,
+    this.flag = 0,
     this.releaseConditions = const [],
-  })  : _baseSkill = BaseSkill(
-          id: id,
-          num: num,
-          name: name,
-          ruby: ruby,
-          unmodifiedDetail: unmodifiedDetail,
-          type: type,
-          icon: icon,
-          coolDown: coolDown,
-          actIndividuality: actIndividuality,
-          script: script,
-          skillAdd: skillAdd,
-          aiIds: aiIds,
-          groupOverwrites: groupOverwrites,
-          functions: functions,
-        ),
-        super.create();
+  });
 
-  factory NiceSkill.fromJson(Map<String, dynamic> json) {
-    if (json['type'] == null) {
-      final baseSkill = GameDataLoader.instance.tmp.gameJson!['baseSkills']![json['id'].toString()]!;
-      json.addAll(Map.from(baseSkill));
-    }
-    return _$NiceSkillFromJson(json);
+  static String getPrimaryKey(int? svtId, int? num, int? priority) => "${svtId ?? 0}:${num ?? 0}:${priority ?? 0}";
+
+  factory SkillSvt.fromJson(Map<String, dynamic> json) {
+    return GameDataLoader.instance.tmp
+        .getSkillSvt(getPrimaryKey(json["svtId"], json["num"], json["priority"]), () => _$SkillSvtFromJson(json));
   }
 
-  bool isExtraPassiveEnabledForEvent(int eventId) {
-    return extraPassive.any((e) {
-      if (e.eventId == 0) {
-        if (e.endedAt - e.startedAt > 90 * kSecsPerDay && e.endedAt > kNeverClosedTimestamp) {
-          return true;
-        } else {
-          return false;
-        }
-      }
-      if (e.eventId == eventId) return true;
-      return false;
-    });
-  }
+  Map<String, dynamic> toJson() => _$SkillSvtToJson(this);
 
-  @override
-  Map<String, dynamic> toJson() => _$NiceSkillToJson(this);
+  SkillSvt copy() => SkillSvt.fromJson(toJson());
 }
 
 @JsonSerializable()
 class BaseTd extends SkillOrTd with RouteInfo {
   @override
   int id;
-  CardType card;
   @override
   String name;
   @override
@@ -334,106 +416,39 @@ class BaseTd extends SkillOrTd with RouteInfo {
   @override
   String? unmodifiedDetail;
   NpGain npGain;
-  List<int> npDistribution;
   List<NiceTrait> individuality;
   @override
   SkillScript? script;
   @override
   List<NiceFunction> functions;
+  @protected
+  List<TdSvt> npSvts; // Not full list
 
-  BaseTd.create({
+  BaseTd({
     required this.id,
-    required this.card,
-    required this.name,
+    this.name = "",
     this.ruby = "",
     this.icon,
-    required this.rank,
-    required this.type,
+    this.rank = "",
+    this.type = "",
     this.effectFlags = const [],
     // this.detail,
     this.unmodifiedDetail,
-    required this.npGain,
-    required this.npDistribution,
+    NpGain? npGain,
     this.individuality = const [],
     this.script,
-    required this.functions,
-  });
+    this.functions = const [],
+    this.npSvts = const [],
+  }) : npGain = npGain ?? NpGain();
 
-  factory BaseTd({
-    required int id,
-    required CardType card,
-    required String name,
-    String ruby = '',
-    String? icon,
-    required String rank,
-    required String type,
-    List<TdEffectFlag> effectFlags = const [],
-    String? unmodifiedDetail,
-    required NpGain npGain,
-    required List<int> npDistribution,
-    List<NiceTrait> individuality = const [],
-    SkillScript? script,
-    required List<NiceFunction> functions,
-  }) =>
-      GameDataLoader.instance.tmp.getBaseTd(
-          id,
-          () => BaseTd.create(
-                id: id,
-                card: card,
-                name: name,
-                ruby: ruby,
-                icon: icon,
-                rank: rank,
-                type: type,
-                effectFlags: effectFlags,
-                unmodifiedDetail: unmodifiedDetail,
-                npGain: npGain,
-                npDistribution: npDistribution,
-                individuality: individuality,
-                script: script,
-                functions: functions,
-              ));
-
-  factory BaseTd.fromJson(Map<String, dynamic> json) => _$BaseTdFromJson(json);
-  TdEffectFlag? _damageType;
-
-  TdEffectFlag get damageType {
-    if (_damageType != null) return _damageType!;
-    for (var func in functions) {
-      // if (func.funcTargetTeam == FuncApplyTarget.enemy) continue;
-      if (func.funcType.name.startsWith('damageNp')) {
-        if ([
-          FuncTargetType.enemyAll,
-          FuncTargetType.enemyFull,
-          FuncTargetType.enemyOtherFull,
-          FuncTargetType.enemyOther
-        ].contains(func.funcTargetType)) {
-          _damageType = TdEffectFlag.attackEnemyAll;
-        } else if ([
-          FuncTargetType.enemy,
-          FuncTargetType.enemyRandom,
-          FuncTargetType.enemyOneAnotherRandom,
-          FuncTargetType.enemyOneNoTargetNoAction,
-          FuncTargetType.enemyAnother,
-        ].contains(func.funcTargetType)) {
-          _damageType = TdEffectFlag.attackEnemyOne;
-        } else {
-          assert(() {
-            throw 'Unknown damageType: ${func.funcTargetType}';
-          }());
-        }
-      }
-    }
-    return _damageType ??= TdEffectFlag.support;
+  factory BaseTd.fromJson(Map<String, dynamic> json) {
+    return GameDataLoader.instance.tmp.getBaseTd(json["id"]!, () => _$BaseTdFromJson(json));
   }
+
+  TdSvt get svt => npSvts.firstOrNull ?? TdSvt();
 
   @override
   Transl<String, String> get lName => Transl.tdNames(name);
-
-  String get nameWithRank {
-    if (['なし', '无', 'None', '無', '없음'].contains(rank)) return lName.l;
-    return '${lName.l} $rank';
-  }
 
   @override
   String? get lDetail {
@@ -457,41 +472,6 @@ class BaseTd extends SkillOrTd with RouteInfo {
 }
 
 @JsonSerializable()
-class SkillSvt {
-  int svtId;
-  int num;
-  int priority;
-  Map? script; // "strengthStatusReleaseId": 40060301, (commonRelease)
-  int strengthStatus;
-  int condQuestId;
-  int condQuestPhase;
-  int condLv;
-  int condLimitCount;
-  int eventId;
-  int flag;
-  List<SvtSkillRelease> releaseConditions;
-
-  SkillSvt({
-    required this.svtId,
-    this.num = -1,
-    this.priority = 0,
-    this.script,
-    this.strengthStatus = 0,
-    this.condQuestId = 0,
-    this.condQuestPhase = 0,
-    this.condLv = 0,
-    this.condLimitCount = 0,
-    this.eventId = 0,
-    this.flag = 0,
-    this.releaseConditions = const [],
-  });
-
-  factory SkillSvt.fromJson(Map<String, dynamic> json) => _$SkillSvtFromJson(json);
-
-  Map<String, dynamic> toJson() => _$SkillSvtToJson(this);
-}
-
-@JsonSerializable()
 class TdSvt {
   int svtId;
   int num;
@@ -504,13 +484,13 @@ class TdSvt {
   int condQuestPhase;
   int condLv;
   int condFriendshipRank;
-  int motion;
+  // int motion;
   CardType card;
   List<SvtSkillRelease> releaseConditions;
 
   TdSvt({
-    required this.svtId,
-    this.num = -1,
+    this.svtId = 0,
+    this.num = 1,
     this.priority = 0,
     this.damage = const [],
     this.strengthStatus = 0,
@@ -520,93 +500,109 @@ class TdSvt {
     this.condQuestPhase = 0,
     this.condLv = 0,
     this.condFriendshipRank = 0,
-    this.motion = 0,
+    // this.motion = 0,
     this.card = CardType.none,
     this.releaseConditions = const [],
   });
 
-  factory TdSvt.fromJson(Map<String, dynamic> json) => _$TdSvtFromJson(json);
+  static String getPrimaryKey(int? svtId, int? num, int? priority) => "${svtId ?? 0}:${num ?? 1}:${priority ?? 0}";
+
+  factory TdSvt.fromJson(Map<String, dynamic> json) {
+    return GameDataLoader.instance.tmp
+        .getTdSvt(getPrimaryKey(json["svtId"], json["num"], json["priority"]), () => _$TdSvtFromJson(json));
+  }
 
   Map<String, dynamic> toJson() => _$TdSvtToJson(this);
+
+  TdSvt copy() => TdSvt.fromJson(toJson());
 }
 
 @JsonSerializable()
-class NiceTd extends BaseTd {
-  BaseTd _baseTd;
+class NiceTd extends SkillOrTd with RouteInfo implements BaseTd {
+  BaseTd _base;
+  BaseTd get base => _base;
 
   @override
-  int get id => _baseTd.id;
-  @override
-  String get name => _baseTd.name;
-  @override
-  String get ruby => _baseTd.ruby;
-  @override
-  String get rank => _baseTd.rank;
-  @override
-  String get type => _baseTd.type;
-  @override
-  String? get unmodifiedDetail => _baseTd.unmodifiedDetail;
-  @override
-  NpGain get npGain => _baseTd.npGain;
-  @override
-  List<NiceTrait> get individuality => _baseTd.individuality;
-  @override
-  SkillScript? get script => _baseTd.script;
-  @override
-  List<NiceFunction> get functions => _baseTd.functions;
-
-  // use it only for td fetched from api
-  List<TdSvt> npSvts;
-
-  int svtId;
-  int num;
-  int strengthStatus;
-  int priority;
-  int condQuestId;
-  int condQuestPhase;
-  List<SvtSkillRelease> releaseConditions;
+  @JsonKey(includeFromJson: false)
+  TdSvt svt;
+  // for JsonSerializer
+  int get svtId => svt.svtId;
+  int get num => svt.num;
+  int get priority => svt.priority;
+  @JsonKey(name: "npDistribution")
+  List<int> get damage => svt.damage;
+  int get strengthStatus => svt.strengthStatus;
+  int get flag => svt.flag;
+  int get imageIndex => svt.imageIndex;
+  int get condQuestId => svt.condQuestId;
+  int get condQuestPhase => svt.condQuestPhase;
+  int get condLv => svt.condLv;
+  int get condFriendshipRank => svt.condFriendshipRank;
+  // int motion;
+  CardType get card => svt.card;
+  List<SvtSkillRelease> get releaseConditions => svt.releaseConditions;
 
   NiceTd({
-    required super.id,
-    required this.num,
-    required super.card,
-    required super.name,
-    super.ruby = "",
-    super.icon,
-    required super.rank,
-    required super.type,
+    required int id,
+    String name = "",
+    String ruby = "",
+    String? icon,
+    String rank = "",
+    String type = "",
     List<TdEffectFlag> effectFlags = const [],
     // this.detail,
-    super.unmodifiedDetail,
-    required super.npGain,
-    required super.npDistribution,
-    required super.individuality,
-    super.script,
-    required super.functions,
-    this.npSvts = const [],
-    this.svtId = 0,
-    this.strengthStatus = 0,
-    this.priority = 0,
-    this.condQuestId = 0,
-    this.condQuestPhase = 0,
-    this.releaseConditions = const [],
-  })  : _baseTd = BaseTd(
-          id: id,
+    String? unmodifiedDetail,
+    NpGain? npGain,
+    List<NiceTrait> individuality = const [],
+    SkillScript? script,
+    List<NiceFunction> functions = const [],
+    List<TdSvt> npSvts = const [],
+    int svtId = 0,
+    int num = 1,
+    int priority = 0,
+    List<int> damage = const [],
+    int strengthStatus = 0,
+    int flag = 0,
+    int imageIndex = 0,
+    int condQuestId = 0,
+    int condQuestPhase = 0,
+    int condLv = 0,
+    int condFriendshipRank = 0,
+    // this.motion = 0,
+    CardType card = CardType.none,
+    List<SvtSkillRelease> releaseConditions = const [],
+  })  : _base = GameDataLoader.instance.tmp.getBaseTd(
+            id,
+            () => BaseTd(
+                  id: id,
+                  name: name,
+                  ruby: ruby,
+                  icon: icon,
+                  rank: rank,
+                  type: type,
+                  effectFlags: effectFlags,
+                  unmodifiedDetail: unmodifiedDetail,
+                  npGain: npGain,
+                  individuality: individuality,
+                  script: script,
+                  functions: functions,
+                  npSvts: npSvts,
+                )),
+        svt = TdSvt(
+          svtId: svtId,
+          num: num,
+          priority: priority,
+          damage: damage,
+          strengthStatus: strengthStatus,
+          flag: flag,
+          imageIndex: imageIndex,
+          condQuestId: condQuestId,
+          condQuestPhase: condQuestPhase,
+          condLv: condLv,
+          condFriendshipRank: condFriendshipRank,
           card: card,
-          name: name,
-          ruby: ruby,
-          icon: icon,
-          rank: rank,
-          type: type,
-          effectFlags: effectFlags,
-          unmodifiedDetail: unmodifiedDetail,
-          npGain: npGain,
-          npDistribution: npDistribution,
-          individuality: individuality,
-          script: script,
-          functions: functions,
-        ),
-        super.create();
+          releaseConditions: releaseConditions,
+        );
 
   factory NiceTd.fromJson(Map<String, dynamic> json) {
     if (json['type'] == null) {
@@ -618,6 +614,108 @@ class NiceTd extends BaseTd {
 
   @override
   Map<String, dynamic> toJson() => _$NiceTdToJson(this);
+
+  /// getters and setters
+
+  @override
+  int get id => _base.id;
+  @override
+  set id(int v) => _base.id = v;
+  @override
+  String get name => _base.name;
+  @override
+  set name(String v) => _base.name = v;
+  @override
+  String get ruby => _base.ruby;
+  @override
+  set ruby(String v) => _base.ruby = v;
+  @override
+  String? get icon => _base.icon;
+  @override
+  set icon(String? v) => _base.icon = v;
+  @override
+  String get rank => _base.rank;
+  @override
+  set rank(String v) => _base.rank = v;
+  @override
+  String get type => _base.type;
+  @override
+  set type(String v) => _base.type = v;
+  @override
+  List<TdEffectFlag> get effectFlags => _base.effectFlags;
+  @override
+  set effectFlags(List<TdEffectFlag> v) => _base.effectFlags = v;
+  @override
+  String? get unmodifiedDetail => _base.unmodifiedDetail;
+  @override
+  set unmodifiedDetail(String? v) => _base.unmodifiedDetail = v;
+  @override
+  NpGain get npGain => _base.npGain;
+  @override
+  set npGain(NpGain v) => _base.npGain = v;
+  @override
+  List<NiceTrait> get individuality => _base.individuality;
+  @override
+  set individuality(List<NiceTrait> v) => _base.individuality = v;
+  @override
+  SkillScript? get script => _base.script;
+  @override
+  set script(SkillScript? v) => _base.script = v;
+  @override
+  List<NiceFunction> get functions => _base.functions;
+  @override
+  set functions(List<NiceFunction> v) => _base.functions = v;
+  @override
+  List<TdSvt> get npSvts => _base.npSvts;
+  @override
+  set npSvts(List<TdSvt> v) => _base.npSvts = v;
+
+  /// override methods
+  @override
+  String? get lDetail => _base.lDetail;
+  @override
+  Transl<String, String> get lName => _base.lName;
+  @override
+  String get route => _base.route;
+  @override
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) =>
+      _base.routeTo(child: child, popDetails: popDetails, region: region);
+}
+
+extension TdMethods on BaseTd {
+  String get nameWithRank {
+    if (['なし', '无', 'None', '無', '없음'].contains(rank)) return lName.l;
+    return '${lName.l} $rank';
+  }
+
+  TdEffectFlag get damageType {
+    for (var func in functions) {
+      // if (func.funcTargetTeam == FuncApplyTarget.enemy) continue;
+      if (func.funcType.isDamageNp) {
+        if ([
+          FuncTargetType.enemyAll,
+          FuncTargetType.enemyFull,
+          FuncTargetType.enemyOtherFull,
+          FuncTargetType.enemyOther
+        ].contains(func.funcTargetType)) {
+          return TdEffectFlag.attackEnemyAll;
+        } else if ([
+          FuncTargetType.enemy,
+          FuncTargetType.enemyRandom,
+          FuncTargetType.enemyOneAnotherRandom,
+          FuncTargetType.enemyOneNoTargetNoAction,
+          FuncTargetType.enemyAnother,
+        ].contains(func.funcTargetType)) {
+          return TdEffectFlag.attackEnemyOne;
+        } else {
+          assert(() {
+            throw 'Unknown damageType: ${func.funcTargetType}';
+          }());
+        }
+      }
+    }
+    return TdEffectFlag.support;
+  }
 }
 
 @JsonSerializable()
@@ -867,12 +965,12 @@ class NpGain {
   List<int> defence;
 
   NpGain({
-    required this.buster,
-    required this.arts,
-    required this.quick,
-    required this.extra,
-    required this.np,
-    required this.defence,
+    this.buster = const [],
+    this.arts = const [],
+    this.quick = const [],
+    this.extra = const [],
+    this.np = const [],
+    this.defence = const [],
   });
 
   List<int?> get firstValues => [

@@ -448,7 +448,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         return ListTile(
           dense: true,
           horizontalTitleGap: 0,
-          leading: td == null ? db.getIconImage(null, width: 24) : CommandCardWidget(card: td.card, width: 28),
+          leading: td == null ? db.getIconImage(null, width: 24) : CommandCardWidget(card: td.svt.card, width: 28),
           title: Text(title),
           subtitle: Text(subtitle),
         );
@@ -569,7 +569,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                     router.pushPage(SkillSelectPage(
                       skillType: SkillType.active,
                       onSelected: (skill) {
-                        playerSvtData.skills[index] = skill.toNice()..num = skillNum;
+                        playerSvtData.skills[index] = skill.toNice()..svt.num = skillNum;
                         _updateState();
                       },
                     ));

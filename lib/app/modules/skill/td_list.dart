@@ -70,7 +70,7 @@ class _TdListPageState extends State<TdListPage> with SearchableListState<BaseTd
   @override
   bool filter(BaseTd? td) {
     if (td == null) return true;
-    if (!filterData.card.matchOne(td.card)) {
+    if (!filterData.card.matchOne(td.svt.card)) {
       return false;
     }
     if (!filterData.type.matchOne(td.damageType)) {
@@ -102,7 +102,7 @@ class _TdListPageState extends State<TdListPage> with SearchableListState<BaseTd
   Widget listItemBuilder(BaseTd? td) {
     return ListTile(
       dense: true,
-      leading: td == null ? const SizedBox(width: 36, height: 36) : CommandCardWidget(card: td.card, width: 36),
+      leading: td == null ? const SizedBox(width: 36, height: 36) : CommandCardWidget(card: td.svt.card, width: 36),
       horizontalTitleGap: 6,
       contentPadding: const EdgeInsetsDirectional.only(start: 10, end: 16),
       title: Text.rich(

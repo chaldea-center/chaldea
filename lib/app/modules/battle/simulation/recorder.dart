@@ -314,7 +314,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
     spans.addAll([
       if (prefix != null) TextSpan(text: '$prefix: '),
       TextSpan(text: '${S.current.skill} '),
-      if ((pskill?.num ?? 0) > 0) TextSpan(text: '${pskill?.num} ', style: kMonoStyle),
+      if ((pskill?.svt.num ?? 0) > 0) TextSpan(text: '${pskill?.svt.num} ', style: kMonoStyle),
       if (pskill?.icon != null)
         CenterWidgetSpan(
           child: db.getIconImage(

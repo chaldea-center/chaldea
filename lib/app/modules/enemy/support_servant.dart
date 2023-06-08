@@ -197,7 +197,7 @@ class _SupportServantPageState extends State<SupportServantPage> {
           router.push(url: ce.equip.route, child: CraftDetailPage(ce: ce.equip));
         },
       ));
-      final skills = ce.equip.skills.where((skill) => skill.condLimitCount == ce.limitCount);
+      final skills = ce.equip.skills.where((skill) => skill.svt.condLimitCount == ce.limitCount);
       children.addAll(skills.map((e) => SkillDescriptor(skill: e, region: widget.region)));
     }
 

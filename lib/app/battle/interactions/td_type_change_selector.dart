@@ -13,7 +13,7 @@ class TdTypeChangeSelector extends StatelessWidget {
   static Future<NiceTd?> show(BattleData battleData, List<NiceTd> tds) {
     if (!battleData.mounted) return Future.value();
     tds = tds.toList();
-    tds.sort((a, b) => (a.card.index % 3).compareTo(b.card.index % 3)); // Q A B
+    tds.sort((a, b) => (a.svt.card.index % 3).compareTo(b.svt.card.index % 3)); // Q A B
     return showUserConfirm<NiceTd>(
       context: battleData.context!,
       builder: (context) => TdTypeChangeSelector(battleData: battleData, tds: tds),
@@ -31,10 +31,10 @@ class TdTypeChangeSelector extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).pop(tds[index]);
                 battleData.battleLogger
-                    .action('${S.current.battle_select_effect}: ${tds[index].card.name.toUpperCase()}'
+                    .action('${S.current.battle_select_effect}: ${tds[index].svt.card.name.toUpperCase()}'
                         ' ${S.current.battle_np_card}');
               },
-              child: CommandCardWidget(card: tds[index].card, width: 80),
+              child: CommandCardWidget(card: tds[index].svt.card, width: 80),
             ),
           );
         }),

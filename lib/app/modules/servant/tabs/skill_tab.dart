@@ -16,16 +16,19 @@ class SvtSkillTab extends StatefulWidget {
   State<SvtSkillTab> createState() => _SvtSkillTabState();
 
   static bool hasUnusualLimitCond(final NiceSkill skill) {
-    return (skill.num == 1 && skill.condLimitCount != 0) ||
-        (skill.num == 2 && skill.condLimitCount != 1) ||
-        (skill.num == 3 && skill.condLimitCount != 3);
+    final skillSvt = skill.svt;
+    return (skill.svt.num == 1 && skillSvt.condLimitCount != 0) ||
+        (skill.svt.num == 2 && skillSvt.condLimitCount != 1) ||
+        (skill.svt.num == 3 && skillSvt.condLimitCount != 3);
   }
 
   static Widget releaseCondition(final NiceSkill skill) {
-    bool notMain = ['91', '94'].contains(skill.condQuestId.toString().padRight(2).substring(0, 2));
-    final quest = db.gameData.quests[skill.condQuestId];
+    final skillSvt = skill.svt;
+
+    bool notMain = ['91', '94'].contains(skillSvt.condQuestId.toString().padRight(2).substring(0, 2));
+    final quest = db.gameData.quests[skillSvt.condQuestId];
     final jpTime = quest?.openedAt,
-        localTime = db.gameData.mappingData.questRelease[skill.condQuestId]?.ofRegion(db.curUser.region);
+        localTime = db.gameData.mappingData.questRelease[skillSvt.condQuestId]?.ofRegion(db.curUser.region);
     return SimpleCancelOkDialog(
       title: Text(skill.lName.l),
       hideCancel: true,
@@ -33,13 +36,13 @@ class SvtSkillTab extends StatefulWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (skill.condQuestId > 0)
+          if (skillSvt.condQuestId > 0)
             CondTargetValueDescriptor(
               condType: notMain ? CondType.questClear : CondType.questClearPhase,
-              target: skill.condQuestId,
-              value: skill.condQuestPhase,
+              target: skillSvt.condQuestId,
+              value: skillSvt.condQuestPhase,
             ),
-          Text('${S.current.ascension_short} ${skill.condLimitCount}'),
+          Text('${S.current.ascension_short} ${skillSvt.condLimitCount}'),
           if (jpTime != null) Text('JP: ${jpTime.sec2date().toDateString()}'),
           if (db.curUser.region != Region.jp && localTime != null)
             Text('${db.curUser.region.upper}: ${localTime.sec2date().toDateString()}'),
@@ -90,7 +93,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
       }
       children.add(_buildSkill(
         shownSkills,
-        status.favorite ? status.skills.getOrNull(skills.first.num - 1) : -1,
+        status.favorite ? status.skills.getOrNull(skills.first.svt.num - 1) : -1,
       ));
     }
     children.add(SHeader(S.current.passive_skill));
@@ -137,7 +140,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
   }
 
   Widget _buildSkill(List<NiceSkill> skills, int? level) {
-    if (skills.length == 1 && skills.first.condQuestId <= 0) {
+    if (skills.length == 1 && skills.first.svt.condQuestId <= 0) {
       return SkillDescriptor(
         skill: skills.first,
         level: level,
@@ -172,7 +175,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
                 },
               ),
             ),
-            if (skill.condQuestId > 0 || SvtSkillTab.hasUnusualLimitCond(skill))
+            if (skill.svt.condQuestId > 0 || SvtSkillTab.hasUnusualLimitCond(skill))
               IconButton(
                 padding: const EdgeInsets.all(2),
                 constraints: const BoxConstraints(

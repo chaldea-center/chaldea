@@ -388,10 +388,10 @@ class Servant with GameCardMixin {
     appendPassive.sort2((e) => e.num * 100 + e.priority);
     // groupedActiveSkills
     groupedActiveSkills.clear();
-    for (final skill in List.of(skills)..sort2((e) => e.priority)) {
-      final _skills = groupedActiveSkills.putIfAbsent(skill.num, () => []);
+    for (final skill in List.of(skills)..sort2((e) => e.svt.priority)) {
+      final _skills = groupedActiveSkills.putIfAbsent(skill.svt.num, () => []);
       // Mash has two same skill but different priority
-      _skills.removeWhere((e) => e.id == skill.id && e.priority < skill.priority);
+      _skills.removeWhere((e) => e.id == skill.id && e.svt.priority < skill.svt.priority);
       _skills.add(skill);
     }
     groupedActiveSkills = sortDict(groupedActiveSkills);
@@ -399,11 +399,11 @@ class Servant with GameCardMixin {
     // groupedNoblePhantasms
     groupedNoblePhantasms.clear();
     List<int> excludeSvtChangeTds = [for (final change in svtChange) ...change.beforeTreasureDeviceIds];
-    for (final td in List.of(noblePhantasms)..sort2((e) => e.priority)) {
+    for (final td in List.of(noblePhantasms)..sort2((e) => e.svt.priority)) {
       // 151-154
       if (excludeSvtChangeTds.contains(td.id)) continue;
-      final tds = groupedNoblePhantasms.putIfAbsent(td.num, () => []);
-      tds.removeWhere((e) => e.id == td.id && e.priority < td.priority);
+      final tds = groupedNoblePhantasms.putIfAbsent(td.svt.num, () => []);
+      tds.removeWhere((e) => e.id == td.id && e.svt.priority < td.svt.priority);
       tds.add(td);
     }
     groupedNoblePhantasms = sortDict(groupedNoblePhantasms);
@@ -642,14 +642,14 @@ class Servant with GameCardMixin {
   }
 
   NiceSkill? getDefaultSkill(List<NiceSkill> skills, Region region) {
-    skills = skills.where((e) => e.num > 0).toList();
+    skills = skills.where((e) => e.svt.num > 0).toList();
     final priorities = db.gameData.mappingData.skillPriority[id]?.ofRegion(region);
     if (originalCollectionNo == 1) {
       skills = skills.where((e) => priorities?[e.id] != null).toList();
     }
     if (skills.isEmpty) return null;
     if (region == Region.jp) {
-      return Maths.findMax<NiceSkill, int>(skills, (e) => e.priority);
+      return Maths.findMax<NiceSkill, int>(skills, (e) => e.svt.priority);
     } else {
       return Maths.findMax<NiceSkill, int>(skills, (e) => priorities?[e.id] ?? -1);
     }
@@ -827,13 +827,13 @@ class CraftEssence with GameCardMixin {
   Map<int, List<NiceSkill>> getActivatedSkills(bool mlb) {
     final grouped = <int, List<NiceSkill>>{};
     for (final skill in skills) {
-      grouped.putIfAbsent(skill.num, () => []).add(skill);
+      grouped.putIfAbsent(skill.svt.num, () => []).add(skill);
     }
     sortDict(grouped, inPlace: true);
     for (final skillNum in grouped.keys.toList()) {
       final skillsForNum = grouped[skillNum]!;
-      skillsForNum.sort2((e) => e.priority);
-      final mlbSkills = skillsForNum.where((s) => s.condLimitCount == (mlb ? 4 : 0)).toList();
+      skillsForNum.sort2((e) => e.svt.priority);
+      final mlbSkills = skillsForNum.where((s) => s.svt.condLimitCount == (mlb ? 4 : 0)).toList();
       if (mlbSkills.isNotEmpty) {
         grouped[skillNum] = mlbSkills;
       }

@@ -226,18 +226,18 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       alignment: Alignment.center,
       children: [
         tdIcon,
-        if (curTd?.card.isQAB == true) ...[
+        if (curTd?.svt.card.isQAB == true) ...[
           Positioned(
             bottom: 0,
             child: Image.asset(
-              'res/assets/card_icon_${curTd?.card.name}.png',
+              'res/assets/card_icon_${curTd?.svt.card.name}.png',
               width: cardSize * 0.8,
             ),
           ),
           Positioned(
             bottom: cardSize * 0.5 * 0.2,
             child: Image.asset(
-              'res/assets/card_txt_${curTd?.card.name}.png',
+              'res/assets/card_txt_${curTd?.svt.card.name}.png',
               width: cardSize * 0.8,
             ),
           ),

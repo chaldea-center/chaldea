@@ -218,7 +218,11 @@ class _FormationEditorState extends State<FormationEditor> {
         for (final onFieldSvt in formation.onFieldSvts) _buildServantIcons(onFieldSvt),
         for (final backupSvt in formation.backupSvts) _buildServantIcons(backupSvt),
         Flexible(
-          child: db.getIconImage(db.gameData.mysticCodes[formation.mysticCode.mysticCodeId]?.icon, aspectRatio: 1),
+          child: db.getIconImage(
+            db.gameData.mysticCodes[formation.mysticCode.mysticCodeId]?.icon,
+            aspectRatio: 1,
+            width: 56,
+          ),
         ),
       ],
     );

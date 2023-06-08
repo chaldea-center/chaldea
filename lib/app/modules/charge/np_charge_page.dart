@@ -272,8 +272,8 @@ class _NpChargePageState extends State<NpChargePage> {
         Text.rich(
           TextSpan(children: [
             CenterWidgetSpan(
-                child: skill is BaseTd
-                    ? CommandCardWidget(card: skill.card, width: 42)
+                child: skill is NiceTd
+                    ? CommandCardWidget(card: skill.svt.card, width: 42)
                     : db.getIconImage(skill.icon, width: 24, aspectRatio: 1)),
             TextSpan(text: '  ${skill.lName.l}'),
             if (skill is BaseSkill && skill.type == SkillType.active && skill.coolDown.isNotEmpty)
@@ -415,11 +415,11 @@ class _NpChargePageState extends State<NpChargePage> {
       final released = db.gameData.mappingData.ceRelease.ofRegion(region)?.contains(ce.collectionNo);
       if (region != Region.jp && released != true) continue;
 
-      final skills = ce.skills.where((e) => e.num == 1).toList();
+      final skills = ce.skills.where((e) => e.svt.num == 1).toList();
       for (final skill in skills) {
         // some CE has the same skill for all ascensions
         // such as bond CE or campaign CE, though no one yet
-        if (skills.length > 1 && !filterData.ceMax.matchOne(skill.priority > 1)) {
+        if (skills.length > 1 && !filterData.ceMax.matchOne(skill.svt.priority > 1)) {
           continue;
         }
         details.addAll(checkSkill(ce, skill, 1, 1));
@@ -430,7 +430,7 @@ class _NpChargePageState extends State<NpChargePage> {
       if (!filterData.favorite.radioValue!.check(db.curUser.svtStatusOf(svt.collectionNo).favorite)) {
         continue;
       }
-      if (!filterData.tdColor.matchAny(svt.noblePhantasms.map((e) => e.card))) {
+      if (!filterData.tdColor.matchAny(svt.noblePhantasms.map((e) => e.svt.card))) {
         continue;
       }
       if (!filterData.tdType.matchAny(svt.noblePhantasms.map((e) => e.damageType))) {
@@ -580,8 +580,8 @@ class _NpChargePageState extends State<NpChargePage> {
         ? 'NP'
         : skill is NiceSkill
             ? skill.type == SkillType.active
-                ? skill.num.toString()
-                : svt is CraftEssence && skill.priority > 1
+                ? skill.svt.num.toString()
+                : svt is CraftEssence && skill.svt.priority > 1
                     ? "✧"
                     : " " // passive
             : null;
@@ -591,7 +591,7 @@ class _NpChargePageState extends State<NpChargePage> {
         if (rankups[srcSkillId]!.contains(skill.id)) {
           final srcSkill = svt.skills.firstWhereOrNull((s) => s.id == srcSkillId);
           if (srcSkill != null) {
-            pos = srcSkill.num.toString();
+            pos = srcSkill.svt.num.toString();
           }
         }
       }

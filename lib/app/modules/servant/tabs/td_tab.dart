@@ -52,7 +52,7 @@ class SvtTdTab extends StatelessWidget {
       if (svt.collectionNo == 312) {
         List<NiceTd> tds1 = [], tds2 = [];
         for (final td in tds) {
-          if (td.releaseConditions.any((e) => e.condType == CondType.equipWithTargetCostume)) {
+          if (td.svt.releaseConditions.any((e) => e.condType == CondType.equipWithTargetCostume)) {
             // if (td.card == CardType.buster) {
             tds2.add(td);
           } else {
@@ -93,7 +93,7 @@ class SvtTdTab extends StatelessWidget {
 
   Widget _buildTds(BuildContext context, List<NiceTd> tds, int? level, List<OverrideTDData?> overrideTds) {
     assert(tds.length == overrideTds.length);
-    if (tds.length == 1 && tds.first.condQuestId <= 0) {
+    if (tds.length == 1 && tds.first.svt.condQuestId <= 0) {
       return TdDescriptor(
         td: tds.first,
         showEnemy: !svt.isUserSvt,
@@ -137,7 +137,7 @@ class SvtTdTab extends StatelessWidget {
                 },
               ),
             ),
-            if (td.condQuestId > 0 || oTdData != null)
+            if (td.svt.condQuestId > 0 || oTdData != null)
               IconButton(
                 padding: const EdgeInsets.all(2),
                 constraints: const BoxConstraints(
@@ -173,24 +173,25 @@ class SvtTdTab extends StatelessWidget {
   }
 
   NiceTd? _getDefaultTd(List<NiceTd> tds) {
-    tds = tds.where((e) => e.num > 0).toList();
+    tds = tds.where((e) => e.svt.num > 0).toList();
     final priorities = db.gameData.mappingData.tdPriority[svt.id]?.ofRegion(db.curUser.region);
     if (svt.collectionNo == 1) {
       tds = tds.where((e) => priorities?[e.id] != null).toList();
     }
     if (tds.isEmpty) return null;
     if (db.curUser.region == Region.jp) {
-      return Maths.findMax<NiceTd, int>(tds, (e) => e.priority);
+      return Maths.findMax<NiceTd, int>(tds, (e) => e.svt.priority);
     } else {
       return Maths.findMax<NiceTd, int>(tds, (e) => priorities?[e.id] ?? -1);
     }
   }
 
   static Widget releaseCondition(final Servant svt, final NiceTd td, final OverrideTDData? overrideTDData) {
-    bool notMain = ['91', '94'].contains(td.condQuestId.toString().padRight(2).substring(0, 2));
-    final quest = db.gameData.quests[td.condQuestId];
+    final tdSvt = td.svt;
+    bool notMain = ['91', '94'].contains(tdSvt.condQuestId.toString().padRight(2).substring(0, 2));
+    final quest = db.gameData.quests[tdSvt.condQuestId];
     final jpTime = quest?.openedAt,
-        localTime = db.gameData.mappingData.questRelease[td.condQuestId]?.ofRegion(db.curUser.region);
+        localTime = db.gameData.mappingData.questRelease[tdSvt.condQuestId]?.ofRegion(db.curUser.region);
     final keys = overrideTDData?.keys ?? [];
     List<int> ascensions = [], costumes = [];
     for (final key in keys) {
@@ -203,11 +204,11 @@ class SvtTdTab extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (td.condQuestId > 0)
+          if (tdSvt.condQuestId > 0)
             CondTargetValueDescriptor(
               condType: notMain ? CondType.questClear : CondType.questClearPhase,
-              target: td.condQuestId,
-              value: td.condQuestPhase,
+              target: tdSvt.condQuestId,
+              value: tdSvt.condQuestPhase,
             ),
           if (ascensions.isNotEmpty) Text('${S.current.ascension_short} ${ascensions.join('&')}'),
           if (costumes.isNotEmpty)

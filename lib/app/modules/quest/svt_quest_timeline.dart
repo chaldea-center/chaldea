@@ -236,10 +236,10 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
   Iterable<TimelineUpgradeType> getUpgradeTypes(Quest quest) sync* {
     final svt = relatedServants[quest.id];
     if (svt != null) {
-      if (svt.skills.any((e) => e.condQuestId == quest.id)) {
+      if (svt.skills.any((e) => e.svt.condQuestId == quest.id)) {
         yield TimelineUpgradeType.skill;
       }
-      if (svt.noblePhantasms.any((e) => e.condQuestId == quest.id)) {
+      if (svt.noblePhantasms.any((e) => e.svt.condQuestId == quest.id)) {
         yield TimelineUpgradeType.np;
       }
     }
@@ -340,13 +340,13 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
       iconIds.add(ItemIconId.interlude);
     }
     for (final skill in svt.skills) {
-      if (skill.condQuestId == quest.id) {
+      if (skill.svt.condQuestId == quest.id) {
         iconIds.add(ItemIconId.skillUpgrade);
         targetSkills[skill.id] = skill; // Mash has multiple skills with same id
       }
     }
     for (final td in svt.noblePhantasms) {
-      if (td.condQuestId == quest.id) {
+      if (td.svt.condQuestId == quest.id) {
         iconIds.add(ItemIconId.tdUpgrade);
         targetTd = td;
         break;
@@ -401,7 +401,7 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
                     icon: Atlas.assetItem(iconId),
                     width: 20,
                     text: iconId == ItemIconId.skillUpgrade
-                        ? targetSkills.values.map((e) => e.num).toSet().toList().sortReturn().join()
+                        ? targetSkills.values.map((e) => e.svt.num).toSet().toList().sortReturn().join()
                         : null,
                     option: ImageWithTextOption(fontSize: 12),
                   ),

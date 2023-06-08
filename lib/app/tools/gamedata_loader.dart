@@ -469,6 +469,8 @@ class _GameLoadingTempData {
   final Map<int, BaseFunction> _baseFuncs = {};
   final Map<int, BaseSkill> _baseSkills = {};
   final Map<int, BaseTd> _baseTds = {};
+  final Map<String, SkillSvt> _skillSvts = {};
+  final Map<String, TdSvt> _tdSvts = {};
 
   void reset() {
     _enabled = false;
@@ -478,37 +480,22 @@ class _GameLoadingTempData {
     _baseFuncs.clear();
     _baseSkills.clear();
     _baseTds.clear();
+    _skillSvts.clear();
+    _tdSvts.clear();
   }
 
-  Buff getBuff(int id, Buff Function() ifAbsent) {
+  V _get<K, V>(Map<K, V> data, K key, V Function() ifAbsent) {
     if (_enabled) {
-      return _buffs.putIfAbsent(id, ifAbsent);
+      return data.putIfAbsent(key, ifAbsent);
     } else {
       return ifAbsent();
     }
   }
 
-  BaseFunction getFunc(int id, BaseFunction Function() ifAbsent) {
-    if (_enabled) {
-      return _baseFuncs.putIfAbsent(id, ifAbsent);
-    } else {
-      return ifAbsent();
-    }
-  }
-
-  BaseSkill getBaseSkill(int id, BaseSkill Function() ifAbsent) {
-    if (_enabled) {
-      return _baseSkills.putIfAbsent(id, ifAbsent);
-    } else {
-      return ifAbsent();
-    }
-  }
-
-  BaseTd getBaseTd(int id, BaseTd Function() ifAbsent) {
-    if (_enabled) {
-      return _baseTds.putIfAbsent(id, ifAbsent);
-    } else {
-      return ifAbsent();
-    }
-  }
+  Buff getBuff(int id, Buff Function() ifAbsent) => _get(_buffs, id, ifAbsent);
+  BaseFunction getFunc(int id, BaseFunction Function() ifAbsent) => _get(_baseFuncs, id, ifAbsent);
+  BaseSkill getBaseSkill(int id, BaseSkill Function() ifAbsent) => _get(_baseSkills, id, ifAbsent);
+  BaseTd getBaseTd(int id, BaseTd Function() ifAbsent) => _get(_baseTds, id, ifAbsent);
+  SkillSvt getSkillSvt(String key, SkillSvt Function() ifAbsent) => _get(_skillSvts, key, ifAbsent);
+  TdSvt getTdSvt(String key, TdSvt Function() ifAbsent) => _get(_tdSvts, key, ifAbsent);
 }

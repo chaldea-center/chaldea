@@ -1000,10 +1000,10 @@ void main() async {
 
       final melusine = battle.onFieldAllyServants[0]!;
       expect(melusine.np, 0);
-      expect(melusine.getCurrentNP(battle)!.card, CardType.buster);
+      expect(melusine.getCurrentNP(battle)!.svt.card, CardType.buster);
       await battle.activateSvtSkill(0, 2);
       expect(melusine.np, 0);
-      expect(melusine.getCurrentNP(battle)!.card, CardType.buster);
+      expect(melusine.getCurrentNP(battle)!.svt.card, CardType.buster);
     });
 
     test('transformSvt 304800 asc 11', () async {
@@ -1026,10 +1026,10 @@ void main() async {
 
       final melusine = battle.onFieldAllyServants[0]!;
       expect(melusine.np, 0);
-      expect(melusine.getCurrentNP(battle)!.card, CardType.arts);
+      expect(melusine.getCurrentNP(battle)!.svt.card, CardType.arts);
       await battle.activateSvtSkill(0, 2);
       expect(melusine.np, 10000);
-      expect(melusine.getCurrentNP(battle)!.card, CardType.buster);
+      expect(melusine.getCurrentNP(battle)!.svt.card, CardType.buster);
     });
 
     test('transformSvt preserve CD & upgrades', () async {

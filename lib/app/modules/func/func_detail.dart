@@ -314,7 +314,7 @@ class _TdTab extends StatelessWidget {
             cards.sort2((e) => e.collectionNo);
             return ListTile(
               dense: true,
-              leading: CommandCardWidget(card: td.card, width: 32),
+              leading: CommandCardWidget(card: td.svt.card, width: 32),
               horizontalTitleGap: 6,
               contentPadding: const EdgeInsetsDirectional.only(start: 10, end: 16),
               title: Text('${td.id} ${td.lName.l}'),

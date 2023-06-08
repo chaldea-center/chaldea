@@ -33,11 +33,11 @@ void main() async {
 
       final oc1Np1BaseParam = baseParam.copy()
         ..damageRate = oc1Np1DataSpec.Value!
-        ..totalHits = Maths.sum(upgradedNp.npDistribution)
+        ..totalHits = Maths.sum(upgradedNp.svt.damage)
         ..npSpecificAttackRate = oc1Np1NpSpecificAtkRate
         ..isNp = true
-        ..currentCardType = upgradedNp.card
-        ..firstCardType = upgradedNp.card;
+        ..currentCardType = upgradedNp.svt.card
+        ..firstCardType = upgradedNp.svt.card;
 
       const baseDamage = 12542;
       test('NP 1 OC 1 no fou as base', () {
@@ -57,7 +57,7 @@ void main() async {
       });
 
       test('NP does not benefit from busterChainMod', () {
-        expect(upgradedNp.card, equals(CardType.buster));
+        expect(upgradedNp.svt.card, equals(CardType.buster));
 
         final damageParameters = oc1Np1BaseParam.copy()
           ..firstCardType = CardType.buster
@@ -366,10 +366,10 @@ void main() async {
         ..classAdvantage = classAdvantage
         ..attackerAttribute = yuyu.attribute
         ..defenderAttribute = defenderAttribute
-        ..totalHits = Maths.sum(np.npDistribution)
+        ..totalHits = Maths.sum(np.svt.damage)
         ..isNp = true
-        ..currentCardType = np.card
-        ..firstCardType = np.card
+        ..currentCardType = np.svt.card
+        ..firstCardType = np.svt.card
         ..damageAdditionBuff = 175 // passive
         ..fixedRandom = 900;
 
@@ -457,8 +457,8 @@ void main() async {
       final npBaseParam = baseParam.copy()
         ..isNp = true
         ..attackerNpCharge = np.npGain.np.last
-        ..currentCardType = np.card
-        ..firstCardType = np.card;
+        ..currentCardType = np.svt.card
+        ..firstCardType = np.svt.card;
 
       const baseHitNpGain = 183;
       test('NP 5 as base', () {
@@ -592,8 +592,8 @@ void main() async {
         ..defenderNpRate = defenderNpRate
         ..isNp = true
         ..attackerNpCharge = np.npGain.np.last
-        ..currentCardType = np.card
-        ..firstCardType = np.card
+        ..currentCardType = np.svt.card
+        ..firstCardType = np.svt.card
         ..cardBuff = 1100; // passive
 
       expect(calculateAttackNpGain(param), equals(42));
@@ -609,7 +609,7 @@ void main() async {
         ..defenderNpRate = defenderNpRate
         ..attackerNpCharge = np.npGain.arts.last
         ..currentCardType = CardType.arts
-        ..firstCardType = np.card
+        ..firstCardType = np.svt.card
         ..isCritical = true
         ..npGainBuff = 1450
         ..isOverkill = true;
@@ -748,8 +748,8 @@ void main() async {
 
       final npBaseParam = baseParam.copy()
         ..isNp = true
-        ..currentCardType = np.card
-        ..firstCardType = np.card
+        ..currentCardType = np.svt.card
+        ..firstCardType = np.svt.card
         ..cardResist = 800; // np first function
 
       const baseHitStarGen = 1169;
@@ -890,8 +890,8 @@ void main() async {
         ..attackerStarGen = kama.starGen
         ..defenderStarRate = defenderStarRate
         ..isNp = true
-        ..currentCardType = np.card
-        ..firstCardType = np.card
+        ..currentCardType = np.svt.card
+        ..firstCardType = np.svt.card
         ..cardBuff = 1300; // passive + np first function
 
       expect(calculateStar(param).toDouble(), moreOrLessEquals(1189, epsilon: 1));

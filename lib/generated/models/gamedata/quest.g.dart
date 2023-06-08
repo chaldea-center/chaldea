@@ -160,6 +160,7 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
       gifts:
           (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
               const [],
+      giftIcon: json['giftIcon'] as String?,
       releaseConditions: (json['releaseConditions'] as List<dynamic>?)
               ?.map((e) => QuestRelease.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -219,7 +220,7 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
               ?.map((e) => EnemyDrop.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-    )..giftIcon = json['giftIcon'] as String?;
+    );
 
 Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic>{
       'id': instance.id,
@@ -869,9 +870,10 @@ EnemyPassive _$EnemyPassiveFromJson(Map json) => EnemyPassive(
       addPassive: (json['addPassive'] as List<dynamic>?)
           ?.map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      addPassiveLvs: (json['addPassiveLvs'] as List<dynamic>?)?.map((e) => e as int).toList(),
       appendPassiveSkillIds: (json['appendPassiveSkillIds'] as List<dynamic>?)?.map((e) => e as int).toList(),
       appendPassiveSkillLvs: (json['appendPassiveSkillLvs'] as List<dynamic>?)?.map((e) => e as int).toList(),
-    )..addPassiveLvs = (json['addPassiveLvs'] as List<dynamic>?)?.map((e) => e as int).toList();
+    );
 
 Map<String, dynamic> _$EnemyPassiveToJson(EnemyPassive instance) => <String, dynamic>{
       'classPassive': instance.classPassive.map((e) => e.toJson()).toList(),

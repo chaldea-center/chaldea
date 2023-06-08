@@ -328,7 +328,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
     if (td.individuality.every((e) => e.name != Trait.cardNP)) {
       ref.add('cardNP');
     }
-    if (cardMap.containsKey(td.card) && td.individuality.every((e) => e.name != cardMap[td.card])) {
+    if (cardMap.containsKey(td.svt.card) && td.individuality.every((e) => e.name != cardMap[td.svt.card])) {
       ref.add('cardQAB');
     }
     final tdType = Transl.tdTypes(overrideData?.tdTypeText ?? td.type);
@@ -339,7 +339,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
     final header = CustomTile(
       leading: Column(
         children: <Widget>[
-          CommandCardWidget(card: td.card, width: 90),
+          CommandCardWidget(card: td.svt.card, width: 90),
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 110 * 0.9),
             child: Text(
@@ -414,10 +414,10 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
               isHeader: true,
             ),
             TableCellData(
-              text: td.npDistribution.isEmpty
+              text: td.svt.damage.isEmpty
                   ? '   -  '
-                  : '   ${td.npDistribution.length} Hits '
-                      '(${td.npDistribution.join(', ')})  ',
+                  : '   ${td.svt.damage.length} Hits '
+                      '(${td.svt.damage.join(', ')})  ',
               flex: 5,
               alignment: Alignment.centerLeft,
               style: TextStyle(
@@ -433,7 +433,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
             if (ref.contain("cardNP"))
               '[${ref.add("cardNP")}] ${S.current.td_cardnp_hint(Transl.trait(Trait.cardNP.id).l)}',
             if (ref.contain("cardQAB"))
-              '[${ref.add("cardQAB")}] ${S.current.td_cardcolor_hint(td.card.name.toTitle(), Transl.trait(cardMap[td.card]!.id).l)}',
+              '[${ref.add("cardQAB")}] ${S.current.td_cardcolor_hint(td.svt.card.name.toTitle(), Transl.trait(cardMap[td.svt.card]!.id).l)}',
           ].join('\n')),
       ],
     );

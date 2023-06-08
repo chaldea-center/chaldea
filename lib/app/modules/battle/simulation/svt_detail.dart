@@ -263,7 +263,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
           dense: true,
           leading: td == null
               ? db.getIconImage(Atlas.common.emptySkillIcon, width: 32, aspectRatio: 1)
-              : CommandCardWidget(card: td.card, width: 38),
+              : CommandCardWidget(card: td.svt.card, width: 38),
           title: Text("${S.current.noble_phantasm} Lv.${td == null ? '-' : svt.tdLv}"),
           subtitle: Text(td?.nameWithRank ?? "NONE"),
         );
