@@ -12,6 +12,7 @@ class AddState {
   static Future<void> addState(
     final BattleData battleData,
     final Buff buff,
+    final int funcId,
     final DataVals dataVals,
     final List<BattleServantData> targets, {
     final List<NiceTd?>? tdSelections,
@@ -41,7 +42,7 @@ class AddState {
         buffData.tdSelection = tdSelections![i];
       } else if (buff.type == BuffType.upDamageEventPoint) {
         final pointBuff = battleData.options.pointBuffs.values.firstWhereOrNull(
-            (pointBuff) => pointBuff.funcIds.isEmpty || pointBuff.funcIds.contains(battleData.curFunc?.funcId));
+            (pointBuff) => pointBuff.funcIds.isEmpty || pointBuff.funcIds.contains(funcId));
         if (pointBuff == null) {
           continue;
         }

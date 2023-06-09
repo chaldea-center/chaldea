@@ -66,10 +66,11 @@ class BattleData {
   int allyTargetIndex = 0;
 
   BattleServantData? get targetedEnemy =>
-      onFieldEnemies.length > enemyTargetIndex ? onFieldEnemies[enemyTargetIndex] : null;
+      onFieldEnemies.length > enemyTargetIndex && enemyTargetIndex >= 0 ? onFieldEnemies[enemyTargetIndex] : null;
 
-  BattleServantData? get targetedAlly =>
-      onFieldAllyServants.length > allyTargetIndex ? onFieldAllyServants[allyTargetIndex] : null;
+  BattleServantData? get targetedAlly => onFieldAllyServants.length > allyTargetIndex && allyTargetIndex >= 0
+      ? onFieldAllyServants[allyTargetIndex]
+      : null;
 
   List<BattleServantData> get nonnullEnemies => _getNonnull(onFieldEnemies);
 
@@ -133,6 +134,8 @@ class BattleData {
   final List<BuffData?> _currentBuff = [];
   final List<BattleServantData> _activator = [];
   final List<BattleServantData> _target = [];
+
+  // this is for logging only
   NiceFunction? curFunc;
 
   void updateLastFuncResults() {
@@ -364,6 +367,8 @@ class BattleData {
           }
         }
       }
+
+      allyTargetIndex = getNonNullTargetIndex(onFieldAllyServants, allyTargetIndex);
     }
 
     if (replenishEnemy) {
@@ -383,6 +388,8 @@ class BattleData {
           }
         }
       }
+
+      enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
     }
 
     for (final svt in newActors) {
@@ -704,7 +711,7 @@ class BattleData {
             if (allyTargetIndex != -1 && action.isValid(this)) {
               recorder.startPlayerCard(action.actor, action.cardData);
 
-              if (currentCard!.isNP) {
+              if (action.cardData.isNP) {
                 await action.actor
                     .activateBuffOnActions(this, [BuffAction.functionAttackBefore, BuffAction.functionNpattack]);
                 await action.actor.activateNP(this, extraOvercharge);
@@ -716,7 +723,14 @@ class BattleData {
                 }
               } else {
                 extraOvercharge = 0;
-                await executePlayerCard(action.actor, currentCard!, i + 1, isTypeChain, isMightyChain, firstCardType);
+                await executePlayerCard(
+                  action.actor,
+                  action.cardData,
+                  i + 1,
+                  isTypeChain,
+                  isMightyChain,
+                  firstCardType,
+                );
               }
               recorder.endPlayerCard(action.actor, action.cardData);
             }
@@ -835,7 +849,7 @@ class BattleData {
     } else {
       targets.add(targetedEnemy!);
     }
-    await Damage.damage(this, cardDamage, targets, chainPos, isTypeChain, isMightyChain, firstCardType);
+    await Damage.damage(this, null, cardDamage, targets, chainPos, isTypeChain, isMightyChain, firstCardType);
 
     unsetActivator();
 
@@ -1000,7 +1014,7 @@ class BattleData {
         return i;
       }
     }
-    return 0;
+    return -1;
   }
 
   bool shouldRemoveDeadActors(final List<CombatAction> actions, final int index) {

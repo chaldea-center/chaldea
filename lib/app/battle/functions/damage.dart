@@ -26,6 +26,7 @@ class Damage {
   /// not be called to avoid removing applied buffs
   static Future<void> damage(
     final BattleData battleData,
+    final NiceFunction? damageFunction,
     final DataVals dataVals,
     final Iterable<BattleServantData> targets,
     final int chainPos,
@@ -33,7 +34,6 @@ class Damage {
     final bool isMightyChain,
     final CardType firstCardType,
   ) async {
-    final damageFunction = battleData.curFunc;
     final funcType = damageFunction?.funcType;
     final activator = battleData.activator!;
     final currentCard = battleData.currentCard!;

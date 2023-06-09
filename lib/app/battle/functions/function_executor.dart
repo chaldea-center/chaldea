@@ -205,6 +205,7 @@ class FunctionExecutor {
         await AddState.addState(
           battleData,
           function.buff!,
+          function.funcId,
           dataVals,
           targets,
           tdSelections: tdSelections,
@@ -260,7 +261,16 @@ class FunctionExecutor {
       case FuncType.damageNpRare:
       case FuncType.damageNpIndividualSum:
       case FuncType.damageNpStateIndividualFix:
-        await Damage.damage(battleData, dataVals, targets, chainPos, isTypeChain, isMightyChain, firstCardType);
+        await Damage.damage(
+          battleData,
+          function,
+          dataVals,
+          targets,
+          chainPos,
+          isTypeChain,
+          isMightyChain,
+          firstCardType,
+        );
         break;
       case FuncType.instantDeath:
       case FuncType.forceInstantDeath:
