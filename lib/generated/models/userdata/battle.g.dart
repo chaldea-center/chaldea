@@ -24,7 +24,8 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
               (v) => (v as List<dynamic>?)
                   ?.map((e) => BattleTeamFormation.fromJson(Map<String, dynamic>.from(e as Map)))
                   .toList()),
-          curFormationIndex: $checkedConvert('curFormationIndex', (v) => v as int? ?? 0),
+          curFormation: $checkedConvert('curFormation',
+              (v) => v == null ? null : BattleTeamFormation.fromJson(Map<String, dynamic>.from(v as Map))),
           tdDmgOptions: $checkedConvert(
               'tdDmgOptions', (v) => v == null ? null : TdDamageOptions.fromJson(Map<String, dynamic>.from(v as Map))),
         );
@@ -40,7 +41,7 @@ Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <Str
       'previousQuestPhase': instance.previousQuestPhase,
       'defaultLvs': instance.defaultLvs.toJson(),
       'formations': instance.formations.map((e) => e.toJson()).toList(),
-      'curFormationIndex': instance.curFormationIndex,
+      'curFormation': instance.curFormation.toJson(),
       'tdDmgOptions': instance.tdDmgOptions.toJson(),
     };
 

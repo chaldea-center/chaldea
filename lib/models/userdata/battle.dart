@@ -28,7 +28,7 @@ class BattleSimSetting {
   String? previousQuestPhase;
   PlayerSvtDefaultData defaultLvs;
   List<BattleTeamFormation> formations;
-  int curFormationIndex;
+  BattleTeamFormation curFormation;
 
   TdDamageOptions tdDmgOptions;
 
@@ -40,12 +40,13 @@ class BattleSimSetting {
     this.previousQuestPhase,
     PlayerSvtDefaultData? defaultLvs,
     List<BattleTeamFormation>? formations,
-    this.curFormationIndex = 0,
+    BattleTeamFormation? curFormation,
     TdDamageOptions? tdDmgOptions,
   })  : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
         pingedSvts = pingedSvts ?? {37, 62, 150, 215, 241, 284, 314, 316, 353, 357},
         defaultLvs = defaultLvs ?? PlayerSvtDefaultData(),
         formations = formations ?? [],
+        curFormation = curFormation ?? BattleTeamFormation(),
         tdDmgOptions = tdDmgOptions ?? TdDamageOptions() {
     validate();
   }
@@ -54,22 +55,11 @@ class BattleSimSetting {
     if (formations.isEmpty) {
       formations.add(BattleTeamFormation());
     }
-    curFormationIndex = curFormationIndex.clamp(0, formations.length - 1);
   }
 
   factory BattleSimSetting.fromJson(Map<String, dynamic> json) => _$BattleSimSettingFromJson(json);
 
   Map<String, dynamic> toJson() => _$BattleSimSettingToJson(this);
-
-  BattleTeamFormation get curFormation {
-    validate();
-    return formations[curFormationIndex];
-  }
-
-  set(BattleTeamFormation formation) {
-    validate();
-    formations[curFormationIndex] = formation;
-  }
 }
 
 @JsonSerializable(includeIfNull: false)
@@ -173,6 +163,8 @@ class BattleTeamFormation {
   factory BattleTeamFormation.fromJson(Map<String, dynamic> json) => _$BattleTeamFormationFromJson(json);
 
   Map<String, dynamic> toJson() => _$BattleTeamFormationToJson(this);
+
+  BattleTeamFormation copy() => BattleTeamFormation.fromJson(toJson());
 
   List<SvtSaveData?> get allSvts => [...onFieldSvts, ...backupSvts];
 

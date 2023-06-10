@@ -111,9 +111,26 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
     children.add(header(S.current.battle_simulation_setup));
     children.add(partyOption());
-    children.add(DividerWithTitle(
-      indent: 16,
-      title: settings.curFormation.shownName(settings.curFormationIndex),
+    children.add(DividerWithTitle(indent: 16, title: S.current.team));
+    children.add(Wrap(
+      alignment: WrapAlignment.center,
+      children: [
+        TextButton(
+          onPressed: () async {
+            await router.pushPage(FormationEditor(isSaving: false, onSelected: restoreFormation));
+            if (mounted) setState(() {});
+          },
+          child: Text(S.current.select),
+        ),
+        TextButton(
+          onPressed: () async {
+            saveFormation();
+            await router.pushPage(const FormationEditor(isSaving: true));
+            if (mounted) setState(() {});
+          },
+          child: Text(S.current.save),
+        ),
+      ],
     ));
     children.add(TeamSetupCard(
       onFieldSvts: onFieldSvts,
@@ -631,11 +648,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           child: Text(' COST: $totalCost ', textAlign: TextAlign.center),
         ),
         FilledButton.icon(
-          onPressed: () => _editFormations(),
-          icon: const Icon(Icons.people),
-          label: Text(S.current.team),
-        ),
-        FilledButton.icon(
           onPressed: errorMsg != null
               ? null
               : () {
@@ -800,18 +812,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   /// Formation part
-
-  void _editFormations() async {
-    saveFormation();
-    final prevFormation = settings.curFormation;
-    await router.pushPage(const FormationEditor());
-    final formation = settings.curFormation;
-    if (formation != prevFormation) {
-      await restoreFormation(formation);
-    }
-
-    if (mounted) setState(() {});
-  }
 
   Future<void> initFormation() async {
     EasyLoading.show();

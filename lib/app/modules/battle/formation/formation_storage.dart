@@ -8,7 +8,9 @@ import 'package:chaldea/widgets/widgets.dart';
 
 /// DO NOT change any field directly except [name] of [BattleTeamFormation]
 class FormationEditor extends StatefulWidget {
-  const FormationEditor({super.key});
+  final bool isSaving;
+  final ValueChanged<BattleTeamFormation>? onSelected;
+  const FormationEditor({super.key, required this.isSaving, this.onSelected});
 
   @override
   State<FormationEditor> createState() => _FormationEditorState();
@@ -24,7 +26,7 @@ class _FormationEditorState extends State<FormationEditor> {
     settings.validate();
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.current.team),
+        title: Text('[${widget.isSaving ? S.current.save : S.current.select}] ${S.current.team}'),
         actions: [
           IconButton(
             onPressed: () {
@@ -45,8 +47,7 @@ class _FormationEditorState extends State<FormationEditor> {
 
   Widget buildBody() {
     List<Widget> children = [
-      for (int index = 0; index < settings.formations.length; index++)
-        buildFormation(index, settings.formations[index], settings.curFormationIndex == index),
+      for (int index = 0; index < settings.formations.length; index++) buildFormation(index),
     ];
 
     if (sorting) {
@@ -56,14 +57,12 @@ class _FormationEditorState extends State<FormationEditor> {
             AbsorbPointer(key: Key('sort_$index'), child: children[index]),
         ],
         onReorder: (int oldIndex, int newIndex) {
-          final prev = settings.curFormation;
           setState(() {
             if (oldIndex < newIndex) {
               newIndex -= 1;
             }
             final item = settings.formations.removeAt(oldIndex);
             settings.formations.insert(newIndex, item);
-            settings.curFormationIndex = settings.formations.indexOf(prev);
             settings.validate();
           });
         },
@@ -90,7 +89,8 @@ class _FormationEditorState extends State<FormationEditor> {
     );
   }
 
-  Widget buildFormation(int index, BattleTeamFormation formation, bool selected) {
+  Widget buildFormation(int index) {
+    BattleTeamFormation formation = settings.formations[index];
     String title = formation.shownName(index);
     final titleStyle = Theme.of(context).textTheme.bodySmall;
     Widget child = Column(
@@ -115,8 +115,6 @@ class _FormationEditorState extends State<FormationEditor> {
               child: Text.rich(
                 TextSpan(
                   children: [
-                    if (index == settings.curFormationIndex)
-                      const TextSpan(text: '● ', style: TextStyle(color: Colors.green)),
                     TextSpan(text: title),
                     if (!sorting) ...[
                       const TextSpan(text: ' '),
@@ -156,9 +154,6 @@ class _FormationEditorState extends State<FormationEditor> {
                               setState(() {
                                 if (settings.formations.length > 1) {
                                   settings.formations.removeAt(index);
-                                  if (index <= settings.curFormationIndex) {
-                                    settings.curFormationIndex -= 1;
-                                  }
                                 }
                               });
                             }
@@ -192,14 +187,20 @@ class _FormationEditorState extends State<FormationEditor> {
               ),
               FilledButton(
                 onPressed: () {
-                  settings.curFormationIndex = index;
+                  if (widget.isSaving) {
+                    settings.formations[index] = settings.curFormation.copy();
+                    EasyLoading.showSuccess("${S.current.saved}: ${S.current.team} ${index + 1}");
+                  } else {
+                    settings.curFormation = formation.copy();
+                    widget.onSelected?.call(settings.curFormation);
+                  }
                   Navigator.pop(context, formation);
                 },
                 style: FilledButton.styleFrom(
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   visualDensity: VisualDensity.compact,
                 ),
-                child: Text(S.current.select),
+                child: Text(widget.isSaving ? S.current.save : S.current.select),
               ),
             ],
           ),
