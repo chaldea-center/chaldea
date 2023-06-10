@@ -9,6 +9,7 @@ class InputCancelOkDialog extends StatefulWidget {
   final String? title;
   final String? text;
   final String? hintText;
+  final String? helperText;
   final String? errorText;
   final bool Function(String s)? validate;
   final ValueChanged<String>? onSubmit;
@@ -19,6 +20,7 @@ class InputCancelOkDialog extends StatefulWidget {
     this.title,
     this.text,
     this.hintText,
+    this.helperText,
     this.errorText,
     this.validate,
     this.onSubmit,
@@ -68,7 +70,11 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
         autofocus: true,
         autocorrect: false,
         keyboardType: widget.keyboardType,
-        decoration: InputDecoration(hintText: widget.hintText, errorText: validation ? null : S.current.invalid_input),
+        decoration: InputDecoration(
+          hintText: widget.hintText,
+          helperText: widget.helperText,
+          errorText: validation ? null : S.current.invalid_input,
+        ),
         onChanged: (v) {
           if (widget.validate != null) {
             setState(() {

@@ -88,7 +88,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     playerSvtData.lv = playerSvtData.lv.clamp(1, min(120, svt.atkGrowth.length));
     final commonSliders = <Widget>[
       SliderWithPrefix(
-        label: S.current.noble_phantasm_level,
+        label: S.current.np_short,
         min: 1,
         max: 5,
         value: playerSvtData.tdLv,
@@ -213,9 +213,10 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       _header(context),
       divider,
       Padding(
-        padding: const EdgeInsetsDirectional.only(start: 16, end: 8),
+        padding: const EdgeInsetsDirectional.only(start: 16, end: 16),
         child: _buildSliderGroup(),
       ),
+      tipsCard,
       divider,
       ListTile(
         dense: true,
@@ -284,6 +285,51 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     return ListView(children: children);
   }
 
+  Widget get tipsCard {
+    return Card(
+      child: ValueStatefulBuilder<bool>(
+        initValue: false,
+        builder: (context, state) {
+          Widget child = Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(width: 30),
+                  Expanded(
+                    child: Text(
+                      "Tips",
+                      style: Theme.of(context).textTheme.titleSmall,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Icon(state.value ? Icons.expand_less : Icons.expand_more),
+                  const SizedBox(width: 8),
+                ],
+              ),
+              if (state.value)
+                Text(
+                  "Tiiiiiiiiiiiiiiiiips.......",
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+            ],
+          );
+          return InkWell(
+            onTap: () {
+              state.value = !state.value;
+              state.updateState();
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: child,
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   Widget get buttonBar {
     return ButtonBar(
       children: [
@@ -303,6 +349,28 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                 S.current.clear,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
+            ),
+            TextButton(
+              onPressed: playerSvtData.svt == null
+                  ? null
+                  : () {
+                      switch (playerSvtData.supportType) {
+                        case SupportSvtType.npc:
+                        case SupportSvtType.friend:
+                          EasyLoading.showToast('Cannot read Support/NPC from owned servant data');
+                          return;
+                        case SupportSvtType.none:
+                          _onSelectServant(playerSvtData.svt!);
+                          _updateState();
+                          EasyLoading.showSuccess(S.current.updated);
+                          return;
+                      }
+                    },
+              child: Text(S.current.update),
+            ),
+            const SizedBox(
+              height: 16,
+              child: VerticalDivider(),
             ),
             TextButton(
               onPressed: selectSvt,
@@ -1066,28 +1134,33 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     List<Widget> children = [];
     children.add(_header(context));
 
-    children.add(Padding(
-      padding: const EdgeInsetsDirectional.only(start: 16),
-      child: SliderWithTitle(
-        leadingText: 'Lv',
-        min: 1,
-        max: ce.lvMax,
-        value: playerSvtData.ceLv,
-        label: playerSvtData.ceLv.toString(),
-        onChange: (v) {
-          playerSvtData.ceLv = v.round();
-          final mlbLv = ce.ascensionAdd.lvMax.ascension[3];
-          if (mlbLv != null && mlbLv > 0 && playerSvtData.ceLv > mlbLv) {
-            playerSvtData.ceLimitBreak = true;
-          }
-          _updateState();
-        },
-      ),
+    children.add(SliderWithPrefix(
+      label: 'Lv',
+      min: 1,
+      max: ce.lvMax,
+      value: playerSvtData.ceLv,
+      valueText: playerSvtData.ceLv.toString(),
+      onChange: (v) {
+        playerSvtData.ceLv = v.round();
+        final mlbLv = ce.ascensionAdd.lvMax.ascension[3];
+        if (mlbLv != null && mlbLv > 0 && playerSvtData.ceLv > mlbLv) {
+          playerSvtData.ceLimitBreak = true;
+        }
+        _updateState();
+      },
+      // endOffset: -16,
     ));
     children.add(SwitchListTile.adaptive(
       value: playerSvtData.ceLimitBreak,
       title: Text(S.current.max_limit_break),
       onChanged: (v) {
+        final ce = playerSvtData.ce;
+        if (v && ce != null && ce.flag == SvtFlag.normal) {
+          int? lvMin = {1: 6, 2: 9, 3: 11, 4: 13, 5: 15}[ce.rarity];
+          if (lvMin != null && lvMin <= ce.lvMax && playerSvtData.ceLv < lvMin) {
+            playerSvtData.ceLv = lvMin;
+          }
+        }
         playerSvtData.ceLimitBreak = v;
         _updateState();
       },

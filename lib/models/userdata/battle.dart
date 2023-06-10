@@ -664,7 +664,7 @@ enum SupportSvtType {
   String get shownName {
     switch (this) {
       case SupportSvtType.none:
-        return 'NONE';
+        return S.current.item_own;
       case SupportSvtType.friend:
         return S.current.support_servant_short;
       case SupportSvtType.npc:

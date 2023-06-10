@@ -3,7 +3,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../common/builders.dart';
+import '../../../packages/language.dart';
 import '../home/elements/random_image.dart';
 import '../home/subpage/feedback_page.dart';
 
@@ -43,12 +43,7 @@ class BattleHomePage extends StatelessWidget {
   Widget getBody(BuildContext context) {
     return ListView(
       children: [
-        const Padding(
-          padding: EdgeInsets.fromLTRB(40, 20, 40, 12),
-          child: Center(
-            child: Icon(Icons.bubble_chart, size: 48),
-          ),
-        ),
+        const SizedBox(height: 8),
         const Center(
           child: Text('Testing/测试中...'),
         ),
@@ -73,28 +68,28 @@ class BattleHomePage extends StatelessWidget {
               },
             ),
             ListTile(
+              title: Text(Language.isZH ? '常见问题/FAQ' : S.current.faq),
+              leading: const Icon(Icons.question_answer),
+              onTap: () {
+                launch(ChaldeaUrl.laplace('faq'));
+              },
+            ),
+            ListTile(
               title: const Text('Bugs'),
               leading: const Icon(Icons.bug_report),
               onTap: () {
                 launch(ChaldeaUrl.laplace('bugs'));
               },
             ),
-            const ListTile(
-              enabled: false,
-              leading: Icon(Icons.snowing),
-              title: Text('· · ·'),
-            )
+            ListTile(
+              title: Text(S.current.about_feedback),
+              leading: const Icon(Icons.message),
+              onTap: () {
+                router.pushPage(FeedbackPage());
+              },
+            ),
           ],
         ),
-        SFooter.rich(TextSpan(children: [
-          const TextSpan(text: 'Bug? '),
-          SharedBuilder.textButtonSpan(
-            context: context,
-            text: S.current.about_feedback,
-            onTap: () => router.pushPage(FeedbackPage()),
-          ),
-          const TextSpan(text: '!'),
-        ])),
         const RandomImageSurprise(),
       ],
     );

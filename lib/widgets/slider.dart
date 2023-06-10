@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 
+import 'custom_dialogs.dart';
+
 class SliderWithTitle extends StatelessWidget {
   final String leadingText;
   final int min;
@@ -58,6 +60,7 @@ class SliderWithTitle extends StatelessWidget {
 
 class SliderWithPrefix extends StatelessWidget {
   final String label;
+  // TODO: use valueFomatter
   final String? valueText;
   final int min;
   final int max;
@@ -65,6 +68,7 @@ class SliderWithPrefix extends StatelessWidget {
   final ValueChanged<double> onChange;
   final double leadingWidth;
   final double endOffset;
+  final bool enableInput;
 
   const SliderWithPrefix({
     super.key,
@@ -76,10 +80,43 @@ class SliderWithPrefix extends StatelessWidget {
     required this.onChange,
     this.leadingWidth = 48,
     this.endOffset = 0,
+    this.enableInput = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    Color? lableColor = enableInput ? Theme.of(context).colorScheme.primaryContainer : null;
+    Widget header = Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        AutoSizeText(
+          label,
+          maxLines: 1,
+          minFontSize: 10,
+          maxFontSize: 16,
+          style: Theme.of(context)
+              .textTheme
+              .bodySmall
+              ?.copyWith(color: valueText == null || valueText!.isEmpty ? lableColor : null),
+        ),
+        if (valueText != null)
+          AutoSizeText(
+            valueText!,
+            maxLines: 1,
+            minFontSize: 10,
+            maxFontSize: 14,
+            style: TextStyle(color: lableColor),
+          ),
+      ],
+    );
+    if (enableInput) {
+      header = InkWell(
+        onTap: () {
+          showDialog(context: context, useRootNavigator: false, builder: getInputDialog);
+        },
+        child: header,
+      );
+    }
     Widget slider = SliderTheme(
       data: SliderTheme.of(context).copyWith(thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8)),
       child: Slider(
@@ -97,25 +134,7 @@ class SliderWithPrefix extends StatelessWidget {
       children: [
         SizedBox(
           width: leadingWidth,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              AutoSizeText(
-                label,
-                maxLines: 1,
-                minFontSize: 10,
-                maxFontSize: 16,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              if (valueText != null)
-                AutoSizeText(
-                  valueText!,
-                  maxLines: 1,
-                  minFontSize: 10,
-                  maxFontSize: 14,
-                ),
-            ],
-          ),
+          child: header,
         ),
         Flexible(
           child: ConstrainedBox(
@@ -135,6 +154,30 @@ class SliderWithPrefix extends StatelessWidget {
           ),
         )
       ],
+    );
+  }
+
+  Widget getInputDialog(BuildContext context) {
+    String helperText = '$min~$max';
+    if (valueText != null && valueText != value.toString()) {
+      helperText += ', $value → $valueText';
+    }
+    return InputCancelOkDialog(
+      title: label,
+      text: value.toString(),
+      helperText: helperText,
+      validate: (s) {
+        final v = int.tryParse(s);
+        if (v == null) return false;
+        return v >= min && v <= max;
+      },
+      onSubmit: (s) {
+        final v = int.tryParse(s);
+        if (v == null) return;
+        if (v >= min && v <= max) {
+          onChange(v.toDouble());
+        }
+      },
     );
   }
 }
