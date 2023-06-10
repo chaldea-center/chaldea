@@ -27,7 +27,9 @@ class InstantDeath {
       battleData.unsetTarget();
       record.targets.add(InstantDeathResultDetail(target: target, params: params));
     }
-    battleData.recorder.instantDeath(record);
+    if (targets.isNotEmpty) {
+      battleData.recorder.instantDeath(record);
+    }
   }
 
   static Future<bool> shouldInstantDeath(
