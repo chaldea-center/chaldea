@@ -114,13 +114,14 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       SliderWithPrefix(
         label: 'ATK ${S.current.foukun}',
         min: 0,
-        max: 200,
-        value: playerSvtData.atkFou ~/ 10,
+        max: 2000,
+        value: playerSvtData.atkFou ~/ 10 * 10,
+        division: 200,
         valueText: '+${playerSvtData.atkFou}',
         onChange: (v) {
-          final int fou = v.round() * 10;
-          if (fou > 1000 && fou % 20 == 10) {
-            playerSvtData.atkFou = fou - 10;
+          final int fou = v.round() ~/ 10 * 10;
+          if (fou > 1000) {
+            playerSvtData.atkFou = fou ~/ 20 * 20;
           } else {
             playerSvtData.atkFou = fou;
           }
@@ -131,13 +132,14 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       SliderWithPrefix(
         label: 'HP ${S.current.foukun}',
         min: 0,
-        max: 200,
-        value: playerSvtData.hpFou ~/ 10,
+        max: 2000,
+        value: playerSvtData.hpFou ~/ 10 * 10,
+        division: 200,
         valueText: '+${playerSvtData.hpFou}',
         onChange: (v) {
           final int fou = v.round() * 10;
-          if (fou > 1000 && fou % 20 == 10) {
-            playerSvtData.hpFou = fou - 10;
+          if (fou > 1000) {
+            playerSvtData.hpFou = fou ~/ 10 * 10;
           } else {
             playerSvtData.hpFou = fou;
           }
@@ -864,16 +866,20 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                   icon: const Icon(Icons.remove_circle_outline, size: 18),
                   tooltip: S.current.remove,
                 ),
-                SliderWithTitle(
-                  leadingText: S.current.card_strengthen,
-                  min: 0,
-                  max: 25,
-                  value: playerSvtData.cardStrengthens[index] ~/ 20,
-                  label: playerSvtData.cardStrengthens[index].toString(),
-                  onChange: (v) {
-                    playerSvtData.cardStrengthens[index] = v.round() * 20;
-                    _updateState();
-                  },
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(start: 8),
+                  child: SliderWithPrefix(
+                    titled: true,
+                    label: S.current.card_strengthen,
+                    min: 0,
+                    max: 500,
+                    value: playerSvtData.cardStrengthens[index] ~/ 20 * 20,
+                    valueText: playerSvtData.cardStrengthens[index].toString(),
+                    onChange: (v) {
+                      playerSvtData.cardStrengthens[index] = v.round() ~/ 20 * 20;
+                      _updateState();
+                    },
+                  ),
                 ),
               ]);
             }),

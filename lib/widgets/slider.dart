@@ -59,6 +59,7 @@ class SliderWithTitle extends StatelessWidget {
 }
 
 class SliderWithPrefix extends StatelessWidget {
+  final bool titled;
   final String label;
   // TODO: use valueFomatter
   final String? valueText;
@@ -66,18 +67,21 @@ class SliderWithPrefix extends StatelessWidget {
   final int max;
   final int value;
   final ValueChanged<double> onChange;
+  final int? division;
   final double leadingWidth;
   final double endOffset;
   final bool enableInput;
 
   const SliderWithPrefix({
     super.key,
+    this.titled = false,
     required this.label,
     this.valueText,
     required this.min,
     required this.max,
     required this.value,
     required this.onChange,
+    this.division,
     this.leadingWidth = 48,
     this.endOffset = 0,
     this.enableInput = true,
@@ -86,29 +90,43 @@ class SliderWithPrefix extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Color? lableColor = enableInput ? Theme.of(context).colorScheme.primaryContainer : null;
-    Widget header = Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        AutoSizeText(
-          label,
-          maxLines: 1,
-          minFontSize: 10,
-          maxFontSize: 16,
-          style: Theme.of(context)
-              .textTheme
-              .bodySmall
-              ?.copyWith(color: valueText == null || valueText!.isEmpty ? lableColor : null),
-        ),
-        if (valueText != null)
+    Widget header;
+    if (titled) {
+      header = Text.rich(TextSpan(
+        text: label,
+        children: valueText == null
+            ? null
+            : [
+                const TextSpan(text: ': '),
+                TextSpan(text: valueText, style: TextStyle(color: lableColor)),
+              ],
+      ));
+    } else {
+      header = Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
           AutoSizeText(
-            valueText!,
+            label,
             maxLines: 1,
             minFontSize: 10,
-            maxFontSize: 14,
-            style: TextStyle(color: lableColor),
+            maxFontSize: 16,
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: valueText == null || valueText!.isEmpty ? lableColor : null),
           ),
-      ],
-    );
+          if (valueText != null)
+            AutoSizeText(
+              valueText!,
+              maxLines: 1,
+              minFontSize: 10,
+              maxFontSize: 14,
+              style: TextStyle(color: lableColor),
+            ),
+        ],
+      );
+    }
+
     if (enableInput) {
       header = InkWell(
         onTap: () {
@@ -122,7 +140,7 @@ class SliderWithPrefix extends StatelessWidget {
       child: Slider(
         min: min.toDouble(),
         max: max.toDouble(),
-        divisions: max > min ? max - min : null,
+        divisions: max > min ? (division ?? max - min) : null,
         value: value.toDouble(),
         label: valueText ?? value.toString(),
         onChanged: (v) {
@@ -130,38 +148,49 @@ class SliderWithPrefix extends StatelessWidget {
         },
       ),
     );
-    return Row(
-      children: [
-        SizedBox(
-          width: leadingWidth,
-          child: header,
-        ),
-        Flexible(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 320, maxHeight: 24),
-            child: Stack(
-              children: [
-                PositionedDirectional(
-                  start: -16,
-                  end: endOffset,
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxHeight: 24),
-                    child: slider,
-                  ),
-                )
-              ],
+    slider = ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 320, maxHeight: 24),
+      child: Stack(
+        children: [
+          PositionedDirectional(
+            start: -16,
+            end: endOffset,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 24),
+              child: slider,
             ),
-          ),
-        )
-      ],
+          )
+        ],
+      ),
     );
+
+    Widget child;
+    if (titled) {
+      child = Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          header,
+          slider,
+        ],
+      );
+    } else {
+      child = Row(
+        children: [
+          if (!titled)
+            SizedBox(
+              width: leadingWidth,
+              child: header,
+            ),
+          Flexible(child: slider)
+        ],
+      );
+    }
+    return child;
   }
 
   Widget getInputDialog(BuildContext context) {
     String helperText = '$min~$max';
-    if (valueText != null && valueText != value.toString()) {
-      helperText += ', $value → $valueText';
-    }
     return InputCancelOkDialog(
       title: label,
       text: value.toString(),
