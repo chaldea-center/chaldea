@@ -31,6 +31,7 @@ class NiceWar with RouteInfo {
   int priority;
   int parentWarId;
   int materialParentWarId;
+  int parentBlankEarthSpotId;
   String emptyMessage;
   Bgm bgm;
   @protected
@@ -100,6 +101,7 @@ class NiceWar with RouteInfo {
     required this.priority,
     this.parentWarId = 0,
     this.materialParentWarId = 0,
+    this.parentBlankEarthSpotId = 0,
     this.emptyMessage = "",
     required this.bgm,
     this.scriptId,
@@ -327,6 +329,7 @@ class MapGimmick {
 @JsonSerializable()
 class NiceSpot {
   int id;
+  bool blankEarth;
   List<int> joinSpotIds;
   int mapId;
   String name;
@@ -348,6 +351,7 @@ class NiceSpot {
 
   NiceSpot({
     required this.id,
+    this.blankEarth = false,
     this.joinSpotIds = const [],
     required this.mapId,
     required this.name,

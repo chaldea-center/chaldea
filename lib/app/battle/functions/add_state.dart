@@ -41,8 +41,8 @@ class AddState {
       if (buff.type == BuffType.tdTypeChange) {
         buffData.tdSelection = tdSelections![i];
       } else if (buff.type == BuffType.upDamageEventPoint) {
-        final pointBuff = battleData.options.pointBuffs.values.firstWhereOrNull(
-            (pointBuff) => pointBuff.funcIds.isEmpty || pointBuff.funcIds.contains(funcId));
+        final pointBuff = battleData.options.pointBuffs.values
+            .firstWhereOrNull((pointBuff) => pointBuff.funcIds.isEmpty || pointBuff.funcIds.contains(funcId));
         if (pointBuff == null) {
           continue;
         }

@@ -21,6 +21,7 @@ NiceWar _$NiceWarFromJson(Map json) => NiceWar(
       priority: json['priority'] as int,
       parentWarId: json['parentWarId'] as int? ?? 0,
       materialParentWarId: json['materialParentWarId'] as int? ?? 0,
+      parentBlankEarthSpotId: json['parentBlankEarthSpotId'] as int? ?? 0,
       emptyMessage: json['emptyMessage'] as String? ?? "",
       bgm: Bgm.fromJson(Map<String, dynamic>.from(json['bgm'] as Map)),
       scriptId: json['scriptId'] as String?,
@@ -61,6 +62,7 @@ Map<String, dynamic> _$NiceWarToJson(NiceWar instance) => <String, dynamic>{
       'priority': instance.priority,
       'parentWarId': instance.parentWarId,
       'materialParentWarId': instance.materialParentWarId,
+      'parentBlankEarthSpotId': instance.parentBlankEarthSpotId,
       'emptyMessage': instance.emptyMessage,
       'bgm': instance.bgm.toJson(),
       'scriptId': instance.scriptId,
@@ -144,6 +146,7 @@ Map<String, dynamic> _$MapGimmickToJson(MapGimmick instance) => <String, dynamic
 
 NiceSpot _$NiceSpotFromJson(Map json) => NiceSpot(
       id: json['id'] as int,
+      blankEarth: json['blankEarth'] as bool? ?? false,
       joinSpotIds: (json['joinSpotIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       mapId: json['mapId'] as int,
       name: json['name'] as String,
@@ -171,6 +174,7 @@ NiceSpot _$NiceSpotFromJson(Map json) => NiceSpot(
 
 Map<String, dynamic> _$NiceSpotToJson(NiceSpot instance) => <String, dynamic>{
       'id': instance.id,
+      'blankEarth': instance.blankEarth,
       'joinSpotIds': instance.joinSpotIds,
       'mapId': instance.mapId,
       'name': instance.name,
