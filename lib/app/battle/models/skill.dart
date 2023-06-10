@@ -22,37 +22,40 @@ class BattleSkillInfoData {
 
   BaseSkill? get proximateSkill => _skill;
 
+  int skillNum;
+  BaseSkill? baseSkill;
   List<BaseSkill> provisionedSkills;
   int rankUp = 0;
   List<BaseSkill?>? rankUps;
-  BaseSkill? baseSkill;
+  int _skillLv = 0;
+  SkillScript? skillScript;
+  int chargeTurn = 0;
+  bool isCommandCode;
+
+  BattleSkillInfoData(
+    this.baseSkill, {
+    List<BaseSkill>? provisionedSkills,
+    this.skillNum = -1,
+    this.isCommandCode = false,
+  }) : provisionedSkills = provisionedSkills ?? [] {
+    if (baseSkill != null && !this.provisionedSkills.contains(baseSkill)) {
+      this.provisionedSkills.add(baseSkill!);
+    }
+    skillScript = proximateSkill?.script;
+  }
 
   BaseSkill? get _skill => rankUp == 0 || rankUps == null || rankUps!.isEmpty
       ? baseSkill
       : rankUp > rankUps!.length
           ? rankUps!.last
           : rankUps![rankUp - 1];
-  int _skillLv = 0;
+
+  set skillLv(int v) => _skillLv = v;
 
   int get skillLv {
     final maxLv = proximateSkill?.maxLv;
     if (maxLv == null || maxLv == 0) return _skillLv;
     return _skillLv.clamp(1, maxLv);
-  }
-
-  set skillLv(int v) {
-    _skillLv = v;
-  }
-
-  SkillScript? skillScript;
-  int chargeTurn = 0;
-  bool isCommandCode;
-
-  BattleSkillInfoData(this.provisionedSkills, this.baseSkill, {this.isCommandCode = false}) {
-    if (baseSkill != null && !provisionedSkills.contains(baseSkill)) {
-      provisionedSkills.add(baseSkill!);
-    }
-    skillScript = proximateSkill?.script;
   }
 
   void setBaseSkillId(final NiceSkill? newSkill) {
@@ -187,7 +190,7 @@ class BattleSkillInfoData {
   }
 
   BattleSkillInfoData copy() {
-    return BattleSkillInfoData(provisionedSkills, baseSkill)
+    return BattleSkillInfoData(baseSkill, provisionedSkills: provisionedSkills, skillNum: skillNum)
       ..isCommandCode = isCommandCode
       ..rankUps = rankUps
       ..rankUp = rankUp

@@ -220,8 +220,10 @@ class BattleData {
       mysticCodeLv = mysticCodeData?.level ?? 10;
     }
     if (mysticCode != null) {
-      masterSkillInfo =
-          mysticCode!.skills.map((skill) => BattleSkillInfoData([skill], skill)..skillLv = mysticCodeLv).toList();
+      masterSkillInfo = [
+        for (int index = 0; index < mysticCode!.skills.length; index++)
+          BattleSkillInfoData(mysticCode!.skills[index], skillNum: index + 1)..skillLv = mysticCodeLv,
+      ];
     }
 
     onFieldAllyServants = List.filled(playerOnFieldCount, null);
@@ -895,7 +897,7 @@ class BattleData {
         recorder.skill(
           battleData: this,
           activator: null,
-          skill: BattleSkillInfoData([], skill),
+          skill: BattleSkillInfoData(skill),
           type: SkillInfoType.commandSpell,
           fromPlayer: true,
         );
@@ -915,7 +917,7 @@ class BattleData {
         recorder.skill(
           battleData: this,
           activator: null,
-          skill: BattleSkillInfoData([], skill),
+          skill: BattleSkillInfoData(skill),
           type: SkillInfoType.commandSpell,
           fromPlayer: true,
         );
@@ -936,7 +938,7 @@ class BattleData {
         recorder.skill(
           battleData: this,
           activator: null,
-          skill: BattleSkillInfoData([], skill),
+          skill: BattleSkillInfoData(skill),
           type: SkillInfoType.commandSpell,
           fromPlayer: true,
         );

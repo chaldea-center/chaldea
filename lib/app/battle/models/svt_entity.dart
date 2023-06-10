@@ -153,8 +153,9 @@ class BattleServantData {
         }
       }
 
-      final skillInfo = BattleSkillInfoData(provisionedSkills, settings.skills[skillNum - 1])
-        ..skillLv = settings.skillLvs[skillNum - 1];
+      final skillInfo =
+          BattleSkillInfoData(settings.skills[skillNum - 1], provisionedSkills: provisionedSkills, skillNum: skillNum)
+            ..skillLv = settings.skillLvs[skillNum - 1];
 
       if (rankUps != null) {
         skillInfo.rankUps = rankUps;
@@ -165,9 +166,8 @@ class BattleServantData {
 
     for (final commandCode in settings.commandCodes) {
       if (commandCode != null) {
-        svt.commandCodeSkills.add(commandCode.skills
-            .map((skill) => BattleSkillInfoData([skill], skill, isCommandCode: true)..skillLv = 1)
-            .toList());
+        svt.commandCodeSkills.add(
+            commandCode.skills.map((skill) => BattleSkillInfoData(skill, isCommandCode: true)..skillLv = 1).toList());
       } else {
         svt.commandCodeSkills.add([]);
       }

@@ -45,11 +45,10 @@ class TransformServant {
             final newSkills = targetSvt.groupedActiveSkills[skillNum];
             if (newSkills == null || newSkills.isEmpty) continue;
 
-            final oldInfoData =
-                target.skillInfoList.firstWhereOrNull((infoData) => infoData.baseSkill?.svt.num == skillNum);
+            final oldInfoData = target.skillInfoList.firstWhereOrNull((infoData) => infoData.skillNum == skillNum);
             final baseSkill =
                 newSkills.firstWhereOrNull((skill) => skill.id == oldInfoData?.baseSkill?.id) ?? newSkills.last;
-            final newInfoData = BattleSkillInfoData(newSkills, baseSkill);
+            final newInfoData = BattleSkillInfoData(baseSkill, provisionedSkills: newSkills, skillNum: skillNum);
             newInfoData.skillLv = target.playerSvtData != null && target.playerSvtData!.skillLvs.length >= skillNum
                 ? target.playerSvtData!.skillLvs[skillNum - 1]
                 : 1;

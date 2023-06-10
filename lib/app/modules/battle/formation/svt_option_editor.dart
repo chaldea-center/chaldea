@@ -569,7 +569,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                     router.pushPage(SkillSelectPage(
                       skillType: SkillType.active,
                       onSelected: (skill) {
-                        playerSvtData.skills[index] = skill.toNice()..svt.num = skillNum;
+                        playerSvtData.skills[index] = skill.toNice();
                         _updateState();
                       },
                     ));
