@@ -51,10 +51,6 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
   @override
   Widget build(BuildContext context) {
     filterShownList(compare: _compareCE);
-    if (widget.pinged != null) {
-      final pinged = shownList.where((e) => widget.pinged!.contains(e.collectionNo)).toList();
-      shownList.insertAll(0, pinged);
-    }
     return scrollListener(
       useGrid: filterData.useGrid,
       appBar: AppBar(
@@ -80,6 +76,31 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
         ],
       ),
     );
+  }
+
+  @override
+  List<Widget> handleSlivers(List<Widget> slivers, bool useGrid) {
+    List<CraftEssence> pingedCEs =
+        widget.pinged?.map((e) => db.gameData.craftEssences[e]).whereType<CraftEssence>().toList() ?? [];
+    pingedCEs.sort2((e) => e.collectionNo);
+    if (pingedCEs.isNotEmpty) {
+      slivers = [
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          sliver: SliverGrid.extent(
+            maxCrossAxisExtent: 72,
+            mainAxisSpacing: 2,
+            crossAxisSpacing: 2,
+            childAspectRatio: 132 / 144,
+            children: [
+              for (final datum in pingedCEs) gridItemBuilder(datum),
+            ],
+          ),
+        ),
+        ...slivers,
+      ];
+    }
+    return super.handleSlivers(slivers, useGrid);
   }
 
   @override

@@ -155,6 +155,10 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
   double? itemExtent;
   bool get prototypeExtent => false;
 
+  List<Widget> handleSlivers(List<Widget> slivers, bool useGrid) {
+    return slivers;
+  }
+
   Widget buildListView({
     Widget? topHint,
     Widget? bottomHint,
@@ -216,7 +220,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
     return _wrapButtonBar(
       CustomScrollView(
         controller: scrollController,
-        slivers: slivers,
+        slivers: handleSlivers(slivers, false),
         physics: const AlwaysScrollableScrollPhysics(),
       ),
     );
@@ -254,7 +258,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
     return _wrapButtonBar(
       CustomScrollView(
         controller: scrollController,
-        slivers: slivers,
+        slivers: handleSlivers(slivers, true),
         physics: const AlwaysScrollableScrollPhysics(),
       ),
     );

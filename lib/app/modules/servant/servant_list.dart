@@ -83,11 +83,6 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
   @override
   Widget build(BuildContext context) {
     filterShownList(compare: _compareSvt);
-    if (widget.pinged != null) {
-      final pinged = shownList.where((e) => widget.pinged!.contains(e.collectionNo)).toList();
-      shownList.insertAll(0, pinged);
-    }
-
     return scrollListener(
       useGrid: widget.planMode ? false : filterData.useGrid,
       appBar: appBar,
@@ -382,6 +377,31 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
   @override
   bool filter(Servant svt) {
     return ServantFilterPage.filter(filterData, svt, planMode: widget.planMode);
+  }
+
+  @override
+  List<Widget> handleSlivers(List<Widget> slivers, bool useGrid) {
+    List<Servant> pingedSvts =
+        widget.pinged?.map((e) => db.gameData.servantsNoDup[e]).whereType<Servant>().toList() ?? [];
+    pingedSvts.sort2((e) => e.collectionNo);
+    if (pingedSvts.isNotEmpty) {
+      slivers = [
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          sliver: SliverGrid.extent(
+            maxCrossAxisExtent: 72,
+            mainAxisSpacing: 2,
+            crossAxisSpacing: 2,
+            childAspectRatio: 132 / 144,
+            children: [
+              for (final datum in pingedSvts) gridItemBuilder(datum),
+            ],
+          ),
+        ),
+        ...slivers,
+      ];
+    }
+    return super.handleSlivers(slivers, useGrid);
   }
 
   @override
