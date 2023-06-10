@@ -9088,6 +9088,17 @@ class S {
     );
   }
 
+  /// `1. Servant options are independent from Chaldea's plan data once imported, if need to resync planned options please select again.\n2. more tips`
+  String get svt_option_edit_tips {
+    return Intl.message(
+      '1. Servant options are independent from Chaldea\'s plan data once imported, if need to resync planned options please select again.\n2. more tips',
+      name: 'svt_option_edit_tips',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Hidden`
   String get svt_plan_hidden {
     return Intl.message(
@@ -9368,6 +9379,17 @@ class S {
     return Intl.message(
       'Start',
       name: 'time_start',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Tips`
+  String get tips {
+    return Intl.message(
+      'Tips',
+      name: 'tips',
       desc: '',
       locale: localeName,
       args: [],

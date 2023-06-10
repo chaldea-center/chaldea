@@ -53,9 +53,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   @override
   void initState() {
     super.initState();
-    if (playerSvtData.svt == null && questPhase?.supportServants.isNotEmpty != true) {
+    if (playerSvtData.svt == null) {
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        if (mounted) Navigator.pop(context);
         selectSvt();
       });
     }
@@ -66,13 +65,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.battle_edit_servant_option),
-        actions: [
-          IconButton(
-            onPressed: selectSvt,
-            icon: const Icon(Icons.change_circle_outlined),
-            tooltip: S.current.select_servant,
-          )
-        ],
+        actions: [popupMenu],
       ),
       body: Column(
         children: [
@@ -301,20 +294,24 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                   const SizedBox(width: 30),
                   Expanded(
                     child: Text(
-                      "Tips",
+                      S.current.tips,
                       style: Theme.of(context).textTheme.titleSmall,
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  Icon(state.value ? Icons.expand_less : Icons.expand_more),
+                  Icon(
+                    state.value ? Icons.expand_less : Icons.expand_more,
+                    color: Theme.of(context).disabledColor,
+                  ),
                   const SizedBox(width: 8),
                 ],
               ),
-              if (state.value)
-                Text(
-                  "Tiiiiiiiiiiiiiiiiips.......",
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
+              Text(
+                S.current.svt_option_edit_tips,
+                style: Theme.of(context).textTheme.bodySmall,
+                maxLines: state.value ? null : 1,
+                overflow: state.value ? null : TextOverflow.ellipsis,
+              ),
             ],
           );
           return InkWell(
@@ -332,61 +329,77 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     );
   }
 
+  Widget get popupMenu {
+    return PopupMenuButton(
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          enabled: false,
+          height: 24,
+          child: Text(S.current.select, style: Theme.of(context).textTheme.bodySmall),
+        ),
+        const PopupMenuItem(
+          enabled: false,
+          height: 8,
+          padding: EdgeInsets.zero,
+          child: Divider(),
+        ),
+        PopupMenuItem(
+          onTap: () async {
+            await null;
+            selectSvt();
+          },
+          child: Text(S.current.servant),
+        ),
+        PopupMenuItem(
+          onTap: () async {
+            await null;
+            selectSvtEntity();
+          },
+          child: Text(S.current.enemy),
+        ),
+        if (questPhase?.supportServants.isNotEmpty == true)
+          PopupMenuItem(
+            onTap: () async {
+              await null;
+              selectSupport();
+            },
+            child: Text(S.current.support_servant),
+          ),
+      ],
+    );
+  }
+
   Widget get buttonBar {
     return ButtonBar(
+      alignment: MainAxisAlignment.center,
       children: [
         Wrap(
-          // spacing: 4,
-          alignment: WrapAlignment.end,
+          spacing: 8,
+          alignment: WrapAlignment.center,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            TextButton(
+            FilledButton(
               onPressed: playerSvtData.svt == null
                   ? null
                   : () {
                       playerSvtData.svt = null;
                       _updateState();
                     },
-              child: Text(
-                S.current.clear,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              style: FilledButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.error,
               ),
+              child: Text(S.current.clear),
             ),
-            TextButton(
-              onPressed: playerSvtData.svt == null
-                  ? null
-                  : () {
-                      switch (playerSvtData.supportType) {
-                        case SupportSvtType.npc:
-                        case SupportSvtType.friend:
-                          EasyLoading.showToast('Cannot read Support/NPC from owned servant data');
-                          return;
-                        case SupportSvtType.none:
-                          _onSelectServant(playerSvtData.svt!);
-                          _updateState();
-                          EasyLoading.showSuccess(S.current.updated);
-                          return;
-                      }
-                    },
-              child: Text(S.current.update),
-            ),
-            const SizedBox(
-              height: 16,
-              child: VerticalDivider(),
-            ),
-            TextButton(
+            FilledButton(
               onPressed: selectSvt,
               child: Text(S.current.select_servant),
             ),
-            TextButton(
-              onPressed: selectSvtEntity,
-              child: Text(S.current.enemy),
-            ),
-            if (questPhase?.supportServants.isNotEmpty == true)
-              TextButton(
-                onPressed: selectSupport,
-                child: Text(S.current.support_servant_short),
-              ),
+            FilledButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(S.current.confirm),
+            )
           ],
         )
       ],
@@ -1106,7 +1119,6 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     super.initState();
     if (playerSvtData.ce == null) {
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        if (mounted) Navigator.pop(context);
         selectCE();
       });
     }
@@ -1117,13 +1129,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.battle_edit_ce_option),
-        actions: [
-          IconButton(
-            onPressed: selectCE,
-            icon: const Icon(Icons.change_circle_outlined),
-            tooltip: S.current.select_ce,
-          )
-        ],
+        actions: [popupMenu],
       ),
       body: Column(children: [
         Expanded(child: body),
@@ -1141,6 +1147,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     children.add(_header(context));
 
     children.add(SliderWithPrefix(
+      leadingWidth: 36,
       label: 'Lv',
       min: 1,
       max: ce.lvMax,
@@ -1188,29 +1195,71 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     return ListView(children: children);
   }
 
-  Widget get buttonBar {
-    return ButtonBar(
-      children: [
-        TextButton(
-          onPressed: playerSvtData.ce == null
-              ? null
-              : () {
-                  playerSvtData.ce = null;
-                  _updateState();
-                },
-          child: Text(
-            S.current.clear,
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
-          ),
+  Widget get popupMenu {
+    return PopupMenuButton(
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          enabled: false,
+          height: 24,
+          child: Text(S.current.select, style: Theme.of(context).textTheme.bodySmall),
         ),
-        TextButton(
-          onPressed: selectCE,
-          child: Text(S.current.select_ce),
+        const PopupMenuItem(
+          enabled: false,
+          height: 8,
+          padding: EdgeInsets.zero,
+          child: Divider(),
         ),
-        TextButton(
-          onPressed: selectStoryCE,
+        PopupMenuItem(
+          onTap: () async {
+            await null;
+            selectCE();
+          },
+          child: Text(S.current.craft_essence),
+        ),
+        PopupMenuItem(
+          onTap: () async {
+            await null;
+            selectStoryCE();
+          },
           child: Text(S.current.story_ce),
         ),
+      ],
+    );
+  }
+
+  Widget get buttonBar {
+    return ButtonBar(
+      alignment: MainAxisAlignment.center,
+      children: [
+        Wrap(
+          spacing: 8,
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            FilledButton(
+              onPressed: playerSvtData.ce == null
+                  ? null
+                  : () {
+                      playerSvtData.ce = null;
+                      _updateState();
+                    },
+              style: FilledButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.error,
+              ),
+              child: Text(S.current.clear),
+            ),
+            FilledButton(
+              onPressed: selectCE,
+              child: Text(S.current.select_ce),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(S.current.confirm),
+            ),
+          ],
+        )
       ],
     );
   }
@@ -1292,6 +1341,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
             return;
           }
           _onSelectCE(ce);
+          _updateState();
         },
         filterData: EnemyFilterData()..svtType.options.add(SvtType.servantEquip),
       ),

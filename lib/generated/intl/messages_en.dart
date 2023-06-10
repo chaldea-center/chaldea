@@ -956,6 +956,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_fav_btn_show_all": MessageLookupByLibrary.simpleMessage("Show All"),
         "svt_fav_btn_show_favorite": MessageLookupByLibrary.simpleMessage("Show Favorite"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("Not favorite"),
+        "svt_option_edit_tips": MessageLookupByLibrary.simpleMessage(
+            "1. Servant options are independent from Chaldea\'s plan data once imported, if need to resync planned options please select again.\n2. more tips"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("Hidden"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("Profile"),
         "svt_profile_info": MessageLookupByLibrary.simpleMessage("Character Info"),
@@ -983,6 +985,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "time_close": MessageLookupByLibrary.simpleMessage("Close"),
         "time_end": MessageLookupByLibrary.simpleMessage("End"),
         "time_start": MessageLookupByLibrary.simpleMessage("Start"),
+        "tips": MessageLookupByLibrary.simpleMessage("Tips"),
         "toggle_dark_mode": MessageLookupByLibrary.simpleMessage("Toggle Dark Mode"),
         "tooltip_refresh_sliders": MessageLookupByLibrary.simpleMessage("Refresh slides"),
         "total": MessageLookupByLibrary.simpleMessage("Total"),
