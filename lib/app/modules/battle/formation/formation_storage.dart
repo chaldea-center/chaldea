@@ -26,7 +26,7 @@ class _FormationEditorState extends State<FormationEditor> {
     settings.validate();
     return Scaffold(
       appBar: AppBar(
-        title: Text('[${widget.isSaving ? S.current.save : S.current.select}] ${S.current.team}'),
+        title: Text('${widget.isSaving ? S.current.save : S.current.select} ${S.current.team}'),
         actions: [
           IconButton(
             onPressed: () {

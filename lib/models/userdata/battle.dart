@@ -470,6 +470,8 @@ class CustomFuncData {
 
   static CustomFuncData _buff(int funcId, int buffId, [bool hasValue = true]) =>
       CustomFuncData(funcId: funcId, buffId: buffId, useValue: hasValue);
+  static CustomFuncData _debuff(int funcId, int buffId, [bool hasValue = true]) =>
+      CustomFuncData(funcId: funcId, buffId: buffId, useValue: hasValue, target: FuncTargetType.enemyAll);
 
   static CustomFuncData get gainNp => CustomFuncData(funcId: -460);
   static CustomFuncData get upDamage => _buff(-1077, 129);
@@ -484,6 +486,10 @@ class CustomFuncData {
   static CustomFuncData get upCriticalpoint => _buff(-295, 117);
   static CustomFuncData get breakAvoidance => _buff(-288, 154, false);
   static CustomFuncData get pierceInvincible => _buff(-510, 189, false);
+  static CustomFuncData get downDef => _debuff(-197, 148);
+  static CustomFuncData get downQuick => _debuff(-1596, 504);
+  static CustomFuncData get downArts => _debuff(-1602, 505);
+  static CustomFuncData get downBuster => _debuff(-1608, 506);
 
   static List<CustomFuncData> get allTypes => [
         gainNp,
@@ -499,6 +505,10 @@ class CustomFuncData {
         upCriticalpoint,
         breakAvoidance,
         pierceInvincible,
+        downDef,
+        downQuick,
+        downArts,
+        downBuster,
       ];
 
   static List<CustomFuncData> get tdDmgTypes => [
@@ -510,6 +520,10 @@ class CustomFuncData {
         upNpDamage,
         upDropNp,
         upCriticalpoint,
+        downDef,
+        downQuick,
+        downArts,
+        downBuster,
       ];
 }
 
