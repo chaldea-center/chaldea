@@ -8,6 +8,7 @@ import 'package:chaldea/utils/extension.dart';
 import '../../utils/basic.dart';
 import '../userdata/version.dart';
 import '_helper.dart';
+import 'class_board.dart';
 import 'command_code.dart';
 import 'common.dart';
 import 'const_data.dart';
@@ -23,6 +24,7 @@ import 'skill.dart';
 import 'war.dart';
 import 'wiki_data.dart';
 
+export 'class_board.dart';
 export 'command_code.dart';
 export 'common.dart';
 export 'const_data.dart';
@@ -56,6 +58,7 @@ class GameData with _GameDataExtra {
   Map<int, MysticCode> mysticCodes;
   Map<int, Event> events;
   Map<int, NiceWar> wars;
+  Map<int, ClassBoard> classBoards;
   Map<int, Item> items;
   Map<int, QuestPhase> questPhases;
   Map<int, ExchangeTicket> exchangeTickets;
@@ -91,6 +94,7 @@ class GameData with _GameDataExtra {
     Map<int, MysticCode>? mysticCodes,
     Map<int, Event>? events,
     Map<int, NiceWar>? wars,
+    Map<int, ClassBoard>? classBoards,
     Map<int, Item>? items,
     Map<int, QuestPhase>? questPhases,
     Map<int, ExchangeTicket>? exchangeTickets,
@@ -132,6 +136,7 @@ class GameData with _GameDataExtra {
         mysticCodes = mysticCodes ?? {},
         events = events ?? {},
         wars = wars ?? {},
+        classBoards = classBoards ?? {},
         items = items ?? {},
         questPhases = questPhases ?? {},
         exchangeTickets = exchangeTickets ?? {},

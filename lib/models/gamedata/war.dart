@@ -335,8 +335,8 @@ class NiceSpot {
   String name;
   @protected
   String? image;
-  int x;
-  int y;
+  num x;
+  num y;
   int imageOfsX;
   int imageOfsY;
   int nameOfsX;

@@ -236,6 +236,7 @@ class GameDataLoader {
       // dropRate
       'entities': 'id',
       'events': 'id',
+      'classBoards': 'id',
       'enemyMasters': 'id',
       'exchangeTickets': 'id',
       'fixedDrops': 'id',

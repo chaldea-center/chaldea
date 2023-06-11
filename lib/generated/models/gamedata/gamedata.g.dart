@@ -29,6 +29,9 @@ GameData _$GameDataFromJson(Map json) => GameData(
       wars: (json['wars'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), NiceWar.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
+      classBoards: (json['classBoards'] as Map?)?.map(
+        (k, e) => MapEntry(int.parse(k as String), ClassBoard.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
       items: (json['items'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), Item.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
