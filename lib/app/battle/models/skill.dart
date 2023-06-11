@@ -352,7 +352,7 @@ class CommonCustomSkills {
             funcTargetTeam: FuncApplyTarget.playerAndEnemy,
             funcPopupText: '遅延発動(即死)',
             buffs: [
-              Buff(
+              const Buff(
                 id: 3631,
                 name: "遅延発動(即死)",
                 detail: "ターン終了時に即死する状態を付与",

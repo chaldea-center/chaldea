@@ -1,3 +1,4 @@
+import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -51,7 +52,9 @@ class Item {
     this.itemSelects = const [],
   });
 
-  factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
+  factory Item.fromJson(Map<String, dynamic> json) {
+    return GameDataLoader.instance.tmp.getItem(json["id"] as int, () => _$ItemFromJson(json));
+  }
 
   int get rarity => background == ItemBGType.questClearQPReward ? 0 : background.index;
 

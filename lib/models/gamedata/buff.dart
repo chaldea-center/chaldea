@@ -31,7 +31,7 @@ class Buff with RouteInfo {
   final List<NiceTrait> ckOpIndv;
   final int maxRate; // don't set default value in api-c
 
-  const Buff.create({
+  const Buff({
     required this.id,
     required this.name,
     required this.detail,
@@ -45,37 +45,6 @@ class Buff with RouteInfo {
     this.ckOpIndv = const [],
     this.maxRate = 0,
   });
-
-  factory Buff({
-    required int id,
-    required String name,
-    required String detail,
-    String? icon,
-    BuffType type = BuffType.unknown,
-    int buffGroup = 0,
-    BuffScript? script,
-    List<NiceTrait> vals = const [],
-    // List<NiceTrait> tvals = const [],
-    List<NiceTrait> ckSelfIndv = const [],
-    List<NiceTrait> ckOpIndv = const [],
-    int maxRate = 0,
-  }) =>
-      GameDataLoader.instance.tmp.getBuff(
-          id,
-          () => Buff.create(
-                id: id,
-                name: name,
-                detail: detail,
-                icon: icon,
-                type: type,
-                buffGroup: buffGroup,
-                script: script,
-                vals: vals,
-                // tvals: tvals,
-                ckSelfIndv: ckSelfIndv,
-                ckOpIndv: ckOpIndv,
-                maxRate: maxRate,
-              ));
 
   @override
   String get route => Routes.buffI(id);
@@ -98,7 +67,9 @@ class Buff with RouteInfo {
     return rate.format(percent: true, base: base);
   }
 
-  factory Buff.fromJson(Map<String, dynamic> json) => _$BuffFromJson(json);
+  factory Buff.fromJson(Map<String, dynamic> json) {
+    return GameDataLoader.instance.tmp.getBuff(json["id"] as int, () => _$BuffFromJson(json));
+  }
 
   Map<String, dynamic> toJson() => _$BuffToJson(this);
 
