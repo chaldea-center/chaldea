@@ -29,6 +29,7 @@ class ServantOptionEditPage extends StatefulWidget {
   final Region playerRegion;
   final QuestPhase? questPhase;
   final VoidCallback onChange;
+  final SvtFilterData? svtFilterData;
 
   ServantOptionEditPage({
     super.key,
@@ -36,6 +37,7 @@ class ServantOptionEditPage extends StatefulWidget {
     required this.playerRegion,
     required this.questPhase,
     required this.onChange,
+    required this.svtFilterData,
   });
 
   @override
@@ -46,8 +48,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   PlayerSvtData get playerSvtData => widget.playerSvtData;
   Servant get svt => playerSvtData.svt!;
   QuestPhase? get questPhase => widget.questPhase;
-
-  static SvtFilterData? _svtFilterData;
+  SvtFilterData? get svtFilterData => widget.svtFilterData;
   static EnemyFilterData? _enemyFilterData;
 
   @override
@@ -927,15 +928,14 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   }
 
   void selectSvt() {
-    _svtFilterData ??= SvtFilterData(useGrid: true);
     router.pushPage(
       ServantListPage(
         planMode: false,
         onSelected: (selectedSvt) {
-          _onSelectServant(selectedSvt);
+          playerSvtData.onSelectServant(selectedSvt, widget.playerRegion);
           _updateState();
         },
-        filterData: _svtFilterData,
+        filterData: svtFilterData,
         pinged: db.settings.battleSim.pingedSvts.toList(),
       ),
       detail: true,
@@ -971,7 +971,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             EasyLoading.showError('${S.current.not_found}: ${entity.id}-${entity.lName.l}');
             return;
           }
-          _onSelectServant(svt);
+          playerSvtData.onSelectServant(svt, widget.playerRegion);
           _updateState();
         },
         filterData: _enemyFilterData,
@@ -1024,55 +1024,6 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     }
   }
 
-  void _onSelectServant(final Servant selectedSvt) {
-    playerSvtData.svt = selectedSvt;
-    if (playerSvtData.supportType == SupportSvtType.npc) {
-      playerSvtData.supportType = SupportSvtType.none;
-    }
-    final status = db.curUser.svtStatusOf(selectedSvt.collectionNo);
-    final plan = db.settings.battleSim.playerDataSource == PreferPlayerSvtDataSource.target
-        ? db.curUser.svtPlanOf(selectedSvt.collectionNo)
-        : status.cur;
-
-    if (!db.settings.battleSim.playerDataSource.isNone && status.cur.favorite && selectedSvt.collectionNo > 0) {
-      playerSvtData.fromUserSvt(svt: selectedSvt, status: status, plan: plan);
-    } else {
-      final defaults = db.settings.battleSim.defaultLvs;
-      int lv, tdLv;
-      if (defaults.useMaxLv) {
-        lv = selectedSvt.lvMax;
-      } else {
-        lv = defaults.lv.clamp(1, min(120, selectedSvt.atkGrowth.length));
-      }
-      if (defaults.useDefaultTdLv) {
-        if (selectedSvt.rarity <= 3 ||
-            selectedSvt.extra.obtains.any((e) => const [SvtObtain.eventReward, SvtObtain.friendPoint].contains(e))) {
-          tdLv = 5;
-        } else if (selectedSvt.rarity == 4) {
-          tdLv = 2;
-        } else {
-          tdLv = 1;
-        }
-      } else {
-        tdLv = defaults.tdLv;
-      }
-      playerSvtData
-        ..limitCount = defaults.limitCount
-        ..lv = lv
-        ..tdLv = tdLv
-        ..skillLvs = List.generate(3, (index) => defaults.activeSkillLv)
-        ..appendLvs = defaults.appendLvs.toList()
-        ..atkFou = 1000
-        ..hpFou = 1000
-        ..cardStrengthens = [0, 0, 0, 0, 0]
-        ..commandCodes = [null, null, null, null, null];
-    }
-
-    playerSvtData.extraPassives = selectedSvt.extraPassive.toList();
-
-    playerSvtData.updateRankUps(widget.playerRegion);
-  }
-
   Future<void> _onSelectSupport(final SupportServant support) async {
     EasyLoading.show();
     final svt = await AtlasApi.svt(support.svt.id);
@@ -1121,12 +1072,14 @@ class CraftEssenceOptionEditPage extends StatefulWidget {
   final PlayerSvtData playerSvtData;
   final QuestPhase? questPhase;
   final VoidCallback onChange;
+  final CraftFilterData? craftFilterData;
 
   CraftEssenceOptionEditPage({
     super.key,
     required this.playerSvtData,
     required this.questPhase,
     required this.onChange,
+    required this.craftFilterData,
   });
 
   @override
@@ -1138,7 +1091,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
 
   CraftEssence get ce => playerSvtData.ce!;
 
-  static CraftFilterData? _craftFilterData;
+  CraftFilterData? get craftFilterData => widget.craftFilterData;
 
   @override
   void initState() {
@@ -1326,26 +1279,14 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
   }
 
   void selectCE() {
-    _craftFilterData ??= CraftFilterData(useGrid: true);
-    final event = widget.questPhase?.war?.event;
-    Set<int> pinged = db.settings.battleSim.pingedCEs.toSet();
-    if (event != null) {
-      for (final ce in db.gameData.craftEssences.values) {
-        if (pinged.contains(ce.collectionNo)) continue;
-        if (ce.skills.any((skill) => skill.isEventSkill(event))) {
-          pinged.add(ce.collectionNo);
-        }
-      }
-    }
-    final bondCE = db.gameData.craftEssencesById[playerSvtData.svt?.bondEquip];
-    if (bondCE != null && bondCE.collectionNo > 0) {
-      pinged.add(bondCE.collectionNo);
-    }
     router.pushPage(
       CraftListPage(
-        onSelected: _onSelectCE,
-        filterData: _craftFilterData,
-        pinged: pinged.toList(),
+        onSelected: (ce) {
+          playerSvtData.onSelectCE(ce);
+          _updateState();
+        },
+        filterData: craftFilterData,
+        pinged: db.settings.battleSim.pingedCEsWithEventAndBond(widget.questPhase, playerSvtData.svt).toList(),
       ),
       detail: true,
     );
@@ -1366,27 +1307,12 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
             EasyLoading.showError(S.current.not_found);
             return;
           }
-          _onSelectCE(ce);
+          playerSvtData.onSelectCE(ce);
           _updateState();
         },
         filterData: EnemyFilterData()..svtType.options.add(SvtType.servantEquip),
       ),
       detail: true,
     );
-  }
-
-  void _onSelectCE(final CraftEssence selectedCE) {
-    playerSvtData.ce = selectedCE;
-    final status = db.curUser.ceStatusOf(selectedCE.collectionNo);
-    if (!db.settings.battleSim.playerDataSource.isNone &&
-        selectedCE.collectionNo > 0 &&
-        status.status == CraftStatus.owned) {
-      playerSvtData.ceLv = status.lv;
-      playerSvtData.ceLimitBreak = status.limitCount == 4;
-    } else {
-      playerSvtData.ceLv = db.settings.battleSim.defaultLvs.ceMaxLv ? ce.lvMax : 1;
-      playerSvtData.ceLimitBreak = db.settings.battleSim.defaultLvs.ceMaxLimitBreak;
-    }
-    _updateState();
   }
 }

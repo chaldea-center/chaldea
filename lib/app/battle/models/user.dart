@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -49,6 +51,55 @@ class PlayerSvtData {
     td = svt!.groupedNoblePhantasms[1]?.first;
   }
 
+  void onSelectServant(final Servant selectedSvt, final Region region) {
+    svt = selectedSvt;
+    if (supportType == SupportSvtType.npc) {
+      supportType = SupportSvtType.none;
+    }
+    final status = db.curUser.svtStatusOf(selectedSvt.collectionNo);
+    final plan = db.settings.battleSim.playerDataSource == PreferPlayerSvtDataSource.target
+        ? db.curUser.svtPlanOf(selectedSvt.collectionNo)
+        : status.cur;
+
+    if (!db.settings.battleSim.playerDataSource.isNone && status.cur.favorite && selectedSvt.collectionNo > 0) {
+      fromUserSvt(svt: selectedSvt, status: status, plan: plan);
+    } else {
+      final defaults = db.settings.battleSim.defaultLvs;
+      int lv, tdLv;
+      if (defaults.useMaxLv) {
+        lv = selectedSvt.lvMax;
+      } else {
+        lv = defaults.lv.clamp(1, min(120, selectedSvt.atkGrowth.length));
+      }
+      if (defaults.useDefaultTdLv) {
+        if (selectedSvt.rarity <= 3 ||
+            selectedSvt.extra.obtains.any((e) => const [SvtObtain.eventReward, SvtObtain.friendPoint].contains(e))) {
+          tdLv = 5;
+        } else if (selectedSvt.rarity == 4) {
+          tdLv = 2;
+        } else {
+          tdLv = 1;
+        }
+      } else {
+        tdLv = defaults.tdLv;
+      }
+      this
+        ..limitCount = defaults.limitCount
+        ..lv = lv
+        ..tdLv = tdLv
+        ..skillLvs = List.generate(3, (index) => defaults.activeSkillLv)
+        ..appendLvs = defaults.appendLvs.toList()
+        ..atkFou = 1000
+        ..hpFou = 1000
+        ..cardStrengthens = [0, 0, 0, 0, 0]
+        ..commandCodes = [null, null, null, null, null];
+    }
+
+    extraPassives = selectedSvt.extraPassive.toList();
+
+    updateRankUps(region);
+  }
+
   void fromUserSvt({
     required Servant svt,
     required SvtStatus status,
@@ -93,6 +144,20 @@ class PlayerSvtData {
       } else {
         skills[skillNum - 1] = validSkills.lastOrNull;
       }
+    }
+  }
+
+  void onSelectCE(final CraftEssence selectedCE) {
+    ce = selectedCE;
+    final status = db.curUser.ceStatusOf(selectedCE.collectionNo);
+    if (!db.settings.battleSim.playerDataSource.isNone &&
+        selectedCE.collectionNo > 0 &&
+        status.status == CraftStatus.owned) {
+      ceLv = status.lv;
+      ceLimitBreak = status.limitCount == 4;
+    } else {
+      ceLv = db.settings.battleSim.defaultLvs.ceMaxLv ? selectedCE.lvMax : 1;
+      ceLimitBreak = db.settings.battleSim.defaultLvs.ceMaxLimitBreak;
     }
   }
 

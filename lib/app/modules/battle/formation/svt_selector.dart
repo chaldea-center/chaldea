@@ -2,8 +2,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
+import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'svt_option_editor.dart';
@@ -20,7 +23,7 @@ class _DragCEData {
   _DragCEData(this.svt);
 }
 
-class ServantSelector extends StatelessWidget {
+class ServantSelector extends StatefulWidget {
   final PlayerSvtData playerSvtData;
   final Region playerRegion;
   final QuestPhase? questPhase;
@@ -39,6 +42,31 @@ class ServantSelector extends StatelessWidget {
     this.onDragCE,
     this.enableEdit = true,
   });
+
+  @override
+  State<ServantSelector> createState() => _ServantSelectorState();
+}
+
+class _ServantSelectorState extends State<ServantSelector> {
+  bool svtHovered = false;
+  bool ceHovered = false;
+
+  PlayerSvtData get playerSvtData => widget.playerSvtData;
+
+  Region get playerRegion => widget.playerRegion;
+
+  QuestPhase? get questPhase => widget.questPhase;
+
+  VoidCallback get onChanged => widget.onChanged;
+
+  DragTargetAccept<PlayerSvtData>? get onDragSvt => widget.onDragSvt;
+
+  DragTargetAccept<PlayerSvtData>? get onDragCE => widget.onDragCE;
+
+  bool get enableEdit => widget.enableEdit;
+
+  static SvtFilterData? svtFilterData;
+  static CraftFilterData? craftFilterData;
 
   @override
   Widget build(final BuildContext context) {
@@ -81,25 +109,96 @@ class ServantSelector extends StatelessWidget {
       );
     }
 
-    svtIcon = InkWell(
+    Widget svtIconFrame = InkWell(
+      onHover: (hovered) {
+        svtHovered = hovered;
+        if (mounted) setState(() {});
+      },
       onTap: () async {
+        svtFilterData ??= SvtFilterData(useGrid: true);
         await router.pushPage(ServantOptionEditPage(
           playerSvtData: enableEdit ? playerSvtData : playerSvtData.copy(),
           questPhase: questPhase,
           playerRegion: playerRegion,
           onChange: onChanged,
+          svtFilterData: svtFilterData,
         ));
         onChanged();
       },
-      child: svtIcon,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          svtIcon,
+          if (PlatformU.isDesktopOrWeb && svtHovered)
+            Positioned(
+              top: -8,
+              left: 0,
+              child: Container(
+                decoration: ShapeDecoration(
+                  color: Theme.of(context).primaryColor,
+                  shape: const CircleBorder(),
+                ),
+                child: IconButton(
+                  onPressed: () {
+                    svtFilterData ??= SvtFilterData(useGrid: true);
+                    router.pushPage(
+                      ServantListPage(
+                        planMode: false,
+                        onSelected: (selectedSvt) {
+                          playerSvtData.onSelectServant(selectedSvt, playerRegion);
+                          onChanged();
+                        },
+                        filterData: svtFilterData,
+                        pinged: db.settings.battleSim.pingedSvts.toList(),
+                      ),
+                      detail: true,
+                    );
+                  },
+                  splashRadius: 20,
+                  padding: const EdgeInsets.all(4),
+                  constraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+                  iconSize: 16,
+                  icon: const Icon(Icons.people),
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          if (PlatformU.isDesktopOrWeb && svtHovered)
+            Positioned(
+              top: -8,
+              right: 0,
+              child: Container(
+                decoration: ShapeDecoration(
+                  color: playerSvtData.svt == null ? Colors.grey : Colors.red,
+                  shape: const CircleBorder(),
+                ),
+                child: IconButton(
+                  onPressed: playerSvtData.svt == null
+                      ? null
+                      : () {
+                          playerSvtData.svt = null;
+                          onChanged();
+                        },
+                  splashRadius: 20,
+                  padding: const EdgeInsets.all(4),
+                  constraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+                  iconSize: 16,
+                  icon: const Icon(Icons.remove_circle_outline),
+                  color: Colors.white,
+                ),
+              ),
+            )
+        ],
+      ),
     );
+
     if (enableEdit && onDragSvt != null) {
       final svtDraggable = Draggable<_DragSvtData>(
         feedback: svtIcon,
         data: _DragSvtData(playerSvtData),
-        child: svtIcon,
+        child: svtIconFrame,
       );
-      svtIcon = DragTarget<_DragSvtData>(
+      svtIconFrame = DragTarget<_DragSvtData>(
         builder: (context, candidateData, rejectedData) {
           return svtDraggable;
         },
@@ -109,7 +208,7 @@ class ServantSelector extends StatelessWidget {
       );
     }
 
-    children.add(svtIcon);
+    children.add(svtIconFrame);
 
     // svt name+btn
     children.add(SizedBox(
@@ -152,24 +251,93 @@ class ServantSelector extends StatelessWidget {
       );
     }
 
-    ceIcon = InkWell(
+    Widget ceIconFrame = InkWell(
+      onHover: (hovered) {
+        ceHovered = hovered;
+        if (mounted) setState(() {});
+      },
       onTap: () async {
+        craftFilterData ??= CraftFilterData(useGrid: true);
         await router.pushPage(CraftEssenceOptionEditPage(
           playerSvtData: enableEdit ? playerSvtData : playerSvtData.copy(),
           questPhase: questPhase,
           onChange: onChanged,
+          craftFilterData: craftFilterData,
         ));
         onChanged();
       },
-      child: ceIcon,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          ceIcon,
+          if (PlatformU.isDesktopOrWeb && ceHovered)
+            Positioned(
+              top: -8,
+              left: 0,
+              child: Container(
+                decoration: ShapeDecoration(
+                  color: Theme.of(context).primaryColor,
+                  shape: const CircleBorder(),
+                ),
+                child: IconButton(
+                  onPressed: () {
+                    craftFilterData ??= CraftFilterData(useGrid: true);
+                    router.pushPage(
+                      CraftListPage(
+                        onSelected: (ce) {
+                          playerSvtData.onSelectCE(ce);
+                          onChanged();
+                        },
+                        filterData: craftFilterData,
+                        pinged: db.settings.battleSim.pingedCEsWithEventAndBond(questPhase, playerSvtData.svt).toList(),
+                      ),
+                      detail: true,
+                    );
+                  },
+                  splashRadius: 16,
+                  padding: const EdgeInsets.all(4),
+                  constraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+                  iconSize: 12,
+                  icon: const Icon(Icons.people),
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          if (PlatformU.isDesktopOrWeb && ceHovered)
+            Positioned(
+              top: -8,
+              right: 0,
+              child: Container(
+                decoration: ShapeDecoration(
+                  color: playerSvtData.ce == null ? Colors.grey : Colors.red,
+                  shape: const CircleBorder(),
+                ),
+                child: IconButton(
+                  onPressed: playerSvtData.ce == null
+                      ? null
+                      : () {
+                          playerSvtData.ce = null;
+                          onChanged();
+                        },
+                  splashRadius: 16,
+                  padding: const EdgeInsets.all(4),
+                  constraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+                  iconSize: 12,
+                  icon: const Icon(Icons.remove_circle_outline),
+                  color: Colors.white,
+                ),
+              ),
+            ),
+        ],
+      ),
     );
     if (enableEdit && onDragCE != null) {
       final ceDraggable = Draggable<_DragCEData>(
         feedback: ceIcon,
         data: _DragCEData(playerSvtData),
-        child: ceIcon,
+        child: ceIconFrame,
       );
-      ceIcon = DragTarget<_DragCEData>(
+      ceIconFrame = DragTarget<_DragCEData>(
         builder: (context, candidateData, rejectedData) {
           return ceDraggable;
         },
@@ -179,7 +347,7 @@ class ServantSelector extends StatelessWidget {
       );
     }
 
-    children.add(Center(child: ceIcon));
+    children.add(Center(child: ceIconFrame));
 
     // ce btn
     String ceInfo = '';

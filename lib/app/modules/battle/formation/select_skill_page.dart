@@ -102,7 +102,7 @@ class _SkillSelectPageState extends State<SkillSelectPage> {
                         }
                         await loadSkill(null, skillId, region);
                       },
-                      child: Text(S.current.atlas_load)
+                      child: Text(S.current.atlas_load),
                     ),
                     ChaldeaUrl.laplaceHelpBtn('faq#what-is-atlas-db-url', zhPath: 'faq.html#什么是-atlas-db-url')
                   ],

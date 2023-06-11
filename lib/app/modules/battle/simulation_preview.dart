@@ -17,7 +17,6 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../common/builders.dart';
 import '../quest/breakdown/quest_phase.dart';
 import '../quest/quest.dart';
