@@ -120,6 +120,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ascension": MessageLookupByLibrary.simpleMessage("Ascension"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("Ascen"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("Ascension"),
+        "atlas_load": MessageLookupByLibrary.simpleMessage("Load"),
         "attach_from_files": MessageLookupByLibrary.simpleMessage("From Files"),
         "attach_from_photos": MessageLookupByLibrary.simpleMessage("From Photos"),
         "attach_help": MessageLookupByLibrary.simpleMessage("If you have trouble picking images, use files instead"),

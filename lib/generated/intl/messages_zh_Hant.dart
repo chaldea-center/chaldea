@@ -115,6 +115,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ascension": MessageLookupByLibrary.simpleMessage("靈基"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("靈基"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("靈基再臨"),
+        "atlas_load": MessageLookupByLibrary.simpleMessage("读取"),
         "attach_from_files": MessageLookupByLibrary.simpleMessage("從文件選取"),
         "attach_from_photos": MessageLookupByLibrary.simpleMessage("從相簿選取"),
         "attach_help": MessageLookupByLibrary.simpleMessage("如果圖片模式存在問題，請使用文件模式"),

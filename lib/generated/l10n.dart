@@ -371,6 +371,17 @@ class S {
     );
   }
 
+  /// `Load`
+  String get atlas_load {
+    return Intl.message(
+      'Load',
+      name: 'atlas_load',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `From Files`
   String get attach_from_files {
     return Intl.message(

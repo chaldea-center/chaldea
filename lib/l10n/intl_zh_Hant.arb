@@ -28,6 +28,7 @@
   "ascension": "靈基",
   "ascension_short": "靈基",
   "ascension_up": "靈基再臨",
+  "atlas_load": null,
   "attach_from_files": "從文件選取",
   "attach_from_photos": "從相簿選取",
   "attach_help": "如果圖片模式存在問題，請使用文件模式",

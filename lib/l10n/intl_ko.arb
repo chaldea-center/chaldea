@@ -28,6 +28,7 @@
   "ascension": "영기",
   "ascension_short": "영기",
   "ascension_up": "영기재림",
+  "atlas_load": null,
   "attach_from_files": "파일에서",
   "attach_from_photos": "앨범에서",
   "attach_help": "앨범에서 이미지를 가져올 때 문제가 있는 경우 파일로 가져오세요",

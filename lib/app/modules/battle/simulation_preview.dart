@@ -17,6 +17,7 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../common/builders.dart';
 import '../quest/breakdown/quest_phase.dart';
 import '../quest/quest.dart';
@@ -279,8 +280,9 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                   if (mounted) setState(() {});
                 }
               },
-              child: Text(S.current.search),
+              child: Text(S.current.atlas_load),
             ),
+            ChaldeaUrl.laplaceHelpBtn('faq#what-is-atlas-db-url', zhPath: 'faq.html#什么是-atlas-db-url')
           ],
         ),
         kDefaultDivider,

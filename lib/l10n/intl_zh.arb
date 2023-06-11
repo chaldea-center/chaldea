@@ -28,6 +28,7 @@
   "ascension": "灵基",
   "ascension_short": "灵基",
   "ascension_up": "灵基再临",
+  "atlas_load": "读取",
   "attach_from_files": "从文件选取",
   "attach_from_photos": "从相册选取",
   "attach_help": "如果图片模式存在问题，请使用文件模式",

@@ -45,6 +45,10 @@ class ChaldeaUrl {
       tooltip: tooltip ?? S.current.help,
     );
   }
+
+  static IconButton laplaceHelpBtn(String path, {String? zhPath, String? tooltip}) {
+    return docsHelpBtn(path, zhPath: zhPath, tooltip: tooltip, dir: 'laplace/');
+  }
 }
 
 class UriX {

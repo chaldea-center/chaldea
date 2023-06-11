@@ -28,6 +28,7 @@
   "ascension": "霊基",
   "ascension_short": "霊基",
   "ascension_up": "霊基再臨",
+  "atlas_load": null,
   "attach_from_files": "ファイルから",
   "attach_from_photos": "アルバムから",
   "attach_help": "アルバムで画像をインポートする時問題があれば、ファイルでインポートしてください",

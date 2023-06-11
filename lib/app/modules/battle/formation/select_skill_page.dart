@@ -86,20 +86,26 @@ class _SkillSelectPageState extends State<SkillSelectPage> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Center(
-                  child: FilledButton(
-                    onPressed: () async {
-                      final result = Atlas.resolveRegionInt(_skillIdController.text.trim());
-                      final region = result.item1;
-                      final skillId = result.item2;
-                      if (skillId == null) {
-                        EasyLoading.showError(S.current.invalid_input);
-                        return;
-                      }
-                      await loadSkill(null, skillId, region);
-                    },
-                    child: Text(S.current.search),
-                  ),
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 8,
+                  children: [
+                    FilledButton(
+                      onPressed: () async {
+                        final result = Atlas.resolveRegionInt(_skillIdController.text.trim());
+                        final region = result.item1;
+                        final skillId = result.item2;
+                        if (skillId == null) {
+                          EasyLoading.showError(S.current.invalid_input);
+                          return;
+                        }
+                        await loadSkill(null, skillId, region);
+                      },
+                      child: Text(S.current.atlas_load)
+                    ),
+                    ChaldeaUrl.laplaceHelpBtn('faq#what-is-atlas-db-url', zhPath: 'faq.html#什么是-atlas-db-url')
+                  ],
                 ),
                 DividerWithTitle(title: '3 - ${S.current.general_custom}', height: 16),
                 Material(
