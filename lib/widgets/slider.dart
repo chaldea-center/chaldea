@@ -61,8 +61,7 @@ class SliderWithTitle extends StatelessWidget {
 class SliderWithPrefix extends StatelessWidget {
   final bool titled;
   final String label;
-  // TODO: use valueFomatter
-  final String? valueText;
+  final String Function(int v)? valueFormatter;
   final int min;
   final int max;
   final int value;
@@ -76,7 +75,7 @@ class SliderWithPrefix extends StatelessWidget {
     super.key,
     this.titled = false,
     required this.label,
-    this.valueText,
+    this.valueFormatter,
     required this.min,
     required this.max,
     required this.value,
@@ -91,15 +90,14 @@ class SliderWithPrefix extends StatelessWidget {
   Widget build(BuildContext context) {
     Color? lableColor = enableInput ? Theme.of(context).colorScheme.primaryContainer : null;
     Widget header;
+    final valueText = valueFormatter?.call(value) ?? value.toString();
     if (titled) {
       header = Text.rich(TextSpan(
         text: label,
-        children: valueText == null
-            ? null
-            : [
-                const TextSpan(text: ': '),
-                TextSpan(text: valueText, style: TextStyle(color: lableColor)),
-              ],
+        children: [
+          const TextSpan(text: ': '),
+          TextSpan(text: valueText, style: TextStyle(color: lableColor)),
+        ],
       ));
     } else {
       header = Column(
@@ -110,19 +108,15 @@ class SliderWithPrefix extends StatelessWidget {
             maxLines: 1,
             minFontSize: 10,
             maxFontSize: 16,
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(color: valueText == null || valueText!.isEmpty ? lableColor : null),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: valueText.isEmpty ? lableColor : null),
           ),
-          if (valueText != null)
-            AutoSizeText(
-              valueText!,
-              maxLines: 1,
-              minFontSize: 10,
-              maxFontSize: 14,
-              style: TextStyle(color: lableColor),
-            ),
+          AutoSizeText(
+            valueText,
+            maxLines: 1,
+            minFontSize: 10,
+            maxFontSize: 14,
+            style: TextStyle(color: lableColor),
+          ),
         ],
       );
     }
@@ -142,7 +136,7 @@ class SliderWithPrefix extends StatelessWidget {
         max: max.toDouble(),
         divisions: max > min ? (division ?? max - min) : null,
         value: value.toDouble(),
-        label: valueText ?? value.toString(),
+        label: valueText,
         onChanged: (v) {
           onChange(v);
         },

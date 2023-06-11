@@ -36,7 +36,6 @@ class _PlayerSvtDefaultLvEditPageState extends State<PlayerSvtDefaultLvEditPage>
               min: 1,
               max: 120,
               value: defaultLvs.lv,
-              valueText: defaultLvs.lv.toString(),
               onChange: (v) {
                 setState(() {
                   defaultLvs.lv = v.toInt();
@@ -49,7 +48,6 @@ class _PlayerSvtDefaultLvEditPageState extends State<PlayerSvtDefaultLvEditPage>
             min: 0,
             max: 4,
             value: defaultLvs.limitCount,
-            valueText: defaultLvs.limitCount.toString(),
             onChange: (v) {
               setState(() {
                 defaultLvs.limitCount = v.toInt();
@@ -75,7 +73,6 @@ class _PlayerSvtDefaultLvEditPageState extends State<PlayerSvtDefaultLvEditPage>
               min: 1,
               max: 5,
               value: defaultLvs.tdLv,
-              valueText: defaultLvs.tdLv.toString(),
               onChange: (v) {
                 setState(() {
                   defaultLvs.tdLv = v.toInt();
@@ -89,7 +86,6 @@ class _PlayerSvtDefaultLvEditPageState extends State<PlayerSvtDefaultLvEditPage>
             min: 1,
             max: 10,
             value: defaultLvs.activeSkillLv,
-            valueText: defaultLvs.activeSkillLv.toString(),
             onChange: (v) {
               setState(() {
                 defaultLvs.activeSkillLv = v.toInt();
@@ -103,7 +99,6 @@ class _PlayerSvtDefaultLvEditPageState extends State<PlayerSvtDefaultLvEditPage>
               min: 0,
               max: 10,
               value: defaultLvs.appendLvs[index],
-              valueText: defaultLvs.appendLvs[index].toString(),
               onChange: (v) {
                 setState(() {
                   defaultLvs.appendLvs[index] = v.toInt();

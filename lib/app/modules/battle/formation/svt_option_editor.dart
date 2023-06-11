@@ -86,7 +86,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         min: 1,
         max: 5,
         value: playerSvtData.tdLv,
-        valueText: 'Lv.${playerSvtData.tdLv}',
+        valueFormatter: (v) => 'Lv.$v',
         onChange: (v) {
           playerSvtData.tdLv = v.round();
           _updateState();
@@ -98,7 +98,6 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         min: 1,
         max: min(120, svt.atkGrowth.length),
         value: playerSvtData.lv,
-        valueText: playerSvtData.lv.toString(),
         onChange: (v) {
           playerSvtData.lv = v.round();
           _updateState();
@@ -111,7 +110,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         max: 2000,
         value: playerSvtData.atkFou ~/ 10 * 10,
         division: 200,
-        valueText: '+${playerSvtData.atkFou}',
+        valueFormatter: (_) => '+${playerSvtData.atkFou}',
         onChange: (v) {
           final int fou = v.round() ~/ 10 * 10;
           if (fou > 1000) {
@@ -129,7 +128,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         max: 2000,
         value: playerSvtData.hpFou ~/ 10 * 10,
         division: 200,
-        valueText: '+${playerSvtData.hpFou}',
+        valueFormatter: (_) => '+${playerSvtData.hpFou}',
         onChange: (v) {
           final int fou = v.round() * 10;
           if (fou > 1000) {
@@ -149,7 +148,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           min: 1,
           max: 10,
           value: playerSvtData.skillLvs[skillNum - 1],
-          valueText: 'Lv.${playerSvtData.skillLvs[skillNum - 1]}',
+          valueFormatter: (v) => 'Lv.$v',
           onChange: (v) {
             playerSvtData.skillLvs[skillNum - 1] = v.round();
             _updateState();
@@ -164,7 +163,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           min: 0,
           max: 10,
           value: playerSvtData.appendLvs[skillNum - 1],
-          valueText: 'Lv.${playerSvtData.appendLvs[skillNum - 1]}',
+          valueFormatter: (v) => 'Lv.$v',
           onChange: (v) {
             playerSvtData.appendLvs[skillNum - 1] = v.round();
             _updateState();
@@ -897,7 +896,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                     min: 0,
                     max: 500,
                     value: playerSvtData.cardStrengthens[index] ~/ 20 * 20,
-                    valueText: playerSvtData.cardStrengthens[index].toString(),
+                    valueFormatter: (_) => playerSvtData.cardStrengthens[index].toString(),
                     onChange: (v) {
                       playerSvtData.cardStrengthens[index] = v.round() ~/ 20 * 20;
                       _updateState();
@@ -1130,7 +1129,6 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
       min: 1,
       max: ce.lvMax,
       value: playerSvtData.ceLv,
-      valueText: playerSvtData.ceLv.toString(),
       onChange: (v) {
         playerSvtData.ceLv = v.round();
         final mlbLv = ce.ascensionAdd.lvMax.ascension[3];
