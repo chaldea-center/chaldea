@@ -6,7 +6,6 @@ import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
 import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'svt_option_editor.dart';
@@ -70,6 +69,7 @@ class _ServantSelectorState extends State<ServantSelector> {
 
   @override
   Widget build(final BuildContext context) {
+    final isDesktop = Theme.of(context).platform.isDesktop;
     List<Widget> children = [];
 
     TextStyle notSelectedStyle = TextStyle(color: Theme.of(context).textTheme.bodySmall?.color);
@@ -129,7 +129,7 @@ class _ServantSelectorState extends State<ServantSelector> {
         clipBehavior: Clip.none,
         children: [
           svtIcon,
-          if (PlatformU.isDesktopOrWeb && svtHovered)
+          if (isDesktop && svtHovered)
             Positioned(
               top: -8,
               left: 0,
@@ -163,7 +163,7 @@ class _ServantSelectorState extends State<ServantSelector> {
                 ),
               ),
             ),
-          if (PlatformU.isDesktopOrWeb && svtHovered)
+          if (isDesktop && svtHovered)
             Positioned(
               top: -8,
               right: 0,
@@ -270,7 +270,7 @@ class _ServantSelectorState extends State<ServantSelector> {
         clipBehavior: Clip.none,
         children: [
           ceIcon,
-          if (PlatformU.isDesktopOrWeb && ceHovered)
+          if (isDesktop && ceHovered)
             Positioned(
               top: -8,
               left: 0,
@@ -303,7 +303,7 @@ class _ServantSelectorState extends State<ServantSelector> {
                 ),
               ),
             ),
-          if (PlatformU.isDesktopOrWeb && ceHovered)
+          if (isDesktop && ceHovered)
             Positioned(
               top: -8,
               right: 0,
