@@ -915,7 +915,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_fav_btn_show_all": MessageLookupByLibrary.simpleMessage("显示全部"),
         "svt_fav_btn_show_favorite": MessageLookupByLibrary.simpleMessage("显示已关注"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("未关注"),
-        "svt_option_edit_tips": MessageLookupByLibrary.simpleMessage("1.队伍中从者的等级等信息自导入后与规划信息独立，如需同步请重新选取\n2.more tips"),
+        "svt_option_edit_tips": MessageLookupByLibrary.simpleMessage(
+            "1.队伍中从者的等级等信息自导入后与规划信息独立，如需再次同步请使用右上角下拉菜单中的重新读取配置\n2.技能、宝具强化状态可通过下方选项手动设定"),
+        "svt_option_resync": MessageLookupByLibrary.simpleMessage("从规划重新读取配置"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("已隐藏"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("羁绊故事"),
         "svt_profile_info": MessageLookupByLibrary.simpleMessage("角色详情"),

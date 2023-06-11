@@ -9088,11 +9088,22 @@ class S {
     );
   }
 
-  /// `1. Servant options are independent from Chaldea's plan data once imported, if need to resync planned options please select again.\n2. more tips`
+  /// `1. Servant options are independent from Chaldea's plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manuually via options below`
   String get svt_option_edit_tips {
     return Intl.message(
-      '1. Servant options are independent from Chaldea\'s plan data once imported, if need to resync planned options please select again.\n2. more tips',
+      '1. Servant options are independent from Chaldea\'s plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manuually via options below',
       name: 'svt_option_edit_tips',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Resync Options from Plan`
+  String get svt_option_resync {
+    return Intl.message(
+      'Resync Options from Plan',
+      name: 'svt_option_resync',
       desc: '',
       locale: localeName,
       args: [],

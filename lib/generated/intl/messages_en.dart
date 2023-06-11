@@ -957,7 +957,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_fav_btn_show_favorite": MessageLookupByLibrary.simpleMessage("Show Favorite"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("Not favorite"),
         "svt_option_edit_tips": MessageLookupByLibrary.simpleMessage(
-            "1. Servant options are independent from Chaldea\'s plan data once imported, if need to resync planned options please select again.\n2. more tips"),
+            "1. Servant options are independent from Chaldea\'s plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manuually via options below"),
+        "svt_option_resync": MessageLookupByLibrary.simpleMessage("Resync Options from Plan"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("Hidden"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("Profile"),
         "svt_profile_info": MessageLookupByLibrary.simpleMessage("Character Info"),

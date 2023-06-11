@@ -821,6 +821,7 @@
   "svt_fav_btn_show_favorite": "Show Favorite",
   "svt_not_planned": "No es favorito",
   "svt_option_edit_tips": null,
+  "svt_option_resync": null,
   "svt_plan_hidden": "Oculto",
   "svt_profile": "Perfil",
   "svt_profile_info": "Info del personaje",

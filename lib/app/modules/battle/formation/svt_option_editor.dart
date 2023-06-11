@@ -365,6 +365,16 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             },
             child: Text(S.current.support_servant),
           ),
+        if (playerSvtData.svt != null &&
+            playerSvtData.supportType != SupportSvtType.npc &&
+            !db.settings.battleSim.playerDataSource.isNone)
+          PopupMenuItem(
+            onTap: () async {
+              await null;
+              resyncServantData();
+            },
+            child: Text(S.current.svt_option_resync),
+          ),
       ],
     );
   }
@@ -996,6 +1006,22 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         );
       },
     );
+  }
+
+  void resyncServantData() {
+    final selectedSvt = playerSvtData.svt;
+    if (selectedSvt == null || playerSvtData.supportType == SupportSvtType.npc) {
+      return;
+    }
+    final status = db.curUser.svtStatusOf(selectedSvt.collectionNo);
+
+    if (!db.settings.battleSim.playerDataSource.isNone && status.cur.favorite && selectedSvt.collectionNo > 0) {
+      final plan = db.settings.battleSim.playerDataSource == PreferPlayerSvtDataSource.target
+          ? db.curUser.svtPlanOf(selectedSvt.collectionNo)
+          : status.cur;
+      playerSvtData.fromUserSvt(svt: selectedSvt, status: status, plan: plan);
+      if (mounted) setState(() {});
+    }
   }
 
   void _onSelectServant(final Servant selectedSvt) {
