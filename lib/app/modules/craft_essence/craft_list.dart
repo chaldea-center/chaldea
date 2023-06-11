@@ -164,11 +164,26 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
     if (ce.status.status == CraftStatus.owned) {
       // status = '${ce.status.limitCount}-${ce.status.lv}';
     }
-    return ce.iconBuilder(
-      context: context,
-      width: 72,
-      text: status,
-      onTap: () => _onTapCard(ce),
+    return InkWell(
+      child: ce.iconBuilder(
+        context: context,
+        width: 72,
+        text: status,
+        onTap: () => _onTapCard(ce),
+      ),
+      onLongPress: () {
+        if (widget.onSelected != null) {
+          router.popDetailAndPush(
+            context: context,
+            url: ce.route,
+            child: CraftDetailPage(
+              ce: ce,
+              onSwitch: (cur, reversed) => switchNext(cur, reversed, shownList),
+            ),
+            detail: true,
+          );
+        }
+      },
     );
   }
 
