@@ -150,8 +150,8 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
     NiceSkill initSkill = svt.getDefaultSkill(skills, db.curUser.region) ?? skills.last;
     return ValueStatefulBuilder<NiceSkill>(
       initValue: initSkill,
-      builder: (context, state) {
-        final skill = state.value;
+      builder: (context, value) {
+        final skill = value.value;
         final toggle = Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
@@ -170,8 +170,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
                 },
                 values: FilterRadioData.nonnull(skill),
                 onFilterChanged: (v, _) {
-                  state.value = v.radioValue!;
-                  state.updateState();
+                  value.value = v.radioValue!;
                 },
               ),
             ),

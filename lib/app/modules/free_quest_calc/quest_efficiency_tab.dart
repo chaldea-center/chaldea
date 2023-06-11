@@ -117,7 +117,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
           child: ValueStatefulBuilder<bool>(
             key: Key('eff_quest_$questId'),
             initValue: false,
-            builder: (context, state) {
+            builder: (context, value) {
               double bondEff = getBondEff(variable);
               return Column(
                 mainAxisSize: MainAxisSize.min,
@@ -140,11 +140,10 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                     onTap: quest == null
                         ? null
                         : () {
-                            state.value = !state.value;
-                            state.updateState();
+                            value.value = !value.value;
                           },
                   ),
-                  if (state.value && quest != null) QuestCard(quest: quest),
+                  if (value.value && quest != null) QuestCard(quest: quest),
                 ],
               );
             },

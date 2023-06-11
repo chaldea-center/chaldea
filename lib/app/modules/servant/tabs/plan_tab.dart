@@ -883,9 +883,9 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       useRootNavigator: false,
       builder: (context) => ValueStatefulBuilder<bool>(
         initValue: false,
-        builder: (context, state) {
+        builder: (context, value) {
           Map<int, int> shownItems = Map.of(items);
-          if (state.value) {
+          if (value.value) {
             for (final itemId in shownItems.keys.toList()) {
               shownItems.addNum(itemId, -max(0, db.curUser.items[itemId] ?? 0));
             }
@@ -921,13 +921,12 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
               if (showSubOwned)
                 TextButton(
                   onPressed: () {
-                    state.value = !state.value;
-                    state.updateState();
+                    value.value = !value.value;
                   },
                   child: Text(
                     S.current.item_stat_sub_owned,
                     style: TextStyle(
-                      color: state.value ? Theme.of(context).disabledColor : null,
+                      color: value.value ? Theme.of(context).disabledColor : null,
                     ),
                   ),
                 )

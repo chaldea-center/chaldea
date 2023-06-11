@@ -104,8 +104,8 @@ class SvtTdTab extends StatelessWidget {
     NiceTd initTd = _getDefaultTd(tds) ?? tds.last;
     return ValueStatefulBuilder<int>(
       initValue: tds.indexOf(initTd),
-      builder: (context, state) {
-        final tdIndex = state.value;
+      builder: (context, value) {
+        final tdIndex = value.value;
         final td = tds[tdIndex];
         final oTdData = overrideTds.getOrNull(tdIndex);
 
@@ -132,8 +132,7 @@ class SvtTdTab extends StatelessWidget {
                 },
                 values: FilterRadioData.nonnull(tdIndex),
                 onFilterChanged: (v, _) {
-                  state.value = v.radioValue!;
-                  state.updateState();
+                  value.value = v.radioValue!;
                 },
               ),
             ),

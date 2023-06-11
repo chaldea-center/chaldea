@@ -5,7 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 
-typedef ValueStatefulWidgetBuilder<T> = Widget Function(BuildContext context, _ValueStatefulBuilderState<T> state);
+typedef ValueStatefulWidgetBuilder<T> = Widget Function(BuildContext context, ValueNotifier<T> value);
 
 class ValueStatefulBuilder<T> extends StatefulWidget {
   final T initValue;
@@ -18,12 +18,19 @@ class ValueStatefulBuilder<T> extends StatefulWidget {
 }
 
 class _ValueStatefulBuilderState<T> extends State<ValueStatefulBuilder<T>> {
-  late T value;
+  late final ValueNotifier<T> value;
 
   @override
   void initState() {
     super.initState();
-    value = widget.initValue;
+    value = ValueNotifier(widget.initValue);
+    value.addListener(updateState);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    value.removeListener(updateState);
   }
 
   void updateState() {
@@ -31,7 +38,7 @@ class _ValueStatefulBuilderState<T> extends State<ValueStatefulBuilder<T>> {
   }
 
   @override
-  Widget build(BuildContext context) => widget.builder(context, this);
+  Widget build(BuildContext context) => widget.builder(context, value);
 }
 
 /// Make sure all keep-alive widgets won't share the [PrimaryScrollController]

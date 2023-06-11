@@ -104,7 +104,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
     Widget child = ValueStatefulBuilder<bool>(
       key: Key('plan_quest_$questId'),
       initValue: false,
-      builder: (context, state) {
+      builder: (context, value) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -114,11 +114,10 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
               subtitle: buildRichDetails(variable.detail.entries),
               trailing: Text('${variable.value}*${variable.cost} AP'),
               onTap: () {
-                state.value = !state.value;
-                state.updateState();
+                value.value = !value.value;
               },
             ),
-            if (state.value && widget.solution?.params != null)
+            if (value.value && widget.solution?.params != null)
               widget.solution!.params!.blacklist.contains(questId)
                   ? TextButton.icon(
                       onPressed: () {
@@ -144,7 +143,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                         style: const TextStyle(color: Colors.redAccent),
                       ),
                     ),
-            if (state.value) QuestCard(quest: quest, questId: questId),
+            if (value.value) QuestCard(quest: quest, questId: questId),
           ],
         );
       },

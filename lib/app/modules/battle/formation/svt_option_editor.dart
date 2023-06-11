@@ -285,7 +285,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     return Card(
       child: ValueStatefulBuilder<bool>(
         initValue: false,
-        builder: (context, state) {
+        builder: (context, value) {
           Widget child = Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -301,7 +301,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                     ),
                   ),
                   Icon(
-                    state.value ? Icons.expand_less : Icons.expand_more,
+                    value.value ? Icons.expand_less : Icons.expand_more,
                     color: Theme.of(context).disabledColor,
                   ),
                   const SizedBox(width: 8),
@@ -310,15 +310,14 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               Text(
                 S.current.svt_option_edit_tips,
                 style: Theme.of(context).textTheme.bodySmall,
-                maxLines: state.value ? null : 1,
-                overflow: state.value ? null : TextOverflow.ellipsis,
+                maxLines: value.value ? null : 1,
+                overflow: value.value ? null : TextOverflow.ellipsis,
               ),
             ],
           );
           return InkWell(
             onTap: () {
-              state.value = !state.value;
-              state.updateState();
+              value.value = !value.value;
             },
             child: Padding(
               padding: const EdgeInsets.all(8),

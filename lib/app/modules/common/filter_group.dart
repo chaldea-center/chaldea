@@ -133,14 +133,13 @@ class FilterGroup<T> extends StatelessWidget {
     Widget _wrapExpandIcon(Widget _child) {
       return ValueStatefulBuilder<bool>(
         initValue: true,
-        builder: (context, state) {
+        builder: (context, value) {
           Widget? expandIcon;
           if (showCollapse) {
             expandIcon = ExpandIcon(
-              isExpanded: state.value,
+              isExpanded: value.value,
               onPressed: (v) {
-                state.value = !state.value;
-                state.updateState();
+                value.value = !value.value;
               },
             );
           }
@@ -150,7 +149,7 @@ class FilterGroup<T> extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               _getTitle(expandIcon),
-              if (state.value) _child,
+              if (value.value) _child,
             ],
           );
         },
