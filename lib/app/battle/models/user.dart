@@ -65,28 +65,28 @@ class PlayerSvtData {
       fromUserSvt(svt: selectedSvt, status: status, plan: plan);
     } else {
       final defaults = db.settings.battleSim.defaultLvs;
-      int lv, tdLv;
+      int defaultLv, defaultTdLv;
       if (defaults.useMaxLv) {
-        lv = selectedSvt.lvMax;
+        defaultLv = selectedSvt.lvMax;
       } else {
-        lv = defaults.lv.clamp(1, min(120, selectedSvt.atkGrowth.length));
+        defaultLv = defaults.lv.clamp(1, min(120, selectedSvt.atkGrowth.length));
       }
       if (defaults.useDefaultTdLv) {
         if (selectedSvt.rarity <= 3 ||
             selectedSvt.extra.obtains.any((e) => const [SvtObtain.eventReward, SvtObtain.friendPoint].contains(e))) {
-          tdLv = 5;
+          defaultTdLv = 5;
         } else if (selectedSvt.rarity == 4) {
-          tdLv = 2;
+          defaultTdLv = 2;
         } else {
-          tdLv = 1;
+          defaultTdLv = 1;
         }
       } else {
-        tdLv = defaults.tdLv;
+        defaultTdLv = defaults.tdLv;
       }
       this
         ..limitCount = defaults.limitCount
-        ..lv = lv
-        ..tdLv = tdLv
+        ..lv = defaultLv
+        ..tdLv = defaultTdLv
         ..skillLvs = List.generate(3, (index) => defaults.activeSkillLv)
         ..appendLvs = defaults.appendLvs.toList()
         ..atkFou = 1000
@@ -156,8 +156,13 @@ class PlayerSvtData {
       ceLv = status.lv;
       ceLimitBreak = status.limitCount == 4;
     } else {
-      ceLv = db.settings.battleSim.defaultLvs.ceMaxLv ? selectedCE.lvMax : 1;
       ceLimitBreak = db.settings.battleSim.defaultLvs.ceMaxLimitBreak;
+      int? lvMin = {1: 6, 2: 9, 3: 11, 4: 13, 5: 15}[selectedCE.rarity];
+      ceLv = db.settings.battleSim.defaultLvs.ceMaxLv
+          ? selectedCE.lvMax
+          : ceLimitBreak && lvMin != null && lvMin <= selectedCE.lvMax && ceLv < lvMin
+              ? lvMin
+              : 1;
     }
   }
 
