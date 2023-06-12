@@ -55,8 +55,13 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   void initState() {
     super.initState();
     if (playerSvtData.svt == null) {
-      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        selectSvt();
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
+        await selectSvt();
+        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+          if (playerSvtData.svt == null && mounted) {
+            Navigator.of(context).pop();
+          }
+        });
       });
     }
   }
@@ -925,8 +930,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     }
   }
 
-  void selectSvt() {
-    router.pushPage(
+  Future selectSvt() async {
+    await router.pushPage(
       ServantListPage(
         planMode: false,
         onSelected: (selectedSvt) {
@@ -1095,8 +1100,13 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
   void initState() {
     super.initState();
     if (playerSvtData.ce == null) {
-      SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        selectCE();
+      SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
+        await selectCE();
+        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+          if (playerSvtData.ce == null && mounted) {
+            Navigator.of(context).pop();
+          }
+        });
       });
     }
   }
@@ -1275,8 +1285,8 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     }
   }
 
-  void selectCE() {
-    router.pushPage(
+  Future selectCE() async {
+    await router.pushPage(
       CraftListPage(
         onSelected: (ce) {
           playerSvtData.onSelectCE(ce);
