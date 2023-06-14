@@ -220,6 +220,7 @@ class TdDmgSolver {
       final svt = db.gameData.servantsById[svtId];
       if (svt == null) continue;
       final sdata = PlayerSvtData.svt(svt);
+      sdata.updateRankUps(options.region);
       BattleServantData support = BattleServantData.fromPlayerSvtData(sdata, battleData.getNextUniqueId());
       battleData.onFieldAllyServants[1] = support;
       // await support.enterField(battle);
