@@ -96,6 +96,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   @override
   void dispose() {
     super.dispose();
+    saveFormation();
     questIdTextController.dispose();
     QuestPhaseWidget.removePhaseSelectCallback(_questSelectCallback);
   }
@@ -115,6 +116,17 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     children.add(Wrap(
       alignment: WrapAlignment.center,
       children: [
+        TextButton(
+          onPressed: () async {
+            options.team.clear();
+            saveFormation();
+            if (mounted) setState(() {});
+          },
+          child: Text(
+            S.current.clear,
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
+        ),
         TextButton(
           onPressed: () async {
             await router.pushPage(FormationEditor(isSaving: false, onSelected: restoreFormation));

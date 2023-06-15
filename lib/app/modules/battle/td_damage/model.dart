@@ -360,6 +360,12 @@ class TdDmgSolver {
     final delegate = BattleDelegate();
     delegate.decideOC = (_actor, baseOC, upOC) => options.fixedOC ? options.oc : options.oc + upOC;
     delegate.whetherTd = (_actor) => true;
+    delegate.skillActSelect = (_actor) async {
+      if (_actor?.svtId == 2501100) {
+        return 1;
+      }
+      return null;
+    };
     if (options.damageNpHpRatioMax) {
       delegate.hpRatio = (_actor, battleData, func, vals) {
         if (func?.funcType == FuncType.damageNpHpratioLow) {
