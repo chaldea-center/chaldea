@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -9,6 +12,7 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/userdata/battle.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../../../packages/logger.dart';
 
 class SkillSelectPage extends StatefulWidget {
   final SkillType? skillType;
@@ -114,7 +118,32 @@ class _SkillSelectPageState extends State<SkillSelectPage> {
                     )
                   ],
                 ),
-                DividerWithTitle(title: '3 - ${S.current.general_custom}', height: 16),
+                const DividerWithTitle(title: '3', height: 16),
+                ListTile(
+                  title: Text('${S.current.general_import} JSON'),
+                  trailing: const Icon(Icons.file_open),
+                  tileColor: Theme.of(context).cardColor,
+                  onTap: () async {
+                    try {
+                      final result = await FilePickerU.pickFiles(
+                          type: FileType.custom, allowedExtensions: ['json'], clearCache: true);
+                      final bytes = result?.files.firstOrNull?.bytes;
+                      if (bytes == null) return;
+                      final skill = NiceSkill.fromJson(Map.from(jsonDecode(utf8.decode(bytes))));
+                      if (skill.id > 0) skill.id = -skill.id;
+                      if (skill.functions.isEmpty) {
+                        EasyLoading.showError('Empty skill effect!');
+                        return;
+                      }
+                      await loadSkill(skill, null, Region.jp);
+                    } catch (e, s) {
+                      logger.i('load custom json skill failed', e, s);
+                      EasyLoading.showError(e.toString());
+                      return;
+                    }
+                  },
+                ),
+                DividerWithTitle(title: '4 - ${S.current.general_custom}', height: 16),
                 Material(
                   color: Theme.of(context).cardColor,
                   child: CustomSkillForm(skillData: skillData),
@@ -142,7 +171,7 @@ class _SkillSelectPageState extends State<SkillSelectPage> {
   Future<void> loadSkill(BaseSkill? skill, int? skillId, Region region) async {
     if (skill == null && skillId != null && skillId > 0) {
       EasyLoading.show();
-      skill = await AtlasApi.skill(skillId);
+      skill = await AtlasApi.skill(skillId, region: region);
       EasyLoading.dismiss();
       if (skill == null) {
         EasyLoading.showError(S.current.not_found);

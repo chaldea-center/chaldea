@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:ruby_text/ruby_text.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -10,6 +12,7 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/enemy/quest_enemy_summary.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -145,7 +148,27 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
 
   Widget get popupMenu {
     return PopupMenuButton(
-      itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(atlas: Atlas.dbSkill(id, region ?? Region.jp)),
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          enabled: data != null,
+          onTap: () async {
+            await null;
+            try {
+              final text = const JsonEncoder.withIndent('  ').convert(skill);
+              await FilePickerU.saveFile(
+                data: utf8.encode(text),
+                filename: "skill-${skill.id}-${DateTime.now().toSafeFileName()}.json",
+              );
+            } catch (e, s) {
+              EasyLoading.showError(e.toString());
+              logger.e('dump skill json failed', e, s);
+              return;
+            }
+          },
+          child: Text('${S.current.general_export} JSON'),
+        ),
+        ...SharedBuilder.websitesPopupMenuItems(atlas: Atlas.dbSkill(id, region ?? Region.jp)),
+      ],
     );
   }
 }
