@@ -4353,6 +4353,28 @@ class S {
     );
   }
 
+  /// `Export`
+  String get general_export {
+    return Intl.message(
+      'Export',
+      name: 'general_export',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Import`
+  String get general_import {
+    return Intl.message(
+      'Import',
+      name: 'general_import',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Others`
   String get general_others {
     return Intl.message(
@@ -8466,6 +8488,28 @@ class S {
     return Intl.message(
       'Show Fullscreen',
       name: 'show_fullscreen',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Show Less`
+  String get show_less {
+    return Intl.message(
+      'Show Less',
+      name: 'show_less',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Show More`
+  String get show_more {
+    return Intl.message(
+      'Show More',
+      name: 'show_more',
       desc: '',
       locale: localeName,
       args: [],

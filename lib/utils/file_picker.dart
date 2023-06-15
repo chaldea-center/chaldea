@@ -1,7 +1,18 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/packages.dart';
+import 'package:chaldea/packages/platform/platform.dart';
+import 'package:chaldea/utils/basic.dart';
+import 'package:chaldea/utils/extension.dart';
+import '../models/db.dart';
+import '../widgets/custom_dialogs.dart';
 
 class FilePickerU {
   const FilePickerU._();
@@ -59,5 +70,36 @@ class FilePickerU {
       _picking = false;
     }
     return null;
+  }
+
+  static Future<void> saveFile({
+    required List<int> data,
+    required String filename,
+    String? saveFolder,
+    BuildContext? dialogContext,
+  }) async {
+    if (kIsWeb) {
+      return kPlatformMethods.downloadFile(data, filename);
+    }
+    String? fp;
+    if (PlatformU.isDesktop) {
+      fp = await FilePicker.platform.saveFile(
+        fileName: filename,
+        initialDirectory: saveFolder,
+      );
+      if (fp == null) return;
+    }
+    fp ??= joinPaths(saveFolder ?? db.paths.downloadDir, filename);
+    final file = File(fp);
+    file.parent.createSync(recursive: true);
+    await file.writeAsBytes(data);
+    if (dialogContext != null && dialogContext.mounted) {
+      SimpleCancelOkDialog(
+        title: Text(S.current.saved),
+        content: Text(db.paths.convertIosPath(file.path).breakWord),
+        hideCancel: true,
+      ).showDialog(dialogContext);
+    }
+    return;
   }
 }

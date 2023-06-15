@@ -41,7 +41,7 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
       // spacing: 8,
       children: [
         const SizedBox(width: 16),
-        const Text('③ '),
+        const Text('① '),
         Flexible(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 250),

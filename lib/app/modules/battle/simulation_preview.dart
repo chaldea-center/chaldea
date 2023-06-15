@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -243,99 +246,143 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     if (questRegion != null && !_validQuestRegions.contains(questRegion)) {
       questRegion = Region.jp;
     }
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-          child: TextFormField(
-            controller: questIdTextController,
-            decoration: InputDecoration(
-              isDense: true,
-              border: const OutlineInputBorder(),
-              hintText: '93031014/3 ${S.current.logic_type_or} **/JP/quest/93031014/3'.breakWord,
-              labelText: '① questId/phase ${S.current.logic_type_or} chaldea/AADB quest url',
-              hintStyle: const TextStyle(overflow: TextOverflow.visible),
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-            ),
-          ),
-        ),
-        Wrap(
-          alignment: WrapAlignment.center,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 8,
+    return ValueStatefulBuilder<bool>(
+      initValue: false,
+      builder: (context, expanded) {
+        return Column(
           children: [
-            DropdownButton<Region>(
-              isDense: true,
-              value: questRegion,
-              items: [
-                for (final r in _validQuestRegions)
-                  DropdownMenuItem(value: r, child: Text(r.localName, textScaleFactor: 0.9)),
-              ],
-              hint: Text(Region.jp.localName),
-              onChanged: (v) {
-                setState(() {
-                  if (v != null) questRegion = v;
-                });
-              },
-            ),
-            ElevatedButton(
-              onPressed: () async {
+            FQSelectDropdown(
+              key: Key('FQSelectDropdown_${questPhase?.id}'),
+              initQuestId: questPhase?.id,
+              onChanged: (Quest quest) async {
                 EasyLoading.show();
-                try {
-                  await _fetchQuestPhase();
-                } catch (e, s) {
-                  logger.e('fetch quest phase failed', e, s);
-                  questErrorMsg = escapeDioError(e);
-                } finally {
-                  EasyLoading.dismiss();
-                  if (mounted) setState(() {});
+                final phase = await AtlasApi.questPhase(quest.id, quest.phases.last);
+                EasyLoading.dismiss();
+                if (mounted) {
+                  if (phase != null) {
+                    questPhase = phase;
+                    questIdTextController.text = '${phase.id}/${phase.phase}';
+                  }
+                  setState(() {});
                 }
               },
-              child: Text(S.current.atlas_load),
             ),
-            ChaldeaUrl.laplaceHelpBtn('faq#what-is-atlas-db-url', zhPath: 'faq.html#什么是-atlas-db-url')
-          ],
-        ),
-        kDefaultDivider,
-        ListTile(
-          dense: true,
-          title: Text('② ${S.current.battle_quest_from} ${S.current.event}/${S.current.main_story}'),
-          subtitle: Text.rich(TextSpan(
-            text: '${S.current.event}→${S.current.war}→${S.current.quest}→',
-            children: [
-              CenterWidgetSpan(
-                child: Icon(
-                  Icons.calculate,
-                  size: 14,
-                  color: Theme.of(context).colorScheme.primary,
+            kIndentDivider,
+            ListTile(
+              dense: true,
+              title: Text('② ${S.current.battle_quest_from} ${S.current.event}/${S.current.main_story}'),
+              subtitle: Text.rich(TextSpan(
+                text: '${S.current.event}→${S.current.war}→${S.current.quest}→',
+                children: [
+                  CenterWidgetSpan(
+                    child: Icon(
+                      Icons.calculate,
+                      size: 14,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  )
+                ],
+              )),
+              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+              onTap: () {
+                QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
+                router.push(url: Routes.events, detail: true);
+              },
+            ),
+            kIndentDivider,
+            TextButton(
+              onPressed: () {
+                expanded.value = !expanded.value;
+              },
+              style: kTextButtonDenseStyle,
+              child: Text(expanded.value ? S.current.show_less : S.current.show_more),
+            ),
+            if (expanded.value) ...[
+              kIndentDivider,
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                child: TextFormField(
+                  controller: questIdTextController,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    border: const OutlineInputBorder(),
+                    hintText: '93031014/3 ${S.current.logic_type_or} **/JP/quest/93031014/3'.breakWord,
+                    labelText: '③ questId/phase ${S.current.logic_type_or} chaldea/AADB quest url',
+                    hintStyle: const TextStyle(overflow: TextOverflow.visible),
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                  ),
                 ),
-              )
+              ),
+              Wrap(
+                alignment: WrapAlignment.center,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 8,
+                children: [
+                  DropdownButton<Region>(
+                    isDense: true,
+                    value: questRegion,
+                    items: [
+                      for (final r in _validQuestRegions)
+                        DropdownMenuItem(value: r, child: Text(r.localName, textScaleFactor: 0.9)),
+                    ],
+                    hint: Text(Region.jp.localName),
+                    onChanged: (v) {
+                      setState(() {
+                        if (v != null) questRegion = v;
+                      });
+                    },
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      EasyLoading.show();
+                      try {
+                        await _fetchQuestPhase();
+                      } catch (e, s) {
+                        logger.e('fetch quest phase failed', e, s);
+                        questErrorMsg = escapeDioError(e);
+                      } finally {
+                        EasyLoading.dismiss();
+                        if (mounted) setState(() {});
+                      }
+                    },
+                    child: Text(S.current.atlas_load),
+                  ),
+                  ChaldeaUrl.laplaceHelpBtn('faq#what-is-atlas-db-url', zhPath: 'faq.html#什么是-atlas-db-url')
+                ],
+              ),
+              kIndentDivider,
+              ListTile(
+                dense: true,
+                title: Text('④ ${S.current.general_import} JSON'),
+                trailing: const Icon(Icons.file_open),
+                onTap: () async {
+                  try {
+                    final result = await FilePickerU.pickFiles(
+                        type: FileType.custom, allowedExtensions: ['json'], clearCache: true);
+                    final bytes = result?.files.firstOrNull?.bytes;
+                    if (bytes == null) return;
+                    final phaseData = QuestPhase.fromJson(Map.from(jsonDecode(utf8.decode(bytes))));
+                    if (phaseData.id > 0) phaseData.id = -phaseData.id;
+                    if (phaseData.allEnemies.isEmpty) {
+                      EasyLoading.showError('No enemy found!');
+                      return;
+                    }
+                    if (mounted) {
+                      questPhase = phaseData;
+                      questIdTextController.text = '';
+                      setState(() {});
+                    }
+                  } catch (e, s) {
+                    logger.i('load custom json quest failed', e, s);
+                    EasyLoading.showError(e.toString());
+                    return;
+                  }
+                },
+              ),
             ],
-          )),
-          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-          onTap: () {
-            QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
-            router.push(url: Routes.events, detail: true);
-          },
-        ),
-        kDefaultDivider,
-        FQSelectDropdown(
-          key: Key('FQSelectDropdown_${questPhase?.id}'),
-          initQuestId: questPhase?.id,
-          onChanged: (Quest quest) async {
-            EasyLoading.show();
-            final phase = await AtlasApi.questPhase(quest.id, quest.phases.last);
-            EasyLoading.dismiss();
-            if (mounted) {
-              if (phase != null) {
-                questPhase = phase;
-                questIdTextController.text = '${phase.id}/${phase.phase}';
-              }
-              setState(() {});
-            }
-          },
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 
@@ -353,17 +400,38 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           ),
         if (questPhase != null) ...[
           // kDefaultDivider,
-          TextButton(
-            onPressed: () {
-              QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
-              router.push(
-                url: Routes.questI(questPhase!.id),
-                child: QuestDetailPage(quest: questPhase),
-                detail: true,
-              );
-            },
-            style: kTextButtonDenseStyle,
-            child: Text('>>> ${S.current.quest_detail_btn} >>>'),
+          Wrap(
+            children: [
+              TextButton(
+                onPressed: () {
+                  QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
+                  router.push(
+                    url: Routes.questI(questPhase!.id),
+                    child: QuestDetailPage(quest: questPhase),
+                    detail: true,
+                  );
+                },
+                style: kTextButtonDenseStyle,
+                child: Text(S.current.quest_detail_btn),
+              ),
+              TextButton(
+                onPressed: () async {
+                  try {
+                    final text = const JsonEncoder.withIndent('  ').convert(questPhase);
+                    await FilePickerU.saveFile(
+                      data: utf8.encode(text),
+                      filename: "quest-${questPhase!.id}-${questPhase!.phase}-${DateTime.now().toSafeFileName()}.json",
+                    );
+                  } catch (e, s) {
+                    EasyLoading.showError(e.toString());
+                    logger.e('dump quest phase json failed', e, s);
+                    return;
+                  }
+                },
+                style: kTextButtonDenseStyle,
+                child: Text('${S.current.general_export} JSON'),
+              ),
+            ],
           ),
           QuestCard(
             region: questRegion,
