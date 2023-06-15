@@ -155,6 +155,7 @@
   "check_update": "更新確認",
   "class_advantage": null,
   "class_attack_rate": null,
+  "class_score": null,
   "clear": "クリア",
   "clear_cache": "キャッシュクリア",
   "clear_cache_finish": "キャッシュクリアが完了しました",

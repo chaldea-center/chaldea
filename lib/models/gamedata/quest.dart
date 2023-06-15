@@ -174,6 +174,19 @@ class Quest with RouteInfo {
     return names;
   }
 
+  String get lNameWithChapter {
+    String questName = lName.l;
+    String chapter = type == QuestType.main
+        ? chapterSubStr.isEmpty && chapterSubId != 0
+            ? S.current.quest_chapter_n(chapterSubId)
+            : Transl.questNames(chapterSubStr).l
+        : '';
+    if (chapter.isNotEmpty) {
+      questName = '$chapter $questName';
+    }
+    return questName;
+  }
+
   NiceSpot? get spot => db.gameData.spots[spotId];
   NiceWar? get war => db.gameData.wars[warId];
 

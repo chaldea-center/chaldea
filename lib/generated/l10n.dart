@@ -1768,6 +1768,17 @@ class S {
     );
   }
 
+  /// `Class Score`
+  String get class_score {
+    return Intl.message(
+      'Class Score',
+      name: 'class_score',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Clear`
   String get clear {
     return Intl.message(

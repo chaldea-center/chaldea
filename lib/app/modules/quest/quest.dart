@@ -63,7 +63,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: AutoSizeText(_quest?.lName.l ?? 'Quest $questId', maxLines: 1, minFontSize: 12),
+        title: AutoSizeText(_quest?.lNameWithChapter ?? 'Quest $questId', maxLines: 1, minFontSize: 12),
         actions: [
           DropdownButton<Region>(
             value: region,

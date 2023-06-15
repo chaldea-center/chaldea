@@ -155,6 +155,7 @@
   "check_update": "檢查更新",
   "class_advantage": "職階剋職",
   "class_attack_rate": "職階補正",
+  "class_score": null,
   "clear": "清空",
   "clear_cache": "清除暫存",
   "clear_cache_finish": "暫存已清除",

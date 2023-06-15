@@ -39,7 +39,7 @@ class BattleSimSetting {
     BattleTeamFormation? curFormation,
     TdDamageOptions? tdDmgOptions,
   })  : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
-        pingedSvts = pingedSvts ?? {37, 62, 150, 215, 241, 284, 314, 316, 353, 357},
+        pingedSvts = pingedSvts ?? {215, 284, 314, 316, 357},
         defaultLvs = defaultLvs ?? PlayerSvtDefaultData(),
         formations = formations ?? [],
         curFormation = curFormation ?? BattleTeamFormation(),

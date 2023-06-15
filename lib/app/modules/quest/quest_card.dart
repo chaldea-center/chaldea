@@ -116,15 +116,8 @@ class _QuestCardState extends State<QuestCard> {
       );
     }
 
-    String questName = quest.lName.l;
-    String chapter = quest.type == QuestType.main
-        ? quest.chapterSubStr.isEmpty && quest.chapterSubId != 0
-            ? S.current.quest_chapter_n(quest.chapterSubId)
-            : quest.chapterSubStr
-        : '';
-    if (chapter.isNotEmpty) {
-      questName = '$chapter $questName';
-    }
+    String questName = quest.lNameWithChapter;
+
     List<String> names = [questName, if (!Transl.isJP && quest.name != quest.lName.l) quest.name]
         .map((e) => e.replaceAll('\n', ' '))
         .toList();

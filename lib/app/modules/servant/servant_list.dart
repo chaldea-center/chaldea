@@ -5,6 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -22,8 +23,16 @@ class ServantListPage extends StatefulWidget {
   final void Function(Servant svt)? onSelected;
   final SvtFilterData? filterData;
   final List<int>? pinged;
+  final bool showSecondaryFilter;
 
-  ServantListPage({super.key, this.planMode = false, this.onSelected, this.filterData, this.pinged});
+  ServantListPage({
+    super.key,
+    this.planMode = false,
+    this.onSelected,
+    this.filterData,
+    this.pinged,
+    this.showSecondaryFilter = false,
+  });
 
   @override
   State<StatefulWidget> createState() => ServantListPageState();
@@ -452,8 +461,93 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
             ),
           ),
         ),
+        if (widget.showSecondaryFilter) secondaryTopFilters,
         Expanded(child: scrollable)
       ],
+    );
+  }
+
+  Widget get secondaryTopFilters {
+    const double height = 36;
+    Widget _getBtn(String text) {
+      return Container(
+        constraints: const BoxConstraints(
+          minHeight: height,
+          maxHeight: height,
+          minWidth: 28,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Center(child: Text(text)),
+      );
+    }
+
+    return SizedBox(
+      height: height,
+      child: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 2),
+        scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
+        children: [
+          FilterGroup<CardType>(
+            combined: true,
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+            shrinkWrap: true,
+            options: const [CardType.arts, CardType.buster, CardType.quick],
+            values: filterData.npColor,
+            optionBuilder: (v) => CommandCardWidget(card: v, width: 30),
+            onFilterChanged: (v, lastChanged) {
+              if (lastChanged != null) {
+                if (v.options.contains(lastChanged)) {
+                  v.options = {lastChanged};
+                } else {
+                  v.options = {};
+                }
+              }
+              setState(() {});
+            },
+          ),
+          FilterGroup<TdEffectFlag>(
+            combined: true,
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            shrinkWrap: true,
+            values: filterData.npType,
+            options: TdEffectFlag.values,
+            optionBuilder: (v) => _getBtn(Transl.enums(v, (enums) => enums.tdEffectFlag).l),
+            onFilterChanged: (v, lastChanged) {
+              if (lastChanged != null) {
+                if (v.options.contains(lastChanged)) {
+                  v.options = {lastChanged};
+                } else {
+                  v.options = {};
+                }
+              }
+              setState(() {});
+            },
+          ),
+          FilterGroup<int>(
+            combined: true,
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+            shrinkWrap: true,
+            options: const [-1, 4, 5],
+            values: FilterGroupData(options: {
+              if (filterData.rarity.contain(5)) 5,
+              if (filterData.rarity.contain(4)) 4,
+              if (filterData.rarity.options.containSubset(<int>{0, 1, 2, 3})) -1,
+            }),
+            optionBuilder: (v) => _getBtn(v == -1 ? '$kStarChar≤3' : v.toString()),
+            onFilterChanged: (v, lastChanged) {
+              if (lastChanged != null) {
+                if (v.options.contains(lastChanged)) {
+                  filterData.rarity.options = lastChanged == -1 ? {0, 1, 2, 3} : {lastChanged};
+                } else {
+                  filterData.rarity.options = {};
+                }
+              }
+              setState(() {});
+            },
+          ),
+        ],
+      ),
     );
   }
 

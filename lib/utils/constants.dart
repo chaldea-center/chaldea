@@ -15,6 +15,8 @@ const String kProjectHomepage = 'https://github.com/chaldea-center/chaldea';
 const String kProjectDocRoot = 'https://docs.chaldea.center';
 const String kStaticHostRoot = 'https://static.chaldea.center';
 
+const String kLaplaceName = 'Laplace';
+
 /// The global key passed to [MaterialApp], so you can access context anywhere
 final kAppKey = GlobalKey<NavigatorState>();
 const kDefaultDivider = Divider(height: 1, thickness: 0.5);

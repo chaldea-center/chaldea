@@ -65,6 +65,22 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     targetVal.validate(curVal);
     // ascension part
     List<Widget> children = [];
+    if (svt.collectionNo > 0) {
+      children.add(TileGroup(
+        header: kLaplaceName,
+        children: [
+          CheckboxListTile(
+            title: Text(S.current.ping_to_top),
+            value: db.settings.battleSim.pingedSvts.contains(svt.collectionNo),
+            onChanged: (v) {
+              setState(() {
+                db.settings.battleSim.pingedSvts.toggle(svt.collectionNo);
+              });
+            },
+          ),
+        ],
+      ));
+    }
     if (showDetail(SvtPlanDetail.ascension)) {
       children.add(TileGroup(
         header: S.current.ascension_up,

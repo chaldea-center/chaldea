@@ -91,6 +91,7 @@ class _SkillSelectPageState extends State<SkillSelectPage> {
                   crossAxisAlignment: WrapCrossAlignment.center,
                   spacing: 8,
                   children: [
+                    const SizedBox(width: kMinInteractiveDimension),
                     FilledButton(
                       onPressed: () async {
                         final result = Atlas.resolveRegionInt(_skillIdController.text.trim());
@@ -104,7 +105,13 @@ class _SkillSelectPageState extends State<SkillSelectPage> {
                       },
                       child: Text(S.current.atlas_load),
                     ),
-                    ChaldeaUrl.laplaceHelpBtn('faq#what-is-atlas-db-url', zhPath: 'faq.html#什么是-atlas-db-url')
+                    SizedBox(
+                      width: kMinInteractiveDimension,
+                      child: ChaldeaUrl.laplaceHelpBtn(
+                        'faq#what-is-atlas-db-url',
+                        zhPath: 'faq.html#什么是-atlas-db-url',
+                      ),
+                    )
                   ],
                 ),
                 DividerWithTitle(title: '3 - ${S.current.general_custom}', height: 16),
@@ -167,7 +174,7 @@ class CustomSkillForm extends StatefulWidget {
   final CustomSkillData skillData;
   final bool showInfo;
   final bool valueOnly;
-  final bool showTarget;
+  final bool showTargetSelf;
   final VoidCallback? onChanged;
 
   const CustomSkillForm({
@@ -175,7 +182,7 @@ class CustomSkillForm extends StatefulWidget {
     required this.skillData,
     this.valueOnly = false,
     this.showInfo = true,
-    this.showTarget = true,
+    this.showTargetSelf = true,
     this.onChanged,
   });
 
@@ -279,7 +286,7 @@ class _CustomSkillFormState extends State<CustomSkillForm> {
         if (effect.count > 0) Transl.special.funcValCountTimes(effect.count),
         if (effect.turn > 0) Transl.special.funcValTurns(effect.turn),
       ],
-      if (widget.showTarget) Transl.funcTargetType(effect.target).l,
+      if (widget.showTargetSelf || effect.target != FuncTargetType.self) Transl.funcTargetType(effect.target).l,
     ];
     final header = ListTile(
       dense: true,

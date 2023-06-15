@@ -155,6 +155,7 @@
   "check_update": "업데이트 확인",
   "class_advantage": null,
   "class_attack_rate": null,
+  "class_score": null,
   "clear": "지우기",
   "clear_cache": "캐시 삭제하기",
   "clear_cache_finish": "캐시 삭제됨",

@@ -155,6 +155,7 @@
   "check_update": "Comprobar actualización",
   "class_advantage": null,
   "class_attack_rate": null,
+  "class_score": null,
   "clear": "Borrar",
   "clear_cache": "Borrar caché",
   "clear_cache_finish": "Caché borrada",

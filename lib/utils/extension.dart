@@ -171,6 +171,10 @@ extension SetX<E> on Set<E> {
   bool equalTo(Set<E> other) {
     return length == other.length && length == {...this, ...other}.length;
   }
+
+  bool containSubset(Set<E> other) {
+    return other.difference(this).isEmpty;
+  }
 }
 
 extension MapX<K, V> on Map<K, V> {

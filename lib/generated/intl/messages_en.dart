@@ -250,6 +250,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "check_update": MessageLookupByLibrary.simpleMessage("Check update"),
         "class_advantage": MessageLookupByLibrary.simpleMessage("Class Advantage"),
         "class_attack_rate": MessageLookupByLibrary.simpleMessage("Class Damage Multiplier"),
+        "class_score": MessageLookupByLibrary.simpleMessage("Class Score"),
         "clear": MessageLookupByLibrary.simpleMessage("Clear"),
         "clear_cache": MessageLookupByLibrary.simpleMessage("Clear Cache"),
         "clear_cache_finish": MessageLookupByLibrary.simpleMessage("Cache cleared"),

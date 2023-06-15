@@ -707,7 +707,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
             skillData: options.extraBuffs,
             valueOnly: true,
             showInfo: false,
-            showTarget: false,
+            showTargetSelf: false,
             onChanged: () {
               if (mounted) setState(() {});
             },

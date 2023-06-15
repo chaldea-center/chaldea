@@ -146,7 +146,7 @@ class MultiDescriptor {
           if (war != null && war.lastQuestId == id) {
             questName = war.lLongName.l.setMaxLines(1);
           } else {
-            questName = quest?.lName.l ?? 'Quest $id';
+            questName = quest?.lNameWithChapter ?? 'Quest $id';
           }
           return inkWell(
             context: context,
@@ -168,7 +168,7 @@ class MultiDescriptor {
           final warName = Transl.warNames(phase?.warLongName ?? quest?.warLongName ?? "?").l.replaceAll('\n', ' ');
           final spotName = phase?.lSpot.l ?? quest?.lSpot.l ?? '?';
           return ListTile(
-            title: Text(quest?.lName.l ?? 'Quest $id'),
+            title: Text(quest?.lNameWithChapter ?? 'Quest $id'),
             subtitle: Text('$id  $spotName${warName.isEmpty ? "" : "\n$warName"}'),
             onTap: () => router.push(url: Routes.questI(id)),
           );

@@ -105,6 +105,7 @@ class ServantSelector extends StatelessWidget {
                 },
                 filterData: svtFilterData,
                 pinged: db.settings.battleSim.pingedSvts.toList(),
+                showSecondaryFilter: true,
               ),
               detail: true,
             );
@@ -271,7 +272,7 @@ class ServantSelector extends StatelessWidget {
           top: -iconSize / 2,
           child: Container(
             decoration: ShapeDecoration(
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.primary,
               shape: const CircleBorder(),
             ),
             child: IconButton(
@@ -290,7 +291,7 @@ class ServantSelector extends StatelessWidget {
           top: -iconSize / 2,
           child: Container(
             decoration: ShapeDecoration(
-              color: Theme.of(context).colorScheme.error,
+              color: Theme.of(context).colorScheme.errorContainer,
               shape: const CircleBorder(),
             ),
             child: IconButton(
