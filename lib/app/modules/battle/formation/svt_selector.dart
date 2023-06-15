@@ -22,7 +22,7 @@ class _DragCEData {
   _DragCEData(this.svt);
 }
 
-class ServantSelector extends StatefulWidget {
+class ServantSelector extends StatelessWidget {
   final PlayerSvtData playerSvtData;
   final Region playerRegion;
   final QuestPhase? questPhase;
@@ -42,34 +42,11 @@ class ServantSelector extends StatefulWidget {
     this.enableEdit = true,
   });
 
-  @override
-  State<ServantSelector> createState() => _ServantSelectorState();
-}
-
-class _ServantSelectorState extends State<ServantSelector> {
-  bool svtHovered = false;
-  bool ceHovered = false;
-
-  PlayerSvtData get playerSvtData => widget.playerSvtData;
-
-  Region get playerRegion => widget.playerRegion;
-
-  QuestPhase? get questPhase => widget.questPhase;
-
-  VoidCallback get onChanged => widget.onChanged;
-
-  DragTargetAccept<PlayerSvtData>? get onDragSvt => widget.onDragSvt;
-
-  DragTargetAccept<PlayerSvtData>? get onDragCE => widget.onDragCE;
-
-  bool get enableEdit => widget.enableEdit;
-
-  static SvtFilterData? svtFilterData;
-  static CraftFilterData? craftFilterData;
+  static SvtFilterData svtFilterData = SvtFilterData(useGrid: true);
+  static CraftFilterData craftFilterData = CraftFilterData(useGrid: true);
 
   @override
   Widget build(final BuildContext context) {
-    final isDesktop = Theme.of(context).platform.isDesktop;
     List<Widget> children = [];
 
     TextStyle notSelectedStyle = TextStyle(color: Theme.of(context).textTheme.bodySmall?.color);
@@ -95,7 +72,7 @@ class _ServantSelectorState extends State<ServantSelector> {
         errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
       ),
     );
-    if (playerSvtData.supportType != SupportSvtType.none) {
+    if (playerSvtData.supportType.isSupport) {
       svtIcon = Stack(
         alignment: Alignment.topRight,
         children: [
@@ -109,13 +86,38 @@ class _ServantSelectorState extends State<ServantSelector> {
       );
     }
 
-    Widget svtIconFrame = InkWell(
-      onHover: (hovered) {
-        svtHovered = hovered;
-        if (mounted) setState(() {});
+    svtIcon = _DragHover<_DragSvtData>(
+      enableEdit: enableEdit,
+      data: _DragSvtData(playerSvtData),
+      child: svtIcon,
+      builder: (context, child, hovered, dragging) {
+        if (dragging || !hovered) return child;
+        return _stackActions(
+          context: context,
+          child: child,
+          onTapSelect: () {
+            router.pushPage(
+              ServantListPage(
+                planMode: false,
+                onSelected: (selectedSvt) {
+                  playerSvtData.onSelectServant(selectedSvt, playerRegion);
+                  onChanged();
+                },
+                filterData: svtFilterData,
+                pinged: db.settings.battleSim.pingedSvts.toList(),
+              ),
+              detail: true,
+            );
+          },
+          onTapClear: () {
+            playerSvtData.svt = null;
+            onChanged();
+          },
+          iconSize: 16,
+        );
       },
       onTap: () async {
-        svtFilterData ??= SvtFilterData(useGrid: true);
+        if (!enableEdit && playerSvtData.svt == null) return;
         await router.pushPage(ServantOptionEditPage(
           playerSvtData: enableEdit ? playerSvtData : playerSvtData.copy(),
           questPhase: questPhase,
@@ -125,90 +127,12 @@ class _ServantSelectorState extends State<ServantSelector> {
         ));
         onChanged();
       },
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          svtIcon,
-          if (isDesktop && svtHovered)
-            Positioned(
-              top: -8,
-              left: 0,
-              child: Container(
-                decoration: ShapeDecoration(
-                  color: Theme.of(context).primaryColor,
-                  shape: const CircleBorder(),
-                ),
-                child: IconButton(
-                  onPressed: () {
-                    svtFilterData ??= SvtFilterData(useGrid: true);
-                    router.pushPage(
-                      ServantListPage(
-                        planMode: false,
-                        onSelected: (selectedSvt) {
-                          playerSvtData.onSelectServant(selectedSvt, playerRegion);
-                          onChanged();
-                        },
-                        filterData: svtFilterData,
-                        pinged: db.settings.battleSim.pingedSvts.toList(),
-                      ),
-                      detail: true,
-                    );
-                  },
-                  splashRadius: 20,
-                  padding: const EdgeInsets.all(4),
-                  constraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-                  iconSize: 16,
-                  icon: const Icon(Icons.people),
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          if (isDesktop && svtHovered)
-            Positioned(
-              top: -8,
-              right: 0,
-              child: Container(
-                decoration: ShapeDecoration(
-                  color: playerSvtData.svt == null ? Colors.grey : Colors.red,
-                  shape: const CircleBorder(),
-                ),
-                child: IconButton(
-                  onPressed: playerSvtData.svt == null
-                      ? null
-                      : () {
-                          playerSvtData.svt = null;
-                          onChanged();
-                        },
-                  splashRadius: 20,
-                  padding: const EdgeInsets.all(4),
-                  constraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-                  iconSize: 16,
-                  icon: const Icon(Icons.remove_circle_outline),
-                  color: Colors.white,
-                ),
-              ),
-            )
-        ],
-      ),
+      onAccept: (data) {
+        onDragSvt?.call(data.svt);
+      },
     );
 
-    if (enableEdit && onDragSvt != null) {
-      final svtDraggable = Draggable<_DragSvtData>(
-        feedback: svtIcon,
-        data: _DragSvtData(playerSvtData),
-        child: svtIconFrame,
-      );
-      svtIconFrame = DragTarget<_DragSvtData>(
-        builder: (context, candidateData, rejectedData) {
-          return svtDraggable;
-        },
-        onAccept: (data) {
-          onDragSvt?.call(data.svt);
-        },
-      );
-    }
-
-    children.add(svtIconFrame);
+    children.add(svtIcon);
 
     // svt name+btn
     children.add(SizedBox(
@@ -251,13 +175,37 @@ class _ServantSelectorState extends State<ServantSelector> {
       );
     }
 
-    Widget ceIconFrame = InkWell(
-      onHover: (hovered) {
-        ceHovered = hovered;
-        if (mounted) setState(() {});
+    ceIcon = _DragHover<_DragCEData>(
+      enableEdit: enableEdit,
+      data: _DragCEData(playerSvtData),
+      child: ceIcon,
+      builder: (context, child, hovered, dragging) {
+        if (dragging || !hovered) return child;
+        return _stackActions(
+          context: context,
+          child: child,
+          onTapSelect: () {
+            router.pushPage(
+              CraftListPage(
+                onSelected: (ce) {
+                  playerSvtData.onSelectCE(ce);
+                  onChanged();
+                },
+                filterData: craftFilterData,
+                pinged: db.settings.battleSim.pingedCEsWithEventAndBond(questPhase, playerSvtData.svt).toList(),
+              ),
+              detail: true,
+            );
+          },
+          onTapClear: () {
+            playerSvtData.ce = null;
+            onChanged();
+          },
+          iconSize: 16,
+        );
       },
       onTap: () async {
-        craftFilterData ??= CraftFilterData(useGrid: true);
+        if (!enableEdit && playerSvtData.ce == null) return;
         await router.pushPage(CraftEssenceOptionEditPage(
           playerSvtData: enableEdit ? playerSvtData : playerSvtData.copy(),
           questPhase: questPhase,
@@ -266,90 +214,14 @@ class _ServantSelectorState extends State<ServantSelector> {
         ));
         onChanged();
       },
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          ceIcon,
-          if (isDesktop && ceHovered)
-            Positioned(
-              top: -8,
-              left: 0,
-              child: Container(
-                decoration: ShapeDecoration(
-                  color: Theme.of(context).primaryColor,
-                  shape: const CircleBorder(),
-                ),
-                child: IconButton(
-                  onPressed: () {
-                    craftFilterData ??= CraftFilterData(useGrid: true);
-                    router.pushPage(
-                      CraftListPage(
-                        onSelected: (ce) {
-                          playerSvtData.onSelectCE(ce);
-                          onChanged();
-                        },
-                        filterData: craftFilterData,
-                        pinged: db.settings.battleSim.pingedCEsWithEventAndBond(questPhase, playerSvtData.svt).toList(),
-                      ),
-                      detail: true,
-                    );
-                  },
-                  splashRadius: 16,
-                  padding: const EdgeInsets.all(4),
-                  constraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-                  iconSize: 12,
-                  icon: const Icon(Icons.people),
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          if (isDesktop && ceHovered)
-            Positioned(
-              top: -8,
-              right: 0,
-              child: Container(
-                decoration: ShapeDecoration(
-                  color: playerSvtData.ce == null ? Colors.grey : Colors.red,
-                  shape: const CircleBorder(),
-                ),
-                child: IconButton(
-                  onPressed: playerSvtData.ce == null
-                      ? null
-                      : () {
-                          playerSvtData.ce = null;
-                          onChanged();
-                        },
-                  splashRadius: 16,
-                  padding: const EdgeInsets.all(4),
-                  constraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-                  iconSize: 12,
-                  icon: const Icon(Icons.remove_circle_outline),
-                  color: Colors.white,
-                ),
-              ),
-            ),
-        ],
-      ),
+      onAccept: (data) {
+        onDragCE?.call(data.svt);
+      },
     );
-    if (enableEdit && onDragCE != null) {
-      final ceDraggable = Draggable<_DragCEData>(
-        feedback: ceIcon,
-        data: _DragCEData(playerSvtData),
-        child: ceIconFrame,
-      );
-      ceIconFrame = DragTarget<_DragCEData>(
-        builder: (context, candidateData, rejectedData) {
-          return ceDraggable;
-        },
-        onAccept: (data) {
-          onDragCE?.call(data.svt);
-        },
-      );
-    }
 
-    children.add(Center(child: ceIconFrame));
+    children.add(Center(child: ceIcon));
 
-    // ce btn
+    // ce info
     String ceInfo = '';
     if (playerSvtData.ce != null) {
       ceInfo = 'Lv.${playerSvtData.ceLv}';
@@ -379,5 +251,137 @@ class _ServantSelectorState extends State<ServantSelector> {
         children: children,
       ),
     );
+  }
+
+  Widget _stackActions({
+    required BuildContext context,
+    required Widget child,
+    required VoidCallback? onTapSelect,
+    required VoidCallback? onTapClear,
+    double iconSize = 24,
+  }) {
+    if (!Theme.of(context).platform.isDesktop) return child;
+    const double padding = 4;
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        child,
+        Positioned(
+          left: 0,
+          top: -iconSize / 2,
+          child: Container(
+            decoration: ShapeDecoration(
+              color: Theme.of(context).primaryColor,
+              shape: const CircleBorder(),
+            ),
+            child: IconButton(
+              onPressed: onTapSelect,
+              icon: const Icon(Icons.people),
+              color: Colors.white,
+              iconSize: iconSize,
+              constraints: const BoxConstraints(),
+              padding: const EdgeInsets.all(padding),
+              splashRadius: 20,
+            ),
+          ),
+        ),
+        Positioned(
+          right: 0,
+          top: -iconSize / 2,
+          child: Container(
+            decoration: ShapeDecoration(
+              color: Theme.of(context).colorScheme.error,
+              shape: const CircleBorder(),
+            ),
+            child: IconButton(
+              onPressed: onTapClear,
+              icon: const Icon(Icons.remove_circle_outline),
+              color: Colors.white,
+              iconSize: iconSize,
+              constraints: const BoxConstraints(),
+              padding: const EdgeInsets.all(padding),
+              splashRadius: 20,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DragHover<T extends Object> extends StatefulWidget {
+  final bool enableEdit;
+  final T data;
+  final Widget child;
+  final Widget Function(BuildContext context, Widget child, bool hovered, bool dragging) builder;
+  final VoidCallback onTap;
+  final DragTargetAccept<T> onAccept;
+
+  const _DragHover({
+    super.key,
+    required this.enableEdit,
+    required this.data,
+    required this.child,
+    required this.builder,
+    required this.onTap,
+    required this.onAccept,
+  });
+
+  @override
+  State<_DragHover<T>> createState() => __DragHoverState<T>();
+}
+
+class __DragHoverState<T extends Object> extends State<_DragHover<T>> {
+  bool hovered = false;
+
+  static bool dragging = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final base = widget.child;
+    if (!widget.enableEdit) return base;
+
+    Widget child = DragTarget<T>(
+      builder: (context, candidateData, rejectedData) {
+        return base;
+      },
+      onAccept: widget.onAccept,
+    );
+    child = Draggable<T>(
+      data: widget.data,
+      feedback: child,
+      child: child,
+      onDragStarted: () {
+        setState(() {
+          dragging = true;
+        });
+      },
+      onDragCompleted: () {
+        setState(() {
+          dragging = false;
+        });
+      },
+      onDraggableCanceled: (_, __) {
+        setState(() {
+          dragging = false;
+        });
+      },
+      onDragEnd: (details) {
+        setState(() {
+          dragging = false;
+        });
+      },
+    );
+    child = widget.builder(context, child, hovered, dragging);
+    child = InkWell(
+      onHover: (value) {
+        setState(() {
+          hovered = value;
+        });
+      },
+      onTap: widget.onTap,
+      child: child,
+    );
+    return child;
   }
 }

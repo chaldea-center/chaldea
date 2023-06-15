@@ -402,6 +402,11 @@ class BattleTeamSetup {
       playerRegion: playerRegion,
     );
   }
+
+  void clear() {
+    onFieldSvtDataList.setRange(0, onFieldSvtDataList.length, List.generate(3, (index) => PlayerSvtData.base()));
+    backupSvtDataList.setRange(0, backupSvtDataList.length, List.generate(3, (index) => PlayerSvtData.base()));
+  }
 }
 
 class BattleOptions extends BattleOptionsRuntime {
