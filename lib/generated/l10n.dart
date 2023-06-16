@@ -3528,6 +3528,17 @@ class S {
     );
   }
 
+  /// `Withdraw`
+  String get event_svt_withdraw {
+    return Intl.message(
+      'Withdraw',
+      name: 'event_svt_withdraw',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Tower`
   String get event_tower {
     return Intl.message(

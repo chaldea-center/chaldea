@@ -315,6 +315,7 @@
   "event_rerun_replace_grail": "전승결정으로 대체되는 성배의 개수 : {n}/{total}",
   "event_shop": null,
   "event_skill": null,
+  "event_svt_withdraw": null,
   "event_tower": "타워",
   "event_treasure_box": "보물 상자",
   "exchange_count": null,

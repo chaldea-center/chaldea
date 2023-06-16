@@ -74,6 +74,7 @@ class ServantSelector extends StatelessWidget {
     );
     svtIcon = Stack(
       clipBehavior: Clip.none,
+      alignment: Alignment.topCenter,
       children: [
         svtIcon,
         if (playerSvtData.supportType.isSupport)
@@ -84,7 +85,6 @@ class ServantSelector extends StatelessWidget {
           ),
         if (playerSvtData.additionalPassives.isNotEmpty)
           Positioned(
-            left: 0,
             top: -5,
             child: db.getIconImage(AssetURL.i.buffIcon(302), width: 24, aspectRatio: 1),
           )

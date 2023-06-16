@@ -332,6 +332,10 @@ class UserSvt {
     }
   }
 
+  bool get isWithdraw {
+    return status != null && status! & 4 != 0;
+  }
+
   UserSvt({
     required dynamic id,
     required dynamic svtId,

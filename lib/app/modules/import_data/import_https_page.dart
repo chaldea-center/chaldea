@@ -302,13 +302,16 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             _wrapCellStyle([
               '${S.current.costume} ${cardCollections[svt.svtId]!.costumeIdsTo01()}',
             ]),
-          if (group.length > 1)
+          if (group.length > 1 || svt.isWithdraw)
             CustomTableRow.fromChildren(
               defaults: TableCellData(padding: EdgeInsets.zero),
               divider: null,
               children: [
                 Text(
-                  '[${group.indexOf(svt) + 1}] ${DateFormat('yyyy-MM-dd').format(svt.createdAt)}',
+                  [
+                    '[${group.indexOf(svt) + 1}] ${DateFormat('yyyy-MM-dd').format(svt.createdAt)}',
+                    if (svt.isWithdraw) S.current.event_svt_withdraw,
+                  ].join(' '),
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
                 )
               ],
@@ -601,6 +604,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     _validSvts.clear();
     for (final group in servants) {
       for (final svt in group) {
+        if (svt.isWithdraw) continue;
         if (_onlyLocked && !svt.locked) continue;
         if (!_allowDuplicated && group.indexOf(svt) > 0) continue;
         _validSvts.add(svt);

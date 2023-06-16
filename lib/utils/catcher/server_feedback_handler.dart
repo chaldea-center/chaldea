@@ -248,7 +248,7 @@ class ServerFeedbackHandler extends ReportHandler {
       }
 
       buffer.write('<h3>Body</h3>');
-      buffer.write(escape(report.body));
+      buffer.write(escape(report.body).replaceAll('\n', '<br/>'));
       buffer.write('<br/><br/>');
     }
 

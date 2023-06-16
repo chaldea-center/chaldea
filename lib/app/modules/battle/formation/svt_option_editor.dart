@@ -248,7 +248,12 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         ],
       ),
       TileGroup(
-        header: '${S.current.custom_skill}/Buff',
+        header: '${S.current.custom_skill}/Buff ',
+        headerWidget: SHeader.rich(TextSpan(text: '${S.current.custom_skill}/Buff', children: [
+          CenterWidgetSpan(
+            child: db.getIconImage(AssetURL.i.buffIcon(302), width: 18, aspectRatio: 1),
+          )
+        ])),
         children: [
           for (int index = 0; index < playerSvtData.additionalPassives.length; index++) _buildAdditionalPassive(index),
           Center(

@@ -13,14 +13,15 @@ enum ShopSort {
 
 class ShopFilterData {
   final permanent = FilterGroupData<bool>();
-  final opening = FilterGroupData<bool>();
+  final opening = FilterGroupData<int>();
   final type = FilterGroupData<ShopType>();
   final purchaseType = FilterGroupData<PurchaseType>();
+  final svtType = FilterGroupData<SvtType>();
 
   ShopSort sortType = ShopSort.openTime;
   bool reversed = false;
 
-  List<FilterGroupData> get groups => [type, permanent, opening, purchaseType];
+  List<FilterGroupData> get groups => [type, permanent, opening, purchaseType, svtType];
 
   void reset() {
     for (final group in groups) {
@@ -78,10 +79,10 @@ class _ShopFilterState extends FilterPageState<ShopFilterData, ShopFilter> {
             update();
           },
         ),
-        FilterGroup<bool>(
-          options: const [true, false],
+        FilterGroup<int>(
+          options: const [0, 1, 2],
           values: filterData.opening,
-          optionBuilder: (v) => Text(v ? "Opening" : "Closed"),
+          optionBuilder: (v) => Text(["Closed", "Opening", "Future"].getOrNull(v) ?? v.toString()),
           onFilterChanged: (value, _) {
             update();
           },
@@ -93,6 +94,22 @@ class _ShopFilterState extends FilterPageState<ShopFilterData, ShopFilter> {
               : (widget.purchaseTypes.toList()..sort2((e) => e.index)),
           values: filterData.purchaseType,
           optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.purchaseType).l),
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
+        FilterGroup<SvtType>(
+          enabled: filterData.purchaseType.contain(PurchaseType.servant),
+          title: const Text('Card Type'),
+          options: const [
+            SvtType.normal,
+            SvtType.svtMaterialTd,
+            SvtType.servantEquip,
+            SvtType.combineMaterial,
+            SvtType.statusUp
+          ],
+          values: filterData.svtType,
+          optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.svtType).l),
           onFilterChanged: (value, _) {
             update();
           },

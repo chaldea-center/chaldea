@@ -197,7 +197,8 @@ class _ShopListPageState extends State<ShopListPage> with SearchableListState<Ni
       return false;
     }
     final now = DateTime.now().timestamp;
-    if (!filterData.opening.matchOne(shop.openedAt <= now && shop.closedAt >= now)) {
+    int openStatus = shop.closedAt < now ? 0 : (shop.openedAt <= now ? 1 : 2);
+    if (!filterData.opening.matchOne(openStatus)) {
       return false;
     }
     if (!filterData.permanent.matchOne(shop.closedAt > kNeverClosedTimestamp)) {
@@ -205,6 +206,25 @@ class _ShopListPageState extends State<ShopListPage> with SearchableListState<Ni
     }
     if (!filterData.purchaseType.matchAny([shop.purchaseType, ...shop.itemSet.map((e) => e.purchaseType)])) {
       return false;
+    }
+    if (filterData.svtType.isNotEmpty) {
+      Set<int> svtIds = {};
+      if (shop.purchaseType == PurchaseType.servant) {
+        svtIds.addAll(shop.targetIds);
+      }
+      for (final setitem in shop.itemSet) {
+        if (setitem.purchaseType == PurchaseType.servant) {
+          svtIds.add(setitem.targetId);
+        }
+        for (final gift in setitem.gifts) {
+          if (gift.type == GiftType.servant) {
+            svtIds.add(gift.objectId);
+          }
+        }
+      }
+      if (!filterData.svtType.matchAny(svtIds.map((e) => db.gameData.entities[e]?.type).whereType())) {
+        return false;
+      }
     }
     return true;
   }

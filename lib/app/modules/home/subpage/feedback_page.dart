@@ -28,8 +28,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
   late TextEditingController subjectController;
   late TextEditingController bodyController;
 
-  final String defaultSubject = 'Chaldea v${AppInfo.fullVersion} Feedback';
-
   bool _changed = false;
 
   void _onTextFieldChanged() {
@@ -184,10 +182,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   decoration: InputDecoration(
                     labelText: S.current.feedback_subject,
                     border: const OutlineInputBorder(),
-                    hintText: defaultSubject,
                   ),
                 ),
               ),
+              const SizedBox(height: 8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 height: 200,
@@ -275,10 +273,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
       EasyLoading.showInfo(S.current.contact_information_not_filled);
       return;
     }
+    if (subjectController.text.trim().isEmpty) {
+      EasyLoading.showInfo('${S.current.feedback_subject}: ${S.current.empty_hint}');
+      return;
+    }
     EasyLoading.show(status: S.current.sending, maskType: EasyLoadingMaskType.clear);
     try {
-      String subject = subjectController.text.trim();
-      if (subject.isEmpty) subject = defaultSubject;
+      String subject = '[Feedback] ${subjectController.text.trim()}';
 
       final handler = ServerFeedbackHandler(
         attachments: [

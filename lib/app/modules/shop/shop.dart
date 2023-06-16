@@ -144,7 +144,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> with RegionBasedState<N
   }
 
   Widget getRewards(BuildContext context) {
-    final rewards = ShopHelper.purchases(context, shop);
+    final rewards = ShopHelper.purchases(context, shop, showSvtLvAsc: true);
     List<Widget> children = [];
     for (final reward in rewards) {
       children.add(Text.rich(TextSpan(text: kULLeading, children: [
@@ -226,6 +226,7 @@ class ShopHelper {
     BuildContext context,
     NiceShop shop, {
     bool showSpecialName = false,
+    bool showSvtLvAsc = false,
   }) sync* {
     final shopName = TextSpan(
       text: '\n(${shop.name})',
@@ -252,7 +253,8 @@ class ShopHelper {
         return;
       case PurchaseType.setItem:
         for (final set in shop.itemSet) {
-          final rewards = onePurchase(context, shop, set.purchaseType, set.targetId, set.setNum, set.gifts);
+          final rewards = onePurchase(context, shop, set.purchaseType, set.targetId, set.setNum, set.gifts,
+              showSvtLvAsc: showSvtLvAsc, showSpecialName: showSpecialName);
           if (shop.setNum == 1) {
             yield* rewards;
           } else {
@@ -266,7 +268,8 @@ class ShopHelper {
         }
         return;
       default:
-        yield* onePurchase(context, shop, shop.purchaseType, shop.targetIds.getOrNull(0) ?? 0, shop.setNum, shop.gifts);
+        yield* onePurchase(context, shop, shop.purchaseType, shop.targetIds.getOrNull(0) ?? 0, shop.setNum, shop.gifts,
+            showSvtLvAsc: showSvtLvAsc, showSpecialName: showSpecialName);
     }
   }
 
@@ -278,6 +281,7 @@ class ShopHelper {
     int targetNum,
     List<Gift> gifts, {
     bool showSpecialName = false,
+    bool showSvtLvAsc = false,
   }) sync* {
     final shopName = TextSpan(
       text: '\n(${shop.name})',
@@ -309,7 +313,15 @@ class ShopHelper {
             id: targetId,
             text: text,
           ),
-          TextSpan(text: GameCardMixin.anyCardItemName(targetId).l + (targetNum == 1 ? "" : " ×${targetNum.format()}")),
+          TextSpan(
+              text: [
+            GameCardMixin.anyCardItemName(targetId).l,
+            if (targetNum != 1) "×${targetNum.format()}",
+            if (showSvtLvAsc &&
+                purchaseType == PurchaseType.servant &&
+                [SvtType.servantEquip, SvtType.normal].contains(db.gameData.entities[targetId]?.type))
+              '(Lv.${shop.defaultLv}, ${S.current.ascension_short} ${shop.defaultLimitCount})',
+          ].join(' ')),
         );
         return;
       case PurchaseType.equip:
