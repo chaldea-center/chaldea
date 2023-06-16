@@ -139,6 +139,7 @@
   "card_strengthen": "コマンドカード強化",
   "carousel_setting": "カルーセル設定",
   "cc_equipped_svt": "装備されたサーヴァント",
+  "ce_custom_skill_hint": null,
   "chaldea_account": "Chaldea アカウント",
   "chaldea_account_system_hint": "V1データとの互換性はありません。\nユーザデータのバックアップ及びマルチデバイス同期を行うためのシンプルなアカウントシステムです。\nセキュリティ保証がなければ、常用パスワードを設定しないでください。\n上記のサービスが要らなければ、登録することは必要がありません。",
   "chaldea_backup": "Chaldea バックアップ",

@@ -248,20 +248,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         ],
       ),
       TileGroup(
-        header: S.current.append_skill,
-        children: [
-          for (final skillNum in kAppendSkillNums) _buildAppendSkill(context, skillNum),
-        ],
-      ),
-      TileGroup(
-        header: S.current.extra_passive,
-        children: [
-          if (extraPassives.isEmpty) const ListTile(dense: true, title: Text('NONE')),
-          for (final passive in extraPassives) _buildExtraPassive(passive),
-        ],
-      ),
-      TileGroup(
-        header: '${S.current.extra_passive} (${S.current.general_custom})',
+        header: '${S.current.custom_skill}/Buff',
         children: [
           for (int index = 0; index < playerSvtData.additionalPassives.length; index++) _buildAdditionalPassive(index),
           Center(
@@ -280,7 +267,20 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           )
         ],
       ),
-      _buildCmdCodePlanner()
+      _buildCmdCodePlanner(),
+      TileGroup(
+        header: S.current.extra_passive,
+        children: [
+          if (extraPassives.isEmpty) const ListTile(dense: true, title: Text('NONE')),
+          for (final passive in extraPassives) _buildExtraPassive(passive),
+        ],
+      ),
+      TileGroup(
+        header: S.current.append_skill,
+        children: [
+          for (final skillNum in kAppendSkillNums) _buildAppendSkill(context, skillNum),
+        ],
+      ),
     ];
     return ListView(children: children);
   }
@@ -334,7 +334,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   }
 
   Widget get popupMenu {
-    return PopupMenuButton(
+    return PopupMenuButton<dynamic>(
       itemBuilder: (context) => [
         PopupMenuItem(
           enabled: false,
@@ -369,16 +369,15 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             },
             child: Text(S.current.support_servant),
           ),
-        if (playerSvtData.svt != null &&
-            playerSvtData.supportType != SupportSvtType.npc &&
-            !db.settings.battleSim.playerDataSource.isNone)
-          PopupMenuItem(
-            onTap: () async {
-              await null;
-              resyncServantData();
-            },
-            child: Text(S.current.svt_option_resync),
-          ),
+        const PopupMenuDivider(),
+        PopupMenuItem(
+          enabled: playerSvtData.svt != null && playerSvtData.supportType.isSupport,
+          onTap: () async {
+            await null;
+            resyncServantData();
+          },
+          child: Text(S.current.svt_option_resync),
+        ),
       ],
     );
   }
@@ -1014,18 +1013,12 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
   void resyncServantData() {
     final selectedSvt = playerSvtData.svt;
-    if (selectedSvt == null || playerSvtData.supportType == SupportSvtType.npc) {
+    if (selectedSvt == null || playerSvtData.supportType.isSupport) {
       return;
     }
-    final status = db.curUser.svtStatusOf(selectedSvt.collectionNo);
-
-    if (!db.settings.battleSim.playerDataSource.isNone && status.cur.favorite && selectedSvt.collectionNo > 0) {
-      final plan = db.settings.battleSim.playerDataSource == PreferPlayerSvtDataSource.target
-          ? db.curUser.svtPlanOf(selectedSvt.collectionNo)
-          : status.cur;
-      playerSvtData.fromUserSvt(svt: selectedSvt, status: status, plan: plan);
-      if (mounted) setState(() {});
-    }
+    playerSvtData.onSelectServant(selectedSvt, widget.playerRegion);
+    if (mounted) setState(() {});
+    EasyLoading.showSuccess(S.current.updated);
   }
 
   Future<void> _onSelectSupport(final SupportServant support) async {
@@ -1134,21 +1127,24 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     List<Widget> children = [];
     children.add(_header(context));
 
-    children.add(SliderWithPrefix(
-      leadingWidth: 36,
-      label: 'Lv',
-      min: 1,
-      max: ce.lvMax,
-      value: playerSvtData.ceLv,
-      onChange: (v) {
-        playerSvtData.ceLv = v.round();
-        final mlbLv = ce.ascensionAdd.lvMax.ascension[3];
-        if (mlbLv != null && mlbLv > 0 && playerSvtData.ceLv > mlbLv) {
-          playerSvtData.ceLimitBreak = true;
-        }
-        _updateState();
-      },
-      // endOffset: -16,
+    children.add(Padding(
+      padding: const EdgeInsetsDirectional.only(end: 16),
+      child: SliderWithPrefix(
+        leadingWidth: 36,
+        label: 'Lv',
+        min: 1,
+        max: ce.lvMax,
+        value: playerSvtData.ceLv,
+        onChange: (v) {
+          playerSvtData.ceLv = v.round();
+          final mlbLv = ce.ascensionAdd.lvMax.ascension[3];
+          if (mlbLv != null && mlbLv > 0 && playerSvtData.ceLv > mlbLv) {
+            playerSvtData.ceLimitBreak = true;
+          }
+          _updateState();
+        },
+        // endOffset: -16,
+      ),
     ));
     children.add(SwitchListTile.adaptive(
       value: playerSvtData.ceLimitBreak,
@@ -1178,6 +1174,15 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
         children.add(SkillDescriptor(skill: skill));
       }
     }
+    children.addAll([
+      DividerWithTitle(title: '${S.current.custom_skill}?'),
+      Text(
+        S.current.ce_custom_skill_hint,
+        style: Theme.of(context).textTheme.bodySmall,
+        textAlign: TextAlign.center,
+      ),
+      const SizedBox(height: 16),
+    ]);
 
     return ListView(children: children);
   }

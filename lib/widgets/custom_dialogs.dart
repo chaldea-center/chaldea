@@ -51,7 +51,13 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.text);
+    final text = widget.text ?? '';
+    _controller = TextEditingController.fromValue(TextEditingValue(
+      text: text,
+      selection: text.isEmpty
+          ? const TextSelection.collapsed(offset: -1)
+          : TextSelection(baseOffset: 0, extentOffset: text.length),
+    ));
   }
 
   @override

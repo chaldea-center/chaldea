@@ -139,6 +139,7 @@
   "card_strengthen": null,
   "carousel_setting": "배너 설정",
   "cc_equipped_svt": "장착된 서번트",
+  "ce_custom_skill_hint": null,
   "chaldea_account": "Chaldea 계정",
   "chaldea_account_system_hint": "V1 데이터와 호환되지 않습니다\n사용자 데이터 백업 및 다중 장치 동기화를 위한 간단한 계정 시스템입니다\n보안이 보장되지 않는 한 일반 비밀번호를 설정하지 마십시오\n위의 서비스가 필요하지 않으시면 회원가입을 하지 않으셔도 됩니다",
   "chaldea_backup": "Chaldea 백업",

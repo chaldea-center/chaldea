@@ -233,6 +233,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_strengthen": MessageLookupByLibrary.simpleMessage("Card Strengthen"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("Carousel Setting"),
         "cc_equipped_svt": MessageLookupByLibrary.simpleMessage("Equipped Servants"),
+        "ce_custom_skill_hint":
+            MessageLookupByLibrary.simpleMessage("Please add custom skills/buffs through servant options"),
         "chaldea_account": MessageLookupByLibrary.simpleMessage("Chaldea Account"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
             "  Not compatible with V1 data.\n  A simple account system for userdata backup to server and multi-device synchronization\n  NO security guarantee, PLEASE DON\'T set frequently used passwords!!!\n  No need to register if you do not need these two features."),
@@ -964,7 +966,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("Not favorite"),
         "svt_option_edit_tips": MessageLookupByLibrary.simpleMessage(
             "1. Servant options are independent from Chaldea\'s plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manuually via options below"),
-        "svt_option_resync": MessageLookupByLibrary.simpleMessage("Resync Options from Plan"),
+        "svt_option_resync": MessageLookupByLibrary.simpleMessage("Resync Options"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("Hidden"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("Profile"),
         "svt_profile_info": MessageLookupByLibrary.simpleMessage("Character Info"),

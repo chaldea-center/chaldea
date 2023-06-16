@@ -139,6 +139,7 @@
   "card_strengthen": null,
   "carousel_setting": "Configuración del carrusel",
   "cc_equipped_svt": null,
+  "ce_custom_skill_hint": null,
   "chaldea_account": "Usuario de Chaldea",
   "chaldea_account_system_hint": "Un sistema de cuenta simple para la copia de seguridad de los datos de usuario en el servidor y la sincronización de múltiples dispositivos\n  SIN garantía de seguridad, ¡POR FAVOR NO establezca contraseñas de uso frecuente!\n  No es necesario registrarse si no necesita estas dos funciones.",
   "chaldea_backup": "Copia de seguridad de Chaldea",

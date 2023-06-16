@@ -227,6 +227,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_strengthen": MessageLookupByLibrary.simpleMessage("指令卡強化"),
         "carousel_setting": MessageLookupByLibrary.simpleMessage("輪播設置"),
         "cc_equipped_svt": MessageLookupByLibrary.simpleMessage("已裝備從者"),
+        "ce_custom_skill_hint": MessageLookupByLibrary.simpleMessage("请前往从者添加自定义技能/Buff"),
         "chaldea_account": MessageLookupByLibrary.simpleMessage("Chaldea帳號"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
             "  與V1數據不互通。\n  一個簡易的用於數據備份及多設備同步的帳號系統。\n  沒有安全性保障，請不要設置常用密碼！\n  若不需要上述功能，則無需註冊。"),
@@ -926,7 +927,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("未關注"),
         "svt_option_edit_tips": MessageLookupByLibrary.simpleMessage(
             "1.队伍中从者的等级等信息自导入后与规划信息独立，如需再次同步请使用右上角下拉菜单中的重新读取配置\n2.技能、宝具强化状态可通过下方选项手动设定"),
-        "svt_option_resync": MessageLookupByLibrary.simpleMessage("从规划重新读取配置"),
+        "svt_option_resync": MessageLookupByLibrary.simpleMessage("重新读取配置"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("已隱藏"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("羈絆故事"),
         "svt_profile_info": MessageLookupByLibrary.simpleMessage("角色詳情"),

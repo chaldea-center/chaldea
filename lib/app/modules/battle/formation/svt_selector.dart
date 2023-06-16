@@ -72,19 +72,24 @@ class ServantSelector extends StatelessWidget {
         errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
       ),
     );
-    if (playerSvtData.supportType.isSupport) {
-      svtIcon = Stack(
-        alignment: Alignment.topRight,
-        children: [
-          svtIcon,
+    svtIcon = Stack(
+      clipBehavior: Clip.none,
+      children: [
+        svtIcon,
+        if (playerSvtData.supportType.isSupport)
           Positioned(
             top: -5,
             right: -5,
             child: db.getIconImage(AssetURL.i.items(12), width: 32, aspectRatio: 1),
           ),
-        ],
-      );
-    }
+        if (playerSvtData.additionalPassives.isNotEmpty)
+          Positioned(
+            left: 0,
+            top: -5,
+            child: db.getIconImage(AssetURL.i.buffIcon(302), width: 24, aspectRatio: 1),
+          )
+      ],
+    );
 
     svtIcon = _DragHover<_DragSvtData>(
       enableEdit: enableEdit,

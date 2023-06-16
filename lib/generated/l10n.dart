@@ -1592,6 +1592,17 @@ class S {
     );
   }
 
+  /// `Please add custom skills/buffs through servant options`
+  String get ce_custom_skill_hint {
+    return Intl.message(
+      'Please add custom skills/buffs through servant options',
+      name: 'ce_custom_skill_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Chaldea Account`
   String get chaldea_account {
     return Intl.message(
@@ -9165,10 +9176,10 @@ class S {
     );
   }
 
-  /// `Resync Options from Plan`
+  /// `Resync Options`
   String get svt_option_resync {
     return Intl.message(
-      'Resync Options from Plan',
+      'Resync Options',
       name: 'svt_option_resync',
       desc: '',
       locale: localeName,

@@ -796,6 +796,7 @@ mixin _ParamDialogMixin {
       case CardType.quick:
         return buffIcon(312);
       case CardType.extra:
+        return buffIcon(388);
       case CardType.none:
       case CardType.blank:
       case CardType.weak:
