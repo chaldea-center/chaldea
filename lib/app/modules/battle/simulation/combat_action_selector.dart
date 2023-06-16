@@ -124,10 +124,13 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         ),
       ],
     ));
-    children.add(Text(
-      S.current.battle_select_critical_card_hint,
-      style: TextStyle(color: Theme.of(context).colorScheme.error),
-      textScaleFactor: 0.9,
+    children.add(ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: cardSize * 7),
+      child: Text(
+        S.current.battle_select_critical_card_hint,
+        style: TextStyle(color: Theme.of(context).colorScheme.error),
+        textScaleFactor: 0.9,
+      ),
     ));
 
     return Column(
