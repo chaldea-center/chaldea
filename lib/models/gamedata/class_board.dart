@@ -145,6 +145,7 @@ class ClassBoardSquare {
 
 @JsonSerializable()
 class ClassBoardCommandSpell {
+  int id;
   int commandSpellId;
   // int lv;
   String name;
@@ -152,13 +153,12 @@ class ClassBoardCommandSpell {
   List<NiceFunction> functions;
 
   ClassBoardCommandSpell({
+    required this.id,
     required this.commandSpellId,
     this.name = "",
     this.detail = "",
     this.functions = const [],
   });
-
-  int get id => int.parse(functions.map((e) => e.funcId % 100).join());
 
   factory ClassBoardCommandSpell.fromJson(Map<String, dynamic> json) => _$ClassBoardCommandSpellFromJson(json);
 
@@ -186,7 +186,7 @@ class ClassBoardLock {
   int condNum;
 
   ClassBoardLock({
-    this.id = 0,
+    required this.id,
     this.items = const [],
     this.condType = CondType.none,
     this.condTargetId = 0,

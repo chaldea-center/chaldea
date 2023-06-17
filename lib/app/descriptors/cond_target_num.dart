@@ -503,7 +503,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           jp: () => text('『$classIdsStr』クラスのサーヴァントの絆レベルを合計$targetNum以上にせよ'),
           cn: () => text('『$classIdsStr』职阶从者牵绊等级合计达到$targetNum以上'),
           tw: null,
-          na: () => text('Accumulatively reach $targetNum bond levels for [$classIdsStr] class servants'),
+          na: () => text('Reach bond level $targetNum on [$classIdsStr] class servants'),
           kr: null,
         );
       case CondType.svtClassSkillLvUpCount:
@@ -512,7 +512,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           cn: () => text('『$classIdsStr』职阶从者技能强化累计$targetNum次（不计算相同灵基）'),
           tw: null,
           na: () => text(
-              'Accumulatively increase skill levels $targetNum times for [$classIdsStr] class servants (not include duplicate servants)'),
+              'Leveled up skills of [$classIdsStr] class servants $targetNum times (not include duplicate servants)'),
           kr: null,
         );
       case CondType.svtClassLvUpCount:
@@ -520,8 +520,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           jp: () => text('『$classIdsStr』クラスのサーヴァントのLvを合計$targetNum回強化せよ(同一霊基不可) '),
           cn: () => text('『$classIdsStr』职阶从者等级强化累计$targetNum次（不计算相同灵基）'),
           tw: null,
-          na: () => text(
-              'Accumulatively level up [$classIdsStr] class servants $targetNum times (not include duplicate servants)'),
+          na: () => text('Leveled up [$classIdsStr] class servants $targetNum times (not include duplicate servants)'),
           kr: null,
         );
       case CondType.svtClassLimitUpCount:
@@ -529,8 +528,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           jp: () => text('『$classIdsStr』クラスのサーヴァントを合計$targetNum回霊基再臨せよ(同一霊基不可) '),
           cn: () => text('『$classIdsStr』职阶从者灵基再临累计$targetNum次（不计算相同灵基）'),
           tw: null,
-          na: () => text(
-              'Accumulatively ascend [$classIdsStr] class servants $targetNum times (not include duplicate servants)'),
+          na: () => text('Ascend [$classIdsStr] class servants $targetNum times (not include duplicate servants)'),
           kr: null,
         );
       case CondType.svtFriendshipClassNumAbove:

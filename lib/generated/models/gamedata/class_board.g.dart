@@ -113,6 +113,7 @@ const _$ClassBoardSquareFlagEnumMap = {
 };
 
 ClassBoardCommandSpell _$ClassBoardCommandSpellFromJson(Map json) => ClassBoardCommandSpell(
+      id: json['id'] as int,
       commandSpellId: json['commandSpellId'] as int,
       name: json['name'] as String? ?? "",
       detail: json['detail'] as String? ?? "",
@@ -123,6 +124,7 @@ ClassBoardCommandSpell _$ClassBoardCommandSpellFromJson(Map json) => ClassBoardC
     );
 
 Map<String, dynamic> _$ClassBoardCommandSpellToJson(ClassBoardCommandSpell instance) => <String, dynamic>{
+      'id': instance.id,
       'commandSpellId': instance.commandSpellId,
       'name': instance.name,
       'detail': instance.detail,
@@ -130,7 +132,7 @@ Map<String, dynamic> _$ClassBoardCommandSpellToJson(ClassBoardCommandSpell insta
     };
 
 ClassBoardLock _$ClassBoardLockFromJson(Map json) => ClassBoardLock(
-      id: json['id'] as int? ?? 0,
+      id: json['id'] as int,
       items: (json['items'] as List<dynamic>?)
               ?.map((e) => ItemAmount.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
