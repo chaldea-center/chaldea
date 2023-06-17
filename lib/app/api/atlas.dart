@@ -288,7 +288,7 @@ class ApiCacheManager {
         _downloading.remove(url);
         if (!task.completer.isCompleted) task.completer.complete(null);
         if (!task.canceled) _failed[url] = DateTime.now();
-        if (kDebugMode) print(escapeDioError(e));
+        if (kDebugMode) print(escapeDioException(e));
         return Future.value();
       });
       return task.completer.future;

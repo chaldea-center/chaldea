@@ -1,12 +1,9 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
-
 import 'package:fl_chart/fl_chart.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
@@ -210,16 +207,6 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
   Widget pieChart() {
     _calcServantClass();
     int total = Maths.sum(svtClassCount.values);
-    if (kIsWeb && !kPlatformMethods.rendererCanvasKit) {
-      // TODO: https://github.com/flutter/flutter/issues/44572
-      // https://github.com/imaNNeoFighT/fl_chart/issues/955
-      return const Padding(
-        padding: EdgeInsets.all(16),
-        child: Center(
-          child: Text('Chart is disabled on web with "html" renderer'),
-        ),
-      );
-    }
     return LayoutBuilder(
       builder: (context, constraints) {
         double mag = min(1, constraints.maxWidth / 350);

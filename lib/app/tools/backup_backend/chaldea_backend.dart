@@ -56,7 +56,7 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
       }
     } catch (e, s) {
       logger.e('upload server backup failed', e, s);
-      error = escapeDioError(e);
+      error = escapeDioException(e);
     }
     EasyLoading.showError(error ?? S.current.failed);
     return false;
@@ -118,7 +118,7 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
       );
     } catch (e, s) {
       logger.e('decode server backup response failed', e, s);
-      EasyLoading.showError(escapeDioError(e));
+      EasyLoading.showError(escapeDioException(e));
       return null;
     }
   }

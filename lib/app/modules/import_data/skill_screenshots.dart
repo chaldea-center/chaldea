@@ -159,7 +159,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage> wi
       if (mounted) {
         SimpleCancelOkDialog(
           title: const Text('Error'),
-          content: Text(escapeDioError(e)),
+          content: Text(escapeDioException(e)),
           hideCancel: true,
         ).showDialog(context);
       }

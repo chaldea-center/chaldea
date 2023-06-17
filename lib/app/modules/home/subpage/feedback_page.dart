@@ -307,7 +307,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
       EasyLoading.showSuccess(S.current.sent);
     } catch (e, s) {
       logger.e('send feedback failed', e, s);
-      EasyLoading.showError(escapeDioError(e));
+      EasyLoading.showError(escapeDioException(e));
     }
   }
 }

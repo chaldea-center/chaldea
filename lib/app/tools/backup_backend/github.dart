@@ -99,7 +99,7 @@ class GithubBackup<T> extends BackupBackend<T> {
         throw GitHubError(github, 'Path is a directory');
       }
       return GitHubFile.fromJson(response.data as Map<String, dynamic>);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       if (e.response?.statusCode == 404) {
         return null;
       }
@@ -126,7 +126,7 @@ class GithubBackup<T> extends BackupBackend<T> {
         },
       );
       return ContentCreation.fromJson(response.data as Map<String, dynamic>);
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       if (e.response?.statusCode == 409) {
         throw ConflictError(github, e.response!.data['message']);
       }

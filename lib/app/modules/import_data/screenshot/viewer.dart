@@ -118,7 +118,7 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
       EasyLoading.dismiss();
     } catch (e, s) {
       logger.e('read recognizer skill list failed', e, s);
-      EasyLoading.showError(escapeDioError(e));
+      EasyLoading.showError(escapeDioException(e));
     }
     if (mounted) setState(() {});
   }
@@ -139,7 +139,7 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
       EasyLoading.dismiss();
     } catch (e, s) {
       logger.e('read recognizer ${widget.type.name} result failed', e, s);
-      EasyLoading.showError(escapeDioError(e));
+      EasyLoading.showError(escapeDioException(e));
     }
     if (mounted) setState(() {});
   }

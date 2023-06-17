@@ -103,7 +103,7 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
                 return items;
               }),
         ),
-        gridData: FlGridData(show: false),
+        gridData: const FlGridData(show: false),
         titlesData: FlTitlesData(
           leftTitles: AxisTitles(
             sideTitles: SideTitles(
@@ -169,7 +169,7 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
             color: datum.color ?? colors[index % colors.length],
             barWidth: 4,
             isStrokeCapRound: true,
-            dotData: FlDotData(show: false),
+            dotData: const FlDotData(show: false),
             belowBarData: BarAreaData(show: false),
             spots: [
               for (int index = 0; index < min(datum.xx.length, datum.yy.length); index++)
@@ -184,9 +184,9 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
         maxX: maxX,
         minY: minY,
         maxY: maxY,
-        clipData: FlClipData.horizontal(),
+        clipData: const FlClipData.horizontal(),
       ),
-      swapAnimationDuration: const Duration(milliseconds: 250),
+      duration: const Duration(milliseconds: 250),
     );
   }
 }

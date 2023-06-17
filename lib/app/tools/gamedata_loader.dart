@@ -68,7 +68,7 @@ class GameDataLoader {
     Duration? connectTimeout,
   }) async {
     void _showError(Object? e) {
-      error = escapeDioError(e);
+      error = escapeDioException(e);
       if (!silent) {
         EasyLoading.showInfo(error);
       } else {

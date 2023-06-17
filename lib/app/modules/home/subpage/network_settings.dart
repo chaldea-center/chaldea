@@ -124,7 +124,7 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
     if (resp is Response) {
       final statusCode = resp.statusCode;
       return _textWithIndicator(statusCode.toString(), statusCode != null && statusCode >= 200 && statusCode < 300);
-    } else if (resp is DioError) {
+    } else if (resp is DioException) {
       return _textWithIndicator(resp.response?.statusCode?.toString() ?? 'Error', false, resp);
     } else {
       return _textWithIndicator('Unknown', false, resp);
@@ -153,7 +153,7 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
         String text;
         if (error is Response) {
           text = error.data.toString();
-        } else if (error is DioError) {
+        } else if (error is DioException) {
           text = error.toString();
           if (error.response != null) {
             text += '\n${error.response!.data}';

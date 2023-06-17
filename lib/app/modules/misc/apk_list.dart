@@ -258,7 +258,7 @@ class _ApkListPageState extends State<ApkListPage> {
       children.add(ListTile(
         dense: true,
         title: Text(
-          '${S.current.error}: ${escapeDioError(data.error)}',
+          '${S.current.error}: ${escapeDioException(data.error)}',
           maxLines: 3,
         ),
       ));

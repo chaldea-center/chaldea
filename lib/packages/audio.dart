@@ -41,7 +41,7 @@ class MyAudioPlayer<T> {
           if (onError != null) {
             onError!(e);
           } else if (showError) {
-            EasyLoading.showError(escapeDioError(e));
+            EasyLoading.showError(escapeDioException(e));
           }
         }
         // may not be `completed`

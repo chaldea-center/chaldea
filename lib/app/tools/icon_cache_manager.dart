@@ -113,7 +113,7 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
       }).catchError((e) async {
         if (e is! RateLimitCancelError) {
           failed += 1;
-          print('failed $url: ${escapeDioError(e)}');
+          print('failed $url: ${escapeDioException(e)}');
         }
         return '';
       }).whenComplete(() {
@@ -292,7 +292,7 @@ abstract class _CachedLoader<K, V> {
       _cmpl.complete(value);
     }).catchError((e, s) {
       _cmpl.complete(null);
-      if (e is DioError) {
+      if (e is DioException) {
         final code = e.response?.statusCode;
         if (code == 403 || code == 404) {
           _failed[key] ??= _FailureDetail(time: DateTime.now(), statusCode: code);

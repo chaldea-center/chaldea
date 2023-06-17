@@ -339,7 +339,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                         await _fetchQuestPhase();
                       } catch (e, s) {
                         logger.e('fetch quest phase failed', e, s);
-                        questErrorMsg = escapeDioError(e);
+                        questErrorMsg = escapeDioException(e);
                       } finally {
                         EasyLoading.dismiss();
                         if (mounted) setState(() {});

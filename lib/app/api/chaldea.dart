@@ -85,7 +85,7 @@ class ChaldeaResponse {
     } catch (e) {
       await SimpleCancelOkDialog(
         title: Text(S.current.failed),
-        content: Text(escapeDioError(e)),
+        content: Text(escapeDioException(e)),
         scrollable: false,
       ).showDialog(null);
       return null;

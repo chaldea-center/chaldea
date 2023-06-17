@@ -162,7 +162,7 @@ class ServerFeedbackHandler extends ReportHandler {
 
   Future<bool> _isBlockedError(Report report) async {
     if (report is FeedbackReport) return false;
-    if (report.error is DioError) return true;
+    if (report.error is DioException) return true;
     if (kIsWeb) {
       if ([
         'TypeError: Failed to fetch',

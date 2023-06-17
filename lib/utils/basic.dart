@@ -251,8 +251,8 @@ String calcMd5(String input) {
   return md5.convert(utf8.encode(input)).toString();
 }
 
-String escapeDioError(error) {
-  if (error is DioError) {
+String escapeDioException(error) {
+  if (error is DioException) {
     return error.messageWithData();
   }
   return error.toString();

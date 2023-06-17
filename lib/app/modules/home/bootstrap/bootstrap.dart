@@ -518,7 +518,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
         if (_loader.error != null)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Center(child: Text(escapeDioError(_loader.error))),
+            child: Center(child: Text(escapeDioException(_loader.error))),
           ),
       ],
     );

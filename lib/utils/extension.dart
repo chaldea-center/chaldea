@@ -432,7 +432,7 @@ Dio DioE([BaseOptions? options]) {
   ));
 }
 
-extension DioErrorX on DioError {
+extension DioExceptionX on DioException {
   String _limit(String s) {
     if (s.length > 1000) return s.substring(0, 1000);
     return s;
@@ -451,7 +451,7 @@ extension DioErrorX on DioError {
   }
 
   String messageWithData() {
-    String msg = '[NetworkError] DioError [$type]: $message';
+    String msg = '[NetworkError] DioException [$type]: $message';
     if (response?.data != null) {
       msg += '\n${_limit(_tryDecodeData())}';
     }

@@ -395,7 +395,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       }
     } catch (e, s) {
       logger.e('toplogin failed', e, s);
-      _error = escapeDioError(e);
+      _error = escapeDioException(e);
       EasyLoading.showError('Login failed\n$_error');
     } finally {
       if (mounted) setState(() {});

@@ -134,7 +134,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
                 widget.onChanged(this.auth);
                 EasyLoading.showSuccess(S.current.success);
               } catch (e, s) {
-                EasyLoading.showError(escapeDioError(e));
+                EasyLoading.showError(escapeDioException(e));
                 logger.e('decode auth failed', e, s);
               } finally {
                 if (mounted) setState(() {});
@@ -272,7 +272,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
       return res;
     } catch (e, s) {
       logger.e('decode auth failed', e, s);
-      EasyLoading.showError(escapeDioError(e));
+      EasyLoading.showError(escapeDioException(e));
     } finally {
       if (mounted) setState(() {});
     }

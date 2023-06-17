@@ -49,14 +49,14 @@ dependencies:
   dart_des: ^1.0.2
   data_table_2: ^2.5.0
   device_info_plus: ^9.0.0
-  dio: ^5.1.0
+  dio: ^5.2.1+1
   # dio_cookie_manager: ^3.0.0
   dots_indicator: ^3.0.0
   file_picker: ^5.3.0
-  fl_chart: ^0.62.0
+  fl_chart: ^0.63.0
   flutter_cache_manager: ^3.2.0
   flutter_easyloading: ^3.0.5
-  flutter_email_sender: ^5.0.2
+  flutter_email_sender: ^6.0.0
   flutter_hooks: ^0.18.5+1
   flutter_markdown: ^0.6.14
   flutter_picker: ^2.1.0
@@ -84,6 +84,7 @@ dependencies:
   modal_bottom_sheet: ^3.0.0-pre
   octo_image: ^1.0.2
   package_info_plus: ^4.0.0
+  pasteboard: ^0.2.0
   path: ^1.8.2
   path_provider: ^2.0.14
   permission_handler: ^10.1.0

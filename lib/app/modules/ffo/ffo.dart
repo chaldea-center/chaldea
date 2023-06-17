@@ -179,7 +179,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
       await FfoDB.i.load(force);
     } catch (e, s) {
       logger.e('load FFO data failed', e, s);
-      EasyLoading.showError(escapeDioError(e));
+      EasyLoading.showError(escapeDioException(e));
     }
     _loading = false;
     if (mounted) setState(() {});

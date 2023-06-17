@@ -92,7 +92,7 @@ class _CustomPrettyPrinter extends PrettyPrinter {
       stackTraceStr = formatStackTrace(_fmtStackTrace(event.stackTrace), errorMethodCount);
     }
     dynamic error = event.error;
-    if (error is DioError) {
+    if (error is DioException) {
       String detail = error.response?.data.toString() ?? "";
       if (detail.length > 1000) detail = "\n${detail.substring(0, 1000)}";
 
