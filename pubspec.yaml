@@ -84,7 +84,10 @@ dependencies:
   modal_bottom_sheet: ^3.0.0-pre
   octo_image: ^1.0.2
   package_info_plus: ^4.0.0
-  pasteboard: ^0.2.0
+  pasteboard: # ^0.2.0
+    git:
+      url: https://github.com/MixinNetwork/flutter-plugins
+      path: packages/pasteboard
   path: ^1.8.2
   path_provider: ^2.0.14
   permission_handler: ^10.1.0
