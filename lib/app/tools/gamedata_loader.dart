@@ -227,7 +227,7 @@ class GameDataLoader {
       // 'servants': 'collectionNo',
       // 'craftEssences': 'collectionNo',
       // 'commandCodes': 'collectionNo',
-
+      'items': 'id',
       'baseFunctions': 'funcId',
       'baseSkills': 'id',
       'baseTds': 'id',
@@ -240,7 +240,6 @@ class GameDataLoader {
       'enemyMasters': 'id',
       'exchangeTickets': 'id',
       'fixedDrops': 'id',
-      'items': 'id',
       // mappingData
       // mappingPatch
       'mysticCodes': 'id',

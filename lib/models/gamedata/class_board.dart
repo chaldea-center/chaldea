@@ -1,13 +1,18 @@
+import 'package:chaldea/generated/l10n.dart';
+import '../../app/app.dart';
+import '../db.dart';
 import '_helper.dart';
 import 'common.dart';
 import 'item.dart';
+import 'mappings.dart';
 import 'skill.dart';
 
 part '../../generated/models/gamedata/class_board.g.dart';
 
 @JsonSerializable(converters: [CondTypeConverter()])
-class ClassBoard {
+class ClassBoard with RouteInfo {
   int id;
+  String name;
   String? icon;
   List<Item> dispItems;
   // String closedMessage;
@@ -20,6 +25,7 @@ class ClassBoard {
 
   ClassBoard({
     required this.id,
+    this.name = "",
     this.icon,
     this.dispItems = const [],
     this.condType = CondType.none,
@@ -30,9 +36,28 @@ class ClassBoard {
     this.lines = const [],
   });
 
+  String get uiIcon =>
+      "https://static.atlasacademy.io/file/aa-fgo-extract-jp/ClassBoard/UI/DownloadClassBoardUIAtlas/DownloadClassBoardUIAtlas1/img_class_$id.png";
+
+  String get dispName {
+    if (id >= 1 && id <= 7) {
+      if (classes.length == 1 && classes.single.classId == id) {
+        return Transl.svtClassId(id).l;
+      }
+    }
+    if (classes.isEmpty) {
+      if (id == 8) return 'EXTRA Ⅰ';
+      if (id == 9) return 'EXTRA Ⅱ';
+    }
+    return name;
+  }
+
   factory ClassBoard.fromJson(Map<String, dynamic> json) => _$ClassBoardFromJson(json);
 
   Map<String, dynamic> toJson() => _$ClassBoardToJson(this);
+
+  @override
+  String get route => Routes.classBoardI(id);
 }
 
 @JsonSerializable(converters: [CondTypeConverter()])
@@ -67,6 +92,7 @@ class ClassBoardSquare {
   int upSkillLv;
   ClassBoardCommandSpell? targetCommandSpell;
   ClassBoardLock? lock;
+  @JsonKey(unknownEnumValue: ClassBoardSquareFlag.none)
   List<ClassBoardSquareFlag> flags;
   int priority;
 
@@ -84,6 +110,33 @@ class ClassBoardSquare {
     this.flags = const [],
     this.priority = 0,
   });
+
+  static String csIcon(bool isGirl) {
+    return "https://static.atlasacademy.io/JP/ClassBoard/Icon/cs_0386${isGirl ? 2 : 1}.png";
+  }
+
+  String? get dispIcon {
+    if (skillType == ClassBoardSkillType.passive) {
+      return icon;
+    } else if (skillType == ClassBoardSkillType.commandSpell) {
+      return csIcon(db.curUser.isGirl);
+    }
+    return null;
+  }
+
+  String get skillTypeStr {
+    switch (skillType) {
+      case ClassBoardSkillType.passive:
+        return S.current.skill;
+      case ClassBoardSkillType.commandSpell:
+        if (targetCommandSpell != null) {
+          return '${S.current.command_spell} ${targetCommandSpell!.commandSpellId}';
+        }
+        return S.current.command_spell;
+      case ClassBoardSkillType.none:
+        return "???";
+    }
+  }
 
   factory ClassBoardSquare.fromJson(Map<String, dynamic> json) => _$ClassBoardSquareFromJson(json);
 
@@ -105,13 +158,27 @@ class ClassBoardCommandSpell {
     this.functions = const [],
   });
 
+  int get id => int.parse(functions.map((e) => e.funcId % 100).join());
+
   factory ClassBoardCommandSpell.fromJson(Map<String, dynamic> json) => _$ClassBoardCommandSpellFromJson(json);
 
   Map<String, dynamic> toJson() => _$ClassBoardCommandSpellToJson(this);
+
+  NiceSkill toSkill({String? icon}) {
+    return NiceSkill(
+      id: -commandSpellId,
+      name: name,
+      unmodifiedDetail: detail,
+      icon: icon ?? ClassBoardSquare.csIcon(db.curUser.isGirl),
+      coolDown: functions.map((_) => 0).toList(),
+      functions: functions.toList(),
+    );
+  }
 }
 
 @JsonSerializable(converters: [CondTypeConverter()])
 class ClassBoardLock {
+  int id;
   List<ItemAmount> items;
   // String closedMessage;
   CondType condType;
@@ -119,6 +186,7 @@ class ClassBoardLock {
   int condNum;
 
   ClassBoardLock({
+    this.id = 0,
     this.items = const [],
     this.condType = CondType.none,
     this.condTargetId = 0,

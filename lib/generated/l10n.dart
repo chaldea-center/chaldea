@@ -1779,6 +1779,17 @@ class S {
     );
   }
 
+  /// `Sign`
+  String get class_board_square {
+    return Intl.message(
+      'Sign',
+      name: 'class_board_square',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Class Score`
   String get class_score {
     return Intl.message(
@@ -3528,10 +3539,10 @@ class S {
     );
   }
 
-  /// `Withdraw`
+  /// `Withdrawn`
   String get event_svt_withdraw {
     return Intl.message(
-      'Withdraw',
+      'Withdrawn',
       name: 'event_svt_withdraw',
       desc: '',
       locale: localeName,

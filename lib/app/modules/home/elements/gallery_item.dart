@@ -21,6 +21,7 @@ import 'package:chaldea/utils/basic.dart';
 import '../../bgm/bgm_list.dart';
 import '../../buff/buff_list.dart';
 import '../../charge/np_charge_page.dart';
+import '../../class_board/class_board_list_page.dart';
 import '../../command_code/cmd_code_list.dart';
 import '../../costume/costume_list.dart';
 import '../../craft_essence/craft_list.dart';
@@ -118,6 +119,7 @@ class GalleryItem {
         plans,
         freeCalculator,
         masterMissions,
+        classBoards,
         saintQuartz,
         mysticCodes,
         effectSearch,
@@ -220,6 +222,14 @@ class GalleryItem {
     icon: FontAwesomeIcons.listCheck,
     url: Routes.masterMissions,
     page: MasterMissionListPage(),
+    isDetail: true,
+  );
+  static GalleryItem classBoards = GalleryItem(
+    name: 'class_boards',
+    titleBuilder: () => S.current.class_score,
+    icon: FontAwesomeIcons.starOfDavid,
+    url: Routes.classBoards,
+    page: ClassBoardListPage(),
     isDetail: true,
   );
   static GalleryItem saintQuartz = GalleryItem(

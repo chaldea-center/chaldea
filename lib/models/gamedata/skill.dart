@@ -471,10 +471,21 @@ class BaseTd extends SkillOrTd with RouteInfo {
   Map<String, dynamic> toJson() => _$BaseTdToJson(this);
 }
 
+// public enum ServantTreasureDvcEntity.Flag
+// {
+// 	public int value__;
+// 	public const ServantTreasureDvcEntity.Flag NONE = 1;
+// 	public const ServantTreasureDvcEntity.Flag WITH_PLAYER_PROGRESS = 2;
+// 	public const ServantTreasureDvcEntity.Flag NONE_TREASURE_DEVICE_EFFECT = 4;
+// 	public const ServantTreasureDvcEntity.Flag SECRET_TREASURE_DEVICE = 8;
+// 	public const ServantTreasureDvcEntity.Flag NOT_DISPLAY_SKILL_ICON = 16;
+// }
+
 @JsonSerializable()
 class TdSvt {
   int svtId;
   int num;
+  int npNum;
   int priority;
   List<int> damage;
   int strengthStatus;
@@ -491,6 +502,7 @@ class TdSvt {
   TdSvt({
     this.svtId = 0,
     this.num = 1,
+    this.npNum = 1,
     this.priority = 0,
     this.damage = const [],
     this.strengthStatus = 0,
@@ -528,6 +540,7 @@ class NiceTd extends SkillOrTd with RouteInfo implements BaseTd {
   // for JsonSerializer
   int get svtId => svt.svtId;
   int get num => svt.num;
+  int get npNum => svt.npNum;
   int get priority => svt.priority;
   @JsonKey(name: "npDistribution")
   List<int> get damage => svt.damage;
@@ -559,6 +572,7 @@ class NiceTd extends SkillOrTd with RouteInfo implements BaseTd {
     List<TdSvt> npSvts = const [],
     int svtId = 0,
     int num = 1,
+    int npNum = 1,
     int priority = 0,
     List<int> damage = const [],
     int strengthStatus = 0,
@@ -591,6 +605,7 @@ class NiceTd extends SkillOrTd with RouteInfo implements BaseTd {
         svt = TdSvt(
           svtId: svtId,
           num: num,
+          npNum: npNum,
           priority: priority,
           damage: damage,
           strengthStatus: strengthStatus,

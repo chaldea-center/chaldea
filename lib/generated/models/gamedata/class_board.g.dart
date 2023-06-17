@@ -8,6 +8,7 @@ part of '../../../models/gamedata/class_board.dart';
 
 ClassBoard _$ClassBoardFromJson(Map json) => ClassBoard(
       id: json['id'] as int,
+      name: json['name'] as String? ?? "",
       icon: json['icon'] as String?,
       dispItems: (json['dispItems'] as List<dynamic>?)
               ?.map((e) => Item.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -33,6 +34,7 @@ ClassBoard _$ClassBoardFromJson(Map json) => ClassBoard(
 
 Map<String, dynamic> _$ClassBoardToJson(ClassBoard instance) => <String, dynamic>{
       'id': instance.id,
+      'name': instance.name,
       'icon': instance.icon,
       'dispItems': instance.dispItems.map((e) => e.toJson()).toList(),
       'condType': const CondTypeConverter().toJson(instance.condType),
@@ -76,7 +78,9 @@ ClassBoardSquare _$ClassBoardSquareFromJson(Map json) => ClassBoardSquare(
           ? null
           : ClassBoardCommandSpell.fromJson(Map<String, dynamic>.from(json['targetCommandSpell'] as Map)),
       lock: json['lock'] == null ? null : ClassBoardLock.fromJson(Map<String, dynamic>.from(json['lock'] as Map)),
-      flags: (json['flags'] as List<dynamic>?)?.map((e) => $enumDecode(_$ClassBoardSquareFlagEnumMap, e)).toList() ??
+      flags: (json['flags'] as List<dynamic>?)
+              ?.map((e) => $enumDecode(_$ClassBoardSquareFlagEnumMap, e, unknownValue: ClassBoardSquareFlag.none))
+              .toList() ??
           const [],
       priority: json['priority'] as int? ?? 0,
     );
@@ -126,6 +130,7 @@ Map<String, dynamic> _$ClassBoardCommandSpellToJson(ClassBoardCommandSpell insta
     };
 
 ClassBoardLock _$ClassBoardLockFromJson(Map json) => ClassBoardLock(
+      id: json['id'] as int? ?? 0,
       items: (json['items'] as List<dynamic>?)
               ?.map((e) => ItemAmount.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -137,6 +142,7 @@ ClassBoardLock _$ClassBoardLockFromJson(Map json) => ClassBoardLock(
     );
 
 Map<String, dynamic> _$ClassBoardLockToJson(ClassBoardLock instance) => <String, dynamic>{
+      'id': instance.id,
       'items': instance.items.map((e) => e.toJson()).toList(),
       'condType': const CondTypeConverter().toJson(instance.condType),
       'condTargetId': instance.condTargetId,

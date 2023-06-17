@@ -146,6 +146,10 @@ class Routes {
   static const String masterMission = '/master-mission';
   static const String masterMissions = '/master-missions';
 
+  static String classBoardI(int id) => '/class-board/$id';
+  static const String classBoard = '/class-board';
+  static const String classBoards = '/class-boards';
+
   static String scriptI(String id) => '/script/$id';
   static const String script = '/script';
   static const String scriptHome = '/scripts';

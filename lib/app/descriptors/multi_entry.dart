@@ -238,7 +238,12 @@ class MultiDescriptor {
         targetIds,
         (context, id) {
           final mission = missions[id];
-          return TextSpan(text: '${mission?.dispNo} - ${mission?.name}');
+          return TextSpan(text: '${mission?.dispNo ?? id} - ', children: [
+            TextSpan(
+              text: mission?.name ?? "???",
+              style: TextStyle(fontSize: 14, color: Theme.of(context).textTheme.bodySmall?.color),
+            )
+          ]);
         },
         useAnd,
       );
@@ -255,8 +260,8 @@ class MultiDescriptor {
           (context, id) {
             final mission = missions[id];
             return ListTile(
-              leading: Text('${mission?.dispNo}'),
-              title: Text('${mission?.name}'),
+              leading: Text('${mission?.dispNo ?? id}'),
+              title: Text(mission?.name ?? "???"),
               horizontalTitleGap: 0,
               dense: true,
             );

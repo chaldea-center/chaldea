@@ -245,6 +245,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "check_update": MessageLookupByLibrary.simpleMessage("檢查更新"),
         "class_advantage": MessageLookupByLibrary.simpleMessage("職階剋職"),
         "class_attack_rate": MessageLookupByLibrary.simpleMessage("職階補正"),
+        "class_board_square": MessageLookupByLibrary.simpleMessage("星宫"),
         "class_score": MessageLookupByLibrary.simpleMessage("职阶刻痕"),
         "clear": MessageLookupByLibrary.simpleMessage("清空"),
         "clear_cache": MessageLookupByLibrary.simpleMessage("清除暫存"),

@@ -419,7 +419,10 @@ class FuncDescriptor extends StatelessWidget {
       if (showBuffDetail) {
         funcText.write(Transl.buffDetail(buff.detail).l);
       } else {
-        if ([
+        if (buff.id == 30042 || buff.id == 30043) {
+          // 令呪励起, ActMasterGenderType
+          funcText.write(Transl.buffNames('攻撃力アップ').l);
+        } else if ([
           BuffType.addIndividuality,
           BuffType.subIndividuality,
           BuffType.fieldIndividuality,
@@ -481,130 +484,6 @@ class FuncDescriptor extends StatelessWidget {
       funcText.write(')');
     }
     return funcText;
-  }
-
-  static String buildFuncText(
-    final NiceFunction func, {
-    final bool showBuffDetail = false,
-    final Region? region = Region.jp,
-  }) {
-    StringBuffer funcText = buildBasicFuncText(func, showBuffDetail: showBuffDetail, region: region);
-    Buff? buff = func.buff;
-    DataVals? vals = func.svals.getOrNull(0);
-
-    final List<String> resultTexts = [];
-    if ((vals?.Rate != null && vals!.Rate! < 0) || (vals?.UseRate != null && vals!.UseRate! < 0)) {
-      final hint = Transl.misc2('Function', 'ifPrevFuncSucceed');
-      resultTexts.insert(0, '($hint)');
-    }
-
-    if (vals?.ActSelectIndex != null) {
-      String hint = Transl.misc2('Function', 'ActSelectIndex');
-      hint = hint.replaceAll('{0}', (vals!.ActSelectIndex! + 1).toString());
-      resultTexts.insert(0, '($hint)');
-    }
-
-    void _addFuncTarget() {
-      if ([
-        FuncType.eventDropUp,
-        FuncType.eventDropRateUp,
-        FuncType.eventPointUp,
-        FuncType.eventPointRateUp,
-        FuncType.eventFortificationPointUp,
-        FuncType.enemyEncountRateUp,
-        FuncType.enemyEncountCopyRateUp,
-      ].contains(func.funcType)) {
-        return;
-      }
-      // if (showPlayer && showEnemy) return;
-      resultTexts.add('[${Transl.funcTargetType(func.funcTargetType).l}] ');
-    }
-
-    _addFuncTarget();
-
-    void _addFuncText() {
-      final text = funcText.toString();
-
-      String _replaceTrait(int trait) {
-        return text.replaceAll('{0}', NiceTrait(id: trait).shownName());
-      }
-
-      switch (func.funcType) {
-        case FuncType.damageNpIndividual:
-        case FuncType.damageNpStateIndividualFix:
-          int? indiv = vals?.Target;
-          if (indiv != null) {
-            resultTexts.add(_replaceTrait(indiv));
-            return;
-          }
-          break;
-        case FuncType.damageNpIndividualSum:
-          if ((vals?.TargetList?.length ?? 0) > 0) {
-            String funcString =
-                text.replaceAll('{0}', (vals?.TargetList ?? []).map((id) => NiceTrait(id: id)).join('/'));
-            funcString = text.replaceAll(
-                '{1}',
-                vals?.Target == 0
-                    ? M.of(jp: '自身', cn: '自身', tw: '自身', na: 'self', kr: '자신')
-                    : M.of(jp: '対象', cn: '对象', tw: '對象', na: 'target', kr: '대상'));
-            resultTexts.add(funcString);
-            return;
-          }
-          break;
-        case FuncType.enemyEncountRateUp:
-        case FuncType.enemyEncountCopyRateUp:
-          int? indiv = vals?.Individuality;
-          if (indiv != null) {
-            resultTexts.add(_replaceTrait(indiv));
-            return;
-          }
-          break;
-        default:
-          break;
-      }
-      if (buff != null) {
-        switch (buff.type) {
-          case BuffType.addIndividuality:
-          case BuffType.subIndividuality:
-          case BuffType.fieldIndividuality:
-            int? indiv = vals?.Value;
-            if (indiv != null) {
-              resultTexts.add(_replaceTrait(indiv));
-              return;
-            }
-            break;
-          case BuffType.subFieldIndividuality:
-          case BuffType.toFieldSubIndividualityField: // need verify
-            List<int>? indivs = vals?.TargetList;
-            if (indivs != null && indivs.isNotEmpty) {
-              resultTexts.add(text.replaceAll('{0}', indivs.map((id) => NiceTrait(id: id).shownName()).join('/')));
-              return;
-            }
-            break;
-          case BuffType.toFieldChangeField:
-            int? indiv = vals?.FieldIndividuality;
-            if (indiv != null) {
-              resultTexts.add(_replaceTrait(indiv));
-              return;
-            }
-            break;
-          default:
-            break;
-        }
-      }
-      resultTexts.add(text);
-    }
-
-    _addFuncText();
-
-    if (func.funcType == FuncType.transformServant) {
-      final transformId = vals?.Value, transformLimit = vals?.SetLimitCount;
-      if (transformId != null) {
-        resultTexts.add(
-            transformLimit == null ? ' $transformId ' : ' $transformId[${S.current.ascension_short}$transformLimit] ');
-      }
-    }
-    return resultTexts.join();
   }
 
   @override
@@ -754,6 +633,10 @@ class FuncDescriptor extends StatelessWidget {
         return;
       }
       // if (showPlayer && showEnemy) return;
+      final actMasterGenderType = vals?.ActMasterGenderType;
+      if (actMasterGenderType != null) {
+        spans.add(TextSpan(text: '[${actMasterGenderType == 2 ? S.current.guda_female : S.current.guda_male}]'));
+      }
       if (lastFuncTarget == func.funcTargetType) return;
       spans.add(TextSpan(text: '[${Transl.funcTargetType(func.funcTargetType).l}] '));
     }

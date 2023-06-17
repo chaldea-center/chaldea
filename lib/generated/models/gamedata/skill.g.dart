@@ -222,6 +222,7 @@ const _$TdEffectFlagEnumMap = {
 TdSvt _$TdSvtFromJson(Map json) => TdSvt(
       svtId: json['svtId'] as int? ?? 0,
       num: json['num'] as int? ?? 1,
+      npNum: json['npNum'] as int? ?? 1,
       priority: json['priority'] as int? ?? 0,
       damage: (json['damage'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       strengthStatus: json['strengthStatus'] as int? ?? 0,
@@ -241,6 +242,7 @@ TdSvt _$TdSvtFromJson(Map json) => TdSvt(
 Map<String, dynamic> _$TdSvtToJson(TdSvt instance) => <String, dynamic>{
       'svtId': instance.svtId,
       'num': instance.num,
+      'npNum': instance.npNum,
       'priority': instance.priority,
       'damage': instance.damage,
       'strengthStatus': instance.strengthStatus,
@@ -292,6 +294,7 @@ NiceTd _$NiceTdFromJson(Map json) => NiceTd(
           const [],
       svtId: json['svtId'] as int? ?? 0,
       num: json['num'] as int? ?? 1,
+      npNum: json['npNum'] as int? ?? 1,
       priority: json['priority'] as int? ?? 0,
       damage: (json['npDistribution'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       strengthStatus: json['strengthStatus'] as int? ?? 0,
@@ -311,6 +314,7 @@ NiceTd _$NiceTdFromJson(Map json) => NiceTd(
 Map<String, dynamic> _$NiceTdToJson(NiceTd instance) => <String, dynamic>{
       'svtId': instance.svtId,
       'num': instance.num,
+      'npNum': instance.npNum,
       'priority': instance.priority,
       'npDistribution': instance.damage,
       'strengthStatus': instance.strengthStatus,

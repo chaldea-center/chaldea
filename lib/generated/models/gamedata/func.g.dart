@@ -174,6 +174,7 @@ const _$FuncTypeEnumMap = {
   FuncType.gainNpIndividualSum: 'gainNpIndividualSum',
   FuncType.setQuestRouteFlag: 'setQuestRouteFlag',
   FuncType.lastUsePlayerSkillCopy: 'lastUsePlayerSkillCopy',
+  FuncType.changeEnemyMasterFace: 'changeEnemyMasterFace',
 };
 
 const _$FuncTargetTypeEnumMap = {

@@ -156,6 +156,7 @@
   "check_update": "تفقد عن تحديث",
   "class_advantage": null,
   "class_attack_rate": null,
+  "class_board_square": null,
   "class_score": null,
   "clear": "مسح",
   "clear_cache": "مسح ذاكرة التخزين المؤقت",

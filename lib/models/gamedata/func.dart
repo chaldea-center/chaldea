@@ -531,6 +531,7 @@ enum FuncType {
   gainNpIndividualSum(133),
   setQuestRouteFlag(134),
   lastUsePlayerSkillCopy(135),
+  changeEnemyMasterFace(136),
   ;
 
   final int id;
