@@ -56,7 +56,7 @@ class ChaldeaResponse {
     return null;
   }
 
-  static Future<void> request({
+  static Future<ChaldeaResponse?> request({
     required Future<Response> Function(Dio dio) caller,
     void Function(ChaldeaResponse)? onSuccess,
     bool showSuccess = true,
@@ -68,22 +68,27 @@ class ChaldeaResponse {
       if (resp.success) {
         onSuccess?.call(resp);
         if (showSuccess) {
-          SimpleCancelOkDialog(
+          await SimpleCancelOkDialog(
             title: Text(S.current.success),
             content: resp.message == null ? null : Text(resp.message!),
+            scrollable: true,
           ).showDialog(null);
         }
       } else {
-        SimpleCancelOkDialog(
+        await SimpleCancelOkDialog(
           title: Text(S.current.failed),
           content: Text(resp.message ?? resp.body()),
+          scrollable: true,
         ).showDialog(null);
       }
+      return resp;
     } catch (e) {
-      SimpleCancelOkDialog(
+      await SimpleCancelOkDialog(
         title: Text(S.current.failed),
         content: Text(escapeDioError(e)),
+        scrollable: false,
       ).showDialog(null);
+      return null;
     } finally {
       EasyLoading.dismiss();
     }

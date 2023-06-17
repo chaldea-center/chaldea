@@ -105,11 +105,16 @@ class BattleShareData {
   }
 
   Uri toShareUriGzip() {
-    final shareData = jsonEncode(this);
-    String data = base64UrlEncode(GZipEncoder().encode(utf8.encode(shareData), level: Deflate.BEST_COMPRESSION)!);
+    String data = toGZip();
     Uri shareUri = Uri.parse(ChaldeaUrl.app('/laplace/share'));
     shareUri = shareUri.replace(queryParameters: {"v": "G$data"});
     return shareUri;
+  }
+
+  String toGZip() {
+    final shareData = jsonEncode(this);
+    String data = base64UrlEncode(GZipEncoder().encode(utf8.encode(shareData), level: Deflate.BEST_COMPRESSION)!);
+    return data;
   }
 
   static BattleShareData? parse(Uri uri) {
