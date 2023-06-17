@@ -420,10 +420,9 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
             return localized(
               jp: () => text(
                   '『${clsIds.map((e) => Transl.svtClassId(e).jp).join("/")}』クラスのサーヴァント$targetNum騎の霊基再臨を$limit段階目にする'),
-              cn: () => text('让$targetNum骑${clsIds.map((e) => Transl.svtClassId(e).cn).join('/')}从者达到灵基再临第$limit阶段'),
+              cn: () => text('让$targetNum骑$classIdsStr从者达到灵基再临第$limit阶段'),
               tw: null,
-              na: () =>
-                  text('Raise $targetNum ${clsIds.map((e) => Transl.svtClassId(e).na).join(', ')} to ascension $limit'),
+              na: () => text('Raise $targetNum $classIdsStr to ascension $limit'),
               kr: null,
             );
           }
@@ -499,6 +498,74 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           na: () => text('Upgrade $targetNum skills to Lv.${targetIds.join("/")} or higher'),
           kr: null,
         );
+      case CondType.svtClassFriendshipCount:
+        return localized(
+          jp: () => text('『$classIdsStr』クラスのサーヴァントの絆レベルを合計$targetNum以上にせよ'),
+          cn: () => text('『$classIdsStr』职阶从者牵绊等级合计达到$targetNum以上'),
+          tw: null,
+          na: () => text('Accumulatively reach $targetNum bond levels for [$classIdsStr] class servants'),
+          kr: null,
+        );
+      case CondType.svtClassSkillLvUpCount:
+        return localized(
+          jp: () => text('『$classIdsStr』クラスのサーヴァントのスキルを合計$targetNum回強化せよ(同一霊基不可) '),
+          cn: () => text('『$classIdsStr』职阶从者技能强化累计$targetNum次（不计算相同灵基）'),
+          tw: null,
+          na: () => text(
+              'Accumulatively increase skill levels $targetNum times for [$classIdsStr] class servants (not include duplicate servants)'),
+          kr: null,
+        );
+      case CondType.svtClassLvUpCount:
+        return localized(
+          jp: () => text('『$classIdsStr』クラスのサーヴァントのLvを合計$targetNum回強化せよ(同一霊基不可) '),
+          cn: () => text('『$classIdsStr』职阶从者等级强化累计$targetNum次（不计算相同灵基）'),
+          tw: null,
+          na: () => text(
+              'Accumulatively level up [$classIdsStr] class servants $targetNum times (not include duplicate servants)'),
+          kr: null,
+        );
+      case CondType.svtClassLimitUpCount:
+        return localized(
+          jp: () => text('『$classIdsStr』クラスのサーヴァントを合計$targetNum回霊基再臨せよ(同一霊基不可) '),
+          cn: () => text('『$classIdsStr』职阶从者灵基再临累计$targetNum次（不计算相同灵基）'),
+          tw: null,
+          na: () => text(
+              'Accumulatively ascend [$classIdsStr] class servants $targetNum times (not include duplicate servants)'),
+          kr: null,
+        );
+      case CondType.svtFriendshipClassNumAbove:
+        // サーヴァント5騎の絆レベルをLv.6以上にせよ
+        // 106, 206, 306, 406, 506
+        List<int> clsIds = [];
+        List<int> counts = [];
+        for (final id in targetIds) {
+          clsIds.add(id ~/ 100);
+          counts.add(id % 100);
+        }
+        if (counts.toSet().length == 1) {
+          final level = counts.first;
+          if (_isPlayableAll(clsIds)) {
+            return localized(
+              jp: () => text('サーヴァント$targetNum騎の絆レベルをLv.$level以上にせよ'),
+              cn: () => text('让$targetNum骑从者的牵绊等级达到Lv.$level以上'),
+              tw: null,
+              na: () => text('Reach Bond Level $level or above on any $targetNum Servants'),
+              kr: null,
+            );
+          } else {
+            return localized(
+              jp: () => text('『$classIdsStr』クラスのサーヴァント$targetNum騎の絆レベルをLv.$level以上にせよ'),
+              cn: () => text('让$targetNum骑$classIdsStr骑从者的牵绊等级达到Lv.$level以上'),
+              tw: null,
+              na: () => text('Reach Bond Level $level or above on $targetNum [$classIdsStr] Servants'),
+              kr: null,
+            );
+          }
+        } else {
+          break;
+        }
+      case CondType.svtSkillLvClassNumAbove:
+        break;
       case CondType.notShopPurchase:
         final countText = targetNum == 1 ? "" : M.of(cn: "$targetNum次", na: '$targetNum times of ');
         return localized(
