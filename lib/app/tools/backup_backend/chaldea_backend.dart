@@ -67,8 +67,8 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
     if (!_check()) return null;
     EasyLoading.show(maskType: EasyLoadingMaskType.clear);
     try {
-      final resp = ChaldeaResponse(await db.apiWorkerDio.post('/account/backup/download',
-          data: {'username': db.security.username, 'auth': db.security.userAuth}));
+      final resp = ChaldeaResponse(await db.apiWorkerDio
+          .post('/account/backup/download', data: {'username': db.security.username, 'auth': db.security.userAuth}));
       List<UserDataBackup> backups = [];
       backups = List.from(resp.body()).map((e) => UserDataBackup.fromJson(e)).toList();
       backups.sort2((e) => e.timestamp, reversed: true);

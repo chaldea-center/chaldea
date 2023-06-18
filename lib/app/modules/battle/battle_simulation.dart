@@ -1,17 +1,16 @@
 import 'dart:math';
 
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:chaldea/app/api/chaldea.dart';
-import 'package:chaldea/models/models.dart';
 import 'package:flutter/foundation.dart';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/db.dart';
-import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../descriptors/skill_descriptor.dart';
@@ -584,11 +583,11 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           FilledButton(
             onPressed: () async {
               await SimpleCancelOkDialog(
-                title: const Text('Upload'),
+                title: Text(S.current.upload),
                 content: db.security.isUserLoggedIn
-                    ? const Text('Upload current team to the server? (Requires login)')
+                    ? Text(S.current.upload_team_confirmation)
                     : Text(
-                        'Not logged in.',
+                        S.current.login_first_hint,
                         style: TextStyle(color: Theme.of(context).colorScheme.error),
                       ),
                 onTapOk: !db.security.isUserLoggedIn
@@ -609,7 +608,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                       },
               ).showDialog(context);
             },
-            child: const Text('Upload'),
+            child: Text(S.current.upload),
           ),
       ],
     );

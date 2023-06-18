@@ -6173,6 +6173,17 @@ class S {
     );
   }
 
+  /// `Manage Uploaded Teams`
+  String get manage_uploaded_teams {
+    return Intl.message(
+      'Manage Uploaded Teams',
+      name: 'manage_uploaded_teams',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Gimmicks`
   String get map_gimmicks {
     return Intl.message(
@@ -6596,6 +6607,17 @@ class S {
     return Intl.message(
       'Click ♡ to view all servants\' quests',
       name: 'no_servant_quest_hint_subtitle',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `No uploaded teams`
+  String get no_uploaded_teams {
+    return Intl.message(
+      'No uploaded teams',
+      name: 'no_uploaded_teams',
       desc: '',
       locale: localeName,
       args: [],
@@ -9418,11 +9440,33 @@ class S {
     );
   }
 
+  /// `Local`
+  String get team_local {
+    return Intl.message(
+      'Local',
+      name: 'team_local',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Frontline`
   String get team_starting_member {
     return Intl.message(
       'Frontline',
       name: 'team_starting_member',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Uploaded`
+  String get team_uploaded {
+    return Intl.message(
+      'Uploaded',
+      name: 'team_uploaded',
       desc: '',
       locale: localeName,
       args: [],
@@ -9830,6 +9874,28 @@ class S {
     return Intl.message(
       'Upload before closing',
       name: 'upload_before_close_app',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Upload current team?`
+  String get upload_team_confirmation {
+    return Intl.message(
+      'Upload current team?',
+      name: 'upload_team_confirmation',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Uploaded Teams`
+  String get uploaded_teams {
+    return Intl.message(
+      'Uploaded Teams',
+      name: 'uploaded_teams',
       desc: '',
       locale: localeName,
       args: [],

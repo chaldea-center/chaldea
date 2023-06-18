@@ -1,26 +1,36 @@
+import 'package:flutter/scheduler.dart';
+
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/battle/formation/formation_card.dart';
+import 'package:chaldea/app/modules/battle/teams/battle_record_details_page.dart';
 import 'package:chaldea/app/modules/home/subpage/login_page.dart';
-import 'package:chaldea/app/modules/quest/quest_card.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/api/api.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/scheduler.dart';
 
-class UserTeamsManagePage extends StatefulWidget {
-  const UserTeamsManagePage({super.key});
+enum TeamQueryMode { user, quest }
+
+class TeamsQueryPage extends StatefulWidget {
+  final TeamQueryMode mode;
+  final int? questId;
+  final int? phase;
+  final String? enemyHash;
+
+  const TeamsQueryPage({super.key, required this.mode, this.questId, this.phase, this.enemyHash});
 
   @override
-  State<UserTeamsManagePage> createState() => _UserTeamsManagePageState();
+  State<TeamsQueryPage> createState() => _TeamsQueryPageState();
 }
 
-class _UserTeamsManagePageState extends State<UserTeamsManagePage> {
+class _TeamsQueryPageState extends State<TeamsQueryPage> {
   static const _pageSize = 20;
 
+  TeamQueryMode get mode => widget.mode;
+
   bool hasNextPage = false;
-  int curPage = 0;
+  int pageIndex = 0;
   List<BattleRecord> battleRecords = [];
 
   @override
@@ -28,7 +38,7 @@ class _UserTeamsManagePageState extends State<UserTeamsManagePage> {
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
-      await _queryUserTeams(curPage);
+      await _queryTeams(pageIndex);
     });
   }
 
@@ -42,21 +52,21 @@ class _UserTeamsManagePageState extends State<UserTeamsManagePage> {
           child: TextButton(
             onPressed: () async {
               await router.pushPage(LoginPage());
-              await _queryUserTeams(curPage);
+              await _queryTeams(pageIndex);
             },
-            child: Text('Click here to login.'),
+            child: Text(S.current.login_first_hint),
           ),
         ),
       );
     } else if (battleRecords.isEmpty) {
-      children.add(Center(child: Text('No uploaded teams.')));
+      children.add(Center(child: Text(S.current.no_uploaded_teams)));
     } else {
       children.addAll(List.generate(battleRecords.length, (index) => _buildBattleRecord(battleRecords[index], index)));
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Manage Uploaded Teams'),
+        title: Text(S.current.uploaded_teams),
       ),
       body: Column(
         children: [
@@ -82,22 +92,22 @@ class _UserTeamsManagePageState extends State<UserTeamsManagePage> {
         runSpacing: 6,
         children: [
           ElevatedButton(
-            onPressed: curPage == 0
+            onPressed: pageIndex == 0
                 ? null
                 : () async {
-                    curPage -= 1;
-                    await _queryUserTeams(curPage);
+                    pageIndex -= 1;
+                    await _queryTeams(pageIndex);
                   },
-            child: Text('Previous Page'),
+            child: Text(S.current.prev_page),
           ),
           ElevatedButton(
             onPressed: !hasNextPage
                 ? null
                 : () async {
-                    curPage += 1;
-                    await _queryUserTeams(curPage);
+                    pageIndex += 1;
+                    await _queryTeams(pageIndex);
                   },
-            child: Text('Next Page'),
+            child: Text(S.current.next_page),
           ),
         ],
       ),
@@ -115,49 +125,61 @@ class _UserTeamsManagePageState extends State<UserTeamsManagePage> {
         FormationCard(formation: shareData.team),
         TextButton(
           onPressed: () {
-            router.push(
-              url: '${Routes.quest}/${battleRecord.questId}/${battleRecord.phase}',
-              child: Scaffold(
-                appBar: AppBar(title: Text(S.current.quest),),
-                body: QuestCard(
-                  quest: null,
-                  questId: battleRecord.questId,
-                  offline: false,
-                  displayPhases: [battleRecord.phase],
-                  battleOnly: true,
-                ),
-              ),
-              detail: true,
-            );
+            router.pushPage(BattleRecordDetailPage(battleRecord: battleRecord));
           },
-          child: Text('>>> ${S.current.quest_detail_btn} >>>'),
+          child: Text('>>> ${S.current.details} >>>'),
         ),
-        TextButton(
-          onPressed: () async {
-            await _deleteUserTeam(battleRecord);
-          },
-          child: Text(
-            S.current.remove,
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
+        if (mode == TeamQueryMode.user)
+          TextButton(
+            onPressed: () async {
+              await _deleteUserTeam(battleRecord);
+            },
+            child: Text(
+              S.current.remove,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
           ),
-        )
+        if (mode == TeamQueryMode.quest)
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, shareData.team);
+            },
+            child: Text(S.current.select),
+          ),
       ],
     );
   }
 
-  Future<void> _queryUserTeams(final int page) async {
+  Future<void> _queryTeams(final int page) async {
     battleRecords.clear();
 
     if (db.security.isUserLoggedIn) {
-      final resp = await ChaldeaResponse.request(
-        showSuccess: false,
-        caller: (dio) => dio.post('/laplace/query/user', data: {
-          'username': db.security.username,
-          'auth': db.security.userAuth,
-          'limit': _pageSize + 1,
-          'offset': _pageSize * page,
-        }),
-      );
+      ChaldeaResponse? resp;
+
+      if (mode == TeamQueryMode.user) {
+        resp = await ChaldeaResponse.request(
+          showSuccess: false,
+          caller: (dio) => dio.post('/laplace/query/user', data: {
+            'username': db.security.username,
+            'auth': db.security.userAuth,
+            'limit': _pageSize + 1,
+            'offset': _pageSize * page,
+          }),
+        );
+      } else if (mode == TeamQueryMode.quest && widget.questId != null) {
+        resp = await ChaldeaResponse.request(
+          showSuccess: false,
+          caller: (dio) => dio.post('/laplace/query/quest', data: {
+            'username': db.security.username,
+            'auth': db.security.userAuth,
+            'questId': widget.questId,
+            if (widget.phase != null) 'phase': widget.phase,
+            if (widget.enemyHash != null) 'enemyHash': widget.enemyHash,
+            'limit': _pageSize + 1,
+            'offset': _pageSize * page,
+          }),
+        );
+      }
 
       final responseMap = resp?.json()?['body'];
       if (responseMap != null) {
@@ -184,7 +206,7 @@ class _UserTeamsManagePageState extends State<UserTeamsManagePage> {
       );
 
       if (resp?.success == true) {
-        await _queryUserTeams(curPage);
+        await _queryTeams(pageIndex);
       }
     }
   }

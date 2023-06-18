@@ -11,6 +11,7 @@ import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/modules/battle/battle_simulation.dart';
+import 'package:chaldea/app/modules/battle/teams/teams_query_page.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/quest/quest_card.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -132,18 +133,37 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         ),
         TextButton(
           onPressed: () async {
-            await router.pushPage(FormationEditor(isSaving: false, onSelected: restoreFormation));
-            if (mounted) setState(() {});
-          },
-          child: Text(S.current.select),
-        ),
-        TextButton(
-          onPressed: () async {
             saveFormation();
             await router.pushPage(const FormationEditor(isSaving: true));
             if (mounted) setState(() {});
           },
           child: Text(S.current.save),
+        ),
+        TextButton(
+          onPressed: () async {
+            await router.pushPage(FormationEditor(isSaving: false, onSelected: restoreFormation));
+            if (mounted) setState(() {});
+          },
+          child: Text(S.current.team_local),
+        ),
+        TextButton(
+          onPressed: questPhase == null
+              ? null
+              : () async {
+                  final BattleTeamFormation? selected = await router.pushPage<BattleTeamFormation?>(
+                    TeamsQueryPage(
+                      mode: TeamQueryMode.quest,
+                      questId: questPhase?.id,
+                      phase: questPhase?.phase,
+                      enemyHash: questPhase?.enemyHash,
+                    ),
+                  );
+                  if (selected != null) {
+                    restoreFormation(selected);
+                  }
+                  if (mounted) setState(() {});
+                },
+          child: Text(S.current.team_uploaded),
         ),
       ],
     ));

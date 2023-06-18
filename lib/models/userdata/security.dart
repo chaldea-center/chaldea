@@ -1,5 +1,6 @@
-import 'package:chaldea/utils/hive_extention.dart';
 import 'package:hive/hive.dart';
+
+import 'package:chaldea/utils/hive_extention.dart';
 
 class ChaldeaSecurity {
   static const _storeKey = 'explorer.aa.io/auth';
@@ -14,7 +15,7 @@ class ChaldeaSecurity {
 
   bool get isUserLoggedIn => username != null && userAuth != null;
 
-  Future<void> init() async{
+  Future<void> init() async {
     box = await Hive.openBoxRetry('security');
   }
 

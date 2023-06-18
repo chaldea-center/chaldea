@@ -1,7 +1,7 @@
-import 'package:chaldea/app/modules/battle/teams/user_teams.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/modules/battle/td_damage/td_damage_ranking.dart';
+import 'package:chaldea/app/modules/battle/teams/teams_query_page.dart';
 import 'package:chaldea/app/modules/buff/buff_list.dart';
 import 'package:chaldea/app/modules/craft_essence/craft.dart';
 import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
@@ -444,7 +444,7 @@ class RouteConfiguration {
         } else if (path?.startsWith(Routes.laplaceNpDmg) == true) {
           return const TdDamageRanking();
         } else if (path?.startsWith(Routes.laplaceManageTeam) == true) {
-          return const UserTeamsManagePage();
+          return const TeamsQueryPage(mode: TeamQueryMode.user);
         }
         return const SimulationPreview();
       case Routes.apk:

@@ -1,6 +1,6 @@
-import 'package:chaldea/app/modules/battle/formation/formation_card.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/modules/battle/formation/formation_card.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/userdata/battle.dart';

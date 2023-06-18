@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:chaldea/models/userdata/security.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +13,7 @@ import 'package:intl/intl.dart';
 
 import 'package:chaldea/app/tools/item_center.dart';
 import 'package:chaldea/models/runtime_data.dart';
+import 'package:chaldea/models/userdata/security.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/icon_clipper.dart';
 import 'package:chaldea/widgets/image/image_viewer.dart';
@@ -153,7 +153,7 @@ class _Database {
     MethodChannelChaldea.configMethodChannel();
 
     // init other hive boxes at last
-   await security.init();
+    await security.init();
     if (kIsWeb) setUrlStrategy(PathUrlStrategy());
     _startSavingLoop();
   }
