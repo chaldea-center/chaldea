@@ -281,3 +281,29 @@ class ImageActions {
     return completer.future;
   }
 }
+
+class ImageLoader {
+  final Map<String, ui.Image> _cachedImages = {};
+  final Map<String, Completer<ui.Image?>> _tasks = {};
+
+  Map<String, ui.Image> get images => Map.of(_cachedImages);
+
+  Future<ui.Image?> loadImage(String? url) async {
+    if (url == null || url.isEmpty) {
+      return SynchronousFuture(null);
+    }
+    if (_cachedImages[url] != null) return _cachedImages[url];
+    if (_tasks.containsKey(url)) {
+      return _tasks[url]!.future;
+    }
+    final task = Completer<ui.Image?>();
+    _tasks[url] = task;
+    final img = await ImageActions.resolveImageUrl(url);
+    if (img != null) {
+      _cachedImages[url] = img;
+    }
+    task.complete(img);
+    _tasks.remove(url);
+    return img;
+  }
+}

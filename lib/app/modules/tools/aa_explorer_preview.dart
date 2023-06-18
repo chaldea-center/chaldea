@@ -28,6 +28,7 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
 
   late final TextEditingController _textEditingController = TextEditingController(text: folder);
   late final ScrollController _scrollController = ScrollController();
+  late final ScrollController _navScrollController = ScrollController();
   String? authCode;
 
   String folder = '/aa-fgo-extract-jp/';
@@ -51,6 +52,7 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
   void dispose() {
     super.dispose();
     _scrollController.dispose();
+    _navScrollController.dispose();
     _textEditingController.dispose();
   }
 
@@ -139,6 +141,7 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
               InputCancelOkDialog(
                 title: 'Edit Auth',
                 validate: validateAuth,
+                text: db.security.get(_storeKey)?.toString(),
                 onSubmit: (value) {
                   setAuth(value);
                   if (mounted) setState(() {});
@@ -211,6 +214,7 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
     return SizedBox(
       height: 42,
       child: ListView(
+        controller: _navScrollController,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         scrollDirection: Axis.horizontal,
         children: children,

@@ -10,6 +10,18 @@ enum SvtMatCostDetailType {
   consumed,
   demands,
   full,
+  ;
+
+  bool shouldCount(LockPlan? plan) {
+    switch (this) {
+      case SvtMatCostDetailType.consumed:
+        return plan == LockPlan.full;
+      case SvtMatCostDetailType.demands:
+        return plan == LockPlan.planned;
+      case SvtMatCostDetailType.full:
+        return true;
+    }
+  }
 }
 
 class ItemCenter {
@@ -39,12 +51,18 @@ class ItemCenter {
   Map<int, int> statSvtDemands = {};
   Map<int, int> _statSvtFull = {};
 
+  Map<int, int> statClassBoard = {};
+
   Map<int, int> _statEvent = {};
   Map<int, int> _statMainStory = {};
   Map<int, int> _statTicket = {};
   Map<int, int> statObtain = {};
 
   Map<int, int> itemLeft = {};
+
+  int demandOf(int itemId) {
+    return (statSvtDemands[itemId] ?? 0) + (statClassBoard[itemId] ?? 0);
+  }
 
   void init() {
     db.gameData.updateDupServants(db.curUser.dupServantMapping);
@@ -79,6 +97,7 @@ class ItemCenter {
     updateEvents(all: true, notify: false);
     updateMainStory(notify: false);
     updateExchangeTickets(notify: false);
+    updateClassBoard(notify: false);
     updateLeftItems();
   }
 
@@ -321,6 +340,37 @@ class ItemCenter {
     }
   }
 
+  void updateClassBoard({bool notify = true}) {
+    statClassBoard.clear();
+    statClassBoard.addAll(calcClassBoardCost(SvtMatCostDetailType.demands));
+    if (notify) {
+      updateLeftItems();
+    }
+  }
+
+  Map<int, int> calcClassBoardCost(SvtMatCostDetailType type) {
+    Map<int, int> items = {};
+    for (final board in db.gameData.classBoards.values) {
+      for (final square in board.squares) {
+        final lock = square.lock;
+        if (lock != null) {
+          final plan = user.curPlan_.classBoardLock[lock.id];
+          if (type.shouldCount(plan)) {
+            for (final itemAmount in lock.items) {
+              items.addNum(itemAmount.itemId, itemAmount.amount);
+            }
+          }
+        }
+        if (type.shouldCount(user.curPlan_.classBoardSquare[square.id])) {
+          for (final itemAmount in square.items) {
+            items.addNum(itemAmount.itemId, itemAmount.amount);
+          }
+        }
+      }
+    }
+    return items;
+  }
+
   void updateLeftItems() {
     itemLeft.clear();
     if (includingEvents) {
@@ -331,7 +381,8 @@ class ItemCenter {
     itemLeft
       ..addDict(user.items)
       ..addDict(statObtain)
-      ..addDict(statSvtDemands.multiple(-1));
+      ..addDict(statSvtDemands.multiple(-1))
+      ..addDict(statClassBoard.multiple(-1));
     streamController.sink.add(this);
     db.notifyUserdata();
   }

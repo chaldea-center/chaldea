@@ -1,3 +1,5 @@
+import 'dart:ui' show Offset;
+
 import 'package:chaldea/generated/l10n.dart';
 import '../../app/app.dart';
 import '../db.dart';
@@ -114,6 +116,8 @@ class ClassBoardSquare {
   static String csIcon(bool isGirl) {
     return "https://static.atlasacademy.io/JP/ClassBoard/Icon/cs_0386${isGirl ? 2 : 1}.png";
   }
+
+  Offset get offset => Offset(posX.toDouble(), -posY.toDouble());
 
   String? get dispIcon {
     if (skillType == ClassBoardSkillType.passive) {

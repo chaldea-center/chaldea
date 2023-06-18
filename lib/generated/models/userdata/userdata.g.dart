@@ -180,6 +180,16 @@ UserPlan _$UserPlanFromJson(Map json) => $checkedCreate(
                     (k, e) => MapEntry(
                         int.parse(k as String), ExchangeTicketPlan.fromJson(Map<String, dynamic>.from(e as Map))),
                   )),
+          classBoardLock: $checkedConvert(
+              'classBoardLock',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), const LockPlanConverter().fromJson(e as int)),
+                  )),
+          classBoardSquare: $checkedConvert(
+              'classBoardSquare',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), const LockPlanConverter().fromJson(e as int)),
+                  )),
         );
         return val;
       },
@@ -191,6 +201,10 @@ Map<String, dynamic> _$UserPlanToJson(UserPlan instance) => <String, dynamic>{
       'limitEvents': instance.limitEvents.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'mainStories': instance.mainStories.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'tickets': instance.tickets.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'classBoardLock':
+          instance.classBoardLock.map((k, e) => MapEntry(k.toString(), const LockPlanConverter().toJson(e))),
+      'classBoardSquare':
+          instance.classBoardSquare.map((k, e) => MapEntry(k.toString(), const LockPlanConverter().toJson(e))),
     };
 
 SvtPlan _$SvtPlanFromJson(Map json) => $checkedCreate(
@@ -415,3 +429,9 @@ Map<String, dynamic> _$SaintQuartzPlanToJson(SaintQuartzPlan instance) => <Strin
       'extraMissions': instance.extraMissions.map((k, e) => MapEntry(k.toString(), e)),
       'minusPlannedBanner': instance.minusPlannedBanner,
     };
+
+const _$LockPlanEnumMap = {
+  LockPlan.none: 0,
+  LockPlan.planned: 1,
+  LockPlan.full: 2,
+};

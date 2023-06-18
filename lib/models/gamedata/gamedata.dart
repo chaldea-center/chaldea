@@ -456,10 +456,17 @@ class _ProcessedData {
       for (final master in gameData.enemyMasters.values)
         for (final battle in master.battles) battle.id: battle
     };
+    eventMissions = {
+      for (final mm in gameData.extraMasterMission.values)
+        for (final m in mm.missions) m.id: m,
+      for (final event in gameData.events.values)
+        for (final m in event.missions) m.id: m,
+    };
     _initFuncBuff();
   }
 
   Map<int, EnemyMasterBattle> enemyMasterBattles = {};
+  Map<int, EventMission> eventMissions = {};
 
   Map<int, Servant> costumeSvtMap = {};
 

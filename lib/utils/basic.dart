@@ -90,6 +90,11 @@ class Maths {
     return iterable.reduce((v, e) => math.min(v, e));
   }
 
+  static double distance(num x1, num y1, num x2, num y2) {
+    final dx = x1 - x2, dy = y1 - y2;
+    return math.sqrt(dx * dx + dy * dy);
+  }
+
   static T findMax<T, S extends num>(Iterable<T> iterable, S Function(T e) key) {
     assert(iterable.isNotEmpty);
     return iterable.reduce((v, e) => key(e) > key(v) ? e : v);
