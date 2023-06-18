@@ -49,6 +49,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       ..options = widget.options.copy()
       ..context = context;
 
+    battleData.recorder.determineUploadEligibility(questPhase, widget.options);
+
     _initBattle();
   }
 
@@ -583,14 +585,17 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           FilledButton(
             onPressed: () async {
               await SimpleCancelOkDialog(
+                scrollable: true,
                 title: Text(S.current.upload),
-                content: db.security.isUserLoggedIn
-                    ? Text(S.current.upload_team_confirmation)
-                    : Text(
+                content: !db.security.isUserLoggedIn
+                    ? Text(
                         S.current.login_first_hint,
                         style: TextStyle(color: Theme.of(context).colorScheme.error),
-                      ),
-                onTapOk: !db.security.isUserLoggedIn
+                      )
+                    : !battleData.recorder.isUploadEligible
+                        ? Text(S.current.upload_not_eligible_hint)
+                        : Text(S.current.upload_team_confirmation),
+                onTapOk: !db.security.isUserLoggedIn || !battleData.recorder.isUploadEligible
                     ? null
                     : () {
                         final uploadData = BattleShareData(team: widget.options.team.toFormationData());

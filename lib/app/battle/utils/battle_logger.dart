@@ -1,4 +1,5 @@
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../models/battle.dart';
 
@@ -39,11 +40,14 @@ class BattleLog {
 enum BattleLogType { debug, function, action, error }
 
 class BattleRecordManager {
+  bool isUploadEligible = true;
   List<BattleRecord> records = [];
   BattleRecordManager();
 
   BattleRecordManager copy() {
-    return BattleRecordManager()..records = records.toList();
+    return BattleRecordManager()
+      ..isUploadEligible = isUploadEligible
+      ..records = records.toList();
   }
 
   void message(String msg, [BattleServantData? target]) {
@@ -55,6 +59,7 @@ class BattleRecordManager {
   }
 
   void skipWave(int wave) {
+    isUploadEligible = false;
     records.add(BattleSkipWaveRecord(wave));
   }
 
@@ -68,7 +73,12 @@ class BattleRecordManager {
     required BattleSkillInfoData skill,
     required SkillInfoType type,
     required bool fromPlayer,
+    required bool uploadEligible,
   }) {
+    if (!uploadEligible) {
+      isUploadEligible = false;
+    }
+
     records.add(BattleSkillRecord(
       activator: activator,
       targetPlayerSvt: battleData.targetedAlly,
@@ -113,6 +123,26 @@ class BattleRecordManager {
     final card = _cardHistory.lastWhereOrNull((card) => card.actor.uniqueId == record.activator?.uniqueId);
     record.card = card?.card;
     records.add(record);
+  }
+
+  void determineUploadEligibility(final QuestPhase questPhase, final BattleOptions options) {
+    if (questPhase.id <= 0 || options.pointBuffs.isNotEmpty) {
+      isUploadEligible = false;
+      return;
+    }
+
+    for (final svtData in options.team.allSvts) {
+      if (svtData.svt != null) {
+        final svt = svtData.svt!;
+        if (!svt.isUserSvt ||
+            svtData.supportType == SupportSvtType.npc ||
+            svtData.cardStrengthens.any((element) => element > 0) ||
+            svtData.additionalPassives.isNotEmpty) {
+          isUploadEligible = false;
+          return;
+        }
+      }
+    }
   }
 }
 

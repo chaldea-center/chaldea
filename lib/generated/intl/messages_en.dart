@@ -1032,6 +1032,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_and_close_app": MessageLookupByLibrary.simpleMessage("Upload & Close"),
         "upload_and_close_app_alert": MessageLookupByLibrary.simpleMessage("Upload data before closing the app?"),
         "upload_before_close_app": MessageLookupByLibrary.simpleMessage("Upload before closing"),
+        "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage(
+            "Current team is not eligible for upload due to any of the following:\n- custom quest via JSON import\n- event point buffs\n- nonplayable servants\n- card strengthen\n- custom skills\n- skipped waves"),
         "upload_team_confirmation": MessageLookupByLibrary.simpleMessage("Upload current team?"),
         "uploaded_teams": MessageLookupByLibrary.simpleMessage("Uploaded Teams"),
         "usage": MessageLookupByLibrary.simpleMessage("Usage"),

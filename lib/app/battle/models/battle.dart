@@ -667,6 +667,7 @@ class BattleData {
           skill: masterSkillInfo[skillIndex],
           type: SkillInfoType.mysticCode,
           fromPlayer: true,
+          uploadEligible: true,
         );
         return;
       },
@@ -900,6 +901,7 @@ class BattleData {
           skill: BattleSkillInfoData(skill),
           type: SkillInfoType.commandSpell,
           fromPlayer: true,
+          uploadEligible: false,
         );
       },
     );
@@ -920,6 +922,7 @@ class BattleData {
           skill: BattleSkillInfoData(skill),
           type: SkillInfoType.commandSpell,
           fromPlayer: true,
+          uploadEligible: false,
         );
       },
     );
@@ -941,12 +944,14 @@ class BattleData {
           skill: BattleSkillInfoData(skill),
           type: SkillInfoType.commandSpell,
           fromPlayer: true,
+          uploadEligible: false,
         );
       },
     );
   }
 
   Future<void> resetPlayerSkillCD(bool isMysticCode) async {
+    recorder.isUploadEligible = false;
     return recordError(
       save: true,
       action: 'resetSkillCD',

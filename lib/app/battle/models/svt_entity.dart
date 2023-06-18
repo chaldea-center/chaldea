@@ -651,7 +651,13 @@ class BattleServantData {
     final activated = await skillInfo.activate(battleData);
     if (activated) {
       battleData.recorder.skill(
-          battleData: battleData, activator: this, skill: skillInfo, type: SkillInfoType.svtSelf, fromPlayer: true);
+          battleData: battleData,
+          activator: this,
+          skill: skillInfo,
+          type: SkillInfoType.svtSelf,
+          fromPlayer: true,
+          uploadEligible: true,
+      );
     }
     battleData.unsetActivator();
     return activated;

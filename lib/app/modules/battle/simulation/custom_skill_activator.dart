@@ -195,6 +195,7 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                                   skill: BattleSkillInfoData(skill!),
                                   type: SkillInfoType.custom,
                                   fromPlayer: isAlly,
+                                  uploadEligible: false,
                                 );
                               },
                             );
