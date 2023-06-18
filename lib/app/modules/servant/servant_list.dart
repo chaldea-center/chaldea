@@ -530,8 +530,8 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
             shrinkWrap: true,
             options: const [-1, 4, 5],
             values: FilterGroupData(options: {
-              if (filterData.rarity.contain(5)) 5,
-              if (filterData.rarity.contain(4)) 4,
+              if (filterData.rarity.options.contains(5)) 5,
+              if (filterData.rarity.options.contains(4)) 4,
               if (filterData.rarity.options.containSubset(<int>{0, 1, 2, 3})) -1,
             }),
             optionBuilder: (v) => _getBtn(v == -1 ? '$kStarChar≤3' : v.toString()),
