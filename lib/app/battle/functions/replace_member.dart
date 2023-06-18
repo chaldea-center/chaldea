@@ -1,5 +1,6 @@
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:tuple/tuple.dart';
 import '../interactions/replace_member.dart';
 
 class ReplaceMember {
@@ -26,7 +27,12 @@ class ReplaceMember {
     final List<BattleServantData?> onFieldList = battleData.onFieldAllyServants;
     final List<BattleServantData?> backupList = battleData.playerDataList;
 
-    final selections = await ReplaceMemberSelectionDialog.show(battleData);
+    final Tuple2<BattleServantData, BattleServantData>? selections;
+    if (battleData.delegate?.replaceMember != null) {
+      selections = await battleData.delegate!.replaceMember!.call(onFieldList, backupList);
+    } else {
+      selections = await ReplaceMemberSelectionDialog.show(battleData);
+    }
     if (selections == null) return;
 
     battleData.recorder.orderChange(onField: selections.item1, backup: selections.item2);

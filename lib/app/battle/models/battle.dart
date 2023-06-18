@@ -1030,17 +1030,27 @@ class BattleData {
   }
 
   Future<bool> canActivate(final int activationRate, final String description) async {
-    if (activationRate < 1000 && activationRate > 0 && options.tailoredExecution && mounted) {
-      final curResult = options.probabilityThreshold <= activationRate ? S.current.success : S.current.failed;
-      final String details = '${S.current.results}: $curResult => '
-          '${S.current.battle_activate_probability}: '
-          '${(activationRate / 10).toStringAsFixed(1)}% '
-          'vs ${S.current.probability_expectation}: '
-          '${(options.probabilityThreshold / 10).toStringAsFixed(1)}%';
-      return TailoredExecutionConfirm.show(context: context!, description: description, details: details);
+    if (activationRate <= 0) {
+      return false;
     }
 
-    return options.probabilityThreshold <= activationRate;
+    final curResult = options.probabilityThreshold <= activationRate;
+
+    if (activationRate < 1000 && options.tailoredExecution) {
+      if (delegate?.tailoredExecutionCanActivate != null) {
+        return await delegate!.tailoredExecutionCanActivate!.call(curResult);
+      } else if (mounted) {
+        final curResultString = curResult ? S.current.success : S.current.failed;
+        final String details = '${S.current.results}: $curResultString => '
+            '${S.current.battle_activate_probability}: '
+            '${(activationRate / 10).toStringAsFixed(1)}% '
+            'vs ${S.current.probability_expectation}: '
+            '${(options.probabilityThreshold / 10).toStringAsFixed(1)}%';
+        return TailoredExecutionConfirm.show(context: context!, description: description, details: details);
+      }
+    }
+
+    return curResult;
   }
 
   Future<bool> canActivateFunction(final int activationRate) async {
