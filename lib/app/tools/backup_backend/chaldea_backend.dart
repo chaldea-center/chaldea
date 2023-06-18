@@ -18,8 +18,8 @@ import 'backend.dart';
 class ChaldeaServerBackup extends BackupBackend<UserData> {
   ChaldeaServerBackup();
 
-  String? get user => db.security.get('chaldea_user');
-  String? get pwd => db.security.get('chaldea_auth');
+  String? get user => db.security.username;
+  String? get pwd => db.security.userAuth;
 
   bool _check() {
     if (user == null || pwd == null) {
@@ -68,7 +68,7 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
     EasyLoading.show(maskType: EasyLoadingMaskType.clear);
     try {
       final resp = ChaldeaResponse(await db.apiWorkerDio.post('/account/backup/download',
-          data: {'username': db.security.get('chaldea_user'), 'auth': db.security.get('chaldea_auth')}));
+          data: {'username': db.security.username, 'auth': db.security.userAuth}));
       List<UserDataBackup> backups = [];
       backups = List.from(resp.body()).map((e) => UserDataBackup.fromJson(e)).toList();
       backups.sort2((e) => e.timestamp, reversed: true);

@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: db.security.get('chaldea_user')?.toString())
+    _nameController = TextEditingController(text: db.security.username?.toString())
       ..addListener(() {
         setState(() {});
       });
@@ -426,8 +426,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void doLogout() {
-    db.security.delete('chaldea_user');
-    db.security.delete('chaldea_auth');
+    db.security.deleteUserInfo();
     _nameController.text = '';
     _pwdController.text = '';
     _newPwdController.text = '';
@@ -505,10 +504,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _saveUserInfo(String name, String? auth) {
-    db.security.put('chaldea_user', name);
-    if (auth != null) {
-      db.security.put('chaldea_auth', auth);
-    }
+    db.security.saveUserInfo(name, auth);
     db.notifySettings();
   }
 }

@@ -22,7 +22,6 @@ class AtlasExplorerPreview extends StatefulWidget {
 }
 
 class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
-  static const _storeKey = 'explorer.aa.io/auth';
   static const _explorerHost = 'https://explorer.atlasacademy.io';
   static ApiCacheManager api = ApiCacheManager(null);
 
@@ -44,7 +43,7 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
         _scrollOffsets[folder] = _scrollController.offset;
       }
     });
-    setAuth(db.security.get(_storeKey)?.toString());
+    setAuth(db.security.atlasAuth?.toString());
   }
 
   @override
@@ -66,7 +65,7 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
     if (s == null || s.isEmpty) return;
     if (validateAuth(s)) {
       authCode = s;
-      db.security.put(_storeKey, authCode);
+      db.security.saveAtlasAuth(s);
       api.createDio = () => DioE(BaseOptions(headers: {"authorization": "Basic $authCode"}));
     }
   }

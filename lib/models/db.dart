@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:chaldea/models/userdata/security.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +23,6 @@ import '../packages/language.dart';
 import '../packages/method_channel/method_channel_chaldea.dart';
 import '../packages/packages.dart';
 import '../packages/split_route/split_route.dart';
-import '../utils/hive_extention.dart';
 import '../utils/json_helper.dart';
 import 'gamedata/gamedata.dart';
 import 'paths.dart';
@@ -37,7 +37,7 @@ class _Database {
   // members
   final paths = PathManager();
   LocalSettings settings = LocalSettings();
-  late final Box security;
+  ChaldeaSecurity security = ChaldeaSecurity();
   UserData _userData = UserData();
 
   UserData get userData => _userData;
@@ -153,7 +153,7 @@ class _Database {
     MethodChannelChaldea.configMethodChannel();
 
     // init other hive boxes at last
-    security = await Hive.openBoxRetry('security');
+   await security.init();
     if (kIsWeb) setUrlStrategy(PathUrlStrategy());
     _startSavingLoop();
   }
