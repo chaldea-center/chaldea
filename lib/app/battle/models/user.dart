@@ -407,6 +407,14 @@ class BattleTeamSetup {
     onFieldSvtDataList.setRange(0, onFieldSvtDataList.length, List.generate(3, (index) => PlayerSvtData.base()));
     backupSvtDataList.setRange(0, backupSvtDataList.length, List.generate(3, (index) => PlayerSvtData.base()));
   }
+
+  BattleTeamFormation toFormationData() {
+    return BattleTeamFormation(
+      onFieldSvts: onFieldSvtDataList.map((e) => e.isEmpty ? null : e.toStoredData()).toList(),
+      backupSvts: backupSvtDataList.map((e) => e.isEmpty ? null : e.toStoredData()).toList(),
+      mysticCode: mysticCodeData.toStoredData(),
+    );
+  }
 }
 
 class BattleOptions extends BattleOptionsRuntime {

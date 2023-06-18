@@ -1,3 +1,4 @@
+import 'package:chaldea/app/modules/battle/formation/formation_card.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/generated/l10n.dart';
@@ -136,7 +137,7 @@ class _FormationEditorState extends State<FormationEditor> {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: _buildServantRow(formation),
+          child: FormationCard(formation: formation),
         ),
         const SizedBox(height: 4),
         if (!sorting)
@@ -210,44 +211,5 @@ class _FormationEditorState extends State<FormationEditor> {
       child = Padding(padding: const EdgeInsetsDirectional.only(end: 24), child: child);
     }
     return child;
-  }
-
-  Widget _buildServantRow(final BattleTeamFormation formation) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        for (final onFieldSvt in formation.onFieldSvts) _buildServantIcons(onFieldSvt),
-        for (final backupSvt in formation.backupSvts) _buildServantIcons(backupSvt),
-        Flexible(
-          child: db.getIconImage(
-            db.gameData.mysticCodes[formation.mysticCode.mysticCodeId]?.icon,
-            aspectRatio: 1,
-            width: 56,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildServantIcons(final SvtSaveData? storedData) {
-    Widget child = Column(
-      children: [
-        db.getIconImage(
-          db.gameData.servantsById[storedData?.svtId]?.ascendIcon(storedData!.limitCount) ?? Atlas.common.emptySvtIcon,
-          aspectRatio: 132 / 144,
-        ),
-        db.getIconImage(
-          db.gameData.craftEssencesById[storedData?.ceId]?.extraAssets.equipFace.equip?[storedData!.ceId] ??
-              Atlas.common.emptyCeIcon,
-          aspectRatio: 150 / 68,
-        )
-      ],
-    );
-    child = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 1),
-      constraints: const BoxConstraints(maxWidth: 64),
-      child: child,
-    );
-    return Flexible(child: child);
   }
 }

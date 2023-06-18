@@ -64,7 +64,8 @@ class ChaldeaResponse {
     try {
       EasyLoading.show(maskType: EasyLoadingMaskType.clear);
       // print('apiWorkerDio: ${db.apiWorkerDio.options.baseUrl}');
-      var resp = ChaldeaResponse(await caller(db.apiWorkerDio));
+      final resp = ChaldeaResponse(await caller(db.apiWorkerDio));
+      EasyLoading.dismiss();
       if (resp.success) {
         onSuccess?.call(resp);
         if (showSuccess) {
@@ -83,14 +84,13 @@ class ChaldeaResponse {
       }
       return resp;
     } catch (e) {
+      EasyLoading.dismiss();
       await SimpleCancelOkDialog(
         title: Text(S.current.failed),
         content: Text(escapeDioException(e)),
         scrollable: false,
       ).showDialog(null);
       return null;
-    } finally {
-      EasyLoading.dismiss();
     }
   }
 }

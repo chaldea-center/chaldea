@@ -4,14 +4,9 @@ part '../../generated/models/api/api.g.dart';
 
 @JsonSerializable(genericArgumentFactories: true)
 class D1Result<T> {
-  bool success;
-  String? error;
-  // meta;
   List<T> results;
 
   D1Result({
-    required this.success,
-    this.error,
     this.results = const [],
   });
 
@@ -24,6 +19,8 @@ class D1Result<T> {
       return null as T;
     } else if (obj is int || obj is double || obj is String) {
       return obj as T;
+    } else if (T == BattleRecord) {
+      return BattleRecord.fromJson(Map<String, dynamic>.from(obj as Map)) as T;
     }
     throw FormatException('unknown type: ${obj.runtimeType}');
   }
@@ -36,4 +33,29 @@ class D1Result<T> {
     }
     throw FormatException('unknown type: ${value.runtimeType} : $T');
   }
+}
+
+@JsonSerializable()
+class BattleRecord {
+  int id;
+  int ver;
+  String userId;
+  int questId;
+  int phase;
+  String enemyHash;
+  String record;
+
+  BattleRecord({
+    required this.id,
+    required this.ver,
+    required this.userId,
+    required this.questId,
+    required this.phase,
+    required this.enemyHash,
+    required this.record,
+  });
+
+  factory BattleRecord.fromJson(Map<String, dynamic> json) => _$BattleRecordFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BattleRecordToJson(this);
 }

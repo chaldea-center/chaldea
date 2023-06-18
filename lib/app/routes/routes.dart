@@ -1,3 +1,4 @@
+import 'package:chaldea/app/modules/battle/teams/user_teams.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/modules/battle/td_damage/td_damage_ranking.dart';
@@ -185,6 +186,7 @@ class Routes {
   static const String laplaceBattle = '/laplace/battle';
   static const String laplaceShare = '/laplace/share';
   static const String laplaceNpDmg = '/laplace/np-dmg';
+  static const String laplaceManageTeam = '/laplace/team';
 
   static const String discord = '/discord';
   static const String notFound = '/404';
@@ -441,6 +443,8 @@ class RouteConfiguration {
           return SimulationPreview(shareData: uri);
         } else if (path?.startsWith(Routes.laplaceNpDmg) == true) {
           return const TdDamageRanking();
+        } else if (path?.startsWith(Routes.laplaceManageTeam) == true) {
+          return const UserTeamsManagePage();
         }
         return const SimulationPreview();
       case Routes.apk:

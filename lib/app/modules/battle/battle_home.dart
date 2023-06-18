@@ -68,6 +68,13 @@ class BattleHomePage extends StatelessWidget {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.group),
+              title: Text('Manage Uploaded Teams'),
+              onTap: () {
+                router.push(url: Routes.laplaceManageTeam);
+              },
+            ),
+            ListTile(
               title: Text(Language.isZH ? '常见问题/FAQ' : S.current.faq),
               leading: const Icon(Icons.question_answer),
               onTap: () {

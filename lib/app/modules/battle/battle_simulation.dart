@@ -1,6 +1,9 @@
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/app/api/chaldea.dart';
+import 'package:chaldea/models/models.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
@@ -35,6 +38,8 @@ class BattleSimulationPage extends StatefulWidget {
 class _BattleSimulationPageState extends State<BattleSimulationPage> {
   final BattleData battleData = BattleData();
 
+  QuestPhase get questPhase => widget.questPhase;
+
   BattleOptionsRuntime get options => battleData.options;
 
   @override
@@ -53,7 +58,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       save: false,
       action: 'battle_init',
       task: () => battleData.init(
-        widget.questPhase,
+        questPhase,
         [...widget.options.team.onFieldSvtDataList, ...widget.options.team.backupSvtDataList],
         widget.options.team.mysticCodeData,
       ),
@@ -65,7 +70,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
   Widget build(final BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: AutoSizeText(widget.questPhase.lName.l, maxLines: 1),
+        title: AutoSizeText(questPhase.lName.l, maxLines: 1),
         actions: [
           PopupMenuButton(itemBuilder: popupMenuItemBuilder),
         ],
@@ -294,7 +299,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             constraints: const BoxConstraints(maxWidth: 720),
             child: BattleRecorderPanel(
               battleData: battleData,
-              quest: widget.questPhase,
+              quest: questPhase,
               team: widget.options.team,
             ),
           ),
@@ -574,7 +579,38 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           child: battleData.isBattleWin
               ? Text('Win', style: TextStyle(color: Theme.of(context).colorScheme.secondary))
               : Text(S.current.battle_attack),
-        )
+        ),
+        if (battleData.isBattleWin && kDebugMode)
+          FilledButton(
+            onPressed: () async {
+              await SimpleCancelOkDialog(
+                title: const Text('Upload'),
+                content: db.security.isUserLoggedIn
+                    ? const Text('Upload current team to the server? (Requires login)')
+                    : Text(
+                        'Not logged in.',
+                        style: TextStyle(color: Theme.of(context).colorScheme.error),
+                      ),
+                onTapOk: !db.security.isUserLoggedIn
+                    ? null
+                    : () {
+                        final uploadData = BattleShareData(team: widget.options.team.toFormationData());
+                        ChaldeaResponse.request(
+                          caller: (dio) => dio.post('/laplace/upload', data: {
+                            'username': db.security.username,
+                            'auth': db.security.userAuth,
+                            'ver': 1,
+                            'questId': questPhase.id,
+                            'phase': questPhase.phase,
+                            'enemyHash': questPhase.enemyHash,
+                            'record': uploadData.toGZip()
+                          }),
+                        );
+                      },
+              ).showDialog(context);
+            },
+            child: const Text('Upload'),
+          ),
       ],
     );
   }
