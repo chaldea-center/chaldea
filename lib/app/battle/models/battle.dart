@@ -45,6 +45,7 @@ class BattleData {
   /// User action records, should be copied/saved to snapshots
   BattleRecordManager recorder = BattleRecordManager();
   BattleDelegate? delegate;
+  BattleReplayDelegateData replayDataRecord = BattleReplayDelegateData();
   BattleOptionsRuntime options = BattleOptionsRuntime();
   final BattleLogger battleLogger = BattleLogger();
   BuildContext? context;
@@ -621,6 +622,7 @@ class BattleData {
     final svt = onFieldAllyServants[servantIndex]!;
     battleLogger
         .action('${svt.lBattleName} - ${S.current.active_skill} ${skillIndex + 1}: ${svt.getSkillName(skillIndex)}');
+    recorder.skillActivation(this, servantIndex, skillIndex);
     return recordError(
       save: true,
       action: 'svt_skill-${servantIndex + 1}-${skillIndex + 1}',
@@ -652,6 +654,7 @@ class BattleData {
 
     battleLogger.action('${S.current.mystic_code} - ${S.current.active_skill} ${skillIndex + 1}: '
         '${masterSkillInfo[skillIndex].lName}');
+    recorder.skillActivation(this, null, skillIndex);
     return recordError(
       save: true,
       action: 'mystic_code_skill-${skillIndex + 1}',
@@ -679,6 +682,7 @@ class BattleData {
       return;
     }
 
+    recorder.initiateAttacks(this, actions);
     return recordError(
       save: true,
       action: 'play_turn-${actions.length} cards',
@@ -1042,8 +1046,8 @@ class BattleData {
     final curResult = options.probabilityThreshold <= activationRate;
 
     if (activationRate < 1000 && options.tailoredExecution) {
-      if (delegate?.tailoredExecutionCanActivate != null) {
-        return await delegate!.tailoredExecutionCanActivate!.call(curResult);
+      if (delegate?.canActivate != null) {
+        return await delegate!.canActivate!.call(curResult);
       } else if (mounted) {
         final curResultString = curResult ? S.current.success : S.current.failed;
         final String details = '${S.current.results}: $curResultString => '
@@ -1051,7 +1055,13 @@ class BattleData {
             '${(activationRate / 10).toStringAsFixed(1)}% '
             'vs ${S.current.probability_expectation}: '
             '${(options.probabilityThreshold / 10).toStringAsFixed(1)}%';
-        return TailoredExecutionConfirm.show(context: context!, description: description, details: details);
+        final result = await TailoredExecutionConfirm.show(
+          context: context!,
+          description: description,
+          details: details,
+        );
+        replayDataRecord.canActivateDecisions.add(result);
+        return result;
       }
     }
 
@@ -1103,7 +1113,8 @@ class BattleData {
       ..criticalStars = criticalStars
       .._uniqueIndex = _uniqueIndex
       ..options = options.copy()
-      ..recorder = recorder.copy();
+      ..recorder = recorder.copy()
+      ..replayDataRecord = replayDataRecord.copy();
 
     snapshots.add(copy);
   }
@@ -1125,7 +1136,7 @@ class BattleData {
       ..enemyDecks = copy.enemyDecks
       ..enemyTargetIndex = copy.enemyTargetIndex
       ..allyTargetIndex = copy.allyTargetIndex
-      ..fieldBuffs = copy.fieldBuffs.map((e) => e.copy()).toList()
+      ..fieldBuffs = copy.fieldBuffs
       ..mysticCode = copy.mysticCode
       ..mysticCodeLv = copy.mysticCodeLv
       ..masterSkillInfo = copy.masterSkillInfo
@@ -1134,8 +1145,9 @@ class BattleData {
       ..totalTurnCount = copy.totalTurnCount
       ..criticalStars = copy.criticalStars
       .._uniqueIndex = copy._uniqueIndex
-      ..options = copy.options.copy()
-      ..recorder = copy.recorder;
+      ..options = copy.options
+      ..recorder = copy.recorder
+      ..replayDataRecord = copy.replayDataRecord;
   }
 }
 

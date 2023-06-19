@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:archive/archive.dart';
 
+import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/url.dart';
@@ -82,11 +83,17 @@ class BattleShareData {
   String? minVer;
   BattleQuestInfo? quest;
   BattleTeamFormation team;
+  BattleActions? actions;
+  bool? disableEvent;
+  bool? autoAdd7KnightsTrait;
 
   BattleShareData({
     this.minVer,
     this.quest,
     required this.team,
+    this.actions,
+    this.disableEvent,
+    this.autoAdd7KnightsTrait,
   });
 
   factory BattleShareData.fromJson(Map<String, dynamic> json) => _$BattleShareDataFromJson(json);
@@ -101,6 +108,9 @@ class BattleShareData {
       minVer: kMinVer,
       quest: quest,
       team: team2,
+      actions: actions,
+      disableEvent: disableEvent,
+      autoAdd7KnightsTrait: autoAdd7KnightsTrait,
     ));
   }
 
@@ -696,4 +706,201 @@ enum SupportSvtType {
         return 'NPC';
     }
   }
+}
+
+@JsonSerializable()
+class BattleReplayDelegateData {
+  List<int> actWeightSelections;
+  List<int> skillActSelectSelections;
+  List<int> tdTypeChangeIndexes;
+  List<bool> canActivateDecisions;
+  List<int> damageSelections;
+  List<List<int>> replaceMemberIndexes;
+
+  BattleReplayDelegateData({
+    List<int>? actWeightSelections,
+    List<int>? skillActSelectSelections,
+    List<int>? tdTypeChangeIndexes,
+    List<bool>? canActivateDecisions,
+    List<int>? damageSelections,
+    List<List<int>>? replaceMemberIndexes,
+  })  : actWeightSelections = actWeightSelections ?? [],
+        skillActSelectSelections = skillActSelectSelections ?? [],
+        tdTypeChangeIndexes = tdTypeChangeIndexes ?? [],
+        canActivateDecisions = canActivateDecisions ?? [],
+        damageSelections = damageSelections ?? [],
+        replaceMemberIndexes = replaceMemberIndexes ?? [];
+
+  factory BattleReplayDelegateData.fromJson(Map<String, dynamic> json) => _$BattleReplayDelegateDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BattleReplayDelegateDataToJson(this);
+
+  BattleReplayDelegateData copy() {
+    return BattleReplayDelegateData(
+      actWeightSelections: actWeightSelections.toList(),
+      skillActSelectSelections: skillActSelectSelections.toList(),
+      tdTypeChangeIndexes: tdTypeChangeIndexes.toList(),
+      canActivateDecisions: canActivateDecisions.toList(),
+      damageSelections: damageSelections.toList(),
+      replaceMemberIndexes: replaceMemberIndexes.toList(),
+    );
+  }
+}
+
+@JsonSerializable()
+class BattleActionOptions {
+  int allyTargetIndex;
+  int enemyTargetIndex;
+  int fixedRandom;
+  int probabilityThreshold;
+  bool isAfter7thAnni;
+  bool tailoredExecution;
+
+  BattleActionOptions({
+    this.allyTargetIndex = 0,
+    this.enemyTargetIndex = 0,
+    this.fixedRandom = 900,
+    this.probabilityThreshold = 1000,
+    this.isAfter7thAnni = true,
+    this.tailoredExecution = false,
+  });
+
+  factory BattleActionOptions.fromJson(Map<String, dynamic> json) => _$BattleActionOptionsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BattleActionOptionsToJson(this);
+}
+
+enum BattleRecordDataType { base, skill, attack }
+
+@JsonSerializable(includeIfNull: false)
+class BattleRecordData {
+  BattleRecordDataType type;
+  BattleActionOptions options;
+
+  int? servantIndex;
+  int? skillIndex;
+
+  List<BattleAttackRecordData>? attackRecords;
+
+  BattleRecordData({BattleActionOptions? options})
+      : type = BattleRecordDataType.base,
+        options = options ?? BattleActionOptions();
+
+  BattleRecordData.skill({
+    BattleActionOptions? options,
+    this.servantIndex,
+    this.skillIndex,
+  })  : type = BattleRecordDataType.skill,
+        options = options ?? BattleActionOptions();
+
+  BattleRecordData.attack({
+    BattleActionOptions? options,
+    List<BattleAttackRecordData>? attackRecords,
+  })  : type = BattleRecordDataType.attack,
+        attackRecords = attackRecords ?? [],
+        options = options ?? BattleActionOptions();
+
+  factory BattleRecordData.fromJson(Map<String, dynamic> json) => _$BattleRecordDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BattleRecordDataToJson(this);
+
+  Future<void> replay(final BattleData battleData) async {
+    battleData.allyTargetIndex = options.allyTargetIndex;
+    battleData.enemyTargetIndex = options.enemyTargetIndex;
+    battleData.options.fixedRandom = options.fixedRandom;
+    battleData.options.probabilityThreshold = options.probabilityThreshold;
+    battleData.options.isAfter7thAnni = options.isAfter7thAnni;
+    battleData.options.tailoredExecution = options.tailoredExecution;
+
+    if (type == BattleRecordDataType.skill) {
+      await replaySkill(battleData);
+    } else if (type == BattleRecordDataType.attack) {
+      await replayBattle(battleData);
+    }
+  }
+
+  Future<void> replaySkill(final BattleData battleData) async {
+    if (skillIndex == null) {
+      return;
+    }
+
+    if (servantIndex == null) {
+      await battleData.activateMysticCodeSKill(skillIndex!);
+    } else {
+      await battleData.activateSvtSkill(servantIndex!, skillIndex!);
+    }
+  }
+
+  Future<void> replayBattle(final BattleData battleData) async {
+    if (attackRecords == null) {
+      return;
+    }
+
+    final List<CombatAction> actions = [];
+    for (final attackRecord in attackRecords!) {
+      final svt = battleData.onFieldAllyServants[attackRecord.servantIndex];
+      if (svt == null) {
+        continue;
+      }
+
+      final cardIndex = attackRecord.cardIndex;
+
+      final CommandCardData? card;
+      if (attackRecord.isNp) {
+        card = svt.getNPCard(battleData);
+      } else if (cardIndex != null) {
+        final cards = svt.getCards(battleData);
+        if (cardIndex < 0 || cardIndex >= cards.length) {
+          continue;
+        }
+        card = cards[cardIndex];
+      } else {
+        continue;
+      }
+
+      if (card == null) {
+        continue;
+      }
+      card.isCritical = attackRecord.isCritical;
+
+      actions.add(CombatAction(svt, card));
+    }
+
+    await battleData.playerTurn(actions);
+  }
+}
+
+@JsonSerializable()
+class BattleAttackRecordData {
+  int servantIndex;
+  int? cardIndex;
+  bool isNp;
+  bool isCritical;
+
+  BattleAttackRecordData({
+    this.servantIndex = 0,
+    this.cardIndex,
+    this.isNp = false,
+    this.isCritical = false,
+  });
+
+  factory BattleAttackRecordData.fromJson(Map<String, dynamic> json) => _$BattleAttackRecordDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BattleAttackRecordDataToJson(this);
+}
+
+@JsonSerializable()
+class BattleActions {
+  List<BattleRecordData> actions;
+  BattleReplayDelegateData delegate;
+
+  BattleActions({
+    List<BattleRecordData>? actions,
+    BattleReplayDelegateData? delegate,
+  })  : actions = actions ?? [],
+        delegate = delegate ?? BattleReplayDelegateData();
+
+  factory BattleActions.fromJson(Map<String, dynamic> json) => _$BattleActionsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BattleActionsToJson(this);
 }

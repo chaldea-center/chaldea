@@ -153,9 +153,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                   final BattleTeamFormation? selected = await router.pushPage<BattleTeamFormation?>(
                     TeamsQueryPage(
                       mode: TeamQueryMode.quest,
-                      questId: questPhase?.id,
-                      phase: questPhase?.phase,
-                      enemyHash: questPhase?.enemyHash,
+                      questPhase: questPhase,
                     ),
                   );
                   if (selected != null) {
@@ -636,7 +634,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
     // Sodom's Beast/Draco in team
     if (options.team.isDracoInTeam && questPhase != null) {
-      bool has7Knights = questPhase!.allEnemies.any((enemy) => _isEnemy7Knights(enemy));
+      bool has7Knights = questPhase!.allEnemies.any((enemy) => isEnemy7Knights(enemy));
       if (has7Knights) {
         final draco = db.gameData.servantsNoDup[377];
         children.addAll([
@@ -895,7 +893,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
     if (options.team.isDracoInTeam && settings.autoAdd7KnightsTrait) {
       for (final enemy in questCopy.allEnemies) {
-        if (_isEnemy7Knights(enemy) && enemy.traits.every((e) => e.signedId != Trait.standardClassServant.id)) {
+        if (isEnemy7Knights(enemy) && enemy.traits.every((e) => e.signedId != Trait.standardClassServant.id)) {
           enemy.traits = [...enemy.traits, NiceTrait(id: Trait.standardClassServant.id)];
         }
       }
@@ -941,7 +939,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 }
 
-bool _isEnemy7Knights(QuestEnemy enemy) {
+bool isEnemy7Knights(QuestEnemy enemy) {
   if (!enemy.traits.any((e) => e.signedId == Trait.servant.id)) return false;
   return enemy.traits.any((e) => _k7KnigntsTraits.contains(e.name));
 }

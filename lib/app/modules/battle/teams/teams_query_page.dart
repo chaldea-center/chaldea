@@ -1,24 +1,28 @@
 import 'package:flutter/scheduler.dart';
 
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/app/modules/battle/battle_simulation.dart';
 import 'package:chaldea/app/modules/battle/formation/formation_card.dart';
-import 'package:chaldea/app/modules/battle/teams/battle_record_details_page.dart';
+import 'package:chaldea/app/modules/battle/simulation_preview.dart';
 import 'package:chaldea/app/modules/home/subpage/login_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/api/api.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 enum TeamQueryMode { user, quest }
 
 class TeamsQueryPage extends StatefulWidget {
   final TeamQueryMode mode;
-  final int? questId;
-  final int? phase;
-  final String? enemyHash;
+  final QuestPhase? questPhase;
 
-  const TeamsQueryPage({super.key, required this.mode, this.questId, this.phase, this.enemyHash});
+  const TeamsQueryPage({super.key, required this.mode, this.questPhase});
 
   @override
   State<TeamsQueryPage> createState() => _TeamsQueryPageState();
@@ -125,7 +129,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
         FormationCard(formation: shareData.team),
         TextButton(
           onPressed: () {
-            router.pushPage(BattleRecordDetailPage(battleRecord: battleRecord));
+            replaySimulation(battleRecord, shareData);
           },
           child: Text('>>> ${S.current.details} >>>'),
         ),
@@ -166,15 +170,16 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
             'offset': _pageSize * page,
           }),
         );
-      } else if (mode == TeamQueryMode.quest && widget.questId != null) {
+      } else if (mode == TeamQueryMode.quest && widget.questPhase != null) {
+        final questPhase = widget.questPhase!;
         resp = await ChaldeaResponse.request(
           showSuccess: false,
           caller: (dio) => dio.post('/laplace/query/quest', data: {
             'username': db.security.username,
             'auth': db.security.userAuth,
-            'questId': widget.questId,
-            if (widget.phase != null) 'phase': widget.phase,
-            if (widget.enemyHash != null) 'enemyHash': widget.enemyHash,
+            'questId': questPhase.id,
+            'phase': questPhase.phase,
+            if (questPhase.enemyHash != null) 'enemyHash': questPhase.enemyHash,
             'limit': _pageSize + 1,
             'offset': _pageSize * page,
           }),
@@ -209,5 +214,71 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
         await _queryTeams(pageIndex);
       }
     }
+  }
+
+  void replaySimulation(final BattleRecord battleRecord, final BattleShareData shareData) async {
+    QuestPhase? questPhase = widget.questPhase;
+
+    if (questPhase == null) {
+      try {
+        EasyLoading.show();
+        questPhase ??= await AtlasApi.questPhase(
+          battleRecord.questId,
+          battleRecord.phase,
+          hash: battleRecord.enemyHash,
+          region: Region.jp,
+        );
+        EasyLoading.dismiss();
+      } catch (ignored) {
+        EasyLoading.dismiss();
+      }
+    }
+
+    if (questPhase == null) {
+      await SimpleCancelOkDialog(
+        title: Text(S.current.failed),
+        content: Text(S.current.not_found),
+        scrollable: false,
+      ).showDialog(null);
+      return;
+    }
+
+    final questCopy = QuestPhase.fromJson(questPhase.toJson());
+
+    final options = BattleOptions();
+    final formation = shareData.team;
+    for (int index = 0; index < 3; index++) {
+      options.team.onFieldSvtDataList[index] =
+          await PlayerSvtData.fromStoredData(formation.onFieldSvts.getOrNull(index));
+      options.team.backupSvtDataList[index] = await PlayerSvtData.fromStoredData(formation.backupSvts.getOrNull(index));
+    }
+
+    options.team.mysticCodeData.loadStoredData(formation.mysticCode);
+
+    if (shareData.disableEvent != null) {
+      options.disableEvent = shareData.disableEvent!;
+    }
+
+    if (options.disableEvent) {
+      questCopy.warId = 0;
+      questCopy.individuality.removeWhere((e) => e.isEventField);
+    }
+
+    if (options.team.isDracoInTeam && shareData.autoAdd7KnightsTrait == true) {
+      for (final enemy in questCopy.allEnemies) {
+        if (isEnemy7Knights(enemy) && enemy.traits.every((e) => e.signedId != Trait.standardClassServant.id)) {
+          enemy.traits = [...enemy.traits, NiceTrait(id: Trait.standardClassServant.id)];
+        }
+      }
+    }
+
+    router.push(
+      url: Routes.laplaceBattle,
+      child: BattleSimulationPage(
+        questPhase: questCopy,
+        options: options,
+        replayActions: shareData.actions,
+      ),
+    );
   }
 }

@@ -1,6 +1,7 @@
+import 'package:tuple/tuple.dart';
+
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
-import 'package:tuple/tuple.dart';
 import '../interactions/replace_member.dart';
 
 class ReplaceMember {
@@ -35,10 +36,16 @@ class ReplaceMember {
     }
     if (selections == null) return;
 
+    // cannot use fieldIndex since order may have already changed
+    // fieldIndex is maintained at the end of skill activations
+    final onFieldIndex = onFieldList.indexOf(selections.item1);
+    final backupIndex = backupList.indexOf(selections.item2);
+    battleData.replayDataRecord.replaceMemberIndexes.add([onFieldIndex, backupIndex]);
+
     battleData.recorder.orderChange(onField: selections.item1, backup: selections.item2);
 
-    onFieldList[onFieldList.indexOf(selections.item1)] = selections.item2;
-    backupList[backupList.indexOf(selections.item2)] = selections.item1;
+    onFieldList[onFieldIndex] = selections.item2;
+    backupList[backupIndex] = selections.item1;
     battleData.curFuncResults[selections.item1.uniqueId] = true;
     battleData.curFuncResults[selections.item2.uniqueId] = true;
 

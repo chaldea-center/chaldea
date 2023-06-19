@@ -18,27 +18,29 @@ class DamageAdjustor extends StatefulWidget {
   State<DamageAdjustor> createState() => _DamageAdjustorState();
 
   static Future<int> show(final BattleData battleData, final DamageParameters damageParameters) async {
-    if (battleData.options.tailoredExecution) {
-      if (battleData.delegate?.tailoredExecutionRandom != null) {
-        damageParameters.fixedRandom = await battleData.delegate!.tailoredExecutionRandom!
-            .call(damageParameters.fixedRandom);
-      } else if (battleData.mounted) {
-        return showUserConfirm<int>(
-          context: battleData.context!,
-          barrierDismissible: false,
-          builder: (context) {
-            return DamageAdjustor(battleData: battleData, damageParameters: damageParameters);
-          },
-        );
-      }
-    }
-
     int damage = 0;
     try {
       damage = calculateDamage(damageParameters);
     } catch (e) {
       battleData.battleLogger.error(e.toString());
     }
+
+    if (battleData.options.tailoredExecution) {
+      if (battleData.delegate?.damageRandom != null) {
+        return await battleData.delegate!.damageRandom!.call(damage);
+      } else if (battleData.mounted) {
+        final damage = await showUserConfirm<int>(
+          context: battleData.context!,
+          barrierDismissible: false,
+          builder: (context) {
+            return DamageAdjustor(battleData: battleData, damageParameters: damageParameters);
+          },
+        );
+        battleData.replayDataRecord.damageSelections.add(damage);
+        return damage;
+      }
+    }
+
     return damage;
   }
 }

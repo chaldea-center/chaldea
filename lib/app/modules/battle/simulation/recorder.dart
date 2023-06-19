@@ -241,6 +241,8 @@ class BattleRecorderPanelBase extends StatelessWidget {
             ...drawSvt(context, record.target!),
           ],
         ])));
+      } else if (record is BattleAttacksInitiationRecord || record is BattleSkillActivationRecord) {
+        // noop
       } else {
         assert(false, record);
       }

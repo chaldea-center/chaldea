@@ -67,6 +67,19 @@ class BattleRecordManager {
     records.add(BattleProgressTurnRecord(turn));
   }
 
+  void skillActivation(final BattleData battleData, final int? servantIndex, final int skillIndex) {
+    records.add(BattleSkillActivationRecord(
+      allyTargetIndex: battleData.allyTargetIndex,
+      enemyTargetIndex: battleData.enemyTargetIndex,
+      fixedRandom: battleData.options.fixedRandom,
+      probabilityThreshold: battleData.options.probabilityThreshold,
+      isAfter7thAnni: battleData.options.isAfter7thAnni,
+      tailoredExecution: battleData.options.tailoredExecution,
+      servantIndex: servantIndex,
+      skillIndex: skillIndex,
+    ));
+  }
+
   void skill({
     required BattleData battleData,
     required BattleServantData? activator,
@@ -94,6 +107,24 @@ class BattleRecordManager {
   }
 
   final List<_BattleCardTempData> _cardHistory = [];
+
+  void initiateAttacks(final BattleData battleData, final List<CombatAction> combatActions) {
+    records.add(BattleAttacksInitiationRecord(
+        allyTargetIndex: battleData.allyTargetIndex,
+        enemyTargetIndex: battleData.enemyTargetIndex,
+        fixedRandom: battleData.options.fixedRandom,
+        probabilityThreshold: battleData.options.probabilityThreshold,
+        isAfter7thAnni: battleData.options.isAfter7thAnni,
+        tailoredExecution: battleData.options.tailoredExecution,
+        actions: combatActions
+            .map((combatAction) => BattleAttackRecordData(
+                  servantIndex: combatAction.actor.fieldIndex,
+                  cardIndex: combatAction.cardData.cardIndex,
+                  isNp: combatAction.cardData.isNP,
+                  isCritical: combatAction.cardData.isCritical,
+                ))
+            .toList()));
+  }
 
   void startPlayerCard(BattleServantData activator, CommandCardData card) {
     _cardHistory.add(_BattleCardTempData(activator, card));
@@ -144,6 +175,17 @@ class BattleRecordManager {
       }
     }
   }
+
+  List<BattleRecordData> toUploadRecords() {
+    final List<BattleRecordData> uploadRecords = [];
+    for (final record in records) {
+      final uploadRecord = record.toUploadRecord();
+      if (uploadRecord != null) {
+        uploadRecords.add(uploadRecord);
+      }
+    }
+    return uploadRecords;
+  }
 }
 
 class _BattleCardTempData {
@@ -161,6 +203,10 @@ abstract class BattleRecord {
   BattleRecord();
 
   BattleRecord copy();
+
+  BattleRecordData? toUploadRecord() {
+    return null;
+  }
 }
 
 class BattleMessageRecord extends BattleRecord {
@@ -222,6 +268,51 @@ class BattleProgressTurnRecord extends BattleRecord {
   }
 }
 
+class BattleSkillActivationRecord extends BattleRecord {
+  final BattleRecordData recordData;
+
+  BattleSkillActivationRecord({
+    required final int allyTargetIndex,
+    required final int enemyTargetIndex,
+    required final int fixedRandom,
+    required final int probabilityThreshold,
+    required final bool isAfter7thAnni,
+    required final bool tailoredExecution,
+    required final int? servantIndex,
+    required final int skillIndex,
+  }) : recordData = BattleRecordData.skill(
+          options: BattleActionOptions(
+            allyTargetIndex: allyTargetIndex,
+            enemyTargetIndex: enemyTargetIndex,
+            fixedRandom: fixedRandom,
+            probabilityThreshold: probabilityThreshold,
+            isAfter7thAnni: isAfter7thAnni,
+            tailoredExecution: tailoredExecution,
+          ),
+          servantIndex: servantIndex,
+          skillIndex: skillIndex,
+        );
+
+  @override
+  BattleRecord copy() {
+    return BattleSkillActivationRecord(
+      allyTargetIndex: recordData.options.allyTargetIndex,
+      enemyTargetIndex: recordData.options.enemyTargetIndex,
+      fixedRandom: recordData.options.fixedRandom,
+      probabilityThreshold: recordData.options.probabilityThreshold,
+      isAfter7thAnni: recordData.options.isAfter7thAnni,
+      tailoredExecution: recordData.options.tailoredExecution,
+      servantIndex: recordData.servantIndex,
+      skillIndex: recordData.skillIndex!,
+    );
+  }
+
+  @override
+  BattleRecordData? toUploadRecord() {
+    return recordData;
+  }
+}
+
 class BattleSkillRecord extends BattleRecord {
   final BattleServantData? activator;
   final BattleServantData? targetPlayerSvt;
@@ -277,6 +368,47 @@ class BattleOrderChangeRecord extends BattleRecord {
   @override
   BattleOrderChangeRecord copy() {
     return BattleOrderChangeRecord(onField: onField, backup: backup);
+  }
+}
+
+class BattleAttacksInitiationRecord extends BattleRecord {
+  final BattleRecordData recordData;
+  BattleAttacksInitiationRecord({
+    required final int allyTargetIndex,
+    required final int enemyTargetIndex,
+    required final int fixedRandom,
+    required final int probabilityThreshold,
+    required final bool isAfter7thAnni,
+    required final bool tailoredExecution,
+    required final List<BattleAttackRecordData> actions,
+  }) : recordData = BattleRecordData.attack(
+          options: BattleActionOptions(
+            allyTargetIndex: allyTargetIndex,
+            enemyTargetIndex: enemyTargetIndex,
+            fixedRandom: fixedRandom,
+            probabilityThreshold: probabilityThreshold,
+            isAfter7thAnni: isAfter7thAnni,
+            tailoredExecution: tailoredExecution,
+          ),
+          attackRecords: actions.toList(),
+        );
+
+  @override
+  BattleRecord copy() {
+    return BattleAttacksInitiationRecord(
+      allyTargetIndex: recordData.options.allyTargetIndex,
+      enemyTargetIndex: recordData.options.enemyTargetIndex,
+      fixedRandom: recordData.options.fixedRandom,
+      probabilityThreshold: recordData.options.probabilityThreshold,
+      isAfter7thAnni: recordData.options.isAfter7thAnni,
+      tailoredExecution: recordData.options.tailoredExecution,
+      actions: recordData.attackRecords!.toList(),
+    );
+  }
+
+  @override
+  BattleRecordData? toUploadRecord() {
+    return recordData;
   }
 }
 

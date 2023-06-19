@@ -163,6 +163,7 @@ class BattleSkillInfoData {
         selectedActionIndex = await battleData.delegate!.skillActSelect!(battleData.activator);
       } else if (battleData.mounted) {
         selectedActionIndex = await SkillActSelectDialog.show(battleData, skill, skillLevel);
+        battleData.replayDataRecord.skillActSelectSelections.add(selectedActionIndex);
       }
     }
 

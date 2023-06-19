@@ -1,12 +1,11 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/battle/interactions/_delegate.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -23,11 +22,13 @@ import 'simulation/svt_detail.dart';
 class BattleSimulationPage extends StatefulWidget {
   final QuestPhase questPhase;
   final BattleOptions options;
+  final BattleActions? replayActions;
 
   BattleSimulationPage({
     super.key,
     required this.questPhase,
     required this.options,
+    this.replayActions,
   });
 
   @override
@@ -64,6 +65,17 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         widget.options.team.mysticCodeData,
       ),
     );
+
+    final replayActions = widget.replayActions;
+    if (replayActions != null) {
+      battleData.delegate = BattleReplayDelegate(replayActions.delegate);
+      for (final action in replayActions.actions) {
+        await action.replay(battleData);
+      }
+      battleData.delegate = null;
+      battleData.recorder.isUploadEligible = false;
+    }
+
     if (mounted) setState(() {});
   }
 
@@ -581,7 +593,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               ? Text('Win', style: TextStyle(color: Theme.of(context).colorScheme.secondary))
               : Text(S.current.battle_attack),
         ),
-        if (battleData.isBattleWin && kDebugMode)
+        if (battleData.isBattleWin && widget.replayActions == null)
           FilledButton(
             onPressed: () async {
               await SimpleCancelOkDialog(
@@ -598,7 +610,15 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                 onTapOk: !db.security.isUserLoggedIn || !battleData.recorder.isUploadEligible
                     ? null
                     : () {
-                        final uploadData = BattleShareData(team: widget.options.team.toFormationData());
+                        final actions = BattleActions(
+                          actions: battleData.recorder.toUploadRecords(),
+                          delegate: battleData.replayDataRecord,
+                        );
+                        final uploadData = BattleShareData(
+                          team: widget.options.team.toFormationData(),
+                          actions: actions,
+                          disableEvent: widget.options.disableEvent,
+                        );
                         ChaldeaResponse.request(
                           caller: (dio) => dio.post('/laplace/upload', data: {
                             'username': db.security.username,

@@ -60,6 +60,10 @@ BattleShareData _$BattleShareDataFromJson(Map json) => $checkedCreate(
           quest: $checkedConvert(
               'quest', (v) => v == null ? null : BattleQuestInfo.fromJson(Map<String, dynamic>.from(v as Map))),
           team: $checkedConvert('team', (v) => BattleTeamFormation.fromJson(Map<String, dynamic>.from(v as Map))),
+          actions: $checkedConvert(
+              'actions', (v) => v == null ? null : BattleActions.fromJson(Map<String, dynamic>.from(v as Map))),
+          disableEvent: $checkedConvert('disableEvent', (v) => v as bool?),
+          autoAdd7KnightsTrait: $checkedConvert('autoAdd7KnightsTrait', (v) => v as bool?),
         );
         return val;
       },
@@ -77,6 +81,9 @@ Map<String, dynamic> _$BattleShareDataToJson(BattleShareData instance) {
   writeNotNull('minVer', instance.minVer);
   writeNotNull('quest', instance.quest?.toJson());
   val['team'] = instance.team.toJson();
+  writeNotNull('actions', instance.actions?.toJson());
+  writeNotNull('disableEvent', instance.disableEvent);
+  writeNotNull('autoAdd7KnightsTrait', instance.autoAdd7KnightsTrait);
   return val;
 }
 
@@ -471,3 +478,146 @@ const _$SvtLvEnumMap = {
   SvtLv.lv100: 'lv100',
   SvtLv.lv120: 'lv120',
 };
+
+BattleReplayDelegateData _$BattleReplayDelegateDataFromJson(Map json) => $checkedCreate(
+      'BattleReplayDelegateData',
+      json,
+      ($checkedConvert) {
+        final val = BattleReplayDelegateData(
+          actWeightSelections:
+              $checkedConvert('actWeightSelections', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          skillActSelectSelections:
+              $checkedConvert('skillActSelectSelections', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          tdTypeChangeIndexes:
+              $checkedConvert('tdTypeChangeIndexes', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          canActivateDecisions:
+              $checkedConvert('canActivateDecisions', (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList()),
+          damageSelections:
+              $checkedConvert('damageSelections', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          replaceMemberIndexes: $checkedConvert('replaceMemberIndexes',
+              (v) => (v as List<dynamic>?)?.map((e) => (e as List<dynamic>).map((e) => e as int).toList()).toList()),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$BattleReplayDelegateDataToJson(BattleReplayDelegateData instance) => <String, dynamic>{
+      'actWeightSelections': instance.actWeightSelections,
+      'skillActSelectSelections': instance.skillActSelectSelections,
+      'tdTypeChangeIndexes': instance.tdTypeChangeIndexes,
+      'canActivateDecisions': instance.canActivateDecisions,
+      'damageSelections': instance.damageSelections,
+      'replaceMemberIndexes': instance.replaceMemberIndexes,
+    };
+
+BattleActionOptions _$BattleActionOptionsFromJson(Map json) => $checkedCreate(
+      'BattleActionOptions',
+      json,
+      ($checkedConvert) {
+        final val = BattleActionOptions(
+          allyTargetIndex: $checkedConvert('allyTargetIndex', (v) => v as int? ?? 0),
+          enemyTargetIndex: $checkedConvert('enemyTargetIndex', (v) => v as int? ?? 0),
+          fixedRandom: $checkedConvert('fixedRandom', (v) => v as int? ?? 900),
+          probabilityThreshold: $checkedConvert('probabilityThreshold', (v) => v as int? ?? 1000),
+          isAfter7thAnni: $checkedConvert('isAfter7thAnni', (v) => v as bool? ?? true),
+          tailoredExecution: $checkedConvert('tailoredExecution', (v) => v as bool? ?? false),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$BattleActionOptionsToJson(BattleActionOptions instance) => <String, dynamic>{
+      'allyTargetIndex': instance.allyTargetIndex,
+      'enemyTargetIndex': instance.enemyTargetIndex,
+      'fixedRandom': instance.fixedRandom,
+      'probabilityThreshold': instance.probabilityThreshold,
+      'isAfter7thAnni': instance.isAfter7thAnni,
+      'tailoredExecution': instance.tailoredExecution,
+    };
+
+BattleRecordData _$BattleRecordDataFromJson(Map json) => $checkedCreate(
+      'BattleRecordData',
+      json,
+      ($checkedConvert) {
+        final val = BattleRecordData(
+          options: $checkedConvert(
+              'options', (v) => v == null ? null : BattleActionOptions.fromJson(Map<String, dynamic>.from(v as Map))),
+        );
+        $checkedConvert('type', (v) => val.type = $enumDecode(_$BattleRecordDataTypeEnumMap, v));
+        $checkedConvert('servantIndex', (v) => val.servantIndex = v as int?);
+        $checkedConvert('skillIndex', (v) => val.skillIndex = v as int?);
+        $checkedConvert(
+            'attackRecords',
+            (v) => val.attackRecords = (v as List<dynamic>?)
+                ?.map((e) => BattleAttackRecordData.fromJson(Map<String, dynamic>.from(e as Map)))
+                .toList());
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$BattleRecordDataToJson(BattleRecordData instance) {
+  final val = <String, dynamic>{
+    'type': _$BattleRecordDataTypeEnumMap[instance.type]!,
+    'options': instance.options.toJson(),
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('servantIndex', instance.servantIndex);
+  writeNotNull('skillIndex', instance.skillIndex);
+  writeNotNull('attackRecords', instance.attackRecords?.map((e) => e.toJson()).toList());
+  return val;
+}
+
+const _$BattleRecordDataTypeEnumMap = {
+  BattleRecordDataType.base: 'base',
+  BattleRecordDataType.skill: 'skill',
+  BattleRecordDataType.attack: 'attack',
+};
+
+BattleAttackRecordData _$BattleAttackRecordDataFromJson(Map json) => $checkedCreate(
+      'BattleAttackRecordData',
+      json,
+      ($checkedConvert) {
+        final val = BattleAttackRecordData(
+          servantIndex: $checkedConvert('servantIndex', (v) => v as int? ?? 0),
+          cardIndex: $checkedConvert('cardIndex', (v) => v as int?),
+          isNp: $checkedConvert('isNp', (v) => v as bool? ?? false),
+          isCritical: $checkedConvert('isCritical', (v) => v as bool? ?? false),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$BattleAttackRecordDataToJson(BattleAttackRecordData instance) => <String, dynamic>{
+      'servantIndex': instance.servantIndex,
+      'cardIndex': instance.cardIndex,
+      'isNp': instance.isNp,
+      'isCritical': instance.isCritical,
+    };
+
+BattleActions _$BattleActionsFromJson(Map json) => $checkedCreate(
+      'BattleActions',
+      json,
+      ($checkedConvert) {
+        final val = BattleActions(
+          actions: $checkedConvert(
+              'actions',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => BattleRecordData.fromJson(Map<String, dynamic>.from(e as Map)))
+                  .toList()),
+          delegate: $checkedConvert('delegate',
+              (v) => v == null ? null : BattleReplayDelegateData.fromJson(Map<String, dynamic>.from(v as Map))),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$BattleActionsToJson(BattleActions instance) => <String, dynamic>{
+      'actions': instance.actions.map((e) => e.toJson()).toList(),
+      'delegate': instance.delegate.toJson(),
+    };
