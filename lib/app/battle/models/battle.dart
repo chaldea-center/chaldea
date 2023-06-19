@@ -622,11 +622,13 @@ class BattleData {
     final svt = onFieldAllyServants[servantIndex]!;
     battleLogger
         .action('${svt.lBattleName} - ${S.current.active_skill} ${skillIndex + 1}: ${svt.getSkillName(skillIndex)}');
-    recorder.skillActivation(this, servantIndex, skillIndex);
     return recordError(
       save: true,
       action: 'svt_skill-${servantIndex + 1}-${skillIndex + 1}',
-      task: () => svt.activateSkill(this, skillIndex),
+      task: () async {
+        recorder.skillActivation(this, servantIndex, skillIndex);
+        await svt.activateSkill(this, skillIndex);
+      },
     );
   }
 
@@ -654,11 +656,11 @@ class BattleData {
 
     battleLogger.action('${S.current.mystic_code} - ${S.current.active_skill} ${skillIndex + 1}: '
         '${masterSkillInfo[skillIndex].lName}');
-    recorder.skillActivation(this, null, skillIndex);
     return recordError(
       save: true,
       action: 'mystic_code_skill-${skillIndex + 1}',
       task: () async {
+        recorder.skillActivation(this, null, skillIndex);
         int effectiveness = 1000;
         for (final svt in nonnullAllies) {
           effectiveness += await svt.getBuffValueOnAction(this, BuffAction.masterSkillValueUp);
@@ -682,11 +684,11 @@ class BattleData {
       return;
     }
 
-    recorder.initiateAttacks(this, actions);
     return recordError(
       save: true,
       action: 'play_turn-${actions.length} cards',
       task: () async {
+        recorder.initiateAttacks(this, actions);
         criticalStars = 0;
 
         // assumption: only Quick, Arts, and Buster are ever listed as viable actions

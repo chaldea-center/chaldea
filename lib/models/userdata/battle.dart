@@ -845,7 +845,7 @@ class BattleRecordData {
 
       final cardIndex = attackRecord.cardIndex;
 
-      final CommandCardData? card;
+      CommandCardData? card;
       if (attackRecord.isNp) {
         card = svt.getNPCard(battleData);
       } else if (cardIndex != null) {
@@ -854,8 +854,6 @@ class BattleRecordData {
           continue;
         }
         card = cards[cardIndex];
-      } else {
-        continue;
       }
 
       if (card == null) {
