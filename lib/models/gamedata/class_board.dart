@@ -47,11 +47,19 @@ class ClassBoard with RouteInfo {
         return Transl.svtClassId(id).l;
       }
     }
-    if (classes.isEmpty) {
-      if (id == 8) return 'EXTRA Ⅰ';
-      if (id == 9) return 'EXTRA Ⅱ';
-    }
+    if (id == 8) return 'EXTRA Ⅰ';
+    if (id == 9) return 'EXTRA Ⅱ';
     return name;
+  }
+
+  int getSkillLv(int id, ClassBoardSkillType type) {
+    int lv = 0;
+    for (final square in squares) {
+      if (square.skillType == type && square.targetSkill?.id == id) {
+        lv += square.upSkillLv;
+      }
+    }
+    return lv;
   }
 
   factory ClassBoard.fromJson(Map<String, dynamic> json) => _$ClassBoardFromJson(json);

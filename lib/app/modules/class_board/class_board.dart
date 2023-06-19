@@ -1,5 +1,6 @@
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
+import 'package:chaldea/app/descriptors/func/func.dart';
 import 'package:chaldea/app/descriptors/mission_conds.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
@@ -30,6 +31,9 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
   void initState() {
     super.initState();
     _board = widget.board ?? db.gameData.classBoards[widget.id];
+    _tabController.addListener(() {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -52,10 +56,11 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
       ),
       body: TabBarView(
         controller: _tabController,
+        physics: _tabController.index == 2 ? const NeverScrollableScrollPhysics() : null,
         children: [
-          infoTab,
+          db.onUserData((context, snapshot) => infoTab),
           squareTab,
-          ClassBoardMap(board: board),
+          mapTab,
         ],
       ),
     );
@@ -63,19 +68,32 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
 
   Widget get infoTab {
     final spells = <int, ClassBoardCommandSpell>{}, skills = <int, NiceSkill>{};
+    final spellLvs = <int, int>{}, skillLvs = <int, int>{};
     final Map<int, int> unlockItems = {}, enhanceItems = {};
+    final Map<int, int> planUnlockItems = {}, planEnhanceItems = {};
     int totalBond = 0;
 
     for (final square in board.squares) {
+      final unlocked = db.curPlan_.classBoardSquare[square.id] == LockPlan.full;
       if (square.targetCommandSpell != null) {
         spells.putIfAbsent(square.targetCommandSpell!.id, () => square.targetCommandSpell!);
+        if (unlocked) spellLvs.addNum(square.targetCommandSpell!.id, square.upSkillLv);
       } else if (square.targetSkill != null) {
         skills.putIfAbsent(square.targetSkill!.id, () => square.targetSkill!);
+        if (unlocked) skillLvs.addNum(square.targetSkill!.id, square.upSkillLv);
       }
       if (square.lock != null) {
-        unlockItems.addDict({for (final itemAmount in square.lock!.items) itemAmount.itemId: itemAmount.amount});
+        final lockItems = {for (final itemAmount in square.lock!.items) itemAmount.itemId: itemAmount.amount};
+        unlockItems.addDict(lockItems);
+        if (db.curPlan_.classBoardLock[square.lock!.id] == LockPlan.planned) {
+          planUnlockItems.addDict(lockItems);
+        }
       }
-      enhanceItems.addDict({for (final itemAmount in square.items) itemAmount.itemId: itemAmount.amount});
+      final squareItems = {for (final itemAmount in square.items) itemAmount.itemId: itemAmount.amount};
+      enhanceItems.addDict(squareItems);
+      if (db.curPlan_.classBoardSquare[square.id] == LockPlan.planned) {
+        planEnhanceItems.addDict(squareItems);
+      }
     }
 
     final clsIds = board.classes.map((e) => e.classId).toSet();
@@ -121,13 +139,48 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
               ],
             )
           ]),
+      CustomTableRow.fromTexts(texts: ['${S.current.item}(${S.current.plan})'], isHeader: true),
+      for (final items in [planUnlockItems, planEnhanceItems])
+        if (items.isNotEmpty)
+          CustomTableRow.fromChildren(children: [
+            Wrap(
+              // alignment: WrapAlignment.center,
+              children: [
+                for (final entry in items.entries)
+                  Item.iconBuilder(
+                    context: context,
+                    item: null,
+                    itemId: entry.key,
+                    text: entry.value.format(),
+                    width: 32,
+                  )
+              ],
+            )
+          ]),
       if (spells.isNotEmpty) ...[
         CustomTableRow.fromTexts(texts: [S.current.command_spell], isHeader: true),
-        for (final cs in spells.values) SkillDescriptor(skill: cs.toSkill(), jumpToDetail: false),
+        for (final cs in spells.values)
+          SkillDescriptor(
+            skill: cs.toSkill(),
+            level: spellLvs[cs.id],
+            jumpToDetail: false,
+          ),
       ],
       if (skills.isNotEmpty) ...[
         CustomTableRow.fromTexts(texts: [S.current.skill], isHeader: true),
-        for (final skill in skills.values) SkillDescriptor(skill: skill),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final skill in skills.values)
+              ...FuncsDescriptor.describe(
+                funcs: skill.functions,
+                script: skill.script,
+                level: skillLvs[skill.id],
+                showPlayer: true,
+                showEnemy: false,
+              ),
+          ],
+        )
       ],
     ];
 
@@ -220,6 +273,27 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
       contentBuilder: (context) => ClassBoardSquareDetail(board: board, square: square),
     );
   }
+
+  bool showPlannedMap = false;
+  Widget get mapTab {
+    return Column(
+      children: [
+        Expanded(child: ClassBoardMap(board: board, showPlanned: showPlannedMap)),
+        kDefaultDivider,
+        SwitchListTile(
+          dense: true,
+          title: Text(S.current.plan),
+          value: showPlannedMap,
+          onChanged: (v) {
+            setState(() {
+              showPlannedMap = !showPlannedMap;
+            });
+          },
+        ),
+        const SafeArea(child: SizedBox.shrink()),
+      ],
+    );
+  }
 }
 
 class ClassBoardSquareDetail extends StatelessWidget {
@@ -239,28 +313,29 @@ class ClassBoardSquareDetail extends StatelessWidget {
         mission = db.gameData.others.eventMissions[lock.condTargetId];
       }
       children.add(TileGroup(
-        header: "Unlock",
+        header: S.current.unlock,
         children: [
-          ListTile(
-            dense: true,
-            title: Text(S.current.plan),
-            trailing: db.onUserData(
-              (context, snapshot) => FilterGroup<LockPlan>(
-                combined: true,
-                padding: EdgeInsets.zero,
-                options: LockPlan.values,
-                values: FilterRadioData.nonnull(db.curPlan_.classBoardLock[lock.id] ?? LockPlan.none),
-                optionBuilder: (value) => Text(value.dispPlan),
-                onFilterChanged: (v, _) {
-                  db.curPlan_.classBoardLock[lock.id] = v.radioValue!;
-                  db.itemCenter.updateClassBoard();
-                },
+          if (lock.items.isNotEmpty)
+            ListTile(
+              dense: true,
+              title: Text(S.current.plan),
+              trailing: db.onUserData(
+                (context, snapshot) => FilterGroup<LockPlan>(
+                  combined: true,
+                  padding: EdgeInsets.zero,
+                  options: LockPlan.values,
+                  values: FilterRadioData.nonnull(db.curPlan_.classBoardLock[lock.id] ?? LockPlan.none),
+                  optionBuilder: (value) => Text(value.dispPlan),
+                  onFilterChanged: (v, _) {
+                    db.curPlan_.classBoardLock[lock.id] = v.radioValue!;
+                    db.itemCenter.updateClassBoard();
+                  },
+                ),
               ),
             ),
-          ),
           ListTile(
             dense: true,
-            title: const Text('Unlock Items'),
+            title: Text('${S.current.item}(${S.current.unlock})'),
             leading: const Icon(Icons.lock, size: 18),
             minLeadingWidth: 24,
             horizontalTitleGap: 8,
@@ -298,23 +373,24 @@ class ClassBoardSquareDetail extends StatelessWidget {
     children.add(TileGroup(
       header: square.skillTypeStr,
       children: [
-        ListTile(
-          dense: true,
-          title: Text(S.current.plan),
-          trailing: db.onUserData(
-            (context, snapshot) => FilterGroup<LockPlan>(
-              combined: true,
-              padding: EdgeInsets.zero,
-              options: LockPlan.values,
-              values: FilterRadioData.nonnull(db.curPlan_.classBoardSquare[square.id] ?? LockPlan.none),
-              optionBuilder: (value) => Text(value.dispPlan),
-              onFilterChanged: (v, _) {
-                db.curPlan_.classBoardSquare[square.id] = v.radioValue!;
-                db.itemCenter.updateClassBoard();
-              },
+        if (square.items.isNotEmpty)
+          ListTile(
+            dense: true,
+            title: Text(S.current.plan),
+            trailing: db.onUserData(
+              (context, snapshot) => FilterGroup<LockPlan>(
+                combined: true,
+                padding: EdgeInsets.zero,
+                options: LockPlan.values,
+                values: FilterRadioData.nonnull(db.curPlan_.classBoardSquare[square.id] ?? LockPlan.none),
+                optionBuilder: (value) => Text(value.dispPlan),
+                onFilterChanged: (v, _) {
+                  db.curPlan_.classBoardSquare[square.id] = v.radioValue!;
+                  db.itemCenter.updateClassBoard();
+                },
+              ),
             ),
           ),
-        ),
         ListTile(
           dense: true,
           title: Text(square.skillTypeStr),
@@ -323,7 +399,7 @@ class ClassBoardSquareDetail extends StatelessWidget {
         ),
         ListTile(
           dense: true,
-          title: const Text('Enhance Items'),
+          title: Text('${S.current.item}(${S.current.enhance})'),
           minLeadingWidth: 24,
           horizontalTitleGap: 8,
           trailing: Wrap(
@@ -352,13 +428,13 @@ class ClassBoardSquareDetail extends StatelessWidget {
         children: [
           ListTile(
             dense: true,
-            title: Text("Previous ${S.current.class_board_square}"),
-            trailing: Text(prevs.isEmpty ? '-' : prevs.join("/")),
+            title: Text(S.current.general_previous),
+            trailing: Text(prevs.isEmpty ? '-' : '${S.current.class_board_square} ${prevs.join("/")}'),
           ),
           ListTile(
             dense: true,
-            title: Text("Next ${S.current.class_board_square}"),
-            trailing: Text(nexts.isEmpty ? '-' : nexts.join("/")),
+            title: Text(S.current.general_next),
+            trailing: Text(nexts.isEmpty ? '-' : '${S.current.class_board_square} ${nexts.join("/")}'),
           ),
         ],
       ));

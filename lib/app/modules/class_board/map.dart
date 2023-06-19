@@ -8,7 +8,8 @@ import 'class_board.dart';
 
 class ClassBoardMap extends StatefulWidget {
   final ClassBoard board;
-  const ClassBoardMap({super.key, required this.board});
+  final bool showPlanned;
+  const ClassBoardMap({super.key, required this.board, required this.showPlanned});
 
   @override
   State<ClassBoardMap> createState() => _ClassBoardMapState();
@@ -28,14 +29,15 @@ class _ClassBoardMapState extends State<ClassBoardMap> {
         child: CustomPaint(
           key: _mapKey,
           painter: ClassBoardMapPainter(
-            board,
-            imageLoader.images,
-            (url) async {
+            board: board,
+            images: imageLoader.images,
+            onLoadImage: (url) async {
               final img = await imageLoader.loadImage(url);
               if (img != null && mounted) setState(() {});
             },
+            showPlanned: widget.showPlanned,
           ),
-          // size: const Size(2048, 2048),
+          size: const Size(2048, 2048),
         ),
       ),
     );
@@ -74,6 +76,7 @@ class _ClassBoardMapState extends State<ClassBoardMap> {
           child: ClassBoardSquareDetail(board: board, square: target),
         ),
         scrollable: true,
+        hideCancel: true,
         contentPadding: const EdgeInsetsDirectional.fromSTEB(8, 10, 8, 24),
       ).showDialog(context);
     }
@@ -84,17 +87,24 @@ class ClassBoardMapPainter extends CustomPainter {
   final ClassBoard board;
   final Map<String, ui.Image> images;
   final Function(String url) onLoadImage;
+  final bool showPlanned;
 
   static const double w0 = 2048;
 
-  ClassBoardMapPainter(this.board, this.images, this.onLoadImage);
+  ClassBoardMapPainter({
+    required this.board,
+    required this.images,
+    required this.onLoadImage,
+    required this.showPlanned,
+  });
+
+  Paint getPaint() => Paint()..filterQuality = FilterQuality.high;
 
   @override
   void paint(Canvas canvas, Size size) {
     final width = min(size.width, size.height);
     final scale = width / w0;
-    print([size, scale]);
-    final _paint = Paint()..filterQuality = FilterQuality.high;
+    final _paint = getPaint();
     canvas.save();
     canvas.translate(size.width / 2, size.height / 2);
 
@@ -117,13 +127,13 @@ class ClassBoardMapPainter extends CustomPainter {
     drawImage(
       asset2("Select/ClassScoreSelectionAtlas/circle_05.png"),
       getRect(Offset.zero, 1040, 1040),
-      paint: Paint()..color = const Color.fromRGBO(0, 0, 0, 0.7),
+      paint: getPaint()..color = const Color.fromRGBO(0, 0, 0, 0.7),
     );
     drawImage(asset2("Select/ClassScoreSelectionAtlas/circle_00.png"), getRect(Offset.zero, 920, 920));
     drawImage(
       asset2("Select/ClassScoreSelectionAtlas/circle_03.png"),
       getRect(Offset.zero, 560, 560),
-      // paint: Paint()..color = const Color.fromRGBO(0, 0, 0, 0.7),
+      // paint: getPaint()..color = const Color.fromRGBO(0, 0, 0, 0.7),
     );
     drawImage(asset('Bg/coat_color.png'), getRect(Offset.zero, 512, 512));
     drawImage(asset2("UI/DownloadClassBoardUIAtlas/DownloadClassBoardUIAtlas1/btn_class.png"),
@@ -145,6 +155,8 @@ class ClassBoardMapPainter extends CustomPainter {
       );
     }
 
+    final darkenPaint = getPaint()..color = const Color.fromRGBO(0, 0, 0, 0.6);
+
     for (final square in board.squares) {
       // buffIcon: 110
       // lock/light: 158
@@ -153,7 +165,7 @@ class ClassBoardMapPainter extends CustomPainter {
       if (square.flags.length == 1 && square.flags.contains(ClassBoardSquareFlag.blank)) {
         // point,point_off,point_on
         drawImage(
-          asset2("Main/DownloadClassBoardSquareLineAtlas1/point_on.png"),
+          asset2("Main/DownloadClassBoardSquareLineAtlas1/point.png"),
           getRect(center, sw * 40 / 110 * 3, sw * 34 / 110 * 3),
         );
         continue;
@@ -161,6 +173,8 @@ class ClassBoardMapPainter extends CustomPainter {
 
       final lock = square.lock;
       if (lock != null) {
+        bool darkenLock = showPlanned && db.curPlan_.classBoardLock[lock.id] == LockPlan.full;
+
         int? itemId;
         for (final itemAmount in lock.items) {
           if (itemAmount.itemId >= 51 && itemAmount.itemId <= 53) {
@@ -170,8 +184,8 @@ class ClassBoardMapPainter extends CustomPainter {
         }
         if (itemId != null) {
           const double lw = sw * 158 / 110 * 1.2;
-          drawImage(asset("Icon/lock_light_$itemId.png"), getRect(center, lw, lw));
-          drawImage(asset("Icon/lock_$itemId.png"), getRect(center, lw, lw));
+          drawImage(asset("Icon/lock_${darkenLock ? "off" : "light"}_$itemId.png"), getRect(center, lw, lw));
+          drawImage(asset("Icon/lock_$itemId.png"), getRect(center, lw, lw), paint: darkenLock ? darkenPaint : null);
         }
       } else {
         final radius = sw / 2 * scale;
@@ -189,7 +203,10 @@ class ClassBoardMapPainter extends CustomPainter {
             ..strokeWidth = radius / 10,
         );
       }
-      drawImage(square.icon, getRect(center, sw, sw));
+
+      bool darkenSquare = showPlanned && db.curPlan_.classBoardSquare[square.id] != LockPlan.full;
+      drawImage(square.icon, getRect(center, sw, sw),
+          paint: darkenSquare ? (getPaint()..color = const Color.fromRGBO(0, 0, 0, 0.6)) : null);
     }
 
     canvas.restore();
@@ -197,7 +214,9 @@ class ClassBoardMapPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(ClassBoardMapPainter oldDelegate) {
-    return oldDelegate.board != board || !oldDelegate.images.keys.toSet().equalTo(images.keys.toSet());
+    return oldDelegate.board != board ||
+        !oldDelegate.images.keys.toSet().equalTo(images.keys.toSet()) ||
+        oldDelegate.showPlanned != showPlanned;
   }
 
   String asset(String p) {
