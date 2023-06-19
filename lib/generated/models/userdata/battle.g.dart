@@ -28,6 +28,7 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
               (v) => v == null ? null : BattleTeamFormation.fromJson(Map<String, dynamic>.from(v as Map))),
           tdDmgOptions: $checkedConvert(
               'tdDmgOptions', (v) => v == null ? null : TdDamageOptions.fromJson(Map<String, dynamic>.from(v as Map))),
+          lastUploadMilli: $checkedConvert('lastUploadMilli', (v) => v as int?),
         );
         return val;
       },
@@ -43,6 +44,7 @@ Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <Str
       'formations': instance.formations.map((e) => e.toJson()).toList(),
       'curFormation': instance.curFormation.toJson(),
       'tdDmgOptions': instance.tdDmgOptions.toJson(),
+      'lastUploadMilli': instance.lastUploadMilli,
     };
 
 const _$PreferPlayerSvtDataSourceEnumMap = {

@@ -201,8 +201,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
 
       final responseMap = resp?.json()?['body'];
       if (responseMap != null) {
-        final D1Result<UserBattleData> d1result =
-            D1Result<UserBattleData>.fromJson(Map<String, dynamic>.from(responseMap as Map));
+        final d1result = D1Result<UserBattleData>.fromJson(Map<String, dynamic>.from(responseMap as Map));
 
         if (d1result.success) {
           errorMessage = null;

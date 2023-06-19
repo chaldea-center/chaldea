@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:chaldea/models/api/api.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
@@ -624,7 +625,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           hideCancel: !canUpload,
           onTapOk: !canUpload
               ? null
-              : () {
+              : () async {
                   final actions = BattleActions(
                     actions: battleData.recorder.toUploadRecords(),
                     delegate: battleData.replayDataRecord,
@@ -635,7 +636,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                     disableEvent: widget.options.disableEvent,
                   );
                   db.settings.battleSim.lastUploadMilli = DateTime.now().millisecondsSinceEpoch;
-                  ChaldeaResponse.request(
+                  final resp = await ChaldeaResponse.request(
+                    showSuccess: false,
                     caller: (dio) => dio.post('/laplace/upload', data: {
                       'username': db.security.username,
                       'auth': db.security.userAuth,
@@ -646,6 +648,15 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                       'record': uploadData.toGZip()
                     }),
                   );
+                  final responseMap = resp?.json()?['body'];
+                  if (responseMap != null) {
+                    final d1result = D1Result<void>.fromJson(Map<String, dynamic>.from(responseMap as Map));
+                    await SimpleCancelOkDialog(
+                      title: Text(d1result.success ? S.current.success : S.current.failed),
+                      content: d1result.success ? null : Text(d1result.error ?? S.current.error),
+                      hideCancel: true,
+                    ).showDialog(null);
+                  }
                 },
         ).showDialog(context);
       },
