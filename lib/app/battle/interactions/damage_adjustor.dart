@@ -22,7 +22,7 @@ class DamageAdjustor extends StatefulWidget {
       return showUserConfirm<int>(
         context: battleData.context!,
         barrierDismissible: false,
-        builder: (context) {
+        builder: (context, _) {
           return DamageAdjustor(battleData: battleData, damageParameters: damageParameters);
         },
       );

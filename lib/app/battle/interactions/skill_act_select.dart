@@ -19,7 +19,7 @@ class SkillActSelectDialog extends StatelessWidget {
     if (!battleData.mounted) return Future.value(-1);
     return showUserConfirm<int>(
       context: battleData.context!,
-      builder: (context) => SkillActSelectDialog(battleData: battleData, skill: skill, skillLevel: skillLevel),
+      builder: (context, _) => SkillActSelectDialog(battleData: battleData, skill: skill, skillLevel: skillLevel),
     );
   }
 

@@ -14,7 +14,7 @@ class FuncActSetSelector extends StatelessWidget {
     return showUserConfirm<int?>(
       context: battleData.context!,
       allowNull: true,
-      builder: (context) => FuncActSetSelector(battleData: battleData, actSets: actSets),
+      builder: (context, _) => FuncActSetSelector(battleData: battleData, actSets: actSets),
     );
   }
 

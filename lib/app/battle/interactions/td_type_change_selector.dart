@@ -16,7 +16,7 @@ class TdTypeChangeSelector extends StatelessWidget {
     tds.sort((a, b) => (a.svt.card.index % 3).compareTo(b.svt.card.index % 3)); // Q A B
     return showUserConfirm<NiceTd>(
       context: battleData.context!,
-      builder: (context) => TdTypeChangeSelector(battleData: battleData, tds: tds),
+      builder: (context, _) => TdTypeChangeSelector(battleData: battleData, tds: tds),
     );
   }
 

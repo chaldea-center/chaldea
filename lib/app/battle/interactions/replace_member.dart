@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:tuple/tuple.dart';
 
+import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../models/battle.dart';
@@ -8,7 +11,9 @@ import '_dialog.dart';
 class ReplaceMemberSelectionDialog extends StatefulWidget {
   final BattleData battleData;
 
-  const ReplaceMemberSelectionDialog({super.key, required this.battleData});
+  final Completer<Tuple2<BattleServantData, BattleServantData>> completer;
+
+  const ReplaceMemberSelectionDialog({super.key, required this.battleData, required this.completer});
 
   @override
   State<ReplaceMemberSelectionDialog> createState() => _ReplaceMemberSelectionDialogState();
@@ -17,7 +22,10 @@ class ReplaceMemberSelectionDialog extends StatefulWidget {
     if (!battleData.mounted) return null;
     return showUserConfirm<Tuple2<BattleServantData, BattleServantData>>(
       context: battleData.context!,
-      builder: (context) => ReplaceMemberSelectionDialog(battleData: battleData),
+      builder: (context, completer) => ReplaceMemberSelectionDialog(
+        battleData: battleData,
+        completer: completer,
+      ),
     );
   }
 }
@@ -113,18 +121,24 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
       actions: [
         TextButton(
           onPressed: () {
-            if (onFieldSelection == null || backupSelection == null) {
-              return;
-            }
-
-            final result = Tuple2(onFieldSelection!, backupSelection!);
-
-            battleData.battleLogger.action('${S.current.team_starting_member}: ${onFieldSelection!.lBattleName} - '
-                '${S.current.team_backup_member}: ${backupSelection!.lBattleName}');
-            Navigator.of(context).pop(result);
+            widget.completer.completeError(const BattleCancelException("Cancel Change Order"));
+            Navigator.of(context).pop();
           },
+          child: Text(S.current.cancel),
+        ),
+        TextButton(
+          onPressed: onFieldSelection == null || backupSelection == null
+              ? null
+              : () {
+                  final result = Tuple2(onFieldSelection!, backupSelection!);
+
+                  battleData.battleLogger
+                      .action('${S.current.team_starting_member}: ${onFieldSelection!.lBattleName} - '
+                          '${S.current.team_backup_member}: ${backupSelection!.lBattleName}');
+                  Navigator.of(context).pop(result);
+                },
           child: Text(S.current.confirm),
-        )
+        ),
       ],
     );
   }

@@ -2,6 +2,16 @@ import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../models/battle.dart';
 
+class BattleCancelException implements Exception {
+  final String msg;
+  const BattleCancelException([this.msg = ""]);
+
+  @override
+  String toString() {
+    return "BattleCancelException: $msg";
+  }
+}
+
 class BattleLogger {
   final List<BattleLog> logs = [];
 
