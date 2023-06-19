@@ -4408,11 +4408,33 @@ class S {
     );
   }
 
+  /// `Next`
+  String get general_next {
+    return Intl.message(
+      'Next',
+      name: 'general_next',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Others`
   String get general_others {
     return Intl.message(
       'Others',
       name: 'general_others',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Previous`
+  String get general_previous {
+    return Intl.message(
+      'Previous',
+      name: 'general_previous',
       desc: '',
       locale: localeName,
       args: [],
@@ -9720,6 +9742,17 @@ class S {
     return Intl.message(
       'Twice skills if Cool Down after 2 turns',
       name: 'twice_skill_if_cd2',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Unlock`
+  String get unlock {
+    return Intl.message(
+      'Unlock',
+      name: 'unlock',
       desc: '',
       locale: localeName,
       args: [],

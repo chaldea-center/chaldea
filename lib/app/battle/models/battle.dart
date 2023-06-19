@@ -596,7 +596,7 @@ class BattleData {
     return onFieldAllyServants[servantIndex]!.canUseSkillIgnoreCoolDown(this, skillIndex);
   }
 
-  Future<T> recordError<T>({
+  Future<T?> recordError<T>({
     required bool save,
     required String action,
     required Future<T> Function() task,
@@ -604,6 +604,10 @@ class BattleData {
     try {
       if (save) pushSnapshot();
       return await task();
+    } on BattleCancelException catch (e) {
+      battleLogger.action("Cancel Action($action): ${e.msg}");
+      if (save) popSnapshot();
+      return null;
     } catch (e, s) {
       battleLogger.error("Failed: $action");
       logger.e('Battle action failed: $action', e, s);

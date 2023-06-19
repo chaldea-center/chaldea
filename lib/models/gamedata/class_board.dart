@@ -1,3 +1,5 @@
+import 'dart:ui' show Offset;
+
 import 'package:chaldea/generated/l10n.dart';
 import '../../app/app.dart';
 import '../db.dart';
@@ -45,11 +47,19 @@ class ClassBoard with RouteInfo {
         return Transl.svtClassId(id).l;
       }
     }
-    if (classes.isEmpty) {
-      if (id == 8) return 'EXTRA Ⅰ';
-      if (id == 9) return 'EXTRA Ⅱ';
-    }
+    if (id == 8) return 'EXTRA Ⅰ';
+    if (id == 9) return 'EXTRA Ⅱ';
     return name;
+  }
+
+  int getSkillLv(int id, ClassBoardSkillType type) {
+    int lv = 0;
+    for (final square in squares) {
+      if (square.skillType == type && square.targetSkill?.id == id) {
+        lv += square.upSkillLv;
+      }
+    }
+    return lv;
   }
 
   factory ClassBoard.fromJson(Map<String, dynamic> json) => _$ClassBoardFromJson(json);
@@ -114,6 +124,8 @@ class ClassBoardSquare {
   static String csIcon(bool isGirl) {
     return "https://static.atlasacademy.io/JP/ClassBoard/Icon/cs_0386${isGirl ? 2 : 1}.png";
   }
+
+  Offset get offset => Offset(posX.toDouble(), -posY.toDouble());
 
   String? get dispIcon {
     if (skillType == ClassBoardSkillType.passive) {

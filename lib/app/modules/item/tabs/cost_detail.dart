@@ -36,6 +36,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
     for (final svtDetail in details.values) {
       svtDemands.updateFrom<int>(svtDetail, (p1, p2) => p1 + p2);
     }
+    final classBoardDemand = stat.calcClassBoardCost(matType)[itemId] ?? 0;
 
     Widget header = CustomTile(
       title: Text(
@@ -45,8 +46,8 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
         style: matType != SvtMatCostDetailType.demands ? TextStyle(color: Theme.of(context).disabledColor) : null,
       ),
       trailing: Text(
-        '${S.current.demands} ${num2str(svtDemands.all)}\n'
-        '${svtDemands.parts.map((e) => num2str(e)).join('/')}',
+        '${S.current.demands} ${num2str(classBoardDemand + svtDemands.all)}\n'
+        '${[classBoardDemand, ...svtDemands.parts.map((e) => num2str(e))].join('/')}',
         textAlign: TextAlign.end,
       ),
     );
@@ -73,7 +74,11 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
               ),
           ],
         ),
-      header
+      header,
+      CustomTile(
+        title: Text(S.current.class_score),
+        trailing: Text(num2str(classBoardDemand)),
+      ),
     ];
     if (db.settings.display.itemDetailViewType == ItemDetailViewType.separated) {
       // 0 ascension 1 skill 2 dress 3 append 4 extra

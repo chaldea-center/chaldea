@@ -617,7 +617,7 @@ class _ItemListTabState extends State<ItemListTab> {
       title = Row(
         children: <Widget>[const Text('QP  '), Expanded(child: textField)],
       );
-      final demand = (db.itemCenter.statSvtDemands[itemId] ?? 0).format(compact: false, groupSeparator: ','),
+      final demand = db.itemCenter.demandOf(itemId).format(compact: false, groupSeparator: ','),
           left = (db.itemCenter.itemLeft[itemId] ?? 0).format(compact: false, groupSeparator: ',');
       subtitle = Row(
         children: <Widget>[
@@ -644,7 +644,7 @@ class _ItemListTabState extends State<ItemListTab> {
         ],
       );
     } else {
-      int demandCount = db.itemCenter.statSvtDemands[itemId] ?? 0;
+      int demandCount = db.itemCenter.demandOf(itemId);
       int leftCount = db.itemCenter.itemLeft[itemId] ?? 0;
       if (coinOwner != null) {
         final mats = db.itemCenter.calcOneSvt(coinOwner, coinOwner.status.cur, coinOwner.curPlan).all;

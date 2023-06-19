@@ -237,7 +237,7 @@ class MultiDescriptor {
         context,
         targetIds,
         (context, id) {
-          final mission = missions[id];
+          final mission = missions[id] ?? db.gameData.others.eventMissions[id];
           return TextSpan(text: '${mission?.dispNo ?? id} - ', children: [
             TextSpan(
               text: mission?.name ?? "???",
@@ -258,7 +258,7 @@ class MultiDescriptor {
           targetIds,
           S.current.mission,
           (context, id) {
-            final mission = missions[id];
+            final mission = missions[id] ?? db.gameData.others.eventMissions[id];
             return ListTile(
               leading: Text('${mission?.dispNo ?? id}'),
               title: Text(mission?.name ?? "???"),

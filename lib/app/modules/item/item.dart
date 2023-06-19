@@ -83,7 +83,15 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
         break;
       case ItemCategory.special:
         _shownTabs.addAll(_kEventTabs);
-        if (<int>[Items.qpId, Items.grailId, Items.lanternId].contains(widget.itemId)) {
+        if (<int>[
+          Items.qpId,
+          Items.grailId,
+          Items.lanternId,
+          Items.stellarSandId,
+          Items.torchNovaId,
+          Items.torchMorningStarId,
+          Items.torchPolarStarId
+        ].contains(widget.itemId)) {
           _shownTabs.addAll(_kStatTabs);
         } else if (<int>[Items.stoneId].contains(widget.itemId)) {
           _shownTabs.addAll([_TabType.interlude]);

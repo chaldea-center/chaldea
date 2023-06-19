@@ -30,6 +30,9 @@ class PlatformU {
 
   static bool get isTargetMobile => [TargetPlatform.android, TargetPlatform.iOS].contains(defaultTargetPlatform);
   static bool get isTargetDesktop => !isTargetMobile;
+
+  // plugin supports
+  static final bool supportCopyImage = kIsWeb || Platform.isIOS || Platform.isMacOS;
 }
 
 final kPlatformMethods = PlatformMethods();

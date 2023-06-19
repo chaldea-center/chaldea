@@ -418,23 +418,30 @@ class SvtStatus {
   }
 }
 
-@JsonSerializable()
+@JsonSerializable(converters: [LockPlanConverter()])
 class UserPlan {
   String title;
   Map<int, SvtPlan> servants;
   Map<int, LimitEventPlan> limitEvents;
   Map<int, MainStoryPlan> mainStories;
   Map<int, ExchangeTicketPlan> tickets;
+  Map<int, LockPlan> classBoardLock;
+  Map<int, LockPlan> classBoardSquare;
+
   UserPlan({
     this.title = '',
     Map<int, SvtPlan>? servants,
     Map<int, LimitEventPlan>? limitEvents,
     Map<int, MainStoryPlan>? mainStories,
     Map<int, ExchangeTicketPlan>? tickets,
+    Map<int, LockPlan>? classBoardLock,
+    Map<int, LockPlan>? classBoardSquare,
   })  : servants = servants ?? {},
         limitEvents = limitEvents ?? {},
         mainStories = mainStories ?? {},
-        tickets = tickets ?? {};
+        tickets = tickets ?? {},
+        classBoardLock = classBoardLock ?? {},
+        classBoardSquare = classBoardSquare ?? {};
 
   factory UserPlan.fromJson(Map<String, dynamic> json) => _$UserPlanFromJson(json);
 
@@ -806,4 +813,34 @@ class CmdCodeStatus {
   factory CmdCodeStatus.fromJson(dynamic json) => _$CmdCodeStatusFromJson(Map<String, dynamic>.from(json));
 
   Map<String, dynamic> toJson() => _$CmdCodeStatusToJson(this);
+}
+
+@JsonEnum(alwaysCreate: true, valueField: "value")
+enum LockPlan {
+  none(0),
+  planned(1),
+  full(2),
+  ;
+
+  const LockPlan(this.value);
+  final int value;
+
+  String get dispPlan {
+    switch (this) {
+      case LockPlan.none:
+        return '0';
+      case LockPlan.planned:
+        return '0→1';
+      case LockPlan.full:
+        return '1';
+    }
+  }
+}
+
+class LockPlanConverter extends JsonConverter<LockPlan, int> {
+  const LockPlanConverter();
+  @override
+  LockPlan fromJson(int value) => decodeEnum(_$LockPlanEnumMap, value, LockPlan.none);
+  @override
+  int toJson(LockPlan obj) => _$LockPlanEnumMap[obj] ?? obj.value;
 }

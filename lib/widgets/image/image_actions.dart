@@ -9,6 +9,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:pasteboard/pasteboard.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
@@ -75,6 +76,23 @@ class ImageActions {
                 }
                 if (provider == null) return;
                 router.pushPage(FullscreenImageViewer(children: [Image(image: provider)]));
+              },
+            ),
+          if (PlatformU.supportCopyImage && (data != null || srcFp != null))
+            ListTile(
+              leading: const Icon(Icons.paste),
+              title: Text(S.current.copy),
+              onTap: () async {
+                try {
+                  Navigator.pop(context);
+                  Uint8List? _bytes = data;
+                  _bytes ??= await FilePlus(srcFp!).readAsBytes();
+                  await Pasteboard.writeImage(_bytes);
+                  EasyLoading.showSuccess(S.current.copied);
+                } catch (e, s) {
+                  EasyLoading.showError(e.toString());
+                  logger.e('copy image to clipboard failed', e, s);
+                }
               },
             ),
           if (url != null && RegExp(r'/CharaFigure/\d+/').hasMatch(url))
@@ -160,6 +178,7 @@ class ImageActions {
             },
           ));
         }
+
         if (share && PlatformU.isMobile) {
           children.add(ListTile(
             leading: const Icon(Icons.share),
@@ -260,5 +279,31 @@ class ImageActions {
     );
     stream.addListener(listener);
     return completer.future;
+  }
+}
+
+class ImageLoader {
+  final Map<String, ui.Image> _cachedImages = {};
+  final Map<String, Completer<ui.Image?>> _tasks = {};
+
+  Map<String, ui.Image> get images => Map.of(_cachedImages);
+
+  Future<ui.Image?> loadImage(String? url) async {
+    if (url == null || url.isEmpty) {
+      return SynchronousFuture(null);
+    }
+    if (_cachedImages[url] != null) return _cachedImages[url];
+    if (_tasks.containsKey(url)) {
+      return _tasks[url]!.future;
+    }
+    final task = Completer<ui.Image?>();
+    _tasks[url] = task;
+    final img = await ImageActions.resolveImageUrl(url);
+    if (img != null) {
+      _cachedImages[url] = img;
+    }
+    task.complete(img);
+    _tasks.remove(url);
+    return img;
   }
 }

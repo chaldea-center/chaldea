@@ -14,7 +14,7 @@ class TailoredExecutionConfirm extends StatelessWidget {
   }) {
     return showUserConfirm<bool>(
       context: context,
-      builder: (context) => TailoredExecutionConfirm(description: description, details: details),
+      builder: (context, _) => TailoredExecutionConfirm(description: description, details: details),
     );
   }
 

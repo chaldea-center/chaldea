@@ -32,7 +32,7 @@ class DamageAdjustor extends StatefulWidget {
         final damage = await showUserConfirm<int>(
           context: battleData.context!,
           barrierDismissible: false,
-          builder: (context) {
+          builder: (context, _) {
             return DamageAdjustor(battleData: battleData, damageParameters: damageParameters);
           },
         );

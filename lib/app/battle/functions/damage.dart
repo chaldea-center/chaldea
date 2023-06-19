@@ -35,6 +35,11 @@ class Damage {
     final CardType firstCardType,
   ) async {
     final funcType = damageFunction?.funcType;
+    final functionRate = dataVals.Rate ?? 1000;
+    if (functionRate < battleData.options.probabilityThreshold) {
+      return;
+    }
+
     final activator = battleData.activator!;
     final currentCard = battleData.currentCard!;
     final List<AttackResultDetail> targetResults = [];
