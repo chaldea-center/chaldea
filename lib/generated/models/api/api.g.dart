@@ -15,6 +15,8 @@ D1Result<T> _$D1ResultFromJson<T>(
       json,
       ($checkedConvert) {
         final val = D1Result<T>(
+          success: $checkedConvert('success', (v) => v as bool),
+          error: $checkedConvert('error', (v) => v as String?),
           results: $checkedConvert('results', (v) => (v as List<dynamic>?)?.map(fromJsonT).toList() ?? const []),
         );
         return val;
@@ -26,14 +28,16 @@ Map<String, dynamic> _$D1ResultToJson<T>(
   Object? Function(T value) toJsonT,
 ) =>
     <String, dynamic>{
+      'success': instance.success,
+      'error': instance.error,
       'results': instance.results.map(toJsonT).toList(),
     };
 
-BattleRecord _$BattleRecordFromJson(Map json) => $checkedCreate(
-      'BattleRecord',
+UserBattleData _$UserBattleDataFromJson(Map json) => $checkedCreate(
+      'UserBattleData',
       json,
       ($checkedConvert) {
-        final val = BattleRecord(
+        final val = UserBattleData(
           id: $checkedConvert('id', (v) => v as int),
           ver: $checkedConvert('ver', (v) => v as int),
           userId: $checkedConvert('userId', (v) => v as String),
@@ -46,7 +50,7 @@ BattleRecord _$BattleRecordFromJson(Map json) => $checkedCreate(
       },
     );
 
-Map<String, dynamic> _$BattleRecordToJson(BattleRecord instance) => <String, dynamic>{
+Map<String, dynamic> _$UserBattleDataToJson(UserBattleData instance) => <String, dynamic>{
       'id': instance.id,
       'ver': instance.ver,
       'userId': instance.userId,

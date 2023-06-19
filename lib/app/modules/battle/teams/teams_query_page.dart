@@ -35,7 +35,8 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
 
   bool hasNextPage = false;
   int pageIndex = 0;
-  List<BattleRecord> battleRecords = [];
+  String? errorMessage;
+  List<UserBattleData> battleRecords = [];
 
   @override
   void initState() {
@@ -59,6 +60,18 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
               await _queryTeams(pageIndex);
             },
             child: Text(S.current.login_first_hint),
+          ),
+        ),
+      );
+    } else if (errorMessage != null) {
+      children.add(Center(child: Text('${S.current.error}: $errorMessage')));
+      children.add(
+        Center(
+          child: TextButton(
+            onPressed: () async {
+              await _queryTeams(pageIndex);
+            },
+            child: Text(S.current.refresh),
           ),
         ),
       );
@@ -118,7 +131,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
     );
   }
 
-  Widget _buildBattleRecord(final BattleRecord battleRecord, final int index) {
+  Widget _buildBattleRecord(final UserBattleData battleRecord, final int index) {
     final shareData = BattleShareData.parseGzip(battleRecord.record);
 
     return Column(
@@ -188,19 +201,29 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
 
       final responseMap = resp?.json()?['body'];
       if (responseMap != null) {
-        List<BattleRecord> records =
-            D1Result<BattleRecord>.fromJson(Map<String, dynamic>.from(responseMap as Map)).results;
-        hasNextPage = records.length > _pageSize;
+        final D1Result<UserBattleData> d1result = D1Result<UserBattleData>.fromJson(Map<String, dynamic>.from(responseMap as Map));
 
-        records = hasNextPage ? records.sublist(0, _pageSize) : records;
-        battleRecords.addAll(records);
+        if (d1result.success) {
+          errorMessage = null;
+          List<UserBattleData?> records = d1result.results;
+          hasNextPage = records.length > _pageSize;
+
+          records = hasNextPage ? records.sublist(0, _pageSize) : records;
+          for (final record in records) {
+            if (record != null) {
+              battleRecords.add(record);
+            }
+          }
+        } else {
+          errorMessage = d1result.error;
+        }
       }
 
       if (mounted) setState(() {});
     }
   }
 
-  Future<void> _deleteUserTeam(final BattleRecord battleRecord) async {
+  Future<void> _deleteUserTeam(final UserBattleData battleRecord) async {
     if (db.security.isUserLoggedIn) {
       final resp = await ChaldeaResponse.request(
         caller: (dio) => dio.post('/laplace/delete', data: {
@@ -216,7 +239,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
     }
   }
 
-  void replaySimulation(final BattleRecord battleRecord, final BattleShareData shareData) async {
+  void replaySimulation(final UserBattleData battleRecord, final BattleShareData shareData) async {
     QuestPhase? questPhase = widget.questPhase;
 
     if (questPhase == null) {
