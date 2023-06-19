@@ -84,6 +84,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m29(trait) => "這是一個寶具，但不持有[${trait}]特性";
 
+  static String m30(pause, remain) => "上传之间需要等待${pause}秒 (还剩${remain}秒)";
+
   static String m14(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -997,6 +999,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_before_close_app": MessageLookupByLibrary.simpleMessage("關閉前上傳"),
         "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage(
             "由于使用过以下任意功能，当前队伍不满足上传条件:\n- 通过导入JSON使用自定义关卡\n- 活动点数加成\n- 无法正常获得的从者\n- 指令卡强化\n- 自定义技能\n- 跳过场次"),
+        "upload_paused": m30,
         "upload_team_confirmation": MessageLookupByLibrary.simpleMessage("确认上传当前的队伍?"),
         "uploaded_teams": MessageLookupByLibrary.simpleMessage("上传的队伍"),
         "usage": MessageLookupByLibrary.simpleMessage("使用方法"),

@@ -897,6 +897,7 @@
   "upload_and_close_app_alert": "是否上傳資料再關閉?",
   "upload_before_close_app": "關閉前上傳",
   "upload_not_eligible_hint": null,
+  "upload_paused": null,
   "upload_team_confirmation": null,
   "uploaded_teams": null,
   "usage": "使用方法",

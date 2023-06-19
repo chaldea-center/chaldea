@@ -9935,6 +9935,17 @@ class S {
     );
   }
 
+  /// `Need to wait {pause} seconds between uploads ({remain}s remain).`
+  String upload_paused(Object pause, Object remain) {
+    return Intl.message(
+      'Need to wait $pause seconds between uploads (${remain}s remain).',
+      name: 'upload_paused',
+      desc: '',
+      locale: localeName,
+      args: [pause, remain],
+    );
+  }
+
   /// `Upload current team?`
   String get upload_team_confirmation {
     return Intl.message(

@@ -593,49 +593,63 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               ? Text('Win', style: TextStyle(color: Theme.of(context).colorScheme.secondary))
               : Text(S.current.battle_attack),
         ),
-        if (battleData.isBattleWin && widget.replayActions == null)
-          FilledButton(
-            onPressed: () async {
-              await SimpleCancelOkDialog(
-                scrollable: true,
-                title: Text(S.current.upload),
-                content: !db.security.isUserLoggedIn
-                    ? Text(
-                        S.current.login_first_hint,
-                        style: TextStyle(color: Theme.of(context).colorScheme.error),
-                      )
-                    : !battleData.recorder.isUploadEligible
-                        ? Text(S.current.upload_not_eligible_hint)
-                        : Text(S.current.upload_team_confirmation),
-                onTapOk: !db.security.isUserLoggedIn || !battleData.recorder.isUploadEligible
-                    ? null
-                    : () {
-                        final actions = BattleActions(
-                          actions: battleData.recorder.toUploadRecords(),
-                          delegate: battleData.replayDataRecord,
-                        );
-                        final uploadData = BattleShareData(
-                          team: widget.options.team.toFormationData(),
-                          actions: actions,
-                          disableEvent: widget.options.disableEvent,
-                        );
-                        ChaldeaResponse.request(
-                          caller: (dio) => dio.post('/laplace/upload', data: {
-                            'username': db.security.username,
-                            'auth': db.security.userAuth,
-                            'ver': 1,
-                            'questId': questPhase.id,
-                            'phase': questPhase.phase,
-                            'enemyHash': questPhase.enemyHash,
-                            'record': uploadData.toGZip()
-                          }),
-                        );
-                      },
-              ).showDialog(context);
-            },
-            child: Text(S.current.upload),
-          ),
+        if (battleData.isBattleWin && widget.replayActions == null) _buildUploadButton(),
       ],
+    );
+  }
+
+  Widget _buildUploadButton() {
+    final canUpload = db.security.isUserLoggedIn &&
+        battleData.recorder.isUploadEligible &&
+        db.settings.battleSim.secondsRemainUtilNextUpload <= 0;
+
+    return FilledButton(
+      onPressed: () async {
+        await SimpleCancelOkDialog(
+          scrollable: true,
+          title: Text(S.current.upload),
+          content: !db.security.isUserLoggedIn
+              ? Text(
+                  S.current.login_first_hint,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                )
+              : !battleData.recorder.isUploadEligible
+                  ? Text(S.current.upload_not_eligible_hint)
+                  : db.settings.battleSim.secondsRemainUtilNextUpload > 0
+                      ? Text(S.current.upload_paused(
+                          BattleSimSetting.secondsBetweenUpload,
+                          db.settings.battleSim.secondsRemainUtilNextUpload,
+                        ))
+                      : Text(S.current.upload_team_confirmation),
+          hideCancel: !canUpload,
+          onTapOk: !canUpload
+              ? null
+              : () {
+                  final actions = BattleActions(
+                    actions: battleData.recorder.toUploadRecords(),
+                    delegate: battleData.replayDataRecord,
+                  );
+                  final uploadData = BattleShareData(
+                    team: widget.options.team.toFormationData(),
+                    actions: actions,
+                    disableEvent: widget.options.disableEvent,
+                  );
+                  db.settings.battleSim.lastUploadMilli = DateTime.now().millisecondsSinceEpoch;
+                  ChaldeaResponse.request(
+                    caller: (dio) => dio.post('/laplace/upload', data: {
+                      'username': db.security.username,
+                      'auth': db.security.userAuth,
+                      'ver': 1,
+                      'questId': questPhase.id,
+                      'phase': questPhase.phase,
+                      'enemyHash': questPhase.enemyHash,
+                      'record': uploadData.toGZip()
+                    }),
+                  );
+                },
+        ).showDialog(context);
+      },
+      child: Text(S.current.upload),
     );
   }
 

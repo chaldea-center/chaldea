@@ -87,6 +87,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m29(trait) => "This is a Nobel Phantasm, but doesn\'t have [${trait}] trait.";
 
+  static String m30(pause, remain) => "Need to wait ${pause} seconds between uploads (${remain}s remain).";
+
   static String m14(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -1038,6 +1040,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_before_close_app": MessageLookupByLibrary.simpleMessage("Upload before closing"),
         "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage(
             "Current team is not eligible for upload due to any of the following:\n- custom quest via JSON import\n- event point buffs\n- nonplayable servants\n- card strengthen\n- custom skills\n- skipped waves"),
+        "upload_paused": m30,
         "upload_team_confirmation": MessageLookupByLibrary.simpleMessage("Upload current team?"),
         "uploaded_teams": MessageLookupByLibrary.simpleMessage("Uploaded Teams"),
         "usage": MessageLookupByLibrary.simpleMessage("Usage"),

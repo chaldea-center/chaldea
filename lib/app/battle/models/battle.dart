@@ -775,9 +775,9 @@ class BattleData {
     if (isBattleFinished) {
       return;
     }
-    recorder.skipWave(waveCount);
-    battleLogger.action('${S.current.battle_skip_current_wave} ($waveCount)');
     pushSnapshot();
+    battleLogger.action('${S.current.battle_skip_current_wave} ($waveCount)');
+    recorder.skipWave(waveCount);
 
     onFieldEnemies.fillRange(0, onFieldEnemies.length);
     enemyDataList.clear();

@@ -897,6 +897,7 @@
   "upload_and_close_app_alert": null,
   "upload_before_close_app": null,
   "upload_not_eligible_hint": null,
+  "upload_paused": null,
   "upload_team_confirmation": null,
   "uploaded_teams": null,
   "usage": "使い方",

@@ -15,6 +15,8 @@ part '../../generated/models/userdata/battle.g.dart';
 
 @JsonSerializable()
 class BattleSimSetting {
+  static const secondsBetweenUpload = 300;
+
   // settings
   PreferPlayerSvtDataSource playerDataSource;
   Set<int> pingedCEs;
@@ -29,6 +31,8 @@ class BattleSimSetting {
 
   TdDamageOptions tdDmgOptions;
 
+  int? lastUploadMilli;
+
   BattleSimSetting({
     this.playerDataSource = PreferPlayerSvtDataSource.none,
     Set<int>? pingedCEs,
@@ -39,6 +43,7 @@ class BattleSimSetting {
     List<BattleTeamFormation>? formations,
     BattleTeamFormation? curFormation,
     TdDamageOptions? tdDmgOptions,
+    this.lastUploadMilli,
   })  : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
         pingedSvts = pingedSvts ?? {215, 284, 314, 316, 357},
         defaultLvs = defaultLvs ?? PlayerSvtDefaultData(),
@@ -74,6 +79,16 @@ class BattleSimSetting {
       pinged.add(bondCE.collectionNo);
     }
     return pinged;
+  }
+
+  int get secondsRemainUtilNextUpload {
+    if (lastUploadMilli == null) {
+      return 0;
+    }
+
+    final diff = secondsBetweenUpload -
+        DateTime.now().difference(DateTime.fromMillisecondsSinceEpoch(lastUploadMilli!)).inSeconds;
+    return diff > 0 ? diff : 0;
   }
 }
 
