@@ -547,11 +547,21 @@ class FunctionExecutor {
           targets.add(activator.lastHitBy!);
         }
         break;
+      // random target: set minCount=0 to enable skip
+      case FuncTargetType.ptRandom:
+      // ChooseTargetsDialog.show(
+      //   battleData,
+      //   targetType: funcTargetType,
+      //   targets: aliveAllies,
+      //   maxCount: 1,
+      //   minCount: 0,
+      // );
+      // targets.addAll([]);
+      // break;
       case FuncTargetType.ptAnother:
       case FuncTargetType.enemyAnother:
       case FuncTargetType.ptSelfBefore:
       case FuncTargetType.ptSelfAfter:
-      case FuncTargetType.ptRandom:
       case FuncTargetType.enemyRandom:
       case FuncTargetType.ptOneAnotherRandom:
       case FuncTargetType.ptSelfAnotherRandom:
