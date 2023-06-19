@@ -35,7 +35,7 @@ class DamageNpSEDecision {
 }
 
 class BattleReplayDelegate extends BattleDelegate {
-  final List<int> actWeightSelections = [];
+  final List<int?> actWeightSelections = [];
   final List<int> skillActSelectSelections = [];
   final List<int> tdTypeChangeIndexes = [];
   final List<bool> canActivateDecisions = [];

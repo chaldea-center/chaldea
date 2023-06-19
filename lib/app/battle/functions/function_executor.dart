@@ -56,9 +56,7 @@ class FunctionExecutor {
       selectedActSet = await battleData.delegate!.actWeight!(battleData.activator);
     } else if (actSets.isNotEmpty && battleData.mounted) {
       selectedActSet = await FuncActSetSelector.show(battleData, actSets);
-      if (selectedActSet != null) {
-        battleData.replayDataRecord.actWeightSelections.add(selectedActSet);
-      }
+      battleData.replayDataRecord.actWeightSelections.add(selectedActSet);
     }
     for (int index = 0; index < functions.length; index += 1) {
       NiceFunction func = functions[index];

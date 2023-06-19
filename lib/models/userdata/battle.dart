@@ -710,7 +710,7 @@ enum SupportSvtType {
 
 @JsonSerializable()
 class BattleReplayDelegateData {
-  List<int> actWeightSelections;
+  List<int?> actWeightSelections;
   List<int> skillActSelectSelections;
   List<int> tdTypeChangeIndexes;
   List<bool> canActivateDecisions;
@@ -718,7 +718,7 @@ class BattleReplayDelegateData {
   List<List<int>> replaceMemberIndexes;
 
   BattleReplayDelegateData({
-    List<int>? actWeightSelections,
+    List<int?>? actWeightSelections,
     List<int>? skillActSelectSelections,
     List<int>? tdTypeChangeIndexes,
     List<bool>? canActivateDecisions,
