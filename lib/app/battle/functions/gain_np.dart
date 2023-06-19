@@ -27,20 +27,20 @@ class GainNP {
     });
   }
 
-  static void gainNpPerIndividual(
+  static Future<void> gainNpPerIndividual(
     final BattleData battleData,
     final DataVals dataVals,
     final Iterable<BattleServantData> targets, {
     final List<NiceTrait>? targetTraits,
     final bool onlyCheckBuff = false,
     final bool isNegative = false,
-  }) {
+  }) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.probabilityThreshold) {
       return;
     }
 
-    targets.forEach((target) {
+    for (final target in targets) {
       battleData.setTarget(target);
 
       int change = isNegative ? -dataVals.Value! : dataVals.Value!;
@@ -51,10 +51,11 @@ class GainNP {
           countTargets.add(target);
         }
         if (targetType == 1 || targetType == 3) {
-          countTargets.addAll(FunctionExecutor.acquireFunctionTarget(battleData, FuncTargetType.ptAll, target));
+          countTargets.addAll(await FunctionExecutor.acquireFunctionTarget(battleData, FuncTargetType.ptAll, target));
         }
         if (targetType == 2 || targetType == 3) {
-          countTargets.addAll(FunctionExecutor.acquireFunctionTarget(battleData, FuncTargetType.enemyAll, target));
+          countTargets
+              .addAll(await FunctionExecutor.acquireFunctionTarget(battleData, FuncTargetType.enemyAll, target));
         }
 
         int count = 0;
@@ -73,6 +74,6 @@ class GainNP {
       battleData.curFuncResults[target.uniqueId] = true;
 
       battleData.unsetTarget();
-    });
+    }
   }
 }

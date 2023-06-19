@@ -713,6 +713,7 @@ class BattleReplayDelegateData {
   List<int?> actWeightSelections;
   List<int> skillActSelectSelections;
   List<int> tdTypeChangeIndexes;
+  List<int?> ptRandomIndexes;
   List<bool> canActivateDecisions;
   List<int> damageSelections;
   List<List<int>> replaceMemberIndexes;
@@ -721,12 +722,14 @@ class BattleReplayDelegateData {
     List<int?>? actWeightSelections,
     List<int>? skillActSelectSelections,
     List<int>? tdTypeChangeIndexes,
+    List<int?>? ptRandomIndexes,
     List<bool>? canActivateDecisions,
     List<int>? damageSelections,
     List<List<int>>? replaceMemberIndexes,
   })  : actWeightSelections = actWeightSelections ?? [],
         skillActSelectSelections = skillActSelectSelections ?? [],
         tdTypeChangeIndexes = tdTypeChangeIndexes ?? [],
+        ptRandomIndexes = ptRandomIndexes ?? [],
         canActivateDecisions = canActivateDecisions ?? [],
         damageSelections = damageSelections ?? [],
         replaceMemberIndexes = replaceMemberIndexes ?? [];
@@ -740,6 +743,7 @@ class BattleReplayDelegateData {
       actWeightSelections: actWeightSelections.toList(),
       skillActSelectSelections: skillActSelectSelections.toList(),
       tdTypeChangeIndexes: tdTypeChangeIndexes.toList(),
+      ptRandomIndexes: ptRandomIndexes.toList(),
       canActivateDecisions: canActivateDecisions.toList(),
       damageSelections: damageSelections.toList(),
       replaceMemberIndexes: replaceMemberIndexes.toList(),

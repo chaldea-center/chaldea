@@ -8164,6 +8164,17 @@ class S {
     );
   }
 
+  /// `Select none to skip this effect`
+  String get select_skip {
+    return Intl.message(
+      'Select none to skip this effect',
+      name: 'select_skip',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Select Support`
   String get select_support_servant {
     return Intl.message(

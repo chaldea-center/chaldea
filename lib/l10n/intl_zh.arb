@@ -736,6 +736,7 @@
   "select_plan": "选择规划",
   "select_servant": "选择从者",
   "select_skill": "选择技能",
+  "select_skip": "不选择以跳过该效果",
   "select_support_servant": "选择助战",
   "send_email_to": "发送邮件到",
   "sending": "正在发送...",

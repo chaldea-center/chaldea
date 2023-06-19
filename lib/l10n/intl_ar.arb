@@ -736,6 +736,7 @@
   "select_plan": "تحديد خطة",
   "select_servant": null,
   "select_skill": null,
+  "select_skip": null,
   "select_support_servant": null,
   "send_email_to": "إرسال البريد الى",
   "sending": "جاري الإرسال",

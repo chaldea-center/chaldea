@@ -871,7 +871,7 @@ void main() async {
 
     expect(previousHp1 - enemy1.hp, 4256);
 
-    battle.activateSvtSkill(0, 1);
+    await battle.activateSvtSkill(0, 1);
     final previousHp2 = enemy1.hp;
     await battle.playerTurn([
       CombatAction(eliz, eliz.getCards(battle)[1]..isCritical = true),

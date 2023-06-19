@@ -9,6 +9,7 @@ class BattleDelegate {
   Future<int?> Function(BattleServantData? actor)? actWeight;
   Future<int?> Function(BattleServantData? actor)? skillActSelect;
   Future<NiceTd?> Function(BattleServantData? actor, List<NiceTd> tds)? tdTypeChange;
+  Future<BattleServantData?> Function(List<BattleServantData> targets)? ptRandom;
   Future<bool> Function(bool curResult)? canActivate;
   Future<int> Function(int curRandom)? damageRandom;
   Future<Tuple2<BattleServantData, BattleServantData>?> Function(
@@ -38,6 +39,7 @@ class BattleReplayDelegate extends BattleDelegate {
   final List<int?> actWeightSelections = [];
   final List<int> skillActSelectSelections = [];
   final List<int> tdTypeChangeIndexes = [];
+  final List<int?> ptRandomIndexes = [];
   final List<bool> canActivateDecisions = [];
   final List<int> damageSelections = [];
   final List<Tuple2<int, int>> replaceMemberIndexes = [];
@@ -46,6 +48,7 @@ class BattleReplayDelegate extends BattleDelegate {
     actWeightSelections.addAll(replayData.actWeightSelections);
     skillActSelectSelections.addAll(replayData.skillActSelectSelections);
     tdTypeChangeIndexes.addAll(replayData.tdTypeChangeIndexes);
+    ptRandomIndexes.addAll(replayData.ptRandomIndexes);
     canActivateDecisions.addAll(replayData.canActivateDecisions);
     damageSelections.addAll(replayData.damageSelections);
     for (final tupleList in replayData.replaceMemberIndexes) {
@@ -69,7 +72,7 @@ class BattleReplayDelegate extends BattleDelegate {
     };
 
     tdTypeChange = (actor, tds) async {
-      if (tdTypeChangeIndexes.isEmpty || tds.isEmpty) {
+      if (tdTypeChangeIndexes.isEmpty) {
         return null;
       }
 
@@ -79,6 +82,18 @@ class BattleReplayDelegate extends BattleDelegate {
       }
 
       return tds[selectedIndex];
+    };
+
+    ptRandom = (targets) async {
+      if (ptRandomIndexes.isEmpty) {
+        return null;
+      }
+
+      final selectedIndex = ptRandomIndexes.removeAt(0);
+      if (selectedIndex == null || selectedIndex < 0 || selectedIndex >= targets.length) {
+        return null;
+      }
+      return targets[selectedIndex];
     };
 
     canActivate = (result) async {
@@ -96,7 +111,7 @@ class BattleReplayDelegate extends BattleDelegate {
     };
 
     replaceMember = (onFieldSvts, backupSvts) async {
-      if (replaceMemberIndexes.isEmpty || onFieldSvts.isEmpty == true || backupSvts.isEmpty == true) {
+      if (replaceMemberIndexes.isEmpty) {
         return null;
       }
 

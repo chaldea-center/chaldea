@@ -736,6 +736,7 @@
   "select_plan": "プランを選択",
   "select_servant": null,
   "select_skill": null,
+  "select_skip": null,
   "select_support_servant": null,
   "send_email_to": "こちらにメールを送信",
   "sending": "送信中",

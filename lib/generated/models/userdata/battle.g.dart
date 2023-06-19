@@ -490,6 +490,8 @@ BattleReplayDelegateData _$BattleReplayDelegateDataFromJson(Map json) => $checke
               $checkedConvert('skillActSelectSelections', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
           tdTypeChangeIndexes:
               $checkedConvert('tdTypeChangeIndexes', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          ptRandomIndexes:
+              $checkedConvert('ptRandomIndexes', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
           canActivateDecisions:
               $checkedConvert('canActivateDecisions', (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList()),
           damageSelections:
@@ -505,6 +507,7 @@ Map<String, dynamic> _$BattleReplayDelegateDataToJson(BattleReplayDelegateData i
       'actWeightSelections': instance.actWeightSelections,
       'skillActSelectSelections': instance.skillActSelectSelections,
       'tdTypeChangeIndexes': instance.tdTypeChangeIndexes,
+      'ptRandomIndexes': instance.ptRandomIndexes,
       'canActivateDecisions': instance.canActivateDecisions,
       'damageSelections': instance.damageSelections,
       'replaceMemberIndexes': instance.replaceMemberIndexes,

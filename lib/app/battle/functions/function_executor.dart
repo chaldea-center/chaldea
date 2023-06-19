@@ -14,6 +14,7 @@ import 'package:chaldea/app/battle/functions/shorten_skill.dart';
 import 'package:chaldea/app/battle/functions/sub_state.dart';
 import 'package:chaldea/app/battle/functions/transform_servant.dart';
 import 'package:chaldea/app/battle/functions/update_entry_positions.dart';
+import 'package:chaldea/app/battle/interactions/choose_targets.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
@@ -137,7 +138,7 @@ class FunctionExecutor {
       checkQuestTraits: true,
     ));
 
-    final List<BattleServantData> targets = acquireFunctionTarget(
+    final List<BattleServantData> targets = await acquireFunctionTarget(
       battleData,
       function.funcTargetType,
       activator,
@@ -234,7 +235,7 @@ class FunctionExecutor {
         break;
       case FuncType.gainNpIndividualSum:
       case FuncType.gainNpBuffIndividualSum:
-        GainNP.gainNpPerIndividual(
+        await GainNP.gainNpPerIndividual(
           battleData,
           dataVals,
           targets,
@@ -421,13 +422,13 @@ class FunctionExecutor {
         DataVals();
   }
 
-  static List<BattleServantData> acquireFunctionTarget(
+  static Future<List<BattleServantData>> acquireFunctionTarget(
     final BattleData battleData,
     final FuncTargetType funcTargetType,
     final BattleServantData? activator, {
     final int? funcId,
     final bool defaultToPlayer = true,
-  }) {
+  }) async {
     final List<BattleServantData> targets = [];
 
     final isAlly = activator?.isPlayer ?? defaultToPlayer;
@@ -553,15 +554,30 @@ class FunctionExecutor {
         break;
       // random target: set minCount=0 to enable skip
       case FuncTargetType.ptRandom:
-      // ChooseTargetsDialog.show(
-      //   battleData,
-      //   targetType: funcTargetType,
-      //   targets: aliveAllies,
-      //   maxCount: 1,
-      //   minCount: 0,
-      // );
-      // targets.addAll([]);
-      // break;
+        if (battleData.delegate?.ptRandom != null) {
+          final selected = await battleData.delegate!.ptRandom!.call(aliveAllies);
+          if (selected != null) {
+            targets.add(selected);
+          }
+        } else if (aliveAllies.isNotEmpty && battleData.mounted) {
+          final selectedSvts = await ChooseTargetsDialog.show(
+            battleData,
+            targetType: funcTargetType,
+            targets: aliveAllies,
+            maxCount: 1,
+            minCount: 0,
+          );
+          if (selectedSvts != null) {
+            final selectedSvt = selectedSvts.firstOrNull;
+            if (selectedSvt != null) {
+              targets.add(selectedSvt);
+              battleData.replayDataRecord.ptRandomIndexes.add(aliveAllies.indexOf(selectedSvt));
+            } else {
+              battleData.replayDataRecord.ptRandomIndexes.add(null);
+            }
+          }
+        }
+        break;
       case FuncTargetType.ptAnother:
       case FuncTargetType.enemyAnother:
       case FuncTargetType.ptSelfBefore:

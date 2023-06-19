@@ -869,6 +869,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "select_plan": MessageLookupByLibrary.simpleMessage("Select Plan"),
         "select_servant": MessageLookupByLibrary.simpleMessage("Select Servant"),
         "select_skill": MessageLookupByLibrary.simpleMessage("Select Skill"),
+        "select_skip": MessageLookupByLibrary.simpleMessage("Select none to skip this effect"),
         "select_support_servant": MessageLookupByLibrary.simpleMessage("Select Support"),
         "send_email_to": MessageLookupByLibrary.simpleMessage("Send email to"),
         "sending": MessageLookupByLibrary.simpleMessage("Sending"),

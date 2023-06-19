@@ -736,6 +736,7 @@
   "select_plan": "Seleccionar Plan",
   "select_servant": null,
   "select_skill": null,
+  "select_skip": null,
   "select_support_servant": null,
   "send_email_to": "Enviar el correo a",
   "sending": "Enviando",

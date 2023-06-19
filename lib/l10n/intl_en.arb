@@ -736,6 +736,7 @@
   "select_plan": "Select Plan",
   "select_servant": "Select Servant",
   "select_skill": "Select Skill",
+  "select_skip": "Select none to skip this effect",
   "select_support_servant": "Select Support",
   "send_email_to": "Send email to",
   "sending": "Sending",

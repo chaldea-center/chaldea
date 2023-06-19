@@ -67,8 +67,8 @@ class _ChooseTargetsDialogState extends State<ChooseTargetsDialog> {
     final showHeader = playerSvts.isNotEmpty && enemies.isNotEmpty;
 
     children.add(Text([
-      "Select ${{widget.minCount, widget.maxCount}.join('~')} servants",
-      if (widget.minCount == 0) "select 0 servant = skip this effect",
+      "${S.current.select} ${{widget.minCount, widget.maxCount}.join('~')} ${S.current.effect_target}",
+      if (widget.minCount == 0) S.current.select_skip,
     ].join("\n")));
 
     if (playerSvts.isNotEmpty) {
@@ -78,7 +78,7 @@ class _ChooseTargetsDialogState extends State<ChooseTargetsDialog> {
           padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
         ));
       }
-      children.add(Wrap(children: playerSvts.map((e) => buildSvt(e)).toList()));
+      children.add(Wrap(spacing: 8, children: playerSvts.map((e) => buildSvt(e)).toList()));
     }
 
     if (enemies.isNotEmpty) {
@@ -88,7 +88,7 @@ class _ChooseTargetsDialogState extends State<ChooseTargetsDialog> {
           padding: EdgeInsets.only(top: 8.0, bottom: 4.0),
         ));
       }
-      children.add(Wrap(children: enemies.map((e) => buildSvt(e)).toList()));
+      children.add(Wrap(spacing: 8, children: enemies.map((e) => buildSvt(e)).toList()));
     }
 
     return SimpleCancelOkDialog(
@@ -130,25 +130,26 @@ class _ChooseTargetsDialogState extends State<ChooseTargetsDialog> {
       decoration: selected.contains(svt)
           ? BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              border: Border.all(color: Colors.redAccent, width: 4),
+              border: Border.all(color: Colors.redAccent, width: 8),
             )
           : const BoxDecoration(),
       child: InkWell(
         child: svt.iconBuilder(
           context: context,
           width: 56,
-        ),
-        onTap: () {
-          if (widget.minCount == 1 && widget.maxCount == 1) {
-            selected.clear();
-            selected.add(svt);
-          } else {
-            if (selected.length < widget.maxCount) {
+          onTap: () {
+            final containsCurSvt = selected.contains(svt);
+            if (widget.maxCount == 1) {
+              selected.clear();
+              if (!containsCurSvt) {
+                selected.add(svt);
+              }
+            } else if (selected.length < widget.maxCount || containsCurSvt) {
               selected.toggle(svt);
             }
-          }
-          if (mounted) setState(() {});
-        },
+            if (mounted) setState(() {});
+          },
+        ),
       ),
     );
   }

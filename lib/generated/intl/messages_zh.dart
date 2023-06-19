@@ -830,6 +830,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "select_plan": MessageLookupByLibrary.simpleMessage("选择规划"),
         "select_servant": MessageLookupByLibrary.simpleMessage("选择从者"),
         "select_skill": MessageLookupByLibrary.simpleMessage("选择技能"),
+        "select_skip": MessageLookupByLibrary.simpleMessage("不选择以跳过该效果"),
         "select_support_servant": MessageLookupByLibrary.simpleMessage("选择助战"),
         "send_email_to": MessageLookupByLibrary.simpleMessage("发送邮件到"),
         "sending": MessageLookupByLibrary.simpleMessage("正在发送..."),

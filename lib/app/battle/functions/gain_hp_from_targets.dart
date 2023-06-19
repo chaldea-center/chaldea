@@ -28,7 +28,7 @@ class GainHpFromTargets {
       battleData.setTarget(receiver);
       //  denoting who should receive the absorbed hp
       int gainValue = 0;
-      for (final absorbTarget in FunctionExecutor.acquireFunctionTarget(
+      for (final absorbTarget in await FunctionExecutor.acquireFunctionTarget(
         battleData,
         dependFunction.funcTargetType,
         receiver,

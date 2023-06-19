@@ -736,6 +736,7 @@
   "select_plan": "계획 선택",
   "select_servant": null,
   "select_skill": null,
+  "select_skip": null,
   "select_support_servant": null,
   "send_email_to": "여기로 메일 보내기",
   "sending": "전송 중",

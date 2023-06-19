@@ -140,7 +140,7 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
               InputCancelOkDialog(
                 title: 'Edit Auth',
                 validate: validateAuth,
-                text: db.security.get(_storeKey)?.toString(),
+                text: db.security.atlasAuth?.toString(),
                 onSubmit: (value) {
                   setAuth(value);
                   if (mounted) setState(() {});
