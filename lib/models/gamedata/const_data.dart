@@ -20,7 +20,7 @@ class ConstGameData {
   final Map<int, MasterUserLvDetail> userLevel;
   final Map<int, SvtExpCurve> svtExp;
   final Map<int, int> bondLimitQp = {10: 10000000, 11: 12000000, 12: 14000000, 13: 16000000, 14: 18000000};
-  final Map<BuffType, BuffAction> buffTypeActionMap;
+  final Map<BuffType, List<BuffAction>> buffTypeActionMap;
 
   final Map<int, int> svtClassCardImageIdRemap = {
     285: 123,
@@ -37,10 +37,13 @@ class ConstGameData {
     this.svtGrailCost = const {},
     this.userLevel = const {},
     this.svtExp = const {},
-  }) : buffTypeActionMap = {
-          for (final entry in buffActions.entries)
-            for (final type in [...entry.value.plusTypes, ...entry.value.minusTypes]) type: entry.key
-        };
+  }) : buffTypeActionMap = {} {
+    for (final entry in buffActions.entries) {
+      for (final type in [...entry.value.plusTypes, ...entry.value.minusTypes]) {
+        buffTypeActionMap.putIfAbsent(type, () => []).add(entry.key);
+      }
+    }
+  }
 
   List<int> getSvtCurve(int growthCurve, int baseValue, int maxValue, int? maxLv) {
     final expData = svtExp[growthCurve];

@@ -75,14 +75,13 @@ class _BuffDetailPageState extends State<BuffDetailPage>
 
   @override
   Widget buildContent(BuildContext context, Buff buff) {
-    BuffAction? buffAction = buff.buffAction;
     return TabBarView(
       controller: controller,
       children: [
         ListView(
           children: [
             BuffInfoTable(buff: buff),
-            if (buffAction != BuffAction.unknown) ...[
+            for (final buffAction in buff.buffActions) ...[
               const DividerWithTitle(
                 title: '  ·   ·   ·  ',
                 indent: 16,

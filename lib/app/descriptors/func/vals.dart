@@ -309,7 +309,7 @@ class ValDsc extends StatelessWidget {
     final bool inList = false,
     final bool ignoreCount = false,
   }) {
-    final base = kBuffActionPercentTypes[buff.buffAction] ?? kBuffTypePercentType[buff.type];
+    final base = buff.percentBase;
     final trigger = kBuffValueTriggerTypes[buff.type];
     String _val(int? v) {
       if (v == null) return '';

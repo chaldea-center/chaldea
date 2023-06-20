@@ -59,10 +59,10 @@ class Buff with RouteInfo {
   Transl<String, String> get lName => Transl.buffNames(name.isEmpty ? type.name : name);
   Transl<String, String> get lDetail => Transl.buffDetail(detail);
 
-  BuffAction get buffAction => type.buffAction;
+  List<BuffAction> get buffActions => type.buffActions;
 
   static String formatRate(BuffType type, int rate) {
-    final base = kBuffActionPercentTypes[type.buffAction] ?? kBuffTypePercentType[type];
+    int? base = type.percentBase;
     if (base == null) return rate.toString();
     return rate.format(percent: true, base: base);
   }
@@ -73,9 +73,7 @@ class Buff with RouteInfo {
 
   Map<String, dynamic> toJson() => _$BuffToJson(this);
 
-  int? get percentBase {
-    return kBuffTypePercentType[type] ?? kBuffActionPercentTypes[buffAction];
-  }
+  int? get percentBase => type.percentBase;
 }
 
 @JsonSerializable(converters: [SvtClassConverter()])
@@ -438,7 +436,14 @@ enum BuffType {
   final int id;
   const BuffType(this.id);
 
-  BuffAction get buffAction => db.gameData.constData.buffTypeActionMap[this] ?? BuffAction.unknown;
+  List<BuffAction> get buffActions => db.gameData.constData.buffTypeActionMap[this] ?? [];
+  int? get percentBase {
+    int? base = kBuffTypePercentType[this];
+    for (final action in buffActions) {
+      base ??= kBuffActionPercentTypes[action];
+    }
+    return base;
+  }
 }
 
 final Map<BuffType, BuffValueTriggerType Function(DataVals)> kBuffValueTriggerTypes = {

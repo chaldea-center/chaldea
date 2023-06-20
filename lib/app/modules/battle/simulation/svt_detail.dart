@@ -359,9 +359,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
       if (buff.param != 0 && !kBuffValueTriggerTypes.containsKey(buff.buff.type))
         TextSpan(
           text: Buff.formatRate(buff.buff.type, buff.param),
-          style: ((kBuffActionPercentTypes[buff.buff.buffAction] ?? kBuffTypePercentType[buff.buff.type]) == null)
-              ? const TextStyle(fontStyle: FontStyle.italic)
-              : null,
+          style: (buff.buff.percentBase == null) ? const TextStyle(fontStyle: FontStyle.italic) : null,
         ),
     ];
     if (valueSpans.isEmpty) valueSpans.add(const TextSpan(text: ' - '));
