@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/models/api/recognizer.dart';
+import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'item_result.dart';
@@ -113,7 +113,7 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
     try {
       EasyLoading.show();
       recentFiles = List.from(
-          (await ChaldeaApi.dio.get('/recognizer/viewer/${widget.type.name}/list', queryParameters: {"count": count}))
+          (await db.apiServerDio.get('/recognizer/viewer/${widget.type.name}/list', queryParameters: {"count": count}))
               .data);
       EasyLoading.dismiss();
     } catch (e, s) {
@@ -126,7 +126,7 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
   Future<void> loadOne(String filename) async {
     try {
       EasyLoading.show();
-      final resp = await ChaldeaApi.dio
+      final resp = await db.apiServerDio
           .get('/recognizer/viewer/${widget.type.name}/result', queryParameters: {"filename": filename});
       switch (widget.type) {
         case RecognizerType.item:

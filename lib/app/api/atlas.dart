@@ -482,8 +482,11 @@ class AtlasApi {
   static QuestPhase? questPhaseCache(int questId, int phase, [String? hash, Region region = Region.jp]) {
     if (cacheDisabledQuests.contains(questId)) return null;
     QuestPhase? cache = cachedQuestPhases[questPhaseUrl(questId, phase, hash, region)];
-    if (cache == null && region == Region.jp && hash == null) {
-      cache = db.gameData.getQuestPhase(questId, phase);
+    if (cache == null && region == Region.jp) {
+      final dbCache = db.gameData.getQuestPhase(questId, phase);
+      if (dbCache != null && (hash == null || dbCache.enemyHash == hash)) {
+        cache = dbCache;
+      }
     }
     return cache;
   }

@@ -9473,11 +9473,22 @@ class S {
     );
   }
 
-  /// `Local`
+  /// `Local Teams`
   String get team_local {
     return Intl.message(
-      'Local',
+      'Local Teams',
       name: 'team_local',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Shared Teams`
+  String get team_shared {
+    return Intl.message(
+      'Shared Teams',
+      name: 'team_shared',
       desc: '',
       locale: localeName,
       args: [],
@@ -9489,17 +9500,6 @@ class S {
     return Intl.message(
       'Frontline',
       name: 'team_starting_member',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Uploaded`
-  String get team_uploaded {
-    return Intl.message(
-      'Uploaded',
-      name: 'team_uploaded',
       desc: '',
       locale: localeName,
       args: [],

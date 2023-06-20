@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:screenshot/screenshot.dart';
 
+import 'package:chaldea/utils/extension.dart';
 import '../app/tools/app_update.dart';
 import '../packages/app_info.dart';
 import '../packages/platform/platform.dart';
@@ -54,6 +55,13 @@ class RuntimeData {
   bool svtPlanTabButtonBarUseActive = true;
 
   final AppClipBoard clipBoard = AppClipBoard();
+
+  int lastUpload = 0;
+  final int secondsBetweenUpload = 300;
+  int get secondsRemainUtilNextUpload {
+    final lapse = DateTime.now().timestamp - lastUpload;
+    return lapse > secondsBetweenUpload ? 0 : secondsBetweenUpload - lapse;
+  }
 }
 
 class AppClipBoard {

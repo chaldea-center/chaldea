@@ -417,12 +417,13 @@ class _LoginPageState extends State<LoginPage> {
     String name = _nameController.text;
     String pwd = _pwdController.text;
     if (!isLoginAvailable(name, pwd)) return;
-    ChaldeaResponse.request(
-      caller: (dio) => dio.post('/account/login', data: {'username': name, 'pwd': pwd}),
-      onSuccess: (resp) {
-        _saveUserInfo(name, resp.body());
-      },
-    );
+    final resp = await ChaldeaResponse.show(
+        ChaldeaApi.wrap(() => db.apiWorkerDio.post('/account/login', data: {'username': name, 'pwd': pwd})),
+        showSuccess: true);
+    final auth = resp.body<String>();
+    if (resp.success && auth != null) {
+      _saveUserInfo(name, auth);
+    }
   }
 
   void doLogout() {
@@ -444,11 +445,9 @@ class _LoginPageState extends State<LoginPage> {
       title: const Text('Delete User Account'),
       content: const Text('Including backups on server'),
       onTapOk: () {
-        ChaldeaResponse.request(
-          caller: (dio) => dio.post('/account/delete', data: {
-            'username': name,
-            'pwd': pwd,
-          }),
+        ChaldeaResponse.show(
+          ChaldeaApi.wrap(() => db.apiWorkerDio.post('/account/delete', data: {'username': name, 'pwd': pwd})),
+          showSuccess: true,
         );
       },
     ).showDialog(context);
@@ -460,12 +459,12 @@ class _LoginPageState extends State<LoginPage> {
     if (!isLoginAvailable(name, pwd)) {
       return;
     }
-    ChaldeaResponse.request(
-      caller: (dio) => dio.post('/account/create', data: {'username': name, 'pwd': pwd}),
-      onSuccess: (resp) {
-        _saveUserInfo(name, resp.body());
-      },
-    );
+    final resp = await ChaldeaResponse.show(
+        ChaldeaApi.wrap(() => db.apiWorkerDio.post('/account/create', data: {'username': name, 'pwd': pwd})),
+        showSuccess: true);
+    if (resp.success) {
+      _saveUserInfo(name, resp.body<String>());
+    }
   }
 
   Future<void> doChangePwd() async {
@@ -475,32 +474,26 @@ class _LoginPageState extends State<LoginPage> {
     if (!isChangePasswordAvailable(name, pwd, newPwd)) {
       return;
     }
-    ChaldeaResponse.request(
-      caller: (dio) => dio.post('/account/changepassword', data: {
-        'username': name,
-        'pwd': pwd,
-        'new_pwd': newPwd,
-      }),
-      onSuccess: (resp) {
-        _saveUserInfo(name, resp.body());
-      },
-    );
+    final resp = await ChaldeaResponse.show(
+        ChaldeaApi.wrap(() =>
+            db.apiWorkerDio.post('/account/changepassword', data: {'username': name, 'pwd': pwd, 'new_pwd': newPwd})),
+        showSuccess: true);
+    if (resp.success) {
+      _saveUserInfo(name, resp.body<String>());
+    }
   }
 
-  Future<void> doChangeName() {
+  Future<void> doChangeName() async {
     String name = _nameController.text;
     String pwd = _pwdController.text;
     String newName = _newNameController.text;
-    return ChaldeaResponse.request(
-      caller: (dio) => dio.post('/account/changename', data: {
-        'username': name,
-        'pwd': pwd,
-        'new_name': newName,
-      }),
-      onSuccess: (resp) {
-        _saveUserInfo(newName, null);
-      },
-    );
+    final resp = await ChaldeaResponse.show(
+        ChaldeaApi.wrap(() =>
+            db.apiWorkerDio.post('/account/changename', data: {'username': name, 'pwd': pwd, 'new_name': newName})),
+        showSuccess: true);
+    if (resp.success) {
+      _saveUserInfo(name, null);
+    }
   }
 
   void _saveUserInfo(String name, String? auth) {

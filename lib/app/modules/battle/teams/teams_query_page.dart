@@ -1,5 +1,4 @@
-import 'package:flutter/scheduler.dart';
-
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -13,7 +12,7 @@ import 'package:chaldea/app/modules/home/subpage/login_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/api/api.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/utils/extension.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 enum TeamQueryMode { user, quest }
@@ -29,7 +28,7 @@ class TeamsQueryPage extends StatefulWidget {
 }
 
 class _TeamsQueryPageState extends State<TeamsQueryPage> {
-  static const _pageSize = 20;
+  static const _pageSize = 50;
 
   TeamQueryMode get mode => widget.mode;
 
@@ -41,10 +40,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
   @override
   void initState() {
     super.initState();
-
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
-      await _queryTeams(pageIndex);
-    });
+    _queryTeams(pageIndex);
   }
 
   @override
@@ -65,16 +61,6 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
       );
     } else if (errorMessage != null) {
       children.add(Center(child: Text('${S.current.error}: $errorMessage')));
-      children.add(
-        Center(
-          child: TextButton(
-            onPressed: () async {
-              await _queryTeams(pageIndex);
-            },
-            child: Text(S.current.refresh),
-          ),
-        ),
-      );
     } else if (battleRecords.isEmpty) {
       children.add(Center(child: Text(S.current.no_uploaded_teams)));
     } else {
@@ -83,7 +69,11 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.current.uploaded_teams),
+        title: AutoSizeText(
+          '${S.current.uploaded_teams} (Page ${pageIndex + 1})',
+          maxLines: 1,
+          minFontSize: 10,
+        ),
       ),
       body: Column(
         children: [
@@ -118,6 +108,14 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
             child: Text(S.current.prev_page),
           ),
           ElevatedButton(
+            onPressed: () async {
+              EasyDebounce.debounce('refresh_laplace_team', const Duration(seconds: 10), () {
+                _queryTeams(pageIndex, refresh: true);
+              });
+            },
+            child: Text(S.current.refresh),
+          ),
+          ElevatedButton(
             onPressed: !hasNextPage
                 ? null
                 : () async {
@@ -131,112 +129,125 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
     );
   }
 
-  Widget _buildBattleRecord(final UserBattleData battleRecord, final int index) {
-    final shareData = BattleShareData.parseGzip(battleRecord.record);
-
+  Widget _buildBattleRecord(final UserBattleData record, final int index) {
+    final shareData = BattleShareData.parseGzip(record.record);
+    final quest = db.gameData.quests[record.questId];
     return Column(
       children: [
         DividerWithTitle(
           title: shareData.team.shownName(index),
         ),
+        if (widget.mode == TeamQueryMode.user)
+          ListTile(
+            dense: true,
+            leading: db.getIconImage(quest?.spot?.shownImage, width: 24),
+            minLeadingWidth: 24,
+            title: Text(quest?.lDispName ?? "Quest ${record.questId}/${record.phase}"),
+            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+            onTap: () {
+              router.push(url: Routes.questI(record.questId));
+            },
+          ),
         FormationCard(formation: shareData.team),
         TextButton(
           onPressed: () {
-            replaySimulation(battleRecord, shareData);
+            replaySimulation(record, shareData);
           },
           child: Text('>>> ${S.current.details} >>>'),
         ),
-        if (mode == TeamQueryMode.user)
-          TextButton(
-            onPressed: () async {
-              await _deleteUserTeam(battleRecord);
-            },
-            child: Text(
-              S.current.remove,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-          ),
-        if (mode == TeamQueryMode.quest)
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context, shareData.team);
-            },
-            child: Text(S.current.select),
-          ),
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 8,
+          children: [
+            if (mode == TeamQueryMode.user || record.userId == db.security.username)
+              FilledButton(
+                onPressed: () {
+                  SimpleCancelOkDialog(
+                    title: Text(S.current.confirm),
+                    content: Text(S.current.delete),
+                    onTapOk: () {
+                      _deleteUserTeam(record);
+                    },
+                  ).showDialog(context);
+                },
+                style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
+                child: Text(S.current.delete),
+              ),
+            if (mode == TeamQueryMode.quest)
+              FilledButton(
+                onPressed: () {
+                  Navigator.pop(context, shareData.team);
+                },
+                child: Text(S.current.select),
+              ),
+          ],
+        ),
       ],
     );
   }
 
-  Future<void> _queryTeams(final int page) async {
-    battleRecords.clear();
-
-    if (db.security.isUserLoggedIn) {
-      ChaldeaResponse? resp;
-
-      if (mode == TeamQueryMode.user) {
-        resp = await ChaldeaResponse.request(
-          showSuccess: false,
-          caller: (dio) => dio.post('/laplace/query/user', data: {
-            'username': db.security.username,
-            'auth': db.security.userAuth,
-            'limit': _pageSize + 1,
-            'offset': _pageSize * page,
-          }),
-        );
-      } else if (mode == TeamQueryMode.quest && widget.questPhase != null) {
-        final questPhase = widget.questPhase!;
-        resp = await ChaldeaResponse.request(
-          showSuccess: false,
-          caller: (dio) => dio.post('/laplace/query/quest', data: {
-            'username': db.security.username,
-            'auth': db.security.userAuth,
-            'questId': questPhase.id,
-            'phase': questPhase.phase,
-            if (questPhase.enemyHash != null) 'enemyHash': questPhase.enemyHash,
-            'limit': _pageSize + 1,
-            'offset': _pageSize * page,
-          }),
-        );
-      }
-
-      final responseMap = resp?.json()?['body'];
-      if (responseMap != null) {
-        final d1result = D1Result<UserBattleData>.fromJson(Map<String, dynamic>.from(responseMap as Map));
-
-        if (d1result.success) {
-          errorMessage = null;
-          List<UserBattleData?> records = d1result.results;
-          hasNextPage = records.length > _pageSize;
-
-          records = hasNextPage ? records.sublist(0, _pageSize) : records;
-          for (final record in records) {
-            if (record != null) {
-              battleRecords.add(record);
-            }
-          }
-        } else {
-          errorMessage = d1result.error;
-        }
-      }
-
+  Future<void> _showError(Future Function() future) async {
+    try {
+      return await future();
+    } catch (e) {
+      EasyLoading.showError(e.toString());
+      errorMessage = e.toString();
+    } finally {
       if (mounted) setState(() {});
     }
   }
 
-  Future<void> _deleteUserTeam(final UserBattleData battleRecord) async {
-    if (db.security.isUserLoggedIn) {
-      final resp = await ChaldeaResponse.request(
-        caller: (dio) => dio.post('/laplace/delete', data: {
-          'username': db.security.username,
-          'auth': db.security.userAuth,
-          'id': battleRecord.id,
-        }),
-      );
-
-      if (resp?.success == true) {
-        await _queryTeams(pageIndex);
+  Future<void> _queryTeams(final int page, {bool refresh = false}) async {
+    if (!db.security.isUserLoggedIn) return;
+    return _showError(() async {
+      Future<ChaldeaResponse>? future;
+      if (mode == TeamQueryMode.user) {
+        future = ChaldeaApi.laplaceQueryTeamByUser(
+          limit: _pageSize + 1,
+          offset: _pageSize * page,
+          expireAfter: refresh ? Duration.zero : null,
+        );
+      } else if (mode == TeamQueryMode.quest) {
+        final questPhase = widget.questPhase;
+        if (questPhase == null || questPhase.id <= 0) return;
+        future = ChaldeaApi.laplaceQueryTeamByQuest(
+          questId: questPhase.id,
+          phase: questPhase.phase,
+          enemyHash: questPhase.enemyHash,
+          limit: _pageSize + 1,
+          offset: _pageSize * page,
+          expireAfter: refresh ? Duration.zero : null,
+        );
       }
-    }
+      if (future == null) return;
+      final resp = await ChaldeaResponse.show(future);
+
+      final respBody = resp.body<Map>();
+      if (respBody == null) return;
+      final d1result = D1Result<UserBattleData>.fromJson(Map.from(respBody));
+
+      if (d1result.success) {
+        errorMessage = null;
+        List<UserBattleData> records = d1result.results;
+        hasNextPage = records.length > _pageSize;
+        records = hasNextPage ? records.sublist(0, _pageSize) : records;
+        battleRecords.clear();
+        battleRecords.addAll(records);
+      } else {
+        errorMessage = d1result.error;
+      }
+    });
+  }
+
+  Future<void> _deleteUserTeam(UserBattleData battleRecord) async {
+    if (!db.security.isUserLoggedIn) return;
+    return _showError(() async {
+      final resp = await ChaldeaResponse.show(ChaldeaApi.laplaceDeleteTeam(id: battleRecord.id));
+      if (resp.success) {
+        ChaldeaApi.clearCache((cache) => true);
+        await _queryTeams(pageIndex, refresh: true);
+      }
+    });
   }
 
   void replaySimulation(final UserBattleData battleRecord, final BattleShareData shareData) async {

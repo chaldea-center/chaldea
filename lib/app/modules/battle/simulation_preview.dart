@@ -161,7 +161,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                   }
                   if (mounted) setState(() {});
                 },
-          child: Text(S.current.team_uploaded),
+          child: Text(S.current.team_shared),
         ),
       ],
     ));

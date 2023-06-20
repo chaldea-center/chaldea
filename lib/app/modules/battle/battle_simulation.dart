@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:chaldea/models/api/api.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
@@ -602,7 +601,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
   Widget _buildUploadButton() {
     final canUpload = db.security.isUserLoggedIn &&
         battleData.recorder.isUploadEligible &&
-        db.settings.battleSim.secondsRemainUtilNextUpload <= 0;
+        db.runtimeData.secondsRemainUtilNextUpload <= 0 &&
+        questPhase.enemyHash != null;
 
     return FilledButton(
       onPressed: () async {
@@ -616,10 +616,10 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                 )
               : !battleData.recorder.isUploadEligible
                   ? Text(S.current.upload_not_eligible_hint)
-                  : db.settings.battleSim.secondsRemainUtilNextUpload > 0
+                  : db.runtimeData.secondsRemainUtilNextUpload > 0
                       ? Text(S.current.upload_paused(
-                          BattleSimSetting.secondsBetweenUpload,
-                          db.settings.battleSim.secondsRemainUtilNextUpload,
+                          db.runtimeData.secondsBetweenUpload,
+                          db.runtimeData.secondsRemainUtilNextUpload,
                         ))
                       : Text(S.current.upload_team_confirmation),
           hideCancel: !canUpload,
@@ -635,25 +635,24 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                     actions: actions,
                     disableEvent: widget.options.disableEvent,
                   );
-                  db.settings.battleSim.lastUploadMilli = DateTime.now().millisecondsSinceEpoch;
-                  final resp = await ChaldeaResponse.request(
-                    showSuccess: false,
-                    caller: (dio) => dio.post('/laplace/upload', data: {
-                      'username': db.security.username,
-                      'auth': db.security.userAuth,
-                      'ver': 1,
-                      'questId': questPhase.id,
-                      'phase': questPhase.phase,
-                      'enemyHash': questPhase.enemyHash,
-                      'record': uploadData.toGZip()
-                    }),
-                  );
-                  final responseMap = resp?.json()?['body'];
-                  if (responseMap != null) {
-                    final d1result = D1Result<void>.fromJson(Map<String, dynamic>.from(responseMap as Map));
+                  db.runtimeData.lastUpload = DateTime.now().timestamp;
+                  final resp = await ChaldeaResponse.show(ChaldeaApi.laplaceUploadTeam(
+                    ver: 1,
+                    questId: questPhase.id,
+                    phase: questPhase.phase,
+                    enemyHash: questPhase.enemyHash!,
+                    record: uploadData.toGZip(),
+                  ));
+                  if (resp.json()?['success'] == false) {
                     await SimpleCancelOkDialog(
-                      title: Text(d1result.success ? S.current.success : S.current.failed),
-                      content: d1result.success ? null : Text(d1result.error ?? S.current.error),
+                      title: Text(S.current.failed),
+                      content: Text(resp.json()?["error"] ?? "something went wrong"),
+                      hideCancel: true,
+                    ).showDialog(null);
+                    ChaldeaApi.clearCache((cache) => true);
+                  } else {
+                    await SimpleCancelOkDialog(
+                      title: Text(S.current.success),
                       hideCancel: true,
                     ).showDialog(null);
                   }

@@ -5,7 +5,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/api/recognizer.dart';
 import 'package:chaldea/models/models.dart';
@@ -40,7 +39,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> with
       if (!_tabController.indexIsChanging) setState(() {});
     });
 
-    _dio = DioE(ChaldeaApi.dio.options.copyWith(
+    _dio = DioE(db.apiServerDio.options.copyWith(
       sendTimeout: const Duration(minutes: 10),
       receiveTimeout: const Duration(minutes: 10),
     ));

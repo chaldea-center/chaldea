@@ -342,6 +342,19 @@ class _Database {
           'os': PlatformU.operatingSystem
         },
       ));
+
+  Dio get apiServerDio => DioE(BaseOptions(
+        baseUrl: Hosts.apiHost,
+        // baseUrl: kDebugMode ? 'http://localhost:8000/' : Hosts.apiHost,
+        queryParameters: {
+          'key': AppInfo.uuid,
+          'ver': AppInfo.versionString,
+          'build': AppInfo.buildNumber,
+          'lang': Language.current.code,
+          'os': PlatformU.operatingSystem,
+        },
+        // validateStatus: _defaultValidateStat,
+      ));
 }
 
 final db = _Database();
