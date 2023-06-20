@@ -1,4 +1,6 @@
+import '../../packages/logger.dart';
 import '../userdata/_helper.dart';
+import '../userdata/battle.dart';
 
 part '../../generated/models/api/api.g.dart';
 
@@ -62,4 +64,20 @@ class UserBattleData {
   factory UserBattleData.fromJson(Map<String, dynamic> json) => _$UserBattleDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserBattleDataToJson(this);
+
+  BattleShareData? parse() {
+    if (decoded != null) return decoded;
+    if (ver == 1) {
+      try {
+        return decoded = BattleShareData.parseGzip(record);
+      } catch (e, s) {
+        logger.e('parse gzip team data failed', e, s);
+        return null;
+      }
+    }
+    return null;
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  BattleShareData? decoded;
 }

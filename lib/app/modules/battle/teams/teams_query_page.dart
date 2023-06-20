@@ -14,6 +14,8 @@ import 'package:chaldea/models/api/api.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../common/filter_page_base.dart';
+import 'filter.dart';
 
 enum TeamQueryMode { user, quest }
 
@@ -27,15 +29,18 @@ class TeamsQueryPage extends StatefulWidget {
   State<TeamsQueryPage> createState() => _TeamsQueryPageState();
 }
 
-class _TeamsQueryPageState extends State<TeamsQueryPage> {
+class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListState<UserBattleData, TeamsQueryPage> {
   static const _pageSize = 50;
 
   TeamQueryMode get mode => widget.mode;
 
   bool hasNextPage = false;
   int pageIndex = 0;
-  String? errorMessage;
   List<UserBattleData> battleRecords = [];
+  final filterData = TeamFilterData();
+
+  @override
+  Iterable<UserBattleData> get wholeData => battleRecords;
 
   @override
   void initState() {
@@ -44,98 +49,106 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
   }
 
   @override
-  Widget build(final BuildContext context) {
-    final List<Widget> children = [];
+  Widget build(BuildContext context) {
+    filterShownList();
+    return scrollListener(
+      useGrid: false,
+      appBar: appBar,
+    );
+  }
 
-    if (!db.security.isUserLoggedIn) {
-      children.add(
-        Center(
-          child: TextButton(
-            onPressed: () async {
-              await router.pushPage(LoginPage());
-              await _queryTeams(pageIndex);
-            },
-            child: Text(S.current.login_first_hint),
-          ),
-        ),
-      );
-    } else if (errorMessage != null) {
-      children.add(Center(child: Text('${S.current.error}: $errorMessage')));
-    } else if (battleRecords.isEmpty) {
-      children.add(Center(child: Text(S.current.no_uploaded_teams)));
-    } else {
-      children.addAll(List.generate(battleRecords.length, (index) => _buildBattleRecord(battleRecords[index], index)));
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: AutoSizeText(
-          '${S.current.uploaded_teams} (Page ${pageIndex + 1})',
-          maxLines: 1,
-          minFontSize: 10,
-        ),
+  PreferredSizeWidget? get appBar {
+    return AppBar(
+      title: AutoSizeText(
+        '${S.current.uploaded_teams} (Page ${pageIndex + 1})',
+        maxLines: 1,
+        minFontSize: 10,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              children: children,
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.filter_alt),
+          tooltip: S.current.filter,
+          onPressed: () => FilterPage.show(
+            context: context,
+            builder: (context) => TeamFilter(
+              filterData: filterData,
+              onChanged: (_) {
+                if (mounted) {
+                  setState(() {});
+                }
+              },
             ),
           ),
-          const Divider(height: 16),
-          SafeArea(child: _buttonBar)
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  Widget get _buttonBar {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 6,
-        runSpacing: 6,
+  @override
+  PreferredSizeWidget? get buttonBar {
+    List<Widget> buttons = [
+      ElevatedButton(
+        onPressed: pageIndex == 0
+            ? null
+            : () async {
+                pageIndex -= 1;
+                await _queryTeams(pageIndex);
+              },
+        child: Text(S.current.prev_page),
+      ),
+      if (db.security.isUserLoggedIn)
+        ElevatedButton(
+          onPressed: () async {
+            EasyDebounce.debounce('refresh_laplace_team', const Duration(seconds: 1), () {
+              _queryTeams(pageIndex, refresh: true);
+            });
+          },
+          child: Text(S.current.refresh),
+        )
+      else
+        ElevatedButton(
+          onPressed: () async {
+            await router.pushPage(LoginPage());
+            if (mounted) setState(() {});
+          },
+          child: Text(S.current.login_login),
+        ),
+      ElevatedButton(
+        onPressed: !hasNextPage
+            ? null
+            : () async {
+                pageIndex += 1;
+                await _queryTeams(pageIndex);
+              },
+        child: Text(S.current.next_page),
+      ),
+    ];
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(48),
+      child: ButtonBar(
+        alignment: MainAxisAlignment.center,
         children: [
-          ElevatedButton(
-            onPressed: pageIndex == 0
-                ? null
-                : () async {
-                    pageIndex -= 1;
-                    await _queryTeams(pageIndex);
-                  },
-            child: Text(S.current.prev_page),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              EasyDebounce.debounce('refresh_laplace_team', const Duration(seconds: 10), () {
-                _queryTeams(pageIndex, refresh: true);
-              });
-            },
-            child: Text(S.current.refresh),
-          ),
-          ElevatedButton(
-            onPressed: !hasNextPage
-                ? null
-                : () async {
-                    pageIndex += 1;
-                    await _queryTeams(pageIndex);
-                  },
-            child: Text(S.current.next_page),
+          Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            runSpacing: 8,
+            children: buttons,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildBattleRecord(final UserBattleData record, final int index) {
-    final shareData = BattleShareData.parseGzip(record.record);
+  @override
+  Widget listItemBuilder(UserBattleData record) {
+    final index = battleRecords.indexOf(record);
+    final shareData = record.decoded;
     final quest = db.gameData.quests[record.questId];
     return Column(
       children: [
         DividerWithTitle(
-          title: shareData.team.shownName(index),
+          title: shareData?.team.shownName(index) ?? S.current.team,
         ),
         if (widget.mode == TeamQueryMode.user)
           ListTile(
@@ -148,13 +161,15 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
               router.push(url: Routes.questI(record.questId));
             },
           ),
-        FormationCard(formation: shareData.team),
-        TextButton(
-          onPressed: () {
-            replaySimulation(record, shareData);
-          },
-          child: Text('>>> ${S.current.details} >>>'),
-        ),
+        if (shareData != null) ...[
+          FormationCard(formation: shareData.team),
+          TextButton(
+            onPressed: () {
+              replaySimulation(record, shareData);
+            },
+            child: Text('>>> ${S.current.details} >>>'),
+          ),
+        ],
         Wrap(
           alignment: WrapAlignment.center,
           spacing: 8,
@@ -175,9 +190,11 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
               ),
             if (mode == TeamQueryMode.quest)
               FilledButton(
-                onPressed: () {
-                  Navigator.pop(context, shareData.team);
-                },
+                onPressed: shareData == null
+                    ? null
+                    : () {
+                        Navigator.pop(context, shareData.team);
+                      },
                 child: Text(S.current.select),
               ),
           ],
@@ -186,12 +203,28 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
     );
   }
 
+  @override
+  Widget gridItemBuilder(UserBattleData record) {
+    throw UnimplementedError("Do not support GridView");
+  }
+
+  @override
+  bool filter(UserBattleData record) {
+    final data = record.decoded;
+    if (data == null) return true;
+    for (final svtId in filterData.blockedSvts.options) {
+      if (data.team.allSvts.any((svt) => db.gameData.servantsById[svt?.svtId]?.collectionNo == svtId)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   Future<void> _showError(Future Function() future) async {
     try {
       return await future();
     } catch (e) {
       EasyLoading.showError(e.toString());
-      errorMessage = e.toString();
     } finally {
       if (mounted) setState(() {});
     }
@@ -227,14 +260,16 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> {
       final d1result = D1Result<UserBattleData>.fromJson(Map.from(respBody));
 
       if (d1result.success) {
-        errorMessage = null;
         List<UserBattleData> records = d1result.results;
         hasNextPage = records.length > _pageSize;
         records = hasNextPage ? records.sublist(0, _pageSize) : records;
         battleRecords.clear();
         battleRecords.addAll(records);
+        for (final r in battleRecords) {
+          r.parse();
+        }
       } else {
-        errorMessage = d1result.error;
+        EasyLoading.showError(d1result.error.toString());
       }
     });
   }

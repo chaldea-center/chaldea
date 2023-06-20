@@ -607,7 +607,12 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                   }
                 } else {
                   int? count = int.tryParse(hash.substring2(2, 4));
-                  text = S.current.quest_version(index, curPhase.enemyHashes.length, count ?? "?");
+                  String versions = curPhase.enemyHashes.length.toString();
+                  if (db.gameData.getQuestPhase(curPhase.id, curPhase.phase) != null &&
+                      [100, 101].contains(curPhase.enemyHashes.length)) {
+                    versions += '+';
+                  }
+                  text = S.current.quest_version(index, versions, count ?? "?");
                 }
                 TextStyle? style = Theme.of(context).textTheme.bodySmall;
                 if (hash == null || hash == noHashPhase?.enemyHash) {
