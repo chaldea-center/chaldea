@@ -58,6 +58,15 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   }
 
   PreferredSizeWidget? get appBar {
+    Set<int> svtIds = {};
+    for (final record in battleRecords) {
+      final svts = record.decoded?.team.allSvts ?? [];
+      svtIds.addAll(svts.map((e) => e?.svtId ?? 0).where((e) => e > 0));
+    }
+    if (!svtIds.contains(filterData.useSvts.radioValue)) {
+      filterData.useSvts.options.clear();
+    }
+
     return AppBar(
       title: AutoSizeText(
         '${S.current.uploaded_teams} (Page ${pageIndex + 1})',
@@ -72,6 +81,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             context: context,
             builder: (context) => TeamFilter(
               filterData: filterData,
+              availableSvts: svtIds,
               onChanged: (_) {
                 if (mounted) {
                   setState(() {});
@@ -215,6 +225,77 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     for (final svtId in filterData.blockedSvts.options) {
       if (data.team.allSvts.any((svt) => db.gameData.servantsById[svt?.svtId]?.collectionNo == svtId)) {
         return false;
+      }
+    }
+
+    final attackerTdCard = filterData.attackerTdCardType.radioValue;
+    if (attackerTdCard != null) {
+      // TODO: check attacker record's td color
+    }
+
+    int maxNormalAttackCount = filterData.normalAttackCount.radioValue!;
+    int maxCriticalAttackCount = filterData.criticalAttackCount.radioValue!;
+
+    if (maxNormalAttackCount >= 0 || maxCriticalAttackCount >= 0) {
+      int normalAttackCount = 0, criticalAttackCount = 0;
+      // TODO: count them in records
+      if (maxNormalAttackCount >= 0 && normalAttackCount > maxNormalAttackCount) {
+        return false;
+      }
+      if (maxCriticalAttackCount >= 0 && criticalAttackCount > maxCriticalAttackCount) {
+        return false;
+      }
+    }
+
+    bool checkCE(SvtSaveData? svt, int ceId, CELimitType limit) {
+      if (svt == null || (svt.svtId ?? 0) <= 0) return true;
+      if (svt.ceId != ceId) return true;
+      return limit.check(svt.ceLimitBreak);
+    }
+
+    if (data.team.allSvts.any((svt) =>
+        !checkCE(svt, 9400340, filterData.kaleidoCELimit.radioValue!) ||
+        !checkCE(svt, 9400480, filterData.blackGrailLimit.radioValue!))) {
+      return false;
+    }
+
+    for (final miscOption in filterData.miscOptions.options) {
+      switch (miscOption) {
+        case TeamFilterMiscType.noOrderChange:
+        // TODO: check used skill rather mystic code id?
+        case TeamFilterMiscType.noSameSvt:
+          final svtIds = data.team.allSvts.map((e) => e?.svtId ?? 0).where((e) => e > 0).toList();
+          if (svtIds.length != svtIds.toSet().length) {
+            return false;
+          }
+        case TeamFilterMiscType.noAppendSkill:
+          for (final svt in data.team.allSvts) {
+            final dbSvt = db.gameData.servantsById[svt?.svtId];
+            if (svt == null || dbSvt == null) continue;
+            if (svt.appendLvs.any((lv) => lv > 0)) {
+              return false;
+            }
+          }
+        case TeamFilterMiscType.noGrailFou:
+          for (final svt in data.team.allSvts) {
+            final dbSvt = db.gameData.servantsById[svt?.svtId];
+            if (svt == null || dbSvt == null) continue;
+            if (dbSvt.type != SvtType.heroine && svt.lv > dbSvt.lvMax) {
+              return false;
+            }
+            if (svt.hpFou > 1000 || svt.atkFou > 1000) {
+              return false;
+            }
+          }
+        case TeamFilterMiscType.noLv100:
+          for (final svt in data.team.allSvts) {
+            final dbSvt = db.gameData.servantsById[svt?.svtId];
+            if (svt == null || dbSvt == null) continue;
+            if (svt.lv > 100) {
+              return false;
+            }
+          }
+          break;
       }
     }
     return true;
