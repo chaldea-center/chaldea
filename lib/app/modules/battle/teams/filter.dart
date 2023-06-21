@@ -15,7 +15,18 @@ enum TeamFilterMiscType {
   ;
 
   String get shownName {
-    return name;
+    switch (this) {
+      case noOrderChange:
+        return S.current.team_no_order_change;
+      case noSameSvt:
+        return S.current.team_no_same_svt;
+      case noAppendSkill:
+        return S.current.team_no_append_skill;
+      case noGrailFou:
+        return S.current.team_no_grail_fou;
+      case noLv100:
+        return S.current.team_no_lv100;
+    }
   }
 }
 
@@ -26,7 +37,14 @@ enum CELimitType {
   ;
 
   String get shownName {
-    return name;
+    switch (this) {
+      case allowed:
+        return S.current.general_any;
+      case allowedNoMLB:
+        return S.current.non_mlb;
+      case banned:
+        return S.current.disabled;
+    }
   }
 
   bool check(bool mlb) {
@@ -42,7 +60,7 @@ enum CELimitType {
 }
 
 class TeamFilterData {
-  static List<int> get _blockedSvtIds => [16, 258, 284, 316];
+  static const List<int> _blockedSvtIds = [16, 258, 284, 314, 316];
 
   final attackerTdCardType = FilterRadioData<CardType>(); // attacker only
   final blockedSvts = FilterGroupData<int>();
@@ -112,16 +130,6 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
             update();
           },
         ),
-        FilterGroup<int>(
-          title: const Text("Blocked Servants"),
-          options: TeamFilterData._blockedSvtIds,
-          values: filterData.blockedSvts,
-          optionBuilder: (v) => svtIcon(v),
-          shrinkWrap: true,
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
         FilterGroup<CELimitType>(
           title: Text(db.gameData.craftEssences[34]?.lName.l ?? "The Black Grail"),
           options: CELimitType.values,
@@ -145,7 +153,7 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
           },
         ),
         getGroup(
-          header: "Attacks",
+          header: S.current.battle_attack,
           children: [
             DropdownButton(
               isDense: true,
@@ -155,7 +163,7 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
                   DropdownMenuItem(
                     value: count,
                     child: Text(
-                      "Normal Attack ≤${count == -1 ? "Any" : count}",
+                      "${S.current.normal_attack} ${count == -1 ? S.current.general_any : "≤$count"}",
                       textScaleFactor: 0.8,
                     ),
                   ),
@@ -175,7 +183,7 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
                   DropdownMenuItem(
                     value: count,
                     child: Text(
-                      "${S.current.critical_attack} ≤${count == -1 ? "Any" : count}",
+                      "${S.current.critical_attack} ${count == -1 ? S.current.general_any : "≤$count"}",
                       textScaleFactor: 0.8,
                     ),
                   ),
@@ -190,11 +198,23 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
           ],
         ),
         FilterGroup<int>(
-          title: const Text("Use Servant"),
+          title: Text(S.current.team_block_servant),
+          options: TeamFilterData._blockedSvtIds,
+          values: filterData.blockedSvts,
+          constraints: const BoxConstraints(maxHeight: 50),
+          optionBuilder: (v) => svtIcon(v),
+          shrinkWrap: true,
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
+        FilterGroup<int>(
+          title: Text(S.current.team_use_servant),
           options: widget.availableSvts.toList(),
           values: filterData.useSvts,
           optionBuilder: (v) => svtIcon(v),
           shrinkWrap: true,
+          constraints: const BoxConstraints(maxHeight: 50),
           onFilterChanged: (value, _) {
             update();
           },

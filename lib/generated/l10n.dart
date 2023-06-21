@@ -4353,6 +4353,17 @@ class S {
     );
   }
 
+  /// `Any`
+  String get general_any {
+    return Intl.message(
+      'Any',
+      name: 'general_any',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Close`
   String get general_close {
     return Intl.message(
@@ -6673,6 +6684,28 @@ class S {
     return Intl.message(
       'Non-favorite servants will be skipped',
       name: 'non_favorite_svt_be_skipped',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `non-MLB`
+  String get non_mlb {
+    return Intl.message(
+      'non-MLB',
+      name: 'non_mlb',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Normal Attack`
+  String get normal_attack {
+    return Intl.message(
+      'Normal Attack',
+      name: 'normal_attack',
       desc: '',
       locale: localeName,
       args: [],
@@ -9473,11 +9506,99 @@ class S {
     );
   }
 
+  /// `Block Servant`
+  String get team_block_servant {
+    return Intl.message(
+      'Block Servant',
+      name: 'team_block_servant',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Allow MLB`
+  String get team_ce_allow_mlb {
+    return Intl.message(
+      'Allow MLB',
+      name: 'team_ce_allow_mlb',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Allow non-MLB`
+  String get team_ce_allow_non_mlb {
+    return Intl.message(
+      'Allow non-MLB',
+      name: 'team_ce_allow_non_mlb',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Local Teams`
   String get team_local {
     return Intl.message(
       'Local Teams',
       name: 'team_local',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `No Append Skill`
+  String get team_no_append_skill {
+    return Intl.message(
+      'No Append Skill',
+      name: 'team_no_append_skill',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `No Grail/☆4 Fou`
+  String get team_no_grail_fou {
+    return Intl.message(
+      'No Grail/☆4 Fou',
+      name: 'team_no_grail_fou',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `No Lv.100+`
+  String get team_no_lv100 {
+    return Intl.message(
+      'No Lv.100+',
+      name: 'team_no_lv100',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `No Order Change`
+  String get team_no_order_change {
+    return Intl.message(
+      'No Order Change',
+      name: 'team_no_order_change',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `No Same Svt`
+  String get team_no_same_svt {
+    return Intl.message(
+      'No Same Svt',
+      name: 'team_no_same_svt',
       desc: '',
       locale: localeName,
       args: [],
@@ -9500,6 +9621,17 @@ class S {
     return Intl.message(
       'Frontline',
       name: 'team_starting_member',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Use Servant`
+  String get team_use_servant {
+    return Intl.message(
+      'Use Servant',
+      name: 'team_use_servant',
       desc: '',
       locale: localeName,
       args: [],

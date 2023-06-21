@@ -437,6 +437,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                   try {
                     final text = const JsonEncoder.withIndent('  ').convert(questPhase);
                     await FilePickerU.saveFile(
+                      dialogContext: context,
                       data: utf8.encode(text),
                       filename: "quest-${questPhase!.id}-${questPhase!.phase}-${DateTime.now().toSafeFileName()}.json",
                     );

@@ -19,6 +19,7 @@ class FilterGroup<T> extends StatelessWidget {
   final bool combined;
   final EdgeInsetsGeometry padding;
   final bool showCollapse;
+  final BoxConstraints? constraints;
 
   const FilterGroup({
     super.key,
@@ -34,6 +35,7 @@ class FilterGroup<T> extends StatelessWidget {
     this.combined = false,
     this.padding = const EdgeInsets.symmetric(horizontal: 12),
     this.showCollapse = false,
+    this.constraints,
   });
 
   static FilterGroup display({required bool useGrid, required ValueChanged<bool?> onChanged}) {
@@ -77,6 +79,7 @@ class FilterGroup<T> extends StatelessWidget {
         selected: values.options.contains(key),
         value: key,
         shrinkWrap: shrinkWrap,
+        constraints: constraints,
         borderRadius: combined
             ? BorderRadius.horizontal(
                 left: Radius.circular(index == 0 ? 3 : 0),
@@ -186,6 +189,7 @@ class FilterOption<T> extends StatelessWidget {
   final Color? selectedTextColor;
   final BorderRadius borderRadius;
   final bool shrinkWrap;
+  final BoxConstraints? constraints;
 
   const FilterOption({
     super.key,
@@ -199,6 +203,7 @@ class FilterOption<T> extends StatelessWidget {
     this.selectedTextColor,
     this.borderRadius = const BorderRadius.all(Radius.circular(3)),
     this.shrinkWrap = false,
+    this.constraints,
   });
 
   @override
@@ -206,7 +211,7 @@ class FilterOption<T> extends StatelessWidget {
     bool darkMode = Theme.of(context).brightness == Brightness.dark;
     final selectedColor = this.selectedColor ?? Colors.blue;
     return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: shrinkWrap ? double.infinity : 30),
+      constraints: constraints ?? const BoxConstraints(maxHeight: 30),
       child: OutlinedButton(
         onPressed: enabled
             ? () {

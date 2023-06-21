@@ -155,7 +155,9 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
             await null;
             try {
               final text = const JsonEncoder.withIndent('  ').convert(skill);
+              // ignore: use_build_context_synchronously
               await FilePickerU.saveFile(
+                dialogContext: context,
                 data: utf8.encode(text),
                 filename: "skill-${skill.id}-${DateTime.now().toSafeFileName()}.json",
               );
