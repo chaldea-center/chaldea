@@ -138,6 +138,27 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
     );
   }
 
+  Widget scrollListener2(Widget Function(BuildContext context, Widget fab) builder) {
+    return UserScrollListener(
+      shouldAnimate: (userScroll) => userScroll.metrics.axis == Axis.vertical,
+      builder: (context, animationController) => builder(
+        context,
+        ScaleTransition(
+          scale: animationController,
+          child: Padding(
+            padding: EdgeInsets.only(bottom: buttonBar?.preferredSize.height ?? 0),
+            child: FloatingActionButton(
+              child: const Icon(Icons.arrow_upward),
+              onPressed: () => scrollController.hasClients
+                  ? scrollController.animateTo(0, duration: const Duration(milliseconds: 600), curve: Curves.easeOut)
+                  : null,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget buildScrollable({bool useGrid = false}) {
     final hintText = defaultHintBuilder(context, defaultHintText(shownList.length, wholeData.length));
     return Scrollbar(

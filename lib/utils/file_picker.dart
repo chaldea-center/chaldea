@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -11,8 +10,9 @@ import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/extension.dart';
+import 'package:chaldea/utils/url.dart';
 import '../models/db.dart';
-import '../widgets/custom_dialogs.dart';
+import '../widgets/widgets.dart';
 
 class FilePickerU {
   const FilePickerU._();
@@ -94,11 +94,33 @@ class FilePickerU {
     file.parent.createSync(recursive: true);
     await file.writeAsBytes(data);
     if (dialogContext != null && dialogContext.mounted) {
-      SimpleCancelOkDialog(
-        title: Text(S.current.saved),
-        content: Text(db.paths.convertIosPath(file.path).breakWord),
-        hideCancel: true,
-      ).showDialog(dialogContext);
+      showDialog(
+        context: dialogContext,
+        builder: (context) {
+          return SimpleCancelOkDialog(
+            title: Text(S.current.saved),
+            content: Text(db.paths.convertIosPath(file.path).breakWord),
+            hideCancel: true,
+            actions: [
+              if (PlatformU.isDesktop)
+                TextButton(
+                  child: Text(S.current.open),
+                  onPressed: () {
+                    openFile(file.parent.path);
+                  },
+                ),
+              if (PlatformU.isMobile)
+                TextButton(
+                  child: Text(S.current.share),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    ShareX.shareFile(file.path, context: context);
+                  },
+                ),
+            ],
+          );
+        },
+      );
     }
     return;
   }

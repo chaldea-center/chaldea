@@ -1,5 +1,6 @@
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/tools/item_center.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -171,6 +172,10 @@ class _ItemStatTabState extends State<ItemStatTab> {
         inPlace: true,
       );
     });
+    if (svtParts.contain(4)) {
+      shownItems.addDict(db.itemCenter.calcClassBoardCost(SvtMatCostDetailType.consumed));
+    }
+
     Maths.sumDict([shownItems, if (includeOwnedItems) db.curUser.items], inPlace: true);
     shownItems.removeWhere((key, value) {
       return value <= 0;
@@ -201,6 +206,9 @@ class _ItemStatTabState extends State<ItemStatTab> {
           inPlace: true,
         );
       });
+    }
+    if (svtParts.contain(4)) {
+      shownItems.addDict(db.itemCenter.calcClassBoardCost(SvtMatCostDetailType.demands));
     }
     Maths.sumDict([
       shownItems,
