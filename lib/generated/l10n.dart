@@ -9275,10 +9275,10 @@ class S {
     );
   }
 
-  /// `1. Servant options are independent from Chaldea's plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manuually via options below`
+  /// `1. Servant options are independent from Chaldea's plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manually via options below\n3. You can manually add custom effect/buff`
   String get svt_option_edit_tips {
     return Intl.message(
-      '1. Servant options are independent from Chaldea\'s plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manuually via options below',
+      '1. Servant options are independent from Chaldea\'s plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manually via options below\n3. You can manually add custom effect/buff',
       name: 'svt_option_edit_tips',
       desc: '',
       locale: localeName,
@@ -10078,10 +10078,10 @@ class S {
     );
   }
 
-  /// `Upload current team?`
+  /// `Upload current team?\n\nAttention: uploaded data may be deleted due to data incompatible etc.`
   String get upload_team_confirmation {
     return Intl.message(
-      'Upload current team?',
+      'Upload current team?\n\nAttention: uploaded data may be deleted due to data incompatible etc.',
       name: 'upload_team_confirmation',
       desc: '',
       locale: localeName,

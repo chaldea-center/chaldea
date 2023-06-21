@@ -1,5 +1,41 @@
 # Changelog
 
+## 2.4.2
+
+- Chaldeas
+  - Added Class Score and planning
+  - Chaldea Gates event quest listing
+  - Servant plan show only current bond
+  - When importing sniffing/login data, properly mark withdrawn event servants
+- Laplace
+  - Team Setup
+    - (New Feature) Added team sharing.
+    - Fixed team costs not up-to-date in setup page
+    - Added an option to export / import quest data in JSON format
+    - Any team change needs to be manually saved
+    - (PC) In the setup page, hover on servant / CE icon to show remove/change buttons
+  - Servant / CE select
+    - Pinged servants / CEs now shown in a separated row
+    - Long press icon to view details
+    - Added a new row for rarity & NP type / color filters
+  - Edit Servant Option
+    - Improved UI
+    - Able to manually input values for sliders in settings
+    - CE minimal level is applied if set to max limit break
+    - Added an option to export/import skill data in JSON format
+    - Added common debuffs to custom skill constructor
+  - Battle Simulation
+    - Added options in custom skills for (delayed) instant death
+    - Added an option to reset mystic code skill CD
+    - Fixed trait related buffs to correctly ignore self / opponent traits to avoid infinite loop
+    - Fixed target selection interaction with stages that disables enemy positions
+    - Certain mandatory selection actions can now be canceled (e.g. replace member)
+    - Added support for functions that affect random party members
+  - NP Damage
+    - Fixed mystic code skills not used
+    - Fixed supports not having upgraded skills
+    - Default Kukulkan's skill activation selection to consume critical stars
+
 ## 2.4.1
 
 - Chaldeas

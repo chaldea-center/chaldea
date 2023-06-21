@@ -201,7 +201,7 @@ class ItemCenter {
       Items.hpFou3: max(0, target.fouHp3 - cur.fouHp3),
       Items.atkFou3: max(0, target.fouAtk3 - cur.fouAtk3),
       Items.grailId: max(0, target.grail - cur.grail),
-      Items.lanternId: max(0, target.bondLimit - cur.bondLimit),
+      // Items.lanternId: max(0, target.bondLimit - cur.bondLimit),
       Items.qpId: QpCost.grail(svt.rarity, cur.grail, target.grail) + QpCost.bondLimit(cur.bondLimit, target.bondLimit),
       if (coinId != null) coinId: coin,
     };

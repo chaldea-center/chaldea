@@ -935,7 +935,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_fav_btn_show_favorite": MessageLookupByLibrary.simpleMessage("显示已关注"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("未关注"),
         "svt_option_edit_tips": MessageLookupByLibrary.simpleMessage(
-            "1.队伍中从者的等级等信息自导入后与规划信息独立，如需再次同步请使用右上角下拉菜单中的重新读取配置\n2.技能、宝具强化状态可通过下方选项手动设定"),
+            "1.队伍中从者的等级等信息自导入后与规划信息独立，如需再次同步请使用右上角下拉菜单中的重新读取配置\n2.技能、宝具强化状态可通过下方选项手动设定\n3.自定义效果/buff可在下方手动添加"),
         "svt_option_resync": MessageLookupByLibrary.simpleMessage("重新读取配置"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("已隐藏"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("羁绊故事"),
@@ -1009,7 +1009,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage(
             "由于使用过以下任意功能，当前队伍不满足上传条件:\n- 通过导入JSON使用自定义关卡\n- 活动点数加成\n- 无法正常获得的从者\n- 自定义技能\n- 跳过场次"),
         "upload_paused": m30,
-        "upload_team_confirmation": MessageLookupByLibrary.simpleMessage("确认上传当前的队伍?"),
+        "upload_team_confirmation": MessageLookupByLibrary.simpleMessage("确认上传当前的队伍?\n\n请注意，上传的队伍可能因数据格式更新/不兼容等原因被移除。"),
         "uploaded_teams": MessageLookupByLibrary.simpleMessage("上传的队伍"),
         "usage": MessageLookupByLibrary.simpleMessage("使用方法"),
         "userdata": MessageLookupByLibrary.simpleMessage("用户数据"),

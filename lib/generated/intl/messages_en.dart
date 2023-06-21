@@ -977,7 +977,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_fav_btn_show_favorite": MessageLookupByLibrary.simpleMessage("Show Favorite"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("Not favorite"),
         "svt_option_edit_tips": MessageLookupByLibrary.simpleMessage(
-            "1. Servant options are independent from Chaldea\'s plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manuually via options below"),
+            "1. Servant options are independent from Chaldea\'s plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manually via options below\n3. You can manually add custom effect/buff"),
         "svt_option_resync": MessageLookupByLibrary.simpleMessage("Resync Options"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("Hidden"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("Profile"),
@@ -1053,7 +1053,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage(
             "Current team is not eligible for upload due to any of the following:\n- custom quest via JSON import\n- event point buffs\n- nonplayable servants\n- custom skills\n- skipped waves"),
         "upload_paused": m30,
-        "upload_team_confirmation": MessageLookupByLibrary.simpleMessage("Upload current team?"),
+        "upload_team_confirmation": MessageLookupByLibrary.simpleMessage(
+            "Upload current team?\n\nAttention: uploaded data may be deleted due to data incompatible etc."),
         "uploaded_teams": MessageLookupByLibrary.simpleMessage("Uploaded Teams"),
         "usage": MessageLookupByLibrary.simpleMessage("Usage"),
         "userdata": MessageLookupByLibrary.simpleMessage("Userdata"),
