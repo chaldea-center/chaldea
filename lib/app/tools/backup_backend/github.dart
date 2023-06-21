@@ -16,7 +16,7 @@ extension _GithubSettingX on GithubSetting {
 
 class GithubBackup<T> extends BackupBackend<T> {
   final GithubSetting config;
-  final GitHub github = GitHub();
+  GitHub github = GitHub();
   final FutureOr<List<int>> Function() encode;
   final FutureOr<T> Function(List<int> data) decode;
 
@@ -28,7 +28,7 @@ class GithubBackup<T> extends BackupBackend<T> {
 
   @override
   Future<bool> backup({String? message}) async {
-    github.auth = Authentication.withToken(config.token);
+    github = GitHub(auth: Authentication.withToken(config.token));
     final content = base64Encode(await encode());
     if (message == null || message.isEmpty) {
       message = DateTime.now().toStringShort(omitSec: false);
@@ -48,7 +48,7 @@ class GithubBackup<T> extends BackupBackend<T> {
 
   @override
   Future<T?> restore() async {
-    github.auth = Authentication.withToken(config.token);
+    github = GitHub(auth: Authentication.withToken(config.token));
     final file = await _getFile();
     if (file == null) throw NotFound(github, 'NotFound');
     if (file.encoding == 'base64') {

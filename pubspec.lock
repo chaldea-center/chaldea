@@ -595,10 +595,10 @@ packages:
     dependency: "direct main"
     description:
       name: github
-      sha256: b0194a326787f0e306dc35e1e39a786d819364ff90a8cdddc9cfda1fdfa17cdb
+      sha256: c4f71eba8715d593af7c0954e0f123810acade2725ca1cf985b8e3d2edb15716
       url: "https://pub.dev"
     source: hosted
-    version: "9.14.0"
+    version: "9.15.0"
   glob:
     dependency: transitive
     description:
@@ -902,7 +902,7 @@ packages:
     description:
       path: "packages/pasteboard"
       ref: HEAD
-      resolved-ref: "8a00c5ea7d1e58214c013e0478a7b169912b6706"
+      resolved-ref: "1bf4315ba7a3ce6cc25e0530d2d7bac3b38d2876"
       url: "https://github.com/MixinNetwork/flutter-plugins"
     source: git
     version: "0.2.0"
@@ -1134,10 +1134,10 @@ packages:
     dependency: transitive
     description:
       name: sentry
-      sha256: "0316390446c6497664379b3d72d1bc1b6e4c5385cf6c1f6a02c5ab5a3ce179ce"
+      sha256: "8f4f1d3ef3ca1801aa3138392bbf0851b39eff703008111765b265f76c8f0190"
       url: "https://pub.dev"
     source: hosted
-    version: "7.7.0"
+    version: "7.8.0"
   share_plus:
     dependency: "direct main"
     description:
@@ -1611,10 +1611,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: "7dacfda1edcca378031db9905ad7d7bd56b29fd1a90b0908b71a52a12c41e36b"
+      sha256: "1414f27dd781737e51afa9711f2ac2ace6ab4498ee98e20863fa5505aa00c58c"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.3"
+    version: "5.0.4"
   win32_registry:
     dependency: transitive
     description:
@@ -1636,10 +1636,10 @@ packages:
     dependency: "direct main"
     description:
       name: worker_manager
-      sha256: "26153ce375748ab0136c298d3279fee3a05a95985f951f48fc0056ac11715595"
+      sha256: "79b3023cdbe3cc0eb6b4d01f6559d159fff57febf5d7707f425c377dae53ec72"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.5"
+    version: "6.1.1"
   xdg_directories:
     dependency: transitive
     description:
