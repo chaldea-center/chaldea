@@ -593,7 +593,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               ? Text('Win', style: TextStyle(color: Theme.of(context).colorScheme.secondary))
               : Text(S.current.battle_attack),
         ),
-        if (battleData.isBattleWin && widget.replayActions == null) _buildUploadButton(),
+        if (battleData.isBattleWin && widget.replayActions == null && questPhase.isAnyFree) _buildUploadButton(),
       ],
     );
   }

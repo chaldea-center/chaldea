@@ -961,11 +961,11 @@ class BattleData {
   }
 
   Future<void> resetPlayerSkillCD(bool isMysticCode) async {
-    recorder.isUploadEligible = false;
     return recordError(
       save: true,
       action: 'resetSkillCD',
       task: () async {
+        recorder.isUploadEligible = false;
         if (isMysticCode) {
           for (final skill in masterSkillInfo) {
             skill.chargeTurn = 0;
