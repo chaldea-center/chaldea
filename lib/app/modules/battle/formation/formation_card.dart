@@ -16,7 +16,7 @@ class FormationCard extends StatelessWidget {
         for (final backupSvt in formation.backupSvts) _buildServantIcons(backupSvt),
         Flexible(
           child: db.getIconImage(
-            db.gameData.mysticCodes[formation.mysticCode.mysticCodeId]?.icon,
+            formation.mysticCode.level > 0 ? db.gameData.mysticCodes[formation.mysticCode.mysticCodeId]?.icon : null,
             aspectRatio: 1,
             width: 56,
           ),

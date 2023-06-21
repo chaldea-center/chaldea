@@ -319,6 +319,8 @@ class MysticCodeData {
   MysticCode? mysticCode = db.gameData.mysticCodes[210];
   int level = 10;
 
+  bool get enabled => mysticCode != null && level > 0;
+
   MysticCodeSaveData toStoredData() {
     return MysticCodeSaveData(mysticCodeId: mysticCode?.id, level: level);
   }

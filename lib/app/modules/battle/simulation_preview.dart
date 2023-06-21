@@ -543,30 +543,38 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   Widget buildMysticCode() {
+    final mcData = options.team.mysticCodeData;
     Widget mcIcon = Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        options.team.mysticCodeData.mysticCode?.iconBuilder(context: context, width: 48, jumpToDetail: false) ??
+        mcData.mysticCode?.iconBuilder(context: context, width: 48, jumpToDetail: false) ??
             db.getIconImage(null, width: 48),
-        if (options.team.mysticCodeData.mysticCode != null)
+        if (mcData.mysticCode != null)
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              for (final skill in options.team.mysticCodeData.mysticCode!.skills)
-                db.getIconImage(skill.icon, width: 24, aspectRatio: 1, padding: const EdgeInsets.all(1)),
+              for (final skill in mcData.mysticCode!.skills)
+                db.getIconImage(
+                  mcData.enabled ? skill.icon : Atlas.common.emptySkillIcon,
+                  width: 24,
+                  aspectRatio: 1,
+                  padding: const EdgeInsets.all(1),
+                ),
             ],
           ),
       ],
     );
+    if (mcData.level == 0) {
+      mcIcon = Opacity(opacity: 0.7, child: mcIcon);
+    }
     mcIcon = InkWell(
       onTap: () {
         router.pushPage(
           MysticCodeListPage(
             onSelected: (selectedMC) {
-              options.team.mysticCodeData
-                ..mysticCode = selectedMC
-                ..level = db.curUser.mysticCodes[selectedMC.id] ?? 10;
+              mcData.mysticCode = selectedMC;
+              mcData.level = settings.playerDataSource.isNone ? 10 : db.curUser.mysticCodes[selectedMC.id] ?? 10;
               if (mounted) setState(() {});
             },
           ),
@@ -587,13 +595,13 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SliderWithTitle(
-                leadingText: options.team.mysticCodeData.mysticCode?.lName.l ?? S.current.mystic_code,
-                min: 1,
+                leadingText: mcData.mysticCode?.lName.l ?? S.current.mystic_code,
+                min: 0,
                 max: 10,
                 value: options.team.mysticCodeData.level,
-                label: 'Lv.${options.team.mysticCodeData.level}',
+                label: mcData.level == 0 ? S.current.disabled : 'Lv.${mcData.level}',
                 onChange: (v) {
-                  options.team.mysticCodeData.level = v.round();
+                  mcData.level = v.round();
                   if (mounted) setState(() {});
                 },
               ),

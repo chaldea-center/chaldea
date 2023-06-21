@@ -217,8 +217,10 @@ class BattleData {
       mysticCode = await overwriteEquip.toMysticCode();
       mysticCodeLv = overwriteEquip.skillLv;
     } else {
-      mysticCode = mysticCodeData?.mysticCode;
       mysticCodeLv = mysticCodeData?.level ?? 10;
+      if (mysticCodeLv > 0) {
+        mysticCode = mysticCodeData?.mysticCode;
+      }
     }
     if (mysticCode != null) {
       masterSkillInfo = [

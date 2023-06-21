@@ -452,7 +452,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
               enableEdit: false,
               showEmptyBackup: false,
             ),
-            if (team.mysticCodeData.mysticCode != null)
+            if (team.mysticCodeData.enabled)
               getMysticCode(context, team.mysticCodeData.mysticCode!, team.mysticCodeData.level),
           ],
         ),

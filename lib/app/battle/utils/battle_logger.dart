@@ -176,9 +176,7 @@ class BattleRecordManager {
     for (final svtData in options.team.allSvts) {
       if (svtData.svt != null) {
         final svt = svtData.svt!;
-        if (!svt.isUserSvt ||
-            svtData.supportType == SupportSvtType.npc ||
-            svtData.additionalPassives.isNotEmpty) {
+        if (!svt.isUserSvt || svtData.supportType == SupportSvtType.npc || svtData.additionalPassives.isNotEmpty) {
           isUploadEligible = false;
           return;
         }
