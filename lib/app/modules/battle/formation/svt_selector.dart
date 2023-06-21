@@ -344,7 +344,16 @@ class __DragHoverState<T extends Object> extends State<_DragHover<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final base = widget.child;
+    Widget base = InkWell(
+      onHover: (value) {
+        setState(() {
+          hovered = value;
+        });
+      },
+      onTap: widget.onTap,
+      child: widget.child,
+    );
+
     if (!widget.enableEdit) return base;
 
     Widget child = DragTarget<T>(
@@ -379,15 +388,6 @@ class __DragHoverState<T extends Object> extends State<_DragHover<T>> {
       },
     );
     child = widget.builder(context, child, hovered, dragging);
-    child = InkWell(
-      onHover: (value) {
-        setState(() {
-          hovered = value;
-        });
-      },
-      onTap: widget.onTap,
-      child: child,
-    );
     return child;
   }
 }

@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -68,11 +67,15 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     }
 
     return AppBar(
-      title: AutoSizeText(
-        '${S.current.uploaded_teams} (Page ${pageIndex + 1})',
-        maxLines: 1,
-        minFontSize: 10,
-      ),
+      title: Text.rich(TextSpan(
+        text: S.current.uploaded_teams,
+        children: [
+          TextSpan(
+            text: '(Page ${pageIndex + 1})',
+            style: const TextStyle(fontSize: 14),
+          )
+        ],
+      )),
       actions: [
         IconButton(
           icon: const Icon(Icons.filter_alt),
@@ -106,7 +109,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
               },
         child: Text(S.current.prev_page),
       ),
-      if (db.security.isUserLoggedIn)
+      if (db.security.isUserLoggedIn || widget.mode == TeamQueryMode.quest)
         ElevatedButton(
           onPressed: () async {
             EasyDebounce.debounce('refresh_laplace_team', const Duration(seconds: 1), () {
@@ -155,11 +158,10 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     final index = battleRecords.indexOf(record);
     final shareData = record.decoded;
     final quest = db.gameData.quests[record.questId];
+    final shownIndex = _pageSize * pageIndex + index + 1;
     return Column(
       children: [
-        DividerWithTitle(
-          title: shareData?.team.shownName(index) ?? S.current.team,
-        ),
+        DividerWithTitle(title: '${S.current.team} $shownIndex - ${record.userId}'),
         if (widget.mode == TeamQueryMode.user)
           ListTile(
             dense: true,
@@ -322,7 +324,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   }
 
   Future<void> _queryTeams(final int page, {bool refresh = false}) async {
-    if (!db.security.isUserLoggedIn) return;
+    if (widget.mode == TeamQueryMode.user && !db.security.isUserLoggedIn) return;
     return _showError(() async {
       Future<ChaldeaResponse>? future;
       if (mode == TeamQueryMode.user) {
