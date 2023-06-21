@@ -487,7 +487,7 @@ BattleReplayDelegateData _$BattleReplayDelegateDataFromJson(Map json) => $checke
           actWeightSelections:
               $checkedConvert('actWeightSelections', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
           skillActSelectSelections:
-              $checkedConvert('skillActSelectSelections', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+              $checkedConvert('skillActSelectSelections', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
           tdTypeChangeIndexes:
               $checkedConvert('tdTypeChangeIndexes', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
           ptRandomIndexes:

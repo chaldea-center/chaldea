@@ -364,7 +364,7 @@ class TdDmgSolver {
       if (_actor?.svtId == 2501100) {
         return 1;
       }
-      return null;
+      return -1;
     };
     if (options.damageNpHpRatioMax) {
       delegate.hpRatio = (_actor, battleData, func, vals) {
