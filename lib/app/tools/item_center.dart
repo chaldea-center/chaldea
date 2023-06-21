@@ -354,14 +354,14 @@ class ItemCenter {
       for (final square in board.squares) {
         final lock = square.lock;
         if (lock != null) {
-          final plan = user.curPlan_.classBoardLock[lock.id];
+          final plan = user.classBoardLocks[lock.id];
           if (type.shouldCount(plan)) {
             for (final itemAmount in lock.items) {
               items.addNum(itemAmount.itemId, itemAmount.amount);
             }
           }
         }
-        if (type.shouldCount(user.curPlan_.classBoardSquare[square.id])) {
+        if (type.shouldCount(user.classBoardSquares[square.id])) {
           for (final itemAmount in square.items) {
             items.addNum(itemAmount.itemId, itemAmount.amount);
           }

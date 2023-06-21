@@ -74,7 +74,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
     int totalBond = 0;
 
     for (final square in board.squares) {
-      final unlocked = db.curPlan_.classBoardSquare[square.id] == LockPlan.full;
+      final unlocked = db.curUser.classBoardSquares[square.id] == LockPlan.full;
       if (square.targetCommandSpell != null) {
         spells.putIfAbsent(square.targetCommandSpell!.id, () => square.targetCommandSpell!);
         if (unlocked) spellLvs.addNum(square.targetCommandSpell!.id, square.upSkillLv);
@@ -85,13 +85,13 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
       if (square.lock != null) {
         final lockItems = {for (final itemAmount in square.lock!.items) itemAmount.itemId: itemAmount.amount};
         unlockItems.addDict(lockItems);
-        if (db.curPlan_.classBoardLock[square.lock!.id] == LockPlan.planned) {
+        if (db.curUser.classBoardLocks[square.lock!.id] == LockPlan.planned) {
           planUnlockItems.addDict(lockItems);
         }
       }
       final squareItems = {for (final itemAmount in square.items) itemAmount.itemId: itemAmount.amount};
       enhanceItems.addDict(squareItems);
-      if (db.curPlan_.classBoardSquare[square.id] == LockPlan.planned) {
+      if (db.curUser.classBoardSquares[square.id] == LockPlan.planned) {
         planEnhanceItems.addDict(squareItems);
       }
     }
@@ -226,7 +226,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
           trailing: db.onUserData((context, snapshot) {
             List<InlineSpan> status = [];
             if (square.lock != null) {
-              final lockPlan = db.curPlan_.classBoardLock[square.lock!.id] ?? LockPlan.none;
+              final lockPlan = db.curUser.classBoardLocks[square.lock!.id] ?? LockPlan.none;
               if (lockPlan != LockPlan.none) {
                 status.add(TextSpan(children: [
                   const CenterWidgetSpan(child: Icon(Icons.lock, size: 16)),
@@ -234,7 +234,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
                 ]));
               }
             }
-            final enhancePlan = db.curPlan_.classBoardSquare[square.id] ?? LockPlan.none;
+            final enhancePlan = db.curUser.classBoardSquares[square.id] ?? LockPlan.none;
             if (enhancePlan != LockPlan.none) {
               status.add(TextSpan(text: enhancePlan.dispPlan));
             }
@@ -324,10 +324,10 @@ class ClassBoardSquareDetail extends StatelessWidget {
                   combined: true,
                   padding: EdgeInsets.zero,
                   options: LockPlan.values,
-                  values: FilterRadioData.nonnull(db.curPlan_.classBoardLock[lock.id] ?? LockPlan.none),
+                  values: FilterRadioData.nonnull(db.curUser.classBoardLocks[lock.id] ?? LockPlan.none),
                   optionBuilder: (value) => Text(value.dispPlan),
                   onFilterChanged: (v, _) {
-                    db.curPlan_.classBoardLock[lock.id] = v.radioValue!;
+                    db.curUser.classBoardLocks[lock.id] = v.radioValue!;
                     db.itemCenter.updateClassBoard();
                   },
                 ),
@@ -382,10 +382,10 @@ class ClassBoardSquareDetail extends StatelessWidget {
                 combined: true,
                 padding: EdgeInsets.zero,
                 options: LockPlan.values,
-                values: FilterRadioData.nonnull(db.curPlan_.classBoardSquare[square.id] ?? LockPlan.none),
+                values: FilterRadioData.nonnull(db.curUser.classBoardSquares[square.id] ?? LockPlan.none),
                 optionBuilder: (value) => Text(value.dispPlan),
                 onFilterChanged: (v, _) {
-                  db.curPlan_.classBoardSquare[square.id] = v.radioValue!;
+                  db.curUser.classBoardSquares[square.id] = v.radioValue!;
                   db.itemCenter.updateClassBoard();
                 },
               ),

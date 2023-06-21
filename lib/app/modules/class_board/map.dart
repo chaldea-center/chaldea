@@ -173,7 +173,7 @@ class ClassBoardMapPainter extends CustomPainter {
 
       final lock = square.lock;
       if (lock != null) {
-        bool darkenLock = showPlanned && db.curPlan_.classBoardLock[lock.id] == LockPlan.full;
+        bool darkenLock = showPlanned && db.curUser.classBoardLocks[lock.id] == LockPlan.full;
 
         int? itemId;
         for (final itemAmount in lock.items) {
@@ -204,7 +204,7 @@ class ClassBoardMapPainter extends CustomPainter {
         );
       }
 
-      bool darkenSquare = showPlanned && db.curPlan_.classBoardSquare[square.id] != LockPlan.full;
+      bool darkenSquare = showPlanned && db.curUser.classBoardSquares[square.id] != LockPlan.full;
       drawImage(square.icon, getRect(center, sw, sw),
           paint: darkenSquare ? (getPaint()..color = const Color.fromRGBO(0, 0, 0, 0.6)) : null);
     }

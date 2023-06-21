@@ -197,7 +197,7 @@ class UserData {
 
 const kSvtPlanMaxNum = 5;
 
-@JsonSerializable()
+@JsonSerializable(converters: [LockPlanConverter()])
 class User {
   String name;
   bool isGirl;
@@ -220,6 +220,8 @@ class User {
   Map<int, int> mysticCodes;
   Set<String> summons;
   Set<int> myRoomMusic;
+  Map<int, LockPlan> classBoardLocks;
+  Map<int, LockPlan> classBoardSquares;
 
   FreeLPParams freeLPParams;
   Map<String, Map<int, int>> luckyBagSvtScores;
@@ -241,6 +243,8 @@ class User {
     Map<int, int>? mysticCodes,
     Set<String>? summons,
     Set<int>? myRoomMusic,
+    Map<int, LockPlan>? classBoardLocks,
+    Map<int, LockPlan>? classBoardSquares,
     FreeLPParams? freeLPParams,
     Map<String, Map<int, int>>? luckyBagSvtScores,
     SaintQuartzPlan? saintQuartzPlan,
@@ -258,6 +262,8 @@ class User {
         mysticCodes = mysticCodes ?? {},
         summons = summons ?? {},
         myRoomMusic = myRoomMusic ?? {},
+        classBoardLocks = classBoardLocks ?? {},
+        classBoardSquares = classBoardSquares ?? {},
         freeLPParams = freeLPParams ?? FreeLPParams(),
         luckyBagSvtScores = luckyBagSvtScores ?? {},
         saintQuartzPlan = saintQuartzPlan ?? SaintQuartzPlan();
@@ -334,6 +340,8 @@ class User {
     cmdCodes = sortDict(cmdCodes);
     summons = (summons.toList()..sort()).toSet();
     myRoomMusic = (myRoomMusic.toList()..sort()).toSet();
+    classBoardLocks = sortDict(classBoardLocks);
+    classBoardSquares = sortDict(classBoardSquares);
     luckyBagSvtScores = sortDict(luckyBagSvtScores);
     freeLPParams.planItemCounts = sortDict(freeLPParams.planItemCounts);
     freeLPParams.planItemWeights = sortDict(freeLPParams.planItemWeights);
@@ -418,15 +426,13 @@ class SvtStatus {
   }
 }
 
-@JsonSerializable(converters: [LockPlanConverter()])
+@JsonSerializable()
 class UserPlan {
   String title;
   Map<int, SvtPlan> servants;
   Map<int, LimitEventPlan> limitEvents;
   Map<int, MainStoryPlan> mainStories;
   Map<int, ExchangeTicketPlan> tickets;
-  Map<int, LockPlan> classBoardLock;
-  Map<int, LockPlan> classBoardSquare;
 
   UserPlan({
     this.title = '',
@@ -434,14 +440,10 @@ class UserPlan {
     Map<int, LimitEventPlan>? limitEvents,
     Map<int, MainStoryPlan>? mainStories,
     Map<int, ExchangeTicketPlan>? tickets,
-    Map<int, LockPlan>? classBoardLock,
-    Map<int, LockPlan>? classBoardSquare,
   })  : servants = servants ?? {},
         limitEvents = limitEvents ?? {},
         mainStories = mainStories ?? {},
-        tickets = tickets ?? {},
-        classBoardLock = classBoardLock ?? {},
-        classBoardSquare = classBoardSquare ?? {};
+        tickets = tickets ?? {};
 
   factory UserPlan.fromJson(Map<String, dynamic> json) => _$UserPlanFromJson(json);
 
