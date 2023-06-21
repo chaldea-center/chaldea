@@ -808,6 +808,31 @@ class BattleRecordData {
 
   Map<String, dynamic> toJson() => _$BattleRecordDataToJson(this);
 
+  bool usedMysticCode() {
+    return type == BattleRecordDataType.skill && servantIndex == null;
+  }
+
+  bool containsTdCardType(final CardType cardType) {
+    if (attackRecords == null || attackRecords!.isEmpty) {
+      return false;
+    }
+    return attackRecords!.any((cardAction) => cardAction.isNp && cardAction.cardType == cardType);
+  }
+
+  int countCrits() {
+    if (attackRecords == null || attackRecords!.isEmpty) {
+      return 0;
+    }
+    return attackRecords!.fold(0, (sum, cardAction) => cardAction.isCritical ? sum + 1 : sum);
+  }
+
+  int countNormalAttacks() {
+    if (attackRecords == null || attackRecords!.isEmpty) {
+      return 0;
+    }
+    return attackRecords!.fold(0, (sum, cardAction) => !cardAction.isNp ? sum + 1 : sum);
+  }
+
   Future<void> replay(final BattleData battleData) async {
     battleData.allyTargetIndex = options.allyTargetIndex;
     battleData.enemyTargetIndex = options.enemyTargetIndex;
@@ -878,12 +903,14 @@ class BattleAttackRecordData {
   int? cardIndex;
   bool isNp;
   bool isCritical;
+  CardType cardType;
 
   BattleAttackRecordData({
     this.servantIndex = 0,
     this.cardIndex,
     this.isNp = false,
     this.isCritical = false,
+    this.cardType = CardType.none,
   });
 
   factory BattleAttackRecordData.fromJson(Map<String, dynamic> json) => _$BattleAttackRecordDataFromJson(json);
@@ -905,4 +932,14 @@ class BattleActions {
   factory BattleActions.fromJson(Map<String, dynamic> json) => _$BattleActionsFromJson(json);
 
   Map<String, dynamic> toJson() => _$BattleActionsToJson(this);
+
+  bool get usedMysticCodeSkills => actions.any((action) => action.usedMysticCode());
+
+  bool containsTdCardType(final CardType cardType) {
+    return actions.any((action) => action.containsTdCardType(cardType));
+  }
+
+  int get critsCount => actions.fold(0, (sum, action) => sum + action.countCrits());
+
+  int get normalAttackCount => actions.fold(0, (sum, action) => sum + action.countNormalAttacks());
 }

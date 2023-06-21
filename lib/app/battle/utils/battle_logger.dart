@@ -132,6 +132,7 @@ class BattleRecordManager {
                   cardIndex: combatAction.cardData.cardIndex,
                   isNp: combatAction.cardData.isNP,
                   isCritical: combatAction.cardData.isCritical,
+                  cardType: combatAction.cardData.cardType,
                 ))
             .toList()));
   }

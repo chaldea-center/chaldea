@@ -591,6 +591,7 @@ BattleAttackRecordData _$BattleAttackRecordDataFromJson(Map json) => $checkedCre
           cardIndex: $checkedConvert('cardIndex', (v) => v as int?),
           isNp: $checkedConvert('isNp', (v) => v as bool? ?? false),
           isCritical: $checkedConvert('isCritical', (v) => v as bool? ?? false),
+          cardType: $checkedConvert('cardType', (v) => $enumDecodeNullable(_$CardTypeEnumMap, v) ?? CardType.none),
         );
         return val;
       },
@@ -601,7 +602,19 @@ Map<String, dynamic> _$BattleAttackRecordDataToJson(BattleAttackRecordData insta
       'cardIndex': instance.cardIndex,
       'isNp': instance.isNp,
       'isCritical': instance.isCritical,
+      'cardType': _$CardTypeEnumMap[instance.cardType]!,
     };
+
+const _$CardTypeEnumMap = {
+  CardType.none: 'none',
+  CardType.arts: 'arts',
+  CardType.buster: 'buster',
+  CardType.quick: 'quick',
+  CardType.extra: 'extra',
+  CardType.blank: 'blank',
+  CardType.weak: 'weak',
+  CardType.strength: 'strength',
+};
 
 BattleActions _$BattleActionsFromJson(Map json) => $checkedCreate(
       'BattleActions',

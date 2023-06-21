@@ -222,26 +222,34 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   bool filter(UserBattleData record) {
     final data = record.decoded;
     if (data == null) return true;
-    for (final svtId in filterData.blockedSvts.options) {
-      if (data.team.allSvts.any((svt) => db.gameData.servantsById[svt?.svtId]?.collectionNo == svtId)) {
+    for (final svtCollectionNo in filterData.blockedSvts.options) {
+      if (data.team.allSvts.any((svt) => db.gameData.servantsById[svt?.svtId]?.collectionNo == svtCollectionNo)) {
         return false;
       }
+    }
+    if (filterData.useSvts.options.isNotEmpty &&
+        data.team.allSvts.every((svt) => !filterData.useSvts.options.contains(svt?.svtId))) {
+      return false;
     }
 
     final attackerTdCard = filterData.attackerTdCardType.radioValue;
     if (attackerTdCard != null) {
-      // TODO: check attacker record's td color
+      final tdCheck = data.actions?.containsTdCardType(attackerTdCard);
+      if (tdCheck == false) {
+        return false;
+      }
     }
 
     int maxNormalAttackCount = filterData.normalAttackCount.radioValue!;
     int maxCriticalAttackCount = filterData.criticalAttackCount.radioValue!;
 
     if (maxNormalAttackCount >= 0 || maxCriticalAttackCount >= 0) {
-      int normalAttackCount = 0, criticalAttackCount = 0;
-      // TODO: count them in records
+      int normalAttackCount = data.actions?.normalAttackCount ?? 0;
       if (maxNormalAttackCount >= 0 && normalAttackCount > maxNormalAttackCount) {
         return false;
       }
+
+      int criticalAttackCount = data.actions?.critsCount ?? 0;
       if (maxCriticalAttackCount >= 0 && criticalAttackCount > maxCriticalAttackCount) {
         return false;
       }
@@ -262,7 +270,9 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     for (final miscOption in filterData.miscOptions.options) {
       switch (miscOption) {
         case TeamFilterMiscType.noOrderChange:
-        // TODO: check used skill rather mystic code id?
+          if ([20, 210].contains(data.team.mysticCode.mysticCodeId) && data.actions?.usedMysticCodeSkills == true) {
+            return false;
+          }
         case TeamFilterMiscType.noSameSvt:
           final svtIds = data.team.allSvts.map((e) => e?.svtId ?? 0).where((e) => e > 0).toList();
           if (svtIds.length != svtIds.toSet().length) {
