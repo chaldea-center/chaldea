@@ -178,7 +178,6 @@ class BattleRecordManager {
         final svt = svtData.svt!;
         if (!svt.isUserSvt ||
             svtData.supportType == SupportSvtType.npc ||
-            svtData.cardStrengthens.any((element) => element > 0) ||
             svtData.additionalPassives.isNotEmpty) {
           isUploadEligible = false;
           return;

@@ -60,7 +60,7 @@ enum CELimitType {
 }
 
 class TeamFilterData {
-  static const List<int> _blockedSvtIds = [16, 258, 284, 314, 316, 357];
+  static const List<int> _blockedSvtIds = [16, 258, 284, 307, 314, 316, 357];
 
   final attackerTdCardType = FilterRadioData<CardType>(); // attacker only
   final blockedSvts = FilterGroupData<int>();

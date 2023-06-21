@@ -270,7 +270,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     for (final miscOption in filterData.miscOptions.options) {
       switch (miscOption) {
         case TeamFilterMiscType.noOrderChange:
-          if ([20, 210].contains(data.team.mysticCode.mysticCodeId) && data.actions?.usedMysticCodeSkills == true) {
+          if ([20, 210].contains(data.team.mysticCode.mysticCodeId) && data.actions?.usedMysticCodeSkill(2) == true) {
             return false;
           }
         case TeamFilterMiscType.noSameSvt:

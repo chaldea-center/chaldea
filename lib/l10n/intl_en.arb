@@ -908,7 +908,7 @@
   "upload_and_close_app": "Upload & Close",
   "upload_and_close_app_alert": "Upload data before closing the app?",
   "upload_before_close_app": "Upload before closing",
-  "upload_not_eligible_hint": "Current team is not eligible for upload due to any of the following:\n- custom quest via JSON import\n- event point buffs\n- nonplayable servants\n- card strengthen\n- custom skills\n- skipped waves",
+  "upload_not_eligible_hint": "Current team is not eligible for upload due to any of the following:\n- custom quest via JSON import\n- event point buffs\n- nonplayable servants\n- custom skills\n- skipped waves",
   "upload_paused": "Need to wait {pause} seconds between uploads ({remain}s remain).",
   "upload_team_confirmation": "Upload current team?",
   "uploaded_teams": "Uploaded Teams",

@@ -808,8 +808,8 @@ class BattleRecordData {
 
   Map<String, dynamic> toJson() => _$BattleRecordDataToJson(this);
 
-  bool usedMysticCode() {
-    return type == BattleRecordDataType.skill && servantIndex == null;
+  bool usedMysticCode(final int checkIndex) {
+    return type == BattleRecordDataType.skill && servantIndex == null && skillIndex == checkIndex;
   }
 
   bool containsTdCardType(final CardType cardType) {
@@ -933,7 +933,9 @@ class BattleActions {
 
   Map<String, dynamic> toJson() => _$BattleActionsToJson(this);
 
-  bool get usedMysticCodeSkills => actions.any((action) => action.usedMysticCode());
+  bool usedMysticCodeSkill(final int checkIndex) {
+    return actions.any((action) => action.usedMysticCode(checkIndex));
+  }
 
   bool containsTdCardType(final CardType cardType) {
     return actions.any((action) => action.containsTdCardType(cardType));
