@@ -24,6 +24,7 @@ class ClassBoardDetailPage extends StatefulWidget {
 class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with SingleTickerProviderStateMixin {
   ClassBoard? _board;
   ClassBoard get board => _board!;
+  ClassBoardPlan get plan => db.curUser.classBoardOf(board.id);
 
   late final _tabController = TabController(length: 3, vsync: this);
 
@@ -74,7 +75,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
     int totalBond = 0;
 
     for (final square in board.squares) {
-      final unlocked = db.curUser.classBoardSquares[square.id] == LockPlan.full;
+      final unlocked = plan.enhanceSquares[square.id] == LockPlan.full;
       if (square.targetCommandSpell != null) {
         spells.putIfAbsent(square.targetCommandSpell!.id, () => square.targetCommandSpell!);
         if (unlocked) spellLvs.addNum(square.targetCommandSpell!.id, square.upSkillLv);
@@ -85,13 +86,13 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
       if (square.lock != null) {
         final lockItems = {for (final itemAmount in square.lock!.items) itemAmount.itemId: itemAmount.amount};
         unlockItems.addDict(lockItems);
-        if (db.curUser.classBoardLocks[square.lock!.id] == LockPlan.planned) {
+        if (plan.unlockSquares[square.id] == LockPlan.planned) {
           planUnlockItems.addDict(lockItems);
         }
       }
       final squareItems = {for (final itemAmount in square.items) itemAmount.itemId: itemAmount.amount};
       enhanceItems.addDict(squareItems);
-      if (db.curUser.classBoardSquares[square.id] == LockPlan.planned) {
+      if (plan.enhanceSquares[square.id] == LockPlan.planned) {
         planEnhanceItems.addDict(squareItems);
       }
     }
@@ -140,6 +141,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
             )
           ]),
       CustomTableRow.fromTexts(texts: ['${S.current.item}(${S.current.plan})'], isHeader: true),
+      if (planUnlockItems.isEmpty && planEnhanceItems.isEmpty) CustomTableRow.fromTexts(texts: const ['-']),
       for (final items in [planUnlockItems, planEnhanceItems])
         if (items.isNotEmpty)
           CustomTableRow.fromChildren(children: [
@@ -226,7 +228,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
           trailing: db.onUserData((context, snapshot) {
             List<InlineSpan> status = [];
             if (square.lock != null) {
-              final lockPlan = db.curUser.classBoardLocks[square.lock!.id] ?? LockPlan.none;
+              final lockPlan = plan.unlockSquares[square.id] ?? LockPlan.none;
               if (lockPlan != LockPlan.none) {
                 status.add(TextSpan(children: [
                   const CenterWidgetSpan(child: Icon(Icons.lock, size: 16)),
@@ -234,7 +236,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
                 ]));
               }
             }
-            final enhancePlan = db.curUser.classBoardSquares[square.id] ?? LockPlan.none;
+            final enhancePlan = plan.enhanceSquares[square.id] ?? LockPlan.none;
             if (enhancePlan != LockPlan.none) {
               status.add(TextSpan(text: enhancePlan.dispPlan));
             }
@@ -324,10 +326,10 @@ class ClassBoardSquareDetail extends StatelessWidget {
                   combined: true,
                   padding: EdgeInsets.zero,
                   options: LockPlan.values,
-                  values: FilterRadioData.nonnull(db.curUser.classBoardLocks[lock.id] ?? LockPlan.none),
+                  values: FilterRadioData.nonnull(board.plan.unlockSquares[square.id] ?? LockPlan.none),
                   optionBuilder: (value) => Text(value.dispPlan),
                   onFilterChanged: (v, _) {
-                    db.curUser.classBoardLocks[lock.id] = v.radioValue!;
+                    board.plan.unlockSquares[square.id] = v.radioValue!;
                     db.itemCenter.updateClassBoard();
                   },
                 ),
@@ -382,10 +384,10 @@ class ClassBoardSquareDetail extends StatelessWidget {
                 combined: true,
                 padding: EdgeInsets.zero,
                 options: LockPlan.values,
-                values: FilterRadioData.nonnull(db.curUser.classBoardSquares[square.id] ?? LockPlan.none),
+                values: FilterRadioData.nonnull(board.plan.enhanceSquares[square.id] ?? LockPlan.none),
                 optionBuilder: (value) => Text(value.dispPlan),
                 onFilterChanged: (v, _) {
-                  db.curUser.classBoardSquares[square.id] = v.radioValue!;
+                  board.plan.enhanceSquares[square.id] = v.radioValue!;
                   db.itemCenter.updateClassBoard();
                 },
               ),

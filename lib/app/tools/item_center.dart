@@ -351,17 +351,18 @@ class ItemCenter {
   Map<int, int> calcClassBoardCost(SvtMatCostDetailType type) {
     Map<int, int> items = {};
     for (final board in db.gameData.classBoards.values) {
+      final boardPlan = user.classBoards[board.id] ?? ClassBoardPlan();
       for (final square in board.squares) {
         final lock = square.lock;
         if (lock != null) {
-          final plan = user.classBoardLocks[lock.id];
+          final plan = boardPlan.unlockSquares[square.id];
           if (type.shouldCount(plan)) {
             for (final itemAmount in lock.items) {
               items.addNum(itemAmount.itemId, itemAmount.amount);
             }
           }
         }
-        if (type.shouldCount(user.classBoardSquares[square.id])) {
+        if (type.shouldCount(boardPlan.enhanceSquares[square.id])) {
           for (final itemAmount in square.items) {
             items.addNum(itemAmount.itemId, itemAmount.amount);
           }

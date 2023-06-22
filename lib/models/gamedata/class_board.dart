@@ -3,6 +3,7 @@ import 'dart:ui' show Offset;
 import 'package:chaldea/generated/l10n.dart';
 import '../../app/app.dart';
 import '../db.dart';
+import '../userdata/userdata.dart';
 import '_helper.dart';
 import 'common.dart';
 import 'item.dart';
@@ -61,6 +62,8 @@ class ClassBoard with RouteInfo {
     }
     return lv;
   }
+
+  ClassBoardPlan get plan => db.curUser.classBoardOf(id);
 
   factory ClassBoard.fromJson(Map<String, dynamic> json) => _$ClassBoardFromJson(json);
 

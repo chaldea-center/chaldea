@@ -140,7 +140,7 @@ class UserMstData {
   // support deck
   List<UserSupportDeck> userSupportDeck;
   List<UserSvtLeader> userSvtLeader;
-
+  List<UserClassBoardSquare> userClassBoardSquare;
   // userEventPoint, userGachaExtraCount,
   // userEventSuperBoss, userSvtVoicePlayed, userQuest
   // userEventMissionFix,userEventMission,
@@ -175,6 +175,7 @@ class UserMstData {
     List<UserEquip>? userEquip,
     List<UserSupportDeck>? userSupportDeck,
     List<UserSvtLeader>? userSvtLeader,
+    List<UserClassBoardSquare>? userClassBoardSquare,
   })  : userGame = userGame ?? [],
         userSvtCollection = userSvtCollection ?? [],
         userSvt = userSvt ?? [],
@@ -189,7 +190,8 @@ class UserMstData {
         userSvtCoin = userSvtCoin ?? [],
         userEquip = userEquip ?? [],
         userSupportDeck = userSupportDeck ?? [],
-        userSvtLeader = userSvtLeader ?? [] {
+        userSvtLeader = userSvtLeader ?? [],
+        userClassBoardSquare = userClassBoardSquare ?? [] {
     for (final e in this.userSvtCoin) {
       coinMap[e.svtId] = e;
     }
@@ -902,4 +904,30 @@ class SvtLeaderCommandCodeStatus {
         userCommandCodeId = _toInt(userCommandCodeId);
 
   factory SvtLeaderCommandCodeStatus.fromJson(Map<String, dynamic> data) => _$SvtLeaderCommandCodeStatusFromJson(data);
+}
+
+// public long userId;
+// public int classBoardBaseId;
+// public int[] classBoardSquareIds;
+// public int[] classBoardUnlockSquareIds;
+// public long updatedAt;
+// public long createdAt;
+
+@JsonSerializable(createToJson: false)
+class UserClassBoardSquare {
+  int classBoardBaseId;
+  List<int> classBoardSquareIds;
+  List<int> classBoardUnlockSquareIds;
+  // int updatedAt;
+  // int createdAt;
+
+  UserClassBoardSquare({
+    dynamic classBoardBaseId,
+    dynamic classBoardSquareIds,
+    dynamic classBoardUnlockSquareIds,
+  })  : classBoardBaseId = _toInt(classBoardBaseId),
+        classBoardSquareIds = _toIntList(classBoardSquareIds),
+        classBoardUnlockSquareIds = _toIntList(classBoardUnlockSquareIds);
+
+  factory UserClassBoardSquare.fromJson(Map<String, dynamic> data) => _$UserClassBoardSquareFromJson(data);
 }

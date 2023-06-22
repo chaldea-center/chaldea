@@ -75,6 +75,9 @@ UserMstData _$UserMstDataFromJson(Map json) => UserMstData(
       userSvtLeader: (json['userSvtLeader'] as List<dynamic>?)
           ?.map((e) => UserSvtLeader.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      userClassBoardSquare: (json['userClassBoardSquare'] as List<dynamic>?)
+          ?.map((e) => UserClassBoardSquare.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
     );
 
 UserItem _$UserItemFromJson(Map json) => UserItem(
@@ -249,4 +252,10 @@ SvtLeaderCommandCodeStatus _$SvtLeaderCommandCodeStatusFromJson(Map json) => Svt
       idx: json['idx'],
       commandCodeId: json['commandCodeId'],
       userCommandCodeId: json['userCommandCodeId'],
+    );
+
+UserClassBoardSquare _$UserClassBoardSquareFromJson(Map json) => UserClassBoardSquare(
+      classBoardBaseId: json['classBoardBaseId'],
+      classBoardSquareIds: json['classBoardSquareIds'],
+      classBoardUnlockSquareIds: json['classBoardUnlockSquareIds'],
     );

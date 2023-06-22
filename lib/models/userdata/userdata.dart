@@ -220,8 +220,7 @@ class User {
   Map<int, int> mysticCodes;
   Set<String> summons;
   Set<int> myRoomMusic;
-  Map<int, LockPlan> classBoardLocks;
-  Map<int, LockPlan> classBoardSquares;
+  Map<int, ClassBoardPlan> classBoards;
 
   FreeLPParams freeLPParams;
   Map<String, Map<int, int>> luckyBagSvtScores;
@@ -243,8 +242,7 @@ class User {
     Map<int, int>? mysticCodes,
     Set<String>? summons,
     Set<int>? myRoomMusic,
-    Map<int, LockPlan>? classBoardLocks,
-    Map<int, LockPlan>? classBoardSquares,
+    Map<int, ClassBoardPlan>? classBoards,
     FreeLPParams? freeLPParams,
     Map<String, Map<int, int>>? luckyBagSvtScores,
     SaintQuartzPlan? saintQuartzPlan,
@@ -262,8 +260,7 @@ class User {
         mysticCodes = mysticCodes ?? {},
         summons = summons ?? {},
         myRoomMusic = myRoomMusic ?? {},
-        classBoardLocks = classBoardLocks ?? {},
-        classBoardSquares = classBoardSquares ?? {},
+        classBoards = classBoards ?? {},
         freeLPParams = freeLPParams ?? FreeLPParams(),
         luckyBagSvtScores = luckyBagSvtScores ?? {},
         saintQuartzPlan = saintQuartzPlan ?? SaintQuartzPlan();
@@ -298,6 +295,8 @@ class User {
   MainStoryPlan mainStoryOf(int warId) => _curEventPlan.mainStories.putIfAbsent(warId, () => MainStoryPlan());
 
   ExchangeTicketPlan ticketOf(int key) => _curEventPlan.tickets.putIfAbsent(key, () => ExchangeTicketPlan());
+
+  ClassBoardPlan classBoardOf(int boardId) => classBoards.putIfAbsent(boardId, () => ClassBoardPlan());
 
   void validate() {
     if (plans.isEmpty) {
@@ -340,8 +339,7 @@ class User {
     cmdCodes = sortDict(cmdCodes);
     summons = (summons.toList()..sort()).toSet();
     myRoomMusic = (myRoomMusic.toList()..sort()).toSet();
-    classBoardLocks = sortDict(classBoardLocks);
-    classBoardSquares = sortDict(classBoardSquares);
+    classBoards = sortDict(classBoards);
     luckyBagSvtScores = sortDict(luckyBagSvtScores);
     freeLPParams.planItemCounts = sortDict(freeLPParams.planItemCounts);
     freeLPParams.planItemWeights = sortDict(freeLPParams.planItemWeights);
@@ -817,6 +815,26 @@ class CmdCodeStatus {
   Map<String, dynamic> toJson() => _$CmdCodeStatusToJson(this);
 }
 
+@JsonSerializable(converters: [LockPlanConverter()])
+class ClassBoardPlan {
+  Map<int, LockPlan> unlockSquares;
+  Map<int, LockPlan> enhanceSquares;
+
+  ClassBoardPlan({
+    Map<int, LockPlan>? unlockSquares,
+    Map<int, LockPlan>? enhanceSquares,
+  })  : unlockSquares = unlockSquares ?? {},
+        enhanceSquares = enhanceSquares ?? {};
+
+  void validate() {
+    //
+  }
+
+  factory ClassBoardPlan.fromJson(dynamic json) => _$ClassBoardPlanFromJson(Map<String, dynamic>.from(json));
+
+  Map<String, dynamic> toJson() => _$ClassBoardPlanToJson(this);
+}
+
 @JsonEnum(alwaysCreate: true, valueField: "value")
 enum LockPlan {
   none(0),
@@ -836,6 +854,12 @@ enum LockPlan {
       case LockPlan.full:
         return '1';
     }
+  }
+
+  LockPlan updateCurrent(bool v) {
+    if (v) return LockPlan.full;
+    if (this == LockPlan.full) return LockPlan.planned;
+    return this;
   }
 }
 

@@ -33,6 +33,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   bool _includeSvtStorage = true;
   bool _includeCraft = true;
   bool _includeCmdCode = true;
+  bool _includeClassBoard = true;
 
   bool _onlyLocked = true;
   bool _allowDuplicated = false;
@@ -43,6 +44,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   bool _showStorage = false;
   bool _showCraft = false;
   bool _showCmdCode = false;
+  bool _showClassBoard = false;
   final Set<UserSvt> _validSvts = {};
 
   // from response,key=game id
@@ -130,6 +132,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                         svtSliver(true),
                         craftSliver,
                         cmdCodeSliver,
+                        classBoardSlider,
                       ],
                     ),
                   ),
@@ -546,6 +549,50 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     );
   }
 
+  Widget get classBoardSlider {
+    final boards = mstData?.userClassBoardSquare.toList() ?? [];
+    boards.sort2((e) => e.classBoardBaseId);
+    return MultiSliver(
+      pushPinnedChildren: true,
+      children: [
+        SliverPinnedHeader(
+          child: ListTile(
+            tileColor: Theme.of(context).cardColor,
+            leading: Checkbox(
+              value: _includeClassBoard,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              onChanged: (v) => setState(() {
+                _includeClassBoard = v ?? _includeClassBoard;
+              }),
+            ),
+            title: Text(S.current.class_score),
+            trailing: ExpandIcon(onPressed: null, isExpanded: _showClassBoard),
+            onTap: () {
+              setState(() {
+                _showClassBoard = !_showClassBoard;
+              });
+            },
+          ),
+        ),
+        if (_showClassBoard)
+          SliverClip(
+            child: MultiSliver(
+              children: boards.map((userBoard) {
+                final board = db.gameData.classBoards[userBoard.classBoardBaseId];
+                return ListTile(
+                  dense: true,
+                  leading: db.getIconImage(board?.uiIcon, width: 32),
+                  title: Text(board?.dispName ?? "${S.current.class_score} ${userBoard.classBoardBaseId}"),
+                  subtitle: Text(
+                      "${S.current.unlock}: ${userBoard.classBoardUnlockSquareIds.length}. ${S.current.enhance}: ${userBoard.classBoardSquareIds.length}"),
+                );
+              }).toList(),
+            ),
+          )
+      ],
+    );
+  }
+
   Widget get buttonBar {
     return ButtonBar(
       alignment: MainAxisAlignment.center,
@@ -660,6 +707,21 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           final status = user.svtStatusOf(svtNo);
           status.cmdCardStrengthen = List.generate(5, (index) => (card.commandCardParam.getOrNull(index) ?? 0) ~/ 20);
         }
+      }
+    }
+    if (_includeClassBoard) {
+      final userBoards = mstData?.userClassBoardSquare.toList() ?? [];
+      for (final userBoard in userBoards) {
+        final plan = user.classBoardOf(userBoard.classBoardBaseId);
+        plan.unlockSquares = {
+          for (final id in <int>{...userBoard.classBoardUnlockSquareIds, ...plan.unlockSquares.keys})
+            id: (plan.unlockSquares[id] ?? LockPlan.none)
+                .updateCurrent(userBoard.classBoardUnlockSquareIds.contains(id)),
+        };
+        plan.enhanceSquares = {
+          for (final id in <int>{...userBoard.classBoardSquareIds, ...plan.enhanceSquares.keys})
+            id: (plan.enhanceSquares[id] ?? LockPlan.none).updateCurrent(userBoard.classBoardSquareIds.contains(id)),
+        };
       }
     }
     // 不删除原本信息

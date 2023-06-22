@@ -88,15 +88,10 @@ User _$UserFromJson(Map json) => $checkedCreate(
                   )),
           summons: $checkedConvert('summons', (v) => (v as List<dynamic>?)?.map((e) => e as String).toSet()),
           myRoomMusic: $checkedConvert('myRoomMusic', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
-          classBoardLocks: $checkedConvert(
-              'classBoardLocks',
+          classBoards: $checkedConvert(
+              'classBoards',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), const LockPlanConverter().fromJson(e as int)),
-                  )),
-          classBoardSquares: $checkedConvert(
-              'classBoardSquares',
-              (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), const LockPlanConverter().fromJson(e as int)),
+                    (k, e) => MapEntry(int.parse(k as String), ClassBoardPlan.fromJson(e)),
                   )),
           freeLPParams: $checkedConvert(
               'freeLPParams', (v) => v == null ? null : FreeLPParams.fromJson(Map<String, dynamic>.from(v as Map))),
@@ -131,10 +126,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'mysticCodes': instance.mysticCodes.map((k, e) => MapEntry(k.toString(), e)),
       'summons': instance.summons.toList(),
       'myRoomMusic': instance.myRoomMusic.toList(),
-      'classBoardLocks':
-          instance.classBoardLocks.map((k, e) => MapEntry(k.toString(), const LockPlanConverter().toJson(e))),
-      'classBoardSquares':
-          instance.classBoardSquares.map((k, e) => MapEntry(k.toString(), const LockPlanConverter().toJson(e))),
+      'classBoards': instance.classBoards.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'freeLPParams': instance.freeLPParams.toJson(),
       'luckyBagSvtScores':
           instance.luckyBagSvtScores.map((k, e) => MapEntry(k, e.map((k, e) => MapEntry(k.toString(), e)))),
@@ -389,6 +381,33 @@ CmdCodeStatus _$CmdCodeStatusFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$CmdCodeStatusToJson(CmdCodeStatus instance) => <String, dynamic>{
       'status': instance.status,
       'count': instance.count,
+    };
+
+ClassBoardPlan _$ClassBoardPlanFromJson(Map json) => $checkedCreate(
+      'ClassBoardPlan',
+      json,
+      ($checkedConvert) {
+        final val = ClassBoardPlan(
+          unlockSquares: $checkedConvert(
+              'unlockSquares',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), const LockPlanConverter().fromJson(e as int)),
+                  )),
+          enhanceSquares: $checkedConvert(
+              'enhanceSquares',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), const LockPlanConverter().fromJson(e as int)),
+                  )),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$ClassBoardPlanToJson(ClassBoardPlan instance) => <String, dynamic>{
+      'unlockSquares':
+          instance.unlockSquares.map((k, e) => MapEntry(k.toString(), const LockPlanConverter().toJson(e))),
+      'enhanceSquares':
+          instance.enhanceSquares.map((k, e) => MapEntry(k.toString(), const LockPlanConverter().toJson(e))),
     };
 
 SaintQuartzPlan _$SaintQuartzPlanFromJson(Map json) => $checkedCreate(
