@@ -36,6 +36,9 @@ class _ClassBoardMapState extends State<ClassBoardMap> {
               if (img != null && mounted) setState(() {});
             },
             showPlanned: widget.showPlanned,
+            unlockSquares: board.plan.unlockSquares.keys.where((e) => board.plan.unlockSquares[e]!.current).toSet(),
+            enhancedSquares:
+                board.plan.enhancedSquares.keys.where((e) => board.plan.enhancedSquares[e]!.current).toSet(),
           ),
           size: const Size(2048, 2048),
         ),
@@ -43,7 +46,7 @@ class _ClassBoardMapState extends State<ClassBoardMap> {
     );
   }
 
-  void onTap(Offset localPosition) {
+  void onTap(Offset localPosition) async {
     final size = _mapKey.currentContext?.size;
     if (size == null) return;
     final width = min(size.width, size.height);
@@ -59,7 +62,7 @@ class _ClassBoardMapState extends State<ClassBoardMap> {
       }
     }
     if (target != null) {
-      SimpleCancelOkDialog(
+      await SimpleCancelOkDialog(
         title: Row(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -79,6 +82,7 @@ class _ClassBoardMapState extends State<ClassBoardMap> {
         hideCancel: true,
         contentPadding: const EdgeInsetsDirectional.fromSTEB(8, 10, 8, 24),
       ).showDialog(context);
+      if (mounted) setState(() {});
     }
   }
 }
@@ -88,6 +92,8 @@ class ClassBoardMapPainter extends CustomPainter {
   final Map<String, ui.Image> images;
   final Function(String url) onLoadImage;
   final bool showPlanned;
+  final Set<int> unlockSquares;
+  final Set<int> enhancedSquares;
 
   static const double w0 = 2048;
 
@@ -96,6 +102,8 @@ class ClassBoardMapPainter extends CustomPainter {
     required this.images,
     required this.onLoadImage,
     required this.showPlanned,
+    required this.unlockSquares,
+    required this.enhancedSquares,
   });
 
   Paint getPaint() => Paint()..filterQuality = FilterQuality.high;
@@ -112,15 +120,20 @@ class ClassBoardMapPainter extends CustomPainter {
       return Rect.fromCenter(center: c * scale, width: w * scale, height: h * scale);
     }
 
-    void drawImage(String? url, Rect dest, {Paint? paint}) {
+    void drawImage(
+      String? url,
+      Rect dest, {
+      Paint? paint,
+      Rect Function(ui.Image img)? src,
+    }) {
       if (url == null) return;
       final img = images[url];
       if (img == null) {
         onLoadImage(url);
         return;
       }
-      canvas.drawImageRect(
-          img, Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()), dest, paint ?? _paint);
+      canvas.drawImageRect(img, src?.call(img) ?? Rect.fromLTWH(0, 0, img.width.toDouble(), img.height.toDouble()),
+          dest, paint ?? _paint);
     }
 
     drawImage(asset('Bg/bg.png'), getRect(Offset.zero, 2048, 2048));
@@ -143,15 +156,34 @@ class ClassBoardMapPainter extends CustomPainter {
     final squaresMap = {for (final s in board.squares) s.id: s};
     const double sw = 56;
 
+    Set<int> lightenSquares = {};
+    for (final square in board.squares) {
+      if (square.items.isNotEmpty) {
+        if (enhancedSquares.contains(square.id)) {
+          lightenSquares.add(square.id);
+        }
+      } else if (square.lock != null) {
+        if (unlockSquares.contains(square.id)) {
+          lightenSquares.add(square.id);
+        }
+      }
+    }
+
     for (final line in board.lines) {
       final prev = squaresMap[line.prevSquareId], next = squaresMap[line.nextSquareId];
       if (prev == null || next == null) continue;
+      Paint p = Paint()
+        ..color = Colors.white60
+        ..strokeWidth = sw * scale / 10;
+      if (showPlanned && lightenSquares.contains(prev.id) && lightenSquares.contains(next.id)) {
+        p
+          ..color = Colors.white
+          ..strokeWidth = sw * scale / 5;
+      }
       canvas.drawLine(
         prev.offset * scale,
         next.offset * scale,
-        Paint()
-          ..color = Colors.white60
-          ..strokeWidth = sw * scale / 10,
+        p,
       );
     }
 
@@ -173,7 +205,7 @@ class ClassBoardMapPainter extends CustomPainter {
 
       final lock = square.lock;
       if (lock != null) {
-        bool darkenLock = showPlanned && board.plan.unlockSquares[square.id] == LockPlan.full;
+        bool darkenLock = showPlanned && !unlockSquares.contains(square.id);
 
         int? itemId;
         for (final itemAmount in lock.items) {
@@ -184,7 +216,10 @@ class ClassBoardMapPainter extends CustomPainter {
         }
         if (itemId != null) {
           const double lw = sw * 158 / 110 * 1.2;
-          drawImage(asset("Icon/lock_${darkenLock ? "off" : "light"}_$itemId.png"), getRect(center, lw, lw));
+          if (showPlanned) {
+            drawImage(
+                asset("Icon/lock_${darkenLock ? "off" : "light"}_$itemId.png"), getRect(center, lw * 1.5, lw * 1.5));
+          }
           drawImage(asset("Icon/lock_$itemId.png"), getRect(center, lw, lw), paint: darkenLock ? darkenPaint : null);
         }
       } else {
@@ -204,7 +239,18 @@ class ClassBoardMapPainter extends CustomPainter {
         );
       }
 
-      bool darkenSquare = showPlanned && board.plan.enhanceSquares[square.id] != LockPlan.full;
+      bool darkenSquare = showPlanned && !enhancedSquares.contains(square.id);
+      if (showPlanned && !darkenSquare) {
+        // drawImage(asset2("Main/glow_01.png"), getRect(center, sw * 2, sw * 2));
+        drawImage(
+          asset2("Main/DownloadClassBoardSquareLineAtlas1/square_on_light.png"),
+          getRect(center, sw * 1.8, sw * 1.8),
+        );
+        drawImage(
+          asset2("Main/DownloadClassBoardSquareLineAtlas1/square_on.png"),
+          getRect(center, sw * 2, sw * 2),
+        );
+      }
       drawImage(square.icon, getRect(center, sw, sw),
           paint: darkenSquare ? (getPaint()..color = const Color.fromRGBO(0, 0, 0, 0.6)) : null);
     }
@@ -216,7 +262,9 @@ class ClassBoardMapPainter extends CustomPainter {
   bool shouldRepaint(ClassBoardMapPainter oldDelegate) {
     return oldDelegate.board != board ||
         !oldDelegate.images.keys.toSet().equalTo(images.keys.toSet()) ||
-        oldDelegate.showPlanned != showPlanned;
+        oldDelegate.showPlanned != showPlanned ||
+        !oldDelegate.unlockSquares.equalTo(unlockSquares) ||
+        oldDelegate.enhancedSquares.equalTo(enhancedSquares);
   }
 
   String asset(String p) {

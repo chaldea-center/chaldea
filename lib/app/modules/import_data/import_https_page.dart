@@ -718,9 +718,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             id: (plan.unlockSquares[id] ?? LockPlan.none)
                 .updateCurrent(userBoard.classBoardUnlockSquareIds.contains(id)),
         };
-        plan.enhanceSquares = {
-          for (final id in <int>{...userBoard.classBoardSquareIds, ...plan.enhanceSquares.keys})
-            id: (plan.enhanceSquares[id] ?? LockPlan.none).updateCurrent(userBoard.classBoardSquareIds.contains(id)),
+        plan.enhancedSquares = {
+          for (final id in <int>{...userBoard.classBoardSquareIds, ...plan.enhancedSquares.keys})
+            id: (plan.enhancedSquares[id] ?? LockPlan.none).updateCurrent(userBoard.classBoardSquareIds.contains(id)),
         };
       }
     }

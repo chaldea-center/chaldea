@@ -818,13 +818,13 @@ class CmdCodeStatus {
 @JsonSerializable(converters: [LockPlanConverter()])
 class ClassBoardPlan {
   Map<int, LockPlan> unlockSquares;
-  Map<int, LockPlan> enhanceSquares;
+  Map<int, LockPlan> enhancedSquares;
 
   ClassBoardPlan({
     Map<int, LockPlan>? unlockSquares,
-    Map<int, LockPlan>? enhanceSquares,
+    Map<int, LockPlan>? enhancedSquares,
   })  : unlockSquares = unlockSquares ?? {},
-        enhanceSquares = enhanceSquares ?? {};
+        enhancedSquares = enhancedSquares ?? {};
 
   void validate() {
     //
@@ -855,6 +855,9 @@ enum LockPlan {
         return '1';
     }
   }
+
+  bool get current => this == LockPlan.full;
+  bool get target => this != LockPlan.none;
 
   LockPlan updateCurrent(bool v) {
     if (v) return LockPlan.full;

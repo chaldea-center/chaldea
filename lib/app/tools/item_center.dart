@@ -362,7 +362,7 @@ class ItemCenter {
             }
           }
         }
-        if (type.shouldCount(boardPlan.enhanceSquares[square.id])) {
+        if (type.shouldCount(boardPlan.enhancedSquares[square.id])) {
           for (final itemAmount in square.items) {
             items.addNum(itemAmount.itemId, itemAmount.amount);
           }

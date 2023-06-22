@@ -75,7 +75,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
     int totalBond = 0;
 
     for (final square in board.squares) {
-      final unlocked = plan.enhanceSquares[square.id] == LockPlan.full;
+      final unlocked = plan.enhancedSquares[square.id] == LockPlan.full;
       if (square.targetCommandSpell != null) {
         spells.putIfAbsent(square.targetCommandSpell!.id, () => square.targetCommandSpell!);
         if (unlocked) spellLvs.addNum(square.targetCommandSpell!.id, square.upSkillLv);
@@ -92,7 +92,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
       }
       final squareItems = {for (final itemAmount in square.items) itemAmount.itemId: itemAmount.amount};
       enhanceItems.addDict(squareItems);
-      if (plan.enhanceSquares[square.id] == LockPlan.planned) {
+      if (plan.enhancedSquares[square.id] == LockPlan.planned) {
         planEnhanceItems.addDict(squareItems);
       }
     }
@@ -236,7 +236,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
                 ]));
               }
             }
-            final enhancePlan = plan.enhanceSquares[square.id] ?? LockPlan.none;
+            final enhancePlan = plan.enhancedSquares[square.id] ?? LockPlan.none;
             if (enhancePlan != LockPlan.none) {
               status.add(TextSpan(text: enhancePlan.dispPlan));
             }
@@ -384,10 +384,10 @@ class ClassBoardSquareDetail extends StatelessWidget {
                 combined: true,
                 padding: EdgeInsets.zero,
                 options: LockPlan.values,
-                values: FilterRadioData.nonnull(board.plan.enhanceSquares[square.id] ?? LockPlan.none),
+                values: FilterRadioData.nonnull(board.plan.enhancedSquares[square.id] ?? LockPlan.none),
                 optionBuilder: (value) => Text(value.dispPlan),
                 onFilterChanged: (v, _) {
-                  board.plan.enhanceSquares[square.id] = v.radioValue!;
+                  board.plan.enhancedSquares[square.id] = v.radioValue!;
                   db.itemCenter.updateClassBoard();
                 },
               ),

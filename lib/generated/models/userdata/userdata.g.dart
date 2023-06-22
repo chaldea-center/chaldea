@@ -393,8 +393,8 @@ ClassBoardPlan _$ClassBoardPlanFromJson(Map json) => $checkedCreate(
               (v) => (v as Map?)?.map(
                     (k, e) => MapEntry(int.parse(k as String), const LockPlanConverter().fromJson(e as int)),
                   )),
-          enhanceSquares: $checkedConvert(
-              'enhanceSquares',
+          enhancedSquares: $checkedConvert(
+              'enhancedSquares',
               (v) => (v as Map?)?.map(
                     (k, e) => MapEntry(int.parse(k as String), const LockPlanConverter().fromJson(e as int)),
                   )),
@@ -406,8 +406,8 @@ ClassBoardPlan _$ClassBoardPlanFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$ClassBoardPlanToJson(ClassBoardPlan instance) => <String, dynamic>{
       'unlockSquares':
           instance.unlockSquares.map((k, e) => MapEntry(k.toString(), const LockPlanConverter().toJson(e))),
-      'enhanceSquares':
-          instance.enhanceSquares.map((k, e) => MapEntry(k.toString(), const LockPlanConverter().toJson(e))),
+      'enhancedSquares':
+          instance.enhancedSquares.map((k, e) => MapEntry(k.toString(), const LockPlanConverter().toJson(e))),
     };
 
 SaintQuartzPlan _$SaintQuartzPlanFromJson(Map json) => $checkedCreate(
