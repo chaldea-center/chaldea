@@ -2,6 +2,7 @@ import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../app/app.dart';
+import '../../app/tools/gamedata_loader.dart';
 import '../db.dart';
 import '../userdata/filter_data.dart';
 import '../userdata/userdata.dart';
@@ -26,9 +27,9 @@ class BasicCostume {
 
   BasicCostume({
     required this.id,
-    required this.costumeCollectionNo,
+    this.costumeCollectionNo = 0,
     required this.battleCharaId,
-    required this.shortName,
+    this.shortName = "",
   });
 
   factory BasicCostume.fromJson(Map<String, dynamic> json) => _$BasicCostumeFromJson(json);
@@ -122,11 +123,11 @@ class BasicServant with GameCardMixin {
 
   BasicServant({
     required this.id,
-    required this.collectionNo,
-    required this.name,
+    this.collectionNo = 0,
+    this.name = "",
     this.overwriteName,
-    required this.type,
-    required this.flag,
+    this.type = SvtType.normal,
+    this.flag = SvtFlag.normal,
     this.classId = 0,
     required this.attribute,
     required this.rarity,
@@ -136,7 +137,14 @@ class BasicServant with GameCardMixin {
     this.costume = const {},
   });
 
-  factory BasicServant.fromJson(Map<String, dynamic> json) => _$BasicServantFromJson(json);
+  factory BasicServant.fromJson(Map<String, dynamic> json) {
+    final id = json["id"] as int;
+    if (json["rarity"] == null) {
+      // classId and attribute can be overridden
+      json = Map.from(GameDataLoader.instance.tmp.gameJson!["entities"][id])..addAll(json);
+    }
+    return _$BasicServantFromJson(json);
+  }
 
   bool get isUserSvt => (type == SvtType.normal || type == SvtType.heroine) && collectionNo > 0;
 
@@ -268,19 +276,19 @@ class Servant with GameCardMixin {
     required this.id,
     required this.collectionNo,
     int? originalCollectionNo,
-    required this.name,
+    this.name = "",
     this.ruby = "",
     this.battleName = "",
     this.classId = 0,
-    required this.type,
-    required this.flag,
+    this.type = SvtType.normal,
+    this.flag = SvtFlag.normal,
     required this.rarity,
     required this.cost,
     required this.lvMax,
     ExtraAssets? extraAssets,
     required this.gender,
     required this.attribute,
-    required this.traits,
+    this.traits = const [],
     required this.starAbsorb,
     required this.starGen,
     required this.instantDeathChance,
@@ -679,13 +687,13 @@ class BasicCraftEssence with GameCardMixin {
 
   BasicCraftEssence({
     required this.id,
-    required this.collectionNo,
+    this.collectionNo = 0,
     required this.name,
-    required this.type,
-    required this.flag,
+    this.type = SvtType.servantEquip,
+    this.flag = SvtFlag.normal,
     required this.rarity,
-    required this.atkMax,
-    required this.hpMax,
+    this.atkMax = 0,
+    this.hpMax = 0,
     required this.face,
   });
 
@@ -746,16 +754,16 @@ class CraftEssence with GameCardMixin {
     required this.collectionNo,
     required this.name,
     this.ruby = "",
-    required this.type,
-    required this.flag,
+    this.type = SvtType.servantEquip,
+    this.flag = SvtFlag.normal,
     required this.rarity,
     required this.cost,
     required this.lvMax,
     ExtraAssets? extraAssets,
-    required this.atkBase,
-    required this.atkMax,
-    required this.hpBase,
-    required this.hpMax,
+    this.atkBase = 0,
+    this.atkMax = 0,
+    this.hpBase = 0,
+    this.hpMax = 0,
     required this.growthCurve,
     this.expFeed = const [],
     this.bondEquipOwner,
@@ -1151,17 +1159,17 @@ class ServantTrait {
   List<NiceTrait> trait;
   int limitCount;
   @CondTypeConverter()
-  CondType? condType;
-  int? condId;
-  int? condNum;
+  CondType condType;
+  int condId;
+  int condNum;
 
   ServantTrait({
     required this.idx,
-    required this.trait,
-    required this.limitCount,
-    this.condType,
-    this.condId,
-    this.condNum,
+    this.trait = const [],
+    this.limitCount = -1,
+    this.condType = CondType.none,
+    this.condId = 0,
+    this.condNum = 0,
   });
 
   factory ServantTrait.fromJson(Map<String, dynamic> json) => _$ServantTraitFromJson(json);

@@ -106,8 +106,8 @@ class NiceWar with RouteInfo {
     required this.bgm,
     this.scriptId,
     this.script,
-    required this.startType,
-    required this.targetId,
+    this.startType = WarStartType.none,
+    this.targetId = 0,
     int eventId = 0,
     this.eventName = "",
     this.lastQuestId = 0,
@@ -356,8 +356,8 @@ class NiceSpot {
     required this.mapId,
     required this.name,
     this.image,
-    required this.x,
-    required this.y,
+    this.x = 0,
+    this.y = 0,
     this.imageOfsX = 0,
     this.imageOfsY = 0,
     this.nameOfsX = 0,
@@ -401,7 +401,7 @@ class SpotAdd {
     this.targetId = 0,
     this.targetText = "",
     this.condType = CondType.none,
-    required this.condTargetId,
+    this.condTargetId = 0,
     this.condNum = 0,
   });
 
@@ -470,8 +470,8 @@ class WarAdd {
   CondType condType;
   int targetId;
   int value;
-  int startedAt;
-  int endedAt;
+  // int startedAt;
+  // int endedAt;
 
   WarAdd({
     required this.warId,
@@ -480,11 +480,11 @@ class WarAdd {
     required this.overwriteId,
     this.overwriteStr = "",
     this.overwriteBanner,
-    required this.condType,
-    required this.targetId,
-    required this.value,
-    required this.startedAt,
-    required this.endedAt,
+    this.condType = CondType.none,
+    this.targetId = 0,
+    this.value = 0,
+    // required this.startedAt,
+    // required this.endedAt,
   });
 
   factory WarAdd.fromJson(Map<String, dynamic> json) => _$WarAddFromJson(json);

@@ -28,11 +28,12 @@ class BasicQuest {
   QuestType type;
   @QuestFlagConverter()
   List<QuestFlag> flags;
+  QuestAfterClearType afterClear;
   ConsumeType consumeType;
   int consume;
   int spotId;
   int warId;
-  String warLongName;
+  String? warLongName;
   int priority;
   int noticeAt;
   int openedAt;
@@ -43,11 +44,12 @@ class BasicQuest {
     required this.name,
     required this.type,
     this.flags = const [],
-    required this.consumeType,
-    required this.consume,
-    required this.spotId,
-    required this.warId,
-    required this.warLongName,
+    this.afterClear = QuestAfterClearType.close,
+    this.consumeType = ConsumeType.ap,
+    this.consume = 0,
+    this.spotId = 0,
+    this.warId = 0,
+    this.warLongName,
     required this.priority,
     required this.noticeAt,
     required this.openedAt,
@@ -72,10 +74,9 @@ class Quest with RouteInfo {
   QuestAfterClearType afterClear;
   String recommendLv;
   int spotId;
-  @protected
-  String spotName;
+  String? _spotName;
   int warId;
-  String warLongName;
+  String? _warLongName;
   int chapterId;
   int chapterSubId;
   String chapterSubStr;
@@ -102,9 +103,9 @@ class Quest with RouteInfo {
     this.afterClear = QuestAfterClearType.close,
     this.recommendLv = '',
     this.spotId = 0,
-    String spotName = '',
+    String? spotName,
     this.warId = 0,
-    this.warLongName = '',
+    String? warLongName,
     this.chapterId = 0,
     this.chapterSubId = 0,
     this.chapterSubStr = "",
@@ -119,9 +120,20 @@ class Quest with RouteInfo {
     this.noticeAt = 0,
     this.openedAt = 0,
     this.closedAt = 0,
-  })  : spotName = spotName == '0' ? '' : spotName,
+  })  : _spotName = spotName == '0' ? null : spotName,
+        _warLongName = warLongName,
         giftIcon = _isSQGiftIcon(giftIcon, gifts) ? null : giftIcon,
         consume = consumeType.useAp ? consume : 0;
+
+  String get spotName {
+    _spotName ??= db.gameData.spots[spotId]?.name;
+    return _spotName ?? "";
+  }
+
+  String get warLongName {
+    _warLongName ??= db.gameData.wars[warId]?.longName;
+    return _warLongName ?? "";
+  }
 
   static bool _isSQGiftIcon(String? giftIcon, List<Gift> gifts) {
     return giftIcon != null &&
@@ -894,10 +906,10 @@ class EnemyDrop extends BaseGift {
   // double dropVariance;
 
   EnemyDrop({
-    required super.type,
+    super.type = GiftType.item,
     required super.objectId,
     // ignore: avoid_types_as_parameter_names
-    required super.num,
+    super.num = 1,
     required this.dropCount,
     required this.runs,
     // required this.dropExpected,
@@ -1023,7 +1035,7 @@ class QuestEnemy with GameCardMixin {
     // this.uniqueId = -1,
     this.npcId = -1,
     this.roleType = EnemyRoleType.normal,
-    required this.name,
+    this.name = "",
     required this.svt,
     this.drops = const [],
     required this.lv,
@@ -1286,7 +1298,7 @@ class EnemyTd {
   EnemyTd({
     this.noblePhantasmId = 0,
     this.noblePhantasm,
-    this.noblePhantasmLv = 0,
+    this.noblePhantasmLv = 1,
     this.noblePhantasmLv1 = 0,
     this.noblePhantasmLv2,
     this.noblePhantasmLv3,

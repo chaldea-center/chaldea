@@ -82,7 +82,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
     }
     final banners = war.extra.allBanners;
     final warAdds = war.warAdds.toList();
-    warAdds.sort2((e) => e.startedAt);
+    warAdds.sort2((e) => e.priority);
     List<String> warBanners = {
       for (final warAdd in warAdds) warAdd.overwriteBanner,
     }.whereType<String>().toList();
