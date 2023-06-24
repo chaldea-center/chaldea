@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.3
+
+- Fix class board planning and support import it from login data
+- Add batch set for class board plans
+- Improve class board map
+
 ## 2.4.2
 
 - Chaldeas
