@@ -8,9 +8,9 @@ part of '../../../models/gamedata/servant.dart';
 
 BasicCostume _$BasicCostumeFromJson(Map json) => BasicCostume(
       id: json['id'] as int,
-      costumeCollectionNo: json['costumeCollectionNo'] as int,
+      costumeCollectionNo: json['costumeCollectionNo'] as int? ?? 0,
       battleCharaId: json['battleCharaId'] as int,
-      shortName: json['shortName'] as String,
+      shortName: json['shortName'] as String? ?? "",
     );
 
 Map<String, dynamic> _$BasicCostumeToJson(BasicCostume instance) => <String, dynamic>{
@@ -22,11 +22,11 @@ Map<String, dynamic> _$BasicCostumeToJson(BasicCostume instance) => <String, dyn
 
 BasicServant _$BasicServantFromJson(Map json) => BasicServant(
       id: json['id'] as int,
-      collectionNo: json['collectionNo'] as int,
-      name: json['name'] as String,
+      collectionNo: json['collectionNo'] as int? ?? 0,
+      name: json['name'] as String? ?? "",
       overwriteName: json['overwriteName'] as String?,
-      type: $enumDecode(_$SvtTypeEnumMap, json['type']),
-      flag: $enumDecode(_$SvtFlagEnumMap, json['flag']),
+      type: $enumDecodeNullable(_$SvtTypeEnumMap, json['type']) ?? SvtType.normal,
+      flag: $enumDecodeNullable(_$SvtFlagEnumMap, json['flag']) ?? SvtFlag.normal,
       classId: json['classId'] as int? ?? 0,
       attribute: $enumDecode(_$AttributeEnumMap, json['attribute']),
       rarity: json['rarity'] as int,
@@ -93,12 +93,12 @@ const _$AttributeEnumMap = {
 Servant _$ServantFromJson(Map json) => Servant(
       id: json['id'] as int,
       collectionNo: json['collectionNo'] as int,
-      name: json['name'] as String,
+      name: json['name'] as String? ?? "",
       ruby: json['ruby'] as String? ?? "",
       battleName: json['battleName'] as String? ?? "",
       classId: json['classId'] as int? ?? 0,
-      type: $enumDecode(_$SvtTypeEnumMap, json['type']),
-      flag: $enumDecode(_$SvtFlagEnumMap, json['flag']),
+      type: $enumDecodeNullable(_$SvtTypeEnumMap, json['type']) ?? SvtType.normal,
+      flag: $enumDecodeNullable(_$SvtFlagEnumMap, json['flag']) ?? SvtFlag.normal,
       rarity: json['rarity'] as int,
       cost: json['cost'] as int,
       lvMax: json['lvMax'] as int,
@@ -107,9 +107,10 @@ Servant _$ServantFromJson(Map json) => Servant(
           : ExtraAssets.fromJson(Map<String, dynamic>.from(json['extraAssets'] as Map)),
       gender: $enumDecode(_$GenderEnumMap, json['gender']),
       attribute: $enumDecode(_$AttributeEnumMap, json['attribute']),
-      traits: (json['traits'] as List<dynamic>)
-          .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+      traits: (json['traits'] as List<dynamic>?)
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       starAbsorb: json['starAbsorb'] as int,
       starGen: json['starGen'] as int,
       instantDeathChance: json['instantDeathChance'] as int,
@@ -262,13 +263,13 @@ const _$CardTypeEnumMap = {
 
 BasicCraftEssence _$BasicCraftEssenceFromJson(Map json) => BasicCraftEssence(
       id: json['id'] as int,
-      collectionNo: json['collectionNo'] as int,
+      collectionNo: json['collectionNo'] as int? ?? 0,
       name: json['name'] as String,
-      type: $enumDecode(_$SvtTypeEnumMap, json['type']),
-      flag: $enumDecode(_$SvtFlagEnumMap, json['flag']),
+      type: $enumDecodeNullable(_$SvtTypeEnumMap, json['type']) ?? SvtType.servantEquip,
+      flag: $enumDecodeNullable(_$SvtFlagEnumMap, json['flag']) ?? SvtFlag.normal,
       rarity: json['rarity'] as int,
-      atkMax: json['atkMax'] as int,
-      hpMax: json['hpMax'] as int,
+      atkMax: json['atkMax'] as int? ?? 0,
+      hpMax: json['hpMax'] as int? ?? 0,
       face: json['face'] as String,
     );
 
@@ -290,18 +291,18 @@ CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
       collectionNo: json['collectionNo'] as int,
       name: json['name'] as String,
       ruby: json['ruby'] as String? ?? "",
-      type: $enumDecode(_$SvtTypeEnumMap, json['type']),
-      flag: $enumDecode(_$SvtFlagEnumMap, json['flag']),
+      type: $enumDecodeNullable(_$SvtTypeEnumMap, json['type']) ?? SvtType.servantEquip,
+      flag: $enumDecodeNullable(_$SvtFlagEnumMap, json['flag']) ?? SvtFlag.normal,
       rarity: json['rarity'] as int,
       cost: json['cost'] as int,
       lvMax: json['lvMax'] as int,
       extraAssets: json['extraAssets'] == null
           ? null
           : ExtraAssets.fromJson(Map<String, dynamic>.from(json['extraAssets'] as Map)),
-      atkBase: json['atkBase'] as int,
-      atkMax: json['atkMax'] as int,
-      hpBase: json['hpBase'] as int,
-      hpMax: json['hpMax'] as int,
+      atkBase: json['atkBase'] as int? ?? 0,
+      atkMax: json['atkMax'] as int? ?? 0,
+      hpBase: json['hpBase'] as int? ?? 0,
+      hpMax: json['hpMax'] as int? ?? 0,
       growthCurve: json['growthCurve'] as int,
       expFeed: (json['expFeed'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       bondEquipOwner: json['bondEquipOwner'] as int?,
@@ -648,34 +649,25 @@ Map<String, dynamic> _$ServantCoinToJson(ServantCoin instance) => <String, dynam
 
 ServantTrait _$ServantTraitFromJson(Map json) => ServantTrait(
       idx: json['idx'] as int,
-      trait:
-          (json['trait'] as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
-      limitCount: json['limitCount'] as int,
-      condType: _$JsonConverterFromJson<String, CondType>(json['condType'], const CondTypeConverter().fromJson),
-      condId: json['condId'] as int?,
-      condNum: json['condNum'] as int?,
+      trait: (json['trait'] as List<dynamic>?)
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      limitCount: json['limitCount'] as int? ?? -1,
+      condType:
+          json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
+      condId: json['condId'] as int? ?? 0,
+      condNum: json['condNum'] as int? ?? 0,
     );
 
 Map<String, dynamic> _$ServantTraitToJson(ServantTrait instance) => <String, dynamic>{
       'idx': instance.idx,
       'trait': instance.trait.map((e) => e.toJson()).toList(),
       'limitCount': instance.limitCount,
-      'condType': _$JsonConverterToJson<String, CondType>(instance.condType, const CondTypeConverter().toJson),
+      'condType': const CondTypeConverter().toJson(instance.condType),
       'condId': instance.condId,
       'condNum': instance.condNum,
     };
-
-Value? _$JsonConverterFromJson<Json, Value>(
-  Object? json,
-  Value? Function(Json json) fromJson,
-) =>
-    json == null ? null : fromJson(json as Json);
-
-Json? _$JsonConverterToJson<Json, Value>(
-  Value? value,
-  Json? Function(Value value) toJson,
-) =>
-    value == null ? null : toJson(value);
 
 LoreCommentAdd _$LoreCommentAddFromJson(Map json) => LoreCommentAdd(
       idx: json['idx'] as int,
@@ -887,6 +879,12 @@ Map<String, dynamic> _$VoiceLineToJson(VoiceLine instance) => <String, dynamic>{
       'playConds': instance.playConds.map((e) => e.toJson()).toList(),
     };
 
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) =>
+    json == null ? null : fromJson(json as Json);
+
 const _$SvtVoiceTypeEnumMap = {
   SvtVoiceType.unknown: 'unknown',
   SvtVoiceType.home: 'home',
@@ -914,6 +912,12 @@ const _$SvtVoiceTypeEnumMap = {
   SvtVoiceType.eventFortification: 'eventFortification',
   SvtVoiceType.sum: 'sum',
 };
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) =>
+    value == null ? null : toJson(value);
 
 VoiceGroup _$VoiceGroupFromJson(Map json) => VoiceGroup(
       svtId: json['svtId'] as int,

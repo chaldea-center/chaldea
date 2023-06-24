@@ -26,8 +26,8 @@ NiceWar _$NiceWarFromJson(Map json) => NiceWar(
       bgm: Bgm.fromJson(Map<String, dynamic>.from(json['bgm'] as Map)),
       scriptId: json['scriptId'] as String?,
       script: json['script'] as String?,
-      startType: $enumDecode(_$WarStartTypeEnumMap, json['startType']),
-      targetId: json['targetId'] as int,
+      startType: $enumDecodeNullable(_$WarStartTypeEnumMap, json['startType']) ?? WarStartType.none,
+      targetId: json['targetId'] as int? ?? 0,
       eventId: json['eventId'] as int? ?? 0,
       eventName: json['eventName'] as String? ?? "",
       lastQuestId: json['lastQuestId'] as int? ?? 0,
@@ -151,8 +151,8 @@ NiceSpot _$NiceSpotFromJson(Map json) => NiceSpot(
       mapId: json['mapId'] as int,
       name: json['name'] as String,
       image: json['image'] as String?,
-      x: json['x'] as num,
-      y: json['y'] as num,
+      x: json['x'] as num? ?? 0,
+      y: json['y'] as num? ?? 0,
       imageOfsX: json['imageOfsX'] as int? ?? 0,
       imageOfsY: json['imageOfsY'] as int? ?? 0,
       nameOfsX: json['nameOfsX'] as int? ?? 0,
@@ -201,7 +201,7 @@ SpotAdd _$SpotAddFromJson(Map json) => SpotAdd(
       targetText: json['targetText'] as String? ?? "",
       condType:
           json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
-      condTargetId: json['condTargetId'] as int,
+      condTargetId: json['condTargetId'] as int? ?? 0,
       condNum: json['condNum'] as int? ?? 0,
     );
 
@@ -274,11 +274,10 @@ WarAdd _$WarAddFromJson(Map json) => WarAdd(
       overwriteId: json['overwriteId'] as int,
       overwriteStr: json['overwriteStr'] as String? ?? "",
       overwriteBanner: json['overwriteBanner'] as String?,
-      condType: const CondTypeConverter().fromJson(json['condType'] as String),
-      targetId: json['targetId'] as int,
-      value: json['value'] as int,
-      startedAt: json['startedAt'] as int,
-      endedAt: json['endedAt'] as int,
+      condType:
+          json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
+      targetId: json['targetId'] as int? ?? 0,
+      value: json['value'] as int? ?? 0,
     );
 
 Map<String, dynamic> _$WarAddToJson(WarAdd instance) => <String, dynamic>{
@@ -291,8 +290,6 @@ Map<String, dynamic> _$WarAddToJson(WarAdd instance) => <String, dynamic>{
       'condType': const CondTypeConverter().toJson(instance.condType),
       'targetId': instance.targetId,
       'value': instance.value,
-      'startedAt': instance.startedAt,
-      'endedAt': instance.endedAt,
     };
 
 const _$WarOverwriteTypeEnumMap = {

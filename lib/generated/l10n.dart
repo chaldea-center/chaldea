@@ -8318,6 +8318,17 @@ class S {
     );
   }
 
+  /// `SET ALL`
+  String get set_all {
+    return Intl.message(
+      'SET ALL',
+      name: 'set_all',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Set Plan Name`
   String get set_plan_name {
     return Intl.message(

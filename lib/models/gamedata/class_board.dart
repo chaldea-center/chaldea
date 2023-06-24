@@ -135,6 +135,12 @@ class ClassBoardSquare {
       return icon;
     } else if (skillType == ClassBoardSkillType.commandSpell) {
       return csIcon(db.curUser.isGirl);
+    } else if (lock != null) {
+      for (final itemAmount in lock!.items) {
+        if (itemAmount.itemId >= 51 && itemAmount.itemId <= 53) {
+          return "https://static.atlasacademy.io/JP/ClassBoard/Icon/lock_${itemAmount.itemId}.png";
+        }
+      }
     }
     return null;
   }

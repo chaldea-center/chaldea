@@ -750,6 +750,7 @@
   "servant_coin_short": "Coin",
   "servant_detail_page": "Página de detalles del Servant",
   "servant_list_page": "Pagína de lista de Servants",
+  "set_all": null,
   "set_plan_name": "Establecer nombre del plan",
   "setting_always_on_top": "Siempre al frente",
   "setting_auto_rotate": "Auto rotar",

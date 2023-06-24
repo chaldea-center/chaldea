@@ -846,6 +846,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "servant_coin_short": MessageLookupByLibrary.simpleMessage("硬币"),
         "servant_detail_page": MessageLookupByLibrary.simpleMessage("从者详情页"),
         "servant_list_page": MessageLookupByLibrary.simpleMessage("从者列表页"),
+        "set_all": MessageLookupByLibrary.simpleMessage("一键设置"),
         "set_plan_name": MessageLookupByLibrary.simpleMessage("设置规划名称"),
         "setting_always_on_top": MessageLookupByLibrary.simpleMessage("置顶显示"),
         "setting_auto_rotate": MessageLookupByLibrary.simpleMessage("自动旋转"),

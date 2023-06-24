@@ -750,6 +750,7 @@
   "servant_coin_short": "コイン",
   "servant_detail_page": "鯖詳細ページ",
   "servant_list_page": "鯖リストページ",
+  "set_all": null,
   "set_plan_name": "プラン名を設定",
   "setting_always_on_top": "一番上で表示",
   "setting_auto_rotate": "自動回転",

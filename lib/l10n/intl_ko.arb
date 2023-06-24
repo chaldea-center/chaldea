@@ -750,6 +750,7 @@
   "servant_coin_short": "코인",
   "servant_detail_page": "서번트 상세 페이지",
   "servant_list_page": "서번트 리스트 페이지",
+  "set_all": null,
   "set_plan_name": "계획 이름 설정",
   "setting_always_on_top": "항상 맨 위에 표시",
   "setting_auto_rotate": "자동 회전",

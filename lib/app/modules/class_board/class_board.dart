@@ -207,23 +207,48 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
   Widget get squareTab {
     final squares = board.squares.toList();
     squares.sort2((e) => e.id);
-    return ListView.separated(
-      itemBuilder: (context, index) => _buildSquareDetail(squares[index]),
-      separatorBuilder: (context, index) => kDefaultDivider,
-      itemCount: squares.length,
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.separated(
+            itemBuilder: (context, index) => _buildSquareDetail(squares[index]),
+            separatorBuilder: (context, index) => kDefaultDivider,
+            itemCount: squares.length,
+          ),
+        ),
+        kDefaultDivider,
+        SafeArea(
+          child: ButtonBar(
+            alignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: _onSetAllPlan,
+                child: Text(S.current.set_all),
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 
   Widget _buildSquareDetail(ClassBoardSquare square) {
-    final name = square.targetSkill?.name ?? square.targetCommandSpell?.name;
+    String? name = square.targetSkill?.name ?? square.targetCommandSpell?.name;
+    String? icon = square.dispIcon;
+    if (square.flags.contains(ClassBoardSquareFlag.blank)) {
+      name ??= "blank";
+      icon ??=
+          "https://static.atlasacademy.io/file/aa-fgo-extract-jp/ClassBoard/Main/DownloadClassBoardSquareLineAtlas1/point_on.png";
+    }
+    double iconSize = square.skillType == ClassBoardSkillType.none ? 40 : 24;
     return SimpleAccordion(
       key: Key('square-${square.id}'),
       headerBuilder: (context, _) {
         return ListTile(
           dense: true,
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
-          leading: db.getIconImage(square.dispIcon ?? Atlas.common.unknownSkillIcon, width: 24),
-          minLeadingWidth: 24,
+          leading: db.getIconImage(icon ?? Atlas.common.unknownSkillIcon, width: iconSize),
+          minLeadingWidth: iconSize,
           title: Text(Transl.skillNames(name ?? "").l),
           trailing: db.onUserData((context, snapshot) {
             List<InlineSpan> status = [];
@@ -259,7 +284,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
                     width: 24,
                     text: itemAmount.amount.format(),
                   ),
-                const Text(' + '),
+                const Text('  '),
               ],
               for (final itemAmount in square.items)
                 Item.iconBuilder(
@@ -294,6 +319,38 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
         ),
         const SafeArea(child: SizedBox.shrink()),
       ],
+    );
+  }
+
+  void _onSetAllPlan() {
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text(S.current.set_all),
+          children: [
+            for (final v in LockPlan.values)
+              SimpleDialogOption(
+                child: Text(v.dispPlan),
+                onPressed: () {
+                  Navigator.pop(context);
+                  board.plan
+                    ..enhancedSquares = {
+                      for (final square in board.squares)
+                        if (square.items.isNotEmpty) square.id: v
+                    }
+                    ..unlockSquares = {
+                      for (final square in board.squares)
+                        if (square.lock != null) square.id: v
+                    };
+                  if (mounted) setState(() {});
+                  db.itemCenter.updateClassBoard();
+                },
+              )
+          ],
+        );
+      },
     );
   }
 }

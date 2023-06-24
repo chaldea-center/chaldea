@@ -885,6 +885,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "servant_coin_short": MessageLookupByLibrary.simpleMessage("Coin"),
         "servant_detail_page": MessageLookupByLibrary.simpleMessage("Servant Detail Page"),
         "servant_list_page": MessageLookupByLibrary.simpleMessage("Servant List Page"),
+        "set_all": MessageLookupByLibrary.simpleMessage("SET ALL"),
         "set_plan_name": MessageLookupByLibrary.simpleMessage("Set Plan Name"),
         "setting_always_on_top": MessageLookupByLibrary.simpleMessage("Always On Top"),
         "setting_auto_rotate": MessageLookupByLibrary.simpleMessage("Auto Rotate"),

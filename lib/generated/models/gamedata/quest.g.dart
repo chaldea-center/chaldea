@@ -12,11 +12,12 @@ BasicQuest _$BasicQuestFromJson(Map json) => BasicQuest(
       type: $enumDecode(_$QuestTypeEnumMap, json['type']),
       flags: (json['flags'] as List<dynamic>?)?.map((e) => const QuestFlagConverter().fromJson(e as String)).toList() ??
           const [],
-      consumeType: $enumDecode(_$ConsumeTypeEnumMap, json['consumeType']),
-      consume: json['consume'] as int,
-      spotId: json['spotId'] as int,
-      warId: json['warId'] as int,
-      warLongName: json['warLongName'] as String,
+      afterClear: $enumDecodeNullable(_$QuestAfterClearTypeEnumMap, json['afterClear']) ?? QuestAfterClearType.close,
+      consumeType: $enumDecodeNullable(_$ConsumeTypeEnumMap, json['consumeType']) ?? ConsumeType.ap,
+      consume: json['consume'] as int? ?? 0,
+      spotId: json['spotId'] as int? ?? 0,
+      warId: json['warId'] as int? ?? 0,
+      warLongName: json['warLongName'] as String?,
       priority: json['priority'] as int,
       noticeAt: json['noticeAt'] as int,
       openedAt: json['openedAt'] as int,
@@ -28,6 +29,7 @@ Map<String, dynamic> _$BasicQuestToJson(BasicQuest instance) => <String, dynamic
       'name': instance.name,
       'type': _$QuestTypeEnumMap[instance.type]!,
       'flags': instance.flags.map(const QuestFlagConverter().toJson).toList(),
+      'afterClear': _$QuestAfterClearTypeEnumMap[instance.afterClear]!,
       'consumeType': _$ConsumeTypeEnumMap[instance.consumeType]!,
       'consume': instance.consume,
       'spotId': instance.spotId,
@@ -46,6 +48,14 @@ const _$QuestTypeEnumMap = {
   QuestType.event: 'event',
   QuestType.heroballad: 'heroballad',
   QuestType.warBoard: 'warBoard',
+};
+
+const _$QuestAfterClearTypeEnumMap = {
+  QuestAfterClearType.close: 'close',
+  QuestAfterClearType.repeatFirst: 'repeatFirst',
+  QuestAfterClearType.repeatLast: 'repeatLast',
+  QuestAfterClearType.resetInterval: 'resetInterval',
+  QuestAfterClearType.closeDisp: 'closeDisp',
 };
 
 const _$ConsumeTypeEnumMap = {
@@ -71,9 +81,9 @@ Quest _$QuestFromJson(Map json) => Quest(
       afterClear: $enumDecodeNullable(_$QuestAfterClearTypeEnumMap, json['afterClear']) ?? QuestAfterClearType.close,
       recommendLv: json['recommendLv'] as String? ?? '',
       spotId: json['spotId'] as int? ?? 0,
-      spotName: json['spotName'] as String? ?? '',
+      spotName: json['spotName'] as String?,
       warId: json['warId'] as int? ?? 0,
-      warLongName: json['warLongName'] as String? ?? '',
+      warLongName: json['warLongName'] as String?,
       chapterId: json['chapterId'] as int? ?? 0,
       chapterSubId: json['chapterSubId'] as int? ?? 0,
       chapterSubStr: json['chapterSubStr'] as String? ?? "",
@@ -109,9 +119,7 @@ Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
       'afterClear': _$QuestAfterClearTypeEnumMap[instance.afterClear]!,
       'recommendLv': instance.recommendLv,
       'spotId': instance.spotId,
-      'spotName': instance.spotName,
       'warId': instance.warId,
-      'warLongName': instance.warLongName,
       'chapterId': instance.chapterId,
       'chapterSubId': instance.chapterSubId,
       'chapterSubStr': instance.chapterSubStr,
@@ -126,15 +134,9 @@ Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
       'noticeAt': instance.noticeAt,
       'openedAt': instance.openedAt,
       'closedAt': instance.closedAt,
+      'spotName': instance.spotName,
+      'warLongName': instance.warLongName,
     };
-
-const _$QuestAfterClearTypeEnumMap = {
-  QuestAfterClearType.close: 'close',
-  QuestAfterClearType.repeatFirst: 'repeatFirst',
-  QuestAfterClearType.repeatLast: 'repeatLast',
-  QuestAfterClearType.resetInterval: 'resetInterval',
-  QuestAfterClearType.closeDisp: 'closeDisp',
-};
 
 QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
       id: json['id'] as int? ?? -1,
@@ -151,9 +153,9 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
       afterClear: $enumDecodeNullable(_$QuestAfterClearTypeEnumMap, json['afterClear']) ?? QuestAfterClearType.close,
       recommendLv: json['recommendLv'] as String? ?? '',
       spotId: json['spotId'] as int? ?? 0,
-      spotName: json['spotName'] as String? ?? '',
+      spotName: json['spotName'] as String?,
       warId: json['warId'] as int? ?? 0,
-      warLongName: json['warLongName'] as String? ?? '',
+      warLongName: json['warLongName'] as String?,
       chapterId: json['chapterId'] as int? ?? 0,
       chapterSubId: json['chapterSubId'] as int? ?? 0,
       chapterSubStr: json['chapterSubStr'] as String? ?? "",
@@ -233,9 +235,7 @@ Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic
       'afterClear': _$QuestAfterClearTypeEnumMap[instance.afterClear]!,
       'recommendLv': instance.recommendLv,
       'spotId': instance.spotId,
-      'spotName': instance.spotName,
       'warId': instance.warId,
-      'warLongName': instance.warLongName,
       'chapterId': instance.chapterId,
       'chapterSubId': instance.chapterSubId,
       'chapterSubStr': instance.chapterSubStr,
@@ -250,6 +250,8 @@ Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic
       'noticeAt': instance.noticeAt,
       'openedAt': instance.openedAt,
       'closedAt': instance.closedAt,
+      'spotName': instance.spotName,
+      'warLongName': instance.warLongName,
       'phase': instance.phase,
       'className': instance.className.map(const SvtClassConverter().toJson).toList(),
       'individuality': instance.individuality.map((e) => e.toJson()).toList(),
@@ -594,7 +596,7 @@ Map<String, dynamic> _$SupportServantLimitToJson(SupportServantLimit instance) =
 EnemyDrop _$EnemyDropFromJson(Map json) => EnemyDrop(
       type: $enumDecodeNullable(_$GiftTypeEnumMap, json['type']) ?? GiftType.item,
       objectId: json['objectId'] as int,
-      num: json['num'] as int,
+      num: json['num'] as int? ?? 1,
       dropCount: json['dropCount'] as int,
       runs: json['runs'] as int,
     );
@@ -658,7 +660,7 @@ QuestEnemy _$QuestEnemyFromJson(Map json) => QuestEnemy(
       deckId: json['deckId'] as int,
       npcId: json['npcId'] as int? ?? -1,
       roleType: $enumDecodeNullable(_$EnemyRoleTypeEnumMap, json['roleType']) ?? EnemyRoleType.normal,
-      name: json['name'] as String,
+      name: json['name'] as String? ?? "",
       svt: BasicServant.fromJson(Map<String, dynamic>.from(json['svt'] as Map)),
       drops: (json['drops'] as List<dynamic>?)
               ?.map((e) => EnemyDrop.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -848,7 +850,7 @@ EnemyTd _$EnemyTdFromJson(Map json) => EnemyTd(
       noblePhantasm: json['noblePhantasm'] == null
           ? null
           : NiceTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
-      noblePhantasmLv: json['noblePhantasmLv'] as int? ?? 0,
+      noblePhantasmLv: json['noblePhantasmLv'] as int? ?? 1,
       noblePhantasmLv1: json['noblePhantasmLv1'] as int? ?? 0,
       noblePhantasmLv2: json['noblePhantasmLv2'] as int?,
       noblePhantasmLv3: json['noblePhantasmLv3'] as int?,
