@@ -141,7 +141,7 @@ class BasicServant with GameCardMixin {
     final id = json["id"] as int;
     if (json["rarity"] == null) {
       // classId and attribute can be overridden
-      json = Map.from(GameDataLoader.instance.tmp.gameJson!["entities"][id])..addAll(json);
+      json = Map.from(GameDataLoader.instance.tmp.gameJson!["entities"][id.toString()])..addAll(json);
     }
     return _$BasicServantFromJson(json);
   }

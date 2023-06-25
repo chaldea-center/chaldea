@@ -685,10 +685,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       });
     }
     if (_includeCraft) {
-      user.craftEssences.addAll(Map.of(crafts));
+      user.craftEssences.addAll(crafts.map((key, value) => MapEntry(key, CraftStatus.fromJson(value.toJson()))));
     }
     if (_includeCmdCode) {
-      user.cmdCodes.addAll(Map.of(cmdCodes));
+      user.cmdCodes.addAll(cmdCodes.map((key, value) => MapEntry(key, CmdCodeStatus.fromJson(value.toJson()))));
 
       if (mstData != null) {
         final userCCMap = <int, int>{for (final cc in mstData!.userCommandCode) cc.id: cc.commandCodeId};
