@@ -98,13 +98,17 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                       fixedWidth: 150,
                     ),
                     const DataColumn2(label: Text('Lv/AP', textScaleFactor: 0.9), fixedWidth: 56),
-                    if (!widget.isMainStory)
-                      DataColumn2(label: Text(S.current.quest_runs("").trim(), textScaleFactor: 0.9), fixedWidth: 48),
                     DataColumn2(label: Text(S.current.svt_class), fixedWidth: 64),
-                    DataColumn2(
-                        label: Text(widget.isMainStory ? S.current.fgo_domus_aurea : S.current.item),
-                        size: ColumnSize.L),
-                    DataColumn2(label: Text(widget.isMainStory ? 'Rayshift' : S.current.item), size: ColumnSize.L),
+                    if (widget.isMainStory) ...[
+                      DataColumn2(label: Text(S.current.quest_runs("").trim(), textScaleFactor: 0.9), fixedWidth: 48),
+                      DataColumn2(label: Text(S.current.fgo_domus_aurea), size: ColumnSize.L),
+                      DataColumn2(label: Text(S.current.quest_runs("").trim(), textScaleFactor: 0.9), fixedWidth: 48),
+                      const DataColumn2(label: Text("Rayshift"), size: ColumnSize.L),
+                    ] else ...[
+                      DataColumn2(label: Text(S.current.quest_runs("").trim(), textScaleFactor: 0.9), fixedWidth: 48),
+                      DataColumn2(label: Text(S.current.item), size: ColumnSize.L),
+                      DataColumn2(label: Text(S.current.item), size: ColumnSize.L),
+                    ],
                   ],
                   rows: data.map((info) => buildRow(info, maxCount)).toList(),
                   fixedLeftColumns: _fixFirstCol ? 1 : 0,
@@ -157,16 +161,6 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
       minFontSize: 10,
       style: Theme.of(context).textTheme.bodySmall,
     )));
-    if (!widget.isMainStory) {
-      cells.add(DataCell(Center(
-        child: AutoSizeText(
-          phase?.drops.getOrNull(0)?.runs.toString() ?? '-',
-          maxLines: 1,
-          minFontSize: 10,
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-      )));
-    }
 
     Widget wrap(Iterable<Widget> children) {
       if (children.isEmpty) return const SizedBox.shrink();
@@ -191,11 +185,31 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
       cells.add(DataCell(wrap(ids.map((e) => items[e]!))));
     }
 
-    final items1 = widget.isMainStory ? info.domusItems : info.eventItems;
-    final items2 = info.normalItems;
-    _addItems(items1);
-    _addItems(items2);
-    int lines = (max(items1.length, items2.length) / countPerLine).ceil();
+    void _addRuns(int runs) {
+      cells.add(DataCell(Center(
+        child: AutoSizeText(
+          runs > 0 ? runs.toString() : '-',
+          maxLines: 1,
+          minFontSize: 10,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+      )));
+    }
+
+    int lines;
+    if (widget.isMainStory) {
+      _addRuns(info.domusRuns);
+      _addItems(info.domusItems);
+      _addRuns(info.rayshiftRuns);
+      _addItems(info.normalItems);
+      lines = (max(info.domusItems.length, info.normalItems.length) / countPerLine).ceil();
+    } else {
+      _addRuns(info.rayshiftRuns);
+      _addItems(info.eventItems);
+      _addItems(info.normalItems);
+      lines = (max(info.eventItems.length, info.normalItems.length) / countPerLine).ceil();
+    }
+
     if (lines < 1) lines = 1;
     return DataRow2(
       cells: cells,
@@ -216,6 +230,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
       // domus
       final drops = db.gameData.dropData.domusAurea.getQuestDropRate(quest.id);
       drops.removeWhere((id, value) => db.gameData.items[id]?.category != ItemCategory.normal);
+      info.domusRuns = db.gameData.dropData.domusAurea.getQuestRuns(quest.id);
       for (final id in drops.keys) {
         if (db.gameData.items[id]?.category != ItemCategory.normal) continue;
         info.domusItems[id] = Item.iconBuilder(
@@ -288,8 +303,11 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
 class _DropInfo {
   final Quest quest;
   QuestPhase? phase;
+  int domusRuns = 0;
   Map<int, Widget> domusItems = {};
   Map<int, Widget> eventItems = {};
   Map<int, Widget> normalItems = {};
   _DropInfo(this.quest);
+
+  int get rayshiftRuns => phase?.drops.firstOrNull?.runs ?? 0;
 }

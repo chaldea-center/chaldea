@@ -66,6 +66,12 @@ class DropRateSheet {
     )..matrix = List.generate(matrix.length, (i) => List.generate(matrix[i].length, (j) => matrix[i][j]));
   }
 
+  int getQuestRuns(int questId) {
+    int questIndex = questIds.indexOf(questId);
+    if (questIndex < 0) return 0;
+    return runs[questIndex];
+  }
+
   Map<int, double> getQuestDropRate(int questId) {
     int questIndex = questIds.indexOf(questId);
     if (questIndex < 0) return {};
