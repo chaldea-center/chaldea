@@ -1340,10 +1340,10 @@ class VoicePlayCond {
 class VoiceLine {
   String? name;
   @CondTypeConverter()
-  CondType? condType;
-  int? condValue;
+  CondType condType;
+  int condValue;
   int? priority;
-  SvtVoiceType? svtVoiceType;
+  SvtVoiceType svtVoiceType;
   String overwriteName;
   ScriptLink? summonScript;
   List<String> id;
@@ -1358,10 +1358,10 @@ class VoiceLine {
 
   VoiceLine({
     this.name,
-    this.condType,
-    this.condValue,
+    this.condType = CondType.none,
+    this.condValue = 0,
     this.priority,
-    this.svtVoiceType,
+    this.svtVoiceType = SvtVoiceType.unknown,
     this.overwriteName = "",
     this.summonScript,
     this.id = const [],

@@ -20,7 +20,6 @@ Event _$EventFromJson(Map json) => Event(
       startedAt: json['startedAt'] as int,
       endedAt: json['endedAt'] as int,
       finishedAt: json['finishedAt'] as int,
-      materialOpenedAt: json['materialOpenedAt'] as int,
       warIds: (json['warIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       shop: (json['shop'] as List<dynamic>?)
               ?.map((e) => NiceShop.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -117,7 +116,6 @@ Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
       'startedAt': instance.startedAt,
       'endedAt': instance.endedAt,
       'finishedAt': instance.finishedAt,
-      'materialOpenedAt': instance.materialOpenedAt,
       'shop': instance.shop.map((e) => e.toJson()).toList(),
       'rewardScenes': instance.rewardScenes.map((e) => e.toJson()).toList(),
       'rewards': instance.pointRewards.map((e) => e.toJson()).toList(),
@@ -246,13 +244,13 @@ NiceShop _$NiceShopFromJson(Map json) => NiceShop(
               ?.map((e) => ShopRelease.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      slot: json['slot'] as int,
+      slot: json['slot'] as int? ?? 0,
       priority: json['priority'] as int,
       name: json['name'] as String,
       detail: json['detail'] as String? ?? "",
       infoMessage: json['infoMessage'] as String? ?? "",
       warningMessage: json['warningMessage'] as String? ?? "",
-      payType: $enumDecodeNullable(_$PayTypeEnumMap, json['payType']) ?? PayType.item,
+      payType: $enumDecodeNullable(_$PayTypeEnumMap, json['payType']) ?? PayType.eventItem,
       cost: json['cost'] == null ? null : ItemAmount.fromJson(Map<String, dynamic>.from(json['cost'] as Map)),
       consumes: (json['consumes'] as List<dynamic>?)
               ?.map((e) => CommonConsume.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -348,9 +346,9 @@ ShopRelease _$ShopReleaseFromJson(Map json) => ShopRelease(
       condValues: (json['condValues'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       condType:
           json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
-      condNum: json['condNum'] as int,
+      condNum: json['condNum'] as int? ?? 0,
       priority: json['priority'] as int? ?? 0,
-      isClosedDisp: json['isClosedDisp'] as bool,
+      isClosedDisp: json['isClosedDisp'] as bool? ?? true,
       closedMessage: json['closedMessage'] as String? ?? "",
       closedItemName: json['closedItemName'] as String? ?? "",
     );
@@ -423,14 +421,15 @@ EventMissionConditionDetail _$EventMissionConditionDetailFromJson(Map json) => E
       id: json['id'] as int,
       missionTargetId: json['missionTargetId'] as int? ?? 0,
       missionCondType: json['missionCondType'] as int,
-      logicType: json['logicType'] as int,
+      logicType: json['logicType'] as int? ?? 1,
       targetIds: (json['targetIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       addTargetIds: (json['addTargetIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       targetQuestIndividualities: (json['targetQuestIndividualities'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      conditionLinkType: $enumDecode(_$DetailMissionCondLinkTypeEnumMap, json['conditionLinkType']),
+      conditionLinkType: $enumDecodeNullable(_$DetailMissionCondLinkTypeEnumMap, json['conditionLinkType']) ??
+          DetailMissionCondLinkType.missionStart,
       targetEventIds: (json['targetEventIds'] as List<dynamic>?)?.map((e) => e as int).toList(),
     );
 
@@ -457,8 +456,9 @@ EventMissionCondition _$EventMissionConditionFromJson(Map json) => EventMissionC
       id: json['id'] as int,
       missionProgressType: $enumDecode(_$MissionProgressTypeEnumMap, json['missionProgressType']),
       priority: json['priority'] as int? ?? 0,
-      condGroup: json['condGroup'] as int,
-      condType: const CondTypeConverter().fromJson(json['condType'] as String),
+      condGroup: json['condGroup'] as int? ?? 1,
+      condType:
+          json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
       targetIds: (json['targetIds'] as List<dynamic>).map((e) => e as int).toList(),
       targetNum: json['targetNum'] as int,
       conditionMessage: json['conditionMessage'] as String,
@@ -500,7 +500,7 @@ EventMission _$EventMissionFromJson(Map json) => EventMission(
       startedAt: json['startedAt'] as int? ?? 0,
       endedAt: json['endedAt'] as int? ?? 0,
       closedAt: json['closedAt'] as int? ?? 0,
-      rewardType: $enumDecode(_$MissionRewardTypeEnumMap, json['rewardType']),
+      rewardType: $enumDecodeNullable(_$MissionRewardTypeEnumMap, json['rewardType']) ?? MissionRewardType.gift,
       gifts: (json['gifts'] as List<dynamic>).map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
       bannerGroup: json['bannerGroup'] as int? ?? 0,
       priority: json['priority'] as int? ?? 0,
@@ -656,7 +656,7 @@ Map<String, dynamic> _$EventLotteryBoxToJson(EventLotteryBox instance) => <Strin
 EventLottery _$EventLotteryFromJson(Map json) => EventLottery(
       id: json['id'] as int,
       slot: json['slot'] as int? ?? 0,
-      payType: $enumDecode(_$PayTypeEnumMap, json['payType']),
+      payType: $enumDecodeNullable(_$PayTypeEnumMap, json['payType']) ?? PayType.eventItem,
       cost: ItemAmount.fromJson(Map<String, dynamic>.from(json['cost'] as Map)),
       priority: json['priority'] as int,
       limited: json['limited'] as bool,
@@ -1140,10 +1140,11 @@ Map<String, dynamic> _$EventBulletinBoardScriptToJson(EventBulletinBoardScript i
     };
 
 EventBulletinBoardRelease _$EventBulletinBoardReleaseFromJson(Map json) => EventBulletinBoardRelease(
-      condGroup: json['condGroup'] as int,
-      condType: const CondTypeConverter().fromJson(json['condType'] as String),
-      condTargetId: json['condTargetId'] as int,
-      condNum: json['condNum'] as int,
+      condGroup: json['condGroup'] as int? ?? 1,
+      condType:
+          json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
+      condTargetId: json['condTargetId'] as int? ?? 0,
+      condNum: json['condNum'] as int? ?? 0,
     );
 
 Map<String, dynamic> _$EventBulletinBoardReleaseToJson(EventBulletinBoardRelease instance) => <String, dynamic>{
@@ -1159,7 +1160,7 @@ EventCampaign _$EventCampaignFromJson(Map json) => EventCampaign(
       target: $enumDecodeNullable(_$CombineAdjustTargetEnumMap, json['target']) ?? CombineAdjustTarget.none,
       idx: json['idx'] as int? ?? 0,
       value: json['value'] as int,
-      calcType: $enumDecode(_$EventCombineCalcEnumMap, json['calcType']),
+      calcType: $enumDecodeNullable(_$EventCombineCalcEnumMap, json['calcType']) ?? EventCombineCalc.multiplication,
     );
 
 Map<String, dynamic> _$EventCampaignToJson(EventCampaign instance) => <String, dynamic>{

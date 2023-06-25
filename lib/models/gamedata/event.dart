@@ -24,7 +24,7 @@ class Event {
   int startedAt;
   int endedAt;
   int finishedAt;
-  int materialOpenedAt;
+  // int materialOpenedAt;
   List<int> _warIds;
   List<NiceShop> shop;
   List<EventRewardScene> rewardScenes;
@@ -72,7 +72,7 @@ class Event {
     required this.startedAt,
     required this.endedAt,
     required this.finishedAt,
-    required this.materialOpenedAt,
+    // required this.materialOpenedAt,
     List<int> warIds = const [],
     this.shop = const [],
     this.pointRewards = const [],
@@ -466,13 +466,13 @@ class NiceShop with RouteInfo {
     this.shopType = ShopType.eventItem,
     this.releaseConditions = const [],
     // required this.eventId,
-    required this.slot,
+    this.slot = 0,
     required this.priority,
     required this.name,
     this.detail = "",
     this.infoMessage = "",
     this.warningMessage = "",
-    this.payType = PayType.item,
+    this.payType = PayType.eventItem,
     ItemAmount? cost,
     this.consumes = const [],
     this.purchaseType = PurchaseType.none,
@@ -522,9 +522,9 @@ class ShopRelease {
   ShopRelease({
     this.condValues = const [],
     this.condType = CondType.none,
-    required this.condNum,
+    this.condNum = 0,
     this.priority = 0,
-    required this.isClosedDisp,
+    this.isClosedDisp = true,
     this.closedMessage = "",
     this.closedItemName = "",
   });
@@ -622,11 +622,11 @@ class EventMissionConditionDetail {
     required this.id,
     this.missionTargetId = 0,
     required this.missionCondType,
-    required this.logicType,
+    this.logicType = 1,
     this.targetIds = const [],
     this.addTargetIds = const [],
     this.targetQuestIndividualities = const [],
-    required this.conditionLinkType,
+     this.conditionLinkType=DetailMissionCondLinkType.missionStart,
     this.targetEventIds,
     this.useAnd,
   });
@@ -660,8 +660,8 @@ class EventMissionCondition {
     required this.missionProgressType,
     this.priority = 0,
     // required this.missionTargetId,
-    required this.condGroup,
-    required this.condType,
+    this.condGroup = 1,
+    this.condType = CondType.none,
     required this.targetIds,
     required this.targetNum,
     required this.conditionMessage,
@@ -711,7 +711,7 @@ class EventMission {
     this.startedAt = 0,
     this.endedAt = 0,
     this.closedAt = 0,
-    required this.rewardType,
+    this.rewardType = MissionRewardType.gift,
     required this.gifts,
     this.bannerGroup = 0,
     this.priority = 0,
@@ -884,7 +884,7 @@ class EventLottery {
   EventLottery({
     required this.id,
     this.slot = 0,
-    required this.payType,
+    this.payType = PayType.eventItem,
     required this.cost,
     required this.priority,
     required this.limited,
@@ -1396,10 +1396,10 @@ class EventBulletinBoardRelease {
   int condNum;
 
   EventBulletinBoardRelease({
-    required this.condGroup,
-    required this.condType,
-    required this.condTargetId,
-    required this.condNum,
+    this.condGroup = 1,
+    this.condType = CondType.none,
+    this.condTargetId = 0,
+    this.condNum = 0,
   });
 
   factory EventBulletinBoardRelease.fromJson(Map<String, dynamic> json) => _$EventBulletinBoardReleaseFromJson(json);
@@ -1423,7 +1423,7 @@ class EventCampaign {
     this.target = CombineAdjustTarget.none,
     this.idx = 0,
     required this.value,
-    required this.calcType,
+    this.calcType = EventCombineCalc.multiplication,
     // this.entryCondMessage = '',
   });
 

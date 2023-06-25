@@ -835,10 +835,11 @@ Map<String, dynamic> _$VoicePlayCondToJson(VoicePlayCond instance) => <String, d
 
 VoiceLine _$VoiceLineFromJson(Map json) => VoiceLine(
       name: json['name'] as String?,
-      condType: _$JsonConverterFromJson<String, CondType>(json['condType'], const CondTypeConverter().fromJson),
-      condValue: json['condValue'] as int?,
+      condType:
+          json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
+      condValue: json['condValue'] as int? ?? 0,
       priority: json['priority'] as int?,
-      svtVoiceType: $enumDecodeNullable(_$SvtVoiceTypeEnumMap, json['svtVoiceType']),
+      svtVoiceType: $enumDecodeNullable(_$SvtVoiceTypeEnumMap, json['svtVoiceType']) ?? SvtVoiceType.unknown,
       overwriteName: json['overwriteName'] as String? ?? "",
       summonScript: json['summonScript'] == null
           ? null
@@ -862,10 +863,10 @@ VoiceLine _$VoiceLineFromJson(Map json) => VoiceLine(
 
 Map<String, dynamic> _$VoiceLineToJson(VoiceLine instance) => <String, dynamic>{
       'name': instance.name,
-      'condType': _$JsonConverterToJson<String, CondType>(instance.condType, const CondTypeConverter().toJson),
+      'condType': const CondTypeConverter().toJson(instance.condType),
       'condValue': instance.condValue,
       'priority': instance.priority,
-      'svtVoiceType': _$SvtVoiceTypeEnumMap[instance.svtVoiceType],
+      'svtVoiceType': _$SvtVoiceTypeEnumMap[instance.svtVoiceType]!,
       'overwriteName': instance.overwriteName,
       'summonScript': instance.summonScript?.toJson(),
       'id': instance.id,
@@ -878,12 +879,6 @@ Map<String, dynamic> _$VoiceLineToJson(VoiceLine instance) => <String, dynamic>{
       'conds': instance.conds.map((e) => e.toJson()).toList(),
       'playConds': instance.playConds.map((e) => e.toJson()).toList(),
     };
-
-Value? _$JsonConverterFromJson<Json, Value>(
-  Object? json,
-  Value? Function(Json json) fromJson,
-) =>
-    json == null ? null : fromJson(json as Json);
 
 const _$SvtVoiceTypeEnumMap = {
   SvtVoiceType.unknown: 'unknown',
@@ -912,12 +907,6 @@ const _$SvtVoiceTypeEnumMap = {
   SvtVoiceType.eventFortification: 'eventFortification',
   SvtVoiceType.sum: 'sum',
 };
-
-Json? _$JsonConverterToJson<Json, Value>(
-  Value? value,
-  Json? Function(Value value) toJson,
-) =>
-    value == null ? null : toJson(value);
 
 VoiceGroup _$VoiceGroupFromJson(Map json) => VoiceGroup(
       svtId: json['svtId'] as int,
