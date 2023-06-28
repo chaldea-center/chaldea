@@ -27,7 +27,15 @@ class BattleRecorderPanel extends StatefulWidget {
   final List<BattleRecord>? records;
   final QuestPhase? quest;
   final BattleTeamSetup? team;
-  const BattleRecorderPanel({super.key, this.battleData, this.records, this.quest, this.team});
+  final bool initShowTeam;
+  const BattleRecorderPanel({
+    super.key,
+    this.battleData,
+    this.records,
+    this.quest,
+    this.team,
+    this.initShowTeam = false,
+  });
 
   @override
   State<BattleRecorderPanel> createState() => _BattleRecorderPanelState();
@@ -36,7 +44,7 @@ class BattleRecorderPanel extends StatefulWidget {
 class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
   bool complete = false;
   bool showQuest = false;
-  bool showTeam = false;
+  late bool showTeam = widget.initShowTeam;
 
   final controller = ScreenshotController();
 

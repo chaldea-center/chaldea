@@ -314,6 +314,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               battleData: battleData,
               quest: questPhase,
               team: widget.options.team,
+              initShowTeam: widget.replayActions != null,
             ),
           ),
         )
@@ -523,7 +524,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
   }
 
   Widget buildButtonBar() {
-    return Wrap(
+    final normalButtons = Wrap(
       alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
@@ -593,9 +594,20 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               ? Text('Win', style: TextStyle(color: Theme.of(context).colorScheme.secondary))
               : Text(S.current.battle_attack),
         ),
-        if (battleData.isBattleWin && widget.replayActions == null && questPhase.isAnyFree) _buildUploadButton(),
       ],
     );
+    if (battleData.isBattleWin && widget.replayActions == null && questPhase.isAnyFree) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildUploadButton(),
+          const SizedBox(height: 4),
+          normalButtons,
+        ],
+      );
+    } else {
+      return normalButtons;
+    }
   }
 
   Widget _buildUploadButton() {
