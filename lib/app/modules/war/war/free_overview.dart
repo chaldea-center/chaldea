@@ -113,7 +113,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                   rows: data.map((info) => buildRow(info, maxCount)).toList(),
                   fixedLeftColumns: _fixFirstCol ? 1 : 0,
                   fixedTopRows: 1,
-                  minWidth: (maxCount * 2 * iconWidth) * 1.1 + 180 + 64 + 48 + 48,
+                  minWidth: (maxCount * 2 * iconWidth) * 1.1 + 180 + 64 + 48 + 48 + 48,
                   columnSpacing: 8,
                   headingRowHeight: 36,
                   horizontalMargin: 8,

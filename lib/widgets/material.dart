@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class FixedHeight extends StatelessWidget implements PreferredSizeWidget {
@@ -88,6 +90,38 @@ class DividerWithTitle extends StatelessWidget {
     }
     return child;
   }
+}
+
+class DashedLinePainter extends CustomPainter {
+  final double dashWidth;
+  final double space;
+  final double indent;
+  final double strokeWidth;
+
+  const DashedLinePainter({
+    this.dashWidth = 9,
+    this.space = 5,
+    this.indent = 0,
+    this.strokeWidth = 1,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    print(size);
+    final paint = Paint()
+      ..color = Colors.grey
+      ..strokeWidth = strokeWidth;
+    double startX = indent;
+    final maxX = max(startX, size.width - indent);
+    final y = size.height / 2;
+    while (startX < maxX) {
+      canvas.drawLine(Offset(startX, y), Offset(min(startX + dashWidth, maxX), y), paint);
+      startX += dashWidth + space;
+    }
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
 typedef WidgetDataBuilder<T> = Widget Function(BuildContext context, T data);

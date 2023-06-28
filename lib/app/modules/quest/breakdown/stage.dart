@@ -124,7 +124,14 @@ class QuestWave extends StatelessWidget {
     List<Widget> children = [];
     // enemy deck
     final _enemyDeck = stageEnemies.where((e) => e.deck == DeckType.enemy).toList();
-    children.addAll(_buildDeck(_enemyDeck, needSort: true));
+    int maxEnemyOnField = stage?.enemyFieldPosCount ?? 3;
+    final onFieldEnemies = _enemyDeck.where((e) => e.deckId <= maxEnemyOnField).toList();
+    final backupEnemies = _enemyDeck.where((e) => e.deckId > maxEnemyOnField).toList();
+    children.addAll(_buildDeck(onFieldEnemies, needSort: true));
+    if (backupEnemies.isNotEmpty) {
+      children.add(const CustomPaint(painter: DashedLinePainter(), size: Size(double.infinity, 4)));
+      children.addAll(_buildDeck(backupEnemies, needSort: true));
+    }
     for (final e in _enemyDeck) {
       _usedUniqueIds.add(e.deckNpcId);
       for (final npcId in e.enemyScript.shift ?? <int>[]) {
