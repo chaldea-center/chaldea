@@ -466,6 +466,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   Widget partyOption() {
+    final jpTime = DateTime.fromMillisecondsSinceEpoch((questPhase?.jpOpenAdt ?? DateTime.now().timestamp) * 1000);
     return Wrap(
       alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
@@ -475,6 +476,15 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           isDense: true,
           value: options.team.playerRegion,
           items: [
+            DropdownMenuItem(
+              value: null,
+              child: Text.rich(
+                TextSpan(children: [
+                  TextSpan(text: "${Region.jp.localName}${jpTime.toDateString('')}"),
+                ]),
+                textScaleFactor: 0.8,
+              ),
+            ),
             for (final r in Region.values)
               DropdownMenuItem(
                 value: r,
@@ -492,7 +502,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           ],
           onChanged: (v) {
             setState(() {
-              if (v != null) options.team.playerRegion = v;
+              options.team.playerRegion = v;
             });
           },
         ),

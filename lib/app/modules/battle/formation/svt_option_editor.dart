@@ -26,7 +26,7 @@ import 'select_skill_page.dart';
 
 class ServantOptionEditPage extends StatefulWidget {
   final PlayerSvtData playerSvtData;
-  final Region playerRegion;
+  final Region? playerRegion;
   final QuestPhase? questPhase;
   final VoidCallback onChange;
   final SvtFilterData? svtFilterData;
@@ -34,7 +34,7 @@ class ServantOptionEditPage extends StatefulWidget {
   ServantOptionEditPage({
     super.key,
     required this.playerSvtData,
-    required this.playerRegion,
+    this.playerRegion,
     required this.questPhase,
     required this.onChange,
     required this.svtFilterData,
@@ -376,7 +376,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           ),
         const PopupMenuDivider(),
         PopupMenuItem(
-          enabled: playerSvtData.svt != null && playerSvtData.supportType.isSupport,
+          enabled: playerSvtData.svt != null && !playerSvtData.supportType.isSupport,
           onTap: () async {
             await null;
             resyncServantData();
@@ -939,7 +939,11 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       ServantListPage(
         planMode: false,
         onSelected: (selectedSvt) {
-          playerSvtData.onSelectServant(selectedSvt, widget.playerRegion);
+          playerSvtData.onSelectServant(
+            selectedSvt,
+            region: widget.playerRegion,
+            jpTime: questPhase?.jpOpenAdt,
+          );
           _updateState();
         },
         filterData: svtFilterData,
@@ -979,7 +983,11 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             EasyLoading.showError('${S.current.not_found}: ${entity.id}-${entity.lName.l}');
             return;
           }
-          playerSvtData.onSelectServant(svt, widget.playerRegion);
+          playerSvtData.onSelectServant(
+            svt,
+            region: widget.playerRegion,
+            jpTime: questPhase?.jpOpenAdt,
+          );
           _updateState();
         },
         filterData: _enemyFilterData,
@@ -1021,7 +1029,11 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     if (selectedSvt == null || playerSvtData.supportType.isSupport) {
       return;
     }
-    playerSvtData.onSelectServant(selectedSvt, widget.playerRegion);
+    playerSvtData.onSelectServant(
+      selectedSvt,
+      region: widget.playerRegion,
+      jpTime: questPhase?.jpOpenAdt,
+    );
     if (mounted) setState(() {});
     EasyLoading.showSuccess(S.current.updated);
   }

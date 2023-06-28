@@ -51,7 +51,7 @@ class PlayerSvtData {
     td = svt!.groupedNoblePhantasms[1]?.first;
   }
 
-  void onSelectServant(final Servant selectedSvt, final Region region) {
+  void onSelectServant(Servant selectedSvt, {Region? region, int? jpTime}) {
     svt = selectedSvt;
     if (supportType == SupportSvtType.npc) {
       supportType = SupportSvtType.none;
@@ -97,7 +97,7 @@ class PlayerSvtData {
 
     extraPassives = selectedSvt.extraPassive.toList();
 
-    updateRankUps(region);
+    updateRankUps(region: region, jpTime: jpTime);
   }
 
   void fromUserSvt({
@@ -122,27 +122,67 @@ class PlayerSvtData {
       });
   }
 
-  void updateRankUps([Region region = Region.jp]) {
+  void updateRankUps({Region? region, int? jpTime}) {
     final svt = this.svt;
     if (svt == null) return;
+    // td
     final tds = BattleUtils.getShownTds(svt, limitCount);
-    if (region != Region.jp) {
-      final releasedTds =
-          tds.where((td) => db.gameData.mappingData.tdPriority[svt.id]?.ofRegion(region)?[td.id] != null).toList();
-      td = releasedTds.lastOrNull ?? tds.lastOrNull;
-    } else {
-      td = tds.lastOrNull;
+    td = null;
+    if (tds.isNotEmpty) {
+      if (region == Region.jp) {
+        td = tds.last;
+      } else if (region != null) {
+        final releasedTds =
+            tds.where((td) => db.gameData.mappingData.tdPriority[svt.id]?.ofRegion(region)?[td.id] != null).toList();
+        td = releasedTds.lastOrNull ?? tds.last;
+      } else if (jpTime != null) {
+        // null: at jp quest time
+        List<NiceTd> releasedTds = [];
+        for (NiceTd tmpTd in tds) {
+          NiceTd tdBefore = tmpTd;
+          final changes = svt.svtChange.toList();
+          changes.sort2((e) => e.priority);
+          for (final change in changes.reversed) {
+            int index = change.afterTreasureDeviceIds.indexOf(tmpTd.id);
+            if (index >= 0 && change.beforeTreasureDeviceIds.length > index) {
+              final beforeId = change.beforeTreasureDeviceIds[index];
+              tdBefore = svt.noblePhantasms.firstWhereOrNull((e) => e.id == beforeId) ?? tdBefore;
+            }
+          }
+          final quest = db.gameData.quests[tdBefore.condQuestId];
+          if (quest == null || quest.openedAt <= jpTime) {
+            releasedTds.add(tmpTd);
+          }
+        }
+        td = releasedTds.lastOrNull ?? tds.last;
+      } else {
+        td = tds.last;
+      }
     }
 
+    // skill
+    skills.fillRange(0, skills.length, null);
     for (final skillNum in kActiveSkillNums) {
       final validSkills = BattleUtils.getShownSkills(svt, limitCount, skillNum);
-      if (region != Region.jp) {
+      if (validSkills.isEmpty) continue;
+      if (region == Region.jp) {
+        skills[skillNum - 1] = validSkills.last;
+      } else if (region != null) {
         final releaseSkills = validSkills
             .where((skill) => db.gameData.mappingData.skillPriority[svt.id]?.ofRegion(region)?[skill.id] != null)
             .toList();
-        skills[skillNum - 1] = releaseSkills.lastOrNull ?? validSkills.lastOrNull;
+        skills[skillNum - 1] = releaseSkills.lastOrNull ?? validSkills.last;
+      } else if (jpTime != null) {
+        List<NiceSkill> releasedSkills = [];
+        for (final skill in validSkills) {
+          final quest = db.gameData.quests[skill.condQuestId];
+          if (quest == null || quest.openedAt <= jpTime) {
+            releasedSkills.add(skill);
+          }
+        }
+        skills[skillNum - 1] = releasedSkills.lastOrNull ?? validSkills.last;
       } else {
-        skills[skillNum - 1] = validSkills.lastOrNull;
+        skills[skillNum - 1] = validSkills.last;
       }
     }
   }
@@ -374,13 +414,13 @@ class BattleTeamSetup {
   final List<PlayerSvtData> backupSvtDataList;
 
   final MysticCodeData mysticCodeData;
-  Region playerRegion;
+  Region? playerRegion;
 
   BattleTeamSetup({
     List<PlayerSvtData?>? onFieldSvtDataList,
     List<PlayerSvtData?>? backupSvtDataList,
     MysticCodeData? mysticCodeData,
-    this.playerRegion = Region.jp,
+    this.playerRegion,
   })  : onFieldSvtDataList = List.generate(3, (index) => onFieldSvtDataList?.getOrNull(index) ?? PlayerSvtData.base()),
         backupSvtDataList = List.generate(3, (index) => backupSvtDataList?.getOrNull(index) ?? PlayerSvtData.base()),
         mysticCodeData = mysticCodeData ?? MysticCodeData();

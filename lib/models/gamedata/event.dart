@@ -626,7 +626,7 @@ class EventMissionConditionDetail {
     this.targetIds = const [],
     this.addTargetIds = const [],
     this.targetQuestIndividualities = const [],
-     this.conditionLinkType=DetailMissionCondLinkType.missionStart,
+    this.conditionLinkType = DetailMissionCondLinkType.missionStart,
     this.targetEventIds,
     this.useAnd,
   });

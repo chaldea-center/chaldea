@@ -170,6 +170,8 @@ class Quest with RouteInfo {
 
   int getPhaseKey(int phase) => id * 100 + phase;
 
+  int? get jpOpenAdt => db.gameData.quests[id.abs()]?.openedAt;
+
   Transl<String, String> get lName {
     final names = Transl.questNames(name);
     if (names.maybeOf(null) == null && name.startsWith('強化クエスト')) {

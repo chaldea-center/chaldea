@@ -24,7 +24,7 @@ class _DragCEData {
 
 class ServantSelector extends StatelessWidget {
   final PlayerSvtData playerSvtData;
-  final Region playerRegion;
+  final Region? playerRegion;
   final QuestPhase? questPhase;
   final VoidCallback onChanged;
   final DragTargetAccept<PlayerSvtData>? onDragSvt;
@@ -34,7 +34,7 @@ class ServantSelector extends StatelessWidget {
   ServantSelector({
     super.key,
     required this.playerSvtData,
-    required this.playerRegion,
+    this.playerRegion,
     required this.questPhase,
     required this.onChanged,
     this.onDragSvt,
@@ -105,7 +105,11 @@ class ServantSelector extends StatelessWidget {
               ServantListPage(
                 planMode: false,
                 onSelected: (selectedSvt) {
-                  playerSvtData.onSelectServant(selectedSvt, playerRegion);
+                  playerSvtData.onSelectServant(
+                    selectedSvt,
+                    region: playerRegion,
+                    jpTime: questPhase?.jpOpenAdt,
+                  );
                   onChanged();
                 },
                 filterData: svtFilterData,
