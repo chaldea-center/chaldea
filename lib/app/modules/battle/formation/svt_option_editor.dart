@@ -135,9 +135,9 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         division: 200,
         valueFormatter: (_) => '+${playerSvtData.hpFou}',
         onChange: (v) {
-          final int fou = v.round() * 10;
+          final int fou = v.round() ~/ 10 * 10;
           if (fou > 1000) {
-            playerSvtData.hpFou = fou ~/ 10 * 10;
+            playerSvtData.hpFou = fou ~/ 20 * 20;
           } else {
             playerSvtData.hpFou = fou;
           }
