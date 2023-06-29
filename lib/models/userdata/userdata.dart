@@ -205,6 +205,7 @@ class User {
   Region region;
   Map<int, int> dupServantMapping; // <new id, original id>
   Map<int, SvtStatus> servants;
+  Map<int, ClassBoardPlan> classBoards;
   List<UserPlan> plans;
   bool sameEventPlan;
 
@@ -220,7 +221,6 @@ class User {
   Map<int, int> mysticCodes;
   Set<String> summons;
   Set<int> myRoomMusic;
-  Map<int, ClassBoardPlan> classBoards;
 
   FreeLPParams freeLPParams;
   Map<String, Map<int, int>> luckyBagSvtScores;
@@ -296,7 +296,14 @@ class User {
 
   ExchangeTicketPlan ticketOf(int key) => _curEventPlan.tickets.putIfAbsent(key, () => ExchangeTicketPlan());
 
-  ClassBoardPlan classBoardOf(int boardId) => classBoards.putIfAbsent(boardId, () => ClassBoardPlan());
+  ClassBoardPlan classBoardStatusOf(int boardId) => classBoards.putIfAbsent(boardId, () => ClassBoardPlan());
+
+  LockPlan classBoardUnlockedOf(int boardId, int squareId) => LockPlan.from(
+      classBoardStatusOf(boardId).unlockedSquares.contains(squareId),
+      curPlan_.classBoardPlan(boardId).unlockedSquares.contains(squareId));
+  LockPlan classBoardEnhancedOf(int boardId, int squareId) => LockPlan.from(
+      classBoardStatusOf(boardId).enhancedSquares.contains(squareId),
+      curPlan_.classBoardPlan(boardId).enhancedSquares.contains(squareId));
 
   void validate() {
     if (plans.isEmpty) {
@@ -431,6 +438,7 @@ class UserPlan {
   Map<int, LimitEventPlan> limitEvents;
   Map<int, MainStoryPlan> mainStories;
   Map<int, ExchangeTicketPlan> tickets;
+  Map<int, ClassBoardPlan> classBoards;
 
   UserPlan({
     this.title = '',
@@ -438,20 +446,25 @@ class UserPlan {
     Map<int, LimitEventPlan>? limitEvents,
     Map<int, MainStoryPlan>? mainStories,
     Map<int, ExchangeTicketPlan>? tickets,
+    Map<int, ClassBoardPlan>? classBoards,
   })  : servants = servants ?? {},
         limitEvents = limitEvents ?? {},
         mainStories = mainStories ?? {},
-        tickets = tickets ?? {};
+        tickets = tickets ?? {},
+        classBoards = classBoards ?? {};
 
   factory UserPlan.fromJson(Map<String, dynamic> json) => _$UserPlanFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserPlanToJson(this);
+
+  ClassBoardPlan classBoardPlan(int boardId) => classBoards.putIfAbsent(boardId, () => ClassBoardPlan());
 
   void clear() {
     servants.clear();
     limitEvents.clear();
     mainStories.clear();
     tickets.clear();
+    classBoards.clear();
   }
 
   void sort() {
@@ -459,6 +472,7 @@ class UserPlan {
     limitEvents = sortDict(limitEvents);
     mainStories = sortDict(mainStories);
     tickets = sortDict(tickets);
+    classBoards = sortDict(classBoards);
   }
 }
 
@@ -817,14 +831,14 @@ class CmdCodeStatus {
 
 @JsonSerializable(converters: [LockPlanConverter()])
 class ClassBoardPlan {
-  Map<int, LockPlan> unlockSquares;
-  Map<int, LockPlan> enhancedSquares;
+  Set<int> unlockedSquares;
+  Set<int> enhancedSquares;
 
   ClassBoardPlan({
-    Map<int, LockPlan>? unlockSquares,
-    Map<int, LockPlan>? enhancedSquares,
-  })  : unlockSquares = unlockSquares ?? {},
-        enhancedSquares = enhancedSquares ?? {};
+    dynamic unlockSquares,
+    dynamic enhancedSquares,
+  })  : unlockedSquares = unlockSquares is List ? Set.from(unlockSquares) : {},
+        enhancedSquares = enhancedSquares is List ? Set.from(enhancedSquares) : {};
 
   void validate() {
     //
@@ -863,6 +877,12 @@ enum LockPlan {
     if (v) return LockPlan.full;
     if (this == LockPlan.full) return LockPlan.planned;
     return this;
+  }
+
+  static LockPlan from(bool cur, bool target) {
+    if (cur) return full;
+    if (target) return planned;
+    return none;
   }
 }
 

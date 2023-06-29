@@ -160,11 +160,19 @@ extension IterableX<E> on Iterable<E> {
 }
 
 extension SetX<E> on Set<E> {
-  void toggle(E value) {
-    if (contains(value)) {
-      remove(value);
+  void toggle(E key, [bool? value]) {
+    if (value == null) {
+      if (contains(key)) {
+        remove(key);
+      } else {
+        add(key);
+      }
     } else {
-      add(value);
+      if (value) {
+        add(key);
+      } else {
+        remove(key);
+      }
     }
   }
 

@@ -712,16 +712,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     if (_includeClassBoard) {
       final userBoards = mstData?.userClassBoardSquare.toList() ?? [];
       for (final userBoard in userBoards) {
-        final plan = user.classBoardOf(userBoard.classBoardBaseId);
-        plan.unlockSquares = {
-          for (final id in <int>{...userBoard.classBoardUnlockSquareIds, ...plan.unlockSquares.keys})
-            id: (plan.unlockSquares[id] ?? LockPlan.none)
-                .updateCurrent(userBoard.classBoardUnlockSquareIds.contains(id)),
-        };
-        plan.enhancedSquares = {
-          for (final id in <int>{...userBoard.classBoardSquareIds, ...plan.enhancedSquares.keys})
-            id: (plan.enhancedSquares[id] ?? LockPlan.none).updateCurrent(userBoard.classBoardSquareIds.contains(id)),
-        };
+        final status = user.classBoardStatusOf(userBoard.classBoardBaseId);
+        status.unlockedSquares = userBoard.classBoardUnlockSquareIds.toSet();
+        status.enhancedSquares = userBoard.classBoardSquareIds.toSet();
       }
     }
     // 不删除原本信息

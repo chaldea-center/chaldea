@@ -63,7 +63,12 @@ class ClassBoard with RouteInfo {
     return lv;
   }
 
-  ClassBoardPlan get plan => db.curUser.classBoardOf(id);
+  ClassBoardPlan get status => db.curUser.classBoardStatusOf(id);
+  ClassBoardPlan get plan_ => db.curPlan_.classBoardPlan(id);
+  LockPlan unlockedOf(int squareId) =>
+      LockPlan.from(status.unlockedSquares.contains(squareId), plan_.unlockedSquares.contains(squareId));
+  LockPlan enhancedOf(int squareId) =>
+      LockPlan.from(status.enhancedSquares.contains(squareId), plan_.enhancedSquares.contains(squareId));
 
   factory ClassBoard.fromJson(Map<String, dynamic> json) => _$ClassBoardFromJson(json);
 

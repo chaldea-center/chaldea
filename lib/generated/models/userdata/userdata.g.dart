@@ -117,6 +117,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'region': const RegionConverter().toJson(instance.region),
       'dupServantMapping': instance.dupServantMapping.map((k, e) => MapEntry(k.toString(), e)),
       'servants': instance.servants.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'classBoards': instance.classBoards.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'plans': instance.plans.map((e) => e.toJson()).toList(),
       'sameEventPlan': instance.sameEventPlan,
       'curSvtPlanNo': instance.curSvtPlanNo,
@@ -126,7 +127,6 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'mysticCodes': instance.mysticCodes.map((k, e) => MapEntry(k.toString(), e)),
       'summons': instance.summons.toList(),
       'myRoomMusic': instance.myRoomMusic.toList(),
-      'classBoards': instance.classBoards.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'freeLPParams': instance.freeLPParams.toJson(),
       'luckyBagSvtScores':
           instance.luckyBagSvtScores.map((k, e) => MapEntry(k, e.map((k, e) => MapEntry(k.toString(), e)))),
@@ -186,6 +186,11 @@ UserPlan _$UserPlanFromJson(Map json) => $checkedCreate(
                     (k, e) => MapEntry(
                         int.parse(k as String), ExchangeTicketPlan.fromJson(Map<String, dynamic>.from(e as Map))),
                   )),
+          classBoards: $checkedConvert(
+              'classBoards',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), ClassBoardPlan.fromJson(e)),
+                  )),
         );
         return val;
       },
@@ -197,6 +202,7 @@ Map<String, dynamic> _$UserPlanToJson(UserPlan instance) => <String, dynamic>{
       'limitEvents': instance.limitEvents.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'mainStories': instance.mainStories.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'tickets': instance.tickets.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'classBoards': instance.classBoards.map((k, e) => MapEntry(k.toString(), e.toJson())),
     };
 
 SvtPlan _$SvtPlanFromJson(Map json) => $checkedCreate(
@@ -388,26 +394,17 @@ ClassBoardPlan _$ClassBoardPlanFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = ClassBoardPlan(
-          unlockSquares: $checkedConvert(
-              'unlockSquares',
-              (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), const LockPlanConverter().fromJson(e as int)),
-                  )),
-          enhancedSquares: $checkedConvert(
-              'enhancedSquares',
-              (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), const LockPlanConverter().fromJson(e as int)),
-                  )),
+          enhancedSquares: $checkedConvert('enhancedSquares', (v) => v),
         );
+        $checkedConvert(
+            'unlockedSquares', (v) => val.unlockedSquares = (v as List<dynamic>).map((e) => e as int).toSet());
         return val;
       },
     );
 
 Map<String, dynamic> _$ClassBoardPlanToJson(ClassBoardPlan instance) => <String, dynamic>{
-      'unlockSquares':
-          instance.unlockSquares.map((k, e) => MapEntry(k.toString(), const LockPlanConverter().toJson(e))),
-      'enhancedSquares':
-          instance.enhancedSquares.map((k, e) => MapEntry(k.toString(), const LockPlanConverter().toJson(e))),
+      'unlockedSquares': instance.unlockedSquares.toList(),
+      'enhancedSquares': instance.enhancedSquares.toList(),
     };
 
 SaintQuartzPlan _$SaintQuartzPlanFromJson(Map json) => $checkedCreate(

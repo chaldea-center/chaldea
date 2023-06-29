@@ -36,9 +36,8 @@ class _ClassBoardMapState extends State<ClassBoardMap> {
               if (img != null && mounted) setState(() {});
             },
             showPlanned: widget.showPlanned,
-            unlockSquares: board.plan.unlockSquares.keys.where((e) => board.plan.unlockSquares[e]!.current).toSet(),
-            enhancedSquares:
-                board.plan.enhancedSquares.keys.where((e) => board.plan.enhancedSquares[e]!.current).toSet(),
+            unlockSquares: board.status.unlockedSquares.toSet(),
+            enhancedSquares: board.status.enhancedSquares.toSet(),
           ),
           size: const Size(2048, 2048),
         ),
