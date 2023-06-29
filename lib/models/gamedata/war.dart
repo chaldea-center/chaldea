@@ -49,6 +49,14 @@ class NiceWar with RouteInfo {
   List<SpotRoad> spotRoads;
   List<WarQuestSelection> questSelections;
 
+  Set<int> get parentWars => {
+        parentWarId,
+        materialParentWarId,
+        for (final warAdd in warAdds)
+          if (warAdd.type == WarOverwriteType.parentWar || warAdd.type == WarOverwriteType.materialParentWar)
+            warAdd.overwriteId,
+      }.where((e) => e != 0).toSet();
+
   // if default banner is null, find overwriteBanner
   String? get shownBanner {
     String? banner;

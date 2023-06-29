@@ -16,8 +16,7 @@ class _ChaldeaGateTabState extends State<ChaldeaGateTab> {
     final wars = db.gameData.wars.values.where((war) {
       if (war.id < 1000 || war.eventId != 0) return false;
       if (war.id >= 11000 && war.id < 20000) {
-        return db.gameData.wars.values
-            .any((e) => e.warAdds.any((add) => add.type == WarOverwriteType.parentWar && add.overwriteId == war.id));
+        return db.gameData.wars.values.any((e) => e.parentWars.contains(war.id));
       }
       return true;
     }).toList();

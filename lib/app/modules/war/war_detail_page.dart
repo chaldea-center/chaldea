@@ -241,18 +241,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
       children.add(TileGroup(children: extraTiles));
     }
 
-    final subWars = db.gameData.wars.values.where((w) {
-      if (w.parentWarId == war.id) return true;
-      for (final warAdd in w.warAdds) {
-        if (warAdd.type == WarOverwriteType.parentWar && warAdd.overwriteId == war.id) {
-          return true;
-        }
-        if (warAdd.type == WarOverwriteType.materialParentWar && warAdd.overwriteId == war.id) {
-          return true;
-        }
-      }
-      return false;
-    }).toList();
+    final subWars = db.gameData.wars.values.where((w) => w.parentWars.contains(war.id)).toList();
     if (subWars.isNotEmpty) {
       subWars.sort2((e) => -e.priority);
       List<Widget> warTiles = [];

@@ -244,7 +244,7 @@ class Event {
     itemWarDrop.clear();
     for (final warId in warIds) {
       final war = gameData.wars[warId];
-      if (war == null) continue;
+      if (war == null || war.id < 1000) continue;
       itemWarReward.addDict(war.itemReward);
       itemWarDrop.addDict(war.itemDrop);
     }
