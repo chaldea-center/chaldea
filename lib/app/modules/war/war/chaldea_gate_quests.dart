@@ -30,7 +30,14 @@ class _ChaldeaGateQuestListPageState extends State<ChaldeaGateQuestListPage>
 
   @override
   Future<NiceWar?> fetchData(Region? r) async {
-    return AtlasApi.war(WarId.chaldeaGate, region: r ?? Region.jp);
+    r ??= Region.jp;
+    if (r == Region.jp) {
+      final war = db.gameData.wars[WarId.chaldeaGate];
+      if (war != null && war.quests.length > 500) {
+        return war;
+      }
+    }
+    return AtlasApi.war(WarId.chaldeaGate, region: r);
   }
 
   @override

@@ -509,7 +509,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
 
     if (war.id == WarId.chaldeaGate) {
       children.add(ListTile(
-        title: Text(S.current.general_others),
+        title: Text("${S.current.sort_order}: ${S.current.time}"),
         trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
         onTap: () {
           router.push(child: const ChaldeaGateQuestListPage());
