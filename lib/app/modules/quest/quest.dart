@@ -7,6 +7,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../common/filter_group.dart';
 
 class QuestDetailPage extends StatefulWidget {
   final int? id;
@@ -25,6 +26,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
   bool _loading = false;
   late Region region;
   Key uniqueKey = UniqueKey();
+  int phase = 0;
 
   @override
   void initState() {
@@ -32,6 +34,9 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
     region = _resolveDefaultRegion();
     _quest = widget.quest ?? (region == Region.jp ? db.gameData.quests[widget.id] : null);
     questId = _quest?.id ?? widget.id;
+    if (_quest != null && _quest!.isAnyFree && _quest!.phases.isNotEmpty) {
+      phase = _quest!.phases.last;
+    }
     _resolveQuest();
   }
 
@@ -136,12 +141,29 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                   : Text(S.current.quest_not_found_error(region.localName)),
             )
           : ListView(
+              padding: const EdgeInsets.symmetric(vertical: 8),
               children: [
+                if (quest.phases.length > 1)
+                  Center(
+                    child: FilterGroup<int>(
+                      combined: true,
+                      options: [0, ...quest.phases],
+                      values: FilterRadioData.nonnull(phase),
+                      padding: EdgeInsets.zero,
+                      optionBuilder: (v) => Text(v == 0 ? '※' : v.toString()),
+                      onFilterChanged: (v, _) {
+                        setState(() {
+                          phase = v.radioValue!;
+                        });
+                      },
+                    ),
+                  ),
                 QuestCard(
                   quest: quest,
                   region: region,
                   offline: false,
                   key: uniqueKey,
+                  displayPhases: quest.phases.contains(phase) ? [phase] : null,
                 ),
                 if (db.gameData.dropData.domusAurea.questIds.contains(quest.id)) blacklistButton,
                 SFooter(S.current.quest_region_has_enemy_hint),

@@ -656,7 +656,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                 children: divideList([
                   for (final flag in flags)
                     TextSpan(
-                      text: flag.name,
+                      text: flag.name.replaceAllMapped(RegExp(r'[A-Z]'), (match) => '\u200B${match.group(0)}'),
                       style: const TextStyle(fontSize: 12),
                     )
                 ], const TextSpan(text: ' / ')),
