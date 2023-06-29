@@ -315,8 +315,10 @@ class NiceSkill extends SkillOrTd with RouteInfo implements BaseSkill {
   @override
   String get route => _base.route;
   @override
-  void routeTo({Widget? child, bool popDetails = false, Region? region}) =>
-      _base.routeTo(child: child, popDetails: popDetails, region: region);
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) => super.routeTo(
+        child: child ?? SkillDetailPage(skill: this, region: region),
+        popDetails: popDetails,
+      );
 }
 
 extension BaseSkillMethods on BaseSkill {
@@ -693,8 +695,10 @@ class NiceTd extends SkillOrTd with RouteInfo implements BaseTd {
   @override
   String get route => _base.route;
   @override
-  void routeTo({Widget? child, bool popDetails = false, Region? region}) =>
-      _base.routeTo(child: child, popDetails: popDetails, region: region);
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) => super.routeTo(
+        child: child ?? TdDetailPage(td: this, region: region),
+        popDetails: popDetails,
+      );
 }
 
 extension TdMethods on BaseTd {
