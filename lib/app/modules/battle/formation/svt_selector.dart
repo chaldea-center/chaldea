@@ -108,7 +108,7 @@ class ServantSelector extends StatelessWidget {
                   playerSvtData.onSelectServant(
                     selectedSvt,
                     region: playerRegion,
-                    jpTime: questPhase?.jpOpenAdt,
+                    jpTime: questPhase?.jpOpenAt,
                   );
                   onChanged();
                 },

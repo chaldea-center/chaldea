@@ -942,7 +942,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           playerSvtData.onSelectServant(
             selectedSvt,
             region: widget.playerRegion,
-            jpTime: questPhase?.jpOpenAdt,
+            jpTime: questPhase?.jpOpenAt,
           );
           _updateState();
         },
@@ -986,7 +986,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           playerSvtData.onSelectServant(
             svt,
             region: widget.playerRegion,
-            jpTime: questPhase?.jpOpenAdt,
+            jpTime: questPhase?.jpOpenAt,
           );
           _updateState();
         },
@@ -1032,7 +1032,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     playerSvtData.onSelectServant(
       selectedSvt,
       region: widget.playerRegion,
-      jpTime: questPhase?.jpOpenAdt,
+      jpTime: questPhase?.jpOpenAt,
     );
     if (mounted) setState(() {});
     EasyLoading.showSuccess(S.current.updated);

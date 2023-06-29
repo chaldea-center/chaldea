@@ -466,7 +466,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   Widget partyOption() {
-    final jpTime = DateTime.fromMillisecondsSinceEpoch((questPhase?.jpOpenAdt ?? DateTime.now().timestamp) * 1000);
+    final jpTime = DateTime.fromMillisecondsSinceEpoch((questPhase?.jpOpenAt ?? DateTime.now().timestamp) * 1000);
     return Wrap(
       alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
