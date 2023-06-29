@@ -42,6 +42,8 @@ class ClassBoard with RouteInfo {
   String get uiIcon =>
       "https://static.atlasacademy.io/file/aa-fgo-extract-jp/ClassBoard/UI/DownloadClassBoardUIAtlas/DownloadClassBoardUIAtlas1/img_class_$id.png";
 
+  String get btnIcon => "https://static.atlasacademy.io/JP/ClassIcons/btn_tab_$id.png";
+
   String get dispName {
     if (id >= 1 && id <= 7) {
       if (classes.length == 1 && classes.single.classId == id) {

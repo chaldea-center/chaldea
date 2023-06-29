@@ -8,6 +8,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/searchable_list_state.dart';
+import 'board_cost.dart';
 import 'class_board.dart';
 
 class ClassBoardListPage extends StatefulWidget {
@@ -36,6 +37,15 @@ class ClassBoardListPageState extends State<ClassBoardListPage>
         leading: const MasterBackButton(),
         title: AutoSizeText(S.current.class_score, maxLines: 1),
         bottom: showSearchBar ? searchBar : null,
+        actions: [
+          IconButton(
+            onPressed: () {
+              router.pushPage(const ClassBoardItemCostPage());
+            },
+            icon: const Icon(Icons.analytics),
+            tooltip: S.current.statistics_title,
+          )
+        ],
       ),
     );
   }
@@ -43,21 +53,7 @@ class ClassBoardListPageState extends State<ClassBoardListPage>
   @override
   Widget listItemBuilder(ClassBoard board) {
     return ListTile(
-      leading: Stack(
-        alignment: Alignment.center,
-        children: [
-          db.getIconImage(
-            "https://static.atlasacademy.io/file/aa-fgo-extract-jp/ClassBoard/UI/DownloadClassBoardUIAtlas/DownloadClassBoardUIAtlas1/btn_class.png",
-            width: 40,
-            aspectRatio: 1,
-          ),
-          db.getIconImage(
-            board.uiIcon,
-            width: 40 * 120 / 128,
-            aspectRatio: 1,
-          ),
-        ],
-      ),
+      leading: db.getIconImage(board.btnIcon, width: 40, aspectRatio: 1),
       title: AutoSizeText(board.dispName, maxLines: 1),
       subtitle: Text('No.${board.id}'),
       trailing: IconButton(

@@ -34,6 +34,8 @@ import '../modules/battle/simulation_preview.dart';
 import '../modules/bgm/bgm.dart';
 import '../modules/bgm/bgm_list.dart';
 import '../modules/buff/buff_detail.dart';
+import '../modules/class_board/class_board.dart';
+import '../modules/class_board/class_board_list_page.dart';
 import '../modules/command_code/cmd_code.dart';
 import '../modules/command_code/cmd_code_list.dart';
 import '../modules/common/not_found.dart';
@@ -374,6 +376,10 @@ class RouteConfiguration {
         return BgmListPage();
       case Routes.bgm:
         return BgmDetailPage(id: _secondInt);
+      case Routes.classBoards:
+        return ClassBoardListPage();
+      case Routes.classBoard:
+        return ClassBoardDetailPage(id: _secondInt);
       case Routes.scriptHome:
         return const ScriptReaderEntryPage();
       case Routes.script:

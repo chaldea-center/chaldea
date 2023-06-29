@@ -108,7 +108,13 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
 
     List<Widget> rows = [
       CustomTableRow.fromTexts(texts: ['No.${board.id}'], isHeader: true),
-      CustomTableRow.fromTexts(texts: [board.dispName]),
+      CustomTableRow.fromChildren(children: [
+        Text.rich(TextSpan(children: [
+          CenterWidgetSpan(child: db.getIconImage(board.btnIcon, width: 24, aspectRatio: 1)),
+          const TextSpan(text: ' '),
+          TextSpan(text: board.dispName),
+        ]))
+      ]),
       if (board.condType != CondType.none) ...[
         CustomTableRow.fromTexts(texts: [S.current.condition], isHeader: true),
         CustomTableRow.fromChildren(children: [

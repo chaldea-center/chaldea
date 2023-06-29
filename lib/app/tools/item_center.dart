@@ -351,25 +351,32 @@ class ItemCenter {
   Map<int, int> calcClassBoardCost(SvtMatCostDetailType type) {
     Map<int, int> items = {};
     for (final board in db.gameData.classBoards.values) {
-      final status = user.classBoardStatusOf(board.id);
-      final plan = user.curPlan_.classBoardPlan(board.id);
-      for (final square in board.squares) {
-        final lock = square.lock;
-        if (lock != null) {
-          final lockPlan =
-              LockPlan.from(status.unlockedSquares.contains(square.id), plan.unlockedSquares.contains(square.id));
-          if (type.shouldCount(lockPlan)) {
-            for (final itemAmount in lock.items) {
-              items.addNum(itemAmount.itemId, itemAmount.amount);
-            }
-          }
-        }
-        final enhancePlan =
-            LockPlan.from(status.enhancedSquares.contains(square.id), plan.enhancedSquares.contains(square.id));
-        if (type.shouldCount(enhancePlan)) {
-          for (final itemAmount in square.items) {
+      items.addDict(calcOneClassBoardCost(board, type));
+    }
+    return items;
+  }
+
+  Map<int, int> calcOneClassBoardCost(ClassBoard board, SvtMatCostDetailType type) {
+    Map<int, int> items = {};
+
+    final status = user.classBoardStatusOf(board.id);
+    final plan = user.curPlan_.classBoardPlan(board.id);
+    for (final square in board.squares) {
+      final lock = square.lock;
+      if (lock != null) {
+        final lockPlan =
+            LockPlan.from(status.unlockedSquares.contains(square.id), plan.unlockedSquares.contains(square.id));
+        if (type.shouldCount(lockPlan)) {
+          for (final itemAmount in lock.items) {
             items.addNum(itemAmount.itemId, itemAmount.amount);
           }
+        }
+      }
+      final enhancePlan =
+          LockPlan.from(status.enhancedSquares.contains(square.id), plan.enhancedSquares.contains(square.id));
+      if (type.shouldCount(enhancePlan)) {
+        for (final itemAmount in square.items) {
+          items.addNum(itemAmount.itemId, itemAmount.amount);
         }
       }
     }
