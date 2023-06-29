@@ -28,6 +28,7 @@ import 'formation/default_lvs.dart';
 import 'formation/formation_storage.dart';
 import 'formation/quest_selector.dart';
 import 'formation/team.dart';
+import 'quest/quest_edit.dart';
 
 class SimulationPreview extends StatefulWidget {
   final Region? region;
@@ -410,48 +411,67 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       children: [
         if (questErrorMsg != null)
           SFooter.rich(TextSpan(text: questErrorMsg, style: TextStyle(color: Theme.of(context).colorScheme.error))),
+        // kDefaultDivider,
+        Wrap(
+          children: [
+            TextButton(
+              onPressed: () {
+                router.pushPage(QuestEditPage(
+                  quest: questPhase!,
+                  onComplete: (q) {
+                    q.id = -q.id.abs();
+                    questPhase = q;
+                    if (mounted) setState(() {});
+                  },
+                ));
+              },
+              style: kTextButtonDenseStyle,
+              child: Text(S.current.general_custom),
+            ),
+            TextButton(
+              onPressed: questPhase == null
+                  ? null
+                  : () {
+                      QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
+                      router.push(
+                        url: Routes.questI(questPhase!.id),
+                        child: QuestDetailPage(quest: questPhase),
+                        detail: true,
+                      );
+                    },
+              style: kTextButtonDenseStyle,
+              child: Text(S.current.quest_detail_btn),
+            ),
+            TextButton(
+              onPressed: questPhase == null
+                  ? null
+                  : () async {
+                      try {
+                        final text = const JsonEncoder.withIndent('  ').convert(questPhase);
+                        await FilePickerU.saveFile(
+                          dialogContext: context,
+                          data: utf8.encode(text),
+                          filename:
+                              "quest-${questPhase!.id}-${questPhase!.phase}-${DateTime.now().toSafeFileName()}.json",
+                        );
+                      } catch (e, s) {
+                        EasyLoading.showError(e.toString());
+                        logger.e('dump quest phase json failed', e, s);
+                        return;
+                      }
+                    },
+              style: kTextButtonDenseStyle,
+              child: Text('${S.current.general_export} JSON'),
+            ),
+          ],
+        ),
         if (questPhase == null)
           Text(
             S.current.battle_no_quest_phase,
             style: TextStyle(color: Theme.of(context).colorScheme.error),
             textAlign: TextAlign.center,
-          ),
-        if (questPhase != null) ...[
-          // kDefaultDivider,
-          Wrap(
-            children: [
-              TextButton(
-                onPressed: () {
-                  QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
-                  router.push(
-                    url: Routes.questI(questPhase!.id),
-                    child: QuestDetailPage(quest: questPhase),
-                    detail: true,
-                  );
-                },
-                style: kTextButtonDenseStyle,
-                child: Text(S.current.quest_detail_btn),
-              ),
-              TextButton(
-                onPressed: () async {
-                  try {
-                    final text = const JsonEncoder.withIndent('  ').convert(questPhase);
-                    await FilePickerU.saveFile(
-                      dialogContext: context,
-                      data: utf8.encode(text),
-                      filename: "quest-${questPhase!.id}-${questPhase!.phase}-${DateTime.now().toSafeFileName()}.json",
-                    );
-                  } catch (e, s) {
-                    EasyLoading.showError(e.toString());
-                    logger.e('dump quest phase json failed', e, s);
-                    return;
-                  }
-                },
-                style: kTextButtonDenseStyle,
-                child: Text('${S.current.general_export} JSON'),
-              ),
-            ],
-          ),
+          )
+        else
           QuestCard(
             region: questRegion,
             offline: false,
@@ -460,7 +480,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             battleOnly: true,
             preferredPhases: [questPhase!],
           ),
-        ]
       ],
     );
   }

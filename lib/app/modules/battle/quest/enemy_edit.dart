@@ -15,16 +15,24 @@ class QuestEnemyEditPage extends StatefulWidget {
   final bool simple;
   final QuestEnemy enemy;
   final QuestEnemy Function(QuestEnemy enemy)? onReset;
-  const QuestEnemyEditPage({super.key, required this.enemy, this.simple = false, this.onReset});
+  final QuestEnemy Function(QuestEnemy enemy)? onPaste;
+  final VoidCallback? onClear;
+  const QuestEnemyEditPage(
+      {super.key, required this.enemy, this.simple = false, this.onReset, this.onPaste, this.onClear});
 
   @override
   State<QuestEnemyEditPage> createState() => _QuestEnemyEditPageState();
 }
 
 class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
-  late QuestEnemy enemy = widget.enemy;
+  late QuestEnemy enemy = initEnemy(widget.enemy);
 
-  late Servant? niceSvt = db.gameData.servantsById[enemy.svt.id];
+  Servant? niceSvt;
+
+  QuestEnemy initEnemy(QuestEnemy e) {
+    niceSvt = db.gameData.servantsById[e.svt.id];
+    return e;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +44,25 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
             IconButton(
               onPressed: () {
                 setState(() {
-                  enemy = widget.onReset!(enemy);
+                  enemy = initEnemy(widget.onReset!(enemy));
                 });
               },
               icon: const Icon(Icons.restore),
               tooltip: S.current.reset,
             ),
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: Text(S.current.copy),
+                onTap: () {
+                  setState(() {
+                    db.runtimeData.clipBoard.questEnemy = enemy;
+                  });
+                  EasyLoading.showSuccess(S.current.copied);
+                },
+              ),
+            ],
+          )
         ],
       ),
       body: buildContent(context),
@@ -77,6 +98,25 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
             },
             child: Text(S.current.enemy),
           ),
+          if (widget.onPaste != null)
+            FilledButton(
+              onPressed: db.runtimeData.clipBoard.questEnemy == null
+                  ? null
+                  : () {
+                      final enemy2 = widget.onPaste!(db.runtimeData.clipBoard.questEnemy!);
+                      enemy = initEnemy(enemy2);
+                    },
+              child: Text(S.current.paste),
+            ),
+          if (widget.onClear != null)
+            FilledButton(
+              onPressed: () {
+                Navigator.pop(context);
+                widget.onClear!();
+              },
+              style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.errorContainer),
+              child: Text(S.current.remove),
+            ),
         ],
       ),
       const Divider(height: 16),

@@ -129,7 +129,7 @@ class QuestWave extends StatelessWidget {
     final backupEnemies = _enemyDeck.where((e) => e.deckId > maxEnemyOnField).toList();
     children.addAll(_buildDeck(onFieldEnemies, needSort: true));
     if (backupEnemies.isNotEmpty) {
-      children.add(const CustomPaint(painter: DashedLinePainter(), size: Size(double.infinity, 4)));
+      children.add(const CustomPaint(painter: DashedLinePainter(indent: 16), size: Size(double.infinity, 4)));
       children.addAll(_buildDeck(backupEnemies, needSort: true));
     }
     for (final e in _enemyDeck) {

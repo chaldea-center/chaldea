@@ -643,6 +643,8 @@ class Stage {
 
   factory Stage.fromJson(Map<String, dynamic> json) => _$StageFromJson(json);
 
+  int get enemyFieldPosCountReal => enemyFieldPosCount ?? 3;
+
   int? get enemyMasterBattleId => originalScript?['enemyMasterBattleId'];
   List<int>? get enemyMasterBattleIdByPlayerGender => toList(originalScript?['enemyMasterBattleIdByPlayerGender']);
   int? get battleMasterImageId => originalScript?['battleMasterImageId'];
