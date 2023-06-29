@@ -948,7 +948,7 @@ class CardDetail {
 
   CardDetail({
     this.hitsDistribution = const [],
-    required this.attackIndividuality,
+    this.attackIndividuality = const [],
     this.attackType = CommandCardAttackType.one,
     this.damageRate,
     this.attackNpRate,

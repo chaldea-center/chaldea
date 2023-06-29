@@ -43,12 +43,8 @@ class BattleHomePage extends StatelessWidget {
   Widget getBody(BuildContext context) {
     return ListView(
       children: [
-        const SizedBox(height: 8),
-        const Center(
-          child: Text('Testing/测试中...'),
-        ),
-        const SizedBox(height: 8),
         TileGroup(
+          header: "Testing/测试中...",
           children: [
             ListTile(
               leading: const Icon(Icons.calculate),
@@ -74,6 +70,11 @@ class BattleHomePage extends StatelessWidget {
                 router.push(url: Routes.laplaceManageTeam);
               },
             ),
+          ],
+        ),
+        TileGroup(
+          header: "(O_O)?",
+          children: [
             ListTile(
               title: Text(Language.isZH ? '常见问题/FAQ' : S.current.faq),
               leading: const Icon(Icons.question_answer),

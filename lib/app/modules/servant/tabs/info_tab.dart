@@ -33,6 +33,7 @@ class SvtInfoTab extends StatelessWidget {
       style: const TextStyle(fontWeight: FontWeight.bold),
       textAlign: TextAlign.center,
     );
+    final tdHits = {for (final td in svt.noblePhantasms) td.damage.toString(): td};
     return SingleChildScrollView(
       padding: const EdgeInsetsDirectional.only(bottom: 10),
       child: SafeArea(
@@ -222,7 +223,11 @@ class SvtInfoTab extends StatelessWidget {
                 )
               ]),
             if (svt.cardDetails.isNotEmpty) CustomTableRow.fromTexts(texts: const ['Hits'], defaults: headerData),
-            for (final entry in svt.cardDetails.entries) _addCardDetail(context, entry.key, entry.value),
+            for (final entry in svt.cardDetails.entries) _addCardDetail(context, entry.key.name.toTitle(), entry.value),
+            for (final td in tdHits.values)
+              if (td.damageType != TdEffectFlag.support)
+                _addCardDetail(
+                    context, S.current.np_short, CardDetail(attackIndividuality: [], hitsDistribution: td.damage)),
             if (svt.noblePhantasms.isNotEmpty) ...[
               CustomTableRow.fromTexts(texts: [S.current.info_np_rate], defaults: headerData),
               CustomTableRow.fromTexts(
@@ -391,7 +396,7 @@ class SvtInfoTab extends StatelessWidget {
     ];
   }
 
-  Widget _addCardDetail(BuildContext context, CardType card, CardDetail detail) {
+  Widget _addCardDetail(BuildContext context, String card, CardDetail detail) {
     List<InlineSpan> spans = [];
     final buffer = StringBuffer('  ');
     if (detail.hitsDistribution.isEmpty) {
@@ -419,7 +424,7 @@ class SvtInfoTab extends StatelessWidget {
           style: const TextStyle(fontSize: 12)));
     }
     return CustomTableRow(children: [
-      TableCellData(text: card.name.toTitle(), isHeader: true),
+      TableCellData(text: card, isHeader: true),
       TableCellData(
         child: Text.rich(TextSpan(children: spans)),
         flex: 5,

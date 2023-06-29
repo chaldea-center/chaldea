@@ -456,9 +456,10 @@ Map<String, dynamic> _$ExtraAssetsToJson(ExtraAssets instance) => <String, dynam
 
 CardDetail _$CardDetailFromJson(Map json) => CardDetail(
       hitsDistribution: (json['hitsDistribution'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
-      attackIndividuality: (json['attackIndividuality'] as List<dynamic>)
-          .map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+      attackIndividuality: (json['attackIndividuality'] as List<dynamic>?)
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       attackType: $enumDecodeNullable(_$CommandCardAttackTypeEnumMap, json['attackType']) ?? CommandCardAttackType.one,
       damageRate: json['damageRate'] as int?,
       attackNpRate: json['attackNpRate'] as int?,
