@@ -5,6 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/master_mission/solver/scheme.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -719,6 +720,45 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
 
     if (event.campaignQuests.isNotEmpty || event.campaigns.isNotEmpty) {
       children.add(EventCampaignDetailPage(event: event));
+    }
+
+    if (event.type == EventType.interludeCampaign) {
+      List<Quest> quests = db.gameData.quests.values
+          .where((quest) => quest.releaseOverwrites.any((e) => e.eventId == event.id))
+          .toList();
+      quests.sort2((e) => -e.priority);
+      if (quests.isNotEmpty) {
+        children.add(TileGroup(
+          header: S.current.interlude,
+          children: quests.map((quest) {
+            final svtId = quest.releaseConditions
+                .firstWhereOrNull((release) => [
+                      CondType.svtGet,
+                      CondType.svtFriendship,
+                    ].contains(release.type))
+                ?.targetId;
+            final svt = db.gameData.servantsById[svtId];
+            return ListTile(
+              leading: svt == null ? const SizedBox.shrink() : svt.iconBuilder(context: context, width: 40),
+              title: Text(quest.lName.l),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (final release in quest.releaseOverwrites)
+                    if (release.eventId == event.id)
+                      CondTargetValueDescriptor(
+                        condType: release.condType,
+                        target: release.condId,
+                        value: release.condNum,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      )
+                ],
+              ),
+              onTap: quest.routeTo,
+            );
+          }).toList(),
+        ));
+      }
     }
 
     if (event.extra.relatedSummons.isNotEmpty) {

@@ -3,6 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -275,22 +276,53 @@ class _QuestCardState extends State<QuestCard> {
   }
 
   Widget releaseConditions() {
+    List<Widget> children = [Center(child: _header(S.current.quest_condition))];
     final conds = quest.releaseConditions.where((cond) => !(cond.type == CondType.date && cond.value == 0)).toList();
+    children.addAll([
+      for (final cond in conds)
+        CondTargetValueDescriptor(
+          condType: cond.type,
+          target: cond.targetId,
+          value: cond.value,
+          missions: db.gameData.wars[quest.warId]?.event?.missions ?? [],
+        ),
+      Text('${S.current.time_start}: ${quest.openedAt.sec2date().toStringShort(omitSec: true)}'),
+      Text('${S.current.time_end}: ${quest.closedAt.sec2date().toStringShort(omitSec: true)}'),
+    ]);
+    final releaseOverwrites = <int, List<QuestReleaseOverwrite>>{};
+    for (final release in quest.releaseOverwrites) {
+      releaseOverwrites.putIfAbsent(release.eventId, () => []).add(release);
+    }
+    for (final entry in releaseOverwrites.entries) {
+      final event = db.gameData.events[entry.key];
+      String name = event?.lName.l ?? "Event ${entry.key}";
+      name = name.replaceAll(RegExp(r"\[(FFFF00|\-)\]"), '');
+      final release = entry.value.first;
+      children.addAll([
+        DividerWithTitle(
+          titleWidget: Text.rich(
+            SharedBuilder.textButtonSpan(context: context, text: name, onTap: event?.routeTo),
+            style: Theme.of(context).textTheme.bodySmall,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Text(
+          [release.startedAt.sec2date().toDateString(), release.endedAt.sec2date().toDateString()].join(" ~ "),
+          textScaleFactor: 0.9,
+        ),
+        for (final release in entry.value)
+          CondTargetValueDescriptor(
+            condType: release.condType,
+            target: release.condId,
+            value: release.condNum,
+          )
+      ]);
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Center(child: _header(S.current.quest_condition)),
-        for (final cond in conds)
-          CondTargetValueDescriptor(
-            condType: cond.type,
-            target: cond.targetId,
-            value: cond.value,
-            missions: db.gameData.wars[quest.warId]?.event?.missions ?? [],
-          ),
-        Text('${S.current.time_start}: ${quest.openedAt.sec2date().toStringShort(omitSec: true)}'),
-        Text('${S.current.time_end}: ${quest.closedAt.sec2date().toStringShort(omitSec: true)}'),
-      ],
+      children: children,
     );
   }
 }

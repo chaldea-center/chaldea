@@ -83,6 +83,7 @@ class Quest with RouteInfo {
   String? giftIcon;
   List<Gift> gifts;
   List<QuestRelease> releaseConditions;
+  List<QuestReleaseOverwrite> releaseOverwrites;
   List<int> phases;
   List<int> phasesWithEnemies;
   List<int> phasesNoBattle;
@@ -112,6 +113,7 @@ class Quest with RouteInfo {
     String? giftIcon,
     this.gifts = const [],
     this.releaseConditions = const [],
+    this.releaseOverwrites = const [],
     this.phases = const [],
     this.phasesWithEnemies = const [],
     this.phasesNoBattle = const [],
@@ -331,6 +333,7 @@ class QuestPhase extends Quest {
     super.gifts,
     super.giftIcon,
     super.releaseConditions,
+    super.releaseOverwrites,
     super.phases,
     super.phasesWithEnemies,
     super.phasesNoBattle,
@@ -681,6 +684,37 @@ class QuestRelease {
   factory QuestRelease.fromJson(Map<String, dynamic> json) => _$QuestReleaseFromJson(json);
 
   Map<String, dynamic> toJson() => _$QuestReleaseToJson(this);
+}
+
+@JsonSerializable()
+class QuestReleaseOverwrite {
+  int priority;
+  // int imagePriority;
+  @CondTypeConverter()
+  CondType condType;
+  int condId;
+  int condNum;
+  String closedMessage;
+  String overlayClosedMessage;
+  int eventId;
+  int startedAt;
+  int endedAt;
+
+  QuestReleaseOverwrite({
+    this.priority = 0,
+    this.condType = CondType.none,
+    this.condId = 0,
+    this.condNum = 0,
+    this.closedMessage = "",
+    this.overlayClosedMessage = "",
+    this.eventId = 0,
+    this.startedAt = 0,
+    this.endedAt = 0,
+  });
+
+  factory QuestReleaseOverwrite.fromJson(Map<String, dynamic> json) => _$QuestReleaseOverwriteFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestReleaseOverwriteToJson(this);
 }
 
 @JsonSerializable()

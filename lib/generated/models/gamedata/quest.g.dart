@@ -95,6 +95,10 @@ Quest _$QuestFromJson(Map json) => Quest(
               ?.map((e) => QuestRelease.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      releaseOverwrites: (json['releaseOverwrites'] as List<dynamic>?)
+              ?.map((e) => QuestReleaseOverwrite.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       phases: (json['phases'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       phasesWithEnemies: (json['phasesWithEnemies'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       phasesNoBattle: (json['phasesNoBattle'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
@@ -126,6 +130,7 @@ Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
       'giftIcon': instance.giftIcon,
       'gifts': instance.gifts.map((e) => e.toJson()).toList(),
       'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+      'releaseOverwrites': instance.releaseOverwrites.map((e) => e.toJson()).toList(),
       'phases': instance.phases,
       'phasesWithEnemies': instance.phasesWithEnemies,
       'phasesNoBattle': instance.phasesNoBattle,
@@ -165,6 +170,10 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
       giftIcon: json['giftIcon'] as String?,
       releaseConditions: (json['releaseConditions'] as List<dynamic>?)
               ?.map((e) => QuestRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      releaseOverwrites: (json['releaseOverwrites'] as List<dynamic>?)
+              ?.map((e) => QuestReleaseOverwrite.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       phases: (json['phases'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
@@ -242,6 +251,7 @@ Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic
       'giftIcon': instance.giftIcon,
       'gifts': instance.gifts.map((e) => e.toJson()).toList(),
       'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+      'releaseOverwrites': instance.releaseOverwrites.map((e) => e.toJson()).toList(),
       'phases': instance.phases,
       'phasesWithEnemies': instance.phasesWithEnemies,
       'phasesNoBattle': instance.phasesNoBattle,
@@ -403,6 +413,31 @@ Map<String, dynamic> _$QuestReleaseToJson(QuestRelease instance) => <String, dyn
       'targetId': instance.targetId,
       'value': instance.value,
       'closedMessage': instance.closedMessage,
+    };
+
+QuestReleaseOverwrite _$QuestReleaseOverwriteFromJson(Map json) => QuestReleaseOverwrite(
+      priority: json['priority'] as int? ?? 0,
+      condType:
+          json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
+      condId: json['condId'] as int? ?? 0,
+      condNum: json['condNum'] as int? ?? 0,
+      closedMessage: json['closedMessage'] as String? ?? "",
+      overlayClosedMessage: json['overlayClosedMessage'] as String? ?? "",
+      eventId: json['eventId'] as int? ?? 0,
+      startedAt: json['startedAt'] as int? ?? 0,
+      endedAt: json['endedAt'] as int? ?? 0,
+    );
+
+Map<String, dynamic> _$QuestReleaseOverwriteToJson(QuestReleaseOverwrite instance) => <String, dynamic>{
+      'priority': instance.priority,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'condId': instance.condId,
+      'condNum': instance.condNum,
+      'closedMessage': instance.closedMessage,
+      'overlayClosedMessage': instance.overlayClosedMessage,
+      'eventId': instance.eventId,
+      'startedAt': instance.startedAt,
+      'endedAt': instance.endedAt,
     };
 
 QuestPhaseScript _$QuestPhaseScriptFromJson(Map json) => QuestPhaseScript(
