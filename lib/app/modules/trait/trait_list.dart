@@ -73,16 +73,38 @@ class _TraitListPageState extends State<TraitListPage> with SearchableListState<
   @override
   Widget listItemBuilder(int id) {
     final trait = getTrait(id);
-    String name = Transl.trait(id).l;
-    String subtitle = 'ID $id';
-    if (trait != null) {
-      subtitle += '  ${trait.name}';
+    String title, subtitle;
+    if (Trait.isEventField(id)) {
+      title = 'ID $id';
+      final warIds = db.gameData.mappingData.fieldTrait[id]?.warIds.toList() ?? [];
+      warIds.sort();
+      if (warIds.length > 2 && warIds.every((e) => e < 1000)) {
+        subtitle = "War ${warIds.join('\u200B/')}";
+      } else {
+        subtitle = warIds
+            .map((e) {
+              final war = db.gameData.wars[e];
+              final event = war?.event;
+              if (event != null) return event.lShortName.l.setMaxLines(1);
+              if (war != null) return war.lShortName;
+              return "War $e";
+            })
+            .toSet()
+            .join(" / ");
+      }
+    } else {
+      title = Transl.trait(id).l;
+      subtitle = 'ID $id';
+      if (trait != null) {
+        subtitle += '  ${trait.name}';
+      }
     }
-    final hasTransl = id.toString() != name;
+
+    final hasTransl = id.toString() != title;
     return ListTile(
       dense: true,
-      title: Text(hasTransl ? name : subtitle),
-      subtitle: hasTransl ? Text(subtitle) : null,
+      title: Text(hasTransl ? title : subtitle),
+      subtitle: hasTransl ? Text(subtitle, maxLines: 2, overflow: TextOverflow.ellipsis) : null,
       onTap: () {
         if (widget.onSelected != null) {
           Navigator.pop(context);

@@ -741,6 +741,10 @@ enum Trait {
 
   final int id;
   const Trait(this.id);
+
+  static bool isEventField(int id) {
+    return id ~/ 1000 == 94000;
+  }
 }
 
 @JsonEnum(alwaysCreate: true)
