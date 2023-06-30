@@ -663,6 +663,7 @@
   "quest_chapter_n": "القسم {n}",
   "quest_condition": "الظروف",
   "quest_detail_btn": "التفاصيل",
+  "quest_edit_hint": null,
   "quest_enemy_summary_hint": null,
   "quest_fields": null,
   "quest_fixed_drop": null,

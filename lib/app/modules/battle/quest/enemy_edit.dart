@@ -25,13 +25,19 @@ class QuestEnemyEditPage extends StatefulWidget {
 }
 
 class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
-  late QuestEnemy enemy = initEnemy(widget.enemy);
-
+  late QuestEnemy enemy;
   Servant? niceSvt;
 
   QuestEnemy initEnemy(QuestEnemy e) {
     niceSvt = db.gameData.servantsById[e.svt.id];
+    enemy = e;
     return e;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initEnemy(widget.enemy);
   }
 
   @override
@@ -44,7 +50,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
             IconButton(
               onPressed: () {
                 setState(() {
-                  enemy = initEnemy(widget.onReset!(enemy));
+                  initEnemy(widget.onReset!(enemy));
                 });
               },
               icon: const Icon(Icons.restore),
@@ -105,6 +111,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
                   : () {
                       final enemy2 = widget.onPaste!(db.runtimeData.clipBoard.questEnemy!);
                       enemy = initEnemy(enemy2);
+                      setState(() {});
                     },
               child: Text(S.current.paste),
             ),

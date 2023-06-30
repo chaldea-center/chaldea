@@ -993,7 +993,7 @@ class QuestEnemy with GameCardMixin {
   int deckId;
   // int userSvtId;
   // int uniqueId;
-  int npcId;
+  int npcId; // not unique even in same deck
   EnemyRoleType roleType;
   @override
   String name;

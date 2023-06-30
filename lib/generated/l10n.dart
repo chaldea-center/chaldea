@@ -7361,6 +7361,17 @@ class S {
     );
   }
 
+  /// `For event effects, both war and field trait(94000xxx) are required to be correctly set.\nOnly basic quest/enemy edit supported, special functions (multiple hp bar/shiftServant) are not supported. Customize JSON data for complex quest.`
+  String get quest_edit_hint {
+    return Intl.message(
+      'For event effects, both war and field trait(94000xxx) are required to be correctly set.\nOnly basic quest/enemy edit supported, special functions (multiple hp bar/shiftServant) are not supported. Customize JSON data for complex quest.',
+      name: 'quest_edit_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `A summary for enemies in free quest from Main Story, any property may be overridden from server. Only for reference.\n*Special* Trait means only part of enemies have this trait.`
   String get quest_enemy_summary_hint {
     return Intl.message(

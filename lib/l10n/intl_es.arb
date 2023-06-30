@@ -663,6 +663,7 @@
   "quest_chapter_n": "Sección {n}",
   "quest_condition": "Condiciones",
   "quest_detail_btn": "detalles",
+  "quest_edit_hint": null,
   "quest_enemy_summary_hint": null,
   "quest_fields": "Terrenos",
   "quest_fixed_drop": "Drops",

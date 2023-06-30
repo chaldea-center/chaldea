@@ -75,7 +75,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
       appBar: AppBar(
         title: AutoSizeText(_quest?.lNameWithChapter ?? 'Quest $questId', maxLines: 1, minFontSize: 12),
         actions: [
-          if (widget.questPhase != null)
+          if (widget.questPhase == null)
             DropdownButton<Region>(
               value: region,
               items: [
@@ -119,6 +119,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
               ),
               const PopupMenuDivider(),
               PopupMenuItem(
+                enabled: widget.questPhase == null,
                 onTap: () {
                   final key = '/quest/$questId/';
                   AtlasApi.cachedQuestPhases.removeWhere((key, value) => key.contains(key));

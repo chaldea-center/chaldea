@@ -663,6 +663,7 @@
   "quest_chapter_n": "제{n}절",
   "quest_condition": "개방 조건",
   "quest_detail_btn": "세부",
+  "quest_edit_hint": null,
   "quest_enemy_summary_hint": "메인 스토리의 무료 퀘스트에서 적에 대한 요약, 모든 속성은 서버에서 재정의될 수 있습니다. 참고용으로만.\n*특수* 특성은 적의 일부만이 이 가지고 있는 특성을 말한다.",
   "quest_fields": "필드",
   "quest_fixed_drop": "드롭",

@@ -758,6 +758,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_chapter_n": m9,
         "quest_condition": MessageLookupByLibrary.simpleMessage("开放条件"),
         "quest_detail_btn": MessageLookupByLibrary.simpleMessage("详情"),
+        "quest_edit_hint": MessageLookupByLibrary.simpleMessage(
+            "若需使用活动效果，对应的关卡配置以及场地特性(94000xxx)均需正确设置。\n仅支持基础关卡和敌人属性编辑，不支持多血条等复杂情形。复杂情况请自定义JSON。"),
         "quest_enemy_summary_hint":
             MessageLookupByLibrary.simpleMessage("主线Free本中敌人信息的汇总，任何属性均可能被服务器所覆盖，仅供参考。\n*特殊*特性指仅部分敌人持有的特性。"),
         "quest_fields": MessageLookupByLibrary.simpleMessage("场地"),

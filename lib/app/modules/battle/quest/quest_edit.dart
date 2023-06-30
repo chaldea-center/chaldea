@@ -20,7 +20,14 @@ class QuestEditPage extends StatefulWidget {
 }
 
 class _QuestEditPageState extends State<QuestEditPage> {
-  late QuestPhase quest = widget.quest == null ? getBlankQuest() : QuestPhase.fromJson(widget.quest!.toJson());
+  late QuestPhase quest;
+
+  @override
+  void initState() {
+    super.initState();
+    quest = widget.quest == null ? getBlankQuest() : QuestPhase.fromJson(widget.quest!.toJson());
+    quest.id = -quest.id.abs();
+  }
 
   QuestPhase getBlankQuest() {
     final id = -(DateTime.now().timestamp % 10000000);
@@ -34,21 +41,18 @@ class _QuestEditPageState extends State<QuestEditPage> {
   }
 
   void onConfirm() {
+    if (quest.stages.isEmpty) {
+      EasyLoading.showError(S.current.empty_hint);
+      return;
+    }
     for (final stage in quest.stages) {
       final enemies = stage.enemies.where((e) => e.deck == DeckType.enemy).toList();
       final onFieldEnemies = enemies.where((e) => e.deckId <= (stage.enemyFieldPosCountReal)).toList();
       if (onFieldEnemies.isEmpty) {
         EasyLoading.showError(
-            '${S.current.quest_wave} ${stage.wave}: NO on field enemy (Pos 1-${stage.enemyFieldPosCountReal})');
+            '${S.current.quest_wave} ${stage.wave}: ${S.current.empty_hint} (Pos 1-${stage.enemyFieldPosCountReal})');
         return;
       }
-      assert(() {
-        final npcIds = enemies.map((e) => e.npcId);
-        if (npcIds.toSet().length != enemies.length) {
-          throw ArgumentError.value(npcIds, 'npcId', "duplicated npcId found in enemy deck");
-        }
-        return true;
-      }());
     }
     Navigator.pop(context);
     widget.onComplete(quest);
@@ -65,14 +69,24 @@ class _QuestEditPageState extends State<QuestEditPage> {
           title: Text(quest.name),
           leading: BackButton(
             onPressed: () {
-              SimpleCancelOkDialog(
-                title: Text(S.current.confirm),
-                content: const Text('Apply changes?'),
-                onTapOk: onConfirm,
-                onTapCancel: () {
-                  Navigator.pop(context);
-                },
-              ).showDialog(context);
+              showDialog(
+                context: context,
+                useRootNavigator: false,
+                builder: (context) => SimpleCancelOkDialog(
+                  title: Text(S.current.save),
+                  confirmText: "YES",
+                  onTapOk: onConfirm,
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                      },
+                      child: const Text("NO"),
+                    ),
+                  ],
+                ),
+              );
             },
           ),
         ),
@@ -120,6 +134,10 @@ class _QuestEditPageState extends State<QuestEditPage> {
     }, reversed: true);
     List<Widget> children = [
       ListTile(
+        leading: const Text("ID"),
+        trailing: Text(quest.id.toString()),
+      ),
+      ListTile(
         title: Text(S.current.name),
         trailing: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 150, minWidth: 100),
@@ -148,30 +166,30 @@ class _QuestEditPageState extends State<QuestEditPage> {
       ListTile(
         title: Text(S.current.war),
         subtitle: Text(S.current.event),
-        trailing: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 200),
-          child: DropdownButton<int>(
-            value: quest.warId,
-            isDense: true,
-            isExpanded: true,
-            alignment: AlignmentDirectional.centerEnd,
-            items: [
-              for (final warId in warIds)
-                DropdownMenuItem(
-                  value: warId,
+        trailing: DropdownButton<int>(
+          value: quest.warId,
+          isDense: true,
+          underline: const SizedBox.shrink(),
+          alignment: AlignmentDirectional.centerEnd,
+          items: [
+            for (final warId in warIds)
+              DropdownMenuItem(
+                value: warId,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 200),
                   child: Text(
                     warId == 0 ? '0-none' : "$warId-${db.gameData.wars[warId]?.lName.l}",
                     textScaleFactor: 0.8,
                     maxLines: 1,
                   ),
-                )
-            ],
-            onChanged: (v) {
-              setState(() {
-                quest.warId = v ?? 0;
-              });
-            },
-          ),
+                ),
+              )
+          ],
+          onChanged: (v) {
+            setState(() {
+              quest.warId = v ?? 0;
+            });
+          },
         ),
       ),
       ListTile(
@@ -193,8 +211,7 @@ class _QuestEditPageState extends State<QuestEditPage> {
           tooltip: S.current.edit,
         ),
       ),
-      const SFooter("For event effect, make sure both war and field trait(94000xxx) are selected"),
-      const SFooter('Only simple quest supported, won\'t support shiftServant etc.'),
+      SFooter(S.current.quest_edit_hint),
     ];
     for (int index = 0; index < quest.stages.length; index++) {
       children.addAll(buildStage(index, quest.stages[index]));
@@ -225,37 +242,39 @@ class _QuestEditPageState extends State<QuestEditPage> {
     stage.wave = index + 1;
     List<Widget> children = [
       DividerWithTitle(title: '${S.current.quest_wave} ${stage.wave}', indent: 16),
-      Center(
-        child: TextButton(
-          onPressed: () {
-            setState(() {
-              quest.stages.removeAt(index);
-            });
-          },
-          child: Text(
-            S.current.remove,
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
+      Wrap(
+        alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 4,
+        children: [
+          TextButton(
+            onPressed: () {
+              setState(() {
+                quest.stages.removeAt(index);
+              });
+            },
+            child: Text(
+              S.current.remove,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
           ),
-        ),
-      ),
-      ListTile(
-        dense: true,
-        title: Text(S.current.max_enemy_on_stage),
-        trailing: DropdownButton<int>(
-          value: stage.enemyFieldPosCount ?? 3,
-          items: [
-            for (final count in {3, 6, stage.enemyFieldPosCount ?? 3})
-              DropdownMenuItem(value: count, child: Text(count.toString())),
-          ],
-          onChanged: (v) {
-            setState(() {
-              stage.enemyFieldPosCount = v;
-            });
-          },
-        ),
+          Text('${S.current.max_enemy_on_stage}:'),
+          DropdownButton<int>(
+            value: stage.enemyFieldPosCountReal,
+            items: [
+              for (final count in {3, 6, stage.enemyFieldPosCountReal})
+                DropdownMenuItem(value: count, child: Text(count.toString())),
+            ],
+            onChanged: (v) {
+              setState(() {
+                stage.enemyFieldPosCount = v;
+              });
+            },
+          )
+        ],
       ),
     ];
-    final onFieldCount = stage.enemyFieldPosCount ?? 3;
+    final onFieldCount = stage.enemyFieldPosCountReal;
     final enemies = {
       for (final enemy in stage.enemies)
         if (enemy.deck == DeckType.enemy) enemy.deckId: enemy,
@@ -269,7 +288,11 @@ class _QuestEditPageState extends State<QuestEditPage> {
     }
     const int colPerRow = 3;
     final rowCount = (enemyDeck.length / colPerRow).ceil();
+    final onFieldRowCount = (onFieldCount / colPerRow).ceil();
     for (int row = 0; row < rowCount; row++) {
+      if (row == onFieldRowCount) {
+        children.add(const CustomPaint(painter: DashedLinePainter(indent: 16), size: Size(double.infinity, 16)));
+      }
       children.add(Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Row(
