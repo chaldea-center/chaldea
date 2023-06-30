@@ -13,6 +13,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../descriptors/skill_descriptor.dart';
+import '../quest/quest.dart';
 import 'simulation/battle_log.dart';
 import 'simulation/combat_action_selector.dart';
 import 'simulation/custom_skill_activator.dart';
@@ -131,10 +132,13 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
   List<PopupMenuEntry> popupMenuItemBuilder(BuildContext context) {
     List<PopupMenuEntry<dynamic>> items = [
       PopupMenuItem(
-        enabled: battleData.niceQuest != null,
         onTap: () async {
           await null;
-          battleData.niceQuest?.routeTo();
+          router.push(
+            url: Routes.questI(questPhase.id),
+            child: QuestDetailPage.phase(questPhase: questPhase),
+            detail: true,
+          );
         },
         child: Text(S.current.quest),
       ),

@@ -13,7 +13,12 @@ class QuestDetailPage extends StatefulWidget {
   final int? id;
   final Quest? quest;
   final Region? region;
-  const QuestDetailPage({super.key, this.id, this.quest, this.region});
+  final QuestPhase? questPhase;
+  const QuestDetailPage({super.key, this.id, this.quest, this.region}) : questPhase = null;
+  QuestDetailPage.phase({super.key, required QuestPhase this.questPhase})
+      : region = null,
+        id = questPhase.id,
+        quest = questPhase;
 
   @override
   State<QuestDetailPage> createState() => _QuestDetailPageState();
@@ -58,7 +63,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
     if (_quest == null && questId != null) {
       _loading = true;
       if (mounted) setState(() {});
-      _quest = await AtlasApi.quest(questId!, region: region);
+      _quest = widget.questPhase ?? await AtlasApi.quest(questId!, region: region);
       _loading = false;
     }
     if (mounted) setState(() {});
@@ -70,40 +75,41 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
       appBar: AppBar(
         title: AutoSizeText(_quest?.lNameWithChapter ?? 'Quest $questId', maxLines: 1, minFontSize: 12),
         actions: [
-          DropdownButton<Region>(
-            value: region,
-            items: [
-              for (final region in Region.values)
-                DropdownMenuItem(
-                  value: region,
-                  child: Text(region.localName),
-                ),
-            ],
-            icon: Icon(
-              Icons.arrow_drop_down,
-              color: SharedBuilder.appBarForeground(context),
-            ),
-            selectedItemBuilder: (context) => [
-              for (final region in Region.values)
-                DropdownMenuItem(
-                  child: Text(
-                    region.localName,
-                    style: TextStyle(color: SharedBuilder.appBarForeground(context)),
+          if (widget.questPhase != null)
+            DropdownButton<Region>(
+              value: region,
+              items: [
+                for (final region in Region.values)
+                  DropdownMenuItem(
+                    value: region,
+                    child: Text(region.localName),
                   ),
-                )
-            ],
-            onChanged: (v) {
-              setState(() {
-                if (v != null) {
-                  region = v;
-                  _quest = null;
-                  _resolveQuest();
-                  setState(() {});
-                }
-              });
-            },
-            underline: const SizedBox(),
-          ),
+              ],
+              icon: Icon(
+                Icons.arrow_drop_down,
+                color: SharedBuilder.appBarForeground(context),
+              ),
+              selectedItemBuilder: (context) => [
+                for (final region in Region.values)
+                  DropdownMenuItem(
+                    child: Text(
+                      region.localName,
+                      style: TextStyle(color: SharedBuilder.appBarForeground(context)),
+                    ),
+                  )
+              ],
+              onChanged: (v) {
+                setState(() {
+                  if (v != null) {
+                    region = v;
+                    _quest = null;
+                    _resolveQuest();
+                    setState(() {});
+                  }
+                });
+              },
+              underline: const SizedBox(),
+            ),
           PopupMenuButton<dynamic>(
             itemBuilder: (context) => [
               PopupMenuItem(
@@ -143,7 +149,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
           : ListView(
               padding: const EdgeInsets.symmetric(vertical: 8),
               children: [
-                if (quest.phases.length > 1)
+                if (quest.phases.length > 1 && widget.questPhase == null)
                   Center(
                     child: FilterGroup<int>(
                       combined: true,
@@ -158,13 +164,23 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                       },
                     ),
                   ),
-                QuestCard(
-                  quest: quest,
-                  region: region,
-                  offline: false,
-                  key: uniqueKey,
-                  displayPhases: quest.phases.contains(phase) ? [phase] : null,
-                ),
+                if (widget.questPhase != null)
+                  QuestCard(
+                    quest: quest,
+                    region: null,
+                    offline: false,
+                    // key: uniqueKey,
+                    displayPhases: [widget.questPhase!.phase],
+                    preferredPhases: [widget.questPhase!],
+                  )
+                else
+                  QuestCard(
+                    quest: quest,
+                    region: region,
+                    offline: false,
+                    key: uniqueKey,
+                    displayPhases: quest.phases.contains(phase) ? [phase] : null,
+                  ),
                 if (db.gameData.dropData.domusAurea.questIds.contains(quest.id)) blacklistButton,
                 SFooter(S.current.quest_region_has_enemy_hint),
                 ...getCampaigns(),

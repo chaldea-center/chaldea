@@ -424,6 +424,7 @@ class AtlasApi {
   }
 
   static Future<Quest?> quest(int questId, {Region region = Region.jp, Duration? expireAfter}) {
+    if (questId < 0) return Future.value();
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/quest/$questId',
       (data) => Quest.fromJson(data),
@@ -433,6 +434,8 @@ class AtlasApi {
 
   static Future<QuestPhase?> questPhase(int questId, int phase,
       {String? hash, Region region = Region.jp, Duration? expireAfter}) async {
+    if (questId < 0) return Future.value();
+
     if (hash != null) hash = hash.trim();
     String url = questPhaseUrl(questId, phase, hash, region);
     QuestPhase? phaseCache;

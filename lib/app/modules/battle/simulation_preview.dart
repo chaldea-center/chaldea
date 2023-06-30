@@ -435,7 +435,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                       QuestPhaseWidget.addPhaseSelectCallback(_questSelectCallback);
                       router.push(
                         url: Routes.questI(questPhase!.id),
-                        child: QuestDetailPage(quest: questPhase),
+                        child: QuestDetailPage.phase(questPhase: questPhase!),
                         detail: true,
                       );
                     },
