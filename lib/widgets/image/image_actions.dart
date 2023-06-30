@@ -75,7 +75,10 @@ class ImageActions {
                   provider = FileImage(File(srcFp));
                 }
                 if (provider == null) return;
-                router.pushPage(FullscreenImageViewer(children: [Image(image: provider)]));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FullscreenImageViewer(children: [Image(image: provider!)])),
+                );
               },
             ),
           if (PlatformU.supportCopyImage && (data != null || srcFp != null))
@@ -84,7 +87,7 @@ class ImageActions {
               title: Text(S.current.copy),
               onTap: () async {
                 try {
-                  Navigator.pop(context);
+                  // Navigator.pop(context);
                   Uint8List? _bytes = data;
                   _bytes ??= await FilePlus(srcFp!).readAsBytes();
                   await Pasteboard.writeImage(_bytes);
