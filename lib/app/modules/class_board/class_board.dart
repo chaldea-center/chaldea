@@ -229,7 +229,9 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
             alignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
-                onPressed: _onSetAllPlan,
+                onPressed: () {
+                  showDialog(context: context, useRootNavigator: false, builder: setAllDialog);
+                },
                 child: Text(S.current.set_all),
               ),
             ],
@@ -329,56 +331,39 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
     );
   }
 
-  void _onSetAllPlan() {
-    showDialog(
-      context: context,
-      useRootNavigator: false,
-      builder: (context) {
-        return SimpleDialog(
-          title: Text(S.current.set_all),
-          children: [
-            for (final v in LockPlan.values)
-              SimpleDialogOption(
-                child: Text(v.dispPlan),
-                onPressed: () {
-                  Navigator.pop(context);
-                  final enhanceSquareIds = board.squares.where((e) => e.items.isNotEmpty).map((e) => e.id).toSet();
+  Widget setAllDialog(BuildContext context) {
+    return SimpleDialog(
+      title: Text(S.current.set_all),
+      children: [
+        for (final isCur in [true, false]) ...[
+          SimpleDialogOption(
+            child: Text(
+              isCur ? S.current.current_ : S.current.target,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+          for (final value in [false, true])
+            SimpleDialogOption(
+              child: Text(value ? '1' : '0'),
+              onPressed: () {
+                Navigator.pop(context);
+                final target = isCur ? status : plan_;
+                if (value) {
                   final lockSquareIds =
                       board.squares.where((e) => e.lock != null && e.lock!.items.isNotEmpty).map((e) => e.id).toSet();
-                  switch (v) {
-                    case LockPlan.none:
-                      status
-                        ..unlockedSquares.clear()
-                        ..enhancedSquares.clear();
-                      plan_
-                        ..unlockedSquares.clear()
-                        ..enhancedSquares.clear();
-                      break;
-                    case LockPlan.planned:
-                      status
-                        ..unlockedSquares.clear()
-                        ..enhancedSquares.clear();
-                      plan_
-                        ..unlockedSquares = lockSquareIds.toSet()
-                        ..enhancedSquares = enhanceSquareIds.toSet();
-                      break;
-                    case LockPlan.full:
-                      status
-                        ..unlockedSquares = lockSquareIds.toSet()
-                        ..enhancedSquares = enhanceSquareIds.toSet();
-
-                      plan_
-                        ..unlockedSquares = lockSquareIds.toSet()
-                        ..enhancedSquares = enhanceSquareIds.toSet();
-                      break;
-                  }
-                  if (mounted) setState(() {});
-                  db.itemCenter.updateClassBoard();
-                },
-              )
-          ],
-        );
-      },
+                  final enhanceSquareIds = board.squares.where((e) => e.items.isNotEmpty).map((e) => e.id).toSet();
+                  target.unlockedSquares = lockSquareIds.toSet();
+                  target.enhancedSquares = enhanceSquareIds.toSet();
+                } else {
+                  target.unlockedSquares.clear();
+                  target.enhancedSquares.clear();
+                }
+                if (mounted) setState(() {});
+                db.itemCenter.updateClassBoard();
+              },
+            ),
+        ],
+      ],
     );
   }
 }
