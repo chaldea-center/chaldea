@@ -167,9 +167,11 @@ class NiceWar with RouteInfo {
     return 'War $id';
   }
 
-  bool get isMainStory => id >= 100 && id < 1000;
+  bool get isMainStory => (id >= 100 && id < 1000) || flags.contains(WarFlag.mainScenario);
 
   Event? get event => db.gameData.events[eventId];
+  // exclude 1.7/1.5.1-1.5.4/2.7
+  Event? get eventReal => isMainStory ? null : db.gameData.events[eventId];
 
   @override
   String get route => Routes.warI(id);

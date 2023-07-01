@@ -24,7 +24,7 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
     quest = db.gameData.quests[widget.initQuestId];
     warId = quest?.warId ?? warId;
     final warList = db.gameData.wars.values.where((e) => e.quests.any((q) => q.isAnyFree)).toList();
-    warList.sort2((e) => e.id < 1000 ? 1000 - e.id : kNeverClosedTimestamp - (e.event?.startedAt ?? e.id));
+    warList.sort2((e) => e.isMainStory ? 10000 - e.id : kNeverClosedTimestamp - (e.eventReal?.startedAt ?? e.id));
     wars = {for (final war in warList) war.id: war};
     if (wars[warId] == null) {
       warId = wars.keys.firstOrNull;
@@ -71,7 +71,7 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
           DropdownMenuItem(
             value: war.id,
             child: Text(
-              (war.id < 1000 ? war.lShortName : war.event?.lShortName.l ?? war.lShortName).setMaxLines(1).breakWord,
+              (war.eventReal?.lShortName.l ?? war.lShortName).setMaxLines(1).breakWord,
               maxLines: 2,
               style: const TextStyle(fontSize: 12),
               overflow: TextOverflow.ellipsis,

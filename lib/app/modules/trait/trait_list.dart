@@ -84,7 +84,7 @@ class _TraitListPageState extends State<TraitListPage> with SearchableListState<
         subtitle = warIds
             .map((e) {
               final war = db.gameData.wars[e];
-              final event = war?.event;
+              final event = war?.eventReal;
               if (event != null) return event.lShortName.l.setMaxLines(1);
               if (war != null) return war.lShortName;
               return "War $e";

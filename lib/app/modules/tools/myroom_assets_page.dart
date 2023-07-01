@@ -117,7 +117,7 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
                 }
                 if (room.condType == 1 || room.condType == 46) {
                   final war = db.gameData.quests[room.condValue]?.war;
-                  final event = war?.event;
+                  final event = war?.eventReal;
                   if (isMain && event == null && war != null) {
                     wars.add(war);
                   } else if (event != null) {

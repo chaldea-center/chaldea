@@ -128,8 +128,8 @@ class _QuestEditPageState extends State<QuestEditPage> {
         <int>{0, quest.warId, ...db.gameData.wars.values.where((e) => e.quests.isNotEmpty).map((e) => e.id)}.toList();
     warIds.sort2((e) {
       if (e == 0) return double.infinity;
-      final event = db.gameData.wars[e]?.event;
-      if (e < 1000 || event == null) return e;
+      final event = db.gameData.wars[e]?.eventReal;
+      if (event == null) return e;
       return event.startedAt;
     }, reversed: true);
     List<Widget> children = [

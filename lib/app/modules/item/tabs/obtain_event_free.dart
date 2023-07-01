@@ -94,7 +94,7 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
     final tmpData = <Tuple4<double, double, Widget, Quest>>[];
     for (final questId in quests.keys) {
       final quest = quests[questId]!;
-      final event = quest.war?.event;
+      final event = quest.war?.eventReal;
 
       bool outdated;
       final delaySecs = db.curUser.region.eventDelayMonth * 30 * kSecsPerDay;

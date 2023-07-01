@@ -913,7 +913,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     final war = questPhase?.war;
     final event = war?.event;
 
-    if (war != null && war.id > 1000 && event != null && event.startedAt < DateTime(2022, 7, 31).timestamp) {
+    if (war != null && !war.isMainStory && event != null && event.startedAt < DateTime(2022, 7, 31).timestamp) {
       options.isAfter7thAnni = false;
     } else {
       options.isAfter7thAnni = true;

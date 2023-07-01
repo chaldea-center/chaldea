@@ -93,7 +93,7 @@ class WarListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final wars = this.wars.toList();
     if (sortByEvent) {
-      wars.sort2((war) => war.event?.startedAt ?? war.priority, reversed: reversed);
+      wars.sort2((war) => war.eventReal?.startedAt ?? war.priority, reversed: reversed);
     } else {
       wars.sort2((e) => e.priority, reversed: reversed);
     }
