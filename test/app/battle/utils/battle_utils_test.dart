@@ -676,7 +676,7 @@ void main() async {
       final np = yuyu.noblePhantasms.last;
 
       final baseParam = DefendNpGainParameters()
-        ..defenderNpCharge = np.npGain.defence.last
+        ..defenderNpGainRate = np.npGain.defence.last
         ..attackerNpRate = attackerNpRate;
 
       const baseHitNpGain = 360;
@@ -710,7 +710,7 @@ void main() async {
       final np = gilgamesh.noblePhantasms.last;
 
       final baseParam = DefendNpGainParameters()
-        ..defenderNpCharge = np.npGain.defence.last
+        ..defenderNpGainRate = np.npGain.defence.last
         ..attackerNpRate = attackerNpRate;
 
       expect(calculateDefendNpGain(baseParam), equals(240));
@@ -723,7 +723,7 @@ void main() async {
       final np = douman.noblePhantasms.last;
 
       final baseParam = DefendNpGainParameters()
-        ..defenderNpCharge = np.npGain.defence.last
+        ..defenderNpGainRate = np.npGain.defence.last
         ..attackerNpRate = attackerNpRate
         ..defenseNpGainBuff = 1200;
 

@@ -175,7 +175,7 @@ class Damage {
           ..starGenBuff = await activator.getBuffValueOnAction(battleData, BuffAction.criticalPoint);
       } else {
         defNpParameters
-          ..defenderNpCharge = target.defenceNpGain
+          ..defenderNpGainRate = target.defenceNpGain
           ..attackerNpRate = activator.enemyTdAttackRate
           ..cardDefNpRate = currentCard.cardDetail.damageRate ?? 1000
           ..npGainBuff = await target.getBuffValueOnAction(battleData, BuffAction.dropNp)
@@ -262,8 +262,9 @@ class Damage {
           '$starString'
           'Overkill: ${result.overkillStates.where((e) => e).length}/${currentCard.cardDetail.hitsDistribution.length}');
       final hitStarString = activator.isPlayer ? ', ${S.current.critical_star}: ${result.stars}' : '';
-      battleData.battleLogger.debug(
-          '${S.current.details}: ${S.current.battle_damage}: ${result.damages}, NP: ${result.npGains}$hitStarString');
+      battleData.battleLogger
+          .debug('${S.current.details}: ${S.current.battle_damage}: ${result.damages}, NP: ${result.npGains}, '
+              'DefNP: ${result.defNpGains}$hitStarString');
 
       battleData.changeStar(toModifier(Maths.sum(result.stars)));
 
@@ -365,9 +366,9 @@ class Damage {
         defNpParameters.isOverkill = isOverkill;
         final hitNpGain = calculateDefendNpGain(defNpParameters);
 
-        final previousNP = activator.np;
+        final previousNP = target.np;
         target.changeNP(hitNpGain);
-        result.defNpGains.add(activator.np - previousNP);
+        result.defNpGains.add(target.np - previousNP);
       }
     }
     target.addAccumulationDamage(totalDamage - remainingDamage);

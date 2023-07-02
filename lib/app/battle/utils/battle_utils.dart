@@ -170,7 +170,7 @@ int calculateDefendNpGain(final DefendNpGainParameters param) {
 
   final cardDefenseNpRate = toModifier(param.cardDefNpRate);
 
-  float.setFloat32(0, param.defenderNpCharge * attackerNpRate);
+  float.setFloat32(0, param.defenderNpGainRate * attackerNpRate);
   float.setFloat32(0, npBonusGain * float.getFloat32(0));
   float.setFloat32(0, defNpBonusGain * float.getFloat32(0));
   float.setFloat32(0, cardDefenseNpRate * float.getFloat32(0));
@@ -389,9 +389,9 @@ class AttackNpGainParameters {
 }
 
 class DefendNpGainParameters {
-  int defenderNpCharge = 0;
-  int attackerNpRate = 0;
-  int cardDefNpRate = 1000;
+  int defenderNpGainRate = 0; // defenceNpGain
+  int attackerNpRate = 0; // enemyTdAttackRate
+  int cardDefNpRate = 1000; // Olga
   int npGainBuff = 1000; // npChargeRateMod = defSvt.dropNp
   int defenseNpGainBuff = 1000; // defensiveChargeRateMod = defSvt.dropNpDamage
   bool isOverkill = false;
@@ -399,7 +399,7 @@ class DefendNpGainParameters {
   @override
   String toString() {
     return 'DefendNpGainParameters: {'
-        'defenderNpCharge: $defenderNpCharge, '
+        'defenderNpGainMod: $defenderNpGainRate, '
         'attackerNpRate: $attackerNpRate, '
         'cardDefNpRate: $cardDefNpRate, '
         'npGainBuff: $npGainBuff, '
@@ -410,7 +410,7 @@ class DefendNpGainParameters {
 
   DefendNpGainParameters copy() {
     return DefendNpGainParameters()
-      ..defenderNpCharge = defenderNpCharge
+      ..defenderNpGainRate = defenderNpGainRate
       ..attackerNpRate = attackerNpRate
       ..cardDefNpRate = cardDefNpRate
       ..npGainBuff = npGainBuff

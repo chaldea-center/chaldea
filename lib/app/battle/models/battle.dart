@@ -743,7 +743,7 @@ class BattleData {
                 }
               } else {
                 extraOvercharge = 0;
-                await executePlayerCard(
+                await executeCommandCard(
                   actor: action.actor,
                   card: action.cardData,
                   chainPos: i + 1,
@@ -793,7 +793,7 @@ class BattleData {
         // recorder.initiateAttacks(this, [action]);
         final previousTargetIndex = enemyTargetIndex;
 
-        if (nonnullActors.isNotEmpty) {
+        if (nonnullAllies.isNotEmpty) {
           currentCard = action.cardData;
           enemyTargetIndex = onFieldEnemies.indexOf(action.actor); // help damageFunction identify attacker
 
@@ -806,11 +806,11 @@ class BattleData {
               await action.actor.activateNP(this, 0);
               await action.actor.activateBuffOnAction(this, BuffAction.functionAttackAfter);
 
-              for (final svt in nonnullActors) {
+              for (final svt in nonnullAllies) {
                 if (svt.attacked) await svt.activateBuffOnAction(this, BuffAction.functionDamage);
               }
             } else {
-              await executePlayerCard(
+              await executeCommandCard(
                 actor: action.actor,
                 card: action.cardData,
                 chainPos: 1,
@@ -920,7 +920,7 @@ class BattleData {
     isPlayerTurn = true;
   }
 
-  Future<void> executePlayerCard({
+  Future<void> executeCommandCard({
     required BattleServantData actor,
     required CommandCardData card,
     required int chainPos,
@@ -943,7 +943,7 @@ class BattleData {
 
     final List<BattleServantData> targets = [];
     if (card.cardDetail.attackType == CommandCardAttackType.all) {
-      targets.addAll(isPlayer ? nonnullEnemies : nonnullActors);
+      targets.addAll(isPlayer ? nonnullEnemies : nonnullAllies);
     } else {
       targets.add(isPlayer ? targetedEnemy! : targetedAlly!);
     }

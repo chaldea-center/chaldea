@@ -658,8 +658,8 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
             ),
           if (record.targets.isNotEmpty || record.damage != 0) ...[
             coloredText('DMG: ${record.damage}', Colors.red),
-            coloredText('NP: ${record.attackNp / 100}', Colors.blue),
-            coloredText('Star: ${record.star / 1000}', Colors.green),
+            if (record.attacker.isPlayer) coloredText('NP: ${record.attackNp / 100}', Colors.blue),
+            if (record.attacker.isPlayer) coloredText('Star: ${record.star / 1000}', Colors.green),
           ],
         ],
       ),
@@ -693,33 +693,50 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
               ),
             ),
           ),
-          coloredText(
-            'NP: ${Maths.sum(result.npGains) / 100}',
-            Colors.blue,
-            () => showParams(
-              context,
-              AttackerNpParamDialog(
-                detail.attackNpParams,
-                detail.result,
-                minResult: detail.minResult,
-                maxResult: detail.maxResult,
+          if (detail.target.isEnemy)
+            coloredText(
+              'NP: ${Maths.sum(result.npGains) / 100}',
+              Colors.blue,
+              () => showParams(
+                context,
+                AttackerNpParamDialog(
+                  detail.attackNpParams,
+                  detail.result,
+                  minResult: detail.minResult,
+                  maxResult: detail.maxResult,
+                ),
+              ),
+            )
+          else
+            coloredText(
+              'NP: ${Maths.sum(result.defNpGains) / 100}',
+              Colors.blue,
+              () => showParams(
+                context,
+                DefenseNpParamDialog(
+                  detail.defenseNpParams,
+                  detail.result,
+                  minResult: detail.minResult,
+                  maxResult: detail.maxResult,
+                ),
               ),
             ),
-          ),
-          coloredText(
-            'Star: ${Maths.sum(result.stars) / 1000}',
-            Colors.green,
-            () => showParams(
-              context,
-              StarParamDialog(
-                detail.starParams,
-                detail.result,
-                minResult: detail.minResult,
-                maxResult: detail.maxResult,
+          if (detail.target.isEnemy)
+            coloredText(
+              'Star: ${Maths.sum(result.stars) / 1000}',
+              Colors.green,
+              () => showParams(
+                context,
+                StarParamDialog(
+                  detail.starParams,
+                  detail.result,
+                  minResult: detail.minResult,
+                  maxResult: detail.maxResult,
+                ),
               ),
             ),
-          ),
-          coloredText('Overkill: ${result.overkillCount}/${result.overkillStates.length}', Colors.yellow.shade900),
+          if (detail.target.isEnemy)
+            coloredText('Overkill: ${result.overkillCount}/${result.overkillStates.length}', Colors.yellow.shade900),
         ],
       ),
     );
@@ -970,6 +987,45 @@ class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
           oneParam(S.current.battle_card_np_rate, cardRate.format(percent: true, precision: 3)),
         oneParam(Transl.buffNames('カード性能アップ').l, cardSum.format(percent: true, precision: 3),
             cardBuffIcon(params.currentCardType)),
+        oneParam(Transl.buffNames('NP獲得アップ').l, npGainBuff.format(percent: true, precision: 3), buffIcon(303)),
+      ],
+    );
+  }
+}
+
+class DefenseNpParamDialog extends StatelessWidget with _ParamDialogMixin {
+  final DefendNpGainParameters params;
+  final DamageResult result;
+  final bool wrapDialog;
+  final DamageResult? minResult;
+  final DamageResult? maxResult;
+
+  const DefenseNpParamDialog(this.params, this.result,
+      {super.key, this.wrapDialog = true, this.minResult, this.maxResult});
+
+  @override
+  Widget build(BuildContext context) {
+    final defenderNpGainRate = params.defenderNpGainRate / 100;
+    final attackerNpRate = params.attackerNpRate / 1000;
+    final npGainBuff = toModifier(params.npGainBuff - 1000);
+    final defenseNpGainBuff = toModifier(params.defenseNpGainBuff - 1000);
+    print(['overkillStates', result.overkillStates]);
+    return buildDialog(
+      context: context,
+      title: "Defend NP Params",
+      wrapDialog: wrapDialog,
+      children: [
+        oneParam("NP Gain", (result.totalDefNpGains / 100).format(precision: 2)),
+        if (minResult != null && maxResult != null)
+          oneParam('', '(${minResult!.totalDefNpGains / 100}~${maxResult!.totalDefNpGains / 100})'),
+        if (result.defNpGains.any((e) => e > 0))
+          listValueWithOverkill(result.defNpGains, result.overkillStates, (v) => (v / 100).format(precision: 2)),
+        oneParam(S.current.defense_np_rate, defenderNpGainRate.format(precision: 2)),
+        oneParam(S.current.attack_np_rate, attackerNpRate.format(precision: 3)),
+        if (params.cardDefNpRate != 1000)
+          oneParam(S.current.battle_card_np_rate, params.cardDefNpRate.format(percent: true, precision: 3, base: 10)),
+        oneParam(
+            Transl.buffNames('被ダメージ時NP獲得アップ').l, defenseNpGainBuff.format(percent: true, precision: 3), buffIcon(335)),
         oneParam(Transl.buffNames('NP獲得アップ').l, npGainBuff.format(percent: true, precision: 3), buffIcon(303)),
       ],
     );
