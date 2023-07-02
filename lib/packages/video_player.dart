@@ -136,7 +136,7 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
           VideoPlayerController.file(File(fp), videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
     } else {
       _fallbackController =
-          VideoPlayerController.network(url, videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
+          VideoPlayerController.networkUrl(Uri.parse(url), videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
     }
     try {
       await _fallbackController!.initialize();

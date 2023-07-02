@@ -115,7 +115,7 @@ SPEC CHECKSUMS:
   path_provider_foundation: eaf5b3e458fc0e5fbb9940fb09980e853fe058b8
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   share_plus: 76dd39142738f7a68dd57b05093b5e8193f220f7
-  shared_preferences_foundation: e2dae3258e06f44cc55f49d42024fd8dd03c590c
+  shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   sqflite: a5789cceda41d54d23f31d6de539d65bb14100ea
   system_tray: e53c972838c69589ff2e77d6d3abfd71332f9e5d
   url_launcher_macos: 5335912b679c073563f29d89d33d10d459f95451

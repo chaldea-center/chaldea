@@ -28,7 +28,7 @@ class GithubBackup<T> extends BackupBackend<T> {
 
   @override
   Future<bool> backup({String? message}) async {
-    github = GitHub(auth: Authentication.withToken(config.token));
+    github.auth = Authentication.withToken(config.token);
     final content = base64Encode(await encode());
     if (message == null || message.isEmpty) {
       message = DateTime.now().toStringShort(omitSec: false);
@@ -48,7 +48,7 @@ class GithubBackup<T> extends BackupBackend<T> {
 
   @override
   Future<T?> restore() async {
-    github = GitHub(auth: Authentication.withToken(config.token));
+    github.auth = Authentication.withToken(config.token);
     final file = await _getFile();
     if (file == null) throw NotFound(github, 'NotFound');
     if (file.encoding == 'base64') {
