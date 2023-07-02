@@ -114,6 +114,12 @@ class BattleServantData {
       ..deckIndex = enemy.deckId
       ..shiftNpcIds = enemy.enemyScript.shift ?? []
       ..changeNpcIds = enemy.enemyScript.change ?? [];
+    enemy.skills;
+    svt.skillInfoList = [
+      BattleSkillInfoData(enemy.skills.skill1, skillNum: 1, skillLv: enemy.skills.skillLv1),
+      BattleSkillInfoData(enemy.skills.skill2, skillNum: 2, skillLv: enemy.skills.skillLv2),
+      BattleSkillInfoData(enemy.skills.skill3, skillNum: 3, skillLv: enemy.skills.skillLv3),
+    ];
     return svt;
   }
 
@@ -153,9 +159,8 @@ class BattleServantData {
         }
       }
 
-      final skillInfo =
-          BattleSkillInfoData(settings.skills[skillNum - 1], provisionedSkills: provisionedSkills, skillNum: skillNum)
-            ..skillLv = settings.skillLvs[skillNum - 1];
+      final skillInfo = BattleSkillInfoData(settings.skills[skillNum - 1],
+          provisionedSkills: provisionedSkills, skillNum: skillNum, skillLv: settings.skillLvs[skillNum - 1]);
 
       if (rankUps != null) {
         skillInfo.rankUps = rankUps;
@@ -173,6 +178,16 @@ class BattleServantData {
       }
     }
     return svt;
+  }
+
+  Future<void> loadEnemySvtData(final BattleData battleData) async {
+    if (niceEnemy == null) return;
+    final svtId = niceEnemy!.svt.id;
+    if (niceSvt != null && niceSvt!.id == svtId) return;
+    niceSvt = db.gameData.servantsById[svtId] ?? await showEasyLoading(() => AtlasApi.svt(svtId));
+    if (niceSvt == null) {
+      battleData.battleLogger.error("failed to load servant data for enenemy $svtId - ${niceEnemy?.lShownName}");
+    }
   }
 
   bool get selectable => battleBuff.isSelectable;
@@ -359,7 +374,19 @@ class BattleServantData {
 
   CommandCardData? getNPCard(final BattleData battleData) {
     if (isEnemy) {
-      return null;
+      final _td = niceEnemy!.noblePhantasm.noblePhantasm;
+      if (_td == null) return null;
+      return CommandCardData(
+          _td.card,
+          CardDetail(
+            attackIndividuality: _td.individuality.toList(),
+            hitsDistribution: _td.damage,
+            attackType:
+                _td.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
+          ))
+        ..isNP = true
+        ..npGain = 0
+        ..traits = _td.individuality.toList();
     }
 
     final currentNP = getCurrentNP(battleData);

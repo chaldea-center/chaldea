@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
+import 'package:chaldea/app/modules/battle/simulation/recorder.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -370,5 +371,213 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
             : null)
         .toList()
         .indexOf(svt);
+  }
+}
+
+class EnemyCombatActionSelector extends StatefulWidget {
+  final BattleData battleData;
+  final Function(Future Function() task) onConfirm;
+
+  const EnemyCombatActionSelector({super.key, required this.battleData, required this.onConfirm});
+
+  @override
+  State<EnemyCombatActionSelector> createState() => _EnemyCombatActionSelectorState();
+}
+
+class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
+  BattleData get battleData => widget.battleData;
+
+  BattleServantData? selectedEnemy;
+  int? actionIndex;
+  bool isCritical = false;
+  Future<void> Function()? onConfirm;
+
+  @override
+  void initState() {
+    super.initState();
+    final enemies = battleData.nonnullEnemies;
+    if (enemies.length == 1) {
+      selectedEnemy = enemies.first;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    int optionIndex = -1;
+    Widget buildRadio({
+      required Widget title,
+      Widget? subtitle,
+      required Future<void> Function() onSelected,
+      bool enabled = true,
+    }) {
+      optionIndex += 1;
+      return RadioListTile<int>(
+        dense: true,
+        value: optionIndex,
+        groupValue: actionIndex,
+        title: title,
+        subtitle: subtitle,
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        onChanged: enabled
+            ? (v) {
+                setState(() {
+                  actionIndex = v;
+                  onConfirm = onSelected;
+                });
+              }
+            : null,
+      );
+    }
+
+    List<Widget> children = [
+      ...getEnemySelector(),
+      const Divider(height: 16),
+    ];
+    children.add(buildRadio(
+      title: Text(S.current.end_enemy_turn),
+      onSelected: () async {
+        await battleData.endEnemyActions();
+      },
+    ));
+    final enemy = selectedEnemy;
+    if (enemy != null) {
+      if (enemy.skillInfoList.any((e) => e.proximateSkill != null)) {
+        children.add(DividerWithTitle(title: S.current.active_skill));
+      }
+      for (int index = 0; index < 3; index++) {
+        final skill = enemy.skillInfoList.getOrNull(index);
+        final baseSkill = skill?.proximateSkill;
+        if (skill != null && baseSkill != null) {
+          children.add(buildRadio(
+            title: Text('${S.current.skill} ${index + 1} ${baseSkill.lName.l}'),
+            onSelected: () async {
+              await enemy.activateSkill(battleData, index);
+            },
+          ));
+        }
+      }
+      final svt = enemy.niceSvt;
+      if (svt != null) {
+        children.add(DividerWithTitle(title: S.current.battle_command_card));
+        for (final cardType in svt.cardDetails.keys) {
+          if (cardType == CardType.extra) continue;
+          final detail = svt.cardDetails[cardType]!;
+          children.add(buildRadio(
+            title: Text(cardType.name.toTitle()),
+            onSelected: () async {
+              final cardData = CommandCardData(cardType, detail)
+                ..cardIndex = 1
+                ..isNP = false
+                ..traits = ConstData.cardInfo[cardType]![1]!.individuality.toList();
+              if (cardType.isQAB) {
+                cardData.isCritical = isCritical;
+              } else if (cardType == CardType.strength) {
+                cardData.isCritical = true;
+              } else if (cardType == CardType.weak) {
+                cardData.isCritical = false;
+              }
+              await battleData.playEnemyCard(CombatAction(enemy, cardData));
+            },
+          ));
+        }
+        if (svt.cardDetails.keys.any((e) => e.isQAB)) {
+          children.add(CheckboxListTile(
+            dense: true,
+            value: isCritical,
+            title: Text(S.current.critical_attack),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            controlAffinity: ListTileControlAffinity.leading,
+            onChanged: (v) {
+              setState(() {
+                isCritical = v ?? isCritical;
+              });
+            },
+          ));
+        }
+        final td = enemy.niceEnemy?.noblePhantasm.noblePhantasm;
+        if (td != null) {
+          children.add(const Divider());
+          children.add(buildRadio(
+            title: Text('${S.current.np_short} ${td.nameWithRank}'),
+            onSelected: () async {
+              final card = enemy.getNPCard(battleData);
+              if (card != null) {
+                await battleData.playEnemyCard(CombatAction(enemy, card));
+              }
+            },
+            enabled: enemy.canNP(battleData),
+          ));
+        }
+      }
+    }
+
+    return SimpleCancelOkDialog(
+      scrollable: true,
+      title: Text(S.current.select),
+      contentPadding: const EdgeInsetsDirectional.fromSTEB(0, 20.0, 0, 24.0),
+      content: ListTileTheme.merge(
+        horizontalTitleGap: 0,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: children,
+        ),
+      ),
+      hideOk: true,
+      actions: [
+        TextButton(
+          onPressed: onConfirm == null
+              ? null
+              : () async {
+                  Navigator.pop(context);
+                  widget.onConfirm(onConfirm!);
+                },
+          child: Text(S.current.confirm),
+        ),
+      ],
+    );
+  }
+
+  List<Widget> getEnemySelector() {
+    List<Widget> children = [];
+    final rowCount = (battleData.onFieldEnemies.length / 3).ceil();
+    for (int row = 0; row < rowCount; row++) {
+      List<Widget> rowChildren = [];
+      for (int index = 0; index < 3; index++) {
+        final enemy = battleData.onFieldEnemies.getOrNull(row * 3 + index);
+        Widget child;
+        if (enemy == null) {
+          child = const SizedBox.shrink();
+        } else {
+          child = enemy.iconBuilder(
+            context: context,
+            battleData: battleData,
+            onTap: () {
+              setState(() {
+                if (selectedEnemy != enemy) {
+                  actionIndex = null;
+                  onConfirm = null;
+                  isCritical = false;
+                }
+                selectedEnemy = enemy;
+              });
+            },
+          );
+          child = Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: selectedEnemy == enemy ? Colors.red : null,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: child,
+          );
+        }
+        rowChildren.add(SizedBox(width: 64, child: child));
+      }
+      children.add(Row(
+        mainAxisSize: MainAxisSize.min,
+        children: rowChildren.reversed.toList(),
+      ));
+    }
+    return children.reversed.toList();
   }
 }

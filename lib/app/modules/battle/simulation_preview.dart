@@ -667,6 +667,17 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         },
       ),
       kIndentDivider,
+      CheckboxListTile(
+        dense: true,
+        value: options.simulateEnemy,
+        title: Text(S.current.simulate_enemy_actions),
+        onChanged: (v) {
+          setState(() {
+            options.simulateEnemy = v ?? options.simulateEnemy;
+          });
+        },
+      ),
+      kIndentDivider,
       ...buildPointBuffs(),
     ];
 

@@ -1311,7 +1311,7 @@ class EnemySkill {
 
   List<NiceSkill?> get skills => [skill1, skill2, skill3];
 
-  List<int> get skillIds => [skillId1, skillId2, skillId3].where((e) => e != 0).toList();
+  List<int> get skillIds => [skillId1, skillId2, skillId3];
 
   List<int?> get skillLvs => [
         skill1 == null ? null : skillLv1,

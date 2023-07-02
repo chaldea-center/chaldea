@@ -362,6 +362,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "email": MessageLookupByLibrary.simpleMessage("邮箱"),
         "empty_hint": MessageLookupByLibrary.simpleMessage("无内容"),
         "enable": MessageLookupByLibrary.simpleMessage("启用"),
+        "end_enemy_turn": MessageLookupByLibrary.simpleMessage("结束敌方回合"),
         "enemy": MessageLookupByLibrary.simpleMessage("敌人"),
         "enemy_count": MessageLookupByLibrary.simpleMessage("敌人数量"),
         "enemy_filter_trait_hint": MessageLookupByLibrary.simpleMessage("特性筛选仅适用于主线Free的敌人"),
@@ -882,6 +883,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "show_outdated": MessageLookupByLibrary.simpleMessage("显示已过期"),
         "show_system_tray": MessageLookupByLibrary.simpleMessage("在系统托盘显示"),
         "silver": MessageLookupByLibrary.simpleMessage("银"),
+        "simulate_enemy_actions": MessageLookupByLibrary.simpleMessage("模拟敌方行动"),
         "simulator": MessageLookupByLibrary.simpleMessage("模拟器"),
         "skill": MessageLookupByLibrary.simpleMessage("技能"),
         "skill_list": MessageLookupByLibrary.simpleMessage("技能列表"),
@@ -938,7 +940,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_fav_btn_show_favorite": MessageLookupByLibrary.simpleMessage("显示已关注"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("未关注"),
         "svt_option_edit_tips": MessageLookupByLibrary.simpleMessage(
-            "1.队伍中从者的等级等信息自导入后与规划信息独立，如需再次同步请使用右上角下拉菜单中的重新读取配置\n2.技能、宝具强化状态可通过下方选项手动设定\n3.自定义效果/buff可在下方手动添加"),
+            "1.队伍中从者的等级等信息自导入后与规划信息独立，如需再次同步请使用右上角下拉菜单中的重新读取配置\n2.技能、宝具强化状态可通过下方选项手动设定\n3.自定义效果/buff可在下方手动添加\n4.从者和礼装可在详情页菜单里进行置顶"),
         "svt_option_resync": MessageLookupByLibrary.simpleMessage("重新读取配置"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("已隐藏"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("羁绊故事"),
@@ -1010,7 +1012,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_and_close_app_alert": MessageLookupByLibrary.simpleMessage("是否上传数据再关闭应用?"),
         "upload_before_close_app": MessageLookupByLibrary.simpleMessage("关闭app前上传"),
         "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage(
-            "由于使用过以下任意功能，当前队伍不满足上传条件:\n- 通过导入JSON使用自定义关卡\n- 活动点数加成\n- 无法正常获得的从者\n- 自定义技能\n- 跳过场次"),
+            "由于使用过以下任意功能，当前队伍不满足上传条件:\n- 通过导入JSON使用自定义关卡\n- 活动点数加成\n- 无法正常获得的从者\n- 自定义技能\n- 跳过场次\n- 模拟敌方行动"),
         "upload_paused": m30,
         "upload_team_confirmation": MessageLookupByLibrary.simpleMessage("确认上传当前的队伍?\n\n请注意，上传的队伍可能因数据格式更新/不兼容等原因被移除。"),
         "uploaded_teams": MessageLookupByLibrary.simpleMessage("上传的队伍"),

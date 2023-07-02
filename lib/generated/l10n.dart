@@ -3033,6 +3033,17 @@ class S {
     );
   }
 
+  /// `End Enemy Turn`
+  String get end_enemy_turn {
+    return Intl.message(
+      'End Enemy Turn',
+      name: 'end_enemy_turn',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Enemy`
   String get enemy {
     return Intl.message(
@@ -8692,6 +8703,17 @@ class S {
     );
   }
 
+  /// `Smulate Enemy Actions`
+  String get simulate_enemy_actions {
+    return Intl.message(
+      'Smulate Enemy Actions',
+      name: 'simulate_enemy_actions',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Simulator`
   String get simulator {
     return Intl.message(
@@ -9297,10 +9319,10 @@ class S {
     );
   }
 
-  /// `1. Servant options are independent from Chaldea's plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manually via options below\n3. You can manually add custom effect/buff`
+  /// `1. Servant options are independent from Chaldea's plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manually via options below\n3. You can manually add custom effect/buff\n4. Svt/ce can be pinged to top in the popup menu from their detail pages`
   String get svt_option_edit_tips {
     return Intl.message(
-      '1. Servant options are independent from Chaldea\'s plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manually via options below\n3. You can manually add custom effect/buff',
+      '1. Servant options are independent from Chaldea\'s plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manually via options below\n3. You can manually add custom effect/buff\n4. Svt/ce can be pinged to top in the popup menu from their detail pages',
       name: 'svt_option_edit_tips',
       desc: '',
       locale: localeName,
@@ -10078,10 +10100,10 @@ class S {
     );
   }
 
-  /// `Current team is not eligible for upload due to any of the following:\n- custom quest via JSON import\n- event point buffs\n- nonplayable servants\n- custom skills\n- skipped waves`
+  /// `Current team is not eligible for upload due to any of the following:\n- custom quest via JSON import\n- event point buffs\n- nonplayable servants\n- custom skills\n- skipped waves\n- enemy actions`
   String get upload_not_eligible_hint {
     return Intl.message(
-      'Current team is not eligible for upload due to any of the following:\n- custom quest via JSON import\n- event point buffs\n- nonplayable servants\n- custom skills\n- skipped waves',
+      'Current team is not eligible for upload due to any of the following:\n- custom quest via JSON import\n- event point buffs\n- nonplayable servants\n- custom skills\n- skipped waves\n- enemy actions',
       name: 'upload_not_eligible_hint',
       desc: '',
       locale: localeName,

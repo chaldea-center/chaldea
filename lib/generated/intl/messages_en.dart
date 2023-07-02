@@ -378,6 +378,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "email": MessageLookupByLibrary.simpleMessage("Email"),
         "empty_hint": MessageLookupByLibrary.simpleMessage("Empty"),
         "enable": MessageLookupByLibrary.simpleMessage("Enable"),
+        "end_enemy_turn": MessageLookupByLibrary.simpleMessage("End Enemy Turn"),
         "enemy": MessageLookupByLibrary.simpleMessage("Enemy"),
         "enemy_count": MessageLookupByLibrary.simpleMessage("Enemy Count"),
         "enemy_filter_trait_hint":
@@ -921,6 +922,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "show_outdated": MessageLookupByLibrary.simpleMessage("Show Outdated"),
         "show_system_tray": MessageLookupByLibrary.simpleMessage("Show in System Tray"),
         "silver": MessageLookupByLibrary.simpleMessage("Silver"),
+        "simulate_enemy_actions": MessageLookupByLibrary.simpleMessage("Smulate Enemy Actions"),
         "simulator": MessageLookupByLibrary.simpleMessage("Simulator"),
         "skill": MessageLookupByLibrary.simpleMessage("Skill"),
         "skill_list": MessageLookupByLibrary.simpleMessage("Skill List"),
@@ -980,7 +982,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_fav_btn_show_favorite": MessageLookupByLibrary.simpleMessage("Show Favorite"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("Not favorite"),
         "svt_option_edit_tips": MessageLookupByLibrary.simpleMessage(
-            "1. Servant options are independent from Chaldea\'s plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manually via options below\n3. You can manually add custom effect/buff"),
+            "1. Servant options are independent from Chaldea\'s plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manually via options below\n3. You can manually add custom effect/buff\n4. Svt/ce can be pinged to top in the popup menu from their detail pages"),
         "svt_option_resync": MessageLookupByLibrary.simpleMessage("Resync Options"),
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("Hidden"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("Profile"),
@@ -1054,7 +1056,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_and_close_app_alert": MessageLookupByLibrary.simpleMessage("Upload data before closing the app?"),
         "upload_before_close_app": MessageLookupByLibrary.simpleMessage("Upload before closing"),
         "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage(
-            "Current team is not eligible for upload due to any of the following:\n- custom quest via JSON import\n- event point buffs\n- nonplayable servants\n- custom skills\n- skipped waves"),
+            "Current team is not eligible for upload due to any of the following:\n- custom quest via JSON import\n- event point buffs\n- nonplayable servants\n- custom skills\n- skipped waves\n- enemy actions"),
         "upload_paused": m30,
         "upload_team_confirmation": MessageLookupByLibrary.simpleMessage(
             "Upload current team?\n\nAttention: uploaded data may be deleted due to data incompatible etc."),

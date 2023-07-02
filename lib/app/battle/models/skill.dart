@@ -37,7 +37,9 @@ class BattleSkillInfoData {
     List<BaseSkill>? provisionedSkills,
     this.skillNum = -1,
     this.isCommandCode = false,
-  }) : provisionedSkills = provisionedSkills ?? [] {
+    int skillLv = 0,
+  })  : provisionedSkills = provisionedSkills ?? [],
+        _skillLv = skillLv {
     if (baseSkill != null && !this.provisionedSkills.contains(baseSkill)) {
       this.provisionedSkills.add(baseSkill!);
     }

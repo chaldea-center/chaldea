@@ -28,6 +28,9 @@ class CallServant {
         if (battleData.onFieldEnemies[index] == null && battleData.enemyValidAppear[index]) {
           // init & entry enemy
           final actor = BattleServantData.fromEnemy(callSvt, battleData.getNextUniqueId());
+          if (battleData.options.simulateEnemy) {
+            await actor.loadEnemySvtData(battleData);
+          }
           battleData.onFieldEnemies[index] = actor;
           actor.initScript(battleData);
           await battleData.initActorSkills([actor]);

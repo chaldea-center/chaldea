@@ -168,7 +168,7 @@ class BattleRecordManager {
   }
 
   void determineUploadEligibility(final QuestPhase questPhase, final BattleOptions options) {
-    if (questPhase.id <= 0 || options.pointBuffs.isNotEmpty) {
+    if (questPhase.id <= 0 || options.pointBuffs.isNotEmpty || options.simulateEnemy) {
       isUploadEligible = false;
       return;
     }

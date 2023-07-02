@@ -514,12 +514,15 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                 },
                 padding: EdgeInsets.zero,
               ),
-              Text.rich(TextSpan(
-                children: [
-                  TextSpan(text: '${S.current.critical_star}: ', style: const TextStyle(fontWeight: FontWeight.bold)),
-                  TextSpan(text: '${battleData.criticalStars.toStringAsFixed(3)}  '),
-                ],
-              )),
+              Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(text: '${S.current.critical_star}: '),
+                    TextSpan(text: '${battleData.criticalStars.toStringAsFixed(3)}  '),
+                  ],
+                ),
+                // textScaleFactor: 0.9,
+              ),
             ],
           ),
         ),
@@ -532,6 +535,22 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
+        if (battleData.options.simulateEnemy)
+          Text.rich(
+            TextSpan(
+              children: divideList([
+                for (final isPlayer in [false, true])
+                  TextSpan(
+                    text: isPlayer ? 'Player Turn' : 'Enemy Turn',
+                    style: isPlayer == battleData.isPlayerTurn
+                        ? TextStyle(color: Theme.of(context).colorScheme.secondary)
+                        : Theme.of(context).textTheme.bodySmall,
+                  )
+              ], const TextSpan(text: '\n')),
+            ),
+            textAlign: TextAlign.center,
+            textScaleFactor: 0.8,
+          ),
         IconButton(
           onPressed: () async {
             await battleData.skipWave();
@@ -582,15 +601,23 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                   await showDialog(
                     context: context,
                     useRootNavigator: false,
-                    builder: (context) => CombatActionSelector(
-                      battleData: battleData,
-                      onSelected: (combatActions) async {
-                        if (combatActions.isNotEmpty) {
-                          await battleData.playerTurn(combatActions);
-                        }
-                        if (mounted) setState(() {});
-                      },
-                    ),
+                    builder: battleData.isPlayerTurn
+                        ? (context) => CombatActionSelector(
+                              battleData: battleData,
+                              onSelected: (combatActions) async {
+                                if (combatActions.isNotEmpty) {
+                                  await battleData.playerTurn(combatActions);
+                                }
+                                if (mounted) setState(() {});
+                              },
+                            )
+                        : (context) => EnemyCombatActionSelector(
+                              battleData: battleData,
+                              onConfirm: (task) async {
+                                await task();
+                                if (mounted) setState(() {});
+                              },
+                            ),
                   );
                   if (mounted) setState(() {});
                 },

@@ -88,6 +88,7 @@ class BattleData {
   int mysticCodeLv = 10;
   List<BattleSkillInfoData> masterSkillInfo = []; //BattleSkillInfoData
 
+  bool isPlayerTurn = true;
   int waveCount = 0;
   int turnCount = 0;
   int totalTurnCount = 0;
@@ -210,7 +211,7 @@ class BattleData {
             ? null
             : BattleServantData.fromPlayerSvtData(svtSetting, getNextUniqueId()))
         .toList();
-    _fetchWaveEnemies();
+    await _fetchWaveEnemies();
 
     final overwriteEquip = quest.extraDetail?.overwriteEquipSkills;
     if (overwriteEquip != null && overwriteEquip.skillIds.isNotEmpty) {
@@ -324,7 +325,7 @@ class BattleData {
     recorder.progressWave(waveCount);
     turnCount = 0;
 
-    _fetchWaveEnemies();
+    await _fetchWaveEnemies();
 
     onFieldEnemies = List.filled(enemyOnFieldCount, null);
     for (int index = 0; index < enemyDataList.length; index += 1) {
@@ -402,7 +403,7 @@ class BattleData {
     }
   }
 
-  void _fetchWaveEnemies() {
+  Future<void> _fetchWaveEnemies() async {
     curStage = niceQuest?.stages.firstWhereOrNull((s) => s.wave == waveCount);
     enemyOnFieldCount = curStage?.enemyFieldPosCount ?? 3;
     enemyDataList = List.filled(enemyOnFieldCount, null, growable: true);
@@ -424,7 +425,10 @@ class BattleData {
             enemyDataList.length = enemy.deckId;
           }
 
-          enemyDataList[enemy.deckId - 1] = BattleServantData.fromEnemy(enemy, getNextUniqueId());
+          final actor = enemyDataList[enemy.deckId - 1] = BattleServantData.fromEnemy(enemy, getNextUniqueId());
+          if (options.simulateEnemy) {
+            await actor.loadEnemySvtData(this);
+          }
         } else {
           if (!enemyDecks.containsKey(enemy.deck)) {
             enemyDecks[enemy.deck] = [];
@@ -686,6 +690,7 @@ class BattleData {
   }
 
   Future<void> playerTurn(final List<CombatAction> actions) async {
+    assert(isPlayerTurn);
     if (actions.isEmpty || isBattleFinished) {
       return;
     }
@@ -739,12 +744,13 @@ class BattleData {
               } else {
                 extraOvercharge = 0;
                 await executePlayerCard(
-                  action.actor,
-                  action.cardData,
-                  i + 1,
-                  isTypeChain,
-                  isMightyChain,
-                  firstCardType,
+                  actor: action.actor,
+                  card: action.cardData,
+                  chainPos: i + 1,
+                  isTypeChain: isTypeChain,
+                  isMightyChain: isMightyChain,
+                  firstCardType: firstCardType,
+                  isPlayer: true,
                 );
               }
               recorder.endPlayerCard(action.actor, action.cardData);
@@ -764,11 +770,83 @@ class BattleData {
         await endPlayerTurn();
 
         await startEnemyTurn();
-        await endEnemyTurn();
-
-        await nextTurn();
+        if (!options.simulateEnemy || nonnullEnemies.isEmpty) {
+          await endEnemyTurn();
+          await nextTurn();
+        }
 
         allyTargetIndex = previousTargetIndex;
+      },
+    );
+  }
+
+  Future<void> playEnemyCard(CombatAction action) async {
+    assert(!isPlayerTurn);
+    if (isBattleFinished) {
+      return;
+    }
+
+    return recordError(
+      save: true,
+      action: 'enemy_card-${action.cardData.cardType.name}',
+      task: () async {
+        // recorder.initiateAttacks(this, [action]);
+        final previousTargetIndex = enemyTargetIndex;
+
+        if (nonnullActors.isNotEmpty) {
+          currentCard = action.cardData;
+          enemyTargetIndex = onFieldEnemies.indexOf(action.actor); // help damageFunction identify attacker
+
+          if (enemyTargetIndex != -1 && action.isValid(this)) {
+            recorder.startPlayerCard(action.actor, action.cardData);
+
+            if (action.cardData.isNP) {
+              await action.actor
+                  .activateBuffOnActions(this, [BuffAction.functionAttackBefore, BuffAction.functionNpattack]);
+              await action.actor.activateNP(this, 0);
+              await action.actor.activateBuffOnAction(this, BuffAction.functionAttackAfter);
+
+              for (final svt in nonnullActors) {
+                if (svt.attacked) await svt.activateBuffOnAction(this, BuffAction.functionDamage);
+              }
+            } else {
+              await executePlayerCard(
+                actor: action.actor,
+                card: action.cardData,
+                chainPos: 1,
+                isTypeChain: false,
+                isMightyChain: false,
+                firstCardType: CardType.none,
+                isPlayer: false,
+              );
+            }
+            recorder.endPlayerCard(action.actor, action.cardData);
+          }
+
+          if (shouldRemoveDeadActors([action], 0)) {
+            await removeDeadActors();
+          }
+
+          currentCard = null;
+        }
+
+        checkBuffStatus();
+
+        enemyTargetIndex = previousTargetIndex;
+      },
+    );
+  }
+
+  Future<void> endEnemyActions() async {
+    assert(!isPlayerTurn);
+    // don't skip even no enemy on field. Field AI can do something at this time.
+    // if (isBattleFinished) return;
+    return recordError(
+      save: true,
+      action: 'enemy_end',
+      task: () async {
+        await endEnemyTurn();
+        await nextTurn();
       },
     );
   }
@@ -814,6 +892,7 @@ class BattleData {
   }
 
   Future<void> startEnemyTurn() async {
+    isPlayerTurn = false;
     for (final svt in nonnullEnemies) {
       if (svt.hp <= 0) {
         svt.shift(this);
@@ -838,17 +917,21 @@ class BattleData {
       buff.turnPass();
     }
     fieldBuffs.removeWhere((buff) => !buff.isActive);
+    isPlayerTurn = true;
   }
 
-  Future<void> executePlayerCard(
-    final BattleServantData actor,
-    final CommandCardData card,
-    final int chainPos,
-    final bool isTypeChain,
-    final bool isMightyChain,
-    final CardType firstCardType,
-  ) async {
-    await actor.activateCommandCode(this, card.cardIndex);
+  Future<void> executePlayerCard({
+    required BattleServantData actor,
+    required CommandCardData card,
+    required int chainPos,
+    required bool isTypeChain,
+    required bool isMightyChain,
+    required CardType firstCardType,
+    required bool isPlayer,
+  }) async {
+    if (isPlayer) {
+      await actor.activateCommandCode(this, card.cardIndex);
+    }
 
     await actor.activateBuffOnActions(this, [
       BuffAction.functionAttackBefore,
@@ -860,9 +943,9 @@ class BattleData {
 
     final List<BattleServantData> targets = [];
     if (card.cardDetail.attackType == CommandCardAttackType.all) {
-      targets.addAll(nonnullEnemies);
+      targets.addAll(isPlayer ? nonnullEnemies : nonnullActors);
     } else {
-      targets.add(targetedEnemy!);
+      targets.add(isPlayer ? targetedEnemy! : targetedAlly!);
     }
     await Damage.damage(this, null, cardDamage, targets, chainPos, isTypeChain, isMightyChain, firstCardType);
 
@@ -1115,6 +1198,7 @@ class BattleData {
       ..mysticCode = mysticCode
       ..mysticCodeLv = mysticCodeLv
       ..masterSkillInfo = masterSkillInfo.map((e) => e.copy()).toList()
+      ..isPlayerTurn = isPlayerTurn
       ..waveCount = waveCount
       ..turnCount = turnCount
       ..totalTurnCount = totalTurnCount
@@ -1148,6 +1232,7 @@ class BattleData {
       ..mysticCode = copy.mysticCode
       ..mysticCodeLv = copy.mysticCodeLv
       ..masterSkillInfo = copy.masterSkillInfo
+      ..isPlayerTurn = copy.isPlayerTurn
       ..waveCount = copy.waveCount
       ..turnCount = copy.turnCount
       ..totalTurnCount = copy.totalTurnCount
