@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -250,6 +252,16 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
           enemy.serverMod.starRate = v;
         },
       ),
+      if (enemy.noblePhantasm.noblePhantasm != null)
+        enumTile<int>(
+          title: Text(S.current.info_charge),
+          value: enemy.chargeTurn,
+          values: List.generate(max(10, enemy.chargeTurn) + 1, (index) => index),
+          itemBuilder: (v) => Text(v.toString(), textScaleFactor: 0.8),
+          onChanged: (v) {
+            enemy.chargeTurn = v;
+          },
+        ),
     ]);
 
     children.add(const SafeArea(child: SizedBox(height: 36)));
@@ -284,6 +296,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
           EnemyTd(noblePhantasmId: td?.id ?? 0, noblePhantasm: td, noblePhantasmLv: 1, noblePhantasmLv1: 1)
       ..limit = EnemyLimit(limitCount: 0);
     updateLimitCount(svt);
+    updateDefaultChargeTurn();
     if (mounted) setState(() {});
   }
 
@@ -323,7 +336,40 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
         _onSelectSvt(niceSvt);
       }
     }
+    updateDefaultChargeTurn();
     if (mounted) setState(() {});
+  }
+
+  void updateDefaultChargeTurn() {
+    if (enemy.noblePhantasm.noblePhantasm == null) {
+      enemy.chargeTurn = 0;
+      return;
+    }
+    switch (enemy.svt.className) {
+      case SvtClass.archer:
+      case SvtClass.assassin:
+      case SvtClass.alterEgo:
+      case SvtClass.moonCancer:
+        enemy.chargeTurn = 3;
+        return;
+      case SvtClass.saber:
+      case SvtClass.lancer:
+      case SvtClass.ruler:
+      case SvtClass.pretender:
+      case SvtClass.shielder:
+        enemy.chargeTurn = 4;
+        return;
+      case SvtClass.rider:
+      case SvtClass.berserker:
+      case SvtClass.avenger:
+      case SvtClass.foreigner:
+      case SvtClass.beast:
+        enemy.chargeTurn = 5;
+        return;
+      default:
+        enemy.chargeTurn = 5;
+        return;
+    }
   }
 
   void updateLimitCount(Servant svt) {
