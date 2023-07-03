@@ -79,6 +79,7 @@ class BattleServantData {
   int maxHp = 0;
   int np = 0; // player, np/100
   int npLineCount = 0; // enemy
+  bool usedNpThisTurn = false;
   int accumulationDamage = 0;
 
   // BattleServantData.Status status
@@ -114,7 +115,7 @@ class BattleServantData {
       ..deckIndex = enemy.deckId
       ..shiftNpcIds = enemy.enemyScript.shift ?? []
       ..changeNpcIds = enemy.enemyScript.change ?? [];
-    enemy.skills;
+
     svt.skillInfoList = [
       BattleSkillInfoData(enemy.skills.skill1, skillNum: 1, skillLv: enemy.skills.skillLv1),
       BattleSkillInfoData(enemy.skills.skill2, skillNum: 2, skillLv: enemy.skills.skillLv2),
@@ -817,6 +818,7 @@ class BattleServantData {
 
       np = 0;
       npLineCount = 0;
+      usedNpThisTurn = true;
       await FunctionExecutor.executeFunctions(battleData, niceTD.functions, tdLv, overchargeLvl: overchargeLvl);
     }
 
@@ -1156,7 +1158,7 @@ class BattleServantData {
     battleData.setTarget(this);
     if (isEnemy) {
       final npSealed = await hasBuffOnActions(battleData, doNotNPTypes);
-      if (!npSealed && niceEnemy!.chargeTurn > 0) {
+      if (!usedNpThisTurn && !npSealed && niceEnemy!.chargeTurn > 0) {
         final turnEndNP = await getBuffValueOnAction(battleData, BuffAction.turnvalNp);
         changeNPLineCount(1 + turnEndNP);
 
@@ -1178,6 +1180,7 @@ class BattleServantData {
         });
       });
     }
+    usedNpThisTurn = false;
 
     int turnEndDamage = await getTurnEndHpReduceValue(battleData);
     if (turnEndDamage != 0) {
@@ -1312,6 +1315,7 @@ class BattleServantData {
       ..maxHp = maxHp
       ..np = np
       ..npLineCount = npLineCount
+      ..usedNpThisTurn = usedNpThisTurn
       ..accumulationDamage = accumulationDamage
       ..skillInfoList = skillInfoList.map((e) => e.copy()).toList() // copy
       ..equip = equip
