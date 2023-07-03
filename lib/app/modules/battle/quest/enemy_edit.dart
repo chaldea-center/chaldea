@@ -238,9 +238,16 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
         base: 10,
         isPercent: true,
         onChanged: (v) {
-          enemy.serverMod
-            ..tdRate = v
-            ..tdAttackRate = v;
+          enemy.serverMod.tdRate = v;
+        },
+      ),
+      intInputTile(
+        title: S.current.attack_np_rate,
+        value: enemy.serverMod.tdAttackRate,
+        base: 10,
+        isPercent: true,
+        onChanged: (v) {
+          enemy.serverMod.tdAttackRate = v;
         },
       ),
       intInputTile(
