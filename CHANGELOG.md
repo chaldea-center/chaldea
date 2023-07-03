@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.4.4
+
+- Chaldeas
+  - Rewrite class score planning
+  - UI improvements
+- Laplace
+  - Support customize/edit quest data
+  - Basic support for enemy simulation
+  - Fix HP Fou input conversion
+  - Support set skill/NP upgrades according to quest's JP event time
+
 ## 2.4.3
 
 - Fix class board planning and support import it from login data
