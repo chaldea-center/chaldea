@@ -417,7 +417,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             TextButton(
               onPressed: () {
                 router.pushPage(QuestEditPage(
-                  quest: questPhase!,
+                  quest: questPhase,
                   onComplete: (q) {
                     q.id = -q.id.abs();
                     questPhase = q;
