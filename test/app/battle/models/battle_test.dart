@@ -973,6 +973,48 @@ void main() async {
     expect(previousHp2 - enemy1.hp, 6974);
   });
 
+  test('functionNpAttack should happen after NP', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(2500200)
+        ..lv = 90
+        ..tdLv = 3
+        ..skillLvs = [9, 9, 9]
+        ..setSkillStrengthenLvs([1, 1, 2])
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final hokusai = battle.onFieldAllyServants[0]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final enemy2 = battle.onFieldEnemies[1]!;
+
+    await battle.activateSvtSkill(0, 2);
+
+    final previousHp1 = enemy1.hp;
+    final previousHp2 = enemy2.hp;
+    await battle.playerTurn([CombatAction(hokusai, hokusai.getNPCard(battle)!)]);
+    expect(previousHp1 - enemy1.hp, 24311);
+    expect(previousHp2 - enemy2.hp, 24311);
+
+    await battle.skipWave();
+
+    final enemy3 = battle.onFieldEnemies[0]!;
+    final previousHp3 = enemy3.hp;
+    hokusai.np = 10000;
+    await battle.playerTurn([CombatAction(hokusai, hokusai.getNPCard(battle)!)]);
+    expect(previousHp3 - enemy3.hp, 24311);
+
+    // should have one stack of defDown from skill 3
+    final previousHp4 = enemy3.hp;
+    hokusai.np = 10000;
+    await battle.playerTurn([CombatAction(hokusai, hokusai.getNPCard(battle)!)]);
+    expect(previousHp4 - enemy3.hp, 28656);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,

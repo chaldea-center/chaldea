@@ -732,10 +732,10 @@ class BattleData {
               recorder.startPlayerCard(action.actor, action.cardData);
 
               if (action.cardData.isNP) {
-                await action.actor
-                    .activateBuffOnActions(this, [BuffAction.functionAttackBefore, BuffAction.functionNpattack]);
+                await action.actor.activateBuffOnAction(this, BuffAction.functionAttackBefore);
                 await action.actor.activateNP(this, extraOvercharge);
-                await action.actor.activateBuffOnAction(this, BuffAction.functionAttackAfter);
+                await action.actor
+                    .activateBuffOnActions(this, [BuffAction.functionAttackAfter, BuffAction.functionNpattack]);
                 extraOvercharge += 1;
 
                 for (final svt in nonnullEnemies) {
