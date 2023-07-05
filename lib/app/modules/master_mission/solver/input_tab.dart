@@ -112,6 +112,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
                   contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
                 ),
                 textAlign: TextAlign.center,
+                keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 onChanged: (v) {
                   setState(() {

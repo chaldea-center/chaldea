@@ -284,7 +284,7 @@ Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic
     };
 
 BaseGift _$BaseGiftFromJson(Map json) => BaseGift(
-      type: $enumDecodeNullable(_$GiftTypeEnumMap, json['type']) ?? GiftType.item,
+      type: $enumDecodeNullable(_$GiftTypeEnumMap, json['type'], unknownValue: GiftType.unknown),
       objectId: json['objectId'] as int,
       num: json['num'] as int,
     );
@@ -296,6 +296,7 @@ Map<String, dynamic> _$BaseGiftToJson(BaseGift instance) => <String, dynamic>{
     };
 
 const _$GiftTypeEnumMap = {
+  GiftType.unknown: 'unknown',
   GiftType.servant: 'servant',
   GiftType.item: 'item',
   GiftType.friendship: 'friendship',
@@ -310,6 +311,7 @@ const _$GiftTypeEnumMap = {
   GiftType.eventPointBuff: 'eventPointBuff',
   GiftType.eventBoardGameToken: 'eventBoardGameToken',
   GiftType.eventCommandAssist: 'eventCommandAssist',
+  GiftType.eventHeelPortrait: 'eventHeelPortrait',
 };
 
 GiftAdd _$GiftAddFromJson(Map json) => GiftAdd(
@@ -333,7 +335,7 @@ Map<String, dynamic> _$GiftAddToJson(GiftAdd instance) => <String, dynamic>{
     };
 
 Gift _$GiftFromJson(Map json) => Gift(
-      type: $enumDecodeNullable(_$GiftTypeEnumMap, json['type']) ?? GiftType.item,
+      type: $enumDecodeNullable(_$GiftTypeEnumMap, json['type'], unknownValue: GiftType.unknown),
       objectId: json['objectId'] as int,
       num: json['num'] as int,
       giftAdds: (json['giftAdds'] as List<dynamic>?)
@@ -629,7 +631,7 @@ Map<String, dynamic> _$SupportServantLimitToJson(SupportServantLimit instance) =
     };
 
 EnemyDrop _$EnemyDropFromJson(Map json) => EnemyDrop(
-      type: $enumDecodeNullable(_$GiftTypeEnumMap, json['type']) ?? GiftType.item,
+      type: $enumDecodeNullable(_$GiftTypeEnumMap, json['type'], unknownValue: GiftType.unknown) ?? GiftType.item,
       objectId: json['objectId'] as int,
       num: json['num'] as int? ?? 1,
       dropCount: json['dropCount'] as int,

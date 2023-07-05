@@ -405,6 +405,7 @@ class QuestPhase extends Quest {
 @JsonSerializable()
 class BaseGift {
   // int id;
+  @JsonKey(unknownEnumValue: GiftType.unknown)
   GiftType type;
   int objectId;
 
@@ -413,11 +414,11 @@ class BaseGift {
 
   BaseGift({
     // required this.id,
-    this.type = GiftType.item,
+    GiftType? type,
     required this.objectId,
     // required this.priority,
     required this.num,
-  });
+  }) : type = type ?? GiftType.item;
 
   factory BaseGift.fromJson(Map<String, dynamic> json) => _$BaseGiftFromJson(json);
 
@@ -427,6 +428,7 @@ class BaseGift {
       GiftType.eventSvtJoin,
       GiftType.eventPointBuff,
       GiftType.eventCommandAssist,
+      GiftType.eventHeelPortrait,
     ].contains(type)) return false;
     return true;
   }
@@ -474,13 +476,17 @@ class BaseGift {
       case GiftType.questRewardIcon:
         icon ??= Atlas.assetItem(objectId);
         break;
-      case GiftType.eventPointBuff:
-        break;
-      case GiftType.eventBoardGameToken:
-        break;
       case GiftType.eventCommandAssist:
         icon ??= Atlas.assetItem(objectId);
         showOne = false;
+        break;
+      case GiftType.eventHeelPortrait:
+        icon ??= AssetURL.i.eventUi("Prefabs/80432/$objectId");
+        showOne = false;
+        break;
+      case GiftType.eventPointBuff:
+      case GiftType.eventBoardGameToken:
+      case GiftType.unknown:
         break;
     }
     return GameCardMixin.anyCardItemBuilder(
@@ -536,6 +542,11 @@ class BaseGift {
         break;
       case GiftType.eventCommandAssist:
         break;
+      case GiftType.eventHeelPortrait:
+        // objectId=svtId
+        break;
+      case GiftType.unknown:
+        break;
     }
     route ??= GameCardMixin.getRoute(objectId);
     if (route != null) {
@@ -575,13 +586,13 @@ class Gift extends BaseGift {
   List<GiftAdd> giftAdds;
   Gift({
     // required this.id,
-    super.type = GiftType.item,
+    GiftType? type,
     required super.objectId,
     // required this.priority,
     // ignore: avoid_types_as_parameter_names
     required super.num,
     this.giftAdds = const [],
-  });
+  }) : super(type: type ?? GiftType.item);
 
   factory Gift.fromJson(Map<String, dynamic> json) => _$GiftFromJson(json);
 
@@ -1677,6 +1688,7 @@ enum QuestFlag {
 }
 
 enum GiftType {
+  unknown,
   servant,
   item,
   friendship,
@@ -1691,6 +1703,7 @@ enum GiftType {
   eventPointBuff,
   eventBoardGameToken,
   eventCommandAssist,
+  eventHeelPortrait,
 }
 
 enum EnemyRoleType {

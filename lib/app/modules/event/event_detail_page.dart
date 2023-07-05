@@ -24,6 +24,7 @@ import 'detail/command_assist.dart';
 import 'detail/cooltime.dart';
 import 'detail/digging.dart';
 import 'detail/fortification.dart';
+import 'detail/heel_portrait.dart';
 import 'detail/lottery.dart';
 import 'detail/mission.dart';
 import 'detail/mission_target.dart';
@@ -187,6 +188,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
     }
     if (event.commandAssists.isNotEmpty) {
       _addTab(S.current.command_assist, EventCommandAssistPage(event: event));
+    }
+    if (event.heelPortraits.isNotEmpty) {
+      _addTab("Heels", EventHeelPortraitPage(event: event));
     }
     if (db.gameData.craftEssences.values.any((ce) => ce.skills.any((skill) => skill.isEventSkill(event))) ||
         db.gameData.servantsNoDup.values.any((svt) => svt.eventSkills(event.id).isNotEmpty)) {

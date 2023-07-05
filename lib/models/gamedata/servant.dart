@@ -562,6 +562,8 @@ class Servant with GameCardMixin {
     );
   }
 
+  String get zeroLimitName => ascensionAdd.overWriteServantName.ascension[0] ?? name;
+
   @override
   Transl<String, String> get lName => Transl.svtNames(ascensionAdd.overWriteServantName.ascension[0] ?? name);
 

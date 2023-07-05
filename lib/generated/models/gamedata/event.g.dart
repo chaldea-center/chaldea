@@ -93,6 +93,10 @@ Event _$EventFromJson(Map json) => Event(
               ?.map((e) => EventCommandAssist.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      heelPortraits: (json['heelPortraits'] as List<dynamic>?)
+              ?.map((e) => HeelPortrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       voicePlays: (json['voicePlays'] as List<dynamic>?)
               ?.map((e) => EventVoicePlay.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -135,6 +139,7 @@ Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
       'campaigns': instance.campaigns.map((e) => e.toJson()).toList(),
       'campaignQuests': instance.campaignQuests.map((e) => e.toJson()).toList(),
       'commandAssists': instance.commandAssists.map((e) => e.toJson()).toList(),
+      'heelPortraits': instance.heelPortraits.map((e) => e.toJson()).toList(),
       'voicePlays': instance.voicePlays.map((e) => e.toJson()).toList(),
       'voices': instance.voices.map((e) => e.toJson()).toList(),
       'warIds': instance.warIds,
@@ -1221,4 +1226,16 @@ EventQuest _$EventQuestFromJson(Map json) => EventQuest(
 
 Map<String, dynamic> _$EventQuestToJson(EventQuest instance) => <String, dynamic>{
       'questId': instance.questId,
+    };
+
+HeelPortrait _$HeelPortraitFromJson(Map json) => HeelPortrait(
+      id: json['id'] as int,
+      name: json['name'] as String? ?? "",
+      image: json['image'] as String,
+    );
+
+Map<String, dynamic> _$HeelPortraitToJson(HeelPortrait instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'image': instance.image,
     };

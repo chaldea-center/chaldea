@@ -313,4 +313,6 @@ const _$CondTypeEnumMap = {
   CondType.svtClassSkillLvUpCount: 'svtClassSkillLvUpCount',
   CondType.svtClassLimitUpCount: 'svtClassLimitUpCount',
   CondType.svtClassFriendshipCount: 'svtClassFriendshipCount',
+  CondType.completeHeelPortrait: 'completeHeelPortrait',
+  CondType.notCompleteHeelPortrait: 'notCompleteHeelPortrait',
 };

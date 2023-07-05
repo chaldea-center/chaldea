@@ -46,6 +46,7 @@ class Event {
   List<EventCampaign> campaigns;
   List<EventQuest> campaignQuests;
   List<EventCommandAssist> commandAssists;
+  List<HeelPortrait> heelPortraits;
   List<EventVoicePlay> voicePlays;
   List<VoiceGroup> voices;
 
@@ -93,6 +94,7 @@ class Event {
     this.campaigns = const [],
     this.campaignQuests = const [],
     this.commandAssists = const [],
+    this.heelPortraits = const [],
     this.voicePlays = const [],
     this.voices = const [],
   })  : _shortName = ['', '-'].contains(shortName) ? null : shortName,
@@ -126,6 +128,7 @@ class Event {
       fortifications.isEmpty &&
       // campaigns.isEmpty &&
       // campaignQuests.isEmpty &&
+      // heelPortraits.isEmpty &&
       extra.huntingQuestIds.isEmpty &&
       extra.extraFixedItems.isEmpty &&
       extra.extraItems.isEmpty;
@@ -1446,6 +1449,27 @@ class EventQuest {
   factory EventQuest.fromJson(Map<String, dynamic> json) => _$EventQuestFromJson(json);
 
   Map<String, dynamic> toJson() => _$EventQuestToJson(this);
+}
+
+@JsonSerializable()
+class HeelPortrait {
+  int id;
+  String name;
+  String image;
+  // CondType dispCondType;
+  // int dispCondId;
+  // int dispCondNum;
+  // Map<String,dynamic> script;
+
+  HeelPortrait({
+    required this.id,
+    this.name = "",
+    required this.image,
+  });
+
+  factory HeelPortrait.fromJson(Map<String, dynamic> json) => _$HeelPortraitFromJson(json);
+
+  Map<String, dynamic> toJson() => _$HeelPortraitToJson(this);
 }
 
 enum PurchaseType {

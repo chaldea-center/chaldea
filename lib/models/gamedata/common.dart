@@ -931,4 +931,6 @@ enum CondType {
   svtClassSkillLvUpCount,
   svtClassLimitUpCount,
   svtClassFriendshipCount,
+  completeHeelPortrait,
+  notCompleteHeelPortrait,
 }
