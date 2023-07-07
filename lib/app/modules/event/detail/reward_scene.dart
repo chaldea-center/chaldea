@@ -65,8 +65,8 @@ class _EventRewardScenePageState extends State<EventRewardScenePage> {
           ),
           onTap: () => FullscreenImageViewer.show(context: context, urls: [scene.bg]),
         ),
-        getBgm(scene.bgm),
-        if (scene.afterBgm.id != scene.bgm.id) getBgm(scene.afterBgm),
+        if (scene.bgm.id != 0) getBgm(scene.bgm),
+        if (scene.afterBgm.id != 0 && scene.afterBgm.id != scene.bgm.id) getBgm(scene.afterBgm),
         if (scene.guides.isNotEmpty) ...const [
           Divider(),
           SHeader('Guide'),
