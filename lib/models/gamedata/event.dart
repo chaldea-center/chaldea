@@ -148,7 +148,7 @@ class Event {
       return DateTime.now().difference(startedAt.sec2date()) > const Duration(days: 31 * 13);
     }
     int? _end = db.curUser.region == Region.jp ? endedAt : extra.endTime.ofRegion(db.curUser.region);
-    final neverClosed = DateTime.now().add(const Duration(days: 365 * 2)).timestamp;
+    final neverClosed = DateTime.now().add(const Duration(days: 365)).timestamp;
     if (_end != null && _end > neverClosed) {
       final _start = db.curUser.region == Region.jp ? startedAt : extra.startTime.ofRegion(db.curUser.region);
       if (_start != null) {

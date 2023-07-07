@@ -429,6 +429,7 @@ class BaseGift {
       GiftType.eventPointBuff,
       GiftType.eventCommandAssist,
       GiftType.eventHeelPortrait,
+      GiftType.unknown,
     ].contains(type)) return false;
     return true;
   }
@@ -486,7 +487,9 @@ class BaseGift {
         break;
       case GiftType.eventPointBuff:
       case GiftType.eventBoardGameToken:
+        break;
       case GiftType.unknown:
+        jumpToDetail = false;
         break;
     }
     return GameCardMixin.anyCardItemBuilder(
