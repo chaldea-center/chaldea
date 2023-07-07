@@ -410,6 +410,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_digging": MessageLookupByLibrary.simpleMessage("Digging"),
         "event_fortification": MessageLookupByLibrary.simpleMessage("Fortification"),
         "event_free_quest": MessageLookupByLibrary.simpleMessage("Event FQ"),
+        "event_heel": MessageLookupByLibrary.simpleMessage("Heel"),
         "event_item_extra": MessageLookupByLibrary.simpleMessage("Extra Items"),
         "event_item_fixed_extra": MessageLookupByLibrary.simpleMessage("Extra Fixed Items"),
         "event_lottery": MessageLookupByLibrary.simpleMessage("Lottery"),

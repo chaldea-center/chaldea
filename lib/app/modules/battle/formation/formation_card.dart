@@ -15,10 +15,19 @@ class FormationCard extends StatelessWidget {
         for (final onFieldSvt in formation.onFieldSvts) _buildServantIcons(context, onFieldSvt),
         for (final backupSvt in formation.backupSvts) _buildServantIcons(context, backupSvt),
         Flexible(
-          child: db.getIconImage(
-            formation.mysticCode.level > 0 ? db.gameData.mysticCodes[formation.mysticCode.mysticCodeId]?.icon : null,
-            aspectRatio: 1,
-            width: 56,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              db.getIconImage(
+                formation.mysticCode.level > 0
+                    ? db.gameData.mysticCodes[formation.mysticCode.mysticCodeId]?.icon
+                    : null,
+                aspectRatio: 1,
+                width: 56,
+              ),
+              if (formation.mysticCode.level > 0) Text("Lv.${formation.mysticCode.level}", textScaleFactor: 0.9)
+            ],
           ),
         ),
       ],

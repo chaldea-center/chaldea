@@ -300,6 +300,7 @@
   "event_digging": null,
   "event_fortification": null,
   "event_free_quest": null,
+  "event_heel": null,
   "event_item_extra": "Objetos adicionales",
   "event_item_fixed_extra": "Objetos fijos adicionales",
   "event_lottery": "Lotería",

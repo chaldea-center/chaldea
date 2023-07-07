@@ -122,6 +122,10 @@ class _EventDetailPageState extends State<EventDetailPage> {
         EventLotteryTab(event: event, lottery: event.lotteries[index]),
       );
     }
+    if (event.heelPortraits.isNotEmpty) {
+      // before tower
+      _addTab(S.current.event_heel, EventHeelPortraitPage(event: event));
+    }
     for (final tower in event.towers) {
       _addTab(Transl.misc2('TowerName', tower.name), EventTowersPage(event: event, tower: tower));
     }
@@ -188,9 +192,6 @@ class _EventDetailPageState extends State<EventDetailPage> {
     }
     if (event.commandAssists.isNotEmpty) {
       _addTab(S.current.command_assist, EventCommandAssistPage(event: event));
-    }
-    if (event.heelPortraits.isNotEmpty) {
-      _addTab("Heels", EventHeelPortraitPage(event: event));
     }
     if (db.gameData.craftEssences.values.any((ce) => ce.skills.any((skill) => skill.isEventSkill(event))) ||
         db.gameData.servantsNoDup.values.any((svt) => svt.eventSkills(event.id).isNotEmpty)) {

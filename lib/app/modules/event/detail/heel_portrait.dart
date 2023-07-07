@@ -103,6 +103,10 @@ class _EventHeelPortraitPageState extends State<EventHeelPortraitPage> {
           child: CachedImage(
             imageUrl: heel.image,
             showSaveOnLongPress: true,
+            cachedOption: CachedImageOption(
+              errorWidget: (context, url, error) => const CachedImage(
+                  imageUrl: "https://static.atlasacademy.io/JP/EventUI/Prefabs/80432/portrait_unknown.png"),
+            ),
           ),
         ),
         Expanded(flex: 3, child: title),

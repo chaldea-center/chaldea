@@ -300,6 +300,7 @@
   "event_digging": "發掘",
   "event_fortification": "強化",
   "event_free_quest": "活動FQ",
+  "event_heel": null,
   "event_item_extra": "額外素材",
   "event_item_fixed_extra": "額外固定素材",
   "event_lottery": "獎池",

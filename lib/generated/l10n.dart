@@ -3363,6 +3363,17 @@ class S {
     );
   }
 
+  /// `Heel`
+  String get event_heel {
+    return Intl.message(
+      'Heel',
+      name: 'event_heel',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Extra Items`
   String get event_item_extra {
     return Intl.message(
