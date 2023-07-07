@@ -237,6 +237,18 @@ class SkillScriptDescriptor extends StatelessWidget {
       children.add(_keyLv(
           context, 'HP_PER_LOWER', script!.HP_PER_LOWER!, (v) => v.format(compact: false, percent: true, base: 10)));
     }
+    if (script?.actRarity?.isNotEmpty == true) {
+      children.add(_keyLv(context, 'actRarity', script!.actRarity!, (v) {
+        if (v.length <= 1) return v.join();
+        for (int index = 1; index < v.length; index++) {
+          if (v[index] != v.first + index) {
+            return v.join("&");
+          }
+        }
+        return "${v.first}-${v.last}";
+      }));
+    }
+
     if (script?.additionalSkillId?.isNotEmpty == true) {
       final ids = script!.additionalSkillId!;
       final lvs = script?.additionalSkillLv ?? <int>[];
@@ -335,7 +347,7 @@ class SkillScriptDescriptor extends StatelessWidget {
     );
   }
 
-  Widget _keyLv(BuildContext context, String key, List<int> vals, String Function(int v) builder) {
+  Widget _keyLv<T>(BuildContext context, String key, List<T> vals, String Function(T v) builder) {
     String title = Transl.misc2('SkillScript', key);
     if (vals.toSet().length == 1) {
       title = title.replaceAll('{0}', builder(vals.first));
@@ -343,7 +355,7 @@ class SkillScriptDescriptor extends StatelessWidget {
     return _richLv(context, TextSpan(text: title), vals, builder);
   }
 
-  Widget _richLv(BuildContext context, TextSpan title, List<int> vals, String Function(int v) builder) {
+  Widget _richLv<T>(BuildContext context, TextSpan title, List<T> vals, String Function(T v) builder) {
     Widget? trailing;
     List<Widget> cells = [];
     if (vals.toSet().length == 1) {

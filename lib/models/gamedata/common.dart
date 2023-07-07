@@ -167,11 +167,11 @@ class BgmRelease {
   BgmRelease({
     required this.id,
     required this.type,
-    required this.condGroup,
-    required this.targetIds,
-    required this.vals,
-    required this.priority,
-    required this.closedMessage,
+    this.condGroup = 0,
+    this.targetIds = const [],
+    this.vals = const [],
+    this.priority = 0,
+    this.closedMessage = "",
   });
 
   factory BgmRelease.fromJson(Map<String, dynamic> json) => _$BgmReleaseFromJson(json);

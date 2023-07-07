@@ -19,11 +19,11 @@ Map<String, dynamic> _$NiceTraitToJson(NiceTrait instance) => <String, dynamic>{
 BgmRelease _$BgmReleaseFromJson(Map json) => BgmRelease(
       id: json['id'] as int,
       type: const CondTypeConverter().fromJson(json['type'] as String),
-      condGroup: json['condGroup'] as int,
-      targetIds: (json['targetIds'] as List<dynamic>).map((e) => e as int).toList(),
-      vals: (json['vals'] as List<dynamic>).map((e) => e as int).toList(),
-      priority: json['priority'] as int,
-      closedMessage: json['closedMessage'] as String,
+      condGroup: json['condGroup'] as int? ?? 0,
+      targetIds: (json['targetIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      vals: (json['vals'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      priority: json['priority'] as int? ?? 0,
+      closedMessage: json['closedMessage'] as String? ?? "",
     );
 
 Map<String, dynamic> _$BgmReleaseToJson(BgmRelease instance) => <String, dynamic>{

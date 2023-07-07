@@ -396,14 +396,17 @@ SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
       HP_VAL_LOWER: (json['HP_VAL_LOWER'] as List<dynamic>?)?.map((e) => e as int).toList(),
       HP_PER_HIGHER: (json['HP_PER_HIGHER'] as List<dynamic>?)?.map((e) => e as int).toList(),
       HP_PER_LOWER: (json['HP_PER_LOWER'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      actRarity: (json['actRarity'] as List<dynamic>?)
+          ?.map((e) => (e as List<dynamic>).map((e) => e as int).toList())
+          .toList(),
       additionalSkillId: (json['additionalSkillId'] as List<dynamic>?)?.map((e) => e as int).toList(),
       additionalSkillLv: (json['additionalSkillLv'] as List<dynamic>?)?.map((e) => e as int).toList(),
       additionalSkillActorType: (json['additionalSkillActorType'] as List<dynamic>?)?.map((e) => e as int).toList(),
-      tdTypeChangeIDs: (json['tdTypeChangeIDs'] as List<dynamic>?)?.map((e) => e as int).toList(),
-      excludeTdChangeTypes: (json['excludeTdChangeTypes'] as List<dynamic>?)?.map((e) => e as int).toList(),
       SelectAddInfo: (json['SelectAddInfo'] as List<dynamic>?)
           ?.map((e) => SkillSelectAddInfo.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      tdTypeChangeIDs: (json['tdTypeChangeIDs'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      excludeTdChangeTypes: (json['excludeTdChangeTypes'] as List<dynamic>?)?.map((e) => e as int).toList(),
     );
 
 Map<String, dynamic> _$SkillScriptToJson(SkillScript instance) {
@@ -423,12 +426,13 @@ Map<String, dynamic> _$SkillScriptToJson(SkillScript instance) {
   writeNotNull('HP_VAL_LOWER', instance.HP_VAL_LOWER);
   writeNotNull('HP_PER_HIGHER', instance.HP_PER_HIGHER);
   writeNotNull('HP_PER_LOWER', instance.HP_PER_LOWER);
+  writeNotNull('actRarity', instance.actRarity);
   writeNotNull('additionalSkillId', instance.additionalSkillId);
   writeNotNull('additionalSkillLv', instance.additionalSkillLv);
   writeNotNull('additionalSkillActorType', instance.additionalSkillActorType);
+  writeNotNull('SelectAddInfo', instance.SelectAddInfo?.map((e) => e.toJson()).toList());
   writeNotNull('tdTypeChangeIDs', instance.tdTypeChangeIDs);
   writeNotNull('excludeTdChangeTypes', instance.excludeTdChangeTypes);
-  writeNotNull('SelectAddInfo', instance.SelectAddInfo?.map((e) => e.toJson()).toList());
   return val;
 }
 

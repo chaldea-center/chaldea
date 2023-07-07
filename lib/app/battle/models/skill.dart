@@ -182,12 +182,13 @@ class BattleSkillInfoData {
       defaultToPlayer: defaultToPlayer,
     );
     if (skill.script?.additionalSkillId != null) {
-      for (int index = 0; index < skill.script!.additionalSkillId!.length; index++) {
-        final skillId = skill.script!.additionalSkillId![index];
-        final skillLv = skill.script!.additionalSkillLv?.getOrNull(index) ?? 1;
+      final skillId = skill.script!.additionalSkillId!.getOrNull(skillLevel - 1);
+      if (skillId != null && skillId != 0) {
+        final askillLv = skill.script!.additionalSkillLv?.getOrNull(skillLevel - 1) ?? 1;
         final askill = await AtlasApi.skill(skillId);
-        if (askill == null) continue;
-        await activateSkill(battleData, askill, skillLv, isPassive: skill.type == SkillType.passive);
+        if (askill != null) {
+          await activateSkill(battleData, askill, askillLv, isPassive: skill.type == SkillType.passive);
+        }
       }
     }
     return true;
