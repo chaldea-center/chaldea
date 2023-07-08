@@ -273,6 +273,10 @@ class BattleData {
       await svt.enterField(this);
     }
 
+    for (final svt in nonnullActors) {
+      await svt.activateBuffOnAction(this, BuffAction.functionWavestart);
+    }
+
     await nextTurn();
   }
 
@@ -354,6 +358,11 @@ class BattleData {
     for (final enemy in nonnullEnemies) {
       await enemy.enterField(this);
     }
+
+    for (final actor in nonnullActors) {
+      await actor.activateBuffOnAction(this, BuffAction.functionWavestart);
+    }
+
     return true;
   }
 
@@ -801,10 +810,10 @@ class BattleData {
             recorder.startPlayerCard(action.actor, action.cardData);
 
             if (action.cardData.isNP) {
-              await action.actor
-                  .activateBuffOnActions(this, [BuffAction.functionAttackBefore, BuffAction.functionNpattack]);
+              await action.actor.activateBuffOnAction(this, BuffAction.functionAttackBefore);
               await action.actor.activateNP(this, 0);
-              await action.actor.activateBuffOnAction(this, BuffAction.functionAttackAfter);
+              await action.actor
+                  .activateBuffOnActions(this, [BuffAction.functionAttackAfter, BuffAction.functionNpattack]);
 
               for (final svt in nonnullAllies) {
                 if (svt.attacked) await svt.activateBuffOnAction(this, BuffAction.functionDamage);
