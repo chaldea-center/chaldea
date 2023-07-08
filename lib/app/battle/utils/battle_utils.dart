@@ -543,11 +543,14 @@ Future<T?> tryEasyLoading<T>(Future<T> Function() task) async {
   return null;
 }
 
-Future<T> showEasyLoading<T>(Future<T> Function() computation) async {
+Future<T> showEasyLoading<T>(
+  Future<T> Function() computation, [
+  EasyLoadingMaskType maskType = EasyLoadingMaskType.clear,
+]) async {
   final mounted = EasyLoading.instance.overlayEntry?.mounted == true;
   if (!mounted) return computation();
   try {
-    EasyLoading.show();
+    EasyLoading.show(maskType: maskType);
     return await computation();
   } finally {
     EasyLoading.dismiss();

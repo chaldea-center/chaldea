@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/functions/function_executor.dart';
+import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -185,7 +186,7 @@ class BattleSkillInfoData {
       final skillId = skill.script!.additionalSkillId!.getOrNull(skillLevel - 1);
       if (skillId != null && skillId != 0) {
         final askillLv = skill.script!.additionalSkillLv?.getOrNull(skillLevel - 1) ?? 1;
-        final askill = await AtlasApi.skill(skillId);
+        final askill = await showEasyLoading(() => AtlasApi.skill(skillId));
         if (askill != null) {
           await activateSkill(battleData, askill, askillLv, isPassive: skill.type == SkillType.passive);
         }

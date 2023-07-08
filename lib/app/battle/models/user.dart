@@ -279,7 +279,7 @@ class PlayerSvtData {
         final skillId = storedData.skillIds.getOrNull(index);
         if (skillId != null) {
           targetSkill = svt.skills.lastWhereOrNull((skill) => skill.id == skillId);
-          targetSkill ??= await AtlasApi.skill(skillId);
+          targetSkill ??= await showEasyLoading(() => AtlasApi.skill(skillId));
         }
         playerSvtData.skills.add(targetSkill);
       }
@@ -290,8 +290,9 @@ class PlayerSvtData {
       playerSvtData.additionalPassiveLvs.clear();
       for (int index = 0; index < storedData.additionalPassives.length; index++) {
         final storedSkill = storedData.additionalPassives[index];
-        final targetSkill =
-            db.gameData.baseSkills[storedSkill.id] ?? await AtlasApi.skill(storedSkill.id) ?? storedSkill;
+        final targetSkill = db.gameData.baseSkills[storedSkill.id] ??
+            await showEasyLoading(() => AtlasApi.skill(storedSkill.id)) ??
+            storedSkill;
 
         int lv = storedData.additionalPassiveLvs.getOrNull(index) ?? targetSkill.maxLv;
         lv = lv.clamp(1, targetSkill.maxLv);
@@ -301,7 +302,7 @@ class PlayerSvtData {
 
       if (storedData.tdId != null) {
         playerSvtData.td = playerSvtData.svt!.noblePhantasms.lastWhereOrNull((td) => td.id == storedData.tdId);
-        playerSvtData.td ??= await AtlasApi.td(storedData.tdId!);
+        playerSvtData.td ??= await showEasyLoading(() => AtlasApi.td(storedData.tdId!));
       }
 
       playerSvtData.commandCodes = [];
