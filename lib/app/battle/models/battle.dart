@@ -743,8 +743,8 @@ class BattleData {
               if (action.cardData.isNP) {
                 await action.actor.activateBuffOnAction(this, BuffAction.functionAttackBefore);
                 await action.actor.activateNP(this, extraOvercharge);
-                await action.actor
-                    .activateBuffOnActions(this, [BuffAction.functionAttackAfter, BuffAction.functionNpattack]);
+                await action.actor.activateBuffOnAction(this, BuffAction.functionNpattack);
+                await action.actor.activateBuffOnAction(this, BuffAction.functionAttackAfter);
                 extraOvercharge += 1;
 
                 for (final svt in nonnullEnemies) {
@@ -812,8 +812,8 @@ class BattleData {
             if (action.cardData.isNP) {
               await action.actor.activateBuffOnAction(this, BuffAction.functionAttackBefore);
               await action.actor.activateNP(this, 0);
-              await action.actor
-                  .activateBuffOnActions(this, [BuffAction.functionAttackAfter, BuffAction.functionNpattack]);
+              await action.actor.activateBuffOnAction(this, BuffAction.functionNpattack);
+              await action.actor.activateBuffOnAction(this, BuffAction.functionAttackAfter);
 
               for (final svt in nonnullAllies) {
                 if (svt.attacked) await svt.activateBuffOnAction(this, BuffAction.functionDamage);
@@ -942,10 +942,10 @@ class BattleData {
       await actor.activateCommandCode(this, card.cardIndex);
     }
 
+    await actor.activateBuffOnAction(this, BuffAction.functionCommandcodeattackBefore);
     await actor.activateBuffOnActions(this, [
-      BuffAction.functionAttackBefore,
       BuffAction.functionCommandattackBefore,
-      BuffAction.functionCommandcodeattackBefore,
+      BuffAction.functionAttackBefore,
     ]);
 
     setActivator(actor);
@@ -960,10 +960,10 @@ class BattleData {
 
     unsetActivator();
 
+    await actor.activateBuffOnAction(this, BuffAction.functionCommandcodeattackAfter);
     await actor.activateBuffOnActions(this, [
-      BuffAction.functionAttackAfter,
       BuffAction.functionCommandattackAfter,
-      BuffAction.functionCommandcodeattackAfter,
+      BuffAction.functionAttackAfter,
     ]);
 
     actor.clearCommandCodeBuffs();

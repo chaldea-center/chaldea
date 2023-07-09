@@ -1001,7 +1001,10 @@ class BattleServantData {
   }
 
   Future<bool> activateBuffOnActions(final BattleData battleData, final Iterable<BuffAction> buffActions) async {
-    return await activateBuffs(battleData, collectBuffsPerActions(battleBuff.allBuffs, buffActions));
+    final List<BuffData> orderedBuffs = [
+      for (final buffAction in buffActions) ...collectBuffsPerAction(battleBuff.allBuffs, buffAction)
+    ];
+    return await activateBuffs(battleData, orderedBuffs);
   }
 
   Future<bool> activateBuffs(final BattleData battleData, final Iterable<BuffData> buffs) async {
