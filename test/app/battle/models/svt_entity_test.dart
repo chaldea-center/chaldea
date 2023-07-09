@@ -161,6 +161,24 @@ void main() async {
     expect(battle.canSelectNp(1), true);
   });
 
+  test('Test act rarity skill script', () async {
+    final List<PlayerSvtData> playerSettings = [
+      PlayerSvtData.id(201300)..ce = db.gameData.craftEssencesById[9407100],
+      PlayerSvtData.id(102600)..ce = db.gameData.craftEssencesById[9407100],
+    ];
+
+    final quest = db.gameData.questPhases[9300040603]!;
+    quest.individuality = [...quest.individuality, NiceTrait(id: 94000144)];
+    final battle = BattleData();
+    await battle.init(quest, playerSettings, null);
+
+    final arash = battle.onFieldAllyServants[0]!;
+    final deon = battle.onFieldAllyServants[1]!;
+
+    expect(arash.battleBuff.allBuffs.length, 4);
+    expect(deon.battleBuff.allBuffs.length, 3);
+  });
+
   test('Chen Gong NP', () async {
     final List<PlayerSvtData> playerSettings = [
       PlayerSvtData.id(504400)

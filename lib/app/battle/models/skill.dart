@@ -104,22 +104,49 @@ class BattleSkillInfoData {
       return true;
     }
 
-    if (skillScript.NP_HIGHER != null) {
-      return checkSkillScripCondition(battleData, SkillScriptCond.npHigher, skillScript.NP_HIGHER![skillLv - 1]);
-    } else if (skillScript.NP_LOWER != null) {
-      return checkSkillScripCondition(battleData, SkillScriptCond.npLower, skillScript.NP_LOWER![skillLv - 1]);
-    } else if (skillScript.STAR_HIGHER != null) {
-      return checkSkillScripCondition(battleData, SkillScriptCond.starHigher, skillScript.STAR_HIGHER![skillLv - 1]);
-    } else if (skillScript.STAR_LOWER != null) {
-      return checkSkillScripCondition(battleData, SkillScriptCond.starLower, skillScript.STAR_LOWER![skillLv - 1]);
-    } else if (skillScript.HP_VAL_HIGHER != null) {
-      return checkSkillScripCondition(battleData, SkillScriptCond.hpValHigher, skillScript.HP_VAL_HIGHER![skillLv - 1]);
-    } else if (skillScript.HP_VAL_LOWER != null) {
-      return checkSkillScripCondition(battleData, SkillScriptCond.hpValLower, skillScript.HP_VAL_LOWER![skillLv - 1]);
-    } else if (skillScript.HP_PER_HIGHER != null) {
-      return checkSkillScripCondition(battleData, SkillScriptCond.hpPerHigher, skillScript.HP_PER_HIGHER![skillLv - 1]);
-    } else if (skillScript.HP_PER_LOWER != null) {
-      return checkSkillScripCondition(battleData, SkillScriptCond.hpPerLower, skillScript.HP_PER_LOWER![skillLv - 1]);
+    final actRarity = skillScript.actRarity?.getOrNull(skillLv - 1);
+    if (actRarity != null && !actRarity.contains(battleData.activator?.rarity)) {
+      return false;
+    }
+
+    final npHigher = skillScript.NP_HIGHER?.getOrNull(skillLv - 1);
+    if (npHigher != null && !checkSkillScripCondition(battleData, SkillScriptCond.npHigher, npHigher)) {
+      return false;
+    }
+
+    final npLower = skillScript.NP_LOWER?.getOrNull(skillLv - 1);
+    if (npLower != null && !checkSkillScripCondition(battleData, SkillScriptCond.npLower, npLower)) {
+      return false;
+    }
+
+    final starHigher = skillScript.STAR_HIGHER?.getOrNull(skillLv - 1);
+    if (starHigher != null && !checkSkillScripCondition(battleData, SkillScriptCond.starHigher, starHigher)) {
+      return false;
+    }
+
+    final starLower = skillScript.STAR_LOWER?.getOrNull(skillLv - 1);
+    if (starLower != null && !checkSkillScripCondition(battleData, SkillScriptCond.starLower, starLower)) {
+      return false;
+    }
+
+    final hpValHigher = skillScript.HP_VAL_HIGHER?.getOrNull(skillLv - 1);
+    if (hpValHigher != null && !checkSkillScripCondition(battleData, SkillScriptCond.hpValHigher, hpValHigher)) {
+      return false;
+    }
+
+    final hpValLower = skillScript.HP_VAL_LOWER?.getOrNull(skillLv - 1);
+    if (hpValLower != null && !checkSkillScripCondition(battleData, SkillScriptCond.hpValLower, hpValLower)) {
+      return false;
+    }
+
+    final hpPerHigher = skillScript.HP_PER_HIGHER?.getOrNull(skillLv - 1);
+    if (hpPerHigher != null && !checkSkillScripCondition(battleData, SkillScriptCond.hpPerHigher, hpPerHigher)) {
+      return false;
+    }
+
+    final hpPerLower = skillScript.HP_PER_LOWER?.getOrNull(skillLv - 1);
+    if (hpPerLower != null && !checkSkillScripCondition(battleData, SkillScriptCond.hpPerLower, hpPerLower)) {
+      return false;
     }
 
     return true;
@@ -155,7 +182,10 @@ class BattleSkillInfoData {
       checkActorTraits: true,
     ));
 
-    bool canActSkill = battleData.delegate?.whetherSkill?.call(battleData.activator, skill) ?? actorTraitMatch;
+    final scriptCheck = skillScriptConditionCheck(battleData, skill.script, skillLevel);
+
+    bool canActSkill =
+        battleData.delegate?.whetherSkill?.call(battleData.activator, skill) ?? actorTraitMatch && scriptCheck;
     if (!canActSkill) {
       return false;
     }
