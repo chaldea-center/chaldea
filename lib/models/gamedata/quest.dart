@@ -821,6 +821,7 @@ class NpcServant {
 @JsonSerializable()
 class SupportServant {
   int id;
+  int npcSvtFollowerId;
   int priority;
   String name;
   BasicServant svt;
@@ -834,10 +835,12 @@ class SupportServant {
   SupportServantScript? script;
   List<SupportServantRelease> releaseConditions;
   SupportServantLimit limit;
+  QuestEnemy? detail;
   // misc
 
   SupportServant({
     required this.id,
+    this.npcSvtFollowerId = 0,
     required this.priority,
     required this.name,
     required this.svt,
@@ -851,6 +854,7 @@ class SupportServant {
     this.script,
     this.releaseConditions = const [],
     required this.limit,
+    this.detail,
   });
 
   factory SupportServant.fromJson(Map<String, dynamic> json) => _$SupportServantFromJson(json);
@@ -1732,6 +1736,7 @@ enum DeckType {
   skillShift,
   missionTargetSkillShift,
   aiNpc,
+  svtFollower,
 }
 
 enum RestrictionType {

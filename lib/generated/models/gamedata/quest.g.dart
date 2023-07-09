@@ -532,6 +532,7 @@ const _$NpcServantFollowerFlagEnumMap = {
 
 SupportServant _$SupportServantFromJson(Map json) => SupportServant(
       id: json['id'] as int,
+      npcSvtFollowerId: json['npcSvtFollowerId'] as int? ?? 0,
       priority: json['priority'] as int,
       name: json['name'] as String,
       svt: BasicServant.fromJson(Map<String, dynamic>.from(json['svt'] as Map)),
@@ -555,10 +556,12 @@ SupportServant _$SupportServantFromJson(Map json) => SupportServant(
               .toList() ??
           const [],
       limit: SupportServantLimit.fromJson(Map<String, dynamic>.from(json['limit'] as Map)),
+      detail: json['detail'] == null ? null : QuestEnemy.fromJson(Map<String, dynamic>.from(json['detail'] as Map)),
     );
 
 Map<String, dynamic> _$SupportServantToJson(SupportServant instance) => <String, dynamic>{
       'id': instance.id,
+      'npcSvtFollowerId': instance.npcSvtFollowerId,
       'priority': instance.priority,
       'name': instance.name,
       'svt': instance.svt.toJson(),
@@ -572,6 +575,7 @@ Map<String, dynamic> _$SupportServantToJson(SupportServant instance) => <String,
       'script': instance.script?.toJson(),
       'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
       'limit': instance.limit.toJson(),
+      'detail': instance.detail?.toJson(),
     };
 
 SupportServantRelease _$SupportServantReleaseFromJson(Map json) => SupportServantRelease(
@@ -784,6 +788,7 @@ const _$DeckTypeEnumMap = {
   DeckType.skillShift: 'skillShift',
   DeckType.missionTargetSkillShift: 'missionTargetSkillShift',
   DeckType.aiNpc: 'aiNpc',
+  DeckType.svtFollower: 'svtFollower',
 };
 
 const _$EnemyRoleTypeEnumMap = {
