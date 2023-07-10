@@ -37,7 +37,7 @@ enum ParamType {
 abstract class UA {
   static const fallback = android;
 
-  static const android = 'Dalvik/2.1.0 (Linux; U; Android 6.0.1; SM-G9500 Build/V417IR)';
+  static const android = 'Dalvik/2.1.0 (Linux; U; Android 8.1; SM-G9500 Build/V417IR)';
 
   static bool validate(String ua) {
     if (ua.trim().isEmpty) return false;
@@ -47,7 +47,7 @@ abstract class UA {
     return true;
   }
 
-  static const deviceinfo = 'samsung SM-G9500 / Android OS 6.0.1 / API-23 (V417IR/eng.duanlusheng.20221214.192029)';
+  static const deviceinfo = 'samsung SM-G9500 / Android OS 8.1 / API-27 (V417IR/eng.duanlusheng.20221214.192029)';
 }
 
 class ServerResponse {
