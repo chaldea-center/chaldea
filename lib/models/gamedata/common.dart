@@ -189,9 +189,9 @@ class BgmEntity extends Bgm {
 
   BgmEntity({
     required super.id,
-    required super.name,
-    required super.fileName,
-    required super.notReleased,
+    super.name,
+    super.fileName,
+    super.notReleased,
     super.audioAsset,
     this.priority = 0,
     this.detail = "",
@@ -200,7 +200,8 @@ class BgmEntity extends Bgm {
     this.releaseConditions = const [],
   });
 
-  factory BgmEntity.fromJson(Map<String, dynamic> json) => _$BgmEntityFromJson(json);
+  factory BgmEntity.fromJson(Map<String, dynamic> json) =>
+      GameDataLoader.instance.tmp.getBgm(json["id"], () => _$BgmEntityFromJson(json));
 
   @override
   Map<String, dynamic> toJson() => _$BgmEntityToJson(this);
@@ -217,8 +218,8 @@ class Bgm with RouteInfo {
   Bgm({
     required this.id,
     this.name = '',
-    required this.fileName,
-    required this.notReleased,
+    this.fileName = "",
+    this.notReleased = false,
     this.audioAsset,
   });
 
@@ -230,9 +231,9 @@ class Bgm with RouteInfo {
   String get route => Routes.bgmI(id);
 
   factory Bgm.fromJson(Map<String, dynamic> json) {
-    final bgm = GameDataLoader.instance.tmp.gameJson?['bgms']?[json['id'].toString()];
-    if (bgm != null) {
-      json.addAll(Map.from(bgm));
+    final tmp = GameDataLoader.instance.tmp;
+    if (tmp.enabled) {
+      return GameDataLoader.instance.tmp.getBgm(json["id"], () => _$BgmEntityFromJson(json));
     }
     return _$BgmFromJson(json);
   }

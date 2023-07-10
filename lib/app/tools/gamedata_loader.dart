@@ -228,11 +228,11 @@ class GameDataLoader {
       // 'craftEssences': 'collectionNo',
       // 'commandCodes': 'collectionNo',
       'items': 'id',
+      'bgms': 'id',
       'entities': 'id',
       'baseFunctions': 'funcId',
       'baseSkills': 'id',
       'baseTds': 'id',
-      'bgms': 'id',
       // constData
       // dropRate
       'events': 'id',
@@ -467,6 +467,7 @@ class _GameLoadingTempData {
   bool _enabled = false;
   Map<String, dynamic>? gameJson;
   final Map<int, Item> _items = {};
+  final Map<int, BgmEntity> _bgms = {};
   final Map<int, BasicServant> _basicSvts = {};
   final Map<int, Buff> _buffs = {};
   final Map<int, BaseFunction> _baseFuncs = {};
@@ -475,11 +476,14 @@ class _GameLoadingTempData {
   final Map<String, SkillSvt> _skillSvts = {};
   final Map<String, TdSvt> _tdSvts = {};
 
+  bool get enabled => _enabled;
+
   void reset() {
     _enabled = false;
     gameJson?.clear();
     gameJson = null;
     _items.clear();
+    _bgms.clear();
     _basicSvts.clear();
     _buffs.clear();
     _baseFuncs.clear();
@@ -498,6 +502,7 @@ class _GameLoadingTempData {
   }
 
   Item getItem(int id, Item Function() ifAbsent) => _get(_items, id, ifAbsent);
+  BgmEntity getBgm(int id, BgmEntity Function() ifAbsent) => _get(_bgms, id, ifAbsent);
   BasicServant getBasicSvt(int id, BasicServant Function() ifAbsent) => _get(_basicSvts, id, ifAbsent);
   Buff getBuff(int id, Buff Function() ifAbsent) => _get(_buffs, id, ifAbsent);
   BaseFunction getFunc(int id, BaseFunction Function() ifAbsent) => _get(_baseFuncs, id, ifAbsent);
