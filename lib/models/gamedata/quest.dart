@@ -868,6 +868,12 @@ class SupportServant {
 
   Transl<String, String> get lName => Transl.svtNames(shownName);
 
+  List<NiceTrait> get traits2 => detail?.traits ?? traits;
+  EnemySkill get skills2 => detail?.skills ?? skills;
+  NiceTd? get td2 => detail?.noblePhantasm.noblePhantasm ?? noblePhantasm.noblePhantasm;
+  int? get td2Lv => detail?.noblePhantasm.noblePhantasmLv ?? noblePhantasm.lv;
+  EnemyPassive get classPassive => detail?.classPassive ?? EnemyPassive();
+
   Map<String, dynamic> toJson() => _$SupportServantToJson(this);
 }
 
@@ -1383,6 +1389,8 @@ class EnemyPassive {
         addPassive = addPassive ?? [];
 
   factory EnemyPassive.fromJson(Map<String, dynamic> json) => _$EnemyPassiveFromJson(json);
+
+  bool get isNotEmpty => classPassive.isNotEmpty || addPassive.isNotEmpty || appendPassiveSkillIds?.isNotEmpty == true;
 
   bool containSkill(int skillId) {
     return classPassive.any((e) => e.id == skillId) ||

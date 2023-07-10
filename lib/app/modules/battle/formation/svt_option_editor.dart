@@ -1048,28 +1048,29 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     }
     // if collected battle data didn't choose support svt,
     // no trait info and passive skills
-    if (support.traits.isNotEmpty) {
-      svt.traits = support.traits.toList();
+    if (support.traits2.isNotEmpty) {
+      svt.traits = support.traits2.toList();
     }
+    final basicSvt = support.detail?.svt ?? support.svt;
     svt
-      ..classId = support.svt.classId
-      ..rarity = support.svt.rarity
-      ..attribute = support.svt.attribute;
+      ..classId = basicSvt.classId
+      ..rarity = basicSvt.rarity
+      ..attribute = basicSvt.attribute;
     playerSvtData
       ..supportType = SupportSvtType.npc
-      ..limitCount = support.limit.limitCount
-      ..hpFou = 0
-      ..atkFou = 0
-      ..lv = support.lv
-      ..fixedHp = support.hp
-      ..fixedAtk = support.atk;
+      ..limitCount = support.detail?.limit.limitCount ?? support.limit.limitCount
+      ..hpFou = (support.detail?.adjustHp ?? 0) * 10
+      ..atkFou = (support.detail?.adjustAtk ?? 0) * 10
+      ..lv = support.detail?.lv ?? support.lv
+      ..fixedHp = support.detail?.hp ?? support.hp
+      ..fixedAtk = support.detail?.atk ?? support.atk;
     // skill & td
-    svt.skills = support.skills.skills.whereType<NiceSkill>().toList();
-    playerSvtData.skills = support.skills.skills;
-    playerSvtData.skillLvs = support.skills.skillLvs.map((e) => e ?? 0).toList();
-    svt.noblePhantasms = [if (support.noblePhantasm.noblePhantasm != null) support.noblePhantasm.noblePhantasm!];
-    playerSvtData.td = support.noblePhantasm.noblePhantasm;
-    playerSvtData.tdLv = support.noblePhantasm.noblePhantasmLv.clamp(1, 5);
+    // svt.skills = support.skills2.skills.whereType<NiceSkill>().toList();
+    playerSvtData.skills = support.skills2.skills.toList();
+    playerSvtData.skillLvs = support.skills2.skillLvs.map((e) => e ?? 0).toList();
+    // svt.noblePhantasms = [if (support.td2 != null) support.td2!];
+    playerSvtData.td = support.td2;
+    playerSvtData.tdLv = (support.td2Lv ?? 1).clamp2(1, support.td2?.maxLv ?? 1);
     // ce
     final ce = support.equips.getOrNull(0);
     playerSvtData

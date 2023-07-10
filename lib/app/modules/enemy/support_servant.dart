@@ -2,6 +2,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/modules/enemy/quest_enemy.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -20,6 +21,8 @@ class SupportServantPage extends StatefulWidget {
 
 class _SupportServantPageState extends State<SupportServantPage> {
   SupportServant get svt => widget.svt;
+  QuestEnemy? get detail => widget.svt.detail;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,53 +111,68 @@ class _SupportServantPageState extends State<SupportServantPage> {
           ),
         )
       ]),
+      if (svt.detail != null)
+        TextButton(
+          onPressed: () {
+            router.pushPage(QuestEnemyDetail(
+              enemy: svt.detail!,
+              overrideTitle: "${S.current.support_servant_short}*",
+            ));
+          },
+          style: kTextButtonDenseStyle,
+          child: Text(S.current.details),
+        ),
       CustomTableRow.fromTexts(
         texts: [S.current.trait],
         isHeader: true,
       ),
       CustomTableRow.fromChildren(
-          children: [SharedBuilder.traitList(context: context, traits: svt.traits.toList()..sort2((e) => e.id))]),
-      if (svt.skills.skill1 != null || svt.skills.skill2 != null || svt.skills.skill3 != null)
+          children: [SharedBuilder.traitList(context: context, traits: svt.traits2.toList()..sort2((e) => e.id))]),
+      if (svt.skills2.skills.any((e) => e != null))
         CustomTableRow.fromTexts(
           texts: [S.current.skill],
           isHeader: true,
         ),
-      if (svt.skills.skill1 != null)
-        SkillDescriptor(
-          skill: svt.skills.skill1!,
-          level: svt.skills.skillLv1,
-          showEnemy: true,
-          showPlayer: true,
-          region: widget.region,
+      for (int index = 0; index < svt.skills2.skills.length; index++)
+        if (svt.skills2.skills[index] != null)
+          SkillDescriptor(
+            skill: svt.skills2.skills[index]!,
+            level: svt.skills2.skillLvs[index],
+            showEnemy: true,
+            showPlayer: true,
+            region: widget.region,
+          ),
+      if (svt.td2 != null) ...[
+        CustomTableRow.fromTexts(
+          texts: [S.current.noble_phantasm],
+          isHeader: true,
         ),
-      if (svt.skills.skill2 != null)
-        SkillDescriptor(
-          skill: svt.skills.skill2!,
-          level: svt.skills.skillLv2,
-          showEnemy: true,
-          showPlayer: true,
-          region: widget.region,
-        ),
-      if (svt.skills.skill3 != null)
-        SkillDescriptor(
-          skill: svt.skills.skill3!,
-          level: svt.skills.skillLv3,
-          showEnemy: true,
-          showPlayer: true,
-          region: widget.region,
-        ),
-      CustomTableRow.fromTexts(
-        texts: [S.current.noble_phantasm],
-        isHeader: true,
-      ),
-      if (svt.noblePhantasm.noblePhantasm != null)
         TdDescriptor(
-          td: svt.noblePhantasm.noblePhantasm!,
-          level: svt.noblePhantasm.noblePhantasmLv,
+          td: svt.td2!,
+          level: svt.td2Lv,
           showEnemy: true,
           showPlayer: true,
           region: widget.region,
         ),
+      ],
+      if (svt.classPassive.isNotEmpty) ...[
+        CustomTableRow.fromTexts(texts: [S.current.passive_skill], isHeader: true),
+        for (final skill in svt.classPassive.classPassive)
+          SkillDescriptor(
+            skill: skill,
+            showEnemy: true,
+            showPlayer: true,
+            region: widget.region,
+          ),
+        for (int index = 0; index < svt.classPassive.addPassive.length; index++)
+          SkillDescriptor(
+            skill: svt.classPassive.addPassive[index],
+            level: svt.classPassive.addPassiveLvs?.getOrNull(index),
+            showEnemy: true,
+            showPlayer: true,
+            region: widget.region,
+          ),
+      ],
       ...getCes(),
       if (svt.releaseConditions.isNotEmpty) ...[
         CustomTableRow.fromTexts(
