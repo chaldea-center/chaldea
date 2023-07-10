@@ -11,13 +11,15 @@ import '../common/filter_group.dart';
 
 class QuestDetailPage extends StatefulWidget {
   final int? id;
+  final int? phase;
   final Quest? quest;
   final Region? region;
   final QuestPhase? questPhase;
-  const QuestDetailPage({super.key, this.id, this.quest, this.region}) : questPhase = null;
+  const QuestDetailPage({super.key, this.id, this.phase, this.quest, this.region}) : questPhase = null;
   QuestDetailPage.phase({super.key, required QuestPhase this.questPhase})
       : region = null,
         id = questPhase.id,
+        phase = questPhase.phase,
         quest = questPhase;
 
   @override
@@ -39,8 +41,12 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
     region = _resolveDefaultRegion();
     _quest = widget.quest ?? (region == Region.jp ? db.gameData.quests[widget.id] : null);
     questId = _quest?.id ?? widget.id;
-    if (_quest != null && _quest!.isAnyFree && _quest!.phases.isNotEmpty) {
-      phase = _quest!.phases.last;
+    if (_quest != null) {
+      if (widget.phase != null && _quest!.phases.contains(widget.phase)) {
+        phase = widget.phase!;
+      } else if (_quest!.isAnyFree && _quest!.phases.isNotEmpty) {
+        phase = _quest!.phases.last;
+      }
     }
     _resolveQuest();
   }

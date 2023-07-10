@@ -263,6 +263,7 @@ class RouteConfiguration {
   }
 
   String? get second => uri?.pathSegments.getOrNull(1);
+  String? get third => uri?.pathSegments.getOrNull(2);
 
   Map<String, String> get query => uri?.queryParameters ?? {};
 
@@ -363,7 +364,8 @@ class RouteConfiguration {
       case Routes.item:
         return ItemDetailPage(itemId: _secondInt ?? 0);
       case Routes.quest:
-        return QuestDetailPage(id: _secondInt, region: region);
+        final int? _thirdInt = third == null ? null : int.tryParse(third!);
+        return QuestDetailPage(id: _secondInt, phase: _thirdInt, region: region);
       case Routes.summons:
         return SummonListPage();
       case Routes.summon:
