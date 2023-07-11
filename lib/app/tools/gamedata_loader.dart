@@ -105,8 +105,9 @@ class GameDataLoader {
       if (e is! UpdateError) logger.e('load gamedata(offline=$offline)', e, s);
       _showError(e);
       if (!completer.isCompleted) completer.complete(null);
+    } finally {
+      tmp.reset();
     }
-    tmp.reset();
     return completer.future;
   }
 
@@ -268,7 +269,6 @@ class GameDataLoader {
     if (_gameJson.isEmpty) {
       throw Exception('No data loaded');
     }
-    tmp.reset();
     _gameJson["version"] = newVersion.toJson();
     if (db.settings.spoilerRegion != Region.jp) {
       _gameJson['spoilerRegion'] = const RegionConverter().toJson(db.settings.spoilerRegion);
@@ -287,7 +287,6 @@ class GameDataLoader {
       }
     }
 
-    tmp.reset();
     db.runtimeData.upgradableDataVersion = newVersion;
     progress.value = finished / newVersion.files.length;
     return _gamedata;
@@ -479,6 +478,7 @@ class _GameLoadingTempData {
   bool get enabled => _enabled;
 
   void reset() {
+    logger.d('disable _GameLoadingTempData');
     _enabled = false;
     gameJson?.clear();
     gameJson = null;

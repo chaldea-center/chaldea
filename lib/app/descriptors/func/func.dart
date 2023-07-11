@@ -252,7 +252,10 @@ class SkillScriptDescriptor extends StatelessWidget {
     if (script?.additionalSkillId?.isNotEmpty == true) {
       final ids = script!.additionalSkillId!;
       final lvs = script?.additionalSkillLv ?? <int>[];
-      List<InlineSpan> titleSpans = [TextSpan(text: Transl.misc2('SkillScript', 'additionalSkillId'))];
+      List<InlineSpan> titleSpans = [
+        TextSpan(text: Transl.misc2('SkillScript', 'additionalSkillId')),
+        const TextSpan(text: ": ")
+      ];
       Widget? trailing;
       List<Widget> cells = [];
 
@@ -298,6 +301,7 @@ class SkillScriptDescriptor extends StatelessWidget {
       children.add(_pad(Text.rich(
         TextSpan(children: [
           TextSpan(text: Transl.misc2('SkillScript', 'tdTypeChangeIDs')),
+          const TextSpan(text: ': '),
           ...divideList(
             List.generate(script!.tdTypeChangeIDs!.length, (index) {
               final tdId = script!.tdTypeChangeIDs![index];

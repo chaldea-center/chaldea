@@ -440,8 +440,9 @@ class BaseTd extends SkillOrTd with RouteInfo {
     this.individuality = const [],
     this.script,
     this.functions = const [],
-    this.npSvts = const [],
-  }) : npGain = npGain ?? NpGain();
+    List<TdSvt>? npSvts,
+  })  : npGain = npGain ?? NpGain(),
+        npSvts = npSvts ?? [];
 
   factory BaseTd.fromJson(Map<String, dynamic> json) {
     return GameDataLoader.instance.tmp.getBaseTd(json["id"]!, () => _$BaseTdFromJson(json));
@@ -571,7 +572,7 @@ class NiceTd extends SkillOrTd with RouteInfo implements BaseTd {
     List<NiceTrait> individuality = const [],
     SkillScript? script,
     List<NiceFunction> functions = const [],
-    List<TdSvt> npSvts = const [],
+    List<TdSvt>? npSvts,
     int svtId = 0,
     int num = 1,
     int npNum = 1,
@@ -619,7 +620,27 @@ class NiceTd extends SkillOrTd with RouteInfo implements BaseTd {
           condFriendshipRank: condFriendshipRank,
           card: card,
           releaseConditions: releaseConditions,
-        );
+        ) {
+    if (svtId > 0 && num > 0 && !_base.npSvts.any((e) => e.svtId == svtId && e.num == num && e.priority == priority)) {
+      // recreate instance in case of wrong reference
+      _base.npSvts.add(TdSvt(
+        svtId: svtId,
+        num: num,
+        npNum: npNum,
+        priority: priority,
+        damage: damage,
+        strengthStatus: strengthStatus,
+        flag: flag,
+        imageIndex: imageIndex,
+        condQuestId: condQuestId,
+        condQuestPhase: condQuestPhase,
+        condLv: condLv,
+        condFriendshipRank: condFriendshipRank,
+        card: card,
+        releaseConditions: releaseConditions,
+      ));
+    }
+  }
 
   factory NiceTd.fromJson(Map<String, dynamic> json) {
     if (json['type'] == null) {

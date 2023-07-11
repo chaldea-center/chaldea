@@ -191,10 +191,8 @@ BaseTd _$BaseTdFromJson(Map json) => BaseTd(
               ?.map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      npSvts: (json['npSvts'] as List<dynamic>?)
-              ?.map((e) => TdSvt.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
+      npSvts:
+          (json['npSvts'] as List<dynamic>?)?.map((e) => TdSvt.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
     );
 
 Map<String, dynamic> _$BaseTdToJson(BaseTd instance) => <String, dynamic>{
@@ -288,10 +286,8 @@ NiceTd _$NiceTdFromJson(Map json) => NiceTd(
               ?.map((e) => NiceFunction.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      npSvts: (json['npSvts'] as List<dynamic>?)
-              ?.map((e) => TdSvt.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
+      npSvts:
+          (json['npSvts'] as List<dynamic>?)?.map((e) => TdSvt.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
       svtId: json['svtId'] as int? ?? 0,
       num: json['num'] as int? ?? 1,
       npNum: json['npNum'] as int? ?? 1,
