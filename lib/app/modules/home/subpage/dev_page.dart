@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
@@ -49,19 +51,24 @@ class _DevInfoPageState extends State<DevInfoPage> {
       ),
       body: LayoutBuilder(builder: (context, constraints) {
         Widget _info(String title, dynamic value) {
+          final text = value.toString();
           return ListTile(
             dense: true,
             title: Text(title),
             trailing: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: constraints.maxWidth * 0.6),
               child: Text(
-                value.toString(),
+                text,
                 textAlign: TextAlign.end,
                 style: Theme.of(context).textTheme.bodySmall,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
+            onLongPress: () {
+              copyToClipboard(text);
+              EasyLoading.showToast(text);
+            },
           );
         }
 
