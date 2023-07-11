@@ -98,15 +98,16 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
     }
     children.add(ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 360),
-      child: SliderWithTitle(
-        padding: EdgeInsets.zero,
-        leadingText: S.current.battle_random,
+      child: SliderWithPrefix(
+        titled: true,
+        label: S.current.battle_random,
         min: ConstData.constants.attackRateRandomMin,
         max: ConstData.constants.attackRateRandomMax - 1,
         value: battleData.options.fixedRandom,
-        label: toModifier(battleData.options.fixedRandom).toStringAsFixed(3),
+        valueFormatter: (v) => toModifier(v).toStringAsFixed(3),
         onChange: (v) {
-          battleData.options.fixedRandom = v.round();
+          battleData.options.fixedRandom = ((v / 10).round() * 10)
+              .clamp(ConstData.constants.attackRateRandomMin, ConstData.constants.attackRateRandomMax - 1);
           if (mounted) setState(() {});
         },
       ),

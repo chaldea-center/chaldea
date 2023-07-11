@@ -137,7 +137,13 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                 child: Text(S.current.refresh),
               ),
               ...SharedBuilder.websitesPopupMenuItems(
-                atlas: _quest == null ? null : Atlas.dbQuest(_quest!.id, _quest!.phases.getOrNull(0), region),
+                atlas: _quest == null
+                    ? null
+                    : Atlas.dbQuest(
+                        _quest!.id,
+                        _quest!.phases.contains(phase) ? phase : _quest!.phases.firstOrNull,
+                        region,
+                      ),
               ),
               PopupMenuItem(
                 onTap: _showFixRegionDialog,
