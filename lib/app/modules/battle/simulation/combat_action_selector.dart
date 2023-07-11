@@ -110,6 +110,11 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
               .clamp(ConstData.constants.attackRateRandomMin, ConstData.constants.attackRateRandomMax - 1);
           if (mounted) setState(() {});
         },
+        onEdit: (v) {
+          battleData.options.fixedRandom =
+              v.round().clamp(ConstData.constants.attackRateRandomMin, ConstData.constants.attackRateRandomMax - 1);
+          if (mounted) setState(() {});
+        },
       ),
     ));
     children.add(Wrap(

@@ -113,16 +113,15 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         label: 'ATK ${S.current.foukun}',
         min: 0,
         max: 2000,
-        value: playerSvtData.atkFou ~/ 10 * 10,
-        division: 200,
-        valueFormatter: (_) => '+${playerSvtData.atkFou}',
+        value: playerSvtData.atkFou,
+        // division: 200,
+        valueFormatter: (v) => '+$v',
         onChange: (v) {
-          final int fou = v.round() ~/ 10 * 10;
-          if (fou > 1000) {
-            playerSvtData.atkFou = fou ~/ 20 * 20;
-          } else {
-            playerSvtData.atkFou = fou;
+          int v2 = (v / 10).round();
+          if (v2 > 100) {
+            v2 = v2 ~/ 2 * 2;
           }
+          playerSvtData.atkFou = v2 * 10;
           _updateState();
         },
         endOffset: -16,
@@ -131,16 +130,15 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         label: 'HP ${S.current.foukun}',
         min: 0,
         max: 2000,
-        value: playerSvtData.hpFou ~/ 10 * 10,
-        division: 200,
-        valueFormatter: (_) => '+${playerSvtData.hpFou}',
+        value: playerSvtData.hpFou,
+        // division: 200,
+        valueFormatter: (v) => '+$v',
         onChange: (v) {
-          final int fou = v.round() ~/ 10 * 10;
-          if (fou > 1000) {
-            playerSvtData.hpFou = fou ~/ 20 * 20;
-          } else {
-            playerSvtData.hpFou = fou;
+          int v2 = (v / 10).round();
+          if (v2 > 100) {
+            v2 = v2 ~/ 2 * 2;
           }
+          playerSvtData.hpFou = v2 * 10;
           _updateState();
         },
         endOffset: -16,
@@ -904,8 +902,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                     label: S.current.card_strengthen,
                     min: 0,
                     max: 500,
-                    value: playerSvtData.cardStrengthens[index] ~/ 20 * 20,
-                    valueFormatter: (_) => playerSvtData.cardStrengthens[index].toString(),
+                    value: playerSvtData.cardStrengthens[index],
+                    // valueFormatter: (v) => v.toString(),
                     onChange: (v) {
                       playerSvtData.cardStrengthens[index] = v.round() ~/ 20 * 20;
                       _updateState();

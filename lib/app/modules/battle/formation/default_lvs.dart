@@ -38,7 +38,7 @@ class _PlayerSvtDefaultLvEditPageState extends State<PlayerSvtDefaultLvEditPage>
               value: defaultLvs.lv,
               onChange: (v) {
                 setState(() {
-                  defaultLvs.lv = v.toInt();
+                  defaultLvs.lv = v.round();
                 });
               },
             ),
@@ -50,7 +50,7 @@ class _PlayerSvtDefaultLvEditPageState extends State<PlayerSvtDefaultLvEditPage>
             value: defaultLvs.limitCount,
             onChange: (v) {
               setState(() {
-                defaultLvs.limitCount = v.toInt();
+                defaultLvs.limitCount = v.round();
               });
             },
           ),
@@ -75,7 +75,7 @@ class _PlayerSvtDefaultLvEditPageState extends State<PlayerSvtDefaultLvEditPage>
               value: defaultLvs.tdLv,
               onChange: (v) {
                 setState(() {
-                  defaultLvs.tdLv = v.toInt();
+                  defaultLvs.tdLv = v.round();
                 });
               },
             ),
@@ -88,7 +88,7 @@ class _PlayerSvtDefaultLvEditPageState extends State<PlayerSvtDefaultLvEditPage>
             value: defaultLvs.activeSkillLv,
             onChange: (v) {
               setState(() {
-                defaultLvs.activeSkillLv = v.toInt();
+                defaultLvs.activeSkillLv = v.round();
               });
             },
           ),
@@ -101,7 +101,7 @@ class _PlayerSvtDefaultLvEditPageState extends State<PlayerSvtDefaultLvEditPage>
               value: defaultLvs.appendLvs[index],
               onChange: (v) {
                 setState(() {
-                  defaultLvs.appendLvs[index] = v.toInt();
+                  defaultLvs.appendLvs[index] = v.round();
                 });
               },
             ),
