@@ -126,8 +126,10 @@ class _EventDetailPageState extends State<EventDetailPage> {
       // before tower
       _addTab(S.current.event_heel, EventHeelPortraitPage(event: event));
     }
-    for (final tower in event.towers) {
-      _addTab(Transl.misc2('TowerName', tower.name), EventTowersPage(event: event, tower: tower));
+    if (event.towers.isNotEmpty) {
+      final tabName =
+          event.towers.length == 1 ? Transl.misc2('TowerName', event.towers.first.name) : S.current.event_tower;
+      _addTab(tabName, EventTowersPage(towers: event.towers));
     }
     if (event.treasureBoxes.isNotEmpty) {
       _addTab(S.current.event_treasure_box, EventTreasureBoxTab(event: event));

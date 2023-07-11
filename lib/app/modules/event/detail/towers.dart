@@ -2,10 +2,44 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class EventTowersPage extends HookWidget {
-  final Event event;
+class EventTowersPage extends StatelessWidget {
+  // final Event event;
+  final List<EventTower> towers;
+  const EventTowersPage({super.key, required this.towers});
+
+  @override
+  Widget build(BuildContext context) {
+    if (towers.length == 1) {
+      return EventTowerTab(tower: towers.first);
+    }
+    final tabbar = TabBar(
+      isScrollable: towers.length > 2,
+      tabs: [
+        for (final tower in towers)
+          Tab(child: Text(Transl.misc2('TowerName', tower.name), style: Theme.of(context).textTheme.bodyMedium))
+      ],
+    );
+    final pages = [
+      for (final tower in towers) EventTowerTab(tower: tower),
+    ];
+
+    return DefaultTabController(
+      length: towers.length,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          FixedHeight.tabBar(tabbar),
+          Expanded(child: TabBarView(children: pages)),
+        ],
+      ),
+    );
+  }
+}
+
+class EventTowerTab extends HookWidget {
   final EventTower tower;
-  const EventTowersPage({super.key, required this.event, required this.tower});
+
+  const EventTowerTab({super.key, required this.tower});
 
   @override
   Widget build(BuildContext context) {
