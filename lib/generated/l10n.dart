@@ -7383,6 +7383,17 @@ class S {
     );
   }
 
+  /// `Invalid quest, only Free and Raid Quests supports team sharing`
+  String get quest_disallow_laplace_share_hint {
+    return Intl.message(
+      'Invalid quest, only Free and Raid Quests supports team sharing',
+      name: 'quest_disallow_laplace_share_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `For event effects, both war and field trait(94000xxx) are required to be correctly set.\nOnly basic quest/enemy edit supported, special functions (multiple hp bar/shiftServant) are not supported. Customize JSON data for complex quest.`
   String get quest_edit_hint {
     return Intl.message(

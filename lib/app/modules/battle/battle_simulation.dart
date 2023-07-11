@@ -627,7 +627,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         ),
       ],
     );
-    if (battleData.isBattleWin && widget.replayActions == null && questPhase.isAnyFree) {
+    if (battleData.isBattleWin && widget.replayActions == null && questPhase.isLaplaceSharable) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [

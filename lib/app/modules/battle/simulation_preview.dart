@@ -151,6 +151,10 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           onPressed: questPhase == null
               ? null
               : () async {
+                  if (!questPhase!.isLaplaceSharable) {
+                    EasyLoading.showInfo(S.current.quest_disallow_laplace_share_hint);
+                    return;
+                  }
                   final BattleTeamFormation? selected = await router.pushPage<BattleTeamFormation?>(
                     TeamsQueryPage(
                       mode: TeamQueryMode.quest,

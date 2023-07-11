@@ -665,6 +665,7 @@
   "quest_chapter_n": "第{n}節",
   "quest_condition": "開放條件",
   "quest_detail_btn": "詳情",
+  "quest_disallow_laplace_share_hint": null,
   "quest_edit_hint": null,
   "quest_enemy_summary_hint": "主線FQ中敵人資訊的匯總, 任何屬性均可能被伺服器所覆蓋, 僅供參考。\n*特殊*特性指僅部分敵人持有的特性。",
   "quest_fields": "場地",

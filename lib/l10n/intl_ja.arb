@@ -665,6 +665,7 @@
   "quest_chapter_n": "第{n}節",
   "quest_condition": "開放条件",
   "quest_detail_btn": "詳細",
+  "quest_disallow_laplace_share_hint": null,
   "quest_edit_hint": null,
   "quest_enemy_summary_hint": "フリークエストの敵編成まとめにある各属性は、サーバーによって上書きされる可能性があり、あくまで参考程度に考えてください。\n*特殊*特性とは、敵の一部のみがその特性を持っていることを示します。",
   "quest_fields": "フィールド",

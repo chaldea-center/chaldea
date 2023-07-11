@@ -281,6 +281,14 @@ class Quest with RouteInfo {
     return true;
   }
 
+  bool get isRepeatRaid {
+    return afterClear == QuestAfterClearType.repeatLast && flags.contains(QuestFlag.raid);
+  }
+
+  bool get isLaplaceSharable {
+    return id > 0 && (isAnyFree || isRepeatRaid);
+  }
+
   List<String> get allScriptIds {
     return [for (final phase in phaseScripts) ...phase.scripts.map((e) => e.scriptId)];
   }

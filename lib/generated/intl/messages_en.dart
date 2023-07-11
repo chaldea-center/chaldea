@@ -795,6 +795,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_chapter_n": m9,
         "quest_condition": MessageLookupByLibrary.simpleMessage("Conditions"),
         "quest_detail_btn": MessageLookupByLibrary.simpleMessage("details"),
+        "quest_disallow_laplace_share_hint":
+            MessageLookupByLibrary.simpleMessage("Invalid quest, only Free and Raid Quests supports team sharing"),
         "quest_edit_hint": MessageLookupByLibrary.simpleMessage(
             "For event effects, both war and field trait(94000xxx) are required to be correctly set.\nOnly basic quest/enemy edit supported, special functions (multiple hp bar/shiftServant) are not supported. Customize JSON data for complex quest."),
         "quest_enemy_summary_hint": MessageLookupByLibrary.simpleMessage(
