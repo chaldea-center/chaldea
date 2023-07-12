@@ -152,9 +152,6 @@ class ValDsc extends StatelessWidget {
 
   static void _addPercent(final List<String> parts, int? value, int base, [String Function(String)? post]) {
     if (value == null || value == 0) return;
-    if (value == 966756) {
-      logger.e(value.toString());
-    }
     String text = '${_toPercent(value, base)!}%';
     if (post != null) {
       text = post(text);
@@ -165,6 +162,12 @@ class ValDsc extends StatelessWidget {
   // return null if not processed
   void describeFunc() {
     parts.clear();
+
+    // conditions
+    if (vals.StarHigher != null) {
+      parts.add("($kStarChar≥${vals.StarHigher})");
+    }
+    // end conditions
 
     if (func.funcType == FuncType.addState ||
         func.funcType == FuncType.addStateShort ||
@@ -394,7 +397,7 @@ class ValDsc extends StatelessWidget {
           (_jsonVals.length == 1 && _jsonVals.first == 'Rate' && ignoreRate != true) ||
           vals.Rate != 1000 ||
           [FuncType.instantDeath, FuncType.forceInstantDeath].contains(func.funcType)) {
-        _addPercent(parts, vals.Rate, 10, (v) => Transl.special.funcValChance(v));
+        parts.add(Transl.special.funcValChance('${_toPercent(vals.Rate, 10)}%'));
       }
     }
 
