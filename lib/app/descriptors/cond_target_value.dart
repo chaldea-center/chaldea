@@ -103,6 +103,14 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
               MultiDescriptor.events(context, [value])),
           kr: null,
         );
+      case CondType.questAvailable:
+        return localized(
+          jp: null,
+          cn: () => combineToRich(context, '关卡可用中', quests(context)),
+          tw: null,
+          na: () => combineToRich(context, 'Quest', quests(context), "available"),
+          kr: null,
+        );
       case CondType.svtLimit:
         return localized(
           jp: () => combineToRich(context, null, servants(context), 'の霊基再臨を$value段階目にする'),

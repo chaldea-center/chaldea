@@ -295,6 +295,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
           title: title,
           text: value,
           validate: validate,
+          maxLines: 2,
           onSubmit: (s) {
             onSubmit(s);
             if (mounted) setState(() {});

@@ -295,7 +295,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "guda_male": MessageLookupByLibrary.simpleMessage("Gudao"),
         "help": MessageLookupByLibrary.simpleMessage("Ayuda"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("Ocultar desactualizado"),
-        "http_sniff_hint": MessageLookupByLibrary.simpleMessage("(NA/JP/CN/TW) Capture los datos al iniciar sesión"),
+        "http_sniff_hint": MessageLookupByLibrary.simpleMessage("(CN/TW) Capture los datos al iniciar sesión"),
         "https_sniff": MessageLookupByLibrary.simpleMessage("Https Sniffing"),
         "hunting_quest": MessageLookupByLibrary.simpleMessage("Hunting Quests"),
         "icons": MessageLookupByLibrary.simpleMessage("Iconos"),

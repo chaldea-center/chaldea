@@ -353,7 +353,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hide_svt_plan_details_hint": MessageLookupByLibrary.simpleMessage("계획 탭에 만 안 표시.\n실제로는 아이템 계획 및 통계에 포함되어 있어."),
         "hide_unreleased_card": MessageLookupByLibrary.simpleMessage("미구현 서번트 숨기기"),
         "high_difficulty_quest": MessageLookupByLibrary.simpleMessage("고난이도 퀘스트"),
-        "http_sniff_hint": MessageLookupByLibrary.simpleMessage("(NA/JP/CN/TW)계정 로그인 시 데이터 캡쳐, KR은 지원하지 않습니다"),
+        "http_sniff_hint": MessageLookupByLibrary.simpleMessage("(CN/TW)계정 로그인 시 데이터 캡쳐, KR은 지원하지 않습니다"),
         "https_sniff": MessageLookupByLibrary.simpleMessage("Https 스나이핑"),
         "hunting_quest": MessageLookupByLibrary.simpleMessage("헌팅 퀘스트"),
         "icons": MessageLookupByLibrary.simpleMessage("아이콘"),

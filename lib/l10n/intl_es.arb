@@ -419,7 +419,7 @@
   "hide_unreleased_card": null,
   "high_difficulty_quest": null,
   "history": null,
-  "http_sniff_hint": "(NA/JP/CN/TW) Capture los datos al iniciar sesión",
+  "http_sniff_hint": "(CN/TW) Capture los datos al iniciar sesión",
   "https_sniff": "Https Sniffing",
   "hunting_quest": "Hunting Quests",
   "icons": "Iconos",

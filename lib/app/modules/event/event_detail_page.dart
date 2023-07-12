@@ -202,11 +202,11 @@ class _EventDetailPageState extends State<EventDetailPage> {
     if (event.bulletinBoards.isNotEmpty) {
       _addTab(S.current.event_bulletin_board, EventBulletinBoardPage(event: event));
     }
-    if (event.rewardScenes.isNotEmpty) {
-      _addTab('Scenes', EventRewardScenePage(event: event));
-    }
     if (event.voices.isNotEmpty) {
       _addTab(S.current.voice, EventVoicePage(event: event));
+    }
+    if (event.rewardScenes.isNotEmpty) {
+      _addTab('Scenes', EventRewardScenePage(event: event));
     }
     return DefaultTabController(
       length: tabs.length,

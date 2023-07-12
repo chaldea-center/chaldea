@@ -8,6 +8,7 @@ import 'package:chaldea/utils/utils.dart';
 class InputCancelOkDialog extends StatefulWidget {
   final String? title;
   final String? text;
+  final int? maxLines;
   final String? hintText;
   final String? helperText;
   final String? errorText;
@@ -19,6 +20,7 @@ class InputCancelOkDialog extends StatefulWidget {
     super.key,
     this.title,
     this.text,
+    this.maxLines,
     this.hintText,
     this.helperText,
     this.errorText,
@@ -76,6 +78,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
         autofocus: true,
         autocorrect: false,
         keyboardType: widget.keyboardType,
+        maxLines: widget.maxLines,
         decoration: InputDecoration(
           hintText: widget.hintText,
           helperText: widget.helperText,

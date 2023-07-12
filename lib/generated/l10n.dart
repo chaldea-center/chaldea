@@ -4672,10 +4672,10 @@ class S {
     );
   }
 
-  /// `(NA/JP/CN/TW)Capture the data when logging in`
+  /// `(CN/TW)Capture the data when logging in`
   String get http_sniff_hint {
     return Intl.message(
-      '(NA/JP/CN/TW)Capture the data when logging in',
+      '(CN/TW)Capture the data when logging in',
       name: 'http_sniff_hint',
       desc: '',
       locale: localeName,
@@ -4804,10 +4804,10 @@ class S {
     );
   }
 
-  /// `Auth File (Transfer Code)`
+  /// `Account File`
   String get import_auth_file {
     return Intl.message(
-      'Auth File (Transfer Code)',
+      'Account File',
       name: 'import_auth_file',
       desc: '',
       locale: localeName,

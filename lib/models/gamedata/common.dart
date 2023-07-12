@@ -219,7 +219,7 @@ class Bgm with RouteInfo {
     required this.id,
     this.name = '',
     this.fileName = "",
-    this.notReleased = false,
+    this.notReleased = true,
     this.audioAsset,
   });
 

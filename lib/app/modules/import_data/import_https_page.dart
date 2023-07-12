@@ -16,6 +16,8 @@ import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../app.dart';
+import '../common/builders.dart';
+import 'autologin/login_page.dart';
 import 'bond_detail_page.dart';
 
 class ImportHttpPage extends StatefulWidget {
@@ -120,6 +122,21 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                           },
                           child: Text(url),
                         ),
+                        Text.rich(
+                          TextSpan(
+                            text: "For JP/NA, use ",
+                            children: [
+                              SharedBuilder.textButtonSpan(
+                                context: context,
+                                text: S.current.import_auth_file,
+                                onTap: () {
+                                  router.pushPage(const AutoLoginPage());
+                                },
+                              ),
+                            ],
+                          ),
+                          textAlign: TextAlign.center,
+                        )
                       ],
                     ),
                   )

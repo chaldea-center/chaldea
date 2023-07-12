@@ -70,6 +70,19 @@ class _ImportPageHomeState extends State<ImportPageHome> {
               router.popDetailAndPush(child: ImportHttpPage());
             },
           ),
+          ListTile(
+            leading: const Icon(Icons.manage_accounts),
+            title: Text(S.current.import_auth_file),
+            trailing: const Icon(Icons.keyboard_arrow_right),
+            subtitle:
+                Text(['${Region.jp.localName}/${Region.na.localName}', if (kIsWeb) 'web is not supported'].join(', ')),
+            enabled: !kIsWeb,
+            onTap: kIsWeb
+                ? null
+                : () {
+                    router.pushPage(const AutoLoginPage());
+                  },
+          ),
           // SHeader(S.current.testing),
           ListTile(
             leading: const Icon(Icons.screenshot),
@@ -97,18 +110,6 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             onTap: () {
               router.pushPage(ImportSkillScreenshotPage(isAppend: true), popDetail: true);
             },
-          ),
-          ListTile(
-            leading: const Icon(Icons.manage_accounts),
-            title: Text(S.current.import_auth_file),
-            trailing: const Icon(Icons.keyboard_arrow_right),
-            subtitle: Text(['JP/NA', if (kIsWeb) 'web is not supported'].join(', ')),
-            enabled: !kIsWeb,
-            onTap: kIsWeb
-                ? null
-                : () {
-                    router.pushPage(const AutoLoginPage());
-                  },
           ),
           ListTile(
             leading: const Icon(Icons.compare_arrows),

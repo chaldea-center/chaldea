@@ -40,7 +40,7 @@ BgmEntity _$BgmEntityFromJson(Map json) => BgmEntity(
       id: json['id'] as int,
       name: json['name'] as String? ?? '',
       fileName: json['fileName'] as String? ?? "",
-      notReleased: json['notReleased'] as bool? ?? false,
+      notReleased: json['notReleased'] as bool? ?? true,
       audioAsset: json['audioAsset'] as String?,
       priority: json['priority'] as int? ?? 0,
       detail: json['detail'] as String? ?? "",
@@ -69,7 +69,7 @@ Bgm _$BgmFromJson(Map json) => Bgm(
       id: json['id'] as int,
       name: json['name'] as String? ?? '',
       fileName: json['fileName'] as String? ?? "",
-      notReleased: json['notReleased'] as bool? ?? false,
+      notReleased: json['notReleased'] as bool? ?? true,
       audioAsset: json['audioAsset'] as String?,
     );
 
