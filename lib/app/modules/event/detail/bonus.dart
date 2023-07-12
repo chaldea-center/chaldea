@@ -80,7 +80,7 @@ class EventBonusTab extends HookWidget {
           SkillDescriptor(
             skill: eventSkills[skillId]!,
             hideDetail: true,
-            showBuffDetail: true,
+            // showBuffDetail: true,
             showEvent: false,
           ),
           GridView.extent(

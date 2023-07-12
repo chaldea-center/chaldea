@@ -447,6 +447,11 @@ class FuncDescriptor extends StatelessWidget {
           BuffType.toFieldSubIndividualityField,
         ].contains(buff.type)) {
           funcText.write(Transl.buffNames(buff.type.name).l);
+        } else if (buff.type == BuffType.upDamage &&
+            func.funcGroup.any((e) => e.eventId != 0) & buff.ckOpIndv.isEmpty &&
+            buff.ckSelfIndv.isEmpty &&
+            func.functvals.isEmpty) {
+          funcText.write(Transl.buffNames("威力アップ").l);
         } else if (buff.name.isEmpty) {
           funcText.write(Transl.buffType(buff.type).l);
         } else {
