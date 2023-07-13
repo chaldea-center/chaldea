@@ -19,6 +19,9 @@ class ConstGameData {
   final Map<int, Map<int, GrailCostDetail>> svtGrailCost; // <rarity, <grail_count, detail>>
   final Map<int, MasterUserLvDetail> userLevel;
   final Map<int, SvtExpCurve> svtExp;
+  final Map<int, FuncTypeDetail> funcTypeDetail;
+  final Map<int, BuffTypeDetail> buffTypeDetail;
+
   final Map<int, int> bondLimitQp = {10: 10000000, 11: 12000000, 12: 14000000, 13: 16000000, 14: 18000000};
   final Map<BuffType, List<BuffAction>> buffTypeActionMap;
 
@@ -37,6 +40,8 @@ class ConstGameData {
     this.svtGrailCost = const {},
     this.userLevel = const {},
     this.svtExp = const {},
+    this.funcTypeDetail = const {},
+    this.buffTypeDetail = const {},
   }) : buffTypeActionMap = {} {
     for (final entry in buffActions.entries) {
       for (final type in [...entry.value.plusTypes, ...entry.value.minusTypes]) {
@@ -68,6 +73,14 @@ class ConstGameData {
 
   int getAttributeRelation(final Attribute attacker, final Attribute defender) {
     return attributeRelation[attacker]?[defender] ?? 1000;
+  }
+
+  bool isIgnoreValueUpFuncType(FuncType funcType) {
+    return funcTypeDetail[funcType.id]?.ignoreValueUp ?? false;
+  }
+
+  bool isIgnoreValueUpBuffType(BuffType buffType) {
+    return funcTypeDetail[buffType.id]?.ignoreValueUp ?? false;
   }
 
   factory ConstGameData.fromJson(Map<String, dynamic> json) {
@@ -222,6 +235,36 @@ class SvtExpCurve {
   factory SvtExpCurve.fromJson(Map<String, dynamic> json) => _$SvtExpCurveFromJson(json);
 
   Map<String, dynamic> toJson() => _$SvtExpCurveToJson(this);
+}
+
+@JsonSerializable()
+class FuncTypeDetail {
+  final FuncType funcType;
+  final bool ignoreValueUp;
+
+  FuncTypeDetail({
+    this.funcType = FuncType.unknown,
+    required this.ignoreValueUp,
+  });
+
+  factory FuncTypeDetail.fromJson(Map<String, dynamic> json) => _$FuncTypeDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FuncTypeDetailToJson(this);
+}
+
+@JsonSerializable()
+class BuffTypeDetail {
+  final BuffType buffType;
+  final bool ignoreValueUp;
+
+  BuffTypeDetail({
+    this.buffType = BuffType.unknown,
+    required this.ignoreValueUp,
+  });
+
+  factory BuffTypeDetail.fromJson(Map<String, dynamic> json) => _$BuffTypeDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BuffTypeDetailToJson(this);
 }
 
 class SvtExpData {
