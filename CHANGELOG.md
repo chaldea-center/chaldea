@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.4.5
+
+- Chaldeas
+  - Add event heel portrait
+  - UI improvements
+- Laplace
+  - Fix Hokusai (Foreigner) skill 3 triggers before NP
+  - Fix users able to interact with UI during calculations
+  - Support functionWaveStart buffs
+  - Support rarity check for skills
+
 ## 2.4.4
 
 - Chaldeas
