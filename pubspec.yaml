@@ -54,14 +54,14 @@ dependencies:
   dots_indicator: ^3.0.0
   file_picker: ^5.3.0
   fl_chart: ^0.63.0
-  flutter_cache_manager: ^3.2.0
+  flutter_cache_manager: ^3.3.1
   flutter_easyloading: ^3.0.5
   flutter_email_sender: ^6.0.0
   flutter_hooks: ^0.18.5+1
   flutter_markdown: ^0.6.14
   flutter_picker: ^2.1.0
   # flutter_qjs: ^0.3.7
-  flutter_js: ^0.7.1
+  flutter_js: ^0.7.2
   flutter_window_close: ^0.2.2
   font_awesome_flutter: ^10.5.0
   github: ^9.15.1
@@ -90,7 +90,7 @@ dependencies:
       path: packages/pasteboard
   path: ^1.8.2
   path_provider: ^2.0.14
-  permission_handler: ^10.4.1
+  permission_handler: ^10.4.3
   pool: ^1.5.0
   photo_view: ^0.14.0
   ruby_text: ^3.0.1
@@ -103,7 +103,7 @@ dependencies:
   system_tray: ^2.0.3
   table_sticky_headers: ^2.0.1
   tuple: ^2.0.1
-  url_launcher: ^6.1.5
+  url_launcher: ^6.1.12
   uuid: ^3.0.5
   video_player: ^2.7.0
   video_player_win: ^2.2.2
