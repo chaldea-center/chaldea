@@ -8,6 +8,24 @@ part of '../../../models/gamedata/gamedata.dart';
 
 GameData _$GameDataFromJson(Map json) => GameData(
       version: json['version'] == null ? null : DataVersion.fromJson(Map<String, dynamic>.from(json['version'] as Map)),
+      items: (json['items'] as Map?)?.map(
+        (k, e) => MapEntry(int.parse(k as String), Item.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      bgms: (json['bgms'] as Map?)?.map(
+        (k, e) => MapEntry(int.parse(k as String), BgmEntity.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      entities: (json['entities'] as Map?)?.map(
+        (k, e) => MapEntry(int.parse(k as String), BasicServant.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      baseFunctions: (json['baseFunctions'] as Map?)?.map(
+        (k, e) => MapEntry(int.parse(k as String), BaseFunction.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      baseSkills: (json['baseSkills'] as Map?)?.map(
+        (k, e) => MapEntry(int.parse(k as String), BaseSkill.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+      baseTds: (json['baseTds'] as Map?)?.map(
+        (k, e) => MapEntry(int.parse(k as String), BaseTd.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
       servants: (json['servants'] as List<dynamic>?)
               ?.map((e) => Servant.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -32,20 +50,11 @@ GameData _$GameDataFromJson(Map json) => GameData(
       classBoards: (json['classBoards'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), ClassBoard.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
-      items: (json['items'] as Map?)?.map(
-        (k, e) => MapEntry(int.parse(k as String), Item.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
       questPhases: (json['questPhases'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), QuestPhase.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       exchangeTickets: (json['exchangeTickets'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), ExchangeTicket.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
-      entities: (json['entities'] as Map?)?.map(
-        (k, e) => MapEntry(int.parse(k as String), BasicServant.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
-      bgms: (json['bgms'] as Map?)?.map(
-        (k, e) => MapEntry(int.parse(k as String), BgmEntity.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
       enemyMasters: (json['enemyMasters'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), EnemyMaster.fromJson(Map<String, dynamic>.from(e as Map))),
@@ -61,15 +70,6 @@ GameData _$GameDataFromJson(Map json) => GameData(
           ? null
           : ConstGameData.fromJson(Map<String, dynamic>.from(json['constData'] as Map)),
       dropData: json['dropData'] == null ? null : DropData.fromJson(Map<String, dynamic>.from(json['dropData'] as Map)),
-      baseTds: (json['baseTds'] as Map?)?.map(
-        (k, e) => MapEntry(int.parse(k as String), BaseTd.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
-      baseSkills: (json['baseSkills'] as Map?)?.map(
-        (k, e) => MapEntry(int.parse(k as String), BaseSkill.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
-      baseFunctions: (json['baseFunctions'] as Map?)?.map(
-        (k, e) => MapEntry(int.parse(k as String), BaseFunction.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
       addData:
           json['addData'] == null ? null : _GameDataAdd.fromJson(Map<String, dynamic>.from(json['addData'] as Map)),
       spoilerRegion: _$JsonConverterFromJson<String, Region>(json['spoilerRegion'], const RegionConverter().fromJson),
