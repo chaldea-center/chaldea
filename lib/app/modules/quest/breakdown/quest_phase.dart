@@ -150,7 +150,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                     WidgetSpan(
                       child: IconButton(
                         onPressed: () {
-                          router.pushPage(WaveInfoPage(stage: stage));
+                          router.pushPage(WaveInfoPage(stage: stage, region: widget.region));
                         },
                         icon: const Icon(Icons.music_note, size: 18),
                         padding: EdgeInsets.zero,

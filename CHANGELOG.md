@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.4.6
+
+- Chaldeas
+  - Add AI page
+- Laplace
+  - Fix Damage Cut
+  - Fix activator not reset after custom skill
+
 ## 2.4.5
 
 - Chaldeas

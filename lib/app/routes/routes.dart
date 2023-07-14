@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/modules/ai/ai_page.dart';
 import 'package:chaldea/app/modules/battle/td_damage/td_damage_ranking.dart';
 import 'package:chaldea/app/modules/battle/teams/teams_query_page.dart';
 import 'package:chaldea/app/modules/buff/buff_list.dart';
@@ -27,6 +28,7 @@ import 'package:chaldea/app/modules/trait/trait_list.dart';
 import 'package:chaldea/app/modules/war/wars_page.dart';
 import 'package:chaldea/models/gamedata/common.dart';
 import 'package:chaldea/models/gamedata/event.dart';
+import '../../models/gamedata/ai.dart';
 import '../../models/gamedata/const_data.dart';
 import '../../packages/split_route/split_route.dart';
 import '../../utils/extension.dart';
@@ -98,7 +100,7 @@ class Routes {
   static const String war = '/war';
   static const String wars = '/wars';
 
-  static String questI(int id) => '/quest/$id';
+  static String questI(int id, [int? phase]) => phase == null || phase <= 0 ? '/quest/$id' : '/quest/$id/$phase';
   static const String quest = '/quest';
 
   static String itemI(int id) => '/item/$id';
@@ -144,6 +146,11 @@ class Routes {
   static String tdI(int id) => '/noble-phantasm/$id';
   static const String td = '/noble-phantasm';
   static const String tds = '/noble-phantasms';
+
+  static String aiI(AiType type, int id) => '/ai/${type.name}/$id';
+  static const String ai = '/ai';
+  static const String svtAi = '/ai/svt';
+  static const String fieldAi = '/ai/field';
 
   static String masterMissionI(int id) => '/master-mission/$id';
   static const String masterMission = '/master-mission';
@@ -446,6 +453,11 @@ class RouteConfiguration {
       case Routes.td:
       case 'NP':
         return TdDetailPage(id: _secondInt, region: region);
+      case Routes.ai:
+        final AiType? type = AiType.fromString(second ?? "");
+        final int? aiId = int.tryParse(third ?? "");
+        if (type == null) break;
+        return AiPage(aiType: type, aiId: aiId, region: region);
       case Routes.laplace:
         if (path?.startsWith(Routes.laplaceShare) == true && uri?.queryParameters.containsKey('v') == true) {
           return SimulationPreview(shareData: uri);

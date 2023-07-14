@@ -594,7 +594,7 @@ class AtlasApi {
 
   static Future<NiceAiCollection?> ai(AiType type, int aiId, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
-      '$_atlasApiHost/nice/${region.upper}/${type.name}/$aiId',
+      '$_atlasApiHost/nice/${region.upper}/ai/${type.name}/$aiId',
       (data) => NiceAiCollection.fromJson(data),
       expireAfter: expireAfter,
     );

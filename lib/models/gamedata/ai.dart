@@ -31,9 +31,11 @@ class NiceAi {
   bool condNegative;
   List<int> vals;
   NiceAiAct aiAct;
+  // [changeThinking, id:message/playMotion]
   List<int> avals;
   Map<AiType, List<int>> parentAis;
   String infoText;
+  // timing is only for field ai
   int? timing;
   AiTiming? timingDescription;
 
@@ -94,6 +96,11 @@ class NiceAiAct {
 enum AiType {
   svt,
   field,
+  ;
+
+  static AiType? fromString(String s) {
+    return AiType.values.firstWhere((e) => e.name == s);
+  }
 }
 
 enum NiceAiActNum {

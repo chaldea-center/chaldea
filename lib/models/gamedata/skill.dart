@@ -52,6 +52,14 @@ abstract class SkillOrTd implements RouteInfo {
   }
 }
 
+extension SkillOrTdX on SkillOrTd {
+  String get dispName {
+    final s = lName.l;
+    if (s.isEmpty) return id.toString();
+    return s;
+  }
+}
+
 @JsonSerializable()
 class BaseSkill extends SkillOrTd with RouteInfo {
   @override

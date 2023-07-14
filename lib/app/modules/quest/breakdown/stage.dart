@@ -10,6 +10,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/video_player.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../ai/ai_page.dart';
 import '../../enemy/quest_enemy.dart';
 
 class QuestWave extends StatelessWidget {
@@ -189,7 +190,8 @@ class QuestWave extends StatelessWidget {
 
 class WaveInfoPage extends StatelessWidget {
   final Stage stage;
-  const WaveInfoPage({super.key, required this.stage});
+  final Region? region;
+  const WaveInfoPage({super.key, required this.stage, this.region});
 
   @override
   Widget build(BuildContext context) {
@@ -237,7 +239,14 @@ class WaveInfoPage extends StatelessWidget {
                         context: context,
                         text: ai.id.toString(),
                         onTap: () {
-                          launch(Atlas.ai(ai.id, false));
+                          router.push(
+                            url: Routes.aiI(AiType.field, ai.id),
+                            child: AiPage(
+                              aiType: AiType.field,
+                              aiId: ai.id,
+                              region: region,
+                            ),
+                          );
                         },
                       ),
                       if (index < stage.fieldAis.length - 1) TextSpan(text: index == perLine - 1 ? '\n' : ', '),

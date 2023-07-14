@@ -1,5 +1,6 @@
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
+import 'package:chaldea/app/modules/ai/ai_page.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -205,11 +206,16 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
                             context: context,
                             text: aiId.toString(),
                             onTap: () {
-                              launch(Atlas.ai(enemy.ai!.aiId, true,
-                                  region: widget.region ?? Region.jp,
-                                  skillId1: enemy.skills.skillId1,
-                                  skillId2: enemy.skills.skillId2,
-                                  skillId3: enemy.skills.skillId3));
+                              router.push(
+                                url: Routes.aiI(AiType.svt, aiId),
+                                child: AiPage(
+                                  aiType: AiType.svt,
+                                  aiId: aiId,
+                                  region: widget.region,
+                                  skills: enemy.skills,
+                                  td: enemy.noblePhantasm,
+                                ),
+                              );
                             },
                           ),
                     ],

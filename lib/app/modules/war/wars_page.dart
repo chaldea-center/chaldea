@@ -61,8 +61,8 @@ class _WarsPageState extends State<WarsPage> with SingleTickerProviderStateMixin
           controller: _tabController,
           tabs: [
             Tab(text: S.current.main_story),
-            Tab(text: S.current.chaldea_gate),
             Tab(text: S.current.event),
+            Tab(text: S.current.chaldea_gate),
           ],
         )),
       ),
@@ -70,8 +70,8 @@ class _WarsPageState extends State<WarsPage> with SingleTickerProviderStateMixin
         controller: _tabController,
         children: [
           WarListPage(wars: mainStories, reversed: reversed),
-          WarListPage(wars: chaldeaGates, reversed: reversed),
           WarListPage(wars: eventWars, reversed: reversed, sortByEvent: true),
+          WarListPage(wars: chaldeaGates, reversed: reversed),
         ],
       ),
     );
