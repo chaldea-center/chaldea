@@ -155,10 +155,10 @@ void main() async {
 
         damageParameters
           ..damageAdditionBuff = 675
-          ..damageReductionBuff = 275;
+          ..damageReceiveAdditionBuff = -275;
         expect(calculateDamage(damageParameters), equals(damage));
 
-        damageParameters.damageReductionBuff = 99999999;
+        damageParameters.damageReceiveAdditionBuff = -99999999;
         expect(calculateDamage(damageParameters), equals(0));
       });
 

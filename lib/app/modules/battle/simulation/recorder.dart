@@ -913,7 +913,7 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
         0.001 - 1);
     final percentAttack = max(toModifier(params.percentAttackBuff), 0.01 - 1);
     final percentDefense = min(toModifier(params.percentDefenseBuff), 1);
-    final damageAdd = params.damageAdditionBuff - params.damageReductionBuff;
+    final damageAdd = params.damageAdditionBuff + params.damageReceiveAdditionBuff;
 
     return buildDialog(
       context: context,

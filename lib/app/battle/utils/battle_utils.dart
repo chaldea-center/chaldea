@@ -86,8 +86,8 @@ int calculateDamage(final DamageParameters param) {
               max(1 + percentAttackBuff, 0.001) *
               npSpecificAttackRate *
               (param.totalHits / 100.0) +
-          param.damageAdditionBuff -
-          param.damageReductionBuff +
+          param.damageAdditionBuff +
+          param.damageReceiveAdditionBuff +
           busterChainMod)
       .toInt();
 
@@ -261,7 +261,7 @@ class DamageParameters {
   int percentAttackBuff = 0; // damageSpecialMod = actor.damageSpecial
   int percentDefenseBuff = 0; // specialDefMod = target.specialdefence
   int damageAdditionBuff = 0; // dmgPlusAdd = actor.givenDamage
-  int damageReductionBuff = 0; // selfDmgCutAdd = target.receiveDamage
+  int damageReceiveAdditionBuff = 0; // selfDmgCutAdd = target.receiveDamage
   int fixedRandom = 0;
 
   NiceFunction? damageFunction;
@@ -296,7 +296,7 @@ class DamageParameters {
         'percentAttackBuff: $percentAttackBuff, '
         'percentDefenseBuff: $percentDefenseBuff, '
         'damageAdditionBuff: $damageAdditionBuff, '
-        'damageReductionBuff: $damageReductionBuff, '
+        'damageReceiveAdditionBuff: $damageReceiveAdditionBuff, '
         'fixedRandom: $fixedRandom'
         '}';
   }
@@ -330,7 +330,7 @@ class DamageParameters {
       ..percentAttackBuff = percentAttackBuff
       ..percentDefenseBuff = percentDefenseBuff
       ..damageAdditionBuff = damageAdditionBuff
-      ..damageReductionBuff = damageReductionBuff
+      ..damageReceiveAdditionBuff = damageReceiveAdditionBuff
       ..fixedRandom = fixedRandom
       ..damageFunction = damageFunction;
   }
