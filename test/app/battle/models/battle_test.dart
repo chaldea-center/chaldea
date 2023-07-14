@@ -1015,6 +1015,34 @@ void main() async {
     expect(previousHp4 - enemy3.hp, 28656);
   });
 
+  test('melusine st np addSelfDamage buff', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(304800)
+        ..lv = 100
+        ..tdLv = 5
+        ..limitCount = 1,
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    await battle.skipWave();
+    await battle.skipWave();
+
+    final melusine = battle.onFieldAllyServants[0]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+
+    final previousHp1 = enemy1.hp;
+    melusine.np = 10000;
+    await battle.playerTurn([CombatAction(melusine, melusine.getNPCard(battle)!)]);
+    expect(previousHp1 - enemy1.hp, 22874);
+
+    final previousHp2 = enemy1.hp;
+    melusine.np = 10000;
+    await battle.playerTurn([CombatAction(melusine, melusine.getNPCard(battle)!)]);
+    expect(previousHp2 - enemy1.hp, 23874);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,
