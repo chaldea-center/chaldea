@@ -1056,11 +1056,6 @@ enum TdEffectFlag {
   attackEnemyOne,
 }
 
-enum AiType {
-  svt,
-  field,
-}
-
 @JsonEnum(fieldRename: FieldRename.screamingSnake)
 enum SkillScriptCond {
   none,

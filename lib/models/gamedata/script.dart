@@ -102,20 +102,3 @@ class ValentineScript extends ScriptLink {
   @override
   Map<String, dynamic> toJson() => _$ValentineScriptToJson(this);
 }
-
-@JsonSerializable()
-class StageLink {
-  int questId;
-  int phase;
-  int stage;
-
-  StageLink({
-    required this.questId,
-    required this.phase,
-    required this.stage,
-  });
-
-  factory StageLink.fromJson(Map<String, dynamic> json) => _$StageLinkFromJson(json);
-
-  Map<String, dynamic> toJson() => _$StageLinkToJson(this);
-}

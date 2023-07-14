@@ -42,15 +42,3 @@ Map<String, dynamic> _$ValentineScriptToJson(ValentineScript instance) => <Strin
       'script': instance.script,
       'scriptName': instance.scriptName,
     };
-
-StageLink _$StageLinkFromJson(Map json) => StageLink(
-      questId: json['questId'] as int,
-      phase: json['phase'] as int,
-      stage: json['stage'] as int,
-    );
-
-Map<String, dynamic> _$StageLinkToJson(StageLink instance) => <String, dynamic>{
-      'questId': instance.questId,
-      'phase': instance.phase,
-      'stage': instance.stage,
-    };

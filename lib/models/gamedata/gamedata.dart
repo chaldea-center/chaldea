@@ -24,6 +24,7 @@ import 'skill.dart';
 import 'war.dart';
 import 'wiki_data.dart';
 
+export 'ai.dart';
 export 'class_board.dart';
 export 'command_code.dart';
 export 'common.dart';

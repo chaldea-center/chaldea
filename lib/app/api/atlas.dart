@@ -592,6 +592,14 @@ class AtlasApi {
     );
   }
 
+  static Future<NiceAiCollection?> ai(AiType type, int aiId, {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/nice/${region.upper}/${type.name}/$aiId',
+      (data) => NiceAiCollection.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+
   // export
   static Future<List<BasicServant>?> basicServants({Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
     return cacheManager.getModel(

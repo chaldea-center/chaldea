@@ -81,6 +81,18 @@ Map<String, dynamic> _$BgmToJson(Bgm instance) => <String, dynamic>{
       'audioAsset': instance.audioAsset,
     };
 
+StageLink _$StageLinkFromJson(Map json) => StageLink(
+      questId: json['questId'] as int? ?? 0,
+      phase: json['phase'] as int? ?? 1,
+      stage: json['stage'] as int? ?? 1,
+    );
+
+Map<String, dynamic> _$StageLinkToJson(StageLink instance) => <String, dynamic>{
+      'questId': instance.questId,
+      'phase': instance.phase,
+      'stage': instance.stage,
+    };
+
 const _$RegionEnumMap = {
   Region.jp: 'jp',
   Region.cn: 'cn',

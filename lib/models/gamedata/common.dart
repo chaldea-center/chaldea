@@ -241,6 +241,22 @@ class Bgm with RouteInfo {
   Map<String, dynamic> toJson() => _$BgmToJson(this);
 }
 
+@JsonSerializable()
+class StageLink {
+  int questId;
+  int phase;
+  int stage;
+
+  StageLink({
+    this.questId = 0,
+    this.phase = 1,
+    this.stage = 1,
+  });
+  factory StageLink.fromJson(Map<String, dynamic> json) => _$StageLinkFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StageLinkToJson(this);
+}
+
 enum CardType {
   none(0),
   arts(1),
