@@ -197,6 +197,7 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                                   fromPlayer: isAlly,
                                   uploadEligible: false,
                                 );
+                                if (activator != null) widget.battleData.unsetActivator();
                               },
                             );
                             if (mounted) Navigator.of(context).pop(skill);
