@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -42,7 +43,7 @@ class BattleRecorderPanel extends StatefulWidget {
 }
 
 class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
-  bool complete = false;
+  bool showDetail = false;
   bool showQuest = false;
   late bool showTeam = widget.initShowTeam;
 
@@ -90,43 +91,16 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
             IconButton(
               onPressed: () {
                 setState(() {
-                  complete = !complete;
+                  showDetail = !showDetail;
                 });
               },
               icon: const Icon(Icons.text_fields),
-              color: complete ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).disabledColor,
+              color: showDetail ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).disabledColor,
               tooltip: 'Show svt/skill name',
               visualDensity: VisualDensity.standard,
             ),
             IconButton(
-              onPressed: () async {
-                if (kIsWeb && !kPlatformMethods.rendererCanvasKit) {
-                  EasyLoading.showError('Web html mode is not supported, please change to canvaskit mode.');
-                  return;
-                }
-                EasyLoading.show();
-                try {
-                  final data = await controller.capture(pixelRatio: MediaQuery.of(context).devicePixelRatio);
-                  if (data == null) {
-                    EasyLoading.showError('Something went wrong.');
-                    return;
-                  }
-                  EasyLoading.dismiss();
-                  if (!mounted) return;
-                  final quest = widget.battleData?.niceQuest;
-                  final t = DateTime.now();
-                  String fn =
-                      [t.month, t.day, t.hour, t.minute, t.second].map((e) => e.toString().padLeft(2, '0')).join('_');
-                  fn = 'battle_log_${quest?.id}_${quest?.phase}_$fn.png';
-                  ImageActions.showSaveShare(
-                    context: context,
-                    data: data,
-                    destFp: joinPaths(db.paths.downloadDir, fn),
-                  );
-                } catch (e) {
-                  EasyLoading.showError(e.toString());
-                }
-              },
+              onPressed: onTapScreenshot,
               icon: const Icon(Icons.camera_alt),
               tooltip: S.current.screenshots,
               color: Theme.of(context).colorScheme.primaryContainer,
@@ -141,7 +115,7 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
             child: BattleRecorderPanelBase(
               battleData: widget.battleData,
               records: widget.records,
-              complete: complete,
+              showDetail: showDetail,
               quest: showQuest ? widget.quest : null,
               team: showTeam ? widget.team : null,
             ),
@@ -160,19 +134,86 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
       ],
     );
   }
+
+  Future<void> onTapScreenshot() async {
+    if (kIsWeb && !kPlatformMethods.rendererCanvasKit) {
+      EasyLoading.showError('Web html mode is not supported, please change to canvaskit mode.');
+      return;
+    }
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text(S.current.screenshots),
+          children: [
+            SimpleDialogOption(
+              onPressed: () async {
+                showQuest = true;
+                showTeam = true;
+                showDetail = true;
+                if (mounted) setState(() {});
+                Navigator.pop(context);
+                // in case image is evicted from memory and needs reload
+                await Future.delayed(const Duration(milliseconds: 500));
+                SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+                  doScreenshot();
+                });
+              },
+              padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+              child: Text(S.current.recorder_screenshot_full_view),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context);
+                doScreenshot();
+              },
+              padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
+              child: Text(S.current.recorder_screenshot_current_view),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> doScreenshot() async {
+    if (!mounted) return;
+    EasyLoading.show();
+    try {
+      final data = await controller.capture(pixelRatio: MediaQuery.of(context).devicePixelRatio);
+      if (data == null) {
+        EasyLoading.showError('Something went wrong.');
+        return;
+      }
+      EasyLoading.dismiss();
+      if (!mounted) return;
+      final quest = widget.battleData?.niceQuest;
+      final t = DateTime.now();
+      String fn = [t.month, t.day, t.hour, t.minute, t.second].map((e) => e.toString().padLeft(2, '0')).join('_');
+      fn = 'battle_log_${quest?.id}_${quest?.phase}_$fn.png';
+      ImageActions.showSaveShare(
+        context: context,
+        data: data,
+        destFp: joinPaths(db.paths.downloadDir, fn),
+      );
+    } catch (e) {
+      EasyLoading.showError(e.toString());
+    }
+  }
 }
 
 class BattleRecorderPanelBase extends StatelessWidget {
   final BattleData? battleData;
   final List<BattleRecord>? records;
-  final bool complete;
+  final bool showDetail;
   final QuestPhase? quest;
   final BattleTeamSetup? team;
   const BattleRecorderPanelBase({
     super.key,
     this.battleData,
     this.records,
-    required this.complete,
+    required this.showDetail,
     this.quest,
     this.team,
   });
@@ -338,7 +379,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
         ),
       if (pskill != null &&
           (pskill.icon == null ||
-              complete ||
+              showDetail ||
               !const [SkillInfoType.svtSelf, SkillInfoType.mysticCode].contains(record.type)))
         SharedBuilder.textButtonSpan(
           context: context,
@@ -347,7 +388,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
           style: (Theme.of(context).textTheme.bodySmall ?? const TextStyle())
               .copyWith(color: Theme.of(context).colorScheme.secondaryContainer),
         ),
-      if (skill.skillLv != 0 && complete) TextSpan(text: 'Lv.${skill.skillLv} '),
+      if (skill.skillLv != 0 && showDetail) TextSpan(text: 'Lv.${skill.skillLv} '),
     ]);
     if (pskill != null) {
       final target = findSkillTarget(pskill, record.fromPlayer, record.targetPlayerSvt, record.targetEnemySvt);
@@ -365,7 +406,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
     return <InlineSpan>[
       TextSpan(text: '${svt.fieldIndex + 1}-', style: const TextStyle(fontFamily: kMonoFont).merge(style)),
       CenterWidgetSpan(child: svt.iconBuilder(context: context, height: 32, battleData: battleData)),
-      if (complete)
+      if (showDetail)
         TextSpan(
           text: svt.lBattleName,
           style: (Theme.of(context).textTheme.bodySmall ?? const TextStyle()).merge(style),
@@ -627,9 +668,9 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Center(child: record.attacker.iconBuilder(context: context, width: 48, battleData: battleData)),
+          Center(child: buildAttackerCard(context)),
           Text(
-            record.attacker.lBattleName,
+            '${record.attacker.fieldIndex + 1}-${record.attacker.lBattleName}',
             maxLines: 1,
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.center,
@@ -638,7 +679,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
             Text.rich(
               TextSpan(
                 children: divideList([
-                  if (record.card?.isNP == true) TextSpan(text: S.current.np_short),
+                  if (record.card?.isNP == true) TextSpan(text: '${S.current.np_short} Lv.${record.attacker.tdLv}'),
                   TextSpan(
                     text: record.card!.cardType.name.toTitle(),
                     style: TextStyle(
@@ -654,7 +695,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
               ),
               style: const TextStyle(decoration: TextDecoration.underline),
               textAlign: TextAlign.center,
-              textScaleFactor: 0.9,
+              textScaleFactor: 0.8,
             ),
           if (record.targets.isNotEmpty || record.damage != 0) ...[
             coloredText('DMG: ${record.damage}', Colors.red),
@@ -662,6 +703,82 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
             if (record.attacker.isPlayer) coloredText('Star: ${record.star / 1000}', Colors.green),
           ],
         ],
+      ),
+    );
+  }
+
+  Widget buildAttackerCard(BuildContext context) {
+    final card = record.card;
+    assert(card != null);
+    if (card == null) {
+      return record.attacker.iconBuilder(
+        context: context,
+        width: 48,
+        battleData: battleData,
+      );
+    }
+    List<Widget> stackChildren = [
+      Positioned.fill(
+        child: record.attacker.iconBuilder(
+          context: context,
+          width: 48,
+          battleData: battleData,
+        ),
+      ),
+    ];
+    if (card.cardType.isQAB) {
+      stackChildren.add(Positioned(
+        left: -2,
+        right: -2,
+        bottom: -6,
+        child: Image.asset(
+          'res/assets/card_icon_${card.cardType.name}.png',
+          fit: BoxFit.fitWidth,
+        ),
+      ));
+      if (card.isNP) {
+        final td = card.td;
+        if (td != null && td.icon != null) {
+          stackChildren.add(Positioned(
+            left: -4,
+            right: -4,
+            bottom: -32,
+            child: CachedImage(
+              imageUrl: td.icon,
+              cachedOption: CachedImageOption(
+                fit: BoxFit.contain,
+                errorWidget: (context, url, error) => Text(S.current.noble_phantasm),
+              ),
+            ),
+          ));
+        } else {
+          stackChildren.add(Positioned.fill(child: Text(S.current.noble_phantasm)));
+        }
+      } else {
+        stackChildren.add(Positioned(
+          left: 2,
+          right: 2,
+          bottom: 0,
+          child: Image.asset(
+            'res/assets/card_txt_${card.cardType.name}.png',
+            fit: BoxFit.fitWidth,
+          ),
+        ));
+      }
+    } else {
+      // stackChildren.add(Positioned.fill(
+      //   child: ImageWithText.paintOutline(text: card.cardType.name),
+      // ));
+    }
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 50, maxHeight: 56),
+      child: InkWell(
+        onTap: () => router.pushPage(BattleSvtDetail(svt: record.attacker, battleData: battleData)),
+        child: Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.bottomCenter,
+          children: stackChildren,
+        ),
       ),
     );
   }
@@ -758,17 +875,21 @@ extension BattleSvtDataUI on BattleServantData {
     double? width,
     double? height,
     double? aspectRatio,
+    String? text,
     VoidCallback? onTap,
     BattleData? battleData,
   }) {
     onTap ??= () => router.pushPage(BattleSvtDetail(svt: this, battleData: battleData));
-    return db.getIconImage(
-      niceSvt?.ascendIcon(limitCount) ?? niceEnemy?.icon ?? Atlas.common.unknownEnemyIcon,
+    return GameCardMixin.cardIconBuilder(
+      context: context,
+      icon: niceSvt?.ascendIcon(limitCount) ?? niceEnemy?.icon ?? Atlas.common.unknownEnemyIcon,
       width: width,
       height: height,
       aspectRatio: aspectRatio ?? (isPlayer ? 132 / 144 : 1),
       onTap: onTap,
-      placeholder: (context) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
+      text: text,
+      option: ImageWithTextOption(
+          errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon)),
     );
   }
 }

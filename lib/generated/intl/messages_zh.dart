@@ -791,6 +791,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rate_app_store": MessageLookupByLibrary.simpleMessage("App Store评分"),
         "rate_play_store": MessageLookupByLibrary.simpleMessage("Google Play评分"),
         "recognizer_result_count": m26,
+        "recorder_screenshot_current_view": MessageLookupByLibrary.simpleMessage("当前视图"),
+        "recorder_screenshot_full_view": MessageLookupByLibrary.simpleMessage("完整视图"),
         "refresh": MessageLookupByLibrary.simpleMessage("刷新"),
         "refresh_data_no_update": MessageLookupByLibrary.simpleMessage("无新增卡牌"),
         "region_cn": MessageLookupByLibrary.simpleMessage("国服"),

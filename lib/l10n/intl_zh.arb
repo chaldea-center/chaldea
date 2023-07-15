@@ -694,6 +694,8 @@
   "rate_app_store": "App Store评分",
   "rate_play_store": "Google Play评分",
   "recognizer_result_count": "{unknown}不明, {dup}重复, {valid}/{total}有效, {selected}已选",
+  "recorder_screenshot_current_view": "当前视图",
+  "recorder_screenshot_full_view": "完整视图",
   "refresh": "刷新",
   "refresh_data_no_update": "无新增卡牌",
   "region_cn": "国服",

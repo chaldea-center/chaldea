@@ -694,6 +694,8 @@
   "rate_app_store": "App Store에서 평가",
   "rate_play_store": "Google Play에서 평가",
   "recognizer_result_count": "{unknown}불명, {dup}중복, {valid}/{total}유효, {selected}선택된",
+  "recorder_screenshot_current_view": null,
+  "recorder_screenshot_full_view": null,
   "refresh": null,
   "refresh_data_no_update": null,
   "region_cn": "간체 중국 서버",

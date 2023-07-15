@@ -43,6 +43,7 @@ class CommandCardData {
   int cardIndex = -1;
   bool isCritical = false;
   CommandCode? commandCode;
+  NiceTd? td;
 
   CommandCardData(this.cardType, this.cardDetail);
 
@@ -54,7 +55,8 @@ class CommandCardData {
       ..isNP = isNP
       ..cardIndex = cardIndex
       ..isCritical = isCritical
-      ..commandCode = commandCode;
+      ..commandCode = commandCode
+      ..td = td;
   }
 }
 

@@ -385,6 +385,7 @@ class BattleServantData {
             attackType:
                 _td.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
           ))
+        ..td = _td
         ..isNP = true
         ..npGain = 0
         ..traits = _td.individuality.toList();
@@ -401,6 +402,7 @@ class BattleServantData {
 
     return CommandCardData(currentNP?.svt.card ?? CardType.none, cardDetail)
       ..isNP = true
+      ..td = currentNP
       ..npGain = currentNP?.npGain.np[playerSvtData!.tdLv - 1] ?? 0
       ..traits = currentNP?.individuality ?? [];
   }

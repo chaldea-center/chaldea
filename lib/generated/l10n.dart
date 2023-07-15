@@ -7702,6 +7702,28 @@ class S {
     );
   }
 
+  /// `Current View`
+  String get recorder_screenshot_current_view {
+    return Intl.message(
+      'Current View',
+      name: 'recorder_screenshot_current_view',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Full View`
+  String get recorder_screenshot_full_view {
+    return Intl.message(
+      'Full View',
+      name: 'recorder_screenshot_full_view',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Refresh`
   String get refresh {
     return Intl.message(

@@ -694,6 +694,8 @@
   "rate_app_store": "App Storeで評価",
   "rate_play_store": "Google Playで評価",
   "recognizer_result_count": null,
+  "recorder_screenshot_current_view": null,
+  "recorder_screenshot_full_view": null,
   "refresh": null,
   "refresh_data_no_update": null,
   "region_cn": "簡体字版",

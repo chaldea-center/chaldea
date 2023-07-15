@@ -694,6 +694,8 @@
   "rate_app_store": "Rate on App Store",
   "rate_play_store": "Rate on Google Play",
   "recognizer_result_count": "{unknown} unknown, {dup} dup, {valid}/{total} valid, {selected} selected",
+  "recorder_screenshot_current_view": "Current View",
+  "recorder_screenshot_full_view": "Full View",
   "refresh": "Refresh",
   "refresh_data_no_update": "No new card found",
   "region_cn": "CN",

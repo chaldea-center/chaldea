@@ -694,6 +694,8 @@
   "rate_app_store": "قيمنا على آب ستور",
   "rate_play_store": "قيمنا على متجر بلاي",
   "recognizer_result_count": null,
+  "recorder_screenshot_current_view": null,
+  "recorder_screenshot_full_view": null,
   "refresh": null,
   "refresh_data_no_update": null,
   "region_cn": "الصينية",

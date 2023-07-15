@@ -830,6 +830,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rate_app_store": MessageLookupByLibrary.simpleMessage("Rate on App Store"),
         "rate_play_store": MessageLookupByLibrary.simpleMessage("Rate on Google Play"),
         "recognizer_result_count": m26,
+        "recorder_screenshot_current_view": MessageLookupByLibrary.simpleMessage("Current View"),
+        "recorder_screenshot_full_view": MessageLookupByLibrary.simpleMessage("Full View"),
         "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
         "refresh_data_no_update": MessageLookupByLibrary.simpleMessage("No new card found"),
         "region_cn": MessageLookupByLibrary.simpleMessage("CN"),
