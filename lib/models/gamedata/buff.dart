@@ -113,13 +113,15 @@ class BuffScript with DataScriptBase {
   List<BuffType>? CheckOpponentBuffTypes;
   BuffRelationOverwrite? relationId;
   NiceTrait? INDIVIDUALITIE; // self indiv?
+  int? INDIVIDUALITIE_COUNT_ABOVE; // used together with INDIVIDUALITIE
+  List<NiceTrait>? INDIVIDUALITIE_AND;
+  List<NiceTrait>? INDIVIDUALITIE_OR;
   List<NiceTrait>? UpBuffRateBuffIndiv; // Oberon
   NiceTrait? TargetIndiv;
   BuffConvert? convert;
 
   String? ReleaseText;
   int? DamageRelease; // remove this buff when receive damage
-  int? INDIVIDUALITIE_COUNT_ABOVE;
   int? HP_LOWER; // Passionlip
   int? HP_HIGHER; // buff 5297
   String? CounterMessage;
@@ -139,6 +141,8 @@ class BuffScript with DataScriptBase {
     this.DamageRelease,
     this.INDIVIDUALITIE,
     this.INDIVIDUALITIE_COUNT_ABOVE,
+    this.INDIVIDUALITIE_AND,
+    this.INDIVIDUALITIE_OR,
     this.UpBuffRateBuffIndiv,
     this.HP_LOWER,
     this.HP_HIGHER,

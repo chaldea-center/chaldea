@@ -99,6 +99,12 @@ BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
           ? null
           : NiceTrait.fromJson(Map<String, dynamic>.from(json['INDIVIDUALITIE'] as Map)),
       INDIVIDUALITIE_COUNT_ABOVE: json['INDIVIDUALITIE_COUNT_ABOVE'] as int?,
+      INDIVIDUALITIE_AND: (json['INDIVIDUALITIE_AND'] as List<dynamic>?)
+          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      INDIVIDUALITIE_OR: (json['INDIVIDUALITIE_OR'] as List<dynamic>?)
+          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
       UpBuffRateBuffIndiv: (json['UpBuffRateBuffIndiv'] as List<dynamic>?)
           ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
