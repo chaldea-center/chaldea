@@ -62,6 +62,14 @@ class SvtInfoTab extends StatelessWidget {
                 texts: [names.map((e) => Transl.svtNames(e).na).join(' / ')],
                 defaults: TableCellData(textAlign: TextAlign.center),
               ),
+            CustomTableRow.fromChildren(children: [
+              if (svt.rarity != 0)
+                CachedImage(
+                  imageUrl:
+                      "https://static.atlasacademy.io/JP/CharaGraphOption/CharaGraphOption/CharaGraphOptionAtlas/rarity${svt.rarity}_0.png",
+                  height: 24,
+                ),
+            ]),
             CustomTableRow.fromChildren(
               children: [
                 Text(

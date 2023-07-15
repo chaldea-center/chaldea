@@ -54,9 +54,13 @@ class ServantSelector extends StatelessWidget {
     // svt icon
     String svtInfo = '';
     if (playerSvtData.svt != null) {
-      svtInfo = ' Lv.${playerSvtData.lv} NP${playerSvtData.tdLv}\n'
-          ' ${playerSvtData.skillLvs.join("/")}\n'
-          ' ${playerSvtData.appendLvs.map((e) => e == 0 ? "-" : e).join("/")}';
+      svtInfo = [
+        ' Lv.${playerSvtData.lv} NP${playerSvtData.tdLv}',
+        if (playerSvtData.atkFou != 1000 || playerSvtData.hpFou != 1000)
+          ' ${playerSvtData.atkFou}/${playerSvtData.hpFou}',
+        ' ${playerSvtData.skillLvs.join("/")}',
+        ' ${playerSvtData.appendLvs.map((e) => e == 0 ? "-" : e).join("/")}',
+      ].join('\n');
     }
     Widget svtIcon = GameCardMixin.cardIconBuilder(
       context: context,

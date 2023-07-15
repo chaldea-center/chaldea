@@ -72,7 +72,7 @@ class NiceAiAct {
   NiceSkill? skill;
   int? noblePhantasmId;
   int? noblePhantasmLv;
-  int? noblePhantasmOc;
+  int? noblePhantasmOc; // 10000->100%
   NiceTd? noblePhantasm;
 
   NiceAiAct({

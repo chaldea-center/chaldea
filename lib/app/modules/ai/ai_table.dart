@@ -194,7 +194,7 @@ class AiTable extends StatelessWidget {
         spans.add(TextSpan(text: ' Lv.${aiAct.noblePhantasmLv}'));
       }
       if (aiAct.noblePhantasmOc != null) {
-        spans.add(TextSpan(text: ' OC${aiAct.noblePhantasmOc}'));
+        spans.add(TextSpan(text: ' OC${aiAct.noblePhantasmOc! ~/ 100}%'));
       }
     }
     return Text.rich(TextSpan(children: spans));

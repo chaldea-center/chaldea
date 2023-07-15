@@ -84,6 +84,12 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
             skillId3: widget.skills?.skillId3 ?? 0,
           ),
         ),
+        PopupMenuItem(
+          child: const Text("How to read AI?"),
+          onTap: () {
+            launch("https://apps.atlasacademy.io/db/JP/faq#svt-field-ai");
+          },
+        )
       ],
     );
   }

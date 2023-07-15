@@ -38,9 +38,12 @@ class FormationCard extends StatelessWidget {
     String svtInfo = '', ceInfo = "";
     if (storedData != null) {
       if (storedData.svtId != null && storedData.svtId != 0) {
-        svtInfo = ' Lv.${storedData.lv} NP${storedData.tdLv}\n'
-            ' ${storedData.skillLvs.join("/")}\n'
-            ' ${storedData.appendLvs.map((e) => e == 0 ? "-" : e).join("/")}';
+        svtInfo = [
+          ' Lv.${storedData.lv} NP${storedData.tdLv}',
+          if (storedData.atkFou != 1000 || storedData.hpFou != 1000) ' ${storedData.atkFou}/${storedData.hpFou}',
+          ' ${storedData.skillLvs.join("/")}',
+          ' ${storedData.appendLvs.map((e) => e == 0 ? "-" : e).join("/")}',
+        ].join('\n');
       }
       if (storedData.ceId != null && storedData.ceId != 0) {
         ceInfo = ' Lv.${storedData.ceLv}';

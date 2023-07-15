@@ -196,6 +196,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
         children: [
           Text(
             'No.${svt.collectionNo > 0 ? svt.collectionNo : svt.id}'
+            ' $kStarChar2${svt.rarity}'
             '  ${Transl.svtClassId(svt.classId).l}',
             style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
           ),
