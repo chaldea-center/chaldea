@@ -72,12 +72,16 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     if (_history.isEmpty) {
       _history.add(_PageEntry(RouteConfiguration.home().createPage(), Completer()));
     }
+
     return SizedBox(
       key: _uniqueKey,
-      child: Navigator(
-        key: navigatorKey,
-        pages: pages,
-        onPopPage: onPopPage,
+      child: AppRouter(
+        router: this,
+        child: Navigator(
+          key: navigatorKey,
+          pages: pages,
+          onPopPage: onPopPage,
+        ),
       ),
     );
   }
@@ -248,5 +252,34 @@ class _PageEntry<T> {
 
   void complete([T? result]) {
     _completer.complete(result);
+  }
+}
+
+class AppRouter extends StatelessWidget {
+  final AppRouterDelegate router;
+  final Widget child;
+  const AppRouter({super.key, required this.child, required this.router});
+
+  @override
+  Widget build(BuildContext context) {
+    return _AppRouter(router: router, child: child);
+  }
+
+  static AppRouterDelegate? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<_AppRouter>()?.router;
+  }
+}
+
+class _AppRouter extends InheritedWidget {
+  final AppRouterDelegate router;
+
+  const _AppRouter({
+    required this.router,
+    required super.child,
+  });
+
+  @override
+  bool updateShouldNotify(_AppRouter oldWidget) {
+    return oldWidget.router != router;
   }
 }
