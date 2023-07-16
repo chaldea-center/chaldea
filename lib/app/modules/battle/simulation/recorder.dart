@@ -740,14 +740,20 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
         final td = card.td;
         if (td != null && td.icon != null) {
           stackChildren.add(Positioned(
-            left: -4,
-            right: -4,
-            bottom: -32,
-            child: CachedImage(
-              imageUrl: td.icon,
-              cachedOption: CachedImageOption(
-                fit: BoxFit.contain,
-                errorWidget: (context, url, error) => Text(S.current.noble_phantasm),
+            left: -2,
+            right: -2,
+            bottom: -4,
+            child: ClipRect(
+              child: Align(
+                alignment: Alignment.topCenter,
+                heightFactor: 0.5,
+                child: CachedImage(
+                  imageUrl: td.icon,
+                  cachedOption: CachedImageOption(
+                    fit: BoxFit.contain,
+                    errorWidget: (context, url, error) => Text(S.current.noble_phantasm),
+                  ),
+                ),
               ),
             ),
           ));
