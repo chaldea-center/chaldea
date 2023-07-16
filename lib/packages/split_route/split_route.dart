@@ -53,6 +53,8 @@ enum SplitLayout {
 
 /// Master-Detail Layout Route for large aspect ratio screen.
 class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
+  static bool enableSplitView = true;
+
   static int _defaultMasterRatio = _kSplitMasterRatio;
   static int get defaultMasterRatio => _defaultMasterRatio;
   static set defaultMasterRatio(int? v) => _defaultMasterRatio = v == null ? _kSplitMasterRatio : v.clamp(30, 60);
@@ -305,6 +307,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   /// Check current size to use split view or not.
   /// When the height is too small, split view is disabled.
   static bool isSplit(BuildContext? context) {
+    if (!enableSplitView) return false;
     context ??= kAppKey.currentContext;
     if (context == null) return false;
     final size = MediaQuery.of(context).size;
@@ -312,6 +315,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   }
 
   SplitLayout getLayout(BuildContext context) {
+    if (!enableSplitView) return SplitLayout.none;
     if (detail == null || !isSplit(context)) return SplitLayout.none;
     return detail! ? SplitLayout.detail : SplitLayout.master;
   }

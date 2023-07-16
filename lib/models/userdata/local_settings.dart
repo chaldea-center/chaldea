@@ -33,7 +33,6 @@ class LocalSettings {
   int lastBackup;
   ThemeMode themeMode;
   bool enableMouseDrag;
-  int? splitMasterRatio;
   bool globalSelection;
   String? _language;
   List<Region>? preferredRegions;
@@ -82,7 +81,6 @@ class LocalSettings {
     this.lastBackup = 0,
     this.themeMode = ThemeMode.system,
     this.enableMouseDrag = true,
-    this.splitMasterRatio,
     this.globalSelection = false,
     String? language,
     List<Region>? preferredRegions,
@@ -203,6 +201,9 @@ class DisplaySettings {
   List<SvtTab> sortedSvtTabs;
   List<SvtPlanDetail> hideSvtPlanDetails;
   bool describeEventMission;
+  int? maxWindowWidth; // web only
+  int? splitMasterRatio;
+  bool enableSplitView;
 
   DisplaySettings({
     this.showAccountAtHome = true,
@@ -219,6 +220,9 @@ class DisplaySettings {
     List<SvtTab?>? sortedSvtTabs,
     List<SvtPlanDetail?>? hideSvtPlanDetails,
     this.describeEventMission = true,
+    this.maxWindowWidth,
+    this.splitMasterRatio,
+    this.enableSplitView = true,
   })  : sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ?? List.of(SvtTab.values),
         hideSvtPlanDetails = hideSvtPlanDetails?.whereType<SvtPlanDetail>().toList() ?? [] {
     validateSvtTabs();

@@ -3033,6 +3033,17 @@ class S {
     );
   }
 
+  /// `Enable Split View`
+  String get enable_split_view {
+    return Intl.message(
+      'Enable Split View',
+      name: 'enable_split_view',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `End Enemy Turn`
   String get end_enemy_turn {
     return Intl.message(
@@ -6398,6 +6409,17 @@ class S {
     return Intl.message(
       'MLB',
       name: 'max_limit_break',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Max Window Width`
+  String get max_window_width {
+    return Intl.message(
+      'Max Window Width',
+      name: 'max_window_width',
       desc: '',
       locale: localeName,
       args: [],

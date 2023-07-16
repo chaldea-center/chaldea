@@ -145,8 +145,10 @@ class _Database {
     await loadUserData().then((value) {
       if (value != null) userData = value;
     });
-    if (settings.splitMasterRatio != null) {
-      SplitRoute.defaultMasterRatio = settings.splitMasterRatio!;
+
+    SplitRoute.enableSplitView = settings.display.enableSplitView;
+    if (settings.display.splitMasterRatio != null) {
+      SplitRoute.defaultMasterRatio = settings.display.splitMasterRatio!;
     }
 
     await AppInfo.resolve(paths.appPath);

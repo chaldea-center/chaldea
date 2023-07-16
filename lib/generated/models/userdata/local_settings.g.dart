@@ -22,7 +22,6 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
           themeMode:
               $checkedConvert('themeMode', (v) => $enumDecodeNullable(_$ThemeModeEnumMap, v) ?? ThemeMode.system),
           enableMouseDrag: $checkedConvert('enableMouseDrag', (v) => v as bool? ?? true),
-          splitMasterRatio: $checkedConvert('splitMasterRatio', (v) => v as int?),
           globalSelection: $checkedConvert('globalSelection', (v) => v as bool? ?? false),
           language: $checkedConvert('language', (v) => v as String?),
           preferredRegions: $checkedConvert('preferredRegions',
@@ -102,7 +101,6 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'lastBackup': instance.lastBackup,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
       'enableMouseDrag': instance.enableMouseDrag,
-      'splitMasterRatio': instance.splitMasterRatio,
       'globalSelection': instance.globalSelection,
       'preferredRegions': instance.preferredRegions?.map(const RegionConverter().toJson).toList(),
       'autoUpdateData': instance.autoUpdateData,
@@ -187,6 +185,9 @@ DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate(
           hideSvtPlanDetails: $checkedConvert('hideSvtPlanDetails',
               (v) => (v as List<dynamic>?)?.map((e) => $enumDecodeNullable(_$SvtPlanDetailEnumMap, e)).toList()),
           describeEventMission: $checkedConvert('describeEventMission', (v) => v as bool? ?? true),
+          maxWindowWidth: $checkedConvert('maxWindowWidth', (v) => v as int?),
+          splitMasterRatio: $checkedConvert('splitMasterRatio', (v) => v as int?),
+          enableSplitView: $checkedConvert('enableSplitView', (v) => v as bool? ?? true),
         );
         return val;
       },
@@ -207,6 +208,9 @@ Map<String, dynamic> _$DisplaySettingsToJson(DisplaySettings instance) => <Strin
       'sortedSvtTabs': instance.sortedSvtTabs.map((e) => _$SvtTabEnumMap[e]!).toList(),
       'hideSvtPlanDetails': instance.hideSvtPlanDetails.map((e) => _$SvtPlanDetailEnumMap[e]!).toList(),
       'describeEventMission': instance.describeEventMission,
+      'maxWindowWidth': instance.maxWindowWidth,
+      'splitMasterRatio': instance.splitMasterRatio,
+      'enableSplitView': instance.enableSplitView,
     };
 
 const _$SvtPlanInputModeEnumMap = {

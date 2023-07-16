@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -38,11 +39,36 @@ class _WindowManagerState extends State<WindowManager> {
     if (!root.appState.dataReady) {
       return BootstrapPage();
     }
-    return root.appState.showWindowManager
+    Widget child = root.appState.showWindowManager
         ? MultipleWindow(root: root)
         : root.appState.showSidebar && SplitRoute.isSplit(context)
             ? WrapSideBar(root: root, child: OneWindow(root: root))
             : OneWindow(root: root);
+    final maxWidth = db.settings.display.maxWindowWidth?.toDouble();
+    if ((kIsWeb || kDebugMode) && maxWidth != null) {
+      if (maxWidth >= 360 && maxWidth < 1920) {
+        final mq = MediaQuery.of(context);
+        final size = mq.size;
+        child = Scaffold(
+          backgroundColor: Theme.of(context).secondaryHeaderColor,
+          body: Center(
+            child: Material(
+              elevation: 16,
+              child: ClipRect(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: maxWidth),
+                  child: MediaQuery(
+                    data: mq.copyWith(size: Size(min(size.width, maxWidth), size.height)),
+                    child: child,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+    }
+    return child;
   }
 }
 
