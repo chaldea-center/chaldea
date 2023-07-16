@@ -48,9 +48,20 @@ void main() {
   });
 
   group('Test containsAnyTraits & containsAllTraits', () {
-    test('default value', () {
+    test('my traits are empty', () {
       expect(containsAnyTraits([], []), isTrue);
+      expect(containsAnyTraits([], [NiceTrait(id: 100)]), isFalse);
+      expect(containsAnyTraits([], [NiceTrait(id: 100, negative: true)]), isTrue);
+      expect(containsAnyTraits([], [NiceTrait(id: 100), NiceTrait(id: 101)]), isFalse);
+      expect(containsAnyTraits([], [NiceTrait(id: 100), NiceTrait(id: 101, negative: true)]), isTrue);
+      expect(containsAnyTraits([], [NiceTrait(id: 100, negative: true), NiceTrait(id: 101, negative: true)]), isTrue);
+
       expect(containsAllTraits([], []), isTrue);
+      expect(containsAllTraits([], [NiceTrait(id: 100)]), isFalse);
+      expect(containsAllTraits([], [NiceTrait(id: 100, negative: true)]), isTrue);
+      expect(containsAllTraits([], [NiceTrait(id: 100), NiceTrait(id: 101)]), isFalse);
+      expect(containsAllTraits([], [NiceTrait(id: 100), NiceTrait(id: 101, negative: true)]), isFalse);
+      expect(containsAllTraits([], [NiceTrait(id: 100, negative: true), NiceTrait(id: 101, negative: true)]), isTrue);
     });
 
     test('requires signed', () {

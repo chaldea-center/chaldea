@@ -538,7 +538,9 @@ class BattleData {
       currentTraits.addAll(getFieldTraits());
     }
 
-    if (params.checkIndivType == 1 || params.checkIndivType == 3) {
+    if (params.requireAtLeast != null) {
+      return countAnyTraits(currentTraits, params.requiredTraits) >= params.requireAtLeast!;
+    } else if (params.checkIndivType == 1 || params.checkIndivType == 3) {
       return containsAllTraits(currentTraits, params.requiredTraits);
     } else {
       return containsAnyTraits(currentTraits, params.requiredTraits);

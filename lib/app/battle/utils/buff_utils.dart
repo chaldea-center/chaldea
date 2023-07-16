@@ -82,6 +82,7 @@ List<BuffData> collectBuffsPerTypes(final Iterable<BuffData> buffs, final Iterab
 class CheckTraitParameters {
   Iterable<NiceTrait> requiredTraits;
   BattleServantData? actor;
+  int? requireAtLeast; // overshadows checkIndivType
   int checkIndivType;
 
   bool checkActorTraits;
@@ -96,6 +97,7 @@ class CheckTraitParameters {
   CheckTraitParameters({
     required final Iterable<NiceTrait> requiredTraits,
     this.actor,
+    this.requireAtLeast,
     this.checkIndivType = 0,
     this.checkActorTraits = false,
     this.checkActorBuffTraits = false,

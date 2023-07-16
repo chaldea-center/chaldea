@@ -1121,15 +1121,7 @@ class BattleServantData {
         buff.useOnce();
       }
 
-      if (buff.buff.script?.INDIVIDUALITIE != null) {
-        buff.individualitiesActive = battleData.checkTraits(CheckTraitParameters(
-          requiredTraits: [buff.buff.script!.INDIVIDUALITIE!],
-          actor: this,
-          checkActorTraits: true,
-          checkActorBuffTraits: true,
-          checkQuestTraits: true,
-        ));
-      }
+      buff.updateIndividualitiesActive(battleData, this);
     });
 
     battleBuff.passiveList.removeWhere((buff) => !buff.isActive);

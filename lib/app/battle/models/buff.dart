@@ -329,6 +329,34 @@ class BuffData {
     }
   }
 
+  void updateIndividualitiesActive(final BattleData battleData, final BattleServantData owner) {
+    List<NiceTrait>? requiredTraits;
+    int? requireAtLeast;
+    int checkIndivType = 0;
+
+    if (buff.script?.INDIVIDUALITIE != null) {
+      requiredTraits = [buff.script!.INDIVIDUALITIE!];
+      requireAtLeast = buff.script?.INDIVIDUALITIE_COUNT_ABOVE;
+    } else if (buff.script?.INDIVIDUALITIE_AND != null) {
+      requiredTraits = buff.script!.INDIVIDUALITIE_AND!;
+      checkIndivType = 1;
+    } else if (buff.script?.INDIVIDUALITIE_OR != null) {
+      requiredTraits = buff.script!.INDIVIDUALITIE_OR!;
+    }
+
+    if (requiredTraits != null) {
+      individualitiesActive = battleData.checkTraits(CheckTraitParameters(
+        requiredTraits: requiredTraits,
+        actor: owner,
+        requireAtLeast: requireAtLeast,
+        checkIndivType: checkIndivType,
+        checkActorTraits: true,
+        checkActorBuffTraits: true,
+        checkQuestTraits: true,
+      ));
+    }
+  }
+
   String effectString() {
     return '${buffRate != 1000 ? '${(buffRate / 10).toStringAsFixed(1)} %' : ''} '
         '${buff.lName.l} '
