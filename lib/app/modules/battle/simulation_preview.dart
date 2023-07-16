@@ -481,14 +481,17 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             textAlign: TextAlign.center,
           )
         else
-          QuestCard(
-            region: questRegion,
-            offline: false,
-            quest: questPhase,
-            displayPhases: [questPhase!.phase],
-            battleOnly: true,
-            preferredPhases: [questPhase!],
-          ),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 540),
+            child: QuestCard(
+              region: questRegion,
+              offline: false,
+              quest: questPhase,
+              displayPhases: [questPhase!.phase],
+              battleOnly: true,
+              preferredPhases: [questPhase!],
+            ),
+          )
       ],
     );
   }
@@ -624,26 +627,21 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     return Row(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const SizedBox(width: 8),
         mcIcon,
         Flexible(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SliderWithTitle(
-                leadingText: mcData.mysticCode?.lName.l ?? S.current.mystic_code,
-                min: 0,
-                max: 10,
-                value: options.team.mysticCodeData.level,
-                label: mcData.level == 0 ? S.current.disabled : 'Lv.${mcData.level}',
-                onChange: (v) {
-                  mcData.level = v.round();
-                  if (mounted) setState(() {});
-                },
-              ),
-            ],
+          child: SliderWithTitle(
+            leadingText: mcData.mysticCode?.lName.l ?? S.current.mystic_code,
+            min: 0,
+            max: 10,
+            value: options.team.mysticCodeData.level,
+            label: mcData.level == 0 ? S.current.disabled : 'Lv.${mcData.level}',
+            onChange: (v) {
+              mcData.level = v.round();
+              if (mounted) setState(() {});
+            },
           ),
         ),
       ],

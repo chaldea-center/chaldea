@@ -91,7 +91,7 @@ class NiceWar with RouteInfo {
   }
 
   ScriptLink? get startScript {
-    if (script != null && scriptId != null && scriptId!.isNotEmpty && scriptId != 'NONE') {
+    if (script != null && scriptId != null && scriptId!.isNotEmpty && scriptId != 'NONE' && scriptId != '0') {
       return ScriptLink(scriptId: scriptId!, script: script!);
     }
     return null;

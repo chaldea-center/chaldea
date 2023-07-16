@@ -20,6 +20,7 @@ class QuestPhaseWidget extends StatefulWidget {
   final Region? region;
   final bool offline;
   final bool showTrueName;
+  final bool? showFace;
   final bool battleOnly;
 
   QuestPhaseWidget({
@@ -29,6 +30,7 @@ class QuestPhaseWidget extends StatefulWidget {
     this.region,
     this.offline = false,
     this.showTrueName = true,
+    this.showFace,
     this.battleOnly = false,
   })  : assert(quest.phases.contains(phase)),
         questPhase = null;
@@ -39,6 +41,7 @@ class QuestPhaseWidget extends StatefulWidget {
     this.region = Region.jp,
     this.offline = false,
     this.showTrueName = true,
+    this.showFace,
     this.battleOnly = false,
   })  : quest = questPhase,
         phase = questPhase.phase;
@@ -169,6 +172,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
             child: QuestWave(
               stage: stage,
               showTrueName: widget.showTrueName,
+              showFace: widget.showFace,
               region: widget.region,
             ),
           )
@@ -191,6 +195,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
               stage: null,
               aiNpcs: aiNpcs,
               showTrueName: widget.showTrueName,
+              showFace: widget.showFace,
               region: widget.region,
             ),
           )

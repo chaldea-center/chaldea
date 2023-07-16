@@ -20,6 +20,7 @@ class QuestCard extends StatefulWidget {
   final bool battleOnly;
   final List<int>? displayPhases;
   final List<QuestPhase> preferredPhases;
+  final bool? showFace;
 
   QuestCard({
     Key? key,
@@ -30,6 +31,7 @@ class QuestCard extends StatefulWidget {
     this.battleOnly = false,
     this.displayPhases,
     this.preferredPhases = const [],
+    this.showFace,
   })  : assert(quest != null || questId != null),
         questId = (quest?.id ?? questId)!,
         super(
@@ -140,6 +142,7 @@ class _QuestCardState extends State<QuestCard> {
           region: widget.region,
           offline: widget.offline,
           showTrueName: showTrueName,
+          showFace: widget.showFace,
           battleOnly: widget.battleOnly,
         ));
       } else {
@@ -149,6 +152,7 @@ class _QuestCardState extends State<QuestCard> {
           region: widget.region,
           offline: widget.offline,
           showTrueName: showTrueName,
+          showFace: widget.showFace,
           battleOnly: widget.battleOnly,
         ));
       }

@@ -17,6 +17,7 @@ class QuestWave extends StatelessWidget {
   final Stage? stage;
   final List<QuestPhaseAiNpc> aiNpcs;
   final bool showTrueName;
+  final bool? showFace;
   final Region? region;
 
   const QuestWave({
@@ -24,6 +25,7 @@ class QuestWave extends StatelessWidget {
     required this.stage,
     this.aiNpcs = const [],
     this.showTrueName = false,
+    this.showFace,
     required this.region,
   });
 
@@ -49,6 +51,7 @@ class QuestWave extends StatelessWidget {
       parts.add(QuestEnemyWidget(
         enemy: enemy,
         showTrueName: showTrueName,
+        showFace: showFace,
         showDeck: showDeck,
         region: region,
         textStyle: dispBreakShift > 0 ? lineThrough : null,
@@ -62,7 +65,7 @@ class QuestWave extends StatelessWidget {
             enemy: shiftEnemy,
             showTrueName: showTrueName,
             showDeck: showDeck,
-            showIcon: shiftEnemy.svt.icon != prev.svt.icon,
+            showFace: shiftEnemy.svt.icon == prev.svt.icon ? false : showFace,
             textStyle: index + 1 < dispBreakShift ? lineThrough : null,
             region: region,
           ));
@@ -175,6 +178,7 @@ class QuestWave extends StatelessWidget {
           children.add(QuestPhaseAiNpcWidget(
             aiNpc: aiNpc,
             showTrueName: showTrueName,
+            showFace: showFace,
             showDeck: false,
             region: region,
           ));
@@ -294,14 +298,14 @@ class QuestEnemyWidget extends StatelessWidget {
   final bool showDeck;
   final TextStyle? textStyle;
   final Region? region;
-  final bool showIcon;
+  final bool? showFace;
 
   const QuestEnemyWidget({
     super.key,
     required this.enemy,
     this.showTrueName = false,
     this.showDeck = false,
-    this.showIcon = true,
+    this.showFace,
     this.textStyle,
     required this.region,
   });
@@ -309,7 +313,8 @@ class QuestEnemyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EnemyThumbBase(
-      icon: showIcon ? enemy.svt.icon : null,
+      icon: enemy.svt.icon,
+      showFace: showFace,
       hidden: enemy.misc?.displayType == 2 && !showTrueName,
       name: showTrueName ? enemy.svt.lName.l : enemy.lShownName,
       classId: enemy.svt.classId,
@@ -328,6 +333,7 @@ class QuestPhaseAiNpcWidget extends StatelessWidget {
   final QuestPhaseAiNpc aiNpc;
   final bool showTrueName;
   final bool showDeck;
+  final bool? showFace;
   final Region? region;
 
   const QuestPhaseAiNpcWidget({
@@ -335,6 +341,7 @@ class QuestPhaseAiNpcWidget extends StatelessWidget {
     required this.aiNpc,
     this.showTrueName = false,
     this.showDeck = false,
+    this.showFace,
     required this.region,
   });
 
@@ -343,6 +350,7 @@ class QuestPhaseAiNpcWidget extends StatelessWidget {
     final enemy = aiNpc.detail;
     return EnemyThumbBase(
       icon: enemy?.icon ?? aiNpc.npc.svt.icon,
+      showFace: showFace,
       hidden: enemy?.misc?.displayType == 2 && !showTrueName,
       name: (showTrueName ? enemy?.svt.lName.l : enemy?.lShownName) ?? aiNpc.npc.svt.lName.l,
       classId: enemy?.svt.classId ?? aiNpc.npc.svt.classId,
@@ -375,6 +383,7 @@ class EnemyThumbBase extends StatelessWidget {
   final String? deck;
   final TextStyle? textStyle;
   final VoidCallback? onTap;
+  final bool? showFace;
 
   const EnemyThumbBase({
     super.key,
@@ -387,13 +396,14 @@ class EnemyThumbBase extends StatelessWidget {
     this.deck,
     this.textStyle,
     this.onTap,
+    this.showFace,
   });
 
   @override
   Widget build(BuildContext context) {
     final clsName = kSvtClassIds[classId];
     Widget? face;
-    if (icon != null) {
+    if (icon != null && showFace != false) {
       face = db.getIconImage(icon, width: 42, placeholder: (_) => const SizedBox());
     }
 

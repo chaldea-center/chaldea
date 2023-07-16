@@ -20,7 +20,7 @@ import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../quest/quest_card.dart';
-import '../formation/team.dart';
+import '../formation/formation_card.dart';
 import 'svt_detail.dart';
 
 class BattleRecorderPanel extends StatefulWidget {
@@ -154,6 +154,7 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
                 showDetail = true;
                 if (mounted) setState(() {});
                 Navigator.pop(context);
+                EasyLoading.show();
                 // in case image is evicted from memory and needs reload
                 await Future.delayed(const Duration(milliseconds: 500));
                 SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
@@ -178,8 +179,11 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
   }
 
   Future<void> doScreenshot() async {
-    if (!mounted) return;
-    EasyLoading.show();
+    if (!mounted) {
+      EasyLoading.dismiss();
+      return;
+    }
+    if (!EasyLoading.isShow) EasyLoading.show();
     try {
       final data = await controller.capture(pixelRatio: MediaQuery.of(context).devicePixelRatio);
       if (data == null) {
@@ -479,6 +483,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
       quest: quest,
       displayPhases: [quest.phase],
       battleOnly: true,
+      showFace: !quest.isLaplaceSharable,
       preferredPhases: [quest],
     );
   }
@@ -493,16 +498,17 @@ class BattleRecorderPanelBase extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            TeamSetupCard(
-              onFieldSvts: team.onFieldSvtDataList,
-              backupSvts: team.backupSvtDataList,
-              team: team,
-              quest: quest,
-              enableEdit: false,
-              showEmptyBackup: false,
-            ),
-            if (team.mysticCodeData.enabled)
-              getMysticCode(context, team.mysticCodeData.mysticCode!, team.mysticCodeData.level),
+            FormationCard(formation: team.toFormationData()),
+            // TeamSetupCard(
+            //   onFieldSvts: team.onFieldSvtDataList,
+            //   backupSvts: team.backupSvtDataList,
+            //   team: team,
+            //   quest: quest,
+            //   enableEdit: false,
+            //   showEmptyBackup: false,
+            // ),
+            // if (team.mysticCodeData.enabled)
+            //   getMysticCode(context, team.mysticCodeData.mysticCode!, team.mysticCodeData.level),
           ],
         ),
       ),
@@ -589,14 +595,14 @@ mixin MultiTargetsWrapper {
         textDirection: isActorEnemy ? TextDirection.ltr : TextDirection.rtl,
         children: [
           Expanded(
-            flex: 1,
+            flex: 11,
             child: DecoratedBox(
               decoration: BoxDecoration(border: Border.symmetric(vertical: borderSide)),
               child: actorBuilder(context),
             ),
           ),
           Expanded(
-            flex: 3,
+            flex: 30,
             child: DecoratedBox(
               decoration: BoxDecoration(border: Border.symmetric(vertical: borderSide)),
               child: enemyParty,
@@ -635,7 +641,7 @@ mixin MultiTargetsWrapper {
       data,
       style: TextStyle(color: color),
       textAlign: TextAlign.center,
-      textScaleFactor: 0.9,
+      textScaleFactor: 0.85,
     );
     if (onTap != null) {
       child = InkWell(onTap: onTap, child: child);
@@ -698,9 +704,9 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
               textScaleFactor: 0.8,
             ),
           if (record.targets.isNotEmpty || record.damage != 0) ...[
-            coloredText('DMG: ${record.damage}', Colors.red),
-            if (record.attacker.isPlayer) coloredText('NP: ${record.attackNp / 100}', Colors.blue),
-            if (record.attacker.isPlayer) coloredText('Star: ${record.star / 1000}', Colors.green),
+            coloredText('DMG ${record.damage}', Colors.red),
+            if (record.attacker.isPlayer) coloredText('NP ${record.attackNp / 100}', Colors.blue),
+            if (record.attacker.isPlayer) coloredText('Star ${record.star / 1000}', Colors.green),
           ],
         ],
       ),
@@ -795,16 +801,16 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Center(child: detail.target.iconBuilder(context: context, width: 48, battleData: battleData)),
+          Center(child: detail.target.iconBuilder(context: context, width: 42, battleData: battleData)),
           Text(
             detail.target.lBattleName,
             maxLines: 1,
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.center,
           ),
-          coloredText('HP: ${detail.target.hp}', null),
+          coloredText('HP ${detail.target.hp}', null),
           coloredText(
-            'DMG: ${Maths.sum(result.damages)}',
+            'DMG ${Maths.sum(result.damages)}',
             Colors.red,
             () => showParams(
               context,
@@ -818,7 +824,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
           ),
           if (detail.target.isEnemy)
             coloredText(
-              'NP: ${Maths.sum(result.npGains) / 100}',
+              'NP ${Maths.sum(result.npGains) / 100}',
               Colors.blue,
               () => showParams(
                 context,
@@ -832,7 +838,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
             )
           else
             coloredText(
-              'NP: ${Maths.sum(result.defNpGains) / 100}',
+              'NP ${Maths.sum(result.defNpGains) / 100}',
               Colors.blue,
               () => showParams(
                 context,
@@ -846,7 +852,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
             ),
           if (detail.target.isEnemy)
             coloredText(
-              'Star: ${Maths.sum(result.stars) / 1000}',
+              'Star ${Maths.sum(result.stars) / 1000}',
               Colors.green,
               () => showParams(
                 context,
@@ -859,7 +865,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
               ),
             ),
           if (detail.target.isEnemy)
-            coloredText('Overkill: ${result.overkillCount}/${result.overkillStates.length}', Colors.yellow.shade900),
+            coloredText('Overkill ${result.overkillCount}/${result.overkillStates.length}', Colors.yellow.shade900),
         ],
       ),
     );

@@ -66,6 +66,8 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       filterData.useSvts.options.clear();
     }
 
+    final username = db.security.username;
+
     return AppBar(
       title: Text.rich(TextSpan(
         text: S.current.uploaded_teams,
@@ -73,7 +75,8 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           TextSpan(
             text: '(Page ${pageIndex + 1})',
             style: const TextStyle(fontSize: 14),
-          )
+          ),
+          if (mode == TeamQueryMode.user && username != null && username.isNotEmpty) TextSpan(text: ' - $username'),
         ],
       )),
       actions: [

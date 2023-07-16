@@ -233,6 +233,19 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
         )
       ],
       ...enemyScriptInfo(),
+      if (enemy.classPassive.addPassive.isNotEmpty)
+        CustomTableRow.fromTexts(
+          texts: [S.current.extra_passive],
+          isHeader: true,
+        ),
+      for (int index = 0; index < enemy.classPassive.addPassive.length; index++)
+        SkillDescriptor(
+          skill: enemy.classPassive.addPassive[index],
+          level: enemy.classPassive.addPassiveLvs?.getOrNull(index),
+          showEnemy: true,
+          showPlayer: true,
+          region: widget.region,
+        ),
       ...enemyDrops(),
       if (enemy.skills.skill1 != null || enemy.skills.skill2 != null || enemy.skills.skill3 != null)
         CustomTableRow.fromTexts(
@@ -263,7 +276,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           showPlayer: true,
           region: widget.region,
         ),
-      if (enemy.classPassive.classPassive.isNotEmpty || enemy.classPassive.addPassive.isNotEmpty)
+      if (enemy.classPassive.classPassive.isNotEmpty)
         CustomTableRow.fromTexts(
           texts: [S.current.passive_skill],
           isHeader: true,
@@ -271,14 +284,6 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
       for (final skill in enemy.classPassive.classPassive)
         SkillDescriptor(
           skill: skill,
-          showEnemy: true,
-          showPlayer: true,
-          region: widget.region,
-        ),
-      for (int index = 0; index < enemy.classPassive.addPassive.length; index++)
-        SkillDescriptor(
-          skill: enemy.classPassive.addPassive[index],
-          level: enemy.classPassive.addPassiveLvs?.getOrNull(index),
           showEnemy: true,
           showPlayer: true,
           region: widget.region,
