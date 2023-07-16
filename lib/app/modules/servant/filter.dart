@@ -73,7 +73,7 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
     if (!filterData.svtDuplicated.matchOne(svt.collectionNo != svt.originalCollectionNo)) {
       return false;
     }
-    if (!filterData.bond.matchOne(svtStat.bond < 5 ? 1 : (svtStat.bond < 10 ? 2 : 3))) {
+    if (!filterData.bond.matchOne(SvtBondStage.fromBond(svtStat.bond))) {
       return false;
     }
 
@@ -354,15 +354,11 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
             });
           },
         ),
-        FilterGroup<int>(
+        FilterGroup<SvtBondStage>(
           title: Text(S.current.bond),
-          options: const [1, 2, 3],
+          options: SvtBondStage.values,
           values: filterData.bond,
-          optionBuilder: (v) {
-            String text = (v * 5).toString();
-            text = (v == 3 ? '≤' : '<') + text;
-            return Text(text);
-          },
+          optionBuilder: (v) => Text(v.text),
           onFilterChanged: (v, _) {
             setState(() {
               update();

@@ -42,8 +42,8 @@ class ServantSelector extends StatelessWidget {
     this.enableEdit = true,
   });
 
-  static SvtFilterData svtFilterData = SvtFilterData(useGrid: true);
-  static CraftFilterData craftFilterData = CraftFilterData(useGrid: true);
+  SvtFilterData get svtFilterData => db.settings.svtFilterData;
+  CraftFilterData get craftFilterData => db.settings.craftFilterData;
 
   @override
   Widget build(final BuildContext context) {

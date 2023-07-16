@@ -368,6 +368,8 @@ class _NpChargePageState extends State<NpChargePage> {
               '${S.current.np_short}:',
               Transl.enums(filterData.tdType.radioValue!, (enums) => enums.tdEffectFlag).l
             ].join()),
+          if (filterData.bond.options.isNotEmpty)
+            optionBuilder(text: '${S.current.bond}:${filterData.bond.options.map((e) => e.text).join("&")}')
         ],
         if (filterData.effectTarget.options.isNotEmpty)
           optionBuilder(text: filterData.effectTarget.options.map((e) => e.shownName).join('/')),
@@ -440,6 +442,7 @@ class _NpChargePageState extends State<NpChargePage> {
         continue;
       }
       if (!filterData.rarity.matchOne(svt.rarity)) continue;
+      if (!filterData.bond.matchOne(SvtBondStage.fromBond(svt.status.bond))) continue;
 
       final region = filterData.region.radioValue ?? Region.jp;
 

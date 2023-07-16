@@ -43,6 +43,7 @@ class NpFilterData {
   final region = FilterRadioData<Region>();
   final tdColor = FilterRadioData<CardType>();
   final tdType = FilterRadioData<TdEffectFlag>();
+  final bond = FilterGroupData<SvtBondStage>();
 
   List<SvtCompare> svtSortKeys = [SvtCompare.no, SvtCompare.no];
   List<CraftCompare> ceSortKeys = [CraftCompare.no, CraftCompare.no];
@@ -63,7 +64,8 @@ class NpFilterData {
       effectTarget,
       region,
       tdColor,
-      tdType
+      tdType,
+      bond,
     ]) {
       v.reset();
     }
@@ -333,6 +335,18 @@ class _NpChargeFilterPageState extends FilterPageState<NpFilterData, NpChargeFil
             optionBuilder: (v) => Text(Transl.enums(v, (enums) => enums.tdEffectFlag).l),
             onFilterChanged: (value, _) {
               update();
+            },
+          ),
+        if (filterData.isSvt)
+          FilterGroup<SvtBondStage>(
+            title: Text(S.current.bond),
+            options: SvtBondStage.values,
+            values: filterData.bond,
+            optionBuilder: (v) => Text(v.text),
+            onFilterChanged: (v, _) {
+              setState(() {
+                update();
+              });
             },
           ),
       ]),

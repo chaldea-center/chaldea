@@ -251,6 +251,22 @@ enum SvtSkillLevelState {
   max10,
 }
 
+enum SvtBondStage {
+  lessThan5('<5'), // <5
+  lessThan10('<10'), // <10
+  greaterThan10('≤15'), // 10<=x<=15
+  ;
+
+  final String text;
+  const SvtBondStage(this.text);
+
+  static SvtBondStage fromBond(int bond) {
+    if (bond < 5) return lessThan5;
+    if (bond < 10) return lessThan10;
+    return greaterThan10;
+  }
+}
+
 const _funcEffectMapping = {
   FuncTargetType.self: EffectTarget.self,
   FuncTargetType.ptAll: EffectTarget.ptAll,
@@ -295,7 +311,7 @@ class SvtFilterData with _FilterData {
   final priority = FilterGroupData<int>(onChanged: () {
     db.itemCenter.updateSvts(all: true);
   });
-  final bond = FilterGroupData<int>();
+  final bond = FilterGroupData<SvtBondStage>();
   final region = FilterRadioData<Region>();
   final obtain = FilterGroupData<SvtObtain>();
   final npColor = FilterGroupData<CardType>();

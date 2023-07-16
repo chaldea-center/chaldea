@@ -10,6 +10,7 @@ import '../../utils/atlas.dart';
 import '../../utils/extension.dart';
 import '../db.dart';
 import '_helper.dart';
+import 'filter_data.dart';
 
 part '../../generated/models/userdata/battle.g.dart';
 
@@ -26,6 +27,9 @@ class BattleSimSetting {
   PlayerSvtDefaultData defaultLvs;
   List<BattleTeamFormation> formations;
   BattleTeamFormation curFormation;
+  // filters
+  SvtFilterData svtFilterData;
+  CraftFilterData craftFilterData;
 
   TdDamageOptions tdDmgOptions;
 
@@ -38,12 +42,16 @@ class BattleSimSetting {
     PlayerSvtDefaultData? defaultLvs,
     List<BattleTeamFormation>? formations,
     BattleTeamFormation? curFormation,
+    SvtFilterData? svtFilterData,
+    CraftFilterData? craftFilterData,
     TdDamageOptions? tdDmgOptions,
   })  : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
         pingedSvts = pingedSvts ?? {215, 284, 314, 316, 357},
         defaultLvs = defaultLvs ?? PlayerSvtDefaultData(),
         formations = formations ?? [],
         curFormation = curFormation ?? BattleTeamFormation(),
+        svtFilterData = svtFilterData ?? SvtFilterData(useGrid: true),
+        craftFilterData = craftFilterData ?? CraftFilterData(useGrid: true),
         tdDmgOptions = tdDmgOptions ?? TdDamageOptions() {
     validate();
   }

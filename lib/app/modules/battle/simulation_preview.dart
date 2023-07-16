@@ -96,6 +96,11 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       _fetchQuestPhase();
       initFormation();
     }
+
+    if (db.settings.autoResetFilter) {
+      db.settings.svtFilterData.reset();
+      db.settings.craftFilterData.reset();
+    }
   }
 
   @override

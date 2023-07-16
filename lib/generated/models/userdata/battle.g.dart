@@ -26,6 +26,10 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
                   .toList()),
           curFormation: $checkedConvert('curFormation',
               (v) => v == null ? null : BattleTeamFormation.fromJson(Map<String, dynamic>.from(v as Map))),
+          svtFilterData: $checkedConvert(
+              'svtFilterData', (v) => v == null ? null : SvtFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
+          craftFilterData: $checkedConvert('craftFilterData',
+              (v) => v == null ? null : CraftFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
           tdDmgOptions: $checkedConvert(
               'tdDmgOptions', (v) => v == null ? null : TdDamageOptions.fromJson(Map<String, dynamic>.from(v as Map))),
         );
@@ -42,6 +46,8 @@ Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <Str
       'defaultLvs': instance.defaultLvs.toJson(),
       'formations': instance.formations.map((e) => e.toJson()).toList(),
       'curFormation': instance.curFormation.toJson(),
+      'svtFilterData': instance.svtFilterData.toJson(),
+      'craftFilterData': instance.craftFilterData.toJson(),
       'tdDmgOptions': instance.tdDmgOptions.toJson(),
     };
 
