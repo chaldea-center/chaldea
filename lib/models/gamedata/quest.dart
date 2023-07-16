@@ -206,6 +206,8 @@ class Quest with RouteInfo {
   NiceSpot? get spot => db.gameData.spots[spotId];
   NiceWar? get war => db.gameData.wars[warId];
 
+  bool get is90PlusFree => (isAnyFree || isRepeatRaid) && (recommendLv == '90+' || recommendLv == '90++');
+
   @override
   String get route => Routes.questI(id);
 

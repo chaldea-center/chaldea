@@ -367,6 +367,8 @@ class BattleRecorderPanelBase extends StatelessWidget {
         break;
     }
     spans.addAll([
+      if (record.type == SkillInfoType.commandSpell)
+        CenterWidgetSpan(child: CachedImage(imageUrl: AssetURL.i.buffIcon(387), width: 18, height: 18)),
       if (prefix != null) TextSpan(text: '$prefix: '),
       TextSpan(text: '${S.current.skill} '),
       if (skill.skillNum > 0) TextSpan(text: '${skill.skillNum} ', style: kMonoStyle),

@@ -157,6 +157,7 @@ class _QuestListPageState extends State<QuestListPage> {
             trailing: trailing,
             contentPadding: leading == null ? null : const EdgeInsetsDirectional.fromSTEB(4, 0, 16, 0),
             horizontalTitleGap: 8,
+            selected: quest.is90PlusFree,
             onTap: () {
               router.push(
                 url: Routes.questI(quest.id),

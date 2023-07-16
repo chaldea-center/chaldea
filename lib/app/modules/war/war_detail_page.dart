@@ -477,19 +477,22 @@ class _WarDetailPageState extends State<WarDetailPage> {
     } else {
       _addTile(S.current.free_quest, freeQuests);
     }
-    if (freeQuests.isNotEmpty && war.id != WarId.daily && war.id != WarId.chaldeaGate) {
-      children.add(ListTile(
-        title: Text("${S.current.item} (${S.current.free_quest})"),
-        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-        onTap: () {
-          router.pushPage(FreeQuestOverview(quests: freeQuests, isMainStory: war.isMainStory));
-        },
-      ));
-    }
+
     _addTile(S.current.daily_ember_quest, dailyEmber);
     _addTile(S.current.daily_training_quest, dailyTraining);
     _addTile(S.current.daily_qp_quest, dailyQp);
     _addTile(S.current.raid_quest, raidQuests);
+
+    final freeAndRaid = [...freeQuests, ...raidQuests];
+    if (freeAndRaid.isNotEmpty && war.id != WarId.daily && war.id != WarId.chaldeaGate) {
+      children.add(ListTile(
+        title: Text("${S.current.item} (${S.current.free_quest})"),
+        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+        onTap: () {
+          router.pushPage(FreeQuestOverview(quests: freeAndRaid, isMainStory: war.isMainStory));
+        },
+      ));
+    }
     _addTile(S.current.high_difficulty_quest, difficultQuests);
     _addTile(S.current.one_off_quest, oneOffQuests);
     _addTile(S.current.interlude, interludeQuests);

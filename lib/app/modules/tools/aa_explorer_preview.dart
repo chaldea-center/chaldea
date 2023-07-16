@@ -223,6 +223,7 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
 
   Widget get pageView {
     List<Widget> children = [];
+    final pngLinks = links.where((e) => e.endsWith('.png') || e.endsWith('.jpg')).toList();
 
     for (final link in links) {
       String name;
@@ -241,7 +242,7 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
           placeholder: (context, url) => const SizedBox.shrink(),
         );
         onTap = () {
-          FullscreenImageViewer.show(context: context, urls: [link]);
+          FullscreenImageViewer.show(context: context, urls: pngLinks, initialPage: pngLinks.indexOf(link));
         };
       } else {
         name = link.split('/').last;

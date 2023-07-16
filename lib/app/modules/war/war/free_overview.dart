@@ -142,12 +142,15 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
       name = quest.lName.l;
     }
 
+    final highlightStyle = TextStyle(color: quest.is90PlusFree ? Theme.of(context).colorScheme.primaryContainer : null);
+
     cells.add(DataCell(
       AutoSizeText(
         name,
         textScaleFactor: 0.9,
         maxLines: 2,
         minFontSize: 10,
+        style: highlightStyle,
       ),
       onTap: quest.routeTo,
     ));
@@ -159,7 +162,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
       ].join('\n'),
       maxLines: 2,
       minFontSize: 10,
-      style: Theme.of(context).textTheme.bodySmall,
+      style: Theme.of(context).textTheme.bodySmall?.merge(highlightStyle),
     )));
 
     Widget wrap(Iterable<Widget> children) {

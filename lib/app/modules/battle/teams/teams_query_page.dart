@@ -72,11 +72,10 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       title: Text.rich(TextSpan(
         text: S.current.uploaded_teams,
         children: [
-          TextSpan(
-            text: '(Page ${pageIndex + 1})',
-            style: const TextStyle(fontSize: 14),
-          ),
-          if (mode == TeamQueryMode.user && username != null && username.isNotEmpty) TextSpan(text: ' - $username'),
+          if (mode == TeamQueryMode.user && username != null && username.isNotEmpty)
+            TextSpan(text: ' - ${username.breakWord}'),
+          if (mode == TeamQueryMode.quest && widget.questPhase != null)
+            TextSpan(text: ' - ${widget.questPhase?.lName.l.breakWord}')
         ],
       )),
       actions: [
@@ -102,26 +101,9 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
 
   @override
   PreferredSizeWidget? get buttonBar {
-    List<Widget> buttons = [
-      ElevatedButton(
-        onPressed: pageIndex == 0
-            ? null
-            : () async {
-                pageIndex -= 1;
-                await _queryTeams(pageIndex);
-              },
-        child: Text(S.current.prev_page),
-      ),
-      if (db.security.isUserLoggedIn || widget.mode == TeamQueryMode.quest)
-        ElevatedButton(
-          onPressed: () async {
-            EasyDebounce.debounce('refresh_laplace_team', const Duration(seconds: 1), () {
-              _queryTeams(pageIndex, refresh: true);
-            });
-          },
-          child: Text(S.current.refresh),
-        )
-      else
+    List<Widget> buttons;
+    if (!db.security.isUserLoggedIn && widget.mode == TeamQueryMode.user) {
+      buttons = [
         ElevatedButton(
           onPressed: () async {
             await router.pushPage(LoginPage());
@@ -129,16 +111,42 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           },
           child: Text(S.current.login_login),
         ),
-      ElevatedButton(
-        onPressed: !hasNextPage
-            ? null
-            : () async {
-                pageIndex += 1;
-                await _queryTeams(pageIndex);
-              },
-        child: Text(S.current.next_page),
-      ),
-    ];
+      ];
+    } else {
+      buttons = [
+        IconButton(
+          onPressed: pageIndex == 0
+              ? null
+              : () async {
+                  pageIndex -= 1;
+                  await _queryTeams(pageIndex);
+                },
+          icon: Icon(DirectionalIcons.keyboard_arrow_back(context)),
+          color: Theme.of(context).colorScheme.primary,
+          tooltip: S.current.prev_page,
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            EasyDebounce.debounce('refresh_laplace_team', const Duration(seconds: 1), () {
+              _queryTeams(pageIndex, refresh: true);
+            });
+          },
+          child: Text('${S.current.refresh}(P${pageIndex + 1})'),
+        ),
+        IconButton(
+          onPressed: !hasNextPage
+              ? null
+              : () async {
+                  pageIndex += 1;
+                  await _queryTeams(pageIndex);
+                },
+          icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+          color: Theme.of(context).colorScheme.primary,
+          tooltip: S.current.next_page,
+        ),
+      ];
+    }
+
     return PreferredSize(
       preferredSize: const Size.fromHeight(48),
       child: ButtonBar(
@@ -173,18 +181,11 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             title: Text(quest?.lDispName ?? "Quest ${record.questId}/${record.phase}"),
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
             onTap: () {
-              router.push(url: Routes.questI(record.questId));
+              router.push(url: Routes.questI(record.questId, record.phase));
             },
           ),
-        if (shareData != null) ...[
-          FormationCard(formation: shareData.team),
-          TextButton(
-            onPressed: () {
-              replaySimulation(record, shareData);
-            },
-            child: Text('>>> ${S.current.details} >>>'),
-          ),
-        ],
+        if (shareData != null) FormationCard(formation: shareData.team),
+        const SizedBox(height: 8),
         Wrap(
           alignment: WrapAlignment.center,
           spacing: 8,
@@ -202,6 +203,13 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
                 },
                 style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
                 child: Text(S.current.delete),
+              ),
+            if (shareData != null)
+              FilledButton(
+                onPressed: () {
+                  replaySimulation(record, shareData);
+                },
+                child: Text(S.current.details),
               ),
             if (mode == TeamQueryMode.quest)
               FilledButton(
