@@ -518,6 +518,7 @@
   "item_stat_sub_owned": "Subtract Owned",
   "join_beta": "Join Beta Program",
   "jump_to": "Jump to {site}",
+  "laplace_upload_td_multi_dmg_func_hint": "Multi-step NP found(e.g. Chen Gong/Arash), please check MIN/MAX RNG to ensure NP refund is sufficient and able to clear the quest.",
   "level": "Level",
   "limited_event": "Limited Event",
   "limited_time": "Limited Time",

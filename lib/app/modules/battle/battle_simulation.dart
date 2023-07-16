@@ -7,6 +7,7 @@ import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/interactions/_delegate.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -631,7 +632,10 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildUploadButton(),
+          FilledButton(
+            onPressed: () => showDialog(context: context, useRootNavigator: false, builder: _buildUploadDialog),
+            child: Text(S.current.upload),
+          ),
           const SizedBox(height: 4),
           normalButtons,
         ],
@@ -641,68 +645,76 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     }
   }
 
-  Widget _buildUploadButton() {
-    final canUpload = db.security.isUserLoggedIn &&
-        battleData.recorder.isUploadEligible &&
-        db.runtimeData.secondsRemainUtilNextUpload <= 0 &&
-        questPhase.enemyHash != null;
+  Widget _buildUploadDialog(BuildContext context) {
+    bool canUpload = false;
+    String content;
+    if (!db.security.isUserLoggedIn) {
+      content = S.current.login_first_hint;
+    } else if (!battleData.recorder.isUploadEligible) {
+      content = S.current.upload_not_eligible_hint;
+    } else if (db.runtimeData.secondsRemainUtilNextUpload > 0) {
+      content =
+          S.current.upload_paused(db.runtimeData.secondsBetweenUpload, db.runtimeData.secondsRemainUtilNextUpload);
+    } else if (!questPhase.isLaplaceSharable) {
+      content = S.current.quest_disallow_laplace_share_hint;
+    } else {
+      // okay
+      canUpload = true;
+      bool hasMultiDamageFunc = false;
+      for (final record in battleData.recorder.records) {
+        if (record is BattleAttackRecord) {
+          final funcs = record.card?.td?.functions ?? [];
+          if (funcs.where((func) => func.funcType.isDamageNp).length > 1) {
+            hasMultiDamageFunc = true;
+            break;
+          }
+        }
+      }
+      if (hasMultiDamageFunc) {
+        content = '${S.current.laplace_upload_td_multi_dmg_func_hint}\n\n${S.current.upload_team_confirmation}';
+      } else {
+        content = S.current.upload_team_confirmation;
+      }
+    }
 
-    return FilledButton(
-      onPressed: () async {
-        await SimpleCancelOkDialog(
-          scrollable: true,
-          title: Text(S.current.upload),
-          content: !db.security.isUserLoggedIn
-              ? Text(
-                  S.current.login_first_hint,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
-                )
-              : !battleData.recorder.isUploadEligible
-                  ? Text(S.current.upload_not_eligible_hint)
-                  : db.runtimeData.secondsRemainUtilNextUpload > 0
-                      ? Text(S.current.upload_paused(
-                          db.runtimeData.secondsBetweenUpload,
-                          db.runtimeData.secondsRemainUtilNextUpload,
-                        ))
-                      : Text(S.current.upload_team_confirmation),
-          hideCancel: !canUpload,
-          onTapOk: !canUpload
-              ? null
-              : () async {
-                  final actions = BattleActions(
-                    actions: battleData.recorder.toUploadRecords(),
-                    delegate: battleData.replayDataRecord,
-                  );
-                  final uploadData = BattleShareData(
-                    team: widget.options.team.toFormationData(),
-                    actions: actions,
-                    disableEvent: widget.options.disableEvent,
-                  );
-                  db.runtimeData.lastUpload = DateTime.now().timestamp;
-                  final resp = await ChaldeaResponse.show(ChaldeaApi.laplaceUploadTeam(
-                    ver: 1,
-                    questId: questPhase.id,
-                    phase: questPhase.phase,
-                    enemyHash: questPhase.enemyHash!,
-                    record: uploadData.toGZip(),
-                  ));
-                  if (resp.json()?['success'] == false) {
-                    await SimpleCancelOkDialog(
-                      title: Text(S.current.failed),
-                      content: Text(resp.json()?["error"] ?? "something went wrong"),
-                      hideCancel: true,
-                    ).showDialog(null);
-                    ChaldeaApi.clearCache((cache) => true);
-                  } else {
-                    await SimpleCancelOkDialog(
-                      title: Text(S.current.success),
-                      hideCancel: true,
-                    ).showDialog(null);
-                  }
-                },
-        ).showDialog(context);
+    return SimpleCancelOkDialog(
+      scrollable: true,
+      title: Text(S.current.upload),
+      content: Text(content),
+      hideOk: !canUpload,
+      onTapOk: () async {
+        final actions = BattleActions(
+          actions: battleData.recorder.toUploadRecords(),
+          delegate: battleData.replayDataRecord,
+        );
+        final uploadData = BattleShareData(
+          team: widget.options.team.toFormationData(),
+          actions: actions,
+          disableEvent: widget.options.disableEvent,
+        );
+        final resp = await ChaldeaResponse.show(ChaldeaApi.laplaceUploadTeam(
+          ver: 1,
+          questId: questPhase.id,
+          phase: questPhase.phase,
+          enemyHash: questPhase.enemyHash!,
+          record: uploadData.toGZip(),
+        ));
+        db.runtimeData.lastUpload = DateTime.now().timestamp;
+        if (resp.json()?['success'] == false) {
+          if (mounted) {
+            SimpleCancelOkDialog(
+              title: Text(S.current.failed),
+              content: Text(resp.json()?["error"] ?? "something went wrong"),
+              hideCancel: true,
+            ).showDialog(context);
+          }
+          ChaldeaApi.clearCache((cache) => true);
+        } else {
+          if (mounted) {
+            SimpleCancelOkDialog(title: Text(S.current.success), hideCancel: true).showDialog(context);
+          }
+        }
       },
-      child: Text(S.current.upload),
     );
   }
 

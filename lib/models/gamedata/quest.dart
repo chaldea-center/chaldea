@@ -380,6 +380,9 @@ class QuestPhase extends Quest {
     }
   }
 
+  @override
+  bool get isLaplaceSharable => super.isLaplaceSharable && enemyHash != null;
+
   int get key => getPhaseKey(phase);
 
   List<QuestEnemy> get allEnemies => [for (final stage in stages) ...stage.enemies];

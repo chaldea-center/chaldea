@@ -742,7 +742,7 @@ class BattleData {
 
               if (action.cardData.isNP) {
                 await action.actor.activateBuffOnAction(this, BuffAction.functionAttackBefore);
-                await action.actor.activateNP(this, extraOvercharge);
+                await action.actor.activateNP(this, action.cardData, extraOvercharge);
                 await action.actor.activateBuffOnAction(this, BuffAction.functionNpattack);
                 await action.actor.activateBuffOnAction(this, BuffAction.functionAttackAfter);
                 extraOvercharge += 1;
@@ -811,7 +811,7 @@ class BattleData {
 
             if (action.cardData.isNP) {
               await action.actor.activateBuffOnAction(this, BuffAction.functionAttackBefore);
-              await action.actor.activateNP(this, 0);
+              await action.actor.activateNP(this, action.cardData, 0);
               await action.actor.activateBuffOnAction(this, BuffAction.functionNpattack);
               await action.actor.activateBuffOnAction(this, BuffAction.functionAttackAfter);
 

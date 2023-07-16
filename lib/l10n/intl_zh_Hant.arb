@@ -518,6 +518,7 @@
   "item_stat_sub_owned": "減去庫存",
   "join_beta": "加入Beta版",
   "jump_to": "跳轉到{site}",
+  "laplace_upload_td_multi_dmg_func_hint": null,
   "level": "等級",
   "limited_event": "限時活動",
   "limited_time": "限時",

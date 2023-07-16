@@ -518,6 +518,7 @@
   "item_stat_sub_owned": "Restar poseídos",
   "join_beta": "Únete al programa Beta",
   "jump_to": "Ir a {site}",
+  "laplace_upload_td_multi_dmg_func_hint": null,
   "level": "Nivel",
   "limited_event": "Evento Limitado",
   "limited_time": null,

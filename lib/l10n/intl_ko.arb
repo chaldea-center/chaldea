@@ -518,6 +518,7 @@
   "item_stat_sub_owned": "재고 제외",
   "join_beta": "베타 프로그램에 참가하기",
   "jump_to": "{site}(으)로 이동",
+  "laplace_upload_td_multi_dmg_func_hint": null,
   "level": "레벨",
   "limited_event": "기간 한정 이벤트",
   "limited_time": null,

@@ -729,6 +729,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
           context: context,
           width: 48,
           battleData: battleData,
+          showClsIcon: true,
         ),
       ),
     ];
@@ -782,6 +783,19 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
       //   child: ImageWithText.paintOutline(text: card.cardType.name),
       // ));
     }
+    final oc = card.oc;
+    if (oc != null && oc > 1 && oc <= 5) {
+      stackChildren.add(Positioned(
+        top: -2,
+        right: -16,
+        child: CachedImage(
+          imageUrl:
+              "https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/BattleUIAtlas/icon_oc_0${oc - 1}.png",
+          width: 32,
+          aspectRatio: 108 / 65,
+        ),
+      ));
+    }
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 50, maxHeight: 56),
       child: InkWell(
@@ -801,7 +815,14 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Center(child: detail.target.iconBuilder(context: context, width: 42, battleData: battleData)),
+          Center(
+            child: detail.target.iconBuilder(
+              context: context,
+              width: 42,
+              battleData: battleData,
+              showClsIcon: true,
+            ),
+          ),
           Text(
             detail.target.lBattleName,
             maxLines: 1,
@@ -890,11 +911,13 @@ extension BattleSvtDataUI on BattleServantData {
     String? text,
     VoidCallback? onTap,
     BattleData? battleData,
+    bool showClsIcon = false,
   }) {
+    final icon = niceEnemy?.icon ?? niceSvt?.ascendIcon(limitCount, true) ?? Atlas.common.unknownEnemyIcon;
     onTap ??= () => router.pushPage(BattleSvtDetail(svt: this, battleData: battleData));
-    return GameCardMixin.cardIconBuilder(
+    Widget child = GameCardMixin.cardIconBuilder(
       context: context,
-      icon: niceSvt?.ascendIcon(limitCount) ?? niceEnemy?.icon ?? Atlas.common.unknownEnemyIcon,
+      icon: icon,
       width: width,
       height: height,
       aspectRatio: aspectRatio ?? (isPlayer ? 132 / 144 : 1),
@@ -903,6 +926,20 @@ extension BattleSvtDataUI on BattleServantData {
       option: ImageWithTextOption(
           errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon)),
     );
+    final dim = width ?? height;
+    if (showClsIcon && (dim != null) && !icon.contains('_bordered.png')) {
+      child = Stack(
+        children: [
+          child,
+          Positioned(
+            left: 0,
+            top: 0,
+            child: db.getIconImage(SvtClassX.clsIcon(classId, rarity), width: dim / 3.2),
+          ),
+        ],
+      );
+    }
+    return child;
   }
 }
 

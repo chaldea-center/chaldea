@@ -5761,6 +5761,17 @@ class S {
     );
   }
 
+  /// `Multi-step NP found(e.g. Chen Gong/Arash), please check MIN/MAX RNG to ensure NP refund is sufficient and able to clear the quest.`
+  String get laplace_upload_td_multi_dmg_func_hint {
+    return Intl.message(
+      'Multi-step NP found(e.g. Chen Gong/Arash), please check MIN/MAX RNG to ensure NP refund is sufficient and able to clear the quest.',
+      name: 'laplace_upload_td_multi_dmg_func_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Level`
   String get level {
     return Intl.message(

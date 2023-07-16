@@ -800,7 +800,7 @@ class BattleServantData {
     return isPlayer ? playerSvtData!.td : niceEnemy!.noblePhantasm.noblePhantasm;
   }
 
-  Future<void> activateNP(final BattleData battleData, final int extraOverchargeLvl) async {
+  Future<void> activateNP(final BattleData battleData, CommandCardData card, final int extraOverchargeLvl) async {
     battleData.setActivator(this);
     battleData.battleLogger.action('$lBattleName ${S.current.battle_np_card}');
 
@@ -817,6 +817,7 @@ class BattleServantData {
       }
       overchargeLvl ??= baseOverCharge + upOverCharge;
       overchargeLvl = overchargeLvl.clamp(1, 5);
+      battleData.recorder.setOverCharge(this, card, overchargeLvl);
 
       np = 0;
       npLineCount = 0;

@@ -141,6 +141,18 @@ class BattleRecordManager {
     _cardHistory.add(_BattleCardTempData(activator, card));
   }
 
+  void setOverCharge(BattleServantData activator, CommandCardData card, int oc) {
+    final last = _cardHistory.lastOrNull;
+    assert(last != null && last.actor == activator && last.card == card);
+    if (last != null && last.actor == activator && last.card == card) {
+      card.oc = oc;
+    } else {
+      assert(() {
+        throw Exception("last card is not desired");
+      }());
+    }
+  }
+
   void attack(BattleServantData activator, BattleAttackRecord record) {
     final _last = _cardHistory.lastOrNull;
     assert(_last == null || _last.actor.uniqueId == activator.uniqueId);

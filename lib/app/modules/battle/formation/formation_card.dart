@@ -48,7 +48,7 @@ class FormationCard extends StatelessWidget {
       if (storedData.ceId != null && storedData.ceId != 0) {
         ceInfo = ' Lv.${storedData.ceLv}';
         if (storedData.ceLimitBreak) {
-          ceInfo += ' $kStarChar';
+          ceInfo += ' $kStarChar2';
         }
       }
     }

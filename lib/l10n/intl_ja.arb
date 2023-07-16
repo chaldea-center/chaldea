@@ -518,6 +518,7 @@
   "item_stat_sub_owned": "在庫を差し引く",
   "join_beta": "ベータ版に参加します",
   "jump_to": "{site}へ",
+  "laplace_upload_td_multi_dmg_func_hint": null,
   "level": "レベル",
   "limited_event": "期間限定イベント",
   "limited_time": null,

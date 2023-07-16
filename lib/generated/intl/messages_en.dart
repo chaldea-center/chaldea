@@ -640,6 +640,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "jump_to": m7,
         "language": MessageLookupByLibrary.simpleMessage("English"),
         "language_en": MessageLookupByLibrary.simpleMessage("English"),
+        "laplace_upload_td_multi_dmg_func_hint": MessageLookupByLibrary.simpleMessage(
+            "Multi-step NP found(e.g. Chen Gong/Arash), please check MIN/MAX RNG to ensure NP refund is sufficient and able to clear the quest."),
         "level": MessageLookupByLibrary.simpleMessage("Level"),
         "limited_event": MessageLookupByLibrary.simpleMessage("Limited Event"),
         "limited_time": MessageLookupByLibrary.simpleMessage("Limited Time"),
