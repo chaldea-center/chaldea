@@ -1649,6 +1649,9 @@ enum QuestAfterClearType {
   repeatLast,
   resetInterval,
   closeDisp,
+  ;
+
+  bool get isRepeat => this == repeatLast || this == repeatFirst;
 }
 
 @JsonEnum(alwaysCreate: true)

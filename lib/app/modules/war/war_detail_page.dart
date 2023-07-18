@@ -421,9 +421,8 @@ class _WarDetailPageState extends State<WarDetailPage> {
         mainQuests.add(quest);
       } else if (quest.type == QuestType.friendship) {
         interludeQuests.add(quest);
-      } else if (quest.type == QuestType.free ||
-          (quest.type == QuestType.event && quest.afterClear == QuestAfterClearType.repeatLast)) {
-        if (quest.afterClear != QuestAfterClearType.repeatLast) {
+      } else if (quest.type == QuestType.free || (quest.type == QuestType.event && quest.afterClear.isRepeat)) {
+        if (!quest.afterClear.isRepeat) {
           oneOffQuests.add(quest);
         } else if (quest.flags.contains(QuestFlag.raid)) {
           raidQuests.add(quest);
