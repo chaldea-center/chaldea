@@ -1,12 +1,14 @@
 # Changelog
 
-## 2.4.6
+## beta
 
 - Chaldeas
-  - Add AI page
+  - Add disable split view option and max window width setting(web)
+  - Add basic AI description page
 - Laplace
   - Fix Damage Cut
   - Fix activator not reset after custom skill
+  - Show Fou on svt avatar if not equal to 1000
 
 ## 2.4.5
 
