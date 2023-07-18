@@ -20,7 +20,6 @@ class BattleSimSetting {
   PreferPlayerSvtDataSource playerDataSource;
   Set<int> pingedCEs;
   Set<int> pingedSvts;
-  bool autoAdd7KnightsTrait;
 
   // save data
   String? previousQuestPhase;
@@ -37,7 +36,6 @@ class BattleSimSetting {
     this.playerDataSource = PreferPlayerSvtDataSource.none,
     Set<int>? pingedCEs,
     Set<int>? pingedSvts,
-    this.autoAdd7KnightsTrait = true,
     this.previousQuestPhase,
     PlayerSvtDefaultData? defaultLvs,
     List<BattleTeamFormation>? formations,
@@ -88,20 +86,19 @@ class BattleSimSetting {
 @JsonSerializable(includeIfNull: false)
 class BattleShareData {
   static const kMinVer = '2.4.1';
+  static const int kDataVer = 2;
   String? minVer;
   BattleQuestInfo? quest;
   BattleTeamFormation team;
   BattleActions? actions;
   bool? disableEvent;
-  bool? autoAdd7KnightsTrait;
 
   BattleShareData({
     this.minVer,
-    this.quest,
+    required this.quest,
     required this.team,
+    required this.disableEvent,
     this.actions,
-    this.disableEvent,
-    this.autoAdd7KnightsTrait,
   });
 
   factory BattleShareData.fromJson(Map<String, dynamic> json) => _$BattleShareDataFromJson(json);
@@ -118,33 +115,50 @@ class BattleShareData {
       team: team2,
       actions: actions,
       disableEvent: disableEvent,
-      autoAdd7KnightsTrait: autoAdd7KnightsTrait,
     ));
   }
 
-  Uri toShareUriGzip() {
-    String data = toGZip();
+  Uri toUriV2() {
+    String data = toDataV2();
     Uri shareUri = Uri.parse(ChaldeaUrl.app('/laplace/share'));
-    shareUri = shareUri.replace(queryParameters: {"v": "G$data"});
+    shareUri = shareUri.replace(queryParameters: {
+      "data": data,
+      if (quest != null) ...{
+        "questId": quest!.id.toString(),
+        "phase": quest!.phase.toString(),
+        if (quest!.hash != null) "enemyHash": quest!.hash,
+      }
+    });
     return shareUri;
   }
 
-  String toGZip() {
+  String toDataV2() {
     final shareData = jsonEncode(this);
     String data = base64UrlEncode(GZipEncoder().encode(utf8.encode(shareData), level: Deflate.BEST_COMPRESSION)!);
-    return data;
+    return 'G$data';
   }
 
-  static BattleShareData? parse(Uri uri) {
-    final v = uri.queryParameters['v'];
-    if (v == null || v.isEmpty) return null;
-    if (v.substring(0, 1) == 'G') {
-      return parseGzip(v.substring(1));
+  // keep 4 bytes for format in the future
+  static BattleShareData? parseUri(Uri uri) {
+    final content = uri.queryParameters['data'];
+    if (content == null) return null;
+    return parse(content);
+  }
+
+  static BattleShareData? parse(String content) {
+    if (content.length < 4) return null;
+    final method = content.substring(0, 1);
+    // final ver = v.substring(1, 2);
+    if (method == 'G') {
+      return _parseGzip(content.substring(1));
+    } else if (content.startsWith('H4s')) {
+      // old format
+      return _parseGzip(content);
     }
     return null;
   }
 
-  static BattleShareData parseGzip(String encoded) {
+  static BattleShareData _parseGzip(String encoded) {
     final data = jsonDecode(utf8.decode(GZipDecoder().decodeBytes(base64Decode(encoded))));
     return BattleShareData.fromJson(data);
   }
@@ -160,7 +174,7 @@ class BattleQuestInfo {
   BattleQuestInfo({
     required this.id,
     required this.phase,
-    this.hash,
+    required this.hash,
     this.region,
   });
 
@@ -169,7 +183,7 @@ class BattleQuestInfo {
     if (hash != null) {
       url += '?hash=$hash';
     }
-    if (region == Region.jp || region == Region.cn) {
+    if (region == Region.jp || region == Region.na) {
       url = '${region?.upper}/$url';
     }
     return url;
@@ -178,6 +192,16 @@ class BattleQuestInfo {
   factory BattleQuestInfo.fromJson(Map<String, dynamic> json) => _$BattleQuestInfoFromJson(json);
 
   Map<String, dynamic> toJson() => _$BattleQuestInfoToJson(this);
+
+  static BattleQuestInfo? fromQuery(Map<String, String> query) {
+    final id = int.tryParse(query['questId'] ?? "");
+    final phase = int.tryParse(query['phase'] ?? "");
+    final enemyHash = query['enemyHash'];
+    if (id != null && phase != null && enemyHash != null) {
+      return BattleQuestInfo(id: id, phase: phase, hash: enemyHash);
+    }
+    return null;
+  }
 }
 
 @JsonSerializable()

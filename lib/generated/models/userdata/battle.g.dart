@@ -15,7 +15,6 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
               (v) => $enumDecodeNullable(_$PreferPlayerSvtDataSourceEnumMap, v) ?? PreferPlayerSvtDataSource.none),
           pingedCEs: $checkedConvert('pingedCEs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
           pingedSvts: $checkedConvert('pingedSvts', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
-          autoAdd7KnightsTrait: $checkedConvert('autoAdd7KnightsTrait', (v) => v as bool? ?? true),
           previousQuestPhase: $checkedConvert('previousQuestPhase', (v) => v as String?),
           defaultLvs: $checkedConvert('defaultLvs',
               (v) => v == null ? null : PlayerSvtDefaultData.fromJson(Map<String, dynamic>.from(v as Map))),
@@ -41,7 +40,6 @@ Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <Str
       'playerDataSource': _$PreferPlayerSvtDataSourceEnumMap[instance.playerDataSource]!,
       'pingedCEs': instance.pingedCEs.toList(),
       'pingedSvts': instance.pingedSvts.toList(),
-      'autoAdd7KnightsTrait': instance.autoAdd7KnightsTrait,
       'previousQuestPhase': instance.previousQuestPhase,
       'defaultLvs': instance.defaultLvs.toJson(),
       'formations': instance.formations.map((e) => e.toJson()).toList(),
@@ -69,7 +67,6 @@ BattleShareData _$BattleShareDataFromJson(Map json) => $checkedCreate(
           actions: $checkedConvert(
               'actions', (v) => v == null ? null : BattleActions.fromJson(Map<String, dynamic>.from(v as Map))),
           disableEvent: $checkedConvert('disableEvent', (v) => v as bool?),
-          autoAdd7KnightsTrait: $checkedConvert('autoAdd7KnightsTrait', (v) => v as bool?),
         );
         return val;
       },
@@ -89,7 +86,6 @@ Map<String, dynamic> _$BattleShareDataToJson(BattleShareData instance) {
   val['team'] = instance.team.toJson();
   writeNotNull('actions', instance.actions?.toJson());
   writeNotNull('disableEvent', instance.disableEvent);
-  writeNotNull('autoAdd7KnightsTrait', instance.autoAdd7KnightsTrait);
   return val;
 }
 

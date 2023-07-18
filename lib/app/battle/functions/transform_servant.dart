@@ -4,7 +4,6 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../../../models/db.dart';
-import '../utils/battle_utils.dart';
 
 class TransformServant {
   TransformServant._();
@@ -34,7 +33,7 @@ class TransformServant {
         target.playerSvtData!.td = svt?.noblePhantasms.firstWhereOrNull((e) => e.id == 304802);
       } else {
         Servant? targetSvt =
-            db.gameData.servantsById[targetSvtId] ?? await showEasyLoading(() => AtlasApi.svt(targetSvtId));
+            db.gameData.servantsById[targetSvtId] ?? await showEasyLoading(() => AtlasApi.svt(targetSvtId), mask: true);
         if (targetSvt == null) {
           battleData.battleLogger.debug('${S.current.not_found}: $targetSvtId');
         } else {

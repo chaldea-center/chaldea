@@ -1,12 +1,8 @@
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/battle/models/battle.dart';
-import 'package:chaldea/app/modules/battle/battle_simulation.dart';
 import 'package:chaldea/app/modules/battle/formation/formation_card.dart';
-import 'package:chaldea/app/modules/battle/simulation_preview.dart';
 import 'package:chaldea/app/modules/home/subpage/login_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/api/api.dart';
@@ -14,6 +10,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../common/filter_page_base.dart';
+import '../utils.dart';
 import 'filter.dart';
 
 enum TeamQueryMode { user, quest }
@@ -70,12 +67,13 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
 
     return AppBar(
       title: Text.rich(TextSpan(
-        text: S.current.uploaded_teams,
         children: [
-          if (mode == TeamQueryMode.user && username != null && username.isNotEmpty)
-            TextSpan(text: ' - ${username.breakWord}'),
+          if (mode == TeamQueryMode.user)
+            TextSpan(
+                text: '${S.current.uploaded_teams} @'
+                    '${username != null && username.isNotEmpty ? username.breakWord : "Not Login"}'),
           if (mode == TeamQueryMode.quest && widget.questPhase != null)
-            TextSpan(text: ' - ${widget.questPhase?.lName.l.breakWord}')
+            TextSpan(text: '${S.current.team_shared} - ${widget.questPhase?.lName.l.breakWord}')
         ],
       )),
       actions: [
@@ -127,7 +125,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         ),
         ElevatedButton(
           onPressed: () async {
-            EasyDebounce.debounce('refresh_laplace_team', const Duration(seconds: 1), () {
+            EasyThrottle.throttle('team_query_refresh', const Duration(seconds: 2), () {
               _queryTeams(pageIndex, refresh: true);
             });
           },
@@ -172,7 +170,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     final shownIndex = _pageSize * pageIndex + index + 1;
     return Column(
       children: [
-        DividerWithTitle(title: '${S.current.team} $shownIndex - ${record.userId}'),
+        DividerWithTitle(title: '${S.current.team} $shownIndex - ${record.userId} [${record.id}]'),
         if (widget.mode == TeamQueryMode.user)
           ListTile(
             dense: true,
@@ -188,6 +186,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         const SizedBox(height: 8),
         Wrap(
           alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
           spacing: 8,
           children: [
             if (mode == TeamQueryMode.user || record.userId == db.security.username)
@@ -207,7 +206,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             if (shareData != null)
               FilledButton(
                 onPressed: () {
-                  replaySimulation(record, shareData);
+                  replaySimulation(detail: shareData, questInfo: record.questInfo);
                 },
                 child: Text(S.current.details),
               ),
@@ -220,6 +219,17 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
                       },
                 child: Text(S.current.select),
               ),
+            IconButton(
+              onPressed: shareData == null
+                  ? null
+                  : () => showDialog(
+                        context: context,
+                        useRootNavigator: false,
+                        builder: (context) => buildShareDialog(context, record),
+                      ),
+              icon: const Icon(Icons.ios_share),
+              tooltip: S.current.share,
+            )
           ],
         ),
       ],
@@ -324,134 +334,81 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     return true;
   }
 
-  Future<void> _showError(Future Function() future) async {
-    try {
-      return await future();
-    } catch (e) {
-      EasyLoading.showError(e.toString());
-    } finally {
-      if (mounted) setState(() {});
-    }
-  }
-
   Future<void> _queryTeams(final int page, {bool refresh = false}) async {
     if (widget.mode == TeamQueryMode.user && !db.security.isUserLoggedIn) return;
-    return _showError(() async {
-      Future<ChaldeaResponse>? future;
-      if (mode == TeamQueryMode.user) {
-        future = ChaldeaApi.laplaceQueryTeamByUser(
-          limit: _pageSize + 1,
-          offset: _pageSize * page,
-          expireAfter: refresh ? Duration.zero : null,
-        );
-      } else if (mode == TeamQueryMode.quest) {
+    Future<List<UserBattleData>?> task;
+    switch (mode) {
+      case TeamQueryMode.user:
+        task = showEasyLoading(() => ChaldeaWorkerApi.laplaceQueryTeamByUser(
+              limit: _pageSize + 1,
+              offset: _pageSize * page,
+              expireAfter: refresh ? Duration.zero : const Duration(minutes: 60),
+            ));
+      case TeamQueryMode.quest:
         final questPhase = widget.questPhase;
-        if (questPhase == null || questPhase.id <= 0) return;
-        future = ChaldeaApi.laplaceQueryTeamByQuest(
-          questId: questPhase.id,
-          phase: questPhase.phase,
-          enemyHash: questPhase.enemyHash,
-          limit: _pageSize + 1,
-          offset: _pageSize * page,
-          expireAfter: refresh ? Duration.zero : null,
-        );
+        if (questPhase == null || !questPhase.isLaplaceSharable) return;
+        task = showEasyLoading(() => ChaldeaWorkerApi.laplaceQueryTeamByQuest(
+              questId: questPhase.id,
+              phase: questPhase.phase,
+              enemyHash: questPhase.enemyHash,
+              limit: _pageSize + 1,
+              offset: _pageSize * page,
+              expireAfter: refresh ? Duration.zero : const Duration(minutes: 60),
+            ));
+    }
+    List<UserBattleData>? records = await task;
+    if (records != null) {
+      hasNextPage = records.length > _pageSize;
+      records = hasNextPage ? records.sublist(0, _pageSize) : records;
+      battleRecords.clear();
+      battleRecords.addAll(records);
+      for (final r in battleRecords) {
+        r.parse();
       }
-      if (future == null) return;
-      final resp = await ChaldeaResponse.show(future);
-
-      final respBody = resp.body<Map>();
-      if (respBody == null) return;
-      final d1result = D1Result<UserBattleData>.fromJson(Map.from(respBody));
-
-      if (d1result.success) {
-        List<UserBattleData> records = d1result.results;
-        hasNextPage = records.length > _pageSize;
-        records = hasNextPage ? records.sublist(0, _pageSize) : records;
-        battleRecords.clear();
-        battleRecords.addAll(records);
-        for (final r in battleRecords) {
-          r.parse();
-        }
-      } else {
-        EasyLoading.showError(d1result.error.toString());
-      }
-    });
+    }
+    if (mounted) setState(() {});
   }
 
   Future<void> _deleteUserTeam(UserBattleData battleRecord) async {
     if (!db.security.isUserLoggedIn) return;
-    return _showError(() async {
-      final resp = await ChaldeaResponse.show(ChaldeaApi.laplaceDeleteTeam(id: battleRecord.id));
-      if (resp.success) {
-        ChaldeaApi.clearCache((cache) => true);
-        await _queryTeams(pageIndex, refresh: true);
-      }
-    });
+    final resp = await showEasyLoading(() => ChaldeaWorkerApi.laplaceDeleteTeam(id: battleRecord.id));
+    if (resp.success) {
+      ChaldeaWorkerApi.clearCache((cache) => true);
+      await _queryTeams(pageIndex, refresh: true);
+    } else {
+      resp.showToast();
+    }
+    if (mounted) setState(() {});
   }
 
-  void replaySimulation(final UserBattleData battleRecord, final BattleShareData shareData) async {
-    QuestPhase? questPhase = widget.questPhase;
+  Widget buildShareDialog(BuildContext context, UserBattleData record) {
+    final urls = <String?>[
+      record.toShortUri().toString(),
+      record.toUriV2().toString(),
+    ].whereType<String>().toList();
 
-    if (questPhase == null) {
-      try {
-        EasyLoading.show();
-        questPhase ??= await AtlasApi.questPhase(
-          battleRecord.questId,
-          battleRecord.phase,
-          hash: battleRecord.enemyHash,
-          region: Region.jp,
-        );
-        EasyLoading.dismiss();
-      } catch (ignored) {
-        EasyLoading.dismiss();
-      }
-    }
-
-    if (questPhase == null) {
-      await SimpleCancelOkDialog(
-        title: Text(S.current.failed),
-        content: Text(S.current.not_found),
-        scrollable: false,
-      ).showDialog(null);
-      return;
-    }
-
-    final questCopy = QuestPhase.fromJson(questPhase.toJson());
-
-    final options = BattleOptions();
-    final formation = shareData.team;
-    for (int index = 0; index < 3; index++) {
-      options.team.onFieldSvtDataList[index] =
-          await PlayerSvtData.fromStoredData(formation.onFieldSvts.getOrNull(index));
-      options.team.backupSvtDataList[index] = await PlayerSvtData.fromStoredData(formation.backupSvts.getOrNull(index));
-    }
-
-    options.team.mysticCodeData.loadStoredData(formation.mysticCode);
-
-    if (shareData.disableEvent != null) {
-      options.disableEvent = shareData.disableEvent!;
-    }
-
-    if (options.disableEvent) {
-      questCopy.warId = 0;
-      questCopy.individuality.removeWhere((e) => e.isEventField);
-    }
-
-    if (options.team.isDracoInTeam && shareData.autoAdd7KnightsTrait == true) {
-      for (final enemy in questCopy.allEnemies) {
-        if (isEnemy7Knights(enemy) && enemy.traits.every((e) => e.signedId != Trait.standardClassServant.id)) {
-          enemy.traits = [...enemy.traits, NiceTrait(id: Trait.standardClassServant.id)];
-        }
-      }
-    }
-
-    router.push(
-      url: Routes.laplaceBattle,
-      child: BattleSimulationPage(
-        questPhase: questCopy,
-        options: options,
-        replayActions: shareData.actions,
-      ),
+    return SimpleDialog(
+      title: Text(S.current.share),
+      children: [
+        for (int index = 0; index < urls.length; index++)
+          ListTile(
+            dense: true,
+            horizontalTitleGap: 0,
+            minLeadingWidth: 32,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+            leading: Text((index + 1).toString()),
+            title: Text(
+              urls[index],
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            onTap: () {
+              copyToClipboard(urls[index]);
+              EasyLoading.showToast(S.current.copied);
+              Navigator.pop(context);
+            },
+          ),
+      ],
     );
   }
 }

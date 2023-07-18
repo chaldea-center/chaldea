@@ -41,24 +41,19 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
     dynamic error;
     try {
       EasyLoading.show(maskType: EasyLoadingMaskType.clear);
-      final dio = db.apiWorkerDio;
       final content = base64Encode(GZipEncoder().encode(utf8.encode(jsonEncode(db.userData)))!);
-      final resp = ChaldeaResponse(await dio.post('/account/backup/upload', data: {
+      final resp = await ChaldeaWorkerApi.postCommon('/account/backup/upload', {
         'username': user,
         'auth': pwd,
         'content': content,
-      }));
-      if (resp.success) {
-        EasyLoading.showSuccess(S.current.success);
-        return true;
-      } else {
-        error = resp.error;
-      }
+      });
+      resp.showToast();
+      return resp.success;
     } catch (e, s) {
       logger.e('upload server backup failed', e, s);
       error = escapeDioException(e);
     }
-    EasyLoading.showError(error ?? S.current.failed);
+    EasyLoading.showError(error ?? S.current.error);
     return false;
   }
 
@@ -67,16 +62,22 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
     if (!_check()) return null;
     EasyLoading.show(maskType: EasyLoadingMaskType.clear);
     try {
-      final resp = ChaldeaResponse(await db.apiWorkerDio
-          .post('/account/backup/download', data: {'username': db.security.username, 'auth': db.security.userAuth}));
-      List<UserDataBackup> backups = [];
-      backups = List.from(resp.body()).map((e) => UserDataBackup.fromJson(e)).toList();
+      EasyLoading.show();
+      final resp = await ChaldeaWorkerApi.postCommon(
+          '/account/backup/download', {'username': db.security.username, 'auth': db.security.userAuth});
+      EasyLoading.dismiss();
+      if (!resp.success) {
+        resp.showToast();
+        return null;
+      }
+
+      List<UserDataBackup> backups;
+      backups = List.from(resp.body).map((e) => UserDataBackup.fromJson(Map.from(e))).toList();
       backups.sort2((e) => e.timestamp, reversed: true);
       if (backups.isEmpty) {
         EasyLoading.showError('No backup found');
         return null;
       }
-      EasyLoading.dismiss();
       return showDialog<UserData?>(
         context: kAppKey.currentContext!,
         useRootNavigator: false,

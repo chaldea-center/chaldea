@@ -54,3 +54,27 @@ class EasyDebounce {
     return _operations.length;
   }
 }
+
+class EasyThrottle {
+  EasyThrottle._();
+  static final Map<String, DateTime> _operations = {};
+
+  static void throttle(String tag, Duration duration, EasyDebounceCallback onExecute) {
+    final op = _operations[tag];
+    final now = DateTime.now();
+    if (op == null || now.difference(op) > duration) {
+      _operations[tag] = now;
+      onExecute();
+    } else {
+      _operations.remove(tag);
+    }
+  }
+
+  static void cancel(String tag) {
+    _operations.remove(tag);
+  }
+
+  static void cancelAll() {
+    _operations.clear();
+  }
+}

@@ -8,6 +8,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/modules/battle/battle_simulation.dart';
@@ -21,7 +22,6 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../common/builders.dart';
 import '../quest/breakdown/quest_phase.dart';
 import '../quest/quest.dart';
 import 'formation/default_lvs.dart';
@@ -29,17 +29,18 @@ import 'formation/formation_storage.dart';
 import 'formation/quest_selector.dart';
 import 'formation/team.dart';
 import 'quest/quest_edit.dart';
+import 'utils.dart';
 
 class SimulationPreview extends StatefulWidget {
   final Region? region;
   final QuestPhase? questPhase;
-  final Uri? shareData;
+  final Uri? shareUri;
 
   const SimulationPreview({
     super.key,
     this.region,
     this.questPhase,
-    this.shareData,
+    this.shareUri,
   });
 
   @override
@@ -74,12 +75,16 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   @override
   void initState() {
     super.initState();
+    init();
+  }
+
+  Future<void> init() async {
     questRegion = widget.region;
     questPhase = widget.questPhase;
     String? initText;
-    if (widget.shareData != null) {
+    if (widget.shareUri != null) {
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-        importShareData(widget.shareData!);
+        importShareData(widget.shareUri!);
       });
     } else if (questPhase != null) {
       initText = '${questPhase!.id}/${questPhase!.phase}';
@@ -93,7 +98,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       initFormation();
     } else if (settings.previousQuestPhase != null) {
       questIdTextController.text = settings.previousQuestPhase!;
-      _fetchQuestPhase();
+      _parseQuestPhase();
       initFormation();
     }
 
@@ -230,8 +235,12 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             region: questRegion,
           );
         }
-        final data = BattleShareData(team: settings.curFormation, quest: questInfo).toShareUriGzip();
-        String shareString = data.toString();
+        final shareUri = BattleShareData(
+          quest: questInfo,
+          team: settings.curFormation,
+          disableEvent: options.disableEvent,
+        ).toUriV2();
+        String shareString = shareUri.toString();
         Clipboard.setData(ClipboardData(text: shareString));
         if (shareString.length > 200) {
           shareString = '${shareString.substring(0, 200)}...';
@@ -364,7 +373,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                     onPressed: () async {
                       EasyLoading.show();
                       try {
-                        await _fetchQuestPhase();
+                        await _parseQuestPhase();
                       } catch (e, s) {
                         logger.e('fetch quest phase failed', e, s);
                         questErrorMsg = escapeDioException(e);
@@ -688,38 +697,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       ...buildPointBuffs(),
     ];
 
-    // Sodom's Beast/Draco in team
-    if (options.team.isDracoInTeam && questPhase != null) {
-      bool has7Knights = questPhase!.allEnemies.any((enemy) => isEnemy7Knights(enemy));
-      if (has7Knights) {
-        final draco = db.gameData.servantsNoDup[377];
-        children.addAll([
-          CheckboxListTile(
-            dense: true,
-            value: settings.autoAdd7KnightsTrait,
-            title: Text.rich(TextSpan(text: '${S.current.auto_add_trait}: ', children: [
-              SharedBuilder.traitSpan(context: context, trait: NiceTrait(id: Trait.standardClassServant.id))
-            ])),
-            subtitle: Text.rich(TextSpan(
-              text: 'For ',
-              children: [
-                SharedBuilder.textButtonSpan(
-                  context: context,
-                  text: draco?.lName.l ?? 'SVT 377',
-                  style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer),
-                  onTap: draco?.routeTo,
-                ),
-              ],
-            )),
-            onChanged: (v) {
-              setState(() {
-                settings.autoAdd7KnightsTrait = v ?? settings.autoAdd7KnightsTrait;
-              });
-            },
-          ),
-        ]);
-      }
-    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: children,
@@ -835,16 +812,32 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
   ///
 
-  void importShareData(Uri uri) {
+  void importShareData(Uri uri) async {
     if (!uri.path.startsWith('/laplace/share')) {
-      EasyLoading.showError("Invalid url");
+      EasyLoading.showError("Invalid url, should be https://chaldea.center/laplace/share?xxxxx");
+      print(uri.path);
       return;
     }
-    final data = BattleShareData.parse(uri);
+    BattleShareData? data;
+    BattleQuestInfo? questInfo;
+    if (uri.queryParameters.containsKey('data')) {
+      data = BattleShareData.parseUri(uri);
+    } else {
+      final recordId = int.tryParse(uri.queryParameters['id'] ?? "");
+      if (recordId != null && recordId > 0) {
+        final encoded = await showEasyLoading(() => ChaldeaWorkerApi.laplaceQueryById(recordId));
+        if (encoded != null) {
+          data = encoded.parse();
+          questInfo = encoded.questInfo;
+        }
+      }
+    }
+    questInfo ??= BattleQuestInfo.fromQuery(uri.queryParameters);
     if (data == null) {
-      EasyLoading.showError('Invalid data');
+      EasyLoading.showError('Invalid data or id');
       return;
     }
+
     if (data.minVer != null) {
       final minVer = AppVersion.tryParse(data.minVer!);
       if (minVer != null && minVer > AppInfo.version) {
@@ -853,15 +846,33 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       }
     }
     restoreFormation(data.team);
-    if (data.quest != null) {
-      questIdTextController.text = data.quest!.toUrl();
-      _fetchQuestPhase();
+    questInfo = data.quest ?? questInfo;
+    if (questInfo != null) {
+      questIdTextController.text = questInfo.toUrl();
+      await _fetchQuestPhase(
+        questId: questInfo.id,
+        phase: questInfo.phase,
+        enemyHash: questInfo.hash,
+        region: questInfo.region ?? Region.jp,
+      );
     }
-    EasyLoading.showSuccess(S.current.import_data_success);
+
+    if (questInfo != null && data.actions != null && mounted) {
+      EasyLoading.dismiss();
+      SimpleCancelOkDialog(
+        title: Text(S.current.success),
+        content: const Text("Replay Simulation/重现操作?"),
+        onTapOk: () {
+          replaySimulation(detail: data!, questInfo: questInfo);
+        },
+      ).showDialog(context);
+    } else {
+      EasyLoading.showSuccess(S.current.import_data_success);
+    }
     if (mounted) setState(() {});
   }
 
-  Future<void> _fetchQuestPhase() async {
+  Future<void> _parseQuestPhase() async {
     questErrorMsg = null;
     final text = questIdTextController.text.trim();
     // quest id and phase
@@ -875,9 +886,21 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     // region
     final regionText = RegExp(r'(JP|NA|CN|TW|KR)/').firstMatch(text)?.group(1);
     Region region = questRegion ??= const RegionConverter().fromJson(regionText ?? "");
+    if (region != Region.jp && region != Region.na) {
+      region = Region.jp;
+    }
     // hash
-    final hash = RegExp(r'\?hash=([0-9a-zA-Z_\-]{14})$').firstMatch(text)?.group(1);
+    final enemyHash = RegExp(r'\?hash=([0-9a-zA-Z_\-]{14})$').firstMatch(text)?.group(1);
 
+    return _fetchQuestPhase(questId: questId, phase: phase, enemyHash: enemyHash, region: region);
+  }
+
+  Future<void> _fetchQuestPhase({
+    required int questId,
+    required int? phase,
+    required String? enemyHash,
+    required Region region,
+  }) async {
     Quest? quest;
     if (region == Region.jp) quest = db.gameData.quests[questId];
     quest ??= await AtlasApi.quest(questId, region: region);
@@ -887,12 +910,12 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     }
     if (phase == null || !quest.phases.contains(phase)) {
       // event quests released in the next day usually have no valid phase data
-      phase = quest.phases.getOrNull(0) ?? 1;
+      phase = (quest.isAnyFree ? quest.phases.lastOrNull : quest.phases.firstOrNull) ?? 1;
     }
-    questPhase = await AtlasApi.questPhase(questId, phase, hash: hash, region: region);
+    questPhase = await AtlasApi.questPhase(questId, phase, hash: enemyHash, region: region);
     if (questPhase == null) {
       questErrorMsg = '${S.current.not_found}: /${region.upper}/quest/$questId/$phase';
-      if (hash != null) questErrorMsg = '${questErrorMsg!}?hash=$hash';
+      if (enemyHash != null) questErrorMsg = '${questErrorMsg!}?hash=$enemyHash';
     }
     if (mounted) setState(() {});
   }
@@ -947,13 +970,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       return options.disableEvent || event?.pointBuffs.contains(pointBuff) != true;
     });
 
-    if (options.team.isDracoInTeam && settings.autoAdd7KnightsTrait) {
-      for (final enemy in questCopy.allEnemies) {
-        if (isEnemy7Knights(enemy) && enemy.traits.every((e) => e.signedId != Trait.standardClassServant.id)) {
-          enemy.traits = [...enemy.traits, NiceTrait(id: Trait.standardClassServant.id)];
-        }
-      }
-    }
     //
     settings.previousQuestPhase = '${questCopy.id}/${questCopy.phase}';
     saveFormation();
@@ -961,6 +977,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       url: Routes.laplaceBattle,
       child: BattleSimulationPage(
         questPhase: questCopy,
+        region: questRegion,
         options: options,
       ),
     );

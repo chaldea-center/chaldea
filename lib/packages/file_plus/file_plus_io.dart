@@ -77,7 +77,7 @@ class FilePlusNative implements FilePlus {
   @override
   Future<void> deleteSafe() async {
     try {
-      await delete();
+      if (await exists()) await delete();
     } on PathNotFoundException catch (e, s) {
       logger.e('delete failed: $path', e, s);
     }

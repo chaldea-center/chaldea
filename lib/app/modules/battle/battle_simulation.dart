@@ -23,12 +23,14 @@ import 'simulation/svt_detail.dart';
 
 class BattleSimulationPage extends StatefulWidget {
   final QuestPhase questPhase;
+  final Region? region;
   final BattleOptions options;
   final BattleActions? replayActions;
 
   BattleSimulationPage({
     super.key,
     required this.questPhase,
+    required this.region,
     required this.options,
     this.replayActions,
   });
@@ -648,7 +650,9 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
   Widget _buildUploadDialog(BuildContext context) {
     bool canUpload = false;
     String content;
-    if (!db.security.isUserLoggedIn) {
+    if (widget.region != null && widget.region != Region.jp) {
+      content = 'Only JP quest supports team sharing. (current: ${widget.region!.localName})';
+    } else if (!db.security.isUserLoggedIn) {
       content = S.current.login_first_hint;
     } else if (!battleData.recorder.isUploadEligible) {
       content = S.current.upload_not_eligible_hint;
@@ -688,32 +692,27 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           delegate: battleData.replayDataRecord,
         );
         final uploadData = BattleShareData(
+          quest: BattleQuestInfo(
+            id: questPhase.id,
+            phase: questPhase.phase,
+            hash: questPhase.enemyHash,
+          ),
           team: widget.options.team.toFormationData(),
           actions: actions,
           disableEvent: widget.options.disableEvent,
         );
-        final resp = await ChaldeaResponse.show(ChaldeaApi.laplaceUploadTeam(
-          ver: 1,
-          questId: questPhase.id,
-          phase: questPhase.phase,
-          enemyHash: questPhase.enemyHash!,
-          record: uploadData.toGZip(),
-        ));
-        db.runtimeData.lastUpload = DateTime.now().timestamp;
-        if (resp.json()?['success'] == false) {
-          if (mounted) {
-            SimpleCancelOkDialog(
-              title: Text(S.current.failed),
-              content: Text(resp.json()?["error"] ?? "something went wrong"),
-              hideCancel: true,
-            ).showDialog(context);
-          }
-          ChaldeaApi.clearCache((cache) => true);
-        } else {
-          if (mounted) {
-            SimpleCancelOkDialog(title: Text(S.current.success), hideCancel: true).showDialog(context);
-          }
+        final resp = await showEasyLoading(() => ChaldeaWorkerApi.laplaceUploadTeam(
+              ver: BattleShareData.kDataVer,
+              questId: questPhase.id,
+              phase: questPhase.phase,
+              enemyHash: questPhase.enemyHash!,
+              record: uploadData.toDataV2(),
+            ));
+        if (resp.success) {
+          db.runtimeData.lastUpload = DateTime.now().timestamp;
+          ChaldeaWorkerApi.clearCache((cache) => true);
         }
+        resp.showDialog();
       },
     );
   }

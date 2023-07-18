@@ -3,6 +3,7 @@
 
 // ignore_for_file: unused_element
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -93,7 +94,17 @@ class _CustomPrettyPrinter extends PrettyPrinter {
     }
     dynamic error = event.error;
     if (error is DioException) {
-      String detail = error.response?.data.toString() ?? "";
+      final respData = error.response?.data;
+      String? detail;
+      if (respData is List<int>) {
+        try {
+          detail = utf8.decode(respData);
+        } catch (e) {
+          //
+        }
+      }
+      detail ??= respData?.toString() ?? "";
+
       if (detail.length > 1000) detail = "\n${detail.substring(0, 1000)}";
 
       List<String> lines = error.stackTrace.toString().split('\n');

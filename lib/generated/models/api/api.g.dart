@@ -6,6 +6,25 @@ part of '../../../models/api/api.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+WorkerResponse _$WorkerResponseFromJson(Map json) => $checkedCreate(
+      'WorkerResponse',
+      json,
+      ($checkedConvert) {
+        final val = WorkerResponse(
+          success: $checkedConvert('success', (v) => v as bool),
+          message: $checkedConvert('message', (v) => v as String?),
+          body: $checkedConvert('body', (v) => v),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$WorkerResponseToJson(WorkerResponse instance) => <String, dynamic>{
+      'success': instance.success,
+      'message': instance.message,
+      'body': instance.body,
+    };
+
 D1Result<T> _$D1ResultFromJson<T>(
   Map json,
   T Function(Object? json) fromJsonT,

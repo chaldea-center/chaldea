@@ -459,8 +459,9 @@ class RouteConfiguration {
         if (type == null) break;
         return AiPage(aiType: type, aiId: aiId, region: region);
       case Routes.laplace:
-        if (path?.startsWith(Routes.laplaceShare) == true && uri?.queryParameters.containsKey('v') == true) {
-          return SimulationPreview(shareData: uri);
+        if (path?.startsWith(Routes.laplaceShare) == true &&
+            (uri?.queryParameters.containsKey('data') == true || uri?.queryParameters.containsKey('id') == true)) {
+          return SimulationPreview(shareUri: uri);
         } else if (path?.startsWith(Routes.laplaceNpDmg) == true) {
           return const TdDamageRanking();
         } else if (path?.startsWith(Routes.laplaceManageTeam) == true) {

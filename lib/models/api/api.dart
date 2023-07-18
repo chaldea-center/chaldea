@@ -1,8 +1,63 @@
+import 'package:flutter/widgets.dart';
+
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/utils/extension.dart';
+import 'package:chaldea/utils/url.dart';
+import 'package:chaldea/widgets/custom_dialogs.dart';
 import '../../packages/logger.dart';
 import '../userdata/_helper.dart';
 import '../userdata/battle.dart';
 
 part '../../generated/models/api/api.g.dart';
+
+@JsonSerializable()
+class WorkerResponse {
+  bool success;
+  String? message;
+  dynamic body;
+
+  WorkerResponse({
+    required this.success,
+    this.message,
+    this.body,
+  });
+
+  WorkerResponse.failed([this.message = "Error"])
+      : success = false,
+        body = null;
+
+  factory WorkerResponse.fromJson(Map<dynamic, dynamic> json) => _$WorkerResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WorkerResponseToJson(this);
+
+  Future<void> showDialog([BuildContext? context]) {
+    if (success) {
+      return SimpleCancelOkDialog(
+        title: Text(S.current.success),
+        content: message == null ? null : Text(message!),
+        scrollable: true,
+        hideCancel: true,
+      ).showDialog(context);
+    } else {
+      return SimpleCancelOkDialog(
+        title: Text(S.current.error),
+        content: Text(message ?? body?.toString() ?? "Error"),
+        scrollable: true,
+        hideCancel: true,
+      ).showDialog(context);
+    }
+  }
+
+  Future<void> showToast() {
+    if (success) {
+      return EasyLoading.showSuccess(message ?? S.current.success);
+    } else {
+      return EasyLoading.showError(message ?? body?.toString() ?? "Error");
+    }
+  }
+}
 
 @JsonSerializable(genericArgumentFactories: true)
 class D1Result<T> {
@@ -16,7 +71,7 @@ class D1Result<T> {
     this.results = const [],
   });
 
-  factory D1Result.fromJson(Map<String, dynamic> json) => _$D1ResultFromJson(json, _fromJsonT<T>);
+  factory D1Result.fromJson(Map<dynamic, dynamic> json) => _$D1ResultFromJson(json, _fromJsonT<T>);
 
   Map<String, dynamic> toJson() => _$D1ResultToJson(this, _toJsonT);
 
@@ -67,17 +122,50 @@ class UserBattleData {
 
   BattleShareData? parse() {
     if (decoded != null) return decoded;
-    if (ver == 1) {
-      try {
-        return decoded = BattleShareData.parseGzip(record);
-      } catch (e, s) {
-        logger.e('parse gzip team data failed', e, s);
-        return null;
+    try {
+      if (ver == 1 || ver == 2) {
+        return decoded = BattleShareData.parse(record);
       }
+    } catch (e, s) {
+      logger.e('parse gzip team data failed', e, s);
+      return null;
     }
+    print('parse failed');
     return null;
+  }
+
+  BattleQuestInfo get questInfo {
+    return BattleQuestInfo(
+      id: questId,
+      phase: phase,
+      hash: enemyHash,
+    );
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   BattleShareData? decoded;
+
+  Uri toShortUri() {
+    Uri shareUri = Uri.parse(ChaldeaUrl.app('/laplace/share'));
+    shareUri = shareUri.replace(queryParameters: {
+      "id": id.toString(),
+      "questId": questId.toString(),
+      "phase": phase.toString(),
+      "enemyHash": enemyHash,
+    });
+    return shareUri;
+  }
+
+  Uri toUriV2() {
+    final detail = parse();
+    String? data = detail?.toDataV2();
+    Uri shareUri = Uri.parse(ChaldeaUrl.app('/laplace/share'));
+    shareUri = shareUri.replace(queryParameters: {
+      if (data != null) "data": data,
+      "questId": (detail?.quest?.id ?? questId).toString(),
+      "phase": (detail?.quest?.phase ?? phase).toString(),
+      "enemyHash": detail?.quest?.hash ?? enemyHash,
+    });
+    return shareUri;
+  }
 }

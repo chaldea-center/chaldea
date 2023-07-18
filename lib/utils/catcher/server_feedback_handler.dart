@@ -140,13 +140,13 @@ class ServerFeedbackHandler extends ReportHandler {
       print('skip sending mail in debug mode');
       return true;
     }
-    final response = await ChaldeaApi.sendFeedback(
+    final response = await ChaldeaWorkerApi.sendFeedback(
       subject: _getEmailTitle(report),
       senderName: senderName ?? 'Chaldea ${AppInfo.versionString} Crash',
       html: sendHtml ? await _setupHtmlMessageText(report) : null,
       files: resolvedAttachments,
     );
-    if (!response.success) {
+    if (response.success != true) {
       logger_.logger.e('failed to send mail', response.message);
     }
     if (report is! FeedbackReport) {

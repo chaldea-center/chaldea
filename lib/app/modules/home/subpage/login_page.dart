@@ -417,11 +417,11 @@ class _LoginPageState extends State<LoginPage> {
     String name = _nameController.text;
     String pwd = _pwdController.text;
     if (!isLoginAvailable(name, pwd)) return;
-    final resp = await ChaldeaResponse.show(
-        ChaldeaApi.wrap(() => db.apiWorkerDio.post('/account/login', data: {'username': name, 'pwd': pwd})),
-        showSuccess: true);
-    final auth = resp.body<String>();
-    if (resp.success && auth != null) {
+    final resp =
+        await showEasyLoading(() => ChaldeaWorkerApi.postCommon('/account/login', {'username': name, 'pwd': pwd}));
+    final auth = resp.body;
+    resp.showDialog();
+    if (resp.success && auth is String) {
       _saveUserInfo(name, auth);
     }
   }
@@ -444,11 +444,10 @@ class _LoginPageState extends State<LoginPage> {
     SimpleCancelOkDialog(
       title: const Text('Delete User Account'),
       content: const Text('Including backups on server'),
-      onTapOk: () {
-        ChaldeaResponse.show(
-          ChaldeaApi.wrap(() => db.apiWorkerDio.post('/account/delete', data: {'username': name, 'pwd': pwd})),
-          showSuccess: true,
-        );
+      onTapOk: () async {
+        final resp =
+            await showEasyLoading(() => ChaldeaWorkerApi.postCommon('/account/delete', {'username': name, 'pwd': pwd}));
+        resp.showDialog();
       },
     ).showDialog(context);
   }
@@ -459,11 +458,11 @@ class _LoginPageState extends State<LoginPage> {
     if (!isLoginAvailable(name, pwd)) {
       return;
     }
-    final resp = await ChaldeaResponse.show(
-        ChaldeaApi.wrap(() => db.apiWorkerDio.post('/account/create', data: {'username': name, 'pwd': pwd})),
-        showSuccess: true);
+    final resp =
+        await showEasyLoading(() => ChaldeaWorkerApi.postCommon('/account/create', {'username': name, 'pwd': pwd}));
+    resp.showDialog();
     if (resp.success) {
-      _saveUserInfo(name, resp.body<String>());
+      _saveUserInfo(name, resp.body);
     }
   }
 
@@ -474,12 +473,11 @@ class _LoginPageState extends State<LoginPage> {
     if (!isChangePasswordAvailable(name, pwd, newPwd)) {
       return;
     }
-    final resp = await ChaldeaResponse.show(
-        ChaldeaApi.wrap(() =>
-            db.apiWorkerDio.post('/account/changepassword', data: {'username': name, 'pwd': pwd, 'new_pwd': newPwd})),
-        showSuccess: true);
+    final resp = await showEasyLoading(() =>
+        ChaldeaWorkerApi.postCommon('/account/changepassword', {'username': name, 'pwd': pwd, 'new_pwd': newPwd}));
+    resp.showDialog();
     if (resp.success) {
-      _saveUserInfo(name, resp.body<String>());
+      _saveUserInfo(name, resp.body);
     }
   }
 
@@ -487,17 +485,16 @@ class _LoginPageState extends State<LoginPage> {
     String name = _nameController.text;
     String pwd = _pwdController.text;
     String newName = _newNameController.text;
-    final resp = await ChaldeaResponse.show(
-        ChaldeaApi.wrap(() =>
-            db.apiWorkerDio.post('/account/changename', data: {'username': name, 'pwd': pwd, 'new_name': newName})),
-        showSuccess: true);
+    final resp = await showEasyLoading(
+        () => ChaldeaWorkerApi.postCommon("/account/changename", {'username': name, 'pwd': pwd, 'new_name': newName}));
+    resp.showDialog();
     if (resp.success) {
       _saveUserInfo(name, null);
     }
   }
 
-  void _saveUserInfo(String name, String? auth) {
-    db.security.saveUserInfo(name, auth);
+  void _saveUserInfo(String name, dynamic auth) {
+    if (auth == null || auth is String) db.security.saveUserInfo(name, auth);
     db.notifySettings();
   }
 }

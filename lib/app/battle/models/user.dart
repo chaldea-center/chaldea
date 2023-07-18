@@ -279,7 +279,7 @@ class PlayerSvtData {
         final skillId = storedData.skillIds.getOrNull(index);
         if (skillId != null) {
           targetSkill = svt.skills.lastWhereOrNull((skill) => skill.id == skillId);
-          targetSkill ??= await showEasyLoading(() => AtlasApi.skill(skillId));
+          targetSkill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
         }
         playerSvtData.skills.add(targetSkill);
       }
@@ -291,7 +291,7 @@ class PlayerSvtData {
       for (int index = 0; index < storedData.additionalPassives.length; index++) {
         final storedSkill = storedData.additionalPassives[index];
         final targetSkill = db.gameData.baseSkills[storedSkill.id] ??
-            await showEasyLoading(() => AtlasApi.skill(storedSkill.id)) ??
+            await showEasyLoading(() => AtlasApi.skill(storedSkill.id), mask: true) ??
             storedSkill;
 
         int lv = storedData.additionalPassiveLvs.getOrNull(index) ?? targetSkill.maxLv;
@@ -302,7 +302,7 @@ class PlayerSvtData {
 
       if (storedData.tdId != null) {
         playerSvtData.td = playerSvtData.svt!.noblePhantasms.lastWhereOrNull((td) => td.id == storedData.tdId);
-        playerSvtData.td ??= await showEasyLoading(() => AtlasApi.td(storedData.tdId!));
+        playerSvtData.td ??= await showEasyLoading(() => AtlasApi.td(storedData.tdId!), mask: true);
       }
 
       playerSvtData.commandCodes = [];
@@ -430,15 +430,6 @@ class BattleTeamSetup {
         mysticCodeData = mysticCodeData ?? MysticCodeData();
 
   List<PlayerSvtData> get allSvts => [...onFieldSvtDataList, ...backupSvtDataList];
-  // db.settings.battleSim.autoAdd7KnightsTrait
-  bool get isDracoInTeam {
-    for (final svt in allSvts) {
-      if (svt.svt?.id == 3300100) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   BattleTeamSetup copy() {
     return BattleTeamSetup(

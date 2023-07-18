@@ -7,6 +7,7 @@ import 'package:flutter/material.dart' as material;
 import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 
 import '../packages/app_info.dart';
@@ -440,6 +441,43 @@ Dio DioE([BaseOptions? options]) {
   ));
 }
 
+enum HttpRequestMethod {
+  put,
+  get,
+  post,
+  delete,
+  patch,
+  head,
+  ;
+
+  String get methodName => name.toUpperCase();
+}
+
+extension DioX on Dio {
+  RequestOptions createRequest(
+    HttpRequestMethod method,
+    String path, {
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    CancelToken? cancelToken,
+    Options? options,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) {
+    // ignore: invalid_use_of_internal_member
+    return DioMixin.checkOptions(method.methodName, options ?? Options()).compose(
+      this.options,
+      path,
+      data: data,
+      queryParameters: queryParameters,
+      onReceiveProgress: onReceiveProgress,
+      onSendProgress: onSendProgress,
+      cancelToken: cancelToken,
+      sourceStackTrace: StackTrace.current,
+    );
+  }
+}
+
 extension DioExceptionX on DioException {
   String _limit(String s) {
     if (s.length > 1000) return s.substring(0, 1000);
@@ -464,5 +502,32 @@ extension DioExceptionX on DioException {
       msg += '\n${_limit(_tryDecodeData())}';
     }
     return msg;
+  }
+}
+
+Future<T?> tryEasyLoading<T>(Future<T> Function() task) async {
+  final mounted = EasyLoading.instance.overlayEntry?.mounted == true;
+  if (mounted) return task();
+  return null;
+}
+
+Future<T> showEasyLoading<T>(
+  Future<T> Function() computation, {
+  bool mask = false,
+}) async {
+  final mounted = EasyLoading.instance.overlayEntry?.mounted == true;
+  if (!mounted) return computation();
+  Widget? widget;
+  try {
+    EasyLoading.show(maskType: mask ? EasyLoadingMaskType.clear : null);
+    widget = EasyLoading.instance.w;
+    return await computation();
+  } finally {
+    final widget2 = EasyLoading.instance.w;
+    if (widget == null || widget == widget2) {
+      EasyLoading.dismiss();
+    } else {
+      print(['easyloading container changed:', widget, widget2]);
+    }
   }
 }

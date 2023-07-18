@@ -337,11 +337,11 @@ class _Database {
   Dio get apiWorkerDio => DioE(BaseOptions(
         baseUrl: Hosts.workerHost,
         // baseUrl: kDebugMode ? 'http://localhost:8183' : ,
-        queryParameters: {
-          'app_ver': AppInfo.versionString,
-          'user_key': AppInfo.uuid,
-          'lang': Language.current.code,
-          'os': PlatformU.operatingSystem
+        headers: {
+          'x-chaldea-ver': AppInfo.versionString,
+          'x-chaldea-uuid': AppInfo.uuid,
+          'x-chaldea-lang': Language.current.code,
+          'x-chaldea-platform': PlatformU.operatingSystem
         },
       ));
 

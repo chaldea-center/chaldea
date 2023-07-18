@@ -185,7 +185,7 @@ class BattleServantData {
     if (niceEnemy == null) return;
     final svtId = niceEnemy!.svt.id;
     if (niceSvt != null && niceSvt!.id == svtId) return;
-    niceSvt = db.gameData.servantsById[svtId] ?? await showEasyLoading(() => AtlasApi.svt(svtId));
+    niceSvt = db.gameData.servantsById[svtId] ?? await showEasyLoading(() => AtlasApi.svt(svtId), mask: true);
     if (niceSvt == null) {
       battleData.battleLogger.error("failed to load servant data for enenemy $svtId - ${niceEnemy?.lShownName}");
     }
@@ -1018,7 +1018,7 @@ class BattleServantData {
       if (await buff.shouldActivateBuff(battleData, false)) {
         final skillId = buff.param;
         BaseSkill? skill = db.gameData.baseSkills[skillId];
-        skill ??= await showEasyLoading(() => AtlasApi.skill(skillId));
+        skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
         if (skill == null) {
           battleData.battleLogger
               .debug('Buff ID [${buff.buff.id}]: ${S.current.skill} [$skillId] ${S.current.not_found}');
