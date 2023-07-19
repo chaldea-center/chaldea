@@ -52,6 +52,23 @@ class ChaldeaWorkerApi {
     return db.apiWorkerDio;
   }
 
+  static Options addAuthHeader([Options? options, bool verify = false]) {
+    options ??= Options();
+    final username = db.security.username ?? "", auth = db.security.userAuth ?? "";
+    if (username.isEmpty || auth.isEmpty) {
+      if (verify) {
+        throw StateError("Not login");
+      }
+      return options;
+    }
+    final encoded = base64Encode(utf8.encode("$username:$auth"));
+    options.headers = {
+      ...?options.headers,
+      "Authorization": "Basic $encoded",
+    };
+    return options;
+  }
+
   static void clearCache(bool Function(ApiCachedInfo cache) test) {
     cacheManager.removeWhere(test);
   }
@@ -77,12 +94,18 @@ class ChaldeaWorkerApi {
     return postCommon("${Hosts.apiHost}/feedback", formData);
   }
 
-  static Future<WorkerResponse> postCommon(String url, dynamic data) async {
+  static Future<WorkerResponse> postCommon(
+    String url,
+    dynamic data, {
+    Options? options,
+    bool addAuth = false,
+  }) async {
     final result = await cacheManager.postModel(
       url,
-      (data) => WorkerResponse.fromJson(data),
+      fromJson: (data) => WorkerResponse.fromJson(data),
       data: data,
       expireAfter: Duration.zero,
+      options: addAuth ? addAuthHeader(options) : options,
     );
     return result ?? WorkerResponse(success: false, message: "Unknown Error");
   }
@@ -92,7 +115,7 @@ class ChaldeaWorkerApi {
     Duration expireAfter = const Duration(minutes: 60),
   }) {
     return cacheManager.getModel(
-      '/laplace/v2/query/id?id=$id',
+      '/api/v3/laplace/query/id/$id',
       (data) => UserBattleData.fromJson(data),
       expireAfter: expireAfter,
     );
@@ -108,15 +131,15 @@ class ChaldeaWorkerApi {
     username ??= db.security.username;
     auth ??= db.security.userAuth;
     return cacheManager.postModel(
-      "/laplace/v2/query/user",
+      "/api/v3/laplace/query/user",
       data: {
-        'username': username,
-        'auth': auth,
+        if (username != null) 'username': username,
         'limit': limit,
         'offset': offset,
       },
-      (data) => (data as List).map((e) => UserBattleData.fromJson(e)).toList(),
+      fromJson: (data) => (data as List).map((e) => UserBattleData.fromJson(e)).toList(),
       expireAfter: expireAfter,
+      options: addAuthHeader(),
     );
   }
 
@@ -129,7 +152,7 @@ class ChaldeaWorkerApi {
     Duration? expireAfter = const Duration(minutes: 60),
   }) {
     return cacheManager.postModel(
-      "/laplace/v2/query/quest",
+      "/api/v3/laplace/query/quest",
       data: {
         'questId': questId,
         'phase': phase,
@@ -137,21 +160,18 @@ class ChaldeaWorkerApi {
         'limit': limit,
         'offset': offset,
       },
-      (data) => (data as List).map((e) => UserBattleData.fromJson(e)).toList(),
+      fromJson: (data) => (data as List).map((e) => UserBattleData.fromJson(e)).toList(),
       expireAfter: expireAfter,
     );
   }
 
   static Future<WorkerResponse> laplaceDeleteTeam({required int id}) {
-    final username = db.security.username;
-    final auth = db.security.userAuth;
     return postCommon(
-      "/laplace/v2/delete",
+      "/api/v3/laplace/delete",
       {
-        'username': username,
-        'auth': auth,
         'id': id,
       },
+      options: addAuthHeader(),
     );
   }
 
@@ -162,18 +182,16 @@ class ChaldeaWorkerApi {
     required String enemyHash,
     required String record,
   }) {
-    final username = db.security.username;
     return postCommon(
-      "/laplace/v2/upload",
+      "/api/v3/laplace/upload",
       {
-        'username': username,
-        'auth': db.security.userAuth,
         'ver': 1,
         'questId': questId,
         'phase': phase,
         'enemyHash': enemyHash,
         'record': record,
       },
+      options: addAuthHeader(),
     );
   }
 }

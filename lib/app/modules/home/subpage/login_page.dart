@@ -418,7 +418,7 @@ class _LoginPageState extends State<LoginPage> {
     String pwd = _pwdController.text;
     if (!isLoginAvailable(name, pwd)) return;
     final resp =
-        await showEasyLoading(() => ChaldeaWorkerApi.postCommon('/account/login', {'username': name, 'pwd': pwd}));
+        await showEasyLoading(() => ChaldeaWorkerApi.postCommon('/api/v3/account/login', _withUserPassword(name, pwd)));
     final auth = resp.body;
     resp.showDialog();
     if (resp.success && auth is String) {
@@ -445,8 +445,8 @@ class _LoginPageState extends State<LoginPage> {
       title: const Text('Delete User Account'),
       content: const Text('Including backups on server'),
       onTapOk: () async {
-        final resp =
-            await showEasyLoading(() => ChaldeaWorkerApi.postCommon('/account/delete', {'username': name, 'pwd': pwd}));
+        final resp = await showEasyLoading(
+            () => ChaldeaWorkerApi.postCommon('/api/v3/account/delete', _withUserPassword(name, pwd)));
         resp.showDialog();
       },
     ).showDialog(context);
@@ -458,8 +458,8 @@ class _LoginPageState extends State<LoginPage> {
     if (!isLoginAvailable(name, pwd)) {
       return;
     }
-    final resp =
-        await showEasyLoading(() => ChaldeaWorkerApi.postCommon('/account/create', {'username': name, 'pwd': pwd}));
+    final resp = await showEasyLoading(
+        () => ChaldeaWorkerApi.postCommon('/api/v3/account/create', _withUserPassword(name, pwd)));
     resp.showDialog();
     if (resp.success) {
       _saveUserInfo(name, resp.body);
@@ -473,10 +473,10 @@ class _LoginPageState extends State<LoginPage> {
     if (!isChangePasswordAvailable(name, pwd, newPwd)) {
       return;
     }
-    final resp = await showEasyLoading(() =>
-        ChaldeaWorkerApi.postCommon('/account/changepassword', {'username': name, 'pwd': pwd, 'new_pwd': newPwd}));
+    final resp = await showEasyLoading(() => ChaldeaWorkerApi.postCommon(
+        '/api/v3/account/change-password', {..._withUserPassword(name, pwd), 'new_pwd': newPwd}));
     resp.showDialog();
-    if (resp.success) {
+    if (resp.success && resp.body is String) {
       _saveUserInfo(name, resp.body);
     }
   }
@@ -485,11 +485,11 @@ class _LoginPageState extends State<LoginPage> {
     String name = _nameController.text;
     String pwd = _pwdController.text;
     String newName = _newNameController.text;
-    final resp = await showEasyLoading(
-        () => ChaldeaWorkerApi.postCommon("/account/changename", {'username': name, 'pwd': pwd, 'new_name': newName}));
+    final resp = await showEasyLoading(() =>
+        ChaldeaWorkerApi.postCommon("/api/v3/account/rename", {..._withUserPassword(name, pwd), 'new_name': newName}));
     resp.showDialog();
-    if (resp.success) {
-      _saveUserInfo(name, null);
+    if (resp.success && resp.body is String) {
+      _saveUserInfo(name, resp.body);
     }
   }
 
@@ -497,4 +497,8 @@ class _LoginPageState extends State<LoginPage> {
     if (auth == null || auth is String) db.security.saveUserInfo(name, auth);
     db.notifySettings();
   }
+}
+
+Map<String, String> _withUserPassword(String username, String pwd) {
+  return {'username': username, 'pwd': pwd};
 }

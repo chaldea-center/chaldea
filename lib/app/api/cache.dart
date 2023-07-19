@@ -463,8 +463,8 @@ class ApiCacheManager {
   }
 
   Future<T?> postModel<T>(
-    String url,
-    T Function(dynamic data) fromJson, {
+    String url, {
+    required T Function(dynamic data) fromJson,
     Duration? expireAfter,
     bool cacheOnly = false,
     // dio

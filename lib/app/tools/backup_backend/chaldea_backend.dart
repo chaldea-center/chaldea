@@ -28,7 +28,7 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
         onTapOk: () {
           router.pushPage(LoginPage());
         },
-      ).showDialog(null);
+      ).showDialog(router.navigatorKey.currentContext);
       return false;
     } else {
       return true;
@@ -42,11 +42,8 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
     try {
       EasyLoading.show(maskType: EasyLoadingMaskType.clear);
       final content = base64Encode(GZipEncoder().encode(utf8.encode(jsonEncode(db.userData)))!);
-      final resp = await ChaldeaWorkerApi.postCommon('/account/backup/upload', {
-        'username': user,
-        'auth': pwd,
-        'content': content,
-      });
+      final resp =
+          await ChaldeaWorkerApi.postCommon('/api/v3/account/backups/upload', {'content': content}, addAuth: true);
       resp.showToast();
       return resp.success;
     } catch (e, s) {
@@ -63,8 +60,7 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
     EasyLoading.show(maskType: EasyLoadingMaskType.clear);
     try {
       EasyLoading.show();
-      final resp = await ChaldeaWorkerApi.postCommon(
-          '/account/backup/download', {'username': db.security.username, 'auth': db.security.userAuth});
+      final resp = await ChaldeaWorkerApi.postCommon('/api/v3/account/backups/download', null, addAuth: true);
       EasyLoading.dismiss();
       if (!resp.success) {
         resp.showToast();
