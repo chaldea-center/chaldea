@@ -28,6 +28,13 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
 
   @override
   Widget build(BuildContext context) {
+    if (battleData.targetedEnemy == null || battleData.targetedAlly == null) {
+      return SimpleCancelOkDialog(
+        title: Text(S.current.warning),
+        content: Text(S.current.battle_targeted_required_hint),
+        hideCancel: true,
+      );
+    }
     final validActions = combatActions.whereType<CombatAction>().toList();
     return SimpleCancelOkDialog(
       title: Text(S.current.battle_select_card),
@@ -410,6 +417,14 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
 
   @override
   Widget build(BuildContext context) {
+    if (battleData.targetedEnemy == null || battleData.targetedAlly == null) {
+      return SimpleCancelOkDialog(
+        title: Text(S.current.warning),
+        content: Text(S.current.battle_targeted_required_hint),
+        hideCancel: true,
+      );
+    }
+
     int optionIndex = -1;
     Widget buildRadio({
       required Widget title,
@@ -440,6 +455,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
       ...getEnemySelector(),
       const Divider(height: 16),
     ];
+
     children.add(buildRadio(
       title: Text(S.current.end_enemy_turn),
       onSelected: () async {
@@ -469,8 +485,12 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
         for (final cardType in svt.cardDetails.keys) {
           if (cardType == CardType.extra) continue;
           final detail = svt.cardDetails[cardType]!;
+          String name = cardType.name.toTitle();
+          if (cardType == CardType.strength) {
+            name += ' (${S.current.critical_attack})';
+          }
           children.add(buildRadio(
-            title: Text(cardType.name.toTitle()),
+            title: Text(name),
             onSelected: () async {
               final cardData = CommandCardData(cardType, detail)
                 ..cardIndex = 1

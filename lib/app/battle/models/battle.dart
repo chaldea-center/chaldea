@@ -254,8 +254,7 @@ class BattleData {
       }
     }
 
-    allyTargetIndex = getNonNullTargetIndex(onFieldAllyServants, allyTargetIndex);
-    enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
+    updateTargetedIndex();
 
     final List<BattleServantData?> allActors = [
       ...onFieldEnemies,
@@ -347,7 +346,7 @@ class BattleData {
       }
     }
 
-    enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
+    updateTargetedIndex();
 
     final List<BattleServantData?> newEnemies = [...onFieldEnemies, ...enemyDataList];
     for (final actor in newEnemies) {
@@ -787,6 +786,7 @@ class BattleData {
         }
 
         allyTargetIndex = previousTargetIndex;
+        updateTargetedIndex();
       },
     );
   }
@@ -844,6 +844,7 @@ class BattleData {
         checkBuffStatus();
 
         enemyTargetIndex = previousTargetIndex;
+        updateTargetedIndex();
       },
     );
   }
@@ -1082,8 +1083,7 @@ class BattleData {
   Future<void> removeDeadActors() async {
     await removeDeadActorsFromList(onFieldAllyServants);
     await removeDeadActorsFromList(onFieldEnemies);
-    allyTargetIndex = getNonNullTargetIndex(onFieldAllyServants, allyTargetIndex);
-    enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
+    updateTargetedIndex();
 
     if (niceQuest != null && niceQuest!.flags.contains(QuestFlag.enemyImmediateAppear)) {
       await replenishActors(replenishAlly: false);
@@ -1115,6 +1115,11 @@ class BattleData {
         }
       }
     }
+  }
+
+  void updateTargetedIndex() {
+    allyTargetIndex = getNonNullTargetIndex(onFieldAllyServants, allyTargetIndex);
+    enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
   }
 
   int getNonNullTargetIndex(final List<BattleServantData?> actorList, final int targetIndex) {

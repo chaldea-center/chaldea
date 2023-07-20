@@ -105,6 +105,7 @@
   "battle_skip_current_wave": "跳过当前场次",
   "battle_star_parameters": "暴击星参数",
   "battle_tailored_execution": "手动随机数模式",
+  "battle_targeted_required_hint": "先确保敌方/我方均正确设置目标",
   "battle_turn": "回合",
   "battle_turn_end": "回合结束",
   "battle_undo": "撤销上个行动",

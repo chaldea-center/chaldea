@@ -105,6 +105,7 @@
   "battle_skip_current_wave": null,
   "battle_star_parameters": null,
   "battle_tailored_execution": null,
+  "battle_targeted_required_hint": null,
   "battle_turn": null,
   "battle_turn_end": null,
   "battle_undo": null,

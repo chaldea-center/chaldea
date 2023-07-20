@@ -105,6 +105,7 @@
   "battle_skip_current_wave": "現ステージをスキップ",
   "battle_star_parameters": null,
   "battle_tailored_execution": "手動ランダム値モード",
+  "battle_targeted_required_hint": null,
   "battle_turn": "ターン",
   "battle_turn_end": "ターン終了",
   "battle_undo": "直前の操作を取消",

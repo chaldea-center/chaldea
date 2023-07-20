@@ -1218,6 +1218,17 @@ class S {
     );
   }
 
+  /// `Make sure enemy/ally are correctly targeted first.`
+  String get battle_targeted_required_hint {
+    return Intl.message(
+      'Make sure enemy/ally are correctly targeted first.',
+      name: 'battle_targeted_required_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Turn`
   String get battle_turn {
     return Intl.message(

@@ -105,6 +105,7 @@
   "battle_skip_current_wave": "Skip current stage",
   "battle_star_parameters": "Star Parameters",
   "battle_tailored_execution": "Manual random value mode",
+  "battle_targeted_required_hint": "Make sure enemy/ally are correctly targeted first.",
   "battle_turn": "Turn",
   "battle_turn_end": "Turn End",
   "battle_undo": "Undo last action",

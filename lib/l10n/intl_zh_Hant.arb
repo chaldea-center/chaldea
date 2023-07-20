@@ -105,6 +105,7 @@
   "battle_skip_current_wave": "跳過目前階段",
   "battle_star_parameters": "爆擊星參數",
   "battle_tailored_execution": "手動隨機數模式",
+  "battle_targeted_required_hint": null,
   "battle_turn": "回合",
   "battle_turn_end": "回合結束",
   "battle_undo": "撤銷上個行動",

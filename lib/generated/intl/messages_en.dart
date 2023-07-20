@@ -201,6 +201,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_skip_current_wave": MessageLookupByLibrary.simpleMessage("Skip current stage"),
         "battle_star_parameters": MessageLookupByLibrary.simpleMessage("Star Parameters"),
         "battle_tailored_execution": MessageLookupByLibrary.simpleMessage("Manual random value mode"),
+        "battle_targeted_required_hint":
+            MessageLookupByLibrary.simpleMessage("Make sure enemy/ally are correctly targeted first."),
         "battle_turn": MessageLookupByLibrary.simpleMessage("Turn"),
         "battle_turn_end": MessageLookupByLibrary.simpleMessage("Turn End"),
         "battle_undo": MessageLookupByLibrary.simpleMessage("Undo last action"),

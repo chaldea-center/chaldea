@@ -195,6 +195,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_skip_current_wave": MessageLookupByLibrary.simpleMessage("跳過目前階段"),
         "battle_star_parameters": MessageLookupByLibrary.simpleMessage("爆擊星參數"),
         "battle_tailored_execution": MessageLookupByLibrary.simpleMessage("手動隨機數模式"),
+        "battle_targeted_required_hint": MessageLookupByLibrary.simpleMessage("先确保敌方/我方均正确设置目标"),
         "battle_turn": MessageLookupByLibrary.simpleMessage("回合"),
         "battle_turn_end": MessageLookupByLibrary.simpleMessage("回合結束"),
         "battle_undo": MessageLookupByLibrary.simpleMessage("撤銷上個行動"),
