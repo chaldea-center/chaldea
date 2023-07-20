@@ -176,6 +176,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                   }
                   if (mounted) setState(() {});
                 },
+          style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.secondary),
           child: Text(S.current.team_shared),
         ),
       ],
@@ -493,6 +494,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 540),
             child: QuestCard(
+              key: Key('quest_phase_${questPhase.hashCode}'),
               region: questRegion,
               offline: false,
               quest: questPhase,
@@ -931,8 +933,8 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     settings.previousQuestPhase = '${selected.id}/${selected.phase}';
     if (mounted) {
       questIdTextController.text = settings.previousQuestPhase!;
+      setState(() {});
     }
-    setState(() {});
   }
 
   bool checkPreviewReady() {

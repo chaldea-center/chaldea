@@ -93,14 +93,17 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   }
 
   void _init() {
-    _fetchData();
+    if (widget.questPhase != null) {
+      questPhase = widget.questPhase;
+      _enemyHash = questPhase?.enemyHashOrTotal;
+    } else {
+      _fetchData();
+    }
   }
 
   Future<void> _fetchData() async {
     questPhase = null;
     if (mounted) setState(() {});
-    questPhase = widget.questPhase;
-    if (questPhase != null) return;
 
     final questId = quest.id;
     final phase = widget.phase;
@@ -548,8 +551,9 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
           IconButton(
             onPressed: () {
               _PhaseSelectCbInfo? found;
+              final curRouter = AppRouter.of(context) ?? router;
               for (final info in QuestPhaseWidget._phaseCallbacks) {
-                if (info.srcRouter == router) {
+                if (info.srcRouter == curRouter) {
                   info.cb(curPhase);
                   found = info;
                   break;
@@ -558,7 +562,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
               if (found != null) {
                 QuestPhaseWidget._phaseCallbacks.remove(found);
               } else {
-                router.pushPage(SimulationPreview(
+                curRouter.pushPage(SimulationPreview(
                   region: widget.region,
                   questPhase: questPhase,
                 ));

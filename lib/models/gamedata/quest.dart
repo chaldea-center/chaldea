@@ -288,7 +288,7 @@ class Quest with RouteInfo {
   }
 
   bool get isLaplaceSharable {
-    return id > 0 && (isAnyFree || isRepeatRaid);
+    return id > 0 && id != WarId.daily && (isAnyFree || isRepeatRaid);
   }
 
   List<String> get allScriptIds {
@@ -388,6 +388,11 @@ class QuestPhase extends Quest {
   int get key => getPhaseKey(phase);
 
   List<QuestEnemy> get allEnemies => [for (final stage in stages) ...stage.enemies];
+
+  String? get enemyHashOrTotal {
+    if (dropsFromAllHashes == true) return null;
+    return enemyHash;
+  }
 
   @override
   Transl<String, String> get lSpot {

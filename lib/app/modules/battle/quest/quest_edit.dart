@@ -335,7 +335,9 @@ class _QuestEditPageState extends State<QuestEditPage> {
                         ..deckId = deckId
                         ..npcId = enemy.npcId
                         ..enemyScript.shift = null;
-                      stage.enemies[stage.enemies.indexOf(enemy)] = enemy2;
+                      final index = stage.enemies.indexOf(enemy);
+                      if (index < 0) return enemy;
+                      stage.enemies[index] = enemy2;
                       EasyLoading.showSuccess(S.current.success);
                       return enemy2;
                     },

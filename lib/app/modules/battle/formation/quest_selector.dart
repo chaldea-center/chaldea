@@ -13,23 +13,74 @@ class FQSelectDropdown extends StatefulWidget {
   State<FQSelectDropdown> createState() => _FQSelectDropdownState();
 }
 
+class _OptionData {
+  int id;
+  NiceWar? war;
+  Event? event;
+  List<Quest> quests;
+  _OptionData({
+    required this.id,
+    required this.war,
+    required this.event,
+    required this.quests,
+  });
+}
+
 class _FQSelectDropdownState extends State<FQSelectDropdown> {
-  int? warId = 308;
+  int? eventWarId = 308;
   Quest? quest;
-  Map<int, NiceWar> wars = {};
+  Map<int, _OptionData> options = {};
+
+  bool shouldShow(Quest quest) {
+    if (quest.isLaplaceSharable) return true;
+    if (quest.warId == WarId.daily) return true;
+    return false;
+  }
 
   @override
   void initState() {
     super.initState();
-    quest = db.gameData.quests[widget.initQuestId];
-    warId = quest?.warId ?? warId;
-    final warList = db.gameData.wars.values.where((e) => e.quests.any((q) => q.isAnyFree)).toList();
-    warList.sort2((e) => e.isMainStory ? 10000 - e.id : kNeverClosedTimestamp - (e.eventReal?.startedAt ?? e.id));
-    wars = {for (final war in warList) war.id: war};
-    if (wars[warId] == null) {
-      warId = wars.keys.firstOrNull;
-      quest = null;
+    final optionList = <_OptionData>[];
+    for (final war in db.gameData.wars.values) {
+      if (war.isMainStory || war.id == WarId.daily) {
+        final quests = war.quests.where(shouldShow).toList();
+        if (quests.isNotEmpty) {
+          optionList.add(_OptionData(id: war.id, war: war, event: null, quests: quests));
+        }
+      }
     }
+    for (final event in db.gameData.events.values) {
+      List<Quest> quests = [];
+      if (event.extra.huntingQuestIds.isNotEmpty) {
+        quests.addAll([
+          for (final questId in event.extra.huntingQuestIds)
+            if (db.gameData.quests.containsKey(questId)) db.gameData.quests[questId]!,
+        ]);
+      }
+      for (final warId in event.warIds) {
+        final war = db.gameData.wars[warId];
+        if (warId < 1000 || war == null) continue;
+        quests.addAll(war.quests.where(shouldShow));
+      }
+      if (quests.isNotEmpty) {
+        optionList.add(_OptionData(id: event.id, war: null, event: event, quests: quests));
+      }
+    }
+
+    optionList.sortByList((e) => <int>[
+          e.war != null ? 0 : 1,
+          e.war != null ? -e.id : -(e.event?.startedAt ?? e.id),
+        ]);
+
+    final initQuest = db.gameData.quests[widget.initQuestId];
+    final option = optionList.firstWhereOrNull((option) => option.quests.contains(initQuest));
+    if (option != null) {
+      eventWarId = option.id;
+      quest = initQuest;
+    } else {
+      eventWarId = optionList.firstOrNull?.id;
+    }
+    options = {for (final option in optionList) option.id: option};
   }
 
   @override
@@ -45,7 +96,7 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
         Flexible(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 250),
-            child: warBtn(),
+            child: eventWarBtn(),
           ),
         ),
         const SizedBox(width: 8),
@@ -60,34 +111,36 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
     );
   }
 
-  Widget warBtn() {
+  Widget eventWarBtn() {
     return DropdownButton<int>(
       // isDense: true,
       isExpanded: true,
-      value: warId,
-      hint: Text(S.current.war, style: const TextStyle(fontSize: 14)),
+      value: eventWarId,
+      hint: Text('${S.current.event}/${S.current.war}', style: const TextStyle(fontSize: 14)),
       items: [
-        for (final war in wars.values)
+        for (final option in options.values)
           DropdownMenuItem(
-            value: war.id,
+            value: option.id,
             child: Text(
-              (war.eventReal?.lShortName.l ?? war.lShortName).setMaxLines(1).breakWord,
+              (option.war?.lShortName ?? option.event?.lShortName.l ?? option.id.toString()).setMaxLines(1).breakWord,
               maxLines: 2,
-              style: const TextStyle(fontSize: 12),
+              style: const TextStyle(fontSize: 12).merge(option.event?.isOutdated(const Duration(days: 1)) == true
+                  ? TextStyle(color: Theme.of(context).textTheme.bodySmall?.color)
+                  : null),
               overflow: TextOverflow.ellipsis,
             ),
           )
       ],
       onChanged: (v) {
         setState(() {
-          warId = v;
+          eventWarId = v;
         });
       },
     );
   }
 
   Widget questBtn() {
-    final quests = wars[warId]?.quests.where((q) => q.isAnyFree && q.phases.isNotEmpty).toList() ?? [];
+    final quests = options[eventWarId]?.quests ?? [];
     if (!quests.contains(quest)) quest = null;
     return DropdownButton<Quest>(
       // isDense: true,
