@@ -9,6 +9,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:chaldea/packages/logger.dart';
 import '../../models/api/api.dart';
 import '../../models/db.dart';
+import '../../models/userdata/local_settings.dart';
 import 'cache.dart';
 import 'hosts.dart';
 
@@ -192,6 +193,15 @@ class ChaldeaWorkerApi {
         'record': record,
       },
       options: addAuthHeader(),
+    );
+  }
+
+  // not from worker
+  static Future<RemoteConfig?> remoteConfig({Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '${Hosts.dataHost}/config.json',
+      (data) => db.runtimeData.remoteConfig = RemoteConfig.fromJson(data),
+      expireAfter: expireAfter,
     );
   }
 }

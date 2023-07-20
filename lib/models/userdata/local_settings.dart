@@ -344,10 +344,12 @@ class CarouselItem {
 
 @JsonSerializable()
 class RemoteConfig {
+  String? forceUpgradeVersion;
   List<String> blockedCarousels;
   List<String> blockedErrors;
 
   RemoteConfig({
+    this.forceUpgradeVersion,
     this.blockedCarousels = const [],
     this.blockedErrors = const [],
   });

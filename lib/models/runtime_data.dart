@@ -8,6 +8,7 @@ import '../packages/app_info.dart';
 import '../packages/platform/platform.dart';
 import 'api/recognizer.dart';
 import 'gamedata/gamedata.dart';
+import 'userdata/local_settings.dart';
 import 'userdata/version.dart';
 
 class RuntimeData {
@@ -15,6 +16,8 @@ class RuntimeData {
   AppUpdateDetail? releaseDetail;
   DataVersion? upgradableDataVersion;
   AppVersion? dataRequiredAppVer;
+
+  RemoteConfig? remoteConfig;
 
   double? criticalWidth;
   bool showSkillOriginText = false;

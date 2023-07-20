@@ -4133,6 +4133,17 @@ class S {
     );
   }
 
+  /// `Forced Update`
+  String get forced_update {
+    return Intl.message(
+      'Forced Update',
+      name: 'forced_update',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Fou`
   String get foukun {
     return Intl.message(

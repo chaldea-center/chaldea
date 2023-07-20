@@ -351,6 +351,7 @@ RemoteConfig _$RemoteConfigFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = RemoteConfig(
+          forceUpgradeVersion: $checkedConvert('forceUpgradeVersion', (v) => v as String?),
           blockedCarousels: $checkedConvert(
               'blockedCarousels', (v) => (v as List<dynamic>?)?.map((e) => e as String).toList() ?? const []),
           blockedErrors: $checkedConvert(
@@ -361,6 +362,7 @@ RemoteConfig _$RemoteConfigFromJson(Map json) => $checkedCreate(
     );
 
 Map<String, dynamic> _$RemoteConfigToJson(RemoteConfig instance) => <String, dynamic>{
+      'forceUpgradeVersion': instance.forceUpgradeVersion,
       'blockedCarousels': instance.blockedCarousels,
       'blockedErrors': instance.blockedErrors,
     };

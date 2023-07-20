@@ -14,7 +14,7 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 import 'package:string_validator/string_validator.dart';
 
-import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -326,7 +326,7 @@ class AppNewsCarousel extends StatefulWidget {
         carouselSetting.items.clear();
       }
       if ((result.isNotEmpty || updated)) {
-        List<String> blocked = (await AtlasApi.remoteConfig())?.blockedCarousels ?? [];
+        List<String> blocked = (await ChaldeaWorkerApi.remoteConfig())?.blockedCarousels ?? [];
         blocked.removeWhere((e) => e.isEmpty);
         result.removeWhere((item) => blocked.any((word) => item.image?.contains(word) == true));
 

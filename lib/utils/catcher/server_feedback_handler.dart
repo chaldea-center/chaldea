@@ -16,7 +16,6 @@ import 'package:path/path.dart' as p;
 import 'package:pool/pool.dart';
 import 'package:screenshot/screenshot.dart';
 
-import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/home/subpage/feedback_page.dart';
@@ -178,7 +177,7 @@ class ServerFeedbackHandler extends ReportHandler {
       }
     }
     if (_blockedErrors == null && !kIsWeb) {
-      _blockedErrors = (await AtlasApi.remoteConfig())?.blockedErrors ?? [];
+      _blockedErrors = (await ChaldeaWorkerApi.remoteConfig())?.blockedErrors ?? [];
       _blockedErrors?.removeWhere((e) => e.isEmpty);
       // logger_.logger.d('_blockedErrors=${jsonEncode(_blockedErrors)}');
     }

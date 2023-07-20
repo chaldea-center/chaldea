@@ -370,6 +370,7 @@
   "fixed_oc": null,
   "force_enable_np_se": null,
   "force_instant_death": null,
+  "forced_update": null,
   "foukun": "Fou",
   "fq_plan_decimal_hint": null,
   "free_progress": "Límite del Quest",

@@ -370,6 +370,7 @@
   "fixed_oc": "固定OC",
   "force_enable_np_se": "强制启用宝具特攻",
   "force_instant_death": "强制即死",
+  "forced_update": "强制升级",
   "foukun": "芙芙",
   "fq_plan_decimal_hint": "小数未显示，显示结果与计算结果可能存在±1的误差",
   "free_progress": "Free进度",

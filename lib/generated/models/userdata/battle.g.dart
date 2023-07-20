@@ -64,9 +64,9 @@ BattleShareData _$BattleShareDataFromJson(Map json) => $checkedCreate(
           quest: $checkedConvert(
               'quest', (v) => v == null ? null : BattleQuestInfo.fromJson(Map<String, dynamic>.from(v as Map))),
           team: $checkedConvert('team', (v) => BattleTeamFormation.fromJson(Map<String, dynamic>.from(v as Map))),
+          disableEvent: $checkedConvert('disableEvent', (v) => v as bool?),
           actions: $checkedConvert(
               'actions', (v) => v == null ? null : BattleActions.fromJson(Map<String, dynamic>.from(v as Map))),
-          disableEvent: $checkedConvert('disableEvent', (v) => v as bool?),
         );
         return val;
       },

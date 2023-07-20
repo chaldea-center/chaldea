@@ -1,6 +1,10 @@
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/userdata/version.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import 'package:flutter/foundation.dart';
 import '../../../models/db.dart';
 import '../../app.dart';
 import '../battle/battle_home.dart';
@@ -24,8 +28,8 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
       body: IndexedStack(
         index: _curIndex,
         children: [
-          GalleryPage(),
-          BattleHomePage(),
+          checkValidState(GalleryPage()),
+          checkValidState(BattleHomePage()),
           SettingsPage(),
         ],
       ),
@@ -55,5 +59,69 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
         DebugFab.createOverlay(context);
       }
     }
+  }
+
+  Widget checkValidState(Widget child) {
+    String? forceUpgradeVersion = db.runtimeData.remoteConfig?.forceUpgradeVersion;
+    List<Widget> errors = [];
+    if (!db.gameData.isValid) {
+      errors.add(Positioned.fill(
+        child: Container(
+          color: Colors.black38,
+          child: SimpleCancelOkDialog(
+            title: Text(S.current.gamedata),
+            content: Text(S.current.game_data_not_found),
+            hideCancel: true,
+            hideOk: true,
+          ),
+        ),
+      ));
+    }
+    if (!kIsWeb && forceUpgradeVersion != null) {
+      final version = const AppVersionConverter().fromJson(forceUpgradeVersion);
+      if (AppInfo.version < version) {
+        errors.add(Positioned.fill(
+          child: Container(
+            color: Colors.black38,
+            child: Center(
+              child: SimpleCancelOkDialog(
+                scrollable: true,
+                title: Text(S.current.update),
+                content: Text(
+                  "${S.current.forced_update}: $forceUpgradeVersion+\n"
+                  "${S.current.current_version}: ${AppInfo.versionString}",
+                  // textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.error,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                hideCancel: true,
+                hideOk: true,
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      launch(ChaldeaUrl.doc("/releases"));
+                    },
+                    child: Text(S.current.details),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ));
+      }
+    }
+    if (errors.isNotEmpty) {
+      child = Stack(
+        alignment: Alignment.center,
+        children: [
+          IgnorePointer(child: child),
+          ...errors,
+        ],
+      );
+    }
+    return child;
   }
 }

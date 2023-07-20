@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chaldea/app/api/chaldea.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
@@ -155,6 +156,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     }
     if (db.settings.showSystemTray) SystemTrayUtil.init();
 
+    ChaldeaWorkerApi.remoteConfig();
     if (db.settings.autoUpdateApp && !kIsWeb) {
       await Future.delayed(const Duration(seconds: 5));
       if (PlatformU.isIOS) {

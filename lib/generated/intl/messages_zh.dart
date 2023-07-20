@@ -461,6 +461,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "fixed_oc": MessageLookupByLibrary.simpleMessage("固定OC"),
         "force_enable_np_se": MessageLookupByLibrary.simpleMessage("强制启用宝具特攻"),
         "force_instant_death": MessageLookupByLibrary.simpleMessage("强制即死"),
+        "forced_update": MessageLookupByLibrary.simpleMessage("强制升级"),
         "foukun": MessageLookupByLibrary.simpleMessage("芙芙"),
         "fq_plan_decimal_hint": MessageLookupByLibrary.simpleMessage("小数未显示，显示结果与计算结果可能存在±1的误差"),
         "free_progress": MessageLookupByLibrary.simpleMessage("Free进度"),

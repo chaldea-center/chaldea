@@ -482,6 +482,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "fixed_oc": MessageLookupByLibrary.simpleMessage("Fixed OC"),
         "force_enable_np_se": MessageLookupByLibrary.simpleMessage("Force Enable NP S.E."),
         "force_instant_death": MessageLookupByLibrary.simpleMessage("Force Death"),
+        "forced_update": MessageLookupByLibrary.simpleMessage("Forced Update"),
         "foukun": MessageLookupByLibrary.simpleMessage("Fou"),
         "fq_plan_decimal_hint": MessageLookupByLibrary.simpleMessage(
             "Decimals are not displayed, there may be an error of ±1 between the displayed result and the calculated result"),
