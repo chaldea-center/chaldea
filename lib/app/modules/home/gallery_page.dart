@@ -26,24 +26,7 @@ class GalleryPage extends StatefulWidget {
 }
 
 class _GalleryPageState extends State<GalleryPage> {
-  late ScrollController _scrollController;
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController = ScrollController();
-
-    Future.delayed(const Duration(seconds: 2)).then((_) async {
-      if (kDebugMode || AppInfo.isDebugDevice) return;
-      await Future.delayed(const Duration(seconds: 2));
-      // await AutoUpdateUtil.checkAppUpdate(
-      //     background: true, download: db.appSetting.autoUpdateApp);
-      // final _iconCache = IconCacheManager();
-      // _iconCache.start(interval: const Duration(seconds: 1));
-    }).onError((e, s) {
-      logger.e('init app extras', e, s);
-    });
-  }
+  late final ScrollController _scrollController = ScrollController();
 
   @override
   void dispose() {

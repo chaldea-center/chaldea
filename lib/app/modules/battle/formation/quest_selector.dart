@@ -33,7 +33,9 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
 
   bool shouldShow(Quest quest) {
     if (quest.isLaplaceSharable) return true;
-    if (quest.warId == WarId.daily) return true;
+    if (quest.warId == WarId.daily || quest.warId == WarId.chaldeaGate) {
+      return quest.isAnyFree;
+    }
     return false;
   }
 
@@ -42,7 +44,7 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
     super.initState();
     final optionList = <_OptionData>[];
     for (final war in db.gameData.wars.values) {
-      if (war.isMainStory || war.id == WarId.daily) {
+      if (war.isMainStory || war.id == WarId.daily || war.id == WarId.chaldeaGate) {
         final quests = war.quests.where(shouldShow).toList();
         if (quests.isNotEmpty) {
           optionList.add(_OptionData(id: war.id, war: war, event: null, quests: quests));
@@ -63,12 +65,13 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
         quests.addAll(war.quests.where(shouldShow));
       }
       if (quests.isNotEmpty) {
+        quests.sort2((e) => -e.priority);
         optionList.add(_OptionData(id: event.id, war: null, event: event, quests: quests));
       }
     }
 
     optionList.sortByList((e) => <int>[
-          e.war != null ? 0 : 1,
+          e.war != null ? (e.id < 1000 ? 0 : 1) : 2,
           e.war != null ? -e.id : -(e.event?.startedAt ?? e.id),
         ]);
 

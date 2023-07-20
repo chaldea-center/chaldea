@@ -519,6 +519,7 @@ Future<T> showEasyLoading<T>(
   if (!mounted) return computation();
   Widget? widget;
   try {
+    await EasyLoading.dismiss();
     EasyLoading.show(maskType: mask ? EasyLoadingMaskType.clear : null);
     widget = EasyLoading.instance.w;
     return await computation();

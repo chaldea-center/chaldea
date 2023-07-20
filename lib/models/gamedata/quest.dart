@@ -275,7 +275,7 @@ class Quest with RouteInfo {
   bool get isAnyFree {
     if (afterClear != QuestAfterClearType.repeatLast) return false;
     if (type == QuestType.free) return true;
-    if (flags.any((flag) => flag.name.toLowerCase().contains('raid'))) {
+    if (flags.any((flag) => flag.name.toLowerCase().contains('raid') || flag == QuestFlag.notRetrievable)) {
       return false;
     }
     if (flags.contains(QuestFlag.noBattle)) return false;

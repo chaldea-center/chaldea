@@ -259,11 +259,13 @@ class AppInfo {
       'FB26CA34-0B8F-588C-8542-4A748BB67740', // android
       'C150DF56-B65C-5167-852B-102D487D7159', // ios
       'BC87303D-6010-5DCE-90FB-68E8758EC260', // ios release
-      '1D6D5558-9929-5AB0-9CE7-BC2E188948CD', // macos
+      'EFD686D5-2D83-56E5-8971-8F72D0D42D58', // macos
       '6986A299-F7CB-5BBF-9680-14ED34013C07', // windows
     ];
-    return excludeIds.contains(AppInfo.uuid) || _debugOn;
+    return excludeIds.contains(AppInfo.uuid);
   }
+
+  static bool get isDebugOn => isDebugDevice || _debugOn;
 
   static bool get isIPad => _isIPad;
 

@@ -125,10 +125,12 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
             title: S.current.set_plan_name,
             text: db.curUser.curPlan_.title,
             onSubmit: (s) {
-              setState(() {
-                s = s.trim();
-                db.curUser.curPlan_.title = s;
-              });
+              if (mounted) {
+                setState(() {
+                  s = s.trim();
+                  db.curUser.curPlan_.title = s;
+                });
+              }
             },
           ).showDialog(context);
         },

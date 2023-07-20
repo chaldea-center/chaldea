@@ -426,7 +426,8 @@ class _WarDetailPageState extends State<WarDetailPage> {
           oneOffQuests.add(quest);
         } else if (quest.flags.contains(QuestFlag.raid)) {
           raidQuests.add(quest);
-        } else if (quest.flags.contains(QuestFlag.dropFirstTimeOnly)) {
+        } else if (quest.flags.contains(QuestFlag.dropFirstTimeOnly) ||
+            quest.flags.contains(QuestFlag.notRetrievable)) {
           difficultQuests.add(quest);
         } else if (quest.flags.contains(QuestFlag.noBattle)) {
           eventQuests.add(quest);

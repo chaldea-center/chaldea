@@ -35,7 +35,7 @@ class RuntimeData {
   // debug
   bool _enableDebugTools = false;
 
-  bool get enableDebugTools => _enableDebugTools || kDebugMode || AppInfo.isDebugDevice;
+  bool get enableDebugTools => _enableDebugTools || kDebugMode || AppInfo.isDebugOn;
 
   set enableDebugTools(bool v) => _enableDebugTools = v;
 

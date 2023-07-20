@@ -1,10 +1,11 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'package:flutter/foundation.dart';
 import '../../../models/db.dart';
 import '../../app.dart';
 import '../battle/battle_home.dart';

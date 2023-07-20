@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:chaldea/app/api/chaldea.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +10,7 @@ import 'package:flutter_window_close/flutter_window_close.dart';
 import 'package:intl/intl.dart';
 import 'package:screenshot/screenshot.dart';
 
+import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/tools/app_update.dart';
 import 'package:chaldea/generated/intl/messages_all.dart';
 import 'package:chaldea/packages/app_info.dart';
