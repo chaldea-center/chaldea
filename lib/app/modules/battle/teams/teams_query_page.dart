@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
@@ -7,6 +9,9 @@ import 'package:chaldea/app/modules/home/subpage/login_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/api/api.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/app_info.dart';
+import 'package:chaldea/packages/logger.dart';
+import 'package:chaldea/utils/catcher/server_feedback_handler.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../common/filter_page_base.dart';
@@ -168,70 +173,120 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     final shareData = record.decoded;
     final quest = db.gameData.quests[record.questId];
     final shownIndex = _pageSize * pageIndex + index + 1;
-    return Column(
-      children: [
-        DividerWithTitle(title: '${S.current.team} $shownIndex - ${record.userId} [${record.id}]'),
-        if (widget.mode == TeamQueryMode.user)
-          ListTile(
-            dense: true,
-            leading: db.getIconImage(quest?.spot?.shownImage, width: 24),
-            minLeadingWidth: 24,
-            title: Text(quest?.lDispName ?? "Quest ${record.questId}/${record.phase}"),
-            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-            onTap: () {
-              router.push(url: Routes.questI(record.questId, record.phase));
-            },
-          ),
-        if (shareData != null) FormationCard(formation: shareData.team),
-        const SizedBox(height: 8),
-        Wrap(
-          alignment: WrapAlignment.center,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 8,
-          children: [
-            if (mode == TeamQueryMode.user || record.userId == db.security.username)
-              FilledButton(
-                onPressed: () {
-                  SimpleCancelOkDialog(
-                    title: Text(S.current.confirm),
-                    content: Text(S.current.delete),
-                    onTapOk: () {
-                      _deleteUserTeam(record);
-                    },
-                  ).showDialog(context);
-                },
-                style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
-                child: Text(S.current.delete),
-              ),
-            if (shareData != null)
-              FilledButton(
-                onPressed: () {
-                  replaySimulation(detail: shareData, questInfo: record.questInfo);
-                },
-                child: Text(S.current.details),
-              ),
-            if (mode == TeamQueryMode.quest)
-              FilledButton(
+    return Material(
+      color: shownList.indexOf(record).isOdd ? Theme.of(context).highlightColor : null,
+      child: Column(
+        children: [
+          const SizedBox(height: 6),
+          _getHeader(shownIndex, record),
+          if (widget.mode == TeamQueryMode.user)
+            ListTile(
+              dense: true,
+              leading: db.getIconImage(quest?.spot?.shownImage, width: 24),
+              minLeadingWidth: 24,
+              title: Text(quest?.lDispName ?? "Quest ${record.questId}/${record.phase}"),
+              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+              onTap: () {
+                router.push(url: Routes.questI(record.questId, record.phase));
+              },
+            ),
+          if (shareData != null) FormationCard(formation: shareData.team),
+          const SizedBox(height: 8),
+          Wrap(
+            alignment: WrapAlignment.center,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 8,
+            children: [
+              if (mode == TeamQueryMode.user ||
+                  record.userId == db.security.username ||
+                  AppInfo.isDebugDevice ||
+                  kDebugMode)
+                FilledButton(
+                  onPressed: () {
+                    SimpleCancelOkDialog(
+                      title: Text(S.current.confirm),
+                      content: Text(S.current.delete),
+                      onTapOk: () {
+                        _deleteUserTeam(record);
+                      },
+                    ).showDialog(context);
+                  },
+                  style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
+                  child: Text(S.current.delete),
+                ),
+              if (shareData != null)
+                FilledButton(
+                  onPressed: () {
+                    replaySimulation(detail: shareData, questInfo: record.questInfo);
+                  },
+                  child: Text(S.current.details),
+                ),
+              if (mode == TeamQueryMode.quest)
+                FilledButton(
+                  onPressed: shareData == null
+                      ? null
+                      : () {
+                          Navigator.pop(context, shareData.team);
+                        },
+                  child: Text(S.current.select),
+                ),
+              IconButton(
                 onPressed: shareData == null
                     ? null
-                    : () {
-                        Navigator.pop(context, shareData.team);
-                      },
-                child: Text(S.current.select),
-              ),
-            IconButton(
-              onPressed: shareData == null
-                  ? null
-                  : () => showDialog(
-                        context: context,
-                        useRootNavigator: false,
-                        builder: (context) => buildShareDialog(context, record),
-                      ),
-              icon: const Icon(Icons.ios_share),
-              tooltip: S.current.share,
-            )
-          ],
+                    : () => showDialog(
+                          context: context,
+                          useRootNavigator: false,
+                          builder: (context) => buildShareDialog(context, record),
+                        ),
+                icon: const Icon(Icons.ios_share),
+                tooltip: S.current.share,
+              )
+            ],
+          ),
+          const SizedBox(height: 6),
+        ],
+      ),
+    );
+  }
+
+  Widget _getHeader(int index, UserBattleData record) {
+    final style = Theme.of(context).textTheme.bodySmall;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const SizedBox(width: 16),
+        Expanded(
+          child: Text('${S.current.team} $index - ${record.userId} [${record.id}]', style: style),
         ),
+        // InkWell(
+        //   onTap: () {},
+        //   child: Icon(
+        //     Icons.thumb_up_alt,
+        //     size: 16,
+        //     color: Theme.of(context).unselectedWidgetColor,
+        //   ),
+        // ),
+        // Text('10 '.padRight(4, ' '), style: style),
+        // InkWell(
+        //   onTap: () {},
+        //   child: Icon(
+        //     Icons.thumb_down_alt,
+        //     size: 16,
+        //     color: Theme.of(context).unselectedWidgetColor,
+        //   ),
+        // ),
+        // Text('0 '.padRight(6, ' '), style: style),
+        InkWell(
+          onTap: () {
+            ReportTeamDialog(record: record).showDialog(context);
+          },
+          child: Icon(
+            Icons.report,
+            size: 18,
+            color: Theme.of(context).colorScheme.errorContainer.withOpacity(0.8),
+          ),
+        ),
+        const SizedBox(width: 24),
       ],
     );
   }
@@ -410,5 +465,97 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           ),
       ],
     );
+  }
+}
+
+class ReportTeamDialog extends StatefulWidget {
+  final UserBattleData record;
+  const ReportTeamDialog({super.key, required this.record});
+
+  @override
+  State<ReportTeamDialog> createState() => _ReportTeamDialogState();
+}
+
+class _ReportTeamDialogState extends State<ReportTeamDialog> {
+  late final UserBattleData record = widget.record;
+  late final controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return SimpleCancelOkDialog(
+      scrollable: true,
+      title: Text(S.current.about_feedback),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            title: Text(S.current.team),
+            contentPadding: EdgeInsets.zero,
+            trailing: Text(
+              "No.${record.id}\n@${record.userId}",
+              textScaleFactor: 0.8,
+              textAlign: TextAlign.end,
+            ),
+          ),
+          const SizedBox(height: 16),
+          TextFormField(
+            controller: controller,
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              labelText: S.current.details,
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              hintText: S.current.team_report_reason_hint,
+            ),
+            maxLines: 3,
+          ),
+        ],
+      ),
+      hideOk: true,
+      actions: [
+        TextButton(
+          onPressed: onSend,
+          child: Text(S.current.feedback_send),
+        ),
+      ],
+    );
+  }
+
+  Future<void> onSend() async {
+    final reason = controller.text.trim();
+    if (reason.isEmpty) {
+      EasyLoading.showInfo(S.current.empty_hint);
+      return;
+    }
+
+    try {
+      EasyLoading.show(maskType: EasyLoadingMaskType.clear);
+      String subject = '[Team] ${reason.substring2(0, 20)}';
+
+      final handler = ServerFeedbackHandler(
+        emailTitle: subject,
+        senderName: 'Team Report',
+      );
+
+      final buffer = StringBuffer();
+      buffer.writeAll([
+        "Quest: https://apps.atlasacademy.io/db/JP/quest/${record.questId}/${record.phase}?hash=${record.enemyHash}",
+        "ID: ${record.id}  v${record.ver}",
+        "Uploader: ${record.userId}",
+        "Stars: x up, y down\n",
+        "Reporter: ${db.security.username}",
+        "Reason:\n$reason"
+      ], '\n');
+
+      final result = await handler.handle(FeedbackReport(null, buffer.toString()), null);
+      if (!result) {
+        throw S.current.sending_failed;
+      }
+      EasyLoading.showSuccess(S.current.sent);
+      await Future.delayed(const Duration(milliseconds: 400));
+      if (mounted) Navigator.pop(context);
+    } catch (e, s) {
+      logger.e('send team feedback failed', e, s);
+      EasyLoading.showError(escapeDioException(e));
+    }
   }
 }

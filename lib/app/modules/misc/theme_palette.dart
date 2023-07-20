@@ -117,6 +117,7 @@ class _PaletteForThemeState extends State<_PaletteForTheme> {
           oneColor('scaffoldBackgroundColor', themeData.scaffoldBackgroundColor),
           oneColor('cardColor', themeData.cardColor),
           oneColor('dividerColor', themeData.dividerColor),
+          oneColor('highlightColor', themeData.highlightColor),
           oneColor('focusColor', themeData.focusColor),
           oneColor('hoverColor', themeData.hoverColor),
           oneColor('splashColor', themeData.splashColor),

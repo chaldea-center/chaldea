@@ -879,6 +879,7 @@
   "team_no_lv100": "无Lv.100+",
   "team_no_order_change": "禁止换人",
   "team_no_same_svt": "禁止相同从者",
+  "team_report_reason_hint": "使用未实装从者/操作发牌成功率低/无法通关 等等",
   "team_shared": "共享队伍",
   "team_starting_member": "前排从者",
   "team_use_servant": "使用从者",

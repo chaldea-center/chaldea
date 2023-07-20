@@ -879,6 +879,7 @@
   "team_no_lv100": null,
   "team_no_order_change": null,
   "team_no_same_svt": null,
+  "team_report_reason_hint": null,
   "team_shared": null,
   "team_starting_member": "前排從者",
   "team_use_servant": null,

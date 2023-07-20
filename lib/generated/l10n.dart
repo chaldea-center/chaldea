@@ -9737,6 +9737,17 @@ class S {
     );
   }
 
+  /// `Unreleased servants/low success rate/cannot clear quest/etc`
+  String get team_report_reason_hint {
+    return Intl.message(
+      'Unreleased servants/low success rate/cannot clear quest/etc',
+      name: 'team_report_reason_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Shared Teams`
   String get team_shared {
     return Intl.message(
