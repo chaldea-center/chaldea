@@ -292,7 +292,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
               }
               battleData.battleLogger.action(msg);
               battleData.recorder.isUploadEligible = false;
-              battleData.recorder.message(S.current.charge_np_to(dispCount), svt);
+              battleData.recorder.message(S.current.charge_np_to(dispCount), target: svt);
               if (mounted) setState(() {});
             },
           ).showDialog(context);

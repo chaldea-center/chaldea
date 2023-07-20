@@ -322,7 +322,7 @@ class BattleData {
 
   Future<bool> nextWave() async {
     if (niceQuest?.stages.every((s) => s.wave < waveCount + 1) == true) {
-      recorder.message('Win');
+      recorder.message('Battle Win    \\(^o^)/', style: const TextStyle(fontSize: 20));
       return false;
     }
     waveCount += 1;
@@ -1066,14 +1066,14 @@ class BattleData {
           for (final skill in masterSkillInfo) {
             skill.chargeTurn = 0;
           }
-          recorder.message("${S.current.reset_skill_cd} (${S.current.mystic_code})", null);
+          recorder.message("${S.current.reset_skill_cd} (${S.current.mystic_code})");
         } else {
           final ally = targetedAlly;
           if (ally == null) return;
           for (final skill in ally.skillInfoList) {
             skill.chargeTurn = 0;
           }
-          recorder.message(S.current.reset_skill_cd, ally);
+          recorder.message(S.current.reset_skill_cd, target: ally);
         }
       },
     );

@@ -287,13 +287,16 @@ class BattleRecorderPanelBase extends StatelessWidget {
       } else if (record is BattleInstantDeathRecord) {
         cardChildren.add(_InstantDeathDetailWidget(record: record, battleData: battleData));
       } else if (record is BattleMessageRecord) {
-        cardChildren.add(Text.rich(TextSpan(children: [
-          TextSpan(text: record.message),
-          if (record.target != null) ...[
-            const TextSpan(text: ': '),
-            ...drawSvt(context, record.target!),
-          ],
-        ])));
+        cardChildren.add(Text.rich(
+          TextSpan(children: [
+            TextSpan(text: record.message, style: record.style),
+            if (record.target != null) ...[
+              const TextSpan(text: ': '),
+              ...drawSvt(context, record.target!),
+            ],
+          ]),
+          textAlign: record.textAlign,
+        ));
       } else if (record is BattleAttacksInitiationRecord || record is BattleSkillActivationRecord) {
         // noop
       } else {

@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -60,8 +62,8 @@ class BattleRecordManager {
       ..records = records.toList();
   }
 
-  void message(String msg, [BattleServantData? target]) {
-    records.add(BattleMessageRecord(msg, target));
+  void message(String msg, {BattleServantData? target, TextStyle? style, TextAlign? textAlign}) {
+    records.add(BattleMessageRecord(msg, target, style, textAlign));
   }
 
   void progressWave(int wave) {
@@ -231,12 +233,14 @@ abstract class BattleRecord {
 
 class BattleMessageRecord extends BattleRecord {
   final String message;
+  final TextStyle? style;
+  final TextAlign? textAlign;
   final BattleServantData? target;
-  BattleMessageRecord(this.message, this.target);
+  BattleMessageRecord(this.message, this.target, this.style, this.textAlign);
 
   @override
   BattleMessageRecord copy() {
-    return BattleMessageRecord(message, target?.copy());
+    return BattleMessageRecord(message, target?.copy(), style?.copyWith(), textAlign);
   }
 }
 

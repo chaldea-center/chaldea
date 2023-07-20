@@ -203,9 +203,13 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
                   kDebugMode)
                 FilledButton(
                   onPressed: () {
+                    final isOthers = record.userId != db.security.username;
                     SimpleCancelOkDialog(
                       title: Text(S.current.confirm),
-                      content: Text(S.current.delete),
+                      content: Text([
+                        '${S.current.delete} No.${record.id}',
+                        if (isOthers) "Waring: ${record.userId}'s, not your team",
+                      ].join('\n')),
                       onTapOk: () {
                         _deleteUserTeam(record);
                       },
@@ -281,7 +285,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             ReportTeamDialog(record: record).showDialog(context);
           },
           child: Icon(
-            Icons.report,
+            Icons.report_outlined,
             size: 18,
             color: Theme.of(context).colorScheme.errorContainer.withOpacity(0.8),
           ),
