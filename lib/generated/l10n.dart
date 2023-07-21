@@ -360,6 +360,28 @@ class S {
     );
   }
 
+  /// `Ascension Stage`
+  String get ascension_stage {
+    return Intl.message(
+      'Ascension Stage',
+      name: 'ascension_stage',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Stage`
+  String get ascension_stage_short {
+    return Intl.message(
+      'Stage',
+      name: 'ascension_stage_short',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Ascension`
   String get ascension_up {
     return Intl.message(

@@ -116,6 +116,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "april_fool": MessageLookupByLibrary.simpleMessage("愚人節"),
         "ascension": MessageLookupByLibrary.simpleMessage("靈基"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("靈基"),
+        "ascension_stage": MessageLookupByLibrary.simpleMessage("再临阶段"),
+        "ascension_stage_short": MessageLookupByLibrary.simpleMessage("阶段"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("靈基再臨"),
         "atlas_load": MessageLookupByLibrary.simpleMessage("读取"),
         "attach_from_files": MessageLookupByLibrary.simpleMessage("從文件選取"),

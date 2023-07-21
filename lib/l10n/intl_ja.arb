@@ -27,6 +27,8 @@
   "april_fool": "エイプリルフール",
   "ascension": "霊基",
   "ascension_short": "霊基",
+  "ascension_stage": null,
+  "ascension_stage_short": null,
   "ascension_up": "霊基再臨",
   "atlas_load": null,
   "attach_from_files": "ファイルから",

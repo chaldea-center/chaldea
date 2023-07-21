@@ -121,6 +121,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "april_fool": MessageLookupByLibrary.simpleMessage("April Fool"),
         "ascension": MessageLookupByLibrary.simpleMessage("Ascension"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("Ascen"),
+        "ascension_stage": MessageLookupByLibrary.simpleMessage("Ascension Stage"),
+        "ascension_stage_short": MessageLookupByLibrary.simpleMessage("Stage"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("Ascension"),
         "atlas_load": MessageLookupByLibrary.simpleMessage("Load"),
         "attach_from_files": MessageLookupByLibrary.simpleMessage("From Files"),

@@ -1,4 +1,5 @@
 import 'package:chaldea/app/api/hosts.dart';
+import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../app/app.dart';
@@ -490,13 +491,20 @@ class Servant with GameCardMixin {
     return profile.costume[battleCharaId]?.id ?? battleCharaId;
   }
 
+  // not limitCount=0-4
   String? ascendIcon(int ascOrCostumeIdOrCharaId, [bool bordered = true]) {
     final idx = ascOrCostumeIdOrCharaId;
     final ascs = extraAssets.faces.ascension ?? {};
     final costumes = extraAssets.faces.costume ?? {};
     String? _icon;
     if (idx < 10) {
-      _icon = ascs[ascOrCostumeIdOrCharaId];
+      if (ascs.containsKey(0)) {
+        // enemy faces may contain limitCount 0-4
+        _icon = ascs[idx];
+      } else {
+        _icon = ascs[BattleUtils.limitCountToDisp(idx)];
+      }
+      _icon ??= ascs.values.firstOrNull;
     } else if (idx < 100) {
       final charaId = profile.costume.values.firstWhereOrNull((e) => e.id == idx);
       _icon = costumes[charaId];

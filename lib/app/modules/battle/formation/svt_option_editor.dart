@@ -423,9 +423,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   }
 
   Widget _header(final BuildContext context) {
-    final faces = svt.extraAssets.faces;
     final ascensionText = svt.getCostume(playerSvtData.limitCount)?.lName.l ??
-        '${S.current.ascension} ${playerSvtData.limitCount == 0 ? 1 : playerSvtData.limitCount}';
+        '${S.current.ascension_stage_short} ${playerSvtData.limitCount}';
     final atk = (svt.atkGrowth.getOrNull(playerSvtData.lv - 1) ?? 0) + playerSvtData.atkFou,
         hp = (svt.hpGrowth.getOrNull(playerSvtData.lv - 1) ?? 0) + playerSvtData.hpFou;
     return CustomTile(
@@ -451,14 +450,17 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         ],
       ),
       trailing: TextButton(
-        child: Text(ascensionText, textScaleFactor: 0.9),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 100),
+          child: Text(ascensionText, textScaleFactor: 0.9),
+        ),
         onPressed: () async {
           showDialog(
             context: context,
             useRootNavigator: false,
             builder: (context) {
               final List<Widget> children = [];
-              void _addOne(final int ascension, final String name, final String? icon) {
+              void _addOne(final int limitCount, final String name, final String? icon) {
                 if (icon == null) return;
                 final borderedIcon = svt.bordered(icon);
                 children.add(ListTile(
@@ -467,15 +469,14 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                     borderedIcon,
                     width: 36,
                     padding: const EdgeInsets.symmetric(vertical: 2),
+                    errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
                   ),
                   title: Text(name, textScaleFactor: 0.9),
                   onTap: () {
-                    final ascensionPhase = ascension == 1 ? 0 : ascension;
-
                     for (final skillNum in kActiveSkillNums) {
                       final List<NiceSkill> previousShownSkills =
                           BattleUtils.getShownSkills(svt, playerSvtData.limitCount, skillNum);
-                      final List<NiceSkill> shownSkills = BattleUtils.getShownSkills(svt, ascensionPhase, skillNum);
+                      final List<NiceSkill> shownSkills = BattleUtils.getShownSkills(svt, limitCount, skillNum);
                       if (!listEquals(previousShownSkills, shownSkills)) {
                         playerSvtData.skills[skillNum - 1] = shownSkills.lastOrNull;
                         logger.d('Changing skill ID: ${playerSvtData.skills[skillNum - 1]?.id}');
@@ -483,8 +484,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                     }
 
                     final List<NiceTd> previousShownTds = BattleUtils.getShownTds(svt, playerSvtData.limitCount);
-                    final List<NiceTd> shownTds = BattleUtils.getShownTds(svt, ascensionPhase);
-                    playerSvtData.limitCount = ascensionPhase;
+                    final List<NiceTd> shownTds = BattleUtils.getShownTds(svt, limitCount);
+                    playerSvtData.limitCount = limitCount;
                     if (!listEquals(previousShownTds, shownTds)) {
                       playerSvtData.td = shownTds.last;
                       logger.d('Capping npId: ${playerSvtData.td?.id}');
@@ -495,19 +496,15 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                 ));
               }
 
-              if (faces.ascension != null) {
-                faces.ascension!.forEach((key, value) {
-                  _addOne(key, '${S.current.ascension} $key', value);
-                });
+              final List<int> limitCounts = {0, ...?svt.extraAssets.faces.ascension?.keys}.toList();
+              for (final limitCount in limitCounts) {
+                _addOne(limitCount, '${S.current.ascension_stage} $limitCount', svt.ascendIcon(limitCount));
               }
-              if (faces.costume != null) {
-                faces.costume!.forEach((key, value) {
-                  _addOne(
-                    key,
-                    svt.profile.costume[key]?.lName.l ?? '${S.current.costume} $key',
-                    value,
-                  );
-                });
+
+              final costumeCharaIds = svt.extraAssets.faces.costume?.keys.toList() ?? [];
+              for (final charaId in costumeCharaIds) {
+                _addOne(charaId, svt.profile.costume[charaId]?.lName.l ?? '${S.current.costume} $charaId',
+                    svt.ascendIcon(charaId));
               }
 
               return SimpleCancelOkDialog(

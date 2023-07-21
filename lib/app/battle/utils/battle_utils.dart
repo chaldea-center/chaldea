@@ -539,6 +539,10 @@ Future<BaseFunction> getDependFunc(BattleLogger logger, DataVals dataVals) async
 class BattleUtils {
   const BattleUtils._();
 
+  static int limitCountToDisp(int dispLimitCount) {
+    return {0: 0, 1: 2, 2: 2, 3: 3, 4: 4}[dispLimitCount] ?? dispLimitCount;
+  }
+
   static final List<int> costumeOrtinaxIds = [12, 800140, 13, 800150];
   static final List<int> melusineDragonIds = [3, 4, 13, 304850];
 
@@ -568,7 +572,7 @@ class BattleUtils {
     return shownTds;
   }
 
-  static List<NiceSkill> getShownSkills(final Servant svt, final int ascension, final int skillNum) {
+  static List<NiceSkill> getShownSkills(final Servant svt, final int limitCount, final int skillNum) {
     final List<NiceSkill> shownSkills = [];
     for (final skill in svt.groupedActiveSkills[skillNum] ?? <NiceSkill>[]) {
       if (shownSkills.every((storeSkill) => storeSkill.id != skill.id)) {
@@ -580,7 +584,7 @@ class BattleUtils {
     final List<int> removeSkillIdList = [];
     if (svt.collectionNo == 1) {
       // Mash
-      if (costumeOrtinaxIds.contains(ascension)) {
+      if (costumeOrtinaxIds.contains(limitCount)) {
         if (skillNum == 1) {
           removeSkillIdList.addAll([1000, 236000]);
         } else if (skillNum == 2) {
@@ -599,7 +603,7 @@ class BattleUtils {
       }
     } else if (svt.collectionNo == 312 && skillNum == 3) {
       // Melusine
-      if (melusineDragonIds.contains(ascension)) {
+      if (melusineDragonIds.contains(limitCount)) {
         removeSkillIdList.add(888550);
       } else {
         removeSkillIdList.add(888575);
