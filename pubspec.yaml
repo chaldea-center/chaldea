@@ -15,7 +15,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 2.4.5+945
+version: 2.4.6+946
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -47,9 +47,9 @@ dependencies:
   csv: ^5.0.2
   cupertino_icons: ^1.0.4
   dart_des: ^1.0.2
-  data_table_2: ^2.5.0
+  data_table_2: ^2.5.5
   device_info_plus: ^9.0.0
-  dio: ^5.2.1+1
+  dio: ^5.3.0
   # dio_cookie_manager: ^3.0.0
   dots_indicator: ^3.0.0
   equatable: ^2.0.5
@@ -58,17 +58,17 @@ dependencies:
   flutter_cache_manager: ^3.3.1
   flutter_easyloading: ^3.0.5
   flutter_email_sender: ^6.0.0
-  flutter_hooks: ^0.18.5+1
+  flutter_hooks: ^0.19.0
   flutter_markdown: ^0.6.14
   flutter_picker: ^2.1.0
   # flutter_qjs: ^0.3.7
-  flutter_js: ^0.7.2
+  flutter_js: ^0.8.0
   flutter_window_close: ^0.2.2
   font_awesome_flutter: ^10.5.0
-  github: ^9.15.1
+  github: ^9.16.0
   hive: ^2.2.3
   html: ^0.15.3
-  http: ^0.13.6
+  http: ^1.1.0
   image: ^4.0.16
   image_gallery_saver: # ^1.7.1
     git:
@@ -97,7 +97,7 @@ dependencies:
   screenshot: ^2.1.0
   share_plus: ^7.0.0
   shared_preferences: ^2.2.0
-  sliver_tools: ^0.2.6
+  sliver_tools: ^0.2.12
   smooth_page_indicator: ^1.1.0
   string_validator: ^1.0.0
   system_tray: ^2.0.3
@@ -120,7 +120,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^2.3.3
-  dart_code_metrics: ^5.7.0
   flutter_lints: ^2.0.1
   json_serializable: ^6.7.0
   import_sorter: ^4.6.0

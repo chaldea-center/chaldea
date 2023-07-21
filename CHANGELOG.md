@@ -9,6 +9,7 @@
   - Fix Damage Cut
   - Fix activator not reset after custom skill
   - Show Fou on svt avatar if not equal to 1000
+  - Fix Master Skill Effect Up skill from Tezcatlipoca 
 
 ## 2.4.5
 
