@@ -1,5 +1,3 @@
-import 'package:ruby_text/ruby_text.dart';
-
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/misc.dart';

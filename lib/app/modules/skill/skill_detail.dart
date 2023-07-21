@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:ruby_text/ruby_text.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';

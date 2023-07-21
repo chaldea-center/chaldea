@@ -12,6 +12,7 @@ export 'layout_try_builder.dart';
 export 'markdown_page.dart';
 export 'material.dart';
 export 'responsive.dart';
+export 'ruby_text.dart';
 export 'search_bar.dart';
 export 'searchable_list_state.dart';
 export 'simple_accordion.dart';
