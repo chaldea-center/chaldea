@@ -172,7 +172,14 @@ class Quest with RouteInfo {
 
   int getPhaseKey(int phase) => id * 100 + phase;
 
-  int? get jpOpenAt => isMainStoryFree ? DateTime.now().timestamp : db.gameData.quests[id.abs()]?.openedAt;
+  int? get jpOpenAt {
+    final quest = db.gameData.quests[id.abs()];
+    if (quest == null) return null;
+    if (quest.closedAt > kNeverClosedTimestamp) {
+      return DateTime.now().timestamp;
+    }
+    return quest.openedAt;
+  }
 
   Transl<String, String> get lName {
     final names = Transl.questNames(name);
