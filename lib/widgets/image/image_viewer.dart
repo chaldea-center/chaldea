@@ -376,7 +376,8 @@ class _CachedImageState extends State<CachedImage> {
     return SizedBox(
       width: widget.width,
       height: widget.height,
-      child: network.available ? CachedImage.defaultProgressPlaceholder(context, url) : const SizedBox(),
+      child:
+          network.available && url.isNotEmpty ? CachedImage.defaultProgressPlaceholder(context, url) : const SizedBox(),
     );
   }
 

@@ -11,6 +11,7 @@ class MainStoryTab extends StatelessWidget {
   final bool showOutdated;
   final bool showSpecialRewards;
   final bool titleOnly;
+  final bool showBanner;
 
   const MainStoryTab({
     super.key,
@@ -18,6 +19,7 @@ class MainStoryTab extends StatelessWidget {
     this.showOutdated = false,
     this.showSpecialRewards = false,
     this.titleOnly = false,
+    this.showBanner = false,
   });
 
   @override
@@ -98,6 +100,8 @@ class MainStoryTab extends StatelessWidget {
     }
 
     Widget tile = ListTile(
+      horizontalTitleGap: 8,
+      leading: showBanner ? db.getIconImage(record.shownBanner, width: 150) : null,
       title: title,
       subtitle: subtitle,
       trailing: titleOnly

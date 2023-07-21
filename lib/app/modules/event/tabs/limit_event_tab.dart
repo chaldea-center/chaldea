@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 
 class LimitEventTab extends StatelessWidget {
   final List<Event> limitEvents;
@@ -12,6 +11,7 @@ class LimitEventTab extends StatelessWidget {
   final bool showOutdated;
   final bool showSpecialRewards;
   final bool showEmpty;
+  final bool showBanner;
 
   LimitEventTab({
     super.key,
@@ -20,6 +20,7 @@ class LimitEventTab extends StatelessWidget {
     this.showOutdated = false,
     this.showSpecialRewards = false,
     this.showEmpty = false,
+    this.showBanner = false,
   });
 
   @override
@@ -70,12 +71,23 @@ class LimitEventTab extends StatelessWidget {
     Color? _outdatedColor = Theme.of(context).textTheme.bodySmall?.color;
 
     Widget tile = ListTile(
+      horizontalTitleGap: 16,
+      leading: showBanner
+          ? CachedImage(
+              imageUrl: event.extra.allBanners.firstOrNull,
+              aspectRatio: 8 / 3,
+              cachedOption: CachedImageOption(
+                placeholder: (context, url) => const SizedBox.shrink(),
+                errorWidget: (context, url, error) => const SizedBox.shrink(),
+              ),
+            )
+          : null,
       title: AutoSizeText.rich(
         TextSpan(children: [
           if (event.isOnGoing(null)) const TextSpan(text: '● ', style: TextStyle(color: Colors.green)),
           TextSpan(text: event.shownName),
         ]),
-        maxFontSize: 14,
+        maxFontSize: 13,
         maxLines: 2,
         style: outdated ? TextStyle(color: _outdatedColor) : null,
       ),
