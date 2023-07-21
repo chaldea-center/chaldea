@@ -52,6 +52,8 @@ class BattleSimSetting {
         craftFilterData = craftFilterData ?? CraftFilterData(useGrid: true),
         tdDmgOptions = tdDmgOptions ?? TdDamageOptions() {
     validate();
+    this.craftFilterData.obtain.options =
+        CEObtain.values.toSet().difference({CEObtain.valentine, CEObtain.exp, CEObtain.campaign});
   }
 
   void validate() {

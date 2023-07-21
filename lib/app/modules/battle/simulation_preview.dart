@@ -104,7 +104,9 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
     if (db.settings.autoResetFilter) {
       db.settings.svtFilterData.reset();
-      db.settings.craftFilterData.reset();
+      db.settings.craftFilterData
+        ..reset()
+        ..obtain.options = CEObtain.values.toSet().difference({CEObtain.valentine, CEObtain.exp, CEObtain.campaign});
     }
   }
 
