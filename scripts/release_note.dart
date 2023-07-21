@@ -42,12 +42,22 @@ void main(List<String> args) {
 
 String? getReleaseNote(String fp, String version) {
   final contents = File(fp).readAsStringSync();
-  final blocks = contents.split(RegExp(r'\n## '));
+  final blocks = contents.split(RegExp(r'\n## ')).skip(1).toList();
   for (final block in blocks) {
     final lines = const LineSplitter().convert(block);
     final header = lines.first.trim();
     if (header == version) {
       return lines.skip(1).join('\n');
+    }
+  }
+  if (version == 'beta') {
+    final lastRelease = blocks.firstOrNull;
+    if (lastRelease != null) {
+      final lines = const LineSplitter().convert(lastRelease);
+      final header = lines.first.trim();
+      if (RegExp(r'^\d+\.\d+\.\d+$').hasMatch(header)) {
+        return lines.skip(1).join('\n');
+      }
     }
   }
   return null;

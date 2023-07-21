@@ -200,7 +200,7 @@ jobs:
           body_path: chaldea-${{ env.VERSION }}-android/release-note.md
           draft: false
           prerelease: true
-          files: "chaldea-*/*"
+          files: "chaldea-*/chaldea-*"
 
       - name: Publish Stable
         id: release-stable

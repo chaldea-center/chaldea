@@ -1,6 +1,6 @@
 # Changelog
 
-## beta
+## 2.4.6
 
 - Chaldeas
   - Add disable split view option and max window width setting(web)
