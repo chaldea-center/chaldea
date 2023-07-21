@@ -19,6 +19,7 @@ import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../interactions/act_set_select.dart';
@@ -127,10 +128,8 @@ class FunctionExecutor {
       return;
     }
 
-    if (effectiveness != null && dataVals.Value != null && dataVals.Value2 == null) {
-      final dataJson = dataVals.toJson();
-      dataJson['Value'] = (dataVals.Value! * toModifier(effectiveness)).toInt();
-      dataVals = DataVals.fromJson(dataJson);
+    if (effectiveness != null) {
+      dataVals = updateDataValsWithEffectiveness(function, dataVals, effectiveness);
     }
 
     final funcQuestTvalsMatch = battleData.checkTraits(CheckTraitParameters(
@@ -420,6 +419,30 @@ class FunctionExecutor {
     }
     return (function.svalsList.getOrNull(overchargeLevel - 1) ?? function.svals).getOrNull(skillLevel - 1) ??
         DataVals();
+  }
+
+  static DataVals updateDataValsWithEffectiveness(
+    final NiceFunction function,
+    final DataVals dataVals,
+    final int effectiveness,
+  ) {
+    if (dataVals.Value == null || effectiveness == 1000) {
+      return dataVals;
+    }
+
+    final funcDetail = ConstData.funcTypeDetail[function.funcType.id];
+    if (funcDetail != null && funcDetail.ignoreValueUp) {
+      return dataVals;
+    }
+
+    final buffDetail = ConstData.buffTypeDetail[function.buff?.type.id];
+    if (buffDetail != null && buffDetail.ignoreValueUp) {
+      return dataVals;
+    }
+
+    final dataJson = dataVals.toJson();
+    dataJson['Value'] = (dataVals.Value! * toModifier(effectiveness)).toInt();
+    return DataVals.fromJson(dataJson);
   }
 
   static Future<List<BattleServantData>> acquireFunctionTarget(
