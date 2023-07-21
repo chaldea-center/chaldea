@@ -167,6 +167,7 @@ class ServerFeedbackHandler extends ReportHandler {
         'TypeError: Failed to fetch',
         'Bad state: Future already completed',
         'Bad state: A RenderObject does not have any constraints before it has been laid out.',
+        "NoSuchMethodError: method not found: 'toString' on null",
       ].contains(report.shownError)) {
         return true;
       }

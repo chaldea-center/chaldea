@@ -17,6 +17,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../common/not_found.dart';
 import '../item/item_select.dart';
 import '../quest/quest_list.dart';
+import '../war/war/free_overview.dart';
 import 'detail/bonus.dart';
 import 'detail/bulletin_board.dart';
 import 'detail/campaign.dart';
@@ -372,6 +373,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       }));
     }
     if (event.extra.huntingQuestIds.isNotEmpty) {
+      final huntingQuests = event.extra.huntingQuestIds.map((e) => db.gameData.quests[e]).whereType<Quest>().toList();
       warTiles.add(ListTile(
         title: Text(S.current.hunting_quest),
         trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
@@ -379,9 +381,16 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
           router.push(
             child: QuestListPage(
               title: S.current.hunting_quest,
-              quests: event.extra.huntingQuestIds.map((e) => db.gameData.quests[e]).whereType<Quest>().toList(),
+              quests: huntingQuests,
             ),
           );
+        },
+      ));
+      warTiles.add(ListTile(
+        title: Text("${S.current.item} (${S.current.hunting_quest})"),
+        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+        onTap: () {
+          router.pushPage(FreeQuestOverview(quests: huntingQuests, isMainStory: false));
         },
       ));
     }
