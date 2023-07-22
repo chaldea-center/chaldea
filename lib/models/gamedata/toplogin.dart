@@ -141,6 +141,8 @@ class UserMstData {
   List<UserSupportDeck> userSupportDeck;
   List<UserSvtLeader> userSvtLeader;
   List<UserClassBoardSquare> userClassBoardSquare;
+  List<UserPresentBox> userPresentBox;
+  List<UserGacha> userGacha;
   // userEventPoint, userGachaExtraCount,
   // userEventSuperBoss, userSvtVoicePlayed, userQuest
   // userEventMissionFix,userEventMission,
@@ -176,6 +178,8 @@ class UserMstData {
     List<UserSupportDeck>? userSupportDeck,
     List<UserSvtLeader>? userSvtLeader,
     List<UserClassBoardSquare>? userClassBoardSquare,
+    List<UserPresentBox>? userPresentBox,
+    List<UserGacha>? userGacha,
   })  : userGame = userGame ?? [],
         userSvtCollection = userSvtCollection ?? [],
         userSvt = userSvt ?? [],
@@ -191,7 +195,9 @@ class UserMstData {
         userEquip = userEquip ?? [],
         userSupportDeck = userSupportDeck ?? [],
         userSvtLeader = userSvtLeader ?? [],
-        userClassBoardSquare = userClassBoardSquare ?? [] {
+        userClassBoardSquare = userClassBoardSquare ?? [],
+        userPresentBox = userPresentBox ?? [],
+        userGacha = userGacha ?? [] {
     for (final e in this.userSvtCoin) {
       coinMap[e.svtId] = e;
     }
@@ -930,4 +936,73 @@ class UserClassBoardSquare {
         classBoardUnlockSquareIds = _toIntList(classBoardUnlockSquareIds);
 
   factory UserClassBoardSquare.fromJson(Map<String, dynamic> data) => _$UserClassBoardSquareFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserPresentBox {
+  int receiveUserId;
+  int presentId;
+  int messageRefType;
+  int messageId;
+  String message;
+  int fromType;
+  int giftType;
+  int objectId;
+  int num;
+  int limitCount;
+  int lv;
+  int flag;
+  int updatedAt;
+  int createdAt;
+
+  UserPresentBox({
+    dynamic receiveUserId,
+    dynamic presentId,
+    dynamic messageRefType,
+    dynamic messageId,
+    dynamic message,
+    dynamic fromType,
+    dynamic giftType,
+    dynamic objectId,
+    dynamic num,
+    dynamic limitCount,
+    dynamic lv,
+    dynamic flag,
+    dynamic updatedAt,
+    dynamic createdAt,
+  })  : receiveUserId = _toInt(receiveUserId),
+        presentId = _toInt(presentId),
+        messageRefType = _toInt(messageRefType),
+        messageId = _toInt(messageId),
+        message = message.toString(),
+        fromType = _toInt(fromType),
+        giftType = _toInt(giftType),
+        objectId = _toInt(objectId),
+        num = _toInt(num),
+        limitCount = _toInt(limitCount),
+        lv = _toInt(lv),
+        flag = _toInt(flag),
+        updatedAt = _toInt(updatedAt),
+        createdAt = _toInt(createdAt);
+  factory UserPresentBox.fromJson(Map<String, dynamic> data) => _$UserPresentBoxFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserGacha {
+  // int userId;
+  int gachaId;
+  int num;
+  int freeDrawAt;
+  int status;
+
+  UserGacha({
+    dynamic gachaId,
+    dynamic num,
+    dynamic freeDrawAt,
+    dynamic status,
+  })  : gachaId = _toInt(gachaId),
+        num = _toInt(num),
+        freeDrawAt = _toInt(freeDrawAt),
+        status = _toInt(status);
+  factory UserGacha.fromJson(Map<String, dynamic> data) => _$UserGachaFromJson(data);
 }

@@ -213,7 +213,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                           db.curSvtPlan.remove(svt.collectionNo);
                         }
                         db.itemCenter.updateSvts(all: true);
-                        setState(() {});
+                        if (mounted) setState(() {});
                       },
                     ).showDialog(context);
                   },

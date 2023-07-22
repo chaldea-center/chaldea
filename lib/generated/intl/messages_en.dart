@@ -791,6 +791,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "preferred_translation": MessageLookupByLibrary.simpleMessage("Preferred Translation"),
         "preferred_translation_footer": MessageLookupByLibrary.simpleMessage(
             "Used for game data description, not UI language. Not all game data is translated for all 5 official languages."),
+        "present_box": MessageLookupByLibrary.simpleMessage("Present Box"),
         "prev_page": MessageLookupByLibrary.simpleMessage("PREV"),
         "preview": MessageLookupByLibrary.simpleMessage("Preview"),
         "previous_card": MessageLookupByLibrary.simpleMessage("Previous"),

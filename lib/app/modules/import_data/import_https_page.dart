@@ -18,7 +18,9 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../../app.dart';
 import '../common/builders.dart';
 import 'autologin/login_page.dart';
-import 'bond_detail_page.dart';
+import 'sniff_details/bond_detail_page.dart';
+import 'sniff_details/gacha_history.dart';
+import 'sniff_details/present_box.dart';
 
 class ImportHttpPage extends StatefulWidget {
   final String? toploginText;
@@ -611,10 +613,68 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   }
 
   Widget get buttonBar {
-    return ButtonBar(
-      alignment: MainAxisAlignment.center,
-      buttonPadding: EdgeInsets.zero,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
+        const SizedBox(height: 4),
+        Wrap(
+          spacing: 4,
+          runSpacing: 2,
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: mstData == null
+                  ? null
+                  : () {
+                      router.push(
+                        child: SvtBondDetailPage(
+                          friendCode: mstData?.firstUser?.friendCode,
+                          cardCollections: cardCollections,
+                        ),
+                      );
+                    },
+              child: Text(S.current.bond),
+            ),
+            ElevatedButton(
+              onPressed: mstData == null
+                  ? null
+                  : () {
+                      final presents = mstData?.userPresentBox ?? [];
+                      router.pushPage(SniffPresentBoxDetailPage(presents: presents.toList()));
+                    },
+              child: Text(S.current.present_box),
+            ),
+            ElevatedButton(
+              onPressed: mstData == null
+                  ? null
+                  : () {
+                      final gachas = mstData?.userGacha ?? [];
+                      showDialog(
+                        context: context,
+                        useRootNavigator: false,
+                        builder: (context) {
+                          return SimpleDialog(
+                            title: Text(S.current.game_server),
+                            children: [
+                              for (final region in Region.values)
+                                SimpleDialogOption(
+                                  child: Text(region.localName),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    router.pushPage(SniffGachaHistory(records: gachas.toList(), region: region));
+                                  },
+                                )
+                            ],
+                          );
+                        },
+                      );
+                    },
+              child: const Text("Gacha"),
+            ),
+          ],
+        ),
         Wrap(
           spacing: 4,
           runSpacing: 2,
@@ -641,23 +701,11 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               },
               label: Text(S.current.import_http_body_duplicated),
             ),
-            ElevatedButton(
-              onPressed: mstData == null
-                  ? null
-                  : () {
-                      router.push(
-                        child: SvtBondDetailPage(
-                          friendCode: mstData?.firstUser?.friendCode,
-                          cardCollections: cardCollections,
-                        ),
-                      );
-                    },
-              child: Text(S.current.bond),
-            ),
-            ElevatedButton(
+            FilledButton(
               onPressed: mstData?.firstUser == null ? null : didImportData,
               child: Text(S.current.import_data),
             ),
+            const SizedBox(height: 4),
           ],
         )
       ],

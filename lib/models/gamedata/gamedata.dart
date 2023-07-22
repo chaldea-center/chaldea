@@ -465,6 +465,10 @@ class _ProcessedData {
       for (final event in gameData.events.values)
         for (final m in event.missions) m.id: m,
     };
+    eventPointBuffs = {
+      for (final event in gameData.events.values)
+        for (final pointBuff in event.pointBuffs) pointBuff.id: pointBuff,
+    };
     huntingToEventIds = {
       for (final event in gameData.events.values)
         for (final questId in event.extra.huntingQuestIds) questId: event.id,
@@ -474,6 +478,7 @@ class _ProcessedData {
 
   Map<int, EnemyMasterBattle> enemyMasterBattles = {};
   Map<int, EventMission> eventMissions = {};
+  Map<int, EventPointBuff> eventPointBuffs = {};
   Map<int, int> huntingToEventIds = {};
 
   Map<int, Servant> costumeSvtMap = {};

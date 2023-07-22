@@ -78,6 +78,12 @@ UserMstData _$UserMstDataFromJson(Map json) => UserMstData(
       userClassBoardSquare: (json['userClassBoardSquare'] as List<dynamic>?)
           ?.map((e) => UserClassBoardSquare.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      userPresentBox: (json['userPresentBox'] as List<dynamic>?)
+          ?.map((e) => UserPresentBox.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      userGacha: (json['userGacha'] as List<dynamic>?)
+          ?.map((e) => UserGacha.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
     );
 
 UserItem _$UserItemFromJson(Map json) => UserItem(
@@ -258,4 +264,28 @@ UserClassBoardSquare _$UserClassBoardSquareFromJson(Map json) => UserClassBoardS
       classBoardBaseId: json['classBoardBaseId'],
       classBoardSquareIds: json['classBoardSquareIds'],
       classBoardUnlockSquareIds: json['classBoardUnlockSquareIds'],
+    );
+
+UserPresentBox _$UserPresentBoxFromJson(Map json) => UserPresentBox(
+      receiveUserId: json['receiveUserId'],
+      presentId: json['presentId'],
+      messageRefType: json['messageRefType'],
+      messageId: json['messageId'],
+      message: json['message'],
+      fromType: json['fromType'],
+      giftType: json['giftType'],
+      objectId: json['objectId'],
+      num: json['num'],
+      limitCount: json['limitCount'],
+      lv: json['lv'],
+      flag: json['flag'],
+      updatedAt: json['updatedAt'],
+      createdAt: json['createdAt'],
+    );
+
+UserGacha _$UserGachaFromJson(Map json) => UserGacha(
+      gachaId: json['gachaId'],
+      num: json['num'],
+      freeDrawAt: json['freeDrawAt'],
+      status: json['status'],
     );

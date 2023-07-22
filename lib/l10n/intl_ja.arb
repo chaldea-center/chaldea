@@ -660,6 +660,7 @@
   "prefer_april_fool_icon": null,
   "preferred_translation": "お気に入りの訳文",
   "preferred_translation_footer": "UIの言語ではなく、ゲームのデータ記述で使用されます。すべてのゲームデータは、5つの公用語へ翻訳されたことがありません。",
+  "present_box": null,
   "prev_page": "前のページ",
   "preview": "プレビュー",
   "previous_card": "前のカード",

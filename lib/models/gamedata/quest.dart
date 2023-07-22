@@ -502,6 +502,12 @@ class BaseGift {
       case GiftType.questRewardIcon:
         icon ??= Atlas.assetItem(objectId);
         break;
+      case GiftType.eventBoardGameToken:
+        if (objectId ~/ 1000 == 80285) {
+          final tokenId = objectId % 1000;
+          icon ??= AssetURL.i.eventUi("Prefabs/80285/940477${tokenId.toString().padLeft(2, '0')}.png");
+        }
+        showOne = false;
       case GiftType.eventCommandAssist:
         icon ??= Atlas.assetItem(objectId);
         showOne = false;
@@ -511,7 +517,6 @@ class BaseGift {
         showOne = false;
         break;
       case GiftType.eventPointBuff:
-      case GiftType.eventBoardGameToken:
         break;
       case GiftType.unknown:
         jumpToDetail = false;
@@ -539,6 +544,12 @@ class BaseGift {
     String? name;
     if (type == GiftType.equip) {
       name = db.gameData.mysticCodes[objectId]?.lName.l;
+    } else if (type == GiftType.eventPointBuff) {
+      name = db.gameData.others.eventPointBuffs[objectId]?.name ?? "PointBuff $objectId";
+      // } else if (type == GiftType.eventBoardGameToken) {
+      // } else if (type == GiftType.eventCommandAssist) {
+    } else if (type == GiftType.eventHeelPortrait) {
+      name = '${S.current.event_heel}(${db.gameData.entities[objectId]?.lName.l ?? objectId})';
     }
     name ??= GameCardMixin.anyCardItemName(objectId).l;
     return name;
@@ -1731,22 +1742,30 @@ enum QuestFlag {
 }
 
 enum GiftType {
-  unknown,
-  servant,
-  item,
-  friendship,
-  userExp,
-  equip,
-  eventSvtJoin,
-  eventSvtGet,
-  questRewardIcon,
-  costumeRelease,
-  costumeGet,
-  commandCode,
-  eventPointBuff,
-  eventBoardGameToken,
-  eventCommandAssist,
-  eventHeelPortrait,
+  unknown(0),
+  servant(1),
+  item(2),
+  friendship(3),
+  userExp(4),
+  equip(5),
+  eventSvtJoin(6),
+  eventSvtGet(7),
+  questRewardIcon(8),
+  costumeRelease(9),
+  costumeGet(10),
+  commandCode(11),
+  eventPointBuff(12), // 94030203, pointBuff.id
+  eventBoardGameToken(13), // 80285047=eventId*1000+tokenId in mstEventBoardGameToken
+  eventCommandAssist(14), // 80505
+  eventHeelPortrait(15), // =svtId
+  ;
+
+  const GiftType(this.id);
+  final int id;
+
+  static GiftType fromId(int id) {
+    return GiftType.values.firstWhere((e) => e.id == id, orElse: () => GiftType.unknown);
+  }
 }
 
 enum EnemyRoleType {

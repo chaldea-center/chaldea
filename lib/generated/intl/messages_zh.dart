@@ -756,6 +756,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "prefer_april_fool_icon": MessageLookupByLibrary.simpleMessage("优先愚人节头像"),
         "preferred_translation": MessageLookupByLibrary.simpleMessage("首选翻译"),
         "preferred_translation_footer": MessageLookupByLibrary.simpleMessage("用于游戏数据的显示而非应用UI语言。部分语言存在未翻译的部分。"),
+        "present_box": MessageLookupByLibrary.simpleMessage("礼物箱"),
         "prev_page": MessageLookupByLibrary.simpleMessage("上一页"),
         "preview": MessageLookupByLibrary.simpleMessage("预览"),
         "previous_card": MessageLookupByLibrary.simpleMessage("上一张"),

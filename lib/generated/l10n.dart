@@ -7328,6 +7328,17 @@ class S {
     );
   }
 
+  /// `Present Box`
+  String get present_box {
+    return Intl.message(
+      'Present Box',
+      name: 'present_box',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `PREV`
   String get prev_page {
     return Intl.message(

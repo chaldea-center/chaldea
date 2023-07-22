@@ -381,7 +381,7 @@ extension DateTimeX on DateTime {
 
 /// This widget should not have any dependency of outer [context]
 extension DialogShowMethod on material.Widget {
-  /// Don't use this when dialog children depends on [context]
+  /// Don't use this when dialog children depend on [context] or need [State.setState]
   Future<T?> showDialog<T>(material.BuildContext? context,
       {bool barrierDismissible = true, bool useRootNavigator = false}) {
     context ??= kAppKey.currentContext;
