@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/widgets.dart';
 
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
@@ -219,6 +221,8 @@ class _BattleCardTempData {
   _BattleCardTempData(this.actor, this.card);
 }
 
+const _kOneRowRecordHeight = 32.0; // with svt icon
+
 /// Only record user visible actions
 /// make sealed when dart 2.19 enabled
 abstract class BattleRecord {
@@ -229,6 +233,8 @@ abstract class BattleRecord {
   BattleRecordData? toUploadRecord() {
     return null;
   }
+
+  double get estimatedHeight;
 }
 
 class BattleMessageRecord extends BattleRecord {
@@ -242,6 +248,9 @@ class BattleMessageRecord extends BattleRecord {
   BattleMessageRecord copy() {
     return BattleMessageRecord(message, target?.copy(), style?.copyWith(), textAlign);
   }
+
+  @override
+  double get estimatedHeight => _kOneRowRecordHeight;
 }
 
 class BattleSkipWaveRecord extends BattleRecord {
@@ -258,6 +267,9 @@ class BattleSkipWaveRecord extends BattleRecord {
   BattleSkipWaveRecord copy() {
     return BattleSkipWaveRecord(wave);
   }
+
+  @override
+  double get estimatedHeight => 21.0;
 }
 
 class BattleProgressWaveRecord extends BattleRecord {
@@ -274,6 +286,9 @@ class BattleProgressWaveRecord extends BattleRecord {
   BattleProgressWaveRecord copy() {
     return BattleProgressWaveRecord(wave);
   }
+
+  @override
+  double get estimatedHeight => 36;
 }
 
 class BattleProgressTurnRecord extends BattleRecord {
@@ -290,6 +305,9 @@ class BattleProgressTurnRecord extends BattleRecord {
   BattleProgressWaveRecord copy() {
     return BattleProgressWaveRecord(turn);
   }
+
+  @override
+  double get estimatedHeight => 21;
 }
 
 class BattleSkillActivationRecord extends BattleRecord {
@@ -335,6 +353,9 @@ class BattleSkillActivationRecord extends BattleRecord {
   BattleRecordData? toUploadRecord() {
     return recordData;
   }
+
+  @override
+  double get estimatedHeight => 0;
 }
 
 class BattleSkillRecord extends BattleRecord {
@@ -373,6 +394,9 @@ class BattleSkillRecord extends BattleRecord {
       fromPlayer: fromPlayer,
     );
   }
+
+  @override
+  double get estimatedHeight => _kOneRowRecordHeight;
 }
 
 class BattleOrderChangeRecord extends BattleRecord {
@@ -393,6 +417,9 @@ class BattleOrderChangeRecord extends BattleRecord {
   BattleOrderChangeRecord copy() {
     return BattleOrderChangeRecord(onField: onField, backup: backup);
   }
+
+  @override
+  double get estimatedHeight => _kOneRowRecordHeight;
 }
 
 class BattleAttacksInitiationRecord extends BattleRecord {
@@ -434,6 +461,9 @@ class BattleAttacksInitiationRecord extends BattleRecord {
   BattleRecordData? toUploadRecord() {
     return recordData;
   }
+
+  @override
+  double get estimatedHeight => 0;
 }
 
 class BattleAttackRecord extends BattleRecord {
@@ -472,6 +502,14 @@ class BattleAttackRecord extends BattleRecord {
       defenseNp: defenseNp,
       star: star,
     );
+  }
+
+  @override
+  double get estimatedHeight {
+    if (targets.isEmpty) return 95.0;
+    final maxFieldIndex = Maths.max(targets.map((e) => e.target.fieldIndex));
+    final rows = max((maxFieldIndex + 1 / 3).ceil(), 1);
+    return rows * 140;
   }
 }
 
@@ -520,11 +558,17 @@ class AttackResultDetail {
 class BattleLossHpRecord extends BattleRecord {
   @override
   BattleRecord copy() => this;
+
+  @override
+  double get estimatedHeight => _kOneRowRecordHeight;
 }
 
 class BattleReduceHpRecord extends BattleRecord {
   @override
   BattleRecord copy() => this;
+
+  @override
+  double get estimatedHeight => _kOneRowRecordHeight;
 }
 
 class BattleInstantDeathRecord extends BattleRecord {
@@ -553,6 +597,13 @@ class BattleInstantDeathRecord extends BattleRecord {
 
   bool get hasSuccess {
     return targets.any((e) => e.params.success);
+  }
+
+  @override
+  double get estimatedHeight {
+    final maxFieldIndex = Maths.max(targets.map((e) => e.target.fieldIndex));
+    final rows = max((maxFieldIndex + 1 / 3).ceil(), 1);
+    return rows * 103;
   }
 }
 

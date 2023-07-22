@@ -4,27 +4,43 @@ import 'package:chaldea/widgets/widgets.dart';
 
 class FormationCard extends StatelessWidget {
   final BattleTeamFormation formation;
+  final bool showAllMysticCodeIcon;
 
-  const FormationCard({super.key, required this.formation});
+  const FormationCard({super.key, required this.formation, this.showAllMysticCodeIcon = false});
 
   @override
   Widget build(final BuildContext context) {
+    final mc = db.gameData.mysticCodes[formation.mysticCode.mysticCodeId];
+    final Set<String?> mcIcons = {};
+    if (showAllMysticCodeIcon) {
+      mcIcons.add(mc?.extraAssets.item.male);
+      mcIcons.add(mc?.extraAssets.item.female);
+    } else {
+      mcIcons.add(mc?.icon);
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         for (final onFieldSvt in formation.onFieldSvts) _buildServantIcons(context, onFieldSvt),
         for (final backupSvt in formation.backupSvts) _buildServantIcons(context, backupSvt),
         Flexible(
+          flex: mcIcons.length > 1 ? 12 : 8,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              db.getIconImage(
-                formation.mysticCode.level > 0
-                    ? db.gameData.mysticCodes[formation.mysticCode.mysticCodeId]?.icon
-                    : null,
-                aspectRatio: 1,
-                width: 56,
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (final icon in mcIcons)
+                    Flexible(
+                      child: db.getIconImage(
+                        formation.mysticCode.level > 0 ? icon : null,
+                        aspectRatio: 1,
+                        width: 56,
+                      ),
+                    )
+                ],
               ),
               if (formation.mysticCode.level > 0) Text("Lv.${formation.mysticCode.level}", textScaleFactor: 0.9)
             ],
@@ -92,6 +108,6 @@ class FormationCard extends StatelessWidget {
       constraints: const BoxConstraints(maxWidth: 64),
       child: child,
     );
-    return Flexible(child: child);
+    return Flexible(flex: 10, child: child);
   }
 }

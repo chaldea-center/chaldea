@@ -265,6 +265,8 @@ class DamageParameters {
 
   NiceFunction? damageFunction;
 
+  bool get isNotMinRoll => fixedRandom != ConstData.constants.attackRateRandomMin;
+
   @override
   String toString() {
     return 'DamageParameters: {'

@@ -31,6 +31,8 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
               (v) => v == null ? null : CraftFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
           tdDmgOptions: $checkedConvert(
               'tdDmgOptions', (v) => v == null ? null : TdDamageOptions.fromJson(Map<String, dynamic>.from(v as Map))),
+          recordScreenshotJpg: $checkedConvert('recordScreenshotJpg', (v) => v as bool? ?? false),
+          recordShowTwoColumn: $checkedConvert('recordShowTwoColumn', (v) => v as bool? ?? false),
         );
         return val;
       },
@@ -47,6 +49,8 @@ Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <Str
       'svtFilterData': instance.svtFilterData.toJson(),
       'craftFilterData': instance.craftFilterData.toJson(),
       'tdDmgOptions': instance.tdDmgOptions.toJson(),
+      'recordScreenshotJpg': instance.recordScreenshotJpg,
+      'recordShowTwoColumn': instance.recordShowTwoColumn,
     };
 
 const _$PreferPlayerSvtDataSourceEnumMap = {

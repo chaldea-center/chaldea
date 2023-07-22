@@ -56,7 +56,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     final top = gameTops?.of(args.region);
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.current.auto_login),
+        title: Text(S.current.import_auth_file),
         actions: [
           IconButton(
             onPressed: () {

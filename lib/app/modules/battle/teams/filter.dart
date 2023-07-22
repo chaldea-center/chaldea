@@ -105,6 +105,9 @@ class TeamFilter extends FilterPage<TeamFilterData> {
 class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
   @override
   Widget build(BuildContext context) {
+    final availableSvts = widget.availableSvts.toList();
+    availableSvts.sort((a, b) => SvtFilterData.compare(db.gameData.servantsById[a], db.gameData.servantsById[b],
+        keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no], reversed: [true, false, true]));
     return buildAdaptive(
       title: Text(S.current.filter, textScaleFactor: 0.8),
       actions: getDefaultActions(onTapReset: () {
@@ -210,7 +213,7 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
         ),
         FilterGroup<int>(
           title: Text(S.current.team_use_servant),
-          options: widget.availableSvts.toList(),
+          options: availableSvts,
           values: filterData.useSvts,
           optionBuilder: (v) => svtIcon(v),
           shrinkWrap: true,

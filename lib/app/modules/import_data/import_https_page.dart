@@ -675,6 +675,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             ),
           ],
         ),
+        const SizedBox(height: 4),
         Wrap(
           spacing: 4,
           runSpacing: 2,
@@ -705,9 +706,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               onPressed: mstData?.firstUser == null ? null : didImportData,
               child: Text(S.current.import_data),
             ),
-            const SizedBox(height: 4),
           ],
-        )
+        ),
+        const SizedBox(height: 4),
       ],
     );
   }

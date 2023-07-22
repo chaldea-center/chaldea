@@ -32,6 +32,9 @@ class BattleSimSetting {
 
   TdDamageOptions tdDmgOptions;
 
+  bool recordScreenshotJpg;
+  bool recordShowTwoColumn;
+
   BattleSimSetting({
     this.playerDataSource = PreferPlayerSvtDataSource.none,
     Set<int>? pingedCEs,
@@ -43,6 +46,8 @@ class BattleSimSetting {
     SvtFilterData? svtFilterData,
     CraftFilterData? craftFilterData,
     TdDamageOptions? tdDmgOptions,
+    this.recordScreenshotJpg = false,
+    this.recordShowTwoColumn = false,
   })  : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
         pingedSvts = pingedSvts ?? {215, 284, 314, 316, 357},
         defaultLvs = defaultLvs ?? PlayerSvtDefaultData(),

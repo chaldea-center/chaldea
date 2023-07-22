@@ -6,6 +6,7 @@ import 'package:flutter/scheduler.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image/image.dart' as img_lib;
 import 'package:screenshot/screenshot.dart';
 import 'package:tuple/tuple.dart';
 
@@ -46,80 +47,44 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
   bool showDetail = false;
   bool showQuest = false;
   late bool showTeam = widget.initShowTeam;
+  bool get showTwoColumn => db.settings.battleSim.recordShowTwoColumn;
 
   final controller = ScreenshotController();
 
   @override
   Widget build(BuildContext context) {
+    // one column: max width 640
+    // two columns: fixed at 512*2=1024
+    Widget panel = DecoratedBox(
+      decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
+      child: BattleRecorderPanelBase(
+        battleData: widget.battleData,
+        records: widget.records,
+        showDetail: showDetail,
+        quest: showQuest ? widget.quest : null,
+        team: showTeam ? widget.team : null,
+        showTwoColumn: showTwoColumn,
+      ),
+    );
+    if (showTwoColumn) {
+      panel = FittedBox(
+        fit: BoxFit.scaleDown,
+        child: SizedBox(
+          width: 1024,
+          child: panel,
+        ),
+      );
+    } else {
+      panel = ConstrainedBox(constraints: const BoxConstraints(maxWidth: 640), child: panel);
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          children: [
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                S.current.battle_records,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(decoration: TextDecoration.underline),
-                // textAlign: TextAlign.center,
-              ),
-            ),
-            if (widget.quest != null)
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    showQuest = !showQuest;
-                  });
-                },
-                icon: const FaIcon(FontAwesomeIcons.dragon, size: 16),
-                color: showQuest ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).disabledColor,
-                tooltip: 'Show Quest',
-                visualDensity: VisualDensity.standard,
-              ),
-            if (widget.team != null)
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    showTeam = !showTeam;
-                  });
-                },
-                icon: const Icon(Icons.groups_3),
-                color: showTeam ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).disabledColor,
-                tooltip: 'Show Team',
-                visualDensity: VisualDensity.standard,
-              ),
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  showDetail = !showDetail;
-                });
-              },
-              icon: const Icon(Icons.text_fields),
-              color: showDetail ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).disabledColor,
-              tooltip: 'Show svt/skill name',
-              visualDensity: VisualDensity.standard,
-            ),
-            IconButton(
-              onPressed: onTapScreenshot,
-              icon: const Icon(Icons.camera_alt),
-              tooltip: S.current.screenshots,
-              color: Theme.of(context).colorScheme.primaryContainer,
-              visualDensity: VisualDensity.standard,
-            ),
-          ],
-        ),
+        buildActions(),
         Screenshot(
           controller: controller,
-          child: DecoratedBox(
-            decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
-            child: BattleRecorderPanelBase(
-              battleData: widget.battleData,
-              records: widget.records,
-              showDetail: showDetail,
-              quest: showQuest ? widget.quest : null,
-              team: showTeam ? widget.team : null,
-            ),
-          ),
+          child: panel,
         ),
         if ((widget.records ?? widget.battleData?.recorder.records)?.any((e) => e is BattleAttackRecord) == true)
           SFooter.rich(TextSpan(children: [
@@ -131,6 +96,74 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
             const TextSpan(text: ': '),
             TextSpan(text: S.current.damage_recorder_param_hint),
           ])),
+      ],
+    );
+  }
+
+  Widget buildActions() {
+    return Row(
+      children: [
+        const SizedBox(width: 16),
+        Expanded(
+          child: Text(
+            S.current.battle_records,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(decoration: TextDecoration.underline),
+            // textAlign: TextAlign.center,
+          ),
+        ),
+        IconButton(
+          onPressed: () {
+            setState(() {
+              db.settings.battleSim.recordShowTwoColumn = !showTwoColumn;
+            });
+          },
+          icon: const FaIcon(FontAwesomeIcons.tableColumns, size: 16),
+          color: showTwoColumn ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).disabledColor,
+          tooltip: 'Two Columns',
+          visualDensity: VisualDensity.standard,
+        ),
+        if (widget.quest != null)
+          IconButton(
+            onPressed: () {
+              setState(() {
+                showQuest = !showQuest;
+              });
+            },
+            icon: const FaIcon(FontAwesomeIcons.dragon, size: 16),
+            color: showQuest ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).disabledColor,
+            tooltip: 'Show Quest',
+            visualDensity: VisualDensity.standard,
+          ),
+        if (widget.team != null)
+          IconButton(
+            onPressed: () {
+              setState(() {
+                showTeam = !showTeam;
+              });
+            },
+            icon: const Icon(Icons.groups_3),
+            color: showTeam ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).disabledColor,
+            tooltip: 'Show Team',
+            visualDensity: VisualDensity.standard,
+          ),
+        IconButton(
+          onPressed: () {
+            setState(() {
+              showDetail = !showDetail;
+            });
+          },
+          icon: const Icon(Icons.text_fields),
+          color: showDetail ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).disabledColor,
+          tooltip: 'Show svt/skill name',
+          visualDensity: VisualDensity.standard,
+        ),
+        IconButton(
+          onPressed: onTapScreenshot,
+          icon: const Icon(Icons.camera_alt),
+          tooltip: S.current.screenshots,
+          color: Theme.of(context).colorScheme.primaryContainer,
+          visualDensity: VisualDensity.standard,
+        ),
       ],
     );
   }
@@ -172,6 +205,27 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
               padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
               child: Text(S.current.recorder_screenshot_current_view),
             ),
+            kIndentDivider,
+            StatefulBuilder(
+              builder: (context, update) {
+                return ListTileTheme.merge(
+                  horizontalTitleGap: 0,
+                  child: CheckboxListTile(
+                    dense: true,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                    // materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    title: const Text("Compress to JPG"),
+                    subtitle: PlatformU.supportCopyImage ? const Text("Only for save, don't check for copy") : null,
+                    value: db.settings.battleSim.recordScreenshotJpg,
+                    controlAffinity: ListTileControlAffinity.leading,
+                    onChanged: (v) {
+                      db.settings.battleSim.recordScreenshotJpg = v!;
+                      update(() {});
+                    },
+                  ),
+                );
+              },
+            ),
           ],
         );
       },
@@ -185,17 +239,37 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
     }
     if (!EasyLoading.isShow) EasyLoading.show();
     try {
-      final data = await controller.capture(pixelRatio: MediaQuery.of(context).devicePixelRatio);
+      final box = context.findRenderObject() as RenderBox?;
+      double ratio = 1.0;
+      if (showTwoColumn && box != null && box.hasSize) {
+        final width = box.size.width;
+        if (width < 1024 && width > 0) {
+          ratio = 1024 / width;
+        }
+      }
+      Uint8List? data = await controller.capture(pixelRatio: ratio * MediaQuery.of(context).devicePixelRatio);
       if (data == null) {
         EasyLoading.showError('Something went wrong.');
         return;
       }
       EasyLoading.dismiss();
       if (!mounted) return;
+      bool useJpg = false;
+      if (db.settings.battleSim.recordScreenshotJpg) {
+        try {
+          data = img_lib.encodeJpg(img_lib.decodePng(data)!, quality: 70);
+          useJpg = true;
+        } catch (e) {
+          useJpg = false;
+          print(e);
+        }
+      }
+
       final quest = widget.battleData?.niceQuest;
       final t = DateTime.now();
       String fn = [t.month, t.day, t.hour, t.minute, t.second].map((e) => e.toString().padLeft(2, '0')).join('_');
-      fn = 'battle_log_${quest?.id}_${quest?.phase}_$fn.png';
+      fn = "battle_log_${quest?.id}_${quest?.phase}_$fn.${useJpg ? 'jpg' : 'png'}";
+
       ImageActions.showSaveShare(
         context: context,
         data: data,
@@ -210,92 +284,143 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
 class BattleRecorderPanelBase extends StatelessWidget {
   final BattleData? battleData;
   final List<BattleRecord>? records;
-  final bool showDetail;
   final QuestPhase? quest;
   final BattleTeamSetup? team;
+  final bool showDetail;
+  final bool showTwoColumn;
+
   const BattleRecorderPanelBase({
     super.key,
     this.battleData,
     this.records,
-    required this.showDetail,
     this.quest,
     this.team,
+    required this.showDetail,
+    required this.showTwoColumn,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (quest != null) getQuest(quest!),
-        if (team != null) getTeam(context, team!),
-        getRecords(context),
-      ],
-    );
+    List<(double, Widget)> children = [
+      if (quest != null) (308.0, getQuest(quest!)),
+      if (team != null) (115.0, getTeam(context, team!)),
+      ...getRecordCards(context),
+    ];
+    if (showTwoColumn) {
+      final totalHeight = Maths.sum(children.map((e) => e.$1));
+      int leftCount = 0;
+      double leftHeight = 0.0;
+      double rightHeight = totalHeight - leftHeight;
+      for (int index = 0; index < children.length; index++) {
+        final height = children[index].$1;
+        if (max(leftHeight + height, rightHeight - height) <= max(leftHeight, rightHeight)) {
+          leftCount += 1;
+          leftHeight += height;
+          rightHeight -= height;
+        } else {
+          break;
+        }
+      }
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final cards in [children.take(leftCount), children.skip(leftCount)])
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: cards.map((e) => e.$2).toList(),
+              ),
+            ),
+        ],
+      );
+    } else {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: children.map((e) => e.$2).toList(),
+      );
+    }
   }
 
-  Widget getRecords(BuildContext context) {
-    List<Widget> cards = [];
-    List<Widget> cardChildren = [];
+  List<(double, Widget)> getRecordCards(BuildContext context) {
+    final cards = <(double height, Widget child)>[];
     final records = this.records ?? battleData?.recorder.records ?? [];
     if (records.length == 2 && records[0] is BattleProgressWaveRecord && records[1] is BattleProgressTurnRecord) {
-      return const SizedBox.shrink();
+      return [];
     }
+    List<(double, Widget)> cardChildren = [];
     for (final record in records) {
       if (record is BattleProgressWaveRecord) {
         if (cardChildren.isNotEmpty) {
           cards.add(createWave(context, cardChildren));
         }
         cardChildren = [];
-        cardChildren.add(Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Center(
-            child: Text(
-              '${S.current.quest_wave} ${record.wave}',
-              style: Theme.of(context).textTheme.titleMedium,
+
+        cardChildren.add((
+          record.estimatedHeight,
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Center(
+              child: Text(
+                '${S.current.quest_wave} ${record.wave}',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ),
-          ),
+          )
         ));
       } else if (record is BattleSkipWaveRecord) {
-        cardChildren.add(Text(
-          'Skip Wave ${record.wave}',
-          style: TextStyle(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold),
-          textScaleFactor: 1.2,
+        cardChildren.add((
+          record.estimatedHeight,
+          Text(
+            'Skip Wave ${record.wave}',
+            style: TextStyle(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold),
+            textScaleFactor: 1.2,
+          )
         ));
       } else if (record is BattleProgressTurnRecord) {
-        cardChildren.add(Center(
-          child: Text(
-            '${S.current.battle_turn} ${record.turn}',
-            style: Theme.of(context).textTheme.titleSmall,
-          ),
+        cardChildren.add((
+          record.estimatedHeight,
+          Center(
+            child: Text(
+              '${S.current.battle_turn} ${record.turn}',
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+          )
         ));
       } else if (record is BattleSkillRecord) {
-        cardChildren.add(buildSkillLog(context, record));
+        cardChildren.add((record.estimatedHeight, buildSkillLog(context, record)));
       } else if (record is BattleOrderChangeRecord) {
-        cardChildren.add(prefixIndicator(
-          context,
-          Text.rich(TextSpan(children: [
-            const TextSpan(text: 'Order Change', style: TextStyle(fontWeight: FontWeight.bold)),
-            const TextSpan(text: ': '),
-            ...drawSvt(context, record.onField),
-            const TextSpan(text: '⇄ '),
-            ...drawSvt(context, record.backup),
-          ])),
+        cardChildren.add((
+          record.estimatedHeight,
+          prefixIndicator(
+            context,
+            Text.rich(TextSpan(children: [
+              const TextSpan(text: 'Order Change', style: TextStyle(fontWeight: FontWeight.bold)),
+              const TextSpan(text: ': '),
+              ...drawSvt(context, record.onField),
+              const TextSpan(text: '⇄ '),
+              ...drawSvt(context, record.backup),
+            ])),
+          )
         ));
       } else if (record is BattleAttackRecord) {
-        cardChildren.add(_AttackDetailWidget(record: record, battleData: battleData));
+        cardChildren.add((record.estimatedHeight, _AttackDetailWidget(record: record, battleData: battleData)));
       } else if (record is BattleInstantDeathRecord) {
-        cardChildren.add(_InstantDeathDetailWidget(record: record, battleData: battleData));
+        cardChildren.add((record.estimatedHeight, _InstantDeathDetailWidget(record: record, battleData: battleData)));
       } else if (record is BattleMessageRecord) {
-        cardChildren.add(Text.rich(
-          TextSpan(children: [
-            TextSpan(text: record.message, style: record.style),
-            if (record.target != null) ...[
-              const TextSpan(text: ': '),
-              ...drawSvt(context, record.target!),
-            ],
-          ]),
-          textAlign: record.textAlign,
+        cardChildren.add((
+          record.estimatedHeight,
+          Text.rich(
+            TextSpan(children: [
+              TextSpan(text: record.message, style: record.style),
+              if (record.target != null) ...[
+                const TextSpan(text: ': '),
+                ...drawSvt(context, record.target!),
+              ],
+            ]),
+            textAlign: record.textAlign,
+          )
         ));
       } else if (record is BattleAttacksInitiationRecord || record is BattleSkillActivationRecord) {
         // noop
@@ -306,26 +431,25 @@ class BattleRecorderPanelBase extends StatelessWidget {
     if (cardChildren.isNotEmpty) {
       cards.add(createWave(context, cardChildren));
     }
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: cards,
-    );
+    return cards;
   }
 
-  Widget createWave(BuildContext context, List<Widget> children) {
-    return Card(
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: children.toList(),
+  (double, Widget) createWave(BuildContext context, List<(double, Widget)> children) {
+    return (
+      Maths.sum(children.map((e) => e.$1)) + 12,
+      Card(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8.0)),
         ),
-      ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: children.map((e) => e.$2).toList(),
+          ),
+        ),
+      )
     );
   }
 
@@ -503,7 +627,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            FormationCard(formation: team.toFormationData()),
+            FormationCard(formation: team.toFormationData(), showAllMysticCodeIcon: true),
             // TeamSetupCard(
             //   onFieldSvts: team.onFieldSvtDataList,
             //   backupSvts: team.backupSvtDataList,
@@ -709,7 +833,9 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
               textScaleFactor: 0.8,
             ),
           if (record.targets.isNotEmpty || record.damage != 0) ...[
-            coloredText('DMG ${record.damage}', Colors.red),
+            record.targets.any((e) => e.damageParams.isNotMinRoll)
+                ? coloredText('DMG ${record.damage}*', Colors.red)
+                : coloredText('DMG ${record.damage}', Colors.red),
             if (record.attacker.isPlayer) coloredText('NP ${record.attackNp / 100}', Colors.blue),
             if (record.attacker.isPlayer) coloredText('Star ${record.star / 1000}', Colors.green),
           ],
@@ -836,7 +962,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
           ),
           coloredText('HP ${detail.target.hp}', null),
           coloredText(
-            'DMG ${Maths.sum(result.damages)}',
+            detail.damageParams.isNotMinRoll ? 'DMG ${result.totalDamage}*' : 'DMG ${result.totalDamage}',
             Colors.red,
             () => showParams(
               context,
@@ -1184,7 +1310,6 @@ class DefenseNpParamDialog extends StatelessWidget with _ParamDialogMixin {
     final attackerNpRate = params.attackerNpRate / 1000;
     final npGainBuff = toModifier(params.npGainBuff - 1000);
     final defenseNpGainBuff = toModifier(params.defenseNpGainBuff - 1000);
-    print(['overkillStates', result.overkillStates]);
     return buildDialog(
       context: context,
       title: "Defend NP Params",

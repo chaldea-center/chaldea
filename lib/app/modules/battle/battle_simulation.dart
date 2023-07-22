@@ -315,14 +315,11 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         ),
         const Divider(thickness: 1, height: 8),
         Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 720),
-            child: BattleRecorderPanel(
-              battleData: battleData,
-              quest: questPhase,
-              team: widget.options.team,
-              initShowTeam: widget.replayActions != null,
-            ),
+          child: BattleRecorderPanel(
+            battleData: battleData,
+            quest: questPhase,
+            team: widget.options.team,
+            initShowTeam: widget.replayActions != null,
           ),
         )
       ],
