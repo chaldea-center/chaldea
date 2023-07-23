@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/extension.dart';
+import 'package:chaldea/utils/utils.dart';
 import '../../app/modules/home/elements/gallery_item.dart';
 import '../../packages/language.dart';
 import '../gamedata/common.dart';
@@ -15,8 +16,10 @@ import '_helper.dart';
 import 'autologin.dart';
 import 'battle.dart';
 import 'filter_data.dart';
+import 'remote_config.dart';
 import 'version.dart';
 
+export 'remote_config.dart';
 export 'filter_data.dart';
 export 'battle.dart';
 
@@ -40,7 +43,7 @@ class LocalSettings {
   bool updateDataBeforeStart;
   bool checkDataHash;
   bool autoUpdateApp;
-  bool proxyServer;
+  bool proxyServer; // when change this, also change Hosts.cn
   bool autoRotate;
   bool autoResetFilter;
   bool hideUnreleasedCard;
@@ -70,6 +73,8 @@ class LocalSettings {
   ScriptReaderFilterData scriptReaderFilterData;
 
   List<AutoLoginData> autologins;
+
+  RemoteConfig remoteConfig;
 
   LocalSettings({
     this.beta = false,
@@ -113,6 +118,7 @@ class LocalSettings {
     SummonFilterData? summonFilterData,
     ScriptReaderFilterData? scriptReaderFilterData,
     List<AutoLoginData>? autologins,
+    RemoteConfig? remoteConfig,
   })  : _language = language,
         _preferredFavorite = preferredFavorite ?? (launchTimes == 0 ? FavoriteState.all : null),
         preferredRegions = preferredRegions == null
@@ -132,7 +138,8 @@ class LocalSettings {
         eventFilterData = eventFilterData ?? EventFilterData(),
         summonFilterData = summonFilterData ?? SummonFilterData(),
         scriptReaderFilterData = scriptReaderFilterData ?? ScriptReaderFilterData(),
-        autologins = autologins ?? [] {
+        autologins = autologins ?? [],
+        remoteConfig = remoteConfig ?? RemoteConfig() {
     this.galleries.removeWhere((key, value) => GalleryItem.allItems.every((item) => item.name != key));
   }
 
@@ -340,23 +347,6 @@ class CarouselItem {
   factory CarouselItem.fromJson(Map<String, dynamic> data) => _$CarouselItemFromJson(data);
 
   Map<String, dynamic> toJson() => _$CarouselItemToJson(this);
-}
-
-@JsonSerializable()
-class RemoteConfig {
-  String? forceUpgradeVersion;
-  List<String> blockedCarousels;
-  List<String> blockedErrors;
-
-  RemoteConfig({
-    this.forceUpgradeVersion,
-    this.blockedCarousels = const [],
-    this.blockedErrors = const [],
-  });
-
-  factory RemoteConfig.fromJson(Map<String, dynamic> data) => _$RemoteConfigFromJson(data);
-
-  Map<String, dynamic> toJson() => _$RemoteConfigToJson(this);
 }
 
 @JsonSerializable()

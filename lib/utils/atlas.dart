@@ -1,20 +1,22 @@
 import 'package:tuple/tuple.dart';
 
 import 'package:chaldea/utils/utils.dart';
-import '../app/api/hosts.dart';
 import '../models/models.dart';
 
 class Atlas {
   Atlas._();
 
-  static String get assetHost => Hosts.atlasAssetHost;
+  static String get assetHost => HostsX.atlasAssetHost;
   static const String appHost = 'https://apps.atlasacademy.io/db/';
   static const String _dbAssetHost = 'https://cdn.jsdelivr.net/gh/atlasacademy/apps/packages/db/src/Assets/';
 
   static const _CommonAssets common = _CommonAssets();
 
   static bool isAtlasAsset(String url) {
-    return url.startsWith(Hosts.kAtlasAssetHostGlobal) || url.startsWith(Hosts.kAtlasAssetHostCN);
+    return url.startsWith(HostsX.atlasAsset.kGlobal) ||
+        url.startsWith(HostsX.atlasAsset.kCN) ||
+        url.startsWith(HostsX.atlasAsset.cn) ||
+        url.startsWith(HostsX.atlasAsset.global);
   }
 
   /// db link
@@ -237,7 +239,7 @@ class AssetURL {
   String svtTexture(dynamic battleCharaId) => "$baseUrl/$region/Servants/$battleCharaId/textures/$battleCharaId.png";
 }
 
-const _assetHost = Hosts.kAtlasAssetHostGlobal;
+const _assetHost = Hosts0.kAtlasAssetHostGlobal;
 
 class _CommonAssets {
   final emptyCeIcon =

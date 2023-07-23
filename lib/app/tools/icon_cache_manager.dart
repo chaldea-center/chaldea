@@ -15,7 +15,6 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
-import '../api/hosts.dart';
 
 @protected
 class IconCacheManagePage extends StatefulWidget {
@@ -140,15 +139,15 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
   }
 
   String proxyAssetUrl(String url) {
-    return Hosts.cn && url.startsWith(Hosts.kAtlasAssetHostGlobal)
-        ? url.replaceFirst(Hosts.kAtlasAssetHostGlobal, Hosts.kAtlasAssetHostCN)
+    return HostsX.proxy && url.startsWith(Hosts0.kAtlasAssetHostGlobal)
+        ? url.replaceFirst(Hosts0.kAtlasAssetHostGlobal, HostsX.atlasAssetHost)
         : url;
   }
 
   @override
   Future<String?> download(String url, {RateLimiter? limiter, bool allowWeb = false}) async {
     final localPath = atlasUrlToFp(url, allowWeb: allowWeb);
-    if (Hosts.cn) {
+    if (HostsX.proxy) {
       url = proxyAssetUrl(url);
     }
     if (localPath == null) return null;
@@ -210,14 +209,24 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
 
   String? atlasUrlToFp(String url, {bool allowWeb = false}) {
     if (kIsWeb && !allowWeb) return null;
-    String urlPath;
-    if (url.startsWith(Hosts.kAtlasAssetHostGlobal)) {
-      urlPath = url.replaceFirst(Hosts.kAtlasAssetHostGlobal, '');
-    } else if (url.startsWith(Hosts.kAtlasAssetHostCN)) {
-      urlPath = url.replaceFirst(Hosts.kAtlasAssetHostCN, '');
-    } else {
+    final uri = Uri.tryParse(url);
+    if (uri == null) return null;
+    // in case non-ascii in path
+    String? urlPath;
+    for (final host in [
+      HostsX.atlasAsset.kGlobal,
+      HostsX.atlasAsset.kCN,
+      HostsX.atlasAsset.global,
+      HostsX.atlasAsset.cn
+    ]) {
+      if (url.startsWith(host)) {
+        urlPath = url.replaceFirst(host, '');
+      }
+    }
+    if (urlPath == null) {
       return null;
     }
+    urlPath = urlPath.split('?').first.trim();
     return pathlib.joinAll([db.paths.atlasAssetsDir, ...urlPath.split('/').where((e) => e.isNotEmpty)]);
   }
 }

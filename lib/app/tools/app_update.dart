@@ -8,7 +8,6 @@ import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:path/path.dart';
 
-import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
@@ -221,8 +220,7 @@ class AppUpdateDetail {
 
 Future<List<_Release>> _githubReleases(String org, String repo) async {
   final dio = DioE();
-  final root =
-      db.settings.proxyServer ? '${Hosts.kWorkerHostCN}/proxy/github/api.github.com' : 'https://api.github.com';
+  final root = db.settings.proxyServer ? '${HostsX.worker.cn}/proxy/github/api.github.com' : 'https://api.github.com';
   final resp = await dio.get('$root/repos/$org/$repo/releases');
   return (resp.data as List).map((e) => _Release.fromJson(e)).toList();
 }
@@ -274,7 +272,7 @@ class _Asset {
   }
 
   String get proxyUrl {
-    return browserDownloadUrl.replaceFirst('https://github.com/', '${Hosts.kWorkerHostCN}/proxy/github/github.com/');
+    return browserDownloadUrl.replaceFirst('https://github.com/', '${HostsX.worker.cn}/proxy/github/github.com/');
   }
 
   factory _Asset.fromJson(Map data) {

@@ -10,7 +10,6 @@ import 'package:path/path.dart';
 import 'package:pool/pool.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
-import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../generated/l10n.dart';
 import '../../models/models.dart';
@@ -322,7 +321,7 @@ class GameDataLoader {
     bool t = false,
     Duration? timeout,
   }) {
-    String url = '${Hosts.dataHost}/$filename';
+    String url = '${HostsX.dataHost}/$filename';
     if (t) {
       final uri = Uri.parse(url);
       url = uri.replace(queryParameters: {

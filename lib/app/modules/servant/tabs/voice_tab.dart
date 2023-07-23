@@ -10,7 +10,6 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart' as pathlib;
 
 import 'package:chaldea/app/api/atlas.dart';
-import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/app/descriptors/voice_cond.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
@@ -257,7 +256,7 @@ class VoiceGroupAccordion extends StatelessWidget {
             onTap: () {
               const limitCount = 0;
               FullscreenImageViewer.show(context: context, urls: [
-                '${Hosts.atlasAssetHost}/JP/CharaFigure/${group.svtId}$limitCount/${group.svtId}${limitCount}_merged.png'
+                '${HostsX.atlasAssetHost}/JP/CharaFigure/${group.svtId}$limitCount/${group.svtId}${limitCount}_merged.png'
               ]);
             },
           ));

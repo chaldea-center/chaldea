@@ -6,7 +6,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
-import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -239,7 +238,7 @@ class _CharaFigureImageState extends State<CharaFigureImage> {
       }
     }
     if (figureId != null) {
-      figureUrl = '${Hosts.kAtlasAssetHostGlobal}/$region/CharaFigure/$figureId/${figureId}_merged.png';
+      figureUrl = '${HostsX.atlasAsset.kGlobal}/$region/CharaFigure/$figureId/${figureId}_merged.png';
     }
     if (mounted) setState(() {});
     if (figureUrl == null) return;

@@ -17,7 +17,6 @@ import 'package:chaldea/models/userdata/security.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/icon_clipper.dart';
 import 'package:chaldea/widgets/image/image_viewer.dart';
-import '../app/api/hosts.dart';
 import '../packages/app_info.dart';
 import '../packages/language.dart';
 import '../packages/method_channel/method_channel_chaldea.dart';
@@ -335,7 +334,7 @@ class _Database {
   }
 
   Dio get apiWorkerDio => DioE(BaseOptions(
-        baseUrl: Hosts.workerHost,
+        baseUrl: HostsX.workerHost,
         // baseUrl: kDebugMode ? 'http://localhost:8183' : ,
         headers: {
           'x-chaldea-ver': AppInfo.versionString,
@@ -346,7 +345,7 @@ class _Database {
       ));
 
   Dio get apiServerDio => DioE(BaseOptions(
-        baseUrl: Hosts.apiHost,
+        baseUrl: HostsX.apiHost,
         // baseUrl: kDebugMode ? 'http://localhost:8000/' : Hosts.apiHost,
         queryParameters: {
           'key': AppInfo.uuid,

@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
@@ -46,7 +45,7 @@ class _ApkListPageState extends State<ApkListPage> {
 
   late final _hidden = db.settings.hideApple;
   late bool proxy = db.settings.proxyServer;
-  String get apkHost => proxy ? '${Hosts.kWorkerHostCN}/proxy' : 'https://fgo.square.ovh';
+  String get apkHost => proxy ? '${HostsX.worker.kCN}/proxy' : 'https://fgo.square.ovh';
 
   @override
   void initState() {
@@ -76,7 +75,7 @@ class _ApkListPageState extends State<ApkListPage> {
           data.version = RegExp(r'FateGO[_\-](\d+\.\d+\.\d+)[_\-]').firstMatch(url)?.group(1);
         }
       } else {
-        final workerHost = proxy || Language.isCHS ? Hosts.kWorkerHostCN : Hosts.kWorkerHostGlobal;
+        final workerHost = HostsX.worker.of(proxy || Language.isCHS);
         final resp = await DioE().get('$workerHost/proxy/gplay-ver/', queryParameters: {
           "id": data.packageId,
           // "t": (DateTime.now().timestamp ~/ 1000).toString()
@@ -86,7 +85,7 @@ class _ApkListPageState extends State<ApkListPage> {
           data.version = ver;
           if (data.region == null) {
             url = data.url = proxy
-                ? '${Hosts.kWorkerHostCN}/proxy/github/github.com/chaldea-center/chaldea/releases/download/v$ver/chaldea-$ver-'
+                ? '${HostsX.workerHost}/proxy/github/github.com/chaldea-center/chaldea/releases/download/v$ver/chaldea-$ver-'
                 : 'https://github.com/chaldea-center/chaldea/releases/download/v$ver/chaldea-$ver-';
           } else {
             url = data.url = '$host/apk/${data.packageId}.v$ver.apk';

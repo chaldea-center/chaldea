@@ -15,7 +15,6 @@ import 'package:html/parser.dart' as parser;
 import 'package:string_validator/string_validator.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
-import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -88,9 +87,9 @@ class AppNewsCarousel extends StatefulWidget {
       final _dio = DioE();
 
       // app news
-      taskChaldea = _dio.get('${Hosts.kDataHostCN}/news.json').then((response) async {
+      taskChaldea = _dio.get('${HostsX.data.cn}/news.json').then((response) async {
         List<CarouselItem> items = [];
-        final data = (await _dio.get('${Hosts.dataHost}/version.json')).data as Map;
+        final data = (await _dio.get('${HostsX.dataHost}/version.json')).data as Map;
         final minVer = AppVersion.parse(data['minimalApp']);
         if (minVer > AppInfo.version) {
           items.add(CarouselItem(
@@ -116,7 +115,7 @@ class AppNewsCarousel extends StatefulWidget {
         proxy ??= kIsWeb;
         if (proxy) {
           queryParameters = {'url': url};
-          url = '${Hosts.workerHost}/corsproxy/';
+          url = '${HostsX.workerHost}/corsproxy/';
         }
         return _dio.get(
           url,

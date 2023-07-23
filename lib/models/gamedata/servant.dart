@@ -1,4 +1,3 @@
-import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -6,6 +5,7 @@ import '../../app/app.dart';
 import '../../app/tools/gamedata_loader.dart';
 import '../db.dart';
 import '../userdata/filter_data.dart';
+import '../userdata/remote_config.dart';
 import '../userdata/userdata.dart';
 import '_helper.dart';
 import 'common.dart';
@@ -478,13 +478,13 @@ class Servant with GameCardMixin {
       return null;
     }
     final padded = originalCollectionNo.toString().padLeft(3, '0');
-    return '${Hosts.kAtlasAssetHostGlobal}/JP/FFO/Atlas/Sprite/icon_servant_$padded.png';
+    return '${HostsX.atlasAsset.kGlobal}/JP/FFO/Atlas/Sprite/icon_servant_$padded.png';
   }
 
   String? get aprilFoolBorderedIcon {
     if (aprilFoolIcon == null) return null;
     final padded = originalCollectionNo.toString().padLeft(3, '0');
-    return '${Hosts.kAtlasAssetHostGlobal}/JP/FFO/Atlas/Sprite_bordered/icon_servant_${padded}_bordered.png';
+    return '${HostsX.atlasAsset.kGlobal}/JP/FFO/Atlas/Sprite_bordered/icon_servant_${padded}_bordered.png';
   }
 
   int battleCharaToLimitCount(int battleCharaId) {

@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart' as launcher;
 import 'package:url_launcher/url_launcher_string.dart' as launcher_string;
 
-import 'package:chaldea/app/api/hosts.dart';
 import '../generated/l10n.dart';
+import '../models/userdata/remote_config.dart';
 import '../packages/language.dart';
 import '../packages/platform/platform.dart';
 import 'constants.dart';
@@ -27,13 +27,13 @@ class ChaldeaUrl {
   static String app(String path, [bool? useCN]) {
     if (useCN == null && kIsWeb) {
       final href = kPlatformMethods.href;
-      if (href.startsWith(Hosts.kAppHostCN)) {
+      if (href.startsWith(HostsX.app.cn) || href.startsWith(HostsX.app.kCN)) {
         useCN = true;
       }
     }
-    useCN ??= Hosts.cn || Language.isCHS;
+    useCN ??= HostsX.proxy || Language.isCHS;
     if (!path.startsWith('/')) path = '/$path';
-    return (useCN ? Hosts.kAppHostCN : Hosts.kAppHostGlobal) + path;
+    return HostsX.app.of(useCN) + path;
   }
 
   static IconButton docsHelpBtn(String path, {String? zhPath, String? tooltip, String dir = 'guide/'}) {

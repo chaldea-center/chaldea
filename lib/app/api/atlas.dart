@@ -6,7 +6,6 @@ import 'package:chaldea/packages/rate_limiter.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../models/models.dart';
 import 'cache.dart';
-import 'hosts.dart';
 
 class AtlasApi {
   const AtlasApi._();
@@ -16,7 +15,7 @@ class AtlasApi {
 
   static RateLimiter get rateLimiter => cacheManager.rateLimiter;
 
-  static String get _atlasApiHost => Hosts.atlasApiHost;
+  static String get _atlasApiHost => HostsX.atlasApiHost;
 
   static Future<void> clear() async {
     cachedQuestPhases.clear();
@@ -299,7 +298,7 @@ class AtlasApi {
   // game top
   static Future<GameTops?> gametops({Duration? expireAfter = Duration.zero}) async {
     final tops = await cacheManager.getModel(
-      '${Hosts.dataHost}/gametop.json',
+      '${HostsX.dataHost}/gametop.json',
       (data) => GameTops.fromJson(data),
       expireAfter: expireAfter,
     );
@@ -319,7 +318,7 @@ class AtlasApi {
 
   static Future<AssetBundleDecrypt?> assetbundle(Region region, {Duration? expireAfter = Duration.zero}) {
     return cacheManager.getModel(
-      Hosts.proxyWorker(
+      HostsX.proxyWorker(
           'https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/metadata/assetbundle.json'),
       (data) => AssetBundleDecrypt.fromJson(data),
       expireAfter: expireAfter,
@@ -346,7 +345,7 @@ class AtlasApi {
         break;
     }
     return cacheManager.getModelRaw(
-      '${Hosts.workerHost}/proxy/gplay-ver?id=$bundleId',
+      '${HostsX.workerHost}/proxy/gplay-ver?id=$bundleId',
       (data) {
         if (RegExp(r'^\d+\.\d+\.\d+$').hasMatch(data)) {
           return data;
@@ -371,18 +370,9 @@ class CachedApi {
       url += 'bvid=$bvid';
     }
     return cacheManager.getModel(
-      corsWebOnly(url),
+      kIsWeb ? HostsX.corsProxy(url) : url,
       (data) => Map.from(data),
       expireAfter: expireAfter,
     );
-  }
-
-  static String corsWebOnly(String url) {
-    if (kIsWeb) return corsProxy(url);
-    return url;
-  }
-
-  static String corsProxy(String url) {
-    return Uri.parse(Hosts.workerHost).replace(path: '/corsproxy/', queryParameters: {'url': url}).toString();
   }
 }

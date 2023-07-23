@@ -86,6 +86,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               (v) => (v as List<dynamic>?)
                   ?.map((e) => AutoLoginData.fromJson(Map<String, dynamic>.from(e as Map)))
                   .toList()),
+          remoteConfig: $checkedConvert(
+              'remoteConfig', (v) => v == null ? null : RemoteConfig.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         return val;
       },
@@ -132,6 +134,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'summonFilterData': instance.summonFilterData.toJson(),
       'scriptReaderFilterData': instance.scriptReaderFilterData.toJson(),
       'autologins': instance.autologins.map((e) => e.toJson()).toList(),
+      'remoteConfig': instance.remoteConfig.toJson(),
       'language': instance.language,
       'preferredFavorite': _$FavoriteStateEnumMap[instance.preferredFavorite],
     };
@@ -344,27 +347,6 @@ Map<String, dynamic> _$CarouselItemToJson(CarouselItem instance) => <String, dyn
       'eventIds': instance.eventIds,
       'warIds': instance.warIds,
       'summonIds': instance.summonIds,
-    };
-
-RemoteConfig _$RemoteConfigFromJson(Map json) => $checkedCreate(
-      'RemoteConfig',
-      json,
-      ($checkedConvert) {
-        final val = RemoteConfig(
-          forceUpgradeVersion: $checkedConvert('forceUpgradeVersion', (v) => v as String?),
-          blockedCarousels: $checkedConvert(
-              'blockedCarousels', (v) => (v as List<dynamic>?)?.map((e) => e as String).toList() ?? const []),
-          blockedErrors: $checkedConvert(
-              'blockedErrors', (v) => (v as List<dynamic>?)?.map((e) => e as String).toList() ?? const []),
-        );
-        return val;
-      },
-    );
-
-Map<String, dynamic> _$RemoteConfigToJson(RemoteConfig instance) => <String, dynamic>{
-      'forceUpgradeVersion': instance.forceUpgradeVersion,
-      'blockedCarousels': instance.blockedCarousels,
-      'blockedErrors': instance.blockedErrors,
     };
 
 GithubSetting _$GithubSettingFromJson(Map json) => $checkedCreate(

@@ -14,12 +14,12 @@ import 'package:octo_image/octo_image.dart';
 import 'package:path/path.dart' as pathlib;
 import 'package:uuid/uuid.dart';
 
-import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../app/tools/icon_cache_manager.dart';
+import '../../models/userdata/remote_config.dart';
 import '../../packages/network.dart';
 import '../layout_try_builder.dart';
 import 'cached_image_option.dart';
@@ -160,7 +160,8 @@ class CachedImage extends StatefulWidget {
       ].any((e) => uri.host.endsWith(e));
     }
     if (cors) {
-      return Uri.parse(Hosts.workerHost).replace(path: '/corsproxy/', queryParameters: {'url': url}).toString();
+      // TODO: corsproxy
+      return Uri.parse(HostsX.workerHost).replace(path: '/corsproxy/', queryParameters: {'url': url}).toString();
     }
     return url;
   }

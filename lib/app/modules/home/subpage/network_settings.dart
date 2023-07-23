@@ -5,9 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 
-import 'package:chaldea/app/api/hosts.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
+import 'package:chaldea/models/userdata/remote_config.dart';
 import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -26,24 +26,24 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
 
   final testUrls = {
     'Chaldea Data': [
-      '${Hosts.kDataHostGlobal}/version.json',
-      '${Hosts.kDataHostCN}/version.json',
+      '${HostsX.data.global}/version.json',
+      '${HostsX.data.cn}/version.json',
     ],
     'Chaldea Server(Account)': [
-      '${Hosts.kWorkerHostGlobal}/network/ping',
-      '${Hosts.kWorkerHostCN}/network/ping',
+      '${HostsX.worker.global}/network/ping',
+      '${HostsX.worker.cn}/network/ping',
     ],
     'Chaldea Server(Recognizer)': [
-      '${Hosts.kApiHostGlobal}/network/ping',
-      '${Hosts.kApiHostCN}/network/ping',
+      '${HostsX.api.global}/network/ping',
+      '${HostsX.api.cn}/network/ping',
     ],
     'Atlas Api': [
-      '${Hosts.kAtlasApiHostGlobal}/info',
-      '${Hosts.kAtlasApiHostCN}/info',
+      '${HostsX.atlasApi.global}/info',
+      '${HostsX.atlasApi.cn}/info',
     ],
     'Atlas Assets': [
-      '${Hosts.kAtlasAssetHostGlobal}/JP/Script/Common/QuestStart.txt',
-      '${Hosts.kAtlasAssetHostCN}/JP/Script/Common/QuestStart.txt',
+      '${HostsX.atlasAsset.global}/JP/Script/Common/QuestStart.txt',
+      '${HostsX.atlasAsset.cn}/JP/Script/Common/QuestStart.txt',
     ],
   };
 

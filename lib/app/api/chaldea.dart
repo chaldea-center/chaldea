@@ -11,7 +11,6 @@ import '../../models/api/api.dart';
 import '../../models/db.dart';
 import '../../models/userdata/local_settings.dart';
 import 'cache.dart';
-import 'hosts.dart';
 
 // ignore: unused_element
 bool _defaultValidateStat(int? statusCode) {
@@ -92,7 +91,7 @@ class ChaldeaWorkerApi {
         for (final file in files.entries) MultipartFile.fromBytes(file.value, filename: file.key),
       ]
     });
-    return postCommon("${Hosts.apiHost}/feedback", formData);
+    return postCommon("${HostsX.apiHost}/feedback", formData);
   }
 
   static Future<WorkerResponse> postCommon(
@@ -199,7 +198,7 @@ class ChaldeaWorkerApi {
   // not from worker
   static Future<RemoteConfig?> remoteConfig({Duration? expireAfter}) {
     return cacheManager.getModel(
-      '${Hosts.dataHost}/config.json',
+      '${HostsX.dataHost}/config.json',
       (data) => db.runtimeData.remoteConfig = RemoteConfig.fromJson(data),
       expireAfter: expireAfter,
     );
