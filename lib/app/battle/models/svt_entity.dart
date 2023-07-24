@@ -762,11 +762,12 @@ class BattleServantData {
 
   bool checkNPScript(final BattleData battleData) {
     battleData.setActivator(this);
+    bool checkNpScript = true;
     if (isPlayer) {
-      return BattleSkillInfoData.skillScriptConditionCheck(battleData, getCurrentNP(battleData)?.script, tdLv);
+      checkNpScript = BattleSkillInfoData.skillScriptConditionCheck(battleData, getCurrentNP(battleData)?.script, tdLv);
     }
     battleData.unsetActivator();
-    return true;
+    return checkNpScript;
   }
 
   List<NiceTd> getTdsById(final List<int> tdIds) {
@@ -789,13 +790,20 @@ class BattleServantData {
 
   NiceTd? getCurrentNP(final BattleData battleData) {
     final buffs = collectBuffsPerAction(battleBuff.allBuffs, BuffAction.tdTypeChange);
+    NiceTd? selected;
     battleData.setActivator(this);
     for (final buff in buffs.reversed) {
       if (buff.tdSelection != null && buff.shouldApplyBuff(battleData, false)) {
-        return buff.tdSelection!;
+        selected = buff.tdSelection!;
+        break;
       }
     }
+
     battleData.unsetActivator();
+
+    if (selected != null) {
+      return selected;
+    }
 
     return isPlayer ? playerSvtData!.td : niceEnemy!.noblePhantasm.noblePhantasm;
   }
