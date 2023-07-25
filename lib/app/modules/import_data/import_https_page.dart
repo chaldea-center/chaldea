@@ -736,19 +736,20 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     user.isGirl = userGame?.genderType == 2;
     if (_includeItem) {
       // user.items.clear();
-      if (userGame != null) {
-        user.items[Items.qpId] = userGame.qp;
-        user.items[Items.manaPrismId] = userGame.mana;
-        user.items[Items.rarePrismId] = userGame.rarePri;
-      }
       for (final svtCoin in mstData!.userSvtCoin) {
         final coinId = db.gameData.servantsById[svtCoin.svtId]?.coin?.item.id;
         if (coinId == null) continue;
         user.items[coinId] = svtCoin.num;
       }
-      items.forEach((item) {
+      for (final item in items) {
         user.items[item.itemId] = item.num;
-      });
+      }
+      if (userGame != null) {
+        user.items[Items.stoneId] = userGame.stone;
+        user.items[Items.qpId] = userGame.qp;
+        user.items[Items.manaPrismId] = userGame.mana;
+        user.items[Items.rarePrismId] = userGame.rarePri;
+      }
     }
     if (_includeCraft) {
       user.craftEssences.addAll(crafts.map((key, value) => MapEntry(key, CraftStatus.fromJson(value.toJson()))));

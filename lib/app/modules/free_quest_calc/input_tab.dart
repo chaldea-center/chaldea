@@ -100,11 +100,14 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(
-                  width: 65,
-                  child: Center(
-                    child: Text(inputMode.shownName),
-                  ),
+                DropdownButton<_InputMode>(
+                  value: inputMode,
+                  isDense: true,
+                  alignment: AlignmentDirectional.centerEnd,
+                  items: [
+                    for (final mode in _InputMode.values) DropdownMenuItem(value: mode, child: Text(mode.shownName)),
+                  ],
+                  onChanged: (v) => setState(() => inputMode = v ?? inputMode),
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete),
@@ -260,20 +263,6 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
           crossAxisAlignment: WrapCrossAlignment.center,
           spacing: 10,
           children: <Widget>[
-            Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: 4,
-              children: <Widget>[
-                DropdownButton<_InputMode>(
-                  value: inputMode,
-                  isDense: true,
-                  items: [
-                    for (final mode in _InputMode.values) DropdownMenuItem(value: mode, child: Text(mode.shownName)),
-                  ],
-                  onChanged: (v) => setState(() => inputMode = v ?? inputMode),
-                ),
-              ],
-            ),
             IconButton(
               icon: const Icon(Icons.settings),
               color: params.minCost > 0 ||

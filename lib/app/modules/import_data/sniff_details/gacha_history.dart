@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -17,7 +18,7 @@ class SniffGachaHistory extends StatefulWidget {
 }
 
 class _SniffGachaHistoryState extends State<SniffGachaHistory> {
-  late final records = widget.records.toList();
+  late List<UserGacha> records = widget.records.toList();
   final loading = ValueNotifier<bool>(false);
 
   Map<int, MstGacha> gachas = {};
@@ -25,22 +26,24 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
   @override
   void initState() {
     super.initState();
+    loadMstData();
+  }
+
+  Future<void> loadMstData() async {
     loading.value = true;
-    AtlasApi.cacheManager
-        .getModel(
+    final data = await AtlasApi.cacheManager.getModel<List<MstGacha>>(
       "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${widget.region.upper}/master/mstGacha.json",
       (data) => (data as List).map((e) => MstGacha.fromJson(e)).toList(),
-    )
-        .then((value) {
-      if (value != null) {
-        gachas = {
-          for (final v in value) v.id: v,
-        };
-        records.sort2((e) => gachas[e.gachaId]?.closedAt ?? e.gachaId, reversed: true);
-        loading.value = false;
-        if (mounted) setState(() {});
-      }
-    });
+    );
+    if (data != null) {
+      gachas = {
+        for (final v in data) v.id: v,
+      };
+      // records.sort2((e) => gachas[e.gachaId]?.closedAt ?? e.gachaId, reversed: true);
+    }
+    records = records.reversed.toList();
+    loading.value = false;
+    if (mounted) setState(() {});
   }
 
   @override
@@ -80,44 +83,54 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     }
 
     // https://static.atlasacademy.io/file/aa-fgo-extract-jp/SummonBanners/DownloadSummonBanner/DownloadSummonBannerAtlas1/img_summon_81278.png
-    return Material(
-        color: index.isEven ? Theme.of(context).hoverColor : null,
-        child: SimpleAccordion(
-          headerBuilder: (context, _) {
-            return ListTile(
-              dense: true,
-              title: Text(title),
-              subtitle: Text(subtitle),
-              contentPadding: const EdgeInsetsDirectional.only(start: 16),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    record.num.toString(),
-                    style: TextStyle(fontStyle: shouldIgnore(record) ? FontStyle.italic : null),
-                  ),
-                  // IconButton(
-                  //   onPressed: url == null ? null : () => launch(url, external: false),
-                  //   icon: const Icon(Icons.link),
-                  // )
-                ],
+    return SimpleAccordion(
+      headerBuilder: (context, _) {
+        return ListTile(
+          dense: true,
+          title: Text(title),
+          subtitle: Text(subtitle),
+          contentPadding: const EdgeInsetsDirectional.only(start: 16),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                record.num.toString(),
+                style: TextStyle(fontStyle: shouldIgnore(record) ? FontStyle.italic : null),
               ),
-            );
-          },
-          contentBuilder: (context) {
-            if (gacha == null) return const Center(child: Text('\n....\n\n'));
-            return Container(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              constraints: const BoxConstraints(maxHeight: 200),
-              child: CachedImage(
-                imageUrl:
-                    "https://static.atlasacademy.io/${widget.region.upper}/SummonBanners/img_summon_${gacha.id}.png",
-                aspectRatio: 1024 / 576,
-              ),
-            );
-          },
-        ));
+              // IconButton(
+              //   onPressed: url == null ? null : () => launch(url, external: false),
+              //   icon: const Icon(Icons.link),
+              // )
+            ],
+          ),
+        );
+      },
+      contentBuilder: (context) {
+        if (gacha == null) return const Center(child: Text('\n....\n\n'));
+        return Container(
+          constraints: const BoxConstraints(maxHeight: 200),
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: CachedNetworkImageProvider("https://data-cn.chaldea.center/public/image/summon_bg.jpg"),
+              fit: BoxFit.cover,
+              alignment: Alignment(0.0, -0.6),
+            ),
+          ),
+          child: CachedImage(
+            imageUrl:
+                "https://static.atlasacademy.io/${widget.region.upper}/SummonBanners/img_summon_${gacha.imageId}.png",
+            showSaveOnLongPress: true,
+            placeholder: (context, url) => const AspectRatio(aspectRatio: 1344 / 576),
+            cachedOption: CachedImageOption(
+              fit: BoxFit.contain,
+              alignment: Alignment.center,
+              errorWidget: (context, url, error) => const AspectRatio(aspectRatio: 1344 / 576),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   String? getUrl(UserGacha record, MstGacha? gacha) {

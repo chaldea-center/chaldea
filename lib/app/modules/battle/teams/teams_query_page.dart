@@ -174,7 +174,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     final quest = db.gameData.quests[record.questId];
     final shownIndex = _pageSize * pageIndex + index + 1;
     return Material(
-      color: shownList.indexOf(record).isOdd ? Theme.of(context).highlightColor : null,
+      color: shownList.indexOf(record).isOdd ? Theme.of(context).hoverColor : null,
       child: Column(
         children: [
           const SizedBox(height: 6),

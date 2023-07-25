@@ -306,6 +306,18 @@ class BattleRecorderPanelBase extends StatelessWidget {
       if (team != null) (115.0, getTeam(context, team!)),
       ...getRecordCards(context),
     ];
+    if (battleData?.isBattleWin == true) {
+      children.add((
+        21,
+        Center(
+          child: Text(
+            '${HostsX.appHost}/laplace',
+            style: Theme.of(context).textTheme.bodySmall,
+            textAlign: TextAlign.center,
+          ),
+        )
+      ));
+    }
     if (showTwoColumn) {
       final totalHeight = Maths.sum(children.map((e) => e.$1));
       int leftCount = 0;
