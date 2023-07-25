@@ -23,14 +23,12 @@ void main() async {
           ]),
           DataVals({'UseRate': 1000}));
 
-      battle.setTarget(cba);
-      battle.setActivator(okuni);
-
-      expect(buff.shouldApplyBuff(battle, false), isTrue);
-      expect(buff.shouldApplyBuff(battle, true), isFalse);
-
-      battle.unsetTarget();
-      battle.unsetActivator();
+      battle.withActivatorSync(okuni, () {
+        battle.withTargetSync(cba, () {
+          expect(buff.shouldApplyBuff(battle, false), isTrue);
+          expect(buff.shouldApplyBuff(battle, true), isFalse);
+        });
+      });
     });
 
     test('checkIndivType 1', () {
@@ -47,14 +45,12 @@ void main() async {
           ),
           DataVals({'UseRate': 1000}));
 
-      battle.setTarget(cba);
-      battle.setActivator(okuni);
-
-      expect(buff.shouldApplyBuff(battle, false), isTrue);
-      expect(buff.shouldApplyBuff(battle, true), isFalse);
-
-      battle.unsetTarget();
-      battle.unsetActivator();
+      battle.withActivatorSync(okuni, () {
+        battle.withTargetSync(cba, () {
+          expect(buff.shouldApplyBuff(battle, false), isTrue);
+          expect(buff.shouldApplyBuff(battle, true), isFalse);
+        });
+      });
     });
 
     test('checkIndivType with current buff', () {
@@ -79,26 +75,25 @@ void main() async {
             {'UseRate': 1000},
           ));
 
-      battle.setTarget(cba);
-      battle.setActivator(okuni);
-      expect(buff.shouldApplyBuff(battle, false), false);
+      battle.withActivatorSync(okuni, () {
+        battle.withTargetSync(cba, () {
+          expect(buff.shouldApplyBuff(battle, false), false);
 
-      battle.setCurrentBuff(negativeBuff);
-      expect(buff.shouldApplyBuff(battle, false), true);
-      battle.unsetCurrentBuff();
+          battle.withBuffSync(negativeBuff, () {
+            expect(buff.shouldApplyBuff(battle, false), true);
+          });
 
-      final positiveBuff = BuffData(
-          Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.buffPositiveEffect.id)]),
-          DataVals(
-            {'UseRate': 1000},
-          ));
-      battle.setCurrentBuff(positiveBuff);
-      cba.addBuff(negativeBuff); // make sure we are not checking servant's buffs' traits
-      expect(buff.shouldApplyBuff(battle, false), false);
-
-      battle.unsetCurrentBuff();
-      battle.unsetTarget();
-      battle.unsetActivator();
+          final positiveBuff = BuffData(
+              Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.buffPositiveEffect.id)]),
+              DataVals(
+                {'UseRate': 1000},
+              ));
+          battle.withBuffSync(positiveBuff, () {
+            cba.addBuff(negativeBuff); // make sure we are not checking servant's buffs' traits
+            expect(buff.shouldApplyBuff(battle, false), false);
+          });
+        });
+      });
     });
 
     test('probability check', () async {
@@ -106,17 +101,15 @@ void main() async {
           Buff(id: -1, name: '', detail: '', ckOpIndv: [NiceTrait(id: Trait.king.id), NiceTrait(id: Trait.divine.id)]),
           DataVals({'UseRate': 500}));
 
-      battle.setTarget(cba);
-      battle.setActivator(okuni);
+      await battle.withActivator(okuni, () async {
+        await battle.withTarget(cba, () async {
+          expect(await buff.shouldActivateBuff(battle, false), isFalse);
 
-      expect(await buff.shouldActivateBuff(battle, false), isFalse);
+          battle.options.probabilityThreshold = 500;
 
-      battle.options.probabilityThreshold = 500;
-
-      expect(await buff.shouldActivateBuff(battle, false), isTrue);
-
-      battle.unsetTarget();
-      battle.unsetActivator();
+          expect(await buff.shouldActivateBuff(battle, false), isTrue);
+        });
+      });
     });
   });
 
@@ -295,19 +288,19 @@ void main() async {
       await battle.activateSvtSkill(0, 1);
 
       final lip = battle.onFieldAllyServants[0]!;
-      battle.setActivator(lip);
+      await battle.withActivator(lip, () async {
+        lip.hp = lip.getMaxHp(battle) ~/ 2 + 13;
+        expect(await lip.getBuffValueOnAction(battle, BuffAction.atk), 1000);
 
-      lip.hp = lip.getMaxHp(battle) ~/ 2 + 13;
-      expect(await lip.getBuffValueOnAction(battle, BuffAction.atk), 1000);
+        lip.hp = lip.getMaxHp(battle) ~/ 2 - 1;
+        expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1300, epsilon: 1));
 
-      lip.hp = lip.getMaxHp(battle) ~/ 2 - 1;
-      expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1300, epsilon: 1));
+        lip.hp = lip.getMaxHp(battle) ~/ 4;
+        expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1400, epsilon: 1));
 
-      lip.hp = lip.getMaxHp(battle) ~/ 4;
-      expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1400, epsilon: 1));
-
-      lip.hp = 1;
-      expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1500, epsilon: 1));
+        lip.hp = 1;
+        expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1500, epsilon: 1));
+      });
     });
 
     test('INDIVIDUALITIE', () async {
@@ -362,16 +355,18 @@ void main() async {
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final kukulcan = battle.onFieldAllyServants[0]!;
-      battle.setActivator(battle.onFieldEnemies[0]!);
-      battle.setTarget(kukulcan);
 
-      expect(await kukulcan.hasBuffOnAction(battle, BuffAction.specialInvincible), false);
-      expect(await kukulcan.hasBuffOnAction(battle, BuffAction.invincible), false);
+      await battle.withActivator(battle.onFieldEnemies[0]!, () async {
+        await battle.withTarget(kukulcan, () async {
+          expect(await kukulcan.hasBuffOnAction(battle, BuffAction.specialInvincible), false);
+          expect(await kukulcan.hasBuffOnAction(battle, BuffAction.invincible), false);
 
-      await battle.activateSvtSkill(1, 2);
+          await battle.activateSvtSkill(1, 2);
 
-      expect(await kukulcan.hasBuffOnAction(battle, BuffAction.specialInvincible), true);
-      expect(await kukulcan.hasBuffOnAction(battle, BuffAction.invincible), false);
+          expect(await kukulcan.hasBuffOnAction(battle, BuffAction.specialInvincible), true);
+          expect(await kukulcan.hasBuffOnAction(battle, BuffAction.invincible), false);
+        });
+      });
     });
 
     test('buffRate', () async {
@@ -382,22 +377,25 @@ void main() async {
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final oberon = battle.onFieldAllyServants[0]!;
-      battle.setActivator(oberon);
-      battle.setTarget(battle.onFieldEnemies[0]!);
-      battle.currentCard = oberon.getNPCard(battle);
 
-      expect(await oberon.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
-      expect(await oberon.getBuffValueOnAction(battle, BuffAction.npdamage), 0);
+      await battle.withActivator(oberon, () async {
+        await battle.withTarget(battle.onFieldEnemies[0]!, () async {
+          await battle.withCard(oberon.getNPCard(battle), () async {
+            expect(await oberon.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
+            expect(await oberon.getBuffValueOnAction(battle, BuffAction.npdamage), 0);
 
-      await battle.activateSvtSkill(0, 0);
+            await battle.activateSvtSkill(0, 0);
 
-      expect(await oberon.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
-      expect(await oberon.getBuffValueOnAction(battle, BuffAction.npdamage), 300);
+            expect(await oberon.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
+            expect(await oberon.getBuffValueOnAction(battle, BuffAction.npdamage), 300);
 
-      await battle.activateSvtSkill(0, 2);
+            await battle.activateSvtSkill(0, 2);
 
-      expect(await oberon.getBuffValueOnAction(battle, BuffAction.commandAtk), 1500);
-      expect(await oberon.getBuffValueOnAction(battle, BuffAction.npdamage), 600);
+            expect(await oberon.getBuffValueOnAction(battle, BuffAction.commandAtk), 1500);
+            expect(await oberon.getBuffValueOnAction(battle, BuffAction.npdamage), 600);
+          });
+        });
+      });
     });
 
     test('changeCommandCardType', () async {
@@ -423,26 +421,30 @@ void main() async {
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final musashi = battle.onFieldAllyServants[0]!;
-      battle.setActivator(musashi);
-      battle.setTarget(battle.onFieldEnemies[0]!);
-      battle.currentCard = musashi.getNPCard(battle);
-      expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
-      battle.currentCard = musashi.getCards(battle)[0];
-      expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
-      battle.currentCard = musashi.getCards(battle)[1];
-      expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
+      await battle.withActivator(musashi, () async {
+        await battle.withTarget(battle.onFieldEnemies[0]!, () async {
+          await battle.withCard(musashi.getNPCard(battle), () async {
+            expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
+          });
+          await battle.withCard(musashi.getCards(battle)[0], () async {
+            expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
+          });
+          await battle.withCard(musashi.getCards(battle)[1], () async {
+            expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
+          });
 
-      await battle.activateSvtSkill(0, 1);
-      battle.currentCard = musashi.getNPCard(battle);
-      expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
-      battle.currentCard = musashi.getCards(battle)[0];
-      expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
-      battle.currentCard = musashi.getCards(battle)[1];
-      expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), true);
-
-      battle.unsetActivator();
-      battle.unsetTarget();
-      battle.currentCard = null;
+          await battle.activateSvtSkill(0, 1);
+          await battle.withCard(musashi.getNPCard(battle), () async {
+            expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
+          });
+          await battle.withCard(musashi.getCards(battle)[0], () async {
+            expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
+          });
+          await battle.withCard(musashi.getCards(battle)[1], () async {
+            expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), true);
+          });
+        });
+      });
 
       await battle.playerTurn([CombatAction(musashi, musashi.getCards(battle)[1])]);
       expect(musashi.np, 1836);
@@ -493,13 +495,16 @@ void main() async {
 
       await battle.activateSvtSkill(0, 1);
 
-      battle.setActivator(murasama);
-      battle.setTarget(castoria);
-      battle.currentCard = murasama.getCards(battle)[0];
-      expect(await murasama.getBuffValueOnAction(battle, BuffAction.criticalDamage), 1050);
+      await battle.withActivator(murasama, () async {
+        await battle.withTarget(castoria, () async {
+          await battle.withCard(murasama.getCards(battle)[0], () async {
+            expect(await murasama.getBuffValueOnAction(battle, BuffAction.criticalDamage), 1050);
 
-      await battle.activateSvtSkill(1, 2);
-      expect(await murasama.getBuffValueOnAction(battle, BuffAction.criticalDamage), 2050);
+            await battle.activateSvtSkill(1, 2);
+            expect(await murasama.getBuffValueOnAction(battle, BuffAction.criticalDamage), 2050);
+          });
+        });
+      });
     });
 
     test('overwriteClassRelation kama skill first', () async {
@@ -519,33 +524,34 @@ void main() async {
       final reinis = battle.onFieldAllyServants[1]!;
       final kirei = battle.onFieldAllyServants[2]!;
 
-      battle.setActivator(kama);
-      battle.setTarget(kirei);
+      await battle.withActivator(kama, () async {
+        await battle.withTarget(kirei, () async {
+          expect(await Damage.getClassRelation(battle, kama, reinis), 2000);
+          expect(await Damage.getClassRelation(battle, kama, kirei), 1000);
+          expect(await Damage.getClassRelation(battle, reinis, kama), 500);
+          expect(await Damage.getClassRelation(battle, reinis, kirei), 1000);
+          expect(await Damage.getClassRelation(battle, kirei, kama), 1500);
+          expect(await Damage.getClassRelation(battle, kirei, reinis), 1500);
 
-      expect(await Damage.getClassRelation(battle, kama, reinis), 2000);
-      expect(await Damage.getClassRelation(battle, kama, kirei), 1000);
-      expect(await Damage.getClassRelation(battle, reinis, kama), 500);
-      expect(await Damage.getClassRelation(battle, reinis, kirei), 1000);
-      expect(await Damage.getClassRelation(battle, kirei, kama), 1500);
-      expect(await Damage.getClassRelation(battle, kirei, reinis), 1500);
+          await battle.activateSvtSkill(0, 2);
 
-      await battle.activateSvtSkill(0, 2);
+          expect(await Damage.getClassRelation(battle, kama, reinis), 2000);
+          expect(await Damage.getClassRelation(battle, kama, kirei), 2000);
+          expect(await Damage.getClassRelation(battle, reinis, kama), 500);
+          expect(await Damage.getClassRelation(battle, reinis, kirei), 1000);
+          expect(await Damage.getClassRelation(battle, kirei, kama), 500);
+          expect(await Damage.getClassRelation(battle, kirei, reinis), 1500);
 
-      expect(await Damage.getClassRelation(battle, kama, reinis), 2000);
-      expect(await Damage.getClassRelation(battle, kama, kirei), 2000);
-      expect(await Damage.getClassRelation(battle, reinis, kama), 500);
-      expect(await Damage.getClassRelation(battle, reinis, kirei), 1000);
-      expect(await Damage.getClassRelation(battle, kirei, kama), 500);
-      expect(await Damage.getClassRelation(battle, kirei, reinis), 1500);
+          await battle.playerTurn([CombatAction(reinis, reinis.getNPCard(battle)!)]);
 
-      await battle.playerTurn([CombatAction(reinis, reinis.getNPCard(battle)!)]);
-
-      expect(await Damage.getClassRelation(battle, kama, reinis), 1000);
-      expect(await Damage.getClassRelation(battle, kama, kirei), 1000);
-      expect(await Damage.getClassRelation(battle, reinis, kama), 500);
-      expect(await Damage.getClassRelation(battle, reinis, kirei), 1000);
-      expect(await Damage.getClassRelation(battle, kirei, kama), 500);
-      expect(await Damage.getClassRelation(battle, kirei, reinis), 1000);
+          expect(await Damage.getClassRelation(battle, kama, reinis), 1000);
+          expect(await Damage.getClassRelation(battle, kama, kirei), 1000);
+          expect(await Damage.getClassRelation(battle, reinis, kama), 500);
+          expect(await Damage.getClassRelation(battle, reinis, kirei), 1000);
+          expect(await Damage.getClassRelation(battle, kirei, kama), 500);
+          expect(await Damage.getClassRelation(battle, kirei, reinis), 1000);
+        });
+      });
     });
 
     test('overwriteClassRelation reinis np first', () async {
@@ -565,26 +571,27 @@ void main() async {
       final reinis = battle.onFieldAllyServants[1]!;
       final kirei = battle.onFieldAllyServants[2]!;
 
-      battle.setActivator(kama);
-      battle.setTarget(kirei);
+      await battle.withActivator(kama, () async {
+        await battle.withTarget(kirei, () async {
+          await battle.playerTurn([CombatAction(reinis, reinis.getNPCard(battle)!)]);
 
-      await battle.playerTurn([CombatAction(reinis, reinis.getNPCard(battle)!)]);
+          expect(await Damage.getClassRelation(battle, kama, reinis), 1000);
+          expect(await Damage.getClassRelation(battle, kama, kirei), 1000);
+          expect(await Damage.getClassRelation(battle, reinis, kama), 500);
+          expect(await Damage.getClassRelation(battle, reinis, kirei), 1000);
+          expect(await Damage.getClassRelation(battle, kirei, kama), 1000);
+          expect(await Damage.getClassRelation(battle, kirei, reinis), 1000);
 
-      expect(await Damage.getClassRelation(battle, kama, reinis), 1000);
-      expect(await Damage.getClassRelation(battle, kama, kirei), 1000);
-      expect(await Damage.getClassRelation(battle, reinis, kama), 500);
-      expect(await Damage.getClassRelation(battle, reinis, kirei), 1000);
-      expect(await Damage.getClassRelation(battle, kirei, kama), 1000);
-      expect(await Damage.getClassRelation(battle, kirei, reinis), 1000);
+          await battle.activateSvtSkill(0, 2);
 
-      await battle.activateSvtSkill(0, 2);
-
-      expect(await Damage.getClassRelation(battle, kama, reinis), 1000);
-      expect(await Damage.getClassRelation(battle, kama, kirei), 1000);
-      expect(await Damage.getClassRelation(battle, reinis, kama), 500);
-      expect(await Damage.getClassRelation(battle, reinis, kirei), 1000);
-      expect(await Damage.getClassRelation(battle, kirei, kama), 1000);
-      expect(await Damage.getClassRelation(battle, kirei, reinis), 1000);
+          expect(await Damage.getClassRelation(battle, kama, reinis), 1000);
+          expect(await Damage.getClassRelation(battle, kama, kirei), 1000);
+          expect(await Damage.getClassRelation(battle, reinis, kama), 500);
+          expect(await Damage.getClassRelation(battle, reinis, kirei), 1000);
+          expect(await Damage.getClassRelation(battle, kirei, kama), 1000);
+          expect(await Damage.getClassRelation(battle, kirei, reinis), 1000);
+        });
+      });
     });
 
     test('preventDeathByDamage', () async {
@@ -773,15 +780,16 @@ void main() async {
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final henry = battle.onFieldAllyServants[0]!;
-      battle.setTarget(battle.onFieldEnemies[0]!);
-      battle.setActivator(henry);
-
-      expect(await henry.getBuffValueOnAction(battle, BuffAction.atk), 1300);
-
-      battle.setTarget(battle.onFieldEnemies[1]!);
-      battle.setActivator(henry);
-
-      expect(await henry.getBuffValueOnAction(battle, BuffAction.atk), 1000);
+      await battle.withActivator(henry, () async {
+        await battle.withTarget(battle.onFieldEnemies[0]!, () async {
+          expect(await henry.getBuffValueOnAction(battle, BuffAction.atk), 1300);
+        });
+      });
+      await battle.withActivator(henry, () async {
+        await battle.withTarget(battle.onFieldEnemies[1]!, () async {
+          expect(await henry.getBuffValueOnAction(battle, BuffAction.atk), 1000);
+        });
+      });
     });
 
     test('BuffAction turnvalNp', () async {

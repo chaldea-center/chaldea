@@ -43,17 +43,21 @@ void main() async {
 
     expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
 
-    battle.currentCard = okuni.getNPCard(battle);
-    expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
+    await battle.withCard(okuni.getNPCard(battle), () async {
+      expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
+    });
 
-    battle.currentCard = okuni.getCards(battle)[2]; // arts
-    expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1040);
-    expect(await okuni.hasBuffOnAction(battle, BuffAction.avoidance), isFalse);
+    await battle.withCard(okuni.getCards(battle)[2], () async {
+      // arts
+      expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1040);
+      expect(await okuni.hasBuffOnAction(battle, BuffAction.avoidance), isFalse);
+    });
 
     await okuni.activateSkill(battle, 0);
-    battle.currentCard = okuni.getNPCard(battle);
-    expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1300);
-    expect(await okuni.hasBuffOnAction(battle, BuffAction.avoidance), isTrue);
+    battle.withCard(okuni.getNPCard(battle), () async {
+      expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1300);
+      expect(await okuni.hasBuffOnAction(battle, BuffAction.avoidance), isTrue);
+    });
   });
 
   test('Test commandCode', () async {
@@ -200,5 +204,60 @@ void main() async {
     await battle.skipWave();
 
     expect(battle.canUseNp(0), false);
+  });
+
+  test('UI method does not reset stack', () async {
+    final List<PlayerSvtData> playerSettings = [
+      PlayerSvtData.id(504400)
+        ..lv = 80
+        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+        ..ceLv = 100
+        ..ceLimitBreak = true,
+    ];
+
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+    final svt = battle.onFieldAllyServants[0]!;
+
+    expect(battle.activator, null);
+
+    svt.getTraits(battle);
+    expect(battle.activator, null);
+
+    svt.isAlive(battle);
+    expect(battle.activator, null);
+
+    svt.isSkillSealed(battle, 0);
+    expect(battle.activator, null);
+
+    svt.isSkillSealed(battle, 2);
+    expect(battle.activator, null);
+
+    svt.canUseSkillIgnoreCoolDown(battle, 0);
+    expect(battle.activator, null);
+
+    await svt.activateSkill(battle, 0);
+    expect(battle.activator, null);
+
+    svt.canNP(battle);
+    expect(battle.activator, null);
+
+    svt.canAttack(battle);
+    expect(battle.activator, null);
+
+    svt.canOrderChange(battle);
+    expect(battle.activator, null);
+
+    svt.canSelectNP(battle);
+    expect(battle.activator, null);
+
+    svt.canCommandCard(battle);
+    expect(battle.activator, null);
+
+    svt.checkNPScript(battle);
+    expect(battle.activator, null);
+
+    svt.getCurrentNP(battle);
+    expect(battle.activator, null);
   });
 }

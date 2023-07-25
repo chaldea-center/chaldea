@@ -179,25 +179,25 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                               save: true,
                               action: 'custom_skill-${skill?.id}',
                               task: () async {
-                                if (activator != null) widget.battleData.setActivator(activator!);
-                                widget.battleData.battleLogger
-                                    .action('${activator == null ? S.current.battle_no_source : activator!.lBattleName}'
-                                        ' - ${S.current.skill}: ${skill!.lName.l}');
-                                await BattleSkillInfoData.activateSkill(
-                                  widget.battleData,
-                                  skill!,
-                                  skillLv,
-                                  defaultToPlayer: isAlly,
-                                );
-                                widget.battleData.recorder.skill(
-                                  battleData: widget.battleData,
-                                  activator: activator,
-                                  skill: BattleSkillInfoData(skill!),
-                                  type: SkillInfoType.custom,
-                                  fromPlayer: isAlly,
-                                  uploadEligible: false,
-                                );
-                                if (activator != null) widget.battleData.unsetActivator();
+                                await widget.battleData.withActivator(activator, () async {
+                                  widget.battleData.battleLogger.action(
+                                      '${activator == null ? S.current.battle_no_source : activator!.lBattleName}'
+                                      ' - ${S.current.skill}: ${skill!.lName.l}');
+                                  await BattleSkillInfoData.activateSkill(
+                                    widget.battleData,
+                                    skill!,
+                                    skillLv,
+                                    defaultToPlayer: isAlly,
+                                  );
+                                  widget.battleData.recorder.skill(
+                                    battleData: widget.battleData,
+                                    activator: activator,
+                                    skill: BattleSkillInfoData(skill!),
+                                    type: SkillInfoType.custom,
+                                    fromPlayer: isAlly,
+                                    uploadEligible: false,
+                                  );
+                                });
                               },
                             );
                             if (mounted) Navigator.of(context).pop(skill);

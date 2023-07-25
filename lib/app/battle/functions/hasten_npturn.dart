@@ -16,12 +16,10 @@ class HastenNpturn {
     }
 
     targets.forEach((target) {
-      battleData.setTarget(target);
-
-      target.changeNPLineCount(isNegative ? -dataVals.Value! : dataVals.Value!);
-      battleData.curFuncResults[target.uniqueId] = true;
-
-      battleData.unsetTarget();
+      battleData.withTargetSync(target, () {
+        target.changeNPLineCount(isNegative ? -dataVals.Value! : dataVals.Value!);
+        battleData.curFuncResults[target.uniqueId] = true;
+      });
     });
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/battle/functions/damage.dart';
@@ -145,34 +147,94 @@ class BattleData {
     uniqueIdToLastFuncResultMap.addAll(curFuncResults);
   }
 
-  void setCurrentBuff(final BuffData buff) {
-    _currentBuff.add(buff);
-  }
-
   BuffData? get currentBuff => _currentBuff.isNotEmpty ? _currentBuff.last : null;
 
-  void unsetCurrentBuff() {
-    _currentBuff.removeLast();
+  Future<T> withBuff<T>(final BuffData? buff, final FutureOr<T> Function() onExecute) async {
+    final sanityCheck = _currentBuff.length;
+    try {
+      _currentBuff.add(buff);
+      return await onExecute();
+    } finally {
+      _currentBuff.removeLast();
+      assert(sanityCheck == _currentBuff.length);
+    }
   }
 
-  void setActivator(final BattleServantData svt) {
-    _activator.add(svt);
+  T withBuffSync<T>(final BuffData? buff, final T Function() onExecute) {
+    final sanityCheck = _currentBuff.length;
+    try {
+      _currentBuff.add(buff);
+      return onExecute();
+    } finally {
+      _currentBuff.removeLast();
+      assert(sanityCheck == _currentBuff.length);
+    }
+  }
+
+  Future<T> withCard<T>(final CommandCardData? card, final FutureOr<T> Function() onExecute) async {
+    try {
+      currentCard = card;
+      return await onExecute();
+    } finally {
+      currentCard = null;
+    }
+  }
+
+  T withCardSync<T>(final CommandCardData? card, final T Function() onExecute) {
+    try {
+      currentCard = card;
+      return onExecute();
+    } finally {
+      currentCard = null;
+    }
   }
 
   BattleServantData? get activator => _activator.isNotEmpty ? _activator.last : null;
 
-  void unsetActivator() {
-    _activator.removeLast();
+  Future<T> withActivator<T>(final BattleServantData? activator, final FutureOr<T> Function() onExecute) async {
+    final sanityCheck = _activator.length;
+    try {
+      if (activator != null) _activator.add(activator);
+      return await onExecute();
+    } finally {
+      if (activator != null) _activator.removeLast();
+      assert(sanityCheck == _activator.length);
+    }
   }
 
-  void setTarget(final BattleServantData svt) {
-    _target.add(svt);
+  T withActivatorSync<T>(final BattleServantData? activator, final T Function() onExecute) {
+    final sanityCheck = _activator.length;
+    try {
+      if (activator != null) _activator.add(activator);
+      return onExecute();
+    } finally {
+      if (activator != null) _activator.removeLast();
+      assert(sanityCheck == _activator.length);
+    }
   }
 
   BattleServantData? get target => _target.isNotEmpty ? _target.last : null;
 
-  void unsetTarget() {
-    _target.removeLast();
+  Future<T> withTarget<T>(final BattleServantData? target, final FutureOr<T> Function() onExecute) async {
+    final sanityCheck = _target.length;
+    try {
+      if (target != null) _target.add(target);
+      return await onExecute();
+    } finally {
+      if (target != null) _target.removeLast();
+      assert(sanityCheck == _target.length);
+    }
+  }
+
+  T withTargetSync<T>(final BattleServantData? target, final T Function() onExecute) {
+    final sanityCheck = _target.length;
+    try {
+      if (target != null) _target.add(target);
+      return onExecute();
+    } finally {
+      if (target != null) _target.removeLast();
+      assert(sanityCheck == _target.length);
+    }
   }
 
   bool get isBattleWin {
@@ -473,15 +535,15 @@ class BattleData {
 
     final List<int> removeTraitIds = [];
     for (final svt in nonnullActors) {
-      setActivator(svt);
-      for (final buff in svt.battleBuff.allBuffs) {
-        if (buff.buff.type == BuffType.fieldIndividuality && buff.shouldApplyBuff(this, false)) {
-          allTraits.addAll(buff.traits.where((trait) => fieldTraitCheck(trait)));
-        } else if (buff.buff.type == BuffType.subFieldIndividuality && buff.shouldApplyBuff(this, false)) {
-          removeTraitIds.addAll(buff.vals.TargetList!.map((traitId) => traitId));
+      withActivatorSync(svt, () {
+        for (final buff in svt.battleBuff.allBuffs) {
+          if (buff.buff.type == BuffType.fieldIndividuality && buff.shouldApplyBuff(this, false)) {
+            allTraits.addAll(buff.traits.where((trait) => fieldTraitCheck(trait)));
+          } else if (buff.buff.type == BuffType.subFieldIndividuality && buff.shouldApplyBuff(this, false)) {
+            removeTraitIds.addAll(buff.vals.TargetList!.map((traitId) => traitId));
+          }
         }
-      }
-      unsetActivator();
+      });
     }
 
     fieldBuffs
@@ -735,42 +797,41 @@ class BattleData {
         for (int i = 0; i < actions.length; i += 1) {
           if (nonnullEnemies.isNotEmpty) {
             final action = actions[i];
-            currentCard = action.cardData;
-            allyTargetIndex = onFieldAllyServants.indexOf(action.actor); // help damageFunction identify attacker
+            await withCard(action.cardData, () async {
+              allyTargetIndex = onFieldAllyServants.indexOf(action.actor); // help damageFunction identify attacker
 
-            if (allyTargetIndex != -1 && action.isValid(this)) {
-              recorder.startPlayerCard(action.actor, action.cardData);
+              if (allyTargetIndex != -1 && action.isValid(this)) {
+                recorder.startPlayerCard(action.actor, action.cardData);
 
-              if (action.cardData.isNP) {
-                await action.actor.activateBuffOnAction(this, BuffAction.functionAttackBefore);
-                await action.actor.activateNP(this, action.cardData, extraOvercharge);
-                await action.actor.activateBuffOnAction(this, BuffAction.functionNpattack);
-                await action.actor.activateBuffOnAction(this, BuffAction.functionAttackAfter);
-                extraOvercharge += 1;
+                if (action.cardData.isNP) {
+                  await action.actor.activateBuffOnAction(this, BuffAction.functionAttackBefore);
+                  await action.actor.activateNP(this, action.cardData, extraOvercharge);
+                  await action.actor.activateBuffOnAction(this, BuffAction.functionNpattack);
+                  await action.actor.activateBuffOnAction(this, BuffAction.functionAttackAfter);
+                  extraOvercharge += 1;
 
-                for (final svt in nonnullEnemies) {
-                  if (svt.attacked) await svt.activateBuffOnAction(this, BuffAction.functionDamage);
+                  for (final svt in nonnullEnemies) {
+                    if (svt.attacked) await svt.activateBuffOnAction(this, BuffAction.functionDamage);
+                  }
+                } else {
+                  extraOvercharge = 0;
+                  await executeCommandCard(
+                    actor: action.actor,
+                    card: action.cardData,
+                    chainPos: i + 1,
+                    isTypeChain: isTypeChain,
+                    isMightyChain: isMightyChain,
+                    firstCardType: firstCardType,
+                    isPlayer: true,
+                  );
                 }
-              } else {
-                extraOvercharge = 0;
-                await executeCommandCard(
-                  actor: action.actor,
-                  card: action.cardData,
-                  chainPos: i + 1,
-                  isTypeChain: isTypeChain,
-                  isMightyChain: isMightyChain,
-                  firstCardType: firstCardType,
-                  isPlayer: true,
-                );
+                recorder.endPlayerCard(action.actor, action.cardData);
               }
-              recorder.endPlayerCard(action.actor, action.cardData);
-            }
 
-            if (shouldRemoveDeadActors(actions, i)) {
-              await removeDeadActors();
-            }
-
-            currentCard = null;
+              if (shouldRemoveDeadActors(actions, i)) {
+                await removeDeadActors();
+              }
+            });
           }
 
           checkBuffStatus();
@@ -805,40 +866,39 @@ class BattleData {
         final previousTargetIndex = enemyTargetIndex;
 
         if (nonnullAllies.isNotEmpty) {
-          currentCard = action.cardData;
-          enemyTargetIndex = onFieldEnemies.indexOf(action.actor); // help damageFunction identify attacker
+          await withCard(action.cardData, () async {
+            enemyTargetIndex = onFieldEnemies.indexOf(action.actor); // help damageFunction identify attacker
 
-          if (enemyTargetIndex != -1 && action.isValid(this)) {
-            recorder.startPlayerCard(action.actor, action.cardData);
+            if (enemyTargetIndex != -1 && action.isValid(this)) {
+              recorder.startPlayerCard(action.actor, action.cardData);
 
-            if (action.cardData.isNP) {
-              await action.actor.activateBuffOnAction(this, BuffAction.functionAttackBefore);
-              await action.actor.activateNP(this, action.cardData, 0);
-              await action.actor.activateBuffOnAction(this, BuffAction.functionNpattack);
-              await action.actor.activateBuffOnAction(this, BuffAction.functionAttackAfter);
+              if (action.cardData.isNP) {
+                await action.actor.activateBuffOnAction(this, BuffAction.functionAttackBefore);
+                await action.actor.activateNP(this, action.cardData, 0);
+                await action.actor.activateBuffOnAction(this, BuffAction.functionNpattack);
+                await action.actor.activateBuffOnAction(this, BuffAction.functionAttackAfter);
 
-              for (final svt in nonnullAllies) {
-                if (svt.attacked) await svt.activateBuffOnAction(this, BuffAction.functionDamage);
+                for (final svt in nonnullAllies) {
+                  if (svt.attacked) await svt.activateBuffOnAction(this, BuffAction.functionDamage);
+                }
+              } else {
+                await executeCommandCard(
+                  actor: action.actor,
+                  card: action.cardData,
+                  chainPos: 1,
+                  isTypeChain: false,
+                  isMightyChain: false,
+                  firstCardType: CardType.none,
+                  isPlayer: false,
+                );
               }
-            } else {
-              await executeCommandCard(
-                actor: action.actor,
-                card: action.cardData,
-                chainPos: 1,
-                isTypeChain: false,
-                isMightyChain: false,
-                firstCardType: CardType.none,
-                isPlayer: false,
-              );
+              recorder.endPlayerCard(action.actor, action.cardData);
             }
-            recorder.endPlayerCard(action.actor, action.cardData);
-          }
 
-          if (shouldRemoveDeadActors([action], 0)) {
-            await removeDeadActors();
-          }
-
-          currentCard = null;
+            if (shouldRemoveDeadActors([action], 0)) {
+              await removeDeadActors();
+            }
+          });
         }
 
         checkBuffStatus();
@@ -951,17 +1011,15 @@ class BattleData {
       BuffAction.functionAttackBefore,
     ]);
 
-    setActivator(actor);
-
     final List<BattleServantData> targets = [];
-    if (card.cardDetail.attackType == CommandCardAttackType.all) {
-      targets.addAll(isPlayer ? nonnullEnemies : nonnullAllies);
-    } else {
-      targets.add(isPlayer ? targetedEnemy! : targetedAlly!);
-    }
-    await Damage.damage(this, null, cardDamage, targets, chainPos, isTypeChain, isMightyChain, firstCardType);
-
-    unsetActivator();
+    await withActivator(actor, () async {
+      if (card.cardDetail.attackType == CommandCardAttackType.all) {
+        targets.addAll(isPlayer ? nonnullEnemies : nonnullAllies);
+      } else {
+        targets.add(isPlayer ? targetedEnemy! : targetedAlly!);
+      }
+      await Damage.damage(this, null, cardDamage, targets, chainPos, isTypeChain, isMightyChain, firstCardType);
+    });
 
     await actor.activateBuffOnAction(this, BuffAction.functionCommandcodeattackAfter);
     await actor.activateBuffOnActions(this, [

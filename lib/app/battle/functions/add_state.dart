@@ -49,41 +49,41 @@ class AddState {
         buffData.param += pointBuff.value;
       }
 
-      battleData.setCurrentBuff(buffData);
-      final convertBuff = target
-          .getFirstBuffOnActions(battleData, [BuffAction.buffConvert])
-          ?.buff
-          .script
-          ?.convert
-          ?.convertBuffs
-          .firstOrNull;
-      if (convertBuff != null) {
-        buffData.buff = convertBuff;
-      }
-
-      battleData.setTarget(target);
-      if (await shouldAddState(battleData, dataVals, activator, target, isCommandCode) &&
-          target.isBuffStackable(buffData.buff.buffGroup) &&
-          checkSameBuffLimitNum(target, dataVals)) {
-        target.addBuff(
-          buffData,
-          isPassive: isPassive || notActorPassive,
-          isCommandCode: isCommandCode,
-        );
-        battleData.curFuncResults[target.uniqueId] = true;
-
-        if (buff.type == BuffType.addMaxhp) {
-          target.gainHp(battleData, dataVals.Value!);
-        } else if (buff.type == BuffType.subMaxhp) {
-          target.lossHp(dataVals.Value!);
-        } else if (buff.type == BuffType.upMaxhp) {
-          target.gainHp(battleData, toModifier(target.maxHp * dataVals.Value!).toInt());
-        } else if (buff.type == BuffType.downMaxhp) {
-          target.lossHp(toModifier(target.maxHp * dataVals.Value!).toInt());
+      await battleData.withBuff(buffData, () async {
+        final convertBuff = target
+            .getFirstBuffOnActions(battleData, [BuffAction.buffConvert])
+            ?.buff
+            .script
+            ?.convert
+            ?.convertBuffs
+            .firstOrNull;
+        if (convertBuff != null) {
+          buffData.buff = convertBuff;
         }
-      }
-      battleData.unsetTarget();
-      battleData.unsetCurrentBuff();
+
+        await battleData.withTarget(target, () async {
+          if (await shouldAddState(battleData, dataVals, activator, target, isCommandCode) &&
+              target.isBuffStackable(buffData.buff.buffGroup) &&
+              checkSameBuffLimitNum(target, dataVals)) {
+            target.addBuff(
+              buffData,
+              isPassive: isPassive || notActorPassive,
+              isCommandCode: isCommandCode,
+            );
+            battleData.curFuncResults[target.uniqueId] = true;
+
+            if (buff.type == BuffType.addMaxhp) {
+              target.gainHp(battleData, dataVals.Value!);
+            } else if (buff.type == BuffType.subMaxhp) {
+              target.lossHp(dataVals.Value!);
+            } else if (buff.type == BuffType.upMaxhp) {
+              target.gainHp(battleData, toModifier(target.maxHp * dataVals.Value!).toInt());
+            } else if (buff.type == BuffType.downMaxhp) {
+              target.lossHp(toModifier(target.maxHp * dataVals.Value!).toInt());
+            }
+          }
+        });
+      });
     }
   }
 

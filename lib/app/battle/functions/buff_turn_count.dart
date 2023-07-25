@@ -29,10 +29,10 @@ class BuffTurnCount {
       value *= 2;
     }
     for (final target in targets) {
-      battleData.setTarget(target);
-      final success = _changeBuffValue(target, value, dataVals.TargetList ?? [], isTurn, true);
-      battleData.curFuncResults[target.uniqueId] = success;
-      battleData.unsetTarget();
+      battleData.withTargetSync(target, () {
+        final success = _changeBuffValue(target, value, dataVals.TargetList ?? [], isTurn, true);
+        battleData.curFuncResults[target.uniqueId] = success;
+      });
     }
   }
 

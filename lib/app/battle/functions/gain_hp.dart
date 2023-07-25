@@ -24,21 +24,19 @@ class GainHP {
     final isPercent = percentFuncTypes.contains(funcType);
 
     for (final target in targets) {
-      battleData.setTarget(target);
-
-      final baseValue = isPercent ? target.getMaxHp(battleData) * toModifier(dataVals.Value!) : dataVals.Value!;
-      if (isLoss) {
-        target.lossHp(baseValue.toInt(), lethal: isLethal);
-      } else {
-        final healGrantEff =
-            toModifier(await battleData.activator?.getBuffValueOnAction(battleData, BuffAction.giveGainHp) ?? 1000);
-        final healReceiveEff = toModifier(await target.getBuffValueOnAction(battleData, BuffAction.gainHp));
-        final finalHeal = (baseValue * healReceiveEff * healGrantEff).toInt();
-        await target.heal(battleData, finalHeal);
-      }
-      battleData.curFuncResults[target.uniqueId] = true;
-
-      battleData.unsetTarget();
+      await battleData.withTarget(target, () async {
+        final baseValue = isPercent ? target.getMaxHp(battleData) * toModifier(dataVals.Value!) : dataVals.Value!;
+        if (isLoss) {
+          target.lossHp(baseValue.toInt(), lethal: isLethal);
+        } else {
+          final healGrantEff =
+              toModifier(await battleData.activator?.getBuffValueOnAction(battleData, BuffAction.giveGainHp) ?? 1000);
+          final healReceiveEff = toModifier(await target.getBuffValueOnAction(battleData, BuffAction.gainHp));
+          final finalHeal = (baseValue * healReceiveEff * healGrantEff).toInt();
+          await target.heal(battleData, finalHeal);
+        }
+        battleData.curFuncResults[target.uniqueId] = true;
+      });
     }
   }
 }

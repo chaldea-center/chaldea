@@ -16,16 +16,16 @@ class InstantDeath {
     final activator = battleData.activator;
     final record = BattleInstantDeathRecord(forceInstantDeath: force, activator: activator, targets: []);
     for (final target in targets) {
-      battleData.setTarget(target);
-      final params = InstantDeathParameters();
+      await battleData.withTarget(target, () async {
+        final params = InstantDeathParameters();
 
-      if (await shouldInstantDeath(battleData, dataVals, activator, target, force, params)) {
-        target.hp = 0;
-        target.lastHitBy = activator;
-        battleData.curFuncResults[target.uniqueId] = true;
-      }
-      battleData.unsetTarget();
-      record.targets.add(InstantDeathResultDetail(target: target, params: params));
+        if (await shouldInstantDeath(battleData, dataVals, activator, target, force, params)) {
+          target.hp = 0;
+          target.lastHitBy = activator;
+          battleData.curFuncResults[target.uniqueId] = true;
+        }
+        record.targets.add(InstantDeathResultDetail(target: target, params: params));
+      });
     }
     if (targets.isNotEmpty) {
       battleData.recorder.instantDeath(record);

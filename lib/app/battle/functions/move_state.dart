@@ -23,20 +23,20 @@ class MoveState {
     final Map<int, bool> currentFunctionResults = battleData.curFuncResults.deepCopy();
 
     for (final receiver in targets) {
-      //  denoting who should receive the absorbed hp
-      battleData.setTarget(receiver);
-      for (final absorbTarget in await FunctionExecutor.acquireFunctionTarget(
-        battleData,
-        dependFunction.funcTargetType,
-        receiver,
-        funcId: dependFunction.funcId,
-      )) {
-        for (final buff in absorbTarget.getBuffsWithTraits(affectTraits)) {
-          receiver.addBuff(buff.copy());
+      // denoting who should receive the absorbed hp
+      await battleData.withTarget(receiver, () async {
+        for (final absorbTarget in await FunctionExecutor.acquireFunctionTarget(
+          battleData,
+          dependFunction.funcTargetType,
+          receiver,
+          funcId: dependFunction.funcId,
+        )) {
+          for (final buff in absorbTarget.getBuffsWithTraits(affectTraits)) {
+            receiver.addBuff(buff.copy());
+          }
         }
-      }
-      currentFunctionResults[receiver.uniqueId] = true;
-      battleData.unsetTarget();
+        currentFunctionResults[receiver.uniqueId] = true;
+      });
     }
 
     final NiceFunction niceFunction = NiceFunction(

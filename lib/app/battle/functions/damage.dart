@@ -48,244 +48,242 @@ class Damage {
     final checkHpRatioLow = funcType == FuncType.damageNpHpratioLow;
     final checkHpRatio = checkHpRatioHigh || checkHpRatioLow;
     for (final target in targets) {
-      battleData.setTarget(target);
+      await battleData.withTarget(target, () async {
+        final classAdvantage = await getClassRelation(battleData, activator, target);
 
-      final classAdvantage = await getClassRelation(battleData, activator, target);
+        int? decideHp;
+        if (battleData.delegate?.hpRatio != null) {
+          decideHp = battleData.delegate!.hpRatio!(activator, battleData, damageFunction, dataVals);
+        }
+        decideHp ??= activator.hp;
+        final hpRatioDamageLow = checkHpRatioLow && dataVals.Target != null
+            ? ((1 - decideHp / activator.getMaxHp(battleData)) * dataVals.Target!).toInt()
+            : 0;
 
-      int? decideHp;
-      if (battleData.delegate?.hpRatio != null) {
-        decideHp = battleData.delegate!.hpRatio!(activator, battleData, damageFunction, dataVals);
-      }
-      decideHp ??= activator.hp;
-      final hpRatioDamageLow = checkHpRatioLow && dataVals.Target != null
-          ? ((1 - decideHp / activator.getMaxHp(battleData)) * dataVals.Target!).toInt()
-          : 0;
+        final hpRatioDamageHigh = checkHpRatioHigh && dataVals.Target != null
+            ? ((decideHp / activator.getMaxHp(battleData)) * dataVals.Target!).toInt()
+            : 0;
 
-      final hpRatioDamageHigh = checkHpRatioHigh && dataVals.Target != null
-          ? ((decideHp / activator.getMaxHp(battleData)) * dataVals.Target!).toInt()
-          : 0;
+        int specificAttackRate = 1000;
 
-      int specificAttackRate = 1000;
+        if (!checkHpRatio && dataVals.Target != null) {
+          if (funcType == FuncType.damageNpRare) {
+            final countTarget = dataVals.Target! == 1 ? activator : target; // need more sample
+            final targetRarities = dataVals.TargetRarityList!;
+            final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
+            final useCorrection = damageNpSEDecision?.useCorrection ?? targetRarities.contains(countTarget.rarity);
+            if (useCorrection) {
+              specificAttackRate = dataVals.Correction!;
+            }
+          } else if (funcType == FuncType.damageNpIndividualSum) {
+            final countTarget = dataVals.Target! == 1 ? target : activator;
+            final requiredTraits = dataVals.TargetList!.map((traitId) => NiceTrait(id: traitId)).toList();
+            final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
+            int useCount = dataVals.IncludeIgnoreIndividuality == 1
+                ? countTarget.countBuffWithTrait(requiredTraits)
+                : countTarget.countTrait(battleData, requiredTraits);
+            final useCorrection = damageNpSEDecision?.useCorrection ?? useCount > 0;
+            useCount = damageNpSEDecision?.indivSumCount ?? useCount;
+            if (dataVals.ParamAddMaxCount != null && dataVals.ParamAddMaxCount! > 0) {
+              useCount = min(useCount, dataVals.ParamAddMaxCount!);
+            }
+            if (useCorrection) {
+              specificAttackRate = dataVals.Value2! + useCount * dataVals.Correction!;
+            }
+          } else if (funcType == FuncType.damageNpIndividual || funcType == FuncType.damageNpStateIndividualFix) {
+            final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
+            final useCorrection = damageNpSEDecision?.useCorrection ??
+                battleData.checkTraits(CheckTraitParameters(
+                  requiredTraits: [NiceTrait(id: dataVals.Target!)],
+                  actor: battleData.target,
+                  checkActorTraits: funcType == FuncType.damageNpIndividual,
+                  checkActorBuffTraits: funcType == FuncType.damageNpStateIndividualFix,
+                  ignoreIrremovableBuff: dataVals.IgnoreIndivUnreleaseable == 1,
+                ));
 
-      if (!checkHpRatio && dataVals.Target != null) {
-        if (funcType == FuncType.damageNpRare) {
-          final countTarget = dataVals.Target! == 1 ? activator : target; // need more sample
-          final targetRarities = dataVals.TargetRarityList!;
-          final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
-          final useCorrection = damageNpSEDecision?.useCorrection ?? targetRarities.contains(countTarget.rarity);
-          if (useCorrection) {
-            specificAttackRate = dataVals.Correction!;
-          }
-        } else if (funcType == FuncType.damageNpIndividualSum) {
-          final countTarget = dataVals.Target! == 1 ? target : activator;
-          final requiredTraits = dataVals.TargetList!.map((traitId) => NiceTrait(id: traitId)).toList();
-          final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
-          int useCount = dataVals.IncludeIgnoreIndividuality == 1
-              ? countTarget.countBuffWithTrait(requiredTraits)
-              : countTarget.countTrait(battleData, requiredTraits);
-          final useCorrection = damageNpSEDecision?.useCorrection ?? useCount > 0;
-          useCount = damageNpSEDecision?.indivSumCount ?? useCount;
-          if (dataVals.ParamAddMaxCount != null && dataVals.ParamAddMaxCount! > 0) {
-            useCount = min(useCount, dataVals.ParamAddMaxCount!);
-          }
-          if (useCorrection) {
-            specificAttackRate = dataVals.Value2! + useCount * dataVals.Correction!;
-          }
-        } else if (funcType == FuncType.damageNpIndividual || funcType == FuncType.damageNpStateIndividualFix) {
-          final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
-          final useCorrection = damageNpSEDecision?.useCorrection ??
-              battleData.checkTraits(CheckTraitParameters(
-                requiredTraits: [NiceTrait(id: dataVals.Target!)],
-                actor: battleData.target,
-                checkActorTraits: funcType == FuncType.damageNpIndividual,
-                checkActorBuffTraits: funcType == FuncType.damageNpStateIndividualFix,
-                ignoreIrremovableBuff: dataVals.IgnoreIndivUnreleaseable == 1,
-              ));
-
-          if (useCorrection) {
-            specificAttackRate = dataVals.Correction!;
+            if (useCorrection) {
+              specificAttackRate = dataVals.Correction!;
+            }
           }
         }
-      }
 
-      int specificAttackBuff = 0;
-      for (final action in powerMods) {
-        specificAttackBuff += await activator.getBuffValueOnAction(battleData, action);
-      }
+        int specificAttackBuff = 0;
+        for (final action in powerMods) {
+          specificAttackBuff += await activator.getBuffValueOnAction(battleData, action);
+        }
 
-      final damageParameters = DamageParameters()
-        ..attack = activator.attack + currentCard.cardStrengthen
-        ..totalHits = Maths.sum(currentCard.cardDetail.hitsDistribution)
-        ..damageRate = currentCard.isNP
-            ? dataVals.Value! + hpRatioDamageLow + hpRatioDamageHigh
-            : currentCard.cardDetail.damageRate ?? 1000
-        ..npSpecificAttackRate = specificAttackRate
-        ..attackerClass = activator.classId
-        ..defenderClass = target.classId
-        ..classAdvantage = classAdvantage
-        ..attackerAttribute = activator.attribute
-        ..defenderAttribute = target.attribute
-        ..isNp = currentCard.isNP
-        ..chainPos = chainPos
-        ..currentCardType = currentCard.cardType
-        ..firstCardType = firstCardType
-        ..isTypeChain = isTypeChain
-        ..isMightyChain = isMightyChain
-        ..isCritical = currentCard.isCritical
-        ..cardBuff = await activator.getBuffValueOnAction(battleData, BuffAction.commandAtk)
-        ..attackBuff = await activator.getBuffValueOnAction(battleData, BuffAction.atk)
-        ..specificAttackBuff = specificAttackBuff
-        ..criticalDamageBuff =
-            currentCard.isCritical ? await activator.getBuffValueOnAction(battleData, BuffAction.criticalDamage) : 0
-        ..npDamageBuff = currentCard.isNP ? await activator.getBuffValueOnAction(battleData, BuffAction.npdamage) : 0
-        ..percentAttackBuff = await activator.getBuffValueOnAction(battleData, BuffAction.damageSpecial)
-        ..damageAdditionBuff = await activator.getBuffValueOnAction(battleData, BuffAction.givenDamage)
-        ..fixedRandom = battleData.options.fixedRandom
-        ..damageFunction = damageFunction;
-
-      final atkNpParameters = AttackNpGainParameters();
-      final defNpParameters = DefendNpGainParameters();
-      final starParameters = StarParameters();
-
-      if (activator.isPlayer) {
-        atkNpParameters
-          ..attackerNpCharge = currentCard.npGain
-          ..defenderNpRate = target.enemyTdRate
-          ..cardAttackNpRate = currentCard.cardDetail.damageRate ?? 1000
+        final damageParameters = DamageParameters()
+          ..attack = activator.attack + currentCard.cardStrengthen
+          ..totalHits = Maths.sum(currentCard.cardDetail.hitsDistribution)
+          ..damageRate = currentCard.isNP
+              ? dataVals.Value! + hpRatioDamageLow + hpRatioDamageHigh
+              : currentCard.cardDetail.damageRate ?? 1000
+          ..npSpecificAttackRate = specificAttackRate
+          ..attackerClass = activator.classId
+          ..defenderClass = target.classId
+          ..classAdvantage = classAdvantage
+          ..attackerAttribute = activator.attribute
+          ..defenderAttribute = target.attribute
           ..isNp = currentCard.isNP
           ..chainPos = chainPos
           ..currentCardType = currentCard.cardType
           ..firstCardType = firstCardType
+          ..isTypeChain = isTypeChain
           ..isMightyChain = isMightyChain
           ..isCritical = currentCard.isCritical
-          ..cardBuff = await activator.getBuffValueOnAction(battleData, BuffAction.commandNpAtk)
-          ..npGainBuff = await activator.getBuffValueOnAction(battleData, BuffAction.dropNp);
+          ..cardBuff = await activator.getBuffValueOnAction(battleData, BuffAction.commandAtk)
+          ..attackBuff = await activator.getBuffValueOnAction(battleData, BuffAction.atk)
+          ..specificAttackBuff = specificAttackBuff
+          ..criticalDamageBuff =
+              currentCard.isCritical ? await activator.getBuffValueOnAction(battleData, BuffAction.criticalDamage) : 0
+          ..npDamageBuff = currentCard.isNP ? await activator.getBuffValueOnAction(battleData, BuffAction.npdamage) : 0
+          ..percentAttackBuff = await activator.getBuffValueOnAction(battleData, BuffAction.damageSpecial)
+          ..damageAdditionBuff = await activator.getBuffValueOnAction(battleData, BuffAction.givenDamage)
+          ..fixedRandom = battleData.options.fixedRandom
+          ..damageFunction = damageFunction;
 
-        starParameters
-          ..attackerStarGen = activator.starGen
-          ..defenderStarRate = target.enemyStarRate
-          ..cardDropStarRate = currentCard.cardDetail.damageRate ?? 1000
-          ..isNp = currentCard.isNP
-          ..chainPos = chainPos
-          ..currentCardType = currentCard.cardType
-          ..firstCardType = firstCardType
-          ..isMightyChain = isMightyChain
-          ..isCritical = currentCard.isCritical
-          ..cardBuff = await activator.getBuffValueOnAction(battleData, BuffAction.commandStarAtk)
-          ..starGenBuff = await activator.getBuffValueOnAction(battleData, BuffAction.criticalPoint);
-      } else {
-        defNpParameters
-          ..defenderNpGainRate = target.defenceNpGain
-          ..attackerNpRate = activator.enemyTdAttackRate
-          ..cardDefNpRate = currentCard.cardDetail.damageRate ?? 1000
-          ..npGainBuff = await target.getBuffValueOnAction(battleData, BuffAction.dropNp)
-          ..defenseNpGainBuff = await target.getBuffValueOnAction(battleData, BuffAction.dropNpDamage);
-      }
+        final atkNpParameters = AttackNpGainParameters();
+        final defNpParameters = DefendNpGainParameters();
+        final starParameters = StarParameters();
 
-      final hasPierceDefense = await activator.hasBuffOnAction(battleData, BuffAction.pierceDefence);
-      final skipDamage = await shouldSkipDamage(battleData, activator, target, currentCard);
-      if (!skipDamage) {
-        damageParameters
-          ..cardResist = await target.getBuffValueOnAction(battleData, BuffAction.commandDef)
-          ..defenseBuff = damageFunction?.funcType == FuncType.damageNpPierce || hasPierceDefense
-              ? await target.getBuffValueOnAction(battleData, BuffAction.defencePierce)
-              : await target.getBuffValueOnAction(battleData, BuffAction.defence)
-          ..specificDefenseBuff = await target.getBuffValueOnAction(battleData, BuffAction.selfdamage)
-          ..percentDefenseBuff = await target.getBuffValueOnAction(battleData, BuffAction.specialdefence)
-          ..damageReceiveAdditionBuff = await target.getBuffValueOnAction(battleData, BuffAction.receiveDamage);
+        if (activator.isPlayer) {
+          atkNpParameters
+            ..attackerNpCharge = currentCard.npGain
+            ..defenderNpRate = target.enemyTdRate
+            ..cardAttackNpRate = currentCard.cardDetail.damageRate ?? 1000
+            ..isNp = currentCard.isNP
+            ..chainPos = chainPos
+            ..currentCardType = currentCard.cardType
+            ..firstCardType = firstCardType
+            ..isMightyChain = isMightyChain
+            ..isCritical = currentCard.isCritical
+            ..cardBuff = await activator.getBuffValueOnAction(battleData, BuffAction.commandNpAtk)
+            ..npGainBuff = await activator.getBuffValueOnAction(battleData, BuffAction.dropNp);
 
-        atkNpParameters.cardResist = await target.getBuffValueOnAction(battleData, BuffAction.commandNpDef);
+          starParameters
+            ..attackerStarGen = activator.starGen
+            ..defenderStarRate = target.enemyStarRate
+            ..cardDropStarRate = currentCard.cardDetail.damageRate ?? 1000
+            ..isNp = currentCard.isNP
+            ..chainPos = chainPos
+            ..currentCardType = currentCard.cardType
+            ..firstCardType = firstCardType
+            ..isMightyChain = isMightyChain
+            ..isCritical = currentCard.isCritical
+            ..cardBuff = await activator.getBuffValueOnAction(battleData, BuffAction.commandStarAtk)
+            ..starGenBuff = await activator.getBuffValueOnAction(battleData, BuffAction.criticalPoint);
+        } else {
+          defNpParameters
+            ..defenderNpGainRate = target.defenceNpGain
+            ..attackerNpRate = activator.enemyTdAttackRate
+            ..cardDefNpRate = currentCard.cardDetail.damageRate ?? 1000
+            ..npGainBuff = await target.getBuffValueOnAction(battleData, BuffAction.dropNp)
+            ..defenseNpGainBuff = await target.getBuffValueOnAction(battleData, BuffAction.dropNpDamage);
+        }
 
-        starParameters
-          ..cardResist = await target.getBuffValueOnAction(battleData, BuffAction.commandStarDef)
-          ..enemyStarGenResist = await target.getBuffValueOnAction(battleData, BuffAction.criticalStarDamageTaken);
-      }
-      final multiAttack = await activator.getConfirmationBuffValueOnAction(battleData, BuffAction.multiattack);
+        final hasPierceDefense = await activator.hasBuffOnAction(battleData, BuffAction.pierceDefence);
+        final skipDamage = await shouldSkipDamage(battleData, activator, target, currentCard);
+        if (!skipDamage) {
+          damageParameters
+            ..cardResist = await target.getBuffValueOnAction(battleData, BuffAction.commandDef)
+            ..defenseBuff = damageFunction?.funcType == FuncType.damageNpPierce || hasPierceDefense
+                ? await target.getBuffValueOnAction(battleData, BuffAction.defencePierce)
+                : await target.getBuffValueOnAction(battleData, BuffAction.defence)
+            ..specificDefenseBuff = await target.getBuffValueOnAction(battleData, BuffAction.selfdamage)
+            ..percentDefenseBuff = await target.getBuffValueOnAction(battleData, BuffAction.specialdefence)
+            ..damageReceiveAdditionBuff = await target.getBuffValueOnAction(battleData, BuffAction.receiveDamage);
 
-      // real
-      final int totalDamage = await DamageAdjustor.show(battleData, damageParameters);
+          atkNpParameters.cardResist = await target.getBuffValueOnAction(battleData, BuffAction.commandNpDef);
 
-      // calc min/max first, since it doesn't change original target/activator
-      final minResult = await _calc(
-            totalDamage:
-                calculateDamageNoError(damageParameters.copy()..fixedRandom = ConstData.constants.attackRateRandomMin),
-            atkNpParameters: atkNpParameters.copy(),
-            defNpParameters: defNpParameters.copy(),
-            starParameters: starParameters.copy(),
-            target: target.copy(),
-            activator: activator.copy(),
-            currentCard: currentCard.copy(),
-            multiAttack: multiAttack,
-            skipDamage: skipDamage,
-          ),
-          maxResult = await _calc(
-            totalDamage: calculateDamageNoError(
-                damageParameters.copy()..fixedRandom = ConstData.constants.attackRateRandomMax - 1),
-            atkNpParameters: atkNpParameters.copy(),
-            defNpParameters: defNpParameters.copy(),
-            starParameters: starParameters.copy(),
-            target: target.copy(),
-            activator: activator.copy(),
-            currentCard: currentCard.copy(),
-            multiAttack: multiAttack,
-            skipDamage: skipDamage,
-          );
+          starParameters
+            ..cardResist = await target.getBuffValueOnAction(battleData, BuffAction.commandStarDef)
+            ..enemyStarGenResist = await target.getBuffValueOnAction(battleData, BuffAction.criticalStarDamageTaken);
+        }
+        final multiAttack = await activator.getConfirmationBuffValueOnAction(battleData, BuffAction.multiattack);
 
-      final result = await _calc(
-        totalDamage: totalDamage,
-        atkNpParameters: atkNpParameters,
-        defNpParameters: defNpParameters,
-        starParameters: starParameters,
-        target: target,
-        activator: activator,
-        currentCard: currentCard,
-        multiAttack: multiAttack,
-        skipDamage: skipDamage,
-      );
+        // real
+        final int totalDamage = await DamageAdjustor.show(battleData, damageParameters);
 
-      battleData.battleLogger.debug(damageParameters.toString());
-      if (activator.isPlayer) {
-        battleData.battleLogger.debug(atkNpParameters.toString());
-        battleData.battleLogger.debug(starParameters.toString());
-      } else {
-        battleData.battleLogger.debug(defNpParameters.toString());
-      }
-      final starString = activator.isPlayer
-          ? '${S.current.critical_star}: ${(Maths.sum(result.stars) / 1000).toStringAsFixed(3)} - '
-          : '';
-      battleData.battleLogger.action('${activator.lBattleName} - ${currentCard.cardType.name.toUpperCase()} - '
-          '${currentCard.isNP ? S.current.battle_np_card : S.current.battle_command_card} - '
-          '${S.current.effect_target}: ${target.lBattleName} - '
-          '${S.current.battle_damage}: $totalDamage - '
-          '${S.current.battle_remaining_hp}: ${target.hp}/${target.maxHp} - '
-          'NP: ${(Maths.sum(result.npGains) / 100).toStringAsFixed(2)}% - '
-          '$starString'
-          'Overkill: ${result.overkillStates.where((e) => e).length}/${currentCard.cardDetail.hitsDistribution.length}');
-      final hitStarString = activator.isPlayer ? ', ${S.current.critical_star}: ${result.stars}' : '';
-      battleData.battleLogger
-          .debug('${S.current.details}: ${S.current.battle_damage}: ${result.damages}, NP: ${result.npGains}, '
-              'DefNP: ${result.defNpGains}$hitStarString');
+        // calc min/max first, since it doesn't change original target/activator
+        final minResult = await _calc(
+              totalDamage: calculateDamageNoError(
+                  damageParameters.copy()..fixedRandom = ConstData.constants.attackRateRandomMin),
+              atkNpParameters: atkNpParameters.copy(),
+              defNpParameters: defNpParameters.copy(),
+              starParameters: starParameters.copy(),
+              target: target.copy(),
+              activator: activator.copy(),
+              currentCard: currentCard.copy(),
+              multiAttack: multiAttack,
+              skipDamage: skipDamage,
+            ),
+            maxResult = await _calc(
+              totalDamage: calculateDamageNoError(
+                  damageParameters.copy()..fixedRandom = ConstData.constants.attackRateRandomMax - 1),
+              atkNpParameters: atkNpParameters.copy(),
+              defNpParameters: defNpParameters.copy(),
+              starParameters: starParameters.copy(),
+              target: target.copy(),
+              activator: activator.copy(),
+              currentCard: currentCard.copy(),
+              multiAttack: multiAttack,
+              skipDamage: skipDamage,
+            );
 
-      battleData.changeStar(toModifier(Maths.sum(result.stars)));
+        final result = await _calc(
+          totalDamage: totalDamage,
+          atkNpParameters: atkNpParameters,
+          defNpParameters: defNpParameters,
+          starParameters: starParameters,
+          target: target,
+          activator: activator,
+          currentCard: currentCard,
+          multiAttack: multiAttack,
+          skipDamage: skipDamage,
+        );
 
-      target.battleBuff.activeList.removeWhere((buff) => buff.buff.script?.DamageRelease == 1);
-      // passive should also be checked?
-      target.battleBuff.passiveList.removeWhere((buff) => buff.buff.script?.DamageRelease == 1);
+        battleData.battleLogger.debug(damageParameters.toString());
+        if (activator.isPlayer) {
+          battleData.battleLogger.debug(atkNpParameters.toString());
+          battleData.battleLogger.debug(starParameters.toString());
+        } else {
+          battleData.battleLogger.debug(defNpParameters.toString());
+        }
+        final starString = activator.isPlayer
+            ? '${S.current.critical_star}: ${(Maths.sum(result.stars) / 1000).toStringAsFixed(3)} - '
+            : '';
+        battleData.battleLogger.action('${activator.lBattleName} - ${currentCard.cardType.name.toUpperCase()} - '
+            '${currentCard.isNP ? S.current.battle_np_card : S.current.battle_command_card} - '
+            '${S.current.effect_target}: ${target.lBattleName} - '
+            '${S.current.battle_damage}: $totalDamage - '
+            '${S.current.battle_remaining_hp}: ${target.hp}/${target.maxHp} - '
+            'NP: ${(Maths.sum(result.npGains) / 100).toStringAsFixed(2)}% - '
+            '$starString'
+            'Overkill: ${result.overkillStates.where((e) => e).length}/${currentCard.cardDetail.hitsDistribution.length}');
+        final hitStarString = activator.isPlayer ? ', ${S.current.critical_star}: ${result.stars}' : '';
+        battleData.battleLogger
+            .debug('${S.current.details}: ${S.current.battle_damage}: ${result.damages}, NP: ${result.npGains}, '
+                'DefNP: ${result.defNpGains}$hitStarString');
 
-      battleData.curFuncResults[target.uniqueId] = true;
+        battleData.changeStar(toModifier(Maths.sum(result.stars)));
 
-      battleData.unsetTarget();
+        target.battleBuff.activeList.removeWhere((buff) => buff.buff.script?.DamageRelease == 1);
+        // passive should also be checked?
+        target.battleBuff.passiveList.removeWhere((buff) => buff.buff.script?.DamageRelease == 1);
 
-      targetResults.add(AttackResultDetail(
-        target: target,
-        damageParams: damageParameters,
-        attackNpParams: atkNpParameters,
-        starParams: starParameters,
-        defenseNpParams: defNpParameters,
-        result: result,
-        minResult: minResult,
-        maxResult: maxResult,
-      ));
+        battleData.curFuncResults[target.uniqueId] = true;
+
+        targetResults.add(AttackResultDetail(
+          target: target,
+          damageParams: damageParameters,
+          attackNpParams: atkNpParameters,
+          starParams: starParameters,
+          defenseNpParams: defNpParameters,
+          result: result,
+          minResult: minResult,
+          maxResult: maxResult,
+        ));
+      });
     }
 
     battleData.recorder.attack(

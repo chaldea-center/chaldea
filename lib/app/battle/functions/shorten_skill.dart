@@ -15,12 +15,12 @@ class ShortenSkill {
     }
 
     for (final target in targets) {
-      battleData.setTarget(target);
-      for (final skill in target.skillInfoList) {
-        skill.shortenSkill(dataVals.Value!);
-      }
-      battleData.curFuncResults[target.uniqueId] = true;
-      battleData.unsetTarget();
+      battleData.withTargetSync(target, () {
+        for (final skill in target.skillInfoList) {
+          skill.shortenSkill(dataVals.Value!);
+        }
+        battleData.curFuncResults[target.uniqueId] = true;
+      });
     }
   }
 
@@ -35,12 +35,12 @@ class ShortenSkill {
     }
 
     for (final target in targets) {
-      battleData.setTarget(target);
-      for (final skill in target.skillInfoList) {
-        skill.extendSkill(dataVals.Value!);
-      }
-      battleData.curFuncResults[target.uniqueId] = true;
-      battleData.unsetTarget();
+      battleData.withTargetSync(target, () {
+        for (final skill in target.skillInfoList) {
+          skill.extendSkill(dataVals.Value!);
+        }
+        battleData.curFuncResults[target.uniqueId] = true;
+      });
     }
   }
 }

@@ -17,13 +17,11 @@ class GainNP {
     }
 
     targets.forEach((target) {
-      battleData.setTarget(target);
-
-      int change = isNegative ? -dataVals.Value! : dataVals.Value!;
-      target.changeNP(change);
-      battleData.curFuncResults[target.uniqueId] = true;
-
-      battleData.unsetTarget();
+      battleData.withTargetSync(target, () {
+        int change = isNegative ? -dataVals.Value! : dataVals.Value!;
+        target.changeNP(change);
+        battleData.curFuncResults[target.uniqueId] = true;
+      });
     });
   }
 
@@ -41,39 +39,37 @@ class GainNP {
     }
 
     for (final target in targets) {
-      battleData.setTarget(target);
-
-      int change = isNegative ? -dataVals.Value! : dataVals.Value!;
-      if (targetTraits != null) {
-        final List<BattleServantData> countTargets = [];
-        final targetType = dataVals.Value2 ?? 0;
-        if (targetType == 0) {
-          countTargets.add(target);
-        }
-        if (targetType == 1 || targetType == 3) {
-          countTargets.addAll(await FunctionExecutor.acquireFunctionTarget(battleData, FuncTargetType.ptAll, target));
-        }
-        if (targetType == 2 || targetType == 3) {
-          countTargets
-              .addAll(await FunctionExecutor.acquireFunctionTarget(battleData, FuncTargetType.enemyAll, target));
-        }
-
-        int count = 0;
-        final bool activeBuffOnly = onlyCheckBuff || (dataVals.GainNpTargetPassiveIndividuality ?? 0) < 1;
-
-        for (final countTarget in countTargets) {
-          count += countTarget.countBuffWithTrait(targetTraits, activeOnly: activeBuffOnly);
-          if (!onlyCheckBuff) {
-            count += countTarget.countTrait(battleData, targetTraits);
+      await battleData.withTarget(target, () async {
+        int change = isNegative ? -dataVals.Value! : dataVals.Value!;
+        if (targetTraits != null) {
+          final List<BattleServantData> countTargets = [];
+          final targetType = dataVals.Value2 ?? 0;
+          if (targetType == 0) {
+            countTargets.add(target);
           }
+          if (targetType == 1 || targetType == 3) {
+            countTargets.addAll(await FunctionExecutor.acquireFunctionTarget(battleData, FuncTargetType.ptAll, target));
+          }
+          if (targetType == 2 || targetType == 3) {
+            countTargets
+                .addAll(await FunctionExecutor.acquireFunctionTarget(battleData, FuncTargetType.enemyAll, target));
+          }
+
+          int count = 0;
+          final bool activeBuffOnly = onlyCheckBuff || (dataVals.GainNpTargetPassiveIndividuality ?? 0) < 1;
+
+          for (final countTarget in countTargets) {
+            count += countTarget.countBuffWithTrait(targetTraits, activeOnly: activeBuffOnly);
+            if (!onlyCheckBuff) {
+              count += countTarget.countTrait(battleData, targetTraits);
+            }
+          }
+          change *= count;
         }
-        change *= count;
-      }
 
-      target.changeNP(change);
-      battleData.curFuncResults[target.uniqueId] = true;
-
-      battleData.unsetTarget();
+        target.changeNP(change);
+        battleData.curFuncResults[target.uniqueId] = true;
+      });
     }
   }
 }

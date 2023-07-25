@@ -18,34 +18,34 @@ class SubState {
   ) async {
     final activator = battleData.activator;
     for (final target in targets) {
-      battleData.setTarget(target);
-      final removeFromStart = dataVals.Value != null && dataVals.Value! > 0;
-      final removeTargetCount =
-          dataVals.Value != null && dataVals.Value2 != null ? max(dataVals.Value!, dataVals.Value2!) : null;
-      int removeCount = 0;
-      final List<BuffData> listToInspect =
-          removeFromStart ? target.battleBuff.activeList.reversed.toList() : target.battleBuff.activeList.toList();
+      await battleData.withTarget(target, () async {
+        final removeFromStart = dataVals.Value != null && dataVals.Value! > 0;
+        final removeTargetCount =
+            dataVals.Value != null && dataVals.Value2 != null ? max(dataVals.Value!, dataVals.Value2!) : null;
+        int removeCount = 0;
+        final List<BuffData> listToInspect =
+            removeFromStart ? target.battleBuff.activeList.reversed.toList() : target.battleBuff.activeList.toList();
 
-      for (int index = listToInspect.length - 1; index >= 0; index -= 1) {
-        final buff = listToInspect[index];
+        for (int index = listToInspect.length - 1; index >= 0; index -= 1) {
+          final buff = listToInspect[index];
 
-        battleData.setCurrentBuff(buff);
-        if (await shouldSubState(battleData, affectTraits, dataVals, activator, target)) {
-          listToInspect.removeAt(index);
-          removeCount += 1;
+          await battleData.withBuff(buff, () async {
+            if (await shouldSubState(battleData, affectTraits, dataVals, activator, target)) {
+              listToInspect.removeAt(index);
+              removeCount += 1;
+            }
+          });
+
+          if (removeTargetCount != null && removeCount == removeTargetCount) {
+            break;
+          }
         }
-        battleData.unsetCurrentBuff();
 
-        if (removeTargetCount != null && removeCount == removeTargetCount) {
-          break;
+        target.battleBuff.activeList = removeFromStart ? listToInspect.reversed.toList() : listToInspect.toList();
+        if (removeCount > 0) {
+          battleData.curFuncResults[target.uniqueId] = true;
         }
-      }
-
-      target.battleBuff.activeList = removeFromStart ? listToInspect.reversed.toList() : listToInspect.toList();
-      if (removeCount > 0) {
-        battleData.curFuncResults[target.uniqueId] = true;
-      }
-      battleData.unsetTarget();
+      });
     }
   }
 

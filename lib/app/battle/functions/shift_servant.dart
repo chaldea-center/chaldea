@@ -14,19 +14,19 @@ class ShiftServant {
       if (target.isPlayer) {
         continue;
       }
-      battleData.setTarget(target);
-      final shiftNpcId = dataVals.ShiftNpcId ?? 0;
-      final skillShiftSvt = battleData.enemyDecks[DeckType.skillShift]?.firstWhereOrNull((e) => e.npcId == shiftNpcId);
-      if (skillShiftSvt == null) {
-        battleData.battleLogger.error('SkillShift NpcId=$shiftNpcId not found');
-        battleData.curFuncResults[target.uniqueId] = false;
-      } else {
-        target.skillShift(battleData, skillShiftSvt);
-        await battleData.initActorSkills([target]);
-        battleData.curFuncResults[target.uniqueId] = true;
-      }
-
-      battleData.unsetTarget();
+      await battleData.withTarget(target, () async {
+        final shiftNpcId = dataVals.ShiftNpcId ?? 0;
+        final skillShiftSvt =
+            battleData.enemyDecks[DeckType.skillShift]?.firstWhereOrNull((e) => e.npcId == shiftNpcId);
+        if (skillShiftSvt == null) {
+          battleData.battleLogger.error('SkillShift NpcId=$shiftNpcId not found');
+          battleData.curFuncResults[target.uniqueId] = false;
+        } else {
+          target.skillShift(battleData, skillShiftSvt);
+          await battleData.initActorSkills([target]);
+          battleData.curFuncResults[target.uniqueId] = true;
+        }
+      });
     }
   }
 
@@ -53,16 +53,16 @@ class ShiftServant {
       actor.shiftNpcIds = changeSvt.enemyScript.shift!.toList();
     }
 
-    battleData.setTarget(actor);
-    actor.changeIndex = changeIndex;
-    actor.niceEnemy = changeSvt;
-    actor.atk = changeSvt.atk;
-    // actor.hp = targetEnemy.hp;
-    actor.maxHp = changeSvt.hp;
-    actor.level = changeSvt.lv;
-    actor.battleBuff.clearPassive(actor.uniqueId);
-    actor.initScript(battleData);
-    await battleData.initActorSkills([actor]);
-    battleData.unsetTarget();
+    await battleData.withTarget(actor, () async {
+      actor.changeIndex = changeIndex;
+      actor.niceEnemy = changeSvt;
+      actor.atk = changeSvt.atk;
+      // actor.hp = targetEnemy.hp;
+      actor.maxHp = changeSvt.hp;
+      actor.level = changeSvt.lv;
+      actor.battleBuff.clearPassive(actor.uniqueId);
+      actor.initScript(battleData);
+      await battleData.initActorSkills([actor]);
+    });
   }
 }

@@ -25,21 +25,21 @@ class GainHpFromTargets {
     final Map<int, bool> currentFunctionResults = battleData.curFuncResults.deepCopy();
 
     for (final receiver in targets) {
-      battleData.setTarget(receiver);
-      //  denoting who should receive the absorbed hp
-      int gainValue = 0;
-      for (final absorbTarget in await FunctionExecutor.acquireFunctionTarget(
-        battleData,
-        dependFunction.funcTargetType,
-        receiver,
-        funcId: dependFunction.funcId,
-      )) {
-        gainValue += min(absorbTarget.hp - 1, checkValue);
-      }
+      await battleData.withTarget(receiver, () async {
+        // denoting who should receive the absorbed hp
+        int gainValue = 0;
+        for (final absorbTarget in await FunctionExecutor.acquireFunctionTarget(
+          battleData,
+          dependFunction.funcTargetType,
+          receiver,
+          funcId: dependFunction.funcId,
+        )) {
+          gainValue += min(absorbTarget.hp - 1, checkValue);
+        }
 
-      await receiver.heal(battleData, gainValue);
-      currentFunctionResults[receiver.uniqueId] = true;
-      battleData.unsetTarget();
+        await receiver.heal(battleData, gainValue);
+        currentFunctionResults[receiver.uniqueId] = true;
+      });
     }
 
     final NiceFunction niceFunction = NiceFunction(
