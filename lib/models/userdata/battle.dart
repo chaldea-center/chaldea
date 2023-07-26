@@ -5,6 +5,7 @@ import 'package:archive/archive.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/utils/url.dart';
 import '../../utils/atlas.dart';
 import '../../utils/extension.dart';
@@ -92,16 +93,18 @@ class BattleSimSetting {
 
 @JsonSerializable(includeIfNull: false)
 class BattleShareData {
-  static const kMinVer = '2.4.1';
+  static const int kMinBuild = 933; //2.4.1
   static const int kDataVer = 2;
-  String? minVer;
+  int? minBuild;
+  int? appBuild; // app ver for uploaded data
   BattleQuestInfo? quest;
   BattleTeamFormation team;
   BattleActions? actions;
   bool? disableEvent;
 
   BattleShareData({
-    this.minVer,
+    this.minBuild,
+    required this.appBuild,
     required this.quest,
     required this.team,
     required this.disableEvent,
@@ -117,7 +120,8 @@ class BattleShareData {
       svt?.additionalPassiveLvs.clear();
     }
     return _$BattleShareDataToJson(BattleShareData(
-      minVer: kMinVer,
+      minBuild: kMinBuild,
+      appBuild: AppInfo.buildNumber,
       quest: quest,
       team: team2,
       actions: actions,

@@ -17,7 +17,6 @@ import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/quest/quest_card.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -239,6 +238,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           );
         }
         final shareUri = BattleShareData(
+          appBuild: AppInfo.buildNumber,
           quest: questInfo,
           team: settings.curFormation,
           disableEvent: options.disableEvent,
@@ -296,6 +296,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               initQuestId: questPhase?.id,
               onChanged: (Quest quest) async {
                 EasyLoading.show();
+                if (quest.phases.isEmpty) return;
                 final phase = await AtlasApi.questPhase(quest.id, quest.phases.last);
                 EasyLoading.dismiss();
                 if (mounted) {
@@ -842,12 +843,10 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       return;
     }
 
-    if (data.minVer != null) {
-      final minVer = AppVersion.tryParse(data.minVer!);
-      if (minVer != null && minVer > AppInfo.version) {
-        EasyLoading.showError(S.current.error_required_app_version(data.minVer!));
-        return;
-      }
+    final minBuild = data.minBuild;
+    if (minBuild != null && minBuild > AppInfo.buildNumber) {
+      EasyLoading.showError(S.current.error_required_app_version('Build $minBuild'));
+      return;
     }
     restoreFormation(data.team);
     questInfo = data.quest ?? questInfo;

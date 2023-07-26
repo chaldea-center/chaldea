@@ -11,6 +11,7 @@ import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../descriptors/skill_descriptor.dart';
@@ -689,6 +690,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           delegate: battleData.replayDataRecord,
         );
         final uploadData = BattleShareData(
+          appBuild: AppInfo.buildNumber,
           quest: BattleQuestInfo(
             id: questPhase.id,
             phase: questPhase.phase,

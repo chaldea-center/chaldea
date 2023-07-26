@@ -64,7 +64,8 @@ BattleShareData _$BattleShareDataFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = BattleShareData(
-          minVer: $checkedConvert('minVer', (v) => v as String?),
+          minBuild: $checkedConvert('minBuild', (v) => v as int?),
+          appBuild: $checkedConvert('appBuild', (v) => v as int?),
           quest: $checkedConvert(
               'quest', (v) => v == null ? null : BattleQuestInfo.fromJson(Map<String, dynamic>.from(v as Map))),
           team: $checkedConvert('team', (v) => BattleTeamFormation.fromJson(Map<String, dynamic>.from(v as Map))),
@@ -85,7 +86,8 @@ Map<String, dynamic> _$BattleShareDataToJson(BattleShareData instance) {
     }
   }
 
-  writeNotNull('minVer', instance.minVer);
+  writeNotNull('minBuild', instance.minBuild);
+  writeNotNull('appBuild', instance.appBuild);
   writeNotNull('quest', instance.quest?.toJson());
   val['team'] = instance.team.toJson();
   writeNotNull('actions', instance.actions?.toJson());
