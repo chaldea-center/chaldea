@@ -215,6 +215,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                 trailing: Text(user.qp.format(compact: false, groupSeparator: ',')),
               ),
               ListTile(
+                title: Text(Items.stone?.lName.l ?? "Saint Quartz"),
+                trailing: Text('${user.stone}(${user.freeStone}+${user.chargeStone})'),
+              ),
+              ListTile(
                 title: Text(Items.manaPrism?.lName.l ?? "Mana Prism"),
                 trailing: Text(user.mana.format(compact: false, groupSeparator: ',')),
               ),

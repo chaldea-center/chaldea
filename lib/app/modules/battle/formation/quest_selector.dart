@@ -32,6 +32,7 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
   Map<int, _OptionData> options = {};
 
   bool shouldShow(Quest quest) {
+    if (quest.phases.isEmpty) return false;
     if (quest.isLaplaceSharable) return true;
     if (quest.warId == WarId.daily || quest.warId == WarId.chaldeaGate) {
       return quest.isAnyFree;

@@ -1,5 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
+
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/models/gamedata/raw.dart';
@@ -39,9 +40,9 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
       gachas = {
         for (final v in data) v.id: v,
       };
-      // records.sort2((e) => gachas[e.gachaId]?.closedAt ?? e.gachaId, reversed: true);
+      records.sort2((e) => gachas[e.gachaId]?.openedAt ?? e.gachaId, reversed: true);
     }
-    records = records.reversed.toList();
+    // records = records.reversed.toList();
     loading.value = false;
     if (mounted) setState(() {});
   }
