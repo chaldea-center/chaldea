@@ -418,13 +418,11 @@ class BattleTeamSetup {
   final List<PlayerSvtData> backupSvtDataList;
 
   final MysticCodeData mysticCodeData;
-  Region? playerRegion;
 
   BattleTeamSetup({
     List<PlayerSvtData?>? onFieldSvtDataList,
     List<PlayerSvtData?>? backupSvtDataList,
     MysticCodeData? mysticCodeData,
-    this.playerRegion,
   })  : onFieldSvtDataList = List.generate(3, (index) => onFieldSvtDataList?.getOrNull(index) ?? PlayerSvtData.base()),
         backupSvtDataList = List.generate(3, (index) => backupSvtDataList?.getOrNull(index) ?? PlayerSvtData.base()),
         mysticCodeData = mysticCodeData ?? MysticCodeData();
@@ -436,7 +434,6 @@ class BattleTeamSetup {
       onFieldSvtDataList: onFieldSvtDataList.map((e) => e.copy()).toList(),
       backupSvtDataList: backupSvtDataList.map((e) => e.copy()).toList(),
       mysticCodeData: mysticCodeData.copy(),
-      playerRegion: playerRegion,
     );
   }
 

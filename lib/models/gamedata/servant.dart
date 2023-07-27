@@ -340,6 +340,7 @@ class Servant with GameCardMixin {
       name: name,
       ruby: ruby,
       battleName: battleName,
+      classId: classId,
       type: type,
       flag: flag,
       rarity: rarity,

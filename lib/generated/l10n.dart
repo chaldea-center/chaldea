@@ -1152,10 +1152,10 @@ class S {
     );
   }
 
-  /// `Repeatedly click Cammand Card and will be Critical Attack when in red`
+  /// `Repeatedly click Command Card and will be Critical Attack when in red`
   String get battle_select_critical_card_hint {
     return Intl.message(
-      'Repeatedly click Cammand Card and will be Critical Attack when in red',
+      'Repeatedly click Command Card and will be Critical Attack when in red',
       name: 'battle_select_critical_card_hint',
       desc: '',
       locale: localeName,

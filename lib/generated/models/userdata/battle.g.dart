@@ -11,6 +11,8 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = BattleSimSetting(
+          playerRegion: $checkedConvert(
+              'playerRegion', (v) => _$JsonConverterFromJson<String, Region>(v, const RegionConverter().fromJson)),
           playerDataSource: $checkedConvert('playerDataSource',
               (v) => $enumDecodeNullable(_$PreferPlayerSvtDataSourceEnumMap, v) ?? PreferPlayerSvtDataSource.none),
           pingedCEs: $checkedConvert('pingedCEs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
@@ -39,6 +41,7 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
     );
 
 Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <String, dynamic>{
+      'playerRegion': _$JsonConverterToJson<String, Region>(instance.playerRegion, const RegionConverter().toJson),
       'playerDataSource': _$PreferPlayerSvtDataSourceEnumMap[instance.playerDataSource]!,
       'pingedCEs': instance.pingedCEs.toList(),
       'pingedSvts': instance.pingedSvts.toList(),
@@ -53,11 +56,23 @@ Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <Str
       'recordShowTwoColumn': instance.recordShowTwoColumn,
     };
 
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) =>
+    json == null ? null : fromJson(json as Json);
+
 const _$PreferPlayerSvtDataSourceEnumMap = {
   PreferPlayerSvtDataSource.none: 'none',
   PreferPlayerSvtDataSource.current: 'current',
   PreferPlayerSvtDataSource.target: 'target',
 };
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) =>
+    value == null ? null : toJson(value);
 
 BattleShareData _$BattleShareDataFromJson(Map json) => $checkedCreate(
       'BattleShareData',
@@ -126,18 +141,6 @@ Map<String, dynamic> _$BattleQuestInfoToJson(BattleQuestInfo instance) {
   writeNotNull('region', _$JsonConverterToJson<String, Region>(instance.region, const RegionConverter().toJson));
   return val;
 }
-
-Value? _$JsonConverterFromJson<Json, Value>(
-  Object? json,
-  Value? Function(Json json) fromJson,
-) =>
-    json == null ? null : fromJson(json as Json);
-
-Json? _$JsonConverterToJson<Json, Value>(
-  Value? value,
-  Json? Function(Value value) toJson,
-) =>
-    value == null ? null : toJson(value);
 
 BattleTeamFormation _$BattleTeamFormationFromJson(Map json) => $checkedCreate(
       'BattleTeamFormation',

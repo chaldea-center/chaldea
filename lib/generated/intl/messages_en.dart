@@ -195,7 +195,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_select_activator": MessageLookupByLibrary.simpleMessage("Select Activator"),
         "battle_select_card": MessageLookupByLibrary.simpleMessage("Select Card"),
         "battle_select_critical_card_hint": MessageLookupByLibrary.simpleMessage(
-            "Repeatedly click Cammand Card and will be Critical Attack when in red"),
+            "Repeatedly click Command Card and will be Critical Attack when in red"),
         "battle_select_effect": MessageLookupByLibrary.simpleMessage("Select Effect "),
         "battle_should_activate": MessageLookupByLibrary.simpleMessage("Should Activate"),
         "battle_simulation": MessageLookupByLibrary.simpleMessage("Battle Simulation"),

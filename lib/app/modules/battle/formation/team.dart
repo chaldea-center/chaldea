@@ -10,6 +10,7 @@ class TeamSetupCard extends StatefulWidget {
   final List<PlayerSvtData> backupSvts;
   final BattleTeamSetup team;
   final QuestPhase? quest;
+  final Region? playerRegion;
   final bool enableEdit;
   final bool showEmptyBackup;
   final VoidCallback? onChanged;
@@ -20,6 +21,7 @@ class TeamSetupCard extends StatefulWidget {
     required this.backupSvts,
     required this.team,
     required this.quest,
+    this.playerRegion,
     this.enableEdit = true,
     this.showEmptyBackup = true,
     this.onChanged,
@@ -60,7 +62,7 @@ class _TeamSetupCardState extends State<TeamSetupCard> {
                 Expanded(
                   child: ServantSelector(
                     playerSvtData: svt,
-                    playerRegion: team.playerRegion,
+                    playerRegion: widget.playerRegion,
                     questPhase: widget.quest,
                     onChanged: () {
                       if (mounted) setState(() {});

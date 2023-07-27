@@ -15,9 +15,10 @@ import 'filter_data.dart';
 
 part '../../generated/models/userdata/battle.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(converters: [RegionConverter()])
 class BattleSimSetting {
   // settings
+  Region? playerRegion;
   PreferPlayerSvtDataSource playerDataSource;
   Set<int> pingedCEs;
   Set<int> pingedSvts;
@@ -37,6 +38,7 @@ class BattleSimSetting {
   bool recordShowTwoColumn;
 
   BattleSimSetting({
+    this.playerRegion,
     this.playerDataSource = PreferPlayerSvtDataSource.none,
     Set<int>? pingedCEs,
     Set<int>? pingedSvts,

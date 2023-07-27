@@ -187,6 +187,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       backupSvts: backupSvts,
       team: options.team,
       quest: questPhase,
+      playerRegion: settings.playerRegion,
       onChanged: () {
         if (mounted) setState(() {});
       },
@@ -519,7 +520,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       children: [
         DropdownButton<Region>(
           isDense: true,
-          value: options.team.playerRegion,
+          value: settings.playerRegion,
           items: [
             DropdownMenuItem(
               value: null,
@@ -547,7 +548,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           ],
           onChanged: (v) {
             setState(() {
-              options.team.playerRegion = v;
+              settings.playerRegion = v;
             });
           },
         ),

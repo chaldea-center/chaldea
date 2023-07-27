@@ -55,7 +55,7 @@ class ServantExtra {
   ServantExtra({
     required this.collectionNo,
     MappingList<String>? nicknames,
-    this.obtains = const [],
+    this.obtains = const [SvtObtain.unknown],
     this.aprilFoolAssets = const [],
     MappingBase<String>? aprilFoolProfile,
     this.mcSprites = const [],
