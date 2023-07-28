@@ -50,14 +50,14 @@ String? getReleaseNote(String fp, String version) {
       return lines.skip(1).join('\n').trim();
     }
   }
-  if (version == 'beta') {
-    final lastRelease = blocks.firstOrNull;
-    if (lastRelease != null) {
-      final lines = const LineSplitter().convert(lastRelease);
-      final header = lines.first.trim();
-      if (RegExp(r'^\d+\.\d+\.\d+$').hasMatch(header)) {
-        return lines.skip(1).join('\n');
-      }
+
+  final fallbackVersion = version == 'beta' ? RegExp(r'^\d+\.\d+\.\d+$') : RegExp('beta');
+  final lastRelease = blocks.firstOrNull;
+  if (lastRelease != null) {
+    final lines = const LineSplitter().convert(lastRelease);
+    final header = lines.first.trim();
+    if (fallbackVersion.hasMatch(header)) {
+      return lines.skip(1).join('\n').trim();
     }
   }
   return null;

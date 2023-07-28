@@ -195,7 +195,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: beta
-          name: Chaldea Preview
+          name: beta
           body: Built at ${{ steps.get-date.outputs.date }}
           body_path: chaldea-${{ env.VERSION }}-android/release-note.md
           draft: false

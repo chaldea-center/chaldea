@@ -1,6 +1,8 @@
 # Changelog
 
-## beta
+## 2.4.7
+
+Happy 8th Anniversary, FGO!
 
 - Chaldeas
   - Sniffing: add present box and Gacha statistics when importing login data
