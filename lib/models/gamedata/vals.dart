@@ -192,8 +192,15 @@ class DataVals {
   int? get ActMasterGenderType => _vals['ActMasterGenderType'];
   int? get IntervalTurn => _vals['IntervalTurn'];
   int? get IntervalCount => _vals['IntervalCount'];
+  int? get TriggeredFieldCountTarget => _vals['TriggeredFieldCountTarget'];
+
+  List<int>? get TriggeredFieldCountRange => _list('TriggeredFieldCountRange');
   List<int>? get TargetEnemyRange => _list('TargetEnemyRange');
 
+  int? get TriggeredFuncPositionSameTarget => _vals['TriggeredFuncPositionSameTarget'];
+  int? get TriggeredFuncPositionAll => _vals['TriggeredFuncPositionAll'];
+  List<int>? get TriggeredTargetHpRange => _list('TriggeredTargetHpRange');
+  List<int>? get TriggeredTargetHpRateRange => _list('TriggeredTargetHpRateRange');
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];
   int? get EventId => _vals['EventId'];

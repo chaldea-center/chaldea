@@ -950,4 +950,5 @@ enum CondType {
   svtClassFriendshipCount,
   completeHeelPortrait,
   notCompleteHeelPortrait,
+  classBoardSquareReleased,
 }

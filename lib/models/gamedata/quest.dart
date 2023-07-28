@@ -833,6 +833,7 @@ class NpcServant {
   EnemySkill? skills;
   SupportServantTd? noblePhantasm;
   SupportServantLimit limit;
+  @JsonKey(unknownEnumValue: NpcServantFollowerFlag.unknown)
   List<NpcServantFollowerFlag> flags;
 
   NpcServant({
@@ -1869,6 +1870,7 @@ enum NpcServantFollowerFlag {
   hideTreasureDeviceLv,
   hideTreasureDeviceDetail,
   hideRarity,
+  notClassBoard,
 }
 
 enum QuestGroupType {

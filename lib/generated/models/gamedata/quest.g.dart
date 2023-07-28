@@ -498,7 +498,10 @@ NpcServant _$NpcServantFromJson(Map json) => NpcServant(
           ? null
           : SupportServantTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
       limit: SupportServantLimit.fromJson(Map<String, dynamic>.from(json['limit'] as Map)),
-      flags: (json['flags'] as List<dynamic>?)?.map((e) => $enumDecode(_$NpcServantFollowerFlagEnumMap, e)).toList() ??
+      flags: (json['flags'] as List<dynamic>?)
+              ?.map(
+                  (e) => $enumDecode(_$NpcServantFollowerFlagEnumMap, e, unknownValue: NpcServantFollowerFlag.unknown))
+              .toList() ??
           const [],
     );
 
@@ -528,6 +531,7 @@ const _$NpcServantFollowerFlagEnumMap = {
   NpcServantFollowerFlag.hideTreasureDeviceLv: 'hideTreasureDeviceLv',
   NpcServantFollowerFlag.hideTreasureDeviceDetail: 'hideTreasureDeviceDetail',
   NpcServantFollowerFlag.hideRarity: 'hideRarity',
+  NpcServantFollowerFlag.notClassBoard: 'notClassBoard',
 };
 
 SupportServant _$SupportServantFromJson(Map json) => SupportServant(

@@ -327,4 +327,5 @@ const _$CondTypeEnumMap = {
   CondType.svtClassFriendshipCount: 'svtClassFriendshipCount',
   CondType.completeHeelPortrait: 'completeHeelPortrait',
   CondType.notCompleteHeelPortrait: 'notCompleteHeelPortrait',
+  CondType.classBoardSquareReleased: 'classBoardSquareReleased',
 };
