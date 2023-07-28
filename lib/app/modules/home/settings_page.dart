@@ -138,6 +138,20 @@ class _SettingsPageState extends State<SettingsPage> {
                   router.popDetailAndPush(child: TranslationSetting());
                 },
               ),
+              ListTile(
+                title: Text(Language.isZH ? '协助翻译！' : 'Help Translation!'),
+                trailing: const Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    Icon(Icons.sos),
+                    SizedBox(width: 8),
+                    Icon(Icons.translate, size: 20),
+                  ],
+                ),
+                onTap: () {
+                  launch(ChaldeaUrl.doc('translation'));
+                },
+              ),
             ],
           ),
           SliverTileGroup(

@@ -21,14 +21,14 @@ void main(List<String> args) {
   final buffer = StringBuffer();
   if (en.isNotEmpty) {
     buffer.writeln("EN:");
-    buffer.writeln(en.trim());
+    buffer.writeln(en);
   }
   if (en.isNotEmpty && zh.isNotEmpty) {
     buffer.writeln();
   }
   if (zh.isNotEmpty) {
     buffer.writeln("ZH:");
-    buffer.writeln(zh.trim());
+    buffer.writeln(zh);
   }
   if (buffer.isEmpty) {
     String time = DateTime.now().toUtc().toIso8601String();
@@ -47,7 +47,7 @@ String? getReleaseNote(String fp, String version) {
     final lines = const LineSplitter().convert(block);
     final header = lines.first.trim();
     if (header == version) {
-      return lines.skip(1).join('\n');
+      return lines.skip(1).join('\n').trim();
     }
   }
   if (version == 'beta') {

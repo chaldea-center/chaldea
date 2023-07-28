@@ -1,5 +1,14 @@
 # Changelog
 
+## beta
+
+- Chaldeas
+  - Sniffing: add present box and Gacha statistics when importing login data
+  - Show related event quests in event page(hunting/trial/advanced quests)
+- Laplace
+  - Records panel can be shown in two columns to avoid image too long
+  - Fix master skill not working correctly because actor may not be reset
+
 ## 2.4.6
 
 - Chaldeas
@@ -9,7 +18,7 @@
   - Fix Damage Cut
   - Fix activator not reset after custom skill
   - Show Fou on svt avatar if not equal to 1000
-  - Fix Master Skill Effect Up skill from Tezcatlipoca 
+  - Fix Master Skill Effect Up skill from Tezcatlipoca
 
 ## 2.4.5
 
