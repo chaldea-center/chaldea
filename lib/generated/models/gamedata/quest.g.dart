@@ -1072,6 +1072,18 @@ const _$FrequencyTypeEnumMap = {
   FrequencyType.none: 'none',
 };
 
+QuestGroup _$QuestGroupFromJson(Map json) => QuestGroup(
+      questId: json['questId'] as int,
+      type: json['type'] as int,
+      groupId: json['groupId'] as int,
+    );
+
+Map<String, dynamic> _$QuestGroupToJson(QuestGroup instance) => <String, dynamic>{
+      'questId': instance.questId,
+      'type': instance.type,
+      'groupId': instance.groupId,
+    };
+
 const _$QuestFlagEnumMap = {
   QuestFlag.none: 'none',
   QuestFlag.noBattle: 'noBattle',

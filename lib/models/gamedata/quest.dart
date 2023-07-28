@@ -1616,6 +1616,25 @@ class QuestPhaseRestriction {
   Map<String, dynamic> toJson() => _$QuestPhaseRestrictionToJson(this);
 }
 
+@JsonSerializable()
+class QuestGroup {
+  final int questId;
+  final int type;
+  final int groupId;
+
+  QuestGroupType get type2 => kQuestGroupTypeMapping[type] ?? QuestGroupType.none;
+
+  QuestGroup({
+    required this.questId,
+    required this.type,
+    required this.groupId,
+  });
+
+  factory QuestGroup.fromJson(Map<String, dynamic> json) => _$QuestGroupFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestGroupToJson(this);
+}
+
 ///
 
 class QuestFlagConverter extends JsonConverter<QuestFlag, String> {
@@ -1851,3 +1870,31 @@ enum NpcServantFollowerFlag {
   hideTreasureDeviceDetail,
   hideRarity,
 }
+
+enum QuestGroupType {
+  none(0),
+  eventQuest(1), // groupId=eventId
+  questRelease(2), // CondType.questGroupClear
+  eventPointQuest(3),
+  eventPointGroupQuest(4),
+  eventRaceQuest(5),
+  eventRaceGroupQuest(6),
+  missionGroupQuest(7),
+  eventTower(8), // groupId=tower id
+  eventTowerFloor(9), // groupId=tower floor
+  highlightQuest(10),
+  eventDailyPoint(11),
+  eventActivityPointGauge(12),
+  interlude(13),
+  eventBattleLine(14),
+  battleGroup(15),
+  shareQuestInfo(16),
+  alloutBattleQuest(17),
+  eventFortification(18),
+  ;
+
+  const QuestGroupType(this.id);
+  final int id;
+}
+
+final kQuestGroupTypeMapping = {for (final v in QuestGroupType.values) v.id: v};

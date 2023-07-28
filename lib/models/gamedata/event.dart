@@ -131,7 +131,9 @@ class Event {
       // heelPortraits.isEmpty &&
       extra.huntingQuestIds.isEmpty &&
       extra.extraFixedItems.isEmpty &&
-      extra.extraItems.isEmpty;
+      extra.extraItems.isEmpty &&
+      !db.gameData.others.eventQuestGroups.containsKey(id) &&
+      !isAdvancedQuestEvent;
 
   bool get isInfinite =>
       extra.extraItems.any((e) => e.infinite) ||
@@ -142,6 +144,8 @@ class Event {
       digging != null ||
       fortifications.isNotEmpty ||
       recipes.isNotEmpty;
+
+  bool get isAdvancedQuestEvent => name.contains('アドバンスドクエスト');
 
   bool isOutdated([Duration diff = const Duration(days: 10)]) {
     if (db.curUser.region == Region.jp) {
@@ -830,6 +834,8 @@ class EventTower {
     required this.name,
     required this.rewards,
   });
+
+  String get lName => Transl.misc2('TowerName', name);
 
   factory EventTower.fromJson(Map<String, dynamic> json) => _$EventTowerFromJson(json);
 

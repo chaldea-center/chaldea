@@ -166,8 +166,10 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
         onClickNextAi: onClickNextAi,
       ));
     }
-
-    return ListView(controller: scrollController, children: children);
+    return SingleChildScrollView(
+      controller: scrollController,
+      child: ListBody(children: children),
+    );
   }
 
   void onClickNextAi(int nextAiId) {

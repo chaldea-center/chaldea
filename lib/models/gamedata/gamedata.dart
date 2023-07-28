@@ -67,6 +67,7 @@ class GameData with _GameDataExtra {
   Map<int, BgmEntity> bgms;
   Map<int, EnemyMaster> enemyMasters;
   Map<int, MasterMission> extraMasterMission;
+  List<QuestGroup> questGroups;
   WikiData wiki;
   MappingData mappingData;
   ConstGameData constData;
@@ -108,6 +109,7 @@ class GameData with _GameDataExtra {
     Map<int, ExchangeTicket>? exchangeTickets,
     Map<int, EnemyMaster>? enemyMasters,
     Map<int, MasterMission>? extraMasterMission,
+    List<QuestGroup>? questGroups,
     WikiData? wiki,
     MappingData? mappingData,
     ConstGameData? constData,
@@ -147,6 +149,7 @@ class GameData with _GameDataExtra {
         bgms = bgms ?? {},
         enemyMasters = enemyMasters ?? {},
         extraMasterMission = extraMasterMission ?? {},
+        questGroups = questGroups ?? [],
         wiki = wiki ?? WikiData(),
         mappingData = mappingData ?? MappingData(),
         constData = constData ?? ConstGameData(),
@@ -473,6 +476,13 @@ class _ProcessedData {
       for (final event in gameData.events.values)
         for (final questId in event.extra.huntingQuestIds) questId: event.id,
     };
+    for (final quest in gameData.questGroups) {
+      if (quest.type2 == QuestGroupType.eventQuest) {
+        eventQuestGroups.putIfAbsent(quest.groupId, () => []).add(quest.questId);
+      } else if (quest.type2 == QuestGroupType.eventTower) {
+        eventTowerQuestGroups.putIfAbsent(quest.groupId, () => []).add(quest.questId);
+      }
+    }
     _initFuncBuff();
   }
 
@@ -480,6 +490,8 @@ class _ProcessedData {
   Map<int, EventMission> eventMissions = {};
   Map<int, EventPointBuff> eventPointBuffs = {};
   Map<int, int> huntingToEventIds = {};
+  Map<int, List<int>> eventQuestGroups = {}; // QuestGroupType.eventQuest: <eventId=groupId, questIds>
+  Map<int, List<int>> eventTowerQuestGroups = {}; // QuestGroupType.eventTower: <towerId, questIds>
 
   Map<int, Servant> costumeSvtMap = {};
 

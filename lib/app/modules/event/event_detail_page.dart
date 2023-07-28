@@ -372,27 +372,49 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         );
       }));
     }
-    if (event.extra.huntingQuestIds.isNotEmpty) {
-      final huntingQuests = event.extra.huntingQuestIds.map((e) => db.gameData.quests[e]).whereType<Quest>().toList();
+
+    // extra quests not in wars
+    Set<int> warQuestIds = {};
+    for (final warId in event.warIds) {
+      warQuestIds.addAll(db.gameData.wars[warId]?.quests.map((e) => e.id) ?? {});
+    }
+    final allEventQuestIds = db.gameData.others.eventQuestGroups[event.id] ?? [];
+    Set<int> extraQuestIds = allEventQuestIds.toSet().difference(warQuestIds);
+    if (event.isAdvancedQuestEvent) {
+      final advancedQuests = db.gameData.wars[WarId.advanced]?.quests.where((q) => q.openedAt == event.startedAt) ?? [];
+      // advanced 1 contains all quests
+      extraQuestIds.removeWhere((e) => db.gameData.quests[e]?.warId == WarId.advanced);
+      extraQuestIds.addAll(advancedQuests.map((e) => e.id));
+    }
+    if (extraQuestIds.isNotEmpty) {
       warTiles.add(ListTile(
-        title: Text(S.current.hunting_quest),
+        title: Text(S.current.event_quest),
         trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
         onTap: () {
           router.push(
-            child: QuestListPage(
-              title: S.current.hunting_quest,
-              quests: huntingQuests,
+            child: QuestListPage.ids(
+              title: S.current.event_quest,
+              ids: extraQuestIds.toList(),
             ),
           );
         },
       ));
-      warTiles.add(ListTile(
-        title: Text("${S.current.item} (${S.current.hunting_quest})"),
-        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-        onTap: () {
-          router.pushPage(FreeQuestOverview(quests: huntingQuests, isMainStory: false));
-        },
-      ));
+
+      List<Quest> extraFreeQuests = [];
+      for (final questId in extraQuestIds) {
+        final quest = db.gameData.quests[questId];
+        if (quest == null) continue;
+        if (quest.isAnyFree) extraFreeQuests.add(quest);
+      }
+      if (extraFreeQuests.isNotEmpty) {
+        warTiles.add(ListTile(
+          title: Text("${S.current.item} (${S.current.event_quest})"),
+          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+          onTap: () {
+            router.pushPage(FreeQuestOverview(quests: extraFreeQuests, isMainStory: false));
+          },
+        ));
+      }
     }
 
     if (warTiles.isNotEmpty) {

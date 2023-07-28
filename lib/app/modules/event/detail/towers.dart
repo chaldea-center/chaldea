@@ -14,10 +14,7 @@ class EventTowersPage extends StatelessWidget {
     }
     final tabbar = TabBar(
       isScrollable: towers.length > 2,
-      tabs: [
-        for (final tower in towers)
-          Tab(child: Text(Transl.misc2('TowerName', tower.name), style: Theme.of(context).textTheme.bodyMedium))
-      ],
+      tabs: [for (final tower in towers) Tab(child: Text(tower.lName, style: Theme.of(context).textTheme.bodyMedium))],
     );
     final pages = [
       for (final tower in towers) EventTowerTab(tower: tower),

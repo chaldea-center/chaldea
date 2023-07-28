@@ -509,6 +509,32 @@ class _WarDetailPageState extends State<WarDetailPage> {
       ));
     }
 
+    final event = war.eventReal;
+    if (event != null) {
+      children.add(Divider(color: Theme.of(context).scaffoldBackgroundColor, thickness: 2, height: 2));
+      for (final tower in event.towers) {
+        final towerQuestIds = db.gameData.others.eventTowerQuestGroups[tower.towerId]
+                ?.toSet()
+                .intersection(war.quests.map((e) => e.id).toSet()) ??
+            <int>{};
+        if (towerQuestIds.isNotEmpty) {
+          children.add(ListTile(
+            dense: true,
+            title: Text('${tower.lName}(${towerQuestIds.length})'),
+            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+            onTap: () {
+              router.push(
+                child: QuestListPage.ids(
+                  title: tower.lName,
+                  ids: towerQuestIds.toList(),
+                ),
+              );
+            },
+          ));
+        }
+      }
+    }
+
     return TileGroup(
       header: S.current.quest,
       children: children,
