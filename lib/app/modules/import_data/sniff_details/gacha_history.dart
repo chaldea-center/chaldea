@@ -30,17 +30,30 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     loadMstData();
   }
 
-  Future<void> loadMstData() async {
-    loading.value = true;
-    final data = await AtlasApi.cacheManager.getModel<List<MstGacha>>(
-      "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${widget.region.upper}/master/mstGacha.json",
+  Future<List<MstGacha>?> _fetchMst(Region region) {
+    return AtlasApi.cacheManager.getModel<List<MstGacha>>(
+      "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/master/mstGacha.json",
       (data) => (data as List).map((e) => MstGacha.fromJson(e)).toList(),
     );
+  }
+
+  Future<void> loadMstData() async {
+    loading.value = true;
+    final data = await _fetchMst(widget.region);
     if (data != null) {
       gachas = {
         for (final v in data) v.id: v,
       };
-      records.sort2((e) => gachas[e.gachaId]?.openedAt ?? e.gachaId, reversed: true);
+      if (widget.region == Region.tw) {
+        // TW doesn't contain closed banners
+        final dataCN = await _fetchMst(Region.cn);
+        if (dataCN != null) {
+          for (final v in dataCN) {
+            gachas.putIfAbsent(v.id, () => v);
+          }
+        }
+      }
+      records.sort2((e) => e.gachaId <= 101 ? -1000000000000 + e.gachaId : -(gachas[e.gachaId]?.openedAt ?? e.gachaId));
     }
     // records = records.reversed.toList();
     loading.value = false;
@@ -134,10 +147,10 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     );
   }
 
-  String? getUrl(UserGacha record, MstGacha? gacha) {
+  String? getHtmlUrl(UserGacha record, MstGacha? gacha) {
     // final page = gacha?.detailUrl;
     // if (page == null || page.trim().isEmpty) return null;
-    if (const [1, 101].contains(record.gachaId)) return null;
+    if (const [1].contains(record.gachaId)) return null;
     switch (widget.region) {
       case Region.jp:
         // return 'https://webview.fate-go.jp/webview$page';
@@ -152,7 +165,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
   }
 
   bool shouldIgnore(UserGacha record) {
-    // fp & new user tutorial
-    return record.gachaId == 1 || record.gachaId == 101;
+    // 1-fp, 101-newbie
+    return record.gachaId == 1;
   }
 }
