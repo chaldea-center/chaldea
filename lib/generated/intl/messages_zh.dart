@@ -472,6 +472,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "free_quest": MessageLookupByLibrary.simpleMessage("Free本"),
         "free_quest_calculator": MessageLookupByLibrary.simpleMessage("Free规划"),
         "free_quest_calculator_short": MessageLookupByLibrary.simpleMessage("Free规划"),
+        "gacha_image_overridden_hint": MessageLookupByLibrary.simpleMessage("卡池图片可能由于重名被以下卡池覆盖"),
         "gacha_prob_calc": MessageLookupByLibrary.simpleMessage("卡池概率计算"),
         "gacha_prob_ce_pickup": m18,
         "gacha_prob_custom_rate": MessageLookupByLibrary.simpleMessage("自定义概率"),

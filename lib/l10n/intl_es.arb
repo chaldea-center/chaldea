@@ -381,6 +381,7 @@
   "free_quest": "Free Quest",
   "free_quest_calculator": "Free Quest",
   "free_quest_calculator_short": "Free Quest",
+  "gacha_image_overridden_hint": null,
   "gacha_prob_calc": null,
   "gacha_prob_ce_pickup": null,
   "gacha_prob_custom_rate": null,

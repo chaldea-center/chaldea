@@ -4254,6 +4254,17 @@ class S {
     );
   }
 
+  /// `Banner image may be overridden by`
+  String get gacha_image_overridden_hint {
+    return Intl.message(
+      'Banner image may be overridden by',
+      name: 'gacha_image_overridden_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Gacha Prob Calc`
   String get gacha_prob_calc {
     return Intl.message(

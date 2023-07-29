@@ -381,6 +381,7 @@
   "free_quest": "Free Quest",
   "free_quest_calculator": "FQ速查",
   "free_quest_calculator_short": "FQ速查",
+  "gacha_image_overridden_hint": null,
   "gacha_prob_calc": "卡池機率計算",
   "gacha_prob_ce_pickup": "{rarity}星禮裝PickUp",
   "gacha_prob_custom_rate": "自訂機率",

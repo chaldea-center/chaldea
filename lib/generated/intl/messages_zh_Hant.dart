@@ -475,6 +475,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "free_quest": MessageLookupByLibrary.simpleMessage("Free Quest"),
         "free_quest_calculator": MessageLookupByLibrary.simpleMessage("FQ速查"),
         "free_quest_calculator_short": MessageLookupByLibrary.simpleMessage("FQ速查"),
+        "gacha_image_overridden_hint": MessageLookupByLibrary.simpleMessage("卡池图片可能由于重名被以下卡池覆盖"),
         "gacha_prob_calc": MessageLookupByLibrary.simpleMessage("卡池機率計算"),
         "gacha_prob_ce_pickup": m18,
         "gacha_prob_custom_rate": MessageLookupByLibrary.simpleMessage("自訂機率"),

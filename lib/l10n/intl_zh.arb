@@ -381,6 +381,7 @@
   "free_quest": "Free本",
   "free_quest_calculator": "Free规划",
   "free_quest_calculator_short": "Free规划",
+  "gacha_image_overridden_hint": "卡池图片可能由于重名被以下卡池覆盖",
   "gacha_prob_calc": "卡池概率计算",
   "gacha_prob_ce_pickup": "{rarity}星礼装PickUp",
   "gacha_prob_custom_rate": "自定义概率",

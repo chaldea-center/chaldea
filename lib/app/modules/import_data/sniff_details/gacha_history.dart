@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/raw.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
@@ -23,6 +24,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
   final loading = ValueNotifier<bool>(false);
 
   Map<int, MstGacha> gachas = {};
+  final Map<int, List<MstGacha>> _imageIdMap = {};
 
   @override
   void initState() {
@@ -39,6 +41,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
 
   Future<void> loadMstData() async {
     loading.value = true;
+    _imageIdMap.clear();
     final data = await _fetchMst(widget.region);
     if (data != null) {
       gachas = {
@@ -55,6 +58,10 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
       }
       records.sort2((e) => e.gachaId <= 101 ? -1000000000000 + e.gachaId : -(gachas[e.gachaId]?.openedAt ?? e.gachaId));
     }
+    for (final gacha in gachas.values) {
+      _imageIdMap.putIfAbsent(gacha.imageId, () => []).add(gacha);
+    }
+
     // records = records.reversed.toList();
     loading.value = false;
     if (mounted) setState(() {});
@@ -101,6 +108,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
       headerBuilder: (context, _) {
         return ListTile(
           dense: true,
+          // selected: (_imageIdMap[gacha?.imageId]?.length ?? 0) > 1,
           title: Text(title),
           subtitle: Text(subtitle),
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
@@ -122,7 +130,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
       },
       contentBuilder: (context) {
         if (gacha == null) return const Center(child: Text('\n....\n\n'));
-        return Container(
+        Widget child = Container(
           constraints: const BoxConstraints(maxHeight: 200),
           decoration: const BoxDecoration(
             image: DecorationImage(
@@ -143,6 +151,37 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
             ),
           ),
         );
+        final dupGachas = List<MstGacha>.of(_imageIdMap[gacha.imageId] ?? []);
+        dupGachas.remove(gacha);
+        if (dupGachas.isNotEmpty) {
+          child = Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              child,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: Text.rich(
+                  TextSpan(
+                    text: '${S.current.gacha_image_overridden_hint}:\n',
+                    style: Theme.of(context).textTheme.bodySmall,
+                    children: [
+                      for (final v in dupGachas)
+                        TextSpan(children: [
+                          TextSpan(
+                            text: ' ${v.name} ',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          TextSpan(text: v.openedAt.sec2date().toDateString()),
+                        ])
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              )
+            ],
+          );
+        }
+        return child;
       },
     );
   }

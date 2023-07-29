@@ -79,7 +79,7 @@ class _GameDataPageState extends State<GameDataPage> {
                     return ListTile(
                       title: Text(S.current.update),
                       subtitle: Text('Progress: $hint', maxLines: 2),
-                      trailing: newVersion?.toText(textAlign: TextAlign.end),
+                      trailing: Text(newVersion == null ? '' : '$newVersion available', textAlign: TextAlign.end),
                       onTap: () async {
                         EasyLoading.showInfo('Background Updating...');
                         final data = await loader.reload();

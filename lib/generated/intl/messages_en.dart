@@ -495,6 +495,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "free_quest": MessageLookupByLibrary.simpleMessage("Free Quest"),
         "free_quest_calculator": MessageLookupByLibrary.simpleMessage("Free Quest"),
         "free_quest_calculator_short": MessageLookupByLibrary.simpleMessage("Free Quest"),
+        "gacha_image_overridden_hint": MessageLookupByLibrary.simpleMessage("Banner image may be overridden by"),
         "gacha_prob_calc": MessageLookupByLibrary.simpleMessage("Gacha Prob Calc"),
         "gacha_prob_ce_pickup": m18,
         "gacha_prob_custom_rate": MessageLookupByLibrary.simpleMessage("Custom Rate"),
