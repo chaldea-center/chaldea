@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
@@ -74,7 +75,7 @@ class _ApkListPageState extends State<ApkListPage> {
           data.url = url;
           data.version = RegExp(r'FateGO[_\-](\d+\.\d+\.\d+)[_\-]').firstMatch(url)?.group(1);
         }
-      } else {
+      } else if (data.region != null) {
         final workerHost = HostsX.worker.of(proxy || Language.isCHS);
         final resp = await DioE().get('$workerHost/proxy/gplay-ver/', queryParameters: {
           "id": data.packageId,
@@ -83,16 +84,19 @@ class _ApkListPageState extends State<ApkListPage> {
         final ver = resp.data.toString().trim();
         if (AppVersion.tryParse(ver) != null) {
           data.version = ver;
-          if (data.region == null) {
-            url = data.url = proxy
-                ? '${HostsX.workerHost}/proxy/github/github.com/chaldea-center/chaldea/releases/download/v$ver/chaldea-$ver-'
-                : 'https://github.com/chaldea-center/chaldea/releases/download/v$ver/chaldea-$ver-';
-          } else {
-            url = data.url = '$host/apk/${data.packageId}.v$ver.apk';
-            if (data.region == Region.jp || data.region == Region.na) {
-              data.url32 = '$host/apk/${data.packageId}.v$ver.armeabi_v7a.apk';
-            }
+          url = data.url = '$host/apk/${data.packageId}.v$ver.apk';
+          if (data.region == Region.jp || data.region == Region.na) {
+            data.url32 = '$host/apk/${data.packageId}.v$ver.armeabi_v7a.apk';
           }
+        }
+      } else if (data.region == null) {
+        final latestRelease = await ChaldeaWorkerApi.githubRelease('chaldea-center', 'chaldea', tag: null);
+        if (latestRelease != null) {
+          final ver = latestRelease.tagName!.trimCharLeft('v');
+          data.version = ver;
+          url = data.url = proxy
+              ? '${HostsX.worker.cn}/proxy/github/github.com/chaldea-center/chaldea/releases/download/v$ver/chaldea-$ver-'
+              : 'https://github.com/chaldea-center/chaldea/releases/download/v$ver/chaldea-$ver-';
         }
       }
       if (url == null) {

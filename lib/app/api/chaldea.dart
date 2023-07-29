@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:github/github.dart';
 
 import 'package:chaldea/packages/logger.dart';
 import '../../models/api/api.dart';
@@ -185,7 +186,7 @@ class ChaldeaWorkerApi {
     return postCommon(
       "/api/v3/laplace/upload",
       {
-        'ver': 1,
+        'ver': ver,
         'questId': questId,
         'phase': phase,
         'enemyHash': enemyHash,
@@ -200,6 +201,24 @@ class ChaldeaWorkerApi {
     return cacheManager.getModel(
       '${HostsX.dataHost}/config.json',
       (data) => db.runtimeData.remoteConfig = RemoteConfig.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+
+  static GitHub get githubApiClient => GitHub(endpoint: '${HostsX.worker.cn}/proxy/github/api.github.com');
+
+  static Future<Release?> githubRelease(
+    String owner,
+    String repo, {
+    required String? tag, // null->latest release
+    Duration? expireAfter,
+  }) {
+    // GitHub(endpoint: '${HostsX.worker.cn}/proxy/github/api.github.com')
+    //     .repositories
+    //     .getLatestRelease(RepositorySlug('chaldea-center', 'chaldea'));
+    return cacheManager.getModel(
+      '${HostsX.worker.cn}/proxy/github/api.github.com/repos/$owner/$repo/releases/${tag == null ? "latest" : "tags/$tag"}',
+      (data) => Release.fromJson(data),
       expireAfter: expireAfter,
     );
   }
