@@ -6,11 +6,35 @@ part of '../../../models/userdata/battle.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+BattleSimUserData _$BattleSimUserDataFromJson(Map json) => $checkedCreate(
+      'BattleSimUserData',
+      json,
+      ($checkedConvert) {
+        final val = BattleSimUserData(
+          pingedCEs: $checkedConvert('pingedCEs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
+          pingedSvts: $checkedConvert('pingedSvts', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
+          formations: $checkedConvert(
+              'formations',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => BattleTeamFormation.fromJson(Map<String, dynamic>.from(e as Map)))
+                  .toList()),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$BattleSimUserDataToJson(BattleSimUserData instance) => <String, dynamic>{
+      'pingedCEs': instance.pingedCEs.toList(),
+      'pingedSvts': instance.pingedSvts.toList(),
+      'formations': instance.formations.map((e) => e.toJson()).toList(),
+    };
+
 BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
       'BattleSimSetting',
       json,
       ($checkedConvert) {
         final val = BattleSimSetting(
+          migratedFormation: $checkedConvert('migratedFormation', (v) => v as bool? ?? false),
           playerRegion: $checkedConvert(
               'playerRegion', (v) => _$JsonConverterFromJson<String, Region>(v, const RegionConverter().fromJson)),
           playerDataSource: $checkedConvert('playerDataSource',
@@ -41,14 +65,15 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
     );
 
 Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <String, dynamic>{
+      'migratedFormation': instance.migratedFormation,
       'playerRegion': _$JsonConverterToJson<String, Region>(instance.playerRegion, const RegionConverter().toJson),
       'playerDataSource': _$PreferPlayerSvtDataSourceEnumMap[instance.playerDataSource]!,
-      'pingedCEs': instance.pingedCEs.toList(),
-      'pingedSvts': instance.pingedSvts.toList(),
       'previousQuestPhase': instance.previousQuestPhase,
       'defaultLvs': instance.defaultLvs.toJson(),
-      'formations': instance.formations.map((e) => e.toJson()).toList(),
       'curFormation': instance.curFormation.toJson(),
+      'pingedCEs': instance.pingedCEs.toList(),
+      'pingedSvts': instance.pingedSvts.toList(),
+      'formations': instance.formations.map((e) => e.toJson()).toList(),
       'svtFilterData': instance.svtFilterData.toJson(),
       'craftFilterData': instance.craftFilterData.toJson(),
       'tdDmgOptions': instance.tdDmgOptions.toJson(),

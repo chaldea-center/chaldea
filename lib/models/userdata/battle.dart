@@ -16,18 +16,52 @@ import 'filter_data.dart';
 part '../../generated/models/userdata/battle.g.dart';
 
 @JsonSerializable(converters: [RegionConverter()])
+class BattleSimUserData {
+  Set<int> pingedCEs;
+  Set<int> pingedSvts;
+
+  List<BattleTeamFormation> formations;
+
+  BattleSimUserData({
+    Set<int>? pingedCEs,
+    Set<int>? pingedSvts,
+    List<BattleTeamFormation>? formations,
+  })  : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
+        pingedSvts = pingedSvts ?? {215, 284, 314, 316, 357},
+        formations = formations ?? [] {
+    validate();
+  }
+
+  void validate() {
+    // when migrating, check [formations] isEmpty
+    // if (formations.isEmpty) {
+    //   formations.add(BattleTeamFormation());
+    // }
+  }
+
+  factory BattleSimUserData.fromJson(Map<String, dynamic> json) => _$BattleSimUserDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BattleSimUserDataToJson(this);
+}
+
+@JsonSerializable(converters: [RegionConverter()])
 class BattleSimSetting {
+  bool migratedFormation;
   // settings
   Region? playerRegion;
   PreferPlayerSvtDataSource playerDataSource;
-  Set<int> pingedCEs;
-  Set<int> pingedSvts;
 
   // save data
   String? previousQuestPhase;
   PlayerSvtDefaultData defaultLvs;
-  List<BattleTeamFormation> formations;
   BattleTeamFormation curFormation;
+  // TODO: remove in v2.5.0
+  @protected
+  Set<int> pingedCEs;
+  @protected
+  Set<int> pingedSvts;
+  @protected
+  List<BattleTeamFormation> formations;
   // filters
   SvtFilterData svtFilterData;
   CraftFilterData craftFilterData;
@@ -38,6 +72,7 @@ class BattleSimSetting {
   bool recordShowTwoColumn;
 
   BattleSimSetting({
+    this.migratedFormation = false,
     this.playerRegion,
     this.playerDataSource = PreferPlayerSvtDataSource.none,
     Set<int>? pingedCEs,
@@ -76,7 +111,7 @@ class BattleSimSetting {
 
   Set<int> pingedCEsWithEventAndBond(final QuestPhase? questPhase, final Servant? svt) {
     final event = questPhase?.war?.event;
-    Set<int> pinged = db.settings.battleSim.pingedCEs.toSet();
+    Set<int> pinged = pingedCEs.toSet();
     if (event != null) {
       for (final ce in db.gameData.craftEssences.values) {
         if (pinged.contains(ce.collectionNo)) continue;

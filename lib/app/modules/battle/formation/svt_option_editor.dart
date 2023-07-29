@@ -942,7 +942,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           _updateState();
         },
         filterData: svtFilterData,
-        pinged: db.settings.battleSim.pingedSvts.toList(),
+        pinged: db.curUser.battleSim.pingedSvts.toList(),
         showSecondaryFilter: true,
       ),
       detail: true,

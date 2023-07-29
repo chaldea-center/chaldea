@@ -207,7 +207,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
               onTapOk: () {
                 if (!mounted) return;
                 router.pushPage(ServantListPage(
-                  pinged: db.settings.battleSim.pingedSvts.toList(),
+                  pinged: db.curUser.battleSim.pingedSvts.toList(),
                   onSelected: (svt) {
                     options.supports.add(svt.id);
                     if (mounted) setState(() {});
@@ -528,7 +528,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
               trailing: const Icon(Icons.change_circle),
               onTap: () {
                 router.pushPage(CraftListPage(
-                  pinged: db.settings.battleSim.pingedCEs.toList(),
+                  pinged: db.curUser.battleSim.pingedCEs.toList(),
                   filterData: CraftFilterData(useGrid: true),
                   onSelected: (ce) {
                     options.ceId = ce.id;

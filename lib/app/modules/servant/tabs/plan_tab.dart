@@ -71,10 +71,10 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         children: [
           CheckboxListTile(
             title: Text(S.current.pin_to_top),
-            value: db.settings.battleSim.pingedSvts.contains(svt.collectionNo),
+            value: db.curUser.battleSim.pingedSvts.contains(svt.collectionNo),
             onChanged: (v) {
               setState(() {
-                db.settings.battleSim.pingedSvts.toggle(svt.collectionNo);
+                db.curUser.battleSim.pingedSvts.toggle(svt.collectionNo);
               });
             },
           ),

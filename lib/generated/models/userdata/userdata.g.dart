@@ -106,6 +106,8 @@ User _$UserFromJson(Map json) => $checkedCreate(
                   )),
           saintQuartzPlan: $checkedConvert('saintQuartzPlan',
               (v) => v == null ? null : SaintQuartzPlan.fromJson(Map<String, dynamic>.from(v as Map))),
+          battleSim: $checkedConvert(
+              'battleSim', (v) => v == null ? null : BattleSimUserData.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         return val;
       },
@@ -131,6 +133,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'luckyBagSvtScores':
           instance.luckyBagSvtScores.map((k, e) => MapEntry(k, e.map((k, e) => MapEntry(k.toString(), e)))),
       'saintQuartzPlan': instance.saintQuartzPlan.toJson(),
+      'battleSim': instance.battleSim.toJson(),
     };
 
 SvtStatus _$SvtStatusFromJson(Map json) => $checkedCreate(

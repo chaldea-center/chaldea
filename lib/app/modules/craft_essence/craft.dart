@@ -178,15 +178,15 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: CheckboxWithLabel(
                 ink: false,
-                value: db.settings.battleSim.pingedCEs.contains(ce.collectionNo),
+                value: db.curUser.battleSim.pingedCEs.contains(ce.collectionNo),
                 label: Text('Laplace: ${S.current.pin_to_top}'),
                 onChanged: (v) {
-                  db.settings.battleSim.pingedCEs.toggle(ce.collectionNo);
+                  db.curUser.battleSim.pingedCEs.toggle(ce.collectionNo);
                   Navigator.pop(context);
                 },
               ),
               onTap: () {
-                db.settings.battleSim.pingedCEs.toggle(ce.collectionNo);
+                db.curUser.battleSim.pingedCEs.toggle(ce.collectionNo);
               },
             ),
           ...SharedBuilder.websitesPopupMenuItems(

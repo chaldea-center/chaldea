@@ -117,7 +117,7 @@ class ServantSelector extends StatelessWidget {
                   onChanged();
                 },
                 filterData: svtFilterData,
-                pinged: db.settings.battleSim.pingedSvts.toList(),
+                pinged: db.curUser.battleSim.pingedSvts.toList(),
                 showSecondaryFilter: true,
               ),
               detail: true,

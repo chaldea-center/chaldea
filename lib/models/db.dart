@@ -142,7 +142,21 @@ class _Database {
 
     await loadSettings();
     await loadUserData().then((value) {
-      if (value != null) userData = value;
+      if (value != null) {
+        userData = value;
+        final src = settings.battleSim, dest = userData.curUser.battleSim;
+        if (!src.migratedFormation && dest.formations.isEmpty) {
+          dest
+            // ignore: invalid_use_of_protected_member
+            ..formations = src.formations.map((e) => BattleTeamFormation.fromJson(e.toJson())).toList()
+            // ignore: invalid_use_of_protected_member
+            ..pingedCEs = src.pingedCEs.toSet()
+            // ignore: invalid_use_of_protected_member
+            ..pingedSvts = src.pingedSvts.toSet();
+          src.migratedFormation = true;
+          logger.i('migrated ${dest.formations.length} teams from settings to user ${userData.curUser.name}');
+        }
+      }
     });
 
     SplitRoute.enableSplitView = settings.display.enableSplitView;

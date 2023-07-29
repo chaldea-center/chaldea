@@ -1,6 +1,8 @@
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/battle/formation/formation_card.dart';
+import 'package:chaldea/app/modules/home/subpage/account_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/userdata/battle.dart';
@@ -19,15 +21,19 @@ class FormationEditor extends StatefulWidget {
 
 class _FormationEditorState extends State<FormationEditor> {
   BattleSimSetting get settings => db.settings.battleSim;
+  BattleSimUserData get userData => db.curUser.battleSim;
+
   BattleTeamFormation? clipboard;
   bool sorting = false;
 
   @override
   Widget build(final BuildContext context) {
     settings.validate();
+    userData.validate();
+    final prefix = '${widget.isSaving ? S.current.save : S.current.select} ${S.current.team}';
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.isSaving ? S.current.save : S.current.select} ${S.current.team}'),
+        title: Text('$prefix [${db.curUser.name}]'),
         actions: [
           IconButton(
             onPressed: () {
@@ -48,7 +54,18 @@ class _FormationEditorState extends State<FormationEditor> {
 
   Widget buildBody() {
     List<Widget> children = [
-      for (int index = 0; index < settings.formations.length; index++) buildFormation(index),
+      ListTile(
+        dense: true,
+        title: db.onUserData((context, snapshot) => Text(
+              '${S.current.cur_account}: ${db.curUser.name}',
+              textAlign: TextAlign.center,
+            )),
+        onTap: () async {
+          await router.pushPage(AccountPage());
+          if (mounted) setState(() {});
+        },
+      ),
+      for (int index = 0; index < userData.formations.length; index++) buildFormation(index),
     ];
 
     if (sorting) {
@@ -62,9 +79,9 @@ class _FormationEditorState extends State<FormationEditor> {
             if (oldIndex < newIndex) {
               newIndex -= 1;
             }
-            final item = settings.formations.removeAt(oldIndex);
-            settings.formations.insert(newIndex, item);
-            settings.validate();
+            final item = userData.formations.removeAt(oldIndex);
+            userData.formations.insert(newIndex, item);
+            userData.validate();
           });
         },
       );
@@ -78,7 +95,7 @@ class _FormationEditorState extends State<FormationEditor> {
           Center(
             child: FilledButton.tonalIcon(
               onPressed: () {
-                settings.formations.add(BattleTeamFormation());
+                userData.formations.add(BattleTeamFormation());
                 if (mounted) setState(() {});
               },
               icon: const Icon(Icons.add),
@@ -91,7 +108,7 @@ class _FormationEditorState extends State<FormationEditor> {
   }
 
   Widget buildFormation(int index) {
-    BattleTeamFormation formation = settings.formations[index];
+    BattleTeamFormation formation = userData.formations[index];
     String title = formation.shownName(index);
     final titleStyle = Theme.of(context).textTheme.bodySmall;
     Widget child = Column(
@@ -146,15 +163,15 @@ class _FormationEditorState extends State<FormationEditor> {
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               TextButton(
-                onPressed: settings.formations.length > 1
+                onPressed: userData.formations.length > 1
                     ? () {
                         SimpleCancelOkDialog(
                           title: Text(S.current.confirm),
                           onTapOk: () {
                             if (mounted) {
                               setState(() {
-                                if (settings.formations.length > 1) {
-                                  settings.formations.removeAt(index);
+                                if (userData.formations.length > 1) {
+                                  userData.formations.removeAt(index);
                                 }
                               });
                             }
@@ -180,7 +197,7 @@ class _FormationEditorState extends State<FormationEditor> {
                     ? null
                     : () {
                         setState(() {
-                          settings.formations[index] = BattleTeamFormation.fromJson(clipboard!.toJson());
+                          userData.formations[index] = BattleTeamFormation.fromJson(clipboard!.toJson());
                           clipboard = null;
                         });
                       },
@@ -189,7 +206,7 @@ class _FormationEditorState extends State<FormationEditor> {
               FilledButton(
                 onPressed: () {
                   if (widget.isSaving) {
-                    settings.formations[index] = settings.curFormation.copy();
+                    userData.formations[index] = settings.curFormation.copy();
                     EasyLoading.showSuccess("${S.current.saved}: ${S.current.team} ${index + 1}");
                   } else {
                     settings.curFormation = formation.copy();

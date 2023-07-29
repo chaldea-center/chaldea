@@ -11,6 +11,7 @@ import '../../utils/basic.dart';
 import '../../utils/extension.dart';
 import '../db.dart';
 import '_helper.dart';
+import 'battle.dart';
 import 'glpk.dart';
 
 part 'sq_plan.dart';
@@ -227,6 +228,8 @@ class User {
 
   SaintQuartzPlan saintQuartzPlan;
 
+  BattleSimUserData battleSim;
+
   User({
     this.name = 'Gudako',
     this.isGirl = true,
@@ -246,6 +249,7 @@ class User {
     FreeLPParams? freeLPParams,
     Map<String, Map<int, int>>? luckyBagSvtScores,
     SaintQuartzPlan? saintQuartzPlan,
+    BattleSimUserData? battleSim,
   })  : servants = servants ?? {},
         dupServantMapping = dupServantMapping ?? {},
         plans = List.generate(kSvtPlanMaxNum, (index) => plans?.getOrNull(index) ?? UserPlan()),
@@ -263,7 +267,8 @@ class User {
         classBoards = classBoards ?? {},
         freeLPParams = freeLPParams ?? FreeLPParams(),
         luckyBagSvtScores = luckyBagSvtScores ?? {},
-        saintQuartzPlan = saintQuartzPlan ?? SaintQuartzPlan();
+        saintQuartzPlan = saintQuartzPlan ?? SaintQuartzPlan(),
+        battleSim = battleSim ?? BattleSimUserData();
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
