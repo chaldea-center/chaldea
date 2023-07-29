@@ -140,6 +140,8 @@ const _$SvtClassEnumMap = {
   SvtClass.ALL: 'ALL',
   SvtClass.EXTRA: 'EXTRA',
   SvtClass.MIX: 'MIX',
+  SvtClass.EXTRA1: 'EXTRA1',
+  SvtClass.EXTRA2: 'EXTRA2',
 };
 
 const _$CondTypeEnumMap = {

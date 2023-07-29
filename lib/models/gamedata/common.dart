@@ -325,6 +325,10 @@ enum SvtClass {
   ALL(1001, 'ALL'), // ignore: constant_identifier_names
   EXTRA(1002, 'EXTRA'), // ignore: constant_identifier_names
   MIX(1003, 'MIX'), // ignore: constant_identifier_names
+  // ignore: constant_identifier_names
+  EXTRA1(1004, 'EXTAR1'),
+  // ignore: constant_identifier_names
+  EXTRA2(1004, 'EXTAR2'),
   ;
 
   final int id;
