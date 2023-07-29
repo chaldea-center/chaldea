@@ -718,6 +718,7 @@ enum Trait {
   chenGongNp(3068),
   buffNullifyBuff(3070),
   cantBeSacrificed(3076),
+  buffDamageCut(3085),
   gutsBlock(3086),
   buffBound(3087), // 拘束
   cardArts(4001),

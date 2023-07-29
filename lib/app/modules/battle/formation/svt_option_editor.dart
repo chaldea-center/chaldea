@@ -1053,7 +1053,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       ..attribute = basicSvt.attribute;
     playerSvtData
       ..supportType = SupportSvtType.npc
-      ..limitCount = support.detail?.limit.limitCount ?? support.limit.limitCount
+      ..limitCount = support.detail?.limit.dispLimitCount ?? support.limit.limitCount
       ..hpFou = (support.detail?.adjustHp ?? 0) * 10
       ..atkFou = (support.detail?.adjustAtk ?? 0) * 10
       ..lv = support.detail?.lv ?? support.lv

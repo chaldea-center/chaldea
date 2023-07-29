@@ -179,24 +179,24 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       if (limits.isEmpty) limits.add(0);
       limits.sort();
       final dftValue = limits.first;
-      if (!limits.contains(enemy.limit.limitCount)) {
-        final costume =
-            enemy.svt.costume.values.firstWhereOrNull((e) => e.id > 10 && e.id < 100 && e.id == enemy.limit.limitCount);
-        enemy.limit.limitCount = costume?.battleCharaId ?? dftValue;
+      if (!limits.contains(enemy.limit.dispLimitCount)) {
+        final costume = enemy.svt.costume.values
+            .firstWhereOrNull((e) => e.id > 10 && e.id < 100 && e.id == enemy.limit.dispLimitCount);
+        enemy.limit.dispLimitCount = costume?.battleCharaId ?? dftValue;
       }
       final costume = niceSvt?.profile.costume.values
-          .firstWhereOrNull((e) => e.id == enemy.limit.limitCount || e.battleCharaId == enemy.limit.limitCount);
+          .firstWhereOrNull((e) => e.id == enemy.limit.dispLimitCount || e.battleCharaId == enemy.limit.dispLimitCount);
       children.add(enumTile<int>(
         title: Text(S.current.ascension),
         subtitle: costume == null ? null : Text(costume.lName.l),
-        value: enemy.limit.limitCount,
+        value: enemy.limit.dispLimitCount,
         values: limits,
         itemBuilder: (v) {
           if (v < 10) return Text(v.toString());
           return Text(v.toString());
         },
         onChanged: (v) {
-          enemy.limit.limitCount = v;
+          enemy.limit.dispLimitCount = v;
           if (niceSvt != null && niceSvt!.id == enemy.svt.id) {
             updateLimitCount(niceSvt!);
           }
@@ -206,7 +206,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       children.add(ListTile(
         dense: true,
         title: Text(S.current.ascension),
-        trailing: Text((enemy.limit.limitCount).toString()),
+        trailing: Text((enemy.limit.dispLimitCount).toString()),
       ));
     }
 
@@ -380,12 +380,12 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
   }
 
   void updateLimitCount(Servant svt) {
-    int limitCount = enemy.limit.limitCount;
+    int limitCount = enemy.limit.dispLimitCount;
     if (svt.extraAssets.faces.ascension?[limitCount] == null && svt.extraAssets.faces.costume?[limitCount] == null) {
       final costume = svt.profile.costume.values.firstWhereOrNull((e) => e.id > 10 && e.id < 100 && e.id == limitCount);
       limitCount = costume?.battleCharaId ?? 0;
     }
-    enemy.limit.limitCount = limitCount;
+    enemy.limit.dispLimitCount = limitCount;
     final face = niceSvt!.ascendIcon(limitCount, false);
     if (face != null) {
       // ignore: invalid_use_of_protected_member

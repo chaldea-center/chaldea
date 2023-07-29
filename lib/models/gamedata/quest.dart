@@ -1023,6 +1023,8 @@ class EnemyDrop extends BaseGift {
 
 @JsonSerializable()
 class EnemyLimit {
+  /// use [dispLimitCount]
+  @protected
   int limitCount;
   int imageLimitCount;
   int dispLimitCount;
