@@ -744,7 +744,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "paste": MessageLookupByLibrary.simpleMessage("貼上"),
         "paste_enemy_hint": MessageLookupByLibrary.simpleMessage("請先選擇一個關卡的敵人，打開選單並複製該敵人至剪貼簿"),
         "permanent": MessageLookupByLibrary.simpleMessage("永久"),
-        "ping_to_top": MessageLookupByLibrary.simpleMessage("置頂"),
+        "pin_to_top": MessageLookupByLibrary.simpleMessage("置頂"),
         "plan": MessageLookupByLibrary.simpleMessage("規劃"),
         "plan_list_only_unlock_append": MessageLookupByLibrary.simpleMessage("僅已解鎖追加"),
         "plan_list_set_all": MessageLookupByLibrary.simpleMessage("批量設置"),

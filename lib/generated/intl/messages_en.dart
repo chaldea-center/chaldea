@@ -775,7 +775,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "paste_enemy_hint":
             MessageLookupByLibrary.simpleMessage("Choose one Quest Enemy, open popup menu, then copy it to clipboard."),
         "permanent": MessageLookupByLibrary.simpleMessage("Permanent"),
-        "ping_to_top": MessageLookupByLibrary.simpleMessage("Ping to Top"),
+        "pin_to_top": MessageLookupByLibrary.simpleMessage("Pin to Top"),
         "plan": MessageLookupByLibrary.simpleMessage("Plan"),
         "plan_list_only_unlock_append": MessageLookupByLibrary.simpleMessage("Unlocked Append"),
         "plan_list_set_all": MessageLookupByLibrary.simpleMessage("Set All"),

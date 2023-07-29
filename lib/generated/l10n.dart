@@ -7163,11 +7163,11 @@ class S {
     );
   }
 
-  /// `Ping to Top`
-  String get ping_to_top {
+  /// `Pin to Top`
+  String get pin_to_top {
     return Intl.message(
-      'Ping to Top',
-      name: 'ping_to_top',
+      'Pin to Top',
+      name: 'pin_to_top',
       desc: '',
       locale: localeName,
       args: [],

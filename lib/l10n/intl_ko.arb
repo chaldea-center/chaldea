@@ -645,7 +645,7 @@
   "paste": null,
   "paste_enemy_hint": null,
   "permanent": null,
-  "ping_to_top": null,
+  "pin_to_top": null,
   "plan": "계획",
   "plan_list_only_unlock_append": "잠금 해제된 어펜드 만",
   "plan_list_set_all": "일괄 설정",

@@ -645,7 +645,7 @@
   "paste": "貼上",
   "paste_enemy_hint": "請先選擇一個關卡的敵人，打開選單並複製該敵人至剪貼簿",
   "permanent": "永久",
-  "ping_to_top": "置頂",
+  "pin_to_top": "置頂",
   "plan": "規劃",
   "plan_list_only_unlock_append": "僅已解鎖追加",
   "plan_list_set_all": "批量設置",

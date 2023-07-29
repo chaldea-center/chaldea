@@ -585,7 +585,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
               child: CheckboxWithLabel(
                 ink: false,
                 value: db.settings.battleSim.pingedSvts.contains(svt.collectionNo),
-                label: Text('Laplace: ${S.current.ping_to_top}'),
+                label: Text('Laplace: ${S.current.pin_to_top}'),
                 onChanged: (v) {
                   db.settings.battleSim.pingedSvts.toggle(svt.collectionNo);
                   Navigator.pop(context);

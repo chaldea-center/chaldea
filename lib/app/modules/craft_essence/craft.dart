@@ -179,7 +179,7 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
               child: CheckboxWithLabel(
                 ink: false,
                 value: db.settings.battleSim.pingedCEs.contains(ce.collectionNo),
-                label: Text('Laplace: ${S.current.ping_to_top}'),
+                label: Text('Laplace: ${S.current.pin_to_top}'),
                 onChanged: (v) {
                   db.settings.battleSim.pingedCEs.toggle(ce.collectionNo);
                   Navigator.pop(context);
