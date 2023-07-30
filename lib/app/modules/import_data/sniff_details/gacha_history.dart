@@ -9,6 +9,7 @@ import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import 'package:flutter/foundation.dart';
 
 class SniffGachaHistory extends StatefulWidget {
   final List<UserSvt> userSvt;
@@ -37,8 +38,13 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
   }
 
   Future<List<MstGacha>?> _fetchMst(Region region) {
+    String url =
+        "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/master/mstGacha.json";
+    if (kIsWeb) {
+      url = HostsX.corsProxy(url);
+    }
     return AtlasApi.cacheManager.getModel<List<MstGacha>>(
-      "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/master/mstGacha.json",
+      url,
       (data) => (data as List).map((e) => MstGacha.fromJson(e)).toList(),
     );
   }
