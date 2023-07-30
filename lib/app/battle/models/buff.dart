@@ -69,7 +69,7 @@ class BuffData {
 
   bool passive = false;
   bool irremovable = false;
-  bool individualitiesActive = true;
+  bool buffActState = true;
 
   // ignore: unused_field
   bool isDecide = false;
@@ -162,7 +162,7 @@ class BuffData {
 
     final scriptCheck = checkDataVals(battleData) && checkBuffScript(battleData, isTarget);
 
-    if (!onFieldCheck || !scriptCheck || !individualitiesActive) {
+    if (!onFieldCheck || !scriptCheck || !buffActState) {
       return false;
     }
 
@@ -274,20 +274,6 @@ class BuffData {
       }
     }
 
-    if (script.HP_HIGHER != null && battleData.activator != null) {
-      final int hpRatio = (battleData.activator!.hp / battleData.activator!.getMaxHp(battleData) * 1000).toInt();
-      if (hpRatio < script.HP_HIGHER!) {
-        return false;
-      }
-    }
-
-    if (script.HP_LOWER != null && battleData.activator != null) {
-      final int hpRatio = (battleData.activator!.hp / battleData.activator!.getMaxHp(battleData) * 1000).toInt();
-      if (hpRatio > script.HP_LOWER!) {
-        return false;
-      }
-    }
-
     if (script.convert != null &&
         battleData.currentBuff != null &&
         script.convert!.convertType == BuffConvertType.buff) {
@@ -329,7 +315,9 @@ class BuffData {
     }
   }
 
-  void updateIndividualitiesActive(final BattleData battleData, final BattleServantData owner) {
+  void updateActState(final BattleData battleData, final BattleServantData owner) {
+    bool checkResult = true;
+
     List<NiceTrait>? requiredTraits;
     int? requireAtLeast;
     int checkIndivType = 0;
@@ -345,7 +333,7 @@ class BuffData {
     }
 
     if (requiredTraits != null) {
-      individualitiesActive = battleData.checkTraits(CheckTraitParameters(
+      checkResult &= battleData.checkTraits(CheckTraitParameters(
         requiredTraits: requiredTraits,
         actor: owner,
         requireAtLeast: requireAtLeast,
@@ -355,6 +343,18 @@ class BuffData {
         checkQuestTraits: true,
       ));
     }
+
+    if (buff.script?.HP_HIGHER != null && battleData.activator != null) {
+      final int hpRatio = (battleData.activator!.hp / battleData.activator!.getMaxHp(battleData) * 1000).toInt();
+      checkResult &= hpRatio >= buff.script!.HP_HIGHER!;
+    }
+
+    if (buff.script?.HP_LOWER != null && battleData.activator != null) {
+      final int hpRatio = (battleData.activator!.hp / battleData.activator!.getMaxHp(battleData) * 1000).toInt();
+      checkResult &= hpRatio <= buff.script!.HP_LOWER!;
+    }
+
+    buffActState = checkResult;
   }
 
   String effectString() {
@@ -402,7 +402,7 @@ class BuffData {
       ..isUsed = isUsed
       ..irremovable = irremovable
       ..passive = passive
-      ..individualitiesActive = individualitiesActive;
+      ..buffActState = buffActState;
     return copy;
   }
 }

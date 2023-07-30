@@ -1126,7 +1126,7 @@ class BattleServantData {
         buff.useOnce();
       }
 
-      buff.updateIndividualitiesActive(battleData, this);
+      buff.updateActState(battleData, this);
     });
 
     battleBuff.passiveList.removeWhere((buff) => !buff.isActive);

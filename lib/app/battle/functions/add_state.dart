@@ -108,7 +108,7 @@ class AddState {
     }
 
     int functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < 0 && battleData.uniqueIdToLastFuncResultStack.last?[target.uniqueId] != true) {
+    if (functionRate < 0 && battleData.uniqueIdToLastFuncResultStack.lastOrNull?[target.uniqueId] != true) {
       return false;
     }
 

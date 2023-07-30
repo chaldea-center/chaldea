@@ -290,15 +290,19 @@ void main() async {
       final lip = battle.onFieldAllyServants[0]!;
       await battle.withActivator(lip, () async {
         lip.hp = lip.getMaxHp(battle) ~/ 2 + 13;
+        lip.checkBuffStatus(battle);
         expect(await lip.getBuffValueOnAction(battle, BuffAction.atk), 1000);
 
         lip.hp = lip.getMaxHp(battle) ~/ 2 - 1;
+        lip.checkBuffStatus(battle);
         expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1300, epsilon: 1));
 
         lip.hp = lip.getMaxHp(battle) ~/ 4;
+        lip.checkBuffStatus(battle);
         expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1400, epsilon: 1));
 
         lip.hp = 1;
+        lip.checkBuffStatus(battle);
         expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1500, epsilon: 1));
       });
     });
