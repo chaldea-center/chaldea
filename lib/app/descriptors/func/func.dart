@@ -248,6 +248,10 @@ class SkillScriptDescriptor extends StatelessWidget {
         return "${v.first}-${v.last}";
       }));
     }
+    if (script?.battleStartRemainingTurn?.isNotEmpty == true) {
+      children.add(_keyLv(context, 'battleStartRemainingTurn', script!.battleStartRemainingTurn!,
+          (v) => Transl.special.funcValTurns(v)));
+    }
 
     if (script?.additionalSkillId?.isNotEmpty == true) {
       final ids = script!.additionalSkillId!;
@@ -792,6 +796,11 @@ class FuncDescriptor extends StatelessWidget {
             router.push(url: Routes.servantI(transformId));
           },
         ));
+      }
+    } else if (func.funcType == FuncType.shortenSkill || func.funcType == FuncType.extendSkill) {
+      final targetNum = vals?.Target;
+      if (targetNum != null) {
+        spans.insert(0, TextSpan(text: '(${S.current.skill} $targetNum)'));
       }
     }
 

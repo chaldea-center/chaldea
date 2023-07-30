@@ -165,8 +165,15 @@ class BattleServantData {
         }
       }
 
-      final skillInfo = BattleSkillInfoData(settings.skills[skillNum - 1],
-          provisionedSkills: provisionedSkills, skillNum: skillNum, skillLv: settings.skillLvs[skillNum - 1]);
+      final baseSkill = settings.skills[skillNum - 1], skillLv = settings.skillLvs[skillNum - 1];
+
+      final skillInfo =
+          BattleSkillInfoData(baseSkill, provisionedSkills: provisionedSkills, skillNum: skillNum, skillLv: skillLv);
+
+      final startTurn = baseSkill?.script?.battleStartRemainingTurn?.getOrNull(skillLv - 1);
+      if (startTurn != null && startTurn > 0) {
+        skillInfo.chargeTurn = startTurn;
+      }
 
       if (rankUps != null) {
         skillInfo.rankUps = rankUps;

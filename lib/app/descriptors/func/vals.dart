@@ -167,6 +167,20 @@ class ValDsc extends StatelessWidget {
     if (vals.StarHigher != null) {
       parts.add("($kStarChar≥${vals.StarHigher})");
     }
+    if (vals.TriggeredTargetHpRange != null) {
+      parts.add('HP${vals.TriggeredTargetHpRange}');
+    }
+    if (vals.TriggeredTargetHpRateRange != null) {
+      String rangeText = vals.TriggeredTargetHpRateRange!;
+      final match = RegExp(r'^(\D*)(\d+)$').firstMatch(rangeText);
+      if (match == null) {
+        parts.add('HP$rangeText');
+      } else {
+        final cond = match.group(1)!;
+        final value = int.parse(match.group(2)!);
+        parts.add('HP$cond${value.format(percent: true, base: 10)}');
+      }
+    }
     // end conditions
 
     if (func.funcType == FuncType.addState ||

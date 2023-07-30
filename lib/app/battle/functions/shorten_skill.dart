@@ -4,6 +4,11 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 class ShortenSkill {
   ShortenSkill._();
 
+  static bool _ignoreSkill(DataVals dataVals, int skillNum) {
+    final targetNum = dataVals.Target;
+    return targetNum != null && targetNum != skillNum;
+  }
+
   static void shortenSkill(
     final BattleData battleData,
     final DataVals dataVals,
@@ -16,7 +21,9 @@ class ShortenSkill {
 
     for (final target in targets) {
       battleData.withTargetSync(target, () {
-        for (final skill in target.skillInfoList) {
+        for (int index = 0; index < target.skillInfoList.length; index++) {
+          if (_ignoreSkill(dataVals, index + 1)) continue;
+          final skill = target.skillInfoList[index];
           skill.shortenSkill(dataVals.Value!);
         }
         battleData.curFuncResults[target.uniqueId] = true;
@@ -36,7 +43,9 @@ class ShortenSkill {
 
     for (final target in targets) {
       battleData.withTargetSync(target, () {
-        for (final skill in target.skillInfoList) {
+        for (int index = 0; index < target.skillInfoList.length; index++) {
+          if (_ignoreSkill(dataVals, index + 1)) continue;
+          final skill = target.skillInfoList[index];
           skill.extendSkill(dataVals.Value!);
         }
         battleData.curFuncResults[target.uniqueId] = true;

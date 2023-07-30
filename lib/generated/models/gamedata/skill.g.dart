@@ -395,6 +395,7 @@ SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
       actRarity: (json['actRarity'] as List<dynamic>?)
           ?.map((e) => (e as List<dynamic>).map((e) => e as int).toList())
           .toList(),
+      battleStartRemainingTurn: (json['battleStartRemainingTurn'] as List<dynamic>?)?.map((e) => e as int).toList(),
       additionalSkillId: (json['additionalSkillId'] as List<dynamic>?)?.map((e) => e as int).toList(),
       additionalSkillLv: (json['additionalSkillLv'] as List<dynamic>?)?.map((e) => e as int).toList(),
       additionalSkillActorType: (json['additionalSkillActorType'] as List<dynamic>?)?.map((e) => e as int).toList(),
@@ -423,6 +424,7 @@ Map<String, dynamic> _$SkillScriptToJson(SkillScript instance) {
   writeNotNull('HP_PER_HIGHER', instance.HP_PER_HIGHER);
   writeNotNull('HP_PER_LOWER', instance.HP_PER_LOWER);
   writeNotNull('actRarity', instance.actRarity);
+  writeNotNull('battleStartRemainingTurn', instance.battleStartRemainingTurn);
   writeNotNull('additionalSkillId', instance.additionalSkillId);
   writeNotNull('additionalSkillLv', instance.additionalSkillLv);
   writeNotNull('additionalSkillActorType', instance.additionalSkillActorType);

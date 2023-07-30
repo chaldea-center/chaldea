@@ -841,6 +841,7 @@ class SkillScript with DataScriptBase {
   final List<int>? HP_PER_LOWER;
   final List<List<int>>? actRarity;
   // ↑ conditions
+  final List<int>? battleStartRemainingTurn;
   final List<int>? additionalSkillId;
   final List<int>? additionalSkillLv;
   final List<int>? additionalSkillActorType; // BattleLogicTask.ACTORTYPE
@@ -859,6 +860,7 @@ class SkillScript with DataScriptBase {
       HP_PER_HIGHER?.isNotEmpty == true ||
       HP_PER_LOWER?.isNotEmpty == true ||
       actRarity?.isNotEmpty == true ||
+      battleStartRemainingTurn?.isNotEmpty == true ||
       additionalSkillId?.isNotEmpty == true ||
       additionalSkillLv?.isNotEmpty == true ||
       additionalSkillActorType?.isNotEmpty == true ||
@@ -876,6 +878,7 @@ class SkillScript with DataScriptBase {
     this.HP_PER_HIGHER,
     this.HP_PER_LOWER,
     this.actRarity,
+    this.battleStartRemainingTurn,
     this.additionalSkillId,
     this.additionalSkillLv,
     this.additionalSkillActorType,
