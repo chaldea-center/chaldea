@@ -267,6 +267,26 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               },
               child: Text(S.current.select_skill),
             ),
+          ),
+          Center(
+            child: TextButton(
+              onPressed: () async {
+                final board = db.gameData.classBoards.values
+                    .firstWhereOrNull((e) => e.classes.any((cls) => cls.classId == svt.classId));
+                if (board == null) {
+                  EasyLoading.showInfo('${S.current.not_found}: ${Transl.svtClassId(svt.classId).l}');
+                  return;
+                }
+                final skill = board.toSkill(db.curUser.classBoardStatusOf(board.id));
+                if (skill == null || skill.functions.isEmpty) {
+                  EasyLoading.showInfo(S.current.empty_hint);
+                  return;
+                }
+                playerSvtData.addCustomPassive(skill, skill.maxLv);
+                if (mounted) setState(() {});
+              },
+              child: Text('${S.current.custom_skill}-${S.current.class_score}'),
+            ),
           )
         ],
       ),

@@ -1,6 +1,7 @@
 import 'dart:ui' show Offset;
 
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/utils/extension.dart';
 import '../../app/app.dart';
 import '../db.dart';
 import '../userdata/userdata.dart';
@@ -78,6 +79,40 @@ class ClassBoard with RouteInfo {
 
   @override
   String get route => Routes.classBoardI(id);
+
+  NiceSkill? toSkill(ClassBoardPlan v) {
+    Map<int, NiceSkill> skills = {};
+    Map<int, int> levels = {};
+    for (final square in squares) {
+      final targetSkill = square.targetSkill;
+      if (targetSkill == null) continue;
+      if (v.enhancedSquares.contains(square.id)) {
+        skills.putIfAbsent(targetSkill.id, () => targetSkill);
+        levels.addNum(targetSkill.id, square.upSkillLv);
+      }
+    }
+    List<NiceFunction> functions = [];
+    for (final skillId in levels.keys) {
+      final skill = skills[skillId]!;
+      final lv = levels[skillId]!.clamp(0, skill.maxLv);
+      if (lv == 0) continue;
+      for (final func in skill.functions) {
+        final func2 = NiceFunction.fromJson(func.toJson());
+        func2.svals = [func.svals[lv - 1]];
+        functions.add(func2);
+      }
+    }
+    if (functions.isEmpty) return null;
+    return NiceSkill(
+      id: -(1000000 + DateTime.now().timestamp % 1000000),
+      type: SkillType.passive,
+      name: "${S.current.class_score} $dispName",
+      icon: btnIcon,
+      num: 0,
+      coolDown: [0],
+      functions: functions,
+    );
+  }
 }
 
 @JsonSerializable(converters: [CondTypeConverter()])

@@ -154,7 +154,7 @@ class TdDmgSolver {
   }
 
   final _debuffImmuneSkill = NiceSkill(
-    id: 1,
+    id: -1000091,
     name: 'Debuff Immune',
     type: SkillType.passive,
     coolDown: [0],
