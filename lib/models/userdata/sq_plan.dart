@@ -158,20 +158,20 @@ class SaintQuartzPlan {
           // startDate: e.extra.
         ));
     // check master mission
-    final Map<int, int> extraMissionItems = {};
-    if (extraMission != null) {
-      for (final mission in extraMission!.missions) {
-        if (extraMissions[mission.id] != true) continue;
-        for (final gift in mission.gifts) {
-          extraMissionItems.addNum(gift.objectId, gift.num);
-        }
-      }
-    }
-    _checkEvent(
-      startDate: DateUtils.addDaysToDate(endDate, -eventDateDelta),
-      items: extraMissionItems,
-      name: 'Extra Mission',
-    );
+    // final Map<int, int> extraMissionItems = {};
+    // if (extraMission != null) {
+    //   for (final mission in extraMission!.missions) {
+    //     if (extraMissions[mission.id] != true) continue;
+    //     for (final gift in mission.gifts) {
+    //       extraMissionItems.addNum(gift.objectId, gift.num);
+    //     }
+    //   }
+    // }
+    // _checkEvent(
+    //   startDate: DateUtils.addDaysToDate(endDate, -eventDateDelta),
+    //   items: extraMissionItems,
+    //   name: 'Extra Mission',
+    // );
 
     db.gameData.wiki.summons.values.forEach((summon) {
       DateTime? startDate = summon.startTime.jp?.sec2date();

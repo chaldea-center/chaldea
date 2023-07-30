@@ -210,22 +210,22 @@ class _SQSettingTabState extends State<SQSettingTab> {
               LocalizedText.of(
                 chs: """实际可获得量远高于计算值：
 仅计算连续登陆奖励、每月魔力棱镜商店呼符、限时活动的关卡通关报酬;
-特殊御主任务奖励在最后一天结算;
+特殊御主任务奖励由于数量繁多，不再计入;
 其余纪念活动、转发达标奖励、维护补偿等直接发放到礼物盒中的奖励均未计算、且无法自动统计。""",
                 jpn: """実際に取得したリソースは、計算よりもはるかに多いはずです。
 連続ログイン報酬、毎月のプリスマショップの呼符、および期間限定イベントのクエスト報酬のみが計算されます。
-エクストラマスターミッション報酬は最終日に決済されます。
+エクストラマスターミッション報酬は多数あるため、カウントされなくなりました。
 その他の記念イベント、メンテナンス補償、メールボックスに直接配布されるものは計算されず、自動的に数えられないからです。""",
                 eng: """Actual obtained resources should be MUCH MORE than calculated.
 
 Only the continuous login rewards, monthly prism store tickets, and quest rewards of limited events are calculated.
 
-Extra master mission rewards are settled on the last day.
+Extra master mission rewards are removed due to too many missions.
 
 The other campaign events, maintenance compensation, and other rewards directly sent to the gift box are not calculated because cannot be automatically counted.""",
                 kor: """실제 획득된 자원은 계산된 것보다 훨씬 더 많아야 합니다.
 연속 로그인 보상, 월별 마나 프리즘 상점 호부, 한정 이벤트의 퀘스트 보상만 계산됩니다.
-엑스트라 마스터 미션 보상은 마지막 날에 추가로 지급됩니다.
+엑스트라 마스터 미션 보상은 마지막 날에 추가로 지급됩니다.(Extra missions are removed due to too many missions)
 기타 캠페인 이벤트, 유지 보수, 기타 기프트 박스로 직접 발송되는 보상은 자동 집계가 불가능하여 계산되지 않습니다. """,
               ),
               style: Theme.of(context).textTheme.bodySmall,

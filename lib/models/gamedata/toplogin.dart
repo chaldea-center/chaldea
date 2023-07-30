@@ -66,7 +66,7 @@ class FateTopLogin {
     if (encoded.startsWith('ey')) {
       encoded = utf8.decode(base64Decode(Uri.decodeFull(encoded).trim()));
     }
-    return FateTopLogin.fromJson(Map<String,dynamic>.from(jsonDecode(encoded)));
+    return FateTopLogin.fromJson(Map<String, dynamic>.from(jsonDecode(encoded)));
   }
 }
 

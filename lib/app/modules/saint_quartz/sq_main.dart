@@ -2,7 +2,6 @@ import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'extra_mission_tab.dart';
 import 'setting_tab.dart';
 import 'table_tab.dart';
 
@@ -21,7 +20,7 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning> with SingleTi
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     // not ideal
     db.curUser.saintQuartzPlan.onSolved = () {
       if (mounted) setState(() {});
@@ -50,9 +49,9 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning> with SingleTi
           isScrollable: true,
           tabs: [
             Tab(text: S.current.settings_tab_name),
-            Tab(
-              text: LocalizedText.of(chs: '特殊御主任务', jpn: 'エクストラミッション', eng: 'Extra Mission', kor: '엑스트라 미션'),
-            ),
+            // Tab(
+            //   text: LocalizedText.of(chs: '特殊御主任务', jpn: 'エクストラミッション', eng: 'Extra Mission', kor: '엑스트라 미션'),
+            // ),
             Tab(
               text: LocalizedText.of(chs: '攒石表(伪)', jpn: '結果表', eng: 'Table', kor: '결과표'),
             ),
@@ -64,7 +63,7 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning> with SingleTi
         // physics: const NeverScrollableScrollPhysics(),
         children: [
           SQSettingTab(),
-          ExtraMissionTab(),
+          // ExtraMissionTab(),
           SQTableTab(),
         ],
       ),
