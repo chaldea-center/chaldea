@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.4.8
+
+Happy 8th Anniversary, FGO!
+
+- Laplace
+  - Local teams are saved in userdata now (support backup)
+  - Fix battle replay error if contains Order Change
+  - Convert class board data to custom skill when edit servant
+
 ## 2.4.7
 
 Happy 8th Anniversary, FGO!
