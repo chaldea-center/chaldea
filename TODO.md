@@ -4,10 +4,10 @@
 
 ### High Priority
 
-- [ ] battle delegate
+- [x] battle delegate
 - [ ] menu skills
   - [ ] Skip turn! support 0 card
-- [ ] active/passiveList make private, filter out actor died buffs, INDIV
+- [x] active/passiveList make private, filter out actor died buffs, INDIV
 - [ ] gainNp/gainHp/gainHpPer related funcs: check DataVals.Unaffected
 
 ### Recorder
@@ -26,7 +26,7 @@
       receiver argument to receive what's lost from absorbTargets
 - [ ] DataVals AddLinkageTargetIndividualty & BehaveAsFamilyBuff & UnSubStateWhileLinkedToOthers
 - [ ] DataVals CounterId CounterLv CounterOc SkillReaction UseTreasureDevice
-- [ ] DataVals TriggeredFuncPosition ignored, only checking previous function success for now
+- [x] DataVals TriggeredFuncPosition ignored, only checking previous function success for now
 - [ ] Group npDamageIndividualSum & buff ParamAddCount's counting logic together?
 - [ ] BuffType doNotGainNp & upGiveNp & DataVals Unaffected
 - [ ] BuffType doNotRecovery interacts with maxHp? Treating as no interaction for now & DataVals Unaffected
@@ -42,8 +42,8 @@
 - [ ] BuffType preventDeathByDamage works if Van Gogh has both curse and burn?
 - [ ] BuffType reflectionFunction
 - [ ] BuffType skillRankUp has a maxRate of 0, so it's probably not a ValuedBuff? Currently only counting by buffTrait
-- [ ] INDIVIDUALITIE seen on fields, buffTraits, servantId, are other traits included as well?
-- [ ] includeIgnoredTrait only adds NP card traits for now
+- [x] INDIVIDUALITIE seen on fields, buffTraits, servantId, are other traits included as well?
+- [ ] IncludeIgnoreIndividuality only adds NP card traits for now
 - [ ] more sample on convertBuff's scripts
   - [ ] BuffConvert is converting a buff list to another buff list, (or trait list to another buff list, not used yet)
 - [ ] prepare a dummy BattleServantData as Master
@@ -59,18 +59,18 @@
 
 ### Team setup
 
-- [ ] svt/enemy: edit indivs, ~~skills, tds~~
+- [x] svt/enemy: edit indivs, ~~skills, tds~~
 
 ### Common Simulation
 
 - [ ] manually remove/add buff
-- [ ] manually apply skill(custom activator/target)
+- [x] manually apply skill(custom activator/target)
 - [ ] Transform: what if skill/td has upgrades or disabled?
   - Currently matching id for upgrades.
-- [ ] add ce event skill on/off
-- [ ] Custom skill! (passive or active)
+- [x] add ce event skill on/off
+- [x] Custom skill! (passive or active)
 - [ ] Player side `allyTargetIndex` could be null or -1, let user to choose manually
-- [ ] SkillRankUp: get skill from api if not in db, make init async
+- [x] SkillRankUp: get skill from api if not in db, make init async
 
 ### NPC Simulation
 
@@ -78,9 +78,9 @@
 
 ### Enemy Simulation
 
-- [ ] build enemy active skills & cards & NP
+- [x] build enemy active skills & cards & NP
 - [ ] TargetType ptSelfAnotherRandom for svt 251 skill 3
-- [ ] TargetType enemyOneNoTargetNoAction for svt 311 skill 3
+- [x] TargetType enemyOneNoTargetNoAction for svt 311 skill 3
 - [ ] FuncType transformServant on enemies
 
 ## Misc
