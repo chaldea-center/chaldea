@@ -223,7 +223,29 @@ class BuffInfoTable extends StatelessWidget {
         CustomTableRow(children: [
           TableCellData(text: "Owner", isHeader: true),
           TableCellData(
-            child: SharedBuilder.trait(context: context, trait: buff.script!.INDIVIDUALITIE!),
+            child: Text.rich(TextSpan(children: [
+              SharedBuilder.traitSpan(context: context, trait: buff.script!.INDIVIDUALITIE!),
+              if (buff.script?.INDIVIDUALITIE_COUNT_ABOVE != null)
+                TextSpan(text: '≥${buff.script!.INDIVIDUALITIE_COUNT_ABOVE}'),
+            ])),
+            flex: 3,
+          )
+        ]),
+      if (buff.script?.INDIVIDUALITIE_AND != null)
+        CustomTableRow(children: [
+          TableCellData(text: "Owner", isHeader: true),
+          TableCellData(
+            child:
+                SharedBuilder.traitList(context: context, traits: buff.script!.INDIVIDUALITIE_AND!, useAndJoin: true),
+            flex: 3,
+          )
+        ]),
+      if (buff.script?.INDIVIDUALITIE_OR != null)
+        CustomTableRow(children: [
+          TableCellData(text: "Owner", isHeader: true),
+          TableCellData(
+            child:
+                SharedBuilder.traitList(context: context, traits: buff.script!.INDIVIDUALITIE_OR!, useAndJoin: false),
             flex: 3,
           )
         ]),
@@ -418,7 +440,10 @@ class BuffInfoTable extends StatelessWidget {
     for (final key in script.source.keys) {
       yield CustomTableRow(children: [
         TableCellData(text: key, isHeader: true)..maxLines = null,
-        TableCellData(text: script.source[key].toString(), flex: 3),
+        TableCellData(
+          text: key == 'relationId' ? '↑...↑' : script.source[key].toString(),
+          flex: 3,
+        ),
       ]);
     }
   }
