@@ -5,7 +5,7 @@
 Happy 8th Anniversary, FGO!
 
 - Laplace
-  - Support Rain Witch's new skill effects (except skill 2 - gain C. Stars when HP 100%)
+  - Support Rain Witch's new skill effects
   - Local teams are saved in userdata now (support backup)
   - Fix battle replay error if contains Order Change
   - Convert class board data to custom skill when edit servant
