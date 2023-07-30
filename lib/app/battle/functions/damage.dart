@@ -256,7 +256,7 @@ class Damage {
             '${currentCard.isNP ? S.current.battle_np_card : S.current.battle_command_card} - '
             '${S.current.effect_target}: ${target.lBattleName} - '
             '${S.current.battle_damage}: $totalDamage - '
-            '${S.current.battle_remaining_hp}: ${target.hp}/${target.maxHp} - '
+            '${S.current.battle_remaining_hp}: ${target.hp}/${target.getMaxHp(battleData)} - '
             'NP: ${(Maths.sum(result.npGains) / 100).toStringAsFixed(2)}% - '
             '$starString'
             'Overkill: ${result.overkillStates.where((e) => e).length}/${currentCard.cardDetail.hitsDistribution.length}');

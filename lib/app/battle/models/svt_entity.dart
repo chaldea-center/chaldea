@@ -76,7 +76,9 @@ class BattleServantData {
   int level = 0;
   int atk = 0;
   int hp = 0;
-  int maxHp = 0;
+  int _maxHp = 0;
+  set maxHp(final int maxHp) => _maxHp = maxHp;
+
   int np = 0; // player, np/100
   int npLineCount = 0; // enemy
   bool usedNpThisTurn = false;
@@ -113,7 +115,7 @@ class BattleServantData {
       ..niceSvt = niceSvt
       ..uniqueId = uniqueId
       ..hp = enemy.hp
-      ..maxHp = enemy.hp
+      .._maxHp = enemy.hp
       ..svtId = enemy.svt.id
       ..level = enemy.lv
       ..atk = enemy.atk
@@ -142,13 +144,13 @@ class BattleServantData {
       ..niceSvt = psvt
       ..svtId = psvt.id
       ..level = settings.lv
-      ..maxHp = settings.fixedHp ?? ((psvt.hpGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.hpFou)
+      .._maxHp = settings.fixedHp ?? ((psvt.hpGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.hpFou)
       ..atk = settings.fixedAtk ?? ((psvt.atkGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.atkFou);
-    svt.hp = svt.maxHp;
+    svt.hp = svt._maxHp;
     if (settings.ce != null) {
       svt.equip = BattleCEData(settings.ce!, settings.ceLimitBreak, settings.ceLv);
       svt.hp += svt.equip!.hp;
-      svt.maxHp += svt.equip!.hp;
+      svt._maxHp += svt.equip!.hp;
     }
 
     final script = psvt.script;
@@ -372,9 +374,9 @@ class BattleServantData {
 
   int getMaxHp(final BattleData battleData) {
     final addition = getBuffValueOnActionForUI(battleData, BuffAction.maxhpValue);
-    final percentAddition = toModifier(getBuffValueOnActionForUI(battleData, BuffAction.maxhpRate) * maxHp).toInt();
+    final percentAddition = toModifier(getBuffValueOnActionForUI(battleData, BuffAction.maxhpRate) * _maxHp).toInt();
 
-    return maxHp + addition + percentAddition;
+    return _maxHp + addition + percentAddition;
   }
 
   CommandCardData? getNPCard(final BattleData battleData) {
@@ -596,7 +598,7 @@ class BattleServantData {
 
     atk = nextShift.atk;
     hp = nextShift.hp;
-    maxHp = nextShift.hp;
+    _maxHp = nextShift.hp;
     level = nextShift.lv;
     battleBuff.clearPassive(uniqueId);
     shiftIndex += 1;
@@ -607,7 +609,7 @@ class BattleServantData {
 
     atk = shiftSvt.atk;
     hp = shiftSvt.hp;
-    maxHp = shiftSvt.hp;
+    _maxHp = shiftSvt.hp;
     level = shiftSvt.lv;
     battleBuff.clearPassive(uniqueId);
     shiftIndex += 1;
@@ -1311,7 +1313,7 @@ class BattleServantData {
       ..level = level
       ..atk = atk
       ..hp = hp
-      ..maxHp = maxHp
+      .._maxHp = _maxHp
       ..np = np
       ..npLineCount = npLineCount
       ..usedNpThisTurn = usedNpThisTurn
