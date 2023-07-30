@@ -4320,6 +4320,17 @@ class S {
     );
   }
 
+  /// `Include NP level, not include sold. Effect on probability of Lucky Bag(GSSR) and 5-Star Servant Present needs manual correction.`
+  String get gacha_svt_count_hint {
+    return Intl.message(
+      'Include NP level, not include sold. Effect on probability of Lucky Bag(GSSR) and 5-Star Servant Present needs manual correction.',
+      name: 'gacha_svt_count_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Home`
   String get gallery_tab_name {
     return Intl.message(

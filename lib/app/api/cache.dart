@@ -162,7 +162,7 @@ class ApiCacheManager {
     }
   }
 
-  Future<void> _clearKey(String key) async {
+  void _clearKey(String key) {
     _data.remove(key);
     _memoryCache.remove(key);
     _downloading.remove(key);
@@ -316,7 +316,7 @@ class ApiCacheManager {
 
       final task = _downloading[key] = _DownloadingTask(key: key, completer: Completer());
       _failed.remove(key);
-      rateLimiter.limited<List<int>?>(() => _fetch(options, onError)).then((value) {
+      unawaited(rateLimiter.limited<List<int>?>(() => _fetch(options, onError)).then((value) {
         _downloading.remove(key);
         _failed.remove(key);
         if (!task.completer.isCompleted) task.completer.complete(value);
@@ -327,7 +327,7 @@ class ApiCacheManager {
         if (!task.completer.isCompleted) task.completer.completeError(e, s);
         // if (kDebugMode) print(escapeDioException(e));
         return Future.value();
-      });
+      }));
       return await task.completer.future;
     } catch (e, s) {
       _data.remove(key);

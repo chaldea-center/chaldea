@@ -11,9 +11,13 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class SniffGachaHistory extends StatefulWidget {
+  final List<UserSvt> userSvt;
+  final List<UserSvt> userSvtStorage;
   final List<UserGacha> records;
   final Region region;
-  const SniffGachaHistory({super.key, required this.records, required this.region});
+
+  const SniffGachaHistory(
+      {super.key, required this.records, required this.userSvt, required this.userSvtStorage, required this.region});
 
   @override
   State<SniffGachaHistory> createState() => _SniffGachaHistoryState();
@@ -69,7 +73,8 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
 
   @override
   Widget build(BuildContext context) {
-    final totalCount = Maths.sum(records.where((e) => !shouldIgnore(e)).map((e) => e.num));
+    final totalSummonCount = Maths.sum(records.where((e) => !shouldIgnore(e)).map((e) => e.num));
+    final tdCount = countServantTD([...widget.userSvt, ...widget.userSvtStorage], 5);
     return Scaffold(
       appBar: AppBar(
         title: const Text("Gacha Statistics"),
@@ -83,13 +88,40 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
                   )
                 : const SizedBox.shrink(),
           ),
-          Center(child: Text('$totalCount   ')),
         ],
       ),
-      body: ListView.separated(
-        itemBuilder: (context, index) => buildGacha(context, index, records[index]),
-        separatorBuilder: (context, index) => const SizedBox.shrink(),
-        itemCount: records.length,
+      body: CustomScrollView(
+        slivers: [
+          SliverList.list(children: [
+            TileGroup(
+              header: S.current.statistics_title,
+              children: [
+                ListTile(
+                  dense: true,
+                  title: Text(S.current.total),
+                  trailing: Text('$totalSummonCount ${S.current.summon_pull_unit}'),
+                ),
+                ListTile(
+                  dense: true,
+                  title: Text('$kStarChar 5 ${S.current.servant}'),
+                  subtitle: Text(S.current.gacha_svt_count_hint),
+                  trailing: Text(
+                    [
+                      tdCount,
+                      '${(tdCount / totalSummonCount * 100).toStringAsFixed(2)}%',
+                    ].join('\n'),
+                    textAlign: TextAlign.end,
+                  ),
+                ),
+              ],
+            )
+          ]),
+          SliverList.separated(
+            itemBuilder: (context, index) => buildGacha(context, index, records[index]),
+            separatorBuilder: (context, index) => const SizedBox.shrink(),
+            itemCount: records.length,
+          ),
+        ],
       ),
     );
   }
@@ -206,5 +238,16 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
   bool shouldIgnore(UserGacha record) {
     // 1-fp, 101-newbie
     return record.gachaId == 1;
+  }
+
+  int countServantTD(List<UserSvt> servants, int rarity) {
+    int count = 0;
+    for (final svt in servants) {
+      final dbSvt = svt.dbSvt;
+      if (dbSvt != null && dbSvt.isUserSvt && dbSvt.rarity == rarity) {
+        count += svt.treasureDeviceLv1;
+      }
+    }
+    return count;
   }
 }

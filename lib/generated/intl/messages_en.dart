@@ -502,6 +502,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "gacha_prob_precision_hint": MessageLookupByLibrary.simpleMessage(
             "If the value is too large or too small, the calculation result is inaccurate due to the double precision problem."),
         "gacha_prob_svt_pickup": m19,
+        "gacha_svt_count_hint": MessageLookupByLibrary.simpleMessage(
+            "Include NP level, not include sold. Effect on probability of Lucky Bag(GSSR) and 5-Star Servant Present needs manual correction."),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("Home"),
         "game_account": MessageLookupByLibrary.simpleMessage("Game Account"),
         "game_data_not_found":

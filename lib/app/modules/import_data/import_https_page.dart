@@ -667,7 +667,12 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                                   child: Text(region.localName),
                                   onPressed: () {
                                     Navigator.pop(context);
-                                    router.pushPage(SniffGachaHistory(records: gachas.toList(), region: region));
+                                    router.pushPage(SniffGachaHistory(
+                                      records: gachas.toList(),
+                                      userSvt: mstData?.userSvt ?? [],
+                                      userSvtStorage: mstData?.userSvtStorage ?? [],
+                                      region: region,
+                                    ));
                                   },
                                 )
                             ],

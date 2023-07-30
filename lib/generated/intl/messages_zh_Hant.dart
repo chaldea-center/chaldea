@@ -481,6 +481,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "gacha_prob_custom_rate": MessageLookupByLibrary.simpleMessage("自訂機率"),
         "gacha_prob_precision_hint": MessageLookupByLibrary.simpleMessage("數值過大或過小時由於double精度問題造成計算結果不準確"),
         "gacha_prob_svt_pickup": m19,
+        "gacha_svt_count_hint": MessageLookupByLibrary.simpleMessage("已包含宝具数，不包含已变还。福袋/自选五星对概率的影响需自行调整。"),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("首頁"),
         "game_account": MessageLookupByLibrary.simpleMessage("遊戲帳號"),
         "game_data_not_found": MessageLookupByLibrary.simpleMessage("數據加載失敗, 請先前往遊戲數據頁面下載"),
