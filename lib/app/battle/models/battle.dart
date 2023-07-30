@@ -136,8 +136,8 @@ class BattleData {
   final Map<int, bool> uniqueIdToLastFuncResultMap = {};
   CommandCardData? currentCard;
   final List<BuffData?> _currentBuff = [];
-  final List<BattleServantData> _activator = [];
-  final List<BattleServantData> _target = [];
+  final List<BattleServantData?> _activator = [];
+  final List<BattleServantData?> _target = [];
 
   // this is for logging only
   NiceFunction? curFunc;
@@ -194,13 +194,11 @@ class BattleData {
   Future<T> withActivator<T>(final BattleServantData? activator, final FutureOr<T> Function() onExecute) async {
     final sanityCheck = _activator.length;
     try {
-      if (activator != null) _activator.add(activator);
+      _activator.add(activator);
       return await onExecute();
     } finally {
-      if (activator != null) {
-        final removedActor = _activator.removeLast();
-        assert(removedActor == activator, '$removedActor != $activator');
-      }
+      final removedActor = _activator.removeLast();
+      assert(removedActor == activator, '$removedActor != $activator');
       assert(sanityCheck == _activator.length, '$sanityCheck != ${_activator.length}');
     }
   }
@@ -208,10 +206,11 @@ class BattleData {
   T withActivatorSync<T>(final BattleServantData? activator, final T Function() onExecute) {
     final sanityCheck = _activator.length;
     try {
-      if (activator != null) _activator.add(activator);
+      _activator.add(activator);
       return onExecute();
     } finally {
-      if (activator != null) _activator.removeLast();
+      final removedActor = _activator.removeLast();
+      assert(removedActor == activator, '$removedActor != $activator');
       assert(sanityCheck == _activator.length);
     }
   }
@@ -221,10 +220,11 @@ class BattleData {
   Future<T> withTarget<T>(final BattleServantData? target, final FutureOr<T> Function() onExecute) async {
     final sanityCheck = _target.length;
     try {
-      if (target != null) _target.add(target);
+      _target.add(target);
       return await onExecute();
     } finally {
-      if (target != null) _target.removeLast();
+      final removedTarget = _target.removeLast();
+      assert(removedTarget == target, '$removedTarget != $target');
       assert(sanityCheck == _target.length);
     }
   }
@@ -232,10 +232,11 @@ class BattleData {
   T withTargetSync<T>(final BattleServantData? target, final T Function() onExecute) {
     final sanityCheck = _target.length;
     try {
-      if (target != null) _target.add(target);
+      _target.add(target);
       return onExecute();
     } finally {
-      if (target != null) _target.removeLast();
+      final removedTarget = _target.removeLast();
+      assert(removedTarget == target, '$removedTarget != $target');
       assert(sanityCheck == _target.length);
     }
   }
@@ -750,7 +751,9 @@ class BattleData {
         for (final svt in nonnullAllies) {
           effectiveness += await svt.getBuffValueOnAction(this, BuffAction.masterSkillValueUp);
         }
-        await masterSkillInfo[skillIndex].activate(this, effectiveness: effectiveness != 1000 ? effectiveness : null);
+        await withActivator(null, () async {
+          await masterSkillInfo[skillIndex].activate(this, effectiveness: effectiveness != 1000 ? effectiveness : null);
+        });
         recorder.skill(
           battleData: this,
           activator: null,
