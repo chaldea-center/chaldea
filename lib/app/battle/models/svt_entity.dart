@@ -101,6 +101,11 @@ class BattleServantData {
 
   BattleServantData._({required this.isPlayer});
 
+  @override
+  String toString() {
+    return 'BattleServantData(${fieldIndex + 1}-$lBattleName)';
+  }
+
   factory BattleServantData.fromEnemy(final QuestEnemy enemy, final int uniqueId, {Servant? niceSvt}) {
     final svt = BattleServantData._(isPlayer: false);
     svt

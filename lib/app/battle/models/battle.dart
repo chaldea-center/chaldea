@@ -197,8 +197,11 @@ class BattleData {
       if (activator != null) _activator.add(activator);
       return await onExecute();
     } finally {
-      if (activator != null) _activator.removeLast();
-      assert(sanityCheck == _activator.length);
+      if (activator != null) {
+        final removedActor = _activator.removeLast();
+        assert(removedActor == activator, '$removedActor != $activator');
+      }
+      assert(sanityCheck == _activator.length, '$sanityCheck != ${_activator.length}');
     }
   }
 

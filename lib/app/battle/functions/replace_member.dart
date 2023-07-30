@@ -49,6 +49,6 @@ class ReplaceMember {
     battleData.curFuncResults[selections.item1.uniqueId] = true;
     battleData.curFuncResults[selections.item2.uniqueId] = true;
 
-    selections.item2.enterField(battleData);
+    await selections.item2.enterField(battleData);
   }
 }
