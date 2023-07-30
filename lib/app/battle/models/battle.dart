@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -133,7 +134,7 @@ class BattleData {
   // should not be read, as this represent a build-in-progress svtUniqueId to funcResult map for the current function
   final Map<int, bool> curFuncResults = {};
 
-  final Map<int, bool> uniqueIdToLastFuncResultMap = {};
+  final List<Map<int, bool>?> uniqueIdToLastFuncResultStack = [];
   CommandCardData? currentCard;
   final List<BuffData?> _currentBuff = [];
   final List<BattleServantData?> _activator = [];
@@ -143,8 +144,7 @@ class BattleData {
   NiceFunction? curFunc;
 
   void updateLastFuncResults() {
-    uniqueIdToLastFuncResultMap.clear();
-    uniqueIdToLastFuncResultMap.addAll(curFuncResults);
+    uniqueIdToLastFuncResultStack.add(HashMap<int, bool>.from(curFuncResults));
   }
 
   BuffData? get currentBuff => _currentBuff.isNotEmpty ? _currentBuff.last : null;
@@ -256,7 +256,7 @@ class BattleData {
     totalTurnCount = 0;
     criticalStars = 0;
 
-    uniqueIdToLastFuncResultMap.clear();
+    uniqueIdToLastFuncResultStack.clear();
     _currentBuff.clear();
     _activator.clear();
     _target.clear();

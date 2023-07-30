@@ -44,6 +44,8 @@ class FunctionExecutor {
     final int? effectiveness,
     final bool defaultToPlayer = true,
   }) async {
+    battleData.uniqueIdToLastFuncResultStack.clear();
+
     Map<int, List<NiceFunction>> actSets = {};
     for (final func in functions) {
       if (!validateFunctionTargetTeam(func, battleData.activator?.isPlayer ?? defaultToPlayer)) continue;
@@ -64,10 +66,11 @@ class FunctionExecutor {
       NiceFunction func = functions[index];
       final dataVal = FunctionExecutor.getDataVals(func, skillLevel, overchargeLvl);
       if ((dataVal.ActSet ?? 0) != 0 && dataVal.ActSet != selectedActSet) {
+        battleData.uniqueIdToLastFuncResultStack.add(null);
         continue;
       }
 
-      await FunctionExecutor.executeFunction(
+      final updatedResult = await FunctionExecutor.executeFunction(
         battleData,
         func,
         skillLevel,
@@ -79,10 +82,14 @@ class FunctionExecutor {
         effectiveness: effectiveness,
         defaultToPlayer: defaultToPlayer,
       );
+      if (!updatedResult) {
+        battleData.uniqueIdToLastFuncResultStack.add(null);
+      }
     }
   }
 
-  static Future<void> executeFunction(
+  /// Return value is whether the uniqueIdToFuncResultMap is updated or not
+  static Future<bool> executeFunction(
     final BattleData battleData,
     final NiceFunction function,
     final int skillLevel, {
@@ -100,7 +107,7 @@ class FunctionExecutor {
   }) async {
     final BattleServantData? activator = battleData.activator;
     if (!validateFunctionTargetTeam(function, activator?.isPlayer ?? defaultToPlayer)) {
-      return;
+      return false;
     }
 
     switch (function.funcType) {
@@ -108,7 +115,7 @@ class FunctionExecutor {
       case FuncType.eventDropUp:
       case FuncType.eventPointUp:
       case FuncType.none:
-        return;
+        return false;
       default:
         final fieldTraitString = function.funcquestTvals.isNotEmpty
             ? ' - ${S.current.battle_require_field_traits} ${function.funcquestTvals.map((e) => e.shownName())}'
@@ -125,7 +132,7 @@ class FunctionExecutor {
 
     DataVals dataVals = getDataVals(function, skillLevel, overchargeLvl);
     if (dataVals.ActSelectIndex != null && dataVals.ActSelectIndex != selectedActionIndex) {
-      return;
+      return false;
     }
 
     if (effectiveness != null) {
@@ -153,26 +160,22 @@ class FunctionExecutor {
     if (!funcQuestTvalsMatch) {
       battleData.updateLastFuncResults();
       battleData.battleLogger.function('${S.current.battle_require_field_traits} ${S.current.failed}');
-      return;
+      return true;
     }
 
     if (dataVals.StarHigher != null && battleData.criticalStars < dataVals.StarHigher!) {
       battleData.updateLastFuncResults();
       battleData.battleLogger.function('${S.current.critical_star} ${battleData.criticalStars.toStringAsFixed(3)} < '
           '${dataVals.StarHigher}');
-      return;
+      return true;
     }
 
-    final checkDead = dataVals.CheckDead != null && dataVals.CheckDead! > 0;
-    targets.retainWhere((svt) =>
-        (svt.isAlive(battleData) || checkDead) &&
-        battleData.checkTraits(CheckTraitParameters(
-          requiredTraits: function.functvals,
-          actor: svt,
-          checkActorTraits: true,
-          checkActorBuffTraits: true,
-          checkActiveBuffOnly: dataVals.IncludePassiveIndividuality != 1,
-        )));
+    if (!triggeredPositionCheck(battleData, dataVals) || !triggeredPositionAllCheck(battleData, dataVals)) {
+      battleData.updateLastFuncResults();
+      return true;
+    }
+
+    updateTargets(battleData, function, dataVals, targets);
 
     List<NiceTd?> tdSelections = [];
     if (function.funcTargetType == FuncTargetType.commandTypeSelfTreasureDevice) {
@@ -318,9 +321,16 @@ class FunctionExecutor {
         battleData.nonnullAllies.forEach((svt) {
           svt.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
         });
+        for (final target in targets) {
+          battleData.curFuncResults[target.uniqueId] = true;
+        }
         break;
       case FuncType.fixCommandcard:
+      case FuncType.displayBuffstring:
         // do nothing
+        for (final target in targets) {
+          battleData.curFuncResults[target.uniqueId] = true;
+        }
         break;
       case FuncType.shortenBuffturn:
       case FuncType.extendBuffturn:
@@ -347,7 +357,6 @@ class FunctionExecutor {
       case FuncType.ptShuffle:
       case FuncType.changeBg:
       case FuncType.withdraw:
-      case FuncType.displayBuffstring:
       case FuncType.resurrection:
       case FuncType.quickChangeBg:
       case FuncType.overwriteDeadType:
@@ -398,6 +407,7 @@ class FunctionExecutor {
 
     battleData.updateLastFuncResults();
     battleData.checkBuffStatus();
+    return true;
   }
 
   static bool validateFunctionTargetTeam(
@@ -617,5 +627,106 @@ class FunctionExecutor {
     }
 
     return targets;
+  }
+
+  static bool triggeredPositionCheck(
+    final BattleData battleData,
+    final DataVals dataVals,
+  ) {
+    final triggeredFuncPosition = dataVals.TriggeredFuncPosition;
+    if (triggeredFuncPosition == null) {
+      return true;
+    }
+
+    final results = battleData.uniqueIdToLastFuncResultStack.getOrNull(triggeredFuncPosition.abs() - 1);
+    if (triggeredFuncPosition > 0) {
+      if (results == null) {
+        return false;
+      } else {
+        for (final result in results.values) {
+          if (result) {
+            return true;
+          }
+        }
+      }
+    } else if (triggeredFuncPosition < 0) {
+      if (results != null) {
+        for (final result in results.values) {
+          if (!result) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  static bool triggeredPositionAllCheck(
+    final BattleData battleData,
+    final DataVals dataVals,
+  ) {
+    final triggeredFuncPositionAll = dataVals.TriggeredFuncPositionAll;
+    if (triggeredFuncPositionAll == null) {
+      return true;
+    }
+
+    final results = battleData.uniqueIdToLastFuncResultStack.getOrNull(triggeredFuncPositionAll.abs() - 1);
+    if (triggeredFuncPositionAll > 0) {
+      if (results == null) {
+        return false;
+      } else {
+        for (final result in results.values) {
+          if (!result) {
+            return false;
+          }
+        }
+      }
+    } else if (triggeredFuncPositionAll < 0) {
+      if (results != null) {
+        for (final result in results.values) {
+          if (result) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
+
+  static void updateTargets(
+    final BattleData battleData,
+    final NiceFunction function,
+    final DataVals dataVals,
+    final List<BattleServantData> targets,
+  ) {
+    final checkDead = dataVals.CheckDead != null && dataVals.CheckDead! > 0;
+    targets.retainWhere((svt) =>
+        (svt.isAlive(battleData) || checkDead) &&
+        battleData.checkTraits(CheckTraitParameters(
+          requiredTraits: function.functvals,
+          actor: svt,
+          checkActorTraits: true,
+          checkActorBuffTraits: true,
+          checkActiveBuffOnly: dataVals.IncludePassiveIndividuality != 1,
+        )));
+
+    final triggeredHpRateRange = dataVals.TriggeredTargetHpRateRange;
+    if (triggeredHpRateRange == null || !RegExp(r'(^<\d+$|^\d+<$)').hasMatch(triggeredHpRateRange)) {
+      return;
+    }
+
+    final lessThan = triggeredHpRateRange.startsWith('<');
+    final hpRateRange = int.parse(triggeredHpRateRange.replaceAll('<', ''));
+
+    targets.retainWhere((svt) {
+      final svtHpRate = (svt.hp / svt.getMaxHp(battleData) * 1000).toInt();
+
+      if (lessThan) {
+        return svtHpRate < hpRateRange;
+      } else {
+        return svtHpRate > hpRateRange;
+      }
+    });
   }
 }

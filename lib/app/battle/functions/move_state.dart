@@ -53,7 +53,11 @@ class MoveState {
         buffs: dependFunction.buffs,
         svals: [dependVal]);
 
-    await FunctionExecutor.executeFunction(battleData, niceFunction, 1); // we provisioned only one dataVal
+    final updatedResult = await FunctionExecutor.executeFunction(battleData, niceFunction, 1); // we provisioned only one dataVal
+
+    if (updatedResult) {
+      battleData.uniqueIdToLastFuncResultStack.removeLast();
+    }
 
     battleData.curFuncResults.addAll(currentFunctionResults);
   }

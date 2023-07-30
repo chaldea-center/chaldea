@@ -1046,6 +1046,42 @@ void main() async {
     expect(previousHp2 - enemy1.hp, 23874);
   });
 
+  test('Summer Morgan', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(505300)
+        ..lv = 90
+        ..atkFou = 1000
+        ..skillLvs = [10, 10, 10]
+        ..tdLv = 5,
+      PlayerSvtData.id(604200)
+        ..lv = 90
+        ..tdLv = 5,
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final morgan = battle.onFieldAllyServants[0]!;
+    expect(morgan.skillInfoList[2].chargeTurn, 5);
+
+    await battle.activateSvtSkill(0, 1);
+    morgan.np = 10000;
+    await battle.playerTurn([CombatAction(morgan, morgan.getNPCard(battle)!)]);
+    expect(morgan.skillInfoList[1].chargeTurn, 4);
+    expect(morgan.skillInfoList[2].chargeTurn, 3);
+    expect(battle.criticalStars, moreOrLessEquals(14.488, epsilon: 0.001));
+
+    await battle.activateSvtSkill(1, 0);
+    expect(morgan.skillInfoList[1].chargeTurn, 2);
+    expect(morgan.skillInfoList[2].chargeTurn, 1);
+
+    morgan.np = 10000;
+    await battle.playerTurn([CombatAction(morgan, morgan.getNPCard(battle)!)]);
+    expect(morgan.skillInfoList[1].chargeTurn, 1);
+    expect(morgan.skillInfoList[2].chargeTurn, 0);
+    expect(battle.criticalStars, moreOrLessEquals(4.187, epsilon: 0.001)); // one enemy not killed
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,

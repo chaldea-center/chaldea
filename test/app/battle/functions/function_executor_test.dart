@@ -219,7 +219,7 @@ void main() async {
       await battle.activateSvtSkill(0, 2); // nemo skill 3, check field shore
       final buffCountAfter = nemo1.battleBuff.activeList.length;
       expect(buffCountAfter, buffCountBefore + 1);
-      expect(battle.uniqueIdToLastFuncResultMap[nemo1.uniqueId], true); // last func in skill is gainStar on self
+      expect(battle.uniqueIdToLastFuncResultStack[1]![nemo1.uniqueId], false);
 
       await battle.init(db.gameData.questPhases[9300030103]!, playerSettings, null); // field shore
       final nemo2 = battle.onFieldAllyServants[0]!;
@@ -227,7 +227,7 @@ void main() async {
       await battle.activateSvtSkill(0, 2); // nemo skill 3, check field shore
       final buffCountAfterShore = nemo2.battleBuff.activeList.length;
       expect(buffCountAfterShore, buffCountBeforeShore + 2);
-      expect(battle.uniqueIdToLastFuncResultMap[nemo2.uniqueId], true); // last func in skill is gainStar on self
+      expect(battle.uniqueIdToLastFuncResultStack[1]![nemo2.uniqueId], true);
     });
 
     test('Function checks target trait', () async {
@@ -247,10 +247,10 @@ void main() async {
       expect(buffCountKamaAfter, buffCountKamaBefore + 2);
 
       // last skill is on female targets except self
-      expect(battle.uniqueIdToLastFuncResultMap.length, 2);
-      expect(battle.uniqueIdToLastFuncResultMap[nemo.uniqueId], false);
-      expect(battle.uniqueIdToLastFuncResultMap[eli.uniqueId], null);
-      expect(battle.uniqueIdToLastFuncResultMap[kama.uniqueId], true);
+      expect(battle.uniqueIdToLastFuncResultStack.last!.length, 2);
+      expect(battle.uniqueIdToLastFuncResultStack.last![nemo.uniqueId], false);
+      expect(battle.uniqueIdToLastFuncResultStack.last![eli.uniqueId], null);
+      expect(battle.uniqueIdToLastFuncResultStack.last![kama.uniqueId], true);
     });
 
     test('Function checks target alive', () async {
@@ -268,10 +268,42 @@ void main() async {
       expect(buffCountAfter, buffCountBefore);
 
       // last func is addState on dead enemies
-      expect(battle.uniqueIdToLastFuncResultMap.length, 3);
-      expect(battle.uniqueIdToLastFuncResultMap[enemy1.uniqueId], false);
-      expect(battle.uniqueIdToLastFuncResultMap[enemy2.uniqueId], false);
-      expect(battle.uniqueIdToLastFuncResultMap[enemy3.uniqueId], false);
+      expect(battle.uniqueIdToLastFuncResultStack.last!.length, 3);
+      expect(battle.uniqueIdToLastFuncResultStack.last![enemy1.uniqueId], false);
+      expect(battle.uniqueIdToLastFuncResultStack.last![enemy2.uniqueId], false);
+      expect(battle.uniqueIdToLastFuncResultStack.last![enemy3.uniqueId], false);
+    });
+
+    test('TriggeredFuncPosition', () async {
+      await battle.init(db.gameData.questPhases[9300040603]!, [
+        PlayerSvtData.id(600200) // cursed arm
+          ..tdLv = 5
+          ..setNpStrengthenLv(2)
+          ..lv = 65,
+      ], null); // no field traits
+      final enemy1 = battle.onFieldEnemies[0]!;
+      final cursedArm = battle.onFieldAllyServants[0]!;
+      final buffCountBefore1 = cursedArm.battleBuff.activeList.length;
+      cursedArm.np = 10000;
+      await battle.playerTurn([CombatAction(cursedArm, cursedArm.getNPCard(battle)!)]);
+      final buffCountAfter1 = cursedArm.battleBuff.activeList.length;
+      expect(buffCountAfter1, buffCountBefore1);
+      expect(battle.uniqueIdToLastFuncResultStack[0]![enemy1.uniqueId], false);
+      expect(battle.uniqueIdToLastFuncResultStack[1]![cursedArm.uniqueId], false);
+      expect(battle.uniqueIdToLastFuncResultStack[2]![cursedArm.uniqueId], false);
+      expect(battle.uniqueIdToLastFuncResultStack[3], null);
+
+      final enemy2 = battle.onFieldEnemies[1]!;
+      final buffCountBefore2 = cursedArm.battleBuff.activeList.length;
+      cursedArm.np = 10000;
+      battle.options.probabilityThreshold = 10;
+      await battle.playerTurn([CombatAction(cursedArm, cursedArm.getNPCard(battle)!)]);
+      final buffCountAfter2 = cursedArm.battleBuff.activeList.length;
+      expect(buffCountAfter2, buffCountBefore2 + 1);
+      expect(battle.uniqueIdToLastFuncResultStack[0]![enemy2.uniqueId], true);
+      expect(battle.uniqueIdToLastFuncResultStack[1]![cursedArm.uniqueId], true);
+      expect(battle.uniqueIdToLastFuncResultStack[2]![cursedArm.uniqueId], true);
+      expect(battle.uniqueIdToLastFuncResultStack[3], null);
     });
   });
 
@@ -425,9 +457,9 @@ void main() async {
       expect(battle.criticalStars, moreOrLessEquals(0, epsilon: 0.001));
       await battle.activateSvtSkill(1, 0);
       expect(battle.criticalStars, moreOrLessEquals(10, epsilon: 0.001));
-      expect(battle.uniqueIdToLastFuncResultMap.length, 2);
-      expect(battle.uniqueIdToLastFuncResultMap[battle.onFieldAllyServants[0]!.uniqueId], false);
-      expect(battle.uniqueIdToLastFuncResultMap[battle.onFieldAllyServants[2]!.uniqueId], true);
+      expect(battle.uniqueIdToLastFuncResultStack[3]!.length, 2);
+      expect(battle.uniqueIdToLastFuncResultStack[3]![battle.onFieldAllyServants[0]!.uniqueId], false);
+      expect(battle.uniqueIdToLastFuncResultStack[3]![battle.onFieldAllyServants[2]!.uniqueId], true);
     });
 
     test('subState affectTraits', () async {
