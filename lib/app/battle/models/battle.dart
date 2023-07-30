@@ -155,8 +155,8 @@ class BattleData {
       _currentBuff.add(buff);
       return await onExecute();
     } finally {
+      StackMismatchException.checkPopStack(_currentBuff, buff, sanityCheck);
       _currentBuff.removeLast();
-      assert(sanityCheck == _currentBuff.length);
     }
   }
 
@@ -166,8 +166,8 @@ class BattleData {
       _currentBuff.add(buff);
       return onExecute();
     } finally {
+      StackMismatchException.checkPopStack(_currentBuff, buff, sanityCheck);
       _currentBuff.removeLast();
-      assert(sanityCheck == _currentBuff.length);
     }
   }
 
@@ -197,9 +197,8 @@ class BattleData {
       _activator.add(activator);
       return await onExecute();
     } finally {
-      final removedActor = _activator.removeLast();
-      assert(removedActor == activator, '$removedActor != $activator');
-      assert(sanityCheck == _activator.length, '$sanityCheck != ${_activator.length}');
+      StackMismatchException.checkPopStack(_activator, activator, sanityCheck);
+      _activator.removeLast();
     }
   }
 
@@ -209,9 +208,8 @@ class BattleData {
       _activator.add(activator);
       return onExecute();
     } finally {
-      final removedActor = _activator.removeLast();
-      assert(removedActor == activator, '$removedActor != $activator');
-      assert(sanityCheck == _activator.length);
+      StackMismatchException.checkPopStack(_activator, activator, sanityCheck);
+      _activator.removeLast();
     }
   }
 
@@ -223,9 +221,8 @@ class BattleData {
       _target.add(target);
       return await onExecute();
     } finally {
-      final removedTarget = _target.removeLast();
-      assert(removedTarget == target, '$removedTarget != $target');
-      assert(sanityCheck == _target.length);
+      StackMismatchException.checkPopStack(_target, target, sanityCheck);
+      _target.removeLast();
     }
   }
 
@@ -235,9 +232,8 @@ class BattleData {
       _target.add(target);
       return onExecute();
     } finally {
-      final removedTarget = _target.removeLast();
-      assert(removedTarget == target, '$removedTarget != $target');
-      assert(sanityCheck == _target.length);
+      StackMismatchException.checkPopStack(_target, target, sanityCheck);
+      _target.removeLast();
     }
   }
 
@@ -1321,6 +1317,30 @@ class BattleData {
       ..options = copy.options
       ..recorder = copy.recorder
       ..replayDataRecord = copy.replayDataRecord;
+  }
+}
+
+class StackMismatchException implements Exception {
+  final String message;
+  StackMismatchException([this.message = '']);
+
+  @override
+  String toString() {
+    return 'StackMismatchException: $message';
+  }
+
+  static T checkPopStack<T>(List<T> stack, T last, int lengthAfterPop) {
+    if (stack.isEmpty) {
+      throw StackMismatchException("Stack is empty but going to pop $last");
+    }
+    final lastInStack = stack.last;
+    if (lastInStack != last) {
+      throw StackMismatchException("Stack last member mismatch: ${stack.lastOrNull}(last in stack)!=$last");
+    }
+    if (stack.length - 1 != lengthAfterPop) {
+      throw StackMismatchException("Stack length mismatch: ${stack.length}-1 != $lengthAfterPop");
+    }
+    return lastInStack;
   }
 }
 
