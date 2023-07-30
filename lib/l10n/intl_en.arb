@@ -3,7 +3,7 @@
   "language": "English",
   "language_en": "English",
   "about_app": "About",
-  "about_app_declaration_text": "The data used in this application comes from game Fate/GO and the following websites. The copyright of the original texts, pictures and voices of game belongs to TYPE MOON/FGO PROJECT.\n\nThe design of program is based on the WeChat mini program \"Material Programe\" and the iOS application \"Guda\".\n\nBattle Simulator \"Laplace\" is implemented by Yome - the author of \"FGO Simulator\" which is also inspired by FGO teamup.",
+  "about_app_declaration_text": "The data used in this application comes from the game Fate/GO and the following websites. The copyright of the original texts, pictures and voices of game belongs to TYPE MOON/FGO PROJECT.\n\nThe design of the program is based on the WeChat mini program \"Material Programe\" and the iOS application \"Guda\".\n\nBattle Simulator \"Laplace\" is implemented by Yome - the author of \"FGO Simulator\" - which is also inspired by FGO teamup.",
   "about_data_source": "Data source",
   "about_data_source_footer": "Please inform us if there is unmarked source or infringement.",
   "about_feedback": "Feedback",
