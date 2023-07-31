@@ -53,20 +53,7 @@ class _FormationEditorState extends State<FormationEditor> {
   }
 
   Widget buildBody() {
-    List<Widget> children = [
-      ListTile(
-        dense: true,
-        title: db.onUserData((context, snapshot) => Text(
-              '${S.current.cur_account}: ${db.curUser.name}',
-              textAlign: TextAlign.center,
-            )),
-        onTap: () async {
-          await router.pushPage(AccountPage());
-          if (mounted) setState(() {});
-        },
-      ),
-      for (int index = 0; index < userData.formations.length; index++) buildFormation(index),
-    ];
+    List<Widget> children = [for (int index = 0; index < userData.formations.length; index++) buildFormation(index)];
 
     if (sorting) {
       return ReorderableListView(
@@ -89,6 +76,17 @@ class _FormationEditorState extends State<FormationEditor> {
 
     return ListView(
       children: [
+        ListTile(
+          dense: true,
+          title: db.onUserData((context, snapshot) => Text(
+            '${S.current.cur_account}: ${db.curUser.name}',
+            textAlign: TextAlign.center,
+          )),
+          onTap: () async {
+            await router.pushPage(AccountPage());
+            if (mounted) setState(() {});
+          },
+        ),
         ...children,
         const Divider(height: 16),
         if (!sorting)
