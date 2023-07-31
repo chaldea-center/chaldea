@@ -19,16 +19,17 @@ void main(List<String> args) {
   print('* Version: $version');
   final en = getReleaseNote('CHANGELOG.md', version) ?? "", zh = getReleaseNote('CHANGELOG_ZH.md', version) ?? "";
   final buffer = StringBuffer();
-  if (en.isNotEmpty) {
-    buffer.writeln("EN:");
-    buffer.writeln(en);
+
+  if (zh.isNotEmpty) {
+    buffer.writeln("ZH:");
+    buffer.writeln(zh);
   }
   if (en.isNotEmpty && zh.isNotEmpty) {
     buffer.writeln();
   }
-  if (zh.isNotEmpty) {
-    buffer.writeln("ZH:");
-    buffer.writeln(zh);
+  if (en.isNotEmpty) {
+    buffer.writeln("EN:");
+    buffer.writeln(en);
   }
   if (buffer.isEmpty) {
     String time = DateTime.now().toUtc().toIso8601String();

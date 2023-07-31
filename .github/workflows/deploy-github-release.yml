@@ -209,7 +209,7 @@ jobs:
         with:
           body: Built at ${{ steps.get-date.outputs.date }}
           body_path: chaldea-${{ env.VERSION }}-android/release-note.md
-          files: "chaldea-*/*"
+          files: "chaldea-*/chaldea-*"
 
       - name: Check draft status
         env:

@@ -108,7 +108,7 @@ class ChaldeaWorkerApi {
       expireAfter: Duration.zero,
       options: addAuth ? addAuthHeader(options) : options,
     );
-    return result ?? WorkerResponse(success: false, message: "Unknown Error");
+    return result ?? WorkerResponse(success: false, message: "Error");
   }
 
   static Future<UserBattleData?> laplaceQueryById(

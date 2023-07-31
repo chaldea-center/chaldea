@@ -79,9 +79,9 @@ class _FormationEditorState extends State<FormationEditor> {
         ListTile(
           dense: true,
           title: db.onUserData((context, snapshot) => Text(
-            '${S.current.cur_account}: ${db.curUser.name}',
-            textAlign: TextAlign.center,
-          )),
+                '${S.current.cur_account}: ${db.curUser.name}',
+                textAlign: TextAlign.center,
+              )),
           onTap: () async {
             await router.pushPage(AccountPage());
             if (mounted) setState(() {});

@@ -59,7 +59,8 @@ class GainHpFromTargets {
           DataVals({'Rate': functionRate, 'Value': checkValue})
         ]);
 
-    final updatedResult = await FunctionExecutor.executeFunction(battleData, niceFunction, 1); // we provisioned only one dataVal
+    final updatedResult =
+        await FunctionExecutor.executeFunction(battleData, niceFunction, 1); // we provisioned only one dataVal
 
     if (updatedResult) {
       battleData.uniqueIdToLastFuncResultStack.removeLast();

@@ -275,12 +275,15 @@ void main() async {
     });
 
     test('TriggeredFuncPosition', () async {
-      await battle.init(db.gameData.questPhases[9300040603]!, [
-        PlayerSvtData.id(600200) // cursed arm
-          ..tdLv = 5
-          ..setNpStrengthenLv(2)
-          ..lv = 65,
-      ], null); // no field traits
+      await battle.init(
+          db.gameData.questPhases[9300040603]!,
+          [
+            PlayerSvtData.id(600200) // cursed arm
+              ..tdLv = 5
+              ..setNpStrengthenLv(2)
+              ..lv = 65,
+          ],
+          null); // no field traits
       final enemy1 = battle.onFieldEnemies[0]!;
       final cursedArm = battle.onFieldAllyServants[0]!;
       final buffCountBefore1 = cursedArm.battleBuff.activeList.length;

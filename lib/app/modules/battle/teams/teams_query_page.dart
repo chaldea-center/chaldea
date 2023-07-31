@@ -31,7 +31,7 @@ class TeamsQueryPage extends StatefulWidget {
 }
 
 class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListState<UserBattleData, TeamsQueryPage> {
-  static const _pageSize = 50;
+  static const _pageSize = 200;
 
   TeamQueryMode get mode => widget.mode;
 

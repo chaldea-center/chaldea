@@ -352,6 +352,7 @@ class _Database {
         // baseUrl: kDebugMode ? 'http://localhost:8183' : ,
         headers: {
           'x-chaldea-ver': AppInfo.versionString,
+          'x-chaldea-build': AppInfo.buildNumber,
           'x-chaldea-uuid': AppInfo.uuid,
           'x-chaldea-lang': Language.current.code,
           'x-chaldea-platform': PlatformU.operatingSystem
