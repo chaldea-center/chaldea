@@ -96,10 +96,10 @@ class S {
     );
   }
 
-  /// `The data used in this application comes from game Fate/GO and the following websites. The copyright of the original texts, pictures and voices of game belongs to TYPE MOON/FGO PROJECT.\n\nThe design of program is based on the WeChat mini program "Material Programe" and the iOS application "Guda".\n\nBattle Simulator "Laplace" is implemented by Yome - the author of "FGO Simulator" which is also inspired by FGO teamup.`
+  /// `The data used in this application comes from the game Fate/GO and the following websites. The copyright of the original texts, pictures and voices of game belongs to TYPE MOON/FGO PROJECT.\n\nThe design of the program is based on the WeChat mini program "Material Programe" and the iOS application "Guda".\n\nBattle Simulator "Laplace" is implemented by Yome - the author of "FGO Simulator" - which is also inspired by FGO teamup.`
   String get about_app_declaration_text {
     return Intl.message(
-      'The data used in this application comes from game Fate/GO and the following websites. The copyright of the original texts, pictures and voices of game belongs to TYPE MOON/FGO PROJECT.\n\nThe design of program is based on the WeChat mini program "Material Programe" and the iOS application "Guda".\n\nBattle Simulator "Laplace" is implemented by Yome - the author of "FGO Simulator" which is also inspired by FGO teamup.',
+      'The data used in this application comes from the game Fate/GO and the following websites. The copyright of the original texts, pictures and voices of game belongs to TYPE MOON/FGO PROJECT.\n\nThe design of the program is based on the WeChat mini program "Material Programe" and the iOS application "Guda".\n\nBattle Simulator "Laplace" is implemented by Yome - the author of "FGO Simulator" - which is also inspired by FGO teamup.',
       name: 'about_app_declaration_text',
       desc: '',
       locale: localeName,
@@ -4320,10 +4320,10 @@ class S {
     );
   }
 
-  /// `Include copies pulled, don't include burned. Effect on probability due to Lucky Bag(GSSR) and 5-Star Servant Present needs manual correction.`
+  /// `Include copies pulled, don't include burned and event 4☆ servants. Effect on probability due to Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction.`
   String get gacha_svt_count_hint {
     return Intl.message(
-      'Include copies pulled, don\'t include burned. Effect on probability due to Lucky Bag(GSSR) and 5-Star Servant Present needs manual correction.',
+      'Include copies pulled, don\'t include burned and event 4☆ servants. Effect on probability due to Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction.',
       name: 'gacha_svt_count_hint',
       desc: '',
       locale: localeName,

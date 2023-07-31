@@ -95,7 +95,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about_app": MessageLookupByLibrary.simpleMessage("About"),
         "about_app_declaration_text": MessageLookupByLibrary.simpleMessage(
-            "The data used in this application comes from game Fate/GO and the following websites. The copyright of the original texts, pictures and voices of game belongs to TYPE MOON/FGO PROJECT.\n\nThe design of program is based on the WeChat mini program \"Material Programe\" and the iOS application \"Guda\".\n\nBattle Simulator \"Laplace\" is implemented by Yome - the author of \"FGO Simulator\" which is also inspired by FGO teamup."),
+            "The data used in this application comes from the game Fate/GO and the following websites. The copyright of the original texts, pictures and voices of game belongs to TYPE MOON/FGO PROJECT.\n\nThe design of the program is based on the WeChat mini program \"Material Programe\" and the iOS application \"Guda\".\n\nBattle Simulator \"Laplace\" is implemented by Yome - the author of \"FGO Simulator\" - which is also inspired by FGO teamup."),
         "about_data_source": MessageLookupByLibrary.simpleMessage("Data source"),
         "about_data_source_footer":
             MessageLookupByLibrary.simpleMessage("Please inform us if there is unmarked source or infringement."),
@@ -503,7 +503,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "If the value is too large or too small, the calculation result is inaccurate due to the double precision problem."),
         "gacha_prob_svt_pickup": m19,
         "gacha_svt_count_hint": MessageLookupByLibrary.simpleMessage(
-            "Include copies pulled, don\'t include burned. Effect on probability due to Lucky Bag(GSSR) and 5-Star Servant Present needs manual correction."),
+            "Include copies pulled, don\'t include burned and event 4☆ servants. Effect on probability due to Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction."),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("Home"),
         "game_account": MessageLookupByLibrary.simpleMessage("Game Account"),
         "game_data_not_found":
