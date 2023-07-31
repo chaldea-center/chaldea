@@ -3,6 +3,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../descriptors/cond_target_num.dart';
 import '../../descriptors/mission_conds.dart';
 import 'solver/custom_mission.dart';
 import 'solver/scheme.dart';
@@ -104,11 +105,26 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
     );
   }
 
+  final bool describeEventMission = false;
+
   Widget _oneEventMission(EventMission mission) {
     final customMission = CustomMission.fromEventMission(mission);
+    final clearConds = mission.conds.where((e) => e.missionProgressType == MissionProgressType.clear).toList();
+    final clearCond = describeEventMission && clearConds.length == 1 ? clearConds.single : null;
+
     return SimpleAccordion(
       headerBuilder: (context, _) => ListTile(
-        title: Text('${mission.dispNo}. ${mission.name}', textScaleFactor: 0.8),
+        title: clearCond != null
+            ? CondTargetNumDescriptor(
+                condType: clearCond.condType,
+                targetNum: clearCond.targetNum,
+                targetIds: clearCond.targetIds,
+                details: clearCond.details,
+                missions: masterMission.missions,
+                textScaleFactor: 0.8,
+                unknownMsg: mission.name,
+              )
+            : Text('${mission.dispNo}. ${mission.name}', textScaleFactor: 0.8),
         contentPadding: const EdgeInsetsDirectional.only(start: 16),
         trailing: customMission == null
             ? null

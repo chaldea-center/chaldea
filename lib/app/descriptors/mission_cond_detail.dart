@@ -220,6 +220,15 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
               context, 'Put servants ', servants(context), ' in your Party and complete Quests $targetNum times'),
           kr: () => combineToRich(context, null, servants(context), '를 1기 이상 편성해서 전투 진행을 $targetNum회 완료'),
         );
+      case DetailCondType.battleSvtIdInFrontDeck:
+        return localized(
+          jp: () => combineToRich(context, null, servants(context), 'をスタメンにして、いずれかのクエストを$targetNum回クリアせよ'),
+          cn: () => combineToRich(context, '在队伍内编入', servants(context), '从者作为首发队员，并完成任意关卡$targetNum次'),
+          tw: null,
+          na: () => combineToRich(
+              context, 'Put servants ', servants(context), ' in Starting Member and complete Quests $targetNum times'),
+          kr: null,
+        );
       case DetailCondType.svtGetBattle:
         return localized(
           jp: () => text('戦利品で種火を$targetNum個集めろ'),
