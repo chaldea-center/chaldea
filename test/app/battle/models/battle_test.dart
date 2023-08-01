@@ -1114,6 +1114,32 @@ void main() async {
     expect(bakin.battleBuff.allBuffs.length, previousBuffCount2 + 1);
   });
 
+  test('AOE NP vs AttackTriggerFunc with enemyOne target', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(2500900)
+        ..lv = 1
+        ..tdLv = 1,
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final koyan = battle.onFieldAllyServants[0]!;
+    await battle.activateSvtSkill(0, 2);
+    koyan.np = 10000;
+
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final enemy2 = battle.onFieldEnemies[1]!;
+    final enemy3 = battle.onFieldEnemies[2]!;
+    final previousBuffCount1 = enemy1.battleBuff.allBuffs.length;
+    final previousBuffCount2 = enemy2.battleBuff.allBuffs.length;
+    final previousBuffCount3 = enemy3.battleBuff.allBuffs.length;
+    await battle.playerTurn([CombatAction(koyan, koyan.getNPCard(battle)!)]);
+    expect(enemy1.battleBuff.allBuffs.length, previousBuffCount1 + 4);
+    expect(enemy2.battleBuff.allBuffs.length, previousBuffCount2 + 4);
+    expect(enemy3.battleBuff.allBuffs.length, previousBuffCount3 + 4);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,

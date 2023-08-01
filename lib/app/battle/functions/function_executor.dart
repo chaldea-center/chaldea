@@ -247,8 +247,8 @@ class FunctionExecutor {
           break;
         case FuncType.hastenNpturn:
         case FuncType.delayNpturn:
-          HastenNpturn.hastenNpturn(
-              battleData, dataVals, targets, isNegative: function.funcType == FuncType.delayNpturn);
+          HastenNpturn.hastenNpturn(battleData, dataVals, targets,
+              isNegative: function.funcType == FuncType.delayNpturn);
           break;
         case FuncType.gainStar:
         case FuncType.lossStar:
@@ -328,7 +328,7 @@ class FunctionExecutor {
           break;
         case FuncType.fixCommandcard:
         case FuncType.displayBuffstring:
-        // do nothing
+          // do nothing
           for (final target in targets) {
             battleData.curFuncResults[target.uniqueId] = true;
           }
@@ -470,12 +470,24 @@ class FunctionExecutor {
     final List<BattleServantData> backupAllies =
         isAlly ? battleData.nonnullBackupAllies : battleData.nonnullBackupEnemies;
     final List<BattleServantData> aliveAllies = isAlly ? battleData.nonnullAllies : battleData.nonnullEnemies;
-    final BattleServantData? targetedAlly = isAlly ? battleData.targetedAlly : battleData.targetedEnemy;
+    final BattleServantData? targetedAlly = isAlly
+        ? battleData.target?.isPlayer == true
+            ? battleData.target
+            : battleData.targetedAlly
+        : battleData.target?.isEnemy == true
+            ? battleData.target
+            : battleData.targetedEnemy;
 
     final List<BattleServantData> backupEnemies =
         isAlly ? battleData.nonnullBackupEnemies : battleData.nonnullBackupAllies;
     final List<BattleServantData> aliveEnemies = isAlly ? battleData.nonnullEnemies : battleData.nonnullAllies;
-    final BattleServantData? targetedEnemy = isAlly ? battleData.targetedEnemy : battleData.targetedAlly;
+    final BattleServantData? targetedEnemy = isAlly
+        ? battleData.target?.isEnemy == true
+            ? battleData.target
+            : battleData.targetedEnemy
+        : battleData.target?.isPlayer == true
+            ? battleData.target
+            : battleData.targetedAlly;
 
     switch (funcTargetType) {
       case FuncTargetType.self:

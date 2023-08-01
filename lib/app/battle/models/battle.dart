@@ -799,7 +799,8 @@ class BattleData {
             effectiveness += await svt.getBuffValueOnAction(this, BuffAction.masterSkillValueUp);
           }
           await withActivator(null, () async {
-            await masterSkillInfo[skillIndex].activate(this, effectiveness: effectiveness != 1000 ? effectiveness : null);
+            await masterSkillInfo[skillIndex]
+                .activate(this, effectiveness: effectiveness != 1000 ? effectiveness : null);
           });
           recorder.skill(
             battleData: this,
@@ -814,16 +815,20 @@ class BattleData {
     );
   }
 
-  Future<void> activateCustomSkill(final BattleServantData? actor, final BaseSkill skill, final int skillLv, final bool isAlly,) async {
+  Future<void> activateCustomSkill(
+    final BattleServantData? actor,
+    final BaseSkill skill,
+    final int skillLv,
+    final bool isAlly,
+  ) async {
     await recordError(
       save: true,
       action: 'custom_skill-${skill.id}',
       task: () async {
         await withAction(() async {
           await withActivator(actor, () async {
-            battleLogger.action(
-                '${actor == null ? S.current.battle_no_source : actor.lBattleName}'
-                    ' - ${S.current.skill}: ${skill.lName.l}');
+            battleLogger.action('${actor == null ? S.current.battle_no_source : actor.lBattleName}'
+                ' - ${S.current.skill}: ${skill.lName.l}');
             await BattleSkillInfoData.activateSkill(
               this,
               skill,
@@ -875,16 +880,13 @@ class BattleData {
         if (isTypeChain) {
           await applyTypeChain(firstCardType, actions);
         }
-        final previousTargetIndex = allyTargetIndex;
         int extraOvercharge = 0;
         for (int i = 0; i < actions.length; i += 1) {
           await withAction(() async {
             if (nonnullEnemies.isNotEmpty) {
               final action = actions[i];
               await withCard(action.cardData, () async {
-                allyTargetIndex = onFieldAllyServants.indexOf(action.actor); // help damageFunction identify attacker
-
-                if (allyTargetIndex != -1 && action.isValid(this)) {
+                if (onFieldAllyServants.contains(action.actor) && action.isValid(this)) {
                   recorder.startPlayerCard(action.actor, action.cardData);
 
                   if (action.cardData.isNP) {
@@ -904,8 +906,12 @@ class BattleData {
                     );
                   }
                   for (final svt in nonnullEnemies) {
-                    if (svt.attacked) await svt.activateBuffOnAction(this, BuffAction.functionDamage);
-                    svt.attacked = false;
+                    if (svt.attacked) {
+                      await withTarget(action.actor, () async {
+                        await svt.activateBuffOnAction(this, BuffAction.functionDamage);
+                      });
+                      svt.attacked = false;
+                    }
                   }
                   recorder.endPlayerCard(action.actor, action.cardData);
                 }
@@ -929,7 +935,6 @@ class BattleData {
           await nextTurn();
         }
 
-        allyTargetIndex = previousTargetIndex;
         updateTargetedIndex();
       },
     );
@@ -946,13 +951,10 @@ class BattleData {
       action: 'enemy_card-${action.cardData.cardType.name}',
       task: () async {
         // recorder.initiateAttacks(this, [action]);
-        final previousTargetIndex = enemyTargetIndex;
         await withAction(() async {
           if (nonnullAllies.isNotEmpty) {
             await withCard(action.cardData, () async {
-              enemyTargetIndex = onFieldEnemies.indexOf(action.actor); // help damageFunction identify attacker
-
-              if (enemyTargetIndex != -1 && action.isValid(this)) {
+              if (onFieldEnemies.contains(action.actor) && action.isValid(this)) {
                 recorder.startPlayerCard(action.actor, action.cardData);
 
                 if (action.cardData.isNP) {
@@ -971,8 +973,12 @@ class BattleData {
                 }
 
                 for (final svt in nonnullAllies) {
-                  if (svt.attacked) await svt.activateBuffOnAction(this, BuffAction.functionDamage);
-                  svt.attacked = false;
+                  if (svt.attacked) {
+                    await withTarget(action.actor, () async {
+                      await svt.activateBuffOnAction(this, BuffAction.functionDamage);
+                    });
+                    svt.attacked = false;
+                  }
                 }
                 recorder.endPlayerCard(action.actor, action.cardData);
               }
@@ -986,7 +992,6 @@ class BattleData {
           checkActorStatus();
         });
 
-        enemyTargetIndex = previousTargetIndex;
         updateTargetedIndex();
       },
     );
