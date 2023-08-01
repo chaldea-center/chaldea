@@ -118,6 +118,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
+                        Text("${S.current.import_source_file} ↗↗"),
                         TextButton(
                           onPressed: () {
                             launch(url);
@@ -904,9 +905,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   }
 
   void parseResponseBody(String contents) {
-    FateTopLogin _topLogin = FateTopLogin.tryBase64(contents);
+    FateTopLogin _topLogin = FateTopLogin.fromBase64(contents);
     if (!_topLogin.response.any((res) => res.nid == 'login')) {
-      throw Exception('This is not login data');
+      throw Exception('This is not login data: ${FateTopLogin.tryBase64Decode(contents).substring2(0, 20)}');
     }
     final body = _topLogin.mstData;
 

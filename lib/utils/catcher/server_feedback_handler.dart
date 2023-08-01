@@ -171,6 +171,9 @@ class ServerFeedbackHandler extends ReportHandler {
       ].contains(report.shownError)) {
         return true;
       }
+      if (RegExp(r"NoSuchMethodError: method not found: '.+?' on null").hasMatch(report.shownError)) {
+        return true;
+      }
     }
     if (!kIsWeb) {
       if (report.stackTrace != null && !report.stackTrace.toString().contains('chaldea')) {

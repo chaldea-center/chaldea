@@ -59,13 +59,22 @@ class FateTopLogin {
 
   factory FateTopLogin.fromJson(Map<String, dynamic> data) => _$FateTopLoginFromJson(data);
 
-  /// base64 maybe url-encoded
-  static FateTopLogin tryBase64(String encoded) {
-    encoded = encoded.trim();
-    // eyJy
-    if (encoded.startsWith('ey')) {
-      encoded = utf8.decode(base64Decode(Uri.decodeFull(encoded).trim()));
+  static String tryBase64Decode(String content) {
+    content = content.trim();
+    try {
+      // eyJy
+      if (content.startsWith('ey')) {
+        content = utf8.decode(base64Decode(Uri.decodeFull(content).trim()));
+      }
+    } catch (e) {
+      //
     }
+    return content;
+  }
+
+  /// base64 maybe url-encoded
+  static FateTopLogin fromBase64(String encoded) {
+    encoded = tryBase64Decode(encoded);
     return FateTopLogin.fromJson(Map<String, dynamic>.from(jsonDecode(encoded)));
   }
 }

@@ -725,6 +725,7 @@ enum Trait {
   buffDamageCut(3085),
   gutsBlock(3086),
   buffBound(3087), // 拘束
+  buffMarking(3088),
   cardArts(4001),
   cardBuster(4002),
   cardQuick(4003),
