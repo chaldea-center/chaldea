@@ -335,6 +335,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Default lv setting is used only if \"Prefer Player Data\" turned off or servant/CE not favorite."),
         "defense_np_rate": MessageLookupByLibrary.simpleMessage("Defense NP Rate"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
+        "delete_reason": MessageLookupByLibrary.simpleMessage("Reason for Deletion"),
         "delete_unreleased_card": MessageLookupByLibrary.simpleMessage("Delete Unreleased Cards"),
         "demands": MessageLookupByLibrary.simpleMessage("Demands"),
         "describe_mission": MessageLookupByLibrary.simpleMessage("Describe Mission"),
@@ -1031,8 +1032,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "team_no_lv100": MessageLookupByLibrary.simpleMessage("No Lv.100+"),
         "team_no_order_change": MessageLookupByLibrary.simpleMessage("No Order Change"),
         "team_no_same_svt": MessageLookupByLibrary.simpleMessage("No Same Svt"),
-        "team_report_reason_hint":
-            MessageLookupByLibrary.simpleMessage("Unreleased servants/low success rate/cannot clear quest/etc"),
+        "team_report_reason_hint": MessageLookupByLibrary.simpleMessage(
+            "Unreleased servants/low success rate/cannot clear quest/etc.\nAsk admin to delete team rather to edit team."),
         "team_shared": MessageLookupByLibrary.simpleMessage("Shared Teams"),
         "team_starting_member": MessageLookupByLibrary.simpleMessage("Frontline"),
         "team_use_servant": MessageLookupByLibrary.simpleMessage("Use Servant"),

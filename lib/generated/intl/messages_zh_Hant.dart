@@ -321,6 +321,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "default_lvs_hint": MessageLookupByLibrary.simpleMessage("預設等級僅在未開啟\"優先使用玩家數據\"或從者/禮裝未關注時使用"),
         "defense_np_rate": MessageLookupByLibrary.simpleMessage("受擊NP率"),
         "delete": MessageLookupByLibrary.simpleMessage("刪除"),
+        "delete_reason": MessageLookupByLibrary.simpleMessage("删除理由"),
         "delete_unreleased_card": MessageLookupByLibrary.simpleMessage("刪除未實裝卡牌"),
         "demands": MessageLookupByLibrary.simpleMessage("需求"),
         "describe_mission": MessageLookupByLibrary.simpleMessage("描述任務"),
@@ -988,7 +989,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "team_no_lv100": MessageLookupByLibrary.simpleMessage("无Lv.100+"),
         "team_no_order_change": MessageLookupByLibrary.simpleMessage("禁止换人"),
         "team_no_same_svt": MessageLookupByLibrary.simpleMessage("禁止相同从者"),
-        "team_report_reason_hint": MessageLookupByLibrary.simpleMessage("使用未实装从者/操作发牌成功率低/无法通关 等等"),
+        "team_report_reason_hint":
+            MessageLookupByLibrary.simpleMessage("使用未实装从者/操作发牌成功率低/无法通关 等等。\n为了通知管理员删除队伍而不是让其修改队伍配置。"),
         "team_shared": MessageLookupByLibrary.simpleMessage("共享队伍"),
         "team_starting_member": MessageLookupByLibrary.simpleMessage("前排從者"),
         "team_use_servant": MessageLookupByLibrary.simpleMessage("使用从者"),

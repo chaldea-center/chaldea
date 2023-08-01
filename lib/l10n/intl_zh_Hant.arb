@@ -229,6 +229,7 @@
   "default_lvs_hint": "預設等級僅在未開啟\"優先使用玩家數據\"或從者/禮裝未關注時使用",
   "defense_np_rate": "受擊NP率",
   "delete": "刪除",
+  "delete_reason": null,
   "delete_unreleased_card": "刪除未實裝卡牌",
   "demands": "需求",
   "describe_mission": "描述任務",

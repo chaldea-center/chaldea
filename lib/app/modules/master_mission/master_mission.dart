@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -105,7 +107,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
     );
   }
 
-  final bool describeEventMission = false;
+  final bool describeEventMission = kDebugMode;
 
   Widget _oneEventMission(EventMission mission) {
     final customMission = CustomMission.fromEventMission(mission);
@@ -123,6 +125,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
                 missions: masterMission.missions,
                 textScaleFactor: 0.8,
                 unknownMsg: mission.name,
+                leading: TextSpan(text: '${mission.dispNo}. '),
               )
             : Text('${mission.dispNo}. ${mission.name}', textScaleFactor: 0.8),
         contentPadding: const EdgeInsetsDirectional.only(start: 16),
@@ -140,7 +143,13 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
       ),
       contentBuilder: (context) => Padding(
         padding: const EdgeInsetsDirectional.only(start: 24, end: 16),
-        child: MissionCondsDescriptor(mission: mission, missions: masterMission.missions),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (clearCond != null) Text(mission.name, style: Theme.of(context).textTheme.bodySmall),
+            MissionCondsDescriptor(mission: mission, missions: masterMission.missions),
+          ],
+        ),
       ),
     );
   }

@@ -229,6 +229,7 @@
   "default_lvs_hint": null,
   "defense_np_rate": null,
   "delete": "Eliminar",
+  "delete_reason": null,
   "delete_unreleased_card": null,
   "demands": "Demandado",
   "describe_mission": null,

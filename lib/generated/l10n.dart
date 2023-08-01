@@ -2582,6 +2582,17 @@ class S {
     );
   }
 
+  /// `Reason for Deletion`
+  String get delete_reason {
+    return Intl.message(
+      'Reason for Deletion',
+      name: 'delete_reason',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Delete Unreleased Cards`
   String get delete_unreleased_card {
     return Intl.message(
@@ -9803,10 +9814,10 @@ class S {
     );
   }
 
-  /// `Unreleased servants/low success rate/cannot clear quest/etc`
+  /// `Unreleased servants/low success rate/cannot clear quest/etc.\nAsk admin to delete team rather to edit team.`
   String get team_report_reason_hint {
     return Intl.message(
-      'Unreleased servants/low success rate/cannot clear quest/etc',
+      'Unreleased servants/low success rate/cannot clear quest/etc.\nAsk admin to delete team rather to edit team.',
       name: 'team_report_reason_hint',
       desc: '',
       locale: localeName,

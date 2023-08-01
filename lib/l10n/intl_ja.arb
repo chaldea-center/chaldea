@@ -229,6 +229,7 @@
   "default_lvs_hint": null,
   "defense_np_rate": "被ダメージNP获得量",
   "delete": "削除",
+  "delete_reason": null,
   "delete_unreleased_card": "未実装カードを削除",
   "demands": "要件",
   "describe_mission": null,

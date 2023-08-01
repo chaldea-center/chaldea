@@ -64,8 +64,12 @@ class BattleRecordManager {
       ..records = records.toList();
   }
 
-  void message(String msg, {BattleServantData? target, TextStyle? style, TextAlign? textAlign}) {
-    records.add(BattleMessageRecord(msg, target, style, textAlign));
+  void message(String msg, {BattleServantData? target}) {
+    records.add(BattleMessageRecord(msg, target: target));
+  }
+
+  void messageRich(BattleMessageRecord msg) {
+    records.add(msg);
   }
 
   void progressWave(int wave) {
@@ -239,14 +243,16 @@ abstract class BattleRecord {
 
 class BattleMessageRecord extends BattleRecord {
   final String message;
+  final AlignmentGeometry? alignment;
   final TextStyle? style;
   final TextAlign? textAlign;
   final BattleServantData? target;
-  BattleMessageRecord(this.message, this.target, this.style, this.textAlign);
+  BattleMessageRecord(this.message, {this.target, this.alignment, this.style, this.textAlign});
 
   @override
   BattleMessageRecord copy() {
-    return BattleMessageRecord(message, target?.copy(), style?.copyWith(), textAlign);
+    return BattleMessageRecord(message,
+        target: target?.copy(), alignment: alignment, style: style?.copyWith(), textAlign: textAlign);
   }
 
   @override

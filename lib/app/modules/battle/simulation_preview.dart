@@ -202,7 +202,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         titleSpacing: 0,
         title: AutoSizeText(S.current.battle_simulation_setup, maxLines: 1),
         centerTitle: false,
-        actions: _buildActions(),
+        actions: [PopupMenuButton(itemBuilder: _buildPopupMenuItems)],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -220,57 +220,77 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     );
   }
 
-  List<Widget> _buildActions() {
-    List<Widget> children = [];
-    children.add(IconButton.filled(
-      onPressed: () {
-        saveFormation();
-        if (!settings.curFormation.allSvts.any((e) => e?.svtId != null)) {
-          EasyLoading.showError("No servant in team");
-          return;
-        }
-        BattleQuestInfo? questInfo;
-        if (_questPhase != null && _questPhase!.id > 0) {
-          questInfo = BattleQuestInfo(
-            id: _questPhase!.id,
-            phase: _questPhase!.phase,
-            hash: _questPhase!.enemyHash,
-            region: questRegion,
-          );
-        }
-        final shareUri = BattleShareData(
-          appBuild: AppInfo.buildNumber,
-          quest: questInfo,
-          team: settings.curFormation,
-          disableEvent: options.disableEvent,
-        ).toUriV2();
-        String shareString = shareUri.toString();
-        Clipboard.setData(ClipboardData(text: shareString));
-        if (shareString.length > 200) {
-          shareString = '${shareString.substring(0, 200)}...';
-        }
-        EasyLoading.showSuccess("${S.current.copied}\n$shareString");
-      },
-      icon: const Icon(Icons.ios_share),
-      tooltip: S.current.share,
-    ));
-    children.add(IconButton(
-      onPressed: () async {
-        final text = (await Clipboard.getData(Clipboard.kTextPlain))?.text;
-        if (text == null || text.isEmpty) {
-          EasyLoading.showError("Please copy share url to clipboard first");
-          return;
-        }
-        final uri = Uri.tryParse(text);
-        if (uri == null) {
-          EasyLoading.showError('Invalid url format');
-          return;
-        }
-        importShareData(uri);
-      },
-      icon: const Icon(Icons.paste),
-      tooltip: S.current.import_data,
-    ));
+  List<PopupMenuItem> _buildPopupMenuItems(BuildContext context) {
+    List<PopupMenuItem> children = [
+      PopupMenuItem(
+        onTap: () {
+          saveFormation();
+          if (!settings.curFormation.allSvts.any((e) => e?.svtId != null)) {
+            EasyLoading.showError("No servant in team");
+            return;
+          }
+          BattleQuestInfo? questInfo;
+          if (_questPhase != null && _questPhase!.id > 0) {
+            questInfo = BattleQuestInfo(
+              id: _questPhase!.id,
+              phase: _questPhase!.phase,
+              hash: _questPhase!.enemyHash,
+              region: questRegion,
+            );
+          }
+          final shareUri = BattleShareData(
+            appBuild: AppInfo.buildNumber,
+            quest: questInfo,
+            team: settings.curFormation,
+            disableEvent: options.disableEvent,
+          ).toUriV2();
+          String shareString = shareUri.toString();
+          Clipboard.setData(ClipboardData(text: shareString));
+          if (shareString.length > 200) {
+            shareString = '${shareString.substring(0, 200)}...';
+          }
+          EasyLoading.showSuccess("${S.current.copied}\n$shareString");
+        },
+        child: Text(S.current.share),
+      ),
+      PopupMenuItem(
+        onTap: () async {
+          final text = (await Clipboard.getData(Clipboard.kTextPlain))?.text;
+          if (text == null || text.isEmpty) {
+            EasyLoading.showError("Please copy share url to clipboard first");
+            return;
+          }
+          final uri = Uri.tryParse(text);
+          if (uri == null) {
+            EasyLoading.showError('Invalid url format');
+            return;
+          }
+          importShareData(uri);
+        },
+        child: Text('${S.current.import_data}(${S.current.import_from_clipboard})'),
+      ),
+      PopupMenuItem(
+        onTap: () async {
+          await null;
+          if (!mounted) return;
+          InputCancelOkDialog(
+            title: 'Laplace Team ID',
+            keyboardType: TextInputType.number,
+            validate: (s) => (int.tryParse(s) ?? -1) > 0,
+            onSubmit: (s) async {
+              final id = int.tryParse(s);
+              if (id == null || id <= 0) {
+                EasyLoading.showError("Invalid ID");
+                return;
+              }
+              importShareData(Uri.parse('https://chaldea.center/laplace/share?id=$id'));
+            },
+          ).showDialog(context);
+        },
+        child: const Text('Laplace Team ID'),
+      )
+    ];
+
     return children;
   }
 
@@ -547,9 +567,23 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               ),
           ],
           onChanged: (v) {
-            setState(() {
-              settings.playerRegion = v;
-            });
+            SimpleCancelOkDialog(
+              title: Text(S.current.update),
+              content: Text('${S.current.skill_rankup}/${S.current.td_rankup}?'),
+              cancelText: "NO",
+              confirmText: "YES",
+              onTapCancel: () {
+                settings.playerRegion = v;
+                if (mounted) setState(() {});
+              },
+              onTapOk: () {
+                settings.playerRegion = v;
+                for (final svt in options.team.allSvts) {
+                  svt.updateRankUps(region: v, jpTime: questPhase?.jpOpenAt);
+                }
+                if (mounted) setState(() {});
+              },
+            ).showDialog(context);
           },
         ),
         TextButton(

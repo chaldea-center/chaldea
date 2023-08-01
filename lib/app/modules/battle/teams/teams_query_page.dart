@@ -493,6 +493,7 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
+            dense: true,
             title: Text(S.current.team),
             contentPadding: EdgeInsets.zero,
             trailing: Text(
@@ -501,16 +502,16 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
               textAlign: TextAlign.end,
             ),
           ),
-          const SizedBox(height: 16),
           TextFormField(
             controller: controller,
             decoration: InputDecoration(
               border: const OutlineInputBorder(),
-              labelText: S.current.details,
+              labelText: S.current.delete_reason,
               floatingLabelBehavior: FloatingLabelBehavior.always,
               hintText: S.current.team_report_reason_hint,
             ),
-            maxLines: 3,
+            style: const TextStyle(fontSize: 14),
+            maxLines: 5,
           ),
         ],
       ),
@@ -543,9 +544,11 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
       final buffer = StringBuffer();
       buffer.writeAll([
         "Quest: https://apps.atlasacademy.io/db/JP/quest/${record.questId}/${record.phase}?hash=${record.enemyHash}",
-        "ID: ${record.id}  v${record.ver}",
+        "Team: https://chaldea.center/laplace/share?id=${record.id}",
+        "ID: ${record.id}",
+        "Version: ${record.ver}",
         "Uploader: ${record.userId}",
-        "Stars: x up, y down\n",
+        // "Stars: x up, y down\n",
         "Reporter: ${db.security.username}",
         "Reason:\n$reason"
       ], '\n');
