@@ -714,21 +714,32 @@ class FunctionExecutor {
         )));
 
     final triggeredHpRateRange = dataVals.TriggeredTargetHpRateRange;
-    if (triggeredHpRateRange == null || !RegExp(r'(^<\d+$|^\d+<$)').hasMatch(triggeredHpRateRange)) {
-      return;
+    if (triggeredHpRateRange != null && RegExp(r'(^<\d+$|^\d+<$)').hasMatch(triggeredHpRateRange)) {
+      final lessThan = triggeredHpRateRange.startsWith('<');
+      final hpRateRange = int.parse(triggeredHpRateRange.replaceAll('<', ''));
+
+      targets.retainWhere((svt) {
+        final svtHpRate = (svt.hp / svt.getMaxHp(battleData) * 1000).toInt();
+
+        if (lessThan) {
+          return svtHpRate < hpRateRange;
+        } else {
+          return svtHpRate > hpRateRange;
+        }
+      });
     }
 
-    final lessThan = triggeredHpRateRange.startsWith('<');
-    final hpRateRange = int.parse(triggeredHpRateRange.replaceAll('<', ''));
-
-    targets.retainWhere((svt) {
-      final svtHpRate = (svt.hp / svt.getMaxHp(battleData) * 1000).toInt();
-
-      if (lessThan) {
-        return svtHpRate < hpRateRange;
-      } else {
-        return svtHpRate > hpRateRange;
+    if (dataVals.CheckDuplicate == 1) {
+      final Map<int, bool>? previousExecutionResults = battleData.actionHistory[function.funcId];
+      if (previousExecutionResults != null) {
+        for (final svt in targets) {
+          final previousResult = previousExecutionResults[svt.uniqueId];
+          if (previousResult != null) {
+            battleData.curFuncResults[svt.uniqueId] = previousResult;
+          }
+        }
+        targets.retainWhere((svt) => previousExecutionResults[svt.uniqueId] == false);
       }
-    });
+    }
   }
 }
