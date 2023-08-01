@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.4.9
+
+Bug Everywhere!
+- Bazett's counter NP trial (manually select after enemy action enabled)
+- Fix trigger logic of on-attack buffs: SaberAlter/Bakin/KoyanDark/Hokusai/Bhima/etc
+- Fix Sleep buff release on Gong/Arash NP
+- Fix condition check on "if prev/some func succeeds"
+- Fix story support servant not set the correct passive skills
+- Fix reorder bug in local teams page
+
 ## 2.4.8
 
 Happy 8th Anniversary, FGO!
