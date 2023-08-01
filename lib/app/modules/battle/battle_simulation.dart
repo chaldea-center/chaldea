@@ -490,7 +490,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                         isSealed: false,
                         isCondFailed: !battleData.canUseMysticCodeSkillIgnoreCoolDown(i),
                         onTap: () async {
-                          await battleData.activateMysticCodeSKill(i);
+                          await battleData.activateMysticCodeSkill(i);
                           if (mounted) setState(() {});
                         },
                       ),

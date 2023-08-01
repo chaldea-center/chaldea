@@ -93,11 +93,6 @@ class BuffData {
     additionalParam = vals.Value2 ?? 0;
     buffRate = vals.UseRate ?? 1000;
     irremovable = vals.UnSubState == 1; // need more sample
-
-    if (vals.SkillID != null) {
-      param = vals.SkillID!;
-      additionalParam = vals.SkillLV!;
-    }
   }
 
   BuffData.makeCopy(this.buff, this.vals);

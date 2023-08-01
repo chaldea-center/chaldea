@@ -57,7 +57,7 @@ class MoveState {
         await FunctionExecutor.executeFunction(battleData, niceFunction, 1); // we provisioned only one dataVal
 
     if (updatedResult) {
-      battleData.uniqueIdToLastFuncResultStack.removeLast();
+      battleData.uniqueIdToFuncResultsList.removeLast();
     }
 
     battleData.curFuncResults.addAll(currentFunctionResults);

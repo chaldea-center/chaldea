@@ -182,7 +182,7 @@ void main() async {
       expect(battle.nonnullEnemies.length, 1);
 
       douman.np = 10000;
-      await battle.activateMysticCodeSKill(1);
+      await battle.activateMysticCodeSkill(1);
       await battle.playerTurn([CombatAction(douman, douman.getNPCard(battle)!)]);
       expect(enemy1.hp, 0);
       expect(battle.nonnullEnemies.length, 0);
@@ -290,19 +290,19 @@ void main() async {
       final lip = battle.onFieldAllyServants[0]!;
       await battle.withActivator(lip, () async {
         lip.hp = lip.getMaxHp(battle) ~/ 2 + 13;
-        lip.checkBuffStatus(battle);
+        lip.updateActState(battle);
         expect(await lip.getBuffValueOnAction(battle, BuffAction.atk), 1000);
 
         lip.hp = lip.getMaxHp(battle) ~/ 2 - 1;
-        lip.checkBuffStatus(battle);
+        lip.updateActState(battle);
         expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1300, epsilon: 1));
 
         lip.hp = lip.getMaxHp(battle) ~/ 4;
-        lip.checkBuffStatus(battle);
+        lip.updateActState(battle);
         expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1400, epsilon: 1));
 
         lip.hp = 1;
-        lip.checkBuffStatus(battle);
+        lip.updateActState(battle);
         expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1500, epsilon: 1));
       });
     });
@@ -843,6 +843,64 @@ void main() async {
       await battle.playerTurn([CombatAction(locusta, locusta.getCards(battle)[0])]);
       expect(locusta.hp, 5000 + 1000 + 300 - 100);
       expect(vanGogh.hp, 5000 + 300 - 100);
+    });
+
+    test('npattackPrevBuff (Hokusai 3rd Skill on NP)', () async {
+      final List<PlayerSvtData> setting = [
+        PlayerSvtData.id(2500200)
+          ..lv = 1
+          ..tdLv = 2
+          ..atkFou = 0
+          ..skillLvs = [6, 6, 6]
+          ..setSkillStrengthenLvs([1, 1, 2]),
+      ];
+      final battle = BattleData();
+      final quest = db.gameData.questPhases[9300040603]!;
+      await battle.init(quest, setting, null);
+
+      final hokusai = battle.onFieldAllyServants[0]!;
+      final enemy1 = battle.onFieldEnemies[0]!;
+      final enemy2 = battle.onFieldEnemies[1]!;
+      final enemy3 = battle.onFieldEnemies[2]!;
+      await battle.activateSvtSkill(0, 2);
+
+      hokusai.np = 10000;
+      final previousHp1 = enemy1.hp;
+      final previousHp2 = enemy2.hp;
+      final previousHp3 = enemy3.hp;
+      final previousBuffCount1 = enemy1.battleBuff.allBuffs.length;
+      final previousBuffCount2 = enemy2.battleBuff.allBuffs.length;
+      final previousBuffCount3 = enemy3.battleBuff.allBuffs.length;
+      await battle.playerTurn([
+        CombatAction(hokusai, hokusai.getNPCard(battle)!),
+        CombatAction(hokusai, hokusai.getCards(battle)[1]),
+      ]);
+      expect(enemy1.hp, previousHp1 - 2831 - 786);
+      expect(enemy2.hp, previousHp2 - 2831);
+      expect(enemy3.hp, previousHp3 - 2831);
+      expect(enemy1.battleBuff.allBuffs.length, previousBuffCount1 + 2);
+      expect(enemy2.battleBuff.allBuffs.length, previousBuffCount2 + 1);
+      expect(enemy3.battleBuff.allBuffs.length, previousBuffCount3 + 1);
+
+      hokusai.np = 20000;
+      battle.enemyTargetIndex = 1;
+      final previousHp4 = enemy1.hp;
+      final previousHp5 = enemy2.hp;
+      final previousHp6 = enemy3.hp;
+      final previousBuffCount4 = enemy1.battleBuff.allBuffs.length;
+      final previousBuffCount5 = enemy2.battleBuff.allBuffs.length;
+      final previousBuffCount6 = enemy3.battleBuff.allBuffs.length;
+      await battle.playerTurn([
+        CombatAction(hokusai, hokusai.getNPCard(battle)!),
+        CombatAction(hokusai, hokusai.getCards(battle)[1]),
+        CombatAction(hokusai, hokusai.getCards(battle)[2]),
+      ]);
+      expect(enemy1.hp, previousHp4 - 3629);
+      expect(enemy2.hp, previousHp5 - 3230 - 865 - 1073 - 2559);
+      expect(enemy3.hp, previousHp6 - 3230);
+      expect(enemy1.battleBuff.allBuffs.length, previousBuffCount4 + 1);
+      expect(enemy2.battleBuff.allBuffs.length, previousBuffCount5 + 3);
+      expect(enemy3.battleBuff.allBuffs.length, previousBuffCount6 + 1);
     });
   });
 }

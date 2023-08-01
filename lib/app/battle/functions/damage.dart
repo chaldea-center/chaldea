@@ -28,12 +28,14 @@ class Damage {
     final BattleData battleData,
     final NiceFunction? damageFunction,
     final DataVals dataVals,
-    final Iterable<BattleServantData> targets,
-    final int chainPos,
-    final bool isTypeChain,
-    final bool isMightyChain,
-    final CardType firstCardType,
-  ) async {
+    final Iterable<BattleServantData> targets, {
+    final int chainPos = 1,
+    final bool isTypeChain = false,
+    final bool isMightyChain = false,
+    final CardType firstCardType = CardType.none,
+    final bool shouldTrigger = true,
+    final bool shouldDamageRelease = true,
+  }) async {
     final funcType = damageFunction?.funcType;
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.probabilityThreshold) {
@@ -49,6 +51,14 @@ class Damage {
     final checkHpRatio = checkHpRatioHigh || checkHpRatioLow;
     for (final target in targets) {
       await battleData.withTarget(target, () async {
+        if (shouldTrigger) {
+          await activator.activateBuffOnAction(battleData, BuffAction.functionCommandcodeattackBefore);
+          await activator.activateBuffOnActions(battleData, [
+            if (!currentCard.isNP) BuffAction.functionCommandattackBefore,
+            BuffAction.functionAttackBefore,
+          ]);
+        }
+
         final classAdvantage = await getClassRelation(battleData, activator, target);
 
         int? decideHp;
@@ -267,9 +277,11 @@ class Damage {
 
         battleData.changeStar(toModifier(Maths.sum(result.stars)));
 
-        target.battleBuff.activeList.removeWhere((buff) => buff.buff.script?.DamageRelease == 1);
-        // passive should also be checked?
-        target.battleBuff.passiveList.removeWhere((buff) => buff.buff.script?.DamageRelease == 1);
+        if (shouldDamageRelease) {
+          target.battleBuff.activeList.removeWhere((buff) => buff.buff.script?.DamageRelease == 1);
+          // passive should also be checked?
+          target.battleBuff.passiveList.removeWhere((buff) => buff.buff.script?.DamageRelease == 1);
+        }
 
         battleData.curFuncResults[target.uniqueId] = true;
 
@@ -283,6 +295,14 @@ class Damage {
           minResult: minResult,
           maxResult: maxResult,
         ));
+
+        if (shouldTrigger) {
+          await activator.activateBuffOnAction(battleData, BuffAction.functionCommandcodeattackAfter);
+          await activator.activateBuffOnActions(battleData, [
+            if (!currentCard.isNP) BuffAction.functionCommandattackAfter,
+            BuffAction.functionAttackAfter,
+          ]);
+        }
       });
     }
 

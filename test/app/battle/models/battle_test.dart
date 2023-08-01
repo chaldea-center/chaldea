@@ -577,9 +577,9 @@ void main() async {
     expect(tezcatlipoca.hp, 15535);
     expect(tezcatlipoca.np, 0);
     expect(battle.criticalStars, moreOrLessEquals(0, epsilon: 0.001));
-    await battle.activateMysticCodeSKill(0);
-    await battle.activateMysticCodeSKill(1);
-    await battle.activateMysticCodeSKill(2);
+    await battle.activateMysticCodeSkill(0);
+    await battle.activateMysticCodeSkill(1);
+    await battle.activateMysticCodeSkill(2);
     expect(tezcatlipoca.hp, 15535 + 3600);
     expect(tezcatlipoca.np, 1200);
     expect(battle.criticalStars, moreOrLessEquals(18, epsilon: 0.001));
@@ -1080,6 +1080,83 @@ void main() async {
     expect(morgan.skillInfoList[1].chargeTurn, 1);
     expect(morgan.skillInfoList[2].chargeTurn, 0);
     expect(battle.criticalStars, moreOrLessEquals(4.187, epsilon: 0.001)); // one enemy not killed
+  });
+
+  test('Check Duplicate vs Attack trigger functions', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(100200)
+        ..lv = 80
+        ..atkFou = 1000
+        ..skillLvs = [10, 10, 10]
+        ..setSkillStrengthenLvs([2, 2, 1])
+        ..tdLv = 5,
+      PlayerSvtData.id(404800)
+        ..lv = 90
+        ..tdLv = 5,
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final altriaAlter = battle.onFieldAllyServants[0]!;
+    await battle.activateSvtSkill(0, 0);
+    altriaAlter.np = 10000;
+    await battle.playerTurn([CombatAction(altriaAlter, altriaAlter.getNPCard(battle)!)]);
+    expect(altriaAlter.np, 4000);
+
+    final bakin = battle.onFieldAllyServants[1]!;
+    await battle.activateSvtSkill(1, 2);
+    bakin.np = 10000;
+    final previousBuffCount1 = altriaAlter.battleBuff.allBuffs.length;
+    final previousBuffCount2 = bakin.battleBuff.allBuffs.length;
+    await battle.playerTurn([CombatAction(bakin, bakin.getNPCard(battle)!)]);
+    expect(altriaAlter.battleBuff.allBuffs.length, previousBuffCount1 + 1);
+    expect(bakin.battleBuff.allBuffs.length, previousBuffCount2 + 1);
+  });
+
+  test('AOE NP vs AttackTriggerFunc with enemyOne target', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(2500900)
+        ..lv = 1
+        ..tdLv = 1,
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final koyan = battle.onFieldAllyServants[0]!;
+    await battle.activateSvtSkill(0, 2);
+    koyan.np = 10000;
+
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final enemy2 = battle.onFieldEnemies[1]!;
+    final enemy3 = battle.onFieldEnemies[2]!;
+    final previousBuffCount1 = enemy1.battleBuff.allBuffs.length;
+    final previousBuffCount2 = enemy2.battleBuff.allBuffs.length;
+    final previousBuffCount3 = enemy3.battleBuff.allBuffs.length;
+    await battle.playerTurn([CombatAction(koyan, koyan.getNPCard(battle)!)]);
+    expect(enemy1.battleBuff.allBuffs.length, previousBuffCount1 + 4);
+    expect(enemy2.battleBuff.allBuffs.length, previousBuffCount2 + 4);
+    expect(enemy3.battleBuff.allBuffs.length, previousBuffCount3 + 4);
+  });
+
+  test('OC NP vs AttackTriggerFunc', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(305400)
+        ..lv = 90
+        ..tdLv = 5
+        ..skillLvs = [10, 10, 10],
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final bhima = battle.onFieldAllyServants[0]!;
+    await battle.activateSvtSkill(0, 2);
+    bhima.np = 20000;
+
+    await battle.playerTurn([CombatAction(bhima, bhima.getNPCard(battle)!)]);
+    expect(battle.criticalStars, moreOrLessEquals(9.030, epsilon: 0.001));
   });
 
   group('Method tests', () {
