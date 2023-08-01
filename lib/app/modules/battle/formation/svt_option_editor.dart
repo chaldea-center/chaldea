@@ -1086,6 +1086,9 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     // svt.noblePhantasms = [if (support.td2 != null) support.td2!];
     playerSvtData.td = support.td2;
     playerSvtData.tdLv = (support.td2Lv ?? 1).clamp2(1, support.td2?.maxLv ?? 1);
+    // playerSvtData.appendLvs = support.classPassive.appendPassiveSkillLvs;
+    playerSvtData.appendLvs.fillRange(0, playerSvtData.appendLvs.length, 0);
+    playerSvtData.additionalPassives = support.detail?.classPassive.addPassive.toList() ?? svt.extraPassive.toList();
     // ce
     final ce = support.equips.getOrNull(0);
     playerSvtData
