@@ -58,6 +58,7 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
           tdDmgOptions: $checkedConvert(
               'tdDmgOptions', (v) => v == null ? null : TdDamageOptions.fromJson(Map<String, dynamic>.from(v as Map))),
           recordScreenshotJpg: $checkedConvert('recordScreenshotJpg', (v) => v as bool? ?? false),
+          recordScreenshotRatio: $checkedConvert('recordScreenshotRatio', (v) => v as int? ?? 10),
           recordShowTwoColumn: $checkedConvert('recordShowTwoColumn', (v) => v as bool? ?? false),
         );
         return val;
@@ -78,6 +79,7 @@ Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <Str
       'craftFilterData': instance.craftFilterData.toJson(),
       'tdDmgOptions': instance.tdDmgOptions.toJson(),
       'recordScreenshotJpg': instance.recordScreenshotJpg,
+      'recordScreenshotRatio': instance.recordScreenshotRatio,
       'recordShowTwoColumn': instance.recordShowTwoColumn,
     };
 

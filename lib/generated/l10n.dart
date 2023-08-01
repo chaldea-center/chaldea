@@ -8087,6 +8087,17 @@ class S {
     );
   }
 
+  /// `Resolution`
+  String get resolution {
+    return Intl.message(
+      'Resolution',
+      name: 'resolution',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Restart to take effect`
   String get restart_to_apply_changes {
     return Intl.message(

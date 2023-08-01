@@ -827,6 +827,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "reset_plan_shown": m12,
         "reset_skill_cd": MessageLookupByLibrary.simpleMessage("重置技能CD"),
         "resettable_digged_num": MessageLookupByLibrary.simpleMessage("重置所需发掘数目"),
+        "resolution": MessageLookupByLibrary.simpleMessage("分辨率"),
         "restart_to_apply_changes": MessageLookupByLibrary.simpleMessage("重启以使配置生效"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage("重启以更新应用，若更新失败，请手动复制source文件夹到destination"),
         "restore": MessageLookupByLibrary.simpleMessage("恢复"),

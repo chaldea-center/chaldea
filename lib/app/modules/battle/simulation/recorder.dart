@@ -226,6 +226,25 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
                 );
               },
             ),
+            StatefulBuilder(
+              builder: (context, update) {
+                return Padding(
+                  padding: const EdgeInsetsDirectional.only(start: 24),
+                  child: SliderWithPrefix(
+                    titled: true,
+                    label: S.current.resolution,
+                    min: 10,
+                    max: 30,
+                    value: db.settings.battleSim.recordScreenshotRatio.clamp(10, 30),
+                    valueFormatter: (v) => '×${v / 10}',
+                    onChange: (v) {
+                      db.settings.battleSim.recordScreenshotRatio = v.round();
+                      update(() {});
+                    },
+                  ),
+                );
+              },
+            ),
           ],
         );
       },
@@ -240,11 +259,12 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
     if (!EasyLoading.isShow) EasyLoading.show();
     try {
       final box = context.findRenderObject() as RenderBox?;
-      double ratio = 1.0;
+      double ratio = db.settings.battleSim.recordScreenshotRatio / 10;
+      ratio = ratio.clamp(1.0, 3.0);
       if (showTwoColumn && box != null && box.hasSize) {
         final width = box.size.width;
         if (width < 1024 && width > 0) {
-          ratio = 1024 / width;
+          ratio *= 1024 / width;
         }
       }
       Uint8List? data = await controller.capture(pixelRatio: ratio * MediaQuery.of(context).devicePixelRatio);

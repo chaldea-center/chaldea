@@ -729,6 +729,7 @@
   "reset_plan_shown": "Reset Plan {n}(Shown)",
   "reset_skill_cd": "Reset Skill CD",
   "resettable_digged_num": "Resettable Digged Num",
+  "resolution": "Resolution",
   "restart_to_apply_changes": "Restart to take effect",
   "restart_to_upgrade_hint": "Restart to upgrade. If the update fails, please manually copy the source folder to destination",
   "restore": "Restore",

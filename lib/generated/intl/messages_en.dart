@@ -868,6 +868,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "reset_plan_shown": m12,
         "reset_skill_cd": MessageLookupByLibrary.simpleMessage("Reset Skill CD"),
         "resettable_digged_num": MessageLookupByLibrary.simpleMessage("Resettable Digged Num"),
+        "resolution": MessageLookupByLibrary.simpleMessage("Resolution"),
         "restart_to_apply_changes": MessageLookupByLibrary.simpleMessage("Restart to take effect"),
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
             "Restart to upgrade. If the update fails, please manually copy the source folder to destination"),

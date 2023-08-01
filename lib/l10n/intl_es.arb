@@ -729,6 +729,7 @@
   "reset_plan_shown": "Restablecer plan {n} (Mostrado)",
   "reset_skill_cd": null,
   "resettable_digged_num": null,
+  "resolution": null,
   "restart_to_apply_changes": "Reiniciar para que surta efecto",
   "restart_to_upgrade_hint": "Reiniciar para actualizar. Si la actualización falla, copie manualmente la carpeta de origen en el destino",
   "restore": "Restaurar",

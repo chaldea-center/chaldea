@@ -729,6 +729,7 @@
   "reset_plan_shown": "プラン{n}をリセット(表示のみ)",
   "reset_skill_cd": null,
   "resettable_digged_num": null,
+  "resolution": null,
   "restart_to_apply_changes": "再起動して設定を有効にしてください",
   "restart_to_upgrade_hint": "再起動してアプリを更新します。更新に失敗した場合は、手動でsourceフォルダをdestinationへコピーペーストしてください",
   "restore": "復元",

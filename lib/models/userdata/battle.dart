@@ -69,6 +69,7 @@ class BattleSimSetting {
   TdDamageOptions tdDmgOptions;
 
   bool recordScreenshotJpg;
+  int recordScreenshotRatio; // 10-30
   bool recordShowTwoColumn;
 
   BattleSimSetting({
@@ -85,6 +86,7 @@ class BattleSimSetting {
     CraftFilterData? craftFilterData,
     TdDamageOptions? tdDmgOptions,
     this.recordScreenshotJpg = false,
+    this.recordScreenshotRatio = 10,
     this.recordShowTwoColumn = false,
   })  : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
         pingedSvts = pingedSvts ?? {215, 284, 314, 316, 357},
