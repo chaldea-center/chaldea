@@ -891,7 +891,6 @@ class BattleData {
 
                   if (action.cardData.isNP) {
                     await action.actor.activateNP(this, action.cardData, extraOvercharge);
-                    await action.actor.activateBuffOnAction(this, BuffAction.functionNpattack);
                     extraOvercharge += 1;
                   } else {
                     extraOvercharge = 0;
@@ -959,7 +958,6 @@ class BattleData {
 
                 if (action.cardData.isNP) {
                   await action.actor.activateNP(this, action.cardData, 0);
-                  await action.actor.activateBuffOnAction(this, BuffAction.functionNpattack);
                 } else {
                   await executeCommandCard(
                     actor: action.actor,

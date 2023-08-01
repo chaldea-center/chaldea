@@ -825,9 +825,49 @@ class BattleServantData {
         np = 0;
         npLineCount = 0;
         usedNpThisTurn = true;
-        await FunctionExecutor.executeFunctions(battleData, niceTD.functions, tdLv, overchargeLvl: overchargeLvl);
+        final functions = await updateNpFunctions(battleData, niceTD.functions);
+        await FunctionExecutor.executeFunctions(battleData, functions, tdLv, overchargeLvl: overchargeLvl);
       }
     });
+  }
+
+  Future<List<NiceFunction>> updateNpFunctions(final BattleData battleData, final List<NiceFunction> functions) async {
+    final List<NiceFunction> updatedFunctions = functions.toList();
+
+    for (final buff in collectBuffsPerAction(battleBuff.allBuffs, BuffAction.functionNpattack)) {
+      if (buff.param < 0 || buff.param >= updatedFunctions.length) {
+        // replace index not valid for current function list
+        continue;
+      }
+
+      final skillId = buff.vals.SkillID;
+      final skillLv = buff.vals.SkillLV;
+      if (skillId != null && skillLv != null && await buff.shouldActivateBuff(battleData, false)) {
+        BaseSkill? skill = db.gameData.baseSkills[skillId];
+        skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
+        final replacementFunction = skill?.functions.firstOrNull;
+        final selectedDataVal = replacementFunction?.svals.getOrNull(skillLv - 1);
+        if (skill == null || replacementFunction == null || selectedDataVal == null) {
+          battleData.battleLogger
+              .debug('Buff ID [${buff.buff.id}]: ${S.current.skill} [$skillId] ${S.current.battle_invalid}');
+          continue;
+        }
+
+        final List<DataVals> updatedSvalsList = List.generate(5, (_) => selectedDataVal);
+        final updatedReplacementFunction = NiceFunction.fromJson(replacementFunction.toJson());
+        updatedReplacementFunction.svals = updatedSvalsList;
+        updatedReplacementFunction.svals2 = updatedSvalsList;
+        updatedReplacementFunction.svals3 = updatedSvalsList;
+        updatedReplacementFunction.svals4 = updatedSvalsList;
+        updatedReplacementFunction.svals5 = updatedSvalsList;
+
+        updatedFunctions[buff.param] = updatedReplacementFunction;
+
+        buff.setUsed();
+      }
+    }
+
+    return updatedFunctions;
   }
 
   Future<int?> getConfirmationBuffValueOnAction(final BattleData battleData, final BuffAction buffAction) async {
