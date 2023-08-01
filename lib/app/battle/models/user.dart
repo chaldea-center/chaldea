@@ -429,6 +429,20 @@ class BattleTeamSetup {
 
   List<PlayerSvtData> get allSvts => [...onFieldSvtDataList, ...backupSvtDataList];
 
+  List<int> get allCardIds {
+    Set<int> ids = {};
+    for (final svt in allSvts) {
+      final svtId = svt.svt?.id;
+      if (svtId != null && svtId > 0) {
+        ids.add(svtId);
+        if (svt.ce != null) {
+          ids.add(svt.ce!.id);
+        }
+      }
+    }
+    return ids.toList();
+  }
+
   BattleTeamSetup copy() {
     return BattleTeamSetup(
       onFieldSvtDataList: onFieldSvtDataList.map((e) => e.copy()).toList(),

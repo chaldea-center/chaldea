@@ -181,6 +181,7 @@ class ChaldeaWorkerApi {
     required int questId,
     required int phase,
     required String enemyHash,
+    required List<int> svts,
     required String record,
   }) {
     return postCommon(
@@ -190,6 +191,7 @@ class ChaldeaWorkerApi {
         'questId': questId,
         'phase': phase,
         'enemyHash': enemyHash,
+        'svts': svts,
         'record': record,
       },
       options: addAuthHeader(),
