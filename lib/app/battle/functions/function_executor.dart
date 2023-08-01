@@ -74,6 +74,7 @@ class FunctionExecutor {
           func,
           skillLevel,
           overchargeLvl: overchargeLvl,
+          shouldDamageRelease: shouldDamageRelease(functions.getOrNull(index + 1)?.funcType),
           isPassive: isPassive,
           notActorFunction: notActorFunction,
           isCommandCode: isCommandCode,
@@ -94,10 +95,7 @@ class FunctionExecutor {
     final NiceFunction function,
     final int skillLevel, {
     final int overchargeLvl = 1,
-    final int chainPos = 1,
-    final bool isTypeChain = false,
-    final bool isMightyChain = false,
-    final CardType firstCardType = CardType.none,
+    final bool shouldDamageRelease = true,
     final bool isPassive = false,
     final bool notActorFunction = false,
     final bool isCommandCode = false,
@@ -269,16 +267,7 @@ class FunctionExecutor {
         case FuncType.damageNpRare:
         case FuncType.damageNpIndividualSum:
         case FuncType.damageNpStateIndividualFix:
-          await Damage.damage(
-            battleData,
-            function,
-            dataVals,
-            targets,
-            chainPos,
-            isTypeChain,
-            isMightyChain,
-            firstCardType,
-          );
+          await Damage.damage(battleData, function, dataVals, targets, shouldDamageRelease: shouldDamageRelease);
           break;
         case FuncType.instantDeath:
         case FuncType.forceInstantDeath:
@@ -752,6 +741,28 @@ class FunctionExecutor {
         }
         targets.retainWhere((svt) => previousExecutionResults[svt.uniqueId] == false);
       }
+    }
+  }
+
+  static bool shouldDamageRelease(final FuncType? nextFuncType) {
+    if (nextFuncType == null) {
+      return true;
+    }
+
+    switch (nextFuncType) {
+      case FuncType.damage:
+      case FuncType.damageNp:
+      case FuncType.damageNpHpratioLow:
+      case FuncType.damageNpHpratioHigh:
+      case FuncType.damageNpIndividual:
+      case FuncType.damageNpIndividualSum:
+      case FuncType.damageNpPierce:
+      case FuncType.damageNpRare:
+      case FuncType.damageNpStateIndividual:
+      case FuncType.damageNpStateIndividualFix:
+        return false;
+      default:
+        return true;
     }
   }
 }

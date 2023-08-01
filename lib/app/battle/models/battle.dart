@@ -1112,10 +1112,10 @@ class BattleData {
             null,
             cardDamage,
             targets,
-            chainPos,
-            isTypeChain,
-            isMightyChain,
-            firstCardType,
+            chainPos: chainPos,
+            isTypeChain: isTypeChain,
+            isMightyChain: isMightyChain,
+            firstCardType: firstCardType,
           );
         });
       });
