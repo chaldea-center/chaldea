@@ -1,3 +1,3 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-const String kCommitHash = "9cc61f";
-const int kCommitTimestamp = 1690746116;
+const String kCommitHash = "44f48c";
+const int kCommitTimestamp = 1690891510;
