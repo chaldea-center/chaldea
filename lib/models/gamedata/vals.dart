@@ -37,6 +37,14 @@ class DataVals {
     return hashCode == other.hashCode;
   }
 
+  void set(String key, dynamic value) {
+    if (value == null) {
+      _vals.remove(key);
+    } else {
+      _vals[key] = value;
+    }
+  }
+
   @override
   int get hashCode {
     return toJson().toString().hashCode;
@@ -136,6 +144,7 @@ class DataVals {
   int? get SetLimitCount => _vals['SetLimitCount'];
   int? get CheckEnemyFieldSpace => _vals['CheckEnemyFieldSpace'];
   int? get TriggeredFuncPosition => _vals['TriggeredFuncPosition'];
+  int? get TriggeredFuncPositionDisp => _vals['TriggeredFuncPositionDisp']; // custom, for display
   int? get DamageCount => _vals['DamageCount'];
   List<int>? get DamageRates => _list('DamageRates');
   List<int>? get OnPositions => _list('OnPositions');

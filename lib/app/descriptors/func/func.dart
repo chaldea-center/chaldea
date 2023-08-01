@@ -57,7 +57,7 @@ mixin FuncsDescriptor {
     LoopTargets? loops,
     Region? region,
   }) {
-    funcs = funcs.where((func) {
+    final funcs2 = funcs.where((func) {
       if (!showNone && func.funcType == FuncType.none) return false;
       if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy) {
         return true;
@@ -70,10 +70,20 @@ mixin FuncsDescriptor {
       children.add(SkillScriptDescriptor(script: script, actIndividuality: actIndiv));
     }
 
-    for (int index = 0; index < funcs.length; index++) {
+    for (int index = 0; index < funcs2.length; index++) {
+      final func = funcs2[index];
+      if (func.svals.isNotEmpty && func.svals[0].TriggeredFuncPosition != null) {
+        final pos = func.svals[0].TriggeredFuncPosition!;
+        if (pos >= 1 && pos <= funcs.length) {
+          final newPos = funcs2.indexOf(funcs[pos - 1]) + 1;
+          if (newPos >= 1 && newPos != pos) {
+            func.svals[0].set('TriggeredFuncPositionDisp', newPos);
+          }
+        }
+      }
       children.add(FuncDescriptor(
-        func: funcs[index],
-        lastFuncTarget: funcs.getOrNull(index - 1)?.funcTargetType,
+        func: func,
+        lastFuncTarget: index == 0 ? null : funcs2[index - 1].funcTargetType,
         level: level,
         padding: padding,
         showPlayer: showPlayer,
@@ -633,8 +643,28 @@ class FuncDescriptor extends StatelessWidget {
       );
     }
 
-    if ((vals?.Rate != null && vals!.Rate! < 0) || (vals?.UseRate != null && vals!.UseRate! < 0)) {
-      // print(vals.Rate);
+    if (vals?.TriggeredFuncPosition != null) {
+      final pos = vals!.TriggeredFuncPosition!;
+      final dispPos = vals.TriggeredFuncPositionDisp ?? pos;
+      final posAll = vals.TriggeredFuncPositionAll;
+      String hint;
+      if (posAll != null && posAll != 0) {
+        if (posAll == 1) {
+          hint = Transl.misc2('Function', 'TriggeredFuncPositionAll.success');
+        } else if (posAll == -1) {
+          hint = Transl.misc2('Function', 'TriggeredFuncPositionAll.fail');
+        } else {
+          hint = '${Transl.misc2('Function', 'TriggeredFuncPositionAll')} @$posAll';
+        }
+      } else {
+        hint = Transl.misc2('Function', 'TriggeredFuncPosition');
+      }
+      spans.insertAll(0, [
+        const TextSpan(text: '('),
+        ...SharedBuilder.replaceSpan(hint, '{0}', [TextSpan(text: dispPos.toString())]),
+        const TextSpan(text: ')'),
+      ]);
+    } else if (vals?.Rate != null && vals!.Rate! < 0) {
       final hint = Transl.misc2('Function', 'ifPrevFuncSucceed');
       spans.insert(0, TextSpan(text: '($hint)'));
     }
