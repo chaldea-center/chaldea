@@ -1039,7 +1039,7 @@ class BattleServantData {
         }
       }
 
-      battleData.checkBuffStatus();
+      battleData.checkActorStatus();
       return activated;
     });
   }
@@ -1121,13 +1121,17 @@ class BattleServantData {
     battleBuff.commandCodeList.clear();
   }
 
-  void checkBuffStatus(final BattleData battleData) {
+  void updateActState(final BattleData battleData) {
+    battleBuff.allBuffs.forEach((buff) {
+      buff.updateActState(battleData, this);
+    });
+  }
+
+  void useBuffOnce(final BattleData battleData) {
     battleBuff.allBuffs.forEach((buff) {
       if (buff.isUsed) {
         buff.useOnce();
       }
-
-      buff.updateActState(battleData, this);
     });
 
     battleBuff.passiveList.removeWhere((buff) => !buff.isActive);
@@ -1242,7 +1246,7 @@ class BattleServantData {
 
     battleBuff.turnPassParamAdd();
 
-    battleData.checkBuffStatus();
+    battleData.checkActorStatus();
   }
 
   Future<void> endOfYourTurn(final BattleData battleData) async {
@@ -1258,7 +1262,7 @@ class BattleServantData {
     final delayedFunctions = collectBuffsPerType(battleBuff.allBuffs, BuffType.delayFunction);
     await activateBuffs(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));
 
-    battleData.checkBuffStatus();
+    battleData.checkActorStatus();
   }
 
   Future<bool> activateGuts(final BattleData battleData) async {

@@ -175,31 +175,7 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                     onPressed: errorMsg != null
                         ? null
                         : () async {
-                            await widget.battleData.recordError(
-                              save: true,
-                              action: 'custom_skill-${skill?.id}',
-                              task: () async {
-                                await widget.battleData.withActivator(activator, () async {
-                                  widget.battleData.battleLogger.action(
-                                      '${activator == null ? S.current.battle_no_source : activator!.lBattleName}'
-                                      ' - ${S.current.skill}: ${skill!.lName.l}');
-                                  await BattleSkillInfoData.activateSkill(
-                                    widget.battleData,
-                                    skill!,
-                                    skillLv,
-                                    defaultToPlayer: isAlly,
-                                  );
-                                  widget.battleData.recorder.skill(
-                                    battleData: widget.battleData,
-                                    activator: activator,
-                                    skill: BattleSkillInfoData(skill!),
-                                    type: SkillInfoType.custom,
-                                    fromPlayer: isAlly,
-                                    uploadEligible: false,
-                                  );
-                                });
-                              },
-                            );
+                            await widget.battleData.activateCustomSkill(activator, skill!, skillLv, isAlly);
                             if (mounted) Navigator.of(context).pop(skill);
                           },
                     icon: const Icon(Icons.play_arrow_rounded),

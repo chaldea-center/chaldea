@@ -577,9 +577,9 @@ void main() async {
     expect(tezcatlipoca.hp, 15535);
     expect(tezcatlipoca.np, 0);
     expect(battle.criticalStars, moreOrLessEquals(0, epsilon: 0.001));
-    await battle.activateMysticCodeSKill(0);
-    await battle.activateMysticCodeSKill(1);
-    await battle.activateMysticCodeSKill(2);
+    await battle.activateMysticCodeSkill(0);
+    await battle.activateMysticCodeSkill(1);
+    await battle.activateMysticCodeSkill(2);
     expect(tezcatlipoca.hp, 15535 + 3600);
     expect(tezcatlipoca.np, 1200);
     expect(battle.criticalStars, moreOrLessEquals(18, epsilon: 0.001));

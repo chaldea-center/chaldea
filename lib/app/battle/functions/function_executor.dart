@@ -406,7 +406,7 @@ class FunctionExecutor {
     }
 
     battleData.updateLastFuncResults();
-    battleData.checkBuffStatus();
+    battleData.checkActorStatus();
     return true;
   }
 

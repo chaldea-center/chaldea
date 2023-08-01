@@ -934,7 +934,7 @@ class BattleRecordData {
     }
 
     if (servantIndex == null) {
-      await battleData.activateMysticCodeSKill(skillIndex!);
+      await battleData.activateMysticCodeSkill(skillIndex!);
     } else {
       await battleData.activateSvtSkill(servantIndex!, skillIndex!);
     }

@@ -379,6 +379,7 @@ class BattleData {
     for (final svt in nonnullAllies) {
       await svt.startOfMyTurn(this);
     }
+    useBuffOnce();
   }
 
   Future<bool> nextWave() async {
@@ -613,9 +614,9 @@ class BattleData {
     return nonnullActors.any((svt) => svt.uniqueId == actorUniqueId);
   }
 
-  void checkBuffStatus() {
+  void checkActorStatus() {
     nonnullActors.forEach((svt) {
-      svt.checkBuffStatus(this);
+      svt.updateActState(this);
     });
 
     for (int index = 0; index < onFieldAllyServants.length; index += 1) {
@@ -630,6 +631,12 @@ class BattleData {
     for (int index = 0; index < enemyDataList.length; index += 1) {
       enemyDataList[index]?.fieldIndex = onFieldEnemies.length + index;
     }
+  }
+
+  void useBuffOnce() {
+    nonnullActors.forEach((svt) {
+      svt.useBuffOnce(this);
+    });
   }
 
   bool canSelectNp(final int servantIndex) {
@@ -711,6 +718,7 @@ class BattleData {
       task: () async {
         recorder.skillActivation(this, servantIndex, skillIndex);
         await svt.activateSkill(this, skillIndex);
+        useBuffOnce();
       },
     );
   }
@@ -732,7 +740,7 @@ class BattleData {
     return true;
   }
 
-  Future<void> activateMysticCodeSKill(final int skillIndex) async {
+  Future<void> activateMysticCodeSkill(final int skillIndex) async {
     if (masterSkillInfo.length <= skillIndex || isBattleFinished) {
       return;
     }
@@ -751,6 +759,7 @@ class BattleData {
         await withActivator(null, () async {
           await masterSkillInfo[skillIndex].activate(this, effectiveness: effectiveness != 1000 ? effectiveness : null);
         });
+        useBuffOnce();
         recorder.skill(
           battleData: this,
           activator: null,
@@ -760,6 +769,35 @@ class BattleData {
           uploadEligible: true,
         );
         return;
+      },
+    );
+  }
+
+  Future<void> activateCustomSkill(final BattleServantData? actor, final BaseSkill skill, final int skillLv, final bool isAlly,) async {
+    await recordError(
+      save: true,
+      action: 'custom_skill-${skill.id}',
+      task: () async {
+        await withActivator(actor, () async {
+          battleLogger.action(
+              '${actor == null ? S.current.battle_no_source : actor.lBattleName}'
+                  ' - ${S.current.skill}: ${skill.lName.l}');
+          await BattleSkillInfoData.activateSkill(
+            this,
+            skill,
+            skillLv,
+            defaultToPlayer: isAlly,
+          );
+          useBuffOnce();
+          recorder.skill(
+            battleData: this,
+            activator: activator,
+            skill: BattleSkillInfoData(skill),
+            type: SkillInfoType.custom,
+            fromPlayer: isAlly,
+            uploadEligible: false,
+          );
+        });
       },
     );
   }
@@ -837,7 +875,8 @@ class BattleData {
             });
           }
 
-          checkBuffStatus();
+          checkActorStatus();
+          useBuffOnce();
         }
 
         // end player turn
@@ -904,7 +943,8 @@ class BattleData {
           });
         }
 
-        checkBuffStatus();
+        checkActorStatus();
+        useBuffOnce();
 
         enemyTargetIndex = previousTargetIndex;
         updateTargetedIndex();
@@ -964,6 +1004,7 @@ class BattleData {
       buff.turnPass();
     }
     fieldBuffs.removeWhere((buff) => !buff.isActive);
+    useBuffOnce();
   }
 
   Future<void> startEnemyTurn() async {
@@ -975,6 +1016,7 @@ class BattleData {
       }
       await svt.startOfMyTurn(this);
     }
+    useBuffOnce();
   }
 
   Future<void> endEnemyTurn() async {
@@ -992,6 +1034,7 @@ class BattleData {
       buff.turnPass();
     }
     fieldBuffs.removeWhere((buff) => !buff.isActive);
+    useBuffOnce();
     isPlayerTurn = true;
   }
 

@@ -182,7 +182,7 @@ void main() async {
       expect(battle.nonnullEnemies.length, 1);
 
       douman.np = 10000;
-      await battle.activateMysticCodeSKill(1);
+      await battle.activateMysticCodeSkill(1);
       await battle.playerTurn([CombatAction(douman, douman.getNPCard(battle)!)]);
       expect(enemy1.hp, 0);
       expect(battle.nonnullEnemies.length, 0);
@@ -290,19 +290,19 @@ void main() async {
       final lip = battle.onFieldAllyServants[0]!;
       await battle.withActivator(lip, () async {
         lip.hp = lip.getMaxHp(battle) ~/ 2 + 13;
-        lip.checkBuffStatus(battle);
+        lip.updateActState(battle);
         expect(await lip.getBuffValueOnAction(battle, BuffAction.atk), 1000);
 
         lip.hp = lip.getMaxHp(battle) ~/ 2 - 1;
-        lip.checkBuffStatus(battle);
+        lip.updateActState(battle);
         expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1300, epsilon: 1));
 
         lip.hp = lip.getMaxHp(battle) ~/ 4;
-        lip.checkBuffStatus(battle);
+        lip.updateActState(battle);
         expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1400, epsilon: 1));
 
         lip.hp = 1;
-        lip.checkBuffStatus(battle);
+        lip.updateActState(battle);
         expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1500, epsilon: 1));
       });
     });
