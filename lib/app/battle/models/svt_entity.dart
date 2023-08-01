@@ -414,6 +414,39 @@ class BattleServantData {
       ..traits = currentNP?.individuality ?? [];
   }
 
+  Future<CommandCardData?> getCounterNPCard(final BattleData battleData) async {
+    // buff.vals.UseTreasureDevice: =0 means skill?
+    final buff = battleBuff.allBuffs.lastWhereOrNull((buff) => buff.vals.CounterId != null);
+    if (buff == null) return null;
+
+    final tdId = buff.vals.CounterId ?? 0;
+    final tdLv = buff.vals.CounterLv ?? 1;
+    NiceTd? td = niceSvt?.noblePhantasms.firstWhereOrNull((e) => e.id == tdId);
+    td ??= await showEasyLoading(() => AtlasApi.td(tdId));
+    if (td == null) {
+      battleData.battleLogger.error('CounterId=$tdId not found');
+      return null;
+    }
+
+    if (isEnemy) {
+      return null;
+    }
+
+    final cardDetail = CardDetail(
+      attackIndividuality: td.individuality,
+      hitsDistribution: td.svt.damage,
+      attackType: td.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
+      attackNpRate: td.npGain.np[tdLv - 1],
+    );
+
+    return CommandCardData(td.svt.card, cardDetail)
+      ..isNP = true
+      ..td = td
+      ..counterBuff = buff
+      ..npGain = td.npGain.np[tdLv - 1]
+      ..traits = td.individuality;
+  }
+
   CommandCardData? getExtraCard(final BattleData battleData) {
     if (isEnemy) {
       return null;

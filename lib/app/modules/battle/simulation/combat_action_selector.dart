@@ -402,6 +402,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
   BattleData get battleData => widget.battleData;
 
   BattleServantData? selectedEnemy;
+  BattleServantData? selectedCounter;
   int? actionIndex;
   bool isCritical = false;
   Future<void> Function()? onConfirm;
@@ -417,7 +418,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
 
   @override
   Widget build(BuildContext context) {
-    if (battleData.targetedEnemy == null || battleData.targetedAlly == null) {
+    if (battleData.nonnullEnemies.isNotEmpty && (battleData.targetedEnemy == null || battleData.targetedAlly == null)) {
       return SimpleCancelOkDialog(
         title: Text(S.current.warning),
         content: Text(S.current.battle_targeted_required_hint),
@@ -586,6 +587,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
                   isCritical = false;
                 }
                 selectedEnemy = enemy;
+                selectedCounter = null;
               });
             },
           );
@@ -605,6 +607,34 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
         children: rowChildren.reversed.toList(),
       ));
     }
-    return children.reversed.toList();
+    children = children.reversed.toList();
+
+    List<Widget> counterActors = [];
+
+    for (final svt in battleData.nonnullAllies) {
+      final counterBuff = svt.battleBuff.allBuffs.lastWhereOrNull((buff) => buff.vals.CounterId != null);
+      if (counterBuff == null) continue;
+      counterActors.add(RadioListTile<BattleServantData>(
+        dense: true,
+        value: svt,
+        groupValue: selectedCounter,
+        title: Text(counterBuff.buff.lName.l),
+        subtitle: Text(svt.lBattleName),
+        secondary: svt.iconBuilder(context: context),
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        onChanged: (v) {
+          setState(() {
+            selectedCounter = svt;
+            selectedEnemy = null;
+            onConfirm = () => battleData.activateCounter(svt);
+          });
+        },
+      ));
+    }
+    if (counterActors.isNotEmpty && battleData.nonnullEnemies.isNotEmpty) {
+      children.insertAll(0, [...counterActors, kDefaultDivider]);
+    }
+
+    return children;
   }
 }

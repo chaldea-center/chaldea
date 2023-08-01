@@ -44,6 +44,7 @@ class CommandCardData {
   bool isCritical = false;
   CommandCode? commandCode;
   NiceTd? td;
+  BuffData? counterBuff;
   int? oc;
 
   CommandCardData(this.cardType, this.cardDetail);
@@ -58,6 +59,7 @@ class CommandCardData {
       ..isCritical = isCritical
       ..commandCode = commandCode
       ..td = td
+      ..counterBuff = counterBuff
       ..oc = oc;
   }
 }

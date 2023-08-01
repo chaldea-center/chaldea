@@ -14,6 +14,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../functions/function_executor.dart';
 import '../interactions/_delegate.dart';
 import '../interactions/tailored_execution_confirm.dart';
 import 'buff.dart';
@@ -904,12 +905,12 @@ class BattleData {
                       isPlayer: true,
                     );
                   }
-                  for (final svt in nonnullEnemies) {
-                    if (svt.attacked) {
+                  for (final enemy in nonnullEnemies) {
+                    if (enemy.attacked) {
                       await withTarget(action.actor, () async {
-                        await svt.activateBuffOnAction(this, BuffAction.functionDamage);
+                        await enemy.activateBuffOnAction(this, BuffAction.functionDamage);
                       });
-                      svt.attacked = false;
+                      enemy.attacked = false;
                     }
                   }
                   recorder.endPlayerCard(action.actor, action.cardData);
@@ -935,6 +936,48 @@ class BattleData {
         }
 
         updateTargetedIndex();
+      },
+    );
+  }
+
+  Future<void> activateCounter(BattleServantData svt) async {
+    return recordError(
+      save: true,
+      action: 'counter-td',
+      task: () async {
+        if (svt.isEnemy) {
+          battleLogger.error('Skip Enemy Counter NP');
+          return;
+        }
+        final tdCard = await svt.getCounterNPCard(this);
+        if (tdCard == null) return;
+        final action = CombatAction(svt, tdCard);
+        if (nonnullEnemies.isEmpty) return;
+        recorder.initiateAttacks(this, [action]);
+        await withAction(() async {
+          await withActivator(svt, () async {
+            await withCard(action.cardData, () async {
+              if (!onFieldAllyServants.contains(action.actor) || action.isValid(this)) return;
+              recorder.startPlayerCard(action.actor, action.cardData);
+              final td = action.cardData.td!, buff = action.cardData.counterBuff!;
+              await FunctionExecutor.executeFunctions(this, td.functions, buff.vals.CounterLv ?? 1,
+                  overchargeLvl: buff.vals.CounterOc ?? 1);
+
+              for (final enemy in nonnullEnemies) {
+                if (enemy.attacked) {
+                  await withTarget(action.actor, () async {
+                    await enemy.activateBuffOnAction(this, BuffAction.functionDamage);
+                  });
+                  enemy.attacked = false;
+                }
+              }
+              recorder.endPlayerCard(action.actor, action.cardData);
+              await removeDeadActors();
+            });
+
+            checkActorStatus();
+          });
+        });
       },
     );
   }
