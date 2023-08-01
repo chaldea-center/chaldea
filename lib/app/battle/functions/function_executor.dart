@@ -44,48 +44,48 @@ class FunctionExecutor {
     final int? effectiveness,
     final bool defaultToPlayer = true,
   }) async {
-    battleData.uniqueIdToLastFuncResultStack.clear();
+    await battleData.withFunctions(() async {
+      Map<int, List<NiceFunction>> actSets = {};
+      for (final func in functions) {
+        if (!validateFunctionTargetTeam(func, battleData.activator?.isPlayer ?? defaultToPlayer)) continue;
 
-    Map<int, List<NiceFunction>> actSets = {};
-    for (final func in functions) {
-      if (!validateFunctionTargetTeam(func, battleData.activator?.isPlayer ?? defaultToPlayer)) continue;
+        final dataVal = FunctionExecutor.getDataVals(func, skillLevel, overchargeLvl);
+        if ((dataVal.ActSet ?? 0) != 0 && (dataVal.ActSetWeight ?? 0) > 0) {
+          actSets.putIfAbsent(dataVal.ActSet!, () => []).add(func);
+        }
+      }
+      int? selectedActSet;
+      if (battleData.delegate?.actWeight != null) {
+        selectedActSet = await battleData.delegate!.actWeight!(battleData.activator);
+      } else if (actSets.isNotEmpty && battleData.mounted) {
+        selectedActSet = await FuncActSetSelector.show(battleData, actSets);
+        battleData.replayDataRecord.actWeightSelections.add(selectedActSet);
+      }
+      for (int index = 0; index < functions.length; index += 1) {
+        NiceFunction func = functions[index];
+        final dataVal = FunctionExecutor.getDataVals(func, skillLevel, overchargeLvl);
+        if ((dataVal.ActSet ?? 0) != 0 && dataVal.ActSet != selectedActSet) {
+          battleData.uniqueIdToFuncResultsList.add(null);
+          continue;
+        }
 
-      final dataVal = FunctionExecutor.getDataVals(func, skillLevel, overchargeLvl);
-      if ((dataVal.ActSet ?? 0) != 0 && (dataVal.ActSetWeight ?? 0) > 0) {
-        actSets.putIfAbsent(dataVal.ActSet!, () => []).add(func);
+        final updatedResult = await FunctionExecutor.executeFunction(
+          battleData,
+          func,
+          skillLevel,
+          overchargeLvl: overchargeLvl,
+          isPassive: isPassive,
+          notActorFunction: notActorFunction,
+          isCommandCode: isCommandCode,
+          selectedActionIndex: selectedActionIndex,
+          effectiveness: effectiveness,
+          defaultToPlayer: defaultToPlayer,
+        );
+        if (!updatedResult) {
+          battleData.uniqueIdToFuncResultsList.add(null);
+        }
       }
-    }
-    int? selectedActSet;
-    if (battleData.delegate?.actWeight != null) {
-      selectedActSet = await battleData.delegate!.actWeight!(battleData.activator);
-    } else if (actSets.isNotEmpty && battleData.mounted) {
-      selectedActSet = await FuncActSetSelector.show(battleData, actSets);
-      battleData.replayDataRecord.actWeightSelections.add(selectedActSet);
-    }
-    for (int index = 0; index < functions.length; index += 1) {
-      NiceFunction func = functions[index];
-      final dataVal = FunctionExecutor.getDataVals(func, skillLevel, overchargeLvl);
-      if ((dataVal.ActSet ?? 0) != 0 && dataVal.ActSet != selectedActSet) {
-        battleData.uniqueIdToLastFuncResultStack.add(null);
-        continue;
-      }
-
-      final updatedResult = await FunctionExecutor.executeFunction(
-        battleData,
-        func,
-        skillLevel,
-        overchargeLvl: overchargeLvl,
-        isPassive: isPassive,
-        notActorFunction: notActorFunction,
-        isCommandCode: isCommandCode,
-        selectedActionIndex: selectedActionIndex,
-        effectiveness: effectiveness,
-        defaultToPlayer: defaultToPlayer,
-      );
-      if (!updatedResult) {
-        battleData.uniqueIdToLastFuncResultStack.add(null);
-      }
-    }
+    });
   }
 
   /// Return value is whether the uniqueIdToFuncResultMap is updated or not
@@ -152,262 +152,264 @@ class FunctionExecutor {
       defaultToPlayer: defaultToPlayer,
     );
 
-    battleData.curFuncResults.clear();
-    for (final target in targets) {
-      battleData.curFuncResults[target.uniqueId] = false;
-    }
+    return await battleData.withFunction(() async {
+      for (final target in targets) {
+        battleData.curFuncResults[target.uniqueId] = false;
+      }
 
-    if (!funcQuestTvalsMatch) {
-      battleData.updateLastFuncResults();
-      battleData.battleLogger.function('${S.current.battle_require_field_traits} ${S.current.failed}');
-      return true;
-    }
+      if (!funcQuestTvalsMatch) {
+        battleData.updateLastFuncResults(function.funcId);
+        battleData.battleLogger.function('${S.current.battle_require_field_traits} ${S.current.failed}');
+        return true;
+      }
 
-    if (dataVals.StarHigher != null && battleData.criticalStars < dataVals.StarHigher!) {
-      battleData.updateLastFuncResults();
-      battleData.battleLogger.function('${S.current.critical_star} ${battleData.criticalStars.toStringAsFixed(3)} < '
-          '${dataVals.StarHigher}');
-      return true;
-    }
+      if (dataVals.StarHigher != null && battleData.criticalStars < dataVals.StarHigher!) {
+        battleData.updateLastFuncResults(function.funcId);
+        battleData.battleLogger.function('${S.current.critical_star} ${battleData.criticalStars.toStringAsFixed(3)} < '
+            '${dataVals.StarHigher}');
+        return true;
+      }
 
-    if (!triggeredPositionCheck(battleData, dataVals) || !triggeredPositionAllCheck(battleData, dataVals)) {
-      battleData.updateLastFuncResults();
-      return true;
-    }
+      if (!triggeredPositionCheck(battleData, dataVals) || !triggeredPositionAllCheck(battleData, dataVals)) {
+        battleData.updateLastFuncResults(function.funcId);
+        return true;
+      }
 
-    updateTargets(battleData, function, dataVals, targets);
+      updateTargets(battleData, function, dataVals, targets);
 
-    List<NiceTd?> tdSelections = [];
-    if (function.funcTargetType == FuncTargetType.commandTypeSelfTreasureDevice) {
-      for (final svt in targets) {
-        NiceTd? tdSelection;
-        final NiceTd? baseTd = svt.playerSvtData?.td;
-        if (baseTd != null) {
-          if (baseTd.script != null && baseTd.script!.tdTypeChangeIDs != null) {
-            final List<NiceTd> tds = svt.getTdsById(baseTd.script!.tdTypeChangeIDs!);
-            if (tds.isNotEmpty) {
-              if (battleData.delegate?.tdTypeChange != null) {
-                tdSelection = await battleData.delegate!.tdTypeChange!(activator, tds);
-              } else if (battleData.mounted) {
-                tdSelection = await TdTypeChangeSelector.show(battleData, tds);
-                if (tdSelection != null) {
-                  battleData.replayDataRecord.tdTypeChangeIndexes.add(tds.indexOf(tdSelection));
+      List<NiceTd?> tdSelections = [];
+      if (function.funcTargetType == FuncTargetType.commandTypeSelfTreasureDevice) {
+        for (final svt in targets) {
+          NiceTd? tdSelection;
+          final NiceTd? baseTd = svt.playerSvtData?.td;
+          if (baseTd != null) {
+            if (baseTd.script != null && baseTd.script!.tdTypeChangeIDs != null) {
+              final List<NiceTd> tds = svt.getTdsById(baseTd.script!.tdTypeChangeIDs!);
+              if (tds.isNotEmpty) {
+                if (battleData.delegate?.tdTypeChange != null) {
+                  tdSelection = await battleData.delegate!.tdTypeChange!(activator, tds);
+                } else if (battleData.mounted) {
+                  tdSelection = await TdTypeChangeSelector.show(battleData, tds);
+                  if (tdSelection != null) {
+                    battleData.replayDataRecord.tdTypeChangeIndexes.add(tds.indexOf(tdSelection));
+                  }
                 }
               }
             }
           }
+          tdSelections.add(tdSelection);
         }
-        tdSelections.add(tdSelection);
       }
-    }
 
-    battleData.curFunc = function;
-    switch (function.funcType) {
-      case FuncType.absorbNpturn:
-      case FuncType.gainNpFromTargets:
-        await GainNpFromTargets.gainNpFromTargets(battleData, dataVals, targets);
-        break;
-      case FuncType.addState:
-      case FuncType.addStateShort:
-        await AddState.addState(
-          battleData,
-          function.buff!,
-          function.funcId,
-          dataVals,
-          targets,
-          tdSelections: tdSelections,
-          isPassive: isPassive,
-          isShortBuff: function.funcType == FuncType.addStateShort,
-          isCommandCode: isCommandCode,
-          notActorPassive: notActorFunction,
-        );
-        break;
-      case FuncType.subState:
-        await SubState.subState(battleData, function.traitVals, dataVals, targets);
-        break;
-      case FuncType.moveState:
-        await MoveState.moveState(battleData, dataVals, targets);
-        break;
-      case FuncType.addFieldChangeToField:
-        AddFieldChangeToField.addFieldChangeToField(battleData, function.buff!, dataVals, targets);
-        break;
-      case FuncType.gainNp:
-      case FuncType.lossNp:
-        GainNP.gainNP(battleData, dataVals, targets, isNegative: function.funcType == FuncType.lossNp);
-        break;
-      case FuncType.gainNpIndividualSum:
-      case FuncType.gainNpBuffIndividualSum:
-        await GainNP.gainNpPerIndividual(
-          battleData,
-          dataVals,
-          targets,
-          targetTraits: function.traitVals,
-          onlyCheckBuff: function.funcType == FuncType.gainNpBuffIndividualSum,
-        );
-        break;
-      case FuncType.hastenNpturn:
-      case FuncType.delayNpturn:
-        HastenNpturn.hastenNpturn(battleData, dataVals, targets, isNegative: function.funcType == FuncType.delayNpturn);
-        break;
-      case FuncType.gainStar:
-      case FuncType.lossStar:
-        GainStar.gainStar(battleData, dataVals, targets: targets, isNegative: function.funcType == FuncType.lossStar);
-        break;
-      case FuncType.shortenSkill:
-        ShortenSkill.shortenSkill(battleData, dataVals, targets);
-        break;
-      case FuncType.extendSkill:
-        ShortenSkill.extendSkill(battleData, dataVals, targets);
-        break;
-      case FuncType.damage:
-      case FuncType.damageNp:
-      case FuncType.damageNpIndividual:
-      case FuncType.damageNpPierce:
-      case FuncType.damageNpHpratioLow:
-      case FuncType.damageNpHpratioHigh: // no real example yet
-      case FuncType.damageNpRare:
-      case FuncType.damageNpIndividualSum:
-      case FuncType.damageNpStateIndividualFix:
-        await Damage.damage(
-          battleData,
-          function,
-          dataVals,
-          targets,
-          chainPos,
-          isTypeChain,
-          isMightyChain,
-          firstCardType,
-        );
-        break;
-      case FuncType.instantDeath:
-      case FuncType.forceInstantDeath:
-        await InstantDeath.instantDeath(
-          battleData,
-          dataVals,
-          targets,
-          force: function.funcType == FuncType.forceInstantDeath,
-        );
-        break;
-      case FuncType.gainHp:
-      case FuncType.gainHpPer:
-      case FuncType.lossHp:
-      case FuncType.lossHpSafe:
-      case FuncType.lossHpPer:
-      case FuncType.lossHpPerSafe:
-        await GainHP.gainHP(battleData, dataVals, targets, function.funcType);
-        break;
-      case FuncType.gainHpFromTargets:
-        await GainHpFromTargets.gainHpFromTargets(battleData, dataVals, targets);
-        break;
-      case FuncType.transformServant:
-        await TransformServant.transformServant(battleData, dataVals, targets);
-        break;
-      case FuncType.shiftServant:
-        await ShiftServant.skillShift(battleData, dataVals, targets);
-        break;
-      case FuncType.changeServant:
-        await ShiftServant.changeServant(battleData, dataVals, activator);
-        break;
-      case FuncType.callServant:
-        await CallServant.callServant(battleData, dataVals, activator);
-        break;
-      case FuncType.moveToLastSubmember:
-        MoveToLastSubMember.moveToLastSubMember(battleData, dataVals, targets);
-        break;
-      case FuncType.replaceMember:
-        await ReplaceMember.replaceMember(battleData, dataVals);
-        break;
-      case FuncType.cardReset:
-        battleData.nonnullAllies.forEach((svt) {
-          svt.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
-        });
-        for (final target in targets) {
-          battleData.curFuncResults[target.uniqueId] = true;
-        }
-        break;
-      case FuncType.fixCommandcard:
-      case FuncType.displayBuffstring:
+      battleData.curFunc = function;
+      switch (function.funcType) {
+        case FuncType.absorbNpturn:
+        case FuncType.gainNpFromTargets:
+          await GainNpFromTargets.gainNpFromTargets(battleData, dataVals, targets);
+          break;
+        case FuncType.addState:
+        case FuncType.addStateShort:
+          await AddState.addState(
+            battleData,
+            function.buff!,
+            function.funcId,
+            dataVals,
+            targets,
+            tdSelections: tdSelections,
+            isPassive: isPassive,
+            isShortBuff: function.funcType == FuncType.addStateShort,
+            isCommandCode: isCommandCode,
+            notActorPassive: notActorFunction,
+          );
+          break;
+        case FuncType.subState:
+          await SubState.subState(battleData, function.traitVals, dataVals, targets);
+          break;
+        case FuncType.moveState:
+          await MoveState.moveState(battleData, dataVals, targets);
+          break;
+        case FuncType.addFieldChangeToField:
+          AddFieldChangeToField.addFieldChangeToField(battleData, function.buff!, dataVals, targets);
+          break;
+        case FuncType.gainNp:
+        case FuncType.lossNp:
+          GainNP.gainNP(battleData, dataVals, targets, isNegative: function.funcType == FuncType.lossNp);
+          break;
+        case FuncType.gainNpIndividualSum:
+        case FuncType.gainNpBuffIndividualSum:
+          await GainNP.gainNpPerIndividual(
+            battleData,
+            dataVals,
+            targets,
+            targetTraits: function.traitVals,
+            onlyCheckBuff: function.funcType == FuncType.gainNpBuffIndividualSum,
+          );
+          break;
+        case FuncType.hastenNpturn:
+        case FuncType.delayNpturn:
+          HastenNpturn.hastenNpturn(
+              battleData, dataVals, targets, isNegative: function.funcType == FuncType.delayNpturn);
+          break;
+        case FuncType.gainStar:
+        case FuncType.lossStar:
+          GainStar.gainStar(battleData, dataVals, targets: targets, isNegative: function.funcType == FuncType.lossStar);
+          break;
+        case FuncType.shortenSkill:
+          ShortenSkill.shortenSkill(battleData, dataVals, targets);
+          break;
+        case FuncType.extendSkill:
+          ShortenSkill.extendSkill(battleData, dataVals, targets);
+          break;
+        case FuncType.damage:
+        case FuncType.damageNp:
+        case FuncType.damageNpIndividual:
+        case FuncType.damageNpPierce:
+        case FuncType.damageNpHpratioLow:
+        case FuncType.damageNpHpratioHigh: // no real example yet
+        case FuncType.damageNpRare:
+        case FuncType.damageNpIndividualSum:
+        case FuncType.damageNpStateIndividualFix:
+          await Damage.damage(
+            battleData,
+            function,
+            dataVals,
+            targets,
+            chainPos,
+            isTypeChain,
+            isMightyChain,
+            firstCardType,
+          );
+          break;
+        case FuncType.instantDeath:
+        case FuncType.forceInstantDeath:
+          await InstantDeath.instantDeath(
+            battleData,
+            dataVals,
+            targets,
+            force: function.funcType == FuncType.forceInstantDeath,
+          );
+          break;
+        case FuncType.gainHp:
+        case FuncType.gainHpPer:
+        case FuncType.lossHp:
+        case FuncType.lossHpSafe:
+        case FuncType.lossHpPer:
+        case FuncType.lossHpPerSafe:
+          await GainHP.gainHP(battleData, dataVals, targets, function.funcType);
+          break;
+        case FuncType.gainHpFromTargets:
+          await GainHpFromTargets.gainHpFromTargets(battleData, dataVals, targets);
+          break;
+        case FuncType.transformServant:
+          await TransformServant.transformServant(battleData, dataVals, targets);
+          break;
+        case FuncType.shiftServant:
+          await ShiftServant.skillShift(battleData, dataVals, targets);
+          break;
+        case FuncType.changeServant:
+          await ShiftServant.changeServant(battleData, dataVals, activator);
+          break;
+        case FuncType.callServant:
+          await CallServant.callServant(battleData, dataVals, activator);
+          break;
+        case FuncType.moveToLastSubmember:
+          MoveToLastSubMember.moveToLastSubMember(battleData, dataVals, targets);
+          break;
+        case FuncType.replaceMember:
+          await ReplaceMember.replaceMember(battleData, dataVals);
+          break;
+        case FuncType.cardReset:
+          battleData.nonnullAllies.forEach((svt) {
+            svt.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
+          });
+          for (final target in targets) {
+            battleData.curFuncResults[target.uniqueId] = true;
+          }
+          break;
+        case FuncType.fixCommandcard:
+        case FuncType.displayBuffstring:
         // do nothing
-        for (final target in targets) {
-          battleData.curFuncResults[target.uniqueId] = true;
-        }
-        break;
-      case FuncType.shortenBuffturn:
-      case FuncType.extendBuffturn:
-      case FuncType.shortenBuffcount:
-      case FuncType.extendBuffcount:
-        BuffTurnCount.changeBuffValue(battleData, function.funcType, dataVals, targets);
-        break;
-      case FuncType.updateEntryPositions:
-        UpdateEntryPositions.updateEntryPositions(battleData, dataVals);
-        break;
-      case FuncType.updateEnemyEntryMaxCountEachTurn:
-      // TODO: unimplemented FuncTypes
-      case FuncType.damageValue:
-      case FuncType.damageNpCounter:
-      case FuncType.damageValueSafe:
-      case FuncType.damageNpSafe:
-      // ↑↑↑ should be implemented ↑↑↑
-      case FuncType.shortenUserEquipSkill:
-      case FuncType.extendUserEquipSkill:
-      case FuncType.subFieldBuff:
-      case FuncType.damageNpAndCheckIndividuality:
-      case FuncType.damageNpStateIndividual:
-      case FuncType.releaseState:
-      case FuncType.ptShuffle:
-      case FuncType.changeBg:
-      case FuncType.withdraw:
-      case FuncType.resurrection:
-      case FuncType.quickChangeBg:
-      case FuncType.overwriteDeadType:
-      case FuncType.forceAllBuffNoact:
-      case FuncType.breakGaugeUp:
-      case FuncType.breakGaugeDown:
-      case FuncType.movePosition:
-      case FuncType.revival:
-      case FuncType.changeBgmCostume:
-      case FuncType.func126:
-      case FuncType.func127:
-      case FuncType.lastUsePlayerSkillCopy:
-        battleData.battleLogger.debug('${S.current.not_implemented}: ${function.funcType}, '
-            'Function ID: ${function.funcId}, '
-            'Activator: ${activator?.lBattleName}');
-        break;
-      case FuncType.unknown:
-      case FuncType.none:
-      case FuncType.changeBgm:
-      case FuncType.expUp:
-      case FuncType.qpUp:
-      case FuncType.dropUp:
-      case FuncType.friendPointUp:
-      case FuncType.eventDropUp:
-      case FuncType.eventDropRateUp:
-      case FuncType.eventPointUp:
-      case FuncType.eventPointRateUp:
-      case FuncType.qpDropUp:
-      case FuncType.servantFriendshipUp:
-      case FuncType.userEquipExpUp:
-      case FuncType.classDropUp:
-      case FuncType.enemyEncountCopyRateUp:
-      case FuncType.enemyEncountRateUp:
-      case FuncType.enemyProbDown:
-      case FuncType.getRewardGift:
-      case FuncType.sendSupportFriendPoint:
-      case FuncType.friendPointUpDuplicate:
-      case FuncType.buddyPointUp:
-      case FuncType.eventFortificationPointUp:
-      case FuncType.setQuestRouteFlag:
-      case FuncType.setSystemAliveFlag:
-      case FuncType.changeEnemyMasterFace:
-        battleData.battleLogger.debug('${S.current.skip}: ${function.funcType}, '
-            'Function ID: ${function.funcId}, '
-            'Activator: ${activator?.lBattleName}');
-        break;
-    }
+          for (final target in targets) {
+            battleData.curFuncResults[target.uniqueId] = true;
+          }
+          break;
+        case FuncType.shortenBuffturn:
+        case FuncType.extendBuffturn:
+        case FuncType.shortenBuffcount:
+        case FuncType.extendBuffcount:
+          BuffTurnCount.changeBuffValue(battleData, function.funcType, dataVals, targets);
+          break;
+        case FuncType.updateEntryPositions:
+          UpdateEntryPositions.updateEntryPositions(battleData, dataVals);
+          break;
+        case FuncType.updateEnemyEntryMaxCountEachTurn:
+        // TODO: unimplemented FuncTypes
+        case FuncType.damageValue:
+        case FuncType.damageNpCounter:
+        case FuncType.damageValueSafe:
+        case FuncType.damageNpSafe:
+        // ↑↑↑ should be implemented ↑↑↑
+        case FuncType.shortenUserEquipSkill:
+        case FuncType.extendUserEquipSkill:
+        case FuncType.subFieldBuff:
+        case FuncType.damageNpAndCheckIndividuality:
+        case FuncType.damageNpStateIndividual:
+        case FuncType.releaseState:
+        case FuncType.ptShuffle:
+        case FuncType.changeBg:
+        case FuncType.withdraw:
+        case FuncType.resurrection:
+        case FuncType.quickChangeBg:
+        case FuncType.overwriteDeadType:
+        case FuncType.forceAllBuffNoact:
+        case FuncType.breakGaugeUp:
+        case FuncType.breakGaugeDown:
+        case FuncType.movePosition:
+        case FuncType.revival:
+        case FuncType.changeBgmCostume:
+        case FuncType.func126:
+        case FuncType.func127:
+        case FuncType.lastUsePlayerSkillCopy:
+          battleData.battleLogger.debug('${S.current.not_implemented}: ${function.funcType}, '
+              'Function ID: ${function.funcId}, '
+              'Activator: ${activator?.lBattleName}');
+          break;
+        case FuncType.unknown:
+        case FuncType.none:
+        case FuncType.changeBgm:
+        case FuncType.expUp:
+        case FuncType.qpUp:
+        case FuncType.dropUp:
+        case FuncType.friendPointUp:
+        case FuncType.eventDropUp:
+        case FuncType.eventDropRateUp:
+        case FuncType.eventPointUp:
+        case FuncType.eventPointRateUp:
+        case FuncType.qpDropUp:
+        case FuncType.servantFriendshipUp:
+        case FuncType.userEquipExpUp:
+        case FuncType.classDropUp:
+        case FuncType.enemyEncountCopyRateUp:
+        case FuncType.enemyEncountRateUp:
+        case FuncType.enemyProbDown:
+        case FuncType.getRewardGift:
+        case FuncType.sendSupportFriendPoint:
+        case FuncType.friendPointUpDuplicate:
+        case FuncType.buddyPointUp:
+        case FuncType.eventFortificationPointUp:
+        case FuncType.setQuestRouteFlag:
+        case FuncType.setSystemAliveFlag:
+        case FuncType.changeEnemyMasterFace:
+          battleData.battleLogger.debug('${S.current.skip}: ${function.funcType}, '
+              'Function ID: ${function.funcId}, '
+              'Activator: ${activator?.lBattleName}');
+          break;
+      }
 
-    battleData.updateLastFuncResults();
-    battleData.checkActorStatus();
-    return true;
+      battleData.updateLastFuncResults(function.funcId);
+      battleData.checkActorStatus();
+      return true;
+    });
   }
 
   static bool validateFunctionTargetTeam(
@@ -638,7 +640,7 @@ class FunctionExecutor {
       return true;
     }
 
-    final results = battleData.uniqueIdToLastFuncResultStack.getOrNull(triggeredFuncPosition.abs() - 1);
+    final results = battleData.uniqueIdToFuncResultsList.getOrNull(triggeredFuncPosition.abs() - 1);
     if (triggeredFuncPosition > 0) {
       if (results == null) {
         return false;
@@ -671,7 +673,7 @@ class FunctionExecutor {
       return true;
     }
 
-    final results = battleData.uniqueIdToLastFuncResultStack.getOrNull(triggeredFuncPositionAll.abs() - 1);
+    final results = battleData.uniqueIdToFuncResultsList.getOrNull(triggeredFuncPositionAll.abs() - 1);
     if (triggeredFuncPositionAll > 0) {
       if (results == null) {
         return false;
