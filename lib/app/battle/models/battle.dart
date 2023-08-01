@@ -888,10 +888,8 @@ class BattleData {
                   recorder.startPlayerCard(action.actor, action.cardData);
 
                   if (action.cardData.isNP) {
-                    await action.actor.activateBuffOnAction(this, BuffAction.functionAttackBefore);
                     await action.actor.activateNP(this, action.cardData, extraOvercharge);
                     await action.actor.activateBuffOnAction(this, BuffAction.functionNpattack);
-                    await action.actor.activateBuffOnAction(this, BuffAction.functionAttackAfter);
                     extraOvercharge += 1;
                   } else {
                     extraOvercharge = 0;
@@ -958,10 +956,8 @@ class BattleData {
                 recorder.startPlayerCard(action.actor, action.cardData);
 
                 if (action.cardData.isNP) {
-                  await action.actor.activateBuffOnAction(this, BuffAction.functionAttackBefore);
                   await action.actor.activateNP(this, action.cardData, 0);
                   await action.actor.activateBuffOnAction(this, BuffAction.functionNpattack);
-                  await action.actor.activateBuffOnAction(this, BuffAction.functionAttackAfter);
                 } else {
                   await executeCommandCard(
                     actor: action.actor,
@@ -1098,14 +1094,8 @@ class BattleData {
       await actor.activateCommandCode(this, card.cardIndex);
     }
 
-    await actor.activateBuffOnAction(this, BuffAction.functionCommandcodeattackBefore);
-    await actor.activateBuffOnActions(this, [
-      BuffAction.functionCommandattackBefore,
-      BuffAction.functionAttackBefore,
-    ]);
     await withFunctions(() async {
       await withFunction(() async {
-
         final List<BattleServantData> targets = [];
         await withActivator(actor, () async {
           if (card.cardDetail.attackType == CommandCardAttackType.all) {
@@ -1113,6 +1103,7 @@ class BattleData {
           } else {
             targets.add(isPlayer ? targetedEnemy! : targetedAlly!);
           }
+
           await Damage.damage(
             this,
             null,
@@ -1126,12 +1117,6 @@ class BattleData {
         });
       });
     });
-
-    await actor.activateBuffOnAction(this, BuffAction.functionCommandcodeattackAfter);
-    await actor.activateBuffOnActions(this, [
-      BuffAction.functionCommandattackAfter,
-      BuffAction.functionAttackAfter,
-    ]);
 
     actor.clearCommandCodeBuffs();
   }

@@ -49,6 +49,12 @@ class Damage {
     final checkHpRatio = checkHpRatioHigh || checkHpRatioLow;
     for (final target in targets) {
       await battleData.withTarget(target, () async {
+        await activator.activateBuffOnAction(battleData, BuffAction.functionCommandcodeattackBefore);
+        await activator.activateBuffOnActions(battleData, [
+          if (!currentCard.isNP) BuffAction.functionCommandattackBefore,
+          BuffAction.functionAttackBefore,
+        ]);
+
         final classAdvantage = await getClassRelation(battleData, activator, target);
 
         int? decideHp;
@@ -283,6 +289,12 @@ class Damage {
           minResult: minResult,
           maxResult: maxResult,
         ));
+
+        await activator.activateBuffOnAction(battleData, BuffAction.functionCommandcodeattackAfter);
+        await activator.activateBuffOnActions(battleData, [
+          if (!currentCard.isNP) BuffAction.functionCommandattackAfter,
+          BuffAction.functionAttackAfter,
+        ]);
       });
     }
 
