@@ -74,7 +74,8 @@ class FunctionExecutor {
           func,
           skillLevel,
           overchargeLvl: overchargeLvl,
-          shouldDamageRelease: shouldDamageRelease(functions.getOrNull(index + 1)?.funcType),
+          shouldTrigger: !isDmgFuncType(functions.getOrNull(index - 1)?.funcType),
+          shouldDamageRelease: !isDmgFuncType(functions.getOrNull(index + 1)?.funcType),
           isPassive: isPassive,
           notActorFunction: notActorFunction,
           isCommandCode: isCommandCode,
@@ -95,6 +96,7 @@ class FunctionExecutor {
     final NiceFunction function,
     final int skillLevel, {
     final int overchargeLvl = 1,
+    final bool shouldTrigger = true,
     final bool shouldDamageRelease = true,
     final bool isPassive = false,
     final bool notActorFunction = false,
@@ -267,7 +269,14 @@ class FunctionExecutor {
         case FuncType.damageNpRare:
         case FuncType.damageNpIndividualSum:
         case FuncType.damageNpStateIndividualFix:
-          await Damage.damage(battleData, function, dataVals, targets, shouldDamageRelease: shouldDamageRelease);
+          await Damage.damage(
+            battleData,
+            function,
+            dataVals,
+            targets,
+            shouldTrigger: shouldTrigger,
+            shouldDamageRelease: shouldDamageRelease,
+          );
           break;
         case FuncType.instantDeath:
         case FuncType.forceInstantDeath:
@@ -744,9 +753,9 @@ class FunctionExecutor {
     }
   }
 
-  static bool shouldDamageRelease(final FuncType? nextFuncType) {
+  static bool isDmgFuncType(final FuncType? nextFuncType) {
     if (nextFuncType == null) {
-      return true;
+      return false;
     }
 
     switch (nextFuncType) {
@@ -760,9 +769,9 @@ class FunctionExecutor {
       case FuncType.damageNpRare:
       case FuncType.damageNpStateIndividual:
       case FuncType.damageNpStateIndividualFix:
-        return false;
-      default:
         return true;
+      default:
+        return false;
     }
   }
 }

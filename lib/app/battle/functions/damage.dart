@@ -33,6 +33,7 @@ class Damage {
     final bool isTypeChain = false,
     final bool isMightyChain = false,
     final CardType firstCardType = CardType.none,
+    final bool shouldTrigger = true,
     final bool shouldDamageRelease = true,
   }) async {
     final funcType = damageFunction?.funcType;
@@ -50,11 +51,13 @@ class Damage {
     final checkHpRatio = checkHpRatioHigh || checkHpRatioLow;
     for (final target in targets) {
       await battleData.withTarget(target, () async {
-        await activator.activateBuffOnAction(battleData, BuffAction.functionCommandcodeattackBefore);
-        await activator.activateBuffOnActions(battleData, [
-          if (!currentCard.isNP) BuffAction.functionCommandattackBefore,
-          BuffAction.functionAttackBefore,
-        ]);
+        if (shouldTrigger) {
+          await activator.activateBuffOnAction(battleData, BuffAction.functionCommandcodeattackBefore);
+          await activator.activateBuffOnActions(battleData, [
+            if (!currentCard.isNP) BuffAction.functionCommandattackBefore,
+            BuffAction.functionAttackBefore,
+          ]);
+        }
 
         final classAdvantage = await getClassRelation(battleData, activator, target);
 
@@ -293,11 +296,13 @@ class Damage {
           maxResult: maxResult,
         ));
 
-        await activator.activateBuffOnAction(battleData, BuffAction.functionCommandcodeattackAfter);
-        await activator.activateBuffOnActions(battleData, [
-          if (!currentCard.isNP) BuffAction.functionCommandattackAfter,
-          BuffAction.functionAttackAfter,
-        ]);
+        if (shouldTrigger) {
+          await activator.activateBuffOnAction(battleData, BuffAction.functionCommandcodeattackAfter);
+          await activator.activateBuffOnActions(battleData, [
+            if (!currentCard.isNP) BuffAction.functionCommandattackAfter,
+            BuffAction.functionAttackAfter,
+          ]);
+        }
       });
     }
 

@@ -1140,6 +1140,25 @@ void main() async {
     expect(enemy3.battleBuff.allBuffs.length, previousBuffCount3 + 4);
   });
 
+  test('OC NP vs AttackTriggerFunc', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(305400)
+        ..lv = 90
+        ..tdLv = 5
+        ..skillLvs = [10, 10, 10],
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final bhima = battle.onFieldAllyServants[0]!;
+    await battle.activateSvtSkill(0, 2);
+    bhima.np = 20000;
+
+    await battle.playerTurn([CombatAction(bhima, bhima.getNPCard(battle)!)]);
+    expect(battle.criticalStars, moreOrLessEquals(9.030, epsilon: 0.001));
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,
