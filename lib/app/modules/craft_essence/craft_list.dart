@@ -171,6 +171,7 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
         text: status,
         onTap: () => _onTapCard(ce),
       ),
+      onTap: () => _onTapCard(ce),
       onLongPress: () {
         if (widget.onSelected != null) {
           router.popDetailAndPush(

@@ -303,7 +303,7 @@
   "event_custom_item": "自訂可獲得素材",
   "event_custom_item_empty_hint": "點擊+按鈕自訂可獲得素材",
   "event_digging": "發掘",
-  "event_fortification": "強化",
+  "event_fortification": null,
   "event_free_quest": "活動FQ",
   "event_heel": null,
   "event_item_extra": "額外素材",

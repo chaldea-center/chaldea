@@ -598,6 +598,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
           ),
           onTap: () => _onTapSvt(svt),
         ),
+        onTap: () => _onTapSvt(svt),
         onLongPress: () {
           if (widget.onSelected != null) {
             router.popDetailAndPush(

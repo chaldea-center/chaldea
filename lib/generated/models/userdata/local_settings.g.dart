@@ -219,7 +219,6 @@ Map<String, dynamic> _$DisplaySettingsToJson(DisplaySettings instance) => <Strin
 const _$SvtPlanInputModeEnumMap = {
   SvtPlanInputMode.dropdown: 'dropdown',
   SvtPlanInputMode.slider: 'slider',
-  SvtPlanInputMode.input: 'input',
 };
 
 const _$ItemDetailViewTypeEnumMap = {

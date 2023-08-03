@@ -792,7 +792,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
   Widget _buildAdditionalPassive(int index) {
     final skill = playerSvtData.additionalPassives[index];
-    final lv = playerSvtData.additionalPassiveLvs[index];
+    final lv = playerSvtData.additionalPassiveLvs.getOrNull(index);
     final maxLv = skill.maxLv;
     return SimpleAccordion(
       headerBuilder: (context, _) {
@@ -1089,6 +1089,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     // playerSvtData.appendLvs = support.classPassive.appendPassiveSkillLvs;
     playerSvtData.appendLvs.fillRange(0, playerSvtData.appendLvs.length, 0);
     playerSvtData.additionalPassives = support.detail?.classPassive.addPassive.toList() ?? svt.extraPassive.toList();
+    playerSvtData.additionalPassiveLvs = playerSvtData.additionalPassives.map((e) => e.maxLv).toList();
     // ce
     final ce = support.equips.getOrNull(0);
     playerSvtData

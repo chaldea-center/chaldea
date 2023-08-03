@@ -395,7 +395,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_custom_item": MessageLookupByLibrary.simpleMessage("自訂可獲得素材"),
         "event_custom_item_empty_hint": MessageLookupByLibrary.simpleMessage("點擊+按鈕自訂可獲得素材"),
         "event_digging": MessageLookupByLibrary.simpleMessage("發掘"),
-        "event_fortification": MessageLookupByLibrary.simpleMessage("強化"),
+        "event_fortification": MessageLookupByLibrary.simpleMessage("梁山泊"),
         "event_free_quest": MessageLookupByLibrary.simpleMessage("活動FQ"),
         "event_heel": MessageLookupByLibrary.simpleMessage("鞋跟"),
         "event_item_extra": MessageLookupByLibrary.simpleMessage("額外素材"),

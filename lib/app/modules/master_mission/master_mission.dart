@@ -146,6 +146,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (kDebugMode) Text('No.${mission.id}', style: Theme.of(context).textTheme.bodySmall),
             if (clearCond != null) Text(mission.name, style: Theme.of(context).textTheme.bodySmall),
             MissionCondsDescriptor(mission: mission, missions: masterMission.missions),
           ],

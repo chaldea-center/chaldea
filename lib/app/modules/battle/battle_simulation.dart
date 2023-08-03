@@ -774,7 +774,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             ? null
             : () {
                 SimpleCancelOkDialog(
-                  title: Text(S.current.skill),
+                  title: Text('${S.current.skill} Lv.${skillInfo.skillLv}'),
                   content: DisableLayoutBuilder(
                     child: SkillDescriptor(
                       skill: pskill,

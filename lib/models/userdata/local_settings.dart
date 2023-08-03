@@ -479,7 +479,11 @@ enum SvtPlanDetail {
   commandCode,
 }
 
-enum SvtPlanInputMode { dropdown, slider, input }
+enum SvtPlanInputMode {
+  dropdown,
+  slider,
+  // input,
+}
 
 enum ItemDetailViewType {
   separated,
