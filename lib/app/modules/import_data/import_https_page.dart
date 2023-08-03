@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -132,9 +133,11 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                               SharedBuilder.textButtonSpan(
                                 context: context,
                                 text: S.current.import_auth_file,
-                                onTap: () {
-                                  router.pushPage(const AutoLoginPage());
-                                },
+                                onTap: kIsWeb
+                                    ? null
+                                    : () {
+                                        router.pushPage(const AutoLoginPage());
+                                      },
                               ),
                             ],
                           ),
@@ -646,8 +649,12 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               onPressed: mstData == null
                   ? null
                   : () {
-                      final presents = mstData?.userPresentBox ?? [];
-                      router.pushPage(SniffPresentBoxDetailPage(presents: presents.toList()));
+                      router.pushPage(SniffPresentBoxDetailPage(
+                        presents: mstData?.userPresentBox.toList() ?? [],
+                        missions: mstData?.userEventMission.toList() ?? [],
+                        items: mstData?.userItem.toList() ?? [],
+                        userGame: mstData?.userGame.firstOrNull,
+                      ));
                     },
               child: Text(S.current.present_box),
             ),

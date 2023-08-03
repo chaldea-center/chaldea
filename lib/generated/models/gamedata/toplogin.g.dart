@@ -84,6 +84,9 @@ UserMstData _$UserMstDataFromJson(Map json) => UserMstData(
       userGacha: (json['userGacha'] as List<dynamic>?)
           ?.map((e) => UserGacha.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      userEventMission: (json['userEventMission'] as List<dynamic>?)
+          ?.map((e) => UserEventMission.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
     );
 
 UserItem _$UserItemFromJson(Map json) => UserItem(
@@ -288,4 +291,14 @@ UserGacha _$UserGachaFromJson(Map json) => UserGacha(
       num: json['num'],
       freeDrawAt: json['freeDrawAt'],
       status: json['status'],
+      createdAt: json['createdAt'],
+    );
+
+UserEventMission _$UserEventMissionFromJson(Map json) => UserEventMission(
+      userId: json['userId'],
+      missionId: json['missionId'],
+      missionTargetId: json['missionTargetId'],
+      missionProgressType: json['missionProgressType'],
+      updatedAt: json['updatedAt'],
+      createdAt: json['createdAt'],
     );

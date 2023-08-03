@@ -28,6 +28,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
   final loading = ValueNotifier<bool>(false);
 
   Map<int, MstGacha> gachas = {};
+  Map<int, MstGacha> cnGachas = {};
   final Map<int, List<MstGacha>> _imageIdMap = {};
 
   @override
@@ -48,6 +49,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
   Future<void> loadMstData() async {
     loading.value = true;
     _imageIdMap.clear();
+    cnGachas.clear();
     final data = await _fetchMst(widget.region);
     if (data != null) {
       gachas = {
@@ -57,14 +59,19 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
         // TW doesn't contain closed banners
         final dataCN = await _fetchMst(Region.cn);
         if (dataCN != null) {
-          for (final v in dataCN) {
-            gachas.putIfAbsent(v.id, () => v);
-          }
+          cnGachas = {
+            for (final v in dataCN) v.id: v,
+          };
         }
       }
-      records.sort2((e) => e.gachaId <= 101 ? -1000000000000 + e.gachaId : -(gachas[e.gachaId]?.openedAt ?? e.gachaId));
+      if (widget.region == Region.tw) {
+        records.sort2((e) => e.gachaId <= 101 ? -1000000000000 + e.gachaId : -(e.createdAt ?? e.gachaId));
+      } else {
+        records
+            .sort2((e) => e.gachaId <= 101 ? -1000000000000 + e.gachaId : -(gachas[e.gachaId]?.openedAt ?? e.gachaId));
+      }
     }
-    for (final gacha in gachas.values) {
+    for (final gacha in [...gachas.values, ...cnGachas.values]) {
       _imageIdMap.putIfAbsent(gacha.imageId, () => []).add(gacha);
     }
 
@@ -136,11 +143,19 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
 
   Widget buildGacha(BuildContext context, int index, UserGacha record) {
     final gacha = gachas[record.gachaId];
+    final cnGacha = cnGachas[record.gachaId];
     final url = getHtmlUrl(record.gachaId);
     String title = gacha?.name ?? record.gachaId.toString();
     String subtitle = '${record.gachaId}   ';
     if (gacha != null) {
       subtitle += [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toDateString()).join(' ~ ');
+    } else if (cnGacha != null) {
+      if (record.createdAt != null) {
+        subtitle += record.createdAt!.sec2date().toDateString();
+        subtitle += '\n';
+      }
+      subtitle += '[CN!] ';
+      subtitle += [cnGacha.openedAt, cnGacha.closedAt].map((e) => e.sec2date().toDateString()).join(' ~ ');
     }
 
     return SimpleAccordion(
@@ -158,7 +173,8 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
         );
       },
       contentBuilder: (context) {
-        if (gacha == null) return const Center(child: Text('\n....\n\n'));
+        final _gacha = gacha ?? cnGacha;
+        if (_gacha == null) return const Center(child: Text('\n....\n\n'));
         List<Widget> children = [
           Container(
             constraints: const BoxConstraints(maxHeight: 200),
@@ -171,7 +187,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
             ),
             child: CachedImage(
               imageUrl:
-                  "https://static.atlasacademy.io/${widget.region.upper}/SummonBanners/img_summon_${gacha.imageId}.png",
+                  "https://static.atlasacademy.io/${widget.region.upper}/SummonBanners/img_summon_${_gacha.imageId}.png",
               showSaveOnLongPress: true,
               placeholder: (context, url) => const AspectRatio(aspectRatio: 1344 / 576),
               cachedOption: CachedImageOption(
@@ -182,8 +198,8 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
             ),
           ),
         ];
-        final dupGachas = List<MstGacha>.of(_imageIdMap[gacha.imageId] ?? []);
-        dupGachas.remove(gacha);
+        final dupGachas = List<MstGacha>.of(_imageIdMap[_gacha.imageId] ?? []);
+        dupGachas.remove(_gacha);
         if (dupGachas.isNotEmpty) {
           children.add(Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),

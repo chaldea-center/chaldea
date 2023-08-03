@@ -23,7 +23,7 @@ class SaintQuartzPlan {
   @JsonKey(includeFromJson: false, includeToJson: false)
   VoidCallback? onSolved;
 
-  MasterMission? get extraMission => db.gameData.extraMasterMission[10001];
+  MasterMission? get extraMission => db.gameData.extraMasterMission[MasterMission.kExtraMasterMissionId];
 
   SaintQuartzPlan({
     int? curSQ,

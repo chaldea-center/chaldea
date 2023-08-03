@@ -152,9 +152,10 @@ class UserMstData {
   List<UserClassBoardSquare> userClassBoardSquare;
   List<UserPresentBox> userPresentBox;
   List<UserGacha> userGacha;
+  List<UserEventMission> userEventMission;
   // userEventPoint, userGachaExtraCount,
   // userEventSuperBoss, userSvtVoicePlayed, userQuest
-  // userEventMissionFix,userEventMission,
+  // userEventMissionFix,
   // userPrivilege
   // userEventMissionConditionDetail, userGachaDrawLog,userQuestRoute,userPresentBox,userNpcSvtRecord,userCoinRoom
   // userEventRaid
@@ -189,6 +190,7 @@ class UserMstData {
     List<UserClassBoardSquare>? userClassBoardSquare,
     List<UserPresentBox>? userPresentBox,
     List<UserGacha>? userGacha,
+    List<UserEventMission>? userEventMission,
   })  : userGame = userGame ?? [],
         userSvtCollection = userSvtCollection ?? [],
         userSvt = userSvt ?? [],
@@ -206,7 +208,8 @@ class UserMstData {
         userSvtLeader = userSvtLeader ?? [],
         userClassBoardSquare = userClassBoardSquare ?? [],
         userPresentBox = userPresentBox ?? [],
-        userGacha = userGacha ?? [] {
+        userGacha = userGacha ?? [],
+        userEventMission = userEventMission ?? [] {
     for (final e in this.userSvtCoin) {
       coinMap[e.svtId] = e;
     }
@@ -1003,15 +1006,44 @@ class UserGacha {
   int num;
   int freeDrawAt;
   int status;
+  // only in CN (and TW?)
+  int? createdAt;
 
   UserGacha({
     dynamic gachaId,
     dynamic num,
     dynamic freeDrawAt,
     dynamic status,
+    dynamic createdAt,
   })  : gachaId = _toInt(gachaId),
         num = _toInt(num),
         freeDrawAt = _toInt(freeDrawAt),
-        status = _toInt(status);
+        status = _toInt(status),
+        createdAt = _toIntNull(createdAt);
   factory UserGacha.fromJson(Map<String, dynamic> data) => _$UserGachaFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserEventMission {
+  int userId;
+  int missionId;
+  int missionTargetId;
+  int missionProgressType;
+  int updatedAt;
+  int createdAt;
+
+  UserEventMission({
+    dynamic userId,
+    dynamic missionId,
+    dynamic missionTargetId,
+    dynamic missionProgressType,
+    dynamic updatedAt,
+    dynamic createdAt,
+  })  : userId = _toInt(userId),
+        missionId = _toInt(missionId),
+        missionTargetId = _toInt(missionTargetId),
+        missionProgressType = _toInt(missionProgressType),
+        updatedAt = _toInt(updatedAt),
+        createdAt = _toInt(createdAt);
+  factory UserEventMission.fromJson(Map<String, dynamic> data) => _$UserEventMissionFromJson(data);
 }

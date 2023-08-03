@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/summon/summon_simulator_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -222,6 +224,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTi
       _result.lessThan = block.ids.where((id) => scoreOf(id) <= maxScore).length;
       results.add(_result);
     }
+
     switch (_sortType) {
       case _ExpSort.exp:
         results.sort((a, b) => b.exp.compareTo(a.exp));
@@ -241,7 +244,16 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTi
     }
     List<Widget> children = [];
     for (final _result in results) {
-      children.add(SHeader(SummonUtil.summonNameLocalize(_result.data.title)));
+      children.add(InkWell(
+        onTap: () {
+          router.pushPage(SummonSimulatorPage(
+            summon: widget.summon,
+            initIndex: widget.summon.subSummons.indexOf(_result.data),
+          ));
+        },
+        child: SHeader(SummonUtil.summonNameLocalize(_result.data.title)),
+      ));
+
       children.add(Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 2),
         child: Wrap(
@@ -266,47 +278,32 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTi
         return number.format(percent: true, precision: 1);
       }
 
+      final textCells = [
+        '${_result.exp.toStringAsFixed(2)}\n±${_result.sd.toStringAsFixed(2)}',
+        '${_toPercent(_result.pBest5)}\n${_result.best5}/$n',
+        '${_toPercent(_result.pWorst0)}\n${_result.worst0}/$n',
+        '${_toPercent(_result.pMoreThan)}\n${_result.moreThan}/$n',
+        '${_toPercent(_result.pLessThan)}\n${_result.lessThan}/$n',
+      ];
       children.add(ListTile(
-        // tileColor: Theme.of(context).highlightColor,
         dense: true,
         // shape: const RoundedRectangleBorder(
         //     borderRadius: BorderRadius.vertical(bottom: Radius.circular(8))),
-        title: DefaultTextStyle.merge(
-          style: TextStyle(
-              // fontSize: 14,
-              color: Theme.of(context).textTheme.bodyMedium?.color),
-          textAlign: TextAlign.center,
-          overflow: TextOverflow.visible,
-          child: Row(
-            children: [
+        title: Row(
+          children: [
+            for (int index = 0; index < textCells.length; index++)
               Expanded(
                 child: Text(
-                  '${_result.exp.toStringAsFixed(2)}\n±${_result.sd.toStringAsFixed(2)}',
+                  textCells[index],
+                  style: TextStyle(
+                      color: _sortType.index == index
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).textTheme.bodyMedium?.color),
                   textAlign: TextAlign.center,
+                  overflow: TextOverflow.visible,
                 ),
               ),
-              Expanded(
-                child: Text(
-                  '${_toPercent(_result.pBest5)}\n${_result.best5}/$n',
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  '${_toPercent(_result.pWorst0)}\n${_result.worst0}/$n',
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  '${_toPercent(_result.pMoreThan)}\n${_result.moreThan}/$n',
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  '${_toPercent(_result.pLessThan)}\n${_result.lessThan}/$n',
-                ),
-              ),
-            ],
-          ),
+          ],
         ),
       ));
       children.add(kIndentDivider);

@@ -386,6 +386,8 @@ class Event {
 
 @JsonSerializable()
 class MasterMission {
+  static const int kExtraMasterMissionId = 10001;
+
   int id;
   int startedAt;
   int endedAt;
@@ -1524,12 +1526,16 @@ enum ShopType {
 }
 
 enum MissionProgressType {
-  none,
-  regist,
-  openCondition,
-  start,
-  clear,
-  achieve,
+  none(0),
+  regist(1),
+  openCondition(2),
+  start(3),
+  clear(4),
+  achieve(5),
+  ;
+
+  const MissionProgressType(this.id);
+  final int id;
 }
 
 enum MissionType {
