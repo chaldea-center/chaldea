@@ -1336,7 +1336,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
           _updateState();
         },
         filterData: craftFilterData,
-        pinged: db.settings.battleSim.pingedCEsWithEventAndBond(widget.questPhase, playerSvtData.svt).toList(),
+        pinged: db.curUser.battleSim.pingedCEsWithEventAndBond(widget.questPhase, playerSvtData.svt).toList(),
       ),
       detail: true,
     );

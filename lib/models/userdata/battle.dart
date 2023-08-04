@@ -38,6 +38,23 @@ class BattleSimUserData {
     //   formations.add(BattleTeamFormation());
     // }
   }
+  Set<int> pingedCEsWithEventAndBond(final QuestPhase? questPhase, final Servant? svt) {
+    final event = questPhase?.war?.event;
+    Set<int> pinged = pingedCEs.toSet();
+    if (event != null) {
+      for (final ce in db.gameData.craftEssences.values) {
+        if (pinged.contains(ce.collectionNo)) continue;
+        if (ce.skills.any((skill) => skill.isEventSkill(event))) {
+          pinged.add(ce.collectionNo);
+        }
+      }
+    }
+    final bondCE = db.gameData.craftEssencesById[svt?.bondEquip];
+    if (bondCE != null && bondCE.collectionNo > 0) {
+      pinged.add(bondCE.collectionNo);
+    }
+    return pinged;
+  }
 
   factory BattleSimUserData.fromJson(Map<String, dynamic> json) => _$BattleSimUserDataFromJson(json);
 
@@ -110,24 +127,6 @@ class BattleSimSetting {
   factory BattleSimSetting.fromJson(Map<String, dynamic> json) => _$BattleSimSettingFromJson(json);
 
   Map<String, dynamic> toJson() => _$BattleSimSettingToJson(this);
-
-  Set<int> pingedCEsWithEventAndBond(final QuestPhase? questPhase, final Servant? svt) {
-    final event = questPhase?.war?.event;
-    Set<int> pinged = pingedCEs.toSet();
-    if (event != null) {
-      for (final ce in db.gameData.craftEssences.values) {
-        if (pinged.contains(ce.collectionNo)) continue;
-        if (ce.skills.any((skill) => skill.isEventSkill(event))) {
-          pinged.add(ce.collectionNo);
-        }
-      }
-    }
-    final bondCE = db.gameData.craftEssencesById[svt?.bondEquip];
-    if (bondCE != null && bondCE.collectionNo > 0) {
-      pinged.add(bondCE.collectionNo);
-    }
-    return pinged;
-  }
 }
 
 @JsonSerializable(includeIfNull: false)

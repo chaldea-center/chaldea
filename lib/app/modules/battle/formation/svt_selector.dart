@@ -206,7 +206,7 @@ class ServantSelector extends StatelessWidget {
                   onChanged();
                 },
                 filterData: craftFilterData,
-                pinged: db.settings.battleSim.pingedCEsWithEventAndBond(questPhase, playerSvtData.svt).toList(),
+                pinged: db.curUser.battleSim.pingedCEsWithEventAndBond(questPhase, playerSvtData.svt).toList(),
               ),
               detail: true,
             );

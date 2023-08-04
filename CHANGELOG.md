@@ -1,8 +1,14 @@
 # Changelog
 
+## 2.4.10
+
+- Master mission solver support Advanced Quests
+- Fix CE pin to top not work in Laplace
+
 ## 2.4.9
 
 Bug Everywhere!
+
 - Bazett's counter NP trial (manually select after enemy action enabled)
 - Fix trigger logic of on-attack buffs: SaberAlter/Bakin/KoyanDark/Hokusai/Bhima/etc
 - Fix Sleep buff release on Gong/Arash NP
