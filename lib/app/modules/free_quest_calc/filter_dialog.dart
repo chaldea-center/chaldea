@@ -25,7 +25,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
       children: [
         ListTile(
           dense: true,
-          title: Text(S.current.free_progress),
+          title: Text(S.current.progress),
           trailing: DropdownButton<NiceWar?>(
             isDense: true,
             value: progress,

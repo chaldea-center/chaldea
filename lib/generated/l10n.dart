@@ -3550,17 +3550,6 @@ class S {
     );
   }
 
-  /// `Progress`
-  String get event_progress {
-    return Intl.message(
-      'Progress',
-      name: 'event_progress',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Event Quests`
   String get event_quest {
     return Intl.message(
@@ -4204,17 +4193,6 @@ class S {
     return Intl.message(
       'Decimals are not displayed, there may be an error of ±1 between the displayed result and the calculated result',
       name: 'fq_plan_decimal_hint',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Quest Limit`
-  String get free_progress {
-    return Intl.message(
-      'Quest Limit',
-      name: 'free_progress',
       desc: '',
       locale: localeName,
       args: [],
@@ -7443,6 +7421,17 @@ class S {
     return Intl.message(
       'Expectation',
       name: 'probability_expectation',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Progress`
+  String get progress {
+    return Intl.message(
+      'Progress',
+      name: 'progress',
       desc: '',
       locale: localeName,
       args: [],

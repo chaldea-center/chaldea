@@ -221,7 +221,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_lottery_unlimited": MessageLookupByLibrary.simpleMessage("Lotería ilimitada"),
         "event_not_planned": MessageLookupByLibrary.simpleMessage("Evento no planificado"),
         "event_point_reward": MessageLookupByLibrary.simpleMessage("Puntos"),
-        "event_progress": MessageLookupByLibrary.simpleMessage("Progreso"),
         "event_quest": MessageLookupByLibrary.simpleMessage("Misiones de Evento"),
         "event_rerun_replace_grail": m4,
         "event_tower": MessageLookupByLibrary.simpleMessage("Torre"),
@@ -269,7 +268,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sort_number": MessageLookupByLibrary.simpleMessage("Nº"),
         "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("Rareza"),
         "foukun": MessageLookupByLibrary.simpleMessage("Fou"),
-        "free_progress": MessageLookupByLibrary.simpleMessage("Límite del Quest"),
         "free_progress_newest": MessageLookupByLibrary.simpleMessage("Más reciente (JP)"),
         "free_quest": MessageLookupByLibrary.simpleMessage("Free Quest"),
         "free_quest_calculator": MessageLookupByLibrary.simpleMessage("Free Quest"),
@@ -484,6 +482,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "priority": MessageLookupByLibrary.simpleMessage("Prioridad"),
         "priority_tagging_hint": MessageLookupByLibrary.simpleMessage(
             "Las etiquetas no deben ser demasiado largas, de lo contrario no se pueden mostrar correctamente"),
+        "progress": MessageLookupByLibrary.simpleMessage("Progreso"),
         "project_homepage": MessageLookupByLibrary.simpleMessage("Página de inicio del proyecto"),
         "quest": MessageLookupByLibrary.simpleMessage("Quest"),
         "quest_chapter_n": m9,

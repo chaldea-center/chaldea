@@ -33,8 +33,10 @@ class MissionInputTab extends StatefulWidget {
 class _MissionInputTabState extends State<MissionInputTab> {
   late ScrollController _scrollController;
   List<CustomMission> missions = [];
-  int warId = 0;
   final solver = MissionSolver();
+  final Map<int, (Event, List<Quest>)> advancedQuests = {};
+  int warId = 0;
+  int advancedEventId = 0;
 
   @override
   void initState() {
@@ -46,6 +48,30 @@ class _MissionInputTabState extends State<MissionInputTab> {
           for (final war in db.gameData.mainStories.values)
             if (war.quests.any((q) => q.isMainStoryFree)) war.id
         ], 0);
+
+    final allAdvancedQuests = <Quest>[];
+    for (final event in db.gameData.events.values) {
+      if (event.isAdvancedQuestEvent) {
+        final questIds = db.gameData.others.eventQuestGroups[event.id] ?? [];
+        for (final questId in questIds) {
+          final quest = db.gameData.quests[questId];
+          if (quest != null &&
+              quest.afterClear == QuestAfterClearType.repeatLast &&
+              quest.closedAt > kNeverClosedTimestamp) {
+            allAdvancedQuests.add(quest);
+          }
+        }
+        advancedQuests[event.id] = (event, []);
+      }
+    }
+    sortDict(advancedQuests, inPlace: true, compare: (a, b) => b.value.$1.startedAt - a.value.$1.startedAt);
+    for (final quest in allAdvancedQuests) {
+      for (final (event, quests) in advancedQuests.values) {
+        if (event.startedAt == quest.openedAt) {
+          quests.add(quest);
+        }
+      }
+    }
   }
 
   @override
@@ -70,6 +96,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
         ),
         kDefaultDivider,
         eventSelector,
+        advancedQuestSelector,
         SafeArea(child: buttonBar),
       ],
     );
@@ -302,7 +329,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
     if (war == null) {
       title = 'Invalid Choice';
     } else if (war.isMainStory) {
-      leading = 'Free ~ ';
+      leading = S.current.progress;
       title = war.lShortName;
     } else {
       title = Transl.eventNames(war.eventName).l;
@@ -320,6 +347,39 @@ class _MissionInputTabState extends State<MissionInputTab> {
       leading: Text(leading),
       title: TextButton(onPressed: _onTap, child: Text(title)),
       dense: true,
+    );
+  }
+
+  Widget get advancedQuestSelector {
+    return ListTile(
+      leading: const Text("Advanced\nQuests", textScaleFactor: 0.8),
+      title: Center(
+        child: DropdownButton<int>(
+          value: advancedEventId,
+          isExpanded: true,
+          isDense: true,
+          alignment: Alignment.center,
+          items: [
+            DropdownMenuItem(
+              value: 0,
+              child: Text(S.current.disabled, style: const TextStyle(fontSize: 14)),
+            ),
+            for (final (event, _) in advancedQuests.values)
+              DropdownMenuItem(
+                value: event.id,
+                child: Text(
+                  '${event.lShortName.l}(JP ${event.startedAt.sec2date().toDateString()})',
+                  style: const TextStyle(fontSize: 14),
+                ),
+              ),
+          ],
+          onChanged: (v) {
+            setState(() {
+              if (v != null) advancedEventId = v;
+            });
+          },
+        ),
+      ),
     );
   }
 
@@ -436,12 +496,23 @@ class _MissionInputTabState extends State<MissionInputTab> {
           return;
         }
         for (final quest in war.quests) {
-          if (!quest.isAnyFree) continue;
-          if (quest.phasesWithEnemies.contains(quest.phases.last)) {
+          if (!quest.isAnyFree && !quest.isRepeatRaid) continue;
+          if (quest.phasesWithEnemies.contains(quest.phases.last) ||
+              (DateTime.now().timestamp - quest.openedAt < kSecsPerDay)) {
             phases[quest.id] = quest.phases.last;
           } else {
             // no enemy data
             countNoEnemy += 1;
+          }
+        }
+      }
+      final lastAdvancedEventTime = advancedQuests[advancedEventId]?.$1.startedAt;
+      if (lastAdvancedEventTime != null) {
+        for (final (event, quests) in advancedQuests.values) {
+          if (event.startedAt <= lastAdvancedEventTime) {
+            for (final quest in quests) {
+              if (quest.phases.isNotEmpty) phases[quest.id] = quest.phases.last;
+            }
           }
         }
       }
@@ -450,6 +521,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
           entry.key,
           entry.value,
           region: region,
+          expireAfter: db.gameData.quests[entry.key]?.warId == WarId.advanced ? const Duration(days: 7) : null,
         ).then((quest) async {
           if (quest == null) {
             countError += 1;

@@ -429,7 +429,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "This trait may be event only servant/enemy trait or field trait.\n Normal servant or enemy may not have this trait, they may have another trait with similar name but different ID.\nSome traits are not translated with \'Servant\', but they may be servant only trait in event."),
         "event_point": MessageLookupByLibrary.simpleMessage("Event Point"),
         "event_point_reward": MessageLookupByLibrary.simpleMessage("Points"),
-        "event_progress": MessageLookupByLibrary.simpleMessage("Progress"),
         "event_quest": MessageLookupByLibrary.simpleMessage("Event Quests"),
         "event_recipe": MessageLookupByLibrary.simpleMessage("Recipe"),
         "event_rerun_replace_grail": m4,
@@ -491,7 +490,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "foukun": MessageLookupByLibrary.simpleMessage("Fou"),
         "fq_plan_decimal_hint": MessageLookupByLibrary.simpleMessage(
             "Decimals are not displayed, there may be an error of ±1 between the displayed result and the calculated result"),
-        "free_progress": MessageLookupByLibrary.simpleMessage("Quest Limit"),
         "free_progress_newest": MessageLookupByLibrary.simpleMessage("Latest(JP)"),
         "free_quest": MessageLookupByLibrary.simpleMessage("Free Quest"),
         "free_quest_calculator": MessageLookupByLibrary.simpleMessage("Free Quest"),
@@ -804,6 +802,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Tags should not be too long, otherwise it cannot be shown completely"),
         "probability": MessageLookupByLibrary.simpleMessage("probability"),
         "probability_expectation": MessageLookupByLibrary.simpleMessage("Expectation"),
+        "progress": MessageLookupByLibrary.simpleMessage("Progress"),
         "project_homepage": MessageLookupByLibrary.simpleMessage("Project Homepage"),
         "quest": MessageLookupByLibrary.simpleMessage("Quest"),
         "quest_chapter_n": m9,

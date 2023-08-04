@@ -238,7 +238,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_not_planned": MessageLookupByLibrary.simpleMessage("لم يتم التخطيط للحدث"),
         "event_point": MessageLookupByLibrary.simpleMessage("نقطة الايفنت"),
         "event_point_reward": MessageLookupByLibrary.simpleMessage("نقاط"),
-        "event_progress": MessageLookupByLibrary.simpleMessage("التقدم"),
         "event_quest": MessageLookupByLibrary.simpleMessage("مهام الايفنت"),
         "event_rerun_replace_grail": m4,
         "event_shop": MessageLookupByLibrary.simpleMessage("متجر الايفنت"),
@@ -284,7 +283,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sort": MessageLookupByLibrary.simpleMessage("فرز"),
         "filter_sort_number": MessageLookupByLibrary.simpleMessage("رقم"),
         "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("الندرة"),
-        "free_progress": MessageLookupByLibrary.simpleMessage("مهمة محدودة"),
         "free_progress_newest": MessageLookupByLibrary.simpleMessage("أحدث(JP)"),
         "free_quest": MessageLookupByLibrary.simpleMessage("الفري كويست"),
         "free_quest_calculator": MessageLookupByLibrary.simpleMessage("الفري كويست"),
@@ -459,6 +457,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "priority": MessageLookupByLibrary.simpleMessage("أفضلية"),
         "priority_tagging_hint": MessageLookupByLibrary.simpleMessage(
             "يجب ألا تكون العلامات - تاغ - طويلة جدًا ، وإلا فلن يتم عرضها بالكامل"),
+        "progress": MessageLookupByLibrary.simpleMessage("التقدم"),
         "project_homepage": MessageLookupByLibrary.simpleMessage("الصفحة الرئيسية للمشروع"),
         "quest": MessageLookupByLibrary.simpleMessage("مهمة"),
         "quest_chapter_n": m9,
