@@ -285,6 +285,20 @@ class BattleTeamFormation {
     }
     return text;
   }
+
+  List<int> get allCardIds {
+    Set<int> ids = {};
+    for (final svt in allSvts) {
+      final svtId = svt?.svtId;
+      if (svt != null && svtId != null && svtId > 0) {
+        ids.add(svtId);
+        if (svt.ceId != null) {
+          ids.add(svt.ceId!);
+        }
+      }
+    }
+    return ids.toList();
+  }
 }
 
 @JsonSerializable(includeIfNull: false)

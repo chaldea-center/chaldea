@@ -705,7 +705,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               questId: questPhase.id,
               phase: questPhase.phase,
               enemyHash: questPhase.enemyHash!,
-              svts: widget.options.team.allCardIds,
+              svts: uploadData.team.allCardIds,
               record: uploadData.toDataV2(),
             ));
         if (resp.success) {

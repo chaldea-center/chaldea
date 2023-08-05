@@ -242,12 +242,14 @@ class NiceSkill extends SkillOrTd with RouteInfo implements BaseSkill {
 
   bool isExtraPassiveEnabledForEvent(int eventId) {
     return extraPassive.any((e) {
+      // ヨハンナさんと未確認の愛 ブレッシング・オブ・セイント EX 300NP
+      if (id == 940274) return false;
       if (e.eventId == 0) {
-        if (e.endedAt - e.startedAt > 90 * kSecsPerDay && e.endedAt > kNeverClosedTimestamp) {
-          return true;
-        } else {
+        // 巡霊の祝祭
+        if (e.endedAt - e.startedAt < 90 * kSecsPerDay || e.endedAt < kNeverClosedTimestamp) {
           return false;
         }
+        return true;
       }
       if (e.eventId == eventId) return true;
       return false;

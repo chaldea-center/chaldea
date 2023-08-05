@@ -894,6 +894,9 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         region: questInfo.region ?? Region.jp,
       );
     }
+    if (data.disableEvent != null) {
+      options.disableEvent = data.disableEvent!;
+    }
 
     if (questInfo != null && data.actions != null && mounted) {
       EasyLoading.dismiss();
