@@ -73,11 +73,16 @@ mixin FuncsDescriptor {
     for (int index = 0; index < funcs2.length; index++) {
       final func = funcs2[index];
       if (func.svals.isNotEmpty && func.svals[0].TriggeredFuncPosition != null) {
-        final pos = func.svals[0].TriggeredFuncPosition!;
-        if (pos >= 1 && pos <= funcs.length) {
-          final newPos = funcs2.indexOf(funcs[pos - 1]) + 1;
-          if (newPos >= 1 && newPos != pos) {
-            func.svals[0].set('TriggeredFuncPositionDisp', newPos);
+        final val = func.svals[0];
+        final int? pos =
+            val.TriggeredFuncPositionSameTarget ?? val.TriggeredFuncPositionAll ?? val.TriggeredFuncPosition;
+        if (pos != null && pos != 0) {
+          final pos2 = pos.abs();
+          if (pos2 >= 1 && pos2 <= funcs.length) {
+            final newPos = funcs2.indexOf(funcs[pos2 - 1]) + 1;
+            if (newPos >= 1 && newPos != pos2) {
+              func.svals[0].set('TriggeredFuncPositionDisp', newPos * pos.sign);
+            }
           }
         }
       }
@@ -643,25 +648,23 @@ class FuncDescriptor extends StatelessWidget {
       );
     }
 
-    if (vals?.TriggeredFuncPosition != null) {
-      final pos = vals!.TriggeredFuncPosition!;
-      final dispPos = vals.TriggeredFuncPositionDisp ?? pos;
-      final posAll = vals.TriggeredFuncPositionAll;
+    final posVal =
+        vals?.TriggeredFuncPositionSameTarget ?? vals?.TriggeredFuncPositionAll ?? vals?.TriggeredFuncPosition;
+    if (vals != null && posVal != null && posVal != 0) {
+      final dispPos = vals.TriggeredFuncPositionDisp ?? posVal;
       String hint;
-      if (posAll != null && posAll != 0) {
-        if (posAll == 1) {
-          hint = Transl.misc2('Function', 'TriggeredFuncPositionAll.success');
-        } else if (posAll == -1) {
-          hint = Transl.misc2('Function', 'TriggeredFuncPositionAll.fail');
-        } else {
-          hint = '${Transl.misc2('Function', 'TriggeredFuncPositionAll')} @$posAll';
-        }
+      if (vals.TriggeredFuncPositionSameTarget != null) {
+        hint = Transl.misc2('Function', 'TriggeredFuncPositionSameTarget');
+      } else if (vals.TriggeredFuncPositionAll != null) {
+        hint = Transl.misc2('Function', 'TriggeredFuncPositionAll');
       } else {
         hint = Transl.misc2('Function', 'TriggeredFuncPosition');
       }
+      hint = hint.replaceAll('{1}', posVal > 0 ? Transl.special.succeed : Transl.special.failed);
+
       spans.insertAll(0, [
         const TextSpan(text: '('),
-        ...SharedBuilder.replaceSpan(hint, '{0}', [TextSpan(text: dispPos.toString())]),
+        ...SharedBuilder.replaceSpan(hint, '{0}', [TextSpan(text: dispPos.abs().toString())]),
         const TextSpan(text: ')'),
       ]);
     } else if (vals?.Rate != null && vals!.Rate! < 0) {

@@ -498,7 +498,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
         for (final quest in war.quests) {
           if (!quest.isAnyFree && !quest.isRepeatRaid) continue;
           if (quest.phasesWithEnemies.contains(quest.phases.last) ||
-              (DateTime.now().timestamp - quest.openedAt < kSecsPerDay)) {
+              (DateTime.now().timestamp - quest.openedAt < 7 * kSecsPerDay)) {
             phases[quest.id] = quest.phases.last;
           } else {
             // no enemy data

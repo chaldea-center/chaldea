@@ -206,6 +206,7 @@ class DataVals {
   List<int>? get TriggeredFieldCountRange => _list('TriggeredFieldCountRange');
   List<int>? get TargetEnemyRange => _list('TargetEnemyRange');
 
+  // TriggeredFuncPositionSameTarget > TriggeredFuncPositionAll > TriggeredFuncPosition
   int? get TriggeredFuncPositionSameTarget => _vals['TriggeredFuncPositionSameTarget'];
   int? get TriggeredFuncPositionAll => _vals['TriggeredFuncPositionAll'];
   String? get TriggeredTargetHpRange => _vals['TriggeredTargetHpRange'];

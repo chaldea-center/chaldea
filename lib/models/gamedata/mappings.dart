@@ -759,4 +759,18 @@ class _SpecialTransl {
         na: 'Various Positive Buffs',
         kr: null,
       );
+  String get succeed => M.of(
+        jp: "成功",
+        cn: '成功',
+        tw: '成功',
+        na: 'succeed',
+        kr: null,
+      );
+  String get failed => M.of(
+        jp: "失敗",
+        cn: '失败',
+        tw: '失敗',
+        na: 'failed',
+        kr: null,
+      );
 }
