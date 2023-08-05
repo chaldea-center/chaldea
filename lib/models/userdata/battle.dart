@@ -159,7 +159,7 @@ class BattleShareData {
     }
     return _$BattleShareDataToJson(BattleShareData(
       minBuild: kMinBuild,
-      appBuild: AppInfo.buildNumber,
+      appBuild: appBuild ?? AppInfo.buildNumber,
       quest: quest,
       team: team2,
       actions: actions,
@@ -256,19 +256,18 @@ class BattleQuestInfo {
 @JsonSerializable()
 class BattleTeamFormation {
   String? name;
-
+  MysticCodeSaveData mysticCode;
   List<SvtSaveData?> onFieldSvts;
   List<SvtSaveData?> backupSvts;
-  MysticCodeSaveData mysticCode;
 
   BattleTeamFormation({
     this.name,
+    MysticCodeSaveData? mysticCode,
     List<SvtSaveData?>? onFieldSvts,
     List<SvtSaveData?>? backupSvts,
-    MysticCodeSaveData? mysticCode,
-  })  : onFieldSvts = List.generate(3, (index) => onFieldSvts?.getOrNull(index)),
-        backupSvts = List.generate(3, (index) => backupSvts?.getOrNull(index)),
-        mysticCode = mysticCode ?? MysticCodeSaveData();
+  })  : mysticCode = mysticCode ?? MysticCodeSaveData(),
+        onFieldSvts = List.generate(3, (index) => onFieldSvts?.getOrNull(index)),
+        backupSvts = List.generate(3, (index) => backupSvts?.getOrNull(index));
 
   factory BattleTeamFormation.fromJson(Map<String, dynamic> json) => _$BattleTeamFormationFromJson(json);
 
@@ -308,9 +307,6 @@ class SvtSaveData {
   List<int?> skillIds;
   List<int> skillLvs;
   List<int> appendLvs;
-  Set<int> disabledExtraSkills;
-  List<BaseSkill> additionalPassives;
-  List<int> additionalPassiveLvs;
   int? tdId;
   int tdLv;
 
@@ -330,6 +326,9 @@ class SvtSaveData {
 
   List<int> cardStrengthens;
   List<int?> commandCodeIds;
+  Set<int> disabledExtraSkills;
+  List<BaseSkill> additionalPassives;
+  List<int> additionalPassiveLvs;
 
   SvtSaveData({
     this.svtId,
@@ -337,9 +336,6 @@ class SvtSaveData {
     List<int>? skillLvs,
     List<int?>? skillIds,
     List<int>? appendLvs,
-    Set<int>? disabledExtraSkills,
-    List<BaseSkill>? additionalPassives,
-    List<int>? additionalPassiveLvs,
     this.tdId = 0,
     this.tdLv = 5,
     this.lv = 1,
@@ -353,14 +349,17 @@ class SvtSaveData {
     this.supportType = SupportSvtType.none,
     List<int>? cardStrengthens,
     List<int?>? commandCodeIds,
+    Set<int>? disabledExtraSkills,
+    List<BaseSkill>? additionalPassives,
+    List<int>? additionalPassiveLvs,
   })  : skillLvs = skillLvs ?? [10, 10, 10],
         skillIds = List.generate(3, (index) => skillIds?.getOrNull(index)),
         appendLvs = appendLvs ?? [0, 0, 0],
+        cardStrengthens = cardStrengthens ?? [0, 0, 0, 0, 0],
+        commandCodeIds = List.generate(5, (index) => commandCodeIds?.getOrNull(index)),
         disabledExtraSkills = disabledExtraSkills ?? {},
         additionalPassives = additionalPassives ?? [],
-        additionalPassiveLvs = additionalPassiveLvs ?? [],
-        cardStrengthens = cardStrengthens ?? [0, 0, 0, 0, 0],
-        commandCodeIds = List.generate(5, (index) => commandCodeIds?.getOrNull(index));
+        additionalPassiveLvs = additionalPassiveLvs ?? [];
 
   factory SvtSaveData.fromJson(Map<String, dynamic> json) => _$SvtSaveDataFromJson(json);
 
@@ -874,27 +873,25 @@ enum BattleRecordDataType { base, skill, attack }
 @JsonSerializable(includeIfNull: false)
 class BattleRecordData {
   BattleRecordDataType type;
-  BattleActionOptions options;
-
   int? servantIndex;
   int? skillIndex;
-
   List<BattleAttackRecordData>? attackRecords;
+  BattleActionOptions options;
 
   BattleRecordData({BattleActionOptions? options})
       : type = BattleRecordDataType.base,
         options = options ?? BattleActionOptions();
 
   BattleRecordData.skill({
-    BattleActionOptions? options,
     this.servantIndex,
     this.skillIndex,
+    BattleActionOptions? options,
   })  : type = BattleRecordDataType.skill,
         options = options ?? BattleActionOptions();
 
   BattleRecordData.attack({
-    BattleActionOptions? options,
     List<BattleAttackRecordData>? attackRecords,
+    BattleActionOptions? options,
   })  : type = BattleRecordDataType.attack,
         attackRecords = attackRecords ?? [],
         options = options ?? BattleActionOptions();
