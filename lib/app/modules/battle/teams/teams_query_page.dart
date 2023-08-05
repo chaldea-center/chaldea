@@ -398,7 +398,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     Future<List<UserBattleData>?> task;
     switch (mode) {
       case TeamQueryMode.user:
-        task = showEasyLoading(() => ChaldeaWorkerApi.laplaceQueryTeamByUser(
+        task = showEasyLoading(() => ChaldeaWorkerApi.teamsByUser(
               limit: _pageSize + 1,
               offset: _pageSize * page,
               expireAfter: refresh ? Duration.zero : const Duration(minutes: 60),
@@ -406,7 +406,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       case TeamQueryMode.quest:
         final questPhase = widget.questPhase;
         if (questPhase == null || !questPhase.isLaplaceSharable) return;
-        task = showEasyLoading(() => ChaldeaWorkerApi.laplaceQueryTeamByQuest(
+        task = showEasyLoading(() => ChaldeaWorkerApi.teamsByQuest(
               questId: questPhase.id,
               phase: questPhase.phase,
               enemyHash: questPhase.enemyHash,
@@ -430,7 +430,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
 
   Future<void> _deleteUserTeam(UserBattleData battleRecord) async {
     if (!db.security.isUserLoggedIn) return;
-    final resp = await showEasyLoading(() => ChaldeaWorkerApi.laplaceDeleteTeam(id: battleRecord.id));
+    final resp = await showEasyLoading(() => ChaldeaWorkerApi.teamDelete(id: battleRecord.id));
     if (resp.success) {
       ChaldeaWorkerApi.clearCache((cache) => true);
       await _queryTeams(pageIndex, refresh: true);

@@ -21,6 +21,8 @@ bool _defaultValidateStat(int? statusCode) {
 class ChaldeaWorkerApi {
   ChaldeaWorkerApi._();
 
+  static const v3Laplace = '/api/v3/laplace';
+
   static final cacheManager = ApiCacheManager(null)
     ..dispatchError = dispatchError
     ..createDio = createDio;
@@ -50,6 +52,7 @@ class ChaldeaWorkerApi {
   }
 
   static Dio createDio() {
+    // return db.apiWorkerDio..options.baseUrl = 'http://127.0.0.1:8787';
     return db.apiWorkerDio;
   }
 
@@ -116,35 +119,55 @@ class ChaldeaWorkerApi {
     Duration expireAfter = const Duration(minutes: 60),
   }) {
     return cacheManager.getModel(
-      '/api/v3/laplace/query/id/$id',
+      '$v3Laplace/team/$id',
       (data) => UserBattleData.fromJson(data),
       expireAfter: expireAfter,
     );
   }
 
-  static Future<List<UserBattleData>?> laplaceQueryTeamByUser({
-    String? username,
-    String? auth,
+  static Future<List<UserBattleData>?> teams({
+    int? questId,
+    int? phase,
+    String? enemyHash,
+    String? userId,
+    int? ver,
     int limit = 20,
     int offset = 0,
     Duration? expireAfter = const Duration(minutes: 60),
   }) {
-    username ??= db.security.username;
-    auth ??= db.security.userAuth;
-    return cacheManager.postModel(
-      "/api/v3/laplace/query/user",
-      data: {
-        if (username != null) 'username': username,
-        'limit': limit,
-        'offset': offset,
-      },
-      fromJson: (data) => (data as List).map((e) => UserBattleData.fromJson(e)).toList(),
+    if (questId == null && userId == null && ver == null) return Future.value([]);
+    final query = _encodeQuery({
+      'questId': questId,
+      'phase': phase,
+      'enemyHash': enemyHash,
+      'userId': userId,
+      'ver': ver,
+      'limit': limit,
+      if (offset != 0) 'offset': offset,
+    });
+    return cacheManager.getModel(
+      "$v3Laplace/teams?$query",
+      (data) => (data as List).map((e) => UserBattleData.fromJson(e)).toList(),
       expireAfter: expireAfter,
-      options: addAuthHeader(),
     );
   }
 
-  static Future<List<UserBattleData>?> laplaceQueryTeamByQuest({
+  static Future<List<UserBattleData>?> teamsByUser({
+    String? userId,
+    int limit = 20,
+    int offset = 0,
+    Duration? expireAfter = const Duration(minutes: 60),
+  }) {
+    userId ??= db.security.username;
+    return teams(
+      userId: userId ?? db.security.username,
+      limit: limit,
+      offset: offset,
+      expireAfter: expireAfter,
+    );
+  }
+
+  static Future<List<UserBattleData>?> teamsByQuest({
     required int questId,
     required int phase,
     required String? enemyHash,
@@ -152,23 +175,19 @@ class ChaldeaWorkerApi {
     int offset = 0,
     Duration? expireAfter = const Duration(minutes: 60),
   }) {
-    return cacheManager.postModel(
-      "/api/v3/laplace/query/quest",
-      data: {
-        'questId': questId,
-        'phase': phase,
-        if (enemyHash != null) 'enemyHash': enemyHash,
-        'limit': limit,
-        'offset': offset,
-      },
-      fromJson: (data) => (data as List).map((e) => UserBattleData.fromJson(e)).toList(),
+    return teams(
+      questId: questId,
+      phase: phase,
+      enemyHash: enemyHash,
+      limit: limit,
+      offset: offset,
       expireAfter: expireAfter,
     );
   }
 
-  static Future<WorkerResponse> laplaceDeleteTeam({required int id}) {
+  static Future<WorkerResponse> teamDelete({required int id}) {
     return postCommon(
-      "/api/v3/laplace/delete",
+      "$v3Laplace/team/delete",
       {
         'id': id,
       },
@@ -176,7 +195,7 @@ class ChaldeaWorkerApi {
     );
   }
 
-  static Future<WorkerResponse> laplaceUploadTeam({
+  static Future<WorkerResponse> teamUpload({
     required int ver,
     required int questId,
     required int phase,
@@ -185,8 +204,34 @@ class ChaldeaWorkerApi {
     required String record,
   }) {
     return postCommon(
-      "/api/v3/laplace/upload",
+      "$v3Laplace/team/upload",
       {
+        'ver': ver,
+        'questId': questId,
+        'phase': phase,
+        'enemyHash': enemyHash,
+        'svts': svts,
+        'record': record,
+      },
+      options: addAuthHeader(),
+    );
+  }
+
+  // debug/dev
+  @visibleForTesting
+  static Future<WorkerResponse> teamUpdate({
+    required int id,
+    required int ver,
+    required int questId,
+    required int phase,
+    required String enemyHash,
+    required List<int> svts,
+    required String record,
+  }) {
+    return postCommon(
+      "$v3Laplace/team/update",
+      {
+        'id': id,
         'ver': ver,
         'questId': questId,
         'phase': phase,
@@ -224,4 +269,23 @@ class ChaldeaWorkerApi {
       expireAfter: expireAfter,
     );
   }
+}
+
+String _encodeQuery(Map<String, dynamic> parameters) {
+  final list = <String>[];
+  for (final key in parameters.keys) {
+    final value = parameters[key];
+    if (value == null || (value is List && value.isEmpty)) continue;
+
+    if (value is List) {
+      for (final v in value) {
+        if (v != null) {
+          list.add('$key=${Uri.encodeQueryComponent(v.toString())}');
+        }
+      }
+    } else {
+      list.add('$key=${Uri.encodeQueryComponent(value.toString())}');
+    }
+  }
+  return list.join('&');
 }

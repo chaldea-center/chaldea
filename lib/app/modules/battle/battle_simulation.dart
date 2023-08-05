@@ -700,7 +700,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           actions: actions,
           disableEvent: widget.options.disableEvent,
         );
-        final resp = await showEasyLoading(() => ChaldeaWorkerApi.laplaceUploadTeam(
+        final resp = await showEasyLoading(() => ChaldeaWorkerApi.teamUpload(
               ver: BattleShareData.kDataVer,
               questId: questPhase.id,
               phase: questPhase.phase,
