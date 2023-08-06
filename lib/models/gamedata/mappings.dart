@@ -766,11 +766,11 @@ class _SpecialTransl {
         na: 'succeed',
         kr: null,
       );
-  String get failed => M.of(
+  String get fail => M.of(
         jp: "失敗",
         cn: '失败',
         tw: '失敗',
-        na: 'failed',
+        na: 'fail',
         kr: null,
       );
 }

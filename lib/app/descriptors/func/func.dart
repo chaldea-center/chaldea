@@ -660,7 +660,7 @@ class FuncDescriptor extends StatelessWidget {
       } else {
         hint = Transl.misc2('Function', 'TriggeredFuncPosition');
       }
-      hint = hint.replaceAll('{1}', posVal > 0 ? Transl.special.succeed : Transl.special.failed);
+      hint = hint.replaceAll('{1}', posVal > 0 ? Transl.special.succeed : Transl.special.fail);
 
       spans.insertAll(0, [
         const TextSpan(text: '('),

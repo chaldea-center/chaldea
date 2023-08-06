@@ -2,7 +2,7 @@
 
 ## 2.4.10
 
-- Master mission solver support Advanced Quests
+- Master mission solver supports Advanced Quests
 - Fix CE pin to top not work in Laplace
 
 ## 2.4.9
