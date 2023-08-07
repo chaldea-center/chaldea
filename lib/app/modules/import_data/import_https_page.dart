@@ -128,7 +128,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                         ),
                         Text.rich(
                           TextSpan(
-                            text: "For JP/NA, use ",
+                            text: "For JP/NA, login via ",
                             children: [
                               SharedBuilder.textButtonSpan(
                                 context: context,
@@ -139,6 +139,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                                         router.pushPage(const AutoLoginPage());
                                       },
                               ),
+                              const TextSpan(text: ' first'),
                             ],
                           ),
                           textAlign: TextAlign.center,

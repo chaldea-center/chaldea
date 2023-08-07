@@ -517,7 +517,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hide_unreleased_card": MessageLookupByLibrary.simpleMessage("隐藏未实装卡牌"),
         "high_difficulty_quest": MessageLookupByLibrary.simpleMessage("高难度关卡"),
         "history": MessageLookupByLibrary.simpleMessage("历史记录"),
-        "http_sniff_hint": MessageLookupByLibrary.simpleMessage("(国/台)账号登陆时的数据"),
+        "http_sniff_hint": MessageLookupByLibrary.simpleMessage("(国/台/日/美)账号登陆时的数据"),
         "https_sniff": MessageLookupByLibrary.simpleMessage("Https抓包"),
         "hunting_quest": MessageLookupByLibrary.simpleMessage("狩猎关卡"),
         "icons": MessageLookupByLibrary.simpleMessage("图标"),

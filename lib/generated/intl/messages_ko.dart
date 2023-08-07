@@ -428,7 +428,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hide_unreleased_card": MessageLookupByLibrary.simpleMessage("미구현 서번트 숨기기"),
         "high_difficulty_quest": MessageLookupByLibrary.simpleMessage("고난이도 퀘스트"),
         "history": MessageLookupByLibrary.simpleMessage("기록"),
-        "http_sniff_hint": MessageLookupByLibrary.simpleMessage("(CN/TW)계정 로그인 시 데이터 캡쳐, KR은 지원하지 않습니다"),
+        "http_sniff_hint": MessageLookupByLibrary.simpleMessage("(JP/NA/CN/TW)계정 로그인 시 데이터 캡쳐, KR은 지원하지 않습니다"),
         "https_sniff": MessageLookupByLibrary.simpleMessage("Https 스나이핑"),
         "hunting_quest": MessageLookupByLibrary.simpleMessage("헌팅 퀘스트"),
         "icons": MessageLookupByLibrary.simpleMessage("아이콘"),

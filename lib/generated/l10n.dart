@@ -4738,10 +4738,10 @@ class S {
     );
   }
 
-  /// `(CN/TW)Capture the data when logging in`
+  /// `(JP/NA/CN/TW)Capture the data when logging in`
   String get http_sniff_hint {
     return Intl.message(
-      '(CN/TW)Capture the data when logging in',
+      '(JP/NA/CN/TW)Capture the data when logging in',
       name: 'http_sniff_hint',
       desc: '',
       locale: localeName,

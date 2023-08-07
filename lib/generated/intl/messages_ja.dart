@@ -391,7 +391,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "help": MessageLookupByLibrary.simpleMessage("ヘルプ"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("期限切れを非表示"),
         "high_difficulty_quest": MessageLookupByLibrary.simpleMessage("高難易度クエスト"),
-        "http_sniff_hint": MessageLookupByLibrary.simpleMessage("(CN/TW)アカウントがログインしているときにデータ"),
+        "http_sniff_hint": MessageLookupByLibrary.simpleMessage("(JP/NA/CN/TW)アカウントがログインしているときにデータ"),
         "https_sniff": MessageLookupByLibrary.simpleMessage("Httpsスニッフィング"),
         "hunting_quest": MessageLookupByLibrary.simpleMessage("ハンティングクエスト"),
         "icons": MessageLookupByLibrary.simpleMessage("アイコン"),
