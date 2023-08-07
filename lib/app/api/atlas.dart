@@ -325,6 +325,23 @@ class AtlasApi {
     );
   }
 
+  static Future<T?> mstData<T>(String table, T Function(dynamic json) fromJson,
+      {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/metadata/$table.json",
+      fromJson,
+      expireAfter: expireAfter,
+    );
+  }
+
+  static Future<T?> exportedData<T>(String name, T Function(dynamic json)fromJson, {Region region = Region.jp, Duration? expireAfter}){
+     return cacheManager.getModel(
+      '$_atlasApiHost/export/${region.upper}/$name.json',
+      fromJson,
+      expireAfter: expireAfter,
+    );
+  }
+
   static Future<String?> gPlayVer(Region region, {Duration? expireAfter = Duration.zero}) {
     assert(region == Region.jp || region == Region.na);
     String bundleId;

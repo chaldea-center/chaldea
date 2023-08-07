@@ -300,6 +300,7 @@ abstract class _CachedLoader<K, V> {
       _failed.remove(key);
       _cmpl.complete(value);
     }).catchError((e, s) {
+      if (e is RateLimitCancelError) return;
       _cmpl.complete(null);
       if (e is DioException) {
         final code = e.response?.statusCode;
