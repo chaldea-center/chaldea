@@ -263,6 +263,7 @@ class ServerFeedbackHandler extends ReportHandler {
       'lang': Language.current.code,
       'locale': Language.systemLocale.toString(),
       'uuid': AppInfo.uuid,
+      'user': db.security.username,
       if (kIsWeb) 'renderer': kPlatformMethods.rendererCanvasKit ? 'canvaskit' : 'html',
     };
     for (var entry in summary.entries) {

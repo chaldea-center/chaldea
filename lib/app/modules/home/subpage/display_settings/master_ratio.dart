@@ -117,7 +117,7 @@ class _MasterRatioSettingState extends State<MasterRatioSetting> {
           onTap: () => setState(() {}),
         ),
         Slider.adaptive(
-          value: (display.maxWindowWidth ?? 1920).toDouble().clamp(720.0, 1930.0),
+          value: (display.maxWindowWidth ?? 1920).toDouble().clamp(400.0, 1930.0),
           min: 720,
           max: 1930,
           divisions: 193 - 72,

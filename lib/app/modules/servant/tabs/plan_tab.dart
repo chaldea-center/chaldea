@@ -70,6 +70,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         header: kLaplaceName,
         children: [
           CheckboxListTile(
+            dense: true,
             title: Text(S.current.pin_to_top),
             value: db.curUser.battleSim.pingedSvts.contains(svt.collectionNo),
             onChanged: (v) {
