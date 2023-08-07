@@ -167,15 +167,18 @@ class BuffData {
       case BuffType.subIndividuality:
         return true;
       default:
-        final int checkIndvType = buff.script?.checkIndvType ?? 0;
-        final bool activeOnly = activeOnlyTypes.contains(buff.type);
-        final bool ignoreIrremovable = vals.IgnoreIndivUnreleaseable == 1;
-        final bool checkActorNpTraits = buff.script?.IncludeIgnoreIndividuality == 1;
+        final checkIndvType = buff.script?.checkIndvType ?? 0;
+        final positiveMatchFunction = checkIndvType == 1 || checkIndvType == 3 ? allMatch : partialMatch;
+        final negativeMatchFunction = checkIndvType == 1 || checkIndvType == 3 ? allMatch : partialMatch;
+        final activeOnly = activeOnlyTypes.contains(buff.type);
+        final ignoreIrremovable = vals.IgnoreIndivUnreleaseable == 1;
+        final checkActorNpTraits = buff.script?.IncludeIgnoreIndividuality == 1;
 
         final selfCheck = battleData.checkTraits(CheckTraitParameters(
           requiredTraits: buff.ckSelfIndv,
           actor: isTarget ? battleData.target : battleData.activator,
-          checkIndivType: checkIndvType,
+          positiveMatchFunction: positiveMatchFunction,
+          negativeMatchFunction: negativeMatchFunction,
           checkActorTraits: true,
           checkActorBuffTraits: battleData.currentBuff == null,
           checkActiveBuffOnly: activeOnly,
@@ -188,7 +191,8 @@ class BuffData {
         final opponentCheck = battleData.checkTraits(CheckTraitParameters(
           requiredTraits: buff.ckOpIndv,
           actor: !isTarget ? battleData.target : battleData.activator,
-          checkIndivType: checkIndvType,
+          positiveMatchFunction: positiveMatchFunction,
+          negativeMatchFunction: negativeMatchFunction,
           checkActorTraits: true,
           checkActorBuffTraits: battleData.currentBuff == null,
           checkActiveBuffOnly: activeOnly,
@@ -315,14 +319,16 @@ class BuffData {
 
     List<NiceTrait>? requiredTraits;
     int? requireAtLeast;
-    int checkIndivType = 0;
+    bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) positiveMatchFunction = partialMatch;
+    bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) negativeMatchFunction = partialMatch;
 
     if (buff.script?.INDIVIDUALITIE != null) {
       requiredTraits = [buff.script!.INDIVIDUALITIE!];
       requireAtLeast = buff.script?.INDIVIDUALITIE_COUNT_ABOVE;
     } else if (buff.script?.INDIVIDUALITIE_AND != null) {
       requiredTraits = buff.script!.INDIVIDUALITIE_AND!;
-      checkIndivType = 1;
+      positiveMatchFunction = allMatch;
+      negativeMatchFunction = allMatch;
     } else if (buff.script?.INDIVIDUALITIE_OR != null) {
       requiredTraits = buff.script!.INDIVIDUALITIE_OR!;
     }
@@ -332,7 +338,8 @@ class BuffData {
         requiredTraits: requiredTraits,
         actor: owner,
         requireAtLeast: requireAtLeast,
-        checkIndivType: checkIndivType,
+        positiveMatchFunction: positiveMatchFunction,
+        negativeMatchFunction: negativeMatchFunction,
         checkActorTraits: true,
         checkActorBuffTraits: true,
         checkQuestTraits: true,

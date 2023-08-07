@@ -1159,6 +1159,51 @@ void main() async {
     expect(battle.criticalStars, moreOrLessEquals(9.030, epsilon: 0.001));
   });
 
+  test('Andersen skill upgrade', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(500500)
+        ..skillLvs = [10, 10, 10]
+        ..setSkillStrengthenLvs([2, 1, 1]),
+      PlayerSvtData.id(703300)
+        ..lv = 90
+        ..atkFou = 1000
+        ..tdLv = 5
+        ..skillLvs = [10, 10, 10],
+      PlayerSvtData.id(703500)
+        ..lv = 90
+        ..atkFou = 1000
+        ..tdLv = 5
+        ..skillLvs = [10, 10, 10],
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final ajAlter = battle.onFieldAllyServants[1]!;
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final enemy2 = battle.onFieldEnemies[1]!;
+    final enemy3 = battle.onFieldEnemies[2]!;
+
+    await battle.activateSvtSkill(0, 0);
+    ajAlter.np = 10000;
+
+    final previousHp1 = enemy1.hp;
+    final previousHp2 = enemy2.hp;
+    final previousHp3 = enemy3.hp;
+    await battle.playerTurn([CombatAction(ajAlter, ajAlter.getNPCard(battle)!)]);
+    expect(previousHp1 - enemy1.hp, 51655);
+    expect(previousHp2 - enemy2.hp, 51655);
+    expect(previousHp3 - enemy3.hp, 51655);
+    expect(battle.criticalStars, moreOrLessEquals(12.945, epsilon: 0.001));
+
+    final mori = battle.onFieldAllyServants[2]!;
+    final enemy4 = battle.onFieldEnemies[0]!;
+    final previousHp4 = enemy4.hp;
+    await battle.playerTurn([CombatAction(mori, mori.getCards(battle)[4]..isCritical = true)]);
+    expect(previousHp4 - enemy4.hp, 27764);
+    expect(battle.criticalStars, moreOrLessEquals(1.006, epsilon: 0.001));
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,
@@ -1181,7 +1226,8 @@ void main() async {
       expect(
         battle.checkTraits(CheckTraitParameters(
           requiredTraits: divinityCheck,
-          checkIndivType: 3,
+          positiveMatchFunction: allMatch,
+          negativeMatchFunction: allMatch,
         )),
         false,
       );
@@ -1196,7 +1242,8 @@ void main() async {
       expect(
         battle.checkTraits(CheckTraitParameters(
           requiredTraits: [],
-          checkIndivType: 3,
+          positiveMatchFunction: allMatch,
+          negativeMatchFunction: allMatch,
         )),
         true,
       );
@@ -1216,7 +1263,8 @@ void main() async {
           requiredTraits: [],
           actor: okuni,
           checkActorTraits: true,
-          checkIndivType: 3,
+          positiveMatchFunction: allMatch,
+          negativeMatchFunction: allMatch,
         )),
         true,
       );

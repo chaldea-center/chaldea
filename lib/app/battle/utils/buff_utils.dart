@@ -36,20 +36,39 @@ int countAnyTraits(final Iterable<NiceTrait> myTraits, final Iterable<NiceTrait>
       .length;
 }
 
-bool containsAnyTraits(final Iterable<NiceTrait> myTraits, final Iterable<NiceTrait> requiredTraits) {
-  if (requiredTraits.isEmpty) {
-    return true;
-  }
+bool checkTraitFunction(
+  final Iterable<NiceTrait> myTraits,
+  final Iterable<NiceTrait> requiredTraits,
+  final bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) positiveMatchFunction,
+  final bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) negativeMatchFunction,
+) {
+  final positiveTargets = requiredTraits.where((trait) => trait.signedId > 0);
+  final negativeTargets = requiredTraits.where((trait) => trait.signedId < 0);
 
-  final Iterable<int> myTraitIds = myTraits.map((e) => e.signedId);
-  return requiredTraits
-      .any((trait) => myTraitIds.contains(trait.signedId) || (trait.negative && !myTraitIds.contains(trait.id)));
+  if (requiredTraits.isEmpty) return true;
+  if (positiveMatchFunction(myTraits, positiveTargets)) return true;
+  if (negativeTargets.isEmpty) return false;
+  return !negativeMatchFunction(myTraits, negativeTargets);
 }
 
-bool containsAllTraits(final Iterable<NiceTrait> myTraits, final Iterable<NiceTrait> requiredTraits) {
-  final Iterable<int> myTraitIds = myTraits.map((e) => e.signedId);
-  return requiredTraits
-      .every((trait) => myTraitIds.contains(trait.signedId) || (trait.negative && !myTraitIds.contains(trait.id)));
+bool partialMatch(final Iterable<NiceTrait> myTraits, final Iterable<NiceTrait> unsignedRequiredTraits) {
+  final Set<int> myTraitsSet = myTraits.map((trait) => trait.id).toSet();
+  for (final required in unsignedRequiredTraits) {
+    if (myTraitsSet.contains(required.id)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool allMatch(final Iterable<NiceTrait> myTraits, final Iterable<NiceTrait> unsignedRequiredTraits) {
+  final Set<int> myTraitsSet = myTraits.map((trait) => trait.id).toSet();
+  for (final required in unsignedRequiredTraits) {
+    if (!myTraitsSet.contains(required.id)) {
+      return false;
+    }
+  }
+  return true;
 }
 
 List<BuffData> collectBuffsPerAction(final Iterable<BuffData> buffs, final BuffAction buffAction) {
@@ -82,8 +101,9 @@ List<BuffData> collectBuffsPerTypes(final Iterable<BuffData> buffs, final Iterab
 class CheckTraitParameters {
   Iterable<NiceTrait> requiredTraits;
   BattleServantData? actor;
-  int? requireAtLeast; // overshadows checkIndivType
-  int checkIndivType;
+  int? requireAtLeast; // overshadows positive & negative match
+  bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) positiveMatchFunction;
+  bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) negativeMatchFunction;
 
   bool checkActorTraits;
   bool checkActorBuffTraits;
@@ -98,7 +118,6 @@ class CheckTraitParameters {
     required final Iterable<NiceTrait> requiredTraits,
     this.actor,
     this.requireAtLeast,
-    this.checkIndivType = 0,
     this.checkActorTraits = false,
     this.checkActorBuffTraits = false,
     this.checkActiveBuffOnly = false,
@@ -107,5 +126,7 @@ class CheckTraitParameters {
     this.checkCurrentBuffTraits = false,
     this.checkCurrentCardTraits = false,
     this.checkQuestTraits = false,
+    this.positiveMatchFunction = partialMatch,
+    this.negativeMatchFunction = partialMatch,
   }) : requiredTraits = requiredTraits.toList();
 }

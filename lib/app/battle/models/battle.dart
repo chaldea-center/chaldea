@@ -644,10 +644,13 @@ class BattleData {
 
     if (params.requireAtLeast != null) {
       return countAnyTraits(currentTraits, params.requiredTraits) >= params.requireAtLeast!;
-    } else if (params.checkIndivType == 1 || params.checkIndivType == 3) {
-      return containsAllTraits(currentTraits, params.requiredTraits);
     } else {
-      return containsAnyTraits(currentTraits, params.requiredTraits);
+      return checkTraitFunction(
+        currentTraits,
+        params.requiredTraits,
+        params.positiveMatchFunction,
+        params.negativeMatchFunction,
+      );
     }
   }
 

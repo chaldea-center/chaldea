@@ -1118,7 +1118,7 @@ class BattleServantData {
   }
 
   void removeBuffWithTrait(final NiceTrait trait) {
-    battleBuff.activeList.removeWhere((buff) => containsAnyTraits(buff.traits, [trait]));
+    battleBuff.activeList.removeWhere((buff) => checkTraitFunction(buff.traits, [trait], partialMatch, partialMatch));
   }
 
   int countTrait(final BattleData battleData, final List<NiceTrait> traits) {
@@ -1131,7 +1131,7 @@ class BattleServantData {
 
   List<BuffData> getBuffsWithTraits(final List<NiceTrait> traits, {final bool activeOnly = false}) {
     final buffList = activeOnly ? battleBuff.activeList : battleBuff.allBuffs;
-    return buffList.where((buff) => containsAnyTraits(buff.traits, traits)).toList();
+    return buffList.where((buff) => checkTraitFunction(buff.traits, traits, partialMatch, partialMatch)).toList();
   }
 
   List<BuffData> getBuffsOfType(final BuffType buffType) {
