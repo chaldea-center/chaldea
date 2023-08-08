@@ -1,10 +1,12 @@
+import 'package:flutter/material.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:data_table_2/data_table_2.dart';
+
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/region_based.dart';
-import 'package:data_table_2/data_table_2.dart';
-import 'package:flutter/material.dart';
 
 class MasterExpPage extends StatefulWidget {
   const MasterExpPage({super.key});

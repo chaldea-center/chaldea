@@ -334,8 +334,9 @@ class AtlasApi {
     );
   }
 
-  static Future<T?> exportedData<T>(String name, T Function(dynamic json)fromJson, {Region region = Region.jp, Duration? expireAfter}){
-     return cacheManager.getModel(
+  static Future<T?> exportedData<T>(String name, T Function(dynamic json) fromJson,
+      {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
       '$_atlasApiHost/export/${region.upper}/$name.json',
       fromJson,
       expireAfter: expireAfter,

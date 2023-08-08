@@ -22,6 +22,7 @@ class ExtraAssetsPage extends StatelessWidget {
   final List<String> aprilFoolAssets;
   final List<String> mcSprites;
   final List<String> fandomSprites;
+  final List<String> anni8photos;
   final bool scrollable;
   final Iterable<String> Function(ExtraAssetsUrl urls)? getUrls;
   final PlaceholderWidgetBuilder? charaGraphPlaceholder;
@@ -33,6 +34,7 @@ class ExtraAssetsPage extends StatelessWidget {
     this.aprilFoolAssets = const [],
     this.mcSprites = const [],
     this.fandomSprites = const [],
+    this.anni8photos = const [],
     this.scrollable = true,
     this.getUrls,
     this.charaGraphPlaceholder,
@@ -126,6 +128,7 @@ class ExtraAssetsPage extends StatelessWidget {
       _oneGroup('${S.current.sprites} (Fandom)', fandomSprites.map(WikiTool.fandomFileUrl), 300, expanded: false),
       spriteViewer(extraAssets),
       _oneGroup('Texture', _getUrls(extraAssets?.spriteModel), 300, expanded: false, showMerge: false),
+      _oneGroup('8th Anniversary', anni8photos, 300, expanded: false),
     ].whereType<Widget>().toList();
     if (scrollable) {
       return ListView(

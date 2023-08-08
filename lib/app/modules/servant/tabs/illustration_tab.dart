@@ -52,6 +52,7 @@ class _SvtIllustrationTabState extends State<SvtIllustrationTab> {
             aprilFoolAssets: svt.extra.aprilFoolAssets,
             mcSprites: svt.extra.mcSprites,
             fandomSprites: svt.extra.fandomSprites,
+            anni8photos: get8AnniPhotos(),
             getUrls: filter.options.isEmpty ? null : getUrls,
             charaGraphPlaceholder: (_, __) => db.getIconImage(svt.classCard),
           ),
@@ -67,5 +68,21 @@ class _SvtIllustrationTabState extends State<SvtIllustrationTab> {
     if (urls.costume != null && filter.options.contains(_costumeKey)) {
       yield* urls.costume!.values;
     }
+  }
+
+  List<String> get8AnniPhotos() {
+    if (!svt.isUserSvt || svt.collectionNo >= 384 || svt.rarity == 0) return const [];
+    List<int> idx;
+    if (svt.collectionNo == 4) {
+      idx = [1, 2, 3];
+    } else if (svt.collectionNo == 315) {
+      idx = [1];
+    } else if (svt.rarity == 4 && svt.extra.obtains.contains(SvtObtain.eventReward)) {
+      idx = [1];
+    } else {
+      idx = [1, 2, 3];
+    }
+    final colNo = svt.collectionNo.toString().padLeft(3, '0');
+    return idx.map((e) => "https://static.atlasacademy.io/JP/8th_anni_photo_studio/$colNo-$e.png").toList();
   }
 }
