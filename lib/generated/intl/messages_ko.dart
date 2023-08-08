@@ -23,8 +23,12 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(curVersion, newVersion, releaseNote) =>
       "현재 버전 : ${curVersion}\nL최신 버전 : ${newVersion}\n개발 노트:\n${releaseNote}";
 
+  static String m15(actorName) => "필드에서 ${actorName} 필요";
+
   static String m1(url) =>
       "Chaldea - 멀티 플랫폼의 Fate/GO 아이템 계획 어플. 게임정보의 열람 및 서번트/이벤트/아이템 계획, 마스터 미션 계획, 가챠 시뮬레이터 등의 기능을 서포트합니다.\n\n자세히 보기: \n${url}\n";
+
+  static String m16(count) => "NP 차지 ${count} 에게";
 
   static String m2(version) => "필요한 앱 버전: ≥ ${version}";
 
@@ -102,6 +106,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "april_fool": MessageLookupByLibrary.simpleMessage("만우절"),
         "ascension": MessageLookupByLibrary.simpleMessage("영기"),
         "ascension_short": MessageLookupByLibrary.simpleMessage("영기"),
+        "ascension_stage": MessageLookupByLibrary.simpleMessage("재림 단계"),
+        "ascension_stage_short": MessageLookupByLibrary.simpleMessage("단계"),
         "ascension_up": MessageLookupByLibrary.simpleMessage("영기재림"),
         "atlas_load": MessageLookupByLibrary.simpleMessage("로드"),
         "attach_from_files": MessageLookupByLibrary.simpleMessage("파일에서"),
@@ -109,6 +115,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "attach_help": MessageLookupByLibrary.simpleMessage("앨범에서 이미지를 가져올 때 문제가 있는 경우 파일로 가져오세요"),
         "attachment": MessageLookupByLibrary.simpleMessage("애정"),
         "attack_np_rate": MessageLookupByLibrary.simpleMessage("공격시 NP 수급률"),
+        "auto_add_trait": MessageLookupByLibrary.simpleMessage("특성 자동 추가"),
         "auto_login": MessageLookupByLibrary.simpleMessage("자동 로그인"),
         "auto_reset": MessageLookupByLibrary.simpleMessage("자동 리셋"),
         "auto_update": MessageLookupByLibrary.simpleMessage("자동 업데이트"),
@@ -123,6 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_activate_probability": MessageLookupByLibrary.simpleMessage("발동확률"),
         "battle_after_7th": MessageLookupByLibrary.simpleMessage("7년 후"),
         "battle_ally": MessageLookupByLibrary.simpleMessage("아군"),
+        "battle_atk_np_parameters": MessageLookupByLibrary.simpleMessage("공격 NP 매개변수"),
         "battle_attack": MessageLookupByLibrary.simpleMessage("공격"),
         "battle_battle_log": MessageLookupByLibrary.simpleMessage("전투일지"),
         "battle_before_7th": MessageLookupByLibrary.simpleMessage("7년 전"),
@@ -139,10 +147,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_click_to_select_servants": MessageLookupByLibrary.simpleMessage("클릭하여 서번트를 선택"),
         "battle_command_card": MessageLookupByLibrary.simpleMessage("커맨드 카드"),
         "battle_damage": MessageLookupByLibrary.simpleMessage("데미지"),
+        "battle_damage_parameters": MessageLookupByLibrary.simpleMessage("데미지 매개변수"),
+        "battle_damage_rate": MessageLookupByLibrary.simpleMessage("데미지 배율"),
         "battle_death": MessageLookupByLibrary.simpleMessage("퇴각"),
         "battle_edit_ce_option": MessageLookupByLibrary.simpleMessage("예장 옵션조정"),
         "battle_edit_servant_option": MessageLookupByLibrary.simpleMessage("사운드 옵션조정"),
         "battle_enemy_remaining": MessageLookupByLibrary.simpleMessage("에너미의 남은수"),
+        "battle_extra_rate": MessageLookupByLibrary.simpleMessage("엑스트라 데미지 계수"),
         "battle_heal": MessageLookupByLibrary.simpleMessage("회복"),
         "battle_invalid": MessageLookupByLibrary.simpleMessage("무효"),
         "battle_mc_lv": MessageLookupByLibrary.simpleMessage("마술예장레벨"),
@@ -157,14 +168,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_random": MessageLookupByLibrary.simpleMessage("랜덤"),
         "battle_records": MessageLookupByLibrary.simpleMessage("기록"),
         "battle_remaining_hp": MessageLookupByLibrary.simpleMessage("남은 HP"),
+        "battle_require_actor_on_field": m15,
         "battle_require_field_traits": MessageLookupByLibrary.simpleMessage("요구되는 필드 특성"),
         "battle_require_opponent_traits": MessageLookupByLibrary.simpleMessage("요구되는 상대 특성"),
         "battle_require_self_traits": MessageLookupByLibrary.simpleMessage("요구되는 자신 특성"),
         "battle_select_activator": MessageLookupByLibrary.simpleMessage("발동자를 선택"),
         "battle_select_card": MessageLookupByLibrary.simpleMessage("커맨드 카드를 선택"),
         "battle_select_effect": MessageLookupByLibrary.simpleMessage("효과선택"),
+        "battle_should_activate": MessageLookupByLibrary.simpleMessage("발동 할까"),
         "battle_simulation": MessageLookupByLibrary.simpleMessage("배틀 시뮬레이션"),
         "battle_simulation_setup": MessageLookupByLibrary.simpleMessage("팀 편성"),
+        "battle_star_parameters": MessageLookupByLibrary.simpleMessage("스타 매개변수"),
         "battle_tailored_execution": MessageLookupByLibrary.simpleMessage("수동랜덤값모드"),
         "battle_turn": MessageLookupByLibrary.simpleMessage("턴"),
         "battle_turn_end": MessageLookupByLibrary.simpleMessage("턴 종료"),
@@ -212,6 +226,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "chaldea_share_msg": m1,
         "change_log": MessageLookupByLibrary.simpleMessage("업데이트 내역"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("캐릭터"),
+        "charge_np_to": m16,
         "check_file_hash": MessageLookupByLibrary.simpleMessage("파일 무결성 확인"),
         "check_update": MessageLookupByLibrary.simpleMessage("업데이트 확인"),
         "clear": MessageLookupByLibrary.simpleMessage("지우기"),
@@ -254,6 +269,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "daily_qp_quest": MessageLookupByLibrary.simpleMessage("보물창고의 문을 열어라"),
         "daily_training_quest": MessageLookupByLibrary.simpleMessage("수련장"),
         "damage": MessageLookupByLibrary.simpleMessage("데미지"),
+        "damage_rate": MessageLookupByLibrary.simpleMessage("데미지 계수"),
         "dark_mode": MessageLookupByLibrary.simpleMessage("다크 모드"),
         "dark_mode_dark": MessageLookupByLibrary.simpleMessage("다크"),
         "dark_mode_light": MessageLookupByLibrary.simpleMessage("라이트"),
@@ -270,6 +286,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "debug_menu": MessageLookupByLibrary.simpleMessage("Debug Menu"),
         "def_np_gain_mod": MessageLookupByLibrary.simpleMessage("적 공격 보정"),
         "delete": MessageLookupByLibrary.simpleMessage("삭제"),
+        "delete_reason": MessageLookupByLibrary.simpleMessage("삭제 이유"),
         "delete_unreleased_card": MessageLookupByLibrary.simpleMessage("미구현카드를 제거"),
         "demands": MessageLookupByLibrary.simpleMessage("요구량"),
         "desktop_only": MessageLookupByLibrary.simpleMessage("데스크탑 만"),
@@ -277,6 +294,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "detective_mission": MessageLookupByLibrary.simpleMessage("탐정 미션"),
         "detective_rank": MessageLookupByLibrary.simpleMessage("탐정 랭크"),
         "disable": MessageLookupByLibrary.simpleMessage("사용불가"),
+        "disable_event_effects": MessageLookupByLibrary.simpleMessage("이벤트 효과 사용불가"),
         "disabled": MessageLookupByLibrary.simpleMessage("사용불가"),
         "display_grid": MessageLookupByLibrary.simpleMessage("그리드"),
         "display_list": MessageLookupByLibrary.simpleMessage("리스트"),
