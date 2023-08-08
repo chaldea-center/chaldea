@@ -186,7 +186,10 @@ class ValDsc extends StatelessWidget {
     if (func.funcType == FuncType.addState ||
         func.funcType == FuncType.addStateShort ||
         func.funcType == FuncType.addFieldChangeToField) {
-      describeBuff(parts, func.buffs.first, vals, inList: inList, ignoreCount: ignoreCount);
+      final buff = func.buff;
+      if (buff != null) {
+        describeBuff(parts, func.buffs.first, vals, inList: inList, ignoreCount: ignoreCount);
+      }
       if (vals.UseRate != null) {
         _addPercent(parts, vals.UseRate, 10, (v) => Transl.special.funcValActChance(v));
       }

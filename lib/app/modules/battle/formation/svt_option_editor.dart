@@ -1146,7 +1146,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
   Widget build(final BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.current.battle_edit_ce_option),
+        title: Text('[${S.current.edit}] ${playerSvtData.svt?.lName.l ?? ""}'),
         actions: [popupMenu],
       ),
       body: Column(children: [

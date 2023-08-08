@@ -113,16 +113,16 @@ class UserMstCache {
 
   factory UserMstCache.fromJson(Map<String, dynamic> data) {
     // some regions' data are in replaced, some are in updated
-    final Map replaced = data.putIfAbsent('replaced', () => {});
-    final Map updated = data.putIfAbsent('updated', () => {});
+    final Map replaced = data.putIfAbsent('replaced', () => <String, dynamic>{});
+    final Map updated = data.putIfAbsent('updated', () => <String, dynamic>{});
     final dupKeys = replaced.keys.toSet().intersection(updated.keys.toSet());
     if (dupKeys.isNotEmpty) {
       print('keys in replaced: [${replaced.keys.join(",")}]');
       print('keys in updated : [${updated.keys.join(",")}]');
       print('keys in both    : [${dupKeys.join(",")}]');
     }
-    updated.addAll(replaced);
-    replaced.addAll(updated);
+    updated.addAll(Map<String, dynamic>.from(replaced));
+    replaced.addAll(Map<String, dynamic>.from(updated));
     updated.clear();
     return _$UserMstCacheFromJson(data);
   }
