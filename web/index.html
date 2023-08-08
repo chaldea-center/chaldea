@@ -180,7 +180,7 @@
             serviceWorker: {
               serviceWorkerVersion: serviceWorkerVersion,
             },
-            entrypointUrl: "/main.dart.js",
+            entrypointUrl: "/main.dart.js?v=",
             onEntrypointLoaded: function (engineInitializer) {
               // config web renderer, only work when built with "auto" option
               let _renderer = window.localStorage.getItem("flutterWebRenderer");

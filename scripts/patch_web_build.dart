@@ -62,13 +62,10 @@ void main() {
   print('[patch-web] patched $patched google fonts code lines.');
 
   // replace all main.dart.js reference to new hashed filename
-  final newMainJsFn = 'main.${mainJs.newHash.substring(0, 8)}.dart.js';
+  final mainjsHash = mainJs.newHash.substring(0, 8);
 
-  for (final file in [indexHtml, /*jsMap, */ sw]) {
-    print('Replacing "main.dart.js" to "$newMainJsFn" in file "${file.fn}"');
-    file.content = file.content.replaceAll('main.dart.js', newMainJsFn);
-    file.updateHash();
-  }
+  indexHtml.content = indexHtml.content.replaceFirst('main.dart.js?v=', 'main.dart.js?v=$mainjsHash');
+  indexHtml.updateHash();
 
   // remove NOTICE from core cache, which needs to download before app start
   sw.content = sw.content.replaceFirst('"assets/NOTICES",\n', '');
@@ -81,7 +78,7 @@ void main() {
       print('Updating hash "${fn.padRight(21)}": $oldHash -> ${indexHtml.newHash}');
       assert(oldHash == indexHtml.initHash);
       return '"$fn": "${indexHtml.newHash}"';
-    } else if (fn == newMainJsFn) {
+    } else if (fn == mainJs.fn) {
       print('Updating hash "${fn.padRight(21)}": $oldHash -> ${mainJs.newHash}');
       assert(oldHash == mainJs.initHash);
       return '"$fn": "${mainJs.newHash}"';
@@ -92,6 +89,5 @@ void main() {
   indexHtml.save();
   mainJs.save();
   // jsMap.save();
-  mainJs.file.renameSync('$_buildDir/$newMainJsFn');
   sw.save();
 }
