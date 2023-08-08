@@ -1,12 +1,17 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
   <head>
     <base href="$FLUTTER_BASE_HREF" />
 
     <meta charset="UTF-8" />
-    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+    <title>Chaldea</title>
     <meta name="description" content="Chaldea - Yet Another Planner & Battle Simulator for Fate/GO" />
+    <meta
+      name="keyword"
+      content="Material Planning,Planner,Laplace,迦勒底,素材规划,模拟器,组队,Battle Simulator,3T Simulator,companion,FGO,Fate/Grand Order,命运-冠位指定,周回,free"
+    />
 
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
     <!-- iOS meta tags & icons -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
@@ -26,60 +31,104 @@
     <meta property="og:image:width" content="300" />
     <meta property="og:image:height" content="300" />
     <meta property="og:image:alt" content="Chaldea Logo" />
-    <meta property="og:description" content="Chaldea - Yet another planner for Fate/GO" />
+    <meta property="og:description" content="Chaldea - Yet Another Planner & Battle Simulator for Fate/GO" />
 
-    <title>Chaldea</title>
     <link rel="manifest" href="manifest.json" />
 
     <style>
-      /* loading indicator style */
-      .loading-hint {
-        margin-top: 100px;
-        color: #212529;
-        font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
-      }
-      @media only screen and (max-width: 768px) {
-        .loading-hint {
-          font-size: 2em;
-        }
-      }
-      .loading-indicator {
+      body {
         display: flex;
         justify-content: center;
         align-items: center;
-        text-align: center;
-        min-height: 100vh;
+        height: 100vh;
+        background-color: #333;
+        font-family: Arial, sans-serif;
+        overflow: hidden;
       }
-      .lds-ripple {
+
+      .splash-container {
+        text-align: center;
+      }
+
+      .splash-container .logo {
+        width: 150px;
+        height: auto;
+      }
+
+      .splash-container h1 {
+        color: #fff;
+        margin-top: 20px;
+      }
+
+      .splash-container p {
+        color: #ccc;
+        margin-top: 10px;
+      }
+
+      .splash-container .button {
         display: inline-block;
-        position: absolute;
-        width: 80px;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: transparent;
+        color: #007bff;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+        border: 2px solid #007bff;
+      }
+
+      .splash-container .button:hover {
+        background-color: #007bff;
+        color: #fff;
+      }
+
+      .splash-container .loading-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
         height: 80px;
       }
-      .lds-ripple div {
+
+      .loading-container .fou {
+        max-width: 100%;
+        max-height: 80px;
         position: absolute;
-        border: 4px solid grey;
-        opacity: 1;
-        border-radius: 50%;
-        animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+        left: 0;
+        right: 0;
+        margin: auto;
+        animation: loading-animation 1s steps(4) infinite;
       }
-      .lds-ripple div:nth-child(2) {
-        animation-delay: -0.5s;
+      .loading-container .fou.f2 {
+        visibility: hidden;
+        animation-delay: 0.25s;
+        -webkit-animation-delay: 0.25s;
       }
-      @keyframes lds-ripple {
+      .loading-container .fou.f3 {
+        visibility: hidden;
+        animation-delay: 0.5s;
+        -webkit-animation-delay: 0.5s;
+      }
+      .loading-container .fou.f4 {
+        visibility: hidden;
+        animation-delay: 0.75s;
+        -webkit-animation-delay: 0.75s;
+      }
+
+      @keyframes loading-animation {
         0% {
-          top: 36px;
-          left: 36px;
-          width: 0;
-          height: 0;
-          opacity: 1;
+          visibility: visible;
+        }
+        25% {
+          visibility: hidden;
+        }
+        50% {
+          visibility: hidden;
+        }
+        75% {
+          visibility: hidden;
         }
         100% {
-          top: 0px;
-          left: 0px;
-          width: 72px;
-          height: 72px;
-          opacity: 0;
+          visibility: hidden;
         }
       }
     </style>
@@ -92,13 +141,24 @@
     <script src="/flutter.js?v=FLUTTER_VERSION" defer></script>
   </head>
   <body>
-    <!-- loading indicator, ref: loading.io -->
-    <div class="loading-indicator">
-      <div class="lds-ripple">
-        <div></div>
-        <div></div>
+    <noscript> You need to enable JavaScript to run this app. </noscript>
+
+    <div class="splash-container">
+      <img class="logo" src="/assets/res/img/launcher_icon/app_icon_rounded.png" alt="Chaldea Logo" />
+      <h1>Chaldea</h1>
+      <p>Starting...</p>
+      <div class="loading-container">
+        <img class="fou f1" src="/assets/res/img/load_icon_A01.png" alt="Loading" />
+        <img class="fou f2" src="/assets/res/img/load_icon_A02.png" alt="Loading" />
+        <img class="fou f3" src="/assets/res/img/load_icon_A03.png" alt="Loading" />
+        <img class="fou f4" src="/assets/res/img/load_icon_A04.png" alt="Loading" />
       </div>
-      <div class="loading-hint">Loading Chaldea...</div>
+      <a class="button" href="https://docs.chaldea.center" target="_blank">Visit Document Site</a>
+      <footer hidden>
+        <p>Chaldea is a cross-platform tool for Fate/Grand Order, composed of Chaldeas and Laplace.</p>
+        <p>Chaldeas is a planner to help masters planning materials, servants, events and so on.</p>
+        <p><a href="/laplace">Laplace</a> is a novel battle simulator to help building your team, help 3T farming.</p>
+      </footer>
     </div>
 
     <script>
