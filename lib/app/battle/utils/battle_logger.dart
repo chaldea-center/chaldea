@@ -188,20 +188,44 @@ class BattleRecordManager {
   }
 
   void determineUploadEligibility(final QuestPhase questPhase, final BattleOptions options) {
-    if (questPhase.id <= 0 || options.pointBuffs.isNotEmpty || options.simulateEnemy) {
+    if (questPhase.id <= 0 || options.pointBuffs.isNotEmpty || options.simulateEnemy || options.disableEvent) {
       isUploadEligible = false;
       return;
     }
 
     for (final svtData in options.team.allSvts) {
-      if (svtData.svt != null) {
-        final svt = svtData.svt!;
-        if (!svt.isUserSvt || svtData.supportType == SupportSvtType.npc || svtData.additionalPassives.isNotEmpty) {
-          isUploadEligible = false;
-          return;
-        }
+      if (!_checkSvtEligible(svtData)) {
+        isUploadEligible = false;
+        return;
       }
     }
+  }
+
+  bool _checkSvtEligible(PlayerSvtData svtData) {
+    final svt = svtData.svt;
+    if (svt == null) return true;
+    if (!svt.isUserSvt || svtData.supportType == SupportSvtType.npc || svtData.additionalPassives.isNotEmpty) {
+      return false;
+    }
+    if (svtData.fixedAtk != null || svtData.fixedHp != null) {
+      return false;
+    }
+    final dbSvt = db.gameData.servantsById[svt.id];
+    if (dbSvt == null) return false;
+    for (final skillNum in kActiveSkillNums) {
+      final validSkills = BattleUtils.getShownSkills(dbSvt, svtData.limitCount, skillNum).map((e) => e.id).toSet();
+      if (svtData.skills.any((e) => !validSkills.contains(e?.id))) {
+        return false;
+      }
+      final validTds = BattleUtils.getShownTds(dbSvt, svtData.limitCount).map((e) => e.id).toSet();
+      if (!validTds.contains(svtData.td?.id)) {
+        return false;
+      }
+    }
+    if (svtData.ce?.collectionNo == 0) {
+      return false;
+    }
+    return true;
   }
 
   List<BattleRecordData> toUploadRecords() {

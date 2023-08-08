@@ -56,6 +56,7 @@ class PlayerSvtData {
     if (supportType == SupportSvtType.npc) {
       supportType = SupportSvtType.none;
     }
+    fixedAtk = fixedHp = null;
     final status = db.curUser.svtStatusOf(selectedSvt.collectionNo);
     final plan = db.settings.battleSim.playerDataSource == PreferPlayerSvtDataSource.target
         ? db.curUser.svtPlanOf(selectedSvt.collectionNo)
