@@ -37,13 +37,23 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     loadMstData();
   }
 
-  Future<List<MstGacha>?> _fetchMst(Region region) {
+  Future<List<MstGacha>?> _fetchMst(Region region) async {
     String url =
         "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/master/mstGacha.json";
-    return AtlasApi.cacheManager.getModel<List<MstGacha>>(
+    if (db.settings.proxyServer) url = HostsX.proxyWorker(url);
+    AtlasApi.cacheManager.clearFailed();
+    final d = await AtlasApi.cacheManager.getModel<List<MstGacha>>(
       url,
-      (data) => (data as List).map((e) => MstGacha.fromJson(e)).toList(),
+      (data) => (data as List).map((e) => MstGacha.fromJson(Map.from(e))).toList(),
     );
+    if (d == null && mounted) {
+      SimpleCancelOkDialog(
+        title: Text(S.current.error),
+        content: const Text('Download Gacha Data failed, click Refresh to retry'),
+        hideCancel: true,
+      ).showDialog(context);
+    }
+    return d;
   }
 
   Future<void> loadMstData() async {
@@ -65,10 +75,10 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
         }
       }
       if (widget.region == Region.tw) {
-        records.sort2((e) => e.gachaId <= 101 ? -1000000000000 + e.gachaId : -(e.createdAt ?? e.gachaId));
+        records.sort2((e) => e.gachaId <= 100 ? -1000000000000 + e.gachaId : -(e.createdAt ?? e.gachaId));
       } else {
         records
-            .sort2((e) => e.gachaId <= 101 ? -1000000000000 + e.gachaId : -(gachas[e.gachaId]?.openedAt ?? e.gachaId));
+            .sort2((e) => e.gachaId <= 100 ? -1000000000000 + e.gachaId : -(gachas[e.gachaId]?.openedAt ?? e.gachaId));
       }
     }
     for (final gacha in [...gachas.values, ...cnGachas.values]) {
@@ -96,6 +106,11 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
                     child: CupertinoActivityIndicator(radius: 8),
                   )
                 : const SizedBox.shrink(),
+          ),
+          IconButton(
+            onPressed: gachas.isEmpty ? loadMstData : null,
+            icon: const Icon(Icons.refresh),
+            tooltip: S.current.refresh,
           ),
         ],
       ),
@@ -149,20 +164,16 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     String subtitle = '${record.gachaId}   ';
     if (gacha != null) {
       subtitle += [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toDateString()).join(' ~ ');
-    } else if (cnGacha != null) {
-      if (record.createdAt != null) {
-        subtitle += record.createdAt!.sec2date().toDateString();
-        subtitle += '\n';
-      }
-      subtitle += '[CN!] ';
-      subtitle += [cnGacha.openedAt, cnGacha.closedAt].map((e) => e.sec2date().toDateString()).join(' ~ ');
+    }
+    if (record.createdAt != null) {
+      subtitle += '\n(${record.createdAt!.sec2date().toDateString()})';
     }
 
     return SimpleAccordion(
       headerBuilder: (context, _) {
         return ListTile(
           dense: true,
-          // selected: (_imageIdMap[gacha?.imageId]?.length ?? 0) > 1,
+          selected: (_imageIdMap[gacha?.imageId]?.length ?? 0) > 1,
           title: Text(title),
           subtitle: Text(subtitle),
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
