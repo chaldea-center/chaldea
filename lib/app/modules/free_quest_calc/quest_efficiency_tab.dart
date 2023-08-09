@@ -207,6 +207,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     List<Widget> children = [];
     items.forEach((itemId) {
       children.add(GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () {
           setState(() {
             if (filterItems.contains(itemId)) {

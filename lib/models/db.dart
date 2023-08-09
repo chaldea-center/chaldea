@@ -342,7 +342,7 @@ class _Database {
       image = Padding(padding: padding, child: image);
     }
     if (onTap != null) {
-      image = GestureDetector(onTap: onTap, child: image);
+      image = GestureDetector(behavior: HitTestBehavior.opaque, onTap: onTap, child: image);
     }
     return image;
   }

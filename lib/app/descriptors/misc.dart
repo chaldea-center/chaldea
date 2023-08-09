@@ -15,10 +15,7 @@ class SvtClassWidget extends StatelessWidget {
     void onTap() => router.push(url: Routes.svtClassI(classId));
     return TextSpan(children: [
       CenterWidgetSpan(
-        child: GestureDetector(
-          onTap: onTap,
-          child: db.getIconImage(SvtClassX.clsIcon(classId, rarity ?? 5), width: 20, aspectRatio: 1),
-        ),
+        child: db.getIconImage(SvtClassX.clsIcon(classId, rarity ?? 5), width: 20, aspectRatio: 1, onTap: onTap),
       ),
       SharedBuilder.textButtonSpan(
         context: context,

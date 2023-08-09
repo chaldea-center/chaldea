@@ -114,6 +114,7 @@ class ImageWithText extends StatelessWidget {
     );
     if (onTap != null) {
       child = GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: onTap,
         child: child,
       );

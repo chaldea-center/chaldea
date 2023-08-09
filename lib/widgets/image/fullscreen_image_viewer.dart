@@ -117,6 +117,7 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
           : null,
       extendBodyBehindAppBar: true,
       body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () {
           Navigator.maybeOf(context)?.pop();
         },
@@ -152,6 +153,7 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
       right: right,
       bottom: bottom,
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () {
           print('press barrier: ${[left, top, right, bottom]}');
           // Navigator.pop(context);

@@ -253,8 +253,9 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
                     physics: const NeverScrollableScrollPhysics(),
                     children: List.generate(2, (index) {
                       final icon = SvtClass.ALL.icon(index == 0 ? 5 : 1);
-                      return GestureDetector(
-                        child: db.getIconImage(icon, width: 60),
+                      return db.getIconImage(
+                        icon,
+                        width: 60,
                         onTap: () {
                           data.options = index == 0 ? shownClasses.toSet() : {};
                           update();
@@ -274,9 +275,9 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
                     physics: const NeverScrollableScrollPhysics(),
                     children: shownClasses.map((className) {
                       final selected = data.options.contains(className);
-                      Widget icon = db.getIconImage(className.icon(selected ? 5 : 1), aspectRatio: 1);
-                      return GestureDetector(
-                        child: icon,
+                      return db.getIconImage(
+                        className.icon(selected ? 5 : 1),
+                        aspectRatio: 1,
                         onTap: () {
                           data.toggle(className);
                           update();

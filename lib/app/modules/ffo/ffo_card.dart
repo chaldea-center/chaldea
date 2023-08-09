@@ -82,6 +82,7 @@ class _FfoCardState extends State<FfoCard> {
     );
     if (widget.showSave || widget.showFullScreen) {
       child = GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: widget.showFullScreen && !widget.params.isEmpty && !images.isEmpty
             ? () => Navigator.of(context).push(
                   PageRouteBuilder(

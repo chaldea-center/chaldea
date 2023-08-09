@@ -155,6 +155,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
             final svtId = options.supports[index];
             final svt = db.gameData.servantsById[svtId];
             return GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onLongPress: () {
                 setState(() {
                   options.supports.removeAt(index);

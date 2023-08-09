@@ -110,9 +110,11 @@ class _MysticCodePageState extends State<MysticCodePage> {
                   child: Container(
                     decoration:
                         BoxDecoration(border: Border.all(color: _selected == e.key ? Colors.blue : Colors.transparent)),
-                    child: GestureDetector(
+                    child: db.getIconImage(
+                      code.icon,
+                      width: 50,
+                      height: 50,
                       onTap: () => setState(() => _selected = e.key),
-                      child: db.getIconImage(code.icon, width: 50, height: 50),
                     ),
                   ),
                 );

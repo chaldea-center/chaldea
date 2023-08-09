@@ -199,6 +199,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       ],
     );
     cardIcon = GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
         final cardIndex = getCardIndex(svt, card);
         if (cardIndex != -1) {
@@ -277,6 +278,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       child: tdIcon,
     );
     tdIcon = GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () async {
         final canCharge = svt.playerSvtData?.td != null && !(svt.isEnemy && svt.niceEnemy!.chargeTurn == 0);
         if (canCharge && !svt.isNpFull(battleData)) {
@@ -418,7 +420,8 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
 
   @override
   Widget build(BuildContext context) {
-    if (battleData.nonnullEnemies.isNotEmpty && (battleData.targetedEnemy == null || battleData.targetedAlly == null)) {
+    if ((battleData.nonnullEnemies.isNotEmpty && battleData.targetedEnemy == null) ||
+        (battleData.nonnullAllies.isNotEmpty && battleData.targetedAlly == null)) {
       return SimpleCancelOkDialog(
         title: Text(S.current.warning),
         content: Text(S.current.battle_targeted_required_hint),

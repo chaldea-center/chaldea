@@ -212,7 +212,11 @@ class _CachedImageState extends State<CachedImage> {
       };
     }
     if (onTap != null) {
-      child = GestureDetector(onTap: onTap, child: child);
+      child = GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: child,
+      );
     }
     return child;
   }

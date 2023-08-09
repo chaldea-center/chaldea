@@ -81,8 +81,8 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
 
   @override
   Widget gridItemBuilder(MysticCode mc) {
-    return GestureDetector(
-      child: db.getIconImage(mc.borderedIcon),
+    return db.getIconImage(
+      mc.borderedIcon,
       onTap: () => _onTapCard(mc),
     );
   }

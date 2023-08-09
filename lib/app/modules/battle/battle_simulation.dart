@@ -769,6 +769,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2),
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: isSealed || isCondFailed || cd > 0 ? null : onTap,
         onLongPress: pskill == null
             ? null

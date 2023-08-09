@@ -125,9 +125,10 @@ class FfoPartListPageState extends State<FfoPartListPage> with SearchableListSta
 
   @override
   Widget gridItemBuilder(FfoSvtPart part) {
-    return GestureDetector(
+    return db.getIconImage(
+      FFOUtil.imgUrl(part.svt?.icon),
+      width: 72,
       onTap: _getOnTap(part),
-      child: db.getIconImage(FFOUtil.imgUrl(part.svt?.icon), width: 72),
     );
   }
 
