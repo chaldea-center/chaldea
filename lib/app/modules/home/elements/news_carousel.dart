@@ -89,21 +89,23 @@ class AppNewsCarousel extends StatefulWidget {
       // app news
       taskChaldea = _dio.get('${HostsX.data.cn}/news.json').then((response) async {
         List<CarouselItem> items = [];
-        final data = (await _dio.get('${HostsX.dataHost}/version.json')).data as Map;
-        final minVer = AppVersion.parse(data['minimalApp']);
+        final newsData = List.from(response.data);
+        items.addAll((newsData).map((e) => CarouselItem.fromJson(e)));
+        final datVer = (await _dio.get('${HostsX.dataHost}/version.json')).data as Map;
+        final minVer = AppVersion.parse(datVer['minimalApp']);
         if (minVer > AppInfo.version) {
           items.add(CarouselItem(
             type: 1,
             title: S.current.update,
-            content: '${S.current.dataset_version}: ${data["utc"]}\n'
+            content: '${S.current.dataset_version}: ${datVer["utc"]}\n'
                 '${S.current.error_required_app_version(minVer.versionString)}',
             link: ChaldeaUrl.doc('releases'),
           ));
         }
+
         if (!carouselSetting.enableChaldea) {
           items.removeWhere((item) => item.type != 1);
         }
-        items.addAll((response.data as List).map((e) => CarouselItem.fromJson(e)));
         return items;
       }).catchError((e, s) async {
         logger.d('parse chaldea news failed', e, s);
