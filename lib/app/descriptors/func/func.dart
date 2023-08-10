@@ -1026,9 +1026,11 @@ class FuncDescriptor extends StatelessWidget {
     final trigger = kBuffValueTriggerTypes[func.buff?.type];
     if (trigger == null) return null;
     final details = func.svals.map((e) => trigger(e)).toList();
+    final ocDetails = func.ocVals(0).map((e) => trigger(e)).toList();
     final detail = details.getOrNull((level ?? -1) - 1) ?? details.firstOrNull;
-    bool noLevel =
-        details.isEmpty || ((level == null || level == -1) && details.map((e) => e.level).toSet().length > 1);
+    bool noLevel = details.isEmpty ||
+        ((level == null || level == -1) && details.map((e) => e.level).toSet().length > 1) ||
+        (ocDetails.map((e) => e.level).toSet().length > 1);
 
     DataVals? vals;
     vals = func.svals.getOrNull((level ?? 1) - 1);

@@ -140,7 +140,7 @@ class BasicServant with GameCardMixin {
 
   factory BasicServant.fromJson(Map<String, dynamic> json) {
     final id = json["id"] as int;
-    if (json["rarity"] == null) {
+    if (json["type"] == null) {
       // classId and attribute can be overridden
       json = Map.from(GameDataLoader.instance.tmp.gameJson!["entities"][id.toString()])..addAll(json);
     }

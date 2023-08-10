@@ -168,11 +168,11 @@ class NiceFunction with RouteInfo implements BaseFunction {
     return valList;
   }
 
-  List<DataVals> ocVals(int lv) {
-    assert(lv >= 0 && lv < svals.length, lv);
+  List<DataVals> ocVals(int index) {
+    assert(index >= 0 && index < svals.length, index);
     return [
       for (final sv in [svals, svals2, svals3, svals4, svals5])
-        if (sv != null) sv[lv]
+        if (sv != null) sv[index]
     ];
   }
 
