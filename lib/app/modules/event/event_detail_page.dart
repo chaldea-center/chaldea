@@ -153,7 +153,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
     }
     final normalMissions = event.missions.where((e) => e.type != MissionType.random).toList();
     if (normalMissions.isNotEmpty) {
-      _addTab(S.current.mission, EventMissionsPage(event: event, missions: normalMissions));
+      _addTab(S.current.mission,
+          EventMissionsPage(event: event, missions: normalMissions, onSwitchRegion: _showSwitchRegion));
     }
     if (event.missions.isNotEmpty && event.warIds.isNotEmpty) {
       if (event.missions.any((em) =>
@@ -201,7 +202,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
       _addTab(S.current.event_bonus, EventBonusTab(event: event));
     }
     if (event.bulletinBoards.isNotEmpty) {
-      _addTab(S.current.event_bulletin_board, EventBulletinBoardPage(event: event));
+      _addTab(S.current.event_bulletin_board, EventBulletinBoardPage(event: event, onSwitchRegion: _showSwitchRegion));
     }
     if (event.voices.isNotEmpty) {
       _addTab(S.current.voice, EventVoicePage(event: event));

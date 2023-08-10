@@ -11,7 +11,8 @@ import '../../master_mission/solver/scheme.dart';
 class EventMissionsPage extends StatefulWidget {
   final Event event;
   final List<EventMission> missions;
-  const EventMissionsPage({super.key, required this.event, required this.missions});
+  final VoidCallback? onSwitchRegion;
+  const EventMissionsPage({super.key, required this.event, required this.missions, this.onSwitchRegion});
 
   @override
   State<EventMissionsPage> createState() => _EventMissionsPageState();
@@ -48,35 +49,35 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
         child: Text(selected.length.toString()),
       ),
       body: ListView.separated(
+        padding: const EdgeInsets.symmetric(vertical: 8),
         itemBuilder: (context, index) {
           if (index == 0) {
-            return Column(children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: Text(
-                  'Menu - ${S.current.switch_region}',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ),
-              SwitchListTile(
-                dense: true,
-                value: db.settings.display.describeEventMission,
-                title: Text(S.current.describe_mission),
-                onChanged: (v) {
-                  setState(() {
-                    db.settings.display.describeEventMission = v;
-                  });
-                },
-              )
-            ]);
+            return buildHeader(context);
           }
           return missionBuilder(context, index - 1, missions);
         },
-        separatorBuilder: (_, __) => const Divider(indent: 48, height: 1),
+        separatorBuilder: (_, index) => index == 0 ? const Divider(height: 1) : const Divider(indent: 48, height: 1),
         itemCount: missions.length + 1,
       ),
     );
+  }
+
+  Widget buildHeader(BuildContext context) {
+    return Column(children: [
+      if (widget.onSwitchRegion != null)
+        TextButton(onPressed: widget.onSwitchRegion, child: Text(S.current.switch_region)),
+      SwitchListTile(
+        dense: true,
+        visualDensity: VisualDensity.compact,
+        value: db.settings.display.describeEventMission,
+        title: Text(S.current.describe_mission),
+        onChanged: (v) {
+          setState(() {
+            db.settings.display.describeEventMission = v;
+          });
+        },
+      )
+    ]);
   }
 
   Widget missionBuilder(BuildContext context, int index, List<EventMission> missions) {

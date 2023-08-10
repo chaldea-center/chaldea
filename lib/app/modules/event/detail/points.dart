@@ -30,7 +30,7 @@ class EventPointsPage extends HookWidget {
     List<InlineSpan> titles = [];
     for (final gift in reward.gifts) {
       if (titles.isNotEmpty) titles.add(const TextSpan(text: '\n'));
-      titles.add(CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 36, text: '', showName: true)));
+      titles.add(CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 28, text: '', showName: true)));
       titles.add(TextSpan(text: ' ×${gift.num.format(compact: false, groupSeparator: ',')}'));
 
       final buff = pointBuffs[reward.point];
@@ -44,6 +44,7 @@ class EventPointsPage extends HookWidget {
     return ListTile(
       key: Key('event_point_${reward.groupId}_${reward.point}'),
       minLeadingWidth: 72,
+      dense: true,
       leading: Text(reward.point.format(compact: false, groupSeparator: ',')),
       title: Text.rich(TextSpan(children: titles)),
     );

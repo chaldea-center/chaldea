@@ -228,6 +228,7 @@ class VoiceGroupAccordion extends StatelessWidget {
           }
         }
         return ListTile(
+          dense: true,
           title: Text.rich(TextSpan(children: [
             if (svtSpan != null) svtSpan,
             TextSpan(text: Transl.enums(group.type, (enums) => enums.svtVoiceType).l),

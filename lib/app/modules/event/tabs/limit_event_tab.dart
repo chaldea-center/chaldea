@@ -84,7 +84,8 @@ class LimitEventTab extends StatelessWidget {
           : null,
       title: AutoSizeText.rich(
         TextSpan(children: [
-          if (event.isOnGoing(null)) const TextSpan(text: '● ', style: TextStyle(color: Colors.green)),
+          if (<Region>{db.curUser.region, Region.jp}.any((e) => event.isOnGoing(e)))
+            const TextSpan(text: '● ', style: TextStyle(color: Colors.green)),
           TextSpan(text: event.shownName),
         ]),
         maxFontSize: 13,

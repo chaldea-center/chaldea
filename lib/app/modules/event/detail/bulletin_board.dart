@@ -10,17 +10,24 @@ import 'package:chaldea/widgets/widgets.dart';
 
 class EventBulletinBoardPage extends HookWidget {
   final Event event;
-  const EventBulletinBoardPage({super.key, required this.event});
+  final VoidCallback? onSwitchRegion;
+  const EventBulletinBoardPage({super.key, required this.event, this.onSwitchRegion});
 
   @override
   Widget build(BuildContext context) {
     final bulletins = event.bulletinBoards.toList();
     bulletins.sort2((e) => e.bulletinBoardId);
+    List<Widget> children = [
+      if (onSwitchRegion != null) TextButton(onPressed: onSwitchRegion, child: Text(S.current.switch_region)),
+      for (final bulletin in bulletins) itemBuilder(context, bulletin),
+    ];
     return ListView.separated(
+      padding: const EdgeInsets.symmetric(vertical: 8),
       controller: useScrollController(),
-      itemBuilder: (context, index) => itemBuilder(context, bulletins[index]),
-      separatorBuilder: (_, __) => const Divider(indent: 48, height: 1),
-      itemCount: bulletins.length,
+      itemBuilder: (context, index) => children[index],
+      separatorBuilder: (_, index) =>
+          onSwitchRegion != null && index == 0 ? const Divider(height: 1) : const Divider(indent: 48, height: 1),
+      itemCount: children.length,
     );
   }
 
