@@ -656,6 +656,7 @@ enum Trait {
   standardClassServant(2858),
   happyHalloween(2859),
   happyHalloweenFlag(2860),
+  manuscriptComplete(2872),
   attackPhysical(3000),
   attackProjectile(3001),
   attackMagical(3002),

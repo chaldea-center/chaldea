@@ -1,3 +1,4 @@
+import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -57,16 +58,44 @@ class EventCooltimePage extends HookWidget {
       },
       contentBuilder: (context) {
         return CustomTable(children: [
-          CustomTableRow.fromTexts(texts: const ['Lv.', 'Cooltime', 'Point Rate'], isHeader: true),
-          for (final reward in rewards)
-            CustomTableRow.fromTexts(texts: [
-              reward.lv.toString(),
-              _fmtCooltime(reward.cooltime),
-              '+${(reward.addEventPointRate / 1000).toStringAsFixed(1)}'
-            ])
+          if (rewards.isNotEmpty)
+            for (final cond in rewards.first.releaseConditions)
+              CustomTableRow.fromChildren(children: [CondTargetValueDescriptor.commonRelease(commonRelease: cond)]),
+          CustomTableRow.fromTexts(texts: const ['Lv.', 'Cooltime', 'Point Rate', 'Cost'], isHeader: true),
+          for (final reward in rewards) buildRow(context, reward)
         ]);
       },
     );
+  }
+
+  Widget buildRow(BuildContext context, EventCooltimeReward reward) {
+    Widget? itemCost;
+    assert(reward.releaseConditions.length == 1, '${reward.name} Lv.${reward.lv}');
+    final cond = reward.releaseConditions.firstOrNull;
+    if (cond != null && cond.condType == CondType.questClear) {
+      final quest = db.gameData.quests[cond.condId];
+      if (quest != null && quest.consumeItem.isNotEmpty) {
+        quest.consumeItem;
+        itemCost = Wrap(
+          children: [
+            for (final itemAmount in quest.consumeItem)
+              Item.iconBuilder(
+                context: context,
+                item: itemAmount.item,
+                itemId: itemAmount.itemId,
+                text: itemAmount.amount.format(),
+                width: 28,
+              )
+          ],
+        );
+      }
+    }
+    return CustomTableRow(children: [
+      TableCellData(text: reward.lv.toString()),
+      TableCellData(text: _fmtCooltime(reward.cooltime)),
+      TableCellData(text: '+${(reward.addEventPointRate / 1000).toStringAsFixed(1)}'),
+      TableCellData(child: itemCost ?? const SizedBox.shrink()),
+    ]);
   }
 
   String _fmtCooltime(int sec) {

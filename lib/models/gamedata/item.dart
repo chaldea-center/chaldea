@@ -46,7 +46,7 @@ class Item {
     required this.detail,
     this.individuality = const [],
     required this.icon,
-    required this.background,
+    this.background = ItemBGType.zero,
     required this.priority,
     required this.dropPriority,
     this.itemSelects = const [],
@@ -478,6 +478,7 @@ enum ItemBGType {
   silver,
   gold,
   questClearQPReward,
+  aquaBlue,
 }
 
 abstract class ItemIconId {

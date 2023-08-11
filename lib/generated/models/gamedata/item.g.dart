@@ -17,7 +17,7 @@ Item _$ItemFromJson(Map json) => Item(
               .toList() ??
           const [],
       icon: json['icon'] as String,
-      background: $enumDecode(_$ItemBGTypeEnumMap, json['background']),
+      background: $enumDecodeNullable(_$ItemBGTypeEnumMap, json['background']) ?? ItemBGType.zero,
       priority: json['priority'] as int,
       dropPriority: json['dropPriority'] as int,
       itemSelects: (json['itemSelects'] as List<dynamic>?)
@@ -91,6 +91,7 @@ const _$ItemBGTypeEnumMap = {
   ItemBGType.silver: 'silver',
   ItemBGType.gold: 'gold',
   ItemBGType.questClearQPReward: 'questClearQPReward',
+  ItemBGType.aquaBlue: 'aquaBlue',
 };
 
 ItemSelect _$ItemSelectFromJson(Map json) => ItemSelect(

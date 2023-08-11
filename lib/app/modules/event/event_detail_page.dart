@@ -29,6 +29,7 @@ import 'detail/heel_portrait.dart';
 import 'detail/lottery.dart';
 import 'detail/mission.dart';
 import 'detail/mission_target.dart';
+import 'detail/mural.dart';
 import 'detail/points.dart';
 import 'detail/random_mission.dart';
 import 'detail/recipe.dart';
@@ -122,6 +123,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
         S.current.event_lottery + (event.lotteries.length > 1 ? ' ${index + 1}' : ''),
         EventLotteryTab(event: event, lottery: event.lotteries[index]),
       );
+    }
+    if (event.murals.isNotEmpty) {
+      _addTab("Murals", EventMuralPage(event: event));
     }
     if (event.heelPortraits.isNotEmpty) {
       // before tower

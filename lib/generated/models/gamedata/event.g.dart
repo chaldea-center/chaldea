@@ -97,6 +97,10 @@ Event _$EventFromJson(Map json) => Event(
               ?.map((e) => HeelPortrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      murals: (json['murals'] as List<dynamic>?)
+              ?.map((e) => EventMural.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       voicePlays: (json['voicePlays'] as List<dynamic>?)
               ?.map((e) => EventVoicePlay.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -140,6 +144,7 @@ Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
       'campaignQuests': instance.campaignQuests.map((e) => e.toJson()).toList(),
       'commandAssists': instance.commandAssists.map((e) => e.toJson()).toList(),
       'heelPortraits': instance.heelPortraits.map((e) => e.toJson()).toList(),
+      'murals': instance.murals.map((e) => e.toJson()).toList(),
       'voicePlays': instance.voicePlays.map((e) => e.toJson()).toList(),
       'voices': instance.voices.map((e) => e.toJson()).toList(),
       'warIds': instance.warIds,
@@ -399,8 +404,10 @@ EventPointBuff _$EventPointBuffFromJson(Map json) => EventPointBuff(
       eventPoint: json['eventPoint'] as int,
       name: json['name'] as String,
       icon: json['icon'] as String,
-      background: $enumDecode(_$ItemBGTypeEnumMap, json['background']),
+      background: $enumDecodeNullable(_$ItemBGTypeEnumMap, json['background']) ?? ItemBGType.zero,
       value: json['value'] as int,
+      skillIcon: json['skillIcon'] as String?,
+      lv: json['lv'] as int? ?? 0,
     );
 
 Map<String, dynamic> _$EventPointBuffToJson(EventPointBuff instance) => <String, dynamic>{
@@ -412,6 +419,8 @@ Map<String, dynamic> _$EventPointBuffToJson(EventPointBuff instance) => <String,
       'icon': instance.icon,
       'background': _$ItemBGTypeEnumMap[instance.background]!,
       'value': instance.value,
+      'skillIcon': instance.skillIcon,
+      'lv': instance.lv,
     };
 
 const _$ItemBGTypeEnumMap = {
@@ -420,6 +429,7 @@ const _$ItemBGTypeEnumMap = {
   ItemBGType.silver: 'silver',
   ItemBGType.gold: 'gold',
   ItemBGType.questClearQPReward: 'questClearQPReward',
+  ItemBGType.aquaBlue: 'aquaBlue',
 };
 
 EventMissionConditionDetail _$EventMissionConditionDetailFromJson(Map json) => EventMissionConditionDetail(
@@ -1238,4 +1248,22 @@ Map<String, dynamic> _$HeelPortraitToJson(HeelPortrait instance) => <String, dyn
       'id': instance.id,
       'name': instance.name,
       'image': instance.image,
+    };
+
+EventMural _$EventMuralFromJson(Map json) => EventMural(
+      id: json['id'] as int? ?? 0,
+      message: json['message'] as String? ?? "",
+      imageIds: (json['imageIds'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
+      num: json['num'] as int? ?? 0,
+      condQuestId: json['condQuestId'] as int? ?? 0,
+      condQuestPhase: json['condQuestPhase'] as int? ?? 0,
+    );
+
+Map<String, dynamic> _$EventMuralToJson(EventMural instance) => <String, dynamic>{
+      'id': instance.id,
+      'message': instance.message,
+      'imageIds': instance.imageIds,
+      'num': instance.num,
+      'condQuestId': instance.condQuestId,
+      'condQuestPhase': instance.condQuestPhase,
     };

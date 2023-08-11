@@ -11,7 +11,9 @@ WorkerResponse _$WorkerResponseFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = WorkerResponse(
-          success: $checkedConvert('success', (v) => v as bool),
+          status: $checkedConvert('status', (v) => v as int?),
+          error: $checkedConvert('error', (v) => v),
+          success: $checkedConvert('success', (v) => v as bool?),
           message: $checkedConvert('message', (v) => v as String?),
           body: $checkedConvert('body', (v) => v),
         );
@@ -20,9 +22,11 @@ WorkerResponse _$WorkerResponseFromJson(Map json) => $checkedCreate(
     );
 
 Map<String, dynamic> _$WorkerResponseToJson(WorkerResponse instance) => <String, dynamic>{
-      'success': instance.success,
+      'status': instance.status,
+      'error': instance.error,
       'message': instance.message,
       'body': instance.body,
+      'success': instance.success,
     };
 
 D1Result<T> _$D1ResultFromJson<T>(

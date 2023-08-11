@@ -168,6 +168,7 @@ class MultiDescriptor {
           final warName = Transl.warNames(phase?.warLongName ?? quest?.warLongName ?? "?").l.replaceAll('\n', ' ');
           final spotName = phase?.lSpot.l ?? quest?.lSpot.l ?? '?';
           return ListTile(
+            dense: true,
             title: Text(quest?.lNameWithChapter ?? 'Quest $id'),
             subtitle: Text('$id  $spotName${warName.isEmpty ? "" : "\n$warName"}'),
             onTap: () => router.push(url: Routes.questI(id)),

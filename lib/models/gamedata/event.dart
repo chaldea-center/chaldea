@@ -47,6 +47,7 @@ class Event {
   List<EventQuest> campaignQuests;
   List<EventCommandAssist> commandAssists;
   List<HeelPortrait> heelPortraits;
+  List<EventMural> murals;
   List<EventVoicePlay> voicePlays;
   List<VoiceGroup> voices;
 
@@ -95,6 +96,7 @@ class Event {
     this.campaignQuests = const [],
     this.commandAssists = const [],
     this.heelPortraits = const [],
+    this.murals = const [],
     this.voicePlays = const [],
     this.voices = const [],
   })  : _shortName = ['', '-'].contains(shortName) ? null : shortName,
@@ -594,6 +596,8 @@ class EventPointBuff {
   String icon;
   ItemBGType background;
   int value;
+  String? skillIcon;
+  int? lv;
 
   EventPointBuff({
     required this.id,
@@ -603,8 +607,10 @@ class EventPointBuff {
     required this.name,
     // required this.detail,
     required this.icon,
-    required this.background,
+    this.background = ItemBGType.zero,
     required this.value,
+    this.skillIcon,
+    this.lv = 0,
   });
 
   factory EventPointBuff.fromJson(Map<String, dynamic> json) => _$EventPointBuffFromJson(json);
@@ -1478,6 +1484,28 @@ class HeelPortrait {
   factory HeelPortrait.fromJson(Map<String, dynamic> json) => _$HeelPortraitFromJson(json);
 
   Map<String, dynamic> toJson() => _$HeelPortraitToJson(this);
+}
+
+@JsonSerializable()
+class EventMural {
+  int id;
+  String message;
+  List<String> imageIds;
+  int num;
+  int condQuestId;
+  int condQuestPhase;
+  EventMural({
+    this.id = 0,
+    this.message = "",
+    this.imageIds = const [],
+    this.num = 0,
+    this.condQuestId = 0,
+    this.condQuestPhase = 0,
+  });
+
+  factory EventMural.fromJson(Map<String, dynamic> json) => _$EventMuralFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventMuralToJson(this);
 }
 
 enum PurchaseType {
