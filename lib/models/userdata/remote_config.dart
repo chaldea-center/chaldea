@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/foundation.dart';
 
 import '../db.dart';
@@ -116,8 +114,9 @@ class HostsX {
 
   static UrlProxy get atlasAsset => _config.atlasAsset;
   static String get atlasAssetHost {
-    if (kIsWeb || !proxy) return atlasAsset.global;
-    return _config.atlasAsset.of(Random().nextInt(10) > 6);
+    // if (kIsWeb || !proxy) return atlasAsset.global;
+    // return _config.atlasAsset.of(Random().nextInt(10) > 6);
+    return atlasAsset.of(proxy);
   }
 
   static String proxyWorker(String url, {bool onlyCN = true}) {
