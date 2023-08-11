@@ -1,0 +1,95 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #333;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+.splash-container {
+  text-align: center;
+}
+
+.splash-container .logo {
+  width: 150px;
+  height: auto;
+}
+
+.splash-container h1 {
+  color: #fff;
+  margin-top: 20px;
+}
+
+.splash-container p {
+  color: #ccc;
+  margin-top: 10px;
+}
+
+.splash-container .button {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: transparent;
+  color: #007bff;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  border: 2px solid #007bff;
+}
+
+.splash-container .button:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.splash-container .loading-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  height: 80px;
+}
+
+.loading-container .fou {
+  max-width: 100%;
+  max-height: 80px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  animation: loading-animation 1s steps(4) infinite;
+}
+.loading-container .fou.f2 {
+  visibility: hidden;
+  animation-delay: 0.25s;
+  -webkit-animation-delay: 0.25s;
+}
+.loading-container .fou.f3 {
+  visibility: hidden;
+  animation-delay: 0.5s;
+  -webkit-animation-delay: 0.5s;
+}
+.loading-container .fou.f4 {
+  visibility: hidden;
+  animation-delay: 0.75s;
+  -webkit-animation-delay: 0.75s;
+}
+
+@keyframes loading-animation {
+  0% {
+    visibility: visible;
+  }
+  25% {
+    visibility: hidden;
+  }
+  50% {
+    visibility: hidden;
+  }
+  75% {
+    visibility: hidden;
+  }
+  100% {
+    visibility: hidden;
+  }
+}

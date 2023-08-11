@@ -35,103 +35,37 @@
 
     <link rel="manifest" href="manifest.json" />
 
-    <style>
-      body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #333;
-        font-family: Arial, sans-serif;
-        overflow: hidden;
-      }
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
 
-      .splash-container {
-        text-align: center;
+    <!-- analyzers -->
+    <!-- Cloudflare Web Analytics -->
+    <script
+      defer
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "467d575c5813481eaebaa9566fd3d78a"}'
+    ></script>
+    <!-- Baidu -->
+    <script>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?ddeb4cb9b5c01c98405c3bf11b9c9c34";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XS2D05TGKG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
       }
+      gtag("js", new Date());
 
-      .splash-container .logo {
-        width: 150px;
-        height: auto;
-      }
-
-      .splash-container h1 {
-        color: #fff;
-        margin-top: 20px;
-      }
-
-      .splash-container p {
-        color: #ccc;
-        margin-top: 10px;
-      }
-
-      .splash-container .button {
-        display: inline-block;
-        margin-top: 20px;
-        padding: 10px 20px;
-        background-color: transparent;
-        color: #007bff;
-        text-decoration: none;
-        border-radius: 5px;
-        transition: background-color 0.3s ease;
-        border: 2px solid #007bff;
-      }
-
-      .splash-container .button:hover {
-        background-color: #007bff;
-        color: #fff;
-      }
-
-      .splash-container .loading-container {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-        height: 80px;
-      }
-
-      .loading-container .fou {
-        max-width: 100%;
-        max-height: 80px;
-        position: absolute;
-        left: 0;
-        right: 0;
-        margin: auto;
-        animation: loading-animation 1s steps(4) infinite;
-      }
-      .loading-container .fou.f2 {
-        visibility: hidden;
-        animation-delay: 0.25s;
-        -webkit-animation-delay: 0.25s;
-      }
-      .loading-container .fou.f3 {
-        visibility: hidden;
-        animation-delay: 0.5s;
-        -webkit-animation-delay: 0.5s;
-      }
-      .loading-container .fou.f4 {
-        visibility: hidden;
-        animation-delay: 0.75s;
-        -webkit-animation-delay: 0.75s;
-      }
-
-      @keyframes loading-animation {
-        0% {
-          visibility: visible;
-        }
-        25% {
-          visibility: hidden;
-        }
-        50% {
-          visibility: hidden;
-        }
-        75% {
-          visibility: hidden;
-        }
-        100% {
-          visibility: hidden;
-        }
-      }
-    </style>
+      gtag("config", "G-XS2D05TGKG");
+    </script>
+    <!-- end analyzers -->
     <script>
       // The value below is injected by flutter build, do not touch.
       var serviceWorkerVersion = null;
@@ -147,7 +81,7 @@
       <img class="logo" src="/assets/res/img/launcher_icon/app_icon_rounded.png" alt="Chaldea Logo" />
       <h1>Chaldea</h1>
       <!-- for bots -->
-      <div style="display: none;">
+      <div style="display: none">
         <em>Chaldea is a cross-platform tool for Fate/Grand Order, composed of Chaldeas and Laplace.</em>
         <em>Chaldeas is a planner to help masters planning materials, servants, events and so on.</em>
         <em><a href="/laplace">Laplace</a> is a novel battle simulator to help building your team, help 3T farming.</em>
@@ -160,7 +94,6 @@
         <img class="fou f4" src="/assets/res/img/load_icon_A04.png" alt="Loading" />
       </div>
       <a class="button" href="https://docs.chaldea.center" target="_blank">Visit Document Site</a>
-     
     </div>
 
     <script>
