@@ -186,4 +186,13 @@ class PathManager {
   // persistent
   @Deprecated('use shared_preference instead')
   String get persistentConfigPath => join(_persistentPath!, 'setting.json');
+
+  bool get isAppPathValid {
+    if (!PlatformU.isWindows) return true;
+    final path = appPath.toLowerCase();
+    return !(path.contains(r'appdata\local\temp') ||
+        path.contains(r'c:\program files') ||
+        path.startsWith('file:///unc') ||
+        path.startsWith('unc'));
+  }
 }

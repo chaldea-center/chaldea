@@ -43,8 +43,7 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
     _accountEditing = TextEditingController(text: db.curUser.name);
 
     if (PlatformU.isWindows) {
-      final startupPath = db.paths.appPath.toLowerCase();
-      if (startupPath.contains(r'appdata\local\temp') || startupPath.contains(r'c:\program files')) {
+      if (!db.paths.isAppPathValid) {
         invalidStartup = true;
       }
       try {

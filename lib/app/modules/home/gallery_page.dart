@@ -161,8 +161,7 @@ class _GalleryPageState extends State<GalleryPage> {
   List<Widget> get notifications {
     List<Widget> children = [];
 
-    final path = db.paths.appPath.toLowerCase();
-    if (PlatformU.isWindows && (path.contains(r'appdata\local\temp') || path.contains(r'c:\program files'))) {
+    if (PlatformU.isWindows && !db.paths.isAppPathValid) {
       children.add(SimpleAccordion(
         expanded: true,
         headerBuilder: (_, __) => ListTile(
