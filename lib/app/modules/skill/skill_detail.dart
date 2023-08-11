@@ -100,6 +100,9 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
             TableCellData(text: S.current.general_type, isHeader: true),
             TableCellData(flex: 2, text: skill.type.name)
           ]),
+          CustomTableRow.fromTexts(texts: [
+            'num ${skill.svt.num} / priority ${skill.svt.priority} / strengthStatus ${skill.svt.strengthStatus}'
+          ]),
         ]),
         if (svts.isNotEmpty) cardList(S.current.servant, svts),
         if (ces.isNotEmpty) cardList(S.current.craft_essence, ces),

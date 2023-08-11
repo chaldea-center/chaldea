@@ -100,6 +100,33 @@ mixin FuncsDescriptor {
         region: region,
       ));
     }
+    final additionalSkillId =
+        script?.additionalSkillId?.getOrNull(level ?? 0) ?? script?.additionalSkillId?.firstOrNull;
+    final additionalSkillLv =
+        script?.additionalSkillLv?.getOrNull(level ?? 0) ?? script?.additionalSkillLv?.firstOrNull;
+
+    if (additionalSkillId != null && additionalSkillId != 0) {
+      children.add(Builder(
+        builder: (context) => Container(
+          margin: const EdgeInsetsDirectional.only(start: 4),
+          decoration: BoxDecoration(
+            border: Border.all(color: Theme.of(context).hintColor),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: _LazyTrigger(
+            trigger: BuffValueTriggerType(BuffType.none, skill: additionalSkillId, level: additionalSkillLv),
+            buff: null,
+            isNp: false,
+            useRate: null,
+            showPlayer: showPlayer,
+            showEnemy: showEnemy,
+            loops: loops ?? LoopTargets(),
+            region: region,
+          ),
+        ),
+      ));
+    }
+
     return children;
   }
 }
@@ -705,13 +732,22 @@ class FuncDescriptor extends StatelessWidget {
       final text = funcText.toString();
       final style = func.isEnemyOnlyFunc ? const TextStyle(fontStyle: FontStyle.italic) : null;
 
-      InlineSpan _replaceTrait(int trait) {
+      InlineSpan _replaceTrait(int trait, {NiceTrait? guessTrait}) {
         return TextSpan(
           children: SharedBuilder.replaceSpan(text, '{0}', [
             SharedBuilder.traitSpan(
               context: context,
               trait: NiceTrait(id: trait),
-            )
+              style: guessTrait == null ? null : const TextStyle(decoration: TextDecoration.lineThrough),
+            ),
+            if (guessTrait != null) ...[
+              const TextSpan(text: '('),
+              SharedBuilder.traitSpan(
+                context: context,
+                trait: guessTrait,
+              ),
+              const TextSpan(text: '?)'),
+            ]
           ]),
           style: style,
         );
@@ -774,7 +810,12 @@ class FuncDescriptor extends StatelessWidget {
           case BuffType.fieldIndividuality:
             int? indiv = vals?.Value;
             if (indiv != null) {
-              spans.add(_replaceTrait(indiv));
+              NiceTrait? guessTrait;
+              if (indiv == 0 || indiv == 9999) {
+                final guessTraits = buff.vals.where((e) => e.signedId >= 2000 && e.signedId < 3000).toList();
+                if (guessTraits.length == 1) guessTrait = guessTraits.first;
+              }
+              spans.add(_replaceTrait(indiv, guessTrait: guessTrait));
               return;
             }
             break;
@@ -1127,7 +1168,7 @@ class FuncDescriptor extends StatelessWidget {
 
 class _LazyTrigger extends StatefulWidget {
   final BuffValueTriggerType trigger;
-  final Buff buff;
+  final Buff? buff;
   final bool isNp;
   final int? useRate;
   final bool showPlayer;
@@ -1196,7 +1237,7 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
       title += ': ${skill!.lName.l}';
     }
     List<String> hints = [
-      Transl.funcPopuptextBase(widget.buff.type.name).l,
+      if (widget.buff != null) Transl.funcPopuptextBase(widget.buff!.type.name).l,
       if (widget.useRate != null) Transl.special.funcValActChance(widget.useRate!.format(percent: true, base: 10)),
     ];
     final loops = LoopTargets.from(widget.loops)..addSkill(widget.trigger.skill);
@@ -1213,7 +1254,7 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
                 text: '  $title ',
                 style: const TextStyle(decoration: TextDecoration.underline),
               ),
-              TextSpan(text: ' [${hints.join(", ")}]')
+              if (hints.isNotEmpty) TextSpan(text: ' [${hints.join(", ")}]')
             ],
             // recognizer: TapGestureRecognizer()..onTap = () => skill?.routeTo(),
           )),

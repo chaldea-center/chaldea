@@ -125,6 +125,9 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
     );
     const divider = Divider(indent: 16, endIndent: 16, height: 2, thickness: 1);
     final detailText = skill.lDetail ?? '???';
+
+    final loops = LoopTargets()..addSkill(skill.id);
+
     Widget child = TileGroup(
       children: [
         header,
@@ -145,9 +148,9 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
           showNone: showNone,
           showBuffDetail: showBuffDetail,
           showEvent: showEvent,
-          loops: LoopTargets()..addSkill(skill.id),
+          loops: loops,
           region: region,
-        )
+        ),
       ],
     );
 
