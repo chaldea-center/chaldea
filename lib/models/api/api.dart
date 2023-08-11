@@ -14,19 +14,30 @@ part '../../generated/models/api/api.g.dart';
 
 @JsonSerializable()
 class WorkerResponse {
-  bool success;
+  int? status;
+  dynamic error;
+
+  bool _success;
   String? message;
   dynamic body;
 
+  bool get success {
+    if (status != null) return status! >= 200 && status! < 300;
+    return _success;
+  }
+
   WorkerResponse({
-    required this.success,
+    this.status,
+    this.error,
+    bool? success,
     this.message,
     this.body,
-  });
+  }) : _success = success ?? (status != null && status >= 200 && status < 300);
 
   WorkerResponse.failed([this.message = "Error"])
-      : success = false,
-        body = null;
+      : _success = false,
+        body = null,
+        error = message;
 
   factory WorkerResponse.fromJson(Map<dynamic, dynamic> json) => _$WorkerResponseFromJson(json);
 
@@ -43,7 +54,7 @@ class WorkerResponse {
     } else {
       return SimpleCancelOkDialog(
         title: Text(S.current.error),
-        content: Text(message ?? body?.toString() ?? "Error"),
+        content: Text(error?.toString() ?? message ?? body?.toString() ?? "Error"),
         scrollable: true,
         hideCancel: true,
       ).showDialog(context);
@@ -54,7 +65,7 @@ class WorkerResponse {
     if (success) {
       return EasyLoading.showSuccess(message ?? S.current.success);
     } else {
-      return EasyLoading.showError(message ?? body?.toString() ?? "Error");
+      return EasyLoading.showError(error?.toString() ?? message ?? body?.toString() ?? "Error");
     }
   }
 }

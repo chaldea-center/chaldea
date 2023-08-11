@@ -39,7 +39,7 @@ class ChaldeaWorkerApi {
       if (text != null) {
         try {
           final resp = WorkerResponse.fromJson(jsonDecode(text));
-          error2 = resp.message ?? resp.body;
+          error2 = resp.error ?? resp.message ?? resp.body;
         } catch (e) {
           error2 = text;
         }

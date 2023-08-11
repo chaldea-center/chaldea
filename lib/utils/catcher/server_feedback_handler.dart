@@ -146,7 +146,7 @@ class ServerFeedbackHandler extends ReportHandler {
       files: resolvedAttachments,
     );
     if (response.success != true) {
-      logger_.logger.e('failed to send mail', response.message);
+      logger_.logger.e('failed to send mail', response.error ?? response.message);
     }
     if (report is! FeedbackReport) {
       _sentReports.add(report.shownError);
