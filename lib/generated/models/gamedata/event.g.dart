@@ -387,8 +387,8 @@ Map<String, dynamic> _$EventPointRewardToJson(EventPointReward instance) => <Str
 
 EventPointGroup _$EventPointGroupFromJson(Map json) => EventPointGroup(
       groupId: json['groupId'] as int,
-      name: json['name'] as String,
-      icon: json['icon'] as String,
+      name: json['name'] as String? ?? "",
+      icon: json['icon'] as String?,
     );
 
 Map<String, dynamic> _$EventPointGroupToJson(EventPointGroup instance) => <String, dynamic>{
@@ -405,7 +405,7 @@ EventPointBuff _$EventPointBuffFromJson(Map json) => EventPointBuff(
       name: json['name'] as String,
       icon: json['icon'] as String,
       background: $enumDecodeNullable(_$ItemBGTypeEnumMap, json['background']) ?? ItemBGType.zero,
-      value: json['value'] as int,
+      value: json['value'] as int? ?? 0,
       skillIcon: json['skillIcon'] as String?,
       lv: json['lv'] as int? ?? 0,
     );

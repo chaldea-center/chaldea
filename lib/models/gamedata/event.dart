@@ -571,12 +571,12 @@ class EventPointReward {
 class EventPointGroup {
   int groupId;
   String name;
-  String icon;
+  String? icon;
 
   EventPointGroup({
     required this.groupId,
-    required this.name,
-    required this.icon,
+    this.name = "",
+    this.icon,
   });
 
   factory EventPointGroup.fromJson(Map<String, dynamic> json) => _$EventPointGroupFromJson(json);
@@ -597,7 +597,7 @@ class EventPointBuff {
   ItemBGType background;
   int value;
   String? skillIcon;
-  int? lv;
+  int lv; // display only? use CE skill condQuest
 
   EventPointBuff({
     required this.id,
@@ -608,10 +608,22 @@ class EventPointBuff {
     // required this.detail,
     required this.icon,
     this.background = ItemBGType.zero,
-    required this.value,
+    this.value = 0,
     this.skillIcon,
     this.lv = 0,
   });
+
+  String get iconFix {
+    if (groupId ~/ 100 == 80442) {
+      final match = RegExp(r'/Items/(\d+).png').firstMatch(icon);
+      String? iconId = match?.group(1);
+      if (iconId != null) {
+        iconId = iconId.padLeft(2, '0');
+        return "https://static.atlasacademy.io/JP/EventUI/Prefabs/80442/img_LeaderIcon$iconId.png";
+      }
+    }
+    return icon;
+  }
 
   factory EventPointBuff.fromJson(Map<String, dynamic> json) => _$EventPointBuffFromJson(json);
 

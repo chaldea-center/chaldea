@@ -135,6 +135,11 @@ class FunctionExecutor {
       return false;
     }
 
+    final requiredEventId = dataVals.EventId ?? 0;
+    if (requiredEventId != 0 && requiredEventId != battleData.eventId) {
+      return false;
+    }
+
     if (effectiveness != null) {
       dataVals = updateDataValsWithEffectiveness(function, dataVals, effectiveness);
     }

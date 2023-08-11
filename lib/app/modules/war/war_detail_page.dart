@@ -510,7 +510,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
     }
 
     final event = war.eventReal;
-    if (event != null) {
+    if (event != null && event.towers.isNotEmpty) {
       children.add(Divider(color: Theme.of(context).scaffoldBackgroundColor, thickness: 2, height: 2));
       for (final tower in event.towers) {
         final towerQuestIds = db.gameData.others.eventTowerQuestGroups[tower.towerId]

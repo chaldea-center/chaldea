@@ -761,9 +761,13 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       if (!buffs.contains(cur)) {
         options.pointBuffs.remove(groupId);
       }
+      String? icon = groupDetail?.icon;
+      if (icon != null && icon.endsWith('Items/0.png')) icon = null;
+      icon ??= buffs.firstOrNull?.iconFix;
+
       rows.add(ListTile(
         dense: true,
-        leading: groupDetail == null ? null : db.getIconImage(groupDetail.icon, width: 24, aspectRatio: 1),
+        leading: icon == null ? null : db.getIconImage(icon, width: 24, aspectRatio: 1),
         horizontalTitleGap: 0,
         title: Text(Transl.itemNames(groupDetail?.name ?? S.current.event_point).l),
         trailing: DropdownButton<EventPointBuff?>(
@@ -778,14 +782,21 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                 textScaleFactor: 0.8,
               ),
             ),
-            for (final buff in buffs)
-              DropdownMenuItem(
+            ...buffs.map((buff) {
+              String bonus;
+              if (buff.value == 0 && buff.lv != 0) {
+                bonus = 'Lv.${buff.lv}';
+              } else {
+                bonus = '+${buff.value.format(base: 10, percent: true)}';
+              }
+              return DropdownMenuItem(
                 value: buff,
                 child: Text(
-                  '${buff.eventPoint}(+${buff.value.format(base: 10, percent: true)})',
+                  '$bonus(${buff.eventPoint})',
                   textScaleFactor: 0.8,
                 ),
-              )
+              );
+            })
           ],
           onChanged: options.disableEvent
               ? null

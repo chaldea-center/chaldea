@@ -57,6 +57,7 @@ class BattleData {
   bool get mounted => context != null && context!.mounted;
 
   QuestPhase? niceQuest;
+  int? get eventId => niceQuest?.war?.eventId;
   Stage? curStage;
 
   int enemyOnFieldCount = 3;
