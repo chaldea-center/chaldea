@@ -10551,6 +10551,17 @@ class S {
     );
   }
 
+  /// `CN endpoint for China mainland\nWeb app is only recommended for PC users, Mobile website is laggy and may refresh unexpectedly.`
+  String get web_domain_choice_hint {
+    return Intl.message(
+      'CN endpoint for China mainland\nWeb app is only recommended for PC users, Mobile website is laggy and may refresh unexpectedly.',
+      name: 'web_domain_choice_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Web Renderer`
   String get web_renderer {
     return Intl.message(

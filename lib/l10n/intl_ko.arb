@@ -953,6 +953,7 @@
   "war_board": "성배전선",
   "war_map": "지도",
   "warning": "경고",
+  "web_domain_choice_hint": null,
   "web_renderer": "웹 렌더러",
   "words_separate": "{a} {b}"
 }

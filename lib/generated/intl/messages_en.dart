@@ -1104,6 +1104,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "war_board": MessageLookupByLibrary.simpleMessage("War Board"),
         "war_map": MessageLookupByLibrary.simpleMessage("Map"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
+        "web_domain_choice_hint": MessageLookupByLibrary.simpleMessage(
+            "CN endpoint for China mainland\nWeb app is only recommended for PC users, Mobile website is laggy and may refresh unexpectedly."),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web Renderer"),
         "words_separate": m14
       };

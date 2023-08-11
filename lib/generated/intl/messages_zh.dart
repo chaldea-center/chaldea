@@ -1056,6 +1056,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "war_board": MessageLookupByLibrary.simpleMessage("圣杯战线"),
         "war_map": MessageLookupByLibrary.simpleMessage("地图"),
         "warning": MessageLookupByLibrary.simpleMessage("警告"),
+        "web_domain_choice_hint":
+            MessageLookupByLibrary.simpleMessage("大陆地区请选择国内节点\n网页版仅推荐PC用户使用，手机版网页性能较差且bug较多如无故刷新"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web渲染器"),
         "words_separate": m14
       };

@@ -953,6 +953,7 @@
   "war_board": "聖杯戦線",
   "war_map": "マップ",
   "warning": "警告",
+  "web_domain_choice_hint": null,
   "web_renderer": "Webレンダラ",
   "words_separate": "{a}{b}"
 }

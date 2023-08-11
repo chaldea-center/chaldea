@@ -220,8 +220,8 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 12),
             child: Text(
-              S.current.download_source_hint,
-              textAlign: TextAlign.center,
+              S.current.web_domain_choice_hint,
+              // textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall,
             ),
           )

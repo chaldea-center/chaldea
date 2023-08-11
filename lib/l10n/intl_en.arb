@@ -953,6 +953,7 @@
   "war_board": "War Board",
   "war_map": "Map",
   "warning": "Warning",
+  "web_domain_choice_hint": "CN endpoint for China mainland\nWeb app is only recommended for PC users, Mobile website is laggy and may refresh unexpectedly.",
   "web_renderer": "Web Renderer",
   "words_separate": "{a} {b}"
 }

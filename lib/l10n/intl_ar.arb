@@ -953,6 +953,7 @@
   "war_board": null,
   "war_map": null,
   "warning": "تحذير",
+  "web_domain_choice_hint": null,
   "web_renderer": null,
   "words_separate": "{a} {b}"
 }
