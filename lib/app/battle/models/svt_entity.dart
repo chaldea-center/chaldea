@@ -1110,7 +1110,20 @@ class BattleServantData {
           }
 
           battleData.battleLogger.function('$lBattleName - ${buff.buff.lName.l} ${S.current.skill} [$skillId]');
-          await BattleSkillInfoData.activateSkill(battleData, skill, buff.additionalParam);
+          if (buff.buff.type == BuffType.entryFunction) {
+            final count = buff.vals.Count;
+            if (count != null && count > 0) {
+              for (int index = 0; index < count; index++) {
+                battleData.battleLogger.function(
+                    '$lBattleName - ${buff.buff.lName.l} ${S.current.skill} [$skillId] count ${index + 1}/${buff.vals.Count}');
+                await BattleSkillInfoData.activateSkill(battleData, skill, buff.additionalParam);
+                buff.useOnce();
+              }
+            }
+          } else {
+            battleData.battleLogger.function('$lBattleName - ${buff.buff.lName.l} ${S.current.skill} [$skillId]');
+            await BattleSkillInfoData.activateSkill(battleData, skill, buff.additionalParam);
+          }
           buff.setUsed();
           activated = true;
         }
