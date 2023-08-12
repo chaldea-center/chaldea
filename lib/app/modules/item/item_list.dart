@@ -376,7 +376,11 @@ class _ItemListTabState extends State<ItemListTab> {
         }
         break;
       case _ItemSortType.id:
-        sortedEntries.sort2((e) => e.key);
+        if (widget.category == ItemCategory.event) {
+          sortedEntries.sort2((e) => -e.key);
+        } else {
+          sortedEntries.sort2((e) => e.key);
+        }
         break;
       case _ItemSortType.owned:
         sortedEntries.sort2((e) => e.key == Items.qpId ? double.negativeInfinity : db.curUser.items[e.key] ?? 0);

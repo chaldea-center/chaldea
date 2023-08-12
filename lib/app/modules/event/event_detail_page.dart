@@ -180,7 +180,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
         pointName = Transl.itemNames(pointGroup.name).l;
       }
       pointName ??= S.current.event_point_reward + (rewardGroups.length > 1 ? ' $groupId' : '');
-      final icon = pointGroup?.icon ?? event.pointBuffs.firstWhereOrNull((buff) => buff.groupId == groupId)?.iconFix;
+      final icon = pointGroup?.icon ?? event.pointBuffs.firstWhereOrNull((buff) => buff.groupId == groupId)?.icon;
       tabs.add(Tab(
         child: Text.rich(TextSpan(children: [
           if (icon != null) CenterWidgetSpan(child: db.getIconImage(icon, width: 24)),

@@ -379,9 +379,11 @@ Map<String, dynamic> _$ShopReleaseToJson(ShopRelease instance) => <String, dynam
     };
 
 EventPointReward _$EventPointRewardFromJson(Map json) => EventPointReward(
-      groupId: json['groupId'] as int,
+      groupId: json['groupId'] as int? ?? 0,
       point: json['point'] as int,
-      gifts: (json['gifts'] as List<dynamic>).map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
+      gifts:
+          (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
+              const [],
     );
 
 Map<String, dynamic> _$EventPointRewardToJson(EventPointReward instance) => <String, dynamic>{
@@ -391,7 +393,7 @@ Map<String, dynamic> _$EventPointRewardToJson(EventPointReward instance) => <Str
     };
 
 EventPointGroup _$EventPointGroupFromJson(Map json) => EventPointGroup(
-      groupId: json['groupId'] as int,
+      groupId: json['groupId'] as int? ?? 0,
       name: json['name'] as String? ?? "",
       icon: json['icon'] as String?,
     );
@@ -438,7 +440,7 @@ const _$ItemBGTypeEnumMap = {
 };
 
 EventPointActivity _$EventPointActivityFromJson(Map json) => EventPointActivity(
-      groupId: json['groupId'] as int,
+      groupId: json['groupId'] as int? ?? 0,
       point: json['point'] as int? ?? 0,
       objectType: $enumDecodeNullable(_$EventPointActivityObjectTypeEnumMap, json['objectType']) ??
           EventPointActivityObjectType.none,
@@ -830,9 +832,9 @@ Map<String, dynamic> _$EventRewardSceneGuideToJson(EventRewardSceneGuide instanc
     };
 
 EventRewardScene _$EventRewardSceneFromJson(Map json) => EventRewardScene(
-      slot: json['slot'] as int,
-      groupId: json['groupId'] as int,
-      type: json['type'] as int,
+      slot: json['slot'] as int? ?? 0,
+      groupId: json['groupId'] as int? ?? 0,
+      type: json['type'] as int? ?? 0,
       guides: (json['guides'] as List<dynamic>?)
               ?.map((e) => EventRewardSceneGuide.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??

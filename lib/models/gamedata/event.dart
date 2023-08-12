@@ -557,9 +557,9 @@ class EventPointReward {
   // String bgImageGet;
 
   EventPointReward({
-    required this.groupId,
+    this.groupId = 0,
     required this.point,
-    required this.gifts,
+    this.gifts = const [],
     // required this.bgImagePoint,
     // required this.bgImageGet,
   });
@@ -576,7 +576,7 @@ class EventPointGroup {
   String? icon;
 
   EventPointGroup({
-    required this.groupId,
+    this.groupId = 0,
     this.name = "",
     String? icon,
   }) : icon = icon != null && icon.endsWith('/Items/0.png') ? null : icon;
@@ -615,18 +615,6 @@ class EventPointBuff {
     this.lv = 0,
   });
 
-  String get iconFix {
-    if (groupId ~/ 100 == 80442) {
-      final match = RegExp(r'/Items/(\d+).png').firstMatch(icon);
-      String? iconId = match?.group(1);
-      if (iconId != null) {
-        iconId = iconId.padLeft(2, '0');
-        return "https://static.atlasacademy.io/JP/EventUI/Prefabs/80442/img_LeaderIcon$iconId.png";
-      }
-    }
-    return icon;
-  }
-
   factory EventPointBuff.fromJson(Map<String, dynamic> json) => _$EventPointBuffFromJson(json);
 
   Map<String, dynamic> toJson() => _$EventPointBuffToJson(this);
@@ -641,7 +629,7 @@ class EventPointActivity {
   int objectValue;
 
   EventPointActivity({
-    required this.groupId,
+    this.groupId = 0,
     this.point = 0,
     this.objectType = EventPointActivityObjectType.none,
     this.objectId = 0,
@@ -1097,9 +1085,9 @@ class EventRewardScene {
   List<EventRewardSceneFlag> flags;
 
   EventRewardScene({
-    required this.slot,
-    required this.groupId,
-    required this.type,
+    this.slot = 0,
+    this.groupId = 0,
+    this.type = 0,
     this.guides = const [],
     required this.tabOnImage,
     required this.tabOffImage,
