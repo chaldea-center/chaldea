@@ -19,15 +19,19 @@ class MoveToLastSubMember {
       if (nonnullOnFieldList.length == 1) {
         continue;
       }
+      if (!target.canAttack(battleData)) {
+        continue;
+      }
 
       final onFieldList = target.isPlayer ? battleData.onFieldAllyServants : battleData.onFieldEnemies;
       final backupList = target.isPlayer ? battleData.playerDataList : battleData.enemyDataList;
 
       final onFieldIndex = onFieldList.indexOf(target);
-      if (onFieldIndex == -1) {
-        backupList[backupList.indexOf(target)] = null;
-      } else {
-        onFieldList[onFieldList.indexOf(target)] = null;
+      final backupIndex = backupList.indexOf(target);
+      if (onFieldIndex == -1 && backupIndex >= 0) {
+        backupList[backupIndex] = null;
+      } else if (onFieldIndex >= 0) {
+        onFieldList[onFieldIndex] = null;
       }
       backupList.add(target);
       battleData.curFuncResults[target.uniqueId] = true;
