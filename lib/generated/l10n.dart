@@ -9814,10 +9814,10 @@ class S {
     );
   }
 
-  /// `Unreleased servants/low success rate/cannot clear quest/etc.\nAsk admin to delete team rather to edit team.`
+  /// `Unreleased servant xxx/low success rate/cannot clear quest/etc.\nAsk admin to delete team rather to edit team.`
   String get team_report_reason_hint {
     return Intl.message(
-      'Unreleased servants/low success rate/cannot clear quest/etc.\nAsk admin to delete team rather to edit team.',
+      'Unreleased servant xxx/low success rate/cannot clear quest/etc.\nAsk admin to delete team rather to edit team.',
       name: 'team_report_reason_hint',
       desc: '',
       locale: localeName,

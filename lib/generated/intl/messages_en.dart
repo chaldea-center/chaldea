@@ -1033,7 +1033,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "team_no_order_change": MessageLookupByLibrary.simpleMessage("No Order Change"),
         "team_no_same_svt": MessageLookupByLibrary.simpleMessage("No Same Svt"),
         "team_report_reason_hint": MessageLookupByLibrary.simpleMessage(
-            "Unreleased servants/low success rate/cannot clear quest/etc.\nAsk admin to delete team rather to edit team."),
+            "Unreleased servant xxx/low success rate/cannot clear quest/etc.\nAsk admin to delete team rather to edit team."),
         "team_shared": MessageLookupByLibrary.simpleMessage("Shared Teams"),
         "team_starting_member": MessageLookupByLibrary.simpleMessage("Frontline"),
         "team_use_servant": MessageLookupByLibrary.simpleMessage("Use Servant"),

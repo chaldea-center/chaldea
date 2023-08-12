@@ -206,15 +206,20 @@ class ExtraAssetsPage extends StatelessWidget {
               String url = _urls[index];
               Widget child;
               if (url.endsWith('manifest.json')) {
+                final svtId = RegExp(r'/Servants/(\d+)/manifest.json').firstMatch(url)?.group(1);
                 child = FutureBuilder(
                   future: AtlasApi.cacheManager.getJson(url, expireAfter: const Duration(days: 7)),
                   builder: (context, snapshot) {
                     final data = snapshot.data;
                     if (data is List) {
-                      List<Map>? parts = data.whereType<Map>().where((m) => m['type'] == 'Texture2D').toList();
-                      Map? part = parts.firstWhereOrNull((m) {
+                      List<Map> parts = data.whereType<Map>().where((m) => m['type'] == 'Texture2D').toList();
+                      Map? part;
+                      if (svtId != null) {
+                        part ??= parts.firstWhereOrNull((m) => m['path'] == "textures/$svtId.png");
+                      }
+                      part ??= parts.firstWhereOrNull((m) {
                         final p = m['path'].toString();
-                        return p.contains('textures/') && !p.contains('aura_');
+                        return p.contains('textures/') && !p.contains('aura_') && !p.contains('fbmx.png');
                       });
                       if (parts.isNotEmpty) {
                         part ??= parts.first;

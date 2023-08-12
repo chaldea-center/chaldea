@@ -326,9 +326,12 @@ class AtlasApi {
   }
 
   static Future<T?> mstData<T>(String table, T Function(dynamic json) fromJson,
-      {Region region = Region.jp, Duration? expireAfter}) {
+      {Region region = Region.jp, Duration? expireAfter, bool? proxy}) {
+    proxy ??= HostsX.proxy;
+    String url = "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/master/$table.json";
+    if (proxy) url = HostsX.proxyWorker(url);
     return cacheManager.getModel(
-      "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/metadata/$table.json",
+      url,
       fromJson,
       expireAfter: expireAfter,
     );

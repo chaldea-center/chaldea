@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/raw.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
@@ -26,6 +27,7 @@ class SniffGachaHistory extends StatefulWidget {
 class _SniffGachaHistoryState extends State<SniffGachaHistory> {
   late List<UserGacha> records = widget.records.toList();
   final loading = ValueNotifier<bool>(false);
+  final gachaType = FilterGroupData<GachaType>();
 
   Map<int, MstGacha> gachas = {};
   Map<int, MstGacha> cnGachas = {};
@@ -92,6 +94,13 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
 
   @override
   Widget build(BuildContext context) {
+    final shownRecords = records.where((record) {
+      if (!gachaType.matchOne(gachas[record.gachaId]?.gachaType ?? GachaType.unknown)) {
+        return false;
+      }
+      return true;
+    }).toList();
+
     final totalSummonCount = Maths.sum(records.where((e) => !shouldIgnore(e)).map((e) => e.num));
     final allUserSvts = [...widget.userSvt, ...widget.userSvtStorage];
     return Scaffold(
@@ -145,11 +154,23 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
               ],
             ),
             const Divider(height: 2, thickness: 1),
+            const SizedBox(height: 8),
+            Center(
+              child: FilterGroup<GachaType>(
+                combined: true,
+                options: const [GachaType.payGacha, GachaType.chargeStone, GachaType.unknown],
+                values: gachaType,
+                optionBuilder: (v) => Text(v.shownName),
+                onFilterChanged: (v, _) {
+                  setState(() {});
+                },
+              ),
+            ),
           ]),
           SliverList.separated(
-            itemBuilder: (context, index) => buildGacha(context, index, records[index]),
+            itemBuilder: (context, index) => buildGacha(context, index, shownRecords[index]),
             separatorBuilder: (context, index) => const SizedBox.shrink(),
-            itemCount: records.length,
+            itemCount: shownRecords.length,
           ),
         ],
       ),
@@ -174,7 +195,16 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
         return ListTile(
           dense: true,
           selected: (_imageIdMap[gacha?.imageId]?.length ?? 0) > 1,
-          title: Text(title),
+          title: Row(
+            children: [
+              if (gachas[record.gachaId]?.type == GachaType.chargeStone.id)
+                const Padding(
+                  padding: EdgeInsetsDirectional.only(end: 4),
+                  child: Icon(Icons.currency_yen, size: 16),
+                ),
+              Expanded(child: Text(title)),
+            ],
+          ),
           subtitle: Text(subtitle),
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
           trailing: Text(

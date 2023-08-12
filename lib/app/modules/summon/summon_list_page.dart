@@ -9,6 +9,7 @@ import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'filter_page.dart';
+import 'gacha_list.dart';
 import 'gacha_prob_calc.dart';
 import 'summon_detail_page.dart';
 
@@ -105,6 +106,12 @@ class _SummonListPageState extends State<SummonListPage> with SearchableListStat
             },
             child: Text(S.current.gacha_prob_calc),
           ),
+          IconButton(
+            onPressed: () {
+              router.pushPage(GachaListPage(region: db.curUser.region));
+            },
+            icon: const Icon(Icons.raw_on),
+          )
         ],
       ),
     );

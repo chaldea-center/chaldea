@@ -410,7 +410,11 @@ class CraftDetailBasePage extends StatelessWidget {
           ),
         ),
         CustomTableRow.fromTexts(
-          texts: [S.current.illustration],
+          texts: [
+            ce.script?.maleImage != null
+                ? '${S.current.illustration} (${S.current.guda_female})'
+                : S.current.illustration,
+          ],
           isHeader: true,
         ),
         ExtraAssetsPage(

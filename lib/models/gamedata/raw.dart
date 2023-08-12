@@ -1,4 +1,7 @@
+import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/utils/extension.dart';
 import '_helper.dart';
+import 'item.dart';
 
 part '../../generated/models/gamedata/raw.g.dart';
 
@@ -74,4 +77,34 @@ class MstGacha {
     this.flag = 0,
   });
   factory MstGacha.fromJson(Map<String, dynamic> json) => _$MstGachaFromJson(json);
+
+  GachaType get gachaType => GachaType.values.firstWhereOrNull((e) => e.id == type) ?? GachaType.unknown;
+}
+
+// public enum SummonControl.GACHATYPE
+enum GachaType {
+  unknown(0),
+  payGacha(1),
+  freeGacha(3),
+  ticketGacha(5),
+  chargeStone(7),
+  ;
+
+  const GachaType(this.id);
+  final int id;
+
+  String get shownName {
+    switch (this) {
+      case unknown:
+        return 'Unknown';
+      case freeGacha:
+        return Items.friendPoint?.lName.l ?? 'FriendPoint';
+      case chargeStone:
+        return S.current.lucky_bag;
+      case payGacha:
+        return 'Normal';
+      case ticketGacha:
+        return name;
+    }
+  }
 }
