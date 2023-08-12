@@ -749,6 +749,7 @@ class CraftEssence with GameCardMixin {
   int? valentineEquipOwner;
   List<ValentineScript> valentineScript;
   AscensionAdd ascensionAdd;
+  ServantScript? script;
   List<NiceSkill> skills;
   NiceLore profile;
 
@@ -781,6 +782,7 @@ class CraftEssence with GameCardMixin {
     this.valentineEquipOwner,
     this.valentineScript = const [],
     AscensionAdd? ascensionAdd,
+    this.script,
     required this.skills,
     NiceLore? profile,
   })  : extraAssets = extraAssets ?? ExtraAssets(),
@@ -1438,10 +1440,12 @@ class ServantScript with DataScriptBase {
   @JsonKey(name: 'SkillRankUp')
   Map<int, List<int>>? skillRankUp;
   bool? svtBuffTurnExtend;
+  ExtraAssets? maleImage;
 
   ServantScript({
     this.skillRankUp,
     this.svtBuffTurnExtend,
+    this.maleImage,
   });
 
   factory ServantScript.fromJson(Map<String, dynamic> json) => _$ServantScriptFromJson(json)..setSource(json);

@@ -762,7 +762,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         options.pointBuffs.remove(groupId);
       }
       String? icon = groupDetail?.icon;
-      if (icon != null && icon.endsWith('Items/0.png')) icon = null;
       icon ??= buffs.firstOrNull?.iconFix;
 
       rows.add(ListTile(

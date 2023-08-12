@@ -418,6 +418,14 @@ class CraftDetailBasePage extends StatelessWidget {
           scrollable: false,
           charaGraphPlaceholder: (_, __) => db.getIconImage(ce.cardBack),
         ),
+        if (ce.script?.maleImage != null) ...[
+          CustomTableRow.fromTexts(texts: [S.current.guda_male], isHeader: true),
+          ExtraAssetsPage(
+            assets: ce.script!.maleImage!,
+            scrollable: false,
+            charaGraphPlaceholder: (_, __) => db.getIconImage(ce.cardBack),
+          ),
+        ],
         if (showExtra && summons.isNotEmpty) ...[
           CustomTableRow(children: [TableCellData(text: S.current.summon, isHeader: true)]),
           CustomTableRow(children: [

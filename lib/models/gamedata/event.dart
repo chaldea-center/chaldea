@@ -32,6 +32,7 @@ class Event {
   List<EventPointReward> pointRewards; // point rewards
   List<EventPointGroup> pointGroups;
   List<EventPointBuff> pointBuffs;
+  List<EventPointActivity> pointActivities;
   List<EventMission> missions;
   List<EventRandomMission> randomMissions;
   List<NiceEventMissionGroup> missionGroups;
@@ -81,6 +82,7 @@ class Event {
     this.rewardScenes = const [],
     this.pointGroups = const [],
     this.pointBuffs = const [],
+    this.pointActivities = const [],
     this.missions = const [],
     this.randomMissions = const [],
     this.missionGroups = const [],
@@ -576,8 +578,8 @@ class EventPointGroup {
   EventPointGroup({
     required this.groupId,
     this.name = "",
-    this.icon,
-  });
+    String? icon,
+  }) : icon = icon != null && icon.endsWith('/Items/0.png') ? null : icon;
 
   factory EventPointGroup.fromJson(Map<String, dynamic> json) => _$EventPointGroupFromJson(json);
 
@@ -628,6 +630,27 @@ class EventPointBuff {
   factory EventPointBuff.fromJson(Map<String, dynamic> json) => _$EventPointBuffFromJson(json);
 
   Map<String, dynamic> toJson() => _$EventPointBuffToJson(this);
+}
+
+@JsonSerializable()
+class EventPointActivity {
+  int groupId;
+  int point;
+  EventPointActivityObjectType objectType;
+  int objectId;
+  int objectValue;
+
+  EventPointActivity({
+    required this.groupId,
+    this.point = 0,
+    this.objectType = EventPointActivityObjectType.none,
+    this.objectId = 0,
+    this.objectValue = 0,
+  });
+
+  factory EventPointActivity.fromJson(Map<String, dynamic> json) => _$EventPointActivityFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventPointActivityToJson(this);
 }
 
 @JsonSerializable()
@@ -1759,4 +1782,11 @@ enum EventFortificationSvtType {
   userSvt,
   npc,
   none,
+}
+
+enum EventPointActivityObjectType {
+  none,
+  questId,
+  skillId,
+  shopId,
 }

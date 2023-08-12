@@ -314,6 +314,7 @@ CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
       ascensionAdd: json['ascensionAdd'] == null
           ? null
           : AscensionAdd.fromJson(Map<String, dynamic>.from(json['ascensionAdd'] as Map)),
+      script: json['script'] == null ? null : ServantScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
       skills: (json['skills'] as List<dynamic>)
           .map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
@@ -342,6 +343,7 @@ Map<String, dynamic> _$CraftEssenceToJson(CraftEssence instance) => <String, dyn
       'valentineEquipOwner': instance.valentineEquipOwner,
       'valentineScript': instance.valentineScript.map((e) => e.toJson()).toList(),
       'ascensionAdd': instance.ascensionAdd.toJson(),
+      'script': instance.script?.toJson(),
       'skills': instance.skills.map((e) => e.toJson()).toList(),
       'profile': instance.profile.toJson(),
     };
@@ -958,11 +960,14 @@ ServantScript _$ServantScriptFromJson(Map json) => ServantScript(
         (k, e) => MapEntry(int.parse(k as String), (e as List<dynamic>).map((e) => e as int).toList()),
       ),
       svtBuffTurnExtend: json['svtBuffTurnExtend'] as bool?,
+      maleImage:
+          json['maleImage'] == null ? null : ExtraAssets.fromJson(Map<String, dynamic>.from(json['maleImage'] as Map)),
     );
 
 Map<String, dynamic> _$ServantScriptToJson(ServantScript instance) => <String, dynamic>{
       'SkillRankUp': instance.skillRankUp?.map((k, e) => MapEntry(k.toString(), e)),
       'svtBuffTurnExtend': instance.svtBuffTurnExtend,
+      'maleImage': instance.maleImage?.toJson(),
     };
 
 SvtScript _$SvtScriptFromJson(Map json) => SvtScript(

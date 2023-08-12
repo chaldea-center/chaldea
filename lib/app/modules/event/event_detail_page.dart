@@ -74,6 +74,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
     Event? newEvent;
     if (region == Region.jp && !force) {
       newEvent = db.gameData.events[eventId];
+      newEvent ??= await AtlasApi.event(eventId!);
     } else {
       _loading = true;
       if (mounted) setState(() {});
@@ -179,9 +180,10 @@ class _EventDetailPageState extends State<EventDetailPage> {
         pointName = Transl.itemNames(pointGroup.name).l;
       }
       pointName ??= S.current.event_point_reward + (rewardGroups.length > 1 ? ' $groupId' : '');
+      final icon = pointGroup?.icon ?? event.pointBuffs.firstWhereOrNull((buff) => buff.groupId == groupId)?.iconFix;
       tabs.add(Tab(
         child: Text.rich(TextSpan(children: [
-          if (pointGroup != null) CenterWidgetSpan(child: db.getIconImage(pointGroup.icon, width: 24)),
+          if (icon != null) CenterWidgetSpan(child: db.getIconImage(icon, width: 24)),
           TextSpan(text: pointName),
         ])),
       ));

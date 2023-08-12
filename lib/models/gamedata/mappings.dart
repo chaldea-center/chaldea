@@ -92,7 +92,7 @@ class Transl<K, V> {
     }
 
     if (!md.trait.containsKey(id)) {
-      final svt = db.gameData.servantsById[id];
+      final svt = db.gameData.servantsById[id] ?? db.gameData.entities[id];
       if (svt != null) {
         var nameMapping = md.svtNames[svt.name] ?? md.entityNames[svt.name] ?? MappingBase(jp: svt.name);
         if (addSvtId) {

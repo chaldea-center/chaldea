@@ -20,22 +20,35 @@ class _TraitServantTabState extends State<TraitServantTab> {
     List<Servant> servants =
         db.gameData.servantsNoDup.values.where((svt) => svt.traitsAll.contains(widget.id)).toList();
     servants.sort2((e) => e.collectionNo);
-    if (servants.isEmpty) return const Center(child: Text('No record'));
+    BasicServant? entity;
+    if (!servants.any((svt) => svt.id == widget.id)) {
+      entity = db.gameData.entities[widget.id];
+    }
+    if (servants.isEmpty && entity == null) return const Center(child: Text('No record'));
+
     return CustomScrollView(
       slivers: [
         SliverList.list(children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Center(
-              child: FilterGroup.display(
-                useGrid: useGrid,
-                onChanged: (v) {
-                  if (v != null) useGrid = v;
-                  setState(() {});
-                },
+          if (servants.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Center(
+                child: FilterGroup.display(
+                  useGrid: useGrid,
+                  onChanged: (v) {
+                    if (v != null) useGrid = v;
+                    setState(() {});
+                  },
+                ),
               ),
             ),
-          ),
+          if (entity != null)
+            ListTile(
+              dense: true,
+              leading: entity.iconBuilder(context: context),
+              title: Text('No.${entity.id}-${entity.lName.l}'),
+              onTap: entity.routeTo,
+            )
         ]),
         useGrid
             ? SliverGrid.extent(

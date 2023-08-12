@@ -103,7 +103,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
         showEnemy: !svt.isUserSvt,
       ));
     }
-    children.add(SHeader(S.current.append_skill));
+    if (svt.appendPassive.isNotEmpty) children.add(SHeader(S.current.append_skill));
     svt.appendPassive.sort2((s) => s.num * 100 + s.priority);
     for (final appendSkill in svt.appendPassive) {
       children.add(SkillDescriptor(

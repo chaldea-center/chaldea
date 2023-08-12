@@ -41,6 +41,10 @@ Event _$EventFromJson(Map json) => Event(
               ?.map((e) => EventPointBuff.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      pointActivities: (json['pointActivities'] as List<dynamic>?)
+              ?.map((e) => EventPointActivity.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       missions: (json['missions'] as List<dynamic>?)
               ?.map((e) => EventMission.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -129,6 +133,7 @@ Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
       'rewards': instance.pointRewards.map((e) => e.toJson()).toList(),
       'pointGroups': instance.pointGroups.map((e) => e.toJson()).toList(),
       'pointBuffs': instance.pointBuffs.map((e) => e.toJson()).toList(),
+      'pointActivities': instance.pointActivities.map((e) => e.toJson()).toList(),
       'missions': instance.missions.map((e) => e.toJson()).toList(),
       'randomMissions': instance.randomMissions.map((e) => e.toJson()).toList(),
       'missionGroups': instance.missionGroups.map((e) => e.toJson()).toList(),
@@ -430,6 +435,30 @@ const _$ItemBGTypeEnumMap = {
   ItemBGType.gold: 'gold',
   ItemBGType.questClearQPReward: 'questClearQPReward',
   ItemBGType.aquaBlue: 'aquaBlue',
+};
+
+EventPointActivity _$EventPointActivityFromJson(Map json) => EventPointActivity(
+      groupId: json['groupId'] as int,
+      point: json['point'] as int? ?? 0,
+      objectType: $enumDecodeNullable(_$EventPointActivityObjectTypeEnumMap, json['objectType']) ??
+          EventPointActivityObjectType.none,
+      objectId: json['objectId'] as int? ?? 0,
+      objectValue: json['objectValue'] as int? ?? 0,
+    );
+
+Map<String, dynamic> _$EventPointActivityToJson(EventPointActivity instance) => <String, dynamic>{
+      'groupId': instance.groupId,
+      'point': instance.point,
+      'objectType': _$EventPointActivityObjectTypeEnumMap[instance.objectType]!,
+      'objectId': instance.objectId,
+      'objectValue': instance.objectValue,
+    };
+
+const _$EventPointActivityObjectTypeEnumMap = {
+  EventPointActivityObjectType.none: 'none',
+  EventPointActivityObjectType.questId: 'questId',
+  EventPointActivityObjectType.skillId: 'skillId',
+  EventPointActivityObjectType.shopId: 'shopId',
 };
 
 EventMissionConditionDetail _$EventMissionConditionDetailFromJson(Map json) => EventMissionConditionDetail(
