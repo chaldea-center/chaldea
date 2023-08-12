@@ -72,7 +72,7 @@ class _TraitServantTabState extends State<TraitServantTab> {
     final comments = _addComment([
       ...svt.traits,
       for (final traitAdd in svt.traitAdd)
-        if (traitAdd.idx == 1) ...traitAdd.trait
+        if (traitAdd.idx == 1 && traitAdd.limitCount == -1) ...traitAdd.trait
     ], widget.id, '');
     return comments.isNotEmpty;
   }
@@ -101,6 +101,9 @@ class _TraitServantTabState extends State<TraitServantTab> {
         String name = traitAdd.idx.toString();
         if (event != null) {
           name += '(${event.lName.l.setMaxLines(1)})';
+        }
+        if (traitAdd.limitCount != -1) {
+          name += '(${S.current.ascension_stage_short} ${traitAdd.limitCount})';
         }
         details.addAll(_addComment(traitAdd.trait, widget.id, name));
       }

@@ -24,7 +24,7 @@ class SvtInfoTab extends StatelessWidget {
     final baseTraits = [
       ...svt.traits,
       for (final traitAdd in svt.traitAdd)
-        if (traitAdd.idx == 1) ...traitAdd.trait,
+        if (traitAdd.idx == 1 && traitAdd.limitCount == -1) ...traitAdd.trait,
     ];
     final name = RubyText(
       [RubyTextData(svt.name, ruby: svt.ruby)],
@@ -280,6 +280,8 @@ class SvtInfoTab extends StatelessWidget {
                           ),
                           TextSpan(text: (traitAdd.idx % 100).toString().padLeft(2, '0'))
                         ],
+                        if (traitAdd.limitCount != -1)
+                          TextSpan(text: '(${S.current.ascension_stage_short}${traitAdd.limitCount})'),
                         if (event == null) TextSpan(text: traitAdd.idx.toString()),
                         const TextSpan(text: ': ')
                       ],

@@ -1170,7 +1170,7 @@ class ServantCoin {
 class ServantTrait {
   int idx;
   List<NiceTrait> trait;
-  int limitCount;
+  int limitCount; // -1: all, 0-4, Murasama event skill 940296
   @CondTypeConverter()
   CondType condType;
   int condId;
