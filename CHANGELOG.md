@@ -2,13 +2,17 @@
 
 ## 2.4.10
 
-- Master mission solver supports Advanced Quests
-- Fix CE pin to top not work in Laplace
-- Fix condition check for Andersen skill 3 upgrade 
-- Fix summer 2023 point buff
-- Fix move to last member should check actor can act (Summer Chloe S2)
-- Fix entry function should activate multiple times if count >0
-- Fix servant event trait should check limit count (Murasama event bonus in summer 2023)
+- Chaldeas
+  - Master mission solver supports Advanced Quests
+  - Illustration of Summer Castoria's bond CE has female and male two versions
+  - Add raw gacha list viewer
+- Laplace
+  - Fix CE pin to top not work in Laplace
+  - Fix condition check for Andersen skill 3 upgrade and Cnoc na Riabh skill 3
+  - Fix summer 2023 point buff
+  - Fix move to last member should check actor can act (Summer Chloe S2)
+  - Fix entry function should activate multiple times if count >0
+  - Fix servant event trait should check limit count (Murasama event bonus in summer 2023)
 
 ## 2.4.9
 
