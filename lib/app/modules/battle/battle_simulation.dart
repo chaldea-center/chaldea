@@ -453,7 +453,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
 
     children.add(Text.rich(
       TextSpan(children: [
-        for (final buff in svt.battleBuff.shownBuffs) WidgetSpan(child: buildBuffIcon(buff)),
+        for (final buff in svt.battleBuff.shownBuffs) WidgetSpan(child: BattleBuffIcon(buff: buff, size: 16)),
       ]),
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
@@ -791,21 +791,6 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           constraints: const BoxConstraints(maxHeight: 32),
           child: child,
         ),
-      ),
-    );
-  }
-
-  Widget buildBuffIcon(final BuffData buff) {
-    return DecoratedBox(
-      decoration: buff.irremovable
-          ? BoxDecoration(
-              border: Border.all(color: Theme.of(context).hintColor),
-              borderRadius: BorderRadius.circular(2),
-            )
-          : const BoxDecoration(),
-      child: Padding(
-        padding: const EdgeInsets.all(1),
-        child: db.getIconImage(buff.buff.icon, width: 16, height: 16),
       ),
     );
   }

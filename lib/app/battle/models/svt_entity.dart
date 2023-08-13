@@ -233,6 +233,22 @@ class BattleServantData {
 
   int get deathRate => isEnemy ? niceEnemy!.deathRate : niceSvt!.instantDeathChance;
 
+  String get npValueText {
+    if (isEnemy) {
+      if (niceEnemy!.noblePhantasm.noblePhantasm?.functions.isNotEmpty == true && niceEnemy!.chargeTurn > 0) {
+        return '$npLineCount/${niceEnemy!.chargeTurn}';
+      } else {
+        return '-';
+      }
+    } else {
+      if (playerSvtData!.td != null) {
+        return (np / 100).toString();
+      } else {
+        return '-';
+      }
+    }
+  }
+
   void initScript(final BattleData battleData) {
     if (niceEnemy != null) {
       int dispBreakShift = niceEnemy!.enemyScript.dispBreakShift ?? 0;

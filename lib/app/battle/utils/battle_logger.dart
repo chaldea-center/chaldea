@@ -217,10 +217,10 @@ class BattleRecordManager {
       if (svtData.skills.any((e) => !validSkills.contains(e?.id))) {
         return false;
       }
-      final validTds = BattleUtils.getShownTds(dbSvt, svtData.limitCount).map((e) => e.id).toSet();
-      if (!validTds.contains(svtData.td?.id)) {
-        return false;
-      }
+    }
+    final validTds = BattleUtils.getShownTds(dbSvt, svtData.limitCount).map((e) => e.id).toSet();
+    if (!validTds.contains(svtData.td?.id)) {
+      return false;
     }
     if (svtData.ce?.collectionNo == 0) {
       return false;

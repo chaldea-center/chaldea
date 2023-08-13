@@ -112,6 +112,17 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
   }
 
   Widget get header {
+    final buffer = StringBuffer('No.${svt.niceEnemy?.shownId ?? svt.niceSvt?.shownId ?? svt.svtId}'
+        ' $kStarChar2${svt.rarity}'
+        ' ${Transl.svtClassId(svt.classId).l}'
+        '\nATK ${svt.atk}  HP ${svt.hp}'
+        '\n${Transl.svtAttribute(svt.attribute).l}  Pos ${svt.fieldIndex + 1}');
+    if (svt.isEnemy) {
+      buffer.write('  ${S.current.info_charge} ');
+    } else {
+      buffer.write('  NP ');
+    }
+    buffer.write(svt.npValueText);
     return CustomTile(
       leading: (svt.niceEnemy ?? svt.niceSvt)?.iconBuilder(
         context: context,
@@ -125,10 +136,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'No.${svt.niceEnemy?.shownId ?? svt.niceSvt?.shownId ?? svt.svtId}'
-            '  ${Transl.svtClassId(svt.classId).l}'
-            '\nATK ${svt.atk}  HP ${svt.hp}'
-            '\n${Transl.svtAttribute(svt.attribute).l}  Pos ${svt.fieldIndex + 1}',
+            buffer.toString(),
             style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
           ),
           const SizedBox(height: 4),
@@ -367,16 +375,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
     return ListTile(
       dense: true,
       horizontalTitleGap: 4,
-      leading: Container(
-        decoration: buff.irremovable
-            ? BoxDecoration(
-                border: Border.all(color: Theme.of(context).hintColor),
-                borderRadius: BorderRadius.circular(2),
-              )
-            : const BoxDecoration(),
-        padding: const EdgeInsets.all(1),
-        child: db.getIconImage(buff.buff.icon, width: 24, aspectRatio: 1),
-      ),
+      leading: BattleBuffIcon(buff: buff, size: 24),
       title: Text(buff.buff.name.isEmpty
           ? FuncDescriptor.buildBasicFuncText(NiceFunction(
               funcId: 0,
@@ -439,6 +438,31 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         buff.buff.routeTo();
       },
     );
+  }
+}
+
+class BattleBuffIcon extends StatelessWidget {
+  final BuffData buff;
+  final double size;
+  const BattleBuffIcon({super.key, required this.buff, this.size = 18});
+
+  @override
+  Widget build(BuildContext context) {
+    Widget child = db.getIconImage(buff.buff.icon, width: size, aspectRatio: 1);
+    child = Container(
+      decoration: buff.irremovable
+          ? BoxDecoration(
+              border: Border.all(color: Theme.of(context).hintColor),
+              borderRadius: BorderRadius.circular(2),
+            )
+          : null,
+      padding: const EdgeInsets.all(1),
+      child: child,
+    );
+    if (!buff.buffActState) {
+      child = Opacity(opacity: 0.5, child: child);
+    }
+    return child;
   }
 }
 
