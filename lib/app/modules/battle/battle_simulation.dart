@@ -55,7 +55,9 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       ..options = widget.options.copy()
       ..context = context;
 
-    battleData.recorder.determineUploadEligibility(questPhase, widget.options);
+    if (!BattleRecordManager.determineUploadEligibility(questPhase, widget.options)) {
+      battleData.recorder.isUploadEligible = false;
+    }
 
     _initBattle();
   }

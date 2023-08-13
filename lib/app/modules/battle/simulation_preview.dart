@@ -818,8 +818,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   Widget buttonBar() {
-    final totalCost = Maths.sum(
-        options.team.allSvts.map((e) => e.supportType.isSupport ? 0 : (e.svt?.cost ?? 0) + (e.ce?.cost ?? 0)));
     Widget child = Wrap(
       spacing: 4,
       alignment: WrapAlignment.center,
@@ -827,7 +825,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       children: [
         ConstrainedBox(
           constraints: const BoxConstraints(minWidth: 90),
-          child: Text(' COST: $totalCost ', textAlign: TextAlign.center),
+          child: Text(' COST: ${options.team.totalCost} ', textAlign: TextAlign.center),
         ),
         FilledButton.icon(
           onPressed: errorMsg != null

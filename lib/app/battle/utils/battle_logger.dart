@@ -187,21 +187,28 @@ class BattleRecordManager {
     records.add(record);
   }
 
-  void determineUploadEligibility(final QuestPhase questPhase, final BattleOptions options) {
+  // move to somewhere else
+  static bool determineUploadEligibility(final QuestPhase questPhase, final BattleOptions options) {
     if (questPhase.id <= 0 || options.pointBuffs.isNotEmpty || options.simulateEnemy || options.disableEvent) {
-      isUploadEligible = false;
-      return;
+      return false;
+    }
+    if (options.team.allSvts.where((e) => e.supportType != SupportSvtType.none).length > 1) {
+      return false;
+    }
+
+    if (options.team.totalCost > Maths.max(ConstData.userLevel.values.map((e) => e.maxCost), 115)) {
+      return false;
     }
 
     for (final svtData in options.team.allSvts) {
       if (!_checkSvtEligible(svtData)) {
-        isUploadEligible = false;
-        return;
+        return false;
       }
     }
+    return true;
   }
 
-  bool _checkSvtEligible(PlayerSvtData svtData) {
+  static bool _checkSvtEligible(PlayerSvtData svtData) {
     final svt = svtData.svt;
     if (svt == null) return true;
     if (!svt.isUserSvt || svtData.supportType == SupportSvtType.npc || svtData.additionalPassives.isNotEmpty) {

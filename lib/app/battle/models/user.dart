@@ -430,6 +430,16 @@ class BattleTeamSetup {
 
   List<PlayerSvtData> get allSvts => [...onFieldSvtDataList, ...backupSvtDataList];
 
+  int get totalCost {
+    int cost = 0;
+    for (final svt in allSvts) {
+      if (svt.svt == null || svt.supportType != SupportSvtType.none) continue;
+      cost += svt.svt!.cost;
+      if (svt.ce != null) cost += svt.ce!.cost;
+    }
+    return cost;
+  }
+
   BattleTeamSetup copy() {
     return BattleTeamSetup(
       onFieldSvtDataList: onFieldSvtDataList.map((e) => e.copy()).toList(),
