@@ -91,10 +91,17 @@ class _FeedbackPageState extends State<FeedbackPage> {
           TileGroup(
             children: [
               ListTile(
-                title: Text(S.current.faq),
+                title: Text('${S.current.faq} (Chaldea)'),
                 trailing: const Icon(Icons.open_in_new),
                 onTap: () {
                   launch(ChaldeaUrl.doc('faq'));
+                },
+              ),
+              ListTile(
+                title: Text('${S.current.faq} (Laplace)'),
+                trailing: const Icon(Icons.open_in_new),
+                onTap: () {
+                  launch(ChaldeaUrl.laplace('faq'));
                 },
               ),
             ],
@@ -167,8 +174,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     border: const OutlineInputBorder(),
                     prefixIcon: const Icon(Icons.mail_outline),
                     hintText: S.current.email,
-                    helperText: S.current.fill_email_warning,
-                    helperMaxLines: 3,
                     floatingLabelBehavior: FloatingLabelBehavior.always,
                   ),
                   maxLines: 1,
@@ -180,7 +185,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 child: TextFormField(
                   controller: subjectController,
                   decoration: InputDecoration(
-                    labelText: S.current.feedback_subject,
+                    labelText: '${S.current.feedback_subject}*',
                     border: const OutlineInputBorder(),
                   ),
                 ),

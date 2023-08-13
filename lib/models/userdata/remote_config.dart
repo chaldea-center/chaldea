@@ -41,12 +41,9 @@ class ServerUrlConfig {
     UrlProxy? atlasAsset,
   })  : api = UrlProxy(src: api, kGlobal: Hosts0.kApiHostGlobal, kCN: Hosts0.kApiHostCN),
         worker = UrlProxy(src: worker, kGlobal: Hosts0.kWorkerHostGlobal, kCN: Hosts0.kWorkerHostCN),
-        data = UrlProxy(src: UrlProxy._(cn: data?.cn), kGlobal: Hosts0.kDataHostGlobal, kCN: Hosts0.kDataHostCN),
+        data = UrlProxy(src: data, kGlobal: Hosts0.kDataHostGlobal, kCN: Hosts0.kDataHostCN),
         atlasApi = UrlProxy(src: atlasApi, kGlobal: Hosts0.kAtlasApiHostGlobal, kCN: Hosts0.kAtlasApiHostCN),
-        atlasAsset = UrlProxy(
-            src: UrlProxy._(cn: Hosts0.kAtlasAssetHostGlobal),
-            kGlobal: Hosts0.kAtlasAssetHostGlobal,
-            kCN: Hosts0.kAtlasAssetHostCN);
+        atlasAsset = UrlProxy(src: atlasApi, kGlobal: Hosts0.kAtlasAssetHostGlobal, kCN: Hosts0.kAtlasAssetHostCN);
 
   factory ServerUrlConfig.fromJson(Map<String, dynamic> data) => _$ServerUrlConfigFromJson(data);
 

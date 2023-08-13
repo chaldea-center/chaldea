@@ -559,7 +559,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_stat_own_total": MessageLookupByLibrary.simpleMessage("(999) مملوك / الكلي"),
         "svt_switch_slider_dropdown": MessageLookupByLibrary.simpleMessage("تبديل الشرائح /المهابط"),
         "switch_region": MessageLookupByLibrary.simpleMessage("تغيير المنطقة"),
-        "testing": MessageLookupByLibrary.simpleMessage("يختبر"),
+        "test": MessageLookupByLibrary.simpleMessage("يختبر"),
         "time_close": MessageLookupByLibrary.simpleMessage("اغلق"),
         "time_end": MessageLookupByLibrary.simpleMessage("نهاية"),
         "time_start": MessageLookupByLibrary.simpleMessage("بداية"),

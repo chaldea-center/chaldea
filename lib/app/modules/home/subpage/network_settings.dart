@@ -5,12 +5,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/userdata/remote_config.dart';
 import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import 'chaldea_server_page.dart';
 
 class NetworkSettingsPage extends StatefulWidget {
   const NetworkSettingsPage({super.key});
@@ -58,21 +60,34 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
   @override
   Widget build(BuildContext context) {
     _connectivity = network.connectivity;
+    final serverHint = SFooter('1 - ${S.current.chaldea_server}: ${S.current.chaldea_server_global}\n'
+        '2 - ${S.current.chaldea_server}: ${S.current.chaldea_server_cn}');
     return Scaffold(
       appBar: AppBar(title: Text(S.current.network_settings)),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
-          Center(
-            child: ElevatedButton(
-              onPressed: _testNetwork,
-              child: const Text('Test'),
-            ),
-          ),
-          const SizedBox(height: 16),
+          // const SizedBox(height: 16),
           TileGroup(
             footer: S.current.network_force_online_hint,
             children: [
+              ListTile(
+                dense: true,
+                leading: const Icon(Icons.dns),
+                title: Text(S.current.chaldea_server),
+                horizontalTitleGap: 0,
+                trailing: Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: <Widget>[
+                    db.onSettings((context, snapshot) =>
+                        Text(db.settings.proxyServer ? S.current.chaldea_server_cn : S.current.chaldea_server_global)),
+                    Icon(DirectionalIcons.keyboard_arrow_forward(context))
+                  ],
+                ),
+                onTap: () {
+                  router.pushPage(const ChaldeaServerPage());
+                },
+              ),
               ListTile(
                 dense: true,
                 title: Text(S.current.network_cur_connection),
@@ -91,11 +106,16 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
               ),
             ],
           ),
-          for (final entry in testUrls.entries) _buildGroup(entry.key, entry.value),
-          SafeArea(
-            child: SFooter('1 - ${S.current.chaldea_server}: ${S.current.chaldea_server_global}\n'
-                '2 - ${S.current.chaldea_server}: ${S.current.chaldea_server_cn}'),
-          )
+          const Divider(height: 8),
+          Center(
+            child: ElevatedButton(
+              onPressed: _testNetwork,
+              child: Text(S.current.test),
+            ),
+          ),
+          serverHint,
+          for (final (key, urls) in testUrls.items) _buildGroup(key, urls),
+          SafeArea(child: serverHint),
         ],
       ),
     );
@@ -105,10 +125,10 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
     return TileGroup(
       header: title,
       children: [
-        for (final url in urls)
+        for (final (index, url) in urls.enumerate)
           ListTile(
             dense: true,
-            title: Text(Uri.parse(url).origin),
+            title: Text('${index + 1}  ${Uri.parse(url).origin}'),
             trailing: _getStatus(url),
           )
       ],

@@ -455,7 +455,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       TextSpan(children: [
         for (final buff in svt.battleBuff.shownBuffs) WidgetSpan(child: BattleBuffIcon(buff: buff, size: 16)),
       ]),
-      maxLines: 1,
+      maxLines: svt.isPlayer ? 2 : 1,
       overflow: TextOverflow.ellipsis,
     ));
 

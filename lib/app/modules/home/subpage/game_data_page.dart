@@ -32,6 +32,7 @@ class _GameDataPageState extends State<GameDataPage> {
     return Scaffold(
       appBar: AppBar(title: Text(S.current.gamedata)),
       body: ListView(
+        padding: const EdgeInsets.only(bottom: 16),
         children: [
           TileGroup(
             children: [
@@ -223,34 +224,6 @@ class _GameDataPageState extends State<GameDataPage> {
               ),
             ],
           ),
-          TileGroup(
-            header: 'TEMP',
-            footer: 'Installer for Android/Windows/Linux.',
-            children: [
-              ListTile(
-                leading: const Icon(Icons.cloud_circle, size: 28),
-                title: Text.rich(
-                  TextSpan(children: [
-                    const TextSpan(
-                      text: 'Lanzou',
-                      style: TextStyle(decoration: TextDecoration.lineThrough),
-                    ),
-                    TextSpan(
-                      text: '  ${S.current.about_app}-${S.current.change_log}',
-                    ),
-                  ]),
-                ),
-                subtitle: Text.rich(TextSpan(
-                  text: ChaldeaUrl.doc('releases'),
-                  style: TextStyle(color: Colors.redAccent[100]),
-                )),
-                horizontalTitleGap: 0,
-                onTap: () {
-                  launch(ChaldeaUrl.doc('releases'));
-                },
-              ),
-            ],
-          )
         ],
       ),
     );

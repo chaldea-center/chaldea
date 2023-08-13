@@ -9858,22 +9858,22 @@ class S {
     );
   }
 
-  /// `Test Info Pad`
-  String get test_info_pad {
+  /// `Test`
+  String get test {
     return Intl.message(
-      'Test Info Pad',
-      name: 'test_info_pad',
+      'Test',
+      name: 'test',
       desc: '',
       locale: localeName,
       args: [],
     );
   }
 
-  /// `Testing`
-  String get testing {
+  /// `Test Info Pad`
+  String get test_info_pad {
     return Intl.message(
-      'Testing',
-      name: 'testing',
+      'Test Info Pad',
+      name: 'test_info_pad',
       desc: '',
       locale: localeName,
       args: [],
