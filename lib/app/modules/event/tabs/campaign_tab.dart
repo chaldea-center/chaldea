@@ -58,6 +58,8 @@ class CampaignEventTab extends StatelessWidget {
 
     Color? _outdatedColor = Theme.of(context).textTheme.bodySmall?.color;
     Widget tile = ListTile(
+      dense: true,
+      selected: highlight,
       title: AutoSizeText.rich(
         TextSpan(children: [
           if (event.isOnGoing(null)) const TextSpan(text: '● ', style: TextStyle(color: Colors.green)),

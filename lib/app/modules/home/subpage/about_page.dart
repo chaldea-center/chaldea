@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -90,7 +91,7 @@ class _AboutPageState extends State<AboutPage> {
           TileGroup(
             header: S.current.about_app,
             children: [
-              if (!AppInfo.isMacStoreApp && (!PlatformU.isIOS || db.runtimeData.upgradableVersion != null))
+              if (!kIsWeb && !AppInfo.isMacStoreApp && (!PlatformU.isIOS || db.runtimeData.upgradableVersion != null))
                 ListTile(
                   title: Text(S.current.check_update),
                   trailing: db.runtimeData.upgradableVersion != null
@@ -126,7 +127,7 @@ class _AboutPageState extends State<AboutPage> {
                     await AppUpdater.installUpdate(detail, savePath);
                   },
                 ),
-              if (!PlatformU.isIOS && !AppInfo.isMacStoreApp && !AppInfo.isFDroid)
+              if (!kIsWeb && !PlatformU.isIOS && !AppInfo.isMacStoreApp && !AppInfo.isFDroid)
                 SwitchListTile.adaptive(
                   value: db.settings.autoUpdateApp,
                   title: Text(S.current.auto_update),

@@ -71,6 +71,8 @@ class LimitEventTab extends StatelessWidget {
     Color? _outdatedColor = Theme.of(context).textTheme.bodySmall?.color;
 
     Widget tile = ListTile(
+      dense: true,
+      selected: highlight,
       horizontalTitleGap: 16,
       leading: showBanner
           ? CachedImage(
