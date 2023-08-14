@@ -220,8 +220,10 @@ class BattleRecordManager {
     final dbSvt = db.gameData.servantsById[svt.id];
     if (dbSvt == null) return false;
     for (final skillNum in kActiveSkillNums) {
+      final skillId = svtData.skills.getOrNull(skillNum - 1)?.id;
+      if (skillId == null) continue;
       final validSkills = BattleUtils.getShownSkills(dbSvt, svtData.limitCount, skillNum).map((e) => e.id).toSet();
-      if (svtData.skills.any((e) => !validSkills.contains(e?.id))) {
+      if (!validSkills.contains(skillId)) {
         return false;
       }
     }
