@@ -21,6 +21,10 @@ Event _$EventFromJson(Map json) => Event(
       endedAt: json['endedAt'] as int,
       finishedAt: json['finishedAt'] as int,
       warIds: (json['warIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      eventAdds: (json['eventAdds'] as List<dynamic>?)
+              ?.map((e) => EventAdd.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       shop: (json['shop'] as List<dynamic>?)
               ?.map((e) => NiceShop.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -128,6 +132,7 @@ Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
       'startedAt': instance.startedAt,
       'endedAt': instance.endedAt,
       'finishedAt': instance.finishedAt,
+      'eventAdds': instance.eventAdds.map((e) => e.toJson()).toList(),
       'shop': instance.shop.map((e) => e.toJson()).toList(),
       'rewardScenes': instance.rewardScenes.map((e) => e.toJson()).toList(),
       'rewards': instance.pointRewards.map((e) => e.toJson()).toList(),
@@ -183,6 +188,41 @@ const _$EventTypeEnumMap = {
   EventType.myroomMultipleViewCampaign: 'myroomMultipleViewCampaign',
   EventType.interludeCampaign: 'interludeCampaign',
   EventType.myroomPhotoCampaign: 'myroomPhotoCampaign',
+};
+
+EventAdd _$EventAddFromJson(Map json) => EventAdd(
+      overwriteType:
+          $enumDecodeNullable(_$EventOverwriteTypeEnumMap, json['overwriteType']) ?? EventOverwriteType.unknown,
+      priority: json['priority'] as int? ?? 0,
+      overwriteId: json['overwriteId'] as int? ?? 0,
+      overwriteText: json['overwriteText'] as String? ?? '',
+      overwriteBanner: json['overwriteBanner'] as String?,
+      condType:
+          json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
+      targetId: json['targetId'] as int? ?? 0,
+      startedAt: json['startedAt'] as int? ?? 0,
+      endedAt: json['endedAt'] as int? ?? 0,
+    );
+
+Map<String, dynamic> _$EventAddToJson(EventAdd instance) => <String, dynamic>{
+      'overwriteType': _$EventOverwriteTypeEnumMap[instance.overwriteType]!,
+      'priority': instance.priority,
+      'overwriteId': instance.overwriteId,
+      'overwriteText': instance.overwriteText,
+      'overwriteBanner': instance.overwriteBanner,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'targetId': instance.targetId,
+      'startedAt': instance.startedAt,
+      'endedAt': instance.endedAt,
+    };
+
+const _$EventOverwriteTypeEnumMap = {
+  EventOverwriteType.unknown: 'unknown',
+  EventOverwriteType.bgImage: 'bgImage',
+  EventOverwriteType.bgm: 'bgm',
+  EventOverwriteType.name: 'name',
+  EventOverwriteType.banner: 'banner',
+  EventOverwriteType.noticeBanner: 'noticeBanner',
 };
 
 MasterMission _$MasterMissionFromJson(Map json) => MasterMission(

@@ -26,6 +26,7 @@ class Event {
   int finishedAt;
   // int materialOpenedAt;
   List<int> _warIds;
+  List<EventAdd> eventAdds;
   List<NiceShop> shop;
   List<EventRewardScene> rewardScenes;
   @JsonKey(name: 'rewards')
@@ -77,6 +78,7 @@ class Event {
     required this.finishedAt,
     // required this.materialOpenedAt,
     List<int> warIds = const [],
+    this.eventAdds = const [],
     this.shop = const [],
     this.pointRewards = const [],
     this.rewardScenes = const [],
@@ -386,6 +388,35 @@ class Event {
   }
 
   Map<String, dynamic> toJson() => _$EventToJson(this);
+}
+
+@JsonSerializable(converters: [CondTypeConverter()])
+class EventAdd {
+  EventOverwriteType overwriteType;
+  int priority;
+  int overwriteId;
+  String overwriteText;
+  String? overwriteBanner;
+  CondType condType;
+  int targetId;
+  int startedAt;
+  int endedAt;
+
+  EventAdd({
+    this.overwriteType = EventOverwriteType.unknown,
+    this.priority = 0,
+    this.overwriteId = 0,
+    this.overwriteText = '',
+    this.overwriteBanner,
+    this.condType = CondType.none,
+    this.targetId = 0,
+    this.startedAt = 0,
+    this.endedAt = 0,
+  });
+
+  factory EventAdd.fromJson(Map<String, dynamic> json) => _$EventAddFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventAddToJson(this);
 }
 
 @JsonSerializable()
@@ -1529,6 +1560,15 @@ class EventMural {
   factory EventMural.fromJson(Map<String, dynamic> json) => _$EventMuralFromJson(json);
 
   Map<String, dynamic> toJson() => _$EventMuralToJson(this);
+}
+
+enum EventOverwriteType {
+  unknown,
+  bgImage,
+  bgm,
+  name,
+  banner,
+  noticeBanner,
 }
 
 enum PurchaseType {

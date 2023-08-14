@@ -74,8 +74,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
     Event? newEvent;
     if (region == Region.jp && !force) {
       newEvent = db.gameData.events[eventId];
-      newEvent ??= await AtlasApi.event(eventId!);
-    } else {
+    }
+    if (newEvent == null) {
       _loading = true;
       if (mounted) setState(() {});
       EasyLoading.show();
@@ -321,10 +321,18 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     List<Widget> children = [
       if (banners.isNotEmpty) CarouselUtil.limitHeightWidget(context: context, imageUrls: banners),
     ];
+    Set<String> shownNames = {event.lName.l}, jpNames = {event.name};
+    for (final eventAdd in event.eventAdds) {
+      if (eventAdd.overwriteType == EventOverwriteType.name && eventAdd.overwriteText.isNotEmpty) {
+        shownNames.add(Transl.eventNames(eventAdd.overwriteText).l);
+        jpNames.add(eventAdd.overwriteText);
+      }
+    }
+
     List<Widget> rows = [
       CustomTableRow(children: [
         TableCellData(
-          text: event.shownName,
+          text: shownNames.join('\n'),
           textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 14),
           color: TableCellData.resolveHeaderColor(context),
@@ -333,7 +341,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       if (!Transl.isJP)
         CustomTableRow(children: [
           TableCellData(
-            text: event.name,
+            text: jpNames.join('\n'),
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 14),
             color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),

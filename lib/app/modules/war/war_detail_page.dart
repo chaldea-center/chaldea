@@ -82,9 +82,10 @@ class _WarDetailPageState extends State<WarDetailPage> {
     }
     final banners = war.extra.allBanners;
     final warAdds = war.warAdds.toList();
-    warAdds.sort2((e) => e.priority);
+    final eventAdds = war.event?.eventAdds ?? [];
     List<String> warBanners = {
       for (final warAdd in warAdds) warAdd.overwriteBanner,
+      for (final eventAdd in eventAdds) eventAdd.overwriteBanner,
     }.whereType<String>().toList();
     warBanners = {
       war.shownBanner,
@@ -199,6 +200,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
       war.bgm.id,
       ...war.warAdds.where((e) => e.type == WarOverwriteType.bgm).map((e) => e.overwriteId),
       ...war.maps.map((e) => e.bgm.id),
+      ...eventAdds.where((e) => e.overwriteType == EventOverwriteType.bgm).map((e) => e.overwriteId),
     }.where((e) => e != 0).toSet();
     if (bgms.isNotEmpty) {
       if (bgms.length == 1) {
