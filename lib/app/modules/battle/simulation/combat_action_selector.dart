@@ -300,7 +300,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
                 svt.npLineCount = svt.niceEnemy!.chargeTurn;
               }
               battleData.battleLogger.action(msg);
-              battleData.recorder.isUploadEligible = false;
+              battleData.recorder.setIllegal(msg);
               battleData.recorder.message(S.current.charge_np_to(dispCount), target: svt);
               if (mounted) setState(() {});
             },

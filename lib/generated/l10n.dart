@@ -10276,10 +10276,10 @@ class S {
     );
   }
 
-  /// `Current team is not eligible for upload due to any of the following:\n- custom quest via JSON import\n- event point buffs\n- nonplayable servants\n- custom skills\n- skipped waves\n- enemy actions`
+  /// `Current team is not eligible for upload due to:`
   String get upload_not_eligible_hint {
     return Intl.message(
-      'Current team is not eligible for upload due to any of the following:\n- custom quest via JSON import\n- event point buffs\n- nonplayable servants\n- custom skills\n- skipped waves\n- enemy actions',
+      'Current team is not eligible for upload due to:',
       name: 'upload_not_eligible_hint',
       desc: '',
       locale: localeName,

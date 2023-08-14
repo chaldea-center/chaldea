@@ -928,7 +928,7 @@
   "upload_and_close_app": "上傳並關閉",
   "upload_and_close_app_alert": "是否上傳資料再關閉?",
   "upload_before_close_app": "關閉前上傳",
-  "upload_not_eligible_hint": "由于使用过以下任意功能，当前队伍不满足上传条件:\n- 通过导入JSON使用自定义关卡\n- 活动点数加成\n- 无法正常获得的从者\n- 自定义技能\n- 跳过场次\n- 模拟敌方行动",
+  "upload_not_eligible_hint": "由于使用过以下任意功能，当前队伍不满足上传条件:",
   "upload_paused": "上传之间需要等待{pause}秒 (还剩{remain}秒)",
   "upload_team_confirmation": "确认上传当前的队伍?\n\n请注意，上传的队伍可能因数据格式更新/不兼容等原因被移除。",
   "uploaded_teams": "上传的队伍",
@@ -953,7 +953,7 @@
   "war_board": "聖杯戰線",
   "war_map": "地圖",
   "warning": "警告",
-  "web_domain_choice_hint": null,
+  "web_domain_choice_hint": "大陆地区请选择国内节点\n网页版仅推荐PC用户使用，手机版网页性能较差且bug较多如无故刷新",
   "web_renderer": "Web渲染器",
   "words_separate": "{a}{b}"
 }

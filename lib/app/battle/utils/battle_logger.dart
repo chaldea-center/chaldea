@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/widgets.dart';
 
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../models/battle.dart';
@@ -54,13 +55,16 @@ class BattleLog {
 enum BattleLogType { debug, function, action, error }
 
 class BattleRecordManager {
-  bool isUploadEligible = true;
   List<BattleRecord> records = [];
+  Set<String> illegalReasons = {};
   BattleRecordManager();
+
+  bool get isUploadEligible => illegalReasons.isEmpty;
+  void setIllegal(String reason) => illegalReasons.add(reason);
 
   BattleRecordManager copy() {
     return BattleRecordManager()
-      ..isUploadEligible = isUploadEligible
+      ..illegalReasons = illegalReasons.toSet()
       ..records = records.toList();
   }
 
@@ -77,7 +81,7 @@ class BattleRecordManager {
   }
 
   void skipWave(int wave) {
-    isUploadEligible = false;
+    setIllegal('Skip Wave $wave');
     records.add(BattleSkipWaveRecord(wave));
   }
 
@@ -107,7 +111,7 @@ class BattleRecordManager {
     required bool uploadEligible,
   }) {
     if (!uploadEligible) {
-      isUploadEligible = false;
+      setIllegal('${S.current.skill}: ${skill.proximateSkill?.lName.l}');
     }
 
     records.add(BattleSkillRecord(
@@ -188,53 +192,97 @@ class BattleRecordManager {
   }
 
   // move to somewhere else
-  static bool determineUploadEligibility(final QuestPhase questPhase, final BattleOptions options) {
-    if (questPhase.id <= 0 || options.pointBuffs.isNotEmpty || options.simulateEnemy || options.disableEvent) {
-      return false;
+  void determineUploadEligibility(final QuestPhase questPhase, final BattleOptions options) {
+    if (questPhase.id <= 0) {
+      setIllegal('${S.current.general_custom}: ${S.current.quest} ${questPhase.id}');
+    }
+    if (options.pointBuffs.isNotEmpty) {
+      // setIllegal(S.current.event_point);
+    }
+    if (options.disableEvent) {
+      setIllegal('${S.current.options}: ${S.current.disable_event_effects}');
+    }
+    if (options.simulateEnemy) {
+      setIllegal('${S.current.options}: ${S.current.simulate_enemy_actions}');
     }
     if (options.team.allSvts.where((e) => e.supportType != SupportSvtType.none).length > 1) {
-      return false;
+      setIllegal('${S.current.support_servant}: ＞1');
     }
-
-    if (options.team.totalCost > Maths.max(ConstData.userLevel.values.map((e) => e.maxCost), 115)) {
-      return false;
+    final maxCost = Maths.max(ConstData.userLevel.values.map((e) => e.maxCost), 115);
+    if (options.team.totalCost > maxCost) {
+      setIllegal('COST ${options.team.totalCost}>$maxCost');
     }
 
     for (final svtData in options.team.allSvts) {
-      if (!_checkSvtEligible(svtData)) {
-        return false;
-      }
+      _checkSvtEligible(svtData);
     }
-    return true;
   }
 
-  static bool _checkSvtEligible(PlayerSvtData svtData) {
+  void _checkSvtEligible(PlayerSvtData svtData) {
     final svt = svtData.svt;
-    if (svt == null) return true;
-    if (!svt.isUserSvt || svtData.supportType == SupportSvtType.npc || svtData.additionalPassives.isNotEmpty) {
-      return false;
+    if (svt == null) return;
+    final svtName = svt.lName.l;
+    if (svtData.supportType == SupportSvtType.npc) {
+      setIllegal('Guest Support/NPC: $svtName');
+    }
+    if (!svt.isUserSvt) {
+      setIllegal('Not player servant: $svtName');
+    }
+    if (svtData.additionalPassives.isNotEmpty) {
+      setIllegal('${S.current.extra_passive}(${S.current.general_custom})');
     }
     if (svtData.fixedAtk != null || svtData.fixedHp != null) {
-      return false;
+      setIllegal('Fixed HP or ATK (mainly Guest Support). If you see this msg, tell me the bug.');
     }
     final dbSvt = db.gameData.servantsById[svt.id];
-    if (dbSvt == null) return false;
+    if (dbSvt == null) {
+      setIllegal('Servant not in database');
+      return;
+    }
     for (final skillNum in kActiveSkillNums) {
       final skillId = svtData.skills.getOrNull(skillNum - 1)?.id;
       if (skillId == null) continue;
       final validSkills = BattleUtils.getShownSkills(dbSvt, svtData.limitCount, skillNum).map((e) => e.id).toSet();
       if (!validSkills.contains(skillId)) {
-        return false;
+        setIllegal('${S.current.custom_skill} $skillNum - ID $skillId, valid: $validSkills');
       }
     }
     final validTds = BattleUtils.getShownTds(dbSvt, svtData.limitCount).map((e) => e.id).toSet();
-    if (!validTds.contains(svtData.td?.id)) {
-      return false;
+    if (svtData.td != null && !validTds.contains(svtData.td?.id)) {
+      setIllegal('${S.current.general_custom} ${S.current.noble_phantasm}: ID ${svtData.td!.id}, valid: $validTds');
     }
-    if (svtData.ce?.collectionNo == 0) {
-      return false;
+    if (svtData.ce != null && svtData.ce!.collectionNo <= 0) {
+      setIllegal('${S.current.craft_essence}: ID ${svtData.ce!.id}, not player CE');
     }
-    return true;
+  }
+
+  Set<String> checkExtraIllegalReason() {
+    final reasons = <String>{};
+    int countNormalAttack = 0, countLargeRng = 0, countProb = 0;
+    for (final record in toUploadRecords()) {
+      if (record.options.fixedRandom >= 950) {
+        countLargeRng += 1;
+      }
+      if (record.options.probabilityThreshold <= 80) {
+        countProb += 1;
+      }
+      final attacks = record.attackRecords ?? [];
+      for (final attack in attacks) {
+        if (!attack.isNp) {
+          countNormalAttack += 1;
+        }
+      }
+    }
+    if (countNormalAttack > 6) {
+      setIllegal('${S.current.normal_attack}: $countNormalAttack >6');
+    }
+    if (countLargeRng > 3) {
+      setIllegal('${S.current.battle_random}≥0.95: count $countLargeRng>3');
+    }
+    if (countProb > 3) {
+      setIllegal('${S.current.battle_probability_threshold}≤80: count $countProb>3');
+    }
+    return reasons;
   }
 
   List<BattleRecordData> toUploadRecords() {

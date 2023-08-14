@@ -55,9 +55,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       ..options = widget.options.copy()
       ..context = context;
 
-    if (!BattleRecordManager.determineUploadEligibility(questPhase, widget.options)) {
-      battleData.recorder.isUploadEligible = false;
-    }
+    battleData.recorder.determineUploadEligibility(questPhase, widget.options);
 
     _initBattle();
   }
@@ -80,7 +78,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         await action.replay(battleData);
       }
       battleData.delegate = null;
-      battleData.recorder.isUploadEligible = false;
+      battleData.recorder.setIllegal('Replaying team');
     }
 
     if (mounted) setState(() {});
@@ -650,12 +648,18 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
   Widget _buildUploadDialog(BuildContext context) {
     bool canUpload = false;
     String content;
+    final reasons = battleData.recorder.illegalReasons.toSet();
+    reasons.addAll(battleData.recorder.checkExtraIllegalReason());
+
     if (widget.region != null && widget.region != Region.jp) {
       content = 'Only JP quest supports team sharing. (current: ${widget.region!.localName})';
     } else if (!db.security.isUserLoggedIn) {
       content = S.current.login_first_hint;
-    } else if (!battleData.recorder.isUploadEligible) {
+    } else if (reasons.isNotEmpty) {
       content = S.current.upload_not_eligible_hint;
+      for (final reason in battleData.recorder.illegalReasons) {
+        content += '\n- $reason';
+      }
     } else if (db.runtimeData.secondsRemainUtilNextUpload > 0) {
       content =
           S.current.upload_paused(db.runtimeData.secondsBetweenUpload, db.runtimeData.secondsRemainUtilNextUpload);
@@ -693,11 +697,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         );
         final uploadData = BattleShareData(
           appBuild: AppInfo.buildNumber,
-          quest: BattleQuestInfo(
-            id: questPhase.id,
-            phase: questPhase.phase,
-            hash: questPhase.enemyHash,
-          ),
+          quest: BattleQuestInfo.quest(questPhase),
           team: widget.options.team.toFormationData(),
           actions: actions,
           disableEvent: widget.options.disableEvent,

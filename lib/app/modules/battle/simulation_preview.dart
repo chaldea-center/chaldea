@@ -231,10 +231,8 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           }
           BattleQuestInfo? questInfo;
           if (_questPhase != null && _questPhase!.id > 0) {
-            questInfo = BattleQuestInfo(
-              id: _questPhase!.id,
-              phase: _questPhase!.phase,
-              hash: _questPhase!.enemyHash,
+            questInfo = BattleQuestInfo.quest(
+              _questPhase!,
               region: questRegion,
             );
           }

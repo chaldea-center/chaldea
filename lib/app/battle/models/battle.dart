@@ -1261,7 +1261,7 @@ class BattleData {
       save: true,
       action: 'resetSkillCD',
       task: () async {
-        recorder.isUploadEligible = false;
+        recorder.setIllegal(S.current.reset_skill_cd);
         if (isMysticCode) {
           for (final skill in masterSkillInfo) {
             skill.chargeTurn = 0;

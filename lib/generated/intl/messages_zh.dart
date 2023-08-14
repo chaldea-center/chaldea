@@ -1030,8 +1030,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_and_close_app": MessageLookupByLibrary.simpleMessage("上传并关闭"),
         "upload_and_close_app_alert": MessageLookupByLibrary.simpleMessage("是否上传数据再关闭应用?"),
         "upload_before_close_app": MessageLookupByLibrary.simpleMessage("关闭app前上传"),
-        "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage(
-            "由于使用过以下任意功能，当前队伍不满足上传条件:\n- 通过导入JSON使用自定义关卡\n- 活动点数加成\n- 无法正常获得的从者\n- 自定义技能\n- 跳过场次\n- 模拟敌方行动"),
+        "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage("由于使用过以下任意功能，当前队伍不满足上传条件:"),
         "upload_paused": m30,
         "upload_team_confirmation": MessageLookupByLibrary.simpleMessage("确认上传当前的队伍?\n\n请注意，上传的队伍可能因数据格式更新/不兼容等原因被移除。"),
         "uploaded_teams": MessageLookupByLibrary.simpleMessage("上传的队伍"),

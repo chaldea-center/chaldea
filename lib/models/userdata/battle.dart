@@ -227,6 +227,11 @@ class BattleQuestInfo {
     this.region,
   });
 
+  BattleQuestInfo.quest(QuestPhase quest, {this.region})
+      : id = quest.id,
+        phase = quest.phase,
+        hash = quest.enemyHash;
+
   String toUrl() {
     String url = '$id/$phase';
     if (hash != null) {
