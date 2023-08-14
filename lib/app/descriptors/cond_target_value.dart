@@ -226,6 +226,26 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           na: () => combineToRich(context, 'Has not cleared arrow $value of quest', quests(context)),
           kr: null,
         );
+      case CondType.questGroupClear:
+        final questIds = db.gameData.others.getQuestsOfGroup(QuestGroupType.questRelease, target);
+        final questSpans = MultiDescriptor.quests(context, questIds, useAnd: useAnd);
+        return localized(
+          jp: () => combineToRich(context, 'クエストを$value種クリア', questSpans),
+          cn: () => combineToRich(context, '通关$value个关卡', questSpans),
+          tw: null,
+          na: () => combineToRich(context, 'Clear $value quests of ', questSpans),
+          kr: null,
+        );
+      case CondType.notQuestGroupClear:
+        final questIds = db.gameData.others.getQuestsOfGroup(QuestGroupType.questRelease, target);
+        final questSpans = MultiDescriptor.quests(context, questIds, useAnd: useAnd);
+        return localized(
+          jp: null,
+          cn: () => combineToRich(context, '(?)未通关$value个关卡', questSpans),
+          tw: null,
+          na: () => combineToRich(context, '(?)Have not cleared $value quests of ', questSpans),
+          kr: null,
+        );
       case CondType.svtRecoverd:
         return localized(
           jp: null,

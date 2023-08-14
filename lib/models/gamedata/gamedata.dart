@@ -452,6 +452,30 @@ class AssetBundleDecrypt {
 class _ProcessedData {
   final GameData gameData;
 
+  Map<int, EnemyMasterBattle> enemyMasterBattles = {};
+  Map<int, EventMission> eventMissions = {};
+  Map<int, EventPointBuff> eventPointBuffs = {};
+  Map<int, int> huntingToEventIds = {};
+  Map<QuestGroupType, Map<int, List<int>>> questGroups = {}; // <type,<groupId, questIds>>
+  Map<int, List<int>> eventQuestGroups = {}; // QuestGroupType.eventQuest: <eventId=groupId, questIds>
+  Map<int, List<int>> eventTowerQuestGroups = {}; // QuestGroupType.eventTower: <towerId, questIds>
+
+  Map<int, Servant> costumeSvtMap = {};
+
+  Set<FuncType> svtFuncs = {};
+  Set<BuffType> svtBuffs = {};
+  Set<FuncType> ceFuncs = {};
+  Set<BuffType> ceBuffs = {};
+  Set<FuncType> ccFuncs = {};
+  Set<BuffType> ccBuffs = {};
+  Set<FuncType> mcFuncs = {};
+  Set<BuffType> mcBuffs = {};
+
+  Set<FuncTargetType> funcTargets = {};
+
+  Set<FuncType> get allFuncs => {...svtFuncs, ...ceFuncs, ...ccFuncs, ...mcFuncs};
+  Set<BuffType> get allBuffs => {...svtBuffs, ...ceBuffs, ...ccBuffs, ...mcBuffs};
+
   _ProcessedData(this.gameData) {
     for (final svt in gameData.servants.values) {
       for (final costume in svt.profile.costume.values) {
@@ -477,37 +501,20 @@ class _ProcessedData {
         for (final questId in event.extra.huntingQuestIds) questId: event.id,
     };
     for (final quest in gameData.questGroups) {
-      if (quest.type2 == QuestGroupType.eventQuest) {
+      final type = quest.type2;
+      questGroups.putIfAbsent(type, () => {}).putIfAbsent(quest.groupId, () => []).add(quest.questId);
+      if (type == QuestGroupType.eventQuest) {
         eventQuestGroups.putIfAbsent(quest.groupId, () => []).add(quest.questId);
-      } else if (quest.type2 == QuestGroupType.eventTower) {
+      } else if (type == QuestGroupType.eventTower) {
         eventTowerQuestGroups.putIfAbsent(quest.groupId, () => []).add(quest.questId);
       }
     }
     _initFuncBuff();
   }
 
-  Map<int, EnemyMasterBattle> enemyMasterBattles = {};
-  Map<int, EventMission> eventMissions = {};
-  Map<int, EventPointBuff> eventPointBuffs = {};
-  Map<int, int> huntingToEventIds = {};
-  Map<int, List<int>> eventQuestGroups = {}; // QuestGroupType.eventQuest: <eventId=groupId, questIds>
-  Map<int, List<int>> eventTowerQuestGroups = {}; // QuestGroupType.eventTower: <towerId, questIds>
-
-  Map<int, Servant> costumeSvtMap = {};
-
-  Set<FuncType> svtFuncs = {};
-  Set<BuffType> svtBuffs = {};
-  Set<FuncType> ceFuncs = {};
-  Set<BuffType> ceBuffs = {};
-  Set<FuncType> ccFuncs = {};
-  Set<BuffType> ccBuffs = {};
-  Set<FuncType> mcFuncs = {};
-  Set<BuffType> mcBuffs = {};
-
-  Set<FuncTargetType> funcTargets = {};
-
-  Set<FuncType> get allFuncs => {...svtFuncs, ...ceFuncs, ...ccFuncs, ...mcFuncs};
-  Set<BuffType> get allBuffs => {...svtBuffs, ...ceBuffs, ...ccBuffs, ...mcBuffs};
+  List<int> getQuestsOfGroup(QuestGroupType type, int groupId) {
+    return questGroups[type]?[groupId] ?? [];
+  }
 
   void _initFuncBuff() {
     for (final svt in gameData.servants.values) {

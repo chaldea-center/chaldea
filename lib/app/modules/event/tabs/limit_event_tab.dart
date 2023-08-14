@@ -73,17 +73,15 @@ class LimitEventTab extends StatelessWidget {
     Widget tile = ListTile(
       dense: true,
       selected: highlight,
-      horizontalTitleGap: 16,
-      leading: showBanner
-          ? CachedImage(
-              imageUrl: event.extra.allBanners.firstOrNull,
-              aspectRatio: 8 / 3,
-              cachedOption: CachedImageOption(
-                placeholder: (context, url) => const SizedBox.shrink(),
-                errorWidget: (context, url, error) => const SizedBox.shrink(),
-              ),
-            )
-          : null,
+      contentPadding: const EdgeInsetsDirectional.only(start: 16, end: 4),
+      leading: CachedImage(
+        imageUrl: event.extra.allBanners.firstOrNull,
+        aspectRatio: 8 / 3,
+        cachedOption: CachedImageOption(
+          placeholder: (context, url) => const SizedBox.shrink(),
+          errorWidget: (context, url, error) => const SizedBox.shrink(),
+        ),
+      ),
       title: AutoSizeText.rich(
         TextSpan(children: [
           if (<Region>{db.curUser.region, Region.jp}.any((e) => event.isOnGoing(e)))
@@ -97,6 +95,7 @@ class LimitEventTab extends StatelessWidget {
       subtitle: AutoSizeText(
         subtitle,
         maxLines: 1,
+        minFontSize: 8,
         style: TextStyle(
           color: outdated ? _outdatedColor?.withAlpha(100) : null,
           decoration: highlight ? TextDecoration.underline : null,
@@ -106,7 +105,7 @@ class LimitEventTab extends StatelessWidget {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          if (event.isInfinite) Icon(Icons.star, color: Colors.yellow[700]),
+          if (event.isInfinite) Icon(Icons.star, color: Colors.yellow[700], size: 16),
           if (!event.isEmpty)
             Switch.adaptive(
               value: plan.enabled,
@@ -114,6 +113,7 @@ class LimitEventTab extends StatelessWidget {
                 plan.enabled = v;
                 event.updateStat();
               },
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             )
         ],
       ),
@@ -121,6 +121,26 @@ class LimitEventTab extends StatelessWidget {
         router.popDetailAndPush(context: context, url: Routes.eventI(event.id), detail: true);
       },
     );
+    // if (!showBanner) {
+    //   tile = Stack(
+    //     alignment: AlignmentDirectional.centerEnd,
+    //     children: [
+    //       PositionedDirectional(
+    //         end: 80,
+    //         child: CachedImage(
+    //           imageUrl: event.extra.allBanners.firstOrNull,
+    //           aspectRatio: 8 / 3,
+    //           height: 40,
+    //           cachedOption: CachedImageOption(
+    //             placeholder: (context, url) => const SizedBox.shrink(),
+    //             errorWidget: (context, url, error) => const SizedBox.shrink(),
+    //           ),
+    //         ),
+    //       ),
+    //       tile,
+    //     ],
+    //   );
+    // }
     if (showSpecialRewards) {
       List<Widget> rewards = [];
       final entries = event.statItemFixed.entries.toList();

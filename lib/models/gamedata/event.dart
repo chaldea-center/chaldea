@@ -193,7 +193,7 @@ class Event {
       int? start = starts[index], end = ends[index];
       if (start != null && end != null) {
         if (end > neverEndTime) {
-          end = start + 31 * 24 * 3600;
+          end = start + 14 * kSecsPerDay;
         }
         if (now > start && end > now) {
           return true;
