@@ -651,29 +651,21 @@ class FunctionExecutor {
     final DataVals dataVals,
   ) {
     final triggeredFuncPosition = dataVals.TriggeredFuncPosition;
-    if (triggeredFuncPosition == null) {
+    if (triggeredFuncPosition == null || triggeredFuncPosition == 0) {
       return true;
     }
 
     final results = battleData.uniqueIdToFuncResultsList.getOrNull(triggeredFuncPosition.abs() - 1);
     if (triggeredFuncPosition > 0) {
-      if (results == null) {
-        return false;
-      } else {
-        for (final result in results.values) {
-          if (result) {
-            return true;
-          }
-        }
-      }
+      // any true
+      if (results == null) return false;
+      if (results.isEmpty) return false;
+      return results.containsValue(true);
     } else if (triggeredFuncPosition < 0) {
-      if (results != null) {
-        for (final result in results.values) {
-          if (!result) {
-            return true;
-          }
-        }
-      }
+      // any false
+      if (results == null) return true;
+      if (results.isEmpty) return true;
+      return results.containsValue(false);
     }
 
     return false;
@@ -684,31 +676,46 @@ class FunctionExecutor {
     final DataVals dataVals,
   ) {
     final triggeredFuncPositionAll = dataVals.TriggeredFuncPositionAll;
-    if (triggeredFuncPositionAll == null) {
+    if (triggeredFuncPositionAll == null || triggeredFuncPositionAll == 0) {
       return true;
     }
 
     final results = battleData.uniqueIdToFuncResultsList.getOrNull(triggeredFuncPositionAll.abs() - 1);
     if (triggeredFuncPositionAll > 0) {
-      if (results == null) {
-        return false;
-      } else {
-        for (final result in results.values) {
-          if (!result) {
-            return false;
-          }
-        }
-      }
+      // all true
+      if (results == null) return false;
+      if (results.isEmpty) return false;
+      return !results.containsValue(false);
     } else if (triggeredFuncPositionAll < 0) {
-      if (results != null) {
-        for (final result in results.values) {
-          if (result) {
-            return false;
-          }
-        }
-      }
+      // all false
+      if (results == null) return true;
+      if (results.isEmpty) return true;
+      return !results.containsValue(true);
     }
     return true;
+  }
+
+  static bool triggeredPositionTargetCheck(
+    final BattleData battleData,
+    final DataVals dataVals,
+    final BattleServantData target,
+  ) {
+    final triggeredFuncPositionSameTarget = dataVals.TriggeredFuncPositionSameTarget;
+    if (triggeredFuncPositionSameTarget == null || triggeredFuncPositionSameTarget == 0) {
+      return true;
+    }
+
+    final results = battleData.uniqueIdToFuncResultsList.getOrNull(triggeredFuncPositionSameTarget.abs() - 1);
+    final last = (results?[target.uniqueId] ?? false);
+    if (triggeredFuncPositionSameTarget > 0) {
+      // last true
+      return last;
+    } else if (triggeredFuncPositionSameTarget < 0) {
+      // last false
+      return !last;
+    }
+
+    return false;
   }
 
   static void updateTargets(
@@ -743,6 +750,8 @@ class FunctionExecutor {
         }
       });
     }
+
+    targets.retainWhere((target) => triggeredPositionTargetCheck(battleData, dataVals, target));
 
     if (dataVals.CheckDuplicate == 1) {
       final Map<int, bool>? previousExecutionResults = battleData.actionHistory[function.funcId];
