@@ -75,7 +75,7 @@ class LimitEventTab extends StatelessWidget {
       selected: highlight,
       contentPadding: const EdgeInsetsDirectional.only(start: 16, end: 4),
       leading: CachedImage(
-        imageUrl: event.extra.allBanners.firstOrNull,
+        imageUrl: event.extra.allBanners.firstOrNull ?? event.shopBanner,
         aspectRatio: 8 / 3,
         cachedOption: CachedImageOption(
           placeholder: (context, url) => const SizedBox.shrink(),

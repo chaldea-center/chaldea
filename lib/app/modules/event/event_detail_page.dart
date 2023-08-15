@@ -317,6 +317,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
   @override
   Widget build(BuildContext context) {
     final banners = event.extra.allBanners;
+    if (banners.isEmpty && event.shopBanner != null) banners.add(event.shopBanner!);
 
     List<Widget> children = [
       if (banners.isNotEmpty) CarouselUtil.limitHeightWidget(context: context, imageUrls: banners),

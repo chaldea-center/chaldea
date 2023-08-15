@@ -545,8 +545,8 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
       buffer.writeAll([
         "Quest: https://apps.atlasacademy.io/db/JP/quest/${record.questId}/${record.phase}?hash=${record.enemyHash}",
         "Team: https://chaldea.center/laplace/share?id=${record.id}",
-        "ID: ${record.id}",
         "Version: ${record.ver}",
+        "ID: ${record.id}",
         "Uploader: ${record.userId}",
         // "Stars: x up, y down\n",
         "Reporter: ${db.security.username}",

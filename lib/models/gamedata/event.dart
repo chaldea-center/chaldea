@@ -153,6 +153,12 @@ class Event {
 
   bool get isAdvancedQuestEvent => name.contains('アドバンスドクエスト');
 
+  String? get shopBanner {
+    // if (shop.isEmpty) return null;
+    // return 'https://static.atlasacademy.io/JP/ShopBanners/shop_event_menu_$id.png';
+    return null;
+  }
+
   bool isOutdated([Duration diff = const Duration(days: 10)]) {
     if (db.curUser.region == Region.jp) {
       return DateTime.now().difference(startedAt.sec2date()) > const Duration(days: 31 * 13);
