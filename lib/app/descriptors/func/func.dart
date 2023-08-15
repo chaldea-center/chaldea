@@ -934,6 +934,10 @@ class FuncDescriptor extends StatelessWidget {
         func.traitVals.map((e) => e.id).join(',') != func.functvals.map((e) => e.id).join(',')) {
       _addTraits(Transl.special.funcTargetVals, func.functvals);
     }
+    if ([FuncType.extendBuffcount, FuncType.extendBuffturn, FuncType.shortenBuffcount, FuncType.shortenBuffturn]
+        .contains(func.funcType)) {
+      _addTraits(Transl.special.funcTargetVals, vals?.TargetList?.map((e) => NiceTrait(id: e)).toList() ?? []);
+    }
 
     if (buff != null) {
       _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv, buff.script?.checkIndvType == 1);

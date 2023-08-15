@@ -224,6 +224,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         ],
         CustomTableRow.fromTexts(
           texts: [
+            S.current.ascension_stage,
             S.current.info_alignment,
             S.current.info_death_rate,
             S.current.info_critical_rate,
@@ -232,6 +233,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         ),
         CustomTableRow.fromTexts(
           texts: [
+            svt.limitCount.toString(),
             Transl.svtAttribute(svt.attribute).l,
             _dscPercent(svt.deathRate, 10),
             svt.isEnemy ? _dscPercent(svt.niceEnemy!.criticalRate, 10) : svt.niceSvt!.starAbsorb.toString(),
