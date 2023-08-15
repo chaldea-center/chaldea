@@ -153,11 +153,11 @@ class BuffData {
   }
 
   bool shouldApplyBuff(final BattleData battleData, final bool isTarget) {
-    final onFieldCheck = !isOnField || actorUniqueId == null || battleData.isActorOnField(actorUniqueId!);
+    // final onFieldCheck = !isOnField || actorUniqueId == null || battleData.isActorOnField(actorUniqueId!);
 
     final scriptCheck = checkDataVals(battleData) && checkBuffScript(battleData, isTarget);
 
-    if (!onFieldCheck || !scriptCheck || !buffActState) {
+    if (!scriptCheck || !buffActState) {
       return false;
     }
 
@@ -354,6 +354,9 @@ class BuffData {
     if (buff.script?.HP_LOWER != null && battleData.activator != null) {
       final int hpRatio = (battleData.activator!.hp / battleData.activator!.getMaxHp(battleData) * 1000).toInt();
       checkResult &= hpRatio <= buff.script!.HP_LOWER!;
+    }
+    if (isOnField && actorUniqueId != null) {
+      checkResult &= battleData.isActorOnField(actorUniqueId!);
     }
 
     buffActState = checkResult;
