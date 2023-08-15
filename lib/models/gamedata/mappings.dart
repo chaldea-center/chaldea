@@ -689,13 +689,33 @@ class _SpecialTransl {
         na: 'Remove: ',
         kr: '해제: ',
       );
-  String get funcTraitPerBuff => M.of(
-        jp: '【〔{0}〕状態の数によって】',
-        cn: '【根据〔{0}〕状态的数量】',
-        tw: "【根據〔{0}〕狀態的數量】",
-        na: ' based on the amount of [{0}]',
-        kr: ' [〔{0}〕 상태의 수만큼]',
-      );
+  String funcTraitPerBuff({
+    // only one of them can be true
+    bool isSelf = false,
+    bool isOpp = false,
+    bool isField = false,
+  }) {
+    String? target;
+    if (isSelf) {
+      target = self;
+    } else if (isOpp) {
+      target = opposite;
+    } else if (isField) {
+      target = field;
+    }
+    return M.of(
+      jp: '【${target ?? ""}〔{0}〕状態の数によって】',
+      cn: '【根据${target ?? ""}〔{0}〕状态的数量】',
+      tw: "【根據${target ?? ""}〔{0}〕狀態的數量】",
+      na: ' (Based on the amount of [{0}]${target == null ? "" : " on $target"})',
+      kr: null,
+    );
+  }
+
+  String get self => M.of(jp: '自身', cn: '自身', tw: '自身', na: 'self', kr: null);
+  String get opposite => M.of(jp: '対象', cn: '对方', tw: '對方', na: 'opposite', kr: null);
+  String get field => M.of(jp: 'フィールド', cn: '场地', tw: '場地', na: 'Field', kr: null);
+
   String get funcTraitOnField => M.of(
         jp: '〔{0}〕のあるフィールドにおいてのみ',
         cn: '仅在〔{0}〕场地上时',

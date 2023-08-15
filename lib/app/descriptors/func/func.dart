@@ -812,7 +812,10 @@ class FuncDescriptor extends StatelessWidget {
             if (indiv != null) {
               NiceTrait? guessTrait;
               if (indiv == 0 || indiv == 9999) {
-                final guessTraits = buff.vals.where((e) => e.signedId >= 2000 && e.signedId < 3000).toList();
+                final guessTraits = buff.vals
+                    .where(
+                        (e) => (e.signedId >= 2000 && e.signedId < 3000) || (e.signedId >= 6000 && e.signedId < 7000))
+                    .toList();
                 if (guessTraits.length == 1) guessTrait = guessTraits.first;
               }
               spans.add(_replaceTrait(indiv, guessTrait: guessTrait));
@@ -851,10 +854,7 @@ class FuncDescriptor extends StatelessWidget {
             break;
         }
       }
-      spans.add(TextSpan(
-        text: text,
-        style: style,
-      ));
+      spans.add(TextSpan(text: text, style: style));
     }
 
     _addFuncText();
@@ -900,6 +900,17 @@ class FuncDescriptor extends StatelessWidget {
       spans.add(TextSpan(text: '${vals?.AddLinkageTargetIndividualty}'));
       spans.add(const TextSpan(text: ')'));
     }
+    //
+    void _addParamAddTrait(String Function() template, List<int>? traitIds) {
+      if (traitIds != null && traitIds.isNotEmpty) {
+        spans.addAll(SharedBuilder.replaceSpan(
+            template(), '{0}', SharedBuilder.traitSpans(context: context, traits: NiceTrait.list(traitIds))));
+      }
+    }
+
+    _addParamAddTrait(() => Transl.special.funcTraitPerBuff(isSelf: true), vals?.ParamAddSelfIndividuality);
+    _addParamAddTrait(() => Transl.special.funcTraitPerBuff(isOpp: true), vals?.ParamAddOpIndividuality);
+    _addParamAddTrait(() => Transl.special.funcTraitPerBuff(isSelf: true), vals?.ParamAddFieldIndividuality);
 
     List<List<InlineSpan>> _condSpans = [];
     void _addTraits(String? prefix, List<NiceTrait> traits, [bool useAnd = false]) {
@@ -924,7 +935,7 @@ class FuncDescriptor extends StatelessWidget {
       if (func.funcType == FuncType.subState) {
         _addTraits(Transl.special.funcTraitRemoval, func.traitVals);
       } else if (func.funcType == FuncType.gainNpBuffIndividualSum) {
-        spans.addAll(SharedBuilder.replaceSpan(Transl.special.funcTraitPerBuff, '{0}',
+        spans.addAll(SharedBuilder.replaceSpan(Transl.special.funcTraitPerBuff(), '{0}',
             SharedBuilder.traitSpans(context: context, traits: func.traitVals)));
       } else if (func.funcType == FuncType.eventDropUp) {
         _addTraits(Transl.special.buffCheckSelf, func.traitVals);

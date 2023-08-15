@@ -86,6 +86,10 @@ class NiceTrait with RouteInfo {
 
   factory NiceTrait.signed(int sid) => _instances.putIfAbsent(sid, () => NiceTrait._(id: sid.abs(), negative: sid < 0));
 
+  static List<NiceTrait> list(List<int> ids) {
+    return ids.map((e) => NiceTrait(id: e)).toList();
+  }
+
   int get signedId => negative ? -id : id;
 
   @override
