@@ -363,6 +363,9 @@ class TdDmgSolver {
       if (_actor?.svtId == 2501100) {
         return 1;
       }
+      // if (_actor?.svtId == 204900) {
+      //   return -1;
+      // }
       return -1;
     };
     if (options.damageNpHpRatioMax) {

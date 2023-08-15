@@ -407,10 +407,19 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       } else if (!widget.offline) {
         if (failed) {
           rowChildren.add(
-            const Expanded(
+            Expanded(
               child: Padding(
-                padding: EdgeInsets.all(4),
-                child: Center(child: Icon(Icons.error_outline)),
+                padding: const EdgeInsets.all(4),
+                child: Center(
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        AtlasApi.cacheManager.clearFailed();
+                      });
+                    },
+                    child: const Icon(Icons.error_outline),
+                  ),
+                ),
               ),
             ),
           );

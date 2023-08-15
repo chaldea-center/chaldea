@@ -103,9 +103,9 @@ class AppUpdater {
   }
 
   static Future showInstallAlert(AppVersion version) {
-    String body = 'Update downloaded.';
+    String body = 'Update downloaded/更新包已下载.';
     if (PlatformU.isWindows || PlatformU.isLinux) {
-      body += '\nExtract zip and replace the old version';
+      body += '\nExtract zip and replace the old version\n请解压并替换旧版本程序文件';
     }
     return showDialog(
       context: kAppKey.currentContext!,
