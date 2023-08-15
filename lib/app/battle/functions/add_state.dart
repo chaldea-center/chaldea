@@ -1,3 +1,4 @@
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
@@ -51,6 +52,36 @@ class AddState {
 
       if (buff.type == BuffType.tdTypeChange) {
         buffData.tdSelection = tdSelections![i];
+      } else if (buff.type == BuffType.tdTypeChangeArts ||
+          buff.type == BuffType.tdTypeChangeQuick ||
+          buff.type == BuffType.tdTypeChangeBuster) {
+        final baseTd = target.getBaseTD();
+        final changeCardType = {
+          BuffType.tdTypeChangeArts: CardType.arts,
+          BuffType.tdTypeChangeBuster: CardType.buster,
+          BuffType.tdTypeChangeQuick: CardType.quick,
+        }[buff.type]!;
+        if (baseTd != null) {
+          final changeTdIds = baseTd.script?.tdTypeChangeIDs ?? [];
+          final List<NiceTd> localTds = [];
+          if (target.isPlayer) {
+            localTds.addAll(target.niceSvt!.noblePhantasms);
+          } else {
+            final td = target.niceEnemy!.noblePhantasm.noblePhantasm;
+            if (td != null) localTds.add(td);
+          }
+
+          /// for Summer Barghest, tdTypeChangeIDs=[changeTdid, baseTdId], both are Arts
+          for (final tdId in changeTdIds) {
+            NiceTd? td = localTds.firstWhereOrNull((e) => e.id == tdId);
+            // todo: add svtId
+            td ??= await AtlasApi.td(tdId);
+            if (td != null && td.card == changeCardType) {
+              buffData.tdSelection = td;
+              break;
+            }
+          }
+        }
       } else if (buff.type == BuffType.upDamageEventPoint) {
         final pointBuff = battleData.options.pointBuffs.values
             .firstWhereOrNull((pointBuff) => pointBuff.funcIds.isEmpty || pointBuff.funcIds.contains(funcId));

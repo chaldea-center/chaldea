@@ -837,12 +837,17 @@ class BattleServantData {
     return result;
   }
 
+  NiceTd? getBaseTD() {
+    return isPlayer ? playerSvtData!.td : niceEnemy!.noblePhantasm.noblePhantasm;
+  }
+
   NiceTd? getCurrentNP(final BattleData battleData) {
     final buffs = collectBuffsPerAction(battleBuff.allBuffs, BuffAction.tdTypeChange);
     NiceTd? selected;
     battleData.withActivatorSync(this, () {
       for (final buff in buffs.reversed) {
-        if (buff.tdSelection != null && buff.shouldApplyBuff(battleData, false)) {
+        if (!buff.shouldApplyBuff(battleData, false)) continue;
+        if (buff.tdSelection != null) {
           selected = buff.tdSelection!;
           break;
         }
@@ -853,7 +858,7 @@ class BattleServantData {
       return selected;
     }
 
-    return isPlayer ? playerSvtData!.td : niceEnemy!.noblePhantasm.noblePhantasm;
+    return getBaseTD();
   }
 
   Future<void> activateNP(final BattleData battleData, CommandCardData card, final int extraOverchargeLvl) async {
