@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.11
+
+- Support Summer Barghest NP Change buff
+- Fix entry function should only trigger once (Summer Chloe bond CE)
+- Fix team upload ineligibility check
+
 ## 2.4.10
 
 - Chaldeas
@@ -11,7 +17,7 @@
   - Fix condition check for Andersen skill 3 upgrade and Cnoc na Riabh skill 3
   - Fix summer 2023 point buff
   - Fix move to last member should check actor can act (Summer Chloe S2)
-  - Fix entry function should activate multiple times if count >0
+  - ~~Fix entry function should activate multiple times if count >0~~ bug
   - Fix servant event trait should check limit count (Murasama event bonus in summer 2023)
 
 ## 2.4.9
