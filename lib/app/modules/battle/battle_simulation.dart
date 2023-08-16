@@ -772,7 +772,15 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       padding: const EdgeInsets.symmetric(horizontal: 2),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: isSealed || isCondFailed || cd > 0 ? null : onTap,
+        onTap: isSealed || isCondFailed || cd > 0
+            ? null
+            : () {
+                if (battleData.isPlayerTurn) {
+                  onTap();
+                } else {
+                  EasyLoading.showInfo("Enemy Turn");
+                }
+              },
         onLongPress: pskill == null
             ? null
             : () {
