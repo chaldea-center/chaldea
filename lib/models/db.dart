@@ -169,7 +169,7 @@ class _Database {
 
     // init other hive boxes at last
     await security.init();
-    if (kIsWeb) setUrlStrategy(PathUrlStrategy());
+    if (kIsWeb) usePathUrlStrategy();
     _startSavingLoop();
   }
 

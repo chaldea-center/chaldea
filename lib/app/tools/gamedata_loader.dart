@@ -477,7 +477,7 @@ class _GameLoadingTempData {
   bool get enabled => _enabled;
 
   void reset() {
-    logger.d('disable _GameLoadingTempData');
+    // logger.d('disable _GameLoadingTempData');
     _enabled = false;
     gameJson?.clear();
     gameJson = null;

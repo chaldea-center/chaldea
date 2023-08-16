@@ -289,11 +289,13 @@ class _UserDataPageState extends State<UserDataPage> {
                 EasyLoading.dismiss();
               } catch (e, s) {
                 logger.e('migrate android data to external failed', e, s);
-                SimpleCancelOkDialog(
-                  title: const Text('⚠️ ERROR'),
-                  content: Text(e.toString()),
-                  hideCancel: true,
-                ).showDialog(context);
+                if (mounted) {
+                  SimpleCancelOkDialog(
+                    title: const Text('⚠️ ERROR'),
+                    content: Text(e.toString()),
+                    hideCancel: true,
+                  ).showDialog(context);
+                }
                 EasyLoading.dismiss();
               }
             },

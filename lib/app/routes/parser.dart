@@ -6,18 +6,17 @@ class AppRouteInformationParser extends RouteInformationParser<RouteConfiguratio
   @override
   Future<RouteConfiguration> parseRouteInformation(RouteInformation routeInformation) async {
     // return RouteConfiguration.bootstrap(routeInformation.location);
-    final uri = routeInformation.location == null ? null : Uri.tryParse(routeInformation.location!);
-    if (uri != null) {
-      if (uri.pathSegments.isEmpty || uri.path == Routes.home) {
-        return RouteConfiguration.home();
-      }
-      return RouteConfiguration.fromUri(uri: uri, detail: !Routes.masterRoutes.contains(uri.path));
+    final uri = routeInformation.uri;
+    if (uri.pathSegments.isEmpty || uri.path == Routes.home) {
+      return RouteConfiguration.home();
     }
-    return RouteConfiguration.notFound(routeInformation.location);
+    return RouteConfiguration.fromUri(uri: uri, detail: !Routes.masterRoutes.contains(uri.path));
   }
 
   @override
   RouteInformation? restoreRouteInformation(RouteConfiguration configuration) {
-    return configuration.url != null ? RouteInformation(location: configuration.url) : null;
+    Uri? uri = configuration.uri;
+    uri ??= configuration.url == null ? null : Uri.tryParse(configuration.url!);
+    return uri != null ? RouteInformation(uri: uri) : null;
   }
 }
