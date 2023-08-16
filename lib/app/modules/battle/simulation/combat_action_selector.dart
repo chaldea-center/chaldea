@@ -526,10 +526,11 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
           ));
         }
         final td = enemy.niceEnemy?.noblePhantasm.noblePhantasm;
-        if (td != null) {
+        if (td != null && td.functions.isNotEmpty) {
           children.add(const Divider());
-          children.add(buildRadio(
+          Widget tile = buildRadio(
             title: Text('${S.current.np_short} ${td.nameWithRank}'),
+            subtitle: Text('${S.current.info_charge}: ${enemy.npValueText}'),
             onSelected: () async {
               final card = enemy.getNPCard(battleData);
               if (card != null) {
@@ -537,7 +538,37 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
               }
             },
             enabled: enemy.canNP(battleData),
-          ));
+          );
+
+          final chargeTurn = enemy.niceEnemy?.chargeTurn ?? 0;
+          if (enemy.npLineCount < chargeTurn) {
+            tile = GestureDetector(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (context) {
+                    return SimpleCancelOkDialog(
+                      title: Text(S.current.np_not_enough),
+                      content: Text(S.current.charge_np_to(chargeTurn)),
+                      onTapOk: () {
+                        final msg =
+                            '${S.current.charge_np_to(chargeTurn)}: ${enemy.fieldIndex + 1}-${enemy.lBattleName}';
+                        battleData.pushSnapshot();
+                        enemy.npLineCount = chargeTurn;
+                        battleData.battleLogger.action(msg);
+                        battleData.recorder.setIllegal(msg);
+                        battleData.recorder.message(S.current.charge_np_to(chargeTurn), target: enemy);
+                        if (mounted) setState(() {});
+                      },
+                    );
+                  },
+                );
+              },
+              child: tile,
+            );
+          }
+          children.add(tile);
         }
       }
     }
