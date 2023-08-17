@@ -74,7 +74,7 @@ class CombatAction {
     if (cardData.isNP) {
       return battleData.delegate?.whetherTd?.call(actor) ?? actor.canNP(battleData);
     } else {
-      return actor.canCommandCard(battleData);
+      return actor.canCommandCard(battleData, cardData);
     }
   }
 }

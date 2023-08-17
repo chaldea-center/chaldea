@@ -174,7 +174,7 @@ class BattleData {
     }
   }
 
-  CommandCardData? currentCard;
+  final List<CommandCardData?> _currentCard = [];
   final List<BuffData?> _currentBuff = [];
   final List<BattleServantData?> _activator = [];
   final List<BattleServantData?> _target = [];
@@ -211,21 +211,27 @@ class BattleData {
     }
   }
 
+  CommandCardData? get currentCard => _currentCard.isNotEmpty ? _currentCard.last : null;
+
   Future<T> withCard<T>(final CommandCardData? card, final FutureOr<T> Function() onExecute) async {
+    final sanityCheck = _currentCard.length;
     try {
-      currentCard = card;
+      _currentCard.add(card);
       return await onExecute();
     } finally {
-      currentCard = null;
+      StackMismatchException.checkPopStack(_currentCard, card, sanityCheck);
+      _currentCard.removeLast();
     }
   }
 
   T withCardSync<T>(final CommandCardData? card, final T Function() onExecute) {
+    final sanityCheck = _currentCard.length;
     try {
-      currentCard = card;
+      _currentCard.add(card);
       return onExecute();
     } finally {
-      currentCard = null;
+      StackMismatchException.checkPopStack(_currentCard, card, sanityCheck);
+      _currentCard.removeLast();
     }
   }
 
@@ -298,6 +304,7 @@ class BattleData {
 
     _uniqueIdToFuncResultsList.clear();
     _curFuncResults.clear();
+    _currentCard.clear();
     _currentBuff.clear();
     _activator.clear();
     _target.clear();
@@ -868,12 +875,12 @@ class BattleData {
         criticalStars = 0;
 
         // assumption: only Quick, Arts, and Buster are ever listed as viable actions
-        final cardTypesSet =
-            actions.where((action) => action.isValid(this)).map((action) => action.cardData.cardType).toSet();
-        final isTypeChain = actions.length == 3 && cardTypesSet.length == 1;
+        final validActions = actions.where((action) => action.isValid(this));
+        final cardTypesSet = validActions.map((action) => action.cardData.cardType).toSet();
+        final isTypeChain = validActions.length == 3 && cardTypesSet.length == 1;
         final isMightyChain = cardTypesSet.length == 3 && options.isAfter7thAnni;
-        final isBraveChain = actions.where((action) => action.isValid(this)).length == kMaxCommand &&
-            actions.map((action) => action.actor).toSet().length == 1;
+        final isBraveChain = validActions.length == kMaxCommand &&
+            validActions.map((action) => action.actor).toSet().length == 1;
         if (isBraveChain) {
           final actor = actions[0].actor;
           final extraCard = actor.getExtraCard(this);

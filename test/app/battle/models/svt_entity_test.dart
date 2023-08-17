@@ -251,9 +251,6 @@ void main() async {
     svt.canSelectNP(battle);
     expect(battle.activator, null);
 
-    svt.canCommandCard(battle);
-    expect(battle.activator, null);
-
     svt.checkNPScript(battle);
     expect(battle.activator, null);
 
