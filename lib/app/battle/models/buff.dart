@@ -346,16 +346,17 @@ class BuffData {
       ));
     }
 
-    if (buff.script?.HP_HIGHER != null && battleData.activator != null) {
-      final int hpRatio = (battleData.activator!.hp / battleData.activator!.getMaxHp(battleData) * 1000).toInt();
+    if (buff.script?.HP_HIGHER != null) {
+      final int hpRatio = (owner.hp / owner.getMaxHp(battleData) * 1000).toInt();
       checkResult &= hpRatio >= buff.script!.HP_HIGHER!;
     }
 
-    if (buff.script?.HP_LOWER != null && battleData.activator != null) {
-      final int hpRatio = (battleData.activator!.hp / battleData.activator!.getMaxHp(battleData) * 1000).toInt();
+    if (buff.script?.HP_LOWER != null) {
+      final int hpRatio = (owner.hp / owner.getMaxHp(battleData) * 1000).toInt();
       checkResult &= hpRatio <= buff.script!.HP_LOWER!;
     }
     if (isOnField && actorUniqueId != null) {
+      // should be NO_FIELD state rather NO_ACT in fact
       checkResult &= battleData.isActorOnField(actorUniqueId!);
     }
 
