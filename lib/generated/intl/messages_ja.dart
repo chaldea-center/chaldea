@@ -317,6 +317,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_lottery_limited": MessageLookupByLibrary.simpleMessage("有限なボックスガチャ"),
         "event_lottery_unit": MessageLookupByLibrary.simpleMessage("ボックス"),
         "event_lottery_unlimited": MessageLookupByLibrary.simpleMessage("無限なボックスガチャ"),
+        "event_mural": MessageLookupByLibrary.simpleMessage("壁画"),
         "event_not_planned": MessageLookupByLibrary.simpleMessage("イベントはプランされていません"),
         "event_point_reward": MessageLookupByLibrary.simpleMessage("ポイント"),
         "event_quest": MessageLookupByLibrary.simpleMessage("イベントクエスト"),

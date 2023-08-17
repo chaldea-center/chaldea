@@ -1,5 +1,6 @@
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class EventMuralPage extends HookWidget {
@@ -10,6 +11,17 @@ class EventMuralPage extends HookWidget {
   Widget build(BuildContext context) {
     final murals = event.murals.toList();
     if (murals.isEmpty) return const SizedBox();
+    murals.sort2((e) => e.id);
+    // const bg = "https://static.atlasacademy.io/JP/EventUI/Prefabs/80442/img_pic_bg.png";
+    // return DecoratedBox(
+    //   decoration: const BoxDecoration(
+    //     image: DecorationImage(
+    //       image: CachedNetworkImageProvider(bg),
+    //       fit: BoxFit.fill,
+    //     ),
+    //   ),
+    //   child:
+    // );
     return ListView.separated(
       controller: useScrollController(),
       itemBuilder: (context, index) => itemBuilder(context, murals[index]),
@@ -20,15 +32,26 @@ class EventMuralPage extends HookWidget {
 
   Widget itemBuilder(BuildContext context, EventMural mural) {
     return SimpleAccordion(
+      headerTileColor: Colors.transparent,
       headerBuilder: (context, _) {
         return ListTile(
           dense: true,
-          title: Text(mural.message),
-          subtitle: Text('No.${mural.id}  ${mural.num}'),
+          title: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              for (final img in mural.images)
+                CachedImage(
+                  imageUrl: img,
+                  showSaveOnLongPress: true,
+                  height: 48,
+                ),
+            ],
+          ),
+          subtitle: Text(mural.message),
         );
       },
       contentBuilder: (context) {
-        return Column(
+        final child = Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (mural.condQuestId != 0)
@@ -36,9 +59,21 @@ class EventMuralPage extends HookWidget {
                 condType: CondType.questClearPhase,
                 target: mural.condQuestId,
                 value: mural.condQuestPhase,
+                textScaleFactor: 0.9,
               ),
+            Wrap(
+              alignment: WrapAlignment.center,
+              children: [
+                for (final img in mural.images)
+                  CachedImage(
+                    imageUrl: img,
+                    showSaveOnLongPress: true,
+                  ),
+              ],
+            )
           ],
         );
+        return Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), child: child);
       },
     );
   }

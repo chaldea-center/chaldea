@@ -3506,6 +3506,17 @@ class S {
     );
   }
 
+  /// `Murals`
+  String get event_mural {
+    return Intl.message(
+      'Murals',
+      name: 'event_mural',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Event not planned`
   String get event_not_planned {
     return Intl.message(

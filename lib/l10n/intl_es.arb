@@ -313,6 +313,7 @@
   "event_lottery_limited": "Lotería limitada",
   "event_lottery_unit": "Lotería",
   "event_lottery_unlimited": "Lotería ilimitada",
+  "event_mural": null,
   "event_not_planned": "Evento no planificado",
   "event_only_trait_hint": null,
   "event_point": null,

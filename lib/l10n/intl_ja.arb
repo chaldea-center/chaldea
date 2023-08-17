@@ -313,6 +313,7 @@
   "event_lottery_limited": "有限なボックスガチャ",
   "event_lottery_unit": "ボックス",
   "event_lottery_unlimited": "無限なボックスガチャ",
+  "event_mural": "壁画",
   "event_not_planned": "イベントはプランされていません",
   "event_only_trait_hint": null,
   "event_point": null,

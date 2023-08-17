@@ -276,7 +276,7 @@ class EventListPageState extends State<EventListPage>
         if (event.type == EventType.warBoard) EventCustomType.warBoard,
         if (db.gameData.wars[event.warIds.getOrNull(0)]?.parentWarId == WarId.mainInterlude)
           EventCustomType.mainInterlude,
-        if (event.extra.huntingQuestIds.isNotEmpty) EventCustomType.hunting,
+        if (event.extra.huntingId > 0 || event.name.contains('ハンティングクエスト')) EventCustomType.hunting,
       ];
       if (!filterData.contentType.matchAny(types)) {
         return false;

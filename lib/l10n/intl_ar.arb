@@ -313,6 +313,7 @@
   "event_lottery_limited": "يانصيب محدود",
   "event_lottery_unit": "اليانصيب",
   "event_lottery_unlimited": "يانصيب غير محدود",
+  "event_mural": null,
   "event_not_planned": "لم يتم التخطيط للحدث",
   "event_only_trait_hint": null,
   "event_point": "نقطة الايفنت",

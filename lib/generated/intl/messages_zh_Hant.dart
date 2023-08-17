@@ -405,6 +405,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_lottery_limited": MessageLookupByLibrary.simpleMessage("有限池"),
         "event_lottery_unit": MessageLookupByLibrary.simpleMessage("池"),
         "event_lottery_unlimited": MessageLookupByLibrary.simpleMessage("無限池"),
+        "event_mural": MessageLookupByLibrary.simpleMessage("壁画"),
         "event_not_planned": MessageLookupByLibrary.simpleMessage("活動未列入規劃"),
         "event_only_trait_hint": MessageLookupByLibrary.simpleMessage(
             "這可能是一個活動限定的從者/敵人特性或場地特性。\n常規從者/敵人可能不包含此特性，但可能包含同名但不同ID的特性。\n部分特性雖未翻譯出從者，但活動中可能是從者限定特性。"),

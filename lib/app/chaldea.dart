@@ -124,13 +124,13 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     }
 
     SystemChannels.lifecycle.setMessageHandler((msg) async {
-      debugPrint('SystemChannels> $msg');
+      // debugPrint('SystemChannels> $msg');
       if (msg == AppLifecycleState.resumed.toString()) {
         // Actions when app is resumed
         network.check();
       } else if (msg == AppLifecycleState.inactive.toString()) {
         db.saveAll();
-        debugPrint('save userdata before being inactive');
+        // debugPrint('save userdata before being inactive');
       }
       return null;
     });

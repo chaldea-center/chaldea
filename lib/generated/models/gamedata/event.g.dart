@@ -1324,7 +1324,7 @@ Map<String, dynamic> _$HeelPortraitToJson(HeelPortrait instance) => <String, dyn
 EventMural _$EventMuralFromJson(Map json) => EventMural(
       id: json['id'] as int? ?? 0,
       message: json['message'] as String? ?? "",
-      imageIds: (json['imageIds'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
+      images: (json['images'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
       num: json['num'] as int? ?? 0,
       condQuestId: json['condQuestId'] as int? ?? 0,
       condQuestPhase: json['condQuestPhase'] as int? ?? 0,
@@ -1333,7 +1333,7 @@ EventMural _$EventMuralFromJson(Map json) => EventMural(
 Map<String, dynamic> _$EventMuralToJson(EventMural instance) => <String, dynamic>{
       'id': instance.id,
       'message': instance.message,
-      'imageIds': instance.imageIds,
+      'images': instance.images,
       'num': instance.num,
       'condQuestId': instance.condQuestId,
       'condQuestPhase': instance.condQuestPhase,

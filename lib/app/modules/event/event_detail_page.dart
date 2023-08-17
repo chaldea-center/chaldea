@@ -126,7 +126,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
       );
     }
     if (event.murals.isNotEmpty) {
-      _addTab("Murals", EventMuralPage(event: event));
+      _addTab(S.current.event_mural, EventMuralPage(event: event));
     }
     if (event.heelPortraits.isNotEmpty) {
       // before tower

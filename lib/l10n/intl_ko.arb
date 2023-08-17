@@ -313,6 +313,7 @@
   "event_lottery_limited": "제한된 룰렛",
   "event_lottery_unit": "룰렛",
   "event_lottery_unlimited": "무제한 룰렛",
+  "event_mural": null,
   "event_not_planned": "이벤트가 계획되지 않았습니다",
   "event_only_trait_hint": null,
   "event_point": "이벤트 포인트",

@@ -1550,14 +1550,14 @@ class HeelPortrait {
 class EventMural {
   int id;
   String message;
-  List<String> imageIds;
+  List<String> images;
   int num;
   int condQuestId;
   int condQuestPhase;
   EventMural({
     this.id = 0,
     this.message = "",
-    this.imageIds = const [],
+    this.images = const [],
     this.num = 0,
     this.condQuestId = 0,
     this.condQuestPhase = 0,

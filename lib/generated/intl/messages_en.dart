@@ -424,6 +424,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_lottery_limited": MessageLookupByLibrary.simpleMessage("Limited lottery"),
         "event_lottery_unit": MessageLookupByLibrary.simpleMessage("Lottery"),
         "event_lottery_unlimited": MessageLookupByLibrary.simpleMessage("Unlimited lottery"),
+        "event_mural": MessageLookupByLibrary.simpleMessage("Murals"),
         "event_not_planned": MessageLookupByLibrary.simpleMessage("Event not planned"),
         "event_only_trait_hint": MessageLookupByLibrary.simpleMessage(
             "This trait may be event only servant/enemy trait or field trait.\n Normal servant or enemy may not have this trait, they may have another trait with similar name but different ID.\nSome traits are not translated with \'Servant\', but they may be servant only trait in event."),
