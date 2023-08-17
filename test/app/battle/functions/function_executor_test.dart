@@ -264,9 +264,10 @@ void main() async {
       final buffCountBefore = enemy2.battleBuff.activeList.length;
       final npCard = kama.getNPCard(battle)!;
       battle.recorder.startPlayerCard(kama, npCard);
-      battle.currentCard = npCard;
       await battle.withAction(() async {
-        await kama.activateNP(battle, npCard, 0);
+        await battle.withCard(npCard, () async {
+          await kama.activateNP(battle, npCard, 0);
+        });
       });
       final buffCountAfter = enemy2.battleBuff.activeList.length;
       expect(buffCountAfter, buffCountBefore);
@@ -295,9 +296,10 @@ void main() async {
       final buffCountBefore1 = cursedArm.battleBuff.activeList.length;
       cursedArm.np = 10000;
       battle.recorder.startPlayerCard(cursedArm, npCard);
-      battle.currentCard = npCard;
       await battle.withAction(() async {
-        await cursedArm.activateNP(battle, npCard, 0);
+        await battle.withCard(npCard, () async {
+          await cursedArm.activateNP(battle, npCard, 0);
+        });
       });
       final buffCountAfter1 = cursedArm.battleBuff.activeList.length;
       expect(buffCountAfter1, buffCountBefore1);
@@ -313,9 +315,10 @@ void main() async {
       cursedArm.np = 10000;
       battle.options.probabilityThreshold = 10;
       battle.recorder.startPlayerCard(cursedArm, npCard);
-      battle.currentCard = npCard;
       await battle.withAction(() async {
-        await cursedArm.activateNP(battle, npCard, 0);
+        await battle.withCard(npCard, () async {
+          await cursedArm.activateNP(battle, npCard, 0);
+        });
       });
       final buffCountAfter2 = cursedArm.battleBuff.activeList.length;
       expect(buffCountAfter2, buffCountBefore2 + 1);

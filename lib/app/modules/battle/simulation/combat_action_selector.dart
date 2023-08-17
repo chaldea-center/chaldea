@@ -185,7 +185,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
               shadowSize: 3,
             ),
           ),
-        if (!svt.canCommandCard(battleData)) ...[
+        if (!svt.canCommandCard(battleData, card)) ...[
           AspectRatio(
             aspectRatio: 1,
             child: Container(

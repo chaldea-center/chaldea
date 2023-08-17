@@ -13,7 +13,11 @@ import 'package:chaldea/utils/utils.dart';
 class BattleServantData {
   static const npPityThreshold = 9900;
   static List<BuffType> gutsTypes = [BuffType.guts, BuffType.gutsRatio];
-  static List<BuffAction> doNotNPTypes = [BuffAction.donotNoble, BuffAction.donotNobleCondMismatch];
+  static List<BuffAction> doNotNPTypes = [
+    BuffAction.donotNoble,
+    BuffAction.donotNobleCondMismatch,
+    BuffAction.donotActCommandtype,
+  ];
   static List<BuffAction> buffEffectivenessTypes = [BuffAction.buffRate, BuffAction.funcHpReduce];
 
   final bool isPlayer;
@@ -776,9 +780,11 @@ class BattleServantData {
     });
   }
 
-  bool canCommandCard(final BattleData battleData) {
+  bool canCommandCard(final BattleData battleData, final CommandCardData card) {
     return battleData.withActivatorSync(this, () {
-      return canAttack(battleData) && !hasDoNotBuffOnActionForUI(battleData, BuffAction.donotActCommandtype);
+      return battleData.withCardSync(card, () {
+        return canAttack(battleData) && !hasDoNotBuffOnActionForUI(battleData, BuffAction.donotActCommandtype);
+      });
     });
   }
 
@@ -794,7 +800,9 @@ class BattleServantData {
       return false;
     }
     return battleData.withActivatorSync(this, () {
-      return canAttack(battleData) && !hasDoNotBuffOnActionsForUI(battleData, doNotNPTypes);
+      return battleData.withCardSync(getNPCard(battleData), () {
+        return canAttack(battleData) && !hasDoNotBuffOnActionsForUI(battleData, doNotNPTypes);
+      });
     });
   }
 
