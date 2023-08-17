@@ -745,6 +745,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     List<Widget> rows = [];
     final event = questPhase?.war?.event;
     if (event == null) return rows;
+    final pointGroups = {for (final group in event.pointGroups) group.groupId: group};
     Map<int, List<EventPointBuff>> grouped = {};
     for (final buff in event.pointBuffs) {
       grouped.putIfAbsent(buff.groupId, () => []).add(buff);
@@ -752,8 +753,15 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     for (final buffs in grouped.values) {
       buffs.sort2((e) => e.eventPoint);
     }
-    for (final groupId in grouped.keys) {
-      final groupDetail = event.pointGroups.firstWhereOrNull((e) => e.groupId == groupId);
+    final groupIds = grouped.keys.toList();
+    final skillNumMap = ConstData.eventPointBuffGroupSkillNumMap[event.id];
+    if (skillNumMap != null) {
+      groupIds.sort2((groupId) => skillNumMap[groupId] ?? groupId);
+    } else {
+      groupIds.sort();
+    }
+    for (final groupId in groupIds) {
+      final groupDetail = pointGroups[groupId];
       final buffs = grouped[groupId]!;
       final cur = options.pointBuffs[groupId];
       if (!buffs.contains(cur)) {
@@ -788,8 +796,15 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               }
               return DropdownMenuItem(
                 value: buff,
-                child: Text(
-                  '$bonus(${buff.eventPoint})',
+                child: Text.rich(
+                  TextSpan(children: [
+                    if (buff.skillIcon != null)
+                      CenterWidgetSpan(
+                        child: db.getIconImage(buff.skillIcon,
+                            width: 18, height: 18, padding: const EdgeInsetsDirectional.only(end: 4)),
+                      ),
+                    TextSpan(text: '$bonus(${buff.eventPoint})'),
+                  ]),
                   textScaleFactor: 0.8,
                 ),
               );

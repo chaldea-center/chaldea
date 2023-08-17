@@ -879,8 +879,8 @@ class BattleData {
         final cardTypesSet = validActions.map((action) => action.cardData.cardType).toSet();
         final isTypeChain = validActions.length == 3 && cardTypesSet.length == 1;
         final isMightyChain = cardTypesSet.length == 3 && options.isAfter7thAnni;
-        final isBraveChain = validActions.length == kMaxCommand &&
-            validActions.map((action) => action.actor).toSet().length == 1;
+        final isBraveChain =
+            validActions.length == kMaxCommand && validActions.map((action) => action.actor).toSet().length == 1;
         if (isBraveChain) {
           final actor = actions[0].actor;
           final extraCard = actor.getExtraCard(this);

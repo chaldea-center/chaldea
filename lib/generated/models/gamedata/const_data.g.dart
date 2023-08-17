@@ -69,6 +69,14 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
             (k, e) => MapEntry(int.parse(k as String), BuffTypeDetail.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
+      eventPointBuffGroupSkillNumMap: (json['eventPointBuffGroupSkillNumMap'] as Map?)?.map(
+            (k, e) => MapEntry(
+                int.parse(k as String),
+                (e as Map).map(
+                  (k, e) => MapEntry(int.parse(k as String), e as int),
+                )),
+          ) ??
+          const {},
     );
 
 Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, dynamic>{
@@ -87,6 +95,8 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
       'svtExp': instance.svtExp.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'funcTypeDetail': instance.funcTypeDetail.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'buffTypeDetail': instance.buffTypeDetail.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'eventPointBuffGroupSkillNumMap': instance.eventPointBuffGroupSkillNumMap
+          .map((k, e) => MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
     };
 
 const _$AttributeEnumMap = {

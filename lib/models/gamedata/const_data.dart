@@ -29,6 +29,17 @@ class ConstGameData {
     285: 123,
     351: 223,
   };
+  // <eventId, <buffGroupId, skillNum>>
+  //   // summer 2023
+  //   80442: {
+  //     8044203: 2,
+  //     8044202: 3,
+  //     8044204: 4,
+  //     8044205: 5,
+  //     8044201: 6,
+  //     8044206: 7,
+  //   }
+  final Map<int, Map<int, int>> eventPointBuffGroupSkillNumMap;
 
   ConstGameData({
     this.attributeRelation = const {},
@@ -42,6 +53,7 @@ class ConstGameData {
     this.svtExp = const {},
     this.funcTypeDetail = const {},
     this.buffTypeDetail = const {},
+    this.eventPointBuffGroupSkillNumMap = const {},
   }) : buffTypeActionMap = {} {
     for (final entry in buffActions.entries) {
       for (final type in [...entry.value.plusTypes, ...entry.value.minusTypes]) {

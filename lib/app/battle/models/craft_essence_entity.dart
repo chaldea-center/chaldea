@@ -1,5 +1,5 @@
 import 'package:chaldea/app/battle/models/battle.dart';
-import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/extension.dart';
 
 class BattleCEData {
@@ -19,24 +19,15 @@ class BattleCEData {
 
   Future<void> activateCE(final BattleData battleData) async {
     final skillGroups = craftEssence.getActivatedSkills(isLimitBreak);
-    // eventId: <CE.skill.num, pointBuff.groupId>
-    const lvPointBuffSkillNumMap = {
-      // summer 2023
-      80442: {
-        6: 8044201,
-        3: 8044202,
-        2: 8044203,
-        4: 8044204,
-        5: 8044205,
-      },
-    };
     final eventId = battleData.niceQuest?.war?.eventId;
     final event = battleData.niceQuest?.war?.event;
     final bool hasLvPointBuff = event?.pointBuffs.any((e) => e.lv > 0) == true;
     for (final skillNum in skillGroups.keys) {
       final skills = skillGroups[skillNum]!.toList();
       if (hasLvPointBuff && skillNum > 1) {
-        final buffGroupId = lvPointBuffSkillNumMap[event?.id]?[skillNum];
+        final buffGroupId = ConstData.eventPointBuffGroupSkillNumMap[event?.id]?.entries
+            .firstWhereOrNull((e) => e.value == skillNum)
+            ?.key;
         int lv = battleData.options.pointBuffs[buffGroupId]?.lv ?? 0;
         final eventSkills = skills
             .where((skill) => skill.functions.any((func) => func.funcGroup.any((g) => g.eventId == eventId)))
