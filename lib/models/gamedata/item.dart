@@ -279,6 +279,7 @@ class Items {
   static const int manaPrismId = 3;
   static const int friendPointId = 4;
   static const int quartzFragmentId = 16;
+  static const int svtAnonymousId = 17;
   static const int purePrismId = 46;
   static const int rarePrismId = 18;
   static const int grailToCrystalId = 19;

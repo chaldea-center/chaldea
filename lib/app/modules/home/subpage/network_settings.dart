@@ -147,7 +147,7 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
     } else if (resp is DioException) {
       return _textWithIndicator(resp.response?.statusCode?.toString() ?? 'Error', false, resp);
     } else {
-      return _textWithIndicator('Unknown', false, resp);
+      return _textWithIndicator(S.current.unknown, false, resp);
     }
   }
 

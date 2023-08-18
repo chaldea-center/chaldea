@@ -4254,6 +4254,17 @@ class S {
     );
   }
 
+  /// `Gacha`
+  String get gacha {
+    return Intl.message(
+      'Gacha',
+      name: 'gacha',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Banner image may be overridden by`
   String get gacha_image_overridden_hint {
     return Intl.message(
@@ -4320,10 +4331,10 @@ class S {
     );
   }
 
-  /// `Include copies pulled, don't include burned and event 4☆ servants. Effect on probability due to Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction.`
+  /// `Sum of NP level of servants in Inventory & Second Archive, don't include burned and event 4☆ servants.\nEffect on probability due to Unregistered Spirit Origin, Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction.`
   String get gacha_svt_count_hint {
     return Intl.message(
-      'Include copies pulled, don\'t include burned and event 4☆ servants. Effect on probability due to Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction.',
+      'Sum of NP level of servants in Inventory & Second Archive, don\'t include burned and event 4☆ servants.\nEffect on probability due to Unregistered Spirit Origin, Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction.',
       name: 'gacha_svt_count_hint',
       desc: '',
       locale: localeName,
@@ -10116,6 +10127,17 @@ class S {
     return Intl.message(
       'Twice skills if Cool Down after 2 turns',
       name: 'twice_skill_if_cd2',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Unknown`
+  String get unknown {
+    return Intl.message(
+      'Unknown',
+      name: 'unknown',
       desc: '',
       locale: localeName,
       args: [],

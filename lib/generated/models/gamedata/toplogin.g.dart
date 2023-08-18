@@ -87,6 +87,9 @@ UserMstData _$UserMstDataFromJson(Map json) => UserMstData(
       userEventMission: (json['userEventMission'] as List<dynamic>?)
           ?.map((e) => UserEventMission.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      userShop: (json['userShop'] as List<dynamic>?)
+          ?.map((e) => UserShop.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
     );
 
 UserItem _$UserItemFromJson(Map json) => UserItem(
@@ -299,6 +302,14 @@ UserEventMission _$UserEventMissionFromJson(Map json) => UserEventMission(
       missionId: json['missionId'],
       missionTargetId: json['missionTargetId'],
       missionProgressType: json['missionProgressType'],
+      updatedAt: json['updatedAt'],
+      createdAt: json['createdAt'],
+    );
+
+UserShop _$UserShopFromJson(Map json) => UserShop(
+      shopId: json['shopId'],
+      num: json['num'],
+      flag: json['flag'],
       updatedAt: json['updatedAt'],
       createdAt: json['createdAt'],
     );

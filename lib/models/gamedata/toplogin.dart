@@ -153,6 +153,7 @@ class UserMstData {
   List<UserPresentBox> userPresentBox;
   List<UserGacha> userGacha;
   List<UserEventMission> userEventMission;
+  List<UserShop> userShop;
   // userEventPoint, userGachaExtraCount,
   // userEventSuperBoss, userSvtVoicePlayed, userQuest
   // userEventMissionFix,
@@ -191,6 +192,7 @@ class UserMstData {
     List<UserPresentBox>? userPresentBox,
     List<UserGacha>? userGacha,
     List<UserEventMission>? userEventMission,
+    List<UserShop>? userShop,
   })  : userGame = userGame ?? [],
         userSvtCollection = userSvtCollection ?? [],
         userSvt = userSvt ?? [],
@@ -209,7 +211,8 @@ class UserMstData {
         userClassBoardSquare = userClassBoardSquare ?? [],
         userPresentBox = userPresentBox ?? [],
         userGacha = userGacha ?? [],
-        userEventMission = userEventMission ?? [] {
+        userEventMission = userEventMission ?? [],
+        userShop = userShop ?? [] {
     for (final e in this.userSvtCoin) {
       coinMap[e.svtId] = e;
     }
@@ -1046,4 +1049,28 @@ class UserEventMission {
         updatedAt = _toInt(updatedAt),
         createdAt = _toInt(createdAt);
   factory UserEventMission.fromJson(Map<String, dynamic> data) => _$UserEventMissionFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserShop {
+  // int userId;
+  int shopId;
+  int num;
+  int flag;
+  int updatedAt;
+  int createdAt; // jp no createdAt
+
+  UserShop({
+    dynamic shopId,
+    dynamic num,
+    dynamic flag,
+    dynamic updatedAt,
+    dynamic createdAt,
+  })  : shopId = _toInt(shopId),
+        num = _toInt(num),
+        flag = _toInt(flag),
+        updatedAt = _toInt(updatedAt ?? createdAt, 0),
+        createdAt = _toInt(createdAt ?? updatedAt, 0);
+
+  factory UserShop.fromJson(Map<String, dynamic> data) => _$UserShopFromJson(data);
 }

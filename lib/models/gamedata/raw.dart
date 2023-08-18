@@ -96,7 +96,7 @@ enum GachaType {
   String get shownName {
     switch (this) {
       case unknown:
-        return 'Unknown';
+        return S.current.unknown;
       case freeGacha:
         return Items.friendPoint?.lName.l ?? 'FriendPoint';
       case chargeStone:

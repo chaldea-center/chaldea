@@ -370,6 +370,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "free_quest": MessageLookupByLibrary.simpleMessage("フリークエスト"),
         "free_quest_calculator": MessageLookupByLibrary.simpleMessage("フリークエスト"),
         "free_quest_calculator_short": MessageLookupByLibrary.simpleMessage("フリークエスト"),
+        "gacha": MessageLookupByLibrary.simpleMessage("壁画"),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("ホーム"),
         "game_account": MessageLookupByLibrary.simpleMessage("ゲームアカウント"),
         "game_drop": MessageLookupByLibrary.simpleMessage("ドロップ"),

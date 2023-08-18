@@ -113,7 +113,7 @@ class _SkillResultTabState extends State<SkillResultTab> with ScrollControllerMi
               ), detail: false);
             },
             child: Text(
-              '${item.svtId} - ${svt == null ? 'Unknown' : svt.lName.l}',
+              '${item.svtId} - ${svt == null ? S.current.unknown : svt.lName.l}',
               style: TextStyle(
                 color: item.valid && item.checked ? null : Theme.of(context).colorScheme.error,
               ),

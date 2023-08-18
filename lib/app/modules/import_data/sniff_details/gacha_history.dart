@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/raw.dart';
@@ -15,10 +16,19 @@ class SniffGachaHistory extends StatefulWidget {
   final List<UserSvt> userSvt;
   final List<UserSvt> userSvtStorage;
   final List<UserGacha> records;
+  final List<UserShop> userShops;
+  final List<UserItem> userItems;
   final Region region;
 
-  const SniffGachaHistory(
-      {super.key, required this.records, required this.userSvt, required this.userSvtStorage, required this.region});
+  const SniffGachaHistory({
+    super.key,
+    required this.records,
+    required this.userSvt,
+    required this.userSvtStorage,
+    required this.region,
+    required this.userShops,
+    required this.userItems,
+  });
 
   @override
   State<SniffGachaHistory> createState() => _SniffGachaHistoryState();
@@ -103,6 +113,10 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
 
     final totalSummonCount = Maths.sum(records.where((e) => !shouldIgnore(e)).map((e) => e.num));
     final allUserSvts = [...widget.userSvt, ...widget.userSvtStorage];
+
+    final curAnonymous = widget.userItems.firstWhereOrNull((e) => e.itemId == Items.svtAnonymousId)?.num ?? 0;
+    final anonumousShops = widget.userShops.where((e) => e.shopId ~/ 1000000 == 4).toList();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Gacha Statistics"),
@@ -153,6 +167,32 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
                 }),
               ],
             ),
+            TileGroup(
+              children: [
+                ListTile(
+                  dense: true,
+                  title: Text(S.current.lucky_bag),
+                  trailing: Text(getLuckyBagCount()),
+                ),
+                ListTile(
+                  dense: true,
+                  enabled: anonumousShops.isNotEmpty,
+                  title: Text(Transl.itemNames('無記名霊基').l),
+                  trailing: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text('$curAnonymous+10×${anonumousShops.length}'),
+                      Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                    ],
+                  ),
+                  onTap: anonumousShops.isEmpty
+                      ? null
+                      : () {
+                          router.pushPage(_UserShopList(userShops: anonumousShops, region: widget.region));
+                        },
+                )
+              ],
+            ),
             const Divider(height: 2, thickness: 1),
             const SizedBox(height: 8),
             Center(
@@ -195,16 +235,11 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
         return ListTile(
           dense: true,
           selected: (_imageIdMap[gacha?.imageId]?.length ?? 0) > 1,
-          title: Row(
-            children: [
-              if (gachas[record.gachaId]?.type == GachaType.chargeStone.id)
-                const Padding(
-                  padding: EdgeInsetsDirectional.only(end: 4),
-                  child: Icon(Icons.currency_yen, size: 16),
-                ),
-              Expanded(child: Text(title)),
-            ],
-          ),
+          title: Text.rich(TextSpan(children: [
+            if (gachas[record.gachaId]?.gachaType == GachaType.chargeStone)
+              const TextSpan(text: '● ', style: TextStyle(color: Colors.green)),
+            TextSpan(text: title),
+          ])),
           subtitle: Text(subtitle),
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
           trailing: Text(
@@ -323,5 +358,50 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
       count += userSvt.treasureDeviceLv1;
     }
     return count;
+  }
+
+  String getLuckyBagCount() {
+    bool hasUnknown = false;
+    int count = 0;
+    for (final record in records) {
+      final gacha = gachas[record.gachaId];
+      if (gacha == null) {
+        hasUnknown = true;
+      } else if (gacha.gachaType == GachaType.chargeStone) {
+        count += 1;
+      }
+    }
+    return hasUnknown ? '≥$count' : '=$count';
+  }
+}
+
+class _UserShopList extends StatelessWidget {
+  final List<UserShop> userShops;
+  final Region region;
+  const _UserShopList({required this.userShops, required this.region});
+
+  @override
+  Widget build(BuildContext context) {
+    final userShops = this.userShops.toList()..sort2((e) => -e.updatedAt);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(S.current.shop),
+      ),
+      body: ListView.builder(
+        itemCount: userShops.length,
+        itemBuilder: (context, index) {
+          final userShop = userShops[index];
+          final time = userShop.updatedAt > 0 ? userShop.updatedAt : userShop.createdAt;
+          return ListTile(
+            title: Text('No.${userShop.shopId}  ×${userShop.num}'),
+            subtitle: Text(time > 0 ? time.sec2date().toStringShort() : 'Unknown Time'),
+            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+            onTap: () {
+              router.push(url: Routes.shopI(userShop.shopId), region: region);
+            },
+          );
+        },
+      ),
+    );
   }
 }

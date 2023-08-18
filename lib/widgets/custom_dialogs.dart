@@ -78,7 +78,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
         autofocus: true,
         autocorrect: false,
         keyboardType: widget.keyboardType,
-        maxLines: widget.maxLines,
+        maxLines: widget.maxLines ?? 1,
         decoration: InputDecoration(
           hintText: widget.hintText,
           helperText: widget.helperText,

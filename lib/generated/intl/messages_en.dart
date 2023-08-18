@@ -495,6 +495,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "free_quest": MessageLookupByLibrary.simpleMessage("Free Quest"),
         "free_quest_calculator": MessageLookupByLibrary.simpleMessage("Free Quest"),
         "free_quest_calculator_short": MessageLookupByLibrary.simpleMessage("Free Quest"),
+        "gacha": MessageLookupByLibrary.simpleMessage("Gacha"),
         "gacha_image_overridden_hint": MessageLookupByLibrary.simpleMessage("Banner image may be overridden by"),
         "gacha_prob_calc": MessageLookupByLibrary.simpleMessage("Gacha Prob Calc"),
         "gacha_prob_ce_pickup": m18,
@@ -503,7 +504,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "If the value is too large or too small, the calculation result is inaccurate due to the double precision problem."),
         "gacha_prob_svt_pickup": m19,
         "gacha_svt_count_hint": MessageLookupByLibrary.simpleMessage(
-            "Include copies pulled, don\'t include burned and event 4☆ servants. Effect on probability due to Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction."),
+            "Sum of NP level of servants in Inventory & Second Archive, don\'t include burned and event 4☆ servants.\nEffect on probability due to Unregistered Spirit Origin, Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction."),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("Home"),
         "game_account": MessageLookupByLibrary.simpleMessage("Game Account"),
         "game_data_not_found":
@@ -1061,6 +1062,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "turn_remain_limit_win": MessageLookupByLibrary.simpleMessage("Considered Win after turn countdown is over"),
         "twice_skill_hint": MessageLookupByLibrary.simpleMessage("Usually for w-Koyan team"),
         "twice_skill_if_cd2": MessageLookupByLibrary.simpleMessage("Twice skills if Cool Down after 2 turns"),
+        "unknown": MessageLookupByLibrary.simpleMessage("Unknown"),
         "unlock": MessageLookupByLibrary.simpleMessage("Unlock"),
         "unlock_quest": MessageLookupByLibrary.simpleMessage("Unlock Quest"),
         "update": MessageLookupByLibrary.simpleMessage("Update"),

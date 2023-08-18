@@ -216,7 +216,7 @@ class EventCampaignDetailPage extends StatelessWidget {
       case QuestType.warBoard:
         return S.current.war_board;
       case null:
-        return 'Unknown';
+        return S.current.unknown;
     }
   }
 }

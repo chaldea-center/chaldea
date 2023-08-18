@@ -623,14 +623,14 @@ class __SearchViewState extends State<_SearchView> {
       ids = _searchTraits();
       tileBuilder = (id) {
         final names = {Transl.trait(id).l, Transl.trait(id).jp};
-        return _buildTile(id, '$id - ${names.join("/")}', kTraitIdMapping[id]?.name ?? 'Unknown');
+        return _buildTile(id, '$id - ${names.join("/")}', kTraitIdMapping[id]?.name ?? S.current.unknown);
       };
     } else if ([CustomMissionType.servantClass, CustomMissionType.enemyClass, CustomMissionType.enemyNotServantClass]
         .contains(widget.targetType)) {
       ids = _searchSvtClasses();
       tileBuilder = (id) {
         final names = {Transl.svtClassId(id).l, Transl.svtClassId(id).jp};
-        return _buildTile(id, '$id - ${names.join("/")}', kSvtClassIds[id]?.name ?? 'Unknown');
+        return _buildTile(id, '$id - ${names.join("/")}', kSvtClassIds[id]?.name ?? S.current.unknown);
       };
     } else {
       int? queryId = int.tryParse(query);

@@ -680,6 +680,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                                       records: gachas.toList(),
                                       userSvt: mstData?.userSvt ?? [],
                                       userSvtStorage: mstData?.userSvtStorage ?? [],
+                                      userShops: mstData?.userShop ?? [],
+                                      userItems: mstData?.userItem ?? [],
                                       region: region,
                                     ));
                                   },
@@ -689,7 +691,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                         },
                       );
                     },
-              child: const Text("Gacha"),
+              child: Text(S.current.gacha),
             ),
           ],
         ),

@@ -51,11 +51,12 @@ class SniffPresentBoxDetailPage extends StatelessWidget {
       ownedItems[Items.stoneId] = userGame!.stone;
     }
     final allItems = Maths.sumDict([presentItems, missionItems, ownedItems]);
-    final summonCount = Maths.sum([
-      (allItems[Items.stoneId] ?? 0) / 3,
-      (allItems[Items.quartzFragmentId] ?? 0) / 7 / 3,
-      allItems[Items.summonTicketId] ?? 0,
+    final stoneCount = Maths.sum([
+      (allItems[Items.stoneId] ?? 0),
+      (allItems[Items.quartzFragmentId] ?? 0) / 7,
+      (allItems[Items.summonTicketId] ?? 0) * 3,
     ]);
+    final summonCount = ((stoneCount ~/ 3) * 1.1).toInt();
 
     List<Widget> children = [];
     children.addAll([
@@ -63,7 +64,9 @@ class SniffPresentBoxDetailPage extends StatelessWidget {
       oneGroup(context, '${S.current.master_mission}(Extra, cleared but not claimed)', missionItems),
       oneGroup(context, '${S.current.item_own}(Summon items only)', ownedItems),
       oneGroup(
-          context, '${S.current.total}: ${summonCount.toStringAsFixed(1)} ${S.current.summon_pull_unit}', allItems),
+          context,
+          '${S.current.total}: ${stoneCount.toInt()} ${S.current.sq_short} = ${stoneCount ~/ 3}×1.1 = $summonCount ${S.current.summon_pull_unit}',
+          allItems),
     ]);
     children.add(SHeader('${S.current.details}(${S.current.present_box})'));
     children.addAll(presents.map((e) => buildPresent(context, e)));
