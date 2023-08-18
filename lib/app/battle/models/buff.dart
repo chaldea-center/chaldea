@@ -141,12 +141,15 @@ class BuffData {
       final addition = upperBound - lowerBound;
       final maxHpRatio = vals.RatioHPRangeHigh ?? 1000;
       final minHpRatio = vals.RatioHPRangeLow ?? 0;
-      final currentHpRatio = ((battleData.activator!.hp / battleData.activator!.getMaxHp(battleData)) * 1000).toInt();
+      final actor = isTarget ? battleData.target : battleData.activator;
+      if (actor != null) {
+        final currentHpRatio = ((actor.hp / actor.getMaxHp(battleData)) * 1000).toInt();
 
-      final appliedBase = currentHpRatio > maxHpRatio ? 0 : lowerBound;
-      final additionPercent = (maxHpRatio - currentHpRatio.clamp(minHpRatio, maxHpRatio)) / (maxHpRatio - minHpRatio);
+        final appliedBase = currentHpRatio > maxHpRatio ? 0 : lowerBound;
+        final additionPercent = (maxHpRatio - currentHpRatio.clamp(minHpRatio, maxHpRatio)) / (maxHpRatio - minHpRatio);
 
-      baseParam += appliedBase + (addition * additionPercent).toInt();
+        baseParam += appliedBase + (addition * additionPercent).toInt();
+      }
     }
 
     return baseParam + addValue;
