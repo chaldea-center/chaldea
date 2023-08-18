@@ -134,6 +134,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
     if (!mounted) return;
     List<int> keys = codes.keys.toList();
     int _curIndex = codes.keys.toList().indexOf(_selected ?? 0);
+    if (_curIndex < 0) return;
     _curIndex = (_curIndex + dx).clamp(0, codes.length - 1);
     setState(() {
       _selected = keys[_curIndex];

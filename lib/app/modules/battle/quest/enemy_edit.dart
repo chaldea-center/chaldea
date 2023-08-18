@@ -84,7 +84,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       CustomTile(
         leading: db.getIconImage(enemy.icon ?? Atlas.common.unknownEnemyIcon, width: 64, aspectRatio: 1),
         title: Text(enemy.lShownName),
-        subtitle: Text(Transl.svtClassId(enemy.svt.classId).l),
+        subtitle: Text('No.${enemy.svt.shownId}  ${Transl.svtClassId(enemy.svt.classId).l}'),
         trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
         onTap: enemy.routeTo,
       ),
@@ -276,6 +276,11 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
   }
 
   void _onSelectSvt(Servant svt) {
+    // check type
+    if (!svt.type.isServantType) {
+      EasyLoading.showError(S.current.input_invalid_hint);
+      return;
+    }
     niceSvt = svt;
     enemy.svt = BasicServant.fromNice(svt);
     enemy.name = svt.name;
@@ -302,6 +307,10 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       ..noblePhantasm =
           EnemyTd(noblePhantasmId: td?.id ?? 0, noblePhantasm: td, noblePhantasmLv: 1, noblePhantasmLv1: 1)
       ..limit = EnemyLimit(limitCount: 0);
+    if (svt.collectionNo > 0) {
+      enemy.deathRate = 0;
+    }
+
     updateLimitCount(svt);
     updateDefaultChargeTurn();
     if (mounted) setState(() {});

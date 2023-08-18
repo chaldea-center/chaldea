@@ -1527,6 +1527,11 @@ enum SvtType {
   all,
   commandCode,
   svtMaterialTd,
+  ;
+
+  // though enemyCollectionDetail should not be
+  static const kServantTypes = [normal, heroine, enemy, enemyCollection, enemyCollectionDetail];
+  bool get isServantType => kServantTypes.contains(this);
 }
 
 enum SvtFlag {
