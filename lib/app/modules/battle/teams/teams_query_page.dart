@@ -18,13 +18,14 @@ import '../../common/filter_page_base.dart';
 import '../utils.dart';
 import 'filter.dart';
 
-enum TeamQueryMode { user, quest }
+enum TeamQueryMode { user, quest, id }
 
 class TeamsQueryPage extends StatefulWidget {
   final TeamQueryMode mode;
   final QuestPhase? questPhase;
+  final List<int>? teamIds;
 
-  const TeamsQueryPage({super.key, required this.mode, this.questPhase});
+  const TeamsQueryPage({super.key, required this.mode, this.questPhase, this.teamIds});
 
   @override
   State<TeamsQueryPage> createState() => _TeamsQueryPageState();
@@ -78,7 +79,8 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
                 text: '${S.current.uploaded_teams} @'
                     '${username != null && username.isNotEmpty ? username.breakWord : "Not Login"}'),
           if (mode == TeamQueryMode.quest && widget.questPhase != null)
-            TextSpan(text: '${S.current.team_shared} - ${widget.questPhase?.lName.l.breakWord}')
+            TextSpan(text: '${S.current.team_shared} - ${widget.questPhase?.lName.l.breakWord}'),
+          if (mode == TeamQueryMode.id) TextSpan(text: S.current.team_shared),
         ],
       )),
       actions: [
@@ -179,7 +181,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         children: [
           const SizedBox(height: 6),
           _getHeader(shownIndex, record),
-          if (widget.mode == TeamQueryMode.user)
+          if (widget.mode == TeamQueryMode.user || widget.mode == TeamQueryMode.id)
             ListTile(
               dense: true,
               leading: db.getIconImage(quest?.spot?.shownImage, width: 24),
@@ -414,6 +416,15 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
               offset: _pageSize * page,
               expireAfter: refresh ? Duration.zero : const Duration(minutes: 60),
             ));
+      case TeamQueryMode.id:
+        task = showEasyLoading(() async {
+          final teams = <UserBattleData>[];
+          for (final id in widget.teamIds ?? <int>[]) {
+            final team = await ChaldeaWorkerApi.laplaceQueryById(id);
+            if (team != null) teams.add(team);
+          }
+          return teams;
+        });
     }
     List<UserBattleData>? records = await task;
     if (records != null) {
@@ -424,6 +435,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       for (final r in battleRecords) {
         r.parse();
       }
+      records.sortByList((e) => [e.userId == db.security.username ? 0 : 1, e.id]);
     }
     if (mounted) setState(() {});
   }
@@ -431,7 +443,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   Future<void> _deleteUserTeam(UserBattleData battleRecord) async {
     if (!db.security.isUserLoggedIn) return;
     final resp = await showEasyLoading(() => ChaldeaWorkerApi.teamDelete(id: battleRecord.id));
-    if (resp.success) {
+    if (resp.success && !kDebugMode) {
       ChaldeaWorkerApi.clearCache((cache) => true);
       await _queryTeams(pageIndex, refresh: true);
     } else {
@@ -542,9 +554,13 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
       );
 
       final buffer = StringBuffer();
+      final quest = db.gameData.quests[record.questId];
       buffer.writeAll([
         "Quest: https://apps.atlasacademy.io/db/JP/quest/${record.questId}/${record.phase}?hash=${record.enemyHash}",
-        "Team: https://chaldea.center/laplace/share?id=${record.id}",
+        "Lv. ${quest?.recommendLv} ${quest?.name}",
+        "Spot: ${quest?.spotName}",
+        "War: ${quest?.war?.longName}"
+            "Team: https://chaldea.center/laplace/share?id=${record.id}",
         "Version: ${record.ver}",
         "ID: ${record.id}",
         "Uploader: ${record.userId}",

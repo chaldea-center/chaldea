@@ -141,6 +141,16 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
               default:
                 return null;
             }
+          }),
+          ...?war.event?.eventAdds.map((eventAdd) {
+            switch (eventAdd.overwriteType) {
+              case EventOverwriteType.banner:
+                return eventAdd.overwriteBanner;
+              case EventOverwriteType.bgImage:
+                return eventAdd.overwriteId != 0 ? assetUrl.back(eventAdd.overwriteId, anyFullscreen) : null;
+              default:
+                return null;
+            }
           })
         ].whereType(),
         ...bgImages,

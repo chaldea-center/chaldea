@@ -40,7 +40,7 @@ class InputCancelOkDialog extends StatefulWidget {
 /// W/IInputConnectionWrapper(31507): getSelectedText on inactive InputConnection
 /// W/IInputConnectionWrapper(31507): endBatchEdit on inactive InputConnection
 class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
-  TextEditingController? _controller;
+  late TextEditingController _controller;
   bool validation = true;
 
   bool _validate(String v) {
@@ -64,13 +64,13 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
 
   @override
   void dispose() {
-    _controller?.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    validation = _validate(_controller!.text);
+    validation = _validate(_controller.text);
     return AlertDialog(
       title: widget.title == null ? null : Text(widget.title!),
       content: TextFormField(
@@ -82,7 +82,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
         decoration: InputDecoration(
           hintText: widget.hintText,
           helperText: widget.helperText,
-          errorText: validation ? null : S.current.invalid_input,
+          errorText: validation || _controller.text.isEmpty ? null : S.current.invalid_input,
         ),
         onChanged: (v) {
           if (widget.validate != null) {
@@ -110,7 +110,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
         TextButton(
           onPressed: validation
               ? () {
-                  String _value = _controller!.text;
+                  String _value = _controller.text;
                   validation = _validate(_value);
                   setState(() {
                     if (validation) {

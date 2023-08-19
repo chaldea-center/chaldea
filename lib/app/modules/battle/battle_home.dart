@@ -6,6 +6,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../../../packages/language.dart';
 import '../home/elements/random_image.dart';
 import '../home/subpage/feedback_page.dart';
+import 'teams/teams_query_page.dart';
 
 class BattleHomePage extends StatelessWidget {
   BattleHomePage({super.key});
@@ -68,6 +69,25 @@ class BattleHomePage extends StatelessWidget {
               title: Text(S.current.manage_uploaded_teams),
               onTap: () {
                 router.push(url: Routes.laplaceManageTeam);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.numbers),
+              title: Text("${S.current.team} ID"),
+              onTap: () {
+                InputCancelOkDialog(
+                  title: '${S.current.team} ID',
+                  validate: (s) => (int.tryParse(s) ?? 0) > 0,
+                  keyboardType: TextInputType.number,
+                  onSubmit: (s) {
+                    final id = int.tryParse(s);
+                    if (id == null || id <= 0) return;
+                    router.push(
+                      url: Routes.laplaceManageTeam,
+                      child: TeamsQueryPage(mode: TeamQueryMode.id, teamIds: [id]),
+                    );
+                  },
+                ).showDialog(context);
               },
             ),
           ],

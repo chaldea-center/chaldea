@@ -6,6 +6,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -318,6 +319,7 @@ class __ClearCacheDialogState extends State<_ClearCacheDialog> {
             imageCache.clear();
             imageCache.clearLiveImages();
             await AtlasApi.clear();
+            ChaldeaWorkerApi.clearCache((_) => true);
           }
           if (app) {
             await DefaultCacheManager().emptyCache();

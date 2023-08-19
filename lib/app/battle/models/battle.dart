@@ -494,7 +494,6 @@ class BattleData {
   }
 
   Future<void> replenishActors({final bool replenishAlly = true, final bool replenishEnemy = true}) async {
-    logger.d('replenishActors: ally=$replenishAlly, enemy=$replenishEnemy');
     final List<BattleServantData> newActors = [];
 
     if (replenishAlly) {
