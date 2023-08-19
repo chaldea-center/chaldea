@@ -108,12 +108,14 @@ class BattleRecordManager {
     required BattleSkillInfoData skill,
     required bool fromPlayer,
     required bool uploadEligible,
+    String? prefix,
   }) {
     if (!uploadEligible) {
-      setIllegal('${S.current.skill}: ${skill.proximateSkill?.lName.l}');
+      setIllegal('${S.current.skill} ${skill.type.name}: ${skill.proximateSkill?.lName.l}');
     }
 
     records.add(BattleSkillRecord(
+      prefix: prefix,
       activator: activator,
       targetPlayerSvt: battleData.targetedAlly,
       targetEnemySvt: battleData.targetedEnemy,
@@ -448,6 +450,7 @@ class BattleSkillActivationRecord extends BattleRecord {
 }
 
 class BattleSkillRecord extends BattleRecord {
+  final String? prefix;
   final BattleServantData? activator;
   final BattleServantData? targetPlayerSvt;
   final BattleServantData? targetEnemySvt;
@@ -455,6 +458,7 @@ class BattleSkillRecord extends BattleRecord {
   final bool fromPlayer;
 
   BattleSkillRecord({
+    this.prefix,
     required BattleServantData? activator,
     required BattleServantData? targetPlayerSvt,
     required BattleServantData? targetEnemySvt,
@@ -473,6 +477,7 @@ class BattleSkillRecord extends BattleRecord {
   @override
   BattleSkillRecord copy() {
     return BattleSkillRecord(
+      prefix: prefix,
       activator: activator,
       targetPlayerSvt: targetPlayerSvt,
       targetEnemySvt: targetEnemySvt,

@@ -511,6 +511,9 @@ class BattleRecorderPanelBase extends StatelessWidget {
         child: SizedBox(height: 32, width: 1),
       )
     ];
+    if (record.prefix != null) {
+      spans.add(TextSpan(text: record.prefix));
+    }
     if (actor != null) {
       spans.addAll(drawSvt(context, actor));
     }

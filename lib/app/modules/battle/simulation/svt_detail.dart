@@ -6,6 +6,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/descriptors/func/func.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
+import 'package:chaldea/app/modules/ai/ai_page.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/app/modules/enemy/quest_enemy.dart';
@@ -31,10 +32,12 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
   BattleServantData get svt => widget.svt;
   BattleData? get battleData => widget.battleData;
 
+  late bool showAiTab = (svt.niceEnemy?.ai?.aiId ?? 0) != 0;
+
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this, initialIndex: tabIndex.clamp(0, 1));
+    _tabController = TabController(length: showAiTab ? 3 : 2, vsync: this, initialIndex: tabIndex.clamp(0, 1));
     _tabController.addListener(() {
       tabIndex = _tabController.index;
     });
@@ -56,7 +59,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
           removeTop: true,
           child: TabBarView(
             controller: _tabController,
-            children: [buffTab, infoTab],
+            children: [buffTab, infoTab, if (showAiTab) aiTab],
           ),
         ),
       ),
@@ -164,7 +167,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         indicatorSize: TabBarIndicatorSize.tab,
         labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
         // unselectedLabelColor: Colors.grey,
-        tabs: [const Tab(text: 'Buff'), Tab(text: S.current.card_info)],
+        tabs: [const Tab(text: 'Buff'), Tab(text: S.current.card_info), if (showAiTab) const Tab(text: 'AI')],
         indicatorColor: Theme.of(context).isDarkMode ? null : Colors.white.withAlpha(210),
       ),
     ));
@@ -439,6 +442,16 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
       onTap: () {
         buff.buff.routeTo();
       },
+    );
+  }
+
+  Widget get aiTab {
+    return AiPage(
+      aiType: AiType.svt,
+      aiId: svt.niceEnemy?.ai?.aiId ?? 0,
+      skills: svt.niceEnemy?.skills,
+      td: svt.niceEnemy?.noblePhantasm,
+      bodyOnly: true,
     );
   }
 }

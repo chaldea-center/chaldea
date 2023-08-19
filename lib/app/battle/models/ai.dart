@@ -34,12 +34,20 @@ class FieldAiManager with _AiManagerBase {
       final mainAis = NiceAiCollection.sortedAis(aiCollection.mainAis);
       if (!hasOnlyOneSkill(mainAis)) continue;
       for (final ai in mainAis) {
+        if (ai.timingDescription != AiTiming.waveStart) continue;
         if (ai.cond == NiceAiCond.none || (ai.cond == NiceAiCond.turn && ai.vals.firstOrNull == 1)) {
           if (ai.aiAct.type == NiceAiActType.skillId && ai.aiAct.target == NiceAiActTarget.random) {
             final skill = ai.aiAct.skill;
             if (skill == null) continue;
-            final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.none, skillLv: ai.aiAct.skillLv ?? 1);
+            final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.fieldAi, skillLv: ai.aiAct.skillLv ?? 1);
             await skillInfo.activate(battleData, defaultToPlayer: true);
+            battleData.recorder.skill(
+                prefix: 'FieldAI: ',
+                battleData: battleData,
+                activator: null,
+                skill: skillInfo,
+                fromPlayer: true,
+                uploadEligible: false);
             break;
           }
         }
@@ -71,8 +79,16 @@ class SvtAiManager with _AiManagerBase {
           ai.aiAct.target == NiceAiActTarget.random) {
         final skill = ai.aiAct.skill;
         if (skill == null) continue;
-        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.none, skillLv: ai.aiAct.skillLv ?? 1);
+        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtAi, skillLv: ai.aiAct.skillLv ?? 1);
         await battleData.withActivator(actor, () => skillInfo.activate(battleData, defaultToPlayer: false));
+        battleData.recorder.skill(
+          prefix: 'SvtAI: ',
+          battleData: battleData,
+          activator: actor,
+          skill: skillInfo,
+          fromPlayer: actor.isPlayer,
+          uploadEligible: false,
+        );
         break;
       }
     }
@@ -90,8 +106,16 @@ class SvtAiManager with _AiManagerBase {
           ai.aiAct.target == NiceAiActTarget.random) {
         final skill = ai.aiAct.skill;
         if (skill == null) continue;
-        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.none, skillLv: ai.aiAct.skillLv ?? 1);
+        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtAi, skillLv: ai.aiAct.skillLv ?? 1);
         await battleData.withActivator(actor, () => skillInfo.activate(battleData, defaultToPlayer: false));
+        battleData.recorder.skill(
+          prefix: 'SvtAI: ',
+          battleData: battleData,
+          activator: actor,
+          skill: skillInfo,
+          fromPlayer: actor.isPlayer,
+          uploadEligible: false,
+        );
         break;
       }
     }
@@ -110,9 +134,17 @@ class SvtAiManager with _AiManagerBase {
           ai.aiAct.target == NiceAiActTarget.random) {
         final skill = ai.aiAct.skill;
         if (skill == null) continue;
-        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.none, skillLv: ai.aiAct.skillLv ?? 1);
+        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtAi, skillLv: ai.aiAct.skillLv ?? 1);
         await battleData.withActivator(actor, () => skillInfo.activate(battleData, defaultToPlayer: false));
         usedAiReactionTurnStart.add(ai.id);
+        battleData.recorder.skill(
+          prefix: 'SvtAI: ',
+          battleData: battleData,
+          activator: actor,
+          skill: skillInfo,
+          fromPlayer: actor.isPlayer,
+          uploadEligible: false,
+        );
         break;
       }
     }

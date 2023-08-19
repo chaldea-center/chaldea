@@ -283,6 +283,8 @@ enum SkillInfoType {
   svtSelf,
   svtEquip,
   commandCode,
+  fieldAi,
+  svtAi,
   custom,
 }
 

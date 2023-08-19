@@ -18,8 +18,18 @@ class AiPage extends StatefulWidget {
   final EnemySkill? skills;
   final EnemyTd? td;
 
-  const AiPage(
-      {super.key, required this.aiType, required this.aiId, this.aiCollection, this.region, this.skills, this.td});
+  final bool bodyOnly;
+
+  const AiPage({
+    super.key,
+    required this.aiType,
+    required this.aiId,
+    this.aiCollection,
+    this.region,
+    this.skills,
+    this.td,
+    this.bodyOnly = false,
+  });
 
   @override
   State<AiPage> createState() => _AiPageState();
@@ -54,6 +64,7 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
 
   @override
   Widget build(BuildContext context) {
+    if (widget.bodyOnly) return buildBody(context);
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(
