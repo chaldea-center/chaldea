@@ -40,9 +40,17 @@ class BattleBuff {
   }
 
   List<BuffData> get shownBuffs => [
-        for (final buff in _passiveList)
-          if (buff.vals.SetPassiveFrame == 1 || (buff.vals.ShowState ?? 0) >= 1) buff,
-        ..._activeList,
+        ..._passiveList.where((buff) {
+          final showState = buff.vals.ShowState ?? 0;
+          if (showState == -1) return false;
+          if (buff.vals.SetPassiveFrame == 1 || showState >= 1) return true;
+          return false;
+        }),
+        ..._activeList.where((buff) {
+          final showState = buff.vals.ShowState ?? 0;
+          if (showState == -1) return false;
+          return true;
+        }),
       ];
 
   bool get isSelectable =>

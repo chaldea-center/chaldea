@@ -439,6 +439,9 @@ class BattleData {
         await svt.startOfMyTurn(this);
       }
     });
+    for (final svt in nonnullActors) {
+      await svt.svtAi.reactionTurnStart(this, svt);
+    }
   }
 
   Future<bool> nextWave() async {

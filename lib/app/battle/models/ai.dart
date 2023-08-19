@@ -3,7 +3,16 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'battle.dart';
 
-class FieldAiManager {
+/// - currently only check mainAis
+/// - Should allow [NiceAiActType.skillIdCheckbuff] too
+
+mixin _AiManagerBase {
+  bool hasOnlyOneSkill(List<NiceAi> ais) {
+    return ais.where((ai) => ai.aiAct.type == NiceAiActType.skillId && ai.aiAct.skill != null).length == 1;
+  }
+}
+
+class FieldAiManager with _AiManagerBase {
   final List<FieldAi> aiIds;
   FieldAiManager([this.aiIds = const []]);
 
@@ -23,6 +32,7 @@ class FieldAiManager {
   Future<void> actWaveStart(BattleData battleData) async {
     for (final aiCollection in fieldAis) {
       final mainAis = NiceAiCollection.sortedAis(aiCollection.mainAis);
+      if (!hasOnlyOneSkill(mainAis)) continue;
       for (final ai in mainAis) {
         if (ai.cond == NiceAiCond.none || (ai.cond == NiceAiCond.turn && ai.vals.firstOrNull == 1)) {
           if (ai.aiAct.type == NiceAiActType.skillId && ai.aiAct.target == NiceAiActTarget.random) {
@@ -38,8 +48,9 @@ class FieldAiManager {
   }
 }
 
-class SvtAiManager {
+class SvtAiManager with _AiManagerBase {
   final EnemyAi? enemyAi;
+  Set<int> usedAiReactionTurnStart = {};
   SvtAiManager(this.enemyAi);
   NiceAiCollection? aiCollection;
 
@@ -52,8 +63,10 @@ class SvtAiManager {
   Future<void> reactionWaveStart(BattleData battleData, BattleServantData actor) async {
     if (aiCollection == null) return;
     final mainAis = NiceAiCollection.sortedAis(aiCollection!.mainAis);
+    if (!hasOnlyOneSkill(mainAis)) return;
     for (final ai in mainAis) {
-      if (ai.cond == NiceAiCond.none &&
+      if (ai.actNum == NiceAiActNum.reactionWavestart &&
+          ai.cond == NiceAiCond.none &&
           ai.aiAct.type == NiceAiActType.skillId &&
           ai.aiAct.target == NiceAiActTarget.random) {
         final skill = ai.aiAct.skill;
@@ -65,18 +78,41 @@ class SvtAiManager {
     }
   }
 
+  // after shift servant only
   Future<void> afterTurnPlayerEnd(BattleData battleData, BattleServantData actor) async {
     if (aiCollection == null) return;
-    print('SVT AI afterTurnPlayerEnd: $actor');
     final mainAis = NiceAiCollection.sortedAis(aiCollection!.mainAis);
+    if (!hasOnlyOneSkill(mainAis)) return;
     for (final ai in mainAis) {
-      if (ai.cond == NiceAiCond.none &&
+      if (ai.actNum == NiceAiActNum.afterTurnPlayerEnd &&
+          ai.cond == NiceAiCond.none &&
           ai.aiAct.type == NiceAiActType.skillId &&
           ai.aiAct.target == NiceAiActTarget.random) {
         final skill = ai.aiAct.skill;
         if (skill == null) continue;
         final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.none, skillLv: ai.aiAct.skillLv ?? 1);
         await battleData.withActivator(actor, () => skillInfo.activate(battleData, defaultToPlayer: false));
+        break;
+      }
+    }
+  }
+
+  // after firstEntry only, activate once per svt
+  Future<void> reactionTurnStart(BattleData battleData, BattleServantData actor) async {
+    if (aiCollection == null) return;
+    final mainAis = NiceAiCollection.sortedAis(aiCollection!.mainAis);
+    if (!hasOnlyOneSkill(mainAis)) return;
+    for (final ai in mainAis) {
+      if (usedAiReactionTurnStart.contains(ai.id)) continue;
+      if (ai.actNum == NiceAiActNum.reactionTurnstart &&
+          ai.cond == NiceAiCond.none &&
+          ai.aiAct.type == NiceAiActType.skillId &&
+          ai.aiAct.target == NiceAiActTarget.random) {
+        final skill = ai.aiAct.skill;
+        if (skill == null) continue;
+        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.none, skillLv: ai.aiAct.skillLv ?? 1);
+        await battleData.withActivator(actor, () => skillInfo.activate(battleData, defaultToPlayer: false));
+        usedAiReactionTurnStart.add(ai.id);
         break;
       }
     }
