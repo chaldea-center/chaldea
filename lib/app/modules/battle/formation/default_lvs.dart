@@ -54,6 +54,28 @@ class _PlayerSvtDefaultLvEditPageState extends State<PlayerSvtDefaultLvEditPage>
               });
             },
           ),
+          SliderWithPrefix(
+            label: 'ATK ${S.current.foukun}',
+            min: 0,
+            max: 200,
+            value: defaultLvs.atkFou,
+            onChange: (v) {
+              setState(() {
+                defaultLvs.atkFou = v.round();
+              });
+            },
+          ),
+          SliderWithPrefix(
+            label: 'HP ${S.current.foukun}',
+            min: 0,
+            max: 200,
+            value: defaultLvs.hpFou,
+            onChange: (v) {
+              setState(() {
+                defaultLvs.hpFou = v.round();
+              });
+            },
+          ),
           const Divider(height: 16),
           CheckboxListTile(
             dense: true,

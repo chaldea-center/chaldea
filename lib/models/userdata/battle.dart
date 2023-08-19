@@ -403,7 +403,6 @@ class PlayerSvtDefaultData {
   int activeSkillLv;
   List<int> appendLvs;
 
-  // Not exposed to user yet
   int atkFou; // 0-100-200
   int hpFou;
   List<int> cardStrengthens;

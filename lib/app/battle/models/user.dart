@@ -90,8 +90,8 @@ class PlayerSvtData {
         ..tdLv = defaultTdLv
         ..skillLvs = List.generate(3, (index) => defaults.activeSkillLv)
         ..appendLvs = defaults.appendLvs.toList()
-        ..atkFou = 1000
-        ..hpFou = 1000
+        ..atkFou = defaults.atkFou * 10
+        ..hpFou = defaults.hpFou * 10
         ..cardStrengthens = [0, 0, 0, 0, 0]
         ..commandCodes = [null, null, null, null, null];
     }

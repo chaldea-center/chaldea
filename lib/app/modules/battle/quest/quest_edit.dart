@@ -188,6 +188,13 @@ class _QuestEditPageState extends State<QuestEditPage> {
           onChanged: (v) {
             setState(() {
               quest.warId = v ?? 0;
+              quest.individuality.removeWhere((e) => e.isEventField);
+              if (quest.warId < 1000) return;
+              for (final entry in db.gameData.mappingData.fieldTrait.entries) {
+                if (entry.value.warIds.contains(quest.warId)) {
+                  quest.individuality.add(NiceTrait(id: entry.key));
+                }
+              }
             });
           },
         ),
