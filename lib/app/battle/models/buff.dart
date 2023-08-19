@@ -116,12 +116,13 @@ class BuffData {
         addCount += isTarget
             ? battleData.target!.countTrait(battleData, targetTraits)
             : battleData.activator!.countTrait(battleData, targetTraits);
-      }
-      if (vals.ParamAddOpIndividuality != null) {
+      } else if (vals.ParamAddOpIndividuality != null) {
         final targetTraits = vals.ParamAddOpIndividuality!.map((e) => NiceTrait(id: e)).toList();
         addCount += isTarget
             ? battleData.activator!.countTrait(battleData, targetTraits)
             : battleData.target!.countTrait(battleData, targetTraits);
+      } else if (vals.ParamAddFieldIndividuality != null) {
+        // TODO: get quest fields from quest.indiv + each svt's addFieldIndiv
       }
       if (vals.ParamAddMaxCount != null) {
         addCount = min(addCount, vals.ParamAddMaxCount!);
@@ -306,8 +307,12 @@ class BuffData {
 
   void turnPassParamAdd() {
     if (vals.ParamAdd != null) {
-      param += vals.ParamAdd!;
-      param = param.clamp(0, vals.ParamMax!);
+      if (vals.ParamAddSelfIndividuality == null &&
+          vals.ParamAddOpIndividuality == null &&
+          vals.ParamAddFieldIndividuality == null) {
+        param += vals.ParamAdd!;
+        param = param.clamp(0, vals.ParamMax!);
+      }
     }
   }
 

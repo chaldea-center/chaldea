@@ -516,8 +516,8 @@ class BattleRecorderPanelBase extends StatelessWidget {
     }
     final pskill = skill.proximateSkill;
     String? prefix;
-    switch (record.type) {
-      case SkillInfoType.mysticCode:
+    switch (record.skill.type) {
+      case SkillInfoType.masterEquip:
         prefix = S.current.mystic_code;
         break;
       case SkillInfoType.commandSpell:
@@ -530,7 +530,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
         break;
     }
     spans.addAll([
-      if (record.type == SkillInfoType.commandSpell)
+      if (record.skill.type == SkillInfoType.commandSpell)
         CenterWidgetSpan(child: CachedImage(imageUrl: AssetURL.i.buffIcon(387), width: 18, height: 18)),
       if (prefix != null) TextSpan(text: '$prefix: '),
       TextSpan(text: '${S.current.skill} '),
@@ -549,7 +549,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
       if (pskill != null &&
           (pskill.icon == null ||
               showDetail ||
-              !const [SkillInfoType.svtSelf, SkillInfoType.mysticCode].contains(record.type)))
+              !const [SkillInfoType.svtSelf, SkillInfoType.masterEquip].contains(record.skill.type)))
         SharedBuilder.textButtonSpan(
           context: context,
           text: '${pskill.lName.l} ',

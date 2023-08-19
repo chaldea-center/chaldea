@@ -11,7 +11,7 @@ import '../interactions/skill_act_select.dart';
 import 'battle.dart';
 
 class BattleSkillInfoData {
-  // BattleSkillType type = BattleSkillType.none;
+  SkillInfoType type;
   // late int index = rawSkill.num;
   // int svtUniqueId = 0;
   // int priority = 0;
@@ -30,13 +30,12 @@ class BattleSkillInfoData {
   int _skillLv = 0;
   SkillScript? skillScript;
   int chargeTurn = 0;
-  bool isCommandCode;
 
   BattleSkillInfoData(
     this.baseSkill, {
+    required this.type,
     List<BaseSkill>? provisionedSkills,
     this.skillNum = -1,
-    this.isCommandCode = false,
     int skillLv = 0,
   })  : provisionedSkills = provisionedSkills ?? [],
         _skillLv = skillLv {
@@ -151,82 +150,77 @@ class BattleSkillInfoData {
     return true;
   }
 
-  Future<bool> activate(final BattleData battleData, {final int? effectiveness}) async {
-    if (chargeTurn > 0 || battleData.isBattleFinished) {
-      return false;
-    }
+  Future<bool> activate(final BattleData battleData, {bool defaultToPlayer = true}) async {
     final curSkill = await getSkill();
     if (curSkill == null) {
       return false;
     }
     chargeTurn = curSkill.coolDown[skillLv - 1];
     skillScript = curSkill.script;
-    return await activateSkill(battleData, curSkill, skillLv,
-        isCommandCode: isCommandCode, effectiveness: effectiveness);
-  }
 
-  static Future<bool> activateSkill(
-    final BattleData battleData,
-    final BaseSkill skill,
-    final int skillLevel, {
-    final bool isPassive = false,
-    final bool notActorSkill = false,
-    final bool isCommandCode = false,
-    final int? effectiveness,
-    final bool defaultToPlayer = true,
-  }) async {
     final actorTraitMatch = battleData.checkTraits(CheckTraitParameters(
-      requiredTraits: skill.actIndividuality,
+      requiredTraits: curSkill.actIndividuality,
       actor: battleData.activator,
       checkActorTraits: true,
     ));
 
-    final scriptCheck = skillScriptConditionCheck(battleData, skill.script, skillLevel);
+    final scriptCheck = skillScriptConditionCheck(battleData, curSkill.script, skillLv);
 
     bool canActSkill =
-        battleData.delegate?.whetherSkill?.call(battleData.activator, skill) ?? actorTraitMatch && scriptCheck;
+        battleData.delegate?.whetherSkill?.call(battleData.activator, curSkill) ?? actorTraitMatch && scriptCheck;
     if (!canActSkill) {
       return false;
     }
 
     int? selectedActionIndex;
-    if (skill.script != null && skill.script!.SelectAddInfo != null && skill.script!.SelectAddInfo!.isNotEmpty) {
+    if (curSkill.script != null &&
+        curSkill.script!.SelectAddInfo != null &&
+        curSkill.script!.SelectAddInfo!.isNotEmpty) {
       if (battleData.delegate?.skillActSelect != null) {
         selectedActionIndex = await battleData.delegate!.skillActSelect!(battleData.activator);
       }
       if (selectedActionIndex == null && battleData.mounted) {
-        selectedActionIndex = await SkillActSelectDialog.show(battleData, skill, skillLevel);
+        selectedActionIndex = await SkillActSelectDialog.show(battleData, curSkill, skillLv);
         battleData.replayDataRecord.skillActSelectSelections.add(selectedActionIndex);
+      }
+    }
+    int effectiveness = 1000;
+    if (type == SkillInfoType.masterEquip) {
+      for (final svt in battleData.nonnullAllies) {
+        effectiveness += await svt.getBuffValueOnAction(battleData, BuffAction.masterSkillValueUp);
       }
     }
 
     await FunctionExecutor.executeFunctions(
       battleData,
-      skill.functions,
-      skillLevel,
-      isPassive: isPassive,
-      notActorFunction: notActorSkill,
-      isCommandCode: isCommandCode,
+      curSkill.functions,
+      skillLv,
+      isPassive: curSkill.type == SkillType.passive,
+      notActorFunction: type == SkillInfoType.svtEquip,
+      isCommandCode: type == SkillInfoType.commandCode,
       selectedActionIndex: selectedActionIndex,
       effectiveness: effectiveness,
       defaultToPlayer: defaultToPlayer,
     );
-    if (skill.script?.additionalSkillId != null) {
-      final skillId = skill.script!.additionalSkillId!.getOrNull(skillLevel - 1);
+    if (curSkill.script?.additionalSkillId != null) {
+      final skillId = curSkill.script!.additionalSkillId!.getOrNull(skillLv - 1);
       if (skillId != null && skillId != 0) {
-        final askillLv = skill.script!.additionalSkillLv?.getOrNull(skillLevel - 1) ?? 1;
+        final askillLv = curSkill.script!.additionalSkillLv?.getOrNull(skillLv - 1) ?? 1;
         final askill = await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
-        if (askill != null) {
-          await activateSkill(battleData, askill, askillLv, isPassive: skill.type == SkillType.passive);
-        }
+        final aSkillInfo = BattleSkillInfoData(askill, type: SkillInfoType.none, skillLv: askillLv);
+        await aSkillInfo.activate(battleData);
       }
     }
     return true;
   }
 
   BattleSkillInfoData copy() {
-    return BattleSkillInfoData(baseSkill, provisionedSkills: provisionedSkills, skillNum: skillNum)
-      ..isCommandCode = isCommandCode
+    return BattleSkillInfoData(
+      baseSkill,
+      type: type,
+      provisionedSkills: provisionedSkills,
+      skillNum: skillNum,
+    )
       ..rankUps = rankUps
       ..rankUp = rankUp
       ..skillLv = skillLv
@@ -266,13 +260,29 @@ class BattleSkillInfoData {
   }
 }
 
+// public enum BattleSkillInfoData.TYPE
+// {
+// 	NONE = 0,
+// 	MASTER_EQUIP = 1,
+// 	MASTER_COMMAND = 2,
+// 	SERVANT_CLASS = 10,
+// 	SERVANT_SELF = 11,
+// 	SERVANT_EQUIP = 12,
+// 	TEMP = 20,
+// 	BOOST = 21,
+// 	COMMAND_CODE = 22,
+// 	COMMAND_ASSIST = 23,
+// 	TEMP_EFFECT_SQUARE = 100,
+// 	WARBOARD_PARTY_SKILL = 101,
+// }
 enum SkillInfoType {
   none,
-  svtSelf,
-  svtPassive,
-  svtEquip,
-  mysticCode,
+  masterEquip,
   commandSpell,
+  svtPassive,
+  svtSelf,
+  svtEquip,
+  commandCode,
   custom,
 }
 

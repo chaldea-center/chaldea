@@ -128,9 +128,12 @@ class BattleServantData {
       ..changeNpcIds = enemy.enemyScript.change ?? [];
 
     svt.skillInfoList = [
-      BattleSkillInfoData(enemy.skills.skill1, skillNum: 1, skillLv: enemy.skills.skillLv1),
-      BattleSkillInfoData(enemy.skills.skill2, skillNum: 2, skillLv: enemy.skills.skillLv2),
-      BattleSkillInfoData(enemy.skills.skill3, skillNum: 3, skillLv: enemy.skills.skillLv3),
+      BattleSkillInfoData(enemy.skills.skill1,
+          skillNum: 1, skillLv: enemy.skills.skillLv1, type: SkillInfoType.svtSelf),
+      BattleSkillInfoData(enemy.skills.skill2,
+          skillNum: 2, skillLv: enemy.skills.skillLv2, type: SkillInfoType.svtSelf),
+      BattleSkillInfoData(enemy.skills.skill3,
+          skillNum: 3, skillLv: enemy.skills.skillLv3, type: SkillInfoType.svtSelf),
     ];
     return svt;
   }
@@ -173,8 +176,8 @@ class BattleServantData {
 
       final baseSkill = settings.skills[skillNum - 1], skillLv = settings.skillLvs[skillNum - 1];
 
-      final skillInfo =
-          BattleSkillInfoData(baseSkill, provisionedSkills: provisionedSkills, skillNum: skillNum, skillLv: skillLv);
+      final skillInfo = BattleSkillInfoData(baseSkill,
+          provisionedSkills: provisionedSkills, skillNum: skillNum, skillLv: skillLv, type: SkillInfoType.svtSelf);
 
       final startTurn = baseSkill?.script?.battleStartRemainingTurn?.getOrNull(skillLv - 1);
       if (startTurn != null && startTurn > 0) {
@@ -190,8 +193,9 @@ class BattleServantData {
 
     for (final commandCode in settings.commandCodes) {
       if (commandCode != null) {
-        svt.commandCodeSkills.add(
-            commandCode.skills.map((skill) => BattleSkillInfoData(skill, isCommandCode: true)..skillLv = 1).toList());
+        svt.commandCodeSkills.add(commandCode.skills
+            .map((skill) => BattleSkillInfoData(skill, type: SkillInfoType.commandCode)..skillLv = 1)
+            .toList());
       } else {
         svt.commandCodeSkills.add([]);
       }
@@ -276,19 +280,17 @@ class BattleServantData {
 
     await battleData.withActivator(this, () async {
       for (final skill in passives) {
-        await BattleSkillInfoData.activateSkill(battleData, skill, 1, isPassive: true); // passives default to level 1
+        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtPassive);
+        await skillInfo.activate(battleData);
       }
 
       if (isPlayer) {
         for (int index = 0; index < niceSvt!.appendPassive.length; index += 1) {
           final appendLv = playerSvtData!.appendLvs.length > index ? playerSvtData!.appendLvs[index] : 0;
           if (appendLv > 0) {
-            await BattleSkillInfoData.activateSkill(
-              battleData,
-              niceSvt!.appendPassive[index].skill,
-              appendLv,
-              isPassive: true,
-            );
+            final skillInfo = BattleSkillInfoData(niceSvt!.appendPassive[index].skill,
+                type: SkillInfoType.svtPassive, skillLv: appendLv);
+            await skillInfo.activate(battleData);
           }
         }
       }
@@ -308,12 +310,8 @@ class BattleServantData {
           if (playerSvtData!.disabledExtraSkills.contains(skill.id)) continue;
           if (skill.extraPassive.isEmpty ||
               skill.isExtraPassiveEnabledForEvent(battleData.niceQuest?.war?.eventId ?? 0)) {
-            await BattleSkillInfoData.activateSkill(
-              battleData,
-              skill,
-              1,
-              isPassive: true,
-            );
+            final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtPassive);
+            await skillInfo.activate(battleData);
           }
         }
       });
@@ -326,12 +324,8 @@ class BattleServantData {
         for (int index = 0; index < playerSvtData!.additionalPassives.length; index++) {
           final skill = playerSvtData!.additionalPassives[index];
           final extraPassiveLv = playerSvtData!.additionalPassiveLvs[index];
-          await BattleSkillInfoData.activateSkill(
-            battleData,
-            skill,
-            extraPassiveLv,
-            isPassive: true,
-          );
+          final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtPassive, skillLv: extraPassiveLv);
+          await skillInfo.activate(battleData);
         }
       });
     }
@@ -731,7 +725,9 @@ class BattleServantData {
   }
 
   Future<bool> activateSkill(final BattleData battleData, final int skillIndex) async {
-    final skillInfo = skillInfoList[skillIndex];
+    final skillInfo = skillInfoList.getOrNull(skillIndex);
+    if (skillInfo == null || skillInfo.chargeTurn > 0) return false;
+
     return await battleData.withActivator(this, () async {
       final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
       skillInfo.setRankUp(rankUp);
@@ -742,7 +738,6 @@ class BattleServantData {
           battleData: battleData,
           activator: this,
           skill: skillInfo,
-          type: SkillInfoType.svtSelf,
           fromPlayer: true,
           uploadEligible: true,
         );
@@ -752,12 +747,12 @@ class BattleServantData {
   }
 
   Future<void> activateCommandCode(final BattleData battleData, final int cardIndex) async {
-    if (cardIndex < 0 || commandCodeSkills.length <= cardIndex) {
-      return;
-    }
+    final skillInfos = commandCodeSkills.getOrNull(cardIndex);
+    if (skillInfos == null) return;
 
     await battleData.withActivator(this, () async {
-      for (final skill in commandCodeSkills[cardIndex]) {
+      for (final skill in skillInfos) {
+        if (skill.chargeTurn > 0) continue;
         battleData.battleLogger.action('$lBattleName - ${S.current.command_code}: ${skill.lName}');
         await skill.activate(battleData);
       }
@@ -1124,6 +1119,7 @@ class BattleServantData {
     return await activateBuffs(battleData, orderedBuffs);
   }
 
+  // trigger skill
   Future<bool> activateBuffs(final BattleData battleData, final Iterable<BuffData> buffs) async {
     return await battleData.withActivator(this, () async {
       bool activated = false;
@@ -1138,7 +1134,8 @@ class BattleServantData {
             continue;
           }
           battleData.battleLogger.function('$lBattleName - ${buff.buff.lName.l} ${S.current.skill} [$skillId]');
-          await BattleSkillInfoData.activateSkill(battleData, skill, buff.additionalParam);
+          final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.none, skillLv: buff.additionalParam);
+          await skillInfo.activate(battleData);
           buff.setUsed();
           activated = true;
         }
@@ -1344,7 +1341,6 @@ class BattleServantData {
         battleBuff.turnProgress();
       });
     });
-
     final delayedFunctions = collectBuffsPerType(battleBuff.allBuffs, BuffType.delayFunction);
     await activateBuffOnAction(battleData, BuffAction.functionSelfturnend);
     await activateBuffs(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));

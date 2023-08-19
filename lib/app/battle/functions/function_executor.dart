@@ -140,7 +140,7 @@ class FunctionExecutor {
       return false;
     }
 
-    if (effectiveness != null) {
+    if (effectiveness != null && effectiveness != 1000) {
       dataVals = updateDataValsWithEffectiveness(function, dataVals, effectiveness);
     }
 

@@ -36,12 +36,14 @@ class BattleCEData {
           lv = lv.clamp2(1, eventSkills.length);
           final targetSkill = eventSkills.getOrNull((lv - 1).clamp(0, eventSkills.length - 1));
           if (targetSkill != null) {
-            await BattleSkillInfoData.activateSkill(battleData, targetSkill, 1, notActorSkill: true);
+            final skillInfo = BattleSkillInfoData(targetSkill, type: SkillInfoType.svtEquip);
+            await skillInfo.activate(battleData);
           }
         }
       } else {
         for (final skill in skills) {
-          await BattleSkillInfoData.activateSkill(battleData, skill, 1, notActorSkill: true);
+          final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtEquip);
+          await skillInfo.activate(battleData);
         }
       }
     }

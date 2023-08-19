@@ -336,7 +336,8 @@ class BattleData {
     if (mysticCode != null) {
       masterSkillInfo = [
         for (int index = 0; index < mysticCode!.skills.length; index++)
-          BattleSkillInfoData(mysticCode!.skills[index], skillNum: index + 1)..skillLv = mysticCodeLv,
+          BattleSkillInfoData(mysticCode!.skills[index], skillNum: index + 1, type: SkillInfoType.masterEquip)
+            ..skillLv = mysticCodeLv,
       ];
     }
 
@@ -757,11 +758,10 @@ class BattleData {
   }
 
   Future<void> activateSvtSkill(final int servantIndex, final int skillIndex) async {
-    if (onFieldAllyServants[servantIndex] == null || isBattleFinished) {
-      return;
-    }
+    final svt = onFieldAllyServants.getOrNull(servantIndex);
+    if (svt == null || isBattleFinished) return;
 
-    final svt = onFieldAllyServants[servantIndex]!;
+
     battleLogger
         .action('${svt.lBattleName} - ${S.current.active_skill} ${skillIndex + 1}: ${svt.getSkillName(skillIndex)}');
     return recordError(
@@ -794,31 +794,24 @@ class BattleData {
   }
 
   Future<void> activateMysticCodeSkill(final int skillIndex) async {
-    if (masterSkillInfo.length <= skillIndex || isBattleFinished) {
+    final skillInfo = masterSkillInfo.getOrNull(skillIndex);
+    if (skillInfo == null || skillInfo.chargeTurn > 0 || isBattleFinished) {
       return;
     }
 
     battleLogger.action('${S.current.mystic_code} - ${S.current.active_skill} ${skillIndex + 1}: '
-        '${masterSkillInfo[skillIndex].lName}');
+        '${skillInfo.lName}');
     return recordError(
       save: true,
       action: 'mystic_code_skill-${skillIndex + 1}',
       task: () async {
         await withAction(() async {
           recorder.skillActivation(this, null, skillIndex);
-          int effectiveness = 1000;
-          for (final svt in nonnullAllies) {
-            effectiveness += await svt.getBuffValueOnAction(this, BuffAction.masterSkillValueUp);
-          }
-          await withActivator(null, () async {
-            await masterSkillInfo[skillIndex]
-                .activate(this, effectiveness: effectiveness != 1000 ? effectiveness : null);
-          });
+          await withActivator(null, () => skillInfo.activate(this));
           recorder.skill(
             battleData: this,
             activator: null,
-            skill: masterSkillInfo[skillIndex],
-            type: SkillInfoType.mysticCode,
+            skill: skillInfo,
             fromPlayer: true,
             uploadEligible: true,
           );
@@ -841,17 +834,12 @@ class BattleData {
           await withActivator(actor, () async {
             battleLogger.action('${actor == null ? S.current.battle_no_source : actor.lBattleName}'
                 ' - ${S.current.skill}: ${skill.lName.l}');
-            await BattleSkillInfoData.activateSkill(
-              this,
-              skill,
-              skillLv,
-              defaultToPlayer: isAlly,
-            );
+            final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.custom, skillLv: skillLv);
+            await skillInfo.activate(this, defaultToPlayer: isAlly);
             recorder.skill(
               battleData: this,
               activator: activator,
-              skill: BattleSkillInfoData(skill),
-              type: SkillInfoType.custom,
+              skill: skillInfo,
               fromPlayer: isAlly,
               uploadEligible: false,
             );
@@ -1207,12 +1195,12 @@ class BattleData {
       save: true,
       action: S.current.battle_charge_party,
       task: () async {
-        await BattleSkillInfoData.activateSkill(this, skill, 1, defaultToPlayer: true);
+        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.commandSpell);
+        await withActivator(null, () => skillInfo.activate(this));
         recorder.skill(
           battleData: this,
           activator: null,
-          skill: BattleSkillInfoData(skill),
-          type: SkillInfoType.commandSpell,
+          skill: skillInfo,
           fromPlayer: true,
           uploadEligible: false,
         );
@@ -1228,12 +1216,12 @@ class BattleData {
       save: true,
       action: csRepairHpName,
       task: () async {
-        await BattleSkillInfoData.activateSkill(this, skill, 1, defaultToPlayer: true);
+        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.commandSpell);
+        await withActivator(null, () => skillInfo.activate(this));
         recorder.skill(
           battleData: this,
           activator: null,
-          skill: BattleSkillInfoData(skill),
-          type: SkillInfoType.commandSpell,
+          skill: skillInfo,
           fromPlayer: true,
           uploadEligible: false,
         );
@@ -1250,12 +1238,12 @@ class BattleData {
       save: true,
       action: csReleaseNpName,
       task: () async {
-        await BattleSkillInfoData.activateSkill(this, skill, 1, defaultToPlayer: true);
+        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.commandSpell);
+        await withActivator(null, () => skillInfo.activate(this));
         recorder.skill(
           battleData: this,
           activator: null,
-          skill: BattleSkillInfoData(skill),
-          type: SkillInfoType.commandSpell,
+          skill: skillInfo,
           fromPlayer: true,
           uploadEligible: false,
         );
