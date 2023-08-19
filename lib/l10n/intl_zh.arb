@@ -803,6 +803,7 @@
   "show_system_tray": "在系统托盘显示",
   "silver": "银",
   "simulate_enemy_actions": "模拟敌方行动",
+  "simulate_simple_ai": "模拟简单AI",
   "simulator": "模拟器",
   "skill": "技能",
   "skill_list": "技能列表",

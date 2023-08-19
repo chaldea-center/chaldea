@@ -155,7 +155,7 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
       allAis.putIfAbsent(ai.id, () => []).add(ai);
     }
     for (final entry in allAis.entries) {
-      final ais = entry.value..sortByList((e) => [-e.priority, -e.priority, e.idx]);
+      final ais = NiceAiCollection.sortedAis(entry.value);
       children.add(AiTable(
         key: getAiKey(entry.key),
         type: widget.aiType,

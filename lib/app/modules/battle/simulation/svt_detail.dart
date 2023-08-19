@@ -452,7 +452,7 @@ class BattleBuffIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget child = db.getIconImage(buff.buff.icon, width: size, aspectRatio: 1);
     child = Container(
-      decoration: buff.irremovable
+      decoration: buff.irremovable || buff.vals.SetPassiveFrame == 1
           ? BoxDecoration(
               border: Border.all(color: Theme.of(context).hintColor),
               borderRadius: BorderRadius.circular(2),

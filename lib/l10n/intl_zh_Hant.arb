@@ -802,6 +802,7 @@
   "show_system_tray": "在系統圖示顯示",
   "silver": "銀",
   "simulate_enemy_actions": "模擬敵方行動",
+  "simulate_simple_ai": null,
   "simulator": "模擬器",
   "skill": "技能",
   "skill_list": "技能列表",

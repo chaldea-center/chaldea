@@ -17,6 +17,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../functions/function_executor.dart';
 import '../interactions/_delegate.dart';
 import '../interactions/tailored_execution_confirm.dart';
+import 'ai.dart';
 import 'buff.dart';
 import 'skill.dart';
 import 'svt_entity.dart';
@@ -59,6 +60,7 @@ class BattleData {
   QuestPhase? niceQuest;
   int? get eventId => niceQuest?.war?.eventId;
   Stage? curStage;
+  FieldAiManager fieldAi = FieldAiManager();
 
   int enemyOnFieldCount = 3;
   List<BattleServantData?> enemyDataList = [];
@@ -82,7 +84,7 @@ class BattleData {
 
   List<BattleServantData> get nonnullAllies => _getNonnull(onFieldAllyServants);
 
-  List<BattleServantData> get nonnullActors => [...nonnullAllies, ...nonnullEnemies];
+  List<BattleServantData> get nonnullActors => [...nonnullEnemies, ...nonnullAllies];
 
   List<BattleServantData> get nonnullBackupEnemies => _getNonnull(enemyDataList);
 
@@ -375,9 +377,12 @@ class BattleData {
     ];
 
     for (final actor in allActors) {
-      actor?.initScript(this);
+      await actor?.initScript(this);
     }
     await initActorSkills(allActors);
+
+    // start wave
+    await fieldAi.actWaveStart(this);
 
     for (final svt in nonnullActors) {
       await svt.enterField(this);
@@ -385,6 +390,10 @@ class BattleData {
 
     for (final svt in nonnullActors) {
       await svt.activateBuffOnAction(this, BuffAction.functionWavestart);
+    }
+
+    for (final svt in nonnullActors) {
+      await svt.svtAi.reactionWaveStart(this, svt);
     }
 
     await nextTurn();
@@ -464,9 +473,11 @@ class BattleData {
 
     final List<BattleServantData?> newEnemies = [...onFieldEnemies, ...enemyDataList];
     for (final actor in newEnemies) {
-      actor?.initScript(this);
+      await actor?.initScript(this);
     }
     await initActorSkills(newEnemies);
+
+    await fieldAi.actWaveStart(this);
 
     for (final enemy in nonnullEnemies) {
       await enemy.enterField(this);
@@ -475,11 +486,15 @@ class BattleData {
     for (final actor in nonnullActors) {
       await actor.activateBuffOnAction(this, BuffAction.functionWavestart);
     }
+    for (final svt in nonnullActors) {
+      await svt.svtAi.reactionWaveStart(this, svt);
+    }
 
     return true;
   }
 
   Future<void> replenishActors({final bool replenishAlly = true, final bool replenishEnemy = true}) async {
+    logger.d('replenishActors: ally=$replenishAlly, enemy=$replenishEnemy');
     final List<BattleServantData> newActors = [];
 
     if (replenishAlly) {
@@ -558,6 +573,12 @@ class BattleData {
           enemyDecks[enemy.deck]!.add(enemy);
         }
       }
+      fieldAi = FieldAiManager(curStage!.fieldAis);
+    } else {
+      fieldAi = FieldAiManager();
+    }
+    if (options.simulateAi) {
+      await fieldAi.fetchAiData();
     }
   }
 
@@ -1097,8 +1118,9 @@ class BattleData {
     await withAction(() async {
       for (final svt in nonnullEnemies) {
         if (svt.hp <= 0) {
-          svt.shift(this);
+          await svt.shift(this);
           await initActorSkills([svt]);
+          await svt.svtAi.afterTurnPlayerEnd(this, svt);
         }
         await svt.startOfMyTurn(this);
       }
@@ -1394,6 +1416,7 @@ class BattleData {
     final BattleData copy = BattleData()
       ..niceQuest = niceQuest
       ..curStage = curStage
+      ..fieldAi = fieldAi
       ..enemyOnFieldCount = enemyOnFieldCount
       ..enemyValidAppear = enemyValidAppear.toList()
       ..enemyDataList = enemyDataList.map((e) => e?.copy()).toList()
@@ -1428,6 +1451,7 @@ class BattleData {
     this
       ..niceQuest = copy.niceQuest
       ..curStage = copy.curStage
+      ..fieldAi = copy.fieldAi
       ..enemyOnFieldCount = copy.enemyOnFieldCount
       ..enemyValidAppear = copy.enemyValidAppear
       ..enemyDataList = copy.enemyDataList

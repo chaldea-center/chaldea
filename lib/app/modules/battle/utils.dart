@@ -41,6 +41,9 @@ void replaySimulation({
   if (detail.disableEvent != null) {
     options.disableEvent = detail.disableEvent!;
   }
+  if (detail.simulateAi != null) {
+    options.simulateAi = detail.simulateAi!;
+  }
   final formation = detail.team;
   for (int index = 0; index < 3; index++) {
     options.team.onFieldSvtDataList[index] = await PlayerSvtData.fromStoredData(formation.onFieldSvts.getOrNull(index));

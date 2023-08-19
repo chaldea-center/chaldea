@@ -203,6 +203,10 @@ class BattleRecordManager {
     if (options.simulateEnemy) {
       setIllegal('${S.current.options}: ${S.current.simulate_enemy_actions}');
     }
+    if (options.simulateAi) {
+      // TODO: allow Tsunguska
+      setIllegal('${S.current.options}: ${S.current.simulate_simple_ai}');
+    }
     if (options.team.allSvts.where((e) => e.supportType != SupportSvtType.none).length > 1) {
       setIllegal('${S.current.support_servant}: ＞1');
     }

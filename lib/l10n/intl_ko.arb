@@ -803,6 +803,7 @@
   "show_system_tray": null,
   "silver": "은색",
   "simulate_enemy_actions": null,
+  "simulate_simple_ai": null,
   "simulator": "시뮬레이터",
   "skill": "스킬",
   "skill_list": null,

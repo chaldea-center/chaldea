@@ -1,3 +1,4 @@
+import 'package:chaldea/utils/utils.dart';
 import '_helper.dart';
 import 'common.dart';
 import 'skill.dart';
@@ -17,6 +18,12 @@ class NiceAiCollection {
   factory NiceAiCollection.fromJson(Map<String, dynamic> json) => _$NiceAiCollectionFromJson(json);
 
   Map<String, dynamic> toJson() => _$NiceAiCollectionToJson(this);
+
+  static List<NiceAi> sortedAis(List<NiceAi> ais) {
+    ais = ais.toList();
+    ais.sortByList((e) => [-e.priority, -e.probability, e.idx]);
+    return ais;
+  }
 }
 
 @JsonSerializable()

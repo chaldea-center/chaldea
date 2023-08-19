@@ -32,7 +32,7 @@ class CallServant {
             await actor.loadEnemySvtData(battleData);
           }
           battleData.onFieldEnemies[index] = actor;
-          actor.initScript(battleData);
+          await actor.initScript(battleData);
           await battleData.initActorSkills([actor]);
           await actor.enterField(battleData);
           break;

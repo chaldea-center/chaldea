@@ -139,13 +139,16 @@ class BattleShareData {
   BattleTeamFormation team;
   BattleActions? actions;
   bool? disableEvent;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool? simulateAi;
 
   BattleShareData({
     this.minBuild,
     required this.appBuild,
     required this.quest,
     required this.team,
-    required this.disableEvent,
+    this.disableEvent,
+    this.simulateAi,
     this.actions,
   });
 
@@ -164,6 +167,7 @@ class BattleShareData {
       team: team2,
       actions: actions,
       disableEvent: disableEvent,
+      simulateAi: simulateAi,
     ));
   }
 

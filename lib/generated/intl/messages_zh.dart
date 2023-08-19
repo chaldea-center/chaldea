@@ -904,6 +904,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "show_system_tray": MessageLookupByLibrary.simpleMessage("在系统托盘显示"),
         "silver": MessageLookupByLibrary.simpleMessage("银"),
         "simulate_enemy_actions": MessageLookupByLibrary.simpleMessage("模拟敌方行动"),
+        "simulate_simple_ai": MessageLookupByLibrary.simpleMessage("模拟简单AI"),
         "simulator": MessageLookupByLibrary.simpleMessage("模拟器"),
         "skill": MessageLookupByLibrary.simpleMessage("技能"),
         "skill_list": MessageLookupByLibrary.simpleMessage("技能列表"),

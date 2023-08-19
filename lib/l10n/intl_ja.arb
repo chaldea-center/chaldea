@@ -803,6 +803,7 @@
   "show_system_tray": null,
   "silver": "銀",
   "simulate_enemy_actions": null,
+  "simulate_simple_ai": null,
   "simulator": "エミュ",
   "skill": "スキル",
   "skill_list": null,

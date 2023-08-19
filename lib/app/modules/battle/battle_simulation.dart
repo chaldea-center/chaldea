@@ -701,6 +701,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           team: widget.options.team.toFormationData(),
           actions: actions,
           disableEvent: widget.options.disableEvent,
+          simulateAi: widget.options.simulateAi,
         );
         final resp = await showEasyLoading(() => ChaldeaWorkerApi.teamUpload(
               ver: BattleShareData.kDataVer,

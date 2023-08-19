@@ -8901,6 +8901,17 @@ class S {
     );
   }
 
+  /// `Simulate Simple AI`
+  String get simulate_simple_ai {
+    return Intl.message(
+      'Simulate Simple AI',
+      name: 'simulate_simple_ai',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Simulator`
   String get simulator {
     return Intl.message(

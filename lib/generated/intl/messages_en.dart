@@ -944,6 +944,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "show_system_tray": MessageLookupByLibrary.simpleMessage("Show in System Tray"),
         "silver": MessageLookupByLibrary.simpleMessage("Silver"),
         "simulate_enemy_actions": MessageLookupByLibrary.simpleMessage("Smulate Enemy Actions"),
+        "simulate_simple_ai": MessageLookupByLibrary.simpleMessage("Simulate Simple AI"),
         "simulator": MessageLookupByLibrary.simpleMessage("Simulator"),
         "skill": MessageLookupByLibrary.simpleMessage("Skill"),
         "skill_list": MessageLookupByLibrary.simpleMessage("Skill List"),

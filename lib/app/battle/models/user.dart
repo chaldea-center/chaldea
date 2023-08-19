@@ -382,6 +382,7 @@ class MysticCodeData {
 // won't change in entire battle
 class BattleOptionsEnv {
   bool disableEvent = false;
+  bool simulateAi = false;
   bool simulateEnemy = false;
   // <groupId, pointBuff>
   Map<int, EventPointBuff> pointBuffs = {};
@@ -389,6 +390,7 @@ class BattleOptionsEnv {
   BattleOptionsEnv copy() {
     return BattleOptionsEnv()
       ..disableEvent = disableEvent
+      ..simulateAi = simulateAi
       ..simulateEnemy = simulateEnemy
       ..pointBuffs = Map.of(pointBuffs);
   }
@@ -404,6 +406,7 @@ class BattleOptionsRuntime extends BattleOptionsEnv {
   BattleOptionsRuntime copy() {
     return BattleOptionsRuntime()
       ..disableEvent = disableEvent
+      ..simulateAi = simulateAi
       ..simulateEnemy = simulateEnemy
       ..pointBuffs = Map.of(pointBuffs)
       ..fixedRandom = fixedRandom
@@ -469,6 +472,7 @@ class BattleOptions extends BattleOptionsRuntime {
   BattleOptions copy() {
     return BattleOptions()
       ..disableEvent = disableEvent
+      ..simulateAi = simulateAi
       ..simulateEnemy = simulateEnemy
       ..pointBuffs = Map.of(pointBuffs)
       ..fixedRandom = fixedRandom

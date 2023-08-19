@@ -241,6 +241,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             quest: questInfo,
             team: settings.curFormation,
             disableEvent: options.disableEvent,
+            simulateAi: options.simulateAi,
           ).toUriV2();
           String shareString = shareUri.toString();
           Clipboard.setData(ClipboardData(text: shareString));
@@ -717,6 +718,17 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         onChanged: (v) {
           setState(() {
             options.disableEvent = v ?? options.disableEvent;
+          });
+        },
+      ),
+      kIndentDivider,
+      CheckboxListTile(
+        dense: true,
+        value: options.simulateAi,
+        title: Text(S.current.simulate_simple_ai),
+        onChanged: (v) {
+          setState(() {
+            options.simulateAi = v ?? options.simulateAi;
           });
         },
       ),

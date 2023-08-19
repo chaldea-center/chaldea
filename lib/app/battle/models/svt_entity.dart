@@ -9,6 +9,7 @@ import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'ai.dart';
 
 class BattleServantData {
   static const npPityThreshold = 9900;
@@ -26,6 +27,7 @@ class BattleServantData {
   Servant? niceSvt;
   BasicServant? overrideSvt;
   PlayerSvtData? playerSvtData;
+  SvtAiManager svtAi = SvtAiManager(null);
 
   // performance issue,
   String? _battleNameCache;
@@ -116,6 +118,7 @@ class BattleServantData {
     final svt = BattleServantData._(isPlayer: false);
     svt
       ..niceEnemy = enemy
+      ..svtAi = SvtAiManager(enemy.ai)
       ..niceSvt = niceSvt
       ..uniqueId = uniqueId
       ..hp = enemy.hp
@@ -257,7 +260,11 @@ class BattleServantData {
     }
   }
 
-  void initScript(final BattleData battleData) {
+  Future<void> initScript(final BattleData battleData) async {
+    svtAi = SvtAiManager(niceEnemy?.ai);
+    if (battleData.options.simulateAi) {
+      await svtAi.fetchAiData();
+    }
     if (niceEnemy != null) {
       int dispBreakShift = niceEnemy!.enemyScript.dispBreakShift ?? 0;
       int shiftLength = niceEnemy!.enemyScript.shift?.length ?? 0;
@@ -267,7 +274,7 @@ class BattleServantData {
         }
         shiftIndex = dispBreakShift - 1;
         if (hasNextShift(battleData)) {
-          shift(battleData);
+          await shift(battleData);
         }
       }
     }
@@ -640,13 +647,14 @@ class BattleServantData {
     return null;
   }
 
-  void shift(final BattleData battleData) {
+  Future<void> shift(final BattleData battleData) async {
     final nextShift = getEnemyShift(battleData);
     if (nextShift == null) {
       return;
     }
 
     niceEnemy = nextShift;
+    await initScript(battleData);
 
     atk = nextShift.atk;
     hp = nextShift.hp;
@@ -656,8 +664,9 @@ class BattleServantData {
     shiftIndex += 1;
   }
 
-  void skillShift(final BattleData battleData, QuestEnemy shiftSvt) {
+  Future<void> skillShift(final BattleData battleData, QuestEnemy shiftSvt) async {
     niceEnemy = shiftSvt;
+    await initScript(battleData);
 
     atk = shiftSvt.atk;
     hp = shiftSvt.hp;
@@ -1403,6 +1412,7 @@ class BattleServantData {
     return BattleServantData._(isPlayer: isPlayer)
       ..niceEnemy = niceEnemy
       ..niceSvt = niceSvt
+      ..svtAi = svtAi
       ..playerSvtData = playerSvtData?.copy()
       ..fieldIndex = fieldIndex
       ..deckIndex = deckIndex

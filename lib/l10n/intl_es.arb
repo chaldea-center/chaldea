@@ -803,6 +803,7 @@
   "show_system_tray": null,
   "silver": "Plata",
   "simulate_enemy_actions": null,
+  "simulate_simple_ai": null,
   "simulator": "Simulador",
   "skill": "Skill",
   "skill_list": null,
