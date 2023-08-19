@@ -7,42 +7,74 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 
 class BattleBuff {
-  List<BuffData> passiveList = [];
-  List<BuffData> activeList = [];
+  List<BuffData> _passiveList = [];
+  List<BuffData> _activeList = [];
   List<BuffData> commandCodeList = [];
   List<BuffData> auraBuffList = [];
 
-  List<BuffData> get allBuffs => [...passiveList, ...activeList, ...commandCodeList];
+  /// directly return origin instance, be aware if you want to modify in place
+  List<BuffData> get originalPassiveList => _passiveList;
+  List<BuffData> get originalActiveList => _activeList;
+
+  List<BuffData> getPassiveList() => _passiveList.where((e) => e.stateAct && e.stateAct).toList();
+  List<BuffData> getActiveList() => _activeList.where((e) => e.stateAct && e.stateAct).toList();
+  List<BuffData> getCommandCodeList() => commandCodeList.where((e) => e.stateAct && e.stateAct).toList();
+
+  List<BuffData> getAllBuffs() => [..._passiveList, ..._activeList, ...commandCodeList];
+  List<BuffData> get validBuffs => [...getPassiveList(), ...getActiveList(), ...getCommandCodeList()];
+
+  void setPassiveList(List<BuffData> list) => _passiveList = list;
+  void setActiveList(List<BuffData> list) => _activeList = list;
+
+  void addBuff(BuffData buff, {required bool isPassive}) {
+    if (isPassive) {
+      _passiveList.add(buff);
+    } else {
+      _activeList.add(buff);
+    }
+  }
+
+  void checkUsedBuff() {
+    _passiveList.removeWhere((buff) => !buff.isActive);
+    _activeList.removeWhere((buff) => !buff.isActive);
+  }
 
   List<BuffData> get shownBuffs => [
-        for (final buff in passiveList)
+        for (final buff in _passiveList)
           if (buff.vals.SetPassiveFrame == 1 || (buff.vals.ShowState ?? 0) >= 1) buff,
-        ...activeList,
+        ..._activeList,
       ];
 
   bool get isSelectable =>
-      allBuffs.every((buff) => !buff.traits.map((trait) => trait.id).contains(Trait.cantBeSacrificed.id));
+      validBuffs.every((buff) => !buff.traits.map((trait) => trait.id).contains(Trait.cantBeSacrificed.id));
+
+  void removeBuffWithTrait(final NiceTrait trait, {bool includeNoAct = false, bool includeNoField = false}) {
+    _activeList.removeWhere((buff) =>
+        (includeNoAct || buff.stateAct) &&
+        (includeNoField || buff.stateField) &&
+        checkTraitFunction(buff.traits, [trait], partialMatch, partialMatch));
+  }
 
   void turnProgress() {
-    for (final buff in allBuffs) {
+    for (final buff in validBuffs) {
       buff.turnPass();
     }
   }
 
   void turnPassParamAdd() {
-    for (final buff in allBuffs) {
+    for (final buff in validBuffs) {
       buff.turnPassParamAdd();
     }
   }
 
   void clearPassive(final int uniqueId) {
-    passiveList.removeWhere((buff) => buff.actorUniqueId == uniqueId);
+    _passiveList.removeWhere((buff) => buff.actorUniqueId == uniqueId);
   }
 
   BattleBuff copy() {
     final copy = BattleBuff()
-      ..passiveList = passiveList.map((e) => e.copy()).toList()
-      ..activeList = activeList.map((e) => e.copy()).toList()
+      .._passiveList = _passiveList.map((e) => e.copy()).toList()
+      .._activeList = _activeList.map((e) => e.copy()).toList()
       ..commandCodeList = commandCodeList.map((e) => e.copy()).toList()
       ..auraBuffList = auraBuffList.map((e) => e.copy()).toList();
     return copy;
@@ -69,7 +101,9 @@ class BuffData {
 
   bool passive = false;
   bool irremovable = false;
-  bool buffActState = true;
+
+  bool stateAct = true;
+  bool stateField = true;
 
   // ignore: unused_field
   bool isDecide = false;
@@ -112,17 +146,21 @@ class BuffData {
     if (vals.ParamAddValue != null) {
       int addCount = 0;
       if (vals.ParamAddSelfIndividuality != null) {
-        final targetTraits = vals.ParamAddSelfIndividuality!.map((e) => NiceTrait(id: e)).toList();
+        final targetTraits = NiceTrait.list(vals.ParamAddSelfIndividuality!);
         addCount += isTarget
-            ? battleData.target!.countTrait(battleData, targetTraits)
-            : battleData.activator!.countTrait(battleData, targetTraits);
+            ? battleData.target!.countTrait(battleData, targetTraits) +
+                battleData.target!.countBuffWithTrait(targetTraits)
+            : battleData.activator!.countTrait(battleData, targetTraits) +
+                battleData.activator!.countBuffWithTrait(targetTraits);
       } else if (vals.ParamAddOpIndividuality != null) {
-        final targetTraits = vals.ParamAddOpIndividuality!.map((e) => NiceTrait(id: e)).toList();
+        final targetTraits = NiceTrait.list(vals.ParamAddOpIndividuality!);
         addCount += isTarget
-            ? battleData.activator!.countTrait(battleData, targetTraits)
-            : battleData.target!.countTrait(battleData, targetTraits);
+            ? battleData.activator!.countTrait(battleData, targetTraits) +
+                battleData.activator!.countBuffWithTrait(targetTraits)
+            : battleData.target!.countTrait(battleData, targetTraits) +
+                battleData.target!.countBuffWithTrait(targetTraits);
       } else if (vals.ParamAddFieldIndividuality != null) {
-        // TODO: get quest fields from quest.indiv + each svt's addFieldIndiv
+        addCount += countAnyTraits(battleData.getFieldTraits(), NiceTrait.list(vals.ParamAddFieldIndividuality!));
       }
       if (vals.ParamAddMaxCount != null) {
         addCount = min(addCount, vals.ParamAddMaxCount!);
@@ -161,7 +199,7 @@ class BuffData {
 
     final scriptCheck = checkDataVals(battleData) && checkBuffScript(battleData, isTarget);
 
-    if (!scriptCheck || !buffActState) {
+    if (!scriptCheck || !stateAct || !stateField) {
       return false;
     }
 
@@ -323,7 +361,7 @@ class BuffData {
   }
 
   void updateActState(final BattleData battleData, final BattleServantData owner) {
-    bool checkResult = true;
+    bool actResult = true;
 
     List<NiceTrait>? requiredTraits;
     int? requireAtLeast;
@@ -342,7 +380,7 @@ class BuffData {
     }
 
     if (requiredTraits != null) {
-      checkResult &= battleData.checkTraits(CheckTraitParameters(
+      actResult &= battleData.checkTraits(CheckTraitParameters(
         requiredTraits: requiredTraits,
         actor: owner,
         requireAtLeast: requireAtLeast,
@@ -356,19 +394,20 @@ class BuffData {
 
     if (buff.script?.HP_HIGHER != null) {
       final int hpRatio = (owner.hp / owner.getMaxHp(battleData) * 1000).toInt();
-      checkResult &= hpRatio >= buff.script!.HP_HIGHER!;
+      actResult &= hpRatio >= buff.script!.HP_HIGHER!;
     }
 
     if (buff.script?.HP_LOWER != null) {
       final int hpRatio = (owner.hp / owner.getMaxHp(battleData) * 1000).toInt();
-      checkResult &= hpRatio <= buff.script!.HP_LOWER!;
+      actResult &= hpRatio <= buff.script!.HP_LOWER!;
     }
+    stateAct = actResult;
+
+    stateField = true;
     if (isOnField && actorUniqueId != null) {
       // should be NO_FIELD state rather NO_ACT in fact
-      checkResult &= battleData.isActorOnField(actorUniqueId!);
+      stateField &= battleData.isActorOnField(actorUniqueId!);
     }
-
-    buffActState = checkResult;
   }
 
   String effectString() {
@@ -416,7 +455,8 @@ class BuffData {
       ..isUsed = isUsed
       ..irremovable = irremovable
       ..passive = passive
-      ..buffActState = buffActState;
+      ..stateAct = stateAct
+      ..stateField = stateField;
     return copy;
   }
 }

@@ -323,7 +323,7 @@ class FunctionExecutor {
           break;
         case FuncType.cardReset:
           battleData.nonnullAllies.forEach((svt) {
-            svt.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
+            svt.battleBuff.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
           });
           for (final target in targets) {
             battleData.curFuncResults[target.uniqueId] = true;

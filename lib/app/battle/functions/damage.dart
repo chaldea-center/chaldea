@@ -278,9 +278,11 @@ class Damage {
         battleData.changeStar(toModifier(Maths.sum(result.stars)));
 
         if (shouldDamageRelease) {
-          target.battleBuff.activeList.removeWhere((buff) => buff.buff.script?.DamageRelease == 1);
+          target.battleBuff.originalActiveList
+              .removeWhere((buff) => buff.stateAct && buff.stateField && buff.buff.script?.DamageRelease == 1);
           // passive should also be checked?
-          target.battleBuff.passiveList.removeWhere((buff) => buff.buff.script?.DamageRelease == 1);
+          target.battleBuff.originalPassiveList
+              .removeWhere((buff) => buff.stateAct && buff.stateField && buff.buff.script?.DamageRelease == 1);
         }
 
         battleData.curFuncResults[target.uniqueId] = true;

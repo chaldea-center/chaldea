@@ -646,7 +646,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
     List<Widget> counterActors = [];
 
     for (final svt in battleData.nonnullAllies) {
-      final counterBuff = svt.battleBuff.allBuffs.lastWhereOrNull((buff) => buff.vals.CounterId != null);
+      final counterBuff = svt.battleBuff.validBuffs.lastWhereOrNull((buff) => buff.vals.CounterId != null);
       if (counterBuff == null) continue;
       counterActors.add(RadioListTile<BattleServantData>(
         dense: true,

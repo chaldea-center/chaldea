@@ -23,8 +23,9 @@ class SubState {
         final removeTargetCount =
             dataVals.Value != null && dataVals.Value2 != null ? max(dataVals.Value!, dataVals.Value2!) : null;
         int removeCount = 0;
-        final List<BuffData> listToInspect =
-            removeFromStart ? target.battleBuff.activeList.reversed.toList() : target.battleBuff.activeList.toList();
+        final List<BuffData> listToInspect = removeFromStart
+            ? target.battleBuff.getActiveList().reversed.toList()
+            : target.battleBuff.getActiveList().toList();
 
         for (int index = listToInspect.length - 1; index >= 0; index -= 1) {
           final buff = listToInspect[index];
@@ -41,7 +42,7 @@ class SubState {
           }
         }
 
-        target.battleBuff.activeList = removeFromStart ? listToInspect.reversed.toList() : listToInspect.toList();
+        target.battleBuff.setActiveList(removeFromStart ? listToInspect.reversed.toList() : listToInspect.toList());
         if (removeCount > 0) {
           battleData.curFuncResults[target.uniqueId] = true;
         }

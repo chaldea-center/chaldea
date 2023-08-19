@@ -137,11 +137,11 @@ void main() async {
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final mash = battle.onFieldAllyServants[0]!;
-      expect(mash.battleBuff.activeList.length, 0);
+      expect(mash.battleBuff.originalActiveList.length, 0);
       expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1000);
 
       await battle.activateSvtSkill(0, 0);
-      expect(mash.battleBuff.activeList.length, 1);
+      expect(mash.battleBuff.originalActiveList.length, 1);
       expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
       expect(await mash.getBuffValueOnAction(battle, BuffAction.defencePierce), 1000);
     });
@@ -230,9 +230,9 @@ void main() async {
 
       final merlin = battle.onFieldAllyServants[1]!;
 
-      final buffCount = merlin.battleBuff.allBuffs.length;
+      final buffCount = merlin.battleBuff.getAllBuffs().length;
       await battle.activateSvtSkill(1, 0);
-      expect(merlin.battleBuff.allBuffs.length, buffCount);
+      expect(merlin.battleBuff.getAllBuffs().length, buffCount);
     });
 
     test('ParamAdd & ParamMax', () async {
@@ -868,9 +868,9 @@ void main() async {
       final previousHp1 = enemy1.hp;
       final previousHp2 = enemy2.hp;
       final previousHp3 = enemy3.hp;
-      final previousBuffCount1 = enemy1.battleBuff.allBuffs.length;
-      final previousBuffCount2 = enemy2.battleBuff.allBuffs.length;
-      final previousBuffCount3 = enemy3.battleBuff.allBuffs.length;
+      final previousBuffCount1 = enemy1.battleBuff.getAllBuffs().length;
+      final previousBuffCount2 = enemy2.battleBuff.getAllBuffs().length;
+      final previousBuffCount3 = enemy3.battleBuff.getAllBuffs().length;
       await battle.playerTurn([
         CombatAction(hokusai, hokusai.getNPCard(battle)!),
         CombatAction(hokusai, hokusai.getCards(battle)[1]),
@@ -878,18 +878,18 @@ void main() async {
       expect(enemy1.hp, previousHp1 - 2831 - 786);
       expect(enemy2.hp, previousHp2 - 2831);
       expect(enemy3.hp, previousHp3 - 2831);
-      expect(enemy1.battleBuff.allBuffs.length, previousBuffCount1 + 2);
-      expect(enemy2.battleBuff.allBuffs.length, previousBuffCount2 + 1);
-      expect(enemy3.battleBuff.allBuffs.length, previousBuffCount3 + 1);
+      expect(enemy1.battleBuff.getAllBuffs().length, previousBuffCount1 + 2);
+      expect(enemy2.battleBuff.getAllBuffs().length, previousBuffCount2 + 1);
+      expect(enemy3.battleBuff.getAllBuffs().length, previousBuffCount3 + 1);
 
       hokusai.np = 20000;
       battle.enemyTargetIndex = 1;
       final previousHp4 = enemy1.hp;
       final previousHp5 = enemy2.hp;
       final previousHp6 = enemy3.hp;
-      final previousBuffCount4 = enemy1.battleBuff.allBuffs.length;
-      final previousBuffCount5 = enemy2.battleBuff.allBuffs.length;
-      final previousBuffCount6 = enemy3.battleBuff.allBuffs.length;
+      final previousBuffCount4 = enemy1.battleBuff.getAllBuffs().length;
+      final previousBuffCount5 = enemy2.battleBuff.getAllBuffs().length;
+      final previousBuffCount6 = enemy3.battleBuff.getAllBuffs().length;
       await battle.playerTurn([
         CombatAction(hokusai, hokusai.getNPCard(battle)!),
         CombatAction(hokusai, hokusai.getCards(battle)[1]),
@@ -898,9 +898,9 @@ void main() async {
       expect(enemy1.hp, previousHp4 - 3629);
       expect(enemy2.hp, previousHp5 - 3230 - 865 - 1073 - 2559);
       expect(enemy3.hp, previousHp6 - 3230);
-      expect(enemy1.battleBuff.allBuffs.length, previousBuffCount4 + 1);
-      expect(enemy2.battleBuff.allBuffs.length, previousBuffCount5 + 3);
-      expect(enemy3.battleBuff.allBuffs.length, previousBuffCount6 + 1);
+      expect(enemy1.battleBuff.getAllBuffs().length, previousBuffCount4 + 1);
+      expect(enemy2.battleBuff.getAllBuffs().length, previousBuffCount5 + 3);
+      expect(enemy3.battleBuff.getAllBuffs().length, previousBuffCount6 + 1);
     });
   });
 }

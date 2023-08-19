@@ -344,11 +344,11 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
     List<Widget> children = [];
 
     children.add(const SHeader('Active Buffs'));
-    for (final buff in svt.battleBuff.activeList) {
+    for (final buff in svt.battleBuff.originalActiveList) {
       children.add(buildBuff(buff));
     }
     children.add(const SHeader('Passive Buffs'));
-    for (final buff in svt.battleBuff.passiveList) {
+    for (final buff in svt.battleBuff.originalPassiveList) {
       children.add(buildBuff(buff));
     }
     // children.add(const SHeader('Command Code Buffs'));
@@ -461,7 +461,7 @@ class BattleBuffIcon extends StatelessWidget {
       padding: const EdgeInsets.all(1),
       child: child,
     );
-    if (!buff.buffActState) {
+    if (!buff.stateAct || !buff.stateField) {
       child = Opacity(opacity: 0.5, child: child);
     }
     return child;

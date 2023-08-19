@@ -352,15 +352,15 @@ void main() async {
       expect(battle.turnCount, 1);
       final kama = battle.targetedAlly!;
       expect(kama.fieldIndex, 0);
-      expect(kama.battleBuff.allBuffs.length, 13);
+      expect(kama.battleBuff.getAllBuffs().length, 13);
       await battle.activateSvtSkill(0, 0);
-      expect(kama.battleBuff.allBuffs.length, 15);
+      expect(kama.battleBuff.getAllBuffs().length, 15);
       await battle.activateSvtSkill(1, 1);
       await battle.activateSvtSkill(1, 2);
-      expect(kama.battleBuff.allBuffs.length, 19);
+      expect(kama.battleBuff.getAllBuffs().length, 19);
       await battle.activateSvtSkill(2, 1);
       await battle.activateSvtSkill(2, 2);
-      expect(kama.battleBuff.allBuffs.length, 22);
+      expect(kama.battleBuff.getAllBuffs().length, 22);
       final npActions = [CombatAction(kama, kama.getNPCard(battle)!)];
 
       battle.enemyTargetIndex = 1;
@@ -370,7 +370,7 @@ void main() async {
       await battle.playerTurn(npActions);
       final hpAfterDamage = skyCaster.hp;
 
-      expect(kama.battleBuff.allBuffs.length, 21);
+      expect(kama.battleBuff.getAllBuffs().length, 21);
       expect(hpBeforeDamage - hpAfterDamage, 82618);
       expect(kama.np, 12422); // np from each hit is added one by one, so would trigger np pity (> 9900) immediately
       expect(battle.criticalStars, moreOrLessEquals(3.432, epsilon: 0.001));
@@ -388,7 +388,7 @@ void main() async {
       await battle.playerTurn(npActions);
       final hpAfterDamageWave2 = wave2enemy.hp;
 
-      expect(kama.battleBuff.allBuffs.length, 21);
+      expect(kama.battleBuff.getAllBuffs().length, 21);
       expect(hpBeforeDamageWave2 - hpAfterDamageWave2, 82618);
       expect(kama.np, 11584 + 380);
       expect(battle.criticalStars, moreOrLessEquals(2.532, epsilon: 0.001));
@@ -403,7 +403,7 @@ void main() async {
       await battle.activateSvtSkill(0, 2);
       await battle.activateSvtSkill(1, 0);
       await battle.activateSvtSkill(2, 0);
-      expect(kama.battleBuff.allBuffs.length, 26);
+      expect(kama.battleBuff.getAllBuffs().length, 26);
 
       final wave3enemy = battle.targetedEnemy!;
       expect(wave3enemy.fieldIndex, 0);
@@ -416,7 +416,7 @@ void main() async {
       ]);
       final hpAfterDamageWave3 = wave3enemy.hp;
 
-      expect(kama.battleBuff.allBuffs.length, 18);
+      expect(kama.battleBuff.getAllBuffs().length, 18);
       expect(hpBeforeDamageWave3 - hpAfterDamageWave3, 15605 + 44520 + 282836);
       expect(kama.np, 3744 + 380);
       expect(battle.criticalStars, moreOrLessEquals(0.184 + 0.784 + 1.143, epsilon: 0.001));
@@ -437,7 +437,7 @@ void main() async {
     await battle.activateSvtSkill(0, 0);
 
     final avoidStateBuff =
-        collectBuffsPerType(battle.onFieldAllyServants[0]!.battleBuff.allBuffs, BuffType.avoidState).first;
+        collectBuffsPerType(battle.onFieldAllyServants[0]!.battleBuff.validBuffs, BuffType.avoidState).first;
 
     expect(avoidStateBuff.count, 3);
 
@@ -555,11 +555,11 @@ void main() async {
     await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
 
     final nito = battle.onFieldAllyServants[0]!;
-    expect(nito.battleBuff.allBuffs.length, 5);
+    expect(nito.battleBuff.getAllBuffs().length, 5);
     await battle.activateSvtSkill(0, 1);
-    expect(nito.battleBuff.allBuffs.length, 7);
+    expect(nito.battleBuff.getAllBuffs().length, 7);
     await battle.activateSvtSkill(0, 2);
-    expect(nito.battleBuff.allBuffs.length, 11);
+    expect(nito.battleBuff.getAllBuffs().length, 11);
   });
 
   test('Tezcatlipoca passive', () async {
@@ -1107,11 +1107,11 @@ void main() async {
     final bakin = battle.onFieldAllyServants[1]!;
     await battle.activateSvtSkill(1, 2);
     bakin.np = 10000;
-    final previousBuffCount1 = altriaAlter.battleBuff.allBuffs.length;
-    final previousBuffCount2 = bakin.battleBuff.allBuffs.length;
+    final previousBuffCount1 = altriaAlter.battleBuff.getAllBuffs().length;
+    final previousBuffCount2 = bakin.battleBuff.getAllBuffs().length;
     await battle.playerTurn([CombatAction(bakin, bakin.getNPCard(battle)!)]);
-    expect(altriaAlter.battleBuff.allBuffs.length, previousBuffCount1 + 1);
-    expect(bakin.battleBuff.allBuffs.length, previousBuffCount2 + 1);
+    expect(altriaAlter.battleBuff.getAllBuffs().length, previousBuffCount1 + 1);
+    expect(bakin.battleBuff.getAllBuffs().length, previousBuffCount2 + 1);
   });
 
   test('AOE NP vs AttackTriggerFunc with enemyOne target', () async {
@@ -1131,13 +1131,13 @@ void main() async {
     final enemy1 = battle.onFieldEnemies[0]!;
     final enemy2 = battle.onFieldEnemies[1]!;
     final enemy3 = battle.onFieldEnemies[2]!;
-    final previousBuffCount1 = enemy1.battleBuff.allBuffs.length;
-    final previousBuffCount2 = enemy2.battleBuff.allBuffs.length;
-    final previousBuffCount3 = enemy3.battleBuff.allBuffs.length;
+    final previousBuffCount1 = enemy1.battleBuff.getAllBuffs().length;
+    final previousBuffCount2 = enemy2.battleBuff.getAllBuffs().length;
+    final previousBuffCount3 = enemy3.battleBuff.getAllBuffs().length;
     await battle.playerTurn([CombatAction(koyan, koyan.getNPCard(battle)!)]);
-    expect(enemy1.battleBuff.allBuffs.length, previousBuffCount1 + 4);
-    expect(enemy2.battleBuff.allBuffs.length, previousBuffCount2 + 4);
-    expect(enemy3.battleBuff.allBuffs.length, previousBuffCount3 + 4);
+    expect(enemy1.battleBuff.getAllBuffs().length, previousBuffCount1 + 4);
+    expect(enemy2.battleBuff.getAllBuffs().length, previousBuffCount2 + 4);
+    expect(enemy3.battleBuff.getAllBuffs().length, previousBuffCount3 + 4);
   });
 
   test('OC NP vs AttackTriggerFunc', () async {

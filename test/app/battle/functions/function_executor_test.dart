@@ -188,7 +188,7 @@ void main() async {
       expect(as1With0Unselectable.length, 1);
       expect(as1With0Unselectable.first, battle.onFieldAllyServants[2]);
 
-      battle.onFieldAllyServants[0]!.battleBuff.activeList.removeLast();
+      battle.onFieldAllyServants[0]!.battleBuff.originalActiveList.removeLast();
 
       final as1AfterRemove = await FunctionExecutor.acquireFunctionTarget(
           battle, FuncTargetType.ptSelfAnotherFirst, battle.onFieldAllyServants[1]);
@@ -215,17 +215,17 @@ void main() async {
     test('Field traits tests', () async {
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null); // no field traits
       final nemo1 = battle.onFieldAllyServants[0]!;
-      final buffCountBefore = nemo1.battleBuff.activeList.length;
+      final buffCountBefore = nemo1.battleBuff.originalActiveList.length;
       await battle.activateSvtSkill(0, 2); // nemo skill 3, check field shore
-      final buffCountAfter = nemo1.battleBuff.activeList.length;
+      final buffCountAfter = nemo1.battleBuff.originalActiveList.length;
       expect(buffCountAfter, buffCountBefore + 1);
       expect(battle.actionHistory[6010]![nemo1.uniqueId], false);
 
       await battle.init(db.gameData.questPhases[9300030103]!, playerSettings, null); // field shore
       final nemo2 = battle.onFieldAllyServants[0]!;
-      final buffCountBeforeShore = nemo2.battleBuff.activeList.length;
+      final buffCountBeforeShore = nemo2.battleBuff.originalActiveList.length;
       await battle.activateSvtSkill(0, 2); // nemo skill 3, check field shore
-      final buffCountAfterShore = nemo2.battleBuff.activeList.length;
+      final buffCountAfterShore = nemo2.battleBuff.originalActiveList.length;
       expect(buffCountAfterShore, buffCountBeforeShore + 2);
       expect(battle.actionHistory[6010]![nemo1.uniqueId], true);
     });
@@ -235,13 +235,13 @@ void main() async {
       final nemo = battle.onFieldAllyServants[0]!;
       final eli = battle.onFieldAllyServants[1]!;
       final kama = battle.onFieldAllyServants[2]!;
-      final buffCountNemoBefore = nemo.battleBuff.activeList.length;
-      final buffCountEliBefore = eli.battleBuff.activeList.length;
-      final buffCountKamaBefore = kama.battleBuff.activeList.length;
+      final buffCountNemoBefore = nemo.battleBuff.originalActiveList.length;
+      final buffCountEliBefore = eli.battleBuff.originalActiveList.length;
+      final buffCountKamaBefore = kama.battleBuff.originalActiveList.length;
       await battle.activateSvtSkill(1, 0); // Eli skill 1, check female
-      final buffCountNemoAfter = nemo.battleBuff.activeList.length;
-      final buffCountEliAfter = eli.battleBuff.activeList.length;
-      final buffCountKamaAfter = kama.battleBuff.activeList.length;
+      final buffCountNemoAfter = nemo.battleBuff.originalActiveList.length;
+      final buffCountEliAfter = eli.battleBuff.originalActiveList.length;
+      final buffCountKamaAfter = kama.battleBuff.originalActiveList.length;
       expect(buffCountNemoAfter, buffCountNemoBefore + 1);
       expect(buffCountEliAfter, buffCountEliBefore + 1);
       expect(buffCountKamaAfter, buffCountKamaBefore + 2);
@@ -261,7 +261,7 @@ void main() async {
       final enemy2 = battle.onFieldEnemies[1]!;
       final enemy3 = battle.onFieldEnemies[2]!;
       await battle.activateSvtSkill(2, 1); // Kama skill 2, just to guarantee kill
-      final buffCountBefore = enemy2.battleBuff.activeList.length;
+      final buffCountBefore = enemy2.battleBuff.originalActiveList.length;
       final npCard = kama.getNPCard(battle)!;
       battle.recorder.startPlayerCard(kama, npCard);
       await battle.withAction(() async {
@@ -269,7 +269,7 @@ void main() async {
           await kama.activateNP(battle, npCard, 0);
         });
       });
-      final buffCountAfter = enemy2.battleBuff.activeList.length;
+      final buffCountAfter = enemy2.battleBuff.originalActiveList.length;
       expect(buffCountAfter, buffCountBefore);
 
       // last func is addState on dead enemies
@@ -293,7 +293,7 @@ void main() async {
       final enemy1 = battle.onFieldEnemies[0]!;
       final cursedArm = battle.onFieldAllyServants[0]!;
       final npCard = cursedArm.getNPCard(battle)!;
-      final buffCountBefore1 = cursedArm.battleBuff.activeList.length;
+      final buffCountBefore1 = cursedArm.battleBuff.originalActiveList.length;
       cursedArm.np = 10000;
       battle.recorder.startPlayerCard(cursedArm, npCard);
       await battle.withAction(() async {
@@ -301,7 +301,7 @@ void main() async {
           await cursedArm.activateNP(battle, npCard, 0);
         });
       });
-      final buffCountAfter1 = cursedArm.battleBuff.activeList.length;
+      final buffCountAfter1 = cursedArm.battleBuff.originalActiveList.length;
       expect(buffCountAfter1, buffCountBefore1);
       expect(battle.actionHistory[479]![enemy1.uniqueId], false);
       expect(battle.actionHistory[146]![cursedArm.uniqueId], false);
@@ -311,7 +311,7 @@ void main() async {
 
       battle.enemyTargetIndex = 1;
       final enemy2 = battle.onFieldEnemies[1]!;
-      final buffCountBefore2 = cursedArm.battleBuff.activeList.length;
+      final buffCountBefore2 = cursedArm.battleBuff.originalActiveList.length;
       cursedArm.np = 10000;
       battle.options.probabilityThreshold = 10;
       battle.recorder.startPlayerCard(cursedArm, npCard);
@@ -320,7 +320,7 @@ void main() async {
           await cursedArm.activateNP(battle, npCard, 0);
         });
       });
-      final buffCountAfter2 = cursedArm.battleBuff.activeList.length;
+      final buffCountAfter2 = cursedArm.battleBuff.originalActiveList.length;
       expect(buffCountAfter2, buffCountBefore2 + 1);
       expect(battle.actionHistory[479]![enemy2.uniqueId], true);
       expect(battle.actionHistory[146]![cursedArm.uniqueId], true);
@@ -342,20 +342,20 @@ void main() async {
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final mash = battle.onFieldAllyServants[0]!;
-      expect(mash.battleBuff.activeList.length, 0);
+      expect(mash.battleBuff.originalActiveList.length, 0);
       expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1000);
 
       await battle.activateSvtSkill(0, 0);
-      expect(mash.battleBuff.activeList.length, 1);
+      expect(mash.battleBuff.originalActiveList.length, 1);
       expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
-      expect(mash.battleBuff.activeList.first.buff.type, BuffType.upDefence);
-      expect(mash.battleBuff.activeList.first.logicTurn, 6);
+      expect(mash.battleBuff.originalActiveList.first.buff.type, BuffType.upDefence);
+      expect(mash.battleBuff.originalActiveList.first.logicTurn, 6);
 
       await battle.playerTurn([CombatAction(mash, mash.getCards(battle)[0])]);
-      expect(mash.battleBuff.activeList.length, 1);
+      expect(mash.battleBuff.originalActiveList.length, 1);
       expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
-      expect(mash.battleBuff.activeList.first.buff.type, BuffType.upDefence);
-      expect(mash.battleBuff.activeList.first.logicTurn, 4);
+      expect(mash.battleBuff.originalActiveList.first.buff.type, BuffType.upDefence);
+      expect(mash.battleBuff.originalActiveList.first.logicTurn, 4);
     });
 
     test('addState & addStateShort', () async {
@@ -366,24 +366,24 @@ void main() async {
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final orion = battle.onFieldAllyServants[0]!;
-      expect(orion.battleBuff.activeList.length, 0);
+      expect(orion.battleBuff.originalActiveList.length, 0);
       expect(await orion.getBuffValueOnAction(battle, BuffAction.defence), 1000);
 
       await battle.activateSvtSkill(0, 0);
-      expect(orion.battleBuff.activeList.length, 3);
+      expect(orion.battleBuff.originalActiveList.length, 3);
       expect(await orion.getBuffValueOnAction(battle, BuffAction.defence), 1500);
-      expect(orion.battleBuff.activeList.first.buff.type, BuffType.upDefence);
-      expect(orion.battleBuff.activeList.first.logicTurn, 2);
+      expect(orion.battleBuff.originalActiveList.first.buff.type, BuffType.upDefence);
+      expect(orion.battleBuff.originalActiveList.first.logicTurn, 2);
       expect(await orion.getBuffValueOnAction(battle, BuffAction.atk), 1200);
-      expect(orion.battleBuff.activeList[1].buff.type, BuffType.upAtk);
-      expect(orion.battleBuff.activeList[1].logicTurn, 5);
+      expect(orion.battleBuff.originalActiveList[1].buff.type, BuffType.upAtk);
+      expect(orion.battleBuff.originalActiveList[1].logicTurn, 5);
 
       await battle.playerTurn([CombatAction(orion, orion.getCards(battle)[0])]);
-      expect(orion.battleBuff.activeList.length, 2);
+      expect(orion.battleBuff.originalActiveList.length, 2);
       expect(await orion.getBuffValueOnAction(battle, BuffAction.defence), 1000);
       expect(await orion.getBuffValueOnAction(battle, BuffAction.atk), 1200);
-      expect(orion.battleBuff.activeList[0].buff.type, BuffType.upAtk);
-      expect(orion.battleBuff.activeList[0].logicTurn, 3);
+      expect(orion.battleBuff.originalActiveList[0].buff.type, BuffType.upAtk);
+      expect(orion.battleBuff.originalActiveList[0].logicTurn, 3);
     });
 
     test('addFieldChangeToField', () async {
@@ -501,11 +501,11 @@ void main() async {
 
       await battle.activateSvtSkill(1, 2);
 
-      expect(collectBuffsPerType(cat.battleBuff.allBuffs, BuffType.donotAct).length, 0);
+      expect(collectBuffsPerType(cat.battleBuff.validBuffs, BuffType.donotAct).length, 0);
 
       await battle.playerTurn([CombatAction(cat, cat.getNPCard(battle)!)]);
 
-      expect(collectBuffsPerType(cat.battleBuff.allBuffs, BuffType.donotAct).length, 2);
+      expect(collectBuffsPerType(cat.battleBuff.validBuffs, BuffType.donotAct).length, 2);
     });
 
     test('subState count', () async {
@@ -522,13 +522,13 @@ void main() async {
       await battle.activateSvtSkill(0, 2);
       await battle.activateSvtSkill(1, 2);
 
-      expect(collectBuffsPerType(lip.battleBuff.allBuffs, BuffType.donotAct).length, 1);
-      expect(collectBuffsPerType(lip.battleBuff.allBuffs, BuffType.donotSkill).length, 1);
+      expect(collectBuffsPerType(lip.battleBuff.validBuffs, BuffType.donotAct).length, 1);
+      expect(collectBuffsPerType(lip.battleBuff.validBuffs, BuffType.donotSkill).length, 1);
 
       await battle.activateSvtSkill(2, 0);
 
-      expect(collectBuffsPerType(lip.battleBuff.allBuffs, BuffType.donotAct).length, 1);
-      expect(collectBuffsPerType(lip.battleBuff.allBuffs, BuffType.donotSkill).length, 0);
+      expect(collectBuffsPerType(lip.battleBuff.validBuffs, BuffType.donotAct).length, 1);
+      expect(collectBuffsPerType(lip.battleBuff.validBuffs, BuffType.donotSkill).length, 0);
     });
 
     test('gainNpFromTargets', () async {
@@ -656,19 +656,19 @@ void main() async {
 
       final charlie1 = battle.onFieldAllyServants[0]!;
       final charlie2 = battle.onFieldAllyServants[1]!;
-      final prevCount1 = charlie1.battleBuff.allBuffs.length;
-      final prevCount2 = charlie2.battleBuff.allBuffs.length;
+      final prevCount1 = charlie1.battleBuff.getAllBuffs().length;
+      final prevCount2 = charlie2.battleBuff.getAllBuffs().length;
 
       await battle.activateSvtSkill(0, 0);
 
-      final afterCount1 = charlie1.battleBuff.allBuffs.length;
+      final afterCount1 = charlie1.battleBuff.getAllBuffs().length;
 
       expect(afterCount1, prevCount1 + 2);
       expect(charlie1.canNP(battle), false);
 
       await battle.activateSvtSkill(1, 0);
 
-      final afterCount2 = charlie2.battleBuff.allBuffs.length;
+      final afterCount2 = charlie2.battleBuff.getAllBuffs().length;
 
       expect(afterCount2, prevCount2 + 2);
       expect(charlie2.canNP(battle), true);
@@ -685,7 +685,7 @@ void main() async {
 
       final kingprotea = battle.onFieldAllyServants[0]!;
 
-      final prevCount = kingprotea.battleBuff.allBuffs.length;
+      final prevCount = kingprotea.battleBuff.getAllBuffs().length;
 
       await battle.activateSvtSkill(0, 0);
 
@@ -693,7 +693,7 @@ void main() async {
         await battle.playerTurn([CombatAction(kingprotea, kingprotea.getCards(battle)[0])]);
       }
 
-      final afterCount = kingprotea.battleBuff.allBuffs.length;
+      final afterCount = kingprotea.battleBuff.getAllBuffs().length;
 
       expect(afterCount, prevCount + 20);
 
@@ -703,7 +703,7 @@ void main() async {
         await battle.playerTurn([CombatAction(kingprotea, kingprotea.getCards(battle)[0])]);
       }
 
-      final afterCount2 = kingprotea.battleBuff.allBuffs.length;
+      final afterCount2 = kingprotea.battleBuff.getAllBuffs().length;
 
       expect(afterCount2, prevCount + 20);
     });
@@ -715,25 +715,25 @@ void main() async {
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
       final jane = battle.onFieldAllyServants[0]!;
-      final prevCount = jane.battleBuff.allBuffs.length;
+      final prevCount = jane.battleBuff.getAllBuffs().length;
       await battle.activateSvtSkill(0, 2);
-      final afterCount = jane.battleBuff.allBuffs.length;
+      final afterCount = jane.battleBuff.getAllBuffs().length;
       expect(afterCount, prevCount + 1);
 
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
       battle.criticalStars = 20;
       final jane2 = battle.onFieldAllyServants[0]!;
-      final prevCount2 = jane2.battleBuff.allBuffs.length;
+      final prevCount2 = jane2.battleBuff.getAllBuffs().length;
       await battle.activateSvtSkill(0, 2);
-      final afterCount2 = jane2.battleBuff.allBuffs.length;
+      final afterCount2 = jane2.battleBuff.getAllBuffs().length;
       expect(afterCount2, prevCount2 + 3);
 
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
       battle.criticalStars = 50;
       final jane3 = battle.onFieldAllyServants[0]!;
-      final prevCount3 = jane3.battleBuff.allBuffs.length;
+      final prevCount3 = jane3.battleBuff.getAllBuffs().length;
       await battle.activateSvtSkill(0, 2);
-      final afterCount3 = jane3.battleBuff.allBuffs.length;
+      final afterCount3 = jane3.battleBuff.getAllBuffs().length;
       expect(afterCount3, prevCount3 + 5);
       expect(jane3.np, 2000);
     });
@@ -746,17 +746,17 @@ void main() async {
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
       final babbage = battle.onFieldAllyServants[0]!;
-      final prevCount = babbage.battleBuff.allBuffs.length;
+      final prevCount = babbage.battleBuff.getAllBuffs().length;
       await battle.activateSvtSkill(0, 2);
-      final afterCount = babbage.battleBuff.allBuffs.length;
+      final afterCount = babbage.battleBuff.getAllBuffs().length;
       expect(afterCount, prevCount + 3);
 
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
       final babbage2 = battle.onFieldAllyServants[0]!;
-      final prevCount2 = babbage2.battleBuff.allBuffs.length;
+      final prevCount2 = babbage2.battleBuff.getAllBuffs().length;
       await battle.activateSvtSkill(1, 0);
       await battle.activateSvtSkill(0, 2);
-      final afterCount2 = babbage2.battleBuff.allBuffs.length;
+      final afterCount2 = babbage2.battleBuff.getAllBuffs().length;
       expect(afterCount2, prevCount2 + 1);
     });
 

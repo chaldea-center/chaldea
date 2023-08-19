@@ -580,30 +580,30 @@ class BattleData {
     final List<NiceTrait> allTraits = [];
     allTraits.addAll(niceQuest!.individuality);
 
-    bool fieldTraitCheck(final NiceTrait trait) {
-      // > 3000 is a buff trait
-      return trait.id < 3000;
-    }
-
     final List<int> removeTraitIds = [];
     for (final svt in nonnullActors) {
       withActivatorSync(svt, () {
-        for (final buff in svt.battleBuff.allBuffs) {
+        for (final buff in svt.battleBuff.validBuffs) {
           if (buff.buff.type == BuffType.fieldIndividuality && buff.shouldApplyBuff(this, false)) {
-            allTraits.addAll(buff.traits.where((trait) => fieldTraitCheck(trait)));
+            allTraits.add(NiceTrait(id: buff.vals.Value ?? 0));
           } else if (buff.buff.type == BuffType.subFieldIndividuality && buff.shouldApplyBuff(this, false)) {
             removeTraitIds.addAll(buff.vals.TargetList!.map((traitId) => traitId));
           }
         }
       });
     }
-
-    fieldBuffs
-        .where((buff) => buff.buff.type == BuffType.toFieldChangeField)
-        .forEach((buff) => allTraits.addAll(buff.traits.where((trait) => fieldTraitCheck(trait))));
-
     allTraits.removeWhere((trait) => removeTraitIds.contains(trait.id));
 
+    final List<NiceTrait> traitsOnField = [];
+    // final List<int> removeTraitIdsOnField = [];
+    for (final buff in fieldBuffs) {
+      if (buff.buff.type == BuffType.toFieldChangeField) {
+        traitsOnField.add(NiceTrait(id: buff.vals.FieldIndividuality ?? 0));
+      } else if (buff.buff.type == BuffType.toFieldSubIndividualityField) {
+        //
+      }
+    }
+    allTraits.addAll(traitsOnField);
     return allTraits;
   }
 
@@ -760,7 +760,6 @@ class BattleData {
   Future<void> activateSvtSkill(final int servantIndex, final int skillIndex) async {
     final svt = onFieldAllyServants.getOrNull(servantIndex);
     if (svt == null || isBattleFinished) return;
-
 
     battleLogger
         .action('${svt.lBattleName} - ${S.current.active_skill} ${skillIndex + 1}: ${svt.getSkillName(skillIndex)}');
@@ -1303,7 +1302,7 @@ class BattleData {
           actor.fieldIndex = -1;
           if (actor.isPlayer) {
             nonnullAllies.forEach((svt) {
-              svt.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
+              svt.battleBuff.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
             });
           }
         }

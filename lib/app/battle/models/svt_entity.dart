@@ -430,7 +430,7 @@ class BattleServantData {
 
   Future<CommandCardData?> getCounterNPCard(final BattleData battleData) async {
     // buff.vals.UseTreasureDevice: =0 means skill?
-    final buff = battleBuff.allBuffs.lastWhereOrNull((buff) => buff.vals.CounterId != null);
+    final buff = battleBuff.validBuffs.lastWhereOrNull((buff) => buff.vals.CounterId != null);
     if (buff == null) return null;
 
     final tdId = buff.vals.CounterId ?? 0;
@@ -528,7 +528,7 @@ class BattleServantData {
 
     final List<int> removeTraitIds = [];
     battleData.withActivatorSync(this, () {
-      for (final buff in battleBuff.allBuffs) {
+      for (final buff in battleBuff.validBuffs) {
         if (buff.buff.type == BuffType.addIndividuality && buff.shouldApplyBuff(battleData, false)) {
           allTraits.add(NiceTrait(id: buff.param));
         } else if (buff.buff.type == BuffType.subIndividuality && buff.shouldApplyBuff(battleData, false)) {
@@ -548,7 +548,7 @@ class BattleServantData {
     final bool ignoreIrremovable = false,
   }) {
     final List<NiceTrait> myTraits = [];
-    final List<BuffData> buffs = activeOnly ? battleBuff.activeList : battleBuff.allBuffs;
+    final List<BuffData> buffs = activeOnly ? battleBuff.getActiveList() : battleBuff.validBuffs;
     buffs.forEach((buff) {
       if (!ignoreIrremovable || !buff.irremovable) {
         myTraits.addAll(buff.traits);
@@ -677,7 +677,7 @@ class BattleServantData {
     }
 
     return battleData.withActivatorSync(this, () {
-      return collectBuffsPerTypes(battleBuff.allBuffs, gutsTypes)
+      return collectBuffsPerTypes(battleBuff.validBuffs, gutsTypes)
           .where((buff) => buff.shouldApplyBuff(battleData, false))
           .isNotEmpty;
     });
@@ -845,7 +845,7 @@ class BattleServantData {
   }
 
   NiceTd? getCurrentNP(final BattleData battleData) {
-    final buffs = collectBuffsPerAction(battleBuff.allBuffs, BuffAction.tdTypeChange);
+    final buffs = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.tdTypeChange);
     NiceTd? selected;
     battleData.withActivatorSync(this, () {
       for (final buff in buffs.reversed) {
@@ -895,7 +895,7 @@ class BattleServantData {
   Future<List<NiceFunction>> updateNpFunctions(final BattleData battleData, final List<NiceFunction> functions) async {
     final List<NiceFunction> updatedFunctions = functions.toList();
 
-    for (final buff in collectBuffsPerAction(battleBuff.allBuffs, BuffAction.functionNpattack)) {
+    for (final buff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.functionNpattack)) {
       if (buff.param < 0 || buff.param >= updatedFunctions.length) {
         // replace index not valid for current function list
         continue;
@@ -938,7 +938,7 @@ class BattleServantData {
     }
     final isTarget = battleData.target == this;
 
-    for (final buff in collectBuffsPerAction(battleBuff.allBuffs, buffAction)) {
+    for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
       if (await buff.shouldActivateBuff(battleData, isTarget)) {
         buff.setUsed();
         final value = buff.getValue(battleData, isTarget);
@@ -962,7 +962,7 @@ class BattleServantData {
     int totalVal = 0;
     int maxRate = Maths.min(actionDetails.maxRate);
 
-    for (final buff in collectBuffsPerAction(battleBuff.allBuffs, buffAction)) {
+    for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
       if (await buff.shouldActivateBuff(battleData, isTarget)) {
         buff.setUsed();
         final totalEffectiveness = await battleData.withBuff(buff, () async {
@@ -991,7 +991,7 @@ class BattleServantData {
     int totalVal = 0;
     int maxRate = Maths.min(actionDetails.maxRate);
 
-    for (final buff in collectBuffsPerAction(battleBuff.allBuffs, BuffAction.turnendHpReduce)) {
+    for (final buff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.turnendHpReduce)) {
       if (await buff.shouldActivateBuff(battleData, isTarget)) {
         buff.setUsed();
         final totalEffectiveness = await battleData.withBuff(buff, () async {
@@ -1026,7 +1026,7 @@ class BattleServantData {
   BuffData? getFirstBuffOnActions(final BattleData battleData, final List<BuffAction> buffActions) {
     final isTarget = battleData.target == this;
 
-    for (final buff in collectBuffsPerActions(battleBuff.allBuffs, buffActions)) {
+    for (final buff in collectBuffsPerActions(battleBuff.validBuffs, buffActions)) {
       if (buff.shouldApplyBuff(battleData, isTarget)) {
         buff.setUsed();
         return buff;
@@ -1049,7 +1049,7 @@ class BattleServantData {
     int totalVal = 0;
     int maxRate = Maths.min(actionDetails!.maxRate);
 
-    for (final buff in collectBuffsPerAction(battleBuff.allBuffs, buffAction)) {
+    for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
       if (buff.shouldApplyBuff(battleData, isTarget)) {
         buff.setUsed();
 
@@ -1083,7 +1083,7 @@ class BattleServantData {
   bool hasDoNotBuffOnActionsForUI(final BattleData battleData, final List<BuffAction> buffActions) {
     final isTarget = battleData.target == this;
 
-    for (final buff in collectBuffsPerActions(battleBuff.allBuffs, buffActions)) {
+    for (final buff in collectBuffsPerActions(battleBuff.validBuffs, buffActions)) {
       if (buff.shouldApplyBuff(battleData, isTarget)) {
         buff.setUsed();
         return true;
@@ -1099,7 +1099,7 @@ class BattleServantData {
   Future<bool> hasBuffOnActions(final BattleData battleData, final List<BuffAction> buffActions) async {
     final isTarget = battleData.target == this;
 
-    for (final buff in collectBuffsPerActions(battleBuff.allBuffs, buffActions)) {
+    for (final buff in collectBuffsPerActions(battleBuff.validBuffs, buffActions)) {
       if (await buff.shouldActivateBuff(battleData, isTarget)) {
         buff.setUsed();
         return true;
@@ -1114,7 +1114,7 @@ class BattleServantData {
 
   Future<bool> activateBuffOnActions(final BattleData battleData, final Iterable<BuffAction> buffActions) async {
     final List<BuffData> orderedBuffs = [
-      for (final buffAction in buffActions) ...collectBuffsPerAction(battleBuff.allBuffs, buffAction)
+      for (final buffAction in buffActions) ...collectBuffsPerAction(battleBuff.validBuffs, buffAction)
     ];
     return await activateBuffs(battleData, orderedBuffs);
   }
@@ -1146,10 +1146,6 @@ class BattleServantData {
     });
   }
 
-  void removeBuffWithTrait(final NiceTrait trait) {
-    battleBuff.activeList.removeWhere((buff) => checkTraitFunction(buff.traits, [trait], partialMatch, partialMatch));
-  }
-
   int countTrait(final BattleData battleData, final List<NiceTrait> traits) {
     return countAnyTraits(getTraits(battleData), traits);
   }
@@ -1159,12 +1155,12 @@ class BattleServantData {
   }
 
   List<BuffData> getBuffsWithTraits(final List<NiceTrait> traits, {final bool activeOnly = false}) {
-    final buffList = activeOnly ? battleBuff.activeList : battleBuff.allBuffs;
+    final buffList = activeOnly ? battleBuff.getActiveList() : battleBuff.validBuffs;
     return buffList.where((buff) => checkTraitFunction(buff.traits, traits, partialMatch, partialMatch)).toList();
   }
 
   List<BuffData> getBuffsOfType(final BuffType buffType) {
-    return battleBuff.allBuffs.where((buff) => buff.buff.type == buffType).toList();
+    return battleBuff.validBuffs.where((buff) => buff.buff.type == buffType).toList();
   }
 
   Future<int> getClassRelation(
@@ -1174,7 +1170,7 @@ class BattleServantData {
     final isTarget,
   ) async {
     int relation = baseRelation;
-    final List<BuffData> buffs = collectBuffsPerType(battleBuff.allBuffs, BuffType.overwriteClassRelation);
+    final List<BuffData> buffs = collectBuffsPerType(battleBuff.validBuffs, BuffType.overwriteClassRelation);
     for (final buff in buffs.reversed) {
       if (await buff.shouldActivateBuff(battleData, isTarget)) {
         buff.setUsed();
@@ -1206,16 +1202,14 @@ class BattleServantData {
   }
 
   bool isBuffStackable(final int buffGroup) {
-    return battleBuff.allBuffs.every((buff) => buff.canStack(buffGroup));
+    return battleBuff.validBuffs.every((buff) => buff.canStack(buffGroup));
   }
 
   void addBuff(final BuffData buffData, {final bool isPassive = false, final bool isCommandCode = false}) {
     if (isCommandCode) {
       battleBuff.commandCodeList.add(buffData);
-    } else if (isPassive) {
-      battleBuff.passiveList.add(buffData);
     } else {
-      battleBuff.activeList.add(buffData);
+      battleBuff.addBuff(buffData, isPassive: isPassive);
     }
   }
 
@@ -1224,20 +1218,18 @@ class BattleServantData {
   }
 
   void updateActState(final BattleData battleData) {
-    battleBuff.allBuffs.forEach((buff) {
+    battleBuff.getAllBuffs().forEach((buff) {
       buff.updateActState(battleData, this);
     });
   }
 
   void useBuffOnce(final BattleData battleData) {
-    battleBuff.allBuffs.forEach((buff) {
+    battleBuff.getAllBuffs().forEach((buff) {
       if (buff.isUsed) {
         buff.useOnce();
       }
     });
-
-    battleBuff.passiveList.removeWhere((buff) => !buff.isActive);
-    battleBuff.activeList.removeWhere((buff) => !buff.isActive);
+    battleBuff.checkUsedBuff();
     battleBuff.commandCodeList.removeWhere((buff) => !buff.isActive);
   }
 
@@ -1341,7 +1333,7 @@ class BattleServantData {
         battleBuff.turnProgress();
       });
     });
-    final delayedFunctions = collectBuffsPerType(battleBuff.allBuffs, BuffType.delayFunction);
+    final delayedFunctions = collectBuffsPerType(battleBuff.validBuffs, BuffType.delayFunction);
     await activateBuffOnAction(battleData, BuffAction.functionSelfturnend);
     await activateBuffs(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));
 
@@ -1360,7 +1352,7 @@ class BattleServantData {
       });
     });
 
-    final delayedFunctions = collectBuffsPerType(battleBuff.allBuffs, BuffType.delayFunction);
+    final delayedFunctions = collectBuffsPerType(battleBuff.validBuffs, BuffType.delayFunction);
     await activateBuffs(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));
 
     battleData.checkActorStatus();
@@ -1369,7 +1361,7 @@ class BattleServantData {
   Future<bool> activateGuts(final BattleData battleData) async {
     BuffData? gutsToApply = await battleData.withActivator(this, () async {
       BuffData? gutsToApply;
-      for (final buff in collectBuffsPerTypes(battleBuff.allBuffs, gutsTypes)) {
+      for (final buff in collectBuffsPerTypes(battleBuff.validBuffs, gutsTypes)) {
         if (await buff.shouldActivateBuff(battleData, false)) {
           if (gutsToApply == null || (gutsToApply.irremovable && !buff.irremovable)) {
             gutsToApply = buff;

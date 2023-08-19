@@ -60,22 +60,23 @@ void main() async {
     });
   });
 
-  test('Test commandCode', () async {
-    final List<PlayerSvtData> okuniCommandCode = [
+  test('Test commandCode CD', () async {
+    final List<PlayerSvtData> svts = [
       PlayerSvtData.id(100100)
         ..tdLv = 3
         ..lv = 90
         ..commandCodes = [
+          // QAABB
           null,
+          db.gameData.commandCodesById[8400840]!, // 鞍馬の申し子, critical dmg 20%
           null,
-          null,
-          db.gameData.commandCodesById[8400460], // Mage of Flowers on buster card
-          db.gameData.commandCodesById[8400460], // Mage of Flowers on buster card
+          db.gameData.commandCodesById[8400460]!, // Mage of Flowers on buster card
+          db.gameData.commandCodesById[8400460]!, // Mage of Flowers on buster card
         ],
     ];
 
     final battle = BattleData();
-    await battle.init(db.gameData.questPhases[9300040603]!, okuniCommandCode, null);
+    await battle.init(db.gameData.questPhases[9300040603]!, svts, null);
 
     final altria = battle.onFieldAllyServants[0]!;
     expect(altria.np, 0);
@@ -92,6 +93,36 @@ void main() async {
 
     await battle.playerTurn([CombatAction(altria, altria.getCards(battle)[4])]);
     expect(altria.np, 3000);
+
+    await battle.playerTurn(
+        [CombatAction(altria, altria.getCards(battle)[1]), CombatAction(altria, altria.getCards(battle)[2])]);
+  });
+
+  test('Test commandCode Clear', () async {
+    final List<PlayerSvtData> svts = [
+      PlayerSvtData.id(100100)
+        ..tdLv = 3
+        ..lv = 90
+        ..commandCodes = [
+          // QAABB
+          null,
+          db.gameData.commandCodesById[8400840]!, // 鞍馬の申し子, critical dmg 20%
+          null, null, null
+        ],
+    ];
+
+    final battle = BattleData();
+    await battle.init(db.gameData.questPhases[9300040603]!, svts, null);
+
+    final altria = battle.onFieldAllyServants[0]!;
+    final enemy = battle.onFieldEnemies[0]!;
+    expect(enemy.hp, 20094);
+
+    await battle.playerTurn([
+      CombatAction(altria, altria.getCards(battle)[1]..isCritical = true),
+      CombatAction(altria, altria.getCards(battle)[2]..isCritical = true)
+    ]);
+    expect(enemy.hp, 9166);
   });
 
   test('Test traits', () async {
@@ -179,8 +210,8 @@ void main() async {
     final arash = battle.onFieldAllyServants[0]!;
     final deon = battle.onFieldAllyServants[1]!;
 
-    expect(arash.battleBuff.allBuffs.length, 4);
-    expect(deon.battleBuff.allBuffs.length, 3);
+    expect(arash.battleBuff.getAllBuffs().length, 4);
+    expect(deon.battleBuff.getAllBuffs().length, 3);
   });
 
   test('Chen Gong NP', () async {

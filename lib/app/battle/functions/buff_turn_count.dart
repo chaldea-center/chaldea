@@ -40,7 +40,7 @@ class BuffTurnCount {
       BattleServantData svt, int changeValue, List<int> targetIndivi, bool isTurn, bool isAny) {
     if (targetIndivi.isEmpty) return false;
     bool changed = false;
-    for (final buff in svt.battleBuff.activeList) {
+    for (final buff in svt.battleBuff.getActiveList()) {
       if (changeValue > 0 || ((!isTurn || buff.logicTurn != 1) && (isTurn || buff.count != 1))) {
         int turn = buff.logicTurn;
         int count = buff.count;
