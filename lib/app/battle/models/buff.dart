@@ -154,23 +154,25 @@ class BuffData {
     int addValue = 0;
     if (vals.ParamAddValue != null) {
       int addCount = 0;
-      if (vals.ParamAddSelfIndividuality != null) {
-        final targetTraits = NiceTrait.list(vals.ParamAddSelfIndividuality!);
+      final selfIndiv = vals.ParamAddSelfIndividuality ?? vals.ParamAddFieldIndividuality;
+      final oppIndiv = vals.ParamAddOpIndividuality ?? vals.ParamAddFieldIndividuality;
+      if (selfIndiv != null) {
+        final targetTraits = NiceTrait.list(selfIndiv);
         addCount += isTarget
             ? battleData.target!.countTrait(battleData, targetTraits) +
                 battleData.target!.countBuffWithTrait(targetTraits)
             : battleData.activator!.countTrait(battleData, targetTraits) +
                 battleData.activator!.countBuffWithTrait(targetTraits);
-      } else if (vals.ParamAddOpIndividuality != null) {
-        final targetTraits = NiceTrait.list(vals.ParamAddOpIndividuality!);
+      }
+      if (oppIndiv != null) {
+        final targetTraits = NiceTrait.list(oppIndiv);
         addCount += isTarget
             ? battleData.activator!.countTrait(battleData, targetTraits) +
                 battleData.activator!.countBuffWithTrait(targetTraits)
             : battleData.target!.countTrait(battleData, targetTraits) +
                 battleData.target!.countBuffWithTrait(targetTraits);
-      } else if (vals.ParamAddFieldIndividuality != null) {
-        addCount += countAnyTraits(battleData.getFieldTraits(), NiceTrait.list(vals.ParamAddFieldIndividuality!));
       }
+
       if (vals.ParamAddMaxCount != null) {
         addCount = min(addCount, vals.ParamAddMaxCount!);
       }
