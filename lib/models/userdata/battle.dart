@@ -217,7 +217,6 @@ class BattleShareData {
 class BattleShareDataOption {
   bool? disableEvent;
   Map<int, int>? pointBuffs;
-  @JsonKey(includeFromJson: false, includeToJson: false)
   bool? simulateAi;
 
   BattleShareDataOption({

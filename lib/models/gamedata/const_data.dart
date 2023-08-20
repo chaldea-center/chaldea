@@ -40,6 +40,7 @@ class ConstGameData {
   //     8044206: 7,
   //   }
   final Map<int, Map<int, int>> eventPointBuffGroupSkillNumMap;
+  final List<int> laplaceUploadAllowAiQuests;
 
   ConstGameData({
     this.attributeRelation = const {},
@@ -54,6 +55,7 @@ class ConstGameData {
     this.funcTypeDetail = const {},
     this.buffTypeDetail = const {},
     this.eventPointBuffGroupSkillNumMap = const {},
+    this.laplaceUploadAllowAiQuests = const [],
   }) : buffTypeActionMap = {} {
     for (final entry in buffActions.entries) {
       for (final type in [...entry.value.plusTypes, ...entry.value.minusTypes]) {

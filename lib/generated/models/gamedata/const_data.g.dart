@@ -77,6 +77,8 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
                 )),
           ) ??
           const {},
+      laplaceUploadAllowAiQuests:
+          (json['laplaceUploadAllowAiQuests'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
     );
 
 Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, dynamic>{
@@ -97,6 +99,7 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
       'buffTypeDetail': instance.buffTypeDetail.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'eventPointBuffGroupSkillNumMap': instance.eventPointBuffGroupSkillNumMap
           .map((k, e) => MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
+      'laplaceUploadAllowAiQuests': instance.laplaceUploadAllowAiQuests,
     };
 
 const _$AttributeEnumMap = {

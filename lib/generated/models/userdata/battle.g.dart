@@ -149,6 +149,7 @@ BattleShareDataOption _$BattleShareDataOptionFromJson(Map json) => $checkedCreat
               (v) => (v as Map?)?.map(
                     (k, e) => MapEntry(int.parse(k as String), e as int),
                   )),
+          simulateAi: $checkedConvert('simulateAi', (v) => v as bool?),
         );
         return val;
       },
@@ -157,6 +158,7 @@ BattleShareDataOption _$BattleShareDataOptionFromJson(Map json) => $checkedCreat
 Map<String, dynamic> _$BattleShareDataOptionToJson(BattleShareDataOption instance) => <String, dynamic>{
       'disableEvent': instance.disableEvent,
       'pointBuffs': instance.pointBuffs?.map((k, e) => MapEntry(k.toString(), e)),
+      'simulateAi': instance.simulateAi,
     };
 
 BattleQuestInfo _$BattleQuestInfoFromJson(Map json) => $checkedCreate(
