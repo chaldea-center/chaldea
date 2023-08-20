@@ -1026,6 +1026,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "td_rankup": MessageLookupByLibrary.simpleMessage("NP Upgrade"),
         "team": MessageLookupByLibrary.simpleMessage("Team"),
         "team_backup_member": MessageLookupByLibrary.simpleMessage("Backup"),
+        "team_block_ce": MessageLookupByLibrary.simpleMessage("Block CE"),
         "team_block_servant": MessageLookupByLibrary.simpleMessage("Block Servant"),
         "team_ce_allow_mlb": MessageLookupByLibrary.simpleMessage("Allow MLB"),
         "team_ce_allow_non_mlb": MessageLookupByLibrary.simpleMessage("Allow non-MLB"),

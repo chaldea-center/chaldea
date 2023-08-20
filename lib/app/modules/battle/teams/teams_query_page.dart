@@ -60,10 +60,11 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   }
 
   PreferredSizeWidget? get appBar {
-    Set<int> svtIds = {};
+    Set<int> svtIds = {}, ceIds = {};
     for (final record in battleRecords) {
       final svts = record.decoded?.team.allSvts ?? [];
       svtIds.addAll(svts.map((e) => e?.svtId ?? 0).where((e) => e > 0));
+      ceIds.addAll(svts.map((e) => e?.ceId ?? 0).where((e) => e > 0));
     }
     if (!svtIds.contains(filterData.useSvts.radioValue)) {
       filterData.useSvts.options.clear();
@@ -92,6 +93,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             builder: (context) => TeamFilter(
               filterData: filterData,
               availableSvts: svtIds,
+              availableCEs: ceIds,
               onChanged: (_) {
                 if (mounted) {
                   setState(() {});
@@ -306,14 +308,19 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   bool filter(UserBattleData record) {
     final data = record.decoded;
     if (data == null) return true;
-    for (final svtCollectionNo in filterData.blockedSvts.options) {
-      if (data.team.allSvts.any((svt) => db.gameData.servantsById[svt?.svtId]?.collectionNo == svtCollectionNo)) {
+    for (final svtId in filterData.blockSvts.options) {
+      if (data.team.allSvts.any((svt) => svt?.svtId == svtId)) {
         return false;
       }
     }
     if (filterData.useSvts.options.isNotEmpty &&
         data.team.allSvts.every((svt) => !filterData.useSvts.options.contains(svt?.svtId))) {
       return false;
+    }
+    for (final ceId in filterData.blockCEs.options) {
+      if (data.team.allSvts.any((svt) => svt?.ceId == ceId)) {
+        return false;
+      }
     }
 
     final attackerTdCard = filterData.attackerTdCardType.radioValue;
@@ -430,12 +437,12 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     if (records != null) {
       hasNextPage = records.length > _pageSize;
       records = hasNextPage ? records.sublist(0, _pageSize) : records;
+      records.sortByList((e) => [e.userId == db.security.username ? 0 : 1, e.id]);
       battleRecords.clear();
       battleRecords.addAll(records);
       for (final r in battleRecords) {
         r.parse();
       }
-      records.sortByList((e) => [e.userId == db.security.username ? 0 : 1, e.id]);
     }
     if (mounted) setState(() {});
   }

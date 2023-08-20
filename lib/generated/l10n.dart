@@ -9748,6 +9748,17 @@ class S {
     );
   }
 
+  /// `Block CE`
+  String get team_block_ce {
+    return Intl.message(
+      'Block CE',
+      name: 'team_block_ce',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Block Servant`
   String get team_block_servant {
     return Intl.message(

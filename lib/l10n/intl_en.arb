@@ -880,6 +880,7 @@
   "td_rankup": "NP Upgrade",
   "team": "Team",
   "team_backup_member": "Backup",
+  "team_block_ce": "Block CE",
   "team_block_servant": "Block Servant",
   "team_ce_allow_mlb": "Allow MLB",
   "team_ce_allow_non_mlb": "Allow non-MLB",

@@ -515,7 +515,11 @@ class CraftFilterData with _FilterData {
 
   Map<String, dynamic> toJson() => _$CraftFilterDataToJson(this);
 
-  static int compare(CraftEssence a, CraftEssence b, {List<CraftCompare>? keys, List<bool>? reversed}) {
+  static int compare(CraftEssence? a, CraftEssence? b, {List<CraftCompare>? keys, List<bool>? reversed}) {
+    if (a == null && b == null) return 0;
+    if (a == null) return -1;
+    if (b == null) return 1;
+
     if (keys == null || keys.isEmpty) {
       keys = [CraftCompare.no];
     }

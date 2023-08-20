@@ -982,6 +982,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "td_rankup": MessageLookupByLibrary.simpleMessage("宝具强化"),
         "team": MessageLookupByLibrary.simpleMessage("队伍"),
         "team_backup_member": MessageLookupByLibrary.simpleMessage("后排从者"),
+        "team_block_ce": MessageLookupByLibrary.simpleMessage("禁用礼装"),
         "team_block_servant": MessageLookupByLibrary.simpleMessage("禁用从者"),
         "team_ce_allow_mlb": MessageLookupByLibrary.simpleMessage("允许满破"),
         "team_ce_allow_non_mlb": MessageLookupByLibrary.simpleMessage("允许未满破"),

@@ -60,11 +60,12 @@ enum CELimitType {
 }
 
 class TeamFilterData {
-  static const List<int> _blockedSvtIds = [16, 258, 284, 307, 314, 316, 357];
+  // static const List<int> _blockedSvtIds = [16, 258, 284, 307, 314, 316, 357];
 
   final attackerTdCardType = FilterRadioData<CardType>(); // attacker only
-  final blockedSvts = FilterGroupData<int>();
+  final blockSvts = FilterGroupData<int>();
   final useSvts = FilterRadioData<int>();
+  final blockCEs = FilterGroupData<int>();
   final normalAttackCount = FilterRadioData<int>.nonnull(-1);
   final criticalAttackCount = FilterRadioData<int>.nonnull(-1);
   final miscOptions = FilterGroupData<TeamFilterMiscType>();
@@ -73,8 +74,9 @@ class TeamFilterData {
 
   List<FilterGroupData> get groups => [
         attackerTdCardType,
-        blockedSvts,
+        blockSvts,
         useSvts,
+        blockCEs,
         normalAttackCount,
         criticalAttackCount,
         miscOptions,
@@ -91,11 +93,13 @@ class TeamFilterData {
 
 class TeamFilter extends FilterPage<TeamFilterData> {
   final Set<int> availableSvts; // in fetched teams
+  final Set<int> availableCEs;
   const TeamFilter({
     super.key,
     required super.filterData,
     super.onChanged,
     this.availableSvts = const {},
+    required this.availableCEs,
   });
 
   @override
@@ -108,6 +112,10 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
     final availableSvts = widget.availableSvts.toList();
     availableSvts.sort((a, b) => SvtFilterData.compare(db.gameData.servantsById[a], db.gameData.servantsById[b],
         keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no], reversed: [true, false, true]));
+    final availableCEs = widget.availableCEs.toList();
+    availableCEs.sort((a, b) => CraftFilterData.compare(
+        db.gameData.craftEssencesById[a], db.gameData.craftEssencesById[b],
+        keys: [CraftCompare.rarity, CraftCompare.no], reversed: [true, true]));
     return buildAdaptive(
       title: Text(S.current.filter, textScaleFactor: 0.8),
       actions: getDefaultActions(onTapReset: () {
@@ -202,10 +210,10 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
         ),
         FilterGroup<int>(
           title: Text(S.current.team_block_servant),
-          options: TeamFilterData._blockedSvtIds,
-          values: filterData.blockedSvts,
+          options: availableSvts,
+          values: filterData.blockSvts,
           constraints: const BoxConstraints(maxHeight: 50),
-          optionBuilder: (v) => svtIcon(v),
+          optionBuilder: (v) => cardIcon(v),
           shrinkWrap: true,
           onFilterChanged: (value, _) {
             update();
@@ -215,9 +223,20 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
           title: Text(S.current.team_use_servant),
           options: availableSvts,
           values: filterData.useSvts,
-          optionBuilder: (v) => svtIcon(v),
+          optionBuilder: (v) => cardIcon(v),
           shrinkWrap: true,
           constraints: const BoxConstraints(maxHeight: 50),
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
+        FilterGroup<int>(
+          title: Text(S.current.team_block_ce),
+          options: availableCEs,
+          values: filterData.blockCEs,
+          constraints: const BoxConstraints(maxHeight: 50),
+          optionBuilder: (v) => cardIcon(v),
+          shrinkWrap: true,
           onFilterChanged: (value, _) {
             update();
           },
@@ -226,12 +245,12 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
     );
   }
 
-  Widget svtIcon(int id) {
-    final svt = db.gameData.servantsNoDup[id] ?? db.gameData.servantsById[id];
-    if (svt == null) return Text(id.toString());
+  Widget cardIcon(int id) {
+    final card = db.gameData.servantsById[id] ?? db.gameData.craftEssencesById[id];
+    if (card == null) return Text(id.toString());
     return Opacity(
       opacity: 0.9,
-      child: svt.iconBuilder(
+      child: card.iconBuilder(
         context: context,
         height: 42,
         jumpToDetail: false,
