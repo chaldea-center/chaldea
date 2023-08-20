@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.4.12
+
+- Fix Kingprotea skill 3 NP Damage Up
+- Fix Command Seal
+- Fix Serva Fes 2023 event point buff
+- Fix some field buff condition check
+- Simple AI simulation(alpha testing!) for Tunguska raid
+
 ## 2.4.11
 
 - Support Summer Barghest NP Change buff
