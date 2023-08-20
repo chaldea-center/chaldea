@@ -42,12 +42,13 @@ class FieldAiManager with _AiManagerBase {
             final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.fieldAi, skillLv: ai.aiAct.skillLv ?? 1);
             await skillInfo.activate(battleData, defaultToPlayer: true);
             battleData.recorder.skill(
-                prefix: 'FieldAI: ',
-                battleData: battleData,
-                activator: null,
-                skill: skillInfo,
-                fromPlayer: true,
-                uploadEligible: false);
+              prefix: 'FieldAI: ',
+              battleData: battleData,
+              activator: null,
+              skill: skillInfo,
+              fromPlayer: true,
+              uploadEligible: battleData.niceQuest?.isLaplaceAllowAi == true,
+            );
             break;
           }
         }
@@ -87,7 +88,7 @@ class SvtAiManager with _AiManagerBase {
           activator: actor,
           skill: skillInfo,
           fromPlayer: actor.isPlayer,
-          uploadEligible: false,
+          uploadEligible: battleData.niceQuest?.isLaplaceAllowAi == true,
         );
         break;
       }
@@ -114,7 +115,7 @@ class SvtAiManager with _AiManagerBase {
           activator: actor,
           skill: skillInfo,
           fromPlayer: actor.isPlayer,
-          uploadEligible: false,
+          uploadEligible: battleData.niceQuest?.isLaplaceAllowAi == true,
         );
         break;
       }
@@ -143,7 +144,7 @@ class SvtAiManager with _AiManagerBase {
           activator: actor,
           skill: skillInfo,
           fromPlayer: actor.isPlayer,
-          uploadEligible: false,
+          uploadEligible: battleData.niceQuest?.isLaplaceAllowAi == true,
         );
         break;
       }

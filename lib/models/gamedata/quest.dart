@@ -298,6 +298,8 @@ class Quest with RouteInfo {
     return id > 0 && id != WarId.daily && (isAnyFree || isRepeatRaid);
   }
 
+  bool get isLaplaceAllowAi => ConstData.laplaceUploadAllowAiQuests.contains(id);
+
   List<String> get allScriptIds {
     return [for (final phase in phaseScripts) ...phase.scripts.map((e) => e.scriptId)];
   }
