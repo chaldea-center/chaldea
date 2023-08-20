@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 
+import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
 
 class DarkLightThemePalette extends StatefulWidget {
@@ -25,13 +26,13 @@ class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
           children: [
             Expanded(
               child: Theme(
-                data: ThemeData.light(),
+                data: _getThemeData(dark: false),
                 child: Builder(builder: (context) => const _PaletteForTheme()),
               ),
             ),
             Expanded(
               child: Theme(
-                data: ThemeData.dark(),
+                data: _getThemeData(dark: true),
                 child: Builder(builder: (context) => const _PaletteForTheme()),
               ),
             ),
@@ -39,6 +40,16 @@ class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
         ),
       ),
     );
+  }
+
+  ThemeData _getThemeData({required bool dark}) {
+    final useM3 = db.settings.m3Color != null;
+    final themeData = ThemeData(
+      brightness: dark ? Brightness.dark : Brightness.light,
+      useMaterial3: useM3,
+      colorSchemeSeed: db.settings.m3Color?.color,
+    );
+    return themeData;
   }
 }
 

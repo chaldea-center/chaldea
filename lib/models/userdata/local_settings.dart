@@ -35,6 +35,7 @@ class LocalSettings {
   int launchTimes;
   int lastBackup;
   ThemeMode themeMode;
+  ColorSeed? m3Color;
   bool enableMouseDrag;
   bool globalSelection;
   String? _language;
@@ -85,6 +86,7 @@ class LocalSettings {
     this.launchTimes = 0,
     this.lastBackup = 0,
     this.themeMode = ThemeMode.system,
+    this.m3Color,
     this.enableMouseDrag = true,
     this.globalSelection = false,
     String? language,
@@ -495,4 +497,20 @@ enum ItemDetailSvtSort {
   collectionNo,
   clsName,
   rarity,
+}
+
+enum ColorSeed {
+  baseColor('M3 Baseline', Color(0xff6750a4)),
+  indigo('Indigo', Colors.indigo),
+  blue('Blue', Colors.blue),
+  teal('Teal', Colors.teal),
+  green('Green', Colors.green),
+  yellow('Yellow', Colors.yellow),
+  orange('Orange', Colors.orange),
+  deepOrange('Deep Orange', Colors.deepOrange),
+  pink('Pink', Colors.pink);
+
+  const ColorSeed(this.label, this.color);
+  final String label;
+  final Color color;
 }

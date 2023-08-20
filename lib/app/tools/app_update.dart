@@ -169,7 +169,7 @@ class AppUpdater {
     final releases = await _githubReleases('chaldea-center', 'chaldea');
     AppUpdateDetail? _latest;
     for (final release in releases) {
-      if (release.version == null || (release.version! <= AppInfo.version && !kDebugMode)) {
+      if (release.version == null || release.prerelease || (release.version! <= AppInfo.version && !kDebugMode)) {
         continue;
       }
       final installer = release.assets.firstWhereOrNull((e) => e.name.contains(os!) && !e.name.contains('sha1'));

@@ -21,6 +21,7 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
           lastBackup: $checkedConvert('lastBackup', (v) => v as int? ?? 0),
           themeMode:
               $checkedConvert('themeMode', (v) => $enumDecodeNullable(_$ThemeModeEnumMap, v) ?? ThemeMode.system),
+          m3Color: $checkedConvert('m3Color', (v) => $enumDecodeNullable(_$ColorSeedEnumMap, v)),
           enableMouseDrag: $checkedConvert('enableMouseDrag', (v) => v as bool? ?? true),
           globalSelection: $checkedConvert('globalSelection', (v) => v as bool? ?? false),
           language: $checkedConvert('language', (v) => v as String?),
@@ -102,6 +103,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'launchTimes': instance.launchTimes,
       'lastBackup': instance.lastBackup,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
+      'm3Color': _$ColorSeedEnumMap[instance.m3Color],
       'enableMouseDrag': instance.enableMouseDrag,
       'globalSelection': instance.globalSelection,
       'preferredRegions': instance.preferredRegions?.map(const RegionConverter().toJson).toList(),
@@ -143,6 +145,18 @@ const _$ThemeModeEnumMap = {
   ThemeMode.system: 'system',
   ThemeMode.light: 'light',
   ThemeMode.dark: 'dark',
+};
+
+const _$ColorSeedEnumMap = {
+  ColorSeed.baseColor: 'baseColor',
+  ColorSeed.indigo: 'indigo',
+  ColorSeed.blue: 'blue',
+  ColorSeed.teal: 'teal',
+  ColorSeed.green: 'green',
+  ColorSeed.yellow: 'yellow',
+  ColorSeed.orange: 'orange',
+  ColorSeed.deepOrange: 'deepOrange',
+  ColorSeed.pink: 'pink',
 };
 
 const _$FavoriteStateEnumMap = {

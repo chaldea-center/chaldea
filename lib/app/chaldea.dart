@@ -93,8 +93,11 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
   }
 
   ThemeData _getThemeData({required bool dark}) {
+    final useM3 = db.settings.m3Color != null;
     final themeData = ThemeData(
       brightness: dark ? Brightness.dark : Brightness.light,
+      useMaterial3: useM3,
+      colorSchemeSeed: db.settings.m3Color?.color,
     );
     return themeData.copyWith(
       appBarTheme: themeData.appBarTheme.copyWith(

@@ -22,6 +22,7 @@ import 'subpage/game_server_page.dart';
 import 'subpage/login_page.dart';
 import 'subpage/network_settings.dart';
 import 'subpage/share_app_dialog.dart';
+import 'subpage/theme_color.dart';
 import 'subpage/translation_setting.dart';
 import 'subpage/user_data_page.dart';
 
@@ -67,7 +68,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 leading: const Icon(Icons.dns),
                 title: Text(S.current.chaldea_server),
                 // subtitle: Text(S.current.chaldea_server_hint),
-                horizontalTitleGap: 0,
+                // horizontalTitleGap: 0,
                 trailing: _wrapArrowTrailing(db.onSettings((context, snapshot) =>
                     Text(db.settings.proxyServer ? S.current.chaldea_server_cn : S.current.chaldea_server_global))),
                 onTap: () {
@@ -226,6 +227,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     },
                   ),
                 ),
+              ),
+              ListTile(
+                title: const Text('Theme Color'),
+                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                onTap: () {
+                  router.popDetailAndPush(child: const ThemeColorPage());
+                },
               ),
               ListTile(
                 title: Text(S.current.display_setting),
@@ -413,7 +421,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget get userTile {
     return ListTile(
       leading: const Icon(Icons.person),
-      horizontalTitleGap: 0,
+      // horizontalTitleGap: 0,
       title: Text(S.current.login_username),
       trailing: db.onSettings((context, snapshot) => Text(db.security.username ?? '')),
       onTap: () {
