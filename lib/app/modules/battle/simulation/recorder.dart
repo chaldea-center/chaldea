@@ -28,6 +28,7 @@ class BattleRecorderPanel extends StatefulWidget {
   final BattleData? battleData;
   final List<BattleRecord>? records;
   final QuestPhase? quest;
+  final BattleOptions? options;
   final BattleTeamSetup? team;
   final bool initShowTeam;
   const BattleRecorderPanel({
@@ -35,6 +36,7 @@ class BattleRecorderPanel extends StatefulWidget {
     this.battleData,
     this.records,
     this.quest,
+    this.options,
     this.team,
     this.initShowTeam = false,
   });
@@ -62,6 +64,7 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
         records: widget.records,
         showDetail: showDetail,
         quest: showQuest ? widget.quest : null,
+        options: widget.options,
         team: showTeam ? widget.team : null,
         showTwoColumn: showTwoColumn,
       ),
@@ -305,6 +308,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
   final BattleData? battleData;
   final List<BattleRecord>? records;
   final QuestPhase? quest;
+  final BattleOptions? options;
   final BattleTeamSetup? team;
   final bool showDetail;
   final bool showTwoColumn;
@@ -314,6 +318,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
     this.battleData,
     this.records,
     this.quest,
+    this.options,
     this.team,
     required this.showDetail,
     required this.showTwoColumn,
@@ -324,6 +329,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
     List<(double, Widget)> children = [
       if (quest != null) (308.0, getQuest(quest!)),
       if (team != null) (115.0, getTeam(context, team!)),
+      if (options != null) getOptions(context, options!),
       ...getRecordCards(context),
     ];
     if (battleData?.isBattleWin == true) {
@@ -473,19 +479,11 @@ class BattleRecorderPanelBase extends StatelessWidget {
   (double, Widget) createWave(BuildContext context, List<(double, Widget)> children) {
     return (
       Maths.sum(children.map((e) => e.$1)) + 12,
-      Card(
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: children.map((e) => e.$2).toList(),
-          ),
-        ),
-      )
+      createCard(Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children.map((e) => e.$2).toList(),
+      ))
     );
   }
 
@@ -679,6 +677,47 @@ class BattleRecorderPanelBase extends StatelessWidget {
             //   getMysticCode(context, team.mysticCodeData.mysticCode!, team.mysticCodeData.level),
           ],
         ),
+      ),
+    );
+  }
+
+  (double, Widget) getOptions(BuildContext context, BattleOptions options) {
+    List<Widget> children = [];
+    double height = 0;
+    if (options.pointBuffs.isNotEmpty) {
+      final groupIds = options.pointBuffs.keys.toList();
+      groupIds.sort();
+      children.add(Text.rich(TextSpan(
+        text: '${S.current.event_point}: ',
+        children: groupIds.map<InlineSpan>((groupId) {
+          final pointBuff = options.pointBuffs[groupId]!;
+          final group = db.gameData.others.eventPointBuffGroups[groupId];
+          final icon = group?.icon ?? pointBuff.icon;
+          return TextSpan(children: [
+            CenterWidgetSpan(child: db.getIconImage(icon, width: 18)),
+            TextSpan(text: group?.lName.l ?? "Group $groupId ", style: Theme.of(context).textTheme.bodySmall),
+            if (pointBuff.skillIcon != null) CenterWidgetSpan(child: db.getIconImage(pointBuff.skillIcon, width: 18)),
+            if (pointBuff.lv > 0)
+              TextSpan(text: ' Lv${pointBuff.lv}; ')
+            else
+              TextSpan(text: ' ${pointBuff.eventPoint}; '),
+          ]);
+        }).toList(),
+      )));
+      height += 26;
+    }
+    if (children.isEmpty) return (height, const SizedBox.shrink());
+    return (height, createCard(Column(mainAxisSize: MainAxisSize.min, children: children)));
+  }
+
+  Widget createCard(Widget child) {
+    return Card(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        child: child,
       ),
     );
   }

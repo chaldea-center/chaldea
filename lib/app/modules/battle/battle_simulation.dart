@@ -320,6 +320,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             battleData: battleData,
             quest: questPhase,
             team: widget.options.team,
+            options: widget.options,
             initShowTeam: widget.replayActions != null,
           ),
         )

@@ -618,6 +618,8 @@ class EventPointGroup {
     String? icon,
   }) : icon = icon != null && icon.endsWith('/Items/0.png') ? null : icon;
 
+  Transl<String, String> get lName => Transl.itemNames(name);
+
   factory EventPointGroup.fromJson(Map<String, dynamic> json) => _$EventPointGroupFromJson(json);
 
   Map<String, dynamic> toJson() => _$EventPointGroupToJson(this);
