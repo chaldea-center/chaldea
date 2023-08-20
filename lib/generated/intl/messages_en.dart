@@ -727,11 +727,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "my_room": MessageLookupByLibrary.simpleMessage("My Room"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("Mystic Code"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
-        "network_cur_connection": MessageLookupByLibrary.simpleMessage("Connection"),
         "network_force_online": MessageLookupByLibrary.simpleMessage("Force Online Mode"),
         "network_force_online_hint":
             MessageLookupByLibrary.simpleMessage("App will change to offline mode if no network detected"),
         "network_settings": MessageLookupByLibrary.simpleMessage("Network Settings"),
+        "network_status": MessageLookupByLibrary.simpleMessage("Network Status"),
         "new_account": MessageLookupByLibrary.simpleMessage("New account"),
         "new_data_available": MessageLookupByLibrary.simpleMessage("New data available"),
         "new_drop_data_6th": MessageLookupByLibrary.simpleMessage("New Drop Data"),

@@ -45,7 +45,9 @@ class LocalSettings {
   bool updateDataBeforeStart;
   bool checkDataHash;
   bool autoUpdateApp;
+  @protected
   bool proxyServer; // when change this, also change Hosts.cn
+  ProxySettings proxy;
   bool autoRotate;
   bool autoResetFilter;
   bool hideUnreleasedCard;
@@ -97,6 +99,7 @@ class LocalSettings {
     this.updateDataBeforeStart = false,
     this.checkDataHash = true,
     this.proxyServer = false,
+    ProxySettings? proxy,
     this.autoUpdateApp = true,
     this.autoRotate = true,
     this.autoResetFilter = true,
@@ -130,6 +133,7 @@ class LocalSettings {
             : (List.of(Region.values)..sort2((e) => preferredRegions.indexOf(e) % Region.values.length)),
         priorityTags = priorityTags ?? {},
         galleries = galleries ?? {},
+        proxy = proxy ?? ProxySettings(proxy: proxyServer),
         display = display ?? DisplaySettings(),
         carousel = carousel ?? CarouselSetting(),
         github = github ?? GithubSetting(),
@@ -194,6 +198,37 @@ class LocalSettings {
     }
     return themeMode == ThemeMode.dark;
   }
+}
+
+@JsonSerializable()
+class ProxySettings {
+  bool proxy;
+  bool api;
+  bool worker;
+  bool data;
+  bool atlasApi;
+  bool atlasAsset;
+
+  ProxySettings({
+    this.proxy = false,
+    bool? api,
+    bool? worker,
+    bool? data,
+    bool? atlasApi,
+    bool? atlasAsset,
+  })  : api = api ?? proxy,
+        worker = worker ?? proxy,
+        data = data ?? proxy,
+        atlasApi = atlasApi ?? proxy,
+        atlasAsset = atlasAsset ?? false;
+
+  void setAll(bool v) {
+    proxy = api = worker = data = atlasApi = v;
+  }
+
+  factory ProxySettings.fromJson(Map<String, dynamic> data) => _$ProxySettingsFromJson(data);
+
+  Map<String, dynamic> toJson() => _$ProxySettingsToJson(this);
 }
 
 @JsonSerializable()

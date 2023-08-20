@@ -14,7 +14,6 @@ import 'package:chaldea/widgets/tile_items.dart';
 import '../root/global_fab.dart';
 import 'subpage/about_page.dart';
 import 'subpage/account_page.dart';
-import 'subpage/chaldea_server_page.dart';
 import 'subpage/display_setting_page.dart';
 import 'subpage/feedback_page.dart';
 import 'subpage/game_data_page.dart';
@@ -66,13 +65,10 @@ class _SettingsPageState extends State<SettingsPage> {
               userTile,
               ListTile(
                 leading: const Icon(Icons.dns),
-                title: Text(S.current.chaldea_server),
-                // subtitle: Text(S.current.chaldea_server_hint),
-                // horizontalTitleGap: 0,
-                trailing: _wrapArrowTrailing(db.onSettings((context, snapshot) =>
-                    Text(db.settings.proxyServer ? S.current.chaldea_server_cn : S.current.chaldea_server_global))),
+                title: Text(S.current.network_settings),
+                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
-                  router.popDetailAndPush(child: const ChaldeaServerPage());
+                  router.popDetailAndPush(child: const NetworkSettingsPage());
                 },
               ),
             ],
@@ -240,13 +236,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
                   router.popDetailAndPush(child: DisplaySettingPage());
-                },
-              ),
-              ListTile(
-                title: Text(S.current.network_settings),
-                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-                onTap: () {
-                  router.popDetailAndPush(child: const NetworkSettingsPage());
                 },
               ),
               if (kIsWeb)

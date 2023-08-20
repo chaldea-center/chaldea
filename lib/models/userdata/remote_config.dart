@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../db.dart';
 import '_helper.dart';
+import 'local_settings.dart';
 
 part '../../generated/models/userdata/remote_config.g.dart';
 
@@ -92,32 +93,32 @@ class UrlProxy {
 class HostsX {
   const HostsX._();
   static ServerUrlConfig get _config => db.settings.remoteConfig.urls;
-  static bool get proxy => db.settings.proxyServer;
+  static ProxySettings get proxy => db.settings.proxy;
 
   static UrlProxy get app => _config.app;
-  static String get appHost => _config.app.of(proxy);
+  static String get appHost => _config.app.of(proxy.data);
 
   static UrlProxy get api => _config.api;
-  static String get apiHost => _config.api.of(proxy);
+  static String get apiHost => _config.api.of(proxy.api);
 
   static UrlProxy get worker => _config.worker;
-  static String get workerHost => _config.worker.of(proxy);
+  static String get workerHost => _config.worker.of(proxy.worker);
 
   static UrlProxy get data => _config.data;
-  static String get dataHost => _config.data.of(proxy);
+  static String get dataHost => _config.data.of(proxy.data);
 
   static UrlProxy get atlasApi => _config.atlasApi;
-  static String get atlasApiHost => _config.atlasApi.of(proxy);
+  static String get atlasApiHost => _config.atlasApi.of(proxy.atlasApi);
 
   static UrlProxy get atlasAsset => _config.atlasAsset;
   static String get atlasAssetHost {
     // if (kIsWeb || !proxy) return atlasAsset.global;
     // return _config.atlasAsset.of(Random().nextInt(10) > 6);
-    return atlasAsset.of(proxy);
+    return atlasAsset.of(proxy.atlasAsset);
   }
 
   static String proxyWorker(String url, {bool onlyCN = true}) {
-    if (onlyCN && !proxy) {
+    if (onlyCN && !proxy.worker) {
       return url;
     }
     return Uri.parse(workerHost).replace(path: '/proxy/custom', queryParameters: {'url': url}).toString();

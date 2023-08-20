@@ -6657,17 +6657,6 @@ class S {
     );
   }
 
-  /// `Connection`
-  String get network_cur_connection {
-    return Intl.message(
-      'Connection',
-      name: 'network_cur_connection',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Force Online Mode`
   String get network_force_online {
     return Intl.message(
@@ -6695,6 +6684,17 @@ class S {
     return Intl.message(
       'Network Settings',
       name: 'network_settings',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Network Status`
+  String get network_status {
+    return Intl.message(
+      'Network Status',
+      name: 'network_status',
       desc: '',
       locale: localeName,
       args: [],

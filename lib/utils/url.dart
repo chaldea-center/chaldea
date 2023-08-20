@@ -31,7 +31,7 @@ class ChaldeaUrl {
         useCN = true;
       }
     }
-    useCN ??= HostsX.proxy || Language.isCHS;
+    useCN ??= HostsX.proxy.data || Language.isCHS;
     if (!path.startsWith('/')) path = '/$path';
     return HostsX.app.of(useCN) + path;
   }

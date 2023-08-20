@@ -598,7 +598,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "move_up": MessageLookupByLibrary.simpleMessage("업"),
         "my_room": MessageLookupByLibrary.simpleMessage("마이룸"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("마술예장"),
-        "network_cur_connection": MessageLookupByLibrary.simpleMessage("코넥션"),
         "network_force_online": MessageLookupByLibrary.simpleMessage("강제 온라인 모드"),
         "network_force_online_hint": MessageLookupByLibrary.simpleMessage("네트워크가 감지되지 않으면 앱이 오프라인 모드로 변경됩니다."),
         "network_settings": MessageLookupByLibrary.simpleMessage("네트워크 설정"),

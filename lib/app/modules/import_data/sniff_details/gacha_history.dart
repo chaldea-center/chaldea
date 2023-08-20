@@ -52,7 +52,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
   Future<List<MstGacha>?> _fetchMst(Region region) async {
     String url =
         "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/master/mstGacha.json";
-    if (db.settings.proxyServer) url = HostsX.proxyWorker(url);
+    if (db.settings.proxy.worker) url = HostsX.proxyWorker(url);
     AtlasApi.cacheManager.clearFailed();
     final d = await AtlasApi.cacheManager.getModel<List<MstGacha>>(
       url,

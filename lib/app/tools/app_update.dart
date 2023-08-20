@@ -220,7 +220,7 @@ class AppUpdateDetail {
 
 Future<List<_Release>> _githubReleases(String org, String repo) async {
   final dio = DioE();
-  final root = db.settings.proxyServer ? '${HostsX.worker.cn}/proxy/github/api.github.com' : 'https://api.github.com';
+  final root = db.settings.proxy.worker ? '${HostsX.worker.cn}/proxy/github/api.github.com' : 'https://api.github.com';
   final resp = await dio.get('$root/repos/$org/$repo/releases');
   return (resp.data as List).map((e) => _Release.fromJson(e)).toList();
 }
@@ -268,7 +268,7 @@ class _Asset {
   });
 
   String get downloadUrl {
-    return db.settings.proxyServer ? proxyUrl : browserDownloadUrl;
+    return db.settings.proxy.worker ? proxyUrl : browserDownloadUrl;
   }
 
   String get proxyUrl {

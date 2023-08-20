@@ -5,14 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 
-import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/userdata/remote_config.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'chaldea_server_page.dart';
 
 class NetworkSettingsPage extends StatefulWidget {
   const NetworkSettingsPage({super.key});
@@ -21,33 +20,63 @@ class NetworkSettingsPage extends StatefulWidget {
   State<NetworkSettingsPage> createState() => _NetworkSettingsPageState();
 }
 
+class _Group {
+  final String title;
+  final String globalUrl;
+  final String cnUrl;
+  final bool Function() getValue;
+  final ValueChanged<bool> onChanged;
+  _Group({
+    required this.title,
+    required this.globalUrl,
+    required this.cnUrl,
+    required this.getValue,
+    required this.onChanged,
+  });
+}
+
 class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
   ConnectivityResult? _connectivity;
   late StreamSubscription<ConnectivityResult> _subscription;
   Map<String, dynamic> testResults = {};
 
-  final testUrls = {
-    'Chaldea Data': [
-      '${HostsX.data.global}/version.json',
-      '${HostsX.data.cn}/version.json',
-    ],
-    'Chaldea Server(Account)': [
-      '${HostsX.worker.global}/network/ping',
-      '${HostsX.worker.cn}/network/ping',
-    ],
-    'Chaldea Server(Recognizer)': [
-      '${HostsX.api.global}/network/ping',
-      '${HostsX.api.cn}/network/ping',
-    ],
-    'Atlas Api': [
-      '${HostsX.atlasApi.global}/info',
-      '${HostsX.atlasApi.cn}/info',
-    ],
-    'Atlas Assets': [
-      '${HostsX.atlasAsset.global}/JP/Script/Common/QuestStart.txt',
-      '${HostsX.atlasAsset.cn}/JP/Script/Common/QuestStart.txt',
-    ],
-  };
+  final testGroups = [
+    _Group(
+      title: 'Chaldea Data',
+      globalUrl: '${HostsX.data.global}/version.json',
+      cnUrl: '${HostsX.data.cn}/version.json',
+      getValue: () => db.settings.proxy.data,
+      onChanged: (v) => db.settings.proxy.data = v,
+    ),
+    _Group(
+      title: '${S.current.chaldea_server}(Account/Laplace)',
+      globalUrl: '${HostsX.worker.global}/network/ping',
+      cnUrl: '${HostsX.worker.cn}/network/ping',
+      getValue: () => db.settings.proxy.worker,
+      onChanged: (v) => db.settings.proxy.worker = v,
+    ),
+    _Group(
+      title: '${S.current.chaldea_server}(Recognizer)',
+      globalUrl: '${HostsX.api.global}/network/ping',
+      cnUrl: '${HostsX.api.cn}/network/ping',
+      getValue: () => db.settings.proxy.api,
+      onChanged: (v) => db.settings.proxy.api = v,
+    ),
+    _Group(
+      title: 'Atlas Api',
+      globalUrl: '${HostsX.atlasApi.global}/info',
+      cnUrl: '${HostsX.atlasApi.cn}/info',
+      getValue: () => db.settings.proxy.atlasApi,
+      onChanged: (v) => db.settings.proxy.atlasApi = v,
+    ),
+    _Group(
+      title: 'Atlas Assets',
+      globalUrl: '${HostsX.atlasAsset.global}/JP/Script/Common/QuestStart.txt',
+      cnUrl: '${HostsX.atlasAsset.cn}/JP/Script/Common/QuestStart.txt',
+      getValue: () => db.settings.proxy.atlasAsset,
+      onChanged: (v) => db.settings.proxy.atlasAsset = v,
+    ),
+  ];
 
   @override
   void initState() {
@@ -60,78 +89,78 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
   @override
   Widget build(BuildContext context) {
     _connectivity = network.connectivity;
-    final serverHint = SFooter('1 - ${S.current.chaldea_server}: ${S.current.chaldea_server_global}\n'
-        '2 - ${S.current.chaldea_server}: ${S.current.chaldea_server_cn}');
+    const serverHint = SHeader('对于大陆用户，若海外路线可正常使用，请尽量使用海外路线以节约流量费！');
     return Scaffold(
       appBar: AppBar(title: Text(S.current.network_settings)),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        children: [
-          // const SizedBox(height: 16),
-          TileGroup(
-            footer: S.current.network_force_online_hint,
-            children: [
-              ListTile(
-                dense: true,
-                leading: const Icon(Icons.dns),
-                title: Text(S.current.chaldea_server),
-                horizontalTitleGap: 0,
-                trailing: Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: <Widget>[
-                    db.onSettings((context, snapshot) =>
-                        Text(db.settings.proxyServer ? S.current.chaldea_server_cn : S.current.chaldea_server_global)),
-                    Icon(DirectionalIcons.keyboard_arrow_forward(context))
-                  ],
+      body: ListTileTheme.merge(
+        minLeadingWidth: 28,
+        child: ListView(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          children: [
+            // const SizedBox(height: 16),
+            TileGroup(
+              // footer: S.current.network_force_online_hint,
+              children: [
+                ListTile(
+                  dense: true,
+                  title: Text(S.current.network_status),
+                  trailing: _textWithIndicator(
+                      _connectivity?.name ?? '?', _connectivity != null && _connectivity != ConnectivityResult.none),
                 ),
-                onTap: () {
-                  router.pushPage(const ChaldeaServerPage());
-                },
-              ),
-              ListTile(
-                dense: true,
-                title: Text(S.current.network_cur_connection),
-                trailing: _textWithIndicator(
-                    _connectivity?.name ?? '?', _connectivity != null && _connectivity != ConnectivityResult.none),
-              ),
-              SwitchListTile.adaptive(
-                value: db.settings.forceOnline,
-                title: Text(S.current.network_force_online),
-                dense: true,
-                onChanged: (v) {
-                  setState(() {
-                    db.settings.forceOnline = v;
-                  });
-                },
-              ),
-            ],
-          ),
-          const Divider(height: 8),
-          Center(
-            child: ElevatedButton(
-              onPressed: _testNetwork,
-              child: Text(S.current.test),
+                SwitchListTile.adaptive(
+                  value: db.settings.forceOnline,
+                  title: Text(S.current.network_force_online),
+                  subtitle: Text(S.current.network_force_online_hint),
+                  dense: true,
+                  onChanged: (v) {
+                    setState(() {
+                      db.settings.forceOnline = v;
+                    });
+                  },
+                ),
+              ],
             ),
-          ),
-          serverHint,
-          for (final (key, urls) in testUrls.items) _buildGroup(key, urls),
-          SafeArea(child: serverHint),
-        ],
+            // const Divider(height: 8),
+            const SizedBox(height: 8),
+            Center(
+              child: ElevatedButton(
+                onPressed: _testNetwork,
+                child: Text(S.current.test.toUpperCase()),
+              ),
+            ),
+            if (Language.isCHS) serverHint,
+            for (final group in testGroups) _buildGroup(group),
+            SafeArea(child: Language.isCHS ? serverHint : const SizedBox()),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildGroup(String title, List<String> urls) {
+  Widget _buildGroup(_Group group) {
     return TileGroup(
-      header: title,
-      children: [
-        for (final (index, url) in urls.enumerate)
-          ListTile(
-            dense: true,
-            title: Text('${index + 1}  ${Uri.parse(url).origin}'),
-            trailing: _getStatus(url),
-          )
-      ],
+      header: group.title,
+      children: [false, true].map((v) {
+        final url = v ? group.cnUrl : group.globalUrl;
+        return RadioListTile(
+          dense: true,
+          value: v,
+          groupValue: group.getValue(),
+          title: Text.rich(TextSpan(children: [
+            TextSpan(
+              text: '${v ? S.current.chaldea_server_cn : S.current.chaldea_server_global}: ',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            TextSpan(text: Uri.parse(url).origin),
+          ])),
+          secondary: _getStatus(url),
+          onChanged: (v) {
+            setState(() {
+              if (v != null) group.onChanged(v);
+            });
+          },
+        );
+      }).toList(),
     );
   }
 
@@ -199,8 +228,8 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
   void _testNetwork() async {
     testResults.clear();
     setState(() {});
-    for (final group in testUrls.values) {
-      for (final url in group) {
+    for (final group in testGroups) {
+      for (final url in [group.globalUrl, group.cnUrl]) {
         scheduleMicrotask(() async {
           final completer = testResults[url] = Completer();
           if (mounted) setState(() {});

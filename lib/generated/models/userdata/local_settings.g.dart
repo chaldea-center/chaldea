@@ -32,6 +32,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
           updateDataBeforeStart: $checkedConvert('updateDataBeforeStart', (v) => v as bool? ?? false),
           checkDataHash: $checkedConvert('checkDataHash', (v) => v as bool? ?? true),
           proxyServer: $checkedConvert('proxyServer', (v) => v as bool? ?? false),
+          proxy: $checkedConvert(
+              'proxy', (v) => v == null ? null : ProxySettings.fromJson(Map<String, dynamic>.from(v as Map))),
           autoUpdateApp: $checkedConvert('autoUpdateApp', (v) => v as bool? ?? true),
           autoRotate: $checkedConvert('autoRotate', (v) => v as bool? ?? true),
           autoResetFilter: $checkedConvert('autoResetFilter', (v) => v as bool? ?? true),
@@ -114,6 +116,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'checkDataHash': instance.checkDataHash,
       'autoUpdateApp': instance.autoUpdateApp,
       'proxyServer': instance.proxyServer,
+      'proxy': instance.proxy.toJson(),
       'autoRotate': instance.autoRotate,
       'autoResetFilter': instance.autoResetFilter,
       'hideUnreleasedCard': instance.hideUnreleasedCard,
@@ -178,6 +181,31 @@ Json? _$JsonConverterToJson<Json, Value>(
   Json? Function(Value value) toJson,
 ) =>
     value == null ? null : toJson(value);
+
+ProxySettings _$ProxySettingsFromJson(Map json) => $checkedCreate(
+      'ProxySettings',
+      json,
+      ($checkedConvert) {
+        final val = ProxySettings(
+          proxy: $checkedConvert('proxy', (v) => v as bool? ?? false),
+          api: $checkedConvert('api', (v) => v as bool?),
+          worker: $checkedConvert('worker', (v) => v as bool?),
+          data: $checkedConvert('data', (v) => v as bool?),
+          atlasApi: $checkedConvert('atlasApi', (v) => v as bool?),
+          atlasAsset: $checkedConvert('atlasAsset', (v) => v as bool?),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$ProxySettingsToJson(ProxySettings instance) => <String, dynamic>{
+      'proxy': instance.proxy,
+      'api': instance.api,
+      'worker': instance.worker,
+      'data': instance.data,
+      'atlasApi': instance.atlasApi,
+      'atlasAsset': instance.atlasAsset,
+    };
 
 DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate(
       'DisplaySettings',

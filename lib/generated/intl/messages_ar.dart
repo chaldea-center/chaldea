@@ -419,7 +419,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "move_down": MessageLookupByLibrary.simpleMessage("تحرك لأسفل"),
         "move_up": MessageLookupByLibrary.simpleMessage("تحرك لأعلى"),
         "mystic_code": MessageLookupByLibrary.simpleMessage("الميستك كود"),
-        "network_cur_connection": MessageLookupByLibrary.simpleMessage("الاتصال"),
         "network_settings": MessageLookupByLibrary.simpleMessage("اعدادت الشبكة"),
         "new_account": MessageLookupByLibrary.simpleMessage("حساب جديد"),
         "new_data_available": MessageLookupByLibrary.simpleMessage("بيانات جديدة متاحة"),

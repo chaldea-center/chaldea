@@ -139,7 +139,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
   }
 
   String proxyAssetUrl(String url) {
-    return HostsX.proxy && url.startsWith(Hosts0.kAtlasAssetHostGlobal)
+    return HostsX.proxy.atlasAsset && url.startsWith(Hosts0.kAtlasAssetHostGlobal)
         ? url.replaceFirst(Hosts0.kAtlasAssetHostGlobal, HostsX.atlasAssetHost)
         : url;
   }
@@ -147,7 +147,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
   @override
   Future<String?> download(String url, {RateLimiter? limiter, bool allowWeb = false}) async {
     final localPath = atlasUrlToFp(url, allowWeb: allowWeb);
-    if (HostsX.proxy) {
+    if (HostsX.proxy.atlasAsset) {
       url = proxyAssetUrl(url);
     }
     if (localPath == null) return null;

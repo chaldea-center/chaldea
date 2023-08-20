@@ -10,6 +10,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/home/bootstrap/startup_load_page.dart';
+import 'package:chaldea/app/modules/home/subpage/network_settings.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -419,8 +420,41 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
   Widget build(BuildContext context) {
     return ListView(
       children: [
+        ListTile(
+          dense: true,
+          title: Text(S.current.download_source),
+          subtitle: Text(S.current.download_source_hint),
+          trailing: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              DropdownButton<bool>(
+                value: db.settings.proxy.data,
+                items: [
+                  DropdownMenuItem(value: false, child: Text(S.current.chaldea_server_global, textScaleFactor: 0.8)),
+                  DropdownMenuItem(value: true, child: Text(S.current.chaldea_server_cn, textScaleFactor: 0.8)),
+                ],
+                onChanged: (v) {
+                  setState(() {
+                    if (v != null) {
+                      db.settings.proxy.setAll(v);
+                    }
+                  });
+                },
+              ),
+              IconButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NetworkSettingsPage()));
+                },
+                icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                tooltip: S.current.details,
+              )
+            ],
+          ),
+        ),
         SwitchListTile.adaptive(
-          title: Text(S.current.auto_update),
+          dense: true,
+          title: Text('${S.current.auto_update} (${S.current.gamedata})'),
+          // subtitle: Text(),
           value: db.settings.autoUpdateData,
           onChanged: (v) {
             setState(() {
@@ -430,25 +464,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
           },
         ),
         ListTile(
-          title: Text(S.current.download_source),
-          subtitle: Text(S.current.download_source_hint),
-          trailing: DropdownButton<bool>(
-            value: db.settings.proxyServer,
-            items: [
-              DropdownMenuItem(value: false, child: Text(S.current.chaldea_server_global)),
-              DropdownMenuItem(value: true, child: Text(S.current.chaldea_server_cn)),
-            ],
-            onChanged: (v) {
-              setState(() {
-                if (v != null) {
-                  db.settings.proxyServer = v;
-                }
-                db.saveSettings();
-              });
-            },
-          ),
-        ),
-        ListTile(
+          dense: true,
           title: Text(S.current.current_version),
           trailing: Text(
             db.gameData.version.timestamp > 0
@@ -457,6 +473,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                     .replaceFirst(' ', '\n')
                 : S.current.not_found,
             textAlign: TextAlign.end,
+            textScaleFactor: 0.9,
           ),
         ),
         Wrap(

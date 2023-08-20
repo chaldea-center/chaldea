@@ -45,7 +45,7 @@ class _ApkListPageState extends State<ApkListPage> {
   ];
 
   late final _hidden = db.settings.hideApple;
-  late bool proxy = db.settings.proxyServer;
+  late bool proxy = db.settings.proxy.worker;
   String get apkHost => proxy ? '${HostsX.worker.kCN}/proxy' : 'https://fgo.square.ovh';
 
   @override
