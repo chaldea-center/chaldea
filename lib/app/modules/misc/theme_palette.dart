@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
+import '../home/subpage/theme_color.dart';
 
 class DarkLightThemePalette extends StatefulWidget {
   DarkLightThemePalette({super.key});
@@ -13,12 +15,33 @@ class DarkLightThemePalette extends StatefulWidget {
 }
 
 class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
+  late bool useM3 = Theme.of(context).useMaterial3;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(),
         title: const Text('Palette'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                useM3 = !useM3;
+              });
+            },
+            icon: Icon(useM3 ? Icons.filter_3 : Icons.filter_2),
+            tooltip: "Material 2/3",
+          ),
+          IconButton(
+            onPressed: () async {
+              await router.pushPage(const ThemeColorPage());
+              if (mounted) setState(() {});
+            },
+            icon: const Icon(Icons.settings),
+            tooltip: "Settings",
+          )
+        ],
       ),
       body: SingleChildScrollView(
         child: Row(
@@ -43,11 +66,10 @@ class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
   }
 
   ThemeData _getThemeData({required bool dark}) {
-    final useM3 = db.settings.m3Color != null;
     final themeData = ThemeData(
       brightness: dark ? Brightness.dark : Brightness.light,
       useMaterial3: useM3,
-      colorSchemeSeed: db.settings.m3Color?.color,
+      colorSchemeSeed: db.settings.colorSeed?.color,
     );
     return themeData;
   }
@@ -148,43 +170,47 @@ class _PaletteForThemeState extends State<_PaletteForTheme> {
 
   Widget oneColor(String text, Color? color) {
     return InkWell(
-      onTap: () {
-        setState(() {
-          bgColor = color;
-        });
-      },
-      onDoubleTap: () {
-        setState(() {
-          bgColor = null;
-        });
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          ListTile(
-            title: Center(
-              child: AutoSizeText(
-                text,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                style: const TextStyle(shadows: [Shadow(offset: Offset(0, 0), blurRadius: 2, color: Colors.grey)]),
+        onTap: () {
+          setState(() {
+            bgColor = color;
+          });
+        },
+        onDoubleTap: () {
+          setState(() {
+            bgColor = null;
+          });
+        },
+        child: SizedBox(
+          height: 120,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ListTile(
+                title: Center(
+                  child: AutoSizeText(
+                    text,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    style: const TextStyle(shadows: [Shadow(offset: Offset(0, 0), blurRadius: 2, color: Colors.grey)]),
+                  ),
+                ),
+                subtitle: Center(
+                  child: AutoSizeText(
+                    color == null ? 'null' : 'Color(0x${color.value.toRadixString(16).padLeft(8, '0')})',
+                    maxLines: 1,
+                    minFontSize: 2,
+                    style: kMonoStyle,
+                  ),
+                ),
               ),
-            ),
-            subtitle: Center(
-              child: AutoSizeText(
-                color == null ? 'null' : 'Color(0x${color.value.toRadixString(16).padLeft(8, '0')})',
-                maxLines: 1,
-                minFontSize: 2,
-                style: kMonoStyle,
-              ),
-            ),
+              Expanded(
+                child: Container(
+                  color: color,
+                  child: const SizedBox.expand(),
+                ),
+              )
+            ],
           ),
-          Container(
-            color: color,
-            child: const SizedBox(width: double.infinity, height: 50),
-          )
-        ],
-      ),
-    );
+        ));
   }
 }

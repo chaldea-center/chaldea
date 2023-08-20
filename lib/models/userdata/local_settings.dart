@@ -35,7 +35,8 @@ class LocalSettings {
   int launchTimes;
   int lastBackup;
   ThemeMode themeMode;
-  ColorSeed? m3Color;
+  bool useMaterial3;
+  ColorSeed? colorSeed;
   bool enableMouseDrag;
   bool globalSelection;
   String? _language;
@@ -86,7 +87,8 @@ class LocalSettings {
     this.launchTimes = 0,
     this.lastBackup = 0,
     this.themeMode = ThemeMode.system,
-    this.m3Color,
+    this.useMaterial3 = false,
+    this.colorSeed,
     this.enableMouseDrag = true,
     this.globalSelection = false,
     String? language,

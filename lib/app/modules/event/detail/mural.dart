@@ -44,6 +44,7 @@ class EventMuralPage extends HookWidget {
                   imageUrl: img,
                   showSaveOnLongPress: true,
                   height: 48,
+                  placeholder: (_, __) => const SizedBox.shrink(),
                 ),
             ],
           ),

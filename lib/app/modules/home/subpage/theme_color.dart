@@ -38,30 +38,36 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
             ],
           ),
           TileGroup(
-            header: 'Material 3',
+            header: "Material Design",
             children: [
-              RadioListTile.adaptive(
-                value: null,
-                groupValue: db.settings.m3Color,
-                title: const Text('Use Material 2'),
-                onChanged: (v) {
-                  if (v != db.settings.m3Color) {
-                    db.settings.m3Color = v;
-                    db.notifySettings();
-                    db.notifyAppUpdate();
-                  }
-                  setState(() {});
-                },
-              ),
-              for (final seed in ColorSeed.values)
+              for (final useM3 in [false, true])
+                RadioListTile.adaptive(
+                  value: useM3,
+                  groupValue: db.settings.useMaterial3,
+                  title: Text(useM3 ? 'Material 3' : 'Material 2'),
+                  onChanged: (v) {
+                    if (v != null && v != db.settings.useMaterial3) {
+                      db.settings.useMaterial3 = v;
+                      db.notifySettings();
+                      db.notifyAppUpdate();
+                    }
+                    setState(() {});
+                  },
+                ),
+            ],
+          ),
+          TileGroup(
+            header: 'Theme Color',
+            children: [
+              for (final seed in [null, ...ColorSeed.values])
                 RadioListTile.adaptive(
                   value: seed,
-                  groupValue: db.settings.m3Color,
-                  title: Text(seed.label),
-                  secondary: Container(width: 24, height: 24, color: seed.color),
+                  groupValue: db.settings.colorSeed,
+                  title: Text(seed?.label ?? S.current.general_default),
+                  secondary: seed == null ? null : Container(width: 24, height: 24, color: seed.color),
                   onChanged: (v) {
-                    if (v != null && v != db.settings.m3Color) {
-                      db.settings.m3Color = v;
+                    if (v != db.settings.colorSeed) {
+                      db.settings.colorSeed = v;
                       db.notifySettings();
                       db.notifyAppUpdate();
                     }

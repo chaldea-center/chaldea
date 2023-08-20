@@ -76,10 +76,14 @@ class GalleryItem {
   Widget buildIcon(BuildContext context, {double size = 40, Color? color}) {
     if (child != null) return child!;
     bool fa = icon!.fontFamily?.toLowerCase().startsWith('fontawesome') == true;
-    final _iconColor = color ??
-        (Utility.isDarkMode(context)
-            ? Theme.of(context).colorScheme.secondaryContainer
-            : Theme.of(context).colorScheme.secondary);
+    var _iconColor = color ??
+        (Theme.of(context).useMaterial3
+            ? (Utility.isDarkMode(context)
+                ? Theme.of(context).colorScheme.primaryContainer
+                : Theme.of(context).colorScheme.primary)
+            : (Utility.isDarkMode(context)
+                ? Theme.of(context).colorScheme.secondaryContainer
+                : Theme.of(context).colorScheme.secondary));
     return fa
         ? Padding(padding: EdgeInsets.all(size * 0.05), child: FaIcon(icon, size: size * 0.9, color: _iconColor))
         : Icon(icon, size: size, color: _iconColor);
