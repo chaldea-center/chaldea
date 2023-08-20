@@ -136,21 +136,18 @@ class BattleShareData {
   int? minBuild;
   int? appBuild; // app ver for uploaded data
   BattleQuestInfo? quest;
+  BattleShareDataOption option;
   BattleTeamFormation team;
   BattleActions? actions;
-  bool? disableEvent;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  bool? simulateAi;
 
   BattleShareData({
     this.minBuild,
     required this.appBuild,
     required this.quest,
+    BattleShareDataOption? option,
     required this.team,
-    this.disableEvent,
-    this.simulateAi,
     this.actions,
-  });
+  }) : option = option ?? BattleShareDataOption();
 
   factory BattleShareData.fromJson(Map<String, dynamic> json) => _$BattleShareDataFromJson(json);
 
@@ -164,10 +161,9 @@ class BattleShareData {
       minBuild: kMinBuild,
       appBuild: appBuild ?? AppInfo.buildNumber,
       quest: quest,
+      option: option,
       team: team2,
       actions: actions,
-      disableEvent: disableEvent,
-      simulateAi: simulateAi,
     ));
   }
 
@@ -215,6 +211,23 @@ class BattleShareData {
     final data = jsonDecode(utf8.decode(GZipDecoder().decodeBytes(base64Decode(encoded))));
     return BattleShareData.fromJson(data);
   }
+}
+
+@JsonSerializable()
+class BattleShareDataOption {
+  bool? disableEvent;
+  Map<int, int>? pointBuffs;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  bool? simulateAi;
+
+  BattleShareDataOption({
+    this.disableEvent,
+    this.pointBuffs,
+    this.simulateAi,
+  });
+  factory BattleShareDataOption.fromJson(Map<String, dynamic> json) => _$BattleShareDataOptionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BattleShareDataOptionToJson(this);
 }
 
 @JsonSerializable(includeIfNull: false, converters: [RegionConverter()])

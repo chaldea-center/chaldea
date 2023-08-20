@@ -394,6 +394,29 @@ class BattleOptionsEnv {
       ..simulateEnemy = simulateEnemy
       ..pointBuffs = Map.of(pointBuffs);
   }
+
+  void fromShareData(BattleShareDataOption src) {
+    this
+      ..disableEvent = src.disableEvent ?? disableEvent
+      ..simulateAi = src.simulateAi ?? simulateAi
+      ..simulateEnemy = false;
+
+    pointBuffs.clear();
+    for (final (groupId, pointBuffId) in (src.pointBuffs ?? <int, int>{}).items) {
+      final pointBuff = db.gameData.others.eventPointBuffs[pointBuffId];
+      if (pointBuff != null) {
+        pointBuffs[groupId] = pointBuff;
+      }
+    }
+  }
+
+  BattleShareDataOption toShareData() {
+    return BattleShareDataOption(
+      disableEvent: disableEvent,
+      simulateAi: simulateAi,
+      pointBuffs: pointBuffs.map((key, value) => MapEntry(key, value.id)),
+    );
+  }
 }
 
 class BattleOptionsRuntime extends BattleOptionsEnv {

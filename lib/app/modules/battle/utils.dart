@@ -38,12 +38,7 @@ void replaySimulation({
   final questCopy = QuestPhase.fromJson(questPhase.toJson());
 
   final options = BattleOptions();
-  if (detail.disableEvent != null) {
-    options.disableEvent = detail.disableEvent!;
-  }
-  if (detail.simulateAi != null) {
-    options.simulateAi = detail.simulateAi!;
-  }
+  options.fromShareData(detail.option);
   final formation = detail.team;
   for (int index = 0; index < 3; index++) {
     options.team.onFieldSvtDataList[index] = await PlayerSvtData.fromStoredData(formation.onFieldSvts.getOrNull(index));
@@ -51,10 +46,6 @@ void replaySimulation({
   }
 
   options.team.mysticCodeData.loadStoredData(formation.mysticCode);
-
-  if (detail.disableEvent != null) {
-    options.disableEvent = detail.disableEvent!;
-  }
 
   if (options.disableEvent) {
     questCopy.warId = 0;

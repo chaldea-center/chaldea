@@ -239,9 +239,8 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           final shareUri = BattleShareData(
             appBuild: AppInfo.buildNumber,
             quest: questInfo,
+            option: options.toShareData(),
             team: settings.curFormation,
-            disableEvent: options.disableEvent,
-            simulateAi: options.simulateAi,
           ).toUriV2();
           String shareString = shareUri.toString();
           Clipboard.setData(ClipboardData(text: shareString));
@@ -927,9 +926,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         region: questInfo.region ?? Region.jp,
       );
     }
-    if (data.disableEvent != null) {
-      options.disableEvent = data.disableEvent!;
-    }
+    options.fromShareData(data.option);
 
     if (questInfo != null && data.actions != null && mounted) {
       EasyLoading.dismiss();

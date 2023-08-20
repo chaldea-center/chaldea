@@ -110,8 +110,9 @@ BattleShareData _$BattleShareDataFromJson(Map json) => $checkedCreate(
           appBuild: $checkedConvert('appBuild', (v) => v as int?),
           quest: $checkedConvert(
               'quest', (v) => v == null ? null : BattleQuestInfo.fromJson(Map<String, dynamic>.from(v as Map))),
+          option: $checkedConvert(
+              'option', (v) => v == null ? null : BattleShareDataOption.fromJson(Map<String, dynamic>.from(v as Map))),
           team: $checkedConvert('team', (v) => BattleTeamFormation.fromJson(Map<String, dynamic>.from(v as Map))),
-          disableEvent: $checkedConvert('disableEvent', (v) => v as bool?),
           actions: $checkedConvert(
               'actions', (v) => v == null ? null : BattleActions.fromJson(Map<String, dynamic>.from(v as Map))),
         );
@@ -131,11 +132,32 @@ Map<String, dynamic> _$BattleShareDataToJson(BattleShareData instance) {
   writeNotNull('minBuild', instance.minBuild);
   writeNotNull('appBuild', instance.appBuild);
   writeNotNull('quest', instance.quest?.toJson());
+  val['option'] = instance.option.toJson();
   val['team'] = instance.team.toJson();
   writeNotNull('actions', instance.actions?.toJson());
-  writeNotNull('disableEvent', instance.disableEvent);
   return val;
 }
+
+BattleShareDataOption _$BattleShareDataOptionFromJson(Map json) => $checkedCreate(
+      'BattleShareDataOption',
+      json,
+      ($checkedConvert) {
+        final val = BattleShareDataOption(
+          disableEvent: $checkedConvert('disableEvent', (v) => v as bool?),
+          pointBuffs: $checkedConvert(
+              'pointBuffs',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                  )),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$BattleShareDataOptionToJson(BattleShareDataOption instance) => <String, dynamic>{
+      'disableEvent': instance.disableEvent,
+      'pointBuffs': instance.pointBuffs?.map((k, e) => MapEntry(k.toString(), e)),
+    };
 
 BattleQuestInfo _$BattleQuestInfoFromJson(Map json) => $checkedCreate(
       'BattleQuestInfo',
