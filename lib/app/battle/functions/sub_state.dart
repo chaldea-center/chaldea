@@ -31,7 +31,7 @@ class SubState {
           final buff = listToInspect[index];
 
           await battleData.withBuff(buff, () async {
-            if (await shouldSubState(battleData, affectTraits, dataVals, activator, target)) {
+            if (buff.stateField && await shouldSubState(battleData, affectTraits, dataVals, activator, target)) {
               listToInspect.removeAt(index);
               removeCount += 1;
             }

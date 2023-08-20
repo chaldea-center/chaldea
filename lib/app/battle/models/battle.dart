@@ -1111,7 +1111,7 @@ class BattleData {
       for (final buff in fieldBuffs) {
         buff.turnPass();
       }
-      fieldBuffs.removeWhere((buff) => !buff.isActive);
+      fieldBuffs.removeWhere((buff) => buff.checkBuffClear());
     });
   }
 
@@ -1144,7 +1144,7 @@ class BattleData {
       for (final buff in fieldBuffs) {
         buff.turnPass();
       }
-      fieldBuffs.removeWhere((buff) => !buff.isActive);
+      fieldBuffs.removeWhere((buff) => buff.checkBuffClear());
     });
     isPlayerTurn = true;
   }

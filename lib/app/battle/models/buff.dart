@@ -35,8 +35,8 @@ class BattleBuff {
   }
 
   void checkUsedBuff() {
-    _passiveList.removeWhere((buff) => !buff.isActive);
-    _activeList.removeWhere((buff) => !buff.isActive);
+    _passiveList.removeWhere((buff) => buff.checkBuffClear());
+    _activeList.removeWhere((buff) => buff.checkBuffClear());
   }
 
   List<BuffData> get shownBuffs => [
@@ -64,7 +64,8 @@ class BattleBuff {
   }
 
   void turnProgress() {
-    for (final buff in validBuffs) {
+    for (final buff in getAllBuffs()) {
+      if (!buff.stateField) continue;
       buff.turnPass();
     }
   }
@@ -101,7 +102,7 @@ class BuffData {
   int additionalParam = 0;
   NiceTd? tdSelection;
 
-  bool get isActive => count != 0 && logicTurn != 0;
+  bool checkBuffClear() => count == 0 || logicTurn == 0;
 
   int? actorUniqueId;
   String? actorName;

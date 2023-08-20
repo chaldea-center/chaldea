@@ -1239,7 +1239,7 @@ class BattleServantData {
       }
     });
     battleBuff.checkUsedBuff();
-    battleBuff.commandCodeList.removeWhere((buff) => !buff.isActive);
+    battleBuff.commandCodeList.removeWhere((buff) => buff.checkBuffClear());
   }
 
   Future<void> enterField(final BattleData battleData) async {
