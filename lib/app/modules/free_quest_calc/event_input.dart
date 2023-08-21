@@ -219,7 +219,16 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
           spacing: 10,
           children: <Widget>[
             FilledButton(
-              onPressed: running ? null : solve,
+              onPressed: running
+                  ? null
+                  : () async {
+                      setState(() {
+                        running = false;
+                      });
+                      await solve();
+                      running = false;
+                      if (mounted) setState(() {});
+                    },
               child: Text(S.current.drop_calc_solve),
             ),
           ],
@@ -228,7 +237,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     );
   }
 
-  void solve() async {
+  Future<void> solve() async {
     setState(() {
       running = true;
     });
@@ -240,6 +249,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
         .toList();
     if (itemIds.isEmpty || details.isEmpty) {
       EasyLoading.showInfo(S.current.input_invalid_hint);
+      running = false;
       return;
     }
     List<List<double>> matA = [];
@@ -299,9 +309,6 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     } catch (e, s) {
       logger.e('solve event item failed', e, s);
       EasyLoading.showError(e.toString());
-    } finally {
-      running = false;
-      if (mounted) setState(() {});
     }
   }
 }

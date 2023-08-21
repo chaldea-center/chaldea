@@ -162,11 +162,12 @@ class _EventShopsPageState extends State<EventShopsPage> {
           style: OutlinedButton.styleFrom(
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             visualDensity: VisualDensity.compact,
-            padding: const EdgeInsets.all(6),
+            padding: const EdgeInsets.all(12),
+            minimumSize: const Size(64, 42),
           ),
           child: Text(
             '${planCount.format()}/$limitCount',
-            style: planCount == shop.limitNum ? null : TextStyle(color: Theme.of(context).colorScheme.error),
+            style: planCount == 0 ? TextStyle(color: Theme.of(context).colorScheme.error) : null,
           ),
         ),
         IconButton(
@@ -283,19 +284,38 @@ class _EventShopsPageState extends State<EventShopsPage> {
           },
           icon: const Icon(Icons.open_in_full_rounded),
         ),
-        IconButton(
-          onPressed: () {
-            SimpleCancelOkDialog(
-              title: Text(S.current.reset),
-              onTapOk: () {
-                plan.shopBuyCount.clear();
-                event?.updateStat();
+        PopupMenuButton(
+          position: PopupMenuPosition.under,
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              onTap: () {
+                SimpleCancelOkDialog(
+                  title: Text(S.current.reset),
+                  onTapOk: () {
+                    plan.shopBuyCount.clear();
+                    event?.updateStat();
+                    if (mounted) setState(() {});
+                  },
+                ).showDialog(context);
+              },
+              child: Text(S.current.reset),
+            ),
+            PopupMenuItem(
+              enabled: db.runtimeData.clipBoard.userShops != null,
+              onTap: () {
+                final userShops = db.runtimeData.clipBoard.userShops?.toList() ?? [];
+                final buyCounts = {for (final shop in userShops) shop.shopId: shop.num};
+                for (final shop in widget.shops) {
+                  final buyCount = buyCounts[shop.id] ?? 0;
+                  if (buyCount > 0 && shop.limitNum > 0 && buyCount <= shop.limitNum) {
+                    plan.shopBuyCount[shop.id] = shop.limitNum - buyCount;
+                  }
+                }
                 if (mounted) setState(() {});
               },
-            ).showDialog(context);
-          },
-          icon: const Icon(Icons.replay),
-          tooltip: S.current.reset,
+              child: const Text("Read Login Data"),
+            )
+          ],
         )
       ],
     );
@@ -352,6 +372,10 @@ class __EditShopNumDialogState extends State<_EditShopNumDialog> {
               if (v != null) buyCount = v;
             }
             setState(() {});
+          },
+          onFieldSubmitted: (s) {
+            Navigator.pop(context);
+            widget.onChanged(buyCount);
           },
         ),
       ),

@@ -8,6 +8,7 @@ import '../packages/app_info.dart';
 import '../packages/platform/platform.dart';
 import 'api/recognizer.dart';
 import 'gamedata/gamedata.dart';
+import 'gamedata/toplogin.dart';
 import 'userdata/local_settings.dart';
 import 'userdata/version.dart';
 
@@ -69,4 +70,5 @@ class RuntimeData {
 
 class AppClipBoard {
   QuestEnemy? questEnemy;
+  List<UserShop>? userShops;
 }

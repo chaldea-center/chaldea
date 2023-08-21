@@ -17,6 +17,7 @@ import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -337,7 +338,8 @@ class BattleRecorderPanelBase extends StatelessWidget {
         21,
         Center(
           child: Text(
-            '${HostsX.appHost}/laplace',
+            'Created by Chaldea App v${AppInfo.versionString}'
+            '\n${HostsX.appHost}/laplace',
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.center,
           ),

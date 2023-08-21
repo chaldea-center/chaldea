@@ -104,6 +104,18 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             icon: const FaIcon(FontAwesomeIcons.fileImport),
             tooltip: S.current.import_source_file,
           ),
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                enabled: mstData?.userShop.isNotEmpty == true,
+                onTap: () {
+                  db.runtimeData.clipBoard.userShops = mstData?.userShop.toList();
+                  EasyLoading.showToast(S.current.copied);
+                },
+                child: const Text('Copy Shop data'),
+              )
+            ],
+          ),
         ],
       ),
       body: Column(
