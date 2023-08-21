@@ -1031,6 +1031,7 @@ class AscensionAdd {
   AscensionAddEntry<String> overWriteTDRank;
   AscensionAddEntry<String> overWriteTDTypeText;
   AscensionAddEntry<int> lvMax;
+  AscensionAddEntry<int> rarity;
   AscensionAddEntry<String> charaGraphChange;
   AscensionAddEntry<String> faceChange;
   AscensionAddEntry<List<CommonRelease>> charaGraphChangeCommonRelease;
@@ -1047,6 +1048,7 @@ class AscensionAdd {
     this.overWriteTDRank = const AscensionAddEntry(),
     this.overWriteTDTypeText = const AscensionAddEntry(),
     this.lvMax = const AscensionAddEntry(),
+    this.rarity = const AscensionAddEntry(),
     this.charaGraphChange = const AscensionAddEntry(),
     this.faceChange = const AscensionAddEntry(),
     this.charaGraphChangeCommonRelease = const AscensionAddEntry(),

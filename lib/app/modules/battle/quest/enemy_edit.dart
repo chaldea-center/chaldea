@@ -33,6 +33,14 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
   QuestEnemy initEnemy(QuestEnemy e) {
     niceSvt = db.gameData.servantsById[e.svt.id];
     enemy = e;
+    if (niceSvt == null && e.svt.id != QuestEnemy.blankEnemy().svt.id) {
+      showEasyLoading(() => AtlasApi.svt(enemy.svt.id)).then((value) {
+        if (value != null && enemy.svt.id == value.id) {
+          niceSvt = value;
+        }
+        if (mounted) setState(() {});
+      });
+    }
     return e;
   }
 
@@ -84,7 +92,8 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       CustomTile(
         leading: db.getIconImage(enemy.icon ?? Atlas.common.unknownEnemyIcon, width: 64, aspectRatio: 1),
         title: Text(enemy.lShownName),
-        subtitle: Text('No.${enemy.svt.shownId}  ${Transl.svtClassId(enemy.svt.classId).l}'),
+        subtitle:
+            Text('No.${enemy.svt.shownId} $kStarChar2${enemy.svt.rarity} ${Transl.svtClassId(enemy.svt.classId).l}'),
         trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
         onTap: enemy.routeTo,
       ),
@@ -173,7 +182,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
 
     if (niceSvt != null) {
       final limits = {
-        ...niceSvt!.ascensionAdd.individuality.all.keys,
+        ...niceSvt!.ascensionAdd.lvMax.all.keys,
         if (niceSvt!.isUserSvt) ...[0, 1, 2, 3, 4]
       }.toList();
       if (limits.isEmpty) limits.add(0);
@@ -400,6 +409,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       // ignore: invalid_use_of_protected_member
       enemy.svt.face = face;
     }
+    enemy.svt.rarity = svt.ascensionAdd.rarity.all[limitCount] ?? enemy.svt.rarity;
     updateTrait(svt, limitCount);
   }
 

@@ -61,12 +61,20 @@ class SvtInfoTab extends StatelessWidget {
                 defaults: TableCellData(textAlign: TextAlign.center),
               ),
             CustomTableRow.fromChildren(children: [
-              if (svt.rarity != 0)
-                CachedImage(
-                  imageUrl:
-                      "https://static.atlasacademy.io/JP/CharaGraphOption/CharaGraphOption/CharaGraphOptionAtlas/rarity${svt.rarity}_0.png",
-                  height: 24,
-                ),
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 4,
+                children: [
+                  for (final rarity in svt.ascensionAdd.rarity.ascension.values)
+                    if (rarity != 0)
+                      CachedImage(
+                        imageUrl:
+                            "https://static.atlasacademy.io/JP/CharaGraphOption/CharaGraphOption/CharaGraphOptionAtlas/rarity${rarity}_0.png",
+                        height: 24,
+                        placeholder: (_, __) => const SizedBox.shrink(),
+                      ),
+                ],
+              ),
             ]),
             CustomTableRow.fromChildren(
               children: [

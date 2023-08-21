@@ -539,6 +539,9 @@ AscensionAdd _$AscensionAddFromJson(Map json) => AscensionAdd(
       lvMax: json['lvMax'] == null
           ? const AscensionAddEntry()
           : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['lvMax'] as Map)),
+      rarity: json['rarity'] == null
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['rarity'] as Map)),
       charaGraphChange: json['charaGraphChange'] == null
           ? const AscensionAddEntry()
           : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['charaGraphChange'] as Map)),
@@ -566,6 +569,7 @@ Map<String, dynamic> _$AscensionAddToJson(AscensionAdd instance) => <String, dyn
       'overWriteTDRank': instance.overWriteTDRank.toJson(),
       'overWriteTDTypeText': instance.overWriteTDTypeText.toJson(),
       'lvMax': instance.lvMax.toJson(),
+      'rarity': instance.rarity.toJson(),
       'charaGraphChange': instance.charaGraphChange.toJson(),
       'faceChange': instance.faceChange.toJson(),
       'charaGraphChangeCommonRelease': instance.charaGraphChangeCommonRelease.toJson(),
