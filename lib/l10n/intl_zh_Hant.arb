@@ -524,7 +524,7 @@
   "item_stat_sub_owned": "減去庫存",
   "join_beta": "加入Beta版",
   "jump_to": "跳轉到{site}",
-  "laplace_upload_td_multi_dmg_func_hint": "操作中存在多段寶具(陳宮/阿拉什等)，請檢查最小和最大隨機數對NP回收等的影響，確保均能通關。",
+  "laplace_upload_td_multi_dmg_func_hint": "部分從者存在多段寶具(陳宮/阿拉什等)，請檢查最小和最大隨機數對NP回收等的影響，確保均能通關。",
   "level": "等級",
   "limited_event": "限時活動",
   "limited_time": "限時",

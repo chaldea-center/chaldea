@@ -623,7 +623,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "language": MessageLookupByLibrary.simpleMessage("简体中文"),
         "language_en": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
         "laplace_upload_td_multi_dmg_func_hint":
-            MessageLookupByLibrary.simpleMessage("操作中存在多段宝具(陈宫/阿拉什等)，请检查最小和最大随机数对NP回收等的影响，确保均能通关。"),
+            MessageLookupByLibrary.simpleMessage("部分从者存在多段宝具(陈宫/阿拉什等)，请检查最小和最大随机数对NP回收等的影响，确保均能通关。"),
         "level": MessageLookupByLibrary.simpleMessage("等级"),
         "limited_event": MessageLookupByLibrary.simpleMessage("限时活动"),
         "limited_time": MessageLookupByLibrary.simpleMessage("限时"),

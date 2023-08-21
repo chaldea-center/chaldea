@@ -768,6 +768,8 @@ extension TdMethods on BaseTd {
     }
     return TdEffectFlag.support;
   }
+
+  int get dmgNpFuncCount => functions.where((func) => func.funcType.isDamageNp).length;
 }
 
 @JsonSerializable()

@@ -146,6 +146,15 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         textScaleFactor: 0.9,
       ),
     ));
+    if (battleData.nonnullAllies.any((svt) => (svt.playerSvtData?.td?.dmgNpFuncCount ?? 0) > 1)) {
+      children.add(ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: cardSize * 7),
+        child: Text(
+          S.current.laplace_upload_td_multi_dmg_func_hint,
+          textScaleFactor: 0.8,
+        ),
+      ));
+    }
 
     return Column(
       mainAxisSize: MainAxisSize.min,

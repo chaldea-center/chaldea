@@ -672,8 +672,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       bool hasMultiDamageFunc = false;
       for (final record in battleData.recorder.records) {
         if (record is BattleAttackRecord) {
-          final funcs = record.card?.td?.functions ?? [];
-          if (funcs.where((func) => func.funcType.isDamageNp).length > 1) {
+          if ((record.card?.td?.dmgNpFuncCount ?? 0) > 1) {
             hasMultiDamageFunc = true;
             break;
           }

@@ -525,7 +525,7 @@
   "item_stat_sub_owned": "减去库存",
   "join_beta": "加入Beta版",
   "jump_to": "跳转到{site}",
-  "laplace_upload_td_multi_dmg_func_hint": "操作中存在多段宝具(陈宫/阿拉什等)，请检查最小和最大随机数对NP回收等的影响，确保均能通关。",
+  "laplace_upload_td_multi_dmg_func_hint": "部分从者存在多段宝具(陈宫/阿拉什等)，请检查最小和最大随机数对NP回收等的影响，确保均能通关。",
   "level": "等级",
   "limited_event": "限时活动",
   "limited_time": "限时",
