@@ -45,7 +45,7 @@ class BattleServantData {
     }
   }
 
-  int get limitCount => isPlayer ? playerSvtData!.limitCount : niceEnemy!.limit.dispLimitCount;
+  int get limitCount => isPlayer ? playerSvtData!.limitCount : niceEnemy!.limit.useLimitCount;
 
   // int exceedCount = 0;
   // int transformSvtId = -1;

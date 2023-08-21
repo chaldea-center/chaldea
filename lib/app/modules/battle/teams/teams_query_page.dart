@@ -566,8 +566,8 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
         "Quest: https://apps.atlasacademy.io/db/JP/quest/${record.questId}/${record.phase}?hash=${record.enemyHash}",
         "Lv. ${quest?.recommendLv} ${quest?.name}",
         "Spot: ${quest?.spotName}",
-        "War: ${quest?.war?.longName}"
-            "Team: https://chaldea.center/laplace/share?id=${record.id}",
+        "War: ${quest?.war?.longName}",
+        "Team: https://chaldea.center/laplace/share?id=${record.id}",
         "Version: ${record.ver}",
         "ID: ${record.id}",
         "Uploader: ${record.userId}",

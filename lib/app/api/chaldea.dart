@@ -32,7 +32,13 @@ class ChaldeaWorkerApi {
     if (response != null) {
       String? text;
       try {
-        text = utf8.decode(response.data);
+        if (response.data is List<int>) {
+          text = utf8.decode(response.data);
+        } else if (response.data is String) {
+          text = response.data;
+        } else if (response.data is Map) {
+          text = jsonEncode(response.data);
+        }
       } catch (e) {
         //
       }

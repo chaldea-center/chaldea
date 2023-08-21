@@ -65,7 +65,7 @@ class SvtInfoTab extends StatelessWidget {
                 alignment: WrapAlignment.center,
                 spacing: 4,
                 children: [
-                  for (final rarity in svt.ascensionAdd.rarity.ascension.values)
+                  for (final rarity in svt.ascensionAdd.rarity.ascension.values.toSet())
                     if (rarity != 0)
                       CachedImage(
                         imageUrl:

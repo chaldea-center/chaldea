@@ -1025,8 +1025,6 @@ class EnemyDrop extends BaseGift {
 
 @JsonSerializable()
 class EnemyLimit {
-  /// use [dispLimitCount]
-  @protected
   int limitCount;
   int imageLimitCount;
   int dispLimitCount;
@@ -1046,6 +1044,8 @@ class EnemyLimit {
     this.battleVoice = 0,
     this.exceedCount = 0,
   });
+
+  int get useLimitCount => limitCount == 0 && dispLimitCount != 0 ? dispLimitCount : limitCount;
 
   factory EnemyLimit.fromJson(Map<String, dynamic> json) => _$EnemyLimitFromJson(json);
 
