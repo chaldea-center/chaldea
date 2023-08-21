@@ -325,11 +325,11 @@ CarouselSetting _$CarouselSettingFromJson(Map json) => $checkedCreate(
                   .toList()),
           enabled: $checkedConvert('enabled', (v) => v as bool? ?? true),
           enableChaldea: $checkedConvert('enableChaldea', (v) => v as bool? ?? true),
-          enableMooncell: $checkedConvert('enableMooncell', (v) => v as bool? ?? true),
-          enableJP: $checkedConvert('enableJP', (v) => v as bool? ?? true),
-          enableCN: $checkedConvert('enableCN', (v) => v as bool? ?? true),
-          enableNA: $checkedConvert('enableNA', (v) => v as bool? ?? true),
-          enableTW: $checkedConvert('enableTW', (v) => v as bool? ?? true),
+          enableMooncell: $checkedConvert('enableMooncell', (v) => v as bool? ?? false),
+          enableJP: $checkedConvert('enableJP', (v) => v as bool? ?? false),
+          enableCN: $checkedConvert('enableCN', (v) => v as bool? ?? false),
+          enableNA: $checkedConvert('enableNA', (v) => v as bool? ?? false),
+          enableTW: $checkedConvert('enableTW', (v) => v as bool? ?? false),
           enableKR: $checkedConvert('enableKR', (v) => v as bool? ?? false),
         );
         return val;

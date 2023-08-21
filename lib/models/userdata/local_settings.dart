@@ -310,11 +310,11 @@ class CarouselSetting {
     List<CarouselItem>? items,
     this.enabled = true,
     this.enableChaldea = true,
-    this.enableMooncell = true,
-    this.enableJP = true,
-    this.enableCN = true,
-    this.enableNA = true,
-    this.enableTW = true,
+    this.enableMooncell = false,
+    this.enableJP = false,
+    this.enableCN = false,
+    this.enableNA = false,
+    this.enableTW = false,
     // KR is blocked in CN, thus disable it by default
     this.enableKR = false,
   }) : items = items ?? [];
@@ -334,6 +334,27 @@ class CarouselSetting {
     final time1 = DateTime.utc(lastTime.year, lastTime.month, lastTime.day, hour, 10);
     if (now.isAfter(time1)) return true;
     return false;
+  }
+
+  void enableFor(Region region) {
+    enableJP = enableCN = enableTW = enableNA = enableKR = enableMooncell = false;
+    switch (region) {
+      case Region.jp:
+        enableJP = true;
+        break;
+      case Region.cn:
+        enableCN = enableMooncell = true;
+        break;
+      case Region.tw:
+        enableTW = true;
+        break;
+      case Region.na:
+        enableNA = true;
+        break;
+      case Region.kr:
+        enableKR = true;
+        break;
+    }
   }
 
   factory CarouselSetting.fromJson(Map<String, dynamic> data) => _$CarouselSettingFromJson(data);

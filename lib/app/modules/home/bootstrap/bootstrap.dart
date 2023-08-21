@@ -304,6 +304,7 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
                   setState(() {
                     db.curUser.region = region;
                   });
+                  db.settings.carousel.enableFor(region);
                 },
               );
             }),
