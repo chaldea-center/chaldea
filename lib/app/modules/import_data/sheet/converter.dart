@@ -47,6 +47,8 @@ class PlanDataSheetConverter {
     _grail,
     _fouHp,
     _fouAtk,
+    _fouHp3,
+    _fouAtk3,
     _bondLimit,
     _npLv
   ];
