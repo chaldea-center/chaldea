@@ -1143,8 +1143,12 @@ class BattleServantData {
             continue;
           }
           battleData.battleLogger.function('$lBattleName - ${buff.buff.lName.l} ${S.current.skill} [$skillId]');
-          final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.none, skillLv: buff.additionalParam);
-          await skillInfo.activate(battleData);
+          await FunctionExecutor.executeFunctions(
+            battleData,
+            skill.functions,
+            buff.additionalParam.clamp(1, skill.maxLv),
+            isPassive: false,
+          );
           buff.setUsed();
           activated = true;
         }
