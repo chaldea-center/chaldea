@@ -115,7 +115,8 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     final allUserSvts = [...widget.userSvt, ...widget.userSvtStorage];
 
     final curAnonymous = widget.userItems.firstWhereOrNull((e) => e.itemId == Items.svtAnonymousId)?.num ?? 0;
-    final anonumousShops = widget.userShops.where((e) => e.shopId ~/ 1000000 == 4).toList();
+    final anonymousShops = widget.userShops.where((e) => e.shopId ~/ 1000000 == 4).toList();
+    final anonymousBuyCount= Maths.sum(anonymousShops.map((e) => e.num));
 
     return Scaffold(
       appBar: AppBar(
@@ -176,19 +177,19 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
                 ),
                 ListTile(
                   dense: true,
-                  enabled: anonumousShops.isNotEmpty,
+                  enabled: anonymousShops.isNotEmpty,
                   title: Text(Transl.itemNames('無記名霊基').l),
                   trailing: Wrap(
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
-                      Text('$curAnonymous+10×${anonumousShops.length}'),
+                      Text('$curAnonymous+10×$anonymousBuyCount'),
                       Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                     ],
                   ),
-                  onTap: anonumousShops.isEmpty
+                  onTap: anonymousShops.isEmpty
                       ? null
                       : () {
-                          router.pushPage(_UserShopList(userShops: anonumousShops, region: widget.region));
+                          router.pushPage(_UserShopList(userShops: anonymousShops, region: widget.region));
                         },
                 )
               ],
