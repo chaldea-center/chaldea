@@ -54,18 +54,27 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
         "https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${region.upper}/master/mstGacha.json";
     if (db.settings.proxy.worker) url = HostsX.proxyWorker(url);
     AtlasApi.cacheManager.clearFailed();
-    final d = await AtlasApi.cacheManager.getModel<List<MstGacha>>(
+    final mstData = await AtlasApi.cacheManager.getModel<List<MstGacha>>(
       url,
       (data) => (data as List).map((e) => MstGacha.fromJson(Map.from(e))).toList(),
     );
-    if (d == null && mounted) {
+    if (mstData == null && mounted) {
       SimpleCancelOkDialog(
         title: Text(S.current.error),
         content: const Text('Download Gacha Data failed, click Refresh to retry'),
         hideCancel: true,
       ).showDialog(context);
     }
-    return d;
+    if (region == Region.cn) {
+      final extra = await AtlasApi.cacheManager.getModel<List<MstGacha>>(
+        "${HostsX.dataHost}/mstGachaCNExtra.json",
+        (data) => (data as List).map((e) => MstGacha.fromJson(Map.from(e))).toList(),
+      );
+      if (extra != null) {
+        mstData?.addAll(extra.map((e) => e..userAdded = true));
+      }
+    }
+    return mstData;
   }
 
   Future<void> loadMstData() async {
@@ -89,11 +98,12 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
       if (widget.region == Region.tw) {
         records.sort2((e) => e.gachaId <= 100 ? -1000000000000 + e.gachaId : -(e.createdAt ?? e.gachaId));
       } else {
-        records
-            .sort2((e) => e.gachaId <= 100 ? -1000000000000 + e.gachaId : -(gachas[e.gachaId]?.openedAt ?? e.gachaId));
+        records.sort2((e) =>
+            e.gachaId <= 100 ? -1000000000000 + e.gachaId : -(gachas[e.gachaId]?.openedAt ?? e.createdAt ?? e.gachaId));
       }
     }
     for (final gacha in [...gachas.values, ...cnGachas.values]) {
+      if (gacha.imageId == 0) continue;
       _imageIdMap.putIfAbsent(gacha.imageId, () => []).add(gacha);
     }
 
@@ -223,6 +233,9 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     final cnGacha = cnGachas[record.gachaId];
     final url = getHtmlUrl(record.gachaId);
     String title = gacha?.name ?? record.gachaId.toString();
+    if (gacha == null && widget.region == Region.cn && record.gachaId < 1000000 && record.gachaId > 10000) {
+      title += ' 剧情池？';
+    }
     String subtitle = '${record.gachaId}   ';
     if (gacha != null) {
       subtitle += [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toDateString()).join(' ~ ');
@@ -236,11 +249,14 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
         return ListTile(
           dense: true,
           selected: (_imageIdMap[gacha?.imageId]?.length ?? 0) > 1,
-          title: Text.rich(TextSpan(children: [
-            if (gachas[record.gachaId]?.gachaType == GachaType.chargeStone)
-              const TextSpan(text: '● ', style: TextStyle(color: Colors.green)),
-            TextSpan(text: title),
-          ])),
+          title: Text.rich(
+            TextSpan(children: [
+              if (gachas[record.gachaId]?.gachaType == GachaType.chargeStone)
+                const TextSpan(text: '$kStarChar2 ', style: TextStyle(color: Colors.green)),
+              TextSpan(text: title),
+            ]),
+            style: TextStyle(fontStyle: gacha?.userAdded == true ? FontStyle.italic : null),
+          ),
           subtitle: Text(subtitle),
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
           trailing: Text(
@@ -252,8 +268,9 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
       contentBuilder: (context) {
         final _gacha = gacha ?? cnGacha;
         if (_gacha == null) return const Center(child: Text('\n....\n\n'));
-        List<Widget> children = [
-          Container(
+        List<Widget> children = [];
+        if (_gacha.imageId > 0) {
+          children.add(Container(
             constraints: const BoxConstraints(maxHeight: 200),
             decoration: const BoxDecoration(
               image: DecorationImage(
@@ -273,8 +290,11 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
                 errorWidget: (context, url, error) => const AspectRatio(aspectRatio: 1344 / 576),
               ),
             ),
-          ),
-        ];
+          ));
+        }
+        if (gacha?.userAdded == true) {
+          children.add(const Text('这是由用户标记的卡池，若存在错误请反馈。', textAlign: TextAlign.center));
+        }
         final dupGachas = List<MstGacha>.of(_imageIdMap[_gacha.imageId] ?? []);
         dupGachas.remove(_gacha);
         if (dupGachas.isNotEmpty) {

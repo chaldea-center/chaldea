@@ -40,6 +40,7 @@ class MstGacha {
   int bannerQuestId; //  1000002,
   int bannerQuestPhase; //  1,
   int flag; //  0
+  bool userAdded;
 
   MstGacha({
     this.id = 0,
@@ -75,6 +76,7 @@ class MstGacha {
     this.bannerQuestId = 0,
     this.bannerQuestPhase = 0,
     this.flag = 0,
+    this.userAdded = false,
   });
   factory MstGacha.fromJson(Map<String, dynamic> json) => _$MstGachaFromJson(json);
 

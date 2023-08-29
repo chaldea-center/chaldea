@@ -40,4 +40,5 @@ MstGacha _$MstGachaFromJson(Map json) => MstGacha(
       bannerQuestId: json['bannerQuestId'] as int? ?? 0,
       bannerQuestPhase: json['bannerQuestPhase'] as int? ?? 0,
       flag: json['flag'] as int? ?? 0,
+      userAdded: json['userAdded'] as bool? ?? false,
     );
