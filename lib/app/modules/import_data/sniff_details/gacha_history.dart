@@ -116,7 +116,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
 
     final curAnonymous = widget.userItems.firstWhereOrNull((e) => e.itemId == Items.svtAnonymousId)?.num ?? 0;
     final anonymousShops = widget.userShops.where((e) => e.shopId ~/ 1000000 == 4).toList();
-    final anonymousBuyCount= Maths.sum(anonymousShops.map((e) => e.num));
+    final anonymousBuyCount = Maths.sum(anonymousShops.map((e) => e.num));
 
     return Scaffold(
       appBar: AppBar(

@@ -723,22 +723,23 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       kIndentDivider,
       CheckboxListTile(
         dense: true,
-        value: options.simulateAi,
-        title: Text(S.current.simulate_simple_ai),
+        value: options.simulateEnemy,
+        title: Text(S.current.simulate_enemy_actions),
         onChanged: (v) {
           setState(() {
-            options.simulateAi = v ?? options.simulateAi;
+            options.simulateEnemy = v ?? options.simulateEnemy;
           });
         },
       ),
       kIndentDivider,
       CheckboxListTile(
         dense: true,
-        value: options.simulateEnemy,
-        title: Text(S.current.simulate_enemy_actions),
+        value: options.simulateAi,
+        title: Text(S.current.simulate_simple_ai),
+        subtitle: Text("Only for ${Transl.eventNames('非霊長生存圏 ツングースカ・サンクチュアリ').l}"),
         onChanged: (v) {
           setState(() {
-            options.simulateEnemy = v ?? options.simulateEnemy;
+            options.simulateAi = v ?? options.simulateAi;
           });
         },
       ),

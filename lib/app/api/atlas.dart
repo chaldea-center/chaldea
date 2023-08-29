@@ -182,10 +182,12 @@ class AtlasApi {
     );
   }
 
-  static Future<NiceTd?> td(int tdId, {Region region = Region.jp, Duration? expireAfter}) {
+  static Future<NiceTd?> td(int tdId, {int? svtId, Region region = Region.jp, Duration? expireAfter}) {
     if (tdId <= 0) return Future.value();
+    String url = '$_atlasApiHost/nice/${region.upper}/NP/$tdId';
+    if (svtId != null) url += '?svtId=$svtId';
     return cacheManager.getModel(
-      '$_atlasApiHost/nice/${region.upper}/NP/$tdId',
+      url,
       (data) => NiceTd.fromJson(data),
       expireAfter: expireAfter,
     );

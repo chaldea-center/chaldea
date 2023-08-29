@@ -149,6 +149,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   launch(ChaldeaUrl.doc('translation'));
                 },
               ),
+              if (!db.settings.hideApple)
+                ListTile(
+                  title: Text(S.current.support_chaldea),
+                  trailing: const Icon(Icons.favorite),
+                  onTap: () {
+                    launch(ChaldeaUrl.doc('donation'));
+                  },
+                ),
             ],
           ),
           SliverTileGroup(
@@ -299,14 +307,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   launch(ChaldeaUrl.docHome);
                 },
               ),
-              if (!db.settings.hideApple)
-                ListTile(
-                  title: Text(S.current.support_chaldea),
-                  trailing: const Icon(Icons.favorite),
-                  onTap: () {
-                    launch(ChaldeaUrl.doc('donation'));
-                  },
-                ),
               if (PlatformU.isApple)
                 ListTile(
                   title: Text(S.current.rate_app_store),
