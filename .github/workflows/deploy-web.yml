@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 env:
-  FLUTTER_VERSION: "3.13.0"
+  FLUTTER_VERSION: "3.13.1"
 
 jobs:
   deploy-web:
@@ -36,7 +36,7 @@ jobs:
       - name: Build with default auto web-renderer
         run: |
           dart ./scripts/gen_git_info.dart
-          flutter build web --release -v --source-maps --no-tree-shake-icons
+          flutter build web --release -v --source-maps
           dart ./scripts/patch_web_build.dart
 
       - name: Publish to app repo ${{ steps.extract-branch-name.outputs.BRANCH_NAME }} branch
