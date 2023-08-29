@@ -504,7 +504,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "If the value is too large or too small, the calculation result is inaccurate due to the double precision problem."),
         "gacha_prob_svt_pickup": m19,
         "gacha_svt_count_hint": MessageLookupByLibrary.simpleMessage(
-            "Sum of NP level of servants in Inventory & Second Archive, don\'t include burned and event 4☆ servants.\nEffect on probability due to Unregistered Spirit Origin, Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction."),
+            "Sum of NP level of servants in Inventory & Second Archive, don\'t include burned and event 4☆ servants.\nEffect on probability due to Unregistered Spirit Origin shop, Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction."),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("Home"),
         "game_account": MessageLookupByLibrary.simpleMessage("Game Account"),
         "game_data_not_found":
@@ -1037,7 +1037,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "team_no_order_change": MessageLookupByLibrary.simpleMessage("No Order Change"),
         "team_no_same_svt": MessageLookupByLibrary.simpleMessage("No Same Svt"),
         "team_report_reason_hint": MessageLookupByLibrary.simpleMessage(
-            "Unreleased servant xxx/low success rate/cannot clear quest/etc.\nAsk admin to delete team rather to edit team."),
+            "[With Details] Unreleased servant xxx/low success rate/cannot clear quest/etc.\nAsk admin to delete team rather to edit team."),
         "team_shared": MessageLookupByLibrary.simpleMessage("Shared Teams"),
         "team_starting_member": MessageLookupByLibrary.simpleMessage("Frontline"),
         "team_use_servant": MessageLookupByLibrary.simpleMessage("Use Servant"),

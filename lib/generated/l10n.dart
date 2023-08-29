@@ -4331,10 +4331,10 @@ class S {
     );
   }
 
-  /// `Sum of NP level of servants in Inventory & Second Archive, don't include burned and event 4☆ servants.\nEffect on probability due to Unregistered Spirit Origin, Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction.`
+  /// `Sum of NP level of servants in Inventory & Second Archive, don't include burned and event 4☆ servants.\nEffect on probability due to Unregistered Spirit Origin shop, Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction.`
   String get gacha_svt_count_hint {
     return Intl.message(
-      'Sum of NP level of servants in Inventory & Second Archive, don\'t include burned and event 4☆ servants.\nEffect on probability due to Unregistered Spirit Origin, Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction.',
+      'Sum of NP level of servants in Inventory & Second Archive, don\'t include burned and event 4☆ servants.\nEffect on probability due to Unregistered Spirit Origin shop, Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction.',
       name: 'gacha_svt_count_hint',
       desc: '',
       locale: localeName,
@@ -9858,10 +9858,10 @@ class S {
     );
   }
 
-  /// `Unreleased servant xxx/low success rate/cannot clear quest/etc.\nAsk admin to delete team rather to edit team.`
+  /// `[With Details] Unreleased servant xxx/low success rate/cannot clear quest/etc.\nAsk admin to delete team rather to edit team.`
   String get team_report_reason_hint {
     return Intl.message(
-      'Unreleased servant xxx/low success rate/cannot clear quest/etc.\nAsk admin to delete team rather to edit team.',
+      '[With Details] Unreleased servant xxx/low success rate/cannot clear quest/etc.\nAsk admin to delete team rather to edit team.',
       name: 'team_report_reason_hint',
       desc: '',
       locale: localeName,

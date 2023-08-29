@@ -481,7 +481,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "gacha_prob_precision_hint": MessageLookupByLibrary.simpleMessage("数值过大或过小时由于double精度问题造成计算结果不准确"),
         "gacha_prob_svt_pickup": m19,
         "gacha_svt_count_hint": MessageLookupByLibrary.simpleMessage(
-            "所持栏位和保管室里从者宝具数的简单加和，不包含已变还(贩卖)，不包含活动四星。\n无记名灵基/福袋/自选四&五星对概率的影响需自行调整。"),
+            "所持栏位和保管室里从者宝具数的简单加和，不包含已变还(贩卖)，不包含活动四星。\n无记名灵基商店兑换/福袋/自选四&五星对概率的影响需自行调整。\n拒绝晒卡，人人有责。"),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("首页"),
         "game_account": MessageLookupByLibrary.simpleMessage("游戏账号"),
         "game_data_not_found": MessageLookupByLibrary.simpleMessage("数据加载失败，请先前往游戏数据页面下载"),
@@ -993,7 +993,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "team_no_order_change": MessageLookupByLibrary.simpleMessage("禁止换人"),
         "team_no_same_svt": MessageLookupByLibrary.simpleMessage("禁止相同从者"),
         "team_report_reason_hint":
-            MessageLookupByLibrary.simpleMessage("使用未实装从者xxx/操作发牌成功率低/无法通关 等等。\n为了通知管理员删除队伍而不是让其修改队伍配置。"),
+            MessageLookupByLibrary.simpleMessage("【详细说明】使用未实装从者/操作发牌成功率低/无法通关 等等。\n为了通知管理员删除队伍而不是让其修改队伍配置。"),
         "team_shared": MessageLookupByLibrary.simpleMessage("共享队伍"),
         "team_starting_member": MessageLookupByLibrary.simpleMessage("前排从者"),
         "team_use_servant": MessageLookupByLibrary.simpleMessage("使用从者"),
