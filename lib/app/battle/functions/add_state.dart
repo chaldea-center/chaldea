@@ -61,8 +61,8 @@ class AddState {
           BuffType.tdTypeChangeBuster: CardType.buster,
           BuffType.tdTypeChangeQuick: CardType.quick,
         }[buff.type]!;
-        if (baseTd != null) {
-          final changeTdIds = baseTd.script?.tdTypeChangeIDs ?? [];
+        final changeTdId = baseTd?.script?.tdTypeChangeIDs?.getOrNull(changeCardType.id - 1);
+        if (baseTd != null && changeTdId != null) {
           final List<NiceTd> localTds = [];
           if (target.isPlayer) {
             localTds.addAll(target.niceSvt!.noblePhantasms);
@@ -71,15 +71,10 @@ class AddState {
             if (td != null) localTds.add(td);
           }
 
-          /// for Summer Barghest, tdTypeChangeIDs=[changeTdid, baseTdId], both are Arts
-          for (final tdId in changeTdIds) {
-            NiceTd? td = localTds.firstWhereOrNull((e) => e.id == tdId);
-            // todo: add svtId
-            td ??= await AtlasApi.td(tdId);
-            if (td != null && td.card == changeCardType) {
-              buffData.tdSelection = td;
-              break;
-            }
+          NiceTd? td = localTds.firstWhereOrNull((e) => e.id == changeTdId);
+          td ??= await AtlasApi.td(changeTdId);
+          if (td != null) {
+            buffData.tdSelection = td;
           }
         }
       } else if (buff.type == BuffType.upDamageEventPoint) {
