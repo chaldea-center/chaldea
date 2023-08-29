@@ -302,6 +302,7 @@ class ExchangeTicket {
       case Region.jp:
         return 0;
       case Region.cn:
+        if (year >= 2022 && month >= 9) return 12;
         return 15;
       case Region.tw:
         return 24;
