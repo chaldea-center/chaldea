@@ -54,11 +54,14 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
     }
     for (final event in db.gameData.events.values) {
       List<Quest> quests = [];
-      if (event.extra.huntingQuestIds.isNotEmpty) {
-        quests.addAll([
-          for (final questId in event.extra.huntingQuestIds)
-            if (db.gameData.quests.containsKey(questId)) db.gameData.quests[questId]!,
-        ]);
+      if (event.isHuntingEvent) {
+        final questIds = db.gameData.others.eventQuestGroups[event.id] ?? [];
+        for (final questId in questIds) {
+          final quest = db.gameData.quests[questId];
+          if (quest != null && quest.isAnyFree) {
+            quests.add(quest);
+          }
+        }
       }
       for (final warId in event.warIds) {
         final war = db.gameData.wars[warId];
@@ -77,7 +80,7 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
         ]);
 
     final initQuest = db.gameData.quests[widget.initQuestId];
-    final option = optionList.firstWhereOrNull((option) => option.quests.contains(initQuest));
+    final option = optionList.lastWhereOrNull((option) => option.quests.contains(initQuest));
     if (option != null) {
       eventWarId = option.id;
       quest = initQuest;
@@ -126,7 +129,7 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
           DropdownMenuItem(
             value: option.id,
             child: Text(
-              (option.war?.lShortName ?? option.event?.lShortName.l ?? option.id.toString()).setMaxLines(1).breakWord,
+              (option.war?.lShortName ?? option.event?.shownName ?? option.id.toString()).setMaxLines(1).breakWord,
               maxLines: 2,
               style: const TextStyle(fontSize: 12).merge(option.event?.isOutdated(const Duration(days: 1)) == true
                   ? TextStyle(color: Theme.of(context).textTheme.bodySmall?.color)

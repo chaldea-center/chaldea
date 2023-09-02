@@ -157,7 +157,6 @@ EventExtra _$EventExtraFromJson(Map json) => EventExtra(
           ? null
           : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['noticeLink'] as Map)),
       huntingId: json['huntingId'] as int? ?? 0,
-      huntingQuestIds: (json['huntingQuestIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       extraFixedItems: (json['extraFixedItems'] as List<dynamic>?)
               ?.map((e) => EventExtraFixedItems.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??

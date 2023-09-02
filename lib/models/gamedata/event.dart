@@ -135,7 +135,7 @@ class Event {
       // campaigns.isEmpty &&
       // campaignQuests.isEmpty &&
       // heelPortraits.isEmpty &&
-      extra.huntingQuestIds.isEmpty &&
+      !isHuntingEvent &&
       extra.extraFixedItems.isEmpty &&
       extra.extraItems.isEmpty &&
       !db.gameData.others.eventQuestGroups.containsKey(id) &&
@@ -143,7 +143,7 @@ class Event {
 
   bool get isInfinite =>
       extra.extraItems.any((e) => e.infinite) ||
-      extra.huntingQuestIds.isNotEmpty ||
+      isHuntingEvent ||
       lotteries.any((e) => !e.limited) ||
       treasureBoxes.isNotEmpty ||
       randomMissions.isNotEmpty ||
@@ -152,6 +152,7 @@ class Event {
       recipes.isNotEmpty;
 
   bool get isAdvancedQuestEvent => name.contains('アドバンスドクエスト');
+  bool get isHuntingEvent => extra.huntingId > 0 || name.contains('ハンティングクエスト');
 
   String? get shopBanner {
     // if (shop.isEmpty) return null;

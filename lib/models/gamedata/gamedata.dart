@@ -456,7 +456,6 @@ class _ProcessedData {
   Map<int, EventMission> eventMissions = {};
   Map<int, EventPointBuff> eventPointBuffs = {};
   Map<int, EventPointGroup> eventPointBuffGroups = {};
-  Map<int, int> huntingToEventIds = {};
   Map<QuestGroupType, Map<int, List<int>>> questGroups = {}; // <type,<groupId, questIds>>
   Map<int, List<int>> eventQuestGroups = {}; // QuestGroupType.eventQuest: <eventId=groupId, questIds>
   Map<int, List<int>> eventTowerQuestGroups = {}; // QuestGroupType.eventTower: <towerId, questIds>
@@ -500,10 +499,6 @@ class _ProcessedData {
     eventPointBuffGroups = {
       for (final event in gameData.events.values)
         for (final group in event.pointGroups) group.groupId: group
-    };
-    huntingToEventIds = {
-      for (final event in gameData.events.values)
-        for (final questId in event.extra.huntingQuestIds) questId: event.id,
     };
     for (final quest in gameData.questGroups) {
       final type = quest.type2;
