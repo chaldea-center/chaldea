@@ -461,7 +461,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest": MessageLookupByLibrary.simpleMessage("مهمة"),
         "quest_chapter_n": m9,
         "quest_condition": MessageLookupByLibrary.simpleMessage("الظروف"),
-        "quest_detail_btn": MessageLookupByLibrary.simpleMessage("التفاصيل"),
         "rarity": MessageLookupByLibrary.simpleMessage("الندرة"),
         "rate_app_store": MessageLookupByLibrary.simpleMessage("قيمنا على آب ستور"),
         "rate_play_store": MessageLookupByLibrary.simpleMessage("قيمنا على متجر بلاي"),

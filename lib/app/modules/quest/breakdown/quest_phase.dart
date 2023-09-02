@@ -542,7 +542,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       if (_enemyHash != null && !curPhase.enemyHashes.contains(_enemyHash)) {
         _enemyHash = null;
       }
-      if (curPhase.enemyHashes.length > 1 && !widget.battleOnly) {
+      if (curPhase.enemyHashes.length > 1) {
         headerRows.add(getQuestVersionDropdown(curPhase));
       }
     }
@@ -642,11 +642,13 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                   child: Text(text, style: style),
                 );
               }),
-              onChanged: (v) {
-                _enemyHash = v;
-                _fetchData();
-                setState(() {});
-              },
+              onChanged: widget.battleOnly
+                  ? null
+                  : (v) {
+                      _enemyHash = v;
+                      _fetchData();
+                      setState(() {});
+                    },
             ),
           ),
         )

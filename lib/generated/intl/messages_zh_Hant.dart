@@ -624,6 +624,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "jump_to": m7,
         "language": MessageLookupByLibrary.simpleMessage("繁體中文"),
         "language_en": MessageLookupByLibrary.simpleMessage("Traditional Chinese"),
+        "laplace_enemy_multi_ver_hint":
+            MessageLookupByLibrary.simpleMessage("注意本关卡有多种版本的敌人配置，查找队伍或模拟时需注意切换到对应版本:\n点击详情-选取版本-点击计算器按钮。"),
         "laplace_upload_td_multi_dmg_func_hint":
             MessageLookupByLibrary.simpleMessage("部分從者存在多段寶具(陳宮/阿拉什等)，請檢查最小和最大隨機數對NP回收等的影響，確保均能通關。"),
         "level": MessageLookupByLibrary.simpleMessage("等級"),
@@ -776,7 +778,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest": MessageLookupByLibrary.simpleMessage("關卡"),
         "quest_chapter_n": m9,
         "quest_condition": MessageLookupByLibrary.simpleMessage("開放條件"),
-        "quest_detail_btn": MessageLookupByLibrary.simpleMessage("詳情"),
         "quest_disallow_laplace_share_hint": MessageLookupByLibrary.simpleMessage("無效關卡，僅支持主線/活動Free本及伐柱戰的隊伍分享"),
         "quest_edit_hint": MessageLookupByLibrary.simpleMessage(
             "若需使用活動效果，對應的關卡配置以及場地特性(94000xxx)均需正確設置。\n僅支持基礎關卡和敵人屬性編輯，不支持多血條等複雜情形。複雜情況請自訂JSON。"),

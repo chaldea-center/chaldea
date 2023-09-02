@@ -622,6 +622,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "jump_to": m7,
         "language": MessageLookupByLibrary.simpleMessage("简体中文"),
         "language_en": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
+        "laplace_enemy_multi_ver_hint":
+            MessageLookupByLibrary.simpleMessage("注意本关卡有多种版本的敌人配置，查找队伍或模拟时需注意切换到对应版本:\n点击详情-选取版本-点击计算器按钮。"),
         "laplace_upload_td_multi_dmg_func_hint":
             MessageLookupByLibrary.simpleMessage("部分从者存在多段宝具(陈宫/阿拉什等)，请检查最小和最大随机数对NP回收等的影响，确保均能通关。"),
         "level": MessageLookupByLibrary.simpleMessage("等级"),
@@ -774,7 +776,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest": MessageLookupByLibrary.simpleMessage("关卡"),
         "quest_chapter_n": m9,
         "quest_condition": MessageLookupByLibrary.simpleMessage("开放条件"),
-        "quest_detail_btn": MessageLookupByLibrary.simpleMessage("详情"),
         "quest_disallow_laplace_share_hint": MessageLookupByLibrary.simpleMessage("无效关卡，仅支持主线/活动Free本及柱子战的队伍分享"),
         "quest_edit_hint": MessageLookupByLibrary.simpleMessage(
             "若需使用活动效果，对应的关卡配置以及场地特性(94000xxx)均需正确设置。\n仅支持基础关卡和敌人属性编辑，不支持多血条等复杂情形。复杂情况请自定义JSON。"),

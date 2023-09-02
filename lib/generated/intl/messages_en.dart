@@ -649,6 +649,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "jump_to": m7,
         "language": MessageLookupByLibrary.simpleMessage("English"),
         "language_en": MessageLookupByLibrary.simpleMessage("English"),
+        "laplace_enemy_multi_ver_hint": MessageLookupByLibrary.simpleMessage(
+            "Warn that this quest contains multiple enemy versions, ensure the desired version before lookup shared teams or simulate:\nDetails - Change Version - Click Calculator button"),
         "laplace_upload_td_multi_dmg_func_hint": MessageLookupByLibrary.simpleMessage(
             "Multi-step NP found(e.g. Chen Gong/Arash), please check MIN/MAX RNG to ensure NP refund is sufficient and able to clear the quest."),
         "level": MessageLookupByLibrary.simpleMessage("Level"),
@@ -809,7 +811,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest": MessageLookupByLibrary.simpleMessage("Quest"),
         "quest_chapter_n": m9,
         "quest_condition": MessageLookupByLibrary.simpleMessage("Conditions"),
-        "quest_detail_btn": MessageLookupByLibrary.simpleMessage("details"),
         "quest_disallow_laplace_share_hint":
             MessageLookupByLibrary.simpleMessage("Invalid quest, only Free and Raid Quests supports team sharing"),
         "quest_edit_hint": MessageLookupByLibrary.simpleMessage(

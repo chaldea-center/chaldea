@@ -487,7 +487,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest": MessageLookupByLibrary.simpleMessage("Quest"),
         "quest_chapter_n": m9,
         "quest_condition": MessageLookupByLibrary.simpleMessage("Condiciones"),
-        "quest_detail_btn": MessageLookupByLibrary.simpleMessage("detalles"),
         "quest_fields": MessageLookupByLibrary.simpleMessage("Terrenos"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("Drops"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("Drops"),

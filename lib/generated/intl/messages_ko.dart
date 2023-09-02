@@ -653,7 +653,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest": MessageLookupByLibrary.simpleMessage("퀘스트"),
         "quest_chapter_n": m9,
         "quest_condition": MessageLookupByLibrary.simpleMessage("개방 조건"),
-        "quest_detail_btn": MessageLookupByLibrary.simpleMessage("세부"),
         "quest_enemy_summary_hint": MessageLookupByLibrary.simpleMessage(
             "메인 스토리의 무료 퀘스트에서 적에 대한 요약, 모든 속성은 서버에서 재정의될 수 있습니다. 참고용으로만.\n*특수* 특성은 적의 일부만이 이 가지고 있는 특성을 말한다."),
         "quest_fields": MessageLookupByLibrary.simpleMessage("필드"),

@@ -585,7 +585,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest": MessageLookupByLibrary.simpleMessage("クエスト"),
         "quest_chapter_n": m9,
         "quest_condition": MessageLookupByLibrary.simpleMessage("開放条件"),
-        "quest_detail_btn": MessageLookupByLibrary.simpleMessage("詳細"),
         "quest_enemy_summary_hint": MessageLookupByLibrary.simpleMessage(
             "フリークエストの敵編成まとめにある各属性は、サーバーによって上書きされる可能性があり、あくまで参考程度に考えてください。\n*特殊*特性とは、敵の一部のみがその特性を持っていることを示します。"),
         "quest_fields": MessageLookupByLibrary.simpleMessage("フィールド"),

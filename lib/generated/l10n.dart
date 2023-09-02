@@ -5838,6 +5838,17 @@ class S {
     );
   }
 
+  /// `Warn that this quest contains multiple enemy versions, ensure the desired version before lookup shared teams or simulate:\nDetails - Change Version - Click Calculator button`
+  String get laplace_enemy_multi_ver_hint {
+    return Intl.message(
+      'Warn that this quest contains multiple enemy versions, ensure the desired version before lookup shared teams or simulate:\nDetails - Change Version - Click Calculator button',
+      name: 'laplace_enemy_multi_ver_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Multi-step NP found(e.g. Chen Gong/Arash), please check MIN/MAX RNG to ensure NP refund is sufficient and able to clear the quest.`
   String get laplace_upload_td_multi_dmg_func_hint {
     return Intl.message(
@@ -7498,17 +7509,6 @@ class S {
     return Intl.message(
       'Conditions',
       name: 'quest_condition',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `details`
-  String get quest_detail_btn {
-    return Intl.message(
-      'details',
-      name: 'quest_detail_btn',
       desc: '',
       locale: localeName,
       args: [],

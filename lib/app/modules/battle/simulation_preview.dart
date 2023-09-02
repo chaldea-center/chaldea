@@ -481,7 +481,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                       );
                     },
               style: kTextButtonDenseStyle,
-              child: Text(S.current.quest_detail_btn),
+              child: Text(S.current.details),
             ),
             TextButton(
               onPressed: questPhase == null
@@ -524,7 +524,8 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               battleOnly: true,
               preferredPhases: [questPhase!],
             ),
-          )
+          ),
+        if (questPhase != null && questPhase!.enemyHashes.isNotEmpty) SFooter(S.current.laplace_enemy_multi_ver_hint),
       ],
     );
   }

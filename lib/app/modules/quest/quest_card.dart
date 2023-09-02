@@ -112,7 +112,7 @@ class _QuestCardState extends State<QuestCard> {
                     detail: true,
                   );
                 },
-                child: Text('>>> ${S.current.quest_detail_btn} >>>'),
+                child: Text('>>> ${S.current.details} >>>'),
               ),
           ],
         ),
@@ -216,7 +216,7 @@ class _QuestCardState extends State<QuestCard> {
               detail: true,
             );
           },
-          child: Text('>>> ${S.current.quest_detail_btn} >>>'),
+          child: Text('>>> ${S.current.details} >>>'),
         ),
     ];
 
