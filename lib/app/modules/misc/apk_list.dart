@@ -7,7 +7,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -77,16 +76,15 @@ class _ApkListPageState extends State<ApkListPage> {
         }
       } else if (data.region != null) {
         final workerHost = HostsX.worker.of(proxy || Language.isCHS);
-        final resp = await DioE().get('$workerHost/proxy/gplay-ver/', queryParameters: {
-          "id": data.packageId,
-          // "t": (DateTime.now().timestamp ~/ 1000).toString()
-        });
-        final ver = resp.data.toString().trim();
-        if (AppVersion.tryParse(ver) != null) {
+        final versions = await ChaldeaWorkerApi.cacheManager
+            .getModel('$workerHost/proxy/apk/current_ver.json', (v) => Map<String, String>.from(v));
+        final ver = versions?[data.region!.upper];
+        final ver32 = versions?['${data.region!.upper}_32'];
+        if (ver != null) {
           data.version = ver;
           url = data.url = '$host/apk/${data.packageId}.v$ver.apk';
-          if (data.region == Region.jp || data.region == Region.na) {
-            data.url32 = '$host/apk/${data.packageId}.v$ver.armeabi_v7a.apk';
+          if (ver32 != null) {
+            data.url32 = '$host/apk/${data.packageId}.v$ver32.armeabi_v7a.apk';
           }
         }
       } else if (data.region == null) {

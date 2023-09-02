@@ -368,7 +368,7 @@ class AtlasApi {
         break;
     }
     return cacheManager.getModelRaw(
-      '${HostsX.workerHost}/proxy/gplay-ver?id=$bundleId',
+      '${HostsX.workerHost}/app-ver/gplay?id=$bundleId',
       (data) {
         if (RegExp(r'^\d+\.\d+\.\d+$').hasMatch(data)) {
           return data;

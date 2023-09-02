@@ -161,7 +161,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     ChaldeaWorkerApi.remoteConfig().then((value) {
       if (value != null) db.settings.remoteConfig = value;
     });
-    if (db.settings.autoUpdateApp && !kIsWeb) {
+    if (db.settings.autoUpdateApp && !kIsWeb && db.settings.launchTimes % 10 == 0) {
       await Future.delayed(const Duration(seconds: 5));
       if (PlatformU.isIOS) {
         AppUpdater.checkAppStoreUpdate();
