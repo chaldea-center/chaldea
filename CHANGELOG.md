@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.13
+
+- Fix CommandCode trigger buff processed as passive
+- Add CN gacha info before 2019
+- CN exchange tickets skip 3 months
+
 ## 2.4.12
 
 - Fix Kingprotea skill 3 NP Damage Up

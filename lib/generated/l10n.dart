@@ -5838,10 +5838,10 @@ class S {
     );
   }
 
-  /// `Warn that this quest contains multiple enemy versions, ensure the desired version before lookup shared teams or simulate:\nDetails - Change Version - Click Calculator button`
+  /// `Warning that this quest contains multiple enemy configurations, when searching shared teams or simulating check the corresponding version:\nClick Details - Select Version - Click the Calculate Button`
   String get laplace_enemy_multi_ver_hint {
     return Intl.message(
-      'Warn that this quest contains multiple enemy versions, ensure the desired version before lookup shared teams or simulate:\nDetails - Change Version - Click Calculator button',
+      'Warning that this quest contains multiple enemy configurations, when searching shared teams or simulating check the corresponding version:\nClick Details - Select Version - Click the Calculate Button',
       name: 'laplace_enemy_multi_ver_hint',
       desc: '',
       locale: localeName,
