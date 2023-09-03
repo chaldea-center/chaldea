@@ -650,7 +650,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     bool canUpload = false;
     String content;
     final reasons = battleData.recorder.illegalReasons.toSet();
-    reasons.addAll(battleData.recorder.checkExtraIllegalReason());
+    reasons.addAll(battleData.recorder.checkExtraIllegalReason(battleData.replayDataRecord));
 
     if (widget.region != null && widget.region != Region.jp) {
       content = 'Only JP quest supports team sharing. (current: ${widget.region!.localName})';

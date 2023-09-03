@@ -258,6 +258,7 @@ class AppInfo {
     const excludeIds = [
       'FB26CA34-0B8F-588C-8542-4A748BB67740', // android
       'C150DF56-B65C-5167-852B-102D487D7159', // ios
+      '42A8BE37-7BD5-5AFA-9F96-6BDCC13A540A', // ios store
       'BC87303D-6010-5DCE-90FB-68E8758EC260', // ios release
       'EFD686D5-2D83-56E5-8971-8F72D0D42D58', // macos
       '6986A299-F7CB-5BBF-9680-14ED34013C07', // windows

@@ -261,14 +261,17 @@ class BattleRecordManager {
     }
   }
 
-  Set<String> checkExtraIllegalReason() {
+  Set<String> checkExtraIllegalReason(BattleReplayDelegateData delegate) {
     final reasons = <String>{};
+    const kMaxRNG = 950, kMinProb = 80;
     int countNormalAttack = 0, countLargeRng = 0, countProb = 0;
+    bool tailoredExecution = delegate.damageSelections.isNotEmpty || delegate.canActivateDecisions.isNotEmpty;
     for (final record in toUploadRecords()) {
-      if (record.options.fixedRandom >= 950) {
+      if (record.options.fixedRandom >= kMaxRNG) {
         countLargeRng += 1;
       }
-      if (record.options.probabilityThreshold <= 80) {
+      tailoredExecution |= record.options.tailoredExecution;
+      if (record.options.probabilityThreshold <= kMinProb) {
         countProb += 1;
       }
       final attacks = record.attackRecords ?? [];
@@ -278,6 +281,10 @@ class BattleRecordManager {
         }
       }
     }
+    if (tailoredExecution) {
+      setIllegal('${S.current.options}: ${S.current.battle_tailored_execution}');
+    }
+
     if (countNormalAttack > 6) {
       setIllegal('${S.current.normal_attack}: $countNormalAttack >6');
     }
