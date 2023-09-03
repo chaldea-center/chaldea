@@ -1204,6 +1204,33 @@ void main() async {
     expect(battle.criticalStars, moreOrLessEquals(1.006, epsilon: 0.001));
   });
 
+  test('Summer Chloe additionalSkillId moveToLastSubmember', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(1101600)..skillLvs = [10, 10, 10],
+      PlayerSvtData.id(800100),
+      PlayerSvtData.id(100100),
+      PlayerSvtData.id(100200),
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final chloe = battle.onFieldAllyServants[0]!;
+
+    expect(battle.onFieldAllyServants[0]?.svtId, 1101600);
+    expect(battle.onFieldAllyServants[1]?.svtId, 800100);
+    expect(battle.onFieldAllyServants[2]?.svtId, 100100);
+    expect(battle.nonnullBackupAllies[0].svtId, 100200);
+
+    await battle.activateSvtSkill(0, 1);
+    await battle.playerTurn([CombatAction(chloe, chloe.getCards(battle)[0])]);
+
+    expect(battle.onFieldAllyServants[0]?.svtId, 100200);
+    expect(battle.onFieldAllyServants[1]?.svtId, 800100);
+    expect(battle.onFieldAllyServants[2]?.svtId, 100100);
+    expect(battle.nonnullBackupAllies[0].svtId, 1101600);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,

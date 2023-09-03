@@ -22,6 +22,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/extension.dart';
+import '../../api/atlas.dart';
 import '../interactions/act_set_select.dart';
 import '../interactions/td_type_change_selector.dart';
 import 'buff_turn_count.dart';
@@ -36,6 +37,7 @@ class FunctionExecutor {
     final BattleData battleData,
     final List<NiceFunction> functions,
     final int skillLevel, {
+    required final SkillScript? script,
     final int overchargeLvl = 1,
     final bool isPassive = false,
     final bool notActorFunction = false,
@@ -85,6 +87,15 @@ class FunctionExecutor {
         );
         if (!updatedResult) {
           battleData.uniqueIdToFuncResultsList.add(null);
+        }
+      }
+      if (script != null && script.additionalSkillId != null) {
+        final askillId = script.additionalSkillId!.getOrNull(skillLevel - 1);
+        final askillLv = script.additionalSkillLv?.getOrNull(skillLevel - 1) ?? 1;
+        if (askillId != null && askillId != 0) {
+          final askill = await showEasyLoading(() => AtlasApi.skill(askillId), mask: true);
+          final aSkillInfo = BattleSkillInfoData(askill, type: SkillInfoType.none, skillLv: askillLv);
+          await aSkillInfo.activate(battleData);
         }
       }
     });

@@ -896,7 +896,8 @@ class BattleServantData {
         npLineCount = 0;
         usedNpThisTurn = true;
         final functions = await updateNpFunctions(battleData, niceTD.functions);
-        await FunctionExecutor.executeFunctions(battleData, functions, tdLv, overchargeLvl: overchargeLvl);
+        await FunctionExecutor.executeFunctions(battleData, functions, tdLv,
+            script: niceTD.script, overchargeLvl: overchargeLvl);
       }
     });
   }
@@ -1147,6 +1148,7 @@ class BattleServantData {
             battleData,
             skill.functions,
             buff.additionalParam.clamp(1, skill.maxLv),
+            script: skill.script,
             isPassive: false,
           );
           buff.setUsed();

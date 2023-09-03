@@ -982,7 +982,7 @@ class BattleData {
               recorder.startPlayerCard(action.actor, action.cardData);
               final td = action.cardData.td!, buff = action.cardData.counterBuff!;
               await FunctionExecutor.executeFunctions(this, td.functions, buff.vals.CounterLv ?? 1,
-                  overchargeLvl: buff.vals.CounterOc ?? 1);
+                  script: td.script, overchargeLvl: buff.vals.CounterOc ?? 1);
 
               for (final enemy in nonnullEnemies) {
                 if (enemy.attacked) {
