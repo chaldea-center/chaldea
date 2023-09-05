@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'package:crclib/catalog.dart';
 
 import 'package:chaldea/utils/extension.dart';
-import '../../utils/basic.dart';
 import '../userdata/version.dart';
 import '_helper.dart';
 import 'class_board.dart';
@@ -75,7 +74,7 @@ class GameData with _GameDataExtra {
   Map<int, BaseSkill> baseSkills;
   Map<int, BaseTd> baseTds;
   Map<int, BaseFunction> baseFunctions;
-  _GameDataAdd? addData;
+  GameDataAdd? addData;
   Region? spoilerRegion;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -117,25 +116,19 @@ class GameData with _GameDataExtra {
     this.addData,
     this.spoilerRegion,
   })  : version = version ?? DataVersion(),
-        servantsById = {
-          for (final svt in [...servants, ...?addData?.svt.values]) svt.id: svt
-        },
+        servantsById = {for (final svt in servants) svt.id: svt},
         servants = {
-          for (final svt in [...servants, ...?addData?.svt.values])
+          for (final svt in servants)
             if (svt.collectionNo > 0) svt.collectionNo: svt
         },
-        craftEssencesById = {
-          for (final ce in [...craftEssences, ...?addData?.ce.values]) ce.id: ce
-        },
+        craftEssencesById = {for (final ce in craftEssences) ce.id: ce},
         craftEssences = {
-          for (final ce in [...craftEssences, ...?addData?.ce.values])
+          for (final ce in craftEssences)
             if (ce.collectionNo > 0) ce.collectionNo: ce
         },
-        commandCodesById = {
-          for (final cc in [...commandCodes, ...?addData?.cc.values]) cc.id: cc
-        },
+        commandCodesById = {for (final cc in commandCodes) cc.id: cc},
         commandCodes = {
-          for (final cc in [...commandCodes, ...?addData?.cc.values])
+          for (final cc in commandCodes)
             if (cc.collectionNo > 0) cc.collectionNo: cc
         },
         mysticCodes = mysticCodes ?? {},
@@ -256,31 +249,30 @@ class GameData with _GameDataExtra {
     if (addData == null || DateTime.now().timestamp - version.timestamp > 1800) {
       return false;
     }
-    final svt = addData.svt[id];
-    if (svt != null && Maths.max(servants.keys, 0) - svt.collectionNo < 5) {
-      return true;
-    }
-    return (addData.ce[id] ?? addData.cc[id]) != null;
+    return addData.svts.contains(id) || addData.ccs.contains(id) || addData.ces.contains(id);
   }
 
   factory GameData.fromJson(Map<String, dynamic> json) => _$GameDataFromJson(json);
 }
 
 @JsonSerializable(createToJson: false)
-class _GameDataAdd {
-  Map<int, Servant> svt;
-  Map<int, CraftEssence> ce;
-  Map<int, CommandCode> cc;
+class GameDataAdd {
+  // all are id not collectionNo
+  List<int> svts;
+  List<int> ces;
+  List<int> ccs;
+  List<int> items;
+  List<int> events; // only EventType.eventQuest
 
-  _GameDataAdd({
-    List<Servant> svt = const [],
-    List<CraftEssence> ce = const [],
-    List<CommandCode> cc = const [],
-  })  : svt = {for (var x in svt) x.id: x},
-        ce = {for (var x in ce) x.id: x},
-        cc = {for (var x in cc) x.id: x};
+  GameDataAdd({
+    this.svts = const [],
+    this.ces = const [],
+    this.ccs = const [],
+    this.items = const [],
+    this.events = const [],
+  });
 
-  factory _GameDataAdd.fromJson(Map<String, dynamic> json) => _$GameDataAddFromJson(json);
+  factory GameDataAdd.fromJson(Map<String, dynamic> json) => _$GameDataAddFromJson(json);
 }
 
 mixin _GameDataExtra {

@@ -157,6 +157,14 @@ class AtlasApi {
     );
   }
 
+  static Future<Item?> item(int itemId, {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/nice/${region.upper}/item/$itemId',
+      (data) => Item.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+
   static Future<NiceSkill?> skill(int skillId, {Region region = Region.jp, Duration? expireAfter}) {
     if (skillId <= 0) return Future.value();
     return cacheManager.getModel(

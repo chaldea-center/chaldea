@@ -263,6 +263,7 @@ class GameDataLoader {
       futures.add(_pool.withResource(() => _downloadCheck(fv, l2mKey: keys[fv.key], l2mFn: l2mFn)));
     }
     await Future.wait(futures);
+    await _addGameAdd(_gameJson);
     _patchMappings(_gameJson);
 
     if (_gameJson.isEmpty) {
@@ -289,6 +290,45 @@ class GameDataLoader {
     db.runtimeData.upgradableDataVersion = newVersion;
     progress.value = finished / newVersion.files.length;
     return _gamedata;
+  }
+
+  Future<void> _addGameAdd(Map<String, dynamic> gamedata) async {
+    final addDataJson = gamedata['addData'] as Map?;
+    if (addDataJson == null) return;
+
+    final addData = GameDataAdd.fromJson(Map.from(addDataJson));
+    List<Future> futures = [
+      for (final svtId in addData.svts)
+        AtlasApi.svt(svtId).then((svt) {
+          if (svt == null) return;
+          (gamedata['servants'] as List?)?.add(svt.toJson());
+        }),
+      for (final ceId in addData.ces)
+        AtlasApi.ce(ceId).then((ce) {
+          if (ce == null) return;
+          (gamedata['craftEssences'] as List?)?.add(ce.toJson());
+        }),
+      for (final ccId in addData.ccs)
+        AtlasApi.cc(ccId).then((cc) {
+          if (cc == null) return;
+          (gamedata['commandCodes'] as List?)?.add(cc.toJson());
+        }),
+      for (final itemId in addData.items)
+        AtlasApi.item(itemId).then((item) {
+          if (item == null) return;
+          (gamedata['items'] as Map?)?[item.id.toString()] ??= item.toJson();
+        }),
+      for (final eventId in addData.events)
+        AtlasApi.event(eventId).then((event) {
+          if (event == null) return;
+          (gamedata['events'] as Map?)?[event.id.toString()] ??= event.toJson();
+        }),
+    ];
+    try {
+      await Future.wait(futures);
+    } catch (e, s) {
+      logger.e('fetch addData failed', e, s);
+    }
   }
 
   void _patchMappings(Map<String, dynamic> gamedata) {

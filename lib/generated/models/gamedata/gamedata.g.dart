@@ -73,8 +73,7 @@ GameData _$GameDataFromJson(Map json) => GameData(
           ? null
           : ConstGameData.fromJson(Map<String, dynamic>.from(json['constData'] as Map)),
       dropData: json['dropData'] == null ? null : DropData.fromJson(Map<String, dynamic>.from(json['dropData'] as Map)),
-      addData:
-          json['addData'] == null ? null : _GameDataAdd.fromJson(Map<String, dynamic>.from(json['addData'] as Map)),
+      addData: json['addData'] == null ? null : GameDataAdd.fromJson(Map<String, dynamic>.from(json['addData'] as Map)),
       spoilerRegion: _$JsonConverterFromJson<String, Region>(json['spoilerRegion'], const RegionConverter().fromJson),
     );
 
@@ -84,18 +83,12 @@ Value? _$JsonConverterFromJson<Json, Value>(
 ) =>
     json == null ? null : fromJson(json as Json);
 
-_GameDataAdd _$GameDataAddFromJson(Map json) => _GameDataAdd(
-      svt:
-          (json['svt'] as List<dynamic>?)?.map((e) => Servant.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
-              const [],
-      ce: (json['ce'] as List<dynamic>?)
-              ?.map((e) => CraftEssence.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      cc: (json['cc'] as List<dynamic>?)
-              ?.map((e) => CommandCode.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
+GameDataAdd _$GameDataAddFromJson(Map json) => GameDataAdd(
+      svts: (json['svts'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      ces: (json['ces'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      ccs: (json['ccs'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      items: (json['items'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      events: (json['events'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
     );
 
 DataVersion _$DataVersionFromJson(Map json) => DataVersion(
