@@ -195,14 +195,19 @@ class ItemCenter {
       coin += (max(0, grailLvs) ~/ 2) * 30;
     }
 
+    int grailStart = cur.grail;
+    if (svt.collectionNo == 1) grailStart = max(2, grailStart);
+
     detail.special = {
       Items.hpFou4: max(0, target.fouHp - cur.fouHp),
       Items.atkFou4: max(0, target.fouAtk - cur.fouAtk),
       Items.hpFou3: max(0, target.fouHp3 - cur.fouHp3),
       Items.atkFou3: max(0, target.fouAtk3 - cur.fouAtk3),
-      Items.grailId: max(0, target.grail - cur.grail),
+      // Mash 80-90 doesn't need grail
+      Items.grailId: max(0, target.grail - grailStart),
       // Items.lanternId: max(0, target.bondLimit - cur.bondLimit),
-      Items.qpId: QpCost.grail(svt.rarity, cur.grail, target.grail) + QpCost.bondLimit(cur.bondLimit, target.bondLimit),
+      Items.qpId:
+          QpCost.grail(svt.rarity, grailStart, target.grail) + QpCost.bondLimit(cur.bondLimit, target.bondLimit),
       if (coinId != null) coinId: coin,
     };
 

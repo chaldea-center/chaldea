@@ -640,6 +640,7 @@ class Servant with GameCardMixin {
     final costs = db.gameData.constData.svtGrailCost[rarity];
     if (costs != null) {
       for (final endLv in costs.keys) {
+        if (collectionNo == 1 && endLv <= 2) continue;
         materials[endLv - 1] = LvlUpMaterial(
           items: [
             ItemAmount(amount: 1, item: Items.grail),

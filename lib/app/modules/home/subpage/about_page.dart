@@ -68,10 +68,8 @@ class _AboutPageState extends State<AboutPage> {
                 child: Image.asset('res/img/launcher_icon/app_icon_logo.png', height: 120),
               ),
               legalese: 'Copyright © 2023 cc.narumi.\nAll rights reserved.',
-              debugInfo: showDebugInfo
-                  ? 'UUID\n${AppInfo.uuid}\n'
-                      'Size: ${size.width.toInt()}×${size.height.toInt()} [×$devicePixelRatio]'
-                  : null,
+              debugInfo: 'UUID\n${AppInfo.uuid}\n'
+                  'Size: ${size.width.toInt()}×${size.height.toInt()} [×$devicePixelRatio]',
               onDoubleTap: () {
                 setState(() {
                   showDebugInfo = true;
@@ -259,18 +257,17 @@ class _AboutPageState extends State<AboutPage> {
               )
             ],
           ),
-          if (db.runtimeData.enableDebugTools)
-            TileGroup(
-              header: 'Dev',
-              children: [
-                ListTile(
-                  title: const Text('Device Info'),
-                  onTap: () {
-                    router.pushPage(const DevInfoPage());
-                  },
-                )
-              ],
-            )
+          TileGroup(
+            header: 'Dev',
+            children: [
+              ListTile(
+                title: const Text('Device Info'),
+                onTap: () {
+                  router.pushPage(const DevInfoPage());
+                },
+              )
+            ],
+          )
         ],
       ),
     );
