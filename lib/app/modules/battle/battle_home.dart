@@ -66,7 +66,7 @@ class BattleHomePage extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.group),
-              title: Text(S.current.manage_uploaded_teams),
+              title: Text(S.current.laplace_my_teams),
               onTap: () {
                 router.push(url: Routes.laplaceManageTeam);
               },

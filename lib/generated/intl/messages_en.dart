@@ -651,6 +651,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "language_en": MessageLookupByLibrary.simpleMessage("English"),
         "laplace_enemy_multi_ver_hint": MessageLookupByLibrary.simpleMessage(
             "Warning that this quest contains multiple enemy configurations, when searching shared teams or simulating check the corresponding version:\nClick Details - Select Version - Click the Calculate Button"),
+        "laplace_my_teams": MessageLookupByLibrary.simpleMessage("My Teams"),
         "laplace_upload_td_multi_dmg_func_hint": MessageLookupByLibrary.simpleMessage(
             "Multi-step NP found(e.g. Chen Gong/Arash), please check MIN/MAX RNG to ensure NP refund is sufficient and able to clear the quest."),
         "level": MessageLookupByLibrary.simpleMessage("Level"),
@@ -698,7 +699,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_quest": MessageLookupByLibrary.simpleMessage("Main Quests"),
         "main_story": MessageLookupByLibrary.simpleMessage("Main Record"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("Chapter"),
-        "manage_uploaded_teams": MessageLookupByLibrary.simpleMessage("Manage Uploaded Teams"),
         "map_gimmicks": MessageLookupByLibrary.simpleMessage("Gimmicks"),
         "map_layer_n": m22,
         "map_show_fq_spots_only": MessageLookupByLibrary.simpleMessage("FQ spots only"),
@@ -1087,7 +1087,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_paused": m30,
         "upload_team_confirmation": MessageLookupByLibrary.simpleMessage(
             "Upload current team?\n\nAttention: uploaded data may be deleted due to data incompatible etc."),
-        "uploaded_teams": MessageLookupByLibrary.simpleMessage("Uploaded Teams"),
         "usage": MessageLookupByLibrary.simpleMessage("Usage"),
         "userdata": MessageLookupByLibrary.simpleMessage("Userdata"),
         "userdata_download_backup": MessageLookupByLibrary.simpleMessage("Download Backup"),

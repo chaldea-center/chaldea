@@ -626,6 +626,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "language_en": MessageLookupByLibrary.simpleMessage("Traditional Chinese"),
         "laplace_enemy_multi_ver_hint":
             MessageLookupByLibrary.simpleMessage("注意本关卡有多种版本的敌人配置，查找队伍或模拟时需注意切换到对应版本:\n点击详情-选取版本-点击计算器按钮。"),
+        "laplace_my_teams": MessageLookupByLibrary.simpleMessage("我的队伍"),
         "laplace_upload_td_multi_dmg_func_hint":
             MessageLookupByLibrary.simpleMessage("部分從者存在多段寶具(陳宮/阿拉什等)，請檢查最小和最大隨機數對NP回收等的影響，確保均能通關。"),
         "level": MessageLookupByLibrary.simpleMessage("等級"),
@@ -671,7 +672,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_quest": MessageLookupByLibrary.simpleMessage("主線關卡"),
         "main_story": MessageLookupByLibrary.simpleMessage("主線記錄"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("章節"),
-        "manage_uploaded_teams": MessageLookupByLibrary.simpleMessage("管理上传的队伍"),
         "map_gimmicks": MessageLookupByLibrary.simpleMessage("小部件"),
         "map_layer_n": m22,
         "map_show_fq_spots_only": MessageLookupByLibrary.simpleMessage("僅有Free Quest地點"),
@@ -1042,7 +1042,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage("由於使用過以下任意功能，當前隊伍不滿足上傳條件:"),
         "upload_paused": m30,
         "upload_team_confirmation": MessageLookupByLibrary.simpleMessage("確認上傳當前的隊伍?\n\n請注意，上傳的隊伍可能因數據格式更新/不相容等原因被移除。"),
-        "uploaded_teams": MessageLookupByLibrary.simpleMessage("上傳的隊伍"),
         "usage": MessageLookupByLibrary.simpleMessage("使用方法"),
         "userdata": MessageLookupByLibrary.simpleMessage("用戶資料"),
         "userdata_download_backup": MessageLookupByLibrary.simpleMessage("下載備份"),

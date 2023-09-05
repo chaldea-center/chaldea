@@ -5849,6 +5849,17 @@ class S {
     );
   }
 
+  /// `My Teams`
+  String get laplace_my_teams {
+    return Intl.message(
+      'My Teams',
+      name: 'laplace_my_teams',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Multi-step NP found(e.g. Chen Gong/Arash), please check MIN/MAX RNG to ensure NP refund is sufficient and able to clear the quest.`
   String get laplace_upload_td_multi_dmg_func_hint {
     return Intl.message(
@@ -6332,17 +6343,6 @@ class S {
     return Intl.message(
       'Chapter',
       name: 'main_story_chapter',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Manage Uploaded Teams`
-  String get manage_uploaded_teams {
-    return Intl.message(
-      'Manage Uploaded Teams',
-      name: 'manage_uploaded_teams',
       desc: '',
       locale: localeName,
       args: [],
@@ -10358,17 +10358,6 @@ class S {
     return Intl.message(
       'Upload current team?\n\nAttention: uploaded data may be deleted due to data incompatible etc.',
       name: 'upload_team_confirmation',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Uploaded Teams`
-  String get uploaded_teams {
-    return Intl.message(
-      'Uploaded Teams',
-      name: 'uploaded_teams',
       desc: '',
       locale: localeName,
       args: [],
