@@ -116,6 +116,7 @@ class TdDmgSolver {
     // final t = StopwatchX('calc');
 
     for (final svt in servants) {
+      if (!svt.isUserSvt) continue;
       try {
         final baseSvt = getSvtData(svt, 4);
         final variants = <PlayerSvtData?>[baseSvt];

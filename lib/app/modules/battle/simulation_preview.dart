@@ -159,24 +159,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           child: Text(S.current.team_local),
         ),
         TextButton(
-          onPressed: questPhase == null
-              ? null
-              : () async {
-                  if (!questPhase!.isLaplaceSharable) {
-                    EasyLoading.showInfo(S.current.quest_disallow_laplace_share_hint);
-                    return;
-                  }
-                  final BattleTeamFormation? selected = await router.pushPage<BattleTeamFormation?>(
-                    TeamsQueryPage(
-                      mode: TeamQueryMode.quest,
-                      questPhase: questPhase,
-                    ),
-                  );
-                  if (selected != null) {
-                    restoreFormation(selected);
-                  }
-                  if (mounted) setState(() {});
-                },
+          onPressed: questPhase == null ? null : () => onTapSharedTeams(questPhase!),
           style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.secondary),
           child: Text(S.current.team_shared),
         ),
@@ -1082,6 +1065,58 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     curFormation.onFieldSvts = onFieldSvts.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
     curFormation.backupSvts = backupSvts.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
     curFormation.mysticCode = options.team.mysticCodeData.toStoredData();
+  }
+
+  void onTapSharedTeams(QuestPhase quest) async {
+    if (!quest.isLaplaceSharable) {
+      EasyLoading.showInfo(S.current.quest_disallow_laplace_share_hint);
+      return;
+    }
+    bool? noEnemyHash = false;
+    final versionCount = quest.enemyHashes.length;
+    if (versionCount > 1) {
+      final index = quest.enemyHashes.indexOf(quest.enemyHash ?? "");
+      noEnemyHash = await showDialog<bool>(
+        context: context,
+        useRootNavigator: false,
+        // barrierDismissible: false,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text(S.current.version),
+            children: [
+              ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                title: Text('${S.current.general_all} $versionCount ${S.current.version}s'),
+                onTap: () {
+                  noEnemyHash = true;
+                  Navigator.pop(context, true);
+                },
+              ),
+              ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                title: Text('${S.current.current_} (No.${index + 1}/$versionCount)'),
+                onTap: () {
+                  Navigator.pop(context, false);
+                },
+              ),
+              SFooter(S.current.laplace_enemy_multi_ver_hint),
+            ],
+          );
+        },
+      );
+    }
+    if (noEnemyHash == null) return;
+    final BattleTeamFormation? selected = await router.pushPage<BattleTeamFormation?>(
+      TeamsQueryPage(
+        mode: TeamQueryMode.quest,
+        questPhase: quest,
+        noEnemyHash: noEnemyHash ?? false,
+      ),
+    );
+    if (selected != null) {
+      restoreFormation(selected);
+    }
+    if (mounted) setState(() {});
   }
 }
 

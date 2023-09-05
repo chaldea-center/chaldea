@@ -165,8 +165,9 @@ class ChaldeaWorkerApi {
     Duration? expireAfter = const Duration(minutes: 60),
   }) {
     userId ??= db.security.username;
+    if (userId == null || userId.isEmpty) return Future.value();
     return teams(
-      userId: userId ?? db.security.username,
+      userId: userId,
       limit: limit,
       offset: offset,
       expireAfter: expireAfter,

@@ -24,8 +24,9 @@ class TeamsQueryPage extends StatefulWidget {
   final TeamQueryMode mode;
   final QuestPhase? questPhase;
   final List<int>? teamIds;
+  final bool noEnemyHash;
 
-  const TeamsQueryPage({super.key, required this.mode, this.questPhase, this.teamIds});
+  const TeamsQueryPage({super.key, required this.mode, this.questPhase, this.teamIds, this.noEnemyHash = false});
 
   @override
   State<TeamsQueryPage> createState() => _TeamsQueryPageState();
@@ -264,7 +265,13 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       children: [
         const SizedBox(width: 16),
         Expanded(
-          child: Text('${S.current.team} $index - ${record.userId} [${record.id}]', style: style),
+          child: Text(
+            [
+              '${S.current.team} $index - ${record.userId} [${record.id}]',
+              if (widget.noEnemyHash) '${S.current.version} ${record.enemyHash.substring2(2)}',
+            ].join('\n'),
+            style: style,
+          ),
         ),
         // InkWell(
         //   onTap: () {},
@@ -418,7 +425,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         task = showEasyLoading(() => ChaldeaWorkerApi.teamsByQuest(
               questId: questPhase.id,
               phase: questPhase.phase,
-              enemyHash: questPhase.enemyHash,
+              enemyHash: widget.noEnemyHash ? null : questPhase.enemyHash,
               limit: _pageSize + 1,
               offset: _pageSize * page,
               expireAfter: refresh ? Duration.zero : const Duration(minutes: 60),
