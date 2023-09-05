@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.4.14
+
+- Fix Chloe didn't move to last
+- Mash doesn't consume grail from Lv 80 to 90
+
 ## 2.4.13
 
 - Fix CommandCode trigger buff processed as passive
