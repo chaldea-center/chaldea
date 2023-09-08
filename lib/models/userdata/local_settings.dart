@@ -292,6 +292,7 @@ class DisplaySettings {
 
 @JsonSerializable()
 class CarouselSetting {
+  int? ver;
   int? updateTime;
   List<CarouselItem> items;
   bool enabled;
@@ -306,6 +307,7 @@ class CarouselSetting {
   bool needUpdate = false;
 
   CarouselSetting({
+    this.ver,
     this.updateTime,
     List<CarouselItem>? items,
     this.enabled = true,
@@ -317,7 +319,12 @@ class CarouselSetting {
     this.enableTW = false,
     // KR is blocked in CN, thus disable it by default
     this.enableKR = false,
-  }) : items = items ?? [];
+  }) : items = items ?? [] {
+    if (ver == null) {
+      enableJP = enableCN = enableTW = enableNA = enableKR = enableMooncell = false;
+      ver = 2;
+    }
+  }
 
   List<bool> get options => [enableChaldea, enableMooncell, enableJP, enableCN, enableNA, enableTW, enableKR];
 

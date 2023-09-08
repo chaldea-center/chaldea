@@ -317,6 +317,7 @@ CarouselSetting _$CarouselSettingFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = CarouselSetting(
+          ver: $checkedConvert('ver', (v) => v as int?),
           updateTime: $checkedConvert('updateTime', (v) => v as int?),
           items: $checkedConvert(
               'items',
@@ -337,6 +338,7 @@ CarouselSetting _$CarouselSettingFromJson(Map json) => $checkedCreate(
     );
 
 Map<String, dynamic> _$CarouselSettingToJson(CarouselSetting instance) => <String, dynamic>{
+      'ver': instance.ver,
       'updateTime': instance.updateTime,
       'items': instance.items.map((e) => e.toJson()).toList(),
       'enabled': instance.enabled,
