@@ -36,6 +36,7 @@ final kDWCharReplace = {
   "\ue000": "{jin}",
   "\ue001": "鯖",
   "\ue002": "辿",
+  "\ue00b": "槌",
   for (int c = 0xe003; c <= 0xe00a; c++) String.fromCharCode(c): '\u2593', // "▓"
 };
 String kReplaceDWChars(String s) {

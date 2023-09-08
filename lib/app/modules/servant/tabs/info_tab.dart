@@ -65,13 +65,13 @@ class SvtInfoTab extends StatelessWidget {
                 alignment: WrapAlignment.center,
                 spacing: 4,
                 children: [
-                  for (final rarity in svt.ascensionAdd.rarity.ascension.values.toSet())
+                  for (final rarity in {...svt.ascensionAdd.rarity.ascension.values, svt.rarity})
                     if (rarity != 0)
                       CachedImage(
                         imageUrl:
                             "https://static.atlasacademy.io/JP/CharaGraphOption/CharaGraphOption/CharaGraphOptionAtlas/rarity${rarity}_0.png",
                         height: 24,
-                        placeholder: (_, __) => const SizedBox.shrink(),
+                        placeholder: (_, __) => Text(kStarChar2 * rarity),
                       ),
                 ],
               ),

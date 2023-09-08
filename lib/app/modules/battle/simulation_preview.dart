@@ -508,7 +508,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               preferredPhases: [questPhase!],
             ),
           ),
-        if (questPhase != null && questPhase!.enemyHashes.isNotEmpty) SFooter(S.current.laplace_enemy_multi_ver_hint),
+        if (questPhase != null && questPhase!.enemyHashes.length > 1) SFooter(S.current.laplace_enemy_multi_ver_hint),
       ],
     );
   }
