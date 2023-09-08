@@ -64,7 +64,7 @@ void main() {
   // replace all main.dart.js reference to new hashed filename
   final mainjsHash = mainJs.newHash.substring(0, 8);
 
-  indexHtml.content = indexHtml.content.replaceFirst('main.dart.js?v=', 'main.dart.js?v=$mainjsHash');
+  indexHtml.content = indexHtml.content.replaceFirst('main.dart.js?v=VERSION', 'main.dart.js?v=$mainjsHash');
   indexHtml.updateHash();
 
   // remove NOTICE from core cache, which needs to download before app start
