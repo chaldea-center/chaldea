@@ -330,8 +330,8 @@ class UserSvt {
   // int treasureDeviceLv2;
   // int treasureDeviceLv3;
   int exceedCount; // grail
-  DateTime createdAt;
-  DateTime? updatedAt;
+  int createdAt;
+  int updatedAt;
   // @protected
   int? isLock; //cn only
   int hp;
@@ -392,8 +392,8 @@ class UserSvt {
         skillLv3 = _toInt(skillLv3),
         treasureDeviceLv1 = _toInt(treasureDeviceLv1),
         exceedCount = _toInt(exceedCount),
-        createdAt = DateTime.fromMillisecondsSinceEpoch(_toInt(createdAt) * 1000),
-        updatedAt = updatedAt == null ? null : DateTime.fromMillisecondsSinceEpoch(_toInt(updatedAt) * 1000),
+        createdAt = _toInt(createdAt),
+        updatedAt = _toInt(updatedAt, 0),
         isLock = _toIntNull(isLock);
 
   factory UserSvt.fromJson(Map<String, dynamic> data) => _$UserSvtFromJson(data);
@@ -443,6 +443,8 @@ class UserSvtCollection {
   /// maybe out of order, need to sort when parsing
   /// include mash's story costume.
   List<int> costumeIds;
+  int updatedAt;
+  int createdAt;
 
   UserSvtCollection({
     required dynamic svtId,
@@ -451,13 +453,17 @@ class UserSvtCollection {
     required dynamic friendshipRank,
     required dynamic friendshipExceedCount,
     required dynamic costumeIds,
+    required dynamic updatedAt,
+    required dynamic createdAt,
     // required List<int> releasedCostumeIds,
   })  : svtId = _toInt(svtId),
         status = _toInt(status),
         friendship = _toInt(friendship),
         friendshipRank = _toInt(friendshipRank),
         friendshipExceedCount = _toInt(friendshipExceedCount),
-        costumeIds = _toIntList(costumeIds)..sort((a, b) => a.abs() - b.abs());
+        costumeIds = _toIntList(costumeIds)..sort((a, b) => a.abs() - b.abs()),
+        updatedAt = _toInt(updatedAt),
+        createdAt = _toInt(createdAt);
 
   bool get isOwned => status == 2;
 

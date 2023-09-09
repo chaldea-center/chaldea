@@ -125,6 +125,8 @@ UserSvtCollection _$UserSvtCollectionFromJson(Map json) => UserSvtCollection(
       friendshipRank: json['friendshipRank'],
       friendshipExceedCount: json['friendshipExceedCount'],
       costumeIds: json['costumeIds'],
+      updatedAt: json['updatedAt'],
+      createdAt: json['createdAt'],
     );
 
 UserGame _$UserGameFromJson(Map json) => UserGame(

@@ -352,7 +352,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               children: [
                 Text(
                   [
-                    '[${group.indexOf(svt) + 1}] ${DateFormat('yyyy-MM-dd').format(svt.createdAt)}',
+                    '[${group.indexOf(svt) + 1}] ${DateFormat('yyyy-MM-dd').format(svt.createdAt.sec2date())}',
                     if (svt.isWithdraw) S.current.event_svt_withdraw,
                   ].join(' '),
                   style: TextStyle(color: Theme.of(context).colorScheme.error),
@@ -652,7 +652,11 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                       router.push(
                         child: SvtBondDetailPage(
                           friendCode: mstData?.firstUser?.friendCode,
-                          cardCollections: cardCollections,
+                          userSvtCollections: mstData?.userSvtCollection.toList() ?? [],
+                          userSvts: [
+                            ...?mstData?.userSvt,
+                            ...?mstData?.userSvtStorage,
+                          ],
                         ),
                       );
                     },
@@ -981,8 +985,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     for (final group in servants) {
       group.sort((a, b) {
         // lv higher, active skills higher, created earlier, id
-        final aa = [a.lv, a.skillLv1 + a.skillLv2 + a.skillLv3, -a.createdAt.microsecondsSinceEpoch, a.id];
-        final bb = [b.lv, b.skillLv1 + b.skillLv2 + b.skillLv3, -b.createdAt.microsecondsSinceEpoch, b.id];
+        final aa = [a.lv, a.skillLv1 + a.skillLv2 + a.skillLv3, -a.createdAt, a.id];
+        final bb = [b.lv, b.skillLv1 + b.skillLv2 + b.skillLv3, -b.createdAt, b.id];
         for (int i = 0; i < aa.length; i++) {
           final ia = aa[i], ib = bb[i];
           if (ia != ib) return ib - ia;

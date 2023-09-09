@@ -11,7 +11,7 @@ import 'package:chaldea/widgets/widgets.dart';
 class RandomImageSurprise extends StatefulWidget {
   final Duration duration;
 
-  const RandomImageSurprise({super.key, this.duration = const Duration(seconds: 15)});
+  const RandomImageSurprise({super.key, this.duration = const Duration(seconds: 60)});
 
   @override
   State<RandomImageSurprise> createState() => _RandomImageSurpriseState();
