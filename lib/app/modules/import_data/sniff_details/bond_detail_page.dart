@@ -48,7 +48,10 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
   late final _tabController = TabController(length: 2, vsync: this);
   _SvtSortType svtSortType = _SvtSortType.no;
   _CESortType ceSortType = _CESortType.time;
+  bool ceGrid = false;
   bool reversed = false;
+
+  Map<int, UserSvtCollection> userSvtCollections = {};
 
   List<MapEntry<Servant, UserSvtCollection>> collections = [];
   List<(CraftEssence, UserSvt?, UserSvtCollection)> bondCEs = [];
@@ -59,6 +62,10 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
     _tabController.addListener(() {
       if (mounted) setState(() {});
     });
+
+    userSvtCollections = {
+      for (final svt in widget.userSvtCollections) svt.svtId: svt,
+    };
 
     final userCEs = <int, UserSvt>{};
     for (final userSvt in widget.userSvts) {
@@ -185,13 +192,35 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
       body: Column(
         children: [
           Expanded(child: TabBarView(controller: _tabController, children: [bondTab, bondCETab])),
-          buttonBar,
+          SafeArea(child: buttonBar),
         ],
       ),
     );
   }
 
   Widget get bondCETab {
+    if (ceGrid) {
+      return GridView.extent(
+        maxCrossAxisExtent: 60,
+        childAspectRatio: 132 / 144,
+        children: bondCEs.map((entry) {
+          final (ce, userSvt, collection) = entry;
+          final t = DateTime.fromMillisecondsSinceEpoch((userSvt?.createdAt ?? collection.updatedAt) * 1000)
+              .toDateString()
+              .substring(2);
+          String text;
+          if (userSvt != null) {
+            text = ' $t ';
+          } else {
+            text = ' $t? ';
+          }
+          final svt = db.gameData.servantsById[ce.bondEquipOwner];
+          text += '\nLv.${userSvtCollections[ce.bondEquipOwner]?.friendshipRank} ';
+          return svt?.iconBuilder(context: context, onTap: ce.routeTo, text: text) ??
+              ce.iconBuilder(context: context, text: text);
+        }).toList(),
+      );
+    }
     return ListView.separated(
       itemBuilder: (context, index) {
         final (ce, userSvt, collection) = bondCEs[index];
@@ -200,8 +229,9 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
         if (userSvt != null) {
           subtitle = userSvt.createdAt.sec2date().toStringShort(omitSec: true);
         } else {
-          subtitle = '???  (${collection.createdAt.sec2date().toStringShort(omitSec: true)}?)';
+          subtitle = '??? (${collection.createdAt.sec2date().toStringShort(omitSec: true)}?)';
         }
+        subtitle += '  Lv.${userSvtCollections[ce.bondEquipOwner]?.friendshipRank}';
         return ListTile(
           dense: true,
           leading: ce.iconBuilder(context: context),
@@ -277,7 +307,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
                             alignment: Alignment.center,
                             child: AutoSizeText(
                               'Lv.${collection.friendshipRank}/'
-                              '${(svt.collectionNo == 1 ? 5 : 10) + collection.friendshipExceedCount}',
+                              '${(svt.collectionNo == 1 ? 8 : 10) + collection.friendshipExceedCount}',
                               maxLines: 1,
                               maxFontSize: 14,
                               minFontSize: 6,
@@ -332,6 +362,15 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        if (_tabController.index == 1)
+          IconButton(
+            onPressed: () {
+              setState(() {
+                ceGrid = !ceGrid;
+              });
+            },
+            icon: Icon(ceGrid ? Icons.grid_view : Icons.list),
+          ),
         Expanded(
           child: Text(
             ceSummary,
@@ -339,7 +378,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ),
-        Text('  ${S.current.filter_sort} '),
+        Text(' ${S.current.filter_sort} '),
         _tabController.index == 0
             ? DropdownButton<_SvtSortType>(
                 value: svtSortType,
