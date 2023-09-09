@@ -379,7 +379,7 @@ class SvtSaveData {
         cardStrengthens = cardStrengthens ?? [0, 0, 0, 0, 0],
         commandCodeIds = List.generate(5, (index) => commandCodeIds?.getOrNull(index)),
         disabledExtraSkills = disabledExtraSkills ?? {},
-        additionalPassives = additionalPassives ?? [],
+        additionalPassives = additionalPassives?.toList() ?? [],
         additionalPassiveLvs = additionalPassiveLvs ?? [];
 
   factory SvtSaveData.fromJson(Map<String, dynamic> json) => _$SvtSaveDataFromJson(json);
