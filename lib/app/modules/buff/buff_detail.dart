@@ -335,31 +335,73 @@ class BuffInfoTable extends StatelessWidget {
       );
     }
 
-    return Table(
-      children: [
-        TableRow(children: [
-          const AutoSizeText(
-            'Attack→',
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            minFontSize: 12,
-          ),
-          for (final a in attackers) clsIcon(a),
-        ]),
-        for (final d in defenders)
+    Widget _buildCell(int attacker, int defender, RelationOverwriteDetail? detail) {
+      List<InlineSpan> spans = [];
+      String tooltip = [attacker, defender].map((e) => Transl.svtClassId(e).l).join("→");
+      if (detail != null) {
+        String value = _fmt(detail.damageRate);
+        spans.add(TextSpan(
+          text: value,
+          style: detail.damageRate > 1000
+              ? const TextStyle(color: Colors.red)
+              : detail.damageRate < 1000
+                  ? const TextStyle(color: Colors.blue)
+                  : null,
+        ));
+        tooltip += ': $value';
+        final suffix = {
+          // ClassRelationOverwriteType.overwriteForce: '',
+          ClassRelationOverwriteType.overwriteMoreThanTarget: '↑',
+          ClassRelationOverwriteType.overwriteLessThanTarget: '↓',
+        }[detail.type];
+        if (suffix != null) {
+          spans.add(TextSpan(
+              text: suffix,
+              style: TextStyle(
+                fontSize: 12,
+                color: Theme.of(context).textTheme.bodySmall?.color,
+              )));
+          tooltip += suffix;
+        }
+        if (detail.type != ClassRelationOverwriteType.overwriteForce) {
+          tooltip += '\n${detail.type.name.substring(9)}';
+        }
+      }
+
+      return Tooltip(
+        message: tooltip,
+        textAlign: TextAlign.center,
+        child: Text.rich(
+          TextSpan(children: spans),
+          textAlign: TextAlign.center,
+          maxLines: 1,
+        ),
+      );
+    }
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Table(
+        children: [
           TableRow(children: [
-            clsIcon(d),
-            for (final a in attackers)
-              AutoSizeText(
-                _fmt(data[a]?[d]?.damageRate),
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                minFontSize: 12,
-              )
-          ])
-      ],
-      border: TableBorder.all(color: kHorizontalDivider.color ?? Theme.of(context).hintColor),
-      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            const Text(
+              'Attack→',
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              // minFontSize: 12,
+            ),
+            for (final a in attackers) clsIcon(a),
+          ]),
+          for (final d in defenders)
+            TableRow(children: [
+              clsIcon(d),
+              for (final a in attackers) _buildCell(a, d, data[a]?[d]),
+            ])
+        ],
+        border: TableBorder.all(color: kHorizontalDivider.color ?? Theme.of(context).hintColor),
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        defaultColumnWidth: const IntrinsicColumnWidth(),
+      ),
     );
   }
 

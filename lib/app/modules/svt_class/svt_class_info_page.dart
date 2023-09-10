@@ -129,7 +129,7 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
     return (rate / 1000).format();
   }
 
-  Text? _fmtColor(int? rate) {
+  Widget? _fmtColor(int? rate, int? attacker, int? defender) {
     if (rate == null) return null;
     Color? color;
     if (rate > 1000) {
@@ -137,10 +137,18 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
     } else if (rate < 1000) {
       color = Theme.of(context).colorScheme.primaryContainer;
     }
-    return Text(
-      _fmt(rate),
+    final text = _fmt(rate);
+    Widget child = Text(
+      text,
       style: color == null ? null : TextStyle(color: color),
     );
+    if (attacker != null && defender != null) {
+      child = Tooltip(
+        message: '${[attacker, defender].map((e) => Transl.svtClassId(e).l).join("→")}: $text',
+        child: child,
+      );
+    }
+    return child;
   }
 
   Widget clsIcon(int _clsId) {
@@ -197,8 +205,8 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
             final oppCls = allClasses.getOrNull(row * clsCountPerLine + col - 1);
             rows[0].add(oppCls == null ? null : clsIcon(oppCls));
             final atk = attackRates[oppCls], def = defenseRates[oppCls];
-            rows[1].add(_fmtColor(atk));
-            rows[2].add(_fmtColor(def));
+            rows[1].add(_fmtColor(atk, clsId, oppCls));
+            rows[2].add(_fmtColor(def, oppCls, clsId));
           }
         }
         for (int row = 0; row < rows.length; row++) {
