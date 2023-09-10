@@ -101,7 +101,7 @@ const kSvtDefAscenRemap = <int, int>{
   9944690: 2, // ソドムズビースト／ドラコー
 };
 
-@JsonSerializable(converters: [SvtClassConverter()])
+@JsonSerializable()
 class BasicServant with GameCardMixin {
   @override
   int id;
@@ -207,7 +207,7 @@ class BasicServant with GameCardMixin {
             ));
 }
 
-@JsonSerializable(converters: [SvtClassConverter()])
+@JsonSerializable()
 class Servant with GameCardMixin {
   @override
   int id;

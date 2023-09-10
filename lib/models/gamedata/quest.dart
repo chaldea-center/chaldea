@@ -274,19 +274,25 @@ class Quest with RouteInfo {
     return name;
   }
 
-  bool get isMainStoryFree => type == QuestType.free && afterClear == QuestAfterClearType.repeatLast && warId < 1000;
+  bool get isMainStoryFree =>
+      type == QuestType.free &&
+      afterClear == QuestAfterClearType.repeatLast &&
+      warId < 1000 &&
+      // war 401 Marie quests
+      !flags.contains(QuestFlag.forceToNoDrop) &&
+      !flags.contains(QuestFlag.dropFirstTimeOnly);
 
   bool get isDomusQuest => isMainStoryFree || db.gameData.dropData.domusAurea.questIds.contains(id);
 
   // exclude challenge quest, raid
   bool get isAnyFree {
     if (afterClear != QuestAfterClearType.repeatLast) return false;
+    if (flags.contains(QuestFlag.noBattle)) return false;
+    if (flags.contains(QuestFlag.dropFirstTimeOnly) || flags.contains(QuestFlag.forceToNoDrop)) return false;
     if (type == QuestType.free) return true;
     if (flags.any((flag) => flag.name.toLowerCase().contains('raid') || flag == QuestFlag.notRetrievable)) {
       return false;
     }
-    if (flags.contains(QuestFlag.noBattle)) return false;
-    if (flags.contains(QuestFlag.dropFirstTimeOnly)) return false;
     return true;
   }
 

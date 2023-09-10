@@ -8,7 +8,7 @@ import 'skill.dart';
 
 part '../../generated/models/gamedata/const_data.g.dart';
 
-@JsonSerializable(converters: [SvtClassConverter(), BuffActionConverter()])
+@JsonSerializable(converters: [BuffActionConverter()])
 class ConstGameData {
   final Map<Attribute, Map<Attribute, int>> attributeRelation;
   final Map<BuffAction, BuffActionDetail> buffActions;
