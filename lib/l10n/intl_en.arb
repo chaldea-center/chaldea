@@ -935,7 +935,7 @@
   "upload_before_close_app": "Upload before closing",
   "upload_not_eligible_hint": "Current team is not eligible for upload due to:",
   "upload_paused": "Need to wait {pause} seconds between uploads ({remain}s remain).",
-  "upload_team_confirmation": "Upload current team?\n\nAttention: uploaded data may be deleted due to data incompatible etc.",
+  "upload_team_confirmation": "Upload current team?\n\nAttention: don't upload team which contains unreleased servants!\nUploaded data may be deleted due to future updates, data incompatibility etc.",
   "usage": "Usage",
   "userdata": "Userdata",
   "userdata_download_backup": "Download Backup",

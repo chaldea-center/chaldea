@@ -10353,10 +10353,10 @@ class S {
     );
   }
 
-  /// `Upload current team?\n\nAttention: uploaded data may be deleted due to data incompatible etc.`
+  /// `Upload current team?\n\nAttention: don't upload team which contains unreleased servants!\nUploaded data may be deleted due to future updates, data incompatibility etc.`
   String get upload_team_confirmation {
     return Intl.message(
-      'Upload current team?\n\nAttention: uploaded data may be deleted due to data incompatible etc.',
+      'Upload current team?\n\nAttention: don\'t upload team which contains unreleased servants!\nUploaded data may be deleted due to future updates, data incompatibility etc.',
       name: 'upload_team_confirmation',
       desc: '',
       locale: localeName,

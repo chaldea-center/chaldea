@@ -24,7 +24,7 @@ class _ClassBoardItemCostPageState extends State<ClassBoardItemCostPage> with Si
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.current.item),
+        title: Text('${S.current.class_score} - ${S.current.statistics_title}'),
         bottom: FixedHeight.tabBar(TabBar(controller: _tabController, tabs: [
           Tab(text: S.current.general_all),
           Tab(text: S.current.plan),

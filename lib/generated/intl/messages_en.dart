@@ -1086,7 +1086,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Current team is not eligible for upload due to:"),
         "upload_paused": m30,
         "upload_team_confirmation": MessageLookupByLibrary.simpleMessage(
-            "Upload current team?\n\nAttention: uploaded data may be deleted due to data incompatible etc."),
+            "Upload current team?\n\nAttention: don\'t upload team which contains unreleased servants!\nUploaded data may be deleted due to future updates, data incompatibility etc."),
         "usage": MessageLookupByLibrary.simpleMessage("Usage"),
         "userdata": MessageLookupByLibrary.simpleMessage("Userdata"),
         "userdata_download_backup": MessageLookupByLibrary.simpleMessage("Download Backup"),

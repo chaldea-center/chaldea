@@ -38,12 +38,17 @@ class ClassBoardListPageState extends State<ClassBoardListPage>
         title: AutoSizeText(S.current.class_score, maxLines: 1),
         bottom: showSearchBar ? searchBar : null,
         actions: [
-          IconButton(
-            onPressed: () {
+          InkWell(
+            onTap: () {
               router.pushPage(const ClassBoardItemCostPage());
             },
-            icon: const Icon(Icons.analytics),
-            tooltip: S.current.statistics_title,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              constraints: const BoxConstraints(minWidth: 56),
+              child: Center(child: Text(S.current.statistics_title)),
+            ),
+            // icon: const Icon(Icons.analytics),
+            // tooltip: S.current.statistics_title,
           )
         ],
       ),
