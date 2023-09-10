@@ -105,17 +105,19 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
                     })
                 : null,
           ),
-          CheckboxListTile(
-            value: carousel.enableKR,
-            title: const Text('KR News'),
-            subtitle: const Text('https://cafe.naver.com/fategokr'),
-            onChanged: carousel.enabled
-                ? (v) => setState(() {
-                      carousel.needUpdate = true;
-                      carousel.enableKR = v ?? carousel.enableKR;
-                      updateHome();
-                    })
-                : null,
+          const CheckboxListTile(
+            // value: carousel.enableKR,
+            value: false,
+            title: Text('KR News'),
+            subtitle: Text('[Error] https://cafe.naver.com/fategokr'),
+            onChanged: null,
+            // onChanged: carousel.enabled
+            //     ? (v) => setState(() {
+            //           carousel.needUpdate = true;
+            //           carousel.enableKR = v ?? carousel.enableKR;
+            //           updateHome();
+            //         })
+            //     : null,
           ),
         ],
       ),

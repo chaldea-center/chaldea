@@ -125,8 +125,11 @@ class AppNewsCarousel extends StatefulWidget {
           options: headers != null
               ? Options(
                   headers: {
-                    if (kIsWeb) 'x-cors-headers': jsonEncode(headers),
-                    if (!kIsWeb) ...headers,
+                    if (proxy) ...{
+                      'x-cors-headers': jsonEncode(headers),
+                      'x-cors-fresh': '1',
+                    },
+                    if (!proxy) ...headers,
                   },
                 )
               : null,
@@ -289,7 +292,7 @@ class AppNewsCarousel extends StatefulWidget {
         });
       }
 
-      if (carouselSetting.enableKR) {
+      if (carouselSetting.enableKR && 1 > 2) {
         const krUrl = 'https://cafe.naver.com/MyCafeIntro.nhn?clubid=29199987';
         taskKR = _getUrl(krUrl, headers: {HttpHeaders.refererHeader: 'https://cafe.naver.com/fategokr'}, proxy: true)
             .then((response) {
