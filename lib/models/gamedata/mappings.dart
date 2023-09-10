@@ -583,9 +583,29 @@ class FieldTraitMapping extends MappingBase<String> {
   Map<String, dynamic> toJson() => _$FieldTraitMappingToJson(this);
 }
 
+@JsonSerializable()
+class SvtClassMapping extends MappingBase<String> {
+  /// name of [SvtClass]
+  String? name;
+
+  SvtClassMapping({
+    this.name,
+    super.jp,
+    super.cn,
+    super.tw,
+    super.na,
+    super.kr,
+  });
+
+  factory SvtClassMapping.fromJson(Map<String, dynamic> json) => _$SvtClassMappingFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$SvtClassMappingToJson(this);
+}
+
 @JsonSerializable(fieldRename: FieldRename.snake)
 class EnumMapping {
-  final Map<int, MappingBase<String>> svtClass;
+  final Map<int, SvtClassMapping> svtClass;
   final Map<String, MappingBase<String>> attribute;
   final Map<String, MappingBase<String>> servantPolicy;
   final Map<String, MappingBase<String>> servantPersonality;

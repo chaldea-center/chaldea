@@ -301,13 +301,13 @@ class BuffInfoTable extends StatelessWidget {
           texts: const ['Class Affinity Change'],
           isHeader: true,
         ),
-        if (buff.script!.relationId!.atkSide.isNotEmpty) ...[
+        if (buff.script!.relationId!.atkSide2.isNotEmpty) ...[
           CustomTableRow.fromTexts(texts: const ['Attacking']),
-          relationId(context, buff.script!.relationId!.atkSide),
+          relationId(context, buff.script!.relationId!.atkSide2),
         ],
-        if (buff.script!.relationId!.defSide.isNotEmpty) ...[
+        if (buff.script!.relationId!.defSide2.isNotEmpty) ...[
           CustomTableRow.fromTexts(texts: const ['Defending']),
-          relationId(context, buff.script!.relationId!.defSide),
+          relationId(context, buff.script!.relationId!.defSide2),
         ],
       ],
       if (buff.script?.convert != null) ...buildBuffConvert(context, buff.script!.convert!),
@@ -315,7 +315,7 @@ class BuffInfoTable extends StatelessWidget {
     ]);
   }
 
-  Widget relationId(BuildContext context, Map<SvtClass, Map<SvtClass, RelationOverwriteDetail>> data) {
+  Widget relationId(BuildContext context, Map<int, Map<int, RelationOverwriteDetail>> data) {
     // data[attacker][defender]
     final attackers = data.keys.toList();
     final defenders = {for (final v in data.values) ...v.keys};
@@ -325,12 +325,12 @@ class BuffInfoTable extends StatelessWidget {
       return (rate / 1000).format();
     }
 
-    Widget clsIcon(SvtClass cls) {
+    Widget clsIcon(int clsId) {
       return Padding(
         padding: const EdgeInsets.all(2),
         child: Tooltip(
-          message: cls.lName,
-          child: db.getIconImage(cls.icon(5), height: 24, aspectRatio: 1),
+          message: Transl.svtClassId(clsId).l,
+          child: db.getIconImage(SvtClassX.clsIcon(clsId, 5), height: 24, aspectRatio: 1),
         ),
       );
     }

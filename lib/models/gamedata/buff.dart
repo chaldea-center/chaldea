@@ -76,19 +76,36 @@ class Buff with RouteInfo {
   int? get percentBase => type.percentBase;
 }
 
-@JsonSerializable(converters: [SvtClassConverter()])
+@JsonSerializable()
 class BuffRelationOverwrite {
-  final Map<SvtClass, Map<SvtClass, RelationOverwriteDetail>> atkSide;
-  final Map<SvtClass, Map<SvtClass, RelationOverwriteDetail>> defSide;
-  // final Map<int, Map<int, RelationOverwriteDetail>> atkSide2;
-  // final Map<int, Map<int, RelationOverwriteDetail>> defSide2;
+  @protected
+  final Map<String, Map<String, RelationOverwriteDetail>> atkSide;
+  @protected
+  final Map<String, Map<String, RelationOverwriteDetail>> defSide;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  late final Map<int, Map<int, RelationOverwriteDetail>> atkSide2 = _resolve(atkSide);
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  late final Map<int, Map<int, RelationOverwriteDetail>> defSide2 = _resolve(defSide);
 
-  const BuffRelationOverwrite({
+  BuffRelationOverwrite({
     this.atkSide = const {},
     this.defSide = const {},
-    // this.atkSide2 = const {},
-    // this.defSide2 = const {},
   });
+
+  static Map<int, Map<int, RelationOverwriteDetail>> _resolve(Map<String, Map<String, RelationOverwriteDetail>> src) {
+    final Map<int, Map<int, RelationOverwriteDetail>> dest = {};
+    for (final (cls1, details) in src.items) {
+      final clsId1 = SvtClassConverter.fromString(cls1, db.gameData.mappingData.enums.svtClass);
+      if (clsId1 == null) continue;
+      final v = dest[clsId1] = {};
+      for (final (cls2, detail) in details.items) {
+        final clsId2 = SvtClassConverter.fromString(cls2, db.gameData.mappingData.enums.svtClass);
+        if (clsId2 == null) continue;
+        v[clsId2] = detail;
+      }
+    }
+    return dest;
+  }
 
   factory BuffRelationOverwrite.fromJson(Map<String, dynamic> json) => _$BuffRelationOverwriteFromJson(json);
 

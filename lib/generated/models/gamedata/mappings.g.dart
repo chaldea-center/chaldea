@@ -365,10 +365,27 @@ Map<String, dynamic> _$FieldTraitMappingToJson(FieldTraitMapping instance) => <S
       'warIds': instance.warIds,
     };
 
+SvtClassMapping _$SvtClassMappingFromJson(Map json) => SvtClassMapping(
+      name: json['name'] as String?,
+      jp: json['JP'] as String?,
+      cn: json['CN'] as String?,
+      tw: json['TW'] as String?,
+      na: json['NA'] as String?,
+      kr: json['KR'] as String?,
+    );
+
+Map<String, dynamic> _$SvtClassMappingToJson(SvtClassMapping instance) => <String, dynamic>{
+      'JP': instance.jp,
+      'CN': instance.cn,
+      'TW': instance.tw,
+      'NA': instance.na,
+      'KR': instance.kr,
+      'name': instance.name,
+    };
+
 EnumMapping _$EnumMappingFromJson(Map json) => EnumMapping(
       svtClass: (json['svt_class'] as Map?)?.map(
-            (k, e) =>
-                MapEntry(int.parse(k as String), MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(int.parse(k as String), SvtClassMapping.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       attribute: (json['attribute'] as Map?)?.map(

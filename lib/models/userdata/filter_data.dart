@@ -385,11 +385,11 @@ class SvtFilterData with _FilterData {
     if (keys == null || keys.isEmpty) {
       keys = [SvtCompare.no];
     }
-    int _classSortKey(SvtClass cls) {
+    int _classSortKey(int clsId) {
       if (db.gameData.constData.classInfo.isNotEmpty) {
-        return -(db.gameData.constData.classInfo[cls.id]?.priority ?? 0);
+        return -(db.gameData.constData.classInfo[clsId]?.priority ?? 0);
       }
-      int k = SvtClassX.regularAllWithBeasts.indexOf(cls);
+      int k = SvtClassX.regularAllWithBeasts.map((e) => e.id).toList().indexOf(clsId);
       return k < 0 ? 999 : k;
     }
 
@@ -402,7 +402,7 @@ class SvtFilterData with _FilterData {
           if (r == 0) r = a.id - b.id;
           break;
         case SvtCompare.className:
-          r = _classSortKey(a.className) - _classSortKey(b.className);
+          r = _classSortKey(a.classId) - _classSortKey(b.classId);
           break;
         case SvtCompare.rarity:
           r = a.rarity - b.rarity;
@@ -854,9 +854,9 @@ class EnemyFilterData with _FilterData {
     if (keys == null || keys.isEmpty) {
       keys = [SvtCompare.no];
     }
-    int _classSortKey(SvtClass cls) {
-      int k = SvtClass.values.indexOf(cls);
-      return k < 0 ? 999 : k;
+    int _classSortKey(int clsId) {
+      final p = db.gameData.constData.classInfo[clsId]?.priority;
+      return p ?? -clsId;
     }
 
     for (var i = 0; i < keys.length; i++) {
@@ -866,7 +866,7 @@ class EnemyFilterData with _FilterData {
           r = a.id - b.id;
           break;
         case SvtCompare.className:
-          r = _classSortKey(a.className) - _classSortKey(b.className);
+          r = _classSortKey(a.classId) - _classSortKey(b.classId);
           break;
         case SvtCompare.rarity:
           r = a.rarity - b.rarity;

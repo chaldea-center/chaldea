@@ -1102,11 +1102,11 @@ void main() async {
       final henry = battle.onFieldAllyServants[0]!;
       await battle.activateSvtSkill(0, 0);
       henry.np = 10000;
-      expect(henry.svtClass, SvtClass.assassin);
+      expect(henry.classId, SvtClass.assassin.id);
       expect(henry.skillInfoList[0].chargeTurn, 5);
       expect(henry.skillInfoList[2].baseSkill!.id, 71255);
       await battle.playerTurn([CombatAction(henry, henry.getNPCard(battle)!)]);
-      expect(henry.svtClass, SvtClass.berserker);
+      expect(henry.classId, SvtClass.berserker.id);
       expect(henry.skillInfoList[0].chargeTurn, 5 - 1);
       expect(henry.skillInfoList[2].baseSkill!.id, 71255);
     });

@@ -356,6 +356,15 @@ class SvtClassConverter implements JsonConverter<SvtClass, String> {
   String toJson(SvtClass cls) {
     return _$SvtClassEnumMap[cls] ?? cls.name;
   }
+
+  static int? fromString(String value, Map<int, SvtClassMapping> mapping) {
+    for (final cls in SvtClass.values) {
+      if (cls.name == value) return cls.id;
+    }
+    int? pureInt = int.tryParse(value);
+    if (pureInt != null && pureInt > 0) return pureInt;
+    return mapping.entries.firstWhereOrNull((entry) => entry.value.name == value)?.key;
+  }
 }
 
 const _kSvtClassRarityMap = {0: 0, 1: 1, 2: 1, 3: 2, 4: 3, 5: 3};

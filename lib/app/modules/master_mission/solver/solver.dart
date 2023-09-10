@@ -90,15 +90,14 @@ class MissionSolver extends BaseLPSolver {
               return cond.targetIds.contains(enemy.svt.id);
             case CustomMissionType.enemyClass:
               assert(!cond.useAnd);
-              return cond.targetIds.contains(enemy.svt.className.id);
+              return cond.targetIds.contains(enemy.svt.classId);
             case CustomMissionType.servantClass:
               assert(!cond.useAnd);
-              return enemy.traits.any((t) => t.name == Trait.servant) &&
-                  cond.targetIds.contains(enemy.svt.className.id);
+              return enemy.traits.any((t) => t.name == Trait.servant) && cond.targetIds.contains(enemy.svt.classId);
             case CustomMissionType.enemyNotServantClass:
               assert(!cond.useAnd);
               return enemy.traits.any((t) => t.name == Trait.notBasedOnServant) &&
-                  cond.targetIds.contains(enemy.svt.className.id);
+                  cond.targetIds.contains(enemy.svt.classId);
             default:
               return false;
           }

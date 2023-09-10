@@ -224,8 +224,6 @@ class BattleServantData {
 
   int get rarity => isPlayer ? niceSvt!.rarity : niceEnemy!.svt.rarity;
 
-  SvtClass get svtClass => isPlayer ? niceSvt!.className : niceEnemy!.svt.className;
-
   int get classId => isPlayer ? niceSvt!.classId : niceEnemy!.svt.classId;
 
   Attribute get attribute => isPlayer ? niceSvt!.attribute : niceEnemy!.svt.attribute;
@@ -1181,7 +1179,7 @@ class BattleServantData {
   Future<int> getClassRelation(
     final BattleData battleData,
     final int baseRelation,
-    final SvtClass opponentClass,
+    final int opponentClass,
     final isTarget,
   ) async {
     int relation = baseRelation;
@@ -1191,11 +1189,11 @@ class BattleServantData {
         buff.setUsed();
         final relationOverwrite = buff.buff.script!.relationId!;
         final overwrite = isTarget
-            ? relationOverwrite.defSide.containsKey(opponentClass)
-                ? relationOverwrite.defSide[opponentClass]![svtClass]
+            ? relationOverwrite.defSide2.containsKey(opponentClass)
+                ? relationOverwrite.defSide2[opponentClass]![classId]
                 : null
-            : relationOverwrite.atkSide.containsKey(svtClass)
-                ? relationOverwrite.atkSide[svtClass]![opponentClass]
+            : relationOverwrite.atkSide2.containsKey(classId)
+                ? relationOverwrite.atkSide2[classId]![opponentClass]
                 : null;
         if (overwrite != null) {
           final overwriteValue = overwrite.damageRate;

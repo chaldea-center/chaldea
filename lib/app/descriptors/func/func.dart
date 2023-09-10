@@ -238,7 +238,7 @@ class SkillScriptDescriptor extends StatelessWidget {
                 final svt = db.gameData.servantsById[indiv.id];
                 String name = indiv.shownName(addSvtId: false);
                 if (svt != null) {
-                  name += '(${svt.className.lName})';
+                  name += '(${Transl.svtClassId(svt.classId).l})';
                 }
                 return SharedBuilder.textButtonSpan(
                   context: context,
