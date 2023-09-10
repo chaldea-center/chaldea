@@ -29,7 +29,11 @@ class _WarsPageState extends State<WarsPage> with SingleTickerProviderStateMixin
     List<NiceWar> mainStories = [], chaldeaGates = [], eventWars = [];
     for (final war in db.gameData.wars.values) {
       if (war.isMainStory) {
-        mainStories.add(war);
+        if (war.id >= 11000 && war.id <= 19000) {
+          chaldeaGates.add(war);
+        } else {
+          mainStories.add(war);
+        }
         continue;
       }
       if (war.eventId != 0) {
@@ -95,7 +99,8 @@ class WarListPage extends StatelessWidget {
     if (sortByEvent) {
       wars.sort2((war) => war.eventReal?.startedAt ?? war.priority, reversed: reversed);
     } else {
-      wars.sort2((e) => e.priority, reversed: reversed);
+      // Advanced 990, OC 300
+      wars.sort2((e) => e.id == WarId.mainInterlude ? 980 : e.priority, reversed: reversed);
     }
     return ListView.builder(
       itemBuilder: (context, index) {

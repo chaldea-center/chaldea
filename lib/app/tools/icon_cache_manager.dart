@@ -151,6 +151,10 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
       url = proxyAssetUrl(url);
     }
     if (localPath == null) return null;
+    if (const <String>[
+      '/JP/Banner/questboard_cap13000.png',
+      '/JP/Banner/questboard_cap14000.png',
+    ].any((e) => url.endsWith(e))) return null;
     limiter ??= _rateLimiter;
 
     if (kIsWeb) {
