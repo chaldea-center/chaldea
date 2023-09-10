@@ -318,6 +318,7 @@ enum SvtClass {
   beast(33, '獸'),
   beastVI(34, '獸Ⅵ'),
   beastVIBoss(35, '獸Ⅵ'),
+  uOlgaMarieFlare(36),
   unknown(97),
   // 98
   // 99
@@ -516,6 +517,7 @@ enum Trait {
   classBeast(124),
   classBeastVI(125),
   classBeastVIBoss(126),
+  classUOlgaMarieFlare(127),
   attributeSky(200),
   attributeEarth(201),
   attributeHuman(202),

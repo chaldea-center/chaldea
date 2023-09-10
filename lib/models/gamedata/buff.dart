@@ -80,10 +80,14 @@ class Buff with RouteInfo {
 class BuffRelationOverwrite {
   final Map<SvtClass, Map<SvtClass, RelationOverwriteDetail>> atkSide;
   final Map<SvtClass, Map<SvtClass, RelationOverwriteDetail>> defSide;
+  // final Map<int, Map<int, RelationOverwriteDetail>> atkSide2;
+  // final Map<int, Map<int, RelationOverwriteDetail>> defSide2;
 
   const BuffRelationOverwrite({
-    required this.atkSide,
-    required this.defSide,
+    this.atkSide = const {},
+    this.defSide = const {},
+    // this.atkSide2 = const {},
+    // this.defSide2 = const {},
   });
 
   factory BuffRelationOverwrite.fromJson(Map<String, dynamic> json) => _$BuffRelationOverwriteFromJson(json);

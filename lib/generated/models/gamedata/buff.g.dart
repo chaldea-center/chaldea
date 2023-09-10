@@ -44,22 +44,24 @@ Map<String, dynamic> _$BuffToJson(Buff instance) => <String, dynamic>{
     };
 
 BuffRelationOverwrite _$BuffRelationOverwriteFromJson(Map json) => BuffRelationOverwrite(
-      atkSide: (json['atkSide'] as Map).map(
-        (k, e) => MapEntry(
-            const SvtClassConverter().fromJson(k as String),
-            (e as Map).map(
-              (k, e) => MapEntry(const SvtClassConverter().fromJson(k as String),
-                  RelationOverwriteDetail.fromJson(Map<String, dynamic>.from(e as Map))),
-            )),
-      ),
-      defSide: (json['defSide'] as Map).map(
-        (k, e) => MapEntry(
-            const SvtClassConverter().fromJson(k as String),
-            (e as Map).map(
-              (k, e) => MapEntry(const SvtClassConverter().fromJson(k as String),
-                  RelationOverwriteDetail.fromJson(Map<String, dynamic>.from(e as Map))),
-            )),
-      ),
+      atkSide: (json['atkSide'] as Map?)?.map(
+            (k, e) => MapEntry(
+                const SvtClassConverter().fromJson(k as String),
+                (e as Map).map(
+                  (k, e) => MapEntry(const SvtClassConverter().fromJson(k as String),
+                      RelationOverwriteDetail.fromJson(Map<String, dynamic>.from(e as Map))),
+                )),
+          ) ??
+          const {},
+      defSide: (json['defSide'] as Map?)?.map(
+            (k, e) => MapEntry(
+                const SvtClassConverter().fromJson(k as String),
+                (e as Map).map(
+                  (k, e) => MapEntry(const SvtClassConverter().fromJson(k as String),
+                      RelationOverwriteDetail.fromJson(Map<String, dynamic>.from(e as Map))),
+                )),
+          ) ??
+          const {},
     );
 
 Map<String, dynamic> _$BuffRelationOverwriteToJson(BuffRelationOverwrite instance) => <String, dynamic>{
