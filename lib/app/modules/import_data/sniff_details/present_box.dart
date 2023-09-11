@@ -107,7 +107,7 @@ class SniffPresentBoxDetailPage extends StatelessWidget {
   }
 
   Widget buildPresent(BuildContext context, UserPresentBox present) {
-    final gift = BaseGift(type: GiftType.fromId(present.giftType), objectId: present.objectId, num: present.num);
+    final gift = BaseGift(id: 0, type: GiftType.fromId(present.giftType), objectId: present.objectId, num: present.num);
     return ListTile(
       dense: true,
       leading: gift.iconBuilder(context: context),

@@ -263,13 +263,10 @@ class _QuestCardState extends State<QuestCard> {
               child: Wrap(
                 spacing: 1,
                 runSpacing: 1,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   if (quest.giftIcon != null) db.getIconImage(quest.giftIcon, width: 36),
-                  for (final gift in quest.gifts)
-                    gift.iconBuilder(
-                      context: context,
-                      width: 36,
-                    ),
+                  ...Gift.listBuilder(context: context, gifts: quest.gifts, size: 36),
                 ],
               ),
             ),

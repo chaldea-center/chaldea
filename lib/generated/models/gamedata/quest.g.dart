@@ -284,12 +284,14 @@ Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic
     };
 
 BaseGift _$BaseGiftFromJson(Map json) => BaseGift(
+      id: json['id'] as int,
       type: $enumDecodeNullable(_$GiftTypeEnumMap, json['type'], unknownValue: GiftType.unknown),
       objectId: json['objectId'] as int,
       num: json['num'] as int,
     );
 
 Map<String, dynamic> _$BaseGiftToJson(BaseGift instance) => <String, dynamic>{
+      'id': instance.id,
       'type': _$GiftTypeEnumMap[instance.type]!,
       'objectId': instance.objectId,
       'num': instance.num,
@@ -335,6 +337,7 @@ Map<String, dynamic> _$GiftAddToJson(GiftAdd instance) => <String, dynamic>{
     };
 
 Gift _$GiftFromJson(Map json) => Gift(
+      id: json['id'] as int,
       type: $enumDecodeNullable(_$GiftTypeEnumMap, json['type'], unknownValue: GiftType.unknown),
       objectId: json['objectId'] as int,
       num: json['num'] as int,
@@ -345,6 +348,7 @@ Gift _$GiftFromJson(Map json) => Gift(
     );
 
 Map<String, dynamic> _$GiftToJson(Gift instance) => <String, dynamic>{
+      'id': instance.id,
       'type': _$GiftTypeEnumMap[instance.type]!,
       'objectId': instance.objectId,
       'num': instance.num,
@@ -639,6 +643,7 @@ Map<String, dynamic> _$SupportServantLimitToJson(SupportServantLimit instance) =
     };
 
 EnemyDrop _$EnemyDropFromJson(Map json) => EnemyDrop(
+      id: json['id'] as int? ?? 0,
       type: $enumDecodeNullable(_$GiftTypeEnumMap, json['type'], unknownValue: GiftType.unknown) ?? GiftType.item,
       objectId: json['objectId'] as int,
       num: json['num'] as int? ?? 1,
@@ -647,6 +652,7 @@ EnemyDrop _$EnemyDropFromJson(Map json) => EnemyDrop(
     );
 
 Map<String, dynamic> _$EnemyDropToJson(EnemyDrop instance) => <String, dynamic>{
+      'id': instance.id,
       'type': _$GiftTypeEnumMap[instance.type]!,
       'objectId': instance.objectId,
       'num': instance.num,

@@ -1,13 +1,12 @@
-import 'package:flutter/widgets.dart';
-
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/game_card.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import '../../app/app.dart';
 import '../../app/modules/enemy/quest_enemy.dart';
-import '../../widgets/image_with_text.dart';
 import '../db.dart';
 import '_helper.dart';
 import 'common.dart';
@@ -437,7 +436,7 @@ class QuestPhase extends Quest {
 
 @JsonSerializable()
 class BaseGift {
-  // int id;
+  int id;
   @JsonKey(unknownEnumValue: GiftType.unknown)
   GiftType type;
   int objectId;
@@ -446,7 +445,7 @@ class BaseGift {
   int num;
 
   BaseGift({
-    // required this.id,
+    required this.id,
     GiftType? type,
     required this.objectId,
     // required this.priority,
@@ -525,6 +524,7 @@ class BaseGift {
         showOne = false;
         break;
       case GiftType.eventPointBuff:
+        icon ??= db.gameData.others.eventPointBuffs[objectId]?.icon;
         break;
       case GiftType.unknown:
         jumpToDetail = false;
@@ -632,7 +632,7 @@ class GiftAdd {
 class Gift extends BaseGift {
   List<GiftAdd> giftAdds;
   Gift({
-    // required this.id,
+    required super.id,
     GiftType? type,
     required super.objectId,
     // required this.priority,
@@ -642,6 +642,62 @@ class Gift extends BaseGift {
   }) : super(type: type ?? GiftType.item);
 
   factory Gift.fromJson(Map<String, dynamic> json) => _$GiftFromJson(json);
+
+  static Map<int, List<Gift>> group(List<Gift> gifts) {
+    Map<int, List<Gift>> groups = {};
+    for (final gift in gifts) {
+      groups.putIfAbsent(gift.id, () => []).add(gift);
+    }
+    return groups;
+  }
+
+  static List<Widget> listBuilder({
+    required BuildContext context,
+    required List<Gift> gifts,
+    Widget Function(BaseGift gift)? itemBuilder,
+    double size = 36.0,
+  }) {
+    List<Widget> children = [];
+    itemBuilder ??= (gift) => gift.iconBuilder(context: context, width: size);
+    Map<int, List<Gift>> groups = {};
+    for (final gift in gifts) {
+      groups.putIfAbsent(gift.id, () => []).add(gift);
+    }
+    bool multiGroup = groups.length > 1;
+    for (final group in groups.values) {
+      final giftAdds = group.first.giftAdds;
+      if (giftAdds.isEmpty) {
+        children.addAll(group.map(itemBuilder));
+      } else {
+        Widget text(String s) => Text(s, style: TextStyle(fontSize: size * 0.6));
+        children.addAll([
+          if (multiGroup) text('('),
+          ...group.map(itemBuilder),
+          // text('➟'),
+          text('→'),
+        ]);
+        for (int index = 0; index < giftAdds.length; index++) {
+          final giftAdd = giftAdds[index];
+          children.add(db.getIconImage(giftAdd.replacementGiftIcon, width: size, height: size));
+          children.addAll(giftAdd.replacementGifts.map(itemBuilder));
+          children.add(InkWell(
+            onTap: () {
+              SimpleCancelOkDialog(
+                title: Text(S.current.condition),
+                content: CondTargetValueDescriptor(
+                    condType: giftAdd.condType, target: giftAdd.targetId, value: giftAdd.targetNum),
+                scrollable: true,
+                hideCancel: true,
+              ).showDialog(context);
+            },
+            child: Icon(Icons.info_outline, size: size * 0.5),
+          ));
+        }
+        if (multiGroup) children.add(text(')'));
+      }
+    }
+    return children;
+  }
 
   static void checkAddGifts(Map<int, int> stat, List<Gift> gifts, [int setNum = 1]) {
     Map<int, int> repls = {};
@@ -1013,6 +1069,7 @@ class EnemyDrop extends BaseGift {
   // double dropVariance;
 
   EnemyDrop({
+    super.id = 0,
     super.type = GiftType.item,
     required super.objectId,
     // ignore: avoid_types_as_parameter_names

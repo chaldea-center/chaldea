@@ -215,6 +215,9 @@ class NiceWar with RouteInfo {
         if ([1000825, 3000540].contains(quest.id)) {
           continue;
         }
+        if (gameData.constData.excludeRewardQuests.contains(quest.id)) {
+          continue;
+        }
 
         Gift.checkAddGifts(itemReward, quest.gifts);
         for (final phase in quest.phases) {

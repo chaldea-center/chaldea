@@ -28,17 +28,27 @@ class EventPointsPage extends HookWidget {
 
   Widget rewardBuilder(BuildContext context, EventPointReward reward, Map<int, EventPointBuff> pointBuffs) {
     List<InlineSpan> titles = [];
-    for (final gift in reward.gifts) {
+    final groups = Gift.group(reward.gifts);
+    for (final gifts in groups.values) {
       if (titles.isNotEmpty) titles.add(const TextSpan(text: '\n'));
-      titles.add(CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 28, text: '', showName: true)));
-      titles.add(TextSpan(text: ' ×${gift.num.format(compact: false, groupSeparator: ',')}'));
-
-      final buff = pointBuffs[reward.point];
-      if (buff == null) continue;
-      titles.add(const TextSpan(text: '\n'));
-      titles.add(CenterWidgetSpan(child: db.getIconImage(buff.icon, width: 36)));
-      titles.add(TextSpan(text: '${buff.name}\n'));
-      titles.add(TextSpan(text: 'Value: ${buff.value.format(percent: true, base: 10)}'));
+      for (final gift in gifts) {
+        titles.add(CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 28, text: '', showName: true)));
+        titles.add(TextSpan(text: ' ×${gift.num.format(compact: false, groupSeparator: ',')}'));
+        final buff = pointBuffs[reward.point];
+        if (buff == null) continue;
+        titles.add(const TextSpan(text: '\n'));
+        titles.add(TextSpan(text: '${buff.name}\n'));
+        titles.add(TextSpan(text: 'Value: ${buff.value.format(percent: true, base: 10)}'));
+      }
+      final giftAdds = gifts.first.giftAdds;
+      if (giftAdds.isNotEmpty) {
+        titles.addAll([
+          const TextSpan(text: '\n→'),
+          CenterWidgetSpan(child: db.getIconImage(giftAdds.first.replacementGiftIcon, width: 28)),
+          for (final gift in giftAdds.first.replacementGifts)
+            CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 28, text: '', showName: true)),
+        ]);
+      }
     }
 
     return ListTile(

@@ -41,6 +41,7 @@ class ConstGameData {
   //   }
   final Map<int, Map<int, int>> eventPointBuffGroupSkillNumMap;
   final List<int> laplaceUploadAllowAiQuests;
+  final List<int> excludeRewardQuests; // when counting war fixed drop and rewards
 
   ConstGameData({
     this.attributeRelation = const {},
@@ -56,6 +57,7 @@ class ConstGameData {
     this.buffTypeDetail = const {},
     this.eventPointBuffGroupSkillNumMap = const {},
     this.laplaceUploadAllowAiQuests = const [],
+    this.excludeRewardQuests = const [],
   }) : buffTypeActionMap = {} {
     for (final entry in buffActions.entries) {
       for (final type in [...entry.value.plusTypes, ...entry.value.minusTypes]) {

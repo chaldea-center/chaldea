@@ -994,7 +994,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "team_no_order_change": MessageLookupByLibrary.simpleMessage("禁止换人"),
         "team_no_same_svt": MessageLookupByLibrary.simpleMessage("禁止相同从者"),
         "team_report_reason_hint":
-            MessageLookupByLibrary.simpleMessage("【详细说明】使用未实装从者/操作发牌成功率低/无法通关 等等。\n为了通知管理员删除队伍而不是让其修改队伍配置。"),
+            MessageLookupByLibrary.simpleMessage("【详细说明】使用未实装从者(说明哪位)/操作发牌成功率低/无法通关 等等。\n为了通知管理员删除队伍而不是让其修改队伍配置。"),
         "team_shared": MessageLookupByLibrary.simpleMessage("共享队伍"),
         "team_starting_member": MessageLookupByLibrary.simpleMessage("前排从者"),
         "team_use_servant": MessageLookupByLibrary.simpleMessage("使用从者"),
