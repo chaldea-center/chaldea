@@ -358,13 +358,14 @@ CarouselItem _$CarouselItemFromJson(Map json) => $checkedCreate(
         final val = CarouselItem(
           type: $checkedConvert('type', (v) => v as int? ?? 0),
           priority: $checkedConvert('priority', (v) => v as int? ?? 100),
-          startTime: $checkedConvert('startTime', (v) => v as String? ?? ""),
-          endTime: $checkedConvert('endTime', (v) => v as String? ?? ""),
+          startTime: $checkedConvert('startTime', (v) => v == null ? null : DateTime.parse(v as String)),
+          endTime: $checkedConvert('endTime', (v) => v == null ? null : DateTime.parse(v as String)),
           title: $checkedConvert('title', (v) => v as String?),
           content: $checkedConvert('content', (v) => v as String?),
           md: $checkedConvert('md', (v) => v as bool? ?? false),
           image: $checkedConvert('image', (v) => v as String?),
           link: $checkedConvert('link', (v) => v as String?),
+          zhLink: $checkedConvert('zhLink', (v) => v as String?),
           verMin: $checkedConvert(
               'verMin', (v) => _$JsonConverterFromJson<String, AppVersion>(v, const AppVersionConverter().fromJson)),
           verMax: $checkedConvert(
@@ -387,6 +388,7 @@ Map<String, dynamic> _$CarouselItemToJson(CarouselItem instance) => <String, dyn
       'md': instance.md,
       'image': instance.image,
       'link': instance.link,
+      'zhLink': instance.zhLink,
       'verMin': _$JsonConverterToJson<String, AppVersion>(instance.verMin, const AppVersionConverter().toJson),
       'verMax': _$JsonConverterToJson<String, AppVersion>(instance.verMax, const AppVersionConverter().toJson),
       'eventIds': instance.eventIds,

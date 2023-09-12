@@ -381,6 +381,7 @@ class CarouselItem {
   bool md;
   String? image;
   String? link;
+  String? zhLink;
   AppVersion? verMin;
   AppVersion? verMax;
   List<int> eventIds;
@@ -392,21 +393,22 @@ class CarouselItem {
   CarouselItem({
     this.type = 0,
     this.priority = 100,
-    String startTime = "",
-    String endTime = "",
+    DateTime? startTime,
+    DateTime? endTime,
     this.title,
     this.content,
     this.md = false,
     this.image,
     this.link,
+    this.zhLink,
     this.verMin,
     this.verMax,
     List<int>? eventIds,
     List<int>? warIds,
     List<String>? summonIds,
     this.fit,
-  })  : startTime = DateTime.tryParse(startTime) ?? DateTime(2000),
-        endTime = DateTime.tryParse(endTime) ?? DateTime(2099),
+  })  : startTime = startTime ?? DateTime(2000),
+        endTime = endTime ?? DateTime(2099),
         eventIds = eventIds ?? [],
         warIds = warIds ?? [],
         summonIds = summonIds ?? [];

@@ -21,6 +21,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/app_info.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -542,7 +543,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
   }
 
   void onTap(CarouselItem item) {
-    final link = item.link;
+    final link = item.zhLink != null && Language.isZH ? item.zhLink : item.link;
     if (link != null) {
       const routePrefix = 'chaldea://';
       if (link.toLowerCase().startsWith(routePrefix) && link.length > routePrefix.length + 1) {
