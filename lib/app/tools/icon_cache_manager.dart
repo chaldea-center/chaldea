@@ -300,8 +300,12 @@ abstract class _CachedLoader<K, V> {
     if (isFailed(key)) return null;
     Completer<V?> _cmpl = Completer();
     download(key, limiter: limiter, allowWeb: allowWeb).then<void>((value) {
-      if (value != null) _success[key] = value;
-      _failed.remove(key);
+      if (value != null) {
+        _success[key] = value;
+        _failed.remove(key);
+      } else {
+        _failed[key] = _FailureDetail(time: DateTime.now());
+      }
       _cmpl.complete(value);
     }).catchError((e, s) {
       if (e is RateLimitCancelError) return;
