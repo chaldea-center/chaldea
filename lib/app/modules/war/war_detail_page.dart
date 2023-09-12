@@ -178,7 +178,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
     ));
 
     if (war.spots.isNotEmpty || war.questSelections.isNotEmpty) {
-      children.add(addQuests());
+      children.add(addQuestCategoryTile(context: context, war: war));
     }
 
     List<Widget> extraTiles = [];
@@ -405,141 +405,149 @@ class _WarDetailPageState extends State<WarDetailPage> {
       )
     ]);
   }
+}
 
-  Widget addQuests() {
-    List<Quest> mainQuests = [],
-        freeQuests = [],
-        dailyEmber = [],
-        dailyTraining = [],
-        dailyQp = [],
-        raidQuests = [],
-        difficultQuests = [],
-        oneOffQuests = [],
-        interludeQuests = [],
-        eventQuests = [],
-        selectionQuests = [];
-    for (final quest in war.quests) {
-      if (quest.type == QuestType.main) {
-        mainQuests.add(quest);
-      } else if (quest.type == QuestType.friendship) {
-        interludeQuests.add(quest);
-      } else if (quest.type == QuestType.free || (quest.type == QuestType.event && quest.afterClear.isRepeat)) {
-        if (!quest.afterClear.isRepeat) {
-          oneOffQuests.add(quest);
-        } else if (quest.flags.contains(QuestFlag.raid)) {
-          raidQuests.add(quest);
-        } else if ([QuestFlag.notRetrievable, QuestFlag.dropFirstTimeOnly, QuestFlag.forceToNoDrop]
-            .any((flag) => quest.flags.contains(flag))) {
-          difficultQuests.add(quest);
-        } else if (quest.flags.contains(QuestFlag.noBattle)) {
-          eventQuests.add(quest);
-        } else {
-          if (quest.warId == WarId.daily) {
-            if (quest.name.contains('種火集め')) {
-              dailyEmber.add(quest);
-            } else if (quest.name.contains('修練場')) {
-              dailyTraining.add(quest);
-            } else if (quest.name.contains('宝物庫の扉を開け')) {
-              dailyQp.add(quest);
-            } else {
-              freeQuests.add(quest);
-            }
+Widget addQuestCategoryTile({
+  required BuildContext context,
+  NiceWar? war,
+  List<Quest> extraQuests = const [],
+}) {
+  final allQuests = [
+    ...?war?.quests,
+    ...extraQuests,
+  ];
+  List<Quest> mainQuests = [],
+      freeQuests = [],
+      dailyEmber = [],
+      dailyTraining = [],
+      dailyQp = [],
+      raidQuests = [],
+      difficultQuests = [],
+      oneOffQuests = [],
+      interludeQuests = [],
+      eventQuests = [],
+      selectionQuests = [];
+  for (final quest in allQuests) {
+    if (quest.type == QuestType.main) {
+      mainQuests.add(quest);
+    } else if (quest.type == QuestType.friendship) {
+      interludeQuests.add(quest);
+    } else if (quest.type == QuestType.free || (quest.type == QuestType.event && quest.afterClear.isRepeat)) {
+      if (!quest.afterClear.isRepeat) {
+        oneOffQuests.add(quest);
+      } else if (quest.flags.contains(QuestFlag.raid)) {
+        raidQuests.add(quest);
+      } else if ([QuestFlag.notRetrievable, QuestFlag.dropFirstTimeOnly, QuestFlag.forceToNoDrop]
+          .any((flag) => quest.flags.contains(flag))) {
+        difficultQuests.add(quest);
+      } else if (quest.flags.contains(QuestFlag.noBattle)) {
+        eventQuests.add(quest);
+      } else {
+        if (quest.warId == WarId.daily) {
+          if (quest.name.contains('種火集め')) {
+            dailyEmber.add(quest);
+          } else if (quest.name.contains('修練場')) {
+            dailyTraining.add(quest);
+          } else if (quest.name.contains('宝物庫の扉を開け')) {
+            dailyQp.add(quest);
           } else {
             freeQuests.add(quest);
           }
+        } else {
+          freeQuests.add(quest);
         }
-      } else {
-        eventQuests.add(quest);
       }
-    }
-
-    final selections = List.of(war.questSelections);
-    selections.sort2((e) => -e.priority);
-    selectionQuests = selections.map((e) => e.quest).toList();
-
-    List<Widget> children = [];
-
-    void _addTile(String name, List<Quest> quests, {bool needSort = true}) {
-      if (quests.isEmpty) return;
-      children.add(ListTile(
-        title: Text(name),
-        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-        onTap: () {
-          router.push(
-            child: QuestListPage(title: name, quests: quests, needSort: needSort),
-          );
-        },
-      ));
-    }
-
-    _addTile(S.current.main_quest, mainQuests);
-    if (war.id == 311) {
-      freeQuests.sort((a, b) => Quest.compare(a, b, spotLayer: true));
-      _addTile(S.current.free_quest, freeQuests, needSort: false);
     } else {
-      _addTile(S.current.free_quest, freeQuests);
+      eventQuests.add(quest);
     }
+  }
 
-    _addTile(S.current.daily_ember_quest, dailyEmber);
-    _addTile(S.current.daily_training_quest, dailyTraining);
-    _addTile(S.current.daily_qp_quest, dailyQp);
-    _addTile(S.current.raid_quest, raidQuests);
+  final selections = war?.questSelections.toList() ?? [];
+  selections.sort2((e) => -e.priority);
+  selectionQuests = selections.map((e) => e.quest).toList();
 
-    final freeAndRaid = [...freeQuests, ...raidQuests];
-    if (freeAndRaid.isNotEmpty && war.id != WarId.daily && war.id != WarId.chaldeaGate) {
-      children.add(ListTile(
-        title: Text("${S.current.item} (${S.current.free_quest})"),
-        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-        onTap: () {
-          router.pushPage(FreeQuestOverview(quests: freeAndRaid, isMainStory: war.isMainStory));
-        },
-      ));
-    }
-    _addTile(S.current.high_difficulty_quest, difficultQuests);
-    _addTile(S.current.one_off_quest, oneOffQuests);
-    _addTile(S.current.interlude, interludeQuests);
-    _addTile(S.current.event_quest, eventQuests);
-    _addTile('Selections', selectionQuests, needSort: false);
+  List<Widget> children = [];
 
-    if (war.id == WarId.chaldeaGate) {
-      children.add(ListTile(
-        title: Text("${S.current.sort_order}: ${S.current.time}"),
-        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-        onTap: () {
-          router.push(child: const ChaldeaGateQuestListPage());
-        },
-      ));
-    }
+  void _addTile(String name, List<Quest> quests, {bool needSort = true}) {
+    if (quests.isEmpty) return;
+    children.add(ListTile(
+      title: Text(name),
+      trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+      onTap: () {
+        router.push(
+          child: QuestListPage(title: name, quests: quests, needSort: needSort),
+        );
+      },
+    ));
+  }
 
-    final event = war.eventReal;
-    if (event != null && event.towers.isNotEmpty) {
-      children.add(Divider(color: Theme.of(context).scaffoldBackgroundColor, thickness: 2, height: 2));
-      for (final tower in event.towers) {
-        final towerQuestIds = db.gameData.others.eventTowerQuestGroups[tower.towerId]
-                ?.toSet()
-                .intersection(war.quests.map((e) => e.id).toSet()) ??
-            <int>{};
-        if (towerQuestIds.isNotEmpty) {
-          children.add(ListTile(
-            dense: true,
-            title: Text('${tower.lName}(${towerQuestIds.length})'),
-            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-            onTap: () {
-              router.push(
-                child: QuestListPage.ids(
-                  title: tower.lName,
-                  ids: towerQuestIds.toList(),
-                ),
-              );
-            },
-          ));
-        }
+  _addTile(S.current.main_quest, mainQuests);
+  if (war?.id == 311) {
+    freeQuests.sort((a, b) => Quest.compare(a, b, spotLayer: true));
+    _addTile(S.current.free_quest, freeQuests, needSort: false);
+  } else {
+    _addTile(S.current.free_quest, freeQuests);
+  }
+
+  _addTile(S.current.daily_ember_quest, dailyEmber);
+  _addTile(S.current.daily_training_quest, dailyTraining);
+  _addTile(S.current.daily_qp_quest, dailyQp);
+  _addTile(S.current.raid_quest, raidQuests);
+
+  final freeAndRaid = [...freeQuests, ...raidQuests];
+  if (freeAndRaid.isNotEmpty && war?.id != WarId.daily && war?.id != WarId.chaldeaGate) {
+    children.add(ListTile(
+      title: Text("${S.current.item} (${S.current.free_quest})"),
+      trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+      onTap: () {
+        router.pushPage(FreeQuestOverview(quests: freeAndRaid, isMainStory: war?.isMainStory ?? false));
+      },
+    ));
+  }
+  _addTile(S.current.high_difficulty_quest, difficultQuests);
+  _addTile(S.current.one_off_quest, oneOffQuests);
+  _addTile(S.current.interlude, interludeQuests);
+  _addTile(S.current.event_quest, eventQuests);
+  _addTile('Selections', selectionQuests, needSort: false);
+
+  if (war?.id == WarId.chaldeaGate) {
+    children.add(ListTile(
+      title: Text("${S.current.sort_order}: ${S.current.time}"),
+      trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+      onTap: () {
+        router.push(child: const ChaldeaGateQuestListPage());
+      },
+    ));
+  }
+
+  final event = war?.eventReal;
+  if (event != null && event.towers.isNotEmpty) {
+    children.add(Divider(color: Theme.of(context).scaffoldBackgroundColor, thickness: 2, height: 2));
+    for (final tower in event.towers) {
+      final towerQuestIds = db.gameData.others.eventTowerQuestGroups[tower.towerId]
+              ?.toSet()
+              .intersection(allQuests.map((e) => e.id).toSet()) ??
+          <int>{};
+      if (towerQuestIds.isNotEmpty) {
+        children.add(ListTile(
+          dense: true,
+          title: Text('${tower.lName}(${towerQuestIds.length})'),
+          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+          onTap: () {
+            router.push(
+              child: QuestListPage.ids(
+                title: tower.lName,
+                ids: towerQuestIds.toList(),
+              ),
+            );
+          },
+        ));
       }
     }
-
-    return TileGroup(
-      header: S.current.quest,
-      children: children,
-    );
   }
+
+  return TileGroup(
+    header: S.current.quest,
+    children: children,
+  );
 }

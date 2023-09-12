@@ -8,6 +8,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/master_mission/solver/scheme.dart';
+import 'package:chaldea/app/modules/war/war_detail_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -16,8 +17,6 @@ import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/not_found.dart';
 import '../item/item_select.dart';
-import '../quest/quest_list.dart';
-import '../war/war/free_overview.dart';
 import 'detail/bonus.dart';
 import 'detail/bulletin_board.dart';
 import 'detail/campaign.dart';
@@ -394,47 +393,22 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     for (final warId in event.warIds) {
       warQuestIds.addAll(db.gameData.wars[warId]?.quests.map((e) => e.id) ?? {});
     }
-    final allEventQuestIds = db.gameData.others.eventQuestGroups[event.id] ?? [];
-    Set<int> extraQuestIds = allEventQuestIds.toSet().difference(warQuestIds);
+    if (warTiles.isNotEmpty) {
+      children.add(TileGroup(header: S.current.war, children: warTiles));
+    }
+    // quests
+    final originEventQuestIds = db.gameData.others.eventQuestGroups[event.id] ?? [];
+    Set<int> extraQuestIds = originEventQuestIds.toSet().difference(warQuestIds);
     if (event.isAdvancedQuestEvent) {
       final advancedQuests = db.gameData.wars[WarId.advanced]?.quests.where((q) => q.openedAt == event.startedAt) ?? [];
       // advanced 1 contains all quests
       extraQuestIds.removeWhere((e) => db.gameData.quests[e]?.warId == WarId.advanced);
       extraQuestIds.addAll(advancedQuests.map((e) => e.id));
     }
-    if (extraQuestIds.isNotEmpty) {
-      warTiles.add(ListTile(
-        title: Text(S.current.event_quest),
-        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-        onTap: () {
-          router.push(
-            child: QuestListPage.ids(
-              title: S.current.event_quest,
-              ids: extraQuestIds.toList(),
-            ),
-          );
-        },
-      ));
+    final extraQuests = extraQuestIds.map((e) => db.gameData.quests[e]).whereType<Quest>().toList();
 
-      List<Quest> extraFreeQuests = [];
-      for (final questId in extraQuestIds) {
-        final quest = db.gameData.quests[questId];
-        if (quest == null) continue;
-        if (quest.isAnyFree) extraFreeQuests.add(quest);
-      }
-      if (extraFreeQuests.isNotEmpty) {
-        warTiles.add(ListTile(
-          title: Text("${S.current.item} (${S.current.event_quest})"),
-          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-          onTap: () {
-            router.pushPage(FreeQuestOverview(quests: extraFreeQuests, isMainStory: false));
-          },
-        ));
-      }
-    }
-
-    if (warTiles.isNotEmpty) {
-      children.add(TileGroup(header: S.current.war, children: warTiles));
+    if (extraQuests.isNotEmpty) {
+      children.add(addQuestCategoryTile(context: context, extraQuests: extraQuests));
     }
 
     int grailToCrystalCount = event.statItemFixed[Items.grailToCrystalId] ?? 0;
