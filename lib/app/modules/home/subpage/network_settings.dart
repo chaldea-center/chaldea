@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
@@ -40,43 +41,43 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
   late StreamSubscription<ConnectivityResult> _subscription;
   Map<String, dynamic> testResults = {};
 
-  final testGroups = [
-    _Group(
-      title: 'Chaldea Data',
-      globalUrl: '${HostsX.data.global}/version.json',
-      cnUrl: '${HostsX.data.cn}/version.json',
-      getValue: () => db.settings.proxy.data,
-      onChanged: (v) => db.settings.proxy.data = v,
-    ),
-    _Group(
-      title: '${S.current.chaldea_server}(Account/Laplace)',
-      globalUrl: '${HostsX.worker.global}/network/ping',
-      cnUrl: '${HostsX.worker.cn}/network/ping',
-      getValue: () => db.settings.proxy.worker,
-      onChanged: (v) => db.settings.proxy.worker = v,
-    ),
-    _Group(
-      title: '${S.current.chaldea_server}(Recognizer)',
-      globalUrl: '${HostsX.api.global}/network/ping',
-      cnUrl: '${HostsX.api.cn}/network/ping',
-      getValue: () => db.settings.proxy.api,
-      onChanged: (v) => db.settings.proxy.api = v,
-    ),
-    _Group(
-      title: 'Atlas Api',
-      globalUrl: '${HostsX.atlasApi.global}/info',
-      cnUrl: '${HostsX.atlasApi.cn}/info',
-      getValue: () => db.settings.proxy.atlasApi,
-      onChanged: (v) => db.settings.proxy.atlasApi = v,
-    ),
-    _Group(
-      title: 'Atlas Assets',
-      globalUrl: '${HostsX.atlasAsset.global}/JP/Script/Common/QuestStart.txt',
-      cnUrl: '${HostsX.atlasAsset.cn}/JP/Script/Common/QuestStart.txt',
-      getValue: () => db.settings.proxy.atlasAsset,
-      onChanged: (v) => db.settings.proxy.atlasAsset = v,
-    ),
-  ];
+  List<_Group> get testGroups => [
+        _Group(
+          title: 'Chaldea Data',
+          globalUrl: '${HostsX.data.global}/version.json',
+          cnUrl: '${HostsX.data.cn}/version.json',
+          getValue: () => db.settings.proxy.data,
+          onChanged: (v) => db.settings.proxy.data = v,
+        ),
+        _Group(
+          title: '${S.current.chaldea_server}(Account/Laplace)',
+          globalUrl: '${HostsX.worker.global}/network/ping',
+          cnUrl: '${HostsX.worker.cn}/network/ping',
+          getValue: () => db.settings.proxy.worker,
+          onChanged: (v) => db.settings.proxy.worker = v,
+        ),
+        _Group(
+          title: '${S.current.chaldea_server}(Recognizer)',
+          globalUrl: '${HostsX.api.global}/network/ping',
+          cnUrl: '${HostsX.api.cn}/network/ping',
+          getValue: () => db.settings.proxy.api,
+          onChanged: (v) => db.settings.proxy.api = v,
+        ),
+        _Group(
+          title: 'Atlas Api',
+          globalUrl: '${HostsX.atlasApi.global}/info',
+          cnUrl: '${HostsX.atlasApi.cn}/info',
+          getValue: () => db.settings.proxy.atlasApi,
+          onChanged: (v) => db.settings.proxy.atlasApi = v,
+        ),
+        _Group(
+          title: 'Atlas Assets',
+          globalUrl: '${HostsX.atlasAsset.global}/JP/Script/Common/QuestStart.txt',
+          cnUrl: '${HostsX.atlasAsset.cn}/JP/Script/Common/QuestStart.txt',
+          getValue: () => db.settings.proxy.atlasAsset,
+          onChanged: (v) => db.settings.proxy.atlasAsset = v,
+        ),
+      ];
 
   @override
   void initState() {
@@ -118,6 +119,18 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
                     });
                   },
                 ),
+                if (kIsWeb || kDebugMode)
+                  SwitchListTile.adaptive(
+                    value: db.settings.proxy.dataWeb,
+                    title: Text(S.current.fix_cors_for_chaldea_data),
+                    subtitle: Text('(data.chaldea.center only) ${S.current.fix_cors_for_chaldea_data_hint}'),
+                    dense: true,
+                    onChanged: (v) {
+                      setState(() {
+                        db.settings.proxy.dataWeb = v;
+                      });
+                    },
+                  ),
               ],
             ),
             // const Divider(height: 8),

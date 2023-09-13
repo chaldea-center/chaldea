@@ -6,8 +6,10 @@ import 'package:flutter/services.dart';
 
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path/path.dart' as pathlib;
 
+import '../generated/l10n.dart';
 import 'extension.dart';
 
 String joinPaths(
@@ -263,8 +265,9 @@ String escapeDioException(error) {
   return error.toString();
 }
 
-Future<void> copyToClipboard(String text) {
-  return Clipboard.setData(ClipboardData(text: text));
+Future<void> copyToClipboard(String text, {bool toast = false}) async {
+  await Clipboard.setData(ClipboardData(text: text));
+  if (toast) tryEasyLoading(() => EasyLoading.showToast(S.current.copied));
 }
 
 List<T>? toList<T>(Object? value) {

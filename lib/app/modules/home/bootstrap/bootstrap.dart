@@ -443,8 +443,10 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                 },
               ),
               IconButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NetworkSettingsPage()));
+                onPressed: () async {
+                  await Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => const NetworkSettingsPage()));
+                  if (mounted) setState(() {});
                 },
                 icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 tooltip: S.current.details,
@@ -452,6 +454,18 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
             ],
           ),
         ),
+        if (kIsWeb || kDebugMode)
+          SwitchListTile.adaptive(
+            value: db.settings.proxy.dataWeb,
+            title: Text(S.current.fix_cors_for_chaldea_data),
+            subtitle: Text(S.current.fix_cors_for_chaldea_data_hint),
+            dense: true,
+            onChanged: (v) {
+              setState(() {
+                db.settings.proxy.dataWeb = v;
+              });
+            },
+          ),
         SwitchListTile.adaptive(
           dense: true,
           title: Text('${S.current.auto_update} (${S.current.gamedata})'),

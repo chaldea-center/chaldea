@@ -16,6 +16,8 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 
+const _kDiscordLink = 'https://discord.gg/5M6w5faqjP';
+
 class FeedbackPage extends StatefulWidget {
   FeedbackPage({super.key});
 
@@ -113,6 +115,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 title: const Text('Github'),
                 subtitle: const Text(kProjectHomepage),
                 onTap: () => launch('$kProjectHomepage/issues'),
+                onLongPress: () {
+                  copyToClipboard('$kProjectHomepage/issues', toast: true);
+                },
               ),
               // ListTile(
               //   title: const Text('NGA'),
@@ -142,12 +147,18 @@ class _FeedbackPageState extends State<FeedbackPage> {
                     }
                   }
                 },
+                onLongPress: () {
+                  copyToClipboard(kSupportTeamEmailAddress, toast: true);
+                },
               ),
               ListTile(
                 title: const Text('Discord'),
-                subtitle: const Text('https://discord.gg/5M6w5faqjP'),
+                subtitle: const Text(_kDiscordLink),
                 onTap: () {
-                  launch('https://discord.gg/5M6w5faqjP');
+                  launch(_kDiscordLink);
+                },
+                onLongPress: () {
+                  copyToClipboard(_kDiscordLink, toast: true);
                 },
               ),
               // ListTile(

@@ -484,6 +484,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sort": MessageLookupByLibrary.simpleMessage("Sort"),
         "filter_sort_number": MessageLookupByLibrary.simpleMessage("No"),
         "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("Rarity"),
+        "fix_cors_for_chaldea_data": MessageLookupByLibrary.simpleMessage("Fix CORS issue for \"Global\" source"),
+        "fix_cors_for_chaldea_data_hint": MessageLookupByLibrary.simpleMessage("Usually on FireFox"),
         "fixed_oc": MessageLookupByLibrary.simpleMessage("Fixed OC"),
         "force_enable_np_se": MessageLookupByLibrary.simpleMessage("Force Enable NP S.E."),
         "force_instant_death": MessageLookupByLibrary.simpleMessage("Force Death"),

@@ -149,6 +149,7 @@ class _UserDataPageState extends State<UserDataPage> {
               ),
               ListTile(
                 title: Text(S.current.import_userdata_more),
+                subtitle: Text('${S.current.gallery_tab_name}-${S.current.general_import}'),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 enabled: db.gameData.isValid,
                 onTap: () {

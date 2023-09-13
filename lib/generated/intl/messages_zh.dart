@@ -463,6 +463,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_sort": MessageLookupByLibrary.simpleMessage("排序"),
         "filter_sort_number": MessageLookupByLibrary.simpleMessage("序号"),
         "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("星级"),
+        "fix_cors_for_chaldea_data": MessageLookupByLibrary.simpleMessage("修复\"海外\"源的跨域请求问题"),
+        "fix_cors_for_chaldea_data_hint": MessageLookupByLibrary.simpleMessage("一般出现在FireFox中"),
         "fixed_oc": MessageLookupByLibrary.simpleMessage("固定OC"),
         "force_enable_np_se": MessageLookupByLibrary.simpleMessage("强制启用宝具特攻"),
         "force_instant_death": MessageLookupByLibrary.simpleMessage("强制即死"),

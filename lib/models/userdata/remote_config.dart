@@ -42,7 +42,16 @@ class ServerUrlConfig {
     UrlProxy? atlasAsset,
   })  : api = UrlProxy(src: api, kGlobal: Hosts0.kApiHostGlobal, kCN: Hosts0.kApiHostCN),
         worker = UrlProxy(src: worker, kGlobal: Hosts0.kWorkerHostGlobal, kCN: Hosts0.kWorkerHostCN),
-        data = UrlProxy(src: data, kGlobal: Hosts0.kDataHostGlobal, kCN: Hosts0.kDataHostCN),
+        data = UrlProxy(
+            src: data,
+            kGlobal: Hosts0.kDataHostGlobal,
+            kCN: Hosts0.kDataHostCN,
+            post: (url) {
+              if (kIsWeb && url == Hosts0.kDataHostGlobal && db.settings.proxy.dataWeb) {
+                return url += '/web';
+              }
+              return url;
+            }),
         atlasApi = UrlProxy(src: atlasApi, kGlobal: Hosts0.kAtlasApiHostGlobal, kCN: Hosts0.kAtlasApiHostCN),
         atlasAsset = UrlProxy(src: atlasApi, kGlobal: Hosts0.kAtlasAssetHostGlobal, kCN: Hosts0.kAtlasAssetHostCN);
 
@@ -59,23 +68,34 @@ class UrlProxy {
   final String kGlobal;
   final String kCN;
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final String Function(String url)? _post;
+
   UrlProxy._({
     String? global,
     String? cn,
   })  : _global = _check(global),
         _cn = _check(cn),
         kGlobal = "",
-        kCN = "";
+        kCN = "",
+        _post = null;
 
-  UrlProxy({required UrlProxy? src, required this.kGlobal, required this.kCN})
-      : _global = _check(src?.global),
-        _cn = _check(src?.cn);
+  UrlProxy({
+    required UrlProxy? src,
+    required this.kGlobal,
+    required this.kCN,
+    String Function(String url)? post,
+  })  : _global = _check(src?.global),
+        _cn = _check(src?.cn),
+        _post = post;
 
-  String get global => _global ?? kGlobal;
-  String get cn => _cn ?? kCN;
+  String get global => of(false);
+  String get cn => of(true);
 
   String of(bool proxy) {
-    return proxy ? cn : global;
+    String url = proxy ? (_cn ?? kCN) : (_global ?? kGlobal);
+    if (_post != null) url = _post!(url);
+    return url;
   }
 
   static String? _check(String? url) {
@@ -141,7 +161,9 @@ class Hosts0 {
   static const kWorkerHostGlobal = 'https://worker.chaldea.center';
   static const kWorkerHostCN = 'https://worker-cn.chaldea.center';
 
-  static const kDataHostGlobal = kIsWeb ? 'https://data.chaldea.center/web' : 'https://data.chaldea.center';
+  // FireFox may send OPTIONS request which cf pages denied
+  @protected
+  static const kDataHostGlobal = 'https://data.chaldea.center';
   static const kDataHostCN = 'https://data-cn.chaldea.center';
 
   static const kAtlasApiHostGlobal = 'https://api.atlasacademy.io';

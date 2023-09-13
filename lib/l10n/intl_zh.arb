@@ -371,6 +371,8 @@
   "filter_sort": "排序",
   "filter_sort_number": "序号",
   "filter_sort_rarity": "星级",
+  "fix_cors_for_chaldea_data": "修复\"海外\"源的跨域请求问题",
+  "fix_cors_for_chaldea_data_hint": "一般出现在FireFox中",
   "fixed_oc": "固定OC",
   "force_enable_np_se": "强制启用宝具特攻",
   "force_instant_death": "强制即死",

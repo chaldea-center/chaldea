@@ -4144,6 +4144,28 @@ class S {
     );
   }
 
+  /// `Fix CORS issue for "Global" source`
+  String get fix_cors_for_chaldea_data {
+    return Intl.message(
+      'Fix CORS issue for "Global" source',
+      name: 'fix_cors_for_chaldea_data',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Usually on FireFox`
+  String get fix_cors_for_chaldea_data_hint {
+    return Intl.message(
+      'Usually on FireFox',
+      name: 'fix_cors_for_chaldea_data_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Fixed OC`
   String get fixed_oc {
     return Intl.message(
