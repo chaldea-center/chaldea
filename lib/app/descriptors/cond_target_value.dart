@@ -116,12 +116,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           jp: () => combineToRich(context, null, servants(context), 'の霊基再臨を$value段階目にする'),
           cn: () => combineToRich(context, null, servants(context), '达到灵基再临第$value阶段'),
           tw: null,
-          na: () => combineToRich(
-            context,
-            null,
-            servants(context),
-            ' at ascension $value',
-          ),
+          na: () => combineToRich(context, null, servants(context), ' at ascension $value'),
           kr: null,
         );
       case CondType.svtGet:
@@ -129,12 +124,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           jp: () => combineToRich(context, null, servants(context), 'は霊基一覧の中にいる'),
           cn: () => combineToRich(context, null, servants(context), '在灵基一览中'),
           tw: null,
-          na: () => combineToRich(
-            context,
-            null,
-            servants(context),
-            ' in Spirit Origin Collection',
-          ),
+          na: () => combineToRich(context, null, servants(context), ' in Spirit Origin Collection'),
           kr: null,
         );
       case CondType.svtFriendship:
@@ -142,12 +132,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           jp: () => combineToRich(context, null, servants(context), 'の絆レベルが$valueになる'),
           cn: () => combineToRich(context, null, servants(context), '的羁绊等级达到$value'),
           tw: null,
-          na: () => combineToRich(
-            context,
-            null,
-            servants(context),
-            ' at bond level $value',
-          ),
+          na: () => combineToRich(context, null, servants(context), ' at bond level $value'),
           kr: null,
         );
       case CondType.svtFriendshipBelow:
@@ -155,12 +140,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           jp: () => combineToRich(context, null, servants(context), 'の絆レベルは$value以下'),
           cn: () => combineToRich(context, null, servants(context), '的羁绊等级为$value或以下'),
           tw: null,
-          na: () => combineToRich(
-            context,
-            null,
-            servants(context),
-            ' at bond level $value or lower',
-          ),
+          na: () => combineToRich(context, null, servants(context), ' at bond level $value or lower'),
           kr: null,
         );
       case CondType.svtFriendshipAbove:
@@ -168,12 +148,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           jp: () => combineToRich(context, null, servants(context), 'の絆レベルは$value以上'),
           cn: () => combineToRich(context, null, servants(context), '的羁绊等级为$value或以上'),
           tw: null,
-          na: () => combineToRich(
-            context,
-            null,
-            servants(context),
-            ' at bond level $value',
-          ),
+          na: () => combineToRich(context, null, servants(context), ' at bond level $value'),
           kr: null,
         );
       case CondType.costumeGet:
@@ -286,12 +261,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           jp: () => combineToRich(context, null, servants(context), 'の霊基再臨を ≥ $value段階目にする'),
           cn: () => combineToRich(context, '从者', servants(context), '的灵基再临 ≥ $value'),
           tw: null,
-          na: () => combineToRich(
-            context,
-            'Servant',
-            servants(context),
-            ' at ascension ≥ $value',
-          ),
+          na: () => combineToRich(context, 'Servant', servants(context), ' at ascension ≥ $value'),
           kr: null,
         );
       case CondType.limitCountBelow:
@@ -299,12 +269,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           jp: () => combineToRich(context, null, servants(context), 'の霊基再臨を ≤ $value段階目にする'),
           cn: () => combineToRich(context, '从者', servants(context), '的灵基再临 ≤ $value'),
           tw: null,
-          na: () => combineToRich(
-            context,
-            'Servant',
-            servants(context),
-            ' at ascension ≤ $value',
-          ),
+          na: () => combineToRich(context, 'Servant', servants(context), ' at ascension ≤ $value'),
           kr: null,
         );
       case CondType.date:

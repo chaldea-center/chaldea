@@ -28,6 +28,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
   final _allMissionTypes = const <MissionType?>[
     MissionType.weekly,
     MissionType.limited,
+    // MissionType.daily,
     null,
   ];
 
@@ -164,6 +165,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
   Widget buttonBar(List<MasterMission> mms) {
     return ButtonBar(
       alignment: MainAxisAlignment.center,
+      overflowButtonSpacing: 4,
       children: [
         FilterGroup<MissionType?>(
           options: _allMissionTypes,

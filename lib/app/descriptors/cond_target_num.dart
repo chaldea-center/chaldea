@@ -6,6 +6,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'descriptor_base.dart';
 import 'mission_cond_detail.dart';
+import 'multi_entry.dart';
 
 class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
   final CondType condType;
@@ -170,16 +171,16 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           jp: () => combineToRich(context, '以下のクエストを$targetNum回クリアせよ', quests(context)),
           cn: () => combineToRich(context, '通关$targetNum次以下关卡', quests(context)),
           tw: null,
-          na: () => combineToRich(
-            context,
-            '$targetNum runs of quests ',
-            quests(context),
-          ),
-          kr: () => combineToRich(
-            context,
-            '$targetNum 퀘스트 탐색 ',
-            quests(context),
-          ),
+          na: () => combineToRich(context, '$targetNum runs of quests ', quests(context)),
+          kr: () => combineToRich(context, '$targetNum 퀘스트 탐색 ', quests(context)),
+        );
+      case CondType.questChallengeNum:
+        return localized(
+          jp: () => combineToRich(context, '以下のクエストを$targetNum回挑戦せよ', quests(context)),
+          cn: () => combineToRich(context, '挑战$targetNum次以下关卡', quests(context)),
+          tw: null,
+          na: () => combineToRich(context, 'Challenge $targetNum runs of quests ', quests(context)),
+          kr: null,
         );
       case CondType.svtCostumeReleased:
       case CondType.notSvtCostumeReleased:
@@ -346,12 +347,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           ),
         );
       case CondType.svtLevelClassNum:
-        List<int> clsIds = [];
-        List<int> levels = [];
-        for (int index = 0; index < targetIds.length / 2; index++) {
-          clsIds.add(targetIds[index * 2]);
-          levels.add(targetIds[index * 2 + 1]);
-        }
+        final (clsIds, levels) = _splitTargets(targetIds);
         if (levels.toSet().length == 1) {
           final lv = levels.first;
           if (_isPlayableAll(clsIds)) {
@@ -400,12 +396,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           );
         }
       case CondType.svtLimitClassNum:
-        List<int> clsIds = [];
-        List<int> limits = [];
-        for (final id in targetIds) {
-          clsIds.add(id ~/ 100);
-          limits.add(id % 100);
-        }
+        final (clsIds, limits) = _splitTargetPercent(targetIds);
         if (limits.toSet().length == 1) {
           final limit = limits.first;
           if (_isPlayableAll(clsIds)) {
@@ -453,13 +444,35 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
             kr: null,
           );
         }
-      case CondType.svtEquipRarityLevelNum:
-        List<int> levels = [];
-        List<int> rarities = [];
-        for (final id in targetIds) {
-          levels.add(id ~/ 100);
-          rarities.add(id % 100);
+      case CondType.svtLevelIdNum:
+        final (svtIds, lvs) = _splitTargets(targetIds);
+        if (lvs.toSet().length > 1) {
+          final svts = <InlineSpan>[
+            for (int index = 0; index < svtIds.length; index++) ...[
+              ...MultiDescriptor.servants(context, [svtIds[index]], useAnd: useAnd),
+              TextSpan(text: 'Lv.${lvs[index]} '),
+            ]
+          ];
+          return localized(
+            jp: () => combineToRich(context, 'サーヴァント$targetNum騎をレベル以上に強化せよ: ', svts),
+            cn: () => combineToRich(context, '将$targetNum骑从者升级到对应等级以上: ', svts),
+            tw: null,
+            na: () => combineToRich(context, 'Raise $targetNum servants to level or higher: ', svts),
+            kr: null,
+          );
+        } else {
+          final lv = lvs.firstOrNull ?? '?';
+          final svts = MultiDescriptor.servants(context, svtIds, useAnd: useAnd);
+          return localized(
+            jp: () => combineToRich(context, 'サーヴァント$targetNum骑をLv.$lv以上にせよ: ', svts),
+            cn: () => combineToRich(context, '将$targetNum骑从者升级到$lv级以上: ', svts),
+            tw: null,
+            na: () => combineToRich(context, 'Raise $targetNum servants to level $lv: ', svts),
+            kr: null,
+          );
         }
+      case CondType.svtEquipRarityLevelNum:
+        final (levels, rarities) = _splitTargetPercent(targetIds);
         if (levels.toSet().length == 1) {
           final level = levels.first;
           if (rarities.toSet().equalTo({1, 2, 3, 4, 5})) {
@@ -535,12 +548,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
       case CondType.svtFriendshipClassNumAbove:
         // サーヴァント5騎の絆レベルをLv.6以上にせよ
         // 106, 206, 306, 406, 506
-        List<int> clsIds = [];
-        List<int> counts = [];
-        for (final id in targetIds) {
-          clsIds.add(id ~/ 100);
-          counts.add(id % 100);
-        }
+        final (clsIds, counts) = _splitTargetPercent(targetIds);
         if (counts.toSet().length == 1) {
           final level = counts.first;
           if (_isPlayableAll(clsIds)) {
@@ -740,5 +748,25 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
       na: () => text('Unknown Cond(${condType.name}): $targetNum, $targetIds'),
       kr: () => text('미확인 (${condType.name}): $targetNum, $targetIds'),
     );
+  }
+
+  (List<int>, List<int>) _splitTargets(List<int> vals) {
+    List<int> keys = [];
+    List<int> values = [];
+    for (int index = 0; index < targetIds.length / 2; index++) {
+      keys.add(targetIds[index * 2]);
+      values.add(targetIds[index * 2 + 1]);
+    }
+    return (keys, values);
+  }
+
+  (List<int>, List<int>) _splitTargetPercent(List<int> vals) {
+    List<int> keys = [];
+    List<int> values = [];
+    for (int index = 0; index < targetIds.length; index++) {
+      keys.add(targetIds[index] ~/ 100);
+      values.add(targetIds[index] % 100);
+    }
+    return (keys, values);
   }
 }

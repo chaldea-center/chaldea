@@ -102,17 +102,27 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
               .join('\n')),
         ),
         const Divider(thickness: 1),
+        SwitchListTile(
+          dense: true,
+          visualDensity: VisualDensity.compact,
+          value: db.settings.display.describeEventMission,
+          title: Text(S.current.describe_mission),
+          onChanged: (v) {
+            setState(() {
+              db.settings.display.describeEventMission = v;
+            });
+          },
+        ),
+        const Divider(thickness: 1),
         for (final mission in masterMission.missions) _oneEventMission(mission)
       ],
     );
   }
 
-  final bool describeEventMission = kDebugMode;
-
   Widget _oneEventMission(EventMission mission) {
     final customMission = CustomMission.fromEventMission(mission);
     final clearConds = mission.conds.where((e) => e.missionProgressType == MissionProgressType.clear).toList();
-    final clearCond = describeEventMission && clearConds.length == 1 ? clearConds.single : null;
+    final clearCond = db.settings.display.describeEventMission && clearConds.length == 1 ? clearConds.single : null;
 
     return SimpleAccordion(
       headerBuilder: (context, _) => ListTile(

@@ -245,6 +245,22 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => text('Perform $targetNum Friend Point Summons'),
           kr: () => text('친구 포인트 소환을 $targetNum회 실행'),
         );
+      case DetailCondType.questChallengeNum:
+        return localized(
+          jp: () => combineToRich(context, '以下のクエストを$targetNum回挑戦せよ', quests(context)),
+          cn: () => combineToRich(context, '挑战$targetNum次以下关卡', quests(context)),
+          tw: null,
+          na: () => combineToRich(context, 'Challenge $targetNum runs of quests ', quests(context)),
+          kr: null,
+        );
+      case DetailCondType.svtFriendshipGet:
+        return localized(
+          jp: () => text('絆を$targetNum獲得せよ'),
+          cn: () => text('获取$targetNum牵绊'),
+          tw: null,
+          na: () => text('Obtain $targetNum Bond Points'),
+          kr: null,
+        );
     }
     if (unknownMsg != null) return text(unknownMsg!);
     return localized(

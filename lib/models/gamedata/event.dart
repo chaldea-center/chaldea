@@ -1716,6 +1716,7 @@ enum DetailMissionCondLinkType {
 /// https://github.com/atlasacademy/apps/blob/master/packages/api-connector/src/Schema/Mission.ts
 class DetailCondType {
   const DetailCondType._();
+  // [1, 2, 3, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27, 28, 31, 32, 33, 34, 36]
   static const int enemyKillNum = 1; // traits AND
   static const int enemyIndividualityKillNum = 2; // traits OR
   static const int itemGetTotal = 3;
@@ -1744,7 +1745,9 @@ class DetailCondType {
   static const int questTypeClear = 28; // 22M Download Campaign
   static const int questClearNumIncludingGrailFront = 31;
   static const int warMainQuestClear = 32; // 「Lostbelt No.7」開幕前メインクエストクリア応援キャンペーン 第1弾
+  static const int svtFriendshipGet = 33;  // 28M Download Campaign
   static const int battleSvtIdInFrontDeck = 34;
+  static const int questChallengeNum = 36; // similar to CondType.questChallengeNum
 
   /// custom, only used in app
   static const int questClearIndividuality = 999;
