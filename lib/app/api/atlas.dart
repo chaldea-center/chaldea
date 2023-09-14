@@ -201,6 +201,14 @@ class AtlasApi {
     );
   }
 
+  static Future<EventMission?> eventMission(int missionId, {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$_atlasApiHost/nice/${region.upper}/event-mission/$missionId',
+      (data) => EventMission.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+
   static Future<List<CommonRelease>?> commonRelease(int releaseId, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/common-release/$releaseId',

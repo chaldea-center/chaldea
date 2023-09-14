@@ -987,6 +987,7 @@ QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) => QuestPhaseExt
       overwriteEquipSkills: json['overwriteEquipSkills'] == null
           ? null
           : OverwriteEquipSkills.fromJson(Map<String, dynamic>.from(json['overwriteEquipSkills'] as Map)),
+      waveSetup: json['waveSetup'] as int?,
     );
 
 Map<String, dynamic> _$QuestPhaseExtraDetailToJson(QuestPhaseExtraDetail instance) => <String, dynamic>{
@@ -997,6 +998,7 @@ Map<String, dynamic> _$QuestPhaseExtraDetailToJson(QuestPhaseExtraDetail instanc
       'aiNpc': instance.aiNpc?.toJson(),
       'aiMultiNpc': instance.aiMultiNpc?.map((e) => e.toJson()).toList(),
       'overwriteEquipSkills': instance.overwriteEquipSkills?.toJson(),
+      'waveSetup': instance.waveSetup,
     };
 
 OverwriteEquipSkills _$OverwriteEquipSkillsFromJson(Map json) => OverwriteEquipSkills(

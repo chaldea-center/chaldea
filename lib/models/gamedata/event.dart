@@ -1745,7 +1745,7 @@ class DetailCondType {
   static const int questTypeClear = 28; // 22M Download Campaign
   static const int questClearNumIncludingGrailFront = 31;
   static const int warMainQuestClear = 32; // 「Lostbelt No.7」開幕前メインクエストクリア応援キャンペーン 第1弾
-  static const int svtFriendshipGet = 33;  // 28M Download Campaign
+  static const int svtFriendshipGet = 33; // 28M Download Campaign
   static const int battleSvtIdInFrontDeck = 34;
   static const int questChallengeNum = 36; // similar to CondType.questChallengeNum
 

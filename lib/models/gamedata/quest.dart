@@ -1569,6 +1569,7 @@ class QuestPhaseExtraDetail {
   QuestPhaseAiNpc? aiNpc;
   List<QuestPhaseAiNpc>? aiMultiNpc;
   OverwriteEquipSkills? overwriteEquipSkills;
+  int? waveSetup;
 
   QuestPhaseExtraDetail({
     this.questSelect,
@@ -1578,6 +1579,7 @@ class QuestPhaseExtraDetail {
     this.aiNpc,
     this.aiMultiNpc,
     OverwriteEquipSkills? overwriteEquipSkills,
+    this.waveSetup,
   }) : overwriteEquipSkills = overwriteEquipSkills?.skills.isNotEmpty == true ? overwriteEquipSkills : null;
 
   factory QuestPhaseExtraDetail.fromJson(Map<String, dynamic> json) => _$QuestPhaseExtraDetailFromJson(json);

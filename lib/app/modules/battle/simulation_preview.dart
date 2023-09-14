@@ -1005,7 +1005,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     return true;
   }
 
-  void _startSimulation() {
+  Future<void> _startSimulation() async {
     // pre-check
     final war = questPhase?.war;
     final event = war?.event;
@@ -1017,6 +1017,40 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     }
 
     final questCopy = QuestPhase.fromJson(questPhase!.toJson());
+
+    if ((questCopy.extraDetail?.waveSetup == 1 || questCopy.stages.length == 10) && questCopy.stages.length > 1) {
+      final int? chosenWave = await showDialog(
+        context: context,
+        useRootNavigator: false,
+        builder: (context) {
+          return SimpleDialog(
+            title: const Text("Wave Battle"),
+            children: [
+              SimpleDialogOption(
+                child: Text('${S.current.general_all} ${S.current.quest_wave}'),
+                onPressed: () {
+                  Navigator.pop(context, -1);
+                },
+              ),
+              for (int wave = 1; wave <= questCopy.stages.length; wave++)
+                SimpleDialogOption(
+                  child: Text('${S.current.quest_wave} $wave'),
+                  onPressed: () {
+                    Navigator.pop(context, wave);
+                  },
+                )
+            ],
+          );
+        },
+      );
+      if (chosenWave == null) return;
+      if (chosenWave > 0 && chosenWave <= questCopy.stages.length) {
+        final stage = questCopy.stages[chosenWave - 1];
+        stage.wave = 1;
+        questCopy.stages = [stage];
+      }
+    }
+
     if (options.disableEvent) {
       questCopy.warId = 0;
       questCopy.individuality.removeWhere((e) => e.isEventField);
