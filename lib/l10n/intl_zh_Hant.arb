@@ -812,6 +812,7 @@
   "skill_up": "技能升級",
   "skilled_max10": "練度最大化(310)",
   "skip": "跳過",
+  "skip_current_turn": null,
   "solution_battle_count": "次數",
   "solution_target_count": "目標數",
   "solution_total_battles_ap": "總計{battles}次戰鬥, {ap} AP",

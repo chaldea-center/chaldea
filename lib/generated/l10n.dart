@@ -9011,6 +9011,17 @@ class S {
     );
   }
 
+  /// `Skip Current Turn`
+  String get skip_current_turn {
+    return Intl.message(
+      'Skip Current Turn',
+      name: 'skip_current_turn',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Battle Count`
   String get solution_battle_count {
     return Intl.message(

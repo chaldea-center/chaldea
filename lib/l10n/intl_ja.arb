@@ -813,6 +813,7 @@
   "skill_up": "スキル強化",
   "skilled_max10": "スキルレベル最大化(310)",
   "skip": null,
+  "skip_current_turn": null,
   "solution_battle_count": "カウント",
   "solution_target_count": "目標カウント",
   "solution_total_battles_ap": "共{battles}回戦闘、{ap} AP",

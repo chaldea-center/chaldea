@@ -871,11 +871,10 @@ class BattleData {
     );
   }
 
-  Future<void> playerTurn(final List<CombatAction> actions) async {
+  Future<void> playerTurn(final List<CombatAction> actions, {bool allowSkip = false}) async {
     assert(isPlayerTurn);
-    if (actions.isEmpty || isBattleFinished) {
-      return;
-    }
+    if (isBattleFinished) return;
+    if (actions.isEmpty && !allowSkip) return;
 
     return recordError(
       save: true,
@@ -885,7 +884,7 @@ class BattleData {
         criticalStars = 0;
 
         // assumption: only Quick, Arts, and Buster are ever listed as viable actions
-        final validActions = actions.where((action) => action.isValid(this));
+        final validActions = actions.where((action) => action.isValid(this)).toList();
         final cardTypesSet = validActions.map((action) => action.cardData.cardType).toSet();
         final isTypeChain = validActions.length == 3 && cardTypesSet.length == 1;
         final isMightyChain = cardTypesSet.length == 3 && options.isAfter7thAnni;
@@ -897,8 +896,11 @@ class BattleData {
           if (extraCard != null) actions.add(CombatAction(actor, extraCard));
         }
 
-        final CardType firstCardType =
-            options.isAfter7thAnni || actions[0].isValid(this) ? actions[0].cardData.cardType : CardType.blank;
+        final CardType firstCardType = actions.isEmpty
+            ? CardType.blank
+            : options.isAfter7thAnni || actions[0].isValid(this)
+                ? actions[0].cardData.cardType
+                : CardType.blank;
         if (isTypeChain) {
           await applyTypeChain(firstCardType, actions);
         }
@@ -1071,6 +1073,14 @@ class BattleData {
         await nextTurn();
       },
     );
+  }
+
+  Future<void> skipTurn() async {
+    if (isPlayerTurn) {
+      await playerTurn([], allowSkip: true);
+    } else {
+      await endEnemyActions();
+    }
   }
 
   Future<void> skipWave() async {

@@ -917,6 +917,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skill_up": MessageLookupByLibrary.simpleMessage("技能升級"),
         "skilled_max10": MessageLookupByLibrary.simpleMessage("練度最大化(310)"),
         "skip": MessageLookupByLibrary.simpleMessage("跳過"),
+        "skip_current_turn": MessageLookupByLibrary.simpleMessage("跳过当前回合"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("次數"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("目標數"),
         "solution_total_battles_ap": m27,

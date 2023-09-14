@@ -813,6 +813,7 @@
   "skill_up": "Skill Up",
   "skilled_max10": "Skills Max(310)",
   "skip": "Skip",
+  "skip_current_turn": "Skip Current Turn",
   "solution_battle_count": "Battle Count",
   "solution_target_count": "Target Count",
   "solution_total_battles_ap": "Total {battles} battles, {ap} AP",

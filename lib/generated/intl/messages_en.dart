@@ -955,6 +955,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "skill_up": MessageLookupByLibrary.simpleMessage("Skill Up"),
         "skilled_max10": MessageLookupByLibrary.simpleMessage("Skills Max(310)"),
         "skip": MessageLookupByLibrary.simpleMessage("Skip"),
+        "skip_current_turn": MessageLookupByLibrary.simpleMessage("Skip Current Turn"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("Battle Count"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("Target Count"),
         "solution_total_battles_ap": m27,

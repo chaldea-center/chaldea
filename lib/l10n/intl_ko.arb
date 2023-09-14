@@ -813,6 +813,7 @@
   "skill_up": "스킬 레벨업",
   "skilled_max10": "스킬 최대(310)",
   "skip": null,
+  "skip_current_turn": null,
   "solution_battle_count": "카운트",
   "solution_target_count": "목표 카운트",
   "solution_total_battles_ap": "합계 {battles}회 전투, {ap} AP",

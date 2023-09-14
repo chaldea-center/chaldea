@@ -555,6 +555,21 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           ),
         IconButton(
           onPressed: () async {
+            await battleData.skipTurn();
+            battleData.recorder.setIllegal(S.current.skip_current_turn);
+            EasyLoading.showToast(S.current.skip_current_turn);
+            if (mounted) setState(() {});
+          },
+          icon: Icon(
+            Icons.play_arrow,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          tooltip: S.current.skip_current_turn,
+          iconSize: 24,
+          constraints: const BoxConstraints(),
+        ),
+        IconButton(
+          onPressed: () async {
             await battleData.skipWave();
             EasyLoading.showToast(S.current.battle_skip_current_wave);
             if (mounted) setState(() {});

@@ -813,6 +813,7 @@
   "skill_up": "Subir Skill",
   "skilled_max10": "Skills Máx(310)",
   "skip": null,
+  "skip_current_turn": null,
   "solution_battle_count": "Conteo de Batallas",
   "solution_target_count": "Conteo de Objetivos",
   "solution_total_battles_ap": "Total de batallas: {battles}, {ap} AP",

@@ -813,6 +813,7 @@
   "skill_up": "رفع المهارة",
   "skilled_max10": "المهارات القصوى (310)",
   "skip": null,
+  "skip_current_turn": null,
   "solution_battle_count": null,
   "solution_target_count": null,
   "solution_total_battles_ap": null,
