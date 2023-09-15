@@ -1018,7 +1018,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
     final questCopy = QuestPhase.fromJson(questPhase!.toJson());
 
-    if ((questCopy.extraDetail?.waveSetup == 1 || questCopy.stages.length == 10) && questCopy.stages.length > 1) {
+    if (questCopy.extraDetail?.waveSetup == 1 && questCopy.stages.length > 1) {
       final int? chosenWave = await showDialog(
         context: context,
         useRootNavigator: false,

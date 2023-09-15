@@ -324,8 +324,16 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         data.team.allSvts.every((svt) => !filterData.useSvts.options.contains(svt?.svtId))) {
       return false;
     }
+
+    bool _isCEMismatch(SvtSaveData? svt, int ceId) {
+      if (svt == null || (svt.svtId ?? 0) <= 0) return false;
+      if (svt.ceId != ceId) return false;
+      final mlbOnly = filterData.blockCEMLBOnly[ceId] ?? false;
+      return mlbOnly ? svt.ceLimitBreak : true;
+    }
+
     for (final ceId in filterData.blockCEs.options) {
-      if (data.team.allSvts.any((svt) => svt?.ceId == ceId)) {
+      if (data.team.allSvts.any((svt) => _isCEMismatch(svt, ceId))) {
         return false;
       }
     }
@@ -351,18 +359,6 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       if (maxCriticalAttackCount >= 0 && criticalAttackCount > maxCriticalAttackCount) {
         return false;
       }
-    }
-
-    bool checkCE(SvtSaveData? svt, int ceId, CELimitType limit) {
-      if (svt == null || (svt.svtId ?? 0) <= 0) return true;
-      if (svt.ceId != ceId) return true;
-      return limit.check(svt.ceLimitBreak);
-    }
-
-    if (data.team.allSvts.any((svt) =>
-        !checkCE(svt, 9400340, filterData.kaleidoCELimit.radioValue!) ||
-        !checkCE(svt, 9400480, filterData.blackGrailLimit.radioValue!))) {
-      return false;
     }
 
     for (final miscOption in filterData.miscOptions.options) {
@@ -457,7 +453,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   Future<void> _deleteUserTeam(UserBattleData battleRecord) async {
     if (!db.security.isUserLoggedIn) return;
     final resp = await showEasyLoading(() => ChaldeaWorkerApi.teamDelete(id: battleRecord.id));
-    if (resp.success && !kDebugMode) {
+    if (resp.success && !db.runtimeData.enableDebugTools) {
       ChaldeaWorkerApi.clearCache((cache) => true);
       await _queryTeams(pageIndex, refresh: true);
     } else {

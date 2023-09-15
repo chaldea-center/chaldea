@@ -2703,6 +2703,17 @@ class S {
     );
   }
 
+  /// `Disallow MLB`
+  String get disallow_mlb {
+    return Intl.message(
+      'Disallow MLB',
+      name: 'disallow_mlb',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Grid`
   String get display_grid {
     return Intl.message(
@@ -6855,17 +6866,6 @@ class S {
     );
   }
 
-  /// `non-MLB`
-  String get non_mlb {
-    return Intl.message(
-      'non-MLB',
-      name: 'non_mlb',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Normal Attack`
   String get normal_attack {
     return Intl.message(
@@ -9803,28 +9803,6 @@ class S {
     );
   }
 
-  /// `Allow MLB`
-  String get team_ce_allow_mlb {
-    return Intl.message(
-      'Allow MLB',
-      name: 'team_ce_allow_mlb',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Allow non-MLB`
-  String get team_ce_allow_non_mlb {
-    return Intl.message(
-      'Allow non-MLB',
-      name: 'team_ce_allow_non_mlb',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Local Teams`
   String get team_local {
     return Intl.message(
@@ -10386,10 +10364,10 @@ class S {
     );
   }
 
-  /// `Upload current team?\n\nAttention: don't upload team which contains unreleased servants!\nUploaded data may be deleted due to future updates, data incompatibility etc.`
+  /// `Upload current team?\n\nAttention: don't upload team which contains unreleased servants!\nPlease try to keep your team configuration as low as possible for sharing with others.\nUploaded data may be deleted due to future updates, data incompatibility etc.`
   String get upload_team_confirmation {
     return Intl.message(
-      'Upload current team?\n\nAttention: don\'t upload team which contains unreleased servants!\nUploaded data may be deleted due to future updates, data incompatibility etc.',
+      'Upload current team?\n\nAttention: don\'t upload team which contains unreleased servants!\nPlease try to keep your team configuration as low as possible for sharing with others.\nUploaded data may be deleted due to future updates, data incompatibility etc.',
       name: 'upload_team_confirmation',
       desc: '',
       locale: localeName,

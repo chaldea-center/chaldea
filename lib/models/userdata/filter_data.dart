@@ -52,6 +52,15 @@ class FilterGroupData<T> {
         _invert = invert,
         _options = options ?? {};
 
+  FilterGroupData<T> copy() {
+    return FilterGroupData(
+      matchAll: _matchAll,
+      invert: _invert,
+      options: options.toSet(),
+      onChanged: onChanged,
+    );
+  }
+
   T? get radioValue => throw UnimplementedError();
 
   bool contain(T v) => options.isEmpty || (invert ? !options.contains(v) : options.contains(v));
@@ -143,6 +152,11 @@ class FilterRadioData<T> extends FilterGroupData<T> {
       : _selected = selected,
         _nonnull = true,
         _initValue = selected;
+
+  @override
+  FilterRadioData<T> copy() {
+    return _nonnull ? FilterRadioData.nonnull(_selected as T) : FilterRadioData(_selected);
+  }
 
   @override
   void toggle(T value) {

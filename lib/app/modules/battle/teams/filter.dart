@@ -30,35 +30,6 @@ enum TeamFilterMiscType {
   }
 }
 
-enum CELimitType {
-  allowed,
-  allowedNoMLB,
-  banned,
-  ;
-
-  String get shownName {
-    switch (this) {
-      case allowed:
-        return S.current.general_any;
-      case allowedNoMLB:
-        return S.current.non_mlb;
-      case banned:
-        return S.current.disabled;
-    }
-  }
-
-  bool check(bool mlb) {
-    switch (this) {
-      case CELimitType.allowed:
-        return true;
-      case CELimitType.allowedNoMLB:
-        return !mlb;
-      case CELimitType.banned:
-        return false;
-    }
-  }
-}
-
 class TeamFilterData {
   // static const List<int> _blockedSvtIds = [16, 258, 284, 307, 314, 316, 357];
 
@@ -66,11 +37,10 @@ class TeamFilterData {
   final blockSvts = FilterGroupData<int>();
   final useSvts = FilterRadioData<int>();
   final blockCEs = FilterGroupData<int>();
+  final blockCEMLBOnly = <int, bool>{}; // true=block MLB only
   final normalAttackCount = FilterRadioData<int>.nonnull(-1);
   final criticalAttackCount = FilterRadioData<int>.nonnull(-1);
   final miscOptions = FilterGroupData<TeamFilterMiscType>();
-  final kaleidoCELimit = FilterRadioData<CELimitType>.nonnull(CELimitType.allowed);
-  final blackGrailLimit = FilterRadioData<CELimitType>.nonnull(CELimitType.allowed);
 
   List<FilterGroupData> get groups => [
         attackerTdCardType,
@@ -80,14 +50,13 @@ class TeamFilterData {
         normalAttackCount,
         criticalAttackCount,
         miscOptions,
-        kaleidoCELimit,
-        blackGrailLimit,
       ];
 
   void reset() {
     for (final group in groups) {
       group.reset();
     }
+    blockCEMLBOnly.clear();
   }
 }
 
@@ -109,10 +78,11 @@ class TeamFilter extends FilterPage<TeamFilterData> {
 class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
   @override
   Widget build(BuildContext context) {
-    final availableSvts = widget.availableSvts.toList();
+    final availableSvts =
+        {...widget.availableSvts, ...filterData.useSvts.options, ...filterData.blockSvts.options}.toList();
     availableSvts.sort((a, b) => SvtFilterData.compare(db.gameData.servantsById[a], db.gameData.servantsById[b],
         keys: [SvtCompare.rarity, SvtCompare.className, SvtCompare.no], reversed: [true, false, true]));
-    final availableCEs = widget.availableCEs.toList();
+    final availableCEs = {...widget.availableCEs, ...filterData.blockCEs.options}.toList();
     availableCEs.sort((a, b) => CraftFilterData.compare(
         db.gameData.craftEssencesById[a], db.gameData.craftEssencesById[b],
         keys: [CraftCompare.rarity, CraftCompare.no], reversed: [true, true]));
@@ -137,28 +107,6 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
           options: TeamFilterMiscType.values,
           values: filterData.miscOptions,
           optionBuilder: (v) => Text(v.shownName),
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<CELimitType>(
-          title: Text(db.gameData.craftEssences[34]?.lName.l ?? "The Black Grail"),
-          options: CELimitType.values,
-          values: filterData.kaleidoCELimit,
-          optionBuilder: (v) {
-            return Text(v.shownName);
-          },
-          onFilterChanged: (value, _) {
-            update();
-          },
-        ),
-        FilterGroup<CELimitType>(
-          title: Text(db.gameData.craftEssences[48]?.lName.l ?? "The Black Grail"),
-          options: CELimitType.values,
-          values: filterData.blackGrailLimit,
-          optionBuilder: (v) {
-            return Text(v.shownName);
-          },
           onFilterChanged: (value, _) {
             update();
           },
@@ -231,13 +179,42 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
           },
         ),
         FilterGroup<int>(
-          title: Text(S.current.team_block_ce),
+          title: Text.rich(TextSpan(text: '${S.current.team_block_ce}:   ', children: [
+            TextSpan(
+              text: S.current.disabled,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+            const TextSpan(text: '  '),
+            TextSpan(
+              text: S.current.disallow_mlb,
+              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            )
+          ])),
           options: availableCEs,
-          values: filterData.blockCEs,
+          values: filterData.blockCEs.copy(),
           constraints: const BoxConstraints(maxHeight: 50),
-          optionBuilder: (v) => cardIcon(v),
+          optionBuilder: (v) => cardIcon(v,
+              color: filterData.blockCEs.options.contains(v)
+                  ? (filterData.blockCEMLBOnly[v] ?? false)
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.error
+                  : null),
           shrinkWrap: true,
-          onFilterChanged: (value, _) {
+          onFilterChanged: (_, last) {
+            if (last != null) {
+              // null-false-true
+              if (!filterData.blockCEs.options.contains(last)) {
+                filterData.blockCEs.options.add(last);
+                filterData.blockCEMLBOnly[last] = false;
+              } else {
+                if (filterData.blockCEMLBOnly[last] != true) {
+                  filterData.blockCEMLBOnly[last] = true;
+                } else {
+                  filterData.blockCEs.options.remove(last);
+                  filterData.blockCEMLBOnly.remove(last);
+                }
+              }
+            }
             update();
           },
         ),
@@ -245,17 +222,30 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
     );
   }
 
-  Widget cardIcon(int id) {
+  Widget cardIcon(int id, {Color? color}) {
     final card = db.gameData.servantsById[id] ?? db.gameData.craftEssencesById[id];
-    if (card == null) return Text(id.toString());
-    return Opacity(
-      opacity: 0.9,
-      child: card.iconBuilder(
-        context: context,
-        height: 42,
-        jumpToDetail: false,
+    Widget child = card == null
+        ? Text(id.toString())
+        : Opacity(
+            opacity: 0.9,
+            child: card.iconBuilder(
+              context: context,
+              height: 42,
+              jumpToDetail: false,
+            ),
+          );
+    if (color != null) {
+      child = Container(
         padding: const EdgeInsets.all(2),
-      ),
-    );
+        color: color,
+        child: child,
+      );
+    } else {
+      child = Padding(
+        padding: const EdgeInsets.all(2),
+        child: child,
+      );
+    }
+    return child;
   }
 }
