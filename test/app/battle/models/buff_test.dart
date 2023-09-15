@@ -23,12 +23,8 @@ void main() async {
           ]),
           DataVals({'UseRate': 1000}));
 
-      battle.withActivatorSync(okuni, () {
-        battle.withTargetSync(cba, () {
-          expect(buff.shouldApplyBuff(battle, false), isTrue);
-          expect(buff.shouldApplyBuff(battle, true), isFalse);
-        });
-      });
+      expect(buff.shouldApplyBuff(battle, okuni, cba), isTrue);
+      expect(buff.shouldApplyBuff(battle, cba, okuni), isFalse);
     });
 
     test('checkIndivType 1', () {
@@ -45,12 +41,8 @@ void main() async {
           ),
           DataVals({'UseRate': 1000}));
 
-      battle.withActivatorSync(okuni, () {
-        battle.withTargetSync(cba, () {
-          expect(buff.shouldApplyBuff(battle, false), isTrue);
-          expect(buff.shouldApplyBuff(battle, true), isFalse);
-        });
-      });
+      expect(buff.shouldApplyBuff(battle, okuni, cba), isTrue);
+      expect(buff.shouldApplyBuff(battle, cba, okuni), isFalse);
     });
 
     test('checkIndivType with current buff', () {
@@ -75,24 +67,20 @@ void main() async {
             {'UseRate': 1000},
           ));
 
-      battle.withActivatorSync(okuni, () {
-        battle.withTargetSync(cba, () {
-          expect(buff.shouldApplyBuff(battle, false), false);
+      expect(buff.shouldApplyBuff(battle, okuni, cba), false);
 
-          battle.withBuffSync(negativeBuff, () {
-            expect(buff.shouldApplyBuff(battle, false), true);
-          });
+      battle.withBuffSync(negativeBuff, () {
+        expect(buff.shouldApplyBuff(battle, okuni, cba), true);
+      });
 
-          final positiveBuff = BuffData(
-              Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.buffPositiveEffect.id)]),
-              DataVals(
-                {'UseRate': 1000},
-              ));
-          battle.withBuffSync(positiveBuff, () {
-            cba.addBuff(negativeBuff); // make sure we are not checking servant's buffs' traits
-            expect(buff.shouldApplyBuff(battle, false), false);
-          });
-        });
+      final positiveBuff = BuffData(
+          Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.buffPositiveEffect.id)]),
+          DataVals(
+            {'UseRate': 1000},
+          ));
+      battle.withBuffSync(positiveBuff, () {
+        cba.addBuff(negativeBuff); // make sure we are not checking servant's buffs' traits
+        expect(buff.shouldApplyBuff(battle, okuni, cba), false);
       });
     });
 
@@ -101,15 +89,11 @@ void main() async {
           Buff(id: -1, name: '', detail: '', ckOpIndv: [NiceTrait(id: Trait.king.id), NiceTrait(id: Trait.divine.id)]),
           DataVals({'UseRate': 500}));
 
-      await battle.withActivator(okuni, () async {
-        await battle.withTarget(cba, () async {
-          expect(await buff.shouldActivateBuff(battle, false), isFalse);
+      expect(await buff.shouldActivateBuff(battle, okuni, cba), isFalse);
 
-          battle.options.probabilityThreshold = 500;
+      battle.options.probabilityThreshold = 500;
 
-          expect(await buff.shouldActivateBuff(battle, false), isTrue);
-        });
-      });
+      expect(await buff.shouldActivateBuff(battle, okuni, cba), isTrue);
     });
   });
 

@@ -427,8 +427,8 @@ class Damage {
     final BattleServantData target,
   ) async {
     int relation = ConstData.getClassIdRelation(activator.classId, target.classId);
-    relation = await activator.getClassRelation(battleData, relation, target.classId, false);
-    relation = await target.getClassRelation(battleData, relation, activator.classId, true);
+    relation = await activator.getClassRelation(battleData, relation, target, false);
+    relation = await target.getClassRelation(battleData, relation, activator, true);
 
     return relation;
   }

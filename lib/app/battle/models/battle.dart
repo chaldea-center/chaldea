@@ -285,6 +285,10 @@ class BattleData {
     }
   }
 
+  BattleServantData? getOpponent(final BattleServantData self) {
+    return target == self ? activator : target;
+  }
+
   bool get isBattleWin {
     return waveCount >= Maths.max(niceQuest?.stages.map((e) => e.wave) ?? [], -1) &&
         (curStage == null || (enemyDataList.isEmpty && onFieldEnemies.every((e) => e == null)));
@@ -605,15 +609,13 @@ class BattleData {
 
     final List<int> removeTraitIds = [];
     for (final svt in nonnullActors) {
-      withActivatorSync(svt, () {
-        for (final buff in svt.battleBuff.validBuffs) {
-          if (buff.buff.type == BuffType.fieldIndividuality && buff.shouldApplyBuff(this, false)) {
-            allTraits.add(NiceTrait(id: buff.vals.Value ?? 0));
-          } else if (buff.buff.type == BuffType.subFieldIndividuality && buff.shouldApplyBuff(this, false)) {
-            removeTraitIds.addAll(buff.vals.TargetList!.map((traitId) => traitId));
-          }
+      for (final buff in svt.battleBuff.validBuffs) {
+        if (buff.buff.type == BuffType.fieldIndividuality && buff.shouldApplyBuff(this, svt)) {
+          allTraits.add(NiceTrait(id: buff.vals.Value ?? 0));
+        } else if (buff.buff.type == BuffType.subFieldIndividuality && buff.shouldApplyBuff(this, svt)) {
+          removeTraitIds.addAll(buff.vals.TargetList!.map((traitId) => traitId));
         }
-      });
+      }
     }
     allTraits.removeWhere((trait) => removeTraitIds.contains(trait.id));
 

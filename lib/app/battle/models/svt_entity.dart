@@ -532,15 +532,13 @@ class BattleServantData {
     allTraits.addAll(getBasicSvtTraits(eventId: battleData.niceQuest?.war?.eventId));
 
     final List<int> removeTraitIds = [];
-    battleData.withActivatorSync(this, () {
-      for (final buff in battleBuff.validBuffs) {
-        if (buff.buff.type == BuffType.addIndividuality && buff.shouldApplyBuff(battleData, false)) {
-          allTraits.add(NiceTrait(id: buff.param));
-        } else if (buff.buff.type == BuffType.subIndividuality && buff.shouldApplyBuff(battleData, false)) {
-          removeTraitIds.add(buff.param);
-        }
+    for (final buff in battleBuff.validBuffs) {
+      if (buff.buff.type == BuffType.addIndividuality && buff.shouldApplyBuff(battleData, this)) {
+        allTraits.add(NiceTrait(id: buff.param));
+      } else if (buff.buff.type == BuffType.subIndividuality && buff.shouldApplyBuff(battleData, this)) {
+        removeTraitIds.add(buff.param);
       }
-    });
+    }
 
     allTraits.removeWhere((trait) => removeTraitIds.contains(trait.id));
 
@@ -685,7 +683,7 @@ class BattleServantData {
 
     return battleData.withActivatorSync(this, () {
       return collectBuffsPerTypes(battleBuff.validBuffs, gutsTypes)
-          .where((buff) => buff.shouldApplyBuff(battleData, false))
+          .where((buff) => buff.shouldApplyBuff(battleData, this))
           .isNotEmpty;
     });
   }
@@ -854,15 +852,13 @@ class BattleServantData {
   NiceTd? getCurrentNP(final BattleData battleData) {
     final buffs = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.tdTypeChange);
     NiceTd? selected;
-    battleData.withActivatorSync(this, () {
-      for (final buff in buffs.reversed) {
-        if (!buff.shouldApplyBuff(battleData, false)) continue;
-        if (buff.tdSelection != null) {
-          selected = buff.tdSelection!;
-          break;
-        }
+    for (final buff in buffs.reversed) {
+      if (!buff.shouldApplyBuff(battleData, this)) continue;
+      if (buff.tdSelection != null) {
+        selected = buff.tdSelection!;
+        break;
       }
-    });
+    }
 
     if (selected != null) {
       return selected;
@@ -911,7 +907,7 @@ class BattleServantData {
 
       final skillId = buff.vals.SkillID;
       final skillLv = buff.vals.SkillLV;
-      if (skillId != null && skillLv != null && await buff.shouldActivateBuff(battleData, false)) {
+      if (skillId != null && skillLv != null && await buff.shouldActivateBuff(battleData, this)) {
         BaseSkill? skill = db.gameData.baseSkills[skillId];
         skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
         final replacementFunction = skill?.functions.firstOrNull;
@@ -944,12 +940,12 @@ class BattleServantData {
     if (actionDetails == null) {
       return null;
     }
-    final isTarget = battleData.target == this;
 
+    final opponent = battleData.getOpponent(this);
     for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
-      if (await buff.shouldActivateBuff(battleData, isTarget)) {
+      if (await buff.shouldActivateBuff(battleData, this, opponent)) {
         buff.setUsed();
-        final value = buff.getValue(battleData, isTarget);
+        final value = buff.getValue(battleData, this, opponent);
         if (actionDetails.plusTypes.contains(buff.buff.type)) {
           return value;
         } else {
@@ -966,18 +962,18 @@ class BattleServantData {
       return 0;
     }
 
-    final isTarget = battleData.target == this;
+    final opponent = battleData.getOpponent(this);
     int totalVal = 0;
     int maxRate = Maths.min(actionDetails.maxRate);
 
     for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
-      if (await buff.shouldActivateBuff(battleData, isTarget)) {
+      if (await buff.shouldActivateBuff(battleData, this, opponent)) {
         buff.setUsed();
         final totalEffectiveness = await battleData.withBuff(buff, () async {
           return await getEffectivenessOnAction(battleData, buffAction);
         });
 
-        final value = (toModifier(totalEffectiveness) * buff.getValue(battleData, isTarget)).toInt();
+        final value = (toModifier(totalEffectiveness) * buff.getValue(battleData, this, opponent)).toInt();
         if (actionDetails.plusTypes.contains(buff.buff.type)) {
           totalVal += value;
         } else {
@@ -995,12 +991,12 @@ class BattleServantData {
       return 0;
     }
 
-    final isTarget = battleData.target == this;
+    final opponent = battleData.getOpponent(this);
     int totalVal = 0;
     int maxRate = Maths.min(actionDetails.maxRate);
 
     for (final buff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.turnendHpReduce)) {
-      if (await buff.shouldActivateBuff(battleData, isTarget)) {
+      if (await buff.shouldActivateBuff(battleData, this, opponent)) {
         buff.setUsed();
         final totalEffectiveness = await battleData.withBuff(buff, () async {
           return await getEffectivenessOnAction(battleData, BuffAction.turnendHpReduce);
@@ -1010,7 +1006,8 @@ class BattleServantData {
         });
 
         final useValue = forHeal == toHeal;
-        final value = useValue ? (toModifier(totalEffectiveness) * buff.getValue(battleData, isTarget)).toInt() : 0;
+        final value =
+            useValue ? (toModifier(totalEffectiveness) * buff.getValue(battleData, this, opponent)).toInt() : 0;
 
         if (actionDetails.plusTypes.contains(buff.buff.type)) {
           totalVal += value;
@@ -1032,10 +1029,8 @@ class BattleServantData {
   }
 
   BuffData? getFirstBuffOnActions(final BattleData battleData, final List<BuffAction> buffActions) {
-    final isTarget = battleData.target == this;
-
     for (final buff in collectBuffsPerActions(battleBuff.validBuffs, buffActions)) {
-      if (buff.shouldApplyBuff(battleData, isTarget)) {
+      if (buff.shouldApplyBuff(battleData, this, battleData.getOpponent(this))) {
         buff.setUsed();
         return buff;
       }
@@ -1053,12 +1048,12 @@ class BattleServantData {
   /// maintain.
   int getBuffValueOnActionForUI(final BattleData battleData, final BuffAction buffAction) {
     final actionDetails = ConstData.buffActions[buffAction];
-    final isTarget = battleData.target == this;
+    final opponent = battleData.getOpponent(this);
     int totalVal = 0;
     int maxRate = Maths.min(actionDetails!.maxRate);
 
     for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
-      if (buff.shouldApplyBuff(battleData, isTarget)) {
+      if (buff.shouldApplyBuff(battleData, this, opponent)) {
         buff.setUsed();
 
         /// should never be called since this is only used for getting maxHp related, so buffAction would never be these
@@ -1072,7 +1067,7 @@ class BattleServantData {
         //
         // final value = (toModifier(totalEffectiveness) * buff.getValue(battleData, isTarget)).toInt();
 
-        final value = buff.getValue(battleData, isTarget);
+        final value = buff.getValue(battleData, this, opponent);
         if (actionDetails.plusTypes.contains(buff.buff.type)) {
           totalVal += value;
         } else {
@@ -1089,10 +1084,8 @@ class BattleServantData {
   }
 
   bool hasDoNotBuffOnActionsForUI(final BattleData battleData, final List<BuffAction> buffActions) {
-    final isTarget = battleData.target == this;
-
     for (final buff in collectBuffsPerActions(battleBuff.validBuffs, buffActions)) {
-      if (buff.shouldApplyBuff(battleData, isTarget)) {
+      if (buff.shouldApplyBuff(battleData, this, battleData.getOpponent(this))) {
         buff.setUsed();
         return true;
       }
@@ -1105,10 +1098,8 @@ class BattleServantData {
   }
 
   Future<bool> hasBuffOnActions(final BattleData battleData, final List<BuffAction> buffActions) async {
-    final isTarget = battleData.target == this;
-
     for (final buff in collectBuffsPerActions(battleBuff.validBuffs, buffActions)) {
-      if (await buff.shouldActivateBuff(battleData, isTarget)) {
+      if (await buff.shouldActivateBuff(battleData, this, battleData.getOpponent(this))) {
         buff.setUsed();
         return true;
       }
@@ -1132,7 +1123,7 @@ class BattleServantData {
     return await battleData.withActivator(this, () async {
       bool activated = false;
       for (final buff in buffs.toList()) {
-        if (await buff.shouldActivateBuff(battleData, false)) {
+        if (await buff.shouldActivateBuff(battleData, this)) {
           final skillId = buff.param;
           BaseSkill? skill = db.gameData.baseSkills[skillId];
           skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
@@ -1177,23 +1168,19 @@ class BattleServantData {
   }
 
   Future<int> getClassRelation(
-    final BattleData battleData,
-    final int baseRelation,
-    final int opponentClass,
-    final isTarget,
-  ) async {
+      final BattleData battleData, final int baseRelation, final BattleServantData other, final bool isTarget) async {
     int relation = baseRelation;
     final List<BuffData> buffs = collectBuffsPerType(battleBuff.validBuffs, BuffType.overwriteClassRelation);
     for (final buff in buffs.reversed) {
-      if (await buff.shouldActivateBuff(battleData, isTarget)) {
+      if (await buff.shouldActivateBuff(battleData, this, other)) {
         buff.setUsed();
         final relationOverwrite = buff.buff.script!.relationId!;
         final overwrite = isTarget
-            ? relationOverwrite.defSide2.containsKey(opponentClass)
-                ? relationOverwrite.defSide2[opponentClass]![classId]
+            ? relationOverwrite.defSide2.containsKey(other.classId)
+                ? relationOverwrite.defSide2[other.classId]![classId]
                 : null
             : relationOverwrite.atkSide2.containsKey(classId)
-                ? relationOverwrite.atkSide2[classId]![opponentClass]
+                ? relationOverwrite.atkSide2[classId]![other.classId]
                 : null;
         if (overwrite != null) {
           final overwriteValue = overwrite.damageRate;
@@ -1300,7 +1287,7 @@ class BattleServantData {
         int turnEndDamage = await getTurnEndHpReduceValue(battleData);
         if (turnEndDamage != 0) {
           final List<BuffData> preventDeaths = getBuffsOfType(BuffType.preventDeathByDamage);
-          turnEndDamage = preventDeaths.any((buff) => buff.shouldApplyBuff(battleData, true))
+          turnEndDamage = preventDeaths.any((buff) => buff.shouldApplyBuff(battleData, this, this))
               ? min(hp - 1, turnEndDamage)
               : turnEndDamage;
 
@@ -1375,7 +1362,7 @@ class BattleServantData {
     BuffData? gutsToApply = await battleData.withActivator(this, () async {
       BuffData? gutsToApply;
       for (final buff in collectBuffsPerTypes(battleBuff.validBuffs, gutsTypes)) {
-        if (await buff.shouldActivateBuff(battleData, false)) {
+        if (await buff.shouldActivateBuff(battleData, this)) {
           if (gutsToApply == null || (gutsToApply.irremovable && !buff.irremovable)) {
             gutsToApply = buff;
           }
@@ -1386,7 +1373,7 @@ class BattleServantData {
 
     if (gutsToApply != null) {
       gutsToApply.setUsed();
-      final value = gutsToApply.getValue(battleData, false);
+      final value = gutsToApply.getValue(battleData, this);
       final isRatio = gutsToApply.buff.type == BuffType.gutsRatio;
       if (isRatio) {
         hp = (toModifier(value) * getMaxHp(battleData)).floor();

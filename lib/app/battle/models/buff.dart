@@ -150,7 +150,7 @@ class BuffData {
     BuffType.downDamageIndividualityActiveonly,
   ];
 
-  int getValue(final BattleData battleData, final bool isTarget) {
+  int getValue(final BattleData battleData, final BattleServantData self, [final BattleServantData? opponent]) {
     int addValue = 0;
     if (vals.ParamAddValue != null) {
       int addCount = 0;
@@ -158,19 +158,11 @@ class BuffData {
       final oppIndiv = vals.ParamAddOpIndividuality ?? vals.ParamAddFieldIndividuality;
       if (selfIndiv != null) {
         final targetTraits = NiceTrait.list(selfIndiv);
-        addCount += isTarget
-            ? battleData.target!.countTrait(battleData, targetTraits) +
-                battleData.target!.countBuffWithTrait(targetTraits)
-            : battleData.activator!.countTrait(battleData, targetTraits) +
-                battleData.activator!.countBuffWithTrait(targetTraits);
+        addCount += self.countTrait(battleData, targetTraits) + self.countBuffWithTrait(targetTraits);
       }
-      if (oppIndiv != null) {
+      if (oppIndiv != null && opponent != null) {
         final targetTraits = NiceTrait.list(oppIndiv);
-        addCount += isTarget
-            ? battleData.activator!.countTrait(battleData, targetTraits) +
-                battleData.activator!.countBuffWithTrait(targetTraits)
-            : battleData.target!.countTrait(battleData, targetTraits) +
-                battleData.target!.countBuffWithTrait(targetTraits);
+        addCount += opponent.countTrait(battleData, targetTraits) + opponent.countBuffWithTrait(targetTraits);
       }
 
       if (vals.ParamAddMaxCount != null) {
@@ -191,24 +183,21 @@ class BuffData {
       final addition = upperBound - lowerBound;
       final maxHpRatio = vals.RatioHPRangeHigh ?? 1000;
       final minHpRatio = vals.RatioHPRangeLow ?? 0;
-      final actor = isTarget ? battleData.target : battleData.activator;
-      if (actor != null) {
-        final currentHpRatio = ((actor.hp / actor.getMaxHp(battleData)) * 1000).toInt();
+      final currentHpRatio = ((self.hp / self.getMaxHp(battleData)) * 1000).toInt();
 
-        final appliedBase = currentHpRatio > maxHpRatio ? 0 : lowerBound;
-        final additionPercent = (maxHpRatio - currentHpRatio.clamp(minHpRatio, maxHpRatio)) / (maxHpRatio - minHpRatio);
+      final appliedBase = currentHpRatio > maxHpRatio ? 0 : lowerBound;
+      final additionPercent = (maxHpRatio - currentHpRatio.clamp(minHpRatio, maxHpRatio)) / (maxHpRatio - minHpRatio);
 
-        baseParam += appliedBase + (addition * additionPercent).toInt();
-      }
+      baseParam += appliedBase + (addition * additionPercent).toInt();
     }
 
     return baseParam + addValue;
   }
 
-  bool shouldApplyBuff(final BattleData battleData, final bool isTarget) {
+  bool shouldApplyBuff(final BattleData battleData, final BattleServantData self, [final BattleServantData? opponent]) {
     // final onFieldCheck = !isOnField || actorUniqueId == null || battleData.isActorOnField(actorUniqueId!);
 
-    final scriptCheck = checkDataVals(battleData) && checkBuffScript(battleData, isTarget);
+    final scriptCheck = checkDataVals(battleData) && checkBuffScript(battleData);
 
     if (!scriptCheck || !stateAct || !stateField) {
       return false;
@@ -229,7 +218,7 @@ class BuffData {
 
         final selfCheck = battleData.checkTraits(CheckTraitParameters(
           requiredTraits: buff.ckSelfIndv,
-          actor: isTarget ? battleData.target : battleData.activator,
+          actor: self,
           positiveMatchFunction: positiveMatchFunction,
           negativeMatchFunction: negativeMatchFunction,
           checkActorTraits: true,
@@ -243,7 +232,7 @@ class BuffData {
 
         final opponentCheck = battleData.checkTraits(CheckTraitParameters(
           requiredTraits: buff.ckOpIndv,
-          actor: !isTarget ? battleData.target : battleData.activator,
+          actor: opponent,
           positiveMatchFunction: positiveMatchFunction,
           negativeMatchFunction: negativeMatchFunction,
           checkActorTraits: true,
@@ -259,7 +248,11 @@ class BuffData {
     }
   }
 
-  Future<bool> shouldActivateBuff(final BattleData battleData, final bool isTarget) async {
+  Future<bool> shouldActivateBuff(
+    final BattleData battleData,
+    final BattleServantData self, [
+    final BattleServantData? opponent,
+  ]) async {
     final probabilityCheck = await battleData.canActivate(
         buffRate,
         '${battleData.activator?.lBattleName ?? S.current.battle_no_source}'
@@ -271,7 +264,7 @@ class BuffData {
           '${battleData.options.tailoredExecution ? '' : ' [$buffRate vs ${battleData.options.probabilityThreshold}]'}');
     }
 
-    return probabilityCheck && shouldApplyBuff(battleData, isTarget);
+    return probabilityCheck && shouldApplyBuff(battleData, self, opponent);
   }
 
   bool checkDataVals(final BattleData battleData) {
@@ -288,7 +281,7 @@ class BuffData {
     return true;
   }
 
-  bool checkBuffScript(final BattleData battleData, final bool isTarget) {
+  bool checkBuffScript(final BattleData battleData) {
     if (buff.script == null) {
       return true;
     }
