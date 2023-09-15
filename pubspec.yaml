@@ -91,7 +91,7 @@ dependencies:
       path: packages/pasteboard
   path: ^1.8.2
   path_provider: ^2.0.14
-  permission_handler: ^10.4.3
+  permission_handler: ^11.0.0
   pool: ^1.5.0
   photo_view: ^0.14.0
   screenshot: ^2.1.0
@@ -104,9 +104,9 @@ dependencies:
   table_sticky_headers: ^2.0.1
   tuple: ^2.0.1
   url_launcher: ^6.1.12
-  uuid: ^3.0.5
+  uuid: ^3.0.6
   video_player: ^2.7.0
-  video_player_win: ^2.2.2
+  video_player_win: ^2.3.1
   video_player_macos: ^2.0.1
   webview_flutter: ^4.1.0
   webview_flutter_web: ^0.2.2+1
