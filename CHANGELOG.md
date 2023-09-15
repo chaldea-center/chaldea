@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.15
+
+- Disable KR carousel
+- Shared team filter supports blocking MLB CE
+- Support skipping current turn
+
 ## 2.4.14
 
 - Fix Chloe didn't move to last
