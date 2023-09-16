@@ -20,31 +20,35 @@ class Language {
       Language('zh_Hant', '繁體中文', 'Traditional Chinese', Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'));
   static const en = Language('en', 'English', 'English', Locale('en', ''));
   static const ko = Language('ko', '한국어', 'Korean', Locale('ko', ''));
-  static const ar = Language('ar', '\u0639\u0631\u0628\u064a', 'Arabic', Locale('ar', ''));
   static const es = Language('es', 'Español', 'Spanish', Locale('es', ''));
+  static const ru = Language('ru', 'Русский', 'Russian', Locale('ru', ''));
+  static const ar = Language('ar', '\u0639\u0631\u0628\u064a', 'Arabic', Locale('ar', ''));
 
-  static List<Language> get supportLanguages => const [jp, chs, cht, en, ko, es, ar];
+  // static List<Language> get supportLanguages => const [jp, chs, cht, en, ko];
+  static List<Language> get supportLanguages => const [jp, chs, cht, en, ko, es, ru, ar];
 
   static List<Language> get officialLanguages => const [jp, chs, cht, en, ko];
 
   static List<Language> getSortedSupportedLanguage(String? langCode) {
     switch (getLanguage(langCode)) {
       case jp:
-        return [jp, chs, cht, en, ko, ar, es];
+        return [jp, chs, cht, en, ko, es, ru, ar];
       case chs:
-        return [chs, cht, jp, en, ko, ar, es];
+        return [chs, cht, jp, en, ko, es, ru, ar];
       case cht:
-        return [cht, chs, jp, en, ko, ar, es];
+        return [cht, chs, jp, en, ko, es, ru, ar];
       case en:
-        return [en, jp, chs, cht, ko, ar, es];
+        return [en, jp, chs, cht, ko, es, ru, ar];
       case ko:
-        return [ko, jp, chs, cht, en, ar, es];
-      case ar:
-        return [ar, en, jp, chs, cht, ko, es];
+        return [ko, jp, chs, cht, en, es, ru, ar];
       case es:
-        return [es, en, jp, chs, cht, ko, ar];
+        return [es, en, jp, chs, cht, ko, ru, ar];
+      case ru:
+        return [ru, en, jp, chs, cht, ko, es, ar];
+      case ar:
+        return [ar, en, jp, chs, cht, ko, es, ru];
       default:
-        return [en, jp, chs, cht, ko, ar, es];
+        return [en, jp, chs, cht, ko, es, ru, ar];
     }
   }
 

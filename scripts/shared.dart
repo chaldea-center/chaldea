@@ -9,6 +9,7 @@ enum ArbLang {
   ja,
   ko,
   es,
+  ru,
   ar,
 }
 
@@ -20,6 +21,7 @@ ArbLang parseArbLang(String lang) {
     'ja': ArbLang.ja,
     'ko': ArbLang.ko,
     'es': ArbLang.es,
+    'ru': ArbLang.ru,
     'ar': ArbLang.ar,
   }[lang]!;
 }
@@ -42,6 +44,7 @@ class ArbManager {
   Map<String, String?> get ja => data[ArbLang.ja]!;
   Map<String, String?> get ko => data[ArbLang.ko]!;
   Map<String, String?> get es => data[ArbLang.es]!;
+  Map<String, String?> get ru => data[ArbLang.ru]!;
   Map<String, String?> get ar => data[ArbLang.ar]!;
 
   void load() {

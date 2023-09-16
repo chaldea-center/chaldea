@@ -18,7 +18,7 @@ void main(List<String> args) async {
   assert(removeKey == null || addKey == null);
   assert(removeKey != null || addKey != null);
 
-  for (final lang in ArbLang.values) {
+  for (final lang in [ArbLang.en, ArbLang.zh, ArbLang.zh_Hant, ArbLang.ja, ArbLang.ko]) {
     final data = loadArb(lang);
     if (removeKey != null) {
       data.remove(removeKey);
