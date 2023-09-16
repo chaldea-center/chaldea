@@ -162,7 +162,10 @@ class Event {
 
   bool isOutdated([Duration diff = const Duration(days: 10)]) {
     if (db.curUser.region == Region.jp) {
-      return DateTime.now().difference(startedAt.sec2date()) > const Duration(days: 365);
+      final t = endedAt > kNeverClosedTimestamp || endedAt - startedAt > 30 * kSecsPerDay
+          ? startedAt + 7 * kSecsPerDay
+          : endedAt;
+      return DateTime.now().difference(t.sec2date()) > const Duration(days: 365);
     }
     int? _end = db.curUser.region == Region.jp ? endedAt : extra.endTime.ofRegion(db.curUser.region);
     final neverClosed = DateTime.now().add(const Duration(days: 365)).timestamp;

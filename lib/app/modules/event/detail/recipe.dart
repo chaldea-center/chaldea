@@ -24,6 +24,7 @@ class EventRecipePage extends HookWidget {
         final recipeGifts = List.of(recipe.recipeGifts);
         recipeGifts.sort2((e) => e.displayOrder);
         return ListTile(
+          selected: db.curPlan_.recipes[recipe.id] == true,
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
           leading: db.getIconImage(recipe.icon, width: 36),
           title: Row(
@@ -73,11 +74,23 @@ class EventRecipePage extends HookWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            SwitchListTile(
+              dense: true,
+              visualDensity: VisualDensity.compact,
+              value: db.curPlan_.recipes[recipe.id] ?? false,
+              title: const Text('Mark'),
+              secondary: const SizedBox.shrink(),
+              onChanged: (v) {
+                db.curPlan_.recipes[recipe.id] = v;
+                db.notifyUserdata();
+              },
+            ),
             ListTile(
               leading: const SizedBox(),
               subtitle: Text.rich(
                 TextSpan(
                   children: [
+                    TextSpan(text: '${recipe.name}\n'),
                     const TextSpan(text: 'Rate Up: '),
                     for (final recipeGift in recipe.recipeGifts)
                       if (recipeGift.topIconId == 1)

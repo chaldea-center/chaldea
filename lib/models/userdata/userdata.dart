@@ -444,6 +444,8 @@ class UserPlan {
   Map<int, MainStoryPlan> mainStories;
   Map<int, ExchangeTicketPlan> tickets;
   Map<int, ClassBoardPlan> classBoards;
+  // misc
+  Map<int, bool> recipes;
 
   UserPlan({
     this.title = '',
@@ -452,11 +454,13 @@ class UserPlan {
     Map<int, MainStoryPlan>? mainStories,
     Map<int, ExchangeTicketPlan>? tickets,
     Map<int, ClassBoardPlan>? classBoards,
+    Map<int, bool>? recipes,
   })  : servants = servants ?? {},
         limitEvents = limitEvents ?? {},
         mainStories = mainStories ?? {},
         tickets = tickets ?? {},
-        classBoards = classBoards ?? {};
+        classBoards = classBoards ?? {},
+        recipes = recipes ?? {};
 
   factory UserPlan.fromJson(Map<String, dynamic> json) => _$UserPlanFromJson(json);
 

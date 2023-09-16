@@ -194,6 +194,11 @@ UserPlan _$UserPlanFromJson(Map json) => $checkedCreate(
               (v) => (v as Map?)?.map(
                     (k, e) => MapEntry(int.parse(k as String), ClassBoardPlan.fromJson(e)),
                   )),
+          recipes: $checkedConvert(
+              'recipes',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), e as bool),
+                  )),
         );
         return val;
       },
@@ -206,6 +211,7 @@ Map<String, dynamic> _$UserPlanToJson(UserPlan instance) => <String, dynamic>{
       'mainStories': instance.mainStories.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'tickets': instance.tickets.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'classBoards': instance.classBoards.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'recipes': instance.recipes.map((k, e) => MapEntry(k.toString(), e)),
     };
 
 SvtPlan _$SvtPlanFromJson(Map json) => $checkedCreate(
