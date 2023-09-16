@@ -166,36 +166,37 @@ class AppUpdater {
       os = 'windows';
     }
     if (os == null) return null;
-    final releases = await _githubReleases('chaldea-center', 'chaldea');
-    AppUpdateDetail? _latest;
-    for (final release in releases) {
-      if (release.version == null || release.prerelease || (release.version! <= AppInfo.version && !kDebugMode)) {
-        continue;
-      }
-      final installer = release.assets.firstWhereOrNull((e) => e.name.contains(os!) && !e.name.contains('sha1'));
-      final checksum = release.assets.firstWhereOrNull((e) => e.name.contains(os!) && e.name.contains('sha1'));
-      if (installer == null || checksum == null) continue;
-      if (_latest == null || _latest.release.version! < release.version!) {
-        _latest = AppUpdateDetail(release: release, installer: installer, checksum: checksum);
-      }
-    }
+    final release = await _githubLatestRelease('chaldea-center', 'chaldea');
+    final installer = release?.assets.firstWhereOrNull((e) => e.name.contains(os!) && !e.name.contains('sha1'));
+    final checksum = release?.assets.firstWhereOrNull((e) => e.name == 'checksums.txt');
+    if (release == null || installer == null) return null;
+    if (release.version != null && release.version! <= AppInfo.version) return null;
+    AppUpdateDetail? _latest = AppUpdateDetail(release: release, installer: installer, checksums: checksum);
     db.runtimeData.releaseDetail = _latest;
     return _latest;
   }
 
   static Future<String?> _downloadFileWithCheck(AppUpdateDetail detail) async {
-    String checksum =
-        (await DioE().get(detail.checksum.downloadUrl, options: Options(responseType: ResponseType.plain))).data;
-    checksum = checksum.toLowerCase();
+    String? checksum;
+    if (detail.checksums != null) {
+      String checksums =
+          (await DioE().get(detail.checksums!.downloadUrl, options: Options(responseType: ResponseType.plain))).data;
+      for (final line in const LineSplitter().convert(checksums)) {
+        final row = line.split(' ');
+        if (row.length >= 2 && row[1] == detail.installer.name) {
+          checksum = row[0].toLowerCase();
+        }
+      }
+    }
     String savePath = joinPaths(db.paths.tempDir, 'installer', detail.installer.name);
     final file = File(savePath);
-    if (await file.exists()) {
+    if (await file.exists() && checksum != null) {
       final localChecksum = sha1.convert(await file.readAsBytes()).toString().toLowerCase();
       if (localChecksum == checksum) return savePath;
     }
     final resp = await DioE().get(detail.installer.downloadUrl, options: Options(responseType: ResponseType.bytes));
     final data = List<int>.from(resp.data);
-    if (sha1.convert(data).toString().toLowerCase() == checksum) {
+    if (sha1.convert(data).toString().toLowerCase() == checksum || checksum == null) {
       file.parent.createSync(recursive: true);
       await file.writeAsBytes(data);
       return savePath;
@@ -209,20 +210,20 @@ class AppUpdater {
 class AppUpdateDetail {
   final _Release release;
   final _Asset installer;
-  final _Asset checksum;
+  final _Asset? checksums;
 
   AppUpdateDetail({
     required this.release,
     required this.installer,
-    required this.checksum,
+    required this.checksums,
   });
 }
 
-Future<List<_Release>> _githubReleases(String org, String repo) async {
+Future<_Release?> _githubLatestRelease(String org, String repo) async {
   final dio = DioE();
   final root = db.settings.proxy.worker ? '${HostsX.worker.cn}/proxy/github/api.github.com' : 'https://api.github.com';
-  final resp = await dio.get('$root/repos/$org/$repo/releases');
-  return (resp.data as List).map((e) => _Release.fromJson(e)).toList();
+  final resp = await dio.get('$root/repos/$org/$repo/releases/latest');
+  return _Release.fromJson(resp.data);
 }
 
 class _Release {
