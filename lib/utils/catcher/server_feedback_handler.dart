@@ -171,6 +171,10 @@ class ServerFeedbackHandler extends ReportHandler {
       ].contains(report.shownError)) {
         return true;
       }
+      if (report.shownError.contains('Stack Overflow') &&
+          report.stackTrace.toString().contains('tear_off.<anonymous>')) {
+        return true;
+      }
       if (RegExp(r"NoSuchMethodError: method not found: '.+?' on null").hasMatch(report.shownError)) {
         return true;
       }
