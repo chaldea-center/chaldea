@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:data_table_2/data_table_2.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/api/cache.dart';
@@ -15,17 +16,20 @@ import 'package:chaldea/widgets/widgets.dart';
 class FreeQuestOverview extends StatefulWidget {
   final List<Quest> quests;
   final bool isMainStory;
-  const FreeQuestOverview({super.key, required this.quests, required this.isMainStory});
+  final bool show90plusButton;
+  const FreeQuestOverview({super.key, required this.quests, required this.isMainStory, required this.show90plusButton});
 
   @override
   State<FreeQuestOverview> createState() => _FreeQuestOverviewState();
 }
 
 class _FreeQuestOverviewState extends State<FreeQuestOverview> {
+  late List<Quest> quests = widget.quests.toList();
   Map<int, QuestPhase> phases = {};
   Map<int, List<Quest>> spots = {};
   bool _loading = false;
   bool _fixFirstCol = false;
+  late bool _only90plus = widget.show90plusButton;
 
   @override
   void initState() {
@@ -37,11 +41,18 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     _loading = true;
     phases.clear();
     spots.clear();
+    quests = widget.quests.toList();
+    if (_only90plus) {
+      quests.retainWhere((quest) => quest.recommendLv.startsWith('90'));
+      if (quests.any((quest) => quest.recommendLv.startsWith('90+'))) {
+        quests.retainWhere((quest) => quest.recommendLv.startsWith('90+'));
+      }
+    }
     if (mounted) setState(() {});
-    for (final quest in widget.quests) {
+    for (final quest in quests) {
       spots.putIfAbsent(quest.spotId, () => []).add(quest);
     }
-    await Future.wait(widget.quests.reversed.map((quest) async {
+    await Future.wait(quests.reversed.map((quest) async {
       if (quest.phases.isEmpty) return null;
       if (quest.warId > 1000) {
         final phaseOld = await AtlasApi.questPhase(quest.id, quest.phases.last, expireAfter: kExpireCacheOnly);
@@ -66,6 +77,19 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
       appBar: AppBar(
         title: Text(S.current.free_quest),
         actions: [
+          if (widget.show90plusButton)
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  _only90plus = !_only90plus;
+                });
+                loadData();
+                EasyLoading.showToast('Only 90+: ${_only90plus ? 'On' : 'Off'}');
+              },
+              icon: const Icon(Icons.filter_9_plus),
+              isSelected: _only90plus,
+              tooltip: 'Only show 90+',
+            ),
           IconButton(
             onPressed: () {
               setState(() {
@@ -225,7 +249,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
 
   List<_DropInfo> getInfo() {
     List<_DropInfo> data = [];
-    final quests = widget.quests.toList();
+    final quests = this.quests.toList();
     quests.sort2((e) => -e.priority);
     quests.sortByList((e) => [kLB7SpotLayers[e.spotId] ?? 0, -e.priority]);
     for (final quest in quests) {

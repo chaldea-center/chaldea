@@ -408,7 +408,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     final extraQuests = extraQuestIds.map((e) => db.gameData.quests[e]).whereType<Quest>().toList();
 
     if (extraQuests.isNotEmpty) {
-      children.add(addQuestCategoryTile(context: context, extraQuests: extraQuests));
+      children.add(addQuestCategoryTile(context: context, event: event, extraQuests: extraQuests));
     }
 
     int grailToCrystalCount = event.statItemFixed[Items.grailToCrystalId] ?? 0;

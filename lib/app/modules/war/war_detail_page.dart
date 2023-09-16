@@ -410,6 +410,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
 Widget addQuestCategoryTile({
   required BuildContext context,
   NiceWar? war,
+  Event? event,
   List<Quest> extraQuests = const [],
 }) {
   final allQuests = [
@@ -500,7 +501,11 @@ Widget addQuestCategoryTile({
       title: Text("${S.current.item} (${S.current.free_quest})"),
       trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
       onTap: () {
-        router.pushPage(FreeQuestOverview(quests: freeAndRaid, isMainStory: war?.isMainStory ?? false));
+        router.pushPage(FreeQuestOverview(
+          quests: freeAndRaid,
+          isMainStory: war?.isMainStory ?? false,
+          show90plusButton: event?.isHuntingEvent == true,
+        ));
       },
     ));
   }
@@ -520,7 +525,7 @@ Widget addQuestCategoryTile({
     ));
   }
 
-  final event = war?.eventReal;
+  event ??= war?.eventReal;
   if (event != null && event.towers.isNotEmpty) {
     children.add(Divider(color: Theme.of(context).scaffoldBackgroundColor, thickness: 2, height: 2));
     for (final tower in event.towers) {
