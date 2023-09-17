@@ -5,6 +5,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../exp/master_exp_page.dart';
 import 'aa_explorer_preview.dart';
+import 'chara_figure_marker.dart';
 import 'combine_image_page.dart';
 import 'custom_chara_figure.dart';
 
@@ -18,6 +19,7 @@ class ToolListPage extends StatelessWidget {
       S.current.custom_chara_figure: const CustomCharaFigureIntro(),
       'Combine Images': const CombineImagePage(),
       'Master Level': const MasterExpPage(),
+      'Extra CharaFigure Marker': const CharaFigureMarker(),
     };
     return Scaffold(
       appBar: AppBar(title: const Text('Tools')),

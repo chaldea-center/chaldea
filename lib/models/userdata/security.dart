@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:chaldea/utils/hive_extention.dart';
 
 class ChaldeaSecurity {
-  static const _storeKey = 'explorer.aa.io/auth';
+  static const _aaExplorerAuth = 'explorer.aa.io/auth';
   static const _chaldeaUser = 'chaldea_user';
   static const _chaldeaAuth = 'chaldea_auth';
 
@@ -11,7 +11,7 @@ class ChaldeaSecurity {
 
   String? get username => box.get(_chaldeaUser);
   String? get userAuth => box.get(_chaldeaAuth);
-  String? get atlasAuth => box.get(_storeKey);
+  String? get atlasAuth => box.get(_aaExplorerAuth);
 
   bool get isUserLoggedIn => username != null && userAuth != null;
 
@@ -20,7 +20,7 @@ class ChaldeaSecurity {
   }
 
   void saveAtlasAuth(final String authCode) {
-    box.put(_storeKey, authCode);
+    box.put(_aaExplorerAuth, authCode);
   }
 
   void saveUserInfo(final String name, final String? auth) {

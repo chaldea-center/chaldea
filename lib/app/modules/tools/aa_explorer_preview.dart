@@ -13,6 +13,97 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/image/image_viewer.dart';
+import '../../../generated/l10n.dart';
+
+class AtlasExplorerManager {
+  static final ApiCacheManager _api = ApiCacheManager(null);
+  final ApiCacheManager api = _api;
+  final host = 'https://explorer.atlasacademy.io';
+
+  String? _auth;
+  String _folder = '/aa-fgo-extract-jp/';
+  String get folder => _folder;
+
+  bool get isLoggedIn => _auth != null;
+
+  bool validate(String s) {
+    try {
+      return utf8.decode(base64Decode(s)).split(':').length == 2;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  void setAuth(String? auth) {
+    auth ??= db.security.atlasAuth?.toString();
+    if (auth == null) return;
+    if (!validate(auth)) return;
+    if (db.security.atlasAuth != auth) {
+      db.security.saveAtlasAuth(auth);
+    }
+    _auth = auth;
+    api.createDio = () => DioE(BaseOptions(headers: {"authorization": "Basic $auth"}));
+    api.dispatchError = (options, response, error, stackTrace) {
+      EasyLoading.showError(error.toString());
+    };
+  }
+
+  Future<String?> navigateTo(String p, {bool refresh = false}) async {
+    p = p.trim();
+    if (!p.startsWith('/')) p = '/$p';
+    _folder = p;
+    EasyLoading.show();
+    String? htmlText = await api.getText(host + folder, expireAfter: refresh ? Duration.zero : null);
+    EasyLoading.dismiss();
+    return htmlText;
+  }
+
+  Future<void> showAuthInput(BuildContext context) {
+    String user = '', pwd = '';
+    return showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) {
+        return SimpleCancelOkDialog(
+          title: const Text('Authentication'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'User',
+                ),
+                maxLines: 1,
+                onChanged: (s) {
+                  user = s;
+                },
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Password',
+                ),
+                maxLines: 1,
+                onChanged: (s) {
+                  pwd = s;
+                },
+              ),
+            ],
+          ),
+          onTapOk: () {
+            if (user.trim().isEmpty || pwd.trim().isEmpty) {
+              EasyLoading.showError(S.current.empty_hint);
+              return;
+            }
+            setAuth(base64Encode(utf8.encode('$user:$pwd')));
+          },
+        );
+      },
+    );
+  }
+}
 
 class AtlasExplorerPreview extends StatefulWidget {
   const AtlasExplorerPreview({super.key});
@@ -22,15 +113,10 @@ class AtlasExplorerPreview extends StatefulWidget {
 }
 
 class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
-  static const _explorerHost = 'https://explorer.atlasacademy.io';
-  static ApiCacheManager api = ApiCacheManager(null);
-
-  late final TextEditingController _textEditingController = TextEditingController(text: folder);
+  final manager = AtlasExplorerManager();
+  late final TextEditingController _textEditingController = TextEditingController(text: manager.folder);
   late final ScrollController _scrollController = ScrollController();
   late final ScrollController _navScrollController = ScrollController();
-  String? authCode;
-
-  String folder = '/aa-fgo-extract-jp/';
   List<String> links = [];
 
   bool useGrid = true;
@@ -39,12 +125,12 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
   @override
   void initState() {
     super.initState();
+    manager.setAuth(db.security.atlasAuth?.toString());
     _scrollController.addListener(() {
       if (_scrollController.hasClients) {
-        _scrollOffsets[folder] = _scrollController.offset;
+        _scrollOffsets[manager.folder] = _scrollController.offset;
       }
     });
-    setAuth(db.security.atlasAuth?.toString());
   }
 
   @override
@@ -55,53 +141,35 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
     _textEditingController.dispose();
   }
 
-  bool validateAuth(String s) {
-    try {
-      return utf8.decode(base64Decode(s)).split(':').length > 1;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  void setAuth(String? s) {
-    if (s == null || s.isEmpty) return;
-    if (validateAuth(s)) {
-      authCode = s;
-      db.security.saveAtlasAuth(s);
-      api.createDio = () => DioE(BaseOptions(headers: {"authorization": "Basic $authCode"}));
-    }
-  }
-
   String? loadFolder([String? s]) {
-    if (authCode == null) {
-      EasyLoading.showError('Invalid Auth');
+    if (!manager.isLoggedIn) {
+      EasyLoading.showError('Not Logged In');
       return null;
     }
     s ??= _textEditingController.text;
     s = s.trim();
     Uri? uri = Uri.tryParse(s);
     if (uri == null) {
-      EasyLoading.showError(s);
+      EasyLoading.showError('Invalid Path: $s');
       return null;
     }
-    if (uri.path.endsWith('.png')) {
-      EasyLoading.showError('input folder rather file');
+    if (uri.path.endsWith('.png') || uri.path.endsWith('.txt')) {
+      EasyLoading.showError('please input folder rather file');
       return null;
     }
     if (uri.host.isNotEmpty) {
       s = s.split(uri.host).getOrNull(1) ?? s;
     }
     s = s.trimChar('/');
-    folder = s.isEmpty ? '/' : '/$s/';
+    final folder = s.isEmpty ? '/' : '/$s/';
     _textEditingController.text = folder;
-    downloadPage();
+    parsePage(folder);
     return folder;
   }
 
-  Future<void> downloadPage() async {
-    if (authCode == null) return;
+  Future<void> parsePage(String folder) async {
     EasyLoading.show();
-    String? htmlText = await api.getText(_explorerHost + folder);
+    String? htmlText = await manager.navigateTo(folder);
     EasyLoading.dismiss();
     htmlText = htmlText?.split('<tbody>').getOrNull(1);
     if (htmlText == null) {
@@ -113,7 +181,7 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
       String link = match.group(1)!.trim();
       // `..` parent folder
       if (folder.startsWith(link)) continue;
-      link = Uri.parse(_explorerHost).resolve(link).toString();
+      link = Uri.parse(manager.host).resolve(link).toString();
       link = UriX.tryDecodeFull(link) ?? link;
       links.add(link);
     }
@@ -136,20 +204,13 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
         title: const Text('AA Explorer'),
         actions: [
           IconButton(
-            onPressed: () {
-              InputCancelOkDialog(
-                title: 'Edit Auth',
-                validate: validateAuth,
-                text: db.security.atlasAuth?.toString(),
-                onSubmit: (value) {
-                  setAuth(value);
-                  if (mounted) setState(() {});
-                },
-              ).showDialog(context);
+            onPressed: () async {
+              await manager.showAuthInput(context);
+              if (mounted) setState(() {});
             },
             icon: const Icon(Icons.login),
-            color: authCode == null || authCode!.isEmpty ? Theme.of(context).colorScheme.error : null,
-            tooltip: 'Edit Auth',
+            color: manager.isLoggedIn ? null : Theme.of(context).colorScheme.error,
+            tooltip: 'Input Auth',
           ),
           IconButton(
             onPressed: () {
@@ -203,7 +264,7 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
   }
 
   Widget get breadcrumbNav {
-    final parents = folder.split('/').where((e) => e.isNotEmpty).toList();
+    final parents = manager.folder.split('/').where((e) => e.isNotEmpty).toList();
     //  parents.insert(0, '');
     List<Widget> children = [_navLink('Home', '/'), const Text(' / ')];
     for (int index = 0; index < parents.length; index++) {

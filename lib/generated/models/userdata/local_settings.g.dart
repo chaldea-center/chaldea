@@ -92,6 +92,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
                   .toList()),
           remoteConfig: $checkedConvert(
               'remoteConfig', (v) => v == null ? null : RemoteConfig.fromJson(Map<String, dynamic>.from(v as Map))),
+          misc: $checkedConvert(
+              'misc', (v) => v == null ? null : _MiscSettings.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         return val;
       },
@@ -142,6 +144,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'scriptReaderFilterData': instance.scriptReaderFilterData.toJson(),
       'autologins': instance.autologins.map((e) => e.toJson()).toList(),
       'remoteConfig': instance.remoteConfig.toJson(),
+      'misc': instance.misc.toJson(),
       'language': instance.language,
       'preferredFavorite': _$FavoriteStateEnumMap[instance.preferredFavorite],
     };
@@ -489,4 +492,26 @@ QuestBonusPlan _$QuestBonusPlanFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$QuestBonusPlanToJson(QuestBonusPlan instance) => <String, dynamic>{
       'enabled': instance.enabled,
       'bonus': instance.bonus.map((k, e) => MapEntry(k.toString(), e)),
+    };
+
+_MiscSettings _$MiscSettingsFromJson(Map json) => $checkedCreate(
+      '_MiscSettings',
+      json,
+      ($checkedConvert) {
+        final val = _MiscSettings(
+          nonSvtCharaFigureIds:
+              $checkedConvert('nonSvtCharaFigureIds', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
+          markedCharaFigureSvtIds: $checkedConvert(
+              'markedCharaFigureSvtIds',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                  )),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$MiscSettingsToJson(_MiscSettings instance) => <String, dynamic>{
+      'nonSvtCharaFigureIds': instance.nonSvtCharaFigureIds.toList(),
+      'markedCharaFigureSvtIds': instance.markedCharaFigureSvtIds.map((k, e) => MapEntry(k.toString(), e)),
     };

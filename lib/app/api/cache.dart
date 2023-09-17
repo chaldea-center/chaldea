@@ -429,7 +429,7 @@ class ApiCacheManager {
     } catch (e, s) {
       _clearKey(options.hashKey());
       logger.e('load model($T) failed', e, s);
-      print(obj);
+      print(obj.toString().substring2(0, 1000));
       onError?.call(options, null, e, s);
     }
     return null;

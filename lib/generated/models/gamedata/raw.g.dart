@@ -42,3 +42,23 @@ MstGacha _$MstGachaFromJson(Map json) => MstGacha(
       flag: json['flag'] as int? ?? 0,
       userAdded: json['userAdded'] as bool? ?? false,
     );
+
+ExtraCharaFigure _$ExtraCharaFigureFromJson(Map json) => ExtraCharaFigure(
+      svtId: json['svtId'] as int,
+      charaFigureIds: (json['charaFigureIds'] as List<dynamic>?)?.map((e) => e as int).toList(),
+    );
+
+Map<String, dynamic> _$ExtraCharaFigureToJson(ExtraCharaFigure instance) => <String, dynamic>{
+      'svtId': instance.svtId,
+      'charaFigureIds': instance.charaFigureIds,
+    };
+
+ExtraCharaImage _$ExtraCharaImageFromJson(Map json) => ExtraCharaImage(
+      svtId: json['svtId'] as int,
+      imageIds: json['imageIds'] as List<dynamic>?,
+    );
+
+Map<String, dynamic> _$ExtraCharaImageToJson(ExtraCharaImage instance) => <String, dynamic>{
+      'svtId': instance.svtId,
+      'imageIds': instance.imageIds,
+    };

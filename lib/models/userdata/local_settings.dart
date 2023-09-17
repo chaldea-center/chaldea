@@ -80,6 +80,8 @@ class LocalSettings {
 
   RemoteConfig remoteConfig;
 
+  _MiscSettings misc = _MiscSettings();
+
   LocalSettings({
     this.beta = false,
     this.showDebugFab = false,
@@ -126,6 +128,7 @@ class LocalSettings {
     ScriptReaderFilterData? scriptReaderFilterData,
     List<AutoLoginData>? autologins,
     RemoteConfig? remoteConfig,
+    _MiscSettings? misc,
   })  : _language = language,
         _preferredFavorite = preferredFavorite ?? (launchTimes == 0 ? FavoriteState.all : null),
         preferredRegions = preferredRegions == null
@@ -147,7 +150,8 @@ class LocalSettings {
         summonFilterData = summonFilterData ?? SummonFilterData(),
         scriptReaderFilterData = scriptReaderFilterData ?? ScriptReaderFilterData(),
         autologins = autologins ?? [],
-        remoteConfig = remoteConfig ?? RemoteConfig() {
+        remoteConfig = remoteConfig ?? RemoteConfig(),
+        misc = misc ?? _MiscSettings() {
     this.galleries.removeWhere((key, value) => GalleryItem.allItems.every((item) => item.name != key));
   }
 
@@ -514,6 +518,21 @@ class QuestBonusPlan {
   factory QuestBonusPlan.fromJson(Map<String, dynamic> json) => _$QuestBonusPlanFromJson(json);
 
   Map<String, dynamic> toJson() => _$QuestBonusPlanToJson(this);
+}
+
+@JsonSerializable()
+class _MiscSettings {
+  Set<int> nonSvtCharaFigureIds = {};
+  Map<int, int> markedCharaFigureSvtIds = {};
+  _MiscSettings({
+    Set<int>? nonSvtCharaFigureIds,
+    Map<int, int>? markedCharaFigureSvtIds,
+  })  : nonSvtCharaFigureIds = nonSvtCharaFigureIds ?? <int>{},
+        markedCharaFigureSvtIds = markedCharaFigureSvtIds ?? {};
+
+  factory _MiscSettings.fromJson(Map<String, dynamic> json) => _$MiscSettingsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MiscSettingsToJson(this);
 }
 
 enum SvtListClassFilterStyle {
