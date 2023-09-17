@@ -509,10 +509,10 @@ Widget addQuestCategoryTile({
       },
     ));
   }
-  _addTile(S.current.high_difficulty_quest, difficultQuests);
-  _addTile(S.current.one_off_quest, oneOffQuests);
-  _addTile(S.current.interlude, interludeQuests);
   _addTile(S.current.event_quest, eventQuests);
+  _addTile(S.current.one_off_quest, oneOffQuests);
+  _addTile(S.current.high_difficulty_quest, difficultQuests);
+  _addTile(S.current.interlude, interludeQuests);
   _addTile('Selections', selectionQuests, needSort: false);
 
   if (war?.id == WarId.chaldeaGate) {

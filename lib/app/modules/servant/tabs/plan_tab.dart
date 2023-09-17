@@ -240,6 +240,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     final extraParts1 = [
       if (showDetail(SvtPlanDetail.coin) && svt.coin != null)
         ListTile(
+          dense: true,
           horizontalTitleGap: 3,
           leading: InkWell(
             child: Item.iconBuilder(

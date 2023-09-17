@@ -278,6 +278,7 @@ class _CachedImageState extends State<CachedImage> {
           Uint8List? bytes;
           String? srcFp;
           String? fn;
+          final imageUrl = widget.imageUrl;
           if (provider is FileImage) {
             srcFp = provider.file.path;
           } else {
@@ -289,7 +290,7 @@ class _CachedImageState extends State<CachedImage> {
             }
             if (bytes == null) {
               EasyLoading.showError('Failed');
-              if (widget.imageUrl != null) copyToClipboard(widget.imageUrl!);
+              if (imageUrl != null) copyToClipboard(imageUrl);
               return;
             }
           }
@@ -297,7 +298,7 @@ class _CachedImageState extends State<CachedImage> {
           if (!mounted) return;
 
           Uri? uri;
-          if (widget.imageUrl != null) uri = Uri.tryParse(widget.imageUrl!);
+          if (imageUrl != null) uri = Uri.tryParse(imageUrl);
           if (uri != null && uri.pathSegments.isNotEmpty) {
             fn = UriX.tryDecodeComponent(uri.pathSegments.last) ?? uri.pathSegments.last;
           }
@@ -307,7 +308,7 @@ class _CachedImageState extends State<CachedImage> {
           ImageActions.showSaveShare(
             context: context,
             data: bytes,
-            url: widget.imageUrl,
+            url: imageUrl,
             destFp: joinPaths(db.paths.downloadDir, fn),
             srcFp: srcFp,
             gallery: true,
