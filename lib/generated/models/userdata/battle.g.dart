@@ -13,6 +13,11 @@ BattleSimUserData _$BattleSimUserDataFromJson(Map json) => $checkedCreate(
         final val = BattleSimUserData(
           pingedCEs: $checkedConvert('pingedCEs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
           pingedSvts: $checkedConvert('pingedSvts', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
+          favoriteTeams: $checkedConvert(
+              'favoriteTeams',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), (e as List<dynamic>).map((e) => e as int).toSet()),
+                  )),
           formations: $checkedConvert(
               'formations',
               (v) => (v as List<dynamic>?)
@@ -27,6 +32,7 @@ Map<String, dynamic> _$BattleSimUserDataToJson(BattleSimUserData instance) => <S
       'pingedCEs': instance.pingedCEs.toList(),
       'pingedSvts': instance.pingedSvts.toList(),
       'formations': instance.formations.map((e) => e.toJson()).toList(),
+      'favoriteTeams': instance.favoriteTeams.map((k, e) => MapEntry(k.toString(), e.toList())),
     };
 
 BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(

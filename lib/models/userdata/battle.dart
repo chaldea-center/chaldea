@@ -22,13 +22,18 @@ class BattleSimUserData {
 
   List<BattleTeamFormation> formations;
 
+  // questId, teamIds
+  Map<int, Set<int>> favoriteTeams;
+
   BattleSimUserData({
     Set<int>? pingedCEs,
     Set<int>? pingedSvts,
+    Map<int, Set<int>>? favoriteTeams,
     List<BattleTeamFormation>? formations,
   })  : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
         pingedSvts = pingedSvts ?? {215, 284, 314, 316, 357},
-        formations = formations ?? [] {
+        formations = formations ?? [],
+        favoriteTeams = favoriteTeams ?? {} {
     validate();
   }
 
@@ -38,6 +43,14 @@ class BattleSimUserData {
     //   formations.add(BattleTeamFormation());
     // }
   }
+  bool isTeamFavorite(int? questId, int teamId) {
+    if (questId != null) {
+      return favoriteTeams[questId]?.contains(teamId) == true;
+    } else {
+      return favoriteTeams.values.any((ids) => ids.contains(teamId));
+    }
+  }
+
   Set<int> pingedCEsWithEventAndBond(final QuestPhase? questPhase, final Servant? svt) {
     final event = questPhase?.war?.event;
     Set<int> pinged = pingedCEs.toSet();

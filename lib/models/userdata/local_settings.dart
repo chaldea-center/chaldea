@@ -80,7 +80,7 @@ class LocalSettings {
 
   RemoteConfig remoteConfig;
 
-  _MiscSettings misc = _MiscSettings();
+  _MiscSettings misc;
 
   LocalSettings({
     this.beta = false,
@@ -522,8 +522,8 @@ class QuestBonusPlan {
 
 @JsonSerializable()
 class _MiscSettings {
-  Set<int> nonSvtCharaFigureIds = {};
-  Map<int, int> markedCharaFigureSvtIds = {};
+  Set<int> nonSvtCharaFigureIds;
+  Map<int, int> markedCharaFigureSvtIds;
   _MiscSettings({
     Set<int>? nonSvtCharaFigureIds,
     Map<int, int>? markedCharaFigureSvtIds,

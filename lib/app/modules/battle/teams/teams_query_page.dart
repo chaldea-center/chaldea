@@ -200,8 +200,20 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           Wrap(
             alignment: WrapAlignment.center,
             crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: 8,
+            spacing: 2,
             children: [
+              if (widget.mode != TeamQueryMode.user)
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      db.curUser.battleSim.favoriteTeams.putIfAbsent(record.questId, () => {}).toggle(record.id);
+                    });
+                  },
+                  icon: db.curUser.battleSim.isTeamFavorite(record.questId, record.id)
+                      ? const Icon(Icons.star, color: Colors.amber)
+                      : const Icon(Icons.star_border, color: Colors.grey),
+                  tooltip: S.current.favorite,
+                ),
               if (mode == TeamQueryMode.user ||
                   record.userId == db.security.username ||
                   AppInfo.isDebugDevice ||
@@ -315,6 +327,9 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   bool filter(UserBattleData record) {
     final data = record.decoded;
     if (data == null) return true;
+    if (filterData.favorite && !db.curUser.battleSim.isTeamFavorite(record.questId, record.id)) {
+      return false;
+    }
     for (final svtId in filterData.blockSvts.options) {
       if (data.team.allSvts.any((svt) => svt?.svtId == svtId)) {
         return false;

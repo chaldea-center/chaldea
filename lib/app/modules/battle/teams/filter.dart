@@ -33,6 +33,7 @@ enum TeamFilterMiscType {
 class TeamFilterData {
   // static const List<int> _blockedSvtIds = [16, 258, 284, 307, 314, 316, 357];
 
+  bool favorite = false;
   final attackerTdCardType = FilterRadioData<CardType>(); // attacker only
   final blockSvts = FilterGroupData<int>();
   final useSvts = FilterRadioData<int>();
@@ -53,6 +54,7 @@ class TeamFilterData {
       ];
 
   void reset() {
+    favorite = false;
     for (final group in groups) {
       group.reset();
     }
@@ -93,6 +95,15 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
         update();
       }),
       content: getListViewBody(restorationId: 'team_list_filter', children: [
+        FilterGroup<bool>(
+          options: const [true],
+          values: FilterRadioData(filterData.favorite),
+          optionBuilder: (v) => Text(S.current.favorite),
+          onFilterChanged: (value, _) {
+            filterData.favorite = !filterData.favorite;
+            update();
+          },
+        ),
         FilterGroup<CardType>(
           title: Text(S.current.noble_phantasm, style: textStyle),
           options: const [CardType.arts, CardType.buster, CardType.quick],
