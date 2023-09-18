@@ -405,7 +405,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       child: InkWell(
         onTap: () => startGacha(times, quartz),
         child: db.getIconImage(
-          'https://static.chaldea.center/images/$fn',
+          'https://assets.chaldea.center/images/$fn',
           height: 50,
           placeholder: (context) => ElevatedButton(
             onPressed: () => startGacha(times, quartz),
