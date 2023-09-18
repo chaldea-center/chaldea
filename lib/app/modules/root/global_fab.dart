@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/_test_page.dart';
+import 'package:chaldea/app/routes/root_delegate.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
@@ -63,12 +64,13 @@ class _WindowManagerFabState extends State<WindowManagerFab> {
   Widget build(BuildContext context) {
     return MovableFab(
       icon: Icon(
-        rootRouter.appState.showWindowManager ? Icons.reply : Icons.grid_view,
+        rootRouter.appState.windowState.isSingle ? Icons.grid_view : Icons.reply,
         size: 20,
       ),
       onPressed: () {
         setState(() {
-          rootRouter.appState.showWindowManager = !rootRouter.appState.showWindowManager;
+          rootRouter.appState.windowState =
+              rootRouter.appState.windowState.isSingle ? WindowStateEnum.windowManager : WindowStateEnum.single;
         });
       },
     );
@@ -242,6 +244,14 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
             Navigator.pop(context);
           },
         ),
+        if (kDebugMode)
+          ListTile(
+            title: const Text('Screenshoter'),
+            onTap: () {
+              Navigator.pop(context);
+              rootRouter.appState.windowState = WindowStateEnum.screenshot;
+            },
+          ),
         Center(
           child: IconButton(
             icon: const Icon(Icons.clear),

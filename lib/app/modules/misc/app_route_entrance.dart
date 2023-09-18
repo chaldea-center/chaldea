@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/routes/delegate.dart';
+import 'package:chaldea/app/routes/root_delegate.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -154,7 +155,7 @@ class RouteHistoryList extends StatelessWidget {
             title: Text(url),
             onTap: () {
               rootRouter.appState.activeRouter.push(url: url);
-              rootRouter.appState.showWindowManager = false;
+              rootRouter.appState.windowState = WindowStateEnum.single;
             },
           );
         },

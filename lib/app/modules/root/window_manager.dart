@@ -16,6 +16,7 @@ import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/material.dart';
 import '../../routes/root_delegate.dart';
+import 'multi_screenshots.dart';
 
 class WindowManager extends StatefulWidget {
   final RootAppRouterDelegate delegate;
@@ -39,11 +40,21 @@ class _WindowManagerState extends State<WindowManager> {
     if (!root.appState.dataReady) {
       return BootstrapPage();
     }
-    Widget child = root.appState.showWindowManager
-        ? MultipleWindow(root: root)
-        : root.appState.showSidebar && SplitRoute.isSplit(context)
+    Widget child;
+    switch (root.appState.windowState) {
+      case WindowStateEnum.single:
+        child = root.appState.showSidebar && SplitRoute.isSplit(context)
             ? WrapSideBar(root: root, child: OneWindow(root: root))
             : OneWindow(root: root);
+        break;
+      case WindowStateEnum.windowManager:
+        child = MultipleWindow(root: root);
+        break;
+      case WindowStateEnum.screenshot:
+        child = MultiScreenshots(root: root);
+        break;
+    }
+
     final maxWidth = db.settings.display.maxWindowWidth?.toDouble();
     if ((kIsWeb || kDebugMode) && maxWidth != null) {
       if (maxWidth >= 360 && maxWidth < 1920) {
@@ -155,7 +166,7 @@ class WrapSideBar extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: () {
-                    root.appState.showWindowManager = true;
+                    root.appState.windowState = WindowStateEnum.windowManager;
                   },
                   icon: const Icon(Icons.grid_view),
                 )
@@ -198,7 +209,7 @@ class OneWindow extends StatelessWidget {
             final child = AppShell(
               appState: root.appState,
               routerDelegate: _delegate,
-              active: index == root.appState.activeIndex && !root.appState.showWindowManager,
+              active: index == root.appState.activeIndex && root.appState.windowState.isSingle,
             );
             if (index == root.appState.activeIndex) {
               return child;
@@ -267,9 +278,11 @@ class MultipleWindow extends StatelessWidget {
               crossAxisCount: max(crossCount, 2),
               childAspectRatio: windowSize.aspectRatio,
               padding: const EdgeInsetsDirectional.fromSTEB(8, 8, 8, 72),
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
               children: List.generate(
                 root.appState.children.length,
-                (index) => WindowThumb(root: root, index: index),
+                (index) => WindowThumb(key: ObjectKey(root.appState.children[index]), root: root, index: index),
               ),
             ),
           ),
@@ -297,7 +310,7 @@ class MultipleWindow extends StatelessWidget {
             title: Text(url),
             onTap: () {
               root.appState.activeRouter.push(url: url);
-              root.appState.showWindowManager = false;
+              root.appState.windowState = WindowStateEnum.single;
             },
           );
         },
@@ -312,22 +325,106 @@ class WindowThumb extends StatelessWidget {
     super.key,
     required this.root,
     required this.index,
+    this.absorbPointer = true,
+    this.gesture = true,
+    this.showTitle = true,
   });
 
   final RootAppRouterDelegate root;
   final int index;
+  final bool absorbPointer;
+  final bool gesture;
+  final bool showTitle;
 
   @override
   Widget build(BuildContext context) {
     final childDelegate = root.appState.children[index];
     final url = childDelegate.currentConfiguration?.url;
+    Widget child = AbsorbPointer(
+      absorbing: absorbPointer,
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: SizedBox.fromSize(
+          size: MediaQuery.of(context).size,
+          child: childDelegate.build(context),
+        ),
+      ),
+    );
+    child = Stack(
+      // alignment: Alignment.bottomLeft,
+      children: [
+        Positioned.fill(child: child),
+        showTitle
+            ? Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).secondaryHeaderColor.withOpacity(1),
+                      border: Border(
+                        top: BorderSide(
+                          width: 1,
+                          color: Theme.of(context).dividerColor,
+                        ),
+                        bottom: BorderSide(
+                          width: 3,
+                          color: index == root.appState.activeIndex
+                              ? Theme.of(context).colorScheme.secondary
+                              : Colors.transparent,
+                        ),
+                      ),
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        root.appState.activeIndex = index;
+                      },
+                      child: Padding(
+                        padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 0, 4),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                "[$index] ${url ?? ""}".breakWord,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                if (root.appState.children.length <= 1) return;
+                                root.appState.removeWindow(index);
+                              },
+                              icon: const Icon(Icons.clear),
+                              padding: const EdgeInsets.all(4),
+                              iconSize: 16,
+                              constraints: const BoxConstraints(minWidth: 24),
+                            )
+                          ],
+                        ),
+                      ),
+                    )),
+              )
+            : Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: GestureDetector(
+                  onTap: () {
+                    root.appState.activeIndex = index;
+                  },
+                  behavior: HitTestBehavior.opaque,
+                  child: const SizedBox(width: double.infinity, height: 8),
+                ),
+              ),
+      ],
+    );
 
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: GestureDetector(
+    if (gesture) {
+      child = GestureDetector(
         onTap: () {
           root.appState.activeIndex = index;
-          root.appState.showWindowManager = false;
+          root.appState.windowState = WindowStateEnum.single;
           WindowManagerFab.markNeedRebuild();
         },
         onLongPress: url == null || url.isEmpty
@@ -337,69 +434,10 @@ class WindowThumb extends StatelessWidget {
                 await copyToClipboard(fullUrl);
                 EasyLoading.showToast('${S.current.copied}\n$fullUrl');
               },
-        child: Stack(
-          // alignment: Alignment.bottomLeft,
-          children: [
-            Positioned.fill(
-              child: AbsorbPointer(
-                child: FittedBox(
-                  fit: BoxFit.fill,
-                  child: SizedBox.fromSize(
-                    size: MediaQuery.of(context).size,
-                    child: childDelegate.build(context),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).secondaryHeaderColor.withOpacity(1),
-                  border: Border(
-                    top: BorderSide(
-                      width: 1,
-                      color: Theme.of(context).dividerColor,
-                    ),
-                    bottom: BorderSide(
-                      width: 3,
-                      color: index == root.appState.activeIndex
-                          ? Theme.of(context).colorScheme.secondary
-                          : Colors.transparent,
-                    ),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 0, 4),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          "[$index] ${url ?? ""}".breakWord,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          if (root.appState.children.length <= 1) return;
-                          root.appState.removeWindow(index);
-                        },
-                        icon: const Icon(Icons.clear),
-                        padding: const EdgeInsets.all(4),
-                        iconSize: 16,
-                        constraints: const BoxConstraints(minWidth: 24),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+        child: child,
+      );
+    }
+
+    return child;
   }
 }

@@ -20,6 +20,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/widgets/inherit_selection_area.dart';
@@ -220,7 +221,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   @override
   bool canTransitionTo(TransitionRoute nextRoute) {
     _nextRouteCache = nextRoute;
-    if (isSplit(null) && nextRoute is SplitRoute && nextRoute.detail == true) {
+    if (isSplit(navigator?.context) && nextRoute is SplitRoute && nextRoute.detail == true) {
       return false;
     }
     return super.canTransitionTo(nextRoute);
@@ -228,7 +229,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
 
   @override
   bool canTransitionFrom(TransitionRoute previousRoute) {
-    if (isSplit(null) && previousRoute is SplitRoute && previousRoute.detail == true) {
+    if (isSplit(navigator?.context) && previousRoute is SplitRoute && previousRoute.detail == true) {
       return false;
     }
     return super.canTransitionFrom(previousRoute);
@@ -308,6 +309,9 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   /// When the height is too small, split view is disabled.
   static bool isSplit(BuildContext? context) {
     if (!enableSplitView) return false;
+    if (context != null) {
+      context = AppRouter.of(context)?.navigatorKey.currentContext ?? context;
+    }
     context ??= kAppKey.currentContext;
     if (context == null) return false;
     final size = MediaQuery.of(context).size;

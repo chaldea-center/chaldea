@@ -9,6 +9,14 @@ import '../modules/root/window_manager.dart';
 import 'delegate.dart';
 import 'routes.dart';
 
+enum WindowStateEnum {
+  single,
+  windowManager,
+  screenshot;
+
+  bool get isSingle => this == single;
+}
+
 class AppState extends ChangeNotifier {
   final RootAppRouterDelegate _root;
   late final List<AppRouterDelegate> _children;
@@ -27,15 +35,20 @@ class AppState extends ChangeNotifier {
   AppRouterDelegate get activeRouter => _children[_activeIndex];
 
   set activeIndex(int index) {
-    if (index >= 0 && index < _children.length) {
+    if (index >= 0 && index < _children.length && index != _activeIndex) {
       _activeIndex = index;
       notifyListeners();
     }
   }
 
   int addWindow() {
-    _children.add(AppRouterDelegate(_root));
-    _activeIndex = _children.length - 1;
+    if (kDebugMode) {
+      _children.insert(_activeIndex + 1, AppRouterDelegate(_root));
+      _activeIndex += 1;
+    } else {
+      _children.add(AppRouterDelegate(_root));
+      _activeIndex = _children.length - 1;
+    }
     notifyListeners();
     return _activeIndex;
   }
@@ -54,12 +67,10 @@ class AppState extends ChangeNotifier {
     return _activeIndex;
   }
 
-  /// _showWindowManager
-  bool get showWindowManager => _showWindowManager;
-  bool _showWindowManager = false;
-
-  set showWindowManager(bool v) {
-    _showWindowManager = v;
+  WindowStateEnum _windowState = WindowStateEnum.single;
+  WindowStateEnum get windowState => _windowState;
+  set windowState(WindowStateEnum v) {
+    _windowState = v;
     notifyListeners();
   }
 
@@ -109,8 +120,8 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
       ],
       onPopPage: (route, result) {
         if (!route.didPop(result)) return false;
-        if (appState.showWindowManager) {
-          appState.showWindowManager = false;
+        if (!appState.windowState.isSingle) {
+          appState.windowState = WindowStateEnum.single;
           return true;
         }
         notifyListeners();
