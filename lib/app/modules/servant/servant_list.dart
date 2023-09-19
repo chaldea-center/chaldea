@@ -308,16 +308,18 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
   Widget _getDetailTable(Servant svt) {
     SvtStatus status = db.curUser.svtStatusOf(svt.collectionNo);
     SvtPlan cur = status.cur, target = db.curUser.svtPlanOf(svt.collectionNo);
-    Widget _getRange(int _c, int _t) {
-      bool highlight = _t > _c;
+    Widget _getRange(int _c, int _t, int? m) {
+      TextStyle? style;
+      if (_t > _c) {
+        style = const TextStyle(color: Colors.redAccent);
+      } else if (m != null && _c >= m) {
+        style = TextStyle(
+          color: Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.4),
+          fontStyle: FontStyle.italic,
+        );
+      }
       return Center(
-        child: Text(
-          '$_c-$_t',
-          style: TextStyle(
-            color: highlight ? Colors.redAccent : null,
-            // decoration: TextDecoration.underline,
-          ),
-        ),
+        child: Text('$_c-$_t', style: style),
       );
     }
 
@@ -344,17 +346,17 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         children: [
           TableRow(children: [
             _getHeader('${S.current.ascension}:'),
-            _getRange(cur.ascension, target.ascension),
+            _getRange(cur.ascension, target.ascension, 4),
             _getHeader('${S.current.grail}:'),
-            _getRange(cur.grail, target.grail),
+            _getRange(cur.grail, target.grail, null),
           ]),
           TableRow(children: [
             _getHeader('${S.current.skill}:'),
-            for (int i = 0; i < 3; i++) _getRange(cur.skills[i], target.skills[i])
+            for (int i = 0; i < 3; i++) _getRange(cur.skills[i], target.skills[i], 9)
           ]),
           TableRow(children: [
             _getHeader('${S.current.append_skill_short}:'),
-            for (int i = 0; i < 3; i++) _getRange(cur.appendSkills[i], target.appendSkills[i])
+            for (int i = 0; i < 3; i++) _getRange(cur.appendSkills[i], target.appendSkills[i], 9)
           ]),
           for (int row = 0; row < costumes.length / 3; row++)
             TableRow(
@@ -366,7 +368,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                   if (costumeId == null) {
                     return Container();
                   }
-                  return _getRange(cur.costumes[costumeId] ?? 0, target.costumes[costumeId] ?? 0);
+                  return _getRange(cur.costumes[costumeId] ?? 0, target.costumes[costumeId] ?? 0, null);
                 })
               ],
             ),

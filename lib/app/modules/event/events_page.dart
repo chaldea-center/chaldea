@@ -41,6 +41,8 @@ class EventListPageState extends State<EventListPage>
         S.current.event_campaign,
       ];
 
+  bool get shouldEnableSearch => _tabController.index == 0 || _tabController.index == 4;
+
   @override
   void initState() {
     super.initState();
@@ -92,7 +94,7 @@ class EventListPageState extends State<EventListPage>
             maxLines: 1,
           );
         }),
-        bottom: showSearchBar && _tabController.index == 0
+        bottom: showSearchBar && shouldEnableSearch
             ? searchBar
             : FixedHeight.tabBar(TabBar(
                 controller: _tabController,
@@ -150,7 +152,7 @@ class EventListPageState extends State<EventListPage>
 
   List<Widget> get actions {
     return <Widget>[
-      if (_tabController.index == 0) searchIcon,
+      if (shouldEnableSearch) searchIcon,
       if (const [0, 2, 4].contains(_tabController.index))
         IconButton(
           icon: const Icon(Icons.filter_alt),

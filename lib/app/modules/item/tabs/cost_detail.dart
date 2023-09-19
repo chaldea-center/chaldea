@@ -38,20 +38,50 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
     }
     final classBoardDemand = stat.calcClassBoardCost(matType)[itemId] ?? 0;
 
-    Widget header = CustomTile(
-      title: Text(
-        '${S.current.item_left} ${num2str(stat.itemLeft[itemId])}\n'
-        '${S.current.item_own} ${num2str(db.curUser.items[itemId])} '
-        '${S.current.event} ${num2str(stat.statObtain[itemId])}',
-        style: matType != SvtMatCostDetailType.demands ? TextStyle(color: Theme.of(context).disabledColor) : null,
-      ),
-      trailing: Text(
-        '${S.current.demands} ${num2str(classBoardDemand + svtDemands.all)}\n'
-        '${[classBoardDemand, ...svtDemands.parts.map((e) => num2str(e))].join('/')}',
-        textAlign: TextAlign.end,
-      ),
+    final header = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 2,
+              child: Text(
+                '${S.current.item_own} ${num2str(db.curUser.items[itemId])} '
+                '${S.current.event} ${num2str(stat.statObtain[itemId])}',
+                style:
+                    matType != SvtMatCostDetailType.demands ? TextStyle(color: Theme.of(context).disabledColor) : null,
+              ),
+            ),
+            Expanded(
+              child: Text(
+                '  ${S.current.demands} ${num2str(classBoardDemand + svtDemands.all)}',
+                textAlign: TextAlign.end,
+              ),
+            ),
+          ],
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Text(
+                '${S.current.item_left} ${num2str(stat.itemLeft[itemId])}  ',
+                style:
+                    matType != SvtMatCostDetailType.demands ? TextStyle(color: Theme.of(context).disabledColor) : null,
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Text(
+                [classBoardDemand, ...svtDemands.parts.map((e) => num2str(e))].join('/'),
+                textAlign: TextAlign.end,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
-    header = InheritSelectionArea(child: header);
 
     /////////////////////////////////////////////////////////
     List<Widget> children = [
@@ -74,7 +104,12 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
               ),
           ],
         ),
-      header,
+      InheritSelectionArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: header,
+        ),
+      ),
       CustomTile(
         title: Text(S.current.class_score),
         trailing: Text(num2str(classBoardDemand)),
