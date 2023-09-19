@@ -108,6 +108,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_condition": MessageLookupByLibrary.simpleMessage("Add Condition"),
         "add_feedback_details_warning": MessageLookupByLibrary.simpleMessage("Please add feedback details"),
         "add_mission": MessageLookupByLibrary.simpleMessage("Add Mission"),
+        "add_not_svt_trait_to_traum_enemy":
+            MessageLookupByLibrary.simpleMessage("Add [NotBasedOnServant] trait for Traum Enemies"),
         "add_to_blacklist": MessageLookupByLibrary.simpleMessage("Add to blacklist"),
         "anniversary": MessageLookupByLibrary.simpleMessage("Anniversary"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),

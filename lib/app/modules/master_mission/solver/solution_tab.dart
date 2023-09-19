@@ -50,7 +50,7 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
       for (final quest in solution.quests.values) {
         int targetCount = 0;
         for (final mission in solution.missions) {
-          targetCount += MissionSolver.countMissionTarget(mission, quest);
+          targetCount += MissionSolver.countMissionTarget(mission, quest, options: solution.options);
         }
         if (targetCount > 0) targetCounts[quest.id] = targetCount;
       }
@@ -79,8 +79,9 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
     }
     if (widget.showResult) {
       final invalidMissions = solution.missions
-          .where((m) => solution.result.keys.every(
-              (q) => solution.quests[q] == null || MissionSolver.countMissionTarget(m, solution.quests[q]!) <= 0))
+          .where((m) => solution.result.keys.every((q) =>
+              solution.quests[q] == null ||
+              MissionSolver.countMissionTarget(m, solution.quests[q]!, options: solution.options) <= 0))
           .toList();
       if (invalidMissions.isNotEmpty) {
         children.add(TileGroup(
@@ -136,7 +137,7 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
       contentBuilder: (context) {
         List<Widget> children = [];
         for (final mission in solution.missions) {
-          int count = MissionSolver.countMissionTarget(mission, quest);
+          int count = MissionSolver.countMissionTarget(mission, quest, options: solution.options);
           if (count <= 0) continue;
           children.add(ListTile(
             title: mission.buildDescriptor(context),
@@ -149,6 +150,32 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
         }
         children = divideTiles(children, divider: const Divider(indent: 16, endIndent: 16));
         children.add(QuestCard(quest: quest, region: solution.region));
+        children.add(db.settings.misc.missionQuestBlacklist.contains(quest.id)
+            ? TextButton.icon(
+                onPressed: () {
+                  setState(() {
+                    db.settings.misc.missionQuestBlacklist.remove(quest.id);
+                  });
+                },
+                icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.secondary),
+                label: Text(
+                  S.current.remove_from_blacklist,
+                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                ),
+              )
+            : TextButton.icon(
+                onPressed: () {
+                  setState(() {
+                    db.settings.misc.missionQuestBlacklist.add(quest.id);
+                  });
+                },
+                icon: const Icon(Icons.add, color: Colors.redAccent),
+                label: Text(
+                  S.current.add_to_blacklist,
+                  style: const TextStyle(color: Colors.redAccent),
+                ),
+              ));
+
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: children,

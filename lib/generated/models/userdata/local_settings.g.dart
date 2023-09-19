@@ -499,6 +499,8 @@ _MiscSettings _$MiscSettingsFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = _MiscSettings(
+          missionQuestBlacklist:
+              $checkedConvert('missionQuestBlacklist', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
           nonSvtCharaFigureIds:
               $checkedConvert('nonSvtCharaFigureIds', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
           markedCharaFigureSvtIds: $checkedConvert(
@@ -512,6 +514,7 @@ _MiscSettings _$MiscSettingsFromJson(Map json) => $checkedCreate(
     );
 
 Map<String, dynamic> _$MiscSettingsToJson(_MiscSettings instance) => <String, dynamic>{
+      'missionQuestBlacklist': instance.missionQuestBlacklist.toList(),
       'nonSvtCharaFigureIds': instance.nonSvtCharaFigureIds.toList(),
       'markedCharaFigureSvtIds': instance.markedCharaFigureSvtIds.map((k, e) => MapEntry(k.toString(), e)),
     };

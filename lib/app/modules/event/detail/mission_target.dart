@@ -202,8 +202,12 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
       Map<CustomMissionCond, int> counts = {};
       if (phase != null) {
         for (final cond in filterData.cond.options.isEmpty ? conds : filterData.cond.options) {
-          int count = MissionSolver.countMissionTarget(CustomMission(count: 1, conds: [cond]), phase,
-              includeRare: filterData.rareEnemy);
+          int count = MissionSolver.countMissionTarget(
+            CustomMission(count: 1, conds: [cond]),
+            phase,
+            includeRare: filterData.rareEnemy,
+            options: null,
+          );
           if (count > 0) counts[cond] = count;
         }
       }

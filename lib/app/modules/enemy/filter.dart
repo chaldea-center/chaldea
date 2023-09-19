@@ -134,4 +134,6 @@ const _traitsForFilter = <Trait>[
   Trait.greekMythologyMales,
   Trait.roman,
   Trait.fae,
+  Trait.notBasedOnServant,
+  Trait.servant,
 ];

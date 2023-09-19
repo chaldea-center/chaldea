@@ -7,14 +7,16 @@ class MissionSolver extends BaseLPSolver {
   Future<Map<int, int>> solve({
     required List<QuestPhase> quests,
     required List<CustomMission> missions,
+    required MissionSolverOptions options,
   }) async {
-    final result = await callSolver(convertLP(quests: quests, missions: missions));
+    final result = await callSolver(convertLP(quests: quests, missions: missions, options: options));
     return result.map((key, value) => MapEntry(key, value.round()));
   }
 
   BasicLPParams convertLP({
     required List<QuestPhase> quests,
     required List<CustomMission> missions,
+    required MissionSolverOptions options,
   }) {
     missions = List.of(missions);
     missions.removeWhere((mission) => mission.conds.every((e) => e.targetIds.isEmpty) || mission.count <= 0);
@@ -26,7 +28,7 @@ class MissionSolver extends BaseLPSolver {
       }
       final row = <int>[];
       for (final quest in quests) {
-        row.add(countMissionTarget(mission, quest));
+        row.add(countMissionTarget(mission, quest, options: options));
       }
       if (row.any((e) => e > 0)) {
         matA.add(row);
@@ -51,7 +53,8 @@ class MissionSolver extends BaseLPSolver {
     );
   }
 
-  static int countMissionTarget(CustomMission mission, QuestPhase quest, {bool includeRare = true}) {
+  static int countMissionTarget(CustomMission mission, QuestPhase quest,
+      {bool includeRare = true, required MissionSolverOptions? options}) {
     int count = 0;
     if (mission.conds.first.type.isQuestType) {
       List<bool> results = mission.conds.map((cond) {
@@ -80,11 +83,19 @@ class MissionSolver extends BaseLPSolver {
           continue;
         }
         final results = mission.conds.map((cond) {
+          final enemyTraits = enemy.traits.toList();
+          if (quest.warId == 310 &&
+              options != null &&
+              options.addNotBasedOnSvtForTraum & MissionSolverOptions.kTraumClassEnemyIds.contains(enemy.svt.id)) {
+            if (enemyTraits.every((e) => e.id != Trait.notBasedOnServant.id)) {
+              enemyTraits.add(NiceTrait(id: Trait.notBasedOnServant.id));
+            }
+          }
           switch (cond.type) {
             case CustomMissionType.trait:
               return cond.useAnd
-                  ? NiceTrait.hasAllTraits(enemy.traits, cond.targetIds)
-                  : NiceTrait.hasAnyTrait(enemy.traits, cond.targetIds);
+                  ? NiceTrait.hasAllTraits(enemyTraits, cond.targetIds)
+                  : NiceTrait.hasAnyTrait(enemyTraits, cond.targetIds);
             case CustomMissionType.enemy:
               assert(!cond.useAnd);
               return cond.targetIds.contains(enemy.svt.id);
@@ -93,10 +104,10 @@ class MissionSolver extends BaseLPSolver {
               return cond.targetIds.contains(enemy.svt.classId);
             case CustomMissionType.servantClass:
               assert(!cond.useAnd);
-              return enemy.traits.any((t) => t.name == Trait.servant) && cond.targetIds.contains(enemy.svt.classId);
+              return enemyTraits.any((t) => t.name == Trait.servant) && cond.targetIds.contains(enemy.svt.classId);
             case CustomMissionType.enemyNotServantClass:
               assert(!cond.useAnd);
-              return enemy.traits.any((t) => t.name == Trait.notBasedOnServant) &&
+              return enemyTraits.any((t) => t.name == Trait.notBasedOnServant) &&
                   cond.targetIds.contains(enemy.svt.classId);
             default:
               return false;

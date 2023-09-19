@@ -522,12 +522,17 @@ class QuestBonusPlan {
 
 @JsonSerializable()
 class _MiscSettings {
+  // mission solver
+  Set<int> missionQuestBlacklist;
+  //
   Set<int> nonSvtCharaFigureIds;
   Map<int, int> markedCharaFigureSvtIds;
   _MiscSettings({
+    Set<int>? missionQuestBlacklist,
     Set<int>? nonSvtCharaFigureIds,
     Map<int, int>? markedCharaFigureSvtIds,
-  })  : nonSvtCharaFigureIds = nonSvtCharaFigureIds ?? <int>{},
+  })  : missionQuestBlacklist = missionQuestBlacklist ?? {},
+        nonSvtCharaFigureIds = nonSvtCharaFigureIds ?? <int>{},
         markedCharaFigureSvtIds = markedCharaFigureSvtIds ?? {};
 
   factory _MiscSettings.fromJson(Map<String, dynamic> json) => _$MiscSettingsFromJson(json);

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/master_mission/solver/solver.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -13,6 +14,18 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../api/atlas.dart';
 import 'scheme.dart';
+
+class _MissionSolverOptions {
+  List<CustomMission> missions = [];
+  int warId = 0;
+  int advancedEventId = 0;
+  bool _isRegionNA = false;
+  bool get isRegionNA => warId < 1000 ? false : _isRegionNA;
+  set isRegionNA(bool v) => _isRegionNA = v;
+  bool addNotBasedOnSvtForTraum = false;
+
+  Set<int> get blacklist => db.settings.misc.missionQuestBlacklist;
+}
 
 class MissionInputTab extends StatefulWidget {
   final List<CustomMission> initMissions;
@@ -32,18 +45,19 @@ class MissionInputTab extends StatefulWidget {
 
 class _MissionInputTabState extends State<MissionInputTab> {
   late ScrollController _scrollController;
-  List<CustomMission> missions = [];
+  final options = _MissionSolverOptions();
+  // List<CustomMission> missions = [];
   final solver = MissionSolver();
   final Map<int, (Event, List<Quest>)> advancedQuests = {};
-  int warId = 0;
-  int advancedEventId = 0;
+  // int warId = 0;
+  // int advancedEventId = 0;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    missions = List.of(widget.initMissions);
-    warId = widget.initWarId ??
+    options.missions = List.of(widget.initMissions);
+    options.warId = widget.initWarId ??
         Maths.max([
           for (final war in db.gameData.mainStories.values)
             if (war.quests.any((q) => q.isMainStoryFree)) war.id
@@ -85,13 +99,13 @@ class _MissionInputTabState extends State<MissionInputTab> {
     return Column(
       children: [
         Expanded(
-          child: missions.isEmpty
+          child: options.missions.isEmpty
               ? Center(child: Text(S.current.custom_mission_nothing_hint))
               : ListView.separated(
                   controller: _scrollController,
-                  itemBuilder: (context, index) => _oneMission(index),
+                  itemBuilder: (context, index) => _oneMission(index, options.missions[index]),
                   separatorBuilder: (_, __) => kDefaultDivider,
-                  itemCount: missions.length,
+                  itemCount: options.missions.length,
                 ),
         ),
         kDefaultDivider,
@@ -102,8 +116,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
     );
   }
 
-  Widget _oneMission(int index) {
-    CustomMission mission = missions[index];
+  Widget _oneMission(int index, CustomMission mission) {
     return SimpleAccordion(
       key: Key('mission_input_${mission.hashCode}'),
       headerBuilder: (context, collapsed) => ListTile(
@@ -174,7 +187,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
               TextButton(
                 onPressed: () {
                   setState(() {
-                    missions.remove(mission);
+                    options.missions.remove(mission);
                   });
                 },
                 child: Text(
@@ -323,7 +336,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
   }
 
   Widget get eventSelector {
-    final war = db.gameData.wars[warId];
+    final war = db.gameData.wars[options.warId];
     String title;
     String leading = S.current.event;
     if (war == null) {
@@ -334,11 +347,11 @@ class _MissionInputTabState extends State<MissionInputTab> {
     } else {
       title = Transl.eventNames(war.eventName).l;
     }
-    title = '[$warId] $title';
+    title = '[${options.warId}] $title';
     void _onTap() async {
-      final result = await SplitRoute.push<int?>(context, EventChooser(initTab: warId < 1000 ? 0 : 1));
+      final result = await SplitRoute.push<int?>(context, EventChooser(initTab: options.warId < 1000 ? 0 : 1));
       if (result != null) {
-        warId = result;
+        options.warId = result;
       }
       if (mounted) setState(() {});
     }
@@ -351,40 +364,36 @@ class _MissionInputTabState extends State<MissionInputTab> {
   }
 
   Widget get advancedQuestSelector {
-    return ListTile(
-      leading: const Text("Advanced\nQuests", textScaleFactor: 0.8),
-      title: Center(
-        child: DropdownButton<int>(
-          value: advancedEventId,
-          isExpanded: true,
-          isDense: true,
-          alignment: Alignment.center,
-          items: [
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: DropdownButton<int>(
+        value: options.advancedEventId,
+        isExpanded: true,
+        isDense: true,
+        alignment: Alignment.center,
+        items: [
+          DropdownMenuItem(
+            value: 0,
+            child: Text('${Transl.eventNames("アドバンスドクエスト").l} ${S.current.disabled}',
+                style: const TextStyle(fontSize: 14)),
+          ),
+          for (final (event, _) in advancedQuests.values)
             DropdownMenuItem(
-              value: 0,
-              child: Text(S.current.disabled, style: const TextStyle(fontSize: 14)),
-            ),
-            for (final (event, _) in advancedQuests.values)
-              DropdownMenuItem(
-                value: event.id,
-                child: Text(
-                  '${event.lShortName.l}(JP ${event.startedAt.sec2date().toDateString()})',
-                  style: const TextStyle(fontSize: 14),
-                ),
+              value: event.id,
+              child: Text(
+                '${event.lShortName.l}(JP ${event.startedAt.sec2date().toDateString()})',
+                style: const TextStyle(fontSize: 14),
               ),
-          ],
-          onChanged: (v) {
-            setState(() {
-              if (v != null) advancedEventId = v;
-            });
-          },
-        ),
+            ),
+        ],
+        onChanged: (v) {
+          setState(() {
+            if (v != null) options.advancedEventId = v;
+          });
+        },
       ),
     );
   }
-
-  bool _isRegionNA = false;
-  bool get isRegionNA => warId < 1000 ? false : _isRegionNA;
 
   Widget get buttonBar {
     return Padding(
@@ -394,7 +403,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
         children: [
           DropdownButton<bool>(
             isDense: true,
-            value: isRegionNA,
+            value: options.isRegionNA,
             items: [
               for (final isNA in [false, true])
                 DropdownMenuItem(
@@ -402,22 +411,22 @@ class _MissionInputTabState extends State<MissionInputTab> {
                   child: Text(isNA ? 'NA' : 'JP'),
                 ),
             ],
-            onChanged: (warId < 1000)
+            onChanged: (options.warId < 1000)
                 ? null
                 : (v) {
                     setState(() {
-                      if (v != null) _isRegionNA = v;
+                      if (v != null) options.isRegionNA = v;
                     });
                   },
           ),
           IconButton(
-            onPressed: missions.isEmpty
+            onPressed: options.missions.isEmpty
                 ? null
                 : () {
                     SimpleCancelOkDialog(
                       title: Text(S.current.clear),
                       onTapOk: () {
-                        missions.clear();
+                        options.missions.clear();
                         if (mounted) setState(() {});
                       },
                     ).showDialog(context);
@@ -426,9 +435,17 @@ class _MissionInputTabState extends State<MissionInputTab> {
             tooltip: S.current.clear,
           ),
           IconButton(
+            onPressed: () async {
+              await _OptionsDialog(options: options).showDialog(context);
+              if (mounted) setState(() {});
+            },
+            icon: const Icon(Icons.settings),
+            tooltip: S.current.options,
+          ),
+          IconButton(
             onPressed: () {
               setState(() {
-                missions.add(CustomMission(
+                options.missions.add(CustomMission(
                   count: 0,
                   conds: [
                     CustomMissionCond(
@@ -446,7 +463,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
             tooltip: S.current.add_mission,
           ),
           ElevatedButton(
-            onPressed: missions.isEmpty ? null : _solveProblem,
+            onPressed: options.missions.isEmpty ? null : _solveProblem,
             child: Text(S.current.drop_calc_solve),
           )
         ],
@@ -455,7 +472,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
   }
 
   Future<void> _solveProblem() async {
-    if (!missions.every((mission) {
+    if (!options.missions.every((mission) {
       if (mission.count <= 0) return false;
       if (mission.conds.isEmpty) return false;
       for (final cond in mission.conds) {
@@ -466,7 +483,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
       EasyLoading.showError(S.current.invalid_input);
       return;
     }
-    final region = isRegionNA ? Region.na : Region.jp;
+    final region = options.isRegionNA ? Region.na : Region.jp;
     void _showHint(String hint) => EasyLoading.show(status: hint);
     _showHint('Solving...');
     try {
@@ -475,9 +492,9 @@ class _MissionInputTabState extends State<MissionInputTab> {
       Map<int, int> phases = {};
 
       int countSuccess = 0, countError = 0, countNoEnemy = 0;
-      if (warId < 1000) {
+      if (options.warId < 1000) {
         for (final war in db.gameData.wars.values) {
-          if (!war.isMainStory || war.id > warId) continue;
+          if (!war.isMainStory || war.id > options.warId) continue;
           for (final quest in war.quests) {
             if (!quest.isMainStoryFree) continue;
             phases[quest.id] = quest.phases.last;
@@ -490,23 +507,18 @@ class _MissionInputTabState extends State<MissionInputTab> {
         //   phases[id] = 1;
         // }
       } else {
-        NiceWar? war = isRegionNA ? await AtlasApi.war(warId, region: Region.na) : db.gameData.wars[warId];
+        NiceWar? war =
+            options.isRegionNA ? await AtlasApi.war(options.warId, region: Region.na) : db.gameData.wars[options.warId];
         if (war == null) {
-          EasyLoading.showError('War $warId not found');
+          EasyLoading.showError('War ${options.warId} not found');
           return;
         }
         for (final quest in war.quests) {
           if (!quest.isAnyFree && !quest.isRepeatRaid) continue;
-          if (quest.phasesWithEnemies.contains(quest.phases.last) ||
-              (DateTime.now().timestamp - quest.openedAt < 7 * kSecsPerDay)) {
-            phases[quest.id] = quest.phases.last;
-          } else {
-            // no enemy data
-            countNoEnemy += 1;
-          }
+          if (quest.phases.isNotEmpty) phases[quest.id] = quest.phases.last;
         }
       }
-      final lastAdvancedEventTime = advancedQuests[advancedEventId]?.$1.startedAt;
+      final lastAdvancedEventTime = advancedQuests[options.advancedEventId]?.$1.startedAt;
       if (lastAdvancedEventTime != null) {
         for (final (event, quests) in advancedQuests.values) {
           if (event.startedAt <= lastAdvancedEventTime) {
@@ -516,6 +528,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
           }
         }
       }
+      phases.removeWhere((questId, _) => options.blacklist.contains(questId));
       for (final entry in phases.entries) {
         futures.add(AtlasApi.questPhase(
           entry.key,
@@ -547,7 +560,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
           context: context,
           builder: (context) => SimpleCancelOkDialog(
             title: Text(S.current.warning),
-            content: Text('Resolve Quests: total ${phases.length + countNoEnemy},'
+            content: Text('Resolved Quests: total ${phases.length + countNoEnemy},'
                 ' $countSuccess success, $countError error, $countNoEnemy no data\n'
                 'Still Continue?'),
           ),
@@ -561,15 +574,20 @@ class _MissionInputTabState extends State<MissionInputTab> {
         EasyLoading.showError('No Valid Quests');
         return;
       }
-      final missionsCopy = missions.map((e) => e.copy()).toList();
+      final missionsCopy = options.missions.map((e) => e.copy()).toList();
+      final solverOptions = MissionSolverOptions(
+        addNotBasedOnSvtForTraum: options.addNotBasedOnSvtForTraum,
+      );
       final result = await solver.solve(
         quests: validQuests,
         missions: missionsCopy,
+        options: solverOptions,
       );
       final solution = MissionSolution(
         result: result,
         missions: missionsCopy,
         quests: validQuests,
+        options: solverOptions,
         region: region,
       );
       widget.onSolved(solution);
@@ -578,6 +596,75 @@ class _MissionInputTabState extends State<MissionInputTab> {
       logger.e('solve custom mission failed', e, s);
       EasyLoading.showError(e.toString());
     }
+  }
+}
+
+class _OptionsDialog extends StatefulWidget {
+  final _MissionSolverOptions options;
+  const _OptionsDialog({required this.options});
+
+  @override
+  State<_OptionsDialog> createState() => __OptionsDialogState();
+}
+
+class __OptionsDialogState extends State<_OptionsDialog> {
+  _MissionSolverOptions get options => widget.options;
+  @override
+  Widget build(BuildContext context) {
+    return SimpleCancelOkDialog(
+      title: Text(S.current.options),
+      scrollable: true,
+      hideCancel: true,
+      contentPadding: const EdgeInsets.symmetric(vertical: 16),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SwitchListTile(
+            dense: true,
+            title: Text(S.current.add_not_svt_trait_to_traum_enemy),
+            subtitle: Text.rich(TextSpan(text: 'See ', children: [
+              SharedBuilder.textButtonSpan(
+                context: context,
+                text: 'document',
+                onTap: () => launch(ChaldeaUrl.doc('master_mission')),
+              ),
+              const TextSpan(text: '. '),
+            ])),
+            value: options.addNotBasedOnSvtForTraum,
+            onChanged: (v) {
+              setState(() {
+                options.addNotBasedOnSvtForTraum = v;
+              });
+            },
+          ),
+          SimpleAccordion(
+            headerBuilder: (context, _) => ListTile(
+              dense: true,
+              title: Text(S.current.blacklist),
+              trailing: Text(options.blacklist.length.toString()),
+            ),
+            contentBuilder: (context) => Column(
+              children: divideTiles(options.blacklist.map((questId) {
+                String shownName = db.gameData.quests[questId]?.lDispName ?? 'Quest $questId';
+                return ListTile(
+                  title: Text(shownName),
+                  dense: true,
+                  trailing: IconButton(
+                    icon: const Icon(Icons.clear, size: 18),
+                    tooltip: S.current.remove_from_blacklist,
+                    onPressed: () {
+                      setState(() {
+                        options.blacklist.remove(questId);
+                      });
+                    },
+                  ),
+                );
+              })),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

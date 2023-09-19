@@ -228,6 +228,17 @@ class S {
     );
   }
 
+  /// `Add [NotBasedOnServant] trait for Traum Enemies`
+  String get add_not_svt_trait_to_traum_enemy {
+    return Intl.message(
+      'Add [NotBasedOnServant] trait for Traum Enemies',
+      name: 'add_not_svt_trait_to_traum_enemy',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Add to blacklist`
   String get add_to_blacklist {
     return Intl.message(

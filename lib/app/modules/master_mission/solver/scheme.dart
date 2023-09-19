@@ -105,7 +105,7 @@ class CustomMission {
             useAnd = false;
             break;
         }
-        conds.add(CustomMissionCond(type: type, targetIds: detail.targetIds, useAnd: useAnd));
+        conds.add(CustomMissionCond(type: type, targetIds: detail.targetIds.toList(), useAnd: useAnd));
       }
       if (conds.isEmpty) continue;
 
@@ -175,15 +175,32 @@ class CustomMission {
   };
 }
 
+class MissionSolverOptions {
+  static const kTraumClassEnemyIds = [
+    // Class enemies
+    9943750, 9943760, 9943770, 9943780, 9943790, 9943800, 9943810,
+    // 粛正騎士＠剣(近衛騎士), 黒武者(Class Saber)
+    9936730, 9939610,
+  ];
+
+  bool addNotBasedOnSvtForTraum;
+  MissionSolverOptions({
+    this.addNotBasedOnSvtForTraum = false,
+  });
+}
+
 class MissionSolution {
   final Map<int, int> result;
   final List<CustomMission> missions;
   final Map<int, QuestPhase> quests;
+  final MissionSolverOptions options;
   final Region region;
+
   MissionSolution({
     required this.result,
     required this.missions,
     required List<QuestPhase> quests,
+    required this.options,
     this.region = Region.jp,
   }) : quests = {for (final quest in quests) quest.id: quest};
 }
