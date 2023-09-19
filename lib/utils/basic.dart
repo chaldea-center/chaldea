@@ -68,6 +68,10 @@ Map<K, V> sortDict<K, V>(
   }
 }
 
+Set<T> sortSet<T extends Comparable>(Set<T> x) {
+  return (x.toList()..sort()).toSet();
+}
+
 class Maths {
   const Maths._();
 

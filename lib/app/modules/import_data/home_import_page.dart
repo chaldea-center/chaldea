@@ -13,7 +13,6 @@ import 'import_https_page.dart';
 import 'item_screenshots.dart';
 import 'sheet/import_csv.dart';
 import 'skill_screenshots.dart';
-import 'v1_backup.dart';
 
 class ImportPageHome extends StatefulWidget {
   ImportPageHome({super.key});
@@ -50,15 +49,6 @@ class _ImportPageHomeState extends State<ImportPageHome> {
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
               router.popDetailAndPush(child: UserDataPage());
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.settings_backup_restore),
-            title: Text('${S.current.chaldea_backup} (v1)'),
-            subtitle: const Text('userdata.json/*.json'),
-            trailing: const Icon(Icons.keyboard_arrow_right),
-            onTap: () {
-              router.popDetailAndPush(child: OldVersionDataImport());
             },
           ),
           ListTile(

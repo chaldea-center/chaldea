@@ -81,7 +81,8 @@ class UserData {
     final previousVersion = json['version'];
     UserData userData;
     if (previousVersion == 2) {
-      userData = UserData.fromLegacy(json);
+      // v1.x data
+      userData = UserData();
     } else if (previousVersion == 3) {
       List users = json['users'] ?? [];
       for (final Map user in users) {
@@ -104,70 +105,6 @@ class UserData {
       userData.previousVersion = previousVersion ?? 0;
     }
     return userData;
-  }
-
-  factory UserData.fromLegacy(Map<String, dynamic> oldData) {
-    List<User> users = [];
-    Map<String, int> itemNameMap = {};
-    for (final item in db.gameData.items.values) {
-      itemNameMap[item.lName.cn] = item.id;
-    }
-    for (final oldUser in Map<String, Map<String, dynamic>>.from(oldData['users']!).values) {
-      Map<int, SvtStatus> statuses = {};
-      List<UserPlan> plans = [];
-      for (final String idStr in Map.from(oldUser['servants'] ?? {}).keys) {
-        final id = int.parse(idStr);
-        final oldStatus = Map<String, dynamic>.from(oldUser['servants']?[idStr]);
-        statuses[id] = SvtStatus(
-          cur: _convertLegacyPlan(oldStatus['curVal'], oldStatus['npLv']),
-          priority: (oldStatus['priority'] as int?) ?? 1,
-          equipCmdCodes: List.from((oldStatus['equipCmdCodes'] as List?) ?? []),
-        );
-      }
-      print('user ${oldUser['name']}: ${oldUser['servantPlans']?.length} plans');
-      for (final svtPlans in List<Map<String, dynamic>>.from((oldUser['servantPlans'] ?? []))) {
-        plans.add(UserPlan(
-            servants: svtPlans.map((key, value) => MapEntry(int.parse(key), _convertLegacyPlan(value, null)))));
-      }
-      final user = User(
-        name: oldUser['name'] ?? 'unknown',
-        isGirl: (oldUser['isMasterGirl'] as bool?) ?? true,
-        region: {'jp': Region.jp, 'cn': Region.cn, 'tw': Region.tw, 'en': Region.na}[oldUser['server']] ?? Region.jp,
-        servants: statuses,
-        plans: plans,
-        curSvtPlanNo: 0,
-        items: {},
-        craftEssences:
-            Map<String, int>.from(oldUser['crafts'] ?? {}).map((key, value) => MapEntry(int.parse(key), value)),
-        mysticCodes: null,
-        summons: null,
-        freeLPParams: null,
-      );
-      for (final entry in Map<String, int>.from(oldUser['items'] ?? {}).entries) {
-        if (itemNameMap.containsKey(entry.key)) {
-          user.items[itemNameMap[entry.key]!] = entry.value;
-        }
-      }
-      user.validate();
-      users.add(user);
-    }
-    return UserData(users: users);
-  }
-
-  static SvtPlan _convertLegacyPlan(Map<String, dynamic>? oldPlan, int? npLv) {
-    if (oldPlan == null) return SvtPlan();
-    return SvtPlan(
-      favorite: (oldPlan['favorite'] as bool?) ?? false,
-      ascension: (oldPlan['ascension'] as int?) ?? 0,
-      skills: List.generate(3, (index) => (oldPlan['skills'] as List?)?.getOrNull(index) ?? 0),
-      appendSkills: List.generate(3, (index) => (oldPlan['appendSkills'] as List?)?.getOrNull(index) ?? 0),
-      costumes: null,
-      grail: (oldPlan['grail'] as int?) ?? 0,
-      fouHp: (oldPlan['fouHp'] as int?) ?? 0,
-      fouAtk: (oldPlan['fouAtk'] as int?) ?? 0,
-      bondLimit: (oldPlan['bondLimit'] as int?) ?? 0,
-      npLv: npLv,
-    );
   }
 
   Map<String, dynamic> toJson() {
@@ -240,7 +177,7 @@ class User {
     this.sameEventPlan = true,
     int curSvtPlanNo = 0,
     Map<int, int>? items,
-    Map<int, dynamic>? craftEssences,
+    Map<int, CraftStatus>? craftEssences,
     Map<int, CmdCodeStatus>? cmdCodes,
     Map<int, int>? mysticCodes,
     Set<String>? summons,
@@ -255,11 +192,7 @@ class User {
         plans = List.generate(kSvtPlanMaxNum, (index) => plans?.getOrNull(index) ?? UserPlan()),
         _curSvtPlanNo = curSvtPlanNo.clamp(0, kSvtPlanMaxNum - 1),
         items = items ?? {},
-        craftEssences = {
-          if (craftEssences != null)
-            for (final e in craftEssences.entries)
-              if (e.value != null) e.key: CraftStatus.fromJson(e.value!)
-        },
+        craftEssences = craftEssences ?? {},
         cmdCodes = cmdCodes ?? {},
         mysticCodes = mysticCodes ?? {},
         summons = summons ?? {},
@@ -342,6 +275,11 @@ class User {
 
   void sort() {
     servants = sortDict(servants);
+    classBoards = sortDict(classBoards);
+    for (final board in classBoards.values) {
+      board.enhancedSquares = sortSet(board.enhancedSquares);
+      board.unlockedSquares = sortSet(board.unlockedSquares);
+    }
     for (final plan in plans) {
       plan.sort();
     }
@@ -795,15 +733,7 @@ class CraftStatus {
     }
   }
 
-  factory CraftStatus.fromJson(dynamic json) {
-    if (json is Map) {
-      return _$CraftStatusFromJson(Map<String, dynamic>.from(json));
-    } else if (json is int) {
-      return CraftStatus(status: json);
-    } else {
-      return CraftStatus();
-    }
-  }
+  factory CraftStatus.fromJson(Map<String, dynamic> json) => _$CraftStatusFromJson(json);
 
   Map<String, dynamic> toJson() => _$CraftStatusToJson(this);
 }
@@ -833,7 +763,7 @@ class CmdCodeStatus {
     count = count.clamp2(0);
   }
 
-  factory CmdCodeStatus.fromJson(dynamic json) => _$CmdCodeStatusFromJson(Map<String, dynamic>.from(json));
+  factory CmdCodeStatus.fromJson(Map<String, dynamic> json) => _$CmdCodeStatusFromJson(json);
 
   Map<String, dynamic> toJson() => _$CmdCodeStatusToJson(this);
 }

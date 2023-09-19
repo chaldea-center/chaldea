@@ -74,12 +74,14 @@ User _$UserFromJson(Map json) => $checkedCreate(
           craftEssences: $checkedConvert(
               'craftEssences',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), e),
+                    (k, e) =>
+                        MapEntry(int.parse(k as String), CraftStatus.fromJson(Map<String, dynamic>.from(e as Map))),
                   )),
           cmdCodes: $checkedConvert(
               'cmdCodes',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), CmdCodeStatus.fromJson(e)),
+                    (k, e) =>
+                        MapEntry(int.parse(k as String), CmdCodeStatus.fromJson(Map<String, dynamic>.from(e as Map))),
                   )),
           mysticCodes: $checkedConvert(
               'mysticCodes',
