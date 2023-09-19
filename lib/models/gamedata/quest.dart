@@ -10,6 +10,7 @@ import '../../app/modules/enemy/quest_enemy.dart';
 import '../db.dart';
 import '_helper.dart';
 import 'common.dart';
+import 'event.dart';
 import 'item.dart';
 import 'mappings.dart';
 import 'mystic_code.dart';
@@ -211,6 +212,14 @@ class Quest with RouteInfo {
 
   NiceSpot? get spot => db.gameData.spots[spotId];
   NiceWar? get war => db.gameData.wars[warId];
+  Event? get questEvent {
+    for (final (eventId, questIds) in db.gameData.others.eventQuestGroups.items) {
+      if (questIds.contains(id) && db.gameData.events.containsKey(eventId)) {
+        return db.gameData.events[eventId];
+      }
+    }
+    return null;
+  }
 
   bool get is90PlusFree => (isAnyFree || isRepeatRaid) && (recommendLv == '90+' || recommendLv == '90++');
 

@@ -414,9 +414,25 @@ Widget addQuestCategoryTile({
   List<Quest> extraQuests = const [],
 }) {
   final allQuests = [
-    ...?war?.quests,
     ...extraQuests,
   ];
+  if (war != null) {
+    if (war.id == WarId.chaldeaGate) {
+      final ignoreQuestIds = <int>{};
+      for (final (eventId, ids) in db.gameData.others.eventQuestGroups.items) {
+        final _event = db.gameData.events[eventId];
+        if (_event == null) continue;
+        if (const [80000, 80001, 80005, 80014].contains(eventId)) {
+          ignoreQuestIds.addAll(ids);
+          continue;
+        }
+        if (ids.length >= 15) ignoreQuestIds.addAll(ids);
+      }
+      allQuests.addAll(war.quests.where((q) => !ignoreQuestIds.contains(q.id)));
+    } else {
+      allQuests.addAll(war.quests);
+    }
+  }
   List<Quest> mainQuests = [],
       freeQuests = [],
       dailyEmber = [],

@@ -158,6 +158,8 @@ class _QuestCardState extends State<QuestCard> {
       }
     }
 
+    final _questEvent = quest.questEvent;
+
     List<Widget> children = [
       Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -170,9 +172,20 @@ class _QuestCardState extends State<QuestCard> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   InkWell(
-                    onTap: widget.battleOnly ? null : quest.war?.routeTo,
+                    onTap: widget.battleOnly
+                        ? null
+                        : () {
+                            if (quest.warId == WarId.chaldeaGate && _questEvent != null) {
+                              _questEvent.routeTo();
+                              return;
+                            }
+                            quest.war?.routeTo();
+                          },
                     child: AutoSizeText(
-                      warName,
+                      [
+                        if (_questEvent != null) _questEvent.shownName.setMaxLines(1),
+                        warName,
+                      ].join('\n'),
                       maxLines: 2,
                       maxFontSize: 14,
                       minFontSize: 6,
