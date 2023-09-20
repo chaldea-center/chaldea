@@ -20,76 +20,73 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(curVersion, newVersion, releaseNote) =>
-      "Current version: ${curVersion}\nLatest version: ${newVersion}\nRelease Note:\n${releaseNote}";
+  static String m14(actorName) => "require ${actorName} on field";
 
-  static String m15(actorName) => "require ${actorName} on field";
-
-  static String m1(url) =>
+  static String m0(url) =>
       "Chaldea - A cross-platform utility for Fate/GO. Supporting game data review, servant/event/item planning, master mission planning, summon simulator and so on.\n\nFor details: \n${url}\n";
 
-  static String m16(count) => "Charge NP to ${count}";
+  static String m15(count) => "Charge NP to ${count}";
 
-  static String m2(version) => "Required app version: ≥ ${version}";
+  static String m1(version) => "Required app version: ≥ ${version}";
 
-  static String m3(n) => "Max ${n} lottery";
+  static String m2(n) => "Max ${n} lottery";
 
-  static String m4(n, total) => "Grail to crystal: ${n}/${total}";
+  static String m3(n, total) => "Grail to crystal: ${n}/${total}";
 
-  static String m17(filename, hash, localHash) =>
+  static String m16(filename, hash, localHash) =>
       "File ${filename} not found or mismatched hash: ${hash} - ${localHash}";
 
-  static String m18(rarity) => "${rarity}☆ CE Pick Up";
+  static String m17(rarity) => "${rarity}☆ CE Pick Up";
 
-  static String m19(rarity) => "${rarity}☆ SVT Pick Up";
+  static String m18(rarity) => "${rarity}☆ SVT Pick Up";
 
-  static String m5(error) => "Import failed. Error:\n${error}";
+  static String m4(error) => "Import failed. Error:\n${error}";
 
-  static String m6(name) => "${name} already exist";
+  static String m5(name) => "${name} already exist";
 
-  static String m7(site) => "Jump to ${site}";
+  static String m6(site) => "Jump to ${site}";
 
-  static String m20(shown, total) => "${shown} shown (total ${total})";
+  static String m19(shown, total) => "${shown} shown (total ${total})";
 
-  static String m21(shown, ignore, total) => "${shown} shown, ${ignore} ignored (total ${total})";
+  static String m20(shown, ignore, total) => "${shown} shown, ${ignore} ignored (total ${total})";
 
-  static String m8(first) => "${Intl.select(first, {
+  static String m7(first) => "${Intl.select(first, {
             'true': 'Already the first one',
             'false': 'Already the last one',
             'other': 'No more',
           })}";
 
-  static String m22(layer) => "Layer ${layer}";
+  static String m21(layer) => "Layer ${layer}";
 
-  static String m9(n) => "Section ${n}";
+  static String m8(n) => "Section ${n}";
 
-  static String m23(region) => "Something went wrong or ${region} doesn\'t have this quest\'s data";
+  static String m22(region) => "Something went wrong or ${region} doesn\'t have this quest\'s data";
 
-  static String m24(runs) => "${runs} Runs";
+  static String m23(runs) => "${runs} Runs";
 
-  static String m25(index, total, enemy) => "Version ${index}/${total} (${enemy} enemies)";
+  static String m24(index, total, enemy) => "Version ${index}/${total} (${enemy} enemies)";
 
-  static String m26(unknown, dup, valid, total, selected) =>
+  static String m25(unknown, dup, valid, total, selected) =>
       "${unknown} unknown, ${dup} dup, ${valid}/${total} valid, ${selected} selected";
 
-  static String m10(region) => "${region} Notice";
+  static String m9(region) => "${region} Notice";
 
-  static String m11(n) => "Reset Plan ${n}(All)";
+  static String m10(n) => "Reset Plan ${n}(All)";
 
-  static String m12(n) => "Reset Plan ${n}(Shown)";
+  static String m11(n) => "Reset Plan ${n}(Shown)";
 
-  static String m27(battles, ap) => "Total ${battles} battles, ${ap} AP";
+  static String m26(battles, ap) => "Total ${battles} battles, ${ap} AP";
 
-  static String m13(n) => "Profile ${n}";
+  static String m12(n) => "Profile ${n}";
 
-  static String m28(color, trait) =>
+  static String m27(color, trait) =>
       "This Nobel Phantasm is displayed as a ${color} card, but doesn\'t have [${trait}] trait.";
 
-  static String m29(trait) => "This is a Nobel Phantasm, but doesn\'t have [${trait}] trait.";
+  static String m28(trait) => "This is a Nobel Phantasm, but doesn\'t have [${trait}] trait.";
 
-  static String m30(pause, remain) => "Need to wait ${pause} seconds between uploads (${remain}s remain).";
+  static String m29(pause, remain) => "Need to wait ${pause} seconds between uploads (${remain}s remain).";
 
-  static String m14(a, b) => "${a} ${b}";
+  static String m13(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -100,7 +97,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "about_data_source_footer":
             MessageLookupByLibrary.simpleMessage("Please inform us if there is unmarked source or infringement."),
         "about_feedback": MessageLookupByLibrary.simpleMessage("Feedback"),
-        "about_update_app_detail": m0,
         "account_title": MessageLookupByLibrary.simpleMessage("Account"),
         "active_skill": MessageLookupByLibrary.simpleMessage("Active Skill"),
         "active_skill_short": MessageLookupByLibrary.simpleMessage("Active"),
@@ -136,7 +132,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "auth_data_hints": MessageLookupByLibrary.simpleMessage(
             "Hints:\n- userId here is not friend code you saw on login/friend page\n- DO NOT share above keys or screenshot to others!!!\n- choose one of following methods to import"),
         "auto_add_trait": MessageLookupByLibrary.simpleMessage("Auto Add Trait"),
-        "auto_login": MessageLookupByLibrary.simpleMessage("Auto Login"),
         "auto_reset": MessageLookupByLibrary.simpleMessage("Auto reset"),
         "auto_update": MessageLookupByLibrary.simpleMessage("Auto Update"),
         "autoplay": MessageLookupByLibrary.simpleMessage("Autoplay"),
@@ -145,7 +140,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "backup_failed": MessageLookupByLibrary.simpleMessage("Backup failed"),
         "backup_history": MessageLookupByLibrary.simpleMessage("Backup History"),
         "battle_action": MessageLookupByLibrary.simpleMessage("Action"),
-        "battle_action_crit": MessageLookupByLibrary.simpleMessage("Action Crit"),
         "battle_activate_custom_skill": MessageLookupByLibrary.simpleMessage("Activate Custom Skill"),
         "battle_activate_probability": MessageLookupByLibrary.simpleMessage("Activation Probability"),
         "battle_after_7th": MessageLookupByLibrary.simpleMessage("After 7th"),
@@ -153,44 +147,36 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_atk_np_parameters": MessageLookupByLibrary.simpleMessage("Attack NP Parameters"),
         "battle_attack": MessageLookupByLibrary.simpleMessage("Attack"),
         "battle_battle_log": MessageLookupByLibrary.simpleMessage("Battle Log"),
-        "battle_before_7th": MessageLookupByLibrary.simpleMessage("Before 7th"),
-        "battle_buff_details": MessageLookupByLibrary.simpleMessage("Buff Details"),
         "battle_buff_permanent": MessageLookupByLibrary.simpleMessage("Permanent"),
-        "battle_buff_times": MessageLookupByLibrary.simpleMessage("Times"),
-        "battle_buff_turns": MessageLookupByLibrary.simpleMessage("Turns"),
         "battle_buster_chain": MessageLookupByLibrary.simpleMessage("Buster Chain Damage"),
         "battle_card_np_rate": MessageLookupByLibrary.simpleMessage("Card NP Rate"),
         "battle_card_star_rate": MessageLookupByLibrary.simpleMessage("Card Star Rate"),
         "battle_change_ascension": MessageLookupByLibrary.simpleMessage("Change Ascension"),
         "battle_charge_party": MessageLookupByLibrary.simpleMessage("Charge 100% NP to party"),
-        "battle_click_to_select_ce": MessageLookupByLibrary.simpleMessage("Click icon to select CE"),
         "battle_click_to_select_servants": MessageLookupByLibrary.simpleMessage("Click to select servant"),
         "battle_command_card": MessageLookupByLibrary.simpleMessage("Command Card"),
         "battle_damage": MessageLookupByLibrary.simpleMessage("Damage"),
         "battle_damage_parameters": MessageLookupByLibrary.simpleMessage("Damage Parameters"),
         "battle_damage_rate": MessageLookupByLibrary.simpleMessage("Damage Rate"),
         "battle_death": MessageLookupByLibrary.simpleMessage("Defeated"),
-        "battle_edit_ce_option": MessageLookupByLibrary.simpleMessage("Edit Craft Essence Option"),
         "battle_edit_servant_option": MessageLookupByLibrary.simpleMessage("Edit Servant Option"),
         "battle_enemy_remaining": MessageLookupByLibrary.simpleMessage("Enemy Remaining"),
         "battle_extra_rate": MessageLookupByLibrary.simpleMessage("Extra Damage Rate"),
         "battle_first_card_bonus": MessageLookupByLibrary.simpleMessage("First Card Bonus"),
         "battle_heal": MessageLookupByLibrary.simpleMessage("Heal"),
         "battle_invalid": MessageLookupByLibrary.simpleMessage("Invalid "),
-        "battle_mc_lv": MessageLookupByLibrary.simpleMessage("MC Lv"),
         "battle_misc_config": MessageLookupByLibrary.simpleMessage("Misc Configs"),
         "battle_no_quest_phase": MessageLookupByLibrary.simpleMessage("No quest phase selected."),
         "battle_no_servant": MessageLookupByLibrary.simpleMessage("No servant selected."),
         "battle_no_skill_selected": MessageLookupByLibrary.simpleMessage("No skill selected"),
         "battle_no_source": MessageLookupByLibrary.simpleMessage("No Source"),
         "battle_np_card": MessageLookupByLibrary.simpleMessage("NP Card"),
-        "battle_prefer_player_data": MessageLookupByLibrary.simpleMessage("Prefer Player Data"),
         "battle_probability_threshold": MessageLookupByLibrary.simpleMessage("Probability Threshold"),
         "battle_quest_from": MessageLookupByLibrary.simpleMessage("From"),
         "battle_random": MessageLookupByLibrary.simpleMessage("Random"),
         "battle_records": MessageLookupByLibrary.simpleMessage("Records"),
         "battle_remaining_hp": MessageLookupByLibrary.simpleMessage("Remaining HP"),
-        "battle_require_actor_on_field": m15,
+        "battle_require_actor_on_field": m14,
         "battle_require_field_traits": MessageLookupByLibrary.simpleMessage("Required field traits "),
         "battle_require_opponent_traits": MessageLookupByLibrary.simpleMessage("Required opponent traits"),
         "battle_require_self_traits": MessageLookupByLibrary.simpleMessage("Required self traits"),
@@ -251,11 +237,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "chaldea_server": MessageLookupByLibrary.simpleMessage("Chaldea Server"),
         "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("China"),
         "chaldea_server_global": MessageLookupByLibrary.simpleMessage("Global"),
-        "chaldea_server_hint": MessageLookupByLibrary.simpleMessage("Used for game data and screenshots recognizer"),
-        "chaldea_share_msg": m1,
+        "chaldea_share_msg": m0,
         "change_log": MessageLookupByLibrary.simpleMessage("Change Log"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("Characters"),
-        "charge_np_to": m16,
+        "charge_np_to": m15,
         "check_file_hash": MessageLookupByLibrary.simpleMessage("Verify file integrity"),
         "check_update": MessageLookupByLibrary.simpleMessage("Check update"),
         "class_advantage": MessageLookupByLibrary.simpleMessage("Class Advantage"),
@@ -278,8 +263,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "consumed": MessageLookupByLibrary.simpleMessage("Consumed"),
         "contact_information_not_filled": MessageLookupByLibrary.simpleMessage("Contact information is not filled in"),
-        "contact_information_not_filled_warning":
-            MessageLookupByLibrary.simpleMessage("The developer will not be able to respond to your feedback"),
         "copied": MessageLookupByLibrary.simpleMessage("Copied"),
         "copy": MessageLookupByLibrary.simpleMessage("Copy"),
         "copy_plan_menu": MessageLookupByLibrary.simpleMessage("Copy Plan from..."),
@@ -403,15 +386,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "error": MessageLookupByLibrary.simpleMessage("Error"),
         "error_no_data_found": MessageLookupByLibrary.simpleMessage("No data found"),
         "error_no_internet": MessageLookupByLibrary.simpleMessage("No internet"),
-        "error_required_app_version": m2,
+        "error_required_app_version": m1,
         "error_widget_hint": MessageLookupByLibrary.simpleMessage("Error! Click to go back >_<"),
         "event": MessageLookupByLibrary.simpleMessage("Event"),
         "event_ap_cost_half": MessageLookupByLibrary.simpleMessage("AP Cost 1/2"),
         "event_bonus": MessageLookupByLibrary.simpleMessage("Bonus"),
         "event_bulletin_board": MessageLookupByLibrary.simpleMessage("Bulletin"),
         "event_campaign": MessageLookupByLibrary.simpleMessage("Campaign"),
-        "event_collect_item_confirm":
-            MessageLookupByLibrary.simpleMessage("All items will be added to bag and remove the event out of plan"),
         "event_collect_items": MessageLookupByLibrary.simpleMessage("Collect Items"),
         "event_cooltime": MessageLookupByLibrary.simpleMessage("Cooltime"),
         "event_custom_item": MessageLookupByLibrary.simpleMessage("Custom Getatable Items"),
@@ -423,19 +404,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_item_extra": MessageLookupByLibrary.simpleMessage("Extra Items"),
         "event_item_fixed_extra": MessageLookupByLibrary.simpleMessage("Extra Fixed Items"),
         "event_lottery": MessageLookupByLibrary.simpleMessage("Lottery"),
-        "event_lottery_limit_hint": m3,
+        "event_lottery_limit_hint": m2,
         "event_lottery_limited": MessageLookupByLibrary.simpleMessage("Limited lottery"),
         "event_lottery_unit": MessageLookupByLibrary.simpleMessage("Lottery"),
         "event_lottery_unlimited": MessageLookupByLibrary.simpleMessage("Unlimited lottery"),
         "event_mural": MessageLookupByLibrary.simpleMessage("Murals"),
-        "event_not_planned": MessageLookupByLibrary.simpleMessage("Event not planned"),
         "event_only_trait_hint": MessageLookupByLibrary.simpleMessage(
             "This trait may be event only servant/enemy trait or field trait.\n Normal servant or enemy may not have this trait, they may have another trait with similar name but different ID.\nSome traits are not translated with \'Servant\', but they may be servant only trait in event."),
         "event_point": MessageLookupByLibrary.simpleMessage("Event Point"),
         "event_point_reward": MessageLookupByLibrary.simpleMessage("Points"),
         "event_quest": MessageLookupByLibrary.simpleMessage("Event Quests"),
         "event_recipe": MessageLookupByLibrary.simpleMessage("Recipe"),
-        "event_rerun_replace_grail": m4,
+        "event_rerun_replace_grail": m3,
         "event_shop": MessageLookupByLibrary.simpleMessage("Event Shop"),
         "event_skill": MessageLookupByLibrary.simpleMessage("Event Skill"),
         "event_svt_withdraw": MessageLookupByLibrary.simpleMessage("Withdrawn"),
@@ -469,21 +449,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "ffo_same_svt": MessageLookupByLibrary.simpleMessage("Same Servant"),
         "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("Domus Aurea"),
         "field_ai": MessageLookupByLibrary.simpleMessage("Field AI"),
-        "file_not_found_or_mismatched_hash": m17,
+        "file_not_found_or_mismatched_hash": m16,
         "filename": MessageLookupByLibrary.simpleMessage("filename"),
-        "fill_email_warning": MessageLookupByLibrary.simpleMessage("Please fill in email address. Otherwise NO reply."),
         "filter": MessageLookupByLibrary.simpleMessage("Filter"),
         "filter_atk_hp_type": MessageLookupByLibrary.simpleMessage("Type"),
         "filter_attribute": MessageLookupByLibrary.simpleMessage("Attribute"),
         "filter_category": MessageLookupByLibrary.simpleMessage("Category"),
-        "filter_effects": MessageLookupByLibrary.simpleMessage("Effects"),
         "filter_match_all": MessageLookupByLibrary.simpleMessage("Match All"),
         "filter_obtain": MessageLookupByLibrary.simpleMessage("Obtains"),
         "filter_plan_not_reached": MessageLookupByLibrary.simpleMessage("Plan Not Reach"),
-        "filter_plan_reached": MessageLookupByLibrary.simpleMessage("Plan-reached"),
         "filter_revert": MessageLookupByLibrary.simpleMessage("Revert"),
         "filter_shown_type": MessageLookupByLibrary.simpleMessage("Display"),
-        "filter_skill_lv": MessageLookupByLibrary.simpleMessage("Skills"),
         "filter_sort": MessageLookupByLibrary.simpleMessage("Sort"),
         "filter_sort_number": MessageLookupByLibrary.simpleMessage("No"),
         "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("Rarity"),
@@ -503,11 +479,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "gacha": MessageLookupByLibrary.simpleMessage("Gacha"),
         "gacha_image_overridden_hint": MessageLookupByLibrary.simpleMessage("Banner image may be overridden by"),
         "gacha_prob_calc": MessageLookupByLibrary.simpleMessage("Gacha Prob Calc"),
-        "gacha_prob_ce_pickup": m18,
+        "gacha_prob_ce_pickup": m17,
         "gacha_prob_custom_rate": MessageLookupByLibrary.simpleMessage("Custom Rate"),
         "gacha_prob_precision_hint": MessageLookupByLibrary.simpleMessage(
             "If the value is too large or too small, the calculation result is inaccurate due to the double precision problem."),
-        "gacha_prob_svt_pickup": m19,
+        "gacha_prob_svt_pickup": m18,
         "gacha_svt_count_hint": MessageLookupByLibrary.simpleMessage(
             "Sum of NP level of servants in Inventory & Second Archive, don\'t include burned and event 4☆ servants.\nEffect on probability due to Unregistered Spirit Origin shop, Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction."),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("Home"),
@@ -571,14 +547,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_csv_load_csv": MessageLookupByLibrary.simpleMessage("Load CSV"),
         "import_csv_title": MessageLookupByLibrary.simpleMessage("CSV Template"),
         "import_data": MessageLookupByLibrary.simpleMessage("Import"),
-        "import_data_error": m5,
+        "import_data_error": m4,
         "import_data_success": MessageLookupByLibrary.simpleMessage("Import data successfully"),
         "import_from_clipboard": MessageLookupByLibrary.simpleMessage("From Clipboard"),
         "import_from_file": MessageLookupByLibrary.simpleMessage("From File"),
         "import_http_body_duplicated": MessageLookupByLibrary.simpleMessage("Duplicated"),
-        "import_http_body_hint":
-            MessageLookupByLibrary.simpleMessage("Click import button to import decrypted HTTPS response"),
-        "import_http_body_hint_hide": MessageLookupByLibrary.simpleMessage("Click servant to hide/unhide"),
         "import_http_body_locked": MessageLookupByLibrary.simpleMessage("Locked Only"),
         "import_image": MessageLookupByLibrary.simpleMessage("Import Image"),
         "import_item_hint": MessageLookupByLibrary.simpleMessage("My Room - Item List"),
@@ -617,24 +590,18 @@ class MessageLookup extends MessageLookupByLibrary {
         "invalid_startup_path_info": MessageLookupByLibrary.simpleMessage(
             "Please, extract zip to non-system path then start the app. \"C:\\\", \"C:\\Program Files\" are not allowed."),
         "ios_app_path": MessageLookupByLibrary.simpleMessage("\"Files\" app/On My iPhone/Chaldea"),
-        "issues": MessageLookupByLibrary.simpleMessage("Issues"),
         "item": MessageLookupByLibrary.simpleMessage("Item"),
-        "item_already_exist_hint": m6,
+        "item_already_exist_hint": m5,
         "item_apple": MessageLookupByLibrary.simpleMessage("Apple"),
-        "item_category_ascension": MessageLookupByLibrary.simpleMessage("Ascension Items"),
         "item_category_bronze": MessageLookupByLibrary.simpleMessage("Bronze Items"),
-        "item_category_event_svt_ascension": MessageLookupByLibrary.simpleMessage("Event Item"),
         "item_category_gem": MessageLookupByLibrary.simpleMessage("Gem"),
-        "item_category_gems": MessageLookupByLibrary.simpleMessage("Skill Items"),
         "item_category_gold": MessageLookupByLibrary.simpleMessage("Gold Items"),
         "item_category_magic_gem": MessageLookupByLibrary.simpleMessage("Magic Gem"),
         "item_category_monument": MessageLookupByLibrary.simpleMessage("Monument"),
-        "item_category_others": MessageLookupByLibrary.simpleMessage("Others"),
         "item_category_piece": MessageLookupByLibrary.simpleMessage("Piece"),
         "item_category_secret_gem": MessageLookupByLibrary.simpleMessage("Secret Gem"),
         "item_category_silver": MessageLookupByLibrary.simpleMessage("Silver Items"),
         "item_category_special": MessageLookupByLibrary.simpleMessage("Special Items"),
-        "item_category_usual": MessageLookupByLibrary.simpleMessage("Items"),
         "item_edit_owned_amount": MessageLookupByLibrary.simpleMessage("Edit Owned Amount"),
         "item_eff": MessageLookupByLibrary.simpleMessage("Item Eff"),
         "item_exceed_hint": MessageLookupByLibrary.simpleMessage(
@@ -651,7 +618,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_stat_sub_event": MessageLookupByLibrary.simpleMessage("Subtract Event"),
         "item_stat_sub_owned": MessageLookupByLibrary.simpleMessage("Subtract Owned"),
         "join_beta": MessageLookupByLibrary.simpleMessage("Join Beta Program"),
-        "jump_to": m7,
+        "jump_to": m6,
         "language": MessageLookupByLibrary.simpleMessage("English"),
         "language_en": MessageLookupByLibrary.simpleMessage("English"),
         "laplace_enemy_multi_ver_hint": MessageLookupByLibrary.simpleMessage(
@@ -663,9 +630,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "limited_event": MessageLookupByLibrary.simpleMessage("Limited Event"),
         "limited_time": MessageLookupByLibrary.simpleMessage("Limited Time"),
         "link": MessageLookupByLibrary.simpleMessage("link"),
-        "list_count_shown_all": m20,
-        "list_count_shown_hidden_all": m21,
-        "list_end_hint": m8,
+        "list_count_shown_all": m19,
+        "list_count_shown_hidden_all": m20,
+        "list_end_hint": m7,
         "load_ffo_data": MessageLookupByLibrary.simpleMessage("Load FFO Data"),
         "logic_type": MessageLookupByLibrary.simpleMessage("Logic Type"),
         "logic_type_and": MessageLookupByLibrary.simpleMessage("AND"),
@@ -685,7 +652,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "login_password_error_same_as_old":
             MessageLookupByLibrary.simpleMessage("Cannot be the same as the old password"),
         "login_signup": MessageLookupByLibrary.simpleMessage("Signup"),
-        "login_state_not_login": MessageLookupByLibrary.simpleMessage("Not logged in"),
         "login_username": MessageLookupByLibrary.simpleMessage("Username"),
         "login_username_error": MessageLookupByLibrary.simpleMessage(
             "Can only contain letters and numbers, starting with a letter, no less than 4 digits"),
@@ -705,7 +671,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "main_story": MessageLookupByLibrary.simpleMessage("Main Record"),
         "main_story_chapter": MessageLookupByLibrary.simpleMessage("Chapter"),
         "map_gimmicks": MessageLookupByLibrary.simpleMessage("Gimmicks"),
-        "map_layer_n": m22,
+        "map_layer_n": m21,
         "map_show_fq_spots_only": MessageLookupByLibrary.simpleMessage("FQ spots only"),
         "map_show_header_image": MessageLookupByLibrary.simpleMessage("Show Header Image"),
         "map_show_roads": MessageLookupByLibrary.simpleMessage("Show Roads"),
@@ -714,7 +680,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "master_mission": MessageLookupByLibrary.simpleMessage("Master Mission"),
         "master_mission_related_quest": MessageLookupByLibrary.simpleMessage("Related Quests"),
         "master_mission_solution": MessageLookupByLibrary.simpleMessage("Solution"),
-        "master_mission_tasklist": MessageLookupByLibrary.simpleMessage("Missions"),
         "master_mission_weekly": MessageLookupByLibrary.simpleMessage("Weekly Mission"),
         "max_enemy_act_count": MessageLookupByLibrary.simpleMessage("Max enemy act count"),
         "max_enemy_on_stage": MessageLookupByLibrary.simpleMessage("Max enemies on stage"),
@@ -741,7 +706,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "network_status": MessageLookupByLibrary.simpleMessage("Network Status"),
         "new_account": MessageLookupByLibrary.simpleMessage("New account"),
         "new_data_available": MessageLookupByLibrary.simpleMessage("New data available"),
-        "new_drop_data_6th": MessageLookupByLibrary.simpleMessage("New Drop Data"),
         "next_card": MessageLookupByLibrary.simpleMessage("Next"),
         "next_page": MessageLookupByLibrary.simpleMessage("NEXT"),
         "no_servant_quest_hint": MessageLookupByLibrary.simpleMessage("There is no interlude or rank up quest"),
@@ -753,7 +717,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "normal_attack": MessageLookupByLibrary.simpleMessage("Normal Attack"),
         "not_found": MessageLookupByLibrary.simpleMessage("Not Found"),
         "not_implemented": MessageLookupByLibrary.simpleMessage("Not yet implemented"),
-        "not_outdated": MessageLookupByLibrary.simpleMessage("Not Outdated"),
         "np_charge": MessageLookupByLibrary.simpleMessage("NP Charge"),
         "np_charge_type_instant": MessageLookupByLibrary.simpleMessage("Instant"),
         "np_charge_type_instant_sum": MessageLookupByLibrary.simpleMessage("Instant Sum"),
@@ -791,8 +754,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "plan_list_set_all": MessageLookupByLibrary.simpleMessage("Set All"),
         "plan_list_set_all_current": MessageLookupByLibrary.simpleMessage("Current"),
         "plan_list_set_all_target": MessageLookupByLibrary.simpleMessage("Target"),
-        "plan_max10": MessageLookupByLibrary.simpleMessage("Plan Max(310)"),
-        "plan_max9": MessageLookupByLibrary.simpleMessage("Plan Max(999)"),
         "plan_objective": MessageLookupByLibrary.simpleMessage("Plan Objective"),
         "plan_title": MessageLookupByLibrary.simpleMessage("Plan"),
         "planning_free_quest_btn": MessageLookupByLibrary.simpleMessage("Planning Quests"),
@@ -813,7 +774,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "progress": MessageLookupByLibrary.simpleMessage("Progress"),
         "project_homepage": MessageLookupByLibrary.simpleMessage("Project Homepage"),
         "quest": MessageLookupByLibrary.simpleMessage("Quest"),
-        "quest_chapter_n": m9,
+        "quest_chapter_n": m8,
         "quest_condition": MessageLookupByLibrary.simpleMessage("Conditions"),
         "quest_disallow_laplace_share_hint":
             MessageLookupByLibrary.simpleMessage("Invalid quest, only Free and Raid Quests supports team sharing"),
@@ -824,7 +785,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_fields": MessageLookupByLibrary.simpleMessage("Fields"),
         "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("Drops"),
         "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("Drops"),
-        "quest_not_found_error": m23,
+        "quest_not_found_error": m22,
         "quest_prefer_region": MessageLookupByLibrary.simpleMessage("Preferred Region"),
         "quest_prefer_region_hint": MessageLookupByLibrary.simpleMessage(
             "If the related event of the quest has not started at chosen region, it will fallback to JP"),
@@ -833,10 +794,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_restriction": MessageLookupByLibrary.simpleMessage("Restrictions"),
         "quest_reward": MessageLookupByLibrary.simpleMessage("Quest Rewards"),
         "quest_reward_short": MessageLookupByLibrary.simpleMessage("Rewards"),
-        "quest_runs": m24,
+        "quest_runs": m23,
         "quest_timeline_sort_campaign_open": MessageLookupByLibrary.simpleMessage("AP Cost Event Time"),
         "quest_timeline_sort_quest_open": MessageLookupByLibrary.simpleMessage("Quest Open Time"),
-        "quest_version": m25,
+        "quest_version": m24,
         "quest_wave": MessageLookupByLibrary.simpleMessage("Wave"),
         "quit": MessageLookupByLibrary.simpleMessage("Quit"),
         "raid_quest": MessageLookupByLibrary.simpleMessage("Raid Quest"),
@@ -849,7 +810,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rarity": MessageLookupByLibrary.simpleMessage("Rarity"),
         "rate_app_store": MessageLookupByLibrary.simpleMessage("Rate on App Store"),
         "rate_play_store": MessageLookupByLibrary.simpleMessage("Rate on Google Play"),
-        "recognizer_result_count": m26,
+        "recognizer_result_count": m25,
         "recorder_screenshot_current_view": MessageLookupByLibrary.simpleMessage("Current View"),
         "recorder_screenshot_full_view": MessageLookupByLibrary.simpleMessage("Full View"),
         "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
@@ -858,11 +819,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "region_jp": MessageLookupByLibrary.simpleMessage("JP"),
         "region_kr": MessageLookupByLibrary.simpleMessage("KR"),
         "region_na": MessageLookupByLibrary.simpleMessage("NA"),
-        "region_notice": m10,
+        "region_notice": m9,
         "region_tw": MessageLookupByLibrary.simpleMessage("TW"),
         "related_traits": MessageLookupByLibrary.simpleMessage("Related Traits"),
         "remove": MessageLookupByLibrary.simpleMessage("Remove"),
-        "remove_condition": MessageLookupByLibrary.simpleMessage("Remove Condition"),
         "remove_duplicated_svt": MessageLookupByLibrary.simpleMessage("Remove duplicated"),
         "remove_from_blacklist": MessageLookupByLibrary.simpleMessage("Remove from blacklist"),
         "remove_mission": MessageLookupByLibrary.simpleMessage("Remove Mission"),
@@ -870,8 +830,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rerun_event": MessageLookupByLibrary.simpleMessage("Rerun"),
         "reset": MessageLookupByLibrary.simpleMessage("Reset"),
         "reset_custom_ascension_icon": MessageLookupByLibrary.simpleMessage("Reset custom ascension icons"),
-        "reset_plan_all": m11,
-        "reset_plan_shown": m12,
+        "reset_plan_all": m10,
+        "reset_plan_shown": m11,
         "reset_skill_cd": MessageLookupByLibrary.simpleMessage("Reset Skill CD"),
         "resettable_digged_num": MessageLookupByLibrary.simpleMessage("Resettable Digged Num"),
         "resolution": MessageLookupByLibrary.simpleMessage("Resolution"),
@@ -904,7 +864,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "select_servant": MessageLookupByLibrary.simpleMessage("Select Servant"),
         "select_skill": MessageLookupByLibrary.simpleMessage("Select Skill"),
         "select_skip": MessageLookupByLibrary.simpleMessage("Select none to skip this effect"),
-        "select_support_servant": MessageLookupByLibrary.simpleMessage("Select Support"),
         "send_email_to": MessageLookupByLibrary.simpleMessage("Send email to"),
         "sending": MessageLookupByLibrary.simpleMessage("Sending"),
         "sending_failed": MessageLookupByLibrary.simpleMessage("Sending failed"),
@@ -955,12 +914,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "skill_list": MessageLookupByLibrary.simpleMessage("Skill List"),
         "skill_rankup": MessageLookupByLibrary.simpleMessage("Skill Upgrade"),
         "skill_up": MessageLookupByLibrary.simpleMessage("Skill Up"),
-        "skilled_max10": MessageLookupByLibrary.simpleMessage("Skills Max(310)"),
         "skip": MessageLookupByLibrary.simpleMessage("Skip"),
         "skip_current_turn": MessageLookupByLibrary.simpleMessage("Skip Current Turn"),
         "solution_battle_count": MessageLookupByLibrary.simpleMessage("Battle Count"),
         "solution_target_count": MessageLookupByLibrary.simpleMessage("Target Count"),
-        "solution_total_battles_ap": m27,
+        "solution_total_battles_ap": m26,
         "sort_order": MessageLookupByLibrary.simpleMessage("Sort"),
         "sound_effect": MessageLookupByLibrary.simpleMessage("Sound Effect"),
         "special_reward_hide": MessageLookupByLibrary.simpleMessage("Hide Special Rewards"),
@@ -1015,7 +973,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("Hidden"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("Profile"),
         "svt_profile_info": MessageLookupByLibrary.simpleMessage("Character Info"),
-        "svt_profile_n": m13,
+        "svt_profile_n": m12,
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("Related CEs"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("Reset Plan"),
         "svt_second_archive": MessageLookupByLibrary.simpleMessage("Second Archive"),
@@ -1027,8 +985,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "td_animation": MessageLookupByLibrary.simpleMessage("NP Animation"),
         "td_base_hits_hint": MessageLookupByLibrary.simpleMessage(
             "For the same NP id, different owners may have different card type and hit distributions."),
-        "td_cardcolor_hint": m28,
-        "td_cardnp_hint": m29,
+        "td_cardcolor_hint": m27,
+        "td_cardnp_hint": m28,
         "td_rankup": MessageLookupByLibrary.simpleMessage("NP Upgrade"),
         "team": MessageLookupByLibrary.simpleMessage("Team"),
         "team_backup_member": MessageLookupByLibrary.simpleMessage("Backup"),
@@ -1087,7 +1045,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_before_close_app": MessageLookupByLibrary.simpleMessage("Upload before closing"),
         "upload_not_eligible_hint":
             MessageLookupByLibrary.simpleMessage("Current team is not eligible for upload due to:"),
-        "upload_paused": m30,
+        "upload_paused": m29,
         "upload_team_confirmation": MessageLookupByLibrary.simpleMessage(
             "Upload current team?\n\nAttention: don\'t upload team which contains unreleased servants!\nPlease try to keep your team configuration as low as possible for sharing with others.\nUploaded data may be deleted due to future updates, data incompatibility etc."),
         "usage": MessageLookupByLibrary.simpleMessage("Usage"),
@@ -1095,7 +1053,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "userdata_download_backup": MessageLookupByLibrary.simpleMessage("Download Backup"),
         "userdata_download_choose_backup": MessageLookupByLibrary.simpleMessage("Choose one backup"),
         "userdata_local": MessageLookupByLibrary.simpleMessage("Userdata (Local)"),
-        "userdata_sync": MessageLookupByLibrary.simpleMessage("Data synchronization"),
         "userdata_sync_hint":
             MessageLookupByLibrary.simpleMessage("Only update account data, not include local settings"),
         "userdata_sync_server": MessageLookupByLibrary.simpleMessage("Data synchronization(Server)"),
@@ -1115,6 +1072,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "web_domain_choice_hint": MessageLookupByLibrary.simpleMessage(
             "CN endpoint for China mainland\nWeb app is only recommended for PC users, Mobile website is laggy and may refresh unexpectedly."),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web Renderer"),
-        "words_separate": m14
+        "words_separate": m13
       };
 }

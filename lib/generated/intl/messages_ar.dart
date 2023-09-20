@@ -20,41 +20,38 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ar';
 
-  static String m0(curVersion, newVersion, releaseNote) =>
-      "النسخة الحالية : ${curVersion}\nاخر نسخة : ${newVersion}\nملاحظة الاصدار :\n${releaseNote}";
-
-  static String m1(url) =>
+  static String m0(url) =>
       "\"Chaldea - أداة مساعدة عبر الأنظمة الأساسية لـ Fate / GO. دعم مراجعة بيانات اللعبة ، وتخطيط الخادم / الحدث / العنصر ، وتخطيط المهمة الرئيسية ، ومحاكاة الاستدعاء ، وما إلى ذلك.\n\n للتفاصيل:\n ${url}\n \"";
 
-  static String m2(version) => "نسخة التطبيق المطلوبة : ≥ ${version}";
+  static String m1(version) => "نسخة التطبيق المطلوبة : ≥ ${version}";
 
-  static String m3(n) => "اقصى ${n} يانصيب";
+  static String m2(n) => "اقصى ${n} يانصيب";
 
-  static String m4(n, total) => "كريستال الى لور : ${n}";
+  static String m3(n, total) => "كريستال الى لور : ${n}";
 
-  static String m5(error) => "فشل الاستيراد. الخطأ:\n${error}";
+  static String m4(error) => "فشل الاستيراد. الخطأ:\n${error}";
 
-  static String m6(name) => "${name} موجود مسبقا";
+  static String m5(name) => "${name} موجود مسبقا";
 
-  static String m7(site) => "اقفز الى${site}";
+  static String m6(site) => "اقفز الى${site}";
 
-  static String m8(first) => "${Intl.select(first, {
+  static String m7(first) => "${Intl.select(first, {
             'true': 'Already the first one',
             'false': 'Already the last one',
             'other': 'No more',
           })}";
 
-  static String m9(n) => "القسم ${n}";
+  static String m8(n) => "القسم ${n}";
 
-  static String m10(region) => "${region} ميّز";
+  static String m9(region) => "${region} ميّز";
 
-  static String m11(n) => "إعادة الخطة ${n}(All)";
+  static String m10(n) => "إعادة الخطة ${n}(All)";
 
-  static String m12(n) => "إعادة الخطة${n}(Shown)";
+  static String m11(n) => "إعادة الخطة${n}(Shown)";
 
-  static String m13(n) => "الملف الشخصي ${n}";
+  static String m12(n) => "الملف الشخصي ${n}";
 
-  static String m14(a, b) => "${a} ${b}";
+  static String m13(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -65,7 +62,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "about_data_source_footer":
             MessageLookupByLibrary.simpleMessage("الرجاء إعلامنا في حالة وجود مصادر غير مذكورة او تم التعدي عليها."),
         "about_feedback": MessageLookupByLibrary.simpleMessage("المرجعية"),
-        "about_update_app_detail": m0,
         "account_title": MessageLookupByLibrary.simpleMessage("الحساب"),
         "active_skill": MessageLookupByLibrary.simpleMessage("المهارة النشطة"),
         "active_skill_short": MessageLookupByLibrary.simpleMessage("النشط"),
@@ -132,8 +128,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "chaldea_server": MessageLookupByLibrary.simpleMessage("سيرفر كاليديا"),
         "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("الصين"),
         "chaldea_server_global": MessageLookupByLibrary.simpleMessage("العالمي"),
-        "chaldea_server_hint": MessageLookupByLibrary.simpleMessage("تستخدم لبيانات اللعبة ولقطات الشاشة"),
-        "chaldea_share_msg": m1,
+        "chaldea_share_msg": m0,
         "change_log": MessageLookupByLibrary.simpleMessage("سجل التغييرات"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("الشخصية التي بالكرافت"),
         "check_update": MessageLookupByLibrary.simpleMessage("تفقد عن تحديث"),
@@ -148,8 +143,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "confirm": MessageLookupByLibrary.simpleMessage("تأكيد"),
         "consumed": MessageLookupByLibrary.simpleMessage("المستهلك"),
         "contact_information_not_filled": MessageLookupByLibrary.simpleMessage("لم يتم ملء معلومات الاتصال"),
-        "contact_information_not_filled_warning":
-            MessageLookupByLibrary.simpleMessage("لن يتمكن المطور من الرد على ملاحظاتك"),
         "copied": MessageLookupByLibrary.simpleMessage("منسوخ"),
         "copy": MessageLookupByLibrary.simpleMessage("نسخ"),
         "copy_plan_menu": MessageLookupByLibrary.simpleMessage("نسخ خطة من…"),
@@ -221,25 +214,22 @@ class MessageLookup extends MessageLookupByLibrary {
         "error": MessageLookupByLibrary.simpleMessage("خطأ"),
         "error_no_data_found": MessageLookupByLibrary.simpleMessage("لا يوجد بيانات"),
         "error_no_internet": MessageLookupByLibrary.simpleMessage("لا انترنت"),
-        "error_required_app_version": m2,
+        "error_required_app_version": m1,
         "error_widget_hint": MessageLookupByLibrary.simpleMessage(" >_< خطأ ! اضغط للعودة"),
         "event": MessageLookupByLibrary.simpleMessage("حدث"),
         "event_bonus": MessageLookupByLibrary.simpleMessage("إضافي"),
         "event_campaign": MessageLookupByLibrary.simpleMessage("احتفالية"),
-        "event_collect_item_confirm":
-            MessageLookupByLibrary.simpleMessage("ستتم إضافة جميع العناصر إلى الحقيبة وإزالة الحدث خارج الخطة"),
         "event_collect_items": MessageLookupByLibrary.simpleMessage("تجميع موارد"),
         "event_item_extra": MessageLookupByLibrary.simpleMessage("عناصر إضافية"),
         "event_lottery": MessageLookupByLibrary.simpleMessage("يانصيب"),
-        "event_lottery_limit_hint": m3,
+        "event_lottery_limit_hint": m2,
         "event_lottery_limited": MessageLookupByLibrary.simpleMessage("يانصيب محدود"),
         "event_lottery_unit": MessageLookupByLibrary.simpleMessage("اليانصيب"),
         "event_lottery_unlimited": MessageLookupByLibrary.simpleMessage("يانصيب غير محدود"),
-        "event_not_planned": MessageLookupByLibrary.simpleMessage("لم يتم التخطيط للحدث"),
         "event_point": MessageLookupByLibrary.simpleMessage("نقطة الايفنت"),
         "event_point_reward": MessageLookupByLibrary.simpleMessage("نقاط"),
         "event_quest": MessageLookupByLibrary.simpleMessage("مهام الايفنت"),
-        "event_rerun_replace_grail": m4,
+        "event_rerun_replace_grail": m3,
         "event_shop": MessageLookupByLibrary.simpleMessage("متجر الايفنت"),
         "event_skill": MessageLookupByLibrary.simpleMessage("سكل الايفنت"),
         "event_tower": MessageLookupByLibrary.simpleMessage("برج"),
@@ -272,14 +262,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "filter_atk_hp_type": MessageLookupByLibrary.simpleMessage("نوع"),
         "filter_attribute": MessageLookupByLibrary.simpleMessage("ميزة"),
         "filter_category": MessageLookupByLibrary.simpleMessage("فئة"),
-        "filter_effects": MessageLookupByLibrary.simpleMessage("التأثير"),
         "filter_match_all": MessageLookupByLibrary.simpleMessage("طابق الكل"),
         "filter_obtain": MessageLookupByLibrary.simpleMessage("يمتلك"),
         "filter_plan_not_reached": MessageLookupByLibrary.simpleMessage("خطة غير محققه"),
-        "filter_plan_reached": MessageLookupByLibrary.simpleMessage("خطة محققه"),
         "filter_revert": MessageLookupByLibrary.simpleMessage("عكسي"),
         "filter_shown_type": MessageLookupByLibrary.simpleMessage("عرض"),
-        "filter_skill_lv": MessageLookupByLibrary.simpleMessage("سكلز"),
         "filter_sort": MessageLookupByLibrary.simpleMessage("فرز"),
         "filter_sort_number": MessageLookupByLibrary.simpleMessage("رقم"),
         "filter_sort_rarity": MessageLookupByLibrary.simpleMessage("الندرة"),
@@ -322,12 +309,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "illustrator": MessageLookupByLibrary.simpleMessage("الرسامين"),
         "import_csv_export_all": MessageLookupByLibrary.simpleMessage("جميع الخدم"),
         "import_data": MessageLookupByLibrary.simpleMessage("استيراد"),
-        "import_data_error": m5,
+        "import_data_error": m4,
         "import_data_success": MessageLookupByLibrary.simpleMessage("نجح استيراد البيانات"),
         "import_http_body_duplicated": MessageLookupByLibrary.simpleMessage("مكرر"),
-        "import_http_body_hint":
-            MessageLookupByLibrary.simpleMessage("Click import button to import decrypted HTTPS response"),
-        "import_http_body_hint_hide": MessageLookupByLibrary.simpleMessage("انقر على الخادم لإخفاء / إظهار"),
         "import_http_body_locked": MessageLookupByLibrary.simpleMessage("المقفل فقط"),
         "import_screenshot": MessageLookupByLibrary.simpleMessage("استورد عن طريق لقطة شاشة"),
         "import_screenshot_hint": MessageLookupByLibrary.simpleMessage("حدث العناصر التي تم التعرف عليها فقط"),
@@ -354,23 +338,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "install": MessageLookupByLibrary.simpleMessage("تنصيب"),
         "interlude_and_rankup": MessageLookupByLibrary.simpleMessage("انترلود والرانك اب"),
         "ios_app_path": MessageLookupByLibrary.simpleMessage("\"Files\" app/On My iPhone/Chaldea"),
-        "issues": MessageLookupByLibrary.simpleMessage("مشاكل"),
         "item": MessageLookupByLibrary.simpleMessage("المواد"),
-        "item_already_exist_hint": m6,
-        "item_category_ascension": MessageLookupByLibrary.simpleMessage("مواد الاسينشن"),
+        "item_already_exist_hint": m5,
         "item_category_bronze": MessageLookupByLibrary.simpleMessage("المواد الفضية"),
-        "item_category_event_svt_ascension": MessageLookupByLibrary.simpleMessage("مواد الايفنت"),
         "item_category_gem": MessageLookupByLibrary.simpleMessage("جوهرة"),
-        "item_category_gems": MessageLookupByLibrary.simpleMessage("مواد الاسكلز"),
         "item_category_gold": MessageLookupByLibrary.simpleMessage("المواد الذهبية"),
         "item_category_magic_gem": MessageLookupByLibrary.simpleMessage("جوهرة سحرية"),
         "item_category_monument": MessageLookupByLibrary.simpleMessage("تمثال"),
-        "item_category_others": MessageLookupByLibrary.simpleMessage("أخرى"),
         "item_category_piece": MessageLookupByLibrary.simpleMessage("قطعة"),
         "item_category_secret_gem": MessageLookupByLibrary.simpleMessage("جوهرة سحرية"),
         "item_category_silver": MessageLookupByLibrary.simpleMessage("مواد فضية"),
         "item_category_special": MessageLookupByLibrary.simpleMessage("مواد خاصة"),
-        "item_category_usual": MessageLookupByLibrary.simpleMessage("المواد"),
         "item_eff": MessageLookupByLibrary.simpleMessage("Item Eff"),
         "item_exceed_hint": MessageLookupByLibrary.simpleMessage(
             "قبل التخطيط ، يمكنك تعيين العدد المتجاوز للعناصر (تستخدم فقط في تخطيط المهام المجانيه )"),
@@ -380,13 +358,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_own": MessageLookupByLibrary.simpleMessage("مملوك"),
         "item_screenshot": MessageLookupByLibrary.simpleMessage("المواد"),
         "join_beta": MessageLookupByLibrary.simpleMessage("انضم للبيتا"),
-        "jump_to": m7,
+        "jump_to": m6,
         "language": MessageLookupByLibrary.simpleMessage("عربي"),
         "language_en": MessageLookupByLibrary.simpleMessage("Arabic"),
         "level": MessageLookupByLibrary.simpleMessage("مستوى"),
         "limited_event": MessageLookupByLibrary.simpleMessage("أيفنت حصري"),
         "link": MessageLookupByLibrary.simpleMessage("رابط"),
-        "list_end_hint": m8,
+        "list_end_hint": m7,
         "login_change_password": MessageLookupByLibrary.simpleMessage("غير كلمة السر"),
         "login_first_hint": MessageLookupByLibrary.simpleMessage("الرجاء تسجيل الدخول اولا"),
         "login_forget_pwd": MessageLookupByLibrary.simpleMessage("نسيت كلمة السر"),
@@ -399,7 +377,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "login_password_error_same_as_old":
             MessageLookupByLibrary.simpleMessage("لا يمكن ان تكون نفس كلمة السر القديمة"),
         "login_signup": MessageLookupByLibrary.simpleMessage("تسجيل"),
-        "login_state_not_login": MessageLookupByLibrary.simpleMessage("لم يتم تسجيل"),
         "login_username": MessageLookupByLibrary.simpleMessage("اسم المستخدم"),
         "login_username_error": MessageLookupByLibrary.simpleMessage(
             "لابد ان يحتوي اسم المستخدم على حروف وأرقام وان يبتدئ بحرف وألا يكون أقل من أربع خانات"),
@@ -414,7 +391,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "master_mission": MessageLookupByLibrary.simpleMessage("مهام الماستر"),
         "master_mission_related_quest": MessageLookupByLibrary.simpleMessage("مهام ذات صلة"),
         "master_mission_solution": MessageLookupByLibrary.simpleMessage("التسهيل"),
-        "master_mission_tasklist": MessageLookupByLibrary.simpleMessage("المهام"),
         "max_limit_break": MessageLookupByLibrary.simpleMessage("MLB"),
         "move_down": MessageLookupByLibrary.simpleMessage("تحرك لأسفل"),
         "move_up": MessageLookupByLibrary.simpleMessage("تحرك لأعلى"),
@@ -444,8 +420,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "plan_list_set_all": MessageLookupByLibrary.simpleMessage("وضع الكل"),
         "plan_list_set_all_current": MessageLookupByLibrary.simpleMessage("الحالي"),
         "plan_list_set_all_target": MessageLookupByLibrary.simpleMessage("الهدف"),
-        "plan_max10": MessageLookupByLibrary.simpleMessage("الحد الأقصى للخطة (310)"),
-        "plan_max9": MessageLookupByLibrary.simpleMessage("الحد الاقصى للخطة (999)"),
         "plan_objective": MessageLookupByLibrary.simpleMessage("هدف الخطة"),
         "plan_title": MessageLookupByLibrary.simpleMessage("الخطة"),
         "planning_free_quest_btn": MessageLookupByLibrary.simpleMessage("مهام التخطيط"),
@@ -459,7 +433,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "progress": MessageLookupByLibrary.simpleMessage("التقدم"),
         "project_homepage": MessageLookupByLibrary.simpleMessage("الصفحة الرئيسية للمشروع"),
         "quest": MessageLookupByLibrary.simpleMessage("مهمة"),
-        "quest_chapter_n": m9,
+        "quest_chapter_n": m8,
         "quest_condition": MessageLookupByLibrary.simpleMessage("الظروف"),
         "rarity": MessageLookupByLibrary.simpleMessage("الندرة"),
         "rate_app_store": MessageLookupByLibrary.simpleMessage("قيمنا على آب ستور"),
@@ -468,15 +442,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "region_jp": MessageLookupByLibrary.simpleMessage("اليابانية"),
         "region_kr": MessageLookupByLibrary.simpleMessage("الكورية"),
         "region_na": MessageLookupByLibrary.simpleMessage("الأمريكية"),
-        "region_notice": m10,
+        "region_notice": m9,
         "region_tw": MessageLookupByLibrary.simpleMessage("التايوانية"),
         "remove_duplicated_svt": MessageLookupByLibrary.simpleMessage("إزالة المكررة"),
         "remove_from_blacklist": MessageLookupByLibrary.simpleMessage("إزالة من القائمة السوداء"),
         "rename": MessageLookupByLibrary.simpleMessage("إعادة التسمية"),
         "rerun_event": MessageLookupByLibrary.simpleMessage("ري رن"),
         "reset": MessageLookupByLibrary.simpleMessage("إعادة"),
-        "reset_plan_all": m11,
-        "reset_plan_shown": m12,
+        "reset_plan_all": m10,
+        "reset_plan_shown": m11,
         "restart_to_upgrade_hint": MessageLookupByLibrary.simpleMessage(
             "أعد التشغيل للتحديث  إذا فشل التحديث ، يرجى نسخ مجلد المصدر يدويًا إلى الوجهة"),
         "restore": MessageLookupByLibrary.simpleMessage("إعادة"),
@@ -525,7 +499,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "simulator": MessageLookupByLibrary.simpleMessage("المحاكي"),
         "skill": MessageLookupByLibrary.simpleMessage("مهارة"),
         "skill_up": MessageLookupByLibrary.simpleMessage("رفع المهارة"),
-        "skilled_max10": MessageLookupByLibrary.simpleMessage("المهارات القصوى (310)"),
         "sort_order": MessageLookupByLibrary.simpleMessage("التصنيف"),
         "sprites": MessageLookupByLibrary.simpleMessage("الأرواح"),
         "statistics_title": MessageLookupByLibrary.simpleMessage("احصائيات"),
@@ -550,7 +523,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("مخفي"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("الملف الشخصي"),
         "svt_profile_info": MessageLookupByLibrary.simpleMessage("معلومات الملف الشخصي"),
-        "svt_profile_n": m13,
+        "svt_profile_n": m12,
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("بطاقات كرافت ذات صلة"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("إعادة ضبط الخطة"),
         "svt_second_archive": MessageLookupByLibrary.simpleMessage("الارشيف الثاني"),
@@ -573,7 +546,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "userdata": MessageLookupByLibrary.simpleMessage("بيانات المستخدم"),
         "userdata_download_backup": MessageLookupByLibrary.simpleMessage("تحميل نسخة احتياطية"),
         "userdata_download_choose_backup": MessageLookupByLibrary.simpleMessage("اختر نسخة احتياطية"),
-        "userdata_sync": MessageLookupByLibrary.simpleMessage("مزامنة البيانات"),
         "userdata_upload_backup": MessageLookupByLibrary.simpleMessage("رفع نسخة احتياطية"),
         "valentine_craft": MessageLookupByLibrary.simpleMessage("كرافت عيد الحب"),
         "version": MessageLookupByLibrary.simpleMessage("النسخة"),
@@ -583,6 +555,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "war_age": MessageLookupByLibrary.simpleMessage("العصر"),
         "war_banner": MessageLookupByLibrary.simpleMessage("البانر"),
         "warning": MessageLookupByLibrary.simpleMessage("تحذير"),
-        "words_separate": m14
+        "words_separate": m13
       };
 }

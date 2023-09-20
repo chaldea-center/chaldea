@@ -140,17 +140,6 @@ class S {
     );
   }
 
-  /// `Current version: {curVersion}\nLatest version: {newVersion}\nRelease Note:\n{releaseNote}`
-  String about_update_app_detail(Object curVersion, Object newVersion, Object releaseNote) {
-    return Intl.message(
-      'Current version: $curVersion\nLatest version: $newVersion\nRelease Note:\n$releaseNote',
-      name: 'about_update_app_detail',
-      desc: '',
-      locale: localeName,
-      args: [curVersion, newVersion, releaseNote],
-    );
-  }
-
   /// `Account`
   String get account_title {
     return Intl.message(
@@ -503,17 +492,6 @@ class S {
     );
   }
 
-  /// `Auto Login`
-  String get auto_login {
-    return Intl.message(
-      'Auto Login',
-      name: 'auto_login',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Auto reset`
   String get auto_reset {
     return Intl.message(
@@ -602,17 +580,6 @@ class S {
     );
   }
 
-  /// `Action Crit`
-  String get battle_action_crit {
-    return Intl.message(
-      'Action Crit',
-      name: 'battle_action_crit',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Activate Custom Skill`
   String get battle_activate_custom_skill {
     return Intl.message(
@@ -690,55 +657,11 @@ class S {
     );
   }
 
-  /// `Before 7th`
-  String get battle_before_7th {
-    return Intl.message(
-      'Before 7th',
-      name: 'battle_before_7th',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Buff Details`
-  String get battle_buff_details {
-    return Intl.message(
-      'Buff Details',
-      name: 'battle_buff_details',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Permanent`
   String get battle_buff_permanent {
     return Intl.message(
       'Permanent',
       name: 'battle_buff_permanent',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Times`
-  String get battle_buff_times {
-    return Intl.message(
-      'Times',
-      name: 'battle_buff_times',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Turns`
-  String get battle_buff_turns {
-    return Intl.message(
-      'Turns',
-      name: 'battle_buff_turns',
       desc: '',
       locale: localeName,
       args: [],
@@ -794,17 +717,6 @@ class S {
     return Intl.message(
       'Charge 100% NP to party',
       name: 'battle_charge_party',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Click icon to select CE`
-  String get battle_click_to_select_ce {
-    return Intl.message(
-      'Click icon to select CE',
-      name: 'battle_click_to_select_ce',
       desc: '',
       locale: localeName,
       args: [],
@@ -877,17 +789,6 @@ class S {
     );
   }
 
-  /// `Edit Craft Essence Option`
-  String get battle_edit_ce_option {
-    return Intl.message(
-      'Edit Craft Essence Option',
-      name: 'battle_edit_ce_option',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Edit Servant Option`
   String get battle_edit_servant_option {
     return Intl.message(
@@ -954,17 +855,6 @@ class S {
     );
   }
 
-  /// `MC Lv`
-  String get battle_mc_lv {
-    return Intl.message(
-      'MC Lv',
-      name: 'battle_mc_lv',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Misc Configs`
   String get battle_misc_config {
     return Intl.message(
@@ -1025,17 +915,6 @@ class S {
     return Intl.message(
       'NP Card',
       name: 'battle_np_card',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Prefer Player Data`
-  String get battle_prefer_player_data {
-    return Intl.message(
-      'Prefer Player Data',
-      name: 'battle_prefer_player_data',
       desc: '',
       locale: localeName,
       args: [],
@@ -1724,17 +1603,6 @@ class S {
     );
   }
 
-  /// `Used for game data and screenshots recognizer`
-  String get chaldea_server_hint {
-    return Intl.message(
-      'Used for game data and screenshots recognizer',
-      name: 'chaldea_server_hint',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Chaldea - A cross-platform utility for Fate/GO. Supporting game data review, servant/event/item planning, master mission planning, summon simulator and so on.\n\nFor details: \n{url}\n`
   String chaldea_share_msg(Object url) {
     return Intl.message(
@@ -2004,17 +1872,6 @@ class S {
     return Intl.message(
       'Contact information is not filled in',
       name: 'contact_information_not_filled',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `The developer will not be able to respond to your feedback`
-  String get contact_information_not_filled_warning {
-    return Intl.message(
-      'The developer will not be able to respond to your feedback',
-      name: 'contact_information_not_filled_warning',
       desc: '',
       locale: localeName,
       args: [],
@@ -3352,17 +3209,6 @@ class S {
     );
   }
 
-  /// `All items will be added to bag and remove the event out of plan`
-  String get event_collect_item_confirm {
-    return Intl.message(
-      'All items will be added to bag and remove the event out of plan',
-      name: 'event_collect_item_confirm',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Collect Items`
   String get event_collect_items {
     return Intl.message(
@@ -3533,17 +3379,6 @@ class S {
     return Intl.message(
       'Murals',
       name: 'event_mural',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Event not planned`
-  String get event_not_planned {
-    return Intl.message(
-      'Event not planned',
-      name: 'event_not_planned',
       desc: '',
       locale: localeName,
       args: [],
@@ -3990,17 +3825,6 @@ class S {
     );
   }
 
-  /// `Please fill in email address. Otherwise NO reply.`
-  String get fill_email_warning {
-    return Intl.message(
-      'Please fill in email address. Otherwise NO reply.',
-      name: 'fill_email_warning',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Filter`
   String get filter {
     return Intl.message(
@@ -4045,17 +3869,6 @@ class S {
     );
   }
 
-  /// `Effects`
-  String get filter_effects {
-    return Intl.message(
-      'Effects',
-      name: 'filter_effects',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Match All`
   String get filter_match_all {
     return Intl.message(
@@ -4089,17 +3902,6 @@ class S {
     );
   }
 
-  /// `Plan-reached`
-  String get filter_plan_reached {
-    return Intl.message(
-      'Plan-reached',
-      name: 'filter_plan_reached',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Revert`
   String get filter_revert {
     return Intl.message(
@@ -4116,17 +3918,6 @@ class S {
     return Intl.message(
       'Display',
       name: 'filter_shown_type',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Skills`
-  String get filter_skill_lv {
-    return Intl.message(
-      'Skills',
-      name: 'filter_skill_lv',
       desc: '',
       locale: localeName,
       args: [],
@@ -5090,28 +4881,6 @@ class S {
     );
   }
 
-  /// `Click import button to import decrypted HTTPS response`
-  String get import_http_body_hint {
-    return Intl.message(
-      'Click import button to import decrypted HTTPS response',
-      name: 'import_http_body_hint',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Click servant to hide/unhide`
-  String get import_http_body_hint_hide {
-    return Intl.message(
-      'Click servant to hide/unhide',
-      name: 'import_http_body_hint_hide',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Locked Only`
   String get import_http_body_locked {
     return Intl.message(
@@ -5519,17 +5288,6 @@ class S {
     );
   }
 
-  /// `Issues`
-  String get issues {
-    return Intl.message(
-      'Issues',
-      name: 'issues',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Item`
   String get item {
     return Intl.message(
@@ -5563,17 +5321,6 @@ class S {
     );
   }
 
-  /// `Ascension Items`
-  String get item_category_ascension {
-    return Intl.message(
-      'Ascension Items',
-      name: 'item_category_ascension',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Bronze Items`
   String get item_category_bronze {
     return Intl.message(
@@ -5585,33 +5332,11 @@ class S {
     );
   }
 
-  /// `Event Item`
-  String get item_category_event_svt_ascension {
-    return Intl.message(
-      'Event Item',
-      name: 'item_category_event_svt_ascension',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Gem`
   String get item_category_gem {
     return Intl.message(
       'Gem',
       name: 'item_category_gem',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Skill Items`
-  String get item_category_gems {
-    return Intl.message(
-      'Skill Items',
-      name: 'item_category_gems',
       desc: '',
       locale: localeName,
       args: [],
@@ -5645,17 +5370,6 @@ class S {
     return Intl.message(
       'Monument',
       name: 'item_category_monument',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Others`
-  String get item_category_others {
-    return Intl.message(
-      'Others',
-      name: 'item_category_others',
       desc: '',
       locale: localeName,
       args: [],
@@ -5700,17 +5414,6 @@ class S {
     return Intl.message(
       'Special Items',
       name: 'item_category_special',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Items`
-  String get item_category_usual {
-    return Intl.message(
-      'Items',
-      name: 'item_category_usual',
       desc: '',
       locale: localeName,
       args: [],
@@ -6195,17 +5898,6 @@ class S {
     );
   }
 
-  /// `Not logged in`
-  String get login_state_not_login {
-    return Intl.message(
-      'Not logged in',
-      name: 'login_state_not_login',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Username`
   String get login_username {
     return Intl.message(
@@ -6503,17 +6195,6 @@ class S {
     );
   }
 
-  /// `Missions`
-  String get master_mission_tasklist {
-    return Intl.message(
-      'Missions',
-      name: 'master_mission_tasklist',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Weekly Mission`
   String get master_mission_weekly {
     return Intl.message(
@@ -6778,17 +6459,6 @@ class S {
     );
   }
 
-  /// `New Drop Data`
-  String get new_drop_data_6th {
-    return Intl.message(
-      'New Drop Data',
-      name: 'new_drop_data_6th',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Next`
   String get next_card {
     return Intl.message(
@@ -6904,17 +6574,6 @@ class S {
     return Intl.message(
       'Not yet implemented',
       name: 'not_implemented',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Not Outdated`
-  String get not_outdated {
-    return Intl.message(
-      'Not Outdated',
-      name: 'not_outdated',
       desc: '',
       locale: localeName,
       args: [],
@@ -7300,28 +6959,6 @@ class S {
     return Intl.message(
       'Target',
       name: 'plan_list_set_all_target',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Plan Max(310)`
-  String get plan_max10 {
-    return Intl.message(
-      'Plan Max(310)',
-      name: 'plan_max10',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Plan Max(999)`
-  String get plan_max9 {
-    return Intl.message(
-      'Plan Max(999)',
-      name: 'plan_max9',
       desc: '',
       locale: localeName,
       args: [],
@@ -7999,17 +7636,6 @@ class S {
     );
   }
 
-  /// `Remove Condition`
-  String get remove_condition {
-    return Intl.message(
-      'Remove Condition',
-      name: 'remove_condition',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Remove duplicated`
   String get remove_duplicated_svt {
     return Intl.message(
@@ -8444,17 +8070,6 @@ class S {
     return Intl.message(
       'Select none to skip this effect',
       name: 'select_skip',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Select Support`
-  String get select_support_servant {
-    return Intl.message(
-      'Select Support',
-      name: 'select_support_servant',
       desc: '',
       locale: localeName,
       args: [],
@@ -8994,17 +8609,6 @@ class S {
     return Intl.message(
       'Skill Up',
       name: 'skill_up',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Skills Max(310)`
-  String get skilled_max10 {
-    return Intl.message(
-      'Skills Max(310)',
-      name: 'skilled_max10',
       desc: '',
       locale: localeName,
       args: [],
@@ -10435,17 +10039,6 @@ class S {
     return Intl.message(
       'Userdata (Local)',
       name: 'userdata_local',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Data synchronization`
-  String get userdata_sync {
-    return Intl.message(
-      'Data synchronization',
-      name: 'userdata_sync',
       desc: '',
       locale: localeName,
       args: [],
