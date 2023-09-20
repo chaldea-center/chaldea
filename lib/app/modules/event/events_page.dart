@@ -105,7 +105,6 @@ class EventListPageState extends State<EventListPage>
       ),
       body: InheritSelectionArea(
         child: LayoutBuilder(builder: (context, constraints) {
-          bool showBanner = constraints.maxWidth > 450;
           return db.onUserData(
             (context, snapshot) => TabBarView(
               controller: _tabController,
@@ -117,7 +116,7 @@ class EventListPageState extends State<EventListPage>
                     showOutdated: filterData.showOutdated,
                     showSpecialRewards: filterData.showSpecialRewards,
                     showEmpty: filterData.showEmpty,
-                    showBanner: showBanner,
+                    showBanner: filterData.showBanner && constraints.maxWidth > 290,
                   ),
                 ),
                 KeepAliveBuilder(
@@ -125,7 +124,7 @@ class EventListPageState extends State<EventListPage>
                     reversed: filterData.reversed,
                     showOutdated: filterData.showOutdated,
                     showSpecialRewards: filterData.showSpecialRewards,
-                    showBanner: showBanner,
+                    showBanner: filterData.showBanner && constraints.maxWidth > 420,
                   ),
                 ),
                 KeepAliveBuilder(

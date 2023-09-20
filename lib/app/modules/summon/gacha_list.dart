@@ -115,7 +115,6 @@ class _GachaListPageState extends State<GachaListPage> with RegionBasedState<Lis
     String subtitle = '[${gacha.type}]${gacha.id}   ';
     subtitle += [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ ');
     final now = DateTime.now().timestamp;
-    final isLuckyBag = gacha.type == GachaType.chargeStone.id;
     return SimpleAccordion(
       headerBuilder: (context, _) {
         return ListTile(
@@ -125,19 +124,16 @@ class _GachaListPageState extends State<GachaListPage> with RegionBasedState<Lis
           // horizontalTitleGap: 8,
           // minLeadingWidth: 12,
           // leading: isLuckyBag ? const Icon(Icons.currency_yen, size: 16) : null,
-          title: Row(
-            children: [
-              if (isLuckyBag)
-                const Padding(
-                  padding: EdgeInsetsDirectional.only(end: 4),
-                  child: Icon(Icons.currency_yen, size: 16),
-                ),
-              Expanded(child: Text(title)),
-            ],
+          title: Text.rich(
+            TextSpan(children: [
+              if (gacha.gachaType == GachaType.chargeStone)
+                const TextSpan(text: '$kStarChar2 ', style: TextStyle(color: Colors.red)),
+              TextSpan(text: title),
+            ]),
+            style: TextStyle(fontStyle: gacha.userAdded == true ? FontStyle.italic : null),
           ),
           subtitle: Text(subtitle),
-          contentPadding:
-              isLuckyBag ? const EdgeInsetsDirectional.only(start: 16) : const EdgeInsetsDirectional.only(start: 16),
+          contentPadding: const EdgeInsetsDirectional.only(start: 16),
         );
       },
       contentBuilder: (context) {

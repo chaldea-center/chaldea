@@ -110,6 +110,7 @@ EventFilterData _$EventFilterDataFromJson(Map json) => $checkedCreate(
           showOutdated: $checkedConvert('showOutdated', (v) => v as bool? ?? false),
           showSpecialRewards: $checkedConvert('showSpecialRewards', (v) => v as bool? ?? false),
           showEmpty: $checkedConvert('showEmpty', (v) => v as bool? ?? false),
+          showBanner: $checkedConvert('showBanner', (v) => v as bool? ?? true),
         );
         return val;
       },
@@ -120,6 +121,7 @@ Map<String, dynamic> _$EventFilterDataToJson(EventFilterData instance) => <Strin
       'showOutdated': instance.showOutdated,
       'showSpecialRewards': instance.showSpecialRewards,
       'showEmpty': instance.showEmpty,
+      'showBanner': instance.showBanner,
     };
 
 SummonFilterData _$SummonFilterDataFromJson(Map json) => $checkedCreate(

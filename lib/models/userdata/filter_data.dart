@@ -701,6 +701,7 @@ class EventFilterData with _FilterData {
   bool showOutdated;
   bool showSpecialRewards;
   bool showEmpty;
+  bool showBanner;
 
   // filter
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -717,6 +718,7 @@ class EventFilterData with _FilterData {
     this.showOutdated = false,
     this.showSpecialRewards = false,
     this.showEmpty = false,
+    this.showBanner = true,
   });
 
   @override

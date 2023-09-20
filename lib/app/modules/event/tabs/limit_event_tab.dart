@@ -74,14 +74,16 @@ class LimitEventTab extends StatelessWidget {
       dense: true,
       selected: highlight,
       contentPadding: const EdgeInsetsDirectional.only(start: 16, end: 4),
-      leading: CachedImage(
-        imageUrl: event.extra.allBanners.firstOrNull ?? event.shopBanner,
-        aspectRatio: 8 / 3,
-        cachedOption: CachedImageOption(
-          placeholder: (context, url) => const SizedBox.shrink(),
-          errorWidget: (context, url, error) => const SizedBox.shrink(),
-        ),
-      ),
+      leading: showBanner
+          ? CachedImage(
+              imageUrl: event.extra.allBanners.firstOrNull ?? event.shopBanner,
+              aspectRatio: 8 / 3,
+              cachedOption: CachedImageOption(
+                placeholder: (context, url) => const SizedBox.shrink(),
+                errorWidget: (context, url, error) => const SizedBox.shrink(),
+              ),
+            )
+          : null,
       title: AutoSizeText.rich(
         TextSpan(children: [
           if (<Region>{db.curUser.region, Region.jp}.any((e) => event.isOnGoing(e)))
@@ -94,7 +96,7 @@ class LimitEventTab extends StatelessWidget {
       ),
       subtitle: AutoSizeText(
         subtitle,
-        maxLines: 1,
+        maxLines: 2,
         minFontSize: 8,
         style: TextStyle(
           color: outdated ? _outdatedColor?.withAlpha(100) : null,
@@ -121,26 +123,6 @@ class LimitEventTab extends StatelessWidget {
         router.popDetailAndPush(context: context, url: Routes.eventI(event.id), detail: true);
       },
     );
-    // if (!showBanner) {
-    //   tile = Stack(
-    //     alignment: AlignmentDirectional.centerEnd,
-    //     children: [
-    //       PositionedDirectional(
-    //         end: 80,
-    //         child: CachedImage(
-    //           imageUrl: event.extra.allBanners.firstOrNull,
-    //           aspectRatio: 8 / 3,
-    //           height: 40,
-    //           cachedOption: CachedImageOption(
-    //             placeholder: (context, url) => const SizedBox.shrink(),
-    //             errorWidget: (context, url, error) => const SizedBox.shrink(),
-    //           ),
-    //         ),
-    //       ),
-    //       tile,
-    //     ],
-    //   );
-    // }
     if (showSpecialRewards) {
       List<Widget> rewards = [];
       final entries = event.statItemFixed.entries.toList();

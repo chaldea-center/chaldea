@@ -60,7 +60,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
         actions: [
           IconButton(
             onPressed: () {
-              launch(ChaldeaUrl.doc('import_https/auto_login'));
+              launch(ChaldeaUrl.doc('import_https/authfile_login'));
             },
             icon: const Icon(Icons.help_outline),
             tooltip: S.current.help,

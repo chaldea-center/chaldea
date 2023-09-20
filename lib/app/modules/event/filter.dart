@@ -69,6 +69,17 @@ class _EventFilterPageState extends FilterPageState<EventFilterData, EventFilter
           },
           controlAffinity: ListTileControlAffinity.trailing,
         ),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: filterData.showBanner,
+          title: Text(S.current.summon_show_banner),
+          subtitle: const Text("Hidden on small screen"),
+          onChanged: (v) {
+            filterData.showBanner = v;
+            update();
+          },
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
         FilterGroup<Region?>(
           title: const Text('Ongoing'),
           options: const [null, ...Region.values],

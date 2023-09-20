@@ -252,7 +252,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
           title: Text.rich(
             TextSpan(children: [
               if (gachas[record.gachaId]?.gachaType == GachaType.chargeStone)
-                const TextSpan(text: '$kStarChar2 ', style: TextStyle(color: Colors.green)),
+                const TextSpan(text: '$kStarChar2 ', style: TextStyle(color: Colors.red)),
               TextSpan(text: title),
             ]),
             style: TextStyle(fontStyle: gacha?.userAdded == true ? FontStyle.italic : null),
