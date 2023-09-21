@@ -286,6 +286,9 @@ enum NiceAiCond {
   countPlayerSkillHigherIncludeMasterSkill,
   countPlayerSkillLowerIncludeMasterSkill,
   countPlayerSkillEqualIncludeMasterSkill,
+  totalTurnHigher,
+  totalTurnLower,
+  totalTurnEqual,
 }
 
 enum AiTiming {
@@ -341,3 +344,5 @@ enum NiceAiActTarget {
   center,
   back,
 }
+
+// enum NiceAiCondParameter

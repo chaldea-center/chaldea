@@ -673,6 +673,7 @@ enum Trait {
   happyHalloweenFlag(2860),
   manuscriptComplete(2872),
   myFairSoldier(2873),
+  elementalsWrath(2880),
   attackPhysical(3000),
   attackProjectile(3001),
   attackMagical(3002),

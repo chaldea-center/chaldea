@@ -242,6 +242,9 @@ const _$NiceAiCondEnumMap = {
   NiceAiCond.countPlayerSkillHigherIncludeMasterSkill: 'countPlayerSkillHigherIncludeMasterSkill',
   NiceAiCond.countPlayerSkillLowerIncludeMasterSkill: 'countPlayerSkillLowerIncludeMasterSkill',
   NiceAiCond.countPlayerSkillEqualIncludeMasterSkill: 'countPlayerSkillEqualIncludeMasterSkill',
+  NiceAiCond.totalTurnHigher: 'totalTurnHigher',
+  NiceAiCond.totalTurnLower: 'totalTurnLower',
+  NiceAiCond.totalTurnEqual: 'totalTurnEqual',
 };
 
 const _$AiTypeEnumMap = {
