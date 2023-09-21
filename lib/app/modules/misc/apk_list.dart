@@ -152,6 +152,21 @@ class _ApkListPageState extends State<ApkListPage> {
                   ],
                 ),
                 for (final data in _dataList) buildOne(data),
+                TileGroup(
+                  header: "Rayshift APK Mod",
+                  children: [
+                    for (final r in const ['jp', 'na'])
+                      ListTile(
+                        dense: true,
+                        title: Text("BetterFGO ${r.toUpperCase()}"),
+                        subtitle: Text('io.rayshift.betterfgo${r == 'jp' ? '' : ".en"}'),
+                        trailing: const Icon(Icons.open_in_new, size: 18),
+                        onTap: () {
+                          launch('https://rayshift.io/betterfgo/download/$r', external: true);
+                        },
+                      )
+                  ],
+                ),
                 const SizedBox(height: 16),
                 const DividerWithTitle(title: 'Links', indent: 16, height: 16),
                 TileGroup(
@@ -193,6 +208,14 @@ class _ApkListPageState extends State<ApkListPage> {
                       trailing: const Icon(Icons.open_in_new, size: 18),
                       onTap: () {
                         launch('$apkHost/apk/?sort=time&order=desc', external: true);
+                      },
+                    ),
+                    ListTile(
+                      dense: true,
+                      title: const Text('Rayshift'),
+                      trailing: const Icon(Icons.open_in_new, size: 18),
+                      onTap: () {
+                        launch('https://rayshift.io', external: true);
                       },
                     ),
                   ],
