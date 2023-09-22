@@ -244,27 +244,27 @@ class ApiCacheManager {
     return _failed.containsKey(_RequestOptionsX.getHashKey(method.methodName, url, data));
   }
 
-  Future<List<int>?> _fetch<T>(RequestOptions requestOptions, DispatchErrorCallback? onError) async {
+  Future<List<int>> _fetch<T>(RequestOptions requestOptions, DispatchErrorCallback? onError) async {
     requestOptions.responseType = ResponseType.bytes;
     final uri = requestOptions.uri;
     final key = requestOptions.hashKey();
     if (!kReleaseMode) print('fetching API: ${requestOptions.method} $uri');
     final _t = StopwatchX(uri.toString());
-    final response = await createDio().fetch<List<int>>(requestOptions);
+    Response<List<int>> response = await createDio().fetch<List<int>>(requestOptions);
     _t.log();
-    if (statusCodes.contains(response.statusCode) && response.data != null) {
-      try {
-        await _saveEntry(key, requestOptions, response);
-      } catch (e, s) {
-        logger.e('save cache entry failed', e, s);
-      }
-      return response.data;
-    } else {
-      dynamic error = Exception("Invalid status code ${response.statusCode} or empty body");
-      onError?.call(requestOptions, response, error, StackTrace.current);
-      print('fetch api [${requestOptions.uri}] failed: $error');
+    if (!statusCodes.contains(response.statusCode) || response.data == null) {
+      throw DioException.badResponse(
+        statusCode: response.statusCode ?? -1,
+        requestOptions: requestOptions,
+        response: response,
+      );
     }
-    return null;
+    try {
+      await _saveEntry(key, requestOptions, response);
+    } catch (e, s) {
+      logger.e('save cache entry failed', e, s);
+    }
+    return response.data!;
   }
 
   // fetch
@@ -316,7 +316,7 @@ class ApiCacheManager {
 
       final task = _downloading[key] = _DownloadingTask(key: key, completer: Completer());
       _failed.remove(key);
-      unawaited(rateLimiter.limited<List<int>?>(() => _fetch(options, onError)).then((value) {
+      unawaited(rateLimiter.limited(() => _fetch(options, onError)).then((value) {
         _downloading.remove(key);
         _failed.remove(key);
         if (!task.completer.isCompleted) task.completer.complete(value);
@@ -325,7 +325,7 @@ class ApiCacheManager {
         _downloading.remove(key);
         if (!task.canceled) _failed[key] = DateTime.now();
         if (!task.completer.isCompleted) task.completer.completeError(e, s);
-        // if (kDebugMode) print(escapeDioException(e));
+        logger.errorSkipDio('ApiCacheManager._fetch failed: ${options.method} ${options.uri}', e, s);
         return Future.value();
       }));
       return await task.completer.future;

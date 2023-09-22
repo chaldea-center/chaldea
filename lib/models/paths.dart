@@ -63,7 +63,7 @@ class PathManager {
     }
     if (PlatformU.isWeb) {
       _persistentPath = _appPath = 'web';
-      initiateLoggerPath('');
+      LoggerUtils.initiateLoggerPath('');
       return;
     }
 
@@ -134,13 +134,13 @@ class PathManager {
       Directory(dir).createSync(recursive: true);
     }
     // logger
-    initiateLoggerPath(appLog);
+    LoggerUtils.initiateLoggerPath(appLog);
     // crash files
     final File crashFile = File(crashLog);
     if (!crashFile.existsSync()) {
       crashFile.writeAsString('chaldea.crash.log\n', flush: true);
     }
-    rollLogFiles(crashFile.path, 3, 1 * 1024 * 1024);
+    LoggerUtils.rollLogFiles(crashFile.path, 3, 1 * 1024 * 1024);
   }
 
   String convertIosPath(String p) {

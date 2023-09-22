@@ -317,7 +317,7 @@ abstract class _CachedLoader<K, V> {
           return;
         }
       }
-      logger.e('Got $key failed', e, s);
+      logger.errorSkipDio('_CachedLoader.download failed: $key', e, s);
 
       final detail = _failed[key];
       if (detail == null) {

@@ -19,42 +19,52 @@ Logger _logger = Logger(
 
 Logger get logger => _logger;
 
-void initiateLoggerPath([String? fp]) {
-  if (fp != null) {
-    rollLogFiles(fp, 5, 10 * 1024 * 1024); //10MB
-  }
-  _logger = Logger(
-    filter: ProductionFilter(),
-    printer: _CustomPrettyPrinter(
-      methodCount: 2,
-      colors: false,
-      printEmojis: false,
-      printTime: true,
-      lineLength: 10,
-    ),
-    output: MultiOutput([
-      ConsoleOutput(),
-      if (!kIsWeb && fp != null) FileOutput(file: File(fp)),
-    ]),
-    level: kDebugMode ? null : Level.debug,
-  );
-}
-
-/// fp, fp.1,...,fp.[maxCount], [maxSize] in bytes
-void rollLogFiles(String fp, int maxBackup, int maxSize) {
-  if (kIsWeb) {
-    // debugPrint('ignore rolling log on web');
-    return;
-  }
-  var f = File(fp);
-  String _fpAt(int index) {
-    return index == 0 ? fp : '$fp.$index';
+extension LoggerUtils on Logger {
+  void errorSkipDio(dynamic message, [dynamic error, StackTrace? stackTrace]) {
+    if (e is DioException) {
+      v(message, error);
+    } else {
+      e(message, error, stackTrace);
+    }
   }
 
-  if (f.existsSync() && f.statSync().size >= maxSize) {
-    for (int i = maxBackup - 1; i >= 0; i--) {
-      var _f = File(_fpAt(i));
-      if (_f.existsSync()) _f.renameSync(_fpAt(i + 1));
+  static void initiateLoggerPath([String? fp]) {
+    if (fp != null) {
+      rollLogFiles(fp, 5, 10 * 1024 * 1024); //10MB
+    }
+    _logger = Logger(
+      filter: ProductionFilter(),
+      printer: _CustomPrettyPrinter(
+        methodCount: 2,
+        colors: false,
+        printEmojis: false,
+        printTime: true,
+        lineLength: 10,
+      ),
+      output: MultiOutput([
+        ConsoleOutput(),
+        if (!kIsWeb && fp != null) FileOutput(file: File(fp)),
+      ]),
+      level: kDebugMode ? null : Level.debug,
+    );
+  }
+
+  /// fp, fp.1,...,fp.[maxCount], [maxSize] in bytes
+  static void rollLogFiles(String fp, int maxBackup, int maxSize) {
+    if (kIsWeb) {
+      // debugPrint('ignore rolling log on web');
+      return;
+    }
+    var f = File(fp);
+    String _fpAt(int index) {
+      return index == 0 ? fp : '$fp.$index';
+    }
+
+    if (f.existsSync() && f.statSync().size >= maxSize) {
+      for (int i = maxBackup - 1; i >= 0; i--) {
+        var _f = File(_fpAt(i));
+        if (_f.existsSync()) _f.renameSync(_fpAt(i + 1));
+      }
     }
   }
 }
@@ -86,7 +96,7 @@ class _CustomPrettyPrinter extends PrettyPrinter {
 
     String? stackTraceStr;
     if (event.stackTrace == null) {
-      if (methodCount > 0) {
+      if (methodCount > 0 && event.level.index > Level.verbose.index) {
         stackTraceStr = formatStackTrace(_fmtStackTrace(StackTrace.current), methodCount);
       }
     } else if (errorMethodCount > 0) {
