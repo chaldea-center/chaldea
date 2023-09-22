@@ -97,6 +97,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
       brightness: dark ? Brightness.dark : Brightness.light,
       useMaterial3: db.settings.useMaterial3,
       colorSchemeSeed: db.settings.colorSeed?.color,
+      tooltipTheme: const TooltipThemeData(waitDuration: Duration(milliseconds: 500)),
     );
     return themeData.copyWith(
       appBarTheme: themeData.appBarTheme.copyWith(

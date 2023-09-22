@@ -81,7 +81,7 @@ class ImageWithText extends StatelessWidget {
             : null);
     _style = _style.copyWith(
       fontSize: fontSize,
-      fontWeight: _style.fontWeight ?? FontWeight.bold,
+      fontWeight: _style.fontWeight ?? FontWeight.w500,
     );
 
     final padding = option?.padding ?? EdgeInsets.zero;
@@ -104,7 +104,7 @@ class ImageWithText extends StatelessWidget {
                 builder: textBuilder,
                 textAlign: option?.textAlign ?? TextAlign.end,
                 textStyle: _style,
-                shadowSize: fontSize == null ? 3 : fontSize * 0.2,
+                shadowSize: fontSize == null ? 6 : fontSize * 0.35,
                 shadowColor: option?.shadowColor ?? Theme.of(context).scaffoldBackgroundColor,
               ),
             ),

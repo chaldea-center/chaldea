@@ -54,10 +54,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   @override
   Widget build(BuildContext context) {
     filterShownList();
-    return scrollListener(
-      useGrid: false,
-      appBar: appBar,
-    );
+    return scrollListener(useGrid: false, appBar: appBar);
   }
 
   PreferredSizeWidget? get appBar {
@@ -178,94 +175,100 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     final shareData = record.decoded;
     final quest = db.gameData.quests[record.questId];
     final shownIndex = _pageSize * pageIndex + index + 1;
-    return Material(
-      color: shownList.indexOf(record).isOdd ? Theme.of(context).hoverColor : null,
-      child: Column(
-        children: [
-          const SizedBox(height: 6),
-          _getHeader(shownIndex, record),
-          if (widget.mode == TeamQueryMode.user || widget.mode == TeamQueryMode.id)
-            ListTile(
-              dense: true,
-              leading: db.getIconImage(quest?.spot?.shownImage, width: 24),
-              minLeadingWidth: 24,
-              title: Text(quest?.lDispName ?? "Quest ${record.questId}/${record.phase}"),
-              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-              onTap: () {
-                router.push(url: Routes.questI(record.questId, record.phase));
-              },
-            ),
-          if (shareData != null) FormationCard(formation: shareData.team),
-          const SizedBox(height: 8),
-          Wrap(
-            alignment: WrapAlignment.center,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: 2,
-            children: [
-              if (widget.mode != TeamQueryMode.user)
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      db.curUser.battleSim.favoriteTeams.putIfAbsent(record.questId, () => {}).toggle(record.id);
-                    });
-                  },
-                  icon: db.curUser.battleSim.isTeamFavorite(record.questId, record.id)
-                      ? const Icon(Icons.star, color: Colors.amber)
-                      : const Icon(Icons.star_border, color: Colors.grey),
-                  tooltip: S.current.favorite,
-                ),
-              if (mode == TeamQueryMode.user ||
-                  record.userId == db.security.username ||
-                  AppInfo.isDebugDevice ||
-                  kDebugMode)
-                FilledButton(
-                  onPressed: () {
-                    final isOthers = record.userId != db.security.username;
-                    SimpleCancelOkDialog(
-                      title: Text(S.current.confirm),
-                      content: Text([
-                        '${S.current.delete} No.${record.id}',
-                        if (isOthers) "Waring: ${record.userId}'s, not your team",
-                      ].join('\n')),
-                      onTapOk: () {
-                        _deleteUserTeam(record);
-                      },
-                    ).showDialog(context);
-                  },
-                  style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
-                  child: Text(S.current.delete),
-                ),
-              if (shareData != null)
-                FilledButton(
-                  onPressed: () {
-                    replaySimulation(detail: shareData, questInfo: record.questInfo);
-                  },
-                  child: Text(S.current.details),
-                ),
-              if (mode == TeamQueryMode.quest)
-                FilledButton(
-                  onPressed: shareData == null
-                      ? null
-                      : () {
-                          Navigator.pop(context, shareData.team);
-                        },
-                  child: Text(S.current.select),
-                ),
+    Widget child = Column(
+      children: [
+        const SizedBox(height: 6),
+        _getHeader(shownIndex, record),
+        if (widget.mode == TeamQueryMode.user || widget.mode == TeamQueryMode.id)
+          ListTile(
+            dense: true,
+            leading: db.getIconImage(quest?.spot?.shownImage, width: 24),
+            minLeadingWidth: 24,
+            title: Text(quest?.lDispName ?? "Quest ${record.questId}/${record.phase}"),
+            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+            onTap: () {
+              router.push(url: Routes.questI(record.questId, record.phase));
+            },
+          ),
+        if (shareData != null) FormationCard(formation: shareData.team),
+        const SizedBox(height: 8),
+        Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 2,
+          children: [
+            if (widget.mode != TeamQueryMode.user)
               IconButton(
+                onPressed: () {
+                  setState(() {
+                    db.curUser.battleSim.favoriteTeams.putIfAbsent(record.questId, () => {}).toggle(record.id);
+                  });
+                },
+                icon: db.curUser.battleSim.isTeamFavorite(record.questId, record.id)
+                    ? const Icon(Icons.star, color: Colors.amber)
+                    : const Icon(Icons.star_border, color: Colors.grey),
+                tooltip: S.current.favorite,
+              ),
+            if (mode == TeamQueryMode.user ||
+                record.userId == db.security.username ||
+                AppInfo.isDebugDevice ||
+                kDebugMode)
+              FilledButton(
+                onPressed: () {
+                  final isOthers = record.userId != db.security.username;
+                  SimpleCancelOkDialog(
+                    title: Text(S.current.confirm),
+                    content: Text([
+                      '${S.current.delete} No.${record.id}',
+                      if (isOthers) "Waring: ${record.userId}'s, not your team",
+                    ].join('\n')),
+                    onTapOk: () {
+                      _deleteUserTeam(record);
+                    },
+                  ).showDialog(context);
+                },
+                style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
+                child: Text(S.current.delete),
+              ),
+            if (shareData != null)
+              FilledButton(
+                onPressed: () {
+                  replaySimulation(detail: shareData, questInfo: record.questInfo);
+                },
+                child: Text(S.current.details),
+              ),
+            if (mode == TeamQueryMode.quest)
+              FilledButton(
                 onPressed: shareData == null
                     ? null
-                    : () => showDialog(
-                          context: context,
-                          useRootNavigator: false,
-                          builder: (context) => buildShareDialog(context, record),
-                        ),
-                icon: const Icon(Icons.ios_share),
-                tooltip: S.current.share,
-              )
-            ],
-          ),
-          const SizedBox(height: 6),
-        ],
+                    : () {
+                        Navigator.pop(context, shareData.team);
+                      },
+                child: Text(S.current.select),
+              ),
+            IconButton(
+              onPressed: shareData == null
+                  ? null
+                  : () => showDialog(
+                        context: context,
+                        useRootNavigator: false,
+                        builder: (context) => buildShareDialog(context, record),
+                      ),
+              icon: const Icon(Icons.ios_share),
+              tooltip: S.current.share,
+            )
+          ],
+        ),
+        const SizedBox(height: 6),
+      ],
+    );
+    return Material(
+      color: shownList.indexOf(record).isOdd ? Theme.of(context).hoverColor : null,
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 80 * 8),
+          child: child,
+        ),
       ),
     );
   }

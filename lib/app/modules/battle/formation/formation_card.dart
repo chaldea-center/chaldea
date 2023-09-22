@@ -66,6 +66,7 @@ class FormationCard extends StatelessWidget {
         if (storedData.ceLimitBreak) {
           ceInfo += ' $kStarChar2';
         }
+        ceInfo = ceInfo.padRight(11);
       }
     }
 
@@ -80,7 +81,7 @@ class FormationCard extends StatelessWidget {
           text: svtInfo,
           option: ImageWithTextOption(
             textAlign: TextAlign.left,
-            fontSize: 8,
+            // fontSize: 8,
             alignment: Alignment.bottomLeft,
             // padding: const EdgeInsets.fromLTRB(22, 0, 2, 4),
             errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
@@ -95,7 +96,7 @@ class FormationCard extends StatelessWidget {
           text: ceInfo,
           option: ImageWithTextOption(
             textAlign: TextAlign.left,
-            fontSize: 8,
+            // fontSize: 8,
             alignment: Alignment.bottomLeft,
             // padding: const EdgeInsets.fromLTRB(22, 0, 2, 4),
             errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.emptyCeIcon),
@@ -105,7 +106,7 @@ class FormationCard extends StatelessWidget {
     );
     child = Container(
       padding: const EdgeInsets.symmetric(horizontal: 1),
-      constraints: const BoxConstraints(maxWidth: 64),
+      constraints: const BoxConstraints(maxWidth: 80),
       child: child,
     );
     return Flexible(flex: 10, child: child);
