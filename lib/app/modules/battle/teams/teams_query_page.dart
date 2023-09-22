@@ -58,16 +58,6 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   }
 
   PreferredSizeWidget? get appBar {
-    Set<int> svtIds = {}, ceIds = {};
-    for (final record in battleRecords) {
-      final svts = record.decoded?.team.allSvts ?? [];
-      svtIds.addAll(svts.map((e) => e?.svtId ?? 0).where((e) => e > 0));
-      ceIds.addAll(svts.map((e) => e?.ceId ?? 0).where((e) => e > 0));
-    }
-    if (!svtIds.contains(filterData.useSvts.radioValue)) {
-      filterData.useSvts.options.clear();
-    }
-
     final username = db.security.username;
 
     return AppBar(
@@ -86,19 +76,27 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         IconButton(
           icon: const Icon(Icons.filter_alt),
           tooltip: S.current.filter,
-          onPressed: () => FilterPage.show(
-            context: context,
-            builder: (context) => TeamFilter(
-              filterData: filterData,
-              availableSvts: svtIds,
-              availableCEs: ceIds,
-              onChanged: (_) {
-                if (mounted) {
-                  setState(() {});
-                }
-              },
-            ),
-          ),
+          onPressed: () {
+            Set<int> svtIds = {}, ceIds = {};
+            for (final record in battleRecords) {
+              final svts = record.decoded?.team.allSvts ?? [];
+              svtIds.addAll(svts.map((e) => e?.svtId ?? 0).where((e) => e > 0));
+              ceIds.addAll(svts.map((e) => e?.ceId ?? 0).where((e) => e > 0));
+            }
+            return FilterPage.show(
+              context: context,
+              builder: (context) => TeamFilter(
+                filterData: filterData,
+                availableSvts: svtIds,
+                availableCEs: ceIds,
+                onChanged: (_) {
+                  if (mounted) {
+                    setState(() {});
+                  }
+                },
+              ),
+            );
+          },
         ),
       ],
     );
@@ -339,7 +337,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       }
     }
     if (filterData.useSvts.options.isNotEmpty &&
-        data.team.allSvts.every((svt) => !filterData.useSvts.options.contains(svt?.svtId))) {
+        !filterData.useSvts.options.every((svtId) => data.team.allSvts.any((e) => e?.svtId == svtId))) {
       return false;
     }
 
@@ -471,12 +469,11 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   Future<void> _deleteUserTeam(UserBattleData battleRecord) async {
     if (!db.security.isUserLoggedIn) return;
     final resp = await showEasyLoading(() => ChaldeaWorkerApi.teamDelete(id: battleRecord.id));
-    if (resp.success && !db.runtimeData.enableDebugTools) {
+    if (resp.success) {
+      battleRecords.remove(battleRecord);
       ChaldeaWorkerApi.clearCache((cache) => true);
-      await _queryTeams(pageIndex, refresh: true);
-    } else {
-      resp.showToast();
     }
+    resp.showToast();
     if (mounted) setState(() {});
   }
 

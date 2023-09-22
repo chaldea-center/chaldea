@@ -36,7 +36,7 @@ class TeamFilterData {
   bool favorite = false;
   final attackerTdCardType = FilterRadioData<CardType>(); // attacker only
   final blockSvts = FilterGroupData<int>();
-  final useSvts = FilterRadioData<int>();
+  final useSvts = FilterGroupData<int>();
   final blockCEs = FilterGroupData<int>();
   final blockCEMLBOnly = <int, bool>{}; // true=block MLB only
   final normalAttackCount = FilterRadioData<int>.nonnull(-1);
