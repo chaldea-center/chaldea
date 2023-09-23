@@ -90,7 +90,7 @@ class Damage {
             final requiredTraits = dataVals.TargetList!.map((traitId) => NiceTrait(id: traitId)).toList();
             final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
             int useCount = countTarget.countBuffWithTrait(requiredTraits,
-                    ignoreIndivUnreleaseable: dataVals.IgnoreIndivUnreleaseable == 1) +
+                    excludeIndivUnreleaseable: dataVals.IgnoreIndivUnreleaseable == 1) +
                 countTarget.countTrait(battleData, requiredTraits);
             final useCorrection = damageNpSEDecision?.useCorrection ?? useCount > 0;
             useCount = damageNpSEDecision?.indivSumCount ?? useCount;
