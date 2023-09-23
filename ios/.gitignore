@@ -1,6 +1,6 @@
 # custom
 # use Info-{Debug/Profile/Release}.plist instead
-Runner/info.plist
+Chaldea/info.plist
 
 # default
 **/dgph
@@ -30,7 +30,7 @@ Flutter/app.zip
 Flutter/flutter_assets/
 Flutter/flutter_export_environment.sh
 ServiceDefinitions.json
-Runner/GeneratedPluginRegistrant.*
+Chaldea/GeneratedPluginRegistrant.*
 
 # Exceptions to above rules.
 !default.mode1v3
