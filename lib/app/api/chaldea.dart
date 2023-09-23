@@ -162,7 +162,7 @@ class ChaldeaWorkerApi {
     String? userId,
     int limit = 20,
     int offset = 0,
-    Duration? expireAfter = const Duration(minutes: 60),
+    Duration? expireAfter,
   }) {
     userId ??= db.security.username;
     if (userId == null || userId.isEmpty) return Future.value();
@@ -180,7 +180,7 @@ class ChaldeaWorkerApi {
     required String? enemyHash,
     int limit = 20,
     int offset = 0,
-    Duration? expireAfter = const Duration(minutes: 60),
+    Duration? expireAfter,
   }) {
     return teams(
       questId: questId,

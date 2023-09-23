@@ -429,7 +429,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         task = showEasyLoading(() => ChaldeaWorkerApi.teamsByUser(
               limit: _pageSize + 1,
               offset: _pageSize * page,
-              expireAfter: refresh ? Duration.zero : const Duration(minutes: 60),
+              expireAfter: refresh ? Duration.zero : null,
             ));
       case TeamQueryMode.quest:
         final questPhase = widget.questPhase;
@@ -440,7 +440,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
               enemyHash: widget.noEnemyHash ? null : questPhase.enemyHash,
               limit: _pageSize + 1,
               offset: _pageSize * page,
-              expireAfter: refresh ? Duration.zero : const Duration(minutes: 60),
+              expireAfter: refresh ? Duration.zero : null,
             ));
       case TeamQueryMode.id:
         task = showEasyLoading(() async {

@@ -274,7 +274,7 @@ class PlayerSvtData {
       ..cardStrengthens = storedData.cardStrengthens.toList();
 
     if (svt != null) {
-      playerSvtData.skills = [];
+      playerSvtData.skills = List.generate(kActiveSkillNums.length, (index) => null);
       for (int index = 0; index < kActiveSkillNums.length; index++) {
         NiceSkill? targetSkill;
         final skillId = storedData.skillIds.getOrNull(index);
@@ -282,7 +282,7 @@ class PlayerSvtData {
           targetSkill = svt.skills.lastWhereOrNull((skill) => skill.id == skillId);
           targetSkill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
         }
-        playerSvtData.skills.add(targetSkill);
+        playerSvtData.skills[index] = targetSkill;
       }
 
       playerSvtData.extraPassives = svt.extraPassive.toList();

@@ -1,6 +1,9 @@
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import 'svt_option_editor.dart';
 
 class FormationCard extends StatelessWidget {
   final BattleTeamFormation formation;
@@ -81,11 +84,22 @@ class FormationCard extends StatelessWidget {
           text: svtInfo,
           option: ImageWithTextOption(
             textAlign: TextAlign.left,
-            // fontSize: 8,
+            fontSize: 14,
             alignment: Alignment.bottomLeft,
             // padding: const EdgeInsets.fromLTRB(22, 0, 2, 4),
             errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
           ),
+          onTap: () async {
+            final data = await PlayerSvtData.fromStoredData(storedData);
+            if (data.svt == null) return;
+            router.pushPage(ServantOptionEditPage(
+              playerSvtData: data,
+              questPhase: null,
+              playerRegion: null,
+              onChange: null,
+              svtFilterData: null,
+            ));
+          },
         ),
         GameCardMixin.cardIconBuilder(
           context: context,
@@ -96,11 +110,21 @@ class FormationCard extends StatelessWidget {
           text: ceInfo,
           option: ImageWithTextOption(
             textAlign: TextAlign.left,
-            // fontSize: 8,
+            fontSize: 14,
             alignment: Alignment.bottomLeft,
             // padding: const EdgeInsets.fromLTRB(22, 0, 2, 4),
             errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.emptyCeIcon),
           ),
+          onTap: () async {
+            final data = await PlayerSvtData.fromStoredData(storedData);
+            if (data.ce == null) return;
+            router.pushPage(CraftEssenceOptionEditPage(
+              playerSvtData: data,
+              questPhase: null,
+              onChange: null,
+              craftFilterData: null,
+            ));
+          },
         ),
       ],
     );
