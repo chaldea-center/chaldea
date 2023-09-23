@@ -662,7 +662,9 @@ class BattleData {
     }
 
     if (params.checkCurrentBuffTraits && currentBuff != null) {
-      currentTraits.addAll(currentBuff!.traits);
+      if (!params.ignoreIrremovableBuff || !currentBuff!.irremovable) {
+        currentTraits.addAll(currentBuff!.traits);
+      }
     }
 
     if (params.checkCurrentCardTraits && currentCard != null) {

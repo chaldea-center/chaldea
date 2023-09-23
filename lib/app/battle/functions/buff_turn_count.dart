@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/models.dart';
 import '../models/battle.dart';
 
@@ -30,43 +33,46 @@ class BuffTurnCount {
     }
     for (final target in targets) {
       battleData.withTargetSync(target, () {
-        final success = _changeBuffValue(target, value, dataVals.TargetList ?? [], isTurn, true);
+        final success = _changeBuffValue(battleData, target, value, dataVals, isTurn, true);
         battleData.curFuncResults[target.uniqueId] = success;
       });
     }
   }
 
   static bool _changeBuffValue(
-      BattleServantData svt, int changeValue, List<int> targetIndivi, bool isTurn, bool isAny) {
+    final BattleData battleData,
+    final BattleServantData svt,
+    final int changeValue,
+    final DataVals dataVals,
+    final bool isTurn,
+    final bool isAny,
+  ) {
+    final List<int> targetIndivi = dataVals.TargetList ?? [];
     if (targetIndivi.isEmpty) return false;
+
+    final List<NiceTrait> targetTraits = targetIndivi.map((targetIndiv) => NiceTrait(id: targetIndiv)).toList();
     bool changed = false;
+
     for (final buff in svt.battleBuff.getActiveList()) {
-      if (changeValue > 0 || ((!isTurn || buff.logicTurn != 1) && (isTurn || buff.count != 1))) {
-        int turn = buff.logicTurn;
-        int count = buff.count;
-        if (isAny && buff.buff.vals.any((trait) => targetIndivi.contains(trait.signedId))) {
-          if (isTurn && turn > 0) {
-            buff.logicTurn += changeValue;
-          } else if (!isTurn && count > 0) {
-            buff.count += changeValue;
+      battleData.withBuffSync(buff, () {
+        if (battleData.checkTraits(CheckTraitParameters(
+          requiredTraits: targetTraits,
+          checkCurrentBuffTraits: true,
+          ignoreIrremovableBuff: dataVals.IgnoreIndivUnreleaseable == 1,
+          positiveMatchFunction: isAny ? partialMatch : allMatch,
+          negativeMatchFunction: isAny ? partialMatch : allMatch,
+        ))) {
+          if (isTurn && buff.logicTurn > 0) {
+            buff.logicTurn = max(buff.logicTurn + changeValue, 1);
+            changed = true;
+          } else if (!isTurn && buff.count > 0) {
+            buff.count = max(buff.count + changeValue, 1);
+            changed = true;
           }
-        } else if (!isAny && targetIndivi.every((id) => buff.buff.vals.any((trait) => trait.signedId == id))) {
-          if (isTurn && turn > 0) {
-            buff.logicTurn += changeValue;
-          } else if (!isTurn && count > 0) {
-            buff.count += changeValue;
-          }
         }
-        if (!changed) {
-          changed = buff.logicTurn != turn || buff.count != count;
-        }
-        if (isTurn && buff.logicTurn != turn && buff.logicTurn <= 0) {
-          buff.logicTurn = 1;
-        } else if (!isTurn && buff.count != count && buff.count <= 0) {
-          buff.count = 1;
-        }
-      }
+      });
     }
+
     return changed;
   }
 }
