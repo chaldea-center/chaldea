@@ -830,6 +830,42 @@ void main() async {
       expect(prevHp3 - enemy3.hp, 57200);
     });
 
+    test('damageNpIndividualSum selfBuff', () async {
+      final List<PlayerSvtData> setting = [
+        PlayerSvtData.id(1101600)
+          ..lv = 80
+          ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
+          ..ceLv = 100
+          ..ceLimitBreak = true,
+      ];
+      final battle = BattleData();
+      await battle.init(db.gameData.questPhases[9300040603]!, setting, null);
+
+      final chloe = battle.onFieldAllyServants[0]!;
+      final enemy1 = battle.onFieldEnemies[0]!;
+      final prevHp1 = enemy1.hp;
+
+      await battle.activateSvtSkill(0, 0);
+      await battle.playerTurn([CombatAction(chloe, chloe.getNPCard(battle)!)]);
+      expect(prevHp1 - enemy1.hp, 67832);
+
+      final enemy2 = battle.onFieldEnemies[1]!;
+      final prevHp2 = enemy2.hp;
+      await battle.playerTurn([
+        CombatAction(chloe, chloe.getCards(battle)[0]),
+        CombatAction(chloe, chloe.getCards(battle)[1]),
+        CombatAction(chloe, chloe.getCards(battle)[2]),
+      ]);
+      expect(prevHp2 - enemy2.hp, 3391 + 4069 + 4748 + 13489);
+
+      final enemy3 = battle.onFieldEnemies[2]!;
+
+      final prevHp3 = enemy3.hp;
+      chloe.np = 10000;
+      await battle.playerTurn([CombatAction(chloe, chloe.getNPCard(battle)!)]);
+      expect(prevHp3 - enemy3.hp, 110999);
+    });
+
     test('damageNpIndividualSum selfTrait', () async {
       final List<PlayerSvtData> setting = [
         PlayerSvtData.id(1001300)

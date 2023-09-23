@@ -140,10 +140,7 @@ class BuffData {
 
   BuffData.makeCopy(this.buff, this.vals);
 
-  List<NiceTrait> get traits => [
-        ...buff.vals,
-        if (vals.AddIndividualty != null && vals.AddIndividualty! > 0) NiceTrait(id: vals.AddIndividualty!)
-      ];
+  List<NiceTrait> get traits => buff.vals;
 
   static final List<BuffType> activeOnlyTypes = [
     BuffType.upDamageIndividualityActiveonly,

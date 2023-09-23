@@ -1154,13 +1154,25 @@ class BattleServantData {
     return countAnyTraits(getTraits(battleData), traits);
   }
 
-  int countBuffWithTrait(final List<NiceTrait> traits, {final bool activeOnly = false}) {
-    return getBuffsWithTraits(traits, activeOnly: activeOnly).length;
+  int countBuffWithTrait(
+    final List<NiceTrait> traits, {
+    final bool activeOnly = false,
+    final bool ignoreIndivUnreleaseable = false,
+  }) {
+    return getBuffsWithTraits(traits, activeOnly: activeOnly, ignoreIndivUnreleaseable: ignoreIndivUnreleaseable)
+        .length;
   }
 
-  List<BuffData> getBuffsWithTraits(final List<NiceTrait> traits, {final bool activeOnly = false}) {
+  List<BuffData> getBuffsWithTraits(
+    final List<NiceTrait> traits, {
+    final bool activeOnly = false,
+    final bool ignoreIndivUnreleaseable = false,
+  }) {
     final buffList = activeOnly ? battleBuff.getActiveList() : battleBuff.validBuffs;
-    return buffList.where((buff) => checkTraitFunction(buff.traits, traits, partialMatch, partialMatch)).toList();
+    return buffList.where((buff) {
+      if (ignoreIndivUnreleaseable && buff.irremovable) return false;
+      return checkTraitFunction(buff.traits, traits, partialMatch, partialMatch);
+    }).toList();
   }
 
   List<BuffData> getBuffsOfType(final BuffType buffType) {
