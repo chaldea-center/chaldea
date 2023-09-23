@@ -184,6 +184,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     final monthPlan = db.curUser.ticketOf(ticket.id);
     List<Widget> trailingItems = [];
     final items = ticket.of(db.curUser.region);
+    if (items.isEmpty) return const SizedBox.shrink();
     for (int index = 0; index < items.length; index++) {
       final itemId = items[index];
       final item = db.gameData.items[itemId];
@@ -263,7 +264,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
       alignment: WrapAlignment.end,
       children: trailingItems,
     );
-    if (items.length <= 3) {
+    if (items.length <= 3 && items.isNotEmpty) {
       child = FittedBox(
         fit: BoxFit.scaleDown,
         child: child,
@@ -284,8 +285,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
       builder: (context) {
         List<Widget> children = [];
         for (final region in Region.values) {
-          final items = region == Region.jp ? ticket.items : ticket.replaced.ofRegion(region);
-          if (items == null) continue;
+          final items = ticket.of(region);
           children.add(ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
             title: Text(region.localName),
