@@ -446,7 +446,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         task = showEasyLoading(() async {
           final teams = <UserBattleData>[];
           for (final id in widget.teamIds ?? <int>[]) {
-            final team = await ChaldeaWorkerApi.laplaceQueryById(id);
+            final team = await ChaldeaWorkerApi.laplaceQueryById(id, expireAfter: refresh ? Duration.zero : null);
             if (team != null) teams.add(team);
           }
           return teams;

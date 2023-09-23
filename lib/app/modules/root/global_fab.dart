@@ -15,6 +15,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/movable_fab.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../app.dart';
+import '../common/frame_rate_layer.dart';
 import '../misc/theme_palette.dart';
 
 class WindowManagerFab extends StatefulWidget {
@@ -213,6 +214,19 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           onTap: () {
             widget.state?.hide(60);
             Navigator.pop(context);
+          },
+        ),
+        ListTile(
+          title: Text(S.current.show_frame_rate),
+          onTap: () {
+            setState(() {
+              FrameRateLayer.showFps = !FrameRateLayer.showFps;
+            });
+            if (FrameRateLayer.showFps) {
+              FrameRateLayer.createOverlay(kAppKey.currentContext ?? context);
+            } else {
+              FrameRateLayer.removeOverlay();
+            }
           },
         ),
         ListTile(

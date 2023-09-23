@@ -120,10 +120,7 @@ class ChaldeaWorkerApi {
     return result ?? WorkerResponse(success: false, message: "Error");
   }
 
-  static Future<UserBattleData?> laplaceQueryById(
-    int id, {
-    Duration expireAfter = const Duration(minutes: 60),
-  }) {
+  static Future<UserBattleData?> laplaceQueryById(int id, {Duration? expireAfter}) {
     return cacheManager.getModel(
       '$v3Laplace/team/$id',
       (data) => UserBattleData.fromJson(data),
