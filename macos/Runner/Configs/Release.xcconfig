@@ -1,5 +1,0 @@
-#include "../../Flutter/Flutter-Release.xcconfig"
-#include "Warnings.xcconfig"
-#include "AppInfo.xcconfig"
-#include "Pods/Target Support Files/Pods-Chaldea/Pods-Chaldea.release.xcconfig"
-#include "Pods/Target Support Files/Pods-Chaldea/Pods-Chaldea.profile.xcconfig"
