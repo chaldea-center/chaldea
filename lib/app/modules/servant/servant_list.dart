@@ -178,9 +178,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                 ),
               PopupMenuItem(
                 child: Text(S.current.select_plan),
-                onTap: () async {
-                  await null;
-                  if (!mounted) return;
+                onTap: () {
                   SharedBuilder.showSwitchPlanDialog(
                     context: context,
                     onChange: (index) {
@@ -194,17 +192,13 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
               if (widget.planMode) ...[
                 PopupMenuItem(
                   child: Text(S.current.copy_plan_menu),
-                  onTap: () async {
-                    await null;
-                    if (!mounted) return;
+                  onTap: () {
                     copyPlan();
                   },
                 ),
                 PopupMenuItem(
                   child: Text(S.current.reset_plan_shown(db.curUser.curSvtPlanNo + 1)),
-                  onTap: () async {
-                    await null;
-                    if (!mounted) return;
+                  onTap: () {
                     SimpleCancelOkDialog(
                       title: Text(S.current.confirm),
                       content: Text(S.current.reset_plan_shown(db.curUser.curSvtPlanNo + 1)),
@@ -220,9 +214,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                 ),
                 PopupMenuItem(
                   child: Text(S.current.reset_plan_all(db.curUser.curSvtPlanNo + 1)),
-                  onTap: () async {
-                    await null;
-                    if (!mounted) return;
+                  onTap: () {
                     SimpleCancelOkDialog(
                       title: Text(S.current.confirm),
                       content: Text(S.current.reset_plan_all(db.curUser.curSvtPlanNo + 1)),
@@ -250,9 +242,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                 ),
                 PopupMenuItem(
                   child: Text(S.current.favorite_all_shown_svt),
-                  onTap: () async {
-                    await null;
-                    if (!mounted) return;
+                  onTap: () {
                     SimpleCancelOkDialog(
                       title: Text(S.current.confirm),
                       content: Text('${S.current.favorite_all_shown_svt}\n${S.current.total} ${shownList.length}'),

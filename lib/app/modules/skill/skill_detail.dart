@@ -154,7 +154,6 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
         PopupMenuItem(
           enabled: data != null,
           onTap: () async {
-            await null;
             try {
               final text = const JsonEncoder.withIndent('  ').convert(skill);
               // ignore: use_build_context_synchronously

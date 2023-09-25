@@ -136,8 +136,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
   List<PopupMenuEntry> popupMenuItemBuilder(BuildContext context) {
     List<PopupMenuEntry<dynamic>> items = [
       PopupMenuItem(
-        onTap: () async {
-          await null;
+        onTap: () {
           router.push(
             url: Routes.questI(questPhase.id),
             child: QuestDetailPage.phase(questPhase: questPhase),
@@ -148,8 +147,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       ),
       PopupMenuItem(
         child: Text(S.current.battle_battle_log),
-        onTap: () async {
-          await null;
+        onTap: () {
           router.pushPage(BattleLogPage(logger: battleData.battleLogger));
         },
       ),
@@ -162,7 +160,6 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       PopupMenuItem(
         child: Text(Transl.skillNames('宝具解放').l),
         onTap: () async {
-          await null;
           await battleData.commandSpellReleaseNP();
           if (mounted) setState(() {});
         },
@@ -170,7 +167,6 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       PopupMenuItem(
         child: Text(Transl.skillNames('霊基修復').l),
         onTap: () async {
-          await null;
           await battleData.commandSpellRepairHp();
           if (mounted) setState(() {});
         },
@@ -178,8 +174,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       // PopupMenuItem(
       //   child: Text(S.current.battle_charge_party),
       //   onTap: () async {
-      //     await null;
-      //     battleData.chargeAllyNP();
+      //     await battleData.chargeAllyNP();
       //     if (mounted) setState(() {});
       //   },
       // ),
@@ -191,9 +186,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       ),
       PopupMenuItem(
         child: Text(S.current.reset_skill_cd),
-        onTap: () async {
-          await null;
-          if (!mounted) return;
+        onTap: () {
           showDialog(
             context: context,
             useRootNavigator: false,
@@ -234,7 +227,6 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       PopupMenuItem(
         child: Text(S.current.battle_activate_custom_skill),
         onTap: () async {
-          await null;
           await router.pushPage(CustomSkillActivator(battleData: battleData));
           if (mounted) setState(() {});
         },

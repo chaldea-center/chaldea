@@ -213,9 +213,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
           if (_shownTabs.length > 1 || db.gameData.items[widget.itemId]?.type == ItemType.svtCoin)
             PopupMenuItem(
               child: Text(S.current.item_edit_owned_amount),
-              onTap: () async {
-                await null;
-                if (!mounted) return;
+              onTap: () {
                 showDialog(
                   context: context,
                   useRootNavigator: false,

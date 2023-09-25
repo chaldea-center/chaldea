@@ -386,23 +386,20 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           child: Divider(),
         ),
         PopupMenuItem(
-          onTap: () async {
-            await null;
+          onTap: () {
             selectSvt();
           },
           child: Text(S.current.servant),
         ),
         PopupMenuItem(
-          onTap: () async {
-            await null;
+          onTap: () {
             selectSvtEntity();
           },
           child: Text(S.current.enemy),
         ),
         if (questPhase?.supportServants.isNotEmpty == true)
           PopupMenuItem(
-            onTap: () async {
-              await null;
+            onTap: () {
               selectSupport();
             },
             child: Text(S.current.support_servant),
@@ -410,8 +407,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         const PopupMenuDivider(),
         PopupMenuItem(
           enabled: playerSvtData.svt != null && !playerSvtData.supportType.isSupport,
-          onTap: () async {
-            await null;
+          onTap: () {
             resyncServantData();
           },
           child: Text(S.current.svt_option_resync),
@@ -1283,15 +1279,13 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
           child: Divider(),
         ),
         PopupMenuItem(
-          onTap: () async {
-            await null;
+          onTap: () {
             selectCE();
           },
           child: Text(S.current.craft_essence),
         ),
         PopupMenuItem(
-          onTap: () async {
-            await null;
+          onTap: () {
             selectStoryCE();
           },
           child: Text(S.current.story_ce),

@@ -233,38 +233,37 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
     );
   }
 
-  void _showFixRegionDialog() async {
-    await null;
-    if (!mounted) return;
+  void _showFixRegionDialog() {
     showDialog(
-        context: context,
-        builder: (context) {
-          return SimpleDialog(
-            title: Text(S.current.quest_prefer_region),
-            children: [
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text(S.current.quest_prefer_region),
+          children: [
+            ListTile(
+              title: Text(S.current.general_default),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+              selected: db.settings.preferredQuestRegion == null,
+              onTap: () {
+                Navigator.pop(context);
+                db.settings.preferredQuestRegion = null;
+              },
+            ),
+            for (final region in Region.values)
               ListTile(
-                title: Text(S.current.general_default),
+                title: Text(region.localName),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-                selected: db.settings.preferredQuestRegion == null,
+                selected: db.settings.preferredQuestRegion == region,
                 onTap: () {
                   Navigator.pop(context);
-                  db.settings.preferredQuestRegion = null;
+                  db.settings.preferredQuestRegion = region;
                 },
               ),
-              for (final region in Region.values)
-                ListTile(
-                  title: Text(region.localName),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-                  selected: db.settings.preferredQuestRegion == region,
-                  onTap: () {
-                    Navigator.pop(context);
-                    db.settings.preferredQuestRegion = region;
-                  },
-                ),
-              SFooter(S.current.quest_prefer_region_hint)
-            ],
-          );
-        });
+            SFooter(S.current.quest_prefer_region_hint)
+          ],
+        );
+      },
+    );
   }
 
   bool _showAllCampaign = false;

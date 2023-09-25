@@ -170,9 +170,7 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
             ),
           PopupMenuItem(
             child: Text(S.current.settings_tab_name),
-            onTap: () async {
-              await null;
-              if (!mounted) return;
+            onTap: () {
               FilterPage.show(
                 context: context,
                 builder: (context) => ScriptReaderFilterPage(

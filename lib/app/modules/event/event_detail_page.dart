@@ -251,8 +251,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
         if (eventId != null && eventId > 0) ...[
           PopupMenuItem(
             child: Text(S.current.switch_region),
-            onTap: () async {
-              await null;
+            onTap: () {
               _showSwitchRegion();
             },
           ),

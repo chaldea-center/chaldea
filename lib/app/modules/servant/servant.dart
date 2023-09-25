@@ -434,9 +434,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
           if (svt.isUserSvt) ...[
             PopupMenuItem(
               value: 'plan', // dialog
-              onTap: () async {
-                await null;
-                if (!mounted) return;
+              onTap: () {
                 SharedBuilder.showSwitchPlanDialog(
                   context: context,
                   onChange: (index) {
@@ -450,9 +448,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
             ),
             PopupMenuItem<String>(
               value: 'reset', // dialog
-              onTap: () async {
-                await null;
-                if (!mounted) return;
+              onTap: () {
                 SimpleCancelOkDialog(
                   title: Text(S.current.reset),
                   onTapOk: () {
@@ -480,8 +476,6 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
             PopupMenuItem(
               child: Text(S.current.svt_ascension_icon),
               onTap: () async {
-                await null;
-                if (!mounted) return;
                 await showDialog(
                   context: context,
                   useRootNavigator: false,

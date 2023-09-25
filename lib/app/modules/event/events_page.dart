@@ -181,9 +181,7 @@ class EventListPageState extends State<EventListPage>
         itemBuilder: (context) => [
           PopupMenuItem(
             child: Text(S.current.select_plan),
-            onTap: () async {
-              await null;
-              if (!mounted) return;
+            onTap: () {
               SharedBuilder.showSwitchPlanDialog(
                 context: context,
                 onChange: (index) {
@@ -196,8 +194,7 @@ class EventListPageState extends State<EventListPage>
           ),
           PopupMenuItem(
             child: Text(S.current.copy_plan_menu),
-            onTap: () async {
-              await null;
+            onTap: () {
               copyPlan();
             },
           ),

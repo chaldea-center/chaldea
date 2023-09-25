@@ -251,9 +251,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         child: Text('${S.current.import_data}(${S.current.import_from_clipboard})'),
       ),
       PopupMenuItem(
-        onTap: () async {
-          await null;
-          if (!mounted) return;
+        onTap: () {
           InputCancelOkDialog(
             title: 'Laplace Team ID',
             keyboardType: TextInputType.number,

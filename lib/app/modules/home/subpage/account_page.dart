@@ -139,10 +139,8 @@ class _AccountPageState extends State<AccountPage> {
     updateData();
   }
 
-  void clearUser(int key) async {
+  void clearUser(int key) {
     final user = users[key];
-    await null;
-    if (!mounted) return;
     SimpleCancelOkDialog(
       title: Text(S.current.clear_data),
       content: Text('${S.current.account_title}: ${user.name}'),
@@ -156,11 +154,9 @@ class _AccountPageState extends State<AccountPage> {
     ).showDialog(context);
   }
 
-  void deleteUser(int key) async {
-    await null;
+  void deleteUser(int key) {
     print('delete user key $key...');
     final user = users[key];
-    if (!mounted) return;
     SimpleCancelOkDialog(
       title: Text('${S.current.delete} ${user.name}'),
       onTapOk: () {
