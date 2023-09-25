@@ -120,17 +120,25 @@ class _ItemObtainEventFreeTabState extends State<ItemObtainEventFreeTab> {
       final child = SimpleAccordion(
         key: ValueKey('event_free_$questId'),
         headerBuilder: (context, _) {
-          String subtitle = 'Lv${quest.recommendLv} ${quest.consume}AP.  ';
-          subtitle += sortType != _SortType.dropRate
-              ? '${S.current.drop_rate} $dropRateString%.'
-              : '${S.current.ap_efficiency} $apRateString AP.';
-          subtitle += '\nJP ${quest.openedAt.sec2date().toDateString()}.  ';
-          subtitle += '${S.current.quest_runs(drops.runs)}.';
-
+          List<InlineSpan> subtitles = [
+            TextSpan(
+              text: 'Lv${quest.recommendLv} ${quest.consume}AP.  ',
+              style: quest.recommendLv.startsWith('90+')
+                  ? TextStyle(color: Theme.of(context).colorScheme.primaryContainer)
+                  : null,
+            ),
+            TextSpan(
+                text: sortType == _SortType.dropRate
+                    ? '${S.current.ap_efficiency} $apRateString AP.'
+                    : '${S.current.drop_rate} $dropRateString%.'),
+            TextSpan(
+                text: '\nJP ${quest.openedAt.sec2date().toDateString()}.  '
+                    '${S.current.quest_runs(drops.runs)}.')
+          ];
           return ListTile(
             dense: true,
             title: Text(quest.lDispName.setMaxLines(1)),
-            subtitle: Text(subtitle),
+            subtitle: Text.rich(TextSpan(children: subtitles)),
             trailing: Text(sortType != _SortType.dropRate ? '$apRateString AP' : '$dropRateString%'),
             isThreeLine: true,
             enabled: !outdated,

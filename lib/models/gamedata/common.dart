@@ -25,6 +25,8 @@ enum Region {
   final Language language;
   const Region(this.language);
 
+  bool get isJP => this == jp;
+
   int get eventDelayMonth {
     switch (this) {
       case Region.jp:

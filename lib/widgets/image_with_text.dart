@@ -104,7 +104,7 @@ class ImageWithText extends StatelessWidget {
                 builder: textBuilder,
                 textAlign: option?.textAlign ?? TextAlign.end,
                 textStyle: _style,
-                shadowSize: fontSize == null ? 6 : fontSize * 0.25,
+                shadowSize: (fontSize == null ? 4.0 : fontSize * 0.25).clamp(2, 4),
                 shadowColor: option?.shadowColor ?? Theme.of(context).cardColor,
               ),
             ),

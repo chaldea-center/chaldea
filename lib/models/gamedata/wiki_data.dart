@@ -312,7 +312,7 @@ class ExchangeTicket {
 
   bool isOutdated() {
     final now = DateTime.now();
-    return year * 12 + month + monthDiff + 4 < now.year * 12 + now.month;
+    return year * 12 + month + (db.curUser.region == Region.jp ? 12 : monthDiff) + 4 < now.year * 12 + now.month;
   }
 
   DateTime get date {
