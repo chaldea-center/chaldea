@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.4.16
+
+- Mission solver:
+  - support blacklist
+  - support adding NotBasedOnServant trait for Traum enemies (trait removed in JP)
+- Support favorite teams
+- Fix Chloe NP S.E. not take effect
+- Fix Tell skill & NP S.E. & Summer Baobhan skill 1 vs unreleasable buff
+
 ## 2.4.15
 
 - Disable KR carousel
