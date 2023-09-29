@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -76,6 +77,30 @@ class FateTopLogin {
   static FateTopLogin fromBase64(String encoded) {
     encoded = tryBase64Decode(encoded);
     return FateTopLogin.fromJson(Map<String, dynamic>.from(jsonDecode(encoded)));
+  }
+
+  // may be deflate, gzip
+  static FateTopLogin fromBytes(List<int> bytes) {
+    String? contents;
+    try {
+      contents = utf8.decode(bytes);
+    } catch (e) {} // ignore: empty_catches
+    if (contents == null) {
+      try {
+        if (bytes.length > 2 && bytes[0] == 0x1f && bytes[1] == 0x8b) {
+          contents = utf8.decode(gzip.decode(bytes));
+        }
+      } catch (e) {} // ignore: empty_catches
+    }
+    if (contents == null) {
+      try {
+        contents = utf8.decode(ZLibCodec(raw: true).decode(bytes));
+      } catch (e) {} // ignore: empty_catches
+    }
+    if (contents == null) {
+      throw const FormatException("Unknown byte format, gzip or raw deflate or plain utf8");
+    }
+    return fromBase64(contents);
   }
 }
 

@@ -75,13 +75,13 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   Future<void> loadOrSave() async {
     try {
       if (widget.toploginText != null) {
-        parseResponseBody(widget.toploginText!);
+        parseResponseBody(utf8.encode(widget.toploginText!));
         await FilePlus(tmpPath).create(recursive: true);
         await FilePlus(tmpPath).writeAsString(widget.toploginText!);
       } else {
         final f = FilePlus(tmpPath);
         if (f.existsSync()) {
-          parseResponseBody(await f.readAsString());
+          parseResponseBody(await f.readAsBytes());
           if (mounted) setState(() {});
         }
       }
@@ -902,13 +902,13 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         final result = await FilePickerU.pickFiles(clearCache: true);
         final bytes = result?.files.first.bytes;
         if (bytes == null) return;
-        parseResponseBody(utf8.decode(bytes));
+        parseResponseBody(bytes);
         await FilePlus(tmpPath).create(recursive: true);
         await FilePlus(tmpPath).writeAsBytes(bytes);
       } else if (fromFile == false) {
         String? text = (await Clipboard.getData(Clipboard.kTextPlain))?.text;
         if (text != null && text.isNotEmpty) {
-          parseResponseBody(text);
+          parseResponseBody(utf8.encode(text));
           await FilePlus(tmpPath).create(recursive: true);
           await FilePlus(tmpPath).writeAsString(text);
         } else {
@@ -930,10 +930,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     }
   }
 
-  void parseResponseBody(String contents) {
-    FateTopLogin _topLogin = FateTopLogin.fromBase64(contents);
+  void parseResponseBody(List<int> bytes) {
+    FateTopLogin _topLogin = FateTopLogin.fromBytes(bytes);
     if (!_topLogin.response.any((res) => res.nid == 'login')) {
-      throw Exception('This is not login data: ${FateTopLogin.tryBase64Decode(contents).substring2(0, 20)}');
+      throw const FormatException('This is not login data');
     }
     final body = _topLogin.mstData;
 
