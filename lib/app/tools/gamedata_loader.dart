@@ -323,6 +323,11 @@ class GameDataLoader {
           if (event == null) return;
           (gamedata['events'] as Map?)?[event.id.toString()] ??= event.toJson();
         }),
+      for (final warId in addData.wars)
+        AtlasApi.war(warId).then((war) {
+          if (war == null) return;
+          (gamedata['wars'] as Map?)?[war.id.toString()] ??= war.toJson();
+        }),
     ];
     try {
       await Future.wait(futures);

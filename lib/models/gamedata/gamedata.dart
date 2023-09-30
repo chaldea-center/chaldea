@@ -263,6 +263,7 @@ class GameDataAdd {
   List<int> ccs;
   List<int> items;
   List<int> events; // only EventType.eventQuest
+  List<int> wars;
 
   GameDataAdd({
     this.svts = const [],
@@ -270,6 +271,7 @@ class GameDataAdd {
     this.ccs = const [],
     this.items = const [],
     this.events = const [],
+    this.wars = const [],
   });
 
   factory GameDataAdd.fromJson(Map<String, dynamic> json) => _$GameDataAddFromJson(json);

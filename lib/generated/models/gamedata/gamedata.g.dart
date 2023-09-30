@@ -89,6 +89,7 @@ GameDataAdd _$GameDataAddFromJson(Map json) => GameDataAdd(
       ccs: (json['ccs'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       items: (json['items'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       events: (json['events'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      wars: (json['wars'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
     );
 
 DataVersion _$DataVersionFromJson(Map json) => DataVersion(
