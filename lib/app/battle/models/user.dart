@@ -234,7 +234,7 @@ class PlayerSvtData {
       ..appendLvs = appendLvs.toList()
       ..extraPassives = extraPassives.toList()
       ..disabledExtraSkills = disabledExtraSkills.toSet()
-      ..additionalPassives = additionalPassives.toList()
+      ..additionalPassives = List<BaseSkill>.of(additionalPassives)
       ..additionalPassiveLvs = additionalPassiveLvs.toList()
       ..tdLv = tdLv
       ..td = td
@@ -260,7 +260,7 @@ class PlayerSvtData {
       ..skillLvs = storedData.skillLvs.toList()
       ..appendLvs = storedData.appendLvs.toList()
       ..disabledExtraSkills = storedData.disabledExtraSkills.toSet()
-      ..additionalPassives = storedData.additionalPassives.toList()
+      ..additionalPassives = List<BaseSkill>.of(storedData.additionalPassives)
       ..additionalPassiveLvs = storedData.additionalPassiveLvs.toList()
       ..tdLv = storedData.tdLv
       ..lv = storedData.lv
