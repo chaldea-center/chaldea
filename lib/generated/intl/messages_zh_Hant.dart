@@ -774,6 +774,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rarity": MessageLookupByLibrary.simpleMessage("稀有度"),
         "rate_app_store": MessageLookupByLibrary.simpleMessage("App Store評分"),
         "rate_play_store": MessageLookupByLibrary.simpleMessage("Google Play評分"),
+        "read_device_info": MessageLookupByLibrary.simpleMessage("读取本设备参数"),
         "recognizer_result_count": m25,
         "recorder_screenshot_current_view": MessageLookupByLibrary.simpleMessage("當前視窗"),
         "recorder_screenshot_full_view": MessageLookupByLibrary.simpleMessage("完整視窗"),

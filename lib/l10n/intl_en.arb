@@ -675,6 +675,7 @@
   "rarity": "Rarity",
   "rate_app_store": "Rate on App Store",
   "rate_play_store": "Rate on Google Play",
+  "read_device_info": "Read this Device's info",
   "recognizer_result_count": "{unknown} unknown, {dup} dup, {valid}/{total} valid, {selected} selected",
   "recorder_screenshot_current_view": "Current View",
   "recorder_screenshot_full_view": "Full View",

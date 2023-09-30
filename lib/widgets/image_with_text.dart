@@ -74,7 +74,7 @@ class ImageWithText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle _style = const TextStyle().merge(option?.textStyle);
+    TextStyle _style = const TextStyle(height: 1).merge(option?.textStyle);
     double? fontSize = option?.fontSize ??
         (option?.height != null && option!.height!.isFinite
             ? option!.height! * ((text?.split('\n').length ?? 1) > 1 ? 0.24 : 0.3)

@@ -675,6 +675,7 @@
   "rarity": "稀有度",
   "rate_app_store": "App Store评分",
   "rate_play_store": "Google Play评分",
+  "read_device_info": "读取本设备参数",
   "recognizer_result_count": "{unknown}不明, {dup}重复, {valid}/{total}有效, {selected}已选",
   "recorder_screenshot_current_view": "当前视图",
   "recorder_screenshot_full_view": "完整视图",

@@ -675,6 +675,7 @@
   "rarity": "레어도",
   "rate_app_store": "App Store에서 평가",
   "rate_play_store": "Google Play에서 평가",
+  "read_device_info": null,
   "recognizer_result_count": "{unknown}불명, {dup}중복, {valid}/{total}유효, {selected}선택된",
   "recorder_screenshot_current_view": null,
   "recorder_screenshot_full_view": null,

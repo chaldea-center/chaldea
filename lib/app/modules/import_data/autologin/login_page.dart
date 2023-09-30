@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -222,6 +223,9 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
             dense: true,
             title: const Text('User Agent'),
             subtitle: Text(args.userAgent ?? UA.fallback),
+            onLongPress: () {
+              copyToClipboard(args.userAgent ?? UA.fallback);
+            },
             trailing: IconButton(
               onPressed: () {
                 onEditArg(
@@ -245,6 +249,9 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
             dense: true,
             title: const Text('Device Info'),
             subtitle: Text(args.deviceInfo ?? UA.deviceinfo),
+            onLongPress: () {
+              copyToClipboard(args.deviceInfo ?? UA.deviceinfo);
+            },
             trailing: IconButton(
               onPressed: () {
                 onEditArg(
@@ -264,6 +271,13 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
               tooltip: S.current.edit,
             ),
           ),
+          Center(
+            child: FilledButton.tonal(
+              onPressed: updateDeviceInfo,
+              child: Text(S.current.read_device_info),
+            ),
+          ),
+          const Divider(height: 16, indent: 16, endIndent: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ElevatedButton.icon(
@@ -272,7 +286,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
               label: Text(S.current.login_login),
             ),
           ),
-          const Divider(height: 16),
+          const SizedBox(height: 16),
           if (response != null)
             Card(
               margin: const EdgeInsets.all(8),
@@ -284,6 +298,27 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
         ],
       ),
     );
+  }
+
+  Future<void> updateDeviceInfo() async {
+    if (!PlatformU.isAndroid) {
+      EasyLoading.showInfo("Only Android device is supported");
+      return;
+    }
+    try {
+      EasyLoading.show();
+      if (PlatformU.isAndroid) {
+        final info = await DeviceInfoPlugin().androidInfo;
+        args.userAgent = "Dalvik/2.1.0 (Linux; U; Android ${info.version.release}; ${info.model} Build/${info.id})";
+        args.deviceInfo =
+            "${info.manufacturer} ${info.model} / Android OS ${info.version.release} / API-${info.version.sdkInt} (${info.id}/${info.version.incremental})";
+      } else if (PlatformU.isIOS) {
+        // final info = await DeviceInfoPlugin().iosInfo;
+      }
+      EasyLoading.showSuccess(S.current.updated);
+    } catch (e) {
+      EasyLoading.showError(e.toString());
+    }
   }
 
   void onEditArg(String title, String value, ValueChanged<String> onSubmit, bool Function(String v)? validate) {

@@ -7493,6 +7493,17 @@ class S {
     );
   }
 
+  /// `Read this Device's info`
+  String get read_device_info {
+    return Intl.message(
+      'Read this Device\'s info',
+      name: 'read_device_info',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `{unknown} unknown, {dup} dup, {valid}/{total} valid, {selected} selected`
   String recognizer_result_count(Object unknown, Object dup, Object valid, Object total, Object selected) {
     return Intl.message(

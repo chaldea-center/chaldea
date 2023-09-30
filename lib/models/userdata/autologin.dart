@@ -78,6 +78,7 @@ class AutoLoginData {
   String? userAgent;
   String? deviceInfo;
   NACountry country;
+  bool useThisDevice;
 
   AutoLoginData({
     this.region = Region.jp,
@@ -85,6 +86,7 @@ class AutoLoginData {
     this.userAgent,
     this.deviceInfo,
     this.country = NACountry.unitedStates,
+    this.useThisDevice = false,
   });
   factory AutoLoginData.fromJson(Map<String, dynamic> json) => _$AutoLoginDataFromJson(json);
 

@@ -675,6 +675,7 @@
   "rarity": "レアリティ",
   "rate_app_store": "App Storeで評価",
   "rate_play_store": "Google Playで評価",
+  "read_device_info": null,
   "recognizer_result_count": null,
   "recorder_screenshot_current_view": null,
   "recorder_screenshot_full_view": null,

@@ -429,7 +429,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         task = showEasyLoading(() => ChaldeaWorkerApi.teamsByUser(
               limit: _pageSize + 1,
               offset: _pageSize * page,
-              expireAfter: refresh ? Duration.zero : null,
+              expireAfter: refresh ? Duration.zero : const Duration(days: 2),
             ));
       case TeamQueryMode.quest:
         final questPhase = widget.questPhase;
