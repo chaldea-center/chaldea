@@ -6,11 +6,11 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
-import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../app/api/chaldea.dart';
 
 // don't import webview_flutter_web
 

@@ -395,23 +395,3 @@ class AtlasApi {
     );
   }
 }
-
-class CachedApi {
-  const CachedApi._();
-  static final ApiCacheManager cacheManager = ApiCacheManager(null);
-
-  static Future<Map?> biliVideoInfo({int? aid, String? bvid, Duration? expireAfter}) async {
-    if (aid == null && bvid == null) return null;
-    String url = 'https://api.bilibili.com/x/web-interface/view?';
-    if (aid != null) {
-      url += 'aid=$aid';
-    } else if (bvid != null) {
-      url += 'bvid=$bvid';
-    }
-    return cacheManager.getModel(
-      kIsWeb ? HostsX.corsProxy(url) : url,
-      (data) => Map.from(data),
-      expireAfter: expireAfter,
-    );
-  }
-}

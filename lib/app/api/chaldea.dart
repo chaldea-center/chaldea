@@ -247,15 +247,6 @@ class ChaldeaWorkerApi {
     );
   }
 
-  // not from worker
-  static Future<RemoteConfig?> remoteConfig({Duration? expireAfter}) {
-    return cacheManager.getModel(
-      '${HostsX.dataHost}/config.json',
-      (data) => db.runtimeData.remoteConfig = RemoteConfig.fromJson(data),
-      expireAfter: expireAfter,
-    );
-  }
-
   static GitHub get githubApiClient => GitHub(endpoint: '${HostsX.worker.cn}/proxy/github/api.github.com');
 
   static Future<Release?> githubRelease(
@@ -270,6 +261,35 @@ class ChaldeaWorkerApi {
     return cacheManager.getModel(
       '${HostsX.worker.cn}/proxy/github/api.github.com/repos/$owner/$repo/releases/${tag == null ? "latest" : "tags/$tag"}',
       (data) => Release.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+}
+
+class CachedApi {
+  const CachedApi._();
+  // silent
+  static final ApiCacheManager cacheManager = ApiCacheManager(null);
+
+  static Future<RemoteConfig?> remoteConfig({Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '${HostsX.dataHost}/config.json',
+      (data) => db.runtimeData.remoteConfig = RemoteConfig.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+
+  static Future<Map?> biliVideoInfo({int? aid, String? bvid, Duration? expireAfter}) async {
+    if (aid == null && bvid == null) return null;
+    String url = 'https://api.bilibili.com/x/web-interface/view?';
+    if (aid != null) {
+      url += 'aid=$aid';
+    } else if (bvid != null) {
+      url += 'bvid=$bvid';
+    }
+    return cacheManager.getModel(
+      kIsWeb ? HostsX.corsProxy(url) : url,
+      (data) => Map.from(data),
       expireAfter: expireAfter,
     );
   }
