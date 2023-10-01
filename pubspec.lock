@@ -170,15 +170,14 @@ packages:
       url: "https://github.com/Carapacik/flutter_carousel_slider.git"
     source: git
     version: "4.2.2"
-  catcher:
+  catcher_2:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "4fa218cd9954715e477458360f5e1649e41b6222"
-      url: "https://github.com/narumi147/catcher.git"
-    source: git
-    version: "0.7.1"
+      name: catcher_2
+      sha256: "8a33bfa845de8aa4306e607d8c76a52b0f111576089f9f329270d56023900ad2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0-alpha.1"
   characters:
     dependency: transitive
     description:

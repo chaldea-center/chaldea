@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/generated/l10n.dart';
@@ -29,7 +29,7 @@ class BaseLPSolver {
       print('=========js libs loaded.=========');
     }).catchError((e, s) {
       logger.e('initiate js libs error', e, s);
-      Catcher.reportCheckedError(e, s);
+      Catcher2.reportCheckedError(e, s);
       EasyLoading.showToast('initiation error\n$e');
     });
   }
@@ -68,7 +68,7 @@ class FreeLPSolver {
       print('=========js libs loaded.=========');
     }).catchError((e, s) {
       logger.e('initiate js libs error', e, s);
-      Catcher.reportCheckedError(e, s);
+      Catcher2.reportCheckedError(e, s);
       EasyLoading.showToast('initiation error\n$e');
     });
   }

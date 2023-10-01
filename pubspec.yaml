@@ -36,9 +36,7 @@ dependencies:
   carousel_slider: # ^4.2.1
     git:
       url: https://github.com/Carapacik/flutter_carousel_slider.git
-  catcher: # ^0.7.0
-    git:
-      url: https://github.com/narumi147/catcher.git
+  catcher_2: ^1.0.0-alpha.1
   connectivity_plus: ^4.0.0
   # cookie_jar: ^4.0.1
   crclib: ^3.0.0

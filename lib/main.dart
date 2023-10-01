@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 import 'package:video_player_win/video_player_win_plugin.dart';
 import 'package:window_size/window_size.dart';
 import 'package:worker_manager/worker_manager.dart';
@@ -26,7 +26,7 @@ void main() async {
   // make sure flutter packages like path_provider is working now
   WidgetsFlutterBinding.ensureInitialized();
   dynamic initError, initStack;
-  CatcherOptions? catcherOptions;
+  Catcher2Options? catcherOptions;
   try {
     await _initiateCommon();
     await workerManager.init();
@@ -57,7 +57,7 @@ void main() async {
   if (kDebugMode) {
     runApp(app);
   } else {
-    Catcher(
+    Catcher2(
       rootWidget: app,
       debugConfig: catcherOptions,
       profileConfig: catcherOptions,

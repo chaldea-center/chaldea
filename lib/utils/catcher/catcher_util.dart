@@ -2,13 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:catcher/catcher.dart';
+import 'package:catcher_2/catcher_2.dart';
 
 class CatcherUtil {
   CatcherUtil._();
 
-  static CatcherOptions getOptions({String? logPath, ReportHandler? feedbackHandler}) {
-    return CatcherOptions(
+  static Catcher2Options getOptions({String? logPath, ReportHandler? feedbackHandler}) {
+    return Catcher2Options(
       // when error occurs when building:
       // DialogReportMode will keep generating error and you can do nothing
       // PageReportMode will generate error repeatedly for about 3 times.
@@ -31,8 +31,8 @@ class CatcherUtil {
 
   static void reportError(dynamic error, StackTrace? stacktrace) {
     try {
-      Catcher.getInstance();
-      Catcher.reportCheckedError(error, stacktrace);
+      Catcher2.getInstance();
+      Catcher2.reportCheckedError(error, stacktrace);
     } catch (e) {
       FlutterError.reportError(FlutterErrorDetails(exception: error, stack: stacktrace));
     }
