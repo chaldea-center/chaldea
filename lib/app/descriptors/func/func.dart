@@ -65,7 +65,9 @@ mixin FuncsDescriptor {
       if (func.funcTargetTeam == FuncApplyTarget.playerAndEnemy) {
         return true;
       }
-      return func.isPlayerOnlyFunc ? showPlayer : showEnemy;
+      if (func.isPlayerOnlyFunc) return showPlayer;
+      if (func.isEnemyOnlyFunc) return showEnemy;
+      return true;
     }).toList();
     List<Widget> children = [];
     final actIndiv = owner is BaseSkill ? owner.actIndividuality : <NiceTrait>[];

@@ -41,16 +41,6 @@ class NiceFunction with RouteInfo implements BaseFunction {
   List<NiceTrait> get traitVals => _baseFunc.traitVals;
   @override
   List<Buff> get buffs => _baseFunc.buffs;
-  @override
-  Buff? get buff => _baseFunc.buff;
-  @override
-  bool get isPlayerOnlyFunc => _baseFunc.isPlayerOnlyFunc;
-  @override
-  bool get isEnemyOnlyFunc => _baseFunc.isEnemyOnlyFunc;
-  @override
-  Transl<String, String> get lPopupText => _baseFunc.lPopupText;
-  @override
-  EffectTarget get effectTarget => _baseFunc.effectTarget;
 
   List<DataVals> svals;
   List<DataVals>? svals2;
@@ -371,8 +361,6 @@ class BaseFunction with RouteInfo {
 
   factory BaseFunction.fromJson(Map<String, dynamic> json) => _$BaseFunctionFromJson(json);
 
-  Buff? get buff => buffs.isEmpty ? null : buffs.first;
-
   @override
   String get route => Routes.funcI(funcId);
 
@@ -384,17 +372,30 @@ class BaseFunction with RouteInfo {
     );
   }
 
+  Map<String, dynamic> toJson() => _$BaseFunctionToJson(this);
+}
+
+extension BaseFunctionX on BaseFunction {
+  Buff? get buff => buffs.isEmpty ? null : buffs.first;
+
   Transl<String, String> get lPopupText => Transl.funcPopuptextBase(funcPopupText, funcType);
 
-  bool get isPlayerOnlyFunc =>
+  bool get canBePlayerFunc =>
+      funcTargetTeam == FuncApplyTarget.playerAndEnemy ||
       (funcTargetTeam == FuncApplyTarget.enemy && funcTargetType.canTargetEnemy) ||
       (funcTargetTeam == FuncApplyTarget.player && funcTargetType.canTargetAlly);
-  bool get isEnemyOnlyFunc =>
+  bool get canBeEnemyFunc =>
+      funcTargetTeam == FuncApplyTarget.playerAndEnemy ||
       (funcTargetTeam == FuncApplyTarget.enemy && funcTargetType.canTargetAlly) ||
       (funcTargetTeam == FuncApplyTarget.player && funcTargetType.canTargetEnemy);
-  EffectTarget get effectTarget => EffectTarget.fromFunc(funcTargetType);
 
-  Map<String, dynamic> toJson() => _$BaseFunctionToJson(this);
+  bool get isPlayerOnlyFunc =>
+      (funcTargetTeam == FuncApplyTarget.enemy && funcTargetType.isEnemy) ||
+      (funcTargetTeam == FuncApplyTarget.player && funcTargetType.isAlly);
+  bool get isEnemyOnlyFunc =>
+      (funcTargetTeam == FuncApplyTarget.enemy && funcTargetType.isAlly) ||
+      (funcTargetTeam == FuncApplyTarget.player && funcTargetType.isEnemy);
+  EffectTarget get effectTarget => EffectTarget.fromFunc(funcTargetType);
 }
 
 @JsonSerializable()

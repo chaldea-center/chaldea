@@ -163,10 +163,21 @@ class _FuncDetailPageState extends State<FuncDetailPage>
       ]),
       CustomTableRow.fromTexts(texts: [S.current.effective_condition], isHeader: true),
       CustomTableRow(children: [
+        TableCellData(text: "Actor", isHeader: true),
         TableCellData(
-          text: "Target Team",
-          isHeader: true,
+          text: [
+            S.current.player,
+            func.canBePlayerFunc ? '√' : '×',
+            '   ',
+            S.current.enemy,
+            func.canBeEnemyFunc ? '√' : '×'
+          ].join(' '),
+          flex: 3,
+          alignment: AlignmentDirectional.centerEnd,
         ),
+      ]),
+      CustomTableRow(children: [
+        TableCellData(text: "Target Team", isHeader: true),
         TableCellData(
           text: func.funcTargetTeam.name,
           flex: 3,
@@ -174,10 +185,7 @@ class _FuncDetailPageState extends State<FuncDetailPage>
         ),
       ]),
       CustomTableRow(children: [
-        TableCellData(
-          text: "Target Traits",
-          isHeader: true,
-        ),
+        TableCellData(text: "Target Traits", isHeader: true),
         TableCellData(
           child: func.functvals.isEmpty
               ? const Text('-')
@@ -188,10 +196,7 @@ class _FuncDetailPageState extends State<FuncDetailPage>
       ]),
       if (func.funcquestTvals.isNotEmpty)
         CustomTableRow(children: [
-          TableCellData(
-            text: "Quest Traits",
-            isHeader: true,
-          ),
+          TableCellData(text: "Quest Traits", isHeader: true),
           TableCellData(
             child: SharedBuilder.traitList(context: context, traits: func.funcquestTvals),
             flex: 3,
@@ -200,10 +205,7 @@ class _FuncDetailPageState extends State<FuncDetailPage>
         ]),
       if (func.traitVals.isNotEmpty)
         CustomTableRow(children: [
-          TableCellData(
-            text: "Affects Traits",
-            isHeader: true,
-          ),
+          TableCellData(text: "Affects Traits", isHeader: true),
           TableCellData(
             child: SharedBuilder.traitList(context: context, traits: func.traitVals),
             flex: 3,

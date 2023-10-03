@@ -9,6 +9,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../common/filter_group.dart';
 import '../enemy/quest_enemy_summary.dart';
 
 class TdDetailPage extends StatefulWidget {
@@ -27,6 +28,7 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
 
   int? _lv;
   int? _oc;
+  FuncApplyTarget _view = FuncApplyTarget.playerAndEnemy;
 
   @override
   void initState() {
@@ -76,8 +78,9 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
         CustomTable(children: [
           CustomTableRow.fromTexts(texts: ['No.${td.id}'], isHeader: true),
           CustomTableRow.fromChildren(children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 8,
               children: [
                 DropdownButton<int>(
                   isDense: true,
@@ -92,7 +95,6 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
                     });
                   },
                 ),
-                const SizedBox(width: 24),
                 DropdownButton<int>(
                   isDense: true,
                   items: [
@@ -106,6 +108,27 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
                     });
                   },
                 ),
+                FilterGroup(
+                  padding: EdgeInsets.zero,
+                  combined: true,
+                  options: const [FuncApplyTarget.playerAndEnemy, FuncApplyTarget.player, FuncApplyTarget.enemy],
+                  values: FilterRadioData.nonnull(_view),
+                  optionBuilder: (v) {
+                    switch (v) {
+                      case FuncApplyTarget.player:
+                        return Text(S.current.player);
+                      case FuncApplyTarget.enemy:
+                        return Text(S.current.enemy);
+                      case FuncApplyTarget.playerAndEnemy:
+                        return Text(S.current.general_all);
+                    }
+                  },
+                  onFilterChanged: (v, _) {
+                    setState(() {
+                      _view = v.radioValue ?? _view;
+                    });
+                  },
+                ),
               ],
             )
           ]),
@@ -113,7 +136,8 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
             td: td,
             level: _lv,
             oc: _oc,
-            showEnemy: true,
+            showPlayer: _view == FuncApplyTarget.playerAndEnemy || _view == FuncApplyTarget.player,
+            showEnemy: _view == FuncApplyTarget.playerAndEnemy || _view == FuncApplyTarget.enemy,
             showNone: true,
             jumpToDetail: false,
             region: region,

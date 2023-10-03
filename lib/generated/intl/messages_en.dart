@@ -381,6 +381,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enemy_list": MessageLookupByLibrary.simpleMessage("Enemies"),
         "enemy_master": MessageLookupByLibrary.simpleMessage("Enemy Master"),
         "enemy_not_servant": MessageLookupByLibrary.simpleMessage("Non-Servant"),
+        "enemy_only": MessageLookupByLibrary.simpleMessage("Enemy Only"),
         "enemy_only_nps": MessageLookupByLibrary.simpleMessage("Enemy Only NPs"),
         "enemy_summary": MessageLookupByLibrary.simpleMessage("Summary"),
         "enhance": MessageLookupByLibrary.simpleMessage("Enhance"),
@@ -759,7 +760,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "plan_objective": MessageLookupByLibrary.simpleMessage("Plan Objective"),
         "plan_title": MessageLookupByLibrary.simpleMessage("Plan"),
         "planning_free_quest_btn": MessageLookupByLibrary.simpleMessage("Planning Quests"),
+        "player": MessageLookupByLibrary.simpleMessage("Player"),
         "player_data": MessageLookupByLibrary.simpleMessage("Player Data"),
+        "player_only": MessageLookupByLibrary.simpleMessage("Player Only"),
         "prefer_april_fool_icon": MessageLookupByLibrary.simpleMessage("Prefer April Fools\' Day icon"),
         "preferred_translation": MessageLookupByLibrary.simpleMessage("Preferred Translation"),
         "preferred_translation_footer": MessageLookupByLibrary.simpleMessage(

@@ -431,8 +431,8 @@ class FunctionExecutor {
     final bool isPlayer,
   ) {
     return function.funcTargetTeam == FuncApplyTarget.playerAndEnemy ||
-        (function.isPlayerOnlyFunc && isPlayer) ||
-        (function.isEnemyOnlyFunc && !isPlayer);
+        (function.canBePlayerFunc && isPlayer) ||
+        (function.canBeEnemyFunc && !isPlayer);
   }
 
   static DataVals getDataVals(

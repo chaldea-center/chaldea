@@ -15,6 +15,7 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../common/filter_group.dart';
 
 class SkillDetailPage extends StatefulWidget {
   final int? id;
@@ -29,6 +30,9 @@ class SkillDetailPage extends StatefulWidget {
 class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState<BaseSkill, SkillDetailPage> {
   int get id => widget.skill?.id ?? widget.id ?? data?.id ?? -1;
   BaseSkill get skill => data!;
+
+  int? _lv;
+  FuncApplyTarget _view = FuncApplyTarget.playerAndEnemy;
 
   @override
   void initState() {
@@ -77,6 +81,7 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
     final mcs = ReverseGameData.skill2MC(id).toList()..sort2((e) => e.id);
     final enemies =
         ReverseGameData.questEnemies((e) => e.skills.skillIds.contains(id) || e.classPassive.containSkill(id));
+    _lv = (_lv ?? skill.maxLv).clamp2(1, skill.maxLv);
 
     return ListView(
       children: [
@@ -89,9 +94,52 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
               textAlign: TextAlign.center,
             )
           ]),
+          CustomTableRow.fromChildren(children: [
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 8,
+              children: [
+                DropdownButton<int>(
+                  isDense: true,
+                  items: [
+                    for (int level = 1; level <= skill.maxLv; level++)
+                      DropdownMenuItem(value: level, child: Text('Lv.$level')),
+                  ],
+                  value: _lv,
+                  onChanged: (v) {
+                    setState(() {
+                      _lv = v;
+                    });
+                  },
+                ),
+                FilterGroup(
+                  padding: EdgeInsets.zero,
+                  combined: true,
+                  options: const [FuncApplyTarget.playerAndEnemy, FuncApplyTarget.player, FuncApplyTarget.enemy],
+                  values: FilterRadioData.nonnull(_view),
+                  optionBuilder: (v) {
+                    switch (v) {
+                      case FuncApplyTarget.player:
+                        return Text(S.current.player);
+                      case FuncApplyTarget.enemy:
+                        return Text(S.current.enemy);
+                      case FuncApplyTarget.playerAndEnemy:
+                        return Text(S.current.general_all);
+                    }
+                  },
+                  onFilterChanged: (v, _) {
+                    setState(() {
+                      _view = v.radioValue ?? _view;
+                    });
+                  },
+                ),
+              ],
+            )
+          ]),
           SkillDescriptor(
             skill: skill,
-            showEnemy: true,
+            showPlayer: _view == FuncApplyTarget.playerAndEnemy || _view == FuncApplyTarget.player,
+            showEnemy: _view == FuncApplyTarget.playerAndEnemy || _view == FuncApplyTarget.enemy,
             showNone: true,
             jumpToDetail: false,
             region: region,

@@ -3077,6 +3077,17 @@ class S {
     );
   }
 
+  /// `Enemy Only`
+  String get enemy_only {
+    return Intl.message(
+      'Enemy Only',
+      name: 'enemy_only',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Enemy Only NPs`
   String get enemy_only_nps {
     return Intl.message(
@@ -7020,11 +7031,33 @@ class S {
     );
   }
 
+  /// `Player`
+  String get player {
+    return Intl.message(
+      'Player',
+      name: 'player',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Player Data`
   String get player_data {
     return Intl.message(
       'Player Data',
       name: 'player_data',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Player Only`
+  String get player_only {
+    return Intl.message(
+      'Player Only',
+      name: 'player_only',
       desc: '',
       locale: localeName,
       args: [],
