@@ -5,7 +5,6 @@ import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/bili_player.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../descriptors/cond_target_value.dart';
@@ -71,10 +70,10 @@ class SvtTdTab extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
         child: ElevatedButton(
           onPressed: () {
-            if (!BiliPlayer.isSupport && svt.extra.tdAnimations.length == 1) {
-              launch(svt.extra.tdAnimations.first.weburl);
-              return;
-            }
+            // if (!BiliPlayer.isSupport && svt.extra.tdAnimations.length == 1) {
+            //   launch(svt.extra.tdAnimations.first.weburl);
+            //   return;
+            // }
             router.pushPage(BiliTdAnimations(
               videos: svt.extra.tdAnimations,
               title: '${S.current.td_animation} - ${svt.lName.l}',
@@ -233,18 +232,18 @@ class BiliTdAnimations extends StatelessWidget {
     for (int index = 0; index < videos.length; index++) {
       final video = videos[index];
       if (!video.valid) continue;
-      if (BiliPlayer.isSupport) {
-        children.add(AspectRatio(
-          aspectRatio: 16 / 9,
-          child: Container(
-            constraints: const BoxConstraints(maxHeight: 400),
-            decoration: BoxDecoration(border: Border.fromBorderSide(Divider.createBorderSide(context))),
-            child: Center(
-              child: BiliPlayer(video: video),
-            ),
-          ),
-        ));
-      }
+      // if (BiliPlayer.isSupport) {
+      //   children.add(AspectRatio(
+      //     aspectRatio: 16 / 9,
+      //     child: Container(
+      //       constraints: const BoxConstraints(maxHeight: 400),
+      //       decoration: BoxDecoration(border: Border.fromBorderSide(Divider.createBorderSide(context))),
+      //       child: Center(
+      //         child: BiliPlayer(video: video),
+      //       ),
+      //     ),
+      //   ));
+      // }
       children.add(Center(
         child: TextButton(
           onPressed: () {
