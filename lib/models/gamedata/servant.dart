@@ -260,6 +260,8 @@ class Servant with GameCardMixin {
   List<NiceSkill> skills;
   List<NiceSkill> classPassive;
   List<NiceSkill> extraPassive;
+  List<NiceSkill> get extraPassiveNonEvent =>
+      extraPassive.where((skill) => skill.extraPassive.every((e) => e.eventId != 0)).toList();
   List<ServantAppendPassiveSkill> appendPassive;
   List<NiceTd> noblePhantasms;
   NiceLore profile;

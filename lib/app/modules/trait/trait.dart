@@ -12,24 +12,33 @@ import 'tabs/sp_dmg.dart';
 import 'tabs/svt_tab.dart';
 
 class TraitDetailPage extends StatefulWidget {
-  final int id;
-  const TraitDetailPage({super.key, required this.id});
+  final List<int> ids;
+  TraitDetailPage({super.key, required int id}) : ids = [id];
+  TraitDetailPage.ids({super.key, required List<int> ids}) : ids = ids.isEmpty ? [0] : ids;
 
   @override
   State<TraitDetailPage> createState() => _TraitDetailPageState();
 }
 
 class _TraitDetailPageState extends State<TraitDetailPage> {
-  int get id => widget.id;
+  late List<int> ids = widget.ids;
+  late final _id = ids.firstOrNull ?? 0;
 
   @override
   Widget build(BuildContext context) {
-    String name = Transl.trait(id).l;
-    String title = '${S.current.trait} $id';
-    if (name != id.toString()) {
-      title += ' - $name';
+    String title;
+    if (ids.length == 1) {
+      final id = ids.first;
+      String name = Transl.trait(id).l;
+      title = '${S.current.trait} $id';
+      if (name != id.toString()) {
+        title += ' - $name';
+      }
+    } else {
+      title = '${S.current.trait} ${ids.map((e) => Transl.trait(e).l).join(" & ")}';
     }
-    bool isEventTrait = Transl.md.eventTrait.containsKey(id) || Transl.md.fieldTrait.containsKey(id);
+    bool isEventTrait =
+        ids.length == 1 && (Transl.md.eventTrait.containsKey(_id) || Transl.md.fieldTrait.containsKey(_id));
     return DefaultTabController(
       length: isEventTrait ? 7 : 6,
       child: Scaffold(
@@ -54,13 +63,13 @@ class _TraitDetailPageState extends State<TraitDetailPage> {
           data: const ListTileThemeData(horizontalTitleGap: 8),
           child: TabBarView(
             children: [
-              if (isEventTrait) TraitEventTab(id),
-              TraitServantTab(id),
-              TraitEnemyTab(id),
-              TraitSPDMGTab(id),
-              TraitFuncTab(id),
-              TraitBuffTab(id),
-              TraitSkillTab(id),
+              if (isEventTrait) TraitEventTab(_id),
+              TraitServantTab(ids),
+              TraitEnemyTab(ids),
+              TraitSPDMGTab(ids),
+              TraitFuncTab(ids),
+              TraitBuffTab(ids),
+              TraitSkillTab(ids),
             ],
           ),
         ),

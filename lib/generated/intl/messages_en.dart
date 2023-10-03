@@ -256,6 +256,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "collapse": MessageLookupByLibrary.simpleMessage("Collapse"),
         "command_assist": MessageLookupByLibrary.simpleMessage("Command Assist"),
         "command_code": MessageLookupByLibrary.simpleMessage("Command Code"),
+        "command_code_short": MessageLookupByLibrary.simpleMessage("CC"),
         "command_spell": MessageLookupByLibrary.simpleMessage("Command Spell"),
         "common_release_group_hint":
             MessageLookupByLibrary.simpleMessage("Only need to meet one *Group* of conditions"),
@@ -272,6 +273,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "count_rare_enemy": MessageLookupByLibrary.simpleMessage("Count Rare Enemy"),
         "counts": MessageLookupByLibrary.simpleMessage("Counts"),
         "craft_essence": MessageLookupByLibrary.simpleMessage("Craft Essence"),
+        "craft_essence_short": MessageLookupByLibrary.simpleMessage("CE"),
         "create_account_textfield_helper":
             MessageLookupByLibrary.simpleMessage("You can add more accounts later in Settings"),
         "create_custom_skill": MessageLookupByLibrary.simpleMessage("Create Custom Skill"),

@@ -951,7 +951,7 @@ class FuncDescriptor extends StatelessWidget {
     }
 
     if (buff != null) {
-      _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv, buff.script?.checkIndvType == 1);
+      _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv, buff.script?.checkIndvTypeAnd == true);
       if (buff.type == BuffType.upToleranceSubstate &&
           buff.ckOpIndv
               .map((e) => e.signedId)
@@ -966,7 +966,7 @@ class FuncDescriptor extends StatelessWidget {
           const TextSpan(text: ' '),
         ]);
       } else {
-        _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv, buff.script?.checkIndvType == 1);
+        _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv, buff.script?.checkIndvTypeAnd == true);
       }
       final script = buff.script;
       if (script?.TargetIndiv != null) {

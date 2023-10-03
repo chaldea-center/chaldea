@@ -5,8 +5,8 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class TraitServantTab extends StatefulWidget {
-  final int id;
-  const TraitServantTab(this.id, {super.key});
+  final List<int> ids;
+  const TraitServantTab(this.ids, {super.key});
 
   @override
   State<TraitServantTab> createState() => _TraitServantTabState();
@@ -14,15 +14,16 @@ class TraitServantTab extends StatefulWidget {
 
 class _TraitServantTabState extends State<TraitServantTab> {
   bool useGrid = false;
+  late final _id = widget.ids.firstOrNull ?? 0;
 
   @override
   Widget build(BuildContext context) {
     List<Servant> servants =
-        db.gameData.servantsNoDup.values.where((svt) => svt.traitsAll.contains(widget.id)).toList();
+        db.gameData.servantsNoDup.values.where((svt) => svt.traitsAll.containSubset(widget.ids.toSet())).toList();
     servants.sort2((e) => e.collectionNo);
     BasicServant? entity;
-    if (!servants.any((svt) => svt.id == widget.id)) {
-      entity = db.gameData.entities[widget.id];
+    if (widget.ids.length == 1 && !servants.any((svt) => svt.id == _id)) {
+      entity = db.gameData.entities[_id];
     }
     if (servants.isEmpty && entity == null) return const Center(child: Text('No record'));
 
@@ -72,18 +73,18 @@ class _TraitServantTabState extends State<TraitServantTab> {
     final comments = _addComment([
       ...svt.traits,
       for (final traitAdd in svt.traitAdd)
-        if (traitAdd.idx == 1 && traitAdd.limitCount == -1) ...traitAdd.trait
-    ], widget.id, '');
+        if (traitAdd.idx < 10 && traitAdd.limitCount == -1) ...traitAdd.trait
+    ], _id, '');
     return comments.isNotEmpty;
   }
 
   Widget listItem(BuildContext context, Servant svt) {
     List<String> details = [];
-    if (!isCommonTrait(svt)) {
+    if (widget.ids.length == 1 && !isCommonTrait(svt)) {
       for (final asc in svt.ascensionAdd.individuality.ascension.keys) {
         details.addAll(_addComment(
           svt.ascensionAdd.individuality.ascension[asc]!,
-          widget.id,
+          _id,
           '${S.current.ascension_short} $asc',
         ));
       }
@@ -91,7 +92,7 @@ class _TraitServantTabState extends State<TraitServantTab> {
         final costumeName = svt.profile.costume[costumeId]?.lName.l ?? costumeId.toString();
         details.addAll(_addComment(
           svt.ascensionAdd.individuality.costume[costumeId]!,
-          widget.id,
+          _id,
           costumeName,
         ));
       }
@@ -105,7 +106,7 @@ class _TraitServantTabState extends State<TraitServantTab> {
         if (traitAdd.limitCount != -1) {
           name += '(${S.current.ascension_stage_short} ${traitAdd.limitCount})';
         }
-        details.addAll(_addComment(traitAdd.trait, widget.id, name));
+        details.addAll(_addComment(traitAdd.trait, _id, name));
       }
     }
 

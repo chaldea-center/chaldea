@@ -295,12 +295,16 @@ class Quest with RouteInfo {
   // exclude challenge quest, raid
   bool get isAnyFree {
     if (afterClear != QuestAfterClearType.repeatLast) return false;
-    if (flags.contains(QuestFlag.noBattle)) return false;
-    if (flags.contains(QuestFlag.dropFirstTimeOnly) || flags.contains(QuestFlag.forceToNoDrop)) return false;
-    if (type == QuestType.free) return true;
-    if (flags.any((flag) => flag.name.toLowerCase().contains('raid') || flag == QuestFlag.notRetrievable)) {
+    if (const [
+      QuestFlag.noBattle,
+      QuestFlag.dropFirstTimeOnly,
+      QuestFlag.forceToNoDrop,
+      QuestFlag.notRetrievable,
+    ].any((e) => flags.contains(e))) return false;
+    if (flags.any((flag) => flag.name.toLowerCase().contains('raid'))) {
       return false;
     }
+    if (type == QuestType.free) return true;
     return true;
   }
 

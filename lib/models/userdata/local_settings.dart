@@ -553,6 +553,7 @@ enum SvtTab {
   skill,
   np,
   info,
+  spDmg,
   lore,
   illustration,
   relatedCards,

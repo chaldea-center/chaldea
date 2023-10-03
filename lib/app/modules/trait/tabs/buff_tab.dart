@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/modules/common/filter_group.dart';
+import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
@@ -12,15 +13,15 @@ enum _BuffCheckPos {
 }
 
 class TraitBuffTab extends StatefulWidget {
-  final int id;
-  const TraitBuffTab(this.id, {super.key});
+  final List<int> ids;
+  const TraitBuffTab(this.ids, {super.key});
 
   @override
   State<TraitBuffTab> createState() => _TraitBuffTabState();
 }
 
 class _TraitBuffTabState extends State<TraitBuffTab> {
-  int get id => widget.id;
+  // int get id => widget.id;
 
   final filter = FilterGroupData<_BuffCheckPos>();
 
@@ -32,13 +33,17 @@ class _TraitBuffTabState extends State<TraitBuffTab> {
 
     for (final buff in buffs) {
       final positions = [
-        if (buff.vals.any((e) => e.id == id)) _BuffCheckPos.vals,
-        if (buff.ckSelfIndv.any((e) => e.id == id)) _BuffCheckPos.ckSelf,
-        if (buff.ckOpIndv.any((e) => e.id == id)) _BuffCheckPos.ckOpp,
-        if ([
-          buff.script?.INDIVIDUALITIE,
-          ...buff.script?.UpBuffRateBuffIndiv ?? [],
-        ].any((e) => e?.id == id))
+        if (Individuality.containsAllAB(buff.vals, widget.ids)) _BuffCheckPos.vals,
+        if (Individuality.containsAllAB(buff.ckSelfIndv, widget.ids)) _BuffCheckPos.ckSelf,
+        if (Individuality.containsAllAB(buff.ckOpIndv, widget.ids)) _BuffCheckPos.ckOpp,
+        if (Individuality.containsAllAB(
+            <NiceTrait?>[
+              buff.script?.INDIVIDUALITIE,
+              ...?buff.script?.INDIVIDUALITIE_AND,
+              ...?buff.script?.INDIVIDUALITIE_OR,
+              ...buff.script?.UpBuffRateBuffIndiv ?? [],
+            ].whereType<NiceTrait>().toList(),
+            widget.ids))
           _BuffCheckPos.script,
       ];
       if (positions.isNotEmpty && filter.matchAny(positions)) {
@@ -89,9 +94,9 @@ class _TraitBuffTabState extends State<TraitBuffTab> {
   }
 
   Widget buildBuff(Buff buff, List<_BuffCheckPos> positions) {
-    Widget _traits(String prefix, List<NiceTrait> traits) {
+    Widget _traits(String prefix, List<NiceTrait> traits, {bool useAnd = false}) {
       return Text(
-        '$prefix: ${traits.map((e) => Transl.trait(e.id).l).join("/")}',
+        '$prefix: ${traits.map((e) => Transl.trait(e.id).l).join(useAnd ? "&" : "/")}',
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       );
@@ -110,7 +115,12 @@ class _TraitBuffTabState extends State<TraitBuffTab> {
           if (positions.contains(_BuffCheckPos.vals)) _traits('vals', buff.vals),
           if (positions.contains(_BuffCheckPos.ckSelf)) _traits('ckSelf', buff.ckSelfIndv),
           if (positions.contains(_BuffCheckPos.ckOpp)) _traits('ckOpp', buff.ckOpIndv),
-          if (buff.script?.INDIVIDUALITIE?.id == id) _traits('owner', [buff.script!.INDIVIDUALITIE!]),
+          if (widget.ids.length == 1 && buff.script?.INDIVIDUALITIE?.id == widget.ids.firstOrNull)
+            _traits('owner', [buff.script!.INDIVIDUALITIE!]),
+          if (Individuality.containsAllAB(buff.script?.INDIVIDUALITIE_AND ?? [], widget.ids))
+            _traits('owner', buff.script?.INDIVIDUALITIE_AND ?? [], useAnd: true),
+          if (Individuality.containsAllAB(buff.script?.INDIVIDUALITIE_OR ?? [], widget.ids))
+            _traits('owner', buff.script?.INDIVIDUALITIE_OR ?? []),
           if (buff.script?.UpBuffRateBuffIndiv?.isNotEmpty == true)
             _traits('UpBuffRate', buff.script!.UpBuffRateBuffIndiv!),
         ],

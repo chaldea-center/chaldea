@@ -130,6 +130,8 @@ class RelationOverwriteDetail {
 @JsonSerializable(createToJson: false, includeIfNull: false)
 class BuffScript with DataScriptBase {
   int? checkIndvType; // 1-AND, default-OR
+  bool get checkIndvTypeAnd => checkIndvType == 1 || checkIndvType == 3;
+
   @BuffTypeConverter()
   List<BuffType>? CheckOpponentBuffTypes;
   BuffRelationOverwrite? relationId;

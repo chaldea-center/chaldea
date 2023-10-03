@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/modules/common/filter_group.dart';
+import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
@@ -11,15 +12,15 @@ enum _FuncCheckPos {
 }
 
 class TraitFuncTab extends StatefulWidget {
-  final int id;
-  const TraitFuncTab(this.id, {super.key});
+  final List<int> ids;
+  const TraitFuncTab(this.ids, {super.key});
 
   @override
   State<TraitFuncTab> createState() => _TraitFuncTabState();
 }
 
 class _TraitFuncTabState extends State<TraitFuncTab> {
-  int get id => widget.id;
+  List<int> get ids => widget.ids;
 
   final filter = FilterRadioData<_FuncCheckPos>();
 
@@ -31,9 +32,9 @@ class _TraitFuncTabState extends State<TraitFuncTab> {
 
     for (final func in funcs) {
       final positions = [
-        if (func.functvals.any((e) => e.id == id)) _FuncCheckPos.tvals,
-        if (func.funcquestTvals.any((e) => e.id == id)) _FuncCheckPos.questtvals,
-        if (func.traitVals.any((e) => e.id == id)) _FuncCheckPos.traitVals,
+        if (Individuality.containsAllAB(func.functvals, ids, signed: false)) _FuncCheckPos.tvals,
+        if (Individuality.containsAllAB(func.funcquestTvals, ids, signed: false)) _FuncCheckPos.questtvals,
+        if (Individuality.containsAllAB(func.traitVals, ids, signed: false)) _FuncCheckPos.traitVals,
       ];
       if (positions.isNotEmpty && filter.matchAny(positions)) {
         children.add(buildFunc(func, positions));

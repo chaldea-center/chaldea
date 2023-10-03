@@ -1812,6 +1812,17 @@ class S {
     );
   }
 
+  /// `CC`
+  String get command_code_short {
+    return Intl.message(
+      'CC',
+      name: 'command_code_short',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Command Spell`
   String get command_spell {
     return Intl.message(
@@ -1971,6 +1982,17 @@ class S {
     return Intl.message(
       'Craft Essence',
       name: 'craft_essence',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `CE`
+  String get craft_essence_short {
+    return Intl.message(
+      'CE',
+      name: 'craft_essence_short',
       desc: '',
       locale: localeName,
       args: [],

@@ -7,8 +7,8 @@ import 'package:chaldea/models/models.dart';
 import '../../enemy/quest_enemy_summary.dart';
 
 class TraitEnemyTab extends StatefulWidget {
-  final int id;
-  const TraitEnemyTab(this.id, {super.key});
+  final List<int> ids;
+  const TraitEnemyTab(this.ids, {super.key});
 
   @override
   State<TraitEnemyTab> createState() => _TraitEnemyTabState();
@@ -19,7 +19,8 @@ class _TraitEnemyTabState extends State<TraitEnemyTab> {
 
   @override
   Widget build(BuildContext context) {
-    Map<int, List<QuestEnemy>> grouped = ReverseGameData.questEnemies((e) => e.traits.any((t) => t.id == widget.id));
+    Map<int, List<QuestEnemy>> grouped =
+        ReverseGameData.questEnemies((e) => widget.ids.every((id) => e.traits.any((t) => t.id == id)));
     final svtIds = grouped.keys.toList()..sort();
     if (svtIds.isEmpty) return const Center(child: Text('No record'));
     return CustomScrollView(

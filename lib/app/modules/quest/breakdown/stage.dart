@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 import 'dart:ui' as ui;
 
@@ -266,7 +267,17 @@ class WaveInfoPage extends StatelessWidget {
           ])
             buildEnemyMaster(masterId),
           if (stage.waveStartMovies.isNotEmpty) ListTile(title: Text(S.current.stage_opening_movie)),
-          for (final movie in stage.waveStartMovies) MyVideoPlayer.url(url: movie.waveStartMovie, autoPlay: false)
+          for (final movie in stage.waveStartMovies) MyVideoPlayer.url(url: movie.waveStartMovie, autoPlay: false),
+          if (stage.originalScript?.isNotEmpty == true) ...[
+            kDefaultDivider,
+            Card(
+              margin: const EdgeInsets.all(8),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(const JsonEncoder.withIndent('  ').convert(stage.originalScript)),
+              ),
+            )
+          ],
         ],
       ),
     );

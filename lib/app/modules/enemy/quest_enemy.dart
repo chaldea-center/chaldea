@@ -7,6 +7,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../battle/td_damage/td_damage_ranking.dart';
+import '../servant/tabs/sp_dmg.dart';
 
 class QuestEnemyDetail extends StatefulWidget {
   final QuestEnemy enemy;
@@ -186,6 +187,16 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
       ),
       CustomTableRow.fromChildren(
           children: [SharedBuilder.traitList(context: context, traits: enemy.traits.toList()..sort2((e) => e.id))]),
+      if (enemy.traits.isNotEmpty)
+        TextButton(
+          onPressed: () {
+            router.pushPage(SpDmgIndivPage(
+              title: Text(enemy.lShownName),
+              svtIndivs: enemy.traits.map((e) => e.signedId).toList(),
+            ));
+          },
+          child: Text(S.current.super_effective_damage),
+        ),
       if (enemy.ai != null) ...[
         CustomTableRow.fromTexts(texts: [
           'AI ID',

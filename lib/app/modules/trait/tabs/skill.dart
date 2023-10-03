@@ -4,16 +4,14 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
 class TraitSkillTab extends StatefulWidget {
-  final int id;
-  const TraitSkillTab(this.id, {super.key});
+  final List<int> ids;
+  const TraitSkillTab(this.ids, {super.key});
 
   @override
   State<TraitSkillTab> createState() => _TraitSkillTabState();
 }
 
 class _TraitSkillTabState extends State<TraitSkillTab> {
-  int get id => widget.id;
-
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
@@ -23,7 +21,7 @@ class _TraitSkillTabState extends State<TraitSkillTab> {
         if (func.funcType == FuncType.eventFortificationPointUp) continue;
         final sval = func.svals.getOrNull(0);
         if (sval == null) continue;
-        for (final val in [
+        for (final val in <List<int>?>[
           ...<int?>[
             sval.Individuality,
             sval.AddIndividualty,
@@ -31,14 +29,14 @@ class _TraitSkillTabState extends State<TraitSkillTab> {
             sval.CardIndividuality,
             sval.FieldIndividuality,
             sval.GainNpTargetPassiveIndividuality,
-          ],
+          ].whereType<int>().map((e) => [e]),
           ...<List<int>?>[
             sval.ParamAddOpIndividuality,
             sval.ParamAddSelfIndividuality,
             sval.ParamAddFieldIndividuality,
           ],
         ]) {
-          if ((val is List && val.contains(id)) || val == id) {
+          if (val != null && val.toSet().containSubset(widget.ids.toSet())) {
             funcs.add(func);
             break;
           }

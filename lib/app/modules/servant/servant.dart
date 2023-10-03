@@ -19,6 +19,7 @@ import 'tabs/profile_tab.dart';
 import 'tabs/quest_tab.dart';
 import 'tabs/related_cards_tab.dart';
 import 'tabs/skill_tab.dart';
+import 'tabs/sp_dmg.dart';
 import 'tabs/summon_tab.dart';
 import 'tabs/td_tab.dart';
 import 'tabs/voice_tab.dart';
@@ -366,6 +367,12 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
           tab: tab,
           tabBuilder: () => S.current.svt_basic_info,
           viewBuilder: (ctx) => SvtInfoTab(svt: svt),
+        );
+      case SvtTab.spDmg:
+        return _SubTabInfo(
+          tab: tab,
+          tabBuilder: () => S.current.super_effective_damage,
+          viewBuilder: (ctx) => SvtSpDmgTab(svt: svt),
         );
       case SvtTab.lore:
         if (svt.originalCollectionNo == 0 && svt.profile.comments.isEmpty) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
@@ -16,15 +17,15 @@ enum _SEScope {
 }
 
 class TraitSPDMGTab extends StatefulWidget {
-  final int id;
-  const TraitSPDMGTab(this.id, {super.key});
+  final List<int> ids;
+  const TraitSPDMGTab(this.ids, {super.key});
 
   @override
   State<TraitSPDMGTab> createState() => _TraitSPDMGTabState();
 }
 
 class _TraitSPDMGTabState extends State<TraitSPDMGTab> {
-  int get id => widget.id;
+  // int get id => widget.id;
 
   final filter = FilterGroupData<_SEScope>();
 
@@ -136,7 +137,7 @@ class _TraitSPDMGTabState extends State<TraitSPDMGTab> {
         ].contains(buff.type)) {
           continue;
         }
-        if (buff.ckOpIndv.any((e) => e.id == id)) {
+        if (Individuality.containsAllAB(buff.ckOpIndv, widget.ids, signed: false)) {
           children.add(_buildRow(card, skill));
         }
       }
@@ -162,10 +163,10 @@ class _TraitSPDMGTabState extends State<TraitSPDMGTab> {
         switch (func.funcType) {
           case FuncType.damageNpIndividual:
           case FuncType.damageNpStateIndividualFix:
-            matched = vals.Target == id;
+            matched = widget.ids.length == 1 && vals.Target == widget.ids.first;
             break;
           case FuncType.damageNpIndividualSum:
-            matched = vals.TargetList?.contains(id) == true;
+            matched = vals.TargetList?.toSet().containSubset(widget.ids.toSet()) == true;
             break;
           case FuncType.damageNpStateIndividual:
             // not used

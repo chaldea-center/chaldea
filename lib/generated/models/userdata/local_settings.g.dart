@@ -295,6 +295,7 @@ const _$SvtTabEnumMap = {
   SvtTab.skill: 'skill',
   SvtTab.np: 'np',
   SvtTab.info: 'info',
+  SvtTab.spDmg: 'spDmg',
   SvtTab.lore: 'lore',
   SvtTab.illustration: 'illustration',
   SvtTab.relatedCards: 'relatedCards',

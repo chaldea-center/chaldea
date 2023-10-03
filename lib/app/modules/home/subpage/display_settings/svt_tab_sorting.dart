@@ -89,6 +89,8 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
         return S.current.noble_phantasm;
       case SvtTab.info:
         return S.current.svt_basic_info;
+      case SvtTab.spDmg:
+        return S.current.super_effective_damage;
       case SvtTab.lore:
         return S.current.svt_profile;
       case SvtTab.illustration:

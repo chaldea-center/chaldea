@@ -201,7 +201,7 @@ class BuffInfoTable extends StatelessWidget {
               : SharedBuilder.traitList(
                   context: context,
                   traits: buff.ckSelfIndv,
-                  useAndJoin: buff.script?.checkIndvType == 1,
+                  useAndJoin: buff.script?.checkIndvTypeAnd == true,
                 ),
           flex: 3,
         )
@@ -214,7 +214,7 @@ class BuffInfoTable extends StatelessWidget {
               : SharedBuilder.traitList(
                   context: context,
                   traits: buff.ckOpIndv,
-                  useAndJoin: buff.script?.checkIndvType == 1,
+                  useAndJoin: buff.script?.checkIndvTypeAnd == true,
                 ),
           flex: 3,
         )
