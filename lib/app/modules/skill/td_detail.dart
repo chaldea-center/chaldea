@@ -25,6 +25,9 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
   int get id => widget.td?.id ?? widget.id ?? data?.id ?? -1;
   BaseTd get td => data!;
 
+  int? _lv;
+  int? _oc;
+
   @override
   void initState() {
     super.initState();
@@ -66,13 +69,50 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
   Widget buildContent(BuildContext context, BaseTd td) {
     final svts = ReverseGameData.td2Svt(id).toList()..sort2((e) => e.collectionNo);
     final enemies = ReverseGameData.questEnemies((e) => e.noblePhantasm.noblePhantasmId == id);
-
+    _lv = (_lv ?? td.maxLv).clamp2(1, td.maxLv);
+    _oc = (_oc ?? 1).clamp2(1, td.maxOC);
     return ListView(
       children: [
         CustomTable(children: [
           CustomTableRow.fromTexts(texts: ['No.${td.id}'], isHeader: true),
+          CustomTableRow.fromChildren(children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                DropdownButton<int>(
+                  isDense: true,
+                  items: [
+                    for (int level = 1; level <= td.maxLv; level++)
+                      DropdownMenuItem(value: level, child: Text('Lv.$level')),
+                  ],
+                  value: _lv,
+                  onChanged: (v) {
+                    setState(() {
+                      _lv = v;
+                    });
+                  },
+                ),
+                const SizedBox(width: 24),
+                DropdownButton<int>(
+                  isDense: true,
+                  items: [
+                    for (int level = 1; level <= td.maxLv; level++)
+                      DropdownMenuItem(value: level, child: Text('OC $level')),
+                  ],
+                  value: _oc,
+                  onChanged: (v) {
+                    setState(() {
+                      _oc = v;
+                    });
+                  },
+                ),
+              ],
+            )
+          ]),
           TdDescriptor(
             td: td,
+            level: _lv,
+            oc: _oc,
             showEnemy: true,
             showNone: true,
             jumpToDetail: false,

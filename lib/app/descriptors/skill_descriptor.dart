@@ -282,6 +282,7 @@ class OverrideTDData {
 class TdDescriptor extends StatelessWidget with FuncsDescriptor {
   final BaseTd td;
   final int? level;
+  final int? oc;
   final bool showPlayer;
   final bool showEnemy;
   final bool showNone;
@@ -294,6 +295,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
     super.key,
     required this.td,
     this.level,
+    this.oc,
     this.showPlayer = true,
     this.showEnemy = false,
     this.showNone = false,
@@ -308,6 +310,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
     required this.td,
     required bool isPlayer,
     this.level,
+    this.oc,
     this.showNone = false,
     this.overrideData,
     this.jumpToDetail = true,
@@ -390,6 +393,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
           script: td.script,
           owner: td,
           level: level,
+          oc: oc,
           showPlayer: showPlayer,
           showEnemy: showEnemy,
           showNone: showNone,

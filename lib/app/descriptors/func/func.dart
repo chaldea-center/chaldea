@@ -21,6 +21,7 @@ mixin FuncsDescriptor {
     required bool showEnemy,
     bool showNone = false,
     int? level,
+    int? oc,
     EdgeInsetsGeometry? padding,
     bool showBuffDetail = false,
     SkillOrTd? owner,
@@ -35,6 +36,7 @@ mixin FuncsDescriptor {
         showEnemy: showEnemy,
         showNone: showNone,
         level: level,
+        oc: oc,
         padding: padding,
         showBuffDetail: showBuffDetail,
         owner: owner,
@@ -50,6 +52,7 @@ mixin FuncsDescriptor {
     required bool showEnemy,
     bool showNone = false,
     int? level,
+    int? oc,
     EdgeInsetsGeometry? padding,
     bool showBuffDetail = false,
     SkillOrTd? owner,
@@ -90,6 +93,7 @@ mixin FuncsDescriptor {
         func: func,
         lastFuncTarget: index == 0 ? null : funcs2[index - 1].funcTargetType,
         level: level,
+        oc: oc,
         padding: padding,
         showPlayer: showPlayer,
         showEnemy: showEnemy,
@@ -137,7 +141,8 @@ class _DescriptorWrapper extends StatelessWidget {
   final List<Widget> lvCells;
   final List<Widget> ocCells;
   final List<Widget> supportCells;
-  final int? selected;
+  final int? lv;
+  final int? oc;
 
   const _DescriptorWrapper({
     required this.title,
@@ -145,7 +150,8 @@ class _DescriptorWrapper extends StatelessWidget {
     this.lvCells = const [],
     this.ocCells = const [],
     this.supportCells = const [],
-    this.selected,
+    this.lv,
+    this.oc,
   });
 
   @override
@@ -191,10 +197,13 @@ class _DescriptorWrapper extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 2),
               child: cell,
             );
-            if (cellIndex == 0 && selected != null && selected! - 1 == j) {
+            if ((cellIndex == 0 && lv != null && lv! - 1 == j) || (cellIndex == 1 && oc != null && oc! - 1 == j)) {
               cell = DecoratedBox(
                 decoration: BoxDecoration(
-                  border: Border.all(color: Theme.of(context).colorScheme.secondaryContainer.withAlpha(180)),
+                  border: Border.all(
+                    color:
+                        cellIndex == 1 ? Colors.amber : Theme.of(context).colorScheme.secondaryContainer.withAlpha(180),
+                  ),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: cell,
@@ -441,6 +450,7 @@ class FuncDescriptor extends StatelessWidget {
   final NiceFunction func;
   final FuncTargetType? lastFuncTarget;
   final int? level; // 1-10
+  final int? oc;
   final EdgeInsetsGeometry? padding;
   final bool showPlayer;
   final bool showEnemy;
@@ -455,6 +465,7 @@ class FuncDescriptor extends StatelessWidget {
     required this.func,
     this.lastFuncTarget,
     this.level,
+    this.oc,
     this.padding,
     this.showPlayer = true,
     this.showEnemy = false,
@@ -1060,7 +1071,8 @@ class FuncDescriptor extends StatelessWidget {
       lvCells: lvCells,
       ocCells: ocCells,
       supportCells: supportCells,
-      selected: level,
+      lv: level,
+      oc: oc,
     );
 
     final triggerSkill = _buildTrigger(context);
@@ -1079,17 +1091,18 @@ class FuncDescriptor extends StatelessWidget {
   }
 
   Widget? _buildTrigger(BuildContext context) {
+    DataVals? vals = func.svalsList.getOrNull((oc ?? 1) - 1)?.getOrNull((level ?? 1) - 1);
     final trigger = kBuffValueTriggerTypes[func.buff?.type];
     if (trigger == null) return null;
     final details = func.svals.map((e) => trigger(e)).toList();
     final ocDetails = func.ocVals(0).map((e) => trigger(e)).toList();
-    final detail = details.getOrNull((level ?? -1) - 1) ?? details.firstOrNull;
+    func.svalsList.getOrNull((oc ?? 1) - 1)?.getOrNull((level ?? 1) - 1);
+    final detail = vals != null ? trigger(vals) : details.getOrNull((level ?? -1) - 1) ?? details.firstOrNull;
     bool noLevel = details.isEmpty ||
         ((level == null || level == -1) && details.map((e) => e.level).toSet().length > 1) ||
-        (ocDetails.map((e) => e.level).toSet().length > 1);
+        ((oc == null || oc == -1) && ocDetails.map((e) => e.level).toSet().length > 1);
 
-    DataVals? vals;
-    vals = func.svals.getOrNull((level ?? 1) - 1);
+    vals ??= func.svals.getOrNull((level ?? 1) - 1);
     vals ??= func.svals.getOrNull(0);
     if (detail == null) return null;
 

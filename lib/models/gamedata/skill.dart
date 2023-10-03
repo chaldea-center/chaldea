@@ -734,6 +734,7 @@ class NiceTd extends SkillOrTd with RouteInfo implements BaseTd {
 
 extension TdMethods on BaseTd {
   int get maxLv => functions.firstOrNull?.svals.length ?? 0;
+  int get maxOC => functions.firstOrNull?.ocVals(0).length ?? 0;
 
   String get nameWithRank {
     if (['なし', '无', 'None', '無', '없음'].contains(rank)) return lName.l;
