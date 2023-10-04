@@ -265,8 +265,8 @@ class _CachedImageState extends State<CachedImage> {
     return _withPlaceholder(context, url);
   }
 
-  Widget _withError(BuildContext context, String url, [dynamic error]) {
-    return cachedOption.errorWidget?.call(context, url, error) ?? const SizedBox();
+  Widget _withError(BuildContext context, String url, [Object? error]) {
+    return cachedOption.errorWidget?.call(context, url, error ?? "") ?? const SizedBox();
   }
 
   Widget _withProvider(ImageProvider provider, {Future<void> Function()? onClearCache}) {

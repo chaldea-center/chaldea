@@ -49,7 +49,7 @@ class _SvtVoiceTabState extends State<SvtVoiceTab> {
   }
 
   bool isReleased(Region r) {
-    return db.gameData.mappingData.svtRelease.ofRegion(r)?.contains(widget.svt.collectionNo) == true;
+    return db.gameData.mappingData.entityRelease.ofRegion(r)?.contains(widget.svt.id) == true;
   }
 
   void fetchSvt(Region r) async {

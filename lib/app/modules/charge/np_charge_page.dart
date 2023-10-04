@@ -414,7 +414,7 @@ class _NpChargePageState extends State<NpChargePage> {
       if (!filterData.rarity.matchOne(ce.rarity)) continue;
       if (!filterData.ceAtkType.matchOne(ce.atkType)) continue;
       final region = filterData.region.radioValue ?? Region.jp;
-      final released = db.gameData.mappingData.ceRelease.ofRegion(region)?.contains(ce.collectionNo);
+      final released = db.gameData.mappingData.entityRelease.ofRegion(region)?.contains(ce.id);
       if (region != Region.jp && released != true) continue;
 
       final skills = ce.skills.where((e) => e.svt.num == 1).toList();
@@ -449,7 +449,7 @@ class _NpChargePageState extends State<NpChargePage> {
       if (filterData.skillLv >= 0) {
         List<BaseSkill> skills = [];
         if (filterData.skillLv == 0) {
-          final released = db.gameData.mappingData.svtRelease.ofRegion(region)?.indexOf(svt.collectionNo);
+          final released = db.gameData.mappingData.entityRelease.ofRegion(region)?.indexOf(svt.id);
           if (region == Region.jp || (released != null && released >= 0)) {
             skills.addAll(svt.classPassive);
           }

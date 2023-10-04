@@ -58,8 +58,8 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
   }
 
   bool isReleased(Region r) {
-    final released = db.gameData.mappingData.svtRelease.ofRegion(r);
-    return released?.contains(widget.svt.collectionNo) == true;
+    final released = db.gameData.mappingData.entityRelease.ofRegion(r);
+    return released?.contains(widget.svt.id) == true;
   }
 
   void fetchSvt(Region r) async {

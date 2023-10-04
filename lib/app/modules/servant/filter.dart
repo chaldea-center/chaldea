@@ -107,8 +107,8 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
 
     final region = filterData.region.radioValue;
     if (region != null && region != Region.jp) {
-      final released = db.gameData.mappingData.svtRelease.ofRegion(region);
-      if (released?.contains(svt.collectionNo) == false) {
+      final released = db.gameData.mappingData.entityRelease.ofRegion(region);
+      if (released?.contains(svt.id) == false) {
         return false;
       }
     }

@@ -111,15 +111,15 @@ class _EffectSearchPageState extends State<EffectSearchPage>
     if (region != null && region != Region.jp) {
       MappingList<int>? release;
       if (card is Servant) {
-        release = db.gameData.mappingData.svtRelease;
+        release = db.gameData.mappingData.entityRelease;
       } else if (card is CraftEssence) {
-        release = db.gameData.mappingData.ceRelease;
+        release = db.gameData.mappingData.entityRelease;
       } else if (card is CommandCode) {
         release = db.gameData.mappingData.ccRelease;
       } else if (card is MysticCode) {
         release = db.gameData.mappingData.mcRelease;
       }
-      if (release?.ofRegion(region)?.contains(card.collectionNo) != true) {
+      if (release?.ofRegion(region)?.contains(card.id) != true) {
         return false;
       }
     }

@@ -367,8 +367,8 @@ class CraftDetailBasePage extends StatelessWidget {
                   builder: (context) {
                     List<Widget> children = [];
                     for (final region in Region.values) {
-                      final ceRelease = db.gameData.mappingData.ceRelease.ofRegion(region);
-                      final released = region == Region.jp || ceRelease?.contains(ce.collectionNo) == true;
+                      final ceRelease = db.gameData.mappingData.entityRelease.ofRegion(region);
+                      final released = region == Region.jp || ceRelease?.contains(ce.id) == true;
                       children.add(SimpleDialogOption(
                         onPressed: released
                             ? () {

@@ -100,11 +100,11 @@ class TdDmgSolver {
     results.clear();
     errors.clear();
     final List<Servant> servants;
-    final releasedSvts = db.gameData.mappingData.svtRelease.ofRegion(options.region) ?? [];
+    final releasedSvts = db.gameData.mappingData.entityRelease.ofRegion(options.region) ?? [];
     if (options.region != Region.jp && releasedSvts.isNotEmpty) {
-      servants = releasedSvts.map((e) => db.gameData.servantsNoDup[e]).whereType<Servant>().toList();
+      servants = releasedSvts.map((e) => db.gameData.servantsById[e]).whereType<Servant>().toList();
     } else {
-      servants = db.gameData.servantsNoDup.values.toList();
+      servants = db.gameData.servantsById.values.toList();
     }
     servants.sort2((e) => e.collectionNo);
     final quest = getQuest();

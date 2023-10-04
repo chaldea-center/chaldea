@@ -14,6 +14,7 @@ import 'const_data.dart';
 import 'drop_rate.dart';
 import 'enemy_master.dart';
 import 'event.dart';
+import 'game_card.dart';
 import 'item.dart';
 import 'mappings.dart';
 import 'mystic_code.dart';
@@ -116,19 +117,19 @@ class GameData with _GameDataExtra {
     this.addData,
     this.spoilerRegion,
   })  : version = version ?? DataVersion(),
-        servantsById = {for (final svt in servants) svt.id: svt},
+        servantsById = {for (final svt in _sortCards(servants)) svt.id: svt},
         servants = {
-          for (final svt in servants)
+          for (final svt in _sortCards(servants))
             if (svt.collectionNo > 0) svt.collectionNo: svt
         },
-        craftEssencesById = {for (final ce in craftEssences) ce.id: ce},
+        craftEssencesById = {for (final ce in _sortCards(craftEssences)) ce.id: ce},
         craftEssences = {
-          for (final ce in craftEssences)
+          for (final ce in _sortCards(craftEssences))
             if (ce.collectionNo > 0) ce.collectionNo: ce
         },
-        commandCodesById = {for (final cc in commandCodes) cc.id: cc},
+        commandCodesById = {for (final cc in _sortCards(commandCodes)) cc.id: cc},
         commandCodes = {
-          for (final cc in commandCodes)
+          for (final cc in _sortCards(commandCodes))
             if (cc.collectionNo > 0) cc.collectionNo: cc
         },
         mysticCodes = mysticCodes ?? {},
@@ -159,20 +160,24 @@ class GameData with _GameDataExtra {
 
     // remove spoiler
     if (this.version.timestamp > 0 && spoilerRegion != null && spoilerRegion != Region.jp) {
-      void _remove<T>(Map<int, T> dict, MappingList<int> releases) {
+      void _remove(Map<int, GameCardMixin> dict, MappingList<int> releases) {
         final released = releases.ofRegion(spoilerRegion);
         if (released == null || released.isEmpty) return;
-        dict.removeWhere((key, _) => !released.contains(key));
+        dict.removeWhere((key, v) => !released.contains(v.id));
       }
 
-      _remove(this.servants, this.mappingData.svtRelease);
-      _remove(this.craftEssences, this.mappingData.ceRelease);
+      _remove(this.servants, this.mappingData.entityRelease);
+      _remove(this.craftEssences, this.mappingData.entityRelease);
       _remove(this.commandCodes, this.mappingData.ccRelease);
       _remove(this.entities, this.mappingData.entityRelease);
     }
     this.items.remove(9305420); // 完璧なお正月 is CE
     // other generated maps
     preprocess();
+  }
+
+  static List<T> _sortCards<T extends GameCardMixin>(List<T> cards) {
+    return cards.toList()..sort2((e) => e.collectionNo);
   }
 
   void preprocess() {

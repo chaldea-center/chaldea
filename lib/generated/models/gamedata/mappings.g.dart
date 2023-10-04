@@ -142,15 +142,9 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
             (k, e) => MapEntry(int.parse(k as String), MappingDict<int>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
-      svtRelease: json['svt_release'] == null
-          ? null
-          : MappingList<int>.fromJson(Map<String, dynamic>.from(json['svt_release'] as Map)),
       entityRelease: json['entity_release'] == null
           ? null
           : MappingList<int>.fromJson(Map<String, dynamic>.from(json['entity_release'] as Map)),
-      ceRelease: json['ce_release'] == null
-          ? null
-          : MappingList<int>.fromJson(Map<String, dynamic>.from(json['ce_release'] as Map)),
       ccRelease: json['cc_release'] == null
           ? null
           : MappingList<int>.fromJson(Map<String, dynamic>.from(json['cc_release'] as Map)),
@@ -213,9 +207,7 @@ Map<String, dynamic> _$MappingDataToJson(MappingData instance) => <String, dynam
       'costume_detail': instance.costumeDetail.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'skill_priority': instance.skillPriority.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'td_priority': instance.tdPriority.map((k, e) => MapEntry(k.toString(), e.toJson())),
-      'svt_release': instance.svtRelease.toJson(),
       'entity_release': instance.entityRelease.toJson(),
-      'ce_release': instance.ceRelease.toJson(),
       'cc_release': instance.ccRelease.toJson(),
       'mc_release': instance.mcRelease.toJson(),
       'war_release': instance.warRelease.toJson(),

@@ -274,9 +274,7 @@ class MappingData {
   final Map<int, MappingBase<String>> costumeDetail; // costume collectionNo
   final Map<int, MappingDict<int>> skillPriority; // <svtId, <skillId, priority>>
   final Map<int, MappingDict<int>> tdPriority; // <svtId, <tdId, priority>>
-  final MappingList<int> svtRelease;
   final MappingList<int> entityRelease;
-  final MappingList<int> ceRelease;
   final MappingList<int> ccRelease;
   final MappingList<int> mcRelease;
   final MappingList<int> warRelease;
@@ -319,9 +317,7 @@ class MappingData {
     this.costumeDetail = const {},
     this.skillPriority = const {},
     this.tdPriority = const {},
-    MappingList<int>? svtRelease,
     MappingList<int>? entityRelease,
-    MappingList<int>? ceRelease,
     MappingList<int>? ccRelease,
     MappingList<int>? mcRelease,
     MappingList<int>? warRelease,
@@ -329,9 +325,7 @@ class MappingData {
     EnumMapping? enums,
     this.misc = const {},
     this.cnReplace = const {},
-  })  : svtRelease = svtRelease ?? MappingList(),
-        entityRelease = entityRelease ?? MappingList(),
-        ceRelease = ceRelease ?? MappingList(),
+  })  : entityRelease = entityRelease ?? MappingList(),
         ccRelease = ccRelease ?? MappingList(),
         mcRelease = mcRelease ?? MappingList(),
         warRelease = warRelease ?? MappingList(),
