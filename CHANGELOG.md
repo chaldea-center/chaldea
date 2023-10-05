@@ -2,12 +2,18 @@
 
 ## 2.4.16
 
-- Mission solver:
-  - support blacklist
-  - support adding NotBasedOnServant trait for Traum enemies (trait removed in JP)
-- Support favorite teams
-- Fix Chloe NP S.E. not take effect
-- Fix Tell skill & NP S.E. & Summer Baobhan skill 1 vs unreleasable buff
+- Chaldeas
+  - Mission solver:
+    - support blacklist
+    - support adding NotBasedOnServant trait for Traum enemies (trait removed in JP)
+  - Add S.P. DMG summary page for svt and enemy
+  - Add lv/oc selector and enemy/player view in skill&td detail page
+  - Show event related campaigns
+- Laplace
+  - Support favorite teams
+  - Support manual skill target selection (click one ally target twice to turn on, radio button becomes red)
+  - Fix Chloe NP S.E. not take effect
+  - Fix Tell skill & NP S.E. & Summer Baobhan skill 1 vs unreleasable buff
 
 ## 2.4.15
 
