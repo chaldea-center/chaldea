@@ -42,7 +42,7 @@ class AppState extends ChangeNotifier {
   }
 
   int addWindow() {
-    if (kDebugMode) {
+    if (kDebugMode && 1 > 2) {
       _children.insert(_activeIndex + 1, AppRouterDelegate(_root));
       _activeIndex += 1;
     } else {

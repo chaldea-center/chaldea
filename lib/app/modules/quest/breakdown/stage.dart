@@ -446,7 +446,7 @@ class EnemyThumbBase extends StatelessWidget {
         if (classId != null) db.getIconImage(SvtClassX.clsIcon(classId!, rarity ?? 5), width: 20),
         Flexible(
           child: AutoSizeText(
-            '${clsName?.shortName ?? "?"} $hp',
+            '${clsName?.shortName ?? "?"} ${hp.format(compact: false, groupSeparator: ",")}',
             maxFontSize: 12,
             // ensure HP is shown completely
             minFontSize: 1,

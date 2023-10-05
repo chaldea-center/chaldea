@@ -84,13 +84,15 @@ class _SvtSpDmgTabState extends State<SvtSpDmgTab> with SingleTickerProviderStat
           Row(
             children: <Widget>[
               Expanded(
-                  child: SizedBox(
-                      height: 36,
-                      child: TabBar(
-                        tabs: ["vs. Others", "vs. this"]
-                            .map((e) => Tab(child: Text(e, style: Theme.of(context).textTheme.bodyMedium)))
-                            .toList(),
-                      ))),
+                child: SizedBox(
+                  height: 36,
+                  child: TabBar(
+                    tabs: ["vs. Others", "vs. this"]
+                        .map((e) => Tab(child: Text(e, style: Theme.of(context).textTheme.bodyMedium)))
+                        .toList(),
+                  ),
+                ),
+              ),
             ],
           ),
           Expanded(
@@ -148,6 +150,7 @@ class SpDmgSelfTab extends StatelessWidget {
           parts.add(ListTile(
             dense: true,
             selected: true,
+            selectedColor: Theme.of(context).colorScheme.secondary,
             title: Text(traits.map((e) => e.shownName()).join(" & ")),
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
             onTap: () {
@@ -159,6 +162,7 @@ class SpDmgSelfTab extends StatelessWidget {
             parts.add(ListTile(
               dense: true,
               selected: true,
+              selectedColor: Theme.of(context).colorScheme.secondary,
               title: Text(trait.shownName()),
               trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
               onTap: trait.routeTo,

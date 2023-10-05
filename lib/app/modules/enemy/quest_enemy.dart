@@ -191,10 +191,11 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
         TextButton(
           onPressed: () {
             router.pushPage(SpDmgIndivPage(
-              title: Text(enemy.lShownName),
+              title: Text('${S.current.super_effective_damage} - ${enemy.lShownName}'),
               svtIndivs: enemy.traits.map((e) => e.signedId).toList(),
             ));
           },
+          style: kTextButtonDenseStyle,
           child: Text(S.current.super_effective_damage),
         ),
       if (enemy.ai != null) ...[
