@@ -5,9 +5,9 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class EventCampaignDetailPage extends StatelessWidget {
+class EventCampaignDetail extends StatelessWidget {
   final Event event;
-  const EventCampaignDetailPage({super.key, required this.event});
+  const EventCampaignDetail({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -218,5 +218,58 @@ class EventCampaignDetailPage extends StatelessWidget {
       case null:
         return S.current.unknown;
     }
+  }
+}
+
+class EventRelatedCampaigns extends StatelessWidget {
+  final Event event;
+  final Region region;
+  const EventRelatedCampaigns({super.key, required this.event, required this.region});
+
+  /// [mainEvent] is [region] which may be non-JP, [campaign] should be JP in db
+  static bool isRelatedCampaign(Region region, Event mainEvent, Event campaign) {
+    if (mainEvent.type == EventType.eventQuest && campaign.type == EventType.eventQuest) return false;
+    if (campaign.id == mainEvent.id) return false;
+    return campaign.startTimeOf(region) == mainEvent.startedAt && campaign.endTimeOf(region) == mainEvent.endedAt;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final relatedCampaigns = db.gameData.events.values.where((c) => isRelatedCampaign(region, event, c)).toList();
+    if (relatedCampaigns.isEmpty) return const Center(child: Text("Empty"));
+    if (event.campaigns.isNotEmpty && relatedCampaigns.every((e) => e.id != event.id)) {
+      relatedCampaigns.insert(0, event);
+    }
+    relatedCampaigns.sortByList((e) => [e.type == EventType.eventQuest ? 0 : 1, e.id]);
+    final time = [event.startedAt, event.endedAt].map((e) => e.sec2date().toDateString()).join(" ~ ");
+    return ListView(
+      children: [
+        SHeader("Guessed Related Campaigns with same start/end time.\n${region.upper}: $time"),
+        for (final (index, campaign) in relatedCampaigns.enumerate)
+          SimpleAccordion(
+            expanded: true,
+            headerBuilder: (context, _) {
+              return ListTile(
+                dense: true,
+                selected: true,
+                leading: Text((index + 1).toString()),
+                subtitle: Text('No.${campaign.id}'),
+                minLeadingWidth: 16,
+                title: Text(campaign.shownName),
+              );
+            },
+            contentBuilder: (context) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextButton(onPressed: campaign.routeTo, child: Text('>>> ${S.current.details} >>>')),
+                  if (campaign.campaigns.isNotEmpty) EventCampaignDetail(event: campaign),
+                ],
+              );
+            },
+          ),
+      ],
+    );
   }
 }

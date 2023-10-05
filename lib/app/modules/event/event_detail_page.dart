@@ -215,6 +215,12 @@ class _EventDetailPageState extends State<EventDetailPage> {
     if (event.rewardScenes.isNotEmpty) {
       _addTab('Scenes', EventRewardScenePage(event: event));
     }
+    if ((db.gameData.events.values.any((e) => EventRelatedCampaigns.isRelatedCampaign(_region, event, e)))) {
+      // if (event.type == EventType.eventQuest &&
+      //     (event.campaigns.isNotEmpty ||
+      //         db.gameData.events.values.any((e) => EventRelatedCampaigns.isRelatedCampaign(_region, event, e)))) {
+      _addTab(S.current.event_campaign, EventRelatedCampaigns(event: event, region: _region));
+    }
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
@@ -746,7 +752,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     }
 
     if (event.campaignQuests.isNotEmpty || event.campaigns.isNotEmpty) {
-      children.add(EventCampaignDetailPage(event: event));
+      children.add(EventCampaignDetail(event: event));
     }
 
     if (event.type == EventType.interludeCampaign) {
