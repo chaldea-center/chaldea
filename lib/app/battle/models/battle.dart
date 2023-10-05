@@ -16,6 +16,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../functions/function_executor.dart';
 import '../interactions/_delegate.dart';
+import '../interactions/choose_targets.dart';
 import '../interactions/tailored_execution_confirm.dart';
 import 'ai.dart';
 import 'buff.dart';
@@ -784,6 +785,34 @@ class BattleData {
     }
   }
 
+  Future<void> _acquireTarget(int? svtIndex, int skillIndex, BattleSkillInfoData? skillInfo) async {
+    if (!options.manualAllySkillTarget) return;
+    skillInfo ??= svtIndex == null
+        ? masterSkillInfo.getOrNull(skillIndex)
+        : onFieldAllyServants.getOrNull(svtIndex)?.skillInfoList.getOrNull(skillIndex);
+    if (skillInfo == null) return;
+    final curSkill = await skillInfo.getSkill();
+    if (curSkill == null) return;
+
+    final targetFunc = curSkill.functions.firstWhereOrNull((func) => func.funcTargetType.needNormalOneTarget);
+    if (targetFunc != null) {
+      final selectedTargets = await ChooseTargetsDialog.show(
+        this,
+        targetType: targetFunc.funcTargetType,
+        targets: nonnullAllies,
+        minCount: 1,
+        maxCount: 1,
+        autoConfirmOneTarget: true,
+      );
+      if (selectedTargets != null && selectedTargets.length == 1) {
+        final targetIndex = onFieldAllyServants.indexOf(selectedTargets.single);
+        if (targetIndex >= 0) {
+          allyTargetIndex = targetIndex;
+        }
+      }
+    }
+  }
+
   Future<void> activateSvtSkill(final int servantIndex, final int skillIndex) async {
     final svt = onFieldAllyServants.getOrNull(servantIndex);
     if (svt == null || isBattleFinished) return;
@@ -795,6 +824,7 @@ class BattleData {
       action: 'svt_skill-${servantIndex + 1}-${skillIndex + 1}',
       task: () async {
         await withAction(() async {
+          await _acquireTarget(servantIndex, skillIndex, null);
           recorder.skillActivation(this, servantIndex, skillIndex);
           await svt.activateSkill(this, skillIndex);
         });
@@ -832,6 +862,7 @@ class BattleData {
       action: 'mystic_code_skill-${skillIndex + 1}',
       task: () async {
         await withAction(() async {
+          await _acquireTarget(null, skillIndex, skillInfo);
           recorder.skillActivation(this, null, skillIndex);
           await withActivator(null, () => skillInfo.activate(this));
           recorder.skill(
@@ -1254,6 +1285,7 @@ class BattleData {
       action: csRepairHpName,
       task: () async {
         final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.commandSpell);
+        await _acquireTarget(null, -1, skillInfo);
         await withActivator(null, () => skillInfo.activate(this));
         recorder.skill(
           battleData: this,
@@ -1276,6 +1308,7 @@ class BattleData {
       action: csReleaseNpName,
       task: () async {
         final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.commandSpell);
+        await _acquireTarget(null, -1, skillInfo);
         await withActivator(null, () => skillInfo.activate(this));
         recorder.skill(
           battleData: this,
@@ -1288,7 +1321,7 @@ class BattleData {
     );
   }
 
-  Future<void> resetPlayerSkillCD(bool isMysticCode) async {
+  Future<void> resetPlayerSkillCD({required bool isMysticCode, required BattleServantData? svt}) async {
     return recordError(
       save: true,
       action: 'resetSkillCD',
@@ -1299,13 +1332,11 @@ class BattleData {
             skill.chargeTurn = 0;
           }
           recorder.message("${S.current.reset_skill_cd} (${S.current.mystic_code})");
-        } else {
-          final ally = targetedAlly;
-          if (ally == null) return;
-          for (final skill in ally.skillInfoList) {
+        } else if (svt != null) {
+          for (final skill in svt.skillInfoList) {
             skill.chargeTurn = 0;
           }
-          recorder.message(S.current.reset_skill_cd, target: ally);
+          recorder.message(S.current.reset_skill_cd, target: svt);
         }
       },
     );

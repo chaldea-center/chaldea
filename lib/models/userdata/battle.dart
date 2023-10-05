@@ -102,6 +102,8 @@ class BattleSimSetting {
   int recordScreenshotRatio; // 10-30
   bool recordShowTwoColumn;
 
+  bool manualAllySkillTarget;
+
   BattleSimSetting({
     this.migratedFormation = false,
     this.playerRegion,
@@ -118,6 +120,7 @@ class BattleSimSetting {
     this.recordScreenshotJpg = false,
     this.recordScreenshotRatio = 10,
     this.recordShowTwoColumn = false,
+    this.manualAllySkillTarget = false,
   })  : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
         pingedSvts = pingedSvts ?? {215, 284, 314, 316, 357},
         defaultLvs = defaultLvs ?? PlayerSvtDefaultData(),

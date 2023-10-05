@@ -15,6 +15,7 @@ class ChooseTargetsDialog extends StatefulWidget {
   final List<BattleServantData> targets;
   final int maxCount;
   final int minCount;
+  final bool autoConfirmOneTarget;
 
   final Completer<List<BattleServantData>> completer;
 
@@ -26,6 +27,7 @@ class ChooseTargetsDialog extends StatefulWidget {
     required this.maxCount,
     required this.minCount,
     required this.completer,
+    required this.autoConfirmOneTarget,
   });
 
   @override
@@ -37,6 +39,7 @@ class ChooseTargetsDialog extends StatefulWidget {
     required List<BattleServantData> targets,
     int maxCount = 1,
     int minCount = 1,
+    bool autoConfirmOneTarget = false,
   }) async {
     assert(maxCount >= minCount && minCount >= 0);
     if (!battleData.mounted) return null;
@@ -49,6 +52,7 @@ class ChooseTargetsDialog extends StatefulWidget {
         targets: targets,
         maxCount: maxCount,
         minCount: minCount,
+        autoConfirmOneTarget: autoConfirmOneTarget,
       ),
     );
   }
@@ -110,15 +114,7 @@ class _ChooseTargetsDialogState extends State<ChooseTargetsDialog> {
           child: Text(S.current.cancel),
         ),
         TextButton(
-          onPressed: selected.length >= widget.minCount && selected.length <= widget.maxCount
-              ? () {
-                  final chosen = selected.toList();
-                  chosen.sortByList((e) => [e.isPlayer ? -1 : 1, e.fieldIndex]);
-                  battleData.battleLogger.action('${S.current.select} (${Transl.funcTargetType(widget.targetType).l}):'
-                      ' ${chosen.map((e) => "${e.fieldIndex}-${e.lBattleName}")}');
-                  Navigator.of(context).pop(chosen);
-                }
-              : null,
+          onPressed: selected.length >= widget.minCount && selected.length <= widget.maxCount ? onConfirm : null,
           child: Text(S.current.confirm),
         ),
       ],
@@ -148,9 +144,20 @@ class _ChooseTargetsDialogState extends State<ChooseTargetsDialog> {
               selected.toggle(svt);
             }
             if (mounted) setState(() {});
+            if (widget.maxCount == 1 && widget.minCount == 1 && widget.autoConfirmOneTarget) {
+              onConfirm();
+            }
           },
         ),
       ),
     );
+  }
+
+  void onConfirm() {
+    final chosen = selected.toList();
+    chosen.sortByList((e) => [e.isPlayer ? -1 : 1, e.fieldIndex]);
+    battleData.battleLogger.action('${S.current.select} (${Transl.funcTargetType(widget.targetType).l}):'
+        ' ${chosen.map((e) => "${e.fieldIndex}-${e.lBattleName}")}');
+    Navigator.of(context).pop(chosen);
   }
 }

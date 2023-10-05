@@ -54,6 +54,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     battleData
       ..options = widget.options.copy()
       ..context = context;
+    battleData.options.manualAllySkillTarget = db.settings.battleSim.manualAllySkillTarget;
 
     battleData.recorder.determineUploadEligibility(questPhase, widget.options);
 
@@ -73,6 +74,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
 
     final replayActions = widget.replayActions;
     if (replayActions != null) {
+      battleData.options.manualAllySkillTarget = false;
       battleData.delegate = BattleReplayDelegate(replayActions.delegate);
       for (final action in replayActions.actions) {
         await action.replay(battleData);
@@ -191,21 +193,20 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             context: context,
             useRootNavigator: false,
             builder: (context) {
-              final ally = battleData.targetedAlly;
               return SimpleDialog(
                 title: Text(S.current.reset_skill_cd),
                 children: [
-                  ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    leading: ally?.iconBuilder(context: context, width: 36),
-                    title: Text("${S.current.servant}: ${ally?.lBattleName}"),
-                    enabled: ally != null,
-                    onTap: () async {
-                      Navigator.pop(context);
-                      await battleData.resetPlayerSkillCD(false);
-                      if (mounted) setState(() {});
-                    },
-                  ),
+                  for (final svt in battleData.nonnullAllies)
+                    ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
+                      leading: svt.iconBuilder(context: context, width: 36),
+                      title: Text("${S.current.servant}: ${svt.lBattleName}"),
+                      onTap: () async {
+                        Navigator.pop(context);
+                        await battleData.resetPlayerSkillCD(isMysticCode: false, svt: svt);
+                        if (mounted) setState(() {});
+                      },
+                    ),
                   ListTile(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
                     leading: battleData.mysticCode?.iconBuilder(context: context, width: 36),
@@ -213,7 +214,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                     enabled: battleData.mysticCode != null,
                     onTap: () async {
                       Navigator.pop(context);
-                      await battleData.resetPlayerSkillCD(true);
+                      await battleData.resetPlayerSkillCD(isMysticCode: true, svt: null);
                       if (mounted) setState(() {});
                     },
                   ),
@@ -347,10 +348,19 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     final List<Widget> children = [];
     void _onChangeIndex(int? v) {
       if (svt.isPlayer) {
-        battleData.allyTargetIndex = v!;
+        if (v != null && battleData.allyTargetIndex != v) {
+          battleData.allyTargetIndex = v;
+          db.settings.battleSim.manualAllySkillTarget = battleData.options.manualAllySkillTarget = false;
+        } else {
+          db.settings.battleSim.manualAllySkillTarget =
+              battleData.options.manualAllySkillTarget = !battleData.options.manualAllySkillTarget;
+        }
       } else {
-        battleData.enemyTargetIndex = v!;
+        if (v != null) {
+          battleData.enemyTargetIndex = v;
+        }
       }
+
       if (mounted) setState(() {});
     }
 
@@ -362,10 +372,12 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             CenterWidgetSpan(
               child: Radio<int>(
                 value: index,
+                toggleable: svt.isPlayer,
                 groupValue: svt.isPlayer ? battleData.allyTargetIndex : battleData.enemyTargetIndex,
                 onChanged: _onChangeIndex,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 visualDensity: VisualDensity.compact,
+                activeColor: svt.isPlayer && options.manualAllySkillTarget ? Colors.red : null,
               ),
             ),
             TextSpan(text: svt.lBattleName.breakWord),

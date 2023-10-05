@@ -66,6 +66,7 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
           recordScreenshotJpg: $checkedConvert('recordScreenshotJpg', (v) => v as bool? ?? false),
           recordScreenshotRatio: $checkedConvert('recordScreenshotRatio', (v) => v as int? ?? 10),
           recordShowTwoColumn: $checkedConvert('recordShowTwoColumn', (v) => v as bool? ?? false),
+          manualAllySkillTarget: $checkedConvert('manualAllySkillTarget', (v) => v as bool? ?? false),
         );
         return val;
       },
@@ -87,6 +88,7 @@ Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <Str
       'recordScreenshotJpg': instance.recordScreenshotJpg,
       'recordScreenshotRatio': instance.recordScreenshotRatio,
       'recordShowTwoColumn': instance.recordShowTwoColumn,
+      'manualAllySkillTarget': instance.manualAllySkillTarget,
     };
 
 Value? _$JsonConverterFromJson<Json, Value>(

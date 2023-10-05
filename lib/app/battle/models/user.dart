@@ -424,6 +424,7 @@ class BattleOptionsRuntime extends BattleOptionsEnv {
   int probabilityThreshold = 1000;
   bool isAfter7thAnni = true;
   bool tailoredExecution = false;
+  bool manualAllySkillTarget = false;
 
   @override
   BattleOptionsRuntime copy() {
@@ -435,7 +436,8 @@ class BattleOptionsRuntime extends BattleOptionsEnv {
       ..fixedRandom = fixedRandom
       ..probabilityThreshold = probabilityThreshold
       ..isAfter7thAnni = isAfter7thAnni
-      ..tailoredExecution = tailoredExecution;
+      ..tailoredExecution = tailoredExecution
+      ..manualAllySkillTarget = manualAllySkillTarget;
   }
 }
 
@@ -502,6 +504,7 @@ class BattleOptions extends BattleOptionsRuntime {
       ..probabilityThreshold = probabilityThreshold
       ..isAfter7thAnni = isAfter7thAnni
       ..tailoredExecution = tailoredExecution
+      ..manualAllySkillTarget = manualAllySkillTarget
       ..team = team.copy();
   }
 }

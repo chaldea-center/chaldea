@@ -558,8 +558,8 @@ enum FuncTargetType {
   enemyRandom,
   ptOtherFull,
   enemyOtherFull,
-  ptselectOneSub,
-  ptselectSub,
+  ptselectOneSub, // 1+1
+  ptselectSub, // ?
   ptOneAnotherRandom,
   ptSelfAnotherRandom,
   enemyOneAnotherRandom,
@@ -584,6 +584,20 @@ enum FuncTargetType {
 
   bool get canTargetAlly => isAlly || isField || isDynamic;
   bool get canTargetEnemy => isEnemy || isField || isDynamic;
+
+  bool get needNormalOneTarget => const [
+        ptOne,
+        ptAnother,
+        ptOneOther,
+      ].contains(this);
+
+  bool get needRadomTarget => const [
+        ptRandom,
+        enemyRandom,
+        ptOneAnotherRandom,
+        ptSelfAnotherRandom,
+        enemyOneAnotherRandom,
+      ].contains(this);
 }
 
 enum FuncApplyTarget {
