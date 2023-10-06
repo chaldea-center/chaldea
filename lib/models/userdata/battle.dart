@@ -632,7 +632,8 @@ class CustomFuncData {
   static CustomFuncData _debuff(int funcId, int buffId, [bool hasValue = true]) =>
       CustomFuncData(funcId: funcId, buffId: buffId, useValue: hasValue, target: FuncTargetType.enemyAll);
 
-  static CustomFuncData get gainNp => CustomFuncData(funcId: -460);
+  static CustomFuncData get gainNp => CustomFuncData(funcId: -476);
+  static CustomFuncData get gainStar => CustomFuncData(funcId: -460);
   static CustomFuncData get upDamage => _buff(-1077, 129);
   static CustomFuncData get upAtk => _buff(-146, 126);
   static CustomFuncData get upQuick => _buff(-100, 100);
@@ -652,6 +653,7 @@ class CustomFuncData {
 
   static List<CustomFuncData> get allTypes => [
         gainNp,
+        gainStar,
         upDamage,
         upAtk,
         upQuick,

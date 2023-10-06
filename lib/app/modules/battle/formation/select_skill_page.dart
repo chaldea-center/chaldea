@@ -230,6 +230,7 @@ class _CustomSkillFormState extends State<CustomSkillForm> {
     FuncTargetType.ptFull,
     FuncTargetType.enemy,
     FuncTargetType.enemyAll,
+    FuncTargetType.enemyFull,
   ];
 
   @override
