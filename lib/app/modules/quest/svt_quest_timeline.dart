@@ -107,7 +107,8 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
           qs = qs.intersection(rqs);
           if (qs.isNotEmpty) {
             final d = grouped.putIfAbsent(event.startedAt, () => _GroupData());
-            d.quests.addAll(qs.map((e) => questMap[e]!));
+            // skip main quest ap campaigns might related to Mash/Cu
+            d.quests.addAll(qs.map((e) => questMap[e]!).where((q) => !(q.warId < 1000 && q.type == QuestType.main)));
             d.events.add(event);
           }
         }

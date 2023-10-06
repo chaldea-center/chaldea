@@ -357,7 +357,7 @@
   "filter_sort": "Sort",
   "filter_sort_number": "No",
   "filter_sort_rarity": "Rarity",
-  "fix_cors_for_chaldea_data": "Fix CORS issue for \"Global\" source",
+  "fix_cors_for_chaldea_data": "Fix CORS network error for \"Global\" source",
   "fix_cors_for_chaldea_data_hint": "Usually on FireFox",
   "fixed_oc": "Fixed OC",
   "force_enable_np_se": "Force Enable NP S.E.",

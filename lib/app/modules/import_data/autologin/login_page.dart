@@ -224,7 +224,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
             title: const Text('User Agent'),
             subtitle: Text(args.userAgent ?? UA.fallback),
             onLongPress: () {
-              copyToClipboard(args.userAgent ?? UA.fallback);
+              copyToClipboard(args.userAgent ?? UA.fallback, toast: true);
             },
             trailing: IconButton(
               onPressed: () {
@@ -250,7 +250,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
             title: const Text('Device Info'),
             subtitle: Text(args.deviceInfo ?? UA.deviceinfo),
             onLongPress: () {
-              copyToClipboard(args.deviceInfo ?? UA.deviceinfo);
+              copyToClipboard(args.deviceInfo ?? UA.deviceinfo, toast: true);
             },
             trailing: IconButton(
               onPressed: () {

@@ -3990,10 +3990,10 @@ class S {
     );
   }
 
-  /// `Fix CORS issue for "Global" source`
+  /// `Fix CORS network error for "Global" source`
   String get fix_cors_for_chaldea_data {
     return Intl.message(
-      'Fix CORS issue for "Global" source',
+      'Fix CORS network error for "Global" source',
       name: 'fix_cors_for_chaldea_data',
       desc: '',
       locale: localeName,
