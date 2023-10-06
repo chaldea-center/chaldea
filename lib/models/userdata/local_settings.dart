@@ -212,8 +212,6 @@ class ProxySettings {
   bool data;
   bool atlasApi;
   bool atlasAsset;
-  // only for cf pages
-  bool dataWeb;
 
   ProxySettings({
     this.proxy = false,
@@ -222,7 +220,6 @@ class ProxySettings {
     bool? data,
     bool? atlasApi,
     bool? atlasAsset,
-    this.dataWeb = false,
   })  : api = api ?? proxy,
         worker = worker ?? proxy,
         data = data ?? proxy,

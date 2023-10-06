@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import '../db.dart';
 import '_helper.dart';
 import 'local_settings.dart';
@@ -42,16 +40,7 @@ class ServerUrlConfig {
     UrlProxy? atlasAsset,
   })  : api = UrlProxy(src: api, kGlobal: Hosts0.kApiHostGlobal, kCN: Hosts0.kApiHostCN),
         worker = UrlProxy(src: worker, kGlobal: Hosts0.kWorkerHostGlobal, kCN: Hosts0.kWorkerHostCN),
-        data = UrlProxy(
-            src: data,
-            kGlobal: Hosts0.kDataHostGlobal,
-            kCN: Hosts0.kDataHostCN,
-            post: (url) {
-              if (kIsWeb && url == Hosts0.kDataHostGlobal && db.settings.proxy.dataWeb) {
-                return url += '/web';
-              }
-              return url;
-            }),
+        data = UrlProxy(src: data, kGlobal: Hosts0.kDataHostGlobal, kCN: Hosts0.kDataHostCN),
         atlasApi = UrlProxy(src: atlasApi, kGlobal: Hosts0.kAtlasApiHostGlobal, kCN: Hosts0.kAtlasApiHostCN),
         atlasAsset = UrlProxy(src: atlasApi, kGlobal: Hosts0.kAtlasAssetHostGlobal, kCN: Hosts0.kAtlasAssetHostCN);
 

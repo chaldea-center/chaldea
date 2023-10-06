@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
@@ -119,18 +118,6 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
                     });
                   },
                 ),
-                if (kIsWeb || kDebugMode)
-                  SwitchListTile.adaptive(
-                    value: db.settings.proxy.dataWeb,
-                    title: Text(S.current.fix_cors_for_chaldea_data),
-                    subtitle: Text('(data.chaldea.center only) ${S.current.fix_cors_for_chaldea_data_hint}'),
-                    dense: true,
-                    onChanged: (v) {
-                      setState(() {
-                        db.settings.proxy.dataWeb = v;
-                      });
-                    },
-                  ),
               ],
             ),
             // const Divider(height: 8),

@@ -454,18 +454,6 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
             ],
           ),
         ),
-        if (kIsWeb || kDebugMode)
-          SwitchListTile.adaptive(
-            value: db.settings.proxy.dataWeb,
-            title: Text(S.current.fix_cors_for_chaldea_data),
-            subtitle: Text(S.current.fix_cors_for_chaldea_data_hint),
-            dense: true,
-            onChanged: (v) {
-              setState(() {
-                db.settings.proxy.dataWeb = v;
-              });
-            },
-          ),
         SwitchListTile.adaptive(
           dense: true,
           title: Text('${S.current.auto_update} (${S.current.gamedata})'),
