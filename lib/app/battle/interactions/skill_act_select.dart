@@ -1,15 +1,20 @@
+import 'dart:async';
+
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../utils/battle_logger.dart';
 import '_dialog.dart';
 
 class SkillActSelectDialog extends StatelessWidget {
   final BattleData battleData;
   final BaseSkill skill;
   final int skillLevel;
+  final Completer<int> completer;
 
-  const SkillActSelectDialog({super.key, required this.battleData, required this.skill, required this.skillLevel});
+  const SkillActSelectDialog(
+      {super.key, required this.battleData, required this.skill, required this.skillLevel, required this.completer});
 
   static Future<int> show(
     final BattleData battleData,
@@ -19,7 +24,12 @@ class SkillActSelectDialog extends StatelessWidget {
     if (!battleData.mounted) return Future.value(-1);
     return showUserConfirm<int>(
       context: battleData.context!,
-      builder: (context, _) => SkillActSelectDialog(battleData: battleData, skill: skill, skillLevel: skillLevel),
+      builder: (context, completer) => SkillActSelectDialog(
+        battleData: battleData,
+        skill: skill,
+        skillLevel: skillLevel,
+        completer: completer,
+      ),
     );
   }
 
@@ -49,7 +59,7 @@ class SkillActSelectDialog extends StatelessWidget {
               padding: const EdgeInsets.all(4.0),
               child: Text(
                 '${transl('Option').l} ${index + 1}: ${transl(button.name).l}',
-                style: const TextStyle(fontSize: 18),
+                // style: const TextStyle(fontSize: 18),
               ),
             );
             return TextButton(
@@ -63,7 +73,14 @@ class SkillActSelectDialog extends StatelessWidget {
                     },
               child: textWidget,
             );
-          })
+          }),
+          TextButton(
+            onPressed: () {
+              completer.completeError(const BattleCancelException("Cancel SelectActSelect"));
+              Navigator.of(context).pop();
+            },
+            child: Text(S.current.cancel),
+          ),
         ]),
       ),
       hideOk: true,
