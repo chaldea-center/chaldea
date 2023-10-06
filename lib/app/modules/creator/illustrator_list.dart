@@ -38,7 +38,7 @@ class _IllustratorListPageState extends State<IllustratorListPage>
     for (final svt in db.gameData.servantsNoDup.values) {
       _update<Servant>(svtMap, svt.profile.illustrator, svt);
     }
-    for (final ce in db.gameData.craftEssences.values) {
+    for (final ce in db.gameData.allCraftEssences) {
       _update<CraftEssence>(ceMap, ce.profile.illustrator, ce);
     }
     for (final cc in db.gameData.commandCodes.values) {

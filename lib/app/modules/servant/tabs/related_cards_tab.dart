@@ -46,7 +46,7 @@ class SvtRelatedCardTab extends StatelessWidget {
     }
 
     if (svt.isNormalSvt && svt.collectionNo > 0) {
-      final charaCEs = db.gameData.craftEssences.values
+      final charaCEs = db.gameData.allCraftEssences
           .where((ce) => ce.extra.characters.contains(svt.collectionNo))
           .toList()
         ..sort2((e) => -e.collectionNo);

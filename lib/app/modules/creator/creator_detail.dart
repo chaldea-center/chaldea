@@ -97,7 +97,7 @@ class CreatorDetail extends StatelessWidget {
     children.add(table);
 
     final servants = db.gameData.servantsNoDup.values.where((svt) => ckSvt(svt)).toList();
-    final ces = db.gameData.craftEssences.values.where((ce) => ckCE(ce)).toList();
+    final ces = db.gameData.allCraftEssences.where((ce) => ckCE(ce)).toList();
     final ccs = db.gameData.commandCodes.values.where((cc) => ckCC(cc)).toList();
     servants.sort2((e) => e.collectionNo);
     ces.sort2((e) => e.collectionNo);

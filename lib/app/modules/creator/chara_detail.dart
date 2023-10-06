@@ -34,7 +34,7 @@ class CharaDetail extends StatelessWidget {
     );
     children.add(table);
 
-    final ces = db.gameData.craftEssences.values.where((ce) => ce.extra.unknownCharacters.contains(name)).toList();
+    final ces = db.gameData.allCraftEssences.where((ce) => ce.extra.unknownCharacters.contains(name)).toList();
     final ccs = db.gameData.commandCodes.values.where((cc) => cc.extra.unknownCharacters.contains(name)).toList();
     if (ces.isNotEmpty) {
       children.addAll([

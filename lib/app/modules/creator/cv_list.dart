@@ -38,7 +38,7 @@ class _CvListPageState extends State<CvListPage> with SearchableListState<String
     for (final svt in db.gameData.servantsNoDup.values) {
       _update<Servant>(svtMap, svt.profile.cv, svt);
     }
-    for (final ce in db.gameData.craftEssences.values) {
+    for (final ce in db.gameData.allCraftEssences) {
       if (ce.profile.cv.isNotEmpty) {
         _update<CraftEssence>(ceMap, ce.profile.cv, ce);
       }

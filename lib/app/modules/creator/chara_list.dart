@@ -27,7 +27,7 @@ class _CharaListPageState extends State<CharaListPage> with SearchableListState<
     ceMap.clear();
     ccMap.clear();
 
-    for (final ce in db.gameData.craftEssences.values) {
+    for (final ce in db.gameData.allCraftEssences) {
       for (final chara in ce.extra.unknownCharacters) {
         ceMap.putIfAbsent(chara, () => []).add(ce);
       }

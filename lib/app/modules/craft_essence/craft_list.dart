@@ -26,7 +26,7 @@ class CraftListPage extends StatefulWidget {
 
 class CraftListPageState extends State<CraftListPage> with SearchableListState<CraftEssence, CraftListPage> {
   @override
-  Iterable<CraftEssence> get wholeData => db.gameData.craftEssences.values;
+  Iterable<CraftEssence> get wholeData => db.gameData.allCraftEssences;
 
   CraftFilterData get filterData => widget.filterData ?? db.settings.craftFilterData;
 

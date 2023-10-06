@@ -83,6 +83,8 @@ class GameData with _GameDataExtra {
   @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, CraftEssence> craftEssencesById;
   @JsonKey(includeFromJson: false, includeToJson: false)
+  List<CraftEssence> allCraftEssences;
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, CommandCode> commandCodesById;
 
   Map<int, Servant> get servantsNoDup => servants;
@@ -122,6 +124,7 @@ class GameData with _GameDataExtra {
           for (final svt in _sortCards(servants))
             if (svt.collectionNo > 0) svt.collectionNo: svt
         },
+        allCraftEssences = _sortCards(craftEssences),
         craftEssencesById = {for (final ce in _sortCards(craftEssences)) ce.id: ce},
         craftEssences = {
           for (final ce in _sortCards(craftEssences))
