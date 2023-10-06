@@ -14,7 +14,7 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Theme Color"),
+        title: Text(S.current.appearance),
       ),
       body: ListView(
         children: [

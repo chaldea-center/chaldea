@@ -114,6 +114,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP rate"),
         "app_data_folder": MessageLookupByLibrary.simpleMessage("Data Folder"),
         "app_data_use_external_storage": MessageLookupByLibrary.simpleMessage("Use External Storage (SD card)"),
+        "appearance": MessageLookupByLibrary.simpleMessage("Appearance"),
         "append_skill": MessageLookupByLibrary.simpleMessage("Append Skill"),
         "append_skill_short": MessageLookupByLibrary.simpleMessage("Append"),
         "april_fool": MessageLookupByLibrary.simpleMessage("April Fool"),

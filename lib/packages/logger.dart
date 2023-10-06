@@ -95,6 +95,7 @@ class _CustomPrettyPrinter extends PrettyPrinter {
     }
 
     String? stackTraceStr;
+    dynamic error = event.error;
     if (event.stackTrace == null) {
       if (methodCount > 0 && event.level.index > Level.verbose.index) {
         stackTraceStr = formatStackTrace(_fmtStackTrace(StackTrace.current), methodCount);
@@ -102,7 +103,9 @@ class _CustomPrettyPrinter extends PrettyPrinter {
     } else if (errorMethodCount > 0) {
       stackTraceStr = formatStackTrace(_fmtStackTrace(event.stackTrace), errorMethodCount);
     }
-    dynamic error = event.error;
+    if (error is DioException && kReleaseMode) {
+      stackTraceStr = null;
+    }
     if (error is DioException) {
       final respData = error.response?.data;
       String? detail;

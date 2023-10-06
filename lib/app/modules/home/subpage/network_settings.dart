@@ -89,7 +89,7 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
   @override
   Widget build(BuildContext context) {
     _connectivity = network.connectivity;
-    const serverHint = SHeader('对于大陆用户，若海外路线可正常使用，请尽量使用海外路线以节约流量费！');
+    const serverHint = SHeader('对于大陆用户，若【Chaldea Data(应用数据)、Atlas Assets(图片等资源)】海外路线可正常使用，请尽量使用海外路线以节约流量费！');
     return Scaffold(
       appBar: AppBar(title: Text(S.current.network_settings)),
       body: ListTileTheme.merge(

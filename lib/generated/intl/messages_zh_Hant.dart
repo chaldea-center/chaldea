@@ -108,6 +108,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP效率"),
         "app_data_folder": MessageLookupByLibrary.simpleMessage("數據目錄"),
         "app_data_use_external_storage": MessageLookupByLibrary.simpleMessage("使用外部儲存(SD卡)"),
+        "appearance": MessageLookupByLibrary.simpleMessage("外观"),
         "append_skill": MessageLookupByLibrary.simpleMessage("追加技能"),
         "append_skill_short": MessageLookupByLibrary.simpleMessage("追加"),
         "april_fool": MessageLookupByLibrary.simpleMessage("愚人節"),

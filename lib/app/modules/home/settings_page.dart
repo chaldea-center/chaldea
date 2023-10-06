@@ -210,30 +210,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ),
               ListTile(
-                title: Text(S.current.dark_mode),
-                trailing: db.onSettings(
-                  (context, snapshot) => DropdownButton<ThemeMode>(
-                    value: db.settings.themeMode,
-                    underline: Container(),
-                    alignment: AlignmentDirectional.centerEnd,
-                    items: [
-                      DropdownMenuItem(value: ThemeMode.system, child: Text(S.current.dark_mode_system)),
-                      DropdownMenuItem(value: ThemeMode.light, child: Text(S.current.dark_mode_light)),
-                      DropdownMenuItem(value: ThemeMode.dark, child: Text(S.current.dark_mode_dark)),
-                    ],
-                    onChanged: (v) {
-                      if (v != null) {
-                        db.settings.themeMode = v;
-                        db.saveSettings();
-                        db.notifySettings();
-                        db.notifyAppUpdate();
-                      }
-                    },
-                  ),
-                ),
-              ),
-              ListTile(
-                title: const Text('Theme Color'),
+                title: Text(S.current.appearance),
                 trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
                   router.popDetailAndPush(child: const ThemeColorPage());

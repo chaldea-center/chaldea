@@ -305,6 +305,17 @@ class S {
     );
   }
 
+  /// `Appearance`
+  String get appearance {
+    return Intl.message(
+      'Appearance',
+      name: 'appearance',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Append Skill`
   String get append_skill {
     return Intl.message(
