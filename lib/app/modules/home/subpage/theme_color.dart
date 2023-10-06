@@ -22,7 +22,7 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
             header: S.current.dark_mode,
             children: [
               for (final mode in ThemeMode.values)
-                RadioListTile.adaptive(
+                RadioListTile(
                   value: mode,
                   groupValue: db.settings.themeMode,
                   title: Text(getThemeModeName(mode)),
@@ -41,7 +41,7 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
             header: "Material Design",
             children: [
               for (final useM3 in [false, true])
-                RadioListTile.adaptive(
+                RadioListTile(
                   value: useM3,
                   groupValue: db.settings.useMaterial3,
                   title: Text(useM3 ? 'Material 3' : 'Material 2'),
@@ -60,7 +60,7 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
             header: 'Theme Color',
             children: [
               for (final seed in [null, ...ColorSeed.values])
-                RadioListTile.adaptive(
+                RadioListTile(
                   value: seed,
                   groupValue: db.settings.colorSeed,
                   title: Text(seed?.label ?? S.current.general_default),

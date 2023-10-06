@@ -346,19 +346,17 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     }
 
     final List<Widget> children = [];
-    void _onChangeIndex(int? v) {
+    void _onChangeIndex(int? _) {
       if (svt.isPlayer) {
-        if (v != null && battleData.allyTargetIndex != v) {
-          battleData.allyTargetIndex = v;
+        if (battleData.allyTargetIndex != index) {
+          battleData.allyTargetIndex = index;
           db.settings.battleSim.manualAllySkillTarget = battleData.options.manualAllySkillTarget = false;
         } else {
           db.settings.battleSim.manualAllySkillTarget =
               battleData.options.manualAllySkillTarget = !battleData.options.manualAllySkillTarget;
         }
       } else {
-        if (v != null) {
-          battleData.enemyTargetIndex = v;
-        }
+        battleData.enemyTargetIndex = index;
       }
 
       if (mounted) setState(() {});
@@ -373,11 +371,25 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               child: Radio<int>(
                 value: index,
                 toggleable: svt.isPlayer,
-                groupValue: svt.isPlayer ? battleData.allyTargetIndex : battleData.enemyTargetIndex,
+                groupValue: svt.isPlayer
+                    ? (options.manualAllySkillTarget && battleData.isPlayerTurn ? null : battleData.allyTargetIndex)
+                    : battleData.enemyTargetIndex,
                 onChanged: _onChangeIndex,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 visualDensity: VisualDensity.compact,
-                activeColor: svt.isPlayer && options.manualAllySkillTarget ? Colors.red : null,
+                fillColor: svt.isPlayer && options.manualAllySkillTarget && battleData.allyTargetIndex == index
+                    ? MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+                        // M2 style
+                        final _theme = Theme.of(context);
+                        if (states.contains(MaterialState.disabled)) {
+                          return _theme.disabledColor;
+                        }
+                        if (states.contains(MaterialState.selected)) {
+                          return _theme.colorScheme.secondary;
+                        }
+                        return _theme.colorScheme.secondary;
+                      })
+                    : null,
               ),
             ),
             TextSpan(text: svt.lBattleName.breakWord),
