@@ -139,6 +139,16 @@ Map<String, dynamic> _$GameTopsToJson(GameTops instance) => <String, dynamic>{
       'NA': instance.na.toJson(),
     };
 
+GameAppVerCode _$GameAppVerCodeFromJson(Map json) => GameAppVerCode(
+      appVer: json['appVer'] as String,
+      verCode: json['verCode'] as String,
+    );
+
+Map<String, dynamic> _$GameAppVerCodeToJson(GameAppVerCode instance) => <String, dynamic>{
+      'appVer': instance.appVer,
+      'verCode': instance.verCode,
+    };
+
 GameTop _$GameTopFromJson(Map json) => GameTop(
       region: const RegionConverter().fromJson(json['region'] as String),
       gameServer: json['gameServer'] as String,
@@ -150,10 +160,10 @@ GameTop _$GameTopFromJson(Map json) => GameTop(
     );
 
 Map<String, dynamic> _$GameTopToJson(GameTop instance) => <String, dynamic>{
-      'region': const RegionConverter().toJson(instance.region),
-      'gameServer': instance.gameServer,
       'appVer': instance.appVer,
       'verCode': instance.verCode,
+      'region': const RegionConverter().toJson(instance.region),
+      'gameServer': instance.gameServer,
       'dataVer': instance.dataVer,
       'dateVer': instance.dateVer,
       'assetbundleFolder': instance.assetbundleFolder,

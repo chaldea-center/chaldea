@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
@@ -326,8 +327,16 @@ class AtlasApi {
             .then((v) => tops.jp.assetbundleFolder = v?.folderName ?? tops.jp.assetbundleFolder),
         assetbundle(Region.na, expireAfter: expireAfter)
             .then((v) => tops.na.assetbundleFolder = v?.folderName ?? tops.na.assetbundleFolder),
-        gPlayVer(Region.jp).then((v) => tops.jp.appVer = v ?? tops.jp.appVer),
-        gPlayVer(Region.na).then((v) => tops.na.appVer = v ?? tops.na.appVer),
+        verCode(Region.jp).then((v) {
+          if (v == null) return;
+          tops.jp.appVer = v.appVer;
+          tops.jp.verCode = v.verCode;
+        }),
+        verCode(Region.na).then((v) {
+          if (v == null) return;
+          tops.na.appVer = v.appVer;
+          tops.na.verCode = v.verCode;
+        }),
       ];
       await Future.wait(tasks);
     }
@@ -360,6 +369,31 @@ class AtlasApi {
     return cacheManager.getModel(
       '$_atlasApiHost/export/${region.upper}/$name.json',
       fromJson,
+      expireAfter: expireAfter,
+    );
+  }
+
+  static Future<GameAppVerCode?> verCode(Region region, {Duration? expireAfter = Duration.zero, bool? proxy}) {
+    assert(region == Region.jp || region == Region.na || region == Region.kr);
+    proxy ??= HostsX.proxy.worker;
+    String url = "https://fgo.square.ovh/${region.upper}/verCode.txt";
+    if (proxy) url = HostsX.proxyWorker(url);
+    return cacheManager.getModelRaw(
+      url,
+      (data) {
+        Map<String, String> out = {};
+        for (final entry in data.split('&')) {
+          final values = entry.split('=');
+          if (values.length == 2) {
+            out[values[0].trim()] = values[1].trim();
+          }
+        }
+        final v = GameAppVerCode.fromJson(out);
+        if (RegExp(r'^\d+\.\d+\.\d+$').hasMatch(v.appVer) && v.verCode.length == 64) {
+          return v;
+        }
+        throw FormatException("Unexpected ver code format: $data => ${jsonEncode(out)}");
+      },
       expireAfter: expireAfter,
     );
   }

@@ -395,12 +395,27 @@ class GameTops {
 }
 
 @JsonSerializable()
-class GameTop {
+class GameAppVerCode {
+  String appVer;
+  String verCode;
+
+  GameAppVerCode({
+    required this.appVer,
+    required this.verCode,
+  });
+
+  factory GameAppVerCode.fromJson(Map<String, dynamic> json) => _$GameAppVerCodeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GameAppVerCodeToJson(this);
+}
+
+@JsonSerializable()
+class GameTop extends GameAppVerCode {
   @RegionConverter()
   Region region;
   String gameServer;
-  String appVer;
-  String verCode;
+  // String appVer;
+  // String verCode;
   int dataVer;
   int dateVer;
   // String assetbundle;
@@ -409,8 +424,8 @@ class GameTop {
   GameTop({
     required this.region,
     required this.gameServer,
-    required this.appVer,
-    required this.verCode,
+    required super.appVer,
+    required super.verCode,
     required this.dataVer,
     required this.dateVer,
     // required this.assetbundle,
@@ -429,6 +444,7 @@ class GameTop {
 
   factory GameTop.fromJson(Map<String, dynamic> json) => _$GameTopFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$GameTopToJson(this);
 }
 
