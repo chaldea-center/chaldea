@@ -37,7 +37,11 @@ dependencies:
     git:
       url: https://github.com/Carapacik/flutter_carousel_slider.git
   catcher_2: ^1.0.0-alpha.1
-  connectivity_plus: ^4.0.0
+  connectivity_plus: # ^4.0.2
+    git:
+      url: https://github.com/fluttercommunity/plus_plugins.git
+      path: packages/connectivity_plus/connectivity_plus
+      ref: 2f1e3a4b2c9b0c8f622161f7753ad789aa6ea603
   # cookie_jar: ^4.0.1
   crclib: ^3.0.0
   cross_file: ^0.3.3+5
