@@ -327,12 +327,12 @@ class AtlasApi {
             .then((v) => tops.jp.assetbundleFolder = v?.folderName ?? tops.jp.assetbundleFolder),
         assetbundle(Region.na, expireAfter: expireAfter)
             .then((v) => tops.na.assetbundleFolder = v?.folderName ?? tops.na.assetbundleFolder),
-        verCode(Region.jp).then((v) {
+        verCode(Region.jp, expireAfter: expireAfter).then((v) {
           if (v == null) return;
           tops.jp.appVer = v.appVer;
           tops.jp.verCode = v.verCode;
         }),
-        verCode(Region.na).then((v) {
+        verCode(Region.na, expireAfter: expireAfter).then((v) {
           if (v == null) return;
           tops.na.appVer = v.appVer;
           tops.na.verCode = v.verCode;
