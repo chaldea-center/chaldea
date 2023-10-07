@@ -605,6 +605,7 @@ abstract class WarId {
   static const interlude = 1003;
   static const mainInterlude = 1004;
   static const advanced = 1006;
+  static const ordealCall = 401;
 }
 
 const Map<int, String> _warMCBanner = {

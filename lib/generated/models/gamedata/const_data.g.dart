@@ -80,6 +80,7 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
       laplaceUploadAllowAiQuests:
           (json['laplaceUploadAllowAiQuests'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       excludeRewardQuests: (json['excludeRewardQuests'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      randomEnemyQuests: (json['randomEnemyQuests'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
     );
 
 Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, dynamic>{
@@ -102,6 +103,7 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
           .map((k, e) => MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
       'laplaceUploadAllowAiQuests': instance.laplaceUploadAllowAiQuests,
       'excludeRewardQuests': instance.excludeRewardQuests,
+      'randomEnemyQuests': instance.randomEnemyQuests,
     };
 
 const _$AttributeEnumMap = {

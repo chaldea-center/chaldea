@@ -408,6 +408,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "exchange_count": MessageLookupByLibrary.simpleMessage("可交换次数"),
         "exchange_ticket": MessageLookupByLibrary.simpleMessage("素材交换券"),
         "exchange_ticket_short": MessageLookupByLibrary.simpleMessage("交换券"),
+        "exclude_random_enemy_quests": MessageLookupByLibrary.simpleMessage("排除随机敌人的关卡"),
         "exp_card_plan_lv": MessageLookupByLibrary.simpleMessage("等级"),
         "exp_card_plan_next": MessageLookupByLibrary.simpleMessage("距离下一级"),
         "exp_card_same_class": MessageLookupByLibrary.simpleMessage("相同职阶"),

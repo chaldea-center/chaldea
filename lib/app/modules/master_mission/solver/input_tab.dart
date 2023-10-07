@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/master_mission/solver/solver.dart';
@@ -24,7 +25,7 @@ class _MissionSolverOptions {
   set isRegionNA(bool v) => _isRegionNA = v;
   bool addNotBasedOnSvtForTraum = false;
 
-  Set<int> get blacklist => db.settings.misc.missionQuestBlacklist;
+  MasterMissionOptions get preset => db.settings.masterMissionOptions;
 }
 
 class MissionInputTab extends StatefulWidget {
@@ -528,7 +529,10 @@ class _MissionInputTabState extends State<MissionInputTab> {
           }
         }
       }
-      phases.removeWhere((questId, _) => options.blacklist.contains(questId));
+      phases.removeWhere((questId, _) => options.preset.blacklist.contains(questId));
+      if (options.preset.excludeRandomEnemyQuests) {
+        phases.removeWhere((questId, _) => ConstData.randomEnemyQuests.contains(questId));
+      }
       for (final entry in phases.entries) {
         futures.add(AtlasApi.questPhase(
           entry.key,
@@ -618,18 +622,11 @@ class __OptionsDialogState extends State<_OptionsDialog> {
       contentPadding: const EdgeInsets.symmetric(vertical: 16),
       content: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SwitchListTile(
             dense: true,
             title: Text(S.current.add_not_svt_trait_to_traum_enemy),
-            subtitle: Text.rich(TextSpan(text: 'See ', children: [
-              SharedBuilder.textButtonSpan(
-                context: context,
-                text: 'document',
-                onTap: () => launch(ChaldeaUrl.doc('master_mission')),
-              ),
-              const TextSpan(text: '. '),
-            ])),
             value: options.addNotBasedOnSvtForTraum,
             onChanged: (v) {
               setState(() {
@@ -637,14 +634,43 @@ class __OptionsDialogState extends State<_OptionsDialog> {
               });
             },
           ),
+          const Divider(),
+          SwitchListTile(
+            dense: true,
+            title: Text(S.current.exclude_random_enemy_quests),
+            subtitle: Text.rich(
+              TextSpan(
+                text: "${ConstData.randomEnemyQuests.length} ${S.current.quest}: ",
+                children: divideList(
+                  [
+                    for (final questId in ConstData.randomEnemyQuests)
+                      SharedBuilder.textButtonSpan(
+                        context: context,
+                        text: questId.toString(),
+                        onTap: () => router.push(url: Routes.questI(questId)),
+                      ),
+                  ],
+                  const TextSpan(text: ', '),
+                ),
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            value: options.preset.excludeRandomEnemyQuests,
+            onChanged: (v) {
+              setState(() {
+                options.preset.excludeRandomEnemyQuests = v;
+              });
+            },
+          ),
           SimpleAccordion(
             headerBuilder: (context, _) => ListTile(
               dense: true,
               title: Text(S.current.blacklist),
-              trailing: Text(options.blacklist.length.toString()),
+              trailing: Text(options.preset.blacklist.length.toString()),
             ),
             contentBuilder: (context) => Column(
-              children: divideTiles(options.blacklist.map((questId) {
+              children: divideTiles(options.preset.blacklist.map((questId) {
                 String shownName = db.gameData.quests[questId]?.lDispName ?? 'Quest $questId';
                 return ListTile(
                   title: Text(shownName),
@@ -654,7 +680,7 @@ class __OptionsDialogState extends State<_OptionsDialog> {
                     tooltip: S.current.remove_from_blacklist,
                     onPressed: () {
                       setState(() {
-                        options.blacklist.remove(questId);
+                        options.preset.blacklist.remove(questId);
                       });
                     },
                   ),
@@ -662,6 +688,17 @@ class __OptionsDialogState extends State<_OptionsDialog> {
               })),
             ),
           ),
+          SFooter.rich(TextSpan(
+            text: 'See ',
+            children: [
+              SharedBuilder.textButtonSpan(
+                context: context,
+                text: 'document',
+                onTap: () => launch(ChaldeaUrl.doc('master_mission')),
+              ),
+              const TextSpan(text: '. '),
+            ],
+          ))
         ],
       ),
     );

@@ -319,6 +319,7 @@
   "exchange_count": "可交換次數",
   "exchange_ticket": "素材交換券",
   "exchange_ticket_short": "交換券",
+  "exclude_random_enemy_quests": null,
   "exp_card_plan_lv": "等級",
   "exp_card_plan_next": "距離下一級",
   "exp_card_same_class": "相同職階",

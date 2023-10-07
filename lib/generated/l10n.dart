@@ -3583,6 +3583,17 @@ class S {
     );
   }
 
+  /// `Exclude Random Enemy Quests`
+  String get exclude_random_enemy_quests {
+    return Intl.message(
+      'Exclude Random Enemy Quests',
+      name: 'exclude_random_enemy_quests',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Levels`
   String get exp_card_plan_lv {
     return Intl.message(

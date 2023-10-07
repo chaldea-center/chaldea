@@ -428,6 +428,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "exchange_count": MessageLookupByLibrary.simpleMessage("Exchange Count"),
         "exchange_ticket": MessageLookupByLibrary.simpleMessage("Exchange Ticket"),
         "exchange_ticket_short": MessageLookupByLibrary.simpleMessage("Ticket"),
+        "exclude_random_enemy_quests": MessageLookupByLibrary.simpleMessage("Exclude Random Enemy Quests"),
         "exp_card_plan_lv": MessageLookupByLibrary.simpleMessage("Levels"),
         "exp_card_plan_next": MessageLookupByLibrary.simpleMessage("NEXT"),
         "exp_card_same_class": MessageLookupByLibrary.simpleMessage("Same Class"),

@@ -320,6 +320,7 @@
   "exchange_count": null,
   "exchange_ticket": "교환 티켓",
   "exchange_ticket_short": "티켓",
+  "exclude_random_enemy_quests": null,
   "exp_card_plan_lv": "레벨",
   "exp_card_plan_next": "다음",
   "exp_card_same_class": "같은 클래스",

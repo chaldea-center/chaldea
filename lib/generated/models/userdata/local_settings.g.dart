@@ -92,6 +92,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
                   .toList()),
           remoteConfig: $checkedConvert(
               'remoteConfig', (v) => v == null ? null : RemoteConfig.fromJson(Map<String, dynamic>.from(v as Map))),
+          masterMissionOptions: $checkedConvert('masterMissionOptions',
+              (v) => v == null ? null : MasterMissionOptions.fromJson(Map<String, dynamic>.from(v as Map))),
           misc: $checkedConvert(
               'misc', (v) => v == null ? null : _MiscSettings.fromJson(Map<String, dynamic>.from(v as Map))),
         );
@@ -144,6 +146,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'scriptReaderFilterData': instance.scriptReaderFilterData.toJson(),
       'autologins': instance.autologins.map((e) => e.toJson()).toList(),
       'remoteConfig': instance.remoteConfig.toJson(),
+      'masterMissionOptions': instance.masterMissionOptions.toJson(),
       'misc': instance.misc.toJson(),
       'language': instance.language,
       'preferredFavorite': _$FavoriteStateEnumMap[instance.preferredFavorite],
@@ -493,13 +496,28 @@ Map<String, dynamic> _$QuestBonusPlanToJson(QuestBonusPlan instance) => <String,
       'bonus': instance.bonus.map((k, e) => MapEntry(k.toString(), e)),
     };
 
+MasterMissionOptions _$MasterMissionOptionsFromJson(Map json) => $checkedCreate(
+      'MasterMissionOptions',
+      json,
+      ($checkedConvert) {
+        final val = MasterMissionOptions(
+          blacklist: $checkedConvert('blacklist', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
+          excludeRandomEnemyQuests: $checkedConvert('excludeRandomEnemyQuests', (v) => v as bool? ?? false),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$MasterMissionOptionsToJson(MasterMissionOptions instance) => <String, dynamic>{
+      'blacklist': instance.blacklist.toList(),
+      'excludeRandomEnemyQuests': instance.excludeRandomEnemyQuests,
+    };
+
 _MiscSettings _$MiscSettingsFromJson(Map json) => $checkedCreate(
       '_MiscSettings',
       json,
       ($checkedConvert) {
         final val = _MiscSettings(
-          missionQuestBlacklist:
-              $checkedConvert('missionQuestBlacklist', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
           nonSvtCharaFigureIds:
               $checkedConvert('nonSvtCharaFigureIds', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
           markedCharaFigureSvtIds: $checkedConvert(
@@ -513,7 +531,6 @@ _MiscSettings _$MiscSettingsFromJson(Map json) => $checkedCreate(
     );
 
 Map<String, dynamic> _$MiscSettingsToJson(_MiscSettings instance) => <String, dynamic>{
-      'missionQuestBlacklist': instance.missionQuestBlacklist.toList(),
       'nonSvtCharaFigureIds': instance.nonSvtCharaFigureIds.toList(),
       'markedCharaFigureSvtIds': instance.markedCharaFigureSvtIds.map((k, e) => MapEntry(k.toString(), e)),
     };

@@ -150,11 +150,11 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
         }
         children = divideTiles(children, divider: const Divider(indent: 16, endIndent: 16));
         children.add(QuestCard(quest: quest, region: solution.region));
-        children.add(db.settings.misc.missionQuestBlacklist.contains(quest.id)
+        children.add(db.settings.masterMissionOptions.blacklist.contains(quest.id)
             ? TextButton.icon(
                 onPressed: () {
                   setState(() {
-                    db.settings.misc.missionQuestBlacklist.remove(quest.id);
+                    db.settings.masterMissionOptions.blacklist.remove(quest.id);
                   });
                 },
                 icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.secondary),
@@ -166,7 +166,7 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
             : TextButton.icon(
                 onPressed: () {
                   setState(() {
-                    db.settings.misc.missionQuestBlacklist.add(quest.id);
+                    db.settings.masterMissionOptions.blacklist.add(quest.id);
                   });
                 },
                 icon: const Icon(Icons.add, color: Colors.redAccent),

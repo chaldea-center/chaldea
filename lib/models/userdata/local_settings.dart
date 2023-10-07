@@ -80,6 +80,7 @@ class LocalSettings {
 
   RemoteConfig remoteConfig;
 
+  MasterMissionOptions masterMissionOptions;
   _MiscSettings misc;
 
   LocalSettings({
@@ -128,6 +129,7 @@ class LocalSettings {
     ScriptReaderFilterData? scriptReaderFilterData,
     List<AutoLoginData>? autologins,
     RemoteConfig? remoteConfig,
+    MasterMissionOptions? masterMissionOptions,
     _MiscSettings? misc,
   })  : _language = language,
         _preferredFavorite = preferredFavorite ?? (launchTimes == 0 ? FavoriteState.all : null),
@@ -151,6 +153,7 @@ class LocalSettings {
         scriptReaderFilterData = scriptReaderFilterData ?? ScriptReaderFilterData(),
         autologins = autologins ?? [],
         remoteConfig = remoteConfig ?? RemoteConfig(),
+        masterMissionOptions = masterMissionOptions ?? MasterMissionOptions(),
         misc = misc ?? _MiscSettings() {
     this.galleries.removeWhere((key, value) => GalleryItem.allItems.every((item) => item.name != key));
   }
@@ -518,18 +521,28 @@ class QuestBonusPlan {
 }
 
 @JsonSerializable()
+class MasterMissionOptions {
+  Set<int> blacklist;
+  bool excludeRandomEnemyQuests;
+
+  MasterMissionOptions({
+    Set<int>? blacklist,
+    this.excludeRandomEnemyQuests = false,
+  }) : blacklist = blacklist ?? {};
+
+  factory MasterMissionOptions.fromJson(Map<String, dynamic> json) => _$MasterMissionOptionsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MasterMissionOptionsToJson(this);
+}
+
+@JsonSerializable()
 class _MiscSettings {
-  // mission solver
-  Set<int> missionQuestBlacklist;
-  //
   Set<int> nonSvtCharaFigureIds;
   Map<int, int> markedCharaFigureSvtIds;
   _MiscSettings({
-    Set<int>? missionQuestBlacklist,
     Set<int>? nonSvtCharaFigureIds,
     Map<int, int>? markedCharaFigureSvtIds,
-  })  : missionQuestBlacklist = missionQuestBlacklist ?? {},
-        nonSvtCharaFigureIds = nonSvtCharaFigureIds ?? <int>{},
+  })  : nonSvtCharaFigureIds = nonSvtCharaFigureIds ?? <int>{},
         markedCharaFigureSvtIds = markedCharaFigureSvtIds ?? {};
 
   factory _MiscSettings.fromJson(Map<String, dynamic> json) => _$MiscSettingsFromJson(json);

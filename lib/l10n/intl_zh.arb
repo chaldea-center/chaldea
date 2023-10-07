@@ -320,6 +320,7 @@
   "exchange_count": "可交换次数",
   "exchange_ticket": "素材交换券",
   "exchange_ticket_short": "交换券",
+  "exclude_random_enemy_quests": "排除随机敌人的关卡",
   "exp_card_plan_lv": "等级",
   "exp_card_plan_next": "距离下一级",
   "exp_card_same_class": "相同职阶",
