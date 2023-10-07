@@ -106,6 +106,10 @@ jobs:
           KEYSTORE_STORE_PASSWORD: ${{ secrets.KEYSTORE_STORE_PASSWORD }}
         working-directory: android
 
+      - name: Enable long path on Windows
+        if: matrix.target == 'windows'
+        run: git config --system core.longpaths true
+
       - name: Generate git info
         run:  dart ./scripts/gen_git_info.dart
 
