@@ -257,10 +257,10 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
       data.add(info);
       // domus
       final drops = db.gameData.dropData.domusAurea.getQuestDropRate(quest.id);
-      drops.removeWhere((id, value) => db.gameData.items[id]?.category != ItemCategory.normal);
+      // drops.removeWhere((id, value) => db.gameData.items[id]?.category != ItemCategory.normal);
       info.domusRuns = db.gameData.dropData.domusAurea.getQuestRuns(quest.id);
       for (final id in drops.keys) {
-        if (db.gameData.items[id]?.category != ItemCategory.normal) continue;
+        if (quest.warId != WarId.ordealCall && db.gameData.items[id]?.category != ItemCategory.normal) continue;
         info.domusItems[id] = Item.iconBuilder(
           context: context,
           item: null,
@@ -320,6 +320,14 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
           case ItemCategory.skill:
           case ItemCategory.eventAscension:
           case ItemCategory.coin:
+            if (quest.warId == WarId.ordealCall && id != Items.qpId) {
+              info.normalItems[id] = Item.iconBuilder(
+                context: context,
+                item: item,
+                width: iconWidth,
+                text: base.format(percent: true, maxDigits: 3),
+              );
+            }
             break;
         }
       }
