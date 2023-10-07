@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.17
+
+- Fix crash on iOS 16 or lower
+
 ## 2.4.16
 
 - Chaldeas
