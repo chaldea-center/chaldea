@@ -10,10 +10,6 @@ ClassBoard _$ClassBoardFromJson(Map json) => ClassBoard(
       id: json['id'] as int,
       name: json['name'] as String? ?? "",
       icon: json['icon'] as String?,
-      dispItems: (json['dispItems'] as List<dynamic>?)
-              ?.map((e) => Item.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
       condType:
           json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
       condTargetId: json['condTargetId'] as int? ?? 0,
@@ -36,7 +32,6 @@ Map<String, dynamic> _$ClassBoardToJson(ClassBoard instance) => <String, dynamic
       'id': instance.id,
       'name': instance.name,
       'icon': instance.icon,
-      'dispItems': instance.dispItems.map((e) => e.toJson()).toList(),
       'condType': const CondTypeConverter().toJson(instance.condType),
       'condTargetId': instance.condTargetId,
       'condNum': instance.condNum,

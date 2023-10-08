@@ -18,7 +18,7 @@ class ClassBoard with RouteInfo {
   int id;
   String name;
   String? icon;
-  List<Item> dispItems;
+  // List<Item> dispItems;
   // String closedMessage;
   CondType condType;
   int condTargetId;
@@ -31,7 +31,7 @@ class ClassBoard with RouteInfo {
     required this.id,
     this.name = "",
     this.icon,
-    this.dispItems = const [],
+    // this.dispItems = const [],
     this.condType = CondType.none,
     this.condTargetId = 0,
     this.condNum = 0,

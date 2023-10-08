@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/descriptors/func/func.dart';
@@ -68,9 +70,19 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
     );
   }
 
+  List<NiceFunction> _limitMaxLv(List<NiceFunction> functions, int? maxLv) {
+    if (maxLv == null || functions.isEmpty || maxLv >= functions.first.svals.length) return functions;
+    functions = [for (final func in functions) NiceFunction.fromJson(func.toJson())];
+    for (final func in functions) {
+      func.svals = func.svals.sublist(0, min(func.svals.length, maxLv));
+    }
+    return functions;
+  }
+
   Widget get infoTab {
     final spells = <int, ClassBoardCommandSpell>{}, skills = <int, NiceSkill>{};
     final spellLvs = <int, int>{}, skillLvs = <int, int>{};
+    final maxSpellLvs = <int, int>{}, maxSkillLvs = <int, int>{};
     final Map<int, int> unlockItems = {}, enhanceItems = {};
     final Map<int, int> planUnlockItems = {}, planEnhanceItems = {};
     int totalBond = 0;
@@ -80,9 +92,11 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
       if (square.targetCommandSpell != null) {
         spells.putIfAbsent(square.targetCommandSpell!.id, () => square.targetCommandSpell!);
         if (unlocked) spellLvs.addNum(square.targetCommandSpell!.id, square.upSkillLv);
+        maxSpellLvs.addNum(square.targetCommandSpell!.id, square.upSkillLv);
       } else if (square.targetSkill != null) {
         skills.putIfAbsent(square.targetSkill!.id, () => square.targetSkill!);
         if (unlocked) skillLvs.addNum(square.targetSkill!.id, square.upSkillLv);
+        maxSkillLvs.addNum(square.targetSkill!.id, square.upSkillLv);
       }
       if (square.lock != null) {
         final lockItems = {for (final itemAmount in square.lock!.items) itemAmount.itemId: itemAmount.amount};
@@ -170,7 +184,11 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
         CustomTableRow.fromTexts(texts: [S.current.command_spell], isHeader: true),
         for (final cs in spells.values)
           SkillDescriptor(
-            skill: cs.toSkill(),
+            skill: () {
+              final skill = cs.toSkill();
+              skill.functions = _limitMaxLv(skill.functions, maxSpellLvs[cs.id]);
+              return skill;
+            }(),
             level: spellLvs[cs.id],
             jumpToDetail: false,
           ),
@@ -181,13 +199,24 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
           mainAxisSize: MainAxisSize.min,
           children: [
             for (final skill in skills.values)
-              ...FuncsDescriptor.describe(
-                funcs: skill.functions,
-                script: skill.script,
-                level: skillLvs[skill.id],
-                showPlayer: true,
-                showEnemy: false,
-              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: FuncsDescriptor.describe(
+                        funcs: _limitMaxLv(skill.functions, maxSkillLvs[skill.id]),
+                        script: skill.script,
+                        level: skillLvs[skill.id],
+                        showPlayer: true,
+                        showEnemy: false,
+                      ),
+                    ),
+                  ),
+                  IconButton(onPressed: skill.routeTo, icon: Icon(DirectionalIcons.keyboard_arrow_forward(context))),
+                ],
+              )
           ],
         )
       ],
