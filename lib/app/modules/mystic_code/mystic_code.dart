@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/common/not_found.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -45,7 +46,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
     _level = db.curUser.mysticCodes[_selected]?.clamp(1, 10) ?? 10;
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.current.mystic_code),
+        title: Text(mysticCode?.lName.l ?? S.current.mystic_code),
         actions: [
           IconButton(
             onPressed: () => setState(() => db.curUser.isGirl = !db.curUser.isGirl),
@@ -209,8 +210,9 @@ class _MysticCodePageState extends State<MysticCodePage> {
             defaults: TableCellData(maxLines: 1),
           ),
         ],
+        ...buildObtains(mysticCode),
         CustomTableRow(children: [TableCellData(text: S.current.illustration, isHeader: true)]),
-        ...buildCodeImages(mysticCode)
+        ...buildCodeImages(mysticCode),
       ],
     );
   }
@@ -260,6 +262,27 @@ class _MysticCodePageState extends State<MysticCodePage> {
         ),
       ),
     );
+  }
+
+  List<Widget> buildObtains(MysticCode mysticCode) {
+    List<Widget> children = [
+      CustomTableRow.fromTexts(texts: [S.current.filter_obtain], isHeader: true)
+    ];
+    for (final quest in db.gameData.quests.values) {
+      if (quest.gifts.any((gift) => gift.type == GiftType.equip && gift.objectId == mysticCode.id)) {
+        children.add(CustomTableRow.fromChildren(children: [
+          CondTargetValueDescriptor(
+            condType: CondType.questClear,
+            target: quest.id,
+            value: 1,
+          ),
+        ]));
+      }
+    }
+    if (children.length == 1) {
+      children.add(CustomTableRow.fromTexts(texts: const ['-']));
+    }
+    return children;
   }
 
   @override
