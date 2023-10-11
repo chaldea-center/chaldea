@@ -977,4 +977,9 @@ enum CondType {
   completeHeelPortrait,
   notCompleteHeelPortrait,
   classBoardSquareReleased,
+  svtLevelExchangeSvt,
+  svtLimitExchangeSvt,
+  skillLvExchangeSvt,
+  svtFriendshipExchangeSvt,
+  exchangeSvt,
 }

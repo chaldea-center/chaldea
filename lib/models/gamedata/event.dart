@@ -1797,6 +1797,7 @@ enum CombineAdjustTarget {
   questFriendship,
   largeSuccessByClass,
   superSuccessByClass,
+  exchangeSvt,
 }
 
 enum EventCombineCalc {

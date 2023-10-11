@@ -331,4 +331,9 @@ const _$CondTypeEnumMap = {
   CondType.completeHeelPortrait: 'completeHeelPortrait',
   CondType.notCompleteHeelPortrait: 'notCompleteHeelPortrait',
   CondType.classBoardSquareReleased: 'classBoardSquareReleased',
+  CondType.svtLevelExchangeSvt: 'svtLevelExchangeSvt',
+  CondType.svtLimitExchangeSvt: 'svtLimitExchangeSvt',
+  CondType.skillLvExchangeSvt: 'skillLvExchangeSvt',
+  CondType.svtFriendshipExchangeSvt: 'svtFriendshipExchangeSvt',
+  CondType.exchangeSvt: 'exchangeSvt',
 };

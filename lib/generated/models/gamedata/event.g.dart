@@ -1293,6 +1293,7 @@ const _$CombineAdjustTargetEnumMap = {
   CombineAdjustTarget.questFriendship: 'questFriendship',
   CombineAdjustTarget.largeSuccessByClass: 'largeSuccessByClass',
   CombineAdjustTarget.superSuccessByClass: 'superSuccessByClass',
+  CombineAdjustTarget.exchangeSvt: 'exchangeSvt',
 };
 
 const _$EventCombineCalcEnumMap = {
