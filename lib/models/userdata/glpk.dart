@@ -189,6 +189,7 @@ class LPSolution {
 @JsonSerializable()
 class LPVariable<T> {
   int name;
+  String? displayName;
   T value;
   int cost;
 
@@ -198,6 +199,7 @@ class LPVariable<T> {
 
   LPVariable({
     required this.name,
+    this.displayName,
     required this.value,
     required this.cost,
     Map<int, double>? detail,

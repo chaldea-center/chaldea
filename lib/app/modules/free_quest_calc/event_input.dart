@@ -63,6 +63,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     eventItemIds.clear();
     final war = db.gameData.wars[widget.warId];
     if (war == null) return;
+    Set<int> validQuests = {};
     for (final quest in war.quests) {
       if (quest.isAnyFree && quest.consumeType.useAp && quest.consume > 0) {
         final drops = db.gameData.dropData.freeDrops2[quest.id];
@@ -77,16 +78,21 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
         }
         if (eventDrops.items.isNotEmpty) {
           sortDict(eventDrops.items, compare: (a, b) => b.value - a.value, inPlace: true);
-          final detail = params.quests.putIfAbsent(quest.id, () => QuestBonusPlan());
-          detail
-            ..questId = quest.id
-            ..ap = quest.consume
-            ..drops = eventDrops;
-          detail.bonus.removeWhere((key, value) => !eventDrops.items.containsKey(key));
+          if (params.bonusPlans.every((e) => e.questId != quest.id)) {
+            params.bonusPlans.add(QuestBonusPlan(questId: quest.id)
+              ..ap = quest.consume
+              ..drops = eventDrops);
+          }
+          for (final plan in params.bonusPlans.where((e) => e.questId == quest.id)) {
+            plan.bonus.removeWhere((key, value) => !eventDrops.items.containsKey(key));
+          }
+          validQuests.add(quest.id);
         }
       }
     }
-    sortDict(params.quests, compare: (a, b) => b.value.questId - a.value.questId, inPlace: true);
+    params.bonusPlans = {for (final e in params.bonusPlans) '${e.questId}-${e.index}': e}.values.toList();
+    params.bonusPlans.removeWhere((e) => !validQuests.contains(e.questId));
+    params.bonusPlans.sort2((e) => -e.questId);
   }
 
   @override
@@ -97,7 +103,14 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     itemIds.sort(Item.compare2);
 
     children.add(TileGroup(
-      header: S.current.demands,
+      headerWidget: Padding(
+        padding: const EdgeInsetsDirectional.only(start: 16.0, top: 8.0, bottom: 4.0, end: 8.0),
+        child: Row(children: [
+          Text(S.current.item),
+          const Spacer(),
+          Text('${S.current.demands}  /  ${S.current.item_own}  '),
+        ]),
+      ),
       children: [
         if (itemIds.isEmpty) const ListTile(title: Text('No event item found')),
         for (final itemId in itemIds) _buildItemDemand(itemId),
@@ -107,8 +120,8 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     children.add(TileGroup(
       header: S.current.event_bonus,
       children: [
-        if (params.quests.isEmpty) const ListTile(title: Text('No valid quest found')),
-        for (final detail in params.quests.values) _buildQuestBonus(detail),
+        if (params.bonusPlans.isEmpty) const ListTile(title: Text('No valid quest found')),
+        for (final plan in params.bonusPlans) _buildQuestBonus(plan),
       ],
     ));
     return Column(
@@ -125,42 +138,58 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
       dense: true,
       leading: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 36),
       title: Text(Item.getName(itemId)),
-      // subtitle: const Text('Bonus: +x, Target 10'),
+      subtitle: Text(((params.itemCounts[itemId] ?? 0) - (db.curUser.items[itemId] ?? 0)).toString()),
       trailing: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text((params.itemCounts[itemId] ?? 0).toString()),
-          const SizedBox(width: 8),
-          const Icon(Icons.edit_note),
+          TextButton(
+            onPressed: () {
+              InputCancelOkDialog(
+                keyboardType: const TextInputType.numberWithOptions(signed: true),
+                title: '${S.current.demands}: ${Item.getName(itemId)}',
+                text: params.itemCounts[itemId]?.toString(),
+                validate: (s) => s.trim().isEmpty || int.tryParse(s) != null,
+                onSubmit: (s) {
+                  params.itemCounts[itemId] = int.tryParse(s) ?? 0;
+                  if (mounted) setState(() {});
+                },
+              ).showDialog(context);
+            },
+            child: Text((params.itemCounts[itemId] ?? 0).toString()),
+          ),
+          TextButton(
+            onPressed: () {
+              InputCancelOkDialog(
+                keyboardType: const TextInputType.numberWithOptions(signed: true),
+                title: '${S.current.item_own}: ${Item.getName(itemId)}',
+                text: db.curUser.items[itemId]?.toString(),
+                validate: (s) => s.trim().isEmpty || int.tryParse(s) != null,
+                onSubmit: (s) {
+                  db.curUser.items[itemId] = int.tryParse(s) ?? 0;
+                  if (mounted) setState(() {});
+                },
+              ).showDialog(context);
+            },
+            child: Text((db.curUser.items[itemId] ?? 0).toString()),
+          ),
         ],
       ),
-      onTap: () {
-        InputCancelOkDialog(
-          title: '${S.current.demands}: ${Item.getName(itemId)}',
-          text: params.itemCounts[itemId]?.toString(),
-          validate: (s) => s.trim().isEmpty || int.tryParse(s) != null,
-          onSubmit: (s) {
-            params.itemCounts[itemId] = int.tryParse(s) ?? 0;
-            if (mounted) setState(() {});
-          },
-        ).showDialog(context);
-      },
     );
   }
 
-  Widget _buildQuestBonus(QuestBonusPlan detail) {
-    final quest = db.gameData.quests[detail.questId];
+  Widget _buildQuestBonus(QuestBonusPlan plan) {
+    final quest = db.gameData.quests[plan.questId];
     final spotImage = quest?.spot?.shownImage;
     List<InlineSpan> spans = [];
     if (quest != null) {
       spans.add(TextSpan(text: 'Lv.${quest.recommendLv} ${quest.lSpot.l}\n'));
     }
     final bonusStyle = TextStyle(color: Theme.of(context).colorScheme.secondary);
-    for (final itemId in detail.drops.items.keys) {
-      final base = detail.drops.getBase(itemId);
-      final group = detail.drops.getGroup(itemId);
-      final bonus = detail.bonus[itemId] ?? 0;
+    for (final itemId in plan.drops.items.keys) {
+      final base = plan.drops.getBase(itemId);
+      final group = plan.drops.getGroup(itemId);
+      final bonus = plan.bonus[itemId] ?? 0;
       final percent = _isPercentTypeBonus(itemId);
       spans.add(TextSpan(children: [
         CenterWidgetSpan(
@@ -190,19 +219,33 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
         const TextSpan(text: '  ')
       ]));
     }
+    String questName = Quest.getName(plan.questId);
+    if (plan.index != 0) questName += ' @${plan.index}';
     return ListTile(
       dense: true,
       leading: spotImage == null ? null : db.getIconImage(spotImage, width: 32),
       title: Text(
-        quest?.lName.l ?? 'Quest ${detail.questId}',
-        style: detail.enabled ? null : TextStyle(fontStyle: FontStyle.italic, color: Theme.of(context).disabledColor),
+        questName,
+        style: plan.enabled ? null : TextStyle(fontStyle: FontStyle.italic, color: Theme.of(context).disabledColor),
       ),
       subtitle: Text.rich(TextSpan(children: spans)),
       isThreeLine: quest != null,
       trailing: const Icon(Icons.edit_note),
       horizontalTitleGap: 8,
       onTap: () async {
-        await _QuestBonusEditDialog(detail).showDialog(context);
+        await _QuestBonusEditDialog(
+          plan: plan,
+          onCopy: () {
+            params.bonusPlans.add(plan
+                .copy(Maths.max(params.bonusPlans.where((e) => e.questId == plan.questId).map((e) => e.index)) + 1));
+            params.bonusPlans.sort2((e) => -e.questId);
+            if (mounted) setState(() {});
+          },
+          onDelete: () {
+            if (plan.index != 0) params.bonusPlans.remove(plan);
+            if (mounted) setState(() {});
+          },
+        ).showDialog(context);
         if (mounted) setState(() {});
       },
     );
@@ -244,10 +287,10 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     EasyLoading.show();
 
     final itemIds = params.itemCounts.keys.where((key) => params.itemCounts[key]! > 0).toList();
-    final details = params.quests.values
-        .where((detail) => detail.enabled && detail.drops.items.keys.any((itemId) => itemIds.contains(itemId)))
+    final plans = params.bonusPlans
+        .where((plan) => plan.enabled && plan.drops.items.keys.any((itemId) => itemIds.contains(itemId)))
         .toList();
-    if (itemIds.isEmpty || details.isEmpty) {
+    if (itemIds.isEmpty || plans.isEmpty) {
       EasyLoading.showInfo(S.current.input_invalid_hint);
       running = false;
       return;
@@ -256,7 +299,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     for (final itemId in itemIds) {
       final percent = _isPercentTypeBonus(itemId);
       List<double> row = [];
-      for (final detail in details) {
+      for (final detail in plans) {
         final a = percent
             ? detail.drops.getBase(itemId) * (1 + detail.getBonus(itemId) / 100)
             : detail.drops.getBase(itemId) + detail.drops.getGroup(itemId) * detail.getBonus(itemId);
@@ -266,27 +309,26 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     }
     try {
       final lpParams = BasicLPParams(
-        colNames: details.map((e) => e.questId).toList(),
+        colNames: List.generate(plans.length, (index) => index),
         rowNames: itemIds.toList(),
         matA: matA,
         bVec: itemIds.map((e) => params.itemCounts[e]!).toList(),
-        cVec: details.map((e) => e.ap).toList(),
+        cVec: plans.map((e) => e.ap).toList(),
       );
       print([lpParams.rowNames, lpParams.bVec]);
+      // key=index
       final result = await solver.callSolver(lpParams);
       final solution = LPSolution(destination: 1, originalItems: itemIds, totalNum: 0, totalCost: 0);
       // solution.params = params;
-      for (final questId in result.keys) {
-        final countFloat = result[questId]!;
+      for (final col in result.keys) {
+        final countFloat = result[col]!;
 
         int count = countFloat.ceil();
-        final detail = params.quests[questId]!;
-        int col = details.indexOf(detail);
-        assert(col >= 0);
+        final plan = params.bonusPlans[col];
         solution.totalNum = solution.totalNum! + count;
-        solution.totalCost = solution.totalCost! + count * detail.ap;
+        solution.totalCost = solution.totalCost! + count * plan.ap;
         Map<int, double> _drops = {};
-        for (final itemId in detail.drops.items.keys) {
+        for (final itemId in plan.drops.items.keys) {
           int row = itemIds.indexOf(itemId);
           if (row < 0) continue;
           final a = matA[row][col];
@@ -295,9 +337,10 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
           }
         }
         solution.countVars.add(LPVariable<int>(
-          name: questId,
+          name: plan.questId,
+          displayName: plan.index == 0 ? null : '${Quest.getName(plan.questId)} @${plan.index}',
           value: count,
-          cost: detail.ap,
+          cost: plan.ap,
           detail: _drops,
         ));
       }
@@ -314,15 +357,18 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
 }
 
 class _QuestBonusEditDialog extends StatefulWidget {
-  final QuestBonusPlan detail;
-  const _QuestBonusEditDialog(this.detail);
+  final QuestBonusPlan plan;
+  final VoidCallback onCopy;
+  final VoidCallback onDelete;
+
+  const _QuestBonusEditDialog({required this.plan, required this.onCopy, required this.onDelete});
 
   @override
   State<_QuestBonusEditDialog> createState() => __QuestBonusEditDialogState();
 }
 
 class __QuestBonusEditDialogState extends State<_QuestBonusEditDialog> {
-  QuestBonusPlan get detail => widget.detail;
+  QuestBonusPlan get plan => widget.plan;
 
   @override
   Widget build(BuildContext context) {
@@ -339,33 +385,52 @@ class __QuestBonusEditDialogState extends State<_QuestBonusEditDialog> {
           ListTile(
             dense: true,
             contentPadding: EdgeInsets.zero,
-            title: Text(Quest.getName(detail.questId)),
+            title: Text(Quest.getName(plan.questId)),
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-            onTap: () => router.push(url: Routes.questI(detail.questId)),
+            onTap: () => router.push(url: Routes.questI(plan.questId)),
           ),
           kDefaultDivider,
           SwitchListTile(
             dense: true,
             contentPadding: EdgeInsets.zero,
-            value: detail.enabled,
+            value: plan.enabled,
             title: Text(S.current.enable),
             onChanged: (v) {
               setState(() {
-                detail.enabled = v;
+                plan.enabled = v;
               });
             },
           ),
           kDefaultDivider,
-          for (final itemId in detail.drops.items.keys) buildItem(itemId),
+          for (final itemId in plan.drops.items.keys) buildItem(itemId),
         ],
       ),
+      actions: [
+        if (plan.index != 0)
+          TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                widget.onDelete();
+              },
+              child: Text(
+                S.current.remove,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              )),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+            widget.onCopy();
+          },
+          child: Text(S.current.copy),
+        ),
+      ],
     );
   }
 
   Widget buildItem(int itemId) {
-    final base = detail.drops.getBase(itemId);
-    final group = detail.drops.getGroup(itemId);
-    final bonus = detail.bonus[itemId] ?? 0;
+    final base = plan.drops.getBase(itemId);
+    final group = plan.drops.getGroup(itemId);
+    final bonus = plan.bonus[itemId] ?? 0;
     final percent = _isPercentTypeBonus(itemId);
 
     return ListTile(
@@ -393,7 +458,7 @@ class __QuestBonusEditDialogState extends State<_QuestBonusEditDialog> {
             s = s.trim();
             int? v = s.isEmpty ? 0 : int.tryParse(s);
             setState(() {
-              if (v != null && v >= 0) detail.bonus[itemId] = v;
+              if (v != null && v >= 0) plan.bonus[itemId] = v;
             });
           },
         ),

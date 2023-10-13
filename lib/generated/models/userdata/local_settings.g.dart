@@ -459,12 +459,11 @@ EventItemCalcParams _$EventItemCalcParamsFromJson(Map json) => $checkedCreate(
               (v) => (v as Map?)?.map(
                     (k, e) => MapEntry(int.parse(k as String), e as int),
                   )),
-          quests: $checkedConvert(
-              'quests',
-              (v) => (v as Map?)?.map(
-                    (k, e) =>
-                        MapEntry(int.parse(k as String), QuestBonusPlan.fromJson(Map<String, dynamic>.from(e as Map))),
-                  )),
+          bonusPlans: $checkedConvert(
+              'bonusPlans',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => QuestBonusPlan.fromJson(Map<String, dynamic>.from(e as Map)))
+                  .toList()),
         );
         return val;
       },
@@ -472,7 +471,7 @@ EventItemCalcParams _$EventItemCalcParamsFromJson(Map json) => $checkedCreate(
 
 Map<String, dynamic> _$EventItemCalcParamsToJson(EventItemCalcParams instance) => <String, dynamic>{
       'itemCounts': instance.itemCounts.map((k, e) => MapEntry(k.toString(), e)),
-      'quests': instance.quests.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'bonusPlans': instance.bonusPlans.map((e) => e.toJson()).toList(),
     };
 
 QuestBonusPlan _$QuestBonusPlanFromJson(Map json) => $checkedCreate(
@@ -481,6 +480,8 @@ QuestBonusPlan _$QuestBonusPlanFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = QuestBonusPlan(
           enabled: $checkedConvert('enabled', (v) => v as bool? ?? true),
+          questId: $checkedConvert('questId', (v) => v as int? ?? 0),
+          index: $checkedConvert('index', (v) => v as int? ?? 0),
           bonus: $checkedConvert(
               'bonus',
               (v) => (v as Map?)?.map(
@@ -493,6 +494,8 @@ QuestBonusPlan _$QuestBonusPlanFromJson(Map json) => $checkedCreate(
 
 Map<String, dynamic> _$QuestBonusPlanToJson(QuestBonusPlan instance) => <String, dynamic>{
       'enabled': instance.enabled,
+      'questId': instance.questId,
+      'index': instance.index,
       'bonus': instance.bonus.map((k, e) => MapEntry(k.toString(), e)),
     };
 

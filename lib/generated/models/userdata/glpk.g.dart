@@ -102,6 +102,7 @@ LPVariable<T> _$LPVariableFromJson<T>(
       ($checkedConvert) {
         final val = LPVariable<T>(
           name: $checkedConvert('name', (v) => v as int),
+          displayName: $checkedConvert('displayName', (v) => v as String?),
           value: $checkedConvert('value', (v) => fromJsonT(v)),
           cost: $checkedConvert('cost', (v) => v as int),
           detail: $checkedConvert(
@@ -120,6 +121,7 @@ Map<String, dynamic> _$LPVariableToJson<T>(
 ) =>
     <String, dynamic>{
       'name': instance.name,
+      'displayName': instance.displayName,
       'value': toJsonT(instance.value),
       'cost': instance.cost,
       'detail': instance.detail.map((k, e) => MapEntry(k.toString(), e)),

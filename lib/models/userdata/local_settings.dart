@@ -483,13 +483,13 @@ class TipsSetting {
 @JsonSerializable()
 class EventItemCalcParams {
   Map<int, int> itemCounts;
-  Map<int, QuestBonusPlan> quests;
+  List<QuestBonusPlan> bonusPlans;
 
   EventItemCalcParams({
     Map<int, int>? itemCounts,
-    Map<int, QuestBonusPlan>? quests,
+    List<QuestBonusPlan>? bonusPlans,
   })  : itemCounts = itemCounts ?? {},
-        quests = quests ?? {};
+        bonusPlans = bonusPlans ?? [];
 
   factory EventItemCalcParams.fromJson(Map<String, dynamic> json) => _$EventItemCalcParamsFromJson(json);
 
@@ -499,17 +499,19 @@ class EventItemCalcParams {
 @JsonSerializable()
 class QuestBonusPlan {
   bool enabled = true;
+  int questId;
+  int index;
   Map<int, int> bonus = {};
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   late int ap;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late int questId;
-  @JsonKey(includeFromJson: false, includeToJson: false)
   late QuestDropData drops;
 
   QuestBonusPlan({
     this.enabled = true,
+    this.questId = 0,
+    this.index = 0,
     Map<int, int>? bonus,
   }) : bonus = bonus ?? {};
 
@@ -518,6 +520,17 @@ class QuestBonusPlan {
   factory QuestBonusPlan.fromJson(Map<String, dynamic> json) => _$QuestBonusPlanFromJson(json);
 
   Map<String, dynamic> toJson() => _$QuestBonusPlanToJson(this);
+
+  QuestBonusPlan copy(int index) {
+    return QuestBonusPlan(
+      enabled: enabled,
+      questId: questId,
+      index: index,
+      bonus: Map.of(bonus),
+    )
+      ..ap = ap
+      ..drops = drops;
+  }
 }
 
 @JsonSerializable()

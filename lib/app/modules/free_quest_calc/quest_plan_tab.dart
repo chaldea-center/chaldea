@@ -102,7 +102,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
     final questId = variable.name;
     final Quest? quest = db.gameData.getQuestPhase(questId) ?? db.gameData.quests[questId];
     Widget child = ValueStatefulBuilder<bool>(
-      key: Key('plan_quest_$questId'),
+      key: ObjectKey(variable),
       initValue: false,
       builder: (context, value) {
         return Column(
@@ -110,7 +110,7 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             CustomTile(
-              title: Text(quest?.lDispName ?? 'Quest $questId'),
+              title: Text(variable.displayName ?? quest?.lDispName ?? 'Quest $questId'),
               subtitle: buildRichDetails(variable.detail.entries),
               trailing: Text('${variable.value}*${variable.cost} AP'),
               onTap: () {
