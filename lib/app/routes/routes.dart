@@ -49,6 +49,7 @@ import '../modules/free_quest_calc/free_calculator_page.dart';
 import '../modules/func/func_detail.dart';
 import '../modules/func/func_list.dart';
 import '../modules/home/home.dart';
+import '../modules/master_mission/master_mission.dart';
 import '../modules/misc/apk_list.dart';
 import '../modules/misc/app_route_entrance.dart';
 import '../modules/misc/common_release.dart';
@@ -438,8 +439,9 @@ class RouteConfiguration {
       case Routes.buffActions:
       case Routes.buffAction:
         return BuffActionPage(action: const BuffActionConverter().fromJson(second ?? "unknown"));
-      // case Routes.masterMission:
-      // case 'MM':
+      case Routes.masterMission:
+      case 'MM':
+        return MasterMissionPage(id: _secondInt ?? 0);
       case Routes.masterMissions:
         return MasterMissionListPage();
       case Routes.effectSearch:

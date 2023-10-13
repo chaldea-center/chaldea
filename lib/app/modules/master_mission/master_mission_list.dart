@@ -6,7 +6,6 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import 'master_mission.dart';
 import 'solver/custom_mission.dart';
 import 'solver/scheme.dart';
 
@@ -232,10 +231,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
       ),
       selected: masterMission.startedAt <= now && masterMission.endedAt > now,
       onTap: () {
-        router.push(
-          child: MasterMissionPage(masterMission: masterMission, region: _region),
-          detail: true,
-        );
+        masterMission.routeTo(region: _region, popDetails: true);
       },
     );
   }

@@ -1,12 +1,10 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/mission_conds.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../master_mission/master_mission.dart';
 import 'base.dart';
 
 class TimerMissionTab extends StatelessWidget {
@@ -80,7 +78,7 @@ class TimerMissionItem with TimerItem {
             children: [
               TextButton(
                 onPressed: () {
-                  router.push(child: MasterMissionPage(masterMission: mm, region: region));
+                  mm.routeTo(region: region);
                 },
                 style: kTextButtonDenseStyle,
                 child: Text('>>> ${S.current.details} >>>'),

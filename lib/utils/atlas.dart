@@ -36,6 +36,10 @@ class Atlas {
     return dbUrl('command-code', id, region);
   }
 
+  static String dbMasterMission(int id, [Region region = Region.jp]) {
+    return dbUrl('master-mission', id, region);
+  }
+
   static String dbEvent(int id, [Region region = Region.jp]) {
     return dbUrl('event', id, region);
   }

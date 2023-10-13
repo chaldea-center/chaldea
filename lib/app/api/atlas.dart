@@ -111,6 +111,7 @@ class AtlasApi {
   }
 
   static Future<MasterMission?> masterMission(int id, {Region region = Region.jp, Duration? expireAfter}) {
+    if (id <= 0) return Future.value();
     return cacheManager.getModel(
       '$_atlasApiHost/nice/${region.upper}/mm/$id',
       (data) => MasterMission.fromJson(data),

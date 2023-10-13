@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
+import '../../app/modules/master_mission/master_mission.dart';
 import '../../app/modules/shop/shop.dart';
 import '_helper.dart';
 import 'gamedata.dart';
@@ -430,7 +431,7 @@ class EventAdd {
 }
 
 @JsonSerializable()
-class MasterMission {
+class MasterMission with RouteInfo {
   static const int kExtraMasterMissionId = 10001;
 
   int id;
@@ -453,6 +454,17 @@ class MasterMission {
 
   bool get isWeekly => id >= 1e5 && id < 2e5;
   bool get isLimited => id >= 2e5 && id < 3e5;
+
+  @override
+  String get route => Routes.masterMissionI(id);
+
+  @override
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) {
+    return super.routeTo(
+      child: child ?? MasterMissionPage(masterMission: this, region: region),
+      popDetails: popDetails,
+    );
+  }
 
   Map<String, dynamic> toJson() => _$MasterMissionToJson(this);
 }

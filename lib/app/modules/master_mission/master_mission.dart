@@ -1,9 +1,12 @@
 import 'package:flutter/foundation.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../descriptors/cond_target_num.dart';
 import '../../descriptors/mission_conds.dart';
@@ -11,63 +14,63 @@ import 'solver/custom_mission.dart';
 import 'solver/scheme.dart';
 
 class MasterMissionPage extends StatefulWidget {
-  final MasterMission masterMission;
+  final int? id;
+  final MasterMission? masterMission;
   final Region? region;
 
-  MasterMissionPage({super.key, required this.masterMission, this.region});
+  MasterMissionPage({super.key, this.id, this.masterMission, this.region})
+      : assert(id != null || masterMission != null);
 
   @override
   _MasterMissionPageState createState() => _MasterMissionPageState();
 }
 
-class _MasterMissionPageState extends State<MasterMissionPage> {
-  MasterMission get masterMission => widget.masterMission;
+class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedState<MasterMission, MasterMissionPage> {
+  int get id => widget.masterMission?.id ?? widget.id ?? data?.id ?? -1;
+  MasterMission get masterMission => data!;
+  @override
+  void initState() {
+    super.initState();
+    region = widget.region ?? (widget.masterMission == null ? Region.jp : null);
+    doFetchData();
+  }
+
+  @override
+  Future<MasterMission?> fetchData(Region? r) async {
+    MasterMission? v;
+    if (r == null || r == widget.region) v = widget.masterMission;
+    v ??= await AtlasApi.masterMission(id, region: r ?? Region.jp);
+    return v;
+  }
+
   @override
   Widget build(BuildContext context) {
     return InheritSelectionArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('${S.current.master_mission} ${masterMission.id}'),
-        ),
-        body: Column(
-          children: [
-            Expanded(child: missionList()),
-            kDefaultDivider,
-            SafeArea(
-              child: ButtonBar(
-                alignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      final customMissions = masterMission.missions
-                          .map((e) => CustomMission.fromEventMission(e))
-                          .whereType<CustomMission>()
-                          .toList();
-                      int? warId;
-                      final region = widget.region ?? Region.jp;
-                      if (region != Region.jp) {
-                        final wars =
-                            db.gameData.mappingData.warRelease.ofRegion(region)?.where((e) => e < 1000).toList();
-                        if (wars != null && wars.isNotEmpty) {
-                          warId = Maths.max(wars);
-                        }
-                      }
-                      router.push(
-                        child: CustomMissionPage(
-                          initMissions: customMissions,
-                          initWarId: warId,
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.search),
-                    label: Text(S.current.drop_calc_solve),
-                  )
-                ],
+          title: Text('${S.current.master_mission} $id'),
+          actions: [
+            dropdownRegion(shownNone: widget.masterMission != null),
+            PopupMenuButton(
+              itemBuilder: (context) => SharedBuilder.websitesPopupMenuItems(
+                atlas: Atlas.dbMasterMission(id, region ?? Region.jp),
               ),
             )
           ],
         ),
+        body: buildBody(context),
       ),
+    );
+  }
+
+  @override
+  Widget buildContent(BuildContext context, MasterMission mm) {
+    return Column(
+      children: [
+        Expanded(child: missionList()),
+        kDefaultDivider,
+        SafeArea(child: buttonBar),
+      ],
     );
   }
 
@@ -162,6 +165,38 @@ class _MasterMissionPageState extends State<MasterMissionPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget get buttonBar {
+    return ButtonBar(
+      alignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton.icon(
+          onPressed: () {
+            final customMissions = masterMission.missions
+                .map((e) => CustomMission.fromEventMission(e))
+                .whereType<CustomMission>()
+                .toList();
+            int? warId;
+            final region = widget.region ?? Region.jp;
+            if (region != Region.jp) {
+              final wars = db.gameData.mappingData.warRelease.ofRegion(region)?.where((e) => e < 1000).toList();
+              if (wars != null && wars.isNotEmpty) {
+                warId = Maths.max(wars);
+              }
+            }
+            router.push(
+              child: CustomMissionPage(
+                initMissions: customMissions,
+                initWarId: warId,
+              ),
+            );
+          },
+          icon: const Icon(Icons.search),
+          label: Text(S.current.drop_calc_solve),
+        )
+      ],
     );
   }
 }
