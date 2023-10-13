@@ -1,23 +1,80 @@
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class EventPointsPage extends HookWidget {
+class EventPointsPage extends StatelessWidget {
   final Event event;
-  final int groupId;
-  const EventPointsPage({super.key, required this.event, required this.groupId});
+  const EventPointsPage({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
-    List<EventPointReward> rewards = event.pointRewards.where((e) => e.groupId == groupId).toList();
-    rewards.sort2((e) => e.point);
+    List<Tab> tabs = [];
+    List<Widget> views = [];
 
-    // <groupId, <point, buff>>
-    Map<int, EventPointBuff> pointBuffs = {
-      for (final buff in event.pointBuffs)
-        if (buff.groupId == groupId) buff.eventPoint: buff
+    final pointGroups = {
+      for (final group in event.pointGroups) group.groupId: group,
     };
 
+    Map<int, List<EventPointReward>> pointRewards = {};
+    for (final reward in event.pointRewards) {
+      pointRewards.putIfAbsent(reward.groupId, () => []).add(reward);
+    }
+
+    Map<int, Map<int, EventPointBuff>> pointBuffs = {};
+    for (final buff in event.pointBuffs) {
+      pointBuffs.putIfAbsent(buff.groupId, () => {})[buff.eventPoint] = buff;
+    }
+
+    List<int> groupIds = pointRewards.keys.toList()..sort();
+    for (final groupId in groupIds) {
+      String? pointName;
+      final group = pointGroups[groupId];
+      if (group != null) {
+        pointName = Transl.itemNames(group.name).l;
+      }
+      pointName ??= S.current.event_point_reward + (groupIds.length > 1 ? ' $groupId' : '');
+      final icon = group?.icon ?? pointBuffs[groupId]?.values.firstOrNull?.icon;
+
+      final rewards = pointRewards[groupId]!;
+      rewards.sort2((e) => e.point);
+      tabs.add(Tab(
+        child: Text.rich(
+          TextSpan(children: [
+            if (icon != null) CenterWidgetSpan(child: db.getIconImage(icon, width: 24)),
+            TextSpan(text: pointName),
+          ]),
+        ),
+      ));
+      views.add(EventPointTab(rewards: rewards, pointBuffs: pointBuffs[groupId] ?? {}));
+    }
+    if (views.isEmpty) return const SizedBox.shrink();
+    if (views.length == 1) return views.single;
+    return DefaultTabController(
+      length: views.length,
+      child: Column(
+        children: [
+          FixedHeight.tabBar(TabBar(
+            isScrollable: tabs.length > 2,
+            tabs: tabs,
+            labelStyle: Theme.of(context).textTheme.bodyMedium,
+          )),
+          Expanded(child: TabBarView(children: views)),
+        ],
+      ),
+    );
+  }
+}
+
+class EventPointTab extends HookWidget {
+  final List<EventPointReward> rewards;
+  final Map<int, EventPointBuff> pointBuffs;
+
+  const EventPointTab({super.key, required this.rewards, required this.pointBuffs});
+
+  @override
+  Widget build(BuildContext context) {
+    rewards.sort2((e) => e.point);
     return ListView.separated(
       controller: useScrollController(),
       itemBuilder: (context, index) => rewardBuilder(context, rewards[index], pointBuffs),

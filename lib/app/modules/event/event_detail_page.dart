@@ -171,23 +171,10 @@ class _EventDetailPageState extends State<EventDetailPage> {
       }
     }
     // point rewards
-    List<int> rewardGroups = event.pointRewards.map((e) => e.groupId).toSet().toList()..sort();
-    for (final groupId in rewardGroups) {
-      EventPointGroup? pointGroup = event.pointGroups.firstWhereOrNull((e) => e.groupId == groupId);
-      String? pointName;
-      if (pointGroup != null) {
-        pointName = Transl.itemNames(pointGroup.name).l;
-      }
-      pointName ??= S.current.event_point_reward + (rewardGroups.length > 1 ? ' $groupId' : '');
-      final icon = pointGroup?.icon ?? event.pointBuffs.firstWhereOrNull((buff) => buff.groupId == groupId)?.icon;
-      tabs.add(Tab(
-        child: Text.rich(TextSpan(children: [
-          if (icon != null) CenterWidgetSpan(child: db.getIconImage(icon, width: 24)),
-          TextSpan(text: pointName),
-        ])),
-      ));
-      views.add(EventPointsPage(event: event, groupId: groupId));
+    if (event.pointRewards.isNotEmpty) {
+      _addTab(S.current.event_point_reward, EventPointsPage(event: event));
     }
+
     // shop last
     List<int> shopSlots = event.shop.map((e) => e.slot).toSet().toList();
     shopSlots.sort();

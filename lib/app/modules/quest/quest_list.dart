@@ -77,7 +77,7 @@ class _QuestListPageState extends State<QuestListPage> {
           }
           bool isMainFree = quest.isMainStoryFree;
           List<InlineSpan> trailings = [];
-          if (quest.consumeType.useAp && quest.afterClear.isRepeat) {
+          if (quest.consumeType.useAp && quest.phases.length == 1) {
             trailings.add(TextSpan(text: 'AP${quest.consume} '));
           }
           for (final itemAmount in quest.consumeItem) {
