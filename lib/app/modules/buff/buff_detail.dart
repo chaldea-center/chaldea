@@ -36,13 +36,13 @@ class _BuffDetailPageState extends State<BuffDetailPage>
   }
 
   @override
-  Future<Buff?> fetchData(Region? r) async {
+  Future<Buff?> fetchData(Region? r, {Duration? expireAfter}) async {
     Buff? v;
     if (r == null || r == widget.region) v = widget.buff;
     if (r == Region.jp) {
       v ??= db.gameData.baseBuffs[id];
     }
-    v ??= await AtlasApi.buff(id, region: r ?? Region.jp);
+    v ??= await AtlasApi.buff(id, region: r ?? Region.jp, expireAfter: expireAfter);
     return v;
   }
 

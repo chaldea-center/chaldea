@@ -27,7 +27,7 @@ class _MasterExpPageState extends State<MasterExpPage>
   }
 
   @override
-  Future<Map<int, MasterUserLvDetail>?> fetchData(Region? r) async {
+  Future<Map<int, MasterUserLvDetail>?> fetchData(Region? r, {Duration? expireAfter}) async {
     if (r == Region.jp) {
       return db.gameData.constData.userLevel;
     } else {
@@ -36,6 +36,7 @@ class _MasterExpPageState extends State<MasterExpPage>
         (json) =>
             (json as Map).map((key, value) => MapEntry(int.parse(key), MasterUserLvDetail.fromJson(Map.from(value)))),
         region: r ?? Region.jp,
+        expireAfter: expireAfter,
       );
     }
   }

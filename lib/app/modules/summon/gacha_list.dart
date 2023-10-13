@@ -31,7 +31,7 @@ class _GachaListPageState extends State<GachaListPage> with RegionBasedState<Lis
   }
 
   @override
-  Future<List<MstGacha>?> fetchData(Region? r) async {
+  Future<List<MstGacha>?> fetchData(Region? r, {Duration? expireAfter}) async {
     r ??= Region.jp;
     _imageIdMap.clear();
     AtlasApi.cacheManager.clearFailed();
@@ -39,6 +39,7 @@ class _GachaListPageState extends State<GachaListPage> with RegionBasedState<Lis
       'mstGacha',
       (json) => (json as List).map((e) => MstGacha.fromJson(Map.from(e))).toList(),
       region: r,
+      expireAfter: expireAfter,
     );
     for (final gacha in gachas) {
       _imageIdMap.putIfAbsent(gacha.imageId, () => []).add(gacha);

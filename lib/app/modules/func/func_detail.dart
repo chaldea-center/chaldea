@@ -38,13 +38,13 @@ class _FuncDetailPageState extends State<FuncDetailPage>
   }
 
   @override
-  Future<BaseFunction?> fetchData(Region? r) async {
+  Future<BaseFunction?> fetchData(Region? r, {Duration? expireAfter}) async {
     BaseFunction? v;
     if (r == null || r == widget.region) v = widget.func;
     if (r == Region.jp) {
       v ??= db.gameData.baseFunctions[id];
     }
-    v ??= await AtlasApi.func(id, region: r ?? Region.jp);
+    v ??= await AtlasApi.func(id, region: r ?? Region.jp, expireAfter: expireAfter);
     return v;
   }
 

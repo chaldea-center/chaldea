@@ -54,11 +54,11 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
   }
 
   @override
-  Future<NiceAiCollection?> fetchData(Region? r) async {
+  Future<NiceAiCollection?> fetchData(Region? r, {Duration? expireAfter}) async {
     NiceAiCollection? v;
     if (r == null || r == widget.region) v = widget.aiCollection;
     if (id <= 0) return v;
-    v ??= await AtlasApi.ai(widget.aiType, id, region: r ?? Region.jp);
+    v ??= await AtlasApi.ai(widget.aiType, id, region: r ?? Region.jp, expireAfter: expireAfter);
     return v;
   }
 

@@ -28,9 +28,9 @@ class _EnemyMasterListPageState extends State<EnemyMasterListPage>
   }
 
   @override
-  Future<List<EnemyMaster>?> fetchData(Region? r) async {
+  Future<List<EnemyMaster>?> fetchData(Region? r, {Duration? expireAfter}) async {
     if (r == Region.jp) return db.gameData.enemyMasters.values.toList();
-    return AtlasApi.enemyMasters(region: r ?? Region.jp);
+    return AtlasApi.enemyMasters(region: r ?? Region.jp, expireAfter: expireAfter);
   }
 
   @override

@@ -23,6 +23,13 @@ class AtlasApi {
     await cacheManager.clearCache();
   }
 
+  static String _tBump(String urlNoQuery, Duration? expireAfter) {
+    if (expireAfter == Duration.zero) {
+      urlNoQuery += '?t=${DateTime.now().timestamp}';
+    }
+    return urlNoQuery;
+  }
+
   static Future<Map<String, dynamic>?> regionInfo({Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
     return cacheManager.getModel(
       '$_atlasApiHost/info',
@@ -104,7 +111,7 @@ class AtlasApi {
 
   static Future<List<MasterMission>?> masterMissions({Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
-      '$_atlasApiHost/export/${region.upper}/nice_master_mission.json',
+      _tBump('$_atlasApiHost/export/${region.upper}/nice_master_mission.json', expireAfter),
       (data) => List.generate((data as List).length, (index) => MasterMission.fromJson(data[index])),
       expireAfter: expireAfter,
     );
@@ -376,7 +383,7 @@ class AtlasApi {
 
   static Future<GameTimerData?> timerData(Region region, {Duration? expireAfter}) async {
     return cacheManager.getModel(
-      '$_atlasApiHost/export/${region.upper}/timer_data.json',
+      _tBump('$_atlasApiHost/export/${region.upper}/timer_data.json', expireAfter),
       (data) => GameTimerData.fromJson(data),
       expireAfter: expireAfter,
     );

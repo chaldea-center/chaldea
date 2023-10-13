@@ -42,8 +42,8 @@ class _CommonReleasesPageState extends State<CommonReleasesPage>
   }
 
   @override
-  Future<List<CommonRelease>?> fetchData(Region? r) {
-    return AtlasApi.commonRelease(widget.id ?? 0, region: r ?? Region.jp);
+  Future<List<CommonRelease>?> fetchData(Region? r, {Duration? expireAfter}) {
+    return AtlasApi.commonRelease(widget.id ?? 0, region: r ?? Region.jp, expireAfter: expireAfter);
   }
 
   @override

@@ -42,13 +42,13 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
   }
 
   @override
-  Future<BaseSkill?> fetchData(Region? r) async {
+  Future<BaseSkill?> fetchData(Region? r, {Duration? expireAfter}) async {
     BaseSkill? v;
     if (r == null || r == widget.region) v = widget.skill;
     if (r == Region.jp) {
       v ??= db.gameData.baseSkills[id];
     }
-    v ??= await AtlasApi.skill(id, region: r ?? Region.jp);
+    v ??= await AtlasApi.skill(id, region: r ?? Region.jp, expireAfter: expireAfter);
     return v;
   }
 

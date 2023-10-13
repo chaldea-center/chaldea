@@ -29,7 +29,7 @@ class _ChaldeaGateQuestListPageState extends State<ChaldeaGateQuestListPage>
   }
 
   @override
-  Future<NiceWar?> fetchData(Region? r) async {
+  Future<NiceWar?> fetchData(Region? r, {Duration? expireAfter}) async {
     r ??= Region.jp;
     if (r == Region.jp) {
       final war = db.gameData.wars[WarId.chaldeaGate];
@@ -37,7 +37,7 @@ class _ChaldeaGateQuestListPageState extends State<ChaldeaGateQuestListPage>
         return war;
       }
     }
-    return AtlasApi.war(WarId.chaldeaGate, region: r);
+    return AtlasApi.war(WarId.chaldeaGate, region: r, expireAfter: expireAfter);
   }
 
   @override

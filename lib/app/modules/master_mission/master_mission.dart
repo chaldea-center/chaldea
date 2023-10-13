@@ -36,10 +36,10 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
   }
 
   @override
-  Future<MasterMission?> fetchData(Region? r) async {
+  Future<MasterMission?> fetchData(Region? r, {Duration? expireAfter}) async {
     MasterMission? v;
     if (r == null || r == widget.region) v = widget.masterMission;
-    v ??= await AtlasApi.masterMission(id, region: r ?? Region.jp);
+    v ??= await AtlasApi.masterMission(id, region: r ?? Region.jp, expireAfter: expireAfter);
     return v;
   }
 

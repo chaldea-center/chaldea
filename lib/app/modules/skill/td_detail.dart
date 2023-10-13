@@ -38,13 +38,13 @@ class _TdDetailPageState extends State<TdDetailPage> with RegionBasedState<BaseT
   }
 
   @override
-  Future<BaseTd?> fetchData(Region? r) async {
+  Future<BaseTd?> fetchData(Region? r, {Duration? expireAfter}) async {
     BaseTd? v;
     if (r == null || r == widget.region) v = widget.td;
     if (r == Region.jp) {
       v ??= db.gameData.baseTds[id];
     }
-    v ??= await AtlasApi.td(id, region: r ?? Region.jp);
+    v ??= await AtlasApi.td(id, region: r ?? Region.jp, expireAfter: expireAfter);
     return v;
   }
 

@@ -60,13 +60,15 @@ mixin RegionBasedState<V, T extends StatefulWidget> on State<T> {
   }
 
   bool _loading = false;
-  Future<V?> fetchData(Region? r);
-  Future<void> doFetchData() async {
+
+  Future<V?> fetchData(Region? r, {Duration? expireAfter});
+
+  Future<void> doFetchData({Duration? expireAfter}) async {
     _loading = true;
     data = null;
     if (mounted) setState(() {});
     try {
-      data = await fetchData(region);
+      data = await fetchData(region, expireAfter: expireAfter);
     } finally {
       _loading = false;
       if (mounted) setState(() {});

@@ -34,8 +34,8 @@ class _TimerHomePageState extends State<TimerHomePage>
   }
 
   @override
-  Future<GameTimerData?> fetchData(Region? r) {
-    return AtlasApi.timerData(r ?? Region.jp);
+  Future<GameTimerData?> fetchData(Region? r, {Duration? expireAfter}) {
+    return AtlasApi.timerData(r ?? Region.jp, expireAfter: expireAfter);
   }
 
   @override
@@ -60,10 +60,9 @@ class _TimerHomePageState extends State<TimerHomePage>
           PopupMenuButton(
             itemBuilder: (context) => [
               PopupMenuItem(
-                enabled: false,
                 child: Text(S.current.refresh),
                 onTap: () {
-                  //
+                  doFetchData(expireAfter: Duration.zero);
                 },
               )
             ],

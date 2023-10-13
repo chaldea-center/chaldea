@@ -29,13 +29,14 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
   }
 
   @override
-  Future<List<MstMyRoomAdd>?> fetchData(Region? r) {
+  Future<List<MstMyRoomAdd>?> fetchData(Region? r, {Duration? expireAfter}) {
     CachedApi.cacheManager.clearFailed();
     return CachedApi.cacheManager.getModel(
       'https://git.atlasacademy.io/atlasacademy/fgo-game-data/raw/branch/${r ?? Region.jp}/master/mstMyroomAdd.json',
       (list) {
         return List<Map>.from(list).map((e) => MstMyRoomAdd.fromJson(Map.from(e))).toList();
       },
+      expireAfter: expireAfter,
     );
   }
 

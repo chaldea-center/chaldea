@@ -36,13 +36,13 @@ class _ShopDetailPageState extends State<ShopDetailPage> with RegionBasedState<N
   }
 
   @override
-  Future<NiceShop?> fetchData(Region? r) async {
+  Future<NiceShop?> fetchData(Region? r, {Duration? expireAfter}) async {
     NiceShop? v;
     if (r == null || r == widget.region) v = widget.shop;
     if (r == Region.jp) {
       v ??= db.gameData.shops[id];
     }
-    v ??= await AtlasApi.shop(id, region: r ?? Region.jp);
+    v ??= await AtlasApi.shop(id, region: r ?? Region.jp, expireAfter: expireAfter);
     return v;
   }
 
