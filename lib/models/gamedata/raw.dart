@@ -6,6 +6,51 @@ import 'item.dart';
 part '../../generated/models/gamedata/raw.g.dart';
 
 @JsonSerializable(createToJson: false)
+class MstEvent {
+  int id;
+  int type;
+  String name;
+  String shortName;
+  // int noticeAt;
+  int startedAt;
+  int endedAt;
+  int finishedAt;
+
+  MstEvent({
+    required this.id,
+    required this.type,
+    this.name = "",
+    this.shortName = "",
+    required this.startedAt,
+    required this.endedAt,
+    required this.finishedAt,
+  });
+  factory MstEvent.fromJson(Map<String, dynamic> json) => _$MstEventFromJson(json);
+}
+
+@JsonSerializable(createToJson: false)
+class MstMasterMission {
+  int id;
+  int priority;
+  int startedAt;
+  int endedAt;
+  int closedAt;
+  int imageId;
+  String name;
+
+  MstMasterMission({
+    required this.id,
+    this.priority = 0,
+    required this.startedAt,
+    required this.endedAt,
+    required this.closedAt,
+    this.imageId = 0,
+    this.name = "",
+  });
+  factory MstMasterMission.fromJson(Map<String, dynamic> json) => _$MstMasterMissionFromJson(json);
+}
+
+@JsonSerializable(createToJson: false)
 class MstGacha {
   int id; //  50001251,
   String name; //  "【ニューイヤー1延長】【課金】第1部 0章 クリア前ベース",

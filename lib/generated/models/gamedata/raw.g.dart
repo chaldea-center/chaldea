@@ -6,6 +6,26 @@ part of '../../../models/gamedata/raw.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+MstEvent _$MstEventFromJson(Map json) => MstEvent(
+      id: json['id'] as int,
+      type: json['type'] as int,
+      name: json['name'] as String? ?? "",
+      shortName: json['shortName'] as String? ?? "",
+      startedAt: json['startedAt'] as int,
+      endedAt: json['endedAt'] as int,
+      finishedAt: json['finishedAt'] as int,
+    );
+
+MstMasterMission _$MstMasterMissionFromJson(Map json) => MstMasterMission(
+      id: json['id'] as int,
+      priority: json['priority'] as int? ?? 0,
+      startedAt: json['startedAt'] as int,
+      endedAt: json['endedAt'] as int,
+      closedAt: json['closedAt'] as int,
+      imageId: json['imageId'] as int? ?? 0,
+      name: json['name'] as String? ?? "",
+    );
+
 MstGacha _$MstGachaFromJson(Map json) => MstGacha(
       id: json['id'] as int? ?? 0,
       name: json['name'] as String? ?? "",

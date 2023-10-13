@@ -417,6 +417,16 @@ class MappingBase<T> {
     return null;
   }
 
+  T? lOf(Region region) {
+    final v = ofRegion(region);
+    if (v != null) return v;
+    for (final region in db.settings.resolvedPreferredRegions) {
+      final v = ofRegion(region);
+      if (v != null) return v;
+    }
+    return null;
+  }
+
   T? ofRegion([Region? region]) {
     region ??= Transl.current;
     switch (region) {

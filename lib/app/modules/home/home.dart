@@ -10,6 +10,7 @@ import '../../../models/db.dart';
 import '../../app.dart';
 import '../battle/battle_home.dart';
 import '../root/global_fab.dart';
+import '../timer/timer_home.dart';
 import 'gallery_page.dart';
 import 'settings_page.dart';
 
@@ -25,20 +26,29 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
     return Scaffold(
       body: IndexedStack(
         index: _curIndex,
         children: [
           checkValidState(GalleryPage()),
           checkValidState(BattleHomePage()),
+          checkValidState(TimerHomePage()),
           SettingsPage(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        unselectedItemColor: themeData.unselectedWidgetColor,
+        selectedItemColor: switch (themeData.brightness) {
+          Brightness.light => themeData.colorScheme.primary,
+          Brightness.dark => themeData.colorScheme.secondary,
+        },
         currentIndex: _curIndex,
         items: [
           const BottomNavigationBarItem(icon: SafeArea(child: Icon(Icons.blur_on_sharp)), label: 'Chaldeas'),
           const BottomNavigationBarItem(icon: SafeArea(child: Icon(Icons.bubble_chart)), label: 'Laplace'),
+          const BottomNavigationBarItem(icon: SafeArea(child: Icon(Icons.timer_outlined)), label: 'Timer'),
           BottomNavigationBarItem(
               icon: const SafeArea(child: Icon(Icons.settings)), label: S.current.settings_tab_name),
         ],

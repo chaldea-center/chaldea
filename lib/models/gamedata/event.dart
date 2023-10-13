@@ -1681,32 +1681,36 @@ enum CommonConsumeType {
 }
 
 enum EventType {
-  none,
-  raidBoss,
-  pvp,
-  point,
-  loginBonus,
-  combineCampaign,
-  shop,
-  questCampaign,
-  bank,
-  serialCampaign,
-  loginCampaign,
-  loginCampaignRepeat,
-  eventQuest, // main
-  svtequipCombineCampaign,
-  terminalBanner,
-  boxGacha,
-  boxGachaPoint,
-  loginCampaignStrict,
-  totalLogin,
-  comebackCampaign, // custom named
-  locationCampaign,
-  warBoard, // main
-  combineCosutumeItem,
-  myroomMultipleViewCampaign,
-  interludeCampaign,
-  myroomPhotoCampaign,
+  none(0),
+  raidBoss(1),
+  pvp(2),
+  point(3),
+  loginBonus(4),
+  combineCampaign(5),
+  shop(6),
+  questCampaign(7),
+  bank(8),
+  serialCampaign(9),
+  loginCampaign(10),
+  loginCampaignRepeat(11),
+  eventQuest(12), // main
+  svtequipCombineCampaign(13),
+  terminalBanner(14),
+  boxGacha(15),
+  boxGachaPoint(16),
+  loginCampaignStrict(17),
+  totalLogin(18),
+  comebackCampaign(19),
+  locationCampaign(20),
+  comebackCampaign2(21),
+  warBoard(22), // main
+  combineCosutumeItem(23),
+  myroomMultipleViewCampaign(24),
+  interludeCampaign(25),
+  myroomPhotoCampaign(26);
+
+  const EventType(this.id);
+  final int id;
 }
 
 enum DetailMissionCondLinkType {
@@ -1716,6 +1720,7 @@ enum DetailMissionCondLinkType {
   randomMissionStart,
 }
 
+// TODO: use enum
 /// https://github.com/atlasacademy/apps/blob/master/packages/api-connector/src/Schema/Mission.ts
 class DetailCondType {
   const DetailCondType._();

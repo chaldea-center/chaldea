@@ -19,6 +19,7 @@ import 'item.dart';
 import 'mappings.dart';
 import 'mystic_code.dart';
 import 'quest.dart';
+import 'raw.dart';
 import 'servant.dart';
 import 'skill.dart';
 import 'war.dart';
@@ -581,4 +582,24 @@ class _ProcessedData {
       }
     }
   }
+}
+
+@JsonSerializable(createToJson: false)
+class GameTimerData {
+  List<Event> events;
+  List<MstGacha> gachas;
+  List<MasterMission> masterMissions;
+  List<NiceShop> shops;
+  List<Item> items;
+
+  GameTimerData({
+    this.events = const [],
+    this.gachas = const [],
+    this.masterMissions = const [],
+    this.shops = const [],
+    this.items = const [],
+  }) {
+    shops = shops.where((shop) => shop.payType != PayType.anonymous).toList();
+  }
+  factory GameTimerData.fromJson(Map<String, dynamic> json) => _$GameTimerDataFromJson(json);
 }

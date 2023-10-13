@@ -180,3 +180,25 @@ Map<String, dynamic> _$AssetBundleDecryptToJson(AssetBundleDecrypt instance) => 
       'animalName': instance.animalName,
       'zooName': instance.zooName,
     };
+
+GameTimerData _$GameTimerDataFromJson(Map json) => GameTimerData(
+      events: (json['events'] as List<dynamic>?)
+              ?.map((e) => Event.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      gachas: (json['gachas'] as List<dynamic>?)
+              ?.map((e) => MstGacha.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      masterMissions: (json['masterMissions'] as List<dynamic>?)
+              ?.map((e) => MasterMission.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      shops: (json['shops'] as List<dynamic>?)
+              ?.map((e) => NiceShop.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      items:
+          (json['items'] as List<dynamic>?)?.map((e) => Item.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
+              const [],
+    );

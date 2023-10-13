@@ -373,6 +373,14 @@ class AtlasApi {
     );
   }
 
+  static Future<GameTimerData?> timerData(Region region, {Duration? expireAfter}) async {
+    return cacheManager.getModel(
+      '$_atlasApiHost/export/${region.upper}/timer_data.json',
+      (data) => GameTimerData.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+
   static Future<GameAppVerCode?> verCode(Region region, {Duration? expireAfter = Duration.zero, bool? proxy}) {
     assert(region == Region.jp || region == Region.na || region == Region.kr);
     proxy ??= HostsX.proxy.worker;

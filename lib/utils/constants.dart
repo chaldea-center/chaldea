@@ -27,6 +27,7 @@ const kMonoStyle = TextStyle(fontFamily: kMonoFont);
 const kStarChar = '☆';
 const kStarChar2 = '★';
 const kULLeading = ' ꔷ ';
+const kLargePoint = '●';
 // 0x01ffffff
 final kOnePixel = base64.decode(
     'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+P//PyMACP0C//k2WXcAAAAASUVORK5CYII=');

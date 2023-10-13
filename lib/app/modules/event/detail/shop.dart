@@ -110,112 +110,20 @@ class _EventShopsPageState extends State<EventShopsPage> {
   }
 
   Widget shopItemBuilder(BuildContext context, NiceShop shop, LimitEventPlan plan) {
-    final rewards = ShopHelper.purchases(context, shop, showSpecialName: true).toList();
-    Widget? leading;
-    Widget title;
-    if (rewards.length == 1) {
-      leading = rewards.first.item1;
-      title = Text.rich(rewards.first.item2, textScaleFactor: 0.8);
-    } else {
-      List<InlineSpan> spans = [];
-      for (int index = 0; index < rewards.length; index++) {
-        final reward = rewards[index];
-        if (reward.item1 != null) {
-          spans.add(CenterWidgetSpan(child: SizedBox(height: 28, child: reward.item1)));
-        }
-        spans.add(reward.item2);
-        if (index != rewards.length - 1) spans.add(const TextSpan(text: ' / '));
-      }
-      title = Text.rich(TextSpan(children: spans), textScaleFactor: 0.8);
-    }
-    if (shop.image != null) {
-      leading ??= db.getIconImage(shop.image, aspectRatio: 1);
-    }
-    if (leading != null) {
-      leading = SizedBox(width: 40, child: leading);
-    }
-
-    List<InlineSpan> costs = ShopHelper.cost(context, shop);
-
-    final planCount = plan.shopBuyCount[shop.id] ?? shop.limitNum;
-    final limitCount = shop.limitNum == 0 ? '∞' : shop.limitNum.format();
-    Widget trailing = Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        OutlinedButton(
-          onPressed: () {
-            if (shop.limitNum == 0) {
-              plan.shopBuyCount.remove(shop.id);
-            } else {
-              if (planCount == 0) {
-                plan.shopBuyCount[shop.id] = shop.limitNum;
-              } else if (planCount == shop.limitNum) {
-                plan.shopBuyCount[shop.id] = 0;
-              } else {
-                plan.shopBuyCount.remove(shop.id);
-              }
-            }
-            event?.updateStat();
-            setState(() {});
-          },
-          style: OutlinedButton.styleFrom(
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            visualDensity: VisualDensity.compact,
-            padding: const EdgeInsets.all(12),
-            minimumSize: const Size(64, 42),
-          ),
-          child: Text(
-            '${planCount.format()}/$limitCount',
-            style: planCount == 0 ? TextStyle(color: Theme.of(context).colorScheme.error) : null,
-          ),
-        ),
-        IconButton(
-          onPressed: () {
-            // show edit dialog
-            showDialog(
-              context: context,
-              builder: (context) {
-                return _EditShopNumDialog(
-                  title: title,
-                  initValue: plan.shopBuyCount[shop.id],
-                  limitNum: shop.limitNum,
-                  onChanged: (v) {
-                    if (v == null || v == shop.limitNum) {
-                      plan.shopBuyCount.remove(shop.id);
-                    } else {
-                      plan.shopBuyCount[shop.id] = v;
-                    }
-                    event?.updateStat();
-                    setState(() {});
-                  },
-                );
-              },
-            );
-          },
-          icon: const Icon(Icons.edit, size: 16),
-          padding: const EdgeInsets.all(6),
-        )
-      ],
-    );
-
-    return ListTile(
+    return ShopDescriptor(
       key: Key('shop_${shop.id}'),
-      leading: leading,
-      title: title,
-      subtitle: Text.rich(
-        TextSpan(text: '${S.current.cost}:  ', children: [
-          ...costs,
-          if (widget.showTime)
-            TextSpan(
-                text: '\n${shop.openedAt.sec2date().toDateString()}'
-                    ' ~ ${shop.closedAt.sec2date().toDateString()}')
-        ]),
-        style: Theme.of(context).textTheme.bodySmall,
-      ),
-      trailing: trailing,
-      contentPadding: const EdgeInsetsDirectional.only(start: 16),
-      onTap: shop.routeTo,
+      shop: shop,
+      showTime: widget.showTime,
+      buyCount: plan.shopBuyCount[shop.id] ?? shop.limitNum,
+      onChanged: (v) {
+        if (v == null) {
+          plan.shopBuyCount.remove(shop.id);
+        } else {
+          plan.shopBuyCount[shop.id] = v;
+        }
+        event?.updateStat();
+        setState(() {});
+      },
     );
   }
 
@@ -318,6 +226,126 @@ class _EventShopsPageState extends State<EventShopsPage> {
           ],
         )
       ],
+    );
+  }
+}
+
+class ShopDescriptor extends StatelessWidget {
+  final NiceShop shop;
+  final bool showTime;
+  final int? buyCount;
+  final ValueChanged<int?>? onChanged;
+
+  const ShopDescriptor({super.key, required this.shop, this.showTime = false, this.buyCount, this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final rewards = ShopHelper.purchases(context, shop, showSpecialName: true).toList();
+    Widget? leading;
+    Widget title;
+    if (rewards.length == 1) {
+      leading = rewards.first.item1;
+      title = Text.rich(rewards.first.item2, textScaleFactor: 0.8);
+    } else {
+      List<InlineSpan> spans = [];
+      for (int index = 0; index < rewards.length; index++) {
+        final reward = rewards[index];
+        if (reward.item1 != null) {
+          spans.add(CenterWidgetSpan(child: SizedBox(height: 28, child: reward.item1)));
+        }
+        spans.add(reward.item2);
+        if (index != rewards.length - 1) spans.add(const TextSpan(text: ' / '));
+      }
+      title = Text.rich(TextSpan(children: spans), textScaleFactor: 0.8);
+    }
+    if (shop.image != null) {
+      leading ??= db.getIconImage(shop.image, aspectRatio: 1);
+    }
+    if (leading != null) {
+      leading = SizedBox(width: 40, child: leading);
+    }
+
+    List<InlineSpan> costs = ShopHelper.cost(context, shop);
+
+    Widget? trailing;
+    final planCount = buyCount ?? shop.limitNum;
+    final limitCount = shop.limitNum == 0 ? '∞' : shop.limitNum.format();
+    trailing = Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        OutlinedButton(
+          onPressed: () {
+            if (onChanged == null) return;
+            if (shop.limitNum == 0) {
+              onChanged!(null);
+            } else {
+              if (planCount == 0) {
+                onChanged!(shop.limitNum);
+              } else if (planCount == shop.limitNum) {
+                onChanged!(0);
+              } else {
+                onChanged!(null);
+              }
+            }
+          },
+          style: OutlinedButton.styleFrom(
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: VisualDensity.compact,
+            padding: const EdgeInsets.all(12),
+            minimumSize: const Size(64, 42),
+          ),
+          child: Text(
+            onChanged != null ? '${planCount.format()}/$limitCount' : limitCount.toString(),
+            style: planCount == 0 ? TextStyle(color: Theme.of(context).colorScheme.error) : null,
+          ),
+        ),
+        if (onChanged != null)
+          IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return _EditShopNumDialog(
+                    title: title,
+                    initValue: buyCount,
+                    limitNum: shop.limitNum,
+                    onChanged: (v) {
+                      if (onChanged == null) return;
+                      if (v == null || v == shop.limitNum) {
+                        onChanged!(null);
+                      } else {
+                        onChanged!(v);
+                      }
+                    },
+                  );
+                },
+              );
+            },
+            icon: const Icon(Icons.edit, size: 16),
+            padding: const EdgeInsets.all(6),
+          )
+        else
+          const SizedBox(width: 16),
+      ],
+    );
+
+    return ListTile(
+      leading: leading,
+      title: title,
+      subtitle: Text.rich(
+        TextSpan(text: '${S.current.cost}:  ', children: [
+          ...costs,
+          if (showTime)
+            TextSpan(
+                text: '\n${shop.openedAt.sec2date().toDateString()}'
+                    ' ~ ${shop.closedAt.sec2date().toDateString()}')
+        ]),
+        style: Theme.of(context).textTheme.bodySmall,
+      ),
+      trailing: trailing,
+      contentPadding: const EdgeInsetsDirectional.only(start: 16),
+      onTap: shop.routeTo,
     );
   }
 }

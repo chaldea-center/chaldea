@@ -7,10 +7,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:github/github.dart';
 
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import '../../models/api/api.dart';
-import '../../models/db.dart';
-import '../../models/userdata/local_settings.dart';
 import 'cache.dart';
 
 // ignore: unused_element

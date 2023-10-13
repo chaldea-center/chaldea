@@ -237,6 +237,7 @@ class AssetURL {
   String movie(String itemId) => "$baseUrl/$region/Movie/$itemId.mp4";
   String marks(String itemId) => "$baseUrl/$region/Marks/$itemId.png";
   String svtTexture(dynamic battleCharaId) => "$baseUrl/$region/Servants/$battleCharaId/textures/$battleCharaId.png";
+  String summonBanner(int imageId) => "$baseUrl/$region/SummonBanners/img_summon_$imageId.png";
 }
 
 const _assetHost = Hosts0.kAtlasAssetHostGlobal;

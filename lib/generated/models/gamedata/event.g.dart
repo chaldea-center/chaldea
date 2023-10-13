@@ -183,6 +183,7 @@ const _$EventTypeEnumMap = {
   EventType.totalLogin: 'totalLogin',
   EventType.comebackCampaign: 'comebackCampaign',
   EventType.locationCampaign: 'locationCampaign',
+  EventType.comebackCampaign2: 'comebackCampaign2',
   EventType.warBoard: 'warBoard',
   EventType.combineCosutumeItem: 'combineCosutumeItem',
   EventType.myroomMultipleViewCampaign: 'myroomMultipleViewCampaign',
