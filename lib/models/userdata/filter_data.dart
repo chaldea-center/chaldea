@@ -339,6 +339,7 @@ class SvtFilterData with _FilterData {
   final effectTarget = FilterGroupData<EffectTarget>();
   final targetTrait = FilterGroupData<int>();
   final effectType = FilterGroupData<SkillEffect>();
+  final freeExchangeSvtEvent = FilterRadioData<int>();
 
   SvtFilterData({
     this.useGrid = false,
@@ -374,6 +375,7 @@ class SvtFilterData with _FilterData {
         effectTarget,
         targetTrait,
         effectType,
+        freeExchangeSvtEvent,
       ];
 
   @override

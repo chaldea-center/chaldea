@@ -4100,6 +4100,17 @@ class S {
     );
   }
 
+  /// `Free Exchange Servant`
+  String get free_exchange_svt {
+    return Intl.message(
+      'Free Exchange Servant',
+      name: 'free_exchange_svt',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Latest(JP)`
   String get free_progress_newest {
     return Intl.message(

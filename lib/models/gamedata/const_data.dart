@@ -43,6 +43,7 @@ class ConstGameData {
   final List<int> laplaceUploadAllowAiQuests;
   final List<int> excludeRewardQuests; // when counting war fixed drop and rewards
   final List<int> randomEnemyQuests;
+  final List<int> freeExchangeSvtEvents;
 
   ConstGameData({
     this.attributeRelation = const {},
@@ -60,6 +61,7 @@ class ConstGameData {
     this.laplaceUploadAllowAiQuests = const [],
     this.excludeRewardQuests = const [],
     this.randomEnemyQuests = const [],
+    this.freeExchangeSvtEvents = const [],
   }) : buffTypeActionMap = {} {
     for (final entry in buffActions.entries) {
       for (final type in [...entry.value.plusTypes, ...entry.value.minusTypes]) {

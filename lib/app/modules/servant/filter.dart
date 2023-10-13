@@ -166,6 +166,14 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
         }
       }
     }
+    final freeSvtEvent = db.gameData.events[filterData.freeExchangeSvtEvent.radioValue];
+    if (freeSvtEvent != null) {
+      if (!freeSvtEvent.shop.any((shop) =>
+          (shop.purchaseType == PurchaseType.servant || shop.purchaseType == PurchaseType.eventSvtJoin) &&
+          shop.targetIds.contains(svt.id))) {
+        return false;
+      }
+    }
     return true;
   }
 }
@@ -484,6 +492,15 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
           options: _getValidEffects(SkillEffect.kOthers),
           values: filterData.effectType,
           optionBuilder: (v) => Text(v.lName),
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
+        FilterGroup<int>(
+          title: Text(S.current.free_exchange_svt),
+          options: ConstData.freeExchangeSvtEvents,
+          values: filterData.freeExchangeSvtEvent,
+          optionBuilder: (v) => Text(db.gameData.events[v]?.lShortName.l.setMaxLines(1) ?? "Event $v"),
           onFilterChanged: (value, _) {
             update();
           },

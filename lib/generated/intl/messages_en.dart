@@ -478,6 +478,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "foukun": MessageLookupByLibrary.simpleMessage("Fou"),
         "fq_plan_decimal_hint": MessageLookupByLibrary.simpleMessage(
             "Decimals are not displayed, there may be an error of ±1 between the displayed result and the calculated result"),
+        "free_exchange_svt": MessageLookupByLibrary.simpleMessage("Free Exchange Servant"),
         "free_progress_newest": MessageLookupByLibrary.simpleMessage("Latest(JP)"),
         "free_quest": MessageLookupByLibrary.simpleMessage("Free Quest"),
         "free_quest_calculator": MessageLookupByLibrary.simpleMessage("Free Quest"),

@@ -456,6 +456,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "forced_update": MessageLookupByLibrary.simpleMessage("强制升级"),
         "foukun": MessageLookupByLibrary.simpleMessage("芙芙"),
         "fq_plan_decimal_hint": MessageLookupByLibrary.simpleMessage("小数未显示，显示结果与计算结果可能存在±1的误差"),
+        "free_exchange_svt": MessageLookupByLibrary.simpleMessage("免费自选从者"),
         "free_progress_newest": MessageLookupByLibrary.simpleMessage("日服最新"),
         "free_quest": MessageLookupByLibrary.simpleMessage("Free本"),
         "free_quest_calculator": MessageLookupByLibrary.simpleMessage("Free规划"),
