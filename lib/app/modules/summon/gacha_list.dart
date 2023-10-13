@@ -1,5 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -8,6 +6,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import 'gacha_banner.dart';
 
 class GachaListPage extends StatefulWidget {
   final Region region;
@@ -138,26 +137,7 @@ class _GachaListPageState extends State<GachaListPage> with RegionBasedState<Lis
       },
       contentBuilder: (context) {
         List<Widget> children = [
-          Container(
-            constraints: const BoxConstraints(maxHeight: 200),
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: CachedNetworkImageProvider("https://data-cn.chaldea.center/public/image/summon_bg.jpg"),
-                fit: BoxFit.cover,
-                alignment: Alignment(0.0, -0.6),
-              ),
-            ),
-            child: CachedImage(
-              imageUrl: "https://static.atlasacademy.io/${region!.upper}/SummonBanners/img_summon_${gacha.imageId}.png",
-              showSaveOnLongPress: true,
-              placeholder: (context, url) => const AspectRatio(aspectRatio: 1344 / 576),
-              cachedOption: CachedImageOption(
-                fit: BoxFit.contain,
-                alignment: Alignment.center,
-                errorWidget: (context, url, error) => const AspectRatio(aspectRatio: 1344 / 576),
-              ),
-            ),
-          ),
+          GachaBanner(imageId: gacha.imageId, region: region ?? Region.jp),
         ];
         final dupGachas = List<MstGacha>.of(_imageIdMap[gacha.imageId] ?? []);
         dupGachas.remove(gacha);

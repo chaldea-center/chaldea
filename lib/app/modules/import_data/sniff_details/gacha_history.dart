@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 
-import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
@@ -11,6 +9,7 @@ import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../summon/gacha_banner.dart';
 
 class SniffGachaHistory extends StatefulWidget {
   final List<UserSvt> userSvt;
@@ -270,27 +269,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
         if (_gacha == null) return const Center(child: Text('\n....\n\n'));
         List<Widget> children = [];
         if (_gacha.imageId > 0) {
-          children.add(Container(
-            constraints: const BoxConstraints(maxHeight: 200),
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: CachedNetworkImageProvider("https://data-cn.chaldea.center/public/image/summon_bg.jpg"),
-                fit: BoxFit.cover,
-                alignment: Alignment(0.0, -0.6),
-              ),
-            ),
-            child: CachedImage(
-              imageUrl:
-                  "https://static.atlasacademy.io/${widget.region.upper}/SummonBanners/img_summon_${_gacha.imageId}.png",
-              showSaveOnLongPress: true,
-              placeholder: (context, url) => const AspectRatio(aspectRatio: 1344 / 576),
-              cachedOption: CachedImageOption(
-                fit: BoxFit.contain,
-                alignment: Alignment.center,
-                errorWidget: (context, url, error) => const AspectRatio(aspectRatio: 1344 / 576),
-              ),
-            ),
-          ));
+          children.add(GachaBanner(imageId: _gacha.imageId, region: widget.region));
         }
         if (gacha?.userAdded == true) {
           children.add(const Text('这是由用户标记的卡池，若存在错误请反馈。', textAlign: TextAlign.center));

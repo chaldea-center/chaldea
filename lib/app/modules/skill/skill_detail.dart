@@ -142,6 +142,7 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
             showEnemy: _view == FuncApplyTarget.playerAndEnemy || _view == FuncApplyTarget.enemy,
             showNone: true,
             jumpToDetail: false,
+            level: _lv,
             region: region,
           ),
           CustomTableRow(children: [

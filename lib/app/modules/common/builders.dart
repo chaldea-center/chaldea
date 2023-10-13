@@ -17,7 +17,7 @@ import 'package:chaldea/widgets/widgets.dart';
 class SharedBuilder {
   SharedBuilder._();
 
-  static DropdownButton appBarRegionDropdown({
+  static DropdownButton<Region> appBarRegionDropdown({
     required BuildContext context,
     required Region region,
     required ValueChanged<Region?> onChanged,

@@ -85,7 +85,7 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
     Widget? title;
 
     if (box.gifts.length == 1) {
-      leading = box.gifts.first.iconBuilder(context: context, width: 42, text: '');
+      leading = box.gifts.first.iconBuilder(context: context, width: 36, text: '');
       String titleText = GameCardMixin.anyCardItemName(box.gifts.first.objectId).l;
       if (box.gifts.first.num != 1) {
         titleText += ' ×${box.gifts.first.num.format()}';
@@ -94,13 +94,14 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
     } else {
       title = Text.rich(TextSpan(children: [
         for (final gift in box.gifts) ...[
-          CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 42, text: '')),
+          CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 28, text: '')),
           TextSpan(text: '×${gift.num.format()} ')
         ],
       ]));
     }
 
     return ListTile(
+      dense: true,
       leading: leading,
       title: title,
       tileColor: box.isRare ? Colors.yellow.withAlpha(100) : null,

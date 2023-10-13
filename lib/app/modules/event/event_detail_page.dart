@@ -249,7 +249,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
         ),
         const PopupMenuDivider(),
         ...SharedBuilder.websitesPopupMenuItems(
-          atlas: Atlas.dbEvent(event.id),
+          atlas: Atlas.dbEvent(event.id, _region),
           mooncell: event.extra.mcLink,
           fandom: event.extra.fandomLink,
         ),
@@ -354,13 +354,20 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         ]),
     ];
     final eventJp = db.gameData.events[event.id];
+    final startTime = event.extra.startTime.copyWith(jp: eventJp?.startedAt);
+    final endTime = event.extra.endTime.copyWith(jp: eventJp?.endedAt);
+    if (widget.region != Region.jp) {
+      startTime.update(event.startedAt, widget.region);
+      endTime.update(event.endedAt, widget.region);
+    }
     rows.add(CustomTableRow.fromChildren(children: [
       _EventTime(
-        startTime: event.extra.startTime.copyWith(jp: eventJp?.startedAt),
-        endTime: event.extra.endTime.copyWith(jp: eventJp?.endedAt),
+        startTime: startTime,
+        endTime: endTime,
         shownRegions: {
           Region.jp,
           db.curUser.region,
+          widget.region,
         },
         format: (v) => v?.sec2date().toStringShort(omitSec: true) ?? '?',
       )

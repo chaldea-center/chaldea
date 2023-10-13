@@ -263,7 +263,10 @@ class EventRelatedCampaigns extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  TextButton(onPressed: campaign.routeTo, child: Text('>>> ${S.current.details} >>>')),
+                  TextButton(
+                    onPressed: campaign.id == event.id ? null : campaign.routeTo,
+                    child: Text('>>> ${S.current.details} >>>'),
+                  ),
                   if (campaign.campaigns.isNotEmpty) EventCampaignDetail(event: campaign),
                 ],
               );
