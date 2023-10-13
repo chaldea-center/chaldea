@@ -1720,45 +1720,50 @@ enum DetailMissionCondLinkType {
   randomMissionStart,
 }
 
-// TODO: use enum
 /// https://github.com/atlasacademy/apps/blob/master/packages/api-connector/src/Schema/Mission.ts
-class DetailCondType {
-  const DetailCondType._();
+enum DetailCondType {
   // [1, 2, 3, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27, 28, 31, 32, 33, 34, 36]
-  static const int enemyKillNum = 1; // traits AND
-  static const int enemyIndividualityKillNum = 2; // traits OR
-  static const int itemGetTotal = 3;
-  static const int battleSvtInDeck = 4; // Unused
-  static const int battleSvtEquipInDeck = 5; // Unused
-  static const int targetQuestEnemyKillNum = 6;
-  static const int targetQuestEnemyIndividualityKillNum = 7;
-  static const int targetQuestItemGetTotal = 8;
-  static const int questClearOnce = 9;
-  static const int questClearNum1 = 10;
-  static const int itemGetBattle = 12;
-  static const int defeatEnemyIndividuality = 13;
-  static const int defeatEnemyClass = 14;
-  static const int defeatServantClass = 15;
-  static const int defeatEnemyNotServantClass = 16;
-  static const int battleSvtIndividualityInDeck = 17;
-  static const int battleSvtClassInDeck = 18; // Filter by svt class
-  static const int svtGetBattle = 19; // Embers are svt instead of items
-  static const int friendPointSummon = 21;
-  static const int battleSvtIdInDeck1 = 22;
-  static const int battleSvtIdInDeck2 = 23; // Filter by svt ID
-  static const int questClearNum2 = 24; // Not sure what's the difference QUEST_CLEAR_NUM_1
-  static const int diceUse = 25; // Probably Fate/Requiem event
-  static const int squareAdvanced = 26;
-  static const int moreFriendFollower = 27; // 5th Anniversary missions
-  static const int questTypeClear = 28; // 22M Download Campaign
-  static const int questClearNumIncludingGrailFront = 31;
-  static const int warMainQuestClear = 32; // 「Lostbelt No.7」開幕前メインクエストクリア応援キャンペーン 第1弾
-  static const int svtFriendshipGet = 33; // 28M Download Campaign
-  static const int battleSvtIdInFrontDeck = 34;
-  static const int questChallengeNum = 36; // similar to CondType.questChallengeNum
+  enemyKillNum(1), // traits AND
+  enemyIndividualityKillNum(2), // traits OR
+  itemGetTotal(3),
+  battleSvtInDeck(4), // Unused
+  battleSvtEquipInDeck(5), // Unused
+  targetQuestEnemyKillNum(6),
+  targetQuestEnemyIndividualityKillNum(7),
+  targetQuestItemGetTotal(8),
+  questClearOnce(9),
+  questClearNum1(10),
+  itemGetBattle(12),
+  defeatEnemyIndividuality(13),
+  defeatEnemyClass(14),
+  defeatServantClass(15),
+  defeatEnemyNotServantClass(16),
+  battleSvtIndividualityInDeck(17),
+  battleSvtClassInDeck(18), // Filter by svt class
+  svtGetBattle(19), // Embers are svt instead of items
+  friendPointSummon(21),
+  battleSvtIdInDeck1(22),
+  battleSvtIdInDeck2(23), // Filter by svt ID
+  questClearNum2(24), // Not sure what's the difference QUEST_CLEAR_NUM_1
+  boardGameDiceUse(25), //(diceUse) Fate/Requiem event: ガッポリーで「123ダイス」または「456ダイス」を累計3回使用せよ, targetIds=[itemIds]
+  boardGameSquareAdvanced(26), //(squareAdvanced) Fate/Requiem event: ガッポリーで合計150マス進め
+  moreFriendFollower(27), // 5th Anniversary missions
+  questTypeClear(28), // 22M Download Campaign
+  questClearNumIncludingGrailFront(31),
+  warMainQuestClear(32), // 「Lostbelt No.7」開幕前メインクエストクリア応援キャンペーン 第1弾
+  svtFriendshipGet(33), // 28M Download Campaign
+  battleSvtIdInFrontDeck(34),
+  questChallengeNum(36), // similar to CondType.questChallengeNum
 
   /// custom, only used in app
-  static const int questClearIndividuality = 999;
+  questClearIndividuality(999);
+
+  final int id;
+  const DetailCondType(this.id);
+
+  static DetailCondType? parseId(int id) {
+    return DetailCondType.values.firstWhereOrNull((type) => type.id == id);
+  }
 }
 
 enum EventRewardSceneFlag {

@@ -85,10 +85,9 @@ class CustomMission {
         bool useAnd;
         switch (type) {
           case CustomMissionType.trait:
-            if (detail.missionCondType == DetailCondType.enemyIndividualityKillNum) {
+            if (detail.missionCondType == DetailCondType.enemyIndividualityKillNum.id) {
               useAnd = false;
-              // ignore: no-equal-then-else
-            } else if (detail.missionCondType == DetailCondType.defeatEnemyIndividuality) {
+            } else if (detail.missionCondType == DetailCondType.defeatEnemyIndividuality.id) {
               useAnd = true;
             } else {
               useAnd = true;
@@ -151,7 +150,7 @@ class CustomMission {
     );
   }
 
-  static const kDetailCondMapping = {
+  static final Map<int, CustomMissionType> kDetailCondMapping = <DetailCondType, CustomMissionType>{
     DetailCondType.questClearNum1: CustomMissionType.quest,
     DetailCondType.questClearNum2: CustomMissionType.quest,
     DetailCondType.enemyKillNum: CustomMissionType.enemy,
@@ -162,9 +161,9 @@ class CustomMission {
     DetailCondType.defeatServantClass: CustomMissionType.servantClass,
     DetailCondType.defeatEnemyClass: CustomMissionType.enemyClass,
     DetailCondType.defeatEnemyNotServantClass: CustomMissionType.enemyNotServantClass,
-  };
+  }.map((key, value) => MapEntry(key.id, value));
 
-  static final kDetailCondMappingReverse = {
+  static final Map<CustomMissionType, int> kDetailCondMappingReverse = <CustomMissionType, DetailCondType>{
     CustomMissionType.quest: DetailCondType.questClearNum1,
     CustomMissionType.enemy: DetailCondType.enemyKillNum,
     CustomMissionType.trait: DetailCondType.defeatEnemyIndividuality,
@@ -172,7 +171,7 @@ class CustomMission {
     CustomMissionType.enemyClass: DetailCondType.defeatEnemyClass,
     CustomMissionType.enemyNotServantClass: DetailCondType.defeatEnemyNotServantClass,
     CustomMissionType.questTrait: DetailCondType.questClearIndividuality,
-  };
+  }.map((key, value) => MapEntry(key, value.id));
 }
 
 class MissionSolverOptions {

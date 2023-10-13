@@ -38,9 +38,9 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
     switch (type) {
       case CustomMissionType.trait:
         // https://github.com/atlasacademy/apps/commit/5f989cd9979a3f6313cc3e7eb349f7487bf607a7
-        if (detail.missionCondType == DetailCondType.enemyIndividualityKillNum) {
+        if (detail.missionCondType == DetailCondType.enemyIndividualityKillNum.id) {
           return false;
-        } else if (detail.missionCondType == DetailCondType.defeatEnemyIndividuality) {
+        } else if (detail.missionCondType == DetailCondType.defeatEnemyIndividuality.id) {
           return true;
         }
         return true;
@@ -63,19 +63,17 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
   @override
   List<InlineSpan> buildContent(BuildContext context) {
     String targetNum = this.targetNum?.toString() ?? 'x';
-    switch (detail.missionCondType) {
+    final condType = DetailCondType.parseId(detail.missionCondType);
+    switch (condType) {
       case DetailCondType.questClearIndividuality:
         return localized(
           jp: () => combineToRich(context, null, traits(context), 'フィールドのクエストを$targetNum回クリアせよ'),
           cn: () => combineToRich(context, '通关$targetNum次场地为', traits(context), '的关卡'),
           tw: null,
-          na: () => combineToRich(
-            context,
-            'Clear $targetNum quests with fields ',
-            traits(context),
-          ),
+          na: () => combineToRich(context, 'Clear $targetNum quests with fields ', traits(context)),
           kr: () => combineToRich(context, null, traits(context), '필드의 프리 퀘스트를 $targetNum회 클리어'),
         );
+      case DetailCondType.questClearOnce: // once?
       case DetailCondType.questClearNum1:
       case DetailCondType.questClearNum2:
       case DetailCondType.questClearNumIncludingGrailFront:
@@ -119,11 +117,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           jp: () => combineToRich(context, null, servants(context), 'の敵を$targetNum体倒せ'),
           cn: () => combineToRich(context, '击败$targetNum个敌人:', servants(context)),
           tw: null,
-          na: () => combineToRich(
-            context,
-            'Defeat $targetNum from enemies ',
-            servants(context),
-          ),
+          na: () => combineToRich(context, 'Defeat $targetNum from enemies ', servants(context)),
           kr: () => combineToRich(context, null, servants(context), '계열의 적을 $targetNum마리 처치'),
         );
       case DetailCondType.defeatEnemyIndividuality:
@@ -149,11 +143,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           jp: () => combineToRich(context, null, svtClasses(context), 'クラスの敵を$targetNum骑倒せ'),
           cn: () => combineToRich(context, '击败$targetNum骑', svtClasses(context), '职阶中任意一种敌人'),
           tw: null,
-          na: () => combineToRich(
-            context,
-            'Defeat $targetNum enemies with class ',
-            svtClasses(context),
-          ),
+          na: () => combineToRich(context, 'Defeat $targetNum enemies with class ', svtClasses(context)),
           kr: () => combineToRich(context, null, svtClasses(context), '클래스의 적을 $targetNum마리 처치'),
         );
       case DetailCondType.defeatEnemyNotServantClass:
@@ -161,12 +151,8 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           jp: () => combineToRich(context, null, svtClasses(context), 'クラスの敵を$targetNum骑倒せ(サーヴァント及び一部ボスなどは除く)'),
           cn: () => combineToRich(context, '击败$targetNum骑', svtClasses(context), '职阶中任意一种敌人(从者及部分首领级敌方除外)'),
           tw: null,
-          na: () => combineToRich(
-            context,
-            'Defeat $targetNum enemies with class ',
-            svtClasses(context),
-            ' (excluding Servants and certain bosses)',
-          ),
+          na: () => combineToRich(context, 'Defeat $targetNum enemies with class ', svtClasses(context),
+              ' (excluding Servants and certain bosses)'),
           kr: () => combineToRich(context, null, svtClasses(context), '클래스의 적을 $targetNum마리 처치 (서번트 및 일부 보스 등은 제외)'),
         );
       case DetailCondType.battleSvtClassInDeck:
@@ -174,12 +160,8 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           jp: () => combineToRich(context, null, svtClasses(context), 'クラスのサーヴァントを1騎以上編成して、いずれかのクエストを$targetNum回クリアせよ'),
           cn: () => combineToRich(context, '在队伍中编入至少1骑以上', svtClasses(context), '职阶从者，并完成任意关卡$targetNum次'),
           tw: null,
-          na: () => combineToRich(
-            context,
-            'Put one or more servants with class',
-            svtClasses(context),
-            ' in your Party and complete any quest $targetNum times',
-          ),
+          na: () => combineToRich(context, 'Put one or more servants with class', svtClasses(context),
+              ' in your Party and complete any quest $targetNum times'),
           kr: () => combineToRich(context, null, svtClasses(context), '클래스의 서번트를 1기 이상 편성해서 전투 진행을 $targetNum회 완료'),
         );
       case DetailCondType.itemGetBattle:
@@ -189,12 +171,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           jp: () => combineToRich(context, '戦利品で', items(context), 'を$targetNum個集めろ'),
           cn: () => combineToRich(context, '通过战利品获得$targetNum个道具', items(context)),
           tw: null,
-          na: () => combineToRich(
-            context,
-            'Obtain $targetNum ',
-            items(context),
-            ' as battle drop',
-          ),
+          na: () => combineToRich(context, 'Obtain $targetNum ', items(context), ' as battle drop'),
           kr: () => combineToRich(context, '전리품으로 ', items(context), ' 중 하나를 $targetNum개 획득'),
         );
       case DetailCondType.battleSvtIndividualityInDeck:
@@ -202,12 +179,8 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           jp: () => combineToRich(context, null, traits(context), '属性を持つサーヴァントを1騎以上編成して、いずれかのクエストを$targetNum回クリアせよ'),
           cn: () => combineToRich(context, '在队伍内编入至少1骑以上持有', traits(context), '属性的从者，并完成任意关卡$targetNum次'),
           tw: null,
-          na: () => combineToRich(
-            context,
-            'Put servants with traits',
-            traits(context),
-            ' in your Party and complete Quests $targetNum times',
-          ),
+          na: () => combineToRich(context, 'Put servants with traits', traits(context),
+              ' in your Party and complete Quests $targetNum times'),
           kr: () => combineToRich(context, null, traits(context), '특성을 가진 서번트를 1기 이상 편성해서 전투 진행을 $targetNum회 완료'),
         );
       case DetailCondType.battleSvtIdInDeck1:
@@ -261,6 +234,35 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => text('Obtain $targetNum Bond Points'),
           kr: null,
         );
+      case DetailCondType.moreFriendFollower:
+        return localized(
+          jp: () => text('フレンド・フォローを$targetNum人増やせ'),
+          cn: () => text('添加$targetNum个好友或关注对象'),
+          tw: () => text('增加$targetNum個好友或關注對象'),
+          na: () => text('Add $targetNum more Friends/Followers'),
+          kr: null,
+        );
+      case DetailCondType.boardGameDiceUse:
+        return localized(
+          jp: () => combineToRich(context, 'ガッポリーで', items(context), 'を累計$targetNum回使用せよ'),
+          cn: () => combineToRich(context, '在堆金大亨中累计使用$targetNum次', items(context)),
+          tw: () => combineToRich(context, '在BIG富翁中累計使用$targetNum次', items(context)),
+          na: () => combineToRich(context, 'Use ', items(context), ' $targetNum times at Culdpoly'),
+          kr: null,
+        );
+      case DetailCondType.boardGameSquareAdvanced:
+        return localized(
+          jp: () => text('ガッポリーで合計$targetNumマス進め'),
+          cn: () => text('在堆金大亨中总计前进$targetNum格'),
+          tw: () => text('在BIG富翁中總計前進$targetNum格'),
+          na: () => text('Proceed $targetNum spaces in Culdpoly'),
+          kr: () => text('갓폴리에서 합계 $targetNum칸 진행'),
+        );
+      // unused
+      case DetailCondType.battleSvtInDeck:
+      case DetailCondType.battleSvtEquipInDeck:
+      case null:
+        break;
     }
     if (unknownMsg != null) return text(unknownMsg!);
     return localized(
