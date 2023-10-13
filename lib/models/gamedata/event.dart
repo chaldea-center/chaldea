@@ -162,26 +162,30 @@ class Event {
   }
 
   bool isOutdated([Duration diff = const Duration(days: 10)]) {
-    if (db.curUser.region == Region.jp) {
+    final region = db.curUser.region;
+    if (region == Region.jp) {
       final t = endedAt > kNeverClosedTimestamp || endedAt - startedAt > 30 * kSecsPerDay
           ? startedAt + 7 * kSecsPerDay
           : endedAt;
       return DateTime.now().difference(t.sec2date()) > const Duration(days: 365);
     }
-    int? _end = db.curUser.region == Region.jp ? endedAt : extra.endTime.ofRegion(db.curUser.region);
+    int? _start = region == Region.jp ? startedAt : extra.startTime.ofRegion(region);
+    int? _end = region == Region.jp ? endedAt : extra.endTime.ofRegion(region);
     final neverClosed = DateTime.now().add(const Duration(days: 365)).timestamp;
     if (_end != null && _end > neverClosed) {
-      final _start = db.curUser.region == Region.jp ? startedAt : extra.startTime.ofRegion(db.curUser.region);
       if (_start != null) {
         _end = _start + const Duration(days: 30).inSeconds;
       }
     }
+    if (region != Region.jp && _start != null && _start > neverClosed) {
+      _start = _end = null;
+    }
     if (_end != null) {
       return _end.sec2date().isBefore(DateTime.now().subtract(diff));
     }
-    // if one event is delayed more than 1 year than expected, mark as outdated/will never open
+    // if one event is delayed more than 3 months than expected, mark as outdated/will never open
     final months = db.curUser.region.eventDelayMonth;
-    final days = months * 31 + 360 + diff.inDays;
+    final days = months * 31 + 3 * 31 + diff.inDays;
     return endedAt.sec2date().isBefore(DateTime.now().subtract(Duration(days: days)));
   }
 
@@ -204,7 +208,7 @@ class Event {
       int? start = starts[index], end = ends[index];
       if (start != null && end != null) {
         if (end > neverEndTime) {
-          end = start + 14 * kSecsPerDay;
+          end = start + 10 * kSecsPerDay;
         }
         if (now > start && end > now) {
           return true;
