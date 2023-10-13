@@ -47,7 +47,7 @@ class FieldAiManager with _AiManagerBase {
               activator: null,
               skill: skillInfo,
               fromPlayer: true,
-              uploadEligible: battleData.niceQuest?.isLaplaceAllowAi == true,
+              uploadEligible: battleData.niceQuest?.isLaplaceNeedAi == true,
             );
             break;
           }
@@ -88,7 +88,7 @@ class SvtAiManager with _AiManagerBase {
           activator: actor,
           skill: skillInfo,
           fromPlayer: actor.isPlayer,
-          uploadEligible: battleData.niceQuest?.isLaplaceAllowAi == true,
+          uploadEligible: battleData.niceQuest?.isLaplaceNeedAi == true,
         );
         break;
       }
@@ -115,7 +115,7 @@ class SvtAiManager with _AiManagerBase {
           activator: actor,
           skill: skillInfo,
           fromPlayer: actor.isPlayer,
-          uploadEligible: battleData.niceQuest?.isLaplaceAllowAi == true,
+          uploadEligible: battleData.niceQuest?.isLaplaceNeedAi == true,
         );
         break;
       }
@@ -144,7 +144,7 @@ class SvtAiManager with _AiManagerBase {
           activator: actor,
           skill: skillInfo,
           fromPlayer: actor.isPlayer,
-          uploadEligible: battleData.niceQuest?.isLaplaceAllowAi == true,
+          uploadEligible: battleData.niceQuest?.isLaplaceNeedAi == true,
         );
         break;
       }

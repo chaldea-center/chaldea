@@ -286,6 +286,14 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             style: style,
           ),
         ),
+        if (record.decoded?.option.simulateAi == true)
+          Tooltip(
+            message: S.current.simulate_simple_ai,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: Icon(Icons.smart_toy_outlined, size: 18, color: Theme.of(context).colorScheme.primary),
+            ),
+          ),
         // InkWell(
         //   onTap: () {},
         //   child: Icon(

@@ -51,6 +51,10 @@ void replaySimulation({
     questCopy.warId = 0;
     questCopy.individuality.removeWhere((e) => e.isEventField);
   }
+  if (questCopy.isLaplaceNeedAi) {
+    // should always turn on
+    options.simulateAi = true;
+  }
 
   router.push(
     url: Routes.laplaceBattle,
