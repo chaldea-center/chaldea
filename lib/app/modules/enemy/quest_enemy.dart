@@ -329,12 +329,12 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
           showPlayer: true,
           region: widget.region,
         ),
-      if (enemy.originalEnemyScript?.isNotEmpty == true) ...[
+      if (enemy.originalEnemyScript?.isNotEmpty == true || enemy.originalInfoScript?.isNotEmpty == true) ...[
         CustomTableRow.fromTexts(
           texts: const ['Enemy Script'],
           isHeader: true,
         ),
-        for (final entry in enemy.originalEnemyScript!.entries)
+        for (final entry in [...?enemy.originalInfoScript?.entries, ...?enemy.originalEnemyScript?.entries])
           CustomTableRow(children: [
             TableCellData(text: entry.key, alignment: AlignmentDirectional.centerEnd, textAlign: TextAlign.end),
             TableCellData(text: entry.value.toString(), alignment: AlignmentDirectional.centerStart),

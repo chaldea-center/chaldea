@@ -386,20 +386,23 @@ class BattleOptionsEnv {
   bool simulateEnemy = false;
   // <groupId, pointBuff>
   Map<int, EventPointBuff> pointBuffs = {};
+  Set<int> enemyRateUp = {};
 
   BattleOptionsEnv copy() {
     return BattleOptionsEnv()
       ..disableEvent = disableEvent
       ..simulateAi = simulateAi
       ..simulateEnemy = simulateEnemy
-      ..pointBuffs = Map.of(pointBuffs);
+      ..pointBuffs = Map.of(pointBuffs)
+      ..enemyRateUp = enemyRateUp.toSet();
   }
 
   void fromShareData(BattleShareDataOption src) {
     this
       ..disableEvent = src.disableEvent ?? disableEvent
       ..simulateAi = src.simulateAi ?? simulateAi
-      ..simulateEnemy = false;
+      ..simulateEnemy = false
+      ..enemyRateUp = src.enemyRateUp?.toSet() ?? {};
 
     pointBuffs.clear();
     for (final (groupId, pointBuffId) in (src.pointBuffs ?? <int, int>{}).items) {
@@ -414,7 +417,8 @@ class BattleOptionsEnv {
     return BattleShareDataOption(
       disableEvent: disableEvent,
       simulateAi: simulateAi,
-      pointBuffs: pointBuffs.map((key, value) => MapEntry(key, value.id)),
+      pointBuffs: pointBuffs.isEmpty ? null : pointBuffs.map((key, value) => MapEntry(key, value.id)),
+      enemyRateUp: enemyRateUp.isEmpty ? null : enemyRateUp.toSet(),
     );
   }
 }
@@ -433,6 +437,7 @@ class BattleOptionsRuntime extends BattleOptionsEnv {
       ..simulateAi = simulateAi
       ..simulateEnemy = simulateEnemy
       ..pointBuffs = Map.of(pointBuffs)
+      ..enemyRateUp = enemyRateUp.toSet()
       ..fixedRandom = fixedRandom
       ..probabilityThreshold = probabilityThreshold
       ..isAfter7thAnni = isAfter7thAnni
@@ -500,6 +505,7 @@ class BattleOptions extends BattleOptionsRuntime {
       ..simulateAi = simulateAi
       ..simulateEnemy = simulateEnemy
       ..pointBuffs = Map.of(pointBuffs)
+      ..enemyRateUp = enemyRateUp.toSet()
       ..fixedRandom = fixedRandom
       ..probabilityThreshold = probabilityThreshold
       ..isAfter7thAnni = isAfter7thAnni

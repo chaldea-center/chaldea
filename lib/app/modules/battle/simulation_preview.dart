@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
@@ -727,6 +728,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       ),
       kIndentDivider,
       ...buildPointBuffs(),
+      if (kDebugMode) ...buildEnemyRateUp(),
     ];
 
     return Column(
@@ -821,6 +823,44 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     if (rows.isNotEmpty) {
       rows.add(kIndentDivider);
     }
+    return rows;
+  }
+
+  List<Widget> buildEnemyRateUp() {
+    List<Widget> rows = [];
+    final event = questPhase?.war?.event;
+    if (event == null) {
+      if (questPhase != null) options.enemyRateUp.clear();
+      return rows;
+    }
+    Set<int> enemyIndivs = {};
+    for (final ce in db.gameData.craftEssencesById.values) {
+      for (final skill in ce.skills) {
+        for (final func in skill.functions) {
+          if (func.funcType != FuncType.enemyEncountCopyRateUp) continue;
+          final vals = func.svals.firstOrNull;
+          final indiv = vals?.Individuality ?? 0;
+          if (vals?.EventId != event.id || indiv == 0) continue;
+          enemyIndivs.add(indiv);
+        }
+      }
+    }
+    for (final indiv in enemyIndivs) {
+      rows.add(SwitchListTile(
+        dense: true,
+        title: Text(Transl.trait(indiv).l),
+        subtitle: Text('${Transl.funcType(FuncType.enemyEncountCopyRateUp).l}: 100%'),
+        value: options.enemyRateUp.contains(indiv),
+        onChanged: options.disableEvent
+            ? null
+            : (v) {
+                setState(() {
+                  options.enemyRateUp.toggle(indiv);
+                });
+              },
+      ));
+    }
+    options.enemyRateUp.removeWhere((e) => !enemyIndivs.contains(e));
     return rows;
   }
 

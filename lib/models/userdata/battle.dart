@@ -234,12 +234,15 @@ class BattleShareDataOption {
   bool? disableEvent;
   Map<int, int>? pointBuffs;
   bool? simulateAi;
+  Set<int>? enemyRateUp;
 
   BattleShareDataOption({
     this.disableEvent,
     this.pointBuffs,
     this.simulateAi,
+    this.enemyRateUp,
   });
+
   factory BattleShareDataOption.fromJson(Map<String, dynamic> json) => _$BattleShareDataOptionFromJson(json);
 
   Map<String, dynamic> toJson() => _$BattleShareDataOptionToJson(this);

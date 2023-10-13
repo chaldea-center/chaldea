@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:collection';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/battle/functions/damage.dart';
@@ -302,6 +304,7 @@ class BattleData {
     final List<PlayerSvtData?> playerSettings,
     final MysticCodeData? mysticCodeData,
   ) async {
+    _copyRateUpEnemies(quest);
     niceQuest = quest;
     waveCount = 1;
     turnCount = 0;
@@ -402,6 +405,36 @@ class BattleData {
     }
 
     await nextTurn();
+  }
+
+  void _copyRateUpEnemies(QuestPhase quest) {
+    if (!kDebugMode) return;
+    if (quest.war?.event == null) return;
+    if (options.disableEvent) return;
+    for (final stage in quest.stages) {
+      stage.enemies.removeWhere((enemy) => enemy.deck == DeckType.enemy && enemy.infoScript?.isAddition == true);
+      final initEnemies = stage.enemies.where((e) => e.deck == DeckType.enemy).toList();
+      for (final indiv in options.enemyRateUp.toList()..sort()) {
+        for (final enemy in initEnemies) {
+          if (enemy.traits.any((e) => e.id == indiv)) {
+            final enemy2 = QuestEnemy.fromJson(enemy.toJson());
+            (enemy2.infoScript ??= EnemyInfoScript()).isAddition = true;
+            (enemy2.originalInfoScript ??= {})['isAddition'] = '1';
+            enemy2.npcId = Maths.max(stage.enemies.map((e) => e.npcId)) + 1;
+            int deckId = 1;
+            final usedDeckIds = <int>{
+              ...stage.enemies.where((e) => e.deck == DeckType.enemy).map((e) => e.deckId),
+              ...?stage.NoEntryIds,
+            };
+            while (usedDeckIds.contains(deckId)) {
+              deckId += 1;
+            }
+            enemy2.deckId = deckId;
+            stage.enemies.add(enemy2);
+          }
+        }
+      }
+    }
   }
 
   /// after init or shift, call battleData.initActorSkills to preserve skill order
