@@ -131,7 +131,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
             '通关${all ? "所有" : ""}${onlyOne ? "" : "$targetNum个"}关卡',
             quests(context),
           ),
-          tw: '通關${all ? "所有" : ""}${onlyOne ? "" : "$targetNum個"}關卡',
+          tw: () => combineToRich(context, '通關${all ? "所有" : ""}${onlyOne ? "" : "$targetNum個"}關卡', quests(context)),
           na: () => combineToRich(
             context,
             'Clear ${all ? "all " : ""}${onlyOne ? "quest" : "$targetNum quests"} of ',
