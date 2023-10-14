@@ -41,7 +41,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () => text('生日'),
-          tw: null,
+          tw: () => text('生日'),
           na: () => text('Player birthday'),
           kr: null,
         );
@@ -49,7 +49,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () => text('最终再临'),
-          tw: null,
+          tw: () => text('最終再臨'),
           na: () => text('Final ascension'),
           kr: null,
         );
@@ -57,7 +57,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () => text('活动举行中'),
-          tw: null,
+          tw: () => text('活動舉行中'),
           na: () => text('An event is available'),
           kr: null,
         );
@@ -65,7 +65,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () => text('活动举行期间'),
-          tw: null,
+          tw: () => text('活動舉行期間'),
           na: () => text('During event'),
           kr: null,
         );
@@ -73,7 +73,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () => text('活动已结束'),
-          tw: null,
+          tw: () => text('活動已結束'),
           na: () => text('Event ended'),
           kr: null,
         );
@@ -81,7 +81,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () => text('活动未结束'),
-          tw: null,
+          tw: () => text('活動未結束'),
           na: () => text('Event hasn\'t ended'),
           kr: null,
         );
@@ -89,7 +89,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () => text('活动商店购买语音'),
-          tw: null,
+          tw: () => text('活動商店購買語音'),
           na: () => text('Event shop purchase line'),
           kr: null,
         );
@@ -97,7 +97,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () => text('活动商店特殊购买语音'),
-          tw: null,
+          tw: () => text('活動商店特殊購買語音'),
           na: () => text('Event specific shop purchase line'),
           kr: null,
         );
@@ -106,7 +106,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () => text('活动任务语音'),
-          tw: null,
+          tw: () => text('活動任務語音'),
           na: () => text('Event mission line'),
           kr: null,
         );
@@ -115,7 +115,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () => text('羁绊Lv.$value'),
-          tw: null,
+          tw: () => text('羈絆Lv.$value'),
           na: () => text('Bond level $value'),
           kr: null,
         );
@@ -123,7 +123,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () => text('羁绊等级不高于Lv.$value'),
-          tw: null,
+          tw: () => text('羈絆等級不高於Lv.$value'),
           na: () => text('Bond level $value or less'),
           kr: null,
         );
@@ -151,7 +151,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () => text('$warName已开放'),
-          tw: null,
+          tw: () => text('$warName已開放'),
           na: () => text('War $warName opened'),
           kr: null,
         );
@@ -159,7 +159,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () => combineToRich(context, '已通关', quests(context)),
-          tw: null,
+          tw: () => combineToRich(context, '已通關', quests(context)),
           na: () => combineToRich(context, 'Cleared ', quests(context)),
           kr: null,
         );
@@ -167,7 +167,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () => combineToRich(context, '未通关', quests(context)),
-          tw: null,
+          tw: () => combineToRich(context, '未通關', quests(context)),
           na: () => combineToRich(context, 'Hasn\'t cleared ', quests(context)),
           kr: null,
         );
@@ -175,7 +175,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () => combineToRich(context, '持有', servants(context)),
-          tw: null,
+          tw: () => combineToRich(context, '持有', servants(context)),
           na: () => combineToRich(context, 'Presence of ', servants(context)),
           kr: null,
         );
@@ -183,7 +183,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () => combineToRich(context, '持有任意一个: ', MultiDescriptor.servants(context, valueList)),
-          tw: null,
+          tw: () => combineToRich(context, '持有任意一個: ', MultiDescriptor.servants(context, valueList)),
           na: () => combineToRich(context, 'Presence any of following: ', MultiDescriptor.servants(context, valueList)),
           kr: null,
         );
@@ -194,7 +194,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
     return localized(
       jp: null,
       cn: () => text('未知条件(${condType.name}): $value'),
-      tw: null,
+      tw: () => text('未知條件(${condType.name}): $value'),
       na: () => text('Unknown Cond(${condType.name}): $value'),
       kr: null,
     );
