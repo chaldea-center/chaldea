@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/utils/battle_exception.dart';
 import 'package:chaldea/models/db.dart';
@@ -13,6 +11,14 @@ const kBattleFuncMiss = 'MISS';
 const kBattleFuncNoEffect = 'NO EFFECT';
 const kBattleFuncGUARD = 'GUARD';
 
+double toModifier(final int value) {
+  return 0.001 * value;
+}
+
+Float toModifierFloat(int value) {
+  return toModifier(value).toFloat();
+}
+
 /// Referencing:
 /// https://apps.atlasacademy.io/fgo-docs/deeper/battle/damage.html
 /// DamageMod caps are applied when gathering the parameters.
@@ -21,56 +27,56 @@ int calculateDamage(final DamageParameters param) {
     throw BattleException('Invalid class: ${param.attackerClass}');
   }
 
-  final classAttackCorrection = toModifier(ConstData.classInfo[param.attackerClass]?.attackRate ?? 1000).toFloat();
-  final classAdvantage =
-      toModifier(param.classAdvantage).toFloat(); // class relation is provisioned due to overwriteClassRelation
+  final Float classAttackCorrection = toModifierFloat(ConstData.classInfo[param.attackerClass]?.attackRate ?? 1000);
+  final Float classAdvantage =
+      toModifierFloat(param.classAdvantage); // class relation is provisioned due to overwriteClassRelation
 
-  final attributeAdvantage =
-      toModifier(ConstData.getAttributeRelation(param.attackerAttribute, param.defenderAttribute)).toFloat();
+  final Float attributeAdvantage =
+      toModifierFloat(ConstData.getAttributeRelation(param.attackerAttribute, param.defenderAttribute));
 
   if (!ConstData.cardInfo.containsKey(param.currentCardType)) {
     throw BattleException('Invalid current card type: ${param.currentCardType}');
   }
 
-  final chainPos = param.isNp ? 1 : param.chainPos;
-  final cardCorrection = toModifier(ConstData.cardInfo[param.currentCardType]![chainPos]!.adjustAtk).toFloat();
+  final int chainPos = param.isNp ? 1 : param.chainPos;
+  final Float cardCorrection = toModifierFloat(ConstData.cardInfo[param.currentCardType]![chainPos]!.adjustAtk);
 
-  final firstCardBonus = shouldIgnoreFirstCardBonus(param.isNp, param.firstCardType)
+  final Float firstCardBonus = shouldIgnoreFirstCardBonus(param.isNp, param.firstCardType)
       ? 0.toFloat()
       : param.isMightyChain
-          ? toModifier(ConstData.cardInfo[CardType.buster]![1]!.addAtk).toFloat()
-          : toModifier(ConstData.cardInfo[param.firstCardType]![1]!.addAtk).toFloat();
+          ? toModifierFloat(ConstData.cardInfo[CardType.buster]![1]!.addAtk)
+          : toModifierFloat(ConstData.cardInfo[param.firstCardType]![1]!.addAtk);
 
-  final criticalModifier =
-      param.isCritical ? toModifier(ConstData.constants.criticalAttackRate).toFloat() : 1.toFloat();
+  final Float criticalModifier =
+      param.isCritical ? toModifierFloat(ConstData.constants.criticalAttackRate) : 1.toFloat();
 
-  final extraRate = param.currentCardType == CardType.extra
+  final int extraRate = param.currentCardType == CardType.extra
       ? param.isTypeChain
           ? ConstData.constants.extraAttackRateGrand
           : ConstData.constants.extraAttackRateSingle
       : 1000;
-  final extraModifier = toModifier(extraRate).toFloat();
+  final extraModifier = toModifierFloat(extraRate);
 
-  final busterChainMod = !param.isNp && param.currentCardType == CardType.buster && param.isTypeChain
-      ? Float(toModifier(ConstData.constants.chainbonusBusterRate) * param.attack)
+  final Float busterChainMod = !param.isNp && param.currentCardType == CardType.buster && param.isTypeChain
+      ? toModifierFloat(ConstData.constants.chainbonusBusterRate) * param.attack.toFloat()
       : 0.toFloat();
 
-  final damageRate = toModifier(param.damageRate).toFloat();
-  final npSpecificAttackRate = toModifier(param.npSpecificAttackRate).toFloat();
-  final cardBuff = toModifier(param.cardBuff).toFloat();
-  final cardResist = toModifier(param.cardResist).toFloat();
-  final attackBuff = toModifier(param.attackBuff).toFloat();
-  final defenseBuff = toModifier(param.defenseBuff).toFloat();
-  final specificAttackBuff = toModifier(param.specificAttackBuff).toFloat();
-  final specificDefenseBuff = toModifier(param.specificDefenseBuff).toFloat();
-  final criticalDamageBuff = param.isCritical ? toModifier(param.criticalDamageBuff).toFloat() : 0.toFloat();
-  final npDamageBuff = param.isNp ? toModifier(param.npDamageBuff).toFloat() : 0.toFloat();
-  final percentAttackBuff = toModifier(param.percentAttackBuff).toFloat();
-  final percentDefenseBuff = toModifier(param.percentDefenseBuff).toFloat();
+  final Float damageRate = toModifierFloat(param.damageRate);
+  final Float npSpecificAttackRate = toModifierFloat(param.npSpecificAttackRate);
+  final Float cardBuff = toModifierFloat(param.cardBuff);
+  final Float cardResist = toModifierFloat(param.cardResist);
+  final Float attackBuff = toModifierFloat(param.attackBuff);
+  final Float defenseBuff = toModifierFloat(param.defenseBuff);
+  final Float specificAttackBuff = toModifierFloat(param.specificAttackBuff);
+  final Float specificDefenseBuff = toModifierFloat(param.specificDefenseBuff);
+  final Float criticalDamageBuff = param.isCritical ? toModifierFloat(param.criticalDamageBuff) : 0.toFloat();
+  final Float npDamageBuff = param.isNp ? toModifierFloat(param.npDamageBuff) : 0.toFloat();
+  final Float percentAttackBuff = toModifierFloat(param.percentAttackBuff);
+  final Float percentDefenseBuff = toModifierFloat(param.percentDefenseBuff);
 
-  final fixedRandom = toModifier(param.fixedRandom).toFloat();
-  final attackRate = toModifier(ConstData.constants.attackRate).toFloat();
-  final hits = (param.totalHits / 100.0).toFloat();
+  final Float fixedRandom = toModifierFloat(param.fixedRandom);
+  final Float attackRate = toModifierFloat(ConstData.constants.attackRate);
+  final Float hits = (param.totalHits / 100.0).toFloat();
 
   final totalDamage = param.attack.toFloat() *
           damageRate *
@@ -115,21 +121,20 @@ int calculateAttackNpGain(final AttackNpGainParameters param) {
   }
 
   final chainPos = param.isNp ? 1 : param.chainPos;
-  final cardCorrection = toModifier(ConstData.cardInfo[param.currentCardType]![chainPos]!.adjustTdGauge).toFloat();
+  final cardCorrection = toModifierFloat(ConstData.cardInfo[param.currentCardType]![chainPos]!.adjustTdGauge);
 
   final firstCardBonus = shouldIgnoreFirstCardBonus(param.isNp, param.firstCardType)
       ? 0.toFloat()
       : param.isMightyChain
-          ? toModifier(ConstData.cardInfo[CardType.arts]![1]!.addTdGauge).toFloat()
-          : toModifier(ConstData.cardInfo[param.firstCardType]![1]!.addTdGauge).toFloat();
-  final criticalModifier =
-      param.isCritical ? toModifier(ConstData.constants.criticalTdPointRate).toFloat() : 1.toFloat();
-  final cardBuff = toModifier(param.cardBuff).toFloat();
-  final cardResist = toModifier(param.cardResist).toFloat();
-  final npGainBuff = toModifier(param.npGainBuff).toFloat();
-  final defenderNpRate = toModifier(param.defenderNpRate).toFloat();
-  final cardAttackNpRate = toModifier(param.cardAttackNpRate).toFloat();
-  final overkillModifier = param.isOverkill ? toModifier(ConstData.constants.overKillNpRate).toFloat() : 1.toFloat();
+          ? toModifierFloat(ConstData.cardInfo[CardType.arts]![1]!.addTdGauge)
+          : toModifierFloat(ConstData.cardInfo[param.firstCardType]![1]!.addTdGauge);
+  final criticalModifier = param.isCritical ? toModifierFloat(ConstData.constants.criticalTdPointRate) : 1.toFloat();
+  final cardBuff = toModifierFloat(param.cardBuff);
+  final cardResist = toModifierFloat(param.cardResist);
+  final npGainBuff = toModifierFloat(param.npGainBuff);
+  final defenderNpRate = toModifierFloat(param.defenderNpRate);
+  final cardAttackNpRate = toModifierFloat(param.cardAttackNpRate);
+  final overkillModifier = param.isOverkill ? toModifierFloat(ConstData.constants.overKillNpRate) : 1.toFloat();
 
   final beforeOverkill = param.attackerNpCharge.toFloat() *
       criticalModifier *
@@ -145,13 +150,13 @@ int calculateAttackNpGain(final AttackNpGainParameters param) {
 /// Float arithmetic used due to:
 /// https://atlasacademy.github.io/fgo-docs/deeper/battle/32-bit-float.html
 int calculateDefendNpGain(final DefendNpGainParameters param) {
-  final attackerNpRate = toModifier(param.attackerNpRate).toFloat();
-  final npGainBuff = toModifier(param.npGainBuff).toFloat();
-  final defenseNpGainBuff = toModifier(param.defenseNpGainBuff).toFloat();
-  final cardDefenseNpRate = toModifier(param.cardDefNpRate).toFloat();
-  final beforeOverkill =
+  final Float attackerNpRate = toModifierFloat(param.attackerNpRate);
+  final Float npGainBuff = toModifierFloat(param.npGainBuff);
+  final Float defenseNpGainBuff = toModifierFloat(param.defenseNpGainBuff);
+  final Float cardDefenseNpRate = toModifierFloat(param.cardDefNpRate);
+  final Float beforeOverkill =
       param.defenderNpGainRate.toFloat() * attackerNpRate * npGainBuff * defenseNpGainBuff * cardDefenseNpRate;
-  final overkillModifier = param.isOverkill ? toModifier(ConstData.constants.overKillNpRate).toFloat() : 1.toFloat();
+  final Float overkillModifier = param.isOverkill ? toModifierFloat(ConstData.constants.overKillNpRate) : 1.toFloat();
   return (beforeOverkill.floor().toFloat() * overkillModifier).floor();
 }
 
@@ -162,48 +167,43 @@ int calculateStar(final StarParameters param) {
     throw 'Invalid current card type: ${param.currentCardType}';
   }
 
-  final chainPos = param.isNp ? 1 : param.chainPos;
-  final cardCorrection = ConstData.cardInfo[param.currentCardType]![chainPos]!.adjustCritical;
+  final int chainPos = param.isNp ? 1 : param.chainPos;
+  final int cardCorrection = ConstData.cardInfo[param.currentCardType]![chainPos]!.adjustCritical;
 
-  final firstCardBonus = shouldIgnoreFirstCardBonus(param.isNp, param.firstCardType)
+  final int firstCardBonus = shouldIgnoreFirstCardBonus(param.isNp, param.firstCardType)
       ? 0
       : param.isMightyChain
           ? ConstData.cardInfo[CardType.quick]![1]!.addCritical
           : ConstData.cardInfo[param.firstCardType]![1]!.addCritical;
-  final criticalModifier = param.isCritical ? ConstData.constants.criticalStarRate : 0;
+  final int criticalModifier = param.isCritical ? ConstData.constants.criticalStarRate : 0;
 
-  final defenderStarRate = param.defenderStarRate;
+  final int defenderStarRate = param.defenderStarRate;
 
-  final cardBuff = toModifier(param.cardBuff);
-  final cardResist = toModifier(param.cardResist);
+  final Float cardBuff = toModifierFloat(param.cardBuff);
+  final Float cardResist = toModifierFloat(param.cardResist);
 
-  final cardDropStarRate = toModifier(param.cardDropStarRate);
+  final Float cardDropStarRate = toModifierFloat(param.cardDropStarRate);
 
-  final overkillModifier = param.isOverkill ? toModifier(ConstData.constants.overKillStarRate) : 1;
-  final overkillAdd = param.isOverkill ? ConstData.constants.overKillStarAdd : 0;
+  final Float overkillModifier = param.isOverkill ? toModifierFloat(ConstData.constants.overKillStarRate) : 1.toFloat();
+  final int overkillAdd = param.isOverkill ? ConstData.constants.overKillStarAdd : 0;
 
   // not converted to modifier since mostly just additions.
-  final dropRate = ((param.attackerStarGen +
-                  firstCardBonus +
-                  (cardCorrection * max(1 + cardBuff - cardResist, 0)) +
-                  defenderStarRate +
-                  param.starGenBuff -
-                  param.enemyStarGenResist +
-                  criticalModifier) *
-              cardDropStarRate *
-              overkillModifier +
-          overkillAdd)
-      .toInt();
+  final Float dropRate = ((param.attackerStarGen.toFloat() +
+              firstCardBonus.toFloat() +
+              (cardCorrection.toFloat() * (1.toFloat() + cardBuff - cardResist).ofMax(0)) +
+              defenderStarRate.toFloat() +
+              param.starGenBuff.toFloat() -
+              param.enemyStarGenResist.toFloat() +
+              criticalModifier.toFloat()) *
+          cardDropStarRate *
+          overkillModifier +
+      overkillAdd.toFloat());
 
-  return dropRate.clamp(0, ConstData.constants.starRateMax);
+  return dropRate.toInt().clamp(0, ConstData.constants.starRateMax);
 }
 
 bool shouldIgnoreFirstCardBonus(final bool isNP, final CardType firstCardType) {
   return isNP || !ConstData.cardInfo.containsKey(firstCardType) || firstCardType == CardType.blank;
-}
-
-double toModifier(final int value) {
-  return 0.001 * value;
 }
 
 class DamageParameters {

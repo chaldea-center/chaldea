@@ -17,7 +17,7 @@ final class Float implements Comparable<Float> {
     byteData.setFloat32(_offset, value.toDouble());
     return Float._(byteData.getFloat32(_offset));
   }
-  
+
   double get value => _value;
 
   @override
