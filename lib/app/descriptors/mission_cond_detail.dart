@@ -69,7 +69,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         return localized(
           jp: () => combineToRich(context, null, traits(context), 'フィールドのクエストを$targetNum回クリアせよ'),
           cn: () => combineToRich(context, '通关$targetNum次场地为', traits(context), '的关卡'),
-          tw: null,
+          tw: () => combineToRich(context, '通關$targetNum次場地為', traits(context),
           na: () => combineToRich(context, 'Clear $targetNum quests with fields ', traits(context)),
           kr: () => combineToRich(context, null, traits(context), '필드의 프리 퀘스트를 $targetNum회 클리어'),
         );
@@ -81,7 +81,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           return localized(
             jp: () => text('いずれかのクエストを$targetNum回クリアせよ'),
             cn: () => text('通关$targetNum次任意关卡'),
-            tw: null,
+            tw: () => text('通關$targetNum次任意關卡'),
             na: () => text('Complete any quest $targetNum times'),
             kr: () => text('퀘스트를 $targetNum회 클리어'),
           );
@@ -89,7 +89,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           return localized(
             jp: () => combineToRich(context, '以下のクエストを$targetNum回クリアせよ', quests(context)),
             cn: () => combineToRich(context, '通关$targetNum次以下关卡', quests(context)),
-            tw: null,
+            tw: () => combineToRich(context, '通關$targetNum次以下關卡', quests(context)),
             na: () => combineToRich(context, '$targetNum runs of quests ', quests(context)),
             kr: () => combineToRich(context, '아래의 퀘스트를 $targetNum회 클리어', quests(context)),
           );
@@ -99,7 +99,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () => text('通关$targetNum次类型为[$types]的关卡'),
-          tw: null,
+          tw: () => text('通關$targetNum次類型為[$types]的關卡'),
           na: () => text('Clear $targetNum times of [$types] quests'),
           kr: null,
         );
@@ -107,7 +107,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         return localized(
           jp: null,
           cn: () => combineToRich(context, '通关$targetNum次以下章节的主线关卡: ', wars(context)),
-          tw: null,
+          tw: () => combineToRich(context, '通關$targetNum次以下章節的主線關卡: ', wars(context)),
           na: () => combineToRich(context, 'Clear $targetNum times main quests from ', wars(context)),
           kr: null,
         );
@@ -116,7 +116,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         return localized(
           jp: () => combineToRich(context, null, servants(context), 'の敵を$targetNum体倒せ'),
           cn: () => combineToRich(context, '击败$targetNum个敌人:', servants(context)),
-          tw: null,
+          tw: () => combineToRich(context, '擊敗$targetNum個敵人:', servants(context)),
           na: () => combineToRich(context, 'Defeat $targetNum from enemies ', servants(context)),
           kr: () => combineToRich(context, null, servants(context), '계열의 적을 $targetNum마리 처치'),
         );
@@ -126,7 +126,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         return localized(
           jp: () => combineToRich(context, null, traits(context), '特性を持つ敵を$targetNum体倒せ'),
           cn: () => combineToRich(context, '击败$targetNum个持有', traits(context), '特性的敌人'),
-          tw: null,
+          tw: () => combineToRich(context, '擊敗$targetNum個持有', traits(context), '特性的敵人'),
           na: () => combineToRich(context, 'Defeat $targetNum enemies with traits ', traits(context)),
           kr: () => combineToRich(context, null, traits(context), '속성을 가진 적을 $targetNum마리 처치'),
         );
@@ -134,7 +134,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         return localized(
           jp: () => combineToRich(context, null, svtClasses(context), 'クラスのサーヴァントを$targetNum骑倒せ'),
           cn: () => combineToRich(context, '击败$targetNum骑', svtClasses(context), '职阶中任意一种从者'),
-          tw: null,
+          tw: () => combineToRich(context, '擊敗$targetNum騎', svtClasses(context), '職階中任意一種從者'),
           na: () => combineToRich(context, 'Defeat $targetNum servants with class ', svtClasses(context)),
           kr: () => combineToRich(context, null, svtClasses(context), '클래스의 서번트를 $targetNum기 처치'),
         );
@@ -142,7 +142,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         return localized(
           jp: () => combineToRich(context, null, svtClasses(context), 'クラスの敵を$targetNum骑倒せ'),
           cn: () => combineToRich(context, '击败$targetNum骑', svtClasses(context), '职阶中任意一种敌人'),
-          tw: null,
+          tw: () => combineToRich(context, '擊敗$targetNum騎', svtClasses(context), '職階中任意一種敵人'),
           na: () => combineToRich(context, 'Defeat $targetNum enemies with class ', svtClasses(context)),
           kr: () => combineToRich(context, null, svtClasses(context), '클래스의 적을 $targetNum마리 처치'),
         );
@@ -150,7 +150,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         return localized(
           jp: () => combineToRich(context, null, svtClasses(context), 'クラスの敵を$targetNum骑倒せ(サーヴァント及び一部ボスなどは除く)'),
           cn: () => combineToRich(context, '击败$targetNum骑', svtClasses(context), '职阶中任意一种敌人(从者及部分首领级敌方除外)'),
-          tw: null,
+          tw: () => combineToRich(context, '擊敗$targetNum騎', svtClasses(context), '職階中任意一種敵人(從者及部分首領級敵方除外)'),
           na: () => combineToRich(context, 'Defeat $targetNum enemies with class ', svtClasses(context),
               ' (excluding Servants and certain bosses)'),
           kr: () => combineToRich(context, null, svtClasses(context), '클래스의 적을 $targetNum마리 처치 (서번트 및 일부 보스 등은 제외)'),
@@ -159,7 +159,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         return localized(
           jp: () => combineToRich(context, null, svtClasses(context), 'クラスのサーヴァントを1騎以上編成して、いずれかのクエストを$targetNum回クリアせよ'),
           cn: () => combineToRich(context, '在队伍中编入至少1骑以上', svtClasses(context), '职阶从者，并完成任意关卡$targetNum次'),
-          tw: null,
+          tw: () => combineToRich(context, '在隊伍中編入至少1騎以上', svtClasses(context), '職階從者，並完成任意關卡$targetNum次'),
           na: () => combineToRich(context, 'Put one or more servants with class', svtClasses(context),
               ' in your Party and complete any quest $targetNum times'),
           kr: () => combineToRich(context, null, svtClasses(context), '클래스의 서번트를 1기 이상 편성해서 전투 진행을 $targetNum회 완료'),
@@ -170,7 +170,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         return localized(
           jp: () => combineToRich(context, '戦利品で', items(context), 'を$targetNum個集めろ'),
           cn: () => combineToRich(context, '通过战利品获得$targetNum个道具', items(context)),
-          tw: null,
+          tw: () => combineToRich(context, '通過戰利品獲得$targetNum個道具', items(context)),
           na: () => combineToRich(context, 'Obtain $targetNum ', items(context), ' as battle drop'),
           kr: () => combineToRich(context, '전리품으로 ', items(context), ' 중 하나를 $targetNum개 획득'),
         );
@@ -178,7 +178,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         return localized(
           jp: () => combineToRich(context, null, traits(context), '属性を持つサーヴァントを1騎以上編成して、いずれかのクエストを$targetNum回クリアせよ'),
           cn: () => combineToRich(context, '在队伍内编入至少1骑以上持有', traits(context), '属性的从者，并完成任意关卡$targetNum次'),
-          tw: null,
+          tw: () => combineToRich(context, '在隊伍內編入至少1騎以上持有', traits(context), '屬性的從者，並完成任意關卡$targetNum次'),
           na: () => combineToRich(context, 'Put servants with traits', traits(context),
               ' in your Party and complete Quests $targetNum times'),
           kr: () => combineToRich(context, null, traits(context), '특성을 가진 서번트를 1기 이상 편성해서 전투 진행을 $targetNum회 완료'),
@@ -188,7 +188,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         return localized(
           jp: () => combineToRich(context, null, servants(context), 'のサーヴァントを1騎以上編成して、いずれかのクエストを$targetNum回クリアせよ'),
           cn: () => combineToRich(context, '在队伍内编入至少1骑以上', servants(context), '从者，并完成任意关卡$targetNum次'),
-          tw: null,
+          tw: () => combineToRich(context, '在隊伍內編入至少1騎以上', servants(context), '從者，並完成任意關卡$targetNum次'),
           na: () => combineToRich(
               context, 'Put servants ', servants(context), ' in your Party and complete Quests $targetNum times'),
           kr: () => combineToRich(context, null, servants(context), '를 1기 이상 편성해서 전투 진행을 $targetNum회 완료'),
@@ -197,7 +197,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         return localized(
           jp: () => combineToRich(context, null, servants(context), 'をスタメンにして、いずれかのクエストを$targetNum回クリアせよ'),
           cn: () => combineToRich(context, '在队伍内编入', servants(context), '从者作为首发队员，并完成任意关卡$targetNum次'),
-          tw: null,
+          tw: () => combineToRich(context, '在隊伍內編入', servants(context), '從者作為首發隊員，並完成任意關卡$targetNum次'),
           na: () => combineToRich(
               context, 'Put servants ', servants(context), ' in Starting Member and complete Quests $targetNum times'),
           kr: null,
@@ -206,7 +206,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         return localized(
           jp: () => text('戦利品で種火を$targetNum個集めろ'),
           cn: () => text('获取$targetNum个种火作为战利品'),
-          tw: null,
+          tw: () => text('獲取$targetNum個種火作為戰利品'),
           na: () => text('Acquire $targetNum embers through battle'),
           kr: () => text('전리품으로 종화를 $targetNum개 획득'),
         );
@@ -214,7 +214,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         return localized(
           jp: () => text('フレンドポイント召喚を$targetNum回実行せよ'),
           cn: () => text('完成$targetNum次友情点召唤'),
-          tw: null,
+          tw: () => text('完成$targetNum次友情點數召喚'),
           na: () => text('Perform $targetNum Friend Point Summons'),
           kr: () => text('친구 포인트 소환을 $targetNum회 실행'),
         );
@@ -222,7 +222,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         return localized(
           jp: () => combineToRich(context, '以下のクエストを$targetNum回挑戦せよ', quests(context)),
           cn: () => combineToRich(context, '挑战$targetNum次以下关卡', quests(context)),
-          tw: null,
+          tw: () => combineToRich(context, '挑戰$targetNum次以下關卡', quests(context)),
           na: () => combineToRich(context, 'Challenge $targetNum runs of quests ', quests(context)),
           kr: null,
         );
@@ -230,7 +230,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         return localized(
           jp: () => text('絆を$targetNum獲得せよ'),
           cn: () => text('获取$targetNum牵绊'),
-          tw: null,
+          tw: () => text('獲取$targetNum羈絆'),
           na: () => text('Obtain $targetNum Bond Points'),
           kr: null,
         );
@@ -268,7 +268,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
     return localized(
       jp: () => text('不明な条件(${detail.missionCondType}): $targetIds, $targetNum'),
       cn: () => text('未知条件(${detail.missionCondType}): $targetIds, $targetNum'),
-      tw: null,
+      tw: () => text('未知條件(${detail.missionCondType}): $targetIds, $targetNum'),
       na: () => text('Unknown CondDetail(${detail.missionCondType}): $targetIds, $targetNum'),
       kr: () => text('알 수 없는 조건(${detail.missionCondType}): $targetIds, $targetNum'),
     );
@@ -290,7 +290,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
       spans.addAll(super.localized(
         jp: null,
         cn: () => combineToRich(null, '(所需关卡特性: ', MultiDescriptor.traits(context, questTraits), ')'),
-        tw: null,
+        tw: () => combineToRich(null, '(所需關卡特性: ', MultiDescriptor.traits(context, questTraits), ')'),
         na: () => combineToRich(null, '(Required Quest Trait: ', MultiDescriptor.traits(context, questTraits), ')'),
         kr: null,
       ));
@@ -304,7 +304,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         spans.addAll(super.localized(
           jp: null,
           cn: () => combineToRich(null, '(活动: ', MultiDescriptor.events(context, events), ')'),
-          tw: null,
+          tw: () => combineToRich(null, '(活動: ', MultiDescriptor.events(context, events), ')'),
           na: () => combineToRich(null, '(Event: ', MultiDescriptor.events(context, events), ')'),
           kr: null,
         ));
