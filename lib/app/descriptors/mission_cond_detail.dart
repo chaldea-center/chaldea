@@ -69,7 +69,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         return localized(
           jp: () => combineToRich(context, null, traits(context), 'フィールドのクエストを$targetNum回クリアせよ'),
           cn: () => combineToRich(context, '通关$targetNum次场地为', traits(context), '的关卡'),
-          tw: () => combineToRich(context, '通關$targetNum次場地為', traits(context),
+          tw: () => combineToRich(context, '通關$targetNum次場地為', traits(context)),
           na: () => combineToRich(context, 'Clear $targetNum quests with fields ', traits(context)),
           kr: () => combineToRich(context, null, traits(context), '필드의 프리 퀘스트를 $targetNum회 클리어'),
         );
