@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.4.18
+
+- Chaldeas
+  - Add timer: countdown for event, gacha, mission and Da Vinci shop 
+  - Add free SR/SSR exchange targets filter in servant list
+  - Shop item solver supports different bonus for one quest
+  - Master Mission: option to exclude random enemy quests in Ordeal Call 
+- Laplace
+  - Tsunguska raid battles must turn on AI simulation for team upload
+  - Support enemy appearance rate up effect (but disable now)
+  - Fix 32-bit float bug when calculating damage and refund
+
 ## 2.4.17
 
 - Fix crash on iOS 16 or lower

@@ -21,18 +21,18 @@ packages:
     dependency: "direct main"
     description:
       name: android_id
-      sha256: d039f7245534888548a992694a61246a9d6c52acbe9fdb9271e0efc8a50b17ed
+      sha256: "5c2d3a259afcd173dbe367ba452817bd530c4df75d251d652c69b8d3c8ac0d36"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.5"
+    version: "0.3.6"
   archive:
     dependency: "direct main"
     description:
       name: archive
-      sha256: "06a96f1249f38a00435b3b0c9a3246d934d7dbc8183fc7c9e56989860edb99d4"
+      sha256: "7e0d52067d05f2e0324268097ba723b71cb41ac8a6a2b24d1edf9c536b987b03"
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.4"
+    version: "3.4.6"
   args:
     dependency: "direct main"
     description:
@@ -174,10 +174,10 @@ packages:
     dependency: "direct main"
     description:
       name: catcher_2
-      sha256: "8a33bfa845de8aa4306e607d8c76a52b0f111576089f9f329270d56023900ad2"
+      sha256: "73e251057b1b59442d58b5109d26401cfed850df21da44b028338d4f85f69105"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0-alpha.1"
+    version: "1.0.0"
   characters:
     dependency: transitive
     description:
@@ -221,12 +221,11 @@ packages:
   connectivity_plus:
     dependency: "direct main"
     description:
-      path: "packages/connectivity_plus/connectivity_plus"
-      ref: "2f1e3a4b2c9b0c8f622161f7753ad789aa6ea603"
-      resolved-ref: "2f1e3a4b2c9b0c8f622161f7753ad789aa6ea603"
-      url: "https://github.com/fluttercommunity/plus_plugins.git"
-    source: git
-    version: "4.0.2"
+      name: connectivity_plus
+      sha256: "94d51c6f1299133a2baa4c5c3d2c11ec7d7fb4768dee5c52a56f7d7522fcf70e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.0"
   connectivity_plus_platform_interface:
     dependency: transitive
     description:
@@ -255,10 +254,10 @@ packages:
     dependency: "direct main"
     description:
       name: cross_file
-      sha256: fd832b5384d0d6da4f6df60b854d33accaaeb63aa9e10e736a87381f08dee2cb
+      sha256: "445db18de832dba8d851e287aff8ccf169bed30d2e94243cb54c7d2f1ed2142c"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.3+5"
+    version: "0.3.3+6"
   crypto:
     dependency: "direct main"
     description:
@@ -383,18 +382,18 @@ packages:
     dependency: transitive
     description:
       name: file
-      sha256: "1b92bec4fc2a72f59a8e15af5f52cd441e4a7860b49499d69dfa817af20e925d"
+      sha256: "5fc22d7c25582e38ad9a8515372cd9a93834027aacf1801cf01164dac0ffa08c"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.4"
+    version: "7.0.0"
   file_picker:
     dependency: "direct main"
     description:
       name: file_picker
-      sha256: be325344c1f3070354a1d84a231a1ba75ea85d413774ec4bdf444c023342e030
+      sha256: "903dd4ba13eae7cef64acc480e91bf54c3ddd23b5b90b639c170f3911e489620"
       url: "https://pub.dev"
     source: hosted
-    version: "5.5.0"
+    version: "6.0.0"
   fixnum:
     dependency: transitive
     description:
@@ -407,10 +406,10 @@ packages:
     dependency: "direct main"
     description:
       name: fl_chart
-      sha256: c1e26c7e48496be85104c16c040950b0436674cdf0737f3f6e95511b2529b592
+      sha256: "6b9eb2b3017241d05c482c01f668dd05cc909ec9a0114fdd49acd958ff2432fa"
       url: "https://pub.dev"
     source: hosted
-    version: "0.63.0"
+    version: "0.64.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -436,10 +435,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_hooks
-      sha256: "4618087243264d5f745b2a719a9fc610768f723da570efc2d0eaefe1efcbae70"
+      sha256: "7c8db779c2d1010aa7f9ea3fbefe8f86524fcb87b69e8b0af31e1a4b55422dec"
       url: "https://pub.dev"
     source: hosted
-    version: "0.20.2"
+    version: "0.20.3"
   flutter_js:
     dependency: "direct main"
     description:
@@ -862,7 +861,7 @@ packages:
     description:
       path: "packages/pasteboard"
       ref: HEAD
-      resolved-ref: "21755855ce8e70755b522d6388c73ddb779405a9"
+      resolved-ref: d0c91d9c3ea12883d38215adc48586753fb41dde
       url: "https://github.com/MixinNetwork/flutter-plugins"
     source: git
     version: "0.2.0"
@@ -942,10 +941,10 @@ packages:
     dependency: transitive
     description:
       name: permission_handler_android
-      sha256: ace7d15a3d1a4a0b91c041d01e5405df221edb9de9116525efc773c74e6fc790
+      sha256: f9fddd3b46109bd69ff3f9efa5006d2d309b7aec0f3c1c5637a60a2d5659e76e
       url: "https://pub.dev"
     source: hosted
-    version: "11.0.5"
+    version: "11.1.0"
   permission_handler_apple:
     dependency: transitive
     description:
@@ -958,10 +957,10 @@ packages:
     dependency: transitive
     description:
       name: permission_handler_platform_interface
-      sha256: f2343e9fa9c22ae4fd92d4732755bfe452214e7189afcc097380950cf567b4b2
+      sha256: "6760eb5ef34589224771010805bea6054ad28453906936f843a8cc4d3a55c4a4"
       url: "https://pub.dev"
     source: hosted
-    version: "3.11.5"
+    version: "3.12.0"
   permission_handler_windows:
     dependency: transitive
     description:
@@ -990,10 +989,10 @@ packages:
     dependency: transitive
     description:
       name: platform
-      sha256: ae68c7bfcd7383af3629daafb32fb4e8681c7154428da4febcff06200585f102
+      sha256: "0a279f0707af40c890e80b1e9df8bb761694c074ba7e1d4ab1bc4b728e200b59"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.2"
+    version: "3.1.3"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -1078,10 +1077,10 @@ packages:
     dependency: "direct main"
     description:
       name: shared_preferences
-      sha256: b7f41bad7e521d205998772545de63ff4e6c97714775902c199353f8bf1511ac
+      sha256: "81429e4481e1ccfb51ede496e916348668fd0921627779233bd24cc3ff6abd02"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.1"
+    version: "2.2.2"
   shared_preferences_android:
     dependency: transitive
     description:
@@ -1102,10 +1101,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_linux
-      sha256: c2eb5bf57a2fe9ad6988121609e47d3e07bb3bdca5b6f8444e4cf302428a128a
+      sha256: "9f2cbcf46d4270ea8be39fa156d86379077c8a5228d9dfdb1164ae0bb93f1faa"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.1"
+    version: "2.3.2"
   shared_preferences_platform_interface:
     dependency: transitive
     description:
@@ -1126,10 +1125,10 @@ packages:
     dependency: transitive
     description:
       name: shared_preferences_windows
-      sha256: f763a101313bd3be87edffe0560037500967de9c394a714cd598d945517f694f
+      sha256: "841ad54f3c8381c480d0c9b508b89a34036f512482c407e6df7a9c4aa2ef8f59"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.1"
+    version: "2.3.2"
   shelf:
     dependency: transitive
     description:
@@ -1243,10 +1242,10 @@ packages:
     dependency: "direct main"
     description:
       name: string_validator
-      sha256: b419cf5d21d608522e6e7cafed4deb34b6f268c43df866e63c320bab98a08cf6
+      sha256: "54d4f42cd6878ae72793a58a529d9a18ebfdfbfebd9793bbe55c9b28935e8543"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.2"
   sync_http:
     dependency: transitive
     description:
