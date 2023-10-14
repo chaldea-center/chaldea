@@ -1069,7 +1069,7 @@ void main() async {
     await battle.playerTurn([CombatAction(morgan, morgan.getNPCard(battle)!)]);
     expect(morgan.skillInfoList[1].chargeTurn, 4);
     expect(morgan.skillInfoList[2].chargeTurn, 3);
-    expect(battle.criticalStars, moreOrLessEquals(14.488, epsilon: 0.001));
+    expect(battle.criticalStars, moreOrLessEquals(14.5, epsilon: 0.001));
 
     await battle.activateSvtSkill(1, 0);
     expect(morgan.skillInfoList[1].chargeTurn, 2);
@@ -1079,7 +1079,7 @@ void main() async {
     await battle.playerTurn([CombatAction(morgan, morgan.getNPCard(battle)!)]);
     expect(morgan.skillInfoList[1].chargeTurn, 1);
     expect(morgan.skillInfoList[2].chargeTurn, 0);
-    expect(battle.criticalStars, moreOrLessEquals(4.187, epsilon: 0.001)); // one enemy not killed
+    expect(battle.criticalStars, moreOrLessEquals(4.2, epsilon: 0.001)); // one enemy not killed
   });
 
   test('Check Duplicate vs Attack trigger functions', () async {

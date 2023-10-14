@@ -188,17 +188,15 @@ int calculateStar(final StarParameters param) {
   final int overkillAdd = param.isOverkill ? ConstData.constants.overKillStarAdd : 0;
 
   // not converted to modifier since mostly just additions.
-  final Float dropRate = ((param.attackerStarGen.toFloat() +
-              firstCardBonus.toFloat() +
-              (cardCorrection.toFloat() * (1.toFloat() + cardBuff - cardResist).ofMax(0)) +
-              defenderStarRate.toFloat() +
-              param.starGenBuff.toFloat() -
-              param.enemyStarGenResist.toFloat() +
-              criticalModifier.toFloat()) *
-          cardDropStarRate *
-          overkillModifier +
-      overkillAdd.toFloat());
-
+  final Float cardGain = (cardCorrection.toFloat() * (1.toFloat() + cardBuff - cardResist).ofMax(0));
+  final Float rawDropRate = param.attackerStarGen.toFloat() +
+      firstCardBonus.toFloat() +
+      cardGain +
+      defenderStarRate.toFloat() +
+      param.starGenBuff.toFloat() -
+      param.enemyStarGenResist.toFloat() +
+      criticalModifier.toFloat();
+  final Float dropRate = rawDropRate * cardDropStarRate * overkillModifier + overkillAdd.toFloat();
   return dropRate.toInt().clamp(0, ConstData.constants.starRateMax);
 }
 
