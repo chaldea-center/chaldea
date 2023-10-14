@@ -8,11 +8,17 @@ extension Num2FloatX on num {
 final class Float implements Comparable<Float> {
   static const int byteLength = 4;
   static const int _offset = 0;
-  final ByteData _value;
+  final double _value;
 
-  Float(num value) : _value = ByteData(byteLength)..setFloat32(_offset, value.toDouble());
+  const Float._(this._value);
 
-  double get value => _value.getFloat32(_offset);
+  factory Float(num value) {
+    final byteData = ByteData(byteLength);
+    byteData.setFloat32(_offset, value.toDouble());
+    return Float._(byteData.getFloat32(_offset));
+  }
+  
+  double get value => _value;
 
   @override
   int compareTo(Float other) {
