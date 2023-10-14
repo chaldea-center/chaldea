@@ -172,8 +172,8 @@ class Event {
     int? _start = region == Region.jp ? startedAt : extra.startTime.ofRegion(region);
     int? _end = region == Region.jp ? endedAt : extra.endTime.ofRegion(region);
     final neverClosed = DateTime.now().add(const Duration(days: 365)).timestamp;
-    if (_end != null && _end > neverClosed) {
-      if (_start != null) {
+    if (_end != null && _start != null) {
+      if (_end > neverClosed) {
         _end = _start + const Duration(days: 30).inSeconds;
       }
     }
@@ -184,9 +184,14 @@ class Event {
       return _end.sec2date().isBefore(DateTime.now().subtract(diff));
     }
     // if one event is delayed more than 3 months than expected, mark as outdated/will never open
+    _start = startedAt;
+    _end = endedAt;
+    if (endedAt - startedAt > const Duration(days: 365).inSeconds) {
+      _end = _start + const Duration(days: 30).inSeconds;
+    }
     final months = db.curUser.region.eventDelayMonth;
     final days = months * 31 + 3 * 31 + diff.inDays;
-    return endedAt.sec2date().isBefore(DateTime.now().subtract(Duration(days: days)));
+    return _end.sec2date().isBefore(DateTime.now().subtract(Duration(days: days)));
   }
 
   int? startTimeOf(Region? region) {

@@ -12,6 +12,7 @@ import 'event.dart';
 import 'gacha.dart';
 import 'mission.dart';
 import 'shop.dart';
+import 'time.dart';
 
 class TimerHomePage extends StatefulWidget {
   TimerHomePage({super.key});
@@ -22,7 +23,7 @@ class TimerHomePage extends StatefulWidget {
 
 class _TimerHomePageState extends State<TimerHomePage>
     with SingleTickerProviderStateMixin, RegionBasedState<GameTimerData, TimerHomePage> {
-  late final _tabController = TabController(length: 5, vsync: this);
+  late final _tabController = TabController(length: 6, vsync: this);
 
   GameTimerData get timerData => data!;
 
@@ -71,9 +72,14 @@ class _TimerHomePageState extends State<TimerHomePage>
         bottom: FixedHeight.tabBar(TabBar(
           isScrollable: true,
           controller: _tabController,
-          tabs: [S.current.general_all, S.current.event, S.current.summon, S.current.master_mission, S.current.shop]
-              .map((e) => Tab(text: e))
-              .toList(),
+          tabs: [
+            S.current.general_all,
+            S.current.event,
+            S.current.summon,
+            S.current.master_mission,
+            S.current.shop,
+            "Time",
+          ].map((e) => Tab(text: e)).toList(),
         )),
       ),
       body: buildBody(context),
@@ -89,6 +95,7 @@ class _TimerHomePageState extends State<TimerHomePage>
       TimerGachaTab(region: region, gachas: timerData.gachas),
       TimerMissionTab(region: region, mms: timerData.masterMissions),
       TimerShopTab(region: region, shops: timerData.shops),
+      RegionTimeTab(region: region),
     ]);
   }
 }

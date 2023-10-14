@@ -64,6 +64,7 @@ dependencies:
   flutter_picker: ^2.1.0
   # flutter_qjs: ^0.3.7
   flutter_js: ^0.8.0
+  flutter_svg: ^2.0.7
   flutter_window_close: ^0.2.2
   font_awesome_flutter: ^10.5.0
   github: ^9.16.0
