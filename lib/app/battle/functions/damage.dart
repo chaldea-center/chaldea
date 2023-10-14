@@ -123,7 +123,7 @@ class Damage {
         }
 
         final damageParameters = DamageParameters()
-          ..attack = activator.attack + currentCard.cardStrengthen
+          ..attack = activator.atk + currentCard.cardStrengthen
           ..totalHits = Maths.sum(currentCard.cardDetail.hitsDistribution)
           ..damageRate = currentCard.isNP
               ? dataVals.Value! + hpRatioDamageLow + hpRatioDamageHigh

@@ -56,7 +56,7 @@ class ShiftServant {
     await battleData.withTarget(actor, () async {
       actor.changeIndex = changeIndex;
       actor.niceEnemy = changeSvt;
-      actor.atk = changeSvt.atk;
+      actor.baseAtk = changeSvt.atk;
       // actor.hp = targetEnemy.hp;
       actor.maxHp = changeSvt.hp;
       actor.level = changeSvt.lv;

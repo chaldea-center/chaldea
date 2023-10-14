@@ -80,7 +80,7 @@ class BattleServantData {
   int uniqueId = 0;
   int svtId = -1;
   int level = 0;
-  int atk = 0;
+  int baseAtk = 0;
   int hp = 0;
   int _maxHp = 0;
   set maxHp(final int maxHp) => _maxHp = maxHp;
@@ -125,7 +125,7 @@ class BattleServantData {
       .._maxHp = enemy.hp
       ..svtId = enemy.svt.id
       ..level = enemy.lv
-      ..atk = enemy.atk
+      ..baseAtk = enemy.atk
       ..deckIndex = enemy.deckId
       ..shiftNpcIds = enemy.enemyScript.shift ?? []
       ..changeNpcIds = enemy.enemyScript.change ?? [];
@@ -155,7 +155,7 @@ class BattleServantData {
       ..svtId = psvt.id
       ..level = settings.lv
       .._maxHp = settings.fixedHp ?? ((psvt.hpGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.hpFou)
-      ..atk = settings.fixedAtk ?? ((psvt.atkGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.atkFou);
+      ..baseAtk = settings.fixedAtk ?? ((psvt.atkGrowth.getOrNull(settings.lv - 1) ?? 0) + settings.atkFou);
     svt.hp = svt._maxHp;
     if (settings.ce != null) {
       svt.equip = BattleCEData(settings.ce!, settings.ceLimitBreak, settings.ceLv);
@@ -220,7 +220,7 @@ class BattleServantData {
 
   int get tdLv => (isPlayer ? playerSvtData!.tdLv : niceEnemy!.noblePhantasm.noblePhantasmLv).clamp(0, 5);
 
-  int get attack => isPlayer ? atk + (equip?.atk ?? 0) : atk;
+  int get atk => isPlayer ? baseAtk + (equip?.atk ?? 0) : baseAtk;
 
   int get rarity => isPlayer ? niceSvt!.rarity : niceEnemy!.svt.rarity;
 
@@ -652,7 +652,7 @@ class BattleServantData {
     niceEnemy = nextShift;
     await initScript(battleData);
 
-    atk = nextShift.atk;
+    baseAtk = nextShift.atk;
     hp = nextShift.hp;
     _maxHp = nextShift.hp;
     level = nextShift.lv;
@@ -664,7 +664,7 @@ class BattleServantData {
     niceEnemy = shiftSvt;
     await initScript(battleData);
 
-    atk = shiftSvt.atk;
+    baseAtk = shiftSvt.atk;
     hp = shiftSvt.hp;
     _maxHp = shiftSvt.hp;
     level = shiftSvt.lv;
@@ -1428,7 +1428,7 @@ class BattleServantData {
       ..uniqueId = uniqueId
       ..svtId = svtId
       ..level = level
-      ..atk = atk
+      ..baseAtk = baseAtk
       ..hp = hp
       .._maxHp = _maxHp
       ..np = np

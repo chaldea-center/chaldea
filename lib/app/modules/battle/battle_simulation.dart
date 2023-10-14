@@ -453,7 +453,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     children.add(Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <String>[
-        if (svt.isPlayer) 'ATK: ${svt.attack}',
+        if (svt.isPlayer) 'ATK: ${svt.atk}',
         'HP: ${svt.hp}',
         if (svt.isEnemy && svt.shiftNpcIds.isNotEmpty)
           List.generate(svt.shiftNpcIds.length, (index) => svt.shiftNpcIds.length - index > svt.shiftIndex ? '◆' : '◇')
