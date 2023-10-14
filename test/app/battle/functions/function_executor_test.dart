@@ -303,11 +303,11 @@ void main() async {
       });
       final buffCountAfter1 = cursedArm.battleBuff.originalActiveList.length;
       expect(buffCountAfter1, buffCountBefore1);
+      expect(battle.actionHistory[12]![enemy1.uniqueId], true);
       expect(battle.actionHistory[479]![enemy1.uniqueId], false);
       expect(battle.actionHistory[146]![cursedArm.uniqueId], false);
       expect(battle.actionHistory[460]![cursedArm.uniqueId], false);
       expect(battle.actionHistory[470], null);
-      expect(battle.actionHistory[12]![enemy1.uniqueId], true);
 
       battle.enemyTargetIndex = 1;
       final enemy2 = battle.onFieldEnemies[1]!;
@@ -322,11 +322,11 @@ void main() async {
       });
       final buffCountAfter2 = cursedArm.battleBuff.originalActiveList.length;
       expect(buffCountAfter2, buffCountBefore2 + 1);
+      expect(battle.actionHistory[12]![enemy2.uniqueId], true);
       expect(battle.actionHistory[479]![enemy2.uniqueId], true);
       expect(battle.actionHistory[146]![cursedArm.uniqueId], true);
       expect(battle.actionHistory[460]![cursedArm.uniqueId], true);
       expect(battle.actionHistory[470], null);
-      expect(battle.actionHistory[12]![enemy2.uniqueId], false);
     });
   });
 
