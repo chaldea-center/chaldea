@@ -415,7 +415,7 @@ void main() async {
         final damageParameters = baseParam.copy()
           ..damageRate = oc4Np5DataSpec.Value!
           ..npSpecificAttackRate = oc4Np5DataSpec.Correction!;
-        expect(calculateDamage(damageParameters), equals(85618));
+        expect(calculateDamage(damageParameters), equals(85617));
       });
 
       test('NP 5 OC 5 with npSpecificDamage', () {
@@ -426,6 +426,38 @@ void main() async {
           ..npSpecificAttackRate = oc5Np5DataSpec.Correction!;
         expect(calculateDamage(damageParameters), equals(91314));
       });
+    });
+
+    test('Vald III vs Caenis 1.099', () {
+      const defenderClass = SvtClass.lancer;
+      const defenderAttribute = Attribute.earth;
+
+      final vald = db.gameData.servantsById[700700]!;
+      const level = 120;
+      final classAdvantage = ConstData.getClassRelation(vald.className, defenderClass);
+
+      final np = vald.noblePhantasms.last;
+      final npDamageSpecs = np.functions.first;
+      final oc1Np5DataSpec = npDamageSpecs.svals.last;
+
+      final damageParameters = DamageParameters()
+        ..attack = vald.atkGrowth[level - 1] + 1000 + 1000 + 2400
+        ..attackerClass = vald.classId
+        ..defenderClass = defenderClass.id
+        ..classAdvantage = classAdvantage
+        ..attackerAttribute = vald.attribute
+        ..defenderAttribute = defenderAttribute
+        ..totalHits = Maths.sum(np.svt.damage)
+        ..isNp = true
+        ..currentCardType = np.svt.card
+        ..firstCardType = np.svt.card
+        ..fixedRandom = 1099
+        ..attackBuff = 1700
+        ..cardBuff = 2000
+        ..npDamageBuff = 950
+        ..damageRate = oc1Np5DataSpec.Value!
+        ..npSpecificAttackRate = 1000;
+      expect(calculateDamage(damageParameters), equals(954401));
     });
   });
 
