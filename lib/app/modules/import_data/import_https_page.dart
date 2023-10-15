@@ -696,6 +696,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                                       records: gachas.toList(),
                                       userSvt: mstData?.userSvt ?? [],
                                       userSvtStorage: mstData?.userSvtStorage ?? [],
+                                      userSvtCollection: mstData?.userSvtCollection ?? [],
                                       userShops: mstData?.userShop ?? [],
                                       userItems: mstData?.userItem ?? [],
                                       region: region,

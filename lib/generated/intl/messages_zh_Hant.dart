@@ -471,7 +471,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "gacha_prob_precision_hint": MessageLookupByLibrary.simpleMessage("數值過大或過小時由於double精度問題造成計算結果不準確"),
         "gacha_prob_svt_pickup": m18,
         "gacha_svt_count_hint": MessageLookupByLibrary.simpleMessage(
-            "所持欄位和保管室裡從者寶具數的簡單加和，不包含已變還(販賣)，不包含活動四星。\n無記名靈基商店兌換/福袋/自選四&五星對機率的影響需自行調整。\n拒絕曬卡，人人有責。"),
+            "均不包含活動四星和友情池四星。 \n持有:所持欄位和保管室裡從者寶具數的簡單加和，不包含已變還(販賣)\n總獲取數:包括所有歷史抽卡、「部分」自選，不包含無記名 靈基，包含已變還(販賣)。 \n詳情戳下方連結↓"),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("首頁"),
         "game_account": MessageLookupByLibrary.simpleMessage("遊戲帳號"),
         "game_data_not_found": MessageLookupByLibrary.simpleMessage("數據加載失敗, 請先前往遊戲數據頁面下載"),
@@ -707,6 +707,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "np_se": MessageLookupByLibrary.simpleMessage("寶具特攻"),
         "np_short": MessageLookupByLibrary.simpleMessage("寶具"),
         "np_sp_damage_rate": MessageLookupByLibrary.simpleMessage("寶具特攻係數"),
+        "obtain": MessageLookupByLibrary.simpleMessage("获取"),
         "obtain_time": MessageLookupByLibrary.simpleMessage("時間"),
         "ok": MessageLookupByLibrary.simpleMessage("確定"),
         "one_off_quest": MessageLookupByLibrary.simpleMessage("一次性關卡"),

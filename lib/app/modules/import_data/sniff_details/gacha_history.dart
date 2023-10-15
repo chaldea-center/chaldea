@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/raw.dart';
@@ -14,6 +15,7 @@ import '../../summon/gacha_banner.dart';
 class SniffGachaHistory extends StatefulWidget {
   final List<UserSvt> userSvt;
   final List<UserSvt> userSvtStorage;
+  final List<UserSvtCollection> userSvtCollection;
   final List<UserGacha> records;
   final List<UserShop> userShops;
   final List<UserItem> userItems;
@@ -24,6 +26,7 @@ class SniffGachaHistory extends StatefulWidget {
     required this.records,
     required this.userSvt,
     required this.userSvtStorage,
+    required this.userSvtCollection,
     required this.region,
     required this.userShops,
     required this.userItems,
@@ -129,7 +132,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Gacha Statistics"),
+        title: Text(S.current.gacha),
         actions: [
           ValueListenableBuilder(
             valueListenable: loading,
@@ -152,7 +155,16 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
           SliverList.list(children: [
             TileGroup(
               header: S.current.statistics_title,
-              footer: S.current.gacha_svt_count_hint,
+              footerWidget: SFooter.rich(TextSpan(text: S.current.gacha_svt_count_hint, children: [
+                const TextSpan(text: '\n'),
+                SharedBuilder.textButtonSpan(
+                  context: context,
+                  text: 'document',
+                  onTap: () {
+                    launch(ChaldeaUrl.doc('import_https/gacha_stat'));
+                  },
+                )
+              ])),
               children: [
                 ListTile(
                   dense: true,
@@ -160,19 +172,43 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
                   trailing: Text('$totalSummonCount ${S.current.summon_pull_unit}'),
                 ),
                 ...<int>[5, 4].map((rarity) {
-                  final tdCount = countServantTD(allUserSvts, rarity);
+                  final countsOwned = countServantTDOwned(allUserSvts, rarity);
+                  final countOwned = Maths.sum(countsOwned.values);
+                  final countsAll = countServantTDAll(widget.userSvtCollection, rarity);
+                  final countAll = Maths.sum(countsAll.values);
+
                   return ListTile(
                     dense: true,
                     title: Text('$kStarChar $rarity ${S.current.servant}'),
-                    trailing: Text.rich(
-                      TextSpan(text: '$tdCount\n', children: [
-                        TextSpan(
-                          text: '${(tdCount / totalSummonCount * 100).toStringAsFixed(2)}%',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        )
-                      ]),
-                      textAlign: TextAlign.end,
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text.rich(
+                          TextSpan(text: '${S.current.item_own} $countOwned\n', children: [
+                            TextSpan(
+                              text: '${(countOwned / totalSummonCount * 100).toStringAsFixed(2)}%',
+                              style: Theme.of(context).textTheme.bodySmall,
+                            )
+                          ]),
+                          textAlign: TextAlign.end,
+                        ),
+                        const SizedBox(width: 8),
+                        Text.rich(
+                          TextSpan(text: '${S.current.obtain} $countAll\n', children: [
+                            TextSpan(
+                              text: '${(countAll / totalSummonCount * 100).toStringAsFixed(2)}%',
+                              style: Theme.of(context).textTheme.bodySmall,
+                            )
+                          ]),
+                          textAlign: TextAlign.end,
+                        ),
+                        Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                      ],
                     ),
+                    onTap: () {
+                      router.pushPage(_SvtTotalNumList(rarity: rarity, countsOwned: countsOwned, countsAll: countsAll));
+                    },
                   );
                 }),
               ],
@@ -343,8 +379,9 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     return record.gachaId == 1;
   }
 
-  int countServantTD(List<UserSvt> servants, int rarity) {
-    int count = 0;
+  Map<int, int> countServantTDOwned(List<UserSvt> servants, int rarity) {
+    assert(rarity == 4 || rarity == 5);
+    Map<int, int> counts = {};
     for (final userSvt in servants) {
       final svt = userSvt.dbSvt;
       if (svt == null || !svt.isUserSvt || svt.rarity != rarity) continue;
@@ -355,9 +392,27 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
           continue;
         }
       }
-      count += userSvt.treasureDeviceLv1;
+      counts.addNum(userSvt.svtId, userSvt.treasureDeviceLv1);
     }
-    return count;
+    return counts;
+  }
+
+  Map<int, int> countServantTDAll(List<UserSvtCollection> servants, int rarity) {
+    Map<int, int> counts = {};
+    for (final userSvt in servants) {
+      final svt = db.gameData.servantsById[userSvt.svtId];
+      if (!userSvt.isOwned) continue;
+      if (svt == null || !svt.isUserSvt || svt.rarity != rarity) continue;
+      if (rarity == 4) {
+        if (svt.type == SvtType.heroine ||
+            const [SvtObtain.eventReward, SvtObtain.friendPoint, SvtObtain.clearReward, SvtObtain.unavailable]
+                .any((e) => svt.extra.obtains.contains(e))) {
+          continue;
+        }
+      }
+      counts[userSvt.svtId] = userSvt.totalGetNum;
+    }
+    return counts;
   }
 
   String getLuckyBagCount() {
@@ -401,6 +456,85 @@ class _UserShopList extends StatelessWidget {
             },
           );
         },
+      ),
+    );
+  }
+}
+
+class _SvtTotalNumList extends StatefulWidget {
+  final int rarity;
+  final Map<int, int> countsOwned;
+  final Map<int, int> countsAll;
+
+  const _SvtTotalNumList({
+    required this.rarity,
+    required this.countsOwned,
+    required this.countsAll,
+  });
+
+  @override
+  State<_SvtTotalNumList> createState() => _SvtTotalNumListState();
+}
+
+class _SvtTotalNumListState extends State<_SvtTotalNumList> {
+  bool diffOnly = false;
+  @override
+  Widget build(BuildContext context) {
+    final svtIds = {...widget.countsOwned.keys, ...widget.countsAll.keys}.toList();
+    svtIds.sort((a, b) {
+      return SvtFilterData.compare(db.gameData.servantsById[a], db.gameData.servantsById[b],
+          keys: [SvtCompare.className, SvtCompare.no], reversed: [false, false]);
+    });
+    List<Widget> children = [];
+    for (final svtId in svtIds) {
+      final owned = widget.countsOwned[svtId] ?? 0;
+      final all = widget.countsAll[svtId] ?? 0;
+      final equal = owned == all;
+      if (diffOnly && equal) continue;
+
+      Widget child = GameCardMixin.anyCardItemBuilder(
+        context: context,
+        id: svtId,
+        text: '$owned\n$all',
+        option: ImageWithTextOption(
+          padding: const EdgeInsets.only(right: 6, bottom: 6),
+          shadowColor: equal ? null : Colors.white,
+          textStyle: equal ? null : const TextStyle(color: Colors.red),
+        ),
+        padding: const EdgeInsets.all(1.5),
+      );
+      if (!equal) {
+        child = Container(color: Colors.red, child: child);
+      }
+      child = Padding(padding: const EdgeInsets.all(1.5), child: child);
+      children.add(child);
+    }
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('$kStarChar2${widget.rarity} ${S.current.statistics_title}'),
+        actions: [
+          Center(
+            child: Text(
+              [S.current.item_own, S.current.obtain].join('\n'),
+              textAlign: TextAlign.end,
+              style: const TextStyle(fontSize: 12),
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              setState(() {
+                diffOnly = !diffOnly;
+              });
+            },
+            icon: const Icon(Icons.difference),
+            tooltip: 'Difference Only',
+          ),
+        ],
+      ),
+      body: GridView.extent(
+        maxCrossAxisExtent: 56,
+        childAspectRatio: 132 / 144,
+        children: children,
       ),
     );
   }

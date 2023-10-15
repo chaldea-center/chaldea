@@ -492,7 +492,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "If the value is too large or too small, the calculation result is inaccurate due to the double precision problem."),
         "gacha_prob_svt_pickup": m18,
         "gacha_svt_count_hint": MessageLookupByLibrary.simpleMessage(
-            "Sum of NP level of servants in Inventory & Second Archive, don\'t include burned and event 4☆ servants.\nEffect on probability due to Unregistered Spirit Origin shop, Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction."),
+            "Both excluded event SR and FP SR.\nOwned: Sum of NP level of servants in Inventory & Second Archive, don\'t include burned.\nObtain: all historical Gachas and \'PART\' of 5/4-Star Servant Present.\nSee link ↓ for details."),
         "gallery_tab_name": MessageLookupByLibrary.simpleMessage("Home"),
         "game_account": MessageLookupByLibrary.simpleMessage("Game Account"),
         "game_data_not_found":
@@ -736,6 +736,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "np_se": MessageLookupByLibrary.simpleMessage("NP S.E."),
         "np_short": MessageLookupByLibrary.simpleMessage("NP"),
         "np_sp_damage_rate": MessageLookupByLibrary.simpleMessage("NP Special Damage Rate"),
+        "obtain": MessageLookupByLibrary.simpleMessage("Obtain"),
         "obtain_time": MessageLookupByLibrary.simpleMessage("Time"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
         "one_off_quest": MessageLookupByLibrary.simpleMessage("One-off Quest"),

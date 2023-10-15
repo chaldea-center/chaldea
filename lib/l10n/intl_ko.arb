@@ -610,6 +610,7 @@
   "np_se": null,
   "np_short": "보구",
   "np_sp_damage_rate": null,
+  "obtain": null,
   "obtain_time": "시간",
   "ok": "확인",
   "one_off_quest": "일회성 퀘스트",

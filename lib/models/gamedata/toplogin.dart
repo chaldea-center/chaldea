@@ -427,66 +427,84 @@ class UserSvt {
   CraftEssence? get dbCE => db.gameData.craftEssencesById[svtId];
 }
 
-//  {
-//             "userId": "100106535477",
-//             "svtId": "103200",
-//             "status": "1",
-//             "maxLv": "0",
-//             "maxHp": "0",
-//             "maxAtk": "0",
-//             "maxLimitCount": "0",
-//             "skillLv1": "1",
-//             "skillLv2": "1",
-//             "skillLv3": "1",
-//             "treasureDeviceLv1": "1",
-//             "treasureDeviceLv2": "1",
-//             "treasureDeviceLv3": "1",
-//             "svtCommonFlag": "0",
-//             "flag": "0",
-//             "friendship": "0",
-//             "friendshipRank": "0",
-//             "friendshipExceedCount": "0",
-//             "voicePlayed": "0",
-//             "voicePlayed2": "0",
-//             "tdPlayed": [],
-//             "getNum": "0",
-//             "costumeIds": [],
-//             "updatedAt": "1568449630",
-//             "createdAt": "1568449630"
-//         },
 @JsonSerializable(createToJson: false)
 class UserSvtCollection {
   int svtId;
 
   /// 1-已遭遇, 2-已契约
   int status;
+  int maxLv;
+  int maxHp;
+  int maxAtk;
+  int maxLimitCount;
+  int skillLv1;
+  int skillLv2;
+  int skillLv3;
+  int treasureDeviceLv1; // CN: treasureDeviceLv2~3
+  int svtCommonFlag;
+  int flag;
   int friendship;
   int friendshipRank;
   int friendshipExceedCount;
+  // int voicePlayed;
+  // int voicePlayed2;
+  // List<int> tdPlayed;
+  int getNum;
+  int totalGetNum;
 
   /// costume: x start from 11, -x when unlock.
   /// maybe out of order, need to sort when parsing
   /// include mash's story costume.
   List<int> costumeIds;
+  List<int> releasedCostumeIds; // always positive, reach unlock condition but haven't unlock
   int updatedAt;
   int createdAt;
+  // commandCodes: null // deprecated?
+  // commandCardParams: null // deprecated?
+  // dateTimeOfGachas: null // new in JP
 
   UserSvtCollection({
     required dynamic svtId,
     required dynamic status,
+    required dynamic maxLv,
+    required dynamic maxHp,
+    required dynamic maxAtk,
+    required dynamic maxLimitCount,
+    required dynamic skillLv1,
+    required dynamic skillLv2,
+    required dynamic skillLv3,
+    required dynamic treasureDeviceLv1,
+    required dynamic svtCommonFlag,
+    required dynamic flag,
     required dynamic friendship,
     required dynamic friendshipRank,
     required dynamic friendshipExceedCount,
+    required dynamic getNum,
+    required dynamic totalGetNum,
     required dynamic costumeIds,
+    required dynamic releasedCostumeIds,
     required dynamic updatedAt,
     required dynamic createdAt,
     // required List<int> releasedCostumeIds,
   })  : svtId = _toInt(svtId),
         status = _toInt(status),
+        maxLv = _toInt(maxLv),
+        maxHp = _toInt(maxHp),
+        maxAtk = _toInt(maxAtk),
+        maxLimitCount = _toInt(maxLimitCount),
+        skillLv1 = _toInt(skillLv1),
+        skillLv2 = _toInt(skillLv2),
+        skillLv3 = _toInt(skillLv3),
+        treasureDeviceLv1 = _toInt(treasureDeviceLv1),
+        svtCommonFlag = _toInt(svtCommonFlag),
+        flag = _toInt(flag),
         friendship = _toInt(friendship),
         friendshipRank = _toInt(friendshipRank),
         friendshipExceedCount = _toInt(friendshipExceedCount),
+        getNum = _toInt(getNum, 0),
+        totalGetNum = _toInt(totalGetNum, 0),
         costumeIds = _toIntList(costumeIds)..sort((a, b) => a.abs() - b.abs()),
+        releasedCostumeIds = _toIntList(releasedCostumeIds)..sort((a, b) => a.abs() - b.abs()),
         updatedAt = _toInt(updatedAt),
         createdAt = _toInt(createdAt);
 
@@ -1052,7 +1070,7 @@ class UserGacha {
   })  : gachaId = _toInt(gachaId),
         num = _toInt(num),
         freeDrawAt = _toInt(freeDrawAt),
-        status = _toInt(status),
+        status = _toInt(status, 0),
         createdAt = _toIntNull(createdAt);
   factory UserGacha.fromJson(Map<String, dynamic> data) => _$UserGachaFromJson(data);
 }

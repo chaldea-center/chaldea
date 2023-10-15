@@ -4232,10 +4232,10 @@ class S {
     );
   }
 
-  /// `Sum of NP level of servants in Inventory & Second Archive, don't include burned and event 4☆ servants.\nEffect on probability due to Unregistered Spirit Origin shop, Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction.`
+  /// `Both excluded event SR and FP SR.\nOwned: Sum of NP level of servants in Inventory & Second Archive, don't include burned.\nObtain: all historical Gachas and 'PART' of 5/4-Star Servant Present.\nSee link ↓ for details.`
   String get gacha_svt_count_hint {
     return Intl.message(
-      'Sum of NP level of servants in Inventory & Second Archive, don\'t include burned and event 4☆ servants.\nEffect on probability due to Unregistered Spirit Origin shop, Lucky Bag(GSSR) and 5/4-Star Servant Present needs manual correction.',
+      'Both excluded event SR and FP SR.\nOwned: Sum of NP level of servants in Inventory & Second Archive, don\'t include burned.\nObtain: all historical Gachas and \'PART\' of 5/4-Star Servant Present.\nSee link ↓ for details.',
       name: 'gacha_svt_count_hint',
       desc: '',
       locale: localeName,
@@ -6772,6 +6772,17 @@ class S {
     return Intl.message(
       'NP Special Damage Rate',
       name: 'np_sp_damage_rate',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Obtain`
+  String get obtain {
+    return Intl.message(
+      'Obtain',
+      name: 'obtain',
       desc: '',
       locale: localeName,
       args: [],
