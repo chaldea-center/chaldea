@@ -504,9 +504,9 @@ class QuestBonusPlan {
   Map<int, int> bonus = {};
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late int ap;
+  int ap = 999999;
   @JsonKey(includeFromJson: false, includeToJson: false)
-  late QuestDropData drops;
+  QuestDropData drops = QuestDropData();
 
   QuestBonusPlan({
     this.enabled = true,

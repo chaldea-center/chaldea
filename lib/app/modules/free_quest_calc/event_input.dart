@@ -65,29 +65,32 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     if (war == null) return;
     Set<int> validQuests = {};
     for (final quest in war.quests) {
-      if (quest.isAnyFree && quest.consumeType.useAp && quest.consume > 0) {
-        final drops = db.gameData.dropData.freeDrops2[quest.id];
-        if (drops == null) continue;
-        final eventDrops = QuestDropData(runs: drops.runs, items: {}, groups: {});
-        for (final itemId in drops.items.keys) {
-          final item = db.gameData.items[itemId];
-          if (item == null || item.category != ItemCategory.event) continue;
-          eventItemIds.add(itemId);
-          eventDrops.items[itemId] = drops.items[itemId]!;
-          eventDrops.groups[itemId] = drops.groups[itemId] ?? drops.runs;
+      if (!(quest.isAnyFree && quest.consumeType.useAp && quest.consume > 0)) {
+        continue;
+      }
+      final drops = db.gameData.dropData.freeDrops2[quest.id];
+      if (drops == null) continue;
+
+      final eventDrops = QuestDropData(runs: drops.runs, items: {}, groups: {});
+      for (final itemId in drops.items.keys) {
+        final item = db.gameData.items[itemId];
+        if (item == null || item.category != ItemCategory.event) continue;
+        eventItemIds.add(itemId);
+        eventDrops.items[itemId] = drops.items[itemId]!;
+        eventDrops.groups[itemId] = drops.groups[itemId] ?? drops.runs;
+      }
+      if (eventDrops.items.isNotEmpty) {
+        sortDict(eventDrops.items, compare: (a, b) => b.value - a.value, inPlace: true);
+        if (params.bonusPlans.every((e) => e.questId != quest.id)) {
+          params.bonusPlans.add(QuestBonusPlan(questId: quest.id));
         }
-        if (eventDrops.items.isNotEmpty) {
-          sortDict(eventDrops.items, compare: (a, b) => b.value - a.value, inPlace: true);
-          if (params.bonusPlans.every((e) => e.questId != quest.id)) {
-            params.bonusPlans.add(QuestBonusPlan(questId: quest.id)
-              ..ap = quest.consume
-              ..drops = eventDrops);
-          }
-          for (final plan in params.bonusPlans.where((e) => e.questId == quest.id)) {
-            plan.bonus.removeWhere((key, value) => !eventDrops.items.containsKey(key));
-          }
-          validQuests.add(quest.id);
+        final _plans = params.bonusPlans.where((e) => e.questId == quest.id).toList();
+        for (final plan in _plans) {
+          plan.ap = quest.consume;
+          plan.drops = drops;
+          plan.bonus.removeWhere((key, value) => !eventDrops.items.containsKey(key));
         }
+        validQuests.add(quest.id);
       }
     }
     params.bonusPlans = {for (final e in params.bonusPlans) '${e.questId}-${e.index}': e}.values.toList();
