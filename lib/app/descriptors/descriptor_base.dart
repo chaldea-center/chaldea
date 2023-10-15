@@ -43,7 +43,7 @@ mixin DescriptorBase {
     return [TextSpan(text: data)];
   }
 
-  List<InlineSpan> combineToRich(
+  List<InlineSpan> rich(
     BuildContext? context,
     String? text1, [
     List<InlineSpan>? children2,
