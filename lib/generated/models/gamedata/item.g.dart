@@ -20,6 +20,8 @@ Item _$ItemFromJson(Map json) => Item(
       background: $enumDecodeNullable(_$ItemBGTypeEnumMap, json['background']) ?? ItemBGType.zero,
       priority: json['priority'] as int,
       dropPriority: json['dropPriority'] as int,
+      startedAt: json['startedAt'] as int,
+      endedAt: json['endedAt'] as int,
       itemSelects: (json['itemSelects'] as List<dynamic>?)
               ?.map((e) => ItemSelect.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -37,6 +39,8 @@ Map<String, dynamic> _$ItemToJson(Item instance) => <String, dynamic>{
       'background': _$ItemBGTypeEnumMap[instance.background]!,
       'priority': instance.priority,
       'dropPriority': instance.dropPriority,
+      'startedAt': instance.startedAt,
+      'endedAt': instance.endedAt,
       'itemSelects': instance.itemSelects.map((e) => e.toJson()).toList(),
     };
 

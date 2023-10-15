@@ -1,4 +1,5 @@
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/quest/quest_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -7,7 +8,8 @@ import 'package:chaldea/widgets/widgets.dart';
 
 class EventCampaignDetail extends StatelessWidget {
   final Event event;
-  const EventCampaignDetail({super.key, required this.event});
+  final Region? region;
+  const EventCampaignDetail({super.key, required this.event, this.region});
 
   @override
   Widget build(BuildContext context) {
@@ -198,6 +200,33 @@ class EventCampaignDetail extends StatelessWidget {
     final item = db.gameData.items[id];
     if (item != null && campaign.target == CombineAdjustTarget.questUseFriendshipUpItem) {
       return Item.iconBuilder(context: context, item: item, width: 48);
+    }
+    if (campaign.target == CombineAdjustTarget.exchangeSvt ||
+        campaign.target == CombineAdjustTarget.exchangeSvtCombineExp) {
+      final shop = db.gameData.shops[id];
+      GameCardMixin? svt;
+      if (shop != null &&
+          const [PurchaseType.eventSvtJoin, PurchaseType.eventSvtGet, PurchaseType.servant]
+              .contains(shop.purchaseType)) {
+        final svtId = shop.targetIds.firstOrNull;
+        svt = db.gameData.servantsById[svtId] ?? db.gameData.entities[svtId];
+      }
+      void _onTap() {
+        if (shop != null) {
+          shop.routeTo(region: region);
+        } else {
+          router.push(url: Routes.shopI(id), region: region);
+        }
+      }
+
+      if (svt != null) {
+        return svt.iconBuilder(context: context, width: 48, onTap: _onTap);
+      }
+      return Text.rich(SharedBuilder.textButtonSpan(
+        context: context,
+        text: id.toString(),
+        onTap: _onTap,
+      ));
     }
     return Text(id.toString());
   }

@@ -811,6 +811,7 @@ class ExtraPassive {
   int condFriendshipRank;
   int eventId;
   int flag;
+  List<CommonRelease> releaseConditions;
   int startedAt;
   int endedAt;
 
@@ -824,6 +825,7 @@ class ExtraPassive {
     this.condFriendshipRank = 0,
     this.eventId = 0,
     this.flag = 0,
+    this.releaseConditions = const [],
     required this.startedAt,
     required this.endedAt,
   });

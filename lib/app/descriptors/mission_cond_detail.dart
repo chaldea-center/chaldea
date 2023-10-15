@@ -258,6 +258,30 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => text('Proceed $targetNum spaces in Culdpoly'),
           kr: () => text('갓폴리에서 합계 $targetNum칸 진행'),
         );
+      case DetailCondType.exchangeSvtQuestClear:
+        return localized(
+          jp: () => text('交換したサーヴァントを編成して、いずれかのクエストを$targetNum回クリアせよ'),
+          cn: () => text('在队伍中编入兑换的从者，并完成任意关卡$targetNum次'),
+          tw: null,
+          na: () => text('Put the exchanged servant in your Party and complete any quest $targetNum times'),
+          kr: null,
+        );
+      case DetailCondType.exchangeSvtTdPlay:
+        return localized(
+          jp: () => text('交換したサーヴァントの宝具を$targetNum回使用せよ'),
+          cn: () => text('使用$targetNum次兑换的从者的宝具'),
+          tw: null,
+          na: () => text('Use the exchanged servant\'s Noble Phantasm $targetNum times'),
+          kr: null,
+        );
+      case DetailCondType.exchangeSvtVoicePlay:
+        return localized(
+          jp: () => text('交換したサーヴァントのボイスをマイルームで$targetNum回再生せよ'),
+          cn: () => text('在个人空间播放$targetNum次兑换的从者的语音'),
+          tw: null,
+          na: () => text('Play the exchanged servant\'s voice $targetNum times in My Room'),
+          kr: null,
+        );
       // unused
       case DetailCondType.battleSvtInDeck:
       case DetailCondType.battleSvtEquipInDeck:
@@ -284,31 +308,35 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
   }) {
     final spans = super.localized(jp: jp, cn: cn, tw: tw, na: na, kr: kr);
     final questTraits = detail.targetQuestIndividualities.map((e) => e.signedId).toList();
-    final events = List<int>.of(detail.targetEventIds ?? []);
+    final eventIds = List<int>.of(detail.targetEventIds ?? []);
     final context = useContext();
+    List<InlineSpan> extraSpans = [];
     if (questTraits.isNotEmpty) {
-      spans.addAll(super.localized(
-        jp: null,
+      extraSpans.addAll(super.localized(
+        jp: () => combineToRich(context, '(クエスト特性: ', MultiDescriptor.traits(context, questTraits), ')'),
         cn: () => combineToRich(null, '(所需关卡特性: ', MultiDescriptor.traits(context, questTraits), ')'),
         tw: () => combineToRich(null, '(所需關卡特性: ', MultiDescriptor.traits(context, questTraits), ')'),
         na: () => combineToRich(null, '(Required Quest Trait: ', MultiDescriptor.traits(context, questTraits), ')'),
         kr: null,
       ));
     }
-    if (events.isNotEmpty) {
-      if (events.length == 1 && events.first == 0) {
-        spans.add(TextSpan(text: '(${S.current.main_story})'));
-      } else if (events.length == 1 && events.first == eventId) {
+    if (eventIds.isNotEmpty) {
+      if (eventIds.length == 1 && eventIds.first == 0) {
+        extraSpans.add(TextSpan(text: '(${S.current.main_story})'));
+      } else if (eventIds.length == 1 && eventIds.first == eventId) {
         // don't show event info inside event page
       } else {
-        spans.addAll(super.localized(
-          jp: null,
-          cn: () => combineToRich(null, '(活动: ', MultiDescriptor.events(context, events), ')'),
-          tw: () => combineToRich(null, '(活動: ', MultiDescriptor.events(context, events), ')'),
-          na: () => combineToRich(null, '(Event: ', MultiDescriptor.events(context, events), ')'),
+        extraSpans.addAll(super.localized(
+          jp: () => combineToRich(context, '(イベント: ', MultiDescriptor.events(context, eventIds), ')'),
+          cn: () => combineToRich(null, '(活动: ', MultiDescriptor.events(context, eventIds), ')'),
+          tw: () => combineToRich(null, '(活動: ', MultiDescriptor.events(context, eventIds), ')'),
+          na: () => combineToRich(null, '(Event: ', MultiDescriptor.events(context, eventIds), ')'),
           kr: null,
         ));
       }
+    }
+    if (extraSpans.isNotEmpty) {
+      spans.add(TextSpan(children: extraSpans, style: const TextStyle(fontSize: 14)));
     }
     return spans;
   }

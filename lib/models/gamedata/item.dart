@@ -36,6 +36,8 @@ class Item {
   ItemBGType background;
   int priority;
   int dropPriority;
+  int startedAt;
+  int endedAt;
   List<ItemSelect> itemSelects;
 
   Item({
@@ -49,6 +51,8 @@ class Item {
     this.background = ItemBGType.zero,
     required this.priority,
     required this.dropPriority,
+    required this.startedAt,
+    required this.endedAt,
     this.itemSelects = const [],
   });
 

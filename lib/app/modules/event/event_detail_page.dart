@@ -746,7 +746,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     }
 
     if (event.campaignQuests.isNotEmpty || event.campaigns.isNotEmpty) {
-      children.add(EventCampaignDetail(event: event));
+      children.add(EventCampaignDetail(event: event, region: widget.region));
     }
 
     if (event.type == EventType.interludeCampaign) {

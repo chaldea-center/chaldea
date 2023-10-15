@@ -145,21 +145,9 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
         bool and = condType == CondType.questNotClearAnd;
         return localized(
           jp: null,
-          cn: () => combineToRich(
-            context,
-            '未通关以下${and ? "所有" : "任意"}关卡',
-            quests(context),
-          ),
-          tw: () => combineToRich(
-            context,
-            '未通關以下${and ? "所有" : "任意"}關卡',
-            quests(context),
-          ),
-          na: () => combineToRich(
-            context,
-            'Have not cleared ${and ? "all " : "any "}quests of ',
-            quests(context),
-          ),
+          cn: () => combineToRich(context, '未通关以下${and ? "所有" : "任意"}关卡', quests(context)),
+          tw: () => combineToRich(context, '未通關以下${and ? "所有" : "任意"}關卡', quests(context)),
+          na: () => combineToRich(context, 'Have not cleared ${and ? "all " : "any "}quests of ', quests(context)),
           kr: null,
         );
       case CondType.questClearPhase:
@@ -225,54 +213,24 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           jp: () => combineToRich(context, null, servants(context), 'の霊基再臨を$targetNum段階目にする'),
           cn: () => combineToRich(context, null, servants(context), '达到灵基再临第$targetNum阶段'),
           tw: () => combineToRich(context, null, servants(context), '達到靈基再臨第$targetNum階段'),
-          na: () => combineToRich(
-            context,
-            null,
-            servants(context),
-            ' at ascension $targetNum',
-          ),
-          kr: () => combineToRich(
-            context,
-            null,
-            servants(context),
-            '영기재림 $targetNum 단계',
-          ),
+          na: () => combineToRich(context, null, servants(context), ' at ascension $targetNum'),
+          kr: () => combineToRich(context, null, servants(context), '영기재림 $targetNum 단계'),
         );
       case CondType.svtFriendship:
         return localized(
           jp: () => combineToRich(context, null, servants(context), 'の絆レベルが$targetNumになる'),
           cn: () => combineToRich(context, null, servants(context), '的羁绊等级达到$targetNum'),
           tw: () => combineToRich(context, null, servants(context), '的羈絆等級達到$targetNum'),
-          na: () => combineToRich(
-            context,
-            null,
-            servants(context),
-            ' at bond level $targetNum',
-          ),
-          kr: () => combineToRich(
-            context,
-            null,
-            servants(context),
-            ' 인연도 레벨 $targetNum',
-          ),
+          na: () => combineToRich(context, null, servants(context), ' at bond level $targetNum'),
+          kr: () => combineToRich(context, null, servants(context), ' 인연도 레벨 $targetNum'),
         );
       case CondType.svtGet:
         return localized(
           jp: () => combineToRich(context, null, servants(context), 'は霊基一覧の中にいる'),
           cn: () => combineToRich(context, null, servants(context), '在灵基一览中'),
           tw: () => combineToRich(context, null, servants(context), '在靈基一覽中'),
-          na: () => combineToRich(
-            context,
-            null,
-            servants(context),
-            ' in Spirit Origin Collection',
-          ),
-          kr: () => combineToRich(
-            context,
-            null,
-            servants(context),
-            ' 정식가입',
-          ),
+          na: () => combineToRich(context, null, servants(context), ' in Spirit Origin Collection'),
+          kr: () => combineToRich(context, null, servants(context), ' 정식가입'),
         );
       case CondType.eventEnd:
         return localized(
@@ -319,36 +277,16 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           jp: () => combineToRich(context, null, servants(context), 'の霊基再臨を ≥ $targetNum段階目にする'),
           cn: () => combineToRich(context, '从者', servants(context), '的灵基再临 ≥ $targetNum'),
           tw: () => combineToRich(context, '從者', servants(context), '的靈基再臨 ≥ $targetNum'),
-          na: () => combineToRich(
-            context,
-            'Servant',
-            servants(context),
-            ' at ascension ≥ $targetNum',
-          ),
-          kr: () => combineToRich(
-            context,
-            '서번트',
-            servants(context),
-            ' 재림 ≥ $targetNum',
-          ),
+          na: () => combineToRich(context, 'Servant', servants(context), ' at ascension ≥ $targetNum'),
+          kr: () => combineToRich(context, '서번트', servants(context), ' 재림 ≥ $targetNum'),
         );
       case CondType.limitCountBelow:
         return localized(
           jp: () => combineToRich(context, null, servants(context), 'の霊基再臨を ≤ $targetNum段階目にする'),
           cn: () => combineToRich(context, '从者', servants(context), '的灵基再临 ≤ $targetNum'),
           tw: () => combineToRich(context, '從者', servants(context), '的靈基再臨 ≤ $targetNum'),
-          na: () => combineToRich(
-            context,
-            'Servant',
-            servants(context),
-            ' at ascension ≤ $targetNum',
-          ),
-          kr: () => combineToRich(
-            context,
-            '서번트',
-            servants(context),
-            ' 재림 ≥ $targetNum',
-          ),
+          na: () => combineToRich(context, 'Servant', servants(context), ' at ascension ≤ $targetNum'),
+          kr: () => combineToRich(context, '서번트', servants(context), ' 재림 ≥ $targetNum'),
         );
       case CondType.svtLevelClassNum:
         final (clsIds, levels) = _splitTargets(targetIds);
@@ -419,8 +357,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
             );
           } else {
             return localized(
-              jp: () => text(
-                  '『${clsIds.map((e) => Transl.svtClassId(e).jp).join("/")}』クラスのサーヴァント$targetNum騎の霊基再臨を$limit段階目にする'),
+              jp: () => text('『${classIds(clsIds)}』クラスのサーヴァント$targetNum騎の霊基再臨を$limit段階目にする'),
               cn: () => text('让$targetNum骑${classIds(clsIds)}从者达到灵基再临第$limit阶段'),
               tw: () => text('讓$targetNum騎${classIds(clsIds)}從者達到靈基再臨第$limit階段'),
               na: () => text('Raise $targetNum ${classIds(clsIds)} to ascension $limit'),
@@ -639,48 +576,25 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           if (targetNum == 1) {
             return localized(
               jp: () => combineToRich(
-                context,
-                claim ? 'ミッションを達成(報酬を受け取り): ' : 'ミッションをクリア: ',
-                missionList(context, missionMap),
-              ),
-              cn: () => combineToRich(
-                context,
-                claim ? '达成任务(领取奖励): ' : '完成任务: ',
-                missionList(context, missionMap),
-              ),
-              tw: () => combineToRich(
-                context,
-                claim ? '達成任務(領取獎勵): ' : '完成任務: ',
-                missionList(context, missionMap),
-              ),
-              na: () => combineToRich(
-                context,
-                claim ? 'Achieve mission (claim rewards): ' : 'Clear mission: ',
-                missionList(context, missionMap),
-              ),
+                  context, claim ? 'ミッションを達成(報酬を受け取り): ' : 'ミッションをクリア: ', missionList(context, missionMap)),
+              cn: () => combineToRich(context, claim ? '达成任务(领取奖励): ' : '完成任务: ', missionList(context, missionMap)),
+              tw: () => combineToRich(context, claim ? '達成任務(領取獎勵): ' : '完成任務: ', missionList(context, missionMap)),
+              na: () => combineToRich(context, claim ? 'Achieve mission (claim rewards): ' : 'Clear mission: ',
+                  missionList(context, missionMap)),
               kr: null,
             );
           } else {
             return localized(
-              jp: () => combineToRich(
-                context,
-                claim ? '以下のすべてのミッションを達成せよ(報酬を受け取り): ' : '以下のすべてのミッションをクリアせよ: ',
-              ),
-              cn: () => combineToRich(
-                context,
-                claim ? '达成以下全部任务(领取奖励): ' : '完成以下全部任务: ',
-                missionList(context, missionMap),
-              ),
-              tw: () => combineToRich(
-                context,
-                claim ? '達成以下全部任務(領取獎勵): ' : '完成以下全部任務: ',
-                missionList(context, missionMap),
-              ),
+              jp: () => combineToRich(context, claim ? '以下のすべてのミッションを達成せよ(報酬を受け取り): ' : '以下のすべてのミッションをクリアせよ: ',
+                  missionList(context, missionMap)),
+              cn: () =>
+                  combineToRich(context, claim ? '达成以下全部任务(领取奖励): ' : '完成以下全部任务: ', missionList(context, missionMap)),
+              tw: () =>
+                  combineToRich(context, claim ? '達成以下全部任務(領取獎勵): ' : '完成以下全部任務: ', missionList(context, missionMap)),
               na: () => combineToRich(
-                context,
-                claim ? 'Achieve all missions (claim rewards) of ' : 'Clear all missions of ',
-                missionList(context, missionMap),
-              ),
+                  context,
+                  claim ? 'Achieve all missions (claim rewards) of ' : 'Clear all missions of ',
+                  missionList(context, missionMap)),
               kr: null,
             );
           }
@@ -756,6 +670,43 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
         } else {
           break;
         }
+      // exchangeSvt related cond: targetIds=[eventId], but no need to show
+      case CondType.svtFriendshipExchangeSvt:
+        return localized(
+          jp: () => combineToRich(context, '交換したサーヴァントの絆レベルをLv.$targetNum以上にせよ', events(context)),
+          cn: () => combineToRich(context, '兑换的从者牵绊等级合到Lv.$targetNum以上', events(context)),
+          tw: null,
+          na: () =>
+              combineToRich(context, 'Reach the exchanged servant\'s Bond to Lv.$targetNum or higher', events(context)),
+          kr: null,
+        );
+      case CondType.skillLvExchangeSvt:
+        return localized(
+          jp: () => combineToRich(context, '交換したサーヴァントのスキル1つをLv.$targetNum以上にせよ', events(context)),
+          cn: () => combineToRich(context, '升级兑换的从者的1个技能至Lv.$targetNum以上', events(context)),
+          tw: null,
+          na: () => combineToRich(
+              context, 'Upgrade the exchange servant\'s 1 skill to Lv.$targetNum or higher', events(context)),
+          kr: null,
+        );
+      case CondType.svtLimitExchangeSvt:
+        return localized(
+          jp: () => combineToRich(context, '交換したサーヴァント$targetNum骑を最終再臨せよ', events(context)),
+          cn: () => combineToRich(context, '让$targetNum器兑换的从者完成最终再临', events(context)),
+          tw: null,
+          na: () => combineToRich(context, 'Have $targetNum exchanged Servant reach Final Ascension', events(context)),
+          kr: null,
+        );
+      case CondType.svtLevelExchangeSvt:
+        return localized(
+          jp: () => combineToRich(context, '交換したサーヴァントをLv.$targetNum以上に強化せよ', events(context)),
+          cn: () => combineToRich(context, '将兑换的从者升级到Lv.$targetNum以上', events(context)),
+          tw: null,
+          na: () => combineToRich(context, 'Raise the exchanged servant to Lv.$targetNum or higher', events(context)),
+          kr: null,
+        );
+      // case CondType.exchangeSvt: // cond_target_value
+      //   break;
       case CondType.date:
         final time = DateTime.fromMillisecondsSinceEpoch(targetNum * 1000).toStringShort(omitSec: true);
         return localized(

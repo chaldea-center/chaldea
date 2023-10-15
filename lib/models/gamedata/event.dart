@@ -1775,6 +1775,9 @@ enum DetailCondType {
   svtFriendshipGet(33), // 28M Download Campaign
   battleSvtIdInFrontDeck(34),
   questChallengeNum(36), // similar to CondType.questChallengeNum
+  exchangeSvtQuestClear(37), // 3000 day campaign, exchangeSvt
+  exchangeSvtTdPlay(38), // 3000 day campaign, exchangeSvt
+  exchangeSvtVoicePlay(39), // 3000 day campaign, exchangeSvt
 
   /// custom, only used in app
   questClearIndividuality(999);

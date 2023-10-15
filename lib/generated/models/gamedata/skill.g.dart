@@ -365,6 +365,10 @@ ExtraPassive _$ExtraPassiveFromJson(Map json) => ExtraPassive(
       condFriendshipRank: json['condFriendshipRank'] as int? ?? 0,
       eventId: json['eventId'] as int? ?? 0,
       flag: json['flag'] as int? ?? 0,
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       startedAt: json['startedAt'] as int,
       endedAt: json['endedAt'] as int,
     );
@@ -379,6 +383,7 @@ Map<String, dynamic> _$ExtraPassiveToJson(ExtraPassive instance) => <String, dyn
       'condFriendshipRank': instance.condFriendshipRank,
       'eventId': instance.eventId,
       'flag': instance.flag,
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
       'startedAt': instance.startedAt,
       'endedAt': instance.endedAt,
     };

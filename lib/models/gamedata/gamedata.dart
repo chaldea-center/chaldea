@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:crclib/catalog.dart';
 
+import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../userdata/version.dart';
 import '_helper.dart';
@@ -195,6 +196,8 @@ class GameData with _GameDataExtra {
       background: ItemBGType.zero,
       priority: 395,
       dropPriority: 8900,
+      startedAt: 0,
+      endedAt: kNeverClosedTimestamp,
     );
     costumes = {
       for (final svt in servants.values)

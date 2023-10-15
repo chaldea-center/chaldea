@@ -76,20 +76,8 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.questClearBeforeEventStart:
         return localized(
           jp: null,
-          cn: () => combineToRich(
-            context,
-            '在活动',
-            MultiDescriptor.events(context, [value]),
-            '开始前通关',
-            quests(context),
-          ),
-          tw: () => combineToRich(
-            context,
-            '在活動',
-            MultiDescriptor.events(context, [value]),
-            '開始前通關',
-            quests(context),
-          ),
+          cn: () => combineToRich(context, '在活动', MultiDescriptor.events(context, [value]), '开始前通关', quests(context)),
+          tw: () => combineToRich(context, '在活動', MultiDescriptor.events(context, [value]), '開始前通關', quests(context)),
           na: () => combineToRich(
               context, 'Clear ', quests(context), ' before event start', MultiDescriptor.events(context, [value])),
           kr: null,
@@ -97,20 +85,8 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.notQuestClearBeforeEventStart:
         return localized(
           jp: null,
-          cn: () => combineToRich(
-            context,
-            '在活动',
-            MultiDescriptor.events(context, [value]),
-            '开始前未通关',
-            quests(context),
-          ),
-          tw: () => combineToRich(
-            context,
-            '在活動',
-            MultiDescriptor.events(context, [value]),
-            '開始前未通關',
-            quests(context),
-          ),
+          cn: () => combineToRich(context, '在活动', MultiDescriptor.events(context, [value]), '开始前未通关', quests(context)),
+          tw: () => combineToRich(context, '在活動', MultiDescriptor.events(context, [value]), '開始前未通關', quests(context)),
           na: () => combineToRich(context, 'Have not cleared ', quests(context), ' before event start',
               MultiDescriptor.events(context, [value])),
           kr: null,
@@ -163,16 +139,6 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           na: () => combineToRich(context, null, servants(context), ' at bond level $value'),
           kr: null,
         );
-      case CondType.costumeGet:
-      case CondType.notCostumeGet:
-      case CondType.purchaseShop:
-      case CondType.notShopPurchase:
-        return CondTargetNumDescriptor(
-          condType: condType,
-          targetNum: value,
-          targetIds: [target],
-          unknownMsg: unknownMsg,
-        ).buildContent(context);
       case CondType.eventEnd:
         return localized(
           jp: () => combineToRich(context, 'イベント', events(context), 'は終了した'),
@@ -319,15 +285,22 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           na: () => text('Reach $value event points'),
           kr: null,
         );
-      case CondType.eventMissionClear:
-      case CondType.eventMissionAchieve:
-        return CondTargetNumDescriptor(
-          condType: condType,
-          targetNum: 1,
-          targetIds: [target],
-          missions: missions,
-          unknownMsg: unknownMsg,
-        ).buildContent(context);
+      case CondType.eventFortificationRewardNum:
+        return localized(
+          jp: () => text('梁山泊の活動報酬を$value回達成'),
+          cn: () => text('梁山泊活动奖励达成$value次'),
+          tw: null,
+          na: () => text('Achieve Fortification rewards $value times'),
+          kr: null,
+        );
+      case CondType.exchangeSvt:
+        return localized(
+          jp: () => combineToRich(context, '交換したサーヴァント', events(context)),
+          cn: () => combineToRich(context, '兑换的从者', events(context)),
+          tw: null,
+          na: () => combineToRich(context, "Exchanged Servant", events(context)),
+          kr: null,
+        );
       case CondType.commonRelease:
         return localized(
           jp: null,
@@ -346,6 +319,26 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         }
         if (weekdays.isEmpty) break;
         return [TextSpan(text: weekdays.join(' / '))];
+      // redirect to CondTargetNum
+      case CondType.costumeGet:
+      case CondType.notCostumeGet:
+      case CondType.purchaseShop:
+      case CondType.notShopPurchase:
+        return CondTargetNumDescriptor(
+          condType: condType,
+          targetNum: value,
+          targetIds: [target],
+          unknownMsg: unknownMsg,
+        ).buildContent(context);
+      case CondType.eventMissionClear:
+      case CondType.eventMissionAchieve:
+        return CondTargetNumDescriptor(
+          condType: condType,
+          targetNum: 1,
+          targetIds: [target],
+          missions: missions,
+          unknownMsg: unknownMsg,
+        ).buildContent(context);
       default:
         break;
     }
