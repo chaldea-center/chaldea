@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/svg.dart';
@@ -38,16 +39,26 @@ class _RegionTimeTabState extends State<RegionTimeTab> {
 
   @override
   Widget build(BuildContext context) {
-    List<_RegionData> list = [
-      _RegionData(name: 'Device', tzName: t.timeZoneName, offset: t.timeZoneOffset, flagSvg: null, region: null),
+    final isDesktop = Theme.of(context).platform.isDesktop;
+    final divider = Divider(indent: 16 + 40 + 16 + (isDesktop ? -4 : 0));
+    List<Widget> list = [
+      buildItem(_RegionData(
+        tzName: t.timeZoneName,
+        offset: t.timeZoneOffset,
+        icon: isDesktop ? Icons.computer : Icons.smartphone,
+      )),
+      divider,
     ];
     final regions = [widget.region, ...Region.values.where((e) => e != widget.region)];
     for (final region in regions) {
-      list.addAll(getRegionData(region));
+      list.addAll(getRegionData(region).map(buildItem));
     }
-    list.add(_RegionData(name: '', tzName: 'UTC', offset: Duration.zero, flagSvg: null, region: null));
+    list.addAll([
+      divider,
+      buildItem(_RegionData(tzName: 'UTC', offset: Duration.zero, icon: FontAwesomeIcons.earthEurope)),
+    ]);
 
-    return ListView(children: [for (final data in list) buildItem(data)]);
+    return ListView(children: list);
   }
 
   List<_RegionData> getRegionData(Region region) {
@@ -116,7 +127,7 @@ class _RegionTimeTabState extends State<RegionTimeTab> {
 
   Widget buildItem(_RegionData data) {
     List<InlineSpan> subtitles = [
-      TextSpan(text: [data.name, data.tzName].where((e) => e.isNotEmpty).join(' ')),
+      TextSpan(text: [if (data.name != null) data.name!, data.tzName].join(' ')),
     ];
     if (data.offset != Duration.zero || data.tzName != 'UTC') {
       final h = data.offset.inHours, m = data.offset.inMinutes.abs() % Duration.minutesPerHour;
@@ -130,7 +141,11 @@ class _RegionTimeTabState extends State<RegionTimeTab> {
         child: SizedBox(
           width: 40,
           child: Center(
-            child: data.flagSvg == null ? null : SvgPicture.string(data.flagSvg!),
+            child: data.flagSvg != null
+                ? SvgPicture.string(data.flagSvg!)
+                : data.icon != null
+                    ? Icon(data.icon, size: 36)
+                    : null,
           ),
         ),
       ),
@@ -149,18 +164,20 @@ class _RegionTimeTabState extends State<RegionTimeTab> {
 }
 
 class _RegionData {
-  String name;
+  String? name;
   String tzName;
   Duration offset;
   String? flagSvg;
+  IconData? icon;
   Region? region;
 
   _RegionData({
-    required this.name,
+    this.name,
     required this.tzName,
     required this.offset,
-    required this.flagSvg,
-    required this.region,
+    this.flagSvg,
+    this.icon,
+    this.region,
   });
 }
 

@@ -45,6 +45,7 @@ class _TimerHomePageState extends State<TimerHomePage>
       appBar: AppBar(
         titleSpacing: NavigationToolbar.kMiddleSpacing,
         title: const Text("Timer"),
+        centerTitle: true,
         actions: [
           SharedBuilder.appBarRegionDropdown(
             context: context,
