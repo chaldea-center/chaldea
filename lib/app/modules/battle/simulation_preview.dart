@@ -14,6 +14,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/modules/battle/battle_simulation.dart';
 import 'package:chaldea/app/modules/battle/teams/teams_query_page.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/quest/quest_card.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -176,7 +177,28 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         if (mounted) setState(() {});
       },
     ));
-    children.add(header(S.current.mystic_code));
+    children.add(DividerWithTitle(
+      titleWidget: Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(text: S.current.mystic_code, style: const TextStyle(fontWeight: FontWeight.bold)),
+            SharedBuilder.textButtonSpan(
+              context: context,
+              text: ' ${S.current.disable} ',
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+              onTap: () {
+                setState(() {
+                  options.team.mysticCodeData.level = 0;
+                  options.team.mysticCodeData.mysticCode = null;
+                });
+              },
+            )
+          ],
+        ),
+      ),
+      thickness: 2,
+      padding: const EdgeInsets.only(top: 8),
+    ));
     children.add(buildMysticCode());
     children.add(header(S.current.battle_misc_config));
     children.add(buildMisc());
@@ -276,7 +298,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
   Widget header(String title) {
     return DividerWithTitle(
-      title: S.current.quest,
       titleWidget: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
       thickness: 2,
       padding: const EdgeInsets.only(top: 8),
@@ -615,28 +636,37 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
   Widget buildMysticCode() {
     final mcData = options.team.mysticCodeData;
+    final enabled = mcData.enabled;
     Widget mcIcon = Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        mcData.mysticCode?.iconBuilder(context: context, width: 48, jumpToDetail: false) ??
-            db.getIconImage(null, width: 48),
-        if (mcData.mysticCode != null)
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
+        mcData.mysticCode?.iconBuilder(context: context, height: 48, jumpToDetail: false) ??
+            db.getIconImage(null, height: 48),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (mcData.mysticCode != null && enabled)
               for (final skill in mcData.mysticCode!.skills)
                 db.getIconImage(
-                  mcData.enabled ? skill.icon : Atlas.common.emptySkillIcon,
+                  skill.icon,
+                  width: 24,
+                  aspectRatio: 1,
+                  padding: const EdgeInsets.all(1),
+                )
+            else
+              for (final _ in kActiveSkillNums)
+                db.getIconImage(
+                  Atlas.common.emptySkillIcon,
                   width: 24,
                   aspectRatio: 1,
                   padding: const EdgeInsets.all(1),
                 ),
-            ],
-          ),
+          ],
+        ),
       ],
     );
-    if (mcData.level == 0) {
+    if (!enabled) {
       mcIcon = Opacity(opacity: 0.7, child: mcIcon);
     }
     mcIcon = InkWell(
@@ -663,11 +693,11 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         mcIcon,
         Flexible(
           child: SliderWithTitle(
-            leadingText: mcData.mysticCode?.lName.l ?? S.current.mystic_code,
+            leadingText: enabled ? mcData.mysticCode?.lName.l ?? S.current.mystic_code : S.current.mystic_code,
             min: 0,
             max: 10,
             value: options.team.mysticCodeData.level,
-            label: mcData.level == 0 ? S.current.disabled : 'Lv.${mcData.level}',
+            label: enabled ? 'Lv.${mcData.level}' : S.current.disabled,
             onChange: (v) {
               mcData.level = v.round();
               if (mounted) setState(() {});

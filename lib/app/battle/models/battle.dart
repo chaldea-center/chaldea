@@ -338,9 +338,12 @@ class BattleData {
       mysticCode = await overwriteEquip.toMysticCode();
       mysticCodeLv = overwriteEquip.skillLv;
     } else {
-      mysticCodeLv = mysticCodeData?.level ?? 10;
-      if (mysticCodeLv > 0) {
-        mysticCode = mysticCodeData?.mysticCode;
+      if (mysticCodeData != null && mysticCodeData.enabled) {
+        mysticCode = mysticCodeData.mysticCode;
+        mysticCodeLv = mysticCodeData.level;
+      } else {
+        mysticCode = null;
+        mysticCodeLv = 10;
       }
     }
     if (mysticCode != null) {

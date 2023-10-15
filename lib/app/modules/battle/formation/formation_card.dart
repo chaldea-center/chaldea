@@ -13,7 +13,8 @@ class FormationCard extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    final mc = db.gameData.mysticCodes[formation.mysticCode.mysticCodeId];
+    final enabled = formation.mysticCode.mysticCodeId != null && formation.mysticCode.level > 0;
+    final mc = enabled ? db.gameData.mysticCodes[formation.mysticCode.mysticCodeId] : null;
     final Set<String?> mcIcons = {};
     if (showAllMysticCodeIcon) {
       mcIcons.add(mc?.extraAssets.item.male);
@@ -38,14 +39,14 @@ class FormationCard extends StatelessWidget {
                   for (final icon in mcIcons)
                     Flexible(
                       child: db.getIconImage(
-                        formation.mysticCode.level > 0 ? icon : null,
+                        enabled ? icon : null,
                         aspectRatio: 1,
                         width: 56,
                       ),
                     )
                 ],
               ),
-              if (formation.mysticCode.level > 0) Text("Lv.${formation.mysticCode.level}", textScaleFactor: 0.9)
+              if (enabled) Text("Lv.${formation.mysticCode.level}", textScaleFactor: 0.9)
             ],
           ),
         ),
