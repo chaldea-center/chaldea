@@ -213,20 +213,21 @@ class _UserDataPageState extends State<UserDataPage> {
             content: Text(hint),
             hideCancel: true,
             actions: [
-              PlatformU.isDesktop
-                  ? TextButton(
-                      child: Text(S.current.open),
-                      onPressed: () {
-                        openFile(db.paths.backupDir);
-                      },
-                    )
-                  : TextButton(
-                      child: Text(S.current.share),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        ShareX.shareFile(fps.first, context: context);
-                      },
-                    ),
+              if (fps.isNotEmpty)
+                PlatformU.isDesktop
+                    ? TextButton(
+                        child: Text(S.current.open),
+                        onPressed: () {
+                          openFile(db.paths.backupDir);
+                        },
+                      )
+                    : TextButton(
+                        child: Text(S.current.share),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          ShareX.shareFile(fps.first, context: context);
+                        },
+                      ),
             ],
           ),
         );

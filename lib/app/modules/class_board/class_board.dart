@@ -29,7 +29,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
   ClassBoardPlan get status => db.curUser.classBoardStatusOf(board.id);
   ClassBoardPlan get plan_ => db.curPlan_.classBoardPlan(board.id);
 
-  late final _tabController = TabController(length: 3, vsync: this);
+  late final _tabController = TabController(length: 4, vsync: this);
 
   @override
   void initState() {
@@ -56,6 +56,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
           const Tab(text: 'Info'),
           Tab(text: S.current.class_board_square),
           const Tab(text: 'Map'),
+          Tab(text: S.current.mission),
         ])),
       ),
       body: TabBarView(
@@ -65,6 +66,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
           db.onUserData((context, snapshot) => infoTab),
           squareTab,
           mapTab,
+          missionTab,
         ],
       ),
     );
@@ -357,6 +359,39 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
         ),
         const SafeArea(child: SizedBox.shrink()),
       ],
+    );
+  }
+
+  Widget get missionTab {
+    List<ClassBoardLock> locks = [];
+    for (final square in board.squares) {
+      final lock = square.lock;
+      if (lock == null || lock.condType != CondType.eventMissionClear) continue;
+      locks.add(lock);
+    }
+    locks.sort2((e) => e.id);
+    final missions = db.gameData.extraMasterMission[MasterMission.kExtraMasterMissionId]?.missions ?? [];
+    final missionMap = {for (final m in missions) m.id: m};
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      itemBuilder: (context, index) {
+        final lock = locks[index];
+        final mission = missionMap[lock.condTargetId];
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CondTargetValueDescriptor(
+              condType: lock.condType,
+              target: lock.condTargetId,
+              value: lock.condNum,
+              textScaleFactor: 0.8,
+            ),
+            if (mission != null) MissionCondsDescriptor(mission: mission, onlyShowClear: true),
+          ],
+        );
+      },
+      separatorBuilder: (_, __) => const Divider(),
+      itemCount: locks.length,
     );
   }
 
