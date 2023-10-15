@@ -58,17 +58,17 @@ class _EventFilterPageState extends FilterPageState<EventFilterData, EventFilter
           },
           controlAffinity: ListTileControlAffinity.trailing,
         ),
-        SwitchListTile.adaptive(
-          dense: true,
-          value: filterData.showEmpty,
-          title: Text(S.current.show_empty_event),
-          subtitle: Text(S.current.limited_event),
-          onChanged: (v) {
-            filterData.showEmpty = v;
-            update();
-          },
-          controlAffinity: ListTileControlAffinity.trailing,
-        ),
+        // SwitchListTile.adaptive(
+        //   dense: true,
+        //   value: filterData.showEmpty,
+        //   title: Text(S.current.show_empty_event),
+        //   subtitle: Text(S.current.limited_event),
+        //   onChanged: (v) {
+        //     filterData.showEmpty = v;
+        //     update();
+        //   },
+        //   controlAffinity: ListTileControlAffinity.trailing,
+        // ),
         SwitchListTile.adaptive(
           dense: true,
           value: filterData.showBanner,

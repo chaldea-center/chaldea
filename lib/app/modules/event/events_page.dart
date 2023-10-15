@@ -14,7 +14,6 @@ import '../common/builders.dart';
 import '../common/filter_page_base.dart';
 import 'filter.dart';
 import 'tabs/campaign_tab.dart';
-import 'tabs/chaldea_gate_tab.dart';
 import 'tabs/exchange_ticket_tab.dart';
 import 'tabs/limit_event_tab.dart';
 import 'tabs/main_story_tab.dart';
@@ -37,11 +36,11 @@ class EventListPageState extends State<EventListPage>
         S.current.limited_event,
         S.current.main_story,
         S.current.exchange_ticket,
-        S.current.chaldea_gate,
         S.current.event_campaign,
       ];
 
-  bool get shouldEnableSearch => _tabController.index == 0 || _tabController.index == 4;
+  bool get shouldEnableSearch => _tabController.index == 0 || _tabController.index == 3;
+  bool get shouldShowFilter => _tabController.index == 0 || _tabController.index == 2 || _tabController.index == 3;
 
   @override
   void initState() {
@@ -115,7 +114,8 @@ class EventListPageState extends State<EventListPage>
                     reversed: filterData.reversed,
                     showOutdated: filterData.showOutdated,
                     showSpecialRewards: filterData.showSpecialRewards,
-                    showEmpty: filterData.showEmpty,
+                    // showEmpty: filterData.showEmpty,
+                    showEmpty: true,
                     showBanner: filterData.showBanner && constraints.maxWidth > 290,
                   ),
                 ),
@@ -133,7 +133,6 @@ class EventListPageState extends State<EventListPage>
                     showOutdated: filterData.showOutdated,
                   ),
                 ),
-                ChaldeaGateTab(),
                 KeepAliveBuilder(
                   builder: (_) => CampaignEventTab(
                     campaignEvents: campaignEvents,
@@ -152,7 +151,7 @@ class EventListPageState extends State<EventListPage>
   List<Widget> get actions {
     return <Widget>[
       if (shouldEnableSearch) searchIcon,
-      if (const [0, 2, 4].contains(_tabController.index))
+      if (shouldShowFilter)
         IconButton(
           icon: const Icon(Icons.filter_alt),
           tooltip: S.current.filter,
