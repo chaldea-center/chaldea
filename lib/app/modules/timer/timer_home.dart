@@ -27,10 +27,19 @@ class _TimerHomePageState extends State<TimerHomePage>
 
   GameTimerData get timerData => data!;
 
+  bool _initiated = false;
+
   @override
   void initState() {
     super.initState();
     region = db.curUser.region;
+  }
+
+  /// [IndexedStack] wraps children with [Visibility.maintain]
+  /// So fetch data when become visible rather in [initState]
+  void init() {
+    if (_initiated || !mounted || !Visibility.of(context)) return;
+    _initiated = true;
     doFetchData();
   }
 
@@ -40,7 +49,18 @@ class _TimerHomePageState extends State<TimerHomePage>
   }
 
   @override
+  void didUpdateWidget(covariant TimerHomePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    init();
     return Scaffold(
       appBar: AppBar(
         titleSpacing: NavigationToolbar.kMiddleSpacing,
