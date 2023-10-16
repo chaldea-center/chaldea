@@ -76,7 +76,6 @@ class BattleSimUserData {
 
 @JsonSerializable(converters: [RegionConverter()])
 class BattleSimSetting {
-  bool migratedFormation;
   // settings
   Region? playerRegion;
   PreferPlayerSvtDataSource playerDataSource;
@@ -85,13 +84,6 @@ class BattleSimSetting {
   String? previousQuestPhase;
   PlayerSvtDefaultData defaultLvs;
   BattleTeamFormation curFormation;
-  // TODO: remove in v2.5.0
-  @protected
-  Set<int> pingedCEs;
-  @protected
-  Set<int> pingedSvts;
-  @protected
-  List<BattleTeamFormation> formations;
   // filters
   SvtFilterData svtFilterData;
   CraftFilterData craftFilterData;
@@ -105,14 +97,10 @@ class BattleSimSetting {
   bool manualAllySkillTarget;
 
   BattleSimSetting({
-    this.migratedFormation = false,
     this.playerRegion,
     this.playerDataSource = PreferPlayerSvtDataSource.none,
-    Set<int>? pingedCEs,
-    Set<int>? pingedSvts,
     this.previousQuestPhase,
     PlayerSvtDefaultData? defaultLvs,
-    List<BattleTeamFormation>? formations,
     BattleTeamFormation? curFormation,
     SvtFilterData? svtFilterData,
     CraftFilterData? craftFilterData,
@@ -121,10 +109,7 @@ class BattleSimSetting {
     this.recordScreenshotRatio = 10,
     this.recordShowTwoColumn = false,
     this.manualAllySkillTarget = false,
-  })  : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
-        pingedSvts = pingedSvts ?? {215, 284, 314, 316, 357},
-        defaultLvs = defaultLvs ?? PlayerSvtDefaultData(),
-        formations = formations ?? [],
+  })  : defaultLvs = defaultLvs ?? PlayerSvtDefaultData(),
         curFormation = curFormation ?? BattleTeamFormation(),
         svtFilterData = svtFilterData ?? SvtFilterData(useGrid: true),
         craftFilterData = craftFilterData ?? CraftFilterData(useGrid: true),
@@ -135,9 +120,7 @@ class BattleSimSetting {
   }
 
   void validate() {
-    if (formations.isEmpty) {
-      formations.add(BattleTeamFormation());
-    }
+    //
   }
 
   factory BattleSimSetting.fromJson(Map<String, dynamic> json) => _$BattleSimSettingFromJson(json);
