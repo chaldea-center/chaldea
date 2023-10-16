@@ -231,7 +231,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
       ),
       selected: masterMission.startedAt <= now && masterMission.endedAt > now,
       onTap: () {
-        masterMission.routeTo(region: _region, popDetails: true);
+        masterMission.routeTo(region: _region);
       },
     );
   }

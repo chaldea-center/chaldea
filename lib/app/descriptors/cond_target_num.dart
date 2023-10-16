@@ -686,7 +686,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
       case CondType.svtLimitExchangeSvt:
         return localized(
           jp: () => rich(context, '交換したサーヴァント$targetNum骑を最終再臨せよ', events(context)),
-          cn: () => rich(context, '让$targetNum器兑换的从者完成最终再临', events(context)),
+          cn: () => rich(context, '让$targetNum骑兑换的从者完成最终再临', events(context)),
           tw: null,
           na: () => rich(context, 'Have $targetNum exchanged Servant reach Final Ascension', events(context)),
           kr: null,
