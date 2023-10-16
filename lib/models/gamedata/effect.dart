@@ -160,6 +160,35 @@ class SkillEffect {
     ...svtIgnores,
   ];
 
+  static List<SkillEffect> get mcIgnores => [
+        SkillEffect.upDamage,
+        SkillEffect.addDamage,
+        SkillEffect.regainStar,
+        SkillEffect.damageNpSP,
+        SkillEffect.regainNp,
+        SkillEffect.upDefence,
+        SkillEffect.subSelfdamage,
+        SkillEffect.upHate,
+        SkillEffect.downCriticalRateDamageTaken,
+        SkillEffect.upGainHp,
+        SkillEffect.upTolerance,
+        SkillEffect.upGrantstate,
+        SkillEffect.upGrantstatePositive,
+        SkillEffect.upGrantstateNegative,
+        SkillEffect.upReceivePositiveEffect,
+        SkillEffect.subStatePositive,
+        SkillEffect.instantDeath,
+        SkillEffect.upResistInstantdeath,
+        SkillEffect.upGrantInstantdeath,
+        SkillEffect.avoidInstantdeath,
+        SkillEffect.friendPointUp,
+        SkillEffect.expUp,
+        SkillEffect.userEquipExpUp,
+        SkillEffect.servantFriendshipUp,
+        SkillEffect.qpUp,
+        SkillEffect.eventDropUp,
+      ];
+
   /// most in official CE filter
   static SkillEffect damageNpSP = SkillEffect(
     'damageNpSP',

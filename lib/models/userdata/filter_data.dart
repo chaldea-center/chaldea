@@ -656,6 +656,46 @@ class CmdCodeFilterData with _FilterData {
   }
 }
 
+@JsonSerializable(ignoreUnannotated: true)
+class MysticCodeFilterData with _FilterData {
+  @JsonKey()
+  bool useGrid;
+  @JsonKey()
+  bool favorite;
+  @JsonKey()
+  bool ascending;
+
+  // filter
+  final region = FilterRadioData<Region>();
+  final effectTarget = FilterGroupData<EffectTarget>();
+  final targetTrait = FilterGroupData<int>();
+  final effectType = FilterGroupData<SkillEffect>();
+
+  MysticCodeFilterData({
+    this.useGrid = false,
+    this.favorite = false,
+    this.ascending = true,
+  });
+
+  @override
+  List<FilterGroupData> get groups => [
+        region,
+        effectTarget,
+        targetTrait,
+        effectType,
+      ];
+
+  @override
+  void reset() {
+    super.reset();
+    favorite = false;
+  }
+
+  factory MysticCodeFilterData.fromJson(Map<String, dynamic> data) => _$MysticCodeFilterDataFromJson(data);
+
+  Map<String, dynamic> toJson() => _$MysticCodeFilterDataToJson(this);
+}
+
 enum FavoriteState {
   all,
   owned,

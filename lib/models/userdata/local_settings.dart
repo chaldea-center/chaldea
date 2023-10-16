@@ -72,6 +72,7 @@ class LocalSettings {
   SvtFilterData svtFilterData;
   CraftFilterData craftFilterData;
   CmdCodeFilterData cmdCodeFilterData;
+  MysticCodeFilterData mysticCodeFilterData;
   EventFilterData eventFilterData;
   SummonFilterData summonFilterData;
   ScriptReaderFilterData scriptReaderFilterData;
@@ -124,6 +125,7 @@ class LocalSettings {
     SvtFilterData? svtFilterData,
     CraftFilterData? craftFilterData,
     CmdCodeFilterData? cmdCodeFilterData,
+    MysticCodeFilterData? mysticCodeFilterData,
     EventFilterData? eventFilterData,
     SummonFilterData? summonFilterData,
     ScriptReaderFilterData? scriptReaderFilterData,
@@ -148,6 +150,7 @@ class LocalSettings {
         svtFilterData = svtFilterData ?? SvtFilterData(),
         craftFilterData = craftFilterData ?? CraftFilterData(),
         cmdCodeFilterData = cmdCodeFilterData ?? CmdCodeFilterData(),
+        mysticCodeFilterData = mysticCodeFilterData ?? MysticCodeFilterData(),
         eventFilterData = eventFilterData ?? EventFilterData(),
         summonFilterData = summonFilterData ?? SummonFilterData(),
         scriptReaderFilterData = scriptReaderFilterData ?? ScriptReaderFilterData(),

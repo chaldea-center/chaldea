@@ -101,6 +101,25 @@ const _$CmdCodeCompareEnumMap = {
   CmdCodeCompare.rarity: 'rarity',
 };
 
+MysticCodeFilterData _$MysticCodeFilterDataFromJson(Map json) => $checkedCreate(
+      'MysticCodeFilterData',
+      json,
+      ($checkedConvert) {
+        final val = MysticCodeFilterData(
+          useGrid: $checkedConvert('useGrid', (v) => v as bool? ?? false),
+          favorite: $checkedConvert('favorite', (v) => v as bool? ?? false),
+          ascending: $checkedConvert('ascending', (v) => v as bool? ?? true),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$MysticCodeFilterDataToJson(MysticCodeFilterData instance) => <String, dynamic>{
+      'useGrid': instance.useGrid,
+      'favorite': instance.favorite,
+      'ascending': instance.ascending,
+    };
+
 EventFilterData _$EventFilterDataFromJson(Map json) => $checkedCreate(
       'EventFilterData',
       json,
