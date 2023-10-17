@@ -154,6 +154,7 @@ class Event {
 
   bool get isAdvancedQuestEvent => name.contains('アドバンスドクエスト');
   bool get isHuntingEvent => extra.huntingId > 0 || name.contains('ハンティングクエスト');
+  bool get isExchangeSvtEvent => shop.isNotEmpty && shop.every((s) => s.isExchangeSvt);
 
   int get finishedAt2 {
     if (finishedAt >= endedAt && finishedAt - endedAt < kSecsPerDay * 100) return finishedAt;
@@ -292,42 +293,44 @@ class Event {
 
     itemShop.clear();
     // shop
-    for (final shopItem in shop) {
-      if (shopItem.limitNum == 0) continue;
-      if (![
-        PurchaseType.item,
-        PurchaseType.servant,
-        PurchaseType.setItem,
-        PurchaseType.eventSvtGet,
-        PurchaseType.costumeRelease,
-        PurchaseType.itemAsPresent,
-        PurchaseType.commandCode,
-        PurchaseType.gift,
-      ].contains(shopItem.purchaseType)) {
-        continue;
-      }
-      final _items = itemShop[shopItem.id] = {};
-      if (shopItem.purchaseType == PurchaseType.setItem) {
-        for (final set in shopItem.itemSet) {
-          if (set.purchaseType == PurchaseType.item || set.purchaseType == PurchaseType.servant) {
-            if (gameData.craftEssencesById[set.targetId]?.flag == SvtFlag.svtEquipChocolate) {
+    if (!isExchangeSvtEvent) {
+      for (final shopItem in shop) {
+        if (shopItem.limitNum == 0) continue;
+        if (![
+          PurchaseType.item,
+          PurchaseType.servant,
+          PurchaseType.setItem,
+          PurchaseType.eventSvtGet,
+          PurchaseType.costumeRelease,
+          PurchaseType.itemAsPresent,
+          PurchaseType.commandCode,
+          PurchaseType.gift,
+        ].contains(shopItem.purchaseType)) {
+          continue;
+        }
+        final _items = itemShop[shopItem.id] = {};
+        if (shopItem.purchaseType == PurchaseType.setItem) {
+          for (final set in shopItem.itemSet) {
+            if (set.purchaseType == PurchaseType.item || set.purchaseType == PurchaseType.servant) {
+              if (gameData.craftEssencesById[set.targetId]?.flag == SvtFlag.svtEquipChocolate) {
+                continue;
+              }
+              _items.addNum(set.targetId, set.setNum * shopItem.setNum);
+              statItemFixed.addNum(set.targetId, set.setNum * shopItem.setNum * shopItem.limitNum);
+            }
+            _items.addDict({for (final gift in set.gifts) gift.objectId: gift.num});
+          }
+        } else {
+          for (final id in shopItem.targetIds) {
+            if (gameData.craftEssencesById[id]?.flag == SvtFlag.svtEquipChocolate) {
               continue;
             }
-            _items.addNum(set.targetId, set.setNum * shopItem.setNum);
-            statItemFixed.addNum(set.targetId, set.setNum * shopItem.setNum * shopItem.limitNum);
+            _items.addNum(id, shopItem.setNum);
+            statItemFixed.addNum(id, shopItem.setNum * shopItem.limitNum);
           }
-          _items.addDict({for (final gift in set.gifts) gift.objectId: gift.num});
         }
-      } else {
-        for (final id in shopItem.targetIds) {
-          if (gameData.craftEssencesById[id]?.flag == SvtFlag.svtEquipChocolate) {
-            continue;
-          }
-          _items.addNum(id, shopItem.setNum);
-          statItemFixed.addNum(id, shopItem.setNum * shopItem.limitNum);
-        }
+        _items.addDict({for (final gift in shopItem.gifts) gift.objectId: gift.num});
       }
-      _items.addDict({for (final gift in shopItem.gifts) gift.objectId: gift.num});
     }
 
     // point rewards
@@ -585,6 +588,14 @@ class NiceShop with RouteInfo {
   }
 
   Map<String, dynamic> toJson() => _$NiceShopToJson(this);
+
+  bool get isExchangeSvt {
+    if (purchaseType == PurchaseType.servant || purchaseType == PurchaseType.eventSvtJoin) {
+      final svt = db.gameData.servantsById[targetIds.firstOrNull];
+      if (svt != null) return true;
+    }
+    return false;
+  }
 }
 
 @JsonSerializable()

@@ -784,15 +784,18 @@ enum EventCustomType {
   warBoard,
   lottery,
   mission,
-  randomMission,
+  // randomMission,
   shop,
   point,
   tower,
-  treasureBox,
-  digging,
-  cooltime,
+  // treasureBox,
+  // digging,
+  // cooltime,
+  // recipe,
   bulletinBoard,
-  recipe,
+  exchangeSvt,
+  special,
+  others,
 }
 
 // summon

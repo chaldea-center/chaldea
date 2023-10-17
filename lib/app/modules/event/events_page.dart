@@ -258,23 +258,25 @@ class EventListPageState extends State<EventListPage>
       return false;
     }
     if (filterData.contentType.options.isNotEmpty) {
-      final List<EventCustomType> types = [
+      final war = event.warIds.isEmpty ? null : db.gameData.wars[event.warIds.first];
+      final Set<EventCustomType> types = {
         if (event.lotteries.isNotEmpty) EventCustomType.lottery,
         if (event.pointRewards.isNotEmpty) EventCustomType.point,
         if (event.missions.isNotEmpty) EventCustomType.mission,
-        if (event.randomMissions.isNotEmpty) EventCustomType.randomMission,
+        if (event.randomMissions.isNotEmpty) EventCustomType.special,
         if (event.shop.isNotEmpty) EventCustomType.shop,
         if (event.towers.isNotEmpty) EventCustomType.tower,
-        if (event.treasureBoxes.isNotEmpty) EventCustomType.treasureBox,
-        if (event.digging != null) EventCustomType.digging,
-        if (event.cooltime != null) EventCustomType.cooltime,
-        if (event.recipes.isNotEmpty) EventCustomType.recipe,
+        if (event.treasureBoxes.isNotEmpty) EventCustomType.special,
+        if (event.digging != null) EventCustomType.special,
+        if (event.cooltime != null) EventCustomType.special,
+        if (event.recipes.isNotEmpty) EventCustomType.special,
         if (event.bulletinBoards.isNotEmpty) EventCustomType.bulletinBoard,
         if (event.type == EventType.warBoard) EventCustomType.warBoard,
-        if (db.gameData.wars[event.warIds.getOrNull(0)]?.parentWarId == WarId.mainInterlude)
-          EventCustomType.mainInterlude,
-        if (event.extra.huntingId > 0 || event.name.contains('ハンティングクエスト')) EventCustomType.hunting,
-      ];
+        if (event.isExchangeSvtEvent || event.id == 80335) EventCustomType.exchangeSvt, // plus 6th Anni SSR
+        if (war != null && war.id > 1000 && war.parentWars.contains(WarId.mainInterlude)) EventCustomType.mainInterlude,
+        if (event.isHuntingEvent) EventCustomType.hunting,
+      };
+      if (types.isEmpty) types.add(EventCustomType.others);
       if (!filterData.contentType.matchAny(types)) {
         return false;
       }
