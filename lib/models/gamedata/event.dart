@@ -155,6 +155,11 @@ class Event {
   bool get isAdvancedQuestEvent => name.contains('アドバンスドクエスト');
   bool get isHuntingEvent => extra.huntingId > 0 || name.contains('ハンティングクエスト');
 
+  int get finishedAt2 {
+    if (finishedAt >= endedAt && finishedAt - endedAt < kSecsPerDay * 100) return finishedAt;
+    return endedAt;
+  }
+
   String? get shopBanner {
     // if (shop.isEmpty) return null;
     // return 'https://static.atlasacademy.io/JP/ShopBanners/shop_event_menu_$id.png';

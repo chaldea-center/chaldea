@@ -25,15 +25,23 @@ mixin TimerItem {
 class CountDown extends StatelessWidget {
   final DateTime endedAt;
   final DateTime? startedAt;
+  // such as shop close time
+  final DateTime? endedAt2;
+  final DateTime? startedAt2;
+
   final Duration duration;
   final bool showSeconds;
+  final TextAlign? textAlign;
 
   const CountDown({
     super.key,
     required this.endedAt,
     this.startedAt,
+    this.endedAt2,
+    this.startedAt2,
     this.duration = const Duration(milliseconds: 500),
     this.showSeconds = true,
+    this.textAlign,
   });
 
   @override
@@ -41,47 +49,60 @@ class CountDown extends StatelessWidget {
     return OnTimer(
       duration: duration,
       builder: (context) {
-        final now = DateTime.now();
-        final left = endedAt.difference(now);
-        final outdated = left.isNegative;
-        final delta = left.abs();
-        String text = "";
-        if (outdated) text += '-';
-        final days = delta.inDays,
-            hours = delta.inHours % Duration.hoursPerDay,
-            minutes = delta.inMinutes % Duration.minutesPerHour,
-            seconds = delta.inSeconds % Duration.secondsPerMinute;
-        if (days > 0) {
-          text += "${days}d ";
-        }
-        text += "${padInt(hours)}:${padInt(minutes)}";
-        if (showSeconds) {
-          text += ":${padInt(seconds)}";
-        }
-        Color? color;
-        final themeData = Theme.of(context);
-        if (startedAt != null && startedAt!.isAfter(now)) {
-          // start in future
-          color = Colors.blue;
-        } else if (outdated) {
-          // closed
-          color = themeData.disabledColor;
-        } else if (left < const Duration(hours: 24 * 2)) {
-          // close in 2 days
-          color = themeData.colorScheme.error;
-        } else {
-          // ongoing
-          color = Colors.green;
-        }
-        return Text(
-          text,
-          style: TextStyle(
-            // fontFamily: kMonoFont,
-            color: color,
-          ),
+        return Text.rich(
+          TextSpan(children: [
+            buildOne(context, endedAt, startedAt),
+            if (endedAt2 != null) ...[
+              const TextSpan(text: '\n'),
+              buildOne(context, endedAt2!, startedAt2),
+            ]
+          ]),
           textScaleFactor: 0.9,
+          textAlign: textAlign,
         );
       },
+    );
+  }
+
+  TextSpan buildOne(BuildContext context, DateTime _endedAt, DateTime? _startedAt) {
+    final now = DateTime.now();
+    final left = _endedAt.difference(now);
+    final outdated = left.isNegative;
+    final delta = left.abs();
+    String text = "";
+    if (outdated) text += '-';
+    final days = delta.inDays,
+        hours = delta.inHours % Duration.hoursPerDay,
+        minutes = delta.inMinutes % Duration.minutesPerHour,
+        seconds = delta.inSeconds % Duration.secondsPerMinute;
+    if (days > 0) {
+      text += "${days}d ";
+    }
+    text += "${padInt(hours)}:${padInt(minutes)}";
+    if (showSeconds) {
+      text += ":${padInt(seconds)}";
+    }
+    Color? color;
+    final themeData = Theme.of(context);
+    if (_startedAt != null && _startedAt.isAfter(now)) {
+      // start in future
+      color = Colors.blue;
+    } else if (outdated) {
+      // closed
+      color = themeData.disabledColor;
+    } else if (left < const Duration(hours: 24 * 2)) {
+      // close in 2 days
+      color = themeData.colorScheme.error;
+    } else {
+      // ongoing
+      color = Colors.green;
+    }
+    return TextSpan(
+      text: text,
+      style: TextStyle(
+        // fontFamily: kMonoFont,
+        color: color,
+      ),
     );
   }
 }

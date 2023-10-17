@@ -58,7 +58,13 @@ class _RegionTimeTabState extends State<RegionTimeTab> {
       buildItem(_RegionData(tzName: 'UTC', offset: Duration.zero, icon: FontAwesomeIcons.earthEurope)),
     ]);
 
-    return ListView(children: list);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        // JP & KR flags using white background
+        color: Theme.of(context).hoverColor,
+      ),
+      child: ListView(children: list),
+    );
   }
 
   List<_RegionData> getRegionData(Region region) {

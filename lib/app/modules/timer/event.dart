@@ -70,7 +70,13 @@ class TimerEventItem with TimerItem {
             )
           ])),
           subtitle: subtitle,
-          trailing: CountDown(endedAt: event.endedAt.sec2date(), startedAt: event.startedAt.sec2date()),
+          trailing: CountDown(
+            endedAt: event.endedAt.sec2date(),
+            startedAt: event.startedAt.sec2date(),
+            endedAt2: event.finishedAt2 > event.endedAt ? event.finishedAt2.sec2date() : null,
+            startedAt2: event.startedAt.sec2date(),
+            textAlign: TextAlign.end,
+          ),
           enabled: event.endedAt > now,
         );
       },

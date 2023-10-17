@@ -32,7 +32,10 @@ class _ScriptReaderEntryPageState extends State<ScriptReaderEntryPage> {
       body: ListView(
         children: [
           TileGroup(
-            header: [S.current.event, S.current.war, S.current.script_story].join('→'),
+            header: [
+              [S.current.event, S.current.war, S.current.script_story],
+              [S.current.quest, S.current.script_story]
+            ].map((e) => e.join('→')).join(', '),
             children: [
               ListTile(
                 title: Text('${S.current.script_story}: ${S.current.main_story}/${S.current.limited_event}'),
@@ -44,7 +47,7 @@ class _ScriptReaderEntryPageState extends State<ScriptReaderEntryPage> {
             ],
           ),
           TileGroup(
-            header: 'Input Script ID',
+            header: 'Script ID',
             children: [
               ListTile(
                 title: Text(S.current.game_server),
@@ -90,8 +93,12 @@ class _ScriptReaderEntryPageState extends State<ScriptReaderEntryPage> {
           Center(
             child: IconButton(
               onPressed: () {
-                final id = _textEditController.text.trim();
+                String id = _textEditController.text.trim();
                 if (id.isEmpty) return;
+                final match = RegExp(r'/script/([^\?]+)').firstMatch(id);
+                if (match != null) {
+                  id = match.group(1)!;
+                }
                 router.push(
                   url: Routes.scriptI(id),
                   child: ScriptIdLoadingPage(scriptId: id, region: region),

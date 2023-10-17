@@ -216,7 +216,11 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
                       ),
                     ),
                   ),
-                  IconButton(onPressed: skill.routeTo, icon: Icon(DirectionalIcons.keyboard_arrow_forward(context))),
+                  IconButton(
+                    onPressed: skill.routeTo,
+                    icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                    color: Theme.of(context).textTheme.bodySmall?.color,
+                  ),
                 ],
               )
           ],

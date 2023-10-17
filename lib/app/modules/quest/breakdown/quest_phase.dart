@@ -783,8 +783,8 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
             context: context,
             id: entry.key,
             text: entry.value,
-            width: 42,
-            option: ImageWithTextOption(fontSize: 42 * 0.27, padding: EdgeInsets.zero),
+            width: 36,
+            option: ImageWithTextOption(fontSize: 36 * 0.27, padding: EdgeInsets.zero),
           )
       ],
     );
@@ -816,9 +816,9 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       }
       return drop.iconBuilder(
         context: context,
-        width: 42,
+        width: 36,
         text: text ?? '-',
-        option: ImageWithTextOption(fontSize: 42 * 0.27, padding: EdgeInsets.zero),
+        option: ImageWithTextOption(fontSize: 36 * 0.27, padding: EdgeInsets.zero),
       );
     }
 

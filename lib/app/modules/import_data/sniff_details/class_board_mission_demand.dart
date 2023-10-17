@@ -5,15 +5,15 @@ import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
-class ClassBoardDemand extends StatefulWidget {
+class ClassBoardMissionDemand extends StatefulWidget {
   final List<UserSvtCollection> userSvtCollection;
-  const ClassBoardDemand({super.key, required this.userSvtCollection});
+  const ClassBoardMissionDemand({super.key, required this.userSvtCollection});
 
   @override
-  State<ClassBoardDemand> createState() => _ClassBoardDemandState();
+  State<ClassBoardMissionDemand> createState() => _ClassBoardMissionDemandState();
 }
 
-class _ClassBoardDemandState extends State<ClassBoardDemand> {
+class _ClassBoardMissionDemandState extends State<ClassBoardMissionDemand> {
   Map<int, List<UserSvtCollection>> groups = {};
   Map<int, int> clsIdToBoardId = {};
 
@@ -65,7 +65,7 @@ class _ClassBoardDemandState extends State<ClassBoardDemand> {
       leading: db.getIconImage(board.btnIcon),
       title: Text('${S.current.bond} $bond  ${S.current.skill} $skillLv'
           '  ${S.current.level} $svtLv  ${S.current.ascension} $svtLimit'),
-      subtitle: Text(board.dispName),
+      subtitle: Text('${board.dispName} ×${servants.length}'),
       onTap: board.routeTo,
     );
   }

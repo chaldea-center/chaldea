@@ -20,7 +20,7 @@ import '../../app.dart';
 import '../common/builders.dart';
 import 'autologin/login_page.dart';
 import 'sniff_details/bond_detail_page.dart';
-import 'sniff_details/class_board_demand.dart';
+import 'sniff_details/class_board_mission_demand.dart';
 import 'sniff_details/gacha_history.dart';
 import 'sniff_details/present_box.dart';
 
@@ -715,7 +715,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               onPressed: mstData == null
                   ? null
                   : () {
-                      router.pushPage(ClassBoardDemand(userSvtCollection: mstData?.userSvtCollection ?? []));
+                      router.pushPage(ClassBoardMissionDemand(userSvtCollection: mstData?.userSvtCollection ?? []));
                     },
               child: Text(S.current.class_score),
             ),
