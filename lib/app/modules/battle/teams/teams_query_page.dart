@@ -22,11 +22,11 @@ enum TeamQueryMode { user, quest, id }
 
 class TeamsQueryPage extends StatefulWidget {
   final TeamQueryMode mode;
-  final QuestPhase? questPhase;
+  final Quest? quest;
+  final BattleQuestInfo? phaseInfo;
   final List<int>? teamIds;
-  final bool noEnemyHash;
 
-  const TeamsQueryPage({super.key, required this.mode, this.questPhase, this.teamIds, this.noEnemyHash = false});
+  const TeamsQueryPage({super.key, required this.mode, this.quest, this.phaseInfo, this.teamIds});
 
   @override
   State<TeamsQueryPage> createState() => _TeamsQueryPageState();
@@ -67,8 +67,8 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             TextSpan(
                 text: '${S.current.team} @'
                     '${username != null && username.isNotEmpty ? username.breakWord : "Not Login"}'),
-          if (mode == TeamQueryMode.quest && widget.questPhase != null)
-            TextSpan(text: '${S.current.team} - ${widget.questPhase?.lName.l.breakWord}'),
+          if (mode == TeamQueryMode.quest && widget.quest != null)
+            TextSpan(text: '${S.current.team} - ${widget.quest?.lName.l.breakWord}'),
           if (mode == TeamQueryMode.id) TextSpan(text: S.current.team_shared),
         ],
       )),
@@ -281,7 +281,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           child: Text(
             [
               '${S.current.team} $index - ${record.userId} [${record.id}]',
-              if (widget.noEnemyHash) '${S.current.version} ${record.enemyHash.substring2(2)}',
+              if (widget.phaseInfo?.hash == null) '${S.current.version} ${record.enemyHash.substring2(2)}',
             ].join('\n'),
             style: style,
           ),
@@ -440,12 +440,13 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
               expireAfter: refresh ? Duration.zero : const Duration(days: 2),
             ));
       case TeamQueryMode.quest:
-        final questPhase = widget.questPhase;
-        if (questPhase == null || !questPhase.isLaplaceSharable) return;
+        final quest = widget.quest;
+        final phase = widget.phaseInfo?.phase ?? quest?.phases.lastOrNull;
+        if (quest == null || !quest.isLaplaceSharable || phase == null) return;
         task = showEasyLoading(() => ChaldeaWorkerApi.teamsByQuest(
-              questId: questPhase.id,
-              phase: questPhase.phase,
-              enemyHash: widget.noEnemyHash ? null : questPhase.enemyHash,
+              questId: quest.id,
+              phase: phase,
+              enemyHash: widget.phaseInfo?.hash,
               limit: _pageSize + 1,
               offset: _pageSize * page,
               expireAfter: refresh ? Duration.zero : null,

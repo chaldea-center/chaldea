@@ -1208,11 +1208,13 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       );
     }
     if (noEnemyHash == null) return;
+    final phaseInfo = BattleQuestInfo.quest(quest);
+    if (noEnemyHash == true) phaseInfo.hash = null;
     final BattleTeamFormation? selected = await router.pushPage<BattleTeamFormation?>(
       TeamsQueryPage(
         mode: TeamQueryMode.quest,
-        questPhase: quest,
-        noEnemyHash: noEnemyHash ?? false,
+        quest: quest,
+        phaseInfo: phaseInfo,
       ),
     );
     if (selected != null) {

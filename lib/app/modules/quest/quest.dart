@@ -1,12 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/quest/quest_card.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../battle/teams/teams_query_page.dart';
 import '../common/filter_group.dart';
 
 class QuestDetailPage extends StatefulWidget {
@@ -194,12 +196,32 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                     key: uniqueKey,
                     displayPhases: quest.phases.contains(phase) ? [phase] : null,
                   ),
+                if (quest.isLaplaceSharable) sharedTeamsButton,
                 if (db.gameData.dropData.domusAurea.questIds.contains(quest.id)) blacklistButton,
                 SFooter(S.current.quest_region_has_enemy_hint),
                 ...getCampaigns(),
                 const SafeArea(child: SizedBox())
               ],
             ),
+    );
+  }
+
+  Widget get sharedTeamsButton {
+    return TextButton.icon(
+      onPressed: () {
+        router.pushPage<BattleTeamFormation?>(
+          TeamsQueryPage(
+            mode: TeamQueryMode.quest,
+            quest: quest,
+            phaseInfo: BattleQuestInfo(id: quest.id, phase: quest.phases.last, hash: null),
+          ),
+        );
+      },
+      icon: const Icon(Icons.search),
+      label: Text(
+        '${S.current.team_shared} @$kLaplaceName',
+        // style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+      ),
     );
   }
 

@@ -313,7 +313,7 @@ class Quest with RouteInfo {
   }
 
   bool get isLaplaceSharable {
-    return id > 0 && id != WarId.daily && (isAnyFree || isRepeatRaid);
+    return id > 0 && id != WarId.daily && phases.isNotEmpty && (isAnyFree || isRepeatRaid);
   }
 
   bool get isLaplaceNeedAi => ConstData.laplaceUploadAllowAiQuests.contains(id);
