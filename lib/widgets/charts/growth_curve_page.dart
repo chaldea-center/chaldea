@@ -1,12 +1,12 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:data_table_2/data_table_2.dart';
 
 import 'package:chaldea/app/modules/common/blank_page.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/charts/line_chart.dart';
+import 'package:chaldea/widgets/widgets.dart';
 
 class GrowthCurvePage extends StatefulWidget {
   final String title;
@@ -46,8 +46,10 @@ class GrowthCurvePage extends StatefulWidget {
   _GrowthCurvePageState createState() => _GrowthCurvePageState();
 }
 
-class _GrowthCurvePageState extends State<GrowthCurvePage> {
+class _GrowthCurvePageState extends State<GrowthCurvePage> with SingleTickerProviderStateMixin {
   static const _preferredIntervals = [10, 20, 50, 100, 200, 500, 1000, 2000];
+
+  late final _tabController = TabController(length: 2, vsync: this);
 
   double _resolveIntervalY() {
     int maxValue = widget.data.map((e) => e.yy.last).fold<int>(0, (p, c) => max(p, c));
@@ -59,6 +61,12 @@ class _GrowthCurvePageState extends State<GrowthCurvePage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -67,39 +75,106 @@ class _GrowthCurvePageState extends State<GrowthCurvePage> {
           maxLines: 1,
           minFontSize: 8,
         ),
+        bottom: FixedHeight.tabBar(
+            TabBar(controller: _tabController, tabs: const [Tab(text: 'Chart'), Tab(text: 'Table')])),
       ),
-      body: Stack(
+      body: TabBarView(
+        controller: _tabController,
         children: [
-          const Positioned.fill(
-            child: Opacity(
-              opacity: 0.1,
-              child: BlankPage(),
-            ),
-          ),
-          if (widget.avatar != null)
-            Positioned(
-              left: 72,
-              top: 28,
-              child: widget.avatar!,
-            ),
-          Positioned.fill(
-            bottom: 24,
-            child: LayoutBuilder(builder: (context, constraints) {
-              return SafeArea(
-                child: SimpleLineChart(
-                  data: widget.data,
-                  minX: 0,
-                  maxX: widget.maxX?.toDouble(),
-                  minY: 0,
-                  intervalX: constraints.maxWidth > 450 ? 10 : 20,
-                  intervalY: _resolveIntervalY(),
-                  xFormatter: (v) => 'Lv.${v.toInt()}',
-                ),
-              );
-            }),
-          ),
+          chartTab,
+          tableTab,
         ],
       ),
+    );
+  }
+
+  Widget get chartTab {
+    return Stack(
+      children: [
+        const Positioned.fill(
+          child: Opacity(
+            opacity: 0.1,
+            child: BlankPage(),
+          ),
+        ),
+        if (widget.avatar != null)
+          Positioned(
+            left: 72,
+            top: 28,
+            child: widget.avatar!,
+          ),
+        Positioned.fill(
+          bottom: 24,
+          child: LayoutBuilder(builder: (context, constraints) {
+            return SafeArea(
+              child: SimpleLineChart(
+                data: widget.data,
+                minX: 0,
+                maxX: widget.maxX?.toDouble(),
+                minY: 0,
+                intervalX: constraints.maxWidth > 450 ? 10 : 20,
+                intervalY: _resolveIntervalY(),
+                xFormatter: (v) => 'Lv.${v.toInt()}',
+              ),
+            );
+          }),
+        ),
+      ],
+    );
+  }
+
+  bool _tableAscending = true;
+  Widget get tableTab {
+    if (widget.data.length != 2) {
+      return const Center(child: Text('Wrong format'));
+    }
+    final hps = widget.data[0], atks = widget.data[1];
+    List<int> indices = List.generate(hps.xx.length, (index) => index);
+    if (!_tableAscending) indices = indices.reversed.toList();
+
+    void _onSort(int _, bool ascending) {
+      setState(() {
+        _tableAscending = !_tableAscending;
+      });
+    }
+
+    return DataTable2(
+      dataRowHeight: 36,
+      headingRowDecoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+      ),
+      headingRowHeight: 42,
+      columns: [
+        DataColumn2(
+          label: const Text('Lv'),
+          numeric: true,
+          onSort: _onSort,
+          size: ColumnSize.S,
+        ),
+        DataColumn2(
+          label: const Text("ATK"),
+          numeric: true,
+          onSort: _onSort,
+          size: ColumnSize.L,
+        ),
+        DataColumn2(
+          label: const Text("HP"),
+          numeric: true,
+          onSort: _onSort,
+          size: ColumnSize.L,
+        ),
+      ],
+      rows: indices.map((index) {
+        final lv = hps.xx[index], hp = hps.yy[index], atk = atks.yy.getOrNull(index);
+        final style = lv % 10 == 0 ? TextStyle(color: Theme.of(context).colorScheme.primaryContainer) : null;
+        Text _text(int? s) =>
+            Text(s?.format(compact: false, groupSeparator: ',') ?? "", style: style, textAlign: TextAlign.center);
+        return DataRow2(cells: [
+          DataCell(_text(lv)),
+          DataCell(_text(atk)),
+          DataCell(_text(hp)),
+        ]);
+      }).toList(),
     );
   }
 }
