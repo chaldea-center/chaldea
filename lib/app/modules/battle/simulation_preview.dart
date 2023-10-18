@@ -965,7 +965,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
     final minBuild = data.minBuild;
     if (minBuild != null && minBuild > AppInfo.buildNumber) {
-      EasyLoading.showError(S.current.error_required_app_version('Build $minBuild'));
+      EasyLoading.showError(S.current.error_required_app_version('Build $minBuild', AppInfo.buildNumber));
       return;
     }
     restoreFormation(data.team);

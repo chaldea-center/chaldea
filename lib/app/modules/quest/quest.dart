@@ -219,7 +219,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
       },
       icon: const Icon(Icons.search),
       label: Text(
-        '${S.current.team_shared} @$kLaplaceName',
+        S.current.team_shared,
         // style: TextStyle(color: Theme.of(context).colorScheme.secondary),
       ),
     );

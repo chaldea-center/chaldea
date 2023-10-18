@@ -3176,14 +3176,14 @@ class S {
     );
   }
 
-  /// `Required app version: ≥ {version}`
-  String error_required_app_version(Object version) {
+  /// `Required app version: ≥ {version} (Current: {curVer})`
+  String error_required_app_version(Object version, Object curVer) {
     return Intl.message(
-      'Required app version: ≥ $version',
+      'Required app version: ≥ $version (Current: $curVer)',
       name: 'error_required_app_version',
       desc: '',
       locale: localeName,
-      args: [version],
+      args: [version, curVer],
     );
   }
 

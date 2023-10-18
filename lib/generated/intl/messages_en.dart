@@ -20,18 +20,18 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m14(actorName) => "require ${actorName} on field";
+  static String m13(actorName) => "require ${actorName} on field";
 
   static String m0(url) =>
       "Chaldea - A cross-platform utility for Fate/GO. Supporting game data review, servant/event/item planning, master mission planning, summon simulator and so on.\n\nFor details: \n${url}\n";
 
-  static String m15(count) => "Charge NP to ${count}";
+  static String m14(count) => "Charge NP to ${count}";
 
-  static String m1(version) => "Required app version: ≥ ${version}";
+  static String m15(version, curVer) => "Required app version: ≥ ${version} (Current: ${curVer})";
 
-  static String m2(n) => "Max ${n} lottery";
+  static String m1(n) => "Max ${n} lottery";
 
-  static String m3(n, total) => "Grail to crystal: ${n}/${total}";
+  static String m2(n, total) => "Grail to crystal: ${n}/${total}";
 
   static String m16(filename, hash, localHash) =>
       "File ${filename} not found or mismatched hash: ${hash} - ${localHash}";
@@ -40,17 +40,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m18(rarity) => "${rarity}☆ SVT Pick Up";
 
-  static String m4(error) => "Import failed. Error:\n${error}";
+  static String m3(error) => "Import failed. Error:\n${error}";
 
-  static String m5(name) => "${name} already exist";
+  static String m4(name) => "${name} already exist";
 
-  static String m6(site) => "Jump to ${site}";
+  static String m5(site) => "Jump to ${site}";
 
   static String m19(shown, total) => "${shown} shown (total ${total})";
 
   static String m20(shown, ignore, total) => "${shown} shown, ${ignore} ignored (total ${total})";
 
-  static String m7(first) => "${Intl.select(first, {
+  static String m6(first) => "${Intl.select(first, {
             'true': 'Already the first one',
             'false': 'Already the last one',
             'other': 'No more',
@@ -58,7 +58,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m21(layer) => "Layer ${layer}";
 
-  static String m8(n) => "Section ${n}";
+  static String m7(n) => "Section ${n}";
 
   static String m22(region) => "Something went wrong or ${region} doesn\'t have this quest\'s data";
 
@@ -69,15 +69,15 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m25(unknown, dup, valid, total, selected) =>
       "${unknown} unknown, ${dup} dup, ${valid}/${total} valid, ${selected} selected";
 
-  static String m9(region) => "${region} Notice";
+  static String m8(region) => "${region} Notice";
 
-  static String m10(n) => "Reset Plan ${n}(All)";
+  static String m9(n) => "Reset Plan ${n}(All)";
 
-  static String m11(n) => "Reset Plan ${n}(Shown)";
+  static String m10(n) => "Reset Plan ${n}(Shown)";
 
   static String m26(battles, ap) => "Total ${battles} battles, ${ap} AP";
 
-  static String m12(n) => "Profile ${n}";
+  static String m11(n) => "Profile ${n}";
 
   static String m27(color, trait) =>
       "This Nobel Phantasm is displayed as a ${color} card, but doesn\'t have [${trait}] trait.";
@@ -86,7 +86,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m29(pause, remain) => "Need to wait ${pause} seconds between uploads (${remain}s remain).";
 
-  static String m13(a, b) => "${a} ${b}";
+  static String m12(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -177,7 +177,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_random": MessageLookupByLibrary.simpleMessage("Random"),
         "battle_records": MessageLookupByLibrary.simpleMessage("Records"),
         "battle_remaining_hp": MessageLookupByLibrary.simpleMessage("Remaining HP"),
-        "battle_require_actor_on_field": m14,
+        "battle_require_actor_on_field": m13,
         "battle_require_field_traits": MessageLookupByLibrary.simpleMessage("Required field traits "),
         "battle_require_opponent_traits": MessageLookupByLibrary.simpleMessage("Required opponent traits"),
         "battle_require_self_traits": MessageLookupByLibrary.simpleMessage("Required self traits"),
@@ -241,7 +241,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "chaldea_share_msg": m0,
         "change_log": MessageLookupByLibrary.simpleMessage("Change Log"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("Characters"),
-        "charge_np_to": m15,
+        "charge_np_to": m14,
         "check_file_hash": MessageLookupByLibrary.simpleMessage("Verify file integrity"),
         "check_update": MessageLookupByLibrary.simpleMessage("Check update"),
         "class_advantage": MessageLookupByLibrary.simpleMessage("Class Advantage"),
@@ -390,7 +390,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "error": MessageLookupByLibrary.simpleMessage("Error"),
         "error_no_data_found": MessageLookupByLibrary.simpleMessage("No data found"),
         "error_no_internet": MessageLookupByLibrary.simpleMessage("No internet"),
-        "error_required_app_version": m1,
+        "error_required_app_version": m15,
         "error_widget_hint": MessageLookupByLibrary.simpleMessage("Error! Click to go back >_<"),
         "event": MessageLookupByLibrary.simpleMessage("Event"),
         "event_ap_cost_half": MessageLookupByLibrary.simpleMessage("AP Cost 1/2"),
@@ -408,7 +408,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_item_extra": MessageLookupByLibrary.simpleMessage("Extra Items"),
         "event_item_fixed_extra": MessageLookupByLibrary.simpleMessage("Extra Fixed Items"),
         "event_lottery": MessageLookupByLibrary.simpleMessage("Lottery"),
-        "event_lottery_limit_hint": m2,
+        "event_lottery_limit_hint": m1,
         "event_lottery_limited": MessageLookupByLibrary.simpleMessage("Limited lottery"),
         "event_lottery_unit": MessageLookupByLibrary.simpleMessage("Lottery"),
         "event_lottery_unlimited": MessageLookupByLibrary.simpleMessage("Unlimited lottery"),
@@ -419,7 +419,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_point_reward": MessageLookupByLibrary.simpleMessage("Points"),
         "event_quest": MessageLookupByLibrary.simpleMessage("Event Quests"),
         "event_recipe": MessageLookupByLibrary.simpleMessage("Recipe"),
-        "event_rerun_replace_grail": m3,
+        "event_rerun_replace_grail": m2,
         "event_shop": MessageLookupByLibrary.simpleMessage("Event Shop"),
         "event_skill": MessageLookupByLibrary.simpleMessage("Event Skill"),
         "event_svt_withdraw": MessageLookupByLibrary.simpleMessage("Withdrawn"),
@@ -554,7 +554,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_csv_load_csv": MessageLookupByLibrary.simpleMessage("Load CSV"),
         "import_csv_title": MessageLookupByLibrary.simpleMessage("CSV Template"),
         "import_data": MessageLookupByLibrary.simpleMessage("Import"),
-        "import_data_error": m4,
+        "import_data_error": m3,
         "import_data_success": MessageLookupByLibrary.simpleMessage("Import data successfully"),
         "import_from_clipboard": MessageLookupByLibrary.simpleMessage("From Clipboard"),
         "import_from_file": MessageLookupByLibrary.simpleMessage("From File"),
@@ -598,7 +598,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please, extract zip to non-system path then start the app. \"C:\\\", \"C:\\Program Files\" are not allowed."),
         "ios_app_path": MessageLookupByLibrary.simpleMessage("\"Files\" app/On My iPhone/Chaldea"),
         "item": MessageLookupByLibrary.simpleMessage("Item"),
-        "item_already_exist_hint": m5,
+        "item_already_exist_hint": m4,
         "item_apple": MessageLookupByLibrary.simpleMessage("Apple"),
         "item_category_bronze": MessageLookupByLibrary.simpleMessage("Bronze Items"),
         "item_category_gem": MessageLookupByLibrary.simpleMessage("Gem"),
@@ -625,7 +625,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_stat_sub_event": MessageLookupByLibrary.simpleMessage("Subtract Event"),
         "item_stat_sub_owned": MessageLookupByLibrary.simpleMessage("Subtract Owned"),
         "join_beta": MessageLookupByLibrary.simpleMessage("Join Beta Program"),
-        "jump_to": m6,
+        "jump_to": m5,
         "language": MessageLookupByLibrary.simpleMessage("English"),
         "language_en": MessageLookupByLibrary.simpleMessage("English"),
         "laplace_enemy_multi_ver_hint": MessageLookupByLibrary.simpleMessage(
@@ -639,7 +639,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "link": MessageLookupByLibrary.simpleMessage("link"),
         "list_count_shown_all": m19,
         "list_count_shown_hidden_all": m20,
-        "list_end_hint": m7,
+        "list_end_hint": m6,
         "load_ffo_data": MessageLookupByLibrary.simpleMessage("Load FFO Data"),
         "logic_type": MessageLookupByLibrary.simpleMessage("Logic Type"),
         "logic_type_and": MessageLookupByLibrary.simpleMessage("AND"),
@@ -784,7 +784,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "progress": MessageLookupByLibrary.simpleMessage("Progress"),
         "project_homepage": MessageLookupByLibrary.simpleMessage("Project Homepage"),
         "quest": MessageLookupByLibrary.simpleMessage("Quest"),
-        "quest_chapter_n": m8,
+        "quest_chapter_n": m7,
         "quest_condition": MessageLookupByLibrary.simpleMessage("Conditions"),
         "quest_disallow_laplace_share_hint":
             MessageLookupByLibrary.simpleMessage("Invalid quest, only Free and Raid Quests supports team sharing"),
@@ -830,7 +830,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "region_jp": MessageLookupByLibrary.simpleMessage("JP"),
         "region_kr": MessageLookupByLibrary.simpleMessage("KR"),
         "region_na": MessageLookupByLibrary.simpleMessage("NA"),
-        "region_notice": m9,
+        "region_notice": m8,
         "region_tw": MessageLookupByLibrary.simpleMessage("TW"),
         "related_traits": MessageLookupByLibrary.simpleMessage("Related Traits"),
         "remove": MessageLookupByLibrary.simpleMessage("Remove"),
@@ -841,8 +841,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rerun_event": MessageLookupByLibrary.simpleMessage("Rerun"),
         "reset": MessageLookupByLibrary.simpleMessage("Reset"),
         "reset_custom_ascension_icon": MessageLookupByLibrary.simpleMessage("Reset custom ascension icons"),
-        "reset_plan_all": m10,
-        "reset_plan_shown": m11,
+        "reset_plan_all": m9,
+        "reset_plan_shown": m10,
         "reset_skill_cd": MessageLookupByLibrary.simpleMessage("Reset Skill CD"),
         "resettable_digged_num": MessageLookupByLibrary.simpleMessage("Resettable Digged Num"),
         "resolution": MessageLookupByLibrary.simpleMessage("Resolution"),
@@ -984,7 +984,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("Hidden"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("Profile"),
         "svt_profile_info": MessageLookupByLibrary.simpleMessage("Character Info"),
-        "svt_profile_n": m12,
+        "svt_profile_n": m11,
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("Related CEs"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("Reset Plan"),
         "svt_second_archive": MessageLookupByLibrary.simpleMessage("Second Archive"),
@@ -1083,6 +1083,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "web_domain_choice_hint": MessageLookupByLibrary.simpleMessage(
             "CN endpoint for China mainland\nWeb app is only recommended for PC users, Mobile website is laggy and may refresh unexpectedly."),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web Renderer"),
-        "words_separate": m13
+        "words_separate": m12
       };
 }

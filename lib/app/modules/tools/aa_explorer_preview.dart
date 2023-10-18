@@ -169,11 +169,11 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
 
   Future<void> parsePage(String folder) async {
     EasyLoading.show();
-    String? htmlText = await manager.navigateTo(folder);
+    String? originalHtmlText = await manager.navigateTo(folder);
     EasyLoading.dismiss();
-    htmlText = htmlText?.split('<tbody>').getOrNull(1);
+    String? htmlText = originalHtmlText?.split('<tbody>').getOrNull(1);
     if (htmlText == null) {
-      EasyLoading.showError('Fetch page failed');
+      EasyLoading.showError('Fetch page failed\n${originalHtmlText ?? ""}');
       return;
     }
     links.clear();
@@ -199,7 +199,7 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    Widget child = Scaffold(
       appBar: AppBar(
         title: const Text('AA Explorer'),
         actions: [
@@ -234,6 +234,10 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
           Expanded(child: pageView),
         ],
       ),
+    );
+    return WillPopScope(
+      child: child,
+      onWillPop: () => Future.value(false),
     );
   }
 
@@ -311,9 +315,15 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
         onTap = () => launch(link);
       }
       double? maxWidth = (context.findRenderObject() as RenderBox?)?.size.width;
+      void _onLongPress() {
+        copyToClipboard(link);
+        EasyLoading.showToast(link);
+      }
+
       if (useGrid) {
         children.add(InkWell(
           onTap: onTap,
+          onLongPress: _onLongPress,
           child: Column(
             children: [
               Expanded(child: Center(child: content)),
@@ -343,6 +353,7 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
           title: Text(name),
           trailing: isImage ? content : null,
           onTap: onTap,
+          onLongPress: _onLongPress,
           dense: true,
         ));
       }

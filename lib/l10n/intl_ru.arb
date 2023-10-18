@@ -136,7 +136,6 @@
   "enemy_not_servant": "Не-Слуга",
   "error_no_data_found": "Данные не найдены",
   "error_no_internet": "Нет интернета",
-  "error_required_app_version": "Требуемая версия приложения: ≥ {version}",
   "error_widget_hint": "Ошибка! Нажмите чтобы вернуться >_<",
   "event_bonus": "Бонус",
   "event_campaign": "Кампания",

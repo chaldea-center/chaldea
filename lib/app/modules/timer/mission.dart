@@ -30,7 +30,7 @@ class TimerMissionItem with TimerItem {
   TimerMissionItem(this.mm, this.region);
 
   @override
-  int get endedAt => mm.closedAt;
+  int get endedAt => mm.endedAt;
 
   @override
   Widget buildItem(BuildContext context, {bool expanded = false}) {
@@ -49,6 +49,7 @@ class TimerMissionItem with TimerItem {
         contentPadding: const EdgeInsetsDirectional.only(start: 16),
         leading: const FaIcon(FontAwesomeIcons.listCheck, size: 20),
         minLeadingWidth: 28,
+        enabled: mm.endedAt > DateTime.now().timestamp,
         title: Text([fmtDate(mm.startedAt), fmtDate(mm.endedAt)].join(' ~ ')),
         subtitle: Text.rich(TextSpan(
           // text: "No.${mm.id}, ",

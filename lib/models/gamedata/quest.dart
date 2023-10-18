@@ -89,6 +89,7 @@ class Quest with RouteInfo {
   List<int> phasesNoBattle;
   List<QuestPhaseScript> phaseScripts;
   int priority; // large=top
+  @protected
   int noticeAt;
   int openedAt;
   int closedAt;

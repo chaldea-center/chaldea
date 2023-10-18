@@ -283,7 +283,7 @@
   "error": "エラー",
   "error_no_data_found": "データが見つかりません",
   "error_no_internet": "インターネットに接続できません",
-  "error_required_app_version": "最低限のアプリバージョン: ≥ {version}",
+  "error_required_app_version": "最低限のアプリバージョン: ≥ {version} (現在: {curVer})",
   "error_widget_hint": null,
   "event": "イベント",
   "event_ap_cost_half": "消費AP 50% DOWN",

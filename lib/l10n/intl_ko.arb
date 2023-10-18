@@ -283,7 +283,7 @@
   "error": "오류",
   "error_no_data_found": "버전 정보를 찾을 수 없습니다",
   "error_no_internet": "인터넷 연결 없음",
-  "error_required_app_version": "필요한 앱 버전: ≥ {version}",
+  "error_required_app_version": "필요한 앱 버전 : ≥{version} (현재: {curVer})",
   "error_widget_hint": null,
   "event": "이벤트",
   "event_ap_cost_half": "소비 AP 50% DOWN",

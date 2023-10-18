@@ -20,17 +20,17 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh_Hant';
 
-  static String m14(actorName) => "需要${actorName}在場";
+  static String m13(actorName) => "需要${actorName}在場";
 
   static String m0(url) => "Chaldea——一款跨平台的Fate/GO素材規劃客戶端，支持遊戲資訊瀏覽、從者練度/活動/素材規劃、周常規劃、抽卡模擬器等功能。\n\n詳情請見: \n${url}\n";
 
-  static String m15(count) => "充能至${count}";
+  static String m14(count) => "充能至${count}";
 
-  static String m1(version) => "App版本需不低於${version}";
+  static String m15(version, curVer) => "App版本需不低於${version} (目前: ${curVer})";
 
-  static String m2(n) => "最多${n}池";
+  static String m1(n) => "最多${n}池";
 
-  static String m3(n, total) => "聖杯替換為傳承結晶 ${n}/${total} 個";
+  static String m2(n, total) => "聖杯替換為傳承結晶 ${n}/${total} 個";
 
   static String m16(filename, hash, localHash) => "文件${filename}未找到或錯誤: ${hash} - ${localHash}";
 
@@ -38,17 +38,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m18(rarity) => "${rarity}星從者PickUp";
 
-  static String m4(error) => "導入失敗，Error:\n${error}";
+  static String m3(error) => "導入失敗，Error:\n${error}";
 
-  static String m5(name) => "${name}已存在";
+  static String m4(name) => "${name}已存在";
 
-  static String m6(site) => "跳轉到${site}";
+  static String m5(site) => "跳轉到${site}";
 
   static String m19(shown, total) => "顯示${shown}/總計${total}";
 
   static String m20(shown, ignore, total) => "顯示${shown}/忽略${ignore}/總計${total}";
 
-  static String m7(first) => "${Intl.select(first, {
+  static String m6(first) => "${Intl.select(first, {
             'true': '已經是第一張',
             'false': '已經是最後一張',
             'other': '已經到頭了',
@@ -56,7 +56,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m21(layer) => "第${layer}層";
 
-  static String m8(n) => "第${n}節";
+  static String m7(n) => "第${n}節";
 
   static String m22(region) => "出現錯誤或${region}無此關卡資料";
 
@@ -67,15 +67,15 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m25(unknown, dup, valid, total, selected) =>
       "${unknown}不明, ${dup}重複, ${valid}/${total}有效, ${selected}已選";
 
-  static String m9(region) => "${region}公告";
+  static String m8(region) => "${region}公告";
 
-  static String m10(n) => "重置規劃${n}(所有)";
+  static String m9(n) => "重置規劃${n}(所有)";
 
-  static String m11(n) => "重置規劃${n}(已顯示)";
+  static String m10(n) => "重置規劃${n}(已顯示)";
 
   static String m26(battles, ap) => "總計${battles}次戰鬥, ${ap} AP";
 
-  static String m12(n) => "個人資料${n}";
+  static String m11(n) => "個人資料${n}";
 
   static String m27(color, trait) => "此寶具顯示為${color}卡，但不持有[${trait}]特性";
 
@@ -83,7 +83,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m29(pause, remain) => "上傳之間需要等待${pause}秒 (還剩${remain}秒)";
 
-  static String m13(a, b) => "${a}${b}";
+  static String m12(a, b) => "${a}${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -171,7 +171,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_random": MessageLookupByLibrary.simpleMessage("隨機"),
         "battle_records": MessageLookupByLibrary.simpleMessage("紀錄"),
         "battle_remaining_hp": MessageLookupByLibrary.simpleMessage("剩餘HP"),
-        "battle_require_actor_on_field": m14,
+        "battle_require_actor_on_field": m13,
         "battle_require_field_traits": MessageLookupByLibrary.simpleMessage("要求的場地特性"),
         "battle_require_opponent_traits": MessageLookupByLibrary.simpleMessage("要求的對方特性"),
         "battle_require_self_traits": MessageLookupByLibrary.simpleMessage("要求的自身特性"),
@@ -232,7 +232,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "chaldea_share_msg": m0,
         "change_log": MessageLookupByLibrary.simpleMessage("更新歷史"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("出場角色"),
-        "charge_np_to": m15,
+        "charge_np_to": m14,
         "check_file_hash": MessageLookupByLibrary.simpleMessage("驗證文件完整性"),
         "check_update": MessageLookupByLibrary.simpleMessage("檢查更新"),
         "class_advantage": MessageLookupByLibrary.simpleMessage("職階剋職"),
@@ -372,7 +372,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "error": MessageLookupByLibrary.simpleMessage("錯誤"),
         "error_no_data_found": MessageLookupByLibrary.simpleMessage("未找到數據文件"),
         "error_no_internet": MessageLookupByLibrary.simpleMessage("無網路連接"),
-        "error_required_app_version": m1,
+        "error_required_app_version": m15,
         "error_widget_hint": MessageLookupByLibrary.simpleMessage("錯誤! 請點擊返回 >_<"),
         "event": MessageLookupByLibrary.simpleMessage("活動"),
         "event_ap_cost_half": MessageLookupByLibrary.simpleMessage("AP消費減半"),
@@ -390,7 +390,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_item_extra": MessageLookupByLibrary.simpleMessage("額外素材"),
         "event_item_fixed_extra": MessageLookupByLibrary.simpleMessage("額外固定素材"),
         "event_lottery": MessageLookupByLibrary.simpleMessage("獎池"),
-        "event_lottery_limit_hint": m2,
+        "event_lottery_limit_hint": m1,
         "event_lottery_limited": MessageLookupByLibrary.simpleMessage("有限池"),
         "event_lottery_unit": MessageLookupByLibrary.simpleMessage("池"),
         "event_lottery_unlimited": MessageLookupByLibrary.simpleMessage("無限池"),
@@ -401,7 +401,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_point_reward": MessageLookupByLibrary.simpleMessage("點數"),
         "event_quest": MessageLookupByLibrary.simpleMessage("活動關卡"),
         "event_recipe": MessageLookupByLibrary.simpleMessage("配方"),
-        "event_rerun_replace_grail": m3,
+        "event_rerun_replace_grail": m2,
         "event_shop": MessageLookupByLibrary.simpleMessage("活動商店"),
         "event_skill": MessageLookupByLibrary.simpleMessage("活動技能"),
         "event_svt_withdraw": MessageLookupByLibrary.simpleMessage("已离队"),
@@ -531,7 +531,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_csv_load_csv": MessageLookupByLibrary.simpleMessage("載入CSV"),
         "import_csv_title": MessageLookupByLibrary.simpleMessage("CSV模板"),
         "import_data": MessageLookupByLibrary.simpleMessage("導入"),
-        "import_data_error": m4,
+        "import_data_error": m3,
         "import_data_success": MessageLookupByLibrary.simpleMessage("成功導入資料"),
         "import_from_clipboard": MessageLookupByLibrary.simpleMessage("從剪貼簿"),
         "import_from_file": MessageLookupByLibrary.simpleMessage("從文件"),
@@ -575,7 +575,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("請解壓文件至非系統目錄再重新啟動應用。\"C:\\\", \"C:\\Program Files\"等路徑為無效路徑."),
         "ios_app_path": MessageLookupByLibrary.simpleMessage("\"文件\"應用/我的iPhone/Chaldea"),
         "item": MessageLookupByLibrary.simpleMessage("素材"),
-        "item_already_exist_hint": m5,
+        "item_already_exist_hint": m4,
         "item_apple": MessageLookupByLibrary.simpleMessage("蘋果"),
         "item_category_bronze": MessageLookupByLibrary.simpleMessage("銅素材"),
         "item_category_gem": MessageLookupByLibrary.simpleMessage("輝石"),
@@ -600,7 +600,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "item_stat_sub_event": MessageLookupByLibrary.simpleMessage("減去活動所得"),
         "item_stat_sub_owned": MessageLookupByLibrary.simpleMessage("減去庫存"),
         "join_beta": MessageLookupByLibrary.simpleMessage("加入Beta版"),
-        "jump_to": m6,
+        "jump_to": m5,
         "language": MessageLookupByLibrary.simpleMessage("繁體中文"),
         "language_en": MessageLookupByLibrary.simpleMessage("Traditional Chinese"),
         "laplace_enemy_multi_ver_hint":
@@ -614,7 +614,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "link": MessageLookupByLibrary.simpleMessage("連結"),
         "list_count_shown_all": m19,
         "list_count_shown_hidden_all": m20,
-        "list_end_hint": m7,
+        "list_end_hint": m6,
         "load_ffo_data": MessageLookupByLibrary.simpleMessage("加載FFO資料"),
         "logic_type": MessageLookupByLibrary.simpleMessage("邏輯關係"),
         "logic_type_and": MessageLookupByLibrary.simpleMessage("且"),
@@ -751,7 +751,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "progress": MessageLookupByLibrary.simpleMessage("進度"),
         "project_homepage": MessageLookupByLibrary.simpleMessage("項目主頁"),
         "quest": MessageLookupByLibrary.simpleMessage("關卡"),
-        "quest_chapter_n": m8,
+        "quest_chapter_n": m7,
         "quest_condition": MessageLookupByLibrary.simpleMessage("開放條件"),
         "quest_disallow_laplace_share_hint": MessageLookupByLibrary.simpleMessage("無效關卡，僅支持主線/活動Free本及伐柱戰的隊伍分享"),
         "quest_edit_hint": MessageLookupByLibrary.simpleMessage(
@@ -793,7 +793,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "region_jp": MessageLookupByLibrary.simpleMessage("日服"),
         "region_kr": MessageLookupByLibrary.simpleMessage("韓服"),
         "region_na": MessageLookupByLibrary.simpleMessage("美服"),
-        "region_notice": m9,
+        "region_notice": m8,
         "region_tw": MessageLookupByLibrary.simpleMessage("繁中服"),
         "related_traits": MessageLookupByLibrary.simpleMessage("關聯特性"),
         "remove": MessageLookupByLibrary.simpleMessage("移除"),
@@ -804,8 +804,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "rerun_event": MessageLookupByLibrary.simpleMessage("復刻活動"),
         "reset": MessageLookupByLibrary.simpleMessage("重置"),
         "reset_custom_ascension_icon": MessageLookupByLibrary.simpleMessage("重置自訂從者頭像"),
-        "reset_plan_all": m10,
-        "reset_plan_shown": m11,
+        "reset_plan_all": m9,
+        "reset_plan_shown": m10,
         "reset_skill_cd": MessageLookupByLibrary.simpleMessage("重置技能CD"),
         "resettable_digged_num": MessageLookupByLibrary.simpleMessage("重置所需發掘數目"),
         "resolution": MessageLookupByLibrary.simpleMessage("分辨率"),
@@ -943,7 +943,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_plan_hidden": MessageLookupByLibrary.simpleMessage("已隱藏"),
         "svt_profile": MessageLookupByLibrary.simpleMessage("羈絆故事"),
         "svt_profile_info": MessageLookupByLibrary.simpleMessage("角色詳情"),
-        "svt_profile_n": m12,
+        "svt_profile_n": m11,
         "svt_related_ce": MessageLookupByLibrary.simpleMessage("關聯禮裝"),
         "svt_reset_plan": MessageLookupByLibrary.simpleMessage("重置規劃"),
         "svt_second_archive": MessageLookupByLibrary.simpleMessage("保管室"),
@@ -1038,6 +1038,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "web_domain_choice_hint":
             MessageLookupByLibrary.simpleMessage("大陆地区请选择国内节点\n网页版仅推荐PC用户使用，手机版网页性能较差且bug较多如无故刷新"),
         "web_renderer": MessageLookupByLibrary.simpleMessage("Web渲染器"),
-        "words_separate": m13
+        "words_separate": m12
       };
 }

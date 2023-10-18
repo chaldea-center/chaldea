@@ -221,16 +221,6 @@ class AppInfo {
 
   static int get buildNumber => int.tryParse(_packageInfo?.buildNumber ?? '0') ?? 0;
 
-  static int get originBuild {
-    if (PlatformU.isAndroid) {
-      final _build = buildNumber;
-      if (_build > 1000 && [10, 20, 40].contains(_build ~/ 100)) {
-        return int.parse(_build.toString().substring(2));
-      }
-    }
-    return buildNumber;
-  }
-
   static String get packageName => info?.packageName ?? kPackageName;
 
   static int? get androidSdk => _androidSdk;

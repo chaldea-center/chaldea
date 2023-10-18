@@ -68,7 +68,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
                 text: '${S.current.team} @'
                     '${username != null && username.isNotEmpty ? username.breakWord : "Not Login"}'),
           if (mode == TeamQueryMode.quest && widget.quest != null)
-            TextSpan(text: '${S.current.team} - ${widget.quest?.lName.l.breakWord}'),
+            TextSpan(text: '${S.current.team} - ${widget.quest?.lDispName.breakWord}'),
           if (mode == TeamQueryMode.id) TextSpan(text: S.current.team_shared),
         ],
       )),

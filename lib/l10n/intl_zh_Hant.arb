@@ -283,7 +283,7 @@
   "error": "錯誤",
   "error_no_data_found": "未找到數據文件",
   "error_no_internet": "無網路連接",
-  "error_required_app_version": "App版本需不低於{version}",
+  "error_required_app_version": "App版本需不低於{version} (目前: {curVer})",
   "error_widget_hint": "錯誤! 請點擊返回 >_<",
   "event": "活動",
   "event_ap_cost_half": "AP消費減半",

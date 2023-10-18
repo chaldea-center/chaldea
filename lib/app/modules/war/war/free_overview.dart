@@ -7,7 +7,6 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
-import 'package:chaldea/app/api/cache.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -54,11 +53,6 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     }
     await Future.wait(quests.reversed.map((quest) async {
       if (quest.phases.isEmpty) return null;
-      if (quest.warId > 1000) {
-        final phaseOld = await AtlasApi.questPhase(quest.id, quest.phases.last, expireAfter: kExpireCacheOnly);
-        if (phaseOld != null) phases[quest.id] = phaseOld;
-        if (mounted) setState(() {});
-      }
       final phase = await AtlasApi.questPhase(quest.id, quest.phases.last);
       if (phase != null) phases[quest.id] = phase;
       if (mounted) setState(() {});

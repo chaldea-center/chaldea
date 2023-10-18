@@ -283,7 +283,7 @@
   "error": "错误",
   "error_no_data_found": "未找到数据文件",
   "error_no_internet": "无网络连接",
-  "error_required_app_version": "App版本需不低于{version}",
+  "error_required_app_version": "App版本需不低于{version} (当前:{curVer})",
   "error_widget_hint": "错误!点击返回>_<",
   "event": "活动",
   "event_ap_cost_half": "AP消耗减半",

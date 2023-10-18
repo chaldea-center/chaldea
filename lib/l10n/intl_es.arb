@@ -278,7 +278,6 @@
   "error": null,
   "error_no_data_found": null,
   "error_no_internet": "Sin internet",
-  "error_required_app_version": "Versión de la aplicación requerida: ≥ {version}",
   "error_widget_hint": null,
   "event": "Eventos",
   "event_ap_cost_half": null,

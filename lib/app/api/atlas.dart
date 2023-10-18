@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
-
 import 'package:chaldea/packages/rate_limiter.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../models/models.dart';
@@ -56,21 +54,16 @@ class AtlasApi {
     QuestPhase? phaseCache;
     if (expireAfter == null) {
       phaseCache = questPhaseCache(questId, phase, hash, region);
-      if (phaseCache != null) return SynchronousFuture(phaseCache);
+      if (phaseCache != null) return phaseCache;
     }
     // free quests, only phase 3 saved in db
     if (region == Region.jp && expireAfter == null) {
       final questJP = db.gameData.quests[questId];
+      final now = DateTime.now().timestamp;
       if (questJP != null) {
-        final now = DateTime.now().timestamp;
-        // main story's main quest:
-        //  if just released in 1 month
-        if (questJP.type == QuestType.main && questJP.closedAt > kNeverClosedTimestamp) {
-          expireAfter = now - questJP.openedAt < const Duration(days: 30).inSeconds
-              ? const Duration(days: 3)
-              : const Duration(days: 15);
-        } else if (now > questJP.closedAt) {
-          expireAfter = const Duration(days: 15);
+        final dt = now - questJP.openedAt;
+        if (dt > 0) {
+          expireAfter = Duration(seconds: (dt * 2).clamp(kSecsPerDay, 7 * kSecsPerDay));
         }
       }
     }

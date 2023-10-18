@@ -200,6 +200,8 @@ class WaveInfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final originalScript = Map<String, dynamic>.of(stage.originalScript ?? {});
+    originalScript.remove('aiFieldIds');
     return Scaffold(
       appBar: AppBar(title: Text('Wave ${stage.wave}')),
       body: ListView(
@@ -268,13 +270,13 @@ class WaveInfoPage extends StatelessWidget {
             buildEnemyMaster(masterId),
           if (stage.waveStartMovies.isNotEmpty) ListTile(title: Text(S.current.stage_opening_movie)),
           for (final movie in stage.waveStartMovies) MyVideoPlayer.url(url: movie.waveStartMovie, autoPlay: false),
-          if (stage.originalScript?.isNotEmpty == true) ...[
+          if (originalScript.isNotEmpty) ...[
             kDefaultDivider,
             Card(
               margin: const EdgeInsets.all(8),
               child: Padding(
                 padding: const EdgeInsets.all(8),
-                child: Text(const JsonEncoder.withIndent('  ').convert(stage.originalScript)),
+                child: Text(const JsonEncoder.withIndent('  ').convert(originalScript)),
               ),
             )
           ],

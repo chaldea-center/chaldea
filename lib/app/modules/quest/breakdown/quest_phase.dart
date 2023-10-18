@@ -757,6 +757,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   }
 
   /// only drops of free quest useApRate
+  final double _itemSize = 40.0;
   Widget _getDomusAureaWidget() {
     final dropRates = db.gameData.dropData.domusAurea;
     Map<int, String?> dropTexts = {};
@@ -783,8 +784,8 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
             context: context,
             id: entry.key,
             text: entry.value,
-            width: 36,
-            option: ImageWithTextOption(fontSize: 36 * 0.27, padding: EdgeInsets.zero),
+            width: _itemSize,
+            option: ImageWithTextOption(fontSize: _itemSize * 0.27, padding: EdgeInsets.zero),
           )
       ],
     );
@@ -816,9 +817,9 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       }
       return drop.iconBuilder(
         context: context,
-        width: 36,
+        width: _itemSize,
         text: text ?? '-',
-        option: ImageWithTextOption(fontSize: 36 * 0.27, padding: EdgeInsets.zero),
+        option: ImageWithTextOption(fontSize: _itemSize * 0.27, padding: EdgeInsets.zero),
       );
     }
 
@@ -842,10 +843,10 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         double base = Maths.sum(subdrops.map((e) => e.num * e.dropCount / e.runs));
         double bonus = Maths.sum(subdrops.map((e) => e.dropCount / e.runs));
         children.add(drop.iconBuilder(
-          width: 42,
+          width: _itemSize,
           context: context,
           text: '${base.format(maxDigits: 3)}\n+${bonus.format(maxDigits: 3)}b',
-          option: ImageWithTextOption(textAlign: TextAlign.end, fontSize: 42 * 0.27, padding: EdgeInsets.zero),
+          option: ImageWithTextOption(textAlign: TextAlign.end, fontSize: _itemSize * 0.27, padding: EdgeInsets.zero),
         ));
       }
     }

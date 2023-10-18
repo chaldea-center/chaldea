@@ -278,7 +278,6 @@
   "error": "خطأ",
   "error_no_data_found": "لا يوجد بيانات",
   "error_no_internet": "لا انترنت",
-  "error_required_app_version": "نسخة التطبيق المطلوبة : ≥ {version}",
   "error_widget_hint": " >_< خطأ ! اضغط للعودة",
   "event": "حدث",
   "event_ap_cost_half": null,

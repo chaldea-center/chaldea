@@ -99,7 +99,7 @@ class AppNewsCarousel extends StatefulWidget {
             type: 1,
             title: S.current.update,
             content: '${S.current.dataset_version}: ${datVer["utc"]}\n'
-                '${S.current.error_required_app_version(minVer.versionString)}',
+                '${S.current.error_required_app_version(minVer.versionString, AppInfo.versionString)}',
             link: ChaldeaUrl.doc('releases'),
           ));
         }

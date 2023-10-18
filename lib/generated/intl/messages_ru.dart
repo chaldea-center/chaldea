@@ -23,19 +23,17 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(url) =>
       "Халдея — кроссплатформенная утилита для Fate/GO. Поддержка просмотра игровых данных, планирования слуг/событий/предметов, планирования основных миссий, симулятор призыва и т. д. Подробности: ${url}";
 
-  static String m15(count) => "Зарядить NP до ${count}";
+  static String m14(count) => "Зарядить NP до ${count}";
 
-  static String m1(version) => "Требуемая версия приложения: ≥ ${version}";
+  static String m3(error) => "Импорт не удался. Ошибка:\n${error}";
 
-  static String m4(error) => "Импорт не удался. Ошибка:\n${error}";
+  static String m8(region) => "${region} Уведомление";
 
-  static String m9(region) => "${region} Уведомление";
-
-  static String m12(n) => "Профиль ${n}";
+  static String m11(n) => "Профиль ${n}";
 
   static String m29(pause, remain) => "Надо подождать ${pause} секунд между загрузками (${remain}остаются).";
 
-  static String m13(a, b) => "${a} ${b}";
+  static String m12(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -112,7 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "chaldea_share_msg": m0,
         "change_log": MessageLookupByLibrary.simpleMessage("Изменить Лог"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("Персонажи"),
-        "charge_np_to": m15,
+        "charge_np_to": m14,
         "check_file_hash": MessageLookupByLibrary.simpleMessage("Проверка целостности файлов"),
         "check_update": MessageLookupByLibrary.simpleMessage("Проверка обновления"),
         "clear": MessageLookupByLibrary.simpleMessage("Очистить"),
@@ -185,7 +183,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "enemy_not_servant": MessageLookupByLibrary.simpleMessage("Не-Слуга"),
         "error_no_data_found": MessageLookupByLibrary.simpleMessage("Данные не найдены"),
         "error_no_internet": MessageLookupByLibrary.simpleMessage("Нет интернета"),
-        "error_required_app_version": m1,
         "error_widget_hint": MessageLookupByLibrary.simpleMessage("Ошибка! Нажмите чтобы вернуться >_<"),
         "event_bonus": MessageLookupByLibrary.simpleMessage("Бонус"),
         "event_campaign": MessageLookupByLibrary.simpleMessage("Кампания"),
@@ -231,7 +228,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "import_csv_load_csv": MessageLookupByLibrary.simpleMessage("Загрузить CSV"),
         "import_csv_title": MessageLookupByLibrary.simpleMessage("Шаблон CSV"),
         "import_data": MessageLookupByLibrary.simpleMessage("Импорт"),
-        "import_data_error": m4,
+        "import_data_error": m3,
         "import_data_success": MessageLookupByLibrary.simpleMessage("Успешный импорт данных"),
         "import_from_clipboard": MessageLookupByLibrary.simpleMessage("Из буфера обмена"),
         "import_from_file": MessageLookupByLibrary.simpleMessage("Из файла"),
@@ -290,7 +287,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "region_jp": MessageLookupByLibrary.simpleMessage("JP"),
         "region_kr": MessageLookupByLibrary.simpleMessage("KR"),
         "region_na": MessageLookupByLibrary.simpleMessage("NA"),
-        "region_notice": m9,
+        "region_notice": m8,
         "region_tw": MessageLookupByLibrary.simpleMessage("TW"),
         "rename": MessageLookupByLibrary.simpleMessage("Переименовать"),
         "save": MessageLookupByLibrary.simpleMessage("Сохранить"),
@@ -319,7 +316,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_class": MessageLookupByLibrary.simpleMessage("Класс"),
         "svt_fav_btn_remember": MessageLookupByLibrary.simpleMessage("Запомнить"),
         "svt_fav_btn_show_all": MessageLookupByLibrary.simpleMessage("Показать Все"),
-        "svt_profile_n": m12,
+        "svt_profile_n": m11,
         "switch_region": MessageLookupByLibrary.simpleMessage("Поменять Регион"),
         "target": MessageLookupByLibrary.simpleMessage("Цель"),
         "team_starting_member": MessageLookupByLibrary.simpleMessage("Передовая"),
@@ -369,6 +366,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "warning": MessageLookupByLibrary.simpleMessage("Предупреждение"),
         "web_domain_choice_hint": MessageLookupByLibrary.simpleMessage(
             "Конечная точка CN для материкового Китая\nВеб-приложение рекомендуется только для пользователей ПК, мобильный сайт работает медленно и может неожиданно обновляться."),
-        "words_separate": m13
+        "words_separate": m12
       };
 }
