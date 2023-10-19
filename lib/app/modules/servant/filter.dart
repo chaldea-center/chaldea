@@ -180,6 +180,14 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
 
 class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilterPage> {
   int _lastResetTime = 0;
+  List<Event> freeExchangeSvtEvents = [];
+
+  @override
+  void initState() {
+    super.initState();
+    freeExchangeSvtEvents = db.gameData.events.values.where((e) => e.isExchangeSvtEvent && e.shop.isNotEmpty).toList();
+    freeExchangeSvtEvents.sort2((e) => -e.startedAt);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -498,7 +506,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
         ),
         FilterGroup<int>(
           title: Text(S.current.free_exchange_svt),
-          options: ConstData.freeExchangeSvtEvents,
+          options: freeExchangeSvtEvents.map((e) => e.id).toList(),
           values: filterData.freeExchangeSvtEvent,
           optionBuilder: (v) => Text(db.gameData.events[v]?.lShortName.l.setMaxLines(1) ?? "Event $v"),
           onFilterChanged: (value, _) {
