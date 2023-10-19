@@ -276,6 +276,7 @@ class WarExtra {
 @JsonSerializable(createToJson: false)
 class ExchangeTicket {
   final int id;
+  final int itemId;
   final int year;
   final int month;
   final List<int> items;
@@ -284,6 +285,7 @@ class ExchangeTicket {
 
   ExchangeTicket({
     required this.id,
+    required this.itemId,
     required this.year,
     required this.month,
     required this.items,

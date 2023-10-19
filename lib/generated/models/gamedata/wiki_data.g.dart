@@ -193,6 +193,7 @@ WarExtra _$WarExtraFromJson(Map json) => WarExtra(
 
 ExchangeTicket _$ExchangeTicketFromJson(Map json) => ExchangeTicket(
       id: json['id'] as int,
+      itemId: json['itemId'] as int,
       year: json['year'] as int,
       month: json['month'] as int,
       items: (json['items'] as List<dynamic>).map((e) => e as int).toList(),
