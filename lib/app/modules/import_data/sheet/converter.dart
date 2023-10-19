@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:chaldea/generated/l10n.dart';
@@ -16,7 +15,6 @@ class PlanDataSheetConverter {
   static const _rarity = 'rarity';
   static const _svtClass = 'class';
   static const _coin = 'coin';
-  static const _cmdCode = 'cmdCode';
 
   static const _favorite = 'favorite';
   static const _ascension = 'ascension';
@@ -26,7 +24,6 @@ class PlanDataSheetConverter {
   static const _append1 = 'append1';
   static const _append2 = 'append2';
   static const _append3 = 'append3';
-  static const _costumes = 'costumes';
   static const _grail = 'grail';
   static const _fouHp = 'fouHp4';
   static const _fouAtk = 'fouAtk4';
@@ -43,7 +40,6 @@ class PlanDataSheetConverter {
     _append1,
     _append2,
     _append3,
-    _costumes,
     _grail,
     _fouHp,
     _fouAtk,
@@ -62,7 +58,6 @@ class PlanDataSheetConverter {
     _priority,
     _coin,
     for (final k in _planHeaders) ...[k, '${k}_t'],
-    _cmdCode,
   ];
 
   static Map<String, String Function()> titles = {
@@ -72,7 +67,6 @@ class PlanDataSheetConverter {
     _svtClass: () => S.current.svt_class,
     _priority: () => S.current.priority,
     _coin: () => S.current.servant_coin,
-    _cmdCode: () => S.current.command_code,
     _favorite: () => S.current.favorite,
     _ascension: () => S.current.ascension,
     _skill1: () => '${S.current.active_skill_short} 1',
@@ -81,7 +75,6 @@ class PlanDataSheetConverter {
     _append1: () => '${S.current.append_skill_short} 1',
     _append2: () => '${S.current.append_skill_short} 2',
     _append3: () => '${S.current.append_skill_short} 3',
-    _costumes: () => S.current.costume,
     _grail: () => S.current.grail_up,
     _fouHp: () => '${S.current.foukun} HP',
     _fouAtk: () => '${S.current.foukun} ATK',
@@ -104,7 +97,6 @@ class PlanDataSheetConverter {
     _write(_append1, plan.appendSkills[0]);
     _write(_append2, plan.appendSkills[1]);
     _write(_append3, plan.appendSkills[2]);
-    _write(_costumes, jsonEncode(plan.costumes.map((key, value) => MapEntry(key.toString(), value))));
     _write(_grail, plan.grail);
     _write(_fouHp, plan.fouHp);
     _write(_fouAtk, plan.fouAtk);
@@ -123,9 +115,6 @@ class PlanDataSheetConverter {
       return int.tryParse(v);
     }
 
-    Map<int, int> costumes =
-        (jsonDecode(row[_costumes + suff] ?? '{}') as Map).map((key, value) => MapEntry(int.parse(key), value));
-
     return SvtPlan(
       favorite: row[_favorite] == "1",
       ascension: _toInt(_ascension) ?? 0,
@@ -139,7 +128,6 @@ class PlanDataSheetConverter {
         _toInt(_append2) ?? 0,
         _toInt(_append3) ?? 0,
       ],
-      costumes: costumes,
       grail: _toInt(_grail) ?? 0,
       fouHp: _toInt(_fouHp) ?? 0,
       fouAtk: _toInt(_fouAtk) ?? 0,
@@ -163,7 +151,6 @@ class PlanDataSheetConverter {
       _priority: status.priority,
       ..._svtPlanToCsv(status.cur, false),
       ..._svtPlanToCsv(plan, true),
-      _cmdCode: jsonEncode(status.equipCmdCodes),
     };
     return _headers.map((e) => data[e]?.toString() ?? "").toList();
   }
@@ -179,14 +166,10 @@ class PlanDataSheetConverter {
       return int.tryParse(v);
     }
 
-    String? _cmd = rowData[_cmdCode];
-    final List equipCmdCodes = _cmd == null || _cmd.trim().isEmpty ? [] : jsonDecode(_cmd);
-
     final plan = _svtPlanFromCsv(rowData, true);
     final status = SvtStatus(
       cur: _svtPlanFromCsv(rowData, false),
       priority: _toInt(_priority) ?? 1,
-      equipCmdCodes: List.from(equipCmdCodes),
     );
 
     final coin = _toInt(_coin);
@@ -249,4 +232,33 @@ class ParedSvtCsvRow {
     required this.plan,
     this.coin,
   });
+
+  // modify in-place
+  SvtStatus mergeStatus(SvtStatus? dest) {
+    if (dest == null) return SvtStatus.fromJson(status.toJson());
+    final src = status;
+    dest
+      ..priority = src.priority
+      ..cur = mergePlan(dest.cur, src.cur);
+    return dest;
+  }
+
+  // modify in-place
+  SvtPlan mergePlan(SvtPlan? dest, [SvtPlan? src]) {
+    src ??= plan;
+    if (dest == null) return SvtPlan.fromJson(src.toJson());
+    dest
+      ..favorite = src.favorite
+      ..ascension = src.ascension
+      ..skills = src.skills.toList()
+      ..appendSkills = src.appendSkills.toList()
+      ..grail = src.grail
+      ..fouHp = src.fouHp
+      ..fouAtk = src.fouAtk
+      ..fouHp3 = src.fouHp3
+      ..fouAtk3 = src.fouAtk3
+      ..bondLimit = src.bondLimit
+      ..npLv = src.npLv;
+    return dest;
+  }
 }

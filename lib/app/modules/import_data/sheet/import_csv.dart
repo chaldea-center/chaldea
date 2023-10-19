@@ -128,8 +128,9 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
                           for (final row in parsedRows) {
                             final svt = db.gameData.servantsWithDup[row.collectionNo];
                             if (svt == null) continue;
-                            db.curUser.servants[row.collectionNo] = row.status;
-                            db.curSvtPlan[row.collectionNo] = row.plan;
+                            db.curUser.servants[row.collectionNo] =
+                                row.mergeStatus(db.curUser.servants[row.collectionNo]);
+                            db.curSvtPlan[row.collectionNo] = row.mergePlan(db.curSvtPlan[row.collectionNo]);
                             final coinId = svt.coin?.item.id;
                             if (coinId != null && row.coin != null) {
                               db.curUser.items[coinId] = row.coin!;
