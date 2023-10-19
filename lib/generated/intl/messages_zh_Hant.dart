@@ -1014,7 +1014,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage("由於使用過以下任意功能，當前隊伍不滿足上傳條件:"),
         "upload_paused": m29,
         "upload_team_confirmation": MessageLookupByLibrary.simpleMessage(
-            "確認上傳當前的隊伍?\n\n注意事項：請勿上傳關卡開放時未實裝的從者，減少管理員的負擔!!!\n請盡量降低隊伍配置以供他人參考。\n上傳的隊伍可能因數據格式更新/不相容等原因被移除。"),
+            "確認上傳當前的隊伍?\n\n注意事項：(為了方便其他玩家檢索)\n- 請勿上傳關卡開放時未實裝的從者!!!\n- 請盡量降低隊伍配置(不必要的聖杯、被動技能、 寶具等級、未使用的後排從者等)以供他人參考。\n- 上傳的隊伍可能因數據格式更新/不相容等原因被移除。"),
         "usage": MessageLookupByLibrary.simpleMessage("使用方法"),
         "userdata": MessageLookupByLibrary.simpleMessage("用戶資料"),
         "userdata_download_backup": MessageLookupByLibrary.simpleMessage("下載備份"),

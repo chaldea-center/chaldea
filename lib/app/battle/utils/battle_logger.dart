@@ -264,6 +264,19 @@ class BattleRecordManager {
     if (svtData.ce != null && svtData.ce!.collectionNo <= 0) {
       setIllegal('${S.current.craft_essence}: ID ${svtData.ce!.id}, not player CE');
     }
+
+    // coin
+    int requiredCoins = 0, maxCoins = 0;
+    int? summonCoin = svt.coin?.summonNum ?? 0;
+    if (summonCoin > 0 && svt.rarity >= 4 && svtData.tdLv < 5 && svt.extra.obtains.any((e) => e.isSummonable)) {
+      maxCoins = summonCoin * svtData.tdLv + 180;
+      requiredCoins += max(((svtData.lv - 100) / 2).ceil() * 30, 0);
+      requiredCoins += svtData.appendLvs.where((e) => e > 0).length * 120;
+      if (requiredCoins > maxCoins) {
+        setIllegal('${S.current.servant_coin}(${svt.lName.l}): required $requiredCoins, '
+            'but max $maxCoins at ${S.current.np_short}${svtData.tdLv} & ${S.current.bond}15 ');
+      }
+    }
   }
 
   Set<String> checkExtraIllegalReason(BattleReplayDelegateData delegate) {

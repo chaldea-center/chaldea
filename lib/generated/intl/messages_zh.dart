@@ -1012,7 +1012,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage("由于使用过以下任意功能，当前队伍不满足上传条件:"),
         "upload_paused": m29,
         "upload_team_confirmation": MessageLookupByLibrary.simpleMessage(
-            "确认上传当前的队伍?\n\n注意事项：请勿上传关卡开放时未实装的从者，减少管理员的负担!!!\n请尽量降低队伍配置以供他人参考。\n上传的队伍可能因后续版本数据格式更新/不兼容等原因被移除。"),
+            "确认上传当前的队伍?\n\n注意事项：(为了方便其他玩家检索)\n- 请勿上传关卡开放时未实装的从者!!!\n- 请尽量降低队伍配置(不必要的圣杯、被动技能、宝具等级、未使用的后备从者等)以供他人参考。\n- 上传的队伍可能因后续版本数据格式更新/不兼容等原因被移除。"),
         "usage": MessageLookupByLibrary.simpleMessage("使用方法"),
         "userdata": MessageLookupByLibrary.simpleMessage("用户数据"),
         "userdata_download_backup": MessageLookupByLibrary.simpleMessage("下载备份"),

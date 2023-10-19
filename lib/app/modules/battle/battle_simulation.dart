@@ -719,7 +719,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     return SimpleCancelOkDialog(
       scrollable: true,
       title: Text(S.current.upload),
-      content: Text(content),
+      content: Text(content, style: const TextStyle(fontSize: 14)),
       hideOk: !canUpload,
       onTapOk: () async {
         final actions = BattleActions(

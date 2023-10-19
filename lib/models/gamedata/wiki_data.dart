@@ -501,7 +501,11 @@ enum SvtObtain {
   clearReward,
   heroine,
   unavailable,
-  unknown,
+  unknown;
+
+  bool get isSummonable {
+    return this == permanent || this == story || this == limited;
+  }
 }
 
 enum CEObtain {
