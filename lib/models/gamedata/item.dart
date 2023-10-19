@@ -34,6 +34,7 @@ class Item {
   List<NiceTrait> individuality;
   String icon;
   ItemBGType background;
+  int value;
   int priority;
   int dropPriority;
   int startedAt;
@@ -49,6 +50,7 @@ class Item {
     this.individuality = const [],
     required this.icon,
     this.background = ItemBGType.zero,
+    this.value = 0,
     required this.priority,
     required this.dropPriority,
     required this.startedAt,
