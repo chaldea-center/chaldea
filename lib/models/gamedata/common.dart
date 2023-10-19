@@ -34,10 +34,12 @@ enum Region {
       case Region.cn:
         return 12;
       case Region.tw:
-        return 15;
+        return 22;
       case Region.na:
-      case Region.kr:
         return 24;
+      // 24 months before JP 2021/07 event
+      case Region.kr:
+        return 22;
     }
   }
 

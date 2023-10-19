@@ -444,23 +444,7 @@ class LimitedSummon with RouteInfo {
     }
     final jpDate = startTime.jp?.sec2date();
     if (jpDate == null) return false;
-    switch (db.curUser.region) {
-      case Region.jp:
-        days = 300;
-        break;
-      case Region.cn:
-        days = 365;
-        break;
-      case Region.tw:
-        days = 624;
-        break;
-      case Region.na:
-        days = 724;
-        break;
-      case Region.kr:
-        days = 728;
-        break;
-    }
+    days = db.curUser.region.eventDelayMonth * 31;
     return jpDate.isBefore(DateTime.now().subtract(Duration(days: days + 30)));
   }
 }
