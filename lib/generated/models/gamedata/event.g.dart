@@ -226,6 +226,20 @@ const _$EventOverwriteTypeEnumMap = {
   EventOverwriteType.noticeBanner: 'noticeBanner',
 };
 
+MstMasterMission _$MstMasterMissionFromJson(Map json) => MstMasterMission(
+      id: json['id'] as int,
+      startedAt: json['startedAt'] as int,
+      endedAt: json['endedAt'] as int,
+      closedAt: json['closedAt'] as int,
+    );
+
+Map<String, dynamic> _$MstMasterMissionToJson(MstMasterMission instance) => <String, dynamic>{
+      'id': instance.id,
+      'startedAt': instance.startedAt,
+      'endedAt': instance.endedAt,
+      'closedAt': instance.closedAt,
+    };
+
 MasterMission _$MasterMissionFromJson(Map json) => MasterMission(
       id: json['id'] as int,
       startedAt: json['startedAt'] as int,

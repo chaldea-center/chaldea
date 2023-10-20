@@ -28,6 +28,7 @@ import 'detail/heel_portrait.dart';
 import 'detail/lottery.dart';
 import 'detail/mission.dart';
 import 'detail/mission_target.dart';
+import 'detail/mm.dart';
 import 'detail/mural.dart';
 import 'detail/points.dart';
 import 'detail/random_mission.dart';
@@ -207,6 +208,10 @@ class _EventDetailPageState extends State<EventDetailPage> {
       //     (event.campaigns.isNotEmpty ||
       //         db.gameData.events.values.any((e) => EventRelatedCampaigns.isRelatedCampaign(_region, event, e)))) {
       _addTab(S.current.event_campaign, EventRelatedCampaigns(event: event, region: _region));
+    }
+    final mms = db.gameData.masterMissions.values.where(event.isRelatedMasterMission).toList();
+    if (mms.isNotEmpty) {
+      _addTab(S.current.master_mission, EventRelatedMMPage(event: event, mms: mms));
     }
     return DefaultTabController(
       length: tabs.length,

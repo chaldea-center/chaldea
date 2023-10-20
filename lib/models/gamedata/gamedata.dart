@@ -68,6 +68,7 @@ class GameData with _GameDataExtra {
   Map<int, BasicServant> entities;
   Map<int, BgmEntity> bgms;
   Map<int, EnemyMaster> enemyMasters;
+  Map<int, MstMasterMission> masterMissions;
   Map<int, MasterMission> extraMasterMission;
   List<QuestGroup> questGroups;
   WikiData wiki;
@@ -112,6 +113,7 @@ class GameData with _GameDataExtra {
     Map<int, QuestPhase>? questPhases,
     Map<int, ExchangeTicket>? exchangeTickets,
     Map<int, EnemyMaster>? enemyMasters,
+    Map<int, MstMasterMission>? masterMissions,
     Map<int, MasterMission>? extraMasterMission,
     List<QuestGroup>? questGroups,
     WikiData? wiki,
@@ -147,6 +149,7 @@ class GameData with _GameDataExtra {
         entities = entities ?? {},
         bgms = bgms ?? {},
         enemyMasters = enemyMasters ?? {},
+        masterMissions = masterMissions ?? {},
         extraMasterMission = extraMasterMission ?? {},
         questGroups = questGroups ?? [],
         wiki = wiki ?? WikiData(),

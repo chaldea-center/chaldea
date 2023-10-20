@@ -109,6 +109,18 @@ class Event {
 
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
 
+  Transl<String, String> get lName => Transl.eventNames(name);
+
+  String get shownName {
+    if (extra.huntingId > 0) {
+      return '${lName.l} ${extra.huntingId}';
+    }
+    return lName.l.setMaxLines(2);
+  }
+
+  String get route => Routes.eventI(id);
+  void routeTo() => router.push(url: Routes.eventI(id));
+
   String get shortName => lShortName.jp;
   Transl<String, String> get lShortName {
     if (_shortName != null) return Transl.warNames(_shortName!);
@@ -229,17 +241,20 @@ class Event {
     return false;
   }
 
-  Transl<String, String> get lName => Transl.eventNames(name);
-
-  String get shownName {
-    if (extra.huntingId > 0) {
-      return '${lName.l} ${extra.huntingId}';
+  bool isRelatedMasterMission(MstMasterMission mm) {
+    if (!const [MissionType.limited, MissionType.complete].contains(mm.type)) return false;
+    final event = db.gameData.events[id]; // use JP event
+    if (event == null) return false;
+    if (event.endedAt < mm.startedAt) return false;
+    if (event.startedAt == mm.startedAt) return true;
+    final startDays = (mm.startedAt - event.startedAt) / kSecsPerDay;
+    final endDays = (mm.endedAt - event.endedAt) / kSecsPerDay;
+    if (startDays < 0 || startDays > 7) return false;
+    if (event.endedAt - event.startedAt < 40 * kSecsPerDay) {
+      return endDays <= 7;
     }
-    return lName.l.setMaxLines(2);
+    return true;
   }
-
-  String get route => Routes.eventI(id);
-  void routeTo() => router.push(url: Routes.eventI(id));
 
   // statistics
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -448,32 +463,72 @@ class EventAdd {
 }
 
 @JsonSerializable()
-class MasterMission with RouteInfo {
-  static const int kExtraMasterMissionId = 10001;
-
+class MstMasterMission with RouteInfo {
   int id;
   int startedAt;
   int endedAt;
   int closedAt;
-  List<EventMission> missions;
-  List<BasicQuest> quests;
+  // int priority;
+  // int imageId;
+  // String name;
 
-  MasterMission({
+  MstMasterMission({
     required this.id,
     required this.startedAt,
     required this.endedAt,
     required this.closedAt,
+  });
+
+  MissionType get type {
+    final a = id ~/ 100000;
+    if (a == 1) return MissionType.weekly;
+    if (a == 2) return MissionType.limited;
+    if (a == 3) return MissionType.daily;
+    final b = id ~/ 10000;
+    if (b == 8) return MissionType.complete;
+    if (id == MasterMission.kExtraMasterMissionId) return MissionType.extra;
+    return MissionType.none;
+  }
+
+  @override
+  String get route => Routes.masterMissionI(id);
+
+  @override
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) {
+    return super.routeTo(
+      child: child ?? MasterMissionPage(id: id, region: region),
+      popDetails: popDetails,
+    );
+  }
+
+  factory MstMasterMission.fromJson(Map<String, dynamic> json) => _$MstMasterMissionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MstMasterMissionToJson(this);
+}
+
+@JsonSerializable()
+class MasterMission extends MstMasterMission {
+  static const int kExtraMasterMissionId = 10001;
+
+  List<EventMission> missions;
+  List<BasicQuest> quests;
+
+  MasterMission({
+    required super.id,
+    required super.startedAt,
+    required super.endedAt,
+    required super.closedAt,
     required this.missions,
     this.quests = const [],
   });
 
-  factory MasterMission.fromJson(Map<String, dynamic> json) => _$MasterMissionFromJson(json);
-
-  bool get isWeekly => id >= 1e5 && id < 2e5;
-  bool get isLimited => id >= 2e5 && id < 3e5;
-
   @override
-  String get route => Routes.masterMissionI(id);
+  MissionType get type {
+    if (missions.isNotEmpty) return missions.first.type;
+    return super.type;
+  }
+
+  factory MasterMission.fromJson(Map<String, dynamic> json) => _$MasterMissionFromJson(json);
 
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
@@ -483,6 +538,7 @@ class MasterMission with RouteInfo {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() => _$MasterMissionToJson(this);
 }
 

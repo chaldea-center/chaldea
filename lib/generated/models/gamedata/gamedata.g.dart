@@ -59,6 +59,9 @@ GameData _$GameDataFromJson(Map json) => GameData(
       enemyMasters: (json['enemyMasters'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), EnemyMaster.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
+      masterMissions: (json['masterMissions'] as Map?)?.map(
+        (k, e) => MapEntry(int.parse(k as String), MstMasterMission.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
       extraMasterMission: (json['extraMasterMission'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), MasterMission.fromJson(Map<String, dynamic>.from(e as Map))),
       ),

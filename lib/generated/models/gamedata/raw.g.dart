@@ -16,16 +16,6 @@ MstEvent _$MstEventFromJson(Map json) => MstEvent(
       finishedAt: json['finishedAt'] as int,
     );
 
-MstMasterMission _$MstMasterMissionFromJson(Map json) => MstMasterMission(
-      id: json['id'] as int,
-      priority: json['priority'] as int? ?? 0,
-      startedAt: json['startedAt'] as int,
-      endedAt: json['endedAt'] as int,
-      closedAt: json['closedAt'] as int,
-      imageId: json['imageId'] as int? ?? 0,
-      name: json['name'] as String? ?? "",
-    );
-
 MstGacha _$MstGachaFromJson(Map json) => MstGacha(
       id: json['id'] as int? ?? 0,
       name: json['name'] as String? ?? "",

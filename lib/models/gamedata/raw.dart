@@ -29,28 +29,6 @@ class MstEvent {
 }
 
 @JsonSerializable(createToJson: false)
-class MstMasterMission {
-  int id;
-  int priority;
-  int startedAt;
-  int endedAt;
-  int closedAt;
-  int imageId;
-  String name;
-
-  MstMasterMission({
-    required this.id,
-    this.priority = 0,
-    required this.startedAt,
-    required this.endedAt,
-    required this.closedAt,
-    this.imageId = 0,
-    this.name = "",
-  });
-  factory MstMasterMission.fromJson(Map<String, dynamic> json) => _$MstMasterMissionFromJson(json);
-}
-
-@JsonSerializable(createToJson: false)
 class MstGacha {
   int id; //  50001251,
   String name; //  "【ニューイヤー1延長】【課金】第1部 0章 クリア前ベース",
