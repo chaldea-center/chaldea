@@ -479,6 +479,7 @@ class _ProcessedData {
 
   Map<int, EnemyMasterBattle> enemyMasterBattles = {};
   Map<int, EventMission> eventMissions = {};
+  Map<int, EventPointGroup> eventPointGroups = {};
   Map<int, EventPointBuff> eventPointBuffs = {};
   Map<int, EventPointGroup> eventPointBuffGroups = {};
   Map<QuestGroupType, Map<int, List<int>>> questGroups = {}; // <type,<groupId, questIds>>
@@ -516,6 +517,10 @@ class _ProcessedData {
         for (final m in mm.missions) m.id: m,
       for (final event in gameData.events.values)
         for (final m in event.missions) m.id: m,
+    };
+    eventPointGroups = {
+      for (final event in gameData.events.values)
+        for (final pointGroup in event.pointGroups) pointGroup.groupId: pointGroup,
     };
     eventPointBuffs = {
       for (final event in gameData.events.values)

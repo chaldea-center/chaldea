@@ -168,7 +168,7 @@ class BgmRelease {
   CondType type;
   int condGroup;
   List<int> targetIds;
-  List<int> vals;
+  List<int> vals; // [0], for QuestClear, change to 1 for descriptor
   int priority;
   String closedMessage;
 

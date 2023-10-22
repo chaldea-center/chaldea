@@ -174,6 +174,18 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           na: () => rich(context, 'Challenge $targetNum runs of quests ', quests(context)),
           kr: null,
         );
+      case CondType.questGroupClear:
+        final questIds = [
+          for (final groupId in targetIds) ...db.gameData.others.getQuestsOfGroup(QuestGroupType.questRelease, groupId)
+        ];
+        final questSpans = MultiDescriptor.quests(context, questIds, useAnd: useAnd);
+        return localized(
+          jp: () => rich(context, 'クエストを$targetNum種クリア', questSpans),
+          cn: () => rich(context, '通关$targetNum个关卡', questSpans),
+          tw: () => rich(context, '通關$targetNum個關卡', questSpans),
+          na: () => rich(context, 'Clear $targetNum quests of ', questSpans),
+          kr: null,
+        );
       case CondType.svtCostumeReleased:
       case CondType.notSvtCostumeReleased:
       case CondType.costumeGet: // cond target value
@@ -536,6 +548,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           kr: null,
         );
       case CondType.purchaseShop:
+      case CondType.purchaseQpShop:
         final countText = targetNum <= 1 ? "" : M.of(cn: "$targetNum次", na: '$targetNum times of ');
         return localized(
           jp: null,
@@ -561,6 +574,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           kr: null,
         );
       case CondType.eventTotalPoint:
+      case CondType.eventPoint:
         return localized(
           jp: () => text('イベントポイントを$targetNum点獲得'),
           cn: () => text('活动点数达到$targetNum点'),
@@ -697,6 +711,14 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           cn: () => rich(context, '将兑换的从者升级到Lv.$targetNum以上', events(context)),
           tw: null,
           na: () => rich(context, 'Raise the exchanged servant to Lv.$targetNum or higher', events(context)),
+          kr: null,
+        );
+      case CondType.commonRelease:
+        return localized(
+          jp: null,
+          cn: null,
+          tw: null,
+          na: () => rich(context, 'Common Release', MultiDescriptor.commonRelease(context, targetIds)),
           kr: null,
         );
       // case CondType.exchangeSvt: // cond_target_value

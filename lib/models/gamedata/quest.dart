@@ -778,6 +778,7 @@ class Stage {
 
   int? get enemyMasterBattleId => originalScript?['enemyMasterBattleId'];
   List<int>? get enemyMasterBattleIdByPlayerGender => toList(originalScript?['enemyMasterBattleIdByPlayerGender']);
+  // mstBattleMasterImage.id
   int? get battleMasterImageId => originalScript?['battleMasterImageId'];
 
   Map<String, dynamic> toJson() => _$StageToJson(this);

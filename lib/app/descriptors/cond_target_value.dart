@@ -199,6 +199,14 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           na: () => rich(context, '(?)Have not cleared $value quests of ', questSpans),
           kr: null,
         );
+      case CondType.questResetAvailable:
+        return localized(
+          jp: null,
+          cn: () => rich(context, '关卡可重置', quests(context)),
+          tw: null,
+          na: () => rich(context, 'Quest reset available', quests(context)),
+          kr: null,
+        );
       case CondType.svtRecoverd:
         return localized(
           jp: null,
@@ -277,12 +285,24 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           kr: null,
         );
       case CondType.eventTotalPoint:
+      case CondType.eventPoint:
         // target=event id
         return localized(
           jp: () => text('イベントポイントを$value点獲得'),
           cn: () => text('活动点数达到$value点'),
           tw: () => text('活動點數達到$value點'),
           na: () => text('Reach $value event points'),
+          kr: null,
+        );
+      case CondType.eventGroupPoint:
+      case CondType.eventNormaPointClear:
+        final group = db.gameData.others.eventPointGroups[target];
+        final groupName = group?.lName.l ?? target.toString();
+        return localized(
+          jp: () => text('イベントポイント$groupNameを$value点獲得'),
+          cn: () => text('活动点数$groupName达到$value点'),
+          tw: () => text('活動點數$groupName達到$value點'),
+          na: () => text('Reach $value event points for $groupName'),
           kr: null,
         );
       case CondType.eventFortificationRewardNum:
@@ -319,6 +339,15 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         }
         if (weekdays.isEmpty) break;
         return [TextSpan(text: weekdays.join(' / '))];
+      case CondType.notEventMissionAchieve:
+        var missionMap = {for (final m in missions) m.id: m};
+        return localized(
+          jp: () => rich(context, 'ミッションを達成しない(報酬を受け取り): ', missionList(context, missionMap)),
+          cn: () => rich(context, '未达成任务(领取奖励): ', missionList(context, missionMap)),
+          tw: () => rich(context, '未達成任務(領取獎勵): ', missionList(context, missionMap)),
+          na: () => rich(context, 'Have not achieved mission (claim rewards): ', missionList(context, missionMap)),
+          kr: null,
+        );
       // redirect to CondTargetNum
       case CondType.costumeGet:
       case CondType.notCostumeGet:
