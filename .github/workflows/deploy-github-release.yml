@@ -154,8 +154,6 @@ jobs:
           compress-archive -Path * -DestinationPath ${env:GITHUB_WORKSPACE}\chaldea-${env:VERSION}-${{ matrix.target }}.zip
         working-directory: ${{ matrix.build_path }}
 
-      - name: Generate SHA1
-        run: dart ./scripts/gen_sha1.dart ./chaldea-${{ env.VERSION }}-${{ matrix.target }}${{ matrix.asset_extension }}
       - name: Generate Release Note
         if: matrix.target == 'android'
         run: dart ./scripts/release_note.dart ${{ env.VERSION }} release-note.md
