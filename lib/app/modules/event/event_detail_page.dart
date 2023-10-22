@@ -184,7 +184,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
       shops.sort2((e) => e.priority);
       _addTab(
         S.current.shop + (shopSlots.length > 1 ? ' ${index + 1}' : ''),
-        EventShopsPage(event: event, shops: shops),
+        EventShopsPage(event: event, shops: shops, region: widget.region),
       );
     }
     if (event.commandAssists.isNotEmpty) {

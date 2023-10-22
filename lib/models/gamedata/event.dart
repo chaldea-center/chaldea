@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/event/event_detail_page.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../app/modules/master_mission/master_mission.dart';
@@ -11,7 +12,7 @@ import 'gamedata.dart';
 part '../../generated/models/gamedata/event.g.dart';
 
 @JsonSerializable()
-class Event {
+class Event with RouteInfo {
   int id;
   EventType type;
   String name;
@@ -24,6 +25,7 @@ class Event {
   int noticeAt;
   int startedAt;
   int endedAt;
+  @protected
   int finishedAt;
   // int materialOpenedAt;
   List<int> _warIds;
@@ -118,8 +120,17 @@ class Event {
     return lName.l.setMaxLines(2);
   }
 
+  @override
   String get route => Routes.eventI(id);
-  void routeTo() => router.push(url: Routes.eventI(id));
+
+  @override
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) {
+    // router.push(url: Routes.eventI(id))
+    super.routeTo(
+      child: child ?? EventDetailPage(event: this, region: region),
+      popDetails: popDetails,
+    );
+  }
 
   String get shortName => lShortName.jp;
   Transl<String, String> get lShortName {
@@ -168,9 +179,9 @@ class Event {
   bool get isHuntingEvent => extra.huntingId > 0 || name.contains('ハンティングクエスト');
   bool get isExchangeSvtEvent => shop.isNotEmpty && shop.every((s) => s.isExchangeSvt);
 
-  int get finishedAt2 {
-    if (finishedAt >= endedAt && finishedAt - endedAt < kSecsPerDay * 100) return finishedAt;
-    return endedAt;
+  int get shopClosedAt {
+    if (shop.isEmpty) return endedAt;
+    return Maths.max(shop.map((e) => e.closedAt));
   }
 
   String? get shopBanner {

@@ -17,7 +17,8 @@ class TimerMissionTab extends StatelessWidget {
     final mms = this.mms.toList();
     mms.sort2((e) => e.closedAt);
     return ListView.separated(
-      itemBuilder: (context, index) => TimerMissionItem(mms[index], region).buildItem(context, expanded: true),
+      itemBuilder: (context, index) =>
+          TimerMissionItem(mms[index], region).buildItem(context, expanded: mms[index].missions.length <= 10),
       separatorBuilder: (_, __) => const SizedBox(height: 0),
       itemCount: mms.length,
     );
@@ -44,6 +45,7 @@ class TimerMissionItem with TimerItem {
       }
     }
     return SimpleAccordion(
+      expanded: expanded,
       headerBuilder: (context, _) => ListTile(
         dense: true,
         contentPadding: const EdgeInsetsDirectional.only(start: 16),

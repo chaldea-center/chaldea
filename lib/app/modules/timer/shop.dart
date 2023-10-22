@@ -82,7 +82,7 @@ class TimerShopItem with TimerItem {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              for (final shop in shops) ShopDescriptor(shop: shop, showTime: false),
+              for (final shop in shops) ShopDescriptor(shop: shop, showTime: false, region: region),
             ],
           ),
         );

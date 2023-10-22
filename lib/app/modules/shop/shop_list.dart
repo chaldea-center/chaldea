@@ -181,7 +181,7 @@ class _ShopListPageState extends State<ShopListPage> with SearchableListState<Ni
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
-          : EventShopsPage(event: null, shops: shownList, showTime: true),
+          : EventShopsPage(event: null, shops: shownList, showTime: true, region: widget.region),
     );
   }
 

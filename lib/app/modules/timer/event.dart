@@ -1,4 +1,3 @@
-import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -33,7 +32,7 @@ class TimerEventItem with TimerItem {
     events = events.toList();
     events.sort2((e) => e.endedAt);
     for (final event in events) {
-      groups.putIfAbsent([event.startedAt, event.endedAt, event.finishedAt].join('-'), () => []).add(event);
+      groups.putIfAbsent([event.startedAt, event.endedAt, event.shopClosedAt].join('-'), () => []).add(event);
     }
     return groups.values.map((e) => TimerEventItem(e, region)).toList();
   }
@@ -51,10 +50,11 @@ class TimerEventItem with TimerItem {
       headerBuilder: (context, _) {
         Widget? subtitle;
         final now = DateTime.now().timestamp;
+        final shopClosedAt = event.shopClosedAt;
         if (event.startedAt > now) {
           // subtitle = Text("Start at ${event.startedAt.sec2date().toStringShort(omitSec: true)}");
-        } else if (event.finishedAt > event.endedAt && event.finishedAt < event.endedAt + 35 * kSecsPerDay) {
-          subtitle = Text("Shop closed at ${event.finishedAt.sec2date().toStringShort(omitSec: true)}");
+        } else if (shopClosedAt > event.endedAt && shopClosedAt < event.endedAt + 35 * kSecsPerDay) {
+          subtitle = Text("Shop closed at ${shopClosedAt.sec2date().toStringShort(omitSec: true)}");
         }
         return ListTile(
           dense: true,
@@ -73,7 +73,7 @@ class TimerEventItem with TimerItem {
           trailing: CountDown(
             endedAt: event.endedAt.sec2date(),
             startedAt: event.startedAt.sec2date(),
-            endedAt2: event.finishedAt2 > event.endedAt ? event.finishedAt2.sec2date() : null,
+            endedAt2: event.shopClosedAt > event.endedAt ? event.shopClosedAt.sec2date() : null,
             startedAt2: event.startedAt.sec2date(),
             textAlign: TextAlign.end,
           ),
@@ -108,7 +108,7 @@ class TimerEventItem with TimerItem {
                       }(),
                       title: Text(Transl.eventNames(event.name).l, maxLines: 2, overflow: TextOverflow.ellipsis),
                       onTap: () {
-                        router.push(url: Routes.eventI(event.id), region: region);
+                        event.routeTo(region: region);
                       },
                     ),
                 ],

@@ -13,12 +13,14 @@ class EventShopsPage extends StatefulWidget {
   final Event? event;
   final List<NiceShop> shops;
   final bool showTime;
+  final Region? region;
 
   const EventShopsPage({
     super.key,
     required this.event,
     required this.shops,
     this.showTime = false,
+    this.region,
   });
 
   @override
@@ -113,6 +115,7 @@ class _EventShopsPageState extends State<EventShopsPage> {
     return ShopDescriptor(
       key: Key('shop_${shop.id}'),
       shop: shop,
+      region: widget.region,
       showTime: widget.showTime,
       buyCount: plan.shopBuyCount[shop.id] ?? shop.limitNum,
       onChanged: (v) {
@@ -235,8 +238,10 @@ class ShopDescriptor extends StatelessWidget {
   final bool showTime;
   final int? buyCount;
   final ValueChanged<int?>? onChanged;
+  final Region? region;
 
-  const ShopDescriptor({super.key, required this.shop, this.showTime = false, this.buyCount, this.onChanged});
+  const ShopDescriptor(
+      {super.key, required this.shop, this.showTime = false, this.buyCount, this.onChanged, this.region});
 
   @override
   Widget build(BuildContext context) {
@@ -345,7 +350,9 @@ class ShopDescriptor extends StatelessWidget {
       ),
       trailing: trailing,
       contentPadding: const EdgeInsetsDirectional.only(start: 16),
-      onTap: shop.routeTo,
+      onTap: () {
+        shop.routeTo(region: region);
+      },
     );
   }
 }
