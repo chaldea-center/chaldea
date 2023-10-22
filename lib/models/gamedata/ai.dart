@@ -34,9 +34,11 @@ class NiceAi {
   NiceAiActNum actNum;
   int priority;
   int probability;
+
   NiceAiCond cond;
   bool condNegative;
   List<int> vals;
+
   NiceAiAct aiAct;
   // [changeThinking, id:message/playMotion]
   List<int> avals;
@@ -98,6 +100,29 @@ class NiceAiAct {
   factory NiceAiAct.fromJson(Map<String, dynamic> json) => _$NiceAiActFromJson(json);
 
   Map<String, dynamic> toJson() => _$NiceAiActToJson(this);
+}
+
+@JsonSerializable()
+class BattleMessage {
+  int id;
+  int idx;
+  int priority;
+  List<CommonRelease> releaseConditions;
+  int motionId;
+  String message;
+
+  BattleMessage({
+    required this.id,
+    this.idx = 0,
+    this.priority = 0,
+    this.releaseConditions = const [],
+    this.motionId = 0,
+    this.message = '',
+  });
+
+  factory BattleMessage.fromJson(Map<String, dynamic> json) => _$BattleMessageFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BattleMessageToJson(this);
 }
 
 enum AiType {
@@ -292,14 +317,21 @@ enum NiceAiCond {
 }
 
 enum AiTiming {
-  dead,
-  turnEnemyStart,
-  turnEnemyEnd,
-  turnPlayerStart,
-  turnPlayerEnd,
-  waveStart,
-  turnStart,
-  unknown,
+  dead(-6),
+  // -3
+  unknown(-1),
+  waveStart(1),
+  turnStart(2),
+  turnPlayerStart(3),
+  turnPlayerEnd(4),
+  turnEnemyStart(5),
+  turnEnemyEnd(6),
+  // 7
+  // 8
+  ;
+
+  const AiTiming(this.id);
+  final int id;
 }
 
 enum NiceAiActType {

@@ -579,7 +579,7 @@ class SharedBuilder {
     final parts = text.split(pattern);
     if (parts.length == 1) {
       if (appendIfAbsent) {
-        return [TextSpan(text: text), ...replace];
+        return [TextSpan(text: text), const TextSpan(text: ' '), ...replace];
       } else {
         return [TextSpan(text: text)];
       }
@@ -595,7 +595,38 @@ class SharedBuilder {
     }
   }
 
-  static List<InlineSpan> replaceSpanMap(String text, Pattern pattern, List<InlineSpan> Function(Match match) replace) {
+  static List<String> _split(List<String> texts, String sep) {
+    return [
+      for (final text in texts) ...text.split(sep).divided((_) => sep),
+    ];
+  }
+
+  static List<InlineSpan> replaceSpanMaps(String text, Map<String, List<InlineSpan> Function(String match)> replaces,
+      {List<InlineSpan> Function(List<String> missing)? ifAbsent}) {
+    List<String> texts = [text];
+    for (final sep in replaces.keys) {
+      texts = _split(texts, sep);
+    }
+    List<InlineSpan> out = [];
+    List<String> matched = [];
+    for (final part in texts) {
+      final replace = replaces[part];
+      if (replace == null) {
+        out.add(TextSpan(text: part));
+      } else {
+        out.addAll(replace(part));
+        matched.add(part);
+      }
+    }
+    if (ifAbsent != null) {
+      final missing = replaces.keys.where((e) => !matched.contains(e)).toList();
+      out.addAll(ifAbsent(missing));
+    }
+    return out;
+  }
+
+  static List<InlineSpan> replaceSpanPattern(
+      String text, Pattern pattern, List<InlineSpan> Function(Match match) replace) {
     List<InlineSpan> spans = [];
     List<String> textParts = text.split(pattern);
     bool mapped = false;

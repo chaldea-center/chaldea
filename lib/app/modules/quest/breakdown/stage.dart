@@ -292,7 +292,6 @@ class WaveInfoPage extends StatelessWidget {
     if (master != null) {
       subtitle += master.lName.l;
     }
-    print([battleId, battle?.id, master?.id]);
     return ListTile(
       title: Text(S.current.enemy_master),
       subtitle: Text(subtitle),

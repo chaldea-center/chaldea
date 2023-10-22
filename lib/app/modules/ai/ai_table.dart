@@ -1,3 +1,5 @@
+import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -41,27 +43,29 @@ class AiTable extends StatelessWidget {
     );
   }
 
-  List<Widget> toRow(String header, {Iterable<String>? texts, Iterable<Widget>? children}) {
+  List<Widget> toRow(String header, {String Function(NiceAi ai)? text, Widget Function(NiceAi ai)? child}) {
     return [
       Text(header, style: const TextStyle(fontWeight: FontWeight.w600)),
-      if (texts != null)
-        for (final text in texts) Text(text),
-      if (children != null) ...children,
+      if (text != null)
+        for (final ai in ais) Text(text(ai)),
+      if (child != null)
+        for (final ai in ais) child(ai),
     ];
   }
 
   Widget getTable(BuildContext context) {
     List<List<Widget>> rows = [
-      toRow("Sub ID", texts: ais.map((e) => e.infoText.isEmpty ? e.idx.toString() : '${e.idx} ${e.infoText}')),
-      toRow("ActNum", texts: ais.map((e) => _desActNum(e.actNumInt, e.actNum))),
-      if (type == AiType.field) toRow("Timing", texts: ais.map((e) => _desTiming(e.timing, e.timingDescription))),
-      toRow("Cond", children: ais.map((e) => _desCond(context, e.cond, e.condNegative, e.vals))),
-      toRow("Priority", texts: ais.map((e) => e.priority.toString())),
-      toRow("Weight", texts: ais.map((e) => e.probability.toString())),
-      toRow("ActType", children: ais.map((e) => _desActType(context, e.aiAct.type))),
-      toRow("ActTarget", children: ais.map((e) => _desActTarget(context, e.aiAct.target, e.aiAct.targetIndividuality))),
-      toRow("ActSkill", children: ais.map((e) => _desActSkill(context, e.aiAct))),
-      toRow("Next AI", children: ais.map((e) => _desNextAi(context, e.avals))),
+      toRow("Sub ID", text: (e) => e.infoText.isEmpty ? e.idx.toString() : '${e.idx} ${e.infoText}'),
+      toRow("ActNum", text: (e) => _desActNum(e.actNumInt, e.actNum)),
+      if (type == AiType.field) toRow("Timing", text: (e) => _desTiming(e.timing, e.timingDescription)),
+      toRow("Cond", child: (e) => _desCond(context, e.cond, e.condNegative, e.vals)),
+      toRow("Priority", text: (e) => e.priority.toString()),
+      toRow("Weight", text: (e) => e.probability.toString()),
+      toRow("ActId", text: (e) => e.id.toString()),
+      toRow("ActType", text: (e) => _desActType(context, e.aiAct)),
+      toRow("ActTarget", child: (e) => _desActTarget(context, e.aiAct.target, e.aiAct.targetIndividuality)),
+      toRow("Act", child: (e) => _desActSkill(context, e)),
+      toRow("Next AI", child: (e) => _desNextAi(context, e.avals)),
     ];
     final borderSide = Divider.createBorderSide(context);
     final table = Table(
@@ -97,59 +101,25 @@ class AiTable extends StatelessWidget {
   }
 
   String _desActNum(int actNumInt, NiceAiActNum actNum) {
-    return actNum == NiceAiActNum.unknown ? actNumInt.toString() : actNum.name;
+    return Transl.md.enums.aiActNum[actNumInt]?.l ??
+        (actNum == NiceAiActNum.unknown ? actNumInt.toString() : actNum.name);
   }
 
   String _desTiming(int? timing, AiTiming? timingDescription) {
-    if (timing == null) return "";
-    if (timingDescription == null || timingDescription == AiTiming.unknown) return timing.toString();
-    return timingDescription.name;
+    if (timing == null) return '';
+    return Transl.md.enums.aiTiming[timing]?.l ??
+        (timingDescription == AiTiming.unknown || timingDescription == null
+            ? timing.toString()
+            : timingDescription.name);
   }
 
-  Widget _desCond(BuildContext context, NiceAiCond cond, bool isNegative, List<int> vals) {
-    List<InlineSpan> spans = [
-      if (isNegative) const TextSpan(text: "(NOT)"),
-      TextSpan(text: cond.name),
-    ];
-    if (vals.isNotEmpty) {
-      spans.addAll([
-        const TextSpan(text: ': '),
-        TextSpan(text: vals.toString()),
-      ]);
-    }
-    return InkWell(
-      onTap: () {
-        _AiCondDialog(cond: cond, isNegative: isNegative, vals: vals).showDialog(context);
-      },
-      child: Text.rich(TextSpan(children: spans)),
-    );
-  }
-
-  Widget _desActType(BuildContext context, NiceAiActType actType) {
-    List<InlineSpan> spans = [TextSpan(text: actType.name)];
-    NiceSkill? skill;
-    if (skills != null) {
-      if (actType == NiceAiActType.skill1) {
-        skill = skills!.skill1;
-      } else if (actType == NiceAiActType.skill2) {
-        skill = skills!.skill2;
-      } else if (actType == NiceAiActType.skill3) {
-        skill = skills!.skill3;
-      }
-    }
-    if (skill != null) {
-      spans.addAll([
-        const TextSpan(text: '\n'),
-        SharedBuilder.textButtonSpan(
-            context: context, text: skill.lName.l, onTap: () => skill?.routeTo(region: region)),
-      ]);
-    }
-    return Text.rich(TextSpan(children: spans));
+  String _desActType(BuildContext context, NiceAiAct aiAct) {
+    return Transl.enums(aiAct.type, (enums) => enums.aiActType).l;
   }
 
   Widget _desActTarget(BuildContext context, NiceAiActTarget target, List<NiceTrait> traits) {
     return Text.rich(TextSpan(
-      text: target.name,
+      text: Transl.enums(target, (enums) => enums.aiActTarget).l,
       children: traits.isEmpty
           ? null
           : [
@@ -159,35 +129,62 @@ class AiTable extends StatelessWidget {
     ));
   }
 
-  Widget _desActSkill(BuildContext context, NiceAiAct aiAct) {
+  Widget _desActSkill(BuildContext context, NiceAi ai) {
+    final NiceAiAct aiAct = ai.aiAct;
     List<InlineSpan> spans = [];
-    if (aiAct.skillId != null) {
-      if (aiAct.skill != null) {
-        spans.add(SharedBuilder.textButtonSpan(
-            context: context, text: aiAct.skill!.dispName, onTap: () => aiAct.skill!.routeTo(region: region)));
-      } else {
-        spans.add(SharedBuilder.textButtonSpan(
-          context: context,
-          text: aiAct.skillId.toString(),
-          onTap: () => router.push(url: Routes.skillI(aiAct.skillId!), region: region),
-        ));
-      }
-      if (aiAct.skillLv != null) {
-        spans.add(TextSpan(text: ' Lv.${aiAct.skillLv}'));
+
+    // skill
+    NiceSkill? skill;
+    int? skillId;
+    if (aiAct.skillId != null && aiAct.skillId != 0) {
+      skillId = aiAct.skillId!;
+      skill = aiAct.skill;
+    } else if (skills != null) {
+      if (aiAct.type == NiceAiActType.skill1) {
+        skill = skills!.skill1;
+      } else if (aiAct.type == NiceAiActType.skill2) {
+        skill = skills!.skill2;
+      } else if (aiAct.type == NiceAiActType.skill3) {
+        skill = skills!.skill3;
       }
     }
-    if (aiAct.noblePhantasmId != null) {
-      if (aiAct.noblePhantasm != null) {
+
+    if (skill != null) {
+      spans.add(SharedBuilder.textButtonSpan(
+          context: context, text: skill.dispName, onTap: () => skill!.routeTo(region: region)));
+    } else if (skillId != null) {
+      spans.add(SharedBuilder.textButtonSpan(
+        context: context,
+        text: skillId.toString(),
+        onTap: () => router.push(url: Routes.skillI(skillId!), region: region),
+      ));
+    }
+    if (aiAct.skillLv != null) {
+      spans.add(TextSpan(text: ' Lv.${aiAct.skillLv}'));
+    }
+
+    // td
+    if (aiAct.type == NiceAiActType.noblePhantasm) {
+      NiceTd? _td;
+      int? _tdId;
+      if (aiAct.noblePhantasmId != null && aiAct.noblePhantasmId != 0) {
+        _td = aiAct.noblePhantasm;
+        _tdId = aiAct.noblePhantasmId!;
+      } else if (aiAct.type == NiceAiActType.noblePhantasm && td != null) {
+        _td = td!.noblePhantasm;
+        _tdId = td!.noblePhantasmId;
+      }
+      if (_td != null) {
         spans.add(SharedBuilder.textButtonSpan(
           context: context,
-          text: aiAct.noblePhantasm!.dispName,
-          onTap: () => aiAct.noblePhantasm!.routeTo(region: region),
+          text: _td.dispName,
+          onTap: () => _td!.routeTo(region: region),
         ));
-      } else {
+      } else if (_tdId != null) {
         spans.add(SharedBuilder.textButtonSpan(
           context: context,
-          text: aiAct.noblePhantasmId.toString(),
-          onTap: () => router.push(url: Routes.tdI(aiAct.noblePhantasmId!), region: region),
+          text: _tdId.toString(),
+          onTap: () => router.push(url: Routes.tdI(_tdId!), region: region),
         ));
       }
       if (aiAct.noblePhantasmLv != null) {
@@ -197,6 +194,28 @@ class AiTable extends StatelessWidget {
         spans.add(TextSpan(text: ' OC${aiAct.noblePhantasmOc! ~/ 100}%'));
       }
     }
+
+    // message
+    if (aiAct.type == NiceAiActType.message) {
+      final msgId = ai.avals.getOrNull(1) ?? 0;
+      if (msgId != 0) {
+        spans.add(SharedBuilder.textButtonSpan(
+          context: context,
+          text: 'message',
+          onTap: () {
+            showDialog(
+              context: context,
+              useRootNavigator: false,
+              builder: (context) => _BattleMessageDialog(
+                msgId: msgId,
+                region: region,
+              ),
+            );
+          },
+        ));
+      }
+    }
+
     return Text.rich(TextSpan(children: spans));
   }
 
@@ -208,6 +227,234 @@ class AiTable extends StatelessWidget {
       onTap: () => onClickNextAi(avals.first),
     ));
   }
+
+  // cond descriptor
+
+  Widget _desCond(BuildContext context, NiceAiCond cond, bool isNegative, List<int> vals) {
+    List<InlineSpan> spans = [
+      if (isNegative) TextSpan(text: "(${Transl.special.not()})"),
+      ...SharedBuilder.replaceSpanMaps(
+        Transl.enums(cond, (enums) => enums.aiCond).l,
+        _getCondVals(context, cond, isNegative, vals),
+        ifAbsent: (missing) {
+          return [
+            if (vals.isNotEmpty)
+              SharedBuilder.textButtonSpan(
+                context: context,
+                text: "[${vals.join('/')}]",
+                onTap: () {
+                  _AiCondDialog(cond: cond, isNegative: isNegative, vals: vals).showDialog(context);
+                },
+              ),
+          ];
+        },
+      ),
+    ];
+    return InkWell(
+      onTap: () {
+        _AiCondDialog(cond: cond, isNegative: isNegative, vals: vals).showDialog(context);
+      },
+      child: Text.rich(TextSpan(children: spans)),
+    );
+  }
+
+  Map<String, List<InlineSpan> Function(String match)> _getCondVals(
+      BuildContext context, NiceAiCond cond, bool isNegative, List<int> vals) {
+    if (vals.isEmpty) return const {};
+    Map<String, List<InlineSpan> Function(String match)> _repl0(List<InlineSpan> v) => {"{0}": (_) => v};
+    switch (cond) {
+      // int
+      case NiceAiCond.actcount:
+      case NiceAiCond.actcountMultiple:
+      case NiceAiCond.turn:
+      case NiceAiCond.turnMultiple:
+      case NiceAiCond.beforeActId:
+      case NiceAiCond.beforeNotActId:
+      case NiceAiCond.checkSelfNpturn:
+      case NiceAiCond.checkPtLowerNpturn:
+      case NiceAiCond.fieldturn:
+      case NiceAiCond.fieldturnMultiple:
+      case NiceAiCond.checkPtLowerTdturn:
+      case NiceAiCond.checkSpace:
+      case NiceAiCond.turnHigher:
+      case NiceAiCond.turnLower:
+      case NiceAiCond.charactorTurnHigher:
+      case NiceAiCond.charactorTurnLower:
+      case NiceAiCond.countAlivePt:
+      case NiceAiCond.countAliveOpponent:
+      case NiceAiCond.countPtRestLower:
+      case NiceAiCond.countOpponentRestHigher:
+      case NiceAiCond.countOpponentRestLower:
+      case NiceAiCond.starHigher:
+      case NiceAiCond.starLower:
+      case NiceAiCond.checkTargetPosition:
+      case NiceAiCond.countAlivePtAll:
+      case NiceAiCond.countAliveOpponentAll:
+      case NiceAiCond.ptFrontDeadEqual:
+      case NiceAiCond.ptCenterDeadEqual:
+      case NiceAiCond.ptBackDeadEqual:
+      case NiceAiCond.countHigherRemainTurn:
+      case NiceAiCond.checkSelfNpturnHigher:
+      case NiceAiCond.checkSelfNpturnLower:
+      case NiceAiCond.countPlayerNpHigher:
+      case NiceAiCond.countPlayerNpLower:
+      case NiceAiCond.countPlayerNpEqual:
+      case NiceAiCond.countPlayerSkillHigher:
+      case NiceAiCond.countPlayerSkillLower:
+      case NiceAiCond.countPlayerSkillEqual:
+      case NiceAiCond.countPlayerSkillHigherIncludeMasterSkill:
+      case NiceAiCond.countPlayerSkillLowerIncludeMasterSkill:
+      case NiceAiCond.countPlayerSkillEqualIncludeMasterSkill:
+      case NiceAiCond.totalTurnHigher:
+      case NiceAiCond.totalTurnLower:
+      case NiceAiCond.totalTurnEqual:
+        return _repl0([TextSpan(text: vals.join('/'))]);
+      // percent 1000
+      case NiceAiCond.hpHigher:
+      case NiceAiCond.hpLower:
+        return _repl0([TextSpan(text: vals.map((e) => e.format(percent: true, compact: false, base: 10)).join('/'))]);
+      // indiv
+      case NiceAiCond.checkSelfIndividuality:
+      case NiceAiCond.checkPtIndividuality:
+      case NiceAiCond.checkOpponentIndividuality:
+      case NiceAiCond.checkSelfBuffIndividuality:
+      case NiceAiCond.checkPtBuffIndividuality:
+      case NiceAiCond.checkOpponentBuffIndividuality:
+      case NiceAiCond.checkPtAllIndividuality:
+      case NiceAiCond.checkOpponentAllIndividuality:
+      case NiceAiCond.checkSelfBuffActiveAndPassiveIndividuality:
+      case NiceAiCond.checkPtBuffActiveAndPassiveIndividuality:
+      case NiceAiCond.checkOpponentBuffActiveAndPassiveIndividuality:
+      case NiceAiCond.checkPtAllBuffIndividuality:
+      case NiceAiCond.checkOpponentAllBuffIndividuality:
+      case NiceAiCond.existIndividualityOpponentFront:
+      case NiceAiCond.existIndividualityOpponentCenter:
+      case NiceAiCond.existIndividualityOpponentBack:
+        return _repl0(SharedBuilder.traitSpans(context: context, traits: vals.map((e) => NiceTrait(id: e)).toList()));
+      // Buff
+      case NiceAiCond.checkSelfBuff:
+      case NiceAiCond.checkPtBuff:
+      case NiceAiCond.checkOpponentBuff:
+      case NiceAiCond.checkSelfBuffActive:
+      case NiceAiCond.checkPtBuffActive:
+      case NiceAiCond.checkOpponentBuffActive:
+      case NiceAiCond.checkPtAllBuff:
+      case NiceAiCond.checkOpponentAllBuff:
+      case NiceAiCond.checkPtAllBuffActive:
+      case NiceAiCond.checkOpponentAllBuffActive:
+        return _repl0([
+          for (final val in vals)
+            SharedBuilder.textButtonSpan(
+              context: context,
+              text: db.gameData.baseBuffs[val]?.lName.l ?? val.toString(),
+            )
+        ]);
+      // [count,trait]
+      case NiceAiCond.checkSelfBuffcountIndividuality:
+      case NiceAiCond.checkPtBuffcountIndividuality:
+      case NiceAiCond.countHigherBuffIndividualitySumPt:
+      case NiceAiCond.countHigherBuffIndividualitySumPtAll:
+      case NiceAiCond.countHigherBuffIndividualitySumOpponent:
+      case NiceAiCond.countHigherBuffIndividualitySumOpponentAll:
+      case NiceAiCond.countHigherBuffIndividualitySumSelf:
+      case NiceAiCond.countLowerBuffIndividualitySumPt:
+      case NiceAiCond.countLowerBuffIndividualitySumPtAll:
+      case NiceAiCond.countLowerBuffIndividualitySumOpponent:
+      case NiceAiCond.countLowerBuffIndividualitySumOpponentAll:
+      case NiceAiCond.countLowerBuffIndividualitySumSelf:
+      case NiceAiCond.countEqualBuffIndividualitySumPt:
+      case NiceAiCond.countEqualBuffIndividualitySumPtAll:
+      case NiceAiCond.countEqualBuffIndividualitySumOpponent:
+      case NiceAiCond.countEqualBuffIndividualitySumOpponentAll:
+      case NiceAiCond.countEqualBuffIndividualitySumSelf:
+      case NiceAiCond.totalCountHigherIndividualityPt:
+      case NiceAiCond.totalCountHigherIndividualityPtAll:
+      case NiceAiCond.totalCountHigherIndividualityOpponent:
+      case NiceAiCond.totalCountHigherIndividualityOpponentAll:
+      case NiceAiCond.totalCountHigherIndividualityAllField:
+      case NiceAiCond.totalCountLowerIndividualityPt:
+      case NiceAiCond.totalCountLowerIndividualityPtAll:
+      case NiceAiCond.totalCountLowerIndividualityOpponent:
+      case NiceAiCond.totalCountLowerIndividualityOpponentAll:
+      case NiceAiCond.totalCountLowerIndividualityAllField:
+      case NiceAiCond.totalCountEqualIndividualityPt:
+      case NiceAiCond.totalCountEqualIndividualityPtAll:
+      case NiceAiCond.totalCountEqualIndividualityOpponent:
+      case NiceAiCond.totalCountEqualIndividualityOpponentAll:
+      case NiceAiCond.totalCountEqualIndividualityAllField:
+      case NiceAiCond.countHigherIndividualityPtFront:
+      case NiceAiCond.countHigherIndividualityPtCenter:
+      case NiceAiCond.countHigherIndividualityPtBack:
+      case NiceAiCond.countHigherIndividualityOpponentFront:
+      case NiceAiCond.countHigherIndividualityOpponentCenter:
+      case NiceAiCond.countHigherIndividualityOpponentBack:
+      case NiceAiCond.countLowerIndividualityPtFront:
+      case NiceAiCond.countLowerIndividualityPtCenter:
+      case NiceAiCond.countLowerIndividualityPtBack:
+      case NiceAiCond.countLowerIndividualityOpponentFront:
+      case NiceAiCond.countLowerIndividualityOpponentCenter:
+      case NiceAiCond.countLowerIndividualityOpponentBack:
+      case NiceAiCond.countEqualIndividualityPtFront:
+      case NiceAiCond.countEqualIndividualityPtCenter:
+      case NiceAiCond.countEqualIndividualityPtBack:
+      case NiceAiCond.countEqualIndividualityOpponentFront:
+      case NiceAiCond.countEqualIndividualityOpponentCenter:
+      case NiceAiCond.countEqualIndividualityOpponentBack:
+        final count = vals.getOrNull(0) ?? 0, trait = vals.getOrNull(1) ?? 0;
+        return {
+          "{count}": (_) => [TextSpan(text: ' $count ')],
+          "{trait}": (_) => [SharedBuilder.traitSpan(context: context, trait: NiceTrait(id: trait))]
+        };
+      // [count, itemId]
+      case NiceAiCond.countItemHigher:
+      case NiceAiCond.countItemLower:
+        final count = vals.getOrNull(0) ?? 0, itemId = vals.getOrNull(1) ?? 0;
+        return {
+          "{count}": (_) => [TextSpan(text: ' $count ')],
+          "{trait}": (_) => [
+                SharedBuilder.textButtonSpan(
+                  context: context,
+                  text: db.gameData.items[itemId]?.lName.l ?? 'Item $itemId',
+                  onTap: () {
+                    router.push(url: Routes.itemI(itemId));
+                  },
+                )
+              ]
+        };
+      // unknown
+      case NiceAiCond.checkSelfNotBuffIndividuality:
+      case NiceAiCond.beforeActType:
+      case NiceAiCond.beforeNotActType:
+      case NiceAiCond.checkOpponentHeightNpgauge:
+      case NiceAiCond.actcountThisturn:
+      case NiceAiCond.checkPtHpHigher:
+      case NiceAiCond.checkPtHpLower:
+      case NiceAiCond.turnAndActcountThisturn:
+      case NiceAiCond.raidHpHigher:
+      case NiceAiCond.raidHpLower:
+      case NiceAiCond.raidCountHigher:
+      case NiceAiCond.raidCountLower:
+      case NiceAiCond.raidCountValueHigher:
+      case NiceAiCond.raidCountValueLower:
+      case NiceAiCond.countPtRestHigher:
+      case NiceAiCond.countEnemyCommandSpellHigher:
+      case NiceAiCond.checkOpponentHpHigher:
+      case NiceAiCond.checkOpponentHpLower:
+      case NiceAiCond.checkPrecedingEnemy:
+      case NiceAiCond.countLowerRemainTurn:
+      case NiceAiCond.countHigherAi171:
+      case NiceAiCond.countLowerAi172:
+      case NiceAiCond.countEqualAi173:
+      case NiceAiCond.checkAi174:
+      case NiceAiCond.checkUseSkillThisturn:
+      case NiceAiCond.countChainHigher:
+      case NiceAiCond.countChainLower:
+      case NiceAiCond.countChainEqual:
+      case NiceAiCond.checkSelectChain:
+      case NiceAiCond.none:
+        return {};
+    }
+  }
 }
 
 class _AiCondDialog extends StatelessWidget {
@@ -218,14 +465,30 @@ class _AiCondDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String condText = '';
+    if (isNegative) {
+      condText += '(${Transl.special.not()})';
+    }
+    condText += '${cond.name}: ';
+    condText += Transl.enums(cond, (enums) => enums.aiCond).l;
     return SimpleCancelOkDialog(
-      title: Text((isNegative ? '(NOT)' : '') + cond.name, textScaleFactor: 0.85),
+      title: Text(S.current.condition),
       scrollable: true,
       hideCancel: true,
       contentPadding: const EdgeInsets.fromLTRB(8.0, 20.0, 8.0, 24.0),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          ListTile(
+            dense: true,
+            title: Text(condText),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+          ),
+          ListTile(
+            dense: true,
+            title: Text('vals: $vals'),
+          ),
+          const Divider(indent: 16, endIndent: 16),
           guessType(context, "Trait?", (v) => Transl.trait(v).l, (v) => router.push(url: Routes.traitI(v))),
           guessType(
               context, "Buff?", (v) => db.gameData.baseBuffs[v]?.lName.l, (v) => router.push(url: Routes.buffI(v))),
@@ -254,5 +517,40 @@ class _AiCondDialog extends StatelessWidget {
         ),
       )),
     );
+  }
+}
+
+class _BattleMessageDialog extends StatelessWidget {
+  final int msgId;
+  final Region? region;
+  const _BattleMessageDialog({required this.msgId, this.region});
+
+  @override
+  Widget build(BuildContext context) {
+    return SimpleCancelOkDialog(
+      title: Text('Message $msgId'),
+      scrollable: true,
+      content: FutureBuilder2(
+        id: msgId,
+        loader: () => AtlasApi.battleMessage(msgId, region: region ?? Region.jp),
+        builder: (context, messages) {
+          if (messages == null) return Text(S.current.error);
+          if (messages.isEmpty) return Text(S.current.not_found);
+          messages = messages.toList()..sort2((e) => e.priority);
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final msg in messages) buildMessage(context, msg),
+            ],
+          );
+        },
+        onFailed: (context) => const Text("Load Failed"),
+        onLoading: (context) => const Text("Loading..."),
+      ),
+    );
+  }
+
+  Widget buildMessage(BuildContext context, BattleMessage msg) {
+    return SimpleDialogOption(child: Text(msg.message));
   }
 }

@@ -476,6 +476,28 @@ EnumMapping _$EnumMappingFromJson(Map json) => EnumMapping(
             (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
+      aiActNum: (json['ai_act_num'] as Map?)?.map(
+            (k, e) =>
+                MapEntry(int.parse(k as String), MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      aiTiming: (json['ai_timing'] as Map?)?.map(
+            (k, e) =>
+                MapEntry(int.parse(k as String), MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      aiCond: (json['ai_cond'] as Map?)?.map(
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      aiActType: (json['ai_act_type'] as Map?)?.map(
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      aiActTarget: (json['ai_act_target'] as Map?)?.map(
+            (k, e) => MapEntry(k as String, MappingBase<String>.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
     );
 
 Map<String, dynamic> _$EnumMappingToJson(EnumMapping instance) => <String, dynamic>{
@@ -504,4 +526,9 @@ Map<String, dynamic> _$EnumMappingToJson(EnumMapping instance) => <String, dynam
       'shop_type': instance.shopType.map((k, e) => MapEntry(k, e.toJson())),
       'purchase_type': instance.purchaseType.map((k, e) => MapEntry(k, e.toJson())),
       'restriction_type': instance.restrictionType.map((k, e) => MapEntry(k, e.toJson())),
+      'ai_act_num': instance.aiActNum.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'ai_timing': instance.aiTiming.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'ai_cond': instance.aiCond.map((k, e) => MapEntry(k, e.toJson())),
+      'ai_act_type': instance.aiActType.map((k, e) => MapEntry(k, e.toJson())),
+      'ai_act_target': instance.aiActTarget.map((k, e) => MapEntry(k, e.toJson())),
     };

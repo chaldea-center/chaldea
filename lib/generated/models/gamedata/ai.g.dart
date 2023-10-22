@@ -254,13 +254,13 @@ const _$AiTypeEnumMap = {
 
 const _$AiTimingEnumMap = {
   AiTiming.dead: 'dead',
-  AiTiming.turnEnemyStart: 'turnEnemyStart',
-  AiTiming.turnEnemyEnd: 'turnEnemyEnd',
-  AiTiming.turnPlayerStart: 'turnPlayerStart',
-  AiTiming.turnPlayerEnd: 'turnPlayerEnd',
+  AiTiming.unknown: 'unknown',
   AiTiming.waveStart: 'waveStart',
   AiTiming.turnStart: 'turnStart',
-  AiTiming.unknown: 'unknown',
+  AiTiming.turnPlayerStart: 'turnPlayerStart',
+  AiTiming.turnPlayerEnd: 'turnPlayerEnd',
+  AiTiming.turnEnemyStart: 'turnEnemyStart',
+  AiTiming.turnEnemyEnd: 'turnEnemyEnd',
 };
 
 NiceAiAct _$NiceAiActFromJson(Map json) => NiceAiAct(
@@ -338,3 +338,24 @@ const _$NiceAiActTargetEnumMap = {
   NiceAiActTarget.center: 'center',
   NiceAiActTarget.back: 'back',
 };
+
+BattleMessage _$BattleMessageFromJson(Map json) => BattleMessage(
+      id: json['id'] as int,
+      idx: json['idx'] as int? ?? 0,
+      priority: json['priority'] as int? ?? 0,
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      motionId: json['motionId'] as int? ?? 0,
+      message: json['message'] as String? ?? '',
+    );
+
+Map<String, dynamic> _$BattleMessageToJson(BattleMessage instance) => <String, dynamic>{
+      'id': instance.id,
+      'idx': instance.idx,
+      'priority': instance.priority,
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+      'motionId': instance.motionId,
+      'message': instance.message,
+    };

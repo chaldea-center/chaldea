@@ -777,31 +777,25 @@ class FuncDescriptor extends StatelessWidget {
           break;
         case FuncType.damageNpIndividualSum:
           if ((vals?.TargetList?.length ?? 0) > 0) {
-            spans.addAll(SharedBuilder.replaceSpanMap(text, RegExp(r'\{[0-1]\}'), (match) {
-              final s = match[0]!;
-              if (s == "{0}") {
-                return [
-                  TextSpan(
-                    children: SharedBuilder.traitSpans(
-                      context: context,
-                      traits: [
-                        for (int indiv in vals?.TargetList ?? []) NiceTrait(id: indiv),
-                      ],
-                    ),
-                    style: style,
-                  )
-                ];
-              } else if (s == "{1}") {
-                final target = vals?.Target == 0
-                    ? M.of(jp: '自身', cn: '自身', tw: '自身', na: 'self', kr: '자신')
-                    : M.of(jp: '対象', cn: '对象', tw: '對象', na: 'target', kr: '대상');
-                return [
-                  TextSpan(text: target),
-                ];
-              } else {
-                return [TextSpan(text: s)];
-              }
-            }));
+            spans.addAll(SharedBuilder.replaceSpanMaps(
+              text,
+              {
+                "{0}": (_) => [
+                      TextSpan(
+                        children: SharedBuilder.traitSpans(
+                          context: context,
+                          traits: [
+                            for (int indiv in vals?.TargetList ?? []) NiceTrait(id: indiv),
+                          ],
+                        ),
+                        style: style,
+                      )
+                    ],
+                "{1}": (_) => [
+                      TextSpan(text: vals?.Target == 0 ? Transl.special.self : Transl.special.opposite),
+                    ]
+              },
+            ));
             return;
           }
           break;

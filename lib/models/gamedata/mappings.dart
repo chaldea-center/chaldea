@@ -634,6 +634,12 @@ class EnumMapping {
   final Map<String, MappingBase<String>> shopType;
   final Map<String, MappingBase<String>> purchaseType;
   final Map<String, MappingBase<String>> restrictionType;
+  // ai
+  final Map<int, MappingBase<String>> aiActNum;
+  final Map<int, MappingBase<String>> aiTiming;
+  final Map<String, MappingBase<String>> aiCond;
+  final Map<String, MappingBase<String>> aiActType;
+  final Map<String, MappingBase<String>> aiActTarget;
 
   EnumMapping({
     this.svtClass = const {},
@@ -661,6 +667,11 @@ class EnumMapping {
     this.shopType = const {},
     this.purchaseType = const {},
     this.restrictionType = const {},
+    this.aiActNum = const {},
+    this.aiTiming = const {},
+    this.aiCond = const {},
+    this.aiActType = const {},
+    this.aiActTarget = const {},
   });
 
   factory EnumMapping.fromJson(Map<String, dynamic> json) {
@@ -671,6 +682,14 @@ class EnumMapping {
 }
 
 class _SpecialTransl {
+  String not() => M.of(
+        jp: null,
+        cn: '非',
+        tw: null,
+        na: 'Not',
+        kr: null,
+      );
+
   String funcValChance(String v) => M.of(
         jp: '$v確率',
         cn: '$v概率',
@@ -736,8 +755,8 @@ class _SpecialTransl {
     );
   }
 
-  String get self => M.of(jp: '自身', cn: '自身', tw: '自身', na: 'self', kr: null);
-  String get opposite => M.of(jp: '対象', cn: '对方', tw: '對方', na: 'opposite', kr: null);
+  String get self => M.of(jp: '自身', cn: '自身', tw: '自身', na: 'self', kr: '자신');
+  String get opposite => M.of(jp: '対象', cn: '对方', tw: '對方', na: 'opposite', kr: '대상');
   String get field => M.of(jp: 'フィールド', cn: '场地', tw: '場地', na: 'Field', kr: null);
 
   String get funcTraitOnField => M.of(
