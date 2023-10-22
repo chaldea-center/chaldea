@@ -268,7 +268,7 @@ mixin GameCardMixin implements RouteInfo {
         if (id == Items.grailToCrystalId) {
           return Item.iconBuilder(
             context: context,
-            item: db.gameData.items[Items.grail],
+            item: db.gameData.items[Items.grailId],
             icon: Atlas.assetItem(id),
             width: width,
             height: height,

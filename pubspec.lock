@@ -278,10 +278,10 @@ packages:
     dependency: "direct main"
     description:
       name: csv
-      sha256: "016b31a51a913744a0a1655c74ff13c9379e1200e246a03d96c81c5d9ed297b5"
+      sha256: "142bdf2b24f4a49e35a0fc4398f21d861c4c0f9015e8054dcacd0bb8e23ee27d"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.2"
+    version: "5.1.0"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -451,10 +451,10 @@ packages:
     dependency: "direct dev"
     description:
       name: flutter_lints
-      sha256: a25a15ebbdfc33ab1cd26c63a6ee519df92338a9c10f122adda92938253bef04
+      sha256: ad76540d21c066228ee3f9d1dad64a9f7e46530e8bb7c85011a88bc1fd874bc5
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.3"
+    version: "3.0.0"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -732,10 +732,10 @@ packages:
     dependency: transitive
     description:
       name: lints
-      sha256: "0a217c6c989d21039f1498c3ed9f3ed71b354e69873f13a8dfc3c9fe76f1b452"
+      sha256: cbf8d4b858bb0134ef3ef87841abdf8d63bfc255c266b7bf6b39daa1085c4290
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.1"
+    version: "3.0.0"
   logger:
     dependency: "direct main"
     description:
@@ -861,7 +861,7 @@ packages:
     description:
       path: "packages/pasteboard"
       ref: HEAD
-      resolved-ref: d0c91d9c3ea12883d38215adc48586753fb41dde
+      resolved-ref: "68dad7b26b850188eeb8c434fd5332b2c7f3eeb4"
       url: "https://github.com/MixinNetwork/flutter-plugins"
     source: git
     version: "0.2.0"
@@ -1490,10 +1490,10 @@ packages:
     dependency: "direct main"
     description:
       name: video_player_win
-      sha256: "56afaf991161ca681d2d28f02a6dbf7f2b84b6f91d6a03f74b7bf8af857ef1ad"
+      sha256: a693c0ee9da5c5e8b599d6bc9f325fc012ef1ab037f17bb4210e93cc05bf7d7d
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.1"
+    version: "2.3.4"
   watcher:
     dependency: transitive
     description:

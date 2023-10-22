@@ -485,23 +485,15 @@ class SplitPage extends MaterialPage {
   final bool? detail;
 
   const SplitPage({
-    required Widget child,
+    required super.child,
     this.detail,
-    bool maintainState = true,
-    bool fullscreenDialog = false,
-    LocalKey? key,
-    String? name,
-    Object? arguments,
-    String? restorationId,
-  }) : super(
-          key: key,
-          child: child,
-          maintainState: maintainState,
-          fullscreenDialog: fullscreenDialog,
-          name: name,
-          arguments: arguments,
-          restorationId: restorationId,
-        );
+    super.maintainState,
+    super.fullscreenDialog,
+    super.key,
+    super.name,
+    super.arguments,
+    super.restorationId,
+  });
 
   @override
   Route createRoute(BuildContext context) {

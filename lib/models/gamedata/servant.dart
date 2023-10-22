@@ -509,7 +509,7 @@ class Servant with GameCardMixin {
       }
       _icon ??= ascs.values.firstOrNull;
     } else if (idx < 100) {
-      final charaId = profile.costume.values.firstWhereOrNull((e) => e.id == idx);
+      final charaId = profile.costume.values.firstWhereOrNull((e) => e.id == idx)?.battleCharaId;
       _icon = costumes[charaId];
     }
     _icon ??= costumes[idx] ?? ascs.values.firstOrNull;
