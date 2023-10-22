@@ -20,7 +20,7 @@ For more details or usage, please check our document: [English](https://docs.cha
 - profiles of **Servants**, **Craft Essences**, **Command Codes**, **Mystic Codes**, **Events**,
   **Items** and **Summons**
 - item/material planning
-  - servants' ascension, skill, dress, append skill, palingenesis, fou-kun and bond(Chaldea lantern)
+  - servants' ascension, skill, dress, append skill, palingenesis, fou-kun, etc.
   - limit events, main records, exchange tickets and campaigns
   - owned items
   - Saint Quartz planning
@@ -32,7 +32,7 @@ For more details or usage, please check our document: [English](https://docs.cha
 - import user data
   - all needed account data from captured https traffic when login to CN/TW/JP/NA server
   - import item/active skill/append skill data from game screenshots (realized on server side)
-  - from [https://fgosim.github.io/Material](https://fgosim.github.io/Material)
+  - from <https://fgosim.github.io/Material>
 
 ### Laplace
 
@@ -47,7 +47,7 @@ For more details or usage, please check our document: [English](https://docs.cha
 | -------- | -------------------------------- |
 | Android  | Android 6.0 (API level 23)       |
 | iOS      | iOS 12.0                         |
-| Windows  | Windows 8 (64-bit), x86-64 based |
+| Windows  | Windows 8 (64-bit), 64-bit based |
 | macOS    | macOS 10.14                      |
 | Linux    | Debian 10 & above                |
 | Web      | Any modern browser               |
