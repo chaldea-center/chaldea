@@ -1,5 +1,6 @@
 import 'package:tuple/tuple.dart';
 
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../models/models.dart';
 
@@ -21,7 +22,20 @@ class Atlas {
 
   /// db link
   static String dbUrl(String path, int id, [Region region = Region.jp]) {
-    return '$appHost${region.upper}/$path/$id';
+    String url = '$appHost${region.upper}/$path/$id';
+    String uiLang = "";
+    String dataLang = "default";
+    if (Language.isCHT) {
+      uiLang = 'zh-TW';
+    } else if (Language.isZH) {
+      uiLang = 'zh-CN';
+    } else if (Language.isEN) {
+      dataLang = 'en';
+    } else if (Language.isKO) {
+      uiLang = 'ko-KR';
+    }
+    url += '?lang=$uiLang&dataLang=$dataLang';
+    return url;
   }
 
   static String dbServant(int id, [Region region = Region.jp]) {
