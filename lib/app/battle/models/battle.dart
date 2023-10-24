@@ -985,6 +985,7 @@ class BattleData {
                   recorder.startPlayerCard(action.actor, action.cardData);
 
                   if (action.cardData.isNP) {
+                    action.cardData.np = action.actor.np;
                     await action.actor.activateNP(this, action.cardData, extraOvercharge);
                     extraOvercharge += 1;
                   } else {

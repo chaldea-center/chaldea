@@ -895,6 +895,8 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
               TextSpan(
                 children: divideList([
                   if (record.card?.isNP == true) TextSpan(text: '${S.current.np_short} Lv.${record.attacker.tdLv}'),
+                  if (record.attacker.isPlayer && record.card?.isNP == true)
+                    TextSpan(text: (record.card?.np ?? 0).format(percent: true, base: 100)),
                   TextSpan(
                     text: record.card!.cardType.name.toTitle(),
                     style: TextStyle(

@@ -40,6 +40,7 @@ class CommandCardData {
   int npGain = 0;
   List<NiceTrait> traits = [];
   bool isNP = false;
+  int np = 0;
   int cardIndex = -1;
   bool isCritical = false;
   CommandCode? commandCode;
@@ -55,6 +56,7 @@ class CommandCardData {
       ..npGain = npGain
       ..traits = traits.toList()
       ..isNP = isNP
+      ..np = np
       ..cardIndex = cardIndex
       ..isCritical = isCritical
       ..commandCode = commandCode
