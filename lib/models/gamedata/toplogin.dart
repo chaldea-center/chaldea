@@ -525,70 +525,148 @@ class UserSvtCollection {
   factory UserSvtCollection.fromJson(Map<String, dynamic> data) => _$UserSvtCollectionFromJson(data);
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable(createToJson: true)
 class UserGame {
-  int? id; //cn only
   int userId;
-
-  // String usk;
-  String? appname; // username of bili account
   String name;
-  DateTime? birthDay;
+  int? birthDay;
   int actMax;
+  int actRecoverAt;
+  int carryOverActPoint;
+  int rpRecoverAt;
+  int carryOverRaidPoint;
   int genderType;
   int lv;
   int exp;
   int qp;
   int costMax;
   String friendCode;
-
-  // int favoriteUserSvtId;
+  int favoriteUserSvtId;
+  int pushUserSvtId;
+  int? grade;
+  int friendKeep;
+  int commandSpellRecoverAt;
+  int svtKeep;
+  int svtEquipKeep;
+  int svtStorageAdjust;
+  int svtEquipStorageAdjust;
   int freeStone;
   int chargeStone;
+  int stone;
+  int? stoneVerifiAt;
   int mana;
   int rarePri;
-
-  // DateTime zerotime;
-  DateTime createdAt;
+  int activeDeckId;
+  int mainSupportDeckId;
+  int eventSupportDeckId;
+  List<int> fixMainSupportDeckIds;
+  List<int> fixEventSupportDeckIds;
+  int tutorial1;
+  int tutorial2;
   String message;
-  int stone;
+  int flag;
+  int updatedAt;
+  int createdAt;
+  // not in UserGameEntity but exists
+  int userEquipId;
+
+  // bilibili only
+  int? id;
+  // String usk;
+  // int? rksdkid;
+  // int? rkchannel;  // ios=996,android=24,渠道服=?
+  int? appuid; // bilibili uid
+  String? appname; // bilibili username, not nickname/display name
 
   UserGame({
-    required dynamic id,
     required dynamic userId,
-    required this.appname,
     required this.name,
     required dynamic birthDay,
     required dynamic actMax,
+    required dynamic actRecoverAt,
+    required dynamic carryOverActPoint,
+    required dynamic rpRecoverAt,
+    required dynamic carryOverRaidPoint,
     required dynamic genderType,
     required dynamic lv,
     required dynamic exp,
     required dynamic qp,
     required dynamic costMax,
     required this.friendCode,
+    required dynamic favoriteUserSvtId,
+    required dynamic pushUserSvtId,
+    required dynamic grade,
+    required dynamic friendKeep,
+    required dynamic commandSpellRecoverAt,
+    required dynamic svtKeep,
+    required dynamic svtEquipKeep,
+    required dynamic svtStorageAdjust,
+    required dynamic svtEquipStorageAdjust,
     required dynamic freeStone,
     required dynamic chargeStone,
+    required dynamic stone,
+    required dynamic stoneVerifiAt,
     required dynamic mana,
     required dynamic rarePri,
-    required dynamic createdAt,
+    required dynamic activeDeckId,
+    required dynamic mainSupportDeckId,
+    required dynamic eventSupportDeckId,
+    required dynamic fixMainSupportDeckIds,
+    required dynamic fixEventSupportDeckIds,
+    required dynamic tutorial1,
+    required dynamic tutorial2,
     required this.message,
-    required this.stone,
-  })  : id = _toIntNull(id),
-        userId = _toInt(userId),
-        birthDay = birthDay == null ? null : DateTime.fromMillisecondsSinceEpoch(_toInt(birthDay) * 1000),
+    required dynamic flag,
+    required dynamic updatedAt,
+    required dynamic createdAt,
+    required dynamic userEquipId,
+    required dynamic id,
+    required dynamic appuid,
+    required this.appname,
+  })  : userId = _toInt(userId),
+        birthDay = _toIntNull(birthDay),
         actMax = _toInt(actMax),
+        actRecoverAt = _toInt(actRecoverAt),
+        carryOverActPoint = _toInt(carryOverActPoint),
+        rpRecoverAt = _toInt(rpRecoverAt),
+        carryOverRaidPoint = _toInt(carryOverRaidPoint),
         genderType = _toInt(genderType),
         lv = _toInt(lv),
         exp = _toInt(exp),
         qp = _toInt(qp),
         costMax = _toInt(costMax),
+        favoriteUserSvtId = _toInt(favoriteUserSvtId),
+        pushUserSvtId = _toInt(pushUserSvtId),
+        grade = _toIntNull(grade),
+        friendKeep = _toInt(friendKeep),
+        commandSpellRecoverAt = _toInt(commandSpellRecoverAt),
+        svtKeep = _toInt(svtKeep),
+        svtEquipKeep = _toInt(svtEquipKeep),
+        svtStorageAdjust = _toInt(svtStorageAdjust),
+        svtEquipStorageAdjust = _toInt(svtEquipStorageAdjust),
         freeStone = _toInt(freeStone),
         chargeStone = _toInt(chargeStone),
+        stone = _toInt(stone),
+        stoneVerifiAt = _toIntNull(stoneVerifiAt),
         mana = _toInt(mana),
         rarePri = _toInt(rarePri),
-        createdAt = DateTime.fromMillisecondsSinceEpoch(_toInt(createdAt) * 1000);
+        activeDeckId = _toInt(activeDeckId),
+        mainSupportDeckId = _toInt(mainSupportDeckId),
+        eventSupportDeckId = _toInt(eventSupportDeckId),
+        fixMainSupportDeckIds = _toIntList(fixMainSupportDeckIds),
+        fixEventSupportDeckIds = _toIntList(fixEventSupportDeckIds),
+        tutorial1 = _toInt(tutorial1),
+        tutorial2 = _toInt(tutorial2),
+        flag = _toInt(flag),
+        updatedAt = _toInt(updatedAt),
+        createdAt = _toInt(createdAt),
+        userEquipId = _toInt(userEquipId),
+        id = _toIntNull(id),
+        appuid = _toIntNull(appuid);
 
   factory UserGame.fromJson(Map<String, dynamic> data) => _$UserGameFromJson(data);
+
+  Map<String, dynamic> toJson() => _$UserGameToJson(this);
 }
 
 // {

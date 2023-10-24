@@ -10,6 +10,7 @@ import 'package:uuid/uuid.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 
 enum ParamType {
@@ -50,14 +51,14 @@ abstract class UA {
   static const deviceinfo = 'samsung SM-G9500 / Android OS 8.1 / API-27 (V417IR/eng.duanlusheng.20221214.192029)';
 }
 
-class ServerResponse {
+class FateServerResponse {
   final Response src;
   String text = '';
   Map? json;
 
   FateTopLogin? toplogin;
 
-  ServerResponse(this.src) {
+  FateServerResponse(this.src) {
     try {
       if (src.data is String) {
         text = src.data as String;
@@ -74,8 +75,8 @@ class ServerResponse {
           toplogin = FateTopLogin.fromJson(Map.from(json!));
         }
       }
-    } catch (e) {
-      //
+    } catch (e, s) {
+      logger.e('parse fgo login response failed', e, s);
     }
   }
 
@@ -241,7 +242,7 @@ class LoginAgent {
     }
     final resp = await post('${gameTop.host}/login/top?_userId=${auth.userId}');
     reset();
-    final sr = ServerResponse(resp);
+    final sr = FateServerResponse(resp);
     if (sr.userGame != null) {
       auth.friendCode = sr.userGame?.friendCode;
       auth.name = sr.userGame?.name;

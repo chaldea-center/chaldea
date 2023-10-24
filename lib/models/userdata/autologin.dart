@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:chaldea/models/gamedata/_helper.dart';
 import 'package:chaldea/utils/extension.dart';
+import '../../app/modules/import_data/autologin/agent.dart';
 import '../gamedata/common.dart';
+import '../gamedata/toplogin.dart';
 
 part '../../generated/models/userdata/autologin.g.dart';
 
@@ -79,6 +81,11 @@ class AutoLoginData {
   String? deviceInfo;
   NACountry country;
   bool useThisDevice;
+  // result
+  int? lastLogin;
+  UserGame? result;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  FateServerResponse? response;
 
   AutoLoginData({
     this.region = Region.jp,
@@ -87,6 +94,8 @@ class AutoLoginData {
     this.deviceInfo,
     this.country = NACountry.unitedStates,
     this.useThisDevice = false,
+    this.lastLogin,
+    this.result,
   });
   factory AutoLoginData.fromJson(Map<String, dynamic> json) => _$AutoLoginDataFromJson(json);
 

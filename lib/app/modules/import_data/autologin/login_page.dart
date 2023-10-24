@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -26,11 +27,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
   GameTops? gameTops;
   final allData = db.settings.autologins;
   AutoLoginData args = AutoLoginData();
-  ServerResponse? response;
   dynamic _error;
-
-  late final _userAgentCtrl = TextEditingController();
-  late final _deviceInfoCtrl = TextEditingController();
 
   @override
   void initState() {
@@ -43,13 +40,6 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       gameTops ??= value;
       if (mounted) setState(() {});
     });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _userAgentCtrl.dispose();
-    _deviceInfoCtrl.dispose();
   }
 
   @override
@@ -70,62 +60,9 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       ),
       body: ListView(
         children: [
-          Row(
-            children: [
-              const SizedBox(width: 16),
-              Expanded(
-                child: DropdownButton<int>(
-                  value: allData.indexOf(args),
-                  items: List.generate(allData.length, (index) {
-                    final user = allData[index];
-                    String text = '[${user.region.upper}] ${user.auth?.userId}';
-                    if (user.auth?.friendCode != null) {
-                      text += '\n (${user.auth?.friendCode} ${user.auth?.name})';
-                    }
-                    return DropdownMenuItem(
-                      value: index,
-                      child: Text(text, textScaleFactor: 0.9),
-                    );
-                  }),
-                  onChanged: (v) {
-                    if (v != null) {
-                      args = db.settings.autologins[v];
-                    }
-                    setState(() {});
-                  },
-                  underline: const SizedBox(),
-                  isExpanded: true,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  allData.add(AutoLoginData());
-                  args = allData.last;
-                  setState(() {});
-                },
-                icon: const Icon(Icons.add_circle_outline),
-                tooltip: S.current.add,
-              ),
-              IconButton(
-                onPressed: allData.length > 1
-                    ? () {
-                        SimpleCancelOkDialog(
-                          title: Text(S.current.delete),
-                          onTapOk: () {
-                            allData.remove(args);
-                            args = allData.first;
-                            if (mounted) setState(() {});
-                          },
-                        ).showDialog(context);
-                      }
-                    : null,
-                icon: const Icon(Icons.remove_circle_outline),
-                color: Theme.of(context).colorScheme.error,
-                tooltip: S.current.add,
-              ),
-            ],
-          ),
-          const Divider(height: 16),
+          ...buildAccounts(),
+          buildActions(),
+          DividerWithTitle(height: 16, title: S.current.settings_tab_name),
           ListTile(
             dense: true,
             title: Text(S.current.game_server),
@@ -141,6 +78,35 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
               },
             ),
           ),
+          ListTile(
+            title: Text(S.current.login_auth),
+            dense: true,
+            subtitle: Text(args.auth?.userId == null
+                ? 'No Auth Loaded'
+                : '${args.auth?.userId} (${args.auth?.userCreateServer ?? "unknown server"})'),
+            trailing: IconButton(
+              onPressed: onEditAuth,
+              icon: const Icon(Icons.edit_note_rounded),
+              tooltip: S.current.edit,
+            ),
+            onTap: onEditAuth,
+            selected: args.auth?.userId == null,
+            selectedColor: Theme.of(context).colorScheme.error,
+          ),
+          if (args.auth?.userCreateServer != null &&
+              !UserAuth.checkGameServer(args.region, args.auth!.userCreateServer!))
+            Card(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(
+                  '${args.region.upper} ≠ ${args.auth?.userCreateServer}',
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          const DividerWithTitle(title: 'Extra', indent: 16),
           ListTile(
             title: const Text('Game Info'),
             dense: true,
@@ -163,41 +129,6 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
               tooltip: S.current.refresh,
             ),
           ),
-          ListTile(
-            title: Text(S.current.login_auth),
-            dense: true,
-            subtitle: Text(args.auth?.userId == null
-                ? 'No Auth Loaded'
-                : '${args.auth?.userId} (${args.auth?.userCreateServer ?? "unknown server"})'),
-            trailing: IconButton(
-              onPressed: () {
-                router.pushPage(ReadAuthPage(
-                    auth: args.auth,
-                    onChanged: (v) {
-                      if (v != null) args.auth = v;
-                      if (mounted) setState(() {});
-                    }));
-              },
-              icon: const Icon(Icons.edit_note_rounded),
-              tooltip: S.current.edit,
-            ),
-            selected: args.auth?.userId == null,
-            selectedColor: Theme.of(context).colorScheme.error,
-          ),
-          if (args.auth?.userCreateServer != null &&
-              !UserAuth.checkGameServer(args.region, args.auth!.userCreateServer!))
-            Card(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(
-                  '${args.region.upper} ≠ ${args.auth?.userCreateServer}',
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          const DividerWithTitle(title: 'Extra', indent: 16),
           if (args.region == Region.na)
             ListTile(
               dense: true,
@@ -278,16 +209,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
             ),
           ),
           const Divider(height: 16, indent: 16, endIndent: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: ElevatedButton.icon(
-              onPressed: doLogin,
-              icon: const Icon(Icons.login),
-              label: Text(S.current.login_login),
-            ),
-          ),
-          const SizedBox(height: 16),
-          if (response != null)
+          if (args.response != null)
             Card(
               margin: const EdgeInsets.all(8),
               child: Padding(
@@ -297,6 +219,123 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
             ),
         ],
       ),
+    );
+  }
+
+  void onEditAuth() {
+    router.pushPage(ReadAuthPage(
+      auth: args.auth,
+      onChanged: (v) {
+        if (v != null) args.auth = v;
+        if (mounted) setState(() {});
+      },
+    ));
+  }
+
+  List<Widget> buildAccounts() {
+    List<Widget> children = [];
+    for (final user in allData) {
+      Widget title = Text(
+        '[${user.region}] ${user.auth?.friendCode ?? "Unknown"} ${user.auth?.name ?? ""}',
+        style: const TextStyle(fontSize: 13),
+      );
+      Widget subtitle = Text('${user.auth?.userId}, last: ${user.lastLogin?.sec2date().toCustomString(year: false)}',
+          style: const TextStyle(fontSize: 12));
+
+      Widget trailing = TimerUpdate(builder: (context, time) {
+        final userGame = user.result;
+        List<InlineSpan> spans = [];
+        if (userGame != null) {
+          // final recoverAt = DateTime(2023, 10, 25, 2).timestamp;
+          // final maxAp = 140;
+          final recoverAt = userGame.actRecoverAt;
+          final maxAp = userGame.actMax;
+          final leftDuration = Duration(seconds: max(0, recoverAt - time.timestamp));
+          final curAp =
+              (maxAp - (recoverAt - time.timestamp) / 300).floor().clamp(0, maxAp) + userGame.carryOverActPoint;
+          spans.add(TextSpan(text: 'AP $curAp/$maxAp'));
+          spans.add(TextSpan(
+            text: '\n${leftDuration.toString().split('.').first}',
+            style: TextStyle(color: maxAp - curAp < 24 ? Theme.of(context).colorScheme.error : null),
+          ));
+          spans.add(const TextSpan(text: '\n'));
+          spans.add(TextSpan(text: recoverAt.sec2date().toCustomString(year: false, second: false)));
+        }
+        return Text.rich(
+          TextSpan(children: spans),
+          style: const TextStyle(fontSize: 12),
+          textAlign: TextAlign.end,
+        );
+      });
+      Widget tile = RadioListTile<AutoLoginData>(
+        visualDensity: VisualDensity.compact,
+        value: user,
+        groupValue: args,
+        title: title,
+        subtitle: subtitle,
+        secondary: trailing,
+        onChanged: (v) {
+          if (v != null) {
+            args = v;
+          }
+          setState(() {});
+        },
+      );
+      tile = ListTileTheme.merge(
+        horizontalTitleGap: 8,
+        minVerticalPadding: 0,
+        child: tile,
+      );
+      children.add(tile);
+    }
+    children.add(const Divider(indent: 16, endIndent: 16));
+    return children;
+  }
+
+  Widget buildActions() {
+    return Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: [
+        IconButton(
+          onPressed: () {
+            allData.add(AutoLoginData());
+            args = allData.last;
+            setState(() {});
+          },
+          icon: Icon(Icons.add_circle_outline, color: Theme.of(context).colorScheme.primary),
+          tooltip: S.current.add,
+        ),
+        IconButton(
+          onPressed: allData.length > 1
+              ? () {
+                  SimpleCancelOkDialog(
+                    title: Text(S.current.delete),
+                    onTapOk: () {
+                      final prevIndex = allData.indexOf(args);
+                      allData.remove(args);
+                      args = allData[prevIndex.clamp(0, allData.length - 1)];
+                      if (mounted) setState(() {});
+                    },
+                  ).showDialog(context);
+                }
+              : null,
+          icon: const Icon(Icons.remove_circle_outline),
+          color: Theme.of(context).colorScheme.error,
+          tooltip: S.current.remove,
+        ),
+        const SizedBox(width: 8),
+        ElevatedButton.icon(
+          onPressed: doLogin,
+          icon: const Icon(Icons.login),
+          label: Text(S.current.login_login),
+        ),
+        const SizedBox(width: 8),
+        ElevatedButton(
+          onPressed: args.response?.success == true ? () => _doImport(args.response!.text) : null,
+          child: Text(S.current.import_data),
+        )
+      ],
     );
   }
 
@@ -346,12 +385,13 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     if (_error != null) {
       buffer.writeln('Error:\n\n$_error');
     } else {
-      final resp = response?.src;
-      if (resp == null) return const Text('No response');
-      if (resp.statusCode != 200) {
-        buffer.writeln('status: ${resp.statusCode}');
-        buffer.writeln('statusText: ${resp.statusMessage}');
+      final src = args.response?.src;
+      if (src == null) return const Text('No response');
+      if (src.statusCode != 200) {
+        buffer.writeln('status: ${src.statusCode}');
+        buffer.writeln('statusText: ${src.statusMessage}');
       }
+      final response = args.response;
       // buffer.writeln('data type: ${data.runtimeType}');
       buffer.writeln('server time: ${response?.serverTime ?? "unknown"}');
       buffer.writeln();
@@ -364,15 +404,16 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
 
       dynamic data = response?.json?['response'];
       if (data != null) data = jsonEncode(data);
-      buffer.writeln((data ?? resp.data).toString().substring2(0, 2000));
+      buffer.writeln((data ?? src.data).toString().substring2(0, 2000));
     }
     return Column(
       mainAxisSize: MainAxisSize.min,
       // crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ElevatedButton(
-          onPressed: response?.success == true ? () => _doImport(response!.text) : null,
-          child: Text(S.current.import_data),
+        Text(
+          "Response",
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.labelLarge,
         ),
         const SizedBox(height: 8),
         Text(buffer.toString())
@@ -404,6 +445,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
   }
 
   Future doLogin() async {
+    final args = this.args;
     _error = null;
     gameTops ??= await AtlasApi.gametops();
     final top = gameTops?.of(args.region);
@@ -420,8 +462,14 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     try {
       EasyLoading.show(status: 'Login...');
       await agent.gamedata();
-      response = ServerResponse(await agent.topLogin());
-      if (response?.success == true) {
+      args.response = FateServerResponse(await agent.topLogin());
+      final userGame = args.response?.userGame;
+      final serverTime = args.response?.serverTime;
+      if (userGame != null) {
+        args.result = userGame;
+        args.lastLogin = serverTime?.timestamp ?? DateTime.now().timestamp;
+      }
+      if (args.response?.success == true) {
         await Future.delayed(const Duration(seconds: 1));
         EasyLoading.show(status: 'Login to home...');
         await agent.topHome();

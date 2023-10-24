@@ -19,5 +19,6 @@ export 'simple_accordion.dart';
 export 'slider.dart';
 export 'sliver_grid.dart';
 export 'tile_items.dart';
+export 'timer_update.dart';
 export 'text.dart';
 export 'widget_builders.dart';

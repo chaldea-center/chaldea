@@ -49,6 +49,9 @@ AutoLoginData _$AutoLoginDataFromJson(Map json) => $checkedCreate(
           country:
               $checkedConvert('country', (v) => $enumDecodeNullable(_$NACountryEnumMap, v) ?? NACountry.unitedStates),
           useThisDevice: $checkedConvert('useThisDevice', (v) => v as bool? ?? false),
+          lastLogin: $checkedConvert('lastLogin', (v) => v as int?),
+          result: $checkedConvert(
+              'result', (v) => v == null ? null : UserGame.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         return val;
       },
@@ -61,6 +64,8 @@ Map<String, dynamic> _$AutoLoginDataToJson(AutoLoginData instance) => <String, d
       'deviceInfo': instance.deviceInfo,
       'country': _$NACountryEnumMap[instance.country]!,
       'useThisDevice': instance.useThisDevice,
+      'lastLogin': instance.lastLogin,
+      'result': instance.result?.toJson(),
     };
 
 const _$NACountryEnumMap = {

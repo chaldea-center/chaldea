@@ -374,6 +374,20 @@ extension DateTimeX on DateTime {
     return [year, month.toString().padLeft(2, '0'), day.toString().padLeft(2, '0')].join(sep);
   }
 
+  String toCustomString({bool year = true, bool second = true, bool millisecond = false}) {
+    String output = [
+      if (year) this.year,
+      month.toString().padLeft(2, '0'),
+      day.toString().padLeft(2, '0'),
+    ].join('-');
+    output += ' ';
+    output += [hour, minute, if (second) this.second].map((e) => e.toString().padLeft(2, '0')).join(":");
+    if (second && millisecond) {
+      output += '.${this.millisecond.toString().padLeft(3, "0")}';
+    }
+    return output;
+  }
+
   String toSafeFileName([Pattern? pattern]) {
     return toString().replaceAll(pattern ?? RegExp(r'[^\d]'), '_');
   }
