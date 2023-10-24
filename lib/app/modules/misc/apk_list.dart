@@ -45,7 +45,7 @@ class _ApkListPageState extends State<ApkListPage> {
 
   late final _hidden = db.settings.hideApple;
   late bool proxy = db.settings.proxy.worker;
-  String get apkHost => proxy ? '${HostsX.worker.kCN}/proxy' : 'https://fgo.square.ovh';
+  String get apkHost => proxy ? '${HostsX.worker.kCN}/proxy' : 'https://fgo.bigcereal.com';
 
   @override
   void initState() {
@@ -198,7 +198,7 @@ class _ApkListPageState extends State<ApkListPage> {
                       title: const Text('@Cereal'),
                       trailing: const Icon(Icons.open_in_new, size: 18),
                       onTap: () {
-                        launch('https://fgo.square.ovh/', external: true);
+                        launch('https://fgo.bigcereal.com/', external: true);
                       },
                     ),
                     ListTile(

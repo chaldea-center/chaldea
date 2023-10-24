@@ -393,7 +393,7 @@ class AtlasApi {
   static Future<GameAppVerCode?> verCode(Region region, {Duration? expireAfter = Duration.zero, bool? proxy}) {
     assert(region == Region.jp || region == Region.na || region == Region.kr);
     proxy ??= HostsX.proxy.worker;
-    String url = "https://fgo.square.ovh/${region.upper}/verCode.txt";
+    String url = "https://fgo.bigcereal.com/${region.upper}/verCode.txt";
     if (proxy) url = HostsX.proxyWorker(url);
     return cacheManager.getModelRaw(
       url,
