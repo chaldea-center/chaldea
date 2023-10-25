@@ -245,6 +245,7 @@ const _$NiceAiCondEnumMap = {
   NiceAiCond.totalTurnHigher: 'totalTurnHigher',
   NiceAiCond.totalTurnLower: 'totalTurnLower',
   NiceAiCond.totalTurnEqual: 'totalTurnEqual',
+  NiceAiCond.checkWarBoardSquareIndividuality: 'checkWarBoardSquareIndividuality',
 };
 
 const _$AiTypeEnumMap = {

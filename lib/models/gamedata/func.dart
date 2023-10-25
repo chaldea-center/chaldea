@@ -533,6 +533,7 @@ enum FuncType {
   setQuestRouteFlag(134),
   lastUsePlayerSkillCopy(135),
   changeEnemyMasterFace(136),
+  damageValueSafeOnce(137),
   ;
 
   final int id;

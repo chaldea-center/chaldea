@@ -414,6 +414,7 @@ class FunctionExecutor {
         case FuncType.setQuestRouteFlag:
         case FuncType.setSystemAliveFlag:
         case FuncType.changeEnemyMasterFace:
+        case FuncType.damageValueSafeOnce:
           battleData.battleLogger.debug('${S.current.skip}: ${function.funcType}, '
               'Function ID: ${function.funcId}, '
               'Activator: ${activator?.lBattleName}');

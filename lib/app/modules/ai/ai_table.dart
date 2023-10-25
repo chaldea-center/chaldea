@@ -452,6 +452,7 @@ class AiTable extends StatelessWidget {
       case NiceAiCond.countChainEqual:
       case NiceAiCond.checkSelectChain:
       case NiceAiCond.none:
+      case NiceAiCond.checkWarBoardSquareIndividuality:
         return {};
     }
   }

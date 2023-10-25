@@ -344,6 +344,8 @@ const _$BuffTypeEnumMap = {
   BuffType.commandattackAfterFunctionMainOnly: 'commandattackAfterFunctionMainOnly',
   BuffType.attackBeforeFunctionMainOnly: 'attackBeforeFunctionMainOnly',
   BuffType.attackAfterFunctionMainOnly: 'attackAfterFunctionMainOnly',
+  BuffType.warBoardNotAttacked: 'warBoardNotAttacked',
+  BuffType.warBoardIgnoreDefeatpoint: 'warBoardIgnoreDefeatpoint',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
   BuffType.toFieldSubIndividualityField: 'toFieldSubIndividualityField',

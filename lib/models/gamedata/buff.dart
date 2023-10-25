@@ -455,6 +455,8 @@ enum BuffType {
   commandattackAfterFunctionMainOnly(180),
   attackBeforeFunctionMainOnly(181),
   attackAfterFunctionMainOnly(182),
+  warBoardNotAttacked(183),
+  warBoardIgnoreDefeatpoint(184),
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),
   toFieldSubIndividualityField(10003),

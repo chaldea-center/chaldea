@@ -314,6 +314,7 @@ enum NiceAiCond {
   totalTurnHigher,
   totalTurnLower,
   totalTurnEqual,
+  checkWarBoardSquareIndividuality,
 }
 
 enum AiTiming {

@@ -376,6 +376,7 @@ const _$FuncTypeEnumMap = {
   FuncType.setQuestRouteFlag: 'setQuestRouteFlag',
   FuncType.lastUsePlayerSkillCopy: 'lastUsePlayerSkillCopy',
   FuncType.changeEnemyMasterFace: 'changeEnemyMasterFace',
+  FuncType.damageValueSafeOnce: 'damageValueSafeOnce',
 };
 
 BuffTypeDetail _$BuffTypeDetailFromJson(Map json) => BuffTypeDetail(
@@ -557,6 +558,8 @@ const _$BuffTypeEnumMap = {
   BuffType.commandattackAfterFunctionMainOnly: 'commandattackAfterFunctionMainOnly',
   BuffType.attackBeforeFunctionMainOnly: 'attackBeforeFunctionMainOnly',
   BuffType.attackAfterFunctionMainOnly: 'attackAfterFunctionMainOnly',
+  BuffType.warBoardNotAttacked: 'warBoardNotAttacked',
+  BuffType.warBoardIgnoreDefeatpoint: 'warBoardIgnoreDefeatpoint',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
   BuffType.toFieldSubIndividualityField: 'toFieldSubIndividualityField',

@@ -212,6 +212,11 @@ class DataVals {
   String? get TriggeredTargetHpRange => _vals['TriggeredTargetHpRange'];
   String? get TriggeredTargetHpRateRange => _vals['TriggeredTargetHpRateRange'];
   int? get ExcludeUnSubStateIndiv => _vals['ExcludeUnSubStateIndiv'];
+  int? get ProgressTurnOnBoard => _vals['ProgressTurnOnBoard'];
+  int? get CheckTargetResurrectable => _vals['CheckTargetResurrectable'];
+  int? get CancelTransform => _vals['CancelTransform'];
+  int? get UnSubStateWhenContinue => _vals['UnSubStateWhenContinue'];
+  int? get CheckTargetHaveDefeatPoint => _vals['CheckTargetHaveDefeatPoint'];
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];
   int? get EventId => _vals['EventId'];
