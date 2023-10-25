@@ -339,11 +339,11 @@ Map<String, dynamic> _$NiceTdToJson(NiceTd instance) => <String, dynamic>{
 
 CommonRelease _$CommonReleaseFromJson(Map json) => CommonRelease(
       id: json['id'] as int,
-      priority: json['priority'] as int,
-      condGroup: json['condGroup'] as int,
+      priority: json['priority'] as int? ?? 0,
+      condGroup: json['condGroup'] as int? ?? 0,
       condType: const CondTypeConverter().fromJson(json['condType'] as String),
-      condId: json['condId'] as int,
-      condNum: json['condNum'] as int,
+      condId: json['condId'] as int? ?? 0,
+      condNum: json['condNum'] as int? ?? 0,
     );
 
 Map<String, dynamic> _$CommonReleaseToJson(CommonRelease instance) => <String, dynamic>{

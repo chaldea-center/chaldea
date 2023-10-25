@@ -785,11 +785,11 @@ class CommonRelease with RouteInfo {
 
   CommonRelease({
     required this.id,
-    required this.priority,
-    required this.condGroup,
+    this.priority = 0,
+    this.condGroup = 0,
     required this.condType,
-    required this.condId,
-    required this.condNum,
+    this.condId = 0,
+    this.condNum = 0,
   });
 
   factory CommonRelease.fromJson(Map<String, dynamic> json) => _$CommonReleaseFromJson(json);

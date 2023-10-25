@@ -96,10 +96,14 @@ class QuestWave extends StatelessWidget {
           null,
           growable: true,
         );
-        for (final e in enemies) {
-          if (e != null) {
-            assert(_enemies[e.deckId - 1] == null);
-            _enemies[e.deckId - 1] = e;
+        for (final enemy in enemies) {
+          if (enemy != null) {
+            if (_enemies[enemy.deckId - 1] == null) {
+              _enemies[enemy.deckId - 1] = enemy;
+            } else {
+              // WarBoard may be dupe
+              _enemies.add(enemy);
+            }
           }
         }
         // for (int i = 0; i < _enemies.length ~/ 3; i++) {

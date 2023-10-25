@@ -246,11 +246,10 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         buildBattleSvtData(battleData.onFieldEnemies.getOrNull(index), index)
     ];
 
-    Widget allyParty, enemyParty;
-    allyParty = ResponsiveLayout(verticalAlign: CrossAxisAlignment.start, children: [
+    Widget allyParty = ResponsiveLayout(verticalAlign: CrossAxisAlignment.start, children: [
       for (final svt in allies) Responsive(small: 4, child: svt),
     ]);
-    enemyParty = ResponsiveLayout(
+    Widget enemyParty = ResponsiveLayout(
       rowDirection: TextDirection.rtl,
       verticalDirection: VerticalDirection.up,
       verticalAlign: CrossAxisAlignment.start,
@@ -258,6 +257,22 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         for (final enemy in enemies) Responsive(small: 4, child: enemy),
       ],
     );
+    if (battleData.isBattleWin) {
+      enemyParty = Stack(
+        alignment: Alignment.center,
+        children: [
+          enemyParty,
+          Positioned.fill(child: Container(color: Colors.grey.withOpacity(0.2))),
+          Text(
+            "Battle Win",
+            style: TextStyle(
+              fontSize: 36,
+              color: Theme.of(context).textTheme.bodySmall?.color,
+            ),
+          ),
+        ],
+      );
+    }
 
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 8),

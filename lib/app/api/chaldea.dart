@@ -8,6 +8,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:github/github.dart';
 
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/logger.dart';
 import '../../models/api/api.dart';
 import 'cache.dart';
@@ -53,7 +54,11 @@ class ChaldeaWorkerApi {
     error2 ??= error;
     logger.e("api error: ${options.uri}", error2);
     if (EasyLoading.instance.overlayEntry?.mounted != true) return;
-    EasyLoading.showError(error2.toString());
+    String msg = error2.toString();
+    if (response?.statusCode == 500 && msg.contains('D1_ERROR: Error 9000: something went wrong')) {
+      msg += Language.isZH ? '\n目前服务器不稳定，请稍后重试s' : '\nThe server is currently unstable, please try again later';
+    }
+    EasyLoading.showError(msg);
   }
 
   static Dio createDio() {

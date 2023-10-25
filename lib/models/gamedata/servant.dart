@@ -1368,8 +1368,8 @@ class VoiceLine {
   List<String> audioAssets;
   List<double> delay;
   List<int> face;
-  List<int> form;
-  List<String> text;
+  List<int> form; // can be empty
+  List<String> text; // can be empty
   String subtitle;
   List<VoiceCond> conds;
   List<VoicePlayCond> playConds;
