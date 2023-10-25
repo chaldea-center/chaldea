@@ -868,7 +868,11 @@ class FuncDescriptor extends StatelessWidget {
 
     if (func.funcType == FuncType.transformServant) {
       final transformId = vals?.Value, transformLimit = vals?.SetLimitCount;
+      final transformSvt = db.gameData.servantsById[transformId] ?? db.gameData.entities[transformId];
       if (transformId != null) {
+        if (transformSvt != null) {
+          spans.add(CenterWidgetSpan(child: transformSvt.iconBuilder(context: context, width: 20)));
+        }
         spans.add(SharedBuilder.textButtonSpan(
           context: context,
           text:

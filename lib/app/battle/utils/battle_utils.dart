@@ -520,6 +520,7 @@ class BattleUtils {
 
   static final List<int> costumeOrtinaxIds = [12, 800140, 13, 800150];
   static final List<int> melusineDragonIds = [3, 4, 13, 304850];
+  static final List<int> ptolemaiosAsc3Ids = [3, 4, 205020];
 
   static List<NiceTd> getShownTds(final Servant svt, final int ascension) {
     final List<NiceTd> shownTds = svt.groupedNoblePhantasms[1]?.toList() ?? <NiceTd>[];
@@ -540,6 +541,12 @@ class BattleUtils {
         removeTdIdList.add(304801);
       } else {
         removeTdIdList.add(304802);
+      }
+    } else if (svt.collectionNo == 394) {
+      if (ptolemaiosAsc3Ids.contains(ascension)) {
+        removeTdIdList.add(205001);
+      } else {
+        removeTdIdList.add(205002);
       }
     }
 
@@ -582,6 +589,12 @@ class BattleUtils {
         removeSkillIdList.add(888550);
       } else {
         removeSkillIdList.add(888575);
+      }
+    } else if (svt.collectionNo == 394 && skillNum == 3) {
+      if (ptolemaiosAsc3Ids.contains(limitCount)) {
+        removeSkillIdList.add(2281650);
+      } else {
+        removeSkillIdList.add(2281675);
       }
     }
 
