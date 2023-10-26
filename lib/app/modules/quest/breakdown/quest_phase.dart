@@ -173,6 +173,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
           ),
           Expanded(
             child: QuestWave(
+              questPhase: curPhase,
               stage: stage,
               showTrueName: widget.showTrueName,
               showFace: widget.showFace,
@@ -195,6 +196,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
           ),
           Expanded(
             child: QuestWave(
+              questPhase: curPhase,
               stage: null,
               aiNpcs: aiNpcs,
               showTrueName: widget.showTrueName,
@@ -348,6 +350,9 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         ],
       ));
     }
+
+    children.addAll(getWarBoard());
+
     if (!widget.battleOnly) {
       children.addAll(getPhaseScript(phase));
     }
@@ -359,6 +364,44 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         divider: const Divider(height: 5, thickness: 0.5),
       ),
     );
+  }
+
+  List<Widget> getWarBoard() {
+    List<Widget> children = [];
+    final warBoards = quest.war?.event?.warBoards ?? [];
+    for (final warBoard in warBoards) {
+      for (final stage in warBoard.stages) {
+        if (quest.id == stage.questId && phase == stage.questPhase) {
+          children.add(_header('${S.current.war_board} (COST ${stage.formationCost})'));
+          if (stage.boardMessage.isNotEmpty) {
+            children.add(Text(stage.boardMessage, style: Theme.of(context).textTheme.bodySmall));
+          }
+          final gifts = stage.squares.expand((e) => e.treasures).expand((e) => e.gifts);
+          if (gifts.isNotEmpty) {
+            children.add(Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 2,
+              runSpacing: 2,
+              children: [
+                for (final gift in gifts) gift.iconBuilder(context: context, width: _itemSize),
+              ],
+            ));
+          }
+          break;
+        }
+      }
+    }
+    if (children.isEmpty) return children;
+    return [
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: 3),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: children,
+        ),
+      )
+    ];
   }
 
   List<Widget> getPhaseScript(int phase) {

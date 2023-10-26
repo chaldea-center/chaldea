@@ -15,6 +15,7 @@ import '../../ai/ai_page.dart';
 import '../../enemy/quest_enemy.dart';
 
 class QuestWave extends StatelessWidget {
+  final QuestPhase? questPhase;
   final Stage? stage;
   final List<QuestPhaseAiNpc> aiNpcs;
   final bool showTrueName;
@@ -23,6 +24,7 @@ class QuestWave extends StatelessWidget {
 
   const QuestWave({
     super.key,
+    this.questPhase,
     required this.stage,
     this.aiNpcs = const [],
     this.showTrueName = false,
@@ -98,12 +100,8 @@ class QuestWave extends StatelessWidget {
         );
         for (final enemy in enemies) {
           if (enemy != null) {
-            if (_enemies[enemy.deckId - 1] == null) {
-              _enemies[enemy.deckId - 1] = enemy;
-            } else {
-              // WarBoard may be dupe
-              _enemies.add(enemy);
-            }
+            assert(_enemies[enemy.deckId - 1] == null || questPhase == null || questPhase?.type == QuestType.warBoard);
+            _enemies[enemy.deckId - 1] = enemy;
           }
         }
         // for (int i = 0; i < _enemies.length ~/ 3; i++) {

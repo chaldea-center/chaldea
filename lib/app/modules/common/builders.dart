@@ -191,9 +191,6 @@ class SharedBuilder {
   static List<PopupMenuItem<T>> noticeLinkPopupMenuItems<T>({
     required MappingBase<String> noticeLink,
   }) {
-    if (noticeLink.cn != null) {
-      assert(int.parse(noticeLink.cn!) > 0);
-    }
     List<PopupMenuItem<T>> items = [];
     for (final region in Region.values) {
       final v = noticeLink.ofRegion(region);
@@ -201,14 +198,16 @@ class SharedBuilder {
         items.add(PopupMenuItem<T>(
           child: Text(S.current.region_notice(region.localName)),
           onTap: () {
+            String url = v;
             if (region == Region.cn) {
-              final url = PlatformU.isTargetMobile
-                  ? 'https://game.bilibili.com/fgo/h5/news.html#detailId=$v'
-                  : 'https://game.bilibili.com/fgo/news.html#!news/0/1/$v';
-              launch(url);
-            } else {
-              launch(v);
+              assert((int.tryParse(v) ?? 0) > 0);
+              if (int.tryParse(v) != null) {
+                url = PlatformU.isTargetMobile
+                    ? 'https://game.bilibili.com/fgo/h5/news.html#detailId=$v'
+                    : 'https://game.bilibili.com/fgo/news.html#!news/0/1/$v';
+              }
             }
+            launch(url);
           },
         ));
       }
