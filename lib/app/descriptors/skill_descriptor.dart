@@ -1,5 +1,7 @@
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -7,7 +9,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../../generated/l10n.dart';
 import 'func/func.dart';
 
-class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
+class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescriptorMixin {
   final BaseSkill skill;
   final int? level; // 1-10
   final bool showPlayer;
@@ -127,9 +129,11 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor {
     final detailText = skill.lDetail ?? '???';
 
     final loops = LoopTargets()..addSkill(skill.id);
+    final costumeReleaseWidget = getEquipCostumeConditions(context, skill.skillSvts);
 
     Widget child = TileGroup(
       children: [
+        if (costumeReleaseWidget != null) costumeReleaseWidget,
         header,
         if (!hideDetail) ...[
           Padding(
@@ -279,7 +283,7 @@ class OverrideTDData {
   int get _hashCode => Object.hash(tdName, tdRuby, tdFileName, tdRank, tdTypeText);
 }
 
-class TdDescriptor extends StatelessWidget with FuncsDescriptor {
+class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescriptorMixin {
   final BaseTd td;
   final int? level;
   final int? oc;
@@ -380,8 +384,12 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
       onTap: jumpToDetail ? () => td.routeTo(region: region) : null,
     );
     final detailText = td.lDetail ?? '???';
+
+    final costumeReleaseWidget = getEquipCostumeConditions(context, td.npSvts);
+
     Widget child = TileGroup(
       children: [
+        if (costumeReleaseWidget != null) costumeReleaseWidget,
         header,
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 4),
@@ -445,6 +453,67 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor {
       ],
     );
     return InheritSelectionArea(child: child);
+  }
+}
+
+mixin _SkillDescriptorMixin {
+  Widget? getEquipCostumeConditions(BuildContext context, List<SkillSvtBase> skillSvts) {
+    List<InlineSpan> spans = [];
+
+    for (final skillSvt in skillSvts) {
+      final releaseConditions = skillSvt.releaseConditions
+          .where((e) => e.condType == CondType.equipWithTargetCostume && e.condTargetId == skillSvt.svtId)
+          .toList();
+      if (releaseConditions.isEmpty) continue;
+
+      for (final release in releaseConditions) {
+        final svtId = release.condTargetId;
+        final svt = db.gameData.servantsById[svtId] ?? db.gameData.entities[svtId];
+        final limitCount = release.condNum;
+        NiceCostume? costume;
+        if (limitCount > 0 && svt is Servant) {
+          costume = svt.getCostume(limitCount);
+        }
+        if (costume != null) {
+          spans.addAll([
+            CenterWidgetSpan(child: db.getIconImage(costume.borderedIcon, onTap: costume.routeTo, width: 36)),
+            SharedBuilder.textButtonSpan(context: context, text: costume.lName.l, onTap: costume.routeTo),
+            const TextSpan(text: '  '),
+          ]);
+        } else if (svt != null) {
+          String? overrideIcon;
+          if (svt is Servant) {
+            overrideIcon = svt.ascendIcon(limitCount);
+          }
+          spans.addAll([
+            CenterWidgetSpan(
+              child: svt.iconBuilder(
+                context: context,
+                width: 36,
+                overrideIcon: overrideIcon,
+              ),
+            ),
+            TextSpan(text: ' ${S.current.ascension_stage_short} $limitCount  '),
+          ]);
+        } else {
+          spans.addAll([
+            SharedBuilder.textButtonSpan(
+              context: context,
+              text: svtId.toString(),
+              onTap: () {
+                router.push(url: Routes.servantI(svtId));
+              },
+            ),
+            TextSpan(text: ' ${S.current.ascension_stage_short} $limitCount  '),
+          ]);
+        }
+      }
+    }
+    if (spans.isEmpty) return null;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+      child: Text.rich(TextSpan(children: spans)),
+    );
   }
 }
 

@@ -368,9 +368,17 @@ extension BaseSkillMethods on BaseSkill {
   }
 }
 
+abstract class SkillSvtBase {
+  int get svtId;
+  int get num;
+  List<SvtSkillRelease> get releaseConditions;
+}
+
 @JsonSerializable()
-class SkillSvt {
+class SkillSvt implements SkillSvtBase {
+  @override
   int svtId;
+  @override
   int num;
   int priority;
   Map? script; // "strengthStatusReleaseId": 40060301, (commonRelease)
@@ -381,6 +389,7 @@ class SkillSvt {
   int condLimitCount;
   int eventId;
   int flag;
+  @override
   List<SvtSkillRelease> releaseConditions;
 
   SkillSvt({
@@ -433,7 +442,6 @@ class BaseTd extends SkillOrTd with RouteInfo {
   SkillScript? script;
   @override
   List<NiceFunction> functions;
-  @protected
   List<TdSvt> npSvts; // Not full list
 
   BaseTd({
@@ -495,8 +503,10 @@ class BaseTd extends SkillOrTd with RouteInfo {
 // }
 
 @JsonSerializable()
-class TdSvt {
+class TdSvt implements SkillSvtBase {
+  @override
   int svtId;
+  @override
   int num;
   int npNum;
   int priority;
@@ -510,6 +520,7 @@ class TdSvt {
   int condFriendshipRank;
   // int motion;
   CardType card;
+  @override
   List<SvtSkillRelease> releaseConditions;
 
   TdSvt({
