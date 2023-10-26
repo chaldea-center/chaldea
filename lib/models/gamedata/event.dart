@@ -42,6 +42,7 @@ class Event with RouteInfo {
   List<NiceEventMissionGroup> missionGroups;
   List<EventTower> towers;
   List<EventLottery> lotteries;
+  List<WarBoard> warBoards;
   List<EventTreasureBox> treasureBoxes;
   List<EventRecipe> recipes;
   List<EventBulletinBoard> bulletinBoards;
@@ -93,6 +94,7 @@ class Event with RouteInfo {
     this.missionGroups = const [],
     this.towers = const [],
     this.lotteries = const [],
+    this.warBoards = const [],
     this.treasureBoxes = const [],
     this.recipes = const [],
     this.bulletinBoards = const [],
@@ -145,6 +147,7 @@ class Event with RouteInfo {
       warIds.isEmpty &&
       shop.isEmpty &&
       lotteries.isEmpty &&
+      warBoards.isEmpty &&
       missions.isEmpty &&
       randomMissions.isEmpty &&
       treasureBoxes.isEmpty &&
@@ -279,7 +282,10 @@ class Event with RouteInfo {
   @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, Map<int, Map<int, int>>> itemLottery = {}; // lotteryId, boxNum
   @JsonKey(includeFromJson: false, includeToJson: false)
+  Map<int, int> itemWarBoard = {};
+  @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, Map<int, int>> itemTreasureBox = {}; //treasureBox.id
+  @protected
   @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, int> itemDigging = {};
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -384,6 +390,13 @@ class Event with RouteInfo {
       }
     }
     statItemFixed.addDict(itemTower);
+
+    //
+    itemWarBoard.clear();
+    for (final treasure in warBoards.expand((e) => e.stages).expand((e) => e.squares).expand((e) => e.treasures)) {
+      Gift.checkAddGifts(itemWarBoard, treasure.gifts);
+    }
+    statItemFixed.addDict(itemWarBoard);
 
     //
     itemLottery.clear();
@@ -1128,24 +1141,77 @@ class EventLotteryTalk {
 }
 
 @JsonSerializable()
-class CommonConsume {
-  int id;
-  int priority;
-  CommonConsumeType type;
-  int objectId;
-  int num;
+class WarBoard {
+  int warBoardId;
+  List<WarBoardStage> stages;
 
-  CommonConsume({
-    required this.id,
-    required this.priority,
-    required this.type,
-    required this.objectId,
-    required this.num,
+  WarBoard({
+    required this.warBoardId,
+    this.stages = const [],
   });
 
-  factory CommonConsume.fromJson(Map<String, dynamic> json) => _$CommonConsumeFromJson(json);
+  factory WarBoard.fromJson(Map<String, dynamic> json) => _$WarBoardFromJson(json);
 
-  Map<String, dynamic> toJson() => _$CommonConsumeToJson(this);
+  Map<String, dynamic> toJson() => _$WarBoardToJson(this);
+}
+
+@JsonSerializable()
+class WarBoardStage {
+  int warBoardStageId;
+  String boardMessage;
+  int formationCost;
+  List<WarBoardStageSquare> squares;
+  int questId;
+  int questPhase;
+
+  WarBoardStage({
+    required this.warBoardStageId,
+    this.boardMessage = '',
+    this.formationCost = 0,
+    this.squares = const [],
+    this.questId = 0,
+    this.questPhase = 0,
+  });
+
+  factory WarBoardStage.fromJson(Map<String, dynamic> json) => _$WarBoardStageFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WarBoardStageToJson(this);
+}
+
+@JsonSerializable()
+class WarBoardStageSquare {
+  int squareIndex;
+  WarBoardStageSquareType type;
+  int effectId;
+  List<WarBoardTreasure> treasures;
+
+  WarBoardStageSquare({
+    required this.squareIndex,
+    this.type = WarBoardStageSquareType.normal,
+    this.effectId = 0,
+    this.treasures = const [],
+  });
+
+  factory WarBoardStageSquare.fromJson(Map<String, dynamic> json) => _$WarBoardStageSquareFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WarBoardStageSquareToJson(this);
+}
+
+@JsonSerializable()
+class WarBoardTreasure {
+  int warBoardTreasureId;
+  WarBoardTreasureRarity rarity;
+  List<Gift> gifts;
+
+  WarBoardTreasure({
+    required this.warBoardTreasureId,
+    this.rarity = WarBoardTreasureRarity.unknown,
+    this.gifts = const [],
+  });
+
+  factory WarBoardTreasure.fromJson(Map<String, dynamic> json) => _$WarBoardTreasureFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WarBoardTreasureToJson(this);
 }
 
 @JsonSerializable()
@@ -1158,7 +1224,7 @@ class EventTreasureBoxGift {
   EventTreasureBoxGift({
     required this.id,
     required this.idx,
-    required this.gifts,
+    this.gifts = const [],
     required this.collateralUpperLimit,
   });
 
@@ -1950,4 +2016,28 @@ enum EventPointActivityObjectType {
   questId,
   skillId,
   shopId,
+}
+
+enum WarBoardStageSquareType {
+  normal,
+  item,
+  effect,
+  treasure,
+  wall,
+}
+
+enum WarBoardTreasureRarity {
+  unknown,
+  common,
+  rare,
+  srare,
+  commonPlus,
+  rarePlus,
+  srarePlus,
+  commonPlus2,
+  rarePlus2,
+  srarePlus2,
+  itemIcon,
+  itemIconPlus,
+  itemIconPlus2,
 }

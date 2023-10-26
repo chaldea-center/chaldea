@@ -439,6 +439,7 @@ Widget addQuestCategoryTile({
       dailyTraining = [],
       dailyQp = [],
       raidQuests = [],
+      warBoardQuests = [],
       difficultQuests = [],
       oneOffQuests = [],
       interludeQuests = [],
@@ -449,6 +450,8 @@ Widget addQuestCategoryTile({
       mainQuests.add(quest);
     } else if (quest.type == QuestType.friendship) {
       interludeQuests.add(quest);
+    } else if (quest.type == QuestType.warBoard) {
+      warBoardQuests.add(quest);
     } else if (quest.type == QuestType.free || (quest.type == QuestType.event && quest.afterClear.isRepeat)) {
       if (!quest.afterClear.isRepeat) {
         oneOffQuests.add(quest);
@@ -525,6 +528,7 @@ Widget addQuestCategoryTile({
       },
     ));
   }
+  _addTile(S.current.war_board, warBoardQuests);
   _addTile(S.current.event_quest, eventQuests);
   _addTile(S.current.one_off_quest, oneOffQuests);
   _addTile(S.current.high_difficulty_quest, difficultQuests);

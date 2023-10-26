@@ -748,6 +748,7 @@ enum Trait {
   gutsBlock(3086),
   buffBound(3087), // 拘束
   buffMarking(3088),
+  buffBuffSuccessRateUp(3090),
   cardArts(4001),
   cardBuster(4002),
   cardQuick(4003),
@@ -984,4 +985,52 @@ enum CondType {
   skillLvExchangeSvt,
   svtFriendshipExchangeSvt,
   exchangeSvt,
+}
+
+@JsonSerializable()
+class CommonConsume {
+  int id;
+  int priority;
+  CommonConsumeType type;
+  int objectId;
+  int num;
+
+  CommonConsume({
+    required this.id,
+    this.priority = 0,
+    required this.type,
+    required this.objectId,
+    required this.num,
+  });
+
+  factory CommonConsume.fromJson(Map<String, dynamic> json) => _$CommonConsumeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CommonConsumeToJson(this);
+}
+
+@JsonSerializable()
+class CommonRelease with RouteInfo {
+  int id;
+  int priority;
+  int condGroup;
+  @CondTypeConverter()
+  CondType condType;
+  int condId;
+  int condNum;
+
+  CommonRelease({
+    required this.id,
+    this.priority = 0,
+    this.condGroup = 0,
+    required this.condType,
+    this.condId = 0,
+    this.condNum = 0,
+  });
+
+  factory CommonRelease.fromJson(Map<String, dynamic> json) => _$CommonReleaseFromJson(json);
+
+  @override
+  String get route => Routes.commonRelease(id);
+
+  Map<String, dynamic> toJson() => _$CommonReleaseToJson(this);
 }

@@ -573,6 +573,7 @@ class LimitEventPlan {
   Map<int, Map<int, int>> treasureBoxItems;
   bool fixedDrop;
   bool questReward;
+  bool warBoard;
   Map<int, bool> extraFixedItems;
   Map<int, Map<int, int>> extraItems;
 
@@ -590,6 +591,7 @@ class LimitEventPlan {
     Map<int, Map<int, int>>? treasureBoxItems,
     this.fixedDrop = true,
     this.questReward = true,
+    this.warBoard = true,
     Map<int, bool>? extraFixedItems,
     Map<int, Map<int, int>>? extraItems,
     Map<int, int>? customItems,

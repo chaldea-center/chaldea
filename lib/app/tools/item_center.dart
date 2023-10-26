@@ -269,6 +269,9 @@ class ItemCenter {
     if (plan.tower) {
       result.addDict(event.itemTower);
     }
+    if (plan.warBoard) {
+      result.addDict(event.itemWarBoard);
+    }
     for (final lottery in event.lotteries) {
       int planBoxNum = plan.lotteries[lottery.id] ?? 0;
       if (planBoxNum <= 0) continue;

@@ -93,6 +93,45 @@ Map<String, dynamic> _$StageLinkToJson(StageLink instance) => <String, dynamic>{
       'stage': instance.stage,
     };
 
+CommonConsume _$CommonConsumeFromJson(Map json) => CommonConsume(
+      id: json['id'] as int,
+      priority: json['priority'] as int? ?? 0,
+      type: $enumDecode(_$CommonConsumeTypeEnumMap, json['type']),
+      objectId: json['objectId'] as int,
+      num: json['num'] as int,
+    );
+
+Map<String, dynamic> _$CommonConsumeToJson(CommonConsume instance) => <String, dynamic>{
+      'id': instance.id,
+      'priority': instance.priority,
+      'type': _$CommonConsumeTypeEnumMap[instance.type]!,
+      'objectId': instance.objectId,
+      'num': instance.num,
+    };
+
+const _$CommonConsumeTypeEnumMap = {
+  CommonConsumeType.item: 'item',
+  CommonConsumeType.ap: 'ap',
+};
+
+CommonRelease _$CommonReleaseFromJson(Map json) => CommonRelease(
+      id: json['id'] as int,
+      priority: json['priority'] as int? ?? 0,
+      condGroup: json['condGroup'] as int? ?? 0,
+      condType: const CondTypeConverter().fromJson(json['condType'] as String),
+      condId: json['condId'] as int? ?? 0,
+      condNum: json['condNum'] as int? ?? 0,
+    );
+
+Map<String, dynamic> _$CommonReleaseToJson(CommonRelease instance) => <String, dynamic>{
+      'id': instance.id,
+      'priority': instance.priority,
+      'condGroup': instance.condGroup,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'condId': instance.condId,
+      'condNum': instance.condNum,
+    };
+
 const _$RegionEnumMap = {
   Region.jp: 'jp',
   Region.cn: 'cn',

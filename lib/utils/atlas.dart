@@ -21,7 +21,7 @@ class Atlas {
   }
 
   /// db link
-  static String dbUrl(String path, int id, [Region region = Region.jp]) {
+  static String dbUrl(String path, Object id, [Region region = Region.jp]) {
     String url = '$appHost${region.upper}/$path/$id';
     String uiLang = "";
     String dataLang = "default";
@@ -79,10 +79,9 @@ class Atlas {
   }
 
   static String dbQuest(int id, [int? phase, Region region = Region.jp]) {
-    String url = dbUrl('quest', id, region);
-    if (phase != null) {
-      url += '/$phase';
-    }
+    String idAndPhase = '$id';
+    if (phase != null) idAndPhase += '/$phase';
+    String url = dbUrl('quest', idAndPhase, region);
     return url;
   }
 

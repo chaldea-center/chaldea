@@ -1077,7 +1077,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "war": MessageLookupByLibrary.simpleMessage("War"),
         "war_age": MessageLookupByLibrary.simpleMessage("Age"),
         "war_banner": MessageLookupByLibrary.simpleMessage("Banner"),
-        "war_board": MessageLookupByLibrary.simpleMessage("War Board"),
+        "war_board": MessageLookupByLibrary.simpleMessage("Grail Front"),
         "war_map": MessageLookupByLibrary.simpleMessage("Map"),
         "warning": MessageLookupByLibrary.simpleMessage("Warning"),
         "web_domain_choice_hint": MessageLookupByLibrary.simpleMessage(

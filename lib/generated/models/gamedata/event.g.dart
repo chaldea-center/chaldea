@@ -69,6 +69,10 @@ Event _$EventFromJson(Map json) => Event(
               ?.map((e) => EventLottery.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      warBoards: (json['warBoards'] as List<dynamic>?)
+              ?.map((e) => WarBoard.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       treasureBoxes: (json['treasureBoxes'] as List<dynamic>?)
               ?.map((e) => EventTreasureBox.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -144,6 +148,7 @@ Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
       'missionGroups': instance.missionGroups.map((e) => e.toJson()).toList(),
       'towers': instance.towers.map((e) => e.toJson()).toList(),
       'lotteries': instance.lotteries.map((e) => e.toJson()).toList(),
+      'warBoards': instance.warBoards.map((e) => e.toJson()).toList(),
       'treasureBoxes': instance.treasureBoxes.map((e) => e.toJson()).toList(),
       'recipes': instance.recipes.map((e) => e.toJson()).toList(),
       'bulletinBoards': instance.bulletinBoards.map((e) => e.toJson()).toList(),
@@ -805,31 +810,101 @@ Map<String, dynamic> _$EventLotteryTalkToJson(EventLotteryTalk instance) => <Str
       'isRare': instance.isRare,
     };
 
-CommonConsume _$CommonConsumeFromJson(Map json) => CommonConsume(
-      id: json['id'] as int,
-      priority: json['priority'] as int,
-      type: $enumDecode(_$CommonConsumeTypeEnumMap, json['type']),
-      objectId: json['objectId'] as int,
-      num: json['num'] as int,
+WarBoard _$WarBoardFromJson(Map json) => WarBoard(
+      warBoardId: json['warBoardId'] as int,
+      stages: (json['stages'] as List<dynamic>?)
+              ?.map((e) => WarBoardStage.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );
 
-Map<String, dynamic> _$CommonConsumeToJson(CommonConsume instance) => <String, dynamic>{
-      'id': instance.id,
-      'priority': instance.priority,
-      'type': _$CommonConsumeTypeEnumMap[instance.type]!,
-      'objectId': instance.objectId,
-      'num': instance.num,
+Map<String, dynamic> _$WarBoardToJson(WarBoard instance) => <String, dynamic>{
+      'warBoardId': instance.warBoardId,
+      'stages': instance.stages.map((e) => e.toJson()).toList(),
     };
 
-const _$CommonConsumeTypeEnumMap = {
-  CommonConsumeType.item: 'item',
-  CommonConsumeType.ap: 'ap',
+WarBoardStage _$WarBoardStageFromJson(Map json) => WarBoardStage(
+      warBoardStageId: json['warBoardStageId'] as int,
+      boardMessage: json['boardMessage'] as String? ?? '',
+      formationCost: json['formationCost'] as int? ?? 0,
+      squares: (json['squares'] as List<dynamic>?)
+              ?.map((e) => WarBoardStageSquare.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      questId: json['questId'] as int? ?? 0,
+      questPhase: json['questPhase'] as int? ?? 0,
+    );
+
+Map<String, dynamic> _$WarBoardStageToJson(WarBoardStage instance) => <String, dynamic>{
+      'warBoardStageId': instance.warBoardStageId,
+      'boardMessage': instance.boardMessage,
+      'formationCost': instance.formationCost,
+      'squares': instance.squares.map((e) => e.toJson()).toList(),
+      'questId': instance.questId,
+      'questPhase': instance.questPhase,
+    };
+
+WarBoardStageSquare _$WarBoardStageSquareFromJson(Map json) => WarBoardStageSquare(
+      squareIndex: json['squareIndex'] as int,
+      type: $enumDecodeNullable(_$WarBoardStageSquareTypeEnumMap, json['type']) ?? WarBoardStageSquareType.normal,
+      effectId: json['effectId'] as int? ?? 0,
+      treasures: (json['treasures'] as List<dynamic>?)
+              ?.map((e) => WarBoardTreasure.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+Map<String, dynamic> _$WarBoardStageSquareToJson(WarBoardStageSquare instance) => <String, dynamic>{
+      'squareIndex': instance.squareIndex,
+      'type': _$WarBoardStageSquareTypeEnumMap[instance.type]!,
+      'effectId': instance.effectId,
+      'treasures': instance.treasures.map((e) => e.toJson()).toList(),
+    };
+
+const _$WarBoardStageSquareTypeEnumMap = {
+  WarBoardStageSquareType.normal: 'normal',
+  WarBoardStageSquareType.item: 'item',
+  WarBoardStageSquareType.effect: 'effect',
+  WarBoardStageSquareType.treasure: 'treasure',
+  WarBoardStageSquareType.wall: 'wall',
+};
+
+WarBoardTreasure _$WarBoardTreasureFromJson(Map json) => WarBoardTreasure(
+      warBoardTreasureId: json['warBoardTreasureId'] as int,
+      rarity: $enumDecodeNullable(_$WarBoardTreasureRarityEnumMap, json['rarity']) ?? WarBoardTreasureRarity.unknown,
+      gifts:
+          (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
+              const [],
+    );
+
+Map<String, dynamic> _$WarBoardTreasureToJson(WarBoardTreasure instance) => <String, dynamic>{
+      'warBoardTreasureId': instance.warBoardTreasureId,
+      'rarity': _$WarBoardTreasureRarityEnumMap[instance.rarity]!,
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+    };
+
+const _$WarBoardTreasureRarityEnumMap = {
+  WarBoardTreasureRarity.unknown: 'unknown',
+  WarBoardTreasureRarity.common: 'common',
+  WarBoardTreasureRarity.rare: 'rare',
+  WarBoardTreasureRarity.srare: 'srare',
+  WarBoardTreasureRarity.commonPlus: 'commonPlus',
+  WarBoardTreasureRarity.rarePlus: 'rarePlus',
+  WarBoardTreasureRarity.srarePlus: 'srarePlus',
+  WarBoardTreasureRarity.commonPlus2: 'commonPlus2',
+  WarBoardTreasureRarity.rarePlus2: 'rarePlus2',
+  WarBoardTreasureRarity.srarePlus2: 'srarePlus2',
+  WarBoardTreasureRarity.itemIcon: 'itemIcon',
+  WarBoardTreasureRarity.itemIconPlus: 'itemIconPlus',
+  WarBoardTreasureRarity.itemIconPlus2: 'itemIconPlus2',
 };
 
 EventTreasureBoxGift _$EventTreasureBoxGiftFromJson(Map json) => EventTreasureBoxGift(
       id: json['id'] as int,
       idx: json['idx'] as int,
-      gifts: (json['gifts'] as List<dynamic>).map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
+      gifts:
+          (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
+              const [],
       collateralUpperLimit: json['collateralUpperLimit'] as int,
     );
 

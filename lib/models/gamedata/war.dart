@@ -220,10 +220,12 @@ class NiceWar with RouteInfo {
         }
 
         Gift.checkAddGifts(itemReward, quest.gifts);
-        for (final phase in quest.phases) {
-          final fixedDrop = gameData.dropData.fixedDrops[quest.id * 100 + phase];
-          if (fixedDrop == null) continue;
-          itemDrop.addDict(fixedDrop.items);
+        if (quest.type != QuestType.warBoard) {
+          for (final phase in quest.phases) {
+            final fixedDrop = gameData.dropData.fixedDrops[quest.id * 100 + phase];
+            if (fixedDrop == null) continue;
+            itemDrop.addDict(fixedDrop.items);
+          }
         }
         int arrows = _countArrows(quest);
         itemReward.addNum(Items.quartzFragmentId, arrows);

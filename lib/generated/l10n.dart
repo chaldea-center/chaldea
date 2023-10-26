@@ -10287,10 +10287,10 @@ class S {
     );
   }
 
-  /// `War Board`
+  /// `Grail Front`
   String get war_board {
     return Intl.message(
-      'War Board',
+      'Grail Front',
       name: 'war_board',
       desc: '',
       locale: localeName,

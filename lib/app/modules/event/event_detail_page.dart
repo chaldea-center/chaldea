@@ -557,6 +557,19 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       ));
     }
 
+    if (event.warBoards.isNotEmpty) {
+      children.addAll(_buildSwitchGroup(
+        value: () => plan.warBoard,
+        enabled: () => plan.enabled,
+        onChanged: (v) {
+          plan.warBoard = v;
+          event.updateStat();
+        },
+        title: '${S.current.war_board} (${S.current.event_treasure_box})',
+        items: event.itemWarBoard,
+      ));
+    }
+
     for (final lottery in event.lotteries) {
       children.addAll([
         ListTile(
@@ -1035,6 +1048,13 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
         onChanged: (v) => plan.tower = v,
       );
     }
+    if (event.warBoards.isNotEmpty) {
+      _addOption(
+        title: S.current.war_board,
+        value: plan.warBoard,
+        onChanged: (v) => plan.warBoard = v,
+      );
+    }
     for (final lottery in event.lotteries) {
       _addOption(
         title: '${lottery.limited ? S.current.event_lottery_limited : S.current.event_lottery_unlimited} ${lottery.id}',
@@ -1109,6 +1129,7 @@ class __ArchiveEventDialogState extends State<_ArchiveEventDialog> {
     if (plan.point) widget.initPlan.point = false;
     if (plan.mission) widget.initPlan.mission = false;
     if (plan.tower) widget.initPlan.tower = false;
+    if (plan.warBoard) widget.initPlan.warBoard = false;
     lotteries.forEach((key, value) {
       if (value) widget.initPlan.lotteries[key] = 0;
     });

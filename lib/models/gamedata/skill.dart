@@ -774,33 +774,6 @@ extension TdMethods on BaseTd {
 }
 
 @JsonSerializable()
-class CommonRelease with RouteInfo {
-  int id;
-  int priority;
-  int condGroup;
-  @CondTypeConverter()
-  CondType condType;
-  int condId;
-  int condNum;
-
-  CommonRelease({
-    required this.id,
-    this.priority = 0,
-    this.condGroup = 0,
-    required this.condType,
-    this.condId = 0,
-    this.condNum = 0,
-  });
-
-  factory CommonRelease.fromJson(Map<String, dynamic> json) => _$CommonReleaseFromJson(json);
-
-  @override
-  String get route => Routes.commonRelease(id);
-
-  Map<String, dynamic> toJson() => _$CommonReleaseToJson(this);
-}
-
-@JsonSerializable()
 class ExtraPassive {
   int num;
   int priority;
