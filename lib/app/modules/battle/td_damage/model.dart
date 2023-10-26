@@ -121,10 +121,17 @@ class TdDmgSolver {
         final baseSvt = getSvtData(svt, 4);
         final variants = <PlayerSvtData?>[baseSvt];
 
-        // Melusine
-        if (svt.collectionNo == 312) {
+        if (svt.id == 304800) {
+          // Melusine
           variants.add(getSvtData(svt, 1));
           variants.add(getSvtData(svt, 1)?..skills[2] = null);
+        } else if (svt.id == 205000) {
+          // Ptolemaios
+          variants.add(getSvtData(svt, 4)?..skills[2] = null);
+          variants.add(getSvtData(svt, 1));
+          variants.add(getSvtData(svt, 1)?..skills[2] = null);
+        } else {
+          //
         }
 
         // tdTypeChanges
