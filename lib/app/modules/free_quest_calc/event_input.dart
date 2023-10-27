@@ -190,6 +190,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     }
     final bonusStyle = TextStyle(color: Theme.of(context).colorScheme.secondary);
     for (final itemId in plan.drops.items.keys) {
+      if (!eventItemIds.contains(itemId)) continue;
       final base = plan.drops.getBase(itemId);
       final group = plan.drops.getGroup(itemId);
       final bonus = plan.bonus[itemId] ?? 0;
@@ -327,7 +328,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
         final countFloat = result[col]!;
 
         int count = countFloat.ceil();
-        final plan = params.bonusPlans[col];
+        final plan = plans[col];
         solution.totalNum = solution.totalNum! + count;
         solution.totalCost = solution.totalCost! + count * plan.ap;
         Map<int, double> _drops = {};
