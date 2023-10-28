@@ -57,7 +57,7 @@ class ApiCachedInfo {
       statusCode: data['statusCode'] as int,
       crc: data['crc'] as String,
       timestamp: data['timestamp'] as int,
-      fp: data['fp'] as String,
+      fp: data['fp'] as String?,
     );
   }
   Map<String, dynamic> toJson() => {

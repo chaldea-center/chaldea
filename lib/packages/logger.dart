@@ -141,7 +141,7 @@ class _CustomPrettyPrinter extends PrettyPrinter {
 
     String levelStr = event.level.toString().split('.').last.toUpperCase();
 
-    if (stackTraceStr != null) {
+    if (stackTraceStr != null && event.level != Level.verbose) {
       final lines = stackTraceStr.split('\n');
       for (int index = 0; index < lines.length; index++) {
         buffer.add((index == 0 ? '├ ' : '│ ') + lines[index]);

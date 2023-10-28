@@ -85,7 +85,7 @@ class AppInfo {
     appParams["packageName"] = _packageInfo?.packageName;
     appParams["commitHash"] = kCommitHash;
     appParams["commitTimestamp"] = commitDate;
-    logger.i('Resolved app version: ${_packageInfo?.packageName}'
+    logger.v('Resolved app version: ${_packageInfo?.packageName}'
         ' ${_packageInfo?.version}+${_packageInfo?.buildNumber} $kCommitHash - $commitDate');
   }
 
@@ -159,7 +159,7 @@ class AppInfo {
     }
     _uuid = const Uuid().v5(Uuid.NAMESPACE_URL, originId!).toUpperCase();
     _debugOn = FilePlus(joinPaths(appPath, '.debug')).existsSync();
-    logger.i('Unique ID: $_uuid');
+    logger.v('Unique ID: $_uuid');
   }
 
   static void initiateForTest() {
