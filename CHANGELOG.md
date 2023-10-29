@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.4.20
+
+- Add war board treasures
+- Fix event quest solver bug when any quest is disabled
+- Laplace: Support Ptolemaios transform servant
+
 ## 2.4.19
 
 - Fix event quest solver error
