@@ -53,7 +53,7 @@ class ExtraAssetsPage extends StatelessWidget {
   Iterable<String> bordered(Iterable<String> urls) sync* {
     yield* urls;
     for (final url in urls) {
-      if (RegExp(r'/Faces/f_\d+\.png$').hasMatch(url)) {
+      if (RegExp(r'/Faces/f_\d+\.png$').hasMatch(url) || RegExp(r'/CommandCodes/c_\d+\.png').hasMatch(url)) {
         yield GameCardMixin.makeBordered(url)!;
       }
     }
@@ -71,6 +71,7 @@ class ExtraAssetsPage extends StatelessWidget {
           ..._getUrls(extraAssets?.charaGraphChange),
         ],
         300,
+        expanded: true,
         showMerge: true,
         placeholder: charaGraphPlaceholder,
       ),
@@ -79,16 +80,19 @@ class ExtraAssetsPage extends StatelessWidget {
           S.current.april_fool,
           aprilFoolAssets,
           300,
+          expanded: true,
           showMerge: true,
           placeholder: charaGraphPlaceholder,
         ),
       _oneGroup(
-          S.current.card_asset_face,
-          bordered([
-            ..._getUrls(assets.faces),
-            ..._getUrls(extraAssets?.facesChange),
-          ]),
-          80),
+        S.current.card_asset_face,
+        bordered([
+          ..._getUrls(assets.faces),
+          ..._getUrls(extraAssets?.facesChange),
+        ]),
+        80,
+        expanded: true,
+      ),
       _oneGroup(S.current.card_asset_status, _getUrls(extraAssets?.status), 120),
       _oneGroup(S.current.card_asset_command, _getUrls(extraAssets?.commands), 120),
       _oneGroup(
@@ -103,7 +107,6 @@ class ExtraAssetsPage extends StatelessWidget {
         S.current.card_asset_chara_figure,
         _getUrls(extraAssets?.charaFigure),
         300,
-        expanded: false,
       ),
       _oneGroup(
         'Forms',
@@ -112,7 +115,6 @@ class ExtraAssetsPage extends StatelessWidget {
             for (final form in extraAssets.charaFigureForm.values) ..._getUrls(form),
         ],
         300,
-        expanded: false,
       ),
       _oneGroup(
         'Characters',
@@ -121,14 +123,13 @@ class ExtraAssetsPage extends StatelessWidget {
             for (final form in extraAssets.charaFigureMulti.values) ..._getUrls(form),
         ],
         300,
-        expanded: false,
       ),
-      _oneGroup('equipFace', _getUrls(extraAssets?.equipFace), 50),
-      _oneGroup('${S.current.sprites} (Mooncell)', mcSprites.map(WikiTool.mcFileUrl), 300, expanded: false),
-      _oneGroup('${S.current.sprites} (Fandom)', fandomSprites.map(WikiTool.fandomFileUrl), 300, expanded: false),
+      _oneGroup('equipFace', _getUrls(extraAssets?.equipFace), 50, expanded: true),
+      _oneGroup('${S.current.sprites} (Mooncell)', mcSprites.map(WikiTool.mcFileUrl), 300),
+      _oneGroup('${S.current.sprites} (Fandom)', fandomSprites.map(WikiTool.fandomFileUrl), 300),
       spriteViewer(extraAssets),
-      _oneGroup('Texture', _getUrls(extraAssets?.spriteModel), 300, expanded: false, showMerge: false),
-      _oneGroup('8th Anniversary', anni8photos, 300, expanded: false),
+      _oneGroup('Texture', _getUrls(extraAssets?.spriteModel), 300, showMerge: false),
+      _oneGroup('8th Anniversary', anni8photos, 300),
     ].whereType<Widget>().toList();
     if (scrollable) {
       return ListView(
@@ -150,7 +151,7 @@ class ExtraAssetsPage extends StatelessWidget {
     String title,
     Iterable<String> urls,
     double height, {
-    bool expanded = true,
+    bool expanded = false,
     bool showMerge = true,
     PlaceholderWidgetBuilder? placeholder,
   }) =>

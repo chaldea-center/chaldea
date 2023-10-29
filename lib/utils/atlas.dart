@@ -3,6 +3,7 @@ import 'package:tuple/tuple.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../models/models.dart';
+import '../packages/platform/platform.dart';
 
 class Atlas {
   Atlas._();
@@ -23,18 +24,28 @@ class Atlas {
   /// db link
   static String dbUrl(String path, Object id, [Region region = Region.jp]) {
     String url = '$appHost${region.upper}/$path/$id';
-    String uiLang = "";
-    String dataLang = "default";
-    if (Language.isCHT) {
-      uiLang = 'zh-TW';
-    } else if (Language.isZH) {
-      uiLang = 'zh-CN';
-    } else if (Language.isEN) {
-      dataLang = 'en';
-    } else if (Language.isKO) {
-      uiLang = 'ko-KR';
+    if (PlatformU.isIOS) {
+      Uri? uri = Uri.tryParse(url);
+      if (uri != null) {
+        String uiLang = "";
+        String dataLang = "default";
+        if (Language.isCHT) {
+          uiLang = 'zh-TW';
+        } else if (Language.isZH) {
+          uiLang = 'zh-CN';
+        } else if (Language.isEN) {
+          dataLang = 'en';
+        } else if (Language.isKO) {
+          uiLang = 'ko-KR';
+        }
+        uri = uri.replace(queryParameters: {
+          if (uiLang.isNotEmpty) 'lang': uiLang,
+          if (dataLang.isNotEmpty) 'dataLang': dataLang,
+          ...uri.queryParametersAll,
+        });
+        url = uri.toString();
+      }
     }
-    url += '?lang=$uiLang&dataLang=$dataLang';
     return url;
   }
 
