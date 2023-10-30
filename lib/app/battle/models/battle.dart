@@ -958,7 +958,7 @@ class BattleData {
         final validActions = actions.where((action) => action.isValid(this)).toList();
         final cardTypesSet = validActions.map((action) => action.cardData.cardType).toSet();
         final isTypeChain = validActions.length == 3 && cardTypesSet.length == 1;
-        final isMightyChain = cardTypesSet.length == 3 && options.isAfter7thAnni;
+        final isMightyChain = cardTypesSet.length == 3 && options.mightyChain;
         final isBraveChain =
             validActions.length == kMaxCommand && validActions.map((action) => action.actor).toSet().length == 1;
         if (isBraveChain) {
@@ -969,7 +969,7 @@ class BattleData {
 
         final CardType firstCardType = actions.isEmpty
             ? CardType.blank
-            : options.isAfter7thAnni || actions[0].isValid(this)
+            : options.mightyChain || actions[0].isValid(this)
                 ? actions[0].cardData.cardType
                 : CardType.blank;
         if (isTypeChain) {
@@ -1276,7 +1276,7 @@ class BattleData {
     await withFunctions(() async {
       await withFunction(() async {
         if (cardType == CardType.quick) {
-          final dataValToUse = options.isAfter7thAnni ? quickChainAfter7thAnni : quickChainBefore7thAnni;
+          final dataValToUse = options.mightyChain ? quickChainAfter7thAnni : quickChainBefore7thAnni;
           GainStar.gainStar(this, dataValToUse);
         } else if (cardType == CardType.arts) {
           final targets = actions.map((action) => action.actor).toSet();
@@ -1570,7 +1570,6 @@ class BattleData {
       enemyTargetIndex = action.options.enemyTarget;
       options.random = action.options.random;
       options.threshold = action.options.threshold;
-      options.isAfter7thAnni = action.options.isAfter7thAnni;
       options.tailoredExecution = action.options.tailoredExecution;
       if (action.type == BattleRecordDataType.skill) {
         await _replaySkill(action);

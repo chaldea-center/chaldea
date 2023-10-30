@@ -139,6 +139,7 @@ BattleShareDataOption _$BattleShareDataOptionFromJson(Map json) => $checkedCreat
       json,
       ($checkedConvert) {
         final val = BattleShareDataOption(
+          mightyChain: $checkedConvert('mightyChain', (v) => v as bool? ?? true),
           disableEvent: $checkedConvert('disableEvent', (v) => v as bool?),
           pointBuffs: $checkedConvert(
               'pointBuffs',
@@ -153,6 +154,7 @@ BattleShareDataOption _$BattleShareDataOptionFromJson(Map json) => $checkedCreat
     );
 
 Map<String, dynamic> _$BattleShareDataOptionToJson(BattleShareDataOption instance) => <String, dynamic>{
+      'mightyChain': instance.mightyChain,
       'disableEvent': instance.disableEvent,
       'pointBuffs': instance.pointBuffs?.map((k, e) => MapEntry(k.toString(), e)),
       'simulateAi': instance.simulateAi,
@@ -582,8 +584,6 @@ BattleActionOptions _$BattleActionOptionsFromJson(Map json) => $checkedCreate(
           enemyTarget: $checkedConvert('enemyTarget', (v) => v as int? ?? 0),
           random: $checkedConvert('random', (v) => v as int? ?? 900),
           threshold: $checkedConvert('threshold', (v) => v as int? ?? 1000),
-          isAfter7thAnni: $checkedConvert('isAfter7thAnni', (v) => v as bool? ?? true),
-          tailoredExecution: $checkedConvert('tailoredExecution', (v) => v as bool? ?? false),
         );
         return val;
       },
@@ -594,8 +594,6 @@ Map<String, dynamic> _$BattleActionOptionsToJson(BattleActionOptions instance) =
       'enemyTarget': instance.enemyTarget,
       'random': instance.random,
       'threshold': instance.threshold,
-      'isAfter7thAnni': instance.isAfter7thAnni,
-      'tailoredExecution': instance.tailoredExecution,
     };
 
 BattleRecordData _$BattleRecordDataFromJson(Map json) => $checkedCreate(

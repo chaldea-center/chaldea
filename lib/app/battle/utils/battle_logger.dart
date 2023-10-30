@@ -95,7 +95,6 @@ class BattleRecordManager {
       enemyTarget: battleData.enemyTargetIndex,
       random: battleData.options.random,
       threshold: battleData.options.threshold,
-      isAfter7thAnni: battleData.options.isAfter7thAnni,
       tailoredExecution: battleData.options.tailoredExecution,
       svt: svt,
       skill: skill,
@@ -136,7 +135,6 @@ class BattleRecordManager {
         enemyTarget: battleData.enemyTargetIndex,
         random: battleData.options.random,
         threshold: battleData.options.threshold,
-        isAfter7thAnni: battleData.options.isAfter7thAnni,
         tailoredExecution: battleData.options.tailoredExecution,
         attacks: combatActions
             .map((combatAction) => BattleAttackRecordData(
@@ -435,7 +433,6 @@ class BattleSkillActivationRecord extends BattleRecord {
     required final int enemyTarget,
     required final int random,
     required final int threshold,
-    required final bool isAfter7thAnni,
     required final bool tailoredExecution,
     required final int? svt,
     required final int skill,
@@ -445,7 +442,6 @@ class BattleSkillActivationRecord extends BattleRecord {
             enemyTarget: enemyTarget,
             random: random,
             threshold: threshold,
-            isAfter7thAnni: isAfter7thAnni,
             tailoredExecution: tailoredExecution,
           ),
           svt: svt,
@@ -459,7 +455,6 @@ class BattleSkillActivationRecord extends BattleRecord {
       enemyTarget: recordData.options.enemyTarget,
       random: recordData.options.random,
       threshold: recordData.options.threshold,
-      isAfter7thAnni: recordData.options.isAfter7thAnni,
       tailoredExecution: recordData.options.tailoredExecution,
       svt: recordData.svt,
       skill: recordData.skill!,
@@ -547,7 +542,6 @@ class BattleAttacksInitiationRecord extends BattleRecord {
     required final int enemyTarget,
     required final int random,
     required final int threshold,
-    required final bool isAfter7thAnni,
     required final bool tailoredExecution,
     required final List<BattleAttackRecordData> attacks,
   }) : recordData = BattleRecordData.attack(
@@ -556,7 +550,6 @@ class BattleAttacksInitiationRecord extends BattleRecord {
             enemyTarget: enemyTarget,
             random: random,
             threshold: threshold,
-            isAfter7thAnni: isAfter7thAnni,
             tailoredExecution: tailoredExecution,
           ),
           attacks: attacks.toList(),
@@ -569,7 +562,6 @@ class BattleAttacksInitiationRecord extends BattleRecord {
       enemyTarget: recordData.options.enemyTarget,
       random: recordData.options.random,
       threshold: recordData.options.threshold,
-      isAfter7thAnni: recordData.options.isAfter7thAnni,
       tailoredExecution: recordData.options.tailoredExecution,
       attacks: recordData.attacks!.toList(),
     );

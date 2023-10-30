@@ -128,11 +128,11 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         CheckboxWithLabel(
-          value: battleData.options.isAfter7thAnni,
+          value: battleData.options.mightyChain,
           label: Text('${S.current.battle_after_7th} (QAB Chain)'),
           onChanged: (v) {
             setState(() {
-              battleData.options.isAfter7thAnni = v!;
+              battleData.options.mightyChain = v!;
             });
           },
         ),

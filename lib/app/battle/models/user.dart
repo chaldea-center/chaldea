@@ -381,6 +381,7 @@ class MysticCodeData {
 
 // won't change in entire battle
 class BattleOptionsEnv {
+  bool mightyChain = true;
   bool disableEvent = false;
   bool simulateAi = false;
   bool simulateEnemy = false;
@@ -390,6 +391,7 @@ class BattleOptionsEnv {
 
   BattleOptionsEnv copy() {
     return BattleOptionsEnv()
+      ..mightyChain = mightyChain
       ..disableEvent = disableEvent
       ..simulateAi = simulateAi
       ..simulateEnemy = simulateEnemy
@@ -399,6 +401,7 @@ class BattleOptionsEnv {
 
   void fromShareData(BattleShareDataOption src) {
     this
+      ..mightyChain = src.mightyChain
       ..disableEvent = src.disableEvent ?? disableEvent
       ..simulateAi = src.simulateAi ?? simulateAi
       ..simulateEnemy = false
@@ -415,6 +418,7 @@ class BattleOptionsEnv {
 
   BattleShareDataOption toShareData() {
     return BattleShareDataOption(
+      mightyChain: mightyChain,
       disableEvent: disableEvent,
       simulateAi: simulateAi,
       pointBuffs: pointBuffs.isEmpty ? null : pointBuffs.map((key, value) => MapEntry(key, value.id)),
@@ -426,13 +430,13 @@ class BattleOptionsEnv {
 class BattleOptionsRuntime extends BattleOptionsEnv {
   int random = ConstData.constants.attackRateRandomMin;
   int threshold = 1000;
-  bool isAfter7thAnni = true;
   bool tailoredExecution = false;
   bool manualAllySkillTarget = false;
 
   @override
   BattleOptionsRuntime copy() {
     return BattleOptionsRuntime()
+      ..mightyChain = mightyChain
       ..disableEvent = disableEvent
       ..simulateAi = simulateAi
       ..simulateEnemy = simulateEnemy
@@ -440,7 +444,6 @@ class BattleOptionsRuntime extends BattleOptionsEnv {
       ..enemyRateUp = enemyRateUp.toSet()
       ..random = random
       ..threshold = threshold
-      ..isAfter7thAnni = isAfter7thAnni
       ..tailoredExecution = tailoredExecution
       ..manualAllySkillTarget = manualAllySkillTarget;
   }
@@ -501,6 +504,7 @@ class BattleOptions extends BattleOptionsRuntime {
   @override
   BattleOptions copy() {
     return BattleOptions()
+      ..mightyChain = mightyChain
       ..disableEvent = disableEvent
       ..simulateAi = simulateAi
       ..simulateEnemy = simulateEnemy
@@ -508,7 +512,6 @@ class BattleOptions extends BattleOptionsRuntime {
       ..enemyRateUp = enemyRateUp.toSet()
       ..random = random
       ..threshold = threshold
-      ..isAfter7thAnni = isAfter7thAnni
       ..tailoredExecution = tailoredExecution
       ..manualAllySkillTarget = manualAllySkillTarget
       ..team = team.copy();

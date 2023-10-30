@@ -1079,9 +1079,9 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     final event = war?.event;
 
     if (war != null && !war.isMainStory && event != null && event.startedAt < DateTime(2022, 7, 31).timestamp) {
-      options.isAfter7thAnni = false;
+      options.mightyChain = false;
     } else {
-      options.isAfter7thAnni = true;
+      options.mightyChain = true;
     }
 
     final questCopy = QuestPhase.fromJson(questPhase!.toJson());

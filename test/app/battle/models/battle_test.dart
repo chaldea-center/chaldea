@@ -456,7 +456,7 @@ void main() async {
       PlayerSvtData.id(2300300)..lv = 90,
     ];
     final battle = BattleData();
-    battle.options.isAfter7thAnni = false;
+    battle.options.mightyChain = false;
     await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
 
     final lip = battle.onFieldAllyServants[0]!;
@@ -480,7 +480,7 @@ void main() async {
       PlayerSvtData.id(2300300)..lv = 90,
     ];
     final battle = BattleData();
-    battle.options.isAfter7thAnni = true;
+    battle.options.mightyChain = true;
     await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
 
     final lip = battle.onFieldAllyServants[0]!;
@@ -503,7 +503,7 @@ void main() async {
     final battle = BattleData();
     await battle.init(db.gameData.questPhases[9300040603]!, lipAndJinako, null);
 
-    battle.options.isAfter7thAnni = false;
+    battle.options.mightyChain = false;
     final lip = battle.onFieldAllyServants[0]!;
     final jinako = battle.onFieldAllyServants[1]!;
 

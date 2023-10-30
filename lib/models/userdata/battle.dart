@@ -236,12 +236,14 @@ class BattleShareData {
 
 @JsonSerializable()
 class BattleShareDataOption {
+  bool mightyChain;
   bool? disableEvent;
   Map<int, int>? pointBuffs;
   bool? simulateAi;
   Set<int>? enemyRateUp;
 
   BattleShareDataOption({
+    this.mightyChain = true,
     this.disableEvent,
     this.pointBuffs,
     this.simulateAi,
@@ -904,7 +906,8 @@ class BattleActionOptions {
   int enemyTarget;
   int random;
   int threshold;
-  bool isAfter7thAnni;
+  // for upload data, this is not allowed
+  @JsonKey(includeFromJson: false, includeToJson: false)
   bool tailoredExecution;
 
   BattleActionOptions({
@@ -912,7 +915,6 @@ class BattleActionOptions {
     this.enemyTarget = 0,
     this.random = 900,
     this.threshold = 1000,
-    this.isAfter7thAnni = true,
     this.tailoredExecution = false,
   });
 
@@ -927,7 +929,7 @@ enum BattleRecordDataType { base, skill, attack }
 class BattleRecordData {
   BattleRecordDataType type;
   int? svt;
-  int? skill; 
+  int? skill;
   List<BattleAttackRecordData>? attacks;
   BattleActionOptions options;
 

@@ -216,8 +216,8 @@ class Damage {
 
         // calc min/max first, since it doesn't change original target/activator
         final minResult = await _calc(
-              totalDamage: calculateDamageNoError(
-                  damageParameters.copy()..random = ConstData.constants.attackRateRandomMin),
+              totalDamage:
+                  calculateDamageNoError(damageParameters.copy()..random = ConstData.constants.attackRateRandomMin),
               atkNpParameters: atkNpParameters.copy(),
               defNpParameters: defNpParameters.copy(),
               starParameters: starParameters.copy(),
@@ -228,8 +228,8 @@ class Damage {
               skipDamage: skipDamage,
             ),
             maxResult = await _calc(
-              totalDamage: calculateDamageNoError(
-                  damageParameters.copy()..random = ConstData.constants.attackRateRandomMax - 1),
+              totalDamage:
+                  calculateDamageNoError(damageParameters.copy()..random = ConstData.constants.attackRateRandomMax - 1),
               atkNpParameters: atkNpParameters.copy(),
               defNpParameters: defNpParameters.copy(),
               starParameters: starParameters.copy(),
