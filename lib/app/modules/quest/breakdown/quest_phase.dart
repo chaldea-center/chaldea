@@ -133,309 +133,41 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = [];
     QuestPhase? curPhase = questPhase ?? getCachedData();
-
-    final header = getPhaseHeader(phase, curPhase);
-    if (curPhase == null) return header;
-    children.add(header);
-
-    for (int j = 0; j < curPhase.stages.length; j++) {
-      final stage = curPhase.stages[j];
-      children.add(Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          SizedBox(
-            width: 32,
-            child: Text.rich(
-              TextSpan(
-                children: divideList(
-                  [
-                    TextSpan(text: '${j + 1}'),
-                    if (stage.enemyFieldPosCount != null) TextSpan(text: '(${stage.enemyFieldPosCount})'),
-                    WidgetSpan(
-                      child: IconButton(
-                        onPressed: () {
-                          router.pushPage(WaveInfoPage(stage: stage, region: widget.region));
-                        },
-                        icon: const Icon(Icons.music_note, size: 18),
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                        color: Theme.of(context).colorScheme.primaryContainer,
-                      ),
-                    )
-                  ],
-                  const TextSpan(text: '\n'),
-                ),
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Expanded(
-            child: QuestWave(
-              questPhase: curPhase,
-              stage: stage,
-              showTrueName: widget.showTrueName,
-              showFace: widget.showFace,
-              region: widget.region,
-            ),
-          )
-        ],
-      ));
+    List<Widget?> children = [
+      getPhaseHeader(phase, curPhase),
+    ];
+    if (curPhase != null) {
+      children.addAll([
+        ...curPhase.stages.map((stage) => buildStage(curPhase, stage)),
+        buildAiNpc(curPhase),
+        buildQuestIndiv(curPhase),
+        getFlags(curPhase.flags),
+        getOverwriteMysticCode(curPhase),
+        getSupportServants(curPhase),
+        buildRestriction(curPhase.restrictions),
+        ...buildDrops(curPhase),
+      ]);
     }
-
-    final aiNpcs =
-        [curPhase.extraDetail?.aiNpc, ...?curPhase.extraDetail?.aiMultiNpc].whereType<QuestPhaseAiNpc>().toList();
-    if (aiNpcs.isNotEmpty) {
-      children.add(Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          const SizedBox(
-            width: 32,
-            child: Text('NPC', textAlign: TextAlign.center),
-          ),
-          Expanded(
-            child: QuestWave(
-              questPhase: curPhase,
-              stage: null,
-              aiNpcs: aiNpcs,
-              showTrueName: widget.showTrueName,
-              showFace: widget.showFace,
-              region: widget.region,
-            ),
-          )
-        ],
-      ));
-    }
-
-    if (curPhase.individuality.isNotEmpty && !curPhase.flags.contains(QuestFlag.noBattle)) {
-      children.add(Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            _header(S.current.quest_fields),
-            Expanded(
-              child: SharedBuilder.traitList(
-                context: context,
-                traits: curPhase.individuality,
-                textAlign: TextAlign.center,
-                format: (trait) {
-                  return trait.shownName().replaceFirst(RegExp('^[^:]+:'), '').trim();
-                },
-              ),
-            )
-          ],
-        ),
-      ));
-    }
-    if (!widget.battleOnly && curPhase.flags.isNotEmpty) {
-      children.add(getFlags(curPhase.flags));
-    }
-    if (curPhase.extraDetail?.overwriteEquipSkills != null) {
-      children.add(getOverwriteMysticCode(curPhase.extraDetail!.overwriteEquipSkills!));
-    }
-    if (!widget.battleOnly && !widget.offline && curPhase.supportServants.isNotEmpty) {
-      children.add(getSupportServants(curPhase));
-    }
-    if (!widget.battleOnly && !widget.offline && curPhase.restrictions.isNotEmpty) {
-      final shortMsg = curPhase.restrictions
-          .map((e) => _QuestRestriction.getText(restriction: e, all: false, leading: false))
-          .firstWhereOrNull((e) => e.isNotEmpty);
-      children.add(Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3),
-        child: InkWell(
-          onTap: () {
-            router.pushPage(_QuestRestriction(restrictions: curPhase.restrictions));
-          },
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _header(S.current.quest_restriction),
-              Text(shortMsg ?? '??????'),
-              const SizedBox(width: double.infinity),
-            ],
-          ),
-        ),
-      ));
-    }
-    final sheetData = db.gameData.dropData.domusAurea;
-    final _questIndex = sheetData.questIds.indexOf(quest.id);
-
-    bool hasMultiEventItem = false;
-    Map<int, int> eventItems = {};
-    for (final drop in curPhase.drops) {
-      final item = db.gameData.items[drop.objectId];
-      if (drop.type == GiftType.item &&
-          (drop.objectId == Items.qpId || [ItemCategory.event, ItemCategory.other].contains(item?.category))) {
-        eventItems.addNum(drop.objectId, 1);
-      }
-    }
-    if (eventItems.values.any((e) => e > 1)) hasMultiEventItem = true;
-
-    if (!widget.battleOnly && (curPhase.drops.isNotEmpty || _questIndex >= 0)) {
-      children.add(Wrap(
-        spacing: 2,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          _header('${S.current.game_drop}:'),
-          FilterGroup<bool>(
-            options: const [true, false],
-            values: FilterRadioData.nonnull(preferApRate),
-            optionBuilder: (v) => Text(v ? 'AP' : S.current.drop_rate),
-            combined: true,
-            onFilterChanged: (v, _) {
-              setState(() {
-                preferApRate = v.radioValue ?? preferApRate;
-              });
-            },
-          ),
-          if (hasMultiEventItem)
-            IconButton(
-              icon: Icon(_sumEventItem ? Icons.unfold_more : Icons.unfold_less),
-              constraints: const BoxConstraints(),
-              padding: EdgeInsets.zero,
-              tooltip: S.current.merge_same_drop,
-              onPressed: () {
-                setState(() {
-                  _sumEventItem = !_sumEventItem;
-                });
-              },
-            )
-        ],
-      ));
-    }
-    if (!widget.battleOnly && _questIndex >= 0) {
-      int runs = sheetData.runs.getOrNull(_questIndex) ?? 0;
-      children.add(Column(
-        children: [
-          const SizedBox(height: 3),
-          Text('${S.current.fgo_domus_aurea} (${S.current.quest_runs(runs)})'),
-          const SizedBox(height: 2),
-          _getDomusAureaWidget(),
-          const SizedBox(height: 3),
-        ],
-      ));
-    }
-
-    if (!widget.battleOnly && curPhase.drops.isNotEmpty) {
-      final bool showDropHint = curPhase.dropsFromAllHashes == true && curPhase.enemyHashes.length > 1;
-      Widget header = Text.rich(TextSpan(
-        text: 'Rayshift Drops (',
-        children: [
-          TextSpan(text: S.current.quest_runs(curPhase.drops.first.runs)),
-          if (showDropHint) const CenterWidgetSpan(child: Icon(Icons.help_outline, size: 18)),
-          const TextSpan(text: ')'),
-        ],
-      ));
-      if (showDropHint) {
-        header = InkWell(
-          child: header,
-          onTap: () {
-            SimpleCancelOkDialog(
-              title: Text(S.current.game_drop),
-              content: Text(S.current.drop_from_all_hashes_hint),
-              hideCancel: true,
-            ).showDialog(context);
-          },
-        );
-      }
-      children.add(Column(
-        children: [
-          const SizedBox(height: 3),
-          header,
-          const SizedBox(height: 2),
-          _getRayshiftDrops(curPhase.drops, hasMultiEventItem && _sumEventItem),
-          const SizedBox(height: 3),
-        ],
-      ));
-    }
-
-    children.addAll(getWarBoard());
-
-    if (!widget.battleOnly) {
-      children.addAll(getPhaseScript(phase));
-    }
+    children.addAll([
+      getWarBoard(),
+      getPhaseScript(phase),
+    ]);
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: divideTiles(
-        children,
+        children.whereType<Widget>(),
         divider: const Divider(height: 5, thickness: 0.5),
       ),
     );
   }
 
-  List<Widget> getWarBoard() {
-    List<Widget> children = [];
-    final warBoards = quest.war?.event?.warBoards ?? [];
-    for (final warBoard in warBoards) {
-      for (final stage in warBoard.stages) {
-        if (quest.id == stage.questId && phase == stage.questPhase) {
-          children.add(_header('${S.current.war_board} (COST ${stage.formationCost})'));
-          if (stage.boardMessage.isNotEmpty) {
-            children.add(Text(stage.boardMessage, style: Theme.of(context).textTheme.bodySmall));
-          }
-          final gifts = stage.squares.expand((e) => e.treasures).expand((e) => e.gifts);
-          if (gifts.isNotEmpty) {
-            children.add(Wrap(
-              alignment: WrapAlignment.center,
-              spacing: 2,
-              runSpacing: 2,
-              children: [
-                for (final gift in gifts) gift.iconBuilder(context: context, width: _itemSize),
-              ],
-            ));
-          }
-          break;
-        }
-      }
-    }
-    if (children.isEmpty) return children;
-    return [
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: children,
-        ),
-      )
-    ];
-  }
-
-  List<Widget> getPhaseScript(int phase) {
-    final scripts = quest.phaseScripts.firstWhereOrNull((e) => e.phase == phase)?.scripts;
-    if (scripts == null || scripts.isEmpty) return [];
-    return [
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            _header(S.current.script_story),
-            Expanded(
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 6,
-                runSpacing: 4,
-                children: [
-                  for (final s in scripts)
-                    Text.rich(SharedBuilder.textButtonSpan(
-                      context: context,
-                      text: '{${s.shortId()}}',
-                      style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer),
-                      onTap: () {
-                        s.routeTo(region: widget.region);
-                      },
-                    ))
-                ],
-              ),
-            )
-          ],
-        ),
-      )
-    ];
+  Text _header(String text, [TextStyle? style]) {
+    return Text(
+      text,
+      style: const TextStyle(fontWeight: FontWeight.w600).merge(style),
+    );
   }
 
   Widget getPhaseHeader(int phase, QuestPhase? curPhase) {
@@ -486,7 +218,6 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: rowChildren,
           ),
-          ...getPhaseScript(phase)
         ],
       );
     }
@@ -699,14 +430,99 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     );
   }
 
-  Text _header(String text, [TextStyle? style]) {
-    return Text(
-      text,
-      style: const TextStyle(fontWeight: FontWeight.w600).merge(style),
+  Widget buildStage(QuestPhase curPhase, Stage stage) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        SizedBox(
+          width: 32,
+          child: Text.rich(
+            TextSpan(
+              children: divideList(
+                [
+                  TextSpan(text: '${stage.wave}'),
+                  if (stage.enemyFieldPosCount != null) TextSpan(text: '(${stage.enemyFieldPosCount})'),
+                  WidgetSpan(
+                    child: IconButton(
+                      onPressed: () {
+                        router.pushPage(WaveInfoPage(stage: stage, region: widget.region));
+                      },
+                      icon: const Icon(Icons.music_note, size: 18),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                    ),
+                  )
+                ],
+                const TextSpan(text: '\n'),
+              ),
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Expanded(
+          child: QuestWave(
+            questPhase: curPhase,
+            stage: stage,
+            showTrueName: widget.showTrueName,
+            showFace: widget.showFace,
+            region: widget.region,
+          ),
+        )
+      ],
     );
   }
 
-  Widget getFlags(List<QuestFlag> flags) {
+  Widget? buildAiNpc(QuestPhase curPhase) {
+    final aiNpcs =
+        [curPhase.extraDetail?.aiNpc, ...?curPhase.extraDetail?.aiMultiNpc].whereType<QuestPhaseAiNpc>().toList();
+    if (aiNpcs.isEmpty) return null;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        const SizedBox(
+          width: 32,
+          child: Text('NPC', textAlign: TextAlign.center),
+        ),
+        Expanded(
+          child: QuestWave(
+            questPhase: curPhase,
+            stage: null,
+            aiNpcs: aiNpcs,
+            showTrueName: widget.showTrueName,
+            showFace: widget.showFace,
+            region: widget.region,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget? buildQuestIndiv(QuestPhase curPhase) {
+    if (curPhase.individuality.isEmpty || curPhase.flags.contains(QuestFlag.noBattle)) return null;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          _header(S.current.quest_fields),
+          Expanded(
+            child: SharedBuilder.traitList(
+              context: context,
+              traits: curPhase.individuality,
+              textAlign: TextAlign.center,
+              format: (trait) {
+                return trait.shownName().replaceFirst(RegExp('^[^:]+:'), '').trim();
+              },
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget? getFlags(List<QuestFlag> flags) {
+    if (flags.isEmpty || widget.battleOnly) return null;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
@@ -732,7 +548,9 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     );
   }
 
-  Widget getOverwriteMysticCode(OverwriteEquipSkills equip) {
+  Widget? getOverwriteMysticCode(QuestPhase curPhase) {
+    final equip = curPhase.extraDetail?.overwriteEquipSkills;
+    if (equip == null) return null;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Column(
@@ -773,7 +591,8 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     );
   }
 
-  Widget getSupportServants(QuestPhase curPhase) {
+  Widget? getSupportServants(QuestPhase curPhase) {
+    if (curPhase.supportServants.isEmpty || widget.battleOnly || widget.offline) return null;
     List<Widget> supports = [];
     for (final svt in curPhase.supportServants) {
       supports.add(SupportServantTile(
@@ -797,6 +616,127 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         ],
       ),
     );
+  }
+
+  Widget? buildRestriction(List<QuestPhaseRestriction> restrictions) {
+    if (restrictions.isEmpty || widget.battleOnly || widget.offline) return null;
+    final shortMsg = restrictions
+        .map((e) => _QuestRestriction.getText(restriction: e, all: false, leading: false))
+        .firstWhereOrNull((e) => e.isNotEmpty);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: InkWell(
+        onTap: () {
+          router.pushPage(_QuestRestriction(restrictions: restrictions));
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _header(S.current.quest_restriction),
+            Text(shortMsg ?? '??????'),
+            const SizedBox(width: double.infinity),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<Widget> buildDrops(QuestPhase curPhase) {
+    List<Widget> children = [];
+    if (widget.battleOnly) return children;
+
+    final sheetData = db.gameData.dropData.domusAurea;
+    final _questIndex = sheetData.questIds.indexOf(quest.id);
+
+    bool hasMultiEventItem = false;
+    Map<int, int> eventItems = {};
+    for (final drop in curPhase.drops) {
+      final item = db.gameData.items[drop.objectId];
+      if (drop.type == GiftType.item &&
+          (drop.objectId == Items.qpId || [ItemCategory.event, ItemCategory.other].contains(item?.category))) {
+        eventItems.addNum(drop.objectId, 1);
+      }
+    }
+    if (eventItems.values.any((e) => e > 1)) hasMultiEventItem = true;
+
+    if (curPhase.drops.isNotEmpty || _questIndex >= 0) {
+      children.add(Wrap(
+        spacing: 2,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          _header('${S.current.game_drop}:'),
+          FilterGroup<bool>(
+            options: const [true, false],
+            values: FilterRadioData.nonnull(preferApRate),
+            optionBuilder: (v) => Text(v ? 'AP' : S.current.drop_rate),
+            combined: true,
+            onFilterChanged: (v, _) {
+              setState(() {
+                preferApRate = v.radioValue ?? preferApRate;
+              });
+            },
+          ),
+          if (hasMultiEventItem)
+            IconButton(
+              icon: Icon(_sumEventItem ? Icons.unfold_more : Icons.unfold_less),
+              constraints: const BoxConstraints(),
+              padding: EdgeInsets.zero,
+              tooltip: S.current.merge_same_drop,
+              onPressed: () {
+                setState(() {
+                  _sumEventItem = !_sumEventItem;
+                });
+              },
+            )
+        ],
+      ));
+    }
+    if (_questIndex >= 0) {
+      int runs = sheetData.runs.getOrNull(_questIndex) ?? 0;
+      children.add(Column(
+        children: [
+          const SizedBox(height: 3),
+          Text('${S.current.fgo_domus_aurea} (${S.current.quest_runs(runs)})'),
+          const SizedBox(height: 2),
+          _getDomusAureaWidget(),
+          const SizedBox(height: 3),
+        ],
+      ));
+    }
+
+    if (curPhase.drops.isNotEmpty) {
+      final bool showDropHint = curPhase.dropsFromAllHashes == true && curPhase.enemyHashes.length > 1;
+      Widget header = Text.rich(TextSpan(
+        text: 'Rayshift Drops (',
+        children: [
+          TextSpan(text: S.current.quest_runs(curPhase.drops.first.runs)),
+          if (showDropHint) const CenterWidgetSpan(child: Icon(Icons.help_outline, size: 18)),
+          const TextSpan(text: ')'),
+        ],
+      ));
+      if (showDropHint) {
+        header = InkWell(
+          child: header,
+          onTap: () {
+            SimpleCancelOkDialog(
+              title: Text(S.current.game_drop),
+              content: Text(S.current.drop_from_all_hashes_hint),
+              hideCancel: true,
+            ).showDialog(context);
+          },
+        );
+      }
+      children.add(Column(
+        children: [
+          const SizedBox(height: 3),
+          header,
+          const SizedBox(height: 2),
+          _getRayshiftDrops(curPhase.drops, hasMultiEventItem && _sumEventItem),
+          const SizedBox(height: 3),
+        ],
+      ));
+    }
+    return children;
   }
 
   /// only drops of free quest useApRate
@@ -897,6 +837,74 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       spacing: 3,
       runSpacing: 2,
       children: children,
+    );
+  }
+
+  Widget? getWarBoard() {
+    List<Widget> children = [];
+    final warBoards = quest.war?.event?.warBoards ?? [];
+    for (final warBoard in warBoards) {
+      for (final stage in warBoard.stages) {
+        if (quest.id == stage.questId && phase == stage.questPhase) {
+          children.add(_header('${S.current.war_board} (COST ${stage.formationCost})'));
+          if (stage.boardMessage.isNotEmpty) {
+            children.add(Text(stage.boardMessage, style: Theme.of(context).textTheme.bodySmall));
+          }
+          final gifts = stage.squares.expand((e) => e.treasures).expand((e) => e.gifts);
+          if (gifts.isNotEmpty) {
+            children.add(Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 2,
+              runSpacing: 2,
+              children: [
+                for (final gift in gifts) gift.iconBuilder(context: context, width: _itemSize),
+              ],
+            ));
+          }
+          break;
+        }
+      }
+    }
+    if (children.isEmpty) return null;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: children,
+      ),
+    );
+  }
+
+  Widget? getPhaseScript(int phase) {
+    final scripts = quest.phaseScripts.firstWhereOrNull((e) => e.phase == phase)?.scripts ?? [];
+    if (scripts.isEmpty || widget.battleOnly) return null;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          _header(S.current.script_story),
+          Expanded(
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 6,
+              runSpacing: 4,
+              children: [
+                for (final s in scripts)
+                  Text.rich(SharedBuilder.textButtonSpan(
+                    context: context,
+                    text: '{${s.shortId()}}',
+                    style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer),
+                    onTap: () {
+                      s.routeTo(region: widget.region);
+                    },
+                  ))
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
