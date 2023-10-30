@@ -286,6 +286,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           record.tempVotes = null;
           if (result != null) {
             record.votes = result;
+            ChaldeaWorkerApi.clearTeamCache();
           }
           if (mounted) setState(() {});
         },
@@ -499,7 +500,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     final resp = await showEasyLoading(() => ChaldeaWorkerApi.teamDelete(id: battleRecord.id));
     if (resp == null) return;
     queryResult.data.remove(battleRecord);
-    // ChaldeaWorkerApi.clearCache((cache) => true);
+    ChaldeaWorkerApi.clearTeamCache();
     resp.showToast();
     if (mounted) setState(() {});
   }

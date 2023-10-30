@@ -97,6 +97,10 @@ class ChaldeaWorkerApi {
     cacheManager.removeWhere(test);
   }
 
+  static void clearTeamCache() {
+    cacheManager.removeWhere((info) => info.url.contains('/team/'));
+  }
+
   // to chaldea server rather worker
   static Future<WorkerResponse?> sendFeedback({
     String? subject,
@@ -346,25 +350,18 @@ class ChaldeaWorkerApi {
     );
   }
 
-  static Future<int?> teamUpload({
-    required int ver,
-    required int questId,
-    required int phase,
-    required String enemyHash,
-    required List<int> svts,
-    required String record,
-  }) {
+  static Future<int?> teamUpload({required BattleShareData data}) {
     return cacheManager.postModel(
       '$apiV4/team/new',
       fromJson: (data) => (data as Map)['id'] as int,
       options: addAuthHeader(),
       data: {
-        'ver': ver,
-        'questId': questId,
-        'phase': phase,
-        'enemyHash': enemyHash,
-        'svts': svts,
-        'record': record,
+        'ver': BattleShareData.kDataVer,
+        'questId': data.quest?.id,
+        'phase': data.quest?.phase,
+        'enemyHash': data.quest?.enemyHash,
+        'svts': data.team.allCardIds,
+        'record': data.toDataV2(),
       },
     );
   }

@@ -46,6 +46,20 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
 
   BattleOptionsRuntime get options => battleData.options;
 
+  BattleShareData getShareData() {
+    assert(battleData.isBattleWin);
+    return BattleShareData(
+      appBuild: AppInfo.buildNumber,
+      quest: BattleQuestInfo.quest(questPhase),
+      team: widget.options.team.toFormationData(),
+      actions: BattleActions(
+        actions: battleData.recorder.toUploadRecords(),
+        delegate: battleData.replayDataRecord,
+      ),
+      option: widget.options.toShareData(),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -730,28 +744,10 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       content: Text(content, style: const TextStyle(fontSize: 14)),
       hideOk: !canUpload,
       onTapOk: () async {
-        final actions = BattleActions(
-          actions: battleData.recorder.toUploadRecords(),
-          delegate: battleData.replayDataRecord,
-        );
-        final uploadData = BattleShareData(
-          appBuild: AppInfo.buildNumber,
-          quest: BattleQuestInfo.quest(questPhase),
-          team: widget.options.team.toFormationData(),
-          actions: actions,
-          option: widget.options.toShareData(),
-        );
-        final insertedId = await showEasyLoading(() => ChaldeaWorkerApi.teamUpload(
-              ver: BattleShareData.kDataVer,
-              questId: questPhase.id,
-              phase: questPhase.phase,
-              enemyHash: questPhase.enemyHash!,
-              svts: uploadData.team.allCardIds,
-              record: uploadData.toDataV2(),
-            ));
+        final insertedId = await showEasyLoading(() => ChaldeaWorkerApi.teamUpload(data: getShareData()));
         if (insertedId == null) return;
         db.runtimeData.lastUpload = DateTime.now().timestamp;
-        // ChaldeaWorkerApi.clearCache((cache) => true);
+        ChaldeaWorkerApi.clearTeamCache();
         if (mounted) {
           SimpleCancelOkDialog(
             title: Text(S.current.success),
