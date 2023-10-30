@@ -14,6 +14,29 @@ import 'filter_data.dart';
 
 part '../../generated/models/userdata/battle.g.dart';
 
+void _removeEmptyList(Map<String, dynamic> data, List<String> keys,
+    {bool removeAllNull = false, bool removeAllZero = false}) {
+  for (final key in keys) {
+    if (!data.containsKey(key)) continue;
+    final value = data[key];
+    bool remove = false;
+    if (value == null) {
+      remove = true;
+    } else if (value is List) {
+      if (value.isEmpty) {
+        remove = true;
+      } else if (removeAllNull && value.every((e) => e == null)) {
+        remove = true;
+      } else if (removeAllZero && value.every((e) => e == 0)) {
+        remove = true;
+      }
+    }
+    if (remove) {
+      data.remove(key);
+    }
+  }
+}
+
 @JsonSerializable(converters: [RegionConverter()])
 class BattleSimUserData {
   Set<int> pingedCEs;
@@ -376,8 +399,8 @@ class SvtSaveData {
     List<int>? customPassiveLvs,
   })  : skillLvs = skillLvs ?? [10, 10, 10],
         skillIds = List.generate(3, (index) => skillIds?.getOrNull(index)),
-        appendLvs = appendLvs ?? [0, 0, 0],
-        cardStrengthens = cardStrengthens ?? [0, 0, 0, 0, 0],
+        appendLvs = List.generate(3, (index) => appendLvs?.getOrNull(index) ?? 0),
+        cardStrengthens = List.generate(5, (index) => cardStrengthens?.getOrNull(index) ?? 0),
         commandCodeIds = List.generate(5, (index) => commandCodeIds?.getOrNull(index)),
         disabledExtraSkills = disabledExtraSkills ?? {},
         customPassives = List<BaseSkill>.from(customPassives ?? []),
@@ -387,7 +410,14 @@ class SvtSaveData {
 
   Map<String, dynamic> toJson() {
     if (svtId == null || svtId == 0) return {};
-    return _$SvtSaveDataToJson(this);
+    final data = _$SvtSaveDataToJson(this);
+    _removeEmptyList(
+      data,
+      ['appendLvs', 'cardStrengthens', 'commandCodeIds', 'disabledExtraSkills', 'customPassives', 'customPassiveLvs'],
+      removeAllNull: true,
+      removeAllZero: true,
+    );
+    return data;
   }
 }
 
