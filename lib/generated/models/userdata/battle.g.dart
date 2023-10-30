@@ -647,10 +647,10 @@ BattleAttackRecordData _$BattleAttackRecordDataFromJson(Map json) => $checkedCre
       json,
       ($checkedConvert) {
         final val = BattleAttackRecordData(
-          servantIndex: $checkedConvert('servantIndex', (v) => v as int? ?? 0),
-          cardIndex: $checkedConvert('cardIndex', (v) => v as int?),
-          isNp: $checkedConvert('isNp', (v) => v as bool? ?? false),
-          isCritical: $checkedConvert('isCritical', (v) => v as bool? ?? false),
+          svt: $checkedConvert('svt', (v) => v as int? ?? 0),
+          card: $checkedConvert('card', (v) => v as int?),
+          isTD: $checkedConvert('isTD', (v) => v as bool? ?? false),
+          critical: $checkedConvert('critical', (v) => v as bool? ?? false),
           cardType: $checkedConvert('cardType', (v) => $enumDecodeNullable(_$CardTypeEnumMap, v) ?? CardType.none),
         );
         return val;
@@ -658,10 +658,10 @@ BattleAttackRecordData _$BattleAttackRecordDataFromJson(Map json) => $checkedCre
     );
 
 Map<String, dynamic> _$BattleAttackRecordDataToJson(BattleAttackRecordData instance) => <String, dynamic>{
-      'servantIndex': instance.servantIndex,
-      'cardIndex': instance.cardIndex,
-      'isNp': instance.isNp,
-      'isCritical': instance.isCritical,
+      'svt': instance.svt,
+      'card': instance.card,
+      'isTD': instance.isTD,
+      'critical': instance.critical,
       'cardType': _$CardTypeEnumMap[instance.cardType]!,
     };
 

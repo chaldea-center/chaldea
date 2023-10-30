@@ -214,10 +214,10 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         if (cardIndex != -1) {
           final combatAction = combatActions[cardIndex]!;
           if (combatAction.cardData.cardType.isQAB) {
-            if (combatAction.cardData.isCritical) {
+            if (combatAction.cardData.critical) {
               combatActions[cardIndex] = null;
             } else {
-              combatAction.cardData.isCritical = true;
+              combatAction.cardData.critical = true;
             }
           } else {
             combatActions[cardIndex] = null;
@@ -234,8 +234,8 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       child: cardIcon,
     );
     final attackIndex = getCardIndex(svt, card);
-    final isCritical = combatActions.getOrNull(attackIndex)?.cardData.isCritical ?? false;
-    cardIcon = wrapAttackIndex(cardIcon, attackIndex, isCritical);
+    final critical = combatActions.getOrNull(attackIndex)?.cardData.critical ?? false;
+    cardIcon = wrapAttackIndex(cardIcon, attackIndex, critical);
     return cardIcon;
   }
 
@@ -342,7 +342,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
     return tdIcon;
   }
 
-  Widget wrapAttackIndex(Widget child, int? index, bool isCritical) {
+  Widget wrapAttackIndex(Widget child, int? index, bool critical) {
     String text = '';
     bool selected = index != null && index >= 0;
     if (selected) {
@@ -352,12 +352,12 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
             3: '3rd',
           }[index + 1] ??
           '${index + 1}th';
-      if (isCritical) {
+      if (critical) {
         // text += ' ${S.current.critical_attack}';
       }
     }
     final colorScheme = Theme.of(context).colorScheme;
-    final color = isCritical ? colorScheme.error : colorScheme.primary;
+    final color = critical ? colorScheme.error : colorScheme.primary;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -384,14 +384,14 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
 
   int getNpCardIndex(final BattleServantData svt) {
     return combatActions
-        .map((action) => action != null && action.cardData.isNP ? action.actor : null)
+        .map((action) => action != null && action.cardData.isTD ? action.actor : null)
         .toList()
         .indexOf(svt);
   }
 
   int getCardIndex(final BattleServantData svt, final CommandCardData cardData) {
     return combatActions
-        .map((action) => action != null && action.cardData.cardIndex == cardData.cardIndex && !action.cardData.isNP
+        .map((action) => action != null && action.cardData.cardIndex == cardData.cardIndex && !action.cardData.isTD
             ? action.actor
             : null)
         .toList()
@@ -415,7 +415,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
   BattleServantData? selectedEnemy;
   BattleServantData? selectedCounter;
   int? actionIndex;
-  bool isCritical = false;
+  bool critical = false;
   Future<void> Function()? onConfirm;
 
   @override
@@ -507,14 +507,14 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
             onSelected: () async {
               final cardData = CommandCardData(cardType, detail)
                 ..cardIndex = 1
-                ..isNP = false
+                ..isTD = false
                 ..traits = ConstData.cardInfo[cardType]?[1]?.individuality.toList() ?? [];
               if (cardType.isQAB) {
-                cardData.isCritical = isCritical;
+                cardData.critical = critical;
               } else if (cardType == CardType.strength) {
-                cardData.isCritical = true;
+                cardData.critical = true;
               } else if (cardType == CardType.weak) {
-                cardData.isCritical = false;
+                cardData.critical = false;
               }
               await battleData.playEnemyCard(CombatAction(enemy, cardData));
             },
@@ -523,13 +523,13 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
         if (svt.cardDetails.keys.any((e) => e.isQAB)) {
           children.add(CheckboxListTile(
             dense: true,
-            value: isCritical,
+            value: critical,
             title: Text(S.current.critical_attack),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             controlAffinity: ListTileControlAffinity.leading,
             onChanged: (v) {
               setState(() {
-                isCritical = v ?? isCritical;
+                critical = v ?? critical;
               });
             },
           ));
@@ -627,7 +627,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
                 if (selectedEnemy != enemy) {
                   actionIndex = null;
                   onConfirm = null;
-                  isCritical = false;
+                  critical = false;
                 }
                 selectedEnemy = enemy;
                 selectedCounter = null;

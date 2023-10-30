@@ -54,7 +54,7 @@ class Damage {
         if (shouldTrigger) {
           await activator.activateBuffOnAction(battleData, BuffAction.functionCommandcodeattackBefore);
           await activator.activateBuffOnActions(battleData, [
-            if (!currentCard.isNP) BuffAction.functionCommandattackBefore,
+            if (!currentCard.isTD) BuffAction.functionCommandattackBefore,
             BuffAction.functionAttackBefore,
           ]);
         }
@@ -125,7 +125,7 @@ class Damage {
         final damageParameters = DamageParameters()
           ..attack = activator.atk + currentCard.cardStrengthen
           ..totalHits = Maths.sum(currentCard.cardDetail.hitsDistribution)
-          ..damageRate = currentCard.isNP
+          ..damageRate = currentCard.isTD
               ? dataVals.Value! + hpRatioDamageLow + hpRatioDamageHigh
               : currentCard.cardDetail.damageRate ?? 1000
           ..npSpecificAttackRate = specificAttackRate
@@ -134,19 +134,19 @@ class Damage {
           ..classAdvantage = classAdvantage
           ..attackerAttribute = activator.attribute
           ..defenderAttribute = target.attribute
-          ..isNp = currentCard.isNP
+          ..isNp = currentCard.isTD
           ..chainPos = chainPos
           ..currentCardType = currentCard.cardType
           ..firstCardType = firstCardType
           ..isTypeChain = isTypeChain
           ..isMightyChain = isMightyChain
-          ..isCritical = currentCard.isCritical
+          ..critical = currentCard.critical
           ..cardBuff = await activator.getBuffValueOnAction(battleData, BuffAction.commandAtk)
           ..attackBuff = await activator.getBuffValueOnAction(battleData, BuffAction.atk)
           ..specificAttackBuff = specificAttackBuff
           ..criticalDamageBuff =
-              currentCard.isCritical ? await activator.getBuffValueOnAction(battleData, BuffAction.criticalDamage) : 0
-          ..npDamageBuff = currentCard.isNP ? await activator.getBuffValueOnAction(battleData, BuffAction.npdamage) : 0
+              currentCard.critical ? await activator.getBuffValueOnAction(battleData, BuffAction.criticalDamage) : 0
+          ..npDamageBuff = currentCard.isTD ? await activator.getBuffValueOnAction(battleData, BuffAction.npdamage) : 0
           ..percentAttackBuff = await activator.getBuffValueOnAction(battleData, BuffAction.damageSpecial)
           ..damageAdditionBuff = await activator.getBuffValueOnAction(battleData, BuffAction.givenDamage)
           ..fixedRandom = battleData.options.fixedRandom
@@ -161,12 +161,12 @@ class Damage {
             ..attackerNpCharge = currentCard.npGain
             ..defenderNpRate = target.enemyTdRate
             ..cardAttackNpRate = currentCard.cardDetail.damageRate ?? 1000
-            ..isNp = currentCard.isNP
+            ..isNp = currentCard.isTD
             ..chainPos = chainPos
             ..currentCardType = currentCard.cardType
             ..firstCardType = firstCardType
             ..isMightyChain = isMightyChain
-            ..isCritical = currentCard.isCritical
+            ..critical = currentCard.critical
             ..cardBuff = await activator.getBuffValueOnAction(battleData, BuffAction.commandNpAtk)
             ..npGainBuff = await activator.getBuffValueOnAction(battleData, BuffAction.dropNp);
 
@@ -174,12 +174,12 @@ class Damage {
             ..attackerStarGen = activator.starGen
             ..defenderStarRate = target.enemyStarRate
             ..cardDropStarRate = currentCard.cardDetail.damageRate ?? 1000
-            ..isNp = currentCard.isNP
+            ..isNp = currentCard.isTD
             ..chainPos = chainPos
             ..currentCardType = currentCard.cardType
             ..firstCardType = firstCardType
             ..isMightyChain = isMightyChain
-            ..isCritical = currentCard.isCritical
+            ..critical = currentCard.critical
             ..cardBuff = await activator.getBuffValueOnAction(battleData, BuffAction.commandStarAtk)
             ..starGenBuff = await activator.getBuffValueOnAction(battleData, BuffAction.criticalPoint);
         } else {
@@ -263,7 +263,7 @@ class Damage {
             ? '${S.current.critical_star}: ${(Maths.sum(result.stars) / 1000).toStringAsFixed(3)} - '
             : '';
         battleData.battleLogger.action('${activator.lBattleName} - ${currentCard.cardType.name.toUpperCase()} - '
-            '${currentCard.isNP ? S.current.battle_np_card : S.current.battle_command_card} - '
+            '${currentCard.isTD ? S.current.battle_np_card : S.current.battle_command_card} - '
             '${S.current.effect_target}: ${target.lBattleName} - '
             '${S.current.battle_damage}: $totalDamage - '
             '${S.current.battle_remaining_hp}: ${target.hp}/${target.getMaxHp(battleData)} - '
@@ -301,7 +301,7 @@ class Damage {
         if (shouldTrigger) {
           await activator.activateBuffOnAction(battleData, BuffAction.functionCommandcodeattackAfter);
           await activator.activateBuffOnActions(battleData, [
-            if (!currentCard.isNP) BuffAction.functionCommandattackAfter,
+            if (!currentCard.isTD) BuffAction.functionCommandattackAfter,
             BuffAction.functionAttackAfter,
           ]);
         }
@@ -367,7 +367,7 @@ class Damage {
       target.lastHitBy = activator;
       target.lastHitByCard = currentCard;
 
-      final isOverkill = target.hp < 0 || (!currentCard.isNP && target.isBuggedOverkill);
+      final isOverkill = target.hp < 0 || (!currentCard.isTD && target.isBuggedOverkill);
       result.overkillStates.add(isOverkill);
 
       if (activator.isPlayer) {

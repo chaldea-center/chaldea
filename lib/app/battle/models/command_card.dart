@@ -39,10 +39,10 @@ class CommandCardData {
   int cardStrengthen = 0;
   int npGain = 0;
   List<NiceTrait> traits = [];
-  bool isNP = false;
+  bool isTD = false;
   int np = 0;
   int cardIndex = -1;
-  bool isCritical = false;
+  bool critical = false;
   CommandCode? commandCode;
   NiceTd? td;
   BuffData? counterBuff;
@@ -55,10 +55,10 @@ class CommandCardData {
       ..cardStrengthen = cardStrengthen
       ..npGain = npGain
       ..traits = traits.toList()
-      ..isNP = isNP
+      ..isTD = isTD
       ..np = np
       ..cardIndex = cardIndex
-      ..isCritical = isCritical
+      ..critical = critical
       ..commandCode = commandCode
       ..td = td
       ..counterBuff = counterBuff
@@ -73,7 +73,7 @@ class CombatAction {
   CombatAction(this.actor, this.cardData);
 
   bool isValid(final BattleData battleData) {
-    if (cardData.isNP) {
+    if (cardData.isTD) {
       return battleData.delegate?.whetherTd?.call(actor) ?? actor.canNP(battleData);
     } else {
       return actor.canCommandCard(battleData, cardData);

@@ -47,8 +47,7 @@ int calculateDamage(final DamageParameters param) {
           ? toModifierFloat(ConstData.cardInfo[CardType.buster]![1]!.addAtk)
           : toModifierFloat(ConstData.cardInfo[param.firstCardType]![1]!.addAtk);
 
-  final Float criticalModifier =
-      param.isCritical ? toModifierFloat(ConstData.constants.criticalAttackRate) : 1.toFloat();
+  final Float criticalModifier = param.critical ? toModifierFloat(ConstData.constants.criticalAttackRate) : 1.toFloat();
 
   final int extraRate = param.currentCardType == CardType.extra
       ? param.isTypeChain
@@ -69,7 +68,7 @@ int calculateDamage(final DamageParameters param) {
   final Float defenseBuff = toModifierFloat(param.defenseBuff);
   final Float specificAttackBuff = toModifierFloat(param.specificAttackBuff);
   final Float specificDefenseBuff = toModifierFloat(param.specificDefenseBuff);
-  final Float criticalDamageBuff = param.isCritical ? toModifierFloat(param.criticalDamageBuff) : 0.toFloat();
+  final Float criticalDamageBuff = param.critical ? toModifierFloat(param.criticalDamageBuff) : 0.toFloat();
   final Float npDamageBuff = param.isNp ? toModifierFloat(param.npDamageBuff) : 0.toFloat();
   final Float percentAttackBuff = toModifierFloat(param.percentAttackBuff);
   final Float percentDefenseBuff = toModifierFloat(param.percentDefenseBuff);
@@ -128,7 +127,7 @@ int calculateAttackNpGain(final AttackNpGainParameters param) {
       : param.isMightyChain
           ? toModifierFloat(ConstData.cardInfo[CardType.arts]![1]!.addTdGauge)
           : toModifierFloat(ConstData.cardInfo[param.firstCardType]![1]!.addTdGauge);
-  final criticalModifier = param.isCritical ? toModifierFloat(ConstData.constants.criticalTdPointRate) : 1.toFloat();
+  final criticalModifier = param.critical ? toModifierFloat(ConstData.constants.criticalTdPointRate) : 1.toFloat();
   final cardBuff = toModifierFloat(param.cardBuff);
   final cardResist = toModifierFloat(param.cardResist);
   final npGainBuff = toModifierFloat(param.npGainBuff);
@@ -175,7 +174,7 @@ int calculateStar(final StarParameters param) {
       : param.isMightyChain
           ? ConstData.cardInfo[CardType.quick]![1]!.addCritical
           : ConstData.cardInfo[param.firstCardType]![1]!.addCritical;
-  final int criticalModifier = param.isCritical ? ConstData.constants.criticalStarRate : 0;
+  final int criticalModifier = param.critical ? ConstData.constants.criticalStarRate : 0;
 
   final int defenderStarRate = param.defenderStarRate;
 
@@ -220,7 +219,7 @@ class DamageParameters {
   CardType firstCardType = CardType.none;
   bool isTypeChain = false;
   bool isMightyChain = false;
-  bool isCritical = false;
+  bool critical = false;
   int cardBuff = 1000; // cardMod = actor.commandAtk
   int cardResist = 1000; // cardMod = target.commandDef
   int attackBuff = 1000; // atkMod = actor.atk
@@ -258,7 +257,7 @@ class DamageParameters {
         'firstCardType: $firstCardType, '
         'isTypeChain: $isTypeChain, '
         'isMightyChain: $isMightyChain, '
-        'isCritical: $isCritical, '
+        'critical: $critical, '
         'cardBuff: $cardBuff, '
         'cardResist: $cardResist, '
         'attackBuff: $attackBuff, '
@@ -292,7 +291,7 @@ class DamageParameters {
       ..firstCardType = firstCardType
       ..isTypeChain = isTypeChain
       ..isMightyChain = isMightyChain
-      ..isCritical = isCritical
+      ..critical = critical
       ..cardBuff = cardBuff
       ..cardResist = cardResist
       ..attackBuff = attackBuff
@@ -319,7 +318,7 @@ class AttackNpGainParameters {
   CardType currentCardType = CardType.none;
   CardType firstCardType = CardType.none;
   bool isMightyChain = false;
-  bool isCritical = false;
+  bool critical = false;
   int cardBuff = 1000; // cardMod = atkSvt.commandNpAtk
   int cardResist = 1000; // cardMod = target.commandNpDef
   int npGainBuff = 1000; // npChargeRateMod = atkSvt.dropNp
@@ -336,7 +335,7 @@ class AttackNpGainParameters {
         'currentCardType: $currentCardType, '
         'firstCardType: $firstCardType, '
         'isMightyChain: $isMightyChain, '
-        'isCritical: $isCritical, '
+        'critical: $critical, '
         'cardBuff: $cardBuff, '
         'cardResist: $cardResist, '
         'npGainBuff: $npGainBuff, '
@@ -354,7 +353,7 @@ class AttackNpGainParameters {
       ..currentCardType = currentCardType
       ..firstCardType = firstCardType
       ..isMightyChain = isMightyChain
-      ..isCritical = isCritical
+      ..critical = critical
       ..cardBuff = cardBuff
       ..cardResist = cardResist
       ..npGainBuff = npGainBuff
@@ -402,7 +401,7 @@ class StarParameters {
   CardType currentCardType = CardType.none;
   CardType firstCardType = CardType.none;
   bool isMightyChain = false;
-  bool isCritical = false;
+  bool critical = false;
   int cardBuff = 1000; // cardMod = atkSvt.commandStarAtk
   int cardResist = 1000; // cardMod = defSvt.commandStarDef
   int starGenBuff = 0; // starDropMod = atkSvt.criticalPoint
@@ -420,7 +419,7 @@ class StarParameters {
         'currentCardType: $currentCardType, '
         'firstCardType: $firstCardType, '
         'isMightyChain: $isMightyChain, '
-        'isCritical: $isCritical, '
+        'critical: $critical, '
         'cardBuff: $cardBuff, '
         'cardResist: $cardResist, '
         'starGenBuff: $starGenBuff, '
@@ -439,7 +438,7 @@ class StarParameters {
       ..currentCardType = currentCardType
       ..firstCardType = firstCardType
       ..isMightyChain = isMightyChain
-      ..isCritical = isCritical
+      ..critical = critical
       ..cardBuff = cardBuff
       ..cardResist = cardResist
       ..starGenBuff = starGenBuff

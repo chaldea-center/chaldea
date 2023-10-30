@@ -225,7 +225,7 @@ void main() async {
         final damageParameters = baseParam.copy()
           ..totalHits = Maths.sum(busterCard.hitsDistribution)
           ..chainPos = 2
-          ..isCritical = true
+          ..critical = true
           ..currentCardType = CardType.buster
           ..firstCardType = CardType.arts;
 
@@ -473,7 +473,7 @@ void main() async {
         ..cardBuff = 2600
         ..cardResist = 1800
         ..npGainBuff = 1300
-        ..isCritical = true;
+        ..critical = true;
 
       expect(calculateAttackNpGain(param), equals(766));
     });
@@ -606,7 +606,7 @@ void main() async {
         final params = baseParam.copy()
           ..attackerNpCharge = np.npGain.arts.last
           ..chainPos = 2
-          ..isCritical = true
+          ..critical = true
           ..currentCardType = CardType.arts
           ..firstCardType = CardType.arts;
 
@@ -642,7 +642,7 @@ void main() async {
         ..attackerNpCharge = np.npGain.arts.last
         ..currentCardType = CardType.arts
         ..firstCardType = np.svt.card
-        ..isCritical = true
+        ..critical = true
         ..npGainBuff = 1450
         ..isOverkill = true;
 
@@ -655,7 +655,7 @@ void main() async {
       param
         ..chainPos = 4
         ..currentCardType = CardType.extra
-        ..isCritical = false;
+        ..critical = false;
       expect(calculateAttackNpGain(param), equals(99));
     });
 
@@ -670,7 +670,7 @@ void main() async {
         ..attackerNpCharge = np.npGain.arts.last
         ..currentCardType = CardType.arts
         ..firstCardType = CardType.arts
-        ..isCritical = true
+        ..critical = true
         ..cardBuff = 1800
         ..npGainBuff = 1300
         ..chainPos = 3
@@ -690,7 +690,7 @@ void main() async {
         ..attackerNpCharge = np.npGain.arts.last
         ..currentCardType = CardType.arts
         ..firstCardType = CardType.arts
-        ..isCritical = true
+        ..critical = true
         ..cardBuff = 1800
         ..npGainBuff = 1300
         ..chainPos = 3
@@ -904,7 +904,7 @@ void main() async {
       test('criticalModifier', () {
         final params = baseParam.copy()
           ..chainPos = 2
-          ..isCritical = true
+          ..critical = true
           ..currentCardType = CardType.quick
           ..firstCardType = CardType.quick;
 

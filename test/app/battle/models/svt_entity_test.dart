@@ -119,8 +119,8 @@ void main() async {
     expect(enemy.hp, 20094);
 
     await battle.playerTurn([
-      CombatAction(altria, altria.getCards(battle)[1]..isCritical = true),
-      CombatAction(altria, altria.getCards(battle)[2]..isCritical = true)
+      CombatAction(altria, altria.getCards(battle)[1]..critical = true),
+      CombatAction(altria, altria.getCards(battle)[2]..critical = true)
     ]);
     expect(enemy.hp, 9166);
   });

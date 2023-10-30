@@ -140,10 +140,10 @@ class BattleRecordManager {
         tailoredExecution: battleData.options.tailoredExecution,
         attacks: combatActions
             .map((combatAction) => BattleAttackRecordData(
-                  servantIndex: combatAction.actor.fieldIndex,
-                  cardIndex: combatAction.cardData.cardIndex,
-                  isNp: combatAction.cardData.isNP,
-                  isCritical: combatAction.cardData.isCritical,
+                  svt: combatAction.actor.fieldIndex,
+                  card: combatAction.cardData.cardIndex,
+                  isTD: combatAction.cardData.isTD,
+                  critical: combatAction.cardData.critical,
                   cardType: combatAction.cardData.cardType,
                 ))
             .toList()));
@@ -294,7 +294,7 @@ class BattleRecordManager {
       }
       final attacks = record.attacks ?? [];
       for (final attack in attacks) {
-        if (!attack.isNp) {
+        if (!attack.isTD) {
           countNormalAttack += 1;
         }
       }

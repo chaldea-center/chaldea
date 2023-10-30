@@ -894,8 +894,8 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
             Text.rich(
               TextSpan(
                 children: divideList([
-                  if (record.card?.isNP == true) TextSpan(text: '${S.current.np_short} Lv.${record.attacker.tdLv}'),
-                  if (record.attacker.isPlayer && record.card?.isNP == true)
+                  if (record.card?.isTD == true) TextSpan(text: '${S.current.np_short} Lv.${record.attacker.tdLv}'),
+                  if (record.attacker.isPlayer && record.card?.isTD == true)
                     TextSpan(text: (record.card?.np ?? 0).format(percent: true, base: 100)),
                   TextSpan(
                     text: record.card!.cardType.name.toTitle(),
@@ -907,7 +907,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
                       }[record.card!.cardType],
                     ),
                   ),
-                  if (record.card?.isCritical == true) TextSpan(text: S.current.critical_attack)
+                  if (record.card?.critical == true) TextSpan(text: S.current.critical_attack)
                 ], const TextSpan(text: ' ')),
               ),
               style: const TextStyle(decoration: TextDecoration.underline),
@@ -956,7 +956,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
           fit: BoxFit.fitWidth,
         ),
       ));
-      if (card.isNP) {
+      if (card.isTD) {
         final td = card.td;
         if (td != null && td.icon != null) {
           stackChildren.add(Positioned(
@@ -1291,7 +1291,7 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
     final specificSum = max(
         toModifier(params.specificAttackBuff -
             params.specificDefenseBuff +
-            (params.isCritical ? params.criticalDamageBuff : 0) +
+            (params.critical ? params.criticalDamageBuff : 0) +
             (params.isNp ? params.npDamageBuff : 0)),
         0.001 - 1);
     final percentAttack = max(toModifier(params.percentAttackBuff), 0.01 - 1);

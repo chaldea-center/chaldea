@@ -706,7 +706,7 @@ class BattleData {
 
     if (params.checkCurrentCardTraits && currentCard != null) {
       currentTraits.addAll(currentCard!.traits);
-      if (currentCard!.isCritical) {
+      if (currentCard!.critical) {
         currentTraits.add(NiceTrait(id: Trait.criticalHit.id));
       }
     }
@@ -984,7 +984,7 @@ class BattleData {
                 if (onFieldAllyServants.contains(action.actor) && action.isValid(this)) {
                   recorder.startPlayerCard(action.actor, action.cardData);
 
-                  if (action.cardData.isNP) {
+                  if (action.cardData.isTD) {
                     action.cardData.np = action.actor.np;
                     await action.actor.activateNP(this, action.cardData, extraOvercharge);
                     extraOvercharge += 1;
@@ -1094,7 +1094,7 @@ class BattleData {
               if (onFieldEnemies.contains(action.actor) && action.isValid(this)) {
                 recorder.startPlayerCard(action.actor, action.cardData);
 
-                if (action.cardData.isNP) {
+                if (action.cardData.isTD) {
                   await action.actor.activateNP(this, action.cardData, 0);
                 } else {
                   await executeCommandCard(
@@ -1436,12 +1436,12 @@ class BattleData {
 
   bool shouldRemoveDeadActors(final List<CombatAction> actions, final int index) {
     final action = actions[index];
-    if (action.cardData.isNP || index == actions.length - 1) {
+    if (action.cardData.isTD || index == actions.length - 1) {
       return true;
     }
 
     final nextAction = actions[index + 1];
-    return nextAction.cardData.isNP || nextAction.actor != action.actor;
+    return nextAction.cardData.isTD || nextAction.actor != action.actor;
   }
 
   Future<bool> canActivate(final int activationRate, final String description) async {
@@ -1596,13 +1596,13 @@ class BattleData {
 
     final List<CombatAction> actions = [];
     for (final attackRecord in action.attacks!) {
-      final svt = onFieldAllyServants[attackRecord.servantIndex];
+      final svt = onFieldAllyServants[attackRecord.svt];
       if (svt == null) continue;
 
-      final cardIndex = attackRecord.cardIndex;
+      final cardIndex = attackRecord.card;
 
       CommandCardData? card;
-      if (attackRecord.isNp) {
+      if (attackRecord.isTD) {
         card = svt.getNPCard(this);
       } else if (cardIndex != null) {
         final cards = svt.getCards(this);
@@ -1615,7 +1615,7 @@ class BattleData {
       if (card == null) {
         continue;
       }
-      card.isCritical = attackRecord.isCritical;
+      card.critical = attackRecord.critical;
 
       actions.add(CombatAction(svt, card));
     }

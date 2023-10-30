@@ -961,37 +961,37 @@ class BattleRecordData {
     if (attacks == null || attacks!.isEmpty) {
       return false;
     }
-    return attacks!.any((cardAction) => cardAction.isNp && cardAction.cardType == cardType);
+    return attacks!.any((cardAction) => cardAction.isTD && cardAction.cardType == cardType);
   }
 
   int countCrits() {
     if (attacks == null || attacks!.isEmpty) {
       return 0;
     }
-    return attacks!.fold(0, (sum, cardAction) => cardAction.isCritical ? sum + 1 : sum);
+    return attacks!.fold(0, (sum, cardAction) => cardAction.critical ? sum + 1 : sum);
   }
 
   int countNormalAttacks() {
     if (attacks == null || attacks!.isEmpty) {
       return 0;
     }
-    return attacks!.fold(0, (sum, cardAction) => !cardAction.isNp ? sum + 1 : sum);
+    return attacks!.fold(0, (sum, cardAction) => !cardAction.isTD ? sum + 1 : sum);
   }
 }
 
 @JsonSerializable()
 class BattleAttackRecordData {
-  int servantIndex;
-  int? cardIndex;
-  bool isNp;
-  bool isCritical;
+  int svt;
+  int? card;
+  bool isTD;
+  bool critical;
   CardType cardType;
 
   BattleAttackRecordData({
-    this.servantIndex = 0,
-    this.cardIndex,
-    this.isNp = false,
-    this.isCritical = false,
+    this.svt = 0,
+    this.card,
+    this.isTD = false,
+    this.critical = false,
     this.cardType = CardType.none,
   });
 

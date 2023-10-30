@@ -411,7 +411,7 @@ void main() async {
       final hpBeforeDamageWave3 = wave3enemy.hp;
       await battle.playerTurn([
         CombatAction(kama, kama.getCards(battle)[3]),
-        CombatAction(kama, kama.getCards(battle)[2]..isCritical = true),
+        CombatAction(kama, kama.getCards(battle)[2]..critical = true),
         CombatAction(kama, kama.getNPCard(battle)!),
       ]);
       final hpAfterDamageWave3 = wave3enemy.hp;
@@ -869,7 +869,7 @@ void main() async {
     final enemy1 = battle.onFieldEnemies[0]!;
     final previousHp1 = enemy1.hp;
     await battle.playerTurn([
-      CombatAction(eliz, eliz.getCards(battle)[2]..isCritical = true),
+      CombatAction(eliz, eliz.getCards(battle)[2]..critical = true),
     ]);
 
     expect(previousHp1 - enemy1.hp, 4256);
@@ -877,7 +877,7 @@ void main() async {
     await battle.activateSvtSkill(0, 1);
     final previousHp2 = enemy1.hp;
     await battle.playerTurn([
-      CombatAction(eliz, eliz.getCards(battle)[1]..isCritical = true),
+      CombatAction(eliz, eliz.getCards(battle)[1]..critical = true),
     ]);
 
     expect(previousHp2 - enemy1.hp, 5533 + 300); // 300 burn damage
@@ -1199,7 +1199,7 @@ void main() async {
     final mori = battle.onFieldAllyServants[2]!;
     final enemy4 = battle.onFieldEnemies[0]!;
     final previousHp4 = enemy4.hp;
-    await battle.playerTurn([CombatAction(mori, mori.getCards(battle)[4]..isCritical = true)]);
+    await battle.playerTurn([CombatAction(mori, mori.getCards(battle)[4]..critical = true)]);
     expect(previousHp4 - enemy4.hp, 27764);
     expect(battle.criticalStars, moreOrLessEquals(1.006, epsilon: 0.001));
   });
@@ -1385,7 +1385,7 @@ void main() async {
       await battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
 
       battle.withCardSync(battle.onFieldAllyServants[0]!.getCards(battle)[0], () {
-        battle.currentCard!.isCritical = true;
+        battle.currentCard!.critical = true;
 
         expect(
           battle.checkTraits(CheckTraitParameters(

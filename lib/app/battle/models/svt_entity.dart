@@ -372,7 +372,7 @@ class BattleServantData {
       final isCardInDeck = niceSvt!.cards.getOrNull(i) == cardType;
       final card = CommandCardData(cardType, detail)
         ..cardIndex = i
-        ..isNP = false
+        ..isTD = false
         ..npGain = getNPGain(battleData, cardType)
         ..traits = ConstData.cardInfo[cardType]![1]!.individuality.toList();
       if (isCardInDeck) {
@@ -382,9 +382,9 @@ class BattleServantData {
           ..commandCode = playerSvtData!.commandCodes.getOrNull(i);
       }
       if (cardType == CardType.weak) {
-        card.isCritical = false;
+        card.critical = false;
       } else if (cardType == CardType.strength) {
-        card.isCritical = true;
+        card.critical = true;
       }
 
       builtCards.add(card);
@@ -412,7 +412,7 @@ class BattleServantData {
                 _td.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
           ))
         ..td = _td
-        ..isNP = true
+        ..isTD = true
         ..npGain = 0
         ..traits = _td.individuality.toList();
     }
@@ -427,7 +427,7 @@ class BattleServantData {
     );
 
     return CommandCardData(currentNP?.svt.card ?? CardType.none, cardDetail)
-      ..isNP = true
+      ..isTD = true
       ..td = currentNP
       ..npGain = currentNP?.npGain.np[playerSvtData!.tdLv - 1] ?? 0
       ..traits = currentNP?.individuality ?? [];
@@ -459,7 +459,7 @@ class BattleServantData {
     );
 
     return CommandCardData(td.svt.card, cardDetail)
-      ..isNP = true
+      ..isTD = true
       ..td = td
       ..counterBuff = buff
       ..npGain = td.npGain.np[tdLv - 1]
@@ -474,7 +474,7 @@ class BattleServantData {
     if (detail == null) return null;
 
     return CommandCardData(CardType.extra, detail)
-      ..isNP = false
+      ..isTD = false
       ..npGain = getNPGain(battleData, CardType.extra)
       ..traits = ConstData.cardInfo[CardType.extra]![1]!.individuality.toList();
   }
