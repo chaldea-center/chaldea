@@ -5,7 +5,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/battle/interactions/_delegate.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -74,13 +73,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
 
     final replayActions = widget.replayActions;
     if (replayActions != null) {
-      battleData.options.manualAllySkillTarget = false;
-      battleData.delegate = BattleReplayDelegate(replayActions.delegate);
-      for (final action in replayActions.actions) {
-        await action.replay(battleData);
-      }
-      battleData.delegate = null;
-      battleData.recorder.setIllegal('Replaying team');
+      await battleData.replay(replayActions);
     }
 
     if (mounted) setState(() {});

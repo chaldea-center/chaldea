@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:archive/archive.dart';
 
-import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/packages/app_info.dart';
@@ -947,69 +946,6 @@ class BattleRecordData {
       return 0;
     }
     return attackRecords!.fold(0, (sum, cardAction) => !cardAction.isNp ? sum + 1 : sum);
-  }
-
-  Future<void> replay(final BattleData battleData) async {
-    battleData.allyTargetIndex = options.allyTargetIndex;
-    battleData.enemyTargetIndex = options.enemyTargetIndex;
-    battleData.options.fixedRandom = options.fixedRandom;
-    battleData.options.probabilityThreshold = options.probabilityThreshold;
-    battleData.options.isAfter7thAnni = options.isAfter7thAnni;
-    battleData.options.tailoredExecution = options.tailoredExecution;
-
-    if (type == BattleRecordDataType.skill) {
-      await replaySkill(battleData);
-    } else if (type == BattleRecordDataType.attack) {
-      await replayBattle(battleData);
-    }
-  }
-
-  Future<void> replaySkill(final BattleData battleData) async {
-    if (skillIndex == null) {
-      return;
-    }
-
-    if (servantIndex == null) {
-      await battleData.activateMysticCodeSkill(skillIndex!);
-    } else {
-      await battleData.activateSvtSkill(servantIndex!, skillIndex!);
-    }
-  }
-
-  Future<void> replayBattle(final BattleData battleData) async {
-    if (attackRecords == null) {
-      return;
-    }
-
-    final List<CombatAction> actions = [];
-    for (final attackRecord in attackRecords!) {
-      final svt = battleData.onFieldAllyServants[attackRecord.servantIndex];
-      if (svt == null) {
-        continue;
-      }
-
-      final cardIndex = attackRecord.cardIndex;
-
-      CommandCardData? card;
-      if (attackRecord.isNp) {
-        card = svt.getNPCard(battleData);
-      } else if (cardIndex != null) {
-        final cards = svt.getCards(battleData);
-        if (cardIndex < 0 || cardIndex >= cards.length) {
-          continue;
-        }
-        card = cards[cardIndex];
-      }
-
-      if (card == null) {
-        continue;
-      }
-      card.isCritical = attackRecord.isCritical;
-
-      actions.add(CombatAction(svt, card));
-    }
-
-    await battleData.playerTurn(actions);
   }
 }
 

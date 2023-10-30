@@ -1559,6 +1559,69 @@ class BattleData {
       ..recorder = copy.recorder
       ..replayDataRecord = copy.replayDataRecord;
   }
+
+  // replay
+  Future<void> replay(BattleActions replayActions) async {
+    recorder.setIllegal('Replaying team');
+    options.manualAllySkillTarget = false;
+    delegate = BattleReplayDelegate(replayActions.delegate);
+    for (final action in replayActions.actions) {
+      allyTargetIndex = action.options.allyTargetIndex;
+      enemyTargetIndex = action.options.enemyTargetIndex;
+      options.fixedRandom = action.options.fixedRandom;
+      options.probabilityThreshold = action.options.probabilityThreshold;
+      options.isAfter7thAnni = action.options.isAfter7thAnni;
+      options.tailoredExecution = action.options.tailoredExecution;
+      if (action.type == BattleRecordDataType.skill) {
+        await _replaySkill(action);
+      } else if (action.type == BattleRecordDataType.attack) {
+        await _replayBattle(action);
+      }
+    }
+    delegate = null;
+  }
+
+  Future<void> _replaySkill(BattleRecordData action) async {
+    if (action.skillIndex == null) return;
+
+    if (action.servantIndex == null) {
+      await activateMysticCodeSkill(action.skillIndex!);
+    } else {
+      await activateSvtSkill(action.servantIndex!, action.skillIndex!);
+    }
+  }
+
+  Future<void> _replayBattle(BattleRecordData action) async {
+    if (action.attackRecords == null) return;
+
+    final List<CombatAction> actions = [];
+    for (final attackRecord in action.attackRecords!) {
+      final svt = onFieldAllyServants[attackRecord.servantIndex];
+      if (svt == null) continue;
+
+      final cardIndex = attackRecord.cardIndex;
+
+      CommandCardData? card;
+      if (attackRecord.isNp) {
+        card = svt.getNPCard(this);
+      } else if (cardIndex != null) {
+        final cards = svt.getCards(this);
+        if (cardIndex < 0 || cardIndex >= cards.length) {
+          continue;
+        }
+        card = cards[cardIndex];
+      }
+
+      if (card == null) {
+        continue;
+      }
+      card.isCritical = attackRecord.isCritical;
+
+      actions.add(CombatAction(svt, card));
+    }
+
+    await playerTurn(actions);
+  }
 }
 
 class StackMismatchException implements Exception {
