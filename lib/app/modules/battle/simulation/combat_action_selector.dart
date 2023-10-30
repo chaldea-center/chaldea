@@ -124,20 +124,6 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         },
       ),
     ));
-    children.add(Wrap(
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [
-        CheckboxWithLabel(
-          value: battleData.options.mightyChain,
-          label: Text('${S.current.battle_after_7th} (QAB Chain)'),
-          onChanged: (v) {
-            setState(() {
-              battleData.options.mightyChain = v!;
-            });
-          },
-        ),
-      ],
-    ));
     children.add(ConstrainedBox(
       constraints: BoxConstraints(maxWidth: cardSize * 7),
       child: Text(

@@ -224,6 +224,16 @@ class Quest with RouteInfo {
 
   bool get is90PlusFree => (isAnyFree || isRepeatRaid) && (recommendLv == '90+' || recommendLv == '90++');
 
+  bool shouldEnableMightyChain() {
+    final war = this.war;
+    final event = war?.eventReal;
+    if (war != null && !war.isMainStory && event != null && event.startedAt < DateTime(2022, 7, 31).timestamp) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   @override
   String get route => Routes.questI(id);
 

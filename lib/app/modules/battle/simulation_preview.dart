@@ -59,6 +59,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       _questPhase = v;
     } else {
       _questPhase = QuestPhase.fromJson(v.toJson());
+      options.mightyChain = v.shouldEnableMightyChain();
     }
   }
 
@@ -725,6 +726,16 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       kIndentDivider,
       CheckboxListTile(
         dense: true,
+        value: options.mightyChain,
+        title: Text('${S.current.battle_after_7th} (QAB Chain)'),
+        onChanged: (v) {
+          setState(() {
+            options.mightyChain = v ?? options.mightyChain;
+          });
+        },
+      ),
+      CheckboxListTile(
+        dense: true,
         value: options.disableEvent,
         title: Text(S.current.disable_event_effects),
         onChanged: (v) {
@@ -1077,12 +1088,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     // pre-check
     final war = questPhase?.war;
     final event = war?.event;
-
-    if (war != null && !war.isMainStory && event != null && event.startedAt < DateTime(2022, 7, 31).timestamp) {
-      options.mightyChain = false;
-    } else {
-      options.mightyChain = true;
-    }
 
     final questCopy = QuestPhase.fromJson(questPhase!.toJson());
 
