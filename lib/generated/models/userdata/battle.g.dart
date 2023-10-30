@@ -166,7 +166,7 @@ BattleQuestInfo _$BattleQuestInfoFromJson(Map json) => $checkedCreate(
         final val = BattleQuestInfo(
           id: $checkedConvert('id', (v) => v as int),
           phase: $checkedConvert('phase', (v) => v as int),
-          hash: $checkedConvert('hash', (v) => v as String?),
+          enemyHash: $checkedConvert('enemyHash', (v) => v as String?),
           region: $checkedConvert(
               'region', (v) => _$JsonConverterFromJson<String, Region>(v, const RegionConverter().fromJson)),
         );
@@ -186,7 +186,7 @@ Map<String, dynamic> _$BattleQuestInfoToJson(BattleQuestInfo instance) {
     }
   }
 
-  writeNotNull('hash', instance.hash);
+  writeNotNull('enemyHash', instance.enemyHash);
   writeNotNull('region', _$JsonConverterToJson<String, Region>(instance.region, const RegionConverter().toJson));
   return val;
 }

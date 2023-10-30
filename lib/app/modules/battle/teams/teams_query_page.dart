@@ -302,7 +302,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           child: Text(
             [
               '${S.current.team} $index - ${record.username ?? "User ${record.userId}"} [${record.id}]',
-              if (widget.phaseInfo?.hash == null) '${S.current.version} ${record.enemyHash.substring2(2)}',
+              if (widget.phaseInfo?.enemyHash == null) '${S.current.version} ${record.enemyHash.substring2(2)}',
             ].join('\n'),
             style: style,
           ),
@@ -467,7 +467,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         task = showEasyLoading(() => ChaldeaWorkerApi.teamsByQuest(
               questId: quest.id,
               phase: phase,
-              enemyHash: widget.phaseInfo?.hash,
+              enemyHash: widget.phaseInfo?.enemyHash,
               limit: _pageSize,
               offset: _pageSize * page,
               expireAfter: refresh ? Duration.zero : null,

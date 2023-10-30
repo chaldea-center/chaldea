@@ -227,11 +227,7 @@ class UserBattleData {
   }
 
   BattleQuestInfo get questInfo {
-    return BattleQuestInfo(
-      id: questId,
-      phase: phase,
-      hash: enemyHash,
-    );
+    return BattleQuestInfo(id: questId, phase: phase, enemyHash: enemyHash);
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -256,7 +252,7 @@ class UserBattleData {
       if (data != null) "data": data,
       "questId": (detail?.quest?.id ?? questId).toString(),
       "phase": (detail?.quest?.phase ?? phase).toString(),
-      "enemyHash": detail?.quest?.hash ?? enemyHash,
+      "enemyHash": detail?.quest?.enemyHash ?? enemyHash,
     });
     return shareUri;
   }

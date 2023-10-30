@@ -213,7 +213,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
           TeamsQueryPage(
             mode: TeamQueryMode.quest,
             quest: quest,
-            phaseInfo: BattleQuestInfo(id: quest.id, phase: quest.phases.last, hash: null),
+            phaseInfo: BattleQuestInfo(id: quest.id, phase: quest.phases.last, enemyHash: null),
           ),
         );
       },

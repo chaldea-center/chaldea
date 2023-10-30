@@ -975,7 +975,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       await _fetchQuestPhase(
         questId: questInfo.id,
         phase: questInfo.phase,
-        enemyHash: questInfo.hash,
+        enemyHash: questInfo.enemyHash,
         region: questInfo.region ?? Region.jp,
       );
     }
@@ -1209,7 +1209,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     }
     if (noEnemyHash == null) return;
     final phaseInfo = BattleQuestInfo.quest(quest);
-    if (noEnemyHash == true) phaseInfo.hash = null;
+    if (noEnemyHash == true) phaseInfo.enemyHash = null;
     final BattleTeamFormation? selected = await router.pushPage<BattleTeamFormation?>(
       TeamsQueryPage(
         mode: TeamQueryMode.quest,

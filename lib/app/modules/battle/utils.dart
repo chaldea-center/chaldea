@@ -21,7 +21,7 @@ void replaySimulation({
   final questPhase = await AtlasApi.questPhase(
     questInfo.id,
     questInfo.phase,
-    hash: questInfo.hash,
+    hash: questInfo.enemyHash,
     region: Region.jp,
   );
   EasyLoading.dismiss();

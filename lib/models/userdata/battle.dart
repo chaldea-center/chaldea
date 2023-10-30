@@ -173,7 +173,7 @@ class BattleShareData {
       if (quest != null) ...{
         "questId": quest!.id.toString(),
         "phase": quest!.phase.toString(),
-        if (quest!.hash != null) "enemyHash": quest!.hash,
+        if (quest!.enemyHash != null) "enemyHash": quest!.enemyHash,
       }
     });
     return shareUri;
@@ -234,25 +234,25 @@ class BattleShareDataOption {
 class BattleQuestInfo {
   int id;
   int phase;
-  String? hash;
+  String? enemyHash;
   Region? region;
 
   BattleQuestInfo({
     required this.id,
     required this.phase,
-    required this.hash,
+    required this.enemyHash,
     this.region,
   });
 
   BattleQuestInfo.quest(QuestPhase quest, {this.region})
       : id = quest.id,
         phase = quest.phase,
-        hash = quest.enemyHash;
+        enemyHash = quest.enemyHash;
 
   String toUrl() {
     String url = '$id/$phase';
-    if (hash != null) {
-      url += '?hash=$hash';
+    if (enemyHash != null) {
+      url += '?hash=$enemyHash';
     }
     if (region == Region.jp || region == Region.na) {
       url = '${region?.upper}/$url';
@@ -269,7 +269,7 @@ class BattleQuestInfo {
     final phase = int.tryParse(query['phase'] ?? "");
     final enemyHash = query['enemyHash'];
     if (id != null && phase != null && enemyHash != null) {
-      return BattleQuestInfo(id: id, phase: phase, hash: enemyHash);
+      return BattleQuestInfo(id: id, phase: phase, enemyHash: enemyHash);
     }
     return null;
   }
