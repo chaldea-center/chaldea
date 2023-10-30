@@ -1,11 +1,10 @@
 import 'package:tuple/tuple.dart';
 
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/extension.dart';
 import '../models/battle.dart';
 
 class BattleDelegate {
-  BattleDelegate();
-
   Future<int?> Function(BattleServantData? actor)? actWeight;
   Future<int?> Function(BattleServantData? actor)? skillActSelect;
   Future<NiceTd?> Function(BattleServantData? actor, List<NiceTd> tds)? tdTypeChange;
@@ -36,47 +35,29 @@ class DamageNpSEDecision {
 }
 
 class BattleReplayDelegate extends BattleDelegate {
-  final List<int?> actWeightSelections = [];
-  final List<int?> skillActSelectSelections = [];
-  final List<int> tdTypeChangeIndexes = [];
-  final List<int?> ptRandomIndexes = [];
-  final List<bool> canActivateDecisions = [];
-  final List<int> damageSelections = [];
-  final List<Tuple2<int, int>> replaceMemberIndexes = [];
+  final BattleReplayDelegateData _data;
 
-  BattleReplayDelegate(final BattleReplayDelegateData replayData) {
-    actWeightSelections.addAll(replayData.actWeightSelections);
-    skillActSelectSelections.addAll(replayData.skillActSelectSelections);
-    tdTypeChangeIndexes.addAll(replayData.tdTypeChangeIndexes);
-    ptRandomIndexes.addAll(replayData.ptRandomIndexes);
-    canActivateDecisions.addAll(replayData.canActivateDecisions);
-    damageSelections.addAll(replayData.damageSelections);
-    for (final tupleList in replayData.replaceMemberIndexes) {
-      if (tupleList.length == 2) {
-        replaceMemberIndexes.add(Tuple2(tupleList[0], tupleList[1]));
-      }
-    }
-
+  BattleReplayDelegate(BattleReplayDelegateData data) : _data = data.copy() {
     actWeight = (actor) async {
-      if (actWeightSelections.isEmpty) {
+      if (_data.actWeightSelections.isEmpty) {
         return null;
       }
-      return actWeightSelections.removeAt(0);
+      return _data.actWeightSelections.removeAt(0);
     };
 
     skillActSelect = (actor) async {
-      if (skillActSelectSelections.isEmpty) {
+      if (_data.skillActSelectSelections.isEmpty) {
         return null;
       }
-      return skillActSelectSelections.removeAt(0);
+      return _data.skillActSelectSelections.removeAt(0);
     };
 
     tdTypeChange = (actor, tds) async {
-      if (tdTypeChangeIndexes.isEmpty) {
+      if (_data.tdTypeChangeIndexes.isEmpty) {
         return null;
       }
 
-      final selectedIndex = tdTypeChangeIndexes.removeAt(0);
+      final selectedIndex = _data.tdTypeChangeIndexes.removeAt(0);
       if (selectedIndex < 0 || selectedIndex >= tds.length) {
         return null;
       }
@@ -85,11 +66,11 @@ class BattleReplayDelegate extends BattleDelegate {
     };
 
     ptRandom = (targets) async {
-      if (ptRandomIndexes.isEmpty) {
+      if (_data.ptRandomIndexes.isEmpty) {
         return null;
       }
 
-      final selectedIndex = ptRandomIndexes.removeAt(0);
+      final selectedIndex = _data.ptRandomIndexes.removeAt(0);
       if (selectedIndex == null || selectedIndex < 0 || selectedIndex >= targets.length) {
         return null;
       }
@@ -97,27 +78,27 @@ class BattleReplayDelegate extends BattleDelegate {
     };
 
     canActivate = (result) async {
-      if (canActivateDecisions.isEmpty) {
+      if (_data.canActivateDecisions.isEmpty) {
         return result;
       }
-      return canActivateDecisions.removeAt(0);
+      return _data.canActivateDecisions.removeAt(0);
     };
 
     damageRandom = (random) async {
-      if (damageSelections.isEmpty) {
+      if (_data.damageSelections.isEmpty) {
         return random;
       }
-      return damageSelections.removeAt(0);
+      return _data.damageSelections.removeAt(0);
     };
 
     replaceMember = (onFieldSvts, backupSvts) async {
-      if (replaceMemberIndexes.isEmpty) {
+      if (_data.replaceMemberIndexes.isEmpty) {
         return null;
       }
 
-      final selections = replaceMemberIndexes.removeAt(0);
-      final onFieldSvtIndex = selections.item1;
-      final backupSvtIndex = selections.item2;
+      final selections = _data.replaceMemberIndexes.removeAt(0);
+      final onFieldSvtIndex = selections.getOrNull(0) ?? -1;
+      final backupSvtIndex = selections.getOrNull(1) ?? -1;
 
       if (onFieldSvtIndex < 0 ||
           backupSvtIndex < 0 ||
