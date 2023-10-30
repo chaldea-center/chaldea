@@ -86,7 +86,7 @@ class SubState {
 
     battleData.battleLogger.debug('${S.current.effect_target}: ${target.lBattleName} - ${buff.buff.lName.l}'
         '$resultsString'
-        '${battleData.options.tailoredExecution ? '' : ' [($activationRate - $resistRate) vs ${battleData.options.probabilityThreshold}]'}');
+        '${battleData.options.tailoredExecution ? '' : ' [($activationRate - $resistRate) vs ${battleData.options.threshold}]'}');
 
     return success;
   }

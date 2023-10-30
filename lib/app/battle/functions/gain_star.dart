@@ -9,7 +9,7 @@ class GainStar {
     final bool isNegative = false,
   }) {
     final functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < battleData.options.probabilityThreshold) {
+    if (functionRate < battleData.options.threshold) {
       return;
     }
     final times = targets?.length ?? 0;

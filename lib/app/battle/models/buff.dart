@@ -258,7 +258,7 @@ class BuffData {
     if (buffRate < 1000) {
       battleData.battleLogger.debug('${battleData.activator?.lBattleName ?? S.current.battle_no_source}'
           ' - ${buff.lName.l}: ${probabilityCheck ? S.current.success : S.current.failed}'
-          '${battleData.options.tailoredExecution ? '' : ' [$buffRate vs ${battleData.options.probabilityThreshold}]'}');
+          '${battleData.options.tailoredExecution ? '' : ' [$buffRate vs ${battleData.options.threshold}]'}');
     }
 
     return probabilityCheck && shouldApplyBuff(battleData, self, opponent);
@@ -287,7 +287,7 @@ class BuffData {
 
     if (vals.OnFieldCount == -1 && script.TargetIndiv != null) {
       final List<BattleServantData> allies =
-          battleData.activator?.isPlayer ?? true ? battleData.nonnullAllies : battleData.nonnullEnemies;
+          battleData.activator?.isPlayer ?? true ? battleData.nonnullPlayers : battleData.nonnullEnemies;
 
       final onFieldServantsExist = allies
           .where((svt) =>

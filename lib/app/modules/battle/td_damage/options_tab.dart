@@ -444,10 +444,10 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         leadingText: S.current.battle_random,
         min: ConstData.constants.attackRateRandomMin,
         max: ConstData.constants.attackRateRandomMax - 1,
-        value: options.fixedRandom,
-        label: (options.fixedRandom / 1000).toStringAsFixed(3),
+        value: options.random,
+        label: (options.random / 1000).toStringAsFixed(3),
         onChange: (v) {
-          options.fixedRandom = v.round();
+          options.random = v.round();
           if (mounted) setState(() {});
         },
         padding: const EdgeInsetsDirectional.only(start: 16),

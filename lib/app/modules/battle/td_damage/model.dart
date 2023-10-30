@@ -199,8 +199,8 @@ class TdDmgSolver {
     final battleData = BattleData();
     battleData.delegate = delegate;
     battleData.options
-      ..fixedRandom = options.fixedRandom
-      ..probabilityThreshold = options.probabilityThreshold;
+      ..random = options.random
+      ..threshold = options.probabilityThreshold;
     final svt = attacker.svt!;
     if (attacker.td == null || !attacker.td!.functions.any((func) => func.funcType.isDamageNp)) {
       return null;

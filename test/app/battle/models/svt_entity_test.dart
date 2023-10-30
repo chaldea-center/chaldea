@@ -229,7 +229,7 @@ void main() async {
 
     expect(battle.canUseNp(0), true);
 
-    battle.allyTargetIndex = 1;
+    battle.playerTargetIndex = 1;
     await battle.activateSvtSkill(1, 2);
 
     await battle.skipWave();

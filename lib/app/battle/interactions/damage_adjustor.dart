@@ -87,10 +87,10 @@ class _DamageAdjustorState extends State<DamageAdjustor> {
             leadingText: S.current.battle_random,
             min: ConstData.constants.attackRateRandomMin,
             max: ConstData.constants.attackRateRandomMax - 1,
-            value: widget.damageParameters.fixedRandom,
-            label: toModifier(widget.damageParameters.fixedRandom).toStringAsFixed(3),
+            value: widget.damageParameters.random,
+            label: toModifier(widget.damageParameters.random).toStringAsFixed(3),
             onChange: (v) {
-              widget.damageParameters.fixedRandom = v.round();
+              widget.damageParameters.random = v.round();
               if (mounted) setState(() {});
             },
           ),

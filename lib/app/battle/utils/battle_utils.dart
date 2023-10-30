@@ -73,7 +73,7 @@ int calculateDamage(final DamageParameters param) {
   final Float percentAttackBuff = toModifierFloat(param.percentAttackBuff);
   final Float percentDefenseBuff = toModifierFloat(param.percentDefenseBuff);
 
-  final Float fixedRandom = toModifierFloat(param.fixedRandom);
+  final Float random = toModifierFloat(param.random);
   final Float attackRate = toModifierFloat(ConstData.constants.attackRate);
   final Float hits = (param.totalHits / 100.0).toFloat();
 
@@ -83,7 +83,7 @@ int calculateDamage(final DamageParameters param) {
           classAttackCorrection *
           classAdvantage *
           attributeAdvantage *
-          fixedRandom *
+          random *
           attackRate *
           (1.toFloat() + attackBuff - defenseBuff).ofMax(0) *
           criticalModifier *
@@ -233,11 +233,11 @@ class DamageParameters {
   int percentDefenseBuff = 0; // specialDefMod = target.specialdefence
   int damageAdditionBuff = 0; // dmgPlusAdd = actor.givenDamage
   int damageReceiveAdditionBuff = 0; // selfDmgCutAdd = target.receiveDamage
-  int fixedRandom = 0;
+  int random = 0;
 
   NiceFunction? damageFunction;
 
-  bool get isNotMinRoll => fixedRandom != ConstData.constants.attackRateRandomMin;
+  bool get isNotMinRoll => random != ConstData.constants.attackRateRandomMin;
 
   @override
   String toString() {
@@ -270,7 +270,7 @@ class DamageParameters {
         'percentDefenseBuff: $percentDefenseBuff, '
         'damageAdditionBuff: $damageAdditionBuff, '
         'damageReceiveAdditionBuff: $damageReceiveAdditionBuff, '
-        'fixedRandom: $fixedRandom'
+        'random: $random'
         '}';
   }
 
@@ -304,7 +304,7 @@ class DamageParameters {
       ..percentDefenseBuff = percentDefenseBuff
       ..damageAdditionBuff = damageAdditionBuff
       ..damageReceiveAdditionBuff = damageReceiveAdditionBuff
-      ..fixedRandom = fixedRandom
+      ..random = random
       ..damageFunction = damageFunction;
   }
 }

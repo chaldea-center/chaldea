@@ -91,10 +91,10 @@ class BattleRecordManager {
 
   void skillActivation(final BattleData battleData, final int? servantIndex, final int skillIndex) {
     records.add(BattleSkillActivationRecord(
-      allyTargetIndex: battleData.allyTargetIndex,
-      enemyTargetIndex: battleData.enemyTargetIndex,
-      fixedRandom: battleData.options.fixedRandom,
-      probabilityThreshold: battleData.options.probabilityThreshold,
+      playerTarget: battleData.playerTargetIndex,
+      enemyTarget: battleData.enemyTargetIndex,
+      random: battleData.options.random,
+      threshold: battleData.options.threshold,
       isAfter7thAnni: battleData.options.isAfter7thAnni,
       tailoredExecution: battleData.options.tailoredExecution,
       servantIndex: servantIndex,
@@ -117,7 +117,7 @@ class BattleRecordManager {
     records.add(BattleSkillRecord(
       prefix: prefix,
       activator: activator,
-      targetPlayerSvt: battleData.targetedAlly,
+      targetPlayerSvt: battleData.targetedPlayer,
       targetEnemySvt: battleData.targetedEnemy,
       skill: skill,
       fromPlayer: fromPlayer,
@@ -132,10 +132,10 @@ class BattleRecordManager {
 
   void initiateAttacks(final BattleData battleData, final List<CombatAction> combatActions) {
     records.add(BattleAttacksInitiationRecord(
-        allyTargetIndex: battleData.allyTargetIndex,
-        enemyTargetIndex: battleData.enemyTargetIndex,
-        fixedRandom: battleData.options.fixedRandom,
-        probabilityThreshold: battleData.options.probabilityThreshold,
+        playerTarget: battleData.playerTargetIndex,
+        enemyTarget: battleData.enemyTargetIndex,
+        random: battleData.options.random,
+        threshold: battleData.options.threshold,
         isAfter7thAnni: battleData.options.isAfter7thAnni,
         tailoredExecution: battleData.options.tailoredExecution,
         attacks: combatActions
@@ -285,11 +285,11 @@ class BattleRecordManager {
     int countNormalAttack = 0, countLargeRng = 0, countProb = 0;
     bool tailoredExecution = delegate.damageSelections.isNotEmpty || delegate.canActivateDecisions.isNotEmpty;
     for (final record in toUploadRecords()) {
-      if (record.options.fixedRandom >= kMaxRNG) {
+      if (record.options.random >= kMaxRNG) {
         countLargeRng += 1;
       }
       tailoredExecution |= record.options.tailoredExecution;
-      if (record.options.probabilityThreshold <= kMinProb) {
+      if (record.options.threshold <= kMinProb) {
         countProb += 1;
       }
       final attacks = record.attacks ?? [];
@@ -431,20 +431,20 @@ class BattleSkillActivationRecord extends BattleRecord {
   final BattleRecordData recordData;
 
   BattleSkillActivationRecord({
-    required final int allyTargetIndex,
-    required final int enemyTargetIndex,
-    required final int fixedRandom,
-    required final int probabilityThreshold,
+    required final int playerTarget,
+    required final int enemyTarget,
+    required final int random,
+    required final int threshold,
     required final bool isAfter7thAnni,
     required final bool tailoredExecution,
     required final int? servantIndex,
     required final int skillIndex,
   }) : recordData = BattleRecordData.skill(
           options: BattleActionOptions(
-            allyTargetIndex: allyTargetIndex,
-            enemyTargetIndex: enemyTargetIndex,
-            fixedRandom: fixedRandom,
-            probabilityThreshold: probabilityThreshold,
+            playerTarget: playerTarget,
+            enemyTarget: enemyTarget,
+            random: random,
+            threshold: threshold,
             isAfter7thAnni: isAfter7thAnni,
             tailoredExecution: tailoredExecution,
           ),
@@ -455,10 +455,10 @@ class BattleSkillActivationRecord extends BattleRecord {
   @override
   BattleRecord copy() {
     return BattleSkillActivationRecord(
-      allyTargetIndex: recordData.options.allyTargetIndex,
-      enemyTargetIndex: recordData.options.enemyTargetIndex,
-      fixedRandom: recordData.options.fixedRandom,
-      probabilityThreshold: recordData.options.probabilityThreshold,
+      playerTarget: recordData.options.playerTarget,
+      enemyTarget: recordData.options.enemyTarget,
+      random: recordData.options.random,
+      threshold: recordData.options.threshold,
       isAfter7thAnni: recordData.options.isAfter7thAnni,
       tailoredExecution: recordData.options.tailoredExecution,
       servantIndex: recordData.servantIndex,
@@ -543,19 +543,19 @@ class BattleAttacksInitiationRecord extends BattleRecord {
   final BattleRecordData recordData;
 
   BattleAttacksInitiationRecord({
-    required final int allyTargetIndex,
-    required final int enemyTargetIndex,
-    required final int fixedRandom,
-    required final int probabilityThreshold,
+    required final int playerTarget,
+    required final int enemyTarget,
+    required final int random,
+    required final int threshold,
     required final bool isAfter7thAnni,
     required final bool tailoredExecution,
     required final List<BattleAttackRecordData> attacks,
   }) : recordData = BattleRecordData.attack(
           options: BattleActionOptions(
-            allyTargetIndex: allyTargetIndex,
-            enemyTargetIndex: enemyTargetIndex,
-            fixedRandom: fixedRandom,
-            probabilityThreshold: probabilityThreshold,
+            playerTarget: playerTarget,
+            enemyTarget: enemyTarget,
+            random: random,
+            threshold: threshold,
             isAfter7thAnni: isAfter7thAnni,
             tailoredExecution: tailoredExecution,
           ),
@@ -565,10 +565,10 @@ class BattleAttacksInitiationRecord extends BattleRecord {
   @override
   BattleRecord copy() {
     return BattleAttacksInitiationRecord(
-      allyTargetIndex: recordData.options.allyTargetIndex,
-      enemyTargetIndex: recordData.options.enemyTargetIndex,
-      fixedRandom: recordData.options.fixedRandom,
-      probabilityThreshold: recordData.options.probabilityThreshold,
+      playerTarget: recordData.options.playerTarget,
+      enemyTarget: recordData.options.enemyTarget,
+      random: recordData.options.random,
+      threshold: recordData.options.threshold,
       isAfter7thAnni: recordData.options.isAfter7thAnni,
       tailoredExecution: recordData.options.tailoredExecution,
       attacks: recordData.attacks!.toList(),

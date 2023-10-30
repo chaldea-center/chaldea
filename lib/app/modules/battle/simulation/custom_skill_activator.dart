@@ -41,7 +41,7 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
   Widget build(final BuildContext context) {
     errorMsg = skill == null ? S.current.battle_no_skill_selected : null;
     if (skill != null) skillLv = min(skillLv, skill!.functions.first.svals.length);
-    final List<BattleServantData> actors = isAlly ? widget.battleData.nonnullAllies : widget.battleData.nonnullEnemies;
+    final List<BattleServantData> actors = isAlly ? widget.battleData.nonnullPlayers : widget.battleData.nonnullEnemies;
 
     return Scaffold(
       appBar: AppBar(title: Text(S.current.battle_activate_custom_skill)),

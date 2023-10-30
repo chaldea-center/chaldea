@@ -333,7 +333,7 @@ class FunctionExecutor {
           await ReplaceMember.replaceMember(battleData, dataVals);
           break;
         case FuncType.cardReset:
-          battleData.nonnullAllies.forEach((svt) {
+          battleData.nonnullPlayers.forEach((svt) {
             svt.battleBuff.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
           });
           for (final target in targets) {
@@ -483,26 +483,26 @@ class FunctionExecutor {
 
     final isAlly = activator?.isPlayer ?? defaultToPlayer;
     final List<BattleServantData> backupAllies =
-        isAlly ? battleData.nonnullBackupAllies : battleData.nonnullBackupEnemies;
-    final List<BattleServantData> aliveAllies = isAlly ? battleData.nonnullAllies : battleData.nonnullEnemies;
+        isAlly ? battleData.nonnullBackupPlayers : battleData.nonnullBackupEnemies;
+    final List<BattleServantData> aliveAllies = isAlly ? battleData.nonnullPlayers : battleData.nonnullEnemies;
     final BattleServantData? targetedAlly = isAlly
         ? battleData.target?.isPlayer == true
             ? battleData.target
-            : battleData.targetedAlly
+            : battleData.targetedPlayer
         : battleData.target?.isEnemy == true
             ? battleData.target
             : battleData.targetedEnemy;
 
     final List<BattleServantData> backupEnemies =
-        isAlly ? battleData.nonnullBackupEnemies : battleData.nonnullBackupAllies;
-    final List<BattleServantData> aliveEnemies = isAlly ? battleData.nonnullEnemies : battleData.nonnullAllies;
+        isAlly ? battleData.nonnullBackupEnemies : battleData.nonnullBackupPlayers;
+    final List<BattleServantData> aliveEnemies = isAlly ? battleData.nonnullEnemies : battleData.nonnullPlayers;
     final BattleServantData? targetedEnemy = isAlly
         ? battleData.target?.isEnemy == true
             ? battleData.target
             : battleData.targetedEnemy
         : battleData.target?.isPlayer == true
             ? battleData.target
-            : battleData.targetedAlly;
+            : battleData.targetedPlayer;
 
     switch (funcTargetType) {
       case FuncTargetType.self:

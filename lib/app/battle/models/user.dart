@@ -424,8 +424,8 @@ class BattleOptionsEnv {
 }
 
 class BattleOptionsRuntime extends BattleOptionsEnv {
-  int fixedRandom = ConstData.constants.attackRateRandomMin;
-  int probabilityThreshold = 1000;
+  int random = ConstData.constants.attackRateRandomMin;
+  int threshold = 1000;
   bool isAfter7thAnni = true;
   bool tailoredExecution = false;
   bool manualAllySkillTarget = false;
@@ -438,8 +438,8 @@ class BattleOptionsRuntime extends BattleOptionsEnv {
       ..simulateEnemy = simulateEnemy
       ..pointBuffs = Map.of(pointBuffs)
       ..enemyRateUp = enemyRateUp.toSet()
-      ..fixedRandom = fixedRandom
-      ..probabilityThreshold = probabilityThreshold
+      ..random = random
+      ..threshold = threshold
       ..isAfter7thAnni = isAfter7thAnni
       ..tailoredExecution = tailoredExecution
       ..manualAllySkillTarget = manualAllySkillTarget;
@@ -506,8 +506,8 @@ class BattleOptions extends BattleOptionsRuntime {
       ..simulateEnemy = simulateEnemy
       ..pointBuffs = Map.of(pointBuffs)
       ..enemyRateUp = enemyRateUp.toSet()
-      ..fixedRandom = fixedRandom
-      ..probabilityThreshold = probabilityThreshold
+      ..random = random
+      ..threshold = threshold
       ..isAfter7thAnni = isAfter7thAnni
       ..tailoredExecution = tailoredExecution
       ..manualAllySkillTarget = manualAllySkillTarget

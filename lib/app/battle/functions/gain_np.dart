@@ -12,7 +12,7 @@ class GainNP {
     final bool isNegative = false,
   }) {
     final functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < battleData.options.probabilityThreshold) {
+    if (functionRate < battleData.options.threshold) {
       return;
     }
 
@@ -34,7 +34,7 @@ class GainNP {
     final bool isNegative = false,
   }) async {
     final functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < battleData.options.probabilityThreshold) {
+    if (functionRate < battleData.options.threshold) {
       return;
     }
 

@@ -38,7 +38,7 @@ class Damage {
   }) async {
     final funcType = damageFunction?.funcType;
     final functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < battleData.options.probabilityThreshold) {
+    if (functionRate < battleData.options.threshold) {
       return;
     }
 
@@ -149,7 +149,7 @@ class Damage {
           ..npDamageBuff = currentCard.isTD ? await activator.getBuffValueOnAction(battleData, BuffAction.npdamage) : 0
           ..percentAttackBuff = await activator.getBuffValueOnAction(battleData, BuffAction.damageSpecial)
           ..damageAdditionBuff = await activator.getBuffValueOnAction(battleData, BuffAction.givenDamage)
-          ..fixedRandom = battleData.options.fixedRandom
+          ..random = battleData.options.random
           ..damageFunction = damageFunction;
 
         final atkNpParameters = AttackNpGainParameters();
@@ -217,7 +217,7 @@ class Damage {
         // calc min/max first, since it doesn't change original target/activator
         final minResult = await _calc(
               totalDamage: calculateDamageNoError(
-                  damageParameters.copy()..fixedRandom = ConstData.constants.attackRateRandomMin),
+                  damageParameters.copy()..random = ConstData.constants.attackRateRandomMin),
               atkNpParameters: atkNpParameters.copy(),
               defNpParameters: defNpParameters.copy(),
               starParameters: starParameters.copy(),
@@ -229,7 +229,7 @@ class Damage {
             ),
             maxResult = await _calc(
               totalDamage: calculateDamageNoError(
-                  damageParameters.copy()..fixedRandom = ConstData.constants.attackRateRandomMax - 1),
+                  damageParameters.copy()..random = ConstData.constants.attackRateRandomMax - 1),
               atkNpParameters: atkNpParameters.copy(),
               defNpParameters: defNpParameters.copy(),
               starParameters: starParameters.copy(),

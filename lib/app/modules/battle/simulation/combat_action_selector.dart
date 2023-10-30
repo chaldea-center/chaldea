@@ -28,7 +28,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
 
   @override
   Widget build(BuildContext context) {
-    if (battleData.targetedEnemy == null || battleData.targetedAlly == null) {
+    if (battleData.targetedEnemy == null || battleData.targetedPlayer == null) {
       return SimpleCancelOkDialog(
         title: Text(S.current.warning),
         content: Text(S.current.battle_targeted_required_hint),
@@ -81,7 +81,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         ],
       )
     ];
-    for (final svt in battleData.nonnullAllies) {
+    for (final svt in battleData.nonnullPlayers) {
       final tdIcon = buildTdIcon(svt);
       final cards = svt.getCards(battleData);
       List<Widget> cells = [tdIcon, const SizedBox(width: 4)];
@@ -110,15 +110,15 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         label: S.current.battle_random,
         min: ConstData.constants.attackRateRandomMin,
         max: ConstData.constants.attackRateRandomMax - 1,
-        value: battleData.options.fixedRandom,
+        value: battleData.options.random,
         valueFormatter: (v) => toModifier(v).toStringAsFixed(3),
         onChange: (v) {
-          battleData.options.fixedRandom = ((v / 10).round() * 10)
+          battleData.options.random = ((v / 10).round() * 10)
               .clamp(ConstData.constants.attackRateRandomMin, ConstData.constants.attackRateRandomMax - 1);
           if (mounted) setState(() {});
         },
         onEdit: (v) {
-          battleData.options.fixedRandom =
+          battleData.options.random =
               v.round().clamp(ConstData.constants.attackRateRandomMin, ConstData.constants.attackRateRandomMax - 1);
           if (mounted) setState(() {});
         },
@@ -146,7 +146,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         textScaleFactor: 0.9,
       ),
     ));
-    if (battleData.nonnullAllies.any((svt) => (svt.playerSvtData?.td?.dmgNpFuncCount ?? 0) > 1)) {
+    if (battleData.nonnullPlayers.any((svt) => (svt.playerSvtData?.td?.dmgNpFuncCount ?? 0) > 1)) {
       children.add(ConstrainedBox(
         constraints: BoxConstraints(maxWidth: cardSize * 7),
         child: Text(
@@ -430,7 +430,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
   @override
   Widget build(BuildContext context) {
     if ((battleData.nonnullEnemies.isNotEmpty && battleData.targetedEnemy == null) ||
-        (battleData.nonnullAllies.isNotEmpty && battleData.targetedAlly == null)) {
+        (battleData.nonnullPlayers.isNotEmpty && battleData.targetedPlayer == null)) {
       return SimpleCancelOkDialog(
         title: Text(S.current.warning),
         content: Text(S.current.battle_targeted_required_hint),
@@ -654,7 +654,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
 
     List<Widget> counterActors = [];
 
-    for (final svt in battleData.nonnullAllies) {
+    for (final svt in battleData.nonnullPlayers) {
       final counterBuff = svt.battleBuff.validBuffs.lastWhereOrNull((buff) => buff.vals.CounterId != null);
       if (counterBuff == null) continue;
       counterActors.add(RadioListTile<BattleServantData>(

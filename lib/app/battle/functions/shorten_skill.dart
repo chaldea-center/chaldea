@@ -15,7 +15,7 @@ class ShortenSkill {
     final List<BattleServantData> targets,
   ) {
     final functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < battleData.options.probabilityThreshold) {
+    if (functionRate < battleData.options.threshold) {
       return;
     }
 
@@ -37,7 +37,7 @@ class ShortenSkill {
     final List<BattleServantData> targets,
   ) {
     final functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < battleData.options.probabilityThreshold) {
+    if (functionRate < battleData.options.threshold) {
       return;
     }
 

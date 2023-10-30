@@ -1271,7 +1271,7 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
         }.contains(params.damageFunction?.funcType);
     final npSpecificAttackRate = toModifier(params.npSpecificAttackRate);
     final hitsPercent = params.totalHits / 100.0;
-    final fixedRandom = toModifier(params.fixedRandom);
+    final random = toModifier(params.random);
     final classAdvantage = toModifier(params.classAdvantage);
     final attributeAdvantage =
         toModifier(ConstData.getAttributeRelation(params.attackerAttribute, params.defenderAttribute));
@@ -1308,7 +1308,7 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
           oneParam('', '(${minResult!.totalDamage}~${maxResult!.totalDamage})'),
         if (result.damages.any((e) => e > 0))
           listValueWithOverkill(result.damages, result.overkillStates, (v) => v.toString()),
-        oneParam(S.current.battle_random, fixedRandom.toStringAsFixed(3)),
+        oneParam(S.current.battle_random, random.toStringAsFixed(3)),
         oneParam('ATK', params.attack.toString()),
         oneParam(S.current.class_attack_rate, classAttackCorrection.format(precision: 3)),
         if (params.damageRate != 1000)

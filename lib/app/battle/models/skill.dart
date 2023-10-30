@@ -185,7 +185,7 @@ class BattleSkillInfoData {
     }
     int effectiveness = 1000;
     if (type == SkillInfoType.masterEquip) {
-      for (final svt in battleData.nonnullAllies) {
+      for (final svt in battleData.nonnullPlayers) {
         effectiveness += await svt.getBuffValueOnAction(battleData, BuffAction.masterSkillValueUp);
       }
     }

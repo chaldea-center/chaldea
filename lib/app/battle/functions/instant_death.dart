@@ -82,7 +82,7 @@ class InstantDeath {
       ..resultString = resultsString;
     battleData.battleLogger.debug('${S.current.effect_target}: ${target.lBattleName} - '
         '$resultsString'
-        '${battleData.options.tailoredExecution ? '' : ' [$activationRate vs ${battleData.options.probabilityThreshold}]'}');
+        '${battleData.options.tailoredExecution ? '' : ' [$activationRate vs ${battleData.options.threshold}]'}');
 
     return success;
   }

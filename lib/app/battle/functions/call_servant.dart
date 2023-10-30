@@ -11,7 +11,7 @@ class CallServant {
     final BattleServantData? activator,
   ) async {
     final functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < battleData.options.probabilityThreshold) {
+    if (functionRate < battleData.options.threshold) {
       return;
     }
 

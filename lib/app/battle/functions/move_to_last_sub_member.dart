@@ -10,12 +10,12 @@ class MoveToLastSubMember {
     final List<BattleServantData> targets,
   ) {
     final functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < battleData.options.probabilityThreshold) {
+    if (functionRate < battleData.options.threshold) {
       return;
     }
 
     for (final target in targets) {
-      final nonnullOnFieldList = target.isPlayer ? battleData.nonnullAllies : battleData.nonnullEnemies;
+      final nonnullOnFieldList = target.isPlayer ? battleData.nonnullPlayers : battleData.nonnullEnemies;
       if (nonnullOnFieldList.length == 1) {
         continue;
       }

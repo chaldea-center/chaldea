@@ -91,7 +91,7 @@ void main() async {
 
       expect(await buff.shouldActivateBuff(battle, okuni, cba), isFalse);
 
-      battle.options.probabilityThreshold = 500;
+      battle.options.threshold = 500;
 
       expect(await buff.shouldActivateBuff(battle, okuni, cba), isTrue);
     });
@@ -479,7 +479,7 @@ void main() async {
 
       final murasama = battle.onFieldAllyServants[0]!;
       final castoria = battle.onFieldAllyServants[1]!;
-      battle.allyTargetIndex = 1;
+      battle.playerTargetIndex = 1;
 
       await battle.activateSvtSkill(0, 1);
 
@@ -590,7 +590,7 @@ void main() async {
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final vanGogh = battle.onFieldAllyServants[0]!;
-      battle.allyTargetIndex = 1;
+      battle.playerTargetIndex = 1;
 
       await battle.activateSvtSkill(0, 0);
       vanGogh.hp = 200;
@@ -733,7 +733,7 @@ void main() async {
       await battle.skipWave();
       expect(habetrot.np, 11000);
       expect(habetrot.hp, 0);
-      expect(battle.nonnullAllies.length, 1);
+      expect(battle.nonnullPlayers.length, 1);
     });
 
     test('guts function', () async {
@@ -796,7 +796,7 @@ void main() async {
       expect(enemy.npLineCount, 1);
 
       await battle.activateSvtSkill(0, 2);
-      battle.options.probabilityThreshold = 500;
+      battle.options.threshold = 500;
       await battle.activateSvtSkill(1, 1);
       await battle.playerTurn([CombatAction(protoMerlin, protoMerlin.getCards(battle)[0])]);
       expect(enemy.npLineCount, 1);

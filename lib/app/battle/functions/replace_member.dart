@@ -12,16 +12,16 @@ class ReplaceMember {
     final DataVals dataVals,
   ) async {
     final functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < battleData.options.probabilityThreshold) {
+    if (functionRate < battleData.options.threshold) {
       return;
     }
 
-    if (battleData.nonnullAllies.where((svt) => svt.canOrderChange(battleData)).isEmpty ||
-        battleData.nonnullBackupAllies.where((svt) => svt.canOrderChange(battleData)).isEmpty) {
+    if (battleData.nonnullPlayers.where((svt) => svt.canOrderChange(battleData)).isEmpty ||
+        battleData.nonnullBackupPlayers.where((svt) => svt.canOrderChange(battleData)).isEmpty) {
       return;
     }
 
-    battleData.nonnullAllies.forEach((svt) {
+    battleData.nonnullPlayers.forEach((svt) {
       svt.battleBuff.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
     });
 

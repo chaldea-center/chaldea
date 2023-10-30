@@ -74,24 +74,24 @@ class BattleData {
   Map<DeckType, List<QuestEnemy>> enemyDecks = {};
 
   int enemyTargetIndex = 0;
-  int allyTargetIndex = 0;
+  int playerTargetIndex = 0;
 
   BattleServantData? get targetedEnemy =>
       onFieldEnemies.length > enemyTargetIndex && enemyTargetIndex >= 0 ? onFieldEnemies[enemyTargetIndex] : null;
 
-  BattleServantData? get targetedAlly => onFieldAllyServants.length > allyTargetIndex && allyTargetIndex >= 0
-      ? onFieldAllyServants[allyTargetIndex]
+  BattleServantData? get targetedPlayer => onFieldAllyServants.length > playerTargetIndex && playerTargetIndex >= 0
+      ? onFieldAllyServants[playerTargetIndex]
       : null;
 
   List<BattleServantData> get nonnullEnemies => _getNonnull(onFieldEnemies);
 
-  List<BattleServantData> get nonnullAllies => _getNonnull(onFieldAllyServants);
+  List<BattleServantData> get nonnullPlayers => _getNonnull(onFieldAllyServants);
 
-  List<BattleServantData> get nonnullActors => [...nonnullEnemies, ...nonnullAllies];
+  List<BattleServantData> get nonnullActors => [...nonnullEnemies, ...nonnullPlayers];
 
   List<BattleServantData> get nonnullBackupEnemies => _getNonnull(enemyDataList);
 
-  List<BattleServantData> get nonnullBackupAllies => _getNonnull(playerDataList);
+  List<BattleServantData> get nonnullBackupPlayers => _getNonnull(playerDataList);
 
   List<BuffData> fieldBuffs = [];
   MysticCode? mysticCode;
@@ -297,7 +297,7 @@ class BattleData {
         (curStage == null || (enemyDataList.isEmpty && onFieldEnemies.every((e) => e == null)));
   }
 
-  bool get isBattleFinished => nonnullEnemies.isEmpty || nonnullAllies.isEmpty;
+  bool get isBattleFinished => nonnullEnemies.isEmpty || nonnullPlayers.isEmpty;
 
   Future<void> init(
     final QuestPhase quest,
@@ -322,7 +322,7 @@ class BattleData {
     _uniqueIndex = 1;
     enemyDecks.clear();
     enemyTargetIndex = 0;
-    allyTargetIndex = 0;
+    playerTargetIndex = 0;
 
     fieldBuffs.clear();
 
@@ -476,7 +476,7 @@ class BattleData {
 
     // start of ally turn
     await withAction(() async {
-      for (final svt in nonnullAllies) {
+      for (final svt in nonnullPlayers) {
         await svt.startOfMyTurn(this);
       }
     });
@@ -554,7 +554,7 @@ class BattleData {
         }
       }
 
-      allyTargetIndex = getNonNullTargetIndex(onFieldAllyServants, allyTargetIndex);
+      playerTargetIndex = getNonNullTargetIndex(onFieldAllyServants, playerTargetIndex);
     }
 
     if (replenishEnemy) {
@@ -835,7 +835,7 @@ class BattleData {
       final selectedTargets = await ChooseTargetsDialog.show(
         this,
         targetType: targetFunc.funcTargetType,
-        targets: nonnullAllies,
+        targets: nonnullPlayers,
         minCount: 1,
         maxCount: 1,
         autoConfirmOneTarget: true,
@@ -843,7 +843,7 @@ class BattleData {
       if (selectedTargets != null && selectedTargets.length == 1) {
         final targetIndex = onFieldAllyServants.indexOf(selectedTargets.single);
         if (targetIndex >= 0) {
-          allyTargetIndex = targetIndex;
+          playerTargetIndex = targetIndex;
         }
       }
     }
@@ -879,7 +879,7 @@ class BattleData {
     }
 
     if (skill.functions.any((func) => func.funcType == FuncType.replaceMember)) {
-      return nonnullBackupAllies.isNotEmpty && nonnullAllies.where((svt) => svt.canOrderChange(this)).isNotEmpty;
+      return nonnullBackupPlayers.isNotEmpty && nonnullPlayers.where((svt) => svt.canOrderChange(this)).isNotEmpty;
     }
 
     return true;
@@ -1089,7 +1089,7 @@ class BattleData {
       task: () async {
         // recorder.initiateAttacks(this, [action]);
         await withAction(() async {
-          if (nonnullAllies.isNotEmpty) {
+          if (nonnullPlayers.isNotEmpty) {
             await withCard(action.cardData, () async {
               if (onFieldEnemies.contains(action.actor) && action.isValid(this)) {
                 recorder.startPlayerCard(action.actor, action.cardData);
@@ -1108,7 +1108,7 @@ class BattleData {
                   );
                 }
 
-                for (final svt in nonnullAllies) {
+                for (final svt in nonnullPlayers) {
                   if (svt.attacked) {
                     await withTarget(action.actor, () async {
                       await svt.activateBuffOnAction(this, BuffAction.functionDamage);
@@ -1176,7 +1176,7 @@ class BattleData {
 
   Future<void> endPlayerTurn() async {
     await withAction(() async {
-      for (final svt in nonnullAllies) {
+      for (final svt in nonnullPlayers) {
         await svt.endOfMyTurn(this);
       }
 
@@ -1217,7 +1217,7 @@ class BattleData {
         await svt.endOfMyTurn(this);
       }
 
-      for (final svt in nonnullAllies) {
+      for (final svt in nonnullPlayers) {
         await svt.endOfYourTurn(this);
       }
 
@@ -1249,9 +1249,9 @@ class BattleData {
         final List<BattleServantData> targets = [];
         await withActivator(actor, () async {
           if (card.cardDetail.attackType == CommandCardAttackType.all) {
-            targets.addAll(isPlayer ? nonnullEnemies : nonnullAllies);
+            targets.addAll(isPlayer ? nonnullEnemies : nonnullPlayers);
           } else {
-            targets.add(isPlayer ? targetedEnemy! : targetedAlly!);
+            targets.add(isPlayer ? targetedEnemy! : targetedPlayer!);
           }
 
           await Damage.damage(
@@ -1407,7 +1407,7 @@ class BattleData {
           actorList[i] = null;
           actor.fieldIndex = -1;
           if (actor.isPlayer) {
-            nonnullAllies.forEach((svt) {
+            nonnullPlayers.forEach((svt) {
               svt.battleBuff.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
             });
           }
@@ -1417,7 +1417,7 @@ class BattleData {
   }
 
   void updateTargetedIndex() {
-    allyTargetIndex = getNonNullTargetIndex(onFieldAllyServants, allyTargetIndex);
+    playerTargetIndex = getNonNullTargetIndex(onFieldAllyServants, playerTargetIndex);
     enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
   }
 
@@ -1449,7 +1449,7 @@ class BattleData {
       return false;
     }
 
-    final curResult = options.probabilityThreshold <= activationRate;
+    final curResult = options.threshold <= activationRate;
 
     if (activationRate < 1000 && options.tailoredExecution) {
       if (delegate?.canActivate != null) {
@@ -1460,7 +1460,7 @@ class BattleData {
             '${S.current.battle_activate_probability}: '
             '${(activationRate / 10).toStringAsFixed(1)}% '
             'vs ${S.current.probability_expectation}: '
-            '${(options.probabilityThreshold / 10).toStringAsFixed(1)}%';
+            '${(options.threshold / 10).toStringAsFixed(1)}%';
         final result = await TailoredExecutionConfirm.show(
           context: context!,
           description: description,
@@ -1509,7 +1509,7 @@ class BattleData {
       ..onFieldAllyServants = onFieldAllyServants.map((e) => e?.copy()).toList()
       ..enemyDecks = enemyDecks
       ..enemyTargetIndex = enemyTargetIndex
-      ..allyTargetIndex = allyTargetIndex
+      ..playerTargetIndex = playerTargetIndex
       ..fieldBuffs = fieldBuffs.map((e) => e.copy()).toList()
       ..mysticCode = mysticCode
       ..mysticCodeLv = mysticCodeLv
@@ -1544,7 +1544,7 @@ class BattleData {
       ..onFieldAllyServants = copy.onFieldAllyServants
       ..enemyDecks = copy.enemyDecks
       ..enemyTargetIndex = copy.enemyTargetIndex
-      ..allyTargetIndex = copy.allyTargetIndex
+      ..playerTargetIndex = copy.playerTargetIndex
       ..fieldBuffs = copy.fieldBuffs
       ..mysticCode = copy.mysticCode
       ..mysticCodeLv = copy.mysticCodeLv
@@ -1566,10 +1566,10 @@ class BattleData {
     options.manualAllySkillTarget = false;
     delegate = BattleReplayDelegate(replayActions.delegate);
     for (final action in replayActions.actions) {
-      allyTargetIndex = action.options.allyTargetIndex;
-      enemyTargetIndex = action.options.enemyTargetIndex;
-      options.fixedRandom = action.options.fixedRandom;
-      options.probabilityThreshold = action.options.probabilityThreshold;
+      playerTargetIndex = action.options.playerTarget;
+      enemyTargetIndex = action.options.enemyTarget;
+      options.random = action.options.random;
+      options.threshold = action.options.threshold;
       options.isAfter7thAnni = action.options.isAfter7thAnni;
       options.tailoredExecution = action.options.tailoredExecution;
       if (action.type == BattleRecordDataType.skill) {

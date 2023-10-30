@@ -714,10 +714,10 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         leadingText: S.current.battle_probability_threshold,
         min: 0,
         max: 10,
-        value: options.probabilityThreshold ~/ 100,
-        label: '${options.probabilityThreshold ~/ 10} %',
+        value: options.threshold ~/ 100,
+        label: '${options.threshold ~/ 10} %',
         onChange: (v) {
-          options.probabilityThreshold = v.round() * 100;
+          options.threshold = v.round() * 100;
           if (mounted) setState(() {});
         },
         padding: const EdgeInsetsDirectional.only(top: 8, start: 8),

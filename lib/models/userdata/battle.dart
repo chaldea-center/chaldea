@@ -734,7 +734,7 @@ class TdDamageOptions {
   int mcLv = 10;
 
   CustomSkillData extraBuffs;
-  int fixedRandom = 1000;
+  int random = 1000;
   int probabilityThreshold = 1000;
 
   bool forceDamageNpSe;
@@ -765,7 +765,7 @@ class TdDamageOptions {
     this.mcId,
     this.mcLv = 10,
     CustomSkillData? extraBuffs,
-    this.fixedRandom = 1000,
+    this.random = 1000,
     this.probabilityThreshold = 1000,
     this.forceDamageNpSe = false,
     this.damageNpIndivSumCount,
@@ -900,18 +900,18 @@ class BattleReplayDelegateData {
 
 @JsonSerializable()
 class BattleActionOptions {
-  int allyTargetIndex;
-  int enemyTargetIndex;
-  int fixedRandom;
-  int probabilityThreshold;
+  int playerTarget;
+  int enemyTarget;
+  int random;
+  int threshold;
   bool isAfter7thAnni;
   bool tailoredExecution;
 
   BattleActionOptions({
-    this.allyTargetIndex = 0,
-    this.enemyTargetIndex = 0,
-    this.fixedRandom = 900,
-    this.probabilityThreshold = 1000,
+    this.playerTarget = 0,
+    this.enemyTarget = 0,
+    this.random = 900,
+    this.threshold = 1000,
     this.isAfter7thAnni = true,
     this.tailoredExecution = false,
   });

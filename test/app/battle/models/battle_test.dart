@@ -26,7 +26,7 @@ void main() async {
         await battle.init(db.gameData.questPhases[9300040603]!, altriaSettings,
             null); // this stage has a sky caster in wave 1 at index 1
 
-        final altria = battle.targetedAlly!;
+        final altria = battle.targetedPlayer!;
         altria.np = 10000;
         final npActions = [CombatAction(altria, altria.getNPCard(battle)!)];
 
@@ -41,7 +41,7 @@ void main() async {
         final battle = BattleData();
         await battle.init(db.gameData.questPhases[9300040603]!, altriaSettings, null);
 
-        final altria = battle.targetedAlly!;
+        final altria = battle.targetedPlayer!;
         altria.np = 10000;
         final npActions = [
           CombatAction(altria, altria.getCards(battle)[4]),
@@ -59,7 +59,7 @@ void main() async {
         final battle = BattleData();
         await battle.init(db.gameData.questPhases[9300040603]!, altriaSettings, null);
 
-        final altria = battle.targetedAlly!;
+        final altria = battle.targetedPlayer!;
         final busterArtsBuster = [
           CombatAction(altria, altria.getCards(battle)[4]),
           CombatAction(altria, altria.getCards(battle)[1]),
@@ -110,7 +110,7 @@ void main() async {
         await battle.activateSvtSkill(1, 2);
         await battle.activateSvtSkill(2, 0);
         await battle.activateSvtSkill(2, 2);
-        final altria = battle.targetedAlly!;
+        final altria = battle.targetedPlayer!;
         final npActions = [CombatAction(altria, altria.getNPCard(battle)!)];
 
         final skyCaster = battle.onFieldEnemies[1]!;
@@ -140,7 +140,7 @@ void main() async {
         final battle = BattleData();
         await battle.init(db.gameData.questPhases[9300040603]!, yuyuSettings, null);
 
-        final yuyu = battle.targetedAlly!;
+        final yuyu = battle.targetedPlayer!;
         final npActions = [CombatAction(yuyu, yuyu.getNPCard(battle)!)];
 
         battle.enemyTargetIndex = 1;
@@ -158,7 +158,7 @@ void main() async {
         final battle = BattleData();
         await battle.init(db.gameData.questPhases[9300040603]!, yuyuSettings, null);
 
-        final yuyu = battle.targetedAlly!;
+        final yuyu = battle.targetedPlayer!;
         final artsQuickArts = [
           CombatAction(yuyu, yuyu.getCards(battle)[3]),
           CombatAction(yuyu, yuyu.getCards(battle)[0]),
@@ -212,7 +212,7 @@ void main() async {
         await battle.activateSvtSkill(2, 0);
         await battle.activateSvtSkill(2, 1);
         await battle.activateSvtSkill(2, 2);
-        final yuyu = battle.targetedAlly!;
+        final yuyu = battle.targetedPlayer!;
         final npActions = [CombatAction(yuyu, yuyu.getNPCard(battle)!)];
 
         battle.enemyTargetIndex = 1;
@@ -245,7 +245,7 @@ void main() async {
         final battle = BattleData();
         await battle.init(db.gameData.questPhases[9300040603]!, okuniSettings, null);
 
-        final okuni = battle.targetedAlly!;
+        final okuni = battle.targetedPlayer!;
         final npActions = [CombatAction(okuni, okuni.getNPCard(battle)!)];
 
         battle.enemyTargetIndex = 1;
@@ -263,7 +263,7 @@ void main() async {
         final battle = BattleData();
         await battle.init(db.gameData.questPhases[9300040603]!, okuniSettings, null);
 
-        final okuni = battle.targetedAlly!;
+        final okuni = battle.targetedPlayer!;
         final quickBusterQuick = [
           CombatAction(okuni, okuni.getCards(battle)[0]),
           CombatAction(okuni, okuni.getCards(battle)[4]),
@@ -315,7 +315,7 @@ void main() async {
         await battle.activateSvtSkill(1, 2);
         await battle.activateSvtSkill(2, 0);
         await battle.activateSvtSkill(2, 2);
-        final okuni = battle.targetedAlly!;
+        final okuni = battle.targetedPlayer!;
         final npActions = [CombatAction(okuni, okuni.getNPCard(battle)!)];
 
         battle.enemyTargetIndex = 1;
@@ -350,7 +350,7 @@ void main() async {
       expect(battle.waveCount, 1);
       expect(battle.totalTurnCount, 1);
       expect(battle.turnCount, 1);
-      final kama = battle.targetedAlly!;
+      final kama = battle.targetedPlayer!;
       expect(kama.fieldIndex, 0);
       expect(kama.battleBuff.getAllBuffs().length, 13);
       await battle.activateSvtSkill(0, 0);
@@ -1220,7 +1220,7 @@ void main() async {
     expect(battle.onFieldAllyServants[0]?.svtId, 1101600);
     expect(battle.onFieldAllyServants[1]?.svtId, 800100);
     expect(battle.onFieldAllyServants[2]?.svtId, 100100);
-    expect(battle.nonnullBackupAllies[0].svtId, 100200);
+    expect(battle.nonnullBackupPlayers[0].svtId, 100200);
 
     await battle.activateSvtSkill(0, 1);
     await battle.playerTurn([CombatAction(chloe, chloe.getCards(battle)[0])]);
@@ -1228,7 +1228,7 @@ void main() async {
     expect(battle.onFieldAllyServants[0]?.svtId, 100200);
     expect(battle.onFieldAllyServants[1]?.svtId, 800100);
     expect(battle.onFieldAllyServants[2]?.svtId, 100100);
-    expect(battle.nonnullBackupAllies[0].svtId, 1101600);
+    expect(battle.nonnullBackupPlayers[0].svtId, 1101600);
   });
 
   group('Method tests', () {

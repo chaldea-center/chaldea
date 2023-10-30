@@ -33,7 +33,7 @@ void main() async {
 
   await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
-  final BattleServantData ally = battle.targetedAlly!;
+  final BattleServantData ally = battle.targetedPlayer!;
   final BattleServantData enemy = battle.targetedEnemy!;
 
   group('Test FunctionExecutor.validateFunctionTargetTeam', () {
@@ -123,17 +123,17 @@ void main() async {
     test('Select all types', () async {
       final ptAll =
           await FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptAll, battle.onFieldAllyServants[1]);
-      expect(ptAll, unorderedEquals(battle.nonnullAllies));
+      expect(ptAll, unorderedEquals(battle.nonnullPlayers));
 
       final ptFull =
           await FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptFull, battle.onFieldAllyServants[1]);
-      expect(ptFull, unorderedEquals([...battle.nonnullAllies, ...battle.nonnullBackupAllies]));
+      expect(ptFull, unorderedEquals([...battle.nonnullPlayers, ...battle.nonnullBackupPlayers]));
 
       final enemyAll = await FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.enemyAll, ally);
       expect(enemyAll, unorderedEquals(battle.nonnullEnemies));
 
       final enemyFullAsEnemy = await FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.enemyFull, enemy);
-      expect(enemyFullAsEnemy, unorderedEquals([...battle.nonnullAllies, ...battle.nonnullBackupAllies]));
+      expect(enemyFullAsEnemy, unorderedEquals([...battle.nonnullPlayers, ...battle.nonnullBackupPlayers]));
     });
 
     test('Select other types', () async {
@@ -155,7 +155,7 @@ void main() async {
           unorderedEquals([
             battle.onFieldAllyServants[0],
             battle.onFieldAllyServants[2],
-            ...battle.nonnullBackupAllies,
+            ...battle.nonnullBackupPlayers,
           ]));
 
       final enemyOtherFullAsEnemy =
@@ -165,7 +165,7 @@ void main() async {
           unorderedEquals([
             battle.onFieldAllyServants[1],
             battle.onFieldAllyServants[2],
-            ...battle.nonnullBackupAllies,
+            ...battle.nonnullBackupPlayers,
           ]));
     });
 
@@ -313,7 +313,7 @@ void main() async {
       final enemy2 = battle.onFieldEnemies[1]!;
       final buffCountBefore2 = cursedArm.battleBuff.originalActiveList.length;
       cursedArm.np = 10000;
-      battle.options.probabilityThreshold = 10;
+      battle.options.threshold = 10;
       battle.recorder.startPlayerCard(cursedArm, npCard);
       await battle.withAction(() async {
         await battle.withCard(npCard, () async {
@@ -947,7 +947,7 @@ void main() async {
       expect(enemy3.hp, greaterThan(0));
       expect(battle.nonnullEnemies.length, 3);
 
-      battle.options.probabilityThreshold = 800;
+      battle.options.threshold = 800;
       kiara.np = 10000;
       await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
       expect(enemy1.hp, 0);

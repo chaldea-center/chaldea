@@ -9,7 +9,7 @@ class UpdateEntryPositions {
     final DataVals dataVals,
   ) {
     final functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < battleData.options.probabilityThreshold) {
+    if (functionRate < battleData.options.threshold) {
       return;
     }
 

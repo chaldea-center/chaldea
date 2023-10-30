@@ -189,7 +189,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               return SimpleDialog(
                 title: Text(S.current.reset_skill_cd),
                 children: [
-                  for (final svt in battleData.nonnullAllies)
+                  for (final svt in battleData.nonnullPlayers)
                     ListTile(
                       contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
                       leading: svt.iconBuilder(context: context, width: 36),
@@ -356,8 +356,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     final List<Widget> children = [];
     void _onChangeIndex(int? _) {
       if (svt.isPlayer) {
-        if (battleData.allyTargetIndex != index) {
-          battleData.allyTargetIndex = index;
+        if (battleData.playerTargetIndex != index) {
+          battleData.playerTargetIndex = index;
           db.settings.battleSim.manualAllySkillTarget = battleData.options.manualAllySkillTarget = false;
         } else {
           db.settings.battleSim.manualAllySkillTarget =
@@ -380,12 +380,12 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                 value: index,
                 toggleable: svt.isPlayer,
                 groupValue: svt.isPlayer
-                    ? (options.manualAllySkillTarget && battleData.isPlayerTurn ? null : battleData.allyTargetIndex)
+                    ? (options.manualAllySkillTarget && battleData.isPlayerTurn ? null : battleData.playerTargetIndex)
                     : battleData.enemyTargetIndex,
                 onChanged: _onChangeIndex,
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 visualDensity: VisualDensity.compact,
-                fillColor: svt.isPlayer && options.manualAllySkillTarget && battleData.allyTargetIndex == index
+                fillColor: svt.isPlayer && options.manualAllySkillTarget && battleData.playerTargetIndex == index
                     ? MaterialStateProperty.resolveWith((Set<MaterialState> states) {
                         // M2 style
                         final _theme = Theme.of(context);
@@ -532,10 +532,10 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                 leadingText: S.current.battle_probability_threshold,
                 min: 0,
                 max: 10,
-                value: options.probabilityThreshold ~/ 100,
-                label: '${options.probabilityThreshold ~/ 10}',
+                value: options.threshold ~/ 100,
+                label: '${options.threshold ~/ 10}',
                 onChange: (v) {
-                  options.probabilityThreshold = v.round() * 100;
+                  options.threshold = v.round() * 100;
                   if (mounted) setState(() {});
                 },
                 padding: EdgeInsets.zero,

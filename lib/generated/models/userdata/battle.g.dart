@@ -491,7 +491,7 @@ TdDamageOptions _$TdDamageOptionsFromJson(Map json) => $checkedCreate(
           mcLv: $checkedConvert('mcLv', (v) => v as int? ?? 10),
           extraBuffs: $checkedConvert(
               'extraBuffs', (v) => v == null ? null : CustomSkillData.fromJson(Map<String, dynamic>.from(v as Map))),
-          fixedRandom: $checkedConvert('fixedRandom', (v) => v as int? ?? 1000),
+          random: $checkedConvert('random', (v) => v as int? ?? 1000),
           probabilityThreshold: $checkedConvert('probabilityThreshold', (v) => v as int? ?? 1000),
           forceDamageNpSe: $checkedConvert('forceDamageNpSe', (v) => v as bool? ?? false),
           damageNpIndivSumCount: $checkedConvert('damageNpIndivSumCount', (v) => v as int?),
@@ -525,7 +525,7 @@ Map<String, dynamic> _$TdDamageOptionsToJson(TdDamageOptions instance) => <Strin
       'mcId': instance.mcId,
       'mcLv': instance.mcLv,
       'extraBuffs': instance.extraBuffs.toJson(),
-      'fixedRandom': instance.fixedRandom,
+      'random': instance.random,
       'probabilityThreshold': instance.probabilityThreshold,
       'forceDamageNpSe': instance.forceDamageNpSe,
       'damageNpIndivSumCount': instance.damageNpIndivSumCount,
@@ -578,10 +578,10 @@ BattleActionOptions _$BattleActionOptionsFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = BattleActionOptions(
-          allyTargetIndex: $checkedConvert('allyTargetIndex', (v) => v as int? ?? 0),
-          enemyTargetIndex: $checkedConvert('enemyTargetIndex', (v) => v as int? ?? 0),
-          fixedRandom: $checkedConvert('fixedRandom', (v) => v as int? ?? 900),
-          probabilityThreshold: $checkedConvert('probabilityThreshold', (v) => v as int? ?? 1000),
+          playerTarget: $checkedConvert('playerTarget', (v) => v as int? ?? 0),
+          enemyTarget: $checkedConvert('enemyTarget', (v) => v as int? ?? 0),
+          random: $checkedConvert('random', (v) => v as int? ?? 900),
+          threshold: $checkedConvert('threshold', (v) => v as int? ?? 1000),
           isAfter7thAnni: $checkedConvert('isAfter7thAnni', (v) => v as bool? ?? true),
           tailoredExecution: $checkedConvert('tailoredExecution', (v) => v as bool? ?? false),
         );
@@ -590,10 +590,10 @@ BattleActionOptions _$BattleActionOptionsFromJson(Map json) => $checkedCreate(
     );
 
 Map<String, dynamic> _$BattleActionOptionsToJson(BattleActionOptions instance) => <String, dynamic>{
-      'allyTargetIndex': instance.allyTargetIndex,
-      'enemyTargetIndex': instance.enemyTargetIndex,
-      'fixedRandom': instance.fixedRandom,
-      'probabilityThreshold': instance.probabilityThreshold,
+      'playerTarget': instance.playerTarget,
+      'enemyTarget': instance.enemyTarget,
+      'random': instance.random,
+      'threshold': instance.threshold,
       'isAfter7thAnni': instance.isAfter7thAnni,
       'tailoredExecution': instance.tailoredExecution,
     };
