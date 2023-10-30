@@ -326,10 +326,10 @@ class BattleServantData {
   Future<void> activateAdditionalPassive(final BattleData battleData) async {
     if (isPlayer) {
       await battleData.withActivator(this, () async {
-        for (int index = 0; index < playerSvtData!.additionalPassives.length; index++) {
-          final skill = playerSvtData!.additionalPassives[index];
-          final extraPassiveLv = playerSvtData!.additionalPassiveLvs[index];
-          final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtPassive, skillLv: extraPassiveLv);
+        for (int index = 0; index < playerSvtData!.customPassives.length; index++) {
+          final skill = playerSvtData!.customPassives[index];
+          final skillLv = playerSvtData!.customPassiveLvs[index];
+          final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtPassive, skillLv: skillLv);
           await skillInfo.activate(battleData);
         }
       });

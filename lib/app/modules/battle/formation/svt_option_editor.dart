@@ -263,7 +263,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           )
         ])),
         children: [
-          for (int index = 0; index < playerSvtData.additionalPassives.length; index++) _buildAdditionalPassive(index),
+          for (int index = 0; index < playerSvtData.customPassives.length; index++) _buildAdditionalPassive(index),
           Center(
             child: TextButton(
               onPressed: enableEdit
@@ -814,8 +814,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   }
 
   Widget _buildAdditionalPassive(int index) {
-    final skill = playerSvtData.additionalPassives[index];
-    final lv = playerSvtData.additionalPassiveLvs.getOrNull(index);
+    final skill = playerSvtData.customPassives[index];
+    final lv = playerSvtData.customPassiveLvs.getOrNull(index);
     final maxLv = skill.maxLv;
     return SimpleAccordion(
       headerBuilder: (context, _) {
@@ -843,8 +843,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                   onPressed: enableEdit
                       ? () {
                           setState(() {
-                            playerSvtData.additionalPassives.removeAt(index);
-                            playerSvtData.additionalPassiveLvs.removeAt(index);
+                            playerSvtData.customPassives.removeAt(index);
+                            playerSvtData.customPassiveLvs.removeAt(index);
                           });
                         }
                       : null,
@@ -856,7 +856,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                 if (maxLv > 1)
                   DropdownButton<int>(
                     isDense: true,
-                    value: playerSvtData.additionalPassiveLvs[index],
+                    value: playerSvtData.customPassiveLvs[index],
                     items: [
                       for (int lv2 = 1; lv2 <= maxLv; lv2++) DropdownMenuItem(value: lv2, child: Text('Lv.$lv2')),
                     ],
@@ -864,7 +864,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                         ? (v) {
                             setState(() {
                               if (v != null) {
-                                playerSvtData.additionalPassiveLvs[index] = v;
+                                playerSvtData.customPassiveLvs[index] = v;
                               }
                             });
                           }
@@ -1120,8 +1120,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     playerSvtData.tdLv = (support.td2Lv ?? 1).clamp2(1, support.td2?.maxLv ?? 1);
     // playerSvtData.appendLvs = support.classPassive.appendPassiveSkillLvs;
     playerSvtData.appendLvs.fillRange(0, playerSvtData.appendLvs.length, 0);
-    playerSvtData.additionalPassives = List<BaseSkill>.of(support.detail?.classPassive.addPassive ?? svt.extraPassive);
-    playerSvtData.additionalPassiveLvs = playerSvtData.additionalPassives.map((e) => e.maxLv).toList();
+    playerSvtData.customPassives = List<BaseSkill>.of(support.detail?.classPassive.addPassive ?? svt.extraPassive);
+    playerSvtData.customPassiveLvs = playerSvtData.customPassives.map((e) => e.maxLv).toList();
     // ce
     final ce = support.equips.getOrNull(0);
     playerSvtData

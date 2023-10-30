@@ -15,8 +15,8 @@ class PlayerSvtData {
   List<int> appendLvs = [0, 0, 0];
   List<NiceSkill> extraPassives = [];
   Set<int> disabledExtraSkills = {};
-  List<BaseSkill> additionalPassives = [];
-  List<int> additionalPassiveLvs = [];
+  List<BaseSkill> customPassives = [];
+  List<int> customPassiveLvs = [];
   int tdLv = 5;
   NiceTd? td;
 
@@ -221,8 +221,8 @@ class PlayerSvtData {
 
   void addCustomPassive(BaseSkill skill, int lv) {
     if (skill.maxLv <= 0) return;
-    additionalPassives.add(skill);
-    additionalPassiveLvs.add(lv);
+    customPassives.add(skill);
+    customPassiveLvs.add(lv);
   }
 
   PlayerSvtData copy() {
@@ -234,8 +234,8 @@ class PlayerSvtData {
       ..appendLvs = appendLvs.toList()
       ..extraPassives = extraPassives.toList()
       ..disabledExtraSkills = disabledExtraSkills.toSet()
-      ..additionalPassives = List<BaseSkill>.of(additionalPassives)
-      ..additionalPassiveLvs = additionalPassiveLvs.toList()
+      ..customPassives = List<BaseSkill>.of(customPassives)
+      ..customPassiveLvs = customPassiveLvs.toList()
       ..tdLv = tdLv
       ..td = td
       ..lv = lv
@@ -260,8 +260,8 @@ class PlayerSvtData {
       ..skillLvs = storedData.skillLvs.toList()
       ..appendLvs = storedData.appendLvs.toList()
       ..disabledExtraSkills = storedData.disabledExtraSkills.toSet()
-      ..additionalPassives = List<BaseSkill>.of(storedData.additionalPassives)
-      ..additionalPassiveLvs = storedData.additionalPassiveLvs.toList()
+      ..customPassives = List<BaseSkill>.of(storedData.customPassives)
+      ..customPassiveLvs = storedData.customPassiveLvs.toList()
       ..tdLv = storedData.tdLv
       ..lv = storedData.lv
       ..atkFou = storedData.atkFou
@@ -287,18 +287,18 @@ class PlayerSvtData {
 
       playerSvtData.extraPassives = svt.extraPassive.toList();
 
-      playerSvtData.additionalPassives.clear();
-      playerSvtData.additionalPassiveLvs.clear();
-      for (int index = 0; index < storedData.additionalPassives.length; index++) {
-        final storedSkill = storedData.additionalPassives[index];
+      playerSvtData.customPassives.clear();
+      playerSvtData.customPassiveLvs.clear();
+      for (int index = 0; index < storedData.customPassives.length; index++) {
+        final storedSkill = storedData.customPassives[index];
         final targetSkill = db.gameData.baseSkills[storedSkill.id] ??
             await showEasyLoading(() => AtlasApi.skill(storedSkill.id), mask: true) ??
             storedSkill;
 
-        int lv = storedData.additionalPassiveLvs.getOrNull(index) ?? targetSkill.maxLv;
+        int lv = storedData.customPassiveLvs.getOrNull(index) ?? targetSkill.maxLv;
         lv = lv.clamp(1, targetSkill.maxLv);
-        playerSvtData.additionalPassives.add(targetSkill);
-        playerSvtData.additionalPassiveLvs.add(lv);
+        playerSvtData.customPassives.add(targetSkill);
+        playerSvtData.customPassiveLvs.add(lv);
       }
 
       if (storedData.tdId != null) {
@@ -329,8 +329,8 @@ class PlayerSvtData {
       skillIds: skills.map((skill) => skill?.id).toList(),
       appendLvs: appendLvs.toList(),
       disabledExtraSkills: disabledExtraSkills.toSet(),
-      additionalPassives: additionalPassives.toList(),
-      additionalPassiveLvs: additionalPassiveLvs.toList(),
+      customPassives: customPassives.toList(),
+      customPassiveLvs: customPassiveLvs.toList(),
       tdLv: tdLv,
       tdId: td?.id,
       lv: lv,

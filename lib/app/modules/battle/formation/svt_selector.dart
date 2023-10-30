@@ -87,7 +87,7 @@ class ServantSelector extends StatelessWidget {
             right: -5,
             child: db.getIconImage(AssetURL.i.items(12), width: 32, aspectRatio: 1),
           ),
-        if (playerSvtData.additionalPassives.isNotEmpty)
+        if (playerSvtData.customPassives.isNotEmpty)
           Positioned(
             top: -5,
             child: db.getIconImage(AssetURL.i.buffIcon(302), width: 24, aspectRatio: 1),

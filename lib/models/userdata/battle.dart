@@ -152,8 +152,8 @@ class BattleShareData {
   Map<String, dynamic> toJson() {
     final team2 = BattleTeamFormation.fromJson(team.toJson());
     for (final svt in [...team2.onFieldSvts, ...team2.backupSvts]) {
-      svt?.additionalPassives.clear();
-      svt?.additionalPassiveLvs.clear();
+      svt?.customPassives.clear();
+      svt?.customPassiveLvs.clear();
     }
     return _$BattleShareDataToJson(BattleShareData(
       minBuild: kMinBuild,
@@ -349,8 +349,8 @@ class SvtSaveData {
   List<int> cardStrengthens;
   List<int?> commandCodeIds;
   Set<int> disabledExtraSkills;
-  List<BaseSkill> additionalPassives;
-  List<int> additionalPassiveLvs;
+  List<BaseSkill> customPassives;
+  List<int> customPassiveLvs;
 
   SvtSaveData({
     this.svtId,
@@ -372,16 +372,16 @@ class SvtSaveData {
     List<int>? cardStrengthens,
     List<int?>? commandCodeIds,
     Set<int>? disabledExtraSkills,
-    List<BaseSkill>? additionalPassives,
-    List<int>? additionalPassiveLvs,
+    List<BaseSkill>? customPassives,
+    List<int>? customPassiveLvs,
   })  : skillLvs = skillLvs ?? [10, 10, 10],
         skillIds = List.generate(3, (index) => skillIds?.getOrNull(index)),
         appendLvs = appendLvs ?? [0, 0, 0],
         cardStrengthens = cardStrengthens ?? [0, 0, 0, 0, 0],
         commandCodeIds = List.generate(5, (index) => commandCodeIds?.getOrNull(index)),
         disabledExtraSkills = disabledExtraSkills ?? {},
-        additionalPassives = additionalPassives?.toList() ?? [],
-        additionalPassiveLvs = additionalPassiveLvs ?? [];
+        customPassives = List<BaseSkill>.from(customPassives ?? []),
+        customPassiveLvs = customPassiveLvs ?? [];
 
   factory SvtSaveData.fromJson(Map<String, dynamic> json) => _$SvtSaveDataFromJson(json);
 
@@ -397,8 +397,8 @@ class MysticCodeSaveData {
   int level;
 
   MysticCodeSaveData({
-    this.mysticCodeId = 210,
-    this.level = 10,
+    this.mysticCodeId,
+    this.level = 0,
   });
 
   factory MysticCodeSaveData.fromJson(Map<String, dynamic> json) => _$MysticCodeSaveDataFromJson(json);

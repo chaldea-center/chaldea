@@ -249,12 +249,12 @@ SvtSaveData _$SvtSaveDataFromJson(Map json) => $checkedCreate(
               $checkedConvert('commandCodeIds', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
           disabledExtraSkills:
               $checkedConvert('disabledExtraSkills', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
-          additionalPassives: $checkedConvert(
-              'additionalPassives',
+          customPassives: $checkedConvert(
+              'customPassives',
               (v) =>
                   (v as List<dynamic>?)?.map((e) => BaseSkill.fromJson(Map<String, dynamic>.from(e as Map))).toList()),
-          additionalPassiveLvs:
-              $checkedConvert('additionalPassiveLvs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          customPassiveLvs:
+              $checkedConvert('customPassiveLvs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
         );
         return val;
       },
@@ -288,8 +288,8 @@ Map<String, dynamic> _$SvtSaveDataToJson(SvtSaveData instance) {
   val['cardStrengthens'] = instance.cardStrengthens;
   val['commandCodeIds'] = instance.commandCodeIds;
   val['disabledExtraSkills'] = instance.disabledExtraSkills.toList();
-  val['additionalPassives'] = instance.additionalPassives.map((e) => e.toJson()).toList();
-  val['additionalPassiveLvs'] = instance.additionalPassiveLvs;
+  val['customPassives'] = instance.customPassives.map((e) => e.toJson()).toList();
+  val['customPassiveLvs'] = instance.customPassiveLvs;
   return val;
 }
 
@@ -304,8 +304,8 @@ MysticCodeSaveData _$MysticCodeSaveDataFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = MysticCodeSaveData(
-          mysticCodeId: $checkedConvert('mysticCodeId', (v) => v as int? ?? 210),
-          level: $checkedConvert('level', (v) => v as int? ?? 10),
+          mysticCodeId: $checkedConvert('mysticCodeId', (v) => v as int?),
+          level: $checkedConvert('level', (v) => v as int? ?? 0),
         );
         return val;
       },

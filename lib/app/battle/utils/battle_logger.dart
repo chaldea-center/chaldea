@@ -238,7 +238,7 @@ class BattleRecordManager {
     if (!svt.isUserSvt) {
       setIllegal('Not player servant: $svtName');
     }
-    if (svtData.additionalPassives.isNotEmpty) {
+    if (svtData.customPassives.isNotEmpty) {
       setIllegal('${S.current.extra_passive}(${S.current.general_custom})');
     }
     if (svtData.fixedAtk != null || svtData.fixedHp != null) {
