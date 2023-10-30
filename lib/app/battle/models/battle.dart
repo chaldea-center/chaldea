@@ -1582,12 +1582,12 @@ class BattleData {
   }
 
   Future<void> _replaySkill(BattleRecordData action) async {
-    if (action.skillIndex == null) return;
+    if (action.skill == null) return;
 
-    if (action.servantIndex == null) {
-      await activateMysticCodeSkill(action.skillIndex!);
+    if (action.svt == null) {
+      await activateMysticCodeSkill(action.skill!);
     } else {
-      await activateSvtSkill(action.servantIndex!, action.skillIndex!);
+      await activateSvtSkill(action.svt!, action.skill!);
     }
   }
 

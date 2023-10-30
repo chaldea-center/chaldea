@@ -607,8 +607,8 @@ BattleRecordData _$BattleRecordDataFromJson(Map json) => $checkedCreate(
               'options', (v) => v == null ? null : BattleActionOptions.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         $checkedConvert('type', (v) => val.type = $enumDecode(_$BattleRecordDataTypeEnumMap, v));
-        $checkedConvert('servantIndex', (v) => val.servantIndex = v as int?);
-        $checkedConvert('skillIndex', (v) => val.skillIndex = v as int?);
+        $checkedConvert('svt', (v) => val.svt = v as int?);
+        $checkedConvert('skill', (v) => val.skill = v as int?);
         $checkedConvert(
             'attacks',
             (v) => val.attacks = (v as List<dynamic>?)
@@ -629,8 +629,8 @@ Map<String, dynamic> _$BattleRecordDataToJson(BattleRecordData instance) {
     }
   }
 
-  writeNotNull('servantIndex', instance.servantIndex);
-  writeNotNull('skillIndex', instance.skillIndex);
+  writeNotNull('svt', instance.svt);
+  writeNotNull('skill', instance.skill);
   writeNotNull('attacks', instance.attacks?.map((e) => e.toJson()).toList());
   val['options'] = instance.options.toJson();
   return val;

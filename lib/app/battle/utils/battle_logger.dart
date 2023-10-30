@@ -89,7 +89,7 @@ class BattleRecordManager {
     records.add(BattleProgressTurnRecord(turn));
   }
 
-  void skillActivation(final BattleData battleData, final int? servantIndex, final int skillIndex) {
+  void skillActivation(final BattleData battleData, final int? svt, final int skill) {
     records.add(BattleSkillActivationRecord(
       playerTarget: battleData.playerTargetIndex,
       enemyTarget: battleData.enemyTargetIndex,
@@ -97,8 +97,8 @@ class BattleRecordManager {
       threshold: battleData.options.threshold,
       isAfter7thAnni: battleData.options.isAfter7thAnni,
       tailoredExecution: battleData.options.tailoredExecution,
-      servantIndex: servantIndex,
-      skillIndex: skillIndex,
+      svt: svt,
+      skill: skill,
     ));
   }
 
@@ -437,8 +437,8 @@ class BattleSkillActivationRecord extends BattleRecord {
     required final int threshold,
     required final bool isAfter7thAnni,
     required final bool tailoredExecution,
-    required final int? servantIndex,
-    required final int skillIndex,
+    required final int? svt,
+    required final int skill,
   }) : recordData = BattleRecordData.skill(
           options: BattleActionOptions(
             playerTarget: playerTarget,
@@ -448,8 +448,8 @@ class BattleSkillActivationRecord extends BattleRecord {
             isAfter7thAnni: isAfter7thAnni,
             tailoredExecution: tailoredExecution,
           ),
-          servantIndex: servantIndex,
-          skillIndex: skillIndex,
+          svt: svt,
+          skill: skill,
         );
 
   @override
@@ -461,8 +461,8 @@ class BattleSkillActivationRecord extends BattleRecord {
       threshold: recordData.options.threshold,
       isAfter7thAnni: recordData.options.isAfter7thAnni,
       tailoredExecution: recordData.options.tailoredExecution,
-      servantIndex: recordData.servantIndex,
-      skillIndex: recordData.skillIndex!,
+      svt: recordData.svt,
+      skill: recordData.skill!,
     );
   }
 

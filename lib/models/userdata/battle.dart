@@ -926,8 +926,8 @@ enum BattleRecordDataType { base, skill, attack }
 @JsonSerializable(includeIfNull: false)
 class BattleRecordData {
   BattleRecordDataType type;
-  int? servantIndex;
-  int? skillIndex;
+  int? svt;
+  int? skill; 
   List<BattleAttackRecordData>? attacks;
   BattleActionOptions options;
 
@@ -936,8 +936,8 @@ class BattleRecordData {
         options = options ?? BattleActionOptions();
 
   BattleRecordData.skill({
-    this.servantIndex,
-    this.skillIndex,
+    this.svt,
+    this.skill,
     BattleActionOptions? options,
   })  : type = BattleRecordDataType.skill,
         options = options ?? BattleActionOptions();
@@ -954,7 +954,7 @@ class BattleRecordData {
   Map<String, dynamic> toJson() => _$BattleRecordDataToJson(this);
 
   bool usedMysticCode(final int checkIndex) {
-    return type == BattleRecordDataType.skill && servantIndex == null && skillIndex == checkIndex;
+    return type == BattleRecordDataType.skill && svt == null && skill == checkIndex;
   }
 
   bool containsTdCardType(final CardType cardType) {
