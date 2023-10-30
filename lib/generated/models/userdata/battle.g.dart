@@ -550,8 +550,8 @@ BattleReplayDelegateData _$BattleReplayDelegateDataFromJson(Map json) => $checke
               $checkedConvert('actWeightSelections', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
           skillActSelectSelections:
               $checkedConvert('skillActSelectSelections', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
-          tdTypeChangeIndexes:
-              $checkedConvert('tdTypeChangeIndexes', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          tdTypeChanges: $checkedConvert(
+              'tdTypeChanges', (v) => (v as List<dynamic>?)?.map((e) => $enumDecode(_$CardTypeEnumMap, e)).toList()),
           ptRandomIndexes:
               $checkedConvert('ptRandomIndexes', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
           canActivateDecisions:
@@ -568,12 +568,23 @@ BattleReplayDelegateData _$BattleReplayDelegateDataFromJson(Map json) => $checke
 Map<String, dynamic> _$BattleReplayDelegateDataToJson(BattleReplayDelegateData instance) => <String, dynamic>{
       'actWeightSelections': instance.actWeightSelections,
       'skillActSelectSelections': instance.skillActSelectSelections,
-      'tdTypeChangeIndexes': instance.tdTypeChangeIndexes,
+      'tdTypeChanges': instance.tdTypeChanges.map((e) => _$CardTypeEnumMap[e]!).toList(),
       'ptRandomIndexes': instance.ptRandomIndexes,
       'canActivateDecisions': instance.canActivateDecisions,
       'damageSelections': instance.damageSelections,
       'replaceMemberIndexes': instance.replaceMemberIndexes,
     };
+
+const _$CardTypeEnumMap = {
+  CardType.none: 'none',
+  CardType.arts: 'arts',
+  CardType.buster: 'buster',
+  CardType.quick: 'quick',
+  CardType.extra: 'extra',
+  CardType.blank: 'blank',
+  CardType.weak: 'weak',
+  CardType.strength: 'strength',
+};
 
 BattleActionOptions _$BattleActionOptionsFromJson(Map json) => $checkedCreate(
       'BattleActionOptions',
@@ -662,17 +673,6 @@ Map<String, dynamic> _$BattleAttackRecordDataToJson(BattleAttackRecordData insta
       'critical': instance.critical,
       'cardType': _$CardTypeEnumMap[instance.cardType]!,
     };
-
-const _$CardTypeEnumMap = {
-  CardType.none: 'none',
-  CardType.arts: 'arts',
-  CardType.buster: 'buster',
-  CardType.quick: 'quick',
-  CardType.extra: 'extra',
-  CardType.blank: 'blank',
-  CardType.weak: 'weak',
-  CardType.strength: 'strength',
-};
 
 BattleActions _$BattleActionsFromJson(Map json) => $checkedCreate(
       'BattleActions',

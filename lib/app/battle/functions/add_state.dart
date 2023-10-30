@@ -6,6 +6,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
+import '../interactions/td_type_change_selector.dart';
 
 const kExtendTurnBuffTypes = <int>[
   // /export/JP/NiceConstantStr.json
@@ -21,7 +22,6 @@ class AddState {
     final int funcId,
     final DataVals dataVals,
     final List<BattleServantData> targets, {
-    final List<NiceTd?>? tdSelections,
     bool isPassive = false,
     final bool isShortBuff = false,
     final bool notActorPassive = false,
@@ -50,33 +50,8 @@ class AddState {
         }
       }
 
-      if (buff.type == BuffType.tdTypeChange) {
-        buffData.tdSelection = tdSelections![i];
-      } else if (buff.type == BuffType.tdTypeChangeArts ||
-          buff.type == BuffType.tdTypeChangeQuick ||
-          buff.type == BuffType.tdTypeChangeBuster) {
-        final baseTd = target.getBaseTD();
-        final changeCardType = {
-          BuffType.tdTypeChangeArts: CardType.arts,
-          BuffType.tdTypeChangeBuster: CardType.buster,
-          BuffType.tdTypeChangeQuick: CardType.quick,
-        }[buff.type]!;
-        final changeTdId = baseTd?.script?.tdTypeChangeIDs?.getOrNull(changeCardType.id - 1);
-        if (baseTd != null && changeTdId != null) {
-          final List<NiceTd> localTds = [];
-          if (target.isPlayer) {
-            localTds.addAll(target.niceSvt!.noblePhantasms);
-          } else {
-            final td = target.niceEnemy!.noblePhantasm.noblePhantasm;
-            if (td != null) localTds.add(td);
-          }
-
-          NiceTd? td = localTds.firstWhereOrNull((e) => e.id == changeTdId);
-          td ??= await AtlasApi.td(changeTdId);
-          if (td != null) {
-            buffData.tdSelection = td;
-          }
-        }
+      if (buff.type.isTdTypeChange) {
+        buffData.tdTypeChange = await getTypeChangeTd(battleData, target, buff);
       } else if (buff.type == BuffType.upDamageEventPoint) {
         final pointBuff = battleData.options.pointBuffs.values
             .firstWhereOrNull((pointBuff) => pointBuff.funcIds.isEmpty || pointBuff.funcIds.contains(funcId));
@@ -177,5 +152,57 @@ class AddState {
         '${battleData.options.tailoredExecution ? '' : ' [($activationRate - $resistRate) vs ${battleData.options.threshold}]'}');
 
     return success;
+  }
+
+  static Future<NiceTd?> getTypeChangeTd(BattleData battleData, BattleServantData svt, Buff buff) async {
+    final NiceTd? baseTd = svt.getBaseTD();
+    if (baseTd == null) return null;
+    if (!buff.type.isTdTypeChange) return null;
+    final excludeTypes = baseTd.script?.excludeTdChangeTypes;
+    final tdTypeChangeIDs = baseTd.script?.tdTypeChangeIDs;
+    if (tdTypeChangeIDs == null || tdTypeChangeIDs.isEmpty) return null;
+
+    final validCardTypes = <CardType>[CardType.arts, CardType.buster, CardType.quick];
+    final cardIdTypeMap = {for (final c in validCardTypes) c.id: c};
+
+    if (excludeTypes != null && excludeTypes.isNotEmpty) {
+      validCardTypes.removeWhere((e) => excludeTypes.contains(e.id));
+    }
+    final tdExistTypes =
+        cardIdTypeMap.entries.where((e) => e.key <= tdTypeChangeIDs.length).map((e) => e.value).toList();
+    validCardTypes.removeWhere((e) => !tdExistTypes.contains(e));
+    if (validCardTypes.isEmpty) return null;
+
+    // in UI, Q/A/B order
+    CardType? targetType;
+    if (buff.type == BuffType.tdTypeChangeArts) {
+      targetType = CardType.arts;
+    } else if (buff.type == BuffType.tdTypeChangeBuster) {
+      targetType = CardType.buster;
+    } else if (buff.type == BuffType.tdTypeChangeQuick) {
+      targetType = CardType.quick;
+    } else if (buff.type == BuffType.tdTypeChange) {
+      if (battleData.delegate?.tdTypeChange != null) {
+        targetType = await battleData.delegate!.tdTypeChange!(svt, validCardTypes);
+      } else if (battleData.mounted) {
+        targetType = await TdTypeChangeSelector.show(battleData, validCardTypes);
+        if (targetType != null) {
+          battleData.replayDataRecord.tdTypeChanges.add(targetType);
+        }
+      }
+    }
+    NiceTd? targetTd;
+    if (targetType != null && validCardTypes.contains(targetType)) {
+      // start from Q/A/B=1/2/3 -> index 0/1/2
+      final tdId = tdTypeChangeIDs.getOrNull(targetType.id - 1);
+      if (tdId == null) return null;
+
+      final List<NiceTd?> tds = svt.isPlayer
+          ? (svt.playerSvtData?.svt?.noblePhantasms ?? [])
+          : (svt.niceSvt?.noblePhantasms ?? [svt.niceEnemy?.noblePhantasm.noblePhantasm]);
+      targetTd = tds.lastWhereOrNull((e) => e?.id == tdId);
+      targetTd ??= await showEasyLoading(() => AtlasApi.td(tdId, svtId: svt.svtId), mask: true);
+    }
+    return targetTd;
   }
 }

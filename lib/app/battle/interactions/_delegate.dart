@@ -7,7 +7,7 @@ import '../models/battle.dart';
 class BattleDelegate {
   Future<int?> Function(BattleServantData? actor)? actWeight;
   Future<int?> Function(BattleServantData? actor)? skillActSelect;
-  Future<NiceTd?> Function(BattleServantData? actor, List<NiceTd> tds)? tdTypeChange;
+  Future<CardType?> Function(BattleServantData? actor, List<CardType> tdTypes)? tdTypeChange;
   Future<BattleServantData?> Function(List<BattleServantData> targets)? ptRandom;
   Future<bool> Function(bool curResult)? canActivate;
   Future<int> Function(int curRandom)? damageRandom;
@@ -52,17 +52,12 @@ class BattleReplayDelegate extends BattleDelegate {
       return _data.skillActSelectSelections.removeAt(0);
     };
 
-    tdTypeChange = (actor, tds) async {
-      if (_data.tdTypeChangeIndexes.isEmpty) {
+    tdTypeChange = (actor, validTypes) async {
+      if (_data.tdTypeChanges.isEmpty) {
         return null;
       }
 
-      final selectedIndex = _data.tdTypeChangeIndexes.removeAt(0);
-      if (selectedIndex < 0 || selectedIndex >= tds.length) {
-        return null;
-      }
-
-      return tds[selectedIndex];
+      return _data.tdTypeChanges.removeAt(0);
     };
 
     ptRandom = (targets) async {

@@ -827,24 +827,6 @@ class BattleServantData {
     });
   }
 
-  List<NiceTd> getTdsById(final List<int> tdIds) {
-    // TODO: enemy(svt?) doesn't contain type changed TDs and fetch remote TDs
-    if (isEnemy) {
-      final td = niceEnemy!.noblePhantasm.noblePhantasm;
-      return [if (td != null) td];
-    }
-
-    final List<NiceTd> result = [];
-
-    for (final td in niceSvt!.noblePhantasms) {
-      if (tdIds.contains(td.id)) {
-        result.add(td);
-      }
-    }
-
-    return result;
-  }
-
   NiceTd? getBaseTD() {
     return isPlayer ? playerSvtData!.td : niceEnemy!.noblePhantasm.noblePhantasm;
   }
@@ -854,8 +836,8 @@ class BattleServantData {
     NiceTd? selected;
     for (final buff in buffs.reversed) {
       if (!buff.shouldApplyBuff(battleData, this)) continue;
-      if (buff.tdSelection != null) {
-        selected = buff.tdSelection!;
+      if (buff.tdTypeChange != null) {
+        selected = buff.tdTypeChange!;
         break;
       }
     }

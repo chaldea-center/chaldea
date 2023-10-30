@@ -473,6 +473,13 @@ enum BuffType {
     }
     return base;
   }
+
+  bool get isTdTypeChange => const [
+        tdTypeChange,
+        tdTypeChangeArts,
+        tdTypeChangeBuster,
+        tdTypeChangeQuick,
+      ].contains(this);
 }
 
 final Map<BuffType, BuffValueTriggerType Function(DataVals)> kBuffValueTriggerTypes = {

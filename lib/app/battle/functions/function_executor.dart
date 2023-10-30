@@ -24,7 +24,6 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../../api/atlas.dart';
 import '../interactions/act_set_select.dart';
-import '../interactions/td_type_change_selector.dart';
 import 'buff_turn_count.dart';
 import 'call_servant.dart';
 import 'move_to_last_sub_member.dart';
@@ -193,30 +192,6 @@ class FunctionExecutor {
 
       updateTargets(battleData, function, dataVals, targets);
 
-      List<NiceTd?> tdSelections = [];
-      if (function.funcTargetType == FuncTargetType.commandTypeSelfTreasureDevice) {
-        for (final svt in targets) {
-          NiceTd? tdSelection;
-          final NiceTd? baseTd = svt.playerSvtData?.td;
-          if (baseTd != null) {
-            if (baseTd.script != null && baseTd.script!.tdTypeChangeIDs != null) {
-              final List<NiceTd> tds = svt.getTdsById(baseTd.script!.tdTypeChangeIDs!);
-              if (tds.isNotEmpty) {
-                if (battleData.delegate?.tdTypeChange != null) {
-                  tdSelection = await battleData.delegate!.tdTypeChange!(activator, tds);
-                } else if (battleData.mounted) {
-                  tdSelection = await TdTypeChangeSelector.show(battleData, tds);
-                  if (tdSelection != null) {
-                    battleData.replayDataRecord.tdTypeChangeIndexes.add(tds.indexOf(tdSelection));
-                  }
-                }
-              }
-            }
-          }
-          tdSelections.add(tdSelection);
-        }
-      }
-
       battleData.curFunc = function;
       switch (function.funcType) {
         case FuncType.absorbNpturn:
@@ -231,7 +206,6 @@ class FunctionExecutor {
             function.funcId,
             dataVals,
             targets,
-            tdSelections: tdSelections,
             isPassive: isPassive,
             isShortBuff: function.funcType == FuncType.addStateShort,
             isCommandCode: isCommandCode,

@@ -100,7 +100,7 @@ class BuffData {
   int get dispTurn => logicTurn >= 0 ? (logicTurn + 1) ~/ 2 : logicTurn;
   int param = 0;
   int additionalParam = 0;
-  NiceTd? tdSelection;
+  NiceTd? tdTypeChange;
 
   bool checkBuffClear() => count == 0 || logicTurn == 0;
 
@@ -450,7 +450,7 @@ class BuffData {
       ..logicTurn = logicTurn
       ..param = param
       ..additionalParam = additionalParam
-      ..tdSelection = tdSelection
+      ..tdTypeChange = tdTypeChange
       ..actorUniqueId = actorUniqueId
       ..actorName = actorName
       ..isUsed = isUsed

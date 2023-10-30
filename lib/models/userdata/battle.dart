@@ -861,7 +861,7 @@ enum SupportSvtType {
 class BattleReplayDelegateData {
   List<int?> actWeightSelections;
   List<int?> skillActSelectSelections;
-  List<int> tdTypeChangeIndexes;
+  List<CardType> tdTypeChanges;
   List<int?> ptRandomIndexes;
   List<bool> canActivateDecisions;
   List<int> damageSelections;
@@ -870,14 +870,14 @@ class BattleReplayDelegateData {
   BattleReplayDelegateData({
     List<int?>? actWeightSelections,
     List<int?>? skillActSelectSelections,
-    List<int>? tdTypeChangeIndexes,
+    List<CardType>? tdTypeChanges,
     List<int?>? ptRandomIndexes,
     List<bool>? canActivateDecisions,
     List<int>? damageSelections,
     List<List<int>>? replaceMemberIndexes,
   })  : actWeightSelections = actWeightSelections ?? [],
         skillActSelectSelections = skillActSelectSelections ?? [],
-        tdTypeChangeIndexes = tdTypeChangeIndexes ?? [],
+        tdTypeChanges = tdTypeChanges ?? [],
         ptRandomIndexes = ptRandomIndexes ?? [],
         canActivateDecisions = canActivateDecisions ?? [],
         damageSelections = damageSelections ?? [],
@@ -891,7 +891,7 @@ class BattleReplayDelegateData {
     return BattleReplayDelegateData(
       actWeightSelections: actWeightSelections.toList(),
       skillActSelectSelections: skillActSelectSelections.toList(),
-      tdTypeChangeIndexes: tdTypeChangeIndexes.toList(),
+      tdTypeChanges: tdTypeChanges.toList(),
       ptRandomIndexes: ptRandomIndexes.toList(),
       canActivateDecisions: canActivateDecisions.toList(),
       damageSelections: damageSelections.toList(),
