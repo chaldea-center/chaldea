@@ -610,8 +610,8 @@ BattleRecordData _$BattleRecordDataFromJson(Map json) => $checkedCreate(
         $checkedConvert('servantIndex', (v) => val.servantIndex = v as int?);
         $checkedConvert('skillIndex', (v) => val.skillIndex = v as int?);
         $checkedConvert(
-            'attackRecords',
-            (v) => val.attackRecords = (v as List<dynamic>?)
+            'attacks',
+            (v) => val.attacks = (v as List<dynamic>?)
                 ?.map((e) => BattleAttackRecordData.fromJson(Map<String, dynamic>.from(e as Map)))
                 .toList());
         return val;
@@ -631,7 +631,7 @@ Map<String, dynamic> _$BattleRecordDataToJson(BattleRecordData instance) {
 
   writeNotNull('servantIndex', instance.servantIndex);
   writeNotNull('skillIndex', instance.skillIndex);
-  writeNotNull('attackRecords', instance.attackRecords?.map((e) => e.toJson()).toList());
+  writeNotNull('attacks', instance.attacks?.map((e) => e.toJson()).toList());
   val['options'] = instance.options.toJson();
   return val;
 }

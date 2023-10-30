@@ -833,7 +833,7 @@ class BattleReplayDelegateData {
   List<int?> ptRandomIndexes;
   List<bool> canActivateDecisions;
   List<int> damageSelections;
-  List<List<int>> replaceMemberIndexes;
+  List<List<int>> replaceMemberIndexes; // [(x,y)]
 
   BattleReplayDelegateData({
     List<int?>? actWeightSelections,
@@ -898,7 +898,7 @@ class BattleRecordData {
   BattleRecordDataType type;
   int? servantIndex;
   int? skillIndex;
-  List<BattleAttackRecordData>? attackRecords;
+  List<BattleAttackRecordData>? attacks;
   BattleActionOptions options;
 
   BattleRecordData({BattleActionOptions? options})
@@ -913,10 +913,10 @@ class BattleRecordData {
         options = options ?? BattleActionOptions();
 
   BattleRecordData.attack({
-    List<BattleAttackRecordData>? attackRecords,
+    List<BattleAttackRecordData>? attacks,
     BattleActionOptions? options,
   })  : type = BattleRecordDataType.attack,
-        attackRecords = attackRecords ?? [],
+        attacks = attacks ?? [],
         options = options ?? BattleActionOptions();
 
   factory BattleRecordData.fromJson(Map<String, dynamic> json) => _$BattleRecordDataFromJson(json);
@@ -928,24 +928,24 @@ class BattleRecordData {
   }
 
   bool containsTdCardType(final CardType cardType) {
-    if (attackRecords == null || attackRecords!.isEmpty) {
+    if (attacks == null || attacks!.isEmpty) {
       return false;
     }
-    return attackRecords!.any((cardAction) => cardAction.isNp && cardAction.cardType == cardType);
+    return attacks!.any((cardAction) => cardAction.isNp && cardAction.cardType == cardType);
   }
 
   int countCrits() {
-    if (attackRecords == null || attackRecords!.isEmpty) {
+    if (attacks == null || attacks!.isEmpty) {
       return 0;
     }
-    return attackRecords!.fold(0, (sum, cardAction) => cardAction.isCritical ? sum + 1 : sum);
+    return attacks!.fold(0, (sum, cardAction) => cardAction.isCritical ? sum + 1 : sum);
   }
 
   int countNormalAttacks() {
-    if (attackRecords == null || attackRecords!.isEmpty) {
+    if (attacks == null || attacks!.isEmpty) {
       return 0;
     }
-    return attackRecords!.fold(0, (sum, cardAction) => !cardAction.isNp ? sum + 1 : sum);
+    return attacks!.fold(0, (sum, cardAction) => !cardAction.isNp ? sum + 1 : sum);
   }
 }
 

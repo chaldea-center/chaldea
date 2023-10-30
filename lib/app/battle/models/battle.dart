@@ -1592,10 +1592,10 @@ class BattleData {
   }
 
   Future<void> _replayBattle(BattleRecordData action) async {
-    if (action.attackRecords == null) return;
+    if (action.attacks == null) return;
 
     final List<CombatAction> actions = [];
-    for (final attackRecord in action.attackRecords!) {
+    for (final attackRecord in action.attacks!) {
       final svt = onFieldAllyServants[attackRecord.servantIndex];
       if (svt == null) continue;
 

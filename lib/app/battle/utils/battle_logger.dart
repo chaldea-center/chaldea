@@ -138,7 +138,7 @@ class BattleRecordManager {
         probabilityThreshold: battleData.options.probabilityThreshold,
         isAfter7thAnni: battleData.options.isAfter7thAnni,
         tailoredExecution: battleData.options.tailoredExecution,
-        actions: combatActions
+        attacks: combatActions
             .map((combatAction) => BattleAttackRecordData(
                   servantIndex: combatAction.actor.fieldIndex,
                   cardIndex: combatAction.cardData.cardIndex,
@@ -292,7 +292,7 @@ class BattleRecordManager {
       if (record.options.probabilityThreshold <= kMinProb) {
         countProb += 1;
       }
-      final attacks = record.attackRecords ?? [];
+      final attacks = record.attacks ?? [];
       for (final attack in attacks) {
         if (!attack.isNp) {
           countNormalAttack += 1;
@@ -541,6 +541,7 @@ class BattleOrderChangeRecord extends BattleRecord {
 
 class BattleAttacksInitiationRecord extends BattleRecord {
   final BattleRecordData recordData;
+
   BattleAttacksInitiationRecord({
     required final int allyTargetIndex,
     required final int enemyTargetIndex,
@@ -548,7 +549,7 @@ class BattleAttacksInitiationRecord extends BattleRecord {
     required final int probabilityThreshold,
     required final bool isAfter7thAnni,
     required final bool tailoredExecution,
-    required final List<BattleAttackRecordData> actions,
+    required final List<BattleAttackRecordData> attacks,
   }) : recordData = BattleRecordData.attack(
           options: BattleActionOptions(
             allyTargetIndex: allyTargetIndex,
@@ -558,7 +559,7 @@ class BattleAttacksInitiationRecord extends BattleRecord {
             isAfter7thAnni: isAfter7thAnni,
             tailoredExecution: tailoredExecution,
           ),
-          attackRecords: actions.toList(),
+          attacks: attacks.toList(),
         );
 
   @override
@@ -570,7 +571,7 @@ class BattleAttacksInitiationRecord extends BattleRecord {
       probabilityThreshold: recordData.options.probabilityThreshold,
       isAfter7thAnni: recordData.options.isAfter7thAnni,
       tailoredExecution: recordData.options.tailoredExecution,
-      actions: recordData.attackRecords!.toList(),
+      attacks: recordData.attacks!.toList(),
     );
   }
 
