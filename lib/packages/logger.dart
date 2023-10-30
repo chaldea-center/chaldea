@@ -82,6 +82,23 @@ class _CustomPrettyPrinter extends PrettyPrinter {
     super.noBoxingByDefault = false,
   });
 
+  final _ignoredErrors = <String>{};
+
+  bool _tryIgnore(Object? exception) {
+    if (exception is DioException) {
+      final dioError = exception.error;
+      if (dioError is! Exception) return false;
+      exception = dioError;
+    }
+    if (exception is SocketException) {
+      exception = SocketException(exception.message, osError: exception.osError, address: exception.address);
+    }
+    if (exception is IOException) {
+      return !_ignoredErrors.add(exception.toString());
+    }
+    return false;
+  }
+
   @override
   List<String> log(LogEvent event) {
     String messageStr = stringifyMessage(event.message);
@@ -94,14 +111,22 @@ class _CustomPrettyPrinter extends PrettyPrinter {
       return StackTrace.fromString(lines.join('\n'));
     }
 
-    String? stackTraceStr;
+    if (_tryIgnore(event.error)) {
+      return [];
+    }
+
     dynamic error = event.error;
-    if (event.stackTrace == null) {
-      if (methodCount > 0 && event.level.index > Level.verbose.index) {
+    StackTrace? stackTrace = error is DioException ? error.stackTrace : event.stackTrace;
+    String? stackTraceStr;
+
+    if (event.level == Level.verbose) {
+      stackTraceStr = null;
+    } else if (stackTrace == null) {
+      if (methodCount > 0) {
         stackTraceStr = formatStackTrace(_fmtStackTrace(StackTrace.current), methodCount);
       }
     } else if (errorMethodCount > 0) {
-      stackTraceStr = formatStackTrace(_fmtStackTrace(event.stackTrace), errorMethodCount);
+      stackTraceStr = formatStackTrace(_fmtStackTrace(stackTrace), errorMethodCount);
     }
     if (error is DioException && kReleaseMode) {
       stackTraceStr = null;
@@ -134,27 +159,31 @@ class _CustomPrettyPrinter extends PrettyPrinter {
       );
     }
     String? errorStr = error?.toString();
-
+    if (printEmojis && errorStr != null) {
+      errorStr = (PrettyPrinter.levelEmojis[event.level] ?? '') + errorStr;
+    }
     String timeStr = DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch).toString();
-
-    List<String> buffer = [];
 
     String levelStr = event.level.toString().split('.').last.toUpperCase();
 
-    if (stackTraceStr != null && event.level != Level.verbose) {
-      final lines = stackTraceStr.split('\n');
-      for (int index = 0; index < lines.length; index++) {
-        buffer.add((index == 0 ? '├ ' : '│ ') + lines[index]);
+    final fullMessageStr = '[$timeStr][$levelStr] $messageStr';
+
+    const addBottom = kDebugMode;
+
+    final lines = <String>[
+      if (stackTraceStr != null) ...stackTraceStr.split('\n'),
+      if (errorStr != null) errorStr,
+      fullMessageStr,
+    ];
+    if (lines.length > 1) {
+      for (int index = 0; index < lines.length - 1; index++) {
+        lines[index] = '├ ${lines[index]}';
+      }
+      lines[lines.length - 1] = (addBottom ? '├ ' : '└-') + lines[lines.length - 1];
+      if (addBottom) {
+        lines.add('└---------');
       }
     }
-    if (errorStr != null) {
-      if (printEmojis) {
-        errorStr = (PrettyPrinter.levelEmojis[event.level] ?? '') + errorStr;
-      }
-      buffer.add('├ $errorStr');
-    }
-    buffer.add('├ [$timeStr][$levelStr] $messageStr');
-    buffer.add('└'.padRight(kReleaseMode ? 10 : lineLength, '-'));
-    return buffer;
+    return lines;
   }
 }

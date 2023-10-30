@@ -121,15 +121,17 @@ class _SummonListPageState extends State<SummonListPage> with SearchableListStat
   Widget listItemBuilder(LimitedSummon summon) {
     Widget title;
     Widget? subtitle;
-    if (filterData.showBanner) {
+    final banner = summon.resolvedBanner.l;
+    if (filterData.showBanner && banner != null) {
       title = ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 108),
         child: CachedImage(
-          imageUrl: summon.resolvedBanner.l,
+          imageUrl: banner,
           placeholder: (ctx, url) => Padding(
             padding: const EdgeInsetsDirectional.only(start: 16),
             child: Text(summon.lName, textScaleFactor: 0.9),
           ),
+          aspectRatio: 8 / 3,
           cachedOption: CachedImageOption(errorWidget: (ctx, url, error) => Text(summon.lName)),
         ),
       );

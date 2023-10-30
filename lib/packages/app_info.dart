@@ -47,7 +47,10 @@ class AppInfo {
         deviceParams.addAll(Map.from(windowsInfo.data)..remove('digitalProductId'));
       } else if (PlatformU.isWeb) {
         final webInfo = await DeviceInfoPlugin().webBrowserInfo;
-        deviceParams.addAll(Map.from(webInfo.data));
+        deviceParams.addAll({
+          ...webInfo.data,
+          'browserName': webInfo.browserName.name,
+        });
       } else {
         deviceParams['operatingSystem'] = PlatformU.operatingSystem;
         deviceParams['operatingSystemVersion'] = PlatformU.operatingSystemVersion;
