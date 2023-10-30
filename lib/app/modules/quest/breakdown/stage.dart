@@ -101,7 +101,11 @@ class QuestWave extends StatelessWidget {
         for (final enemy in enemies) {
           if (enemy != null) {
             assert(_enemies[enemy.deckId - 1] == null || questPhase == null || questPhase?.type == QuestType.warBoard);
-            _enemies[enemy.deckId - 1] = enemy;
+            if (_enemies[enemy.deckId - 1] == null) {
+              _enemies[enemy.deckId - 1] = enemy;
+            } else {
+              _enemies.add(enemy);
+            }
           }
         }
         // for (int i = 0; i < _enemies.length ~/ 3; i++) {
