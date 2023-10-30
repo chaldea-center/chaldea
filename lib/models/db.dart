@@ -25,6 +25,7 @@ import '../utils/json_helper.dart';
 import 'gamedata/gamedata.dart';
 import 'paths.dart';
 import 'userdata/local_settings.dart';
+import 'userdata/security.dart';
 import 'userdata/userdata.dart';
 
 import 'package:flutter_web_plugins/url_strategy.dart'; // ignore: depend_on_referenced_packages
@@ -35,6 +36,7 @@ class _Database {
   // members
   final paths = PathManager();
   LocalSettings settings = LocalSettings();
+  ChaldeaSecurity legacySecurity = ChaldeaSecurity();
   UserData _userData = UserData();
 
   UserData get userData => _userData;
@@ -154,6 +156,7 @@ class _Database {
     MethodChannelChaldea.configMethodChannel();
 
     // init other hive boxes at last
+    await legacySecurity.init();
     if (kIsWeb) usePathUrlStrategy();
     _startSavingLoop();
   }
