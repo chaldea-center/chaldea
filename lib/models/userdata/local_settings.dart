@@ -10,6 +10,7 @@ import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../app/modules/home/elements/gallery_item.dart';
 import '../../packages/language.dart';
+import '../api/api.dart';
 import '../gamedata/common.dart';
 import '../gamedata/drop_rate.dart';
 import '_helper.dart';
@@ -83,6 +84,7 @@ class LocalSettings {
 
   MasterMissionOptions masterMissionOptions;
   _MiscSettings misc;
+  _SecretsData secrets;
 
   LocalSettings({
     this.beta = false,
@@ -133,6 +135,7 @@ class LocalSettings {
     RemoteConfig? remoteConfig,
     MasterMissionOptions? masterMissionOptions,
     _MiscSettings? misc,
+    _SecretsData? secrets,
   })  : _language = language,
         _preferredFavorite = preferredFavorite ?? (launchTimes == 0 ? FavoriteState.all : null),
         preferredRegions = preferredRegions == null
@@ -157,7 +160,8 @@ class LocalSettings {
         autologins = autologins ?? [],
         remoteConfig = remoteConfig ?? RemoteConfig(),
         masterMissionOptions = masterMissionOptions ?? MasterMissionOptions(),
-        misc = misc ?? _MiscSettings() {
+        misc = misc ?? _MiscSettings(),
+        secrets = secrets ?? _SecretsData() {
     this.galleries.removeWhere((key, value) => GalleryItem.allItems.every((item) => item.name != key));
   }
 
@@ -564,6 +568,23 @@ class _MiscSettings {
   factory _MiscSettings.fromJson(Map<String, dynamic> json) => _$MiscSettingsFromJson(json);
 
   Map<String, dynamic> toJson() => _$MiscSettingsToJson(this);
+}
+
+@JsonSerializable()
+class _SecretsData {
+  ChaldeaUser? user;
+  String? explorerAuth;
+
+  _SecretsData({
+    this.user,
+    this.explorerAuth,
+  });
+
+  bool get isLoggedIn => user?.secret?.isNotEmpty == true;
+
+  factory _SecretsData.fromJson(Map<String, dynamic> json) => _$SecretsDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SecretsDataToJson(this);
 }
 
 enum SvtListClassFilterStyle {

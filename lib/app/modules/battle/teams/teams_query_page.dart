@@ -34,16 +34,17 @@ class TeamsQueryPage extends StatefulWidget {
 
 class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListState<UserBattleData, TeamsQueryPage> {
   static const _pageSize = 200;
+  final secrets = db.settings.secrets;
+  int? get curUserId => secrets.user?.id;
 
   TeamQueryMode get mode => widget.mode;
 
-  bool hasNextPage = false;
   int pageIndex = 0;
-  List<UserBattleData> battleRecords = [];
+  TeamQueryResult queryResult = TeamQueryResult(data: []);
   final filterData = TeamFilterData();
 
   @override
-  Iterable<UserBattleData> get wholeData => battleRecords;
+  Iterable<UserBattleData> get wholeData => queryResult.data;
 
   @override
   void initState() {
@@ -58,15 +59,14 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   }
 
   PreferredSizeWidget? get appBar {
-    final username = db.security.username;
-
+    final username = secrets.user?.name ?? "";
     return AppBar(
       title: Text.rich(TextSpan(
         children: [
           if (mode == TeamQueryMode.user)
             TextSpan(
                 text: '${S.current.team} @'
-                    '${username != null && username.isNotEmpty ? username.breakWord : "Not Login"}'),
+                    '${secrets.isLoggedIn ? username.breakWord : "Not Login"}'),
           if (mode == TeamQueryMode.quest && widget.quest != null)
             TextSpan(text: '${S.current.team} - ${widget.quest?.lDispName.breakWord}'),
           if (mode == TeamQueryMode.id) TextSpan(text: S.current.team_shared),
@@ -78,7 +78,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           tooltip: S.current.filter,
           onPressed: () {
             Set<int> svtIds = {}, ceIds = {};
-            for (final record in battleRecords) {
+            for (final record in queryResult.data) {
               final svts = record.decoded?.team.allSvts ?? [];
               svtIds.addAll(svts.map((e) => e?.svtId ?? 0).where((e) => e > 0));
               ceIds.addAll(svts.map((e) => e?.ceId ?? 0).where((e) => e > 0));
@@ -104,8 +104,8 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
 
   @override
   PreferredSizeWidget? get buttonBar {
-    List<Widget> buttons;
-    if (!db.security.isUserLoggedIn && widget.mode == TeamQueryMode.user) {
+    final List<Widget> buttons;
+    if (widget.mode == TeamQueryMode.user && !secrets.isLoggedIn) {
       buttons = [
         ElevatedButton(
           onPressed: () async {
@@ -116,60 +116,62 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         ),
       ];
     } else {
+      String rangeHint;
+      if (queryResult.data.isEmpty && queryResult.offset == 0 && (queryResult.total ?? 0) == 0) {
+        rangeHint = '-';
+      } else {
+        rangeHint = MaterialLocalizations.of(context).pageRowsInfoTitle(
+          queryResult.offset + 1,
+          queryResult.offset + queryResult.data.length,
+          queryResult.total ?? -1,
+          false,
+        );
+      }
       buttons = [
-        IconButton(
-          onPressed: pageIndex == 0
-              ? null
-              : () async {
-                  pageIndex -= 1;
-                  await _queryTeams(pageIndex);
-                },
-          icon: Icon(DirectionalIcons.keyboard_arrow_back(context)),
-          color: Theme.of(context).colorScheme.primary,
-          tooltip: S.current.prev_page,
+        Text(
+          rangeHint,
+          style: Theme.of(context).textTheme.bodySmall,
         ),
-        ElevatedButton(
+        const SizedBox(width: 8),
+        TextButton(
+          onPressed: pageIndex == 0 ? null : () => _queryTeams(pageIndex - 1),
+          child: Text(S.current.prev_page),
+        ),
+        TextButton(
+          onPressed: !queryResult.hasNextPage ? null : () => _queryTeams(pageIndex + 1),
+          child: Text(S.current.next_page),
+        ),
+        TextButton(
           onPressed: () async {
             EasyThrottle.throttle('team_query_refresh', const Duration(seconds: 2), () {
               _queryTeams(pageIndex, refresh: true);
             });
           },
-          child: Text('${S.current.refresh}(P${pageIndex + 1})'),
-        ),
-        IconButton(
-          onPressed: !hasNextPage
-              ? null
-              : () async {
-                  pageIndex += 1;
-                  await _queryTeams(pageIndex);
-                },
-          icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-          color: Theme.of(context).colorScheme.primary,
-          tooltip: S.current.next_page,
+          child: Text(S.current.refresh),
         ),
       ];
     }
 
     return PreferredSize(
-      preferredSize: const Size.fromHeight(48),
-      child: ButtonBar(
-        alignment: MainAxisAlignment.center,
-        children: [
-          Wrap(
-            alignment: WrapAlignment.center,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: 8,
-            runSpacing: 8,
-            children: buttons,
-          ),
-        ],
+      preferredSize: const Size.fromHeight(36),
+      child: SizedBox(
+        height: 36,
+        child: ListView(
+          reverse: true,
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 16),
+          children: [
+            for (final child in buttons.reversed) Center(child: child),
+          ],
+        ),
       ),
     );
   }
 
   @override
   Widget listItemBuilder(UserBattleData record) {
-    final index = battleRecords.indexOf(record);
+    final index = queryResult.data.indexOf(record);
     final shareData = record.decoded;
     final quest = db.gameData.quests[record.questId];
     final shownIndex = _pageSize * pageIndex + index + 1;
@@ -207,13 +209,10 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
                     : const Icon(Icons.star_border, color: Colors.grey),
                 tooltip: S.current.favorite,
               ),
-            if (mode == TeamQueryMode.user ||
-                record.userId == db.security.username ||
-                AppInfo.isDebugDevice ||
-                kDebugMode)
+            if (mode == TeamQueryMode.user || record.userId == curUserId || AppInfo.isDebugDevice || kDebugMode)
               FilledButton(
                 onPressed: () {
-                  final isOthers = record.userId != db.security.username;
+                  final isOthers = record.userId != curUserId;
                   SimpleCancelOkDialog(
                     title: Text(S.current.confirm),
                     content: Text([
@@ -272,7 +271,29 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   }
 
   Widget _getHeader(int index, UserBattleData record) {
-    final style = Theme.of(context).textTheme.bodySmall;
+    final themeData = Theme.of(context);
+    final style = themeData.textTheme.bodySmall;
+    Future<void> onVote(bool isUpVote) async {
+      if (!secrets.isLoggedIn) return;
+      record.tempVotes ??= record.votes.copy();
+      record.tempVotes!.updateMyVote(isUpVote);
+      if (mounted) setState(() {});
+      EasyDebounce.debounce(
+        'team_vote_${record.id}',
+        const Duration(seconds: 1),
+        () async {
+          final result = await ChaldeaWorkerApi.teamVote(teamId: record.id, voteValue: record.votes.mine);
+          record.tempVotes = null;
+          if (result != null) {
+            record.votes = result;
+          }
+          if (mounted) setState(() {});
+        },
+      );
+    }
+
+    final votes = record.tempVotes ?? record.votes;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -280,7 +301,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         Expanded(
           child: Text(
             [
-              '${S.current.team} $index - ${record.userId} [${record.id}]',
+              '${S.current.team} $index - ${record.username ?? "User ${record.userId}"} [${record.id}]',
               if (widget.phaseInfo?.hash == null) '${S.current.version} ${record.enemyHash.substring2(2)}',
             ].join('\n'),
             style: style,
@@ -294,24 +315,24 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
               child: Icon(Icons.smart_toy_outlined, size: 18, color: Theme.of(context).colorScheme.primary),
             ),
           ),
-        // InkWell(
-        //   onTap: () {},
-        //   child: Icon(
-        //     Icons.thumb_up_alt,
-        //     size: 16,
-        //     color: Theme.of(context).unselectedWidgetColor,
-        //   ),
-        // ),
-        // Text('10 '.padRight(4, ' '), style: style),
-        // InkWell(
-        //   onTap: () {},
-        //   child: Icon(
-        //     Icons.thumb_down_alt,
-        //     size: 16,
-        //     color: Theme.of(context).unselectedWidgetColor,
-        //   ),
-        // ),
-        // Text('0 '.padRight(6, ' '), style: style),
+        InkWell(
+          onTap: secrets.isLoggedIn ? () => onVote(true) : null,
+          child: Icon(
+            Icons.thumb_up_alt,
+            size: 16,
+            color: votes.mine == 1 ? themeData.colorScheme.primary : themeData.unselectedWidgetColor,
+          ),
+        ),
+        Text(votes.up.toString().padRight(4, ' '), style: style),
+        InkWell(
+          onTap: secrets.isLoggedIn ? () => onVote(false) : null,
+          child: Icon(
+            Icons.thumb_down_alt,
+            size: 16,
+            color: votes.mine == -1 ? themeData.colorScheme.primaryContainer : themeData.unselectedWidgetColor,
+          ),
+        ),
+        Text(votes.down.toString().padRight(6, ' '), style: style),
         InkWell(
           onTap: () {
             ReportTeamDialog(record: record).showDialog(context);
@@ -430,12 +451,12 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   }
 
   Future<void> _queryTeams(final int page, {bool refresh = false}) async {
-    if (widget.mode == TeamQueryMode.user && !db.security.isUserLoggedIn) return;
-    Future<List<UserBattleData>?> task;
+    if (widget.mode == TeamQueryMode.user && !secrets.isLoggedIn) return;
+    Future<TeamQueryResult?> task;
     switch (mode) {
       case TeamQueryMode.user:
         task = showEasyLoading(() => ChaldeaWorkerApi.teamsByUser(
-              limit: _pageSize + 1,
+              limit: _pageSize,
               offset: _pageSize * page,
               expireAfter: refresh ? Duration.zero : const Duration(days: 2),
             ));
@@ -447,7 +468,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
               questId: quest.id,
               phase: phase,
               enemyHash: widget.phaseInfo?.hash,
-              limit: _pageSize + 1,
+              limit: _pageSize,
               offset: _pageSize * page,
               expireAfter: refresh ? Duration.zero : null,
             ));
@@ -455,33 +476,30 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         task = showEasyLoading(() async {
           final teams = <UserBattleData>[];
           for (final id in widget.teamIds ?? <int>[]) {
-            final team = await ChaldeaWorkerApi.laplaceQueryById(id, expireAfter: refresh ? Duration.zero : null);
+            final team = await ChaldeaWorkerApi.team(id, expireAfter: refresh ? Duration.zero : null);
             if (team != null) teams.add(team);
           }
-          return teams;
+          return TeamQueryResult(offset: 0, limit: teams.length, total: teams.length, data: teams);
         });
     }
-    List<UserBattleData>? records = await task;
-    if (records != null) {
-      hasNextPage = records.length > _pageSize;
-      records = hasNextPage ? records.sublist(0, _pageSize) : records;
-      records.sortByList((e) => [e.userId == db.security.username ? 0 : 1, e.id]);
-      battleRecords.clear();
-      battleRecords.addAll(records);
-      for (final r in battleRecords) {
+    TeamQueryResult? result = await task;
+    if (result != null) {
+      result.data.sortByList((e) => [e.userId == curUserId ? 0 : 1, -e.votes.up + e.votes.down, e.id]);
+      for (final r in result.data) {
         r.parse();
       }
+      queryResult = result;
+      pageIndex = page;
     }
     if (mounted) setState(() {});
   }
 
   Future<void> _deleteUserTeam(UserBattleData battleRecord) async {
-    if (!db.security.isUserLoggedIn) return;
+    if (!secrets.isLoggedIn) return;
     final resp = await showEasyLoading(() => ChaldeaWorkerApi.teamDelete(id: battleRecord.id));
-    if (resp.success) {
-      battleRecords.remove(battleRecord);
-      ChaldeaWorkerApi.clearCache((cache) => true);
-    }
+    if (resp == null) return;
+    queryResult.data.remove(battleRecord);
+    // ChaldeaWorkerApi.clearCache((cache) => true);
     resp.showToast();
     if (mounted) setState(() {});
   }
@@ -599,7 +617,7 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
         "ID: ${record.id}",
         "Uploader: ${record.userId}",
         // "Stars: x up, y down\n",
-        "Reporter: ${db.security.username}",
+        "Reporter: ${db.settings.secrets.user?.id}-${db.settings.secrets.user?.name}",
         "Reason:\n$reason"
       ], '\n');
 

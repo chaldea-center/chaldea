@@ -248,10 +248,13 @@ class ApiCacheManager {
     requestOptions.responseType = ResponseType.bytes;
     final uri = requestOptions.uri;
     final key = requestOptions.hashKey();
-    if (!kReleaseMode) print('fetching API: ${requestOptions.method} $uri');
-    final _t = StopwatchX(uri.toString());
+    if (!kReleaseMode) {
+      print('fetching API: ${requestOptions.method} $uri');
+      // print('headers: ${requestOptions.headers}');
+    }
+    // final _t = StopwatchX(uri.toString());
     Response<List<int>> response = await createDio().fetch<List<int>>(requestOptions);
-    _t.log();
+    // if (kDebugMode) _t.log();
     if (!statusCodes.contains(response.statusCode) || response.data == null) {
       throw DioException.badResponse(
         statusCode: response.statusCode ?? -1,
@@ -325,7 +328,6 @@ class ApiCacheManager {
         _downloading.remove(key);
         if (!task.canceled) _failed[key] = DateTime.now();
         if (!task.completer.isCompleted) task.completer.completeError(e, s);
-        logger.errorSkipDio('ApiCacheManager._fetch failed: ${options.method} ${options.uri}', e, s);
         return Future.value();
       }));
       return await task.completer.future;
@@ -333,7 +335,7 @@ class ApiCacheManager {
       _data.remove(key);
       _downloading.remove(key);
       _memoryCache.remove(key);
-      logger.e('api fetch failed', e, s);
+      logger.e('fetch failed: ${options.method} ${options.uri}', e, s);
       onError?.call(options, e is DioException ? e.response : null, e, s);
     }
     return null;
@@ -456,9 +458,14 @@ class ApiCacheManager {
         expireAfter: expireAfter, cacheOnly: cacheOnly);
   }
 
-  Future<T?> getModel<T>(String url, T Function(dynamic data) fromJson,
-      {Duration? expireAfter, bool cacheOnly = false}) {
-    return fetchModel(createDio().createRequest(HttpRequestMethod.get, url), fromJson,
+  Future<T?> getModel<T>(
+    String url,
+    T Function(dynamic data) fromJson, {
+    Duration? expireAfter,
+    bool cacheOnly = false,
+    Options? options,
+  }) {
+    return fetchModel(createDio().createRequest(HttpRequestMethod.get, url, options: options), fromJson,
         expireAfter: expireAfter, cacheOnly: cacheOnly);
   }
 
@@ -475,6 +482,63 @@ class ApiCacheManager {
     return fetchModel(
       createDio()
           .createRequest(HttpRequestMethod.post, url, data: data, queryParameters: queryParameters, options: options),
+      fromJson,
+      expireAfter: expireAfter,
+      cacheOnly: cacheOnly,
+    );
+  }
+
+  Future<T?> putModel<T>(
+    String url, {
+    required T Function(dynamic data) fromJson,
+    Duration? expireAfter,
+    bool cacheOnly = false,
+    // dio
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) {
+    return fetchModel(
+      createDio()
+          .createRequest(HttpRequestMethod.put, url, data: data, queryParameters: queryParameters, options: options),
+      fromJson,
+      expireAfter: expireAfter,
+      cacheOnly: cacheOnly,
+    );
+  }
+
+  Future<T?> patchModel<T>(
+    String url, {
+    required T Function(dynamic data) fromJson,
+    Duration? expireAfter,
+    bool cacheOnly = false,
+    // dio
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) {
+    return fetchModel(
+      createDio()
+          .createRequest(HttpRequestMethod.patch, url, data: data, queryParameters: queryParameters, options: options),
+      fromJson,
+      expireAfter: expireAfter,
+      cacheOnly: cacheOnly,
+    );
+  }
+
+  Future<T?> deleteModel<T>(
+    String url, {
+    required T Function(dynamic data) fromJson,
+    Duration? expireAfter,
+    bool cacheOnly = false,
+    // dio
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+  }) {
+    return fetchModel(
+      createDio()
+          .createRequest(HttpRequestMethod.delete, url, data: data, queryParameters: queryParameters, options: options),
       fromJson,
       expireAfter: expireAfter,
       cacheOnly: cacheOnly,

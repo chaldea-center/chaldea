@@ -13,7 +13,6 @@ import 'package:intl/intl.dart';
 
 import 'package:chaldea/app/tools/item_center.dart';
 import 'package:chaldea/models/runtime_data.dart';
-import 'package:chaldea/models/userdata/security.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/icon_clipper.dart';
 import 'package:chaldea/widgets/image/image_viewer.dart';
@@ -36,7 +35,6 @@ class _Database {
   // members
   final paths = PathManager();
   LocalSettings settings = LocalSettings();
-  ChaldeaSecurity security = ChaldeaSecurity();
   UserData _userData = UserData();
 
   UserData get userData => _userData;
@@ -156,7 +154,6 @@ class _Database {
     MethodChannelChaldea.configMethodChannel();
 
     // init other hive boxes at last
-    await security.init();
     if (kIsWeb) usePathUrlStrategy();
     _startSavingLoop();
   }

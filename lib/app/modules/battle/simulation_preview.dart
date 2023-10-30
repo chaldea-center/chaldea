@@ -948,9 +948,9 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     if (uri.queryParameters.containsKey('data')) {
       data = BattleShareData.parseUri(uri);
     } else {
-      final recordId = int.tryParse(uri.queryParameters['id'] ?? "");
-      if (recordId != null && recordId > 0) {
-        final encoded = await showEasyLoading(() => ChaldeaWorkerApi.laplaceQueryById(recordId));
+      final teamId = int.tryParse(uri.queryParameters['id'] ?? "");
+      if (teamId != null && teamId > 0) {
+        final encoded = await showEasyLoading(() => ChaldeaWorkerApi.team(teamId));
         if (encoded != null) {
           data = encoded.parse();
           questInfo = encoded.questInfo;

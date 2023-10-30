@@ -30,10 +30,12 @@ class _LoginPageState extends State<LoginPage> {
   late TextEditingController _newNameController;
   bool obscurePwd = true;
 
+  final secrets = db.settings.secrets;
+
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: db.security.username?.toString())
+    _nameController = TextEditingController(text: secrets.user?.name)
       ..addListener(() {
         setState(() {});
       });
@@ -154,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
       );
 
   Widget get logoutBtn => TextButton(
-        onPressed: doLogout,
+        onPressed: secrets.isLoggedIn ? doLogout : null,
         child: Text(
           S.current.login_logout,
           style: TextStyle(color: Theme.of(context).colorScheme.error),
@@ -413,43 +415,54 @@ class _LoginPageState extends State<LoginPage> {
     return isLoginAvailable(name, pwd) && newName.isNotEmpty && _validateNewName(newName) == null;
   }
 
+  void _update() {
+    if (mounted) setState(() {});
+    db.notifySettings();
+  }
+
   Future<void> doLogin() async {
     String name = _nameController.text;
     String pwd = _pwdController.text;
     if (!isLoginAvailable(name, pwd)) return;
-    final resp =
-        await showEasyLoading(() => ChaldeaWorkerApi.postCommon('/api/v3/account/login', _withUserPassword(name, pwd)));
-    final auth = resp.body;
-    resp.showDialog();
-    if (resp.success && auth is String) {
-      _saveUserInfo(name, auth);
+    final user = await showEasyLoading(() => ChaldeaWorkerApi.login(username: name, password: pwd));
+    if (user != null) {
+      secrets.user = user;
+      EasyLoading.showSuccess(S.current.success);
     }
+    _update();
   }
 
-  void doLogout() {
-    db.security.deleteUserInfo();
-    _nameController.text = '';
-    _pwdController.text = '';
-    _newPwdController.text = '';
-    const SimpleCancelOkDialog(content: Text('Cleared local login info')).showDialog(context);
+  void doLogout() async {
+    final resp = await showEasyLoading(() => ChaldeaWorkerApi.logout());
+    if (resp != null) {
+      secrets.user = null;
+      if (mounted) {
+        _nameController.text = '';
+        _pwdController.text = '';
+        _newPwdController.text = '';
+      }
+      if (mounted) resp.showDialog();
+    }
+    _update();
   }
 
-  void doDelete() {
+  void doDelete() async {
     String name = _nameController.text;
     String pwd = _pwdController.text;
-    if (pwd.isEmpty) {
-      EasyLoading.showInfo('Please fill the password');
+    if (pwd.isEmpty || name.isEmpty) {
+      EasyLoading.showInfo('Please fill name and password');
       return;
     }
-    SimpleCancelOkDialog(
-      title: const Text('Delete User Account'),
-      content: const Text('Including backups on server'),
-      onTapOk: () async {
-        final resp = await showEasyLoading(
-            () => ChaldeaWorkerApi.postCommon('/api/v3/account/delete', _withUserPassword(name, pwd)));
-        resp.showDialog();
-      },
-    ).showDialog(context);
+    final resp = await showEasyLoading(() => ChaldeaWorkerApi.deleteUser(username: name, password: pwd));
+    if (resp != null) {
+      secrets.user = null;
+      if (mounted) {
+        _nameController.clear();
+        _pwdController.clear();
+      }
+      if (mounted) resp.showDialog(context);
+    }
+    _update();
   }
 
   Future<void> doSignUp() async {
@@ -458,12 +471,12 @@ class _LoginPageState extends State<LoginPage> {
     if (!isLoginAvailable(name, pwd)) {
       return;
     }
-    final resp = await showEasyLoading(
-        () => ChaldeaWorkerApi.postCommon('/api/v3/account/create', _withUserPassword(name, pwd)));
-    resp.showDialog();
-    if (resp.success) {
-      _saveUserInfo(name, resp.body);
+    final user = await showEasyLoading(() => ChaldeaWorkerApi.signup(username: name, password: pwd));
+    if (user != null) {
+      // secrets.user = user;
+      EasyLoading.showSuccess('${S.current.login_signup}: ${S.current.success}');
     }
+    _update();
   }
 
   Future<void> doChangePwd() async {
@@ -473,32 +486,25 @@ class _LoginPageState extends State<LoginPage> {
     if (!isChangePasswordAvailable(name, pwd, newPwd)) {
       return;
     }
-    final resp = await showEasyLoading(() => ChaldeaWorkerApi.postCommon(
-        '/api/v3/account/change-password', {..._withUserPassword(name, pwd), 'new_pwd': newPwd}));
-    resp.showDialog();
-    if (resp.success && resp.body is String) {
-      _saveUserInfo(name, resp.body);
+    final user = await showEasyLoading(
+        () => ChaldeaWorkerApi.changePassword(username: name, password: pwd, newPassword: newPwd));
+    if (user != null) {
+      secrets.user = user;
+      EasyLoading.showSuccess(S.current.success);
     }
+    _update();
   }
 
   Future<void> doChangeName() async {
     String name = _nameController.text;
     String pwd = _pwdController.text;
     String newName = _newNameController.text;
-    final resp = await showEasyLoading(() =>
-        ChaldeaWorkerApi.postCommon("/api/v3/account/rename", {..._withUserPassword(name, pwd), 'new_name': newName}));
-    resp.showDialog();
-    if (resp.success && resp.body is String) {
-      _saveUserInfo(name, resp.body);
+    final user =
+        await showEasyLoading(() => ChaldeaWorkerApi.renameUser(username: name, password: pwd, newUsername: newName));
+    if (user != null) {
+      secrets.user = user;
+      EasyLoading.showSuccess(S.current.success);
     }
+    _update();
   }
-
-  void _saveUserInfo(String name, dynamic auth) {
-    if (auth == null || auth is String) db.security.saveUserInfo(name, auth);
-    db.notifySettings();
-  }
-}
-
-Map<String, String> _withUserPassword(String username, String pwd) {
-  return {'username': username, 'pwd': pwd};
 }

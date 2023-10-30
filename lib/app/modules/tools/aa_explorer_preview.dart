@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,14 +36,14 @@ class AtlasExplorerManager {
   }
 
   void setAuth(String? auth) {
-    auth ??= db.security.atlasAuth?.toString();
+    auth ??= db.settings.secrets.explorerAuth;
     if (auth == null) return;
     if (!validate(auth)) return;
-    if (db.security.atlasAuth != auth) {
-      db.security.saveAtlasAuth(auth);
+    if (db.settings.secrets.explorerAuth != auth) {
+      db.settings.secrets.explorerAuth = auth;
     }
     _auth = auth;
-    api.createDio = () => DioE(BaseOptions(headers: {"authorization": "Basic $auth"}));
+    api.createDio = () => DioE(BaseOptions(headers: {HttpHeaders.authorizationHeader: "Basic $auth"}));
     api.dispatchError = (options, response, error, stackTrace) {
       EasyLoading.showError(error.toString());
     };
@@ -125,7 +126,7 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
   @override
   void initState() {
     super.initState();
-    manager.setAuth(db.security.atlasAuth?.toString());
+    manager.setAuth(db.settings.secrets.explorerAuth);
     _scrollController.addListener(() {
       if (_scrollController.hasClients) {
         _scrollOffsets[manager.folder] = _scrollController.offset;

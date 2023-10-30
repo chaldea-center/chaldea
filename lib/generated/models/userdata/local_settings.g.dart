@@ -98,6 +98,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               (v) => v == null ? null : MasterMissionOptions.fromJson(Map<String, dynamic>.from(v as Map))),
           misc: $checkedConvert(
               'misc', (v) => v == null ? null : _MiscSettings.fromJson(Map<String, dynamic>.from(v as Map))),
+          secrets: $checkedConvert(
+              'secrets', (v) => v == null ? null : _SecretsData.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         return val;
       },
@@ -151,6 +153,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'remoteConfig': instance.remoteConfig.toJson(),
       'masterMissionOptions': instance.masterMissionOptions.toJson(),
       'misc': instance.misc.toJson(),
+      'secrets': instance.secrets.toJson(),
       'language': instance.language,
       'preferredFavorite': _$FavoriteStateEnumMap[instance.preferredFavorite],
     };
@@ -539,4 +542,22 @@ _MiscSettings _$MiscSettingsFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$MiscSettingsToJson(_MiscSettings instance) => <String, dynamic>{
       'nonSvtCharaFigureIds': instance.nonSvtCharaFigureIds.toList(),
       'markedCharaFigureSvtIds': instance.markedCharaFigureSvtIds.map((k, e) => MapEntry(k.toString(), e)),
+    };
+
+_SecretsData _$SecretsDataFromJson(Map json) => $checkedCreate(
+      '_SecretsData',
+      json,
+      ($checkedConvert) {
+        final val = _SecretsData(
+          user: $checkedConvert(
+              'user', (v) => v == null ? null : ChaldeaUser.fromJson(Map<String, dynamic>.from(v as Map))),
+          explorerAuth: $checkedConvert('explorerAuth', (v) => v as String?),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$SecretsDataToJson(_SecretsData instance) => <String, dynamic>{
+      'user': instance.user?.toJson(),
+      'explorerAuth': instance.explorerAuth,
     };

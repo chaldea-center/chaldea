@@ -389,7 +389,19 @@ class _SettingsPageState extends State<SettingsPage> {
       leading: const Icon(Icons.person),
       // horizontalTitleGap: 0,
       title: Text(S.current.login_username),
-      trailing: db.onSettings((context, snapshot) => Text(db.security.username ?? '')),
+      trailing: db.onSettings((context, snapshot) {
+        final user = db.settings.secrets.user;
+        if (user == null) return const SizedBox.shrink();
+        return Text.rich(
+          TextSpan(text: user.name, children: [
+            TextSpan(
+              text: '\n${user.id}',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ]),
+          textAlign: TextAlign.end,
+        );
+      }),
       onTap: () {
         router.popDetailAndPush(child: LoginPage());
       },

@@ -8,8 +8,10 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:github/github.dart';
 
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/language.dart';
-import 'package:chaldea/packages/logger.dart';
+import 'package:chaldea/packages/platform/platform.dart';
+import 'package:chaldea/utils/utils.dart';
 import '../../models/api/api.dart';
 import 'cache.dart';
 
@@ -22,6 +24,7 @@ class ChaldeaWorkerApi {
   ChaldeaWorkerApi._();
 
   static const v3Laplace = '/api/v3/laplace';
+  static const apiV4 = '/api/v4/';
 
   static final cacheManager = ApiCacheManager(null)
     ..dispatchError = dispatchError
@@ -52,7 +55,6 @@ class ChaldeaWorkerApi {
       }
     }
     error2 ??= error;
-    logger.e("api error: ${options.uri}", error2);
     if (EasyLoading.instance.overlayEntry?.mounted != true) return;
     String msg = error2.toString();
     if (response?.statusCode == 500 && msg.contains('D1_ERROR: Error 9000: something went wrong')) {
@@ -68,17 +70,16 @@ class ChaldeaWorkerApi {
 
   static Options addAuthHeader([Options? options, bool verify = false]) {
     options ??= Options();
-    final username = db.security.username ?? "", auth = db.security.userAuth ?? "";
-    if (username.isEmpty || auth.isEmpty) {
+    final secret = db.settings.secrets.user?.secret ?? "";
+    if (secret.isEmpty) {
       if (verify) {
         throw StateError("Not login");
       }
       return options;
     }
-    final encoded = base64Encode(utf8.encode("$username:$auth"));
     options.headers = {
       ...?options.headers,
-      "Authorization": "Basic $encoded",
+      "Authorization": "Basic $secret",
     };
     return options;
   }
@@ -88,7 +89,7 @@ class ChaldeaWorkerApi {
   }
 
   // to chaldea server rather worker
-  static Future<WorkerResponse> sendFeedback({
+  static Future<WorkerResponse?> sendFeedback({
     String? subject,
     String? senderName,
     String? html,
@@ -108,41 +109,156 @@ class ChaldeaWorkerApi {
     return postCommon("${HostsX.apiHost}/feedback", formData);
   }
 
-  static Future<WorkerResponse> postCommon(
+  static Future<WorkerResponse?> postCommon(
     String url,
     dynamic data, {
     Options? options,
     bool addAuth = false,
-  }) async {
-    final result = await cacheManager.postModel(
+  }) {
+    return cacheManager.postModel(
       url,
       fromJson: (data) => WorkerResponse.fromJson(data),
       data: data,
       expireAfter: Duration.zero,
       options: addAuth ? addAuthHeader(options) : options,
     );
-    return result ?? WorkerResponse(success: false, message: "Error");
   }
 
-  static Future<UserBattleData?> laplaceQueryById(int id, {Duration? expireAfter}) {
-    return cacheManager.getModel(
-      '$v3Laplace/team/$id',
-      (data) => UserBattleData.fromJson(data),
-      expireAfter: expireAfter,
+  /// users part
+  static Future<ChaldeaUser?> login({
+    required String username,
+    required String password,
+  }) {
+    return cacheManager.postModel(
+      '$apiV4/user/login',
+      fromJson: (data) => ChaldeaUser.fromJson(data),
+      data: {
+        'username': username,
+        'password': password,
+      },
     );
   }
 
-  static Future<List<UserBattleData>?> teams({
+  static Future<ChaldeaUser?> signup({
+    required String username,
+    required String password,
+  }) {
+    return cacheManager.postModel(
+      '$apiV4/user/signup',
+      fromJson: (data) => ChaldeaUser.fromJson(data),
+      data: {
+        'username': username,
+        'password': password,
+      },
+    );
+  }
+
+  static Future<ChaldeaUser?> changePassword({
+    required String username,
+    required String password,
+    required String newPassword,
+  }) {
+    return cacheManager.postModel(
+      '$apiV4/user/change-password',
+      fromJson: (data) => ChaldeaUser.fromJson(data),
+      data: {
+        'username': username,
+        'password': password,
+        'new_password': newPassword,
+      },
+    );
+  }
+
+  static Future<ChaldeaUser?> renameUser({
+    required String username,
+    required String password,
+    required String newUsername,
+  }) {
+    return cacheManager.postModel(
+      '$apiV4/user/change-password',
+      fromJson: (data) => ChaldeaUser.fromJson(data),
+      data: {
+        'username': username,
+        'password': password,
+        'new_username': newUsername,
+      },
+    );
+  }
+
+  static Future<WorkerResponse?> deleteUser({
+    required String username,
+    required String password,
+  }) {
+    return cacheManager.postModel(
+      '$apiV4/user/delete',
+      fromJson: (data) => WorkerResponse.fromJson(data),
+      data: {
+        'username': username,
+        'password': password,
+      },
+    );
+  }
+
+  static Future<WorkerResponse?> logout() {
+    return cacheManager.postModel(
+      '$apiV4/user/logout',
+      fromJson: (data) => WorkerResponse.fromJson(data),
+      options: addAuthHeader(),
+    );
+  }
+
+  static Future<List<UserBackupData>?> listBackup() {
+    return cacheManager.getModel(
+      '$apiV4/user/backup/list',
+      (data) => (data as List).map((e) => UserBackupData.fromJson(Map.from(e))).toList(),
+      expireAfter: Duration.zero,
+      options: addAuthHeader(),
+    );
+  }
+
+  static Future<WorkerResponse?> uploadBackup({required String content}) {
+    AppInfo.deviceParams;
+    return cacheManager.postModel(
+      '$apiV4/user/backup/new',
+      fromJson: (data) => WorkerResponse.fromJson(data),
+      options: addAuthHeader(),
+      data: <String, String>{
+        'content': content,
+        'appVer': AppInfo.versionString,
+        'os': <String?>[
+          PlatformU.operatingSystem,
+          if (kIsWeb) ...[
+            AppInfo.deviceParams['browserName'],
+            AppInfo.deviceParams['platform'],
+          ],
+          if (!kIsWeb) PlatformU.operatingSystemVersion,
+        ].where((e) => e != null && e.isNotEmpty).join(' ').substring2(0, 60).trim(),
+      },
+    );
+  }
+
+  // teams
+
+  static Future<UserBattleData?> team(int id, {Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$apiV4/team/$id',
+      (data) => UserBattleData.fromJson(data),
+      expireAfter: expireAfter,
+      options: addAuthHeader(),
+    );
+  }
+
+  static Future<TeamQueryResult?> teams({
     int? questId,
     int? phase,
     String? enemyHash,
-    String? userId,
+    int? userId,
     int? ver,
     int limit = 20,
     int offset = 0,
     Duration? expireAfter = const Duration(minutes: 60),
   }) {
-    if (questId == null && userId == null && ver == null) return Future.value([]);
+    if (questId == null && userId == null && ver == null) return Future.value();
     final query = _encodeQuery({
       'questId': questId,
       'phase': phase,
@@ -150,23 +266,24 @@ class ChaldeaWorkerApi {
       'userId': userId,
       'ver': ver,
       'limit': limit,
-      if (offset != 0) 'offset': offset,
+      if (offset > 0) 'offset': offset,
     });
     return cacheManager.getModel(
-      "$v3Laplace/teams?$query",
-      (data) => (data as List).map((e) => UserBattleData.fromJson(e)).toList(),
+      "$apiV4/team/search?$query",
+      (data) => TeamQueryResult.fromJson(data),
       expireAfter: expireAfter,
+      options: addAuthHeader(),
     );
   }
 
-  static Future<List<UserBattleData>?> teamsByUser({
-    String? userId,
+  static Future<TeamQueryResult?> teamsByUser({
+    int? userId,
     int limit = 20,
     int offset = 0,
     Duration? expireAfter,
   }) {
-    userId ??= db.security.username;
-    if (userId == null || userId.isEmpty) return Future.value();
+    userId ??= db.settings.secrets.user?.id;
+    if (userId == null || userId == 0) return Future.value();
     return teams(
       userId: userId,
       limit: limit,
@@ -175,7 +292,7 @@ class ChaldeaWorkerApi {
     );
   }
 
-  static Future<List<UserBattleData>?> teamsByQuest({
+  static Future<TeamQueryResult?> teamsByQuest({
     required int questId,
     required int phase,
     required String? enemyHash,
@@ -193,17 +310,15 @@ class ChaldeaWorkerApi {
     );
   }
 
-  static Future<WorkerResponse> teamDelete({required int id}) {
-    return postCommon(
-      "$v3Laplace/team/delete",
-      {
-        'id': id,
-      },
+  static Future<WorkerResponse?> teamDelete({required int id}) {
+    return cacheManager.deleteModel(
+      '$apiV4/team/$id',
+      fromJson: (data) => WorkerResponse.fromJson(data),
       options: addAuthHeader(),
     );
   }
 
-  static Future<WorkerResponse> teamUpload({
+  static Future<int?> teamUpload({
     required int ver,
     required int questId,
     required int phase,
@@ -211,9 +326,11 @@ class ChaldeaWorkerApi {
     required List<int> svts,
     required String record,
   }) {
-    return postCommon(
-      "$v3Laplace/team/upload",
-      {
+    return cacheManager.postModel(
+      '$apiV4/team/new',
+      fromJson: (data) => (data as Map)['id'] as int,
+      options: addAuthHeader(),
+      data: {
         'ver': ver,
         'questId': questId,
         'phase': phase,
@@ -221,33 +338,40 @@ class ChaldeaWorkerApi {
         'svts': svts,
         'record': record,
       },
+    );
+  }
+
+  static Future<TeamVoteData?> teamVote({
+    required int teamId,
+    required int voteValue,
+  }) {
+    return cacheManager.postModel(
+      '$apiV4/team/$teamId/vote',
+      fromJson: (data) => TeamVoteData.fromJson(data),
       options: addAuthHeader(),
+      data: {
+        'value': voteValue,
+      },
     );
   }
 
   // debug/dev
   @visibleForTesting
-  static Future<WorkerResponse> teamUpdate({
-    required int id,
-    required int ver,
-    required int questId,
-    required int phase,
-    required String enemyHash,
-    required List<int> svts,
-    required String record,
-  }) {
-    return postCommon(
-      "$v3Laplace/team/update",
-      {
-        'id': id,
-        'ver': ver,
-        'questId': questId,
-        'phase': phase,
-        'enemyHash': enemyHash,
-        'svts': svts,
-        'record': record,
-      },
+  static Future<WorkerResponse?> teamUpdate({required UserBattleData team}) {
+    return cacheManager.putModel(
+      '$apiV4/team/${team.id}',
+      fromJson: (data) => WorkerResponse.fromJson(data),
       options: addAuthHeader(),
+      data: {
+        "id": team.id,
+        "ver": team.ver,
+        "userId": team.userId,
+        "questId": team.questId,
+        "phase": team.phase,
+        "enemyHash": team.enemyHash,
+        "createdAt": team.createdAt,
+        "record": team.record,
+      },
     );
   }
 

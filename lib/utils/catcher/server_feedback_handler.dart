@@ -145,13 +145,14 @@ class ServerFeedbackHandler extends ReportHandler {
       html: sendHtml ? await _setupHtmlMessageText(report) : null,
       files: resolvedAttachments,
     );
-    if (response.success != true) {
-      logger_.logger.e('failed to send mail', response.error ?? response.message);
+    final success = response != null && response.error == null;
+    if (!success) {
+      logger_.logger.e('failed to send mail', response?.fullMessage);
     }
     if (report is! FeedbackReport) {
       _sentReports.add(report.shownError);
     }
-    return response.success;
+    return success;
   }
 
   /// List temporary blocked error on gitee wiki
@@ -267,7 +268,7 @@ class ServerFeedbackHandler extends ReportHandler {
       'lang': Language.current.code,
       'locale': Language.systemLocale.toString(),
       'uuid': AppInfo.uuid,
-      'user': db.security.username,
+      'user': db.settings.secrets.user?.name ?? "",
       if (kIsWeb) 'renderer': kPlatformMethods.rendererCanvasKit ? 'canvaskit' : 'html',
     };
     for (var entry in summary.entries) {

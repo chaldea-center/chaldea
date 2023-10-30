@@ -700,7 +700,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
 
     if (widget.region != null && widget.region != Region.jp) {
       content = 'Only JP quest supports team sharing. (current: ${widget.region!.localName})';
-    } else if (!db.security.isUserLoggedIn) {
+    } else if (!db.settings.secrets.isLoggedIn) {
       content = S.current.login_first_hint;
     } else if (reasons.isNotEmpty) {
       content = S.current.upload_not_eligible_hint;
@@ -748,7 +748,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           actions: actions,
           option: widget.options.toShareData(),
         );
-        final resp = await showEasyLoading(() => ChaldeaWorkerApi.teamUpload(
+        final insertedId = await showEasyLoading(() => ChaldeaWorkerApi.teamUpload(
               ver: BattleShareData.kDataVer,
               questId: questPhase.id,
               phase: questPhase.phase,
@@ -756,11 +756,16 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               svts: uploadData.team.allCardIds,
               record: uploadData.toDataV2(),
             ));
-        if (resp.success) {
-          db.runtimeData.lastUpload = DateTime.now().timestamp;
-          ChaldeaWorkerApi.clearCache((cache) => true);
+        if (insertedId == null) return;
+        db.runtimeData.lastUpload = DateTime.now().timestamp;
+        // ChaldeaWorkerApi.clearCache((cache) => true);
+        if (mounted) {
+          SimpleCancelOkDialog(
+            title: Text(S.current.success),
+            content: Text("ID: $insertedId"),
+            hideCancel: true,
+          ).showDialog(this.context);
         }
-        resp.showDialog();
       },
     );
   }
