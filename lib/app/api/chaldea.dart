@@ -361,7 +361,7 @@ class ChaldeaWorkerApi {
         'phase': data.quest?.phase,
         'enemyHash': data.quest?.enemyHash,
         'svts': data.team.allCardIds,
-        'record': data.toDataV2(),
+        'content': data.toDataV2(),
       },
     );
   }
@@ -395,7 +395,7 @@ class ChaldeaWorkerApi {
         "phase": team.phase,
         "enemyHash": team.enemyHash,
         "createdAt": team.createdAt,
-        "record": team.record,
+        "record": team.content,
       },
     );
   }

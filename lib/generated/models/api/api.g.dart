@@ -104,7 +104,7 @@ UserBattleData _$UserBattleDataFromJson(Map json) => $checkedCreate(
           phase: $checkedConvert('phase', (v) => v as int),
           enemyHash: $checkedConvert('enemyHash', (v) => v as String),
           createdAt: $checkedConvert('createdAt', (v) => v as int),
-          record: $checkedConvert('record', (v) => v as String),
+          content: $checkedConvert('content', (v) => v as String),
           username: $checkedConvert('username', (v) => v as String?),
           votes: $checkedConvert(
               'votes', (v) => v == null ? null : TeamVoteData.fromJson(Map<String, dynamic>.from(v as Map))),
@@ -121,7 +121,7 @@ Map<String, dynamic> _$UserBattleDataToJson(UserBattleData instance) => <String,
       'phase': instance.phase,
       'enemyHash': instance.enemyHash,
       'createdAt': instance.createdAt,
-      'record': instance.record,
+      'content': instance.content,
       'username': instance.username,
       'votes': instance.votes.toJson(),
     };

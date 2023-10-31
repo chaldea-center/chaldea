@@ -188,7 +188,7 @@ class UserBattleData {
   int phase;
   String enemyHash;
   int createdAt;
-  String record;
+  String content;
   // stats
   String? username;
   TeamVoteData votes;
@@ -203,7 +203,7 @@ class UserBattleData {
     required this.phase,
     required this.enemyHash,
     required this.createdAt,
-    required this.record,
+    required this.content,
     this.username,
     TeamVoteData? votes,
   }) : votes = votes ?? TeamVoteData();
@@ -216,7 +216,7 @@ class UserBattleData {
     if (decoded != null) return decoded;
     try {
       if (ver == 1 || ver == 2) {
-        return decoded = BattleShareData.parse(record);
+        return decoded = BattleShareData.parse(content);
       }
     } catch (e, s) {
       logger.e('parse gzip team data failed', e, s);
