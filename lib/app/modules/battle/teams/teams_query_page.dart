@@ -308,7 +308,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             style: style,
           ),
         ),
-        if (record.decoded?.option.simulateAi == true)
+        if (record.decoded?.options.simulateAi == true)
           Tooltip(
             message: S.current.simulate_simple_ai,
             child: Padding(
@@ -386,7 +386,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
 
     final attackerTdCard = filterData.attackerTdCardType.radioValue;
     if (attackerTdCard != null) {
-      final tdCheck = data.actions?.containsTdCardType(attackerTdCard);
+      final tdCheck = data.containsTdCardType(attackerTdCard);
       if (tdCheck == false) {
         return false;
       }
@@ -396,12 +396,12 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     int maxCriticalAttackCount = filterData.criticalAttackCount.radioValue!;
 
     if (maxNormalAttackCount >= 0 || maxCriticalAttackCount >= 0) {
-      int normalAttackCount = data.actions?.normalAttackCount ?? 0;
+      int normalAttackCount = data.normalAttackCount;
       if (maxNormalAttackCount >= 0 && normalAttackCount > maxNormalAttackCount) {
         return false;
       }
 
-      int criticalAttackCount = data.actions?.critsCount ?? 0;
+      int criticalAttackCount = data.critsCount;
       if (maxCriticalAttackCount >= 0 && criticalAttackCount > maxCriticalAttackCount) {
         return false;
       }
@@ -410,7 +410,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     for (final miscOption in filterData.miscOptions.options) {
       switch (miscOption) {
         case TeamFilterMiscType.noOrderChange:
-          if ([20, 210].contains(data.team.mysticCode.mysticCodeId) && data.actions?.usedMysticCodeSkill(2) == true) {
+          if ([20, 210].contains(data.team.mysticCode.mysticCodeId) && data.usedMysticCodeSkill(2) == true) {
             return false;
           }
         case TeamFilterMiscType.noSameSvt:

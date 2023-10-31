@@ -157,18 +157,22 @@ class BattleShareData {
   int? minBuild;
   int? appBuild; // app ver for uploaded data
   BattleQuestInfo? quest;
-  BattleShareDataOption option;
+  BattleShareDataOption options;
   BattleTeamFormation team;
-  BattleActions? actions;
+  List<BattleRecordData> actions;
+  BattleReplayDelegateData delegate;
 
   BattleShareData({
     this.minBuild,
     required this.appBuild,
     required this.quest,
-    BattleShareDataOption? option,
+    BattleShareDataOption? options,
     required this.team,
-    this.actions,
-  }) : option = option ?? BattleShareDataOption();
+    BattleReplayDelegateData? delegate,
+    List<BattleRecordData>? actions,
+  })  : options = options ?? BattleShareDataOption(),
+        delegate = delegate ?? BattleReplayDelegateData(),
+        actions = actions ?? [];
 
   factory BattleShareData.fromJson(Map<String, dynamic> json) => _$BattleShareDataFromJson(json);
 
@@ -182,8 +186,9 @@ class BattleShareData {
       minBuild: kMinBuild,
       appBuild: appBuild ?? AppInfo.buildNumber,
       quest: quest,
-      option: option,
+      options: options,
       team: team2,
+      delegate: delegate,
       actions: actions,
     ));
   }
@@ -232,6 +237,20 @@ class BattleShareData {
     final data = jsonDecode(utf8.decode(GZipDecoder().decodeBytes(base64Decode(encoded))));
     return BattleShareData.fromJson(data);
   }
+
+  //
+
+  bool usedMysticCodeSkill(final int checkIndex) {
+    return actions.any((action) => action.usedMysticCode(checkIndex));
+  }
+
+  bool containsTdCardType(final CardType cardType) {
+    return actions.any((action) => action.containsTdCardType(cardType));
+  }
+
+  int get critsCount => actions.fold(0, (sum, action) => sum + action.countCrits());
+
+  int get normalAttackCount => actions.fold(0, (sum, action) => sum + action.countNormalAttacks());
 }
 
 @JsonSerializable()
@@ -885,7 +904,11 @@ class BattleReplayDelegateData {
 
   factory BattleReplayDelegateData.fromJson(Map<String, dynamic> json) => _$BattleReplayDelegateDataFromJson(json);
 
-  Map<String, dynamic> toJson() => _$BattleReplayDelegateDataToJson(this);
+  Map<String, dynamic> toJson() {
+    final data = _$BattleReplayDelegateDataToJson(this);
+    data.removeWhere((key, value) => value is List && value.isEmpty);
+    return data;
+  }
 
   BattleReplayDelegateData copy() {
     return BattleReplayDelegateData(
@@ -1000,32 +1023,4 @@ class BattleAttackRecordData {
   factory BattleAttackRecordData.fromJson(Map<String, dynamic> json) => _$BattleAttackRecordDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$BattleAttackRecordDataToJson(this);
-}
-
-@JsonSerializable()
-class BattleActions {
-  List<BattleRecordData> actions;
-  BattleReplayDelegateData delegate;
-
-  BattleActions({
-    List<BattleRecordData>? actions,
-    BattleReplayDelegateData? delegate,
-  })  : actions = actions ?? [],
-        delegate = delegate ?? BattleReplayDelegateData();
-
-  factory BattleActions.fromJson(Map<String, dynamic> json) => _$BattleActionsFromJson(json);
-
-  Map<String, dynamic> toJson() => _$BattleActionsToJson(this);
-
-  bool usedMysticCodeSkill(final int checkIndex) {
-    return actions.any((action) => action.usedMysticCode(checkIndex));
-  }
-
-  bool containsTdCardType(final CardType cardType) {
-    return actions.any((action) => action.containsTdCardType(cardType));
-  }
-
-  int get critsCount => actions.fold(0, (sum, action) => sum + action.countCrits());
-
-  int get normalAttackCount => actions.fold(0, (sum, action) => sum + action.countNormalAttacks());
 }

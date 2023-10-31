@@ -246,7 +246,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           final shareUri = BattleShareData(
             appBuild: AppInfo.buildNumber,
             quest: questInfo,
-            option: options.toShareData(),
+            options: options.toShareData(),
             team: settings.curFormation,
           ).toUriV2();
           String shareString = shareUri.toString();
@@ -991,9 +991,9 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         region: questInfo.region ?? Region.jp,
       );
     }
-    options.fromShareData(data.option);
+    options.fromShareData(data.options);
 
-    if (questInfo != null && data.actions != null && mounted) {
+    if (questInfo != null && data.actions.isNotEmpty && mounted) {
       EasyLoading.dismiss();
       SimpleCancelOkDialog(
         title: Text(S.current.success),

@@ -30,7 +30,7 @@ void replaySimulation({
     EasyLoading.showError('${S.current.not_found}: quest ${questInfo.toUrl()}');
     return;
   }
-  if (detail.actions == null || detail.actions!.actions.isEmpty) {
+  if (detail.actions.isEmpty) {
     EasyLoading.showError('No replay action found');
     return;
   }
@@ -38,7 +38,7 @@ void replaySimulation({
   final questCopy = QuestPhase.fromJson(questPhase.toJson());
 
   final options = BattleOptions();
-  options.fromShareData(detail.option);
+  options.fromShareData(detail.options);
   final formation = detail.team;
   for (int index = 0; index < 3; index++) {
     options.team.onFieldSvtDataList[index] = await PlayerSvtData.fromStoredData(formation.onFieldSvts.getOrNull(index));
@@ -62,7 +62,7 @@ void replaySimulation({
       questPhase: questCopy,
       region: Region.jp,
       options: options,
-      replayActions: detail.actions,
+      replayActions: detail,
     ),
   );
 }

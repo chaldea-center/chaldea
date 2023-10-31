@@ -106,11 +106,16 @@ BattleShareData _$BattleShareDataFromJson(Map json) => $checkedCreate(
           appBuild: $checkedConvert('appBuild', (v) => v as int?),
           quest: $checkedConvert(
               'quest', (v) => v == null ? null : BattleQuestInfo.fromJson(Map<String, dynamic>.from(v as Map))),
-          option: $checkedConvert(
-              'option', (v) => v == null ? null : BattleShareDataOption.fromJson(Map<String, dynamic>.from(v as Map))),
+          options: $checkedConvert(
+              'options', (v) => v == null ? null : BattleShareDataOption.fromJson(Map<String, dynamic>.from(v as Map))),
           team: $checkedConvert('team', (v) => BattleTeamFormation.fromJson(Map<String, dynamic>.from(v as Map))),
+          delegate: $checkedConvert('delegate',
+              (v) => v == null ? null : BattleReplayDelegateData.fromJson(Map<String, dynamic>.from(v as Map))),
           actions: $checkedConvert(
-              'actions', (v) => v == null ? null : BattleActions.fromJson(Map<String, dynamic>.from(v as Map))),
+              'actions',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => BattleRecordData.fromJson(Map<String, dynamic>.from(e as Map)))
+                  .toList()),
         );
         return val;
       },
@@ -128,9 +133,10 @@ Map<String, dynamic> _$BattleShareDataToJson(BattleShareData instance) {
   writeNotNull('minBuild', instance.minBuild);
   writeNotNull('appBuild', instance.appBuild);
   writeNotNull('quest', instance.quest?.toJson());
-  val['option'] = instance.option.toJson();
+  val['options'] = instance.options.toJson();
   val['team'] = instance.team.toJson();
-  writeNotNull('actions', instance.actions?.toJson());
+  val['actions'] = instance.actions.map((e) => e.toJson()).toList();
+  val['delegate'] = instance.delegate.toJson();
   return val;
 }
 
@@ -672,26 +678,4 @@ Map<String, dynamic> _$BattleAttackRecordDataToJson(BattleAttackRecordData insta
       'isTD': instance.isTD,
       'critical': instance.critical,
       'cardType': _$CardTypeEnumMap[instance.cardType]!,
-    };
-
-BattleActions _$BattleActionsFromJson(Map json) => $checkedCreate(
-      'BattleActions',
-      json,
-      ($checkedConvert) {
-        final val = BattleActions(
-          actions: $checkedConvert(
-              'actions',
-              (v) => (v as List<dynamic>?)
-                  ?.map((e) => BattleRecordData.fromJson(Map<String, dynamic>.from(e as Map)))
-                  .toList()),
-          delegate: $checkedConvert('delegate',
-              (v) => v == null ? null : BattleReplayDelegateData.fromJson(Map<String, dynamic>.from(v as Map))),
-        );
-        return val;
-      },
-    );
-
-Map<String, dynamic> _$BattleActionsToJson(BattleActions instance) => <String, dynamic>{
-      'actions': instance.actions.map((e) => e.toJson()).toList(),
-      'delegate': instance.delegate.toJson(),
     };

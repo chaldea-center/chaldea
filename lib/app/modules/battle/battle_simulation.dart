@@ -26,7 +26,7 @@ class BattleSimulationPage extends StatefulWidget {
   final QuestPhase questPhase;
   final Region? region;
   final BattleOptions options;
-  final BattleActions? replayActions;
+  final BattleShareData? replayActions;
 
   BattleSimulationPage({
     super.key,
@@ -53,11 +53,9 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       appBuild: AppInfo.buildNumber,
       quest: BattleQuestInfo.quest(questPhase),
       team: widget.options.team.toFormationData(),
-      actions: BattleActions(
-        actions: battleData.recorder.toUploadRecords(),
-        delegate: battleData.replayDataRecord,
-      ),
-      option: widget.options.toShareData(),
+      delegate: battleData.replayDataRecord,
+      actions: battleData.recorder.toUploadRecords(),
+      options: widget.options.toShareData(),
     );
   }
 

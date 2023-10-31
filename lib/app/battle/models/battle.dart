@@ -1561,7 +1561,7 @@ class BattleData {
   }
 
   // replay
-  Future<void> replay(BattleActions replayActions) async {
+  Future<void> replay(BattleShareData replayActions) async {
     recorder.setIllegal('Replaying team');
     options.manualAllySkillTarget = false;
     delegate = BattleReplayDelegate(replayActions.delegate);
