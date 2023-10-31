@@ -734,6 +734,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           });
         },
       ),
+      kIndentDivider,
       CheckboxListTile(
         dense: true,
         value: options.disableEvent,

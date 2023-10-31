@@ -277,7 +277,7 @@ class GameDataLoader {
     tmp.gameJson = _gameJson;
     GameData _gamedata = GameData.fromJson(_gameJson);
     if (!offline) {
-      logger.i(
+      logger.v(
           '[${offline ? "offline" : "online"}]Updating dataset(${_gamedata.version.text(false)}): ${_dataToWrite.length} files updated');
       if (newVersion != oldVersion) {
         _dataToWrite[_versionFile] = utf8.encode(jsonEncode(newVersion));

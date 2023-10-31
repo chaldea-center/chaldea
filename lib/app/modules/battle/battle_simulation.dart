@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -46,8 +47,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
 
   BattleOptionsRuntime get options => battleData.options;
 
-  BattleShareData getShareData() {
-    assert(battleData.isBattleWin);
+  BattleShareData getShareData({bool allowNotWin = false}) {
+    assert(battleData.isBattleWin || allowNotWin);
     return BattleShareData(
       appBuild: AppInfo.buildNumber,
       quest: BattleQuestInfo.quest(questPhase),
@@ -195,42 +196,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       ),
       PopupMenuItem(
         child: Text(S.current.reset_skill_cd),
-        onTap: () {
-          showDialog(
-            context: context,
-            useRootNavigator: false,
-            builder: (context) {
-              return SimpleDialog(
-                title: Text(S.current.reset_skill_cd),
-                children: [
-                  for (final svt in battleData.nonnullPlayers)
-                    ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
-                      leading: svt.iconBuilder(context: context, width: 36),
-                      title: Text("${S.current.servant}: ${svt.lBattleName}"),
-                      onTap: () async {
-                        Navigator.pop(context);
-                        await battleData.resetPlayerSkillCD(isMysticCode: false, svt: svt);
-                        if (mounted) setState(() {});
-                      },
-                    ),
-                  ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    leading: battleData.mysticCode?.iconBuilder(context: context, width: 36),
-                    title: Text(S.current.mystic_code),
-                    enabled: battleData.mysticCode != null,
-                    onTap: () async {
-                      Navigator.pop(context);
-                      await battleData.resetPlayerSkillCD(isMysticCode: true, svt: null);
-                      if (mounted) setState(() {});
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-          if (mounted) setState(() {});
-        },
+        onTap: () => onResetSkillCD(context),
       ),
       PopupMenuItem(
         child: Text(S.current.battle_activate_custom_skill),
@@ -239,6 +205,26 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           if (mounted) setState(() {});
         },
       ),
+      if (AppInfo.isDebugOn) ...[
+        PopupMenuItem(
+          enabled: false,
+          height: 16,
+          padding: EdgeInsets.zero,
+          child: DividerWithTitle(title: S.current.debug),
+        ),
+        PopupMenuItem(
+          child: const Text('Share Data json'),
+          onTap: () {
+            copyToClipboard(jsonEncode(getShareData(allowNotWin: true)));
+          },
+        ),
+        PopupMenuItem(
+          child: const Text('Share Data gzip'),
+          onTap: () {
+            copyToClipboard(getShareData(allowNotWin: true).toDataV2());
+          },
+        ),
+      ],
     ];
     return items;
   }
@@ -842,6 +828,42 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           child: child,
         ),
       ),
+    );
+  }
+
+  void onResetSkillCD(BuildContext context) {
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text(S.current.reset_skill_cd),
+          children: [
+            for (final svt in battleData.nonnullPlayers)
+              ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
+                leading: svt.iconBuilder(context: context, width: 36),
+                title: Text("${S.current.servant}: ${svt.lBattleName}"),
+                onTap: () async {
+                  Navigator.pop(context);
+                  await battleData.resetPlayerSkillCD(isMysticCode: false, svt: svt);
+                  if (mounted) setState(() {});
+                },
+              ),
+            ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
+              leading: battleData.mysticCode?.iconBuilder(context: context, width: 36),
+              title: Text(S.current.mystic_code),
+              enabled: battleData.mysticCode != null,
+              onTap: () async {
+                Navigator.pop(context);
+                await battleData.resetPlayerSkillCD(isMysticCode: true, svt: null);
+                if (mounted) setState(() {});
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
