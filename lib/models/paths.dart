@@ -116,7 +116,7 @@ class PathManager {
       throw const OSError('Cannot resolve document folder');
     }
 
-    logger.i('appPath: $_appPath');
+    logger.v('appPath: $_appPath');
     // ensure directory exist
     for (String dir in [
       _persistentPath!,

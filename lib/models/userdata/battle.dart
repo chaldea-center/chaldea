@@ -880,6 +880,7 @@ enum SupportSvtType {
 class BattleReplayDelegateData {
   List<int?> actWeightSelections;
   List<int?> skillActSelectSelections;
+  @JsonKey(unknownEnumValue: CardType.none)
   List<CardType> tdTypeChanges;
   List<int?> ptRandomIndexes;
   List<bool> canActivateDecisions;

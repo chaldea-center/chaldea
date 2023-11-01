@@ -13,6 +13,7 @@ import '../models/db.dart';
 import '../packages/logger.dart';
 
 extension HiveRetryOpen on HiveInterface {
+  @Deprecated('drop Hive plugin')
   Future<Box<E>> openBoxRetry<E>(
     String name, {
     HiveCipher? encryptionCipher,

@@ -557,7 +557,10 @@ BattleReplayDelegateData _$BattleReplayDelegateDataFromJson(Map json) => $checke
           skillActSelectSelections:
               $checkedConvert('skillActSelectSelections', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
           tdTypeChanges: $checkedConvert(
-              'tdTypeChanges', (v) => (v as List<dynamic>?)?.map((e) => $enumDecode(_$CardTypeEnumMap, e)).toList()),
+              'tdTypeChanges',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => $enumDecode(_$CardTypeEnumMap, e, unknownValue: CardType.none))
+                  .toList()),
           ptRandomIndexes:
               $checkedConvert('ptRandomIndexes', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
           canActivateDecisions:

@@ -153,14 +153,14 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     }
 
     return PreferredSize(
-      preferredSize: const Size.fromHeight(36),
+      preferredSize: const Size.fromHeight(48),
       child: SizedBox(
-        height: 36,
+        height: 48,
         child: ListView(
           reverse: true,
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 16),
+          padding: const EdgeInsetsDirectional.fromSTEB(0, 8, 0, 12),
           children: [
             for (final child in buttons.reversed) Center(child: child),
           ],
