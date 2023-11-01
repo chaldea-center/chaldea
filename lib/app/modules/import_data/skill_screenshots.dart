@@ -87,7 +87,9 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage> wi
           KeepAliveBuilder(
             builder: (ctx) => ScreenshotsTab(
               images: imageFiles,
-              onUpload: _uploadScreenshots,
+              onUpload: () {
+                EasyThrottle.throttle('skill_recognizer_upload', const Duration(seconds: 5), _uploadScreenshots);
+              },
               debugServerRoot: _dio.options.baseUrl,
             ),
           ),

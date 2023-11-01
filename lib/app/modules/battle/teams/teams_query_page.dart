@@ -598,7 +598,6 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
     }
 
     try {
-      EasyLoading.show(maskType: EasyLoadingMaskType.clear);
       String subject = '[Team] ${reason.substring2(0, 20)}';
 
       final handler = ServerFeedbackHandler(
@@ -622,7 +621,7 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
         "Reason:\n$reason"
       ], '\n');
 
-      final result = await handler.handle(FeedbackReport(null, buffer.toString()), null);
+      final result = await showEasyLoading(() => handler.handle(FeedbackReport(null, buffer.toString()), null));
       if (!result) {
         throw S.current.sending_failed;
       }

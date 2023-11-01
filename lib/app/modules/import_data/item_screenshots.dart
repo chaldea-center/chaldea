@@ -75,7 +75,9 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> with
           KeepAliveBuilder(
             builder: (ctx) => ScreenshotsTab(
               images: imageFiles,
-              onUpload: _uploadScreenshots,
+              onUpload: () {
+                EasyThrottle.throttle('item_recognizer_upload', const Duration(seconds: 5), _uploadScreenshots);
+              },
               debugServerRoot: _dio.options.baseUrl,
             ),
           ),

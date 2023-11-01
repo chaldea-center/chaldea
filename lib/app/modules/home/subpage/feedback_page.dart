@@ -293,7 +293,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
       EasyLoading.showInfo('${S.current.feedback_subject}: ${S.current.empty_hint}');
       return;
     }
-    EasyLoading.show(status: S.current.sending, maskType: EasyLoadingMaskType.clear);
     try {
       String subject = '[Feedback] ${subjectController.text.trim()}';
 
@@ -310,7 +309,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
       );
 
       if (!kDebugMode) {
-        final result = await handler.handle(FeedbackReport(contactController.text, bodyController.text), null);
+        final result = await showEasyLoading(
+            () => handler.handle(FeedbackReport(contactController.text, bodyController.text), null));
         if (!result) {
           throw S.current.sending_failed;
         }

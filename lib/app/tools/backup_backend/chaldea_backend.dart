@@ -33,7 +33,6 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
     if (!_check()) return false;
     dynamic error;
     try {
-      EasyLoading.show(maskType: EasyLoadingMaskType.clear);
       final content = UserBackupData.encode(db.userData);
       final resp = await showEasyLoading(() => ChaldeaWorkerApi.uploadBackup(content: content));
       if (resp != null) {
@@ -41,8 +40,8 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
       }
       return resp != null && resp.error != null;
     } catch (e, s) {
-      logger.e('upload server backup failed', e, s);
       error = escapeDioException(e);
+      logger.e('upload server backup failed', e, s);
     }
     EasyLoading.showError(error ?? S.current.error);
     return false;
@@ -51,7 +50,6 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
   @override
   Future<UserData?> restore() async {
     if (!_check()) return null;
-    EasyLoading.show(maskType: EasyLoadingMaskType.clear);
     try {
       final backups = await showEasyLoading(() => ChaldeaWorkerApi.listBackup());
       if (backups == null) return null;

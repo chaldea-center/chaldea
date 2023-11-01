@@ -59,9 +59,8 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
   }
 
   Future<void> backup() async {
-    EasyLoading.show(status: 'backup...', maskType: EasyLoadingMaskType.clear);
     try {
-      await backend.backup(message: message.isNotEmpty ? message : null);
+      await showEasyLoading(() => backend.backup(message: message.isNotEmpty ? message : null));
       EasyLoading.showSuccess(S.current.success);
       db.saveAll();
     } on ConflictError catch (e) {
@@ -90,9 +89,8 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
   }
 
   Future<void> restore() async {
-    EasyLoading.show(status: 'downloading...', maskType: EasyLoadingMaskType.clear);
     try {
-      await backend.restore();
+      await showEasyLoading(() => backend.restore());
       EasyLoading.showSuccess(S.current.success);
       db.saveAll();
     } catch (e, s) {

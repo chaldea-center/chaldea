@@ -134,8 +134,7 @@ class _GalleryPageState extends State<GalleryPage> {
       children: [
         InkWell(
           onTap: () async {
-            EasyLoading.show(maskType: EasyLoadingMaskType.clear);
-            final data = await GameDataLoader.instance.reload(offline: true);
+            final data = await showEasyLoading(() => GameDataLoader.instance.reload(offline: true));
             if (data == null) {
               EasyLoading.showError(S.current.failed);
               return;

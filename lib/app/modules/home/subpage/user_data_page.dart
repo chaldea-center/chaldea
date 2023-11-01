@@ -275,10 +275,9 @@ class _UserDataPageState extends State<UserDataPage> {
           ),
           TextButton(
             onPressed: () async {
-              EasyLoading.show(status: 'Moving...', maskType: EasyLoadingMaskType.clear);
               try {
                 Navigator.of(context).pop();
-                await _copyDirectory(from, to);
+                await showEasyLoading(() => _copyDirectory(from, to));
                 final sp = await SharedPreferences.getInstance();
                 sp.setBool('android_use_external', useExternal);
                 if (mounted) {
