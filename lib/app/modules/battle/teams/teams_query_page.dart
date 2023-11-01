@@ -282,7 +282,8 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         'team_vote_${record.id}',
         const Duration(seconds: 1),
         () async {
-          final result = await ChaldeaWorkerApi.teamVote(teamId: record.id, voteValue: record.votes.mine);
+          final result =
+              await ChaldeaWorkerApi.teamVote(teamId: record.id, voteValue: (record.tempVotes ?? record.votes).mine);
           record.tempVotes = null;
           if (result != null) {
             record.votes = result;
@@ -469,7 +470,8 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
               questId: quest.id,
               phase: phase,
               enemyHash: widget.phaseInfo?.enemyHash,
-              limit: _pageSize,
+              // limit: _pageSize,
+              limit: 10,
               offset: _pageSize * page,
               expireAfter: refresh ? Duration.zero : null,
             ));

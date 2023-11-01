@@ -24,7 +24,7 @@ class ChaldeaWorkerApi {
   ChaldeaWorkerApi._();
 
   static const v3Laplace = '/api/v3/laplace';
-  static const apiV4 = '/api/v4/';
+  static const apiV4 = '/api/v4';
 
   static final cacheManager = ApiCacheManager(null)
     ..dispatchError = dispatchError
@@ -372,7 +372,10 @@ class ChaldeaWorkerApi {
   }) {
     return cacheManager.postModel(
       '$apiV4/team/$teamId/vote',
-      fromJson: (data) => TeamVoteData.fromJson(data),
+      fromJson: (data) {
+        print('vote $teamId value $voteValue: $data');
+        return TeamVoteData.fromJson(data);
+      },
       options: addAuthHeader(),
       data: {
         'value': voteValue,
