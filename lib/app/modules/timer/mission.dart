@@ -49,8 +49,9 @@ class TimerMissionItem with TimerItem {
       headerBuilder: (context, _) => ListTile(
         dense: true,
         contentPadding: const EdgeInsetsDirectional.only(start: 16),
-        leading: const FaIcon(FontAwesomeIcons.listCheck, size: 20),
-        minLeadingWidth: 28,
+        leading: const FaIcon(FontAwesomeIcons.listCheck, size: 18),
+        minLeadingWidth: 24,
+        horizontalTitleGap: 8,
         enabled: mm.endedAt > DateTime.now().timestamp,
         title: Text([fmtDate(mm.startedAt), fmtDate(mm.endedAt)].join(' ~ ')),
         subtitle: Text.rich(TextSpan(

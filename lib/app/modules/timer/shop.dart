@@ -11,10 +11,7 @@ class TimerShopTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now().timestamp;
-    final shops = this.shops.toList();
     final groups = TimerShopItem.group(shops, region);
-    shops.sortByList((e) => [e.closedAt > now ? -1 : 1, (e.closedAt - now).abs(), e.priority]);
 
     return ListView(children: [
       for (final group in groups) group.buildItem(context, expanded: true),
@@ -28,9 +25,10 @@ class TimerShopItem with TimerItem {
   TimerShopItem(this.shops, this.region);
 
   static List<TimerShopItem> group(List<NiceShop> shops, Region region) {
+    final now = DateTime.now().timestamp;
     Map<String, List<NiceShop>> groups = {};
     shops = shops.toList();
-    shops.sort2((e) => e.closedAt);
+    shops.sortByList((e) => [e.closedAt > now ? -1 : 1, (e.closedAt - now).abs(), e.priority]);
     for (final shop in shops) {
       groups.putIfAbsent([shop.openedAt, shop.closedAt, shop.payType.name].join('-'), () => []).add(shop);
     }
@@ -55,14 +53,15 @@ class TimerShopItem with TimerItem {
         return ListTile(
           dense: true,
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
-          minLeadingWidth: 28,
+          minLeadingWidth: 24,
+          horizontalTitleGap: 8,
           leading: payItem == null
               ? null
               : Item.iconBuilder(
                   context: context,
                   item: payItem,
                   icon: payItem.icon,
-                  width: 24,
+                  width: 20,
                 ),
           title: Text.rich(TextSpan(children: [
             TextSpan(

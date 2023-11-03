@@ -60,7 +60,8 @@ class TimerEventItem with TimerItem {
           dense: true,
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
           leading: const Icon(Icons.flag, size: 24),
-          minLeadingWidth: 28,
+          minLeadingWidth: 24,
+          horizontalTitleGap: 8,
           title: Text.rich(TextSpan(children: [
             TextSpan(
               text: [
