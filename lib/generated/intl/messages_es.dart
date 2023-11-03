@@ -599,8 +599,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "userdata_download_backup": MessageLookupByLibrary.simpleMessage("Descargar copia de seguridad"),
         "userdata_download_choose_backup": MessageLookupByLibrary.simpleMessage("Elegir una copia de seguridad"),
         "userdata_local": MessageLookupByLibrary.simpleMessage("Datos de usuario (Local)"),
-        "userdata_sync_hint": MessageLookupByLibrary.simpleMessage(
-            "Solo actualiza los datos de la cuenta, no incluye la configuración local"),
         "userdata_sync_server": MessageLookupByLibrary.simpleMessage("Sincronizar datos (Servidor)"),
         "userdata_upload_backup": MessageLookupByLibrary.simpleMessage("Cargar copia de seguridad"),
         "valentine_craft": MessageLookupByLibrary.simpleMessage("Valentine craft"),

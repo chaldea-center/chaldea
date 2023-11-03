@@ -300,7 +300,6 @@
   "userdata_download_backup": "Скачать резервную копию",
   "userdata_download_choose_backup": "Выберать одну резервную копию",
   "userdata_local": "Пользовательские данные (Локально)",
-  "userdata_sync_hint": "Обновляются только данные учетной записи, без локальных настроек",
   "userdata_sync_server": "Синхронизация данных (Сервер)",
   "userdata_upload_backup": "Загрузить резервную копию",
   "version": "Версия",

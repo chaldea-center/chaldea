@@ -1020,7 +1020,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "userdata_download_backup": MessageLookupByLibrary.simpleMessage("下載備份"),
         "userdata_download_choose_backup": MessageLookupByLibrary.simpleMessage("選擇一個備份"),
         "userdata_local": MessageLookupByLibrary.simpleMessage("用戶資料(本地)"),
-        "userdata_sync_hint": MessageLookupByLibrary.simpleMessage("僅更新帳號數據，不包含本地設置"),
+        "userdata_sync_hint": MessageLookupByLibrary.simpleMessage("僅包含帳號數據，不包含本地設置，最多儲存3個月內的3個最新備份"),
         "userdata_sync_server": MessageLookupByLibrary.simpleMessage("同步數據(伺服器)"),
         "userdata_upload_backup": MessageLookupByLibrary.simpleMessage("上傳備份"),
         "valentine_craft": MessageLookupByLibrary.simpleMessage("情人節禮裝"),

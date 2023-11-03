@@ -352,8 +352,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "userdata_download_backup": MessageLookupByLibrary.simpleMessage("Скачать резервную копию"),
         "userdata_download_choose_backup": MessageLookupByLibrary.simpleMessage("Выберать одну резервную копию"),
         "userdata_local": MessageLookupByLibrary.simpleMessage("Пользовательские данные (Локально)"),
-        "userdata_sync_hint":
-            MessageLookupByLibrary.simpleMessage("Обновляются только данные учетной записи, без локальных настроек"),
         "userdata_sync_server": MessageLookupByLibrary.simpleMessage("Синхронизация данных (Сервер)"),
         "userdata_upload_backup": MessageLookupByLibrary.simpleMessage("Загрузить резервную копию"),
         "version": MessageLookupByLibrary.simpleMessage("Версия"),

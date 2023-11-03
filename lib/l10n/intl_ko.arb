@@ -917,7 +917,6 @@
   "userdata_download_backup": "백업 파일을 다운로드",
   "userdata_download_choose_backup": "백업 파일을 선택",
   "userdata_local": "사용자 데이터(로컬)",
-  "userdata_sync_hint": "계정 데이터만을 갱신하여 전역 설정을 포함시키지 않음",
   "userdata_sync_server": "데이터 동기화(서버)",
   "userdata_upload_backup": "백업 파일을 업로드",
   "valentine_craft": "발렌타인 예장",

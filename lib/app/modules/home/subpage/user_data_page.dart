@@ -88,7 +88,7 @@ class _UserDataPageState extends State<UserDataPage> {
           ),
           TileGroup(
             header: S.current.userdata_sync_server,
-            // footer: S.current.userdata_sync_hint,
+            footer: S.current.userdata_sync_hint,
             children: [
               ListTile(
                 title: Text(S.current.userdata_upload_backup),
@@ -112,6 +112,7 @@ class _UserDataPageState extends State<UserDataPage> {
             ],
           ),
           TileGroup(
+            header: 'Github',
             children: [
               ListTile(
                 title: const Text('Github Backup'),

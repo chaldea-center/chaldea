@@ -905,7 +905,6 @@
   "userdata_download_backup": "Descargar copia de seguridad",
   "userdata_download_choose_backup": "Elegir una copia de seguridad",
   "userdata_local": "Datos de usuario (Local)",
-  "userdata_sync_hint": "Solo actualiza los datos de la cuenta, no incluye la configuración local",
   "userdata_sync_server": "Sincronizar datos (Servidor)",
   "userdata_upload_backup": "Cargar copia de seguridad",
   "valentine_craft": "Valentine craft",

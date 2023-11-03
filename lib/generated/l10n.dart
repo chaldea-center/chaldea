@@ -10155,10 +10155,10 @@ class S {
     );
   }
 
-  /// `Only update account data, not include local settings`
+  /// `Only account data, not include local settings, up to 3 backups within 3 months`
   String get userdata_sync_hint {
     return Intl.message(
-      'Only update account data, not include local settings',
+      'Only account data, not include local settings, up to 3 backups within 3 months',
       name: 'userdata_sync_hint',
       desc: '',
       locale: localeName,

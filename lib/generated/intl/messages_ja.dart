@@ -701,7 +701,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "userdata_download_backup": MessageLookupByLibrary.simpleMessage("バックアップをダウンロード"),
         "userdata_download_choose_backup": MessageLookupByLibrary.simpleMessage("バックアップを選択"),
         "userdata_local": MessageLookupByLibrary.simpleMessage("ユーザーデータ（ローカル）"),
-        "userdata_sync_hint": MessageLookupByLibrary.simpleMessage("アカウントデータのみを更新し、ローカル設定を含めない"),
         "userdata_sync_server": MessageLookupByLibrary.simpleMessage("データ同期(サーバー)"),
         "userdata_upload_backup": MessageLookupByLibrary.simpleMessage("バックアップをアップロード"),
         "valentine_craft": MessageLookupByLibrary.simpleMessage("チョコ礼装"),

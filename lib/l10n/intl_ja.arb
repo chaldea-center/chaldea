@@ -917,7 +917,6 @@
   "userdata_download_backup": "バックアップをダウンロード",
   "userdata_download_choose_backup": "バックアップを選択",
   "userdata_local": "ユーザーデータ（ローカル）",
-  "userdata_sync_hint": "アカウントデータのみを更新し、ローカル設定を含めない",
   "userdata_sync_server": "データ同期(サーバー)",
   "userdata_upload_backup": "バックアップをアップロード",
   "valentine_craft": "チョコ礼装",
