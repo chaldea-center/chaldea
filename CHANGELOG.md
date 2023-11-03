@@ -1,7 +1,9 @@
 # Changelog
 
-## 2.4.20
+## 2.5.0
 
+- Server Migration
+  - previous app versions will be refused to upload user data, upload team etc. 
 - Add war board treasures
 - Fix event quest solver bug when any quest is disabled
 - Laplace: Support Ptolemaios transform servant
