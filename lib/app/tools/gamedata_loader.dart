@@ -70,9 +70,6 @@ class GameDataLoader {
       error = escapeDioException(e);
       if (!silent) {
         EasyLoading.showInfo(error);
-      } else {
-        debugPrint('load data failed: $e');
-        debugPrintStack(stackTrace: StackTrace.current, maxFrames: 3);
       }
     }
 
@@ -101,7 +98,7 @@ class GameDataLoader {
         throw UpdateError("Invalid game data!");
       }
     } catch (e, s) {
-      if (e is! UpdateError) logger.e('load gamedata(offline=$offline)', e, s);
+      if (e is! UpdateError || !e.silent) logger.e('load gamedata(offline=$offline)', e, s);
       _showError(e);
       if (!completer.isCompleted) completer.complete(null);
     } finally {
@@ -140,7 +137,7 @@ class GameDataLoader {
       if (newVersion.timestamp <= db.gameData.version.timestamp &&
           db.gameData.servantsById.isNotEmpty &&
           db.gameData.items.isNotEmpty) {
-        throw UpdateError(S.current.update_already_latest);
+        throw UpdateError(S.current.update_already_latest, true);
       }
     }
     Map<String, dynamic> _gameJson = {};
@@ -409,7 +406,8 @@ class GameDataLoader {
 
 class UpdateError extends Error {
   final String message;
-  UpdateError([this.message = ""]);
+  final bool silent;
+  UpdateError([this.message = "", this.silent = false]);
 
   @override
   String toString() {

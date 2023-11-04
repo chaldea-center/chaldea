@@ -135,10 +135,12 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         const SizedBox(width: 8),
         TextButton(
           onPressed: pageIndex == 0 ? null : () => _queryTeams(pageIndex - 1),
+          style: kTextButtonDenseStyle,
           child: Text(S.current.prev_page),
         ),
         TextButton(
           onPressed: !queryResult.hasNextPage ? null : () => _queryTeams(pageIndex + 1),
+          style: kTextButtonDenseStyle,
           child: Text(S.current.next_page),
         ),
         TextButton(
@@ -147,6 +149,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
               _queryTeams(pageIndex, refresh: true);
             });
           },
+          style: kTextButtonDenseStyle,
           child: Text(S.current.refresh),
         ),
       ];
@@ -470,8 +473,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
               questId: quest.id,
               phase: phase,
               enemyHash: widget.phaseInfo?.enemyHash,
-              // limit: _pageSize,
-              limit: 10,
+              limit: _pageSize,
               offset: _pageSize * page,
               expireAfter: refresh ? Duration.zero : null,
             ));
