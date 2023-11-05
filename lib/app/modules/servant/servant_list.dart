@@ -836,6 +836,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                 Text(svt.profile.costume.values.map((e) => status.cur.costumes[e.battleCharaId] ?? 0).join('/')),
               ],
             ),
+          Text('${S.current.np_short}${status.cur.npLv}'),
         ],
       );
       statusText = DefaultTextStyle(

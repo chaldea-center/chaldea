@@ -45,6 +45,7 @@ const _$SvtCompareEnumMap = {
   SvtCompare.atk: 'atk',
   SvtCompare.hp: 'hp',
   SvtCompare.priority: 'priority',
+  SvtCompare.tdLv: 'tdLv',
 };
 
 CraftFilterData _$CraftFilterDataFromJson(Map json) => $checkedCreate(

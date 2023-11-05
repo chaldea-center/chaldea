@@ -185,6 +185,7 @@ enum SvtCompare {
   atk,
   hp,
   priority,
+  tdLv,
   ;
 
   String get showName {
@@ -201,6 +202,8 @@ enum SvtCompare {
         return 'HP';
       case SvtCompare.priority:
         return S.current.priority;
+      case SvtCompare.tdLv:
+        return '${S.current.np_short} Lv';
     }
   }
 }
@@ -397,6 +400,7 @@ class SvtFilterData with _FilterData {
     if (a == null && b == null) return 0;
     if (a == null) return -1;
     if (b == null) return 1;
+    user ??= db.curUser;
 
     if (keys == null || keys.isEmpty) {
       keys = [SvtCompare.no];
@@ -430,8 +434,12 @@ class SvtFilterData with _FilterData {
           r = (a.hpMax) - (b.hpMax);
           break;
         case SvtCompare.priority:
-          final aa = user?.svtStatusOf(a.collectionNo), bb = user?.svtStatusOf(b.collectionNo);
-          r = (aa?.priority ?? 1) - (bb?.priority ?? 1);
+          final aa = user.svtStatusOf(a.collectionNo), bb = user.svtStatusOf(b.collectionNo);
+          r = (aa.priority) - (bb.priority);
+          break;
+        case SvtCompare.tdLv:
+          final aa = user.svtStatusOf(a.collectionNo).cur.npLv, bb = user.svtStatusOf(b.collectionNo).cur.npLv;
+          r = aa - bb;
           break;
       }
       if (r != 0) {
