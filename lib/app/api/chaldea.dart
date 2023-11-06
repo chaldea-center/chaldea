@@ -68,7 +68,7 @@ class ChaldeaWorkerApi {
     return db.apiWorkerDio;
   }
 
-  static Options addAuthHeader([Options? options, bool verify = false]) {
+  static Options addAuthHeader({Options? options, bool verify = false}) {
     options ??= Options();
     final secret = db.settings.secrets.user?.secret ?? "";
     String? authHeader;
@@ -133,7 +133,7 @@ class ChaldeaWorkerApi {
       fromJson: (data) => WorkerResponse.fromJson(data),
       data: data,
       expireAfter: Duration.zero,
-      options: addAuth ? addAuthHeader(options) : options,
+      options: addAuth ? addAuthHeader(options: options) : options,
     );
   }
 
@@ -152,6 +152,7 @@ class ChaldeaWorkerApi {
     );
     if (user != null && user.secret != null) {
       db.settings.secrets.user = user;
+      db.legacySecurity.deleteUserInfo();
       db.saveSettings();
     }
     return user;
@@ -197,6 +198,21 @@ class ChaldeaWorkerApi {
         'username': username,
         'password': password,
         'new_password': newPassword,
+      },
+    );
+  }
+
+  static Future<WorkerResponse?> adminResetPassword({
+    required String username,
+    required String password,
+  }) {
+    return cacheManager.postModel(
+      '$apiV4/user/reset-password',
+      fromJson: (data) => WorkerResponse.fromJson(data),
+      options: addAuthHeader(),
+      data: {
+        'username': username,
+        'password': password,
       },
     );
   }

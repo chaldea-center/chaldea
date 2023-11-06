@@ -115,6 +115,17 @@ class _LoginPageState extends State<LoginPage> {
                 deleteAccountBtn,
               ],
             ),
+          if (db.settings.secrets.user?.isAdmin == true)
+            ButtonBar(
+              alignment: MainAxisAlignment.center,
+              children: [
+                TextButton.icon(
+                  onPressed: isLoginAvailable() ? doAdminResetPwd : null,
+                  icon: const Icon(Icons.admin_panel_settings),
+                  label: Text('${S.current.reset}(Admin)'),
+                )
+              ],
+            ),
           if (kDebugMode)
             ListTile(
               title: Center(
@@ -491,6 +502,24 @@ class _LoginPageState extends State<LoginPage> {
     if (user != null) {
       secrets.user = user;
       EasyLoading.showSuccess(S.current.success);
+    }
+    _update();
+  }
+
+  Future<void> doAdminResetPwd() async {
+    String name = _nameController.text;
+    String pwd = _pwdController.text;
+    if (!isLoginAvailable(name, pwd)) {
+      return;
+    }
+    final confirm = await SimpleCancelOkDialog(
+      title: const Text('Reset Password (Admin only)'),
+      content: Text('user: $name\npassword: $pwd'),
+    ).showDialog(context);
+    if (confirm != true) return;
+    final resp = await showEasyLoading(() => ChaldeaWorkerApi.adminResetPassword(username: name, password: pwd));
+    if (resp != null) {
+      resp.showDialog();
     }
     _update();
   }

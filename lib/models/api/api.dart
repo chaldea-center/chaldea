@@ -46,7 +46,7 @@ class WorkerResponse {
 
   Future<void> showDialog([BuildContext? context]) {
     return SimpleCancelOkDialog(
-      title: Text(error != null ? S.current.error : S.current.error),
+      title: Text(error != null ? S.current.error : S.current.success),
       content: Text(fullMessage),
       scrollable: true,
       hideCancel: true,
@@ -88,6 +88,8 @@ class ChaldeaUser {
   factory ChaldeaUser.fromJson(Map<String, dynamic> json) => _$ChaldeaUserFromJson(json);
 
   Map<String, dynamic> toJson() => _$ChaldeaUserToJson(this);
+
+  bool get isAdmin => role == 16;
 }
 
 @JsonSerializable()
