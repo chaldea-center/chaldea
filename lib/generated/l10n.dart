@@ -1460,6 +1460,17 @@ class S {
     );
   }
 
+  /// `Warning: {count} of total {total} command cards didn't attack, try to remove unnecessary cards`
+  String card_not_attack_warning(Object count, Object total) {
+    return Intl.message(
+      'Warning: $count of total $total command cards didn\'t attack, try to remove unnecessary cards',
+      name: 'card_not_attack_warning',
+      desc: '',
+      locale: localeName,
+      args: [count, total],
+    );
+  }
+
   /// `Met`
   String get card_status_met {
     return Intl.message(

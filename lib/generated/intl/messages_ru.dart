@@ -23,7 +23,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(url) =>
       "Халдея — кроссплатформенная утилита для Fate/GO. Поддержка просмотра игровых данных, планирования слуг/событий/предметов, планирования основных миссий, симулятор призыва и т. д. Подробности: ${url}";
 
-  static String m14(count) => "Зарядить NP до ${count}";
+  static String m15(count) => "Зарядить NP до ${count}";
 
   static String m3(error) => "Импорт не удался. Ошибка:\n${error}";
 
@@ -31,7 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m11(n) => "Профиль ${n}";
 
-  static String m29(pause, remain) => "Надо подождать ${pause} секунд между загрузками (${remain}остаются).";
+  static String m30(pause, remain) => "Надо подождать ${pause} секунд между загрузками (${remain}остаются).";
 
   static String m12(a, b) => "${a} ${b}";
 
@@ -110,7 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "chaldea_share_msg": m0,
         "change_log": MessageLookupByLibrary.simpleMessage("Изменить Лог"),
         "characters_in_card": MessageLookupByLibrary.simpleMessage("Персонажи"),
-        "charge_np_to": m14,
+        "charge_np_to": m15,
         "check_file_hash": MessageLookupByLibrary.simpleMessage("Проверка целостности файлов"),
         "check_update": MessageLookupByLibrary.simpleMessage("Проверка обновления"),
         "clear": MessageLookupByLibrary.simpleMessage("Очистить"),
@@ -346,7 +346,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_before_close_app": MessageLookupByLibrary.simpleMessage("Загрузить перед закрытием"),
         "upload_not_eligible_hint":
             MessageLookupByLibrary.simpleMessage("Текущая команда не может быть загружена по следующим причинам:"),
-        "upload_paused": m29,
+        "upload_paused": m30,
         "usage": MessageLookupByLibrary.simpleMessage("Использование"),
         "userdata": MessageLookupByLibrary.simpleMessage("Пользовательские данные"),
         "userdata_download_backup": MessageLookupByLibrary.simpleMessage("Скачать резервную копию"),

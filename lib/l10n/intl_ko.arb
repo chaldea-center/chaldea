@@ -127,6 +127,7 @@
   "card_description": "상세 정보",
   "card_info": "정보",
   "card_name": "카드명",
+  "card_not_attack_warning": null,
   "card_status_met": "이미 조우",
   "card_status_not_met": "미조우",
   "card_status_owned": "계약자",

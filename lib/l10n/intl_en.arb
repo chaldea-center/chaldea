@@ -127,6 +127,7 @@
   "card_description": "Description",
   "card_info": "Info",
   "card_name": "Card Name",
+  "card_not_attack_warning": "Warning: {count} of total {total} command cards didn't attack, try to remove unnecessary cards",
   "card_status_met": "Met",
   "card_status_not_met": "Not Met",
   "card_status_owned": "Owned",

@@ -708,19 +708,28 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       // okay
       canUpload = true;
       bool hasMultiDamageFunc = false;
+      int attackCards = 0;
+      int totalAttackCards = 0;
       for (final record in battleData.recorder.records) {
-        if (record is BattleAttackRecord) {
+        if (record is BattleAttacksInitiationRecord) {
+          totalAttackCards += record.attacks.length;
+        } else if (record is BattleAttackRecord) {
           if ((record.card?.td?.dmgNpFuncCount ?? 0) > 1) {
             hasMultiDamageFunc = true;
             break;
           }
+          attackCards += 1;
         }
       }
-      if (hasMultiDamageFunc) {
-        content = '${S.current.laplace_upload_td_multi_dmg_func_hint}\n\n${S.current.upload_team_confirmation}';
-      } else {
-        content = S.current.upload_team_confirmation;
+
+      content = '';
+      if (totalAttackCards > attackCards) {
+        content += '${S.current.card_not_attack_warning(totalAttackCards - attackCards, totalAttackCards)}\n\n';
       }
+      if (hasMultiDamageFunc) {
+        content = '${S.current.laplace_upload_td_multi_dmg_func_hint}\n\n';
+      }
+      content += S.current.upload_team_confirmation;
     }
 
     return SimpleCancelOkDialog(

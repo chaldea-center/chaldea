@@ -127,6 +127,7 @@
   "card_description": "解说",
   "card_info": "资料",
   "card_name": "卡牌名称",
+  "card_not_attack_warning": "注意：{total}张指令卡中有{count}张未攻击，请尽量减少不必要的指令卡",
   "card_status_met": "已遭遇",
   "card_status_not_met": "未遭遇",
   "card_status_owned": "持有",

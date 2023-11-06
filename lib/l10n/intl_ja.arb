@@ -127,6 +127,7 @@
   "card_description": "解説",
   "card_info": "資料",
   "card_name": "カード名",
+  "card_not_attack_warning": null,
   "card_status_met": "未所持",
   "card_status_not_met": "未遭遇",
   "card_status_owned": "所持",
