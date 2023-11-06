@@ -9,6 +9,7 @@ import 'package:chaldea/app/battle/functions/damage.dart';
 import 'package:chaldea/app/battle/functions/gain_np.dart';
 import 'package:chaldea/app/battle/functions/gain_star.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
+import 'package:chaldea/app/battle/utils/battle_exception.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -799,12 +800,17 @@ class BattleData {
     return onFieldAllyServants[servantIndex]!.canUseSkillIgnoreCoolDown(this, skillIndex);
   }
 
+  bool _executing = false;
   Future<T?> recordError<T>({
     required bool save,
     required String action,
     required Future<T> Function() task,
   }) async {
     try {
+      if (_executing) {
+        throw BattleException('Previous task is still running');
+      }
+      _executing = true;
       if (save) pushSnapshot();
       return await task();
     } on BattleCancelException catch (e) {
@@ -818,6 +824,8 @@ class BattleData {
       if (mounted) EasyLoading.showError('${S.current.failed}\n\n$e');
       if (save) popSnapshot();
       rethrow;
+    } finally {
+      _executing = false;
     }
   }
 

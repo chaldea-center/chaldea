@@ -15,6 +15,7 @@ import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
@@ -32,6 +33,7 @@ class BattleRecorderPanel extends StatefulWidget {
   final BattleOptions? options;
   final BattleTeamSetup? team;
   final bool initShowTeam;
+  final bool initShowQuest;
   const BattleRecorderPanel({
     super.key,
     this.battleData,
@@ -40,6 +42,7 @@ class BattleRecorderPanel extends StatefulWidget {
     this.options,
     this.team,
     this.initShowTeam = false,
+    this.initShowQuest = false,
   });
 
   @override
@@ -48,7 +51,7 @@ class BattleRecorderPanel extends StatefulWidget {
 
 class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
   bool showDetail = false;
-  bool showQuest = false;
+  late bool showQuest = widget.initShowQuest;
   late bool showTeam = widget.initShowTeam;
   bool get showTwoColumn => db.settings.battleSim.recordShowTwoColumn;
 
@@ -466,7 +469,19 @@ class BattleRecorderPanelBase extends StatelessWidget {
           record.estimatedHeight,
           child,
         ));
-      } else if (record is BattleAttacksInitiationRecord || record is BattleSkillActivationRecord) {
+      } else if (record is BattleAttacksInitiationRecord) {
+        cardChildren.add((
+          record.estimatedHeight,
+          prefixIndicator(
+            context,
+            Text.rich(TextSpan(children: [
+              TextSpan(text: S.current.battle_attack, style: const TextStyle(fontWeight: FontWeight.bold)),
+              const TextSpan(text: ': '),
+              for (final attack in record.attacks) ...drawSvt(context, attack.actor, attack.cardData),
+            ])),
+          )
+        ));
+      } else if (record is BattleSkillActivationRecord) {
         // noop
       } else {
         assert(false, record);
@@ -572,12 +587,16 @@ class BattleRecorderPanelBase extends StatelessWidget {
     return prefixIndicator(context, Text.rich(TextSpan(children: spans)));
   }
 
-  List<InlineSpan> drawSvt(BuildContext context, BattleServantData svt) {
+  List<InlineSpan> drawSvt(BuildContext context, BattleServantData svt, [CommandCardData? card]) {
     final TextStyle? style = svt.isEnemy ? const TextStyle(fontStyle: FontStyle.italic) : null;
 
     return <InlineSpan>[
       TextSpan(text: '${svt.fieldIndex + 1}-', style: const TextStyle(fontFamily: kMonoFont).merge(style)),
       CenterWidgetSpan(child: svt.iconBuilder(context: context, height: 32, battleData: battleData)),
+      if (card != null) ...[
+        CenterWidgetSpan(child: CommandCardWidget(card: card.cardType, width: 32)),
+        if (card.isTD) TextSpan(text: '${S.current.np_short} ', style: const TextStyle(fontWeight: FontWeight.bold)),
+      ],
       if (showDetail)
         TextSpan(
           text: svt.lBattleName,

@@ -131,20 +131,13 @@ class BattleRecordManager {
 
   void initiateAttacks(final BattleData battleData, final List<CombatAction> combatActions) {
     records.add(BattleAttacksInitiationRecord(
-        playerTarget: battleData.playerTargetIndex,
-        enemyTarget: battleData.enemyTargetIndex,
-        random: battleData.options.random,
-        threshold: battleData.options.threshold,
-        tailoredExecution: battleData.options.tailoredExecution,
-        attacks: combatActions
-            .map((combatAction) => BattleAttackRecordData(
-                  svt: combatAction.actor.fieldIndex,
-                  card: combatAction.cardData.cardIndex,
-                  isTD: combatAction.cardData.isTD,
-                  critical: combatAction.cardData.critical,
-                  cardType: combatAction.cardData.cardType,
-                ))
-            .toList()));
+      playerTarget: battleData.playerTargetIndex,
+      enemyTarget: battleData.enemyTargetIndex,
+      random: battleData.options.random,
+      threshold: battleData.options.threshold,
+      tailoredExecution: battleData.options.tailoredExecution,
+      attacks: combatActions,
+    ));
   }
 
   void startPlayerCard(BattleServantData activator, CommandCardData card) {
@@ -535,45 +528,59 @@ class BattleOrderChangeRecord extends BattleRecord {
 }
 
 class BattleAttacksInitiationRecord extends BattleRecord {
-  final BattleRecordData recordData;
+  final int playerTarget;
+  final int enemyTarget;
+  final int random;
+  final int threshold;
+  final bool tailoredExecution;
+  final List<CombatAction> attacks;
 
   BattleAttacksInitiationRecord({
-    required final int playerTarget,
-    required final int enemyTarget,
-    required final int random,
-    required final int threshold,
-    required final bool tailoredExecution,
-    required final List<BattleAttackRecordData> attacks,
-  }) : recordData = BattleRecordData.attack(
-          options: BattleActionOptions(
-            playerTarget: playerTarget,
-            enemyTarget: enemyTarget,
-            random: random,
-            threshold: threshold,
-            tailoredExecution: tailoredExecution,
-          ),
-          attacks: attacks.toList(),
-        );
+    required this.playerTarget,
+    required this.enemyTarget,
+    required this.random,
+    required this.threshold,
+    required this.tailoredExecution,
+    required List<CombatAction> attacks,
+  }) : attacks = attacks.map((e) => e.copy()).toList();
 
   @override
   BattleRecord copy() {
     return BattleAttacksInitiationRecord(
-      playerTarget: recordData.options.playerTarget,
-      enemyTarget: recordData.options.enemyTarget,
-      random: recordData.options.random,
-      threshold: recordData.options.threshold,
-      tailoredExecution: recordData.options.tailoredExecution,
-      attacks: recordData.attacks!.toList(),
+      playerTarget: playerTarget,
+      enemyTarget: enemyTarget,
+      random: random,
+      threshold: threshold,
+      tailoredExecution: tailoredExecution,
+      attacks: attacks.map((e) => e.copy()).toList(),
     );
   }
 
   @override
   BattleRecordData? toUploadRecord() {
-    return recordData;
+    return BattleRecordData.attack(
+      options: BattleActionOptions(
+        playerTarget: playerTarget,
+        enemyTarget: enemyTarget,
+        random: random,
+        threshold: threshold,
+        tailoredExecution: tailoredExecution,
+      ),
+      attacks: [
+        for (final attack in attacks)
+          BattleAttackRecordData(
+            svt: attack.actor.fieldIndex,
+            card: attack.cardData.cardIndex,
+            isTD: attack.cardData.isTD,
+            critical: attack.cardData.critical,
+            cardType: attack.cardData.cardType,
+          )
+      ],
+    );
   }
 
   @override
-  double get estimatedHeight => 0;
+  double get estimatedHeight => _kOneRowRecordHeight;
 }
 
 class BattleAttackRecord extends BattleRecord {

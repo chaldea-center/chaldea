@@ -79,4 +79,8 @@ class CombatAction {
       return actor.canCommandCard(battleData, cardData);
     }
   }
+
+  CombatAction copy() {
+    return CombatAction(actor.copy(), cardData.copy());
+  }
 }
