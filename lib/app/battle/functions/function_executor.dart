@@ -92,7 +92,8 @@ class FunctionExecutor {
         final askillId = script.additionalSkillId!.getOrNull(skillLevel - 1);
         final askillLv = script.additionalSkillLv?.getOrNull(skillLevel - 1) ?? 1;
         if (askillId != null && askillId != 0) {
-          final askill = await showEasyLoading(() => AtlasApi.skill(askillId), mask: true);
+          final askill =
+              db.gameData.baseSkills[askillId] ?? await showEasyLoading(() => AtlasApi.skill(askillId), mask: true);
           final aSkillInfo = BattleSkillInfoData(askill, type: SkillInfoType.none, skillLv: askillLv);
           await aSkillInfo.activate(battleData);
         }

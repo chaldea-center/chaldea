@@ -175,6 +175,7 @@ class _CustomPrettyPrinter extends PrettyPrinter {
       if (errorStr != null) errorStr,
       fullMessageStr,
     ];
+    lines.removeWhere((e) => e == '<asynchronous suspension>');
     if (lines.length > 1) {
       for (int index = 0; index < lines.length - 1; index++) {
         lines[index] = '├ ${lines[index]}';

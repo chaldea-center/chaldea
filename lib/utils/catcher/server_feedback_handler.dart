@@ -319,7 +319,9 @@ class ServerFeedbackHandler extends ReportHandler {
 
       if (enableStackTrace) {
         buffer.write("<h3>Stack trace:</h3>");
-        buffer.write(escapeCode(report.stackTrace.toString()));
+        final lines = report.stackTrace.toString().split('\n');
+        lines.removeWhere((e) => e == '<asynchronous suspension>');
+        buffer.write(escapeCode(lines.join('\n')));
 
         if (report.stackTrace?.toString().trim().isNotEmpty != true && report.errorDetails != null) {
           buffer.write(escapeCode(report.errorDetails!.stack.toString()));

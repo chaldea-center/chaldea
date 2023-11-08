@@ -113,6 +113,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
       ));
     }
     final extraPassives = svt.extraPassive.where((e) => !e.isExtraPassiveEnabledForEvent(0)).toList();
+    extraPassives.sort2((e) => e.extraPassive.firstOrNull?.startedAt ?? 0, reversed: true);
     if (extraPassives.isNotEmpty) {
       children.add(SimpleAccordion(
         headerBuilder: (context, expanded) {

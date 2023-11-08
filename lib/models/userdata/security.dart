@@ -7,7 +7,7 @@ class ChaldeaSecurity {
   static const _chaldeaUser = 'chaldea_user';
   static const _chaldeaAuth = 'chaldea_auth';
 
-  late Box? _box;
+  Box? _box;
 
   String? get username => _box?.get(_chaldeaUser);
   String? get userAuth => _box?.get(_chaldeaAuth);
