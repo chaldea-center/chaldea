@@ -78,67 +78,34 @@ class _CommonReleasesPageState extends State<CommonReleasesPage>
     List<Widget> children = [];
     for (final groupId in grouped.keys.toList()..sort()) {
       final rs = grouped[groupId]!;
-      if (grouped.length > 1) {
-        children.add(DividerWithTitle(
-          title: 'Group $groupId',
-          height: 36,
-          indent: 16,
-          thickness: 1,
-          padding: const EdgeInsets.only(top: 8),
-        ));
-      }
-      children.addAll(divideList(
-        List.generate(rs.length, (index) => buildRelease(context, index, rs[index], !useId)),
-        const DividerWithTitle(height: 16, title: '·  ·  ·  ·  ·  ·', indent: 64),
-      ));
+      children.add(buildRelease(context, rs));
     }
     children.add(SafeArea(child: grouped.length > 1 ? SFooter(S.current.common_release_group_hint) : const SizedBox()));
 
-    return ListView(children: children);
+    return ListView(children: divideTiles(children));
   }
 
-  Widget buildRelease(BuildContext context, int index, CommonRelease release, bool enableLink) {
-    final title = '${release.condGroup}.${index + 1}  -  ${release.id}';
-    return CustomTable(children: [
-      enableLink
-          ? CustomTableRow(children: [
-              TableCellData(
-                child: SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: release.routeTo,
-                    style: kTextButtonDenseStyle,
-                    child: Text(title),
-                  ),
-                ),
-                isHeader: true,
-              )
-            ])
-          : CustomTableRow.fromTexts(texts: [title], isHeader: true),
-      CustomTableRow(children: [
-        TableCellData(
-          child: CondTargetValueDescriptor.commonRelease(
-            commonRelease: release,
-            leading: const TextSpan(text: kULLeading),
+  Widget buildRelease(BuildContext context, List<CommonRelease> releases) {
+    final group = releases.first.condGroup;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          title: Text('Group $group'),
+          leading: const Icon(Icons.group_work),
+          minLeadingWidth: 28,
+        ),
+        for (final (index, release) in releases.enumerate)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: CondTargetValueDescriptor.commonRelease(
+              commonRelease: release,
+              leading: TextSpan(text: '${index + 1}. '),
+            ),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        )
-      ]),
-      CustomTableRow.fromTexts(texts: [S.current.general_type], isHeader: true),
-      CustomTableRow.fromTexts(texts: [release.condType.name]),
-      CustomTableRow.fromTexts(
-        texts: const ['Group', 'Priority', 'CondId', 'CondNum'],
-        isHeader: true,
-      ),
-      CustomTableRow.fromTexts(
-        texts: [
-          release.condGroup.toString(),
-          release.priority.toString(),
-          release.condId.toString(),
-          release.condNum.toString()
-        ],
-      ),
-    ]);
+      ],
+    );
   }
 
   Widget cardList(String header, List<GameCardMixin> cards) {
