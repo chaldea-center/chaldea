@@ -11,6 +11,7 @@ UserAuth _$UserAuthFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = UserAuth(
+          source: $checkedConvert('source', (v) => v as String?),
           code: $checkedConvert('code', (v) => v as String?),
           userId: $checkedConvert('userId', (v) => v as String),
           authKey: $checkedConvert('authKey', (v) => v as String),
@@ -25,6 +26,7 @@ UserAuth _$UserAuthFromJson(Map json) => $checkedCreate(
     );
 
 Map<String, dynamic> _$UserAuthToJson(UserAuth instance) => <String, dynamic>{
+      'source': instance.source,
       'code': instance.code,
       'userId': instance.userId,
       'authKey': instance.authKey,

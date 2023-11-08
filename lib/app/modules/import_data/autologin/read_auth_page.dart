@@ -262,7 +262,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
       EasyLoading.show(status: 'Decoding...');
       String encrypted = utf8.decode(bytes.skip(2).toList());
       // print(encrypted);
-      final res = await decodeAuth(encrypted);
+      final res = await decodeAuth(encrypted, bytes);
       widget.onChanged(res);
       if (res.code != null) _codeCtrl.text = res.code!;
       _userIdCtrl.text = res.userId;
@@ -279,7 +279,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
     return null;
   }
 
-  Future<UserAuth> decodeAuth(String code) async {
+  Future<UserAuth> decodeAuth(String code, [List<int>? source]) async {
     // check base64 and length
     code = UserAuth.normTransferCode(code);
     if (code.isEmpty) {
@@ -307,6 +307,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
     final decrypted = utf8.decode(bytes);
     final data = jsonDecode(decrypted);
     return auth = UserAuth(
+      source: source == null ? null : base64Encode(source),
       code: code,
       authKey: data['authKey'] as String,
       secretKey: data['secretKey'] as String,

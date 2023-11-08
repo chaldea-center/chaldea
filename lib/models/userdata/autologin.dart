@@ -10,6 +10,7 @@ part '../../generated/models/userdata/autologin.g.dart';
 
 @JsonSerializable()
 class UserAuth {
+  final String? source; // bytes in base64
   final String? code;
 
   final String userId;
@@ -21,6 +22,7 @@ class UserAuth {
   String? name;
   //
   UserAuth({
+    this.source,
     this.code,
     required this.userId,
     required this.authKey,
