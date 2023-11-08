@@ -245,7 +245,7 @@ class NiceSkill extends SkillOrTd with RouteInfo implements BaseSkill {
       // ヨハンナさんと未確認の愛 ブレッシング・オブ・セイント EX 300NP
       if (id == 940274) return false;
       if (e.eventId == 0) {
-        // 巡霊の祝祭
+        // 巡霊の祝祭, 3000日纪念
         if (e.endedAt - e.startedAt < 90 * kSecsPerDay || e.endedAt < kNeverClosedTimestamp) {
           return false;
         }

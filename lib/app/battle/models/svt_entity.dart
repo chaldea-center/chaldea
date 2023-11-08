@@ -737,12 +737,15 @@ class BattleServantData {
       final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
       skillInfo.setRankUp(rankUp);
 
+      // in case transform svt changed self or skill
+      final _actor = copy(), _skill = skillInfo.copy();
+
       final activated = await skillInfo.activate(battleData);
       if (activated) {
         battleData.recorder.skill(
           battleData: battleData,
-          activator: this,
-          skill: skillInfo,
+          activator: _actor,
+          skill: _skill,
           fromPlayer: true,
           uploadEligible: true,
         );
