@@ -206,13 +206,14 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
         getGroup(
           header: S.current.filter_shown_type,
           children: [
-            FilterGroup.display(
-              useGrid: filterData.useGrid,
-              onChanged: (v) {
-                if (v != null) filterData.useGrid = v;
-                update();
-              },
-            ),
+            if (!widget.planMode)
+              FilterGroup.display(
+                useGrid: filterData.useGrid,
+                onChanged: (v) {
+                  if (v != null) filterData.useGrid = v;
+                  update();
+                },
+              ),
             FilterGroup<FavoriteState>(
               options: FavoriteState.values,
               combined: true,

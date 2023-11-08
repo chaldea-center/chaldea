@@ -49,6 +49,7 @@ class ItemListPage extends StatefulWidget {
 class ItemListPageState extends State<ItemListPage> with SingleTickerProviderStateMixin {
   bool filtered = false;
   _ItemSortType sortType = _ItemSortType.default_;
+  bool useGrid = false;
 
   late TabController _tabController;
   late List<TextEditingController> _itemRedundantControllers;
@@ -112,6 +113,16 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
             tooltip: '${S.current.sort_order} - ${sortType.shownName}',
           ),
           IconButton(
+            icon: Icon(useGrid ? Icons.grid_on : Icons.view_list),
+            tooltip: '${S.current.display_list}/${S.current.display_grid}',
+            onPressed: () {
+              FocusScope.of(context).unfocus();
+              setState(() {
+                useGrid = !useGrid;
+              });
+            },
+          ),
+          IconButton(
             icon: Icon(filtered ? Icons.check_circle : Icons.check_circle_outline),
             tooltip: S.current.item_only_show_lack,
             onPressed: () {
@@ -153,6 +164,7 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
                       editable: ![ItemCategory.event, ItemCategory.other].contains(category),
                       sortType:
                           [ItemCategory.event, ItemCategory.other].contains(category) ? _ItemSortType.id : sortType,
+                      useGrid: useGrid,
                     ),
                   )
               ],
@@ -312,6 +324,7 @@ class ItemListTab extends StatefulWidget {
   final bool showSet999;
   final bool editable;
   final _ItemSortType sortType;
+  final bool useGrid;
 
   const ItemListTab({
     super.key,
@@ -322,6 +335,7 @@ class ItemListTab extends StatefulWidget {
     this.showSet999 = false,
     this.editable = true,
     this.sortType = _ItemSortType.default_,
+    this.useGrid = true,
   });
 
   @override
@@ -443,7 +457,7 @@ class _ItemListTabState extends State<ItemListTab> {
         children.add((context) => buildItemTileNonEdit(group));
       }
     }
-    if (widget.showSet999 && widget.editable) {
+    if (widget.showSet999 && widget.editable && !widget.useGrid) {
       children.add((context) => Center(
             child: TextButton(
               onPressed: setAll999,
@@ -451,11 +465,25 @@ class _ItemListTabState extends State<ItemListTab> {
             ),
           ));
     }
-    Widget listView = ListView.builder(
-      controller: _scrollController,
-      itemCount: children.length,
-      itemBuilder: (context, index) => children[index](context),
-    );
+    Widget listView;
+    if (widget.useGrid) {
+      listView = GridView.extent(
+        controller: _scrollController,
+        maxCrossAxisExtent: 56,
+        childAspectRatio: 132 / 144,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        children: [
+          for (final builder in children) builder(context),
+        ],
+      );
+    } else {
+      listView = ListView.builder(
+        controller: _scrollController,
+        itemCount: children.length,
+        itemBuilder: (context, index) => children[index](context),
+      );
+    }
+
     return Column(children: [
       Expanded(child: listView),
       kDefaultDivider,
@@ -559,6 +587,9 @@ class _ItemListTabState extends State<ItemListTab> {
   /// Windows: catch "\t", enter = click listTile
   /// macOS: catch "\t", enter to complete and submit
   Widget buildItemTile(InputComponents group) {
+    if (widget.useGrid) {
+      return buildGridItem(group);
+    }
     final itemId = group.data;
     bool isQp = itemId == Items.qpId;
     final coinOwner = _coinSvtMap[itemId];
@@ -730,6 +761,10 @@ class _ItemListTabState extends State<ItemListTab> {
   }
 
   Widget buildItemTileNonEdit(InputComponents group) {
+    if (widget.useGrid) {
+      return buildGridItem(group);
+    }
+
     final itemId = group.data;
     return ListTile(
       horizontalTitleGap: 8,
@@ -741,6 +776,22 @@ class _ItemListTabState extends State<ItemListTab> {
         FocusScope.of(context).unfocus();
         router.popDetailAndPush(context: context, url: Routes.itemI(itemId));
       },
+    );
+  }
+
+  Widget buildGridItem(InputComponents group) {
+    final itemId = group.data;
+    final int countOwn = db.curUser.items[itemId] ?? 0, countLeft = db.itemCenter.itemLeft[itemId] ?? 0;
+    String? text;
+    if (group.data != Items.qpId && !const [ItemCategory.other, ItemCategory.event].contains(widget.category)) {
+      text = '$countOwn\n$countLeft';
+    }
+    return Item.iconBuilder(
+      context: context,
+      item: null,
+      itemId: itemId,
+      width: 52,
+      text: text,
     );
   }
 
