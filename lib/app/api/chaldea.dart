@@ -373,6 +373,7 @@ class ChaldeaWorkerApi {
       options: addAuthHeader(),
       data: {
         'ver': BattleShareData.kDataVer,
+        'appVer': AppInfo.versionString,
         'questId': data.quest?.id,
         'phase': data.quest?.phase,
         'enemyHash': data.quest?.enemyHash,
@@ -409,6 +410,7 @@ class ChaldeaWorkerApi {
       data: {
         "id": team.id,
         "ver": team.ver,
+        "appVer": team.appVer,
         "userId": team.userId,
         "questId": team.questId,
         "phase": team.phase,

@@ -99,6 +99,7 @@ UserBattleData _$UserBattleDataFromJson(Map json) => $checkedCreate(
         final val = UserBattleData(
           id: $checkedConvert('id', (v) => v as int),
           ver: $checkedConvert('ver', (v) => v as int),
+          appVer: $checkedConvert('appVer', (v) => v as String?),
           userId: $checkedConvert('userId', (v) => v as int),
           questId: $checkedConvert('questId', (v) => v as int),
           phase: $checkedConvert('phase', (v) => v as int),
@@ -116,6 +117,7 @@ UserBattleData _$UserBattleDataFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$UserBattleDataToJson(UserBattleData instance) => <String, dynamic>{
       'id': instance.id,
       'ver': instance.ver,
+      'appVer': instance.appVer,
       'userId': instance.userId,
       'questId': instance.questId,
       'phase': instance.phase,

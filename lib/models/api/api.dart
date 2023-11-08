@@ -185,6 +185,7 @@ class TeamVoteData {
 class UserBattleData {
   int id;
   int ver;
+  String? appVer;
   int userId;
   int questId;
   int phase;
@@ -200,6 +201,7 @@ class UserBattleData {
   UserBattleData({
     required this.id,
     required this.ver,
+    required this.appVer,
     required this.userId,
     required this.questId,
     required this.phase,

@@ -566,11 +566,18 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
             title: Text(S.current.team),
             contentPadding: EdgeInsets.zero,
             trailing: Text(
-              "No.${record.id}\n@${record.userId}",
+              "No.${record.id}\n@${record.username ?? record.userId}",
               textScaleFactor: 0.8,
               textAlign: TextAlign.end,
             ),
+            subtitle: Text(
+              [
+                record.createdAt.sec2date().toDateString(),
+                if ((record.appVer ?? "").isNotEmpty) record.appVer,
+              ].join('  '),
+            ),
           ),
+          const SizedBox(height: 8),
           TextFormField(
             controller: controller,
             decoration: InputDecoration(
@@ -619,7 +626,7 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
         "Team: https://chaldea.center/laplace/share?id=${record.id}",
         "Version: ${record.ver}",
         "ID: ${record.id}",
-        "Uploader: ${record.userId}",
+        "Uploader: ${record.userId} - ${record.username}",
         // "Stars: x up, y down\n",
         "Reporter: ${db.settings.secrets.user?.id}-${db.settings.secrets.user?.name}",
         "Reason:\n$reason"
