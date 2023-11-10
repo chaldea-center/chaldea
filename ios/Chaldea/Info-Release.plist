@@ -81,7 +81,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>FlutterDeepLinkingEnabled</key>
+	<true/>
 	<key>FLTEnableImpeller</key>
-  	<false />
+	<false/>
 </dict>
 </plist>

@@ -106,8 +106,12 @@
     </script>
 
     <script>
-      if (window.location.pathname === "/discord") {
+      const uri = new URL(window.location.href);
+      if (uri.pathname === "/discord") {
         window.location.href = "https://discord.gg/5M6w5faqjP";
+      } else if (uri.host === 'link.chaldea.center') {
+        uri.host = 'chaldea.center';
+        window.location.href = uri.toString();
       } else {
         window.addEventListener("load", function (ev) {
           // Download main.dart.js

@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "cc.narumi.chaldea",
+      "sha256_cert_fingerprints": [
+        "32:3A:BD:30:AE:C1:C0:15:EF:AF:AA:3C:B1:49:DF:74:26:57:86:30:1B:D6:A9:D9:8A:40:62:A7:A5:A6:1E:99"
+      ]
+    }
+  }
+]
