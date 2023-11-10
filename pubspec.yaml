@@ -28,7 +28,7 @@ dependencies:
     sdk: flutter
 
   android_id: ^0.3.5
-  archive: ^3.4.4
+  archive: ^3.4.9
   args: ^2.3.1
   auto_size_text: ^3.0.0
   cached_network_image: ^3.3.0
@@ -51,7 +51,7 @@ dependencies:
   # dio_cookie_manager: ^3.0.0
   dots_indicator: ^3.0.0
   equatable: ^2.0.5
-  file_picker: ^6.0.0
+  file_picker: ^6.1.1
   fl_chart: ^0.64.0
   flutter_cache_manager: ^3.3.1
   flutter_easyloading: ^3.0.5
@@ -103,9 +103,8 @@ dependencies:
   tuple: ^2.0.1
   url_launcher: ^6.1.12
   uuid: ^3.0.6
-  video_player: ^2.7.0
+  video_player: ^2.8.1
   video_player_win: ^2.3.1
-  video_player_macos: ^2.0.1
   # webview_flutter: ^4.1.0
   # webview_flutter_web: ^0.2.2+1
   worker_manager: ^6.3.1

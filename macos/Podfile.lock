@@ -39,8 +39,6 @@ PODS:
   - video_player_avfoundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - video_player_macos (0.0.1):
-    - FlutterMacOS
   - window_size (0.0.2):
     - FlutterMacOS
 
@@ -61,7 +59,6 @@ DEPENDENCIES:
   - system_tray (from `Flutter/ephemeral/.symlinks/plugins/system_tray/macos`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
   - video_player_avfoundation (from `Flutter/ephemeral/.symlinks/plugins/video_player_avfoundation/darwin`)
-  - video_player_macos (from `Flutter/ephemeral/.symlinks/plugins/video_player_macos/macos`)
   - window_size (from `Flutter/ephemeral/.symlinks/plugins/window_size/macos`)
 
 SPEC REPOS:
@@ -102,8 +99,6 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
   video_player_avfoundation:
     :path: Flutter/ephemeral/.symlinks/plugins/video_player_avfoundation/darwin
-  video_player_macos:
-    :path: Flutter/ephemeral/.symlinks/plugins/video_player_macos/macos
   window_size:
     :path: Flutter/ephemeral/.symlinks/plugins/window_size/macos
 
@@ -126,7 +121,6 @@ SPEC CHECKSUMS:
   system_tray: e53c972838c69589ff2e77d6d3abfd71332f9e5d
   url_launcher_macos: d2691c7dd33ed713bf3544850a623080ec693d95
   video_player_avfoundation: 8563f13d8fc8b2c29dc2d09e60b660e4e8128837
-  video_player_macos: 7a50b407d775a45392851b1218a9cf4be395cf7f
   window_size: 339dafa0b27a95a62a843042038fa6c3c48de195
 
 PODFILE CHECKSUM: ef1a79269797af34dd64252892cb94a71579d1d8
