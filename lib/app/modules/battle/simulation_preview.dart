@@ -970,18 +970,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       }
     }
     questInfo ??= BattleQuestInfo.fromQuery(uri.queryParameters);
-    if (data == null) {
-      EasyLoading.showError('Invalid data or id');
-      return;
-    }
-
-    final minBuild = data.minBuild;
-    if (minBuild != null && minBuild > AppInfo.buildNumber) {
-      EasyLoading.showError(S.current.error_required_app_version('Build $minBuild', AppInfo.buildNumber));
-      return;
-    }
-    restoreFormation(data.team);
-    questInfo = data.quest ?? questInfo;
     if (questInfo != null) {
       questIdTextController.text = questInfo.toUrl();
       await _fetchQuestPhase(
@@ -991,9 +979,23 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         region: questInfo.region ?? Region.jp,
       );
     }
+
+    if (questInfo == null) {
+      EasyLoading.showError('Invalid data or id');
+      return;
+    }
+    if (data == null) return;
+
+    final minBuild = data.minBuild;
+    if (minBuild != null && minBuild > AppInfo.buildNumber) {
+      EasyLoading.showError(S.current.error_required_app_version('Build $minBuild', AppInfo.buildNumber));
+      return;
+    }
+    restoreFormation(data.team);
+
     options.fromShareData(data.options);
 
-    if (questInfo != null && data.actions.isNotEmpty && mounted) {
+    if (data.actions.isNotEmpty && mounted) {
       EasyLoading.dismiss();
       SimpleCancelOkDialog(
         title: Text(S.current.success),

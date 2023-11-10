@@ -310,9 +310,9 @@ class BattleQuestInfo {
 
   static BattleQuestInfo? fromQuery(Map<String, String> query) {
     final id = int.tryParse(query['questId'] ?? "");
-    final phase = int.tryParse(query['phase'] ?? "");
+    final phase = int.tryParse(query['phase'] ?? "") ?? db.gameData.quests[id]?.phases.lastOrNull;
     final enemyHash = query['enemyHash'];
-    if (id != null && phase != null && enemyHash != null) {
+    if (id != null && phase != null) {
       return BattleQuestInfo(id: id, phase: phase, enemyHash: enemyHash);
     }
     return null;

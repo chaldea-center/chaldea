@@ -196,7 +196,7 @@ class Routes {
   static const String laplaceBattle = '/laplace/battle';
   static const String laplaceShare = '/laplace/share';
   static const String laplaceNpDmg = '/laplace/np-dmg';
-  static const String laplaceManageTeam = '/laplace/team';
+  static const String laplaceManageTeam = '/laplace/my-teams';
 
   static const String discord = '/discord';
   static const String notFound = '/404';
@@ -461,8 +461,7 @@ class RouteConfiguration {
         if (type == null) break;
         return AiPage(aiType: type, aiId: aiId, region: region);
       case Routes.laplace:
-        if (path?.startsWith(Routes.laplaceShare) == true &&
-            (uri?.queryParameters.containsKey('data') == true || uri?.queryParameters.containsKey('id') == true)) {
+        if (path?.startsWith(Routes.laplaceShare) == true) {
           return SimulationPreview(shareUri: uri);
         } else if (path?.startsWith(Routes.laplaceNpDmg) == true) {
           return const TdDamageRanking();
