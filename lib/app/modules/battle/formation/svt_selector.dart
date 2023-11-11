@@ -30,6 +30,7 @@ class ServantSelector extends StatelessWidget {
   final DragTargetAccept<PlayerSvtData>? onDragSvt;
   final DragTargetAccept<PlayerSvtData>? onDragCE;
   final bool enableEdit;
+  final ValueNotifier<String?> hovered;
 
   ServantSelector({
     super.key,
@@ -40,6 +41,7 @@ class ServantSelector extends StatelessWidget {
     this.onDragSvt,
     this.onDragCE,
     this.enableEdit = true,
+    required this.hovered,
   });
 
   SvtFilterData get svtFilterData => db.settings.svtFilterData;
@@ -98,9 +100,10 @@ class ServantSelector extends StatelessWidget {
     svtIcon = _DragHover<_DragSvtData>(
       enableEdit: enableEdit,
       data: _DragSvtData(playerSvtData),
+      hovered: hovered,
+      hoverKey: '${playerSvtData.hashCode}-svt',
       child: svtIcon,
-      builder: (context, child, hovered, dragging) {
-        if (dragging || !hovered) return child;
+      hoveredBuilder: (context, child) {
         return _stackActions(
           context: context,
           child: child,
@@ -192,9 +195,10 @@ class ServantSelector extends StatelessWidget {
     ceIcon = _DragHover<_DragCEData>(
       enableEdit: enableEdit,
       data: _DragCEData(playerSvtData),
+      hovered: hovered,
+      hoverKey: '${playerSvtData.hashCode}-ce',
       child: ceIcon,
-      builder: (context, child, hovered, dragging) {
-        if (dragging || !hovered) return child;
+      hoveredBuilder: (context, child) {
         return _stackActions(
           context: context,
           child: child,
@@ -258,7 +262,7 @@ class ServantSelector extends StatelessWidget {
     ));
 
     return Padding(
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(2),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -326,19 +330,23 @@ class ServantSelector extends StatelessWidget {
 class _DragHover<T extends Object> extends StatefulWidget {
   final bool enableEdit;
   final T data;
+  final String hoverKey;
   final Widget child;
-  final Widget Function(BuildContext context, Widget child, bool hovered, bool dragging) builder;
+  final Widget Function(BuildContext context, Widget child) hoveredBuilder;
   final VoidCallback onTap;
   final DragTargetAccept<T> onAccept;
+  final ValueNotifier<String?> hovered;
 
   const _DragHover({
     super.key,
     required this.enableEdit,
     required this.data,
+    required this.hoverKey,
     required this.child,
-    required this.builder,
+    required this.hoveredBuilder,
     required this.onTap,
     required this.onAccept,
+    required this.hovered,
   });
 
   @override
@@ -346,16 +354,18 @@ class _DragHover<T extends Object> extends StatefulWidget {
 }
 
 class __DragHoverState<T extends Object> extends State<_DragHover<T>> {
-  bool hovered = false;
-
   static bool dragging = false;
 
   @override
   Widget build(BuildContext context) {
     Widget base = InkWell(
-      onHover: (value) {
+      onHover: (hovered) {
         setState(() {
-          hovered = value;
+          if (hovered) {
+            widget.hovered.value = widget.hoverKey;
+          } else if (widget.hovered.value == widget.hoverKey) {
+            widget.hovered.value = null;
+          }
         });
       },
       onTap: widget.onTap,
@@ -397,7 +407,9 @@ class __DragHoverState<T extends Object> extends State<_DragHover<T>> {
         });
       },
     );
-    child = widget.builder(context, child, hovered, dragging);
+    if (!dragging && widget.hoverKey == widget.hovered.value) {
+      child = widget.hoveredBuilder(context, child);
+    }
     return child;
   }
 }
