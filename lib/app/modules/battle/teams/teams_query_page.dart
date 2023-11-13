@@ -549,10 +549,10 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           ),
           onTap: () {
             db.runtimeData.clipBoard.teamData = record;
-              EasyLoading.showToast(S.current.copied);
-              Navigator.pop(context);
-            },
-          ),
+            EasyLoading.showToast(S.current.copied);
+            Navigator.pop(context);
+          },
+        ),
       ],
     );
   }
@@ -639,13 +639,13 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
         "Quest: https://apps.atlasacademy.io/db/JP/quest/${record.questId}/${record.phase}?hash=${record.enemyHash}",
         "Lv. ${quest?.recommendLv} ${quest?.name}",
         "Spot: ${quest?.spotName}",
-        "War: ${quest?.war?.longName}",
-        "Team: https://chaldea.center/laplace/share?id=${record.id}",
+        "War: ${quest?.war?.longName.setMaxLines(1)}",
+        "Team: https://worker.chaldea.center/api/v4/team/${record.id}?decode=1",
         "Version: ${record.ver}",
         "ID: ${record.id}",
-        "Uploader: ${record.userId} - ${record.username}",
+        "Uploader: ${record.username}",
         // "Stars: x up, y down\n",
-        "Reporter: ${db.settings.secrets.user?.id}-${db.settings.secrets.user?.name}",
+        "Reporter: ${db.settings.secrets.user?.name}",
         "Reason:\n$reason"
       ], '\n');
 

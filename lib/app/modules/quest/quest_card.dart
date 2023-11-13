@@ -121,7 +121,7 @@ class _QuestCardState extends State<QuestCard> {
 
     String questName = quest.lNameWithChapter;
 
-    List<String> names = [questName, if (!Transl.isJP && quest.name != quest.lName.l) quest.name]
+    List<String> names = [questName, if (!Transl.isJP && quest.name != quest.lName.l && !widget.battleOnly) quest.name]
         .map((e) => e.replaceAll('\n', ' '))
         .toList();
     String shownQuestName;
@@ -182,10 +182,10 @@ class _QuestCardState extends State<QuestCard> {
                             quest.war?.routeTo();
                           },
                     child: AutoSizeText(
-                      [
+                      {
                         if (_questEvent != null) _questEvent.shownName.setMaxLines(1),
                         warName,
-                      ].join('\n'),
+                      }.join('\n'),
                       maxLines: 2,
                       maxFontSize: 14,
                       minFontSize: 6,

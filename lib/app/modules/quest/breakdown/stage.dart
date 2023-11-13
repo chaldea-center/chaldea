@@ -470,7 +470,7 @@ class EnemyThumbBase extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (face != null) face,
+          if (face != null) AnimatedSwitcher(duration: const Duration(milliseconds: 200), child: face),
           LayoutTryBuilder(builder: (context, constraints) {
             return AutoSizeText(
               [name, if (deck != null && deck!.isNotEmpty) deck].join(),

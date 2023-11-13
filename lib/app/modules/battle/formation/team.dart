@@ -55,12 +55,12 @@ class _TeamSetupCardState extends State<TeamSetupCard> {
 
   Responsive partyOrganization(List<PlayerSvtData> svts, String title) {
     return Responsive(
-      small: 12,
+      small: 6,
       middle: 6,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(title),
+          Text(title, style: Theme.of(context).textTheme.bodySmall),
           Row(
             children: [
               for (final svt in svts)

@@ -123,7 +123,7 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
           },
         ),
         getGroup(
-          header: S.current.battle_attack,
+          header: S.current.battle_command_card,
           children: [
             DropdownButton(
               isDense: true,
@@ -133,7 +133,7 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
                   DropdownMenuItem(
                     value: count,
                     child: Text(
-                      "${S.current.normal_attack} ${count == -1 ? S.current.general_any : "≤$count"}",
+                      "${S.current.battle_command_card} ${count == -1 ? S.current.general_any : "≤$count"}",
                       textScaleFactor: 0.8,
                     ),
                   ),
@@ -190,7 +190,7 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
           },
         ),
         FilterGroup<int>(
-          title: Text.rich(TextSpan(text: '${S.current.team_block_ce}:   ', children: [
+          title: Text.rich(TextSpan(text: '${S.current.team_block_ce}  ( ', children: [
             TextSpan(
               text: S.current.disabled,
               style: TextStyle(color: Theme.of(context).colorScheme.error),
@@ -199,7 +199,8 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
             TextSpan(
               text: S.current.disallow_mlb,
               style: TextStyle(color: Theme.of(context).colorScheme.primary),
-            )
+            ),
+            const TextSpan(text: ' )'),
           ])),
           options: availableCEs,
           values: filterData.blockCEs.copy(),

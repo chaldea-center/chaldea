@@ -223,7 +223,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     }
     String spotJp = effPhase.lSpot.jp;
     String spot = effPhase.lSpot.l;
-    String shownSpotName = spotJp == spot ? spot : '$spot/$spotJp';
+    String shownSpotName = spotJp == spot || widget.battleOnly ? spot : '$spot/$spotJp';
     final layer = kLB7SpotLayers[quest.spotId];
     if (layer != null && quest.type == QuestType.free) {
       shownSpotName = '${S.current.map_layer_n(layer)} $shownSpotName';

@@ -308,15 +308,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
         extraAttachments: Map.of(attachFiles),
       );
 
-      if (!kDebugMode) {
-        final result = await showEasyLoading(
-            () => handler.handle(FeedbackReport(contactController.text, bodyController.text), null));
-        if (!result) {
-          throw S.current.sending_failed;
-        }
-      } else {
-        print('Debugging, skip sending email');
-        await Future.delayed(const Duration(seconds: 3));
+      final result = await showEasyLoading(
+          () => handler.handle(FeedbackReport(contactController.text, bodyController.text), null));
+      if (!result) {
+        throw S.current.sending_failed;
       }
       subjectController.text = '';
       bodyController.text = '';

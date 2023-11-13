@@ -510,25 +510,28 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             ),
           ],
         ),
-        if (questPhase == null)
-          Text(
-            S.current.battle_no_quest_phase,
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
-            textAlign: TextAlign.center,
-          )
-        else
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 540),
-            child: QuestCard(
-              key: Key('quest_phase_${questPhase.hashCode}'),
-              region: questRegion,
-              offline: false,
-              quest: questPhase,
-              displayPhases: [questPhase!.phase],
-              battleOnly: true,
-              preferredPhases: [questPhase!],
-            ),
-          ),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 540),
+          child: questPhase == null
+              ? Card(
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 400,
+                    child: Center(
+                      child: Text(S.current.battle_no_quest_phase),
+                    ),
+                  ),
+                )
+              : QuestCard(
+                  key: Key('quest_phase_${questPhase.hashCode}'),
+                  region: questRegion,
+                  offline: false,
+                  quest: questPhase,
+                  displayPhases: [questPhase!.phase],
+                  battleOnly: true,
+                  preferredPhases: [questPhase!],
+                ),
+        ),
         if (questPhase != null && questPhase!.enemyHashes.length > 1) SFooter(S.current.laplace_enemy_multi_ver_hint),
       ],
     );

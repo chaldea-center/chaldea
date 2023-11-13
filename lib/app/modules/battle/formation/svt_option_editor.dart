@@ -1076,13 +1076,14 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     if (selectedSvt == null || playerSvtData.supportType.isSupport) {
       return;
     }
+    final favorite = db.curUser.svtStatusOf(selectedSvt.collectionNo).favorite;
     playerSvtData.onSelectServant(
       selectedSvt,
       region: widget.playerRegion,
       jpTime: questPhase?.jpOpenAt,
     );
     if (mounted) setState(() {});
-    EasyLoading.showSuccess(S.current.updated);
+    EasyLoading.showSuccess(S.current.updated + ('(${favorite ? S.current.favorite : S.current.default_lvs})'));
   }
 
   Future<void> _onSelectSupport(final SupportServant support) async {
