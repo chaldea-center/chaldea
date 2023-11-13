@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:intl/intl.dart';
@@ -248,6 +250,7 @@ class AppInfo {
   static String get uuid => _uuid!;
 
   static bool get isDebugDevice {
+    if (kDebugMode) return true;
     const excludeIds = [
       'FB26CA34-0B8F-588C-8542-4A748BB67740', // android
       'C150DF56-B65C-5167-852B-102D487D7159', // ios

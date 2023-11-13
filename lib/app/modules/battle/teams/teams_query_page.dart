@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
@@ -25,8 +23,9 @@ class TeamsQueryPage extends StatefulWidget {
   final Quest? quest;
   final BattleQuestInfo? phaseInfo;
   final List<int>? teamIds;
+  final String? userId; // name or id
 
-  const TeamsQueryPage({super.key, required this.mode, this.quest, this.phaseInfo, this.teamIds});
+  const TeamsQueryPage({super.key, required this.mode, this.quest, this.phaseInfo, this.teamIds, this.userId});
 
   @override
   State<TeamsQueryPage> createState() => _TeamsQueryPageState();
@@ -59,14 +58,11 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   }
 
   PreferredSizeWidget? get appBar {
-    final username = secrets.user?.name ?? "";
+    final username = widget.userId ?? secrets.user?.name ?? "Not Login";
     return AppBar(
       title: Text.rich(TextSpan(
         children: [
-          if (mode == TeamQueryMode.user)
-            TextSpan(
-                text: '${S.current.team} @'
-                    '${secrets.isLoggedIn ? username.breakWord : "Not Login"}'),
+          if (mode == TeamQueryMode.user) TextSpan(text: '${S.current.team} @$username'),
           if (mode == TeamQueryMode.quest && widget.quest != null)
             TextSpan(text: '${S.current.team} - ${widget.quest?.lDispName.breakWord}'),
           if (mode == TeamQueryMode.id) TextSpan(text: S.current.team_shared),
@@ -212,7 +208,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
                     : const Icon(Icons.star_border, color: Colors.grey),
                 tooltip: S.current.favorite,
               ),
-            if (mode == TeamQueryMode.user || record.userId == curUserId || AppInfo.isDebugDevice || kDebugMode)
+            if (mode == TeamQueryMode.user || record.userId == curUserId || AppInfo.isDebugDevice)
               FilledButton(
                 onPressed: () {
                   final isOthers = record.userId != curUserId;
@@ -460,10 +456,13 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     Future<TeamQueryResult?> task;
     switch (mode) {
       case TeamQueryMode.user:
+        final userId = widget.userId != null ? int.tryParse(widget.userId!) : null;
         task = showEasyLoading(() => ChaldeaWorkerApi.teamsByUser(
               limit: _pageSize,
               offset: _pageSize * page,
               expireAfter: refresh ? Duration.zero : const Duration(days: 2),
+              userId: userId,
+              username: widget.userId,
             ));
       case TeamQueryMode.quest:
         final quest = widget.quest;

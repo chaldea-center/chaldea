@@ -1,6 +1,7 @@
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../packages/language.dart';
@@ -71,6 +72,23 @@ class BattleHomePage extends StatelessWidget {
                 router.push(url: Routes.laplaceManageTeam);
               },
             ),
+            if (AppInfo.isDebugDevice || db.settings.secrets.user?.isAdmin == true)
+              ListTile(
+                leading: const Icon(Icons.group),
+                title: const Text("???'s Teams"),
+                onTap: () {
+                  InputCancelOkDialog(
+                    title: 'User ID or name',
+                    validate: (s) => s.trim().isNotEmpty,
+                    onSubmit: (value) {
+                      router.push(
+                        url: Routes.laplaceManageTeam,
+                        child: TeamsQueryPage(mode: TeamQueryMode.user, userId: value),
+                      );
+                    },
+                  ).showDialog(context);
+                },
+              ),
             ListTile(
               leading: const Icon(Icons.numbers),
               title: Text("${S.current.team} ID"),

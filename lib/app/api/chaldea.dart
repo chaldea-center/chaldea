@@ -301,17 +301,19 @@ class ChaldeaWorkerApi {
     int? phase,
     String? enemyHash,
     int? userId,
+    String? username,
     int? ver,
     int limit = 20,
     int offset = 0,
     Duration? expireAfter = const Duration(minutes: 60),
   }) {
-    if (questId == null && userId == null && ver == null) return Future.value();
+    if (questId == null && userId == null && ver == null && username == null) return Future.value();
     final query = _encodeQuery({
       'questId': questId,
       'phase': phase,
       'enemyHash': enemyHash,
       'userId': userId,
+      'username': username,
       'ver': ver,
       'limit': limit,
       if (offset > 0) 'offset': offset,
@@ -326,14 +328,16 @@ class ChaldeaWorkerApi {
 
   static Future<TeamQueryResult?> teamsByUser({
     int? userId,
+    String? username,
     int limit = 20,
     int offset = 0,
     Duration? expireAfter,
   }) {
-    userId ??= db.settings.secrets.user?.id;
-    if (userId == null || userId == 0) return Future.value();
+    if (username == null) userId ??= db.settings.secrets.user?.id;
+    if ((userId == null || userId == 0) && (username == null || username.isEmpty)) return Future.value();
     return teams(
       userId: userId,
+      username: username,
       limit: limit,
       offset: offset,
       expireAfter: expireAfter,
