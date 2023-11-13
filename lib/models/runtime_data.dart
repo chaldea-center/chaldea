@@ -6,6 +6,7 @@ import 'package:chaldea/utils/extension.dart';
 import '../app/tools/app_update.dart';
 import '../packages/app_info.dart';
 import '../packages/platform/platform.dart';
+import 'api/api.dart';
 import 'api/recognizer.dart';
 import 'gamedata/gamedata.dart';
 import 'gamedata/toplogin.dart';
@@ -71,4 +72,5 @@ class RuntimeData {
 class AppClipBoard {
   QuestEnemy? questEnemy;
   List<UserShop>? userShops;
+  UserBattleData? teamData;
 }

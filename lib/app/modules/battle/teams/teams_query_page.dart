@@ -521,8 +521,8 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         for (int index = 0; index < urls.length; index++)
           ListTile(
             dense: true,
-            horizontalTitleGap: 0,
-            minLeadingWidth: 32,
+            horizontalTitleGap: 8,
+            minLeadingWidth: 16,
             contentPadding: const EdgeInsets.symmetric(horizontal: 24),
             leading: Text((index + 1).toString()),
             title: Text(
@@ -532,6 +532,23 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             ),
             onTap: () {
               copyToClipboard(urls[index]);
+              EasyLoading.showToast(S.current.copied);
+              Navigator.pop(context);
+            },
+          ),
+        ListTile(
+          dense: true,
+          horizontalTitleGap: 8,
+          minLeadingWidth: 16,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+          leading: Text(3.toString()),
+          title: const Text(
+            "Copy Replay Steps",
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          onTap: () {
+            db.runtimeData.clipBoard.teamData = record;
               EasyLoading.showToast(S.current.copied);
               Navigator.pop(context);
             },

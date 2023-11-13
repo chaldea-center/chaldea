@@ -1136,6 +1136,37 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       return options.disableEvent || event?.pointBuffs.contains(pointBuff) != true;
     });
 
+    // check replay
+    BattleShareData? replayActions;
+    final replayTeamData = db.runtimeData.clipBoard.teamData;
+    if (replayTeamData != null && replayTeamData.decoded != null && replayTeamData.questId == questCopy.id && mounted) {
+      final needReplay = await showDialog(
+        context: context,
+        useRootNavigator: false,
+        builder: (context) {
+          return SimpleCancelOkDialog(
+            title: const Text("Replay Actions?"),
+            cancelText: "NO",
+            confirmText: "YES",
+            actions: [
+              TextButton(
+                onPressed: () {
+                  db.runtimeData.clipBoard.teamData = null;
+                  Navigator.pop(context, false);
+                },
+                child: Text("NO(${S.current.reset})"),
+              ),
+            ],
+            content: Text([
+              '${S.current.team} ${replayTeamData.id}',
+            ].join('\n')),
+          );
+        },
+      );
+      if (needReplay == null) return;
+      if (needReplay == true) replayActions = replayTeamData.decoded;
+    }
+
     //
     settings.previousQuestPhase = '${questCopy.id}/${questCopy.phase}';
     saveFormation();
@@ -1145,6 +1176,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         questPhase: questCopy,
         region: questRegion,
         options: options,
+        replayActions: replayActions,
       ),
     );
   }
