@@ -855,10 +855,10 @@ class S {
     );
   }
 
-  /// `Invalid `
+  /// `Invalid`
   String get battle_invalid {
     return Intl.message(
-      'Invalid ',
+      'Invalid',
       name: 'battle_invalid',
       desc: '',
       locale: localeName,
@@ -998,10 +998,10 @@ class S {
     );
   }
 
-  /// `Required field traits `
+  /// `Required field traits`
   String get battle_require_field_traits {
     return Intl.message(
-      'Required field traits ',
+      'Required field traits',
       name: 'battle_require_field_traits',
       desc: '',
       locale: localeName,
@@ -1064,10 +1064,10 @@ class S {
     );
   }
 
-  /// `Select Effect `
+  /// `Select Effect`
   String get battle_select_effect {
     return Intl.message(
-      'Select Effect ',
+      'Select Effect',
       name: 'battle_select_effect',
       desc: '',
       locale: localeName,
