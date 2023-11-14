@@ -212,9 +212,10 @@ FixedDrop _$FixedDropFromJson(Map json) => FixedDrop(
 
 LimitedSummon _$LimitedSummonFromJson(Map json) => LimitedSummon(
       id: json['id'] as String,
+      name: json['name'],
+      name_: json['name_'] as String?,
       mcLink: json['mcLink'] as String?,
       fandomLink: json['fandomLink'] as String?,
-      name: json['name'] == null ? null : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['name'] as Map)),
       banner: json['banner'] == null
           ? null
           : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['banner'] as Map)),

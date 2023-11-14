@@ -351,9 +351,10 @@ class FixedDrop {
 @JsonSerializable(createToJson: false)
 class LimitedSummon with RouteInfo {
   String id;
+  String name;
+  String name_;
   String? mcLink;
   String? fandomLink;
-  MappingBase<String> name;
   MappingBase<String> banner;
   MappingBase<String> officialBanner;
   MappingBase<String> noticeLink;
@@ -365,9 +366,10 @@ class LimitedSummon with RouteInfo {
 
   LimitedSummon({
     required this.id,
+    dynamic name,
+    String? name_,
     this.mcLink,
     this.fandomLink,
-    MappingBase<String>? name,
     MappingBase<String>? banner,
     MappingBase<String>? officialBanner,
     MappingBase<String>? noticeLink,
@@ -376,7 +378,8 @@ class LimitedSummon with RouteInfo {
     this.type = SummonType.unknown,
     this.rollCount = 11,
     this.subSummons = const [],
-  })  : name = name ?? MappingBase(),
+  })  : name = name_ ?? (name is String ? name : id.toString()),
+        name_ = name_ ?? id.toString(),
         banner = banner ?? MappingBase(),
         officialBanner = officialBanner ?? MappingBase(),
         noticeLink = noticeLink ?? MappingBase(),
@@ -387,7 +390,7 @@ class LimitedSummon with RouteInfo {
 
   bool get isLuckyBag => type == SummonType.gssr || type == SummonType.gssrsr;
 
-  String get lName => name.l ?? id;
+  Transl<String, String> get lName => Transl.summonNames(name);
 
   @override
   String get route => Routes.summonI(id);

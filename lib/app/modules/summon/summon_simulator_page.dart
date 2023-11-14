@@ -56,7 +56,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       appBar: AppBar(
         leading: const BackButton(),
         title: AutoSizeText(
-          summon.lName,
+          summon.lName.l,
           maxLines: 1,
           overflow: TextOverflow.fade,
         ),

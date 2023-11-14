@@ -52,7 +52,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       appBar: AppBar(
         leading: const BackButton(),
         title: AutoSizeText(
-          summon.lName,
+          summon.lName.l,
           maxLines: 1,
           overflow: TextOverflow.fade,
         ),
@@ -103,16 +103,16 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       CustomTable(selectable: true, children: [
         CustomTableRow(children: [
           TableCellData(
-            text: summon.lName,
+            text: summon.lName.l,
             textAlign: TextAlign.center,
             style: const TextStyle(fontSize: 12),
             color: TableCellData.resolveHeaderColor(context),
           )
         ]),
-        if (!Transl.isJP && summon.name.jp != null)
+        if (!Transl.isJP && summon.lName.jp != summon.lName.l)
           CustomTableRow(children: [
             TableCellData(
-              text: summon.name.jp!,
+              text: summon.lName.jp,
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 12),
               color: TableCellData.resolveHeaderColor(context).withOpacity(0.5),

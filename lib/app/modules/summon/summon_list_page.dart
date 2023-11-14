@@ -129,10 +129,10 @@ class _SummonListPageState extends State<SummonListPage> with SearchableListStat
           imageUrl: banner,
           placeholder: (ctx, url) => Padding(
             padding: const EdgeInsetsDirectional.only(start: 16),
-            child: Text(summon.lName, textScaleFactor: 0.9),
+            child: Text(summon.lName.l, textScaleFactor: 0.9),
           ),
           aspectRatio: 8 / 3,
-          cachedOption: CachedImageOption(errorWidget: (ctx, url, error) => Text(summon.lName)),
+          cachedOption: CachedImageOption(errorWidget: (ctx, url, error) => Text(summon.lName.l)),
         ),
       );
       title = Column(
@@ -140,7 +140,7 @@ class _SummonListPageState extends State<SummonListPage> with SearchableListStat
         children: [
           title,
           Text(
-            summon.lName,
+            summon.lName.l,
             style: Theme.of(context)
                 .textTheme
                 .bodySmall
@@ -151,7 +151,7 @@ class _SummonListPageState extends State<SummonListPage> with SearchableListStat
       );
     } else {
       title = AutoSizeText(
-        summon.lName,
+        summon.lName.l,
         maxLines: 2,
         maxFontSize: 14,
         style: TextStyle(color: summon.isOutdated() ? Colors.grey : null),
@@ -207,10 +207,7 @@ class _SummonListPageState extends State<SummonListPage> with SearchableListStat
 
   @override
   Iterable<String?> getSummary(LimitedSummon summon) sync* {
-    yield* SearchUtil.getAllKeys(
-      Transl.fromMapping(summon.id, summon.name, summon.id.toString()),
-      dft: null,
-    );
+    yield* SearchUtil.getAllKeys(summon.lName, dft: null);
   }
 
   @override

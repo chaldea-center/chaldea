@@ -69,7 +69,7 @@ class _SvtSummonTabState extends State<SvtSummonTab> {
           if (summon.hasSinglePickupSvt(widget.svt.collectionNo))
             TextSpan(text: kStarChar, style: TextStyle(color: Colors.yellow[800])),
           TextSpan(
-            text: summon.name.l ?? summon.id,
+            text: summon.lName.l,
             style: outdated ? TextStyle(color: Theme.of(context).textTheme.bodySmall?.color) : null,
           )
         ]),

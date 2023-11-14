@@ -44,7 +44,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTi
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: AutoSizeText(widget.summon.lName, maxLines: 1),
+        title: AutoSizeText(widget.summon.lName.l, maxLines: 1),
         actions: [
           IconButton(
             onPressed: () {

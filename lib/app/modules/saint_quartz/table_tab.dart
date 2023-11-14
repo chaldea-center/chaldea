@@ -179,7 +179,7 @@ class _PlanDataSource extends DataTableSource {
                   height: _summonHeight,
                 )),
               TextSpan(
-                text: summon.lName,
+                text: summon.lName.l,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             ]),

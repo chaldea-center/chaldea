@@ -623,7 +623,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
                 ),
               for (final summonId in item.summonIds)
                 _tile(
-                  db.gameData.wiki.summons[summonId]?.lName.setMaxLines(1) ?? '${S.current.summon} $summonId',
+                  db.gameData.wiki.summons[summonId]?.lName.l.setMaxLines(1) ?? '${S.current.summon} $summonId',
                   () => router.push(url: Routes.summonI(summonId)),
                 ),
             ],

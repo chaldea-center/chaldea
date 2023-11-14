@@ -814,7 +814,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
           final summon = db.gameData.wiki.summons[summonKey];
           return ListTile(
             dense: true,
-            title: Text(summon == null ? summonKey : summon.lName),
+            title: Text(summon?.lName.l ?? summonKey),
             onTap: summon == null ? null : () => summon.routeTo(),
           );
         }),
