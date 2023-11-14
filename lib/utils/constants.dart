@@ -7,7 +7,7 @@ const String kPackageName = 'cc.narumi.chaldea';
 const String kPackageNameFDroid = 'cc.narumi.chaldea.fdroid';
 const String kUserDataFilename = 'userdata.json';
 const String kGameDataFilename = 'dataset.json';
-const String kSupportTeamEmailAddress = 'chaldea@narumi.cc';
+const String kSupportTeamEmailAddress = 'support@chaldea.center';
 const String kAppStoreLink = 'itms-apps://itunes.apple.com/app/id1548713491';
 const String kAppStoreHttpLink = 'https://itunes.apple.com/app/id1548713491';
 const String kGooglePlayLink = 'https://play.google.com/store/apps/details?id=cc.narumi.chaldea';

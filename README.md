@@ -89,7 +89,7 @@ If you have any bug report, feature request, question or want to contribute to t
 - File an [issue](https://github.com/chaldea-center/chaldea/issues/new/choose)
 - Pull request or join the collaboration
 - Discord: [https://discord.gg/5M6w5faqjP](https://discord.gg/5M6w5faqjP)
-- Email: [chaldea@narumi.cc](mailto:chaldea@narumi.cc)
+- Email: [support@chaldea.center](mailto:support@chaldea.center)
 
 ## Acknowledgements
 

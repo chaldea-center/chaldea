@@ -85,7 +85,7 @@ Chaldea 是为手游[Fate/Grand Order](https://game.bilibili.com/fgo/)打造的�
 - 在 Github 上提出一个[issue](https://github.com/chaldea-center/chaldea/issues/new/choose)
 - Pull request 或者加入开发者组织
 - Discord：[https://discord.gg/5M6w5faqjP](https://discord.gg/5M6w5faqjP)
-- 电子邮箱：[chaldea@narumi.cc](mailto:chaldea@narumi.cc)
+- 电子邮箱：[support@chaldea.center](mailto:support@chaldea.center)
 
 ## 鸣谢
 
