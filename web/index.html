@@ -111,7 +111,9 @@
         window.location.href = "https://discord.gg/5M6w5faqjP";
       } else if (uri.host === 'link.chaldea.center') {
         uri.host = 'chaldea.center';
-        window.location.href = uri.toString();
+        setTimeout(() => {
+          window.location.href = uri.toString();
+        }, 5000);
       } else {
         window.addEventListener("load", function (ev) {
           // Download main.dart.js
