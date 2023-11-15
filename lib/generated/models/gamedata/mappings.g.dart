@@ -167,10 +167,6 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
                 )),
           ) ??
           const {},
-      cnReplace: (json['cn_replace'] as Map?)?.map(
-            (k, e) => MapEntry(k as String, e as String),
-          ) ??
-          const {},
     );
 
 Map<String, dynamic> _$MappingDataToJson(MappingData instance) => <String, dynamic>{
@@ -214,7 +210,6 @@ Map<String, dynamic> _$MappingDataToJson(MappingData instance) => <String, dynam
       'quest_release': instance.questRelease.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'enums': instance.enums.toJson(),
       'misc': instance.misc.map((k, e) => MapEntry(k, e.map((k, e) => MapEntry(k, e.toJson())))),
-      'cn_replace': instance.cnReplace,
     };
 
 MappingBase<T> _$MappingBaseFromJson<T>(

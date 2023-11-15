@@ -10,6 +10,7 @@ part '../../generated/models/gamedata/const_data.g.dart';
 
 @JsonSerializable(converters: [BuffActionConverter()])
 class ConstGameData {
+  final Map<String, String> cnReplace;
   final Map<Attribute, Map<Attribute, int>> attributeRelation;
   final Map<BuffAction, BuffActionDetail> buffActions;
   final Map<CardType, Map<int, CardInfo>> cardInfo;
@@ -45,6 +46,7 @@ class ConstGameData {
   final List<int> randomEnemyQuests;
 
   ConstGameData({
+    this.cnReplace = const {},
     this.attributeRelation = const {},
     this.buffActions = const {},
     this.cardInfo = const {},

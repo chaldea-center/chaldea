@@ -367,7 +367,7 @@ class ApiCacheManager {
         text = kReplaceDWChars(text);
         if (options.uri.path.contains('/CN/')) {
           String cnText = text;
-          db.gameData.mappingData.cnReplace.forEach((key, value) {
+          ConstData.cnReplace.forEach((key, value) {
             cnText = cnText.replaceAll(key, value);
           });
           try {

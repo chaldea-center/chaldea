@@ -7,6 +7,10 @@ part of '../../../models/gamedata/const_data.dart';
 // **************************************************************************
 
 ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
+      cnReplace: (json['cnReplace'] as Map?)?.map(
+            (k, e) => MapEntry(k as String, e as String),
+          ) ??
+          const {},
       attributeRelation: (json['attributeRelation'] as Map?)?.map(
             (k, e) => MapEntry(
                 $enumDecode(_$AttributeEnumMap, k),
@@ -84,6 +88,7 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
     );
 
 Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, dynamic>{
+      'cnReplace': instance.cnReplace,
       'attributeRelation': instance.attributeRelation
           .map((k, e) => MapEntry(_$AttributeEnumMap[k]!, e.map((k, e) => MapEntry(_$AttributeEnumMap[k]!, e)))),
       'buffActions': instance.buffActions.map((k, e) => MapEntry(const BuffActionConverter().toJson(k), e.toJson())),
