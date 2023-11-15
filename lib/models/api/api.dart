@@ -238,7 +238,7 @@ class UserBattleData {
   BattleShareData? decoded;
 
   Uri toShortUri() {
-    Uri shareUri = Uri.parse(ChaldeaUrl.app('/laplace/share'));
+    Uri shareUri = Uri.parse(ChaldeaUrl.deepLink('/laplace/share'));
     shareUri = shareUri.replace(queryParameters: {
       "id": id.toString(),
       "questId": questId.toString(),
@@ -251,7 +251,7 @@ class UserBattleData {
   Uri toUriV2() {
     final detail = parse();
     String? data = detail?.toDataV2();
-    Uri shareUri = Uri.parse(ChaldeaUrl.app('/laplace/share'));
+    Uri shareUri = Uri.parse(ChaldeaUrl.deepLink('/laplace/share'));
     shareUri = shareUri.replace(queryParameters: {
       if (data != null) "data": data,
       "questId": (detail?.quest?.id ?? questId).toString(),

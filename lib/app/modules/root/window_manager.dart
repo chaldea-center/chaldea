@@ -430,7 +430,7 @@ class WindowThumb extends StatelessWidget {
         onLongPress: url == null || url.isEmpty
             ? null
             : () async {
-                final fullUrl = ChaldeaUrl.app(url);
+                final fullUrl = ChaldeaUrl.deepLink(url);
                 await copyToClipboard(fullUrl);
                 EasyLoading.showToast('${S.current.copied}\n$fullUrl');
               },

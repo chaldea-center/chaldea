@@ -36,6 +36,11 @@ class ChaldeaUrl {
     return HostsX.app.of(useCN) + path;
   }
 
+  static String deepLink(String path) {
+    if (!path.startsWith('/')) path = '/$path';
+    return Hosts0.kDeepLink + path;
+  }
+
   static IconButton docsHelpBtn(String path, {String? zhPath, String? tooltip, String dir = 'guide/'}) {
     return IconButton(
       onPressed: () {

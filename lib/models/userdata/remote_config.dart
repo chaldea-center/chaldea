@@ -144,6 +144,8 @@ class Hosts0 {
   static const kAppHostGlobal = 'https://chaldea.center';
   static const kAppHostCN = 'https://cn.chaldea.center';
 
+  static const kDeepLink = 'https://link.chaldea.center';
+
   static const kApiHostGlobal = 'https://api.chaldea.center';
   static const kApiHostCN = 'https://api-cn.chaldea.center';
 
