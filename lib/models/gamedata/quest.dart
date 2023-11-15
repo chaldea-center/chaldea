@@ -222,7 +222,9 @@ class Quest with RouteInfo {
     return null;
   }
 
-  bool get is90PlusFree => (isAnyFree || isRepeatRaid) && (recommendLv == '90+' || recommendLv == '90++');
+  bool get is90PlusFree =>
+      (isAnyFree || isRepeatRaid) &&
+      ((recommendLv.startsWith('90') && recommendLv != '90') || recommendLv.startsWith('100'));
 
   bool shouldEnableMightyChain() {
     final war = this.war;

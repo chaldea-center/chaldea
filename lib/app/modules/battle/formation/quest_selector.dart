@@ -100,19 +100,9 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
       children: [
         const SizedBox(width: 16),
         const Text('① '),
-        Flexible(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 250),
-            child: eventWarBtn(),
-          ),
-        ),
+        Flexible(child: eventWarBtn()),
         const SizedBox(width: 8),
-        Flexible(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 250),
-            child: questBtn(),
-          ),
-        ),
+        Flexible(child: questBtn()),
         const SizedBox(width: 16),
       ],
     );
@@ -123,21 +113,32 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
       // isDense: true,
       isExpanded: true,
       value: eventWarId,
-      hint: Text('${S.current.event}/${S.current.war}', style: const TextStyle(fontSize: 14)),
-      items: [
-        for (final option in options.values)
-          DropdownMenuItem(
-            value: option.id,
-            child: Text(
-              (option.war?.lShortName ?? option.event?.shownName ?? option.id.toString()).setMaxLines(1).breakWord,
-              maxLines: 2,
-              style: const TextStyle(fontSize: 12).merge(option.event?.isOutdated(const Duration(days: 1)) == true
-                  ? TextStyle(color: Theme.of(context).textTheme.bodySmall?.color)
-                  : null),
-              overflow: TextOverflow.ellipsis,
-            ),
-          )
-      ],
+      hint: Text(
+        '${S.current.event}/${S.current.war}',
+        style: const TextStyle(fontSize: 14),
+      ),
+      items: options.values.map((option) {
+        final outdated = option.event?.isOutdated(const Duration(days: 1)) == true;
+        final ongoing = option.event?.isOnGoing(db.curUser.region) == true;
+        String name = option.war?.lShortName ?? option.event?.shownName ?? option.id.toString();
+        if (option.war != null) name = 'ꔷ $name';
+        return DropdownMenuItem(
+          value: option.id,
+          child: Text(
+            name.setMaxLines(1).breakWord,
+            maxLines: 2,
+            style: const TextStyle(fontSize: 12).merge(TextStyle(
+              color: ongoing
+                  ? Theme.of(context).colorScheme.primaryContainer
+                  : outdated
+                      ? Theme.of(context).textTheme.bodySmall?.color
+                      : null,
+              // decoration: option.event != null && !outdated ? TextDecoration.underline : null,
+            )),
+            overflow: TextOverflow.ellipsis,
+          ),
+        );
+      }).toList(),
       onChanged: (v) {
         setState(() {
           eventWarId = v;
@@ -161,7 +162,7 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
             child: Text(
               quest.lDispName.setMaxLines(1).breakWord,
               maxLines: 1,
-              style: const TextStyle(fontSize: 12),
+              style: TextStyle(fontSize: 12, color: quest.is90PlusFree ? Theme.of(context).colorScheme.primary : null),
               overflow: TextOverflow.ellipsis,
             ),
           )

@@ -140,7 +140,6 @@ EventExtraFixedItems _$EventExtraFixedItemsFromJson(Map json) => EventExtraFixed
 
 EventExtra _$EventExtraFromJson(Map json) => EventExtra(
       id: json['id'] as int,
-      name: json['name'] as String?,
       mcLink: json['mcLink'] as String?,
       fandomLink: json['fandomLink'] as String?,
       shown: json['shown'] as bool?,

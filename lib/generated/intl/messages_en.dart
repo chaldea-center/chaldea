@@ -479,6 +479,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "force_enable_np_se": MessageLookupByLibrary.simpleMessage("Force Enable NP S.E."),
         "force_instant_death": MessageLookupByLibrary.simpleMessage("Force Death"),
         "forced_update": MessageLookupByLibrary.simpleMessage("Forced Update"),
+        "forgot_password_hint": MessageLookupByLibrary.simpleMessage(
+            "Read FAQ first about password reset then contact developer with required info."),
         "foukun": MessageLookupByLibrary.simpleMessage("Fou"),
         "fq_plan_decimal_hint": MessageLookupByLibrary.simpleMessage(
             "Decimals are not displayed, there may be an error of ±1 between the displayed result and the calculated result"),
@@ -1053,6 +1055,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "update_dataset": MessageLookupByLibrary.simpleMessage("Update Dataset"),
         "update_msg_error": MessageLookupByLibrary.simpleMessage("Update failed"),
         "update_msg_no_update": MessageLookupByLibrary.simpleMessage("No update available"),
+        "update_time": MessageLookupByLibrary.simpleMessage("Update Time"),
         "updated": MessageLookupByLibrary.simpleMessage("Updated"),
         "upload": MessageLookupByLibrary.simpleMessage("Upload"),
         "upload_and_close_app": MessageLookupByLibrary.simpleMessage("Upload & Close"),

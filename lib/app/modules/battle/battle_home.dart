@@ -46,7 +46,7 @@ class BattleHomePage extends StatelessWidget {
     return ListView(
       children: [
         TileGroup(
-          header: "Testing/测试中...",
+          header: "事象記録電脳魔・ラプラス",
           children: [
             ListTile(
               leading: const Icon(Icons.calculate),
@@ -74,7 +74,7 @@ class BattleHomePage extends StatelessWidget {
             ),
             if (AppInfo.isDebugDevice || db.settings.secrets.user?.isAdmin == true)
               ListTile(
-                leading: const Icon(Icons.group),
+                leading: const Icon(Icons.groups),
                 title: const Text("???'s Teams"),
                 onTap: () {
                   InputCancelOkDialog(

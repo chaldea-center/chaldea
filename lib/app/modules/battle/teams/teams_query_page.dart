@@ -174,10 +174,24 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     final shareData = record.decoded;
     final quest = db.gameData.quests[record.questId];
     final shownIndex = _pageSize * pageIndex + index + 1;
+    final extraInfo = getExtraInfo(record);
+
     Widget child = Column(
       children: [
         const SizedBox(height: 6),
         _getHeader(shownIndex, record),
+        if (extraInfo.isNotEmpty)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            alignment: Alignment.centerLeft,
+            child: Text.rich(
+              TextSpan(children: extraInfo),
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodySmall?.color,
+                fontSize: 14,
+              ),
+            ),
+          ),
         if (widget.mode == TeamQueryMode.user || widget.mode == TeamQueryMode.id)
           ListTile(
             dense: true,
@@ -190,7 +204,6 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             },
           ),
         if (shareData != null) FormationCard(formation: shareData.team),
-        const SizedBox(height: 8),
         Wrap(
           alignment: WrapAlignment.center,
           crossAxisAlignment: WrapCrossAlignment.center,
@@ -349,6 +362,45 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     );
   }
 
+  List<InlineSpan> getExtraInfo(UserBattleData record) {
+    List<InlineSpan> spans = [];
+    final team = record.decoded;
+    if (team == null) return spans;
+    final maxRandom = Maths.max(team.actions.map((e) => e.options.random));
+    if (maxRandom > ConstData.constants.attackRateRandomMin) {
+      spans.add(TextSpan(text: '${S.current.random} ${maxRandom / 1000}'));
+    }
+    final minThreshold = Maths.min(team.actions.map((e) => e.options.threshold));
+    if (minThreshold < 1000) {
+      spans.add(
+          TextSpan(text: '${S.current.battle_probability_threshold} ${minThreshold.format(percent: true, base: 10)}'));
+    }
+    final normalAttackCount = team.normalAttackCount;
+    if (normalAttackCount > 0) {
+      spans.add(TextSpan(text: '$normalAttackCount ${S.current.battle_command_card}'));
+    }
+
+    // team.options.pointBuffs;
+    final enemyRateUp = team.options.enemyRateUp?.toList() ?? [];
+    if (enemyRateUp.isNotEmpty) {
+      for (final indiv in enemyRateUp) {
+        spans.add(TextSpan(children: [
+          CenterWidgetSpan(
+            child: db.getIconImage(
+              AssetURL.i.buffIcon(Theme.of(context).isDarkMode ? 1014 : 1015),
+              width: 18,
+              height: 18,
+            ),
+          ),
+          TextSpan(text: Transl.trait(indiv).l),
+        ]));
+      }
+    }
+
+    spans = divideList(spans, const TextSpan(text: ', '));
+    return spans;
+  }
+
   @override
   Widget gridItemBuilder(UserBattleData record) {
     throw UnimplementedError("Do not support GridView");
@@ -488,7 +540,12 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     }
     TeamQueryResult? result = await task;
     if (result != null) {
-      result.data.sortByList((e) => [e.userId == curUserId ? 0 : 1, -e.votes.up + e.votes.down, e.id]);
+      result.data.sortByList((e) => [
+            e.userId == curUserId ? 0 : 1,
+            db.curUser.battleSim.favoriteTeams[e.questId]?.contains(e.id) == true ? 0 : 1,
+            -e.votes.up + e.votes.down,
+            e.id,
+          ]);
       for (final r in result.data) {
         r.parse();
       }

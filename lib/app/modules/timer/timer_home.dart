@@ -115,7 +115,7 @@ class _TimerHomePageState extends State<TimerHomePage>
       TimerEventTab(region: region, events: timerData.events),
       TimerGachaTab(region: region, gachas: timerData.gachas),
       TimerMissionTab(region: region, mms: timerData.masterMissions),
-      TimerShopTab(region: region, shops: timerData.shops),
+      TimerShopTab(region: region, shops: timerData.shownShops),
       RegionTimeTab(region: region),
     ]);
   }
@@ -132,15 +132,26 @@ class _AllItemTab extends StatelessWidget {
       ...TimerEventItem.group(timerData.events, region),
       ...timerData.gachas.map((e) => TimerGachaItem(e, region)),
       ...timerData.masterMissions.map((e) => TimerMissionItem(e, region)),
-      ...TimerShopItem.group(timerData.shops, region),
+      ...TimerShopItem.group(timerData.shownShops, region),
     ];
     entries.sort2((e) => e.endedAt);
     final now = DateTime.now().timestamp;
     entries.sortByList((e) => [e.endedAt > now ? -1 : 1, (e.endedAt - now).abs()]);
     return ListView.separated(
-      itemBuilder: (context, index) => entries[index].buildItem(context, expanded: false),
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return ListTile(
+            dense: true,
+            title: Text(
+              '${S.current.update_time}: ${timerData.updatedAt.sec2date().toCustomString(second: false)}',
+              textAlign: TextAlign.center,
+            ),
+          );
+        }
+        return entries[index - 1].buildItem(context, expanded: false);
+      },
       separatorBuilder: (context, _) => const Divider(indent: 16, endIndent: 16),
-      itemCount: entries.length,
+      itemCount: entries.length + 1,
     );
   }
 }

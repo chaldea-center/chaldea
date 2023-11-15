@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
@@ -26,6 +27,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../quest/breakdown/quest_phase.dart';
 import '../quest/quest.dart';
 import 'formation/default_lvs.dart';
+import 'formation/formation_card.dart';
 import 'formation/formation_storage.dart';
 import 'formation/quest_selector.dart';
 import 'formation/team.dart';
@@ -212,9 +214,13 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         actions: [PopupMenuButton(itemBuilder: _buildPopupMenuItems)],
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Expanded(child: ListView(children: children)),
+          Expanded(child: LayoutBuilder(builder: (context, constraints) {
+            return ListView(
+              padding: EdgeInsets.symmetric(horizontal: max(0, constraints.maxWidth - 640) / 2),
+              children: children,
+            );
+          })),
           kDefaultDivider,
           SafeArea(
             child: Padding(
@@ -1044,7 +1050,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }) async {
     Quest? quest;
     if (region == Region.jp) quest = db.gameData.quests[questId];
-    quest ??= await AtlasApi.quest(questId, region: region);
+    quest ??= await showEasyLoading(() => AtlasApi.quest(questId, region: region));
     if (quest == null) {
       questErrorMsg = '${S.current.not_found}: $questId';
       return;
@@ -1053,7 +1059,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       // event quests released in the next day usually have no valid phase data
       phase = (quest.isAnyFree ? quest.phases.lastOrNull : quest.phases.firstOrNull) ?? 1;
     }
-    questPhase = await AtlasApi.questPhase(questId, phase, hash: enemyHash, region: region);
+    questPhase = await showEasyLoading(() => AtlasApi.questPhase(questId, phase ?? 1, hash: enemyHash, region: region));
     if (questPhase == null) {
       questErrorMsg = '${S.current.not_found}: /${region.upper}/quest/$questId/$phase';
       if (enemyHash != null) questErrorMsg = '${questErrorMsg!}?hash=$enemyHash';
@@ -1160,9 +1166,16 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                 child: Text("NO(${S.current.reset})"),
               ),
             ],
-            content: Text([
-              '${S.current.team} ${replayTeamData.id}',
-            ].join('\n')),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text([
+                  '${S.current.team} ${replayTeamData.id} @${replayTeamData.username}',
+                ].join('\n')),
+                IgnorePointer(child: FormationCard(formation: replayTeamData.decoded!.team)),
+              ],
+            ),
           );
         },
       );

@@ -111,9 +111,10 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
 
   @override
   Widget gridItemBuilder(MysticCode mc) {
-    return db.getIconImage(
-      mc.borderedIcon,
+    return InkWell(
       onTap: () => _onTapCard(mc),
+      onLongPress: mc.routeTo,
+      child: db.getIconImage(mc.borderedIcon),
     );
   }
 

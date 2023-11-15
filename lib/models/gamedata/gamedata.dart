@@ -597,6 +597,7 @@ class _ProcessedData {
 
 @JsonSerializable(createToJson: false)
 class GameTimerData {
+  int updatedAt;
   List<Event> events;
   List<MstGacha> gachas;
   List<MasterMission> masterMissions;
@@ -604,13 +605,15 @@ class GameTimerData {
   List<Item> items;
 
   GameTimerData({
+    int? updatedAt,
     this.events = const [],
     this.gachas = const [],
     this.masterMissions = const [],
     this.shops = const [],
     this.items = const [],
-  }) {
-    shops = shops.where((shop) => shop.payType != PayType.anonymous).toList();
-  }
+  }) : updatedAt = updatedAt ?? DateTime.now().timestamp;
+
+  List<NiceShop> get shownShops => shops.where((e) => e.payType != PayType.anonymous).toList();
+
   factory GameTimerData.fromJson(Map<String, dynamic> json) => _$GameTimerDataFromJson(json);
 }

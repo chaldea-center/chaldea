@@ -183,7 +183,7 @@ class EventExtraFixedItems {
 @JsonSerializable(createToJson: false)
 class EventExtra {
   int id;
-  String? name;
+  // String? name;
   String? mcLink;
   String? fandomLink;
   bool? shown;
@@ -201,7 +201,7 @@ class EventExtra {
 
   EventExtra({
     required this.id,
-    this.name,
+    // this.name,
     this.mcLink,
     this.fandomLink,
     this.shown,

@@ -165,13 +165,22 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
     }
     String prefix = (_sortType == _SortType.id ? result.svt.collectionNo : rank).toString().padRight(2);
     List<Widget> cardIcons = [];
+    int tdLv = result.originalSvtData.tdLv;
+    int? oc;
     for (final record in result.attacks) {
       if (record is BattleAttackRecord && record.card != null) {
         cardIcons.add(CommandCardWidget(card: record.card!.cardType, width: 28));
+        oc ??= record.card!.oc;
       } else if (record is BattleInstantDeathRecord) {
         cardIcons.add(db.getIconImage(AssetURL.i.buffIcon(record.hasSuccess ? 337 : 532), width: 20, height: 20));
+        oc ??= record.card?.oc;
       }
     }
+    cardIcons.add(Text(
+      [' NP$tdLv', if (oc != null) ' OC$oc'].join('\n'),
+      style: Theme.of(context).textTheme.bodySmall,
+      textScaleFactor: 0.9,
+    ));
     return ListTile(
       dense: true,
       leading: Row(
@@ -192,8 +201,7 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
         padding: const EdgeInsets.only(bottom: 8),
         child: Text(npStr),
       ),
-      horizontalTitleGap: 16,
-      contentPadding: const EdgeInsetsDirectional.only(start: 16),
+      contentPadding: const EdgeInsetsDirectional.only(start: 12),
       trailing: Wrap(
         alignment: WrapAlignment.end,
         crossAxisAlignment: WrapCrossAlignment.center,

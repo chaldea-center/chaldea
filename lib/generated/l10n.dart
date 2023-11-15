@@ -4089,6 +4089,17 @@ class S {
     );
   }
 
+  /// `Read FAQ first about password reset then contact developer with required info.`
+  String get forgot_password_hint {
+    return Intl.message(
+      'Read FAQ first about password reset then contact developer with required info.',
+      name: 'forgot_password_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Fou`
   String get foukun {
     return Intl.message(
@@ -10017,6 +10028,17 @@ class S {
     return Intl.message(
       'No update available',
       name: 'update_msg_no_update',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Update Time`
+  String get update_time {
+    return Intl.message(
+      'Update Time',
+      name: 'update_time',
       desc: '',
       locale: localeName,
       args: [],

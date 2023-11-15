@@ -329,6 +329,8 @@ class _NpChargePageState extends State<NpChargePage> {
             optionBuilder(
               text: filterData.ceAtkType.options.map((e) => e.shownName).join('/'),
             ),
+          if (filterData.ceStatus.radioValue != null)
+            optionBuilder(text: CraftStatus.shownText(filterData.ceStatus.radioValue!)),
         ],
         if (filterData.isSvt) ...[
           if (filterData.skillLv != -1)
@@ -416,6 +418,8 @@ class _NpChargePageState extends State<NpChargePage> {
       final region = filterData.region.radioValue ?? Region.jp;
       final released = db.gameData.mappingData.entityRelease.ofRegion(region)?.contains(ce.id);
       if (region != Region.jp && released != true) continue;
+      final ceStatus = filterData.ceStatus.radioValue;
+      if (ceStatus != null && ce.status.status != ceStatus) continue;
 
       final skills = ce.skills.where((e) => e.svt.num == 1).toList();
       for (final skill in skills) {

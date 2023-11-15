@@ -140,7 +140,7 @@ class Event with RouteInfo {
     return lName;
   }
 
-  EventExtra get extra => db.gameData.wiki.events.putIfAbsent(id, () => EventExtra(id: id, name: name));
+  EventExtra get extra => db.gameData.wiki.events.putIfAbsent(id, () => EventExtra(id: id));
 
   /// Check valuable "content", campaigns are not considered as "event" usually
   bool get isEmpty =>

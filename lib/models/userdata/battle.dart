@@ -257,9 +257,9 @@ class BattleShareData {
 class BattleShareDataOption {
   bool mightyChain;
   bool? disableEvent;
-  Map<int, int>? pointBuffs;
+  Map<int, int>? pointBuffs; // <groupId, pointBuffId>
   bool? simulateAi;
-  Set<int>? enemyRateUp;
+  Set<int>? enemyRateUp; // indiv
 
   BattleShareDataOption({
     this.mightyChain = true,

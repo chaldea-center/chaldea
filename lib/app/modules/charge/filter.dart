@@ -34,6 +34,7 @@ class NpFilterData {
   bool isSvt = true;
 
   final favorite = FilterRadioData.nonnull(FavoriteState.all);
+  final ceStatus = FilterRadioData<int>();
   final type = FilterRadioData.nonnull(NpChargeType.instant);
   final ceMax = FilterGroupData<bool>();
   final ceAtkType = FilterGroupData<CraftATKType>();
@@ -56,6 +57,7 @@ class NpFilterData {
     tdOC = 1;
     for (var v in <FilterGroupData>[
       favorite,
+      ceStatus,
       type,
       ceMax,
       ceAtkType,
@@ -289,16 +291,24 @@ class _NpChargeFilterPageState extends FilterPageState<NpFilterData, NpChargeFil
           },
         ),
         buildGroupDivider(text: 'General'),
-        if (filterData.isSvt)
-          FilterGroup<FavoriteState>(
-            // title: Text(S.current.filter_sort_rarity, style: textStyle),
-            options: FavoriteState.values,
-            values: filterData.favorite,
-            optionBuilder: (v) => Icon(v.icon, size: 16),
-            onFilterChanged: (value, _) {
-              update();
-            },
-          ),
+        filterData.isSvt
+            ? FilterGroup<FavoriteState>(
+                // title: Text(S.current.filter_sort_rarity, style: textStyle),
+                options: FavoriteState.values,
+                values: filterData.favorite,
+                optionBuilder: (v) => Icon(v.icon, size: 16),
+                onFilterChanged: (value, _) {
+                  update();
+                },
+              )
+            : FilterGroup<int>(
+                options: CraftStatus.values,
+                values: filterData.ceStatus,
+                optionBuilder: (v) => Text(CraftStatus.shownText(v)),
+                onFilterChanged: (value, _) {
+                  update();
+                },
+              ),
         if (filterData.isSvt) buildClassFilter(filterData.svtClass),
         FilterGroup<int>(
           title: Text(S.current.filter_sort_rarity, style: textStyle),

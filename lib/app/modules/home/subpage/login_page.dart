@@ -204,7 +204,7 @@ class _LoginPageState extends State<LoginPage> {
             useRootNavigator: false,
             builder: (context) => SimpleCancelOkDialog(
               title: Text(S.current.login_forget_pwd),
-              content: const Text('Contact via Email or Feedback, check <FAQ>.'),
+              content: Text(S.current.forgot_password_hint),
               scrollable: true,
               hideOk: true,
               actions: [
