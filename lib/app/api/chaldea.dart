@@ -303,7 +303,7 @@ class ChaldeaWorkerApi {
     int? userId,
     String? username,
     int? ver,
-    int limit = 20,
+    int limit = 200,
     int offset = 0,
     Duration? expireAfter = const Duration(minutes: 60),
   }) {
@@ -329,7 +329,7 @@ class ChaldeaWorkerApi {
   static Future<TeamQueryResult?> teamsByUser({
     int? userId,
     String? username,
-    int limit = 20,
+    int limit = 200,
     int offset = 0,
     Duration? expireAfter,
   }) {
@@ -348,7 +348,7 @@ class ChaldeaWorkerApi {
     required int questId,
     required int phase,
     required String? enemyHash,
-    int limit = 20,
+    int limit = 200,
     int offset = 0,
     Duration? expireAfter,
   }) {
@@ -359,6 +359,21 @@ class ChaldeaWorkerApi {
       limit: limit,
       offset: offset,
       expireAfter: expireAfter,
+    );
+  }
+
+  static Future<TeamQueryResult?> teamsByVote({
+    required int userId,
+    required bool isUpVote,
+    int limit = 200,
+    int offset = 0,
+    Duration? expireAfter,
+  }) {
+    return cacheManager.getModel(
+      "$apiV4/team/user-voted?userId=$userId&value=${isUpVote ? 1 : -1}",
+      (data) => TeamQueryResult.fromJson(data),
+      expireAfter: expireAfter,
+      options: addAuthHeader(),
     );
   }
 
