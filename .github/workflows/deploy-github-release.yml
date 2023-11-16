@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  FLUTTER_VERSION: "3.13.9"
+  FLUTTER_VERSION: "3.16.0"
 
 jobs:
   create-build:
@@ -30,7 +30,7 @@ jobs:
           - os: windows-latest
             target: windows
             build_target: windows
-            build_path: build\windows\runner\Release
+            build_path: build\windows\x64\runner\Release
             asset_extension: .zip
             asset_content_type: application/zip
             build_options: 
