@@ -1600,6 +1600,8 @@ class QuestPhaseExtraDetail {
   List<QuestPhaseAiNpc>? aiMultiNpc;
   OverwriteEquipSkills? overwriteEquipSkills;
   int? waveSetup;
+  // int? repeatReward;
+  // List<int>? consumeItemBattleWin;
 
   QuestPhaseExtraDetail({
     this.questSelect,

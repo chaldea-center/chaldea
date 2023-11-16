@@ -78,14 +78,15 @@ class _CostumeListPageState extends State<CostumeListPage> with SearchableListSt
 
   @override
   Widget gridItemBuilder(NiceCostume costume) {
-    return db.getIconImage(costume.icon, aspectRatio: 132 / 144, onTap: () => costume.routeTo(popDetails: true));
+    return db.getIconImage(costume.borderedIcon,
+        aspectRatio: 132 / 144, onTap: () => costume.routeTo(popDetails: true));
   }
 
   @override
   Widget listItemBuilder(NiceCostume costume) {
     return ListTile(
       leading: db.getIconImage(
-        costume.icon,
+        costume.borderedIcon,
         aspectRatio: 132 / 144,
         // padding: const EdgeInsets.symmetric(vertical: 0),
       ),
