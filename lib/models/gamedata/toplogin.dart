@@ -21,7 +21,19 @@ int _toInt(dynamic v, [int? k]) {
   if (v is int) {
     return v;
   } else if (v is String) {
-    return k == null ? int.parse(v) : int.tryParse(v) ?? k;
+    if (k == null) {
+      try {
+        return int.parse(v);
+      } on FormatException catch (e) {
+        if (e.message == 'Positive input exceeds the limit of integer') {
+          print(e);
+          return 0;
+        }
+        rethrow;
+      }
+    } else {
+      return int.tryParse(v) ?? k;
+    }
   } else if (v is double) {
     return v.toInt();
   } else {
@@ -186,6 +198,7 @@ class UserMstData {
   // userEventMissionConditionDetail, userGachaDrawLog,userQuestRoute,userPresentBox,userNpcSvtRecord,userCoinRoom
   // userEventRaid
   // userDeck; // 10个打本队伍
+  // // userEvent.tutorial: int may exceed int64
   // userQuestInfo,,userGacha,userEvent,userSvtCommandCard,
   // beforeBirthDay
 
@@ -446,7 +459,7 @@ class UserSvtCollection {
   int friendship;
   int friendshipRank;
   int friendshipExceedCount;
-  // int voicePlayed;
+  // int voicePlayed; // may exceed int64
   // int voicePlayed2;
   // List<int> tdPlayed;
   int getNum;
@@ -575,7 +588,7 @@ class UserGame {
   // String usk;
   // int? rksdkid;
   // int? rkchannel;  // ios=996,android=24,渠道服=?
-  int? appuid; // bilibili uid
+  String? appuid; // (int) bilibili uid, may exceed int64 for 渠道服
   String? appname; // bilibili username, not nickname/display name
 
   UserGame({
@@ -662,7 +675,7 @@ class UserGame {
         createdAt = _toInt(createdAt),
         userEquipId = _toInt(userEquipId),
         id = _toIntNull(id),
-        appuid = _toIntNull(appuid);
+        appuid = appuid?.toString();
 
   factory UserGame.fromJson(Map<String, dynamic> data) => _$UserGameFromJson(data);
 
