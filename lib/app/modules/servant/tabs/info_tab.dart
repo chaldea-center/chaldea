@@ -406,7 +406,10 @@ class SvtInfoTab extends StatelessWidget {
       CustomTableRow(children: [
         TableCellData(
           alignment: null,
-          child: Text.rich(TextSpan(children: children), textScaleFactor: textScaleFactor),
+          child: Text.rich(
+            TextSpan(children: children),
+            textScaler: textScaleFactor == null ? null : TextScaler.linear(textScaleFactor),
+          ),
         )
       ]),
     ];

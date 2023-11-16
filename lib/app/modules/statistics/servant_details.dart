@@ -87,7 +87,7 @@ class _ServantDemandDetailStatState extends State<ServantDemandDetailStat> {
                     ),
                   )
                 ]),
-                textScaleFactor: 0.8,
+                textScaler: const TextScaler.linear(0.8),
               ),
             )
           ],

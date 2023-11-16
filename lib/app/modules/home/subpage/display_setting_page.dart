@@ -239,7 +239,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 title: Text(S.current.quest_prefer_region),
                 subtitle: Text(
                   S.current.quest_prefer_region_hint,
-                  textScaleFactor: 0.9,
+                  textScaler: const TextScaler.linear(0.9),
                 ),
                 trailing: DropdownButton<Region?>(
                   value: db.settings.preferredQuestRegion,

@@ -209,7 +209,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         child: Text(
           S.current.overview,
           style: const TextStyle(fontWeight: FontWeight.bold),
-          textScaleFactor: 0.9,
+          textScaler: const TextScaler.linear(0.9),
         ),
       ));
     }

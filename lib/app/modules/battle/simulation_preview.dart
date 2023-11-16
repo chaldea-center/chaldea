@@ -393,7 +393,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                     value: questRegion,
                     items: [
                       for (final r in _validQuestRegions)
-                        DropdownMenuItem(value: r, child: Text(r.localName, textScaleFactor: 0.9)),
+                        DropdownMenuItem(value: r, child: Text(r.localName, textScaler: const TextScaler.linear(0.9))),
                     ],
                     hint: Text(Region.jp.localName),
                     onChanged: (v) {
@@ -560,7 +560,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                 TextSpan(children: [
                   TextSpan(text: "${Region.jp.localName}${jpTime.toDateString('')}"),
                 ]),
-                textScaleFactor: 0.8,
+                textScaler: const TextScaler.linear(0.8),
               ),
             ),
             for (final r in Region.values)
@@ -574,7 +574,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                     ),
                     TextSpan(text: r.localName),
                   ]),
-                  textScaleFactor: 0.9,
+                  textScaler: const TextScaler.linear(0.9),
                 ),
               ),
           ],
@@ -630,7 +630,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                   ),
                   TextSpan(text: text),
                 ]),
-                textScaleFactor: 0.9,
+                textScaler: const TextScaler.linear(0.9),
               ),
             );
           }).toList(),
@@ -825,13 +825,13 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         trailing: DropdownButton<EventPointBuff?>(
           isDense: true,
           value: options.pointBuffs[groupId],
-          hint: Text(S.current.event_bonus, textScaleFactor: 0.8),
+          hint: Text(S.current.event_bonus, textScaler: const TextScaler.linear(0.8)),
           items: [
             DropdownMenuItem(
               value: null,
               child: Text(
                 S.current.disable,
-                textScaleFactor: 0.8,
+                textScaler: const TextScaler.linear(0.8),
               ),
             ),
             ...buffs.map((buff) {
@@ -852,7 +852,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                       ),
                     TextSpan(text: '$bonus(${buff.eventPoint})'),
                   ]),
-                  textScaleFactor: 0.8,
+                  textScaler: const TextScaler.linear(0.8),
                 ),
               );
             })

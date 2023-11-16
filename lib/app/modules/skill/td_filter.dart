@@ -38,7 +38,7 @@ class _TdFilterState extends FilterPageState<TdFilterData, TdFilter> with FuncFi
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
-      title: Text(S.current.filter, textScaleFactor: 0.8),
+      title: Text(S.current.filter, textScaler: const TextScaler.linear(0.8)),
       actions: getDefaultActions(onTapReset: () {
         filterData.reset();
         update();

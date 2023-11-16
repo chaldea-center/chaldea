@@ -99,7 +99,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
 
       return Text.rich(
         TextSpan(children: spans),
-        textScaleFactor: textScaleFactor,
+        textScaler: textScaleFactor == null ? null : TextScaler.linear(textScaleFactor!),
         style: style,
       );
     }

@@ -236,7 +236,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           value: options.region,
           items: [
             for (final region in Region.values)
-              DropdownMenuItem(value: region, child: Text(region.localName, textScaleFactor: 0.9)),
+              DropdownMenuItem(value: region, child: Text(region.localName, textScaler: const TextScaler.linear(0.9))),
           ],
           onChanged: (v) {
             setState(() {
@@ -267,7 +267,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
             }
             return DropdownMenuItem(
               value: source,
-              child: Text(text, textScaleFactor: 0.9),
+              child: Text(text, textScaler: const TextScaler.linear(0.9)),
             );
           }).toList(),
           onChanged: (v) {
@@ -289,7 +289,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
                 value: lv,
                 child: Text(
                   lv == SvtLv.maxLv ? 'Lv.MAX' : 'Lv.${lv.lv}',
-                  textScaleFactor: 0.9,
+                  textScaler: const TextScaler.linear(0.9),
                 ),
               ),
           ],
@@ -761,7 +761,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
                 value: count,
                 child: Text(
                   count?.toString() ?? "MAX",
-                  textScaleFactor: 0.8,
+                  textScaler: const TextScaler.linear(0.8),
                 ),
               )
           ],

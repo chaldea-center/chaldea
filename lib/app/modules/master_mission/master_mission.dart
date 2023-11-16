@@ -140,7 +140,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
                 unknownMsg: mission.name,
                 leading: TextSpan(text: '${mission.dispNo}. '),
               )
-            : Text('${mission.dispNo}. ${mission.name}', textScaleFactor: 0.8),
+            : Text('${mission.dispNo}. ${mission.name}', textScaler: const TextScaler.linear(0.8)),
         contentPadding: const EdgeInsetsDirectional.only(start: 16),
         trailing: customMission == null
             ? null

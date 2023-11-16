@@ -169,7 +169,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
                 child: Text(
                   war.event?.lShortName.l ?? Transl.eventNames(war.eventName).l,
                   textAlign: TextAlign.center,
-                  textScaleFactor: 0.9,
+                  textScaler: const TextScaler.linear(0.9),
                 ),
               ),
             )
@@ -258,7 +258,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
             title: Text(
               title,
               maxLines: 1,
-              textScaleFactor: 0.8,
+              textScaler: const TextScaler.linear(0.8),
               overflow: TextOverflow.ellipsis,
             ),
             onTap: () {
@@ -343,7 +343,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
         PopupMenuItem(
           enabled: false,
           height: 32,
-          child: Text('No.${widget.war?.id ?? widget.warId}', textScaleFactor: 0.9),
+          child: Text('No.${widget.war?.id ?? widget.warId}', textScaler: const TextScaler.linear(0.9)),
         ),
         const PopupMenuDivider(),
         if (_war != null)
@@ -399,7 +399,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
           child: Text(
             condWar.lShortName,
             textAlign: TextAlign.center,
-            textScaleFactor: 0.9,
+            textScaler: const TextScaler.linear(0.9),
           ),
         ),
       )

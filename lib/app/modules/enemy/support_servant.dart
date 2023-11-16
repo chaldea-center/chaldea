@@ -276,7 +276,7 @@ class SupportServantTile extends StatelessWidget {
           ),
         ]
       ]),
-      textScaleFactor: 0.9,
+      textScaler: const TextScaler.linear(0.9),
     );
     if (onTap != null) {
       support = InkWell(

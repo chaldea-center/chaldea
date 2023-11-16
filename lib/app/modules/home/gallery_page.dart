@@ -54,7 +54,7 @@ class _GalleryPageState extends State<GalleryPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: db.onUserData((context, snapshot) => Text(
                           db.curUser.name,
-                          textScaleFactor: 0.8,
+                          textScaler: const TextScaler.linear(0.8),
                         )),
                   ),
                 ),
@@ -150,7 +150,7 @@ class _GalleryPageState extends State<GalleryPage> {
                 style: TextStyle(color: Theme.of(context).colorScheme.primary),
               )
             ]),
-            textScaleFactor: 0.8,
+            textScaler: const TextScaler.linear(0.8),
           ),
         ),
       ],

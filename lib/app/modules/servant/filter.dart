@@ -192,7 +192,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
-      title: Text(S.current.filter, textScaleFactor: 0.8),
+      title: Text(S.current.filter, textScaler: const TextScaler.linear(0.8)),
       actions: getDefaultActions(onTapReset: () {
         filterData.reset();
         final now = DateTime.now().timestamp;

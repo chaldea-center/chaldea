@@ -185,8 +185,8 @@ class _TraitSPDMGTabState extends State<TraitSPDMGTab> {
   Widget _buildRow(GameCardMixin card, SkillOrTd skill) {
     return ListTile(
       leading: card.iconBuilder(context: context, jumpToDetail: false),
-      title: Text(skill.lName.l, textScaleFactor: 0.9),
-      subtitle: Text(skill.lDetail ?? '???', textScaleFactor: 0.9),
+      title: Text(skill.lName.l, textScaler: const TextScaler.linear(0.9)),
+      subtitle: Text(skill.lDetail ?? '???', textScaler: const TextScaler.linear(0.9)),
       dense: true,
       onTap: () {
         card.routeTo();

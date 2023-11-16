@@ -297,7 +297,7 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
         title: Text(
           countText,
           style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-          textScaleFactor: 0.8,
+          textScaler: const TextScaler.linear(0.8),
         ),
         onTap: () {
           router.pushPage(Builder(

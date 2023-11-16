@@ -179,7 +179,7 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
     cardIcons.add(Text(
       [' NP$tdLv', if (oc != null) ' OC$oc'].join('\n'),
       style: Theme.of(context).textTheme.bodySmall,
-      textScaleFactor: 0.9,
+      textScaler: const TextScaler.linear(0.9),
     ));
     return ListTile(
       dense: true,
@@ -187,7 +187,7 @@ class _TdDmgRankingTabState extends State<TdDmgRankingTab> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text('$prefix ', style: kMonoStyle, textScaleFactor: 0.8),
+          Text('$prefix ', style: kMonoStyle, textScaler: const TextScaler.linear(0.8)),
           result.svt.iconBuilder(
             context: context,
             width: 36,

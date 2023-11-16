@@ -161,7 +161,7 @@ class _PlanDataSource extends DataTableSource {
         _wrap(
           child: Text(
             event.shownName,
-            textScaleFactor: 0.8,
+            textScaler: const TextScaler.linear(0.8),
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
           ),
@@ -184,7 +184,7 @@ class _PlanDataSource extends DataTableSource {
               ),
             ]),
             maxLines: 1,
-            textScaleFactor: 0.8,
+            textScaler: const TextScaler.linear(0.8),
             overflow: TextOverflow.ellipsis,
           ),
           onTap: summon.routeTo,

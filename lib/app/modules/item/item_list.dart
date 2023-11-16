@@ -740,7 +740,7 @@ class _ItemListTabState extends State<ItemListTab> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           subtitle,
-          Text(itemId.toString(), textScaleFactor: 0.85),
+          Text(itemId.toString(), textScaler: const TextScaler.linear(0.85)),
         ],
       );
     }

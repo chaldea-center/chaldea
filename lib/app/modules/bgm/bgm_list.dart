@@ -141,8 +141,8 @@ class _BgmListPageState extends State<BgmListPage> with SearchableListState<BgmE
               width: 56,
             ),
             horizontalTitleGap: 8,
-            title: Text(bgm.lName.l, textScaleFactor: 1),
-            subtitle: Text('No.${bgm.id} ${bgm.fileName}', textScaleFactor: 1),
+            title: Text(bgm.lName.l, textScaler: const TextScaler.linear(1)),
+            subtitle: Text('No.${bgm.id} ${bgm.fileName}', textScaler: const TextScaler.linear(1)),
             onTap: () {
               bgm.routeTo();
             },

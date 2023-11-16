@@ -129,8 +129,8 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
               quest.spot?.shownImage == null ? const SizedBox() : db.getIconImage(quest.spot?.shownImage, width: 48),
           contentPadding: const EdgeInsetsDirectional.only(start: 2),
           horizontalTitleGap: 2,
-          title: Text(quest.lDispName, textScaleFactor: 0.9),
-          subtitle: Text(subtitle, textScaleFactor: 0.9),
+          title: Text(quest.lDispName, textScaler: const TextScaler.linear(0.9)),
+          subtitle: Text(subtitle, textScaler: const TextScaler.linear(0.9)),
           trailing: Text('${widget.showResult ? '×' : '+'} $count'),
         );
       },

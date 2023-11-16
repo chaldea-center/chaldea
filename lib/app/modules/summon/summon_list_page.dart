@@ -129,7 +129,7 @@ class _SummonListPageState extends State<SummonListPage> with SearchableListStat
           imageUrl: banner,
           placeholder: (ctx, url) => Padding(
             padding: const EdgeInsetsDirectional.only(start: 16),
-            child: Text(summon.lName.l, textScaleFactor: 0.9),
+            child: Text(summon.lName.l, textScaler: const TextScaler.linear(0.9)),
           ),
           aspectRatio: 8 / 3,
           cachedOption: CachedImageOption(errorWidget: (ctx, url, error) => Text(summon.lName.l)),
@@ -165,7 +165,7 @@ class _SummonListPageState extends State<SummonListPage> with SearchableListStat
           .where((e) => e.value != null)
           .map((e) => '${e.key.upper} ${e.value?.sec2date().toDateString()}')
           .join(' / ');
-      subtitle = Text(subtitleText, textScaleFactor: 0.9);
+      subtitle = Text(subtitleText, textScaler: const TextScaler.linear(0.9));
     }
     return ListTile(
       title: title,

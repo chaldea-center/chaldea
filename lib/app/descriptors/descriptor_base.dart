@@ -34,7 +34,7 @@ mixin DescriptorBase {
           const TextSpan(text: ' '),
         ],
       ),
-      textScaleFactor: textScaleFactor,
+      textScaler: textScaleFactor == null ? null : TextScaler.linear(textScaleFactor!),
       style: style,
     );
   }

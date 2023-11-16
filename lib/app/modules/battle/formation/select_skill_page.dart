@@ -375,7 +375,7 @@ class _CustomSkillFormState extends State<CustomSkillForm> {
                     value: type,
                     child: Text(
                       Transl.funcTargetType(type).l,
-                      textScaleFactor: 0.8,
+                      textScaler: const TextScaler.linear(0.8),
                     ),
                   )
               ],

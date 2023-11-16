@@ -314,7 +314,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
               style: kTextButtonDenseStyle,
               child: const Text(
                 'Create token for chaldea',
-                textScaleFactor: 0.9,
+                textScaler: TextScaler.linear(0.9),
               ),
             ),
           ),
@@ -332,7 +332,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
               style: kTextButtonDenseStyle,
               child: const Text(
                 'Create a personal access token',
-                textScaleFactor: 0.9,
+                textScaler: TextScaler.linear(0.9),
               ),
             ),
           ),
@@ -344,7 +344,7 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
               style: kTextButtonDenseStyle,
               child: const Text(
                 'Create or update file contents',
-                textScaleFactor: 0.9,
+                textScaler: TextScaler.linear(0.9),
               ),
             ),
           ),

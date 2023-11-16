@@ -102,7 +102,7 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
                 textScaleFactor: 0.8,
                 unknownMsg: mission.name,
               )
-            : Text(mission.name, textScaleFactor: 0.8),
+            : Text(mission.name, textScaler: const TextScaler.linear(0.8)),
         horizontalTitleGap: 0,
         contentPadding: const EdgeInsetsDirectional.only(start: 16),
         minLeadingWidth: 32,
@@ -131,10 +131,10 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
               Text(
                 '~~~ ${S.current.mission} ~~~',
                 textAlign: TextAlign.center,
-                textScaleFactor: 0.9,
+                textScaler: const TextScaler.linear(0.9),
                 style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
               ),
-              Text(mission.name, textScaleFactor: 0.8),
+              Text(mission.name, textScaler: const TextScaler.linear(0.8)),
               const Divider(height: 8),
               child,
             ],

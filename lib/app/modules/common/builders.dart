@@ -326,7 +326,7 @@ class SharedBuilder {
         child: Text(
           format?.call(trait) ?? trait.shownName(),
           style: style ?? TextStyle(color: Theme.of(context).colorScheme.secondaryContainer),
-          textScaleFactor: textScaleFactor,
+          textScaler: textScaleFactor == null ? null : TextScaler.linear(textScaleFactor),
         ),
       ),
     );
@@ -367,7 +367,7 @@ class SharedBuilder {
         ),
       ),
       style: style,
-      textScaleFactor: textScaleFactor,
+      textScaler: textScaleFactor == null ? null : TextScaler.linear(textScaleFactor),
       textAlign: textAlign,
     );
   }

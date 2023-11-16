@@ -60,10 +60,8 @@ class _QuestEditPageState extends State<QuestEditPage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
+    return PopScope(
+      canPop: false,
       child: Scaffold(
         appBar: AppBar(
           title: Text(quest.name),
@@ -158,7 +156,7 @@ class _QuestEditPageState extends State<QuestEditPage> {
                 ).showDialog(context);
               },
             ),
-            textScaleFactor: 0.9,
+            textScaler: const TextScaler.linear(0.9),
             textAlign: TextAlign.end,
           ),
         ),
@@ -179,7 +177,7 @@ class _QuestEditPageState extends State<QuestEditPage> {
                   constraints: const BoxConstraints(maxWidth: 200),
                   child: Text(
                     warId == 0 ? '0-none' : "$warId-${db.gameData.wars[warId]?.lName.l}",
-                    textScaleFactor: 0.8,
+                    textScaler: const TextScaler.linear(0.8),
                     maxLines: 1,
                   ),
                 ),

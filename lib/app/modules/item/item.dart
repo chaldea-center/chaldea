@@ -207,7 +207,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
           PopupMenuItem(
             enabled: false,
             height: 32,
-            child: Text('No.${widget.itemId}', textScaleFactor: 0.9),
+            child: Text('No.${widget.itemId}', textScaler: const TextScaler.linear(0.9)),
           ),
           const PopupMenuDivider(),
           if (_shownTabs.length > 1 || db.gameData.items[widget.itemId]?.type == ItemType.svtCoin)

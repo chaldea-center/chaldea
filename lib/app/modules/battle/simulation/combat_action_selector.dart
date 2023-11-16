@@ -129,7 +129,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       child: Text(
         S.current.battle_select_critical_card_hint,
         style: TextStyle(color: Theme.of(context).colorScheme.error),
-        textScaleFactor: 0.9,
+        textScaler: const TextScaler.linear(0.9),
       ),
     ));
     if (battleData.nonnullPlayers.any((svt) => (svt.playerSvtData?.td?.dmgNpFuncCount ?? 0) > 1)) {
@@ -137,7 +137,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         constraints: BoxConstraints(maxWidth: cardSize * 7),
         child: Text(
           S.current.laplace_upload_td_multi_dmg_func_hint,
-          textScaleFactor: 0.8,
+          textScaler: const TextScaler.linear(0.8),
         ),
       ));
     }
@@ -360,7 +360,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
           child: Text(
             text,
             style: TextStyle(color: color),
-            textScaleFactor: 0.8,
+            textScaler: const TextScaler.linear(0.8),
             maxLines: 1,
           ),
         )

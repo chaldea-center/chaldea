@@ -311,7 +311,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
             ),
             title: Text("${S.current.skill} $skillNum  Lv.${baseSkill == null ? '-' : skill?.skillLv}"),
             subtitle: Text(skill?.lName ?? "NONE"),
-            trailing: Text('CD ${cd > 0 ? cd : "-"}/${baseCd ?? "-"}', textScaleFactor: 0.8),
+            trailing: Text('CD ${cd > 0 ? cd : "-"}/${baseCd ?? "-"}', textScaler: const TextScaler.linear(0.8)),
             contentPadding: const EdgeInsetsDirectional.only(start: 16),
           );
         },

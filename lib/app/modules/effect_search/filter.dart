@@ -112,7 +112,7 @@ class _BuffFuncFilterState extends FilterPageState<BuffFuncFilterData, BuffFuncF
     List<BuffType> buffs = allBuffs.keys.where((e) => _buffs.contains(e)).toList();
 
     return buildAdaptive(
-      title: Text(S.current.filter_sort, textScaleFactor: 0.8),
+      title: Text(S.current.filter_sort, textScaler: const TextScaler.linear(0.8)),
       actions: getDefaultActions(onTapReset: () {
         filterData.reset();
         update();

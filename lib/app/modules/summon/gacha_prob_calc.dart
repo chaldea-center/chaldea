@@ -67,12 +67,12 @@ class _GachaProbCalcPageState extends State<GachaProbCalcPage> {
               items: [
                 DropdownMenuItem(
                   value: null,
-                  child: Text(S.current.general_custom, textScaleFactor: 0.9),
+                  child: Text(S.current.general_custom, textScaler: const TextScaler.linear(0.9)),
                 ),
                 for (final rate in upTypes)
                   DropdownMenuItem(
                     value: rate,
-                    child: Text('${rate.title}(${rate.rate}%)', textScaleFactor: 0.9),
+                    child: Text('${rate.title}(${rate.rate}%)', textScaler: const TextScaler.linear(0.9)),
                   ),
               ],
               onChanged: (v) {

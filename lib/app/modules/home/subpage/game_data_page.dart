@@ -126,7 +126,7 @@ class _GameDataPageState extends State<GameDataPage> {
                   (kIsWeb ? db.settings.autoUpdateData : db.settings.updateDataBeforeStart)
                       ? S.current.update_data_at_start_on_hint
                       : S.current.update_data_at_start_off_hint,
-                  textScaleFactor: 0.8,
+                  textScaler: const TextScaler.linear(0.8),
                 ),
                 onChanged: !kIsWeb && db.settings.autoUpdateData
                     ? (v) {

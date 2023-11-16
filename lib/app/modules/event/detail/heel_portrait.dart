@@ -92,7 +92,7 @@ class _EventHeelPortraitPageState extends State<EventHeelPortraitPage> {
           router.push(url: Routes.servantI(heel.id));
         },
       ),
-      textScaleFactor: 0.8,
+      textScaler: const TextScaler.linear(0.8),
       textAlign: TextAlign.center,
     );
     return Column(

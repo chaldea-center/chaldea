@@ -144,7 +144,7 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
           values: filterData.cond,
           optionBuilder: (cond) => Padding(
             padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-            child: Text(describeCond(cond), textScaleFactor: 0.95),
+            child: Text(describeCond(cond), textScaler: const TextScaler.linear(0.95)),
           ),
           onFilterChanged: (value, _) {
             setState(() {});
@@ -219,7 +219,7 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
               if (spotImg != null) CenterWidgetSpan(child: db.getIconImage(spotImg, width: 28)),
               TextSpan(text: name),
             ]),
-            textScaleFactor: 0.9,
+            textScaler: const TextScaler.linear(0.9),
           ),
         ),
         Wrap(
@@ -228,7 +228,7 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
             if (phase?.allEnemies.isNotEmpty != true)
               const Text(
                 'No enemy data.',
-                textScaleFactor: 0.85,
+                textScaler: TextScaler.linear(0.85),
               ),
             for (final entry in counts.entries)
               Text.rich(
@@ -239,7 +239,7 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
                   ),
                   TextSpan(text: '×${entry.value}'),
                 ]),
-                textScaleFactor: 0.85,
+                textScaler: const TextScaler.linear(0.85),
               ),
           ],
         )

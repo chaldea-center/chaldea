@@ -237,7 +237,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
         PopupMenuItem(
           enabled: false,
           height: 32,
-          child: Text('No.$eventId', textScaleFactor: 0.9),
+          child: Text('No.$eventId', textScaler: const TextScaler.linear(0.9)),
         ),
         const PopupMenuDivider(),
         ...SharedBuilder.websitesPopupMenuItems(
@@ -382,7 +382,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
           title: Text(
             title,
             maxLines: 1,
-            textScaleFactor: 0.8,
+            textScaler: const TextScaler.linear(0.8),
             overflow: TextOverflow.ellipsis,
           ),
           onTap: () {
@@ -868,7 +868,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
               : null,
           title: Text(
             title,
-            textScaleFactor: subtitle == null ? 0.9 : null,
+            textScaler: subtitle == null ? const TextScaler.linear(0.9) : null,
           ),
           subtitle: subtitle?.toText(),
           controlAffinity: ListTileControlAffinity.leading,

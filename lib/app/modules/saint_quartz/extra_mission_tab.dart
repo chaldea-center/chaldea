@@ -50,7 +50,7 @@ class _ExtraMissionTabState extends State<ExtraMissionTab> {
                 fontStyle: FontStyle.italic,
               );
         if (cond == null) {
-          title = Text('${mission.dispNo} - ${mission.name}', style: style, textScaleFactor: 0.8);
+          title = Text('${mission.dispNo} - ${mission.name}', style: style, textScaler: const TextScaler.linear(0.8));
         } else {
           title = CondTargetNumDescriptor(
             condType: cond.condType,
@@ -73,7 +73,7 @@ class _ExtraMissionTabState extends State<ExtraMissionTab> {
               Text(
                 mission.name,
                 style: Theme.of(context).textTheme.bodySmall,
-                textScaleFactor: 0.9,
+                textScaler: const TextScaler.linear(0.9),
               ),
               Wrap(
                 spacing: 4,

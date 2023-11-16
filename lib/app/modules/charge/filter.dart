@@ -111,7 +111,7 @@ class _NpChargeFilterPageState extends FilterPageState<NpFilterData, NpChargeFil
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
-      title: Text(S.current.filter, textScaleFactor: 0.8),
+      title: Text(S.current.filter, textScaler: const TextScaler.linear(0.8)),
       actions: getDefaultActions(onTapReset: () {
         filterData.reset();
         update();
@@ -189,7 +189,7 @@ class _NpChargeFilterPageState extends FilterPageState<NpFilterData, NpChargeFil
                     value: lv,
                     child: Text(
                       NpFilterData.textSkillLv(lv),
-                      textScaleFactor: 0.9,
+                      textScaler: const TextScaler.linear(0.9),
                     ),
                   )
               ],
@@ -205,7 +205,7 @@ class _NpChargeFilterPageState extends FilterPageState<NpFilterData, NpChargeFil
                   value: 0,
                   child: Text(
                     'CD',
-                    textScaleFactor: 0.9,
+                    textScaler: TextScaler.linear(0.9),
                   ),
                 ),
                 for (int cd = 3; cd <= 8; cd++)
@@ -213,7 +213,7 @@ class _NpChargeFilterPageState extends FilterPageState<NpFilterData, NpChargeFil
                     value: cd,
                     child: Text(
                       'CD≤$cd',
-                      textScaleFactor: 0.9,
+                      textScaler: const TextScaler.linear(0.9),
                     ),
                   )
               ],
@@ -232,7 +232,7 @@ class _NpChargeFilterPageState extends FilterPageState<NpFilterData, NpChargeFil
                     value: lv,
                     child: Text(
                       NpFilterData.textTdLv(lv),
-                      textScaleFactor: 0.9,
+                      textScaler: const TextScaler.linear(0.9),
                     ),
                   )
               ],
@@ -249,7 +249,7 @@ class _NpChargeFilterPageState extends FilterPageState<NpFilterData, NpChargeFil
                     value: lv,
                     child: Text(
                       NpFilterData.textTdOC(lv),
-                      textScaleFactor: 0.9,
+                      textScaler: const TextScaler.linear(0.9),
                     ),
                   )
               ],

@@ -243,7 +243,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
                       value: type,
                       child: Text(
                         Transl.enums(type, (enums) => enums.customMissionType).l,
-                        textScaleFactor: 0.8,
+                        textScaler: const TextScaler.linear(0.8),
                       ),
                     ),
                 ],

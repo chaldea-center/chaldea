@@ -204,16 +204,16 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
     final now = DateTime.now().timestamp;
     return ListTile(
       key: Key('master_mission_${mm.id}'),
-      title: Text(title, textScaleFactor: 0.9),
+      title: Text(title, textScaler: const TextScaler.linear(0.9)),
       subtitle: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Flexible(
-            child: Text(_showTime(mm.startedAt), textScaleFactor: 0.9),
+            child: Text(_showTime(mm.startedAt), textScaler: const TextScaler.linear(0.9)),
           ),
           const Text(' ~ '),
           Flexible(
-            child: Text(_showTime(mm.endedAt), textScaleFactor: 0.9),
+            child: Text(_showTime(mm.endedAt), textScaler: const TextScaler.linear(0.9)),
           ),
         ],
       ),

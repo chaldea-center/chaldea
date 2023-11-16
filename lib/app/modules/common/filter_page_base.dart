@@ -216,7 +216,7 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
               child: Text(
                 e.value,
                 style: textStyle,
-                textScaleFactor: 0.9,
+                textScaler: const TextScaler.linear(0.9),
               )))
           .toList(),
       onChanged: onSortAttr,

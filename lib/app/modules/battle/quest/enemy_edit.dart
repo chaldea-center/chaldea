@@ -142,7 +142,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
         title: Text(S.current.svt_class),
         value: enemy.svt.classId,
         values: classIds,
-        itemBuilder: (v) => Text(Transl.svtClassId(v).l.substring2(0, 15), textScaleFactor: 0.8),
+        itemBuilder: (v) => Text(Transl.svtClassId(v).l.substring2(0, 15), textScaler: const TextScaler.linear(0.8)),
         onChanged: (v) {
           enemy.svt.classId = v;
           updateTrait(niceSvt, null);
@@ -152,7 +152,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
         title: Text(S.current.filter_attribute),
         value: enemy.svt.attribute,
         values: Attribute.values,
-        itemBuilder: (v) => Text(Transl.svtAttribute(v).l, textScaleFactor: 0.9),
+        itemBuilder: (v) => Text(Transl.svtAttribute(v).l, textScaler: const TextScaler.linear(0.9)),
         onChanged: (v) {
           enemy.svt.attribute = v;
           updateTrait(niceSvt, null);
@@ -277,7 +277,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
           title: Text(S.current.info_charge),
           value: enemy.chargeTurn,
           values: List.generate(max(10, enemy.chargeTurn) + 1, (index) => index),
-          itemBuilder: (v) => Text(v.toString(), textScaleFactor: 0.8),
+          itemBuilder: (v) => Text(v.toString(), textScaler: const TextScaler.linear(0.8)),
           onChanged: (v) {
             enemy.chargeTurn = v;
           },

@@ -134,7 +134,7 @@ class WarListPage extends StatelessWidget {
                   minFontSize: 10,
                   maxFontSize: 14,
                   overflow: TextOverflow.ellipsis,
-                  // textScaleFactor: 0.9,
+                  // textScaler: const TextScaler.linear(0.9),
                 ),
           horizontalTitleGap: 8,
           onTap: () {

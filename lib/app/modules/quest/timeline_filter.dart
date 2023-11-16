@@ -73,7 +73,7 @@ class _SvtQuestTimelineFilterState extends FilterPageState<SvtQuestTimelineFilte
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
-      title: Text(S.current.filter_sort, textScaleFactor: 0.8),
+      title: Text(S.current.filter_sort, textScaler: const TextScaler.linear(0.8)),
       actions: getDefaultActions(onTapReset: () {
         filterData.reset();
         update();

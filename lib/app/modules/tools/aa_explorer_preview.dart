@@ -236,9 +236,9 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
         ],
       ),
     );
-    return WillPopScope(
+    return PopScope(
+      canPop: false,
       child: child,
-      onWillPop: () => Future.value(false),
     );
   }
 

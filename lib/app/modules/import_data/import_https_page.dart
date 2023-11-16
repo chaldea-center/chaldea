@@ -571,7 +571,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                     '${CmdCodeStatus.shownText(CmdCodeStatus.notMet)}: $notMet\n'
                     'ALL:   ${cmdCodes.length}\n'
                     '${S.current.cc_equipped_svt}: $svtCount ${S.current.servant}, $ccCount ${S.current.command_code}.',
-                    textScaleFactor: 0.8,
+                    textScaler: const TextScaler.linear(0.8),
                   ),
                 ),
                 if (mstData!.userSvtCommandCard.isNotEmpty) SHeader(S.current.beast_footprint),

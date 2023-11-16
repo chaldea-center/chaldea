@@ -431,8 +431,11 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
               DropdownButton<bool>(
                 value: db.settings.proxy.data,
                 items: [
-                  DropdownMenuItem(value: false, child: Text(S.current.chaldea_server_global, textScaleFactor: 0.8)),
-                  DropdownMenuItem(value: true, child: Text(S.current.chaldea_server_cn, textScaleFactor: 0.8)),
+                  DropdownMenuItem(
+                      value: false,
+                      child: Text(S.current.chaldea_server_global, textScaler: const TextScaler.linear(0.8))),
+                  DropdownMenuItem(
+                      value: true, child: Text(S.current.chaldea_server_cn, textScaler: const TextScaler.linear(0.8))),
                 ],
                 onChanged: (v) {
                   setState(() {
@@ -476,7 +479,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                     .replaceFirst(' ', '\n')
                 : S.current.not_found,
             textAlign: TextAlign.end,
-            textScaleFactor: 0.9,
+            textScaler: const TextScaler.linear(0.9),
           ),
         ),
         Wrap(

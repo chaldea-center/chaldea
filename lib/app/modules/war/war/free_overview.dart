@@ -116,15 +116,21 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                       label: Text('${S.current.quest} (${phases.length}/${widget.quests.length})'),
                       fixedWidth: 150,
                     ),
-                    const DataColumn2(label: Text('Lv/AP', textScaleFactor: 0.9), fixedWidth: 56),
+                    const DataColumn2(label: Text('Lv/AP', textScaler: TextScaler.linear(0.9)), fixedWidth: 56),
                     DataColumn2(label: Text(S.current.svt_class), fixedWidth: 64),
                     if (widget.isMainStory) ...[
-                      DataColumn2(label: Text(S.current.quest_runs("").trim(), textScaleFactor: 0.9), fixedWidth: 48),
+                      DataColumn2(
+                          label: Text(S.current.quest_runs("").trim(), textScaler: const TextScaler.linear(0.9)),
+                          fixedWidth: 48),
                       DataColumn2(label: Text(S.current.fgo_domus_aurea), size: ColumnSize.L),
-                      DataColumn2(label: Text(S.current.quest_runs("").trim(), textScaleFactor: 0.9), fixedWidth: 48),
+                      DataColumn2(
+                          label: Text(S.current.quest_runs("").trim(), textScaler: const TextScaler.linear(0.9)),
+                          fixedWidth: 48),
                       const DataColumn2(label: Text("Rayshift"), size: ColumnSize.L),
                     ] else ...[
-                      DataColumn2(label: Text(S.current.quest_runs("").trim(), textScaleFactor: 0.9), fixedWidth: 48),
+                      DataColumn2(
+                          label: Text(S.current.quest_runs("").trim(), textScaler: const TextScaler.linear(0.9)),
+                          fixedWidth: 48),
                       DataColumn2(label: Text(S.current.item), size: ColumnSize.L),
                       DataColumn2(label: Text(S.current.item), size: ColumnSize.L),
                     ],

@@ -33,7 +33,7 @@ class EventBulletinBoardPage extends HookWidget {
 
   Widget itemBuilder(BuildContext context, EventBulletinBoard bulletin) {
     final scripts = bulletin.script ?? const [];
-    Widget title = Text(bulletin.message, textScaleFactor: 0.8);
+    Widget title = Text(bulletin.message, textScaler: const TextScaler.linear(0.8));
 
     List<InlineSpan> spans = [];
     for (final script in scripts) {

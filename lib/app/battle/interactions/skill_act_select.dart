@@ -50,7 +50,7 @@ class SkillActSelectDialog extends StatelessWidget {
             padding: const EdgeInsets.all(4.0),
             child: Text(
               '${transl('Optional').l}: ${transl(selectAddInfo.title).l}',
-              textScaleFactor: 0.85,
+              textScaler: const TextScaler.linear(0.85),
             ),
           ),
           ...List.generate(buttons.length, (index) {

@@ -114,7 +114,7 @@ class _TraitServantTabState extends State<TraitServantTab> {
       dense: true,
       leading: svt.iconBuilder(context: context),
       title: Text('No.${svt.collectionNo}-${svt.lName.l}'),
-      subtitle: details.isEmpty ? null : Text(details.join(' / '), textScaleFactor: 0.9),
+      subtitle: details.isEmpty ? null : Text(details.join(' / '), textScaler: const TextScaler.linear(0.9)),
       onTap: () => svt.routeTo(),
     );
   }

@@ -38,7 +38,7 @@ class EventRecipePage extends HookWidget {
                   width: 24,
                   icon: db.gameData.items[consume.objectId]?.icon,
                 ),
-                Text(consume.num.format(), textScaleFactor: 0.9),
+                Text(consume.num.format(), textScaler: const TextScaler.linear(0.9)),
               ],
             ],
           ),

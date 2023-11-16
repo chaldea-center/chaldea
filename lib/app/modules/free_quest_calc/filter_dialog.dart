@@ -35,7 +35,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
                 value: null,
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 160),
-                  child: Text(S.current.free_progress_newest, textScaleFactor: 0.8),
+                  child: Text(S.current.free_progress_newest, textScaler: const TextScaler.linear(0.8)),
                 ),
               ),
               for (final war in wars)
@@ -43,7 +43,7 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
                   value: war,
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 160),
-                    child: Text(war.lShortName, textScaleFactor: 0.8),
+                    child: Text(war.lShortName, textScaler: const TextScaler.linear(0.8)),
                   ),
                 )
             ],
@@ -67,8 +67,8 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
             isDense: true,
             value: params.costMinimize,
             items: [
-              DropdownMenuItem(value: true, child: Text(S.current.ap, textScaleFactor: 0.9)),
-              DropdownMenuItem(value: false, child: Text(S.current.counts, textScaleFactor: 0.9))
+              DropdownMenuItem(value: true, child: Text(S.current.ap, textScaler: const TextScaler.linear(0.9))),
+              DropdownMenuItem(value: false, child: Text(S.current.counts, textScaler: const TextScaler.linear(0.9)))
             ],
             onChanged: (v) => setState(() => params.costMinimize = v ?? params.costMinimize),
           ),
@@ -80,8 +80,10 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
             isDense: true,
             value: params.useAP20,
             items: [
-              DropdownMenuItem(value: true, child: Text(S.current.efficiency_type_ap, textScaleFactor: 0.9)),
-              DropdownMenuItem(value: false, child: Text(S.current.efficiency_type_drop, textScaleFactor: 0.9))
+              DropdownMenuItem(
+                  value: true, child: Text(S.current.efficiency_type_ap, textScaler: const TextScaler.linear(0.9))),
+              DropdownMenuItem(
+                  value: false, child: Text(S.current.efficiency_type_drop, textScaler: const TextScaler.linear(0.9)))
             ],
             onChanged: (v) => setState(() => params.useAP20 = v ?? params.useAP20),
           ),

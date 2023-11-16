@@ -148,7 +148,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
           title: Text(
             '${S.current.exchange_ticket_short} ${ticket.dateStr}',
             style: _textStyle(false, ticket.isOutdated()),
-            textScaleFactor: 0.9,
+            textScaler: const TextScaler.linear(0.9),
           ),
           subtitle: AutoSizeText(ticket.of(db.curUser.region).map((e) => GameCardMixin.anyCardItemName(e).l).join('/'),
               maxLines: 1),

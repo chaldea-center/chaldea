@@ -52,7 +52,7 @@ class EventCooltimePage extends HookWidget {
               for (final gift in first.gifts) CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 28)),
               TextSpan(text: '×${first.upperLimitGiftNum.format()}')
             ]),
-            textScaleFactor: 0.9,
+            textScaler: const TextScaler.linear(0.9),
           ),
         );
       },

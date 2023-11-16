@@ -195,7 +195,7 @@ class _QuestCardState extends State<QuestCard> {
                   ),
                   Text(
                     shownQuestName,
-                    textScaleFactor: 0.9,
+                    textScaler: const TextScaler.linear(0.9),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -321,7 +321,7 @@ class _QuestCardState extends State<QuestCard> {
         ),
         Text(
           [release.startedAt.sec2date().toDateString(), release.endedAt.sec2date().toDateString()].join(" ~ "),
-          textScaleFactor: 0.9,
+          textScaler: const TextScaler.linear(0.9),
         ),
         for (final release in entry.value)
           CondTargetValueDescriptor(

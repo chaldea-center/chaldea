@@ -381,7 +381,7 @@ class __QuestBonusEditDialogState extends State<_QuestBonusEditDialog> {
       scrollable: true,
       title: Text(
         S.current.event_bonus,
-        // textScaleFactor: 0.8,
+        // textScaler: const TextScaler.linear(0.8),
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,

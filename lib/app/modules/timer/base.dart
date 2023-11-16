@@ -57,7 +57,7 @@ class CountDown extends StatelessWidget {
               buildOne(context, endedAt2!, startedAt2),
             ]
           ]),
-          textScaleFactor: 0.9,
+          textScaler: const TextScaler.linear(0.9),
           textAlign: textAlign,
         );
       },

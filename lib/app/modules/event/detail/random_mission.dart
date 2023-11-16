@@ -90,7 +90,7 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
           ]),
           textAlign: TextAlign.center,
         ),
-        title: Text(mission?.name ?? randomMission.missionId.toString(), textScaleFactor: 0.75),
+        title: Text(mission?.name ?? randomMission.missionId.toString(), textScaler: const TextScaler.linear(0.75)),
         horizontalTitleGap: 8,
         minLeadingWidth: 24,
         contentPadding: const EdgeInsetsDirectional.only(start: 8),

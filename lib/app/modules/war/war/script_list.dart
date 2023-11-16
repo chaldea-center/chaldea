@@ -25,7 +25,7 @@ class _ScriptListPageState extends State<ScriptListPage> {
     if (war.startScript != null) {
       mainPart.add(ListTile(
         dense: true,
-        title: Text('Start Script ${war.startScript?.scriptId}', textScaleFactor: 1.1),
+        title: Text('Start Script ${war.startScript?.scriptId}', textScaler: const TextScaler.linear(1.1)),
         contentPadding: EdgeInsets.zero,
         onTap: () => onTap(war.startScript!),
       ));
@@ -58,7 +58,7 @@ class _ScriptListPageState extends State<ScriptListPage> {
       target.addAll([
         ListTile(
           dense: true,
-          title: Text(title, textScaleFactor: 1.1),
+          title: Text(title, textScaler: const TextScaler.linear(1.1)),
           contentPadding: EdgeInsets.zero,
           trailing: IconButton(
             onPressed: () {
@@ -71,7 +71,7 @@ class _ScriptListPageState extends State<ScriptListPage> {
           padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 0, 8),
           child: Text.rich(
             TextSpan(children: spans),
-            textScaleFactor: 0.9,
+            textScaler: const TextScaler.linear(0.9),
           ),
         )
       ]);

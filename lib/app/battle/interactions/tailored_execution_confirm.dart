@@ -30,11 +30,11 @@ class TailoredExecutionConfirm extends StatelessWidget {
           [
             Padding(
               padding: const EdgeInsets.all(4.0),
-              child: Text(description, textScaleFactor: 0.85),
+              child: Text(description, textScaler: const TextScaler.linear(0.85)),
             ),
             Padding(
               padding: const EdgeInsets.all(4.0),
-              child: Text(details, textScaleFactor: 0.85),
+              child: Text(details, textScaler: const TextScaler.linear(0.85)),
             ),
             Padding(
               padding: const EdgeInsets.all(4.0),

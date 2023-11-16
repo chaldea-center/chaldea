@@ -19,7 +19,7 @@ class _ScriptReaderFilterPageState extends FilterPageState<ScriptReaderFilterDat
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
-      title: Text(S.current.settings_tab_name, textScaleFactor: 0.8),
+      title: Text(S.current.settings_tab_name, textScaler: const TextScaler.linear(0.8)),
       actions: getDefaultActions(onTapReset: () {
         filterData.reset();
         update();

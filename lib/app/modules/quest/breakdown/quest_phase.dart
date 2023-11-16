@@ -249,7 +249,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
               shownSpotName,
               style: const TextStyle(fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
-              textScaleFactor: 0.9,
+              textScaler: const TextScaler.linear(0.9),
             ),
           ),
         ],

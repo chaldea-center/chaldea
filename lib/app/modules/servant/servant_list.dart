@@ -572,7 +572,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
           if (status.cur.appendSkills.any((lv) => lv > 0))
             TextSpan(text: "\n${status.cur.appendSkills.map((e) => e == 0 ? '-' : e.toString()).join('/')}"),
         ]),
-        textScaleFactor: 0.9,
+        textScaler: const TextScaler.linear(0.9),
       );
     }
 

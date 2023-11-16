@@ -279,7 +279,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                 for (int index = 0; index <= 9; index++)
                   DropdownMenuItem(
                     value: index,
-                    child: Text('+${index * 5}%', textScaleFactor: 0.9),
+                    child: Text('+${index * 5}%', textScaler: const TextScaler.linear(0.9)),
                   ),
               ],
               onChanged: (v) {
@@ -296,7 +296,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
                 for (int index = 0; index <= 2; index++)
                   DropdownMenuItem(
                     value: index,
-                    child: Text('+${index * 50}', textScaleFactor: 0.9),
+                    child: Text('+${index * 50}', textScaler: const TextScaler.linear(0.9)),
                   ),
               ],
               onChanged: (v) {

@@ -28,7 +28,7 @@ class EventBonusTab extends HookWidget {
       if (_lastTag != tag) {
         children.add(ListTile(
           leading: db.getIconImage(skill.icon, height: 28),
-          title: Text(skill.lName.l, textScaleFactor: 0.8),
+          title: Text(skill.lName.l, textScaler: const TextScaler.linear(0.8)),
           horizontalTitleGap: 4,
         ));
       } else {

@@ -67,7 +67,7 @@ class _QuestListPageState extends State<QuestListPage> {
             return ListTile(
               leading: leading,
               // minLeadingWidth: 16,
-              title: Text('Quest $questId', textScaleFactor: 0.85),
+              title: Text('Quest $questId', textScaler: const TextScaler.linear(0.85)),
               contentPadding: leading == null ? null : const EdgeInsetsDirectional.fromSTEB(4, 0, 16, 0),
               horizontalTitleGap: 8,
               onTap: () {
@@ -143,7 +143,7 @@ class _QuestListPageState extends State<QuestListPage> {
           return ListTile(
             leading: leading,
             // minLeadingWidth: 16,
-            title: Text(title, textScaleFactor: 0.85),
+            title: Text(title, textScaler: const TextScaler.linear(0.85)),
             subtitle: subtitle.isEmpty && interludeOwner == null
                 ? null
                 : Text.rich(
@@ -152,7 +152,7 @@ class _QuestListPageState extends State<QuestListPage> {
                         CenterWidgetSpan(child: interludeOwner.iconBuilder(context: context, height: 32)),
                       TextSpan(text: subtitle),
                     ]),
-                    textScaleFactor: 0.85,
+                    textScaler: const TextScaler.linear(0.85),
                   ),
             trailing: trailing,
             contentPadding: leading == null ? null : const EdgeInsetsDirectional.fromSTEB(4, 0, 16, 0),

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 Future<T> showUserConfirm<T>({
@@ -16,9 +15,9 @@ Future<T> showUserConfirm<T>({
     useRootNavigator: false,
     barrierDismissible: barrierDismissible,
     builder: (context) {
-      return WillPopScope(
+      return PopScope(
+        canPop: barrierDismissible,
         child: builder(context, completer),
-        onWillPop: () => SynchronousFuture(barrierDismissible),
       );
     },
   ).then((result) {

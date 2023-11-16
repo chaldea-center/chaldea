@@ -365,7 +365,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
         children: <Widget>[
           Text(
             tdRuby.l,
-            textScaleFactor: 0.95,
+            textScaler: const TextScaler.linear(0.95),
             style: TextStyle(
               color: Theme.of(context).textTheme.bodySmall?.color,
             ),
@@ -374,7 +374,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
           if (!Transl.isJP) ...[
             Text(
               tdRuby.jp,
-              textScaleFactor: 0.95,
+              textScaler: const TextScaler.linear(0.95),
               style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
             ),
             Text(tdName.jp, style: const TextStyle(fontWeight: FontWeight.w600)),

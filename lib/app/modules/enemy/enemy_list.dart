@@ -120,7 +120,7 @@ class EnemyListPageState extends State<EnemyListPage> with SearchableListState<B
       subtitle: Text(
         subtitles.join('\n'),
         maxLines: subtitles.length,
-        textScaleFactor: 0.8,
+        textScaler: const TextScaler.linear(0.8),
       ),
       trailing: IconButton(
         icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),

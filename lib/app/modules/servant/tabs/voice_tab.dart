@@ -243,7 +243,7 @@ class VoiceGroupAccordion extends StatelessWidget {
                       const TextSpan(text: ' ')
                     ],
                   ),
-                  textScaleFactor: 0.9,
+                  textScaler: const TextScaler.linear(0.9),
                 ),
         );
       },
@@ -474,7 +474,7 @@ class VoiceGroupAccordion extends StatelessWidget {
         // _voicePlayCond(),
         Padding(
           padding: const EdgeInsetsDirectional.only(end: 16),
-          child: Text(text, textScaleFactor: 0.9),
+          child: Text(text, textScaler: const TextScaler.linear(0.9)),
         ),
         const SizedBox(height: 8),
       ],

@@ -123,7 +123,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
               PopupMenuItem(
                 enabled: false,
                 height: 32,
-                child: Text('No.$questId', textScaleFactor: 0.9),
+                child: Text('No.$questId', textScaler: const TextScaler.linear(0.9)),
               ),
               const PopupMenuDivider(),
               PopupMenuItem(

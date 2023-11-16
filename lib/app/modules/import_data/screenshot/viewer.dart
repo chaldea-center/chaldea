@@ -78,7 +78,7 @@ class _RecognizerViewerTabState extends State<RecognizerViewerTab> {
                 child: Text(
                   '${index + 1} - ${recentFiles[index]}',
                   maxLines: 1,
-                  textScaleFactor: 0.8,
+                  textScaler: const TextScaler.linear(0.8),
                   softWrap: false,
                 ),
               );

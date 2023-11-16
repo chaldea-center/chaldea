@@ -278,7 +278,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           '${S.current.battle_enemy_remaining} ${battleData.nonnullEnemies.length + battleData.nonnullBackupEnemies.length}',
           style: Theme.of(context).textTheme.labelLarge,
           textAlign: TextAlign.center,
-          textScaleFactor: 0.9,
+          textScaler: const TextScaler.linear(0.9),
         ),
         const Divider(thickness: 1, height: 8),
         ResponsiveLayout(
@@ -546,7 +546,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                     TextSpan(text: '${battleData.criticalStars.toStringAsFixed(3)}  '),
                   ],
                 ),
-                // textScaleFactor: 0.9,
+                // textScaler: const TextScaler.linear(0.9),
               ),
             ],
           ),
@@ -574,7 +574,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               ], const TextSpan(text: '\n')),
             ),
             textAlign: TextAlign.center,
-            textScaleFactor: 0.8,
+            textScaler: const TextScaler.linear(0.8),
           ),
         IconButton(
           onPressed: () async {
@@ -763,7 +763,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     Widget cdText = Text(
       cd.toString(),
       style: TextStyle(fontSize: isSealed ? 14 : 18, color: Colors.white.withOpacity(0.8)),
-      textScaleFactor: 1,
+      textScaler: const TextScaler.linear(1),
     );
     if ((isSealed && cd > 0) || (isCondFailed && !isSealed)) {
       cdText = Positioned(right: 0, bottom: 0, child: cdText);

@@ -152,7 +152,7 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
                         if (widget.aiType == AiType.field) "fieldAiId": id.toString(),
                       }).toString());
                     },
-                    child: Text(S.current.show_more, textScaleFactor: 0.8),
+                    child: Text(S.current.show_more, textScaler: const TextScaler.linear(0.8)),
                   ),
               ],
             ),

@@ -79,7 +79,7 @@ class _DamageAdjustorState extends State<DamageAdjustor> {
             '${widget.damageParameters.isNp ? S.current.battle_np_card : S.current.battle_command_card}'
             '\nvs ${widget.battleData.target!.lBattleName} (HP: ${widget.battleData.target!.hp})',
             style: Theme.of(context).textTheme.bodyMedium,
-            textScaleFactor: 0.9,
+            textScaler: const TextScaler.linear(0.9),
           ),
           const SizedBox(height: 8),
           Text('${S.current.battle_damage}: $totalDamage'),

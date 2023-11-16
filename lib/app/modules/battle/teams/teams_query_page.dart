@@ -644,7 +644,7 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
             contentPadding: EdgeInsets.zero,
             trailing: Text(
               "No.${record.id}\n@${record.username ?? record.userId}",
-              textScaleFactor: 0.8,
+              textScaler: const TextScaler.linear(0.8),
               textAlign: TextAlign.end,
             ),
             subtitle: Text(

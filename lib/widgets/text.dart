@@ -48,7 +48,7 @@ class _TransformText extends StatelessWidget {
       offset: offset,
       child: Text(
         data,
-        textScaleFactor: textScaleFactor,
+        textScaler: textScaleFactor == null ? null : TextScaler.linear(textScaleFactor!),
         style: DefaultTextStyle.of(context).style.merge(style),
       ),
     );

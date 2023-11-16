@@ -140,7 +140,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
                   for (final c in NACountry.values)
                     DropdownMenuItem(
                       value: c,
-                      child: Text(c.displayName, textScaleFactor: 0.8),
+                      child: Text(c.displayName, textScaler: const TextScaler.linear(0.8)),
                     ),
                 ],
                 onChanged: (v) {

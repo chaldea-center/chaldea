@@ -313,7 +313,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
             return Text.rich(
               TextSpan(children: status),
               textAlign: TextAlign.end,
-              textScaleFactor: 0.9,
+              textScaler: const TextScaler.linear(0.9),
             );
           }),
           subtitle: Wrap(

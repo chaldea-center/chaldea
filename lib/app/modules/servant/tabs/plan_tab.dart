@@ -557,7 +557,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             maxVal - minVal + 1,
             (index) => DropdownMenuItem(
               value: minVal + index,
-              child: Text(labelFormatter!(minVal + index), textScaleFactor: 0.9),
+              child: Text(labelFormatter!(minVal + index), textScaler: const TextScaler.linear(0.9)),
             ),
           ),
           // disable at enhance mode
@@ -576,7 +576,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           startEnabled: !enhanceMode,
           startItems: items,
           endItems: items,
-          itemBuilder: (context, v) => Text(labelFormatter!(v), textScaleFactor: 0.9),
+          itemBuilder: (context, v) => Text(labelFormatter!(v), textScaler: const TextScaler.linear(0.9)),
           onChanged: (_start, _end) {
             onValueChanged(enhanceMode ? start : _start, _end);
           },

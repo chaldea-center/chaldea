@@ -200,7 +200,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     if (willHandlePopInternally) {
       return false;
     }
-    if (hasScopedWillPopCallback) {
+    if (popDisposition == RoutePopDisposition.doNotPop) {
       return false;
     }
     if (fullscreenDialog) {

@@ -24,8 +24,8 @@ class WarBgmListPage extends StatelessWidget {
               width: 56,
             ),
             horizontalTitleGap: 8,
-            title: Text(bgm.lName.l.setMaxLines(1), textScaleFactor: 1),
-            subtitle: Text('No.${bgm.id} ${bgm.fileName}', textScaleFactor: 1),
+            title: Text(bgm.lName.l.setMaxLines(1), textScaler: const TextScaler.linear(1)),
+            subtitle: Text('No.${bgm.id} ${bgm.fileName}', textScaler: const TextScaler.linear(1)),
             onTap: () {
               bgm.routeTo();
             },

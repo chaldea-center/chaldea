@@ -227,7 +227,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
               child: Text(
                 'ATK ${svt.atkMax}  HP ${svt.hpMax}',
                 // style: Theme.of(context).textTheme.bodySmall,
-                textScaleFactor: 0.9,
+                textScaler: const TextScaler.linear(0.9),
               ),
             ),
           const SizedBox(height: 4),

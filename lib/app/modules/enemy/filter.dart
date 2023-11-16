@@ -19,7 +19,7 @@ class _EnemyFilterPageState extends FilterPageState<EnemyFilterData, EnemyFilter
   @override
   Widget build(BuildContext context) {
     return buildAdaptive(
-      title: Text(S.current.filter, textScaleFactor: 0.8),
+      title: Text(S.current.filter, textScaler: const TextScaler.linear(0.8)),
       actions: getDefaultActions(onTapReset: () {
         filterData.reset();
         update();
@@ -56,7 +56,7 @@ class _EnemyFilterPageState extends FilterPageState<EnemyFilterData, EnemyFilter
           controlAffinity: ListTileControlAffinity.trailing,
           title: Text(
             S.current.only_show_main_story_enemy,
-            textScaleFactor: 0.8,
+            textScaler: const TextScaler.linear(0.8),
           ),
           onChanged: (v) {
             filterData.onlyShowQuestEnemy = v;

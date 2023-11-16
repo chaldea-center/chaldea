@@ -171,9 +171,9 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
             textScaleFactor: 0.9,
           );
         case CondType.svtFriendship:
-          return Text('${S.current.bond} Lv.$condValue', textScaleFactor: 0.9);
+          return Text('${S.current.bond} Lv.$condValue', textScaler: const TextScaler.linear(0.9));
         case CondType.svtLimit:
-          return Text('${S.current.ascension_short} Lv.$condValue', textScaleFactor: 0.9);
+          return Text('${S.current.ascension_short} Lv.$condValue', textScaler: const TextScaler.linear(0.9));
         case CondType.svtGet:
           return CondTargetValueDescriptor(
             condType: condType,
@@ -219,7 +219,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
         }
       }
       if (lore.condMessage.isNotEmpty) {
-        conds.add(Text('(${lore.condMessage})', textScaleFactor: 0.85));
+        conds.add(Text('(${lore.condMessage})', textScaler: const TextScaler.linear(0.85)));
       }
 
       children.add(ProfileCommentCard(
@@ -329,7 +329,7 @@ class ProfileCommentCard extends StatelessWidget {
           kIndentDivider,
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text(comment, textScaleFactor: 0.9),
+            child: Text(comment, textScaler: const TextScaler.linear(0.9)),
           )
         ],
       ),

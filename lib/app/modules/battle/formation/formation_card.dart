@@ -46,7 +46,7 @@ class FormationCard extends StatelessWidget {
                     )
                 ],
               ),
-              if (enabled) Text("Lv.${formation.mysticCode.level}", textScaleFactor: 0.9)
+              if (enabled) Text("Lv.${formation.mysticCode.level}", textScaler: const TextScaler.linear(0.9))
             ],
           ),
         ),

@@ -181,7 +181,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                   style: Theme.of(context).textTheme.bodySmall,
                                 )
                               ]),
-                              textScaleFactor: 0.9,
+                              textScaler: const TextScaler.linear(0.9),
                             )))
                         .toList(),
                     selectedItemBuilder: (context) {
@@ -194,7 +194,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                     style: Theme.of(context).textTheme.bodySmall,
                                   )
                                 ]),
-                                textScaleFactor: 0.9,
+                                textScaler: const TextScaler.linear(0.9),
                                 textAlign: TextAlign.end,
                               )))
                           .toList();

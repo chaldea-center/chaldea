@@ -74,7 +74,7 @@ class EventFortificationPage extends HookWidget {
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
           horizontalTitleGap: 8,
           leading: db.getIconImage(fortification.workType.icon, width: 32),
-          title: Text('${fortification.idx}. ${fortification.name}', textScaleFactor: 0.9),
+          title: Text('${fortification.idx}. ${fortification.name}', textScaler: const TextScaler.linear(0.9)),
           subtitle: Wrap(
             spacing: 2,
             runSpacing: 2,
@@ -82,7 +82,7 @@ class EventFortificationPage extends HookWidget {
             children: [
               Text(
                 '${fortification.details.length} Positions, Max Point: $point',
-                textScaleFactor: 0.9,
+                textScaler: const TextScaler.linear(0.9),
               ),
             ],
           ),
@@ -128,7 +128,7 @@ class EventFortificationPage extends HookWidget {
                     return SimpleCancelOkDialog(
                       hideCancel: true,
                       scrollable: true,
-                      title: Text('${detail.position} - ${detail.name}', textScaleFactor: 0.9),
+                      title: Text('${detail.position} - ${detail.name}', textScaler: const TextScaler.linear(0.9)),
                       content: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -176,7 +176,7 @@ class EventFortificationPage extends HookWidget {
                       return SimpleCancelOkDialog(
                         hideCancel: true,
                         scrollable: true,
-                        title: Text('${svt.position} - ${svt.type.name}', textScaleFactor: 0.9),
+                        title: Text('${svt.position} - ${svt.type.name}', textScaler: const TextScaler.linear(0.9)),
                         content: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,

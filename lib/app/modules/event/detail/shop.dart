@@ -250,7 +250,7 @@ class ShopDescriptor extends StatelessWidget {
     Widget title;
     if (rewards.length == 1) {
       leading = rewards.first.item1;
-      title = Text.rich(rewards.first.item2, textScaleFactor: 0.8);
+      title = Text.rich(rewards.first.item2, textScaler: const TextScaler.linear(0.8));
     } else {
       List<InlineSpan> spans = [];
       for (int index = 0; index < rewards.length; index++) {
@@ -261,7 +261,7 @@ class ShopDescriptor extends StatelessWidget {
         spans.add(reward.item2);
         if (index != rewards.length - 1) spans.add(const TextSpan(text: ' / '));
       }
-      title = Text.rich(TextSpan(children: spans), textScaleFactor: 0.8);
+      title = Text.rich(TextSpan(children: spans), textScaler: const TextScaler.linear(0.8));
     }
     if (shop.image != null) {
       leading ??= db.getIconImage(shop.image, aspectRatio: 1);

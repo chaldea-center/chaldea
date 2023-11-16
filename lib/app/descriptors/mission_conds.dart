@@ -31,7 +31,7 @@ class MissionCondsDescriptor extends StatelessWidget {
         children.add(Text(
           '~~~ ${Transl.enums(cond.missionProgressType, (enums) => enums.missionProgressType).l} ~~~',
           textAlign: TextAlign.center,
-          textScaleFactor: 0.9,
+          textScaler: const TextScaler.linear(0.9),
           style: TextStyle(
             color: isClearCond
                 ? Theme.of(context).colorScheme.primaryContainer
@@ -44,7 +44,7 @@ class MissionCondsDescriptor extends StatelessWidget {
         children.add(Text(
           cond.conditionMessage,
           style: Theme.of(context).textTheme.bodySmall,
-          textScaleFactor: 0.9,
+          textScaler: const TextScaler.linear(0.9),
         ));
       }
       children.add(CondTargetNumDescriptor(
@@ -60,7 +60,7 @@ class MissionCondsDescriptor extends StatelessWidget {
       children.add(Text(
         '~~~ ${S.current.game_rewards} ~~~',
         textAlign: TextAlign.center,
-        textScaleFactor: 0.9,
+        textScaler: const TextScaler.linear(0.9),
         style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
       ));
       children.add(SharedBuilder.giftGrid(context: context, gifts: mission.gifts));
@@ -70,7 +70,7 @@ class MissionCondsDescriptor extends StatelessWidget {
     }
     final mq = MediaQuery.of(context);
     return MediaQuery(
-      data: mq.copyWith(textScaleFactor: mq.textScaleFactor * 0.9),
+      data: mq.copyWith(textScaler: TextScaler.linear(mq.textScaler.scale(0.9))),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,

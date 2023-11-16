@@ -268,7 +268,7 @@ class _ImportFgoSimuMaterialPageState extends State<ImportFgoSimuMaterialPage> w
           ],
         ),
         textAlign: TextAlign.center,
-        textScaleFactor: 0.9,
+        textScaler: const TextScaler.linear(0.9),
       ),
     );
   }

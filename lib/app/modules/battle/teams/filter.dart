@@ -89,7 +89,7 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
         db.gameData.craftEssencesById[a], db.gameData.craftEssencesById[b],
         keys: [CraftCompare.rarity, CraftCompare.no], reversed: [true, true]));
     return buildAdaptive(
-      title: Text(S.current.filter, textScaleFactor: 0.8),
+      title: Text(S.current.filter, textScaler: const TextScaler.linear(0.8)),
       actions: getDefaultActions(onTapReset: () {
         filterData.reset();
         update();
@@ -134,7 +134,7 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
                     value: count,
                     child: Text(
                       "${S.current.battle_command_card} ${count == -1 ? S.current.general_any : "≤$count"}",
-                      textScaleFactor: 0.8,
+                      textScaler: const TextScaler.linear(0.8),
                     ),
                   ),
               ],
@@ -154,7 +154,7 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
                     value: count,
                     child: Text(
                       "${S.current.critical_attack} ${count == -1 ? S.current.general_any : "≤$count"}",
-                      textScaleFactor: 0.8,
+                      textScaler: const TextScaler.linear(0.8),
                     ),
                   ),
               ],

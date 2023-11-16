@@ -387,7 +387,7 @@ class SkillScriptDescriptor extends StatelessWidget {
             '${transl('Option').l} ${index + 1}: ${transl(info.btn[index].name).l}'
         ].join('\n'),
         style: Theme.of(context).textTheme.bodySmall,
-        textScaleFactor: 0.9,
+        textScaler: const TextScaler.linear(0.9),
       )));
     }
     if (children.isEmpty) return const SizedBox();

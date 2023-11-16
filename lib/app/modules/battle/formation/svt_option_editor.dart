@@ -234,7 +234,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           options: SupportSvtType.values,
           values: FilterRadioData.nonnull(playerSvtData.supportType),
           enabled: playerSvtData.supportType != SupportSvtType.npc && enableEdit,
-          optionBuilder: (v) => Text(v.shownName, textScaleFactor: 0.9),
+          optionBuilder: (v) => Text(v.shownName, textScaler: const TextScaler.linear(0.9)),
           onFilterChanged: (v, _) {
             setState(() {
               playerSvtData.supportType = v.radioValue!;
@@ -484,7 +484,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       trailing: TextButton(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 100),
-          child: Text(ascensionText, textScaleFactor: 0.9),
+          child: Text(ascensionText, textScaler: const TextScaler.linear(0.9)),
         ),
         onPressed: () async {
           if (!enableEdit) return;
@@ -504,7 +504,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
                   ),
-                  title: Text(name, textScaleFactor: 0.9),
+                  title: Text(name, textScaler: const TextScaler.linear(0.9)),
                   onTap: () {
                     for (final skillNum in kActiveSkillNums) {
                       final List<NiceSkill> previousShownSkills =
@@ -769,7 +769,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           title: Text(title, style: disabled ? const TextStyle(decoration: TextDecoration.lineThrough) : null),
           subtitle: Text(
             subtitle,
-            textScaleFactor: 0.85,
+            textScaler: const TextScaler.linear(0.85),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: disabled ? const TextStyle(decoration: TextDecoration.lineThrough) : null,
@@ -829,7 +829,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           horizontalTitleGap: 0,
           leading: db.getIconImage(skill.icon ?? Atlas.common.emptySkillIcon, width: 28),
           title: Text(title),
-          subtitle: Text(subtitle, textScaleFactor: 0.85, maxLines: 2, overflow: TextOverflow.ellipsis),
+          subtitle:
+              Text(subtitle, textScaler: const TextScaler.linear(0.85), maxLines: 2, overflow: TextOverflow.ellipsis),
         );
       },
       contentBuilder: (context) {

@@ -418,7 +418,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
           Text(
             'Skip Wave ${record.wave}',
             style: TextStyle(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold),
-            textScaleFactor: 1.2,
+            textScaler: const TextScaler.linear(1.2),
           )
         ));
       } else if (record is BattleProgressTurnRecord) {
@@ -748,7 +748,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
       decoration: BoxDecoration(border: Border(top: Divider.createBorderSide(context))),
       child: ListTile(
         leading: db.getIconImage(mysticCode.icon, width: 56, aspectRatio: 1),
-        title: Text('${mysticCode.lName.l}  Lv.$level', textScaleFactor: 0.9),
+        title: Text('${mysticCode.lName.l}  Lv.$level', textScaler: const TextScaler.linear(0.9)),
         subtitle: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -869,7 +869,7 @@ mixin MultiTargetsWrapper {
       data,
       style: TextStyle(color: color),
       textAlign: TextAlign.center,
-      textScaleFactor: 0.85,
+      textScaler: const TextScaler.linear(0.85),
     );
     if (onTap != null) {
       child = InkWell(onTap: onTap, child: child);
@@ -931,7 +931,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
               ),
               style: const TextStyle(decoration: TextDecoration.underline),
               textAlign: TextAlign.center,
-              textScaleFactor: 0.8,
+              textScaler: const TextScaler.linear(0.8),
             ),
           if (record.targets.isNotEmpty || record.damage != 0) ...[
             record.targets.any((e) => e.damageParams.isNotMinRoll)
