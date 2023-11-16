@@ -424,6 +424,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "faq": MessageLookupByLibrary.simpleMessage("FAQ"),
         "favorite": MessageLookupByLibrary.simpleMessage("關注"),
         "favorite_all_shown_svt": MessageLookupByLibrary.simpleMessage("關注全部已顯示從者"),
+        "favorite_teams": MessageLookupByLibrary.simpleMessage("收藏的队伍"),
         "feedback_add_attachments": MessageLookupByLibrary.simpleMessage("e.g. 截圖等文件"),
         "feedback_contact": MessageLookupByLibrary.simpleMessage("聯繫方式"),
         "feedback_content_hint": MessageLookupByLibrary.simpleMessage("回饋與建議"),

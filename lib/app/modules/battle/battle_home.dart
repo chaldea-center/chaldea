@@ -7,6 +7,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../../../packages/language.dart';
 import '../home/elements/random_image.dart';
 import '../home/subpage/feedback_page.dart';
+import 'teams/favorite_teams_page.dart';
 import 'teams/teams_query_page.dart';
 
 class BattleHomePage extends StatelessWidget {
@@ -72,23 +73,13 @@ class BattleHomePage extends StatelessWidget {
                 router.push(url: Routes.laplaceManageTeam);
               },
             ),
-            if (AppInfo.isDebugDevice || db.settings.secrets.user?.isAdmin == true)
-              ListTile(
-                leading: const Icon(Icons.groups),
-                title: const Text("???'s Teams"),
-                onTap: () {
-                  InputCancelOkDialog(
-                    title: 'User ID or name',
-                    validate: (s) => s.trim().isNotEmpty,
-                    onSubmit: (value) {
-                      router.push(
-                        url: Routes.laplaceManageTeam,
-                        child: TeamsQueryPage(mode: TeamQueryMode.user, userId: value),
-                      );
-                    },
-                  ).showDialog(context);
-                },
-              ),
+            ListTile(
+              leading: const Icon(Icons.star),
+              title: Text(S.current.favorite_teams),
+              onTap: () {
+                router.push(child: const FavoriteTeamsPage());
+              },
+            ),
             ListTile(
               leading: const Icon(Icons.numbers),
               title: Text("${S.current.team} ID"),
@@ -108,6 +99,23 @@ class BattleHomePage extends StatelessWidget {
                 ).showDialog(context);
               },
             ),
+            if (AppInfo.isDebugDevice || db.settings.secrets.user?.isAdmin == true)
+              ListTile(
+                leading: const Icon(Icons.groups),
+                title: const Text("???'s Teams"),
+                onTap: () {
+                  InputCancelOkDialog(
+                    title: 'User ID or name',
+                    validate: (s) => s.trim().isNotEmpty,
+                    onSubmit: (value) {
+                      router.push(
+                        url: Routes.laplaceManageTeam,
+                        child: TeamsQueryPage(mode: TeamQueryMode.user, userId: value),
+                      );
+                    },
+                  ).showDialog(context);
+                },
+              ),
           ],
         ),
         TileGroup(

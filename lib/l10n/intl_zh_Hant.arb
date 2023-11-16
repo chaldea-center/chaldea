@@ -332,6 +332,7 @@
   "faq": "FAQ",
   "favorite": "關注",
   "favorite_all_shown_svt": "關注全部已顯示從者",
+  "favorite_teams": null,
   "feedback_add_attachments": "e.g. 截圖等文件",
   "feedback_contact": "聯繫方式",
   "feedback_content_hint": "回饋與建議",

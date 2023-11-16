@@ -145,10 +145,13 @@ class Quest with RouteInfo {
   }
 
   static int compare(Quest a, Quest b, {bool spotLayer = false}) {
-    if (spotLayer && a.type == QuestType.free && b.type == QuestType.free) {
+    if (spotLayer && a.warId == b.warId && a.afterClear.isRepeat && b.afterClear.isRepeat) {
       final la = kLB7SpotLayers[a.spotId], lb = kLB7SpotLayers[b.spotId];
       if (la != null && lb != null && la != lb) return la - lb;
     }
+    final v1 = ListX.compareByList(
+        a, b, (v) => [v.warId < 1000 ? 0 : 1, v.warId < 1000 ? v.warId : (v.war?.event?.startedAt ?? v.openedAt)]);
+    if (v1 != 0) return v1;
     if (a.priority == b.priority) return a.id - b.id;
     return b.priority - a.priority;
   }

@@ -68,7 +68,7 @@ class ChaldeaWorkerApi {
     return db.apiWorkerDio;
   }
 
-  static Options addAuthHeader({Options? options, bool verify = false}) {
+  static Options addAuthHeader({Options? options}) {
     options ??= Options();
     final secret = db.settings.secrets.user?.secret ?? "";
     String? authHeader;
@@ -81,9 +81,6 @@ class ChaldeaWorkerApi {
       }
     }
     if (authHeader == null) {
-      if (verify) {
-        throw StateError("Not login");
-      }
       return options;
     }
     options.headers = {
@@ -303,17 +300,19 @@ class ChaldeaWorkerApi {
     int? userId,
     String? username,
     int? ver,
+    List<int> teamIds = const [],
     int limit = 200,
     int offset = 0,
     Duration? expireAfter = const Duration(minutes: 60),
   }) {
-    if (questId == null && userId == null && ver == null && username == null) return Future.value();
+    if (questId == null && userId == null && ver == null && username == null && teamIds.isEmpty) return Future.value();
     final query = _encodeQuery({
       'questId': questId,
       'phase': phase,
       'enemyHash': enemyHash,
       'userId': userId,
       'username': username,
+      'ids': teamIds.toList()..sort(),
       'ver': ver,
       'limit': limit,
       if (offset > 0) 'offset': offset,

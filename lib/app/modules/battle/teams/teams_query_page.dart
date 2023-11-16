@@ -219,7 +219,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
                 icon: db.curUser.battleSim.isTeamFavorite(record.questId, record.id)
                     ? const Icon(Icons.star, color: Colors.amber)
                     : const Icon(Icons.star_border, color: Colors.grey),
-                tooltip: S.current.favorite,
+                tooltip: S.current.favorite_teams,
               ),
             if (mode == TeamQueryMode.user || record.userId == curUserId || AppInfo.isDebugDevice)
               FilledButton(
@@ -530,12 +530,16 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             ));
       case TeamQueryMode.id:
         task = showEasyLoading(() async {
-          final teams = <UserBattleData>[];
-          for (final id in widget.teamIds ?? <int>[]) {
-            final team = await ChaldeaWorkerApi.team(id, expireAfter: refresh ? Duration.zero : null);
-            if (team != null) teams.add(team);
+          final teamIds = widget.teamIds ?? [];
+          if (teamIds.isEmpty) {
+            return null;
+          } else if (teamIds.length == 1) {
+            final team = await ChaldeaWorkerApi.team(teamIds.single, expireAfter: refresh ? Duration.zero : null);
+            if (team == null) return null;
+            return TeamQueryResult(offset: 0, limit: 1, total: 1, data: [team]);
+          } else {
+            return ChaldeaWorkerApi.teams(teamIds: teamIds);
           }
-          return TeamQueryResult(offset: 0, limit: teams.length, total: teams.length, data: teams);
         });
     }
     TeamQueryResult? result = await task;
@@ -692,15 +696,13 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
       final buffer = StringBuffer();
       final quest = db.gameData.quests[record.questId];
       buffer.writeAll([
-        "Quest: https://apps.atlasacademy.io/db/JP/quest/${record.questId}/${record.phase}?hash=${record.enemyHash}",
-        "Lv. ${quest?.recommendLv} ${quest?.name}",
-        "Spot: ${quest?.spotName}",
-        "War: ${quest?.war?.longName.setMaxLines(1)}",
         "Team: https://worker.chaldea.center/api/v4/team/${record.id}?decode=1",
-        "Version: ${record.ver}",
+        "Team: https://link.chaldea.center/laplace/share/?id=${record.id}",
+        "Quest: https://apps.atlasacademy.io/db/JP/quest/${record.questId}/${record.phase}?hash=${record.enemyHash}",
+        "Lv. ${quest?.recommendLv} ${quest?.dispName}",
+        "War: ${quest?.war?.longName.setMaxLines(1)}",
         "ID: ${record.id}",
         "Uploader: ${record.username}",
-        // "Stars: x up, y down\n",
         "Reporter: ${db.settings.secrets.user?.name}",
         "Reason:\n$reason"
       ], '\n');

@@ -463,10 +463,14 @@ class ApiCacheManager {
     T Function(dynamic data) fromJson, {
     Duration? expireAfter,
     bool cacheOnly = false,
+    Map<String, dynamic>? queryParameters,
     Options? options,
   }) {
-    return fetchModel(createDio().createRequest(HttpRequestMethod.get, url, options: options), fromJson,
-        expireAfter: expireAfter, cacheOnly: cacheOnly);
+    return fetchModel(
+        createDio().createRequest(HttpRequestMethod.get, url, queryParameters: queryParameters, options: options),
+        fromJson,
+        expireAfter: expireAfter,
+        cacheOnly: cacheOnly);
   }
 
   Future<T?> postModel<T>(

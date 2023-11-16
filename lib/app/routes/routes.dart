@@ -462,6 +462,10 @@ class RouteConfiguration {
         return AiPage(aiType: type, aiId: aiId, region: region);
       case Routes.laplace:
         if (path?.startsWith(Routes.laplaceShare) == true) {
+          final teamId = int.tryParse(uri?.queryParameters['id'] ?? "");
+          if (teamId != null) {
+            return TeamsQueryPage(mode: TeamQueryMode.id, teamIds: [teamId]);
+          }
           return SimulationPreview(shareUri: uri);
         } else if (path?.startsWith(Routes.laplaceNpDmg) == true) {
           return const TdDamageRanking();

@@ -3715,6 +3715,17 @@ class S {
     );
   }
 
+  /// `Favorite Teams`
+  String get favorite_teams {
+    return Intl.message(
+      'Favorite Teams',
+      name: 'favorite_teams',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `e.g. screenshots, files.`
   String get feedback_add_attachments {
     return Intl.message(
