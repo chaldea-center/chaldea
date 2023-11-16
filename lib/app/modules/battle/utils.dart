@@ -8,12 +8,8 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'battle_simulation.dart';
 
-void replaySimulation({
-  required BattleShareData detail,
-  // only use quest info to compatible old version
-  BattleQuestInfo? questInfo,
-}) async {
-  questInfo = detail.quest ?? questInfo;
+void replaySimulation({required BattleShareData detail, int? replayTeamId}) async {
+  final questInfo = detail.quest;
   if (questInfo == null) {
     return EasyLoading.showError('invalid quest info');
   }
@@ -63,6 +59,7 @@ void replaySimulation({
       region: Region.jp,
       options: options,
       replayActions: detail,
+      replayTeamId: replayTeamId,
     ),
   );
 }

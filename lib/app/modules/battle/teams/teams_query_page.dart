@@ -3,6 +3,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/battle/formation/formation_card.dart';
+import 'package:chaldea/app/modules/battle/simulation_preview.dart';
 import 'package:chaldea/app/modules/home/subpage/login_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/api/api.dart';
@@ -24,8 +25,10 @@ class TeamsQueryPage extends StatefulWidget {
   final BattleQuestInfo? phaseInfo;
   final List<int>? teamIds;
   final String? userId; // name or id
+  final ValueChanged<BattleShareData>? onSelect;
 
-  const TeamsQueryPage({super.key, required this.mode, this.quest, this.phaseInfo, this.teamIds, this.userId});
+  const TeamsQueryPage(
+      {super.key, required this.mode, this.quest, this.phaseInfo, this.teamIds, this.userId, this.onSelect});
 
   @override
   State<TeamsQueryPage> createState() => _TeamsQueryPageState();
@@ -242,7 +245,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             if (shareData != null)
               FilledButton(
                 onPressed: () {
-                  replaySimulation(detail: shareData, questInfo: record.questInfo);
+                  replaySimulation(detail: shareData, replayTeamId: record.id);
                 },
                 child: Text(S.current.details),
               ),
@@ -251,7 +254,16 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
                 onPressed: shareData == null
                     ? null
                     : () {
-                        Navigator.pop(context, shareData.team);
+                        if (widget.onSelect != null) {
+                          Navigator.pop(context);
+                          widget.onSelect!(shareData);
+                        } else {
+                          final data2 = BattleShareData.fromJson(shareData.toJson());
+                          data2
+                            ..actions.clear()
+                            ..delegate = BattleReplayDelegateData();
+                          router.pushPage(SimulationPreview(shareUri: data2.toUriV2()));
+                        }
                       },
                 child: Text(S.current.select),
               ),

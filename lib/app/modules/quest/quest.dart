@@ -209,7 +209,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
   Widget get sharedTeamsButton {
     return TextButton.icon(
       onPressed: () {
-        router.pushPage<BattleTeamFormation?>(
+        router.pushPage(
           TeamsQueryPage(
             mode: TeamQueryMode.quest,
             quest: quest,

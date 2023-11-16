@@ -1010,11 +1010,9 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         title: Text(S.current.success),
         content: const Text("Replay Simulation/重现操作?"),
         onTapOk: () {
-          replaySimulation(detail: data!, questInfo: questInfo);
+          replaySimulation(detail: data!);
         },
       ).showDialog(context);
-    } else {
-      EasyLoading.showSuccess(S.current.import_data_success);
     }
     if (mounted) setState(() {});
   }
@@ -1266,17 +1264,17 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     if (noEnemyHash == null) return;
     final phaseInfo = BattleQuestInfo.quest(quest);
     if (noEnemyHash == true) phaseInfo.enemyHash = null;
-    final BattleTeamFormation? selected = await router.pushPage<BattleTeamFormation?>(
+    router.pushPage(
       TeamsQueryPage(
         mode: TeamQueryMode.quest,
         quest: quest,
         phaseInfo: phaseInfo,
+        onSelect: (data) {
+          restoreFormation(data.team);
+          if (mounted) setState(() {});
+        },
       ),
     );
-    if (selected != null) {
-      restoreFormation(selected);
-    }
-    if (mounted) setState(() {});
   }
 }
 

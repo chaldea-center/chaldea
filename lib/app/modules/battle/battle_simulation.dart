@@ -27,6 +27,7 @@ class BattleSimulationPage extends StatefulWidget {
   final Region? region;
   final BattleOptions options;
   final BattleShareData? replayActions;
+  final int? replayTeamId;
 
   BattleSimulationPage({
     super.key,
@@ -34,6 +35,7 @@ class BattleSimulationPage extends StatefulWidget {
     required this.region,
     required this.options,
     this.replayActions,
+    this.replayTeamId,
   });
 
   @override
@@ -87,6 +89,15 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     final replayActions = widget.replayActions;
     if (replayActions != null) {
       await battleData.replay(replayActions);
+      if (widget.replayTeamId != null && widget.replayTeamId != 0) {
+        battleData.recorder.messageRich(BattleMessageRecord(
+          'Team ${widget.replayTeamId}',
+          alignment: Alignment.center,
+          style: context.mounted
+              ? const TextStyle(decoration: TextDecoration.underline).merge(Theme.of(context).textTheme.bodySmall)
+              : null,
+        ));
+      }
     }
 
     if (mounted) setState(() {});
