@@ -66,6 +66,11 @@
       gtag("config", "G-XS2D05TGKG");
     </script>
     <!-- end analyzers -->
+
+    <!-- WeakRef polyfill Chrome <84 -->
+    <script>
+        var self=this||{};try{self.WeakRef=WeakRef,self.FinalizationGroup=FinalizationGroup}catch(e){!function(e,t){var i=new e;function n(e){i.set(this,e)}t(n.prototype,{deref:{value:function(){return i.get(this)}}});var a=new e;function r(e){a.set(this,[])}t(r.prototype,{register:{value:function(e,t){var i=a.get(this);i.indexOf(t)<0&&i.push(t)}},unregister:{value:function(e,t){var i=a.get(this),n=i.indexOf(t);return-1<n&&i.splice(n,1),-1<n}},cleanupSome:{value:function(e){e(a.get(this))}}}),self.WeakRef=n,self.FinalizationGroup=r}(WeakMap,Object.defineProperties)}
+    </script>
     <script>
       // The value below is injected by flutter build, do not touch.
       const serviceWorkerVersion = null;
