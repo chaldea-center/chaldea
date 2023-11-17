@@ -398,6 +398,7 @@ const _$ShopTypeEnumMap = {
   ShopType.shop13: 'shop13',
   ShopType.tradeAp: 'tradeAp',
   ShopType.shop15: 'shop15',
+  ShopType.eventSvtEquip: 'eventSvtEquip',
 };
 
 const _$PayTypeEnumMap = {

@@ -1793,9 +1793,10 @@ enum ShopType {
   grailFragments,
   svtCostume,
   startUpSummon,
-  shop13,
+  shop13, // pure prism
   tradeAp,
-  shop15,
+  shop15, // 巡霊の葉
+  eventSvtEquip,
 }
 
 enum MissionProgressType {

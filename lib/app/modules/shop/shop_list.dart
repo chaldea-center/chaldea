@@ -26,6 +26,7 @@ class _ShopListHomeState extends State<ShopListHome> {
         ShopType.shop15, // 巡霊の葉
         ShopType.shop13, // pure prism
         ShopType.svtCostume,
+        ShopType.eventSvtEquip,
         ShopType.startUpSummon,
         ShopType.svtAnonymous,
         ShopType.limitMaterial,
