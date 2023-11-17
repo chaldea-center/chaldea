@@ -217,6 +217,8 @@ class Quest with RouteInfo {
   NiceSpot? get spot => db.gameData.spots[spotId];
   NiceWar? get war => db.gameData.wars[warId];
   Event? get questEvent {
+    final _event = war?.eventReal;
+    if (_event != null) return _event;
     for (final (eventId, questIds) in db.gameData.others.eventQuestGroups.items) {
       if (questIds.contains(id) && db.gameData.events.containsKey(eventId)) {
         return db.gameData.events[eventId];

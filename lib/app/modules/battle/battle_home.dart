@@ -99,6 +99,11 @@ class BattleHomePage extends StatelessWidget {
                 ).showDialog(context);
               },
             ),
+          ],
+        ),
+        TileGroup(
+          header: "(O_O)?",
+          children: [
             if (AppInfo.isDebugDevice || db.settings.secrets.user?.isAdmin == true)
               ListTile(
                 leading: const Icon(Icons.groups),
@@ -116,11 +121,6 @@ class BattleHomePage extends StatelessWidget {
                   ).showDialog(context);
                 },
               ),
-          ],
-        ),
-        TileGroup(
-          header: "(O_O)?",
-          children: [
             ListTile(
               title: Text(Language.isZH ? '常见问题/FAQ' : S.current.faq),
               leading: const Icon(Icons.question_answer),

@@ -175,111 +175,16 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   Widget listItemBuilder(UserBattleData record) {
     final index = queryResult.data.indexOf(record);
     final shareData = record.decoded;
-    final quest = db.gameData.quests[record.questId];
     final shownIndex = _pageSize * pageIndex + index + 1;
-    final extraInfo = getExtraInfo(record);
 
     Widget child = Column(
       children: [
         const SizedBox(height: 6),
-        _getHeader(shownIndex, record),
-        if (extraInfo.isNotEmpty)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            alignment: Alignment.centerLeft,
-            child: Text.rich(
-              TextSpan(children: extraInfo),
-              style: TextStyle(
-                color: Theme.of(context).textTheme.bodySmall?.color,
-                fontSize: 14,
-              ),
-            ),
-          ),
-        if (widget.mode == TeamQueryMode.user || widget.mode == TeamQueryMode.id)
-          ListTile(
-            dense: true,
-            leading: db.getIconImage(quest?.spot?.shownImage, width: 24),
-            minLeadingWidth: 24,
-            title: Text(quest?.lDispName ?? "Quest ${record.questId}/${record.phase}"),
-            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-            onTap: () {
-              router.push(url: Routes.questI(record.questId, record.phase));
-            },
-          ),
+        buildHeader(shownIndex, record),
+        buildExtraInfo(record),
+        if (widget.mode == TeamQueryMode.user || widget.mode == TeamQueryMode.id) buildQuest(record),
         if (shareData != null) FormationCard(formation: shareData.team),
-        Wrap(
-          alignment: WrapAlignment.center,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          spacing: 2,
-          children: [
-            if (widget.mode != TeamQueryMode.user)
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    db.curUser.battleSim.favoriteTeams.putIfAbsent(record.questId, () => {}).toggle(record.id);
-                  });
-                },
-                icon: db.curUser.battleSim.isTeamFavorite(record.questId, record.id)
-                    ? const Icon(Icons.star, color: Colors.amber)
-                    : const Icon(Icons.star_border, color: Colors.grey),
-                tooltip: S.current.favorite_teams,
-              ),
-            if (mode == TeamQueryMode.user || record.userId == curUserId || AppInfo.isDebugDevice)
-              FilledButton(
-                onPressed: () {
-                  final isOthers = record.userId != curUserId;
-                  SimpleCancelOkDialog(
-                    title: Text(S.current.confirm),
-                    content: Text([
-                      '${S.current.delete} No.${record.id}',
-                      if (isOthers) "Waring: ${record.userId}'s, not your team",
-                    ].join('\n')),
-                    onTapOk: () {
-                      _deleteUserTeam(record);
-                    },
-                  ).showDialog(context);
-                },
-                style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
-                child: Text(S.current.delete),
-              ),
-            if (shareData != null)
-              FilledButton(
-                onPressed: () {
-                  replaySimulation(detail: shareData, replayTeamId: record.id);
-                },
-                child: Text(S.current.details),
-              ),
-            if (mode == TeamQueryMode.quest)
-              FilledButton(
-                onPressed: shareData == null
-                    ? null
-                    : () {
-                        if (widget.onSelect != null) {
-                          Navigator.pop(context);
-                          widget.onSelect!(shareData);
-                        } else {
-                          final data2 = BattleShareData.fromJson(shareData.toJson());
-                          data2
-                            ..actions.clear()
-                            ..delegate = BattleReplayDelegateData();
-                          router.pushPage(SimulationPreview(shareUri: data2.toUriV2()));
-                        }
-                      },
-                child: Text(S.current.select),
-              ),
-            IconButton(
-              onPressed: shareData == null
-                  ? null
-                  : () => showDialog(
-                        context: context,
-                        useRootNavigator: false,
-                        builder: (context) => buildShareDialog(context, record),
-                      ),
-              icon: const Icon(Icons.ios_share),
-              tooltip: S.current.share,
-            )
-          ],
-        ),
+        buildTeamActions(record),
         const SizedBox(height: 6),
       ],
     );
@@ -294,7 +199,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     );
   }
 
-  Widget _getHeader(int index, UserBattleData record) {
+  Widget buildHeader(int index, UserBattleData record) {
     final themeData = Theme.of(context);
     final style = themeData.textTheme.bodySmall;
     Future<void> onVote(bool isUpVote) async {
@@ -374,10 +279,10 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     );
   }
 
-  List<InlineSpan> getExtraInfo(UserBattleData record) {
+  Widget buildExtraInfo(UserBattleData record) {
     List<InlineSpan> spans = [];
     final team = record.decoded;
-    if (team == null) return spans;
+    if (team == null) return const SizedBox.shrink();
     final maxRandom = Maths.max(team.actions.map((e) => e.options.random));
     if (maxRandom > ConstData.constants.attackRateRandomMin) {
       spans.add(TextSpan(text: '${S.current.random} ${maxRandom / 1000}'));
@@ -409,8 +314,127 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       }
     }
 
-    spans = divideList(spans, const TextSpan(text: ', '));
-    return spans;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      alignment: Alignment.centerLeft,
+      child: Text.rich(
+        TextSpan(children: divideList(spans, const TextSpan(text: ', '))),
+        style: TextStyle(
+          color: Theme.of(context).textTheme.bodySmall?.color,
+          fontSize: 14,
+        ),
+      ),
+    );
+  }
+
+  Widget buildQuest(UserBattleData record) {
+    final quest = db.gameData.quests[record.questId];
+    List<InlineSpan> questName = [];
+    if (quest == null) {
+      questName.add(TextSpan(text: "Quest ${record.questId}/${record.phase}"));
+    } else {
+      questName.add(TextSpan(text: quest.lDispName));
+      final eventName = quest.questEvent?.shownName ?? quest.war?.lShortName;
+      if (eventName != null) {
+        questName.add(TextSpan(
+          text: '\n${eventName.setMaxLines(1)}',
+          style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodySmall?.color),
+        ));
+      }
+    }
+    return ListTile(
+      dense: true,
+      leading: db.getIconImage(quest?.spot?.shownImage, width: 24),
+      minLeadingWidth: 24,
+      title: Text.rich(TextSpan(children: questName)),
+      trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+      onTap: () {
+        router.push(url: Routes.questI(record.questId, record.phase));
+      },
+    );
+  }
+
+  Widget buildTeamActions(UserBattleData record) {
+    List<Widget> actions = [];
+    final teamData = record.decoded;
+    if (mode == TeamQueryMode.user) {
+      actions.add(IconButton(
+        onPressed: () {
+          setState(() {
+            db.curUser.battleSim.favoriteTeams.putIfAbsent(record.questId, () => {}).toggle(record.id);
+          });
+        },
+        icon: db.curUser.battleSim.isTeamFavorite(record.questId, record.id)
+            ? const Icon(Icons.star, color: Colors.amber)
+            : const Icon(Icons.star_border, color: Colors.grey),
+        tooltip: S.current.favorite_teams,
+      ));
+    }
+    if (mode == TeamQueryMode.user || record.userId == curUserId || AppInfo.isDebugDevice) {
+      actions.add(FilledButton(
+        onPressed: () {
+          final isOthers = record.userId != curUserId;
+          SimpleCancelOkDialog(
+            title: Text(S.current.confirm),
+            content: Text([
+              '${S.current.delete} No.${record.id}',
+              if (isOthers) "Waring: ${record.userId}'s, not your team",
+            ].join('\n')),
+            onTapOk: () {
+              _deleteUserTeam(record);
+            },
+          ).showDialog(context);
+        },
+        style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
+        child: Text(S.current.delete),
+      ));
+    }
+    if (teamData != null) {
+      actions.add(FilledButton(
+        onPressed: () {
+          replaySimulation(detail: teamData, replayTeamId: record.id);
+        },
+        child: Text(S.current.details),
+      ));
+    }
+
+    actions.addAll([
+      FilledButton(
+        onPressed: teamData == null
+            ? null
+            : () {
+                if (widget.onSelect != null) {
+                  Navigator.pop(context);
+                  widget.onSelect!(teamData);
+                } else {
+                  final data2 = BattleShareData.fromJson(teamData.toJson());
+                  data2
+                    ..actions.clear()
+                    ..delegate = BattleReplayDelegateData();
+                  router.pushPage(SimulationPreview(shareUri: data2.toUriV2()));
+                }
+              },
+        child: Text(S.current.select),
+      ),
+      IconButton(
+        onPressed: teamData == null
+            ? null
+            : () => showDialog(
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (context) => buildShareDialog(context, record),
+                ),
+        icon: const Icon(Icons.ios_share),
+        tooltip: S.current.share,
+      ),
+    ]);
+
+    return Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 2,
+      children: actions,
+    );
   }
 
   @override
