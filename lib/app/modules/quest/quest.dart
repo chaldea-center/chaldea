@@ -119,39 +119,49 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
               underline: const SizedBox(),
             ),
           PopupMenuButton<dynamic>(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                enabled: false,
-                height: 32,
-                child: Text('No.$questId', textScaler: const TextScaler.linear(0.9)),
-              ),
-              const PopupMenuDivider(),
-              PopupMenuItem(
-                enabled: widget.questPhase == null,
-                onTap: () {
-                  final key = '/quest/$questId/';
-                  AtlasApi.cachedQuestPhases.removeWhere((key, value) => key.contains(key));
-                  AtlasApi.cacheManager.removeWhere((info) => info.url.contains(key));
-                  if (questId != null) AtlasApi.cacheDisabledQuests.add(questId!);
-                  uniqueKey = UniqueKey();
-                  if (mounted) setState(() {});
-                },
-                child: Text(S.current.refresh),
-              ),
-              ...SharedBuilder.websitesPopupMenuItems(
-                atlas: _quest == null
-                    ? null
-                    : Atlas.dbQuest(
-                        _quest!.id,
-                        _quest!.phases.contains(phase) ? phase : _quest!.phases.firstOrNull,
-                        region,
-                      ),
-              ),
-              PopupMenuItem(
-                onTap: _showFixRegionDialog,
-                child: Text(S.current.quest_prefer_region),
-              ),
-            ],
+            itemBuilder: (context) {
+              String? mcLink;
+              if (_quest != null && _quest!.type == QuestType.friendship) {
+                final svt =
+                    db.gameData.servantsById.values.firstWhereOrNull((e) => e.relateQuestIds.contains(_quest!.id));
+                mcLink = svt?.extra.mcLink;
+                if (mcLink != null) mcLink += '/从者任务';
+              }
+              return [
+                PopupMenuItem(
+                  enabled: false,
+                  height: 32,
+                  child: Text('No.$questId', textScaler: const TextScaler.linear(0.9)),
+                ),
+                const PopupMenuDivider(),
+                PopupMenuItem(
+                  enabled: widget.questPhase == null,
+                  onTap: () {
+                    final key = '/quest/$questId/';
+                    AtlasApi.cachedQuestPhases.removeWhere((key, value) => key.contains(key));
+                    AtlasApi.cacheManager.removeWhere((info) => info.url.contains(key));
+                    if (questId != null) AtlasApi.cacheDisabledQuests.add(questId!);
+                    uniqueKey = UniqueKey();
+                    if (mounted) setState(() {});
+                  },
+                  child: Text(S.current.refresh),
+                ),
+                ...SharedBuilder.websitesPopupMenuItems(
+                  atlas: _quest == null
+                      ? null
+                      : Atlas.dbQuest(
+                          _quest!.id,
+                          _quest!.phases.contains(phase) ? phase : _quest!.phases.firstOrNull,
+                          region,
+                        ),
+                  mooncell: mcLink,
+                ),
+                PopupMenuItem(
+                  onTap: _showFixRegionDialog,
+                  child: Text(S.current.quest_prefer_region),
+                ),
+              ];
+            },
           )
         ],
       ),

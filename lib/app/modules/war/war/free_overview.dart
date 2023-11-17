@@ -42,9 +42,9 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     spots.clear();
     quests = widget.quests.toList();
     if (_only90plus) {
-      quests.retainWhere((quest) => quest.recommendLv.startsWith('90'));
-      if (quests.any((quest) => quest.recommendLv.startsWith('90+'))) {
-        quests.retainWhere((quest) => quest.recommendLv.startsWith('90+'));
+      quests.retainWhere((quest) => quest.is90PlusFree);
+      if (quests.any((quest) => quest.recommendLv != '90')) {
+        quests.retainWhere((quest) => quest.recommendLv != '90');
       }
     }
     if (mounted) setState(() {});

@@ -378,7 +378,7 @@ class LimitedSummon with RouteInfo {
     this.type = SummonType.unknown,
     this.rollCount = 11,
     this.subSummons = const [],
-  })  : name = name_ ?? (name is String ? name : id.toString()),
+  })  : name = name is String ? name : (name_ ?? id.toString()),
         name_ = name_ ?? id.toString(),
         banner = banner ?? MappingBase(),
         officialBanner = officialBanner ?? MappingBase(),
