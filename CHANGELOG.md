@@ -1,9 +1,16 @@
 # Changelog
 
+## 2.5.1
+
+- Improvements and bug fix
+- Support deep link on mobile
+- Fix sniffed data import may failed
+- Add favorite team list (not up voted)
+
 ## 2.5.0
 
 - Server Migration
-  - previous app versions will be refused to upload user data, upload team etc. 
+  - previous app versions will be refused to upload user data, upload team etc.
 - Add war board treasures
 - Fix event quest solver bug when any quest is disabled
 - Laplace: Support Ptolemaios transform servant
