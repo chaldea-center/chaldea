@@ -89,7 +89,6 @@ class BattleServantData {
 
     return max(_maxHp + addition + percentAddition, 1);
   }
-  set maxHp(final int maxHp) => _maxHp = maxHp;
 
   int np = 0; // player, np/100
   int npLineCount = 0; // enemy
@@ -652,7 +651,7 @@ class BattleServantData {
     await initScript(battleData);
 
     baseAtk = nextShift.atk;
-    maxHp = nextShift.hp;
+    _maxHp = nextShift.hp;
     hp = maxHp;
     level = nextShift.lv;
     battleBuff.clearPassive(uniqueId);
@@ -664,11 +663,25 @@ class BattleServantData {
     await initScript(battleData);
 
     baseAtk = shiftSvt.atk;
-    maxHp = shiftSvt.hp;
+    _maxHp = shiftSvt.hp;
     hp = maxHp;
     level = shiftSvt.lv;
     battleBuff.clearPassive(uniqueId);
     shiftIndex += 1;
+  }
+
+  Future<void> changeServant(final BattleData battleData, QuestEnemy changeSvt) async {
+    await battleData.withTarget(this, () async {
+      changeIndex = changeIndex;
+      niceEnemy = changeSvt;
+      baseAtk = changeSvt.atk;
+      _maxHp = changeSvt.hp;
+      // hp = maxHp;
+      level = changeSvt.lv;
+      battleBuff.clearPassive(uniqueId);
+      await initScript(battleData);
+      await battleData.initActorSkills([this]);
+    });
   }
 
   bool isAlive(final BattleData battleData) {
@@ -919,14 +932,14 @@ class BattleServantData {
     return updatedFunctions;
   }
 
-  Future<int?> getMultiAttackBuffValue(final BattleData battleData, final BuffAction buffAction) async {
-    final actionDetails = ConstData.buffActions[buffAction];
+  Future<int?> getMultiAttackBuffValue(final BattleData battleData) async {
+    final actionDetails = ConstData.buffActions[BuffAction.multiattack];
     if (actionDetails == null) {
       return null;
     }
 
     final opponent = battleData.getOpponent(this);
-    for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
+    for (final buff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.multiattack)) {
       if (await buff.shouldActivateBuff(battleData, this, opponent)) {
         buff.setUsed();
         final value = buff.getValue(battleData, this, opponent);

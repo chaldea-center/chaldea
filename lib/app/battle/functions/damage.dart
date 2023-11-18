@@ -209,7 +209,7 @@ class Damage {
             ..cardResist = await target.getBuffValueOnAction(battleData, BuffAction.commandStarDef)
             ..enemyStarGenResist = await target.getBuffValueOnAction(battleData, BuffAction.criticalStarDamageTaken);
         }
-        final multiAttack = await activator.getMultiAttackBuffValue(battleData, BuffAction.multiattack);
+        final multiAttack = await activator.getMultiAttackBuffValue(battleData);
 
         // real
         final int totalDamage = await DamageAdjustor.show(battleData, damageParameters);

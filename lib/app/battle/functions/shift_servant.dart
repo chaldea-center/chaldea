@@ -53,16 +53,6 @@ class ShiftServant {
       actor.shiftNpcIds = changeSvt.enemyScript.shift!.toList();
     }
 
-    await battleData.withTarget(actor, () async {
-      actor.changeIndex = changeIndex;
-      actor.niceEnemy = changeSvt;
-      actor.baseAtk = changeSvt.atk;
-      // actor.hp = targetEnemy.hp;
-      actor.maxHp = changeSvt.hp;
-      actor.level = changeSvt.lv;
-      actor.battleBuff.clearPassive(actor.uniqueId);
-      await actor.initScript(battleData);
-      await battleData.initActorSkills([actor]);
-    });
+    await actor.changeServant(battleData, changeSvt);
   }
 }
