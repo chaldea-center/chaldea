@@ -883,6 +883,10 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
   final BattleAttackRecord record;
   const _AttackDetailWidget({required this.battleData, required this.record});
 
+  String fmtHp(int value) {
+    return value.format(compact: false, groupSeparator: ",");
+  }
+
   @override
   Widget build(BuildContext context) {
     return buildContent(
@@ -935,8 +939,8 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
             ),
           if (record.targets.isNotEmpty || record.damage != 0) ...[
             record.targets.any((e) => e.damageParams.isNotMinRoll)
-                ? coloredText('DMG ${record.damage}*', Colors.red)
-                : coloredText('DMG ${record.damage}', Colors.red),
+                ? coloredText('DMG ${fmtHp(record.damage)}*', Colors.red)
+                : coloredText('DMG ${fmtHp(record.damage)}', Colors.red),
             if (record.attacker.isPlayer) coloredText('NP ${record.attackNp / 100}', Colors.blue),
             if (record.attacker.isPlayer) coloredText('Star ${record.star / 1000}', Colors.green),
           ],
@@ -1061,9 +1065,9 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.center,
           ),
-          coloredText('HP ${detail.target.hp}', null),
+          coloredText('HP ${fmtHp(detail.target.hp)}', null),
           coloredText(
-            detail.damageParams.isNotMinRoll ? 'DMG ${result.totalDamage}*' : 'DMG ${result.totalDamage}',
+            "DMG ${fmtHp(result.totalDamage)}${detail.damageParams.isNotMinRoll ? '*' : ''}",
             Colors.red,
             () => showParams(
               context,
