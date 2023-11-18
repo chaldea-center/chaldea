@@ -474,7 +474,7 @@ class BattleBuffIcon extends StatelessWidget {
       padding: const EdgeInsets.all(1),
       child: child,
     );
-    if (!buff.stateAct || !buff.stateField) {
+    if (!buff.checkAct()) {
       child = Opacity(opacity: 0.5, child: child);
     }
     return child;

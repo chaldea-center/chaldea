@@ -16,9 +16,9 @@ class BattleBuff {
   List<BuffData> get originalPassiveList => _passiveList;
   List<BuffData> get originalActiveList => _activeList;
 
-  List<BuffData> getPassiveList() => _passiveList.where((e) => e.stateAct && e.stateAct).toList();
-  List<BuffData> getActiveList() => _activeList.where((e) => e.stateAct && e.stateAct).toList();
-  List<BuffData> getCommandCodeList() => commandCodeList.where((e) => e.stateAct && e.stateAct).toList();
+  List<BuffData> getPassiveList() => _passiveList.where((e) => e.checkAct()).toList();
+  List<BuffData> getActiveList() => _activeList.where((e) => e.checkAct()).toList();
+  List<BuffData> getCommandCodeList() => commandCodeList.where((e) => e.checkAct()).toList();
 
   List<BuffData> getAllBuffs() => [..._passiveList, ..._activeList, ...commandCodeList];
   List<BuffData> get validBuffs => [...getPassiveList(), ...getActiveList(), ...getCommandCodeList()];
@@ -58,14 +58,14 @@ class BattleBuff {
 
   void removeBuffWithTrait(final NiceTrait trait, {bool includeNoAct = false, bool includeNoField = false}) {
     _activeList.removeWhere((buff) =>
-        (includeNoAct || buff.stateAct) &&
-        (includeNoField || buff.stateField) &&
+        (includeNoAct || !buff.checkState(BuffState.noAct)) &&
+        (includeNoField || !buff.checkState(BuffState.noField)) &&
         checkTraitFunction(buff.traits, [trait], partialMatch, partialMatch));
   }
 
   void turnProgress() {
     for (final buff in getAllBuffs()) {
-      if (!buff.stateField) continue;
+      if (!buff.checkField()) continue;
       buff.turnPass();
     }
   }
@@ -111,16 +111,13 @@ class BuffData {
   bool passive = false;
   bool irremovable = false;
 
-  bool stateAct = true;
-  bool stateField = true;
-
   // ignore: unused_field
-  bool isDecide = false;
-  int userCommandCodeId = -1;
-  List<int> targetSkill = [];
-  int state = 0;
-  int auraEffectId = -1;
-  bool isActiveCC = false;
+  // bool isDecide = false;
+  // int userCommandCodeId = -1;
+  // List<int> targetSkill = [];
+  int _state = 0;
+  // int auraEffectId = -1;
+  // bool isActiveCC = false;
 
   // may not need this field.
   // Intent is to check should remove passive when transforming servants to only remove actor's passive
@@ -208,7 +205,7 @@ class BuffData {
 
     final scriptCheck = checkDataVals(battleData) && checkBuffScript(battleData);
 
-    if (!scriptCheck || !stateAct || !stateField) {
+    if (!scriptCheck || !checkAct()) {
       return false;
     }
 
@@ -354,7 +351,7 @@ class BuffData {
   }
 
   void updateActState(final BattleData battleData, final BattleServantData owner) {
-    bool actResult = true;
+    bool isAct = true;
 
     List<NiceTrait>? requiredTraits;
     int? requireAtLeast;
@@ -373,7 +370,7 @@ class BuffData {
     }
 
     if (requiredTraits != null) {
-      actResult &= battleData.checkTraits(CheckTraitParameters(
+      isAct &= battleData.checkTraits(CheckTraitParameters(
         requiredTraits: requiredTraits,
         actor: owner,
         requireAtLeast: requireAtLeast,
@@ -387,7 +384,7 @@ class BuffData {
 
     // written based on Chen Gong np & passive. Right now only Chen Gong uses this
     if (vals.OnFieldCount == -1 && buff.script?.TargetIndiv != null) {
-      actResult &= battleData.checkTraits(CheckTraitParameters(
+      isAct &= battleData.checkTraits(CheckTraitParameters(
         requiredTraits: buff.ckSelfIndv,
         actor: owner,
         checkActorTraits: true,
@@ -396,7 +393,7 @@ class BuffData {
 
       final List<BattleServantData> allies = owner.isPlayer ? battleData.nonnullPlayers : battleData.nonnullEnemies;
 
-      actResult &= allies
+      isAct &= allies
           .where((svt) =>
               svt != owner &&
               battleData.checkTraits(CheckTraitParameters(
@@ -410,20 +407,26 @@ class BuffData {
 
     if (buff.script?.HP_HIGHER != null) {
       final int hpRatio = (owner.hp / owner.maxHp * 1000).toInt();
-      actResult &= hpRatio >= buff.script!.HP_HIGHER!;
+      isAct &= hpRatio >= buff.script!.HP_HIGHER!;
     }
 
     if (buff.script?.HP_LOWER != null) {
       final int hpRatio = (owner.hp / owner.maxHp * 1000).toInt();
-      actResult &= hpRatio <= buff.script!.HP_LOWER!;
+      isAct &= hpRatio <= buff.script!.HP_LOWER!;
     }
-    stateAct = actResult;
 
-    stateField = true;
-    if (isOnField && actorUniqueId != null) {
-      // should be NO_FIELD state rather NO_ACT in fact
-      stateField &= battleData.isActorOnField(actorUniqueId!);
+    if (isAct) {
+      offState(BuffState.noAct);
+    } else {
+      onState(BuffState.noAct);
     }
+    setState(BuffState.noAct, !isAct);
+
+    bool isField = true;
+    if (isOnField && actorUniqueId != null) {
+      isField &= battleData.isActorOnField(actorUniqueId!);
+    }
+    setState(BuffState.noField, !isField);
   }
 
   String effectString() {
@@ -471,8 +474,29 @@ class BuffData {
       ..isUsed = isUsed
       ..irremovable = irremovable
       ..passive = passive
-      ..stateAct = stateAct
-      ..stateField = stateField;
+      .._state = _state;
     return copy;
   }
+
+  // dw style
+  void onState(BuffState state) => _state |= state.value;
+  void offState(BuffState state) => _state &= ~state.value;
+  void setState(BuffState state, bool v) => v ? onState(state) : offState(state);
+  bool checkState(BuffState state) => _state & state.value > 0;
+
+  bool checkAct() => !checkState(BuffState.noAct) && !checkState(BuffState.noField);
+  bool checkField() => !checkState(BuffState.noField);
+  bool checkProgressTurn() => !checkState(BuffState.cond) && logicTurn > 0;
+  // skip command buff related...
+  // bool isActiveCommandCode, isCommandCodeBuff, IsMineCommandCode
+}
+
+enum BuffState {
+  noField(1),
+  noAct(16),
+  cond(32),
+  ;
+
+  const BuffState(this.value);
+  final int value;
 }
