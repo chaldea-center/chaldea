@@ -569,7 +569,7 @@ class FunctionExecutor {
 
         BattleServantData hpLowestRate = aliveAllies.first;
         for (final svt in aliveAllies) {
-          if (svt.hp / svt.getMaxHp(battleData) < hpLowestRate.hp / hpLowestRate.getMaxHp(battleData)) {
+          if (svt.hp / svt.maxHp < hpLowestRate.hp / hpLowestRate.maxHp) {
             hpLowestRate = svt;
           }
         }
@@ -728,7 +728,7 @@ class FunctionExecutor {
       final hpRateRange = int.parse(triggeredHpRateRange.replaceAll('<', ''));
 
       targets.retainWhere((svt) {
-        final svtHpRate = (svt.hp / svt.getMaxHp(battleData) * 1000).toInt();
+        final svtHpRate = (svt.hp / svt.maxHp * 1000).toInt();
 
         if (lessThan) {
           return svtHpRate < hpRateRange;

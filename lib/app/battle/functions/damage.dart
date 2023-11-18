@@ -67,11 +67,11 @@ class Damage {
         }
         decideHp ??= activator.hp;
         final hpRatioDamageLow = checkHpRatioLow && dataVals.Target != null
-            ? ((1 - decideHp / activator.getMaxHp(battleData)) * dataVals.Target!).toInt()
+            ? ((1 - decideHp / activator.maxHp) * dataVals.Target!).toInt()
             : 0;
 
         final hpRatioDamageHigh = checkHpRatioHigh && dataVals.Target != null
-            ? ((decideHp / activator.getMaxHp(battleData)) * dataVals.Target!).toInt()
+            ? ((decideHp / activator.maxHp) * dataVals.Target!).toInt()
             : 0;
 
         int specificAttackRate = 1000;
@@ -209,7 +209,7 @@ class Damage {
             ..cardResist = await target.getBuffValueOnAction(battleData, BuffAction.commandStarDef)
             ..enemyStarGenResist = await target.getBuffValueOnAction(battleData, BuffAction.criticalStarDamageTaken);
         }
-        final multiAttack = await activator.getConfirmationBuffValueOnAction(battleData, BuffAction.multiattack);
+        final multiAttack = await activator.getMultiAttackBuffValue(battleData, BuffAction.multiattack);
 
         // real
         final int totalDamage = await DamageAdjustor.show(battleData, damageParameters);
@@ -266,7 +266,7 @@ class Damage {
             '${currentCard.isTD ? S.current.battle_np_card : S.current.battle_command_card} - '
             '${S.current.effect_target}: ${target.lBattleName} - '
             '${S.current.battle_damage}: $totalDamage - '
-            '${S.current.battle_remaining_hp}: ${target.hp}/${target.getMaxHp(battleData)} - '
+            '${S.current.battle_remaining_hp}: ${target.hp}/${target.maxHp} - '
             'NP: ${(Maths.sum(result.npGains) / 100).toStringAsFixed(2)}% - '
             '$starString'
             'Overkill: ${result.overkillStates.where((e) => e).length}/${currentCard.cardDetail.hitsDistribution.length}');

@@ -244,9 +244,9 @@ class BattleSkillInfoData {
       case SkillScriptCond.hpValLower:
         return battleData.activator!.hp >= value;
       case SkillScriptCond.hpPerHigher:
-        return battleData.activator!.hp / battleData.activator!.getMaxHp(battleData) >= value / 1000;
+        return battleData.activator!.hp / battleData.activator!.maxHp >= value / 1000;
       case SkillScriptCond.hpPerLower:
-        return battleData.activator!.hp / battleData.activator!.getMaxHp(battleData) <= value / 1000;
+        return battleData.activator!.hp / battleData.activator!.maxHp <= value / 1000;
     }
   }
 }

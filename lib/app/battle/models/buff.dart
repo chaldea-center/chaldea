@@ -180,7 +180,7 @@ class BuffData {
       final addition = upperBound - lowerBound;
       final maxHpRatio = vals.RatioHPRangeHigh ?? 1000;
       final minHpRatio = vals.RatioHPRangeLow ?? 0;
-      final currentHpRatio = ((self.hp / self.getMaxHp(battleData)) * 1000).toInt();
+      final currentHpRatio = ((self.hp / self.maxHp) * 1000).toInt();
 
       final appliedBase = currentHpRatio > maxHpRatio ? 0 : lowerBound;
       final additionPercent = (maxHpRatio - currentHpRatio.clamp(minHpRatio, maxHpRatio)) / (maxHpRatio - minHpRatio);
@@ -394,12 +394,12 @@ class BuffData {
     }
 
     if (buff.script?.HP_HIGHER != null) {
-      final int hpRatio = (owner.hp / owner.getMaxHp(battleData) * 1000).toInt();
+      final int hpRatio = (owner.hp / owner.maxHp * 1000).toInt();
       actResult &= hpRatio >= buff.script!.HP_HIGHER!;
     }
 
     if (buff.script?.HP_LOWER != null) {
-      final int hpRatio = (owner.hp / owner.getMaxHp(battleData) * 1000).toInt();
+      final int hpRatio = (owner.hp / owner.maxHp * 1000).toInt();
       actResult &= hpRatio <= buff.script!.HP_LOWER!;
     }
     stateAct = actResult;

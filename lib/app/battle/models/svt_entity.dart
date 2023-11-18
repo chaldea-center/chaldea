@@ -83,6 +83,12 @@ class BattleServantData {
   int baseAtk = 0;
   int hp = 0;
   int _maxHp = 0;
+  int get maxHp {
+    final addition = getMaxHpBuffValue(BuffAction.maxhpValue);
+    final percentAddition = toModifier(getMaxHpBuffValue(BuffAction.maxhpRate) * _maxHp).toInt();
+
+    return max(_maxHp + addition + percentAddition, 1);
+  }
   set maxHp(final int maxHp) => _maxHp = maxHp;
 
   int np = 0; // player, np/100
@@ -392,13 +398,6 @@ class BattleServantData {
     return builtCards;
   }
 
-  int getMaxHp(final BattleData battleData) {
-    final addition = getBuffValueOnActionForUI(battleData, BuffAction.maxhpValue);
-    final percentAddition = toModifier(getBuffValueOnActionForUI(battleData, BuffAction.maxhpRate) * _maxHp).toInt();
-
-    return _maxHp + addition + percentAddition;
-  }
-
   CommandCardData? getNPCard(final BattleData battleData) {
     if (isEnemy) {
       final _td = niceEnemy!.noblePhantasm.noblePhantasm;
@@ -606,7 +605,7 @@ class BattleServantData {
 
   void gainHp(final BattleData battleData, final int gain) {
     hp += gain;
-    hp = hp.clamp(0, getMaxHp(battleData));
+    hp = hp.clamp(0, maxHp);
   }
 
   void lossHp(
@@ -653,8 +652,8 @@ class BattleServantData {
     await initScript(battleData);
 
     baseAtk = nextShift.atk;
-    hp = nextShift.hp;
-    _maxHp = nextShift.hp;
+    maxHp = nextShift.hp;
+    hp = maxHp;
     level = nextShift.lv;
     battleBuff.clearPassive(uniqueId);
     shiftIndex += 1;
@@ -665,8 +664,8 @@ class BattleServantData {
     await initScript(battleData);
 
     baseAtk = shiftSvt.atk;
-    hp = shiftSvt.hp;
-    _maxHp = shiftSvt.hp;
+    maxHp = shiftSvt.hp;
+    hp = maxHp;
     level = shiftSvt.lv;
     battleBuff.clearPassive(uniqueId);
     shiftIndex += 1;
@@ -920,7 +919,7 @@ class BattleServantData {
     return updatedFunctions;
   }
 
-  Future<int?> getConfirmationBuffValueOnAction(final BattleData battleData, final BuffAction buffAction) async {
+  Future<int?> getMultiAttackBuffValue(final BattleData battleData, final BuffAction buffAction) async {
     final actionDetails = ConstData.buffActions[buffAction];
     if (actionDetails == null) {
       return null;
@@ -1031,35 +1030,21 @@ class BattleServantData {
   /// create dedicated fields to mark these UI related properties and update those at the end of any
   /// action (checkBuffStatus maybe?). However, that would result in a lot of extra properties to
   /// maintain.
-  int getBuffValueOnActionForUI(final BattleData battleData, final BuffAction buffAction) {
+  int getMaxHpBuffValue(final BuffAction buffAction) {
     final actionDetails = ConstData.buffActions[buffAction];
-    final opponent = battleData.getOpponent(this);
     int totalVal = 0;
     int maxRate = Maths.min(actionDetails!.maxRate);
 
     for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
-      if (buff.shouldApplyBuff(battleData, this, opponent)) {
-        buff.setUsed();
+      buff.setUsed();
 
-        /// should never be called since this is only used for getting maxHp related, so buffAction would never be these
-        // battleData.setCurrentBuff(buff);
-        // final totalEffectiveness = buffAction == BuffAction.turnendHpReduce
-        //     ? getBuffValueOnActionForUI(battleData, BuffAction.funcHpReduce)
-        //     : buffAction != BuffAction.buffRate
-        //         ? getBuffValueOnActionForUI(battleData, BuffAction.buffRate)
-        //         : 1000;
-        // battleData.unsetCurrentBuff();
-        //
-        // final value = (toModifier(totalEffectiveness) * buff.getValue(battleData, isTarget)).toInt();
-
-        final value = buff.getValue(battleData, this, opponent);
-        if (actionDetails.plusTypes.contains(buff.buff.type)) {
-          totalVal += value;
-        } else {
-          totalVal -= value;
-        }
-        maxRate = max(maxRate, buff.buff.maxRate);
+      final value = buff.param;
+      if (actionDetails.plusTypes.contains(buff.buff.type)) {
+        totalVal += value;
+      } else {
+        totalVal -= value;
       }
+      maxRate = max(maxRate, buff.buff.maxRate);
     }
     return capBuffValue(actionDetails, totalVal, maxRate);
   }
@@ -1379,11 +1364,11 @@ class BattleServantData {
       final value = gutsToApply.getValue(battleData, this);
       final isRatio = gutsToApply.buff.type == BuffType.gutsRatio;
       if (isRatio) {
-        hp = (toModifier(value) * getMaxHp(battleData)).floor();
+        hp = (toModifier(value) * maxHp).floor();
       } else {
         hp = value;
       }
-      hp = hp.clamp(0, getMaxHp(battleData));
+      hp = hp.clamp(0, maxHp);
 
       battleData.battleLogger.action('$lBattleName - ${gutsToApply.buff.lName.l} - '
           '${!isRatio ? value : '${(value / 10).toStringAsFixed(1)}%'}');

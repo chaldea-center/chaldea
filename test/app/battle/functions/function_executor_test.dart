@@ -781,7 +781,7 @@ void main() async {
       await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);
       expect(prevHp1 - enemy1.hp, 107144);
 
-      toshizo.hp = toshizo.getMaxHp(battle) ~/ 2;
+      toshizo.hp = toshizo.maxHp ~/ 2;
       toshizo.np = 10000;
       final prevHp2 = enemy2.hp;
       await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);

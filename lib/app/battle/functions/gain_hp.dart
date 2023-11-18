@@ -25,7 +25,7 @@ class GainHP {
 
     for (final target in targets) {
       await battleData.withTarget(target, () async {
-        final baseValue = isPercent ? target.getMaxHp(battleData) * toModifier(dataVals.Value!) : dataVals.Value!;
+        final baseValue = isPercent ? target.maxHp * toModifier(dataVals.Value!) : dataVals.Value!;
         if (isLoss) {
           target.lossHp(baseValue.toInt(), lethal: isLethal);
         } else {

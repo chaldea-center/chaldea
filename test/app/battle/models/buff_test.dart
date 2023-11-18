@@ -273,15 +273,15 @@ void main() async {
 
       final lip = battle.onFieldAllyServants[0]!;
       await battle.withActivator(lip, () async {
-        lip.hp = lip.getMaxHp(battle) ~/ 2 + 13;
+        lip.hp = lip.maxHp ~/ 2 + 13;
         lip.updateActState(battle);
         expect(await lip.getBuffValueOnAction(battle, BuffAction.atk), 1000);
 
-        lip.hp = lip.getMaxHp(battle) ~/ 2 - 1;
+        lip.hp = lip.maxHp ~/ 2 - 1;
         lip.updateActState(battle);
         expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1300, epsilon: 1));
 
-        lip.hp = lip.getMaxHp(battle) ~/ 4;
+        lip.hp = lip.maxHp ~/ 4;
         lip.updateActState(battle);
         expect((await lip.getBuffValueOnAction(battle, BuffAction.atk)).toDouble(), moreOrLessEquals(1400, epsilon: 1));
 
@@ -321,17 +321,17 @@ void main() async {
       final kama = battle.onFieldAllyServants[0]!;
 
       expect(kama.hp, 12889 + 1000);
-      expect(kama.getMaxHp(battle), 12889 + 1000);
+      expect(kama.maxHp, 12889 + 1000);
 
       await battle.activateSvtSkill(0, 0);
 
       expect(kama.hp, 12889 + 1000 - 1000);
-      expect(kama.getMaxHp(battle), 12889 + 1000 - 1000);
+      expect(kama.maxHp, 12889 + 1000 - 1000);
 
       await battle.activateSvtSkill(1, 2);
 
       expect(kama.hp, 12889 + 1000 - 1000 + 3000);
-      expect(kama.getMaxHp(battle), 12889 + 1000 - 1000 + 3000);
+      expect(kama.maxHp, 12889 + 1000 - 1000 + 3000);
     });
 
     test('convert', () async {

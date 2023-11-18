@@ -381,7 +381,7 @@ class TdDmgSolver {
         if (func?.funcType == FuncType.damageNpHpratioLow) {
           return 1;
         } else if (func?.funcType == FuncType.damageNpHpratioHigh) {
-          return _actor.getMaxHp(battleData);
+          return _actor.maxHp;
         }
         return null;
       };
