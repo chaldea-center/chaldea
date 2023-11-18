@@ -534,6 +534,16 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             }
           }
           break;
+        case TeamFilterMiscType.noDoubleCastoria:
+          if (data.team.allSvts.where((e) => e?.svtId == 504500).length >= 2) {
+            return false;
+          }
+          break;
+        case TeamFilterMiscType.noDoubleKoyan:
+          if (data.team.allSvts.where((e) => e?.svtId == 604200).length >= 2) {
+            return false;
+          }
+          break;
       }
     }
     return true;

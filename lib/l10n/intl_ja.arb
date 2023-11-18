@@ -866,6 +866,8 @@
   "team_block_servant": null,
   "team_local": null,
   "team_no_append_skill": null,
+  "team_no_double_castoria": null,
+  "team_no_double_koyan": null,
   "team_no_grail_fou": null,
   "team_no_lv100": null,
   "team_no_order_change": null,

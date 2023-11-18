@@ -1013,6 +1013,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "team_block_servant": MessageLookupByLibrary.simpleMessage("Block Servant"),
         "team_local": MessageLookupByLibrary.simpleMessage("Local Teams"),
         "team_no_append_skill": MessageLookupByLibrary.simpleMessage("No Append Skill"),
+        "team_no_double_castoria": MessageLookupByLibrary.simpleMessage("No Double Castoria"),
+        "team_no_double_koyan": MessageLookupByLibrary.simpleMessage("No Double Koyan"),
         "team_no_grail_fou": MessageLookupByLibrary.simpleMessage("No Grail/☆4 Fou"),
         "team_no_lv100": MessageLookupByLibrary.simpleMessage("No Lv.100+"),
         "team_no_order_change": MessageLookupByLibrary.simpleMessage("No Order Change"),

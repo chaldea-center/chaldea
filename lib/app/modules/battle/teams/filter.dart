@@ -8,25 +8,24 @@ import 'package:chaldea/utils/extension.dart';
 
 enum TeamFilterMiscType {
   noOrderChange,
-  noSameSvt,
   noAppendSkill,
   noGrailFou,
   noLv100,
+  noSameSvt,
+  noDoubleCastoria,
+  noDoubleKoyan,
   ;
 
   String get shownName {
-    switch (this) {
-      case noOrderChange:
-        return S.current.team_no_order_change;
-      case noSameSvt:
-        return S.current.team_no_same_svt;
-      case noAppendSkill:
-        return S.current.team_no_append_skill;
-      case noGrailFou:
-        return S.current.team_no_grail_fou;
-      case noLv100:
-        return S.current.team_no_lv100;
-    }
+    return switch (this) {
+      noOrderChange => S.current.team_no_order_change,
+      noAppendSkill => S.current.team_no_append_skill,
+      noGrailFou => S.current.team_no_grail_fou,
+      noLv100 => S.current.team_no_lv100,
+      noSameSvt => S.current.team_no_same_svt,
+      noDoubleCastoria => S.current.team_no_double_castoria,
+      noDoubleKoyan => S.current.team_no_double_koyan,
+    };
   }
 }
 

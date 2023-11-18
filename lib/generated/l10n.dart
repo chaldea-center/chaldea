@@ -9594,6 +9594,28 @@ class S {
     );
   }
 
+  /// `No Double Castoria`
+  String get team_no_double_castoria {
+    return Intl.message(
+      'No Double Castoria',
+      name: 'team_no_double_castoria',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `No Double Koyan`
+  String get team_no_double_koyan {
+    return Intl.message(
+      'No Double Koyan',
+      name: 'team_no_double_koyan',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `No Grail/☆4 Fou`
   String get team_no_grail_fou {
     return Intl.message(
