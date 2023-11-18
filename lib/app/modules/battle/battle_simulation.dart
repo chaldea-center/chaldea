@@ -425,7 +425,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             height: 72,
             overrideIcon: svt.niceSvt!.ascendIcon(svt.limitCount),
             option: ImageWithTextOption(
-                errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon)))
+                errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon)),
+          )
         : Stack(
             children: [
               CachedImage(
@@ -433,11 +434,13 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                 height: 72,
                 aspectRatio: 1,
                 cachedOption: CachedImageOption(
-                    errorWidget: (ctx, _, __) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon)),
+                  fit: BoxFit.contain,
+                  errorWidget: (ctx, _, __) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
+                ),
               ),
               Positioned(
-                left: 2,
-                top: 4,
+                left: 1,
+                top: 1,
                 child: db.getIconImage(SvtClassX.clsIcon(svt.classId, svt.rarity), width: 20),
               ),
             ],

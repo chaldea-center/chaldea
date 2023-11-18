@@ -204,6 +204,10 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     final style = themeData.textTheme.bodySmall;
     Future<void> onVote(bool isUpVote) async {
       if (!secrets.isLoggedIn) return;
+      if (record.userId == secrets.user?.id) {
+        EasyLoading.showInfo("Do not vote your own team.");
+        return;
+      }
       record.tempVotes ??= record.votes.copy();
       record.tempVotes!.updateMyVote(isUpVote);
       if (mounted) setState(() {});
