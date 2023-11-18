@@ -492,6 +492,17 @@ class S {
     );
   }
 
+  /// `Read usage and RISK first! `
+  String get authfile_login_warning {
+    return Intl.message(
+      'Read usage and RISK first! ',
+      name: 'authfile_login_warning',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Auto Add Trait`
   String get auto_add_trait {
     return Intl.message(

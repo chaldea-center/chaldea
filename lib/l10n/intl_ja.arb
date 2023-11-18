@@ -39,6 +39,7 @@
   "attack_np_rate": "攻撃NP获得量",
   "attribute_advantage": null,
   "auth_data_hints": null,
+  "authfile_login_warning": null,
   "auto_add_trait": null,
   "auto_reset": "自動リセット",
   "auto_update": "自動更新",

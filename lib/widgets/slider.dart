@@ -191,6 +191,7 @@ class SliderWithPrefix extends StatelessWidget {
       title: label,
       text: value.toString(),
       helperText: helperText,
+      keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: true),
       validate: (s) {
         final v = int.tryParse(s);
         if (v == null) return false;

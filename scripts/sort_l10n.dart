@@ -3,6 +3,7 @@ import 'shared.dart';
 const _kFixedKeys = ['@@locale', 'language', 'language_en'];
 
 void main([List<String> args = const []]) {
+  print('sort l10n...');
   final bool fillNull = args.contains('-f');
 
   Map<ArbLang, Map<String, String?>> translations = {};

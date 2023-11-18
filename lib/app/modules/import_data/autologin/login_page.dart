@@ -60,6 +60,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       ),
       body: ListView(
         children: [
+          warning,
           ...buildAccounts(),
           buildActions(),
           DividerWithTitle(height: 16, title: S.current.settings_tab_name),
@@ -218,6 +219,42 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  Widget get warning {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: InkWell(
+        onTap: () {
+          launch(ChaldeaUrl.doc('import_https/authfile_login'));
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.errorContainer,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                S.current.warning,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onErrorContainer,
+                ),
+              ),
+              Text(
+                S.current.authfile_login_warning,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Theme.of(context).colorScheme.onErrorContainer,
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

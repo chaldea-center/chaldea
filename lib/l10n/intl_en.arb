@@ -39,6 +39,7 @@
   "attack_np_rate": "Attack NP Rate",
   "attribute_advantage": "Attribute Advantage",
   "auth_data_hints": "Hints:\n- userId here is not friend code you saw on login/friend page\n- DO NOT share above keys or screenshot to others!!!\n- choose one of following methods to import",
+  "authfile_login_warning": "Read usage and RISK first! ",
   "auto_add_trait": "Auto Add Trait",
   "auto_reset": "Auto reset",
   "auto_update": "Auto Update",

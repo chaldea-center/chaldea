@@ -39,6 +39,7 @@
   "attack_np_rate": "공격시 NP 수급률",
   "attribute_advantage": null,
   "auth_data_hints": null,
+  "authfile_login_warning": null,
   "auto_add_trait": "특성 자동 추가",
   "auto_reset": "자동 리셋",
   "auto_update": "자동 업데이트",

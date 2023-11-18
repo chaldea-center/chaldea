@@ -135,6 +135,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "attribute_advantage": MessageLookupByLibrary.simpleMessage("Attribute Advantage"),
         "auth_data_hints": MessageLookupByLibrary.simpleMessage(
             "Hints:\n- userId here is not friend code you saw on login/friend page\n- DO NOT share above keys or screenshot to others!!!\n- choose one of following methods to import"),
+        "authfile_login_warning": MessageLookupByLibrary.simpleMessage("Read usage and RISK first! "),
         "auto_add_trait": MessageLookupByLibrary.simpleMessage("Auto Add Trait"),
         "auto_reset": MessageLookupByLibrary.simpleMessage("Auto reset"),
         "auto_update": MessageLookupByLibrary.simpleMessage("Auto Update"),
