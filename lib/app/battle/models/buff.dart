@@ -191,6 +191,18 @@ class BuffData {
     return baseParam + addValue;
   }
 
+  bool shouldActivateDonotActCommandtype(final CommandCardData card) {
+    final checkIndvType = buff.script?.checkIndvType ?? 0;
+    final positiveMatchFunction = checkIndvType == 1 || checkIndvType == 3 ? allMatch : partialMatch;
+    final negativeMatchFunction = checkIndvType == 1 || checkIndvType == 3 ? allMatch : partialMatch;
+    return checkTraitFunction(
+      card.traits,
+      buff.ckSelfIndv,
+      positiveMatchFunction,
+      negativeMatchFunction,
+    );
+  }
+
   bool shouldApplyBuff(final BattleData battleData, final BattleServantData self, [final BattleServantData? opponent]) {
     // final onFieldCheck = !isOnField || actorUniqueId == null || battleData.isActorOnField(actorUniqueId!);
 
@@ -285,26 +297,6 @@ class BuffData {
 
     final script = buff.script!;
 
-    if (vals.OnFieldCount == -1 && script.TargetIndiv != null) {
-      final List<BattleServantData> allies =
-          battleData.activator?.isPlayer ?? true ? battleData.nonnullPlayers : battleData.nonnullEnemies;
-
-      final onFieldServantsExist = allies
-          .where((svt) =>
-              svt != battleData.activator &&
-              battleData.checkTraits(CheckTraitParameters(
-                requiredTraits: [script.TargetIndiv!],
-                actor: svt,
-                checkActorTraits: true,
-                checkActorBuffTraits: script.IncludeIgnoreIndividuality == 1,
-              )))
-          .isNotEmpty;
-
-      if (onFieldServantsExist) {
-        return false;
-      }
-    }
-
     if (script.UpBuffRateBuffIndiv != null && battleData.currentBuff != null) {
       final isCurrentBuffMatch = battleData.checkTraits(CheckTraitParameters(
         requiredTraits: script.UpBuffRateBuffIndiv!,
@@ -391,6 +383,29 @@ class BuffData {
         checkActorBuffTraits: true,
         checkQuestTraits: true,
       ));
+    }
+
+    // written based on Chen Gong np & passive. Right now only Chen Gong uses this
+    if (vals.OnFieldCount == -1 && buff.script?.TargetIndiv != null) {
+      actResult &= battleData.checkTraits(CheckTraitParameters(
+        requiredTraits: buff.ckSelfIndv,
+        actor: owner,
+        checkActorTraits: true,
+        checkActorNpTraits: true,
+      ));
+
+      final List<BattleServantData> allies = owner.isPlayer ? battleData.nonnullPlayers : battleData.nonnullEnemies;
+
+      actResult &= allies
+          .where((svt) =>
+              svt != owner &&
+              battleData.checkTraits(CheckTraitParameters(
+                requiredTraits: [buff.script!.TargetIndiv!],
+                actor: svt,
+                checkActorTraits: true,
+                checkActorBuffTraits: true, // buff.script?.IncludeIgnoreIndividuality == 1,
+              )))
+          .isEmpty;
     }
 
     if (buff.script?.HP_HIGHER != null) {

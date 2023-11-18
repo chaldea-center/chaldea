@@ -16,8 +16,8 @@ class ReplaceMember {
       return;
     }
 
-    if (battleData.nonnullPlayers.where((svt) => svt.canOrderChange(battleData)).isEmpty ||
-        battleData.nonnullBackupPlayers.where((svt) => svt.canOrderChange(battleData)).isEmpty) {
+    if (battleData.nonnullPlayers.where((svt) => svt.canOrderChange()).isEmpty ||
+        battleData.nonnullBackupPlayers.where((svt) => svt.canOrderChange()).isEmpty) {
       return;
     }
 

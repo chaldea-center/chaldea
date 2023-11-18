@@ -162,12 +162,12 @@ void main() async {
       await battle.skipWave();
       final douman = battle.onFieldAllyServants[0]!;
       final enemy1 = battle.onFieldEnemies[0]!;
-      await battle.playerTurn([CombatAction(douman, douman.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(douman, douman.getNPCard()!)]);
       expect(battle.nonnullEnemies.length, 1);
 
       douman.np = 10000;
       await battle.activateMysticCodeSkill(1);
-      await battle.playerTurn([CombatAction(douman, douman.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(douman, douman.getNPCard()!)]);
       expect(enemy1.hp, 0);
       expect(battle.nonnullEnemies.length, 0);
     });
@@ -257,7 +257,7 @@ void main() async {
       final arjuna = battle.onFieldAllyServants[0]!;
       final enemy = battle.onFieldEnemies[0]!;
       final prevHp = enemy.hp;
-      await battle.playerTurn([CombatAction(arjuna, arjuna.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(arjuna, arjuna.getNPCard()!)]);
       expect(prevHp - enemy.hp, 96971);
     });
 
@@ -368,7 +368,7 @@ void main() async {
 
       await battle.withActivator(oberon, () async {
         await battle.withTarget(battle.onFieldEnemies[0]!, () async {
-          await battle.withCard(oberon.getNPCard(battle), () async {
+          await battle.withCard(oberon.getNPCard(), () async {
             expect(await oberon.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
             expect(await oberon.getBuffValueOnAction(battle, BuffAction.npdamage), 0);
 
@@ -411,7 +411,7 @@ void main() async {
       final musashi = battle.onFieldAllyServants[0]!;
       await battle.withActivator(musashi, () async {
         await battle.withTarget(battle.onFieldEnemies[0]!, () async {
-          await battle.withCard(musashi.getNPCard(battle), () async {
+          await battle.withCard(musashi.getNPCard(), () async {
             expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
           });
           await battle.withCard(musashi.getCards(battle)[0], () async {
@@ -422,7 +422,7 @@ void main() async {
           });
 
           await battle.activateSvtSkill(0, 1);
-          await battle.withCard(musashi.getNPCard(battle), () async {
+          await battle.withCard(musashi.getNPCard(), () async {
             expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
           });
           await battle.withCard(musashi.getCards(battle)[0], () async {
@@ -459,11 +459,11 @@ void main() async {
       final himiko2 = battle.onFieldAllyServants[1]!;
       final tamamo = battle.onFieldAllyServants[2]!;
       await battle.playerTurn([
-        CombatAction(himiko1, himiko1.getNPCard(battle)!),
-        CombatAction(himiko2, himiko2.getNPCard(battle)!),
+        CombatAction(himiko1, himiko1.getNPCard()!),
+        CombatAction(himiko2, himiko2.getNPCard()!),
       ]);
       tamamo.np = 30000;
-      await battle.playerTurn([CombatAction(tamamo, tamamo.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(tamamo, tamamo.getNPCard()!)]);
       expect(himiko1.np, 5000);
       expect(himiko2.np, 5000);
       expect(tamamo.np, 5000);
@@ -530,7 +530,7 @@ void main() async {
           expect(await Damage.getClassRelation(battle, kirei, kama), 500);
           expect(await Damage.getClassRelation(battle, kirei, reinis), 1500);
 
-          await battle.playerTurn([CombatAction(reinis, reinis.getNPCard(battle)!)]);
+          await battle.playerTurn([CombatAction(reinis, reinis.getNPCard()!)]);
 
           expect(await Damage.getClassRelation(battle, kama, reinis), 1000);
           expect(await Damage.getClassRelation(battle, kama, kirei), 1000);
@@ -561,7 +561,7 @@ void main() async {
 
       await battle.withActivator(kama, () async {
         await battle.withTarget(kirei, () async {
-          await battle.playerTurn([CombatAction(reinis, reinis.getNPCard(battle)!)]);
+          await battle.playerTurn([CombatAction(reinis, reinis.getNPCard()!)]);
 
           expect(await Damage.getClassRelation(battle, kama, reinis), 1000);
           expect(await Damage.getClassRelation(battle, kama, kirei), 1000);
@@ -638,7 +638,7 @@ void main() async {
 
       final prevHp2 = enemy2.hp;
       final prevHp3 = enemy3.hp;
-      await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(kiara, kiara.getNPCard()!)]);
       expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 0);
       expect(prevHp2 - enemy2.hp, 65301);
       expect(prevHp3 - enemy3.hp, 65301);
@@ -687,9 +687,9 @@ void main() async {
       kirei2.np = 10000;
       kirei3.np = 10000;
       await battle.playerTurn([
-        CombatAction(kirei1, kirei1.getNPCard(battle)!),
-        CombatAction(kirei2, kirei2.getNPCard(battle)!),
-        CombatAction(kirei3, kirei3.getNPCard(battle)!)
+        CombatAction(kirei1, kirei1.getNPCard()!),
+        CombatAction(kirei2, kirei2.getNPCard()!),
+        CombatAction(kirei3, kirei3.getNPCard()!)
       ]);
       expect(prevHp1 - enemy.hp, 1457 + 1514 + 1571 + 1000 * 3 * (1 + 3) * 2);
 
@@ -698,9 +698,9 @@ void main() async {
       kirei2.np = 10000;
       kirei3.np = 10000;
       await battle.playerTurn([
-        CombatAction(kirei1, kirei1.getNPCard(battle)!),
-        CombatAction(kirei2, kirei2.getNPCard(battle)!),
-        CombatAction(kirei3, kirei3.getNPCard(battle)!)
+        CombatAction(kirei1, kirei1.getNPCard()!),
+        CombatAction(kirei2, kirei2.getNPCard()!),
+        CombatAction(kirei3, kirei3.getNPCard()!)
       ]);
       expect(prevHp2 - enemy.hp, 1457 + 1514 + 1571 + 1000 * 6 * (1 + 3 + 3) * 2);
 
@@ -709,9 +709,9 @@ void main() async {
       kirei2.np = 10000;
       kirei3.np = 10000;
       await battle.playerTurn([
-        CombatAction(kirei1, kirei1.getNPCard(battle)!),
-        CombatAction(kirei2, kirei2.getNPCard(battle)!),
-        CombatAction(kirei3, kirei3.getNPCard(battle)!)
+        CombatAction(kirei1, kirei1.getNPCard()!),
+        CombatAction(kirei2, kirei2.getNPCard()!),
+        CombatAction(kirei3, kirei3.getNPCard()!)
       ]);
       expect(100000 - enemy.hp, 1457 + 1514 + 1571 + 1000 * 9 * (1 + 3 + 3 + 3) * 2);
     });
@@ -753,7 +753,7 @@ void main() async {
       await battle.activateSvtSkill(0, 1);
       expect(nemo.hp, 14680);
       expect(nemo.np, 3000);
-      await battle.playerTurn([CombatAction(chenGong, chenGong.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(chenGong, chenGong.getNPCard()!)]);
       expect(nemo.np, 8000);
       expect(nemo.hp, 3000);
     });
@@ -856,7 +856,7 @@ void main() async {
       final previousBuffCount2 = enemy2.battleBuff.getAllBuffs().length;
       final previousBuffCount3 = enemy3.battleBuff.getAllBuffs().length;
       await battle.playerTurn([
-        CombatAction(hokusai, hokusai.getNPCard(battle)!),
+        CombatAction(hokusai, hokusai.getNPCard()!),
         CombatAction(hokusai, hokusai.getCards(battle)[1]),
       ]);
       expect(enemy1.hp, previousHp1 - 2831 - 786);
@@ -875,7 +875,7 @@ void main() async {
       final previousBuffCount5 = enemy2.battleBuff.getAllBuffs().length;
       final previousBuffCount6 = enemy3.battleBuff.getAllBuffs().length;
       await battle.playerTurn([
-        CombatAction(hokusai, hokusai.getNPCard(battle)!),
+        CombatAction(hokusai, hokusai.getNPCard()!),
         CombatAction(hokusai, hokusai.getCards(battle)[1]),
         CombatAction(hokusai, hokusai.getCards(battle)[2]),
       ]);

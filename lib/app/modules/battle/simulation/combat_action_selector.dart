@@ -180,7 +180,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
               shadowSize: 3,
             ),
           ),
-        if (!svt.canCommandCard(battleData, card)) ...[
+        if (!svt.canCommandCard(card)) ...[
           AspectRatio(
             aspectRatio: 1,
             child: Container(
@@ -226,7 +226,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
   }
 
   Widget buildTdIcon(BattleServantData svt) {
-    final curTd = svt.getCurrentNP(battleData);
+    final curTd = svt.getCurrentNP();
     final tdValid = svt.canSelectNP(battleData);
     Widget tdIcon = svt.niceSvt!.iconBuilder(
       context: context,
@@ -276,7 +276,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       behavior: HitTestBehavior.opaque,
       onTap: () async {
         final canCharge = svt.playerSvtData?.td != null && !(svt.isEnemy && svt.niceEnemy!.chargeTurn == 0);
-        if (canCharge && !svt.isNpFull(battleData)) {
+        if (canCharge && !svt.isNpFull()) {
           int dispCount;
           if (svt.isPlayer) {
             dispCount = ConstData.constants.fullTdPoint ~/ 100;
@@ -301,7 +301,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
             },
           ).showDialog(context);
         }
-        if (!svt.isNpFull(battleData)) {
+        if (!svt.isNpFull()) {
           return;
         }
         if (!svt.canSelectNP(battleData)) {
@@ -318,7 +318,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
             return;
           }
 
-          combatActions[nextIndex] = CombatAction(svt, svt.getNPCard(battleData)!);
+          combatActions[nextIndex] = CombatAction(svt, svt.getNPCard()!);
           if (mounted) setState(() {});
         }
       },
@@ -527,12 +527,12 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
             title: Text('${S.current.np_short} ${td.nameWithRank}'),
             subtitle: Text('${S.current.info_charge}: ${enemy.npValueText}'),
             onSelected: () async {
-              final card = enemy.getNPCard(battleData);
+              final card = enemy.getNPCard();
               if (card != null) {
                 await battleData.playEnemyCard(CombatAction(enemy, card));
               }
             },
-            enabled: enemy.canNP(battleData),
+            enabled: enemy.canNP(),
           );
 
           final chargeTurn = enemy.niceEnemy?.chargeTurn ?? 0;

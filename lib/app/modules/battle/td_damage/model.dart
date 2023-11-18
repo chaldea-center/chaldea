@@ -251,7 +251,7 @@ class TdDmgSolver {
     }
     actor.np = ConstData.constants.fullTdPoint;
 
-    final card = actor.getNPCard(battleData);
+    final card = actor.getNPCard();
     if (card == null) {
       print('svt ${svt.collectionNo}-${svt.lName.l}: No NP card');
       return null;

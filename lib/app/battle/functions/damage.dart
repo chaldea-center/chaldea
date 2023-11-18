@@ -70,9 +70,8 @@ class Damage {
             ? ((1 - decideHp / activator.maxHp) * dataVals.Target!).toInt()
             : 0;
 
-        final hpRatioDamageHigh = checkHpRatioHigh && dataVals.Target != null
-            ? ((decideHp / activator.maxHp) * dataVals.Target!).toInt()
-            : 0;
+        final hpRatioDamageHigh =
+            checkHpRatioHigh && dataVals.Target != null ? ((decideHp / activator.maxHp) * dataVals.Target!).toInt() : 0;
 
         int specificAttackRate = 1000;
 

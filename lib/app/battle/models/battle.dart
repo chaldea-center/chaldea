@@ -692,7 +692,7 @@ class BattleData {
       }
 
       if (params.checkActorNpTraits) {
-        final currentNp = actor.getNPCard(this);
+        final currentNp = actor.getNPCard();
         if (currentNp != null) {
           currentTraits.addAll(currentNp.traits);
         }
@@ -771,7 +771,7 @@ class BattleData {
       return false;
     }
 
-    return onFieldAllyServants[servantIndex]!.canNP(this);
+    return onFieldAllyServants[servantIndex]!.canNP();
   }
 
   /// Only check skill sealed
@@ -780,7 +780,7 @@ class BattleData {
       return false;
     }
 
-    return onFieldAllyServants[servantIndex]!.isSkillSealed(this, skillIndex);
+    return onFieldAllyServants[servantIndex]!.isSkillSealed(skillIndex);
   }
 
   /// Check canAct and skill script
@@ -789,7 +789,7 @@ class BattleData {
       return false;
     }
 
-    return onFieldAllyServants[servantIndex]!.isCondFailed(this, skillIndex);
+    return onFieldAllyServants[servantIndex]!.isSkillCondFailed(this, skillIndex);
   }
 
   bool canUseSvtSkillIgnoreCoolDown(final int servantIndex, final int skillIndex) {
@@ -887,7 +887,7 @@ class BattleData {
     }
 
     if (skill.functions.any((func) => func.funcType == FuncType.replaceMember)) {
-      return nonnullBackupPlayers.isNotEmpty && nonnullPlayers.where((svt) => svt.canOrderChange(this)).isNotEmpty;
+      return nonnullBackupPlayers.isNotEmpty && nonnullPlayers.where((svt) => svt.canOrderChange()).isNotEmpty;
     }
 
     return true;
@@ -1610,7 +1610,7 @@ class BattleData {
 
       CommandCardData? card;
       if (attackRecord.isTD) {
-        card = svt.getNPCard(this);
+        card = svt.getNPCard();
       } else if (cardIndex != null) {
         final cards = svt.getCards(this);
         if (cardIndex < 0 || cardIndex >= cards.length) {

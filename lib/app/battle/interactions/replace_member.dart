@@ -41,7 +41,7 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
     final List<Widget> children = [];
 
     final List<BattleServantData> selectableOnField =
-        battleData.nonnullPlayers.where((svt) => svt.canOrderChange(battleData)).toList();
+        battleData.nonnullPlayers.where((svt) => svt.canOrderChange()).toList();
     children.addAll([
       SHeader(
         S.current.team_starting_member,
@@ -75,7 +75,7 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
     ]);
 
     final List<BattleServantData> selectableBackup =
-        battleData.nonnullBackupPlayers.where((svt) => svt.canOrderChange(battleData)).toList();
+        battleData.nonnullBackupPlayers.where((svt) => svt.canOrderChange()).toList();
     children.addAll([
       SHeader(
         S.current.team_backup_member,

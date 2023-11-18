@@ -43,7 +43,7 @@ void main() async {
 
     expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
 
-    await battle.withCard(okuni.getNPCard(battle), () async {
+    await battle.withCard(okuni.getNPCard(), () async {
       expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
     });
 
@@ -54,7 +54,7 @@ void main() async {
     });
 
     await okuni.activateSkill(battle, 0);
-    battle.withCard(okuni.getNPCard(battle), () async {
+    battle.withCard(okuni.getNPCard(), () async {
       expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1300);
       expect(await okuni.hasBuffOnAction(battle, BuffAction.avoidance), isTrue);
     });
@@ -258,10 +258,10 @@ void main() async {
     svt.isAlive(battle);
     expect(battle.activator, null);
 
-    svt.isSkillSealed(battle, 0);
+    svt.isSkillSealed(0);
     expect(battle.activator, null);
 
-    svt.isSkillSealed(battle, 2);
+    svt.isSkillSealed(2);
     expect(battle.activator, null);
 
     svt.canUseSkillIgnoreCoolDown(battle, 0);
@@ -270,13 +270,13 @@ void main() async {
     await svt.activateSkill(battle, 0);
     expect(battle.activator, null);
 
-    svt.canNP(battle);
+    svt.canNP();
     expect(battle.activator, null);
 
-    svt.canAttack(battle);
+    svt.canAttack();
     expect(battle.activator, null);
 
-    svt.canOrderChange(battle);
+    svt.canOrderChange();
     expect(battle.activator, null);
 
     svt.canSelectNP(battle);
@@ -285,7 +285,7 @@ void main() async {
     svt.checkNPScript(battle);
     expect(battle.activator, null);
 
-    svt.getCurrentNP(battle);
+    svt.getCurrentNP();
     expect(battle.activator, null);
   });
 }

@@ -262,7 +262,7 @@ void main() async {
       final enemy3 = battle.onFieldEnemies[2]!;
       await battle.activateSvtSkill(2, 1); // Kama skill 2, just to guarantee kill
       final buffCountBefore = enemy2.battleBuff.originalActiveList.length;
-      final npCard = kama.getNPCard(battle)!;
+      final npCard = kama.getNPCard()!;
       battle.recorder.startPlayerCard(kama, npCard);
       await battle.withAction(() async {
         await battle.withCard(npCard, () async {
@@ -292,7 +292,7 @@ void main() async {
           null); // no field traits
       final enemy1 = battle.onFieldEnemies[0]!;
       final cursedArm = battle.onFieldAllyServants[0]!;
-      final npCard = cursedArm.getNPCard(battle)!;
+      final npCard = cursedArm.getNPCard()!;
       final buffCountBefore1 = cursedArm.battleBuff.originalActiveList.length;
       cursedArm.np = 10000;
       battle.recorder.startPlayerCard(cursedArm, npCard);
@@ -409,16 +409,16 @@ void main() async {
 
       expect(battle.getFieldTraits().map((e) => e.id).contains(Trait.milleniumCastle.id), isFalse);
 
-      await battle.playerTurn([CombatAction(archType1, archType1.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(archType1, archType1.getNPCard()!)]);
 
       expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 1);
 
-      await battle.playerTurn([CombatAction(archType2, archType1.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(archType2, archType1.getNPCard()!)]);
 
       expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 2);
 
       await battle.activateSvtSkill(0, 1);
-      await battle.playerTurn([CombatAction(archType1, archType1.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(archType1, archType1.getNPCard()!)]);
 
       expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 2);
 
@@ -430,13 +430,13 @@ void main() async {
 
       expect(battle.getFieldTraits().map((e) => e.id).contains(Trait.milleniumCastle.id), isFalse);
 
-      await battle.playerTurn([CombatAction(archType3, archType3.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(archType3, archType3.getNPCard()!)]);
 
       expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 1);
 
       archType3.hp = 0;
 
-      await battle.playerTurn([CombatAction(archType4, archType4.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(archType4, archType4.getNPCard()!)]);
 
       expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 1);
     });
@@ -503,7 +503,7 @@ void main() async {
 
       expect(collectBuffsPerType(cat.battleBuff.validBuffs, BuffType.donotAct).length, 0);
 
-      await battle.playerTurn([CombatAction(cat, cat.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(cat, cat.getNPCard()!)]);
 
       expect(collectBuffsPerType(cat.battleBuff.validBuffs, BuffType.donotAct).length, 2);
     });
@@ -626,7 +626,7 @@ void main() async {
       expect(backup3.fieldIndex, 5);
       expect(battle.canUseNp(2), true);
 
-      await battle.playerTurn([CombatAction(crane, crane.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(crane, crane.getNPCard()!)]);
 
       expect(battle.playerDataList.length, 3);
       expect(battle.playerDataList.last, crane);
@@ -664,14 +664,14 @@ void main() async {
       final afterCount1 = charlie1.battleBuff.getAllBuffs().length;
 
       expect(afterCount1, prevCount1 + 2);
-      expect(charlie1.canNP(battle), false);
+      expect(charlie1.canNP(), false);
 
       await battle.activateSvtSkill(1, 0);
 
       final afterCount2 = charlie2.battleBuff.getAllBuffs().length;
 
       expect(afterCount2, prevCount2 + 2);
-      expect(charlie2.canNP(battle), true);
+      expect(charlie2.canNP(), true);
     });
 
     test('DataVals SameBuffLimitNum', () async {
@@ -778,25 +778,25 @@ void main() async {
       final enemy3 = battle.onFieldEnemies[2]!;
 
       final prevHp1 = enemy1.hp;
-      await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard()!)]);
       expect(prevHp1 - enemy1.hp, 107144);
 
       toshizo.hp = toshizo.maxHp ~/ 2;
       toshizo.np = 10000;
       final prevHp2 = enemy2.hp;
-      await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard()!)]);
       expect((prevHp2 - enemy2.hp).toDouble(), moreOrLessEquals(142859, epsilon: 5));
 
       toshizo.hp = 1;
       toshizo.np = 10000;
       final prevHp3 = enemy3.hp;
-      await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard()!)]);
       expect((prevHp3 - enemy3.hp).toDouble(), moreOrLessEquals(178567, epsilon: 5));
 
       final enemy4 = battle.onFieldEnemies[0]!;
       toshizo.np = 30000;
       final prevHp4 = enemy4.hp;
-      await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(toshizo, toshizo.getNPCard()!)]);
       expect((prevHp4 - enemy4.hp).toDouble(), moreOrLessEquals(196424, epsilon: 5));
     });
 
@@ -824,7 +824,7 @@ void main() async {
       final prevHp1 = enemy1.hp;
       final prevHp2 = enemy2.hp;
       final prevHp3 = enemy3.hp;
-      await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(kiara, kiara.getNPCard()!)]);
       expect(prevHp1 - enemy1.hp, 88719);
       expect(prevHp2 - enemy2.hp, 57200);
       expect(prevHp3 - enemy3.hp, 57200);
@@ -846,7 +846,7 @@ void main() async {
       final prevHp1 = enemy1.hp;
 
       await battle.activateSvtSkill(0, 0);
-      await battle.playerTurn([CombatAction(chloe, chloe.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(chloe, chloe.getNPCard()!)]);
       expect(prevHp1 - enemy1.hp, 67832);
 
       final enemy2 = battle.onFieldEnemies[1]!;
@@ -862,7 +862,7 @@ void main() async {
 
       final prevHp3 = enemy3.hp;
       chloe.np = 10000;
-      await battle.playerTurn([CombatAction(chloe, chloe.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(chloe, chloe.getNPCard()!)]);
       expect(prevHp3 - enemy3.hp, 110999);
     });
 
@@ -880,7 +880,7 @@ void main() async {
       final bunyan = battle.onFieldAllyServants[0]!;
       final enemy1 = battle.onFieldEnemies[0]!;
       final prevHp1 = enemy1.hp;
-      await battle.playerTurn([CombatAction(bunyan, bunyan.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(bunyan, bunyan.getNPCard()!)]);
       expect(prevHp1 - enemy1.hp, 20323);
 
       final enemy2 = battle.onFieldEnemies[1]!;
@@ -896,7 +896,7 @@ void main() async {
 
       final prevHp3 = enemy3.hp;
       bunyan.np = 10000;
-      await battle.playerTurn([CombatAction(bunyan, bunyan.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(bunyan, bunyan.getNPCard()!)]);
       expect(prevHp3 - enemy3.hp, 25403);
     });
 
@@ -919,7 +919,7 @@ void main() async {
       final prevHp1 = enemy1.hp;
       final prevHp2 = enemy2.hp;
       final prevHp3 = enemy3.hp;
-      await battle.playerTurn([CombatAction(roberts, roberts.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(roberts, roberts.getNPCard()!)]);
       expect(prevHp1 - enemy1.hp, 24043);
       expect(prevHp2 - enemy2.hp, 48087);
       expect(prevHp3 - enemy3.hp, 24043);
@@ -940,7 +940,7 @@ void main() async {
       final enemy1 = battle.onFieldEnemies[0]!;
       final enemy2 = battle.onFieldEnemies[1]!;
       final enemy3 = battle.onFieldEnemies[2]!;
-      await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(kiara, kiara.getNPCard()!)]);
       expect(battle.waveCount, 1);
       expect(enemy1.hp, greaterThan(0));
       expect(enemy2.hp, greaterThan(0));
@@ -949,7 +949,7 @@ void main() async {
 
       battle.options.threshold = 800;
       kiara.np = 10000;
-      await battle.playerTurn([CombatAction(kiara, kiara.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(kiara, kiara.getNPCard()!)]);
       expect(enemy1.hp, 0);
       expect(enemy2.hp, 0);
       expect(enemy3.hp, 0);
@@ -989,7 +989,7 @@ void main() async {
       expect(backup2.fieldIndex, 4);
       expect(battle.playerDataList.length, 2);
       await battle.activateSvtSkill(1, 0);
-      await battle.playerTurn([CombatAction(arash, arash.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(arash, arash.getNPCard()!)]);
 
       expect(arash.hp, 0);
       expect(arash.fieldIndex, -1);
@@ -1093,10 +1093,10 @@ void main() async {
 
       final melusine = battle.onFieldAllyServants[0]!;
       expect(melusine.np, 0);
-      expect(melusine.getCurrentNP(battle)!.svt.card, CardType.buster);
+      expect(melusine.getCurrentNP()!.svt.card, CardType.buster);
       await battle.activateSvtSkill(0, 2);
       expect(melusine.np, 0);
-      expect(melusine.getCurrentNP(battle)!.svt.card, CardType.buster);
+      expect(melusine.getCurrentNP()!.svt.card, CardType.buster);
     });
 
     test('transformSvt 304800 asc 11', () async {
@@ -1119,10 +1119,10 @@ void main() async {
 
       final melusine = battle.onFieldAllyServants[0]!;
       expect(melusine.np, 0);
-      expect(melusine.getCurrentNP(battle)!.svt.card, CardType.arts);
+      expect(melusine.getCurrentNP()!.svt.card, CardType.arts);
       await battle.activateSvtSkill(0, 2);
       expect(melusine.np, 10000);
-      expect(melusine.getCurrentNP(battle)!.svt.card, CardType.buster);
+      expect(melusine.getCurrentNP()!.svt.card, CardType.buster);
     });
 
     test('transformSvt preserve CD & upgrades', () async {
@@ -1141,7 +1141,7 @@ void main() async {
       expect(henry.classId, SvtClass.assassin.id);
       expect(henry.skillInfoList[0].chargeTurn, 5);
       expect(henry.skillInfoList[2].baseSkill!.id, 71255);
-      await battle.playerTurn([CombatAction(henry, henry.getNPCard(battle)!)]);
+      await battle.playerTurn([CombatAction(henry, henry.getNPCard()!)]);
       expect(henry.classId, SvtClass.berserker.id);
       expect(henry.skillInfoList[0].chargeTurn, 5 - 1);
       expect(henry.skillInfoList[2].baseSkill!.id, 71255);

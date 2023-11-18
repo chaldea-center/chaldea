@@ -19,7 +19,7 @@ class MoveToLastSubMember {
       if (nonnullOnFieldList.length == 1) {
         continue;
       }
-      if (!target.canAttack(battleData)) {
+      if (!target.canAttack()) {
         continue;
       }
 

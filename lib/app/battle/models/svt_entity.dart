@@ -14,11 +14,6 @@ import 'ai.dart';
 class BattleServantData {
   static const npPityThreshold = 9900;
   static List<BuffType> gutsTypes = [BuffType.guts, BuffType.gutsRatio];
-  static List<BuffAction> doNotNPTypes = [
-    BuffAction.donotNoble,
-    BuffAction.donotNobleCondMismatch,
-    BuffAction.donotActCommandtype,
-  ];
   static List<BuffAction> buffEffectivenessTypes = [BuffAction.buffRate, BuffAction.funcHpReduce];
 
   final bool isPlayer;
@@ -397,7 +392,7 @@ class BattleServantData {
     return builtCards;
   }
 
-  CommandCardData? getNPCard(final BattleData battleData) {
+  CommandCardData? getNPCard() {
     if (isEnemy) {
       final _td = niceEnemy!.noblePhantasm.noblePhantasm;
       if (_td == null) return null;
@@ -415,7 +410,7 @@ class BattleServantData {
         ..traits = _td.individuality.toList();
     }
 
-    final currentNP = getCurrentNP(battleData);
+    final currentNP = getCurrentNP();
     final cardDetail = CardDetail(
       attackIndividuality: currentNP?.individuality ?? [],
       hitsDistribution: currentNP?.svt.damage ?? [100],
@@ -481,7 +476,7 @@ class BattleServantData {
     if (!isPlayer) {
       return 0;
     }
-    final currentNp = getCurrentNP(battleData);
+    final currentNp = getCurrentNP();
     if (currentNp == null) {
       return 0;
     }
@@ -700,21 +695,23 @@ class BattleServantData {
     });
   }
 
-  bool isSkillSealed(final BattleData battleData, final int skillIndex) {
-    if (skillInfoList.length <= skillIndex || skillIndex < 0) {
-      return false;
-    }
-
-    final skillInfo = skillInfoList[skillIndex];
-    return battleData.withActivatorSync(this, () {
-      final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
-      skillInfo.setRankUp(rankUp);
-
-      return hasDoNotBuffOnActionForUI(battleData, BuffAction.donotSkill);
-    });
+  bool isNPSealed() {
+    return collectBuffsPerActions(battleBuff.validBuffs, [BuffAction.donotNoble, BuffAction.donotNobleCondMismatch])
+        .isNotEmpty;
   }
 
-  bool isCondFailed(final BattleData battleData, final int skillIndex) {
+  bool isSkillSealed(final int skillIndex) {
+    if (skillInfoList.length <= skillIndex || skillIndex < 0) {
+      return false;
+    }
+
+    final skillInfo = skillInfoList[skillIndex];
+    final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
+    skillInfo.setRankUp(rankUp);
+    return collectBuffsPerAction(battleBuff.validBuffs, BuffAction.donotSkill).isNotEmpty;
+  }
+
+  bool isSkillCondFailed(final BattleData battleData, final int skillIndex) {
     if (skillInfoList.length <= skillIndex || skillIndex < 0) {
       return false;
     }
@@ -723,7 +720,7 @@ class BattleServantData {
     return battleData.withActivatorSync(this, () {
       final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
       skillInfo.setRankUp(rankUp);
-      return !canAttack(battleData) || skillInfo.proximateSkill == null || !skillInfo.checkSkillScript(battleData);
+      return !canAttack() || skillInfo.proximateSkill == null || !skillInfo.checkSkillScript(battleData);
     });
   }
 
@@ -737,7 +734,7 @@ class BattleServantData {
       final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
       skillInfo.setRankUp(rankUp);
 
-      return !isSkillSealed(battleData, skillIndex) && !isCondFailed(battleData, skillIndex);
+      return !isSkillSealed(skillIndex) && !isSkillCondFailed(battleData, skillIndex);
     });
   }
 
@@ -779,49 +776,35 @@ class BattleServantData {
     });
   }
 
-  bool canOrderChange(final BattleData battleData) {
-    return battleData.withActivatorSync(this, () {
-      return !hasDoNotBuffOnActionForUI(battleData, BuffAction.donotReplace);
-    });
+  bool canOrderChange() {
+    return collectBuffsPerAction(battleBuff.validBuffs, BuffAction.donotReplace).isEmpty;
   }
 
-  bool canAttack(final BattleData battleData) {
-    if (hp <= 0) {
-      return false;
-    }
-
-    return battleData.withActivatorSync(this, () {
-      return !hasDoNotBuffOnActionForUI(battleData, BuffAction.donotAct);
-    });
+  bool canAttack() {
+    return hp > 0 && collectBuffsPerAction(battleBuff.validBuffs, BuffAction.donotAct).isEmpty;
   }
 
-  bool canCommandCard(final BattleData battleData, final CommandCardData card) {
-    return battleData.withActivatorSync(this, () {
-      return battleData.withCardSync(card, () {
-        return canAttack(battleData) && !hasDoNotBuffOnActionForUI(battleData, BuffAction.donotActCommandtype);
-      });
-    });
+  bool canCommandCard(final CommandCardData card) {
+    if (!canAttack()) return false;
+
+    return collectBuffsPerAction(battleBuff.validBuffs, BuffAction.donotActCommandtype)
+        .where((buff) => buff.shouldActivateDonotActCommandtype(card))
+        .isEmpty;
   }
 
   bool canSelectNP(final BattleData battleData) {
     return battleData.withActivatorSync(this, () {
-      final currentNp = getCurrentNP(battleData);
-      return canNP(battleData) && currentNp != null && currentNp.functions.isNotEmpty && checkNPScript(battleData);
+      final currentNp = getCurrentNP();
+      return canNP() && currentNp != null && currentNp.functions.isNotEmpty && checkNPScript(battleData);
     });
   }
 
-  bool canNP(final BattleData battleData) {
-    if (!isNpFull(battleData)) {
-      return false;
-    }
-    return battleData.withActivatorSync(this, () {
-      return battleData.withCardSync(getNPCard(battleData), () {
-        return canAttack(battleData) && !hasDoNotBuffOnActionsForUI(battleData, doNotNPTypes);
-      });
-    });
+  bool canNP() {
+    final npCard = getNPCard();
+    return npCard != null && isNpFull() && canAttack() && canCommandCard(npCard) && !isNPSealed();
   }
 
-  bool isNpFull(BattleData battleData) {
+  bool isNpFull() {
     if (isPlayer && np < ConstData.constants.fullTdPoint) {
       return false;
     }
@@ -835,8 +818,7 @@ class BattleServantData {
     return battleData.withActivatorSync(this, () {
       bool checkNpScript = true;
       if (isPlayer) {
-        checkNpScript =
-            BattleSkillInfoData.skillScriptConditionCheck(battleData, getCurrentNP(battleData)?.script, tdLv);
+        checkNpScript = BattleSkillInfoData.skillScriptConditionCheck(battleData, getCurrentNP()?.script, tdLv);
       }
       return checkNpScript;
     });
@@ -846,11 +828,10 @@ class BattleServantData {
     return isPlayer ? playerSvtData!.td : niceEnemy!.noblePhantasm.noblePhantasm;
   }
 
-  NiceTd? getCurrentNP(final BattleData battleData) {
+  NiceTd? getCurrentNP() {
     final buffs = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.tdTypeChange);
     NiceTd? selected;
     for (final buff in buffs.reversed) {
-      if (!buff.shouldApplyBuff(battleData, this)) continue;
       if (buff.tdTypeChange != null) {
         selected = buff.tdTypeChange!;
         break;
@@ -868,7 +849,7 @@ class BattleServantData {
     await battleData.withActivator(this, () async {
       battleData.battleLogger.action('$lBattleName ${S.current.battle_np_card}');
 
-      final niceTD = getCurrentNP(battleData);
+      final niceTD = getCurrentNP();
       if (niceTD != null) {
         final baseOverCharge = isPlayer ? np ~/ ConstData.constants.fullTdPoint : 1;
         int upOverCharge = await getBuffValueOnAction(battleData, BuffAction.chagetd);
@@ -1035,14 +1016,6 @@ class BattleServantData {
     return null;
   }
 
-  /// The following three methods are created to avoid calling async functions when building UI.
-  /// These methods should only check buffs that only make sense in terms of turns and not times,
-  /// like maxHp, stun, etc., hence no need to check and should not check probability of activation
-  ///
-  /// An alternative way of implementing tailored execution without these three methods would be to
-  /// create dedicated fields to mark these UI related properties and update those at the end of any
-  /// action (checkBuffStatus maybe?). However, that would result in a lot of extra properties to
-  /// maintain.
   int getMaxHpBuffValue(final BuffAction buffAction) {
     final actionDetails = ConstData.buffActions[buffAction];
     int totalVal = 0;
@@ -1060,20 +1033,6 @@ class BattleServantData {
       maxRate = max(maxRate, buff.buff.maxRate);
     }
     return capBuffValue(actionDetails, totalVal, maxRate);
-  }
-
-  bool hasDoNotBuffOnActionForUI(final BattleData battleData, final BuffAction buffAction) {
-    return hasDoNotBuffOnActionsForUI(battleData, [buffAction]);
-  }
-
-  bool hasDoNotBuffOnActionsForUI(final BattleData battleData, final List<BuffAction> buffActions) {
-    for (final buff in collectBuffsPerActions(battleBuff.validBuffs, buffActions)) {
-      if (buff.shouldApplyBuff(battleData, this, battleData.getOpponent(this))) {
-        buff.setUsed();
-        return true;
-      }
-    }
-    return false;
   }
 
   Future<bool> hasBuffOnAction(final BattleData battleData, final BuffAction buffAction) async {
@@ -1260,8 +1219,7 @@ class BattleServantData {
     await battleData.withActivator(this, () async {
       await battleData.withTarget(this, () async {
         if (isEnemy) {
-          final npSealed = await hasBuffOnActions(battleData, doNotNPTypes);
-          if (!usedNpThisTurn && !npSealed && niceEnemy!.chargeTurn > 0) {
+          if (!usedNpThisTurn && !isNPSealed() && niceEnemy!.chargeTurn > 0) {
             final turnEndNP = await getBuffValueOnAction(battleData, BuffAction.turnvalNp);
             changeNPLineCount(1 + turnEndNP);
 

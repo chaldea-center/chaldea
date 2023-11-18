@@ -269,7 +269,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
     ];
 
     children.add(DividerWithTitle(title: S.current.noble_phantasm, indent: 16, padding: const EdgeInsets.only(top: 8)));
-    final td = battleData == null ? svt.playerSvtData?.td : svt.getCurrentNP(battleData!);
+    final td = battleData == null ? svt.playerSvtData?.td : svt.getCurrentNP();
     children.add(SimpleAccordion(
       headerBuilder: (context, _) {
         return ListTile(
