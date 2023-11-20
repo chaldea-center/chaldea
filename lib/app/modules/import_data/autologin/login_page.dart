@@ -11,6 +11,7 @@ import 'package:chaldea/app/modules/import_data/autologin/agent.dart';
 import 'package:chaldea/app/modules/import_data/import_https_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -377,23 +378,37 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
   }
 
   Future<void> updateDeviceInfo() async {
-    if (!PlatformU.isAndroid) {
-      EasyLoading.showInfo("Only Android device is supported");
-      return;
-    }
     try {
       EasyLoading.show();
       if (PlatformU.isAndroid) {
         final info = await DeviceInfoPlugin().androidInfo;
-        args.userAgent = "Dalvik/2.1.0 (Linux; U; Android ${info.version.release}; ${info.model} Build/${info.id})";
-        args.deviceInfo =
-            "${info.manufacturer} ${info.model} / Android OS ${info.version.release} / API-${info.version.sdkInt} (${info.id}/${info.version.incremental})";
+        args.userAgent = (await MethodChannelChaldea.getUserAgent()) ??
+            "Dalvik/2.1.0 (Linux; U; Android ${info.version.release}; ${info.model} Build/${info.id})";
+        final deviceModel = "${info.manufacturer} ${info.model}",
+            operatingSystem =
+                "Android OS ${info.version.release} / API-${info.version.sdkInt} (${info.id}/${info.version.incremental})";
+        args.deviceInfo = "$deviceModel / $operatingSystem";
       } else if (PlatformU.isIOS) {
-        // final info = await DeviceInfoPlugin().iosInfo;
+        final gameTop = gameTops?.of(args.region);
+        if (gameTop == null) {
+          EasyLoading.showError('Load Game Info first!');
+          return;
+        }
+        final info = await DeviceInfoPlugin().iosInfo;
+        final cfNetworkVersion = await MethodChannelChaldea.getCFNetworkVersion() ?? "1474";
+        args.userAgent = "FateGO/${gameTop.appVer} CFNetwork/$cfNetworkVersion Darwin/${info.utsname.release}";
+        final deviceModel = info.utsname.machine,
+            operatingSystem = info.model.toLowerCase().contains('ipad') ? "iPad OS" : "iPhone OS";
+        args.deviceInfo = "$deviceModel / $operatingSystem";
+      } else {
+        EasyLoading.showInfo("Only Android/iOS device supported");
+        return;
       }
       EasyLoading.showSuccess(S.current.updated);
     } catch (e) {
       EasyLoading.showError(e.toString());
+    } finally {
+      if (mounted) setState(() {});
     }
   }
 

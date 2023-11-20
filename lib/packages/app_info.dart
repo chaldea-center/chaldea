@@ -13,6 +13,7 @@ import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../generated/git_info.dart';
 import '../models/userdata/version.dart';
+import 'method_channel/method_channel_chaldea.dart';
 
 class AppInfo {
   AppInfo._();
@@ -34,10 +35,12 @@ class AppInfo {
         deviceParams.addAll(Map.from(androidInfo.data)..remove('systemFeatures'));
         _androidSdk = androidInfo.version.sdkInt;
         deviceParams['androidId'] = await const AndroidId().getId();
+        deviceParams['userAgent'] = await MethodChannelChaldea.getUserAgent();
       } else if (PlatformU.isIOS) {
         final iosInfo = await DeviceInfoPlugin().iosInfo;
         _isIPad = iosInfo.model.toLowerCase().contains('ipad');
         deviceParams.addAll(Map.from(iosInfo.data)..remove('name'));
+        deviceParams['CFNetworkVersion'] = await MethodChannelChaldea.getCFNetworkVersion();
       } else if (PlatformU.isMacOS) {
         final macOsInfo = await DeviceInfoPlugin().macOsInfo;
         deviceParams.addAll(Map.from(macOsInfo.data)..remove('computerName'));

@@ -21,7 +21,7 @@ enum ParamType {
   lastAccessTime('lastAccessTime'),
   verCode('verCode'),
   idempotencyKey('idempotencyKey'),
-  deviceinfo('deviceinfo'), // optional? login top only
+  deviceInfo('deviceInfo'), // optional? login top only
   userState('userState'),
   assetbundleFolder('assetbundleFolder'),
   dataVer('dataVer'),
@@ -192,8 +192,7 @@ class LoginAgent {
         'Accept-Encoding': 'gzip, identity',
         'User-Agent': ua,
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Connection': 'Keep-Alive, TE',
-        'TE': 'identity',
+        if (args.region.isJP) 'X-Unity-Version': '2020.3.34f1',
       }),
     );
     print(resp.requestOptions.uri.toString());
@@ -233,7 +232,7 @@ class LoginAgent {
     int lastAccessTime = int.parse(_params[ParamType.lastAccessTime]!);
     int userState = (-lastAccessTime >> 2) ^ int.parse(auth.userId) & gameTop.folderCrc;
     print('crc: ${gameTop.folderCrc}');
-    addParam(ParamType.deviceinfo, args.deviceInfo ?? UA.deviceinfo);
+    addParam(ParamType.deviceInfo, args.deviceInfo ?? UA.deviceinfo);
     addParam(ParamType.assetbundleFolder, gameTop.assetbundleFolder);
     addParam(ParamType.isTerminalLogin, '1');
     addParam(ParamType.userState, userState.toString());

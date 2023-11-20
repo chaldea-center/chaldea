@@ -17,6 +17,10 @@ class MainActivity: FlutterActivity() {
                 if (methodCall.method == "sendBackground") {
                     moveTaskToBack(false)
                     result.success(true)
+                } else if (methodCall.method == "getUserAgent") {
+                    result.success(System.getProperty("http.agent"))
+                } else {
+                    result.notImplemented()
                 }
             }
         }

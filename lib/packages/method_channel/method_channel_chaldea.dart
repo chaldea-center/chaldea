@@ -26,8 +26,11 @@ class MethodChannelChaldea {
   /// Send app to background rather exit when pop root route
   ///
   /// only available on Android
-  static Future<void> sendBackground() {
-    return kMethodChannel.invokeMethod('sendBackground');
+  static Future<void> sendBackground() async {
+    assert(PlatformU.isAndroid);
+    if (PlatformU.isAndroid) {
+      return kMethodChannel.invokeMethod('sendBackground');
+    }
   }
 
   /// Set window always on top
@@ -56,5 +59,21 @@ class MethodChannelChaldea {
         });
       }
     }
+  }
+
+  static Future<String?> getUserAgent() async {
+    assert(PlatformU.isAndroid);
+    if (PlatformU.isAndroid) {
+      return kMethodChannel.invokeMethod('getUserAgent');
+    }
+    return null;
+  }
+
+  static Future<String?> getCFNetworkVersion() async {
+    assert(PlatformU.isIOS);
+    if (PlatformU.isIOS) {
+      return kMethodChannel.invokeMethod('getCFNetworkVersion');
+    }
+    return null;
   }
 }
