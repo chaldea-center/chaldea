@@ -14,14 +14,16 @@ import '../common/filter_group.dart';
 class QuestDetailPage extends StatefulWidget {
   final int? id;
   final int? phase;
+  final String? enemyHash;
   final Quest? quest;
   final Region? region;
   final QuestPhase? questPhase;
-  const QuestDetailPage({super.key, this.id, this.phase, this.quest, this.region}) : questPhase = null;
+  const QuestDetailPage({super.key, this.id, this.phase, this.enemyHash, this.quest, this.region}) : questPhase = null;
   QuestDetailPage.phase({super.key, required QuestPhase this.questPhase})
       : region = null,
         id = questPhase.id,
         phase = questPhase.phase,
+        enemyHash = null,
         quest = questPhase;
 
   @override
@@ -36,6 +38,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
   late Region region;
   Key uniqueKey = UniqueKey();
   int phase = 0;
+  (int phase, String? enemyHash)? initHash;
 
   @override
   void initState() {
@@ -46,6 +49,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
     if (_quest != null) {
       if (widget.phase != null && _quest!.phases.contains(widget.phase)) {
         phase = widget.phase!;
+        if (phase > 0) initHash = (phase, widget.enemyHash);
       } else if (_quest!.isAnyFree && _quest!.phases.isNotEmpty) {
         phase = _quest!.phases.last;
       }
@@ -195,7 +199,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                     region: null,
                     offline: false,
                     // key: uniqueKey,
-                    displayPhases: [widget.questPhase!.phase],
+                    displayPhases: {widget.questPhase!.phase: null},
                     preferredPhases: [widget.questPhase!],
                   )
                 else
@@ -204,7 +208,8 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                     region: region,
                     offline: false,
                     key: uniqueKey,
-                    displayPhases: quest.phases.contains(phase) ? [phase] : null,
+                    displayPhases:
+                        quest.phases.contains(phase) ? {phase: initHash?.$1 == phase ? widget.enemyHash : null} : null,
                   ),
                 if (quest.isLaplaceSharable) sharedTeamsButton,
                 if (db.gameData.dropData.domusAurea.questIds.contains(quest.id)) blacklistButton,

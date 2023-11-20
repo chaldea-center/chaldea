@@ -361,7 +361,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   Widget buildTeamActions(UserBattleData record) {
     List<Widget> actions = [];
     final teamData = record.decoded;
-    if (mode == TeamQueryMode.user) {
+    if (teamData != null) {
       actions.add(IconButton(
         onPressed: () {
           setState(() {

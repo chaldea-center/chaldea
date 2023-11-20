@@ -373,7 +373,11 @@ class RouteConfiguration {
         return ItemDetailPage(itemId: _secondInt ?? 0);
       case Routes.quest:
         final int? _thirdInt = third == null ? null : int.tryParse(third!);
-        return QuestDetailPage(id: _secondInt, phase: _thirdInt, region: region);
+        String? enemyHash = uri?.queryParameters['enemyHash'] ?? uri?.queryParameters['hash'];
+        if (enemyHash != null && enemyHash.trim().isEmpty) {
+          enemyHash = null;
+        }
+        return QuestDetailPage(id: _secondInt, phase: _thirdInt, enemyHash: enemyHash, region: region);
       case Routes.summons:
         return SummonListPage();
       case Routes.summon:

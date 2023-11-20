@@ -533,7 +533,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                   region: questRegion,
                   offline: false,
                   quest: questPhase,
-                  displayPhases: [questPhase!.phase],
+                  displayPhases: {questPhase!.phase: questPhase?.enemyHashOrTotal},
                   battleOnly: true,
                   preferredPhases: [questPhase!],
                 ),

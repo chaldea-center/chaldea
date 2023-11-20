@@ -439,6 +439,30 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                 ),
               ),
               Positioned(
+                top: 8,
+                left: 18,
+                right: 4,
+                child: Container(
+                  height: 5,
+                  decoration: const BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.all(Radius.elliptical(3, 3)),
+                  ),
+                ),
+              ),
+              const Positioned(
+                top: 7,
+                left: 16,
+                right: 2,
+                child: CachedImage(
+                  imageUrl:
+                      'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/BattleUIAtlas/enemy_frameB.png',
+                  cachedOption: CachedImageOption(
+                    fit: BoxFit.fitWidth,
+                  ),
+                ),
+              ),
+              Positioned(
                 left: 1,
                 top: 1,
                 child: db.getIconImage(SvtClassX.clsIcon(svt.classId, svt.rarity), width: 20),

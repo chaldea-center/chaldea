@@ -668,7 +668,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
     return QuestCard(
       offline: false,
       quest: quest,
-      displayPhases: [quest.phase],
+      displayPhases: {quest.phase: quest.enemyHashOrTotal},
       battleOnly: true,
       showFace: !quest.isLaplaceSharable,
       preferredPhases: [quest],

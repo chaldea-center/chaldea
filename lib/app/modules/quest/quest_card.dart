@@ -18,7 +18,7 @@ class QuestCard extends StatefulWidget {
   final bool offline;
   final Region? region;
   final bool battleOnly;
-  final List<int>? displayPhases;
+  final Map<int, String?>? displayPhases;
   final List<QuestPhase> preferredPhases;
   final bool? showFace;
 
@@ -133,8 +133,11 @@ class _QuestCardState extends State<QuestCard> {
     String warName = Transl.warNames(quest.warLongName).l.replaceAll('\n', ' ');
 
     List<Widget> phaseWidgets = [];
-    final displayPhases = widget.displayPhases ?? (quest.isMainStoryFree ? [quest.phases.last] : quest.phases);
-    for (final phase in displayPhases) {
+    final Map<int, String?> displayPhases = widget.displayPhases ??
+        {
+          for (var v in quest.isMainStoryFree ? [quest.phases.last] : quest.phases) v: null
+        };
+    for (final (phase, enemyHash) in displayPhases.items) {
       final phaseData = widget.preferredPhases.firstWhereOrNull((qh) => qh.id == quest.id && qh.phase == phase);
       if (phaseData != null) {
         phaseWidgets.add(QuestPhaseWidget.phase(
@@ -149,6 +152,7 @@ class _QuestCardState extends State<QuestCard> {
         phaseWidgets.add(QuestPhaseWidget(
           quest: quest,
           phase: phase,
+          enemyHash: enemyHash,
           region: widget.region,
           offline: widget.offline,
           showTrueName: showTrueName,

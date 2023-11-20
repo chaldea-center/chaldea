@@ -17,6 +17,7 @@ class QuestPhaseWidget extends StatefulWidget {
   final Quest quest;
   final QuestPhase? questPhase;
   final int phase;
+  final String? enemyHash;
   final Region? region;
   final bool offline;
   final bool showTrueName;
@@ -27,6 +28,7 @@ class QuestPhaseWidget extends StatefulWidget {
     super.key,
     required this.quest,
     required this.phase,
+    this.enemyHash,
     this.region,
     this.offline = false,
     this.showTrueName = true,
@@ -44,7 +46,8 @@ class QuestPhaseWidget extends StatefulWidget {
     this.showFace,
     this.battleOnly = false,
   })  : quest = questPhase,
-        phase = questPhase.phase;
+        phase = questPhase.phase,
+        enemyHash = questPhase.enemyHash;
 
   @override
   State<QuestPhaseWidget> createState() => _QuestPhaseWidgetState();
@@ -76,6 +79,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   void initState() {
     super.initState();
     if (quest.isDomusQuest) preferApRate = db.settings.preferApRate;
+    _enemyHash = widget.enemyHash;
     _init();
   }
 
@@ -86,8 +90,12 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     if (oldWidget.quest != widget.quest ||
         oldWidget.phase != widget.phase ||
         oldWidget.questPhase != widget.questPhase ||
+        oldWidget.enemyHash != widget.enemyHash ||
         oldWidget.region != widget.region ||
         oldWidget.offline != widget.offline) {
+      if (oldWidget.quest != widget.quest || oldWidget.phase != widget.phase || oldWidget.region != widget.region) {
+        _enemyHash = widget.enemyHash;
+      }
       _init();
     }
   }
