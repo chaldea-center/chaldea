@@ -361,19 +361,18 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   Widget buildTeamActions(UserBattleData record) {
     List<Widget> actions = [];
     final teamData = record.decoded;
-    if (teamData != null) {
-      actions.add(IconButton(
-        onPressed: () {
-          setState(() {
-            db.curUser.battleSim.favoriteTeams.putIfAbsent(record.questId, () => {}).toggle(record.id);
-          });
-        },
-        icon: db.curUser.battleSim.isTeamFavorite(record.questId, record.id)
-            ? const Icon(Icons.star, color: Colors.amber)
-            : const Icon(Icons.star_border, color: Colors.grey),
-        tooltip: S.current.favorite_teams,
-      ));
-    }
+    actions.add(IconButton(
+      onPressed: () {
+        setState(() {
+          db.curUser.battleSim.favoriteTeams.putIfAbsent(record.questId, () => {}).toggle(record.id);
+        });
+      },
+      icon: db.curUser.battleSim.isTeamFavorite(record.questId, record.id)
+          ? const Icon(Icons.star, color: Colors.amber)
+          : const Icon(Icons.star_border, color: Colors.grey),
+      tooltip: S.current.favorite_teams,
+    ));
+
     if (mode == TeamQueryMode.user || record.userId == curUserId || AppInfo.isDebugDevice) {
       actions.add(FilledButton(
         onPressed: () {
