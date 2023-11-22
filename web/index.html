@@ -91,7 +91,7 @@
         <em>Chaldeas is a planner to help masters planning materials, servants, events and so on.</em>
         <em><a href="/laplace">Laplace</a> is a novel battle simulator to help building your team, help 3T farming.</em>
       </div>
-      <p>Starting...</p>
+      <p id="loading-message">Starting...</p>
       <div class="loading-container">
         <img class="fou f1" src="/assets/res/img/load_icon_A01.png" alt="Loading" />
         <img class="fou f2" src="/assets/res/img/load_icon_A02.png" alt="Loading" />
@@ -111,6 +111,13 @@
     </script>
 
     <script>
+      function setErrorMessage(msg) {
+        document.getElementById("loading-message").innerHTML = msg;
+        const loading_container = document.getElementsByClassName('loading-container')[0]
+        if(loading_container) {
+          loading_container.style.display = 'none';
+        }
+      }
       const uri = new URL(window.location.href);
       if (uri.pathname === "/discord") {
         window.location.href = "https://discord.gg/5M6w5faqjP";
@@ -118,7 +125,9 @@
         uri.host = 'chaldea.center';
         setTimeout(() => {
           window.location.href = uri.toString();
-        }, 5000);
+        }, 3000);
+      } else if (!window.globalThis) {
+        setErrorMessage("Please upgrade browser<br>请升级浏览器")
       } else {
         window.addEventListener("load", function (ev) {
           // Download main.dart.js
