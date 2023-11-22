@@ -163,20 +163,24 @@ class ServerFeedbackHandler extends ReportHandler {
   Future<bool> _isBlockedError(Report report) async {
     if (report is FeedbackReport) return false;
     if (report.error is DioException) return true;
+    final error = report.shownError;
+    final stackTrace = report.stackTrace.toString();
+    final errorAndStackTrace = '$error\n$stackTrace';
     if (kIsWeb) {
       if ([
         'TypeError: Failed to fetch',
         'Bad state: Future already completed',
         'Bad state: A RenderObject does not have any constraints before it has been laid out.',
         "NoSuchMethodError: method not found: 'toString' on null",
-      ].contains(report.shownError)) {
+        "TypeError: Cannot read property 'toString' of null",
+      ].any(errorAndStackTrace.contains)) {
         return true;
       }
       if (report.shownError.contains('Stack Overflow') &&
           report.stackTrace.toString().contains('tear_off.<anonymous>')) {
         return true;
       }
-      if (RegExp(r"NoSuchMethodError: method not found: '.+?' on null").hasMatch(report.shownError)) {
+      if (RegExp(r"NoSuchMethodError: method not found: '.+?' on null").hasMatch(errorAndStackTrace)) {
         return true;
       }
     }
@@ -185,14 +189,12 @@ class ServerFeedbackHandler extends ReportHandler {
         return true;
       }
     }
-    if (_blockedErrors == null && !kIsWeb) {
+    if (_blockedErrors == null) {
       _blockedErrors = (await CachedApi.remoteConfig())?.blockedErrors ?? [];
       _blockedErrors?.removeWhere((e) => e.isEmpty);
       // logger_.logger.d('_blockedErrors=${jsonEncode(_blockedErrors)}');
     }
 
-    final error = report.shownError;
-    final stackTrace = report.stackTrace.toString();
     bool? shouldIgnore = _blockedErrors?.any((e) => error.contains(e) || stackTrace.contains(e));
     if (shouldIgnore == true) {
       // logger_.logger.e('don\'t send blocked error', report.error, report.stackTrace);
