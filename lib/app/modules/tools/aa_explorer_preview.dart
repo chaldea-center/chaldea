@@ -200,9 +200,14 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
 
   @override
   Widget build(BuildContext context) {
-    Widget child = Scaffold(
+    return Scaffold(
       appBar: AppBar(
         title: const Text('AA Explorer'),
+        leading: BackButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         actions: [
           IconButton(
             onPressed: () async {
@@ -224,21 +229,20 @@ class _AtlasExplorerPreviewState extends State<AtlasExplorerPreview> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            child: inputField,
-          ),
-          breadcrumbNav,
-          kDefaultDivider,
-          Expanded(child: pageView),
-        ],
+      body: PopScope(
+        canPop: false,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+              child: inputField,
+            ),
+            breadcrumbNav,
+            kDefaultDivider,
+            Expanded(child: pageView),
+          ],
+        ),
       ),
-    );
-    return PopScope(
-      canPop: false,
-      child: child,
     );
   }
 

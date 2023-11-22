@@ -173,6 +173,7 @@ class ServerFeedbackHandler extends ReportHandler {
         'Bad state: A RenderObject does not have any constraints before it has been laid out.',
         "NoSuchMethodError: method not found: 'toString' on null",
         "TypeError: Cannot read property 'toString' of null",
+        "TypeError: Cannot read properties of undefined",
       ].any(errorAndStackTrace.contains)) {
         return true;
       }

@@ -725,6 +725,7 @@
   "save_to_photos": "アルバムに保存",
   "saved": "保存済み",
   "screen_size": "画面サイズ",
+  "screenshot_not_support_html_renderer": null,
   "screenshots": "スクショ",
   "script_choice": null,
   "script_choice_end": null,

@@ -725,6 +725,7 @@
   "save_to_photos": "Save to Photos",
   "saved": "Saved",
   "screen_size": "Screen Size",
+  "screenshot_not_support_html_renderer": "Screenshot is not supported with html renderer",
   "screenshots": "Screenshots",
   "script_choice": "Choice",
   "script_choice_end": "Choice Branch End",

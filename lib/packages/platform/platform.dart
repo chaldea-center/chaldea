@@ -33,6 +33,8 @@ class PlatformU {
 
   // plugin supports
   static final bool supportCopyImage = kIsWeb || Platform.isIOS || Platform.isMacOS;
+
+  static final bool supportScreenshot = kIsWeb ? kPlatformMethods.rendererCanvasKit : true;
 }
 
 final kPlatformMethods = PlatformMethods();

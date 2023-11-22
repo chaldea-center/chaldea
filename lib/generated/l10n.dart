@@ -8043,6 +8043,17 @@ class S {
     );
   }
 
+  /// `Screenshot is not supported with html renderer`
+  String get screenshot_not_support_html_renderer {
+    return Intl.message(
+      'Screenshot is not supported with html renderer',
+      name: 'screenshot_not_support_html_renderer',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Screenshots`
   String get screenshots {
     return Intl.message(

@@ -725,6 +725,7 @@
   "save_to_photos": "保存到相册",
   "saved": "已保存",
   "screen_size": "屏幕尺寸",
+  "screenshot_not_support_html_renderer": "截屏功能在html渲染模式中不可用",
   "screenshots": "截图",
   "script_choice": "选项",
   "script_choice_end": "选项分支结束",

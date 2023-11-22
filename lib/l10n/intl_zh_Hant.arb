@@ -724,6 +724,7 @@
   "save_to_photos": "保存到相簿",
   "saved": "已保存",
   "screen_size": "螢幕尺寸",
+  "screenshot_not_support_html_renderer": null,
   "screenshots": "截圖",
   "script_choice": "選項",
   "script_choice_end": "選項分歧結束",

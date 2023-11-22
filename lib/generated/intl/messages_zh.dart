@@ -824,6 +824,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "save_to_photos": MessageLookupByLibrary.simpleMessage("保存到相册"),
         "saved": MessageLookupByLibrary.simpleMessage("已保存"),
         "screen_size": MessageLookupByLibrary.simpleMessage("屏幕尺寸"),
+        "screenshot_not_support_html_renderer": MessageLookupByLibrary.simpleMessage("截屏功能在html渲染模式中不可用"),
         "screenshots": MessageLookupByLibrary.simpleMessage("截图"),
         "script_choice": MessageLookupByLibrary.simpleMessage("选项"),
         "script_choice_end": MessageLookupByLibrary.simpleMessage("选项分支结束"),

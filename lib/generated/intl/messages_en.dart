@@ -866,6 +866,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "save_to_photos": MessageLookupByLibrary.simpleMessage("Save to Photos"),
         "saved": MessageLookupByLibrary.simpleMessage("Saved"),
         "screen_size": MessageLookupByLibrary.simpleMessage("Screen Size"),
+        "screenshot_not_support_html_renderer":
+            MessageLookupByLibrary.simpleMessage("Screenshot is not supported with html renderer"),
         "screenshots": MessageLookupByLibrary.simpleMessage("Screenshots"),
         "script_choice": MessageLookupByLibrary.simpleMessage("Choice"),
         "script_choice_end": MessageLookupByLibrary.simpleMessage("Choice Branch End"),

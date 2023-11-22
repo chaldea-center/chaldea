@@ -725,6 +725,7 @@
   "save_to_photos": "사진 저장하기",
   "saved": "저장됨",
   "screen_size": "스크린 사이즈",
+  "screenshot_not_support_html_renderer": null,
   "screenshots": "스크린샷",
   "script_choice": null,
   "script_choice_end": null,
