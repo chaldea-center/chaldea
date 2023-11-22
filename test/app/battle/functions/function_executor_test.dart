@@ -351,7 +351,7 @@ void main() async {
       expect(mash.battleBuff.originalActiveList.first.buff.type, BuffType.upDefence);
       expect(mash.battleBuff.originalActiveList.first.logicTurn, 6);
 
-      await battle.playerTurn([CombatAction(mash, mash.getCards(battle)[0])]);
+      await battle.playerTurn([CombatAction(mash, mash.getCards()[0])]);
       expect(mash.battleBuff.originalActiveList.length, 1);
       expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
       expect(mash.battleBuff.originalActiveList.first.buff.type, BuffType.upDefence);
@@ -378,7 +378,7 @@ void main() async {
       expect(orion.battleBuff.originalActiveList[1].buff.type, BuffType.upAtk);
       expect(orion.battleBuff.originalActiveList[1].logicTurn, 5);
 
-      await battle.playerTurn([CombatAction(orion, orion.getCards(battle)[0])]);
+      await battle.playerTurn([CombatAction(orion, orion.getCards()[0])]);
       expect(orion.battleBuff.originalActiveList.length, 2);
       expect(await orion.getBuffValueOnAction(battle, BuffAction.defence), 1000);
       expect(await orion.getBuffValueOnAction(battle, BuffAction.atk), 1200);
@@ -577,7 +577,7 @@ void main() async {
       expect(yuyu2.np, 7200);
       expect(enemy.npLineCount, 0);
 
-      await battle.playerTurn([CombatAction(yuyu2, yuyu2.getCards(battle).last)]); // buster card
+      await battle.playerTurn([CombatAction(yuyu2, yuyu2.getCards().last)]); // buster card
 
       expect(lambda.np, 4800);
       expect(yuyu1.np, 0);
@@ -690,7 +690,7 @@ void main() async {
       await battle.activateSvtSkill(0, 0);
 
       for (int i = 0; i < 10; i += 1) {
-        await battle.playerTurn([CombatAction(kingprotea, kingprotea.getCards(battle)[0])]);
+        await battle.playerTurn([CombatAction(kingprotea, kingprotea.getCards()[0])]);
       }
 
       final afterCount = kingprotea.battleBuff.getAllBuffs().length;
@@ -700,7 +700,7 @@ void main() async {
       await battle.activateSvtSkill(0, 0);
 
       for (int i = 0; i < 10; i += 1) {
-        await battle.playerTurn([CombatAction(kingprotea, kingprotea.getCards(battle)[0])]);
+        await battle.playerTurn([CombatAction(kingprotea, kingprotea.getCards()[0])]);
       }
 
       final afterCount2 = kingprotea.battleBuff.getAllBuffs().length;
@@ -852,9 +852,9 @@ void main() async {
       final enemy2 = battle.onFieldEnemies[1]!;
       final prevHp2 = enemy2.hp;
       await battle.playerTurn([
-        CombatAction(chloe, chloe.getCards(battle)[0]),
-        CombatAction(chloe, chloe.getCards(battle)[1]),
-        CombatAction(chloe, chloe.getCards(battle)[2]),
+        CombatAction(chloe, chloe.getCards()[0]),
+        CombatAction(chloe, chloe.getCards()[1]),
+        CombatAction(chloe, chloe.getCards()[2]),
       ]);
       expect(prevHp2 - enemy2.hp, 3391 + 4069 + 4748 + 13489);
 
@@ -886,9 +886,9 @@ void main() async {
       final enemy2 = battle.onFieldEnemies[1]!;
       final prevHp2 = enemy2.hp;
       await battle.playerTurn([
-        CombatAction(bunyan, bunyan.getCards(battle)[0]),
-        CombatAction(bunyan, bunyan.getCards(battle)[1]),
-        CombatAction(bunyan, bunyan.getCards(battle)[2]),
+        CombatAction(bunyan, bunyan.getCards()[0]),
+        CombatAction(bunyan, bunyan.getCards()[1]),
+        CombatAction(bunyan, bunyan.getCards()[2]),
       ]);
       expect(prevHp2 - enemy2.hp, 5283 + 6909 + 10567 + 12193);
 

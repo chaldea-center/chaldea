@@ -391,14 +391,36 @@ void main() async {
       final playerSettings = [
         PlayerSvtData.id(100100)
           ..lv = 90
-          ..setSkillStrengthenLvs([1, 2, 2]),
+          ..setSkillStrengthenLvs([1, 2, 2])
+          ..cardStrengthens = [500, 0, 300, 0, 100]
+          ..commandCodes = [
+            db.gameData.commandCodes[120],
+            null,
+            db.gameData.commandCodes[100],
+            null,
+            db.gameData.commandCodes[90],
+          ],
       ];
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final altria = battle.onFieldAllyServants[0]!;
+      final cardBefore = altria.getCards();
+      expect(cardBefore[0].cardStrengthen, 500);
+      expect(cardBefore[2].cardStrengthen, 300);
+      expect(cardBefore[4].cardStrengthen, 100);
+      expect(cardBefore[0].commandCode?.collectionNo, 120);
+      expect(cardBefore[2].commandCode?.collectionNo, 100);
+      expect(cardBefore[4].commandCode?.collectionNo, 90);
 
       await battle.activateSvtSkill(0, 1);
-      expect(altria.getCards(battle).where((element) => element.cardType == CardType.buster).length, 5);
+      final cardsAfter = altria.getCards();
+      expect(cardsAfter.where((card) => card.cardType == CardType.buster).length, 5);
+      expect(cardsAfter[0].cardStrengthen, 500);
+      expect(cardsAfter[2].cardStrengthen, 300);
+      expect(cardsAfter[4].cardStrengthen, 100);
+      expect(cardsAfter[0].commandCode?.collectionNo, 120);
+      expect(cardsAfter[2].commandCode?.collectionNo, 100);
+      expect(cardsAfter[4].commandCode?.collectionNo, 90);
     });
 
     test('multiAttack', () async {
@@ -414,10 +436,10 @@ void main() async {
           await battle.withCard(musashi.getNPCard(), () async {
             expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
           });
-          await battle.withCard(musashi.getCards(battle)[0], () async {
+          await battle.withCard(musashi.getCards()[0], () async {
             expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
           });
-          await battle.withCard(musashi.getCards(battle)[1], () async {
+          await battle.withCard(musashi.getCards()[1], () async {
             expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
           });
 
@@ -425,16 +447,16 @@ void main() async {
           await battle.withCard(musashi.getNPCard(), () async {
             expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
           });
-          await battle.withCard(musashi.getCards(battle)[0], () async {
+          await battle.withCard(musashi.getCards()[0], () async {
             expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), false);
           });
-          await battle.withCard(musashi.getCards(battle)[1], () async {
+          await battle.withCard(musashi.getCards()[1], () async {
             expect(await musashi.hasBuffOnAction(battle, BuffAction.multiattack), true);
           });
         });
       });
 
-      await battle.playerTurn([CombatAction(musashi, musashi.getCards(battle)[1])]);
+      await battle.playerTurn([CombatAction(musashi, musashi.getCards()[1])]);
       expect(musashi.np, 1836);
     });
 
@@ -485,7 +507,7 @@ void main() async {
 
       await battle.withActivator(murasama, () async {
         await battle.withTarget(castoria, () async {
-          await battle.withCard(murasama.getCards(battle)[0], () async {
+          await battle.withCard(murasama.getCards()[0], () async {
             expect(await murasama.getBuffValueOnAction(battle, BuffAction.criticalDamage), 1050);
 
             await battle.activateSvtSkill(1, 2);
@@ -613,23 +635,23 @@ void main() async {
       await battle.activateSvtSkill(0, 0);
       expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 0);
 
-      await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
+      await battle.playerTurn([CombatAction(kiara, kiara.getCards()[4])]);
       expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 1);
 
-      await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
+      await battle.playerTurn([CombatAction(kiara, kiara.getCards()[4])]);
       expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 2);
 
-      await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
+      await battle.playerTurn([CombatAction(kiara, kiara.getCards()[4])]);
       expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 3);
 
-      await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
+      await battle.playerTurn([CombatAction(kiara, kiara.getCards()[4])]);
       expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 4);
 
       await battle.activateSvtSkill(0, 1);
       expect(kiara.np, 15000);
       expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 2);
 
-      await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
+      await battle.playerTurn([CombatAction(kiara, kiara.getCards()[4])]);
       expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 2);
       await battle.activateSvtSkill(0, 2);
       expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 0);
@@ -653,8 +675,8 @@ void main() async {
 
       final kiara = battle.onFieldAllyServants[0]!;
       await battle.activateSvtSkill(0, 0);
-      await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
-      await battle.playerTurn([CombatAction(kiara, kiara.getCards(battle)[4])]);
+      await battle.playerTurn([CombatAction(kiara, kiara.getCards()[4])]);
+      await battle.playerTurn([CombatAction(kiara, kiara.getCards()[4])]);
       await battle.activateSvtSkill(0, 2);
       await battle.activateSvtSkill(0, 1);
       expect(kiara.np, 3000);
@@ -792,19 +814,19 @@ void main() async {
       final enemy = battle.onFieldEnemies[0]!;
       expect(enemy.npLineCount, 0);
 
-      await battle.playerTurn([CombatAction(protoMerlin, protoMerlin.getCards(battle)[0])]);
+      await battle.playerTurn([CombatAction(protoMerlin, protoMerlin.getCards()[0])]);
       expect(enemy.npLineCount, 1);
 
       await battle.activateSvtSkill(0, 2);
       battle.options.threshold = 500;
       await battle.activateSvtSkill(1, 1);
-      await battle.playerTurn([CombatAction(protoMerlin, protoMerlin.getCards(battle)[0])]);
+      await battle.playerTurn([CombatAction(protoMerlin, protoMerlin.getCards()[0])]);
       expect(enemy.npLineCount, 1);
 
-      await battle.playerTurn([CombatAction(protoMerlin, protoMerlin.getCards(battle)[0])]);
+      await battle.playerTurn([CombatAction(protoMerlin, protoMerlin.getCards()[0])]);
       expect(enemy.npLineCount, 1);
 
-      await battle.playerTurn([CombatAction(protoMerlin, protoMerlin.getCards(battle)[0])]);
+      await battle.playerTurn([CombatAction(protoMerlin, protoMerlin.getCards()[0])]);
       expect(enemy.npLineCount, 2);
     });
 
@@ -824,7 +846,7 @@ void main() async {
       await battle.activateSvtSkill(0, 1);
       await battle.activateSvtSkill(0, 2);
       await battle.activateSvtSkill(1, 1);
-      await battle.playerTurn([CombatAction(locusta, locusta.getCards(battle)[0])]);
+      await battle.playerTurn([CombatAction(locusta, locusta.getCards()[0])]);
       expect(locusta.hp, 5000 + 1000 + 300 - 100);
       expect(vanGogh.hp, 5000 + 300 - 100);
     });
@@ -857,7 +879,7 @@ void main() async {
       final previousBuffCount3 = enemy3.battleBuff.getAllBuffs().length;
       await battle.playerTurn([
         CombatAction(hokusai, hokusai.getNPCard()!),
-        CombatAction(hokusai, hokusai.getCards(battle)[1]),
+        CombatAction(hokusai, hokusai.getCards()[1]),
       ]);
       expect(enemy1.hp, previousHp1 - 2831 - 786);
       expect(enemy2.hp, previousHp2 - 2831);
@@ -876,8 +898,8 @@ void main() async {
       final previousBuffCount6 = enemy3.battleBuff.getAllBuffs().length;
       await battle.playerTurn([
         CombatAction(hokusai, hokusai.getNPCard()!),
-        CombatAction(hokusai, hokusai.getCards(battle)[1]),
-        CombatAction(hokusai, hokusai.getCards(battle)[2]),
+        CombatAction(hokusai, hokusai.getCards()[1]),
+        CombatAction(hokusai, hokusai.getCards()[2]),
       ]);
       expect(enemy1.hp, previousHp4 - 3629);
       expect(enemy2.hp, previousHp5 - 3230 - 865 - 1073 - 2559);

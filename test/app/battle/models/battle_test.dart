@@ -43,7 +43,7 @@ void main() async {
 
         final altria = battle.targetedPlayer!;
         altria.np = 10000;
-        final npActions = [CombatAction(altria, altria.getCards(battle)[4]), CombatAction(altria, altria.getNPCard()!)];
+        final npActions = [CombatAction(altria, altria.getCards()[4]), CombatAction(altria, altria.getNPCard()!)];
 
         final hpBeforeDamage = battle.onFieldEnemies[1]!.hp;
         await battle.playerTurn(npActions);
@@ -58,9 +58,9 @@ void main() async {
 
         final altria = battle.targetedPlayer!;
         final busterArtsBuster = [
-          CombatAction(altria, altria.getCards(battle)[4]),
-          CombatAction(altria, altria.getCards(battle)[1]),
-          CombatAction(altria, altria.getCards(battle)[3]),
+          CombatAction(altria, altria.getCards()[4]),
+          CombatAction(altria, altria.getCards()[1]),
+          CombatAction(altria, altria.getCards()[3]),
         ];
 
         battle.enemyTargetIndex = 1;
@@ -157,9 +157,9 @@ void main() async {
 
         final yuyu = battle.targetedPlayer!;
         final artsQuickArts = [
-          CombatAction(yuyu, yuyu.getCards(battle)[3]),
-          CombatAction(yuyu, yuyu.getCards(battle)[0]),
-          CombatAction(yuyu, yuyu.getCards(battle)[2]),
+          CombatAction(yuyu, yuyu.getCards()[3]),
+          CombatAction(yuyu, yuyu.getCards()[0]),
+          CombatAction(yuyu, yuyu.getCards()[2]),
         ];
 
         battle.enemyTargetIndex = 1;
@@ -262,9 +262,9 @@ void main() async {
 
         final okuni = battle.targetedPlayer!;
         final quickBusterQuick = [
-          CombatAction(okuni, okuni.getCards(battle)[0]),
-          CombatAction(okuni, okuni.getCards(battle)[4]),
-          CombatAction(okuni, okuni.getCards(battle)[1]),
+          CombatAction(okuni, okuni.getCards()[0]),
+          CombatAction(okuni, okuni.getCards()[4]),
+          CombatAction(okuni, okuni.getCards()[1]),
         ];
 
         battle.enemyTargetIndex = 1;
@@ -407,8 +407,8 @@ void main() async {
       expect(wave3enemy.uniqueId, 10);
       final hpBeforeDamageWave3 = wave3enemy.hp;
       await battle.playerTurn([
-        CombatAction(kama, kama.getCards(battle)[3]),
-        CombatAction(kama, kama.getCards(battle)[2]..critical = true),
+        CombatAction(kama, kama.getCards()[3]),
+        CombatAction(kama, kama.getCards()[2]..critical = true),
         CombatAction(kama, kama.getNPCard()!),
       ]);
       final hpAfterDamageWave3 = wave3enemy.hp;
@@ -463,11 +463,11 @@ void main() async {
 
     expect(jinako.np, 0);
     await battle
-        .playerTurn([CombatAction(lip, lip.getCards(battle)[1]), CombatAction(jinako, jinako.getCards(battle)[4])]);
+        .playerTurn([CombatAction(lip, lip.getCards()[1]), CombatAction(jinako, jinako.getCards()[4])]);
     expect(jinako.np, 0);
     expect(lip.canAttack(), isTrue);
     await battle
-        .playerTurn([CombatAction(lip, lip.getCards(battle)[1]), CombatAction(jinako, jinako.getCards(battle)[4])]);
+        .playerTurn([CombatAction(lip, lip.getCards()[1]), CombatAction(jinako, jinako.getCards()[4])]);
     expect(jinako.np, greaterThan(0));
   });
 
@@ -488,7 +488,7 @@ void main() async {
     expect(jinako.np, 0);
     expect(lip.canAttack(), false);
     await battle
-        .playerTurn([CombatAction(lip, lip.getCards(battle)[1]), CombatAction(jinako, jinako.getCards(battle)[4])]);
+        .playerTurn([CombatAction(lip, lip.getCards()[1]), CombatAction(jinako, jinako.getCards()[4])]);
     expect(jinako.np, greaterThan(0));
   });
 
@@ -508,16 +508,16 @@ void main() async {
 
     expect(lip.np, 0);
     await battle.playerTurn([
-      CombatAction(lip, lip.getCards(battle)[1]),
-      CombatAction(jinako, jinako.getCards(battle)[1]),
-      CombatAction(jinako, jinako.getCards(battle)[2])
+      CombatAction(lip, lip.getCards()[1]),
+      CombatAction(jinako, jinako.getCards()[1]),
+      CombatAction(jinako, jinako.getCards()[2])
     ]);
     expect(lip.np, 0);
 
     await battle.playerTurn([
-      CombatAction(lip, lip.getCards(battle)[1]),
-      CombatAction(jinako, jinako.getCards(battle)[1]),
-      CombatAction(jinako, jinako.getCards(battle)[2])
+      CombatAction(lip, lip.getCards()[1]),
+      CombatAction(jinako, jinako.getCards()[1]),
+      CombatAction(jinako, jinako.getCards()[2])
     ]);
     expect(lip.np, greaterThan(20));
   });
@@ -537,9 +537,9 @@ void main() async {
 
     final previousHp = enemy.hp;
     await battle.playerTurn([
-      CombatAction(lip, lip.getCards(battle)[1]),
-      CombatAction(lip, lip.getCards(battle)[2]),
-      CombatAction(lip, lip.getCards(battle)[3])
+      CombatAction(lip, lip.getCards()[1]),
+      CombatAction(lip, lip.getCards()[2]),
+      CombatAction(lip, lip.getCards()[3])
     ]);
     expect(enemy.hp, previousHp);
   });
@@ -607,7 +607,7 @@ void main() async {
     await battle.activateSvtSkill(0, 0);
     await battle.playerTurn([
       CombatAction(bunyan, bunyan.getNPCard()!),
-      CombatAction(bunyan, bunyan.getCards(battle)[1]),
+      CombatAction(bunyan, bunyan.getCards()[1]),
     ]);
     expect(bunyan.np, 993);
   });
@@ -636,8 +636,8 @@ void main() async {
     await battle.activateSvtSkill(1, 0);
     await battle.playerTurn([
       CombatAction(arash, arash.getNPCard()!),
-      CombatAction(arash, arash.getCards(battle)[0]),
-      CombatAction(arash, arash.getCards(battle)[1]),
+      CombatAction(arash, arash.getCards()[0]),
+      CombatAction(arash, arash.getCards()[1]),
     ]);
 
     expect(arash.hp, 0);
@@ -667,8 +667,8 @@ void main() async {
     final previousHp1 = enemy1.hp;
     await battle.playerTurn([
       CombatAction(crane, crane.getNPCard()!),
-      CombatAction(crane, crane.getCards(battle)[0]),
-      CombatAction(crane, crane.getCards(battle)[1]),
+      CombatAction(crane, crane.getCards()[0]),
+      CombatAction(crane, crane.getCards()[1]),
     ]);
 
     expect(previousHp1, enemy1.hp);
@@ -694,8 +694,8 @@ void main() async {
     final previousHp1 = enemy1.hp;
     await battle.playerTurn([
       CombatAction(rba, rba.getNPCard()!),
-      CombatAction(rba, rba.getCards(battle)[0]),
-      CombatAction(rba, rba.getCards(battle)[1]),
+      CombatAction(rba, rba.getCards()[0]),
+      CombatAction(rba, rba.getCards()[1]),
     ]);
 
     expect(previousHp1 - enemy1.hp, 15407 + 3281 + 3786 + 11302);
@@ -721,8 +721,8 @@ void main() async {
     final previousHp2 = enemy2.hp;
     await battle.playerTurn([
       CombatAction(spaceIshtar, spaceIshtar.getNPCard()!),
-      CombatAction(spaceIshtar, spaceIshtar.getCards(battle)[0]),
-      CombatAction(spaceIshtar, spaceIshtar.getCards(battle)[1]),
+      CombatAction(spaceIshtar, spaceIshtar.getCards()[0]),
+      CombatAction(spaceIshtar, spaceIshtar.getCards()[1]),
     ]);
 
     expect(previousHp1 - enemy1.hp, 37595);
@@ -783,9 +783,9 @@ void main() async {
     final enemy1 = battle.onFieldEnemies[0]!;
     final previousHp1 = enemy1.hp;
     await battle.playerTurn([
-      CombatAction(archtypeEarth, archtypeEarth.getCards(battle)[4]),
-      CombatAction(archtypeEarth, archtypeEarth.getCards(battle)[2]),
-      CombatAction(archtypeEarth, archtypeEarth.getCards(battle)[0]),
+      CombatAction(archtypeEarth, archtypeEarth.getCards()[4]),
+      CombatAction(archtypeEarth, archtypeEarth.getCards()[2]),
+      CombatAction(archtypeEarth, archtypeEarth.getCards()[0]),
     ]);
 
     expect(previousHp1 - enemy1.hp, 6044 + 5573 + 4896 + 9067);
@@ -804,9 +804,9 @@ void main() async {
     final enemy4 = battle.onFieldEnemies[0]!;
     final previousHp4 = enemy4.hp;
     await battle.playerTurn([
-      CombatAction(archtypeEarth, archtypeEarth.getCards(battle)[4]),
-      CombatAction(archtypeEarth, archtypeEarth.getCards(battle)[2]),
-      CombatAction(archtypeEarth, archtypeEarth.getCards(battle)[0]),
+      CombatAction(archtypeEarth, archtypeEarth.getCards()[4]),
+      CombatAction(archtypeEarth, archtypeEarth.getCards()[2]),
+      CombatAction(archtypeEarth, archtypeEarth.getCards()[0]),
     ]);
 
     expect(previousHp4 - enemy4.hp, 7404 + 6661 + 5911 + 9067);
@@ -839,14 +839,14 @@ void main() async {
     final enemy1 = battle.onFieldEnemies[0]!;
     final previousHp1 = enemy1.hp;
     await battle.playerTurn([
-      CombatAction(archtypeEarth, archtypeEarth.getCards(battle)[0]),
+      CombatAction(archtypeEarth, archtypeEarth.getCards()[0]),
     ]);
 
     expect(previousHp1 - enemy1.hp, 2659);
 
     final previousHp2 = enemy1.hp;
     await battle.playerTurn([
-      CombatAction(archtypeEarth, archtypeEarth.getCards(battle)[2]),
+      CombatAction(archtypeEarth, archtypeEarth.getCards()[2]),
     ]);
 
     expect(previousHp2 - enemy1.hp, 4062);
@@ -866,7 +866,7 @@ void main() async {
     final enemy1 = battle.onFieldEnemies[0]!;
     final previousHp1 = enemy1.hp;
     await battle.playerTurn([
-      CombatAction(eliz, eliz.getCards(battle)[2]..critical = true),
+      CombatAction(eliz, eliz.getCards()[2]..critical = true),
     ]);
 
     expect(previousHp1 - enemy1.hp, 4256);
@@ -874,7 +874,7 @@ void main() async {
     await battle.activateSvtSkill(0, 1);
     final previousHp2 = enemy1.hp;
     await battle.playerTurn([
-      CombatAction(eliz, eliz.getCards(battle)[1]..critical = true),
+      CombatAction(eliz, eliz.getCards()[1]..critical = true),
     ]);
 
     expect(previousHp2 - enemy1.hp, 5533 + 300); // 300 burn damage
@@ -965,11 +965,11 @@ void main() async {
     final enemy1 = battle.onFieldEnemies[0]!;
 
     final previousHp1 = enemy1.hp;
-    await battle.playerTurn([CombatAction(karen2, karen2.getCards(battle)[4])]);
+    await battle.playerTurn([CombatAction(karen2, karen2.getCards()[4])]);
     expect(previousHp1 - enemy1.hp, 6974);
 
     final previousHp2 = enemy1.hp;
-    await battle.playerTurn([CombatAction(karen1, karen1.getCards(battle)[4])]);
+    await battle.playerTurn([CombatAction(karen1, karen1.getCards()[4])]);
     expect(previousHp2 - enemy1.hp, 6974);
   });
 
@@ -1196,7 +1196,7 @@ void main() async {
     final mori = battle.onFieldAllyServants[2]!;
     final enemy4 = battle.onFieldEnemies[0]!;
     final previousHp4 = enemy4.hp;
-    await battle.playerTurn([CombatAction(mori, mori.getCards(battle)[4]..critical = true)]);
+    await battle.playerTurn([CombatAction(mori, mori.getCards()[4]..critical = true)]);
     expect(previousHp4 - enemy4.hp, 27764);
     expect(battle.criticalStars, moreOrLessEquals(1.006, epsilon: 0.001));
   });
@@ -1220,7 +1220,7 @@ void main() async {
     expect(battle.nonnullBackupPlayers[0].svtId, 100200);
 
     await battle.activateSvtSkill(0, 1);
-    await battle.playerTurn([CombatAction(chloe, chloe.getCards(battle)[0])]);
+    await battle.playerTurn([CombatAction(chloe, chloe.getCards()[0])]);
 
     expect(battle.onFieldAllyServants[0]?.svtId, 100200);
     expect(battle.onFieldAllyServants[1]?.svtId, 800100);
@@ -1381,7 +1381,7 @@ void main() async {
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
 
-      battle.withCardSync(battle.onFieldAllyServants[0]!.getCards(battle)[0], () {
+      battle.withCardSync(battle.onFieldAllyServants[0]!.getCards()[0], () {
         battle.currentCard!.critical = true;
 
         expect(

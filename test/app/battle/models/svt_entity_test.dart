@@ -47,7 +47,7 @@ void main() async {
       expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
     });
 
-    await battle.withCard(okuni.getCards(battle)[2], () async {
+    await battle.withCard(okuni.getCards()[2], () async {
       // arts
       expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1040);
       expect(await okuni.hasBuffOnAction(battle, BuffAction.avoidance), isFalse);
@@ -81,21 +81,21 @@ void main() async {
     final altria = battle.onFieldAllyServants[0]!;
     expect(altria.np, 0);
 
-    await battle.playerTurn([CombatAction(altria, altria.getCards(battle)[4])]);
+    await battle.playerTurn([CombatAction(altria, altria.getCards()[4])]);
     expect(altria.np, 1000);
 
-    await battle.playerTurn([CombatAction(altria, altria.getCards(battle)[4])]);
+    await battle.playerTurn([CombatAction(altria, altria.getCards()[4])]);
     expect(altria.np, 1000);
 
     await battle.playerTurn(
-        [CombatAction(altria, altria.getCards(battle)[4]), CombatAction(altria, altria.getCards(battle)[3])]);
+        [CombatAction(altria, altria.getCards()[4]), CombatAction(altria, altria.getCards()[3])]);
     expect(altria.np, 2000);
 
-    await battle.playerTurn([CombatAction(altria, altria.getCards(battle)[4])]);
+    await battle.playerTurn([CombatAction(altria, altria.getCards()[4])]);
     expect(altria.np, 3000);
 
     await battle.playerTurn(
-        [CombatAction(altria, altria.getCards(battle)[1]), CombatAction(altria, altria.getCards(battle)[2])]);
+        [CombatAction(altria, altria.getCards()[1]), CombatAction(altria, altria.getCards()[2])]);
   });
 
   test('Test commandCode Clear', () async {
@@ -119,8 +119,8 @@ void main() async {
     expect(enemy.hp, 20094);
 
     await battle.playerTurn([
-      CombatAction(altria, altria.getCards(battle)[1]..critical = true),
-      CombatAction(altria, altria.getCards(battle)[2]..critical = true)
+      CombatAction(altria, altria.getCards()[1]..critical = true),
+      CombatAction(altria, altria.getCards()[2]..critical = true)
     ]);
     expect(enemy.hp, 9166);
   });

@@ -83,7 +83,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
     ];
     for (final svt in battleData.nonnullPlayers) {
       final tdIcon = buildTdIcon(svt);
-      final cards = svt.getCards(battleData);
+      final cards = svt.getCards();
       List<Widget> cells = [tdIcon, const SizedBox(width: 4)];
       for (int index = 0; index < max(5, cards.length); index++) {
         final card = cards.getOrNull(index);

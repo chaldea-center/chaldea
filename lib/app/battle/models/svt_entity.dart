@@ -344,18 +344,21 @@ class BattleServantData {
     return skillInfoList[index].lName;
   }
 
-  List<CommandCardData> getCards(final BattleData battleData) {
+  List<CommandCardData> getCards() {
     if (isEnemy) {
       return [];
     }
 
+    // get regular cards for servants
     final cardDetails = niceSvt!.cardDetails;
-    final changeCardType = getFirstBuffOnActions(battleData, [BuffAction.changeCommandCardType]);
     List<CardType> cards = niceSvt!.cards.where((card) => cardDetails.containsKey(card)).toList();
-    if (changeCardType != null) {
-      cards = List.generate(niceSvt!.cards.length,
-          (index) => CardType.values.firstWhere((cardType) => cardType.id == changeCardType.param));
-    }
+
+    // check for changeCardBuff
+    final changeCardBuff = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.changeCommandCardType).firstOrNull;
+    final changeCardType =
+        changeCardBuff == null ? null : CardType.values.firstWhere((cardType) => cardType.id == changeCardBuff.param);
+
+    // fill in for enemy units
     if (cards.isEmpty) {
       for (final card in [CardType.weak, CardType.strength]) {
         if (cardDetails.containsKey(card)) {
@@ -366,15 +369,17 @@ class BattleServantData {
 
     final List<CommandCardData> builtCards = [];
     for (int i = 0; i < cards.length; i += 1) {
-      final cardType = cards[i];
+      final isCardInDeck = niceSvt!.cards.getOrNull(i) == cards[i];
+
+      final cardType = changeCardType ?? cards[i];
       final detail = niceSvt!.cardDetails[cardType];
       if (detail == null) continue;
-      final isCardInDeck = niceSvt!.cards.getOrNull(i) == cardType;
       final card = CommandCardData(cardType, detail)
         ..cardIndex = i
         ..isTD = false
-        ..npGain = getNPGain(battleData, cardType)
+        ..npGain = getNPGain(cardType)
         ..traits = ConstData.cardInfo[cardType]![1]!.individuality.toList();
+
       if (isCardInDeck) {
         // enemy weak+strength 6 cards
         card
@@ -459,7 +464,7 @@ class BattleServantData {
       ..traits = td.individuality;
   }
 
-  CommandCardData? getExtraCard(final BattleData battleData) {
+  CommandCardData? getExtraCard() {
     if (isEnemy) {
       return null;
     }
@@ -468,11 +473,11 @@ class BattleServantData {
 
     return CommandCardData(CardType.extra, detail)
       ..isTD = false
-      ..npGain = getNPGain(battleData, CardType.extra)
+      ..npGain = getNPGain(CardType.extra)
       ..traits = ConstData.cardInfo[CardType.extra]![1]!.individuality.toList();
   }
 
-  int getNPGain(final BattleData battleData, final CardType cardType) {
+  int getNPGain(final CardType cardType) {
     if (!isPlayer) {
       return 0;
     }

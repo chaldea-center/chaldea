@@ -971,7 +971,7 @@ class BattleData {
             validActions.length == kMaxCommand && validActions.map((action) => action.actor).toSet().length == 1;
         if (isBraveChain) {
           final actor = actions[0].actor;
-          final extraCard = actor.getExtraCard(this);
+          final extraCard = actor.getExtraCard();
           if (extraCard != null) actions.add(CombatAction(actor, extraCard));
         }
 
@@ -1612,7 +1612,7 @@ class BattleData {
       if (attackRecord.isTD) {
         card = svt.getNPCard();
       } else if (cardIndex != null) {
-        final cards = svt.getCards(this);
+        final cards = svt.getCards();
         if (cardIndex < 0 || cardIndex >= cards.length) {
           continue;
         }
