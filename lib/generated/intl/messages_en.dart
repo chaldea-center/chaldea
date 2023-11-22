@@ -83,9 +83,9 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m11(n) => "Profile ${n}";
 
   static String m28(color, trait) =>
-      "This Nobel Phantasm is displayed as a ${color} card, but doesn\'t have [${trait}] trait.";
+      "This Noble Phantasm is displayed as ${color} card, but doesn\'t have [${trait}] trait.";
 
-  static String m29(trait) => "This is a Nobel Phantasm, but doesn\'t have [${trait}] trait.";
+  static String m29(trait) => "This is a Noble Phantasm, but doesn\'t have [${trait}] trait.";
 
   static String m30(pause, remain) => "Need to wait ${pause} seconds between uploads (${remain}s remain).";
 

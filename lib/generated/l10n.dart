@@ -9495,10 +9495,10 @@ class S {
     );
   }
 
-  /// `This Nobel Phantasm is displayed as a {color} card, but doesn't have [{trait}] trait.`
+  /// `This Noble Phantasm is displayed as {color} card, but doesn't have [{trait}] trait.`
   String td_cardcolor_hint(Object color, Object trait) {
     return Intl.message(
-      'This Nobel Phantasm is displayed as a $color card, but doesn\'t have [$trait] trait.',
+      'This Noble Phantasm is displayed as $color card, but doesn\'t have [$trait] trait.',
       name: 'td_cardcolor_hint',
       desc: '',
       locale: localeName,
@@ -9506,10 +9506,10 @@ class S {
     );
   }
 
-  /// `This is a Nobel Phantasm, but doesn't have [{trait}] trait.`
+  /// `This is a Noble Phantasm, but doesn't have [{trait}] trait.`
   String td_cardnp_hint(Object trait) {
     return Intl.message(
-      'This is a Nobel Phantasm, but doesn\'t have [$trait] trait.',
+      'This is a Noble Phantasm, but doesn\'t have [$trait] trait.',
       name: 'td_cardnp_hint',
       desc: '',
       locale: localeName,
