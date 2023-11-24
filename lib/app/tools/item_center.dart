@@ -180,14 +180,15 @@ class ItemCenter {
     }
 
     detail.costume = _sumMat(svt.costumeMaterials, [
-      for (final charaId in target.costumes.keys)
-        if (target.costumes[charaId]! > 0 && (cur.costumes[charaId] ?? 0) == 0) charaId
+      if (!svt.isDupSvt)
+        for (final charaId in target.costumes.keys)
+          if (target.costumes[charaId]! > 0 && (cur.costumes[charaId] ?? 0) == 0) charaId
     ]);
     final coinId = svt.coin?.item.id;
     int coin = 0;
     if (coinId != null) {
       for (int skill = 0; skill < 3; skill++) {
-        if (cur.appendSkills[skill] == 0 && target.appendSkills[skill] > 0) {
+        if (cur.appendSkills[skill] == 0 && target.appendSkills[skill] > 0 && !svt.isDupSvt) {
           coin += 120;
         }
       }

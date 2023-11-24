@@ -434,6 +434,8 @@ class Servant with GameCardMixin {
         SvtType.enemyCollectionDetail,
       ].contains(type);
 
+  bool get isDupSvt => originalCollectionNo != collectionNo;
+
   @override
   String? get icon {
     final _remapId = kSvtDefAscenRemap[id];

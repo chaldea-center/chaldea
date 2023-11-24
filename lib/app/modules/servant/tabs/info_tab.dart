@@ -79,9 +79,7 @@ class SvtInfoTab extends StatelessWidget {
             CustomTableRow.fromChildren(
               children: [
                 Text(
-                  svt.collectionNo == svt.originalCollectionNo
-                      ? 'No.${svt.collectionNo}'
-                      : 'No.${svt.originalCollectionNo}\n${svt.collectionNo}',
+                  svt.isDupSvt ? 'No.${svt.originalCollectionNo}\n${svt.collectionNo}' : 'No.${svt.collectionNo}',
                   textAlign: TextAlign.center,
                 ),
                 Text('No. ${svt.id}', textAlign: TextAlign.center, maxLines: 1),

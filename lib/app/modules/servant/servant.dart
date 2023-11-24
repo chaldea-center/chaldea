@@ -569,7 +569,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
               },
               child: Text(S.current.create_duplicated_svt),
             ),
-          if (svt.collectionNo != svt.originalCollectionNo)
+          if (svt.isDupSvt)
             PopupMenuItem<String>(
               onTap: () {
                 db.curUser.dupServantMapping.remove(svt.collectionNo);

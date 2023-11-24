@@ -70,7 +70,7 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
         return false;
       }
     }
-    if (!filterData.svtDuplicated.matchOne(svt.collectionNo != svt.originalCollectionNo)) {
+    if (!filterData.svtDuplicated.matchOne(svt.isDupSvt)) {
       return false;
     }
     if (!filterData.bond.matchOne(SvtBondStage.fromBond(svtStat.bond))) {
