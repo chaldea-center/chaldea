@@ -170,7 +170,14 @@ class DataVals {
   List<int>? get NotTargetSkillIdArray => _list('NotTargetSkillIdArray');
 
   int? get ShortTurn => _vals['ShortTurn'];
-  int? get FieldIndividuality => _vals['FieldIndividuality'];
+
+  List<int>? get FieldIndividuality {
+    final v = _vals['FieldIndividuality'];
+    if (v is List) return List<int>.from(v);
+    if (v is int) return [v];
+    return null;
+  }
+
   int? get BGId => _vals['BGId'];
   int? get BGType => _vals['BGType'];
   int? get BgmId => _vals['BgmId'];

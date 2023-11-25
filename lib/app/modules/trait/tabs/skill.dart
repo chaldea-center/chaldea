@@ -27,13 +27,13 @@ class _TraitSkillTabState extends State<TraitSkillTab> {
             sval.AddIndividualty,
             sval.AddIndividualityEx,
             sval.CardIndividuality,
-            sval.FieldIndividuality,
             sval.GainNpTargetPassiveIndividuality,
           ].whereType<int>().map((e) => [e]),
           ...<List<int>?>[
             sval.ParamAddOpIndividuality,
             sval.ParamAddSelfIndividuality,
             sval.ParamAddFieldIndividuality,
+            sval.FieldIndividuality,
           ],
         ]) {
           if (val != null && val.toSet().containSubset(widget.ids.toSet())) {

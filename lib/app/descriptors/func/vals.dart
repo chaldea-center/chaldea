@@ -380,7 +380,7 @@ class ValDsc extends StatelessWidget {
           // BuffType.toFieldSubIndividualityField,  // may be in TargetList
         ].contains(buff.type) &&
         vals.FieldIndividuality != null) {
-      // parts.add(Transl.trait(vals.FieldIndividuality!).l);
+      // parts.add(vals.FieldIndividuality!.map((e) => Transl.trait(e).l).join('/'));
       parts.add('');
       return;
     } else {

@@ -661,7 +661,7 @@ class BattleData {
     // final List<int> removeTraitIdsOnField = [];
     for (final buff in fieldBuffs) {
       if (buff.buff.type == BuffType.toFieldChangeField) {
-        traitsOnField.add(NiceTrait(id: buff.vals.FieldIndividuality ?? 0));
+        traitsOnField.addAll((buff.vals.FieldIndividuality ?? []).map((e) => NiceTrait(id: e)));
       } else if (buff.buff.type == BuffType.toFieldSubIndividualityField) {
         //
       }

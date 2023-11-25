@@ -154,6 +154,10 @@ class NiceTrait with RouteInfo {
   };
 }
 
+extension IterableTrait on Iterable<NiceTrait> {
+  List<int> toIntList() => map((e) => e.signedId).toList();
+}
+
 mixin DataScriptBase {
   Map<String, dynamic> _source = {};
   Map<String, dynamic> get source => _source;
@@ -763,6 +767,7 @@ enum Trait {
   // 4103, 迎撃宝具-斬り抉る戦神の剣
   canBeInBattle(5000),
   notBasedOnServant(5010),
+  isSupport(7000), // constants.INDIVIDUALITY_IS_SUPPORT
   eventSaberWars(94000015),
   eventRashomon(94000037),
   eventOnigashima(94000045),

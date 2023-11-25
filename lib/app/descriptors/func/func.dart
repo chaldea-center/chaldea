@@ -766,6 +766,20 @@ class FuncDescriptor extends StatelessWidget {
         );
       }
 
+      InlineSpan _replaceTraits(List<int> traits) {
+        return TextSpan(
+          children: SharedBuilder.replaceSpan(
+            text,
+            '{0}',
+            SharedBuilder.traitSpans(
+              context: context,
+              traits: traits.map((e) => NiceTrait(id: e)).toList(),
+            ),
+          ),
+          style: style,
+        );
+      }
+
       switch (func.funcType) {
         case FuncType.damageNpIndividual:
         case FuncType.damageNpStateIndividualFix:
@@ -851,9 +865,9 @@ class FuncDescriptor extends StatelessWidget {
             }
             break;
           case BuffType.toFieldChangeField:
-            int? indiv = vals?.FieldIndividuality;
-            if (indiv != null) {
-              spans.add(_replaceTrait(indiv));
+            List<int>? indivs = vals?.FieldIndividuality;
+            if (indivs != null) {
+              spans.add(_replaceTraits(indivs));
               return;
             }
             break;
