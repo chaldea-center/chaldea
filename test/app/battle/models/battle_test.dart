@@ -462,12 +462,10 @@ void main() async {
     await battle.activateSvtSkill(0, 2); // lip is stunned
 
     expect(jinako.np, 0);
-    await battle
-        .playerTurn([CombatAction(lip, lip.getCards()[1]), CombatAction(jinako, jinako.getCards()[4])]);
+    await battle.playerTurn([CombatAction(lip, lip.getCards()[1]), CombatAction(jinako, jinako.getCards()[4])]);
     expect(jinako.np, 0);
     expect(lip.canAttack(), isTrue);
-    await battle
-        .playerTurn([CombatAction(lip, lip.getCards()[1]), CombatAction(jinako, jinako.getCards()[4])]);
+    await battle.playerTurn([CombatAction(lip, lip.getCards()[1]), CombatAction(jinako, jinako.getCards()[4])]);
     expect(jinako.np, greaterThan(0));
   });
 
@@ -487,8 +485,7 @@ void main() async {
 
     expect(jinako.np, 0);
     expect(lip.canAttack(), false);
-    await battle
-        .playerTurn([CombatAction(lip, lip.getCards()[1]), CombatAction(jinako, jinako.getCards()[4])]);
+    await battle.playerTurn([CombatAction(lip, lip.getCards()[1]), CombatAction(jinako, jinako.getCards()[4])]);
     expect(jinako.np, greaterThan(0));
   });
 

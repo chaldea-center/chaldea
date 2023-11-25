@@ -147,7 +147,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
       ),
       titlePadding: const EdgeInsetsDirectional.only(start: 16),
       contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
-      trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+      trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context), color: Colors.white),
       onTap: () {
         if (svt.isEnemy) {
           svt.niceEnemy?.routeTo();
@@ -216,6 +216,8 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
             if (svt.niceEnemy != null) '(${svt.niceEnemy!.svt.lName.l})',
           ].join(' ')
         ]),
+        CustomTableRow.fromTexts(
+            texts: ['HP ${svt.hp}/${svt.maxHp} (${(svt.hp / svt.maxHp).format(percent: true, precision: 2)})']),
         if (shiftNpcs.isNotEmpty) ...[
           CustomTableRow.fromTexts(texts: const ['Shift'], isHeader: true),
           CustomTableRow.fromChildren(children: [
@@ -483,4 +485,90 @@ class BattleBuffIcon extends StatelessWidget {
 
 String _dscPercent(int v, int base) {
   return '${(v / base).toString().replaceFirst(RegExp(r'\.0+$'), '')}%';
+}
+
+class BattleSvtAvatar extends StatelessWidget {
+  final BattleServantData svt;
+  final double size;
+  final bool showHpBar;
+  final VoidCallback? onTap;
+  const BattleSvtAvatar({super.key, required this.svt, required this.size, required this.showHpBar, this.onTap});
+
+  static const stdSize = 72.0;
+
+  double sized(double v) => v / stdSize * size;
+
+  @override
+  Widget build(BuildContext context) {
+    List<Widget> children = [];
+    final aspectRatio = svt.isPlayer ? 132 / 144 : 1.0;
+    children.add(Positioned.fill(
+      child: CachedImage(
+        imageUrl: svt.isPlayer ? svt.niceSvt?.ascendIcon(svt.limitCount) : svt.niceEnemy?.icon,
+        height: size,
+        aspectRatio: aspectRatio,
+        cachedOption: CachedImageOption(
+          fit: BoxFit.contain,
+          errorWidget: (ctx, _, __) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
+        ),
+      ),
+    ));
+    if (showHpBar) {
+      children.add(Positioned(
+        top: sized(8),
+        left: sized(18),
+        right: sized(4),
+        child: Container(
+          height: sized(5),
+          clipBehavior: Clip.hardEdge,
+          decoration: const BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.all(Radius.elliptical(3, 3)),
+          ),
+        ),
+      ));
+      children.add(Positioned(
+        top: sized(8),
+        left: sized(18),
+        right: sized(4 + (stdSize - 4 - 18) * (1 - svt.hp / svt.maxHp).clamp(0.0, 1.0)),
+        child: Container(
+          height: sized(5),
+          clipBehavior: Clip.hardEdge,
+          decoration: const BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.horizontal(left: Radius.elliptical(3, 3)),
+          ),
+        ),
+      ));
+      children.add(Positioned(
+        top: sized(7),
+        left: sized(16),
+        right: sized(2),
+        child: const CachedImage(
+          imageUrl:
+              'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/BattleUIAtlas/enemy_frameB.png',
+          cachedOption: CachedImageOption(fit: BoxFit.fitWidth),
+        ),
+      ));
+    }
+    if (svt.isEnemy) {
+      children.add(Positioned(
+        left: sized(1),
+        top: sized(1),
+        child: db.getIconImage(SvtClassX.clsIcon(svt.classId, svt.rarity), width: sized(20)),
+      ));
+    }
+    Widget stack = SizedBox(
+      height: size,
+      width: size * aspectRatio,
+      child: Stack(children: children),
+    );
+    if (onTap != null) {
+      stack = InkWell(
+        onTap: onTap,
+        child: stack,
+      );
+    }
+    return stack;
+  }
 }

@@ -87,15 +87,13 @@ void main() async {
     await battle.playerTurn([CombatAction(altria, altria.getCards()[4])]);
     expect(altria.np, 1000);
 
-    await battle.playerTurn(
-        [CombatAction(altria, altria.getCards()[4]), CombatAction(altria, altria.getCards()[3])]);
+    await battle.playerTurn([CombatAction(altria, altria.getCards()[4]), CombatAction(altria, altria.getCards()[3])]);
     expect(altria.np, 2000);
 
     await battle.playerTurn([CombatAction(altria, altria.getCards()[4])]);
     expect(altria.np, 3000);
 
-    await battle.playerTurn(
-        [CombatAction(altria, altria.getCards()[1]), CombatAction(altria, altria.getCards()[2])]);
+    await battle.playerTurn([CombatAction(altria, altria.getCards()[1]), CombatAction(altria, altria.getCards()[2])]);
   });
 
   test('Test commandCode Clear', () async {

@@ -418,59 +418,10 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         // overflow: TextOverflow.fade,
       ),
     ));
-    final iconImage = svt.isPlayer
-        ? svt.niceSvt!.iconBuilder(
-            context: context,
-            jumpToDetail: false,
-            height: 72,
-            overrideIcon: svt.niceSvt!.ascendIcon(svt.limitCount),
-            option: ImageWithTextOption(
-                errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon)),
-          )
-        : Stack(
-            children: [
-              CachedImage(
-                imageUrl: svt.niceEnemy?.icon,
-                height: 72,
-                aspectRatio: 1,
-                cachedOption: CachedImageOption(
-                  fit: BoxFit.contain,
-                  errorWidget: (ctx, _, __) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
-                ),
-              ),
-              Positioned(
-                top: 8,
-                left: 18,
-                right: 4,
-                child: Container(
-                  height: 5,
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.all(Radius.elliptical(3, 3)),
-                  ),
-                ),
-              ),
-              const Positioned(
-                top: 7,
-                left: 16,
-                right: 2,
-                child: CachedImage(
-                  imageUrl:
-                      'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/BattleUIAtlas/enemy_frameB.png',
-                  cachedOption: CachedImageOption(
-                    fit: BoxFit.fitWidth,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 1,
-                top: 1,
-                child: db.getIconImage(SvtClassX.clsIcon(svt.classId, svt.rarity), width: 20),
-              ),
-            ],
-          );
-    children.add(InkWell(
-      child: iconImage,
+    children.add(BattleSvtAvatar(
+      svt: svt,
+      size: 72,
+      showHpBar: svt.isEnemy,
       onTap: () {
         router.pushPage(BattleSvtDetail(svt: svt, battleData: battleData));
       },

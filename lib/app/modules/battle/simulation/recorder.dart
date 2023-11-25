@@ -1052,11 +1052,13 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
         mainAxisSize: MainAxisSize.min,
         children: [
           Center(
-            child: detail.target.iconBuilder(
-              context: context,
-              width: 42,
-              battleData: battleData,
-              showClsIcon: true,
+            child: BattleSvtAvatar(
+              svt: detail.target,
+              size: 42,
+              showHpBar: true,
+              onTap: () {
+                router.pushPage(BattleSvtDetail(svt: detail.target, battleData: battleData));
+              },
             ),
           ),
           Text(
@@ -1148,9 +1150,13 @@ extension BattleSvtDataUI on BattleServantData {
     VoidCallback? onTap,
     BattleData? battleData,
     bool showClsIcon = false,
+    ImageWithTextOption? option,
   }) {
     final icon = niceEnemy?.icon ?? niceSvt?.ascendIcon(limitCount, true) ?? Atlas.common.unknownEnemyIcon;
     onTap ??= () => router.pushPage(BattleSvtDetail(svt: this, battleData: battleData));
+    option =
+        ImageWithTextOption(errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon))
+            .merge(option);
     Widget child = GameCardMixin.cardIconBuilder(
       context: context,
       icon: icon,
@@ -1159,8 +1165,7 @@ extension BattleSvtDataUI on BattleServantData {
       aspectRatio: aspectRatio ?? (isPlayer ? 132 / 144 : 1),
       onTap: onTap,
       text: text,
-      option: ImageWithTextOption(
-          errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon)),
+      option: option,
     );
     final dim = width ?? height;
     if (showClsIcon && (dim != null) && !icon.contains('_bordered.png')) {
@@ -1482,6 +1487,9 @@ class _InstantDeathDetailWidget extends StatelessWidget with MultiTargetsWrapper
 
   const _InstantDeathDetailWidget({this.battleData, required this.record});
 
+  bool get isKillSelf =>
+      record.targets.length == 1 && record.targets.single.target.uniqueId == record.activator?.uniqueId;
+
   @override
   Widget build(BuildContext context) {
     return buildContent(
@@ -1503,12 +1511,15 @@ class _InstantDeathDetailWidget extends StatelessWidget with MultiTargetsWrapper
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Center(child: actor.iconBuilder(context: context, width: 48, battleData: battleData)),
-          Text(
-            actor.lBattleName,
-            maxLines: 1,
-            style: Theme.of(context).textTheme.bodySmall,
-            textAlign: TextAlign.center,
+          if (!isKillSelf) Center(child: actor.iconBuilder(context: context, width: 48, battleData: battleData)),
+          InkWell(
+            onTap: () => router.pushPage(BattleSvtDetail(svt: actor, battleData: battleData)),
+            child: Text(
+              actor.lBattleName,
+              maxLines: 1,
+              style: Theme.of(context).textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
           ),
           coloredText(S.current.instant_death, null),
         ],
@@ -1534,12 +1545,16 @@ class _InstantDeathDetailWidget extends StatelessWidget with MultiTargetsWrapper
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Center(child: detail.target.iconBuilder(context: context, width: 48, battleData: battleData)),
-          Text(
-            detail.target.lBattleName,
-            maxLines: 1,
-            style: Theme.of(context).textTheme.bodySmall,
-            textAlign: TextAlign.center,
+          if (!isKillSelf)
+            Center(child: detail.target.iconBuilder(context: context, width: 48, battleData: battleData)),
+          InkWell(
+            onTap: () => router.pushPage(BattleSvtDetail(svt: detail.target, battleData: battleData)),
+            child: Text(
+              detail.target.lBattleName,
+              maxLines: 1,
+              style: Theme.of(context).textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
           ),
           if (params.success)
             coloredText(
