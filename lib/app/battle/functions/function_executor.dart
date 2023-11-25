@@ -61,6 +61,9 @@ class FunctionExecutor {
       } else if (actSets.isNotEmpty && battleData.mounted) {
         selectedActSet = await FuncActSetSelector.show(battleData, actSets);
         battleData.replayDataRecord.actWeightSelections.add(selectedActSet);
+        if (selectedActSet != null && selectedActSet > 0) {
+          battleData.recorder.setIllegal("ActSetWeight: Must skip random effects");
+        }
       }
       for (int index = 0; index < functions.length; index += 1) {
         NiceFunction func = functions[index];
