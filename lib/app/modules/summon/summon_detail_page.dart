@@ -144,9 +144,10 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           CustomTableRow.fromTexts(
               texts: ['${S.current.lucky_bag}(${summon.type == SummonType.gssrsr ? 'SSR+SR' : 'SSR'})'])
       ]),
-      if (summon.subSummons.length > 1) dropdownButton,
-      if (summon.subSummons.isNotEmpty) gachaDetails,
-      if (summon.subSummons.isNotEmpty)
+      if (summon.subSummons.isEmpty && (summon.puSvt.isNotEmpty || summon.puCE.isNotEmpty)) pickupOverviewOnDetail,
+      if (summon.subSummons.isNotEmpty) ...[
+        if (summon.subSummons.length > 1) dropdownButton,
+        gachaDetails,
         Padding(
           padding: const EdgeInsets.only(bottom: 8, left: 16),
           child: Row(
@@ -162,18 +163,19 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             ],
           ),
         ),
-      if (curIndex >= 0 && summon.subSummons.isNotEmpty)
-        Center(
-          child: ExpandIcon(
-            isExpanded: _expanded,
-            onPressed: (v) {
-              setState(() {
-                _expanded = !v;
-              });
-            },
-            padding: EdgeInsets.zero,
+        if (curIndex >= 0)
+          Center(
+            child: ExpandIcon(
+              isExpanded: _expanded,
+              onPressed: (v) {
+                setState(() {
+                  _expanded = !v;
+                });
+              },
+              padding: EdgeInsets.zero,
+            ),
           ),
-        ),
+      ],
       if (relatedEvents.isNotEmpty)
         TileGroup(
           header: S.current.event,
@@ -257,8 +259,8 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     final data = summon.subSummons[curIndex];
 
     List<Widget> children = [];
-    data.probs.forEach((block) {
-      if (!_expanded && !block.display) return;
+    for (final block in data.probs) {
+      if (!_expanded && !block.display) continue;
       children.add(Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SummonUtil.buildBlock(
@@ -266,7 +268,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           block: block,
         ),
       ));
-    });
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -280,9 +282,9 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       if (ids.length == 1) {
         map[ids.single] = true;
       } else {
-        ids.forEach((id) {
+        for (final id in ids) {
           map[id] = false;
-        });
+        }
       }
     }
 
@@ -290,13 +292,13 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       children.add(SHeader(S.current.overview));
       for (int rarity in [5, 4, 3]) {
         Set<int> pickups = {};
-        summon.subSummons.forEach((data) {
-          data.svts.forEach((block) {
+        for (final data in summon.subSummons) {
+          for (final block in data.svts) {
             if (block.display && block.rarity == rarity) {
               pickups.addAll(block.ids);
             }
-          });
-        });
+          }
+        }
         children.add(Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           child: Wrap(
@@ -320,13 +322,13 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       children.add(SHeader(SummonUtil.summonNameLocalize(data.title)));
       Map<int, bool> svtIds = {};
       if (summon.isLuckyBag) {
-        data.svts.where((block) => block.rarity == 5).forEach((block) {
+        for (final block in data.svts.where((block) => block.rarity == 5)) {
           _addTo(svtIds, block.ids);
-        });
+        }
       } else {
-        data.probs.where((block) => block.display && block.isSvt).forEach((block) {
+        for (final block in data.probs.where((block) => block.display && block.isSvt)) {
           _addTo(svtIds, block.ids);
-        });
+        }
       }
       children.add(Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -340,6 +342,52 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
                   star: entry.value,
                   favorite: db.curUser.svtStatusOf(entry.key).favorite))
               .toList(),
+        ),
+      ));
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
+    );
+  }
+
+  Widget get pickupOverviewOnDetail {
+    List<Widget> children = [];
+    if (summon.puSvt.isNotEmpty) {
+      children.add(SHeader(S.current.servant));
+      children.add(Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+        child: Wrap(
+          spacing: 4,
+          runSpacing: 4,
+          children: [
+            for (final id in summon.puSvt)
+              SummonUtil.svtAvatar(
+                context: context,
+                card: db.gameData.servantsNoDup[id],
+                star: summon.hasSinglePickupSvt(id),
+                favorite: db.curUser.svtStatusOf(id).favorite,
+              )
+          ],
+        ),
+      ));
+    }
+    if (summon.puCE.isNotEmpty) {
+      children.add(SHeader(S.current.craft_essence));
+      children.add(Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+        child: Wrap(
+          spacing: 4,
+          runSpacing: 4,
+          children: [
+            for (final id in summon.puCE)
+              SummonUtil.svtAvatar(
+                context: context,
+                card: db.gameData.craftEssences[id],
+                favorite: db.curUser.ceStatusOf(id).favorite,
+              )
+          ],
         ),
       ));
     }

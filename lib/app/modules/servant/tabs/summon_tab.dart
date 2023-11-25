@@ -20,8 +20,7 @@ class _SvtSummonTabState extends State<SvtSummonTab> {
   Widget build(BuildContext context) {
     List<LimitedSummon> summons = [];
     for (final summon in db.gameData.wiki.summons.values) {
-      if (summon.allCards(svt: true, includeGSSR: includeGSSR).contains(widget.svt.collectionNo) &&
-          summon.startTime.jp != null) {
+      if (summon.hasPickupSvt(widget.svt.collectionNo) && summon.startTime.jp != null) {
         summons.add(summon);
       }
     }
@@ -68,6 +67,7 @@ class _SvtSummonTabState extends State<SvtSummonTab> {
         TextSpan(children: [
           if (summon.hasSinglePickupSvt(widget.svt.collectionNo))
             TextSpan(text: kStarChar, style: TextStyle(color: Colors.yellow[800])),
+          if (summon.subSummons.isEmpty) const TextSpan(text: '(?)'),
           TextSpan(
             text: summon.lName.l,
             style: outdated ? TextStyle(color: Theme.of(context).textTheme.bodySmall?.color) : null,

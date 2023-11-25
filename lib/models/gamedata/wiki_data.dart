@@ -362,6 +362,8 @@ class LimitedSummon with RouteInfo {
   MappingBase<int> endTime;
   SummonType type;
   int rollCount;
+  List<int> puSvt;
+  List<int> puCE;
   List<SubSummon> subSummons;
 
   LimitedSummon({
@@ -377,6 +379,8 @@ class LimitedSummon with RouteInfo {
     MappingBase<int>? endTime,
     this.type = SummonType.unknown,
     this.rollCount = 11,
+    this.puSvt = const [],
+    this.puCE = const [],
     this.subSummons = const [],
   })  : name = name is String ? name : (name_ ?? id.toString()),
         name_ = name_ ?? id.toString(),
@@ -419,9 +423,25 @@ class LimitedSummon with RouteInfo {
     return cards;
   }
 
+  bool hasPickupSvt(int id, {bool includeGSSR = true}) {
+    if (subSummons.isNotEmpty) {
+      return allCards(svt: true, includeGSSR: includeGSSR).contains(id);
+    } else {
+      return puSvt.contains(id);
+    }
+  }
+
+  bool hasPickupCE(int id) {
+    if (subSummons.isNotEmpty) {
+      return allCards(ce: true).contains(id);
+    } else {
+      return puCE.contains(id);
+    }
+  }
+
   bool hasSinglePickupSvt(int id) {
-    for (var data in subSummons) {
-      for (var block in data.probs) {
+    for (final data in subSummons) {
+      for (final block in data.probs) {
         if (block.ids.length == 1 && block.ids.single == id) {
           return true;
         }

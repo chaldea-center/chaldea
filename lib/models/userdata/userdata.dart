@@ -727,6 +727,8 @@ class CraftStatus {
     this.limitCount = 0,
   });
 
+  bool get favorite => status == CraftStatus.owned;
+
   void validate(int? maxLv) {
     status = status.clamp(0, 2);
     limitCount = limitCount.clamp(0, 4);

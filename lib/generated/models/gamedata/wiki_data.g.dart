@@ -231,6 +231,8 @@ LimitedSummon _$LimitedSummonFromJson(Map json) => LimitedSummon(
           json['endTime'] == null ? null : MappingBase<int>.fromJson(Map<String, dynamic>.from(json['endTime'] as Map)),
       type: $enumDecodeNullable(_$SummonTypeEnumMap, json['type']) ?? SummonType.unknown,
       rollCount: json['rollCount'] as int? ?? 11,
+      puSvt: (json['puSvt'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      puCE: (json['puCE'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       subSummons: (json['subSummons'] as List<dynamic>?)
               ?.map((e) => SubSummon.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??

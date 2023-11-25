@@ -508,12 +508,9 @@ class CraftDetailBasePage extends StatelessWidget {
   }
 
   List<LimitedSummon> getPickupSummons() {
-    List<LimitedSummon> summons = [];
-    db.gameData.wiki.summons.forEach((key, summon) {
-      if (summon.allCards(ce: true).contains(ce.collectionNo)) {
-        summons.add(summon);
-      }
-    });
+    List<LimitedSummon> summons =
+        db.gameData.wiki.summons.values.where((summon) => summon.hasPickupCE(ce.collectionNo)).toList();
+    summons.sort2((e) => e.startTime.jp ?? 0, reversed: true);
     return summons;
   }
 
