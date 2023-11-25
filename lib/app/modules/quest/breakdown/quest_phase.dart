@@ -276,7 +276,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                       context: context,
                       item: itemAmount.item,
                       text: itemAmount.amount.format(),
-                      width: 28,
+                      width: 20,
                     ),
                   )
               ]),

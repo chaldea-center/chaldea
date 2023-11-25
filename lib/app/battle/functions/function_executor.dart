@@ -335,7 +335,6 @@ class FunctionExecutor {
           UpdateEntryPositions.updateEntryPositions(battleData, dataVals);
           break;
         case FuncType.updateEnemyEntryMaxCountEachTurn:
-        // TODO: unimplemented FuncTypes
         case FuncType.damageValue:
         case FuncType.damageNpCounter:
         case FuncType.damageValueSafe:

@@ -24,27 +24,29 @@ class Buff with RouteInfo {
   @BuffTypeConverter()
   final BuffType type;
   final int buffGroup;
-  final BuffScript? script;
+  final BuffScript script;
+  Map<String, dynamic> get originalScript => script.source;
   final List<NiceTrait> vals;
-  // final List<NiceTrait> tvals; // not for game play
+  final List<NiceTrait> tvals; // not for game play
   final List<NiceTrait> ckSelfIndv;
   final List<NiceTrait> ckOpIndv;
   final int maxRate; // don't set default value in api-c
 
-  const Buff({
+  Buff({
     required this.id,
     required this.name,
     required this.detail,
     this.icon,
     this.type = BuffType.unknown,
     this.buffGroup = 0,
-    this.script,
+    BuffScript? script,
+    Map<String, dynamic>? originalScript,
     this.vals = const [],
-    // this.tvals = const [],
+    this.tvals = const [],
     this.ckSelfIndv = const [],
     this.ckOpIndv = const [],
     this.maxRate = 0,
-  });
+  }) : script = (script ?? BuffScript())..setSource(originalScript);
 
   @override
   String get route => Routes.buffI(id);
@@ -143,45 +145,39 @@ class BuffScript with DataScriptBase {
   NiceTrait? TargetIndiv;
   BuffConvert? convert;
 
-  String? ReleaseText;
-  int? DamageRelease; // remove this buff when receive damage
-  int? HP_LOWER; // Passionlip
-  int? HP_HIGHER; // buff 5297
-  String? CounterMessage;
-  String? avoidanceText;
-  String? gutsText;
-  String? missText;
-  int? AppId;
-  int? IncludeIgnoreIndividuality;
-  int? ProgressSelfTurn;
-  int? extendLowerLimit;
+  String? get ReleaseText => source['ReleaseText'];
+  int? get DamageRelease => toInt('DamageRelease'); // remove this buff when receive damage
+  int? get HP_LOWER => toInt('HP_LOWER'); // Passionlip
+  int? get HP_HIGHER => toInt('HP_HIGHER'); // buff 5297
+  String? get CounterMessage => source['CounterMessage'];
+  String? get avoidanceText => source['avoidanceText'];
+  String? get gutsText => source['gutsText'];
+  String? get missText => source['missText'];
+  int? get AppId => toInt('AppId');
+  int? get IncludeIgnoreIndividuality => toInt('IncludeIgnoreIndividuality');
+  int? get ProgressSelfTurn => toInt('ProgressSelfTurn');
+  int? get extendLowerLimit => toInt('extendLowerLimit');
+
+  int? get IndvAddBuffPassive => toInt('IndvAddBuffPassive');
+  List<int>? get ckSelfCountIndividuality => toList('ckSelfCountIndividuality');
+  List<int>? get ckOpCountIndividuality => toList('ckOpCountIndividuality');
+  int? get ckIndvCountAbove => toInt('ckIndvCountAbove');
+  int? get ckIndvCountBelow => toInt('ckIndvCountBelow');
 
   BuffScript({
     this.checkIndvType,
     this.CheckOpponentBuffTypes,
     this.relationId,
-    this.ReleaseText,
-    this.DamageRelease,
     this.INDIVIDUALITIE,
     this.INDIVIDUALITIE_COUNT_ABOVE,
     this.INDIVIDUALITIE_AND,
     this.INDIVIDUALITIE_OR,
     this.UpBuffRateBuffIndiv,
-    this.HP_LOWER,
-    this.HP_HIGHER,
-    this.CounterMessage,
-    this.avoidanceText,
-    this.gutsText,
-    this.missText,
-    this.AppId,
-    this.IncludeIgnoreIndividuality,
-    this.ProgressSelfTurn,
     this.TargetIndiv,
-    this.extendLowerLimit,
     this.convert,
   });
 
-  factory BuffScript.fromJson(Map<String, dynamic> json) => _$BuffScriptFromJson(json)..setSource(json);
+  factory BuffScript.fromJson(Map<String, dynamic> json) => _$BuffScriptFromJson(json);
 
   Map<String, dynamic> toJson() => Map.from(source);
 }

@@ -162,7 +162,8 @@ mixin DataScriptBase {
   Map<String, dynamic> _source = {};
   Map<String, dynamic> get source => _source;
   void setSource(Map<String, dynamic>? json) => json == null ? null : _source = Map.from(json);
-  List<T>? list<T>(String key) => (_source[key] as List<dynamic>?)?.cast();
+  List<T>? toList<T>(String key) => (_source[key] as List<dynamic>?)?.cast();
+  int? toInt(String key) => (_source[key] as int?);
 }
 
 @JsonSerializable()

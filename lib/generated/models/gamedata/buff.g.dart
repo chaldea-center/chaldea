@@ -14,7 +14,14 @@ Buff _$BuffFromJson(Map json) => Buff(
       type: json['type'] == null ? BuffType.unknown : const BuffTypeConverter().fromJson(json['type'] as String),
       buffGroup: json['buffGroup'] as int? ?? 0,
       script: json['script'] == null ? null : BuffScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
+      originalScript: (json['originalScript'] as Map?)?.map(
+        (k, e) => MapEntry(k as String, e),
+      ),
       vals: (json['vals'] as List<dynamic>?)
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      tvals: (json['tvals'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
@@ -36,8 +43,10 @@ Map<String, dynamic> _$BuffToJson(Buff instance) => <String, dynamic>{
       'icon': instance.icon,
       'type': const BuffTypeConverter().toJson(instance.type),
       'buffGroup': instance.buffGroup,
-      'script': instance.script?.toJson(),
+      'script': instance.script.toJson(),
+      'originalScript': instance.originalScript,
       'vals': instance.vals.map((e) => e.toJson()).toList(),
+      'tvals': instance.tvals.map((e) => e.toJson()).toList(),
       'ckSelfIndv': instance.ckSelfIndv.map((e) => e.toJson()).toList(),
       'ckOpIndv': instance.ckOpIndv.map((e) => e.toJson()).toList(),
       'maxRate': instance.maxRate,
@@ -93,8 +102,6 @@ BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
       relationId: json['relationId'] == null
           ? null
           : BuffRelationOverwrite.fromJson(Map<String, dynamic>.from(json['relationId'] as Map)),
-      ReleaseText: json['ReleaseText'] as String?,
-      DamageRelease: json['DamageRelease'] as int?,
       INDIVIDUALITIE: json['INDIVIDUALITIE'] == null
           ? null
           : NiceTrait.fromJson(Map<String, dynamic>.from(json['INDIVIDUALITIE'] as Map)),
@@ -108,19 +115,9 @@ BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
       UpBuffRateBuffIndiv: (json['UpBuffRateBuffIndiv'] as List<dynamic>?)
           ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
-      HP_LOWER: json['HP_LOWER'] as int?,
-      HP_HIGHER: json['HP_HIGHER'] as int?,
-      CounterMessage: json['CounterMessage'] as String?,
-      avoidanceText: json['avoidanceText'] as String?,
-      gutsText: json['gutsText'] as String?,
-      missText: json['missText'] as String?,
-      AppId: json['AppId'] as int?,
-      IncludeIgnoreIndividuality: json['IncludeIgnoreIndividuality'] as int?,
-      ProgressSelfTurn: json['ProgressSelfTurn'] as int?,
       TargetIndiv: json['TargetIndiv'] == null
           ? null
           : NiceTrait.fromJson(Map<String, dynamic>.from(json['TargetIndiv'] as Map)),
-      extendLowerLimit: json['extendLowerLimit'] as int?,
       convert: json['convert'] == null ? null : BuffConvert.fromJson(Map<String, dynamic>.from(json['convert'] as Map)),
     );
 

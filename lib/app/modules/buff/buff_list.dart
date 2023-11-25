@@ -87,8 +87,8 @@ class _BuffListPageState extends State<BuffListPage> with SearchableListState<Bu
       ...buff.vals,
       ...buff.ckSelfIndv,
       ...buff.ckOpIndv,
-      if (buff.script?.INDIVIDUALITIE != null) buff.script!.INDIVIDUALITIE!,
-      if (buff.script?.UpBuffRateBuffIndiv != null) ...buff.script!.UpBuffRateBuffIndiv!,
+      if (buff.script.INDIVIDUALITIE != null) buff.script.INDIVIDUALITIE!,
+      if (buff.script.UpBuffRateBuffIndiv != null) ...buff.script.UpBuffRateBuffIndiv!,
     ].map((e) => e.id))) {
       return false;
     }

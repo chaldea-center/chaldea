@@ -755,7 +755,7 @@ class Gift extends BaseGift {
 }
 
 @JsonSerializable()
-class Stage {
+class Stage with DataScriptBase {
   int wave;
   Bgm? bgm;
 
@@ -768,7 +768,7 @@ class Stage {
   // ignore: non_constant_identifier_names
   List<int>? NoEntryIds;
   List<StageStartMovie> waveStartMovies;
-  Map<String, dynamic>? originalScript;
+  Map<String, dynamic> get originalScript => source;
   List<QuestEnemy> enemies;
 
   Stage({
@@ -783,20 +783,22 @@ class Stage {
     // ignore: non_constant_identifier_names
     this.NoEntryIds,
     this.waveStartMovies = const [],
-    this.originalScript,
+    Map<String, dynamic>? originalScript,
     List<QuestEnemy>? enemies,
   })  : fieldAis = fieldAis ?? [],
         call = call ?? [],
-        enemies = enemies ?? [];
+        enemies = enemies ?? [] {
+    setSource(originalScript);
+  }
 
   factory Stage.fromJson(Map<String, dynamic> json) => _$StageFromJson(json);
 
   int get enemyFieldPosCountReal => enemyFieldPosCount ?? 3;
 
-  int? get enemyMasterBattleId => originalScript?['enemyMasterBattleId'];
-  List<int>? get enemyMasterBattleIdByPlayerGender => toList(originalScript?['enemyMasterBattleIdByPlayerGender']);
+  int? get enemyMasterBattleId => toInt('enemyMasterBattleId');
+  List<int>? get enemyMasterBattleIdByPlayerGender => toList('enemyMasterBattleIdByPlayerGender');
   // mstBattleMasterImage.id
-  int? get battleMasterImageId => originalScript?['battleMasterImageId'];
+  int? get battleMasterImageId => toInt('battleMasterImageId');
 
   Map<String, dynamic> toJson() => _$StageToJson(this);
 }
@@ -1216,9 +1218,9 @@ class QuestEnemy with GameCardMixin {
 
   EnemyAi? ai;
   EnemyScript enemyScript;
-  Map<String, dynamic>? originalEnemyScript;
-  EnemyInfoScript? infoScript;
-  Map<String, dynamic>? originalInfoScript;
+  Map<String, dynamic> get originalEnemyScript => enemyScript.source;
+  EnemyInfoScript infoScript;
+  Map<String, dynamic> get originalInfoScript => infoScript.source;
 
   EnemyLimit limit;
   EnemyMisc? misc;
@@ -1253,9 +1255,9 @@ class QuestEnemy with GameCardMixin {
     EnemyServerMod? serverMod,
     this.ai,
     EnemyScript? enemyScript,
-    this.originalEnemyScript,
-    this.infoScript,
-    this.originalInfoScript,
+    Map<String, dynamic>? originalEnemyScript,
+    EnemyInfoScript? infoScript,
+    Map<String, dynamic>? originalInfoScript,
     EnemyLimit? limit,
     this.misc,
   })  : traits = traits ?? [],
@@ -1263,7 +1265,8 @@ class QuestEnemy with GameCardMixin {
         classPassive = classPassive ?? EnemyPassive(),
         noblePhantasm = noblePhantasm ?? EnemyTd(),
         serverMod = serverMod ?? EnemyServerMod(),
-        enemyScript = (enemyScript ?? EnemyScript())..originalScript = originalEnemyScript ?? {},
+        enemyScript = (enemyScript ?? EnemyScript())..setSource(originalEnemyScript),
+        infoScript = (infoScript ?? EnemyInfoScript())..setSource(originalInfoScript),
         limit = limit ?? EnemyLimit();
 
   static QuestEnemy blankEnemy() {
@@ -1409,10 +1412,7 @@ class EnemyScript with DataScriptBase {
   List<int>? call; // npcId
   List<int>? shift; // npcId
   List<NiceTrait>? shiftClear;
-  List<int>? get change => toList(originalScript['change']);
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  Map<String, dynamic> originalScript = {};
+  List<int>? get change => toList('change');
 
   EnemyScript({
     this.deathType,
@@ -1423,24 +1423,22 @@ class EnemyScript with DataScriptBase {
     this.shiftClear,
   });
 
-  bool get isRare => originalScript['probability_type'] == 1;
+  bool get isRare => toInt('probability_type') == 1;
 
-  int? get dispBreakShift => originalScript['dispBreakShift'] as int?;
+  int? get dispBreakShift => toInt('dispBreakShift');
 
-  factory EnemyScript.fromJson(Map<String, dynamic> json) => _$EnemyScriptFromJson(json)..setSource(json);
+  factory EnemyScript.fromJson(Map<String, dynamic> json) => _$EnemyScriptFromJson(json);
 
   Map<String, dynamic> toJson() => _$EnemyScriptToJson(this);
 }
 
 @JsonSerializable(includeIfNull: false)
 class EnemyInfoScript with DataScriptBase {
-  bool? isAddition;
+  bool get isAddition => toInt('isAddition') == 1;
 
-  EnemyInfoScript({
-    this.isAddition,
-  });
+  EnemyInfoScript();
 
-  factory EnemyInfoScript.fromJson(Map<String, dynamic> json) => _$EnemyInfoScriptFromJson(json)..setSource(json);
+  factory EnemyInfoScript.fromJson(Map<String, dynamic> json) => _$EnemyInfoScriptFromJson(json);
 
   Map<String, dynamic> toJson() => _$EnemyInfoScriptToJson(this);
 }

@@ -1139,7 +1139,7 @@ class BattleServantData {
     for (final buff in buffs.reversed) {
       if (await buff.shouldActivateBuff(battleData, this, other)) {
         buff.setUsed();
-        final relationOverwrite = buff.buff.script!.relationId!;
+        final relationOverwrite = buff.buff.script.relationId!;
         final overwrite = isTarget
             ? relationOverwrite.defSide2.containsKey(other.classId)
                 ? relationOverwrite.defSide2[other.classId]![classId]

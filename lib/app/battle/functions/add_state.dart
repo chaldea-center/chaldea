@@ -61,7 +61,7 @@ class AddState {
             .getFirstBuffOnActions(battleData, [BuffAction.buffConvert])
             ?.buff
             .script
-            ?.convert
+            .convert
             ?.convertBuffs
             .firstOrNull;
         if (convertBuff != null) {

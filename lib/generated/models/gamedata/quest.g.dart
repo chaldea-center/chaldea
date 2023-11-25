@@ -783,7 +783,7 @@ Map<String, dynamic> _$QuestEnemyToJson(QuestEnemy instance) => <String, dynamic
       'ai': instance.ai?.toJson(),
       'enemyScript': instance.enemyScript.toJson(),
       'originalEnemyScript': instance.originalEnemyScript,
-      'infoScript': instance.infoScript?.toJson(),
+      'infoScript': instance.infoScript.toJson(),
       'originalInfoScript': instance.originalInfoScript,
       'limit': instance.limit.toJson(),
       'misc': instance.misc?.toJson(),
@@ -856,22 +856,9 @@ const _$EnemyDeathTypeEnumMap = {
   EnemyDeathType.energy: 'energy',
 };
 
-EnemyInfoScript _$EnemyInfoScriptFromJson(Map json) => EnemyInfoScript(
-      isAddition: json['isAddition'] as bool?,
-    );
+EnemyInfoScript _$EnemyInfoScriptFromJson(Map json) => EnemyInfoScript();
 
-Map<String, dynamic> _$EnemyInfoScriptToJson(EnemyInfoScript instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('isAddition', instance.isAddition);
-  return val;
-}
+Map<String, dynamic> _$EnemyInfoScriptToJson(EnemyInfoScript instance) => <String, dynamic>{};
 
 EnemySkill _$EnemySkillFromJson(Map json) => EnemySkill(
       skillId1: json['skillId1'] as int? ?? 0,

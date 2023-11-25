@@ -43,9 +43,9 @@ void checkSvtData(final String path, final Servant svtData) {
 
         if (function.buff != null) {
           final buff = function.buff!;
-          final scriptCheck = buff.script != null && buff.script!.source.isNotEmpty;
+          final scriptCheck = buff.script.source.isNotEmpty;
           checkStrings.add('Buff in function has type [${buff.type}]'
-              '${scriptCheck ? ' and script [${buff.script!.source}]' : ''}');
+              '${scriptCheck ? ' and script [${buff.script.source}]' : ''}');
         }
       }
       checkStrings.add('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
@@ -71,9 +71,9 @@ void checkSvtData(final String path, final Servant svtData) {
           'DataVal sample: ${function.svals.last.toJson()}');
       if (function.buff != null) {
         final buff = function.buff!;
-        final scriptCheck = buff.script != null && buff.script!.source.isNotEmpty;
+        final scriptCheck = buff.script.source.isNotEmpty;
         checkStrings.add('Buff in function has type [${buff.type}]'
-            '${scriptCheck ? ' and script [${buff.script!.source}]' : ''}');
+            '${scriptCheck ? ' and script [${buff.script.source}]' : ''}');
       }
     }
     checkStrings.add('===============================================================');
@@ -121,14 +121,14 @@ void checkByType(final String path) {
 
       if (function.buff != null) {
         final buff = function.buff!;
-        final scriptCheck = buff.script != null && buff.script!.source.isNotEmpty;
+        final scriptCheck = buff.script.source.isNotEmpty;
 
         if (!buffTypeToScripts.containsKey(buff.type.name)) {
           buffTypeToScripts[buff.type.name] = {};
         }
         final scriptKeys = buffTypeToScripts[buff.type.name]!;
         if (scriptCheck) {
-          for (final entry in buff.script!.source.entries) {
+          for (final entry in buff.script.source.entries) {
             if (!scriptKeys.containsKey(entry.key)) {
               scriptKeys[entry.key] = [];
             }

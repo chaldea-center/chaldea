@@ -189,7 +189,7 @@ class BuffData {
   }
 
   bool shouldActivateDonotActCommandtype(final CommandCardData card) {
-    final checkIndvType = buff.script?.checkIndvType ?? 0;
+    final checkIndvType = buff.script.checkIndvType ?? 0;
     final positiveMatchFunction = checkIndvType == 1 || checkIndvType == 3 ? allMatch : partialMatch;
     final negativeMatchFunction = checkIndvType == 1 || checkIndvType == 3 ? allMatch : partialMatch;
     return checkTraitFunction(
@@ -215,12 +215,12 @@ class BuffData {
       case BuffType.subIndividuality:
         return true;
       default:
-        final checkIndvType = buff.script?.checkIndvType ?? 0;
+        final checkIndvType = buff.script.checkIndvType ?? 0;
         final positiveMatchFunction = checkIndvType == 1 || checkIndvType == 3 ? allMatch : partialMatch;
         final negativeMatchFunction = checkIndvType == 1 || checkIndvType == 3 ? allMatch : partialMatch;
         final activeOnly = activeOnlyTypes.contains(buff.type);
         final ignoreIrremovable = vals.IgnoreIndivUnreleaseable == 1;
-        final checkActorNpTraits = buff.script?.IncludeIgnoreIndividuality == 1;
+        final checkActorNpTraits = buff.script.IncludeIgnoreIndividuality == 1;
 
         final selfCheck = battleData.checkTraits(CheckTraitParameters(
           requiredTraits: buff.ckSelfIndv,
@@ -288,11 +288,11 @@ class BuffData {
   }
 
   bool checkBuffScript(final BattleData battleData) {
-    if (buff.script == null) {
+    if (buff.script.source.isEmpty) {
       return true;
     }
 
-    final script = buff.script!;
+    final script = buff.script;
 
     if (script.UpBuffRateBuffIndiv != null && battleData.currentBuff != null) {
       final isCurrentBuffMatch = battleData.checkTraits(CheckTraitParameters(
@@ -358,15 +358,15 @@ class BuffData {
     bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) positiveMatchFunction = partialMatch;
     bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) negativeMatchFunction = partialMatch;
 
-    if (buff.script?.INDIVIDUALITIE != null) {
-      requiredTraits = [buff.script!.INDIVIDUALITIE!];
-      requireAtLeast = buff.script?.INDIVIDUALITIE_COUNT_ABOVE;
-    } else if (buff.script?.INDIVIDUALITIE_AND != null) {
-      requiredTraits = buff.script!.INDIVIDUALITIE_AND!;
+    if (buff.script.INDIVIDUALITIE != null) {
+      requiredTraits = [buff.script.INDIVIDUALITIE!];
+      requireAtLeast = buff.script.INDIVIDUALITIE_COUNT_ABOVE;
+    } else if (buff.script.INDIVIDUALITIE_AND != null) {
+      requiredTraits = buff.script.INDIVIDUALITIE_AND!;
       positiveMatchFunction = allMatch;
       negativeMatchFunction = allMatch;
-    } else if (buff.script?.INDIVIDUALITIE_OR != null) {
-      requiredTraits = buff.script!.INDIVIDUALITIE_OR!;
+    } else if (buff.script.INDIVIDUALITIE_OR != null) {
+      requiredTraits = buff.script.INDIVIDUALITIE_OR!;
     }
 
     if (requiredTraits != null) {
@@ -383,7 +383,7 @@ class BuffData {
     }
 
     // written based on Chen Gong np & passive. Right now only Chen Gong uses this
-    if (vals.OnFieldCount == -1 && buff.script?.TargetIndiv != null) {
+    if (vals.OnFieldCount == -1 && buff.script.TargetIndiv != null) {
       isAct &= battleData.checkTraits(CheckTraitParameters(
         requiredTraits: buff.ckSelfIndv,
         actor: owner,
@@ -397,7 +397,7 @@ class BuffData {
           .where((svt) =>
               svt != owner &&
               battleData.checkTraits(CheckTraitParameters(
-                requiredTraits: [buff.script!.TargetIndiv!],
+                requiredTraits: [buff.script.TargetIndiv!],
                 actor: svt,
                 checkActorTraits: true,
                 checkActorBuffTraits: true, // buff.script?.IncludeIgnoreIndividuality == 1,
@@ -405,14 +405,14 @@ class BuffData {
           .isEmpty;
     }
 
-    if (buff.script?.HP_HIGHER != null) {
+    if (buff.script.HP_HIGHER != null) {
       final int hpRatio = (owner.hp / owner.maxHp * 1000).toInt();
-      isAct &= hpRatio >= buff.script!.HP_HIGHER!;
+      isAct &= hpRatio >= buff.script.HP_HIGHER!;
     }
 
-    if (buff.script?.HP_LOWER != null) {
+    if (buff.script.HP_LOWER != null) {
       final int hpRatio = (owner.hp / owner.maxHp * 1000).toInt();
-      isAct &= hpRatio <= buff.script!.HP_LOWER!;
+      isAct &= hpRatio <= buff.script.HP_LOWER!;
     }
 
     if (isAct) {

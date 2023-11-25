@@ -38,10 +38,10 @@ class _TraitBuffTabState extends State<TraitBuffTab> {
         if (Individuality.containsAllAB(buff.ckOpIndv, widget.ids)) _BuffCheckPos.ckOpp,
         if (Individuality.containsAllAB(
             <NiceTrait?>[
-              buff.script?.INDIVIDUALITIE,
-              ...?buff.script?.INDIVIDUALITIE_AND,
-              ...?buff.script?.INDIVIDUALITIE_OR,
-              ...buff.script?.UpBuffRateBuffIndiv ?? [],
+              buff.script.INDIVIDUALITIE,
+              ...?buff.script.INDIVIDUALITIE_AND,
+              ...?buff.script.INDIVIDUALITIE_OR,
+              ...buff.script.UpBuffRateBuffIndiv ?? [],
             ].whereType<NiceTrait>().toList(),
             widget.ids))
           _BuffCheckPos.script,
@@ -115,14 +115,14 @@ class _TraitBuffTabState extends State<TraitBuffTab> {
           if (positions.contains(_BuffCheckPos.vals)) _traits('vals', buff.vals),
           if (positions.contains(_BuffCheckPos.ckSelf)) _traits('ckSelf', buff.ckSelfIndv),
           if (positions.contains(_BuffCheckPos.ckOpp)) _traits('ckOpp', buff.ckOpIndv),
-          if (widget.ids.length == 1 && buff.script?.INDIVIDUALITIE?.id == widget.ids.firstOrNull)
-            _traits('owner', [buff.script!.INDIVIDUALITIE!]),
-          if (Individuality.containsAllAB(buff.script?.INDIVIDUALITIE_AND ?? [], widget.ids))
-            _traits('owner', buff.script?.INDIVIDUALITIE_AND ?? [], useAnd: true),
-          if (Individuality.containsAllAB(buff.script?.INDIVIDUALITIE_OR ?? [], widget.ids))
-            _traits('owner', buff.script?.INDIVIDUALITIE_OR ?? []),
-          if (buff.script?.UpBuffRateBuffIndiv?.isNotEmpty == true)
-            _traits('UpBuffRate', buff.script!.UpBuffRateBuffIndiv!),
+          if (widget.ids.length == 1 && buff.script.INDIVIDUALITIE?.id == widget.ids.firstOrNull)
+            _traits('owner', [buff.script.INDIVIDUALITIE!]),
+          if (Individuality.containsAllAB(buff.script.INDIVIDUALITIE_AND ?? [], widget.ids))
+            _traits('owner', buff.script.INDIVIDUALITIE_AND ?? [], useAnd: true),
+          if (Individuality.containsAllAB(buff.script.INDIVIDUALITIE_OR ?? [], widget.ids))
+            _traits('owner', buff.script.INDIVIDUALITIE_OR ?? []),
+          if (buff.script.UpBuffRateBuffIndiv?.isNotEmpty == true)
+            _traits('UpBuffRate', buff.script.UpBuffRateBuffIndiv!),
         ],
       ),
       onTap: () => buff.routeTo(),

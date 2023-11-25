@@ -201,7 +201,7 @@ class BuffInfoTable extends StatelessWidget {
               : SharedBuilder.traitList(
                   context: context,
                   traits: buff.ckSelfIndv,
-                  useAndJoin: buff.script?.checkIndvTypeAnd == true,
+                  useAndJoin: buff.script.checkIndvTypeAnd == true,
                 ),
           flex: 3,
         )
@@ -214,76 +214,74 @@ class BuffInfoTable extends StatelessWidget {
               : SharedBuilder.traitList(
                   context: context,
                   traits: buff.ckOpIndv,
-                  useAndJoin: buff.script?.checkIndvTypeAnd == true,
+                  useAndJoin: buff.script.checkIndvTypeAnd == true,
                 ),
           flex: 3,
         )
       ]),
-      if (buff.script?.INDIVIDUALITIE != null)
+      if (buff.script.INDIVIDUALITIE != null)
         CustomTableRow(children: [
           TableCellData(text: "Owner", isHeader: true),
           TableCellData(
             child: Text.rich(TextSpan(children: [
-              SharedBuilder.traitSpan(context: context, trait: buff.script!.INDIVIDUALITIE!),
-              if (buff.script?.INDIVIDUALITIE_COUNT_ABOVE != null)
-                TextSpan(text: '≥${buff.script!.INDIVIDUALITIE_COUNT_ABOVE}'),
+              SharedBuilder.traitSpan(context: context, trait: buff.script.INDIVIDUALITIE!),
+              if (buff.script.INDIVIDUALITIE_COUNT_ABOVE != null)
+                TextSpan(text: '≥${buff.script.INDIVIDUALITIE_COUNT_ABOVE}'),
             ])),
             flex: 3,
           )
         ]),
-      if (buff.script?.INDIVIDUALITIE_AND != null)
+      if (buff.script.INDIVIDUALITIE_AND != null)
         CustomTableRow(children: [
           TableCellData(text: "Owner", isHeader: true),
           TableCellData(
-            child:
-                SharedBuilder.traitList(context: context, traits: buff.script!.INDIVIDUALITIE_AND!, useAndJoin: true),
+            child: SharedBuilder.traitList(context: context, traits: buff.script.INDIVIDUALITIE_AND!, useAndJoin: true),
             flex: 3,
           )
         ]),
-      if (buff.script?.INDIVIDUALITIE_OR != null)
+      if (buff.script.INDIVIDUALITIE_OR != null)
         CustomTableRow(children: [
           TableCellData(text: "Owner", isHeader: true),
           TableCellData(
-            child:
-                SharedBuilder.traitList(context: context, traits: buff.script!.INDIVIDUALITIE_OR!, useAndJoin: false),
+            child: SharedBuilder.traitList(context: context, traits: buff.script.INDIVIDUALITIE_OR!, useAndJoin: false),
             flex: 3,
           )
         ]),
-      if (buff.script?.UpBuffRateBuffIndiv?.isNotEmpty == true)
+      if (buff.script.UpBuffRateBuffIndiv?.isNotEmpty == true)
         CustomTableRow(children: [
           TableCellData(text: "Buff Boost", isHeader: true),
           TableCellData(
-            child: SharedBuilder.traitList(context: context, traits: buff.script!.UpBuffRateBuffIndiv!),
+            child: SharedBuilder.traitList(context: context, traits: buff.script.UpBuffRateBuffIndiv!),
             flex: 3,
           )
         ]),
-      if (buff.script?.DamageRelease == 1)
+      if (buff.script.DamageRelease == 1)
         CustomTableRow(children: [
           TableCellData(text: "Damage Release", isHeader: true),
           TableCellData(
-            text: buff.script?.ReleaseText ?? '-',
+            text: buff.script.ReleaseText ?? '-',
             flex: 3,
           )
         ]),
-      if (buff.script?.HP_LOWER != null || buff.script?.HP_HIGHER != null)
+      if (buff.script.HP_LOWER != null || buff.script.HP_HIGHER != null)
         CustomTableRow(children: [
           TableCellData(text: "HP", isHeader: true),
           TableCellData(
             text: [
-              buff.script?.HP_HIGHER?.format(percent: true, base: 10),
+              buff.script.HP_HIGHER?.format(percent: true, base: 10),
               'HP',
-              buff.script?.HP_LOWER?.format(percent: true, base: 10),
+              buff.script.HP_LOWER?.format(percent: true, base: 10),
             ].where((e) => e != null).join(" ≤ "),
             flex: 3,
           )
         ]),
-      if (buff.script?.CheckOpponentBuffTypes?.isNotEmpty == true)
+      if (buff.script.CheckOpponentBuffTypes?.isNotEmpty == true)
         CustomTableRow(children: [
           TableCellData(text: "Opp Buff Types", isHeader: true),
           TableCellData(
             child: Text.rich(TextSpan(
               children: divideList(
-                buff.script!.CheckOpponentBuffTypes!.map((e) => SharedBuilder.textButtonSpan(
+                buff.script.CheckOpponentBuffTypes!.map((e) => SharedBuilder.textButtonSpan(
                       context: context,
                       text: Transl.buffType(e).l,
                       onTap: () {
@@ -296,22 +294,22 @@ class BuffInfoTable extends StatelessWidget {
             flex: 3,
           )
         ]),
-      if (buff.script?.relationId != null) ...[
+      if (buff.script.relationId != null) ...[
         CustomTableRow.fromTexts(
           texts: const ['Class Affinity Change'],
           isHeader: true,
         ),
-        if (buff.script!.relationId!.atkSide2.isNotEmpty) ...[
+        if (buff.script.relationId!.atkSide2.isNotEmpty) ...[
           CustomTableRow.fromTexts(texts: const ['Attacking']),
-          relationId(context, buff.script!.relationId!.atkSide2),
+          relationId(context, buff.script.relationId!.atkSide2),
         ],
-        if (buff.script!.relationId!.defSide2.isNotEmpty) ...[
+        if (buff.script.relationId!.defSide2.isNotEmpty) ...[
           CustomTableRow.fromTexts(texts: const ['Defending']),
-          relationId(context, buff.script!.relationId!.defSide2),
+          relationId(context, buff.script.relationId!.defSide2),
         ],
       ],
-      if (buff.script?.convert != null) ...buildBuffConvert(context, buff.script!.convert!),
-      if (buff.script?.source.isNotEmpty == true) ..._sourceScript(context, buff.script!),
+      if (buff.script.convert != null) ...buildBuffConvert(context, buff.script.convert!),
+      if (buff.script.source.isNotEmpty == true) ..._sourceScript(context, buff.script),
     ]);
   }
 
@@ -480,10 +478,11 @@ class BuffInfoTable extends StatelessWidget {
       isHeader: true,
     );
     for (final key in script.source.keys) {
+      if (key == 'relationOverwrite') continue;
       yield CustomTableRow(children: [
         TableCellData(text: key, isHeader: true)..maxLines = null,
         TableCellData(
-          text: key == 'relationId' ? '↑...↑' : script.source[key].toString(),
+          text: key == 'relationId' || key == 'convert' ? '↑...↑' : script.source[key].toString(),
           flex: 3,
         ),
       ]);

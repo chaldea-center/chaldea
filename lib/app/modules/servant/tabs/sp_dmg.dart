@@ -133,7 +133,7 @@ class SpDmgSelfTab extends StatelessWidget {
               .contains(buff.type) &&
           buff.ckOpIndv.isNotEmpty) {
         traits = buff.ckOpIndv;
-        useAnd = buff.script?.checkIndvTypeAnd == true;
+        useAnd = buff.script.checkIndvTypeAnd == true;
       } else if (const [FuncType.damageNpIndividual, FuncType.damageNpStateIndividualFix].contains(func.funcType)) {
         final target = func.svals.firstOrNull?.Target;
         if (target != null) traits = [NiceTrait(id: target)];
@@ -254,7 +254,7 @@ class _SpDmgIndivTabState extends State<SpDmgIndivTab> {
           continue;
         }
         if (buff.ckOpIndv.isEmpty) continue;
-        if (buff.script?.checkIndvTypeAnd == true) {
+        if (buff.script.checkIndvTypeAnd) {
           if (buff.ckOpIndv.every((e) => widget.svtIndivs.contains(e.signedId))) {
             getGroup(buff.ckOpIndv.map((e) => e.signedId), true, null, scope).add(card);
           }

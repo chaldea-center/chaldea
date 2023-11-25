@@ -14,6 +14,11 @@ import '../packages/app_info.dart';
 import '../packages/platform/platform.dart';
 import 'constants.dart';
 
+class Ref<T> {
+  T value;
+  Ref(this.value);
+}
+
 extension NumX on num {
   String format({
     bool compact = true,

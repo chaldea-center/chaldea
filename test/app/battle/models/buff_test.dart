@@ -98,12 +98,12 @@ void main() async {
   });
 
   test('can stack', () {
-    final buff = BuffData(const Buff(id: -1, name: '', detail: '', buffGroup: 500), DataVals());
+    final buff = BuffData(Buff(id: -1, name: '', detail: '', buffGroup: 500), DataVals());
     expect(buff.canStack(500), isFalse);
     expect(buff.canStack(300), isTrue);
     expect(buff.canStack(0), isTrue);
 
-    final stackable = BuffData(const Buff(id: -1, name: '', detail: '', buffGroup: 0), DataVals());
+    final stackable = BuffData(Buff(id: -1, name: '', detail: '', buffGroup: 0), DataVals());
     expect(stackable.canStack(500), isTrue);
     expect(stackable.canStack(300), isTrue);
     expect(stackable.canStack(0), isTrue);

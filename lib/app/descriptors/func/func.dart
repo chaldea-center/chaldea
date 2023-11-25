@@ -983,7 +983,7 @@ class FuncDescriptor extends StatelessWidget {
     }
 
     if (buff != null) {
-      _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv, buff.script?.checkIndvTypeAnd == true);
+      _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv, buff.script.checkIndvTypeAnd == true);
       if (buff.type == BuffType.upToleranceSubstate &&
           buff.ckOpIndv
               .map((e) => e.signedId)
@@ -998,21 +998,21 @@ class FuncDescriptor extends StatelessWidget {
           const TextSpan(text: ' '),
         ]);
       } else {
-        _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv, buff.script?.checkIndvTypeAnd == true);
+        _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv, buff.script.checkIndvTypeAnd == true);
       }
       final script = buff.script;
-      if (script?.TargetIndiv != null) {
-        _addTraits('Target Indiv: ', [script!.TargetIndiv!]);
+      if (script.TargetIndiv != null) {
+        _addTraits('Target Indiv: ', [script.TargetIndiv!]);
       }
-      if (buff.script?.INDIVIDUALITIE != null) {
-        _addTraits(Transl.special.buffCheckSelf, [buff.script!.INDIVIDUALITIE!]);
+      if (buff.script.INDIVIDUALITIE != null) {
+        _addTraits(Transl.special.buffCheckSelf, [buff.script.INDIVIDUALITIE!]);
       }
-      if (script?.HP_HIGHER != null) {
-        final v = script!.HP_HIGHER!.format(percent: true, base: 10);
+      if (script.HP_HIGHER != null) {
+        final v = script.HP_HIGHER!.format(percent: true, base: 10);
         _condSpans.add([TextSpan(text: 'HP≥$v')]);
       }
-      if (script?.HP_LOWER != null) {
-        final v = script!.HP_LOWER!.format(percent: true, base: 10);
+      if (script.HP_LOWER != null) {
+        final v = script.HP_LOWER!.format(percent: true, base: 10);
         _condSpans.add([TextSpan(text: 'HP≤$v')]);
       }
     }

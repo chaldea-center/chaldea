@@ -416,14 +416,13 @@ class BattleData {
     if (quest.war?.event == null) return;
     if (options.disableEvent) return;
     for (final stage in quest.stages) {
-      stage.enemies.removeWhere((enemy) => enemy.deck == DeckType.enemy && enemy.infoScript?.isAddition == true);
+      stage.enemies.removeWhere((enemy) => enemy.deck == DeckType.enemy && enemy.infoScript.isAddition);
       final initEnemies = stage.enemies.where((e) => e.deck == DeckType.enemy).toList();
       for (final indiv in options.enemyRateUp.toList()..sort()) {
         for (final enemy in initEnemies) {
           if (enemy.traits.any((e) => e.id == indiv)) {
             final enemy2 = QuestEnemy.fromJson(enemy.toJson());
-            (enemy2.infoScript ??= EnemyInfoScript()).isAddition = true;
-            (enemy2.originalInfoScript ??= {})['isAddition'] = '1';
+            enemy2.infoScript.source['isAddition'] = 1;
             enemy2.npcId = Maths.max(stage.enemies.map((e) => e.npcId)) + 1;
             int deckId = 1;
             final usedDeckIds = <int>{

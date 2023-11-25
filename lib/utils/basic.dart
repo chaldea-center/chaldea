@@ -273,7 +273,3 @@ Future<void> copyToClipboard(String text, {bool toast = false}) async {
   await Clipboard.setData(ClipboardData(text: text));
   if (toast) tryEasyLoading(() => EasyLoading.showToast(S.current.copied));
 }
-
-List<T>? toList<T>(Object? value) {
-  return (value as List<dynamic>?)?.cast();
-}

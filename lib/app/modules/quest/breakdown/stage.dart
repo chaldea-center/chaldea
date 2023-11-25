@@ -206,7 +206,7 @@ class WaveInfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final originalScript = Map<String, dynamic>.of(stage.originalScript ?? {});
+    final originalScript = Map<String, dynamic>.of(stage.originalScript);
     originalScript.remove('aiFieldIds');
     return Scaffold(
       appBar: AppBar(title: Text('Wave ${stage.wave}')),
