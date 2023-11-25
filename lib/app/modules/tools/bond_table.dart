@@ -1,9 +1,5 @@
-import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:screenshot/screenshot.dart';
-
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/builders.dart';
@@ -16,8 +12,6 @@ class BondTotalTable extends StatefulWidget {
 }
 
 class _BondTotalStateTable extends State<BondTotalTable> {
-  final screenshotController = ScreenshotController();
-
   final kBondLvs = const [5, 10, 15];
   final int kGroupBondWidth = 5000;
   int maxBondLv = 10;
@@ -88,24 +82,12 @@ class _BondTotalStateTable extends State<BondTotalTable> {
             },
             underline: const SizedBox(),
           ),
-          IconButton(
-            onPressed: takeScreenshot,
-            icon: const Icon(Icons.camera_alt),
-            tooltip: S.current.screenshots,
-          ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Screenshot(
-          controller: screenshotController,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (final group in groups) buildGroup(group.$1, group.$2),
-            ],
-          ),
-        ),
+      body: ListView(
+        children: [
+          for (final group in groups) buildGroup(group.$1, group.$2),
+        ],
       ),
     );
   }
@@ -146,27 +128,5 @@ class _BondTotalStateTable extends State<BondTotalTable> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: children,
     );
-  }
-
-  Future<void> takeScreenshot() async {
-    if (!PlatformU.supportScreenshot) {
-      EasyLoading.showToast(S.current.screenshot_not_support_html_renderer);
-      return;
-    }
-    try {
-      final data = await screenshotController.capture();
-      if (!mounted) return;
-      if (data == null) {
-        EasyLoading.showError(S.current.failed);
-        return;
-      }
-      ImageActions.showSaveShare(
-        context: context,
-        data: data,
-        destFp: joinPaths(db.paths.downloadDir, 'bond-table-${DateTime.now().toSafeFileName()}.png'),
-      );
-    } catch (e) {
-      EasyLoading.showError(e.toString());
-    }
   }
 }

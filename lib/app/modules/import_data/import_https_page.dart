@@ -838,14 +838,15 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         if (!_validSvts.contains(svt)) continue;
         if (!_includeSvt && !svt.inStorage) continue;
         if (!_includeSvtStorage && svt.inStorage) continue;
+        final dbSvt = svt.dbSvt;
+        if (dbSvt == null || !dbSvt.isUserSvt) continue;
 
         SvtStatus status = SvtStatus();
         UserSvtCollection collection = cardCollections[svt.svtId]!;
-        final dbSvt = svt.dbSvt;
-        if (_alreadyAdded.contains(svt.svtId) && dbSvt != null && dbSvt.collectionNo > 0) {
+        if (_alreadyAdded.contains(svt.svtId) && dbSvt.collectionNo > 0) {
           user.dupServantMapping[svt.id] = dbSvt.collectionNo;
           status = user.svtStatusOf(svt.id);
-        } else if (dbSvt != null) {
+        } else {
           status = user.svtStatusOf(dbSvt.collectionNo);
         }
         _alreadyAdded.add(svt.svtId);
