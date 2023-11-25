@@ -8,11 +8,6 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../interactions/td_type_change_selector.dart';
 
-const kExtendTurnBuffTypes = <int>[
-  // /export/JP/NiceConstantStr.json
-  1, 9, 11, 13, 15, 18, 25, 50, 51, 52, 70, 72, 89, 90, 110, 112, 116, 121, 137, 144, 148, 160, 162
-];
-
 class AddState {
   AddState._();
 
@@ -45,7 +40,7 @@ class AddState {
       }
       // enemy Bazett may not contains niceSvt
       if (target.niceSvt?.script?.svtBuffTurnExtend == true || target.svtId == 1001100) {
-        if (kExtendTurnBuffTypes.contains(buff.type.id)) {
+        if (ConstData.constantStr.extendTurnBuffType.contains(buff.type.id)) {
           buffData.logicTurn += 1;
         }
       }
