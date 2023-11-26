@@ -52,7 +52,7 @@ dependencies:
   dots_indicator: ^3.0.0
   equatable: ^2.0.5
   file_picker: ^6.1.1
-  fl_chart: ^0.64.0
+  fl_chart: ^0.65.0
   flutter_cache_manager: ^3.3.1
   flutter_easyloading: ^3.0.5
   flutter_hooks: ^0.20.1
@@ -61,7 +61,7 @@ dependencies:
   # flutter_qjs: ^0.3.7
   flutter_js: ^0.8.0
   flutter_svg: ^2.0.7
-  flutter_window_close: ^0.2.2
+  flutter_window_close: ^0.3.0
   font_awesome_flutter: ^10.6.0
   github: ^9.16.0
   hive: ^2.2.3
@@ -82,7 +82,7 @@ dependencies:
   markdown: ^7.0.0
   modal_bottom_sheet: ^3.0.0-pre
   octo_image: ^2.0.0
-  package_info_plus: ^4.2.0
+  package_info_plus: ^5.0.1
   pasteboard: # ^0.2.0
     git:
       url: https://github.com/MixinNetwork/flutter-plugins
