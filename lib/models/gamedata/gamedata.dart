@@ -53,6 +53,7 @@ part '../../generated/models/gamedata/gamedata.g.dart';
 
 @JsonSerializable(converters: [RegionConverter()], createToJson: false)
 class GameData with _GameDataExtra {
+  static const int kMinCompatibleVer = 1700938060;
   DataVersion version;
   @protected
   Map<int, Servant> servants;

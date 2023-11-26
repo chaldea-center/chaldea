@@ -160,7 +160,6 @@ class CachedImage extends StatefulWidget {
       ].any((e) => uri.host.endsWith(e));
     }
     if (cors) {
-      // TODO: corsproxy
       return Uri.parse(HostsX.workerHost).replace(path: '/corsproxy/', queryParameters: {'url': url}).toString();
     }
     return url;

@@ -124,6 +124,10 @@ class GameDataLoader {
         throw UpdateError(S.current.error_no_data_found);
       }
       newVersion = oldVersion;
+
+      if (newVersion.timestamp < GameData.kMinCompatibleVer) {
+        throw UpdateError("Local data is outdated");
+      }
     } else {
       oldVersion ??= DataVersion();
       newVersion = DataVersion.fromJson((await _downFile('version.json', timeout: connectTimeout)).json());
