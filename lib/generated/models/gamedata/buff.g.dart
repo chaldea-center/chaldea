@@ -121,6 +121,29 @@ BuffScript _$BuffScriptFromJson(Map json) => BuffScript(
       convert: json['convert'] == null ? null : BuffConvert.fromJson(Map<String, dynamic>.from(json['convert'] as Map)),
     );
 
+Map<String, dynamic> _$BuffScriptToJson(BuffScript instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('checkIndvType', instance.checkIndvType);
+  writeNotNull(
+      'CheckOpponentBuffTypes', instance.CheckOpponentBuffTypes?.map(const BuffTypeConverter().toJson).toList());
+  writeNotNull('relationId', instance.relationId?.toJson());
+  writeNotNull('INDIVIDUALITIE', instance.INDIVIDUALITIE?.toJson());
+  writeNotNull('INDIVIDUALITIE_COUNT_ABOVE', instance.INDIVIDUALITIE_COUNT_ABOVE);
+  writeNotNull('INDIVIDUALITIE_AND', instance.INDIVIDUALITIE_AND?.map((e) => e.toJson()).toList());
+  writeNotNull('INDIVIDUALITIE_OR', instance.INDIVIDUALITIE_OR?.map((e) => e.toJson()).toList());
+  writeNotNull('UpBuffRateBuffIndiv', instance.UpBuffRateBuffIndiv?.map((e) => e.toJson()).toList());
+  writeNotNull('TargetIndiv', instance.TargetIndiv?.toJson());
+  writeNotNull('convert', instance.convert?.toJson());
+  return val;
+}
+
 BuffConvert _$BuffConvertFromJson(Map json) => BuffConvert(
       targetLimit: $enumDecodeNullable(_$BuffConvertLimitTypeEnumMap, json['targetLimit']) ?? BuffConvertLimitType.all,
       convertType: $enumDecodeNullable(_$BuffConvertTypeEnumMap, json['convertType']) ?? BuffConvertType.none,

@@ -129,7 +129,7 @@ class RelationOverwriteDetail {
   Map<String, dynamic> toJson() => _$RelationOverwriteDetailToJson(this);
 }
 
-@JsonSerializable(createToJson: false, includeIfNull: false)
+@JsonSerializable(includeIfNull: false)
 class BuffScript with DataScriptBase {
   int? checkIndvType; // 1-AND, default-OR
   bool get checkIndvTypeAnd => checkIndvType == 1 || checkIndvType == 3;
@@ -179,7 +179,7 @@ class BuffScript with DataScriptBase {
 
   factory BuffScript.fromJson(Map<String, dynamic> json) => _$BuffScriptFromJson(json);
 
-  Map<String, dynamic> toJson() => Map.from(source);
+  Map<String, dynamic> toJson() => _$BuffScriptToJson(this);
 }
 
 /// Convert [targets] to [convertBuffs]
