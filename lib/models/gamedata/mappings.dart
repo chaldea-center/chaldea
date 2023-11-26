@@ -343,7 +343,7 @@ class MappingData {
     _updateRegion(entityNames, Region.jp);
     _updateRegion(tdTypes, Region.jp);
     _updateRegion(bgmNames, Region.jp);
-    _updateRegion(summonNames, Region.cn);
+    _updateRegion(summonNames, Region.jp);
     _updateRegion(charaNames, Region.cn);
     _updateRegion(buffDetail, Region.jp);
     _updateRegion(skillNames, Region.jp);

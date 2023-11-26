@@ -1295,7 +1295,7 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         InkWell(
-          onTap: () => skill?.routeTo(),
+          onTap: () => skill?.routeTo(region: widget.region),
           child: Text.rich(TextSpan(
             style: Theme.of(context).textTheme.bodySmall,
             children: [

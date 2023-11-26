@@ -50,6 +50,11 @@ abstract class SkillOrTd implements RouteInfo {
     if (unmodifiedDetail == null) return null;
     return unmodifiedDetail!.replaceAll(RegExp(r'\[/?[og]\]'), '');
   }
+
+  @override
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) {
+    router.popDetailAndPush(url: route, child: child, popDetail: popDetails);
+  }
 }
 
 extension SkillOrTdX on SkillOrTd {
@@ -61,7 +66,7 @@ extension SkillOrTdX on SkillOrTd {
 }
 
 @JsonSerializable()
-class BaseSkill extends SkillOrTd with RouteInfo {
+class BaseSkill extends SkillOrTd {
   @override
   int id;
   @override
@@ -142,7 +147,7 @@ class BaseSkill extends SkillOrTd with RouteInfo {
 }
 
 @JsonSerializable()
-class NiceSkill extends SkillOrTd with RouteInfo implements BaseSkill {
+class NiceSkill extends SkillOrTd implements BaseSkill {
   BaseSkill _base;
   BaseSkill get base => _base;
 
@@ -420,7 +425,7 @@ class SkillSvt implements SkillSvtBase {
 }
 
 @JsonSerializable()
-class BaseTd extends SkillOrTd with RouteInfo {
+class BaseTd extends SkillOrTd {
   @override
   int id;
   @override
@@ -554,7 +559,7 @@ class TdSvt implements SkillSvtBase {
 }
 
 @JsonSerializable()
-class NiceTd extends SkillOrTd with RouteInfo implements BaseTd {
+class NiceTd extends SkillOrTd implements BaseTd {
   BaseTd _base;
   BaseTd get base => _base;
 
