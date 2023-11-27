@@ -391,11 +391,14 @@ class CarouselItem {
   DateTime startTime;
   DateTime endTime;
   String? title;
+  String? title2;
   String? content;
-  bool md;
+  String? content2;
   String? image;
+  String? image2;
   String? link;
-  String? zhLink;
+  String? link2;
+  bool md;
   AppVersion? verMin;
   AppVersion? verMax;
   List<int> eventIds;
@@ -410,11 +413,14 @@ class CarouselItem {
     DateTime? startTime,
     DateTime? endTime,
     this.title,
+    this.title2,
     this.content,
-    this.md = false,
+    this.content2,
     this.image,
+    this.image2,
     this.link,
-    this.zhLink,
+    this.link2,
+    this.md = false,
     this.verMin,
     this.verMax,
     List<int>? eventIds,
@@ -430,6 +436,11 @@ class CarouselItem {
   factory CarouselItem.fromJson(Map<String, dynamic> data) => _$CarouselItemFromJson(data);
 
   Map<String, dynamic> toJson() => _$CarouselItemToJson(this);
+
+  String? getLink() => Language.isZH ? link2 ?? link : link;
+  String? getTitle() => Language.isZH ? title2 ?? title : title;
+  String? getContent() => Language.isZH ? content2 ?? content : content;
+  String? getImage() => Language.isZH ? image2 ?? image : image;
 }
 
 @JsonSerializable()

@@ -21,7 +21,6 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/app_info.dart';
-import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -72,11 +71,11 @@ class AppNewsCarousel extends StatefulWidget {
           _result.add(CarouselItem(link: link, content: linkNode.text));
         }
       }
-      _result.forEach((item) {
-        print('img=${item.image}');
-        print('  link=${item.link}');
-        if (item.content != null) print('  content=${item.content}');
-      });
+      // for (final item in _result) {
+      //   print('img=${item.image}');
+      //   print('  link=${item.link}');
+      //   if (item.content != null) print('  content=${item.content}');
+      // }
       return _result;
     }
 
@@ -106,6 +105,11 @@ class AppNewsCarousel extends StatefulWidget {
 
         if (!carouselSetting.enableChaldea) {
           items.removeWhere((item) => item.type != 1);
+        }
+        if (db.settings.hideApple) {
+          items.removeWhere((item) {
+            return [item.title, item.content, item.image].any((e) => (e ?? '').toLowerCase().contains('donation'));
+          });
         }
         return items;
       }).catchError((e, s) async {
@@ -484,7 +488,8 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
     for (final item in items) {
       if (item.priority < 0 && !kDebugMode) continue;
       Widget? child;
-      final img = item.image;
+      final img = item.getImage();
+      final content = item.getContent();
       if (img != null && isURL(img)) {
         child = CachedImage(
           imageUrl: img,
@@ -496,19 +501,19 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
             fit: item.fit,
           ),
         );
-      } else if (item.content?.isNotEmpty == true) {
+      } else if (content != null && content.isNotEmpty) {
         if (item.md) {
           child = FittedBox(
             fit: BoxFit.scaleDown,
-            child: MarkdownBody(data: item.content!),
+            child: MarkdownBody(data: content),
           );
         } else {
           child = AutoSizeText(
-            item.content!,
+            content,
             textAlign: TextAlign.center,
             maxFontSize: 20,
             minFontSize: 5,
-            maxLines: item.content!.split('\n').length,
+            maxLines: content.split('\n').length,
           );
         }
 
@@ -527,8 +532,8 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
         }
       }
       if (child == null) continue;
-      if (item.link != null ||
-          item.content != null ||
+      if (item.getLink() != null ||
+          content != null ||
           item.eventIds.isNotEmpty ||
           item.warIds.isNotEmpty ||
           item.summonIds.isNotEmpty) {
@@ -543,7 +548,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
   }
 
   void onTap(CarouselItem item) {
-    final link = item.zhLink != null && Language.isZH ? item.zhLink : item.link;
+    final link = item.getLink();
     if (link != null) {
       const routePrefix = 'chaldea://';
       if (link.toLowerCase().startsWith(routePrefix) && link.length > routePrefix.length + 1) {
@@ -585,9 +590,10 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
           );
         }
 
+        final title = item.getTitle(), content = item.getContent();
         return SimpleCancelOkDialog(
           title: Text(
-            item.title ?? S.current.jump_to(''),
+            title ?? S.current.jump_to(''),
             maxLines: 2,
             style: Theme.of(context).textTheme.titleSmall,
             overflow: TextOverflow.ellipsis,
@@ -599,8 +605,8 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text.rich(TextSpan(children: [
-                if (item.content != null) TextSpan(text: item.content!),
-                if (item.content != null && shownLink != null) const TextSpan(text: '\n\n'),
+                if (content != null) TextSpan(text: content),
+                if (content != null && shownLink != null) const TextSpan(text: '\n\n'),
                 if (shownLink != null)
                   SharedBuilder.textButtonSpan(
                     context: context,
