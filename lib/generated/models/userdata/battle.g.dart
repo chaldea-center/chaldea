@@ -23,6 +23,11 @@ BattleSimUserData _$BattleSimUserDataFromJson(Map json) => $checkedCreate(
               (v) => (v as List<dynamic>?)
                   ?.map((e) => BattleTeamFormation.fromJson(Map<String, dynamic>.from(e as Map)))
                   .toList()),
+          teams: $checkedConvert(
+              'teams',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => BattleShareData.fromJson(Map<String, dynamic>.from(e as Map)))
+                  .toList()),
         );
         return val;
       },
@@ -31,8 +36,9 @@ BattleSimUserData _$BattleSimUserDataFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$BattleSimUserDataToJson(BattleSimUserData instance) => <String, dynamic>{
       'pingedCEs': instance.pingedCEs.toList(),
       'pingedSvts': instance.pingedSvts.toList(),
-      'formations': instance.formations.map((e) => e.toJson()).toList(),
       'favoriteTeams': instance.favoriteTeams.map((k, e) => MapEntry(k.toString(), e.toList())),
+      'formations': instance.formations.map((e) => e.toJson()).toList(),
+      'teams': instance.teams.map((e) => e.toJson()).toList(),
     };
 
 BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
@@ -47,8 +53,8 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
           previousQuestPhase: $checkedConvert('previousQuestPhase', (v) => v as String?),
           defaultLvs: $checkedConvert('defaultLvs',
               (v) => v == null ? null : PlayerSvtDefaultData.fromJson(Map<String, dynamic>.from(v as Map))),
-          curFormation: $checkedConvert('curFormation',
-              (v) => v == null ? null : BattleTeamFormation.fromJson(Map<String, dynamic>.from(v as Map))),
+          curTeam: $checkedConvert(
+              'curTeam', (v) => v == null ? null : BattleShareData.fromJson(Map<String, dynamic>.from(v as Map))),
           svtFilterData: $checkedConvert(
               'svtFilterData', (v) => v == null ? null : SvtFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
           craftFilterData: $checkedConvert('craftFilterData',
@@ -69,7 +75,7 @@ Map<String, dynamic> _$BattleSimSettingToJson(BattleSimSetting instance) => <Str
       'playerDataSource': _$PreferPlayerSvtDataSourceEnumMap[instance.playerDataSource]!,
       'previousQuestPhase': instance.previousQuestPhase,
       'defaultLvs': instance.defaultLvs.toJson(),
-      'curFormation': instance.curFormation.toJson(),
+      'curTeam': instance.curTeam.toJson(),
       'svtFilterData': instance.svtFilterData.toJson(),
       'craftFilterData': instance.craftFilterData.toJson(),
       'tdDmgOptions': instance.tdDmgOptions.toJson(),
@@ -135,8 +141,8 @@ Map<String, dynamic> _$BattleShareDataToJson(BattleShareData instance) {
   writeNotNull('quest', instance.quest?.toJson());
   val['options'] = instance.options.toJson();
   val['team'] = instance.team.toJson();
+  writeNotNull('delegate', instance.delegate?.toJson());
   val['actions'] = instance.actions.map((e) => e.toJson()).toList();
-  val['delegate'] = instance.delegate.toJson();
   return val;
 }
 

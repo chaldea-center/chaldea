@@ -150,15 +150,11 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         ),
         TextButton(
           onPressed: () async {
-            saveFormation();
-            await router.pushPage(const FormationEditor(isSaving: true));
-            if (mounted) setState(() {});
-          },
-          child: Text(S.current.save),
-        ),
-        TextButton(
-          onPressed: () async {
-            await router.pushPage(FormationEditor(isSaving: false, onSelected: restoreFormation));
+            final team = saveFormation();
+            await router.pushPage(FormationEditor(
+              teamToSave: team.team.allCardIds.isEmpty ? null : team,
+              onSelected: restoreFormation,
+            ));
             if (mounted) setState(() {});
           },
           child: Text(S.current.team_local),
@@ -238,7 +234,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       PopupMenuItem(
         onTap: () {
           saveFormation();
-          if (!settings.curFormation.allSvts.any((e) => e?.svtId != null)) {
+          if (settings.curTeam.team.allCardIds.isEmpty) {
             EasyLoading.showError("No servant in team");
             return;
           }
@@ -253,7 +249,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             appBuild: AppInfo.buildNumber,
             quest: questInfo,
             options: options.toShareData(),
-            team: settings.curFormation,
+            team: settings.curTeam.team,
           ).toUriV2();
           String shareString = shareUri.toString();
           Clipboard.setData(ClipboardData(text: shareString));
@@ -1000,7 +996,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       EasyLoading.showError(S.current.error_required_app_version('Build $minBuild', AppInfo.buildNumber));
       return;
     }
-    restoreFormation(data.team);
+    restoreFormation(data);
 
     options.fromShareData(data.options);
 
@@ -1200,27 +1196,34 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   Future<void> initFormation() async {
     EasyLoading.show();
     try {
-      await restoreFormation(settings.curFormation);
+      await restoreFormation(settings.curTeam);
     } finally {
       EasyLoading.dismiss();
       if (mounted) setState(() {});
     }
   }
 
-  Future<void> restoreFormation(BattleTeamFormation formation) async {
+  Future<void> restoreFormation(BattleShareData team) async {
+    final formation = team.team;
     for (int index = 0; index < 3; index++) {
       onFieldSvts[index] = await PlayerSvtData.fromStoredData(formation.onFieldSvts.getOrNull(index));
       backupSvts[index] = await PlayerSvtData.fromStoredData(formation.backupSvts.getOrNull(index));
     }
-
+    options.fromShareData(team.options);
     options.team.mysticCodeData.loadStoredData(formation.mysticCode);
   }
 
-  void saveFormation() {
-    final curFormation = settings.curFormation;
+  BattleShareData saveFormation() {
+    final team = settings.curTeam;
+    final curFormation = team.team;
     curFormation.onFieldSvts = onFieldSvts.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
     curFormation.backupSvts = backupSvts.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
     curFormation.mysticCode = options.team.mysticCodeData.toStoredData();
+    final questInfo = questPhase == null ? null : BattleQuestInfo.quest(questPhase!);
+    team.quest = questInfo;
+    team.options = options.toShareData();
+
+    return team;
   }
 
   void onTapSharedTeams(QuestPhase quest) async {
@@ -1270,7 +1273,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         quest: quest,
         phaseInfo: phaseInfo,
         onSelect: (data) {
-          restoreFormation(data.team);
+          restoreFormation(data);
           if (mounted) setState(() {});
         },
       ),

@@ -7,6 +7,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../../../packages/language.dart';
 import '../home/elements/random_image.dart';
 import '../home/subpage/feedback_page.dart';
+import 'formation/formation_storage.dart';
 import 'teams/favorite_teams_page.dart';
 import 'teams/teams_query_page.dart';
 
@@ -66,11 +67,22 @@ class BattleHomePage extends StatelessWidget {
                 router.push(url: Routes.laplaceNpDmg);
               },
             ),
+          ],
+        ),
+        TileGroup(
+          children: [
             ListTile(
-              leading: const Icon(Icons.group),
+              leading: const Icon(Icons.cloud_upload),
               title: Text(S.current.laplace_my_teams),
               onTap: () {
                 router.push(url: Routes.laplaceManageTeam);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.local_activity),
+              title: Text(S.current.team_local),
+              onTap: () {
+                router.pushPage(const FormationEditor());
               },
             ),
             ListTile(

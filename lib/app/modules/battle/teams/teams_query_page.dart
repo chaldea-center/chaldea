@@ -413,7 +413,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
                   final data2 = BattleShareData.fromJson(teamData.toJson());
                   data2
                     ..actions.clear()
-                    ..delegate = BattleReplayDelegateData();
+                    ..delegate = null;
                   router.pushPage(SimulationPreview(shareUri: data2.toUriV2()));
                 }
               },

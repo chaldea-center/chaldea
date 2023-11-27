@@ -8,12 +8,13 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/userdata/battle.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../utils.dart';
 
 /// DO NOT change any field directly except [name] of [BattleTeamFormation]
 class FormationEditor extends StatefulWidget {
-  final bool isSaving;
-  final ValueChanged<BattleTeamFormation>? onSelected;
-  const FormationEditor({super.key, required this.isSaving, this.onSelected});
+  final BattleShareData? teamToSave;
+  final ValueChanged<BattleShareData>? onSelected;
+  const FormationEditor({super.key, this.teamToSave, this.onSelected});
 
   @override
   State<FormationEditor> createState() => _FormationEditorState();
@@ -30,10 +31,10 @@ class _FormationEditorState extends State<FormationEditor> {
   Widget build(final BuildContext context) {
     settings.validate();
     userData.validate();
-    final prefix = '${widget.isSaving ? S.current.save : S.current.select} ${S.current.team}';
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('$prefix [${db.curUser.name}]'),
+        title: Text(S.current.team_local),
         actions: [
           IconButton(
             onPressed: () {
@@ -42,8 +43,7 @@ class _FormationEditorState extends State<FormationEditor> {
               });
               if (sorting) EasyLoading.showToast(S.current.drag_to_sort);
             },
-            icon: const Icon(Icons.sort),
-            color: sorting ? Theme.of(context).colorScheme.primary : null,
+            icon: Icon(sorting ? Icons.done : Icons.sort),
             tooltip: S.current.sort_order,
           )
         ],
@@ -53,7 +53,9 @@ class _FormationEditorState extends State<FormationEditor> {
   }
 
   Widget buildBody() {
-    List<Widget> children = [for (int index = 0; index < userData.formations.length; index++) buildFormation(index)];
+    List<Widget> children = [
+      for (final (index, team) in userData.teams.enumerate) buildFormation(index, team),
+    ];
 
     if (sorting) {
       return ReorderableListView(
@@ -66,15 +68,15 @@ class _FormationEditorState extends State<FormationEditor> {
             if (oldIndex < newIndex) {
               newIndex -= 1;
             }
-            final item = userData.formations.removeAt(oldIndex);
-            userData.formations.insert(newIndex, item);
+            final item = userData.teams.removeAt(oldIndex);
+            userData.teams.insert(newIndex, item);
             userData.validate();
           });
         },
       );
     }
 
-    return ListView(
+    final listView = ListView(
       children: [
         ListTile(
           dense: true,
@@ -89,142 +91,203 @@ class _FormationEditorState extends State<FormationEditor> {
         ),
         ...children,
         const Divider(height: 16),
-        if (!sorting)
-          Center(
-            child: FilledButton.tonalIcon(
-              onPressed: () {
-                userData.formations.add(BattleTeamFormation());
-                if (mounted) setState(() {});
-              },
-              icon: const Icon(Icons.add),
-              label: Text(S.current.add),
-            ),
-          ),
-        const SafeArea(child: SizedBox(height: 8))
+      ],
+    );
+    return Column(
+      children: [
+        Expanded(child: listView),
+        if (!sorting) SafeArea(child: buildButtonBar()),
       ],
     );
   }
 
-  Widget buildFormation(int index) {
-    BattleTeamFormation formation = userData.formations[index];
+  Widget buildFormation(int index, BattleShareData team) {
+    final formation = team.team;
     String title = formation.shownName(index);
     final titleStyle = Theme.of(context).textTheme.bodySmall;
+    final titleWidget = DividerWithTitle(
+      titleWidget: InkWell(
+        onTap: () {
+          InputCancelOkDialog(
+            title: S.current.team,
+            onSubmit: (s) {
+              if (mounted) {
+                setState(() {
+                  s = s.trim();
+                  formation.name = s.isEmpty ? null : s;
+                });
+              }
+            },
+          ).showDialog(context);
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          child: Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(text: title),
+                if (!sorting) ...[
+                  const TextSpan(text: ' '),
+                  CenterWidgetSpan(
+                    child: Icon(
+                      Icons.edit,
+                      size: 16,
+                      color: titleStyle?.color,
+                    ),
+                  )
+                ],
+              ],
+            ),
+            style: titleStyle,
+          ),
+        ),
+      ),
+      padding: const EdgeInsets.only(top: 8),
+    );
     Widget child = Column(
       children: [
-        DividerWithTitle(
-          titleWidget: InkWell(
-            onTap: () {
-              InputCancelOkDialog(
-                title: S.current.team,
-                onSubmit: (s) {
-                  if (mounted) {
-                    setState(() {
-                      s = s.trim();
-                      formation.name = s.isEmpty ? null : s;
-                    });
-                  }
-                },
-              ).showDialog(context);
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(text: title),
-                    if (!sorting) ...[
-                      const TextSpan(text: ' '),
-                      CenterWidgetSpan(
-                        child: Icon(
-                          Icons.edit,
-                          size: 16,
-                          color: titleStyle?.color,
-                        ),
-                      )
-                    ],
-                  ],
-                ),
-                style: titleStyle,
-              ),
-            ),
-          ),
-          padding: const EdgeInsets.only(top: 8),
-        ),
+        titleWidget,
+        if (team.quest != null) buildQuest(team.quest!),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: FormationCard(formation: formation),
         ),
         const SizedBox(height: 4),
-        if (!sorting)
-          Wrap(
-            alignment: WrapAlignment.center,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              TextButton(
-                onPressed: userData.formations.length > 1
-                    ? () {
-                        SimpleCancelOkDialog(
-                          title: Text(S.current.confirm),
-                          onTapOk: () {
-                            if (mounted) {
-                              setState(() {
-                                if (userData.formations.length > 1) {
-                                  userData.formations.removeAt(index);
-                                }
-                              });
-                            }
-                          },
-                        ).showDialog(context);
-                      }
-                    : null,
-                child: Text(
-                  S.current.remove,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    clipboard = formation;
-                  });
-                },
-                child: Text(S.current.copy),
-              ),
-              TextButton(
-                onPressed: clipboard == null || clipboard == formation
-                    ? null
-                    : () {
-                        setState(() {
-                          userData.formations[index] = BattleTeamFormation.fromJson(clipboard!.toJson());
-                          clipboard = null;
-                        });
-                      },
-                child: Text(S.current.paste),
-              ),
-              FilledButton(
-                onPressed: () {
-                  if (widget.isSaving) {
-                    userData.formations[index] = settings.curFormation.copy();
-                    EasyLoading.showSuccess("${S.current.saved}: ${S.current.team} ${index + 1}");
-                  } else {
-                    settings.curFormation = formation.copy();
-                    widget.onSelected?.call(settings.curFormation);
-                  }
-                  Navigator.pop(context, formation);
-                },
-                style: FilledButton.styleFrom(
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  visualDensity: VisualDensity.compact,
-                ),
-                child: Text(widget.isSaving ? S.current.save : S.current.select),
-              ),
-            ],
-          ),
+        if (!sorting) buildActions(index, team),
       ],
     );
     if (Theme.of(context).platform.isDesktop && sorting) {
       child = Padding(padding: const EdgeInsetsDirectional.only(end: 24), child: child);
     }
     return child;
+  }
+
+  Widget buildQuest(BattleQuestInfo questInfo) {
+    final quest = db.gameData.quests[questInfo.id];
+    List<InlineSpan> questName = [];
+    if (quest == null) {
+      questName.add(TextSpan(text: "Quest ${questInfo.id}/${questInfo.phase}"));
+    } else {
+      questName.add(TextSpan(text: quest.lDispName));
+      final eventName = quest.questEvent?.shownName ?? quest.war?.lShortName;
+      if (eventName != null) {
+        questName.add(TextSpan(
+          text: '\n${eventName.setMaxLines(1)}',
+          style: TextStyle(fontSize: 12, color: Theme.of(context).textTheme.bodySmall?.color),
+        ));
+      }
+    }
+    return ListTile(
+      dense: true,
+      leading: db.getIconImage(quest?.spot?.shownImage, width: 24),
+      minLeadingWidth: 24,
+      title: Text.rich(TextSpan(children: questName)),
+      trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+      onTap: () {
+        router.push(url: Routes.questI(questInfo.id, questInfo.phase));
+      },
+    );
+  }
+
+  Widget buildActions(int index, BattleShareData team) {
+    final formation = team.team;
+    List<Widget> children = [
+      TextButton(
+        onPressed: userData.teams.length > 1
+            ? () {
+                SimpleCancelOkDialog(
+                  title: Text(S.current.remove),
+                  content: Text('${S.current.team} ${index + 1}'),
+                  onTapOk: () {
+                    if (mounted) {
+                      setState(() {
+                        if (userData.teams.length > 1) {
+                          userData.teams.remove(team);
+                        }
+                      });
+                    }
+                  },
+                ).showDialog(context);
+              }
+            : null,
+        child: Text(
+          S.current.remove,
+          style: TextStyle(color: Theme.of(context).colorScheme.error),
+        ),
+      ),
+      TextButton(
+        onPressed: () {
+          setState(() {
+            clipboard = formation;
+          });
+        },
+        child: Text(S.current.copy),
+      ),
+      if (clipboard != null)
+        TextButton(
+          onPressed: () {
+            setState(() {
+              if (clipboard != formation) {
+                userData.teams[index].team = BattleTeamFormation.fromJson(clipboard!.toJson());
+              }
+              clipboard = null;
+            });
+          },
+          child: Text(clipboard != formation ? S.current.paste : S.current.cancel),
+        ),
+      if (widget.onSelected != null)
+        FilledButton(
+          onPressed: () {
+            widget.onSelected?.call(team);
+            Navigator.pop(context, formation);
+          },
+          style: FilledButton.styleFrom(
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: VisualDensity.compact,
+          ),
+          child: Text(S.current.select),
+        ),
+      TextButton(
+        onPressed: team.quest != null && team.actions.isNotEmpty
+            ? () {
+                replaySimulation(detail: team);
+              }
+            : null,
+        child: Text(S.current.details),
+      )
+    ];
+
+    return Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: children,
+    );
+  }
+
+  Widget buildButtonBar() {
+    return ButtonBar(
+      alignment: MainAxisAlignment.center,
+      children: [
+        FilledButton.tonalIcon(
+          onPressed: () {
+            userData.teams.add(BattleShareData(quest: null, team: BattleTeamFormation()));
+            if (mounted) setState(() {});
+          },
+          icon: const Icon(Icons.add),
+          label: Text(S.current.add),
+        ),
+        FilledButton.tonalIcon(
+          onPressed: widget.teamToSave == null
+              ? null
+              : () {
+                  userData.teams.add(BattleShareData.fromJson(widget.teamToSave!.toJson()));
+                  EasyLoading.showSuccess('${S.current.saved}: ${S.current.team} ${userData.teams.length}');
+                  if (mounted) setState(() {});
+                },
+          icon: const Icon(Icons.save),
+          label: Text(S.current.save),
+        ),
+      ],
+    );
   }
 }

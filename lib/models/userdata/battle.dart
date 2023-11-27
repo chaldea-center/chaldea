@@ -41,21 +41,26 @@ void _removeEmptyList(Map<String, dynamic> data, List<String> keys,
 class BattleSimUserData {
   Set<int> pingedCEs;
   Set<int> pingedSvts;
-
-  List<BattleTeamFormation> formations;
-
   // questId, teamIds
   Map<int, Set<int>> favoriteTeams;
+  @protected
+  List<BattleTeamFormation> formations;
+  List<BattleShareData> teams;
 
   BattleSimUserData({
     Set<int>? pingedCEs,
     Set<int>? pingedSvts,
     Map<int, Set<int>>? favoriteTeams,
     List<BattleTeamFormation>? formations,
+    List<BattleShareData>? teams,
   })  : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
         pingedSvts = pingedSvts ?? {215, 284, 314, 316, 357},
+        favoriteTeams = favoriteTeams ?? {},
         formations = formations ?? [],
-        favoriteTeams = favoriteTeams ?? {} {
+        teams = teams ?? [] {
+    if (teams == null && formations != null) {
+      this.teams.addAll(formations.map((e) => BattleShareData(quest: null, team: e)));
+    }
     validate();
   }
 
@@ -105,7 +110,7 @@ class BattleSimSetting {
   // save data
   String? previousQuestPhase;
   PlayerSvtDefaultData defaultLvs;
-  BattleTeamFormation curFormation;
+  BattleShareData curTeam;
   // filters
   SvtFilterData svtFilterData;
   CraftFilterData craftFilterData;
@@ -123,7 +128,7 @@ class BattleSimSetting {
     this.playerDataSource = PreferPlayerSvtDataSource.none,
     this.previousQuestPhase,
     PlayerSvtDefaultData? defaultLvs,
-    BattleTeamFormation? curFormation,
+    BattleShareData? curTeam,
     SvtFilterData? svtFilterData,
     CraftFilterData? craftFilterData,
     TdDamageOptions? tdDmgOptions,
@@ -132,7 +137,7 @@ class BattleSimSetting {
     this.recordShowTwoColumn = false,
     this.manualAllySkillTarget = false,
   })  : defaultLvs = defaultLvs ?? PlayerSvtDefaultData(),
-        curFormation = curFormation ?? BattleTeamFormation(),
+        curTeam = curTeam ?? BattleShareData(quest: null, team: BattleTeamFormation()),
         svtFilterData = svtFilterData ?? SvtFilterData(useGrid: true),
         craftFilterData = craftFilterData ?? CraftFilterData(useGrid: true),
         tdDmgOptions = tdDmgOptions ?? TdDamageOptions() {
@@ -159,19 +164,18 @@ class BattleShareData {
   BattleQuestInfo? quest;
   BattleShareDataOption options;
   BattleTeamFormation team;
+  BattleReplayDelegateData? delegate;
   List<BattleRecordData> actions;
-  BattleReplayDelegateData delegate;
 
   BattleShareData({
     this.minBuild,
-    required this.appBuild,
+    this.appBuild,
     required this.quest,
     BattleShareDataOption? options,
     required this.team,
-    BattleReplayDelegateData? delegate,
+    this.delegate,
     List<BattleRecordData>? actions,
   })  : options = options ?? BattleShareDataOption(),
-        delegate = delegate ?? BattleReplayDelegateData(),
         actions = actions ?? [];
 
   factory BattleShareData.fromJson(Map<String, dynamic> json) => _$BattleShareDataFromJson(json);
@@ -912,15 +916,7 @@ class BattleReplayDelegateData {
   }
 
   BattleReplayDelegateData copy() {
-    return BattleReplayDelegateData(
-      actWeightSelections: actWeightSelections.toList(),
-      skillActSelectSelections: skillActSelectSelections.toList(),
-      tdTypeChanges: tdTypeChanges.toList(),
-      ptRandomIndexes: ptRandomIndexes.toList(),
-      canActivateDecisions: canActivateDecisions.toList(),
-      damageSelections: damageSelections.toList(),
-      replaceMemberIndexes: replaceMemberIndexes.toList(),
-    );
+    return BattleReplayDelegateData.fromJson(toJson());
   }
 }
 

@@ -55,7 +55,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       appBuild: AppInfo.buildNumber,
       quest: BattleQuestInfo.quest(questPhase),
       team: widget.options.team.toFormationData(),
-      delegate: battleData.replayDataRecord,
+      delegate: battleData.replayDataRecord.copy(),
       actions: battleData.recorder.toUploadRecords(),
       options: widget.options.toShareData(),
     );
@@ -701,13 +701,14 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       int totalAttackCards = 0;
       for (final record in battleData.recorder.records) {
         if (record is BattleAttacksInitiationRecord) {
-          totalAttackCards += record.attacks.length;
+          totalAttackCards += record.attacks.where((e) => e.cardData.cardType != CardType.extra).length;
         } else if (record is BattleAttackRecord) {
           if ((record.card?.td?.dmgNpFuncCount ?? 0) > 1) {
             hasMultiDamageFunc = true;
-            break;
           }
-          attackCards += 1;
+          if (record.card?.cardType != CardType.extra) {
+            attackCards += 1;
+          }
         }
       }
 
@@ -720,14 +721,19 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       }
       content += S.current.upload_team_confirmation;
     }
+    content += '\n\n${S.current.save}: ${S.current.team_local}'
+        '\n${S.current.upload}: ${S.current.team_shared}';
+
+    final teamData = getShareData();
 
     return SimpleCancelOkDialog(
       scrollable: true,
       title: Text(S.current.upload),
       content: Text(content, style: const TextStyle(fontSize: 14)),
       hideOk: !canUpload,
+      confirmText: S.current.upload,
       onTapOk: () async {
-        final insertedId = await showEasyLoading(() => ChaldeaWorkerApi.teamUpload(data: getShareData()));
+        final insertedId = await showEasyLoading(() => ChaldeaWorkerApi.teamUpload(data: teamData));
         if (insertedId == null) return;
         db.runtimeData.lastUpload = DateTime.now().timestamp;
         ChaldeaWorkerApi.clearTeamCache();
@@ -739,6 +745,18 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           ).showDialog(this.context);
         }
       },
+      actions: [
+        if (canUpload)
+          TextButton(
+            onPressed: () {
+              db.curUser.battleSim.teams.add(teamData);
+              Navigator.pop(context);
+              EasyLoading.showSuccess(
+                  '${S.current.saved}: ${S.current.team_local} ${db.curUser.battleSim.teams.length}');
+            },
+            child: Text(S.current.save),
+          )
+      ],
     );
   }
 
