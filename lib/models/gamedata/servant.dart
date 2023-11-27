@@ -810,6 +810,8 @@ class CraftEssence with GameCardMixin {
   CraftEssenceExtra get extra =>
       db.gameData.wiki.craftEssences[collectionNo] ??= CraftEssenceExtra(collectionNo: collectionNo);
 
+  bool get isRegionSpecific => collectionNo > 100000 && (sortId ?? collectionNo) < 0;
+
   CEObtain get obtain {
     switch (flag) {
       case SvtFlag.svtEquipFriendShip:

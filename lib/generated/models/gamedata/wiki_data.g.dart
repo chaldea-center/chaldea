@@ -101,6 +101,7 @@ const _$CEObtainEnumMap = {
   CEObtain.exp: 'exp',
   CEObtain.campaign: 'campaign',
   CEObtain.drop: 'drop',
+  CEObtain.regionSpecific: 'regionSpecific',
   CEObtain.unknown: 'unknown',
 };
 

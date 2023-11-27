@@ -125,6 +125,7 @@ BattleShareData _$BattleShareDataFromJson(Map json) => $checkedCreate(
         );
         return val;
       },
+      fieldKeyMap: const {'formation': 'team'},
     );
 
 Map<String, dynamic> _$BattleShareDataToJson(BattleShareData instance) {

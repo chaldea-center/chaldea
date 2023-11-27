@@ -542,5 +542,6 @@ enum CEObtain {
   exp,
   campaign,
   drop,
+  regionSpecific,
   unknown,
 }

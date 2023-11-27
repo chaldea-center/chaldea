@@ -200,7 +200,9 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
         return false;
       }
     }
-    if (!filterData.obtain.matchOne(ce.obtain)) {
+    if (!filterData.obtain.matchOne(ce.obtain, compares: {
+      CEObtain.regionSpecific: (_, __) => ce.isRegionSpecific,
+    })) {
       return false;
     }
     if (!filterData.atkType.matchOne(ce.atkType)) {
