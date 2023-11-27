@@ -3033,6 +3033,17 @@ class S {
     );
   }
 
+  /// `Ended`
+  String get ended {
+    return Intl.message(
+      'Ended',
+      name: 'ended',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Enemy`
   String get enemy {
     return Intl.message(
@@ -6684,6 +6695,17 @@ class S {
     return Intl.message(
       'Not yet implemented',
       name: 'not_implemented',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Not Started`
+  String get not_started {
+    return Intl.message(
+      'Not Started',
+      name: 'not_started',
       desc: '',
       locale: localeName,
       args: [],

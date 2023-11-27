@@ -379,6 +379,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enable": MessageLookupByLibrary.simpleMessage("Enable"),
         "enable_split_view": MessageLookupByLibrary.simpleMessage("Enable Split View"),
         "end_enemy_turn": MessageLookupByLibrary.simpleMessage("End Enemy Turn"),
+        "ended": MessageLookupByLibrary.simpleMessage("Ended"),
         "enemy": MessageLookupByLibrary.simpleMessage("Enemy"),
         "enemy_count": MessageLookupByLibrary.simpleMessage("Enemy Count"),
         "enemy_filter_trait_hint":
@@ -732,6 +733,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "normal_attack": MessageLookupByLibrary.simpleMessage("Normal Attack"),
         "not_found": MessageLookupByLibrary.simpleMessage("Not Found"),
         "not_implemented": MessageLookupByLibrary.simpleMessage("Not yet implemented"),
+        "not_started": MessageLookupByLibrary.simpleMessage("Not Started"),
         "np_charge": MessageLookupByLibrary.simpleMessage("NP Charge"),
         "np_charge_type_instant": MessageLookupByLibrary.simpleMessage("Instant"),
         "np_charge_type_instant_sum": MessageLookupByLibrary.simpleMessage("Instant Sum"),

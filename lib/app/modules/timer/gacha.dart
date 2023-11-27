@@ -44,6 +44,7 @@ class TimerGachaItem with TimerItem {
         trailing: CountDown(
           endedAt: gacha.closedAt.sec2date(),
           startedAt: gacha.openedAt.sec2date(),
+          textAlign: TextAlign.end,
         ),
       ),
       contentBuilder: (context) => GachaBanner(region: region, imageId: gacha.imageId),

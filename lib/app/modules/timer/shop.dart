@@ -71,7 +71,11 @@ class TimerShopItem with TimerItem {
               ].join(" ~ "),
             )
           ])),
-          trailing: CountDown(endedAt: shop.closedAt.sec2date(), startedAt: shop.openedAt.sec2date()),
+          trailing: CountDown(
+            endedAt: shop.closedAt.sec2date(),
+            startedAt: shop.openedAt.sec2date(),
+            textAlign: TextAlign.end,
+          ),
           enabled: shop.closedAt > now,
         );
       },

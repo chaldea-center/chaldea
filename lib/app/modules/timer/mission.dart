@@ -71,7 +71,11 @@ class TimerMissionItem with TimerItem {
               )
           ],
         )),
-        trailing: CountDown(endedAt: mm.endedAt.sec2date(), startedAt: mm.startedAt.sec2date()),
+        trailing: CountDown(
+          endedAt: mm.endedAt.sec2date(),
+          startedAt: mm.startedAt.sec2date(),
+          textAlign: TextAlign.end,
+        ),
       ),
       contentBuilder: (context) {
         return Card(

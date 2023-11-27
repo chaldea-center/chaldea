@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
@@ -32,6 +33,7 @@ class CountDown extends StatelessWidget {
   final Duration duration;
   final bool showSeconds;
   final TextAlign? textAlign;
+  final bool fitted;
 
   const CountDown({
     super.key,
@@ -42,15 +44,20 @@ class CountDown extends StatelessWidget {
     this.duration = const Duration(milliseconds: 500),
     this.showSeconds = true,
     this.textAlign,
+    this.fitted = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    return OnTimer(
+    Widget child = OnTimer(
       duration: duration,
       builder: (context) {
+        final _now = DateTime.now();
         return Text.rich(
           TextSpan(children: [
+            if (startedAt != null && startedAt!.isAfter(_now))
+              TextSpan(text: '${S.current.not_started}\n', style: const TextStyle(fontSize: 12)),
+            if (endedAt.isBefore(_now)) TextSpan(text: '${S.current.ended}\n', style: const TextStyle(fontSize: 12)),
             buildOne(context, endedAt, startedAt),
             if (endedAt2 != null) ...[
               const TextSpan(text: '\n'),
@@ -62,6 +69,10 @@ class CountDown extends StatelessWidget {
         );
       },
     );
+    if (fitted) {
+      child = FittedBox(fit: BoxFit.scaleDown, child: child);
+    }
+    return child;
   }
 
   TextSpan buildOne(BuildContext context, DateTime _endedAt, DateTime? _startedAt) {
