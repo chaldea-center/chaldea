@@ -395,7 +395,7 @@ class ChaldeaWorkerApi {
         'questId': data.quest?.id,
         'phase': data.quest?.phase,
         'enemyHash': data.quest?.enemyHash,
-        'svts': data.team.allCardIds,
+        'svts': data.formation.allCardIds,
         'content': data.toDataV2(),
       },
     );

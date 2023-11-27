@@ -102,7 +102,7 @@ class _FormationEditorState extends State<FormationEditor> {
   }
 
   Widget buildFormation(int index, BattleShareData team) {
-    final formation = team.team;
+    final formation = team.formation;
     String title = formation.shownName(index);
     final titleStyle = Theme.of(context).textTheme.bodySmall;
     final titleWidget = DividerWithTitle(
@@ -190,7 +190,7 @@ class _FormationEditorState extends State<FormationEditor> {
   }
 
   Widget buildActions(int index, BattleShareData team) {
-    final formation = team.team;
+    final formation = team.formation;
     List<Widget> children = [
       TextButton(
         onPressed: userData.teams.length > 1
@@ -228,7 +228,7 @@ class _FormationEditorState extends State<FormationEditor> {
           onPressed: () {
             setState(() {
               if (clipboard != formation) {
-                userData.teams[index].team = BattleTeamFormation.fromJson(clipboard!.toJson());
+                team.formation = BattleTeamFormation.fromJson(clipboard!.toJson());
               }
               clipboard = null;
             });
@@ -270,8 +270,8 @@ class _FormationEditorState extends State<FormationEditor> {
       children: [
         FilledButton.tonalIcon(
           onPressed: () {
-            userData.teams.add(BattleShareData(quest: null, team: BattleTeamFormation()));
-            if (mounted) setState(() {});
+            userData.teams.add(BattleShareData(quest: null, formation: BattleTeamFormation()));
+            setState(() {});
           },
           icon: const Icon(Icons.add),
           label: Text(S.current.add),
@@ -280,9 +280,9 @@ class _FormationEditorState extends State<FormationEditor> {
           onPressed: widget.teamToSave == null
               ? null
               : () {
-                  userData.teams.add(BattleShareData.fromJson(widget.teamToSave!.toJson()));
+                  userData.teams.add(widget.teamToSave!.copy());
                   EasyLoading.showSuccess('${S.current.saved}: ${S.current.team} ${userData.teams.length}');
-                  if (mounted) setState(() {});
+                  setState(() {});
                 },
           icon: const Icon(Icons.save),
           label: Text(S.current.save),

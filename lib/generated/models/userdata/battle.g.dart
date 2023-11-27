@@ -114,7 +114,7 @@ BattleShareData _$BattleShareDataFromJson(Map json) => $checkedCreate(
               'quest', (v) => v == null ? null : BattleQuestInfo.fromJson(Map<String, dynamic>.from(v as Map))),
           options: $checkedConvert(
               'options', (v) => v == null ? null : BattleShareDataOption.fromJson(Map<String, dynamic>.from(v as Map))),
-          team: $checkedConvert('team', (v) => BattleTeamFormation.fromJson(Map<String, dynamic>.from(v as Map))),
+          formation: $checkedConvert('team', (v) => BattleTeamFormation.fromJson(Map<String, dynamic>.from(v as Map))),
           delegate: $checkedConvert('delegate',
               (v) => v == null ? null : BattleReplayDelegateData.fromJson(Map<String, dynamic>.from(v as Map))),
           actions: $checkedConvert(
@@ -140,7 +140,7 @@ Map<String, dynamic> _$BattleShareDataToJson(BattleShareData instance) {
   writeNotNull('appBuild', instance.appBuild);
   writeNotNull('quest', instance.quest?.toJson());
   val['options'] = instance.options.toJson();
-  val['team'] = instance.team.toJson();
+  val['team'] = instance.formation.toJson();
   writeNotNull('delegate', instance.delegate?.toJson());
   val['actions'] = instance.actions.map((e) => e.toJson()).toList();
   return val;

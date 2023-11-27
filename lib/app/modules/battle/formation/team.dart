@@ -6,9 +6,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import 'svt_selector.dart';
 
 class TeamSetupCard extends StatefulWidget {
-  final List<PlayerSvtData> onFieldSvts;
-  final List<PlayerSvtData> backupSvts;
-  final BattleTeamSetup team;
+  final BattleTeamSetup formation;
   final QuestPhase? quest;
   final Region? playerRegion;
   final bool enableEdit;
@@ -17,9 +15,7 @@ class TeamSetupCard extends StatefulWidget {
 
   const TeamSetupCard({
     super.key,
-    required this.onFieldSvts,
-    required this.backupSvts,
-    required this.team,
+    required this.formation,
     required this.quest,
     this.playerRegion,
     this.enableEdit = true,
@@ -32,9 +28,9 @@ class TeamSetupCard extends StatefulWidget {
 }
 
 class _TeamSetupCardState extends State<TeamSetupCard> {
-  List<PlayerSvtData> get onFieldSvts => widget.onFieldSvts;
-  List<PlayerSvtData> get backupSvts => widget.backupSvts;
-  BattleTeamSetup get team => widget.team;
+  List<PlayerSvtData> get onFieldSvts => formation.onFieldSvtDataList;
+  List<PlayerSvtData> get backupSvts => formation.backupSvtDataList;
+  BattleTeamSetup get formation => widget.formation;
 
   final hovered = ValueNotifier<String?>(null);
 
@@ -87,7 +83,7 @@ class _TeamSetupCardState extends State<TeamSetupCard> {
   }
 
   void onDrag(PlayerSvtData from, PlayerSvtData to, bool isCE) {
-    final allSvts = team.allSvts.toList();
+    final allSvts = formation.allSvts.toList();
     final fromIndex = allSvts.indexOf(from), toIndex = allSvts.indexOf(to);
     if (fromIndex < 0 || toIndex < 0 || fromIndex == toIndex) return;
     if (isCE) {

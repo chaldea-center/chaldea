@@ -78,7 +78,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           onPressed: () {
             Set<int> svtIds = {}, ceIds = {};
             for (final record in queryResult.data) {
-              final svts = record.decoded?.team.allSvts ?? [];
+              final svts = record.decoded?.formation.allSvts ?? [];
               svtIds.addAll(svts.map((e) => e?.svtId ?? 0).where((e) => e > 0));
               ceIds.addAll(svts.map((e) => e?.ceId ?? 0).where((e) => e > 0));
             }
@@ -183,7 +183,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         buildHeader(shownIndex, record),
         buildExtraInfo(record),
         if (widget.mode == TeamQueryMode.user || widget.mode == TeamQueryMode.id) buildQuest(record),
-        if (shareData != null) FormationCard(formation: shareData.team),
+        if (shareData != null) FormationCard(formation: shareData.formation),
         buildTeamActions(record),
         const SizedBox(height: 6),
       ],
@@ -410,7 +410,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
                   Navigator.pop(context);
                   widget.onSelect!(teamData);
                 } else {
-                  final data2 = BattleShareData.fromJson(teamData.toJson());
+                  final data2 = teamData.copy();
                   data2
                     ..actions.clear()
                     ..delegate = null;
@@ -453,12 +453,12 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       return false;
     }
     for (final svtId in filterData.blockSvts.options) {
-      if (data.team.allSvts.any((svt) => svt?.svtId == svtId)) {
+      if (data.formation.allSvts.any((svt) => svt?.svtId == svtId)) {
         return false;
       }
     }
     if (filterData.useSvts.options.isNotEmpty &&
-        !filterData.useSvts.options.every((svtId) => data.team.allSvts.any((e) => e?.svtId == svtId))) {
+        !filterData.useSvts.options.every((svtId) => data.formation.allSvts.any((e) => e?.svtId == svtId))) {
       return false;
     }
 
@@ -470,7 +470,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     }
 
     for (final ceId in filterData.blockCEs.options) {
-      if (data.team.allSvts.any((svt) => _isCEMismatch(svt, ceId))) {
+      if (data.formation.allSvts.any((svt) => _isCEMismatch(svt, ceId))) {
         return false;
       }
     }
@@ -501,16 +501,16 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     for (final miscOption in filterData.miscOptions.options) {
       switch (miscOption) {
         case TeamFilterMiscType.noOrderChange:
-          if ([20, 210].contains(data.team.mysticCode.mysticCodeId) && data.usedMysticCodeSkill(2) == true) {
+          if ([20, 210].contains(data.formation.mysticCode.mysticCodeId) && data.usedMysticCodeSkill(2) == true) {
             return false;
           }
         case TeamFilterMiscType.noSameSvt:
-          final svtIds = data.team.allSvts.map((e) => e?.svtId ?? 0).where((e) => e > 0).toList();
+          final svtIds = data.formation.allSvts.map((e) => e?.svtId ?? 0).where((e) => e > 0).toList();
           if (svtIds.length != svtIds.toSet().length) {
             return false;
           }
         case TeamFilterMiscType.noAppendSkill:
-          for (final svt in data.team.allSvts) {
+          for (final svt in data.formation.allSvts) {
             final dbSvt = db.gameData.servantsById[svt?.svtId];
             if (svt == null || dbSvt == null) continue;
             if (svt.appendLvs.any((lv) => lv > 0)) {
@@ -518,7 +518,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             }
           }
         case TeamFilterMiscType.noGrailFou:
-          for (final svt in data.team.allSvts) {
+          for (final svt in data.formation.allSvts) {
             final dbSvt = db.gameData.servantsById[svt?.svtId];
             if (svt == null || dbSvt == null) continue;
             if (dbSvt.type != SvtType.heroine && svt.lv > dbSvt.lvMax) {
@@ -529,7 +529,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             }
           }
         case TeamFilterMiscType.noLv100:
-          for (final svt in data.team.allSvts) {
+          for (final svt in data.formation.allSvts) {
             final dbSvt = db.gameData.servantsById[svt?.svtId];
             if (svt == null || dbSvt == null) continue;
             if (svt.lv > 100) {
@@ -538,12 +538,12 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           }
           break;
         case TeamFilterMiscType.noDoubleCastoria:
-          if (data.team.allSvts.where((e) => e?.svtId == 504500).length >= 2) {
+          if (data.formation.allSvts.where((e) => e?.svtId == 504500).length >= 2) {
             return false;
           }
           break;
         case TeamFilterMiscType.noDoubleKoyan:
-          if (data.team.allSvts.where((e) => e?.svtId == 604200).length >= 2) {
+          if (data.formation.allSvts.where((e) => e?.svtId == 604200).length >= 2) {
             return false;
           }
           break;

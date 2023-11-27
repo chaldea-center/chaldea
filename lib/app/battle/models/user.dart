@@ -499,7 +499,7 @@ class BattleTeamSetup {
 }
 
 class BattleOptions extends BattleOptionsRuntime {
-  BattleTeamSetup team = BattleTeamSetup();
+  BattleTeamSetup formation = BattleTeamSetup();
 
   @override
   BattleOptions copy() {
@@ -514,6 +514,6 @@ class BattleOptions extends BattleOptionsRuntime {
       ..threshold = threshold
       ..tailoredExecution = tailoredExecution
       ..manualAllySkillTarget = manualAllySkillTarget
-      ..team = team.copy();
+      ..formation = formation.copy();
   }
 }

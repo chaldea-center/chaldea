@@ -35,13 +35,15 @@ void replaySimulation({required BattleShareData detail, int? replayTeamId}) asyn
 
   final options = BattleOptions();
   options.fromShareData(detail.options);
-  final formation = detail.team;
+  final formation = detail.formation;
   for (int index = 0; index < 3; index++) {
-    options.team.onFieldSvtDataList[index] = await PlayerSvtData.fromStoredData(formation.onFieldSvts.getOrNull(index));
-    options.team.backupSvtDataList[index] = await PlayerSvtData.fromStoredData(formation.backupSvts.getOrNull(index));
+    options.formation.onFieldSvtDataList[index] =
+        await PlayerSvtData.fromStoredData(formation.onFieldSvts.getOrNull(index));
+    options.formation.backupSvtDataList[index] =
+        await PlayerSvtData.fromStoredData(formation.backupSvts.getOrNull(index));
   }
 
-  options.team.mysticCodeData.loadStoredData(formation.mysticCode);
+  options.formation.mysticCodeData.loadStoredData(formation.mysticCode);
 
   if (options.disableEvent) {
     questCopy.warId = 0;

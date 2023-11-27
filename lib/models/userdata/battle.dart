@@ -59,7 +59,7 @@ class BattleSimUserData {
         formations = formations ?? [],
         teams = teams ?? [] {
     if (teams == null && formations != null) {
-      this.teams.addAll(formations.map((e) => BattleShareData(quest: null, team: e)));
+      this.teams.addAll(formations.map((e) => BattleShareData(quest: null, formation: e)));
     }
     validate();
   }
@@ -137,7 +137,7 @@ class BattleSimSetting {
     this.recordShowTwoColumn = false,
     this.manualAllySkillTarget = false,
   })  : defaultLvs = defaultLvs ?? PlayerSvtDefaultData(),
-        curTeam = curTeam ?? BattleShareData(quest: null, team: BattleTeamFormation()),
+        curTeam = curTeam ?? BattleShareData(quest: null, formation: BattleTeamFormation()),
         svtFilterData = svtFilterData ?? SvtFilterData(useGrid: true),
         craftFilterData = craftFilterData ?? CraftFilterData(useGrid: true),
         tdDmgOptions = tdDmgOptions ?? TdDamageOptions() {
@@ -163,7 +163,8 @@ class BattleShareData {
   int? appBuild; // app ver for uploaded data
   BattleQuestInfo? quest;
   BattleShareDataOption options;
-  BattleTeamFormation team;
+  @JsonKey(name: 'team')
+  BattleTeamFormation formation;
   BattleReplayDelegateData? delegate;
   List<BattleRecordData> actions;
 
@@ -172,7 +173,7 @@ class BattleShareData {
     this.appBuild,
     required this.quest,
     BattleShareDataOption? options,
-    required this.team,
+    required this.formation,
     this.delegate,
     List<BattleRecordData>? actions,
   })  : options = options ?? BattleShareDataOption(),
@@ -181,20 +182,24 @@ class BattleShareData {
   factory BattleShareData.fromJson(Map<String, dynamic> json) => _$BattleShareDataFromJson(json);
 
   Map<String, dynamic> toJson() {
-    final team2 = BattleTeamFormation.fromJson(team.toJson());
-    for (final svt in [...team2.onFieldSvts, ...team2.backupSvts]) {
-      svt?.customPassives.clear();
-      svt?.customPassiveLvs.clear();
-    }
+    // final team2 = BattleTeamFormation.fromJson(formation.toJson());
+    // for (final svt in [...team2.onFieldSvts, ...team2.backupSvts]) {
+    //   svt?.customPassives.clear();
+    //   svt?.customPassiveLvs.clear();
+    // }
     return _$BattleShareDataToJson(BattleShareData(
       minBuild: kMinBuild,
       appBuild: appBuild ?? AppInfo.buildNumber,
       quest: quest,
       options: options,
-      team: team2,
+      formation: formation,
       delegate: delegate,
       actions: actions,
     ));
+  }
+
+  BattleShareData copy() {
+    return BattleShareData.fromJson(toJson());
   }
 
   Uri toUriV2() {

@@ -206,15 +206,15 @@ class BattleRecordManager {
       }
     }
 
-    if (options.team.allSvts.where((e) => e.supportType != SupportSvtType.none).length > 1) {
+    if (options.formation.allSvts.where((e) => e.supportType != SupportSvtType.none).length > 1) {
       setIllegal('${S.current.support_servant}: ＞1');
     }
     final maxCost = Maths.max(ConstData.userLevel.values.map((e) => e.maxCost), 115);
-    if (options.team.totalCost > maxCost) {
-      setIllegal('COST ${options.team.totalCost}>$maxCost');
+    if (options.formation.totalCost > maxCost) {
+      setIllegal('COST ${options.formation.totalCost}>$maxCost');
     }
 
-    for (final svtData in options.team.allSvts) {
+    for (final svtData in options.formation.allSvts) {
       _checkSvtEligible(svtData);
     }
   }

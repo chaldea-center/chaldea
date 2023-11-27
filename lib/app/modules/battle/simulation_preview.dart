@@ -73,8 +73,8 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   final BattleOptions options = BattleOptions();
   BattleSimSetting get settings => db.settings.battleSim;
 
-  List<PlayerSvtData> get onFieldSvts => options.team.onFieldSvtDataList;
-  List<PlayerSvtData> get backupSvts => options.team.backupSvtDataList;
+  List<PlayerSvtData> get onFieldSvts => options.formation.onFieldSvtDataList;
+  List<PlayerSvtData> get backupSvts => options.formation.backupSvtDataList;
 
   @override
   void initState() {
@@ -139,7 +139,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       children: [
         TextButton(
           onPressed: () async {
-            options.team.clear();
+            options.formation.clear();
             saveFormation();
             if (mounted) setState(() {});
           },
@@ -152,7 +152,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           onPressed: () async {
             final team = saveFormation();
             await router.pushPage(FormationEditor(
-              teamToSave: team.team.allCardIds.isEmpty ? null : team,
+              teamToSave: team.formation.allCardIds.isEmpty ? null : team,
               onSelected: restoreFormation,
             ));
             if (mounted) setState(() {});
@@ -167,9 +167,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       ],
     ));
     children.add(TeamSetupCard(
-      onFieldSvts: onFieldSvts,
-      backupSvts: backupSvts,
-      team: options.team,
+      formation: options.formation,
       quest: questPhase,
       playerRegion: settings.playerRegion,
       onChanged: () {
@@ -187,8 +185,8 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               style: TextStyle(color: Theme.of(context).colorScheme.error),
               onTap: () {
                 setState(() {
-                  options.team.mysticCodeData.level = 0;
-                  options.team.mysticCodeData.mysticCode = null;
+                  options.formation.mysticCodeData.level = 0;
+                  options.formation.mysticCodeData.mysticCode = null;
                 });
               },
             )
@@ -234,7 +232,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       PopupMenuItem(
         onTap: () {
           saveFormation();
-          if (settings.curTeam.team.allCardIds.isEmpty) {
+          if (settings.curTeam.formation.allCardIds.isEmpty) {
             EasyLoading.showError("No servant in team");
             return;
           }
@@ -249,7 +247,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             appBuild: AppInfo.buildNumber,
             quest: questInfo,
             options: options.toShareData(),
-            team: settings.curTeam.team,
+            formation: settings.curTeam.formation,
           ).toUriV2();
           String shareString = shareUri.toString();
           Clipboard.setData(ClipboardData(text: shareString));
@@ -586,7 +584,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
               },
               onTapOk: () {
                 settings.playerRegion = v;
-                for (final svt in options.team.allSvts) {
+                for (final svt in options.formation.allSvts) {
                   svt.updateRankUps(region: v, jpTime: questPhase?.jpOpenAt);
                 }
                 if (mounted) setState(() {});
@@ -641,7 +639,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   Widget buildMysticCode() {
-    final mcData = options.team.mysticCodeData;
+    final mcData = options.formation.mysticCodeData;
     final enabled = mcData.enabled;
     Widget mcIcon = Column(
       mainAxisSize: MainAxisSize.min,
@@ -702,7 +700,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
             leadingText: enabled ? mcData.mysticCode?.lName.l ?? S.current.mystic_code : S.current.mystic_code,
             min: 0,
             max: 10,
-            value: options.team.mysticCodeData.level,
+            value: options.formation.mysticCodeData.level,
             label: enabled ? 'Lv.${mcData.level}' : S.current.disabled,
             onChange: (v) {
               mcData.level = v.round();
@@ -919,7 +917,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       children: [
         ConstrainedBox(
           constraints: const BoxConstraints(minWidth: 90),
-          child: Text(' COST: ${options.team.totalCost} ', textAlign: TextAlign.center),
+          child: Text(' COST: ${options.formation.totalCost} ', textAlign: TextAlign.center),
         ),
         FilledButton.icon(
           onPressed: errorMsg != null
@@ -1167,7 +1165,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                 Text([
                   '${S.current.team} ${replayTeamData.id} @${replayTeamData.username}',
                 ].join('\n')),
-                IgnorePointer(child: FormationCard(formation: replayTeamData.decoded!.team)),
+                IgnorePointer(child: FormationCard(formation: replayTeamData.decoded!.formation)),
               ],
             ),
           );
@@ -1204,21 +1202,21 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   Future<void> restoreFormation(BattleShareData team) async {
-    final formation = team.team;
+    final formation = team.formation;
     for (int index = 0; index < 3; index++) {
       onFieldSvts[index] = await PlayerSvtData.fromStoredData(formation.onFieldSvts.getOrNull(index));
       backupSvts[index] = await PlayerSvtData.fromStoredData(formation.backupSvts.getOrNull(index));
     }
     options.fromShareData(team.options);
-    options.team.mysticCodeData.loadStoredData(formation.mysticCode);
+    options.formation.mysticCodeData.loadStoredData(formation.mysticCode);
   }
 
   BattleShareData saveFormation() {
     final team = settings.curTeam;
-    final curFormation = team.team;
+    final curFormation = team.formation;
     curFormation.onFieldSvts = onFieldSvts.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
     curFormation.backupSvts = backupSvts.map((e) => e.isEmpty ? null : e.toStoredData()).toList();
-    curFormation.mysticCode = options.team.mysticCodeData.toStoredData();
+    curFormation.mysticCode = options.formation.mysticCodeData.toStoredData();
     final questInfo = questPhase == null ? null : BattleQuestInfo.quest(questPhase!);
     team.quest = questInfo;
     team.options = options.toShareData();

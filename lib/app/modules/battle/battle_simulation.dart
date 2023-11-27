@@ -54,7 +54,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     return BattleShareData(
       appBuild: AppInfo.buildNumber,
       quest: BattleQuestInfo.quest(questPhase),
-      team: widget.options.team.toFormationData(),
+      formation: widget.options.formation.toFormationData(),
       delegate: battleData.replayDataRecord.copy(),
       actions: battleData.recorder.toUploadRecords(),
       options: widget.options.toShareData(),
@@ -81,8 +81,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       action: 'battle_init',
       task: () => battleData.init(
         questPhase,
-        [...widget.options.team.onFieldSvtDataList, ...widget.options.team.backupSvtDataList],
-        widget.options.team.mysticCodeData,
+        [...widget.options.formation.onFieldSvtDataList, ...widget.options.formation.backupSvtDataList],
+        widget.options.formation.mysticCodeData,
       ),
     );
 
@@ -329,7 +329,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           child: BattleRecorderPanel(
             battleData: battleData,
             quest: questPhase,
-            team: widget.options.team,
+            team: widget.options.formation,
             options: widget.options,
             initShowTeam: widget.replayActions != null,
             initShowQuest: widget.replayActions != null,
