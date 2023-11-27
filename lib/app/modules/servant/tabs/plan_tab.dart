@@ -1,7 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/services.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -251,26 +249,28 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           ),
           title: Text(S.current.servant_coin),
           subtitle: Text('${S.current.coin_summon_num}: ${svt.coin?.summonNum}'),
-          trailing: SizedBox(
-            width: 60,
-            child: TextFormField(
-              controller: _coinEditController,
-              buildCounter: (context, {required int currentLength, required int? maxLength, required bool isFocused}) =>
-                  null,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              maxLength: 4,
-              onChanged: (v) {
-                int? coin = int.tryParse(v);
-                final coinId = svt.coin?.item.id;
-                if (coin != null && coinId != null) {
-                  db.curUser.items[coinId] = coin;
-                  updateState();
-                }
-              },
-            ),
-          ),
+          trailing: db.onUserData((context, snapshot) => TextButton(
+                onPressed: () {
+                  InputCancelOkDialog(
+                    title: S.current.servant_coin,
+                    text: db.curUser.items[svt.coin?.item.id]?.toString(),
+                    keyboardType: const TextInputType.numberWithOptions(signed: true),
+                    validate: (s) => int.tryParse(s) != null,
+                    onSubmit: (s) {
+                      int? coin = int.tryParse(s);
+                      final coinId = svt.coin?.item.id;
+                      if (coin != null && coinId != null) {
+                        db.curUser.items[coinId] = coin;
+                        updateState();
+                      }
+                    },
+                  ).showDialog(context);
+                },
+                child: Text(
+                  '${(db.curUser.items[svt.coin?.item.id] ?? 0)}',
+                  style: const TextStyle(decoration: TextDecoration.underline),
+                ),
+              )),
         ),
       if (showDetail(SvtPlanDetail.grail))
         buildPlanRow(

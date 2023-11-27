@@ -80,6 +80,7 @@ class _GrowthCurvePageState extends State<GrowthCurvePage> with SingleTickerProv
       ),
       body: TabBarView(
         controller: _tabController,
+        physics: const NeverScrollableScrollPhysics(),
         children: [
           chartTab,
           tableTab,

@@ -170,8 +170,9 @@ class _SummonListPageState extends State<SummonListPage> with SearchableListStat
     return ListTile(
       title: title,
       subtitle: subtitle,
-      contentPadding: filterData.showBanner ? EdgeInsets.zero : const EdgeInsetsDirectional.only(start: 16),
+      contentPadding: EdgeInsetsDirectional.only(start: filterData.showBanner ? 8 : 16),
       minVerticalPadding: filterData.showBanner ? 0 : null,
+      horizontalTitleGap: filterData.showBanner ? 0 : null,
       trailing: db.onUserData(
         (context, snapshot) {
           final planned = db.curUser.summons.contains(summon.id);

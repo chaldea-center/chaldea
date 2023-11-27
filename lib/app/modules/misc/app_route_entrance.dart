@@ -110,6 +110,7 @@ class _AppRouteEntrancePageState extends State<AppRouteEntrancePage> {
               },
               textAlign: TextAlign.center,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              keyboardType: const TextInputType.numberWithOptions(signed: true),
               onFieldSubmitted: (s) {
                 final v = int.tryParse(s);
                 if (v != null) router.push(url: '$path/$v');

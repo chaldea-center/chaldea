@@ -289,7 +289,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     if (team == null) return const SizedBox.shrink();
     final maxRandom = Maths.max(team.actions.map((e) => e.options.random));
     if (maxRandom > ConstData.constants.attackRateRandomMin) {
-      spans.add(TextSpan(text: '${S.current.random} ${maxRandom / 1000}'));
+      spans.add(TextSpan(text: '${S.current.battle_random} ${maxRandom / 1000}'));
     }
     final minThreshold = Maths.min(team.actions.map((e) => e.options.threshold));
     if (minThreshold < 1000) {
