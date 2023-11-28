@@ -8032,6 +8032,17 @@ class S {
     );
   }
 
+  /// `Save Current Team`
+  String get save_current_team {
+    return Intl.message(
+      'Save Current Team',
+      name: 'save_current_team',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Save to Photos`
   String get save_to_photos {
     return Intl.message(

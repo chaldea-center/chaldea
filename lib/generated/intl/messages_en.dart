@@ -865,6 +865,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "same_event_plan": MessageLookupByLibrary.simpleMessage("Keep Same Event Plan"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "save_as": MessageLookupByLibrary.simpleMessage("Save As"),
+        "save_current_team": MessageLookupByLibrary.simpleMessage("Save Current Team"),
         "save_to_photos": MessageLookupByLibrary.simpleMessage("Save to Photos"),
         "saved": MessageLookupByLibrary.simpleMessage("Saved"),
         "screen_size": MessageLookupByLibrary.simpleMessage("Screen Size"),

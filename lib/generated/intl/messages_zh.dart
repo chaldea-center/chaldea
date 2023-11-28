@@ -823,6 +823,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "same_event_plan": MessageLookupByLibrary.simpleMessage("保持相同活动规划"),
         "save": MessageLookupByLibrary.simpleMessage("保存"),
         "save_as": MessageLookupByLibrary.simpleMessage("另存为"),
+        "save_current_team": MessageLookupByLibrary.simpleMessage("保存当前队伍"),
         "save_to_photos": MessageLookupByLibrary.simpleMessage("保存到相册"),
         "saved": MessageLookupByLibrary.simpleMessage("已保存"),
         "screen_size": MessageLookupByLibrary.simpleMessage("屏幕尺寸"),

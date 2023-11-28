@@ -13,43 +13,12 @@ class FormationCard extends StatelessWidget {
 
   @override
   Widget build(final BuildContext context) {
-    final enabled = formation.mysticCode.mysticCodeId != null && formation.mysticCode.level > 0;
-    final mc = enabled ? db.gameData.mysticCodes[formation.mysticCode.mysticCodeId] : null;
-    final Set<String?> mcIcons = {};
-    if (showAllMysticCodeIcon) {
-      mcIcons.add(mc?.extraAssets.item.male);
-      mcIcons.add(mc?.extraAssets.item.female);
-    } else {
-      mcIcons.add(mc?.icon);
-    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         for (final onFieldSvt in formation.onFieldSvts) _buildServantIcons(context, onFieldSvt),
         for (final backupSvt in formation.backupSvts) _buildServantIcons(context, backupSvt),
-        Flexible(
-          flex: mcIcons.length > 1 ? 12 : 8,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  for (final icon in mcIcons)
-                    Flexible(
-                      child: db.getIconImage(
-                        enabled ? icon : null,
-                        aspectRatio: 1,
-                        width: 56,
-                      ),
-                    )
-                ],
-              ),
-              if (enabled) Text("Lv.${formation.mysticCode.level}", textScaler: const TextScaler.linear(0.9))
-            ],
-          ),
-        ),
+        _buildMysticCode(context),
       ],
     );
   }
@@ -135,5 +104,44 @@ class FormationCard extends StatelessWidget {
       child: child,
     );
     return Flexible(flex: 10, child: child);
+  }
+
+  Widget _buildMysticCode(BuildContext context) {
+    final enabled = formation.mysticCode.mysticCodeId != null && formation.mysticCode.level > 0;
+    final mc = enabled ? db.gameData.mysticCodes[formation.mysticCode.mysticCodeId] : null;
+    final Set<String?> mcIcons = {};
+    if (showAllMysticCodeIcon) {
+      mcIcons.add(mc?.extraAssets.item.male);
+      mcIcons.add(mc?.extraAssets.item.female);
+    } else {
+      mcIcons.add(mc?.icon);
+    }
+
+    return Flexible(
+      flex: mcIcons.length > 1 ? 12 : 8,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final icon in mcIcons)
+                Flexible(
+                  child: db.getIconImage(
+                    enabled ? icon : null,
+                    aspectRatio: 1,
+                    width: 56,
+                    onTap: enabled
+                        ? () => router.push(url: Routes.mysticCodeI(formation.mysticCode.mysticCodeId ?? 0))
+                        : null,
+                  ),
+                )
+            ],
+          ),
+          if (enabled) Text("Lv.${formation.mysticCode.level}", textScaler: const TextScaler.linear(0.9))
+        ],
+      ),
+    );
   }
 }

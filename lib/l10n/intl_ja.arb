@@ -724,6 +724,7 @@
   "same_event_plan": "同じイベントプランを維持",
   "save": "保存",
   "save_as": null,
+  "save_current_team": null,
   "save_to_photos": "アルバムに保存",
   "saved": "保存済み",
   "screen_size": "画面サイズ",

@@ -317,6 +317,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         ]));
       }
     }
+    if (spans.isEmpty) return const SizedBox.shrink();
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -374,7 +375,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     ));
 
     if (mode == TeamQueryMode.user || record.userId == curUserId || AppInfo.isDebugDevice) {
-      actions.add(FilledButton(
+      actions.add(TextButton(
         onPressed: () {
           final isOthers = record.userId != curUserId;
           SimpleCancelOkDialog(
@@ -388,19 +389,19 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             },
           ).showDialog(context);
         },
-        style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
+        style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.error),
         child: Text(S.current.delete),
       ));
     }
     if (teamData != null) {
-      actions.add(FilledButton(
+      actions.add(TextButton(
         onPressed: () {
           replaySimulation(detail: teamData, replayTeamId: record.id);
         },
         child: Text(S.current.details),
       ));
     }
-
+    actions.add(const SizedBox(width: 8));
     actions.addAll([
       FilledButton(
         onPressed: teamData == null
@@ -435,7 +436,6 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     return Wrap(
       alignment: WrapAlignment.center,
       crossAxisAlignment: WrapCrossAlignment.center,
-      spacing: 2,
       children: actions,
     );
   }

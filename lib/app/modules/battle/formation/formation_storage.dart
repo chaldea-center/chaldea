@@ -24,7 +24,6 @@ class _FormationEditorState extends State<FormationEditor> {
   BattleSimSetting get settings => db.settings.battleSim;
   BattleSimUserData get userData => db.curUser.battleSim;
 
-  BattleTeamFormation? clipboard;
   bool sorting = false;
 
   @override
@@ -76,27 +75,33 @@ class _FormationEditorState extends State<FormationEditor> {
       );
     }
 
-    final listView = ListView(
-      children: [
-        ListTile(
-          dense: true,
-          title: db.onUserData((context, snapshot) => Text(
-                '${S.current.cur_account}: ${db.curUser.name}',
-                textAlign: TextAlign.center,
-              )),
-          onTap: () async {
-            await router.pushPage(AccountPage());
-            if (mounted) setState(() {});
-          },
-        ),
-        ...children,
-        const Divider(height: 16),
-      ],
+    final listView = ScrollRestoration(
+      restorationId: 'formation_storage',
+      builder: (context, controller) {
+        return ListView(
+          controller: controller,
+          children: [
+            ListTile(
+              dense: true,
+              title: db.onUserData((context, snapshot) => Text(
+                    '${S.current.cur_account}: ${db.curUser.name}',
+                    textAlign: TextAlign.center,
+                  )),
+              onTap: () async {
+                await router.pushPage(AccountPage());
+                if (mounted) setState(() {});
+              },
+            ),
+            ...children,
+            const Divider(height: 16),
+          ],
+        );
+      },
     );
     return Column(
       children: [
         Expanded(child: listView),
-        if (!sorting) SafeArea(child: buildButtonBar()),
+        if (!sorting && widget.teamToSave != null) SafeArea(child: buildButtonBar()),
       ],
     );
   }
@@ -142,7 +147,6 @@ class _FormationEditorState extends State<FormationEditor> {
           ),
         ),
       ),
-      padding: const EdgeInsets.only(top: 8),
     );
     Widget child = Column(
       children: [
@@ -152,7 +156,6 @@ class _FormationEditorState extends State<FormationEditor> {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: FormationCard(formation: formation),
         ),
-        const SizedBox(height: 4),
         if (!sorting) buildActions(index, team),
       ],
     );
@@ -196,7 +199,7 @@ class _FormationEditorState extends State<FormationEditor> {
         onPressed: userData.teams.length > 1
             ? () {
                 SimpleCancelOkDialog(
-                  title: Text(S.current.remove),
+                  title: Text(S.current.delete),
                   content: Text('${S.current.team} ${index + 1}'),
                   onTapOk: () {
                     if (mounted) {
@@ -211,30 +214,19 @@ class _FormationEditorState extends State<FormationEditor> {
               }
             : null,
         child: Text(
-          S.current.remove,
+          S.current.delete,
           style: TextStyle(color: Theme.of(context).colorScheme.error),
         ),
       ),
       TextButton(
-        onPressed: () {
-          setState(() {
-            clipboard = formation;
-          });
-        },
-        child: Text(S.current.copy),
-      ),
-      if (clipboard != null)
-        TextButton(
-          onPressed: () {
-            setState(() {
-              if (clipboard != formation) {
-                team.formation = BattleTeamFormation.fromJson(clipboard!.toJson());
+        onPressed: team.quest != null && team.actions.isNotEmpty
+            ? () {
+                replaySimulation(detail: team);
               }
-              clipboard = null;
-            });
-          },
-          child: Text(clipboard != formation ? S.current.paste : S.current.cancel),
-        ),
+            : null,
+        child: Text(S.current.details),
+      ),
+      const SizedBox(width: 8),
       if (widget.onSelected != null)
         FilledButton(
           onPressed: () {
@@ -247,14 +239,15 @@ class _FormationEditorState extends State<FormationEditor> {
           ),
           child: Text(S.current.select),
         ),
-      TextButton(
-        onPressed: team.quest != null && team.actions.isNotEmpty
-            ? () {
-                replaySimulation(detail: team);
-              }
-            : null,
-        child: Text(S.current.details),
-      )
+      IconButton(
+        onPressed: () async {
+          final shareUri = team.toUriV2().toString();
+          await copyToClipboard(shareUri);
+          EasyLoading.showSuccess('${shareUri.substring2(0, 200)}...');
+        },
+        icon: const Icon(Icons.ios_share),
+        tooltip: S.current.share,
+      ),
     ];
 
     return Wrap(
@@ -269,14 +262,6 @@ class _FormationEditorState extends State<FormationEditor> {
       alignment: MainAxisAlignment.center,
       children: [
         FilledButton.tonalIcon(
-          onPressed: () {
-            userData.teams.add(BattleShareData(quest: null, formation: BattleTeamFormation()));
-            setState(() {});
-          },
-          icon: const Icon(Icons.add),
-          label: Text(S.current.add),
-        ),
-        FilledButton.tonalIcon(
           onPressed: widget.teamToSave == null
               ? null
               : () {
@@ -284,8 +269,8 @@ class _FormationEditorState extends State<FormationEditor> {
                   EasyLoading.showSuccess('${S.current.saved}: ${S.current.team} ${userData.teams.length}');
                   setState(() {});
                 },
-          icon: const Icon(Icons.save),
-          label: Text(S.current.save),
+          icon: const Icon(Icons.person_add),
+          label: Text(S.current.save_current_team),
         ),
       ],
     );
