@@ -61,7 +61,7 @@ dependencies:
   # flutter_qjs: ^0.3.7
   flutter_js: ^0.8.0
   flutter_svg: ^2.0.7
-  flutter_window_close: ^0.3.0
+  flutter_window_close: ^1.0.0
   font_awesome_flutter: ^10.6.0
   github: ^9.16.0
   hive: ^2.2.3
