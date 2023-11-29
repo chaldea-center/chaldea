@@ -4,6 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/url.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../war/wars_page.dart';
 import 'input_tab.dart';
@@ -40,7 +41,9 @@ class _FreeQuestCalcPageState extends State<FreeQuestCalcPage> with SingleTicker
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.free_quest_calculator),
-        actions: [MarkdownHelpPage.buildHelpBtn(context, 'free_quest_planning.md')],
+        actions: [
+          ChaldeaUrl.docsHelpBtn('free_calculator'),
+        ],
         bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
           isScrollable: true,

@@ -13,6 +13,8 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../models/models.dart';
 
+const _kDocDir = 'res/doc';
+
 class MyMarkdownWidget extends StatefulWidget {
   final String? data;
   final String? assetKey;
@@ -124,7 +126,7 @@ class MarkdownHelpPage extends StatefulWidget {
 
   const MarkdownHelpPage({
     super.key,
-    this.dir = 'doc/help',
+    this.dir = _kDocDir,
     this.data,
     this.asset,
     this.assetJp,
@@ -136,7 +138,7 @@ class MarkdownHelpPage extends StatefulWidget {
 
   const MarkdownHelpPage.localized({
     super.key,
-    this.dir = 'doc/help',
+    this.dir = _kDocDir,
     required this.asset,
     this.leading = const BackButton(),
     this.title,
@@ -146,7 +148,7 @@ class MarkdownHelpPage extends StatefulWidget {
         assetEn = 'en/$asset';
 
   static Future<String?> loadHelpAsset({
-    String dir = 'doc/help',
+    String dir = _kDocDir,
     required String? asset,
     String? assetJp,
     String? assetEn,

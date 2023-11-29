@@ -99,7 +99,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         titleSpacing: 0,
         title: Text(S.current.https_sniff),
         actions: [
-          MarkdownHelpPage.buildHelpBtn(context, 'import_https_response.md'),
+          ChaldeaUrl.docsHelpBtn('import_https/'),
           IconButton(
             onPressed: importResponseBody,
             icon: const FaIcon(FontAwesomeIcons.fileImport),

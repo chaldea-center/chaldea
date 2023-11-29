@@ -80,9 +80,9 @@ Future<void> _initiateCommon() async {
 
   LicenseRegistry.addLicense(() async* {
     Map<String, String> licenses = {
-      'MOONCELL': 'doc/license/CC-BY-NC-SA-4.0.txt',
-      'FANDOM': 'doc/license/CC-BY-SA-3.0.txt',
-      'Atlas Academy': 'doc/license/ODC-BY 1.0.txt',
+      'MOONCELL': 'res/license/CC-BY-NC-SA-4.0.txt',
+      'FANDOM': 'res/license/CC-BY-SA-3.0.txt',
+      'Atlas Academy': 'res/license/ODC-BY 1.0.txt',
     };
     for (final entry in licenses.entries) {
       String license = await rootBundle.loadString(entry.value).catchError((e, s) async {
