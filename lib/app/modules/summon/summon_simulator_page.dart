@@ -239,9 +239,9 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       if (block.ids.isEmpty) continue;
       if (!_expanded && !block.display) continue;
       double weight = block.weight / block.ids.length;
-      block.ids.forEach((id) {
+      for (final id in block.ids) {
         Servant? svt = db.gameData.servantsNoDup[id];
-        if (svt == null) return;
+        if (svt == null) continue;
         svtRow.add(SummonUtil.buildCard(
           context: context,
           card: svt,
@@ -249,7 +249,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           showCategory: true,
           showNpLv: false,
         ));
-      });
+      }
     }
 
     List<Widget> craftRow = [];
@@ -257,15 +257,15 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
       if (block.ids.isEmpty) continue;
       if (!_expanded && !block.display) continue;
       double weight = block.weight / block.ids.length;
-      block.ids.forEach((id) {
+      for (final id in block.ids) {
         CraftEssence? ce = db.gameData.craftEssences[id];
-        if (ce == null) return;
+        if (ce == null) continue;
         craftRow.add(SummonUtil.buildCard(
           context: context,
           card: ce,
           weight: weight,
         ));
-      });
+      }
     }
 
     return Padding(
@@ -491,9 +491,9 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     // return;
     List<GameCardMixin> newAdded = summonWithGuarantee(times);
     newAdded.shuffle(random);
-    newAdded.forEach((element) {
+    for (final element in newAdded) {
       allSummons[element] = (allSummons[element] ?? 0) + 1;
-    });
+    }
     history.add(newAdded);
     totalPulls += times;
     totalQuartz += quartz;
@@ -582,7 +582,9 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     probList.shuffle();
     List<GameCardMixin> result = [];
     double totalProb = 0;
-    probList.forEach((element) => totalProb += element.value);
+    for (final element in probList) {
+      totalProb += element.value;
+    }
     for (int i = 0; i < times; i++) {
       double p = random.nextDouble() * totalProb * 0.9999999;
       GameCardMixin? target;

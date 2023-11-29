@@ -71,13 +71,13 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     final List<LPVariable> solutionVars = getSortedVars();
 
     allItems.clear();
-    solutionVars.forEach((variable) {
+    for (final variable in solutionVars) {
       variable.detail.forEach((key, value) {
         if (value > 0 && key != Items.bondPointId && key != Items.expPointId) {
           allItems.add(key);
         }
       });
-    });
+    }
     filterItems.removeWhere((element) => !allItems.contains(element));
 
     List<Widget> children = [];
@@ -205,7 +205,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
     double height = 36;
     List<int> items = allItems.toList()..sort2((e) => db.gameData.items[e]?.priority ?? e);
     List<Widget> children = [];
-    items.forEach((itemId) {
+    for (final itemId in items) {
       children.add(GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
@@ -230,7 +230,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
           ),
         ),
       ));
-    });
+    }
 
     return Column(
       mainAxisSize: MainAxisSize.min,

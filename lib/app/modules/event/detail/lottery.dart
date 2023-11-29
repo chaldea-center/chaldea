@@ -23,9 +23,9 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
     for (final box in lottery.boxes) {
       groups.putIfAbsent(box.boxIndex, () => []).add(box);
     }
-    groups.values.forEach((group) {
+    for (final group in groups.values) {
       group.sort2((e) => e.no);
-    });
+    }
     final boxIndices = groups.keys.toList()..sort();
     if (!boxIndices.contains(selected)) {
       selected = boxIndices.first;

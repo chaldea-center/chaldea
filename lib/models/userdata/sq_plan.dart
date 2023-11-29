@@ -151,12 +151,16 @@ class SaintQuartzPlan {
       }
     }
 
-    db.gameData.events.values.forEach((e) => _checkEvent(event: e));
-    db.gameData.mainStories.values.forEach((e) => _checkEvent(
-          name: e.lLongName.l,
-          items: {...e.itemDrop, ...e.itemReward},
-          // startDate: e.extra.
-        ));
+    for (final event in db.gameData.events.values) {
+      _checkEvent(event: event);
+    }
+    for (final war in db.gameData.mainStories.values) {
+      _checkEvent(
+        name: war.lLongName.l,
+        items: {...war.itemDrop, ...war.itemReward},
+        // startDate: war.extra.
+      );
+    }
     // check master mission
     // final Map<int, int> extraMissionItems = {};
     // if (extraMission != null) {
@@ -173,14 +177,14 @@ class SaintQuartzPlan {
     //   name: 'Extra Mission',
     // );
 
-    db.gameData.wiki.summons.values.forEach((summon) {
+    for (final summon in db.gameData.wiki.summons.values) {
       DateTime? startDate = summon.startTime.jp?.sec2date();
-      if (startDate == null) return;
+      if (startDate == null) continue;
       startDate = DateUtils.dateOnly(DateUtils.addDaysToDate(startDate, eventDateDelta));
       final detail = dataMap[startDate.toDateString()];
-      if (detail == null) return;
+      if (detail == null) continue;
       detail.summons.add(summon);
-    });
+    }
 
     solution = dataMap.values.toList();
     solution.sort((a, b) => a.date.compareTo(b.date));

@@ -77,9 +77,9 @@ class CustomTableRow extends StatefulWidget {
     this.color,
     this.divider = kVerticalDivider,
   }) {
-    children.forEach((cell) {
+    for (final cell in children) {
       cell.key ??= GlobalKey();
-    });
+    }
   }
 
   CustomTableRow.fromTexts({

@@ -161,9 +161,9 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
   Widget _buildSvtIconGrid(BuildContext context, Map<int, int> src, {bool highlight = false}) {
     List<Widget> children = [];
     var sortedSvts = sortSvts(src.keys.toList());
-    sortedSvts.forEach((svtNo) {
+    for (var svtNo in sortedSvts) {
       final svt = db.gameData.servantsWithDup[svtNo];
-      if (svt == null) return;
+      if (svt == null) continue;
       final count = src[svtNo]!;
       bool shouldHighlight = highlight && db.curUser.svtStatusOf(svtNo).cur.favorite;
       if (count > 0) {
@@ -197,7 +197,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
         }
         children.add(Padding(padding: const EdgeInsets.all(1), child: avatar));
       }
-    });
+    }
     return GridView.extent(
       maxCrossAxisExtent: 72,
       childAspectRatio: 132 / 144,

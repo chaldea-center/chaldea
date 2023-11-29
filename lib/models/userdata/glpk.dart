@@ -252,9 +252,9 @@ class BasicLPParams {
   void removeCol(int index) {
     colNames.removeAt(index);
     cVec.removeAt(index);
-    matA.forEach((row) {
+    for (final row in matA) {
       row.removeAt(index);
-    });
+    }
   }
 
   void removeRow(int index) {

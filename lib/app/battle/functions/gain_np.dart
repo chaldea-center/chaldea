@@ -16,13 +16,13 @@ class GainNP {
       return;
     }
 
-    targets.forEach((target) {
+    for (final target in targets) {
       battleData.withTargetSync(target, () {
         int change = isNegative ? -dataVals.Value! : dataVals.Value!;
         target.changeNP(change);
         battleData.curFuncResults[target.uniqueId] = true;
       });
-    });
+    }
   }
 
   static Future<void> gainNpPerIndividual(

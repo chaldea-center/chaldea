@@ -33,15 +33,15 @@ class _ItemResultTabState extends State<ItemResultTab> with ScrollControllerMixi
     for (final detail in result.details) {
       items.putIfAbsent(detail.itemId, () => []).add(detail);
     }
-    items.values.forEach((itemList) {
+    for (final itemList in items.values) {
       itemList.sort2((e) => -e.score);
       final selected = itemList.firstWhereOrNull((e) => e.checked);
       if (selected != null) {
-        itemList.forEach((e) {
-          e.checked = e == selected;
-        });
+        for (final itemDetail in itemList) {
+          itemDetail.checked = itemDetail == selected;
+        }
       }
-    });
+    }
     final keys = items.keys.toList();
     keys.sort2((e) => db.gameData.items[e]?.priority ?? -1);
     countUnknown = items[-1]?.length ?? 0;
@@ -139,11 +139,11 @@ class _ItemResultTabState extends State<ItemResultTab> with ScrollControllerMixi
           onChanged: item.valid
               ? (v) {
                   if (v == true) {
-                    result.details.forEach((e) {
-                      if (e.itemId == item.itemId && e.valid) {
-                        e.checked = e == item;
+                    for (final itemDetail in result.details) {
+                      if (itemDetail.itemId == item.itemId && itemDetail.valid) {
+                        itemDetail.checked = itemDetail == item;
                       }
-                    });
+                    }
                   } else if (v == false) {
                     item.checked = false;
                   }

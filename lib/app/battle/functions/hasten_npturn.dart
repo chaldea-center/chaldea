@@ -15,11 +15,11 @@ class HastenNpturn {
       return;
     }
 
-    targets.forEach((target) {
+    for (final target in targets) {
       battleData.withTargetSync(target, () {
         target.changeNPLineCount(isNegative ? -dataVals.Value! : dataVals.Value!);
         battleData.curFuncResults[target.uniqueId] = true;
       });
-    });
+    }
   }
 }

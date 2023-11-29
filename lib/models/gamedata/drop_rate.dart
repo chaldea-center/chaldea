@@ -114,7 +114,9 @@ class DropRateSheet {
     runs.removeAt(index);
     bonds.removeAt(index);
     exps.removeAt(index);
-    matrix.forEach((row) => row.removeAt(index));
+    for (final row in matrix) {
+      row.removeAt(index);
+    }
   }
 
   factory DropRateSheet.fromJson(Map<String, dynamic> json) => _$DropRateSheetFromJson(json);

@@ -46,7 +46,7 @@ class Query {
     // _optional.clear();
     _mandatory.clear();
     _excluded.clear();
-    phrases.forEach((phrase) {
+    for (final phrase in phrases) {
       switch (phrase[0]) {
         case '+':
           _mandatory.add(phrase.substring(1));
@@ -58,7 +58,7 @@ class Query {
           _mandatory.add(phrase);
           break;
       }
-    });
+    }
   }
 
   // for performance issue, use generator

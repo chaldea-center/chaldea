@@ -550,11 +550,11 @@ class BattleServantData {
   }) {
     final List<NiceTrait> myTraits = [];
     final List<BuffData> buffs = activeOnly ? battleBuff.getActiveList() : battleBuff.validBuffs;
-    buffs.forEach((buff) {
+    for (final buff in buffs) {
       if (!ignoreIrremovable || !buff.irremovable) {
         myTraits.addAll(buff.traits);
       }
-    });
+    }
 
     return myTraits;
   }
@@ -1204,9 +1204,9 @@ class BattleServantData {
 
   Future<void> death(final BattleData battleData) async {
     if (await activateBuffOnAction(battleData, BuffAction.functionDead)) {
-      battleData.nonnullActors.forEach((svt) {
+      for (final svt in battleData.nonnullActors) {
         svt.clearAccumulationDamage();
-      });
+      }
     }
 
     battleData.fieldBuffs
@@ -1235,16 +1235,16 @@ class BattleServantData {
         } else {
           final skillSealed = await hasBuffOnAction(battleData, BuffAction.donotSkill);
           if (!skillSealed) {
-            skillInfoList.forEach((skill) {
+            for (final skill in skillInfoList) {
               skill.turnEnd();
-            });
+            }
           }
 
-          commandCodeSkills.forEach((skills) {
-            skills.forEach((skill) {
+          for (final skills in commandCodeSkills) {
+            for (final skill in skills) {
               skill.turnEnd();
-            });
-          });
+            }
+          }
         }
         usedNpThisTurn = false;
 
@@ -1353,9 +1353,9 @@ class BattleServantData {
       lastHitBy = null;
 
       if (await activateBuffOnAction(battleData, BuffAction.functionGuts)) {
-        battleData.nonnullActors.forEach((svt) {
+        for (final svt in battleData.nonnullActors) {
           svt.clearAccumulationDamage();
-        });
+        }
       }
       return true;
     }

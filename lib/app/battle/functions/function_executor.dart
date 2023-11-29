@@ -311,9 +311,9 @@ class FunctionExecutor {
           await ReplaceMember.replaceMember(battleData, dataVals);
           break;
         case FuncType.cardReset:
-          battleData.nonnullPlayers.forEach((svt) {
+          for (final svt in battleData.nonnullPlayers) {
             svt.battleBuff.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
-          });
+          }
           for (final target in targets) {
             battleData.curFuncResults[target.uniqueId] = true;
           }

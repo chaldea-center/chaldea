@@ -217,14 +217,14 @@ DropRateSheet _preProcess({required DropRateSheet data, required FreeLPParams pa
     return warId == null || warId <= params.progress || warId >= 1000;
   }).toList();
   // only append extra columns having drop data in gpk matrix
-  params.extraCols.forEach((col) {
+  for (final col in params.extraCols) {
     if (data.questIds.contains(col)) cols.add(col);
-  });
+  }
 
   // remove quests in blacklist
-  params.blacklist.forEach((col) {
+  for (final col in params.blacklist) {
     data.removeCol(col);
-  });
+  }
 
   // remove unused quests
   // create a new list since iterator will change the original values
@@ -250,9 +250,9 @@ DropRateSheet _preProcess({required DropRateSheet data, required FreeLPParams pa
     }
     return false;
   });
-  List.of(data.itemIds).forEach((row) {
+  for (final row in List.of(data.itemIds)) {
     if (!objective.containsKey(row)) data.removeRow(row);
-  });
+  }
 
   // remove cols don't contain any objective rows
   for (int col = 0; col < data.questIds.length; col++) {
@@ -301,10 +301,12 @@ DropRateSheet _preProcess({required DropRateSheet data, required FreeLPParams pa
 
   // remove rows/cols above
   params.rows.removeWhere((rowName) => removeRows.contains(rowName) || !objective.containsKey(rowName));
-  removeRows.forEach((element) => data.removeRow(element));
-  removeCols.forEach((element) {
+  for (final element in removeRows) {
+    data.removeRow(element);
+  }
+  for (final element in removeCols) {
     if (!retainCols.contains(element)) data.removeCol(element);
-  });
+  }
 
   // no rows (glpk will raise error), need to check in caller
   if (objective.isEmpty) logger.d('no valid objRows');

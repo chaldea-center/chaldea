@@ -732,9 +732,9 @@ class BattleData {
   }
 
   void checkActorStatus() {
-    nonnullActors.forEach((svt) {
+    for (final svt in nonnullActors) {
       svt.updateActState(this);
-    });
+    }
 
     for (int index = 0; index < onFieldAllyServants.length; index += 1) {
       onFieldAllyServants[index]?.fieldIndex = index;
@@ -751,9 +751,9 @@ class BattleData {
   }
 
   void _useBuffOnce() {
-    nonnullActors.forEach((svt) {
+    for (final svt in nonnullActors) {
       svt.useBuffOnce(this);
-    });
+    }
   }
 
   bool canSelectNp(final int servantIndex) {
@@ -1414,9 +1414,9 @@ class BattleData {
           actorList[i] = null;
           actor.fieldIndex = -1;
           if (actor.isPlayer) {
-            nonnullPlayers.forEach((svt) {
+            for (final svt in nonnullPlayers) {
               svt.battleBuff.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
-            });
+            }
           }
         }
       }

@@ -336,11 +336,11 @@ class Damage {
     int remainingDamage = totalDamage;
 
     if (multiAttack != null && multiAttack > 0) {
-      currentCard.cardDetail.hitsDistribution.forEach((hit) {
+      for (final hit in currentCard.cardDetail.hitsDistribution) {
         for (int count = 1; count <= multiAttack; count += 1) {
           result.cardHits.add(hit);
         }
-      });
+      }
     } else {
       result.cardHits.addAll(currentCard.cardDetail.hitsDistribution);
     }

@@ -237,7 +237,9 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
       actions: [
         TextButton(
           onPressed: () {
-            _itemRedundantControllers.forEach((e) => e.text = '0');
+            for (final controller in _itemRedundantControllers) {
+              controller.text = '0';
+            }
             db.userData.itemAbundantValue.fillRange(0, db.userData.itemAbundantValue.length, 0);
           },
           child: Text(S.current.clear),
@@ -408,13 +410,17 @@ class _ItemListTabState extends State<ItemListTab> {
 
   @override
   void dispose() {
-    _allGroups.values.forEach((group) => group.dispose());
+    for (final group in _allGroups.values) {
+      group.dispose();
+    }
     _scrollController.dispose();
     super.dispose();
   }
 
   void unfocusAll() {
-    _allGroups.values.forEach((group) => group.focusNode.unfocus());
+    for (final group in _allGroups.values) {
+      group.focusNode.unfocus();
+    }
   }
 
   @override
@@ -427,11 +433,11 @@ class _ItemListTabState extends State<ItemListTab> {
     SimpleCancelOkDialog(
       content: const Text('Set All 999'),
       onTapOk: () {
-        _shownGroups.forEach((group) {
+        for (final group in _shownGroups) {
           if (group.data != Items.qpId) {
             db.curUser.items[group.data] = 999;
           }
-        });
+        }
         db.itemCenter.updateLeftItems();
       },
     ).showDialog(context);

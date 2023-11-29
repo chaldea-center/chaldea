@@ -248,7 +248,9 @@ class User {
       plans.add(UserPlan());
     }
     curSvtPlanNo = curSvtPlanNo.clamp2(0, plans.length - 1);
-    servants.values.forEach((e) => e.validate());
+    for (final status in servants.values) {
+      status.validate();
+    }
     for (final key in servants.keys) {
       servants[key]!.validate(db.gameData.servantsWithDup[key]);
     }

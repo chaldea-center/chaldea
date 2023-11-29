@@ -20,7 +20,9 @@ class _SvtPriorityTaggingState extends State<SvtPriorityTagging> {
   @override
   void dispose() {
     super.dispose();
-    _controllers.values.forEach((e) => e.dispose());
+    for (final controller in _controllers.values) {
+      controller.dispose();
+    }
   }
 
   @override

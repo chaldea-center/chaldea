@@ -34,15 +34,15 @@ class _SkillResultTabState extends State<SkillResultTab> with ScrollControllerMi
     for (final detail in result.details) {
       items.putIfAbsent(detail.svtId, () => []).add(detail);
     }
-    items.values.forEach((itemList) {
+    for (var itemList in items.values) {
       itemList.sort2((e) => -e.score);
       final selected = itemList.firstWhereOrNull((e) => e.checked);
       if (selected != null) {
-        itemList.forEach((e) {
-          e.checked = e == selected;
-        });
+        for (var detail in itemList) {
+          detail.checked = detail == selected;
+        }
       }
-    });
+    }
     final keys = items.keys.toList();
     keys.sort();
     countUnknown = items[-1]?.length ?? 0;
@@ -151,11 +151,11 @@ class _SkillResultTabState extends State<SkillResultTab> with ScrollControllerMi
           onChanged: item.valid
               ? (v) {
                   if (v == true) {
-                    result.details.forEach((e) {
-                      if (e.svtId == item.svtId && e.valid) {
-                        e.checked = e == item;
+                    for (final detail in result.details) {
+                      if (detail.svtId == item.svtId && detail.valid) {
+                        detail.checked = detail == item;
                       }
-                    });
+                    }
                   } else if (v == false) {
                     item.checked = false;
                   }

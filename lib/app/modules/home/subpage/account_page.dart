@@ -147,7 +147,9 @@ class _AccountPageState extends State<AccountPage> {
       onTapOk: () {
         user.servants.clear();
         user.items.clear();
-        user.plans.forEach((e) => e.clear());
+        for (final plan in user.plans) {
+          plan.clear();
+        }
         user.mysticCodes.clear();
         updateData(key == db.userData.curUserKey);
       },
