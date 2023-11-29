@@ -1155,6 +1155,10 @@ enum BuffAction {
   functionCommandattackAfterMainOnly(119),
   functionAttackBeforeMainOnly(120),
   functionAttackAfterMainOnly(121),
+  functionSkillAfter(122),
+  functionSkillAfterMainOnly(123),
+  functionTreasureDeviceAfter(124),
+  functionTreasureDeviceAfterMainOnly(125),
   ;
 
   final int id;

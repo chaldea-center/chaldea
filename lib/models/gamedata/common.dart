@@ -991,6 +991,21 @@ enum CondType {
   skillLvExchangeSvt,
   svtFriendshipExchangeSvt,
   exchangeSvt,
+  raidDamageAbove,
+  raidDamageBelow,
+  raidGroupDamageAbove,
+  raidGroupDamageBelow,
+  raidDamageRateAbove,
+  raidDamageRateBelow,
+  raidDamageRateNotAbove,
+  raidDamageRateNotBelow,
+  raidGroupDamageRateAbove,
+  raidGroupDamageRateBelow,
+  raidGroupDamageRateNotAbove,
+  raidGroupDamageRateNotBelow,
+  notQuestGroupClearNum,
+  raidGroupOpenAbove,
+  raidGroupOpenBelow,
 }
 
 @JsonSerializable()
