@@ -119,6 +119,8 @@ class _EventFilterPageState extends FilterPageState<EventFilterData, EventFilter
                 return Text(S.current.mission);
               // case EventCustomType.randomMission:
               //   return Text(S.current.detective_mission);
+              case EventCustomType.raid:
+                return Text(S.current.raid_quest);
               case EventCustomType.shop:
                 return Text(S.current.shop);
               case EventCustomType.point:

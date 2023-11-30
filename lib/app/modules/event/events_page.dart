@@ -261,6 +261,7 @@ class EventListPageState extends State<EventListPage>
       final war = event.warIds.isEmpty ? null : db.gameData.wars[event.warIds.first];
       final Set<EventCustomType> types = {
         if (event.lotteries.isNotEmpty) EventCustomType.lottery,
+        if (event.isRaidEvent) EventCustomType.raid,
         if (event.pointRewards.isNotEmpty) EventCustomType.point,
         if (event.missions.isNotEmpty) EventCustomType.mission,
         if (event.randomMissions.isNotEmpty) EventCustomType.special,

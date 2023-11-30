@@ -91,12 +91,10 @@ class _ShopDetailPageState extends State<ShopDetailPage> with RegionBasedState<N
             Text.rich(TextSpan(children: ShopHelper.cost(context, shop, iconSize: 36)))
           ]),
           CustomTableRow.fromTexts(texts: [S.current.game_rewards], isHeader: true),
-          CustomTableRow(children: [
-            TableCellData(
-              child: getRewards(context),
-              alignment: AlignmentDirectional.centerStart,
-            )
-          ]),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+            child: getRewards(context),
+          ),
           if (shop.script != null && shop.scriptId != null) ...[
             CustomTableRow.fromTexts(texts: [S.current.script_story], isHeader: true),
             TextButton(
@@ -144,8 +142,8 @@ class _ShopDetailPageState extends State<ShopDetailPage> with RegionBasedState<N
   }
 
   Widget getRewards(BuildContext context) {
-    final rewards = ShopHelper.purchases(context, shop, showSvtLvAsc: true);
     List<Widget> children = [];
+    final rewards = ShopHelper.purchases(context, shop, showSvtLvAsc: true);
     for (final reward in rewards) {
       children.add(Text.rich(TextSpan(text: kULLeading, children: [
         if (reward.item1 != null) CenterWidgetSpan(child: SizedBox(height: 42, child: reward.item1!)),

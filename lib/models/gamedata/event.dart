@@ -181,6 +181,19 @@ class Event with RouteInfo {
   bool get isAdvancedQuestEvent => name.contains('アドバンスドクエスト');
   bool get isHuntingEvent => extra.huntingId > 0 || name.contains('ハンティングクエスト');
   bool get isExchangeSvtEvent => shop.isNotEmpty && shop.every((s) => s.isExchangeSvt);
+  bool get isRaidEvent {
+    for (final warId in _warIds) {
+      final war = db.gameData.wars[warId];
+      if (war != null) {
+        for (final quest in war.quests) {
+          if (quest.flags.any((flag) => flag.name.toLowerCase().contains('raid'))) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
 
   int get shopClosedAt {
     if (shop.isEmpty) return endedAt;

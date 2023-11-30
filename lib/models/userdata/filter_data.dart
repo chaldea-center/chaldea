@@ -792,6 +792,7 @@ enum EventCustomType {
   warBoard,
   lottery,
   mission,
+  raid,
   // randomMission,
   shop,
   point,
