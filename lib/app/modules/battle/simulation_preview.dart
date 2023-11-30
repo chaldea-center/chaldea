@@ -1090,12 +1090,26 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
   Future<void> _startSimulation() async {
     // pre-check
+    if (!options.simulateAi && questPhase?.isLaplaceNeedAi == true) {
+      final confirm = await showDialog(
+        context: context,
+        useRootNavigator: false,
+        builder: (context) {
+          return SimpleCancelOkDialog(
+            title: Text(S.current.simulate_simple_ai),
+            content: const Text("This quest is suggested to enable Simulate Simple AI.\nContinue with it disabled?"),
+          );
+        },
+      );
+      if (confirm != true) return;
+    }
+
     final war = questPhase?.war;
     final event = war?.event;
 
     final questCopy = QuestPhase.fromJson(questPhase!.toJson());
 
-    if (questCopy.extraDetail?.waveSetup == 1 && questCopy.stages.length > 1) {
+    if (questCopy.extraDetail?.waveSetup == 1 && questCopy.stages.length > 1 && mounted) {
       final int? chosenWave = await showDialog(
         context: context,
         useRootNavigator: false,
