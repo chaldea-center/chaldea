@@ -769,6 +769,8 @@ class Stage with DataScriptBase {
   List<int>? NoEntryIds;
   List<StageStartMovie> waveStartMovies;
   Map<String, dynamic> get originalScript => source;
+
+  StageCutin? cutin;
   List<QuestEnemy> enemies;
 
   Stage({
@@ -784,6 +786,7 @@ class Stage with DataScriptBase {
     this.NoEntryIds,
     this.waveStartMovies = const [],
     Map<String, dynamic>? originalScript,
+    this.cutin,
     List<QuestEnemy>? enemies,
   })  : fieldAis = fieldAis ?? [],
         call = call ?? [],
@@ -801,6 +804,35 @@ class Stage with DataScriptBase {
   int? get battleMasterImageId => toInt('battleMasterImageId');
 
   Map<String, dynamic> toJson() => _$StageToJson(this);
+}
+
+@JsonSerializable()
+class StageCutin {
+  int runs;
+  List<StageCutInSkill> skills;
+  List<EnemyDrop> drops;
+
+  StageCutin({
+    required this.runs,
+    this.skills = const [],
+    this.drops = const [],
+  });
+
+  factory StageCutin.fromJson(Map<String, dynamic> json) => _$StageCutinFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StageCutinToJson(this);
+}
+
+@JsonSerializable()
+class StageCutInSkill {
+  NiceSkill skill;
+  int appearCount;
+
+  StageCutInSkill({required this.skill, required this.appearCount});
+
+  factory StageCutInSkill.fromJson(Map<String, dynamic> json) => _$StageCutInSkillFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StageCutInSkillToJson(this);
 }
 
 @JsonSerializable()

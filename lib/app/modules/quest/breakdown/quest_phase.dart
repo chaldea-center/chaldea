@@ -146,8 +146,14 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       getPhaseHeader(phase, curPhase),
     ];
     if (curPhase != null) {
+      for (final stage in curPhase.stages) {
+        children.add(buildStage(curPhase, stage));
+        final stageCutin = stage.cutin;
+        if (stageCutin != null) {
+          children.add(_buildStageCutin(context, stageCutin));
+        }
+      }
       children.addAll([
-        ...curPhase.stages.map((stage) => buildStage(curPhase, stage)),
         buildAiNpc(curPhase),
         buildQuestIndiv(curPhase),
         getFlags(curPhase.flags),
@@ -157,6 +163,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         ...buildDrops(curPhase),
       ]);
     }
+
     children.addAll([
       getWarBoard(),
       getPhaseScript(phase),
@@ -478,6 +485,58 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
           ),
         )
       ],
+    );
+  }
+
+  Widget _buildStageCutin(BuildContext context, StageCutin cutin) {
+    List<Widget> children = [];
+    children.add(Text(
+      'Stage Cutin (${S.current.quest_runs(cutin.runs)})',
+      style: const TextStyle(
+        // fontWeight: FontWeight.bold,
+        fontSize: 14,
+      ),
+    ));
+    if (cutin.skills.isNotEmpty) {
+      children.add(Text.rich(SharedBuilder.textButtonSpan(
+        context: context,
+        text: '${cutin.skills.length} ${S.current.skill}',
+        onTap: () {
+          showDialog(
+            context: context,
+            useRootNavigator: false,
+            builder: (context) {
+              return SimpleDialog(
+                title: const Text('Stage Cutin Skills'),
+                titlePadding: const EdgeInsets.fromLTRB(16.0, 24.0, 24.0, 0.0),
+                children: [
+                  for (final skill in cutin.skills)
+                    ListTile(
+                      dense: true,
+                      minLeadingWidth: 24,
+                      title: Text(skill.skill.dispName),
+                      leading: skill.skill.icon != null ? db.getIconImage(skill.skill.icon, width: 24) : null,
+                      trailing: Text(
+                        '${(skill.appearCount / cutin.runs * 100).toStringAsPrecision(3)}%'
+                        '\n(${skill.appearCount}/${cutin.runs})',
+                        style: const TextStyle(fontSize: 12),
+                        textAlign: TextAlign.end,
+                      ),
+                      onTap: skill.skill.routeTo,
+                    ),
+                ],
+              );
+            },
+          );
+        },
+      )));
+    }
+    if (cutin.drops.isNotEmpty) {
+      children.add(_getRayshiftDrops(cutin.drops, false));
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: children,
     );
   }
 

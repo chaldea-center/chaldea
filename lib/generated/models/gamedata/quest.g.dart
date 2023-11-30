@@ -374,6 +374,7 @@ Stage _$StageFromJson(Map json) => Stage(
       originalScript: (json['originalScript'] as Map?)?.map(
         (k, e) => MapEntry(k as String, e),
       ),
+      cutin: json['cutin'] == null ? null : StageCutin.fromJson(Map<String, dynamic>.from(json['cutin'] as Map)),
       enemies: (json['enemies'] as List<dynamic>?)
           ?.map((e) => QuestEnemy.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
@@ -391,6 +392,7 @@ Map<String, dynamic> _$StageToJson(Stage instance) => <String, dynamic>{
       'NoEntryIds': instance.NoEntryIds,
       'waveStartMovies': instance.waveStartMovies.map((e) => e.toJson()).toList(),
       'originalScript': instance.originalScript,
+      'cutin': instance.cutin?.toJson(),
       'enemies': instance.enemies.map((e) => e.toJson()).toList(),
     };
 
@@ -398,6 +400,34 @@ const _$StageLimitActTypeEnumMap = {
   StageLimitActType.win: 'win',
   StageLimitActType.lose: 'lose',
 };
+
+StageCutin _$StageCutinFromJson(Map json) => StageCutin(
+      runs: json['runs'] as int,
+      skills: (json['skills'] as List<dynamic>?)
+              ?.map((e) => StageCutInSkill.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      drops: (json['drops'] as List<dynamic>?)
+              ?.map((e) => EnemyDrop.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+Map<String, dynamic> _$StageCutinToJson(StageCutin instance) => <String, dynamic>{
+      'runs': instance.runs,
+      'skills': instance.skills.map((e) => e.toJson()).toList(),
+      'drops': instance.drops.map((e) => e.toJson()).toList(),
+    };
+
+StageCutInSkill _$StageCutInSkillFromJson(Map json) => StageCutInSkill(
+      skill: NiceSkill.fromJson(Map<String, dynamic>.from(json['skill'] as Map)),
+      appearCount: json['appearCount'] as int,
+    );
+
+Map<String, dynamic> _$StageCutInSkillToJson(StageCutInSkill instance) => <String, dynamic>{
+      'skill': instance.skill.toJson(),
+      'appearCount': instance.appearCount,
+    };
 
 StageStartMovie _$StageStartMovieFromJson(Map json) => StageStartMovie(
       waveStartMovie: json['waveStartMovie'] as String,
