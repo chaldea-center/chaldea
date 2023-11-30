@@ -181,6 +181,11 @@ class _WarDetailPageState extends State<WarDetailPage> {
       children.add(addQuestCategoryTile(context: context, war: war));
     }
 
+    final raidLink = war.event?.extra.script.raidLink;
+    if (raidLink != null && raidLink.isNotEmpty) {
+      children.add(buildRaidLinks(raidLink));
+    }
+
     List<Widget> extraTiles = [];
     if (war.quests.any((q) => q.phaseScripts.isNotEmpty)) {
       extraTiles.add(ListTile(
@@ -404,6 +409,21 @@ class _WarDetailPageState extends State<WarDetailPage> {
         ),
       )
     ]);
+  }
+
+  Widget buildRaidLinks(Map<Region, String> raidLink) {
+    return TileGroup(
+      // header: S.current.event_raid,
+      children: [
+        for (final (region, url) in raidLink.items)
+          ListTile(
+            title: Text("[${region.localName}] ${S.current.event_raid}"),
+            onTap: () {
+              launch(url);
+            },
+          )
+      ],
+    );
   }
 }
 

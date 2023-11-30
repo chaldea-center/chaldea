@@ -125,7 +125,7 @@ class GameDataLoader {
       }
       newVersion = oldVersion;
 
-      if (newVersion.timestamp < GameData.kMinCompatibleVer) {
+      if (newVersion.timestamp < GameData.kMinCompatibleVer.timestamp) {
         throw UpdateError("Local data is outdated");
       }
     } else {

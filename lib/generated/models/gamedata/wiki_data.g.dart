@@ -156,7 +156,6 @@ EventExtra _$EventExtraFromJson(Map json) => EventExtra(
       noticeLink: json['noticeLink'] == null
           ? null
           : MappingBase<String>.fromJson(Map<String, dynamic>.from(json['noticeLink'] as Map)),
-      huntingId: json['huntingId'] as int? ?? 0,
       extraFixedItems: (json['extraFixedItems'] as List<dynamic>?)
               ?.map((e) => EventExtraFixedItems.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -165,12 +164,22 @@ EventExtra _$EventExtraFromJson(Map json) => EventExtra(
               ?.map((e) => EventExtraItems.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      script:
+          json['script'] == null ? null : EventExtraScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
       startTime: json['startTime'] == null
           ? null
           : MappingBase<int>.fromJson(Map<String, dynamic>.from(json['startTime'] as Map)),
       endTime:
           json['endTime'] == null ? null : MappingBase<int>.fromJson(Map<String, dynamic>.from(json['endTime'] as Map)),
       relatedSummons: (json['relatedSummons'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
+    );
+
+EventExtraScript _$EventExtraScriptFromJson(Map json) => EventExtraScript(
+      huntingId: json['huntingId'] as int? ?? 0,
+      raidLink: (json['raidLink'] as Map?)?.map(
+            (k, e) => MapEntry(const RegionConverter().fromJson(k as String), e as String),
+          ) ??
+          const {},
     );
 
 WarExtra _$WarExtraFromJson(Map json) => WarExtra(

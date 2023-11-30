@@ -191,9 +191,9 @@ class EventExtra {
   MappingBase<String> officialBanner;
   MappingList<String> extraBanners;
   MappingBase<String> noticeLink;
-  int huntingId;
   List<EventExtraFixedItems> extraFixedItems;
   List<EventExtraItems> extraItems;
+  EventExtraScript script;
 
   MappingBase<int> startTime;
   MappingBase<int> endTime;
@@ -209,9 +209,9 @@ class EventExtra {
     MappingBase<String>? officialBanner,
     MappingList<String>? extraBanners,
     MappingBase<String>? noticeLink,
-    this.huntingId = 0,
     this.extraFixedItems = const [],
     this.extraItems = const [],
+    EventExtraScript? script,
     MappingBase<int>? startTime,
     MappingBase<int>? endTime,
     this.relatedSummons = const [],
@@ -219,6 +219,7 @@ class EventExtra {
         officialBanner = officialBanner ?? MappingBase(),
         extraBanners = extraBanners ?? MappingList(),
         noticeLink = noticeLink ?? MappingBase(),
+        script = script ?? EventExtraScript(),
         startTime = startTime ?? MappingBase(),
         endTime = endTime ?? MappingBase();
 
@@ -234,6 +235,19 @@ class EventExtra {
   }
 
   factory EventExtra.fromJson(Map<String, dynamic> json) => _$EventExtraFromJson(json);
+}
+
+@JsonSerializable(createToJson: false, converters: [RegionConverter()])
+class EventExtraScript {
+  final int huntingId;
+  final Map<Region, String> raidLink;
+
+  EventExtraScript({
+    this.huntingId = 0,
+    this.raidLink = const {},
+  });
+
+  factory EventExtraScript.fromJson(Map<String, dynamic> json) => _$EventExtraScriptFromJson(json);
 }
 
 @JsonSerializable(createToJson: false)

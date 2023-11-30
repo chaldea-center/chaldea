@@ -403,6 +403,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_point": MessageLookupByLibrary.simpleMessage("活动点数"),
         "event_point_reward": MessageLookupByLibrary.simpleMessage("点数"),
         "event_quest": MessageLookupByLibrary.simpleMessage("活动关卡"),
+        "event_raid": MessageLookupByLibrary.simpleMessage("团体战"),
         "event_recipe": MessageLookupByLibrary.simpleMessage("配方"),
         "event_rerun_replace_grail": m2,
         "event_shop": MessageLookupByLibrary.simpleMessage("活动商店"),
@@ -759,7 +760,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest": MessageLookupByLibrary.simpleMessage("关卡"),
         "quest_chapter_n": m7,
         "quest_condition": MessageLookupByLibrary.simpleMessage("开放条件"),
-        "quest_disallow_laplace_share_hint": MessageLookupByLibrary.simpleMessage("无效关卡，仅支持主线/活动Free本及柱子战的队伍分享"),
+        "quest_disallow_laplace_share_hint": MessageLookupByLibrary.simpleMessage("无效关卡，仅支持主线/活动Free本及团体战的队伍分享"),
         "quest_edit_hint": MessageLookupByLibrary.simpleMessage(
             "若需使用活动效果，对应的关卡配置以及场地特性(94000xxx)均需正确设置。\n仅支持基础关卡和敌人属性编辑，不支持多血条等复杂情形。复杂情况请自定义JSON。"),
         "quest_enemy_summary_hint":
@@ -780,7 +781,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_version": m25,
         "quest_wave": MessageLookupByLibrary.simpleMessage("Wave"),
         "quit": MessageLookupByLibrary.simpleMessage("退出"),
-        "raid_quest": MessageLookupByLibrary.simpleMessage("柱子战"),
+        "raid_quest": MessageLookupByLibrary.simpleMessage("团体战"),
         "random": MessageLookupByLibrary.simpleMessage("随机"),
         "random_mission": MessageLookupByLibrary.simpleMessage("随机任务"),
         "rankup_quest": MessageLookupByLibrary.simpleMessage("强化关卡"),

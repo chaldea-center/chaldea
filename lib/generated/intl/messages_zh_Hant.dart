@@ -405,6 +405,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_point": MessageLookupByLibrary.simpleMessage("活動點數"),
         "event_point_reward": MessageLookupByLibrary.simpleMessage("點數"),
         "event_quest": MessageLookupByLibrary.simpleMessage("活動關卡"),
+        "event_raid": MessageLookupByLibrary.simpleMessage("团体战"),
         "event_recipe": MessageLookupByLibrary.simpleMessage("配方"),
         "event_rerun_replace_grail": m2,
         "event_shop": MessageLookupByLibrary.simpleMessage("活動商店"),
@@ -761,7 +762,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest": MessageLookupByLibrary.simpleMessage("關卡"),
         "quest_chapter_n": m7,
         "quest_condition": MessageLookupByLibrary.simpleMessage("開放條件"),
-        "quest_disallow_laplace_share_hint": MessageLookupByLibrary.simpleMessage("無效關卡，僅支持主線/活動Free本及伐柱戰的隊伍分享"),
+        "quest_disallow_laplace_share_hint": MessageLookupByLibrary.simpleMessage("無效關卡，僅支持主線/活動Free本及團體戰的隊伍分享"),
         "quest_edit_hint": MessageLookupByLibrary.simpleMessage(
             "若需使用活動效果，對應的關卡配置以及場地特性(94000xxx)均需正確設置。\n僅支持基礎關卡和敵人屬性編輯，不支持多血條等複雜情形。複雜情況請自訂JSON。"),
         "quest_enemy_summary_hint":
@@ -782,7 +783,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "quest_version": m25,
         "quest_wave": MessageLookupByLibrary.simpleMessage("Wave"),
         "quit": MessageLookupByLibrary.simpleMessage("退出"),
-        "raid_quest": MessageLookupByLibrary.simpleMessage("伐柱戰"),
+        "raid_quest": MessageLookupByLibrary.simpleMessage("團體戰"),
         "random": MessageLookupByLibrary.simpleMessage("隨機"),
         "random_mission": MessageLookupByLibrary.simpleMessage("隨機任務"),
         "rankup_quest": MessageLookupByLibrary.simpleMessage("強化關卡"),

@@ -3506,6 +3506,17 @@ class S {
     );
   }
 
+  /// `Raid`
+  String get event_raid {
+    return Intl.message(
+      'Raid',
+      name: 'event_raid',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Recipe`
   String get event_recipe {
     return Intl.message(

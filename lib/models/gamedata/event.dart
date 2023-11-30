@@ -116,8 +116,8 @@ class Event with RouteInfo {
   Transl<String, String> get lName => Transl.eventNames(name);
 
   String get shownName {
-    if (extra.huntingId > 0) {
-      return '${lName.l} ${extra.huntingId}';
+    if (extra.script.huntingId > 0) {
+      return '${lName.l} ${extra.script.huntingId}';
     }
     return lName.l.setMaxLines(2);
   }
@@ -179,7 +179,7 @@ class Event with RouteInfo {
       recipes.isNotEmpty;
 
   bool get isAdvancedQuestEvent => name.contains('アドバンスドクエスト');
-  bool get isHuntingEvent => extra.huntingId > 0 || name.contains('ハンティングクエスト');
+  bool get isHuntingEvent => extra.script.huntingId > 0 || name.contains('ハンティングクエスト');
   bool get isExchangeSvtEvent => shop.isNotEmpty && shop.every((s) => s.isExchangeSvt);
   bool get isRaidEvent {
     for (final warId in _warIds) {
