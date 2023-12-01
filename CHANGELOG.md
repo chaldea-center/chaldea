@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.5.2
+
+- Saving full battle to local teams, a replacement of uploading to shared team for personal usage
+- Don't count costume and append skill unlock materials for dup svt
+- Support reading iOS device info for account file login
+- Improve summon pickup info
+- Disallow random ActSet effect for team upload (e.g. Summer Da Vinci's NP)
+- Fix incorrect cc and card strength after card type change
+
 ## 2.5.1
 
 - Improvements and bug fix
