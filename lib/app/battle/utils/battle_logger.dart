@@ -10,11 +10,12 @@ import '../models/battle.dart';
 
 class BattleCancelException implements Exception {
   final String msg;
-  const BattleCancelException([this.msg = ""]);
+  final bool toast;
+  const BattleCancelException([this.msg = "", this.toast = false]);
 
   @override
   String toString() {
-    return "BattleCancelException: $msg";
+    return "BattleCancelException: $msg, $toast";
   }
 }
 

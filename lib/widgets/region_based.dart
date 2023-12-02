@@ -68,7 +68,11 @@ mixin RegionBasedState<V, T extends StatefulWidget> on State<T> {
     data = null;
     if (mounted) setState(() {});
     try {
-      data = await fetchData(region, expireAfter: expireAfter);
+      final regionBefore = region;
+      final _data = await fetchData(regionBefore, expireAfter: expireAfter);
+      if (regionBefore == region) {
+        data = _data;
+      }
     } finally {
       _loading = false;
       if (mounted) setState(() {});

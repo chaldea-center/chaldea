@@ -76,8 +76,8 @@ class _ApkListPageState extends State<ApkListPage> {
         }
       } else if (data.region != null) {
         final workerHost = HostsX.worker.of(proxy || Language.isCHS);
-        final versions = await ChaldeaWorkerApi.cacheManager
-            .getModel('$workerHost/proxy/apk/current_ver.json', (v) => Map<String, String>.from(v));
+        final versions = await ChaldeaWorkerApi.cacheManager.getModel(
+            '$workerHost/proxy/apk/current_ver.json?t=${DateTime.now().timestamp}', (v) => Map<String, String>.from(v));
         final ver = versions?[data.region!.upper];
         final ver32 = versions?['${data.region!.upper}_32'];
         if (ver != null) {

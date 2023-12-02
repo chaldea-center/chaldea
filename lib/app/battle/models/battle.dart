@@ -805,16 +805,24 @@ class BattleData {
     required String action,
     required Future<T> Function() task,
   }) async {
+    bool _saved = false;
     try {
       if (_executing) {
         throw BattleException('Previous task is still running');
       }
       _executing = true;
-      if (save) pushSnapshot();
+      if (save) {
+        pushSnapshot();
+        _saved = true;
+      }
       return await task();
     } on BattleCancelException catch (e) {
-      battleLogger.action("Cancel Action($action): ${e.msg}");
-      if (save) popSnapshot();
+      final msg = "Cancel Action($action): ${e.msg}";
+      battleLogger.action(msg);
+      if (e.toast) {
+        EasyLoading.showToast(msg);
+      }
+      if (_saved) popSnapshot();
       return null;
     } catch (e, s) {
       battleLogger.error("Failed: $action");
