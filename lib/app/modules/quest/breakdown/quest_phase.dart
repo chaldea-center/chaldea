@@ -149,7 +149,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       for (final stage in curPhase.stages) {
         children.add(buildStage(curPhase, stage));
         final stageCutin = stage.cutin;
-        if (stageCutin != null) {
+        if (stageCutin != null && !widget.battleOnly) {
           children.add(_buildStageCutin(context, stageCutin));
         }
       }

@@ -729,17 +729,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       kIndentDivider,
       CheckboxListTile(
         dense: true,
-        value: options.mightyChain,
-        title: Text('${S.current.battle_after_7th} (QAB Chain)'),
-        onChanged: (v) {
-          setState(() {
-            options.mightyChain = v ?? options.mightyChain;
-          });
-        },
-      ),
-      kIndentDivider,
-      CheckboxListTile(
-        dense: true,
         value: options.disableEvent,
         title: Text(S.current.disable_event_effects),
         onChanged: (v) {
@@ -764,10 +753,21 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         dense: true,
         value: options.simulateAi,
         title: Text(S.current.simulate_simple_ai),
-        subtitle: Text("Only for ${Transl.eventNames('非霊長生存圏 ツングースカ・サンクチュアリ').l}"),
+        subtitle: Text("Only for ${S.current.raid_quest}"),
         onChanged: (v) {
           setState(() {
             options.simulateAi = v ?? options.simulateAi;
+          });
+        },
+      ),
+      kIndentDivider,
+      CheckboxListTile(
+        dense: true,
+        value: options.mightyChain,
+        title: Text('${S.current.battle_after_7th} (QAB Chain)'),
+        onChanged: (v) {
+          setState(() {
+            options.mightyChain = v ?? options.mightyChain;
           });
         },
       ),

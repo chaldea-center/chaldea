@@ -417,7 +417,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
       children: [
         for (final (region, url) in raidLink.items)
           ListTile(
-            title: Text("[${region.localName}] ${S.current.event_raid}"),
+            title: Text("[${region.localName}] ${S.current.event_raid} ${S.current.statistics_title}"),
             onTap: () {
               launch(url);
             },
