@@ -152,6 +152,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
     return CustomTable(
       selectable: true,
       children: <Widget>[
+        CustomTableRow.fromTexts(texts: ['No.${mysticCode.id}']),
         CustomTableRow(children: [
           TableCellData(
             child: Text(mysticCode.lName.l, style: const TextStyle(fontWeight: FontWeight.bold)),

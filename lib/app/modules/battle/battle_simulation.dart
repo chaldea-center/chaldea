@@ -93,7 +93,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         battleData.recorder.messageRich(BattleMessageRecord(
           'Team ${widget.replayTeamId}',
           alignment: Alignment.center,
-          style: context.mounted
+          style: mounted
               ? const TextStyle(decoration: TextDecoration.underline).merge(Theme.of(context).textTheme.bodySmall)
               : null,
         ));

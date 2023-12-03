@@ -289,6 +289,7 @@ class Items {
   static const int purePrismId = 46;
   static const int rarePrismId = 18;
   static const int grailToCrystalId = 19;
+  static const int evocationLeafId = 48;
   static const int stellarSandId = 50;
   static const int torchNovaId = 51;
   static const int torchMorningStarId = 52;
@@ -339,7 +340,7 @@ class Items {
   static const List<int> specialItems = [
     //
     qpId, stoneId, quartzFragmentId, manaPrismId, purePrismId, rarePrismId,
-    stellarSandId, torchNovaId, torchMorningStarId, torchPolarStarId,
+    evocationLeafId, stellarSandId, torchNovaId, torchMorningStarId, torchPolarStarId,
     summonTicketId, goldAppleId, silverAppleId, bronzeAppleId, blueSaplingId,
     blueAppleId, grailFragId, grailId, grailToCrystalId, lanternId,
   ];

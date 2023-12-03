@@ -210,17 +210,17 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
             child: Text('No.${widget.itemId}', textScaler: const TextScaler.linear(0.9)),
           ),
           const PopupMenuDivider(),
-          if (_shownTabs.length > 1 || db.gameData.items[widget.itemId]?.type == ItemType.svtCoin)
-            PopupMenuItem(
-              child: Text(S.current.item_edit_owned_amount),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  useRootNavigator: false,
-                  builder: (context) => _ItemAmountEditDialog(widget.itemId),
-                );
-              },
-            ),
+          // if (_shownTabs.length > 1 || db.gameData.items[widget.itemId]?.type == ItemType.svtCoin)
+          PopupMenuItem(
+            child: Text(S.current.item_edit_owned_amount),
+            onTap: () {
+              showDialog(
+                context: context,
+                useRootNavigator: false,
+                builder: (context) => _ItemAmountEditDialog(widget.itemId),
+              );
+            },
+          ),
           ...SharedBuilder.websitesPopupMenuItems(
             atlas: Atlas.dbUrl(
               Items.specialSvtMat.contains(widget.itemId) ? 'servant' : 'item',
