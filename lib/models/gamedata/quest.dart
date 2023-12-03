@@ -1541,18 +1541,20 @@ class EnemyTd {
 class EnemyPassive {
   List<NiceSkill> classPassive;
   List<NiceSkill> addPassive;
-  List<int>? addPassiveLvs;
+  List<int> addPassiveLvs;
   List<int>? appendPassiveSkillIds;
   List<int>? appendPassiveSkillLvs;
 
   EnemyPassive({
     List<NiceSkill>? classPassive,
     List<NiceSkill>? addPassive,
-    this.addPassiveLvs,
+    List<int>? addPassiveLvs,
     this.appendPassiveSkillIds,
     this.appendPassiveSkillLvs,
   })  : classPassive = classPassive ?? [],
-        addPassive = addPassive ?? [];
+        addPassive = addPassive ?? [],
+        addPassiveLvs = List.generate(addPassive?.length ?? 0,
+            (index) => addPassiveLvs?.getOrNull(index) ?? addPassive?.getOrNull(index)?.maxLv ?? 1);
 
   factory EnemyPassive.fromJson(Map<String, dynamic> json) => _$EnemyPassiveFromJson(json);
 

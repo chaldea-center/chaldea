@@ -279,14 +279,20 @@ class BattleServantData {
   }
 
   Future<void> activateClassPassive(final BattleData battleData) async {
-    final List<NiceSkill> passives = isPlayer
-        ? [...niceSvt!.classPassive]
-        : [...niceEnemy!.classPassive.classPassive, ...niceEnemy!.classPassive.addPassive];
+    final List<NiceSkill> passives = isPlayer ? [...niceSvt!.classPassive] : [...niceEnemy!.classPassive.classPassive];
 
     await battleData.withActivator(this, () async {
       for (final skill in passives) {
         final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtPassive);
         await skillInfo.activate(battleData);
+      }
+      if (isEnemy) {
+        for (final (index, skill) in niceEnemy!.classPassive.addPassive.enumerate) {
+          final skillInfo = BattleSkillInfoData(skill,
+              type: SkillInfoType.svtPassive,
+              skillLv: niceEnemy!.classPassive.addPassiveLvs.getOrNull(index) ?? skill.maxLv);
+          await skillInfo.activate(battleData);
+        }
       }
 
       if (isPlayer) {

@@ -354,22 +354,7 @@ extension BaseSkillMethods on BaseSkill {
   }
 
   NiceSkill toNice() {
-    return NiceSkill(
-      id: id,
-      name: name,
-      ruby: ruby,
-      unmodifiedDetail: unmodifiedDetail,
-      type: type,
-      icon: icon,
-      coolDown: coolDown,
-      actIndividuality: actIndividuality,
-      script: script,
-      skillAdd: skillAdd,
-      aiIds: aiIds,
-      groupOverwrites: groupOverwrites,
-      functions: functions,
-      skillSvts: skillSvts,
-    );
+    return NiceSkill.fromJson(toJson());
   }
 }
 

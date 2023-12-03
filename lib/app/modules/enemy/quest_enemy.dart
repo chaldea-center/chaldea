@@ -253,7 +253,7 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
       for (int index = 0; index < enemy.classPassive.addPassive.length; index++)
         SkillDescriptor(
           skill: enemy.classPassive.addPassive[index],
-          level: enemy.classPassive.addPassiveLvs?.getOrNull(index),
+          level: enemy.classPassive.addPassiveLvs.getOrNull(index),
           showEnemy: true,
           showPlayer: true,
           region: widget.region,

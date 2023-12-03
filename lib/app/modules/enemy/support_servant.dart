@@ -167,7 +167,7 @@ class _SupportServantPageState extends State<SupportServantPage> {
         for (int index = 0; index < svt.classPassive.addPassive.length; index++)
           SkillDescriptor(
             skill: svt.classPassive.addPassive[index],
-            level: svt.classPassive.addPassiveLvs?.getOrNull(index),
+            level: svt.classPassive.addPassiveLvs.getOrNull(index),
             showEnemy: true,
             showPlayer: true,
             region: widget.region,

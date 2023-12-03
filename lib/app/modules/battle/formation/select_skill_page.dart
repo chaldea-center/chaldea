@@ -5,11 +5,10 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/skill/skill_list.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/db.dart';
-import 'package:chaldea/models/gamedata/gamedata.dart';
-import 'package:chaldea/models/userdata/battle.dart';
+import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../../packages/logger.dart';
@@ -171,7 +170,10 @@ class _SkillSelectPageState extends State<SkillSelectPage> {
   Future<void> loadSkill(BaseSkill? skill, int? skillId, Region region) async {
     if (skill == null && skillId != null && skillId > 0) {
       EasyLoading.show();
-      skill = await AtlasApi.skill(skillId, region: region);
+      if (region == Region.jp) {
+        skill = db.gameData.baseSkills[skillId];
+      }
+      skill ??= await AtlasApi.skill(skillId, region: region);
       EasyLoading.dismiss();
       if (skill == null) {
         EasyLoading.showError(S.current.not_found);
@@ -274,6 +276,22 @@ class _CustomSkillFormState extends State<CustomSkillForm> {
                   if (s.trim().isNotEmpty) skill.name = s.trim();
                 },
               ),
+            ),
+          ),
+          ListTile(
+            dense: true,
+            title: Text(S.current.general_type),
+            trailing: FilterGroup<SkillType>(
+              combined: true,
+              padding: EdgeInsets.zero,
+              options: SkillType.values,
+              values: FilterRadioData.nonnull(skill.skillType),
+              optionBuilder: (v) => Text(v.shortName),
+              onFilterChanged: (value, __) {
+                skill.skillType = value.radioValue!;
+                setState(() {});
+                widget.onChanged?.call();
+              },
             ),
           ),
           ListTile(

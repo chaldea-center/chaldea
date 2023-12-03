@@ -359,6 +359,10 @@ class TdDmgSolver {
       if (options.addDebuffImmuneEnemy) {
         enemy.classPassive.addPassive.add(_debuffImmuneSkill);
       }
+      for (final (skill, lv) in options.enemySkills) {
+        enemy.classPassive.addPassive.add(skill.toNice());
+        enemy.classPassive.addPassiveLvs.add(lv);
+      }
       enemies.add(enemy);
     }
 

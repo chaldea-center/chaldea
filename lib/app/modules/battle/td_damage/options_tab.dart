@@ -1,6 +1,7 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/battle/formation/select_skill_page.dart';
 import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
@@ -226,6 +227,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
     children.add(_buildCEPart());
     children.add(_buildMCPart());
     children.add(_buildCustomBuff());
+    children.add(_buildEnemySkills());
     children.add(DividerWithTitle(title: S.current.servant));
     children.addAll([
       ListTile(
@@ -738,6 +740,91 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
             onChanged: () {
               if (mounted) setState(() {});
             },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildEnemySkills() {
+    return SimpleAccordion(
+      headerBuilder: (context, _) {
+        return ListTile(
+          dense: true,
+          leading: const FaIcon(FontAwesomeIcons.dragon, size: 16),
+          title: Text("[${S.current.enemy}] ${S.current.skill}/Buff"),
+          horizontalTitleGap: 8,
+          contentPadding: const EdgeInsetsDirectional.only(start: 16),
+        );
+      },
+      contentBuilder: (context) {
+        List<Widget> rows = [
+          TextButton(
+            onPressed: () {
+              router.pushPage(SkillSelectPage(
+                skillType: null,
+                onSelected: (v) {
+                  final skill = BaseSkill.fromJson(v.toJson());
+                  options.enemySkills.add((skill, skill.maxLv));
+                  if (mounted) setState(() {});
+                },
+              ));
+            },
+            child: Text(S.current.add),
+          ),
+        ];
+
+        for (final (index, skillAndLv) in options.enemySkills.enumerate) {
+          final (skill, skillLv) = skillAndLv;
+          final maxLv = skill.maxLv;
+          rows.add(kDefaultDivider);
+          rows.add(ListTile(
+            dense: true,
+            selected: true,
+            leading: Text('No.${index + 1}'),
+            title: Wrap(
+              spacing: 16,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                Text(skill.lName.l),
+                if (maxLv > 1)
+                  DropdownButton<int>(
+                    isDense: true,
+                    value: skillLv,
+                    items: [
+                      for (int lv = 1; lv <= maxLv; lv++)
+                        DropdownMenuItem(
+                          value: lv,
+                          child: Text('Lv.$lv', style: const TextStyle(fontSize: 14)),
+                        )
+                    ],
+                    onChanged: (v) {
+                      setState(() {
+                        if (v != null) {
+                          options.enemySkills[index] = (skill, v);
+                        }
+                      });
+                    },
+                  )
+              ],
+            ),
+            trailing: IconButton(
+              onPressed: () {
+                setState(() {
+                  options.enemySkills.remove(skillAndLv);
+                });
+              },
+              icon: const Icon(Icons.clear),
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ));
+          rows.add(SkillDescriptor(skill: skill));
+        }
+
+        return Card(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: rows,
           ),
         );
       },

@@ -765,6 +765,8 @@ class TdDamageOptions {
   int mcLv;
 
   CustomSkillData extraBuffs;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  List<(BaseSkill, int)> enemySkills = [];
   int random;
   int probabilityThreshold;
 
