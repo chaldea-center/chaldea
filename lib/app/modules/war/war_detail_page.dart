@@ -534,19 +534,21 @@ Widget addQuestCategoryTile({
   _addTile(S.current.daily_qp_quest, dailyQp);
   _addTile(S.current.raid_quest, raidQuests);
 
-  final freeAndRaid = [...freeQuests, ...raidQuests];
-  if (freeAndRaid.isNotEmpty && war?.id != WarId.daily && war?.id != WarId.chaldeaGate) {
-    children.add(ListTile(
-      title: Text("${S.current.item} (${S.current.free_quest})"),
-      trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-      onTap: () {
-        router.pushPage(FreeQuestOverview(
-          quests: freeAndRaid,
-          isMainStory: war?.isMainStory ?? false,
-          show90plusButton: event?.isHuntingEvent == true,
-        ));
-      },
-    ));
+  if (war?.id != WarId.daily && war?.id != WarId.chaldeaGate) {
+    for (final (fqs, title) in [(freeQuests, S.current.free_quest), (raidQuests, S.current.raid_quest)]) {
+      if (fqs.isEmpty) continue;
+      children.add(ListTile(
+        title: Text("${S.current.item} ($title)"),
+        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+        onTap: () {
+          router.pushPage(FreeQuestOverview(
+            quests: fqs,
+            isMainStory: war?.isMainStory ?? false,
+            show90plusButton: fqs.where((q) => q.is90PlusFree).length > 3,
+          ));
+        },
+      ));
+    }
   }
   _addTile(S.current.war_board, warBoardQuests);
   _addTile(S.current.event_quest, eventQuests);
