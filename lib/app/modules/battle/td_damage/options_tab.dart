@@ -382,6 +382,32 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         },
       ),
       kIndentDivider,
+      ListTile(
+        dense: true,
+        title: Text(S.current.class_score),
+        trailing: DropdownButton<PreferClassBoardDataSource>(
+          isDense: true,
+          value: options.classBoard,
+          items: PreferClassBoardDataSource.values.map((source) {
+            String text = switch (source) {
+              PreferClassBoardDataSource.none => S.current.disabled,
+              PreferClassBoardDataSource.current => S.current.current_,
+              PreferClassBoardDataSource.target => S.current.target,
+              PreferClassBoardDataSource.full => "Full"
+            };
+            return DropdownMenuItem(
+              value: source,
+              child: Text(text, textScaler: const TextScaler.linear(0.9)),
+            );
+          }).toList(),
+          onChanged: (v) {
+            setState(() {
+              if (v != null) options.classBoard = v;
+            });
+          },
+        ),
+      ),
+      kIndentDivider,
       CheckboxListTile(
         dense: true,
         value: options.enableActiveSkills,

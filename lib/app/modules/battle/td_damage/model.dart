@@ -311,6 +311,20 @@ class TdDmgSolver {
         limitCount: limitCount,
       );
     }
+    final board =
+        db.gameData.classBoards.values.firstWhereOrNull((e) => e.classes.any((cls) => cls.classId == svt.classId));
+    if (board != null) {
+      NiceSkill? skill = switch (options.classBoard) {
+        PreferClassBoardDataSource.none => null,
+        PreferClassBoardDataSource.current => board.toSkill(db.curUser.classBoardStatusOf(board.id)),
+        PreferClassBoardDataSource.target => board.toSkill(db.curPlan_.classBoardPlan(board.id)),
+        PreferClassBoardDataSource.full => board.toSkill(ClassBoardPlan.full(board)),
+      };
+      if (skill != null) {
+        data.addCustomPassive(skill, skill.maxLv);
+      }
+    }
+
     data.limitCount = limitCount;
     data.updateRankUps(region: options.region);
     if (!options.enableActiveSkills) {

@@ -407,7 +407,8 @@ ClassBoardPlan _$ClassBoardPlanFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = ClassBoardPlan(
-          enhancedSquares: $checkedConvert('enhancedSquares', (v) => v),
+          enhancedSquares:
+              $checkedConvert('enhancedSquares', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
         );
         $checkedConvert(
             'unlockedSquares', (v) => val.unlockedSquares = (v as List<dynamic>).map((e) => e as int).toSet());

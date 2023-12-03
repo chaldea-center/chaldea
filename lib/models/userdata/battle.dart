@@ -736,36 +736,37 @@ class CustomFuncData {
 @JsonSerializable(converters: [_QuestEnemyConverter(), RegionConverter()])
 class TdDamageOptions {
   QuestEnemy enemy;
-  List<int> supports = [];
+  List<int> supports;
 
   // only use some fields
   // DamageParameters params = DamageParameters();
-  int enemyCount = 1;
-  PreferPlayerSvtDataSource usePlayerSvt = PreferPlayerSvtDataSource.none;
-  bool addDebuffImmune = true;
-  bool addDebuffImmuneEnemy = false;
-  bool upResistSubState = true; // 5000
-  bool enableActiveSkills = true;
-  bool twiceActiveSkill = false;
-  bool enableAppendSkills = false;
+  int enemyCount;
+  PreferPlayerSvtDataSource usePlayerSvt;
+  PreferClassBoardDataSource classBoard;
+  bool addDebuffImmune;
+  bool addDebuffImmuneEnemy;
+  bool upResistSubState; // 5000
+  bool enableActiveSkills;
+  bool twiceActiveSkill;
+  bool enableAppendSkills;
   // bool includeRefundAfterTd = true; // 重蓄力
-  SvtLv svtLv = SvtLv.maxLv;
-  int tdR3 = 5;
-  int tdR4 = 2;
-  int tdR5 = 1;
-  int oc = 1;
-  bool fixedOC = false;
-  Region region = Region.jp;
+  SvtLv svtLv;
+  int tdR3;
+  int tdR4;
+  int tdR5;
+  int oc;
+  bool fixedOC;
+  Region region;
   // CE & MC
   int? ceId;
-  int ceLv = 0;
-  bool ceMLB = true;
+  int ceLv;
+  bool ceMLB;
   int? mcId;
-  int mcLv = 10;
+  int mcLv;
 
   CustomSkillData extraBuffs;
-  int random = 1000;
-  int probabilityThreshold = 1000;
+  int random;
+  int probabilityThreshold;
 
   bool forceDamageNpSe;
   int? damageNpIndivSumCount;
@@ -776,6 +777,7 @@ class TdDamageOptions {
     List<int>? supports,
     this.enemyCount = 1,
     this.usePlayerSvt = PreferPlayerSvtDataSource.none,
+    this.classBoard = PreferClassBoardDataSource.none,
     this.addDebuffImmune = true,
     this.addDebuffImmuneEnemy = false,
     this.upResistSubState = true,
@@ -863,6 +865,13 @@ enum PreferPlayerSvtDataSource {
   ;
 
   bool get isNone => this == PreferPlayerSvtDataSource.none;
+}
+
+enum PreferClassBoardDataSource {
+  none,
+  current,
+  target,
+  full,
 }
 
 enum SupportSvtType {

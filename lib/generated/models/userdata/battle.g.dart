@@ -485,6 +485,8 @@ TdDamageOptions _$TdDamageOptionsFromJson(Map json) => $checkedCreate(
           enemyCount: $checkedConvert('enemyCount', (v) => v as int? ?? 1),
           usePlayerSvt: $checkedConvert('usePlayerSvt',
               (v) => $enumDecodeNullable(_$PreferPlayerSvtDataSourceEnumMap, v) ?? PreferPlayerSvtDataSource.none),
+          classBoard: $checkedConvert('classBoard',
+              (v) => $enumDecodeNullable(_$PreferClassBoardDataSourceEnumMap, v) ?? PreferClassBoardDataSource.none),
           addDebuffImmune: $checkedConvert('addDebuffImmune', (v) => v as bool? ?? true),
           addDebuffImmuneEnemy: $checkedConvert('addDebuffImmuneEnemy', (v) => v as bool? ?? false),
           upResistSubState: $checkedConvert('upResistSubState', (v) => v as bool? ?? true),
@@ -521,6 +523,7 @@ Map<String, dynamic> _$TdDamageOptionsToJson(TdDamageOptions instance) => <Strin
       'supports': instance.supports,
       'enemyCount': instance.enemyCount,
       'usePlayerSvt': _$PreferPlayerSvtDataSourceEnumMap[instance.usePlayerSvt]!,
+      'classBoard': _$PreferClassBoardDataSourceEnumMap[instance.classBoard]!,
       'addDebuffImmune': instance.addDebuffImmune,
       'addDebuffImmuneEnemy': instance.addDebuffImmuneEnemy,
       'upResistSubState': instance.upResistSubState,
@@ -546,6 +549,13 @@ Map<String, dynamic> _$TdDamageOptionsToJson(TdDamageOptions instance) => <Strin
       'damageNpIndivSumCount': instance.damageNpIndivSumCount,
       'damageNpHpRatioMax': instance.damageNpHpRatioMax,
     };
+
+const _$PreferClassBoardDataSourceEnumMap = {
+  PreferClassBoardDataSource.none: 'none',
+  PreferClassBoardDataSource.current: 'current',
+  PreferClassBoardDataSource.target: 'target',
+  PreferClassBoardDataSource.full: 'full',
+};
 
 const _$SvtLvEnumMap = {
   SvtLv.maxLv: 'maxLv',

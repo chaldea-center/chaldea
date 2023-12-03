@@ -780,10 +780,20 @@ class ClassBoardPlan {
   Set<int> enhancedSquares;
 
   ClassBoardPlan({
-    dynamic unlockSquares,
-    dynamic enhancedSquares,
-  })  : unlockedSquares = unlockSquares is List ? Set.from(unlockSquares) : {},
-        enhancedSquares = enhancedSquares is List ? Set.from(enhancedSquares) : {};
+    Set<int>? unlockSquares,
+    Set<int>? enhancedSquares,
+  })  : unlockedSquares = unlockSquares ?? {},
+        enhancedSquares = enhancedSquares ?? {};
+
+  ClassBoardPlan.full(ClassBoard board)
+      : unlockedSquares = {
+          for (final square in board.squares)
+            if (square.lock != null) square.id,
+        },
+        enhancedSquares = {
+          for (final square in board.squares)
+            if (square.targetSkill != null || square.targetCommandSpell != null) square.id,
+        };
 
   void validate() {
     //
