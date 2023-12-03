@@ -538,7 +538,7 @@ Widget addQuestCategoryTile({
     for (final (fqs, title) in [(freeQuests, S.current.free_quest), (raidQuests, S.current.raid_quest)]) {
       if (fqs.isEmpty) continue;
       children.add(ListTile(
-        title: Text("${S.current.item} ($title)"),
+        title: Text("${S.current.game_drop} ($title)"),
         trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
         onTap: () {
           router.pushPage(FreeQuestOverview(
