@@ -320,7 +320,16 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
           case ItemCategory.skill:
           case ItemCategory.eventAscension:
           case ItemCategory.coin:
-            if (quest.warId == WarId.ordealCall && id != Items.qpId) {
+            if (id == Items.qpId) {
+              if (base > 10000) {
+                info.normalItems[id] = Item.iconBuilder(
+                  context: context,
+                  item: item,
+                  width: iconWidth,
+                  text: base.format(),
+                );
+              }
+            } else if (quest.warId == WarId.ordealCall) {
               info.normalItems[id] = Item.iconBuilder(
                 context: context,
                 item: item,

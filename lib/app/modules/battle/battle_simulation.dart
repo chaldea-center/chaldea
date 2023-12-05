@@ -204,8 +204,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         child: DividerWithTitle(title: S.current.custom_skill),
       ),
       PopupMenuItem(
+        onTap: onResetSkillCD,
         child: Text(S.current.reset_skill_cd),
-        onTap: () => onResetSkillCD(context),
       ),
       PopupMenuItem(
         child: Text(S.current.battle_activate_custom_skill),
@@ -846,10 +846,9 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     );
   }
 
-  void onResetSkillCD(BuildContext context) {
-    showDialog(
+  void onResetSkillCD() {
+    router.showDialog(
       context: context,
-      useRootNavigator: false,
       builder: (context) {
         return SimpleDialog(
           title: Text(S.current.reset_skill_cd),

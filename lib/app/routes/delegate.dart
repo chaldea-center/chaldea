@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/models/gamedata/common.dart';
@@ -223,6 +224,34 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
         return;
       }
     }
+  }
+
+  Future<T?> showDialog<T>({
+    BuildContext? context,
+    required WidgetBuilder builder,
+    bool barrierDismissible = true,
+    Color? barrierColor,
+    String? barrierLabel,
+    bool useSafeArea = true,
+    bool useRootNavigator = false,
+    RouteSettings? routeSettings,
+    Offset? anchorPoint,
+    TraversalEdgeBehavior? traversalEdgeBehavior,
+  }) {
+    BuildContext _context = [context, navigatorKey.currentContext, _parent.navigatorKey.currentContext]
+        .firstWhere((e) => e != null && e.mounted)!;
+    return material.showDialog(
+      context: _context,
+      builder: builder,
+      barrierDismissible: barrierDismissible,
+      barrierColor: barrierColor,
+      barrierLabel: barrierLabel,
+      useSafeArea: useSafeArea,
+      useRootNavigator: useRootNavigator,
+      routeSettings: routeSettings,
+      anchorPoint: anchorPoint,
+      traversalEdgeBehavior: traversalEdgeBehavior,
+    );
   }
 
   @override

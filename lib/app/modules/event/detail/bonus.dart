@@ -89,7 +89,18 @@ class EventBonusTab extends HookWidget {
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             padding: const EdgeInsetsDirectional.only(start: 16, end: 10),
-            children: group.map((e) => e.iconBuilder(context: context)).toList(),
+            children: [
+              for (final svt in group)
+                svt.iconBuilder(
+                  context: context,
+                  text: svt.status.favorite ? 'NP${svt.status.cur.npLv}' : null,
+                  option: ImageWithTextOption(
+                    alignment: Alignment.bottomLeft,
+                    fontSize: 12,
+                    padding: const EdgeInsets.only(bottom: 4),
+                  ),
+                )
+            ],
           ),
         ],
       ));
