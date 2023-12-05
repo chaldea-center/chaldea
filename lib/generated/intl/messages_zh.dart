@@ -726,6 +726,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "opening_time": MessageLookupByLibrary.simpleMessage("开放时间"),
         "options": MessageLookupByLibrary.simpleMessage("选项"),
         "outdated": MessageLookupByLibrary.simpleMessage("已过期"),
+        "override_": MessageLookupByLibrary.simpleMessage("覆盖"),
         "overview": MessageLookupByLibrary.simpleMessage("概览"),
         "passive_skill": MessageLookupByLibrary.simpleMessage("被动技能"),
         "passive_skill_short": MessageLookupByLibrary.simpleMessage("被动"),

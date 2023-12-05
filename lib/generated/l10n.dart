@@ -6987,6 +6987,17 @@ class S {
     );
   }
 
+  /// `Override`
+  String get override_ {
+    return Intl.message(
+      'Override',
+      name: 'override_',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Overview`
   String get overview {
     return Intl.message(

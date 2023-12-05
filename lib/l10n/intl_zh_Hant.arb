@@ -628,6 +628,7 @@
   "opening_time": "開放時間",
   "options": "選項",
   "outdated": "已過期",
+  "override_": null,
   "overview": "概覽",
   "passive_skill": "被動技能",
   "passive_skill_short": "被動",

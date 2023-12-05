@@ -629,6 +629,7 @@
   "opening_time": null,
   "options": null,
   "outdated": "期限切れ",
+  "override_": null,
   "overview": "概要",
   "passive_skill": "クラススキル",
   "passive_skill_short": "クラス",

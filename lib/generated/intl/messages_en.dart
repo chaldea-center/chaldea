@@ -760,6 +760,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "opening_time": MessageLookupByLibrary.simpleMessage("Opening Time"),
         "options": MessageLookupByLibrary.simpleMessage("Options"),
         "outdated": MessageLookupByLibrary.simpleMessage("Outdated"),
+        "override_": MessageLookupByLibrary.simpleMessage("Override"),
         "overview": MessageLookupByLibrary.simpleMessage("Overview"),
         "passive_skill": MessageLookupByLibrary.simpleMessage("Passive Skill"),
         "passive_skill_short": MessageLookupByLibrary.simpleMessage("Passive"),

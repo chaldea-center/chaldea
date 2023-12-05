@@ -218,6 +218,22 @@ class _FormationEditorState extends State<FormationEditor> {
           style: TextStyle(color: Theme.of(context).colorScheme.error),
         ),
       ),
+      if (widget.teamToSave != null)
+        TextButton(
+          onPressed: () {
+            SimpleCancelOkDialog(
+              title: Text(S.current.override_),
+              content: Text('${S.current.team} ${index + 1}'),
+              onTapOk: () {
+                setState(() {
+                  userData.teams[index] = widget.teamToSave!.copy();
+                });
+                EasyLoading.showSuccess('${S.current.team} ${index + 1}');
+              },
+            ).showDialog(context);
+          },
+          child: Text(S.current.override_),
+        ),
       TextButton(
         onPressed: team.quest != null && team.actions.isNotEmpty
             ? () {
