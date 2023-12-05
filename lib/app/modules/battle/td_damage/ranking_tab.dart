@@ -248,9 +248,11 @@ class _ResultDetailState extends State<_ResultDetail> {
       Widget? paramsCard;
       if (attack is BattleAttackRecord) {
         final target = attack.targets.first;
+        final baseInfo = AttackBaseInfo(actor: attack.attacker, target: target.target, card: attack.card);
         switch (tab) {
           case _ParamType.damage:
             paramsCard = DamageParamDialog(
+              baseInfo,
               target.damageParams,
               target.result,
               wrapDialog: false,
@@ -260,6 +262,7 @@ class _ResultDetailState extends State<_ResultDetail> {
             break;
           case _ParamType.refund:
             paramsCard = AttackerNpParamDialog(
+              baseInfo,
               target.attackNpParams,
               target.result,
               wrapDialog: false,
@@ -269,6 +272,7 @@ class _ResultDetailState extends State<_ResultDetail> {
             break;
           case _ParamType.star:
             paramsCard = StarParamDialog(
+              baseInfo,
               target.starParams,
               target.result,
               wrapDialog: false,
@@ -282,6 +286,7 @@ class _ResultDetailState extends State<_ResultDetail> {
       } else if (attack is BattleInstantDeathRecord) {
         if (tab == _ParamType.instantDeath) {
           paramsCard = InstantDeathParamDialog(
+            AttackBaseInfo(actor: attack.activator, target: attack.targets.first.target, card: attack.card),
             attack.targets.first.params,
             wrapDialog: false,
           );

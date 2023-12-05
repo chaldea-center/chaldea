@@ -1047,6 +1047,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
 
   Widget buildDefender(BuildContext context, AttackResultDetail detail) {
     final result = detail.result;
+    final baseInfo = AttackBaseInfo(actor: record.attacker, target: detail.target, card: record.card);
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1074,6 +1075,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
             () => showParams(
               context,
               DamageParamDialog(
+                baseInfo,
                 detail.damageParams,
                 detail.result,
                 minResult: detail.minResult,
@@ -1088,6 +1090,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
               () => showParams(
                 context,
                 AttackerNpParamDialog(
+                  baseInfo,
                   detail.attackNpParams,
                   detail.result,
                   minResult: detail.minResult,
@@ -1102,6 +1105,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
               () => showParams(
                 context,
                 DefenseNpParamDialog(
+                  baseInfo,
                   detail.defenseNpParams,
                   detail.result,
                   minResult: detail.minResult,
@@ -1116,6 +1120,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
               () => showParams(
                 context,
                 StarParamDialog(
+                  baseInfo,
                   detail.starParams,
                   detail.result,
                   minResult: detail.minResult,
@@ -1184,7 +1189,42 @@ extension BattleSvtDataUI on BattleServantData {
   }
 }
 
+class AttackBaseInfo {
+  final BattleServantData? actor;
+  final BattleServantData target;
+  final CommandCardData? card;
+  AttackBaseInfo({
+    required this.actor,
+    required this.target,
+    required this.card,
+  });
+}
+
 mixin _ParamDialogMixin {
+  Widget buildCardInfo(BuildContext context, AttackBaseInfo info) {
+    final card = info.card;
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Text.rich(TextSpan(
+          children: [
+            if (info.actor != null) CenterWidgetSpan(child: info.actor!.iconBuilder(context: context, width: 24)),
+            const TextSpan(text: 'vs.'),
+            CenterWidgetSpan(child: info.target.iconBuilder(context: context, width: 24)),
+            if (card != null) ...[
+              const TextSpan(text: '  '),
+              CenterWidgetSpan(child: CommandCardWidget(card: card.cardType, width: 28)),
+              if (card.isTD) TextSpan(text: '${S.current.np_short} Lv${info.actor?.tdLv} OC${card.oc}'),
+              if (card.critical) TextSpan(text: S.current.critical_attack),
+            ],
+          ],
+          style: const TextStyle(fontSize: 14),
+        )),
+      ),
+    );
+  }
+
   Widget oneParam(String key, String value, [String? icon]) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
@@ -1269,7 +1309,7 @@ mixin _ParamDialogMixin {
     return SimpleCancelOkDialog(
       title: Text(title),
       scrollable: true,
-      contentPadding: const EdgeInsetsDirectional.fromSTEB(20.0, 20.0, 20.0, 24.0),
+      contentPadding: const EdgeInsetsDirectional.fromSTEB(20.0, 8.0, 20.0, 24.0),
       hideCancel: true,
       content: content,
     );
@@ -1277,13 +1317,14 @@ mixin _ParamDialogMixin {
 }
 
 class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
+  final AttackBaseInfo info;
   final DamageParameters params;
   final DamageResult result;
   final DamageResult? minResult;
   final DamageResult? maxResult;
   final bool wrapDialog;
 
-  const DamageParamDialog(this.params, this.result,
+  const DamageParamDialog(this.info, this.params, this.result,
       {super.key, this.wrapDialog = true, this.minResult, this.maxResult});
 
   @override
@@ -1331,6 +1372,7 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
       title: S.current.battle_damage_parameters,
       wrapDialog: wrapDialog,
       children: [
+        buildCardInfo(context, info),
         oneParam(S.current.battle_damage, result.totalDamage.toString()),
         if (minResult != null && maxResult != null)
           oneParam('', '(${minResult!.totalDamage}~${maxResult!.totalDamage})'),
@@ -1365,13 +1407,14 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
 }
 
 class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
+  final AttackBaseInfo info;
   final AttackNpGainParameters params;
   final DamageResult result;
   final bool wrapDialog;
   final DamageResult? minResult;
   final DamageResult? maxResult;
 
-  const AttackerNpParamDialog(this.params, this.result,
+  const AttackerNpParamDialog(this.info, this.params, this.result,
       {super.key, this.wrapDialog = true, this.minResult, this.maxResult});
 
   @override
@@ -1387,6 +1430,7 @@ class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
       title: S.current.battle_atk_np_parameters,
       wrapDialog: wrapDialog,
       children: [
+        buildCardInfo(context, info),
         oneParam(S.current.np_refund, (result.totalNpGains / 100).format(precision: 2)),
         if (minResult != null && maxResult != null)
           oneParam('', '(${minResult!.totalNpGains / 100}~${maxResult!.totalNpGains / 100})'),
@@ -1405,13 +1449,14 @@ class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
 }
 
 class DefenseNpParamDialog extends StatelessWidget with _ParamDialogMixin {
+  final AttackBaseInfo info;
   final DefendNpGainParameters params;
   final DamageResult result;
   final bool wrapDialog;
   final DamageResult? minResult;
   final DamageResult? maxResult;
 
-  const DefenseNpParamDialog(this.params, this.result,
+  const DefenseNpParamDialog(this.info, this.params, this.result,
       {super.key, this.wrapDialog = true, this.minResult, this.maxResult});
 
   @override
@@ -1425,6 +1470,7 @@ class DefenseNpParamDialog extends StatelessWidget with _ParamDialogMixin {
       title: "Defend NP Params",
       wrapDialog: wrapDialog,
       children: [
+        buildCardInfo(context, info),
         oneParam("NP Gain", (result.totalDefNpGains / 100).format(precision: 2)),
         if (minResult != null && maxResult != null)
           oneParam('', '(${minResult!.totalDefNpGains / 100}~${maxResult!.totalDefNpGains / 100})'),
@@ -1443,13 +1489,15 @@ class DefenseNpParamDialog extends StatelessWidget with _ParamDialogMixin {
 }
 
 class StarParamDialog extends StatelessWidget with _ParamDialogMixin {
+  final AttackBaseInfo info;
   final StarParameters params;
   final DamageResult result;
   final bool wrapDialog;
   final DamageResult? minResult;
   final DamageResult? maxResult;
 
-  const StarParamDialog(this.params, this.result, {super.key, this.wrapDialog = true, this.minResult, this.maxResult});
+  const StarParamDialog(this.info, this.params, this.result,
+      {super.key, this.wrapDialog = true, this.minResult, this.maxResult});
 
   @override
   Widget build(BuildContext context) {
@@ -1464,6 +1512,7 @@ class StarParamDialog extends StatelessWidget with _ParamDialogMixin {
       title: S.current.battle_star_parameters,
       wrapDialog: wrapDialog,
       children: [
+        buildCardInfo(context, info),
         oneParam(S.current.critical_star, (result.totalStars / 1000).format(precision: 3)),
         if (minResult != null && maxResult != null)
           oneParam('', '(${minResult!.totalStars / 1000}~${maxResult!.totalStars / 1000})'),
@@ -1536,7 +1585,8 @@ class _InstantDeathDetailWidget extends StatelessWidget with MultiTargetsWrapper
         showDialog(
           context: context,
           useRootNavigator: false,
-          builder: (context) => InstantDeathParamDialog(params),
+          builder: (context) => InstantDeathParamDialog(
+              AttackBaseInfo(actor: record.activator, target: detail.target, card: record.card), params),
         );
       };
     }
@@ -1576,9 +1626,10 @@ class _InstantDeathDetailWidget extends StatelessWidget with MultiTargetsWrapper
 }
 
 class InstantDeathParamDialog extends StatelessWidget with _ParamDialogMixin {
+  final AttackBaseInfo info;
   final InstantDeathParameters params;
   final bool wrapDialog;
-  const InstantDeathParamDialog(this.params, {super.key, this.wrapDialog = true});
+  const InstantDeathParamDialog(this.info, this.params, {super.key, this.wrapDialog = true});
 
   @override
   Widget build(BuildContext context) {
@@ -1587,6 +1638,7 @@ class InstantDeathParamDialog extends StatelessWidget with _ParamDialogMixin {
       title: S.current.instant_death_params,
       wrapDialog: wrapDialog,
       children: [
+        buildCardInfo(context, info),
         oneParam('[${S.current.target}]${S.current.info_death_rate}',
             params.deathRate.format(percent: true, precision: 3, base: 10)),
         oneParam(S.current.death_effect_rate, params.functionRate.format(percent: true, precision: 3, base: 10)),
