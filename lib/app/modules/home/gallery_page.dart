@@ -26,14 +26,6 @@ class GalleryPage extends StatefulWidget {
 }
 
 class _GalleryPageState extends State<GalleryPage> {
-  late final ScrollController _scrollController = ScrollController();
-
-  @override
-  void dispose() {
-    super.dispose();
-    _scrollController.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,7 +84,6 @@ class _GalleryPageState extends State<GalleryPage> {
       builder: (context, constraints) {
         final dataVersion = db.runtimeData.upgradableDataVersion;
         return ListView(
-          controller: _scrollController,
           children: <Widget>[
             ConstrainedBox(
               constraints: BoxConstraints(minHeight: PlatformU.isDesktopOrWeb ? 0 : constraints.maxHeight),

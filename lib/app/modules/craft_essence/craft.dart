@@ -440,6 +440,12 @@ class CraftDetailBasePage extends StatelessWidget {
                 for (var summon in summons)
                   ListTile(
                     title: Text(summon.lName.l, maxLines: 1),
+                    trailing: summon.startTime.jp == null
+                        ? null
+                        : Text(
+                            'JP: ${summon.startTime.jp!.sec2date().toDateString()}',
+                            style: const TextStyle(fontSize: 12),
+                          ),
                     dense: true,
                     visualDensity: VisualDensity.compact,
                     onTap: () {

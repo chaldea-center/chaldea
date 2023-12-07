@@ -213,7 +213,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTi
         for (var el in scores) {
           variance += (el - meanA) * (el - meanA);
         }
-        variance /= scores.length - 1;
+        variance /= scores.length;
         _result.sd = sqrt(variance);
       }
 
