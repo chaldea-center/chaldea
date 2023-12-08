@@ -595,9 +595,11 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           constraints: const BoxConstraints(),
         ),
         IconButton(
-          onPressed: () {
-            battleData.popSnapshot();
-            EasyLoading.showToast(S.current.battle_undo, duration: const Duration(seconds: 1));
+          onPressed: () async {
+            await battleData.tryAcquire(() async {
+              battleData.popSnapshot();
+              EasyLoading.showToast(S.current.battle_undo, duration: const Duration(seconds: 1));
+            });
             if (mounted) setState(() {});
           },
           icon: Icon(

@@ -9,7 +9,6 @@ import 'package:chaldea/app/battle/functions/damage.dart';
 import 'package:chaldea/app/battle/functions/gain_np.dart';
 import 'package:chaldea/app/battle/functions/gain_star.dart';
 import 'package:chaldea/app/battle/models/command_card.dart';
-import 'package:chaldea/app/battle/utils/battle_exception.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -379,7 +378,7 @@ class BattleData {
       }
     }
 
-    updateTargetedIndex();
+    _updateTargetedIndex();
 
     final List<BattleServantData?> allActors = [
       ...onFieldEnemies,
@@ -408,7 +407,7 @@ class BattleData {
       await svt.svtAi.reactionWaveStart(this, svt);
     }
 
-    await nextTurn();
+    await _nextTurn();
   }
 
   void _copyRateUpEnemies(QuestPhase quest) {
@@ -460,12 +459,12 @@ class BattleData {
     return _uniqueIndex++;
   }
 
-  Future<void> nextTurn() async {
-    await replenishActors();
+  Future<void> _nextTurn() async {
+    await _replenishActors();
     bool addTurn = true;
 
     if (enemyDataList.isEmpty && nonnullEnemies.isEmpty) {
-      addTurn = await nextWave();
+      addTurn = await _nextWave();
     }
     if (addTurn) {
       turnCount += 1;
@@ -485,7 +484,7 @@ class BattleData {
     }
   }
 
-  Future<bool> nextWave() async {
+  Future<bool> _nextWave() async {
     if (niceQuest?.stages.every((s) => s.wave < waveCount + 1) == true) {
       recorder.messageRich(BattleMessageRecord('Battle Win \\(^o^)/',
           alignment: Alignment.center, style: const TextStyle(fontSize: 20)));
@@ -513,7 +512,7 @@ class BattleData {
       }
     }
 
-    updateTargetedIndex();
+    _updateTargetedIndex();
 
     final List<BattleServantData?> newEnemies = [...onFieldEnemies, ...enemyDataList];
     for (final actor in newEnemies) {
@@ -537,7 +536,7 @@ class BattleData {
     return true;
   }
 
-  Future<void> replenishActors({final bool replenishAlly = true, final bool replenishEnemy = true}) async {
+  Future<void> _replenishActors({final bool replenishAlly = true, final bool replenishEnemy = true}) async {
     final List<BattleServantData> newActors = [];
 
     if (replenishAlly) {
@@ -800,40 +799,49 @@ class BattleData {
   }
 
   bool _executing = false;
+  Future<T?> tryAcquire<T>(Future<T> Function() task) async {
+    if (_executing) {
+      EasyLoading.showError('Previous task is still running');
+      return null;
+    }
+    _executing = true;
+    try {
+      return await task();
+    } finally {
+      _executing = false;
+    }
+  }
+
   Future<T?> recordError<T>({
     required bool save,
     required String action,
     required Future<T> Function() task,
   }) async {
-    bool _saved = false;
-    try {
-      if (_executing) {
-        throw BattleException('Previous task is still running');
+    return tryAcquire<T?>(() async {
+      bool _saved = false;
+      try {
+        if (save) {
+          pushSnapshot();
+          _saved = true;
+        }
+        return await task();
+      } on BattleCancelException catch (e) {
+        final msg = "Cancel Action($action): ${e.msg}";
+        battleLogger.action(msg);
+        if (e.toast) {
+          EasyLoading.showToast(msg);
+        }
+        if (_saved) popSnapshot();
+        return null;
+      } catch (e, s) {
+        battleLogger.error("Failed: $action");
+        logger.e('Battle action failed: $action', e, s);
+        logger.i(battleLogger.logs.join("\n"));
+        if (mounted) EasyLoading.showError('${S.current.failed}\n\n$e');
+        if (save) popSnapshot();
+        rethrow;
       }
-      _executing = true;
-      if (save) {
-        pushSnapshot();
-        _saved = true;
-      }
-      return await task();
-    } on BattleCancelException catch (e) {
-      final msg = "Cancel Action($action): ${e.msg}";
-      battleLogger.action(msg);
-      if (e.toast) {
-        EasyLoading.showToast(msg);
-      }
-      if (_saved) popSnapshot();
-      return null;
-    } catch (e, s) {
-      battleLogger.error("Failed: $action");
-      logger.e('Battle action failed: $action', e, s);
-      logger.i(battleLogger.logs.join("\n"));
-      if (mounted) EasyLoading.showError('${S.current.failed}\n\n$e');
-      if (save) popSnapshot();
-      rethrow;
-    } finally {
-      _executing = false;
-    }
+    });
   }
 
   Future<void> _acquireTarget(int? svtIndex, int skillIndex, BattleSkillInfoData? skillInfo) async {
@@ -988,7 +996,7 @@ class BattleData {
                 ? actions[0].cardData.cardType
                 : CardType.blank;
         if (isTypeChain) {
-          await applyTypeChain(firstCardType, actions);
+          await _applyTypeChain(firstCardType, actions);
         }
         int extraOvercharge = 0;
         for (int i = 0; i < actions.length; i += 1) {
@@ -1005,7 +1013,7 @@ class BattleData {
                     extraOvercharge += 1;
                   } else {
                     extraOvercharge = 0;
-                    await executeCommandCard(
+                    await _executeCommandCard(
                       actor: action.actor,
                       card: action.cardData,
                       chainPos: i + 1,
@@ -1027,7 +1035,7 @@ class BattleData {
                 }
 
                 if (shouldRemoveDeadActors(actions, i)) {
-                  await removeDeadActors();
+                  await _removeDeadActors();
                 }
               });
             }
@@ -1037,15 +1045,15 @@ class BattleData {
         }
 
         // end player turn
-        await endPlayerTurn();
+        await _endPlayerTurn();
 
-        await startEnemyTurn();
+        await _startEnemyTurn();
         if (!options.simulateEnemy || nonnullEnemies.isEmpty) {
-          await endEnemyTurn();
-          await nextTurn();
+          await _endEnemyTurn();
+          await _nextTurn();
         }
 
-        updateTargetedIndex();
+        _updateTargetedIndex();
       },
     );
   }
@@ -1082,7 +1090,7 @@ class BattleData {
                 }
               }
               recorder.endPlayerCard(action.actor, action.cardData);
-              await removeDeadActors();
+              await _removeDeadActors();
             });
 
             checkActorStatus();
@@ -1112,7 +1120,7 @@ class BattleData {
                 if (action.cardData.isTD) {
                   await action.actor.activateNP(this, action.cardData, 0);
                 } else {
-                  await executeCommandCard(
+                  await _executeCommandCard(
                     actor: action.actor,
                     card: action.cardData,
                     chainPos: 1,
@@ -1135,7 +1143,7 @@ class BattleData {
               }
 
               if (shouldRemoveDeadActors([action], 0)) {
-                await removeDeadActors();
+                await _removeDeadActors();
               }
             });
           }
@@ -1143,7 +1151,7 @@ class BattleData {
           checkActorStatus();
         });
 
-        updateTargetedIndex();
+        _updateTargetedIndex();
       },
     );
   }
@@ -1156,8 +1164,8 @@ class BattleData {
       save: true,
       action: 'enemy_end',
       task: () async {
-        await endEnemyTurn();
-        await nextTurn();
+        await _endEnemyTurn();
+        await _nextTurn();
       },
     );
   }
@@ -1174,22 +1182,27 @@ class BattleData {
     if (isBattleFinished) {
       return;
     }
-    pushSnapshot();
     battleLogger.action('${S.current.battle_skip_current_wave} ($waveCount)');
-    recorder.skipWave(waveCount);
+    return recordError(
+      save: true,
+      action: 'skip-wave-$waveCount',
+      task: () async {
+        recorder.skipWave(waveCount);
 
-    onFieldEnemies.fillRange(0, onFieldEnemies.length);
-    enemyDataList.clear();
+        onFieldEnemies.fillRange(0, onFieldEnemies.length);
+        enemyDataList.clear();
 
-    await endPlayerTurn();
+        await _endPlayerTurn();
 
-    await startEnemyTurn();
-    await endEnemyTurn();
+        await _startEnemyTurn();
+        await _endEnemyTurn();
 
-    await nextTurn();
+        await _nextTurn();
+      },
+    );
   }
 
-  Future<void> endPlayerTurn() async {
+  Future<void> _endPlayerTurn() async {
     await withAction(() async {
       for (final svt in nonnullPlayers) {
         await svt.endOfMyTurn(this);
@@ -1203,7 +1216,7 @@ class BattleData {
         skill.turnEnd();
       }
 
-      await removeDeadActors();
+      await _removeDeadActors();
 
       for (final buff in fieldBuffs) {
         buff.turnPass();
@@ -1212,7 +1225,7 @@ class BattleData {
     });
   }
 
-  Future<void> startEnemyTurn() async {
+  Future<void> _startEnemyTurn() async {
     isPlayerTurn = false;
     await withAction(() async {
       for (final svt in nonnullEnemies) {
@@ -1226,7 +1239,7 @@ class BattleData {
     });
   }
 
-  Future<void> endEnemyTurn() async {
+  Future<void> _endEnemyTurn() async {
     await withAction(() async {
       for (final svt in nonnullEnemies) {
         await svt.endOfMyTurn(this);
@@ -1236,7 +1249,7 @@ class BattleData {
         await svt.endOfYourTurn(this);
       }
 
-      await removeDeadActors();
+      await _removeDeadActors();
 
       for (final buff in fieldBuffs) {
         buff.turnPass();
@@ -1246,7 +1259,7 @@ class BattleData {
     isPlayerTurn = true;
   }
 
-  Future<void> executeCommandCard({
+  Future<void> _executeCommandCard({
     required BattleServantData actor,
     required CommandCardData card,
     required int chainPos,
@@ -1286,7 +1299,7 @@ class BattleData {
     actor.clearCommandCodeBuffs();
   }
 
-  Future<void> applyTypeChain(final CardType cardType, final List<CombatAction> actions) async {
+  Future<void> _applyTypeChain(final CardType cardType, final List<CombatAction> actions) async {
     battleLogger.action('${cardType.name} Chain');
     await withFunctions(() async {
       await withFunction(() async {
@@ -1394,17 +1407,17 @@ class BattleData {
     );
   }
 
-  Future<void> removeDeadActors() async {
-    await removeDeadActorsFromList(onFieldAllyServants);
-    await removeDeadActorsFromList(onFieldEnemies);
-    updateTargetedIndex();
+  Future<void> _removeDeadActors() async {
+    await _removeDeadActorsFromList(onFieldAllyServants);
+    await _removeDeadActorsFromList(onFieldEnemies);
+    _updateTargetedIndex();
 
     if (niceQuest != null && niceQuest!.flags.contains(QuestFlag.enemyImmediateAppear)) {
-      await replenishActors(replenishAlly: false);
+      await _replenishActors(replenishAlly: false);
     }
   }
 
-  Future<void> removeDeadActorsFromList(final List<BattleServantData?> actorList) async {
+  Future<void> _removeDeadActorsFromList(final List<BattleServantData?> actorList) async {
     for (int i = 0; i < actorList.length; i += 1) {
       if (actorList[i] == null) {
         continue;
@@ -1431,7 +1444,7 @@ class BattleData {
     }
   }
 
-  void updateTargetedIndex() {
+  void _updateTargetedIndex() {
     playerTargetIndex = getNonNullTargetIndex(onFieldAllyServants, playerTargetIndex);
     enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
   }

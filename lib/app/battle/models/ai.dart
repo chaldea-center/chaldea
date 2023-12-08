@@ -21,7 +21,7 @@ class FieldAiManager with _AiManagerBase {
   Future<void> fetchAiData() async {
     final List<NiceAiCollection> ais = [];
     for (final aiId in aiIds) {
-      final ai = await showEasyLoading(() => AtlasApi.ai(AiType.field, aiId.id));
+      final ai = await showEasyLoading(() => AtlasApi.ai(AiType.field, aiId.id), mask: true);
       if (ai != null) {
         ais.add(ai);
       }
@@ -66,7 +66,7 @@ class SvtAiManager with _AiManagerBase {
   Future<void> fetchAiData() async {
     final aiId = enemyAi?.aiId ?? 0;
     if (aiId == 0) return;
-    aiCollection = await showEasyLoading(() => AtlasApi.ai(AiType.svt, aiId));
+    aiCollection = await showEasyLoading(() => AtlasApi.ai(AiType.svt, aiId), mask: true);
   }
 
   Future<void> reactionWaveStart(BattleData battleData, BattleServantData actor) async {

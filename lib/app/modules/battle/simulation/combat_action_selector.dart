@@ -287,16 +287,21 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
           await SimpleCancelOkDialog(
             title: Text(S.current.np_not_enough),
             content: Text(msg),
-            onTapOk: () {
-              battleData.pushSnapshot();
-              if (svt.isPlayer) {
-                svt.np = ConstData.constants.fullTdPoint;
-              } else {
-                svt.npLineCount = svt.niceEnemy!.chargeTurn;
-              }
-              battleData.battleLogger.action(msg);
-              battleData.recorder.setIllegal(msg);
-              battleData.recorder.message(S.current.charge_np_to(dispCount), target: svt);
+            onTapOk: () async {
+              await battleData.recordError(
+                save: true,
+                action: 'force-player-td-full',
+                task: () async {
+                  if (svt.isPlayer) {
+                    svt.np = ConstData.constants.fullTdPoint;
+                  } else {
+                    svt.npLineCount = svt.niceEnemy!.chargeTurn;
+                  }
+                  battleData.battleLogger.action(msg);
+                  battleData.recorder.setIllegal(msg);
+                  battleData.recorder.message(S.current.charge_np_to(dispCount), target: svt);
+                },
+              );
               if (mounted) setState(() {});
             },
           ).showDialog(context);
@@ -546,14 +551,20 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
                     return SimpleCancelOkDialog(
                       title: Text(S.current.np_not_enough),
                       content: Text(S.current.charge_np_to(chargeTurn)),
-                      onTapOk: () {
-                        final msg =
-                            '${S.current.charge_np_to(chargeTurn)}: ${enemy.fieldIndex + 1}-${enemy.lBattleName}';
-                        battleData.pushSnapshot();
-                        enemy.npLineCount = chargeTurn;
-                        battleData.battleLogger.action(msg);
-                        battleData.recorder.setIllegal(msg);
-                        battleData.recorder.message(S.current.charge_np_to(chargeTurn), target: enemy);
+                      onTapOk: () async {
+                        await battleData.recordError(
+                          save: true,
+                          action: 'force-enemy-td-full',
+                          task: () async {
+                            final msg =
+                                '${S.current.charge_np_to(chargeTurn)}: ${enemy.fieldIndex + 1}-${enemy.lBattleName}';
+                            battleData.pushSnapshot();
+                            enemy.npLineCount = chargeTurn;
+                            battleData.battleLogger.action(msg);
+                            battleData.recorder.setIllegal(msg);
+                            battleData.recorder.message(S.current.charge_np_to(chargeTurn), target: enemy);
+                          },
+                        );
                         if (mounted) setState(() {});
                       },
                     );

@@ -445,7 +445,7 @@ class BattleServantData {
     final tdId = buff.vals.CounterId ?? 0;
     final tdLv = buff.vals.CounterLv ?? 1;
     NiceTd? td = niceSvt?.noblePhantasms.firstWhereOrNull((e) => e.id == tdId);
-    td ??= await showEasyLoading(() => AtlasApi.td(tdId));
+    td ??= await showEasyLoading(() => AtlasApi.td(tdId), mask: true);
     if (td == null) {
       battleData.battleLogger.error('CounterId=$tdId not found');
       return null;
