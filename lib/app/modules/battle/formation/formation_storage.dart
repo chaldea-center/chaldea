@@ -78,23 +78,32 @@ class _FormationEditorState extends State<FormationEditor> {
     final listView = ScrollRestoration(
       restorationId: 'formation_storage',
       builder: (context, controller) {
-        return ListView(
-          controller: controller,
-          children: [
-            ListTile(
-              dense: true,
-              title: db.onUserData((context, snapshot) => Text(
-                    '${S.current.cur_account}: ${db.curUser.name}',
-                    textAlign: TextAlign.center,
-                  )),
-              onTap: () async {
-                await router.pushPage(AccountPage());
-                if (mounted) setState(() {});
-              },
-            ),
-            ...children,
-            const Divider(height: 16),
-          ],
+        return ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(
+            platform: switch (Theme.of(context).platform) {
+              TargetPlatform.android => TargetPlatform.windows,
+              TargetPlatform.iOS => TargetPlatform.macOS,
+              _ => null,
+            },
+          ),
+          child: ListView(
+            controller: controller,
+            children: [
+              ListTile(
+                dense: true,
+                title: db.onUserData((context, snapshot) => Text(
+                      '${S.current.cur_account}: ${db.curUser.name}',
+                      textAlign: TextAlign.center,
+                    )),
+                onTap: () async {
+                  await router.pushPage(AccountPage());
+                  if (mounted) setState(() {});
+                },
+              ),
+              ...children,
+              const Divider(height: 16),
+            ],
+          ),
         );
       },
     );
