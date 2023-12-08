@@ -35,6 +35,8 @@ class WorkerResponse {
 
   Map<String, dynamic> toJson() => _$WorkerResponseToJson(this);
 
+  bool get hasError => error != null;
+
   String get fullMessage {
     String msg = <String>[
       if (message != null) message!,
@@ -55,7 +57,7 @@ class WorkerResponse {
 
   Future<void> showToast() {
     final msg = fullMessage;
-    if (error != null) {
+    if (hasError) {
       return EasyLoading.showError(msg);
     } else {
       return EasyLoading.showSuccess(message ?? S.current.success);

@@ -145,7 +145,7 @@ class ServerFeedbackHandler extends ReportHandler {
       html: sendHtml ? await _setupHtmlMessageText(report) : null,
       files: resolvedAttachments,
     );
-    final success = response != null && response.error == null;
+    final success = response != null && !response.hasError;
     if (!success) {
       logger_.logger.e('failed to send mail', response?.fullMessage);
     }

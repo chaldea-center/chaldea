@@ -38,7 +38,7 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
       if (resp != null) {
         resp.showToast();
       }
-      return resp != null && resp.error != null;
+      return resp != null && !resp.hasError;
     } catch (e, s) {
       error = escapeDioException(e);
       logger.e('upload server backup failed', e, s);
