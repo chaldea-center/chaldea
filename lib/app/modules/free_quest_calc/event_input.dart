@@ -55,9 +55,8 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
   void getData() {
     params = db.settings.eventItemCalc.putIfAbsent(widget.warId, () => EventItemCalcParams());
     if (widget.objectiveCounts != null) {
-      // Only event shop pass objectiveCounts yet
-      // don't clear event point data
-      params.itemCounts.removeWhere((key, value) => !_isPercentTypeBonus(key));
+      // [objectiveCounts] should contain all items from shop even value is 0
+      // except the final event item to qp shop, event points should not be in it
       params.itemCounts.addAll(widget.objectiveCounts!);
     }
     eventItemIds.clear();
@@ -80,14 +79,14 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
         eventDrops.groups[itemId] = drops.groups[itemId] ?? drops.runs;
       }
       if (eventDrops.items.isNotEmpty) {
-        sortDict(eventDrops.items, compare: (a, b) => b.value - a.value, inPlace: true);
+        sortDict(eventDrops.items, compare: (a, b) => b.key - a.key, inPlace: true);
         if (params.bonusPlans.every((e) => e.questId != quest.id)) {
           params.bonusPlans.add(QuestBonusPlan(questId: quest.id));
         }
         final _plans = params.bonusPlans.where((e) => e.questId == quest.id).toList();
         for (final plan in _plans) {
           plan.ap = quest.consume;
-          plan.drops = drops;
+          plan.drops = eventDrops;
           plan.bonus.removeWhere((key, value) => !eventDrops.items.containsKey(key));
         }
         validQuests.add(quest.id);
@@ -96,6 +95,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     params.bonusPlans = {for (final e in params.bonusPlans) '${e.questId}-${e.index}': e}.values.toList();
     params.bonusPlans.removeWhere((e) => !validQuests.contains(e.questId));
     params.bonusPlans.sort2((e) => -e.questId);
+    params.itemCounts.removeWhere((key, value) => !eventItemIds.contains(key));
   }
 
   @override
@@ -312,9 +312,9 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
       matA.add(row);
     }
     try {
-      final lpParams = BasicLPParams(
+      final lpParams = BasicLPParams.duplicate(
         colNames: List.generate(plans.length, (index) => index),
-        rowNames: itemIds.toList(),
+        rowNames: itemIds,
         matA: matA,
         bVec: itemIds.map((e) => params.itemCounts[e]!).toList(),
         cVec: plans.map((e) => e.ap).toList(),

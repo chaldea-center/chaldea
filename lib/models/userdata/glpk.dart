@@ -239,6 +239,20 @@ class BasicLPParams {
         cVec = cVec ?? [],
         integer = integer ?? false;
 
+  BasicLPParams.duplicate({
+    List<int>? colNames,
+    List<int>? rowNames,
+    List<List<num>>? matA,
+    List<num>? bVec,
+    List<num>? cVec,
+    bool? integer,
+  })  : colNames = colNames?.toList() ?? [],
+        rowNames = rowNames?.toList() ?? [],
+        matA = matA?.map((e) => e.toList()).toList() ?? [],
+        bVec = bVec?.toList() ?? [],
+        cVec = cVec?.toList() ?? [],
+        integer = integer ?? false;
+
   List<num> getCol(int index) {
     return matA.map((e) => e[index]).toList();
   }

@@ -134,6 +134,8 @@ class _EventShopsPageState extends State<EventShopsPage> {
     Map<int, int> items = {};
     for (final shop in widget.shops) {
       final count = plan.shopBuyCount[shop.id] ?? shop.limitNum;
+      // skip event item to qp
+      if (shop.limitNum == 0 && count == 0) continue;
       if (shop.cost != null) {
         items.addNum(shop.cost!.itemId, shop.cost!.amount * count);
       }
@@ -143,7 +145,8 @@ class _EventShopsPageState extends State<EventShopsPage> {
         }
       }
     }
-    items.removeWhere((key, value) => value <= 0);
+    // keep zero
+    items.removeWhere((key, value) => value < 0);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
