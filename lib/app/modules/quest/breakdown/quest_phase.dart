@@ -276,7 +276,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
             constraints: const BoxConstraints(minWidth: 48),
             child: Text.rich(
               TextSpan(children: [
-                if (effPhase.consumeType.useAp) TextSpan(text: 'AP ${effPhase.consume}'),
+                if (effPhase.consumeType.useApOrBp) TextSpan(text: '${effPhase.consumeType.unit} ${effPhase.consume}'),
                 for (final itemAmount in effPhase.consumeItem)
                   WidgetSpan(
                     child: Item.iconBuilder(

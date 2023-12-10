@@ -65,7 +65,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
   Widget build(BuildContext context) {
     final data = getInfo();
     int maxCount = Maths.max(
-        data.map((info) => Maths.max([info.domusItems.length, info.eventItems.length, info.normalItems.length])));
+        data.map((info) => Maths.max([info.domusItems.length, info.eventItems.length, info.normalItems.length])), 0);
     maxCount = maxCount.clamp(3, 8);
     return Scaffold(
       appBar: AppBar(
@@ -157,6 +157,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
   DataRow buildRow(_DropInfo info, int countPerLine) {
     List<DataCell> cells = [];
     final quest = info.quest, phase = info.phase;
+    final effQuest = phase ?? quest;
     String name;
     if (spots.length > 1) {
       name = quest.lSpot.l;
@@ -182,8 +183,8 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
 
     cells.add(DataCell(AutoSizeText(
       [
-        'Lv.${(phase ?? quest).recommendLv}',
-        if ((phase ?? quest).consumeType.useAp) '${(phase ?? quest).consume}AP',
+        'Lv.${(effQuest).recommendLv}',
+        if (effQuest.consumeType.useApOrBp) '${effQuest.consume}${effQuest.consumeType.unit}',
       ].join('\n'),
       maxLines: 2,
       minFontSize: 10,

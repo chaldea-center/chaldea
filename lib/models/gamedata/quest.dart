@@ -126,7 +126,7 @@ class Quest with RouteInfo {
   })  : _spotName = spotName == '0' ? null : spotName,
         _warLongName = warLongName,
         giftIcon = _isSQGiftIcon(giftIcon, gifts) ? null : giftIcon,
-        consume = consumeType.useAp ? consume : 0;
+        consume = consumeType.useApOrBp ? consume : 0;
 
   String get spotName {
     _spotName ??= db.gameData.spots[spotId]?.name;
@@ -1818,7 +1818,9 @@ enum ConsumeType {
   item,
   apAndItem;
 
-  bool get useAp => this == ConsumeType.ap || this == ConsumeType.apAndItem;
+  bool get useAp => this == ap || this == apAndItem;
+  bool get useApOrBp => this == ap || this == apAndItem || this == rp;
+  String get unit => useAp ? 'AP' : (this == rp ? 'BP' : '');
 }
 
 enum QuestAfterClearType {

@@ -218,6 +218,9 @@ class ValDsc extends StatelessWidget {
           case FuncType.lossHpSafe:
           case FuncType.lossHpPer:
           case FuncType.lossHpPerSafe:
+          case FuncType.damageValue:
+          case FuncType.damageValueSafe:
+          case FuncType.damageValueSafeOnce:
             if (vals.Value2 != null) {
               parts.add('${vals.Value}~${vals.Value2}');
             } else {

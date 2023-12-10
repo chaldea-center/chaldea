@@ -78,14 +78,8 @@ class _FormationEditorState extends State<FormationEditor> {
     final listView = ScrollRestoration(
       restorationId: 'formation_storage',
       builder: (context, controller) {
-        return ScrollConfiguration(
-          behavior: ScrollConfiguration.of(context).copyWith(
-            platform: switch (Theme.of(context).platform) {
-              TargetPlatform.android => TargetPlatform.windows,
-              TargetPlatform.iOS => TargetPlatform.macOS,
-              _ => null,
-            },
-          ),
+        return Scrollbar(
+          controller: controller,
           child: ListView(
             controller: controller,
             children: [

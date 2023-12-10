@@ -119,7 +119,7 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
       headerTileColor: Theme.of(context).cardColor,
       headerBuilder: (context, expanded) {
         final name = quest.lDispName, nameJp = quest.dispName;
-        String subtitle = '${quest.consume}AP';
+        String subtitle = '${quest.consume}${quest.consumeType.unit}';
         if (quest.war?.isMainStory == true) {
           subtitle += ' ${quest.war?.lShortName}';
         }

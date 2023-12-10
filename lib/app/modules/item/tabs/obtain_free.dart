@@ -76,6 +76,7 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
       final apRate = dropRateData.apCosts[i] / dropMatrix[i], dropRate = dropMatrix[i];
       final dropRateString = (dropRate * 100).toStringAsFixed(2), apRateString = apRate.toStringAsFixed(2);
       final quest = db.gameData.quests[questId];
+      final apUnit = quest?.consumeType.unit ?? 'AP';
       final child = SimpleAccordion(
         key: ValueKey('main_free_$questId'),
         headerBuilder: (context, _) {
@@ -83,8 +84,8 @@ class _ItemObtainFreeTabState extends State<ItemObtainFreeTab> {
             dense: true,
             title: Text(quest?.lDispName.setMaxLines(1) ?? 'Quest $questId'),
             subtitle: Text(
-                'Cost ${quest?.consume ?? dropRateData.apCosts[i]}AP.  ${sortByAP ? '${S.current.drop_rate} $dropRateString%.' : '${S.current.ap_efficiency} $apRateString AP.'}'),
-            trailing: Text(sortByAP ? '$apRateString AP' : '$dropRateString%'),
+                'Cost ${quest?.consume ?? dropRateData.apCosts[i]}$apUnit.  ${sortByAP ? '${S.current.drop_rate} $dropRateString%.' : '${S.current.ap_efficiency} $apRateString $apUnit.'}'),
+            trailing: Text(sortByAP ? '$apRateString $apUnit' : '$dropRateString%'),
           );
         },
         contentBuilder: (context) {

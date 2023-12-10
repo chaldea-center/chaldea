@@ -155,7 +155,10 @@ class _ChaldeaGateQuestListPageState extends State<ChaldeaGateQuestListPage>
                 subtitle: Text(
                     [quest.openedAt.sec2date().toDateString(), quest.closedAt.sec2date().toDateString()].join(" ~ ")),
                 trailing: Text(
-                  ['Lv.${quest.recommendLv}', if (quest.consumeType.useAp) "AP ${quest.consume}"].join("\n"),
+                  [
+                    'Lv.${quest.recommendLv}',
+                    if (quest.consumeType.useApOrBp) "${quest.consumeType.unit} ${quest.consume}",
+                  ].join("\n"),
                   textAlign: TextAlign.end,
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
