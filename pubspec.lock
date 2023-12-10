@@ -861,7 +861,7 @@ packages:
     description:
       path: "packages/pasteboard"
       ref: HEAD
-      resolved-ref: c5e1bd792b1646ccc781c064efd47c08d45a2749
+      resolved-ref: "5becd52b9a48f7f3a960450626de6962aff116c9"
       url: "https://github.com/MixinNetwork/flutter-plugins"
     source: git
     version: "0.2.0"
@@ -957,10 +957,10 @@ packages:
     dependency: transitive
     description:
       name: permission_handler_html
-      sha256: d96ff56a757b7f04fa825c469d296c5aebc55f743e87bd639fef91a466a24da8
+      sha256: "11b762a8c123dced6461933a88ea1edbbe036078c3f9f41b08886e678e7864df"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0+1"
+    version: "0.1.0+2"
   permission_handler_platform_interface:
     dependency: transitive
     description:
@@ -1346,10 +1346,10 @@ packages:
     dependency: "direct main"
     description:
       name: url_launcher
-      sha256: b1c9e98774adf8820c96fbc7ae3601231d324a7d5ebd8babe27b6dfac91357ba
+      sha256: e9aa5ea75c84cf46b3db4eea212523591211c3cf2e13099ee4ec147f54201c86
       url: "https://pub.dev"
     source: hosted
-    version: "6.2.1"
+    version: "6.2.2"
   url_launcher_android:
     dependency: transitive
     description:
@@ -1394,10 +1394,10 @@ packages:
     dependency: transitive
     description:
       name: url_launcher_web
-      sha256: "138bd45b3a456dcfafc46d1a146787424f8d2edfbf2809c9324361e58f851cf7"
+      sha256: "7286aec002c8feecc338cc33269e96b73955ab227456e9fb2a91f7fab8a358e9"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.1"
+    version: "2.2.2"
   url_launcher_windows:
     dependency: transitive
     description:
@@ -1466,10 +1466,10 @@ packages:
     dependency: transitive
     description:
       name: video_player_avfoundation
-      sha256: bc923884640d6dc403050586eb40713cdb8d1d84e6886d8aca50ab04c59124c2
+      sha256: "01a57940e1dabc8769ccd457c4ae9ea50274e7d5a7617f7820dae5fe1d8436ae"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.2"
+    version: "2.5.3"
   video_player_platform_interface:
     dependency: transitive
     description:
@@ -1522,10 +1522,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: "7c99c0e1e2fa190b48d25c81ca5e42036d5cac81430ef249027d97b0935c553f"
+      sha256: b0f37db61ba2f2e9b7a78a1caece0052564d1bc70668156cf3a29d676fe4e574
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.0"
+    version: "5.1.1"
   win32_registry:
     dependency: transitive
     description:
@@ -1563,10 +1563,10 @@ packages:
     dependency: transitive
     description:
       name: xml
-      sha256: af5e77e9b83f2f4adc5d3f0a4ece1c7f45a2467b695c2540381bac793e34e556
+      sha256: b015a8ad1c488f66851d762d3090a21c600e479dc75e68328c52774040cf9226
       url: "https://pub.dev"
     source: hosted
-    version: "6.4.2"
+    version: "6.5.0"
   yaml:
     dependency: transitive
     description:
