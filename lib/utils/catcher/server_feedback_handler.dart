@@ -18,7 +18,6 @@ import 'package:screenshot/screenshot.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/modules/home/subpage/feedback_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/file_plus/file_plus.dart';
 import 'package:chaldea/packages/network.dart';
@@ -28,7 +27,6 @@ import '../../packages/app_info.dart';
 import '../../packages/language.dart';
 import '../../packages/logger.dart' as logger_;
 import '../../packages/platform/platform.dart';
-import '../constants.dart';
 
 class ServerFeedbackHandler extends ReportHandler {
   @override
@@ -290,46 +288,13 @@ class ServerFeedbackHandler extends ReportHandler {
       if (report.error.toString().trim().isEmpty && report.errorDetails != null) {
         buffer.write(escapeCode(report.errorDetails!.exceptionAsString()));
       }
-      final error = (report.error ?? report.errorDetails?.exception).toString();
-      if (kIsWeb && error.contains('Unsupported operation: NaN.floor()')) {
-        final context = kAppKey.currentContext;
-        final nav = context == null ? null : Navigator.maybeOf(context);
-        if (context != null && nav != null) {
-          await showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) {
-              return SimpleCancelOkDialog(
-                title: const Text('Help'),
-                content: Text('Error: $error\n'
-                    'I have trouble to figure out the just happened bug.\n'
-                    'Would you like to share details? such as which page, screenshots,'
-                    ' operations in recent seconds, browser Console output(F12)...\n'
-                    'Looking forward to your response.'),
-                confirmText: S.current.about_feedback,
-                onTapCancel: () {
-                  buffer.write('<br>canceled<br>');
-                },
-                onTapOk: () {
-                  buffer.write('<br>feedback<br>');
-                  router.pushPage(FeedbackPage());
-                },
-              );
-            },
-          );
-        } else {
-          buffer.write('<br>navigator not found<br>');
-        }
-        kPlatformMethods.setLocalStorage('flutterWebRenderer', 'canvaskit');
-        buffer.write('<br>Set canvaskit renderer!<br>');
-      }
       buffer.write("<hr>");
 
       if (enableStackTrace) {
         buffer.write("<h3>Stack trace:</h3>");
         final lines = report.stackTrace.toString().split('\n');
         lines.removeWhere((e) => e == '<asynchronous suspension>');
-        buffer.write(escapeCode(lines.join('\n')));
+        buffer.write(escapeCode(lines.take(20).join('\n')));
 
         if (report.stackTrace?.toString().trim().isNotEmpty != true && report.errorDetails != null) {
           buffer.write(escapeCode(report.errorDetails!.stack.toString()));

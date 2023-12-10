@@ -171,11 +171,11 @@ class _CustomPrettyPrinter extends PrettyPrinter {
     const addBottom = kDebugMode;
 
     final lines = <String>[
-      if (stackTraceStr != null) ...stackTraceStr.split('\n'),
+      if (stackTraceStr != null)
+        ...stackTraceStr.split('\n').where((line) => line != '<asynchronous suspension>').take(20),
       if (errorStr != null) errorStr,
       fullMessageStr,
     ];
-    lines.removeWhere((e) => e == '<asynchronous suspension>');
     if (lines.length > 1) {
       for (int index = 0; index < lines.length - 1; index++) {
         lines[index] = '├ ${lines[index]}';
