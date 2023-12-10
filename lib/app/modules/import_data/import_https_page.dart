@@ -175,7 +175,12 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                   ),
           ),
           kDefaultDivider,
-          SafeArea(child: buttonBar),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+              child: buttonBar,
+            ),
+          ),
         ],
       ),
     );
@@ -635,96 +640,14 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   }
 
   Widget get buttonBar {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
+    return Wrap(
+      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 4,
+      runSpacing: 4,
       children: [
-        const SizedBox(height: 4),
         Wrap(
           spacing: 4,
-          runSpacing: 2,
-          alignment: WrapAlignment.center,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: mstData == null
-                  ? null
-                  : () {
-                      router.push(
-                        child: SvtBondDetailPage(
-                          friendCode: mstData?.firstUser?.friendCode,
-                          userSvtCollections: mstData?.userSvtCollection.toList() ?? [],
-                          userSvts: [
-                            ...?mstData?.userSvt,
-                            ...?mstData?.userSvtStorage,
-                          ],
-                        ),
-                      );
-                    },
-              child: Text(S.current.bond),
-            ),
-            ElevatedButton(
-              onPressed: mstData == null
-                  ? null
-                  : () {
-                      router.pushPage(SniffPresentBoxDetailPage(
-                        presents: mstData?.userPresentBox.toList() ?? [],
-                        missions: mstData?.userEventMission.toList() ?? [],
-                        items: mstData?.userItem.toList() ?? [],
-                        userGame: mstData?.userGame.firstOrNull,
-                      ));
-                    },
-              child: Text(S.current.present_box),
-            ),
-            ElevatedButton(
-              onPressed: mstData == null
-                  ? null
-                  : () {
-                      final gachas = mstData?.userGacha ?? [];
-                      showDialog(
-                        context: context,
-                        useRootNavigator: false,
-                        builder: (context) {
-                          return SimpleDialog(
-                            title: Text(S.current.game_server),
-                            children: [
-                              for (final region in Region.values)
-                                SimpleDialogOption(
-                                  child: Text(region.localName),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    router.pushPage(SniffGachaHistory(
-                                      records: gachas.toList(),
-                                      userSvt: mstData?.userSvt ?? [],
-                                      userSvtStorage: mstData?.userSvtStorage ?? [],
-                                      userSvtCollection: mstData?.userSvtCollection ?? [],
-                                      userShops: mstData?.userShop ?? [],
-                                      userItems: mstData?.userItem ?? [],
-                                      region: region,
-                                    ));
-                                  },
-                                )
-                            ],
-                          );
-                        },
-                      );
-                    },
-              child: Text(S.current.gacha),
-            ),
-            ElevatedButton(
-              onPressed: mstData == null
-                  ? null
-                  : () {
-                      router.pushPage(ClassBoardMissionDemand(userSvtCollection: mstData?.userSvtCollection ?? []));
-                    },
-              child: Text(S.current.class_score),
-            ),
-          ],
-        ),
-        const SizedBox(height: 4),
-        Wrap(
-          spacing: 4,
-          runSpacing: 2,
           alignment: WrapAlignment.center,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
@@ -748,13 +671,105 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               },
               label: Text(S.current.import_http_body_duplicated),
             ),
+          ],
+        ),
+        Wrap(
+          spacing: 4,
+          runSpacing: 2,
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
             FilledButton(
+              onPressed: mstData == null
+                  ? null
+                  : () {
+                      showDialog(
+                        context: context,
+                        useRootNavigator: false,
+                        builder: (context) => buildStatDialog(context, mstData!),
+                      );
+                    },
+              child: Text(S.current.statistics_title),
+            ),
+            FilledButton.tonal(
               onPressed: mstData?.firstUser == null ? null : didImportData,
               child: Text(S.current.import_data),
             ),
           ],
         ),
-        const SizedBox(height: 4),
+      ],
+    );
+  }
+
+  Widget buildStatDialog(BuildContext context, UserMstData _mstData) {
+    return SimpleDialog(
+      title: Text(S.current.statistics_title),
+      children: [
+        SimpleDialogOption(
+          onPressed: () {
+            router.push(
+              child: SvtBondDetailPage(
+                friendCode: _mstData.firstUser?.friendCode,
+                userSvtCollections: _mstData.userSvtCollection.toList(),
+                userSvts: [
+                  ..._mstData.userSvt,
+                  ..._mstData.userSvtStorage,
+                ],
+              ),
+            );
+          },
+          child: Text(S.current.bond),
+        ),
+        SimpleDialogOption(
+          onPressed: () {
+            router.pushPage(SniffPresentBoxDetailPage(
+              presents: _mstData.userPresentBox.toList(),
+              missions: _mstData.userEventMission.toList(),
+              items: _mstData.userItem.toList(),
+              userGame: _mstData.userGame.firstOrNull,
+            ));
+          },
+          child: Text(S.current.present_box),
+        ),
+        SimpleDialogOption(
+          onPressed: () {
+            final gachas = _mstData.userGacha;
+            showDialog(
+              context: context,
+              useRootNavigator: false,
+              builder: (context) {
+                return SimpleDialog(
+                  title: Text(S.current.game_server),
+                  children: [
+                    for (final region in Region.values)
+                      SimpleDialogOption(
+                        child: Text(region.localName),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          router.pushPage(SniffGachaHistory(
+                            records: gachas.toList(),
+                            userSvt: _mstData.userSvt,
+                            userSvtStorage: _mstData.userSvtStorage,
+                            userSvtCollection: _mstData.userSvtCollection,
+                            userShops: _mstData.userShop,
+                            userItems: _mstData.userItem,
+                            region: region,
+                          ));
+                        },
+                      )
+                  ],
+                );
+              },
+            );
+          },
+          child: Text(S.current.gacha),
+        ),
+        SimpleDialogOption(
+          onPressed: () {
+            router.pushPage(ClassBoardMissionDemand(userSvtCollection: _mstData.userSvtCollection));
+          },
+          child: Text(S.current.class_score),
+        ),
       ],
     );
   }
