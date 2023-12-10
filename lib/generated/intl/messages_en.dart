@@ -949,6 +949,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sound_effect": MessageLookupByLibrary.simpleMessage("Sound Effect"),
         "special_reward_hide": MessageLookupByLibrary.simpleMessage("Hide Special Rewards"),
         "special_reward_show": MessageLookupByLibrary.simpleMessage("Show Special Rewards"),
+        "spirit_origin_release_quest": MessageLookupByLibrary.simpleMessage("Spirit Origin Release Quest"),
         "spoiler_setting": MessageLookupByLibrary.simpleMessage("Spoiler Setting"),
         "sprites": MessageLookupByLibrary.simpleMessage("Sprites"),
         "sq_buy_pack_unit": MessageLookupByLibrary.simpleMessage("Pack(s)"),

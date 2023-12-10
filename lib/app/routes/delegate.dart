@@ -154,7 +154,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
       arguments: arguments,
       region: region,
     ).createPage();
-    final completer = Completer<T>();
+    final completer = Completer<T?>();
     _history.add(_PageEntry(page, completer));
     if (url != null && url.trim().trimChar('/').isNotEmpty) {
       urlHistory.add(url);

@@ -8934,6 +8934,17 @@ class S {
     );
   }
 
+  /// `Spirit Origin Release Quest`
+  String get spirit_origin_release_quest {
+    return Intl.message(
+      'Spirit Origin Release Quest',
+      name: 'spirit_origin_release_quest',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Spoiler Setting`
   String get spoiler_setting {
     return Intl.message(

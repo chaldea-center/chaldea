@@ -191,15 +191,17 @@ class UserMstData {
   List<UserGacha> userGacha;
   List<UserEventMission> userEventMission;
   List<UserShop> userShop;
+  // event/quest
+  List<UserQuest> userQuest;
   // userEventPoint, userGachaExtraCount,
   // userEventSuperBoss, userSvtVoicePlayed, userQuest
   // userEventMissionFix,
   // userPrivilege
-  // userEventMissionConditionDetail, userGachaDrawLog,userQuestRoute,userPresentBox,userNpcSvtRecord,userCoinRoom
+  // userEventMissionConditionDetail, userGachaDrawLog,userQuestRoute,userNpcSvtRecord,userCoinRoom
   // userEventRaid
   // userDeck; // 10个打本队伍
   // // userEvent.tutorial: int may exceed int64
-  // userQuestInfo,,userGacha,userEvent,userSvtCommandCard,
+  // userQuestInfo,userEvent,
   // beforeBirthDay
 
   // transformed
@@ -231,6 +233,7 @@ class UserMstData {
     List<UserGacha>? userGacha,
     List<UserEventMission>? userEventMission,
     List<UserShop>? userShop,
+    List<UserQuest>? userQuest,
   })  : userGame = userGame ?? [],
         userSvtCollection = userSvtCollection ?? [],
         userSvt = userSvt ?? [],
@@ -250,7 +253,8 @@ class UserMstData {
         userPresentBox = userPresentBox ?? [],
         userGacha = userGacha ?? [],
         userEventMission = userEventMission ?? [],
-        userShop = userShop ?? [] {
+        userShop = userShop ?? [],
+        userQuest = userQuest ?? [] {
     for (final e in this.userSvtCoin) {
       coinMap[e.svtId] = e;
     }
@@ -1213,4 +1217,48 @@ class UserShop {
         createdAt = _toInt(createdAt ?? updatedAt, 0);
 
   factory UserShop.fromJson(Map<String, dynamic> data) => _$UserShopFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserQuest {
+  int questId;
+  int questPhase;
+  int clearNum;
+  bool isEternalOpen;
+  int expireAt;
+  // int keyExpireAt;  // CN
+  // int keyCountRemain;  // CN
+  // int isHide; // CN
+  int challengeNum;
+  bool isNew;
+  int lastStartedAt;
+  int status;
+  int updatedAt;
+  int createdAt;
+
+  UserQuest({
+    dynamic questId,
+    dynamic questPhase,
+    dynamic clearNum,
+    dynamic isEternalOpen,
+    dynamic expireAt,
+    dynamic challengeNum,
+    dynamic isNew,
+    dynamic lastStartedAt,
+    dynamic status,
+    dynamic updatedAt,
+    dynamic createdAt,
+  })  : questId = _toInt(questId),
+        questPhase = _toInt(questPhase),
+        clearNum = _toInt(clearNum),
+        isEternalOpen = isEternalOpen as bool,
+        expireAt = _toInt(expireAt),
+        challengeNum = _toInt(challengeNum),
+        isNew = isNew as bool,
+        lastStartedAt = _toInt(lastStartedAt),
+        status = _toInt(status),
+        updatedAt = _toInt(updatedAt),
+        createdAt = _toInt(createdAt);
+
+  factory UserQuest.fromJson(Map<String, dynamic> data) => _$UserQuestFromJson(data);
 }

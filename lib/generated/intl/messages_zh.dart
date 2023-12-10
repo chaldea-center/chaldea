@@ -906,6 +906,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sound_effect": MessageLookupByLibrary.simpleMessage("音效"),
         "special_reward_hide": MessageLookupByLibrary.simpleMessage("隐藏特殊报酬"),
         "special_reward_show": MessageLookupByLibrary.simpleMessage("显示特殊报酬"),
+        "spirit_origin_release_quest": MessageLookupByLibrary.simpleMessage("灵基解放关卡"),
         "spoiler_setting": MessageLookupByLibrary.simpleMessage("剧透设置"),
         "sprites": MessageLookupByLibrary.simpleMessage("模型"),
         "sq_buy_pack_unit": MessageLookupByLibrary.simpleMessage("单"),

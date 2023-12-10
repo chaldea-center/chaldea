@@ -23,6 +23,7 @@ import 'sniff_details/bond_detail_page.dart';
 import 'sniff_details/class_board_mission_demand.dart';
 import 'sniff_details/gacha_history.dart';
 import 'sniff_details/present_box.dart';
+import 'sniff_details/quest_farming.dart';
 
 class ImportHttpPage extends StatefulWidget {
   final String? toploginText;
@@ -769,6 +770,12 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             router.pushPage(ClassBoardMissionDemand(userSvtCollection: _mstData.userSvtCollection));
           },
           child: Text(S.current.class_score),
+        ),
+        SimpleDialogOption(
+          onPressed: () {
+            router.pushPage(UserQuestFarmingStatPage(userQuests: _mstData.userQuest));
+          },
+          child: Text(S.current.quest),
         ),
       ],
     );
