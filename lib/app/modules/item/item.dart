@@ -71,6 +71,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
         _shownTabs = _TabType.values.toList();
         break;
       case ItemCategory.coin:
+        _shownTabs = [_TabType.info, _TabType.demand, _TabType.consumed, _TabType.event];
         break;
       case ItemCategory.event:
       case ItemCategory.other:
@@ -96,6 +97,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
         } else if (<int>[Items.stoneId].contains(widget.itemId)) {
           _shownTabs.addAll([_TabType.interlude]);
         }
+        _shownTabs.sort2((e) => e.index);
         break;
       case null: // svtMat
         if (Items.fous.contains(widget.itemId)) {
@@ -109,7 +111,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
         db.gameData.dropData.freeDrops2.values.every((e) => !e.items.containsKey(widget.itemId))) {
       _shownTabs.remove(_TabType.eventFree);
     }
-    _shownTabs = {..._shownTabs, _TabType.info}.toList();
+    if (!_shownTabs.contains(_TabType.info)) _shownTabs.add(_TabType.info);
 
     _tabController = TabController(
       initialIndex: widget.initialTabIndex,
@@ -130,51 +132,47 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     List<_TabInfo> tabs = [
-      if (_shownTabs.contains(_TabType.demand))
-        _TabInfo(
-          header: Tab(text: S.current.demands),
-          view: db.onUserData((context, _) => ItemCostSvtDetailTab(itemId: widget.itemId, matType: null)),
-          actions: [viewTypeButton, sortButton, popupMenu],
-        ),
-      if (_shownTabs.contains(_TabType.consumed))
-        _TabInfo(
-          header: Tab(text: S.current.consumed),
-          view: db.onUserData((context, _) => ItemCostSvtDetailTab(
-                itemId: widget.itemId,
-                matType: SvtMatCostDetailType.consumed,
-              )),
-          actions: [viewTypeButton, sortButton, popupMenu],
-        ),
-      if (_shownTabs.contains(_TabType.free))
-        _TabInfo(
-          header: Tab(text: S.current.free_quest),
-          view: ItemObtainFreeTab(itemId: widget.itemId),
-          actions: [popupMenu],
-        ),
-      if (_shownTabs.contains(_TabType.event))
-        _TabInfo(
-          header: Tab(text: S.current.event),
-          view: ItemObtainEventTab(itemId: widget.itemId, showOutdated: showOutdated),
-          actions: [filterOutdatedButton, popupMenu],
-        ),
-      if (_shownTabs.contains(_TabType.eventFree))
-        _TabInfo(
-          header: Tab(text: S.current.event_free_quest),
-          view: ItemObtainEventFreeTab(itemId: widget.itemId, showOutdated: showOutdated),
-          actions: [filterOutdatedButton, popupMenu],
-        ),
-      if (_shownTabs.contains(_TabType.interlude))
-        _TabInfo(
-          header: Tab(text: S.current.interlude_and_rankup),
-          view: ItemObtainInterludeTab(itemId: widget.itemId),
-          actions: [sortButton, popupMenu],
-        ),
-      if (_shownTabs.contains(_TabType.info))
-        _TabInfo(
-          header: Tab(text: S.current.card_info),
-          view: ItemInfoTab(itemId: widget.itemId),
-          actions: [popupMenu],
-        )
+      for (final tabType in _shownTabs)
+        switch (tabType) {
+          _TabType.demand => _TabInfo(
+              header: Tab(text: S.current.demands),
+              view: db.onUserData((context, _) => ItemCostSvtDetailTab(itemId: widget.itemId, matType: null)),
+              actions: [viewTypeButton, sortButton, popupMenu],
+            ),
+          _TabType.consumed => _TabInfo(
+              header: Tab(text: S.current.consumed),
+              view: db.onUserData((context, _) => ItemCostSvtDetailTab(
+                    itemId: widget.itemId,
+                    matType: SvtMatCostDetailType.consumed,
+                  )),
+              actions: [viewTypeButton, sortButton, popupMenu],
+            ),
+          _TabType.free => _TabInfo(
+              header: Tab(text: S.current.free_quest),
+              view: ItemObtainFreeTab(itemId: widget.itemId),
+              actions: [popupMenu],
+            ),
+          _TabType.event => _TabInfo(
+              header: Tab(text: S.current.event),
+              view: ItemObtainEventTab(itemId: widget.itemId, showOutdated: showOutdated),
+              actions: [filterOutdatedButton, popupMenu],
+            ),
+          _TabType.eventFree => _TabInfo(
+              header: Tab(text: S.current.event_free_quest),
+              view: ItemObtainEventFreeTab(itemId: widget.itemId, showOutdated: showOutdated),
+              actions: [filterOutdatedButton, popupMenu],
+            ),
+          _TabType.interlude => _TabInfo(
+              header: Tab(text: S.current.interlude_and_rankup),
+              view: ItemObtainInterludeTab(itemId: widget.itemId),
+              actions: [sortButton, popupMenu],
+            ),
+          _TabType.info => _TabInfo(
+              header: Tab(text: S.current.card_info),
+              view: ItemInfoTab(itemId: widget.itemId),
+              actions: [popupMenu],
+            )
+        }
     ];
 
     return Scaffold(
