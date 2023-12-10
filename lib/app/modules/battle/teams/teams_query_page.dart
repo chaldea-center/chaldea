@@ -269,13 +269,17 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         ),
         Text(votes.down.toString().padRight(6, ' '), style: style),
         InkWell(
-          onTap: () {
-            ReportTeamDialog(record: record).showDialog(context);
-          },
+          onTap: record.userId == curUserId
+              ? null
+              : () {
+                  ReportTeamDialog(record: record).showDialog(context);
+                },
           child: Icon(
             Icons.report_outlined,
             size: 18,
-            color: Theme.of(context).colorScheme.errorContainer.withOpacity(0.8),
+            color: record.userId == curUserId
+                ? Theme.of(context).disabledColor
+                : Theme.of(context).colorScheme.errorContainer.withOpacity(0.8),
           ),
         ),
         const SizedBox(width: 24),

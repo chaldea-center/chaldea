@@ -799,6 +799,7 @@ class BattleData {
   }
 
   bool _executing = false;
+  bool get isRunning => _executing;
   Future<T?> tryAcquire<T>(Future<T> Function() task) async {
     if (_executing) {
       EasyLoading.showError('Previous task is still running');

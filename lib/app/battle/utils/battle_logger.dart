@@ -66,7 +66,8 @@ class BattleRecordManager {
   BattleRecordManager copy() {
     return BattleRecordManager()
       ..illegalReasons = illegalReasons.toSet()
-      ..records = records.toList();
+      ..records = records.toList()
+      .._cardHistory = _cardHistory.toList();
   }
 
   void message(String msg, {BattleServantData? target}) {
@@ -128,7 +129,7 @@ class BattleRecordManager {
     records.add(BattleOrderChangeRecord(onField: onField, backup: backup));
   }
 
-  final List<_BattleCardTempData> _cardHistory = [];
+  List<_BattleCardTempData> _cardHistory = [];
 
   void initiateAttacks(final BattleData battleData, final List<CombatAction> combatActions) {
     records.add(BattleAttacksInitiationRecord(

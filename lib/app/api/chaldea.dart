@@ -23,7 +23,6 @@ bool _defaultValidateStat(int? statusCode) {
 class ChaldeaWorkerApi {
   ChaldeaWorkerApi._();
 
-  static const v3Laplace = '/api/v3/laplace';
   static const apiV4 = '/api/v4';
 
   static final cacheManager = ApiCacheManager(null)

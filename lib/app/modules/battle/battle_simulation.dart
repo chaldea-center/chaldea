@@ -629,6 +629,10 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           onPressed: battleData.isBattleWin
               ? null
               : () async {
+                  if (battleData.isRunning) {
+                    EasyLoading.showToast('Previous task is still running');
+                    return;
+                  }
                   await showDialog(
                     context: context,
                     useRootNavigator: false,
