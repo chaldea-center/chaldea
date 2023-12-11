@@ -767,6 +767,8 @@ class TdDamageOptions {
   CustomSkillData extraBuffs;
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<(BaseSkill, int)> enemySkills = [];
+  List<int> fieldTraits;
+  int warId;
   int random;
   int probabilityThreshold;
 
@@ -799,6 +801,8 @@ class TdDamageOptions {
     this.mcId,
     this.mcLv = 10,
     CustomSkillData? extraBuffs,
+    List<int>? fieldTraits,
+    this.warId = 0,
     this.random = 1000,
     this.probabilityThreshold = 1000,
     this.forceDamageNpSe = false,
@@ -806,7 +810,8 @@ class TdDamageOptions {
     this.damageNpHpRatioMax = false,
   })  : enemy = enemy ?? QuestEnemy.blankEnemy(),
         supports = supports ?? [],
-        extraBuffs = extraBuffs ?? CustomSkillData(buffOnly: true, hasTurnCount: false);
+        extraBuffs = extraBuffs ?? CustomSkillData(buffOnly: true, hasTurnCount: false),
+        fieldTraits = fieldTraits ?? [];
 
   void initBuffs() {
     final buffMap = {

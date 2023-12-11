@@ -3,9 +3,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/app/modules/battle/formation/select_skill_page.dart';
+import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
+import 'package:chaldea/app/modules/master_mission/solver/input_tab.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/servant/servant_list.dart';
+import 'package:chaldea/app/modules/trait/trait_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -228,6 +231,8 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
     children.add(_buildMCPart());
     children.add(_buildCustomBuff());
     children.add(_buildEnemySkills());
+    children.add(_buildWarId());
+    children.add(_buildFieldTraits());
     children.add(DividerWithTitle(title: S.current.servant));
     children.addAll([
       ListTile(
@@ -753,6 +758,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           dense: true,
           leading: const FaIcon(FontAwesomeIcons.dragon, size: 16),
           title: Text("[${S.current.enemy}] ${S.current.skill}/Buff"),
+          trailing: Text(options.enemySkills.length.toString()),
           horizontalTitleGap: 8,
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
         );
@@ -825,6 +831,112 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: rows,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildWarId() {
+    return ListTile(
+      dense: true,
+      leading: const FaIcon(FontAwesomeIcons.flag, size: 16),
+      horizontalTitleGap: 8,
+      contentPadding: const EdgeInsetsDirectional.only(start: 16),
+      title: Text(S.current.event),
+      subtitle: options.warId <= 0
+          ? null
+          : Text(db.gameData.wars[options.warId]?.lShortName.setMaxLines(1) ?? "War ${options.warId}"),
+      trailing: IconButton(
+        onPressed: options.warId == 0
+            ? null
+            : () {
+                setState(() {
+                  options.warId = 0;
+                });
+              },
+        icon: const Icon(Icons.clear),
+        iconSize: 18,
+        tooltip: S.current.clear,
+      ),
+      onTap: () async {
+        final result = await router.pushPage<int?>(const EventChooser(initTab: 1));
+        if (result != null) {
+          options.warId = result;
+          options.fieldTraits.removeWhere(Trait.isEventField);
+          if (result > 2000) {
+            for (final (indiv, trans) in db.gameData.mappingData.fieldTrait.items) {
+              if (Trait.isEventField(indiv) && trans.warIds.contains(result)) {
+                options.fieldTraits.add(indiv);
+              }
+            }
+          }
+        }
+        if (mounted) setState(() {});
+      },
+    );
+  }
+
+  Widget _buildFieldTraits() {
+    return SimpleAccordion(
+      headerBuilder: (context, _) {
+        return ListTile(
+          dense: true,
+          leading: const FaIcon(FontAwesomeIcons.diamond, size: 16),
+          title: Text(S.current.quest_fields),
+          subtitle: options.fieldTraits.isEmpty
+              ? null
+              : Text(options.fieldTraits.map((e) => Transl.trait(e, field: true).l).join(', ')),
+          // trailing: Text(options.fieldTraits.length.toString()),
+          horizontalTitleGap: 8,
+          contentPadding: const EdgeInsetsDirectional.only(start: 16),
+        );
+      },
+      contentBuilder: (context) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Wrap(
+                spacing: 2,
+                runSpacing: 2,
+                children: [
+                  for (final indiv in options.fieldTraits)
+                    FilterOption(
+                      selected: false,
+                      value: indiv,
+                      child: InkWell(
+                        onLongPress: () {
+                          setState(() {
+                            options.fieldTraits.remove(indiv);
+                          });
+                        },
+                        child: Text(Transl.trait(indiv, field: true).l),
+                      ),
+                    ),
+                ],
+              ),
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      router.pushPage(TraitListPage(
+                        initSearchString: 'field',
+                        onSelected: (value) {
+                          if (!options.fieldTraits.contains(value)) {
+                            options.fieldTraits.add(value);
+                          }
+                          if (mounted) setState(() {});
+                        },
+                      ));
+                    },
+                    child: Text(S.current.add),
+                  ),
+                ],
+              )
+            ],
           ),
         );
       },

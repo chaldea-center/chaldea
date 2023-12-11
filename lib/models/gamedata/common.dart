@@ -795,7 +795,9 @@ enum Trait {
   const Trait(this.id);
 
   static bool isEventField(int id) {
-    return id ~/ 1000 == 94000;
+    final v = id ~/ 1000;
+    // return v == 94000 || v == 95000;
+    return v == 94000;
   }
 }
 

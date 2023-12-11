@@ -68,6 +68,12 @@ class _TraitListPageState extends State<TraitListPage> with SearchableListState<
     yield id.toString();
     yield getTrait(id)?.name;
     yield* SearchUtil.getAllKeys(Transl.trait(id));
+    final warIds = db.gameData.mappingData.fieldTrait[id]?.warIds;
+    if (warIds != null) {
+      for (final warId in warIds) {
+        if (warId > 1000) yield 'fieldWar$warId';
+      }
+    }
   }
 
   @override

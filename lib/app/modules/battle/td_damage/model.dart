@@ -22,38 +22,6 @@ import 'package:chaldea/utils/utils.dart';
 //  * 随机数)
 // ± 伤害附加与减免 ∓ 被伤害减免与提升
 
-class DmgBuffSet {
-  // dmg
-  int upAtk;
-  int upDef;
-  int upArts;
-  int upQuick;
-  int upBuster;
-  int upNpDamage;
-  int upDamage; // exclude upNpDamage
-  int addDamage; // add-sub
-  //
-  int upDropNp;
-  int upCriticalPoint;
-
-  DmgBuffSet({
-    this.upAtk = 0,
-    this.upDef = 0,
-    this.upArts = 0,
-    this.upQuick = 0,
-    this.upBuster = 0,
-    this.upNpDamage = 0,
-    this.upDamage = 0,
-    this.addDamage = 0,
-    this.upDropNp = 0,
-    this.upCriticalPoint = 0,
-  });
-}
-
-class DmgBuffPresets {
-  DmgBuffPresets._();
-}
-
 class TdDmgResult {
   final PlayerSvtData originalSvtData;
   final Servant svt;
@@ -291,6 +259,7 @@ class TdDmgSolver {
 
   PlayerSvtData? getSvtData(Servant svt, int limitCount) {
     final data = PlayerSvtData.svt(svt);
+    data.extraPassives = svt.extraPassive.toList();
     if (options.usePlayerSvt == PreferPlayerSvtDataSource.none) {
       data.lv = options.svtLv == SvtLv.maxLv ? svt.lvMax : options.svtLv.lv!;
 
@@ -371,6 +340,8 @@ class TdDmgSolver {
       id: -1,
       phase: 1,
       phases: [1],
+      warId: options.warId,
+      individuality: options.fieldTraits.map((e) => NiceTrait(id: e)).toList(),
       stages: [
         Stage(
           wave: 1,

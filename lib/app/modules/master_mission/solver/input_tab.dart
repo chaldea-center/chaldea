@@ -716,10 +716,10 @@ class _SearchView extends StatefulWidget {
   });
 
   @override
-  State<_SearchView> createState() => __SearchViewState();
+  State<_SearchView> createState() => _SearchViewState();
 }
 
-class __SearchViewState extends State<_SearchView> {
+class _SearchViewState extends State<_SearchView> {
   late TextEditingController _textEditingController;
   String get query => _textEditingController.text.trim().toLowerCase();
   Set<int> selected = {};
@@ -746,7 +746,7 @@ class __SearchViewState extends State<_SearchView> {
     if ([CustomMissionType.trait, CustomMissionType.questTrait].contains(widget.targetType)) {
       ids = _searchTraits();
       tileBuilder = (id) {
-        final names = {Transl.trait(id).l, Transl.trait(id).jp};
+        final names = {Transl.trait(id, field: true).l, Transl.trait(id, field: true).jp};
         return _buildTile(id, '$id - ${names.join("/")}', kTraitIdMapping[id]?.name ?? S.current.unknown);
       };
     } else if ([CustomMissionType.servantClass, CustomMissionType.enemyClass, CustomMissionType.enemyNotServantClass]
@@ -819,11 +819,16 @@ class __SearchViewState extends State<_SearchView> {
   List<int> _searchTraits() {
     List<int> ids = [];
     int? queryId = int.tryParse(query);
+    final allIds = <int>{
+      ...kTraitIdMapping.keys,
+      ...db.gameData.mappingData.eventTrait.keys,
+      ...db.gameData.mappingData.fieldTrait.keys,
+    }.toList();
     if (queryId != null) {
-      ids = kTraitIdMapping.keys.where((e) => e.toString().contains(query)).toList();
+      ids = allIds.where((e) => e.toString().contains(query)).toList();
       if (!ids.contains(queryId)) ids.insert(0, queryId);
     } else {
-      for (final id in kTraitIdMapping.keys) {
+      for (final id in allIds) {
         for (final key in _getTraitStrings(id)) {
           if (key.contains(query)) {
             ids.add(id);
@@ -836,7 +841,7 @@ class __SearchViewState extends State<_SearchView> {
       ids.insertAll(0, _preferredTraits.where((e) => ids.contains(e.id)).map((e) => e.id));
     }
     ids.remove(Trait.unknown.id);
-
+    ids.sort();
     return ids;
   }
 
@@ -844,6 +849,12 @@ class __SearchViewState extends State<_SearchView> {
     final trait = kTraitIdMapping[id];
     if (trait != null) yield trait.name.toLowerCase();
     yield* SearchUtil.getAllKeys(Transl.trait(id)).whereType();
+    final warIds = db.gameData.mappingData.fieldTrait[id]?.warIds;
+    if (warIds != null) {
+      for (final warId in warIds) {
+        if (warId > 1000) yield 'fieldWar$warId';
+      }
+    }
   }
 
   List<int> _searchSvtClasses() {
