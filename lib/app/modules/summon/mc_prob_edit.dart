@@ -88,27 +88,23 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
           const Divider(height: 16),
           Wrap(
             alignment: WrapAlignment.center,
+            spacing: 8,
             children: [
-              Expanded(
-                child: FilledButton(
-                  onPressed: result == null
-                      ? null
-                      : () {
-                          copyToClipboard(result!.toOutput(), toast: true);
-                        },
-                  child: Text(S.current.copy),
-                ),
+              FilledButton(
+                onPressed: result == null
+                    ? null
+                    : () {
+                        copyToClipboard(result!.toOutput(), toast: true);
+                      },
+                child: Text(S.current.copy),
               ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: FilledButton(
-                  onPressed: result == null
-                      ? null
-                      : () {
-                          router.push(child: SummonSimulatorPage(summon: result!.toSummon()));
-                        },
-                  child: Text(S.current.simulator),
-                ),
+              FilledButton(
+                onPressed: result == null
+                    ? null
+                    : () {
+                        router.push(child: SummonSimulatorPage(summon: result!.toSummon()));
+                      },
+                child: Text(S.current.simulator),
               ),
             ],
           ),
