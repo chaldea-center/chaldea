@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.5.3
+
+- NP Damage Ranking supports: class score, custom enemy passives/buffs, event/field traits
+- Fix window cannot be closed on desktop
+- Fix event item planner
+- Add tool to export Mooncell Gacha Prob Table
+
 ## 2.5.2
 
 - Saving full battle to local teams, a replacement of uploading to shared team for personal usage
