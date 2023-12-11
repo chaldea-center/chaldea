@@ -174,6 +174,7 @@ class ServerFeedbackHandler extends ReportHandler {
         "Null check operator",
         "Bad state: Too many elements",
         "Bad state: No element",
+        "Unsupported operation: NaN.floor()",
         // "TypeError: Cannot read property 'toString' of null",
         // "TypeError: Cannot read properties of undefined",
         // "TypeError: Cannot read properties of null",

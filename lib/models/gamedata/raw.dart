@@ -104,6 +104,8 @@ class MstGacha {
   factory MstGacha.fromJson(Map<String, dynamic> json) => _$MstGachaFromJson(json);
 
   GachaType get gachaType => GachaType.values.firstWhereOrNull((e) => e.id == type) ?? GachaType.unknown;
+
+  bool get isLuckyBag => type == GachaType.chargeStone.id;
 }
 
 // public enum SummonControl.GACHATYPE

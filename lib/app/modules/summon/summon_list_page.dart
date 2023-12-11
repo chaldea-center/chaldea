@@ -106,11 +106,11 @@ class _SummonListPageState extends State<SummonListPage> with SearchableListStat
             },
             child: Text(S.current.gacha_prob_calc),
           ),
-          IconButton(
+          ElevatedButton(
             onPressed: () {
               router.pushPage(GachaListPage(region: db.curUser.region));
             },
-            icon: const Icon(Icons.raw_on),
+            child: Text(S.current.raw_gacha_data),
           )
         ],
       ),

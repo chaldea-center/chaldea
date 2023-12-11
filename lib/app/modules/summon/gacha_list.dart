@@ -1,12 +1,15 @@
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/raw.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'gacha_banner.dart';
+import 'mc_prob_edit.dart';
 
 class GachaListPage extends StatefulWidget {
   final Region region;
@@ -65,7 +68,7 @@ class _GachaListPageState extends State<GachaListPage> with RegionBasedState<Lis
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gacha List'),
+        title: Text(S.current.raw_gacha_data),
         actions: [dropdownRegion()],
       ),
       body: buildBody(context),
@@ -165,9 +168,20 @@ class _GachaListPageState extends State<GachaListPage> with RegionBasedState<Lis
           ));
         }
         if ((region == Region.jp || region == Region.na) && url != null) {
-          children.add(IconButton(
-            onPressed: () => launch(url, external: false),
-            icon: const Icon(Icons.open_in_browser),
+          final enabled = gacha.openedAt < DateTime.now().timestamp;
+          children.add(Wrap(
+            alignment: WrapAlignment.center,
+            children: [
+              TextButton(
+                onPressed: enabled ? () => launch(url, external: false) : null,
+                child: Text(S.current.open_in_browser),
+              ),
+              if (region == Region.jp && Language.isZH)
+                TextButton(
+                  onPressed: enabled ? () => router.pushPage(MCGachaProbEditPage(gacha: gacha, url: url)) : null,
+                  child: const Text("导出Mooncell卡池概率"),
+                )
+            ],
           ));
         }
         return Column(

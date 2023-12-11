@@ -246,6 +246,10 @@ extension NumMapDefault<K> on Map<K, int> {
 }
 
 extension StringX on String {
+  int count(String s) {
+    return split(s).length - 1;
+  }
+
   String substring2(int start, [int? end]) {
     if (start >= length) return '';
     if (end != null) {

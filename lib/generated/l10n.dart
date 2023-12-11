@@ -6943,6 +6943,17 @@ class S {
     );
   }
 
+  /// `Open In Browser`
+  String get open_in_browser {
+    return Intl.message(
+      'Open In Browser',
+      name: 'open_in_browser',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Please open with file manager`
   String get open_in_file_manager {
     return Intl.message(
@@ -7674,6 +7685,17 @@ class S {
     return Intl.message(
       'Rate on Google Play',
       name: 'rate_play_store',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Raw Gachas`
+  String get raw_gacha_data {
+    return Intl.message(
+      'Raw Gachas',
+      name: 'raw_gacha_data',
       desc: '',
       locale: localeName,
       args: [],
