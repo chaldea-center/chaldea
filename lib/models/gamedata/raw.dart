@@ -1,6 +1,7 @@
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/extension.dart';
 import '_helper.dart';
+import 'common.dart';
 import 'item.dart';
 
 part '../../generated/models/gamedata/raw.g.dart';
@@ -106,6 +107,31 @@ class MstGacha {
   GachaType get gachaType => GachaType.values.firstWhereOrNull((e) => e.id == type) ?? GachaType.unknown;
 
   bool get isLuckyBag => type == GachaType.chargeStone.id;
+
+  String? getHtmlUrl(Region region) {
+    // final page = gacha?.detailUrl;
+    // if (page == null || page.trim().isEmpty) return null;
+    if (const [1, 101].contains(id)) return null;
+    switch (region) {
+      case Region.jp:
+        // return 'https://webview.fate-go.jp/webview$page';
+        if (openedAt < 1640790000) {
+          // ID50017991 2021-12-29 23:00+08
+          return null;
+        }
+        return "https://static.atlasacademy.io/file/aa-fgo/GameData-uTvNN4iBTNInrYDa/JP/Banners/$id/index.html";
+      case Region.na:
+        if (openedAt < 1641268800) {
+          // 50010611: 2022-01-04 12:00+08
+          return null;
+        }
+        return "https://static.atlasacademy.io/file/aa-fgo/GameData-uTvNN4iBTNInrYDa/NA/Banners/$id/index.html";
+      case Region.cn:
+      case Region.tw:
+      case Region.kr:
+        return null;
+    }
+  }
 }
 
 // public enum SummonControl.GACHATYPE

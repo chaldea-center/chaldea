@@ -9,6 +9,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/raw.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -39,7 +40,7 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
   Future<void> parseHtml() async {
     final text = await showEasyLoading(() => CachedApi.cacheManager.getText(widget.url));
     if (text == null || text.isEmpty) {
-      EasyLoading.showError("获取卡池概率网页失败");
+      EasyLoading.showError(S.current.failed);
       return;
     }
 
@@ -74,11 +75,12 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
         children: [
           GachaBanner(imageId: gacha.imageId, region: Region.jp),
           Text(gacha.name, textAlign: TextAlign.center),
-          TextButton(onPressed: () => launch(widget.url), child: const Text('打开卡池概率详情网页')),
+          TextButton(onPressed: () => launch(widget.url), child: Text(S.current.open_in_browser)),
           kDefaultDivider,
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            child: Text('检查并修改以下部分后再写入到“某某卡池/模拟器/data{X}”中: \n'
+            child: Text('[For Mooncell wiki Editor]\n'
+                '检查并修改以下部分后再写入到“某某卡池/模拟器/data{X}”中: \n'
                 '- 是否显示(1显示 0不显示)\n'
                 '- 各行总概率是否正确\n'
                 '- 行顺序是否需要调整'),
@@ -113,7 +115,7 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
           SwitchListTile(
             dense: true,
             value: showIcon,
-            title: const Text('显示图标'),
+            title: Text(S.current.icons),
             onChanged: result == null
                 ? null
                 : (v) {
@@ -125,7 +127,7 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
           buildTable(),
           const SizedBox(height: 8),
           const SizedBox(height: 32),
-          if (result != null)
+          if (result != null && AppInfo.isDebugDevice)
             Card(
               child: Text(
                 result!.getShownHtml(),
@@ -150,7 +152,7 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
     } else {
       final totalProb = Maths.sum(result.groups.map((e) => e.getTotalProb()));
       final guessTotalProb = Maths.sum(result.groups.map((e) => e.guessTotalProb()));
-      children.add(Text('总概率$guessTotalProb% ($totalProb%)'));
+      children.add(Text('${S.current.total}: $guessTotalProb% ($totalProb%)'));
       children.add(SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Table(

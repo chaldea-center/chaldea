@@ -4,7 +4,6 @@ import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/raw.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -113,7 +112,7 @@ class _GachaListPageState extends State<GachaListPage> with RegionBasedState<Lis
   }
 
   Widget buildGacha(BuildContext context, MstGacha gacha) {
-    final url = getHtmlUrl(gacha);
+    final url = gacha.getHtmlUrl(region ?? Region.jp);
     String title = gacha.name;
     String subtitle = '[${gacha.type}]${gacha.id}   ';
     subtitle += [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ ');
@@ -176,10 +175,10 @@ class _GachaListPageState extends State<GachaListPage> with RegionBasedState<Lis
                 onPressed: enabled ? () => launch(url, external: false) : null,
                 child: Text(S.current.open_in_browser),
               ),
-              if (region == Region.jp && Language.isZH)
+              if (region == Region.jp)
                 TextButton(
                   onPressed: enabled ? () => router.pushPage(MCGachaProbEditPage(gacha: gacha, url: url)) : null,
-                  child: const Text("导出Mooncell卡池概率"),
+                  child: Text('${S.current.probability}/${S.current.simulator}'),
                 )
             ],
           ));
@@ -190,31 +189,5 @@ class _GachaListPageState extends State<GachaListPage> with RegionBasedState<Lis
         );
       },
     );
-  }
-
-  String? getHtmlUrl(MstGacha gacha) {
-    // final page = gacha?.detailUrl;
-    // if (page == null || page.trim().isEmpty) return null;
-    if (const [1, 101].contains(gacha.id)) return null;
-    final gachaId = gacha.id;
-    switch (region ?? Region.jp) {
-      case Region.jp:
-        // return 'https://webview.fate-go.jp/webview$page';
-        if (gacha.openedAt < 1640790000) {
-          // ID50017991 2021-12-29 23:00+08
-          return null;
-        }
-        return "https://static.atlasacademy.io/file/aa-fgo/GameData-uTvNN4iBTNInrYDa/JP/Banners/$gachaId/index.html";
-      case Region.na:
-        if (gacha.openedAt < 1641268800) {
-          // 50010611: 2022-01-04 12:00+08
-          return null;
-        }
-        return "https://static.atlasacademy.io/file/aa-fgo/GameData-uTvNN4iBTNInrYDa/NA/Banners/$gachaId/index.html";
-      case Region.cn:
-      case Region.tw:
-      case Region.kr:
-        return null;
-    }
   }
 }

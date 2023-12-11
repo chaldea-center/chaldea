@@ -1,8 +1,11 @@
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/summon/gacha_banner.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/raw.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../summon/mc_prob_edit.dart';
 import 'base.dart';
 
 class TimerGachaTab extends StatelessWidget {
@@ -47,7 +50,31 @@ class TimerGachaItem with TimerItem {
           textAlign: TextAlign.end,
         ),
       ),
-      contentBuilder: (context) => GachaBanner(region: region, imageId: gacha.imageId),
+      contentBuilder: (context) {
+        final htmlUrl = gacha.getHtmlUrl(region);
+        List<Widget> children = [GachaBanner(region: region, imageId: gacha.imageId)];
+        if ((region == Region.jp || region == Region.na) && htmlUrl != null) {
+          final enabled = gacha.openedAt < DateTime.now().timestamp;
+          children.add(Wrap(
+            alignment: WrapAlignment.center,
+            children: [
+              TextButton(
+                onPressed: enabled ? () => launch(htmlUrl, external: false) : null,
+                child: Text(S.current.open_in_browser),
+              ),
+              if (region == Region.jp)
+                TextButton(
+                  onPressed: enabled ? () => router.pushPage(MCGachaProbEditPage(gacha: gacha, url: htmlUrl)) : null,
+                  child: Text('${S.current.probability}/${S.current.simulator}'),
+                )
+            ],
+          ));
+        }
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: children,
+        );
+      },
     );
   }
 }
