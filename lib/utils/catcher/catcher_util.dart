@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 import 'package:catcher_2/catcher_2.dart';
+import 'package:catcher_2/model/platform_type.dart';
 
 class CatcherUtil {
   CatcherUtil._();
@@ -14,8 +17,8 @@ class CatcherUtil {
       // PageReportMode will generate error repeatedly for about 3 times.
       SilentReportMode(),
       [
-        if (!kIsWeb && logPath != null) FileHandler(File(logPath)),
-        ConsoleHandler(),
+        if (!kIsWeb && logPath != null) _StacktraceHandler(FileHandler(File(logPath)), 50),
+        _StacktraceHandler(ConsoleHandler(), 50),
         // ToastHandler(),
         if (feedbackHandler != null) feedbackHandler,
       ],
@@ -36,5 +39,36 @@ class CatcherUtil {
     } catch (e) {
       FlutterError.reportError(FlutterErrorDetails(exception: error, stack: stacktrace));
     }
+  }
+}
+
+class _StacktraceHandler extends ReportHandler {
+  final ReportHandler handler;
+  final int maxLines;
+  _StacktraceHandler(this.handler, this.maxLines);
+
+  @override
+  List<PlatformType> getSupportedPlatforms() => PlatformType.values;
+
+  @override
+  Future<bool> handle(Report error, BuildContext? context) {
+    final stackTrace = error.stackTrace;
+    if (stackTrace != null) {
+      final lines = const LineSplitter().convert(stackTrace.toString());
+      if (lines.length > maxLines) {
+        error = Report(
+          error.error,
+          StackTrace.fromString(lines.take(maxLines).join('\n')),
+          error.dateTime,
+          error.deviceParameters,
+          error.applicationParameters,
+          error.customParameters,
+          error.errorDetails,
+          error.platformType,
+          error.screenshot,
+        );
+      }
+    }
+    return handler.handle(error, context);
   }
 }

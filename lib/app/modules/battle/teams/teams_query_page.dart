@@ -357,7 +357,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     if (quest == null) {
       questName.add(TextSpan(text: "Quest ${record.questId}/${record.phase}"));
     } else {
-      questName.add(TextSpan(text: quest.lDispName));
+      questName.add(TextSpan(text: quest.lDispName.setMaxLines(1)));
       final eventName = quest.questEvent?.shownName ?? quest.war?.lShortName;
       if (eventName != null) {
         questName.add(TextSpan(
@@ -370,7 +370,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       dense: true,
       leading: db.getIconImage(quest?.spot?.shownImage, width: 24),
       minLeadingWidth: 24,
-      title: Text.rich(TextSpan(children: questName)),
+      title: Text.rich(TextSpan(children: questName), maxLines: 2, overflow: TextOverflow.ellipsis),
       trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
       onTap: () {
         router.push(url: Routes.questI(record.questId, record.phase));
