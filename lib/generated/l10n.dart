@@ -8142,10 +8142,10 @@ class S {
     );
   }
 
-  /// `Hujimaru`
+  /// `Fujimaru`
   String get script_player_name {
     return Intl.message(
-      'Hujimaru',
+      'Fujimaru',
       name: 'script_player_name',
       desc: '',
       locale: localeName,
@@ -8758,10 +8758,10 @@ class S {
     );
   }
 
-  /// `Smulate Enemy Actions`
+  /// `Simulate Enemy Actions`
   String get simulate_enemy_actions {
     return Intl.message(
-      'Smulate Enemy Actions',
+      'Simulate Enemy Actions',
       name: 'simulate_enemy_actions',
       desc: '',
       locale: localeName,
@@ -8978,10 +8978,10 @@ class S {
     );
   }
 
-  /// `21 Fragments = 3 Quartzs`
+  /// `21 Fragments = 3 Quartzes`
   String get sq_fragment_convert {
     return Intl.message(
-      '21 Fragments = 3 Quartzs',
+      '21 Fragments = 3 Quartzes',
       name: 'sq_fragment_convert',
       desc: '',
       locale: localeName,
