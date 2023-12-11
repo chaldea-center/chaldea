@@ -4,6 +4,7 @@ import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/battle/formation/formation_card.dart';
 import 'package:chaldea/app/modules/battle/simulation_preview.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/home/subpage/login_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/api/api.dart';
@@ -228,17 +229,31 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     }
 
     final votes = record.tempVotes ?? record.votes;
-
+    final username = record.username ?? "User ${record.userId}";
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(width: 16),
         Expanded(
-          child: Text(
-            [
-              '${S.current.team} $index - ${record.username ?? "User ${record.userId}"} [${record.id}]',
-              if (widget.phaseInfo?.enemyHash == null) '${S.current.version} ${record.enemyHash.substring2(2)}',
-            ].join('\n'),
+          child: Text.rich(
+            TextSpan(children: [
+              TextSpan(text: '${S.current.team} $index - '),
+              mode == TeamQueryMode.user
+                  ? TextSpan(text: username)
+                  : SharedBuilder.textButtonSpan(
+                      context: context,
+                      text: username,
+                      onTap: () {
+                        router.push(
+                          url: Routes.laplaceManageTeam,
+                          child: TeamsQueryPage(mode: TeamQueryMode.user, userId: record.userId.toString()),
+                        );
+                      },
+                    ),
+              TextSpan(text: ' [${record.id}]'),
+              if (widget.phaseInfo?.enemyHash == null)
+                TextSpan(text: '\n${S.current.version} ${record.enemyHash.substring2(2)}'),
+            ]),
             style: style,
           ),
         ),
