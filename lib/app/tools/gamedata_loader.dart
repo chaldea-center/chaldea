@@ -248,6 +248,7 @@ class GameDataLoader {
       'wars': 'id',
       'extraMasterMission': 'id',
       'masterMissions': 'id',
+      'mstGacha': 'id',
       'wiki.commandCodes': 'collectionNo',
       'wiki.craftEssences': 'collectionNo',
       'wiki.events': 'id',

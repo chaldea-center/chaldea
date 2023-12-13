@@ -698,6 +698,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "noble_phantasm": MessageLookupByLibrary.simpleMessage("宝具"),
         "noble_phantasm_level": MessageLookupByLibrary.simpleMessage("宝具等级"),
         "non_favorite_svt_be_skipped": MessageLookupByLibrary.simpleMessage("未关注从者将被忽略"),
+        "normal": MessageLookupByLibrary.simpleMessage("常规"),
         "normal_attack": MessageLookupByLibrary.simpleMessage("普通攻击"),
         "not_found": MessageLookupByLibrary.simpleMessage("Not Found"),
         "not_implemented": MessageLookupByLibrary.simpleMessage("尚未实现"),

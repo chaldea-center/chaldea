@@ -23,7 +23,7 @@ MstGacha _$MstGachaFromJson(Map json) => MstGacha(
       priority: json['priority'] as int? ?? 0,
       warId: json['warId'] as int? ?? 0,
       gachaSlot: json['gachaSlot'] as int? ?? 0,
-      type: json['type'] as int? ?? 0,
+      type: json['type'] as int? ?? 1,
       shopId1: json['shopId1'] as int? ?? 0,
       shopId2: json['shopId2'] as int? ?? 0,
       rarityId: json['rarityId'] as int? ?? 0,

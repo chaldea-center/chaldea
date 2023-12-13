@@ -85,6 +85,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               (v) => v == null ? null : EventFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
           summonFilterData: $checkedConvert('summonFilterData',
               (v) => v == null ? null : SummonFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
+          gachaFilterData: $checkedConvert('gachaFilterData',
+              (v) => v == null ? null : SummonFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
           scriptReaderFilterData: $checkedConvert('scriptReaderFilterData',
               (v) => v == null ? null : ScriptReaderFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
           autologins: $checkedConvert(
@@ -148,6 +150,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'mysticCodeFilterData': instance.mysticCodeFilterData.toJson(),
       'eventFilterData': instance.eventFilterData.toJson(),
       'summonFilterData': instance.summonFilterData.toJson(),
+      'gachaFilterData': instance.gachaFilterData.toJson(),
       'scriptReaderFilterData': instance.scriptReaderFilterData.toJson(),
       'autologins': instance.autologins.map((e) => e.toJson()).toList(),
       'remoteConfig': instance.remoteConfig.toJson(),

@@ -76,6 +76,7 @@ class LocalSettings {
   MysticCodeFilterData mysticCodeFilterData;
   EventFilterData eventFilterData;
   SummonFilterData summonFilterData;
+  SummonFilterData gachaFilterData;
   ScriptReaderFilterData scriptReaderFilterData;
 
   List<AutoLoginData> autologins;
@@ -130,6 +131,7 @@ class LocalSettings {
     MysticCodeFilterData? mysticCodeFilterData,
     EventFilterData? eventFilterData,
     SummonFilterData? summonFilterData,
+    SummonFilterData? gachaFilterData,
     ScriptReaderFilterData? scriptReaderFilterData,
     List<AutoLoginData>? autologins,
     RemoteConfig? remoteConfig,
@@ -156,6 +158,7 @@ class LocalSettings {
         mysticCodeFilterData = mysticCodeFilterData ?? MysticCodeFilterData(),
         eventFilterData = eventFilterData ?? EventFilterData(),
         summonFilterData = summonFilterData ?? SummonFilterData(),
+        gachaFilterData = gachaFilterData ?? SummonFilterData(),
         scriptReaderFilterData = scriptReaderFilterData ?? ScriptReaderFilterData(),
         autologins = autologins ?? [],
         remoteConfig = remoteConfig ?? RemoteConfig(),

@@ -73,7 +73,7 @@ class MstGacha {
     this.priority = 0,
     this.warId = 0,
     this.gachaSlot = 0,
-    this.type = 0,
+    this.type = 1,
     this.shopId1 = 0,
     this.shopId2 = 0,
     this.rarityId = 0,
@@ -155,7 +155,7 @@ enum GachaType {
       case chargeStone:
         return S.current.lucky_bag;
       case payGacha:
-        return 'Normal';
+        return S.current.normal;
       case ticketGacha:
         return name;
     }

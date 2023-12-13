@@ -72,6 +72,7 @@ class GameData with _GameDataExtra {
   Map<int, MstMasterMission> masterMissions;
   Map<int, MasterMission> extraMasterMission;
   List<QuestGroup> questGroups;
+  Map<int, MstGacha> mstGacha;
   WikiData wiki;
   MappingData mappingData;
   ConstGameData constData;
@@ -117,6 +118,7 @@ class GameData with _GameDataExtra {
     Map<int, MstMasterMission>? masterMissions,
     Map<int, MasterMission>? extraMasterMission,
     List<QuestGroup>? questGroups,
+    Map<int, MstGacha>? mstGacha,
     WikiData? wiki,
     MappingData? mappingData,
     ConstGameData? constData,
@@ -153,6 +155,7 @@ class GameData with _GameDataExtra {
         masterMissions = masterMissions ?? {},
         extraMasterMission = extraMasterMission ?? {},
         questGroups = questGroups ?? [],
+        mstGacha = mstGacha ?? {},
         wiki = wiki ?? WikiData(),
         mappingData = mappingData ?? MappingData(),
         constData = constData ?? ConstGameData(),

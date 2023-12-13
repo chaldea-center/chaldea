@@ -138,13 +138,14 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       CheckboxListTile(
         dense: true,
         value: options.addDebuffImmuneEnemy,
-        title: Text("${S.current.debuff_immune} (${S.current.enemy})"),
+        title: Text("[${S.current.enemy}] ${S.current.debuff_immune}"),
         onChanged: (value) {
           setState(() {
             options.addDebuffImmuneEnemy = !options.addDebuffImmuneEnemy;
           });
         },
       ),
+      _buildEnemySkills(),
     ]);
 
     children.add(DividerWithTitle(title: S.current.support_servant));
@@ -230,7 +231,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
     children.add(_buildCEPart());
     children.add(_buildMCPart());
     children.add(_buildCustomBuff());
-    children.add(_buildEnemySkills());
+    children.add(const Divider(height: 16));
     children.add(_buildWarId());
     children.add(_buildFieldTraits());
     children.add(DividerWithTitle(title: S.current.servant));
@@ -756,7 +757,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       headerBuilder: (context, _) {
         return ListTile(
           dense: true,
-          leading: const FaIcon(FontAwesomeIcons.dragon, size: 16),
+          // leading: const FaIcon(FontAwesomeIcons.dragon, size: 16),
           title: Text("[${S.current.enemy}] ${S.current.skill}/Buff"),
           trailing: Text(options.enemySkills.length.toString()),
           horizontalTitleGap: 8,

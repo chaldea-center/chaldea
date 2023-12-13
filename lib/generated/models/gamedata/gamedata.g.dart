@@ -68,6 +68,9 @@ GameData _$GameDataFromJson(Map json) => GameData(
       questGroups: (json['questGroups'] as List<dynamic>?)
           ?.map((e) => QuestGroup.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      mstGacha: (json['mstGacha'] as Map?)?.map(
+        (k, e) => MapEntry(int.parse(k as String), MstGacha.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
       wiki: json['wiki'] == null ? null : WikiData.fromJson(Map<String, dynamic>.from(json['wiki'] as Map)),
       mappingData: json['mappingData'] == null
           ? null

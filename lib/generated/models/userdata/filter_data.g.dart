@@ -149,10 +149,11 @@ SummonFilterData _$SummonFilterDataFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = SummonFilterData(
-          favorite: $checkedConvert('favorite', (v) => v as bool?),
-          reversed: $checkedConvert('reversed', (v) => v as bool?),
-          showBanner: $checkedConvert('showBanner', (v) => v as bool?),
-          showOutdated: $checkedConvert('showOutdated', (v) => v as bool?),
+          favorite: $checkedConvert('favorite', (v) => v as bool? ?? false),
+          reversed: $checkedConvert('reversed', (v) => v as bool? ?? true),
+          showBanner: $checkedConvert('showBanner', (v) => v as bool? ?? false),
+          showOutdated: $checkedConvert('showOutdated', (v) => v as bool? ?? false),
+          sortByClosed: $checkedConvert('sortByClosed', (v) => v as bool? ?? false),
         );
         return val;
       },
@@ -163,6 +164,7 @@ Map<String, dynamic> _$SummonFilterDataToJson(SummonFilterData instance) => <Str
       'reversed': instance.reversed,
       'showBanner': instance.showBanner,
       'showOutdated': instance.showOutdated,
+      'sortByClosed': instance.sortByClosed,
     };
 
 ScriptReaderFilterData _$ScriptReaderFilterDataFromJson(Map json) => $checkedCreate(

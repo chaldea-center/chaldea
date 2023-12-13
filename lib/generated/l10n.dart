@@ -6679,6 +6679,17 @@ class S {
     );
   }
 
+  /// `Normal`
+  String get normal {
+    return Intl.message(
+      'Normal',
+      name: 'normal',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Normal Attack`
   String get normal_attack {
     return Intl.message(

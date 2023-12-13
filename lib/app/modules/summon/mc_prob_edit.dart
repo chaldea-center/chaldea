@@ -101,8 +101,29 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
               FilledButton(
                 onPressed: result == null
                     ? null
-                    : () {
-                        router.push(child: SummonSimulatorPage(summon: result!.toSummon()));
+                    : () async {
+                        final summon = result!.toSummon();
+                        if (gacha.isLuckyBag) {
+                          final type = await showDialog<SummonType>(
+                            context: context,
+                            useRootNavigator: false,
+                            builder: (context) => SimpleDialog(
+                              title: Text(S.current.lucky_bag),
+                              children: [
+                                for (final type in [SummonType.gssr, SummonType.gssrsr])
+                                  SimpleDialogOption(
+                                    child: Text(Transl.enums(type, (enums) => enums.summonType).l),
+                                    onPressed: () {
+                                      Navigator.pop(context, type);
+                                    },
+                                  )
+                              ],
+                            ),
+                          );
+                          if (type == null) return;
+                          summon.type = type;
+                        }
+                        router.push(child: SummonSimulatorPage(summon: summon));
                       },
                 child: Text(S.current.simulator),
               ),

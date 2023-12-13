@@ -1,12 +1,17 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/raw.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../tools/gamedata_loader.dart';
+import '../common/filter_page_base.dart';
+import 'filter_page.dart';
 import 'gacha_banner.dart';
 import 'mc_prob_edit.dart';
 
@@ -18,18 +23,21 @@ class GachaListPage extends StatefulWidget {
   State<GachaListPage> createState() => _GachaListPageState();
 }
 
-class _GachaListPageState extends State<GachaListPage> with RegionBasedState<List<MstGacha>, GachaListPage> {
-  List<MstGacha> get gachas => data ?? [];
+class _GachaListPageState extends State<GachaListPage>
+    with RegionBasedState<List<MstGacha>, GachaListPage>, SearchableListState<MstGacha, GachaListPage> {
+  @override
+  Iterable<MstGacha> get wholeData => data ?? [];
+  // List<MstGacha> get gachas => data ?? [];
   final Map<int, List<MstGacha>> _imageIdMap = {};
 
-  // filters
-  final type = FilterGroupData<GachaType>();
+  SummonFilterData get filterData => db.settings.gachaFilterData;
 
   @override
   void initState() {
     super.initState();
     region = widget.region;
     doFetchData();
+    filterData.reversed = true;
   }
 
   @override
@@ -37,87 +45,127 @@ class _GachaListPageState extends State<GachaListPage> with RegionBasedState<Lis
     r ??= Region.jp;
     _imageIdMap.clear();
     AtlasApi.cacheManager.clearFailed();
-    final results = await AtlasApi.mstData(
-      'mstGacha',
-      (json) => (json as List).map((e) => MstGacha.fromJson(Map.from(e))).toList(),
-      region: r,
-      expireAfter: expireAfter,
-    );
-    for (final gacha in gachas) {
-      _imageIdMap.putIfAbsent(gacha.imageId, () => []).add(gacha);
+    List<MstGacha>? results;
+    if (r == Region.jp) {
+      results = db.gameData.mstGacha.values.toList();
+    } else {
+      results = await AtlasApi.mstData(
+        'mstGacha',
+        (json) => (json as List).map((e) => MstGacha.fromJson(Map.from(e))).toList(),
+        region: r,
+        expireAfter: expireAfter,
+      );
+    }
+    if (results != null) {
+      for (final gacha in results) {
+        _imageIdMap.putIfAbsent(gacha.imageId, () => []).add(gacha);
+      }
     }
 
     return results;
   }
 
+  @override
   bool filter(MstGacha gacha) {
     if (region == Region.cn) {
       if (gacha.openedAt == gacha.closedAt && gacha.openedAt == 1911657599) return false;
     }
     final gachaType = gacha.gachaType;
-    if (type.isNotEmpty) {
-      if (!type.matchOne(gachaType)) {
-        return false;
-      }
+    if (!filterData.gachaType.matchOne(gachaType)) {
+      return false;
+    }
+    if (!filterData.showOutdated &&
+        (gacha.closedAt < DateTime.now().timestamp - kSecsPerDay * 365 * (region?.isJP == true ? 2 : 1))) {
+      return false;
     }
     return true;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return scrollListener(
+      useGrid: false,
       appBar: AppBar(
         title: Text(S.current.raw_gacha_data),
-        actions: [dropdownRegion()],
+        leading: const MasterBackButton(),
+        titleSpacing: 0,
+        bottom: showSearchBar ? searchBar : null,
+        actions: [
+          dropdownRegion(),
+          IconButton(
+            icon: FaIcon(
+              filterData.reversed ? FontAwesomeIcons.arrowDownWideShort : FontAwesomeIcons.arrowUpWideShort,
+              size: 20,
+            ),
+            tooltip: S.current.sort_order,
+            onPressed: () {
+              setState(() {
+                filterData.reversed = !filterData.reversed;
+              });
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.filter_alt),
+            tooltip: S.current.filter,
+            onPressed: () => FilterPage.show(
+              context: context,
+              builder: (context) => SummonFilterPage(
+                filterData: filterData,
+                isRawGacha: true,
+                onChanged: (_) {
+                  if (mounted) setState(() {});
+                },
+              ),
+            ),
+          ),
+          searchIcon,
+        ],
       ),
-      body: buildBody(context),
     );
   }
 
-  Widget buildButtonBar() {
-    final validTypes = {for (final gacha in gachas) gacha.gachaType}.toList();
-    validTypes.sort2((e) => e.index);
-    return ButtonBar(
-      alignment: MainAxisAlignment.center,
-      children: [
-        FilterGroup<GachaType>(
-          combined: true,
-          options: validTypes,
-          values: type,
-          optionBuilder: (v) => Text(v.shownName),
-          onFilterChanged: (v, _) {
-            setState(() {});
-          },
-        ),
-      ],
+  @override
+  Widget buildScrollable({bool useGrid = false}) {
+    return RefreshIndicator(
+      child: buildBody(context),
+      onRefresh: () async {
+        if (region == Region.jp) {
+          await GameDataLoader.instance.reloadAndUpdate();
+        } else {
+          await doFetchData(expireAfter: Duration.zero);
+        }
+        if (mounted) setState(() {});
+      },
     );
   }
 
   @override
   Widget buildContent(BuildContext context, List<MstGacha> gachas) {
-    gachas = gachas.where(filter).toList();
-    gachas.sort2((e) => e.id == 1 ? double.negativeInfinity : -e.openedAt);
-    return Column(
-      children: [
-        Expanded(
-          child: ListView.separated(
-            itemBuilder: (context, index) => buildGacha(context, gachas[index]),
-            separatorBuilder: (context, index) => const Divider(height: 8),
-            itemCount: gachas.length,
-          ),
-        ),
-        SafeArea(child: buildButtonBar()),
-      ],
-    );
+    filterShownList();
+    if (filterData.sortByClosed) {
+      shownList.sort2((a) => a.closedAt);
+    } else {
+      shownList.sort2((a) => a.openedAt);
+    }
+    if (filterData.reversed) {
+      final reversed = List.of(shownList.reversed);
+      shownList
+        ..clear()
+        ..addAll(reversed);
+    }
+    return super.buildScrollable();
   }
 
-  Widget buildGacha(BuildContext context, MstGacha gacha) {
+  @override
+  Widget listItemBuilder(MstGacha gacha) {
     final url = gacha.getHtmlUrl(region ?? Region.jp);
     String title = gacha.name;
     String subtitle = '[${gacha.type}]${gacha.id}   ';
     subtitle += [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ ');
     final now = DateTime.now().timestamp;
     return SimpleAccordion(
+      key: Key('mstGacha-${gacha.id}-${filterData.showBanner}'),
+      expanded: filterData.showBanner,
       headerBuilder: (context, _) {
         return ListTile(
           dense: true,
@@ -189,5 +237,24 @@ class _GachaListPageState extends State<GachaListPage> with RegionBasedState<Lis
         );
       },
     );
+  }
+
+  @override
+  Widget gridItemBuilder(MstGacha gacha) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Iterable<String?> getSummary(MstGacha gacha) sync* {
+    yield gacha.id.toString();
+    yield gacha.name;
+    yield switch (region) {
+      Region.jp => SearchUtil.getJP(gacha.name),
+      Region.cn => SearchUtil.getCN(gacha.name),
+      Region.tw => SearchUtil.getCN(gacha.name),
+      Region.na => SearchUtil.getEn(gacha.name),
+      Region.kr => SearchUtil.getKr(gacha.name),
+      _ => gacha.name,
+    };
   }
 }

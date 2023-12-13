@@ -6,6 +6,7 @@ import 'package:chaldea/utils/utils.dart';
 import '../../app/modules/ffo/schema.dart';
 import '../../generated/l10n.dart';
 import '../db.dart';
+import '../gamedata/raw.dart';
 import '_helper.dart';
 import 'userdata.dart';
 
@@ -815,27 +816,30 @@ class SummonFilterData with _FilterData {
   bool reversed;
   bool showBanner;
   bool showOutdated;
+  bool sortByClosed;
+
   @JsonKey(includeFromJson: false, includeToJson: false)
   final category = FilterGroupData<SummonType>();
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final gachaType = FilterGroupData<GachaType>();
 
   SummonFilterData({
-    bool? favorite,
-    bool? reversed,
-    bool? showBanner,
-    bool? showOutdated,
-  })  : favorite = favorite ?? false,
-        reversed = reversed ?? true,
-        showBanner = showBanner ?? false,
-        showOutdated = showOutdated ?? false;
+    this.favorite = false,
+    this.reversed = true,
+    this.showBanner = false,
+    this.showOutdated = false,
+    this.sortByClosed = false,
+  });
 
   @override
-  List<FilterGroupData> get groups => [category];
+  List<FilterGroupData> get groups => [category, gachaType];
 
   @override
   void reset() {
     super.reset();
     favorite = false;
     showOutdated = false;
+    sortByClosed = false;
   }
 
   factory SummonFilterData.fromJson(Map<String, dynamic> data) => _$SummonFilterDataFromJson(data);

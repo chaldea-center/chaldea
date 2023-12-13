@@ -1,3 +1,5 @@
+import 'package:flutter/scheduler.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -20,7 +22,9 @@ class SummonListPage extends StatefulWidget {
   _SummonListPageState createState() => _SummonListPageState();
 }
 
-class _SummonListPageState extends State<SummonListPage> with SearchableListState<LimitedSummon, SummonListPage> {
+class _SummonListPageState extends State<SummonListPage>
+    with SearchableListState<LimitedSummon, SummonListPage>, SingleTickerProviderStateMixin {
+  late final _tabController = TabController(length: 2, vsync: this);
   @override
   Iterable<LimitedSummon> get wholeData => db.gameData.wiki.summons.values;
 
@@ -38,7 +42,11 @@ class _SummonListPageState extends State<SummonListPage> with SearchableListStat
   @override
   Widget build(BuildContext context) {
     filterShownList();
-    shownList.sort2((a) => a.startTime.jp ?? 0);
+    if (filterData.sortByClosed) {
+      shownList.sort2((a) => a.endTime.jp ?? 0);
+    } else {
+      shownList.sort2((a) => a.startTime.jp ?? 0);
+    }
     if (filterData.reversed) {
       final reversed = List.of(shownList.reversed);
       shownList
@@ -51,7 +59,20 @@ class _SummonListPageState extends State<SummonListPage> with SearchableListStat
         title: Text(S.current.summon),
         leading: const MasterBackButton(),
         titleSpacing: 0,
-        bottom: showSearchBar ? searchBar : null,
+        bottom: showSearchBar
+            ? searchBar
+            : FixedHeight.tabBar(TabBar(
+                controller: _tabController,
+                tabs: [const Tab(text: "Mooncell"), Tab(text: S.current.raw_gacha_data)],
+                onTap: (index) {
+                  if (index == 1) {
+                    router.pushPage(GachaListPage(region: db.curUser.region));
+                    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+                      if (mounted) _tabController.index = 0;
+                    });
+                  }
+                },
+              )),
         actions: [
           IconButton(
             icon: FaIcon(
@@ -72,6 +93,7 @@ class _SummonListPageState extends State<SummonListPage> with SearchableListStat
               context: context,
               builder: (context) => SummonFilterPage(
                 filterData: filterData,
+                isRawGacha: false,
                 onChanged: (_) {
                   if (mounted) setState(() {});
                 },
@@ -106,12 +128,6 @@ class _SummonListPageState extends State<SummonListPage> with SearchableListStat
             },
             child: Text(S.current.gacha_prob_calc),
           ),
-          ElevatedButton(
-            onPressed: () {
-              router.pushPage(GachaListPage(region: db.curUser.region));
-            },
-            child: Text(S.current.raw_gacha_data),
-          )
         ],
       ),
     );

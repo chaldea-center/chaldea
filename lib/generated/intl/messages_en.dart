@@ -731,6 +731,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "noble_phantasm": MessageLookupByLibrary.simpleMessage("Noble Phantasm"),
         "noble_phantasm_level": MessageLookupByLibrary.simpleMessage("Noble Phantasm"),
         "non_favorite_svt_be_skipped": MessageLookupByLibrary.simpleMessage("Non-favorite servants will be skipped"),
+        "normal": MessageLookupByLibrary.simpleMessage("Normal"),
         "normal_attack": MessageLookupByLibrary.simpleMessage("Normal Attack"),
         "not_found": MessageLookupByLibrary.simpleMessage("Not Found"),
         "not_implemented": MessageLookupByLibrary.simpleMessage("Not yet implemented"),
