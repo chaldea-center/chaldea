@@ -850,6 +850,7 @@
   "svt_fav_btn_show_all": "顯示全部",
   "svt_fav_btn_show_favorite": "顯示已關注",
   "svt_not_planned": "未關注",
+  "svt_not_release_hint": null,
   "svt_option_edit_tips": "1.隊伍中從者的等級等資訊自導入後與規劃資訊獨立，如需再次同步請使用右上角下拉選單中的重新讀取配置\n2.技能、寶具強化狀態可通過下方選項手動設定\n3.自訂效果/buff可在下方手動添加\n4.從者和禮裝可在詳情頁選單裡進行置頂",
   "svt_option_resync": "重新读取配置",
   "svt_plan_hidden": "已隱藏",

@@ -9429,6 +9429,17 @@ class S {
     );
   }
 
+  /// `Servants may be not released when quest is open`
+  String get svt_not_release_hint {
+    return Intl.message(
+      'Servants may be not released when quest is open',
+      name: 'svt_not_release_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `1. Servant options are independent from Chaldea's plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manually via options below\n3. You can manually add custom effect/buff\n4. Svt/ce can be pinged to top in the popup menu from their detail pages`
   String get svt_option_edit_tips {
     return Intl.message(

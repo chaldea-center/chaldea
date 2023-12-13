@@ -997,6 +997,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_fav_btn_show_all": MessageLookupByLibrary.simpleMessage("Show All"),
         "svt_fav_btn_show_favorite": MessageLookupByLibrary.simpleMessage("Show Favorite"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("Not favorite"),
+        "svt_not_release_hint": MessageLookupByLibrary.simpleMessage("Servants may be not released when quest is open"),
         "svt_option_edit_tips": MessageLookupByLibrary.simpleMessage(
             "1. Servant options are independent from Chaldea\'s plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manually via options below\n3. You can manually add custom effect/buff\n4. Svt/ce can be pinged to top in the popup menu from their detail pages"),
         "svt_option_resync": MessageLookupByLibrary.simpleMessage("Resync Options"),

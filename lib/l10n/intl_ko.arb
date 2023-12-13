@@ -851,6 +851,7 @@
   "svt_fav_btn_show_all": "전부 표시",
   "svt_fav_btn_show_favorite": "즐겨찾기 표시",
   "svt_not_planned": "팔로우 하지않음",
+  "svt_not_release_hint": null,
   "svt_option_edit_tips": null,
   "svt_option_resync": null,
   "svt_plan_hidden": "숨김",

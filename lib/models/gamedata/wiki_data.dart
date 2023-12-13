@@ -41,6 +41,8 @@ class WikiData {
 class ServantExtra {
   int collectionNo;
   MappingList<String> nicknames;
+  @protected
+  int releasedAt;
   List<SvtObtain> obtains;
   List<String> aprilFoolAssets;
   MappingBase<String> aprilFoolProfile;
@@ -55,6 +57,7 @@ class ServantExtra {
   ServantExtra({
     required this.collectionNo,
     MappingList<String>? nicknames,
+    this.releasedAt = 0,
     this.obtains = const [SvtObtain.unknown],
     this.aprilFoolAssets = const [],
     MappingBase<String>? aprilFoolProfile,
@@ -69,6 +72,19 @@ class ServantExtra {
         aprilFoolProfile = aprilFoolProfile ?? MappingBase();
 
   factory ServantExtra.fromJson(Map<String, dynamic> json) => _$ServantExtraFromJson(json);
+
+  static const int kReleaseStartId = 198;
+  int getReleasedAt() {
+    if (collectionNo <= kReleaseStartId) return 0;
+    if (releasedAt > 0) return releasedAt;
+    int prevId = collectionNo - 1;
+    while (prevId > kReleaseStartId) {
+      final prev = db.gameData.wiki.servants[prevId]?.releasedAt ?? 0;
+      if (prev > 0) return prev;
+      prevId--;
+    }
+    return 0;
+  }
 }
 
 @JsonSerializable(createToJson: false)

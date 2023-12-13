@@ -725,10 +725,24 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       if (hasMultiDamageFunc) {
         content = '${S.current.laplace_upload_td_multi_dmg_func_hint}\n\n';
       }
+
+      List<String> unreleasedSvts = [];
+      for (final svtData in widget.options.formation.allSvts) {
+        final svt = svtData.svt;
+        if (svt == null) continue;
+        final releasedAt = svt.extra.getReleasedAt();
+        if (questPhase.closedAt < releasedAt && releasedAt > 0) {
+          unreleasedSvts.add(svt.lName.l);
+        }
+      }
+      if (unreleasedSvts.isNotEmpty) {
+        content += '${kStarChar2 * 3} ${S.current.svt_not_release_hint}:\n${unreleasedSvts.join(" / ")}\n\n';
+      }
+
       content += S.current.upload_team_confirmation;
     }
-    content += '\n\n${S.current.save}: ${S.current.team_local}'
-        '\n${S.current.upload}: ${S.current.team_shared}';
+    content += '\n\n${S.current.save}: ${S.current.team_local}; '
+        '${S.current.upload}: ${S.current.team_shared}';
 
     final teamData = getShareData();
 

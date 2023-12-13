@@ -851,6 +851,7 @@
   "svt_fav_btn_show_all": "显示全部",
   "svt_fav_btn_show_favorite": "显示已关注",
   "svt_not_planned": "未关注",
+  "svt_not_release_hint": "以下从者可能在关卡开放时未实装",
   "svt_option_edit_tips": "1.队伍中从者的等级等信息自导入后与规划信息独立，如需再次同步请使用右上角下拉菜单中的重新读取配置\n2.技能、宝具强化状态可通过下方选项手动设定\n3.自定义效果/buff可在下方手动添加\n4.从者和礼装可在详情页菜单里进行置顶",
   "svt_option_resync": "重新读取配置",
   "svt_plan_hidden": "已隐藏",
