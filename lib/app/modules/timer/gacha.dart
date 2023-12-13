@@ -64,7 +64,7 @@ class TimerGachaItem with TimerItem {
               ),
               if (region == Region.jp)
                 TextButton(
-                  onPressed: enabled ? () => router.pushPage(MCGachaProbEditPage(gacha: gacha, url: htmlUrl)) : null,
+                  onPressed: enabled ? () => router.pushPage(MCGachaProbEditPage(gacha: gacha)) : null,
                   child: Text('${S.current.probability}/${S.current.simulator}'),
                 )
             ],

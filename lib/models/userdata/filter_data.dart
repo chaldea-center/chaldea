@@ -810,18 +810,22 @@ enum EventCustomType {
 
 // summon
 
-@JsonSerializable(checked: true)
+@JsonSerializable(checked: true, ignoreUnannotated: true)
 class SummonFilterData with _FilterData {
+  @JsonKey()
   bool favorite;
+  @JsonKey()
   bool reversed;
+  @JsonKey()
   bool showBanner;
+  @JsonKey()
   bool showOutdated;
+  @JsonKey()
   bool sortByClosed;
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   final category = FilterGroupData<SummonType>();
-  @JsonKey(includeFromJson: false, includeToJson: false)
   final gachaType = FilterGroupData<GachaType>();
+  bool multiChoiceMode = false;
 
   SummonFilterData({
     this.favorite = false,

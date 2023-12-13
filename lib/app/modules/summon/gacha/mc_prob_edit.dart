@@ -18,8 +18,7 @@ import 'gacha_banner.dart';
 
 class MCGachaProbEditPage extends StatefulWidget {
   final MstGacha gacha;
-  final String url;
-  const MCGachaProbEditPage({super.key, required this.gacha, required this.url});
+  const MCGachaProbEditPage({super.key, required this.gacha});
 
   @override
   State<MCGachaProbEditPage> createState() => _MCGachaProbEditPageState();
@@ -27,8 +26,9 @@ class MCGachaProbEditPage extends StatefulWidget {
 
 class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
   late final gacha = widget.gacha;
+  late final url = gacha.getHtmlUrl(Region.jp);
 
-  _GachaResult? result;
+  GachaParseResult? result;
   bool showIcon = false;
 
   @override
@@ -38,14 +38,15 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
   }
 
   Future<void> parseHtml() async {
-    final text = await showEasyLoading(() => CachedApi.cacheManager.getText(widget.url));
+    if (url == null) return;
+    final text = await showEasyLoading(() => CachedApi.cacheManager.getText(url!));
     if (text == null || text.isEmpty) {
       EasyLoading.showError(S.current.failed);
       return;
     }
 
     try {
-      final parser = _GachaParser();
+      final parser = GachaParser();
       result = parser.parse(text, gacha);
     } catch (e, s) {
       if (mounted) {
@@ -75,7 +76,7 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
         children: [
           GachaBanner(imageId: gacha.imageId, region: Region.jp),
           Text(gacha.name, textAlign: TextAlign.center),
-          TextButton(onPressed: () => launch(widget.url), child: Text(S.current.open_in_browser)),
+          if (url != null) TextButton(onPressed: () => launch(url!), child: Text(S.current.open_in_browser)),
           kDefaultDivider,
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -167,8 +168,8 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
     if (result == null) {
       children.add(const Text('Nothing'));
     } else {
-      final totalProb = Maths.sum(result.groups.map((e) => e.getTotalProb()));
-      final guessTotalProb = Maths.sum(result.groups.map((e) => e.guessTotalProb()));
+      final totalProb = result.getTotalProb();
+      final guessTotalProb = result.guessTotalProb();
       children.add(Text('${S.current.total}: $guessTotalProb% ($totalProb%)'));
       children.add(SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -224,10 +225,10 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
           children: [
             for (final card in group.cards)
               CenterWidgetSpan(
-                child: card.iconBuilder(
+                child: GameCardMixin.anyCardItemBuilder(
                   context: context,
                   width: 28,
-                  overrideIcon: card.bordered(card.icon),
+                  id: card.id,
                 ),
               ),
           ],
@@ -239,10 +240,10 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
   }
 }
 
-class _GachaParser {
+class GachaParser {
   static const String kStar = '★';
 
-  _GachaResult parse(String text, MstGacha gacha) {
+  GachaParseResult parse(String text, MstGacha gacha) {
     final doc = htmlparser.parse(text);
     final tableCount = text.split("<table").length - 1;
     List<List<String>> svtTable, ceTable;
@@ -252,8 +253,22 @@ class _GachaParser {
       // rarity, name, prob
       ceTable = getProbTable(doc, 3, 3);
     } else if (tableCount == 6) {
+      // 1, svt, ce, svt, ce, 6
       svtTable = [...getProbTable(doc, 2, 4), ...getProbTable(doc, 4, 4)];
       ceTable = [...getProbTable(doc, 3, 3), ...getProbTable(doc, 5, 3)];
+    } else if (tableCount == 5) {
+      const svtTitle = '■ピックアップサーヴァント一覧', ceTitle = '■ピックアップ概念礼装';
+      if (text.contains(svtTitle) && !text.contains(ceTitle)) {
+        // 1, svt, svt, ce, 5
+        svtTable = [...getProbTable(doc, 2, 4), ...getProbTable(doc, 3, 4)];
+        ceTable = [...getProbTable(doc, 4, 3)];
+      } else if (!text.contains(svtTitle) && text.contains(ceTitle)) {
+        // 1, ce, svt, ce, 5
+        svtTable = [...getProbTable(doc, 3, 4)];
+        ceTable = [...getProbTable(doc, 2, 3), ...getProbTable(doc, 4, 3)];
+      } else {
+        throw FormatException('Unexpected table count(5): $tableCount');
+      }
     } else {
       throw FormatException('Unexpected table count: $tableCount');
     }
@@ -290,7 +305,7 @@ class _GachaParser {
     final groups = groupMap.values.toList();
     groups.sortByList((e) => [e.isSvt ? 0 : 1, e.display ? 0 : 1, -e.rarity, e.cards.length]);
 
-    return _GachaResult(gacha, text, groups);
+    return GachaParseResult(gacha, text, groups);
   }
 
   List<List<String>> getProbTable(htmldom.Document document, int tableIndex, int colCount) {
@@ -334,13 +349,16 @@ class _GachaParser {
   }
 }
 
-class _GachaResult {
+class GachaParseResult {
   final MstGacha gacha;
   final String htmlText;
   List<_ProbGroup> groups;
-  _GachaResult(this.gacha, this.htmlText, this.groups);
+  GachaParseResult(this.gacha, this.htmlText, this.groups);
 
   List<String> tableHeaders = ["type", "star", "weight", "display", "ids"];
+
+  double getTotalProb() => Maths.sum(groups.map((e) => e.getTotalProb()));
+  double guessTotalProb() => Maths.sum(groups.map((e) => e.guessTotalProb()));
 
   String toOutput() {
     List<List<String>> outputs = [tableHeaders.toList()];
@@ -411,7 +429,10 @@ class _ProbGroup {
   }
 
   double guessTotalProb() {
-    final v = (getTotalProb() * 10).round() / 10;
+    double v = (getTotalProb() * 10).round() / 10;
+    if (isSvt && rarity == 4 && cards.length > 40 && v == 0.8) {
+      v = 0.9;
+    }
     return double.parse(v.toString());
   }
 

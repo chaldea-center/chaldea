@@ -8,10 +8,13 @@ import '../common/filter_group.dart';
 
 class SummonFilterPage extends FilterPage<SummonFilterData> {
   final bool isRawGacha;
+  final bool showMultiChoice;
+
   const SummonFilterPage({
     super.key,
     required super.filterData,
     required this.isRawGacha,
+    this.showMultiChoice = false,
     super.onChanged,
   });
 
@@ -29,6 +32,16 @@ class _CmdCodeFilterPageState extends FilterPageState<SummonFilterData, SummonFi
         update();
       }),
       content: getListViewBody(children: [
+        if (widget.showMultiChoice)
+          SwitchListTile.adaptive(
+            value: filterData.multiChoiceMode,
+            title: const Text("多选模式(用于Mooncell卡池编辑)"),
+            onChanged: (v) {
+              filterData.multiChoiceMode = v;
+              update();
+            },
+            controlAffinity: ListTileControlAffinity.trailing,
+          ),
         SwitchListTile.adaptive(
           value: filterData.showBanner,
           title: Text(S.current.summon_show_banner),

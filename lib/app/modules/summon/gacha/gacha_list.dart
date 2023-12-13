@@ -6,6 +6,7 @@ import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/raw.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/region_based.dart';
@@ -13,6 +14,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../../common/filter_page_base.dart';
 import '../filter_page.dart';
 import 'gacha_banner.dart';
+import 'mc_multi_gacha.dart';
 import 'mc_prob_edit.dart';
 
 class GachaListPage extends StatefulWidget {
@@ -29,6 +31,8 @@ class _GachaListPageState extends State<GachaListPage>
   Iterable<MstGacha> get wholeData => data ?? [];
   // List<MstGacha> get gachas => data ?? [];
   final Map<int, List<MstGacha>> _imageIdMap = {};
+  final Set<MstGacha> _selectedGachas = {};
+  bool get shouldShowMultiChoice => region == Region.jp && Language.isZH;
 
   SummonFilterData get filterData => db.settings.gachaFilterData;
 
@@ -61,6 +65,7 @@ class _GachaListPageState extends State<GachaListPage>
         _imageIdMap.putIfAbsent(gacha.imageId, () => []).add(gacha);
       }
     }
+    _selectedGachas.clear();
 
     return results;
   }
@@ -112,6 +117,7 @@ class _GachaListPageState extends State<GachaListPage>
               builder: (context) => SummonFilterPage(
                 filterData: filterData,
                 isRawGacha: true,
+                showMultiChoice: shouldShowMultiChoice,
                 onChanged: (_) {
                   if (mounted) setState(() {});
                 },
@@ -167,6 +173,19 @@ class _GachaListPageState extends State<GachaListPage>
       key: Key('mstGacha-${gacha.id}-${filterData.showBanner}'),
       expanded: filterData.showBanner,
       headerBuilder: (context, _) {
+        Widget? trailing;
+        if (shouldShowMultiChoice && filterData.multiChoiceMode) {
+          trailing = Checkbox(
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: VisualDensity.compact,
+            value: _selectedGachas.contains(gacha),
+            onChanged: (v) {
+              setState(() {
+                _selectedGachas.toggle(gacha);
+              });
+            },
+          );
+        }
         return ListTile(
           dense: true,
           // selected: (_imageIdMap[gacha.imageId]?.length ?? 0) > 1,
@@ -183,6 +202,7 @@ class _GachaListPageState extends State<GachaListPage>
             style: TextStyle(fontStyle: gacha.userAdded == true ? FontStyle.italic : null),
           ),
           subtitle: Text(subtitle),
+          trailing: trailing,
           contentPadding: const EdgeInsetsDirectional.only(start: 16),
         );
       },
@@ -225,7 +245,7 @@ class _GachaListPageState extends State<GachaListPage>
               ),
               if (region == Region.jp)
                 TextButton(
-                  onPressed: enabled ? () => router.pushPage(MCGachaProbEditPage(gacha: gacha, url: url)) : null,
+                  onPressed: enabled ? () => router.pushPage(MCGachaProbEditPage(gacha: gacha)) : null,
                   child: Text('${S.current.probability}/${S.current.simulator}'),
                 )
             ],
@@ -236,6 +256,34 @@ class _GachaListPageState extends State<GachaListPage>
           children: children,
         );
       },
+    );
+  }
+
+  @override
+  PreferredSizeWidget? get buttonBar {
+    if (!shouldShowMultiChoice || !filterData.multiChoiceMode) return null;
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(48),
+      child: ButtonBar(
+        alignment: MainAxisAlignment.center,
+        children: [
+          ElevatedButton(
+            onPressed: _selectedGachas.isEmpty
+                ? null
+                : () {
+                    router.pushPage(MCSummonCreatePage(gachas: _selectedGachas.toList()));
+                  },
+            child: Text("创建Mooncell卡池(${_selectedGachas.length})"),
+          ),
+          IconButton(
+            onPressed: () {
+              _selectedGachas.clear();
+              setState(() {});
+            },
+            icon: const Icon(Icons.clear_all),
+          )
+        ],
+      ),
     );
   }
 
