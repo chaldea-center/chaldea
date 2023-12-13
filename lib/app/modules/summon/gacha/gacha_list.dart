@@ -2,6 +2,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/raw.dart';
 import 'package:chaldea/models/models.dart';
@@ -9,9 +10,8 @@ import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../../tools/gamedata_loader.dart';
-import '../common/filter_page_base.dart';
-import 'filter_page.dart';
+import '../../common/filter_page_base.dart';
+import '../filter_page.dart';
 import 'gacha_banner.dart';
 import 'mc_prob_edit.dart';
 

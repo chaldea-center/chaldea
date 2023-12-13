@@ -1,11 +1,11 @@
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/modules/summon/gacha_banner.dart';
+import 'package:chaldea/app/modules/summon/gacha/gacha_banner.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/raw.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../summon/mc_prob_edit.dart';
+import '../summon/gacha/mc_prob_edit.dart';
 import 'base.dart';
 
 class TimerGachaTab extends StatelessWidget {

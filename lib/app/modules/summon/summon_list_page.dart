@@ -11,8 +11,8 @@ import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'filter_page.dart';
-import 'gacha_list.dart';
-import 'gacha_prob_calc.dart';
+import 'gacha/gacha_list.dart';
+import 'gacha/gacha_prob_calc.dart';
 import 'summon_detail_page.dart';
 
 class SummonListPage extends StatefulWidget {

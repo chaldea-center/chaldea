@@ -10,7 +10,7 @@ import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../../summon/gacha_banner.dart';
+import '../../summon/gacha/gacha_banner.dart';
 
 class SniffGachaHistory extends StatefulWidget {
   final List<UserSvt> userSvt;
