@@ -1,9 +1,11 @@
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../exp/master_exp_page.dart';
+import '_hidden.dart';
 import 'aa_explorer_preview.dart';
 import 'bond_table.dart';
 import 'chara_figure_marker.dart';
@@ -22,6 +24,7 @@ class ToolListPage extends StatelessWidget {
       'Master Level': const MasterExpPage(),
       'Extra CharaFigure Marker': const CharaFigureMarker(),
       '${S.current.bond} (${S.current.total})': const BondTotalTable(),
+      if (AppInfo.isDebugDevice) 'Y(^o^)Y': const HiddenToolsPage(),
     };
     return Scaffold(
       appBar: AppBar(title: const Text('Tools')),
