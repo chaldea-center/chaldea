@@ -5,7 +5,7 @@ import 'package:chaldea/models/gamedata/raw.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../summon/gacha/mc_prob_edit.dart';
+import '../mc/mc_prob_edit.dart';
 import 'base.dart';
 
 class TimerGachaTab extends StatelessWidget {

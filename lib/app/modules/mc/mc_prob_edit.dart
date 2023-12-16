@@ -13,8 +13,8 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../summon_simulator_page.dart';
-import 'gacha_banner.dart';
+import '../summon/gacha/gacha_banner.dart';
+import '../summon/summon_simulator_page.dart';
 
 class MCGachaProbEditPage extends StatefulWidget {
   final MstGacha gacha;
