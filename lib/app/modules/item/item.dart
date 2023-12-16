@@ -79,7 +79,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
           // fp, Q/A/B opener, Beast's Footprint
           4, 5000, 5001, 5002, 5003, 2000,
         ].contains(widget.itemId)) {
-          _shownTabs = _kEventTabs;
+          _shownTabs = _kEventTabs.toList();
         }
         break;
       case ItemCategory.special:
@@ -103,7 +103,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
         if (Items.fous.contains(widget.itemId)) {
           _shownTabs = _TabType.values.toList();
         } else if (Items.embers.contains(widget.itemId)) {
-          _shownTabs = _kEventTabs;
+          _shownTabs = _kEventTabs.toList();
         }
         break;
     }

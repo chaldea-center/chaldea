@@ -86,6 +86,8 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
               CustomTableRow.fromChildren(
                   children: [SharedBuilder.traitList(context: context, traits: item.individuality)])
             ],
+            CustomTableRow.fromTexts(texts: const ['Priority', 'Drop Priority'], isHeader: true),
+            CustomTableRow.fromTexts(texts: ['${item.priority}', '${item.dropPriority}']),
             CustomTableRow.fromTexts(texts: [S.current.card_description], isHeader: true),
             CustomTableRow(
               children: [

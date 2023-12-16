@@ -79,6 +79,7 @@ class Item {
     if (type == ItemType.eventItem) {
       return uses.contains(ItemUse.ascension) ? ItemCategory.eventAscension : ItemCategory.event;
     }
+    if (type == ItemType.boostItem || type == ItemType.dice) return ItemCategory.event;
     if (type == ItemType.eventPoint) return ItemCategory.event;
     if (type == ItemType.svtCoin) return ItemCategory.coin;
     return ItemCategory.other;
@@ -202,18 +203,30 @@ class Item {
     }
   }
 
-  static int compare(int itemA, int itemB) {
-    final a = db.gameData.items[itemA]?.priority, b = db.gameData.items[itemB]?.priority;
-    if (a != null && b != null) return a - b;
-    if (a == null && b == null) return 0;
-    return a == null ? -1 : 1;
-  }
-
   static int _getType(int a) {
-    if (db.gameData.craftEssencesById.containsKey(a)) return 1;
-    if (db.gameData.items.containsKey(a)) return 2;
+    final item = db.gameData.items[a];
+    if (item != null) {
+      return switch (item.category) {
+        ItemCategory.coin => 10,
+        ItemCategory.eventAscension => 11,
+        ItemCategory.event => 12,
+        ItemCategory.normal => 13,
+        ItemCategory.skill => 14,
+        ItemCategory.ascension => 15,
+        ItemCategory.special => 16,
+        ItemCategory.other => 17,
+      };
+    }
+    if (db.gameData.craftEssencesById.containsKey(a)) return 2;
+    if (db.gameData.commandCodesById.containsKey(a)) return 3;
+    final svt = db.gameData.entities[a];
+    if (svt != null) {
+      if (svt.type == SvtType.statusUp) return 101;
+      if (svt.type == SvtType.combineMaterial) return 102;
+      return 1;
+    }
     if (db.gameData.entities[a]?.type == SvtType.combineMaterial) {
-      return 3;
+      return 6;
     }
     return 0; // unknown
   }
@@ -222,11 +235,17 @@ class Item {
     return -(db.gameData.items[a]?.priority ?? db.gameData.craftEssencesById[a]?.collectionNo ?? a);
   }
 
-  // item/ce/svt
-  static int compare2(int id1, int id2, [bool reversed = false]) {
-    // priority越大越金
-    // ce3->item2->ember1
-    return ListX.compareByList(id1, id2, (v) => <int>[_getType(v), _getPriority(v)], reversed);
+  static int _getDropPriority(int a) {
+    return -(db.gameData.items[a]?.dropPriority ?? db.gameData.craftEssencesById[a]?.collectionNo ?? a);
+  }
+
+  // compare drop
+  static int compare(int id1, int id2) {
+    return ListX.compareByList(id1, id2, (v) => <int>[_getType(v), _getDropPriority(v)]);
+  }
+
+  static int compare2(int id1, int id2) {
+    return ListX.compareByList(id1, id2, (v) => <int>[_getType(v), _getPriority(v)]);
   }
 
   static Map<int, int> sortMapByPriority(

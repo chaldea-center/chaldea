@@ -131,7 +131,7 @@ class MainStoryTab extends StatelessWidget {
     if (showSpecialRewards) {
       List<Widget> rewards = [];
       final entries = record.itemReward.entries.toList();
-      entries.sort((a, b) => Item.compare(a.key, b.key));
+      entries.sort((a, b) => Item.compare2(a.key, b.key));
       for (final entry in entries) {
         if (entry.value <= 0) continue;
         final objectId = entry.key;
