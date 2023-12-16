@@ -1,8 +1,30 @@
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 
 class McConverter {
   List<String> errors = [];
+  String result = '';
+
+  void checkLanguageError() {
+    final e = getLanguageError();
+    if (e.isNotEmpty) errors.add(e);
+  }
+
+  String getLanguageError() {
+    List<String> _errors = [];
+    if (!Language.isCHS) {
+      _errors.add('App语言需设置为 简体中文');
+    }
+    final langs = Transl.preferRegions;
+    if (!(langs.length >= 3 &&
+        langs.first == Region.cn &&
+        (langs[1] == Region.jp || (langs[1] == Region.tw && langs[2] == Region.jp)))) {
+      _errors.add('首选翻译 需设置为: 1国服 2日服. 当前: ${langs.map((e) => e.localName).join("-")}');
+    }
+    if (_errors.isEmpty) return '';
+    return '应用设置不符合要求:\n${_errors.map((e) => "* $e").join('\n')}\n';
+  }
 
   String getLocalTime(int timestamp, int tz) {
     final utc = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true);

@@ -172,7 +172,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                     onTap: _quest == null
                         ? null
                         : () {
-                            router.pushPage(MCQuestEditPage(quest: _quest!));
+                            router.pushPage(MCQuestConvertPage(quest: _quest!));
                           },
                     child: const Text("导出至Mooncell"),
                   ),

@@ -12,16 +12,15 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'converter.dart';
 
-// todo: call deck
-class MCQuestEditPage extends StatefulWidget {
+class MCQuestConvertPage extends StatefulWidget {
   final Quest quest;
-  const MCQuestEditPage({super.key, required this.quest});
+  const MCQuestConvertPage({super.key, required this.quest});
 
   @override
-  State<MCQuestEditPage> createState() => _MCQuestEditPageState();
+  State<MCQuestConvertPage> createState() => _MCQuestConvertPageState();
 }
 
-class _MCQuestEditPageState extends State<MCQuestEditPage> {
+class _MCQuestConvertPageState extends State<MCQuestConvertPage> {
   late final quest = widget.quest;
   List<QuestPhase?> questPhases = [];
 
@@ -36,7 +35,7 @@ class _MCQuestEditPageState extends State<MCQuestEditPage> {
   Future<void> loadData() async {
     EasyLoading.show();
     try {
-      await parser.loadData();
+      await parser.loadAndConvert();
       EasyLoading.dismiss();
     } catch (e, s) {
       EasyLoading.showError(e.toString());
@@ -138,7 +137,117 @@ class _MCQuestEditPageState extends State<MCQuestEditPage> {
   }
 }
 
+class MCQuestListConvertPage extends StatefulWidget {
+  final String? title;
+  final List<Quest> quests;
+  const MCQuestListConvertPage({super.key, this.title, required this.quests});
+
+  @override
+  State<MCQuestListConvertPage> createState() => _MCQuestListConvertPageState();
+}
+
+class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
+  List<_MCQuestConverter> converters = [];
+
+  @override
+  void initState() {
+    super.initState();
+    converters = [for (final quest in widget.quests) _MCQuestConverter(quest)];
+    loadData();
+  }
+
+  bool _running = false;
+  Future<void> loadData() async {
+    if (_running) return;
+    _running = true;
+    try {
+      int finished = 0;
+      for (final converter in converters) {
+        EasyLoading.show(status: '$finished/${converters.length}...');
+        await converter.loadAndConvert();
+        finished += 1;
+      }
+      int error = converters.where((e) => e.errors.isNotEmpty).length;
+      if (error == 0) {
+        EasyLoading.showSuccess('共${converters.length}个关卡');
+      } else {
+        EasyLoading.showInfo('共${converters.length}个关卡, $error个包含错误/警告');
+      }
+    } catch (e, s) {
+      logger.e('convert quests failed', e, s);
+      EasyLoading.showError(e.toString());
+    } finally {
+      _running = false;
+    }
+    if (mounted) setState(() {});
+  }
+
+  String getAllResults() {
+    final buffer = StringBuffer();
+    if (widget.title != null) {
+      buffer.writeln('==${widget.title}==');
+    }
+    for (final converter in converters) {
+      if (converter.result.isEmpty) {
+        buffer.writeln('未解析\n');
+      } else {
+        buffer.writeln(converter.result);
+      }
+      if (converter.errors.isNotEmpty) {
+        buffer.writeln(converter.errors.join('\n'));
+        buffer.writeln();
+      }
+    }
+    return buffer.toString();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final result = getAllResults();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('导出至Mooncell'),
+        actions: [
+          IconButton(onPressed: loadData, icon: const Icon(Icons.refresh)),
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              children: [
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Text(result),
+                  ),
+                )
+              ],
+            ),
+          ),
+          SafeArea(
+            child: ButtonBar(
+              alignment: MainAxisAlignment.center,
+              children: [
+                FilledButton(
+                  onPressed: () {
+                    copyToClipboard(result, toast: true);
+                  },
+                  child: Text('${S.current.copy}(${converters.length}个关卡)'),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
 class _MCQuestConverter extends McConverter {
+  // static
+  static final Map<int, (Uint8List, Uint8List, Color)> _bannerCaches = {};
   // data
   final Quest quest;
   Map<int, QuestPhase> questPhases = {};
@@ -149,8 +258,6 @@ class _MCQuestConverter extends McConverter {
   Color? bannerColor;
   // options
   String? titleBg;
-  // result
-  String result = '';
 
   _MCQuestConverter(this.quest);
 
@@ -168,8 +275,10 @@ class _MCQuestConverter extends McConverter {
     return null;
   }
 
-  Future<void> loadData() async {
+  Future<void> loadAndConvert() async {
+    result = '';
     errors.clear();
+    checkLanguageError();
     questPhases.clear();
     cnQuestPhases.clear();
     final phases = (quest.isMainStoryFree && quest.phases.length == 3) ? [quest.phases.last] : quest.phases;
@@ -199,8 +308,14 @@ class _MCQuestConverter extends McConverter {
   }
 
   Future<void> pickBannerColor(int bannerId) async {
-    print('bannerId=$bannerId');
     if (bannerId <= 0) return;
+    if (_bannerCaches.containsKey(bannerId)) {
+      final cache = _bannerCaches[bannerId]!;
+      titleBanner = cache.$1;
+      cropTitleBanner = cache.$2;
+      bannerColor = cache.$3;
+      return;
+    }
     final imgBytes = await CachedApi.cacheManager.get('${HostsX.atlasAssetHost}/JP/EventUI/quest_board_$bannerId.png');
     if (imgBytes == null) return;
     titleBanner = Uint8List.fromList(imgBytes);
@@ -213,12 +328,12 @@ class _MCQuestConverter extends McConverter {
     final g = Maths.sum(cropped.map((e) => e.g.toInt())) ~/ cropped.length;
     final b = Maths.sum(cropped.map((e) => e.b.toInt())) ~/ cropped.length;
     bannerColor = Color.fromARGB(255, r, g, b);
-    print('bannerColor=$bannerColor');
     cropTitleBanner = img_lib.encodePng(cropped);
+    _bannerCaches[bannerId] = (titleBanner!, cropTitleBanner!, bannerColor!);
   }
 
   String convert() {
-    errors.clear();
+    // errors.clear();
     String? nameCn = quest.lName.maybeOf(Region.cn);
     bool allNoBattle = questPhases.values.every((q) => q.isNoBattle);
     Set<String> recommendLvs = questPhases.values.map((e) => e.recommendLv).toSet();

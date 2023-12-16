@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:chaldea/app/modules/quest/quest.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../app.dart';
+import '../mc/mc_quest.dart';
 
 class QuestListPage extends StatefulWidget {
   final List<Quest> quests;
@@ -51,6 +53,9 @@ class _QuestListPageState extends State<QuestListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title ?? '${questIds.length} ${S.current.quest}'),
+        actions: [
+          if (Language.isCHS) popupMenu,
+        ],
       ),
       body: ListView.separated(
         separatorBuilder: (context, index) => const Divider(indent: 16, endIndent: 16, height: 4),
@@ -169,6 +174,22 @@ class _QuestListPageState extends State<QuestListPage> {
         },
         itemCount: questIds.length,
       ),
+    );
+  }
+
+  Widget get popupMenu {
+    return PopupMenuButton(
+      itemBuilder: (context) {
+        return [
+          if (widget.quests.isNotEmpty)
+            PopupMenuItem(
+              child: const Text('导出至Mooncell'),
+              onTap: () {
+                router.pushPage(MCQuestListConvertPage(title: widget.title, quests: widget.quests));
+              },
+            ),
+        ];
+      },
     );
   }
 }
