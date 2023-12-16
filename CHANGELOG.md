@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.5.4
+
+- Export quest to Mooncell wiki format
+- Check svt release time before uploading team
+
 ## 2.5.3
 
 - NP Damage Ranking supports: class score, custom enemy passives/buffs, event/field traits
