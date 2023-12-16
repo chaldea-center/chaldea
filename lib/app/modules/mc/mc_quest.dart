@@ -3,6 +3,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'converter.dart';
@@ -19,7 +20,7 @@ class _MCQuestEditPageState extends State<MCQuestEditPage> {
   late final quest = widget.quest;
   List<QuestPhase?> questPhases = [];
 
-  final _parser = _MCQuestConverter();
+  late final _parser = _MCQuestConverter(widget.quest);
 
   @override
   void initState() {
@@ -28,20 +29,14 @@ class _MCQuestEditPageState extends State<MCQuestEditPage> {
   }
 
   Future<void> loadData() async {
-    _parser.errors.clear();
-    questPhases = List.filled(quest.phases.length, null);
     EasyLoading.show();
-    final phases = (quest.isMainStoryFree && quest.phases.length == 3) ? [quest.phases.last] : quest.phases;
-    for (final phase in phases) {
-      final questPhase = await AtlasApi.questPhase(quest.id, phase,
-          expireAfter: quest.isMainStoryFree ? const Duration(minutes: 10) : null);
-      questPhases[phase - 1] = questPhase;
-      if (questPhase == null) {
-        _parser.errors.add('Phase $phase 获取数据失败');
-      }
+    try {
+      await _parser.loadData();
+      EasyLoading.dismiss();
+    } catch (e, s) {
+      EasyLoading.showError(e.toString());
+      logger.e('convert mc quest failed', e, s);
     }
-    _parser.result = _parser.convert(quest, questPhases.whereType<QuestPhase>().toList());
-    EasyLoading.dismiss();
     if (mounted) setState(() {});
   }
 
@@ -105,17 +100,55 @@ class _MCQuestEditPageState extends State<MCQuestEditPage> {
 }
 
 class _MCQuestConverter extends McConverter {
+  // data
+  final Quest quest;
+  Map<int, QuestPhase> questPhases = {};
+  Map<int, QuestPhase?> cnQuestPhases = {};
+  Map<String, dynamic>? rawQuest;
+  // options
   String? titleBg;
+  // result
   String result = '';
 
-  String convert(Quest quest, List<QuestPhase> questPhases) {
+  _MCQuestConverter(this.quest);
+
+  Future<void> loadData() async {
+    errors.clear();
+    questPhases.clear();
+    cnQuestPhases.clear();
+    final phases = (quest.isMainStoryFree && quest.phases.length == 3) ? [quest.phases.last] : quest.phases;
+    List<Future> futures = [];
+    futures.addAll(phases.map((phase) async {
+      final questPhase = await AtlasApi.questPhase(quest.id, phase,
+          expireAfter: quest.isMainStoryFree ? const Duration(minutes: 10) : null);
+      if (questPhase == null) {
+        errors.add('Phase $phase 获取数据失败');
+      } else {
+        questPhases[phase] = questPhase;
+        cnQuestPhases[phase] = await AtlasApi.questPhase(quest.id, phase, region: Region.cn);
+      }
+    }));
+    futures.add(AtlasApi.cacheManager.getJson('${AtlasApi.atlasApiHost}/raw/JP/quest/${quest.id}').then((value) {
+      if (value == null) {
+        errors.add('raw quest data 获取失败');
+      } else {
+        rawQuest = Map.from(value);
+      }
+    }));
+
+    await Future.wait(futures);
+    if (rawQuest == null) {}
+    result = convert();
+  }
+
+  String convert() {
     errors.clear();
     String? nameCn = quest.lName.maybeOf(Region.cn);
-    bool allNoBattle = questPhases.every((q) => q.isNoBattle);
-    Set<String> recommendLvs = questPhases.map((e) => e.recommendLv).toSet();
-    Set<int> bonds = questPhases.map((e) => e.bond).toSet();
-    Set<int> exps = questPhases.map((e) => e.exp).toSet();
-    Set<int> qps = questPhases.map((e) => e.qp).toSet();
+    bool allNoBattle = questPhases.values.every((q) => q.isNoBattle);
+    Set<String> recommendLvs = questPhases.values.map((e) => e.recommendLv).toSet();
+    Set<int> bonds = questPhases.values.map((e) => e.bond).toSet();
+    Set<int> exps = questPhases.values.map((e) => e.exp).toSet();
+    Set<int> qps = questPhases.values.map((e) => e.qp).toSet();
     bool sameBond = allNoBattle;
     String? titleBg = this.titleBg;
     if (quest.warId == WarId.rankup || quest.type == QuestType.friendship) {
@@ -147,8 +180,8 @@ class _MCQuestConverter extends McConverter {
     if (quest.flags.contains(QuestFlag.displayLoopmark)) {
       buffer.writeln("|可重复=${quest.phases.last}");
     }
-    for (final questPhase in questPhases) {
-      buffer.write(cvtPhase(questPhase, sameBond));
+    for (final phase in quest.phases) {
+      buffer.write(cvtPhase(questPhases[phase], cnQuestPhases[phase], sameBond));
     }
     final gifts = quest.gifts.where((gift) => gift.type != GiftType.questRewardIcon).toList();
     // gifts.sort((a, b) => Item.compare2(a.objectId, b.objectId));
@@ -187,11 +220,16 @@ class _MCQuestConverter extends McConverter {
     if (quest.flags.contains(QuestFlag.branch)) {
       extraInfo.add('分支关卡，需要合并到默认关卡中');
     }
-    for (final questPhase in questPhases) {
+    for (final questPhase in questPhases.values) {
       if (questPhase.enemyHashes.length > 1) {
         extraInfo.add('wave${questPhase.phase}: 存在多种敌方配置，可能随剧情选择变化或随机');
       }
     }
+
+    extraInfo.addAll([
+      if (quest.flags.contains(QuestFlag.noContinue)) '无法续关',
+      if (quest.flags.contains(QuestFlag.dropFirstTimeOnly)) '只有首次通关时才能获得牵绊点、经验值、战利品、通关奖励',
+    ]);
     if (extraInfo.isNotEmpty) {
       buffer.writeln('|备注=${extraInfo.join("\n")}');
     }
@@ -199,7 +237,10 @@ class _MCQuestConverter extends McConverter {
     return buffer.toString().split('\n').map((e) => e.trimRight()).join('\n');
   }
 
-  String cvtPhase(QuestPhase quest, bool sameBond) {
+  String cvtPhase(QuestPhase? quest, QuestPhase? cnQuest, bool sameBond) {
+    if (quest == null) {
+      return '';
+    }
     final buffer = StringBuffer();
     final int phase = (quest.isMainStoryFree && quest.phases.length == 3) ? 1 : quest.phase;
     final String phaseZh = getZhNum(phase);
@@ -269,23 +310,22 @@ class _MCQuestConverter extends McConverter {
           }
         }
       } else {
-        Map<int, int> fixedDrops = {};
+        Map<int, Map<int, int>> fixedDrops = {};
         for (final enemy in quest.allEnemies) {
           for (final drop in enemy.drops) {
             final fixedNum = drop.dropCount ~/ drop.runs;
             if (fixedNum > 0) {
-              fixedDrops.addNum(drop.objectId, fixedNum);
+              fixedDrops.putIfAbsent(drop.objectId, () => {}).addNum(drop.num, fixedNum);
             }
           }
         }
         final itemIds = fixedDrops.keys.toList();
         itemIds.sort((a, b) => Item.compare2(a, b));
         for (final objectId in itemIds) {
-          buffer.write(getWikiDaoju(objectId));
-          if (objectId == Items.qpId) {
-            buffer.write('+${fixedDrops[objectId]?.format(compact: false, groupSeparator: ",")}');
-          } else {
-            buffer.write('×${fixedDrops[objectId]}');
+          final setNums = fixedDrops[objectId]!;
+          for (final setNum in setNums.keys) {
+            buffer.write(getWikiDaoju(objectId, setNum: setNum));
+            buffer.write('×${setNums[setNum]}');
           }
           buffer.write(' ');
         }
@@ -297,8 +337,10 @@ class _MCQuestConverter extends McConverter {
     if (quest.flags.contains(QuestFlag.supportSelectAfterScript)) {
       formationConds.add('该关卡的队伍编制将在战斗开始前进行');
     }
-    for (final restriction in quest.restrictions) {
-      if (restriction.restriction.name != '編成制限あり') {
+    for (final restriction in (cnQuest ?? quest).restrictions) {
+      if (!const [
+        '編成制限あり',
+      ].contains(restriction.restriction.name)) {
         formationConds.add(restriction.restriction.name);
       }
     }
@@ -310,13 +352,13 @@ class _MCQuestConverter extends McConverter {
     List<String> battleEffects = [];
     if (quest.stages.any((e) => e.enemyFieldPosCountReal != 3)) {
       if (quest.stages.map((e) => e.enemyFieldPosCountReal).toSet().length == 1) {
+        battleEffects.add('场上最多出现${quest.stages.first.enemyFieldPosCountReal}个敌人');
+      } else {
         for (final stage in quest.stages) {
           if (stage.enemyFieldPosCountReal != 3) {
             battleEffects.add('场上最多出现${stage.enemyFieldPosCountReal}个敌人(wave${stage.wave})');
           }
         }
-      } else {
-        battleEffects.add('场上最多出现${quest.stages.first.enemyFieldPosCountReal}个敌人');
       }
     }
     Set<String> disabledMasterEffects = {
@@ -328,7 +370,7 @@ class _MCQuestConverter extends McConverter {
       battleEffects.add('无${disabledMasterEffects.join('、')}');
     }
     if (battleEffects.isNotEmpty) {
-      buffer.write('|$phaseZh战斗效果=${battleEffects.join("\n")}');
+      buffer.writeln('|$phaseZh战斗效果=${battleEffects.join("\n")}');
     }
     // 助战
     if (quest.supportServants.isNotEmpty) {
