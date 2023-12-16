@@ -447,6 +447,14 @@ extension ColorX on Color {
   Color get inverted {
     return Color.fromARGB(alpha, alpha - red, alpha - green, alpha - blue);
   }
+
+  String toCSSHex({bool omitAlpha = true}) {
+    String hex = value.toRadixString(16).toUpperCase().padLeft(8, '0');
+    if (omitAlpha && hex.startsWith('FF')) {
+      hex = hex.substring(2);
+    }
+    return '#$hex';
+  }
 }
 
 extension ResponseX<T> on Response<T> {

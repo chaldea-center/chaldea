@@ -1,6 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:image/image.dart' as img_lib;
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
@@ -8,6 +12,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'converter.dart';
 
+// todo: call deck
 class MCQuestEditPage extends StatefulWidget {
   final Quest quest;
   const MCQuestEditPage({super.key, required this.quest});
@@ -20,7 +25,7 @@ class _MCQuestEditPageState extends State<MCQuestEditPage> {
   late final quest = widget.quest;
   List<QuestPhase?> questPhases = [];
 
-  late final _parser = _MCQuestConverter(widget.quest);
+  late final parser = _MCQuestConverter(widget.quest);
 
   @override
   void initState() {
@@ -31,7 +36,7 @@ class _MCQuestEditPageState extends State<MCQuestEditPage> {
   Future<void> loadData() async {
     EasyLoading.show();
     try {
-      await _parser.loadData();
+      await parser.loadData();
       EasyLoading.dismiss();
     } catch (e, s) {
       EasyLoading.showError(e.toString());
@@ -43,59 +48,93 @@ class _MCQuestEditPageState extends State<MCQuestEditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("导出Mooncell关卡"),
-          actions: [
-            IconButton(
-              onPressed: () {
-                loadData();
-              },
-              icon: const Icon(Icons.refresh),
-              tooltip: S.current.refresh,
-            )
-          ],
-        ),
-        body: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                children: [
-                  if (_parser.errors.isNotEmpty)
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Column(
-                          children: [Text(S.current.error), Text(_parser.errors.join('\n'))],
-                        ),
-                      ),
-                    ),
+      appBar: AppBar(
+        title: const Text("导出Mooncell关卡"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              loadData();
+            },
+            icon: const Icon(Icons.refresh),
+            tooltip: S.current.refresh,
+          )
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+              children: [
+                if (parser.errors.isNotEmpty)
                   Card(
                     child: Padding(
                       padding: const EdgeInsets.all(8),
-                      child: Text(_parser.result),
+                      child: Column(
+                        children: [Text(S.current.error), Text(parser.errors.join('\n'))],
+                      ),
                     ),
                   ),
-                ],
-              ),
-            ),
-            SafeArea(
-              child: ButtonBar(
-                alignment: MainAxisAlignment.center,
-                children: [
-                  FilledButton(
-                    onPressed: _parser.result.isEmpty
-                        ? null
-                        : () {
-                            copyToClipboard(_parser.result, toast: true);
-                          },
-                    child: Text(S.current.copy),
+                colorPicker,
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Text(parser.result),
                   ),
-                ],
-              ),
-            )
-          ],
-        ));
+                ),
+              ],
+            ),
+          ),
+          SafeArea(
+            child: ButtonBar(
+              alignment: MainAxisAlignment.center,
+              children: [
+                FilledButton(
+                  onPressed: parser.result.isEmpty
+                      ? null
+                      : () {
+                          copyToClipboard(parser.result, toast: true);
+                        },
+                  child: Text(S.current.copy),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget get colorPicker {
+    return TileGroup(
+      header: '标题背景',
+      children: [
+        ListTile(
+          dense: true,
+          title: const Text('默认'),
+          trailing: Text(parser.getDefaultTitleBg() ?? '无'),
+          tileColor: parser.kHtmlColors[parser.getDefaultTitleBg()],
+        ),
+        ListTile(
+          dense: true,
+          title: const Text('背景图'),
+          trailing: parser.titleBanner == null ? const Text('未加载') : Image.memory(parser.titleBanner!),
+        ),
+        ListTile(
+          dense: true,
+          title: const Text('提取颜色'),
+          subtitle: Text(parser.bannerColor == null ? '未加载' : parser.bannerColor!.toCSSHex()),
+          tileColor: parser.bannerColor,
+          trailing: parser.cropTitleBanner == null
+              ? null
+              : Container(
+                  decoration: BoxDecoration(border: Border.all(color: Colors.white)),
+                  constraints: const BoxConstraints(maxWidth: 180),
+                  child: Image.memory(parser.cropTitleBanner!),
+                ),
+        ),
+      ],
+    );
   }
 }
 
@@ -104,13 +143,30 @@ class _MCQuestConverter extends McConverter {
   final Quest quest;
   Map<int, QuestPhase> questPhases = {};
   Map<int, QuestPhase?> cnQuestPhases = {};
-  Map<String, dynamic>? rawQuest;
+  Map? rawQuest;
+  Uint8List? titleBanner;
+  Uint8List? cropTitleBanner;
+  Color? bannerColor;
   // options
   String? titleBg;
   // result
   String result = '';
 
   _MCQuestConverter(this.quest);
+
+  final Map<String, Color> kHtmlColors = const {
+    'Chocolate': Color.fromARGB(255, 123, 63, 0),
+    'Maroon': Color.fromARGB(255, 128, 0, 0),
+  };
+
+  String? getDefaultTitleBg() {
+    if (quest.warId == WarId.rankup || quest.type == QuestType.friendship) {
+      return 'Chocolate';
+    } else if (quest.name.startsWith('【高難易度】')) {
+      return 'Maroon';
+    }
+    return null;
+  }
 
   Future<void> loadData() async {
     errors.clear();
@@ -125,20 +181,40 @@ class _MCQuestConverter extends McConverter {
         errors.add('Phase $phase 获取数据失败');
       } else {
         questPhases[phase] = questPhase;
-        cnQuestPhases[phase] = await AtlasApi.questPhase(quest.id, phase, region: Region.cn);
+        if (db.gameData.mappingData.warRelease.cn?.contains(quest.warId) == true) {
+          cnQuestPhases[phase] = await AtlasApi.questPhase(quest.id, phase, region: Region.cn);
+        }
       }
     }));
-    futures.add(AtlasApi.cacheManager.getJson('${AtlasApi.atlasApiHost}/raw/JP/quest/${quest.id}').then((value) {
-      if (value == null) {
-        errors.add('raw quest data 获取失败');
-      } else {
-        rawQuest = Map.from(value);
-      }
-    }));
+    futures.add(_loadRaw());
 
     await Future.wait(futures);
-    if (rawQuest == null) {}
     result = convert();
+  }
+
+  Future<void> _loadRaw() async {
+    final rawQuest = await AtlasApi.cacheManager.getJson('${AtlasApi.atlasApiHost}/raw/JP/quest/${quest.id}');
+    final int? bannerId = rawQuest['mstQuest']?['bannerId'];
+    await pickBannerColor(bannerId ?? 0);
+  }
+
+  Future<void> pickBannerColor(int bannerId) async {
+    print('bannerId=$bannerId');
+    if (bannerId <= 0) return;
+    final imgBytes = await CachedApi.cacheManager.get('${HostsX.atlasAssetHost}/JP/EventUI/quest_board_$bannerId.png');
+    if (imgBytes == null) return;
+    titleBanner = Uint8List.fromList(imgBytes);
+    final img = img_lib.decodePng(titleBanner!);
+    if (img == null) return;
+    final w = img.width, h = img.height;
+    final cropped = img_lib.copyCrop(img,
+        x: (0.35 * w).toInt(), y: (28 / 256 * h).toInt(), width: (0.4 * w).toInt(), height: (80 / 256 * h).toInt());
+    final r = Maths.sum(cropped.map((e) => e.r.toInt())) ~/ cropped.length;
+    final g = Maths.sum(cropped.map((e) => e.g.toInt())) ~/ cropped.length;
+    final b = Maths.sum(cropped.map((e) => e.b.toInt())) ~/ cropped.length;
+    bannerColor = Color.fromARGB(255, r, g, b);
+    print('bannerColor=$bannerColor');
+    cropTitleBanner = img_lib.encodePng(cropped);
   }
 
   String convert() {
@@ -150,18 +226,12 @@ class _MCQuestConverter extends McConverter {
     Set<int> exps = questPhases.values.map((e) => e.exp).toSet();
     Set<int> qps = questPhases.values.map((e) => e.qp).toSet();
     bool sameBond = allNoBattle;
-    String? titleBg = this.titleBg;
-    if (quest.warId == WarId.rankup || quest.type == QuestType.friendship) {
-      titleBg = 'Chocolate';
-    } else if (quest.name.startsWith('【高難易度】')) {
-      titleBg = 'Maroon';
-    }
     final buffer = StringBuffer("""===${nameCn ?? quest.name}===
 {{关卡配置
 |开放条件=
 |名称jp=${quest.name}
 |名称cn=${nameCn ?? ""}
-|标题背景颜色=${titleBg ?? ""}
+|标题背景颜色=${titleBg ?? getDefaultTitleBg() ?? bannerColor?.toCSSHex() ?? ""}
 """);
     final svt = db.gameData.servantsById.values.firstWhereOrNull((e) => e.relateQuestIds.contains(quest.id));
     if (svt != null) {
@@ -279,12 +349,19 @@ class _MCQuestConverter extends McConverter {
       final startEffect =
           const {1: 'BATTLE', 2: 'FATAL BATTLE', 3: 'GRAND BATTLE'}[stage.startEffectId] ?? 'Battle <!--特殊开场特效-->';
       buffer.writeln('|$stagePrefix=$startEffect');
-      final enemies = stage.enemies.where((e) => e.deck == DeckType.enemy).toList();
-      final shifts = stage.enemies.where((e) => e.deck == DeckType.shift).toList();
-      enemies.sort2((e) => e.deckId);
-      for (final enemy in enemies) {
+      final enemyDeck = stage.enemies.where((e) => e.deck == DeckType.enemy).toList();
+      final shiftDeck = stage.enemies.where((e) => e.deck == DeckType.shift).toList();
+      final callDeck = stage.enemies.where((e) => e.deck == DeckType.call).toList();
+      enemyDeck.sort2((e) => e.deckId);
+      for (final enemy in enemyDeck) {
         buffer.write('|$stagePrefix敌人${enemy.deckId}=');
-        buffer.writeln(buildEnemyWithShift(enemy, shifts));
+        buffer.writeln(buildEnemyWithShift(enemy, shiftDeck));
+      }
+      int callDeckIdStart = (Maths.max(enemyDeck.map((e) => e.deckId), 0) / 3).ceil() * 3;
+      callDeck.sort2((e) => e.deckId);
+      for (final enemy in callDeck) {
+        buffer.write('|$stagePrefix敌人${callDeckIdStart + enemy.deckId}=');
+        buffer.writeln(buildEnemyWithShift(enemy, shiftDeck));
       }
     }
     // drops
