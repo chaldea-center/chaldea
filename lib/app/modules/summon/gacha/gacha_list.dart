@@ -181,6 +181,16 @@ class _GachaListPageState extends State<GachaListPage>
             value: _selectedGachas.contains(gacha),
             onChanged: (v) {
               setState(() {
+                if (v != null && v && _selectedGachas.isEmpty && gacha.detailUrl.isNotEmpty) {
+                  final match = RegExp(r'(/.+/.+_)[a-z]$').firstMatch(gacha.detailUrl);
+                  if (match != null) {
+                    final prefix = match.group(1)!;
+                    final related = wholeData.where((e) =>
+                        (e.openedAt - gacha.openedAt).abs() < kSecsPerDay * 30 && e.detailUrl.startsWith(prefix));
+                    _selectedGachas.addAll(related);
+                    return;
+                  }
+                }
                 _selectedGachas.toggle(gacha);
               });
             },
@@ -267,6 +277,7 @@ class _GachaListPageState extends State<GachaListPage>
       child: ButtonBar(
         alignment: MainAxisAlignment.center,
         children: [
+          const SizedBox(width: kMinInteractiveDimension),
           ElevatedButton(
             onPressed: _selectedGachas.isEmpty
                 ? null
