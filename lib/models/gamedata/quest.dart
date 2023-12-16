@@ -336,6 +336,8 @@ class Quest with RouteInfo {
 
   bool get isLaplaceNeedAi => ConstData.laplaceUploadAllowAiQuests.contains(id);
 
+  bool get isNoBattle => flags.contains(QuestFlag.noBattle);
+
   List<String> get allScriptIds {
     return [for (final phase in phaseScripts) ...phase.scripts.map((e) => e.scriptId)];
   }
@@ -758,6 +760,7 @@ class Gift extends BaseGift {
 class Stage with DataScriptBase {
   int wave;
   Bgm? bgm;
+  int startEffectId;
 
   List<FieldAi> fieldAis;
   List<int> call;
@@ -776,6 +779,7 @@ class Stage with DataScriptBase {
   Stage({
     required this.wave,
     this.bgm,
+    this.startEffectId = 1,
     List<FieldAi>? fieldAis,
     List<int>? call,
     this.turn,

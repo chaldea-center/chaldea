@@ -6,10 +6,12 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/quest/quest_card.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../battle/teams/teams_query_page.dart';
 import '../common/filter_group.dart';
+import '../mc/mc_quest.dart';
 
 class QuestDetailPage extends StatefulWidget {
   final int? id;
@@ -125,7 +127,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
           PopupMenuButton<dynamic>(
             itemBuilder: (context) {
               String? mcLink;
-              if (_quest != null && _quest!.type == QuestType.friendship) {
+              if (_quest != null && (_quest!.type == QuestType.friendship || _quest!.warId == WarId.rankup)) {
                 final svt =
                     db.gameData.servantsById.values.firstWhereOrNull((e) => e.relateQuestIds.contains(_quest!.id));
                 mcLink = svt?.extra.mcLink;
@@ -164,6 +166,17 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                   onTap: _showFixRegionDialog,
                   child: Text(S.current.quest_prefer_region),
                 ),
+                if (region == Region.jp && Language.isZH) ...[
+                  const PopupMenuDivider(),
+                  PopupMenuItem(
+                    onTap: _quest == null
+                        ? null
+                        : () {
+                            router.pushPage(MCQuestEditPage(quest: _quest!));
+                          },
+                    child: const Text("导出至Mooncell"),
+                  ),
+                ],
               ];
             },
           )

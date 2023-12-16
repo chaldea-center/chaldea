@@ -358,6 +358,7 @@ Map<String, dynamic> _$GiftToJson(Gift instance) => <String, dynamic>{
 Stage _$StageFromJson(Map json) => Stage(
       wave: json['wave'] as int,
       bgm: json['bgm'] == null ? null : Bgm.fromJson(Map<String, dynamic>.from(json['bgm'] as Map)),
+      startEffectId: json['startEffectId'] as int? ?? 1,
       fieldAis: (json['fieldAis'] as List<dynamic>?)
           ?.map((e) => FieldAi.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
@@ -383,6 +384,7 @@ Stage _$StageFromJson(Map json) => Stage(
 Map<String, dynamic> _$StageToJson(Stage instance) => <String, dynamic>{
       'wave': instance.wave,
       'bgm': instance.bgm?.toJson(),
+      'startEffectId': instance.startEffectId,
       'fieldAis': instance.fieldAis.map((e) => e.toJson()).toList(),
       'call': instance.call,
       'turn': instance.turn,
