@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -511,6 +513,10 @@ class EventItemCalcParams {
     List<QuestBonusPlan>? bonusPlans,
   })  : itemCounts = itemCounts ?? {},
         bonusPlans = bonusPlans ?? [];
+
+  int getItemDemand(int itemId) {
+    return max(0, (itemCounts[itemId] ?? 0) - (db.curUser.items[itemId] ?? 0));
+  }
 
   factory EventItemCalcParams.fromJson(Map<String, dynamic> json) => _$EventItemCalcParamsFromJson(json);
 

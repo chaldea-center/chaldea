@@ -141,7 +141,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
       dense: true,
       leading: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 36),
       title: Text(Item.getName(itemId)),
-      subtitle: Text(((params.itemCounts[itemId] ?? 0) - (db.curUser.items[itemId] ?? 0)).toString()),
+      subtitle: Text(params.getItemDemand(itemId).toString()),
       trailing: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -290,7 +290,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     });
     EasyLoading.show();
 
-    final itemIds = params.itemCounts.keys.where((key) => params.itemCounts[key]! > 0).toList();
+    final itemIds = params.itemCounts.keys.where((key) => params.getItemDemand(key) > 0).toList();
     final plans = params.bonusPlans
         .where((plan) => plan.enabled && plan.drops.items.keys.any((itemId) => itemIds.contains(itemId)))
         .toList();
@@ -316,7 +316,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
         colNames: List.generate(plans.length, (index) => index),
         rowNames: itemIds,
         matA: matA,
-        bVec: itemIds.map((e) => params.itemCounts[e]!).toList(),
+        bVec: itemIds.map((e) => params.getItemDemand(e)).toList(),
         cVec: plans.map((e) => e.ap).toList(),
       );
       print([lpParams.rowNames, lpParams.bVec]);
