@@ -22,7 +22,7 @@ class _FavoriteTeamsPageState extends State<FavoriteTeamsPage> {
         .whereType<Quest>()
         .toList();
     quests.sortByList((e) => [
-          e.warId < 1000 ? -e.warId : -(e.war?.event?.startedAt ?? e.questEvent?.startedAt ?? e.openedAt),
+          e.warId < 1000 ? -e.warId : -(e.war?.event?.startedAt ?? e.event?.startedAt ?? e.openedAt),
           e.priority,
         ]);
     quests.sort((a, b) => Quest.compare(a, b, spotLayer: true));
@@ -56,8 +56,7 @@ class _FavoriteTeamsPageState extends State<FavoriteTeamsPage> {
         placeholder: (context, url) => const SizedBox(),
       ),
       title: Text('Lv.${quest.recommendLv} ${quest.lDispName}'),
-      subtitle:
-          Text(quest.war?.eventReal?.lName.l ?? quest.war?.lName.l ?? quest.questEvent?.lName.l ?? 'Unknown Event'),
+      subtitle: Text(quest.war?.eventReal?.lName.l ?? quest.war?.lName.l ?? quest.event?.lName.l ?? 'Unknown Event'),
       trailing: Text('${teamIds.length} ${S.current.team}'),
       onTap: () async {
         await router.pushPage(TeamsQueryPage(mode: TeamQueryMode.id, teamIds: teamIds));

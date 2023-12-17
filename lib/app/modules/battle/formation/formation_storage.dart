@@ -175,7 +175,7 @@ class _FormationEditorState extends State<FormationEditor> {
       questName.add(TextSpan(text: "Quest ${questInfo.id}/${questInfo.phase}"));
     } else {
       questName.add(TextSpan(text: quest.lDispName));
-      final eventName = quest.questEvent?.shownName ?? quest.war?.lShortName;
+      final eventName = quest.event?.shownName ?? quest.war?.lShortName;
       if (eventName != null) {
         questName.add(TextSpan(
           text: '\n${eventName.setMaxLines(1)}',

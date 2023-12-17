@@ -216,12 +216,17 @@ class Quest with RouteInfo {
 
   NiceSpot? get spot => db.gameData.spots[spotId];
   NiceWar? get war => db.gameData.wars[warId];
-  Event? get questEvent {
+  Event? get event {
     final _event = war?.eventReal;
     if (_event != null) return _event;
     for (final (eventId, questIds) in db.gameData.others.eventQuestGroups.items) {
       if (questIds.contains(id) && db.gameData.events.containsKey(eventId)) {
-        return db.gameData.events[eventId];
+        final _event = db.gameData.events[eventId]!;
+        if (_event.isAdvancedQuestEvent) {
+          return db.gameData.events.values.firstWhereOrNull((e) => e.isAdvancedQuestEvent && e.startedAt == openedAt) ??
+              _event;
+        }
+        return _event;
       }
     }
     return null;

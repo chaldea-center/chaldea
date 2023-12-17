@@ -358,7 +358,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       questName.add(TextSpan(text: "Quest ${record.questId}/${record.phase}"));
     } else {
       questName.add(TextSpan(text: quest.lDispName.setMaxLines(1)));
-      final eventName = quest.questEvent?.shownName ?? quest.war?.lShortName;
+      final eventName = quest.event?.shownName ?? quest.war?.lShortName;
       if (eventName != null) {
         questName.add(TextSpan(
           text: '\n${eventName.setMaxLines(1)}',

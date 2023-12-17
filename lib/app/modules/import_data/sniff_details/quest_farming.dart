@@ -150,7 +150,7 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
         placeholder: (_, __) => const SizedBox.shrink(),
       ),
       title: Text(info.quest.lDispName),
-      subtitle: Text((info.quest.questEvent?.shownName ??
+      subtitle: Text((info.quest.event?.shownName ??
               info.quest.war?.eventReal?.shownName ??
               info.quest.war?.lShortName ??
               "War ${info.quest.warId}")

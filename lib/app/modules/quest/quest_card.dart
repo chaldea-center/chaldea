@@ -119,19 +119,6 @@ class _QuestCardState extends State<QuestCard> {
       );
     }
 
-    String questName = quest.lNameWithChapter;
-
-    List<String> names = [questName, if (!Transl.isJP && quest.name != quest.lName.l && !widget.battleOnly) quest.name]
-        .map((e) => e.replaceAll('\n', ' '))
-        .toList();
-    String shownQuestName;
-    if (names.any((s) => s.charWidth > 16)) {
-      shownQuestName = names.join('\n');
-    } else {
-      shownQuestName = names.join('/');
-    }
-    String warName = Transl.warNames(quest.warLongName).l.replaceAll('\n', ' ');
-
     List<Widget> phaseWidgets = [];
     final Map<int, String?> displayPhases = widget.displayPhases ??
         {
@@ -162,65 +149,8 @@ class _QuestCardState extends State<QuestCard> {
       }
     }
 
-    final _questEvent = quest.questEvent;
-
     List<Widget> children = [
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(width: 36),
-          Expanded(
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: widget.battleOnly
-                        ? null
-                        : () {
-                            if (quest.warId == WarId.chaldeaGate && _questEvent != null) {
-                              _questEvent.routeTo();
-                              return;
-                            }
-                            quest.war?.routeTo();
-                          },
-                    child: AutoSizeText(
-                      {
-                        if (_questEvent != null) _questEvent.shownName.setMaxLines(1),
-                        warName,
-                      }.join('\n'),
-                      maxLines: 2,
-                      maxFontSize: 14,
-                      minFontSize: 6,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Text(
-                    shownQuestName,
-                    textScaler: const TextScaler.linear(0.9),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 36,
-            child: IconButton(
-              onPressed: () => setState(() => showTrueName = !showTrueName),
-              icon: Icon(
-                Icons.remove_red_eye_outlined,
-                color: showTrueName ? Theme.of(context).indicatorColor : null,
-              ),
-              tooltip: showTrueName ? 'Show Display Name' : 'Show True Name',
-              padding: EdgeInsets.zero,
-              iconSize: 20,
-            ),
-          )
-        ],
-      ),
+      _cardHeader(),
       ...phaseWidgets,
       if (!widget.battleOnly && (quest.gifts.isNotEmpty || quest.giftIcon != null)) _questRewards(),
       if (!widget.battleOnly && !widget.offline) releaseConditions(),
@@ -265,6 +195,82 @@ class _QuestCardState extends State<QuestCard> {
     return Text(
       text,
       style: const TextStyle(fontWeight: FontWeight.w600).merge(style),
+    );
+  }
+
+  Widget _cardHeader() {
+    String questName = quest.lNameWithChapter;
+
+    List<String> names = [questName, if (!Transl.isJP && quest.name != quest.lName.l && !widget.battleOnly) quest.name]
+        .map((e) => e.replaceAll('\n', ' '))
+        .toList();
+    String shownQuestName;
+    if (names.any((s) => s.charWidth > 16)) {
+      shownQuestName = names.join('\n');
+    } else {
+      shownQuestName = names.join('/');
+    }
+    String warName = Transl.warNames(quest.warLongName).l.replaceAll('\n', ' ');
+    final _event = quest.event;
+
+    List<Widget> headLines = [
+      if (_event != null)
+        InkWell(
+          onTap: widget.battleOnly ? null : _event.routeTo,
+          child: AutoSizeText(
+            _event.shownName.setMaxLines(1),
+            maxLines: 2,
+            maxFontSize: 14,
+            minFontSize: 6,
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
+      InkWell(
+        onTap: widget.battleOnly ? null : quest.war?.routeTo,
+        child: AutoSizeText(
+          warName,
+          maxLines: 2,
+          maxFontSize: 14,
+          minFontSize: 6,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
+      Text(
+        shownQuestName,
+        textScaler: const TextScaler.linear(0.9),
+        textAlign: TextAlign.center,
+      ),
+    ];
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const SizedBox(width: 36),
+        Expanded(
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: headLines,
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 36,
+          child: IconButton(
+            onPressed: () => setState(() => showTrueName = !showTrueName),
+            icon: Icon(
+              Icons.remove_red_eye_outlined,
+              color: showTrueName ? Theme.of(context).indicatorColor : null,
+            ),
+            tooltip: showTrueName ? 'Show Display Name' : 'Show True Name',
+            padding: EdgeInsets.zero,
+            iconSize: 20,
+          ),
+        )
+      ],
     );
   }
 
