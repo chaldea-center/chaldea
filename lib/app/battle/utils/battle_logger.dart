@@ -625,6 +625,7 @@ class BattleAttackRecord extends BattleRecord {
 
 class AttackResultDetail {
   final BattleServantData target;
+  final BattleServantData targetBefore;
   final DamageParameters damageParams;
   final AttackNpGainParameters attackNpParams;
   final DefendNpGainParameters defenseNpParams;
@@ -635,6 +636,7 @@ class AttackResultDetail {
 
   AttackResultDetail({
     required BattleServantData target,
+    required BattleServantData targetBefore,
     required DamageParameters damageParams,
     required AttackNpGainParameters attackNpParams,
     required DefendNpGainParameters defenseNpParams,
@@ -643,6 +645,7 @@ class AttackResultDetail {
     required DamageResult? minResult,
     required DamageResult? maxResult,
   })  : target = target.copy(),
+        targetBefore = targetBefore.copy(),
         damageParams = damageParams.copy(),
         attackNpParams = attackNpParams.copy(),
         defenseNpParams = defenseNpParams.copy(),
@@ -654,6 +657,7 @@ class AttackResultDetail {
   AttackResultDetail copy() {
     return AttackResultDetail(
       target: target,
+      targetBefore: targetBefore,
       damageParams: damageParams,
       attackNpParams: attackNpParams,
       defenseNpParams: defenseNpParams,

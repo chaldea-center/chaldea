@@ -1047,7 +1047,8 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
 
   Widget buildDefender(BuildContext context, AttackResultDetail detail) {
     final result = detail.result;
-    final baseInfo = AttackBaseInfo(actor: record.attacker, target: detail.target, card: record.card);
+    final baseInfo = AttackBaseInfo(
+        actor: record.attacker, target: detail.target, targetBefore: detail.targetBefore, card: record.card);
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1192,10 +1193,12 @@ extension BattleSvtDataUI on BattleServantData {
 class AttackBaseInfo {
   final BattleServantData? actor;
   final BattleServantData target;
+  final BattleServantData? targetBefore;
   final CommandCardData? card;
   AttackBaseInfo({
     required this.actor,
     required this.target,
+    this.targetBefore,
     required this.card,
   });
 }
@@ -1210,16 +1213,15 @@ mixin _ParamDialogMixin {
         child: Text.rich(TextSpan(
           children: [
             if (info.actor != null) CenterWidgetSpan(child: info.actor!.iconBuilder(context: context, width: 24)),
-            const TextSpan(text: 'vs.'),
-            CenterWidgetSpan(child: info.target.iconBuilder(context: context, width: 24)),
             if (card != null) ...[
-              const TextSpan(text: '  '),
               CenterWidgetSpan(child: CommandCardWidget(card: card.cardType, width: 28)),
               if (card.isTD) TextSpan(text: '${S.current.np_short} Lv${info.actor?.tdLv} OC${card.oc}'),
               if (card.critical) TextSpan(text: S.current.critical_attack),
             ],
+            const TextSpan(text: ' vs. ', style: TextStyle(fontStyle: FontStyle.italic)),
+            CenterWidgetSpan(child: info.target.iconBuilder(context: context, width: 24)),
           ],
-          style: const TextStyle(fontSize: 14),
+          style: const TextStyle(fontSize: 12),
         )),
       ),
     );
@@ -1241,7 +1243,8 @@ mixin _ParamDialogMixin {
     );
   }
 
-  Widget listValueWithOverkill(List<int> values, List<bool> overskills, String Function(int v) format) {
+  Widget listValueWithOverkill(List<int> values, List<bool> overskills, String Function(int v) format,
+      {List<bool>? npLimitedStates}) {
     const style = TextStyle(fontSize: 13);
     return Padding(
       padding: const EdgeInsets.only(top: 2, bottom: 4),
@@ -1251,12 +1254,36 @@ mixin _ParamDialogMixin {
           alignment: WrapAlignment.end,
           children: divideList(
             List.generate(values.length, (index) {
-              final value = values[index], ok = overskills.getOrNull(index);
+              final value = values[index],
+                  ok = overskills.getOrNull(index),
+                  npLimited = npLimitedStates?.getOrNull(index);
               assert(ok != null, [values, overskills]);
-              return Text(
-                format(value),
-                style: style.merge(ok == true ? TextStyle(color: Colors.yellow.shade900) : null),
-              );
+
+              List<InlineSpan> tooltips = [
+                if (ok == true) TextSpan(text: "Overkill", style: TextStyle(color: Colors.yellow.shade900)),
+                if (npLimited == true)
+                  const TextSpan(text: "Max NP Limited", style: TextStyle(decoration: TextDecoration.underline)),
+              ];
+
+              final text = format(value);
+              final textStyle = style.merge(TextStyle(
+                color: ok == true ? Colors.yellow.shade900 : null,
+                decoration: npLimited == true ? TextDecoration.underline : null,
+              ));
+
+              Widget child = Text(text, style: textStyle);
+              if (tooltips.isNotEmpty) {
+                child = Tooltip(
+                  richMessage: TextSpan(children: [
+                    TextSpan(text: text, style: textStyle),
+                    const TextSpan(text: ': '),
+                    ...divideList(tooltips, const TextSpan(text: ', ')),
+                  ]),
+                  child: child,
+                );
+              }
+
+              return child;
             }),
             const Text(',', style: style),
           ),
@@ -1378,6 +1405,7 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
           oneParam('', '(${minResult!.totalDamage}~${maxResult!.totalDamage})'),
         if (result.damages.any((e) => e > 0))
           listValueWithOverkill(result.damages, result.overkillStates, (v) => v.toString()),
+        if (info.targetBefore != null) oneParam('HP', '${info.targetBefore!.hp} → ${info.target.hp}'),
         oneParam(S.current.battle_random, random.toStringAsFixed(3)),
         oneParam('ATK', params.attack.toString()),
         oneParam(S.current.class_attack_rate, classAttackCorrection.format(precision: 3)),
@@ -1435,7 +1463,12 @@ class AttackerNpParamDialog extends StatelessWidget with _ParamDialogMixin {
         if (minResult != null && maxResult != null)
           oneParam('', '(${minResult!.totalNpGains / 100}~${maxResult!.totalNpGains / 100})'),
         if (result.npGains.any((e) => e > 0))
-          listValueWithOverkill(result.npGains, result.overkillStates, (v) => (v / 100).format(precision: 2)),
+          listValueWithOverkill(
+            result.npGains,
+            result.overkillStates,
+            (v) => (v / 100).format(precision: 2),
+            npLimitedStates: result.npMaxLimited,
+          ),
         oneParam(S.current.attack_np_rate, attackerNpCharge.format(percent: true, precision: 2)),
         oneParam(S.current.np_gain_mod, defenderNpRate.format(precision: 3)),
         if (params.cardAttackNpRate != 1000)
@@ -1475,7 +1508,12 @@ class DefenseNpParamDialog extends StatelessWidget with _ParamDialogMixin {
         if (minResult != null && maxResult != null)
           oneParam('', '(${minResult!.totalDefNpGains / 100}~${maxResult!.totalDefNpGains / 100})'),
         if (result.defNpGains.any((e) => e > 0))
-          listValueWithOverkill(result.defNpGains, result.overkillStates, (v) => (v / 100).format(precision: 2)),
+          listValueWithOverkill(
+            result.defNpGains,
+            result.overkillStates,
+            (v) => (v / 100).format(precision: 2),
+            npLimitedStates: result.defNpMaxLimited,
+          ),
         oneParam(S.current.defense_np_rate, defenderNpGainRate.format(precision: 2)),
         oneParam(S.current.attack_np_rate, attackerNpRate.format(precision: 3)),
         if (params.cardDefNpRate != 1000)

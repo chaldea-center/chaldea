@@ -574,14 +574,16 @@ class BattleServantData {
     npLineCount = npLineCount.clamp(0, niceEnemy!.chargeTurn);
   }
 
-  void changeNP(final int change) {
+  void changeNP(final int change, {Ref<bool>? maxLimited}) {
     if (!isPlayer || playerSvtData?.td == null) {
       return;
     }
 
     np += change;
 
-    np = np.clamp(0, getNPCap(playerSvtData!.tdLv));
+    final maxNp = getNPCap(playerSvtData!.tdLv);
+    maxLimited?.value = np > maxNp;
+    np = np.clamp(0, maxNp);
     if (change > 0 && np >= npPityThreshold) {
       np = max(np, ConstData.constants.fullTdPoint);
     }

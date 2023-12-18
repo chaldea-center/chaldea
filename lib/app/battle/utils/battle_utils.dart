@@ -450,7 +450,9 @@ class DamageResult {
   List<int> cardHits = [];
   List<int> damages = [];
   List<int> npGains = [];
+  List<bool> npMaxLimited = [];
   List<int> defNpGains = [];
+  List<bool> defNpMaxLimited = [];
   List<int> stars = [];
   List<bool> overkillStates = [];
 
@@ -465,7 +467,9 @@ class DamageResult {
       ..stars = stars.toList()
       ..damages = damages.toList()
       ..npGains = npGains.toList()
+      ..npMaxLimited = npMaxLimited.toList()
       ..defNpGains = defNpGains.toList()
+      ..defNpMaxLimited = defNpMaxLimited.toList()
       ..cardHits = cardHits.toList()
       ..overkillStates = overkillStates.toList();
   }

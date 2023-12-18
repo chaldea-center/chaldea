@@ -51,6 +51,7 @@ class Damage {
     final checkHpRatio = checkHpRatioHigh || checkHpRatioLow;
     for (final target in targets) {
       await battleData.withTarget(target, () async {
+        final targetBefore = target.copy();
         if (shouldTrigger) {
           await activator.activateBuffOnAction(battleData, BuffAction.functionCommandcodeattackBefore);
           await activator.activateBuffOnActions(battleData, [
@@ -288,6 +289,7 @@ class Damage {
 
         targetResults.add(AttackResultDetail(
           target: target,
+          targetBefore: targetBefore,
           damageParams: damageParameters,
           attackNpParams: atkNpParameters,
           starParams: starParameters,
@@ -374,8 +376,10 @@ class Damage {
         starParameters.isOverkill = isOverkill;
         final hitNpGain = calculateAttackNpGain(atkNpParameters);
         final previousNP = activator.np;
-        activator.changeNP(hitNpGain);
+        final maxLimited = Ref<bool>(false);
+        activator.changeNP(hitNpGain, maxLimited: maxLimited);
         result.npGains.add(activator.np - previousNP);
+        result.npMaxLimited.add(maxLimited.value);
 
         final hitStar = calculateStar(starParameters);
         result.stars.add(hitStar);
@@ -386,8 +390,10 @@ class Damage {
         final hitNpGain = calculateDefendNpGain(defNpParameters);
 
         final previousNP = target.np;
-        target.changeNP(hitNpGain);
+        final maxLimited = Ref<bool>(false);
+        target.changeNP(hitNpGain, maxLimited: maxLimited);
         result.defNpGains.add(target.np - previousNP);
+        result.defNpMaxLimited.add(maxLimited.value);
       }
     }
     target.addAccumulationDamage(totalDamage - remainingDamage);
