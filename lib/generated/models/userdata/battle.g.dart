@@ -122,6 +122,7 @@ BattleShareData _$BattleShareDataFromJson(Map json) => $checkedCreate(
               (v) => (v as List<dynamic>?)
                   ?.map((e) => BattleRecordData.fromJson(Map<String, dynamic>.from(e as Map)))
                   .toList()),
+          isCritTeam: $checkedConvert('isCritTeam', (v) => v as bool? ?? false),
         );
         return val;
       },
@@ -144,6 +145,7 @@ Map<String, dynamic> _$BattleShareDataToJson(BattleShareData instance) {
   val['team'] = instance.formation.toJson();
   writeNotNull('delegate', instance.delegate?.toJson());
   val['actions'] = instance.actions.map((e) => e.toJson()).toList();
+  val['isCritTeam'] = instance.isCritTeam;
   return val;
 }
 

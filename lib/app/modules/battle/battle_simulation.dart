@@ -16,11 +16,39 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../descriptors/skill_descriptor.dart';
 import '../quest/quest.dart';
+import 'formation/formation_storage.dart';
 import 'simulation/battle_log.dart';
 import 'simulation/combat_action_selector.dart';
 import 'simulation/custom_skill_activator.dart';
 import 'simulation/recorder.dart';
 import 'simulation/svt_detail.dart';
+
+class _BattleRuntime {
+  BattleData battleData;
+  Region? region;
+  BattleOptions originalOptions;
+  QuestPhase originalQuest;
+
+  _BattleRuntime({
+    required this.battleData,
+    required this.region,
+    required this.originalOptions,
+    required this.originalQuest,
+  });
+
+  BattleShareData getShareData({bool allowNotWin = false, bool isCritTeam = false}) {
+    assert(battleData.isBattleWin || allowNotWin);
+    return BattleShareData(
+      appBuild: AppInfo.buildNumber,
+      quest: BattleQuestInfo.quest(originalQuest),
+      formation: originalOptions.formation.toFormationData(),
+      delegate: battleData.replayDataRecord.copy(),
+      actions: battleData.recorder.toUploadRecords(),
+      options: originalOptions.toShareData(),
+      isCritTeam: isCritTeam,
+    );
+  }
+}
 
 class BattleSimulationPage extends StatefulWidget {
   final QuestPhase questPhase;
@@ -43,34 +71,26 @@ class BattleSimulationPage extends StatefulWidget {
 }
 
 class _BattleSimulationPageState extends State<BattleSimulationPage> {
-  final BattleData battleData = BattleData();
-
-  QuestPhase get questPhase => widget.questPhase;
-
+  late final _BattleRuntime runtime = _BattleRuntime(
+    battleData: BattleData(),
+    region: widget.region,
+    originalOptions: widget.options.copy(),
+    originalQuest: widget.questPhase,
+  );
+  BattleData get battleData => runtime.battleData;
+  QuestPhase get questPhase => runtime.originalQuest;
   BattleOptionsRuntime get options => battleData.options;
-
-  BattleShareData getShareData({bool allowNotWin = false}) {
-    assert(battleData.isBattleWin || allowNotWin);
-    return BattleShareData(
-      appBuild: AppInfo.buildNumber,
-      quest: BattleQuestInfo.quest(questPhase),
-      formation: widget.options.formation.toFormationData(),
-      delegate: battleData.replayDataRecord.copy(),
-      actions: battleData.recorder.toUploadRecords(),
-      options: widget.options.toShareData(),
-    );
-  }
 
   @override
   void initState() {
     super.initState();
 
     battleData
-      ..options = widget.options.copy()
+      ..options = runtime.originalOptions.copy()
       ..context = context;
     battleData.options.manualAllySkillTarget = db.settings.battleSim.manualAllySkillTarget;
 
-    battleData.recorder.determineUploadEligibility(questPhase, widget.options);
+    battleData.recorder.determineUploadEligibility(questPhase, runtime.originalOptions);
 
     _initBattle();
   }
@@ -81,8 +101,11 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       action: 'battle_init',
       task: () => battleData.init(
         questPhase,
-        [...widget.options.formation.onFieldSvtDataList, ...widget.options.formation.backupSvtDataList],
-        widget.options.formation.mysticCodeData,
+        [
+          ...runtime.originalOptions.formation.onFieldSvtDataList,
+          ...runtime.originalOptions.formation.backupSvtDataList
+        ],
+        runtime.originalOptions.formation.mysticCodeData,
       ),
     );
 
@@ -224,13 +247,13 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         PopupMenuItem(
           child: const Text('Share Data json'),
           onTap: () {
-            copyToClipboard(jsonEncode(getShareData(allowNotWin: true)));
+            copyToClipboard(jsonEncode(runtime.getShareData(allowNotWin: true)));
           },
         ),
         PopupMenuItem(
           child: const Text('Share Data gzip'),
           onTap: () {
-            copyToClipboard(getShareData(allowNotWin: true).toDataV2());
+            copyToClipboard(runtime.getShareData(allowNotWin: true).toDataV2());
           },
         ),
       ],
@@ -329,8 +352,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           child: BattleRecorderPanel(
             battleData: battleData,
             quest: questPhase,
-            team: widget.options.formation,
-            options: widget.options,
+            team: runtime.originalOptions.formation,
+            options: runtime.originalOptions,
             initShowTeam: widget.replayActions != null,
             initShowQuest: widget.replayActions != null,
           ),
@@ -667,7 +690,11 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           FilledButton(
-            onPressed: () => showDialog(context: context, useRootNavigator: false, builder: _buildUploadDialog),
+            onPressed: () => showDialog(
+              context: context,
+              useRootNavigator: false,
+              builder: (context) => _TeamUploadDialog(runtime),
+            ),
             child: Text(S.current.upload),
           ),
           const SizedBox(height: 4),
@@ -677,107 +704,6 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     } else {
       return normalButtons;
     }
-  }
-
-  Widget _buildUploadDialog(BuildContext context) {
-    bool canUpload = false;
-    String content;
-    final reasons = battleData.recorder.illegalReasons.toSet();
-    reasons.addAll(battleData.recorder.checkExtraIllegalReason(battleData.replayDataRecord));
-
-    if (widget.region != null && widget.region != Region.jp) {
-      content = 'Only JP quest supports team sharing. (current: ${widget.region!.localName})';
-    } else if (!db.settings.secrets.isLoggedIn) {
-      content = S.current.login_first_hint;
-    } else if (reasons.isNotEmpty) {
-      content = S.current.upload_not_eligible_hint;
-      for (final reason in battleData.recorder.illegalReasons) {
-        content += '\n- $reason';
-      }
-    } else if (db.runtimeData.secondsRemainUtilNextUpload > 0) {
-      content =
-          S.current.upload_paused(db.runtimeData.secondsBetweenUpload, db.runtimeData.secondsRemainUtilNextUpload);
-    } else if (!questPhase.isLaplaceSharable) {
-      content = S.current.quest_disallow_laplace_share_hint;
-    } else {
-      // okay
-      canUpload = true;
-      bool hasMultiDamageFunc = false;
-      int attackCards = 0;
-      int totalAttackCards = 0;
-      for (final record in battleData.recorder.records) {
-        if (record is BattleAttacksInitiationRecord) {
-          totalAttackCards += record.attacks.where((e) => e.cardData.cardType != CardType.extra).length;
-        } else if (record is BattleAttackRecord) {
-          if ((record.card?.td?.dmgNpFuncCount ?? 0) > 1) {
-            hasMultiDamageFunc = true;
-          }
-          if (record.card?.cardType != CardType.extra) {
-            attackCards += 1;
-          }
-        }
-      }
-
-      content = '';
-      if (totalAttackCards > attackCards) {
-        content += '${S.current.card_not_attack_warning(totalAttackCards - attackCards, totalAttackCards)}\n\n';
-      }
-      if (hasMultiDamageFunc) {
-        content = '${S.current.laplace_upload_td_multi_dmg_func_hint}\n\n';
-      }
-
-      List<String> unreleasedSvts = [];
-      for (final svtData in widget.options.formation.allSvts) {
-        final svt = svtData.svt;
-        if (svt == null) continue;
-        final releasedAt = svt.extra.getReleasedAt();
-        if (questPhase.closedAt < releasedAt && releasedAt > 0) {
-          unreleasedSvts.add(svt.lName.l);
-        }
-      }
-      if (unreleasedSvts.isNotEmpty) {
-        content += '${kStarChar2 * 3} ${S.current.svt_not_release_hint}:\n${unreleasedSvts.join(" / ")}\n\n';
-      }
-
-      content += S.current.upload_team_confirmation;
-    }
-    content += '\n\n${S.current.save}: ${S.current.team_local}; '
-        '${S.current.upload}: ${S.current.team_shared}';
-
-    final teamData = getShareData();
-
-    return SimpleCancelOkDialog(
-      scrollable: true,
-      title: Text(S.current.upload),
-      content: Text(content, style: const TextStyle(fontSize: 14)),
-      hideOk: !canUpload,
-      confirmText: S.current.upload,
-      onTapOk: () async {
-        final insertedId = await showEasyLoading(() => ChaldeaWorkerApi.teamUpload(data: teamData));
-        if (insertedId == null) return;
-        db.runtimeData.lastUpload = DateTime.now().timestamp;
-        ChaldeaWorkerApi.clearTeamCache();
-        if (mounted) {
-          SimpleCancelOkDialog(
-            title: Text(S.current.success),
-            content: Text("ID: $insertedId"),
-            hideCancel: true,
-          ).showDialog(this.context);
-        }
-      },
-      actions: [
-        if (canUpload)
-          TextButton(
-            onPressed: () {
-              db.curUser.battleSim.teams.add(teamData);
-              Navigator.pop(context);
-              EasyLoading.showSuccess(
-                  '${S.current.saved}: ${S.current.team_local} ${db.curUser.battleSim.teams.length}');
-            },
-            child: Text(S.current.save),
-          )
-      ],
-    );
   }
 
   Widget buildSkillInfo({
@@ -899,5 +825,190 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         );
       },
     );
+  }
+}
+
+class _TeamUploadDialog extends StatefulWidget {
+  final _BattleRuntime runtime;
+  const _TeamUploadDialog(this.runtime);
+
+  @override
+  State<_TeamUploadDialog> createState() => _TeamUploadDialogState();
+}
+
+class _TeamUploadDialogState extends State<_TeamUploadDialog> {
+  late final runtime = widget.runtime;
+  late final battleData = widget.runtime.battleData;
+  late final questPhase = runtime.originalQuest;
+
+  static const int kMaxAttack = 5;
+  bool isCritTeam = false;
+
+  List<String> getErrors() {
+    final region = runtime.region;
+    List<String> errors = [
+      if (region != null && region != Region.jp) 'Only JP quest supports team sharing. (current: ${region.localName})',
+      if (!runtime.originalQuest.isLaplaceSharable) S.current.quest_disallow_laplace_share_hint,
+    ];
+
+    final reasons = battleData.recorder.illegalReasons.toSet();
+    reasons.addAll(battleData.recorder.checkExtraIllegalReason(battleData.replayDataRecord));
+    errors.addAll(reasons);
+    return errors;
+  }
+
+  List<String> getWarnings() {
+    final records = battleData.recorder.records;
+
+    final multiDmgFuncSvts = records
+        .whereType<BattleAttackRecord>()
+        .where((e) => (e.card?.td?.dmgNpFuncCount ?? 0) > 1)
+        .map((e) => e.attacker.lBattleName)
+        .toSet();
+    List<String> warnings = [
+      if (multiDmgFuncSvts.isNotEmpty)
+        '${S.current.laplace_upload_td_multi_dmg_func_hint}: ${multiDmgFuncSvts.join(" / ")}',
+    ];
+
+    List<String> unreleasedSvts = [];
+    for (final svtData in runtime.originalOptions.formation.allSvts) {
+      final svt = svtData.svt;
+      if (svt == null) continue;
+      final releasedAt = svt.extra.getReleasedAt();
+      if (questPhase.closedAt < releasedAt && releasedAt > 0) {
+        unreleasedSvts.add(svt.lName.l);
+      }
+    }
+    if (unreleasedSvts.isNotEmpty) {
+      warnings.add(
+          '$kStarChar2 ${S.current.svt_not_release_hint} $kStarChar2:\n   $kStarChar2 ${unreleasedSvts.join(" / ")}');
+    }
+    return warnings;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const divider = Divider(height: 16);
+    List<Widget> children = [];
+    final errors = getErrors();
+    if (errors.isNotEmpty) {
+      children.addAll([
+        Text(S.current.upload_not_eligible_hint),
+        Text(errors.map((e) => '- $e').join('\n')),
+      ]);
+      return buildDialog(children: children, canSave: false, canUpload: false);
+    }
+
+    // check attacks
+    int totalCards = 0, totalNormalCards = 0, attackedCards = 0;
+    for (final record in battleData.recorder.records) {
+      if (record is BattleAttacksInitiationRecord) {
+        final selectedCards = record.attacks.where((e) => e.cardData.cardType != CardType.extra).toList();
+        totalCards += selectedCards.length;
+        totalNormalCards += selectedCards.where((e) => !e.cardData.isTD).length;
+      } else if (record is BattleAttackRecord) {
+        if (record.card?.cardType != CardType.extra) {
+          attackedCards += 1;
+        }
+      }
+    }
+    final warnings = <String>[
+      if (totalCards > attackedCards) S.current.card_not_attack_warning(totalCards - attackedCards, totalCards),
+      ...getWarnings(),
+    ];
+
+    bool tooManyNormalCards = totalNormalCards > kMaxAttack;
+    final bool canUpload = !tooManyNormalCards || isCritTeam;
+    if (tooManyNormalCards) {
+      children.addAll([
+        Text(S.current.upload_team_critical_team_warning),
+        CheckboxListTile(
+          dense: true,
+          contentPadding: EdgeInsets.zero,
+          value: isCritTeam,
+          title: Text('${S.current.critical_team} ($totalNormalCards ${S.current.normal_attack})'),
+          onChanged: (v) {
+            setState(() {
+              isCritTeam = v ?? isCritTeam;
+            });
+          },
+        ),
+        divider,
+      ]);
+    }
+
+    if (warnings.isNotEmpty) {
+      children.addAll([
+        Text(S.current.warning, style: const TextStyle(fontWeight: FontWeight.bold)),
+        Text(warnings.map((e) => '- $e').join('\n')),
+        divider,
+      ]);
+    }
+
+    children.add(Text(S.current.upload_team_confirmation, style: Theme.of(context).textTheme.bodySmall));
+
+    return buildDialog(children: children, canSave: true, canUpload: canUpload);
+  }
+
+  Widget buildDialog({required List<Widget> children, required bool canSave, required bool canUpload}) {
+    return SimpleCancelOkDialog(
+      scrollable: true,
+      title: Text(S.current.upload),
+      content: DefaultTextStyle.merge(
+        style: const TextStyle(fontSize: 14),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: children,
+        ),
+      ),
+      hideOk: true,
+      actions: [
+        TextButton(
+          onPressed: canSave ? doSave : null,
+          child: Text(S.current.save),
+        ),
+        TextButton(
+          onPressed: canUpload
+              ? () async {
+                  EasyThrottle.throttleAsync('upload-team', doUpload);
+                }
+              : null,
+          child: Text(S.current.upload),
+        ),
+      ],
+    );
+  }
+
+  void doSave() {
+    final teamData = runtime.getShareData(isCritTeam: isCritTeam);
+    Navigator.pop(context);
+    router.pushPage(FormationEditor(teamToSave: teamData));
+  }
+
+  Future<void> doUpload() async {
+    if (!db.settings.secrets.isLoggedIn) {
+      EasyLoading.showError(S.current.login_first_hint);
+      return;
+    }
+    if (db.runtimeData.secondsRemainUtilNextUpload > 0) {
+      EasyLoading.showError(
+          S.current.upload_paused(db.runtimeData.secondsBetweenUpload, db.runtimeData.secondsRemainUtilNextUpload));
+      return;
+    }
+
+    final teamData = runtime.getShareData(isCritTeam: isCritTeam);
+    final insertedId = await showEasyLoading(() => ChaldeaWorkerApi.teamUpload(data: teamData));
+    if (insertedId == null) return;
+    db.runtimeData.lastUpload = DateTime.now().timestamp;
+    ChaldeaWorkerApi.clearTeamCache();
+    if (mounted) {
+      Navigator.pop(context);
+      SimpleCancelOkDialog(
+        title: Text(S.current.success),
+        content: Text("ID: $insertedId"),
+        hideCancel: true,
+      ).showDialog(context);
+    }
   }
 }

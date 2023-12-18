@@ -22,7 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m13(actorName) => "需要${actorName}在场";
 
-  static String m14(count, total) => "注意：${total}张指令卡中有${count}张未攻击，请尽量减少不必要的指令卡";
+  static String m14(count, total) => "${total}张指令卡中有${count}张未攻击，请减少不必要的指令卡";
 
   static String m0(url) => "Chaldea——一款跨平台的Fate/GO素材规划客户端，支持游戏信息浏览、从者练度/活动/素材规划、周常规划、抽卡模拟器等功能。\n\n详情请见: \n${url}\n";
 
@@ -275,6 +275,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "crit_star_mod": MessageLookupByLibrary.simpleMessage("暴击星补正"),
         "critical_attack": MessageLookupByLibrary.simpleMessage("暴击"),
         "critical_star": MessageLookupByLibrary.simpleMessage("暴击星"),
+        "critical_team": MessageLookupByLibrary.simpleMessage("暴击队"),
         "cur_account": MessageLookupByLibrary.simpleMessage("当前账号"),
         "current_": MessageLookupByLibrary.simpleMessage("当前"),
         "current_version": MessageLookupByLibrary.simpleMessage("当前版本"),
@@ -613,7 +614,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("注意本关卡有多种版本的敌人配置，查找队伍或模拟时需注意切换到对应版本:\n点击详情-选取版本-点击计算器按钮。"),
         "laplace_my_teams": MessageLookupByLibrary.simpleMessage("我的队伍"),
         "laplace_upload_td_multi_dmg_func_hint":
-            MessageLookupByLibrary.simpleMessage("部分从者存在多段宝具(陈宫/阿拉什等)，请检查最小和最大随机数对NP回收等的影响，确保均能通关。"),
+            MessageLookupByLibrary.simpleMessage("以下从者宝具存在多段攻击，请检查最小和最大随机数对NP回收等的影响，确保均能通关"),
         "level": MessageLookupByLibrary.simpleMessage("等级"),
         "limited_event": MessageLookupByLibrary.simpleMessage("限时活动"),
         "limited_time": MessageLookupByLibrary.simpleMessage("限时"),
@@ -951,7 +952,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_fav_btn_show_all": MessageLookupByLibrary.simpleMessage("显示全部"),
         "svt_fav_btn_show_favorite": MessageLookupByLibrary.simpleMessage("显示已关注"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("未关注"),
-        "svt_not_release_hint": MessageLookupByLibrary.simpleMessage("以下从者可能在关卡开放时未实装"),
+        "svt_not_release_hint": MessageLookupByLibrary.simpleMessage("以下从者可能未实装"),
         "svt_option_edit_tips": MessageLookupByLibrary.simpleMessage(
             "1.队伍中从者的等级等信息自导入后与规划信息独立，如需再次同步请使用右上角下拉菜单中的重新读取配置\n2.技能、宝具强化状态可通过下方选项手动设定\n3.自定义效果/buff可在下方手动添加\n4.从者和礼装可在详情页菜单里进行置顶"),
         "svt_option_resync": MessageLookupByLibrary.simpleMessage("重新读取配置"),
@@ -1029,10 +1030,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_and_close_app": MessageLookupByLibrary.simpleMessage("上传并关闭"),
         "upload_and_close_app_alert": MessageLookupByLibrary.simpleMessage("是否上传数据再关闭应用?"),
         "upload_before_close_app": MessageLookupByLibrary.simpleMessage("关闭app前上传"),
-        "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage("由于使用过以下任意功能，当前队伍不满足上传条件:"),
+        "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage("当前队伍不满足上传条件:"),
         "upload_paused": m30,
-        "upload_team_confirmation": MessageLookupByLibrary.simpleMessage(
-            "确认上传当前的队伍?\n\n注意事项：(为了方便其他玩家检索)\n- 请勿上传关卡开放时未实装的从者!!!\n- 请尽量降低队伍配置(不必要的圣杯、被动技能、宝具等级、未使用的后备从者等)以供他人参考。\n- 上传的队伍可能因后续版本数据格式更新/不兼容等原因被移除。"),
+        "upload_team_confirmation":
+            MessageLookupByLibrary.simpleMessage("确认上传当前的队伍?\n\n注意事项：\n- 请尽量降低队伍配置(不必要的圣杯、被动技能、宝具等级、未使用的后备从者等)以供他人参考。"),
+        "upload_team_critical_team_warning": MessageLookupByLibrary.simpleMessage("普通指令卡过多，请减少不必要出卡。若确实为暴击队请勾选:"),
         "usage": MessageLookupByLibrary.simpleMessage("使用方法"),
         "userdata": MessageLookupByLibrary.simpleMessage("用户数据"),
         "userdata_download_backup": MessageLookupByLibrary.simpleMessage("下载备份"),

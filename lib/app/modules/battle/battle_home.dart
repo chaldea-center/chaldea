@@ -125,7 +125,7 @@ class BattleHomePage extends StatelessWidget {
                   onSubmit: (value) {
                     router.push(
                       url: Routes.laplaceManageTeam,
-                      child: TeamsQueryPage(mode: TeamQueryMode.user, userId: value),
+                      child: TeamsQueryPage(mode: TeamQueryMode.user, username: value),
                     );
                   },
                 ).showDialog(context);

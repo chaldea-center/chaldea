@@ -11,6 +11,7 @@ class _EasyDebounceOperation {
   _EasyDebounceOperation(this.callback, this.timer);
 }
 
+/// run task at the end
 class EasyDebounce {
   static final Map<String, _EasyDebounceOperation> _operations = {};
 
@@ -55,6 +56,7 @@ class EasyDebounce {
   }
 }
 
+/// run task instantly
 class EasyThrottle {
   EasyThrottle._();
   static final Map<String, DateTime> _operations = {};
@@ -68,6 +70,19 @@ class EasyThrottle {
     } else {
       _operations.remove(tag);
     }
+  }
+
+  static final Map<String, Completer> _tasks = {};
+
+  static Future<T> throttleAsync<T>(String tag, Future<T> Function() onExecute) {
+    Completer<T>? completer = _tasks[tag] as Completer<T>?;
+    if (completer != null && !completer.isCompleted) {
+      return completer.future;
+    }
+    completer = Completer<T>();
+    _tasks[tag] = completer;
+    onExecute().then((value) => completer!.complete(value), onError: completer.completeError);
+    return completer.future;
   }
 
   static void cancel(String tag) {

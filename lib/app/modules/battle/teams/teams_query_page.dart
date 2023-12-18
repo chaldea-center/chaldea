@@ -25,11 +25,19 @@ class TeamsQueryPage extends StatefulWidget {
   final Quest? quest;
   final BattleQuestInfo? phaseInfo;
   final List<int>? teamIds;
-  final String? userId; // name or id
+  final int? userId; // name or id
+  final String? username; // name or id
   final ValueChanged<BattleShareData>? onSelect;
 
   const TeamsQueryPage(
-      {super.key, required this.mode, this.quest, this.phaseInfo, this.teamIds, this.userId, this.onSelect});
+      {super.key,
+      required this.mode,
+      this.quest,
+      this.phaseInfo,
+      this.teamIds,
+      this.userId,
+      this.username,
+      this.onSelect});
 
   @override
   State<TeamsQueryPage> createState() => _TeamsQueryPageState();
@@ -62,7 +70,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   }
 
   PreferredSizeWidget? get appBar {
-    final username = widget.userId ?? secrets.user?.name ?? "Not Login";
+    final username = widget.username ?? widget.userId ?? secrets.user?.name ?? "Not Login";
     return AppBar(
       title: Text.rich(TextSpan(
         children: [
@@ -246,7 +254,8 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
                       onTap: () {
                         router.push(
                           url: Routes.laplaceManageTeam,
-                          child: TeamsQueryPage(mode: TeamQueryMode.user, userId: record.userId.toString()),
+                          child: TeamsQueryPage(
+                              mode: TeamQueryMode.user, userId: record.userId, username: record.username),
                         );
                       },
                     ),
@@ -257,6 +266,14 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             style: style,
           ),
         ),
+        if (record.decoded?.isCritTeam == true)
+          Tooltip(
+            message: S.current.critical_team,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: db.getIconImage(AssetURL.i.buffIcon(324), width: 18, height: 18),
+            ),
+          ),
         if (record.decoded?.options.simulateAi == true)
           Tooltip(
             message: S.current.simulate_simple_ai,
@@ -267,22 +284,35 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           ),
         InkWell(
           onTap: secrets.isLoggedIn ? () => onVote(true) : null,
-          child: Icon(
-            Icons.thumb_up_alt,
-            size: 16,
-            color: votes.mine == 1 ? themeData.colorScheme.primary : themeData.unselectedWidgetColor,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.thumb_up_alt,
+                size: 16,
+                color: votes.mine == 1 ? themeData.colorScheme.primary : themeData.unselectedWidgetColor,
+              ),
+              Text(votes.up.toString().padRight(4, ' '), style: style),
+            ],
           ),
         ),
-        Text(votes.up.toString().padRight(4, ' '), style: style),
         InkWell(
           onTap: secrets.isLoggedIn ? () => onVote(false) : null,
-          child: Icon(
-            Icons.thumb_down_alt,
-            size: 16,
-            color: votes.mine == -1 ? themeData.colorScheme.primaryContainer : themeData.unselectedWidgetColor,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.thumb_down_alt,
+                size: 16,
+                color: votes.mine == -1 ? themeData.colorScheme.primaryContainer : themeData.unselectedWidgetColor,
+              ),
+              Text(votes.down.toString().padRight(4, ' '), style: style),
+            ],
           ),
         ),
-        Text(votes.down.toString().padRight(6, ' '), style: style),
+        const SizedBox(width: 4),
         InkWell(
           onTap: record.userId == curUserId
               ? null
@@ -306,6 +336,11 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     List<InlineSpan> spans = [];
     final team = record.decoded;
     if (team == null) return const SizedBox.shrink();
+
+    if (team.isCritTeam) {
+      spans.add(TextSpan(text: S.current.critical_team));
+    }
+
     final maxRandom = Maths.max(team.actions.map((e) => e.options.random));
     if (maxRandom > ConstData.constants.attackRateRandomMin) {
       spans.add(TextSpan(text: '${S.current.battle_random} ${maxRandom / 1000}'));
@@ -576,13 +611,13 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     Future<TeamQueryResult?> task;
     switch (mode) {
       case TeamQueryMode.user:
-        final userId = widget.userId != null ? int.tryParse(widget.userId!) : null;
+        final userId = widget.userId ?? (widget.username != null ? int.tryParse(widget.username!) : null);
         task = showEasyLoading(() => ChaldeaWorkerApi.teamsByUser(
               limit: _pageSize,
               offset: _pageSize * page,
               expireAfter: refresh ? Duration.zero : const Duration(days: 2),
               userId: userId,
-              username: widget.userId,
+              username: widget.username,
             ));
       case TeamQueryMode.quest:
         final quest = widget.quest;

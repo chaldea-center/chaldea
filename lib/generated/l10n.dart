@@ -1471,10 +1471,10 @@ class S {
     );
   }
 
-  /// `Warning: {count} of total {total} command cards didn't attack, try to remove unnecessary cards`
+  /// `{count} of total {total} command cards didn't attack, please remove unnecessary cards`
   String card_not_attack_warning(Object count, Object total) {
     return Intl.message(
-      'Warning: $count of total $total command cards didn\'t attack, try to remove unnecessary cards',
+      '$count of total $total command cards didn\'t attack, please remove unnecessary cards',
       name: 'card_not_attack_warning',
       desc: '',
       locale: localeName,
@@ -2092,6 +2092,17 @@ class S {
     return Intl.message(
       'Critical Star',
       name: 'critical_star',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Critical Team`
+  String get critical_team {
+    return Intl.message(
+      'Critical Team',
+      name: 'critical_team',
       desc: '',
       locale: localeName,
       args: [],
@@ -5739,10 +5750,10 @@ class S {
     );
   }
 
-  /// `Multi-step NP found(e.g. Chen Gong/Arash), please check MIN/MAX RNG to ensure NP refund is sufficient and able to clear the quest.`
+  /// `Multi-step NP found, please check MIN/MAX RNG to ensure NP refund is sufficient and able to clear the quest`
   String get laplace_upload_td_multi_dmg_func_hint {
     return Intl.message(
-      'Multi-step NP found(e.g. Chen Gong/Arash), please check MIN/MAX RNG to ensure NP refund is sufficient and able to clear the quest.',
+      'Multi-step NP found, please check MIN/MAX RNG to ensure NP refund is sufficient and able to clear the quest',
       name: 'laplace_upload_td_multi_dmg_func_hint',
       desc: '',
       locale: localeName,
@@ -9429,10 +9440,10 @@ class S {
     );
   }
 
-  /// `Servants may be not released when quest is open`
+  /// `Servants may be not released`
   String get svt_not_release_hint {
     return Intl.message(
-      'Servants may be not released when quest is open',
+      'Servants may be not released',
       name: 'svt_not_release_hint',
       desc: '',
       locale: localeName,
@@ -10265,10 +10276,10 @@ class S {
     );
   }
 
-  /// `Current team is not eligible for upload due to:`
+  /// `Current team is not eligible for upload:`
   String get upload_not_eligible_hint {
     return Intl.message(
-      'Current team is not eligible for upload due to:',
+      'Current team is not eligible for upload:',
       name: 'upload_not_eligible_hint',
       desc: '',
       locale: localeName,
@@ -10292,6 +10303,17 @@ class S {
     return Intl.message(
       'Upload current team?\n\nAttention: to service more players.\n- don\'t upload team which contains unreleased servants!\n- Please try to keep your team configuration as low as possible (unnecessary grailed lv, append skill, NP Lv, unused backup servant).\n- Uploaded data may be deleted due to future updates, data incompatibility etc.',
       name: 'upload_team_confirmation',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Too many normal cards, please reduce unnecessary cards. If it's indeed critical-based team, check:`
+  String get upload_team_critical_team_warning {
+    return Intl.message(
+      'Too many normal cards, please reduce unnecessary cards. If it\'s indeed critical-based team, check:',
+      name: 'upload_team_critical_team_warning',
       desc: '',
       locale: localeName,
       args: [],

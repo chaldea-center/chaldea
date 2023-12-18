@@ -167,6 +167,7 @@ class BattleShareData {
   BattleTeamFormation formation;
   BattleReplayDelegateData? delegate;
   List<BattleRecordData> actions;
+  bool isCritTeam;
 
   BattleShareData({
     this.minBuild,
@@ -176,6 +177,7 @@ class BattleShareData {
     required this.formation,
     this.delegate,
     List<BattleRecordData>? actions,
+    this.isCritTeam = false,
   })  : options = options ?? BattleShareDataOption(),
         actions = actions ?? [];
 

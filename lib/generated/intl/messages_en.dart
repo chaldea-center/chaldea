@@ -23,7 +23,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m13(actorName) => "require ${actorName} on field";
 
   static String m14(count, total) =>
-      "Warning: ${count} of total ${total} command cards didn\'t attack, try to remove unnecessary cards";
+      "${count} of total ${total} command cards didn\'t attack, please remove unnecessary cards";
 
   static String m0(url) =>
       "Chaldea - A cross-platform utility for Fate/GO. Supporting game data review, servant/event/item planning, master mission planning, summon simulator and so on.\n\nFor details: \n${url}\n";
@@ -287,6 +287,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "crit_star_mod": MessageLookupByLibrary.simpleMessage("Crit Star Mod"),
         "critical_attack": MessageLookupByLibrary.simpleMessage("Critical"),
         "critical_star": MessageLookupByLibrary.simpleMessage("Critical Star"),
+        "critical_team": MessageLookupByLibrary.simpleMessage("Critical Team"),
         "cur_account": MessageLookupByLibrary.simpleMessage("Current Account"),
         "current_": MessageLookupByLibrary.simpleMessage("Current"),
         "current_version": MessageLookupByLibrary.simpleMessage("Current Version"),
@@ -642,7 +643,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Warning that this quest contains multiple enemy configurations, when searching shared teams or simulating check the corresponding version:\nClick Details - Select Version - Click the Calculate Button"),
         "laplace_my_teams": MessageLookupByLibrary.simpleMessage("My Teams"),
         "laplace_upload_td_multi_dmg_func_hint": MessageLookupByLibrary.simpleMessage(
-            "Multi-step NP found(e.g. Chen Gong/Arash), please check MIN/MAX RNG to ensure NP refund is sufficient and able to clear the quest."),
+            "Multi-step NP found, please check MIN/MAX RNG to ensure NP refund is sufficient and able to clear the quest"),
         "level": MessageLookupByLibrary.simpleMessage("Level"),
         "limited_event": MessageLookupByLibrary.simpleMessage("Limited Event"),
         "limited_time": MessageLookupByLibrary.simpleMessage("Limited Time"),
@@ -997,7 +998,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "svt_fav_btn_show_all": MessageLookupByLibrary.simpleMessage("Show All"),
         "svt_fav_btn_show_favorite": MessageLookupByLibrary.simpleMessage("Show Favorite"),
         "svt_not_planned": MessageLookupByLibrary.simpleMessage("Not favorite"),
-        "svt_not_release_hint": MessageLookupByLibrary.simpleMessage("Servants may be not released when quest is open"),
+        "svt_not_release_hint": MessageLookupByLibrary.simpleMessage("Servants may be not released"),
         "svt_option_edit_tips": MessageLookupByLibrary.simpleMessage(
             "1. Servant options are independent from Chaldea\'s plan data once imported, if need to resync planned options please use the Resync option from the dropdown menu in the top right corner\n2. Skill/NP strengthen status can be set manually via options below\n3. You can manually add custom effect/buff\n4. Svt/ce can be pinged to top in the popup menu from their detail pages"),
         "svt_option_resync": MessageLookupByLibrary.simpleMessage("Resync Options"),
@@ -1077,11 +1078,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_and_close_app": MessageLookupByLibrary.simpleMessage("Upload & Close"),
         "upload_and_close_app_alert": MessageLookupByLibrary.simpleMessage("Upload data before closing the app?"),
         "upload_before_close_app": MessageLookupByLibrary.simpleMessage("Upload before closing"),
-        "upload_not_eligible_hint":
-            MessageLookupByLibrary.simpleMessage("Current team is not eligible for upload due to:"),
+        "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage("Current team is not eligible for upload:"),
         "upload_paused": m30,
         "upload_team_confirmation": MessageLookupByLibrary.simpleMessage(
             "Upload current team?\n\nAttention: to service more players.\n- don\'t upload team which contains unreleased servants!\n- Please try to keep your team configuration as low as possible (unnecessary grailed lv, append skill, NP Lv, unused backup servant).\n- Uploaded data may be deleted due to future updates, data incompatibility etc."),
+        "upload_team_critical_team_warning": MessageLookupByLibrary.simpleMessage(
+            "Too many normal cards, please reduce unnecessary cards. If it\'s indeed critical-based team, check:"),
         "usage": MessageLookupByLibrary.simpleMessage("Usage"),
         "userdata": MessageLookupByLibrary.simpleMessage("Userdata"),
         "userdata_download_backup": MessageLookupByLibrary.simpleMessage("Download Backup"),
