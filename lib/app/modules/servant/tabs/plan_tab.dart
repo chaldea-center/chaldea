@@ -304,14 +304,14 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           useSlider: sliderMode,
           leading: db.getIconImage(Atlas.assetItem(Items.npRankUpIconId), width: 33),
           title: S.current.noble_phantasm_level,
-          start: status.cur.npLv,
-          end: plan.npLv,
+          start: curVal.npLv,
+          end: targetVal.npLv,
           minVal: 0,
           maxVal: 5,
           onValueChanged: (_start, _end) {
             status.cur.favorite = true;
-            status.cur.npLv = _start;
-            plan.npLv = _end;
+            curVal.npLv = _start;
+            targetVal.npLv = _end;
             updateState();
           },
           detailPageBuilder: (context) => const SimpleCancelOkDialog(title: Text('Not Used yet')),
@@ -872,19 +872,16 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     final Map<int, int> enhanceItems =
         Item.sortMapByPriority(db.itemCenter.calcOneSvt(svt, status.cur, enhancePlan).all);
 
-    bool hasItem = Maths.sum(enhanceItems.values) > 0;
     _showItemsDialog(
       title: S.current.enhance_warning,
       items: enhanceItems,
       hideCancel: false,
       showSubOwned: true,
       onConfirm: () {
-        if (hasItem) {
-          Maths.sumDict([db.curUser.items, Maths.multiplyDict(enhanceItems, -1)], inPlace: true);
-          status.cur = SvtPlan.fromJson(enhancePlan.toJson());
-          enhanceMode = !enhanceMode;
-          updateState();
-        }
+        Maths.sumDict([db.curUser.items, Maths.multiplyDict(enhanceItems, -1)], inPlace: true);
+        status.cur = SvtPlan.fromJson(enhancePlan.toJson());
+        enhanceMode = !enhanceMode;
+        updateState();
       },
     );
   }
