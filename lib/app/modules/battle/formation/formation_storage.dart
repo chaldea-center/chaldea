@@ -53,7 +53,7 @@ class _FormationEditorState extends State<FormationEditor> {
 
   Widget buildBody() {
     List<Widget> children = [
-      for (final (index, team) in userData.teams.enumerate) buildFormation(index, team),
+      for (final (index, team) in userData.teams.indexed) buildFormation(index, team),
     ];
 
     if (sorting) {

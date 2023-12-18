@@ -274,7 +274,7 @@ class EventRelatedCampaigns extends StatelessWidget {
     return ListView(
       children: [
         SHeader("Guessed Related Campaigns with same start/end time.\n${region.upper}: $time"),
-        for (final (index, campaign) in relatedCampaigns.enumerate)
+        for (final (index, campaign) in relatedCampaigns.indexed)
           SimpleAccordion(
             expanded: true,
             headerBuilder: (context, _) {

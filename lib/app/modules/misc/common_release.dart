@@ -9,7 +9,6 @@ import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
@@ -96,7 +95,7 @@ class _CommonReleasesPageState extends State<CommonReleasesPage>
           leading: const Icon(Icons.group_work),
           minLeadingWidth: 28,
         ),
-        for (final (index, release) in releases.enumerate)
+        for (final (index, release) in releases.indexed)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: CondTargetValueDescriptor.commonRelease(

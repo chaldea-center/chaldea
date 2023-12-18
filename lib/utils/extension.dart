@@ -163,14 +163,6 @@ extension IterableX<E> on Iterable<E> {
   E? get firstOrNull => isNotEmpty ? first : null;
 
   E? get lastOrNull => isNotEmpty ? last : null;
-
-  Iterable<(int index, E element)> get enumerate sync* {
-    int index = 0;
-    for (final e in this) {
-      yield (index, e);
-      index++;
-    }
-  }
 }
 
 extension SetX<E> on Set<E> {

@@ -287,7 +287,7 @@ class BattleServantData {
         await skillInfo.activate(battleData);
       }
       if (isEnemy) {
-        for (final (index, skill) in niceEnemy!.classPassive.addPassive.enumerate) {
+        for (final (index, skill) in niceEnemy!.classPassive.addPassive.indexed) {
           final skillInfo = BattleSkillInfoData(skill,
               type: SkillInfoType.svtPassive,
               skillLv: niceEnemy!.classPassive.addPassiveLvs.getOrNull(index) ?? skill.maxLv);

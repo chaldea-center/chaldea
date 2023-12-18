@@ -781,7 +781,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           ),
         ];
 
-        for (final (index, skillAndLv) in options.enemySkills.enumerate) {
+        for (final (index, skillAndLv) in options.enemySkills.indexed) {
           final (skill, skillLv) = skillAndLv;
           final maxLv = skill.maxLv;
           rows.add(kDefaultDivider);

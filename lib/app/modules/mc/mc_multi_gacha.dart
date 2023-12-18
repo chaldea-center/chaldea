@@ -54,7 +54,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       children: [
-        for (final (index, gacha) in gachas.enumerate)
+        for (final (index, gacha) in gachas.indexed)
           ListTile(
             dense: true,
             minLeadingWidth: 24,
