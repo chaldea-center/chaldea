@@ -43,6 +43,7 @@ class BattleSimUserData {
   Set<int> pingedSvts;
   // questId, teamIds
   Map<int, Set<int>> favoriteTeams;
+  // TODO: deprecate after 2024/03
   @protected
   List<BattleTeamFormation> formations;
   List<BattleShareData> teams;

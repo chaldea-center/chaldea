@@ -222,8 +222,7 @@ FixedDrop _$FixedDropFromJson(Map json) => FixedDrop(
 
 LimitedSummon _$LimitedSummonFromJson(Map json) => LimitedSummon(
       id: json['id'] as String,
-      name: json['name'],
-      name_: json['name_'] as String?,
+      name: json['name'] as String?,
       mcLink: json['mcLink'] as String?,
       fandomLink: json['fandomLink'] as String?,
       banner: json['banner'] == null

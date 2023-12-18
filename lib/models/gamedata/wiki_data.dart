@@ -382,7 +382,6 @@ class FixedDrop {
 class LimitedSummon with RouteInfo {
   String id;
   String name;
-  String name_;
   String? mcLink;
   String? fandomLink;
   MappingBase<String> banner;
@@ -398,8 +397,7 @@ class LimitedSummon with RouteInfo {
 
   LimitedSummon({
     required this.id,
-    dynamic name,
-    String? name_,
+    String? name,
     this.mcLink,
     this.fandomLink,
     MappingBase<String>? banner,
@@ -412,8 +410,7 @@ class LimitedSummon with RouteInfo {
     this.puSvt = const [],
     this.puCE = const [],
     this.subSummons = const [],
-  })  : name = name is String ? name : (name_ ?? id.toString()),
-        name_ = name_ ?? id.toString(),
+  })  : name = name ?? id.toString(),
         banner = banner ?? MappingBase(),
         officialBanner = officialBanner ?? MappingBase(),
         noticeLink = noticeLink ?? MappingBase(),
