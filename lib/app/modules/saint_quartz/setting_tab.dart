@@ -203,6 +203,15 @@ class _SQSettingTabState extends State<SQSettingTab> {
           subtitle: Text(S.current.sq_fragment_convert),
           controlAffinity: ListTileControlAffinity.trailing,
         ),
+        SwitchListTile.adaptive(
+          value: plan.favoriteSummonOnly,
+          onChanged: (v) {
+            plan.favoriteSummonOnly = v;
+            update();
+          },
+          title: Text(LocalizedText.of(chs: '仅显示已关注卡池', jpn: null, eng: 'Show favorite summons only')),
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
         Card(
           child: Padding(
             padding: const EdgeInsets.all(12),
@@ -244,6 +253,12 @@ The other campaign events, maintenance compensation, and other rewards directly 
 
   void update() {
     if (mounted) setState(() {});
-    plan.solve();
+    EasyDebounce.debounce(
+      'sq_plan_solve',
+      const Duration(seconds: 1),
+      () {
+        plan.solve();
+      },
+    );
   }
 }

@@ -15,22 +15,7 @@ class SaintQuartzPlanning extends StatefulWidget {
 }
 
 class _SaintQuartzPlanningState extends State<SaintQuartzPlanning> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-    // not ideal
-    db.curUser.saintQuartzPlan.onSolved = () {
-      if (mounted) setState(() {});
-    };
-    _tabController.addListener(() {
-      if (!_tabController.indexIsChanging && _tabController.index == _tabController.length - 1) {
-        db.curUser.saintQuartzPlan.solve();
-      }
-    });
-  }
+  late final TabController _tabController = TabController(length: 2, vsync: this);
 
   @override
   void dispose() {

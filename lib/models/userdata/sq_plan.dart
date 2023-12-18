@@ -20,31 +20,29 @@ class SaintQuartzPlan {
   Map<int, bool> extraMissions;
   bool minusPlannedBanner;
 
+  // view options
+  bool favoriteSummonOnly;
+
   @JsonKey(includeFromJson: false, includeToJson: false)
-  VoidCallback? onSolved;
+  final notifier = ValueNotifier<int>(0);
 
   MasterMission? get extraMission => db.gameData.extraMasterMission[MasterMission.kExtraMasterMissionId];
 
   SaintQuartzPlan({
-    int? curSQ,
-    int? curTicket,
-    int? curApple,
+    this.curSQ = 0,
+    this.curTicket = 0,
+    this.curApple = 0,
     DateTime? startDate,
     DateTime? endDate,
-    int? accLogin,
-    int? continuousLogin,
-    int? eventDateDelta,
+    this.accLogin = 1,
+    this.continuousLogin = 1,
+    this.eventDateDelta = 365,
     bool? weeklyMission,
     Map<int, bool>? missions,
     bool? minusPlannedBanner,
-  })  : curSQ = curSQ ?? 0,
-        curTicket = curTicket ?? 0,
-        curApple = curApple ?? 0,
-        startDate = startDate ?? DateUtils.dateOnly(DateTime.now()),
+    this.favoriteSummonOnly = false,
+  })  : startDate = startDate ?? DateUtils.dateOnly(DateTime.now()),
         endDate = endDate ?? DateUtils.dateOnly(DateTime.now()),
-        accLogin = accLogin ?? 1,
-        continuousLogin = continuousLogin ?? 1,
-        eventDateDelta = eventDateDelta ?? 365,
         weeklyMission = weeklyMission ?? true,
         extraMissions = missions ?? {},
         minusPlannedBanner = minusPlannedBanner ?? true {
@@ -183,7 +181,9 @@ class SaintQuartzPlan {
       startDate = DateUtils.dateOnly(DateUtils.addDaysToDate(startDate, eventDateDelta));
       final detail = dataMap[startDate.toDateString()];
       if (detail == null) continue;
-      detail.summons.add(summon);
+      if (!favoriteSummonOnly || db.curUser.summons.contains(summon.id)) {
+        detail.summons.add(summon);
+      }
     }
 
     solution = dataMap.values.toList();
@@ -195,7 +195,10 @@ class SaintQuartzPlan {
         ..accTicket = lastDate.accTicket + curDate.addTicket
         ..accApple = lastDate.accApple + curDate.addApple;
     }
-    if (onSolved != null) onSolved!();
+    if (favoriteSummonOnly) {
+      solution.retainWhere((e) => e.summons.isNotEmpty);
+    }
+    notifier.value = DateTime.now().microsecondsSinceEpoch;
     return solution;
   }
 }

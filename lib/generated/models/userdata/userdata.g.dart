@@ -426,16 +426,17 @@ SaintQuartzPlan _$SaintQuartzPlanFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = SaintQuartzPlan(
-          curSQ: $checkedConvert('curSQ', (v) => v as int?),
-          curTicket: $checkedConvert('curTicket', (v) => v as int?),
-          curApple: $checkedConvert('curApple', (v) => v as int?),
+          curSQ: $checkedConvert('curSQ', (v) => v as int? ?? 0),
+          curTicket: $checkedConvert('curTicket', (v) => v as int? ?? 0),
+          curApple: $checkedConvert('curApple', (v) => v as int? ?? 0),
           startDate: $checkedConvert('startDate', (v) => v == null ? null : DateTime.parse(v as String)),
           endDate: $checkedConvert('endDate', (v) => v == null ? null : DateTime.parse(v as String)),
-          accLogin: $checkedConvert('accLogin', (v) => v as int?),
-          continuousLogin: $checkedConvert('continuousLogin', (v) => v as int?),
-          eventDateDelta: $checkedConvert('eventDateDelta', (v) => v as int?),
+          accLogin: $checkedConvert('accLogin', (v) => v as int? ?? 1),
+          continuousLogin: $checkedConvert('continuousLogin', (v) => v as int? ?? 1),
+          eventDateDelta: $checkedConvert('eventDateDelta', (v) => v as int? ?? 365),
           weeklyMission: $checkedConvert('weeklyMission', (v) => v as bool?),
           minusPlannedBanner: $checkedConvert('minusPlannedBanner', (v) => v as bool?),
+          favoriteSummonOnly: $checkedConvert('favoriteSummonOnly', (v) => v as bool? ?? false),
         );
         $checkedConvert(
             'extraMissions',
@@ -458,6 +459,7 @@ Map<String, dynamic> _$SaintQuartzPlanToJson(SaintQuartzPlan instance) => <Strin
       'weeklyMission': instance.weeklyMission,
       'extraMissions': instance.extraMissions.map((k, e) => MapEntry(k.toString(), e)),
       'minusPlannedBanner': instance.minusPlannedBanner,
+      'favoriteSummonOnly': instance.favoriteSummonOnly,
     };
 
 const _$LockPlanEnumMap = {

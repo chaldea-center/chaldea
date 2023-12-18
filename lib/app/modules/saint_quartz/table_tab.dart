@@ -28,12 +28,14 @@ class _SQTableTabState extends State<SQTableTab> {
   void initState() {
     super.initState();
     source = _PlanDataSource(context, plan);
+    plan.notifier.addListener(source.notify);
   }
 
   @override
   void dispose() {
     super.dispose();
     source.dispose();
+    plan.notifier.removeListener(source.notify);
   }
 
   @override
@@ -96,6 +98,10 @@ class _PlanDataSource extends DataTableSource {
   final SaintQuartzPlan plan;
 
   _PlanDataSource(this.context, this.plan);
+
+  void notify() {
+    notifyListeners();
+  }
 
   @override
   int get rowCount => plan.solution.length;
