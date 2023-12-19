@@ -224,6 +224,7 @@ class DataVals {
   int? get CancelTransform => _vals['CancelTransform'];
   int? get UnSubStateWhenContinue => _vals['UnSubStateWhenContinue'];
   int? get CheckTargetHaveDefeatPoint => _vals['CheckTargetHaveDefeatPoint'];
+  int? get NPFixedDamageValue => _vals['NPFixedDamageValue'];
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];
   int? get EventId => _vals['EventId'];

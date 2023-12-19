@@ -390,4 +390,5 @@ const _$CondTypeEnumMap = {
   CondType.notQuestGroupClearNum: 'notQuestGroupClearNum',
   CondType.raidGroupOpenAbove: 'raidGroupOpenAbove',
   CondType.raidGroupOpenBelow: 'raidGroupOpenBelow',
+  CondType.treasureDeviceAccelerate: 'treasureDeviceAccelerate',
 };

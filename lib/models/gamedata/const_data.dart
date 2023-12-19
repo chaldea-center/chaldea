@@ -1161,6 +1161,7 @@ enum BuffAction {
   functionSkillAfterMainOnly(123),
   functionTreasureDeviceAfter(124),
   functionTreasureDeviceAfterMainOnly(125),
+  guts(126),
   ;
 
   final int id;

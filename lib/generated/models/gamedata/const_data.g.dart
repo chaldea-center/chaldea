@@ -1330,4 +1330,5 @@ const _$BuffActionEnumMap = {
   BuffAction.functionSkillAfterMainOnly: 'functionSkillAfterMainOnly',
   BuffAction.functionTreasureDeviceAfter: 'functionTreasureDeviceAfter',
   BuffAction.functionTreasureDeviceAfterMainOnly: 'functionTreasureDeviceAfterMainOnly',
+  BuffAction.guts: 'guts',
 };

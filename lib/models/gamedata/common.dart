@@ -1008,6 +1008,7 @@ enum CondType {
   notQuestGroupClearNum,
   raidGroupOpenAbove,
   raidGroupOpenBelow,
+  treasureDeviceAccelerate,
 }
 
 @JsonSerializable()
