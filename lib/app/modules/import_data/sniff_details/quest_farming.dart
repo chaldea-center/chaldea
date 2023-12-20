@@ -1,8 +1,10 @@
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/master_mission/solver/input_tab.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
@@ -16,24 +18,34 @@ class UserQuestFarmingStatPage extends StatefulWidget {
 
 class _QuestInfo {
   UserQuest userQuest;
-  Quest quest;
+  Quest? quest;
   int winNum;
   int loseNum;
   _QuestInfo(this.userQuest, this.quest, this.winNum, this.loseNum);
 }
 
+enum _UserQuestSort {
+  clearNum,
+  challengeNum,
+}
+
 class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> with SingleTickerProviderStateMixin {
-  late final _tabController = TabController(length: 3, vsync: this);
+  late final _tabController = TabController(length: 4, vsync: this);
+  List<_QuestInfo> allQuests = []; // Main Free Quests only count the last phase
   List<_QuestInfo> freeQuests = []; // Main Free Quests only count the last phase
   List<_QuestInfo> failedQuests = [];
   int warId = 0;
+  _UserQuestSort userQuestSortType = _UserQuestSort.challengeNum;
 
   @override
   void initState() {
     super.initState();
     for (final userQuest in widget.userQuests) {
       final quest = db.gameData.quests[userQuest.questId];
-      if (quest == null) continue;
+      if (quest == null) {
+        allQuests.add(_QuestInfo(userQuest, quest, 0, 0));
+        continue;
+      }
       // 邪馬台国 収穫クエスト
       if (quest.afterClear == QuestAfterClearType.resetInterval) continue;
       if (userQuest.questPhase == 0 && userQuest.challengeNum == 1 && userQuest.clearNum == 1) continue;
@@ -58,9 +70,22 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
           failedQuests.add(info);
         }
       }
+      allQuests.add(info);
     }
     freeQuests.sort2((e) => -e.winNum);
     failedQuests.sort2((e) => -e.loseNum);
+  }
+
+  String get hint {
+    return Language.isZH
+        ? """- clearNum=通关次数(仅关卡最后一个进度)。challengeNum=挑战次数，所有进度，包括失败撤退。
+- 除“所有”这一页外，仅包含当前数据库中存在的关卡。例如早期每日关卡曾多次变更、重置，非常早期的部分活动关卡等均不显示。
+- Free本周回数: 仅显示当前数据库存在的关卡，不显示部分收菜关卡。
+- 战败: 不计算团体战(柱子战的战败)"""
+        : """- clearNum: clear times of last phase. challengeNum: include all phases and battle lose/withdraw.
+- all tabs except "ALL" tab didn't include quests which are not in db
+- Free Quest: assume daily quests always win, didn't include outdated daily quests because of reset/changed multiple times
+- Failed/lose: didn't count Raid battle, assume always win.""";
   }
 
   @override
@@ -69,6 +94,7 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
       appBar: AppBar(
         title: Text(S.current.quest),
         bottom: FixedHeight.tabBar(TabBar(controller: _tabController, tabs: [
+          Tab(text: S.current.general_all),
           Tab(text: S.current.free_quest),
           Tab(text: S.current.failed),
           Tab(text: S.current.general_others),
@@ -76,27 +102,85 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
         actions: [
           IconButton(
             onPressed: () {
-              const SimpleCancelOkDialog(
-                title: Text("Notes"),
-                content: Text("1. didn't count lose for Raid\n"
-                    "2. assume daily quests all win"),
+              SimpleCancelOkDialog(
+                title: Text(S.current.help),
+                content: Text(hint, style: const TextStyle(fontSize: 14)),
               ).showDialog(context);
             },
-            icon: const Icon(Icons.help),
+            icon: const Icon(Icons.help_outline),
           )
         ],
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
+          buildAllTab(),
           buildFreeTab(),
-          ListView.builder(
-            itemCount: failedQuests.length,
-            itemBuilder: (context, index) => buildQuest(context, failedQuests[index], failedQuests[index].loseNum),
-          ),
+          buildFailTab(),
           Builder(builder: buildOthers),
         ],
       ),
+    );
+  }
+
+  Widget buildAllTab() {
+    switch (userQuestSortType) {
+      case _UserQuestSort.clearNum:
+        allQuests.sortByList((e) => [-e.userQuest.clearNum, -e.userQuest.challengeNum]);
+      case _UserQuestSort.challengeNum:
+        allQuests.sortByList((e) => [-e.userQuest.challengeNum, -e.userQuest.clearNum]);
+    }
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            itemCount: allQuests.length,
+            itemBuilder: (context, index) {
+              final info = allQuests[index];
+              String primary, secondary;
+              switch (userQuestSortType) {
+                case _UserQuestSort.clearNum:
+                  primary = info.userQuest.clearNum.toString();
+                  secondary = info.userQuest.challengeNum.toString();
+                case _UserQuestSort.challengeNum:
+                  primary = info.userQuest.challengeNum.toString();
+                  secondary = info.userQuest.clearNum.toString();
+              }
+              final trailing = Text.rich(
+                TextSpan(children: [
+                  TextSpan(text: primary),
+                  TextSpan(
+                    text: '\n$secondary',
+                    style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color, fontSize: 10),
+                  )
+                ]),
+                style: const TextStyle(fontSize: 12),
+                textAlign: TextAlign.end,
+              );
+              return buildQuest(context, info, trailing);
+            },
+          ),
+        ),
+        kDefaultDivider,
+        SafeArea(
+          child: ButtonBar(
+            alignment: MainAxisAlignment.center,
+            children: [
+              FilterGroup<_UserQuestSort>(
+                combined: true,
+                options: _UserQuestSort.values,
+                values: FilterRadioData.nonnull(userQuestSortType),
+                optionBuilder: (value) => Text(value.name),
+                onFilterChanged: (v, _) {
+                  setState(() {
+                    userQuestSortType = v.radioValue!;
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -104,14 +188,20 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
     final war = db.gameData.wars[warId];
     final shownQuests = freeQuests.toList();
     if (warId != 0) {
-      shownQuests.retainWhere((quest) => quest.quest.warId == warId);
+      shownQuests.retainWhere((quest) => quest.quest?.warId == warId);
     }
     return Column(
       children: [
         Expanded(
           child: ListView.builder(
             itemCount: shownQuests.length,
-            itemBuilder: (context, index) => buildQuest(context, shownQuests[index], shownQuests[index].winNum),
+            itemBuilder: (context, index) => buildQuest(
+                context,
+                shownQuests[index],
+                Text(
+                  Transl.special.funcValCountTimes(shownQuests[index].winNum),
+                  style: const TextStyle(fontSize: 12),
+                )),
           ),
         ),
         kDefaultDivider,
@@ -120,7 +210,11 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
           subtitle: Text(war?.lShortName ?? S.current.general_all),
           tileColor: Theme.of(context).cardColor,
           onTap: () async {
-            final selected = await router.pushPage<int>(EventChooser(initTab: warId < 1000 ? 0 : 1));
+            final selected = await router.pushPage<int>(EventChooser(
+              initTab: warId < 1000 ? 0 : 1,
+              showChaldeaGate: true,
+              hasFreeQuest: false,
+            ));
             if (selected != null) {
               warId = selected;
             }
@@ -139,32 +233,46 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
     );
   }
 
-  Widget buildQuest(BuildContext context, _QuestInfo info, int count) {
+  Widget buildFailTab() {
+    return ListView.builder(
+      itemCount: failedQuests.length,
+      itemBuilder: (context, index) => buildQuest(
+        context,
+        failedQuests[index],
+        Text(
+          Transl.special.funcValCountTimes(failedQuests[index].loseNum),
+          style: const TextStyle(fontSize: 12),
+        ),
+      ),
+    );
+  }
+
+  Widget buildQuest(BuildContext context, _QuestInfo info, Widget trailing) {
     return ListTile(
       dense: true,
       horizontalTitleGap: 8,
       leading: CachedImage(
-        imageUrl: info.quest.spot?.shownImage,
+        imageUrl: info.quest?.spot?.shownImage,
         width: 32,
         height: 32,
         placeholder: (_, __) => const SizedBox.shrink(),
       ),
-      title: Text(info.quest.lDispName),
-      subtitle: Text((info.quest.event?.shownName ??
-              info.quest.war?.eventReal?.shownName ??
-              info.quest.war?.lShortName ??
-              "War ${info.quest.warId}")
-          .setMaxLines(1)),
-      trailing: Text(
-        Transl.special.funcValCountTimes(count),
-        textAlign: TextAlign.end,
-        style: const TextStyle(fontSize: 12),
-      ),
-      onTap: info.quest.routeTo,
+      title: Text(info.quest?.lDispName ?? info.userQuest.questId.toString()),
+      subtitle: Text(info.quest == null
+          ? S.current.unknown
+          : (info.quest?.event?.shownName ??
+                  info.quest?.war?.eventReal?.shownName ??
+                  info.quest?.war?.lShortName ??
+                  "War ${info.quest?.warId}")
+              .setMaxLines(1)),
+      trailing: trailing,
+      onTap: () {
+        router.push(url: Routes.questI(info.userQuest.questId));
+      },
       onLongPress: () {
         SimpleCancelOkDialog(
-          title: Text(info.quest.dispName),
-          content: Text('phase: ${info.userQuest.questPhase}/${info.quest.phases.lastOrNull}\n'
+          title: Text(info.quest?.dispName ?? info.userQuest.questId.toString()),
+          content: Text('phase: ${info.userQuest.questPhase}/${info.quest?.phases.lastOrNull}\n'
               'clearNum: ${info.userQuest.clearNum}\n'
               'challengeNum: ${info.userQuest.challengeNum}'),
           hideCancel: true,

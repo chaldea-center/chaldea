@@ -923,22 +923,35 @@ const _preferredTraits = <Trait>[
 
 class EventChooser extends StatelessWidget {
   final int initTab;
-  const EventChooser({super.key, this.initTab = 0});
+  final bool hasFreeQuest;
+  final bool showChaldeaGate;
+  const EventChooser({super.key, this.initTab = 0, this.hasFreeQuest = true, this.showChaldeaGate = false});
 
   @override
   Widget build(BuildContext context) {
-    final mainStories =
-        db.gameData.mainStories.values.where((war) => war.quests.any((quest) => quest.isMainStoryFree)).toList();
-    mainStories.sort2((e) => -e.id);
-    final eventWars =
-        db.gameData.wars.values.where((war) => !war.isMainStory && war.quests.any((quest) => quest.isAnyFree)).toList();
+    List<NiceWar> eventWars = [], otherWars = [];
+    for (final war in db.gameData.wars.values) {
+      if (war.quests.isEmpty) continue;
+      if (hasFreeQuest && !war.quests.any((quest) => quest.isAnyFree)) continue;
+      if (war.isMainStory) {
+        otherWars.add(war);
+      } else {
+        if (war.eventReal != null) {
+          eventWars.add(war);
+        } else if (showChaldeaGate) {
+          otherWars.add(war);
+        }
+      }
+    }
     eventWars.sort2((war) => -(db.gameData.events[war.eventId]?.startedAt ?? war.id));
+
+    otherWars.sort2((e) => -e.id);
     return DefaultTabController(
       length: 2,
       initialIndex: initTab,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Select Free Progress or an Event War'),
+          title: const Text('Select War'),
           bottom: FixedHeight.tabBar(TabBar(tabs: [
             Tab(text: S.current.main_story),
             Tab(text: S.current.event),
@@ -948,7 +961,7 @@ class EventChooser extends StatelessWidget {
           children: [
             ListView(
               children: [
-                for (final war in mainStories)
+                for (final war in otherWars)
                   ListTile(
                     dense: true,
                     title: Text(war.lLongName.l),
