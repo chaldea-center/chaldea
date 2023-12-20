@@ -391,6 +391,7 @@ class ChaldeaWorkerApi {
       data: {
         'ver': BattleShareData.kDataVer,
         'appVer': AppInfo.versionString,
+        'dataVer': db.gameData.version.timestamp,
         'questId': data.quest?.id,
         'phase': data.quest?.phase,
         'enemyHash': data.quest?.enemyHash,
