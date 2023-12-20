@@ -603,11 +603,12 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         boxItems.removeWhere((key, value) => value == 0);
         if (boxItems.isEmpty) continue;
         boxes.add(ListTile(
+          dense: true,
           leading: Text('No.${boxIndex + 1}'),
           title: SharedBuilder.itemGrid(
             context: context,
             items: boxItems.entries,
-            width: 48,
+            width: 32,
           ),
         ));
       }
