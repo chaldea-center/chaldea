@@ -169,6 +169,8 @@ class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
         EasyLoading.show(status: '$finished/${converters.length}...');
       }).toList();
       await Future.wait(futures);
+      await Future.delayed(const Duration(milliseconds: 50));
+      EasyLoading.dismiss();
       int error = converters.where((e) => e.errors.isNotEmpty).length;
       if (error == 0) {
         EasyLoading.showSuccess('共${converters.length}个关卡');
@@ -419,7 +421,7 @@ class _MCQuestConverter extends McConverter {
       if (quest.flags.contains(QuestFlag.dropFirstTimeOnly)) '只有首次通关时才能获得牵绊点、经验值、战利品、通关奖励',
     ]);
     if (extraInfo.isNotEmpty) {
-      buffer.writeln('|备注=${extraInfo.join("\n")}');
+      buffer.writeln('|备注=${extraInfo.join("\n\n")}');
     }
     buffer.writeln('}}');
     return buffer.toString().split('\n').map((e) => e.trimRight()).join('\n');
@@ -506,6 +508,36 @@ class _MCQuestConverter extends McConverter {
           for (final setNum in setNums) {
             buffer.write(getWikiDaoju(objectId, setNum: setNum));
             buffer.write(' ');
+          }
+        }
+      } else if (quest.type == QuestType.warBoard) {
+        final warBoards = quest.war?.event?.warBoards ?? [];
+        final warBoardStage = warBoards
+            .expand((e) => e.stages)
+            .firstWhereOrNull((e) => e.questId == quest.id && e.questPhase == quest.phase);
+        if (warBoardStage != null) {
+          final allTreasures = warBoardStage.squares.expand((e) => e.treasures).toList();
+          allTreasures.sort2((e) => -e.rarity.index);
+          Map<WarBoardTreasureRarity, List<WarBoardTreasure>> treasureDict = {};
+          for (final treasure in allTreasures) {
+            treasureDict.putIfAbsent(treasure.rarity, () => []).add(treasure);
+          }
+          // common/rare/srare
+          for (final (rarity, treasures) in treasureDict.items) {
+            buffer.write(const {
+                  WarBoardTreasureRarity.common: '铜箱子',
+                  WarBoardTreasureRarity.rare: '银箱子',
+                  WarBoardTreasureRarity.srare: '金箱子',
+                }[rarity] ??
+                rarity.name);
+            buffer.write('：');
+            for (final treasure in treasures) {
+              for (final gift in treasure.gifts) {
+                buffer.write(getWikiDaoju(gift.objectId));
+                buffer.write('×${gift.num}');
+                buffer.write(' ');
+              }
+            }
           }
         }
       } else {
