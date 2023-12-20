@@ -31,8 +31,6 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m11(n) => "Профиль ${n}";
 
-  static String m30(pause, remain) => "Надо подождать ${pause} секунд между загрузками (${remain}остаются).";
-
   static String m12(a, b) => "${a} ${b}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -346,7 +344,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_before_close_app": MessageLookupByLibrary.simpleMessage("Загрузить перед закрытием"),
         "upload_not_eligible_hint":
             MessageLookupByLibrary.simpleMessage("Текущая команда не может быть загружена по следующим причинам:"),
-        "upload_paused": m30,
         "usage": MessageLookupByLibrary.simpleMessage("Использование"),
         "userdata": MessageLookupByLibrary.simpleMessage("Пользовательские данные"),
         "userdata_download_backup": MessageLookupByLibrary.simpleMessage("Скачать резервную копию"),

@@ -62,7 +62,7 @@ class RuntimeData {
   final AppClipBoard clipBoard = AppClipBoard();
 
   int lastUpload = 0;
-  final int secondsBetweenUpload = 300;
+  final int secondsBetweenUpload = 120;
   int get secondsRemainUtilNextUpload {
     final lapse = DateTime.now().timestamp - lastUpload;
     return lapse > secondsBetweenUpload ? 0 : secondsBetweenUpload - lapse;

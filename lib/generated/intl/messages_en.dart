@@ -87,7 +87,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m29(trait) => "This is a Noble Phantasm, but doesn\'t have [${trait}] trait.";
 
-  static String m30(pause, remain) => "Need to wait ${pause} seconds between uploads (${remain}s remain).";
+  static String m30(count) =>
+      "${count} NP5 ★5 servants, please descrease svt requirements as much as possible for sharing";
+
+  static String m31(remain) => "Uploading too frequently, please wait ${remain} seconds";
 
   static String m12(a, b) => "${a} ${b}";
 
@@ -1045,6 +1048,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "time_start": MessageLookupByLibrary.simpleMessage("Start"),
         "tips": MessageLookupByLibrary.simpleMessage("Tips"),
         "toggle_dark_mode": MessageLookupByLibrary.simpleMessage("Toggle Dark Mode"),
+        "too_many_td5_svts_warning": m30,
         "tooltip_refresh_sliders": MessageLookupByLibrary.simpleMessage("Refresh slides"),
         "total": MessageLookupByLibrary.simpleMessage("Total"),
         "total_ap": MessageLookupByLibrary.simpleMessage("Total AP"),
@@ -1079,7 +1083,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_and_close_app_alert": MessageLookupByLibrary.simpleMessage("Upload data before closing the app?"),
         "upload_before_close_app": MessageLookupByLibrary.simpleMessage("Upload before closing"),
         "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage("Current team is not eligible for upload:"),
-        "upload_paused": m30,
+        "upload_paused": m31,
         "upload_team_confirmation": MessageLookupByLibrary.simpleMessage(
             "Upload current team?\n\nAttention: to service more players.\n- don\'t upload team which contains unreleased servants!\n- Please try to keep your team configuration as low as possible (unnecessary grailed lv, append skill, NP Lv, unused backup servant).\n- Uploaded data may be deleted due to future updates, data incompatibility etc."),
         "upload_team_critical_team_warning": MessageLookupByLibrary.simpleMessage(

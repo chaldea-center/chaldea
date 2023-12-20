@@ -896,6 +896,7 @@
   "time_start": "スタート",
   "tips": null,
   "toggle_dark_mode": "ダークモードに切り替え",
+  "too_many_td5_svts_warning": null,
   "tooltip_refresh_sliders": "スライドを更新",
   "total": null,
   "total_ap": "AP合計",

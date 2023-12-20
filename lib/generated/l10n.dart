@@ -9924,6 +9924,17 @@ class S {
     );
   }
 
+  /// `{count} NP5 ★5 servants, please descrease svt requirements as much as possible for sharing`
+  String too_many_td5_svts_warning(Object count) {
+    return Intl.message(
+      '$count NP5 ★5 servants, please descrease svt requirements as much as possible for sharing',
+      name: 'too_many_td5_svts_warning',
+      desc: '',
+      locale: localeName,
+      args: [count],
+    );
+  }
+
   /// `Refresh slides`
   String get tooltip_refresh_sliders {
     return Intl.message(
@@ -10287,14 +10298,14 @@ class S {
     );
   }
 
-  /// `Need to wait {pause} seconds between uploads ({remain}s remain).`
-  String upload_paused(Object pause, Object remain) {
+  /// `Uploading too frequently, please wait {remain} seconds`
+  String upload_paused(Object remain) {
     return Intl.message(
-      'Need to wait $pause seconds between uploads (${remain}s remain).',
+      'Uploading too frequently, please wait $remain seconds',
       name: 'upload_paused',
       desc: '',
       locale: localeName,
-      args: [pause, remain],
+      args: [remain],
     );
   }
 

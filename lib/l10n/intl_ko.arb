@@ -896,6 +896,7 @@
   "time_start": "시작",
   "tips": null,
   "toggle_dark_mode": "다크 모드로 전환",
+  "too_many_td5_svts_warning": null,
   "tooltip_refresh_sliders": "슬라이드 갱신",
   "total": null,
   "total_ap": "AP 합계",

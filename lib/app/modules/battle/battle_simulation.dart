@@ -871,6 +871,7 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
     ];
 
     List<String> unreleasedSvts = [];
+    int r5td5 = 0;
     for (final svtData in runtime.originalOptions.formation.allSvts) {
       final svt = svtData.svt;
       if (svt == null) continue;
@@ -878,10 +879,17 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
       if (questPhase.closedAt < releasedAt && releasedAt > 0) {
         unreleasedSvts.add(svt.lName.l);
       }
+
+      if (svt.rarity == 5 && svtData.tdLv >= 5) {
+        r5td5 += 1;
+      }
     }
     if (unreleasedSvts.isNotEmpty) {
       warnings.add(
           '$kStarChar2 ${S.current.svt_not_release_hint} $kStarChar2:\n   $kStarChar2 ${unreleasedSvts.join(" / ")}');
+    }
+    if (r5td5 >= 2) {
+      warnings.add(S.current.too_many_td5_svts_warning(r5td5));
     }
     return warnings;
   }
@@ -940,17 +948,27 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
     if (warnings.isNotEmpty) {
       children.addAll([
         Text(S.current.warning, style: const TextStyle(fontWeight: FontWeight.bold)),
-        Text(warnings.map((e) => '- $e').join('\n')),
+        Text(
+          warnings.map((e) => '- $e').join('\n'),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.errorContainer,
+          ),
+        ),
         divider,
       ]);
     }
 
     children.add(Text(S.current.upload_team_confirmation, style: Theme.of(context).textTheme.bodySmall));
 
-    return buildDialog(children: children, canSave: true, canUpload: canUpload);
+    return buildDialog(children: children, canSave: true, canUpload: canUpload, warnings: warnings);
   }
 
-  Widget buildDialog({required List<Widget> children, required bool canSave, required bool canUpload}) {
+  Widget buildDialog({
+    required List<Widget> children,
+    required bool canSave,
+    required bool canUpload,
+    List<String> warnings = const [],
+  }) {
     return SimpleCancelOkDialog(
       scrollable: true,
       title: Text(S.current.upload),
@@ -971,7 +989,7 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
         TextButton(
           onPressed: canUpload
               ? () async {
-                  EasyThrottle.throttleAsync('upload-team', doUpload);
+                  EasyThrottle.throttleAsync('upload-team', () => doUpload(warnings));
                 }
               : null,
           child: Text(S.current.upload),
@@ -986,15 +1004,31 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
     router.pushPage(FormationEditor(teamToSave: teamData));
   }
 
-  Future<void> doUpload() async {
+  Future<void> doUpload(List<String> warnings) async {
     if (!db.settings.secrets.isLoggedIn) {
       EasyLoading.showError(S.current.login_first_hint);
       return;
     }
     if (db.runtimeData.secondsRemainUtilNextUpload > 0) {
-      EasyLoading.showError(
-          S.current.upload_paused(db.runtimeData.secondsBetweenUpload, db.runtimeData.secondsRemainUtilNextUpload));
+      EasyLoading.showError(S.current.upload_paused(db.runtimeData.secondsRemainUtilNextUpload));
       return;
+    }
+
+    if (!mounted) return;
+    if (warnings.isNotEmpty) {
+      final confirm = await router.showDialog(
+        builder: (context) {
+          return SimpleCancelOkDialog(
+            scrollable: true,
+            title: Text('${S.current.upload} - ${S.current.warning}'),
+            content: Text(
+              warnings.map((e) => '- $e').join('\n'),
+              style: TextStyle(color: Theme.of(context).colorScheme.errorContainer),
+            ),
+          );
+        },
+      );
+      if (confirm != true) return;
     }
 
     final teamData = runtime.getShareData(isCritTeam: isCritTeam);

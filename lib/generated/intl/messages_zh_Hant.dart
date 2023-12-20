@@ -83,7 +83,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m29(trait) => "這是一個寶具，但不持有[${trait}]特性";
 
-  static String m30(pause, remain) => "上傳之間需要等待${pause}秒 (還剩${remain}秒)";
+  static String m30(count) => "存在${count}张满宝五星，分享队伍应尽可能低配减配";
+
+  static String m31(remain) => "上傳過於頻繁，請等待${remain}秒";
 
   static String m12(a, b) => "${a}${b}";
 
@@ -1000,6 +1002,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "time_start": MessageLookupByLibrary.simpleMessage("開始"),
         "tips": MessageLookupByLibrary.simpleMessage("小贴士"),
         "toggle_dark_mode": MessageLookupByLibrary.simpleMessage("切換深色模式"),
+        "too_many_td5_svts_warning": m30,
         "tooltip_refresh_sliders": MessageLookupByLibrary.simpleMessage("刷新輪播圖"),
         "total": MessageLookupByLibrary.simpleMessage("總計"),
         "total_ap": MessageLookupByLibrary.simpleMessage("總AP"),
@@ -1033,7 +1036,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "upload_and_close_app_alert": MessageLookupByLibrary.simpleMessage("是否上傳資料再關閉?"),
         "upload_before_close_app": MessageLookupByLibrary.simpleMessage("關閉前上傳"),
         "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage("当前队伍不满足上传条件:"),
-        "upload_paused": m30,
+        "upload_paused": m31,
         "upload_team_confirmation": MessageLookupByLibrary.simpleMessage(
             "確認上傳當前的隊伍?\n\n注意事項：(為了方便其他玩家檢索)\n- 請勿上傳關卡開放時未實裝的從者!!!\n- 請盡量降低隊伍配置(不必要的聖杯、被動技能、 寶具等級、未使用的後排從者等)以供他人參考。\n- 上傳的隊伍可能因數據格式更新/不相容等原因被移除。"),
         "upload_team_critical_team_warning": MessageLookupByLibrary.simpleMessage("普通指令卡过多，请减少不必要出卡。若确实为暴击队请勾选:"),
