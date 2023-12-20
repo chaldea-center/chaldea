@@ -108,6 +108,14 @@ class ServantSelector extends StatelessWidget {
           context: context,
           child: child,
           onTapSelect: () {
+            Set<int>? eventSvtIds;
+            final event = questPhase?.event;
+            if (event != null) {
+              eventSvtIds = db.gameData.servantsById.values
+                  .where((svt) => svt.eventSkills(event.id).isNotEmpty)
+                  .map((e) => e.id)
+                  .toSet();
+            }
             router.pushPage(
               ServantListPage(
                 planMode: false,
@@ -122,6 +130,7 @@ class ServantSelector extends StatelessWidget {
                 filterData: svtFilterData,
                 pinged: db.curUser.battleSim.pingedSvts.toList(),
                 showSecondaryFilter: true,
+                eventSvtIds: eventSvtIds,
               ),
               detail: true,
             );

@@ -22,8 +22,10 @@ class ServantListPage extends StatefulWidget {
   final bool planMode;
   final void Function(Servant svt)? onSelected;
   final SvtFilterData? filterData;
+  //
   final List<int>? pinged;
   final bool showSecondaryFilter;
+  final Set<int>? eventSvtIds;
 
   ServantListPage({
     super.key,
@@ -32,6 +34,7 @@ class ServantListPage extends StatefulWidget {
     this.filterData,
     this.pinged,
     this.showSecondaryFilter = false,
+    this.eventSvtIds,
   });
 
   @override
@@ -377,8 +380,15 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
   int? _changedAppend; // only append skill 2 - NP related
   bool? _changedDress;
 
+  bool _eventSvtOnly = false;
   @override
   bool filter(Servant svt) {
+    if (_eventSvtOnly) {
+      final eventSvtIds = widget.eventSvtIds;
+      if (eventSvtIds != null && eventSvtIds.isNotEmpty && !eventSvtIds.contains(svt.id)) {
+        return false;
+      }
+    }
     return ServantFilterPage.filter(filterData, svt, planMode: widget.planMode);
   }
 
@@ -540,6 +550,19 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
               setState(() {});
             },
           ),
+          if (widget.eventSvtIds?.isNotEmpty == true)
+            FilterGroup<bool>(
+              combined: true,
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              shrinkWrap: true,
+              values: FilterRadioData.nonnull(_eventSvtOnly),
+              options: const [true],
+              optionBuilder: (v) => _getBtn(S.current.event),
+              onFilterChanged: (v, lastChanged) {
+                _eventSvtOnly = !_eventSvtOnly;
+                setState(() {});
+              },
+            ),
         ],
       ),
     );
