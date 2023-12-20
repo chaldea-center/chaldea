@@ -319,8 +319,7 @@ class BattleServantData {
       await battleData.withActivator(this, () async {
         for (final skill in playerSvtData!.extraPassives) {
           if (playerSvtData!.disabledExtraSkills.contains(skill.id)) continue;
-          if (skill.extraPassive.isEmpty ||
-              skill.isExtraPassiveEnabledForEvent(battleData.niceQuest?.war?.eventId ?? 0)) {
+          if (skill.isSvtEventSkill(eventId: battleData.niceQuest?.war?.eventId ?? 0, includeZero: true)) {
             final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtPassive);
             await skillInfo.activate(battleData);
           }

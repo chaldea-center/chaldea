@@ -85,7 +85,7 @@ class BattleSimUserData {
     if (event != null) {
       for (final ce in db.gameData.craftEssences.values) {
         if (pinged.contains(ce.collectionNo)) continue;
-        if (ce.skills.any((skill) => skill.isEventSkill(event))) {
+        if (ce.eventSkills(event.id).isNotEmpty) {
           pinged.add(ce.collectionNo);
         }
       }

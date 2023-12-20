@@ -112,7 +112,7 @@ class ServantSelector extends StatelessWidget {
             final event = questPhase?.event;
             if (event != null) {
               eventSvtIds = db.gameData.servantsById.values
-                  .where((svt) => svt.eventSkills(event.id).isNotEmpty)
+                  .where((svt) => svt.eventSkills(eventId: event.id, includeZero: false).isNotEmpty)
                   .map((e) => e.id)
                   .toSet();
             }

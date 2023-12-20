@@ -245,20 +245,30 @@ class NiceSkill extends SkillOrTd implements BaseSkill {
     return _$NiceSkillFromJson(json);
   }
 
-  bool isExtraPassiveEnabledForEvent(int eventId) {
-    return extraPassive.any((e) {
-      // ヨハンナさんと未確認の愛 ブレッシング・オブ・セイント EX 300NP
-      if (id == 940274) return false;
-      if (e.eventId == 0) {
+  bool isSvtEventSkill({required int eventId, required bool includeZero}) {
+    // ヨハンナさんと未確認の愛 ブレッシング・オブ・セイント EX 300NP
+    if (id == 940274) return false;
+    if (extraPassive.isEmpty && includeZero) return true;
+    for (final passive in extraPassive) {
+      if (passive.eventId == 0) {
         // 巡霊の祝祭, 3000日纪念
-        if (e.endedAt - e.startedAt < 90 * kSecsPerDay || e.endedAt < kNeverClosedTimestamp) {
-          return false;
+        if (passive.endedAt - passive.startedAt < 90 * kSecsPerDay || passive.endedAt < kNeverClosedTimestamp) {
+          continue;
         }
+        if (eventId == 0 || includeZero) return true;
+      }
+      if (passive.eventId == eventId) return true;
+    }
+    return false;
+  }
+
+  bool isCraftEventSkill({required int svtId, required int eventId}) {
+    for (final skillSvt in skillSvts) {
+      if (skillSvt.svtId == svtId && skillSvt.eventId == eventId) {
         return true;
       }
-      if (e.eventId == eventId) return true;
-      return false;
-    });
+    }
+    return false;
   }
 
   @override
@@ -338,20 +348,6 @@ class NiceSkill extends SkillOrTd implements BaseSkill {
 
 extension BaseSkillMethods on BaseSkill {
   int get maxLv => functions.firstOrNull?.svals.length ?? 0;
-
-  bool isEventSkill(Event event) {
-    return functions.any((func) {
-      if (func.svals.getOrNull(0)?.EventId == event.id) return true;
-      if (event.warIds.isNotEmpty) {
-        if (<int>{for (final trait in func.funcquestTvals) ...?db.gameData.mappingData.fieldTrait[trait.id]?.warIds}
-            .intersection(event.warIds.toSet())
-            .isNotEmpty) {
-          return true;
-        }
-      }
-      return false;
-    });
-  }
 
   NiceSkill toNice() {
     return NiceSkill.fromJson(toJson());

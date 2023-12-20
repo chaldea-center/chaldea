@@ -23,7 +23,7 @@ class EventBonusTab extends HookWidget {
     ];
 
     int? _lastTag;
-    for (final skill in ce.skills.where((skill) => skill.isEventSkill(event))) {
+    for (final skill in ce.eventSkills(event.id)) {
       final tag = Object.hash(skill.icon, skill.lName.l);
       if (_lastTag != tag) {
         children.add(ListTile(
@@ -50,8 +50,7 @@ class EventBonusTab extends HookWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> ceWidgets = [], svtWidgets = [];
-    final eventCEs =
-        db.gameData.craftEssences.values.where((e) => e.skills.any((skill) => skill.isEventSkill(event))).toList();
+    final eventCEs = db.gameData.craftEssences.values.where((e) => e.eventSkills(event.id).isNotEmpty).toList();
     eventCEs.sort2((e) => e.collectionNo);
 
     for (final ce in eventCEs) {
@@ -62,11 +61,9 @@ class EventBonusTab extends HookWidget {
     Map<int, List<Servant>> svts = {};
 
     for (final svt in db.gameData.servantsNoDup.values) {
-      for (final skill in svt.extraPassive) {
-        if (skill.isEventSkill(event)) {
-          svts.putIfAbsent(skill.id, () => []).add(svt);
-          eventSkills[skill.id] ??= skill;
-        }
+      for (final skill in svt.eventSkills(eventId: event.id, includeZero: false)) {
+        svts.putIfAbsent(skill.id, () => []).add(svt);
+        eventSkills[skill.id] ??= skill;
       }
     }
     svts = sortDict(svts);

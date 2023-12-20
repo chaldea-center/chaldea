@@ -604,8 +604,8 @@ class Servant with GameCardMixin {
     db.itemCenter.updateSvts(svts: [this]);
   }
 
-  Iterable<NiceSkill> eventSkills(int eventId) {
-    return extraPassive.where((skill) => skill.functions.any((func) => func.svals.getOrNull(0)?.EventId == eventId));
+  Iterable<NiceSkill> eventSkills({required int eventId, required bool includeZero}) {
+    return extraPassive.where((skill) => skill.isSvtEventSkill(eventId: eventId, includeZero: includeZero));
   }
 
   NiceSkill? getDefaultSkill(List<NiceSkill> skills, Region region) {
@@ -794,6 +794,10 @@ class CraftEssence with GameCardMixin {
   CraftStatus get status => db.curUser.ceStatusOf(collectionNo);
 
   Map<String, dynamic> toJson() => _$CraftEssenceToJson(this);
+
+  Iterable<NiceSkill> eventSkills(int eventId) {
+    return skills.where((skill) => skill.isCraftEventSkill(svtId: id, eventId: eventId));
+  }
 
   Map<int, List<NiceSkill>> getActivatedSkills(bool mlb) {
     final grouped = <int, List<NiceSkill>>{};

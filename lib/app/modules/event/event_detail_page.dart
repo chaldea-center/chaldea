@@ -190,8 +190,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
     if (event.commandAssists.isNotEmpty) {
       _addTab(S.current.command_assist, EventCommandAssistPage(event: event));
     }
-    if (db.gameData.craftEssences.values.any((ce) => ce.skills.any((skill) => skill.isEventSkill(event))) ||
-        db.gameData.servantsNoDup.values.any((svt) => svt.eventSkills(event.id).isNotEmpty)) {
+    if (db.gameData.craftEssences.values.any((ce) => ce.eventSkills(event.id).isNotEmpty) ||
+        db.gameData.servantsNoDup.values
+            .any((svt) => svt.eventSkills(eventId: event.id, includeZero: false).isNotEmpty)) {
       _addTab(S.current.event_bonus, EventBonusTab(event: event));
     }
     if (event.bulletinBoards.isNotEmpty) {
