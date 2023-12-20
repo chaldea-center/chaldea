@@ -162,11 +162,13 @@ class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
     _running = true;
     try {
       int finished = 0;
-      for (final converter in converters) {
-        EasyLoading.show(status: '$finished/${converters.length}...');
+      EasyLoading.show(status: '$finished/${converters.length}...');
+      List<Future> futures = converters.map((converter) async {
         await converter.loadAndConvert();
         finished += 1;
-      }
+        EasyLoading.show(status: '$finished/${converters.length}...');
+      }).toList();
+      await Future.wait(futures);
       int error = converters.where((e) => e.errors.isNotEmpty).length;
       if (error == 0) {
         EasyLoading.showSuccess('共${converters.length}个关卡');
@@ -341,6 +343,8 @@ class _MCQuestConverter extends McConverter {
     Set<int> exps = questPhases.values.map((e) => e.exp).toSet();
     Set<int> qps = questPhases.values.map((e) => e.qp).toSet();
     bool sameBond = allNoBattle;
+    List<String> extraInfo = [];
+
     final buffer = StringBuffer("""===${nameCn ?? quest.name}===
 {{关卡配置
 |开放条件=
@@ -366,7 +370,7 @@ class _MCQuestConverter extends McConverter {
       buffer.writeln("|可重复=${quest.phases.last}");
     }
     for (final phase in quest.phases) {
-      buffer.write(cvtPhase(questPhases[phase], cnQuestPhases[phase], sameBond));
+      buffer.write(cvtPhase(questPhases[phase], cnQuestPhases[phase], sameBond, extraInfo));
     }
     final gifts = quest.gifts.where((gift) => gift.type != GiftType.questRewardIcon).toList();
     // gifts.sort((a, b) => Item.compare2(a.objectId, b.objectId));
@@ -398,7 +402,6 @@ class _MCQuestConverter extends McConverter {
     }
     buffer.writeln();
 
-    List<String> extraInfo = [];
     if (quest.gifts.any((e) => e.giftAdds.isNotEmpty)) {
       extraInfo.add('部分通关奖励可能被替换');
     }
@@ -407,7 +410,7 @@ class _MCQuestConverter extends McConverter {
     }
     for (final questPhase in questPhases.values) {
       if (questPhase.enemyHashes.length > 1) {
-        extraInfo.add('wave${questPhase.phase}: 存在多种敌方配置，可能随剧情选择变化或随机');
+        extraInfo.add('进度${questPhase.phase}: 存在多种敌方配置，可能随剧情选择变化或随机');
       }
     }
 
@@ -422,7 +425,7 @@ class _MCQuestConverter extends McConverter {
     return buffer.toString().split('\n').map((e) => e.trimRight()).join('\n');
   }
 
-  String cvtPhase(QuestPhase? quest, QuestPhase? cnQuest, bool sameBond) {
+  String cvtPhase(QuestPhase? quest, QuestPhase? cnQuest, bool sameBond, List<String> extraInfo) {
     if (quest == null) {
       return '';
     }
@@ -477,6 +480,10 @@ class _MCQuestConverter extends McConverter {
       for (final enemy in callDeck) {
         buffer.write('|$stagePrefix敌人${callDeckIdStart + enemy.deckId}=');
         buffer.writeln(buildEnemyWithShift(enemy, shiftDeck));
+      }
+
+      if (enemyDeck.length != enemyDeck.map((e) => e.deckId).toSet().length) {
+        extraInfo.add('进度$phase Wave${stage.wave} 同一位置存在多个敌人，可能整合自多个版本');
       }
     }
     // drops
