@@ -998,6 +998,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         filterData: svtFilterData,
         pinged: db.curUser.battleSim.pingedSvts.toList(),
         showSecondaryFilter: true,
+        eventId: questPhase?.event?.id,
       ),
       detail: true,
     );

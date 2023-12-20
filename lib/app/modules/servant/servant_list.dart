@@ -25,7 +25,7 @@ class ServantListPage extends StatefulWidget {
   //
   final List<int>? pinged;
   final bool showSecondaryFilter;
-  final Set<int>? eventSvtIds;
+  final int? eventId;
 
   ServantListPage({
     super.key,
@@ -34,7 +34,7 @@ class ServantListPage extends StatefulWidget {
     this.filterData,
     this.pinged,
     this.showSecondaryFilter = false,
-    this.eventSvtIds,
+    this.eventId,
   });
 
   @override
@@ -384,8 +384,8 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
   @override
   bool filter(Servant svt) {
     if (_eventSvtOnly) {
-      final eventSvtIds = widget.eventSvtIds;
-      if (eventSvtIds != null && eventSvtIds.isNotEmpty && !eventSvtIds.contains(svt.id)) {
+      final eventId = widget.eventId ?? 0;
+      if (eventId > 0 && svt.eventSkills(eventId: eventId, includeZero: false).isEmpty) {
         return false;
       }
     }
@@ -550,7 +550,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
               setState(() {});
             },
           ),
-          if (widget.eventSvtIds?.isNotEmpty == true)
+          if ((widget.eventId ?? 0) != 0)
             FilterGroup<bool>(
               combined: true,
               padding: const EdgeInsets.symmetric(horizontal: 4),
