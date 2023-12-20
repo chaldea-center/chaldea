@@ -1425,10 +1425,10 @@ class BattleData {
       }
 
       final actor = actorList[i]!;
-      if (actor.hp <= 0 && !actor.hasNextShift(this)) {
+      if (actor.hp <= 0) {
         bool hasGuts = false;
         await actor.activateGuts(this).then((value) => hasGuts = value);
-        if (!hasGuts) {
+        if (!hasGuts && !actor.hasNextShift(this)) {
           await actor.death(this);
           if (actor.lastHitBy != null) {
             await actor.lastHitBy!.activateBuffOnAction(this, BuffAction.functionDeadattack);

@@ -14,6 +14,7 @@ import 'ai.dart';
 class BattleServantData {
   static const npPityThreshold = 9900;
   static List<BuffType> gutsTypes = [BuffType.guts, BuffType.gutsRatio];
+  static List<BuffType> shiftGutsTypes = [BuffType.shiftGuts, BuffType.shiftGutsRatio];
   static List<BuffAction> buffEffectivenessTypes = [BuffAction.buffRate, BuffAction.funcHpReduce];
 
   final bool isPlayer;
@@ -1332,7 +1333,8 @@ class BattleServantData {
   Future<bool> activateGuts(final BattleData battleData) async {
     BuffData? gutsToApply = await battleData.withActivator(this, () async {
       BuffData? gutsToApply;
-      for (final buff in collectBuffsPerTypes(battleBuff.validBuffs, gutsTypes)) {
+      final List<BuffType> gutsTypesToCheck = hasNextShift(battleData) ? shiftGutsTypes : gutsTypes;
+      for (final buff in collectBuffsPerTypes(battleBuff.validBuffs, gutsTypesToCheck)) {
         if (await buff.shouldActivateBuff(battleData, this)) {
           if (gutsToApply == null || (gutsToApply.irremovable && !buff.irremovable)) {
             gutsToApply = buff;
@@ -1345,7 +1347,7 @@ class BattleServantData {
     if (gutsToApply != null) {
       gutsToApply.setUsed();
       final value = gutsToApply.getValue(battleData, this);
-      final isRatio = gutsToApply.buff.type == BuffType.gutsRatio;
+      final isRatio = gutsToApply.buff.type == BuffType.gutsRatio || gutsToApply.buff.type == BuffType.shiftGutsRatio;
       if (isRatio) {
         hp = (toModifier(value) * maxHp).floor();
       } else {
