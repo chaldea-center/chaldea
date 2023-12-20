@@ -2,8 +2,10 @@
 
 ## 2.5.4
 
-- Export quest to Mooncell wiki format
+- Export quest data and gacha data to Mooncell wiki format
 - Check svt release time before uploading team
+- Allow uploading critical team
+- Add event servant filter when build formation
 
 ## 2.5.3
 
