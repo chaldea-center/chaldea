@@ -13,8 +13,6 @@ import 'ai.dart';
 
 class BattleServantData {
   static const npPityThreshold = 9900;
-  static List<BuffType> gutsTypes = [BuffType.guts, BuffType.gutsRatio];
-  static List<BuffType> shiftGutsTypes = [BuffType.shiftGuts, BuffType.shiftGutsRatio];
   static List<BuffAction> buffEffectivenessTypes = [BuffAction.buffRate, BuffAction.funcHpReduce];
 
   final bool isPlayer;
@@ -702,7 +700,7 @@ class BattleServantData {
     }
 
     return battleData.withActivatorSync(this, () {
-      return collectBuffsPerTypes(battleBuff.validBuffs, gutsTypes)
+      return collectBuffsPerAction(battleBuff.validBuffs, BuffAction.guts)
           .where((buff) => buff.shouldApplyBuff(battleData, this))
           .isNotEmpty;
     });
@@ -1333,8 +1331,8 @@ class BattleServantData {
   Future<bool> activateGuts(final BattleData battleData) async {
     BuffData? gutsToApply = await battleData.withActivator(this, () async {
       BuffData? gutsToApply;
-      final List<BuffType> gutsTypesToCheck = hasNextShift(battleData) ? shiftGutsTypes : gutsTypes;
-      for (final buff in collectBuffsPerTypes(battleBuff.validBuffs, gutsTypesToCheck)) {
+      final BuffAction gutsActionToCheck = hasNextShift(battleData) ? BuffAction.shiftGuts : BuffAction.guts;
+      for (final buff in collectBuffsPerAction(battleBuff.validBuffs, gutsActionToCheck)) {
         if (await buff.shouldActivateBuff(battleData, this)) {
           if (gutsToApply == null || (gutsToApply.irremovable && !buff.irremovable)) {
             gutsToApply = buff;
