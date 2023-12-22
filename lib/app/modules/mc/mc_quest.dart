@@ -148,11 +148,12 @@ class MCQuestListConvertPage extends StatefulWidget {
 
 class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
   List<_MCQuestConverter> converters = [];
+  bool _useBgColor = true;
 
   @override
   void initState() {
     super.initState();
-    converters = [for (final quest in widget.quests) _MCQuestConverter(quest)];
+    converters = [for (final quest in widget.quests) _MCQuestConverter(quest)..useTitleBg = _useBgColor];
     loadData();
   }
 
@@ -164,6 +165,7 @@ class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
       int finished = 0;
       EasyLoading.show(status: '$finished/${converters.length}...');
       List<Future> futures = converters.map((converter) async {
+        converter.useTitleBg = _useBgColor;
         await converter.loadAndConvert();
         finished += 1;
         EasyLoading.show(status: '$finished/${converters.length}...');
@@ -221,6 +223,17 @@ class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
               children: [
+                SwitchListTile(
+                  // dense: true,
+                  value: _useBgColor,
+                  title: const Text('添加标题背景颜色'),
+                  onChanged: (v) {
+                    setState(() {
+                      _useBgColor = v;
+                    });
+                    loadData();
+                  },
+                ),
                 Card(
                   child: Padding(
                     padding: const EdgeInsets.all(8),
@@ -251,7 +264,7 @@ class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
 
 class _MCQuestConverter extends McConverter {
   // static
-  static final Map<int, (Uint8List, Uint8List, Color)> _bannerCaches = {};
+  static final Map<String, (Uint8List, Uint8List, Color)> _bannerCaches = {};
   // data
   final Quest quest;
   Map<int, QuestPhase> questPhases = {};
@@ -261,6 +274,7 @@ class _MCQuestConverter extends McConverter {
   Uint8List? cropTitleBanner;
   Color? bannerColor;
   // options
+  bool useTitleBg = true;
   String? titleBg;
 
   _MCQuestConverter(this.quest);
@@ -298,7 +312,7 @@ class _MCQuestConverter extends McConverter {
           cnQuestPhases[phase] = await AtlasApi.questPhase(quest.id, phase, region: Region.cn);
         }
       }
-    }));
+    }).toList());
     futures.add(_loadRaw());
 
     await Future.wait(futures);
@@ -308,19 +322,48 @@ class _MCQuestConverter extends McConverter {
   Future<void> _loadRaw() async {
     final rawQuest = await AtlasApi.cacheManager.getJson('${AtlasApi.atlasApiHost}/raw/JP/quest/${quest.id}');
     final int? bannerId = rawQuest['mstQuest']?['bannerId'];
-    await pickBannerColor(bannerId ?? 0);
+    final int? bannerType = rawQuest['mstQuest']?['bannerType'];
+    await pickBannerColor(bannerId ?? 0, bannerType ?? 0);
   }
 
-  Future<void> pickBannerColor(int bannerId) async {
-    if (bannerId <= 0) return;
-    if (_bannerCaches.containsKey(bannerId)) {
-      final cache = _bannerCaches[bannerId]!;
+  Future<void> pickBannerColor(int bannerId, int bannerType) async {
+    String? url;
+    if (bannerId == 0) {
+      // index=quest.type
+      const msQBoardL3Names = [
+        "",
+        "img_questboard_main_",
+        "img_questboard_free_",
+        "img_questboard_story03",
+        "",
+        "img_questboard_free_",
+        "img_questboard_hero03"
+      ];
+      // https://explorer.atlasacademy.io/aa-fgo-public/JP/Banner/
+      switch (quest.type) {
+        case QuestType.main:
+        case QuestType.free:
+        case QuestType.event:
+          final prefix = msQBoardL3Names.getOrNull(quest.type.id);
+          if (prefix != null) {
+            url = '${HostsX.atlasAssetHost}/JP/Banner/$prefix$bannerType.png';
+          }
+        default:
+          break;
+      }
+    } else {
+      url = '${HostsX.atlasAssetHost}/JP/EventUI/quest_board_$bannerId.png';
+    }
+    if (url == null) return;
+
+    if (_bannerCaches.containsKey(url)) {
+      final cache = _bannerCaches[url]!;
       titleBanner = cache.$1;
       cropTitleBanner = cache.$2;
       bannerColor = cache.$3;
       return;
     }
-    final imgBytes = await CachedApi.cacheManager.get('${HostsX.atlasAssetHost}/JP/EventUI/quest_board_$bannerId.png');
+    final imgBytes = await CachedApi.cacheManager.get(url);
     if (imgBytes == null) return;
     titleBanner = Uint8List.fromList(imgBytes);
     final img = img_lib.decodePng(titleBanner!);
@@ -333,7 +376,7 @@ class _MCQuestConverter extends McConverter {
     final b = Maths.sum(cropped.map((e) => e.b.toInt())) ~/ cropped.length;
     bannerColor = Color.fromARGB(255, r, g, b);
     cropTitleBanner = img_lib.encodePng(cropped);
-    _bannerCaches[bannerId] = (titleBanner!, cropTitleBanner!, bannerColor!);
+    _bannerCaches[url] = (titleBanner!, cropTitleBanner!, bannerColor!);
   }
 
   String convert() {
@@ -347,12 +390,17 @@ class _MCQuestConverter extends McConverter {
     bool sameBond = allNoBattle;
     List<String> extraInfo = [];
 
+    String effectiveTitleBg = "";
+    if (useTitleBg) {
+      effectiveTitleBg = titleBg ?? getDefaultTitleBg() ?? bannerColor?.toCSSHex() ?? "";
+    }
+
     final buffer = StringBuffer("""===${nameCn ?? quest.name}===
 {{关卡配置
 |开放条件=
 |名称jp=${quest.name}
 |名称cn=${nameCn ?? ""}
-|标题背景颜色=${titleBg ?? getDefaultTitleBg() ?? bannerColor?.toCSSHex() ?? ""}
+|标题背景颜色=$effectiveTitleBg
 """);
     final svt = db.gameData.servantsById.values.firstWhereOrNull((e) => e.relateQuestIds.contains(quest.id));
     if (svt != null) {
