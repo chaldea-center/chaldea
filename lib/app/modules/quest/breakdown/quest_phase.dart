@@ -391,7 +391,13 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   }
 
   Widget getQuestVersionDropdown(QuestPhase curPhase) {
-    final hashsWithNull = [null, ...curPhase.enemyHashes];
+    const int kMaxHashCount = 100;
+    List<String?> shownHashes = [null, ...curPhase.enemyHashes.take(kMaxHashCount)];
+    if (!shownHashes.contains(_enemyHash)) {
+      shownHashes.add(_enemyHash);
+    }
+
+    // final hashsWithNull = [null, ...curPhase.enemyHashes];
     final noHashPhase = getCachedData(null);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -403,8 +409,8 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
               isDense: true,
               iconSize: 16,
               value: _enemyHash,
-              items: List.generate(hashsWithNull.length, (index) {
-                final hash = hashsWithNull[index];
+              items: List.generate(shownHashes.length, (index) {
+                final hash = shownHashes[index];
                 String text;
                 if (hash == null) {
                   text = S.current.total;
