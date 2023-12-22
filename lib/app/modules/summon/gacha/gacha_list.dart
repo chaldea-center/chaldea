@@ -117,7 +117,6 @@ class _GachaListPageState extends State<GachaListPage>
               builder: (context) => SummonFilterPage(
                 filterData: filterData,
                 isRawGacha: true,
-                showMultiChoice: shouldShowMultiChoice,
                 onChanged: (_) {
                   if (mounted) setState(() {});
                 },
@@ -174,7 +173,7 @@ class _GachaListPageState extends State<GachaListPage>
       expanded: filterData.showBanner,
       headerBuilder: (context, _) {
         Widget? trailing;
-        if (shouldShowMultiChoice && filterData.multiChoiceMode) {
+        if (shouldShowMultiChoice) {
           trailing = Checkbox(
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             visualDensity: VisualDensity.compact,
@@ -271,7 +270,7 @@ class _GachaListPageState extends State<GachaListPage>
 
   @override
   PreferredSizeWidget? get buttonBar {
-    if (!shouldShowMultiChoice || !filterData.multiChoiceMode) return null;
+    if (!shouldShowMultiChoice) return null;
     return PreferredSize(
       preferredSize: const Size.fromHeight(48),
       child: ButtonBar(

@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -10,7 +7,8 @@ import 'package:chaldea/models/gamedata/raw.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/widgets/inherit_selection_area.dart';
+import 'package:chaldea/widgets/widgets.dart';
+import 'gacha_parser.dart';
 import 'mc_prob_edit.dart';
 
 class MCSummonCreatePage extends StatefulWidget {
@@ -22,20 +20,23 @@ class MCSummonCreatePage extends StatefulWidget {
 }
 
 class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
-  List<_GachaState> gachas = [];
-  bool get anyNoResult => gachas.any((e) => e.result?.groups.isNotEmpty != true);
+  late List<GachaProbData> gachas = widget.gachas.map((e) => GachaProbData(e, '', [])).toList();
+  List<JpGachaNotice> notices = [];
+  JpGachaNotice? _selectedNotice;
+
+  bool get anyNoResult => gachas.any((e) => e.isInvalid);
 
   // -2=gacha page, -1=simulator page, 0/1/2/3=data{X+1}
   final curTab = FilterRadioData<int>.nonnull(-2);
   late final _jpNameController = TextEditingController();
   late final _cnNameController = TextEditingController();
+  bool _isLuckyBagWithSR = false;
 
   @override
   void initState() {
     super.initState();
-    gachas = widget.gachas.map((e) => _GachaState(e)).toList();
-    gachas.sort2((e) => e.gacha.openedAt);
-    parse();
+    parseProbs();
+    parseNotices();
   }
 
   @override
@@ -60,10 +61,10 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
             minLeadingWidth: 24,
             horizontalTitleGap: 8,
             contentPadding: EdgeInsets.zero,
-            leading: gacha.result == null
+            leading: gacha.isInvalid
                 ? const Icon(Icons.error, color: Colors.red, size: 18)
                 : const Icon(Icons.check_circle, color: Colors.green, size: 18),
-            title: Text('${index + 1} - ${gacha.gacha.name}'),
+            title: Text('${index + 1} - ${gacha.gacha.name.setMaxLines(1)}'),
             onTap: () {
               router.pushPage(MCGachaProbEditPage(gacha: gacha.gacha));
             },
@@ -71,15 +72,109 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
           ),
         Center(
           child: ElevatedButton(
-            onPressed: parse,
+            onPressed: parseProbs,
             child: const Text('解析所有卡池'),
           ),
         ),
         const Divider(height: 16),
-        const SizedBox(height: 16),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Text('公告: '),
+            Expanded(
+              child: DropdownButton<JpGachaNotice>(
+                value: _selectedNotice,
+                hint: const Text('官方公告'),
+                isExpanded: true,
+                items: [
+                  DropdownMenuItem(
+                    value: null,
+                    child: Text(
+                      notices.isEmpty ? "解析中..." : "<选择一个公告(若在列表中)>",
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ),
+                  for (final notice in notices)
+                    DropdownMenuItem(
+                      value: notice,
+                      child: Text.rich(TextSpan(
+                        style: const TextStyle(fontSize: 12),
+                        children: [
+                          TextSpan(
+                            text: '[${notice.lastUpdate}更新]',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          TextSpan(text: notice.title)
+                        ],
+                      )),
+                    )
+                ],
+                onChanged: (v) {
+                  setState(() {
+                    _selectedNotice = v;
+                    if (v != null) {
+                      _jpNameController.text = v.title;
+                    }
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: _selectedNotice == null
+                  ? null
+                  : () {
+                      launch(_selectedNotice!.link);
+                    },
+              child: const Text('打开公告'),
+            ),
+            TextButton(
+              onPressed: _selectedNotice?.topBanner == null
+                  ? null
+                  : () {
+                      launch(_selectedNotice!.topBanner!, external: true);
+                    },
+              child: const Text('下载标题图'),
+            ),
+            TextButton(
+              onPressed: () {
+                final cnName = _cnNameController.text.trim();
+                if (cnName.isEmpty) {
+                  EasyLoading.showInfo('请先填写中文卡池名');
+                  return;
+                }
+                final fn = '${cnName}_jp.png';
+                if (fn.contains('/')) {
+                  EasyLoading.showError('文件名不能包含半角斜杠"/"');
+                  return;
+                }
+                launch("https://fgo.wiki/index.php?title=特殊:上传文件&wpDestFile=$fn");
+              },
+              child: const Text('上传标题图'),
+            ),
+          ],
+        ),
+        if (_selectedNotice?.topBanner != null)
+          Container(
+            constraints: const BoxConstraints(maxHeight: 80),
+            child: CachedImage(
+              imageUrl: _selectedNotice!.topBanner,
+              aspectRatio: 8 / 3,
+              onTap: () {
+                launch(_selectedNotice!.topBanner!, external: true);
+              },
+            ),
+          ),
+        const Divider(height: 16),
+        const SizedBox(height: 8),
         TextFormField(
           controller: _jpNameController,
           decoration: const InputDecoration(
+            isDense: true,
             labelText: '日文卡池名(不能出现英文斜杠/)',
             floatingLabelBehavior: FloatingLabelBehavior.always,
             border: OutlineInputBorder(),
@@ -92,6 +187,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
         TextFormField(
           controller: _cnNameController,
           decoration: const InputDecoration(
+            isDense: true,
             labelText: '中文卡池名(不能出现英文斜杠/)',
             floatingLabelBehavior: FloatingLabelBehavior.always,
             border: OutlineInputBorder(),
@@ -100,6 +196,18 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
             setState(() {});
           },
         ),
+        if (gachas.any((e) => e.gacha.isLuckyBag))
+          SwitchListTile(
+            dense: true,
+            title: const Text("福袋是否必定保底一四星从者"),
+            contentPadding: EdgeInsets.zero,
+            value: _isLuckyBagWithSR,
+            onChanged: (v) {
+              setState(() {
+                _isLuckyBagWithSR = v;
+              });
+            },
+          ),
         const SizedBox(height: 16),
         Center(
           child: FilterGroup<int>(
@@ -168,10 +276,12 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
               ),
             ),
           ),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Text(wikitext ?? "解析失败"),
+        InheritSelectionArea(
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(wikitext ?? "解析失败"),
+            ),
           ),
         ),
       ],
@@ -183,9 +293,8 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
     final closeAt = Maths.min(gachas.map((e) => e.gacha.closedAt), 0);
     List<int> puSvts = [], puCEs = [];
     for (final gacha in gachas) {
-      final result = gacha.result;
-      if (result == null) continue;
-      for (final group in result.groups) {
+      if (gacha.isInvalid) continue;
+      for (final group in gacha.groups) {
         if (group.display) {
           if (group.isSvt) {
             puSvts.addAll(group.ids);
@@ -218,6 +327,10 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
       ceNames += hint;
     }
 
+    String cnName = _cnNameController.text.trim();
+    String bannerFilename = cnName.isEmpty ? "<!-- 上传标题图 -->" : '$cnName jp.png';
+    String? jpLink = _selectedNotice?.link ?? "<!-- 填写公告地址 -->";
+
     final wikitext = """{{卡池信息
 |卡池名cn=
 |卡池名缩短cn=
@@ -227,12 +340,12 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
 |卡池时间预估cn=
 |卡池官网链接cn=
 |卡池名jp=${_jpNameController.text}
-|卡池名ha=${_cnNameController.text}
+|卡池名ha=$cnName
 |卡池名缩短jp=
 |卡池开始时间jp=${fmtJpDate(openAt)}
 |卡池结束时间jp=${fmtJpDate(closeAt)}
-|卡池图文件名jp=${_cnNameController.text} jp.png
-|卡池官网链接jp=<!-- 手动填写公告地址和上传标题图 -->
+|卡池图文件名jp=$bannerFilename
+|卡池官网链接jp=$jpLink
 |关联活动1=
 |关联卡池1=
 |推荐召唤从者=$svtNames
@@ -249,12 +362,13 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
 |卡池图片={{#show:{{Decode|{{BASEPAGENAME}}}}|?SummonImage|link=none}}
 |类型=20220101""");
     if (gachas.any((e) => e.gacha.isLuckyBag)) {
-      buffer.writeln('|福袋=ssr <!--若包含四星保底则为ssrsr-->');
+      buffer.write('|福袋=');
+      buffer.writeln(_isLuckyBagWithSR ? 'ssrsr' : 'ssr');
     }
 
     List<Set<int>> svtIdsGroups = [];
     for (final gacha in gachas) {
-      final groups = gacha.result?.groups ?? [];
+      final groups = gacha.groups;
       if (groups.isEmpty) continue;
       final ids = groups.where((e) => e.isSvt && e.display).expand((e) => e.ids).toList();
       if (ids.isNotEmpty) {
@@ -265,14 +379,14 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
     final Set<int> sameSvtIds = allSvtIds.where((e) => svtIdsGroups.every((g) => g.contains(e))).toSet();
     for (final (index, gacha) in gachas.indexed) {
       final idx = index + 1;
-      final groups = gacha.result?.groups.where((e) => e.isSvt && e.display).toList() ?? [];
+      final groups = gacha.groups.where((e) => e.isSvt && e.display).toList();
       final groupIds = groups.expand((e) => e.ids).toList();
       final diffIds = groupIds.where((e) => !sameSvtIds.contains(e));
       if (diffIds.isEmpty) {
         if (gachas.length == 1) {
           buffer.writeln("|子名称$idx=默认");
         } else {
-          buffer.writeln("|子名称$idx=默认$idx<!-- 未知 -->");
+          buffer.writeln("|子名称$idx=第$idx组<!-- ${gacha.gacha.name.setMaxLines(1)} -->");
         }
       } else {
         final name = diffIds.map((e) => db.gameData.servantsNoDup[e]?.extra.mcLink ?? "从者$e").join('+');
@@ -292,40 +406,42 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
 
   Widget dataTab(int index) {
     final gacha = gachas[index];
-    final result = gacha.result;
-    final table = result?.toOutput();
+    final table = gacha.toOutput();
     String page = _cnNameController.text.trim();
     if (page.isNotEmpty) {
       page = '$page/模拟器/data${index + 1}';
     }
     String? warning;
-    if (result != null) {
-      warning = '检查概率: ${result.guessTotalProb()}% (${result.getTotalProb()}%)';
+    if (gacha.isInvalid) {
+      warning = '该卡池解析失败';
+    } else {
+      warning = '检查概率: ${gacha.guessTotalProb()}% (${gacha.getTotalProb()}%)';
     }
 
     return _buildWikitext(table, page, warning: warning);
   }
 
-  Future<void> parse() async {
+  Future<void> parseProbs() async {
     try {
-      for (final gacha in gachas) {
-        if (gacha.url == null) continue;
-        final text = await showEasyLoading(() => CachedApi.cacheManager.getText(gacha.url!));
-        if (text == null) continue;
-        gacha.result = GachaParser().parse(text, gacha.gacha);
+      gachas = await showEasyLoading(() => JpGachaParser().parseMultiple(widget.gachas));
+      final errorCount = gachas.where((e) => e.isInvalid).length;
+      if (errorCount > 0) {
+        EasyLoading.showSuccess('$errorCount个卡池解析失败');
+      } else {
+        EasyLoading.showSuccess('Done');
       }
-      EasyLoading.showSuccess('Done');
     } catch (e, s) {
       logger.e('parse gachas failed', e, s);
       EasyLoading.showError(e.toString());
     }
     if (mounted) setState(() {});
   }
-}
 
-class _GachaState {
-  final MstGacha gacha;
-  final String? url;
-  GachaParseResult? result;
-  _GachaState(this.gacha) : url = gacha.getHtmlUrl(Region.jp);
+  Future<void> parseNotices() async {
+    notices = await JpGachaParser().parseNotices();
+    _selectedNotice = null;
+    if (mounted) {
+      setState(() {});
+    }
+  }
 }

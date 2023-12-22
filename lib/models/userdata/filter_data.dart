@@ -825,7 +825,6 @@ class SummonFilterData with _FilterData {
 
   final category = FilterGroupData<SummonType>();
   final gachaType = FilterGroupData<GachaType>();
-  bool multiChoiceMode = false;
 
   SummonFilterData({
     this.favorite = false,
