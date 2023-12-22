@@ -203,10 +203,12 @@ class Item {
     }
   }
 
-  static int _getType(int a) {
+  static List<int> _getType(int a, bool useDropPriority) {
+    int type, rarity, priority;
     final item = db.gameData.items[a];
     if (item != null) {
-      return switch (item.category) {
+      final category = item.category;
+      type = switch (category) {
         ItemCategory.coin => 10,
         ItemCategory.eventAscension => 11,
         ItemCategory.event => 12,
@@ -216,36 +218,50 @@ class Item {
         ItemCategory.special => 16,
         ItemCategory.other => 17,
       };
-    }
-    if (db.gameData.craftEssencesById.containsKey(a)) return 2;
-    if (db.gameData.commandCodesById.containsKey(a)) return 3;
-    final svt = db.gameData.entities[a];
-    if (svt != null) {
-      if (svt.type == SvtType.statusUp) return 101;
-      if (svt.type == SvtType.combineMaterial) return 102;
-      return 1;
-    }
-    if (db.gameData.entities[a]?.type == SvtType.combineMaterial) {
-      return 6;
-    }
-    return 0; // unknown
-  }
 
-  static int _getPriority(int a) {
-    return -(db.gameData.items[a]?.priority ?? db.gameData.craftEssencesById[a]?.collectionNo ?? a);
-  }
-
-  static int _getDropPriority(int a) {
-    return -(db.gameData.items[a]?.dropPriority ?? db.gameData.craftEssencesById[a]?.collectionNo ?? a);
+      rarity = item.background.index;
+      priority = useDropPriority ? item.dropPriority : item.priority;
+      priority = switch (category) {
+        ItemCategory.ascension || ItemCategory.skill => priority,
+        ItemCategory.coin => -(db.gameData.servantsById[item.value]?.collectionNo ?? item.id),
+        _ => -priority,
+      };
+    } else if (db.gameData.craftEssencesById.containsKey(a)) {
+      final ce = db.gameData.craftEssencesById[a]!;
+      type = 2;
+      rarity = ce.rarity;
+      priority = -ce.collectionNo;
+    } else if (db.gameData.commandCodesById.containsKey(a)) {
+      final cc = db.gameData.commandCodesById[a]!;
+      type = 3;
+      rarity = cc.rarity;
+      priority = -cc.collectionNo;
+    } else if (db.gameData.entities.containsKey(a)) {
+      final svt = db.gameData.entities[a]!;
+      type = switch (svt.type) {
+        SvtType.statusUp => 110,
+        SvtType.combineMaterial => 120,
+        SvtType.svtMaterialTd => 4,
+        _ => svt.collectionNo > 0 ? 1 : 9,
+      };
+      rarity = svt.rarity;
+      priority = -(svt.collectionNo > 0 ? svt.collectionNo : svt.id);
+    } else {
+      // unknown
+      type = 0;
+      rarity = 0;
+      priority = -a;
+    }
+    return [type, -rarity, priority];
   }
 
   // compare drop
   static int compare(int id1, int id2) {
-    return ListX.compareByList(id1, id2, (v) => <int>[_getType(v), _getDropPriority(v)]);
+    return ListX.compareByList(id1, id2, (v) => _getType(v, true));
   }
 
   static int compare2(int id1, int id2) {
-    return ListX.compareByList(id1, id2, (v) => <int>[_getType(v), _getPriority(v)]);
+    return ListX.compareByList(id1, id2, (v) => _getType(v, false));
   }
 
   static Map<int, int> sortMapByPriority(
