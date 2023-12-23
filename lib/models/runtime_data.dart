@@ -1,7 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 import 'package:screenshot/screenshot.dart';
 
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../app/tools/app_update.dart';
 import '../packages/app_info.dart';
@@ -67,10 +70,34 @@ class RuntimeData {
     final lapse = DateTime.now().timestamp - lastUpload;
     return lapse > secondsBetweenUpload ? 0 : secondsBetweenUpload - lapse;
   }
+
+  // filters
+  final svtFilters = _RouterValueMap<SvtFilterData>(() => SvtFilterData(
+        useGrid: true,
+        favorite: db.settings.battleSim.playerDataSource.isNone ? FavoriteState.all : FavoriteState.owned,
+      ));
+  final ceFilters = _RouterValueMap<CraftFilterData>(() => CraftFilterData(useGrid: true)
+    ..obtain.options = CEObtain.values.toSet().difference({CEObtain.valentine, CEObtain.exp, CEObtain.campaign}));
 }
 
 class AppClipBoard {
   QuestEnemy? questEnemy;
   List<UserShop>? userShops;
   UserBattleData? teamData;
+}
+
+class _RouterValueMap<T> {
+  final Map<int, T> _data = {};
+  final T Function() onAbsent;
+
+  _RouterValueMap(this.onAbsent);
+
+  T get current {
+    return _data.putIfAbsent(router.hashCode, onAbsent);
+  }
+
+  T of(BuildContext context) {
+    final r = Router.maybeOf(context) ?? router;
+    return _data.putIfAbsent(r.hashCode, onAbsent);
+  }
 }

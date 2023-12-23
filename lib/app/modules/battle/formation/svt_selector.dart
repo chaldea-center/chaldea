@@ -44,8 +44,8 @@ class ServantSelector extends StatelessWidget {
     required this.hovered,
   });
 
-  SvtFilterData get svtFilterData => db.settings.svtFilterData;
-  CraftFilterData get craftFilterData => db.settings.craftFilterData;
+  SvtFilterData get svtFilterData => db.runtimeData.svtFilters.current;
+  CraftFilterData get craftFilterData => db.runtimeData.ceFilters.current;
 
   @override
   Widget build(final BuildContext context) {

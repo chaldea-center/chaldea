@@ -52,7 +52,6 @@ class SimulationPreview extends StatefulWidget {
 
 class _SimulationPreviewState extends State<SimulationPreview> {
   static const _validQuestRegions = [Region.jp, Region.na];
-  static bool _initiated = false;
 
   Region? questRegion; // region for quest selector
   QuestPhase? _questPhase;
@@ -106,19 +105,6 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       _parseQuestPhase();
       initFormation();
     }
-
-    if (!_initiated && db.settings.autoResetFilter) {
-      db.settings.svtFilterData
-        ..reset()
-        ..useGrid = true;
-      if (!settings.playerDataSource.isNone) {
-        db.settings.svtFilterData.favorite = FavoriteState.owned;
-      }
-      db.settings.craftFilterData
-        ..reset()
-        ..obtain.options = CEObtain.values.toSet().difference({CEObtain.valentine, CEObtain.exp, CEObtain.campaign});
-    }
-    _initiated = true;
   }
 
   @override
