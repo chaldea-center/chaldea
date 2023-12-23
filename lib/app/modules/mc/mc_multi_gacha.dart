@@ -2,6 +2,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
+import 'package:chaldea/app/modules/mc/converter.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/raw.dart';
 import 'package:chaldea/models/models.dart';
@@ -293,7 +294,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
     for (final gacha in gachas) {
       if (gacha.isInvalid) continue;
       for (final group in gacha.groups) {
-        if (group.display) {
+        if (group.pickup) {
           if (group.isSvt) {
             puSvts.addAll(group.ids);
           } else {
@@ -330,7 +331,8 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
     bannerFilename = bannerFilename.isEmpty ? "<!-- 上传标题图 -->" : '${bannerFilename}_jp.png';
     String? jpLink = _selectedNotice?.link ?? "<!-- 填写公告地址 -->";
 
-    final wikitext = """{{卡池信息
+    final buffer = StringBuffer();
+    buffer.writeln("""{{卡池信息
 |卡池名cn=
 |卡池名缩短cn=
 |卡池开始时间cn=
@@ -351,8 +353,105 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
 |推荐召唤礼装=$ceNames
 |其他信息=
 }}
-""";
-    return _buildWikitext(wikitext, _cnNameController.text);
+""");
+
+    // 卡池情况
+    buffer.writeln('==推荐召唤具体情况==\n{{color|red|※所有召唤卡池均为不同卡池，单抽及保底次数不会继承。}}<br />');
+    buffer.writeln('===卡池情况===');
+
+    String _getJpTime(int timestamp) {
+      final date = McConverter().getDate(timestamp, 9);
+      // 9月13日(周三) 18:00～<br/>9月20日(周三) 17:59
+      const weekdays = ['', '周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+      return '${date.month.padTwoDigit}月${date.day.padTwoDigit}日(${weekdays[date.weekday]}) ${date.hour.padTwoDigit}:${date.minute.padTwoDigit}';
+    }
+
+    List<(String date, Map<int, Set<int>> svts, Set<int> ces)> puDetailTable = [];
+    Map<int, bool> hasCards = {};
+    for (final gacha in gachas) {
+      final date = '${_getJpTime(gacha.gacha.openedAt)}～<br/>${_getJpTime(gacha.gacha.closedAt)}';
+      Map<int, Set<int>> svts = {};
+      Set<int> ces = {};
+      for (final group in gacha.groups) {
+        if (!group.pickup || group.cards.isEmpty) continue;
+        if (group.isSvt) {
+          svts.putIfAbsent(group.rarity, () => {}).addAll(group.ids);
+          hasCards[group.rarity] = true;
+        } else {
+          ces.addAll(group.ids);
+          hasCards[-1] = true;
+        }
+      }
+      puDetailTable.add((date, svts, ces));
+    }
+    buffer.writeln('{| class="wikitable" style="text-align:center; white-space:normal;"');
+    buffer.writeln('! 推荐召唤时段');
+    for (final rarity in [5, 4, 3]) {
+      if (hasCards[rarity] ?? false) buffer.writeln('! 推荐召唤$rarity星从者');
+    }
+    if (hasCards[-1] ?? false) buffer.writeln('! 推荐召唤概念礼装');
+    for (final (date, svts, ces) in puDetailTable) {
+      buffer.writeln('|-');
+      buffer.writeln('|$date');
+      for (final rarity in [5, 4, 3]) {
+        if (hasCards[rarity] ?? false) {
+          buffer.write('|');
+          final ids = svts[rarity]?.toList() ?? [];
+          ids.sort();
+          buffer.writeln(ids.map((id) {
+            final svt = db.gameData.servantsNoDup[id];
+            final link = svt?.extra.mcLink ?? "从者$id";
+            return '[[文件:Servant ${id.toString().padLeft(3, "0")}.png|60px|link=$link]]';
+          }).join(' '));
+        }
+      }
+      if (hasCards[-1] ?? false) {
+        buffer.write('|');
+        final ids = ces.toList()..sort();
+        // |[[文件:礼装 412.png|60px|link=朝日初升]] [[文件:礼装 424.png|60px|link=苦味之黑]]
+        buffer.writeln(ids.map((id) {
+          final ce = db.gameData.craftEssences[id];
+          final link = ce?.extra.mcLink ?? "礼装$id";
+          return '[[文件:礼装 ${id.toString().padLeft(3, "0")}.png|60px|link=$link]]';
+        }).join(' '));
+      }
+    }
+    buffer.writeln('|}');
+    buffer.writeln('');
+
+    // 推荐卡牌抽取概率
+    Map<bool, Map<int, Set<String>>> pickupProbs = {};
+    for (final gacha in gachas) {
+      for (final group in gacha.groups) {
+        if (group.pickup) {
+          pickupProbs.putIfAbsent(group.isSvt, () => {}).putIfAbsent(group.rarity, () => {}).add(group.indivProb);
+        }
+      }
+    }
+    List<(String header, String value)> puProbTable = [];
+    for (final isSvt in [true, false]) {
+      for (final rarity in [5, 4, 3]) {
+        final probs = pickupProbs[isSvt]?[rarity];
+        if (probs == null) continue;
+        puProbTable.add((
+          "$rarity星${isSvt ? '从者' : '礼装'}",
+          probs.map((e) => RegExp(r'^\d+\.\d00%$').hasMatch(e) ? '${e.substring(0, e.length - 3)}%' : e).join(' / '),
+        ));
+      }
+    }
+    if (pickupProbs.isNotEmpty) {
+      buffer.writeln('===推荐卡牌抽取概率===');
+      buffer.writeln('{| class="wikitable" style="text-align:center; white-space:normal; width:600px; display:table;"');
+      for (final (header, _) in puProbTable) {
+        buffer.writeln('! $header');
+      }
+      buffer.writeln('|-');
+      for (final (_, value) in puProbTable) {
+        buffer.writeln('|$value');
+      }
+      buffer.writeln('|}');
+    }
+    return _buildWikitext(buffer.toString(), _cnNameController.text);
   }
 
   Widget get simulatorTab {
@@ -369,7 +468,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
     for (final gacha in gachas) {
       final groups = gacha.groups;
       if (groups.isEmpty) continue;
-      final ids = groups.where((e) => e.isSvt && e.display).expand((e) => e.ids).toList();
+      final ids = groups.where((e) => e.isSvt && e.pickup).expand((e) => e.ids).toList();
       if (ids.isNotEmpty) {
         svtIdsGroups.add(ids.toSet());
       }
@@ -378,7 +477,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
     final Set<int> sameSvtIds = allSvtIds.where((e) => svtIdsGroups.every((g) => g.contains(e))).toSet();
     for (final (index, gacha) in gachas.indexed) {
       final idx = index + 1;
-      final groups = gacha.groups.where((e) => e.isSvt && e.display).toList();
+      final groups = gacha.groups.where((e) => e.isSvt && e.pickup).toList();
       final groupIds = groups.expand((e) => e.ids).toList();
       final diffIds = groupIds.where((e) => !sameSvtIds.contains(e));
       if (diffIds.isEmpty) {
@@ -394,9 +493,6 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
       buffer.writeln('|数据$idx={{PAGENAME}}/data$idx');
     }
     buffer.writeln('}}');
-    if (gachas.any((e) => e.gacha.isLuckyBag)) {
-      // buffer.writeln('|类型=20220101');
-    }
 
     final wikitext = buffer.toString();
     String page = _cnNameController.text.trim();

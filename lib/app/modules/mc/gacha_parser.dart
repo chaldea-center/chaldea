@@ -47,7 +47,7 @@ class GachaProbData {
               isSvt: group.isSvt,
               rarity: group.rarity,
               weight: group.guessTotalProb(),
-              display: group.display,
+              display: group.pickup,
               ids: group.ids,
             ),
         ])
@@ -69,21 +69,23 @@ class GachaProbData {
 }
 
 class GachaProbRow {
-  bool isSvt;
-  int rarity;
-  String indivProb;
-  List<GameCardMixin> cards;
-  bool isLuckyBag;
+  final bool isSvt;
+  final bool pickup;
+  final int rarity;
+  final String indivProb;
+  final List<GameCardMixin> cards;
+  final bool isLuckyBag;
 
   GachaProbRow({
     required this.isSvt,
+    required this.pickup,
     required this.rarity,
     required this.indivProb,
     required this.cards,
     required this.isLuckyBag,
   });
 
-  bool get display => !isLuckyBag && cards.length <= 3;
+  // bool get display => !isLuckyBag && cards.length <= 3;
 
   List<int> get ids => cards.map((e) => e.collectionNo).toList()..sort();
 
@@ -105,7 +107,7 @@ class GachaProbRow {
       isSvt ? 'svt' : 'ce',
       rarity.toString(),
       formatProb(getTotalProb()),
-      display ? '1' : '0',
+      pickup ? '1' : '0',
       ids.join(', '),
     ];
   }
@@ -159,26 +161,26 @@ class JpGachaParser {
 
     final doc = htmlparser.parse(text);
     final tableCount = text.split("<table").length - 1;
-    List<List<String>> svtTable, ceTable;
+    List<(bool pickup, List<List<String>> table)> svtTables, ceTables;
     if (tableCount == 4) {
       // svt_class, rarity, name, prob
-      svtTable = _getProbTable(doc, 2, 4);
+      svtTables = [(false, _getProbTable(doc, 2, 4))];
       // rarity, name, prob
-      ceTable = _getProbTable(doc, 3, 3);
+      ceTables = [(false, _getProbTable(doc, 3, 3))];
     } else if (tableCount == 6) {
       // 1, svt, ce, svt, ce, 6
-      svtTable = [..._getProbTable(doc, 2, 4), ..._getProbTable(doc, 4, 4)];
-      ceTable = [..._getProbTable(doc, 3, 3), ..._getProbTable(doc, 5, 3)];
+      svtTables = [(true, _getProbTable(doc, 2, 4)), (false, _getProbTable(doc, 4, 4))];
+      ceTables = [(true, _getProbTable(doc, 3, 3)), (false, _getProbTable(doc, 5, 3))];
     } else if (tableCount == 5) {
       const svtTitle = '■ピックアップサーヴァント一覧', ceTitle = '■ピックアップ概念礼装';
       if (text.contains(svtTitle) && !text.contains(ceTitle)) {
         // 1, svt, svt, ce, 5
-        svtTable = [..._getProbTable(doc, 2, 4), ..._getProbTable(doc, 3, 4)];
-        ceTable = [..._getProbTable(doc, 4, 3)];
+        svtTables = [(true, _getProbTable(doc, 2, 4)), (false, _getProbTable(doc, 3, 4))];
+        ceTables = [(false, _getProbTable(doc, 4, 3))];
       } else if (!text.contains(svtTitle) && text.contains(ceTitle)) {
         // 1, ce, svt, ce, 5
-        svtTable = [..._getProbTable(doc, 3, 4)];
-        ceTable = [..._getProbTable(doc, 2, 3), ..._getProbTable(doc, 4, 3)];
+        svtTables = [(false, _getProbTable(doc, 3, 4))];
+        ceTables = [(true, _getProbTable(doc, 2, 3)), (false, _getProbTable(doc, 4, 3))];
       } else {
         throw FormatException('Unexpected table count(5): $tableCount');
       }
@@ -193,30 +195,33 @@ class JpGachaParser {
 
     Map<String, GachaProbRow> groupMap = {};
 
-    for (final row in svtTable) {
-      final int classId = classMap[row[0]]!;
-      final int rarity = row[1].count(kStar);
-      final String name = row[2];
-      final String probStr = row[3];
-      final svt = _findCard(name, rarity, classId);
-      final key = 'svt-$rarity-$probStr';
-      final group = groupMap[key] ??=
-          GachaProbRow(isSvt: true, rarity: rarity, indivProb: probStr, cards: [], isLuckyBag: gacha.isLuckyBag);
-      group.cards.add(svt);
+    for (final (pickup, table) in svtTables) {
+      for (final row in table) {
+        final int classId = classMap[row[0]]!;
+        final int rarity = row[1].count(kStar);
+        final String name = row[2];
+        final String probStr = row[3];
+        final svt = _findCard(name, rarity, classId);
+        final key = 'svt-$pickup-$rarity-$probStr';
+        final group = groupMap[key] ??= GachaProbRow(
+            isSvt: true, pickup: pickup, rarity: rarity, indivProb: probStr, cards: [], isLuckyBag: gacha.isLuckyBag);
+        group.cards.add(svt);
+      }
     }
-
-    for (final row in ceTable) {
-      final int rarity = row[0].count(kStar);
-      final ce = _findCard(row[1], rarity, 1001);
-      final probStr = row[2];
-      final key = 'ce-$rarity-$probStr';
-      final group = groupMap[key] ??=
-          GachaProbRow(isSvt: false, rarity: rarity, indivProb: probStr, cards: [], isLuckyBag: gacha.isLuckyBag);
-      group.cards.add(ce);
+    for (final (pickup, table) in ceTables) {
+      for (final row in table) {
+        final int rarity = row[0].count(kStar);
+        final ce = _findCard(row[1], rarity, 1001);
+        final probStr = row[2];
+        final key = 'ce-$pickup-$rarity-$probStr';
+        final group = groupMap[key] ??= GachaProbRow(
+            isSvt: false, pickup: pickup, rarity: rarity, indivProb: probStr, cards: [], isLuckyBag: gacha.isLuckyBag);
+        group.cards.add(ce);
+      }
     }
 
     final groups = groupMap.values.toList();
-    groups.sortByList((e) => [e.isSvt ? 0 : 1, e.display ? 0 : 1, -e.rarity, e.cards.length]);
+    groups.sortByList((e) => [e.isSvt ? 0 : 1, e.pickup ? 0 : 1, -e.rarity, e.cards.length]);
 
     return GachaProbData(gacha, text, groups);
   }

@@ -77,6 +77,8 @@ extension IntX on int {
 
   /// timestamp in seconds
   String toDateTimeString() => DateTime.fromMillisecondsSinceEpoch(this * 1000).toStringShort();
+
+  String get padTwoDigit => toString().padLeft(2, '0');
 }
 
 extension ListX<T> on List<T> {

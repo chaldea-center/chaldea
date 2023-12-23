@@ -26,6 +26,11 @@ class McConverter {
     return '应用设置不符合要求:\n${_errors.map((e) => "* $e").join('\n')}\n';
   }
 
+  DateTime getDate(int timestamp, int tz) {
+    final utc = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true);
+    return utc.add(Duration(hours: tz));
+  }
+
   String getLocalTime(int timestamp, int tz) {
     final utc = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true);
     final jst = utc.add(Duration(hours: tz));
