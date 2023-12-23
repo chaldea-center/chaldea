@@ -323,13 +323,16 @@ class Quest with RouteInfo {
       QuestFlag.dropFirstTimeOnly,
       QuestFlag.forceToNoDrop,
       QuestFlag.notRetrievable,
-    ].any((e) => flags.contains(e))) return false;
-    if (flags.any((flag) => flag.name.toLowerCase().contains('raid'))) {
+    ].any((e) => flags.contains(e))) {
       return false;
     }
+    if (isAnyRaid) return false;
     if (type == QuestType.free) return true;
     return true;
   }
+
+  // may be event's main quest
+  bool get isAnyRaid => flags.contains(QuestFlag.raid);
 
   bool get isRepeatRaid {
     return afterClear == QuestAfterClearType.repeatLast && flags.contains(QuestFlag.raid);

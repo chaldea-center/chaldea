@@ -668,6 +668,9 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         children: [
           for (final itemId in extraItems.items.keys)
             ListTile(
+              dense: true,
+              visualDensity: VisualDensity.compact,
+              minVerticalPadding: 0,
               leading: db.onUserData(
                 (context, snapshot) => Item.iconBuilder(
                   context: context,

@@ -64,7 +64,7 @@ class _UserQuestFarmingStatPageState extends State<UserQuestFarmingStatPage> wit
         freeQuests.add(info);
       }
       if (failedNum > 0) {
-        if (quest.flags.any((flag) => flag.name.toLowerCase().contains('raid') || flag == QuestFlag.superBoss)) {
+        if (quest.isAnyRaid || quest.flags.contains(QuestFlag.superBoss)) {
           //
         } else {
           failedQuests.add(info);

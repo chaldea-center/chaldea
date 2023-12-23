@@ -186,7 +186,7 @@ class Event with RouteInfo {
       final war = db.gameData.wars[warId];
       if (war != null) {
         for (final quest in war.quests) {
-          if (quest.flags.any((flag) => flag.name.toLowerCase().contains('raid'))) {
+          if (quest.isAnyRaid && quest.phases.isNotEmpty) {
             return true;
           }
         }
