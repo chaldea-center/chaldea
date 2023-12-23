@@ -35,6 +35,7 @@ import '../../func/func_list.dart';
 import '../../import_data/home_import_page.dart';
 import '../../item/item_list.dart';
 import '../../master_mission/master_mission_list.dart';
+import '../../mc/mc_home.dart';
 import '../../misc/apk_list.dart';
 import '../../misc/app_route_entrance.dart';
 import '../../mystic_code/mystic_code_list.dart';
@@ -153,6 +154,7 @@ class GalleryItem {
         enemyMasters,
         myRoom,
         appRoutes,
+        mooncell,
         toolbox,
       ];
 
@@ -500,6 +502,15 @@ class GalleryItem {
     icon: FontAwesomeIcons.toolbox,
     page: const ToolListPage(),
     isDetail: false,
+    shownDefault: false,
+  );
+  static GalleryItem mooncell = GalleryItem(
+    name: 'Mooncell',
+    titleBuilder: () => 'Mooncell',
+    url: null,
+    icon: FontAwesomeIcons.cube,
+    page: const MooncellToolsPage(),
+    isDetail: true,
     shownDefault: false,
   );
 // static GalleryItem more = GalleryItem(

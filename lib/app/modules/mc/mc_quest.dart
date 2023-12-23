@@ -609,6 +609,10 @@ class _MCQuestConverter extends McConverter {
           buffer.write(' ');
         }
       }
+      final runs = quest.drops.firstOrNull?.runs ?? 0;
+      if (runs < 20) {
+        buffer.write(' <!-- 样本数($runs)较低，战利品信息可能不准确 -->');
+      }
       buffer.writeln();
     }
     // 杂项名称
@@ -731,7 +735,11 @@ class _MCQuestConverter extends McConverter {
 
   String trimEnemyName(QuestEnemy enemy) {
     String name = enemy.lShownName;
-    if (enemy.roleType == EnemyRoleType.servant) return name;
+    if (enemy.roleType == EnemyRoleType.servant) {
+      if (name.startsWith('谜之') || name.startsWith('謎の') || name.toLowerCase().startsWith('beast')) {
+        return name;
+      }
+    }
     if (name.length > 1) {
       String last = name.substring(name.length - 1);
       last = McConverter.kNormAlphabet[last] ?? last;

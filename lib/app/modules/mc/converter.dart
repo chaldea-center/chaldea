@@ -30,7 +30,7 @@ class McConverter {
     final utc = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000, isUtc: true);
     final jst = utc.add(Duration(hours: tz));
     String pad(int v) => v.toString().padLeft(2, '0');
-    return '${jst.year}-${pad(jst.month)}-${pad(jst.day)} ${pad(jst.hour)}:${jst.minute}';
+    return '${jst.year}-${pad(jst.month)}-${pad(jst.day)} ${pad(jst.hour)}:${pad(jst.minute)}';
   }
 
   String getJpTime(int timestamp) => getLocalTime(timestamp, 9);

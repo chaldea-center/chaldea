@@ -32,6 +32,8 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
   late final _cnNameController = TextEditingController();
   bool _isLuckyBagWithSR = false;
 
+  String get bannerFnBase => _cnNameController.text.trim().replaceAll(RegExp(r'[:\/ ]'), '_');
+
   @override
   void initState() {
     super.initState();
@@ -142,16 +144,12 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
             ),
             TextButton(
               onPressed: () {
-                final cnName = _cnNameController.text.trim();
+                final cnName = bannerFnBase;
                 if (cnName.isEmpty) {
                   EasyLoading.showInfo('请先填写中文卡池名');
                   return;
                 }
                 final fn = '${cnName}_jp.png';
-                if (fn.contains('/')) {
-                  EasyLoading.showError('文件名不能包含半角斜杠"/"');
-                  return;
-                }
                 launch("https://fgo.wiki/index.php?title=特殊:上传文件&wpDestFile=$fn");
               },
               child: const Text('上传标题图'),
@@ -175,7 +173,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
           controller: _jpNameController,
           decoration: const InputDecoration(
             isDense: true,
-            labelText: '日文卡池名(不能出现英文斜杠/)',
+            labelText: '日文卡池名',
             floatingLabelBehavior: FloatingLabelBehavior.always,
             border: OutlineInputBorder(),
           ),
@@ -188,7 +186,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
           controller: _cnNameController,
           decoration: const InputDecoration(
             isDense: true,
-            labelText: '中文卡池名(不能出现英文斜杠/)',
+            labelText: '中文卡池名',
             floatingLabelBehavior: FloatingLabelBehavior.always,
             border: OutlineInputBorder(),
           ),
@@ -328,7 +326,8 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
     }
 
     String cnName = _cnNameController.text.trim();
-    String bannerFilename = cnName.isEmpty ? "<!-- 上传标题图 -->" : '$cnName jp.png';
+    String bannerFilename = bannerFnBase;
+    bannerFilename = bannerFilename.isEmpty ? "<!-- 上传标题图 -->" : '${bannerFilename}_jp.png';
     String? jpLink = _selectedNotice?.link ?? "<!-- 填写公告地址 -->";
 
     final wikitext = """{{卡池信息
