@@ -96,6 +96,10 @@ class _MCQuestConvertPageState extends State<MCQuestConvertPage> {
                         },
                   child: Text(S.current.copy),
                 ),
+                FilledButton(
+                  onPressed: () => _jumpToMooncell(quest),
+                  child: const Text("跳转到Mooncell"),
+                ),
               ],
             ),
           )
@@ -149,10 +153,15 @@ class MCQuestListConvertPage extends StatefulWidget {
 class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
   List<_MCQuestConverter> converters = [];
   bool _useBgColor = true;
+  late String? title = widget.title;
 
   @override
   void initState() {
     super.initState();
+    if (title == S.current.free_quest) {
+      title = '自由关卡';
+    }
+
     converters = [for (final quest in widget.quests) _MCQuestConverter(quest)..useTitleBg = _useBgColor];
     loadData();
   }
@@ -190,8 +199,8 @@ class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
 
   String getAllResults() {
     final buffer = StringBuffer();
-    if (widget.title != null) {
-      buffer.writeln('==${widget.title}==');
+    if (title != null) {
+      buffer.writeln('==$title==');
     }
     for (final converter in converters) {
       if (converter.result.isEmpty) {
@@ -253,6 +262,11 @@ class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
                   },
                   child: Text('${S.current.copy}(${converters.length}个关卡)'),
                 ),
+                if (converters.isNotEmpty)
+                  FilledButton(
+                    onPressed: () => _jumpToMooncell(converters.first.quest, anchor: title),
+                    child: const Text("跳转到Mooncell"),
+                  ),
               ],
             ),
           )
@@ -282,11 +296,14 @@ class _MCQuestConverter extends McConverter {
   final Map<String, Color> kHtmlColors = const {
     'Chocolate': Color.fromARGB(255, 123, 63, 0),
     'Maroon': Color.fromARGB(255, 128, 0, 0),
+    'darkred': Color.fromARGB(255, 139, 0, 0),
   };
 
   String? getDefaultTitleBg() {
     if (quest.warId == WarId.rankup || quest.type == QuestType.friendship) {
       return 'Chocolate';
+    } else if (quest.warId == WarId.advanced) {
+      return 'darkred';
     } else if (quest.name.startsWith('【高難易度】')) {
       return 'Maroon';
     }
@@ -395,7 +412,25 @@ class _MCQuestConverter extends McConverter {
       effectiveTitleBg = titleBg ?? getDefaultTitleBg() ?? bannerColor?.toCSSHex() ?? "";
     }
 
-    final buffer = StringBuffer("""===${nameCn ?? quest.name}===
+    String chapter = "";
+    if (quest.type == QuestType.main) {
+      chapter = quest.chapterSubStr.isEmpty && quest.chapterSubId != 0
+          ? S.current.quest_chapter_n(quest.chapterSubId)
+          : Transl.questNames(quest.chapterSubStr).l;
+      if (chapter.isEmpty) {
+        chapter = nameCn ?? quest.name;
+        final match = RegExp(r'^(第\S{1,2}[節节]) \S').firstMatch(chapter);
+        if (match != null) {
+          chapter = match.group(1)!;
+        }
+      }
+    }
+
+    if (chapter.isEmpty) {
+      chapter = nameCn ?? quest.name;
+    }
+
+    final buffer = StringBuffer("""===$chapter===
 {{关卡配置
 |开放条件=
 |名称jp=${quest.name}
@@ -506,8 +541,10 @@ class _MCQuestConverter extends McConverter {
     }
     // spot
     String spotName = quest.spotName;
-    if (const [WarId.rankup, WarId.interlude, WarId.advanced].contains(quest.warId)) {
+    if (const [WarId.daily, WarId.interlude, WarId.rankup, WarId.advanced, WarId.chaldeaGate].contains(quest.warId)) {
       spotName = 'カルデアゲート';
+    } else if (quest.spot?.map?.hasSize != true) {
+      spotName = "";
     }
     buffer.writeln('|$phaseZh地点jp=$spotName');
     buffer.writeln('|$phaseZh地点cn=${Transl.spotNames(spotName).maybeOf(Region.cn) ?? ""}');
@@ -610,7 +647,7 @@ class _MCQuestConverter extends McConverter {
         }
       }
       final runs = quest.drops.firstOrNull?.runs ?? 0;
-      if (runs < 20) {
+      if (quest.drops.isNotEmpty && runs < 20) {
         buffer.write(' <!-- 样本数($runs)较低，战利品信息可能不准确 -->');
       }
       buffer.writeln();
@@ -696,7 +733,7 @@ class _MCQuestConverter extends McConverter {
         if (support.limit.limitCount > 10) {
           buffer.write('|灵衣=1');
         }
-        buffer.write('}}');
+        buffer.write('}} ');
       }
       if (quest.supportServants.any((q) => q.equips.any((ce) => ce.equip.id > 0 && ce.equip.collectionNo == 0))) {
         buffer.write('{{助战|概念礼装=1}}');
@@ -710,7 +747,7 @@ class _MCQuestConverter extends McConverter {
   }
 
   String buildEnemyWithShift(QuestEnemy enemy, List<QuestEnemy> shiftEnemies) {
-    String svtName = enemy.svt.lName.maybeOf(Region.cn) ?? enemy.name;
+    String svtName = enemy.svt.lName.maybeOf(Region.cn) ?? enemy.svt.name;
     String displayName = trimEnemyName(enemy);
     final buffer = StringBuffer();
     buffer.write('{{敌人${enemy.roleType.index + 1}|$svtName|${displayName == svtName ? "" : displayName}');
@@ -753,4 +790,33 @@ class _MCQuestConverter extends McConverter {
     }
     return name;
   }
+}
+
+void _jumpToMooncell(Quest quest, {String? anchor}) {
+  String? mcLink;
+  bool subpage = true;
+  if (quest.type == QuestType.friendship || quest.warId == WarId.rankup) {
+    mcLink =
+        db.gameData.servantsNoDup.values.firstWhereOrNull((e) => e.relateQuestIds.contains(quest.id))?.extra.mcLink;
+  } else if (quest.war?.isMainStory == true) {
+    mcLink = quest.war?.extra.mcLink;
+  } else if (quest.war?.eventReal != null) {
+    mcLink = quest.war?.eventReal?.extra.mcLink;
+  } else if (quest.warId == WarId.advanced) {
+    mcLink = '迦勒底之门/进阶关卡';
+    subpage = false;
+  } else {
+    final huntingId = quest.event?.extra.script.huntingId ?? 0;
+    if (huntingId > 0) {
+      mcLink = quest.event?.extra.mcLink;
+      subpage = false;
+    }
+  }
+  if (mcLink == null || mcLink.isEmpty) {
+    EasyLoading.showInfo('未指定wiki页面，请手动打开');
+    return;
+  }
+  if (subpage && !mcLink.endsWith('关卡配置')) mcLink += '/关卡配置';
+  if (anchor != null) mcLink += '#$anchor';
+  launch('https://fgo.wiki/w/$mcLink', external: true);
 }

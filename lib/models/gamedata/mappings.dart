@@ -122,7 +122,8 @@ class Transl<K, V> {
 
   static Transl<String, String> svtNames(String jp) {
     if (md.svtNames.containsKey(jp)) return Transl(md.svtNames, jp, jp);
-    return Transl(md.entityNames, jp, jp);
+    if (md.entityNames.containsKey(jp)) return Transl(md.entityNames, jp, jp);
+    return Transl(md.ceNames, jp, jp);
   }
 
   static Transl<String, String> ceNames(String jp) => Transl(md.ceNames, jp, jp);

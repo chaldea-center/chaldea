@@ -54,7 +54,7 @@ class _QuestListPageState extends State<QuestListPage> {
       appBar: AppBar(
         title: Text(widget.title ?? '${questIds.length} ${S.current.quest}'),
         actions: [
-          if (Language.isCHS) popupMenu,
+          if (Language.isZH) buildPopupMenu(questIds, allQuestsMap),
         ],
       ),
       body: ListView.separated(
@@ -177,7 +177,7 @@ class _QuestListPageState extends State<QuestListPage> {
     );
   }
 
-  Widget get popupMenu {
+  Widget buildPopupMenu(List<int> questIds, Map<int, Quest> allQuestsMap) {
     return PopupMenuButton(
       itemBuilder: (context) {
         return [
@@ -185,7 +185,8 @@ class _QuestListPageState extends State<QuestListPage> {
             PopupMenuItem(
               child: const Text('导出至Mooncell'),
               onTap: () {
-                router.pushPage(MCQuestListConvertPage(title: widget.title, quests: widget.quests));
+                final quests = questIds.map((e) => allQuestsMap[e]).whereType<Quest>().toList();
+                router.pushPage(MCQuestListConvertPage(title: widget.title, quests: quests));
               },
             ),
         ];

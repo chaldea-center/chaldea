@@ -297,6 +297,8 @@ class WarMap {
     required this.bgm,
   });
 
+  bool get hasSize => mapImageW > 0 && mapImageH > 0;
+
   factory WarMap.fromJson(Map<String, dynamic> json) => _$WarMapFromJson(json);
 
   Map<String, dynamic> toJson() => _$WarMapToJson(this);
