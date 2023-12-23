@@ -261,6 +261,9 @@ class Item {
         _ => svt.collectionNo > 0 ? 1 : 9,
       };
       rarity = svt.rarity;
+      if (svt.type == SvtType.combineMaterial || svt.type == SvtType.statusUp) {
+        rarity = 5 - rarity;
+      }
       priority = -(svt.collectionNo > 0 ? svt.collectionNo : svt.id);
     } else {
       // unknown

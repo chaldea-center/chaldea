@@ -576,8 +576,10 @@ class _MCQuestConverter extends McConverter {
     // drops
     if (!quest.isNoBattle) {
       buffer.write('|$phaseZh战利品=');
-      bool isFree = quest.isAnyFree;
-      if (isFree) {
+
+      final dropBuffer = StringBuffer();
+
+      if (quest.isAnyFree) {
         Map<int, Set<int>> possibleDrops = {};
         final drops = quest.drops.toList();
         drops.sort((a, b) => Item.compare2(a.objectId, b.objectId));
@@ -591,9 +593,9 @@ class _MCQuestConverter extends McConverter {
 
         for (final (objectId, setNums) in possibleDrops.items) {
           for (final setNum in setNums) {
-            buffer.write(getWikiDaoju(objectId, setNum: setNum));
-            buffer.write(' ');
+            dropBuffer.write(getWikiDaoju(objectId, setNum: setNum));
           }
+          dropBuffer.write(' ');
         }
       } else if (quest.type == QuestType.warBoard) {
         final warBoards = quest.war?.event?.warBoards ?? [];
@@ -609,18 +611,18 @@ class _MCQuestConverter extends McConverter {
           }
           // common/rare/srare
           for (final (rarity, treasures) in treasureDict.items) {
-            buffer.write(const {
+            dropBuffer.write(const {
                   WarBoardTreasureRarity.common: '铜箱子',
                   WarBoardTreasureRarity.rare: '银箱子',
                   WarBoardTreasureRarity.srare: '金箱子',
                 }[rarity] ??
                 rarity.name);
-            buffer.write('：');
+            dropBuffer.write('：');
             for (final treasure in treasures) {
               for (final gift in treasure.gifts) {
-                buffer.write(getWikiDaoju(gift.objectId));
-                buffer.write('×${gift.num}');
-                buffer.write(' ');
+                dropBuffer.write(getWikiDaoju(gift.objectId));
+                dropBuffer.write('×${gift.num}');
+                dropBuffer.write(' ');
               }
             }
           }
@@ -640,17 +642,22 @@ class _MCQuestConverter extends McConverter {
         for (final objectId in itemIds) {
           final setNums = fixedDrops[objectId]!;
           for (final setNum in setNums.keys) {
-            buffer.write(getWikiDaoju(objectId, setNum: setNum));
-            buffer.write('×${setNums[setNum]}');
+            dropBuffer.write(getWikiDaoju(objectId, setNum: setNum));
+            dropBuffer.write('×${setNums[setNum]}');
           }
-          buffer.write(' ');
+          dropBuffer.write(' ');
         }
       }
       final runs = quest.drops.firstOrNull?.runs ?? 0;
       if (quest.drops.isNotEmpty && runs < 20) {
-        buffer.write(' <!-- 样本数($runs)较低，战利品信息可能不准确 -->');
+        dropBuffer.write(' <!-- 样本数($runs)较低，战利品信息可能不准确 -->');
       }
-      buffer.writeln();
+      buffer.writeln(dropBuffer.toString());
+      // final dropText = dropBuffer.toString().trim();
+      // if (dropText.isNotEmpty) {
+      //   buffer.write('{{subst:关卡配置/战利品/subst|$dropText}}');
+      // }
+      // buffer.writeln();
     }
     // 杂项名称
     List<String> formationConds = [];
