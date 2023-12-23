@@ -209,15 +209,31 @@ class Item {
     if (item != null) {
       final category = item.category;
       type = switch (category) {
-        ItemCategory.coin => 10,
-        ItemCategory.eventAscension => 11,
-        ItemCategory.event => 12,
-        ItemCategory.normal => 13,
-        ItemCategory.skill => 14,
-        ItemCategory.ascension => 15,
-        ItemCategory.special => 16,
-        ItemCategory.other => 17,
+        ItemCategory.coin => 100,
+        ItemCategory.eventAscension => 110,
+        ItemCategory.event => 120 +
+            switch (item.type) {
+              ItemType.eventPoint => 1,
+              ItemType.boostItem => 2,
+              ItemType.dice => 3,
+              ItemType.eventItem => 8,
+              _ => 9,
+            },
+        ItemCategory.special => 130,
+        ItemCategory.normal => 140,
+        ItemCategory.skill => 150,
+        ItemCategory.ascension => 160,
+        ItemCategory.other => 170 +
+            switch (item.type) {
+              ItemType.friendshipUpItem => 1,
+              ItemType.continueItem => 2,
+              ItemType.itemSelect => 3,
+              _ => 0,
+            },
       };
+      if (item.id == Items.qpId || item.type == ItemType.questRewardQp) {
+        type = 500;
+      }
 
       rarity = item.background.index;
       priority = useDropPriority ? item.dropPriority : item.priority;
@@ -228,20 +244,20 @@ class Item {
       };
     } else if (db.gameData.craftEssencesById.containsKey(a)) {
       final ce = db.gameData.craftEssencesById[a]!;
-      type = 2;
+      type = 3;
       rarity = ce.rarity;
       priority = -ce.collectionNo;
     } else if (db.gameData.commandCodesById.containsKey(a)) {
       final cc = db.gameData.commandCodesById[a]!;
-      type = 3;
+      type = 4;
       rarity = cc.rarity;
       priority = -cc.collectionNo;
     } else if (db.gameData.entities.containsKey(a)) {
       final svt = db.gameData.entities[a]!;
       type = switch (svt.type) {
-        SvtType.statusUp => 110,
-        SvtType.combineMaterial => 120,
-        SvtType.svtMaterialTd => 4,
+        SvtType.statusUp => 210 + svt.className.index,
+        SvtType.combineMaterial => 250 + svt.className.index,
+        SvtType.svtMaterialTd => 2,
         _ => svt.collectionNo > 0 ? 1 : 9,
       };
       rarity = svt.rarity;
