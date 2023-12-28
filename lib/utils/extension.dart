@@ -576,3 +576,23 @@ Future<T> showEasyLoading<T>(
     }
   }
 }
+
+Iterable<int> range(int a, [int? b, int c = 0]) sync* {
+  if (c == 0) {
+    throw ArgumentError.value(c, 'step', 'must not be 0');
+  }
+  int start, end, step;
+  if (b == null) {
+    start = 0;
+    end = a;
+    step = 1;
+  } else {
+    start = a;
+    end = b;
+    step = c;
+  }
+  bool reverse = end < start;
+  for (int i = start; (reverse ? i > end : i < end); i += step) {
+    yield i;
+  }
+}

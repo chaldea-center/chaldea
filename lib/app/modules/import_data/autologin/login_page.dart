@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -10,6 +12,7 @@ import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/import_data/autologin/agent.dart';
 import 'package:chaldea/app/modules/import_data/import_https_page.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/faker/req/agent.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 import 'package:chaldea/packages/packages.dart';
@@ -28,6 +31,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
   GameTops? gameTops;
   final allData = db.settings.autologins;
   AutoLoginData args = AutoLoginData();
+  FRequestAgent? agent;
   dynamic _error;
 
   @override
@@ -211,6 +215,25 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
             ),
           ),
           const Divider(height: 16, indent: 16, endIndent: 16),
+          if (kDebugMode)
+            Center(
+              child: FilledButton(
+                onPressed: agent == null
+                    ? null
+                    : () async {
+                        InputCancelOkDialog(
+                          title: 'Loop Count',
+                          text: '3',
+                          keyboardType: TextInputType.number,
+                          onSubmit: (s) {
+                            final count = int.parse(s);
+                            startLoopBattle(count);
+                          },
+                        ).showDialog(context);
+                      },
+                child: const Text("Loop battle"),
+              ),
+            ),
           if (args.response != null)
             Card(
               margin: const EdgeInsets.all(8),
@@ -496,7 +519,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     );
   }
 
-  Future doLogin() async {
+  Future doLogin2() async {
     final args = this.args;
     _error = null;
     gameTops ??= await AtlasApi.gametops();
@@ -536,5 +559,88 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     } finally {
       if (mounted) setState(() {});
     }
+  }
+
+  Future doLogin() async {
+    final args = this.args;
+    _error = null;
+    gameTops ??= await AtlasApi.gametops();
+    final top = gameTops?.of(args.region);
+    if (top == null) {
+      EasyLoading.showError('Failed to load Game Info');
+      return;
+    }
+    if (args.auth == null) {
+      EasyLoading.showError('Auth info not loaded');
+      return;
+    }
+    if (mounted) setState(() {});
+    final agent = FRequestAgent(gameTop: top, user: args);
+    this.agent = agent;
+    try {
+      EasyLoading.show(status: 'Login...');
+      await agent.gamedataTop();
+      final loginResp = await agent.loginTop();
+      args.response = FateServerResponse(loginResp.rawResponse);
+      final userGame = args.response?.userGame;
+      final serverTime = args.response?.serverTime;
+      if (userGame != null) {
+        args.userGame = userGame;
+        args.lastLogin = serverTime?.timestamp ?? DateTime.now().timestamp;
+      }
+      if (args.response?.success == true) {
+        await Future.delayed(const Duration(seconds: 1));
+        EasyLoading.show(status: 'Login to home...');
+        await agent.homeTop();
+        EasyLoading.showSuccess(S.current.success);
+      } else {
+        EasyLoading.showError('Login failed');
+      }
+    } catch (e, s) {
+      logger.e('toplogin failed', e, s);
+      _error = escapeDioException(e);
+      EasyLoading.showError('Login failed\n$_error');
+    } finally {
+      if (mounted) setState(() {});
+    }
+  }
+
+  Future<void> startLoopBattle(int count) async {
+    final agent = this.agent!;
+    Map<int, int> results = {1: 0, 2: 0, 3: 0};
+    EasyLoading.dismiss();
+
+    for (int i = 0; i < count; i++) {
+      final idx = '${i + 1}/$count';
+      logger.v('battle $idx');
+      EasyLoading.show(status: 'Starting battle $idx');
+      final (battleResult, _) = await agent.startBattle(
+        msgPrefix: 'Battle $idx:',
+        questId: 94091101,
+        questPhase: 1,
+        activeDeckId: 91432036,
+        useEventDeck: true,
+        supportSvtIds: [],
+        supportEquipIds: [9403520],
+        targetDropItems: {6549: 2},
+        playerServantNoblePhantasmUsageData: [
+          PlayerServantNoblePhantasmUsageDataEntity(
+            svtId: 403500,
+            followerType: 0,
+            seqId: 403500,
+            addCount: 3,
+          )
+        ],
+        voicePlayedArray: [
+          [403500, 7],
+          [403500, 8]
+        ],
+      );
+      results.addNum(battleResult, 1);
+      logger.v('progress $idx: $results');
+      await Future.delayed(const Duration(seconds: 2));
+    }
+    logger.v('All $count battles done!');
+    EasyLoading.dismiss();
   }
 }
