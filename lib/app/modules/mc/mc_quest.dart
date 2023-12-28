@@ -406,6 +406,7 @@ class _MCQuestConverter extends McConverter {
     Set<int> qps = questPhases.values.map((e) => e.qp).toSet();
     bool sameBond = allNoBattle;
     List<String> extraInfo = [];
+    final svt = db.gameData.servantsById.values.firstWhereOrNull((e) => e.relateQuestIds.contains(quest.id));
 
     String effectiveTitleBg = "";
     if (useTitleBg) {
@@ -430,14 +431,12 @@ class _MCQuestConverter extends McConverter {
       chapter = nameCn ?? quest.name;
     }
 
-    final buffer = StringBuffer("""===$chapter===
-{{关卡配置
-|开放条件=
+    final buffer = StringBuffer("""===$chapter===\n{{关卡配置\n""");
+    if (svt != null) buffer.writeln('|开放条件=');
+    buffer.writeln("""
 |名称jp=${quest.name}
 |名称cn=${nameCn ?? ""}
-|标题背景颜色=$effectiveTitleBg
-""");
-    final svt = db.gameData.servantsById.values.firstWhereOrNull((e) => e.relateQuestIds.contains(quest.id));
+|标题背景颜色=$effectiveTitleBg""");
     if (svt != null) {
       buffer.writeln('|图标=Servant ${svt.collectionNo.toString().padLeft(3, "0")}');
     }
@@ -541,9 +540,10 @@ class _MCQuestConverter extends McConverter {
     }
     // spot
     String spotName = quest.spotName;
+    final spot = quest.spot;
     if (const [WarId.daily, WarId.interlude, WarId.rankup, WarId.advanced, WarId.chaldeaGate].contains(quest.warId)) {
       spotName = 'カルデアゲート';
-    } else if (quest.spot?.map?.hasSize != true) {
+    } else if (spot != null && spot.map?.hasSize == false && !spot.blankEarth) {
       spotName = "";
     }
     buffer.writeln('|$phaseZh地点jp=$spotName');

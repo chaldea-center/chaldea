@@ -236,7 +236,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
     final utc = DateTime.fromMillisecondsSinceEpoch(t * 1000, isUtc: true);
     final jst = utc.add(const Duration(hours: 9)); // JST=UTC+9
     String pad(int v) => v.toString().padLeft(2, '0');
-    return '${jst.year}-${pad(jst.month)}-${pad(jst.day)} ${pad(jst.hour)}:${jst.minute}';
+    return '${jst.year}-${pad(jst.month)}-${pad(jst.day)} ${pad(jst.hour)}:${pad(jst.minute)}';
   }
 
   Widget _buildWikitext(String? wikitext, String? page, {String? warning}) {
@@ -356,101 +356,88 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
 """);
 
     // 卡池情况
-    buffer.writeln('==推荐召唤具体情况==\n{{color|red|※所有召唤卡池均为不同卡池，单抽及保底次数不会继承。}}<br />');
-    buffer.writeln('===卡池情况===');
+    buffer.writeln('==推荐召唤具体情况==');
 
     String _getJpTime(int timestamp) {
-      final date = McConverter().getDate(timestamp, 9);
-      // 9月13日(周三) 18:00～<br/>9月20日(周三) 17:59
-      const weekdays = ['', '周一', '周二', '周三', '周四', '周五', '周六', '周日'];
-      return '${date.month.padTwoDigit}月${date.day.padTwoDigit}日(${weekdays[date.weekday]}) ${date.hour.padTwoDigit}:${date.minute.padTwoDigit}';
+      return McConverter().getJpTime(timestamp);
+      // final date = McConverter().getDate(timestamp, 9);
+      // // 9月13日(周三) 18:00～<br/>9月20日(周三) 17:59
+      // const weekdays = ['', '周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+      // return '${date.month.padTwoDigit}月${date.day.padTwoDigit}日(${weekdays[date.weekday]}) ${date.hour.padTwoDigit}:${date.minute.padTwoDigit}';
     }
 
-    List<(String date, Map<int, Set<int>> svts, Set<int> ces)> puDetailTable = [];
-    Map<int, bool> hasCards = {};
-    for (final gacha in gachas) {
-      final date = '${_getJpTime(gacha.gacha.openedAt)}～<br/>${_getJpTime(gacha.gacha.closedAt)}';
-      Map<int, Set<int>> svts = {};
-      Set<int> ces = {};
-      for (final group in gacha.groups) {
-        if (!group.pickup || group.cards.isEmpty) continue;
-        if (group.isSvt) {
-          svts.putIfAbsent(group.rarity, () => {}).addAll(group.ids);
-          hasCards[group.rarity] = true;
-        } else {
-          ces.addAll(group.ids);
-          hasCards[-1] = true;
-        }
-      }
-      puDetailTable.add((date, svts, ces));
+    String fmtProb(String? indivProb, List<int>? ids) {
+      if (indivProb == null || ids == null || ids.isEmpty) return '';
+      String prob =
+          RegExp(r'^\d+\.\d00%$').hasMatch(indivProb) ? '${indivProb.substring(0, indivProb.length - 3)}%' : indivProb;
+      if (ids.length == 1) return prob;
+      return '各$prob';
     }
-    buffer.writeln('{| class="wikitable" style="text-align:center; white-space:normal;"');
-    buffer.writeln('! 推荐召唤时段');
-    for (final rarity in [5, 4, 3]) {
-      if (hasCards[rarity] ?? false) buffer.writeln('! 推荐召唤$rarity星从者');
-    }
-    if (hasCards[-1] ?? false) buffer.writeln('! 推荐召唤概念礼装');
-    for (final (date, svts, ces) in puDetailTable) {
-      buffer.writeln('|-');
-      buffer.writeln('|$date');
-      for (final rarity in [5, 4, 3]) {
-        if (hasCards[rarity] ?? false) {
-          buffer.write('|');
-          final ids = svts[rarity]?.toList() ?? [];
-          ids.sort();
-          buffer.writeln(ids.map((id) {
-            final svt = db.gameData.servantsNoDup[id];
-            final link = svt?.extra.mcLink ?? "从者$id";
-            return '[[文件:Servant ${id.toString().padLeft(3, "0")}.png|60px|link=$link]]';
-          }).join(' '));
-        }
-      }
-      if (hasCards[-1] ?? false) {
-        buffer.write('|');
-        final ids = ces.toList()..sort();
-        // |[[文件:礼装 412.png|60px|link=朝日初升]] [[文件:礼装 424.png|60px|link=苦味之黑]]
-        buffer.writeln(ids.map((id) {
-          final ce = db.gameData.craftEssences[id];
-          final link = ce?.extra.mcLink ?? "礼装$id";
-          return '[[文件:礼装 ${id.toString().padLeft(3, "0")}.png|60px|link=$link]]';
-        }).join(' '));
-      }
-    }
-    buffer.writeln('|}');
-    buffer.writeln('');
 
-    // 推荐卡牌抽取概率
-    Map<bool, Map<int, Set<String>>> pickupProbs = {};
+    List<String> dates = [], svtProbs = [], ceProbs = [], svtIds = [], ceIds = [];
     for (final gacha in gachas) {
-      for (final group in gacha.groups) {
-        if (group.pickup) {
-          pickupProbs.putIfAbsent(group.isSvt, () => {}).putIfAbsent(group.rarity, () => {}).add(group.indivProb);
-        }
-      }
+      final date = '${_getJpTime(gacha.gacha.openedAt)},${_getJpTime(gacha.gacha.closedAt)}';
+      String svtProb = [5, 4, 3]
+          .map((rarity) {
+            final group = gacha.groups.firstWhereOrNull((e) => e.isSvt && e.pickup && e.rarity == rarity);
+            return fmtProb(group?.indivProb, group?.ids);
+          })
+          .where((e) => e.isNotEmpty)
+          .join(',');
+      String ceProb = [5, 4, 3]
+          .map((rarity) {
+            final group = gacha.groups.firstWhereOrNull((e) => !e.isSvt && e.pickup && e.rarity == rarity);
+            return fmtProb(group?.indivProb, group?.ids);
+          })
+          .where((e) => e.isNotEmpty)
+          .join(',');
+      String svtId = gacha.groups
+          .where((e) => e.isSvt && e.pickup)
+          .expand((e) => e.ids)
+          .map((e) => e.toString().padLeft(3, '0'))
+          .join(',');
+      String ceId = gacha.groups
+          .where((e) => !e.isSvt && e.pickup)
+          .expand((e) => e.ids)
+          .map((e) => e.toString().padLeft(3, '0'))
+          .join(',');
+      dates.add(date);
+      svtProbs.add(svtProb);
+      ceProbs.add(ceProb);
+      svtIds.add(svtId);
+      ceIds.add(ceId);
     }
-    List<(String header, String value)> puProbTable = [];
-    for (final isSvt in [true, false]) {
-      for (final rarity in [5, 4, 3]) {
-        final probs = pickupProbs[isSvt]?[rarity];
-        if (probs == null) continue;
-        puProbTable.add((
-          "$rarity星${isSvt ? '从者' : '礼装'}",
-          probs.map((e) => RegExp(r'^\d+\.\d00%$').hasMatch(e) ? '${e.substring(0, e.length - 3)}%' : e).join(' / '),
-        ));
+
+    String _mergeRows(List<String> rows, [bool fallback = true]) {
+      if (fallback && rows.length > 1 && rows.toSet().length == 1) {
+        rows = [rows.first];
       }
+      return rows.map((e) => '*$e').join('\n');
     }
-    if (pickupProbs.isNotEmpty) {
-      buffer.writeln('===推荐卡牌抽取概率===');
-      buffer.writeln('{| class="wikitable" style="text-align:center; white-space:normal; width:600px; display:table;"');
-      for (final (header, _) in puProbTable) {
-        buffer.writeln('! $header');
-      }
-      buffer.writeln('|-');
-      for (final (_, value) in puProbTable) {
-        buffer.writeln('|$value');
-      }
-      buffer.writeln('|}');
-    }
+
+    buffer.writeln("{{推荐召唤情况\n|召唤时段=");
+    buffer.writeln(_mergeRows(dates));
+    buffer.writeln('|从者概率=');
+    buffer.writeln(_mergeRows(svtProbs));
+    buffer.writeln('|礼装概率=');
+    buffer.writeln(_mergeRows(ceProbs));
+    buffer.writeln('|从者序号=');
+    buffer.writeln(_mergeRows(svtIds, false));
+    buffer.writeln('|礼装序号=');
+    buffer.writeln(_mergeRows(ceIds, false));
+
+    buffer.writeln("""|召唤时段cn=
+
+|从者概率cn=
+
+|礼装概率cn=
+
+|从者序号cn=
+
+|礼装序号cn=
+
+}}""");
+
     return _buildWikitext(buffer.toString(), _cnNameController.text);
   }
 
