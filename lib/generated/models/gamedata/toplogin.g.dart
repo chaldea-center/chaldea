@@ -343,6 +343,7 @@ SvtLeaderEquipTargetInfo _$SvtLeaderEquipTargetInfoFromJson(Map json) => SvtLead
       skillLv2: json['skillLv2'],
       skillId3: json['skillId3'],
       skillLv3: json['skillLv3'],
+      addSkills: (json['addSkills'] as List<dynamic>?)?.map((e) => e as Map).toList(),
     );
 
 SvtLeaderAppendSkillStatus _$SvtLeaderAppendSkillStatusFromJson(Map json) => SvtLeaderAppendSkillStatus(
@@ -416,4 +417,61 @@ UserQuest _$UserQuestFromJson(Map json) => UserQuest(
       status: json['status'],
       updatedAt: json['updatedAt'],
       createdAt: json['createdAt'],
+    );
+
+FollowerInfo _$FollowerInfoFromJson(Map json) => FollowerInfo(
+      userId: json['userId'],
+      userName: json['userName'],
+      userLv: json['userLv'],
+      type: json['type'],
+      userSvtLeaderHash: (json['userSvtLeaderHash'] as List<dynamic>?)
+          ?.map((e) => ServantLeaderInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      eventUserSvtLeaderHash: (json['eventUserSvtLeaderHash'] as List<dynamic>?)
+          ?.map((e) => ServantLeaderInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      tutorial1: json['tutorial1'],
+      message: json['message'],
+      pushUserSvtId: json['pushUserSvtId'],
+      mainSupportDeckIds: (json['mainSupportDeckIds'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      eventSupportDeckIds: (json['eventSupportDeckIds'] as List<dynamic>?)?.map((e) => e as int).toList(),
+    );
+
+ServantLeaderInfo _$ServantLeaderInfoFromJson(Map json) => ServantLeaderInfo(
+      supportDeckId: json['supportDeckId'],
+      userId: json['userId'],
+      classId: json['classId'],
+      userSvtId: json['userSvtId'],
+      svtId: json['svtId'],
+      limitCount: json['limitCount'],
+      lv: json['lv'],
+      exp: json['exp'],
+      hp: json['hp'],
+      atk: json['atk'],
+      adjustAtk: json['adjustAtk'],
+      adjustHp: json['adjustHp'],
+      skillId1: json['skillId1'],
+      skillId2: json['skillId2'],
+      skillId3: json['skillId3'],
+      skillLv1: json['skillLv1'],
+      skillLv2: json['skillLv2'],
+      skillLv3: json['skillLv3'],
+      classPassive: json['classPassive'],
+      treasureDeviceId: json['treasureDeviceId'],
+      treasureDeviceLv: json['treasureDeviceLv'],
+      exceedCount: json['exceedCount'],
+      equipTarget1: json['equipTarget1'] == null
+          ? null
+          : SvtLeaderEquipTargetInfo.fromJson(Map<String, dynamic>.from(json['equipTarget1'] as Map)),
+      updatedAt: json['updatedAt'],
+      imageLimitCount: json['imageLimitCount'],
+      dispLimitCount: json['dispLimitCount'],
+      commandCardLimitCount: json['commandCardLimitCount'],
+      iconLimitCount: json['iconLimitCount'],
+      portraitLimitCount: json['portraitLimitCount'],
+      randomLimitCountTargets: json['randomLimitCountTargets'],
+      commandCode: (json['commandCode'] as List<dynamic>?)?.map((e) => e as Map).toList(),
+      commandCardParam: json['commandCardParam'],
+      appendPassiveSkill: (json['appendPassiveSkill'] as List<dynamic>?)?.map((e) => e as Map).toList(),
+      eventSvtPoint: json['eventSvtPoint'],
     );

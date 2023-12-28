@@ -273,3 +273,24 @@ Future<void> copyToClipboard(String text, {bool toast = false}) async {
   await Clipboard.setData(ClipboardData(text: text));
   if (toast) tryEasyLoading(() => EasyLoading.showToast(S.current.copied));
 }
+
+class ByteFormatDetector {
+  const ByteFormatDetector._();
+
+  static bool isGzip(List<int> data) {
+    return data.length > 2 && data[0] == 0x1f && data[1] == 0x8b;
+  }
+
+  // raw=false
+  static bool isZlib(List<int> data) {
+    return data.length > 2 && (data[0] & 0x0F) == 0x08 && ((data[0] << 8) + data[1]) % 31 == 0;
+  }
+
+  static bool isJsonMap(List<int> data) {
+    return data.length > 1 && data[0] == 0x7b;
+  }
+
+  static bool isJsonMapBase64(List<int> data) {
+    return data.length > 2 && data[0] == 0x65 && data[1] == 0x79;
+  }
+}

@@ -14,6 +14,11 @@ import '../packages/app_info.dart';
 import '../packages/platform/platform.dart';
 import 'constants.dart';
 
+// ignore: camel_case_types
+typedef int32_t = int;
+// ignore: camel_case_types
+typedef int64_t = int;
+
 class Ref<T> {
   T value;
   Ref(this.value);

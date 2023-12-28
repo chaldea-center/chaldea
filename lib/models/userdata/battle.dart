@@ -884,6 +884,18 @@ enum PreferClassBoardDataSource {
   full,
 }
 
+enum FollowerType {
+  none(0),
+  friend(1),
+  notFriend(2),
+  npc(3),
+  npcNoTd(4),
+  follow(5);
+
+  const FollowerType(this.value);
+  final int value;
+}
+
 enum SupportSvtType {
   none,
   friend,

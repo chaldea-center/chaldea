@@ -274,14 +274,14 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     List<Widget> children = [];
     for (final user in allData) {
       Widget title = Text(
-        '[${user.region}] ${user.auth?.friendCode ?? "Unknown"} ${user.auth?.name ?? ""}',
+        '[${user.region}] ${user.userGame?.friendCode ?? "Unknown"} ${user.userGame?.name ?? ""}',
         style: const TextStyle(fontSize: 13),
       );
       Widget subtitle = Text('${user.auth?.userId}, last: ${user.lastLogin?.sec2date().toCustomString(year: false)}',
           style: const TextStyle(fontSize: 12));
 
       Widget trailing = TimerUpdate(builder: (context, time) {
-        final userGame = user.result;
+        final userGame = user.userGame;
         List<InlineSpan> spans = [];
         if (userGame != null) {
           // final recoverAt = DateTime(2023, 10, 25, 2).timestamp;
@@ -518,7 +518,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       final userGame = args.response?.userGame;
       final serverTime = args.response?.serverTime;
       if (userGame != null) {
-        args.result = userGame;
+        args.userGame = userGame;
         args.lastLogin = serverTime?.timestamp ?? DateTime.now().timestamp;
       }
       if (args.response?.success == true) {

@@ -430,8 +430,8 @@ class GameTop extends GameAppVerCode {
   String gameServer;
   // String appVer;
   // String verCode;
-  int dataVer;
-  int dateVer;
+  int dataVer; // int32
+  int dateVer; // int64
   // String assetbundle;
   String assetbundleFolder;
 
@@ -460,6 +460,8 @@ class GameTop extends GameAppVerCode {
 
   @override
   Map<String, dynamic> toJson() => _$GameTopToJson(this);
+
+  GameTop copy() => GameTop.fromJson(toJson());
 }
 
 @JsonSerializable()

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chaldea/models/db.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import '_helper.dart';
 import 'command_code.dart';
@@ -72,6 +73,35 @@ class FateTopLogin {
 
   factory FateTopLogin.fromJson(Map<String, dynamic> data) => _$FateTopLoginFromJson(data);
 
+  factory FateTopLogin.parseAny(dynamic data) => FateTopLogin.fromJson(parseToMap(data));
+
+  static Map<String, dynamic> parseToMap(dynamic data) {
+    if (data is Map) {
+      return Map.from(data);
+    }
+    if (data is String) {
+      return Map.from(jsonDecode(tryBase64Decode(data)));
+    }
+    if (data is List<int>) {
+      List<int> bytes = data;
+      if (ByteFormatDetector.isGzip(bytes)) {
+        bytes = gzip.decode(bytes);
+      } else if (ByteFormatDetector.isZlib(bytes)) {
+        bytes = ZLibCodec(raw: false).decode(bytes);
+      } else if (ByteFormatDetector.isJsonMap(bytes) || ByteFormatDetector.isJsonMapBase64(bytes)) {
+        // do nothing
+      } else {
+        try {
+          bytes = ZLibCodec(raw: true).decode(bytes);
+        } catch (e, s) {
+          logger.v('not deflate compressed: ${bytes.take(10).toList()}', e, s);
+        }
+      }
+      return Map.from(jsonDecode(tryBase64Decode(utf8.decode(bytes))));
+    }
+    throw FormatException('Unsupported format: ${data.runtimeType}');
+  }
+
   static String tryBase64Decode(String content) {
     content = content.trim();
     try {
@@ -114,6 +144,19 @@ class FateTopLogin {
     }
     return fromBase64(contents);
   }
+
+  FateResponseDetail getResponse(String nid) {
+    return response.firstWhere((e) => e.nid == nid);
+  }
+
+  FateTopLogin throwError() {
+    for (final detail in response) {
+      if (!detail.checkError()) {
+        throw Exception('[${detail.nid}] ${detail.resCode} ${detail.fail}');
+      }
+    }
+    return this;
+  }
 }
 
 @JsonSerializable(createToJson: false)
@@ -122,6 +165,8 @@ class FateResponseDetail {
   Map? success;
   Map? fail;
   String? nid;
+
+  bool checkError() => resCode == '00';
 
   int? get code => resCode == null ? null : int.tryParse(resCode!);
 
@@ -1008,6 +1053,7 @@ class SvtLeaderEquipTargetInfo {
   int skillLv2;
   int skillId3;
   int skillLv3;
+  List addSkills; // {int num; int skillId}
   // int updatedAt;
   SvtLeaderEquipTargetInfo({
     dynamic userSvtId,
@@ -1023,6 +1069,7 @@ class SvtLeaderEquipTargetInfo {
     dynamic skillLv2,
     dynamic skillId3,
     dynamic skillLv3,
+    List<Map>? addSkills,
     // dynamic updatedAt,
   })  : userSvtId = _toInt(userSvtId),
         svtId = _toInt(svtId),
@@ -1036,7 +1083,8 @@ class SvtLeaderEquipTargetInfo {
         skillId2 = _toInt(skillId2, 0),
         skillLv2 = _toInt(skillLv2, 0),
         skillId3 = _toInt(skillId3, 0),
-        skillLv3 = _toInt(skillLv3, 0);
+        skillLv3 = _toInt(skillLv3, 0),
+        addSkills = addSkills ?? [];
 
   factory SvtLeaderEquipTargetInfo.fromJson(Map<String, dynamic> data) => _$SvtLeaderEquipTargetInfoFromJson(data);
 }
@@ -1261,4 +1309,168 @@ class UserQuest {
         createdAt = _toInt(createdAt);
 
   factory UserQuest.fromJson(Map<String, dynamic> data) => _$UserQuestFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class FollowerInfo {
+  int userId;
+  String userName;
+  int userLv;
+  int type;
+  List<ServantLeaderInfo> userSvtLeaderHash;
+  List<ServantLeaderInfo> eventUserSvtLeaderHash;
+  int tutorial1;
+  String message;
+  int pushUserSvtId;
+  // 	int npcFollowerSvtId;
+  //  int npcInitIdx;
+  //  bool isMySvtOrNpc;
+  //  bool isFixedNpc;
+  //  int imageSvtId;
+
+  List<int> mainSupportDeckIds;
+  List<int> eventSupportDeckIds;
+  // List<ClassBoardInfo> userClassBoardInfo;
+
+  FollowerInfo({
+    required dynamic userId,
+    required dynamic userName,
+    required dynamic userLv,
+    required dynamic type,
+    required List<ServantLeaderInfo>? userSvtLeaderHash,
+    required List<ServantLeaderInfo>? eventUserSvtLeaderHash,
+    required dynamic tutorial1,
+    required dynamic message,
+    required dynamic pushUserSvtId,
+    required List<int>? mainSupportDeckIds,
+    required List<int>? eventSupportDeckIds,
+    // required dynamic userClassBoardInfo,
+  })  : userId = _toInt(userId),
+        userName = userName.toString(),
+        userLv = _toInt(userLv),
+        type = _toInt(type),
+        tutorial1 = _toInt(tutorial1),
+        message = message.toString(),
+        pushUserSvtId = _toInt(pushUserSvtId),
+        userSvtLeaderHash = userSvtLeaderHash ?? [],
+        eventUserSvtLeaderHash = eventUserSvtLeaderHash ?? [],
+        mainSupportDeckIds = _toIntList(mainSupportDeckIds),
+        eventSupportDeckIds = _toIntList(eventSupportDeckIds);
+
+  factory FollowerInfo.fromJson(Map<String, dynamic> data) => _$FollowerInfoFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class ServantLeaderInfo {
+  int supportDeckId;
+  int userId;
+  int classId;
+  int userSvtId;
+  int svtId;
+  int limitCount;
+  int lv;
+  int exp;
+  int hp;
+  int atk;
+  int adjustAtk;
+  int adjustHp;
+  int skillId1;
+  int skillId2;
+  int skillId3;
+  int skillLv1;
+  int skillLv2;
+  int skillLv3;
+  List<int> classPassive;
+  int treasureDeviceId;
+  int treasureDeviceLv;
+  int exceedCount;
+  SvtLeaderEquipTargetInfo? equipTarget1;
+  int updatedAt;
+  int imageLimitCount;
+  int dispLimitCount;
+  int commandCardLimitCount;
+  int iconLimitCount;
+  int portraitLimitCount;
+  List<int> randomLimitCountTargets;
+
+  List<Map> commandCode; // {int idx; int commandCodeId; int userCommandCodeId}
+  List<int> commandCardParam;
+  List<Map> appendPassiveSkill; //{int skillId; int skillLv;}
+  int eventSvtPoint;
+  // int battleVoice;
+  // private
+  // Map<int, int> limitChangeDic;
+  // String overwriteServantName;
+  // String overwriteServantDetailName;
+
+  ServantLeaderInfo({
+    required dynamic supportDeckId,
+    required dynamic userId,
+    required dynamic classId,
+    required dynamic userSvtId,
+    required dynamic svtId,
+    required dynamic limitCount,
+    required dynamic lv,
+    required dynamic exp,
+    required dynamic hp,
+    required dynamic atk,
+    required dynamic adjustAtk,
+    required dynamic adjustHp,
+    required dynamic skillId1,
+    required dynamic skillId2,
+    required dynamic skillId3,
+    required dynamic skillLv1,
+    required dynamic skillLv2,
+    required dynamic skillLv3,
+    required dynamic classPassive,
+    required dynamic treasureDeviceId,
+    required dynamic treasureDeviceLv,
+    required dynamic exceedCount,
+    this.equipTarget1,
+    required dynamic updatedAt,
+    required dynamic imageLimitCount,
+    required dynamic dispLimitCount,
+    required dynamic commandCardLimitCount,
+    required dynamic iconLimitCount,
+    required dynamic portraitLimitCount,
+    required dynamic randomLimitCountTargets,
+    List<Map>? commandCode,
+    required dynamic commandCardParam,
+    List<Map>? appendPassiveSkill,
+    required dynamic eventSvtPoint,
+  })  : supportDeckId = _toInt(supportDeckId),
+        userId = _toInt(userId),
+        classId = _toInt(classId),
+        userSvtId = _toInt(userSvtId),
+        svtId = _toInt(svtId),
+        limitCount = _toInt(limitCount),
+        lv = _toInt(lv),
+        exp = _toInt(exp),
+        hp = _toInt(hp),
+        atk = _toInt(atk),
+        adjustAtk = _toInt(adjustAtk),
+        adjustHp = _toInt(adjustHp),
+        skillId1 = _toInt(skillId1),
+        skillId2 = _toInt(skillId2),
+        skillId3 = _toInt(skillId3),
+        skillLv1 = _toInt(skillLv1),
+        skillLv2 = _toInt(skillLv2),
+        skillLv3 = _toInt(skillLv3),
+        classPassive = _toIntList(classPassive),
+        treasureDeviceId = _toInt(treasureDeviceId),
+        treasureDeviceLv = _toInt(treasureDeviceLv),
+        exceedCount = _toInt(exceedCount),
+        updatedAt = _toInt(updatedAt),
+        imageLimitCount = _toInt(imageLimitCount),
+        dispLimitCount = _toInt(dispLimitCount),
+        commandCardLimitCount = _toInt(commandCardLimitCount),
+        iconLimitCount = _toInt(iconLimitCount),
+        portraitLimitCount = _toInt(portraitLimitCount),
+        randomLimitCountTargets = _toIntList(randomLimitCountTargets),
+        commandCode = commandCode ?? [],
+        commandCardParam = _toIntList(commandCardParam),
+        appendPassiveSkill = appendPassiveSkill ?? [],
+        eventSvtPoint = _toInt(eventSvtPoint);
+
+  factory ServantLeaderInfo.fromJson(Map<String, dynamic> data) => _$ServantLeaderInfoFromJson(data);
 }

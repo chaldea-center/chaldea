@@ -18,8 +18,6 @@ UserAuth _$UserAuthFromJson(Map json) => $checkedCreate(
           secretKey: $checkedConvert('secretKey', (v) => v as String),
           saveDataVer: $checkedConvert('saveDataVer', (v) => v as String?),
           userCreateServer: $checkedConvert('userCreateServer', (v) => v as String?),
-          friendCode: $checkedConvert('friendCode', (v) => v as String?),
-          name: $checkedConvert('name', (v) => v as String?),
         );
         return val;
       },
@@ -33,8 +31,6 @@ Map<String, dynamic> _$UserAuthToJson(UserAuth instance) => <String, dynamic>{
       'secretKey': instance.secretKey,
       'saveDataVer': instance.saveDataVer,
       'userCreateServer': instance.userCreateServer,
-      'friendCode': instance.friendCode,
-      'name': instance.name,
     };
 
 AutoLoginData _$AutoLoginDataFromJson(Map json) => $checkedCreate(
@@ -52,8 +48,8 @@ AutoLoginData _$AutoLoginDataFromJson(Map json) => $checkedCreate(
               $checkedConvert('country', (v) => $enumDecodeNullable(_$NACountryEnumMap, v) ?? NACountry.unitedStates),
           useThisDevice: $checkedConvert('useThisDevice', (v) => v as bool? ?? false),
           lastLogin: $checkedConvert('lastLogin', (v) => v as int?),
-          result: $checkedConvert(
-              'result', (v) => v == null ? null : UserGame.fromJson(Map<String, dynamic>.from(v as Map))),
+          userGame: $checkedConvert(
+              'userGame', (v) => v == null ? null : UserGame.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         return val;
       },
@@ -67,7 +63,7 @@ Map<String, dynamic> _$AutoLoginDataToJson(AutoLoginData instance) => <String, d
       'country': _$NACountryEnumMap[instance.country]!,
       'useThisDevice': instance.useThisDevice,
       'lastLogin': instance.lastLogin,
-      'result': instance.result?.toJson(),
+      'userGame': instance.userGame?.toJson(),
     };
 
 const _$NACountryEnumMap = {

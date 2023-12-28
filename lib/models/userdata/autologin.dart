@@ -18,9 +18,9 @@ class UserAuth {
   final String secretKey;
   final String? saveDataVer;
   final String? userCreateServer;
-  String? friendCode;
-  String? name;
-  //
+
+  int get userIdInt => int.parse(userId);
+
   UserAuth({
     this.source,
     this.code,
@@ -29,8 +29,6 @@ class UserAuth {
     required this.secretKey,
     this.saveDataVer,
     this.userCreateServer,
-    this.friendCode,
-    this.name,
   });
 
   bool get isValid => isValidKeys(userId, authKey, secretKey);
@@ -85,7 +83,7 @@ class AutoLoginData {
   bool useThisDevice;
   // result
   int? lastLogin;
-  UserGame? result;
+  UserGame? userGame;
   @JsonKey(includeFromJson: false, includeToJson: false)
   FateServerResponse? response;
 
@@ -97,7 +95,7 @@ class AutoLoginData {
     this.country = NACountry.unitedStates,
     this.useThisDevice = false,
     this.lastLogin,
-    this.result,
+    this.userGame,
   });
   factory AutoLoginData.fromJson(Map<String, dynamic> json) => _$AutoLoginDataFromJson(json);
 

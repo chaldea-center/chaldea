@@ -243,8 +243,7 @@ class LoginAgent {
     reset();
     final sr = FateServerResponse(resp);
     if (sr.userGame != null) {
-      auth.friendCode = sr.userGame?.friendCode;
-      auth.name = sr.userGame?.name;
+      args.userGame = sr.userGame;
     }
     return resp;
   }
