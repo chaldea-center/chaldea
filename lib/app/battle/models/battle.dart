@@ -1470,7 +1470,9 @@ class BattleData {
     }
 
     final nextAction = actions[index + 1];
-    return nextAction.cardData.isTD || nextAction.actor != action.actor;
+    return nextAction.cardData.isTD ||
+        nextAction.cardData.cardDetail.attackType == CommandCardAttackType.all ||
+        nextAction.actor != action.actor;
   }
 
   Future<bool> canActivate(final int activationRate, final String description) async {
