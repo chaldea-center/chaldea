@@ -614,10 +614,11 @@ void main() async {
       final vanGogh = battle.onFieldAllyServants[0]!;
       battle.playerTargetIndex = 1;
 
+      await battle.activateSvtSkill(0, 1);
       await battle.activateSvtSkill(0, 0);
       vanGogh.hp = 200;
       await battle.skipWave();
-      expect(vanGogh.hp, 1);
+      expect(vanGogh.hp, 301);
     });
 
     test('skillRankUp & selfTurnEnd', () async {

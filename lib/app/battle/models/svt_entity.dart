@@ -974,39 +974,64 @@ class BattleServantData {
     return capBuffValue(actionDetails, totalVal, maxRate);
   }
 
-  Future<int> getTurnEndHpReduceValue(final BattleData battleData, {final bool forHeal = false}) async {
+  Future<int> getTurnEndHpReduceValue(final BattleData battleData, final int currentHp, {final bool forHeal = false}) async {
     final actionDetails = ConstData.buffActions[BuffAction.turnendHpReduce];
     if (actionDetails == null) {
       return 0;
     }
 
     final opponent = battleData.getOpponent(this);
-    int totalVal = 0;
+    int nonPreventableValue = 0;
+    int preventableValue = 0;
     int maxRate = Maths.min(actionDetails.maxRate);
+    final List<BuffData> preventDeaths = getBuffsOfType(BuffType.preventDeathByDamage);
+    final List<BuffData> activatedPreventDeaths = [];
 
     for (final buff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.turnendHpReduce)) {
       if (await buff.shouldActivateBuff(battleData, this, opponent)) {
+        final toHeal = await battleData.withBuff(buff, () async {
+          return await hasBuffOnAction(battleData, BuffAction.turnendHpReduceToRegain);
+        });
+        if (forHeal != toHeal) {
+          continue;
+        }
+
         buff.setUsed();
         final totalEffectiveness = await battleData.withBuff(buff, () async {
           return await getEffectivenessOnAction(battleData, BuffAction.turnendHpReduce);
         });
-        final toHeal = await battleData.withBuff(buff, () async {
-          return await hasBuffOnAction(battleData, BuffAction.turnendHpReduceToRegain);
+        final shouldPrevent = battleData.withBuffSync(buff, () {
+          return preventDeaths.any((buff) {
+            if (buff.shouldApplyBuff(battleData, this, this)) {
+              activatedPreventDeaths.add(buff);
+              return true;
+            }
+            return false;
+          });
         });
 
-        final useValue = forHeal == toHeal;
-        final value =
-            useValue ? (toModifier(totalEffectiveness) * buff.getValue(battleData, this, opponent)).toInt() : 0;
+        final buffValue = (toModifier(totalEffectiveness) * buff.getValue(battleData, this, opponent)).toInt();
 
-        if (actionDetails.plusTypes.contains(buff.buff.type)) {
-          totalVal += value;
+        // turnendHpReduce has no minus type
+        if (shouldPrevent) {
+          preventableValue += buffValue;
         } else {
-          totalVal -= value;
+          nonPreventableValue += buffValue;
         }
+
         maxRate = max(maxRate, buff.buff.maxRate);
       }
     }
-    return capBuffValue(actionDetails, totalVal, maxRate);
+
+    int finalValue = preventableValue + nonPreventableValue;
+    if (!forHeal && currentHp <= finalValue && currentHp > nonPreventableValue && preventableValue > 0) {
+      finalValue = currentHp - 1;
+      for (final buff in activatedPreventDeaths) {
+        buff.setUsed();
+      }
+    }
+
+    return capBuffValue(actionDetails, finalValue, maxRate);
   }
 
   Future<int> getEffectivenessOnAction(final BattleData battleData, final BuffAction buffAction) async {
@@ -1254,23 +1279,9 @@ class BattleServantData {
         }
         usedNpThisTurn = false;
 
-        int turnEndDamage = await getTurnEndHpReduceValue(battleData);
-        if (turnEndDamage != 0) {
-          final List<BuffData> preventDeaths = getBuffsOfType(BuffType.preventDeathByDamage);
-          turnEndDamage = preventDeaths.any((buff) => buff.shouldApplyBuff(battleData, this, this))
-              ? min(hp - 1, turnEndDamage)
-              : turnEndDamage;
-
-          receiveDamage(turnEndDamage);
-          turnEndLog += ' - dot ${S.current.battle_damage}: $turnEndDamage';
-        }
-
-        if (hp <= 0 && hasNextShift(battleData)) {
-          hp = 1;
-        }
-
+        final currentHp = hp;
         final turnEndHeal = await getBuffValueOnAction(battleData, BuffAction.turnendHpRegain) +
-            await getTurnEndHpReduceValue(battleData, forHeal: true);
+            await getTurnEndHpReduceValue(battleData, currentHp, forHeal: true);
         if (turnEndHeal != 0) {
           final healGrantEff = toModifier(await getBuffValueOnAction(battleData, BuffAction.giveGainHp));
           final healReceiveEff = toModifier(await getBuffValueOnAction(battleData, BuffAction.gainHp));
@@ -1278,6 +1289,16 @@ class BattleServantData {
           await heal(battleData, finalHeal);
 
           turnEndLog += ' - ${S.current.battle_heal} HP: $finalHeal';
+        }
+
+        int turnEndDamage = await getTurnEndHpReduceValue(battleData, currentHp);
+        if (turnEndDamage != 0) {
+          receiveDamage(turnEndDamage);
+          turnEndLog += ' - dot ${S.current.battle_damage}: $turnEndDamage';
+        }
+
+        if (hp <= 0 && hasNextShift(battleData)) {
+          hp = 1;
         }
 
         final turnEndStar = await getBuffValueOnAction(battleData, BuffAction.turnendStar);
