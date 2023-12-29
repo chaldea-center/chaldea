@@ -974,7 +974,7 @@ class BattleServantData {
     return capBuffValue(actionDetails, totalVal, maxRate);
   }
 
-  Future<int> getTurnEndHpReduceValue(final BattleData battleData, final int currentHp, {final bool forHeal = false}) async {
+  Future<int> getTurnEndHpReduceValue(final BattleData battleData, {final bool forHeal = false}) async {
     final actionDetails = ConstData.buffActions[BuffAction.turnendHpReduce];
     if (actionDetails == null) {
       return 0;
@@ -1024,8 +1024,8 @@ class BattleServantData {
     }
 
     int finalValue = preventableValue + nonPreventableValue;
-    if (!forHeal && currentHp <= finalValue && currentHp > nonPreventableValue && preventableValue > 0) {
-      finalValue = currentHp - 1;
+    if (!forHeal && hp <= finalValue && hp > nonPreventableValue && preventableValue > 0) {
+      finalValue = hp - 1;
       for (final buff in activatedPreventDeaths) {
         buff.setUsed();
       }
@@ -1281,7 +1281,7 @@ class BattleServantData {
 
         final currentHp = hp;
         final turnEndHeal = await getBuffValueOnAction(battleData, BuffAction.turnendHpRegain) +
-            await getTurnEndHpReduceValue(battleData, currentHp, forHeal: true);
+            await getTurnEndHpReduceValue(battleData, forHeal: true);
         if (turnEndHeal != 0) {
           final healGrantEff = toModifier(await getBuffValueOnAction(battleData, BuffAction.giveGainHp));
           final healReceiveEff = toModifier(await getBuffValueOnAction(battleData, BuffAction.gainHp));
@@ -1291,8 +1291,11 @@ class BattleServantData {
           turnEndLog += ' - ${S.current.battle_heal} HP: $finalHeal';
         }
 
-        int turnEndDamage = await getTurnEndHpReduceValue(battleData, currentHp);
+        int turnEndDamage = await getTurnEndHpReduceValue(battleData);
         if (turnEndDamage != 0) {
+          if (turnEndDamage > currentHp && battleData.isWaveCleared) {
+            turnEndDamage = currentHp - 1;
+          }
           receiveDamage(turnEndDamage);
           turnEndLog += ' - dot ${S.current.battle_damage}: $turnEndDamage';
         }

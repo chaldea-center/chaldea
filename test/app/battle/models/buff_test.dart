@@ -619,6 +619,14 @@ void main() async {
       vanGogh.hp = 200;
       await battle.skipWave();
       expect(vanGogh.hp, 301);
+
+      vanGogh.hp = 200;
+      await battle.skipTurn();
+      expect(vanGogh.hp, 100);
+
+      vanGogh.hp = 50;
+      await battle.skipTurn();
+      expect(vanGogh.hp, 1);
     });
 
     test('skillRankUp & selfTurnEnd', () async {

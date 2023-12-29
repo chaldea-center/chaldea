@@ -92,6 +92,7 @@ class BattleData {
   List<BattleServantData> get nonnullBackupEnemies => _getNonnull(enemyDataList);
 
   List<BattleServantData> get nonnullBackupPlayers => _getNonnull(playerDataList);
+  bool get isWaveCleared => enemyDataList.isEmpty && nonnullEnemies.isEmpty;
 
   List<BuffData> fieldBuffs = [];
   MysticCode? mysticCode;
@@ -463,7 +464,7 @@ class BattleData {
     await _replenishActors();
     bool addTurn = true;
 
-    if (enemyDataList.isEmpty && nonnullEnemies.isEmpty) {
+    if (isWaveCleared) {
       addTurn = await _nextWave();
     }
     if (addTurn) {
@@ -1465,7 +1466,9 @@ class BattleData {
 
   bool shouldRemoveDeadActors(final List<CombatAction> actions, final int index) {
     final action = actions[index];
-    if (action.cardData.isTD || index == actions.length - 1) {
+    if (action.cardData.isTD ||
+        action.cardData.cardDetail.attackType == CommandCardAttackType.all ||
+        index == actions.length - 1) {
       return true;
     }
 
