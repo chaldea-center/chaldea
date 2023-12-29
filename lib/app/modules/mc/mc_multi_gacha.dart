@@ -412,11 +412,14 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
       if (fallback && rows.length > 1 && rows.toSet().length == 1) {
         rows = [rows.first];
       }
+      if (rows.toSet().length == 1 && rows.first.isEmpty) {
+        return '';
+      }
       return rows.map((e) => '*$e').join('\n');
     }
 
     buffer.writeln("{{推荐召唤情况\n|召唤时段=");
-    buffer.writeln(_mergeRows(dates));
+    if (dates.length > 1) buffer.writeln(_mergeRows(dates));
     buffer.writeln('|从者概率=');
     buffer.writeln(_mergeRows(svtProbs));
     buffer.writeln('|礼装概率=');

@@ -780,7 +780,11 @@ class _MCQuestConverter extends McConverter {
   String trimEnemyName(QuestEnemy enemy) {
     String name = enemy.lShownName;
     if (enemy.roleType == EnemyRoleType.servant) {
-      if (name.startsWith('谜之') || name.startsWith('謎の') || name.toLowerCase().startsWith('beast')) {
+      if (name.startsWith('谜之') ||
+          name.startsWith('謎の') ||
+          name.contains('女主角') ||
+          name.contains('ヒロイン') ||
+          name.toLowerCase().startsWith('beast')) {
         return name;
       }
     }
