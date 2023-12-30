@@ -406,10 +406,10 @@ packages:
     dependency: "direct main"
     description:
       name: fl_chart
-      sha256: "5a74434cc83bf64346efb562f1a06eefaf1bcb530dc3d96a104f631a1eff8d79"
+      sha256: fe6fec7d85975a99c73b9515a69a6e291364accfa0e4a5b3ce6de814d74b9a1c
       url: "https://pub.dev"
     source: hosted
-    version: "0.65.0"
+    version: "0.66.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -435,10 +435,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_hooks
-      sha256: "7c8db779c2d1010aa7f9ea3fbefe8f86524fcb87b69e8b0af31e1a4b55422dec"
+      sha256: "09f64db63fee3b2ab8b9038a1346be7d8986977fae3fec601275bf32455ccfc0"
       url: "https://pub.dev"
     source: hosted
-    version: "0.20.3"
+    version: "0.20.4"
   flutter_js:
     dependency: "direct main"
     description:
@@ -652,10 +652,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "07c3fde455ddd8281351b55041aabcb0040c5f34"
+      resolved-ref: "81b4e5733eef3a2211e2c37e8a3f008eb7d0b751"
       url: "https://github.com/chaldea-center/intl_utils"
     source: git
-    version: "2.8.6"
+    version: "2.8.7"
   io:
     dependency: transitive
     description:
@@ -869,7 +869,7 @@ packages:
     description:
       path: "packages/pasteboard"
       ref: HEAD
-      resolved-ref: "60dcc22467d0de16274e84a9bc3aae383efbc01d"
+      resolved-ref: "40bf8cfc149e6cb1e6a6e2c5392376fd3ce84de4"
       url: "https://github.com/MixinNetwork/flutter-plugins"
     source: git
     version: "0.2.0"
@@ -901,10 +901,10 @@ packages:
     dependency: transitive
     description:
       name: path_provider_android
-      sha256: e595b98692943b4881b219f0a9e3945118d3c16bd7e2813f98ec6e532d905f72
+      sha256: "477184d672607c0a3bf68fbbf601805f92ef79c82b64b4d6eb318cbca4c48668"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.1"
+    version: "2.2.2"
   path_provider_foundation:
     dependency: transitive
     description:
