@@ -609,12 +609,13 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     final agent = this.agent!;
     Map<int, int> results = {1: 0, 2: 0, 3: 0};
     EasyLoading.dismiss();
+    int winCount = 0, battleCount = 0, itemCount = 0;
 
-    for (int i = 0; i < count; i++) {
-      final idx = '${i + 1}/$count';
+    while (winCount < count) {
+      final idx = '$battleCount ($winCount()/$count, $itemCount items)';
       logger.v('battle $idx');
       EasyLoading.show(status: 'Starting battle $idx');
-      final (battleResult, _) = await agent.startBattle(
+      final (battleResult, drops, _) = await agent.startBattle(
         msgPrefix: 'Battle $idx:',
         questId: 94091101,
         questPhase: 1,
@@ -637,9 +638,15 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
         ],
       );
       results.addNum(battleResult, 1);
-      logger.v('progress $idx: $results');
+      battleCount++;
+      if (battleResult == 1) {
+        winCount++;
+        itemCount += drops[6549] ?? 0;
+      }
+      logger.v('$battleCount ($winCount()/$count, $itemCount items): $results');
       await Future.delayed(const Duration(seconds: 2));
     }
+
     logger.v('All $count battles done!');
     EasyLoading.dismiss();
   }

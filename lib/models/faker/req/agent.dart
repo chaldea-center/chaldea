@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
+
 import 'package:archive/archive.dart' show getCrc32;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:msgpack_dart/msgpack_dart.dart' as msgpack;
@@ -35,7 +37,7 @@ class FRequestAgent {
       } else {
         msg2 = '$msg after ${milliseconds ~/ 1000}s';
       }
-      EasyLoading.show(status: msg2);
+      EasyLoading.show(status: msg2, indicator: const SizedBox.shrink());
       await Future.delayed(Duration(milliseconds: min(dt, milliseconds)));
       milliseconds -= dt;
     }
@@ -239,7 +241,7 @@ class FRequestAgent {
     return request.beginRequestAndCheckError();
   }
 
-  Future<(int battleResult, FResponse resp)> startBattle({
+  Future<(int battleResult, Map<int, int> drops, FResponse resp)> startBattle({
     String msgPrefix = "Battle:",
     required int questId,
     required int questPhase,
@@ -272,7 +274,7 @@ class FRequestAgent {
     }
 
     while (true) {
-      final resp = await folowerList(questId: questId, questPhase: questPhase, isEnfoceRefresh: true);
+      final resp = await folowerList(questId: questId, questPhase: questPhase, isEnfoceRefresh: refreshCount > 0);
       refreshCount += 1;
       if (refreshCount > 20) {
         throw Exception('After $refreshCount times refresh, no support svt is valid');
@@ -313,6 +315,7 @@ class FRequestAgent {
     for (final drop in drops) {
       dropNums.addNum(drop['objectId'], drop['num']);
     }
+    final originalDropNums = Map.of(dropNums);
     bool desiredDrop = true;
     for (final itemId in targetDropItems.keys) {
       if ((dropNums[itemId] ?? 0) < targetDropItems[itemId]!) {
@@ -328,7 +331,7 @@ class FRequestAgent {
 
     List<int> usedTurnList = List.filled(stageCount, 0);
     if (targetDropItems.isNotEmpty && !desiredDrop) {
-      logger.i('target drops not meet: $dropNums, retire battle after 5s');
+      logger.i('target drops not meet: $originalDropNums, retire battle after 5s');
       await waitSeconds(3, null, '$msgPrefix retire');
       usedTurnList[0] = 1;
       final List wave1Enemies = stages[0]['svts'];
@@ -342,7 +345,7 @@ class FRequestAgent {
         playerServantNoblePhantasmUsageData: [],
         aliveUniqueIds: enemySvts.map((e) => e['uniqueId'] as int).toList(),
       );
-      return (3, retireResp);
+      return (3, originalDropNums, retireResp);
     } else {
       logger.i('target drop found $targetDropItems, win battle after 60s');
       await waitSeconds(60, 70, '$msgPrefix win');
@@ -359,7 +362,7 @@ class FRequestAgent {
         playerServantNoblePhantasmUsageData: playerServantNoblePhantasmUsageData,
         voicePlayedArray: voicePlayedArray,
       );
-      return (1, resp);
+      return (1, originalDropNums, resp);
     }
   }
 }
