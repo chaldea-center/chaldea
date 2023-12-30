@@ -1,5 +1,14 @@
 # 更新日志
 
+## 2.5.5
+
+Happy New Year ヾ(^▽^ヾ)
+
+- 优化 Mooncell 关卡和卡池导出
+- Laplace
+  - 支持 shiftGuts
+  - 修复 preventDeathByDamage
+
 ## 2.5.4
 
 - 支持导出关卡配置和卡池信息(包括概率表)至 Mooncell 格式

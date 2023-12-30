@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.5.5
+
+Happy New Year ヾ(^▽^ヾ)
+
+- Improve Mooncell converters
+- Laplace
+  - support shiftGuts
+  - fix preventDeathByDamage
+
 ## 2.5.4
 
 - Export quest data and gacha data to Mooncell wiki format

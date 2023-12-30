@@ -84,9 +84,9 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "about_app": MessageLookupByLibrary.simpleMessage("정보"),
         "about_app_declaration_text": MessageLookupByLibrary.simpleMessage(
-            "이 어플리케이션에 사용되는 데이터는 게임 Fate/GO 및 게임 사이트에서 가져왔습니다. 게임의 텍스트, 그림, 음성의 저작권은 TYPE MOON/FGO PROJECT에 있습니다.\n\n프로그램의 설계는 WeChat의 프로그램인  \"Material Programe\" 과 IOS 앱인  \"Guda\"를 기반으로 제작되었습니다."),
+            "이 어플리케이션에 사용되는 데이터는 게임 Fate/GO 및 게임 사이트에서 가져왔습니다. 게임의 텍스트, 그림, 음성의 저작권은 TYPE MOON/FGO PROJECT에 있습니다.\n\n프로그램의 설계는 WeChat의 프로그램인 \"Material Programe\" 과 IOS 앱인 \"Guda\"를 기반으로 제작되었습니다."),
         "about_data_source": MessageLookupByLibrary.simpleMessage("데이터 소스"),
-        "about_data_source_footer": MessageLookupByLibrary.simpleMessage("출처가 표시되어 있지 않거나 침해가 있는 경우 알려주세요"),
+        "about_data_source_footer": MessageLookupByLibrary.simpleMessage("출처가 표시되어 있지 않거나 침해가 있는 경우 알려주세요."),
         "about_feedback": MessageLookupByLibrary.simpleMessage("피드백"),
         "account_title": MessageLookupByLibrary.simpleMessage("계정"),
         "active_skill": MessageLookupByLibrary.simpleMessage("보유 스킬"),
@@ -172,7 +172,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "battle_select_activator": MessageLookupByLibrary.simpleMessage("발동자를 선택"),
         "battle_select_card": MessageLookupByLibrary.simpleMessage("커맨드 카드를 선택"),
         "battle_select_critical_card_hint": MessageLookupByLibrary.simpleMessage("커맨드 카드를 클릭하여 빨간색이 되면 치명타 공격을 합니다"),
-        "battle_select_effect": MessageLookupByLibrary.simpleMessage("효과선택"),
+        "battle_select_effect": MessageLookupByLibrary.simpleMessage("효과 선택"),
         "battle_should_activate": MessageLookupByLibrary.simpleMessage("발동 할까"),
         "battle_simulation": MessageLookupByLibrary.simpleMessage("배틀 시뮬레이션"),
         "battle_simulation_setup": MessageLookupByLibrary.simpleMessage("팀 편성"),
@@ -456,7 +456,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "hide": MessageLookupByLibrary.simpleMessage("숨기기"),
         "hide_outdated": MessageLookupByLibrary.simpleMessage("기간종료 숨기기"),
         "hide_svt_plan_details": MessageLookupByLibrary.simpleMessage("계획 세부 숨기기"),
-        "hide_svt_plan_details_hint": MessageLookupByLibrary.simpleMessage("계획 탭에 만 안 표시.\n실제로는 아이템 계획 및 통계에 포함되어 있어."),
+        "hide_svt_plan_details_hint": MessageLookupByLibrary.simpleMessage("계획 탭에서는 보이지 않으나 실제 아이템 계획 및 통계에는 포함되어 있음."),
         "hide_unreleased_card": MessageLookupByLibrary.simpleMessage("미구현 서번트 숨기기"),
         "high_difficulty_quest": MessageLookupByLibrary.simpleMessage("고난이도 퀘스트"),
         "history": MessageLookupByLibrary.simpleMessage("기록"),
@@ -521,7 +521,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "invalid_input": MessageLookupByLibrary.simpleMessage("잘못된 입력입니다"),
         "invalid_startup_path": MessageLookupByLibrary.simpleMessage("잘못된 시작 경로입니다"),
         "invalid_startup_path_info": MessageLookupByLibrary.simpleMessage(
-            "시스템 폴더가 아닌 곳에 zip을 추출 후 시작해 주시기 바랍니다, \"C:\\\", \"C:\\Program Files\" 는 사용할 수 없습니다"),
+            "시스템 폴더가 아닌 곳에 zip을 추출 후 시작해 주시기 바랍니다, \"C:\\\", \"C:\\Program Files\" 는 사용할 수 없습니다."),
         "ios_app_path": MessageLookupByLibrary.simpleMessage("\"Files\" app/On My iPhone/Chaldea"),
         "item": MessageLookupByLibrary.simpleMessage("아이템"),
         "item_already_exist_hint": m4,
@@ -715,7 +715,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "resettable_digged_num": MessageLookupByLibrary.simpleMessage("필요한 파다 수 초기화"),
         "restart_to_apply_changes": MessageLookupByLibrary.simpleMessage("다시 시작하여 적용시키기"),
         "restart_to_upgrade_hint":
-            MessageLookupByLibrary.simpleMessage("업데이트 후 재시작합니다. 만약 업데이트에 실패했다면 수동으로 소스 파일을 다른곳에 옮겨주시기 바랍니다."),
+            MessageLookupByLibrary.simpleMessage("업데이트 후 재시작합니다. 만약 업데이트에 실패했다면 수동으로 소스 파일을 다른 곳에 옮겨주시기 바랍니다."),
         "restore": MessageLookupByLibrary.simpleMessage("복원"),
         "results": MessageLookupByLibrary.simpleMessage("결과"),
         "saint_quartz_plan": MessageLookupByLibrary.simpleMessage("성정석 저장 계획"),
