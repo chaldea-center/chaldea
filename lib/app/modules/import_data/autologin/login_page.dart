@@ -612,7 +612,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     int winCount = 0, battleCount = 0, itemCount = 0;
 
     while (winCount < count) {
-      final idx = '$battleCount ($winCount()/$count, $itemCount items)';
+      final idx = '$battleCount ($winCount/$count, $itemCount items)';
       logger.v('battle $idx');
       EasyLoading.show(status: 'Starting battle $idx');
       final (battleResult, drops, _) = await agent.startBattle(

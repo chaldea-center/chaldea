@@ -20,7 +20,7 @@ class _SvtSummonTabState extends State<SvtSummonTab> {
   Widget build(BuildContext context) {
     List<LimitedSummon> summons = [];
     for (final summon in db.gameData.wiki.summons.values) {
-      if (summon.hasPickupSvt(widget.svt.collectionNo) && summon.startTime.jp != null) {
+      if (summon.hasPickupSvt(widget.svt.collectionNo, includeGSSR: includeGSSR) && summon.startTime.jp != null) {
         summons.add(summon);
       }
     }

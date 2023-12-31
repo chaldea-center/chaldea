@@ -181,7 +181,7 @@ class _GachaListPageState extends State<GachaListPage>
             onChanged: (v) {
               setState(() {
                 if (v != null && v && _selectedGachas.isEmpty && gacha.detailUrl.isNotEmpty) {
-                  final match = RegExp(r'(/.+/.+_)[a-z]$').firstMatch(gacha.detailUrl);
+                  final match = RegExp(r'(/.+/.+_)[a-z]\d?$').firstMatch(gacha.detailUrl);
                   if (match != null) {
                     final prefix = match.group(1)!;
                     final related = wholeData.where((e) =>

@@ -350,10 +350,11 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
 |关联活动1=
 |关联卡池1=
 |推荐召唤从者=$svtNames
-|推荐召唤礼装=$ceNames
-|其他信息=
-}}
-""");
+|推荐召唤礼装=$ceNames""");
+    if (gachas.any((e) => e.gacha.isLuckyBag)) {
+      buffer.writeln("""|福袋召唤=yes\n|圣杯=""");
+    }
+    buffer.writeln("}}\n");
 
     // 卡池情况
     buffer.writeln('==推荐召唤具体情况==');
