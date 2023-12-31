@@ -92,6 +92,12 @@ class BattleData {
   List<BattleServantData> get nonnullBackupEnemies => _getNonnull(enemyDataList);
 
   List<BattleServantData> get nonnullBackupPlayers => _getNonnull(playerDataList);
+
+  BattleServantData? getServantData(int uniqueId, {bool onFieldOnly = false}) {
+    final targets = onFieldOnly ? [...onFieldAllyServants, ...onFieldEnemies] : [...playerDataList, ...enemyDataList];
+    return targets.firstWhereOrNull((e) => e?.uniqueId == uniqueId);
+  }
+
   bool get isWaveCleared => enemyDataList.isEmpty && nonnullEnemies.isEmpty;
 
   List<BuffData> fieldBuffs = [];
@@ -1431,6 +1437,7 @@ class BattleData {
         await actor.activateGuts(this).then((value) => hasGuts = value);
         if (!hasGuts && !actor.hasNextShift(this)) {
           await actor.death(this);
+          
           if (actor.lastHitBy != null) {
             await actor.lastHitBy!.activateBuffOnAction(this, BuffAction.functionDeadattack);
           }

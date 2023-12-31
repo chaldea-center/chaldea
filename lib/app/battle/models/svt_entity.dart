@@ -103,8 +103,11 @@ class BattleServantData {
   int changeIndex = 0;
 
   bool attacked = false;
+  @Deprecated('actionHistory')
   BattleServantData? lastHitBy;
+  @Deprecated('actionHistory')
   CommandCardData? lastHitByCard;
+  List<BattleServantActionHistory> actionHistory = [];
 
   BattleServantData._({required this.isPlayer});
 
@@ -1234,6 +1237,8 @@ class BattleServantData {
   }
 
   Future<void> death(final BattleData battleData) async {
+    // TODO: collect buffs and activate each, 
+    // DataVals.OpponentOnly? revengeOpp : revenge
     if (await activateBuffOnAction(battleData, BuffAction.functionDead)) {
       for (final svt in battleData.nonnullActors) {
         svt.clearAccumulationDamage();
@@ -1297,6 +1302,11 @@ class BattleServantData {
             turnEndDamage = currentHp - 1;
           }
           receiveDamage(turnEndDamage);
+          actionHistory.add(BattleServantActionHistory(
+            actType: BattleServantActionHistoryType.reduceHp,
+            targetUniqueId: -1,
+            isOpponent: false,
+          ));
           turnEndLog += ' - dot ${S.current.battle_damage}: $turnEndDamage';
         }
 
@@ -1394,6 +1404,24 @@ class BattleServantData {
     return false;
   }
 
+  int getRevengeTargetUniqueId() {
+    for (final action in actionHistory.reversed) {
+      if (action.isDamage && action.targetUniqueId != uniqueId) {
+        return action.targetUniqueId;
+      }
+    }
+    return -1;
+  }
+
+  int getRevengeTargetUniqueIdFromOpponent() {
+    for (final action in actionHistory.reversed) {
+      if (action.isDamage && action.isOpponent && action.targetUniqueId != uniqueId) {
+        return action.targetUniqueId;
+      }
+    }
+    return -1;
+  }
+
   BattleServantData copy() {
     return BattleServantData._(isPlayer: isPlayer)
       ..niceEnemy = niceEnemy
@@ -1419,6 +1447,38 @@ class BattleServantData {
       ..shiftNpcIds = shiftNpcIds.toList()
       ..shiftIndex = shiftIndex
       ..changeNpcIds = changeNpcIds.toList()
-      ..changeIndex = changeIndex; //copy
+      ..changeIndex = changeIndex
+      ..actionHistory = actionHistory.toList(); //copy
   }
+}
+
+class BattleServantActionHistory {
+  final BattleServantActionHistoryType actType;
+  final int targetUniqueId;
+  // final int waveCount;
+  final bool isOpponent;
+
+  BattleServantActionHistory({
+    required this.actType,
+    required this.targetUniqueId,
+    // required this.waveCount,
+    required this.isOpponent,
+  });
+
+  bool get isDamage => actType.isDamage;
+
+  void copy() {}
+}
+
+enum BattleServantActionHistoryType {
+  none,
+  damageCommand,
+  damageTd,
+  hploss,
+  instantDeath,
+  reduceHp,
+  damageReflection,
+  damageValue;
+
+  bool get isDamage => this != none;
 }

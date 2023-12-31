@@ -28,6 +28,11 @@ class GainHP {
         final baseValue = isPercent ? target.maxHp * toModifier(dataVals.Value!) : dataVals.Value!;
         if (isLoss) {
           target.lossHp(baseValue.toInt(), lethal: isLethal);
+          target.actionHistory.add(BattleServantActionHistory(
+            actType: BattleServantActionHistoryType.hploss,
+            targetUniqueId: battleData.activator?.uniqueId ?? -1,
+            isOpponent: false,
+          ));
         } else {
           final healGrantEff =
               toModifier(await battleData.activator?.getBuffValueOnAction(battleData, BuffAction.giveGainHp) ?? 1000);

@@ -365,6 +365,13 @@ class Damage {
         target.receiveDamage(hitDamage);
       }
 
+      target.actionHistory.add(BattleServantActionHistory(
+        actType:
+            currentCard.isTD ? BattleServantActionHistoryType.damageTd : BattleServantActionHistoryType.damageCommand,
+        targetUniqueId: activator.uniqueId,
+        isOpponent: activator.isPlayer != target.isPlayer,
+      ));
+
       target.lastHitBy = activator;
       target.lastHitByCard = currentCard;
 

@@ -12,6 +12,7 @@ class InstantDeath {
     final DataVals dataVals,
     final List<BattleServantData> targets, {
     final bool force = false,
+    final bool defaultToPlayer = true,
   }) async {
     final activator = battleData.activator;
     final record = BattleInstantDeathRecord(forceInstantDeath: force, activator: activator, targets: []);
@@ -22,6 +23,12 @@ class InstantDeath {
         if (await shouldInstantDeath(battleData, dataVals, activator, target, force, params)) {
           target.hp = 0;
           target.lastHitBy = activator;
+          target.actionHistory.add(BattleServantActionHistory(
+            actType: BattleServantActionHistoryType.instantDeath,
+            targetUniqueId: activator?.uniqueId ?? -1,
+            isOpponent: (activator?.isPlayer ?? defaultToPlayer) != target.isPlayer,
+          ));
+
           battleData.curFuncResults[target.uniqueId] = true;
         }
         record.targets.add(InstantDeathResultDetail(target: target, params: params));

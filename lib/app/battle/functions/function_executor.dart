@@ -279,6 +279,7 @@ class FunctionExecutor {
             dataVals,
             targets,
             force: function.funcType == FuncType.forceInstantDeath,
+            defaultToPlayer: defaultToPlayer,
           );
           break;
         case FuncType.gainHp:
@@ -587,8 +588,11 @@ class FunctionExecutor {
       case FuncTargetType.ptselectOneSub: //  used by replace member
         break;
       case FuncTargetType.enemyOneNoTargetNoAction:
-        if (activator != null && activator.lastHitBy != null) {
-          targets.add(activator.lastHitBy!);
+        if (activator != null) {
+          final target = battleData.getServantData(activator.getRevengeTargetUniqueId(), onFieldOnly: true);
+          if (target != null) {
+            targets.add(target);
+          }
         }
         break;
       // random target: set minCount=0 to enable skip
