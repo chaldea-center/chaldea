@@ -1891,7 +1891,8 @@ enum EventType {
   combineCosutumeItem(23),
   myroomMultipleViewCampaign(24),
   interludeCampaign(25),
-  myroomPhotoCampaign(26);
+  myroomPhotoCampaign(26),
+  fortuneCampaign(27);
 
   const EventType(this.id);
   final int id;

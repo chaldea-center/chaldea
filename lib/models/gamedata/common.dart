@@ -683,6 +683,7 @@ enum Trait {
   manuscriptComplete(2872),
   myFairSoldier(2873),
   elementalsWrath(2880),
+  groupServant(2881),
   attackPhysical(3000),
   attackProjectile(3001),
   attackMagical(3002),
@@ -754,6 +755,7 @@ enum Trait {
   buffBound(3087), // 拘束
   buffMarking(3088),
   buffBuffSuccessRateUp(3090),
+  takeruDummyTrait(3091),
   cardArts(4001),
   cardBuster(4002),
   cardQuick(4003),

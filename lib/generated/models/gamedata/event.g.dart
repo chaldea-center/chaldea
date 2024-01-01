@@ -194,6 +194,7 @@ const _$EventTypeEnumMap = {
   EventType.myroomMultipleViewCampaign: 'myroomMultipleViewCampaign',
   EventType.interludeCampaign: 'interludeCampaign',
   EventType.myroomPhotoCampaign: 'myroomPhotoCampaign',
+  EventType.fortuneCampaign: 'fortuneCampaign',
 };
 
 EventAdd _$EventAddFromJson(Map json) => EventAdd(
