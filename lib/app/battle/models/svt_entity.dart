@@ -1237,7 +1237,7 @@ class BattleServantData {
   }
 
   Future<void> death(final BattleData battleData) async {
-    // TODO: collect buffs and activate each, 
+    // TODO: collect buffs and activate each,
     // DataVals.OpponentOnly? revengeOpp : revenge
     if (await activateBuffOnAction(battleData, BuffAction.functionDead)) {
       for (final svt in battleData.nonnullActors) {

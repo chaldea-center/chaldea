@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -427,9 +428,7 @@ class VoiceGroupAccordion extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     onPressed: () async {
                       if (kIsWeb) {
-                        for (var url in line.audioAssets) {
-                          launch(url);
-                        }
+                        toMergeVoiceLine(line);
                         return;
                       }
                       List<String?> localFiles = [];
@@ -461,6 +460,14 @@ class VoiceGroupAccordion extends StatelessWidget {
                             EasyLoading.showInfo(S.current.open_in_file_manager);
                           }
                         },
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              toMergeVoiceLine(line);
+                            },
+                            child: Text(S.current.merge),
+                          ),
+                        ],
                       ).showDialog(null);
                     },
                     icon: const Icon(Icons.file_download),
@@ -479,6 +486,16 @@ class VoiceGroupAccordion extends StatelessWidget {
         const SizedBox(height: 8),
       ],
     );
+  }
+
+  void toMergeVoiceLine(VoiceLine line) {
+    List<String> rows = [];
+    for (final (index, url) in line.audioAssets.indexed) {
+      rows.add(url);
+      rows.add((line.delay.getOrNull(index) ?? 0).toString());
+    }
+    launch(ChaldeaUrl.doc('tools', queryParams: {'audioData': base64Encode(utf8.encode(rows.join('\n')))}),
+        external: true);
   }
 }
 

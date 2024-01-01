@@ -707,6 +707,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "max_limit_break": MessageLookupByLibrary.simpleMessage("MLB"),
         "max_window_width": MessageLookupByLibrary.simpleMessage("Max Window Width"),
         "media_assets": MessageLookupByLibrary.simpleMessage("Assets"),
+        "merge": MessageLookupByLibrary.simpleMessage("Merge"),
         "merge_same_drop": MessageLookupByLibrary.simpleMessage("Merge Same Drop Item"),
         "migrate_external_storage_btn_no": MessageLookupByLibrary.simpleMessage("NOT MIGRATE"),
         "migrate_external_storage_btn_yes": MessageLookupByLibrary.simpleMessage("MIGRATE"),

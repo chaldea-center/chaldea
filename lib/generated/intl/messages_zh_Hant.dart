@@ -677,6 +677,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "max_limit_break": MessageLookupByLibrary.simpleMessage("滿破"),
         "max_window_width": MessageLookupByLibrary.simpleMessage("最大視窗寬度"),
         "media_assets": MessageLookupByLibrary.simpleMessage("資源"),
+        "merge": MessageLookupByLibrary.simpleMessage("合并"),
         "merge_same_drop": MessageLookupByLibrary.simpleMessage("合併相同掉落素材"),
         "migrate_external_storage_btn_no": MessageLookupByLibrary.simpleMessage("不轉移"),
         "migrate_external_storage_btn_yes": MessageLookupByLibrary.simpleMessage("轉移"),

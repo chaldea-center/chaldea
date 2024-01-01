@@ -6404,6 +6404,17 @@ class S {
     );
   }
 
+  /// `Merge`
+  String get merge {
+    return Intl.message(
+      'Merge',
+      name: 'merge',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Merge Same Drop Item`
   String get merge_same_drop {
     return Intl.message(

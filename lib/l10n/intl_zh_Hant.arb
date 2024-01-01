@@ -575,6 +575,7 @@
   "max_limit_break": "滿破",
   "max_window_width": "最大視窗寬度",
   "media_assets": "資源",
+  "merge": null,
   "merge_same_drop": "合併相同掉落素材",
   "migrate_external_storage_btn_no": "不轉移",
   "migrate_external_storage_btn_yes": "轉移",
