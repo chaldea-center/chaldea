@@ -30,7 +30,7 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
       appBar: AppBar(
         title: Text(S.current.import_csv_title),
         actions: [
-          ChaldeaUrl.docsHelpBtn('import_data.html#csv-template', zhPath: 'import_data.html#csv-模板'),
+          ChaldeaUrl.docsHelpBtn('import_data.html#csv-template'),
         ],
       ),
       body: Column(

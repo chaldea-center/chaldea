@@ -113,7 +113,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
                 actions: [
                   TextButton(
                     onPressed: () {
-                      launch(ChaldeaUrl.doc("/releases"));
+                      launch(ChaldeaUrl.doc("/install"));
                     },
                     child: Text(S.current.details),
                   ),

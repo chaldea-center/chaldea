@@ -70,7 +70,7 @@ class ImportSkillScreenshotPageState extends State<ImportSkillScreenshotPage> wi
         title: Text(
             widget.isAppend ? S.current.import_append_skill_screenshots : S.current.import_active_skill_screenshots),
         actions: [
-          ChaldeaUrl.docsHelpBtn('import_data#active-append-skill-recognition', zhPath: 'import_data#主动-被动技能截图解析'),
+          ChaldeaUrl.docsHelpBtn('import_data#skill-recognition'),
         ],
         bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,

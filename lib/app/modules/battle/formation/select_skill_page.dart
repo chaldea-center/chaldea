@@ -110,10 +110,7 @@ class _SkillSelectPageState extends State<SkillSelectPage> {
                     ),
                     SizedBox(
                       width: kMinInteractiveDimension,
-                      child: ChaldeaUrl.laplaceHelpBtn(
-                        'faq#what-is-atlas-db-url',
-                        zhPath: 'faq.html#什么是-atlas-db-url',
-                      ),
+                      child: ChaldeaUrl.laplaceHelpBtn('faq#atlas-db-url'),
                     )
                   ],
                 ),

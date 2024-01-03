@@ -2,7 +2,7 @@
 
 ## Installation
 
-Check in docs for more about installation and startup: https://docs.chaldea.center/guide/installation.html
+Check in docs for more about installation and startup: https://docs.chaldea.center/guide/install.html
 
 Please
 
@@ -19,7 +19,7 @@ Simply override old files with new extracted files.
 
 ## 安装与启动
 
-更多关于安装与启动的问题请参考文档: https://docs.chaldea.center/zh/guide/installation.html
+更多关于安装与启动的问题请参考文档: https://docs.chaldea.center/zh/guide/install.html
 
 请务必:
 

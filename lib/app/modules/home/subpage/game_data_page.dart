@@ -11,7 +11,6 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -183,11 +182,7 @@ class _GameDataPageState extends State<GameDataPage> {
                 context: context,
                 text: 'document',
                 onTap: () {
-                  if (Language.isZH) {
-                    launch(ChaldeaUrl.doc('app_setting#防剧透设置'));
-                  } else {
-                    launch(ChaldeaUrl.doc('app_setting#spoiler-settings'));
-                  }
+                  launch(ChaldeaUrl.doc('app_setting#spoiler-settings'));
                 },
               )
             ])),

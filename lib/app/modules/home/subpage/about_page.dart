@@ -139,7 +139,7 @@ class _AboutPageState extends State<AboutPage> {
               ListTile(
                 title: Text(S.current.change_log),
                 onTap: () {
-                  launch(ChaldeaUrl.doc('releases'));
+                  launch(ChaldeaUrl.doc('install#releases'));
                 },
               ),
               ListTile(

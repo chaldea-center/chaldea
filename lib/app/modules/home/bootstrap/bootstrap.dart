@@ -215,7 +215,7 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
             horizontalTitleGap: 0,
             trailing: const Icon(Icons.open_in_new),
             onTap: () {
-              launch(ChaldeaUrl.doc('installation'));
+              launch(ChaldeaUrl.doc('install'));
             },
           ),
           Padding(

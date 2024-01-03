@@ -404,7 +404,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                     },
                     child: Text(S.current.atlas_load),
                   ),
-                  ChaldeaUrl.laplaceHelpBtn('faq#what-is-atlas-db-url', zhPath: 'faq.html#什么是-atlas-db-url')
+                  ChaldeaUrl.laplaceHelpBtn('faq#atlas-db-url')
                 ],
               ),
               kIndentDivider,

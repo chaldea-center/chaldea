@@ -58,7 +58,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> with
         titleSpacing: 0,
         title: Text(S.current.item_screenshot),
         actions: [
-          ChaldeaUrl.docsHelpBtn('import_data#item-screenshots', zhPath: 'import_data#素材截图解析'),
+          ChaldeaUrl.docsHelpBtn('import_data#item-screenshots'),
         ],
         bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,

@@ -183,9 +183,9 @@ class _ApkListPageState extends State<ApkListPage> {
                     ListTile(
                       dense: true,
                       title: const Text('Chaldea App'),
-                      subtitle: Text(ChaldeaUrl.doc('releases')),
+                      subtitle: Text(ChaldeaUrl.doc('install')),
                       onTap: () {
-                        launch(ChaldeaUrl.doc('releases'));
+                        launch(ChaldeaUrl.doc('install'));
                       },
                     ),
                   ],
