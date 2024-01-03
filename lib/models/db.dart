@@ -14,7 +14,6 @@ import 'package:intl/intl.dart';
 import 'package:chaldea/app/tools/item_center.dart';
 import 'package:chaldea/models/runtime_data.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/widgets/icon_clipper.dart';
 import 'package:chaldea/widgets/image/image_viewer.dart';
 import '../packages/app_info.dart';
 import '../packages/language.dart';
@@ -283,7 +282,6 @@ class _Database {
     BoxFit? fit,
     bool? preferPng,
     bool withBorder = true,
-    bool? clip,
     EdgeInsetsGeometry? padding,
     WidgetBuilder? placeholder,
     LoadingErrorWidgetBuilder? errorWidget,
@@ -318,12 +316,6 @@ class _Database {
           height: height,
           child: placeholder?.call(context),
         ),
-      );
-    }
-    if (clip != false) {
-      image = ClipPath(
-        clipper: TopCornerClipper(),
-        child: image,
       );
     }
     if (padding != null) {

@@ -37,16 +37,16 @@ class CommandCardWidget extends StatelessWidget {
                 right: dx,
                 top: dx,
                 bottom: dx,
-                child: Image.asset(
-                  'res/assets/card_bg_$cardName.png',
+                child: db.getIconImage(
+                  AssetURL.i.commandAtlas('card_bg_$cardName'),
+                  fit: BoxFit.fill,
                   // width: 100,
                   // height: 100,
-                  fit: BoxFit.fill,
                 ),
               ),
               Positioned.fill(
-                child: Image.asset(
-                  'res/assets/card_icon_$cardName.png',
+                child: db.getIconImage(
+                  AssetURL.i.commandAtlas('card_icon_$cardName'),
                   fit: BoxFit.fitWidth,
                 ),
               ),
@@ -54,8 +54,8 @@ class CommandCardWidget extends StatelessWidget {
                 left: dx,
                 right: dx,
                 bottom: 0,
-                child: Image.asset(
-                  'res/assets/card_txt_$cardName.png',
+                child: db.getIconImage(
+                  AssetURL.i.commandAtlas('card_txt_$cardName'),
                   fit: BoxFit.fitWidth,
                 ),
               ),

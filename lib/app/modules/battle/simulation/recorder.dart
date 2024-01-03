@@ -974,8 +974,8 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
         left: -2,
         right: -2,
         bottom: -6,
-        child: Image.asset(
-          'res/assets/card_icon_${card.cardType.name}.png',
+        child: db.getIconImage(
+          AssetURL.i.commandAtlas('card_icon_${card.cardType.name}'),
           fit: BoxFit.fitWidth,
         ),
       ));
@@ -1008,16 +1008,22 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
           left: 2,
           right: 2,
           bottom: 0,
-          child: Image.asset(
-            'res/assets/card_txt_${card.cardType.name}.png',
+          child: db.getIconImage(
+            AssetURL.i.commandAtlas('card_txt_${card.cardType.name}'),
             fit: BoxFit.fitWidth,
           ),
         ));
       }
-    } else {
-      // stackChildren.add(Positioned.fill(
-      //   child: ImageWithText.paintOutline(text: card.cardType.name),
-      // ));
+    } else if (card.cardType == CardType.extra) {
+      stackChildren.add(Positioned(
+        left: 2,
+        right: -4,
+        bottom: 0,
+        child: db.getIconImage(
+          AssetURL.i.commandAtlas('card_txt_${card.cardType.name}'),
+          fit: BoxFit.fitWidth,
+        ),
+      ));
     }
     final oc = card.oc;
     if (oc != null && oc > 1 && oc <= 5) {

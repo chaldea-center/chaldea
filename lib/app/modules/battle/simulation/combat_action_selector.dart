@@ -239,18 +239,18 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
       alignment: Alignment.center,
       children: [
         tdIcon,
-        if (curTd?.svt.card.isQAB == true) ...[
+        if (curTd != null && curTd.svt.card.isQAB) ...[
           Positioned(
             bottom: 0,
-            child: Image.asset(
-              'res/assets/card_icon_${curTd?.svt.card.name}.png',
+            child: db.getIconImage(
+              AssetURL.i.commandAtlas('card_icon_${curTd.svt.card.name}'),
               width: cardSize * 0.8,
             ),
           ),
           Positioned(
             bottom: cardSize * 0.5 * 0.2,
-            child: Image.asset(
-              'res/assets/card_txt_${curTd?.svt.card.name}.png',
+            child: db.getIconImage(
+              AssetURL.i.commandAtlas('card_txt_${curTd.svt.card.name}'),
               width: cardSize * 0.8,
             ),
           ),
