@@ -44,6 +44,7 @@ class FunctionExecutor {
     final int? selectedActionIndex,
     final int? effectiveness,
     final bool defaultToPlayer = true,
+    final BattleServantData? revengeTarget,
   }) async {
     await battleData.withFunctions(() async {
       Map<int, List<NiceFunction>> actSets = {};
@@ -73,20 +74,17 @@ class FunctionExecutor {
           continue;
         }
 
-        final updatedResult = await FunctionExecutor.executeFunction(
-          battleData,
-          func,
-          skillLevel,
-          overchargeLvl: overchargeLvl,
-          shouldTrigger: !isDmgFuncType(functions.getOrNull(index - 1)?.funcType),
-          shouldDamageRelease: !isDmgFuncType(functions.getOrNull(index + 1)?.funcType),
-          isPassive: isPassive,
-          notActorFunction: notActorFunction,
-          isCommandCode: isCommandCode,
-          selectedActionIndex: selectedActionIndex,
-          effectiveness: effectiveness,
-          defaultToPlayer: defaultToPlayer,
-        );
+        final updatedResult = await FunctionExecutor.executeFunction(battleData, func, skillLevel,
+            overchargeLvl: overchargeLvl,
+            shouldTrigger: !isDmgFuncType(functions.getOrNull(index - 1)?.funcType),
+            shouldDamageRelease: !isDmgFuncType(functions.getOrNull(index + 1)?.funcType),
+            isPassive: isPassive,
+            notActorFunction: notActorFunction,
+            isCommandCode: isCommandCode,
+            selectedActionIndex: selectedActionIndex,
+            effectiveness: effectiveness,
+            defaultToPlayer: defaultToPlayer,
+            revengeTarget: revengeTarget);
         if (!updatedResult) {
           battleData.uniqueIdToFuncResultsList.add(null);
         }
@@ -118,6 +116,7 @@ class FunctionExecutor {
     final int? selectedActionIndex,
     final int? effectiveness,
     final bool defaultToPlayer = true,
+    final BattleServantData? revengeTarget,
   }) async {
     final BattleServantData? activator = battleData.activator;
     if (!validateFunctionTargetTeam(function, activator?.isPlayer ?? defaultToPlayer)) {
@@ -169,6 +168,7 @@ class FunctionExecutor {
       activator,
       funcId: function.funcId,
       defaultToPlayer: defaultToPlayer,
+      revengeTarget: revengeTarget,
     );
 
     return await battleData.withFunction(() async {
@@ -456,6 +456,7 @@ class FunctionExecutor {
     final BattleServantData? activator, {
     final int? funcId,
     final bool defaultToPlayer = true,
+    final BattleServantData? revengeTarget,
   }) async {
     final List<BattleServantData> targets = [];
 
@@ -495,7 +496,9 @@ class FunctionExecutor {
         }
         break;
       case FuncTargetType.enemy:
-        if (targetedEnemy != null) {
+        if (revengeTarget != null) {
+          targets.add(revengeTarget);
+        } else if (targetedEnemy != null) {
           targets.add(targetedEnemy);
         }
         break;
