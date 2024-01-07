@@ -289,7 +289,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
 
   Widget get summonTab {
     final openAt = Maths.min(gachas.map((e) => e.gacha.openedAt), 0);
-    final closeAt = Maths.min(gachas.map((e) => e.gacha.closedAt), 0);
+    final closeAt = Maths.max(gachas.map((e) => e.gacha.closedAt), 0);
     List<int> puSvts = [], puCEs = [];
     for (final gacha in gachas) {
       if (gacha.isInvalid) continue;
