@@ -198,10 +198,10 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
       exp: json['exp'] as int? ?? 0,
       bond: json['bond'] as int? ?? 0,
       isNpcOnly: json['isNpcOnly'] as bool? ?? false,
-      battleBgId: json['battleBgId'] as int? ?? 0,
       enemyHash: json['enemyHash'] as String?,
       enemyHashes: (json['availableEnemyHashes'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
       dropsFromAllHashes: json['dropsFromAllHashes'] as bool?,
+      battleBg: json['battleBg'] == null ? null : BattleBg.fromJson(Map<String, dynamic>.from(json['battleBg'] as Map)),
       extraDetail: json['extraDetail'] == null
           ? null
           : QuestPhaseExtraDetail.fromJson(Map<String, dynamic>.from(json['extraDetail'] as Map)),
@@ -269,10 +269,10 @@ Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic
       'exp': instance.exp,
       'bond': instance.bond,
       'isNpcOnly': instance.isNpcOnly,
-      'battleBgId': instance.battleBgId,
       'enemyHash': instance.enemyHash,
       'availableEnemyHashes': instance.enemyHashes,
       'dropsFromAllHashes': instance.dropsFromAllHashes,
+      'battleBg': instance.battleBg?.toJson(),
       'extraDetail': instance.extraDetail?.toJson(),
       'scripts': instance.scripts.map((e) => e.toJson()).toList(),
       'messages': instance.messages.map((e) => e.toJson()).toList(),
@@ -367,6 +367,7 @@ Stage _$StageFromJson(Map json) => Stage(
       limitAct: $enumDecodeNullable(_$StageLimitActTypeEnumMap, json['limitAct']),
       enemyFieldPosCount: json['enemyFieldPosCount'] as int?,
       enemyActCount: json['enemyActCount'] as int?,
+      battleBg: json['battleBg'] == null ? null : BattleBg.fromJson(Map<String, dynamic>.from(json['battleBg'] as Map)),
       NoEntryIds: (json['NoEntryIds'] as List<dynamic>?)?.map((e) => e as int).toList(),
       waveStartMovies: (json['waveStartMovies'] as List<dynamic>?)
               ?.map((e) => StageStartMovie.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -391,6 +392,7 @@ Map<String, dynamic> _$StageToJson(Stage instance) => <String, dynamic>{
       'limitAct': _$StageLimitActTypeEnumMap[instance.limitAct],
       'enemyFieldPosCount': instance.enemyFieldPosCount,
       'enemyActCount': instance.enemyActCount,
+      'battleBg': instance.battleBg?.toJson(),
       'NoEntryIds': instance.NoEntryIds,
       'waveStartMovies': instance.waveStartMovies.map((e) => e.toJson()).toList(),
       'originalScript': instance.originalScript,
@@ -1114,6 +1116,32 @@ Map<String, dynamic> _$QuestGroupToJson(QuestGroup instance) => <String, dynamic
       'type': instance.type,
       'groupId': instance.groupId,
     };
+
+BattleBg _$BattleBgFromJson(Map json) => BattleBg(
+      id: json['id'] as int,
+      type: $enumDecodeNullable(_$BattleFieldEnvironmentGrantTypeEnumMap, json['type']) ??
+          BattleFieldEnvironmentGrantType.none,
+      priority: json['priority'] as int? ?? 0,
+      individuality: (json['individuality'] as List<dynamic>?)
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      imageId: json['imageId'] as int? ?? 0,
+    );
+
+Map<String, dynamic> _$BattleBgToJson(BattleBg instance) => <String, dynamic>{
+      'id': instance.id,
+      'type': _$BattleFieldEnvironmentGrantTypeEnumMap[instance.type]!,
+      'priority': instance.priority,
+      'individuality': instance.individuality.map((e) => e.toJson()).toList(),
+      'imageId': instance.imageId,
+    };
+
+const _$BattleFieldEnvironmentGrantTypeEnumMap = {
+  BattleFieldEnvironmentGrantType.none: 'none',
+  BattleFieldEnvironmentGrantType.stage: 'stage',
+  BattleFieldEnvironmentGrantType.function_: 'function',
+};
 
 const _$QuestFlagEnumMap = {
   QuestFlag.none: 'none',

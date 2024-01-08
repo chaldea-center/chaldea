@@ -362,13 +362,14 @@ class QuestPhase extends Quest {
   int exp;
   int bond;
   bool isNpcOnly;
-  int battleBgId;
+  // int battleBgId;
   // v1 `1_{enemy_count_hash:>02}{npc_id_hash:>02}_{sha1_hash}`
   String? enemyHash;
   @JsonKey(name: 'availableEnemyHashes')
   List<String> enemyHashes;
   // null if no enemy data found
   bool? dropsFromAllHashes;
+  BattleBg? battleBg;
   QuestPhaseExtraDetail? extraDetail;
   List<ScriptLink> scripts;
   List<QuestMessage> messages;
@@ -414,10 +415,11 @@ class QuestPhase extends Quest {
     this.exp = 0,
     this.bond = 0,
     this.isNpcOnly = false,
-    this.battleBgId = 0,
+    // this.battleBgId = 0,
     this.enemyHash,
     this.enemyHashes = const [],
     this.dropsFromAllHashes,
+    this.battleBg,
     this.extraDetail,
     this.scripts = const [],
     this.messages = const [],
@@ -776,6 +778,7 @@ class Stage with DataScriptBase {
   StageLimitActType? limitAct;
   int? enemyFieldPosCount;
   int? enemyActCount;
+  BattleBg? battleBg;
   // ignore: non_constant_identifier_names
   List<int>? NoEntryIds;
   List<StageStartMovie> waveStartMovies;
@@ -794,6 +797,7 @@ class Stage with DataScriptBase {
     this.limitAct,
     this.enemyFieldPosCount,
     this.enemyActCount,
+    this.battleBg,
     // ignore: non_constant_identifier_names
     this.NoEntryIds,
     this.waveStartMovies = const [],
@@ -1783,6 +1787,27 @@ class QuestGroup {
   Map<String, dynamic> toJson() => _$QuestGroupToJson(this);
 }
 
+@JsonSerializable()
+class BattleBg {
+  final int id;
+  final BattleFieldEnvironmentGrantType type;
+  final int priority;
+  final List<NiceTrait> individuality;
+  final int imageId;
+
+  BattleBg({
+    required this.id,
+    this.type = BattleFieldEnvironmentGrantType.none,
+    this.priority = 0,
+    this.individuality = const [],
+    this.imageId = 0,
+  });
+
+  factory BattleBg.fromJson(Map<String, dynamic> json) => _$BattleBgFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BattleBgToJson(this);
+}
+
 ///
 
 class QuestFlagConverter extends JsonConverter<QuestFlag, String> {
@@ -2049,3 +2074,13 @@ enum QuestGroupType {
 }
 
 final kQuestGroupTypeMapping = {for (final v in QuestGroupType.values) v.id: v};
+
+enum BattleFieldEnvironmentGrantType {
+  none(0),
+  stage(1),
+  @JsonValue('function')
+  function_(2);
+
+  const BattleFieldEnvironmentGrantType(this.value);
+  final int value;
+}
