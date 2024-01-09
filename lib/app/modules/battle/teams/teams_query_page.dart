@@ -29,15 +29,16 @@ class TeamsQueryPage extends StatefulWidget {
   final String? username; // name or id
   final ValueChanged<BattleShareData>? onSelect;
 
-  const TeamsQueryPage(
-      {super.key,
-      required this.mode,
-      this.quest,
-      this.phaseInfo,
-      this.teamIds,
-      this.userId,
-      this.username,
-      this.onSelect});
+  const TeamsQueryPage({
+    super.key,
+    required this.mode,
+    this.quest,
+    this.phaseInfo,
+    this.teamIds,
+    this.userId,
+    this.username,
+    this.onSelect,
+  });
 
   @override
   State<TeamsQueryPage> createState() => _TeamsQueryPageState();
@@ -371,6 +372,23 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         ]));
       }
     }
+    //
+    final quest = db.gameData.quests[team.quest?.id];
+    if (quest != null) {
+      Set<String> unreleasedSvts = {};
+      for (final svtData in team.formation.allSvts) {
+        final svt = db.gameData.servantsById[svtData?.svtId];
+        if (svt == null) continue;
+        final releasedAt = svt.extra.getReleasedAt();
+        if (quest.closedAt < releasedAt && releasedAt > 0) {
+          unreleasedSvts.add(svt.lName.l);
+        }
+      }
+      if (unreleasedSvts.isNotEmpty) {
+        spans.add(TextSpan(text: '${S.current.svt_not_release_hint}(${unreleasedSvts.join(" / ")})'));
+      }
+    }
+
     if (spans.isEmpty) return const SizedBox.shrink();
 
     return Container(
