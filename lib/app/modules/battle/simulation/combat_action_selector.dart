@@ -132,11 +132,13 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         textScaler: const TextScaler.linear(0.9),
       ),
     ));
-    if (battleData.nonnullPlayers.any((svt) => (svt.playerSvtData?.td?.dmgNpFuncCount ?? 0) > 1)) {
+    final multiDmgFuncSvts =
+        combatActions.map((e) => e?.actor).where((e) => (e?.playerSvtData?.td?.dmgNpFuncCount ?? 0) > 1).toList();
+    if (multiDmgFuncSvts.isNotEmpty) {
       children.add(ConstrainedBox(
         constraints: BoxConstraints(maxWidth: cardSize * 7),
         child: Text(
-          S.current.laplace_upload_td_multi_dmg_func_hint,
+          '${S.current.laplace_upload_td_multi_dmg_func_hint}: ${multiDmgFuncSvts.map((e) => e?.lBattleName).join("/")}',
           textScaler: const TextScaler.linear(0.8),
         ),
       ));
