@@ -862,7 +862,7 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
 
     final multiDmgFuncSvts = records
         .whereType<BattleAttackRecord>()
-        .where((e) => (e.card?.td?.dmgNpFuncCount ?? 0) > 1)
+        .where((e) => e.card?.isTD == true && (e.card?.td?.dmgNpFuncCount ?? 0) > 1)
         .map((e) => e.attacker.lBattleName)
         .toSet();
     List<String> warnings = [
