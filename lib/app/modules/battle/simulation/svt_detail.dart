@@ -350,11 +350,11 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
 
     children.add(const SHeader('Active Buffs'));
     for (final buff in svt.battleBuff.originalActiveList) {
-      children.add(buildBuff(buff));
+      children.add(buildBuff(buff, svt.battleBuff.originalActiveList));
     }
     children.add(const SHeader('Passive Buffs'));
     for (final buff in svt.battleBuff.originalPassiveList) {
-      children.add(buildBuff(buff));
+      children.add(buildBuff(buff, svt.battleBuff.originalPassiveList));
     }
     // children.add(const SHeader('Command Code Buffs'));
     // for (final buff in svt.battleBuff.commandCodeList) {
@@ -364,7 +364,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
     return ListView(children: children);
   }
 
-  Widget buildBuff(BuffData buff) {
+  Widget buildBuff(BuffData buff, List<BuffData> buffList) {
     final valueSpans = <InlineSpan>[
       if (buff.vals.UseRate != null)
         TextSpan(text: Transl.special.funcValChance(buff.vals.UseRate!.format(base: 10, percent: true))),
@@ -379,20 +379,21 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
     ];
     if (valueSpans.isEmpty) valueSpans.add(const TextSpan(text: ' - '));
     final bool showActor = buff.vals.OnField == 1;
+    final buffName = buff.buff.name.isEmpty
+        ? FuncDescriptor.buildBasicFuncText(NiceFunction(
+            funcId: 0,
+            funcType: FuncType.addState,
+            funcTargetType: FuncTargetType.self,
+            funcTargetTeam: FuncApplyTarget.playerAndEnemy,
+            buffs: [buff.buff],
+            svals: [DataVals(buff.vals.toJson(sort: false)..['Value'] = buff.param)],
+          )).toString()
+        : buff.buff.lName.l;
     return ListTile(
       dense: true,
       horizontalTitleGap: 4,
       leading: BattleBuffIcon(buff: buff, size: 24),
-      title: Text(buff.buff.name.isEmpty
-          ? FuncDescriptor.buildBasicFuncText(NiceFunction(
-              funcId: 0,
-              funcType: FuncType.addState,
-              funcTargetType: FuncTargetType.self,
-              funcTargetTeam: FuncApplyTarget.playerAndEnemy,
-              buffs: [buff.buff],
-              svals: [DataVals(buff.vals.toJson(sort: false)..['Value'] = buff.param)],
-            )).toString()
-          : buff.buff.lName.l),
+      title: Text(buffName),
       isThreeLine: showActor,
       subtitle: Text.rich(TextSpan(
         text: buff.buff.lDetail.l,
@@ -443,6 +444,21 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
       ),
       onTap: () {
         buff.buff.routeTo();
+      },
+      onLongPress: () {
+        final recorder = battleData?.recorder;
+        if (recorder == null) return;
+        router.showDialog(
+          builder: (context) => SimpleCancelOkDialog(
+            title: Text(S.current.remove),
+            content: Text(buffName),
+            onTapOk: () {
+              recorder.setIllegal("Manual Remove Buff: ${svt.lBattleName}-$buffName");
+              buffList.remove(buff);
+              if (mounted) setState(() {});
+            },
+          ),
+        );
       },
     );
   }
