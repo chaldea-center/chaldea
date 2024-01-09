@@ -100,7 +100,6 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             playerSvtData.tdLv = v.round();
           });
         },
-        endOffset: -16,
       ),
       SliderWithPrefix(
         label: 'Lv',
@@ -112,7 +111,6 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             playerSvtData.lv = v.round();
           });
         },
-        endOffset: -16,
       ),
       SliderWithPrefix(
         label: 'ATK ${S.current.foukun}',
@@ -130,7 +128,6 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             playerSvtData.atkFou = v2 * 10;
           });
         },
-        endOffset: -16,
       ),
       SliderWithPrefix(
         label: 'HP ${S.current.foukun}',
@@ -148,7 +145,6 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             playerSvtData.hpFou = v2 * 10;
           });
         },
-        endOffset: -16,
       ),
     ];
     final activeSkills = [
@@ -164,7 +160,6 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               playerSvtData.skillLvs[skillNum - 1] = v.round();
             });
           },
-          endOffset: -16,
         ),
     ];
     final appendSkills = [
@@ -180,7 +175,6 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               playerSvtData.appendLvs[skillNum - 1] = v.round();
             });
           },
-          endOffset: -16,
         )
     ];
 

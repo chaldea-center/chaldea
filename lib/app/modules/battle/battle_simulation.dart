@@ -539,17 +539,24 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SliderWithTitle(
-                leadingText: S.current.battle_probability_threshold,
+              SliderWithPrefix(
+                titled: true,
+                label: S.current.battle_probability_threshold,
                 min: 0,
-                max: 10,
-                value: options.threshold ~/ 100,
-                label: '${options.threshold ~/ 10}',
-                onChange: (v) {
-                  options.threshold = v.round() * 100;
+                max: 1000,
+                value: options.threshold,
+                valueFormatter: (v) => v.format(percent: true, base: 10),
+                onEdit: (v) {
+                  options.threshold = v.round().clamp(0, 1000);
                   if (mounted) setState(() {});
                 },
-                padding: EdgeInsets.zero,
+                onChange: (v) {
+                  final v2 = (v.round() ~/ 100 * 100).clamp(0, 1000);
+                  if (v2 != options.threshold) {
+                    options.threshold = v2;
+                    if (mounted) setState(() {});
+                  }
+                },
               ),
               Text.rich(
                 TextSpan(

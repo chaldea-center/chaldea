@@ -4,23 +4,24 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 import 'custom_dialogs.dart';
 
+@Deprecated('use SliderWithPrefix')
 class SliderWithTitle extends StatelessWidget {
-  final String leadingText;
+  final String label;
   final int min;
   final int max;
   final int value;
-  final String label;
+  final String valueText;
   final ValueChanged<double> onChange;
   final EdgeInsetsGeometry padding;
   final double maxWidth;
 
   const SliderWithTitle({
     super.key,
-    required this.leadingText,
+    required this.label,
     required this.min,
     required this.max,
     required this.value,
-    required this.label,
+    required this.valueText,
     required this.onChange,
     this.padding = const EdgeInsets.only(top: 8),
     this.maxWidth = 360,
@@ -35,7 +36,7 @@ class SliderWithTitle extends StatelessWidget {
       children: [
         Padding(
           padding: padding,
-          child: Text('$leadingText: $label'),
+          child: Text('$label: $valueText'),
         ),
         ConstrainedBox(
           constraints: BoxConstraints(
@@ -47,7 +48,7 @@ class SliderWithTitle extends StatelessWidget {
             max: max.toDouble(),
             divisions: max > min ? max - min : null,
             value: value.toDouble(),
-            label: label,
+            label: valueText,
             onChanged: (v) {
               onChange(v);
             },
@@ -69,8 +70,8 @@ class SliderWithPrefix extends StatelessWidget {
   final ValueChanged<double>? onEdit;
   final int? division;
   final double leadingWidth;
-  final double endOffset;
   final bool enableInput;
+  final EdgeInsetsGeometry? padding;
 
   const SliderWithPrefix({
     super.key,
@@ -84,8 +85,8 @@ class SliderWithPrefix extends StatelessWidget {
     this.onEdit,
     this.division,
     this.leadingWidth = 48,
-    this.endOffset = 0,
     this.enableInput = true,
+    this.padding,
   });
 
   @override
@@ -132,7 +133,10 @@ class SliderWithPrefix extends StatelessWidget {
       );
     }
     Widget slider = SliderTheme(
-      data: SliderTheme.of(context).copyWith(thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8)),
+      data: SliderTheme.of(context).copyWith(
+        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
+        trackShape: const _CustomTrackShape(left: 16, right: 16),
+      ),
       child: Slider(
         min: min.toDouble(),
         max: max.toDouble(),
@@ -146,18 +150,7 @@ class SliderWithPrefix extends StatelessWidget {
     );
     slider = ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 320, maxHeight: 24),
-      child: Stack(
-        children: [
-          PositionedDirectional(
-            start: -16,
-            end: endOffset,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 24),
-              child: slider,
-            ),
-          )
-        ],
-      ),
+      child: slider,
     );
 
     Widget child;
@@ -181,6 +174,9 @@ class SliderWithPrefix extends StatelessWidget {
           Flexible(child: slider)
         ],
       );
+    }
+    if (padding != null) {
+      child = Padding(padding: padding!, child: child);
     }
     return child;
   }
@@ -209,5 +205,30 @@ class SliderWithPrefix extends StatelessWidget {
         }
       },
     );
+  }
+}
+
+class _CustomTrackShape extends RoundedRectSliderTrackShape {
+  final double left;
+  final double right;
+
+  const _CustomTrackShape({
+    this.left = 0.0,
+    this.right = 0.0,
+  });
+
+  @override
+  Rect getPreferredRect({
+    required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final trackHeight = sliderTheme.trackHeight;
+    final trackLeft = offset.dx + left;
+    final trackTop = offset.dy + (parentBox.size.height - trackHeight!) / 2;
+    final trackWidth = parentBox.size.width - left - right;
+    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
 }

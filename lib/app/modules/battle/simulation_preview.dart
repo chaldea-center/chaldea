@@ -689,12 +689,13 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         const SizedBox(width: 8),
         mcIcon,
         Flexible(
-          child: SliderWithTitle(
-            leadingText: enabled ? mcData.mysticCode?.lName.l ?? S.current.mystic_code : S.current.mystic_code,
+          child: SliderWithPrefix(
+            titled: true,
+            label: enabled ? mcData.mysticCode?.lName.l ?? S.current.mystic_code : S.current.mystic_code,
             min: 0,
             max: 10,
-            value: options.formation.mysticCodeData.level,
-            label: enabled ? 'Lv.${mcData.level}' : S.current.disabled,
+            value: mcData.level,
+            valueFormatter: (v) => enabled ? 'Lv.$v' : S.current.disabled,
             onChange: (v) {
               mcData.level = v.round();
               if (mounted) setState(() {});
@@ -707,17 +708,25 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 
   Widget buildMisc() {
     List<Widget> children = [
-      SliderWithTitle(
-        leadingText: S.current.battle_probability_threshold,
+      SliderWithPrefix(
+        titled: true,
+        label: S.current.battle_probability_threshold,
         min: 0,
-        max: 10,
-        value: options.threshold ~/ 100,
-        label: '${options.threshold ~/ 10} %',
-        onChange: (v) {
-          options.threshold = v.round() * 100;
+        max: 1000,
+        value: options.threshold,
+        valueFormatter: (v) => v.format(percent: true, base: 10),
+        onEdit: (v) {
+          options.threshold = v.round().clamp(0, 1000);
           if (mounted) setState(() {});
         },
-        padding: const EdgeInsetsDirectional.only(top: 8, start: 8),
+        onChange: (v) {
+          final v2 = (v.round() ~/ 100 * 100).clamp(0, 1000);
+          if (v2 != options.threshold) {
+            options.threshold = v2;
+            if (mounted) setState(() {});
+          }
+        },
+        padding: const EdgeInsetsDirectional.only(start: 16),
       ),
       kIndentDivider,
       CheckboxListTile(

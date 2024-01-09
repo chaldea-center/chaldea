@@ -474,31 +474,38 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       // ),
       kIndentDivider,
       const SizedBox(height: 8),
-      SliderWithTitle(
-        leadingText: S.current.battle_random,
+      SliderWithPrefix(
+        titled: true,
+        label: S.current.battle_random,
         min: ConstData.constants.attackRateRandomMin,
         max: ConstData.constants.attackRateRandomMax - 1,
         value: options.random,
-        label: (options.random / 1000).toStringAsFixed(3),
+        valueFormatter: (v) => (v / 1000).toStringAsFixed(3),
         onChange: (v) {
           options.random = v.round();
           if (mounted) setState(() {});
         },
-        padding: const EdgeInsetsDirectional.only(start: 16),
-        maxWidth: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
       ),
-      SliderWithTitle(
-        leadingText: S.current.battle_probability_threshold,
+      SliderWithPrefix(
+        titled: true,
+        label: S.current.battle_probability_threshold,
         min: 0,
-        max: 10,
-        value: options.probabilityThreshold ~/ 100,
-        label: '${options.probabilityThreshold / 10} %',
-        onChange: (v) {
-          options.probabilityThreshold = v.round() * 100;
+        max: 1000,
+        value: options.probabilityThreshold,
+        valueFormatter: (v) => v.format(percent: true, base: 10),
+        onEdit: (v) {
+          options.probabilityThreshold = v.round().clamp(0, 1000);
           if (mounted) setState(() {});
         },
-        padding: const EdgeInsetsDirectional.only(start: 16),
-        maxWidth: double.infinity,
+        onChange: (v) {
+          final v2 = (v.round() ~/ 100 * 100).clamp(0, 1000);
+          if (v2 != options.probabilityThreshold) {
+            options.probabilityThreshold = v2;
+            if (mounted) setState(() {});
+          }
+        },
+        padding: const EdgeInsets.symmetric(horizontal: 16),
       ),
       kDefaultDivider,
       TextButton(

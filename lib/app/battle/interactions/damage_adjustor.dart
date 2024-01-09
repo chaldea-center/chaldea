@@ -83,12 +83,13 @@ class _DamageAdjustorState extends State<DamageAdjustor> {
           ),
           const SizedBox(height: 8),
           Text('${S.current.battle_damage}: $totalDamage'),
-          SliderWithTitle(
-            leadingText: S.current.battle_random,
+          SliderWithPrefix(
+            titled: true,
+            label: S.current.battle_random,
             min: ConstData.constants.attackRateRandomMin,
             max: ConstData.constants.attackRateRandomMax - 1,
             value: widget.damageParameters.random,
-            label: toModifier(widget.damageParameters.random).toStringAsFixed(3),
+            valueFormatter: (v) => toModifier(v).toStringAsFixed(3),
             onChange: (v) {
               widget.damageParameters.random = v.round();
               if (mounted) setState(() {});

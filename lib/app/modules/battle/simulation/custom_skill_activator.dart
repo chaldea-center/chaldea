@@ -88,13 +88,13 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                 if (skill != null && skill!.maxLv > 1)
                   Padding(
                     padding: const EdgeInsetsDirectional.only(start: 16),
-                    child: SliderWithTitle(
-                      padding: EdgeInsets.zero,
-                      leadingText: S.current.level,
+                    child: SliderWithPrefix(
+                      titled: true,
+                      label: S.current.level,
                       min: 1,
                       max: skill!.maxLv,
                       value: skillLv.clamp(1, skill!.maxLv),
-                      label: skillLv.toString(),
+                      valueFormatter: (v) => v.toString(),
                       onChange: (v) {
                         skillLv = v.toInt();
                         if (mounted) setState(() {});
