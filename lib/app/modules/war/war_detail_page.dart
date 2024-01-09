@@ -42,6 +42,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
   void initState() {
     super.initState();
     _war = widget.war ?? db.gameData.wars[widget.warId];
+    if (_war == null) fetchWar();
   }
 
   Future<void> fetchWar({bool force = false}) async {
@@ -57,6 +58,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
       EasyLoading.dismiss();
     }
     _loading = false;
+    _war?.calcItems(db.gameData);
     if (mounted) setState(() {});
   }
 
