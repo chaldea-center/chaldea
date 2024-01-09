@@ -46,6 +46,7 @@ User _$UserFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = User(
+          id: $checkedConvert('id', (v) => v as String?),
           name: $checkedConvert('name', (v) => v as String? ?? 'Gudako'),
           isGirl: $checkedConvert('isGirl', (v) => v as bool? ?? true),
           region:
@@ -116,6 +117,7 @@ User _$UserFromJson(Map json) => $checkedCreate(
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
+      'id': instance.id,
       'name': instance.name,
       'isGirl': instance.isGirl,
       'region': const RegionConverter().toJson(instance.region),

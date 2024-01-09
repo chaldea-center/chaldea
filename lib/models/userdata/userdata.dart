@@ -4,6 +4,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'package:uuid/uuid.dart';
+
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/packages/app_info.dart';
@@ -137,6 +139,7 @@ const kSvtPlanMaxNum = 5;
 
 @JsonSerializable(converters: [LockPlanConverter()])
 class User {
+  final String id;
   String name;
   bool isGirl;
   @RegionConverter()
@@ -168,6 +171,7 @@ class User {
   BattleSimUserData battleSim;
 
   User({
+    String? id,
     this.name = 'Gudako',
     this.isGirl = true,
     this.region = Region.jp,
@@ -187,7 +191,8 @@ class User {
     Map<String, Map<int, int>>? luckyBagSvtScores,
     SaintQuartzPlan? saintQuartzPlan,
     BattleSimUserData? battleSim,
-  })  : servants = servants ?? {},
+  })  : id = id ?? const Uuid().v4(),
+        servants = servants ?? {},
         dupServantMapping = dupServantMapping ?? {},
         plans = List.generate(kSvtPlanMaxNum, (index) => plans?.getOrNull(index) ?? UserPlan()),
         _curSvtPlanNo = curSvtPlanNo.clamp(0, kSvtPlanMaxNum - 1),

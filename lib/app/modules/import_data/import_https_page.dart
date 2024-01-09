@@ -66,7 +66,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
 
   UserMstData? get mstData => topLogin?.mstData;
 
-  String tmpPath = joinPaths(db.paths.userDir, 'sniff', calcMd5(db.curUser.name));
+  String get tmpPath => joinPaths(db.paths.userDir, 'sniff', db.curUser.id);
+  String tmpPathOld = joinPaths(db.paths.userDir, 'sniff', calcMd5(db.curUser.name));
 
   @override
   void initState() {
@@ -81,7 +82,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         await FilePlus(tmpPath).create(recursive: true);
         await FilePlus(tmpPath).writeAsString(widget.toploginText!);
       } else {
-        final f = FilePlus(tmpPath);
+        final newFile = FilePlus(tmpPath);
+        final oldFile = FilePlus(tmpPathOld);
+        final f = !newFile.existsSync() && oldFile.existsSync() ? oldFile : newFile;
         if (f.existsSync()) {
           parseResponseBody(await f.readAsBytes());
           if (mounted) setState(() {});
