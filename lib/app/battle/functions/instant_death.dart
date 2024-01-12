@@ -22,7 +22,6 @@ class InstantDeath {
 
         if (await shouldInstantDeath(battleData, dataVals, activator, target, force, params)) {
           target.hp = 0;
-          target.lastHitBy = activator;
           target.actionHistory.add(BattleServantActionHistory(
             actType: BattleServantActionHistoryType.instantDeath,
             targetUniqueId: activator?.uniqueId ?? -1,

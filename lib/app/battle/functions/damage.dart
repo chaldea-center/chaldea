@@ -252,6 +252,10 @@ class Damage {
           skipDamage: skipDamage,
         );
 
+        if (result.totalDamage > 0) {
+          battleData.damageHistory[target.uniqueId] = activator.uniqueId;
+        }
+
         battleData.battleLogger.debug(damageParameters.toString());
         if (activator.isPlayer) {
           battleData.battleLogger.debug(atkNpParameters.toString());
@@ -371,9 +375,6 @@ class Damage {
         targetUniqueId: activator.uniqueId,
         isOpponent: activator.isPlayer != target.isPlayer,
       ));
-
-      target.lastHitBy = activator;
-      target.lastHitByCard = currentCard;
 
       final isOverkill = target.hp < 0 || (!currentCard.isTD && target.isBuggedOverkill);
       result.overkillStates.add(isOverkill);

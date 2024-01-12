@@ -103,10 +103,6 @@ class BattleServantData {
   int changeIndex = 0;
 
   bool attacked = false;
-  @Deprecated('actionHistory')
-  BattleServantData? lastHitBy;
-  @Deprecated('actionHistory')
-  CommandCardData? lastHitByCard;
   List<BattleServantActionHistory> actionHistory = [];
 
   BattleServantData._({required this.isPlayer});
@@ -597,10 +593,6 @@ class BattleServantData {
             ? 2
             : 3;
     return ConstData.constants.fullTdPoint * capRate;
-  }
-
-  bool isKilledBy(final BattleServantData? activator, final CommandCardData? currentCard) {
-    return activator != null && currentCard != null && lastHitBy == activator && lastHitByCard == currentCard;
   }
 
   Future<void> heal(final BattleData battleData, final int heal) async {
@@ -1104,7 +1096,27 @@ class BattleServantData {
     return await battleData.withActivator(this, () async {
       bool activated = false;
       for (final buff in buffs.toList()) {
-        if (await buff.shouldActivateBuff(battleData, this)) {
+        // determine revenge target
+        int? revengeTargetUniqueId;
+        if ([
+          BuffType.damageFunction,
+          BuffType.gutsFunction,
+          BuffType.selfturnendFunction,
+          BuffType.delayFunction,
+          BuffType.deadFunction,
+        ].contains(buff.buff.type)) {
+          for (final act in actionHistory.reversed) {
+            if (act.isDamage && act.targetUniqueId != uniqueId) {
+              revengeTargetUniqueId = act.targetUniqueId;
+              break;
+            }
+          }
+        }
+        final BattleServantData? buffActivateTarget = revengeTargetUniqueId == null
+            ? battleData.getOpponent(this)
+            : battleData.getServantData(revengeTargetUniqueId);
+
+        if (await buff.shouldActivateBuff(battleData, this, buffActivateTarget)) {
           final skillId = buff.param;
           BaseSkill? skill = db.gameData.baseSkills[skillId];
           skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
@@ -1115,32 +1127,13 @@ class BattleServantData {
           }
           battleData.battleLogger.function('$lBattleName - ${buff.buff.lName.l} ${S.current.skill} [$skillId]');
 
-          // determine revenge target
-          int? revengeTargetUniqueId;
-          if ([
-            BuffType.damageFunction,
-            BuffType.gutsFunction,
-            BuffType.selfturnendFunction,
-            BuffType.delayFunction,
-            BuffType.deadFunction,
-          ].contains(buff.buff.type)) {
-            for (final act in actionHistory.reversed) {
-              if (act.isDamage && act.targetUniqueId != uniqueId) {
-                revengeTargetUniqueId = act.targetUniqueId;
-                break;
-              }
-            }
-          }
-          final BattleServantData? revengeTarget =
-              revengeTargetUniqueId == null ? null : battleData.getServantData(revengeTargetUniqueId);
-
           await FunctionExecutor.executeFunctions(
             battleData,
             skill.functions,
             buff.additionalParam.clamp(1, skill.maxLv),
             script: skill.script,
             isPassive: false,
-            revengeTarget: revengeTarget,
+            revengeTarget: buffActivateTarget,
           );
           buff.setUsed();
           activated = true;
@@ -1408,9 +1401,6 @@ class BattleServantData {
 
       battleData.battleLogger.action('$lBattleName - ${gutsToApply.buff.lName.l} - '
           '${!isRatio ? value : '${(value / 10).toStringAsFixed(1)}%'}');
-
-      lastHitByCard = null;
-      lastHitBy = null;
 
       if (await activateBuffOnAction(battleData, BuffAction.functionGuts)) {
         for (final svt in battleData.nonnullActors) {

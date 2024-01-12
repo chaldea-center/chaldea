@@ -94,7 +94,9 @@ class BattleData {
   List<BattleServantData> get nonnullBackupPlayers => _getNonnull(playerDataList);
 
   BattleServantData? getServantData(int uniqueId, {bool onFieldOnly = false}) {
-    final targets = onFieldOnly ? [...onFieldAllyServants, ...onFieldEnemies] : [...playerDataList, ...enemyDataList];
+    final targets = onFieldOnly
+        ? [...onFieldAllyServants, ...onFieldEnemies]
+        : [...onFieldAllyServants, ...onFieldEnemies, ...playerDataList, ...enemyDataList];
     return targets.firstWhereOrNull((e) => e?.uniqueId == uniqueId);
   }
 
@@ -145,6 +147,7 @@ class BattleData {
   // int lastActId = 0;
   // int prevTargetId = 0;
 
+  final Map<int, int> damageHistory = {}; // uniqueId to uniqueId
   final Map<int, Map<int, bool>> actionHistory = {};
   // should not be read, as this represent a build-in-progress svtUniqueId to funcResult map for the current function
   Map<int, bool> get curFuncResults => _curFuncResults.last;
@@ -1418,6 +1421,7 @@ class BattleData {
   Future<void> _removeDeadActors() async {
     await _removeDeadActorsFromList(onFieldAllyServants);
     await _removeDeadActorsFromList(onFieldEnemies);
+    damageHistory.clear();
     _updateTargetedIndex();
 
     if (niceQuest != null && niceQuest!.flags.contains(QuestFlag.enemyImmediateAppear)) {
@@ -1438,8 +1442,14 @@ class BattleData {
         if (!hasGuts && !actor.hasNextShift(this)) {
           await actor.death(this);
 
-          if (actor.lastHitBy != null) {
-            await actor.lastHitBy!.activateBuffOnAction(this, BuffAction.functionDeadattack);
+          final lastAttackerUniqueId = damageHistory[actor.uniqueId];
+          if (lastAttackerUniqueId != null) {
+            final killer = getServantData(lastAttackerUniqueId);
+            if (killer != null) {
+              await withTarget(actor, () async {
+                await killer.activateBuffOnAction(this, BuffAction.functionDeadattack);
+              });
+            }
           }
           actorList[i] = null;
           actor.fieldIndex = -1;
