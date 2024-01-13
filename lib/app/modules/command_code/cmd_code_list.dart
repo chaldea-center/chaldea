@@ -141,7 +141,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> with SearchableListSta
     final region = filterData.region.radioValue;
     if (region != null && region != Region.jp) {
       final released = db.gameData.mappingData.ccRelease.ofRegion(region);
-      if (released?.contains(cc.collectionNo) == false) {
+      if (released?.contains(cc.id) == false) {
         return false;
       }
     }

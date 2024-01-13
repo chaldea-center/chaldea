@@ -1118,7 +1118,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     playerSvtData.tdLv = (support.td2Lv ?? 1).clamp2(1, support.td2?.maxLv ?? 1);
     // playerSvtData.appendLvs = support.classPassive.appendPassiveSkillLvs;
     playerSvtData.appendLvs.fillRange(0, playerSvtData.appendLvs.length, 0);
-    playerSvtData.customPassives = List<BaseSkill>.of(support.detail?.classPassive.addPassive ?? svt.extraPassive);
+    playerSvtData.customPassives = List<BaseSkill>.of(support.detail?.classPassive.addPassive ?? []);
     playerSvtData.customPassiveLvs = playerSvtData.customPassives.map((e) => e.maxLv).toList();
     // ce
     final ce = support.equips.getOrNull(0);
@@ -1129,6 +1129,9 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
 
     svt.preprocess();
     playerSvtData.svt = svt;
+    playerSvtData
+      ..commandCodes.fillRange(0, playerSvtData.commandCodes.length, null)
+      ..cardStrengthens.fillRange(0, playerSvtData.cardStrengthens.length, 0);
   }
 }
 
