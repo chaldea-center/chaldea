@@ -499,7 +499,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
           children.add(buildRadio(
             title: Text(name),
             onSelected: () async {
-              final cardData = CommandCardData(cardType, detail)
+              final cardData = CommandCardData(enemy, cardType, detail)
                 ..cardIndex = 1
                 ..isTD = false
                 ..traits = ConstData.cardInfo[cardType]?[1]?.individuality.toList() ?? [];

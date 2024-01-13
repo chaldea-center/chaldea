@@ -381,7 +381,7 @@ class BattleServantData {
       final cardType = changeCardType ?? cards[i];
       final detail = niceSvt!.cardDetails[cardType];
       if (detail == null) continue;
-      final card = CommandCardData(cardType, detail)
+      final card = CommandCardData(this, cardType, detail)
         ..cardIndex = i
         ..isTD = false
         ..npGain = getNPGain(cardType)
@@ -409,6 +409,7 @@ class BattleServantData {
       final _td = niceEnemy!.noblePhantasm.noblePhantasm;
       if (_td == null) return null;
       return CommandCardData(
+          this,
           _td.card,
           CardDetail(
             attackIndividuality: _td.individuality.toList(),
@@ -431,7 +432,7 @@ class BattleServantData {
       attackNpRate: currentNP?.npGain.np[playerSvtData!.tdLv - 1] ?? 0,
     );
 
-    return CommandCardData(currentNP?.svt.card ?? CardType.none, cardDetail)
+    return CommandCardData(this, currentNP?.svt.card ?? CardType.none, cardDetail)
       ..isTD = true
       ..td = currentNP
       ..npGain = currentNP?.npGain.np[playerSvtData!.tdLv - 1] ?? 0
@@ -463,7 +464,7 @@ class BattleServantData {
       attackNpRate: td.npGain.np[tdLv - 1],
     );
 
-    return CommandCardData(td.svt.card, cardDetail)
+    return CommandCardData(this, td.svt.card, cardDetail)
       ..isTD = true
       ..td = td
       ..counterBuff = buff
@@ -478,7 +479,7 @@ class BattleServantData {
     final detail = niceSvt!.cardDetails[CardType.extra];
     if (detail == null) return null;
 
-    return CommandCardData(CardType.extra, detail)
+    return CommandCardData(this, CardType.extra, detail)
       ..isTD = false
       ..npGain = getNPGain(CardType.extra)
       ..traits = ConstData.cardInfo[CardType.extra]![1]!.individuality.toList();

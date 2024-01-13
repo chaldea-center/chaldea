@@ -34,8 +34,11 @@ class BattleCommandData {
 }
 
 class CommandCardData {
-  CardType cardType;
-  CardDetail cardDetail;
+  final int svtId;
+  final int svtLimit;
+  final int uniqueId;
+  final CardType cardType;
+  final CardDetail cardDetail;
   int cardStrengthen = 0;
   int npGain = 0;
   List<NiceTrait> traits = [];
@@ -48,10 +51,15 @@ class CommandCardData {
   BuffData? counterBuff;
   int? oc;
 
-  CommandCardData(this.cardType, this.cardDetail);
+  CommandCardData._(this.svtId, this.svtLimit, this.uniqueId, this.cardType, this.cardDetail);
+
+  CommandCardData(BattleServantData svt, this.cardType, this.cardDetail)
+      : svtId = svt.svtId,
+        svtLimit = svt.limitCount,
+        uniqueId = svt.uniqueId;
 
   CommandCardData copy() {
-    return CommandCardData(cardType, cardDetail)
+    return CommandCardData._(svtId, svtLimit, uniqueId, cardType, cardDetail)
       ..cardStrengthen = cardStrengthen
       ..npGain = npGain
       ..traits = traits.toList()

@@ -72,6 +72,7 @@ class BattleData {
   List<BattleServantData?> onFieldEnemies = [];
   List<BattleServantData?> onFieldAllyServants = [];
   Map<DeckType, List<QuestEnemy>> enemyDecks = {};
+  Map<int, CommandCardData> deadAttackCommandDict = {}; // <uniqueId, card>
 
   int enemyTargetIndex = 0;
   int playerTargetIndex = 0;
@@ -1563,7 +1564,8 @@ class BattleData {
       .._uniqueIndex = _uniqueIndex
       ..options = options.copy()
       ..recorder = recorder.copy()
-      ..replayDataRecord = replayDataRecord.copy();
+      ..replayDataRecord = replayDataRecord.copy()
+      ..deadAttackCommandDict = deadAttackCommandDict.map((key, value) => MapEntry(key, value.copy()));
 
     snapshots.add(copy);
   }
@@ -1598,7 +1600,8 @@ class BattleData {
       .._uniqueIndex = copy._uniqueIndex
       ..options = copy.options
       ..recorder = copy.recorder
-      ..replayDataRecord = copy.replayDataRecord;
+      ..replayDataRecord = copy.replayDataRecord
+      ..deadAttackCommandDict = copy.deadAttackCommandDict.map((key, value) => MapEntry(key, value.copy()));
   }
 
   // replay
