@@ -42,7 +42,7 @@ class QuestWave extends StatelessWidget {
     Set<int> _usedUniqueIds = {};
 
     Widget _buildEnemyWithShift(QuestEnemy? enemy, {bool showDeck = false}) {
-      if (enemy == null) return const SizedBox();
+      if (enemy == null) return const SizedBox.shrink();
       List<Widget> parts = [];
       int dispBreakShift = enemy.enemyScript.dispBreakShift ?? 0;
       if (dispBreakShift > 0) {
@@ -59,11 +59,13 @@ class QuestWave extends StatelessWidget {
         region: region,
         textStyle: dispBreakShift > 0 ? lineThrough : null,
       ));
+      _usedUniqueIds.add(enemy.deckNpcId);
       if (enemy.enemyScript.shift != null) {
         QuestEnemy prev = enemy;
         for (int index = 0; index < enemy.enemyScript.shift!.length; index++) {
           final shiftEnemy = npcs[DeckType.shift]?[enemy.enemyScript.shift![index]];
           if (shiftEnemy == null) continue;
+          _usedUniqueIds.add(shiftEnemy.deckNpcId);
           parts.add(QuestEnemyWidget(
             enemy: shiftEnemy,
             showTrueName: showTrueName,
@@ -90,7 +92,12 @@ class QuestWave extends StatelessWidget {
       );
     }
 
-    List<Widget> _buildDeck(Iterable<QuestEnemy?> enemies, {bool showDeck = false, bool needSort = false}) {
+    List<Widget> _buildDeck(
+      Iterable<QuestEnemy?> enemies, {
+      bool showDeck = false,
+      bool needSort = false,
+      bool skipUsedShift = false,
+    }) {
       List<QuestEnemy?> _enemies;
       if (needSort) {
         _enemies = List.filled(
@@ -121,12 +128,19 @@ class QuestWave extends StatelessWidget {
         for (int i = 0; i < _enemies.length / 3; i++)
           Row(
             textDirection: TextDirection.rtl,
-            children: <Widget>[
-              for (int j in [0, 1, 2])
-                Expanded(
-                  child: _buildEnemyWithShift(_enemies.getOrNull(i * 3 + j), showDeck: showDeck),
-                ),
-            ],
+            children: List.generate(
+              3,
+              (j) {
+                final enemy = _enemies.getOrNull(i * 3 + j);
+                if (skipUsedShift &&
+                    enemy != null &&
+                    enemy.deck == DeckType.shift &&
+                    _usedUniqueIds.contains(enemy.deckNpcId)) {
+                  return const Expanded(child: SizedBox.shrink());
+                }
+                return Expanded(child: _buildEnemyWithShift(enemy, showDeck: showDeck));
+              },
+            ),
           ),
       ];
     }
@@ -138,30 +152,25 @@ class QuestWave extends StatelessWidget {
     int maxEnemyOnField = stage?.enemyFieldPosCount ?? 3;
     final onFieldEnemies = _enemyDeck.where((e) => e.deckId <= maxEnemyOnField).toList();
     final backupEnemies = _enemyDeck.where((e) => e.deckId > maxEnemyOnField).toList();
-    children.addAll(_buildDeck(onFieldEnemies, needSort: true));
+    children.addAll(_buildDeck(onFieldEnemies, needSort: true).reversed);
     if (backupEnemies.isNotEmpty) {
       children.add(const CustomPaint(painter: DashedLinePainter(indent: 16), size: Size(double.infinity, 4)));
       children.addAll(_buildDeck(backupEnemies, needSort: true));
     }
-    for (final e in _enemyDeck) {
-      _usedUniqueIds.add(e.deckNpcId);
-      for (final npcId in e.enemyScript.shift ?? <int>[]) {
-        final shift = npcs[DeckType.shift]?[npcId];
-        if (shift != null) _usedUniqueIds.add(shift.deckNpcId);
-      }
-    }
+
     // call deck
     final _callDeck = stageEnemies.where((e) => e.deck == DeckType.call).toList();
     if (_callDeck.isNotEmpty) {
       children.add(const Text('- Call Deck -', textAlign: TextAlign.center));
       children.addAll(_buildDeck(_callDeck, needSort: true));
     }
-    _usedUniqueIds.addAll(_callDeck.map((e) => e.deckNpcId));
+
     // others
-    final _unknownDeck = stageEnemies.where((e) => !_usedUniqueIds.contains(e.deckNpcId));
+    final _unknownDeck = stageEnemies.where((e) => !_usedUniqueIds.contains(e.deckNpcId)).toList();
+    _unknownDeck.sortByList((e) => [e.deck == DeckType.shift ? 999 : e.deck.index, e.deckId, e.npcId]);
     if (_unknownDeck.isNotEmpty) {
       children.add(const Text('- Unknown Deck -', textAlign: TextAlign.center));
-      children.addAll(_buildDeck(_unknownDeck, showDeck: true));
+      children.addAll(_buildDeck(_unknownDeck, showDeck: true, skipUsedShift: true));
     }
 
     if (aiNpcs.isNotEmpty) {
