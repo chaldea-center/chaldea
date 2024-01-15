@@ -11,6 +11,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 import 'package:chaldea/packages/platform/platform.dart';
+import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import '../../root/global_fab.dart';
@@ -324,6 +325,17 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                       } else {
                         SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                       }
+                    });
+                    db.notifyAppUpdate();
+                  },
+                ),
+              if (!SplitRoute.isPopGestureAlwaysDisabled)
+                SwitchListTile.adaptive(
+                  value: db.settings.enableEdgeSwipePopGesture,
+                  title: Text(S.current.edge_swipe_pop_gesture),
+                  onChanged: (v) {
+                    setState(() {
+                      db.settings.enableEdgeSwipePopGesture = v;
                     });
                     db.notifyAppUpdate();
                   },

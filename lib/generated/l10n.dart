@@ -2868,6 +2868,17 @@ class S {
     );
   }
 
+  /// `Edge-swipe pop gesture`
+  String get edge_swipe_pop_gesture {
+    return Intl.message(
+      'Edge-swipe pop gesture',
+      name: 'edge_swipe_pop_gesture',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Edit`
   String get edit {
     return Intl.message(

@@ -366,6 +366,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "duplicated_servant": MessageLookupByLibrary.simpleMessage("Duplicated Servant"),
         "duplicated_servant_duplicated": MessageLookupByLibrary.simpleMessage("Duplicated"),
         "duplicated_servant_primary": MessageLookupByLibrary.simpleMessage("Primary"),
+        "edge_swipe_pop_gesture": MessageLookupByLibrary.simpleMessage("Edge-swipe pop gesture"),
         "edit": MessageLookupByLibrary.simpleMessage("Edit"),
         "effect_scope": MessageLookupByLibrary.simpleMessage("Effect Scope"),
         "effect_search": MessageLookupByLibrary.simpleMessage("Effect Search"),

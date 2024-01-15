@@ -255,6 +255,7 @@
   "duplicated_servant": null,
   "duplicated_servant_duplicated": null,
   "duplicated_servant_primary": null,
+  "edge_swipe_pop_gesture": null,
   "edit": "編集",
   "effect_scope": "効果範囲",
   "effect_search": "効果検索",

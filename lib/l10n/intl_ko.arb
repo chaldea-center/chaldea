@@ -255,6 +255,7 @@
   "duplicated_servant": "2호기",
   "duplicated_servant_duplicated": "2호기",
   "duplicated_servant_primary": "초호기",
+  "edge_swipe_pop_gesture": null,
   "edit": "수정",
   "effect_scope": "효과 범위",
   "effect_search": "효과 검색",

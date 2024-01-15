@@ -36,6 +36,7 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               'proxy', (v) => v == null ? null : ProxySettings.fromJson(Map<String, dynamic>.from(v as Map))),
           autoUpdateApp: $checkedConvert('autoUpdateApp', (v) => v as bool? ?? true),
           autoRotate: $checkedConvert('autoRotate', (v) => v as bool? ?? true),
+          enableEdgeSwipePopGesture: $checkedConvert('enableEdgeSwipePopGesture', (v) => v as bool? ?? true),
           autoResetFilter: $checkedConvert('autoResetFilter', (v) => v as bool? ?? true),
           hideUnreleasedCard: $checkedConvert('hideUnreleasedCard', (v) => v as bool? ?? false),
           preferredFavorite:
@@ -128,6 +129,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'proxyServer': instance.proxyServer,
       'proxy': instance.proxy.toJson(),
       'autoRotate': instance.autoRotate,
+      'enableEdgeSwipePopGesture': instance.enableEdgeSwipePopGesture,
       'autoResetFilter': instance.autoResetFilter,
       'hideUnreleasedCard': instance.hideUnreleasedCard,
       'preferApRate': instance.preferApRate,

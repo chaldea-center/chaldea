@@ -52,6 +52,7 @@ class LocalSettings {
   bool proxyServer; // when change this, also change Hosts.cn
   ProxySettings proxy;
   bool autoRotate;
+  bool enableEdgeSwipePopGesture;
   bool autoResetFilter;
   bool hideUnreleasedCard;
   // ignore: unused_field
@@ -111,6 +112,7 @@ class LocalSettings {
     ProxySettings? proxy,
     this.autoUpdateApp = true,
     this.autoRotate = true,
+    this.enableEdgeSwipePopGesture = true,
     this.autoResetFilter = true,
     this.hideUnreleasedCard = false,
     FavoriteState? preferredFavorite,

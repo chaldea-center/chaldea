@@ -191,31 +191,21 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
     );
   }
 
+  static bool get isPopGestureAlwaysDisabled {
+    if (kIsWeb || !PlatformU.isTargetMobile) return true;
+    return false;
+  }
+
+  static bool get shouldPopGestureEnabled {
+    if (isPopGestureAlwaysDisabled) return false;
+    if (!db.settings.enableEdgeSwipePopGesture) return false;
+    return true;
+  }
+
   @override
   bool get popGestureEnabled {
-    if (kIsWeb) return false;
-    if (isFirst) {
-      return false;
-    }
-    if (willHandlePopInternally) {
-      return false;
-    }
-    if (popDisposition == RoutePopDisposition.doNotPop) {
-      return false;
-    }
-    if (fullscreenDialog) {
-      return false;
-    }
-    if (animation!.status != AnimationStatus.completed) {
-      return false;
-    }
-    if (secondaryAnimation!.status != AnimationStatus.dismissed) {
-      return false;
-    }
-    if (CupertinoRouteTransitionMixin.isPopGestureInProgress(this)) {
-      return false;
-    }
-    return true;
+    if (!shouldPopGestureEnabled) return false;
+    return super.popGestureEnabled;
   }
 
   @override
@@ -238,7 +228,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
   @override
   Widget buildTransitions(
       BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-    if (kIsWeb || !PlatformU.isTargetMobile) {
+    if (!shouldPopGestureEnabled) {
       const bool linearTransition = false;
       if (fullscreenDialog) {
         child = CupertinoFullscreenDialogTransition(
