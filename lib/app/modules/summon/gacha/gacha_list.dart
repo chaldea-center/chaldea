@@ -136,6 +136,7 @@ class _GachaListPageState extends State<GachaListPage>
       onRefresh: () async {
         if (region == Region.jp) {
           await GameDataLoader.instance.reloadAndUpdate();
+          await doFetchData();
         } else {
           await doFetchData(expireAfter: Duration.zero);
         }

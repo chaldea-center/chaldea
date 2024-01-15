@@ -303,7 +303,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
     var bytes = des3CBC.decrypt(base64.decode(code));
     assert(bytes.first == 0x7b && bytes.last == 0x7d, bytes.map((e) => e.toRadixString(16).padLeft(2, '0')).join());
     // '{'=0x7b, '}'=0x7d
-    bytes = bytes.sublist(bytes.indexOf(0x7b), bytes.indexOf(0x7d) + 1);
+    bytes = bytes.sublist(bytes.indexOf(0x7b), bytes.lastIndexOf(0x7d) + 1);
     final decrypted = utf8.decode(bytes);
     final data = jsonDecode(decrypted);
     return auth = UserAuth(

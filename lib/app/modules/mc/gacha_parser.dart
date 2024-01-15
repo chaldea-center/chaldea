@@ -295,8 +295,10 @@ class JpGachaParser {
     assert(node.children.length == 3, node.children.length);
     String lastUpdate = node.children[0].text;
 
-    String? title = node.children[1].text;
-    title = RegExp(r'「(.+召喚)」').firstMatch(title)?.group(1) ?? RegExp(r'「(.*福袋召喚.*)」！').firstMatch(title)?.group(1);
+    final fullTitle = node.children[1].text;
+    String? title = [r'「(.+召喚)」', r'『(.+召喚)』', r'「(.*福袋召喚.*)」！', r'『(.*福袋召喚.*)』！']
+        .map((e) => RegExp(e).firstMatch(fullTitle)?.group(1))
+        .firstWhereOrNull((e) => e != null);
     if (title == null) return null;
 
     String? link = node.children[2].attributes['href'];

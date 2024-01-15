@@ -154,11 +154,12 @@ class _ApkListPageState extends State<ApkListPage> {
                 for (final data in _dataList) buildOne(data),
                 TileGroup(
                   header: "Rayshift APK Mod",
+                  footer: "Disclaimer: 3rd party modified apk, use at your own risk.",
                   children: [
                     for (final r in const ['jp', 'na'])
                       ListTile(
                         dense: true,
-                        title: Text("BetterFGO ${r.toUpperCase()}"),
+                        title: Text("BFGO ${r.toUpperCase()}"),
                         subtitle: Text('io.rayshift.betterfgo${r == 'jp' ? '' : ".en"}'),
                         trailing: const Icon(Icons.open_in_new, size: 18),
                         onTap: () {

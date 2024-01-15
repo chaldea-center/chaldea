@@ -15,7 +15,8 @@ class TimerMissionTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mms = this.mms.toList();
-    mms.sort2((e) => e.closedAt);
+    final now = DateTime.now().timestamp;
+    mms.sortByList((e) => [e.closedAt > now ? -1 : 1, (e.closedAt - now).abs()]);
     return ListView.separated(
       itemBuilder: (context, index) =>
           TimerMissionItem(mms[index], region).buildItem(context, expanded: mms[index].missions.length <= 10),
