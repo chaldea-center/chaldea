@@ -32,7 +32,7 @@ dependencies:
   args: ^2.3.1
   auto_size_text: ^3.0.0
   cached_network_image: ^3.3.0
-  cached_network_image_platform_interface: ^3.0.0
+  cached_network_image_platform_interface: ^4.0.0
   carousel_slider: # ^4.2.1
     git:
       url: https://github.com/Carapacik/flutter_carousel_slider.git
