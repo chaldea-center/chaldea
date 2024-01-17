@@ -1906,8 +1906,7 @@ enum DetailMissionCondLinkType {
 }
 
 /// https://github.com/atlasacademy/apps/blob/master/packages/api-connector/src/Schema/Mission.ts
-enum DetailCondType {
-  // [1, 2, 3, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27, 28, 31, 32, 33, 34, 36]
+enum EventMissionCondType {
   enemyKillNum(1), // traits AND
   enemyIndividualityKillNum(2), // traits OR
   itemGetTotal(3),
@@ -1916,41 +1915,47 @@ enum DetailCondType {
   targetQuestEnemyKillNum(6),
   targetQuestEnemyIndividualityKillNum(7),
   targetQuestItemGetTotal(8),
-  questClearOnce(9),
-  questClearNum1(10),
-  itemGetBattle(12),
-  defeatEnemyIndividuality(13),
-  defeatEnemyClass(14),
-  defeatServantClass(15),
-  defeatEnemyNotServantClass(16),
-  battleSvtIndividualityInDeck(17),
-  battleSvtClassInDeck(18), // Filter by svt class
-  svtGetBattle(19), // Embers are svt instead of items
-  friendPointSummon(21),
-  battleSvtIdInDeck1(22),
-  battleSvtIdInDeck2(23), // Filter by svt ID
-  questClearNum2(24), // Not sure what's the difference QUEST_CLEAR_NUM_1
-  boardGameDiceUse(25), //(diceUse) Fate/Requiem event: ガッポリーで「123ダイス」または「456ダイス」を累計3回使用せよ, targetIds=[itemIds]
-  boardGameSquareAdvanced(26), //(squareAdvanced) Fate/Requiem event: ガッポリーで合計150マス進め
-  moreFriendFollower(27), // 5th Anniversary missions
-  questTypeClear(28), // 22M Download Campaign
-  questClearNumIncludingGrailFront(31),
-  warMainQuestClear(32), // 「Lostbelt No.7」開幕前メインクエストクリア応援キャンペーン 第1弾
-  svtFriendshipGet(33), // 28M Download Campaign
-  battleSvtIdInFrontDeck(34),
-  questChallengeNum(36), // similar to CondType.questChallengeNum
-  exchangeSvtQuestClear(37), // 3000 day campaign, exchangeSvt
-  exchangeSvtTdPlay(38), // 3000 day campaign, exchangeSvt
-  exchangeSvtVoicePlay(39), // 3000 day campaign, exchangeSvt
+  questClear(9),
+  questClearNum(10),
+  svtGetNum(11),
+  allQuestItemGetTotal(12),
+  allIndividualityInEnemyKillNum(13),
+  targetEnemyClassKillNum(14),
+  targetSvtEnemyClassKillNum(15),
+  targetEnemyIndividualityClassKillNum(16),
+  battleSvtIndividualitySpecificNum(17),
+  battleSvtClassSpecificNum(18), // Filter by svt class
+  allQuestSvtGetTotal(19), // Embers are svt instead of items
+  questGroupClearNum(20),
+  gachaDrawNum(21),
+  questClearWithSvtInDec(22),
+  questClearWithSvtInDeckNoneFollower(23), // Filter by svt ID
+  questPhaseClearNum(24), // Not sure what's the difference QUEST_CLEAR_NUM_1
+  eventItemUseNum(25), //(diceUse) Fate/Requiem event: ガッポリーで「123ダイス」または「456ダイス」を累計3回使用せよ, targetIds=[itemIds]
+  eventBoardGameCellNum(26), //(squareAdvanced) Fate/Requiem event: ガッポリーで合計150マス進め
+  friendAndFollowNum(27), // 5th Anniversary missions
+  questPhaseClearNumQuestType(28), // 22M Download Campaign
+  questPhaseClearNumQuestGroup(29),
+  questPhaseClearNumWarId(30),
+  questPhaseClearNumWithWarBoard(31),
+  warMainQuestClear(32), //not in enum, 「Lostbelt No.7」開幕前メインクエストクリア応援キャンペーン 第1弾
+  svtFriendshipGet(33), //not in enum,  28M Download Campaign
+  questClearWithSvtInDeckOnlyStartingMember(34),
+  questClearWithSvtInDeckNoneFollowerOnlyStartingMember(35),
+  questChallengeNum(36), //not in enum, similar to CondType.questChallengeNum
+  battleExchangeSvtInDeck(37), // 3000 day campaign, exchangeSvt
+  useTreasureDeviceExchangeSvt(38), // 3000 day campaign, exchangeSvt
+  playVoiceExchangeSvt(39), // 3000 day campaign, exchangeSvt
+  mapGimmickCount(40), // FSR collaboration, touch dog or cat
 
   /// custom, only used in app
   questClearIndividuality(999);
 
   final int id;
-  const DetailCondType(this.id);
+  const EventMissionCondType(this.id);
 
-  static DetailCondType? parseId(int id) {
-    return DetailCondType.values.firstWhereOrNull((type) => type.id == id);
+  static EventMissionCondType? parseId(int id) {
+    return EventMissionCondType.values.firstWhereOrNull((type) => type.id == id);
   }
 }
 

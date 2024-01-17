@@ -38,9 +38,9 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
     switch (type) {
       case CustomMissionType.trait:
         // https://github.com/atlasacademy/apps/commit/5f989cd9979a3f6313cc3e7eb349f7487bf607a7
-        if (detail.missionCondType == DetailCondType.enemyIndividualityKillNum.id) {
+        if (detail.missionCondType == EventMissionCondType.enemyIndividualityKillNum.id) {
           return false;
-        } else if (detail.missionCondType == DetailCondType.defeatEnemyIndividuality.id) {
+        } else if (detail.missionCondType == EventMissionCondType.allIndividualityInEnemyKillNum.id) {
           return true;
         }
         return true;
@@ -63,9 +63,9 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
   @override
   List<InlineSpan> buildContent(BuildContext context) {
     String targetNum = this.targetNum?.toString() ?? 'x';
-    final condType = DetailCondType.parseId(detail.missionCondType);
+    final condType = EventMissionCondType.parseId(detail.missionCondType);
     switch (condType) {
-      case DetailCondType.questClearIndividuality:
+      case EventMissionCondType.questClearIndividuality:
         return localized(
           jp: () => rich(context, null, traits(context), 'フィールドのクエストを$targetNum回クリアせよ'),
           cn: () => rich(context, '通关$targetNum次场地为', traits(context), '的关卡'),
@@ -73,10 +73,10 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => rich(context, 'Clear $targetNum quests with fields ', traits(context)),
           kr: () => rich(context, null, traits(context), '필드의 프리 퀘스트를 $targetNum회 클리어'),
         );
-      case DetailCondType.questClearOnce: // once?
-      case DetailCondType.questClearNum1:
-      case DetailCondType.questClearNum2:
-      case DetailCondType.questClearNumIncludingGrailFront:
+      case EventMissionCondType.questClear: // once?
+      case EventMissionCondType.questClearNum:
+      case EventMissionCondType.questPhaseClearNum:
+      case EventMissionCondType.questPhaseClearNumWithWarBoard:
         if (targetIds.length == 1 && targetIds.first == 0) {
           return localized(
             jp: () => text('いずれかのクエストを$targetNum回クリアせよ'),
@@ -94,7 +94,8 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
             kr: () => rich(context, '아래의 퀘스트를 $targetNum회 클리어', quests(context)),
           );
         }
-      case DetailCondType.questTypeClear:
+      // questPhase clear num, for each arrow
+      case EventMissionCondType.questPhaseClearNumQuestType:
         final types = targetIds.map((e) => kQuestTypeIds[e]?.shownName ?? 'Unknown QuestType $e').join('/');
         return localized(
           jp: null,
@@ -103,7 +104,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => text('Clear $targetNum times of [$types] quests'),
           kr: null,
         );
-      case DetailCondType.warMainQuestClear:
+      case EventMissionCondType.warMainQuestClear:
         return localized(
           jp: null,
           cn: () => rich(context, '通关$targetNum次以下章节的主线关卡: ', wars(context)),
@@ -111,8 +112,8 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => rich(context, 'Clear $targetNum times main quests from ', wars(context)),
           kr: null,
         );
-      case DetailCondType.enemyKillNum:
-      case DetailCondType.targetQuestEnemyKillNum:
+      case EventMissionCondType.enemyKillNum:
+      case EventMissionCondType.targetQuestEnemyKillNum:
         return localized(
           jp: () => rich(context, null, servants(context), 'の敵を$targetNum体倒せ'),
           cn: () => rich(context, '击败$targetNum个敌人:', servants(context)),
@@ -120,9 +121,9 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => rich(context, 'Defeat $targetNum from enemies ', servants(context)),
           kr: () => rich(context, null, servants(context), '계열의 적을 $targetNum마리 처치'),
         );
-      case DetailCondType.defeatEnemyIndividuality:
-      case DetailCondType.enemyIndividualityKillNum:
-      case DetailCondType.targetQuestEnemyIndividualityKillNum:
+      case EventMissionCondType.allIndividualityInEnemyKillNum:
+      case EventMissionCondType.enemyIndividualityKillNum:
+      case EventMissionCondType.targetQuestEnemyIndividualityKillNum:
         return localized(
           jp: () => rich(context, null, traits(context), '特性を持つ敵を$targetNum体倒せ'),
           cn: () => rich(context, '击败$targetNum个持有', traits(context), '特性的敌人'),
@@ -130,7 +131,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => rich(context, 'Defeat $targetNum enemies with traits ', traits(context)),
           kr: () => rich(context, null, traits(context), '속성을 가진 적을 $targetNum마리 처치'),
         );
-      case DetailCondType.defeatServantClass:
+      case EventMissionCondType.targetSvtEnemyClassKillNum:
         return localized(
           jp: () => rich(context, null, svtClasses(context), 'クラスのサーヴァントを$targetNum骑倒せ'),
           cn: () => rich(context, '击败$targetNum骑', svtClasses(context), '职阶中任意一种从者'),
@@ -138,7 +139,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => rich(context, 'Defeat $targetNum servants with class ', svtClasses(context)),
           kr: () => rich(context, null, svtClasses(context), '클래스의 서번트를 $targetNum기 처치'),
         );
-      case DetailCondType.defeatEnemyClass:
+      case EventMissionCondType.targetEnemyClassKillNum:
         return localized(
           jp: () => rich(context, null, svtClasses(context), 'クラスの敵を$targetNum骑倒せ'),
           cn: () => rich(context, '击败$targetNum骑', svtClasses(context), '职阶中任意一种敌人'),
@@ -146,7 +147,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => rich(context, 'Defeat $targetNum enemies with class ', svtClasses(context)),
           kr: () => rich(context, null, svtClasses(context), '클래스의 적을 $targetNum마리 처치'),
         );
-      case DetailCondType.defeatEnemyNotServantClass:
+      case EventMissionCondType.targetEnemyIndividualityClassKillNum:
         return localized(
           jp: () => rich(context, null, svtClasses(context), 'クラスの敵を$targetNum骑倒せ(サーヴァント及び一部ボスなどは除く)'),
           cn: () => rich(context, '击败$targetNum骑', svtClasses(context), '职阶中任意一种敌人(从者及部分首领级敌方除外)'),
@@ -155,7 +156,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
               ' (excluding Servants and certain bosses)'),
           kr: () => rich(context, null, svtClasses(context), '클래스의 적을 $targetNum마리 처치 (서번트 및 일부 보스 등은 제외)'),
         );
-      case DetailCondType.battleSvtClassInDeck:
+      case EventMissionCondType.battleSvtClassSpecificNum:
         return localized(
           jp: () => rich(context, null, svtClasses(context), 'クラスのサーヴァントを1騎以上編成して、いずれかのクエストを$targetNum回クリアせよ'),
           cn: () => rich(context, '在队伍中编入至少1骑以上', svtClasses(context), '职阶从者，并完成任意关卡$targetNum次'),
@@ -164,9 +165,9 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
               ' in your Party and complete any quest $targetNum times'),
           kr: () => rich(context, null, svtClasses(context), '클래스의 서번트를 1기 이상 편성해서 전투 진행을 $targetNum회 완료'),
         );
-      case DetailCondType.itemGetBattle:
-      case DetailCondType.itemGetTotal:
-      case DetailCondType.targetQuestItemGetTotal:
+      case EventMissionCondType.allQuestItemGetTotal:
+      case EventMissionCondType.itemGetTotal:
+      case EventMissionCondType.targetQuestItemGetTotal:
         return localized(
           jp: () => rich(context, '戦利品で', items(context), 'を$targetNum個集めろ'),
           cn: () => rich(context, '通过战利品获得$targetNum个道具', items(context)),
@@ -174,7 +175,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => rich(context, 'Obtain $targetNum ', items(context), ' as battle drop'),
           kr: () => rich(context, '전리품으로 ', items(context), ' 중 하나를 $targetNum개 획득'),
         );
-      case DetailCondType.battleSvtIndividualityInDeck:
+      case EventMissionCondType.battleSvtIndividualitySpecificNum:
         return localized(
           jp: () => rich(context, null, traits(context), '属性を持つサーヴァントを1騎以上編成して、いずれかのクエストを$targetNum回クリアせよ'),
           cn: () => rich(context, '在队伍内编入至少1骑以上持有', traits(context), '属性的从者，并完成任意关卡$targetNum次'),
@@ -183,8 +184,8 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
               ' in your Party and complete Quests $targetNum times'),
           kr: () => rich(context, null, traits(context), '특성을 가진 서번트를 1기 이상 편성해서 전투 진행을 $targetNum회 완료'),
         );
-      case DetailCondType.battleSvtIdInDeck1:
-      case DetailCondType.battleSvtIdInDeck2:
+      case EventMissionCondType.questClearWithSvtInDec:
+      case EventMissionCondType.questClearWithSvtInDeckNoneFollower:
         return localized(
           jp: () => rich(context, null, servants(context), 'のサーヴァントを1騎以上編成して、いずれかのクエストを$targetNum回クリアせよ'),
           cn: () => rich(context, '在队伍内编入至少1骑以上', servants(context), '从者，并完成任意关卡$targetNum次'),
@@ -193,7 +194,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
               rich(context, 'Put servants ', servants(context), ' in your Party and complete Quests $targetNum times'),
           kr: () => rich(context, null, servants(context), '를 1기 이상 편성해서 전투 진행을 $targetNum회 완료'),
         );
-      case DetailCondType.battleSvtIdInFrontDeck:
+      case EventMissionCondType.questClearWithSvtInDeckOnlyStartingMember:
         return localized(
           jp: () => rich(context, null, servants(context), 'をスタメンにして、いずれかのクエストを$targetNum回クリアせよ'),
           cn: () => rich(context, '在队伍内编入', servants(context), '从者作为首发队员，并完成任意关卡$targetNum次'),
@@ -202,7 +203,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
               context, 'Put servants ', servants(context), ' in Starting Member and complete Quests $targetNum times'),
           kr: null,
         );
-      case DetailCondType.svtGetBattle:
+      case EventMissionCondType.allQuestSvtGetTotal:
         return localized(
           jp: () => text('戦利品で種火を$targetNum個集めろ'),
           cn: () => text('获取$targetNum个种火作为战利品'),
@@ -210,15 +211,28 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => text('Acquire $targetNum embers through battle'),
           kr: () => text('전리품으로 종화를 $targetNum개 획득'),
         );
-      case DetailCondType.friendPointSummon:
-        return localized(
-          jp: () => text('フレンドポイント召喚を$targetNum回実行せよ'),
-          cn: () => text('完成$targetNum次友情点召唤'),
-          tw: () => text('完成$targetNum次友情點數召喚'),
-          na: () => text('Perform $targetNum Friend Point Summons'),
-          kr: () => text('친구 포인트 소환을 $targetNum회 실행'),
-        );
-      case DetailCondType.questChallengeNum:
+      case EventMissionCondType.gachaDrawNum:
+        final gachaId = targetIds.firstOrNull ?? 0;
+        if (gachaId == 1) {
+          return localized(
+            jp: () => text('フレンドポイント召喚を$targetNum回実行せよ'),
+            cn: () => text('完成$targetNum次友情点召唤'),
+            tw: () => text('完成$targetNum次友情點數召喚'),
+            na: () => text('Perform $targetNum Friend Point Summons'),
+            kr: () => text('친구 포인트 소환을 $targetNum회 실행'),
+          );
+        } else {
+          final gacha = db.gameData.mstGacha[gachaId];
+          final gachaName = gacha?.name ?? "${S.current.gacha} $gachaId";
+          return localized(
+            jp: () => text('「$gachaName」召喚を$targetNum回実行せよ'),
+            cn: () => text('完成$targetNum次召唤「$gachaName」'),
+            tw: () => text('完成$targetNum次召喚「$gachaName」'),
+            na: () => text('Perform $targetNum Summons [$gachaName]'),
+            kr: null,
+          );
+        }
+      case EventMissionCondType.questChallengeNum:
         return localized(
           jp: () => rich(context, '以下のクエストを$targetNum回挑戦せよ', quests(context)),
           cn: () => rich(context, '挑战$targetNum次以下关卡', quests(context)),
@@ -226,7 +240,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => rich(context, 'Challenge $targetNum runs of quests ', quests(context)),
           kr: null,
         );
-      case DetailCondType.svtFriendshipGet:
+      case EventMissionCondType.svtFriendshipGet:
         return localized(
           jp: () => text('絆を$targetNum獲得せよ'),
           cn: () => text('获取$targetNum牵绊'),
@@ -234,7 +248,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => text('Obtain $targetNum Bond Points'),
           kr: null,
         );
-      case DetailCondType.moreFriendFollower:
+      case EventMissionCondType.friendAndFollowNum:
         return localized(
           jp: () => text('フレンド・フォローを$targetNum人増やせ'),
           cn: () => text('添加$targetNum个好友或关注对象'),
@@ -242,15 +256,15 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => text('Add $targetNum more Friends/Followers'),
           kr: null,
         );
-      case DetailCondType.boardGameDiceUse:
+      case EventMissionCondType.eventItemUseNum:
         return localized(
-          jp: () => rich(context, 'ガッポリーで', items(context), 'を累計$targetNum回使用せよ'),
-          cn: () => rich(context, '在堆金大亨中累计使用$targetNum次', items(context)),
-          tw: () => rich(context, '在BIG富翁中累計使用$targetNum次', items(context)),
-          na: () => rich(context, 'Use ', items(context), ' $targetNum times at Culdpoly'),
+          jp: () => rich(context, 'イベントアイテムを累計$targetNum回使用せよ', items(context)),
+          cn: () => rich(context, '累计使用$targetNum次活动道具', items(context)),
+          tw: () => rich(context, '累計使用$targetNum次活動道具', items(context)),
+          na: () => rich(context, 'Use event item $targetNum times', items(context)),
           kr: null,
         );
-      case DetailCondType.boardGameSquareAdvanced:
+      case EventMissionCondType.eventBoardGameCellNum:
         return localized(
           jp: () => text('ガッポリーで合計$targetNumマス進め'),
           cn: () => text('在堆金大亨中总计前进$targetNum格'),
@@ -258,7 +272,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => text('Proceed $targetNum spaces in Culdpoly'),
           kr: () => text('갓폴리에서 합계 $targetNum칸 진행'),
         );
-      case DetailCondType.exchangeSvtQuestClear:
+      case EventMissionCondType.battleExchangeSvtInDeck:
         return localized(
           jp: () => text('交換したサーヴァントを編成して、いずれかのクエストを$targetNum回クリアせよ'),
           cn: () => text('在队伍中编入兑换的从者，并完成任意关卡$targetNum次'),
@@ -266,7 +280,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => text('Put the exchanged servant in your Party and complete any quest $targetNum times'),
           kr: null,
         );
-      case DetailCondType.exchangeSvtTdPlay:
+      case EventMissionCondType.useTreasureDeviceExchangeSvt:
         return localized(
           jp: () => text('交換したサーヴァントの宝具を$targetNum回使用せよ'),
           cn: () => text('使用$targetNum次兑换的从者的宝具'),
@@ -274,7 +288,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => text('Use the exchanged servant\'s Noble Phantasm $targetNum times'),
           kr: null,
         );
-      case DetailCondType.exchangeSvtVoicePlay:
+      case EventMissionCondType.playVoiceExchangeSvt:
         return localized(
           jp: () => text('交換したサーヴァントのボイスをマイルームで$targetNum回再生せよ'),
           cn: () => text('在个人空间播放$targetNum次兑换的从者的语音'),
@@ -282,19 +296,34 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => text('Play the exchanged servant\'s voice $targetNum times in My Room'),
           kr: null,
         );
+      case EventMissionCondType.mapGimmickCount:
+        // targetIds = gimmick ids
+        return localized(
+          jp: null,
+          cn: () => text('与地图组件交互$targetNum次'),
+          tw: null,
+          na: () => text('Touch map gimmick $targetNum times'),
+          kr: null,
+        );
       // unused
-      case DetailCondType.battleSvtInDeck:
-      case DetailCondType.battleSvtEquipInDeck:
+      case EventMissionCondType.battleSvtInDeck:
+      case EventMissionCondType.battleSvtEquipInDeck:
+      case EventMissionCondType.svtGetNum:
+      case EventMissionCondType.questGroupClearNum:
+      case EventMissionCondType.questPhaseClearNumQuestGroup:
+      case EventMissionCondType.questPhaseClearNumWarId:
+      case EventMissionCondType.questClearWithSvtInDeckNoneFollowerOnlyStartingMember:
       case null:
         break;
     }
     if (unknownMsg != null) return text(unknownMsg!);
+    final condTypeStr = condType?.name ?? detail.missionCondType;
     return localized(
-      jp: () => text('不明な条件(${detail.missionCondType}): $targetIds, $targetNum'),
-      cn: () => text('未知条件(${detail.missionCondType}): $targetIds, $targetNum'),
-      tw: () => text('未知條件(${detail.missionCondType}): $targetIds, $targetNum'),
-      na: () => text('Unknown CondDetail(${detail.missionCondType}): $targetIds, $targetNum'),
-      kr: () => text('알 수 없는 조건(${detail.missionCondType}): $targetIds, $targetNum'),
+      jp: () => text('不明な条件($condTypeStr): $targetIds, $targetNum'),
+      cn: () => text('未知条件($condTypeStr): $targetIds, $targetNum'),
+      tw: () => text('未知條件($condTypeStr): $targetIds, $targetNum'),
+      na: () => text('Unknown CondDetail($condTypeStr): $targetIds, $targetNum'),
+      kr: () => text('알 수 없는 조건($condTypeStr): $targetIds, $targetNum'),
     );
   }
 
