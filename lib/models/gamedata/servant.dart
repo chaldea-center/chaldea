@@ -193,6 +193,7 @@ class Servant with GameCardMixin {
   List<ServantTrait> traitAdd;
   List<ServantChange> svtChange;
   List<ServantLimitImage> ascensionImage;
+  List<SvtOverwrite> overwrites;
   Map<int, LvlUpMaterial> ascensionMaterials;
   Map<int, LvlUpMaterial> skillMaterials;
   Map<int, LvlUpMaterial> appendSkillMaterials;
@@ -257,6 +258,7 @@ class Servant with GameCardMixin {
     this.traitAdd = const [],
     this.svtChange = const [],
     this.ascensionImage = const [],
+    this.overwrites = const [],
     this.ascensionMaterials = const {},
     this.skillMaterials = const {},
     this.appendSkillMaterials = const {},
@@ -1470,6 +1472,41 @@ class SvtScriptExtendData {
   Map<String, dynamic> toJson() => _$SvtScriptExtendDataToJson(this);
 }
 
+@JsonSerializable()
+class SvtOverwriteValue {
+  NiceTd? noblePhantasm;
+
+  SvtOverwriteValue({
+    this.noblePhantasm,
+  });
+  factory SvtOverwriteValue.fromJson(Map<String, dynamic> json) => _$SvtOverwriteValueFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SvtOverwriteValueToJson(this);
+}
+
+@JsonSerializable()
+class SvtOverwrite {
+  ServantOverwriteType type;
+  int priority;
+  @CondTypeConverter()
+  CondType condType;
+  int condTargetId;
+  int condValue;
+  SvtOverwriteValue? overwriteValue;
+
+  SvtOverwrite({
+    this.type = ServantOverwriteType.none,
+    this.priority = 0,
+    this.condType = CondType.none,
+    this.condTargetId = 0,
+    this.condValue = 0,
+    this.overwriteValue,
+  });
+  factory SvtOverwrite.fromJson(Map<String, dynamic> json) => _$SvtOverwriteFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SvtOverwriteToJson(this);
+}
+
 enum SvtType {
   normal,
   heroine,
@@ -1602,4 +1639,9 @@ enum Gender {
 enum CommandCardAttackType {
   one,
   all,
+}
+
+enum ServantOverwriteType {
+  none,
+  treasureDevice,
 }

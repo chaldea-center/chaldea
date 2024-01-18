@@ -150,6 +150,10 @@ Servant _$ServantFromJson(Map json) => Servant(
               ?.map((e) => ServantLimitImage.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      overwrites: (json['overwrites'] as List<dynamic>?)
+              ?.map((e) => SvtOverwrite.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       ascensionMaterials: (json['ascensionMaterials'] as Map?)?.map(
             (k, e) => MapEntry(int.parse(k as String), LvlUpMaterial.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
@@ -230,6 +234,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'traitAdd': instance.traitAdd.map((e) => e.toJson()).toList(),
       'svtChange': instance.svtChange.map((e) => e.toJson()).toList(),
       'ascensionImage': instance.ascensionImage.map((e) => e.toJson()).toList(),
+      'overwrites': instance.overwrites.map((e) => e.toJson()).toList(),
       'ascensionMaterials': instance.ascensionMaterials.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'skillMaterials': instance.skillMaterials.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'appendSkillMaterials': instance.appendSkillMaterials.map((k, e) => MapEntry(k.toString(), e.toJson())),
@@ -1019,3 +1024,39 @@ Map<String, dynamic> _$SvtScriptExtendDataToJson(SvtScriptExtendData instance) =
       'photoSvtPosition': instance.photoSvtPosition,
       'photoSvtScale': instance.photoSvtScale,
     };
+
+SvtOverwriteValue _$SvtOverwriteValueFromJson(Map json) => SvtOverwriteValue(
+      noblePhantasm: json['noblePhantasm'] == null
+          ? null
+          : NiceTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
+    );
+
+Map<String, dynamic> _$SvtOverwriteValueToJson(SvtOverwriteValue instance) => <String, dynamic>{
+      'noblePhantasm': instance.noblePhantasm?.toJson(),
+    };
+
+SvtOverwrite _$SvtOverwriteFromJson(Map json) => SvtOverwrite(
+      type: $enumDecodeNullable(_$ServantOverwriteTypeEnumMap, json['type']) ?? ServantOverwriteType.none,
+      priority: json['priority'] as int? ?? 0,
+      condType:
+          json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
+      condTargetId: json['condTargetId'] as int? ?? 0,
+      condValue: json['condValue'] as int? ?? 0,
+      overwriteValue: json['overwriteValue'] == null
+          ? null
+          : SvtOverwriteValue.fromJson(Map<String, dynamic>.from(json['overwriteValue'] as Map)),
+    );
+
+Map<String, dynamic> _$SvtOverwriteToJson(SvtOverwrite instance) => <String, dynamic>{
+      'type': _$ServantOverwriteTypeEnumMap[instance.type]!,
+      'priority': instance.priority,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'condTargetId': instance.condTargetId,
+      'condValue': instance.condValue,
+      'overwriteValue': instance.overwriteValue?.toJson(),
+    };
+
+const _$ServantOverwriteTypeEnumMap = {
+  ServantOverwriteType.none: 'none',
+  ServantOverwriteType.treasureDevice: 'treasureDevice',
+};
