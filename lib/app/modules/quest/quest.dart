@@ -20,13 +20,24 @@ class QuestDetailPage extends StatefulWidget {
   final Quest? quest;
   final Region? region;
   final QuestPhase? questPhase;
-  const QuestDetailPage({super.key, this.id, this.phase, this.enemyHash, this.quest, this.region}) : questPhase = null;
+  final List<int> questIdList;
+  const QuestDetailPage({
+    super.key,
+    this.id,
+    this.phase,
+    this.enemyHash,
+    this.quest,
+    this.region,
+    this.questIdList = const [],
+  }) : questPhase = null;
+
   QuestDetailPage.phase({super.key, required QuestPhase this.questPhase})
       : region = null,
         id = questPhase.id,
         phase = questPhase.phase,
         enemyHash = null,
-        quest = questPhase;
+        quest = questPhase,
+        questIdList = const [];
 
   @override
   State<QuestDetailPage> createState() => _QuestDetailPageState();
@@ -66,7 +77,9 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
       return Region.jp;
     }
     final jpQuest = db.gameData.quests[widget.quest?.id ?? widget.id];
-    final released = db.gameData.mappingData.warRelease.ofRegion(fixedRegion)?.contains(jpQuest?.warId);
+    if (jpQuest == null) return Region.jp;
+    if (jpQuest.war?.eventReal == null) return Region.jp;
+    final released = db.gameData.mappingData.warRelease.ofRegion(fixedRegion)?.contains(jpQuest.warId);
     if (released == true) {
       return fixedRegion;
     }
@@ -191,21 +204,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
           : ListView(
               padding: const EdgeInsets.symmetric(vertical: 8),
               children: [
-                if (quest.phases.length > 1 && widget.questPhase == null)
-                  Center(
-                    child: FilterGroup<int>(
-                      combined: true,
-                      options: [0, ...quest.phases],
-                      values: FilterRadioData.nonnull(phase),
-                      padding: EdgeInsets.zero,
-                      optionBuilder: (v) => Text(v == 0 ? '※' : v.toString()),
-                      onFilterChanged: (v, _) {
-                        setState(() {
-                          phase = v.radioValue!;
-                        });
-                      },
-                    ),
-                  ),
+                ...getHeader(),
                 if (widget.questPhase != null)
                   QuestCard(
                     quest: quest,
@@ -232,6 +231,79 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
               ],
             ),
     );
+  }
+
+  List<Widget> getHeader() {
+    List<Widget> children = [];
+    if (quest.phases.length > 1 && widget.questPhase == null) {
+      children.add(Expanded(
+        child: Center(
+          child: FilterGroup<int>(
+            combined: true,
+            options: [0, ...quest.phases],
+            values: FilterRadioData.nonnull(phase),
+            padding: EdgeInsets.zero,
+            optionBuilder: (v) => Text(v == 0 ? '※' : v.toString()),
+            onFilterChanged: (v, _) {
+              setState(() {
+                phase = v.radioValue!;
+              });
+            },
+          ),
+        ),
+      ));
+    } else {
+      children.add(Expanded(
+        child: Center(
+          child: Text(
+            quest.lNameWithChapter,
+            style: Theme.of(context).textTheme.bodySmall,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ));
+    }
+    final questIds = widget.questIdList.toList();
+    final index = questIds.indexOf(quest.id);
+    if (index >= 0) {
+      void pushQuest(int questId) {
+        Navigator.pop(context);
+        router.push(
+          url: Routes.questI(questId),
+          child: QuestDetailPage(
+            id: questId,
+            region: region,
+            questIdList: questIds,
+          ),
+        );
+      }
+
+      children = [
+        IconButton(
+          onPressed: index - 1 >= 0 ? () => pushQuest(questIds[index - 1]) : null,
+          icon: const Icon(Icons.keyboard_double_arrow_left),
+          tooltip: S.current.prev_page,
+        ),
+        const SizedBox(width: 8),
+        ...children,
+        const SizedBox(width: 8),
+        IconButton(
+          onPressed: index + 1 < questIds.length ? () => pushQuest(questIds[index + 1]) : null,
+          icon: const Icon(Icons.keyboard_double_arrow_right),
+          tooltip: S.current.next_page,
+        ),
+      ];
+    }
+    if (children.isEmpty) return [];
+    return [
+      Row(
+        textDirection: TextDirection.ltr,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: children,
+      )
+    ];
   }
 
   Widget get sharedTeamsButton {

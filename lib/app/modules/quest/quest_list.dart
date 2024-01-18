@@ -166,7 +166,7 @@ class _QuestListPageState extends State<QuestListPage> {
             onTap: () {
               router.push(
                 url: Routes.questI(quest.id),
-                child: QuestDetailPage(quest: quest),
+                child: QuestDetailPage(quest: quest, questIdList: questIds),
                 detail: true,
               );
             },
