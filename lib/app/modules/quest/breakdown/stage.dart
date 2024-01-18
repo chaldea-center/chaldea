@@ -11,7 +11,6 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/video_player.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../../ai/ai_page.dart';
 import '../../enemy/quest_enemy.dart';
 
 class QuestWave extends StatelessWidget {
@@ -248,36 +247,8 @@ class WaveInfoPage extends StatelessWidget {
               title: Text(S.current.max_enemy_act_count),
               trailing: Text(stage.enemyActCount.toString()),
             ),
-          if (stage.fieldAis.isNotEmpty)
-            ListTile(
-              title: Text(S.current.field_ai),
-              trailing: Text.rich(
-                TextSpan(
-                  children: List.generate(stage.fieldAis.length, (index) {
-                    final ai = stage.fieldAis[index];
-                    int perLine = max(3, (stage.fieldAis.length / 2).ceil());
-                    return TextSpan(children: [
-                      SharedBuilder.textButtonSpan(
-                        context: context,
-                        text: ai.id.toString(),
-                        onTap: () {
-                          router.push(
-                            url: Routes.aiI(AiType.field, ai.id),
-                            child: AiPage(
-                              aiType: AiType.field,
-                              aiId: ai.id,
-                              region: region,
-                            ),
-                          );
-                        },
-                      ),
-                      if (index < stage.fieldAis.length - 1) TextSpan(text: index == perLine - 1 ? '\n' : ', '),
-                    ]);
-                  }),
-                ),
-                textAlign: TextAlign.end,
-              ),
-            ),
+          if (stage.fieldAis.isNotEmpty) buildFieldAis(context, stage.fieldAis),
+          if (originalScript['aiAllocations'] != null) buildAiAllocations(context, originalScript['aiAllocations']),
           for (final masterId in [
             if (stage.enemyMasterBattleId != null) stage.enemyMasterBattleId!,
             ...?stage.enemyMasterBattleIdByPlayerGender
@@ -315,6 +286,80 @@ class WaveInfoPage extends StatelessWidget {
         child: db.getIconImage(battle?.face ?? AssetURL.i.enemyMasterFace(battleId), width: 36),
       ),
       onTap: master?.routeTo,
+    );
+  }
+
+  Widget buildFieldAis(BuildContext context, List<FieldAi> ais) {
+    List<Widget> children = ais.map((ai) {
+      return Text.rich(
+        SharedBuilder.textButtonSpan(
+          context: context,
+          text: ai.id.toString(),
+          onTap: () {
+            router.push(url: Routes.aiI(AiType.field, ai.id), region: region);
+          },
+        ),
+        style: const TextStyle(fontSize: 14),
+      );
+    }).toList();
+    children = divideList(children, const Text(', '));
+    return ListTile(
+      title: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(S.current.field_ai),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Wrap(
+              alignment: WrapAlignment.end,
+              children: children,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget buildAiAllocations(BuildContext context, List aiAllocations) {
+    List<Widget> children = [];
+    for (final aiAllocation in aiAllocations) {
+      final allocation = AiAllocationInfo.tryParse(aiAllocation as Map);
+      if (allocation == null) {
+        children.add(ListTile(title: Text("Parse failed: $aiAllocation")));
+        continue;
+      }
+      List<InlineSpan> titleSpans = [];
+      if (allocation.applySvtType == 0) {
+        titleSpans.add(TextSpan(text: S.current.general_all));
+      } else {
+        final String svtType = AiAllocationApplySvtFlag.values
+            .where((e) => e.value > 0 && allocation.applySvtType & e.value != 0)
+            .map((e) => e.name)
+            .join("/");
+        titleSpans.add(TextSpan(text: svtType));
+      }
+      titleSpans.add(const TextSpan(text: ' '));
+      titleSpans.add(SharedBuilder.traitSpan(context: context, trait: NiceTrait(id: allocation.individuality)));
+
+      List<InlineSpan> trailings = [
+        for (final aiId in allocation.aiIds)
+          SharedBuilder.textButtonSpan(
+            context: context,
+            text: aiId.toString(),
+            onTap: () {
+              router.push(url: Routes.aiI(AiType.svt, aiId), region: region);
+            },
+          )
+      ];
+      children.add(ListTile(
+        dense: true,
+        title: Text.rich(TextSpan(children: titleSpans)),
+        trailing: Text.rich(TextSpan(children: divideList(trailings, const TextSpan(text: ', ')))),
+      ));
+    }
+    return TileGroup(
+      header: "AI Allocation",
+      children: children,
     );
   }
 }

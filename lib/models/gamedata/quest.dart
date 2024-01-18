@@ -823,6 +823,31 @@ class Stage with DataScriptBase {
 }
 
 @JsonSerializable()
+class AiAllocationInfo {
+  List<int> aiIds;
+  int applySvtType;
+  int individuality;
+
+  AiAllocationInfo({
+    this.aiIds = const [],
+    this.applySvtType = 0,
+    this.individuality = 0,
+  });
+
+  factory AiAllocationInfo.fromJson(Map<String, dynamic> json) => _$AiAllocationInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AiAllocationInfoToJson(this);
+
+  static AiAllocationInfo? tryParse(Map json) {
+    try {
+      return AiAllocationInfo.fromJson(Map.from(json));
+    } catch (e) {
+      return null;
+    }
+  }
+}
+
+@JsonSerializable()
 class StageCutin {
   int runs;
   List<StageCutInSkill> skills;
@@ -2082,5 +2107,15 @@ enum BattleFieldEnvironmentGrantType {
   function_(2);
 
   const BattleFieldEnvironmentGrantType(this.value);
+  final int value;
+}
+
+enum AiAllocationApplySvtFlag {
+  all(0),
+  own(1),
+  friend(2),
+  npc(4);
+
+  const AiAllocationApplySvtFlag(this.value);
   final int value;
 }

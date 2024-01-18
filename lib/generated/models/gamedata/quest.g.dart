@@ -405,6 +405,18 @@ const _$StageLimitActTypeEnumMap = {
   StageLimitActType.lose: 'lose',
 };
 
+AiAllocationInfo _$AiAllocationInfoFromJson(Map json) => AiAllocationInfo(
+      aiIds: (json['aiIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      applySvtType: json['applySvtType'] as int? ?? 0,
+      individuality: json['individuality'] as int? ?? 0,
+    );
+
+Map<String, dynamic> _$AiAllocationInfoToJson(AiAllocationInfo instance) => <String, dynamic>{
+      'aiIds': instance.aiIds,
+      'applySvtType': instance.applySvtType,
+      'individuality': instance.individuality,
+    };
+
 StageCutin _$StageCutinFromJson(Map json) => StageCutin(
       runs: json['runs'] as int,
       skills: (json['skills'] as List<dynamic>?)
