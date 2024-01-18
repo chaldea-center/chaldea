@@ -397,15 +397,9 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
           isDense: true,
           value: options.classBoard,
           items: PreferClassBoardDataSource.values.map((source) {
-            String text = switch (source) {
-              PreferClassBoardDataSource.none => S.current.disabled,
-              PreferClassBoardDataSource.current => S.current.current_,
-              PreferClassBoardDataSource.target => S.current.target,
-              PreferClassBoardDataSource.full => "Full"
-            };
             return DropdownMenuItem(
               value: source,
-              child: Text(text, textScaler: const TextScaler.linear(0.9)),
+              child: Text(source.shownName, textScaler: const TextScaler.linear(0.9)),
             );
           }).toList(),
           onChanged: (v) {

@@ -276,23 +276,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           ),
           Center(
             child: TextButton(
-              onPressed: enableEdit
-                  ? () async {
-                      final board = db.gameData.classBoards.values
-                          .firstWhereOrNull((e) => e.classes.any((cls) => cls.classId == svt.classId));
-                      if (board == null) {
-                        EasyLoading.showInfo('${S.current.not_found}: ${Transl.svtClassId(svt.classId).l}');
-                        return;
-                      }
-                      final skill = board.toSkill(db.curUser.classBoardStatusOf(board.id));
-                      if (skill == null || skill.functions.isEmpty) {
-                        EasyLoading.showInfo(S.current.empty_hint);
-                        return;
-                      }
-                      playerSvtData.addCustomPassive(skill, skill.maxLv);
-                      if (mounted) setState(() {});
-                    }
-                  : null,
+              onPressed: enableEdit ? onAddClassBoard : null,
               child: Text('${S.current.custom_skill}-${S.current.class_score}'),
             ),
           )
@@ -884,6 +868,55 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         );
       },
     );
+  }
+
+  Future<void> onAddClassBoard() async {
+    final board =
+        db.gameData.classBoards.values.firstWhereOrNull((e) => e.classes.any((cls) => cls.classId == svt.classId));
+    if (board == null) {
+      EasyLoading.showInfo('${S.current.not_found}: ${Transl.svtClassId(svt.classId).l}');
+      return;
+    }
+    if (!mounted) return;
+    final source = await showDialog<PreferClassBoardDataSource>(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text('${S.current.plan} (${S.current.class_score})'),
+          children: [
+            for (final source in [
+              PreferClassBoardDataSource.current,
+              PreferClassBoardDataSource.target,
+              PreferClassBoardDataSource.full
+            ])
+              SimpleDialogOption(
+                child: Text(source.shownName),
+                onPressed: () {
+                  Navigator.pop(context, source);
+                },
+              )
+          ],
+        );
+      },
+    );
+    if (source == null) return;
+
+    ClassBoardPlan? plan = switch (source) {
+      PreferClassBoardDataSource.none => null,
+      PreferClassBoardDataSource.current => db.curUser.classBoardStatusOf(board.id),
+      PreferClassBoardDataSource.target => db.curPlan_.classBoardPlan(board.id),
+      PreferClassBoardDataSource.full => ClassBoardPlan.full(board),
+    };
+    if (plan == null) return;
+    final skill = board.toSkill(plan);
+    if (skill == null || skill.functions.isEmpty) {
+      EasyLoading.showInfo(S.current.empty_hint);
+      return;
+    }
+    skill.unmodifiedDetail = source.shownName;
+    playerSvtData.addCustomPassive(skill, skill.maxLv);
+    if (mounted) setState(() {});
   }
 
   Widget _buildCmdCodePlanner() {

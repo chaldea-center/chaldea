@@ -881,7 +881,16 @@ enum PreferClassBoardDataSource {
   none,
   current,
   target,
-  full,
+  full;
+
+  String get shownName {
+    return switch (this) {
+      PreferClassBoardDataSource.none => S.current.disabled,
+      PreferClassBoardDataSource.current => S.current.current_,
+      PreferClassBoardDataSource.target => S.current.target,
+      PreferClassBoardDataSource.full => "Full"
+    };
+  }
 }
 
 enum FollowerType {
