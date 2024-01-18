@@ -726,6 +726,10 @@ class BattleServantData {
     return collectBuffsPerAction(battleBuff.validBuffs, BuffAction.donotSkill).isNotEmpty;
   }
 
+  bool isDonotSkillSelect(int idx) {
+    return collectBuffsPerType(battleBuff.validBuffs, BuffType.donotSkillSelect).any((buff) => buff.vals.Value == idx);
+  }
+
   bool isSkillCondFailed(final BattleData battleData, final int skillIndex) {
     if (skillInfoList.length <= skillIndex || skillIndex < 0) {
       return false;

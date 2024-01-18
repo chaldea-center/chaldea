@@ -458,6 +458,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               child: buildSkillInfo(
                 skillInfo: svt.skillInfoList[skillIndex],
                 isSealed: battleData.isSkillSealed(index, skillIndex),
+                donotSkillSelect: svt.isDonotSkillSelect(skillIndex + 1),
                 isCondFailed: battleData.isSkillCondFailed(index, skillIndex),
                 onTap: () async {
                   await battleData.activateSvtSkill(index, skillIndex);
@@ -524,6 +525,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                       buildSkillInfo(
                         skillInfo: battleData.masterSkillInfo[i],
                         isSealed: false,
+                        donotSkillSelect: false,
                         isCondFailed: !battleData.canUseMysticCodeSkillIgnoreCoolDown(i),
                         onTap: () async {
                           await battleData.activateMysticCodeSkill(i);
@@ -716,16 +718,17 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
   Widget buildSkillInfo({
     required final BattleSkillInfoData skillInfo,
     required bool isSealed,
+    required bool donotSkillSelect,
     required bool isCondFailed,
     required final VoidCallback onTap,
   }) {
     final cd = skillInfo.chargeTurn;
     Widget cdText = Text(
       cd.toString(),
-      style: TextStyle(fontSize: isSealed ? 14 : 18, color: Colors.white.withOpacity(0.8)),
+      style: TextStyle(fontSize: isSealed || donotSkillSelect ? 14 : 18, color: Colors.white.withOpacity(0.8)),
       textScaler: const TextScaler.linear(1),
     );
-    if ((isSealed && cd > 0) || (isCondFailed && !isSealed)) {
+    if ((isSealed && cd > 0) || donotSkillSelect || (isCondFailed && !isSealed)) {
       cdText = Positioned(right: 0, bottom: 0, child: cdText);
     }
 
@@ -733,7 +736,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       alignment: Alignment.center,
       children: [
         db.getIconImage(skillInfo.proximateSkill?.icon ?? Atlas.common.emptySkillIcon, width: 32, aspectRatio: 1),
-        if (isSealed || isCondFailed || cd > 0)
+        if (isSealed || donotSkillSelect || isCondFailed || cd > 0)
           AspectRatio(
             aspectRatio: 1,
             child: Container(
@@ -742,16 +745,16 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               color: Colors.black54,
             ),
           ),
-        if (cd > 0) cdText,
-        if (isSealed)
+        if (isSealed || donotSkillSelect)
           Opacity(
             opacity: 0.8,
             child: db.getIconImage(
               'https://static.atlasacademy.io/JP/BuffIcons/bufficon_511.png',
-              width: 18,
+              width: 22,
               aspectRatio: 1,
             ),
           ),
+        if (cd > 0) cdText,
         if (isCondFailed && !isSealed)
           const Text(
             '×',
@@ -766,7 +769,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       padding: const EdgeInsets.symmetric(horizontal: 2),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: isSealed || isCondFailed || cd > 0
+        onTap: isSealed || donotSkillSelect || isCondFailed || cd > 0
             ? null
             : () {
                 if (battleData.isPlayerTurn) {
