@@ -280,7 +280,8 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
               ],
             )
           ],
-          bottom: _loading ? null : FixedHeight.tabBar(TabBar(tabs: tabs.map((e) => e.item1).toList())),
+          bottom:
+              _loading ? null : FixedHeight.tabBar(TabBar(isScrollable: true, tabs: tabs.map((e) => e.item1).toList())),
         ),
         body: _loading
             ? Column(

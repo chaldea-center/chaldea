@@ -214,6 +214,7 @@ class _SpDmgIndivTabState extends State<SpDmgIndivTab> {
   void initState() {
     super.initState();
     initData();
+    type.options = {_SEScope.buff, _SEScope.td};
   }
 
   Set<GameCardMixin> getGroup(Iterable<int> traits, bool useAnd, int? rarity, _SEScope scope) {

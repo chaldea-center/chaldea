@@ -1007,7 +1007,12 @@ class FuncDescriptor extends StatelessWidget {
         _addTraits('Target Indiv: ', [script.TargetIndiv!]);
       }
       if (buff.script.INDIVIDUALITIE != null) {
-        _addTraits(Transl.special.buffCheckSelf, [buff.script.INDIVIDUALITIE!]);
+        final indiv = buff.script.INDIVIDUALITIE!;
+        if ((buff.type == BuffType.guts || buff.type == BuffType.gutsRatio) && indiv.signedId == -3086) {
+          // don't show gutsBlock
+        } else {
+          _addTraits(Transl.special.buffCheckSelf, [buff.script.INDIVIDUALITIE!]);
+        }
       }
       if (script.HP_HIGHER != null) {
         final v = script.HP_HIGHER!.format(percent: true, base: 10);

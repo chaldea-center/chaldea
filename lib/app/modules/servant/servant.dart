@@ -70,7 +70,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
     _svt = widget.svt ?? db.gameData.servantsWithDup[widget.id] ?? db.gameData.servantsById[widget.id];
     final id = widget.svt?.id ?? widget.id;
     if (id == null || _svt != null) return;
-    _svt = await AtlasApi.svt(id);
+    _svt = await showEasyLoading(() => AtlasApi.svt(id));
     if (mounted) setState(() {});
   }
 
