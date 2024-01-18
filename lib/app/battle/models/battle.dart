@@ -1459,16 +1459,19 @@ class BattleData {
     enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
   }
 
-  int getNonNullTargetIndex(final List<BattleServantData?> actorList, final int targetIndex) {
+  int getNonNullTargetIndex(List<BattleServantData?> actorList, final int targetIndex) {
     if (actorList.length > targetIndex && targetIndex >= 0 && actorList[targetIndex] != null) {
       return targetIndex;
     }
 
-    for (int i = 0; i < actorList.length; i += 1) {
-      if (actorList[i] != null) {
-        return i;
+    final minUniqueId = Maths.min(actorList.whereType<BattleServantData>().map((e) => e.uniqueId), -1);
+    if (minUniqueId < 0) return -1;
+    for (final (index, actor) in actorList.indexed) {
+      if (actor?.uniqueId == minUniqueId) {
+        return index;
       }
     }
+
     return -1;
   }
 
