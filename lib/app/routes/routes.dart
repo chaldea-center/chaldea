@@ -63,6 +63,7 @@ import '../modules/skill/skill_list.dart';
 import '../modules/skill/td_detail.dart';
 import '../modules/skill/td_list.dart';
 import '../modules/statistics/game_stat.dart';
+import '../modules/summon/gacha/gacha_list.dart';
 import '../modules/summon/summon_detail_page.dart';
 import '../modules/summon/summon_list_page.dart';
 import '../modules/svt_class/svt_class_info_page.dart';
@@ -111,6 +112,10 @@ class Routes {
   static String summonI(String id) => '/summon/$id';
   static const String summon = '/summon';
   static const String summons = '/summons';
+
+  static String gachaI(String id) => '/gacha/$id';
+  static const String gacha = '/gacha';
+  static const String gachas = '/gachas';
 
   static String costumeI(int id) => '/costume/$id';
   static const String costume = '/costume';
@@ -335,7 +340,7 @@ class RouteConfiguration {
       case Routes.servants:
         return ServantListPage();
       case Routes.servant:
-      case 'svt':
+      case '/svt':
         return ServantDetailPage(id: _secondInt);
       case Routes.enemies:
         return EnemyListPage();
@@ -347,17 +352,17 @@ class RouteConfiguration {
       case Routes.craftEssences:
         return CraftListPage();
       case Routes.craftEssence:
-      case 'equip':
+      case '/equip':
         return CraftDetailPage(id: _secondInt);
       case Routes.commandCodes:
         return CmdCodeListPage();
       case Routes.commandCode:
-      case 'CC':
+      case '/CC':
         return CmdCodeDetailPage(id: _secondInt);
       case Routes.mysticCodes:
         return MysticCodeListPage();
       case Routes.mysticCode:
-      case 'MC':
+      case '/MC':
         return MysticCodePage(id: _secondInt);
       case Routes.events:
         return EventListPage();
@@ -382,6 +387,10 @@ class RouteConfiguration {
         return SummonListPage();
       case Routes.summon:
         return SummonDetailPage(id: second);
+      case Routes.gachas:
+        return GachaListPage(region: region ?? Region.jp);
+      // case Routes.gacha:
+      //   return GachaDetailPage(id: second);
       case Routes.costumes:
         return CostumeListPage();
       case Routes.costume:
@@ -434,7 +443,7 @@ class RouteConfiguration {
       case Routes.funcs:
         return const FuncListPage();
       case Routes.func:
-      case 'function':
+      case '/function':
         return FuncDetailPage(id: _secondInt, region: region);
       case Routes.buffs:
         return const BuffListPage();
@@ -444,7 +453,7 @@ class RouteConfiguration {
       case Routes.buffAction:
         return BuffActionPage(action: const BuffActionConverter().fromJson(second ?? "unknown"));
       case Routes.masterMission:
-      case 'MM':
+      case '/MM':
         return MasterMissionPage(id: _secondInt ?? 0);
       case Routes.masterMissions:
         return MasterMissionListPage();
@@ -457,7 +466,7 @@ class RouteConfiguration {
       case Routes.tds:
         return const TdListPage();
       case Routes.td:
-      case 'NP':
+      case '/NP':
         return TdDetailPage(id: _secondInt, region: region);
       case Routes.ai:
         final AiType? type = AiType.fromString(second ?? "");
