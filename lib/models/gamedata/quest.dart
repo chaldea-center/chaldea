@@ -1499,6 +1499,7 @@ class EnemyScript with DataScriptBase {
   bool get isRare => toInt('probability_type') == 1;
 
   int? get dispBreakShift => toInt('dispBreakShift');
+  int? get shiftPosition => toInt('shiftPosition'); // default value -1
 
   factory EnemyScript.fromJson(Map<String, dynamic> json) => _$EnemyScriptFromJson(json);
 

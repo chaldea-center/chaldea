@@ -44,19 +44,28 @@ class QuestWave extends StatelessWidget {
       if (enemy == null) return const SizedBox.shrink();
       List<Widget> parts = [];
       int dispBreakShift = enemy.enemyScript.dispBreakShift ?? 0;
-      if (dispBreakShift > 0) {
-        dispBreakShift = min(dispBreakShift, enemy.enemyScript.shift?.length ?? 0);
+      dispBreakShift = dispBreakShift.clamp(0, enemy.enemyScript.shift?.length ?? 0);
+      int shiftPos = enemy.enemyScript.shiftPosition ?? -1;
+
+      final color = Theme.of(context).textTheme.bodySmall?.color;
+      TextStyle? getShiftStyle(int shiftIndex) {
+        TextStyle? style;
+        if (dispBreakShift > 0 && shiftIndex < (shiftPos + dispBreakShift)) {
+          style = TextStyle(decoration: TextDecoration.lineThrough, color: color);
+        }
+        if (shiftPos > -1 && shiftIndex < shiftPos) {
+          style = const TextStyle(decoration: TextDecoration.lineThrough);
+        }
+        return style;
       }
 
-      final lineThrough =
-          TextStyle(decoration: TextDecoration.lineThrough, color: Theme.of(context).textTheme.bodySmall?.color);
       parts.add(QuestEnemyWidget(
         enemy: enemy,
         showTrueName: showTrueName,
         showFace: showFace,
         showDeck: showDeck,
         region: region,
-        textStyle: dispBreakShift > 0 ? lineThrough : null,
+        textStyle: getShiftStyle(-1),
       ));
       _usedUniqueIds.add(enemy.deckNpcId);
       if (enemy.enemyScript.shift != null) {
@@ -70,7 +79,7 @@ class QuestWave extends StatelessWidget {
             showTrueName: showTrueName,
             showDeck: showDeck,
             showFace: shiftEnemy.svt.icon == prev.svt.icon ? false : showFace,
-            textStyle: index + 1 < dispBreakShift ? lineThrough : null,
+            textStyle: getShiftStyle(index),
             region: region,
           ));
           prev = shiftEnemy;
@@ -302,7 +311,7 @@ class WaveInfoPage extends StatelessWidget {
         style: const TextStyle(fontSize: 14),
       );
     }).toList();
-    children = divideList(children, const Text(', '));
+    children = divideList(children, const Text(' / ', style: TextStyle(fontSize: 14)));
     return ListTile(
       title: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -354,7 +363,7 @@ class WaveInfoPage extends StatelessWidget {
       children.add(ListTile(
         dense: true,
         title: Text.rich(TextSpan(children: titleSpans)),
-        trailing: Text.rich(TextSpan(children: divideList(trailings, const TextSpan(text: ', ')))),
+        trailing: Text.rich(TextSpan(children: divideList(trailings, const TextSpan(text: ' / ')))),
       ));
     }
     return TileGroup(

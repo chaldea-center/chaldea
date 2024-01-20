@@ -492,7 +492,7 @@ enum FuncType {
   absorbNpturn(56),
   overwriteDeadType(57),
   forceAllBuffNoact(58),
-  breakGaugeUp(59),
+  breakGaugeUp(59), // DataVals.ChangeMaxBreakGauge? restore hpbar : insert new hpbar
   breakGaugeDown(60),
   moveToLastSubmember(61),
   extendUserEquipSkill(62),

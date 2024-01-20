@@ -544,6 +544,11 @@ class FuncDescriptor extends StatelessWidget {
       }
     }
 
+    // FuncType.breakGaugeUp
+    if (vals?.ChangeMaxBreakGauge == 1) {
+      funcText.write('(.ChangeMaxBreakGauge)');
+    }
+
     if ([
       FuncType.gainHpFromTargets,
       FuncType.absorbNpturn,
