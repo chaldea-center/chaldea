@@ -557,6 +557,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
 
     int maxNormalAttackCount = filterData.normalAttackCount.radioValue!;
     int maxCriticalAttackCount = filterData.criticalAttackCount.radioValue!;
+    int maxTdCount = filterData.tdCount.radioValue!;
 
     if (maxNormalAttackCount >= 0 || maxCriticalAttackCount >= 0) {
       int normalAttackCount = data.normalAttackCount;
@@ -569,7 +570,9 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         return false;
       }
     }
-
+    if (maxTdCount >= 0 && data.tdAttackCount > maxTdCount) {
+      return false;
+    }
     for (final miscOption in filterData.miscOptions.options) {
       switch (miscOption) {
         case TeamFilterMiscType.noOrderChange:
