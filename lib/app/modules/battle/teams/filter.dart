@@ -40,7 +40,6 @@ class TeamFilterData {
   final blockCEMLBOnly = <int, bool>{}; // true=block MLB only
   final normalAttackCount = FilterRadioData<int>.nonnull(-1);
   final criticalAttackCount = FilterRadioData<int>.nonnull(-1);
-  final tdCount = FilterRadioData<int>.nonnull(-1);
   final miscOptions = FilterGroupData<TeamFilterMiscType>();
 
   List<FilterGroupData> get groups => [
@@ -50,7 +49,6 @@ class TeamFilterData {
         blockCEs,
         normalAttackCount,
         criticalAttackCount,
-        tdCount,
         miscOptions,
       ];
 
@@ -124,7 +122,7 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
           },
         ),
         getGroup(
-          header: '${S.current.battle_command_card} & ${S.current.noble_phantasm}',
+          header: S.current.battle_command_card,
           children: [
             DropdownButton(
               isDense: true,
@@ -162,26 +160,6 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
               onChanged: (v) {
                 if (v != null) {
                   filterData.criticalAttackCount.set(v);
-                }
-                update();
-              },
-            ),
-            DropdownButton(
-              isDense: true,
-              value: filterData.tdCount.radioValue,
-              items: [
-                for (int count in [-1, 3, 4, 5])
-                  DropdownMenuItem(
-                    value: count,
-                    child: Text(
-                      "${S.current.np_short} ${count == -1 ? S.current.general_any : "≤$count"}",
-                      textScaler: const TextScaler.linear(0.8),
-                    ),
-                  ),
-              ],
-              onChanged: (v) {
-                if (v != null) {
-                  filterData.tdCount.set(v);
                 }
                 update();
               },
