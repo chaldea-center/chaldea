@@ -18,6 +18,7 @@ class BattleServantData {
   final bool isPlayer;
   bool get isEnemy => !isPlayer;
   QuestEnemy? niceEnemy;
+  QuestEnemy? baseEnemy;
   Servant? niceSvt;
   BasicServant? overrideSvt;
   PlayerSvtData? playerSvtData;
@@ -98,7 +99,9 @@ class BattleServantData {
   List<List<BattleSkillInfoData>> commandCodeSkills = [];
 
   List<int> shiftNpcIds = [];
-  int shiftIndex = 0;
+  int shiftLowLimit = 0; // lowLimitShift in dw terms
+  int shiftDeckIndex = -1;
+  int get shiftCounts => shiftNpcIds.length - shiftLowLimit;
   List<int> changeNpcIds = [];
   int changeIndex = 0;
 
@@ -120,6 +123,7 @@ class BattleServantData {
     final svt = BattleServantData._(isPlayer: false);
     svt
       ..niceEnemy = enemy
+      ..baseEnemy = enemy
       ..svtAi = SvtAiManager(enemy.ai)
       ..niceSvt = niceSvt
       ..uniqueId = uniqueId
@@ -260,22 +264,33 @@ class BattleServantData {
     }
   }
 
-  Future<void> initScript(final BattleData battleData) async {
+  Future<void> loadAi(final BattleData battleData) async {
     svtAi = SvtAiManager(niceEnemy?.ai);
     if (battleData.options.simulateAi) {
       await svtAi.fetchAiData();
     }
+  }
+
+  Future<void> initScript(final BattleData battleData) async {
+    await loadAi(battleData);
+
     if (niceEnemy != null) {
-      int dispBreakShift = niceEnemy!.enemyScript.dispBreakShift ?? 0;
       int shiftLength = niceEnemy!.enemyScript.shift?.length ?? 0;
-      if (dispBreakShift > 0 && shiftLength > 0) {
-        if (dispBreakShift > shiftLength) {
-          dispBreakShift = shiftLength;
-        }
-        shiftIndex = dispBreakShift - 1;
-        if (hasNextShift(battleData)) {
-          await shift(battleData);
-        }
+      int shiftPosition = niceEnemy!.enemyScript.shiftPosition ?? -1;
+      if (shiftPosition >= 0) {
+        shiftDeckIndex = shiftPosition;
+        shiftLowLimit = (shiftPosition + 1).clamp(0, shiftLength - 1);
+      }
+      int dispBreakShift = niceEnemy!.enemyScript.dispBreakShift ?? 0;
+      if (dispBreakShift > 0) {
+        shiftDeckIndex += dispBreakShift;
+      }
+
+      shiftDeckIndex = shiftDeckIndex.clamp(-1, shiftLength - 1);
+      final shouldShift = dispBreakShift > 0 || shiftPosition >= 0;
+      if (shouldShift) {
+        shiftDeckIndex -= 1; // go to previous shift to shift to desired shift
+        await shift(battleData);
       }
     }
   }
@@ -640,44 +655,48 @@ class BattleServantData {
   }
 
   bool hasNextShift(final BattleData battleData) {
-    return getEnemyShift(battleData) != null;
+    return getEnemyShift(battleData, shiftDeckIndex + 1) != null;
   }
 
-  QuestEnemy? getEnemyShift(final BattleData battleData) {
-    if (isEnemy && shiftNpcIds.isNotEmpty && shiftNpcIds.length > shiftIndex) {
-      return battleData.enemyDecks[DeckType.shift]
-          ?.firstWhereOrNull((questEnemy) => questEnemy.npcId == shiftNpcIds[shiftIndex]);
+  QuestEnemy? getEnemyShift(final BattleData battleData, final int shiftTo) {
+    if (isEnemy) {
+      if (shiftTo == -1) {
+        return baseEnemy;
+      } else if (shiftNpcIds.isNotEmpty && shiftNpcIds.length > shiftTo && shiftTo >= 0) {
+        return battleData.enemyDecks[DeckType.shift]
+            ?.firstWhereOrNull((questEnemy) => questEnemy.npcId == shiftNpcIds[shiftTo]);
+      }
     }
     return null;
   }
 
   Future<void> shift(final BattleData battleData) async {
-    final nextShift = getEnemyShift(battleData);
+    shiftDeckIndex += 1;
+    final nextShift = getEnemyShift(battleData, shiftDeckIndex);
     if (nextShift == null) {
       return;
     }
 
     niceEnemy = nextShift;
-    await initScript(battleData);
+    await loadAi(battleData);
 
     baseAtk = nextShift.atk;
     _maxHp = nextShift.hp;
     hp = maxHp;
     level = nextShift.lv;
     battleBuff.clearPassive(uniqueId);
-    shiftIndex += 1;
   }
 
   Future<void> skillShift(final BattleData battleData, QuestEnemy shiftSvt) async {
+    shiftDeckIndex += 1;
     niceEnemy = shiftSvt;
-    await initScript(battleData);
+    await loadAi(battleData);
 
     baseAtk = shiftSvt.atk;
     _maxHp = shiftSvt.hp;
     hp = maxHp;
     level = shiftSvt.lv;
     battleBuff.clearPassive(uniqueId);
-    shiftIndex += 1;
   }
 
   Future<void> changeServant(final BattleData battleData, QuestEnemy changeSvt) async {
@@ -689,7 +708,7 @@ class BattleServantData {
       // hp = maxHp;
       level = changeSvt.lv;
       battleBuff.clearPassive(uniqueId);
-      await initScript(battleData);
+      await loadAi(battleData);
       await battleData.initActorSkills([this]);
     });
   }
@@ -1430,6 +1449,7 @@ class BattleServantData {
   BattleServantData copy() {
     return BattleServantData._(isPlayer: isPlayer)
       ..niceEnemy = niceEnemy
+      ..baseEnemy = baseEnemy
       ..niceSvt = niceSvt
       ..svtAi = svtAi
       ..playerSvtData = playerSvtData?.copy()
@@ -1450,7 +1470,8 @@ class BattleServantData {
       ..battleBuff = battleBuff.copy()
       ..commandCodeSkills = commandCodeSkills.map((skills) => skills.map((skill) => skill.copy()).toList()).toList()
       ..shiftNpcIds = shiftNpcIds.toList()
-      ..shiftIndex = shiftIndex
+      ..shiftLowLimit = shiftLowLimit
+      ..shiftDeckIndex = shiftDeckIndex
       ..changeNpcIds = changeNpcIds.toList()
       ..changeIndex = changeIndex
       ..actionHistory = actionHistory.toList(); //copy

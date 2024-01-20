@@ -1,5 +1,6 @@
 import 'package:chaldea/app/battle/functions/add_field_change_to_field.dart';
 import 'package:chaldea/app/battle/functions/add_state.dart';
+import 'package:chaldea/app/battle/functions/break_gauge_up.dart';
 import 'package:chaldea/app/battle/functions/damage.dart';
 import 'package:chaldea/app/battle/functions/gain_hp.dart';
 import 'package:chaldea/app/battle/functions/gain_hp_from_targets.dart';
@@ -335,6 +336,10 @@ class FunctionExecutor {
         case FuncType.updateEntryPositions:
           UpdateEntryPositions.updateEntryPositions(battleData, dataVals);
           break;
+        case FuncType.breakGaugeUp:
+        case FuncType.breakGaugeDown:
+          await BreakGaugeUp.breakGaugeUp(battleData, function.funcType, dataVals, targets);
+          break;
         case FuncType.updateEnemyEntryMaxCountEachTurn:
         case FuncType.damageValue:
         case FuncType.damageNpCounter:
@@ -354,8 +359,6 @@ class FunctionExecutor {
         case FuncType.quickChangeBg:
         case FuncType.overwriteDeadType:
         case FuncType.forceAllBuffNoact:
-        case FuncType.breakGaugeUp:
-        case FuncType.breakGaugeDown:
         case FuncType.movePosition:
         case FuncType.revival:
         case FuncType.changeBgmCostume:

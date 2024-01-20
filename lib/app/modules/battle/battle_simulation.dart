@@ -476,7 +476,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         if (svt.isPlayer) 'ATK: ${svt.atk}',
         'HP: ${svt.hp.format(compact: false, groupSeparator: ",")}',
         if (svt.isEnemy && svt.shiftNpcIds.isNotEmpty)
-          List.generate(svt.shiftNpcIds.length, (index) => svt.shiftNpcIds.length - index > svt.shiftIndex ? '◆' : '◇')
+          List.generate(svt.shiftCounts, (index) => svt.shiftNpcIds.length - index > svt.shiftDeckIndex + 1 ? '◆' : '◇')
               .join(),
         svt.isPlayer
             ? svt.playerSvtData!.td == null

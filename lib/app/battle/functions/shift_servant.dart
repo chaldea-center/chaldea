@@ -41,7 +41,7 @@ class ShiftServant {
       // if changeIndex == 0: reset to original enemy. Same for shift.
       return;
     }
-    final changeNpcId = actor.changeNpcIds.getOrNull(actor.shiftIndex); // use shiftIndex here!
+    final changeNpcId = actor.changeNpcIds.getOrNull(actor.shiftDeckIndex + 1); // use shiftIndex here!
     final changeSvt = battleData.enemyDecks[DeckType.change]?.firstWhereOrNull((e) => e.npcId == changeNpcId);
     if (changeSvt == null) {
       battleData.battleLogger.error('ChangeServant NpcId=$changeNpcId not found');
