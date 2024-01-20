@@ -1239,10 +1239,14 @@ class BattleData {
     await withAction(() async {
       for (final svt in nonnullEnemies) {
         if (svt.hp <= 0) {
-          await svt.shift(this);
-          await initActorSkills([svt]);
-          await svt.svtAi.afterTurnPlayerEnd(this, svt);
+          bool hasGuts = false;
+          await svt.activateGuts(this).then((value) => hasGuts = value);
+          if (!hasGuts) {
+            await svt.shift(this);
+            await initActorSkills([svt]);
+          }
         }
+        await svt.svtAi.afterTurnPlayerEnd(this, svt);
         await svt.startOfMyTurn(this);
       }
     });
@@ -1433,21 +1437,23 @@ class BattleData {
       }
 
       final actor = actorList[i]!;
-      if (actor.hp <= 0) {
-        bool hasGuts = false;
-        await actor.activateGuts(this).then((value) => hasGuts = value);
-        if (!hasGuts && !actor.hasNextShift(this)) {
-          await actor.death(this);
+      if (actor.hp > 0 || actor.hasNextShift(this)) {
+        continue;
+      }
 
-          if (actor.lastHitBy != null) {
-            await actor.lastHitBy!.activateBuffOnAction(this, BuffAction.functionDeadattack);
-          }
-          actorList[i] = null;
-          actor.fieldIndex = -1;
-          if (actor.isPlayer) {
-            for (final svt in nonnullPlayers) {
-              svt.battleBuff.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
-            }
+      bool hasGuts = false;
+      await actor.activateGuts(this).then((value) => hasGuts = value);
+      if (!hasGuts) {
+        await actor.death(this);
+
+        if (actor.lastHitBy != null) {
+          await actor.lastHitBy!.activateBuffOnAction(this, BuffAction.functionDeadattack);
+        }
+        actorList[i] = null;
+        actor.fieldIndex = -1;
+        if (actor.isPlayer) {
+          for (final svt in nonnullPlayers) {
+            svt.battleBuff.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
           }
         }
       }
