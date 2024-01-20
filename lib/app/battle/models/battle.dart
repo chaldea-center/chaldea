@@ -561,7 +561,7 @@ class BattleData {
         }
       }
 
-      playerTargetIndex = getNonNullTargetIndex(onFieldAllyServants, playerTargetIndex);
+      playerTargetIndex = getNonNullTargetIndex(onFieldAllyServants, playerTargetIndex, false);
     }
 
     if (replenishEnemy) {
@@ -582,7 +582,7 @@ class BattleData {
         }
       }
 
-      enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
+      enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex, true);
     }
 
     for (final svt in newActors) {
@@ -1455,20 +1455,25 @@ class BattleData {
   }
 
   void _updateTargetedIndex() {
-    playerTargetIndex = getNonNullTargetIndex(onFieldAllyServants, playerTargetIndex);
-    enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex);
+    playerTargetIndex = getNonNullTargetIndex(onFieldAllyServants, playerTargetIndex, false);
+    enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex, true);
   }
 
-  int getNonNullTargetIndex(List<BattleServantData?> actorList, final int targetIndex) {
+  int getNonNullTargetIndex(List<BattleServantData?> actorList, final int targetIndex, bool isEnemy) {
     if (actorList.length > targetIndex && targetIndex >= 0 && actorList[targetIndex] != null) {
       return targetIndex;
     }
-
-    final minUniqueId = Maths.min(actorList.whereType<BattleServantData>().map((e) => e.uniqueId), -1);
-    if (minUniqueId < 0) return -1;
-    for (final (index, actor) in actorList.indexed) {
-      if (actor?.uniqueId == minUniqueId) {
-        return index;
+    if (isEnemy && niceQuest?.flags.contains(QuestFlag.enemyImmediateAppear) == true) {
+      final minUniqueId = Maths.min(actorList.whereType<BattleServantData>().map((e) => e.uniqueId), -1);
+      if (minUniqueId < 0) return -1;
+      for (final (index, actor) in actorList.indexed) {
+        if (actor?.uniqueId == minUniqueId) {
+          return index;
+        }
+      }
+    } else {
+      for (final (index, actor) in actorList.indexed) {
+        if (actor != null) return index;
       }
     }
 
