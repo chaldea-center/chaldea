@@ -72,8 +72,9 @@ class Transl<K, V> {
 
   static Transl<int, String> trait(int id, {bool addSvtId = true, bool field = false}) {
     final eventTrait = md.eventTrait[id];
+    String cvt(String v) => v.replaceAll('/', '\u2060/\u2060');
     if (eventTrait != null) {
-      return Transl({id: eventTrait.convert((v, r) => v == null ? v : '"$v"')}, id, '$id');
+      return Transl({id: eventTrait.convert((v, r) => v == null ? v : '"${cvt(v)}"')}, id, '$id');
     }
     final fieldTrait = md.fieldTrait[id];
     if (field && fieldTrait != null) {
@@ -91,7 +92,10 @@ class Transl<K, V> {
       return Transl(md.fieldTrait, id, '$id');
     }
 
-    if (!md.trait.containsKey(id)) {
+    final tm = md.trait[id];
+    if (tm != null) {
+      return Transl({id: tm.convert((v, r) => v == null ? v : cvt(v))}, id, '$id');
+    } else {
       final svt = db.gameData.servantsById[id] ?? db.gameData.entities[id];
       if (svt != null) {
         var nameMapping = md.svtNames[svt.name] ?? md.entityNames[svt.name] ?? MappingBase(jp: svt.name);
@@ -100,8 +104,8 @@ class Transl<K, V> {
         }
         return Transl({id: nameMapping}, id, '$id');
       }
+      return Transl(md.trait, id, '$id');
     }
-    return Transl(md.trait, id, '$id');
   }
 
   static Transl<String, String> itemNames(String jp) => Transl(md.itemNames, jp, jp);

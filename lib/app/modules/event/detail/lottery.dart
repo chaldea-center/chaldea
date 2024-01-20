@@ -60,6 +60,7 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
       separatorBuilder: (_, __) => const Divider(indent: 64, height: 1),
       itemCount: boxes.length + 1,
     );
+    final maxBoxIdx = Maths.max(boxIndices, 0);
     return Column(
       children: [
         Padding(
@@ -67,7 +68,13 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
           child: DropdownButton<int>(
             value: selected,
             isExpanded: true,
-            items: [for (final index in boxIndices) DropdownMenuItem(value: index, child: Text('Box ${index + 1}'))],
+            items: [
+              for (final index in boxIndices)
+                DropdownMenuItem(
+                  value: index,
+                  child: Text(!lottery.limited && index == maxBoxIdx ? 'Box ${index + 1}+' : 'Box ${index + 1}'),
+                )
+            ],
             onChanged: (v) {
               setState(() {
                 selected = v;

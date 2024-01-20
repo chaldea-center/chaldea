@@ -676,7 +676,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
                   context: context,
                   item: null,
                   itemId: itemId,
-                  width: 42,
+                  // width: 32,
                   text: [db.curUser.items[itemId] ?? 0, db.itemCenter.itemLeft[itemId] ?? 0]
                       .map((e) => e.format())
                       .join('\n'),
@@ -813,9 +813,11 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
 
     if (event.extra.relatedSummons.isNotEmpty) {
       children.add(ListTile(title: Text(S.current.summon)));
+      final summons = event.extra.relatedSummons;
+      summons.sort2((key) => db.gameData.wiki.summons[key]?.startTime.l ?? 0);
       children.add(TileGroup(
-        children: List.generate(event.extra.relatedSummons.length, (index) {
-          final summonKey = event.extra.relatedSummons[index];
+        children: List.generate(summons.length, (index) {
+          final summonKey = summons[index];
           final summon = db.gameData.wiki.summons[summonKey];
           return ListTile(
             dense: true,

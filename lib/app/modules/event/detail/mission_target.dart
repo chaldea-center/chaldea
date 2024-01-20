@@ -216,7 +216,7 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
           onTap: quest.routeTo,
           child: Text.rich(
             TextSpan(children: [
-              if (spotImg != null) CenterWidgetSpan(child: db.getIconImage(spotImg, width: 28)),
+              if (spotImg != null) WidgetSpan(child: db.getIconImage(spotImg, width: 28)),
               TextSpan(text: name),
             ]),
             textScaler: const TextScaler.linear(0.9),

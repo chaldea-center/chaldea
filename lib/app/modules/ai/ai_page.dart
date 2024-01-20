@@ -135,6 +135,8 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
             flex: 3,
             child: Wrap(
               spacing: 4,
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 for (final link in aiCollection.relatedQuests.take(5))
                   Text.rich(SharedBuilder.textButtonSpan(
