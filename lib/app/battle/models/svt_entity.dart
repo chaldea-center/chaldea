@@ -1002,7 +1002,7 @@ class BattleServantData {
 
     final opponent = battleData.getOpponent(this);
     int totalVal = 0;
-    int? maxRate = actionDetails.maxRate.isEmpty ? null : Maths.min(actionDetails.maxRate);
+    int? maxRate;
 
     for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
       if (await buff.shouldActivateBuff(battleData, this, opponent)) {
@@ -1032,7 +1032,7 @@ class BattleServantData {
     final opponent = battleData.getOpponent(this);
     int nonPreventableValue = 0;
     int preventableValue = 0;
-    int maxRate = Maths.min(actionDetails.maxRate);
+    int? maxRate;
     final List<BuffData> preventDeaths = getBuffsOfType(BuffType.preventDeathByDamage);
     final List<BuffData> activatedPreventDeaths = [];
 
@@ -1068,7 +1068,7 @@ class BattleServantData {
           nonPreventableValue += buffValue;
         }
 
-        maxRate = max(maxRate, buff.buff.maxRate);
+        maxRate = maxRate == null ? buff.buff.maxRate : max(maxRate, buff.buff.maxRate);
       }
     }
 
@@ -1103,8 +1103,12 @@ class BattleServantData {
 
   int getMaxHpBuffValue(final BuffAction buffAction) {
     final actionDetails = ConstData.buffActions[buffAction];
+    if (actionDetails == null) {
+      return 0;
+    }
+
     int totalVal = 0;
-    int maxRate = Maths.min(actionDetails!.maxRate);
+    int? maxRate;
 
     for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
       buff.setUsed();
@@ -1115,7 +1119,7 @@ class BattleServantData {
       } else {
         totalVal -= value;
       }
-      maxRate = max(maxRate, buff.buff.maxRate);
+      maxRate = maxRate == null ? buff.buff.maxRate : max(maxRate, buff.buff.maxRate);
     }
     return capBuffValue(actionDetails, totalVal, maxRate);
   }

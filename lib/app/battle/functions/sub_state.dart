@@ -70,9 +70,7 @@ class SubState {
     }
 
     final toleranceSubState = await target.getBuffValueOnAction(battleData, BuffAction.toleranceSubstate);
-    final grantSubStateDetails = ConstData.buffActions[BuffAction.grantSubstate]!;
-    final grantSubState = await activator?.getBuffValueOnAction(battleData, BuffAction.grantSubstate) ??
-        capBuffValue(grantSubStateDetails, 0, Maths.min(grantSubStateDetails.maxRate));
+    final grantSubState = await activator?.getBuffValueOnAction(battleData, BuffAction.grantSubstate) ?? 0;
 
     final functionRate = dataVals.Rate ?? 1000;
     final activationRate = functionRate + grantSubState;
