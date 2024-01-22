@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -22,7 +24,9 @@ class DamageNpCounter {
       return;
     }
 
-    final damage = (activator.accumulationDamage * toModifier(dataVals.Value!)).toInt();
+    final baseDamage = max(0, activator.reflectionRecordedHp - activator.hp);
+    final rate = toModifier(dataVals.Value ?? 0);
+    final damage = (baseDamage * rate).toInt();
 
     for (final target in targets) {
       battleData.withTargetSync(target, () {

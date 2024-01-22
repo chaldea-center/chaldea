@@ -89,7 +89,7 @@ class BattleServantData {
   int npLineCount = 0; // enemy
   bool usedNpThisTurn = false;
   int reducedHp = 0; // used for bug overkill checks
-  int accumulationDamage = 0; // clear at enemy end of turn, used for Angry Mango NP (damageNpCounter)
+  int reflectionRecordedHp = 0; // clear at enemy end of turn, used for Angry Mango NP (damageNpCounter)
 
   // BattleServantData.Status status
   // NiceTd? td;
@@ -645,7 +645,6 @@ class BattleServantData {
 
   void receiveDamage(final int hitDamage) {
     hp -= hitDamage;
-    accumulationDamage += hitDamage;
   }
 
   void addReducedHp(final int damage) {
@@ -1367,6 +1366,8 @@ class BattleServantData {
     await activateBuffOnAction(battleData, BuffAction.functionSelfturnend);
     await activateBuffs(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));
 
+    reflectionRecordedHp = hp;
+
     battleBuff.turnPassParamAdd();
 
     battleData.checkActorStatus();
@@ -1385,8 +1386,6 @@ class BattleServantData {
     final delayedFunctions = collectBuffsPerType(battleBuff.validBuffs, BuffType.delayFunction);
     await activateBuffs(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));
     await activateBuffOnAction(battleData, BuffAction.functionReflection);
-    // IMPORTANT: this need to happen after BuffAction.functionReflection (Angry Mango NP)
-    accumulationDamage = 0;
 
     battleData.checkActorStatus();
   }
@@ -1470,7 +1469,7 @@ class BattleServantData {
       ..npLineCount = npLineCount
       ..usedNpThisTurn = usedNpThisTurn
       ..reducedHp = reducedHp
-      ..accumulationDamage = accumulationDamage
+      ..reflectionRecordedHp = reflectionRecordedHp
       ..skillInfoList = skillInfoList.map((e) => e.copy()).toList() // copy
       ..equip = equip
       ..battleBuff = battleBuff.copy()
