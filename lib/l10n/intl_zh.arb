@@ -527,6 +527,7 @@
   "list_count_shown_hidden_all": "显示{shown}/忽略{ignore}/总计{total}",
   "list_end_hint": "{first, select, true{已经是第一张} false{已经是最后一张} other{已经到头了}}",
   "load_ffo_data": "加载FFO数据",
+  "local_team_save_no_replay_warning": "仅保存关卡和队伍信息，无法保存操作信息",
   "logic_type": "逻辑关系",
   "logic_type_and": "且",
   "logic_type_or": "或",

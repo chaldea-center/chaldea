@@ -626,6 +626,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "list_count_shown_hidden_all": m21,
         "list_end_hint": m6,
         "load_ffo_data": MessageLookupByLibrary.simpleMessage("加载FFO数据"),
+        "local_team_save_no_replay_warning": MessageLookupByLibrary.simpleMessage("仅保存关卡和队伍信息，无法保存操作信息"),
         "logic_type": MessageLookupByLibrary.simpleMessage("逻辑关系"),
         "logic_type_and": MessageLookupByLibrary.simpleMessage("且"),
         "logic_type_or": MessageLookupByLibrary.simpleMessage("或"),

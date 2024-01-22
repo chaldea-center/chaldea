@@ -526,6 +526,7 @@
   "list_count_shown_hidden_all": "顯示{shown}/忽略{ignore}/總計{total}",
   "list_end_hint": "{first, select, true{已經是第一張} false{已經是最後一張} other{已經到頭了}}",
   "load_ffo_data": "載入FFO資料",
+  "local_team_save_no_replay_warning": null,
   "logic_type": "邏輯關係",
   "logic_type_and": "且",
   "logic_type_or": "或",

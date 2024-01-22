@@ -527,6 +527,7 @@
   "list_count_shown_hidden_all": "{shown} shown, {ignore} ignored (total {total})",
   "list_end_hint": "{first, select, true{Already the first one} false{Already the last one} other{No more}}",
   "load_ffo_data": "Load FFO Data",
+  "local_team_save_no_replay_warning": "Only save quest and team info, no replay data",
   "logic_type": "Logic Type",
   "logic_type_and": "AND",
   "logic_type_or": "OR",

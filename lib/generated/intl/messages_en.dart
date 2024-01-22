@@ -656,6 +656,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "list_count_shown_hidden_all": m21,
         "list_end_hint": m6,
         "load_ffo_data": MessageLookupByLibrary.simpleMessage("Load FFO Data"),
+        "local_team_save_no_replay_warning":
+            MessageLookupByLibrary.simpleMessage("Only save quest and team info, no replay data"),
         "logic_type": MessageLookupByLibrary.simpleMessage("Logic Type"),
         "logic_type_and": MessageLookupByLibrary.simpleMessage("AND"),
         "logic_type_or": MessageLookupByLibrary.simpleMessage("OR"),

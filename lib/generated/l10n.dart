@@ -5865,6 +5865,17 @@ class S {
     );
   }
 
+  /// `Only save quest and team info, no replay data`
+  String get local_team_save_no_replay_warning {
+    return Intl.message(
+      'Only save quest and team info, no replay data',
+      name: 'local_team_save_no_replay_warning',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Logic Type`
   String get logic_type {
     return Intl.message(

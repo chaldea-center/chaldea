@@ -527,6 +527,7 @@
   "list_count_shown_hidden_all": "{shown} 표시, {ignore} 무시 (합계 {total})",
   "list_end_hint": "{first, select, true{이미 첫번째입니다.} false{이미 마지막입니다.} other{마지막입니다.}}",
   "load_ffo_data": "FFO 데이터 로드",
+  "local_team_save_no_replay_warning": null,
   "logic_type": null,
   "logic_type_and": "그리고",
   "logic_type_or": "또는",

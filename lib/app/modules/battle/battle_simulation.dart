@@ -36,14 +36,18 @@ class _BattleRuntime {
     required this.originalQuest,
   });
 
-  BattleShareData getShareData({bool allowNotWin = false, bool isCritTeam = false}) {
+  BattleShareData getShareData({
+    bool allowNotWin = false,
+    bool isCritTeam = false,
+    bool includeReplayData = true,
+  }) {
     assert(battleData.isBattleWin || allowNotWin);
     return BattleShareData(
       appBuild: AppInfo.buildNumber,
       quest: BattleQuestInfo.quest(originalQuest),
       formation: originalOptions.formation.toFormationData(),
-      delegate: battleData.replayDataRecord.copy(),
-      actions: battleData.recorder.toUploadRecords(),
+      delegate: includeReplayData ? battleData.replayDataRecord.copy() : null,
+      actions: includeReplayData ? battleData.recorder.toUploadRecords() : null,
       options: originalOptions.toShareData(),
       isCritTeam: isCritTeam,
     );
@@ -993,7 +997,18 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
       hideOk: true,
       actions: [
         TextButton(
-          onPressed: canSave ? doSave : null,
+          onPressed: () async {
+            if (!canSave) {
+              final confirm = await SimpleCancelOkDialog(
+                title: Text(S.current.warning),
+                content: Text(S.current.local_team_save_no_replay_warning),
+              ).showDialog(context);
+              if (confirm != true) return;
+              doSave(false);
+            } else {
+              doSave(true);
+            }
+          },
           child: Text(S.current.save),
         ),
         TextButton(
@@ -1008,8 +1023,8 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
     );
   }
 
-  void doSave() {
-    final teamData = runtime.getShareData(isCritTeam: isCritTeam);
+  void doSave(bool includeReplayData) {
+    final teamData = runtime.getShareData(isCritTeam: isCritTeam, includeReplayData: includeReplayData);
     Navigator.pop(context);
     router.pushPage(FormationEditor(teamToSave: teamData));
   }
