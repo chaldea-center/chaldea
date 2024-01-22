@@ -46,8 +46,8 @@ class ReplaceMember {
 
     onFieldList[onFieldIndex] = selections.item2;
     backupList[backupIndex] = selections.item1;
-    battleData.curFuncResults[selections.item1.uniqueId] = true;
-    battleData.curFuncResults[selections.item2.uniqueId] = true;
+    battleData.setFuncResult(selections.item1.uniqueId, true);
+    battleData.setFuncResult(selections.item2.uniqueId, true);
 
     await selections.item2.enterField(battleData);
   }

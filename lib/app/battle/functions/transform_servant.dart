@@ -77,7 +77,7 @@ class TransformServant {
             }
           }
         }
-        battleData.curFuncResults[target.uniqueId] = true;
+        battleData.setFuncResult(target.uniqueId, true);
       });
     }
   }

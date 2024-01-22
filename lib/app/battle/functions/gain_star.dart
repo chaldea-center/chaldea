@@ -21,7 +21,7 @@ class GainStar {
 
     if (targets != null) {
       for (final target in targets) {
-        battleData.curFuncResults[target.uniqueId] = true;
+        battleData.setFuncResult(target.uniqueId, true);
       }
     }
   }

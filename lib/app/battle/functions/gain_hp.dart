@@ -40,7 +40,7 @@ class GainHP {
           final finalHeal = (baseValue * healReceiveEff * healGrantEff).toInt();
           await target.heal(battleData, finalHeal);
         }
-        battleData.curFuncResults[target.uniqueId] = true;
+        battleData.setFuncResult(target.uniqueId, true);
       });
     }
   }

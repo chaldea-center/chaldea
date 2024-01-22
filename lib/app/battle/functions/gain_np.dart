@@ -20,7 +20,7 @@ class GainNP {
       battleData.withTargetSync(target, () {
         int change = isNegative ? -dataVals.Value! : dataVals.Value!;
         target.changeNP(change);
-        battleData.curFuncResults[target.uniqueId] = true;
+        battleData.setFuncResult(target.uniqueId, true);
       });
     }
   }
@@ -68,7 +68,7 @@ class GainNP {
         }
 
         target.changeNP(change);
-        battleData.curFuncResults[target.uniqueId] = true;
+        battleData.setFuncResult(target.uniqueId, true);
       });
     }
   }

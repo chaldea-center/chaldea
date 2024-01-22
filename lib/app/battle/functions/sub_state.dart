@@ -43,7 +43,7 @@ class SubState {
         }
         target.battleBuff.setActiveList(removeFromStart ? listToInspect.reversed.toList() : listToInspect.toList());
         if (removeCount > 0) {
-          battleData.curFuncResults[target.uniqueId] = true;
+          battleData.setFuncResult(target.uniqueId, true);
         }
       });
     }

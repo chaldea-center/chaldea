@@ -88,7 +88,7 @@ class BattleServantData {
   int np = 0; // player, np/100
   int npLineCount = 0; // enemy
   bool usedNpThisTurn = false;
-  int accumulationDamage = 0;
+  int reducedHp = 0;
 
   // BattleServantData.Status status
   // NiceTd? td;
@@ -244,7 +244,7 @@ class BattleServantData {
 
   int get enemyStarRate => isEnemy ? niceEnemy!.serverMod.starRate : 0;
 
-  bool get isBuggedOverkill => accumulationDamage > hp;
+  bool get isBuggedOverkill => reducedHp > hp;
 
   int get deathRate => isEnemy ? niceEnemy!.deathRate : niceSvt!.instantDeathChance;
 
@@ -644,14 +644,15 @@ class BattleServantData {
 
   void receiveDamage(final int hitDamage) {
     hp -= hitDamage;
+    accumulationDamage += hitDamage;
   }
 
-  void addAccumulationDamage(final int damage) {
-    accumulationDamage += damage;
+  void addReducedHp(final int damage) {
+    reducedHp += damage;
   }
 
-  void clearAccumulationDamage() {
-    accumulationDamage = 0;
+  void clearReducedHp() {
+    reducedHp = 0;
   }
 
   bool hasNextShift(final BattleData battleData) {
@@ -1265,7 +1266,7 @@ class BattleServantData {
     // DataVals.OpponentOnly? revengeOpp : revenge
     if (await activateBuffOnAction(battleData, BuffAction.functionDead)) {
       for (final svt in battleData.nonnullActors) {
-        svt.clearAccumulationDamage();
+        svt.clearReducedHp();
       }
     }
 
@@ -1371,7 +1372,7 @@ class BattleServantData {
   }
 
   Future<void> endOfYourTurn(final BattleData battleData) async {
-    clearAccumulationDamage();
+    clearReducedHp();
     attacked = false;
 
     await battleData.withActivator(this, () async {
@@ -1419,7 +1420,7 @@ class BattleServantData {
 
       if (await activateBuffOnAction(battleData, BuffAction.functionGuts)) {
         for (final svt in battleData.nonnullActors) {
-          svt.clearAccumulationDamage();
+          svt.clearReducedHp();
         }
       }
       return true;
@@ -1464,7 +1465,7 @@ class BattleServantData {
       ..np = np
       ..npLineCount = npLineCount
       ..usedNpThisTurn = usedNpThisTurn
-      ..accumulationDamage = accumulationDamage
+      ..reducedHp = reducedHp
       ..skillInfoList = skillInfoList.map((e) => e.copy()).toList() // copy
       ..equip = equip
       ..battleBuff = battleBuff.copy()

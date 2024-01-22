@@ -37,7 +37,7 @@ class BreakGaugeUp {
           await target.shift(battleData);
         }
 
-        battleData.curFuncResults[target.uniqueId] = true;
+        battleData.setFuncResult(target.uniqueId, true);
       });
     }
   }

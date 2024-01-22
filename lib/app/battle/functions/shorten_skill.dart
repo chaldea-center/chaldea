@@ -26,7 +26,7 @@ class ShortenSkill {
           final skill = target.skillInfoList[index];
           skill.shortenSkill(dataVals.Value!);
         }
-        battleData.curFuncResults[target.uniqueId] = true;
+        battleData.setFuncResult(target.uniqueId, true);
       });
     }
   }
@@ -48,7 +48,7 @@ class ShortenSkill {
           final skill = target.skillInfoList[index];
           skill.extendSkill(dataVals.Value!);
         }
-        battleData.curFuncResults[target.uniqueId] = true;
+        battleData.setFuncResult(target.uniqueId, true);
       });
     }
   }

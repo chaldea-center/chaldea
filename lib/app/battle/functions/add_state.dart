@@ -77,7 +77,7 @@ class AddState {
               isPassive: isPassive || notActorPassive,
               isCommandCode: isCommandCode,
             );
-            battleData.curFuncResults[target.uniqueId] = true;
+            battleData.setFuncResult(target.uniqueId, true);
 
             if (buff.type == BuffType.addMaxhp) {
               target.gainHp(dataVals.Value!);
@@ -115,7 +115,7 @@ class AddState {
     }
 
     int functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < 0 && battleData.uniqueIdToFuncResultsList.lastOrNull?[target.uniqueId] != true) {
+    if (functionRate < 0 && battleData.functionResults.lastOrNull?[target.uniqueId] != true) {
       return false;
     }
 

@@ -4,7 +4,6 @@ import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
-import 'package:chaldea/utils/utils.dart';
 
 class GainHpFromTargets {
   GainHpFromTargets._();
@@ -22,7 +21,6 @@ class GainHpFromTargets {
     final dependFunction = await getDependFunc(battleData.battleLogger, dataVals);
     final dependVal = dataVals.DependFuncVals!;
     final checkValue = dependVal.Value!;
-    final Map<int, bool> currentFunctionResults = battleData.curFuncResults.deepCopy();
 
     for (final receiver in targets) {
       await battleData.withTarget(receiver, () async {
@@ -38,7 +36,7 @@ class GainHpFromTargets {
         }
 
         await receiver.heal(battleData, gainValue);
-        currentFunctionResults[receiver.uniqueId] = true;
+        battleData.setFuncResult(receiver.uniqueId, true);
       });
     }
 
@@ -59,13 +57,7 @@ class GainHpFromTargets {
           DataVals({'Rate': functionRate, 'Value': checkValue})
         ]);
 
-    final updatedResult =
-        await FunctionExecutor.executeFunction(battleData, niceFunction, 1); // we provisioned only one dataVal
-
-    if (updatedResult) {
-      battleData.uniqueIdToFuncResultsList.removeLast();
-    }
-
-    battleData.curFuncResults.addAll(currentFunctionResults);
+    // we provisioned only one dataVal
+    await FunctionExecutor.executeFunctions(battleData, [niceFunction], 1, script: null);
   }
 }

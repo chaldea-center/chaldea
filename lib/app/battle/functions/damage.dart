@@ -285,7 +285,7 @@ class Damage {
               .removeWhere((buff) => buff.checkAct() && buff.buff.script.DamageRelease == 1);
         }
 
-        battleData.curFuncResults[target.uniqueId] = true;
+        battleData.setFuncResult(target.uniqueId, true);
 
         targetResults.add(AttackResultDetail(
           target: target,
@@ -403,7 +403,7 @@ class Damage {
         result.defNpMaxLimited.add(maxLimited.value);
       }
     }
-    target.addAccumulationDamage(totalDamage - remainingDamage);
+    target.addReducedHp(totalDamage - remainingDamage);
     target.attacked = true;
 
     return result;

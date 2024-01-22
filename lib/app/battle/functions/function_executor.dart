@@ -70,7 +70,7 @@ class FunctionExecutor {
         NiceFunction func = functions[index];
         final dataVal = FunctionExecutor.getDataVals(func, skillLevel, overchargeLvl);
         if ((dataVal.ActSet ?? 0) != 0 && dataVal.ActSet != selectedActSet) {
-          battleData.uniqueIdToFuncResultsList.add(null);
+          battleData.functionResults.add(null);
           continue;
         }
 
@@ -89,7 +89,7 @@ class FunctionExecutor {
           defaultToPlayer: defaultToPlayer,
         );
         if (!updatedResult) {
-          battleData.uniqueIdToFuncResultsList.add(null);
+          battleData.functionResults.add(null);
         }
       }
       if (script != null && script.additionalSkillId != null) {
@@ -174,7 +174,7 @@ class FunctionExecutor {
 
     return await battleData.withFunction(() async {
       for (final target in targets) {
-        battleData.curFuncResults[target.uniqueId] = false;
+        battleData.setFuncResult(target.uniqueId, false);
       }
 
       if (!funcQuestTvalsMatch) {
@@ -317,14 +317,14 @@ class FunctionExecutor {
             svt.battleBuff.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
           }
           for (final target in targets) {
-            battleData.curFuncResults[target.uniqueId] = true;
+            battleData.setFuncResult(target.uniqueId, true);
           }
           break;
         case FuncType.fixCommandcard:
         case FuncType.displayBuffstring:
           // do nothing
           for (final target in targets) {
-            battleData.curFuncResults[target.uniqueId] = true;
+            battleData.setFuncResult(target.uniqueId, true);
           }
           break;
         case FuncType.shortenBuffturn:
@@ -651,7 +651,7 @@ class FunctionExecutor {
       return true;
     }
 
-    final results = battleData.uniqueIdToFuncResultsList.getOrNull(triggeredFuncPosition.abs() - 1);
+    final results = battleData.functionResults.getOrNull(triggeredFuncPosition.abs() - 1);
     if (triggeredFuncPosition > 0) {
       // any true
       if (results == null) return false;
@@ -676,7 +676,7 @@ class FunctionExecutor {
       return true;
     }
 
-    final results = battleData.uniqueIdToFuncResultsList.getOrNull(triggeredFuncPositionAll.abs() - 1);
+    final results = battleData.functionResults.getOrNull(triggeredFuncPositionAll.abs() - 1);
     if (triggeredFuncPositionAll > 0) {
       // all true
       if (results == null) return false;
@@ -701,7 +701,7 @@ class FunctionExecutor {
       return true;
     }
 
-    final results = battleData.uniqueIdToFuncResultsList.getOrNull(triggeredFuncPositionSameTarget.abs() - 1);
+    final results = battleData.functionResults.getOrNull(triggeredFuncPositionSameTarget.abs() - 1);
     final last = (results?[target.uniqueId] ?? false);
     if (triggeredFuncPositionSameTarget > 0) {
       // last true
@@ -750,12 +750,12 @@ class FunctionExecutor {
     targets.retainWhere((target) => triggeredPositionTargetCheck(battleData, dataVals, target));
 
     if (dataVals.CheckDuplicate == 1) {
-      final Map<int, bool>? previousExecutionResults = battleData.actionHistory[function.funcId];
+      final Map<int, bool>? previousExecutionResults = battleData.checkDuplicateFuncData[function.funcId];
       if (previousExecutionResults != null) {
         for (final svt in targets) {
           final previousResult = previousExecutionResults[svt.uniqueId];
           if (previousResult != null) {
-            battleData.curFuncResults[svt.uniqueId] = previousResult;
+            battleData.setFuncResult(svt.uniqueId, previousResult);
           }
         }
         targets.retainWhere((svt) => previousExecutionResults[svt.uniqueId] == false);

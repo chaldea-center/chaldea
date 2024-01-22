@@ -20,11 +20,10 @@ class ShiftServant {
             battleData.enemyDecks[DeckType.skillShift]?.firstWhereOrNull((e) => e.npcId == shiftNpcId);
         if (skillShiftSvt == null) {
           battleData.battleLogger.error('SkillShift NpcId=$shiftNpcId not found');
-          battleData.curFuncResults[target.uniqueId] = false;
         } else {
           await target.skillShift(battleData, skillShiftSvt);
           await battleData.initActorSkills([target]);
-          battleData.curFuncResults[target.uniqueId] = true;
+          battleData.setFuncResult(target.uniqueId, true);
         }
       });
     }

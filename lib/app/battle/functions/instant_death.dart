@@ -29,7 +29,7 @@ class InstantDeath {
             isOpponent: (activator?.isPlayer ?? defaultToPlayer) != target.isPlayer,
           ));
 
-          battleData.curFuncResults[target.uniqueId] = true;
+          battleData.setFuncResult(target.uniqueId, true);
         }
         record.targets.add(InstantDeathResultDetail(target: target, params: params));
       });

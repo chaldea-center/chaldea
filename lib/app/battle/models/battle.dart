@@ -146,23 +146,28 @@ class BattleData {
   // int lastActId = 0;
   // int prevTargetId = 0;
 
-  final Map<int, Map<int, bool>> actionHistory = {};
-  // should not be read, as this represent a build-in-progress svtUniqueId to funcResult map for the current function
-  Map<int, bool> get curFuncResults => _curFuncResults.last;
-  List<Map<int, bool>?> get uniqueIdToFuncResultsList => _uniqueIdToFuncResultsList.last;
+  // used by checkDuplicate related checks. Map of (funcId of function, Map of (uniqueId of target, function result))
+  final Map<int, Map<int, bool>> checkDuplicateFuncData = {};
+  // representing functions results of a skill, used by triggerPosition checks. List of (uniqueId of target, function result),
+  List<Map<int, bool>?> get functionResults => _functionResultsStack.last;
 
+  // this is a list of list to prevent mismatch when a function executes another function
+  final List<List<Map<int, bool>?>> _functionResultsStack = [];
   final List<Map<int, bool>> _curFuncResults = [];
-  final List<List<Map<int, bool>?>> _uniqueIdToFuncResultsList = [];
+
+  void setFuncResult(final int uniqueId, final bool result) {
+    _curFuncResults.last[uniqueId] = result;
+  }
 
   Future<T> withFunctions<T>(final FutureOr<T> Function() onExecute) async {
-    final sanityCheck = _uniqueIdToFuncResultsList.length;
+    final sanityCheck = _functionResultsStack.length;
     final List<Map<int, bool>?> funcsStacks = [];
     try {
-      _uniqueIdToFuncResultsList.add(funcsStacks);
+      _functionResultsStack.add(funcsStacks);
       return await onExecute();
     } finally {
-      StackMismatchException.checkPopStack(_uniqueIdToFuncResultsList, funcsStacks, sanityCheck);
-      _uniqueIdToFuncResultsList.removeLast();
+      StackMismatchException.checkPopStack(_functionResultsStack, funcsStacks, sanityCheck);
+      _functionResultsStack.removeLast();
     }
   }
 
@@ -179,7 +184,7 @@ class BattleData {
   }
 
   Future<T> withAction<T>(final FutureOr<T> Function() onExecute) async {
-    actionHistory.clear();
+    checkDuplicateFuncData.clear();
     try {
       return await onExecute();
     } finally {
@@ -196,8 +201,8 @@ class BattleData {
   NiceFunction? curFunc;
 
   void updateLastFuncResults(final int funcId) {
-    uniqueIdToFuncResultsList.add(HashMap<int, bool>.from(curFuncResults));
-    actionHistory[funcId] = HashMap<int, bool>.from(curFuncResults);
+    functionResults.add(HashMap<int, bool>.from(_curFuncResults.last));
+    checkDuplicateFuncData[funcId] = HashMap<int, bool>.from(_curFuncResults.last);
   }
 
   BuffData? get currentBuff => _currentBuff.isNotEmpty ? _currentBuff.last : null;
@@ -320,7 +325,7 @@ class BattleData {
     totalTurnCount = 0;
     criticalStars = 0;
 
-    _uniqueIdToFuncResultsList.clear();
+    _functionResultsStack.clear();
     _curFuncResults.clear();
     _currentCard.clear();
     _currentBuff.clear();

@@ -34,7 +34,7 @@ class BuffTurnCount {
     for (final target in targets) {
       battleData.withTargetSync(target, () {
         final success = _changeBuffValue(battleData, target, value, dataVals, isTurn, true);
-        battleData.curFuncResults[target.uniqueId] = success;
+        battleData.setFuncResult(target.uniqueId, success);
       });
     }
   }

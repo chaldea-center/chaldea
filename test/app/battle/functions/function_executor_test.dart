@@ -219,7 +219,7 @@ void main() async {
       await battle.activateSvtSkill(0, 2); // nemo skill 3, check field shore
       final buffCountAfter = nemo1.battleBuff.originalActiveList.length;
       expect(buffCountAfter, buffCountBefore + 1);
-      expect(battle.actionHistory[6010]![nemo1.uniqueId], false);
+      expect(battle.checkDuplicateFuncData[6010]![nemo1.uniqueId], false);
 
       await battle.init(db.gameData.questPhases[9300030103]!, playerSettings, null); // field shore
       final nemo2 = battle.onFieldAllyServants[0]!;
@@ -227,7 +227,7 @@ void main() async {
       await battle.activateSvtSkill(0, 2); // nemo skill 3, check field shore
       final buffCountAfterShore = nemo2.battleBuff.originalActiveList.length;
       expect(buffCountAfterShore, buffCountBeforeShore + 2);
-      expect(battle.actionHistory[6010]![nemo1.uniqueId], true);
+      expect(battle.checkDuplicateFuncData[6010]![nemo1.uniqueId], true);
     });
 
     test('Function checks target trait', () async {
@@ -247,10 +247,10 @@ void main() async {
       expect(buffCountKamaAfter, buffCountKamaBefore + 2);
 
       // last skill is on female targets except self
-      expect(battle.actionHistory.length, 2);
-      expect(battle.actionHistory[1137]![nemo.uniqueId], false);
-      expect(battle.actionHistory[1137]![eli.uniqueId], null);
-      expect(battle.actionHistory[1137]![kama.uniqueId], true);
+      expect(battle.checkDuplicateFuncData.length, 2);
+      expect(battle.checkDuplicateFuncData[1137]![nemo.uniqueId], false);
+      expect(battle.checkDuplicateFuncData[1137]![eli.uniqueId], null);
+      expect(battle.checkDuplicateFuncData[1137]![kama.uniqueId], true);
     });
 
     test('Function checks target alive', () async {
@@ -273,11 +273,11 @@ void main() async {
       expect(buffCountAfter, buffCountBefore);
 
       // last func is addState on dead enemies
-      expect(battle.actionHistory.length, 2);
-      expect(battle.actionHistory[197]!.length, 3);
-      expect(battle.actionHistory[197]![enemy1.uniqueId], false);
-      expect(battle.actionHistory[197]![enemy2.uniqueId], false);
-      expect(battle.actionHistory[197]![enemy3.uniqueId], false);
+      expect(battle.checkDuplicateFuncData.length, 2);
+      expect(battle.checkDuplicateFuncData[197]!.length, 3);
+      expect(battle.checkDuplicateFuncData[197]![enemy1.uniqueId], false);
+      expect(battle.checkDuplicateFuncData[197]![enemy2.uniqueId], false);
+      expect(battle.checkDuplicateFuncData[197]![enemy3.uniqueId], false);
     });
 
     test('TriggeredFuncPosition', () async {
@@ -303,11 +303,11 @@ void main() async {
       });
       final buffCountAfter1 = cursedArm.battleBuff.originalActiveList.length;
       expect(buffCountAfter1, buffCountBefore1);
-      expect(battle.actionHistory[12]![enemy1.uniqueId], true);
-      expect(battle.actionHistory[479]![enemy1.uniqueId], false);
-      expect(battle.actionHistory[146]![cursedArm.uniqueId], false);
-      expect(battle.actionHistory[460]![cursedArm.uniqueId], false);
-      expect(battle.actionHistory[470], null);
+      expect(battle.checkDuplicateFuncData[12]![enemy1.uniqueId], true);
+      expect(battle.checkDuplicateFuncData[479]![enemy1.uniqueId], false);
+      expect(battle.checkDuplicateFuncData[146]![cursedArm.uniqueId], false);
+      expect(battle.checkDuplicateFuncData[460]![cursedArm.uniqueId], false);
+      expect(battle.checkDuplicateFuncData[470], null);
 
       battle.enemyTargetIndex = 1;
       final enemy2 = battle.onFieldEnemies[1]!;
@@ -322,11 +322,11 @@ void main() async {
       });
       final buffCountAfter2 = cursedArm.battleBuff.originalActiveList.length;
       expect(buffCountAfter2, buffCountBefore2 + 1);
-      expect(battle.actionHistory[12]![enemy2.uniqueId], true);
-      expect(battle.actionHistory[479]![enemy2.uniqueId], true);
-      expect(battle.actionHistory[146]![cursedArm.uniqueId], true);
-      expect(battle.actionHistory[460]![cursedArm.uniqueId], true);
-      expect(battle.actionHistory[470], null);
+      expect(battle.checkDuplicateFuncData[12]![enemy2.uniqueId], true);
+      expect(battle.checkDuplicateFuncData[479]![enemy2.uniqueId], true);
+      expect(battle.checkDuplicateFuncData[146]![cursedArm.uniqueId], true);
+      expect(battle.checkDuplicateFuncData[460]![cursedArm.uniqueId], true);
+      expect(battle.checkDuplicateFuncData[470], null);
     });
   });
 
@@ -480,9 +480,9 @@ void main() async {
       expect(battle.criticalStars, moreOrLessEquals(0, epsilon: 0.001));
       await battle.activateSvtSkill(1, 0);
       expect(battle.criticalStars, moreOrLessEquals(10, epsilon: 0.001));
-      expect(battle.actionHistory[7015]!.length, 2);
-      expect(battle.actionHistory[7015]![battle.onFieldAllyServants[0]!.uniqueId], false);
-      expect(battle.actionHistory[7015]![battle.onFieldAllyServants[2]!.uniqueId], true);
+      expect(battle.checkDuplicateFuncData[7015]!.length, 2);
+      expect(battle.checkDuplicateFuncData[7015]![battle.onFieldAllyServants[0]!.uniqueId], false);
+      expect(battle.checkDuplicateFuncData[7015]![battle.onFieldAllyServants[2]!.uniqueId], true);
     });
 
     test('subState affectTraits', () async {

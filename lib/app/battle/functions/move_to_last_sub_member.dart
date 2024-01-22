@@ -34,7 +34,7 @@ class MoveToLastSubMember {
         onFieldList[onFieldIndex] = null;
       }
       backupList.add(target);
-      battleData.curFuncResults[target.uniqueId] = true;
+      battleData.setFuncResult(target.uniqueId, true);
     }
   }
 }
