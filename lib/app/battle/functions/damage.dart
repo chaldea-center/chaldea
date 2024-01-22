@@ -364,7 +364,9 @@ class Damage {
 
         final previousHp = target.hp;
         target.receiveDamage(hitDamage);
-        target.procAccumulationDamage(previousHp);
+        if (target != activator) {
+          target.procAccumulationDamage(previousHp);
+        }
       }
 
       target.actionHistory.add(BattleServantActionHistory(

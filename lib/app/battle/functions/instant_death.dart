@@ -31,7 +31,7 @@ class InstantDeath {
             isOpponent: (activator?.isPlayer ?? defaultToPlayer) != target.isPlayer,
           ));
 
-          if (!isForceInstantDeath) {
+          if (!isForceInstantDeath && target != activator) {
             target.procAccumulationDamage(previousHp);
           }
           battleData.setFuncResult(target.uniqueId, true);

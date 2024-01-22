@@ -31,7 +31,9 @@ class DamageNpCounter {
       battleData.withTargetSync(target, () {
         final previousHp = target.hp;
         target.receiveDamage(damage);
-        target.procAccumulationDamage(previousHp);
+        if (target != activator) {
+          target.procAccumulationDamage(previousHp);
+        }
         target.actionHistory.add(BattleServantActionHistory(
           actType: BattleServantActionHistoryType.damageCommand,
           targetUniqueId: activator.uniqueId,
