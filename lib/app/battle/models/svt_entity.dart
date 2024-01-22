@@ -624,10 +624,10 @@ class BattleServantData {
       return;
     }
 
-    gainHp(battleData, heal);
+    gainHp(heal);
   }
 
-  void gainHp(final BattleData battleData, final int gain) {
+  void gainHp(final int gain) {
     hp += gain;
     hp = hp.clamp(0, maxHp);
   }
@@ -1325,7 +1325,7 @@ class BattleServantData {
           if (turnEndDamage > currentHp && battleData.isWaveCleared) {
             turnEndDamage = currentHp - 1;
           }
-          receiveDamage(turnEndDamage);
+          lossHp(turnEndDamage, lethal: true);
           actionHistory.add(BattleServantActionHistory(
             actType: BattleServantActionHistoryType.reduceHp,
             targetUniqueId: -1,
