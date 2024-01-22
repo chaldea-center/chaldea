@@ -35,7 +35,9 @@ class _SummonListPageState extends State<SummonListPage>
   @override
   void initState() {
     super.initState();
-    filterData.reset();
+    if (db.settings.autoResetFilter) {
+      filterData.reset();
+    }
     filterData.reversed = db.curUser.region == Region.jp;
   }
 

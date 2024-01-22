@@ -41,7 +41,10 @@ class _GachaListPageState extends State<GachaListPage>
     super.initState();
     region = widget.region;
     doFetchData();
-    filterData.reversed = true;
+    if (db.settings.autoResetFilter) {
+      filterData.reset();
+      filterData.reversed = true;
+    }
   }
 
   @override
