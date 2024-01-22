@@ -89,7 +89,12 @@ class BattleServantData {
   int npLineCount = 0; // enemy
   bool usedNpThisTurn = false;
   int reducedHp = 0; // used for bug overkill checks
-  int accumulationDamage = 0; // used for Angry Mango NP (damageNpCounter), clear after use
+  int get accumulationDamage => _accumulationDamage;
+  // used for Angry Mango NP (damageNpCounter)
+  // set with procAccumulationDamage(previousHp)
+  // reset with resetAccumulationDamage (after use or after reflectionFunction buff is added)
+  int _accumulationDamage = 0;
+
 
   // BattleServantData.Status status
   // NiceTd? td;
@@ -653,10 +658,14 @@ class BattleServantData {
     return max(hp, minHp);
   }
 
+  void resetAccumulationDamage() {
+    _accumulationDamage = 0;
+  }
+
   // solely used for DamageReflection calculations
   void procAccumulationDamage(final int previousHp) {
-    accumulationDamage += _getHpForAccumulationDamage(previousHp) - _getHpForAccumulationDamage(hp);
-    accumulationDamage = accumulationDamage.clamp(0, maxHp);
+    _accumulationDamage += _getHpForAccumulationDamage(previousHp) - _getHpForAccumulationDamage(hp);
+    _accumulationDamage = _accumulationDamage.clamp(0, maxHp);
   }
 
   void addReducedHp(final int damage) {
@@ -993,7 +1002,7 @@ class BattleServantData {
 
     final opponent = battleData.getOpponent(this);
     int totalVal = 0;
-    int maxRate = Maths.min(actionDetails.maxRate);
+    int? maxRate = actionDetails.maxRate.isEmpty ? null : Maths.min(actionDetails.maxRate);
 
     for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
       if (await buff.shouldActivateBuff(battleData, this, opponent)) {
@@ -1008,7 +1017,7 @@ class BattleServantData {
         } else {
           totalVal -= value;
         }
-        maxRate = max(maxRate, buff.buff.maxRate);
+        maxRate = maxRate == null ? buff.buff.maxRate : max(maxRate, buff.buff.maxRate);
       }
     }
     return capBuffValue(actionDetails, totalVal, maxRate);
@@ -1397,7 +1406,7 @@ class BattleServantData {
     final delayedFunctions = collectBuffsPerType(battleBuff.validBuffs, BuffType.delayFunction);
     await activateBuffs(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));
     await activateBuffOnAction(battleData, BuffAction.functionReflection);
-    accumulationDamage = 0;
+    resetAccumulationDamage();
 
     battleData.checkActorStatus();
   }
@@ -1420,12 +1429,11 @@ class BattleServantData {
       gutsToApply.setUsed();
       final value = gutsToApply.getValue(battleData, this);
       final isRatio = gutsToApply.buff.type == BuffType.gutsRatio || gutsToApply.buff.type == BuffType.shiftGutsRatio;
-      if (isRatio) {
-        hp = (toModifier(value) * maxHp).floor();
-      } else {
-        hp = value;
-      }
-      hp = hp.clamp(0, maxHp);
+      final baseGutsHp = isRatio ? (toModifier(value) * maxHp).floor() : value;
+      final gutsHpModifier = toModifier(await getBuffValueOnAction(battleData, BuffAction.gutsHp));
+      hp = (baseGutsHp * gutsHpModifier).toInt();
+      hp = hp.clamp(1, maxHp);
+      clearReducedHp();
       procAccumulationDamage(1); // guts always proc with previousHp = 1
 
       battleData.battleLogger.action('$lBattleName - ${gutsToApply.buff.lName.l} - '
@@ -1482,7 +1490,7 @@ class BattleServantData {
       ..npLineCount = npLineCount
       ..usedNpThisTurn = usedNpThisTurn
       ..reducedHp = reducedHp
-      ..accumulationDamage = accumulationDamage
+      .._accumulationDamage = _accumulationDamage
       ..skillInfoList = skillInfoList.map((e) => e.copy()).toList() // copy
       ..equip = equip
       ..battleBuff = battleBuff.copy()

@@ -37,6 +37,7 @@ void main() {
       actionDetail.limit = BuffLimit.upper;
       expect(capBuffValue(actionDetail, -100000, maxRate), -100000 + actionDetail.baseParam - actionDetail.baseValue);
       expect(capBuffValue(actionDetail, 100000, maxRate), maxRate);
+      expect(capBuffValue(actionDetail, 100000, null), 100000 + actionDetail.baseParam - actionDetail.baseValue);
     });
 
     test('value bound on none', () {
