@@ -64,11 +64,11 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final missions = List.of(_allRegionMissions[_region] ?? <MasterMission>[]);
+    final allMissions = List.of(_allRegionMissions[_region] ?? <MasterMission>[]);
     final now = DateTime.now().timestamp;
     final curWeekly =
-        missions.firstWhereOrNull((mm) => mm.type == MissionType.weekly && mm.startedAt <= now && mm.endedAt > now);
-    missions.retainWhere((mission) {
+        allMissions.firstWhereOrNull((mm) => mm.type == MissionType.weekly && mm.startedAt <= now && mm.endedAt > now);
+    final missions = allMissions.where((mission) {
       if (selected.contains(mission.id)) return true;
       if (!showOutdated) {
         if (mission.endedAt < now) return false;
@@ -83,7 +83,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
         if (mission.type == MissionType.daily && mission is! MasterMission) return false;
       }
       return typeOptions.matchOne(_allMissionTypes.contains(mission.type) ? mission.type : null);
-    });
+    }).toList();
     missions.sort((a, b) {
       if (a.startedAt == b.startedAt) return a.id.compareTo(b.id);
       return a.startedAt.compareTo(b.startedAt);
@@ -153,7 +153,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
                       },
                     ),
                   )
-                : missions.isEmpty
+                : allMissions.isEmpty
                     ? const Center(child: CircularProgressIndicator())
                     : RefreshIndicator(
                         child: ListView.builder(

@@ -237,6 +237,10 @@ MstMasterMission _$MstMasterMissionFromJson(Map json) => MstMasterMission(
       startedAt: json['startedAt'] as int,
       endedAt: json['endedAt'] as int,
       closedAt: json['closedAt'] as int,
+      gifts: (json['gifts'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String), e as int),
+          ) ??
+          const {},
     );
 
 Map<String, dynamic> _$MstMasterMissionToJson(MstMasterMission instance) => <String, dynamic>{
@@ -244,6 +248,7 @@ Map<String, dynamic> _$MstMasterMissionToJson(MstMasterMission instance) => <Str
       'startedAt': instance.startedAt,
       'endedAt': instance.endedAt,
       'closedAt': instance.closedAt,
+      'gifts': instance.gifts.map((k, e) => MapEntry(k.toString(), e)),
     };
 
 MasterMission _$MasterMissionFromJson(Map json) => MasterMission(

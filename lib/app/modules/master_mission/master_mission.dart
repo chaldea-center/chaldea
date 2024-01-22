@@ -75,13 +75,18 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
   }
 
   Widget missionList() {
-    masterMission.missions.sort2((e) => e.dispNo);
+    final missions = masterMission.missions.toList();
+    missions.sort2((e) => e.dispNo);
     Map<MissionType, int> categorized = {};
-    for (final mission in masterMission.missions) {
+    Map<int, int> gifts = {};
+    for (final mission in missions) {
       categorized.addNum(mission.type, 1);
+      Gift.checkAddGifts(gifts, mission.gifts);
     }
+
     return ListView(
       children: [
+        DividerWithTitle(title: "${S.current.master_mission} ${masterMission.id}"),
         ListTile(
           dense: true,
           title: Text(S.current.time_start),
@@ -104,7 +109,19 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
               .map((e) => '${e.value} ${Transl.enums(e.key, (enums) => enums.missionType).l}')
               .join('\n')),
         ),
-        const Divider(thickness: 1),
+        DividerWithTitle(title: S.current.game_rewards),
+        ListTile(
+          dense: true,
+          title: Center(
+            child: SharedBuilder.itemGrid(
+              context: context,
+              items: gifts.entries,
+              sort: true,
+              height: 36,
+            ),
+          ),
+        ),
+        DividerWithTitle(title: S.current.mission),
         SwitchListTile(
           dense: true,
           visualDensity: VisualDensity.compact,
@@ -116,8 +133,8 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
             });
           },
         ),
-        const Divider(thickness: 1),
-        for (final mission in masterMission.missions) _oneEventMission(mission)
+        const Divider(thickness: 1, indent: 16, endIndent: 16),
+        for (final mission in missions) _oneEventMission(mission)
       ],
     );
   }

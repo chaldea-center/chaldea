@@ -118,7 +118,7 @@ class SharedBuilder {
       width = 48;
     }
     if (sort) {
-      items = items.toList()..sort2((e) => db.gameData.items[e.key]?.priority ?? e.key);
+      items = items.toList()..sort((a, b) => Item.compare2(a.key, b.key));
     }
     return Wrap(
       spacing: 1,

@@ -508,12 +508,14 @@ class MstMasterMission with RouteInfo {
   // int priority;
   // int imageId;
   // String name;
+  Map<int, int> gifts; // manually added
 
   MstMasterMission({
     required this.id,
     required this.startedAt,
     required this.endedAt,
     required this.closedAt,
+    this.gifts = const {},
   });
 
   MissionType get type {
@@ -525,6 +527,11 @@ class MstMasterMission with RouteInfo {
     if (b == 8) return MissionType.complete;
     if (id == MasterMission.kExtraMasterMissionId) return MissionType.extra;
     return MissionType.none;
+  }
+
+  bool isOutdated([Region? region]) {
+    region ??= db.curUser.region;
+    return endedAt < DateTime.now().timestamp - region.eventDelayMonth * 31 * kSecsPerDay;
   }
 
   @override
@@ -549,6 +556,16 @@ class MasterMission extends MstMasterMission {
 
   List<EventMission> missions;
   List<BasicQuest> quests;
+
+  @override
+  @JsonKey(includeFromJson: false)
+  Map<int, int> get gifts {
+    Map<int, int> items = {};
+    for (final mission in missions) {
+      Gift.checkAddGifts(items, mission.gifts);
+    }
+    return items;
+  }
 
   MasterMission({
     required super.id,

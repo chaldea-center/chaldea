@@ -18,14 +18,13 @@ class ItemObtainEventTab extends StatefulWidget {
 }
 
 class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
-  List<bool> expandedList = [true, true, true, true];
-
   @override
   Widget build(BuildContext context) {
     return db.onUserData((context, _) {
       List<Widget> children = [
         _limitEventAccordion,
         _ticketAccordion,
+        _limitedMissionAccordion,
         _mainRecordAccordion,
       ];
       return InheritSelectionArea(
@@ -120,7 +119,6 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
       title: Text(S.current.limited_event),
       trailing: Text(count.format()),
       children: children,
-      expanded: expandedList[0],
     );
   }
 
@@ -150,8 +148,11 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
             style: _textStyle(false, ticket.isOutdated()),
             textScaler: const TextScaler.linear(0.9),
           ),
-          subtitle: AutoSizeText(ticket.of(db.curUser.region).map((e) => GameCardMixin.anyCardItemName(e).l).join('/'),
-              maxLines: 1),
+          subtitle: AutoSizeText(
+            ticket.of(db.curUser.region).map((e) => GameCardMixin.anyCardItemName(e).l).join('/'),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
           trailing: Text(
             '$itemNum/${ticket.maxCount}',
             style: _textStyle(plan.enabled, ticket.isOutdated()),
@@ -166,7 +167,45 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
       title: Text(S.current.exchange_ticket),
       trailing: Text(count.toString()),
       children: children,
-      expanded: expandedList[1],
+    );
+  }
+
+  Widget get _limitedMissionAccordion {
+    List<Widget> children = [];
+    final masterMissions = db.gameData.masterMissions.values
+        .where((e) => const [MissionType.limited, MissionType.extra].contains(e.type))
+        .toList();
+    masterMissions.sort2((a) => -a.endedAt);
+    int count = 0;
+    for (final mission in masterMissions) {
+      int itemNum = mission.gifts[widget.itemId] ?? 0;
+      if (itemNum <= 0) continue;
+      if (!_whetherToShow(false, mission.isOutdated())) {
+        continue;
+      }
+
+      count += itemNum;
+      children.add(ListTile(
+        title: Text(
+          'ID ${mission.id}',
+          style: _textStyle(false, mission.isOutdated()),
+          textScaler: const TextScaler.linear(0.9),
+        ),
+        subtitle: AutoSizeText([mission.startedAt, mission.endedAt].map((e) => e.sec2date().toDateString()).join(' ~ '),
+            maxLines: 1),
+        trailing: Text(
+          itemNum.format(),
+          style: _textStyle(false, mission.isOutdated()),
+        ),
+        onTap: () {
+          mission.routeTo();
+        },
+      ));
+    }
+    return _getAccordion(
+      title: Text('${S.current.master_mission}(${Transl.enums(MissionType.limited, (enums) => enums.missionType).l})'),
+      trailing: Text(count.format()),
+      children: children,
     );
   }
 
@@ -221,7 +260,6 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
       title: Text(S.current.main_story),
       trailing: Text('${count.format()}/${totalCount.format()}'),
       children: children,
-      expanded: expandedList[2],
     );
   }
 
@@ -229,10 +267,9 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
     required Widget title,
     Widget? trailing,
     required List<Widget> children,
-    required bool expanded,
   }) {
     return SimpleAccordion(
-      expanded: children.isNotEmpty,
+      expanded: false,
       headerBuilder: (context, expanded) => ListTile(
         leading: const Icon(Icons.event),
         title: title,
