@@ -24,13 +24,14 @@ class DamageNpCounter {
       return;
     }
 
-    final baseDamage = max(0, activator.reflectionRecordedHp - activator.hp);
     final rate = toModifier(dataVals.Value ?? 0);
-    final damage = (baseDamage * rate).toInt();
+    final damage = (activator.accumulationDamage * rate).toInt();
 
     for (final target in targets) {
       battleData.withTargetSync(target, () {
+        final previousHp = target.hp;
         target.receiveDamage(damage);
+        target.procAccumulationDamage(previousHp);
         target.actionHistory.add(BattleServantActionHistory(
           actType: BattleServantActionHistoryType.damageCommand,
           targetUniqueId: activator.uniqueId,

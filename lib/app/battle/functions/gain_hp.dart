@@ -25,6 +25,7 @@ class GainHP {
 
     for (final target in targets) {
       await battleData.withTarget(target, () async {
+        final previousHp = target.hp;
         final baseValue = isPercent ? target.maxHp * toModifier(dataVals.Value!) : dataVals.Value!;
         if (isLoss) {
           target.lossHp(baseValue.toInt(), lethal: isLethal);
@@ -40,6 +41,7 @@ class GainHP {
           final finalHeal = (baseValue * healReceiveEff * healGrantEff).toInt();
           await target.heal(battleData, finalHeal);
         }
+        target.procAccumulationDamage(previousHp);
         battleData.setFuncResult(target.uniqueId, true);
       });
     }

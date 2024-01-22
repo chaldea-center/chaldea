@@ -362,7 +362,9 @@ class Damage {
         result.damages.add(hitDamage);
         remainingDamage -= hitDamage;
 
+        final previousHp = target.hp;
         target.receiveDamage(hitDamage);
+        target.procAccumulationDamage(previousHp);
       }
 
       target.actionHistory.add(BattleServantActionHistory(

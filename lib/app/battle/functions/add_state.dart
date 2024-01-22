@@ -87,6 +87,8 @@ class AddState {
               target.gainHp(toModifier(target.maxHp * dataVals.Value!).toInt());
             } else if (buff.type == BuffType.downMaxhp) {
               target.lossHp(toModifier(target.maxHp * dataVals.Value!).toInt());
+            } else if (buff.type == BuffType.reflectionFunction) {
+              target.accumulationDamage = 0;
             }
           }
         });

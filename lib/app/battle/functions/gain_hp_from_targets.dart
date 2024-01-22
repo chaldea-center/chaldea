@@ -24,6 +24,7 @@ class GainHpFromTargets {
 
     for (final receiver in targets) {
       await battleData.withTarget(receiver, () async {
+        final previousHp = receiver.hp;
         // denoting who should receive the absorbed hp
         int gainValue = 0;
         for (final absorbTarget in await FunctionExecutor.acquireFunctionTarget(
@@ -36,6 +37,7 @@ class GainHpFromTargets {
         }
 
         await receiver.heal(battleData, gainValue);
+        receiver.procAccumulationDamage(previousHp);
         battleData.setFuncResult(receiver.uniqueId, true);
       });
     }

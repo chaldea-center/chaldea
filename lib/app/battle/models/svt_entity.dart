@@ -89,7 +89,7 @@ class BattleServantData {
   int npLineCount = 0; // enemy
   bool usedNpThisTurn = false;
   int reducedHp = 0; // used for bug overkill checks
-  int reflectionRecordedHp = 0; // clear at enemy end of turn, used for Angry Mango NP (damageNpCounter)
+  int accumulationDamage = 0; // used for Angry Mango NP (damageNpCounter), clear after use
 
   // BattleServantData.Status status
   // NiceTd? td;
@@ -645,6 +645,18 @@ class BattleServantData {
 
   void receiveDamage(final int hitDamage) {
     hp -= hitDamage;
+  }
+
+  // since Laplace allows minus HP, need to change it to lower limit for accumulation damage calculation
+  int _getHpForAccumulationDamage(final int hp) {
+    final minHp = shiftDeckIndex < shiftNpcIds.length - 1 ? 1 : 0;
+    return max(hp, minHp);
+  }
+
+  // solely used for DamageReflection calculations
+  void procAccumulationDamage(final int previousHp) {
+    accumulationDamage += _getHpForAccumulationDamage(previousHp) - _getHpForAccumulationDamage(hp);
+    accumulationDamage = accumulationDamage.clamp(0, maxHp);
   }
 
   void addReducedHp(final int damage) {
@@ -1317,6 +1329,7 @@ class BattleServantData {
           final healReceiveEff = toModifier(await getBuffValueOnAction(battleData, BuffAction.gainHp));
           final finalHeal = (turnEndHeal * healReceiveEff * healGrantEff).toInt();
           await heal(battleData, finalHeal);
+          procAccumulationDamage(currentHp);
 
           turnEndLog += ' - ${S.current.battle_heal} HP: $finalHeal';
         }
@@ -1366,8 +1379,6 @@ class BattleServantData {
     await activateBuffOnAction(battleData, BuffAction.functionSelfturnend);
     await activateBuffs(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));
 
-    reflectionRecordedHp = hp;
-
     battleBuff.turnPassParamAdd();
 
     battleData.checkActorStatus();
@@ -1386,6 +1397,7 @@ class BattleServantData {
     final delayedFunctions = collectBuffsPerType(battleBuff.validBuffs, BuffType.delayFunction);
     await activateBuffs(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));
     await activateBuffOnAction(battleData, BuffAction.functionReflection);
+    accumulationDamage = 0;
 
     battleData.checkActorStatus();
   }
@@ -1414,6 +1426,7 @@ class BattleServantData {
         hp = value;
       }
       hp = hp.clamp(0, maxHp);
+      procAccumulationDamage(1); // guts always proc with previousHp = 1
 
       battleData.battleLogger.action('$lBattleName - ${gutsToApply.buff.lName.l} - '
           '${!isRatio ? value : '${(value / 10).toStringAsFixed(1)}%'}');
@@ -1469,7 +1482,7 @@ class BattleServantData {
       ..npLineCount = npLineCount
       ..usedNpThisTurn = usedNpThisTurn
       ..reducedHp = reducedHp
-      ..reflectionRecordedHp = reflectionRecordedHp
+      ..accumulationDamage = accumulationDamage
       ..skillInfoList = skillInfoList.map((e) => e.copy()).toList() // copy
       ..equip = equip
       ..battleBuff = battleBuff.copy()

@@ -19,8 +19,10 @@ class InstantDeath {
     for (final target in targets) {
       await battleData.withTarget(target, () async {
         final params = InstantDeathParameters();
+        final previousHp = target.hp;
+        final isForceInstantDeath = force || (activator == target && dataVals.ForceSelfInstantDeath == 1);
 
-        if (await shouldInstantDeath(battleData, dataVals, activator, target, force, params)) {
+        if (await shouldInstantDeath(battleData, dataVals, activator, target, isForceInstantDeath, params)) {
           target.hp = 0;
           target.lastHitBy = activator;
           target.actionHistory.add(BattleServantActionHistory(
@@ -29,6 +31,9 @@ class InstantDeath {
             isOpponent: (activator?.isPlayer ?? defaultToPlayer) != target.isPlayer,
           ));
 
+          if (!isForceInstantDeath) {
+            target.procAccumulationDamage(previousHp);
+          }
           battleData.setFuncResult(target.uniqueId, true);
         }
         record.targets.add(InstantDeathResultDetail(target: target, params: params));
@@ -44,11 +49,11 @@ class InstantDeath {
     final DataVals dataVals,
     final BattleServantData? activator,
     final BattleServantData target,
-    final bool force,
+    final bool isForceInstantDeath,
     InstantDeathParameters? params,
   ) async {
     params ??= InstantDeathParameters();
-    params.isForce = force || (activator == target && dataVals.ForceSelfInstantDeath == 1);
+    params.isForce = isForceInstantDeath;
     if (params.isForce) {
       params.success = true;
       params.resultString = S.current.success;
