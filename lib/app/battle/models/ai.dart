@@ -77,7 +77,8 @@ class SvtAiManager with _AiManagerBase {
       if (ai.actNum == NiceAiActNum.reactionWavestart &&
           ai.cond == NiceAiCond.none &&
           ai.aiAct.type == NiceAiActType.skillId &&
-          ai.aiAct.target == NiceAiActTarget.random) {
+          ai.aiAct.target == NiceAiActTarget.random &&
+          ai.aiAct.targetIndividuality.isEmpty) {
         final skill = ai.aiAct.skill;
         if (skill == null) continue;
         final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtAi, skillLv: ai.aiAct.skillLv ?? 1);
@@ -104,7 +105,8 @@ class SvtAiManager with _AiManagerBase {
       if (ai.actNum == NiceAiActNum.afterTurnPlayerEnd &&
           ai.cond == NiceAiCond.none &&
           ai.aiAct.type == NiceAiActType.skillId &&
-          ai.aiAct.target == NiceAiActTarget.random) {
+          ai.aiAct.target == NiceAiActTarget.random &&
+          ai.aiAct.targetIndividuality.isEmpty) {
         final skill = ai.aiAct.skill;
         if (skill == null) continue;
         final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtAi, skillLv: ai.aiAct.skillLv ?? 1);
@@ -132,7 +134,8 @@ class SvtAiManager with _AiManagerBase {
       if (ai.actNum == NiceAiActNum.reactionTurnstart &&
           ai.cond == NiceAiCond.none &&
           ai.aiAct.type == NiceAiActType.skillId &&
-          ai.aiAct.target == NiceAiActTarget.random) {
+          ai.aiAct.target == NiceAiActTarget.random &&
+          ai.aiAct.targetIndividuality.isEmpty) {
         final skill = ai.aiAct.skill;
         if (skill == null) continue;
         final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtAi, skillLv: ai.aiAct.skillLv ?? 1);
