@@ -1,11 +1,11 @@
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
-import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import '../interactions/td_type_change_selector.dart';
 
 class AddState {
@@ -79,20 +79,24 @@ class AddState {
             );
             battleData.setFuncResult(target.uniqueId, true);
 
-            if (buff.type == BuffType.addMaxhp) {
-              target.gainHp(dataVals.Value!);
-            } else if (buff.type == BuffType.subMaxhp) {
-              target.lossHp(dataVals.Value!);
-            } else if (buff.type == BuffType.upMaxhp) {
-              target.gainHp(toModifier(target.maxHp * dataVals.Value!).toInt());
-            } else if (buff.type == BuffType.downMaxhp) {
-              target.lossHp(toModifier(target.maxHp * dataVals.Value!).toInt());
-            } else if (buff.type == BuffType.reflectionFunction) {
-              target.resetAccumulationDamage();
-            }
+            postAddStateProcessing(target, buff, dataVals);
           }
         });
       });
+    }
+  }
+
+  static void postAddStateProcessing(final BattleServantData target, final Buff buff, final DataVals dataVals) {
+    if (buff.type == BuffType.addMaxhp && target.hp > 0) {
+      target.gainHp(dataVals.Value!);
+    } else if (buff.type == BuffType.subMaxhp && target.hp > 0) {
+      target.lossHp(dataVals.Value!);
+    } else if (buff.type == BuffType.upMaxhp && target.hp > 0) {
+      target.gainHp(toModifier(target.maxHp * dataVals.Value!).toInt());
+    } else if (buff.type == BuffType.downMaxhp && target.hp > 0) {
+      target.lossHp(toModifier(target.maxHp * dataVals.Value!).toInt());
+    } else if (buff.type == BuffType.reflectionFunction) {
+      target.resetAccumulationDamage();
     }
   }
 

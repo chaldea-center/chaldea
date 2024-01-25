@@ -3,9 +3,7 @@ import 'dart:math';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
-import 'package:chaldea/utils/basic.dart';
 
 class SubState {
   SubState._();
@@ -42,6 +40,10 @@ class SubState {
           }
         }
         target.battleBuff.setActiveList(removeFromStart ? listToInspect.reversed.toList() : listToInspect.toList());
+        if (target.hp > 0) {
+          target.hp = target.hp.clamp(1, target.maxHp);
+        }
+
         if (removeCount > 0) {
           battleData.setFuncResult(target.uniqueId, true);
         }
