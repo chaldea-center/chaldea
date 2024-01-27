@@ -79,24 +79,10 @@ class AddState {
             );
             battleData.setFuncResult(target.uniqueId, true);
 
-            postAddStateProcessing(target, buff, dataVals);
+            target.postAddStateProcessing(buff, dataVals);
           }
         });
       });
-    }
-  }
-
-  static void postAddStateProcessing(final BattleServantData target, final Buff buff, final DataVals dataVals) {
-    if (buff.type == BuffType.addMaxhp && target.hp > 0) {
-      target.gainHp(dataVals.Value!);
-    } else if (buff.type == BuffType.subMaxhp && target.hp > 0) {
-      target.lossHp(dataVals.Value!);
-    } else if (buff.type == BuffType.upMaxhp && target.hp > 0) {
-      target.gainHp(toModifier(target.maxHp * dataVals.Value!).toInt());
-    } else if (buff.type == BuffType.downMaxhp && target.hp > 0) {
-      target.lossHp(toModifier(target.maxHp * dataVals.Value!).toInt());
-    } else if (buff.type == BuffType.reflectionFunction) {
-      target.resetAccumulationDamage();
     }
   }
 

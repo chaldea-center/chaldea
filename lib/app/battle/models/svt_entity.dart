@@ -364,6 +364,20 @@ class BattleServantData {
     }
   }
 
+  void postAddStateProcessing(final Buff buff, final DataVals dataVals) {
+    if (buff.type == BuffType.addMaxhp && hp > 0) {
+      gainHp(dataVals.Value!);
+    } else if (buff.type == BuffType.subMaxhp && hp > 0) {
+      lossHp(dataVals.Value!);
+    } else if (buff.type == BuffType.upMaxhp && hp > 0) {
+      gainHp(toModifier(_maxHp * dataVals.Value!).toInt());
+    } else if (buff.type == BuffType.downMaxhp && hp > 0) {
+      lossHp(toModifier(_maxHp * dataVals.Value!).toInt());
+    } else if (buff.type == BuffType.reflectionFunction) {
+      resetAccumulationDamage();
+    }
+  }
+
   String getSkillName(final int index) {
     if (skillInfoList.length <= index || index < 0) {
       return 'Invalid skill index: $index';
