@@ -609,7 +609,8 @@ class Servant with GameCardMixin {
   }
 
   Iterable<NiceSkill> eventSkills({required int eventId, required bool includeZero}) {
-    return extraPassive.where((skill) => skill.shouldActiveSvtEventSkill(eventId: eventId, includeZero: includeZero));
+    return extraPassive
+        .where((skill) => skill.shouldActiveSvtEventSkill(eventId: eventId, svtId: id, includeZero: includeZero));
   }
 
   NiceSkill? getDefaultSkill(List<NiceSkill> skills, Region region) {
