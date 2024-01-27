@@ -471,12 +471,12 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
     ));
     final enemy = selectedEnemy;
     if (enemy != null) {
-      if (enemy.skillInfoList.any((e) => e.proximateSkill != null)) {
+      if (enemy.skillInfoList.any((e) => e.skill != null)) {
         children.add(DividerWithTitle(title: S.current.active_skill));
       }
       for (int index = 0; index < 3; index++) {
         final skill = enemy.skillInfoList.getOrNull(index);
-        final baseSkill = skill?.proximateSkill;
+        final baseSkill = skill?.skill;
         if (skill != null && baseSkill != null) {
           children.add(buildRadio(
             title: Text('${S.current.skill} ${index + 1} ${baseSkill.lName.l}'),

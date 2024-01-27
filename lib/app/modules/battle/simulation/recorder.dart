@@ -532,7 +532,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
     if (actor != null) {
       spans.addAll(drawSvt(context, actor));
     }
-    final pskill = skill.proximateSkill;
+    final pskill = skill.skill;
     String? prefix;
     switch (record.skill.type) {
       case SkillInfoType.masterEquip:

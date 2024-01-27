@@ -291,7 +291,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
     children.add(DividerWithTitle(title: S.current.active_skill, indent: 16));
     for (final skillNum in kActiveSkillNums) {
       final skill = svt.skillInfoList.getOrNull(skillNum - 1);
-      final baseSkill = skill?.proximateSkill;
+      final baseSkill = skill?.skill;
       final cd = skill?.chargeTurn ?? 0;
       final baseCd = baseSkill?.coolDown.getOrNull((skill?.skillLv ?? 1) - 1);
       children.add(SimpleAccordion(

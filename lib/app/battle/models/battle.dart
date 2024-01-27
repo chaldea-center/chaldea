@@ -864,7 +864,7 @@ class BattleData {
         ? masterSkillInfo.getOrNull(skillIndex)
         : onFieldAllyServants.getOrNull(svtIndex)?.skillInfoList.getOrNull(skillIndex);
     if (skillInfo == null) return;
-    final curSkill = await skillInfo.getSkill();
+    final curSkill = skillInfo.skill;
     if (curSkill == null) return;
 
     final targetFunc = curSkill.functions.firstWhereOrNull((func) => func.funcTargetType.needNormalOneTarget);
@@ -910,7 +910,7 @@ class BattleData {
       return false;
     }
 
-    final skill = masterSkillInfo[skillIndex].proximateSkill;
+    final skill = masterSkillInfo[skillIndex].skill;
     if (skill == null) {
       return true; // enable update
     }

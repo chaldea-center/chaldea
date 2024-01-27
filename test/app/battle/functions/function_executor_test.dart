@@ -1140,11 +1140,13 @@ void main() async {
       henry.np = 10000;
       expect(henry.classId, SvtClass.assassin.id);
       expect(henry.skillInfoList[0].chargeTurn, 5);
-      expect(henry.skillInfoList[2].baseSkill!.id, 71255);
+      expect(henry.skillInfoList[2].skill, isNotNull);
+      expect(henry.skillInfoList[2].skill!.id, 71255);
       await battle.playerTurn([CombatAction(henry, henry.getNPCard()!)]);
       expect(henry.classId, SvtClass.berserker.id);
       expect(henry.skillInfoList[0].chargeTurn, 5 - 1);
-      expect(henry.skillInfoList[2].baseSkill!.id, 71255);
+      expect(henry.skillInfoList[2].skill, isNotNull);
+      expect(henry.skillInfoList[2].skill!.id, 71255);
     });
 
     test('gainNpIndividualSum', () async {

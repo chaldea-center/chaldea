@@ -794,7 +794,7 @@ class BattleServantData {
     return battleData.withActivatorSync(this, () {
       final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
       skillInfo.setRankUp(rankUp);
-      return !canAttack() || skillInfo.proximateSkill == null || !skillInfo.checkSkillScript(battleData);
+      return !canAttack() || skillInfo.skill == null || !skillInfo.checkSkillScript(battleData);
     });
   }
 

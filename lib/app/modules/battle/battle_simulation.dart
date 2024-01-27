@@ -739,7 +739,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     Widget child = Stack(
       alignment: Alignment.center,
       children: [
-        db.getIconImage(skillInfo.proximateSkill?.icon ?? Atlas.common.emptySkillIcon, width: 32, aspectRatio: 1),
+        db.getIconImage(skillInfo.skill?.icon ?? Atlas.common.emptySkillIcon, width: 32, aspectRatio: 1),
         if (isSealed || donotSkillSelect || isCondFailed || cd > 0)
           AspectRatio(
             aspectRatio: 1,
@@ -767,7 +767,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
       ],
     );
 
-    final pskill = skillInfo.proximateSkill;
+    final pskill = skillInfo.skill;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2),

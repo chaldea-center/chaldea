@@ -17,13 +17,11 @@ class BattleSkillInfoData {
   // bool isUseSkill = false;
   // int userCommandCodeId = -1;
 
-  String get lName => proximateSkill?.lName.l ?? '???';
+  String get lName => skill?.lName.l ?? '???';
 
-  BaseSkill? get proximateSkill => _skill;
-
-  int skillNum;
-  BaseSkill? baseSkill;
-  List<BaseSkill> provisionedSkills;
+  final int skillNum;
+  final BaseSkill? _baseSkill;
+  final List<BaseSkill> _provisionedSkills;
   int rankUp = 0;
   List<BaseSkill?>? rankUps;
   int _skillLv = 0;
@@ -31,21 +29,21 @@ class BattleSkillInfoData {
   int chargeTurn = 0;
 
   BattleSkillInfoData(
-    this.baseSkill, {
+    this._baseSkill, {
     required this.type,
     List<BaseSkill>? provisionedSkills,
     this.skillNum = -1,
     int skillLv = 0,
-  })  : provisionedSkills = provisionedSkills ?? [],
+  })  : _provisionedSkills = provisionedSkills ?? [],
         _skillLv = skillLv {
-    if (baseSkill != null && !this.provisionedSkills.contains(baseSkill)) {
-      this.provisionedSkills.add(baseSkill!);
+    if (_baseSkill != null && !_provisionedSkills.contains(_baseSkill)) {
+      _provisionedSkills.add(_baseSkill!);
     }
-    skillScript = proximateSkill?.script;
+    skillScript = skill?.script;
   }
 
-  BaseSkill? get _skill => rankUp == 0 || rankUps == null || rankUps!.isEmpty
-      ? baseSkill
+  BaseSkill? get skill => rankUp == 0 || rankUps == null || rankUps!.isEmpty
+      ? _baseSkill
       : rankUp > rankUps!.length
           ? rankUps!.last
           : rankUps![rankUp - 1];
@@ -53,23 +51,14 @@ class BattleSkillInfoData {
   set skillLv(int v) => _skillLv = v;
 
   int get skillLv {
-    final maxLv = proximateSkill?.maxLv;
+    final maxLv = skill?.maxLv;
     if (maxLv == null || maxLv == 0) return _skillLv;
     return _skillLv.clamp(1, maxLv);
   }
 
-  void setBaseSkillId(final NiceSkill? newSkill) {
-    baseSkill = newSkill;
-    skillScript = proximateSkill?.script;
-  }
-
   void setRankUp(final int newRank) {
     rankUp = newRank;
-    skillScript = proximateSkill?.script;
-  }
-
-  Future<BaseSkill?> getSkill() async {
-    return _skill;
+    skillScript = skill?.script;
   }
 
   void shortenSkill(final int turns) {
@@ -150,11 +139,13 @@ class BattleSkillInfoData {
   }
 
   Future<bool> activate(final BattleData battleData, {bool defaultToPlayer = true}) async {
-    final curSkill = await getSkill();
+    final curSkill = skill;
     if (curSkill == null) {
       return false;
     }
-    chargeTurn = curSkill.coolDown[skillLv - 1];
+    if (battleData.activator?.isPlayer ?? false) {
+      chargeTurn = curSkill.coolDown[skillLv - 1];
+    }
     skillScript = curSkill.script;
 
     final actorTraitMatch = battleData.checkTraits(CheckTraitParameters(
@@ -207,9 +198,9 @@ class BattleSkillInfoData {
 
   BattleSkillInfoData copy() {
     return BattleSkillInfoData(
-      baseSkill,
+      _baseSkill,
       type: type,
-      provisionedSkills: provisionedSkills,
+      provisionedSkills: _provisionedSkills,
       skillNum: skillNum,
     )
       ..rankUps = rankUps

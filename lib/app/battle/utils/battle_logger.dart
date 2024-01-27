@@ -112,7 +112,7 @@ class BattleRecordManager {
     String? prefix,
   }) {
     if (!uploadEligible) {
-      setIllegal('${S.current.skill} ${skill.type.name}: ${skill.proximateSkill?.lName.l}');
+      setIllegal('${S.current.skill} ${skill.type.name}: ${skill.lName}');
     }
 
     records.add(BattleSkillRecord(
