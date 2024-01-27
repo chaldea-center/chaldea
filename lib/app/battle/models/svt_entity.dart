@@ -95,7 +95,6 @@ class BattleServantData {
   // reset with resetAccumulationDamage (after use or after reflectionFunction buff is added)
   int _accumulationDamage = 0;
 
-
   // BattleServantData.Status status
   // NiceTd? td;
   // int ascensionPhase = 0;
@@ -342,7 +341,7 @@ class BattleServantData {
       await battleData.withActivator(this, () async {
         for (final skill in playerSvtData!.extraPassives) {
           if (playerSvtData!.disabledExtraSkills.contains(skill.id)) continue;
-          if (skill.isSvtEventSkill(eventId: battleData.niceQuest?.war?.eventId ?? 0, includeZero: true)) {
+          if (skill.shouldActiveSvtEventSkill(eventId: battleData.niceQuest?.war?.eventId ?? 0, includeZero: true)) {
             final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtPassive);
             await skillInfo.activate(battleData);
           }

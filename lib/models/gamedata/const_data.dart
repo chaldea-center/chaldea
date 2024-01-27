@@ -33,6 +33,7 @@ class ConstGameData {
     285: 123,
     351: 223,
   };
+  final Map<int, List<SvtLimitHide>> svtLimitHides;
   // <eventId, <buffGroupId, skillNum>>
   //   // summer 2023
   //   80442: {
@@ -63,6 +64,7 @@ class ConstGameData {
     this.svtExp = const {},
     this.funcTypeDetail = const {},
     this.buffTypeDetail = const {},
+    this.svtLimitHides = const {},
     this.eventPointBuffGroupSkillNumMap = const {},
     this.laplaceUploadAllowAiQuests = const [],
     this.excludeRewardQuests = const [],
@@ -74,6 +76,14 @@ class ConstGameData {
         buffTypeActionMap.putIfAbsent(type, () => []).add(entry.key);
       }
     }
+  }
+
+  List<SvtLimitHide> getSvtLimitHides(int svtId, int? limitCount) {
+    Set<SvtLimitHide> hides = {...?svtLimitHides[-1], ...?svtLimitHides[svtId]};
+    if (limitCount != null) {
+      hides.retainWhere((e) => e.limits.contains(-1) || e.limits.contains(limitCount));
+    }
+    return hides.toList();
   }
 
   List<int> getSvtCurve(int growthCurve, int baseValue, int maxValue, int? maxLv) {
@@ -996,6 +1006,27 @@ class GameConstantStr {
   }
 
   Map<String, dynamic> toJson() => _$GameConstantStrToJson(this);
+}
+
+@JsonSerializable()
+class SvtLimitHide {
+  final List<int> limits;
+  final List<int> tds;
+  final Map<int, List<int>> activeSkills;
+  final List<int> classPassives;
+  final List<int> addPassives;
+
+  const SvtLimitHide({
+    this.limits = const [],
+    this.tds = const [],
+    this.activeSkills = const {},
+    this.classPassives = const [],
+    this.addPassives = const [],
+  });
+
+  factory SvtLimitHide.fromJson(Map<String, dynamic> json) => _$SvtLimitHideFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SvtLimitHideToJson(this);
 }
 
 enum SvtFrameType {

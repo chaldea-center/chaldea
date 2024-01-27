@@ -208,7 +208,8 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     }
     const divider = Divider(height: 8, thickness: 1);
     final extraPassives = playerSvtData.extraPassives
-        .where((passive) => passive.isSvtEventSkill(eventId: questPhase?.war?.eventId ?? 0, includeZero: true))
+        .where(
+            (passive) => passive.shouldActiveSvtEventSkill(eventId: questPhase?.war?.eventId ?? 0, includeZero: true))
         .toList();
     final List<Widget> children = [
       _header(context),

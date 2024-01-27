@@ -76,6 +76,11 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
             (k, e) => MapEntry(int.parse(k as String), BuffTypeDetail.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
+      svtLimitHides: (json['svtLimitHides'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String),
+                (e as List<dynamic>).map((e) => SvtLimitHide.fromJson(Map<String, dynamic>.from(e as Map))).toList()),
+          ) ??
+          const {},
       eventPointBuffGroupSkillNumMap: (json['eventPointBuffGroupSkillNumMap'] as Map?)?.map(
             (k, e) => MapEntry(
                 int.parse(k as String),
@@ -112,6 +117,7 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
       'svtExp': instance.svtExp.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'funcTypeDetail': instance.funcTypeDetail.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'buffTypeDetail': instance.buffTypeDetail.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'svtLimitHides': instance.svtLimitHides.map((k, e) => MapEntry(k.toString(), e.map((e) => e.toJson()).toList())),
       'eventPointBuffGroupSkillNumMap': instance.eventPointBuffGroupSkillNumMap
           .map((k, e) => MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
       'laplaceUploadAllowAiQuests': instance.laplaceUploadAllowAiQuests,
@@ -1200,6 +1206,25 @@ Map<String, dynamic> _$GameConstantStrToJson(GameConstantStr instance) => <Strin
       'starRefreshBuffType': instance.starRefreshBuffType,
       'subPtBuffIndivi': instance.subPtBuffIndivi,
       'svtExitPtBuffIndivi': instance.svtExitPtBuffIndivi,
+    };
+
+SvtLimitHide _$SvtLimitHideFromJson(Map json) => SvtLimitHide(
+      limits: (json['limits'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      tds: (json['tds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      activeSkills: (json['activeSkills'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String), (e as List<dynamic>).map((e) => e as int).toList()),
+          ) ??
+          const {},
+      classPassives: (json['classPassives'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      addPassives: (json['addPassives'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+    );
+
+Map<String, dynamic> _$SvtLimitHideToJson(SvtLimitHide instance) => <String, dynamic>{
+      'limits': instance.limits,
+      'tds': instance.tds,
+      'activeSkills': instance.activeSkills.map((k, e) => MapEntry(k.toString(), e)),
+      'classPassives': instance.classPassives,
+      'addPassives': instance.addPassives,
     };
 
 const _$BuffActionEnumMap = {

@@ -356,6 +356,8 @@ class Servant with GameCardMixin {
     groupedNoblePhantasms.clear();
     List<int> excludeSvtChangeTds = [for (final change in svtChange) ...change.beforeTreasureDeviceIds];
     for (final td in List.of(noblePhantasms)..sort2((e) => e.svt.priority)) {
+      // skip Iori's unknown TD
+      if (collectionNo == 405 && td.id == 106099) continue;
       // 151-154
       if (excludeSvtChangeTds.contains(td.id)) continue;
       final tds = groupedNoblePhantasms.putIfAbsent(td.svt.num, () => []);
@@ -607,7 +609,7 @@ class Servant with GameCardMixin {
   }
 
   Iterable<NiceSkill> eventSkills({required int eventId, required bool includeZero}) {
-    return extraPassive.where((skill) => skill.isSvtEventSkill(eventId: eventId, includeZero: includeZero));
+    return extraPassive.where((skill) => skill.shouldActiveSvtEventSkill(eventId: eventId, includeZero: includeZero));
   }
 
   NiceSkill? getDefaultSkill(List<NiceSkill> skills, Region region) {

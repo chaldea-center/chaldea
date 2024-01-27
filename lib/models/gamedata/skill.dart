@@ -245,9 +245,9 @@ class NiceSkill extends SkillOrTd implements BaseSkill {
     return _$NiceSkillFromJson(json);
   }
 
-  bool isSvtEventSkill({required int eventId, required bool includeZero}) {
-    // ヨハンナさんと未確認の愛 ブレッシング・オブ・セイント EX 300NP
-    if (id == 940274) return false;
+  bool shouldActiveSvtEventSkill({required int eventId, required bool includeZero}) {
+    final hidePassives = ConstData.getSvtLimitHides(svtId, null).expand((e) => e.addPassives);
+    if (hidePassives.contains(940274)) return false;
     if (extraPassive.isEmpty && includeZero) return true;
     for (final passive in extraPassive) {
       if (passive.eventId == 0) {
