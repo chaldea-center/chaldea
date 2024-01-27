@@ -144,7 +144,8 @@ class _MCQuestConvertPageState extends State<MCQuestConvertPage> {
 class MCQuestListConvertPage extends StatefulWidget {
   final String? title;
   final List<Quest> quests;
-  const MCQuestListConvertPage({super.key, this.title, required this.quests});
+  final NiceWar? war;
+  const MCQuestListConvertPage({super.key, this.title, required this.quests, this.war});
 
   @override
   State<MCQuestListConvertPage> createState() => _MCQuestListConvertPageState();
@@ -199,6 +200,23 @@ class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
 
   String getAllResults() {
     final buffer = StringBuffer();
+    final war = widget.war;
+    final event = war?.eventReal;
+    if (war != null && event != null && title == '主线关卡') {
+      final converter = McConverter();
+      buffer.writeln("""{{关卡信息
+|类型=活动
+|章名称cn=${war.lName.maybeOf(Region.cn) ?? ""}
+|开始时间cn=
+|结束时间cn=
+|章名称jp=${war.name}
+|开始时间jp=${converter.getJpTime(event.startedAt)}
+|结束时间jp=${converter.getJpTime(event.endedAt)}
+|开放条件=
+|地图=
+}}
+""");
+    }
     if (title != null) {
       buffer.writeln('==$title==');
     }

@@ -15,6 +15,7 @@ class QuestListPage extends StatefulWidget {
   final String? title;
   final bool needSort;
   final bool groupWar; // not implemented yet
+  final NiceWar? war;
 
   const QuestListPage({
     super.key,
@@ -22,13 +23,16 @@ class QuestListPage extends StatefulWidget {
     this.title,
     this.needSort = true,
     this.groupWar = false,
+    this.war,
   }) : ids = const [];
+
   const QuestListPage.ids({
     super.key,
     this.ids = const [],
     this.title,
     this.needSort = true,
     this.groupWar = false,
+    this.war,
   }) : quests = const [];
 
   @override
@@ -186,7 +190,7 @@ class _QuestListPageState extends State<QuestListPage> {
               child: const Text('导出至Mooncell'),
               onTap: () {
                 final quests = questIds.map((e) => allQuestsMap[e]).whereType<Quest>().toList();
-                router.pushPage(MCQuestListConvertPage(title: widget.title, quests: quests));
+                router.pushPage(MCQuestListConvertPage(title: widget.title, quests: quests, war: widget.war));
               },
             ),
         ];

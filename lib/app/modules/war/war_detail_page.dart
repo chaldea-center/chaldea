@@ -517,7 +517,7 @@ Widget addQuestCategoryTile({
       trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
       onTap: () {
         router.push(
-          child: QuestListPage(title: name, quests: quests, needSort: needSort),
+          child: QuestListPage(title: name, quests: quests, needSort: needSort, war: war),
         );
       },
     ));
