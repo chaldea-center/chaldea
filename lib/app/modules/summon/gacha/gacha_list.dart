@@ -43,7 +43,6 @@ class _GachaListPageState extends State<GachaListPage>
     doFetchData();
     if (db.settings.autoResetFilter) {
       filterData.reset();
-      filterData.reversed = true;
     }
   }
 

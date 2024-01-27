@@ -1,5 +1,6 @@
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -30,7 +31,7 @@ class EventItemInputTab extends StatefulWidget {
 class _EventItemInputTabState extends State<EventItemInputTab> {
   late final _scrollController = ScrollController();
 
-  late EventItemCalcParams params;
+  EventItemCalcParams params = EventItemCalcParams();
 
   // category - itemKey
   final solver = BaseLPSolver();
@@ -42,7 +43,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     super.initState();
     // update userdata at last
     solver.ensureEngine();
-    getData();
+    showEasyLoading(getData, mask: true);
   }
 
   @override
@@ -52,7 +53,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     super.dispose();
   }
 
-  void getData() {
+  Future<void> getData() async {
     params = db.settings.eventItemCalc.putIfAbsent(widget.warId, () => EventItemCalcParams());
     if (widget.objectiveCounts != null) {
       // [objectiveCounts] should contain all items from shop even value is 0
@@ -64,10 +65,26 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     if (war == null) return;
     Set<int> validQuests = {};
     for (final quest in war.quests) {
-      if (!(quest.isAnyFree && quest.consumeType.useAp && quest.consume > 0)) {
+      if (!(quest.isAnyFree && quest.consumeType.useAp && quest.consume > 0 && quest.phases.isNotEmpty)) {
         continue;
       }
-      final drops = db.gameData.dropData.freeDrops2[quest.id];
+      QuestDropData? drops = db.gameData.dropData.freeDrops2[quest.id];
+      if ((drops == null || drops.runs < 5) && DateTime.now().timestamp - quest.openedAt < kSecsPerDay) {
+        final questPhase =
+            await AtlasApi.questPhase(quest.id, quest.phases.last, expireAfter: const Duration(minutes: 30));
+        if (questPhase != null && questPhase.drops.isNotEmpty && questPhase.drops.first.runs > (drops?.runs ?? 0)) {
+          Map<int, int> items = {}, groups = {};
+          for (final drop in questPhase.drops) {
+            items.addNum(drop.objectId, drop.num * drop.dropCount);
+            groups.addNum(drop.objectId, drop.dropCount);
+          }
+          drops = QuestDropData(
+            runs: questPhase.drops.first.runs,
+            items: items,
+            groups: groups,
+          );
+        }
+      }
       if (drops == null) continue;
 
       final eventDrops = QuestDropData(runs: drops.runs, items: {}, groups: {});
@@ -96,6 +113,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     params.bonusPlans.removeWhere((e) => !validQuests.contains(e.questId));
     params.bonusPlans.sort2((e) => -e.questId);
     params.itemCounts.removeWhere((key, value) => !eventItemIds.contains(key));
+    if (mounted) setState(() {});
   }
 
   @override

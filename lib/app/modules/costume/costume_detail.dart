@@ -54,8 +54,12 @@ class CostumeDetailPage extends StatelessWidget {
                     CustomTableRow(children: [TableCellData(text: costume.name, textAlign: TextAlign.center)]),
                   if (!Transl.isEN)
                     CustomTableRow(children: [TableCellData(text: costume.lName.na, textAlign: TextAlign.center)]),
-                  CustomTableRow.fromTexts(
-                      texts: ['No. ${costume.costumeCollectionNo}', 'No. ${costume.battleCharaId}'])
+                  CustomTableRow(
+                    children: [
+                      TableCellData(text: 'No. ${costume.costumeCollectionNo}'),
+                      TableCellData(text: 'No. ${costume.battleCharaId} (${costume.id})', flex: 2)
+                    ],
+                  )
                 ],
               ),
             ),

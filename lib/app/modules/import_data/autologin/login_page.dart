@@ -387,7 +387,9 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
         ),
         const SizedBox(width: 8),
         ElevatedButton.icon(
-          onPressed: doLogin,
+          onPressed: () {
+            EasyThrottle.throttleAsync('auth_file_login', doLogin);
+          },
           icon: const Icon(Icons.login),
           label: Text(S.current.login_login),
         ),
@@ -564,7 +566,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
   Future doLogin() async {
     final args = this.args;
     _error = null;
-    gameTops ??= await AtlasApi.gametops();
+    gameTops ??= await showEasyLoading(() => AtlasApi.gametops());
     final top = gameTops?.of(args.region);
     if (top == null) {
       EasyLoading.showError('Failed to load Game Info');

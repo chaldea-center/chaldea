@@ -239,7 +239,8 @@ class Quest with RouteInfo {
   bool shouldEnableMightyChain() {
     final war = this.war;
     final event = war?.eventReal;
-    if (war != null && !war.isMainStory && event != null && event.startedAt < DateTime(2022, 7, 31).timestamp) {
+    final checkTime = DateTime(2022, 7, 31).timestamp;
+    if (war != null && !war.isMainStory && event != null && event.endedAt < checkTime && closedAt < checkTime) {
       return false;
     } else {
       return true;
