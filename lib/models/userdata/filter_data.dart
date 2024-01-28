@@ -263,10 +263,35 @@ enum SvtPlanScope {
   misc, //fou, grail, bond
 }
 
-enum SvtSkillLevelState {
-  normal,
-  max9,
-  max10,
+enum SvtStatusState {
+  asc3,
+  asc4,
+  active8,
+  active9,
+  active10,
+  appendTwo8,
+  appendTwo9,
+  // appendTwo10,
+  append8,
+  append9,
+  // append10
+  ;
+
+  String get shownName {
+    return switch (this) {
+      SvtStatusState.asc3 => '<4',
+      SvtStatusState.asc4 => '=4',
+      SvtStatusState.active8 => '<9/9/9',
+      SvtStatusState.active9 => '9/9/9',
+      SvtStatusState.active10 => '10/10/10',
+      SvtStatusState.appendTwo8 => 'A2|<9',
+      SvtStatusState.appendTwo9 => 'A2|≥9',
+      // SvtStatusState.appendTwo10 => 'A2|10',
+      SvtStatusState.append8 => 'A|<9',
+      SvtStatusState.append9 => 'A|≥9',
+      // SvtStatusState.append10 => 'A|≥10',
+    };
+  }
 }
 
 enum SvtBondStage {
@@ -325,7 +350,7 @@ class SvtFilterData with _FilterData {
 
   final svtDuplicated = FilterRadioData<bool>();
   final planCompletion = FilterGroupData<SvtPlanScope>();
-  final activeSkillLevel = FilterGroupData<SvtSkillLevelState>();
+  final curStatus = FilterGroupData<SvtStatusState>();
   final priority = FilterGroupData<int>(onChanged: () {
     db.itemCenter.updateSvts(all: true);
   });
@@ -362,7 +387,7 @@ class SvtFilterData with _FilterData {
         svtClass,
         rarity,
         attribute,
-        activeSkillLevel,
+        curStatus,
         planCompletion,
         svtDuplicated,
         bond,

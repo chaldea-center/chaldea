@@ -58,15 +58,19 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
     }
     // svt data filter
     // skill level
-    if (filterData.activeSkillLevel.options.isNotEmpty) {
+    if (filterData.curStatus.options.isNotEmpty) {
       if (!svtStat.favorite) return false;
-      int lowestSkill = svtStat.cur.skills.reduce((a, b) => min(a, b));
-      final skillState = lowestSkill == 10
-          ? SvtSkillLevelState.max10
-          : lowestSkill == 9
-              ? SvtSkillLevelState.max9
-              : SvtSkillLevelState.normal;
-      if (!filterData.activeSkillLevel.matchOne(skillState)) {
+      int minActive = Maths.min(svtStat.cur.skills, 0);
+      int append2 = svtStat.cur.appendSkills[1];
+      int minAppend = Maths.min(svtStat.cur.appendSkills.where((e) => e > 0), -1);
+      final values = [
+        svtStat.cur.ascension < 4 ? SvtStatusState.asc3 : SvtStatusState.asc4,
+        minActive == 10 ? SvtStatusState.active10 : (minActive == 9 ? SvtStatusState.active9 : SvtStatusState.active8),
+        append2 < 9 ? SvtStatusState.appendTwo8 : SvtStatusState.appendTwo9,
+        if (minAppend != -1) minAppend < 9 ? SvtStatusState.append8 : SvtStatusState.append9,
+      ];
+
+      if (!filterData.curStatus.matchAny(values)) {
         return false;
       }
     }
@@ -341,20 +345,34 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
             update();
           },
         ),
-        FilterGroup<SvtSkillLevelState>(
-          title: Text(S.current.active_skill),
-          options: SvtSkillLevelState.values,
-          values: filterData.activeSkillLevel,
-          optionBuilder: (v) {
-            switch (v) {
-              case SvtSkillLevelState.normal:
-                return const Text('<999');
-              case SvtSkillLevelState.max9:
-                return const Text('999');
-              case SvtSkillLevelState.max10:
-                return const Text('10/10/10');
-            }
+        FilterGroup<SvtStatusState>(
+          title: Text("${S.current.current_}: ${S.current.ascension_short}/${S.current.active_skill_short}"),
+          options: const [
+            SvtStatusState.asc3,
+            SvtStatusState.asc4,
+            SvtStatusState.active8,
+            SvtStatusState.active9,
+            SvtStatusState.active10,
+          ],
+          values: filterData.curStatus,
+          optionBuilder: (v) => Text(v.shownName),
+          onFilterChanged: (value, _) {
+            update();
           },
+        ),
+        FilterGroup<SvtStatusState>(
+          title: Text(
+              "${S.current.current_}: ${S.current.append_skill_short}2/${S.current.append_skill_short}(Unlocked only)"),
+          options: const [
+            SvtStatusState.appendTwo8,
+            SvtStatusState.appendTwo9,
+            // SvtStatusState.appendTwo10,
+            SvtStatusState.append8,
+            SvtStatusState.append9,
+            // SvtStatusState.append10,
+          ],
+          values: filterData.curStatus,
+          optionBuilder: (v) => Text(v.shownName),
           onFilterChanged: (value, _) {
             update();
           },
