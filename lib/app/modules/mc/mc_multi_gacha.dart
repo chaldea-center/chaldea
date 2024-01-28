@@ -357,6 +357,23 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
 
     // 卡池情况
     buffer.writeln('==推荐召唤具体情况==');
+    for (final gacha in gachas.map((e) => e.niceGacha)) {
+      if (gacha == null || gacha.storyAdjusts.isEmpty) continue;
+      final questId = gacha.storyAdjusts.firstWhereOrNull((e) => e.condType == CondType.questClear)?.targetId;
+      final quest = db.gameData.quests[questId];
+      String chapter;
+      if (questId != null && quest != null && quest.war?.lastQuestId == questId) {
+        chapter = quest.war?.extra.mcLink?.replaceAll('_', ' ') ?? quest.war!.lLongName.l;
+        chapter = '[[$chapter]]';
+      } else if (questId != null) {
+        chapter = "${quest?.war?.lLongName.l ?? ''} ${quest?.lName.l ?? questId}".trim();
+      } else {
+        chapter = "未知进度";
+      }
+
+      buffer.writeln("{{cbox2|lv=4|icon=exclamation|title=召唤「xxxx(查看公告并补充)」需要通关「$chapter」}}");
+      break;
+    }
 
     String _getJpTime(int timestamp) {
       return McConverter().getJpTime(timestamp);

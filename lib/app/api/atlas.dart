@@ -295,6 +295,14 @@ class AtlasApi {
     );
   }
 
+  static Future<NiceGacha?> gacha(int gachaId, {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$atlasApiHost/nice/${region.upper}/gacha/$gachaId',
+      (data) => NiceGacha.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+
   static Future<List<EnemyMaster>?> enemyMasters({Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$atlasApiHost/export/${region.upper}/nice_enemy_master.json',

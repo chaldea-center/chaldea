@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:html/dom.dart' as htmldom;
 import 'package:html/parser.dart' as htmlparser;
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
@@ -11,6 +12,7 @@ import 'converter.dart';
 
 class GachaProbData {
   final MstGacha gacha;
+  NiceGacha? niceGacha;
   String htmlText = "";
   List<GachaProbRow> groups = [];
 
@@ -155,6 +157,7 @@ class JpGachaParser {
     final data = GachaProbData(gacha, '', []);
     final url = gacha.getHtmlUrl(Region.jp);
     if (url == null) return data;
+    data.niceGacha = await AtlasApi.gacha(gacha.id);
     final text = await CachedApi.cacheManager.getText(url);
     if (text == null) return data;
 
@@ -222,7 +225,7 @@ class JpGachaParser {
     final groups = groupMap.values.toList();
     groups.sortByList((e) => [e.isSvt ? 0 : 1, e.pickup ? 0 : 1, -e.rarity, e.cards.length]);
 
-    return GachaProbData(gacha, text, groups);
+    return GachaProbData(gacha, text, groups)..niceGacha = data.niceGacha;
   }
 
   List<List<String>> _getProbTable(htmldom.Document document, int tableIndex, int colCount) {
