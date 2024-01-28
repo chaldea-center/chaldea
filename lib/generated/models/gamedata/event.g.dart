@@ -25,6 +25,10 @@ Event _$EventFromJson(Map json) => Event(
               ?.map((e) => EventAdd.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      svts: (json['svts'] as List<dynamic>?)
+              ?.map((e) => EventSvt.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       shop: (json['shop'] as List<dynamic>?)
               ?.map((e) => NiceShop.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -137,6 +141,7 @@ Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
       'endedAt': instance.endedAt,
       'finishedAt': instance.finishedAt,
       'eventAdds': instance.eventAdds.map((e) => e.toJson()).toList(),
+      'svts': instance.svts.map((e) => e.toJson()).toList(),
       'shop': instance.shop.map((e) => e.toJson()).toList(),
       'rewardScenes': instance.rewardScenes.map((e) => e.toJson()).toList(),
       'rewards': instance.pointRewards.map((e) => e.toJson()).toList(),
@@ -1435,4 +1440,70 @@ Map<String, dynamic> _$EventMuralToJson(EventMural instance) => <String, dynamic
       'num': instance.num,
       'condQuestId': instance.condQuestId,
       'condQuestPhase': instance.condQuestPhase,
+    };
+
+EventSvt _$EventSvtFromJson(Map json) => EventSvt(
+      svtId: json['svtId'] as int,
+      script: json['script'] == null ? null : EventSvtScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
+      originalScript: (json['originalScript'] as Map?)?.map(
+        (k, e) => MapEntry(k as String, e),
+      ),
+      type: $enumDecodeNullable(_$EventSvtTypeEnumMap, json['type']) ?? EventSvtType.none,
+      joinMessage: json['joinMessage'] as String? ?? '',
+      getMessage: json['getMessage'] as String? ?? '',
+      leaveMessage: json['leaveMessage'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      battleName: json['battleName'] as String? ?? '',
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      startedAt: json['startedAt'] as int? ?? 0,
+      endedAt: json['endedAt'] as int? ?? 0,
+    );
+
+Map<String, dynamic> _$EventSvtToJson(EventSvt instance) => <String, dynamic>{
+      'svtId': instance.svtId,
+      'script': instance.script.toJson(),
+      'originalScript': instance.originalScript,
+      'type': _$EventSvtTypeEnumMap[instance.type]!,
+      'joinMessage': instance.joinMessage,
+      'getMessage': instance.getMessage,
+      'leaveMessage': instance.leaveMessage,
+      'name': instance.name,
+      'battleName': instance.battleName,
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+      'startedAt': instance.startedAt,
+      'endedAt': instance.endedAt,
+    };
+
+const _$EventSvtTypeEnumMap = {
+  EventSvtType.none: 'none',
+  EventSvtType.join: 'join',
+  EventSvtType.condJoin: 'condJoin',
+  EventSvtType.directJoin: 'directJoin',
+};
+
+EventSvtScript _$EventSvtScriptFromJson(Map json) => EventSvtScript(
+      addGetMessage: json['addGetMessage'] as String?,
+      addMessageReleaseConditions: (json['addMessageReleaseConditions'] as List<dynamic>?)
+          ?.map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      isProtectedDuringEvent: json['isProtectedDuringEvent'] as bool?,
+      joinQuestId: json['joinQuestId'] as int?,
+      joinShopId: json['joinShopId'] as int?,
+      notPresentAnonymous: json['notPresentAnonymous'] as bool?,
+      notPresentRarePri: json['notPresentRarePri'] as int?,
+      ruby: json['ruby'] as String?,
+    );
+
+Map<String, dynamic> _$EventSvtScriptToJson(EventSvtScript instance) => <String, dynamic>{
+      'addGetMessage': instance.addGetMessage,
+      'addMessageReleaseConditions': instance.addMessageReleaseConditions?.map((e) => e.toJson()).toList(),
+      'isProtectedDuringEvent': instance.isProtectedDuringEvent,
+      'joinQuestId': instance.joinQuestId,
+      'joinShopId': instance.joinShopId,
+      'notPresentAnonymous': instance.notPresentAnonymous,
+      'notPresentRarePri': instance.notPresentRarePri,
+      'ruby': instance.ruby,
     };

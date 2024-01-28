@@ -30,6 +30,7 @@ class Event with RouteInfo {
   // int materialOpenedAt;
   List<int> _warIds;
   List<EventAdd> eventAdds;
+  List<EventSvt>svts;
   List<NiceShop> shop;
   List<EventRewardScene> rewardScenes;
   @JsonKey(name: 'rewards')
@@ -83,6 +84,7 @@ class Event with RouteInfo {
     // required this.materialOpenedAt,
     List<int> warIds = const [],
     this.eventAdds = const [],
+    this.svts = const [],
     this.shop = const [],
     this.pointRewards = const [],
     this.rewardScenes = const [],
@@ -1774,6 +1776,69 @@ class EventMural {
   Map<String, dynamic> toJson() => _$EventMuralToJson(this);
 }
 
+@JsonSerializable()
+class EventSvt {
+  int svtId;
+  EventSvtScript script;
+  Map<String, dynamic> originalScript;
+  EventSvtType type;
+  String joinMessage;
+  String getMessage;
+  String leaveMessage;
+  String name;
+  String battleName;
+  List<CommonRelease> releaseConditions;
+  int startedAt;
+  int endedAt;
+
+  EventSvt({
+    required this.svtId,
+    EventSvtScript? script,
+    Map<String, dynamic>? originalScript,
+    this.type = EventSvtType.none,
+    this.joinMessage = '',
+    this.getMessage = '',
+    this.leaveMessage = '',
+    this.name = '',
+    this.battleName = '',
+    this.releaseConditions = const [],
+    this.startedAt = 0,
+    this.endedAt = 0,
+  })  : script = script ?? EventSvtScript(),
+        originalScript = originalScript ?? {};
+
+  factory EventSvt.fromJson(Map<String, dynamic> json) => _$EventSvtFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventSvtToJson(this);
+}
+
+@JsonSerializable()
+class EventSvtScript {
+  String? addGetMessage;
+  List<CommonRelease>? addMessageReleaseConditions;
+  bool? isProtectedDuringEvent;
+  int? joinQuestId;
+  int? joinShopId;
+  bool? notPresentAnonymous;
+  int? notPresentRarePri;
+  String? ruby;
+
+  EventSvtScript({
+    this.addGetMessage,
+    this.addMessageReleaseConditions,
+    this.isProtectedDuringEvent,
+    this.joinQuestId,
+    this.joinShopId,
+    this.notPresentAnonymous,
+    this.notPresentRarePri,
+    this.ruby,
+  });
+
+  factory EventSvtScript.fromJson(Map<String, dynamic> json) => _$EventSvtScriptFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventSvtScriptToJson(this);
+}
+
 enum EventOverwriteType {
   unknown,
   bgImage,
@@ -2077,4 +2142,11 @@ enum WarBoardTreasureRarity {
   itemIcon,
   itemIconPlus,
   itemIconPlus2,
+}
+
+enum EventSvtType {
+  none,
+  join,
+  condJoin,
+  directJoin,
 }
