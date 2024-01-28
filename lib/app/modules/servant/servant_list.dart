@@ -230,16 +230,19 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                   },
                 ),
                 PopupMenuItem(
-                  child: Text(
-                    S.current.setting_only_change_second_append_skill,
-                    style: db.settings.display.onlyAppendSkillTwo
-                        ? null
-                        : const TextStyle(decoration: TextDecoration.lineThrough),
+                  child: CheckboxWithLabel(
+                    value: db.settings.display.onlyAppendSkillTwo,
+                    label: Text(S.current.setting_only_change_second_append_skill),
+                    onChanged: (v) {
+                      Navigator.pop(context);
+                      setState(() {
+                        db.settings.display.onlyAppendSkillTwo = !db.settings.display.onlyAppendSkillTwo;
+                      });
+                    },
                   ),
                   onTap: () {
                     setState(() {
                       db.settings.display.onlyAppendSkillTwo = !db.settings.display.onlyAppendSkillTwo;
-                      db.saveSettings();
                     });
                   },
                 ),
@@ -263,7 +266,6 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                   enabled: SplitRoute.isSplit(context),
                   onTap: () {
                     db.settings.display.planPageFullScreen = !db.settings.display.planPageFullScreen;
-                    db.saveSettings();
                     SplitRoute.of(context)!.detail = db.settings.display.planPageFullScreen ? null : false;
                   },
                   child: Text(S.current.show_fullscreen),
@@ -328,7 +330,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
     }
     final costumes = svt.profile.costume.values.toList();
     costumes.sort2((e) => e.id);
-    return DefaultTextStyle(
+    return DefaultTextStyle.merge(
       style: TextStyle(
         fontSize: 12,
         color: Theme.of(context).textTheme.bodySmall?.color,
@@ -338,13 +340,13 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         // border: TableBorder.all(),
         children: [
           TableRow(children: [
-            _getHeader('${S.current.ascension}:'),
+            _getHeader('${S.current.ascension_short}:'),
             _getRange(cur.ascension, target.ascension, 4),
-            _getHeader('${S.current.grail}:'),
-            _getRange(cur.grail, target.grail, null),
+            _getHeader('${S.current.np_short}:'),
+            _getRange(cur.npLv, target.npLv, 5),
           ]),
           TableRow(children: [
-            _getHeader('${S.current.skill}:'),
+            _getHeader('${S.current.active_skill_short}:'),
             for (int i = 0; i < 3; i++) _getRange(cur.skills[i], target.skills[i], 9)
           ]),
           TableRow(children: [
@@ -376,9 +378,10 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
 
   bool changeTarget = true;
   int? _changedAscension;
-  int? _changedSkill;
+  int? _changedActive;
   int? _changedAppend; // only append skill 2 - NP related
   bool? _changedDress;
+  int? _changedTd;
 
   bool _eventSvtOnly = false;
   @override
@@ -638,18 +641,18 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
   PreferredSizeWidget? get buttonBar {
     if (!widget.planMode) return null;
 
+    Text text(String s) => Text(s, style: const TextStyle(fontSize: 14));
+
     final buttons = [
       DropdownButton<int>(
         value: _changedAscension,
         icon: Container(),
-        hint: Text(S.current.ascension),
+        hint: text(S.current.ascension_short),
         items: List.generate(
           5,
           (i) => DropdownMenuItem(
             value: i,
-            child: Text(
-              S.current.words_separate(S.current.ascension, '$i'),
-            ),
+            child: text(S.current.words_separate(S.current.ascension_short, '$i')),
           ),
         ),
         onChanged: (v) {
@@ -667,36 +670,36 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
         },
       ),
       DropdownButton<int>(
-        value: _changedSkill,
+        value: _changedActive,
         icon: Container(),
-        hint: Text(S.current.skill),
+        hint: text(S.current.active_skill_short),
         items: List.generate(11, (i) {
           if (i == 0) {
-            return DropdownMenuItem(value: i, child: const Text('x + 1'));
+            return DropdownMenuItem(value: i, child: text('x + 1'));
           } else {
             return DropdownMenuItem(
               value: i,
-              child: Text(S.current.words_separate(S.current.skill, i.toString())),
+              child: text(S.current.words_separate(S.current.active_skill_short, i.toString())),
             );
           }
         }),
         onChanged: (v) {
           setState(() {
-            _changedSkill = v;
-            if (_changedSkill == null) return;
+            _changedActive = v;
+            if (_changedActive == null) return;
             _batchChange((svt, cur, target) {
               for (int i = 0; i < 3; i++) {
                 if (changeTarget) {
                   if (v == 0) {
                     target.skills[i] = min(10, cur.skills[i] + 1);
                   } else {
-                    target.skills[i] = max(cur.skills[i], _changedSkill!);
+                    target.skills[i] = max(cur.skills[i], _changedActive!);
                   }
                 } else {
                   if (v == 0) {
                     cur.skills[i] = min(10, cur.skills[i] + 1);
                   } else {
-                    cur.skills[i] = _changedSkill!;
+                    cur.skills[i] = _changedActive!;
                   }
                 }
               }
@@ -707,15 +710,15 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
       DropdownButton<int>(
         value: _changedAppend,
         icon: Container(),
-        hint: Text(S.current.append_skill_short + (db.settings.display.onlyAppendSkillTwo ? '2' : '')),
+        hint: text(S.current.append_skill_short + (db.settings.display.onlyAppendSkillTwo ? '2' : '')),
         items: List.generate(12, (i) {
           if (i == 0) {
-            return const DropdownMenuItem(value: -1, child: Text('x + 1'));
+            return DropdownMenuItem(value: -1, child: text('x + 1'));
           } else {
             return DropdownMenuItem(
               value: i - 1,
-              child: Text(S.current.words_separate(
-                  S.current.append_skill_short + (db.settings.display.onlyAppendSkillTwo ? '2-' : '-'),
+              child: text(S.current.words_separate(
+                  S.current.append_skill_short + (db.settings.display.onlyAppendSkillTwo ? '2|' : ''),
                   (i - 1).toString())),
             );
           }
@@ -750,10 +753,10 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
       DropdownButton<bool>(
         value: _changedDress,
         icon: Container(),
-        hint: Text(S.current.costume),
+        hint: text(S.current.costume),
         items: [
-          DropdownMenuItem(value: false, child: Text('${S.current.costume}×')),
-          DropdownMenuItem(value: true, child: Text('${S.current.costume}√'))
+          DropdownMenuItem(value: false, child: text('${S.current.costume}×')),
+          DropdownMenuItem(value: true, child: text('${S.current.costume}√'))
         ],
         onChanged: (v) {
           setState(() {
@@ -767,7 +770,33 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
           });
         },
       ),
+      DropdownButton<int>(
+        value: _changedTd,
+        icon: Container(),
+        hint: text(S.current.np_short),
+        items: List.generate(
+          6,
+          (i) => DropdownMenuItem(
+            value: i,
+            child: text('${S.current.np_short}$i'),
+          ),
+        ),
+        onChanged: (v) {
+          setState(() {
+            _changedTd = v;
+            if (_changedTd == null) return;
+            _batchChange((svt, cur, target) {
+              if (changeTarget) {
+                target.npLv = max(cur.npLv, _changedTd!);
+              } else {
+                cur.npLv = _changedTd!;
+              }
+            });
+          });
+        },
+      ),
     ];
+    Icons.lock;
     return PreferredSize(
       preferredSize: const Size.fromHeight(64),
       child: Container(
@@ -801,9 +830,10 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                         setState(() {
                           changeTarget = v.radioValue!;
                           _changedAscension = null;
-                          _changedSkill = null;
+                          _changedActive = null;
                           _changedAppend = null;
                           _changedDress = null;
+                          _changedTd = null;
                         });
                       },
                       optionBuilder: (s) =>

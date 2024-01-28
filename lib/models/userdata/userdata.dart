@@ -533,8 +533,8 @@ class SvtPlan {
         _npLv = 5;
       }
     }
-    if (_npLv != null) {
-      _npLv = _npLv!.clamp2(lower?.npLv ?? 0, 5);
+    if (lower != null && lower._npLv != null) {
+      _npLv = npLv.clamp2(lower.npLv, 5);
     }
   }
 
