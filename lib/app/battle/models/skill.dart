@@ -143,7 +143,7 @@ class BattleSkillInfoData {
     if (curSkill == null) {
       return false;
     }
-    if (battleData.activator?.isPlayer ?? false) {
+    if (battleData.activator?.isEnemy != true) {
       chargeTurn = curSkill.coolDown[skillLv - 1];
     }
     skillScript = curSkill.script;
