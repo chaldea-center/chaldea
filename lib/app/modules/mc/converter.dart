@@ -11,6 +11,10 @@ class McConverter {
     if (e.isNotEmpty) errors.add(e);
   }
 
+  String? getPageName(String? title) {
+    return title?.replaceAll('_', ' ').replaceAll('\n', ' ');
+  }
+
   String getLanguageError() {
     List<String> _errors = [];
     if (!Language.isCHS) {

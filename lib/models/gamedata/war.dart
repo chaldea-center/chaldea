@@ -173,6 +173,30 @@ class NiceWar with RouteInfo {
   // exclude 1.7/1.5.1-1.5.4/2.7
   Event? get eventReal => isMainStory ? null : db.gameData.events[eventId];
 
+  NiceWar? get releaseCondWar {
+    Quest? firstMainQuest;
+    NiceWar? condWar;
+    final quests = spots.expand((e) => e.quests);
+    if (startType == WarStartType.quest) {
+      firstMainQuest = quests.firstWhereOrNull((q) => q.id == targetId);
+    }
+    if (firstMainQuest == null) {
+      final mainQuests = quests.where((e) => e.type == QuestType.main).toList();
+      mainQuests.sort2((e) => -e.priority);
+      firstMainQuest = mainQuests.getOrNull(0);
+    }
+    if (firstMainQuest != null) {
+      final targetId =
+          firstMainQuest.releaseConditions.firstWhereOrNull((cond) => cond.type == CondType.questClear)?.targetId;
+      final condQuest = db.gameData.quests[targetId];
+      if (targetId == condQuest?.war?.lastQuestId) {
+        // usually only main story use the lastQuestId
+        condWar = condQuest?.war;
+      }
+    }
+    return condWar;
+  }
+
   @override
   String get route => Routes.warI(id);
 

@@ -374,25 +374,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
   }
 
   Widget? getCondWar() {
-    Quest? firstMainQuest;
-    NiceWar? condWar;
-    if (war.startType == WarStartType.quest) {
-      firstMainQuest = war.quests.firstWhereOrNull((q) => q.id == war.targetId);
-    }
-    if (firstMainQuest == null) {
-      final mainQuests = war.quests.where((e) => e.type == QuestType.main).toList();
-      mainQuests.sort2((e) => -e.priority);
-      firstMainQuest = mainQuests.getOrNull(0);
-    }
-    if (firstMainQuest != null) {
-      final targetId =
-          firstMainQuest.releaseConditions.firstWhereOrNull((cond) => cond.type == CondType.questClear)?.targetId;
-      final condQuest = db.gameData.quests[targetId];
-      if (targetId == condQuest?.war?.lastQuestId) {
-        // usually only main story use the lastQuestId
-        condWar = condQuest?.war;
-      }
-    }
+    NiceWar? condWar = war.releaseCondWar;
     if (condWar == null) return null;
     return CustomTableRow(children: [
       TableCellData(isHeader: true, text: S.current.open_condition),
@@ -400,7 +382,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
         flex: 3,
         child: TextButton(
           onPressed: () {
-            condWar?.routeTo();
+            condWar.routeTo();
           },
           style: kTextButtonDenseStyle,
           child: Text(

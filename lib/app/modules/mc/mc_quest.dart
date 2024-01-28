@@ -176,7 +176,7 @@ class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
       EasyLoading.show(status: '$finished/${converters.length}...');
       List<Future> futures = converters.map((converter) async {
         converter.useTitleBg = _useBgColor;
-        await converter.loadAndConvert();
+        await converter.loadAndConvert(widget.quests);
         finished += 1;
         EasyLoading.show(status: '$finished/${converters.length}...');
       }).toList();
@@ -204,15 +204,20 @@ class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
     final event = war?.eventReal;
     if (war != null && event != null && title == '主线关卡') {
       final converter = McConverter();
+      final eventName = Transl.eventNames(event.detail);
+      final condWar = war.releaseCondWar;
+
       buffer.writeln("""{{关卡信息
-|类型=活动
-|章名称cn=${war.lName.maybeOf(Region.cn) ?? ""}
+|类型=${war.parentWars.contains(WarId.mainInterlude) ? "主线物语" : "活动"}
+|章名称cn=${converter.getPageName(eventName.maybeOf(Region.cn)) ?? ""}
 |开始时间cn=
 |结束时间cn=
-|章名称jp=${war.name}
+|地点cn=${war.lLongName.maybeOf(Region.cn) ?? ""}
+|章名称jp=${converter.getPageName(event.detail)}
 |开始时间jp=${converter.getJpTime(event.startedAt)}
 |结束时间jp=${converter.getJpTime(event.endedAt)}
-|开放条件=
+|地点jp=${war.longName}
+|开放条件=${converter.getPageName(condWar?.extra.mcLink) ?? ""}
 |地图=
 }}
 """);
@@ -222,7 +227,7 @@ class _MCQuestListConvertPageState extends State<MCQuestListConvertPage> {
     }
     for (final converter in converters) {
       if (converter.result.isEmpty) {
-        buffer.writeln('未解析\n');
+        buffer.writeln('「${converter.quest.lName.l}」未解析\n');
       } else {
         buffer.writeln(converter.result);
       }
@@ -328,7 +333,7 @@ class _MCQuestConverter extends McConverter {
     return null;
   }
 
-  Future<void> loadAndConvert() async {
+  Future<void> loadAndConvert([List<Quest>? questList]) async {
     result = '';
     errors.clear();
     checkLanguageError();
@@ -351,7 +356,7 @@ class _MCQuestConverter extends McConverter {
     futures.add(_loadRaw());
 
     await Future.wait(futures);
-    result = convert();
+    result = convert(questList);
   }
 
   Future<void> _loadRaw() async {
@@ -414,7 +419,7 @@ class _MCQuestConverter extends McConverter {
     _bannerCaches[url] = (titleBanner!, cropTitleBanner!, bannerColor!);
   }
 
-  String convert() {
+  String convert([List<Quest>? questList]) {
     // errors.clear();
     String? nameCn = quest.lName.maybeOf(Region.cn);
     bool allNoBattle = questPhases.values.every((q) => q.isNoBattle);
@@ -450,7 +455,64 @@ class _MCQuestConverter extends McConverter {
     }
 
     final buffer = StringBuffer("""===$chapter===\n{{关卡配置\n""");
-    if (svt != null) buffer.writeln('|开放条件=');
+    buffer.write('|开放条件=');
+    List<String> conds = [];
+
+    String getQuestName(int questId) {
+      final q = db.gameData.quests[questId];
+      if (q == null) return questId.toString();
+      if (q.warId != quest.warId) {
+        if (q.id == q.war?.lastQuestId) {
+          return q.war!.lShortName;
+        } else {
+          return "${q.war!.lShortName} ${q.lNameWithChapter}";
+        }
+      }
+      return q.lNameWithChapter;
+    }
+
+    for (final cond in quest.releaseConditions) {
+      if (cond.type == CondType.questClear) {
+        conds.add("通关「${getQuestName(cond.targetId)}」");
+      } else if (cond.type == CondType.questGroupClear) {
+        final questIds = db.gameData.others.getQuestsOfGroup(QuestGroupType.questRelease, cond.targetId);
+        conds.add("通关「${questIds.map((e) => getQuestName(e)).join('、')}」");
+      } else if (cond.type == CondType.eventMissionAchieve || cond.type == CondType.eventMissionClear) {
+        final mission = db.gameData.others.eventMissions[cond.targetId];
+        conds.add("完成任务No.${mission?.dispNo ?? cond.targetId}");
+      } else if (cond.type == CondType.eventTotalPoint) {
+        final event = db.gameData.events[cond.targetId];
+        if (event != null && event.pointGroups.length > 1) {
+          conds.add("活动点数合计${cond.value}以上后");
+        } else {
+          conds.add("活动点数${cond.value}以上后");
+        }
+      } else if (cond.type == CondType.eventGroupPoint) {
+        final pointName = db.gameData.others.eventPointGroups[cond.targetId]?.lName.l ?? "活动点数【${cond.targetId}】";
+        conds.add("$pointName${cond.value}以上");
+      }
+    }
+
+    if (questList != null && questList.isNotEmpty) {
+      int getDay(int t) {
+        final datetime = questList.first.openedAt.sec2date().toUtc().add(const Duration(hours: 9));
+        return datetime.year * 10000 + datetime.month * 100 + datetime.day;
+      }
+
+      final firstDay = getDay(questList.first.openedAt);
+      final days = getDay(quest.openedAt) - firstDay + 1;
+
+      if (days > 1) {
+        conds.add("第$days天${getJpTime(quest.openedAt).split(' ').last}");
+      }
+    }
+    if (conds.isNotEmpty) {
+      buffer.writeln('${conds.join('&')}后');
+    } else {
+      buffer.writeln();
+    }
+    // end release conds
+
     buffer.writeln("""
 |名称jp=${quest.name}
 |名称cn=${nameCn ?? ""}
