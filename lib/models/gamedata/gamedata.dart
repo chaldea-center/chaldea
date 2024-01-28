@@ -15,12 +15,12 @@ import 'const_data.dart';
 import 'drop_rate.dart';
 import 'enemy_master.dart';
 import 'event.dart';
+import 'gacha.dart';
 import 'game_card.dart';
 import 'item.dart';
 import 'mappings.dart';
 import 'mystic_code.dart';
 import 'quest.dart';
-import 'raw.dart';
 import 'servant.dart';
 import 'skill.dart';
 import 'war.dart';
@@ -46,6 +46,7 @@ export 'war.dart';
 export 'misc.dart';
 export 'wiki_data.dart';
 export 'reverse.dart';
+export 'gacha.dart';
 
 part '../../generated/models/gamedata/gamedata.g.dart';
 

@@ -4,7 +4,6 @@ import 'package:html/dom.dart' as htmldom;
 import 'package:html/parser.dart' as htmlparser;
 
 import 'package:chaldea/app/api/chaldea.dart';
-import 'package:chaldea/models/gamedata/raw.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';

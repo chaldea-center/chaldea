@@ -30,7 +30,7 @@ class Event with RouteInfo {
   // int materialOpenedAt;
   List<int> _warIds;
   List<EventAdd> eventAdds;
-  List<EventSvt>svts;
+  List<EventSvt> svts;
   List<NiceShop> shop;
   List<EventRewardScene> rewardScenes;
   @JsonKey(name: 'rewards')
