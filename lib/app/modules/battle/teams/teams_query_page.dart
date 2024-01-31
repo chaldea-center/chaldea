@@ -86,11 +86,14 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           icon: const Icon(Icons.filter_alt),
           tooltip: S.current.filter,
           onPressed: () {
-            Set<int> svtIds = {}, ceIds = {};
+            Set<int> svtIds = {}, ceIds = {}, mcIds = {};
             for (final record in queryResult.data) {
               final svts = record.decoded?.formation.allSvts ?? [];
               svtIds.addAll(svts.map((e) => e?.svtId ?? 0).where((e) => e > 0));
               ceIds.addAll(svts.map((e) => e?.ceId ?? 0).where((e) => e > 0));
+              if (record.decoded?.hasUsedMCSkills() ?? false) {
+                mcIds.add(record.decoded?.formation.mysticCode.mysticCodeId ?? 0);
+              }
             }
             return FilterPage.show(
               context: context,
@@ -98,6 +101,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
                 filterData: filterData,
                 availableSvts: svtIds,
                 availableCEs: ceIds,
+                availableMCs: mcIds,
                 onChanged: (_) {
                   if (mounted) {
                     setState(() {});
@@ -193,7 +197,11 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         buildHeader(shownIndex, record),
         buildExtraInfo(record),
         if (widget.mode == TeamQueryMode.user || widget.mode == TeamQueryMode.id) buildQuest(record),
-        if (shareData != null) FormationCard(formation: shareData.formation),
+        if (shareData != null)
+          FormationCard(
+            formation: shareData.formation,
+            fadeOutMysticCode: shareData.actions.isNotEmpty && !shareData.hasUsedMCSkills(),
+          ),
         buildTeamActions(record),
         const SizedBox(height: 6),
       ],
@@ -566,6 +574,13 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
 
       int criticalAttackCount = data.critsCount;
       if (maxCriticalAttackCount >= 0 && criticalAttackCount > maxCriticalAttackCount) {
+        return false;
+      }
+    }
+
+    if (filterData.mysticCode.isNotEmpty) {
+      final mcId = data.hasUsedMCSkills() ? data.formation.mysticCode.mysticCodeId ?? 0 : 0;
+      if (!filterData.mysticCode.matchOne(mcId)) {
         return false;
       }
     }

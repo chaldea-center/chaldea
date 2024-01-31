@@ -252,6 +252,15 @@ class BattleShareData {
 
   //
 
+  bool hasUsedMCSkills() {
+    if ((formation.mysticCode.mysticCodeId ?? 0) > 0 && formation.mysticCode.level > 0) {
+      if (actions.any((e) => e.type == BattleRecordDataType.skill && e.svt == null)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   bool usedMysticCodeSkill(final int checkIndex) {
     return actions.any((action) => action.usedMysticCode(checkIndex));
   }

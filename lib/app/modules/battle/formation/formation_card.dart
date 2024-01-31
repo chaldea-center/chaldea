@@ -8,8 +8,14 @@ import 'svt_option_editor.dart';
 class FormationCard extends StatelessWidget {
   final BattleTeamFormation formation;
   final bool showAllMysticCodeIcon;
+  final bool fadeOutMysticCode;
 
-  const FormationCard({super.key, required this.formation, this.showAllMysticCodeIcon = false});
+  const FormationCard({
+    super.key,
+    required this.formation,
+    this.showAllMysticCodeIcon = false,
+    this.fadeOutMysticCode = false,
+  });
 
   @override
   Widget build(final BuildContext context) {
@@ -117,31 +123,41 @@ class FormationCard extends StatelessWidget {
       mcIcons.add(mc?.icon);
     }
 
+    Widget child = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final icon in mcIcons)
+              Flexible(
+                child: db.getIconImage(
+                  enabled ? icon : null,
+                  aspectRatio: 1,
+                  width: 56,
+                  onTap: enabled
+                      ? () => router.push(url: Routes.mysticCodeI(formation.mysticCode.mysticCodeId ?? 0))
+                      : null,
+                ),
+              )
+          ],
+        ),
+        if (enabled)
+          Text(
+            "Lv.${formation.mysticCode.level}",
+            style: fadeOutMysticCode ? const TextStyle(decoration: TextDecoration.lineThrough) : null,
+            textScaler: const TextScaler.linear(0.9),
+          )
+      ],
+    );
+    if (fadeOutMysticCode) {
+      child = Opacity(opacity: 0.5, child: child);
+    }
+
     return Flexible(
       flex: mcIcons.length > 1 ? 12 : 8,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (final icon in mcIcons)
-                Flexible(
-                  child: db.getIconImage(
-                    enabled ? icon : null,
-                    aspectRatio: 1,
-                    width: 56,
-                    onTap: enabled
-                        ? () => router.push(url: Routes.mysticCodeI(formation.mysticCode.mysticCodeId ?? 0))
-                        : null,
-                  ),
-                )
-            ],
-          ),
-          if (enabled) Text("Lv.${formation.mysticCode.level}", textScaler: const TextScaler.linear(0.9))
-        ],
-      ),
+      child: child,
     );
   }
 }

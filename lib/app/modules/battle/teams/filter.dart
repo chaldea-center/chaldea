@@ -40,6 +40,7 @@ class TeamFilterData {
   final blockCEMLBOnly = <int, bool>{}; // true=block MLB only
   final normalAttackCount = FilterRadioData<int>.nonnull(-1);
   final criticalAttackCount = FilterRadioData<int>.nonnull(-1);
+  final mysticCode = FilterGroupData<int>();
   final miscOptions = FilterGroupData<TeamFilterMiscType>();
 
   List<FilterGroupData> get groups => [
@@ -49,6 +50,7 @@ class TeamFilterData {
         blockCEs,
         normalAttackCount,
         criticalAttackCount,
+        mysticCode,
         miscOptions,
       ];
 
@@ -64,12 +66,14 @@ class TeamFilterData {
 class TeamFilter extends FilterPage<TeamFilterData> {
   final Set<int> availableSvts; // in fetched teams
   final Set<int> availableCEs;
+  final Set<int> availableMCs;
   const TeamFilter({
     super.key,
     required super.filterData,
     super.onChanged,
-    this.availableSvts = const {},
+    required this.availableSvts,
     required this.availableCEs,
+    required this.availableMCs,
   });
 
   @override
@@ -87,6 +91,7 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
     availableCEs.sort((a, b) => CraftFilterData.compare(
         db.gameData.craftEssencesById[a], db.gameData.craftEssencesById[b],
         keys: [CraftCompare.rarity, CraftCompare.no], reversed: [true, true]));
+    final availableMCs = {0, ...widget.availableMCs, ...filterData.mysticCode.options}.toList()..sort();
     return buildAdaptive(
       title: Text(S.current.filter, textScaler: const TextScaler.linear(0.8)),
       actions: getDefaultActions(onTapReset: () {
@@ -167,11 +172,23 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
           ],
         ),
         FilterGroup<int>(
+          title: Text(S.current.mystic_code),
+          showInvert: true,
+          options: availableMCs,
+          values: filterData.mysticCode,
+          constraints: const BoxConstraints(maxHeight: 50),
+          optionBuilder: (v) => cardIcon(v, db.gameData.mysticCodes[v]),
+          shrinkWrap: true,
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
+        FilterGroup<int>(
           title: Text(S.current.team_block_servant),
           options: availableSvts,
           values: filterData.blockSvts,
           constraints: const BoxConstraints(maxHeight: 50),
-          optionBuilder: (v) => cardIcon(v),
+          optionBuilder: (v) => cardIcon(v, db.gameData.servantsById[v]),
           shrinkWrap: true,
           onFilterChanged: (value, _) {
             update();
@@ -181,7 +198,7 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
           title: Text(S.current.team_use_servant),
           options: availableSvts,
           values: filterData.useSvts,
-          optionBuilder: (v) => cardIcon(v),
+          optionBuilder: (v) => cardIcon(v, db.gameData.servantsById[v]),
           shrinkWrap: true,
           constraints: const BoxConstraints(maxHeight: 50),
           onFilterChanged: (value, _) {
@@ -204,7 +221,7 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
           options: availableCEs,
           values: filterData.blockCEs.copy(),
           constraints: const BoxConstraints(maxHeight: 50),
-          optionBuilder: (v) => cardIcon(v,
+          optionBuilder: (v) => cardIcon(v, db.gameData.craftEssencesById[v],
               color: filterData.blockCEs.options.contains(v)
                   ? (filterData.blockCEMLBOnly[v] ?? false)
                       ? Theme.of(context).colorScheme.primary
@@ -233,10 +250,15 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
     );
   }
 
-  Widget cardIcon(int id, {Color? color}) {
-    final card = db.gameData.servantsById[id] ?? db.gameData.craftEssencesById[id];
+  Widget cardIcon(int id, GameCardMixin? card, {Color? color}) {
+    // final card = db.gameData.servantsById[id] ?? db.gameData.craftEssencesById[id];
     Widget child = card == null
-        ? Text(id.toString())
+        ? GameCardMixin.cardIconBuilder(
+            context: context,
+            icon: null,
+            text: id == 0 ? null : id.toString(),
+            height: 42,
+          )
         : Opacity(
             opacity: 0.9,
             child: card.iconBuilder(

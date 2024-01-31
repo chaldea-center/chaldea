@@ -479,6 +479,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
               const TextSpan(text: ': '),
               for (final attack in record.attacks) ...drawSvt(context, attack.actor, attack.cardData),
             ])),
+            color: Colors.red,
           )
         ));
       } else if (record is BattleSkillActivationRecord) {
@@ -504,13 +505,13 @@ class BattleRecorderPanelBase extends StatelessWidget {
     );
   }
 
-  Widget prefixIndicator(BuildContext context, Widget child) {
+  Widget prefixIndicator(BuildContext context, Widget child, {Color? color}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 14),
-          child: Icon(Icons.circle, color: Colors.green, size: 8),
+        Padding(
+          padding: const EdgeInsets.only(top: 14),
+          child: Icon(Icons.circle, color: color ?? Colors.green, size: 8),
         ),
         const SizedBox(width: 4),
         Flexible(child: child),
