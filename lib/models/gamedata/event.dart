@@ -72,15 +72,15 @@ class Event with RouteInfo {
     this.type = EventType.none,
     required this.name,
     String shortName = "",
-    required this.detail,
+    this.detail = "",
     this.noticeBanner,
     this.banner,
     this.icon,
     this.bannerPriority = 0,
-    required this.noticeAt,
+    int? noticeAt,
     required this.startedAt,
     required this.endedAt,
-    required this.finishedAt,
+    int? finishedAt,
     // required this.materialOpenedAt,
     List<int> warIds = const [],
     this.eventAdds = const [],
@@ -111,7 +111,9 @@ class Event with RouteInfo {
     this.voicePlays = const [],
     this.voices = const [],
   })  : _shortName = ['', '-'].contains(shortName) ? null : shortName,
-        _warIds = warIds;
+        _warIds = warIds,
+        noticeAt = noticeAt ?? startedAt,
+        finishedAt = finishedAt ?? endedAt;
 
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
 
@@ -359,7 +361,7 @@ class Event with RouteInfo {
         if (shopItem.purchaseType == PurchaseType.setItem) {
           for (final set in shopItem.itemSet) {
             if (set.purchaseType == PurchaseType.item || set.purchaseType == PurchaseType.servant) {
-              if (gameData.craftEssencesById[set.targetId]?.flag == SvtFlag.svtEquipChocolate) {
+              if (gameData.craftEssencesById[set.targetId]?.flags.contains(SvtFlag.svtEquipChocolate) == true) {
                 continue;
               }
               _items.addNum(set.targetId, set.setNum * shopItem.setNum);
@@ -369,7 +371,7 @@ class Event with RouteInfo {
           }
         } else {
           for (final id in shopItem.targetIds) {
-            if (gameData.craftEssencesById[id]?.flag == SvtFlag.svtEquipChocolate) {
+            if (gameData.craftEssencesById[id]?.flags.contains(SvtFlag.svtEquipChocolate) == true) {
               continue;
             }
             _items.addNum(id, shopItem.setNum);
@@ -1974,7 +1976,8 @@ enum EventType {
   myroomMultipleViewCampaign(24),
   interludeCampaign(25),
   myroomPhotoCampaign(26),
-  fortuneCampaign(27);
+  fortuneCampaign(27),
+  mcCampaign(999); // some campaign events not in master data, use Mooncell data
 
   const EventType(this.id);
   final int id;

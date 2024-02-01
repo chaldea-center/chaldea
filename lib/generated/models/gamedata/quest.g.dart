@@ -866,7 +866,7 @@ Map<String, dynamic> _$EnemyServerModToJson(EnemyServerMod instance) => <String,
     };
 
 EnemyScript _$EnemyScriptFromJson(Map json) => EnemyScript(
-      deathType: $enumDecodeNullable(_$EnemyDeathTypeEnumMap, json['deathType']),
+      deathType: $enumDecodeNullable(_$SvtDeathTypeEnumMap, json['deathType']),
       hpBarType: json['hpBarType'] as int?,
       leader: json['leader'] as bool?,
       call: (json['call'] as List<dynamic>?)?.map((e) => e as int).toList(),
@@ -885,7 +885,7 @@ Map<String, dynamic> _$EnemyScriptToJson(EnemyScript instance) {
     }
   }
 
-  writeNotNull('deathType', _$EnemyDeathTypeEnumMap[instance.deathType]);
+  writeNotNull('deathType', _$SvtDeathTypeEnumMap[instance.deathType]);
   writeNotNull('hpBarType', instance.hpBarType);
   writeNotNull('leader', instance.leader);
   writeNotNull('call', instance.call);
@@ -894,12 +894,14 @@ Map<String, dynamic> _$EnemyScriptToJson(EnemyScript instance) {
   return val;
 }
 
-const _$EnemyDeathTypeEnumMap = {
-  EnemyDeathType.escape: 'escape',
-  EnemyDeathType.stand: 'stand',
-  EnemyDeathType.effect: 'effect',
-  EnemyDeathType.wait: 'wait',
-  EnemyDeathType.energy: 'energy',
+const _$SvtDeathTypeEnumMap = {
+  SvtDeathType.normal: 'normal',
+  SvtDeathType.escape: 'escape',
+  SvtDeathType.stand: 'stand',
+  SvtDeathType.effect: 'effect',
+  SvtDeathType.wait: 'wait',
+  SvtDeathType.energy: 'energy',
+  SvtDeathType.crystal: 'crystal',
 };
 
 EnemyInfoScript _$EnemyInfoScriptFromJson(Map json) => EnemyInfoScript();

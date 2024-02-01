@@ -26,7 +26,10 @@ BasicServant _$BasicServantFromJson(Map json) => BasicServant(
       name: json['name'] as String? ?? "",
       overwriteName: json['overwriteName'] as String?,
       type: $enumDecodeNullable(_$SvtTypeEnumMap, json['type']) ?? SvtType.normal,
-      flag: $enumDecodeNullable(_$SvtFlagEnumMap, json['flag']) ?? SvtFlag.normal,
+      flags: (json['flags'] as List<dynamic>?)
+              ?.map((e) => $enumDecode(_$SvtFlagEnumMap, e, unknownValue: SvtFlag.unknown))
+              .toList() ??
+          const [],
       classId: json['classId'] as int? ?? 0,
       attribute: $enumDecode(_$AttributeEnumMap, json['attribute']),
       rarity: json['rarity'] as int,
@@ -45,7 +48,7 @@ Map<String, dynamic> _$BasicServantToJson(BasicServant instance) => <String, dyn
       'name': instance.name,
       'overwriteName': instance.overwriteName,
       'type': _$SvtTypeEnumMap[instance.type]!,
-      'flag': _$SvtFlagEnumMap[instance.flag]!,
+      'flags': instance.flags.map((e) => _$SvtFlagEnumMap[e]!).toList(),
       'classId': instance.classId,
       'attribute': _$AttributeEnumMap[instance.attribute]!,
       'rarity': instance.rarity,
@@ -71,14 +74,12 @@ const _$SvtTypeEnumMap = {
 };
 
 const _$SvtFlagEnumMap = {
+  SvtFlag.unknown: 'unknown',
   SvtFlag.onlyUseForNpc: 'onlyUseForNpc',
   SvtFlag.svtEquipFriendShip: 'svtEquipFriendShip',
   SvtFlag.ignoreCombineLimitSpecial: 'ignoreCombineLimitSpecial',
   SvtFlag.svtEquipExp: 'svtEquipExp',
   SvtFlag.svtEquipChocolate: 'svtEquipChocolate',
-  SvtFlag.normal: 'normal',
-  SvtFlag.goetia: 'goetia',
-  SvtFlag.matDropRateUpCe: 'matDropRateUpCe',
 };
 
 const _$AttributeEnumMap = {
@@ -98,7 +99,10 @@ Servant _$ServantFromJson(Map json) => Servant(
       battleName: json['battleName'] as String? ?? "",
       classId: json['classId'] as int? ?? 0,
       type: $enumDecodeNullable(_$SvtTypeEnumMap, json['type']) ?? SvtType.normal,
-      flag: $enumDecodeNullable(_$SvtFlagEnumMap, json['flag']) ?? SvtFlag.normal,
+      flags: (json['flags'] as List<dynamic>?)
+              ?.map((e) => $enumDecode(_$SvtFlagEnumMap, e, unknownValue: SvtFlag.unknown))
+              .toList() ??
+          const [],
       rarity: json['rarity'] as int,
       cost: json['cost'] as int,
       lvMax: json['lvMax'] as int,
@@ -203,7 +207,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'battleName': instance.battleName,
       'classId': instance.classId,
       'type': _$SvtTypeEnumMap[instance.type]!,
-      'flag': _$SvtFlagEnumMap[instance.flag]!,
+      'flags': instance.flags.map((e) => _$SvtFlagEnumMap[e]!).toList(),
       'rarity': instance.rarity,
       'cost': instance.cost,
       'lvMax': instance.lvMax,
@@ -271,7 +275,7 @@ BasicCraftEssence _$BasicCraftEssenceFromJson(Map json) => BasicCraftEssence(
       collectionNo: json['collectionNo'] as int? ?? 0,
       name: json['name'] as String,
       type: $enumDecodeNullable(_$SvtTypeEnumMap, json['type']) ?? SvtType.servantEquip,
-      flag: $enumDecodeNullable(_$SvtFlagEnumMap, json['flag']) ?? SvtFlag.normal,
+      flags: (json['flags'] as List<dynamic>?)?.map((e) => $enumDecode(_$SvtFlagEnumMap, e)).toList() ?? const [],
       rarity: json['rarity'] as int,
       atkMax: json['atkMax'] as int? ?? 0,
       hpMax: json['hpMax'] as int? ?? 0,
@@ -283,7 +287,7 @@ Map<String, dynamic> _$BasicCraftEssenceToJson(BasicCraftEssence instance) => <S
       'collectionNo': instance.collectionNo,
       'name': instance.name,
       'type': _$SvtTypeEnumMap[instance.type]!,
-      'flag': _$SvtFlagEnumMap[instance.flag]!,
+      'flags': instance.flags.map((e) => _$SvtFlagEnumMap[e]!).toList(),
       'rarity': instance.rarity,
       'atkMax': instance.atkMax,
       'hpMax': instance.hpMax,
@@ -297,7 +301,7 @@ CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
       name: json['name'] as String,
       ruby: json['ruby'] as String? ?? "",
       type: $enumDecodeNullable(_$SvtTypeEnumMap, json['type']) ?? SvtType.servantEquip,
-      flag: $enumDecodeNullable(_$SvtFlagEnumMap, json['flag']) ?? SvtFlag.normal,
+      flags: (json['flags'] as List<dynamic>?)?.map((e) => $enumDecode(_$SvtFlagEnumMap, e)).toList() ?? const [],
       rarity: json['rarity'] as int,
       cost: json['cost'] as int,
       lvMax: json['lvMax'] as int,
@@ -333,7 +337,7 @@ Map<String, dynamic> _$CraftEssenceToJson(CraftEssence instance) => <String, dyn
       'name': instance.name,
       'ruby': instance.ruby,
       'type': _$SvtTypeEnumMap[instance.type]!,
-      'flag': _$SvtFlagEnumMap[instance.flag]!,
+      'flags': instance.flags.map((e) => _$SvtFlagEnumMap[e]!).toList(),
       'rarity': instance.rarity,
       'cost': instance.cost,
       'lvMax': instance.lvMax,

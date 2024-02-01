@@ -1352,7 +1352,7 @@ class QuestEnemy with GameCardMixin {
         collectionNo: 0,
         name: 'BlankEnemy',
         type: SvtType.normal,
-        flag: SvtFlag.normal,
+        flags: [],
         classId: SvtClass.ALL.id,
         attribute: Attribute.void_,
         rarity: 3,
@@ -1480,7 +1480,7 @@ class EnemyServerMod {
 @JsonSerializable(includeIfNull: false)
 class EnemyScript with DataScriptBase {
   // lots of fields are skipped
-  EnemyDeathType? deathType;
+  SvtDeathType? deathType;
   int? hpBarType;
   bool? leader;
   List<int>? call; // npcId
@@ -1995,12 +1995,14 @@ enum EnemyRoleType {
   servant,
 }
 
-enum EnemyDeathType {
+enum SvtDeathType {
+  normal,
   escape,
   stand,
   effect,
   wait,
   energy,
+  crystal,
 }
 
 enum DeckType {

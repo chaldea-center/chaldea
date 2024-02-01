@@ -285,7 +285,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
         double bonus = Maths.sum(drops.map((e) => e.dropCount / e.runs));
         final ce = db.gameData.craftEssencesById[id];
         if (ce != null) {
-          if (ce.flag != SvtFlag.svtEquipExp) {
+          if (!ce.flags.contains(SvtFlag.svtEquipExp)) {
             info.eventItems[id] = ce.iconBuilder(
               context: context,
               width: iconWidth,

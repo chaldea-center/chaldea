@@ -70,7 +70,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
     final userCEs = <int, UserSvt>{};
     for (final userSvt in widget.userSvts) {
       final ce = db.gameData.craftEssencesById[userSvt.svtId];
-      if (ce != null && ce.flag == SvtFlag.svtEquipFriendShip) {
+      if (ce != null && ce.flags.contains(SvtFlag.svtEquipFriendShip)) {
         userCEs[userSvt.svtId] = userSvt;
       }
     }
@@ -82,7 +82,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
         collections.add(MapEntry(svt, collection));
       }
       final ce = db.gameData.craftEssencesById[collection.svtId];
-      if (ce != null && ce.flag == SvtFlag.svtEquipFriendShip) {
+      if (ce != null && ce.flags.contains(SvtFlag.svtEquipFriendShip)) {
         bondCEs.add((ce, userCEs[collection.svtId], collection));
       }
     }

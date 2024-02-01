@@ -1261,7 +1261,10 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
       onChanged: enableEdit
           ? (v) {
               final ce = playerSvtData.ce;
-              if (v && ce != null && ce.flag == SvtFlag.normal) {
+              if (v &&
+                  ce != null &&
+                  const [SvtFlag.svtEquipChocolate, SvtFlag.svtEquipExp, SvtFlag.svtEquipFriendShip]
+                      .every((e) => !ce.flags.contains(e))) {
                 int? lvMin = {1: 6, 2: 9, 3: 11, 4: 13, 5: 15}[ce.rarity];
                 if (lvMin != null && lvMin <= ce.lvMax && playerSvtData.ceLv < lvMin) {
                   playerSvtData.ceLv = lvMin;

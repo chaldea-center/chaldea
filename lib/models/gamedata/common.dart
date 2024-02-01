@@ -684,6 +684,7 @@ enum Trait {
   myFairSoldier(2873),
   elementalsWrath(2880),
   groupServant(2881),
+  fsnServant(2883),
   attackPhysical(3000),
   attackProjectile(3001),
   attackMagical(3002),

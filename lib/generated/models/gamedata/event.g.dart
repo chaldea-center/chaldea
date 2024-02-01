@@ -11,15 +11,15 @@ Event _$EventFromJson(Map json) => Event(
       type: $enumDecodeNullable(_$EventTypeEnumMap, json['type']) ?? EventType.none,
       name: json['name'] as String,
       shortName: json['shortName'] as String? ?? "",
-      detail: json['detail'] as String,
+      detail: json['detail'] as String? ?? "",
       noticeBanner: json['noticeBanner'] as String?,
       banner: json['banner'] as String?,
       icon: json['icon'] as String?,
       bannerPriority: json['bannerPriority'] as int? ?? 0,
-      noticeAt: json['noticeAt'] as int,
+      noticeAt: json['noticeAt'] as int?,
       startedAt: json['startedAt'] as int,
       endedAt: json['endedAt'] as int,
-      finishedAt: json['finishedAt'] as int,
+      finishedAt: json['finishedAt'] as int?,
       warIds: (json['warIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       eventAdds: (json['eventAdds'] as List<dynamic>?)
               ?.map((e) => EventAdd.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -200,6 +200,7 @@ const _$EventTypeEnumMap = {
   EventType.interludeCampaign: 'interludeCampaign',
   EventType.myroomPhotoCampaign: 'myroomPhotoCampaign',
   EventType.fortuneCampaign: 'fortuneCampaign',
+  EventType.mcCampaign: 'mcCampaign',
 };
 
 EventAdd _$EventAddFromJson(Map json) => EventAdd(

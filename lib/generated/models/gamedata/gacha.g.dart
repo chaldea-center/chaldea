@@ -47,7 +47,7 @@ NiceGacha _$NiceGachaFromJson(Map json) => NiceGacha(
       id: json['id'] as int? ?? 0,
       name: json['name'] as String? ?? '',
       imageId: json['imageId'] as int? ?? 0,
-      type: json['type'] == null ? GachaType.unknown : const GachaTypeConverter().fromJson(json['type'] as String),
+      type: json['type'] == null ? GachaType.payGacha : const GachaTypeConverter().fromJson(json['type'] as String),
       adjustId: json['adjustId'] as int? ?? 0,
       pickupId: json['pickupId'] as int? ?? 0,
       drawNum1: json['drawNum1'] as int? ?? 0,

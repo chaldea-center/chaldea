@@ -48,7 +48,8 @@ class BasicServant with GameCardMixin {
   String name;
   String? overwriteName;
   SvtType type;
-  SvtFlag flag;
+  @JsonKey(unknownEnumValue: SvtFlag.unknown)
+  List<SvtFlag> flags;
   int classId;
   Attribute attribute;
   @override
@@ -65,7 +66,7 @@ class BasicServant with GameCardMixin {
     this.name = "",
     this.overwriteName,
     this.type = SvtType.normal,
-    this.flag = SvtFlag.normal,
+    this.flags = const [],
     this.classId = 0,
     required this.attribute,
     required this.rarity,
@@ -131,7 +132,7 @@ class BasicServant with GameCardMixin {
         name = svt.name,
         overwriteName = null,
         type = svt.type,
-        flag = svt.flag,
+        flags = svt.flags.toList(),
         classId = svt.classId,
         attribute = svt.attribute,
         rarity = svt.rarity,
@@ -161,7 +162,8 @@ class Servant with GameCardMixin {
   String battleName;
   int classId;
   SvtType type;
-  SvtFlag flag;
+  @JsonKey(unknownEnumValue: SvtFlag.unknown)
+  List<SvtFlag> flags;
   @override
   int rarity;
   int cost;
@@ -227,7 +229,7 @@ class Servant with GameCardMixin {
     this.battleName = "",
     this.classId = 0,
     this.type = SvtType.normal,
-    this.flag = SvtFlag.normal,
+    this.flags = const [],
     required this.rarity,
     required this.cost,
     required this.lvMax,
@@ -288,7 +290,7 @@ class Servant with GameCardMixin {
       battleName: battleName,
       classId: classId,
       type: type,
-      flag: flag,
+      flags: flags,
       rarity: rarity,
       cost: cost,
       lvMax: lvMax,
@@ -642,7 +644,7 @@ class BasicCraftEssence with GameCardMixin {
   @override
   String name;
   SvtType type;
-  SvtFlag flag;
+  List<SvtFlag> flags;
   @override
   int rarity;
   int atkMax;
@@ -654,7 +656,7 @@ class BasicCraftEssence with GameCardMixin {
     this.collectionNo = 0,
     required this.name,
     this.type = SvtType.servantEquip,
-    this.flag = SvtFlag.normal,
+    this.flags = const [],
     required this.rarity,
     this.atkMax = 0,
     this.hpMax = 0,
@@ -686,7 +688,7 @@ class CraftEssence with GameCardMixin {
   String name;
   String ruby;
   SvtType type;
-  SvtFlag flag;
+  List<SvtFlag> flags;
   @override
   int rarity;
   int cost;
@@ -720,7 +722,7 @@ class CraftEssence with GameCardMixin {
     required this.name,
     this.ruby = "",
     this.type = SvtType.servantEquip,
-    this.flag = SvtFlag.normal,
+    this.flags = const [],
     required this.rarity,
     required this.cost,
     required this.lvMax,
@@ -761,19 +763,12 @@ class CraftEssence with GameCardMixin {
   bool get isRegionSpecific => collectionNo > 100000 && (sortId ?? collectionNo) < 0;
 
   CEObtain get obtain {
-    switch (flag) {
-      case SvtFlag.svtEquipFriendShip:
-        return CEObtain.bond;
-      case SvtFlag.svtEquipChocolate:
-        return CEObtain.valentine;
-      case SvtFlag.matDropRateUpCe:
-        return CEObtain.drop;
-      case SvtFlag.svtEquipExp:
-      case SvtFlag.ignoreCombineLimitSpecial:
-      case SvtFlag.normal:
-      case SvtFlag.goetia:
-      case SvtFlag.onlyUseForNpc:
-        break;
+    if (flags.contains(SvtFlag.svtEquipFriendShip)) {
+      return CEObtain.bond;
+    } else if (flags.contains(SvtFlag.svtEquipExp)) {
+      return CEObtain.exp;
+    } else if (flags.contains(SvtFlag.svtEquipChocolate)) {
+      return CEObtain.valentine;
     }
     return extra.obtain;
   }
@@ -1531,14 +1526,12 @@ enum SvtType {
 }
 
 enum SvtFlag {
+  unknown,
   onlyUseForNpc,
   svtEquipFriendShip,
   ignoreCombineLimitSpecial,
-  svtEquipExp, // may be normal for some EXP CEs
+  svtEquipExp,
   svtEquipChocolate,
-  normal,
-  goetia,
-  matDropRateUpCe,
 }
 
 enum Attribute {
