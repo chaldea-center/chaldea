@@ -1141,6 +1141,8 @@ class ServantTrait {
     this.condNum = 0,
   });
 
+  bool get isAlwaysValid => idx < 100 && limitCount == -1 && condType == CondType.none;
+
   factory ServantTrait.fromJson(Map<String, dynamic> json) => _$ServantTraitFromJson(json);
 
   Map<String, dynamic> toJson() => _$ServantTraitToJson(this);

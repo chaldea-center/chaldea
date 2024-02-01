@@ -1,4 +1,5 @@
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -23,8 +24,8 @@ class SvtInfoTab extends StatelessWidget {
     };
     final baseTraits = [
       ...svt.traits,
-      for (final traitAdd in svt.traitAdd)
-        if (traitAdd.idx == 1 && traitAdd.limitCount == -1) ...traitAdd.trait,
+      // for (final traitAdd in svt.traitAdd)
+      //   if (traitAdd.isAlwaysValid) ...traitAdd.trait,
     ];
     final name = RubyText(
       [RubyTextData(svt.name, ruby: svt.ruby)],
@@ -271,32 +272,51 @@ class SvtInfoTab extends StatelessWidget {
                 baseTraits,
               ),
             for (final traitAdd in svt.traitAdd)
-              if (traitAdd.idx != 1)
-                ..._addTraits(
-                  context,
-                  () {
-                    final event = db.gameData.events[traitAdd.idx ~/ 100];
-                    return TextSpan(
-                      children: [
-                        if (event != null) ...[
-                          SharedBuilder.textButtonSpan(
-                            context: context,
-                            text: event.id.toString(),
-                            onTap: event.routeTo,
+              ..._addTraits(
+                context,
+                () {
+                  final event = db.gameData.events[traitAdd.idx ~/ 100];
+                  return TextSpan(
+                    children: [
+                      if (traitAdd.condType != CondType.none)
+                        CenterWidgetSpan(
+                          child: InkWell(
+                            child: Icon(
+                              Icons.info_outline,
+                              size: 16,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                            onTap: () {
+                              SimpleCancelOkDialog(
+                                title: Text(S.current.condition),
+                                content: CondTargetValueDescriptor(
+                                  condType: traitAdd.condType,
+                                  target: traitAdd.condId,
+                                  value: traitAdd.condNum,
+                                ),
+                              ).showDialog(context);
+                            },
                           ),
-                          TextSpan(text: (traitAdd.idx % 100).toString().padLeft(2, '0'))
-                        ],
-                        if (traitAdd.limitCount != -1)
-                          TextSpan(text: '(${S.current.ascension_stage_short}${traitAdd.limitCount})'),
-                        if (event == null) TextSpan(text: traitAdd.idx.toString()),
-                        const TextSpan(text: ': ')
+                        ),
+                      if (traitAdd.limitCount != -1)
+                        TextSpan(text: '(${S.current.ascension_stage_short}${traitAdd.limitCount})'),
+                      if (event != null) ...[
+                        SharedBuilder.textButtonSpan(
+                          context: context,
+                          text: event.id.toString(),
+                          onTap: event.routeTo,
+                        ),
+                        TextSpan(text: (traitAdd.idx % 100).toString().padLeft(2, '0'))
                       ],
-                    );
-                  }(),
-                  traitAdd.trait,
-                  baseTraits,
-                  0.9,
-                ),
+                      if (event == null) TextSpan(text: traitAdd.idx.toString()),
+                      const TextSpan(text: ': ')
+                    ],
+                  );
+                }(),
+                traitAdd.trait,
+                [],
+                0.9,
+              ),
             if (svt.bondGrowth.isNotEmpty) ...[
               CustomTableRow.fromTexts(texts: [S.current.info_bond_points], defaults: headerData),
               for (int row = 0; row < svt.bondGrowth.length / 5; row++) ...[
@@ -371,6 +391,7 @@ class SvtInfoTab extends StatelessWidget {
       }
       shownTraits.add(trait);
     }
+    if (shownTraits.isEmpty) return [];
     List<InlineSpan> children = [];
     if (prefix != null) children.add(prefix);
     children.addAll(SharedBuilder.traitSpans(context: context, traits: shownTraits));

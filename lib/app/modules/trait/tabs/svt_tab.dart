@@ -73,7 +73,7 @@ class _TraitServantTabState extends State<TraitServantTab> {
     final comments = _addComment([
       ...svt.traits,
       for (final traitAdd in svt.traitAdd)
-        if (traitAdd.idx < 10 && traitAdd.limitCount == -1) ...traitAdd.trait
+        if (traitAdd.idx < 100 && traitAdd.limitCount == -1) ...traitAdd.trait
     ], _id, '');
     return comments.isNotEmpty;
   }
@@ -97,7 +97,7 @@ class _TraitServantTabState extends State<TraitServantTab> {
         ));
       }
       for (final traitAdd in svt.traitAdd) {
-        if (traitAdd.idx == 1) continue;
+        if (traitAdd.isAlwaysValid) continue;
         final event = db.gameData.events[traitAdd.idx ~/ 100];
         String name = traitAdd.idx.toString();
         if (event != null) {

@@ -556,10 +556,10 @@ class BattleServantData {
       }
       // idx=1,2, or eventId01
       for (final add in niceSvt!.traitAdd) {
-        if (add.idx < 10 || (add.idx > 100 && (add.idx ~/ 100) == eventId)) {
+        if (add.idx < 100 || (add.idx > 100 && (add.idx ~/ 100) == eventId)) {
           if (add.limitCount < 0 ||
               add.limitCount == limitCount ||
-              add.limitCount == niceSvt?.profile.costume[limitCount]?.battleCharaId) {
+              add.limitCount == niceSvt?.profile.costume[limitCount]?.id) {
             traits.addAll(add.trait);
           }
         }
