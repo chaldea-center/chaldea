@@ -227,6 +227,15 @@ class AtlasApi {
     );
   }
 
+  static Future<List<BattleMasterImage>?> battleMasterImage(int imageId,
+      {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$atlasApiHost/nice/${region.upper}/battle-master-image/$imageId',
+      (data) => (data as List).map((e) => BattleMasterImage.fromJson(Map.from(e))).toList(),
+      expireAfter: expireAfter,
+    );
+  }
+
   static Future<List<BattleMessage>?> battleMessage(int msgId, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$atlasApiHost/nice/${region.upper}/battle-message/$msgId',

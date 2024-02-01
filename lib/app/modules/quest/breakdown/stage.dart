@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:auto_size_text/auto_size_text.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -258,6 +259,7 @@ class WaveInfoPage extends StatelessWidget {
             ),
           if (stage.fieldAis.isNotEmpty) buildFieldAis(context, stage.fieldAis),
           if (originalScript['aiAllocations'] != null) buildAiAllocations(context, originalScript['aiAllocations']),
+          if ((stage.battleMasterImageId ?? 0) > 0) buildMasterImage(stage.battleMasterImageId!),
           for (final masterId in [
             if (stage.enemyMasterBattleId != null) stage.enemyMasterBattleId!,
             ...?stage.enemyMasterBattleIdByPlayerGender
@@ -277,6 +279,30 @@ class WaveInfoPage extends StatelessWidget {
           ],
         ],
       ),
+    );
+  }
+
+  Widget buildMasterImage(int battleMasterImageId) {
+    return FutureBuilder2(
+      id: battleMasterImageId,
+      loader: () => AtlasApi.battleMasterImage(battleMasterImageId, region: region ?? Region.jp),
+      builder: (context, images) {
+        List<Widget> trailings = [];
+        if (images == null || images.isEmpty) {
+          trailings.add(Text(battleMasterImageId.toString()));
+        } else {
+          for (final image in images) {
+            trailings.add(db.getIconImage(image.faceIcon, width: 36, height: 36));
+          }
+        }
+        return ListTile(
+          title: const Text("Master"),
+          trailing: Wrap(
+            spacing: 2,
+            children: trailings,
+          ),
+        );
+      },
     );
   }
 
