@@ -244,6 +244,15 @@ class AtlasApi {
     );
   }
 
+  static Future<List<BattleMessageGroup>?> battleMessageGroup(int groupId,
+      {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$atlasApiHost/nice/${region.upper}/battle-message-group/$groupId',
+      (data) => (data as List).map((e) => BattleMessageGroup.fromJson(e)).toList(),
+      expireAfter: expireAfter,
+    );
+  }
+
   // export
   static Future<List<BasicServant>?> basicServants({Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
     return cacheManager.getModel(

@@ -102,29 +102,6 @@ class NiceAiAct {
   Map<String, dynamic> toJson() => _$NiceAiActToJson(this);
 }
 
-@JsonSerializable()
-class BattleMessage {
-  int id;
-  int idx;
-  int priority;
-  List<CommonRelease> releaseConditions;
-  int motionId;
-  String message;
-
-  BattleMessage({
-    required this.id,
-    this.idx = 0,
-    this.priority = 0,
-    this.releaseConditions = const [],
-    this.motionId = 0,
-    this.message = '',
-  });
-
-  factory BattleMessage.fromJson(Map<String, dynamic> json) => _$BattleMessageFromJson(json);
-
-  Map<String, dynamic> toJson() => _$BattleMessageToJson(this);
-}
-
 enum AiType {
   svt,
   field,

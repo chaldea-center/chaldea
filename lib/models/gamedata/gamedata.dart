@@ -37,6 +37,7 @@ export 'event.dart';
 export 'game_card.dart';
 export 'item.dart';
 export 'mappings.dart';
+export 'message.dart';
 export 'mystic_code.dart';
 export 'quest.dart';
 export 'script.dart';

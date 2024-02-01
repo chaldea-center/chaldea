@@ -1,7 +1,7 @@
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../app.dart';
@@ -198,22 +198,40 @@ class AiTable extends StatelessWidget {
     // message
     if (aiAct.type == NiceAiActType.message) {
       final msgId = ai.avals.getOrNull(1) ?? 0;
-      if (msgId != 0) {
-        spans.add(SharedBuilder.textButtonSpan(
-          context: context,
-          text: 'message',
-          onTap: () {
-            showDialog(
-              context: context,
-              useRootNavigator: false,
-              builder: (context) => _BattleMessageDialog(
-                msgId: msgId,
-                region: region,
-              ),
-            );
-          },
-        ));
-      }
+      spans.add(SharedBuilder.textButtonSpan(
+        context: context,
+        text: 'message',
+        onTap: msgId == 0
+            ? null
+            : () {
+                showDialog(
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (context) => _BattleMessageDialog(
+                    msgId: msgId,
+                    region: region,
+                  ),
+                );
+              },
+      ));
+    } else if (aiAct.type == NiceAiActType.messageGroup) {
+      final groupId = ai.avals.getOrNull(1) ?? 0;
+      spans.add(SharedBuilder.textButtonSpan(
+        context: context,
+        text: 'messageGroup',
+        onTap: groupId == 0
+            ? null
+            : () {
+                showDialog(
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (context) => _BattleMessageGroupDialog(
+                    groupId: groupId,
+                    region: region,
+                  ),
+                );
+              },
+      ));
     }
 
     return Text.rich(TextSpan(children: spans));
@@ -531,6 +549,7 @@ class _BattleMessageDialog extends StatelessWidget {
     return SimpleCancelOkDialog(
       title: Text('Message $msgId'),
       scrollable: true,
+      hideCancel: true,
       content: FutureBuilder2(
         id: msgId,
         loader: () => AtlasApi.battleMessage(msgId, region: region ?? Region.jp),
@@ -540,6 +559,7 @@ class _BattleMessageDialog extends StatelessWidget {
           messages = messages.toList()..sort2((e) => e.priority);
           return Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               for (final msg in messages) buildMessage(context, msg),
             ],
@@ -551,7 +571,74 @@ class _BattleMessageDialog extends StatelessWidget {
     );
   }
 
-  Widget buildMessage(BuildContext context, BattleMessage msg) {
-    return SimpleDialogOption(child: Text(msg.message));
+  static Widget buildMessage(BuildContext context, BattleMessage msg) {
+    return TileGroup(
+      header: 'No.${msg.idx}',
+      children: [
+        ListTile(
+          dense: true,
+          selected: true,
+          title: Text(msg.message),
+          onLongPress: () {
+            copyToClipboard(msg.message, toast: true);
+          },
+        ),
+        for (final release in msg.releaseConditions)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: CondTargetValueDescriptor.commonRelease(
+              commonRelease: release,
+              leading: const TextSpan(text: '$kULLeading '),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
+        if (msg.script.isNotEmpty)
+          ListTile(
+            dense: true,
+            title: Text('$kULLeading script: ${msg.script}', style: Theme.of(context).textTheme.bodySmall),
+          ),
+      ],
+    );
+  }
+}
+
+class _BattleMessageGroupDialog extends StatelessWidget {
+  final int groupId;
+  final Region? region;
+  const _BattleMessageGroupDialog({required this.groupId, this.region});
+
+  @override
+  Widget build(BuildContext context) {
+    return SimpleCancelOkDialog(
+      title: Text('Message Group $groupId'),
+      scrollable: true,
+      hideCancel: true,
+      contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 4),
+      content: FutureBuilder2(
+        id: groupId,
+        loader: () => AtlasApi.battleMessageGroup(groupId, region: region ?? Region.jp),
+        builder: (context, groups) {
+          if (groups == null) return Text(S.current.error);
+          if (groups.isEmpty) return Text(S.current.not_found);
+          groups = groups.toList()..sort2((e) => -e.probability);
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final group in groups) ...buildGroup(context, group),
+            ],
+          );
+        },
+        onFailed: (context) => const Text("Load Failed"),
+        onLoading: (context) => const Text("Loading..."),
+      ),
+    );
+  }
+
+  List<Widget> buildGroup(BuildContext context, BattleMessageGroup group) {
+    return [
+      DividerWithTitle(title: 'Message ${group.messages.firstOrNull?.id} (${group.probability}%)'),
+      for (final msg in group.messages) _BattleMessageDialog.buildMessage(context, msg),
+    ];
   }
 }
