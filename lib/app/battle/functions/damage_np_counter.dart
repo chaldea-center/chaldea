@@ -1,7 +1,9 @@
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/utils/basic.dart';
 
 class DamageNpCounter {
   DamageNpCounter._();
@@ -24,9 +26,11 @@ class DamageNpCounter {
 
     final rate = toModifier(dataVals.Value ?? 0);
     final damage = (activator.accumulationDamage * rate).toInt();
+    final List<AttackResultDetail> targetResults = [];
 
     for (final target in targets) {
       battleData.withTargetSync(target, () {
+        final targetBefore = target.copy();
         final previousHp = target.hp;
         target.receiveDamage(damage);
         if (target != activator) {
@@ -37,6 +41,22 @@ class DamageNpCounter {
           targetUniqueId: activator.uniqueId,
           isOpponent: activator.isPlayer != target.isPlayer,
         ));
+        targetResults.add(AttackResultDetail(
+          target: target,
+          targetBefore: targetBefore,
+          damageParams: DamageParameters(),
+          attackNpParams: AttackNpGainParameters(),
+          defenseNpParams: DefendNpGainParameters(),
+          starParams: StarParameters(),
+          result: DamageResult()
+            ..damages = [damage]
+            ..cardHits = [100]
+            ..npGains = [0]
+            ..npMaxLimited = [false]
+            ..overkillStates = [false],
+          minResult: null,
+          maxResult: null,
+        ));
 
         battleData.battleLogger.action('${activator.lBattleName} - '
             '${Transl.buffType(BuffType.reflectionFunction).l}: $damage -'
@@ -44,5 +64,17 @@ class DamageNpCounter {
         battleData.setFuncResult(target.uniqueId, true);
       });
     }
+    battleData.recorder.attack(
+      activator,
+      BattleAttackRecord(
+        activator: activator,
+        card: null,
+        targets: targetResults,
+        damage: Maths.sum(targetResults.map((e) => Maths.sum(e.result.damages))),
+        attackNp: Maths.sum(targetResults.map((e) => Maths.sum(e.result.npGains))),
+        defenseNp: Maths.sum(targetResults.map((e) => Maths.sum(e.result.defNpGains))),
+        star: Maths.sum(targetResults.map((e) => Maths.sum(e.result.stars))),
+      ),
+    );
   }
 }

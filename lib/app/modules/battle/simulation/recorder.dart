@@ -897,7 +897,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
       actorBuilder: buildAttacker,
       targets: [
         for (final target in record.targets)
-          Tuple3(target.target.isEnemy, target.target.fieldIndex, (context) => buildDefender(context, target))
+          Tuple3(target.target.isEnemy, target.target.fieldIndex, (context) => buildDefender(context, target, record))
       ],
     );
   }
@@ -942,8 +942,10 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
             record.targets.any((e) => e.damageParams.isNotMinRoll)
                 ? coloredText('DMG ${fmtHp(record.damage)}*', Colors.red)
                 : coloredText('DMG ${fmtHp(record.damage)}', Colors.red),
-            if (record.attacker.isPlayer) coloredText('NP ${record.attackNp / 100}', Colors.blue),
-            if (record.attacker.isPlayer) coloredText('Star ${record.star / 1000}', Colors.green),
+            if (record.attacker.isPlayer && (record.card != null || record.attackNp != 0))
+              coloredText('NP ${record.attackNp / 100}', Colors.blue),
+            if (record.attacker.isPlayer && (record.card != null || record.star != 0))
+              coloredText('Star ${record.star / 1000}', Colors.green),
           ],
         ],
       ),
@@ -952,7 +954,6 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
 
   Widget buildAttackerCard(BuildContext context) {
     final card = record.card;
-    assert(card != null);
     if (card == null) {
       return record.attacker.iconBuilder(
         context: context,
@@ -1052,7 +1053,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
     );
   }
 
-  Widget buildDefender(BuildContext context, AttackResultDetail detail) {
+  Widget buildDefender(BuildContext context, AttackResultDetail detail, BattleAttackRecord record) {
     final result = detail.result;
     final baseInfo = AttackBaseInfo(
         actor: record.attacker, target: detail.target, targetBefore: detail.targetBefore, card: record.card);
@@ -1091,53 +1092,56 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
               ),
             ),
           ),
-          if (detail.target.isEnemy)
-            coloredText(
-              'NP ${Maths.sum(result.npGains) / 100}',
-              Colors.blue,
-              () => showParams(
-                context,
-                AttackerNpParamDialog(
-                  baseInfo,
-                  detail.attackNpParams,
-                  detail.result,
-                  minResult: detail.minResult,
-                  maxResult: detail.maxResult,
+          if (record.card != null || result.totalNpGains != 0)
+            if (detail.target.isEnemy)
+              coloredText(
+                'NP ${Maths.sum(result.npGains) / 100}',
+                Colors.blue,
+                () => showParams(
+                  context,
+                  AttackerNpParamDialog(
+                    baseInfo,
+                    detail.attackNpParams,
+                    detail.result,
+                    minResult: detail.minResult,
+                    maxResult: detail.maxResult,
+                  ),
+                ),
+              )
+            else
+              coloredText(
+                'NP ${Maths.sum(result.defNpGains) / 100}',
+                Colors.blue,
+                () => showParams(
+                  context,
+                  DefenseNpParamDialog(
+                    baseInfo,
+                    detail.defenseNpParams,
+                    detail.result,
+                    minResult: detail.minResult,
+                    maxResult: detail.maxResult,
+                  ),
                 ),
               ),
-            )
-          else
-            coloredText(
-              'NP ${Maths.sum(result.defNpGains) / 100}',
-              Colors.blue,
-              () => showParams(
-                context,
-                DefenseNpParamDialog(
-                  baseInfo,
-                  detail.defenseNpParams,
-                  detail.result,
-                  minResult: detail.minResult,
-                  maxResult: detail.maxResult,
+          if (record.card != null || result.totalStars != 0)
+            if (detail.target.isEnemy)
+              coloredText(
+                'Star ${Maths.sum(result.stars) / 1000}',
+                Colors.green,
+                () => showParams(
+                  context,
+                  StarParamDialog(
+                    baseInfo,
+                    detail.starParams,
+                    detail.result,
+                    minResult: detail.minResult,
+                    maxResult: detail.maxResult,
+                  ),
                 ),
               ),
-            ),
-          if (detail.target.isEnemy)
-            coloredText(
-              'Star ${Maths.sum(result.stars) / 1000}',
-              Colors.green,
-              () => showParams(
-                context,
-                StarParamDialog(
-                  baseInfo,
-                  detail.starParams,
-                  detail.result,
-                  minResult: detail.minResult,
-                  maxResult: detail.maxResult,
-                ),
-              ),
-            ),
-          if (detail.target.isEnemy)
-            coloredText('Overkill ${result.overkillCount}/${result.overkillStates.length}', Colors.yellow.shade900),
+          if (record.card != null)
+            if (detail.target.isEnemy)
+              coloredText('Overkill ${result.overkillCount}/${result.overkillStates.length}', Colors.yellow.shade900),
         ],
       ),
     );
