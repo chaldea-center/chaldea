@@ -26,6 +26,7 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../../api/atlas.dart';
 import '../interactions/act_set_select.dart';
+import '../utils/battle_logger.dart';
 import 'buff_turn_count.dart';
 import 'call_servant.dart';
 import 'move_to_last_sub_member.dart';
@@ -46,8 +47,9 @@ class FunctionExecutor {
     final int? selectedActionIndex,
     final int? effectiveness,
     final bool defaultToPlayer = true,
+    final BattleSkillParams? param,
   }) async {
-    await battleData.withFunctions(() async {
+    return await battleData.withFunctions(() async {
       Map<int, List<NiceFunction>> actSets = {};
       for (final func in functions) {
         if (!validateFunctionTargetTeam(func, battleData.activator?.isPlayer ?? defaultToPlayer)) continue;
@@ -67,6 +69,7 @@ class FunctionExecutor {
           battleData.recorder.setIllegal("ActSetWeight: Must skip random effects");
         }
       }
+      param?.actSet = selectedActSet;
       for (int index = 0; index < functions.length; index += 1) {
         NiceFunction func = functions[index];
         final dataVal = FunctionExecutor.getDataVals(func, skillLevel, overchargeLvl);

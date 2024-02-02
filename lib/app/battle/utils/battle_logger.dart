@@ -110,6 +110,7 @@ class BattleRecordManager {
     required bool fromPlayer,
     required bool uploadEligible,
     String? prefix,
+    BattleSkillParams? param,
   }) {
     if (!uploadEligible) {
       setIllegal('${S.current.skill} ${skill.type.name}: ${skill.lName}');
@@ -122,6 +123,7 @@ class BattleRecordManager {
       targetEnemySvt: battleData.targetedEnemy,
       skill: skill,
       fromPlayer: fromPlayer,
+      param: param,
     ));
   }
 
@@ -456,6 +458,26 @@ class BattleSkillActivationRecord extends BattleRecord {
   double get estimatedHeight => 0;
 }
 
+class BattleSkillParams {
+  int? selectAddIndex;
+  int? actSet;
+  int? tdTypeChange;
+
+  BattleSkillParams({
+    this.selectAddIndex,
+    this.actSet,
+    this.tdTypeChange,
+  });
+
+  BattleSkillParams copy() {
+    return BattleSkillParams(
+      selectAddIndex: selectAddIndex,
+      actSet: actSet,
+      tdTypeChange: tdTypeChange,
+    );
+  }
+}
+
 class BattleSkillRecord extends BattleRecord {
   final String? prefix;
   final BattleServantData? activator;
@@ -463,6 +485,7 @@ class BattleSkillRecord extends BattleRecord {
   final BattleServantData? targetEnemySvt;
   final BattleSkillInfoData skill;
   final bool fromPlayer;
+  final BattleSkillParams param;
 
   BattleSkillRecord({
     this.prefix,
@@ -471,10 +494,12 @@ class BattleSkillRecord extends BattleRecord {
     required BattleServantData? targetEnemySvt,
     required BattleSkillInfoData skill,
     required this.fromPlayer,
+    BattleSkillParams? param,
   })  : activator = activator?.copy(),
         targetPlayerSvt = targetPlayerSvt?.copy(),
         targetEnemySvt = targetEnemySvt?.copy(),
-        skill = skill.copy();
+        skill = skill.copy(),
+        param = param ?? BattleSkillParams();
 
   @override
   String toString() {
@@ -490,6 +515,7 @@ class BattleSkillRecord extends BattleRecord {
       targetEnemySvt: targetEnemySvt,
       skill: skill,
       fromPlayer: fromPlayer,
+      param: param.copy(),
     );
   }
 

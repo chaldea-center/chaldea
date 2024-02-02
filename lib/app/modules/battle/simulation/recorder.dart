@@ -585,6 +585,28 @@ class BattleRecorderPanelBase extends StatelessWidget {
         spans.addAll(drawSvt(context, target));
       }
     }
+    List<InlineSpan> paramSpans = [];
+    final optionStr = Transl.miscScope('SelectAddInfo')('Option').l;
+    if (record.param.selectAddIndex != null) {
+      final selectAddIndex = record.param.selectAddIndex!;
+      String text = '$optionStr ${selectAddIndex + 1} ';
+      final btn = pskill?.script?.SelectAddInfo?.getOrNull(skill.skillLv - 1)?.btn.getOrNull(selectAddIndex);
+      if (btn != null) {
+        text += Transl.miscScope('SelectAddInfo')(btn.name).l;
+      }
+      paramSpans.add(TextSpan(text: text.trim()));
+    }
+    if (record.param.actSet != null) {
+      final actSet = record.param.actSet!;
+      paramSpans.add(TextSpan(text: '$optionStr ${actSet == -1 ? S.current.skip : '$actSet'}'));
+    }
+    if (paramSpans.isNotEmpty) {
+      spans.addAll([
+        const TextSpan(text: '  ('),
+        ...divideList(paramSpans, const TextSpan(text: ', ')),
+        const TextSpan(text: ')'),
+      ]);
+    }
     return prefixIndicator(context, Text.rich(TextSpan(children: spans)));
   }
 

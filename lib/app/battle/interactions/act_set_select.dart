@@ -43,7 +43,7 @@ class FuncActSetSelector extends StatelessWidget {
     }
     children.add(TextButton(
       onPressed: () {
-        Navigator.of(context).pop(null);
+        Navigator.of(context).pop(-1);
         battleData.battleLogger.action('${S.current.battle_select_effect}: ${transl('Option').l} ${S.current.skip}');
       },
       child: Padding(

@@ -7,6 +7,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../interactions/skill_act_select.dart';
+import '../utils/battle_logger.dart';
 import 'battle.dart';
 
 class BattleSkillInfoData {
@@ -138,7 +139,7 @@ class BattleSkillInfoData {
     return true;
   }
 
-  Future<bool> activate(final BattleData battleData, {bool defaultToPlayer = true}) async {
+  Future<bool> activate(final BattleData battleData, {bool defaultToPlayer = true, BattleSkillParams? param}) async {
     final curSkill = skill;
     if (curSkill == null) {
       return false;
@@ -174,6 +175,7 @@ class BattleSkillInfoData {
         battleData.replayDataRecord.skillActSelectSelections.add(selectedActionIndex);
       }
     }
+    param?.selectAddIndex = selectedActionIndex;
     int effectiveness = 1000;
     if (type == SkillInfoType.masterEquip) {
       for (final svt in battleData.nonnullPlayers) {
@@ -192,6 +194,7 @@ class BattleSkillInfoData {
       selectedActionIndex: selectedActionIndex,
       effectiveness: effectiveness,
       defaultToPlayer: defaultToPlayer,
+      param: param,
     );
     return true;
   }
