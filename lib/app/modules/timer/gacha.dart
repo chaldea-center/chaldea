@@ -9,7 +9,7 @@ import 'base.dart';
 
 class TimerGachaTab extends StatelessWidget {
   final Region region;
-  final List<MstGacha> gachas;
+  final List<NiceGacha> gachas;
   const TimerGachaTab({super.key, required this.region, required this.gachas});
 
   @override
@@ -26,7 +26,7 @@ class TimerGachaTab extends StatelessWidget {
 }
 
 class TimerGachaItem with TimerItem {
-  final MstGacha gacha;
+  final NiceGacha gacha;
   final Region region;
   TimerGachaItem(this.gacha, this.region);
 

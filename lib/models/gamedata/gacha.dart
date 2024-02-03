@@ -127,8 +127,11 @@ class NiceGacha {
   int openedAt;
   int closedAt;
   String detailUrl;
+  @JsonKey(unknownEnumValue: GachaFlag.none)
   List<GachaFlag> flags;
   List<GachaStoryAdjust> storyAdjusts;
+
+  bool userAdded;
 
   NiceGacha({
     this.id = 0,
@@ -145,8 +148,36 @@ class NiceGacha {
     this.detailUrl = '',
     this.flags = const [],
     this.storyAdjusts = const [],
+    this.userAdded = false,
   });
   factory NiceGacha.fromJson(Map<String, dynamic> json) => _$NiceGachaFromJson(json);
+
+  bool get isLuckyBag => type == GachaType.chargeStone;
+
+  String? getHtmlUrl(Region region) {
+    // final page = gacha?.detailUrl;
+    // if (page == null || page.trim().isEmpty) return null;
+    if (const [1, 101].contains(id)) return null;
+    switch (region) {
+      case Region.jp:
+        // return 'https://webview.fate-go.jp/webview$page';
+        if (openedAt < 1640790000) {
+          // ID50017991 2021-12-29 23:00+08
+          return null;
+        }
+        return "https://static.atlasacademy.io/file/aa-fgo/GameData-uTvNN4iBTNInrYDa/JP/Banners/$id/index.html";
+      case Region.na:
+        if (openedAt < 1641268800) {
+          // 50010611: 2022-01-04 12:00+08
+          return null;
+        }
+        return "https://static.atlasacademy.io/file/aa-fgo/GameData-uTvNN4iBTNInrYDa/NA/Banners/$id/index.html";
+      case Region.cn:
+      case Region.tw:
+      case Region.kr:
+        return null;
+    }
+  }
 }
 
 @JsonSerializable(createToJson: false)
@@ -171,7 +202,7 @@ class GachaStoryAdjust {
   factory GachaStoryAdjust.fromJson(Map<String, dynamic> json) => _$GachaStoryAdjustFromJson(json);
 }
 
-class GachaTypeConverter extends JsonConverter<GachaType, String> {
+class GachaTypeConverter extends JsonConverter<GachaType, dynamic> {
   const GachaTypeConverter();
 
   static const payTypeToGachaType = <String, GachaType>{
@@ -182,8 +213,9 @@ class GachaTypeConverter extends JsonConverter<GachaType, String> {
   };
 
   @override
-  GachaType fromJson(String? value) {
+  GachaType fromJson(dynamic value) {
     if (value == null) return GachaType.payGacha;
+    if (value is int) return GachaType.values.firstWhere((e) => e.id == value, orElse: () => GachaType.unknown);
     return payTypeToGachaType[value] ?? decodeEnum(_$GachaTypeEnumMap, value, GachaType.unknown);
   }
 

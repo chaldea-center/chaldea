@@ -322,9 +322,19 @@ class AtlasApi {
   }
 
   static Future<List<EnemyMaster>?> enemyMasters({Region region = Region.jp, Duration? expireAfter}) {
-    return cacheManager.getModel(
-      '$atlasApiHost/export/${region.upper}/nice_enemy_master.json',
+    return exportedData(
+      'nice_enemy_master',
       (data) => (data as List).map((e) => EnemyMaster.fromJson(e)).toList(),
+      region: region,
+      expireAfter: expireAfter,
+    );
+  }
+
+  static Future<List<NiceGacha>?> gachas({Region region = Region.jp, Duration? expireAfter}) {
+    return exportedData(
+      'nice_gacha',
+      (data) => (data as List).map((e) => NiceGacha.fromJson(e)).toList(),
+      region: region,
       expireAfter: expireAfter,
     );
   }

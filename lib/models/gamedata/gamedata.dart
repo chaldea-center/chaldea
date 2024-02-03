@@ -74,7 +74,7 @@ class GameData with _GameDataExtra {
   Map<int, MstMasterMission> masterMissions;
   Map<int, MasterMission> extraMasterMission;
   List<QuestGroup> questGroups;
-  Map<int, MstGacha> mstGacha;
+  Map<int, NiceGacha> gachas;
   WikiData wiki;
   MappingData mappingData;
   ConstGameData constData;
@@ -120,7 +120,7 @@ class GameData with _GameDataExtra {
     Map<int, MstMasterMission>? masterMissions,
     Map<int, MasterMission>? extraMasterMission,
     List<QuestGroup>? questGroups,
-    Map<int, MstGacha>? mstGacha,
+    Map<int, NiceGacha>? gachas,
     WikiData? wiki,
     MappingData? mappingData,
     ConstGameData? constData,
@@ -157,7 +157,7 @@ class GameData with _GameDataExtra {
         masterMissions = masterMissions ?? {},
         extraMasterMission = extraMasterMission ?? {},
         questGroups = questGroups ?? [],
-        mstGacha = mstGacha ?? {},
+        gachas = gachas ?? {},
         wiki = wiki ?? WikiData(),
         mappingData = mappingData ?? MappingData(),
         constData = constData ?? ConstGameData(),
@@ -607,7 +607,7 @@ class _ProcessedData {
 class GameTimerData {
   int updatedAt;
   List<Event> events;
-  List<MstGacha> gachas;
+  List<NiceGacha> gachas;
   List<MasterMission> masterMissions;
   List<NiceShop> shops;
   List<Item> items;

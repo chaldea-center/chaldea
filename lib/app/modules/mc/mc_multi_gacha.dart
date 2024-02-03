@@ -12,7 +12,7 @@ import 'gacha_parser.dart';
 import 'mc_prob_edit.dart';
 
 class MCSummonCreatePage extends StatefulWidget {
-  final List<MstGacha> gachas;
+  final List<NiceGacha> gachas;
   const MCSummonCreatePage({super.key, required this.gachas});
 
   @override
@@ -357,8 +357,8 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
 
     // 卡池情况
     buffer.writeln('==推荐召唤具体情况==');
-    for (final gacha in gachas.map((e) => e.niceGacha)) {
-      if (gacha == null || gacha.storyAdjusts.isEmpty) continue;
+    for (final gacha in gachas.map((e) => e.gacha)) {
+      if (gacha.storyAdjusts.isEmpty) continue;
       final questId = gacha.storyAdjusts.firstWhereOrNull((e) => e.condType == CondType.questClear)?.targetId;
       final quest = db.gameData.quests[questId];
       String chapter;

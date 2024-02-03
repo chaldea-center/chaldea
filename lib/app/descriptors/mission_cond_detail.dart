@@ -222,7 +222,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
             kr: () => text('친구 포인트 소환을 $targetNum회 실행'),
           );
         } else {
-          final gacha = db.gameData.mstGacha[gachaId];
+          final gacha = db.gameData.gachas[gachaId];
           final gachaName = gacha?.name ?? "${S.current.gacha} $gachaId";
           return localized(
             jp: () => text('「$gachaName」召喚を$targetNum回実行せよ'),

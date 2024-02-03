@@ -12,7 +12,7 @@ import '../summon/summon_simulator_page.dart';
 import 'gacha_parser.dart';
 
 class MCGachaProbEditPage extends StatefulWidget {
-  final MstGacha gacha;
+  final NiceGacha gacha;
   const MCGachaProbEditPage({super.key, required this.gacha});
 
   @override

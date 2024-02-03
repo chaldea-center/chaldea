@@ -47,7 +47,7 @@ NiceGacha _$NiceGachaFromJson(Map json) => NiceGacha(
       id: json['id'] as int? ?? 0,
       name: json['name'] as String? ?? '',
       imageId: json['imageId'] as int? ?? 0,
-      type: json['type'] == null ? GachaType.payGacha : const GachaTypeConverter().fromJson(json['type'] as String),
+      type: json['type'] == null ? GachaType.payGacha : const GachaTypeConverter().fromJson(json['type']),
       adjustId: json['adjustId'] as int? ?? 0,
       pickupId: json['pickupId'] as int? ?? 0,
       drawNum1: json['drawNum1'] as int? ?? 0,
@@ -56,11 +56,15 @@ NiceGacha _$NiceGachaFromJson(Map json) => NiceGacha(
       openedAt: json['openedAt'] as int? ?? 0,
       closedAt: json['closedAt'] as int? ?? 0,
       detailUrl: json['detailUrl'] as String? ?? '',
-      flags: (json['flags'] as List<dynamic>?)?.map((e) => $enumDecode(_$GachaFlagEnumMap, e)).toList() ?? const [],
+      flags: (json['flags'] as List<dynamic>?)
+              ?.map((e) => $enumDecode(_$GachaFlagEnumMap, e, unknownValue: GachaFlag.none))
+              .toList() ??
+          const [],
       storyAdjusts: (json['storyAdjusts'] as List<dynamic>?)
               ?.map((e) => GachaStoryAdjust.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      userAdded: json['userAdded'] as bool? ?? false,
     );
 
 const _$GachaFlagEnumMap = {

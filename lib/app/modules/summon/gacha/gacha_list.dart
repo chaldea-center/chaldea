@@ -25,12 +25,12 @@ class GachaListPage extends StatefulWidget {
 }
 
 class _GachaListPageState extends State<GachaListPage>
-    with RegionBasedState<List<MstGacha>, GachaListPage>, SearchableListState<MstGacha, GachaListPage> {
+    with RegionBasedState<List<NiceGacha>, GachaListPage>, SearchableListState<NiceGacha, GachaListPage> {
   @override
-  Iterable<MstGacha> get wholeData => data ?? [];
-  // List<MstGacha> get gachas => data ?? [];
-  final Map<int, List<MstGacha>> _imageIdMap = {};
-  final Set<MstGacha> _selectedGachas = {};
+  Iterable<NiceGacha> get wholeData => data ?? [];
+  // List<NiceGacha> get gachas => data ?? [];
+  final Map<int, List<NiceGacha>> _imageIdMap = {};
+  final Set<NiceGacha> _selectedGachas = {};
   bool get shouldShowMultiChoice => region == Region.jp && Language.isZH;
 
   SummonFilterData get filterData => db.settings.gachaFilterData;
@@ -46,20 +46,15 @@ class _GachaListPageState extends State<GachaListPage>
   }
 
   @override
-  Future<List<MstGacha>?> fetchData(Region? r, {Duration? expireAfter}) async {
+  Future<List<NiceGacha>?> fetchData(Region? r, {Duration? expireAfter}) async {
     r ??= Region.jp;
     _imageIdMap.clear();
     AtlasApi.cacheManager.clearFailed();
-    List<MstGacha>? results;
+    List<NiceGacha>? results;
     if (r == Region.jp) {
-      results = db.gameData.mstGacha.values.toList();
+      results = db.gameData.gachas.values.toList();
     } else {
-      results = await AtlasApi.mstData(
-        'mstGacha',
-        (json) => (json as List).map((e) => MstGacha.fromJson(Map.from(e))).toList(),
-        region: r,
-        expireAfter: expireAfter,
-      );
+      results = await AtlasApi.gachas(region: r, expireAfter: expireAfter);
     }
     if (results != null) {
       for (final gacha in results) {
@@ -72,12 +67,11 @@ class _GachaListPageState extends State<GachaListPage>
   }
 
   @override
-  bool filter(MstGacha gacha) {
+  bool filter(NiceGacha gacha) {
     if (region == Region.cn) {
       if (gacha.openedAt == gacha.closedAt && gacha.openedAt == 1911657599) return false;
     }
-    final gachaType = gacha.gachaType;
-    if (!filterData.gachaType.matchOne(gachaType)) {
+    if (!filterData.gachaType.matchOne(gacha.type)) {
       return false;
     }
     if (!filterData.showOutdated &&
@@ -147,7 +141,7 @@ class _GachaListPageState extends State<GachaListPage>
   }
 
   @override
-  Widget buildContent(BuildContext context, List<MstGacha> gachas) {
+  Widget buildContent(BuildContext context, List<NiceGacha> gachas) {
     filterShownList();
     if (filterData.sortByClosed) {
       shownList.sort2((a) => a.closedAt);
@@ -164,7 +158,7 @@ class _GachaListPageState extends State<GachaListPage>
   }
 
   @override
-  Widget listItemBuilder(MstGacha gacha) {
+  Widget listItemBuilder(NiceGacha gacha) {
     final url = gacha.getHtmlUrl(region ?? Region.jp);
     String title = gacha.name;
     String subtitle = '[${gacha.type}]${gacha.id}   ';
@@ -206,11 +200,11 @@ class _GachaListPageState extends State<GachaListPage>
           // leading: isLuckyBag ? const Icon(Icons.currency_yen, size: 16) : null,
           title: Text.rich(
             TextSpan(children: [
-              if (gacha.gachaType == GachaType.chargeStone)
+              if (gacha.type == GachaType.chargeStone)
                 const TextSpan(text: '$kStarChar2 ', style: TextStyle(color: Colors.red)),
               TextSpan(text: title),
             ]),
-            style: TextStyle(fontStyle: gacha.userAdded == true ? FontStyle.italic : null),
+            style: TextStyle(fontStyle: gacha.userAdded ? FontStyle.italic : null),
           ),
           subtitle: Text(subtitle),
           trailing: trailing,
@@ -221,7 +215,7 @@ class _GachaListPageState extends State<GachaListPage>
         List<Widget> children = [
           GachaBanner(imageId: gacha.imageId, region: region ?? Region.jp),
         ];
-        final dupGachas = List<MstGacha>.of(_imageIdMap[gacha.imageId] ?? []);
+        final dupGachas = List<NiceGacha>.of(_imageIdMap[gacha.imageId] ?? []);
         dupGachas.remove(gacha);
         if (dupGachas.isNotEmpty) {
           children.add(Padding(
@@ -300,12 +294,12 @@ class _GachaListPageState extends State<GachaListPage>
   }
 
   @override
-  Widget gridItemBuilder(MstGacha gacha) {
+  Widget gridItemBuilder(NiceGacha gacha) {
     throw UnimplementedError();
   }
 
   @override
-  Iterable<String?> getSummary(MstGacha gacha) sync* {
+  Iterable<String?> getSummary(NiceGacha gacha) sync* {
     yield gacha.id.toString();
     yield gacha.name;
     yield switch (region) {

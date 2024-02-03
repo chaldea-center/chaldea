@@ -249,6 +249,7 @@ class GameDataLoader {
       'extraMasterMission': 'id',
       'masterMissions': 'id',
       'mstGacha': 'id',
+      'gacha': 'id',
       'wiki.commandCodes': 'collectionNo',
       'wiki.craftEssences': 'collectionNo',
       'wiki.events': 'id',
@@ -266,6 +267,7 @@ class GameDataLoader {
       futures.add(_pool.withResource(() => _downloadCheck(fv, l2mKey: keys[fv.key], l2mFn: l2mFn)));
     }
     await Future.wait(futures);
+    _gameJson['gachas'] ??= _gameJson['mstGacha'] ?? {};
     await _addGameAdd(_gameJson);
     _patchMappings(_gameJson);
 
