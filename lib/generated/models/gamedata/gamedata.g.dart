@@ -41,6 +41,9 @@ GameData _$GameDataFromJson(Map json) => GameData(
       mysticCodes: (json['mysticCodes'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), MysticCode.fromJson(Map<String, dynamic>.from(e as Map))),
       ),
+      campaigns: (json['campaigns'] as Map?)?.map(
+        (k, e) => MapEntry(int.parse(k as String), Event.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
       events: (json['events'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), Event.fromJson(Map<String, dynamic>.from(e as Map))),
       ),

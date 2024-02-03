@@ -115,7 +115,13 @@ class Event with RouteInfo {
         noticeAt = noticeAt ?? startedAt,
         finishedAt = finishedAt ?? endedAt;
 
-  factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
+  factory Event.fromJson(Map<String, dynamic> json) {
+    final event = _$EventFromJson(json);
+    if (event.id < 0 && event.type == EventType.none) {
+      event.type = EventType.mcCampaign;
+    }
+    return event;
+  }
 
   Transl<String, String> get lName => Transl.eventNames(name);
 

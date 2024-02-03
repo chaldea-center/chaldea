@@ -940,6 +940,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "show_frame_rate": MessageLookupByLibrary.simpleMessage("Show Frame Rate"),
         "show_fullscreen": MessageLookupByLibrary.simpleMessage("Show Fullscreen"),
         "show_less": MessageLookupByLibrary.simpleMessage("Show Less"),
+        "show_mc_campaign": MessageLookupByLibrary.simpleMessage("Show Campaign Events"),
         "show_more": MessageLookupByLibrary.simpleMessage("Show More"),
         "show_outdated": MessageLookupByLibrary.simpleMessage("Show Outdated"),
         "show_system_tray": MessageLookupByLibrary.simpleMessage("Show in System Tray"),

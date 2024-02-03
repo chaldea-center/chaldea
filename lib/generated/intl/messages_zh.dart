@@ -895,6 +895,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "show_frame_rate": MessageLookupByLibrary.simpleMessage("显示刷新率"),
         "show_fullscreen": MessageLookupByLibrary.simpleMessage("全屏显示"),
         "show_less": MessageLookupByLibrary.simpleMessage("显示更少"),
+        "show_mc_campaign": MessageLookupByLibrary.simpleMessage("显示纪念活动"),
         "show_more": MessageLookupByLibrary.simpleMessage("显示更多"),
         "show_outdated": MessageLookupByLibrary.simpleMessage("显示已过期"),
         "show_system_tray": MessageLookupByLibrary.simpleMessage("在系统托盘显示"),

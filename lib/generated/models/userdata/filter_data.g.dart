@@ -129,6 +129,7 @@ EventFilterData _$EventFilterDataFromJson(Map json) => $checkedCreate(
           reversed: $checkedConvert('reversed', (v) => v as bool? ?? false),
           showOutdated: $checkedConvert('showOutdated', (v) => v as bool? ?? false),
           showSpecialRewards: $checkedConvert('showSpecialRewards', (v) => v as bool? ?? false),
+          showCampaign: $checkedConvert('showCampaign', (v) => v as bool? ?? true),
           showEmpty: $checkedConvert('showEmpty', (v) => v as bool? ?? false),
           showBanner: $checkedConvert('showBanner', (v) => v as bool? ?? true),
         );
@@ -141,6 +142,7 @@ Map<String, dynamic> _$EventFilterDataToJson(EventFilterData instance) => <Strin
       'showOutdated': instance.showOutdated,
       'showSpecialRewards': instance.showSpecialRewards,
       'showEmpty': instance.showEmpty,
+      'showCampaign': instance.showCampaign,
       'showBanner': instance.showBanner,
     };
 

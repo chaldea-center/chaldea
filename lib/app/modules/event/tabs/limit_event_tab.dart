@@ -67,6 +67,7 @@ class LimitEventTab extends StatelessWidget {
         .where((e) => e.value != null)
         .map((e) => '${e.key.upper} ${e.value?.sec2date().toDateString()}')
         .join(' / ');
+    if (event.id < 0) subtitle = '* $subtitle';
 
     Color? _outdatedColor = Theme.of(context).textTheme.bodySmall?.color;
 

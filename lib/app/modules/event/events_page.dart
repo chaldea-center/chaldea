@@ -65,13 +65,15 @@ class EventListPageState extends State<EventListPage>
   @override
   Widget build(BuildContext context) {
     filterShownList();
-    List<Event> limitEvents = [], campaignEvents = [];
+    List<Event> limitEvents = [], campaigns = [];
 
     for (final event in shownList) {
       if (const [EventType.eventQuest, EventType.warBoard].contains(event.type)) {
         limitEvents.add(event);
+      } else if (event.type == EventType.mcCampaign) {
+        if (filterData.showCampaign) limitEvents.add(event);
       } else {
-        campaignEvents.add(event);
+        campaigns.add(event);
       }
     }
 
@@ -135,7 +137,7 @@ class EventListPageState extends State<EventListPage>
                 ),
                 KeepAliveBuilder(
                   builder: (_) => CampaignEventTab(
-                    campaignEvents: campaignEvents,
+                    campaignEvents: campaigns,
                     reversed: filterData.reversed,
                     showOutdated: filterData.showOutdated,
                   ),

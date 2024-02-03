@@ -62,6 +62,7 @@ class GameData with _GameDataExtra {
   Map<int, CraftEssence> craftEssences;
   Map<int, CommandCode> commandCodes;
   Map<int, MysticCode> mysticCodes;
+  Map<int, Event> campaigns;
   Map<int, Event> events;
   Map<int, NiceWar> wars;
   Map<int, ClassBoard> classBoards;
@@ -111,6 +112,7 @@ class GameData with _GameDataExtra {
     List<CraftEssence> craftEssences = const [],
     List<CommandCode> commandCodes = const [],
     Map<int, MysticCode>? mysticCodes,
+    Map<int, Event>? campaigns,
     Map<int, Event>? events,
     Map<int, NiceWar>? wars,
     Map<int, ClassBoard>? classBoards,
@@ -145,6 +147,7 @@ class GameData with _GameDataExtra {
             if (cc.collectionNo > 0) cc.collectionNo: cc
         },
         mysticCodes = mysticCodes ?? {},
+        campaigns = campaigns ?? {},
         events = events ?? {},
         wars = wars ?? {},
         classBoards = classBoards ?? {},
@@ -165,6 +168,13 @@ class GameData with _GameDataExtra {
         baseTds = baseTds ?? {},
         baseSkills = baseSkills ?? {},
         baseFunctions = baseFunctions ?? {} {
+    // merge mc campaigns
+    String trim(String s) => s.replaceAll(RegExp(r'[\s\n]'), '');
+    Set<String> eventKeys = this.events.values.map((e) => [e.extra.mcLink, trim(e.name)].join('/')).toSet();
+    final campaignsToAdd =
+        this.campaigns.values.where((e) => !eventKeys.contains([e.extra.mcLink, trim(e.name)].join('/')));
+    this.events.addAll({for (final e in campaignsToAdd) e.id: e});
+
     // process
     for (final func in this.baseFunctions.values) {
       for (final buff in func.buffs) {

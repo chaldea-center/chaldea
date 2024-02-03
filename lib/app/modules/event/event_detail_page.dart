@@ -242,7 +242,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
         ),
         const PopupMenuDivider(),
         ...SharedBuilder.websitesPopupMenuItems(
-          atlas: Atlas.dbEvent(event.id, _region),
+          atlas: event.id < 0 ? null : Atlas.dbEvent(event.id, _region),
           mooncell: event.extra.mcLink,
           fandom: event.extra.fandomLink,
         ),
@@ -365,6 +365,17 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         format: (v) => v?.sec2date().toStringShort(omitSec: true) ?? '?',
       )
     ]));
+
+    if (event.id < 0) {
+      rows.add(CustomTableRow.fromChildren(
+        children: [
+          Text(
+            '* Campaign info from Mooncell wiki *',
+            style: Theme.of(context).textTheme.bodySmall,
+          )
+        ],
+      ));
+    }
 
     children.add(CustomTable(selectable: true, children: rows));
     if (event.type == EventType.questCampaign) {

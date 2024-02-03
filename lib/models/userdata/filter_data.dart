@@ -776,6 +776,7 @@ class EventFilterData with _FilterData {
   bool showOutdated;
   bool showSpecialRewards;
   bool showEmpty;
+  bool showCampaign;
   bool showBanner;
 
   // filter
@@ -792,6 +793,7 @@ class EventFilterData with _FilterData {
     this.reversed = false,
     this.showOutdated = false,
     this.showSpecialRewards = false,
+    this.showCampaign = true,
     this.showEmpty = false,
     this.showBanner = true,
   });

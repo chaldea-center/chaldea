@@ -237,6 +237,7 @@ class GameDataLoader {
       // constData
       // dropRate
       'events': 'id',
+      'campaigns': 'id',
       'classBoards': 'id',
       'enemyMasters': 'id',
       'exchangeTickets': 'id',
@@ -268,6 +269,7 @@ class GameDataLoader {
     }
     await Future.wait(futures);
     _gameJson['gachas'] ??= _gameJson['mstGacha'] ?? {};
+
     await _addGameAdd(_gameJson);
     _patchMappings(_gameJson);
 

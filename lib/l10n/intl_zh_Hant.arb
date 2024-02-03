@@ -792,6 +792,7 @@
   "show_frame_rate": "顯示刷新率",
   "show_fullscreen": "全螢幕顯示",
   "show_less": "顯示更少",
+  "show_mc_campaign": null,
   "show_more": "顯示更多",
   "show_outdated": "顯示已過期",
   "show_system_tray": "在系統圖示顯示",

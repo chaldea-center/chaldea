@@ -8791,6 +8791,17 @@ class S {
     );
   }
 
+  /// `Show Campaign Events`
+  String get show_mc_campaign {
+    return Intl.message(
+      'Show Campaign Events',
+      name: 'show_mc_campaign',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Show More`
   String get show_more {
     return Intl.message(

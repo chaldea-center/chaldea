@@ -793,6 +793,7 @@
   "show_frame_rate": "fps 표시",
   "show_fullscreen": "풀스크린 보이기",
   "show_less": null,
+  "show_mc_campaign": null,
   "show_more": null,
   "show_outdated": "기간종료 보이기",
   "show_system_tray": null,

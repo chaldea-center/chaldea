@@ -80,6 +80,17 @@ class _EventFilterPageState extends FilterPageState<EventFilterData, EventFilter
           },
           controlAffinity: ListTileControlAffinity.trailing,
         ),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: filterData.showCampaign,
+          title: Text(S.current.show_mc_campaign),
+          subtitle: const Text("From Mooncell wiki"),
+          onChanged: (v) {
+            filterData.showCampaign = v;
+            update();
+          },
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
         FilterGroup<Region?>(
           title: const Text('Ongoing'),
           options: const [null, ...Region.values],
