@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -86,7 +87,7 @@ class _GachaListPageState extends State<GachaListPage>
     return scrollListener(
       useGrid: false,
       appBar: AppBar(
-        title: Text(S.current.raw_gacha_data),
+        title: AutoSizeText(S.current.raw_gacha_data, maxLines: 1),
         leading: const MasterBackButton(),
         titleSpacing: 0,
         bottom: showSearchBar ? searchBar : null,
@@ -159,9 +160,8 @@ class _GachaListPageState extends State<GachaListPage>
 
   @override
   Widget listItemBuilder(NiceGacha gacha) {
-    final url = gacha.getHtmlUrl(region ?? Region.jp);
     String title = gacha.name;
-    String subtitle = '[${gacha.type}]${gacha.id}   ';
+    String subtitle = '[${gacha.type.id}]${gacha.id}   ';
     subtitle += [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ ');
     final now = DateTime.now().timestamp;
     return SimpleAccordion(
@@ -239,23 +239,10 @@ class _GachaListPageState extends State<GachaListPage>
             ),
           ));
         }
-        if ((region == Region.jp || region == Region.na) && url != null) {
-          final enabled = gacha.openedAt < DateTime.now().timestamp;
-          children.add(Wrap(
-            alignment: WrapAlignment.center,
-            children: [
-              TextButton(
-                onPressed: enabled ? () => launch(url, external: false) : null,
-                child: Text(S.current.open_in_browser),
-              ),
-              if (region == Region.jp)
-                TextButton(
-                  onPressed: enabled ? () => router.pushPage(MCGachaProbEditPage(gacha: gacha)) : null,
-                  child: Text('${S.current.probability}/${S.current.simulator}'),
-                )
-            ],
-          ));
-        }
+        children.add(TextButton(
+          onPressed: () => router.pushPage(MCGachaProbEditPage(gacha: gacha, region: region!)),
+          child: Text(S.current.details),
+        ));
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: children,

@@ -50,25 +50,13 @@ class TimerGachaItem with TimerItem {
         ),
       ),
       contentBuilder: (context) {
-        final htmlUrl = gacha.getHtmlUrl(region);
-        List<Widget> children = [GachaBanner(region: region, imageId: gacha.imageId)];
-        if ((region == Region.jp || region == Region.na) && htmlUrl != null) {
-          final enabled = gacha.openedAt < DateTime.now().timestamp;
-          children.add(Wrap(
-            alignment: WrapAlignment.center,
-            children: [
-              TextButton(
-                onPressed: enabled ? () => launch(htmlUrl, external: false) : null,
-                child: Text(S.current.open_in_browser),
-              ),
-              if (region == Region.jp)
-                TextButton(
-                  onPressed: enabled ? () => router.pushPage(MCGachaProbEditPage(gacha: gacha)) : null,
-                  child: Text('${S.current.probability}/${S.current.simulator}'),
-                )
-            ],
-          ));
-        }
+        List<Widget> children = [
+          GachaBanner(region: region, imageId: gacha.imageId),
+          TextButton(
+            onPressed: () => router.pushPage(MCGachaProbEditPage(gacha: gacha, region: region)),
+            child: Text(S.current.details),
+          ),
+        ];
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: children,

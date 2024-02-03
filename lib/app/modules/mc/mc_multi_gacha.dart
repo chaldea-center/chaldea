@@ -68,7 +68,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
                 : const Icon(Icons.check_circle, color: Colors.green, size: 18),
             title: Text('${index + 1} - ${gacha.gacha.name.setMaxLines(1)}'),
             onTap: () {
-              router.pushPage(MCGachaProbEditPage(gacha: gacha.gacha));
+              router.pushPage(MCGachaProbEditPage(gacha: gacha.gacha, region: Region.jp));
             },
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           ),

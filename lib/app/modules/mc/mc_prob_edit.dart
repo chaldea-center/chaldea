@@ -1,6 +1,8 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
@@ -13,7 +15,8 @@ import 'gacha_parser.dart';
 
 class MCGachaProbEditPage extends StatefulWidget {
   final NiceGacha gacha;
-  const MCGachaProbEditPage({super.key, required this.gacha});
+  final Region region;
+  const MCGachaProbEditPage({super.key, required this.gacha, required this.region});
 
   @override
   State<MCGachaProbEditPage> createState() => _MCGachaProbEditPageState();
@@ -21,12 +24,13 @@ class MCGachaProbEditPage extends StatefulWidget {
 
 class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
   late final gacha = widget.gacha;
-  late final url = gacha.getHtmlUrl(Region.jp);
+  late final url = gacha.getHtmlUrl(widget.region);
   late GachaProbData result = GachaProbData(widget.gacha, '', []);
 
   final converter = JpGachaParser();
 
   bool showIcon = false;
+  bool get allowParse => widget.region == Region.jp;
 
   @override
   void initState() {
@@ -36,6 +40,7 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
 
   Future<void> parseHtml() async {
     try {
+      if (!allowParse || gacha.openedAt > DateTime.now().timestamp) return;
       result = await showEasyLoading(() => converter.parseProb(gacha));
       if (result.isInvalid) {
         EasyLoading.showError(S.current.failed);
@@ -59,39 +64,47 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(gacha.name.setMaxLines(1)),
+        title: AutoSizeText(gacha.name.setMaxLines(1), maxLines: 1, minFontSize: 14),
         // actions: [
         //   IconButton(onPressed: parseHtml, icon: const Icon(Icons.search)),
         // ],
       ),
       body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
-          GachaBanner(imageId: gacha.imageId, region: Region.jp),
-          Text(gacha.name, textAlign: TextAlign.center),
-          if (url != null) TextButton(onPressed: () => launch(url!), child: Text(S.current.open_in_browser)),
-          kDefaultDivider,
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            child: Text('[For Mooncell wiki Editor]\n'
-                '检查并修改以下部分后再写入到“某某卡池/模拟器/data{X}”中: \n'
-                '- 是否显示(1显示 0不显示)\n'
-                '- 各行总概率是否正确\n'
-                '- 行顺序是否需要调整'),
-          ),
+          GachaBanner(imageId: gacha.imageId, region: widget.region),
+          CustomTable(children: [
+            CustomTableRow.fromTexts(
+              texts: [gacha.name],
+              defaults: TableCellData(textAlign: TextAlign.center, color: TableCellData.resolveHeaderColor(context)),
+            ),
+            CustomTableRow.fromTexts(texts: ['No.${gacha.id}', gacha.type.shownName]),
+            CustomTableRow.fromTexts(texts: [
+              [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ ')
+            ]),
+          ]),
+          for (final adjust in gacha.storyAdjusts) ...[
+            DividerWithTitle(title: "Case ${adjust.idx}"),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: CondTargetValueDescriptor(
+                condType: adjust.condType,
+                target: adjust.targetId,
+                value: adjust.value,
+              ),
+            ),
+            if (adjust.imageId != gacha.imageId)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: GachaBanner(imageId: adjust.imageId, region: widget.region),
+              ),
+          ],
           const Divider(height: 16),
           Wrap(
+            spacing: 6,
             alignment: WrapAlignment.center,
-            spacing: 8,
             children: [
-              FilledButton(
-                onPressed: result.isInvalid
-                    ? null
-                    : () {
-                        copyToClipboard(result.toOutput(), toast: true);
-                      },
-                child: Text(S.current.copy),
-              ),
+              if (url != null) TextButton(onPressed: () => launch(url!), child: Text(S.current.open_in_browser)),
               FilledButton(
                 onPressed: result.isInvalid
                     ? null
@@ -123,20 +136,42 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
               ),
             ],
           ),
-          SwitchListTile(
-            dense: true,
-            value: showIcon,
-            title: Text(S.current.icons),
-            onChanged: result.isInvalid
-                ? null
-                : (v) {
-                    setState(() {
-                      showIcon = v;
-                    });
-                  },
-          ),
-          buildTable(),
-          const SizedBox(height: 8),
+          if (allowParse) ...[
+            const Divider(height: 16),
+            SwitchListTile(
+              dense: true,
+              value: showIcon,
+              title: Text(S.current.icons),
+              onChanged: result.isInvalid
+                  ? null
+                  : (v) {
+                      setState(() {
+                        showIcon = v;
+                      });
+                    },
+            ),
+            buildTable(),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Text(
+                '[For Mooncell wiki Editor]\n'
+                '检查后再写入到“某某卡池/模拟器/data{X}”中:\n'
+                '- 是否显示(1显示 0不显示)\n'
+                '- 各行总概率是否正确',
+                style: TextStyle(fontSize: 14),
+              ),
+            ),
+            Center(
+              child: FilledButton(
+                onPressed: result.isInvalid
+                    ? null
+                    : () {
+                        copyToClipboard(result.toOutput(), toast: true);
+                      },
+                child: Text('${S.current.copy} Mooncell wikitext'),
+              ),
+            ),
+          ],
           const SizedBox(height: 32),
           if (!result.isInvalid && AppInfo.isDebugDevice)
             Card(
