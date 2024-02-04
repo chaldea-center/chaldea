@@ -72,6 +72,18 @@ class MyAudioPlayer<T> {
   }
 }
 
+extension MyAudioPlayerString on MyAudioPlayer<String> {
+  Future<void> playUri(String url) async {
+    AudioSource source;
+    String? fp;
+    if (!kIsWeb) {
+      fp = await AtlasIconLoader.i.get(url);
+    }
+    source = fp != null ? AudioSource.uri(Uri.file(fp), tag: url) : AudioSource.uri(Uri.parse(url), tag: url);
+    playOrPause([source], url);
+  }
+}
+
 class SoundPlayButton extends StatelessWidget {
   final String? name;
   final String? url;
@@ -81,6 +93,17 @@ class SoundPlayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final playButton = StreamBuilder(
+      stream: player.player.processingStateStream,
+      builder: (context, processState) => StreamBuilder(
+        stream: player.player.playingStream,
+        builder: (context, isPlaying) {
+          bool playing =
+              (isPlaying.data ?? false) && player.isPlaying(url) && processState.data != ProcessingState.completed;
+          return Icon(playing ? Icons.pause : Icons.play_arrow, size: 18);
+        },
+      ),
+    );
     if (name == null || name!.isEmpty) {
       return ElevatedButton(
         onPressed: url == null ? null : () => onPressed(url!),
@@ -90,7 +113,7 @@ class SoundPlayButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
           minimumSize: const Size(18, 18),
         ),
-        child: const Icon(Icons.play_arrow, size: 18),
+        child: playButton,
       );
     }
     return ElevatedButton.icon(
@@ -100,18 +123,12 @@ class SoundPlayButton extends StatelessWidget {
         visualDensity: VisualDensity.compact,
         padding: const EdgeInsetsDirectional.fromSTEB(8, 2, 14, 2),
       ),
-      icon: const Icon(Icons.play_arrow, size: 18),
+      icon: playButton,
       label: Text(name!),
     );
   }
 
   Future onPressed(String _url) async {
-    AudioSource source;
-    String? fp;
-    if (!kIsWeb) {
-      fp = await AtlasIconLoader.i.get(_url);
-    }
-    source = fp != null ? AudioSource.uri(Uri.file(fp), tag: _url) : AudioSource.uri(Uri.parse(_url), tag: _url);
-    player.playOrPause([source], _url);
+    player.playUri(_url);
   }
 }
