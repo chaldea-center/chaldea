@@ -43,25 +43,17 @@ class BattleSimUserData {
   Set<int> pingedSvts;
   // questId, teamIds
   Map<int, Set<int>> favoriteTeams;
-  // TODO: deprecate after 2024/03
-  @protected
-  List<BattleTeamFormation> formations;
   List<BattleShareData> teams;
 
   BattleSimUserData({
     Set<int>? pingedCEs,
     Set<int>? pingedSvts,
     Map<int, Set<int>>? favoriteTeams,
-    List<BattleTeamFormation>? formations,
     List<BattleShareData>? teams,
   })  : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
         pingedSvts = pingedSvts ?? {215, 284, 314, 316, 357},
         favoriteTeams = favoriteTeams ?? {},
-        formations = formations ?? [],
         teams = teams ?? [] {
-    if (teams == null && formations != null) {
-      this.teams.addAll(formations.map((e) => BattleShareData(quest: null, formation: e)));
-    }
     validate();
   }
 
