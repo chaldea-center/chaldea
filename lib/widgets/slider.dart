@@ -4,61 +4,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 import 'custom_dialogs.dart';
 
-@Deprecated('use SliderWithPrefix')
-class SliderWithTitle extends StatelessWidget {
-  final String label;
-  final int min;
-  final int max;
-  final int value;
-  final String valueText;
-  final ValueChanged<double> onChange;
-  final EdgeInsetsGeometry padding;
-  final double maxWidth;
-
-  const SliderWithTitle({
-    super.key,
-    required this.label,
-    required this.min,
-    required this.max,
-    required this.value,
-    required this.valueText,
-    required this.onChange,
-    this.padding = const EdgeInsets.only(top: 8),
-    this.maxWidth = 360,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: padding,
-          child: Text('$label: $valueText'),
-        ),
-        ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: 24,
-            maxWidth: maxWidth,
-          ),
-          child: Slider(
-            min: min.toDouble(),
-            max: max.toDouble(),
-            divisions: max > min ? max - min : null,
-            value: value.toDouble(),
-            label: valueText,
-            onChanged: (v) {
-              onChange(v);
-            },
-          ),
-        )
-      ],
-    );
-  }
-}
-
 class SliderWithPrefix extends StatelessWidget {
   final bool titled;
   final String label;

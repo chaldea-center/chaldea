@@ -183,10 +183,6 @@ class PathManager {
 
   String get crashLog => join(logDir, 'crash.log');
 
-  // persistent
-  @Deprecated('use shared_preference instead')
-  String get persistentConfigPath => join(_persistentPath!, 'setting.json');
-
   bool get isAppPathValid {
     if (!PlatformU.isWindows) return true;
     final path = appPath.toLowerCase();

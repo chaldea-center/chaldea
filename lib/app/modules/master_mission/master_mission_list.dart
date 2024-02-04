@@ -79,7 +79,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
           // skipped, won't use
           return false;
         }
-        // deprecated
+        // legacy daily mm didn't update end time
         if (mission.type == MissionType.daily && mission is! MasterMission) return false;
       }
       return typeOptions.matchOne(_allMissionTypes.contains(mission.type) ? mission.type : null);

@@ -44,7 +44,7 @@ class _ImportPageHomeState extends State<ImportPageHome> {
           const Divider(indent: 48, endIndent: 48, height: 2),
           ListTile(
             leading: const Icon(Icons.settings_backup_restore),
-            title: Text('${S.current.chaldea_backup} (v2)'),
+            title: Text(S.current.chaldea_backup),
             subtitle: const Text('userdata.json/*.json'),
             trailing: const Icon(Icons.keyboard_arrow_right),
             onTap: () {
@@ -101,15 +101,16 @@ class _ImportPageHomeState extends State<ImportPageHome> {
               router.pushPage(ImportSkillScreenshotPage(isAppend: true), popDetail: true);
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.compare_arrows),
-            title: const Text('FGO Simulator-Material'),
-            subtitle: const Text('https://fgosim.github.io/Material/'),
-            trailing: const Icon(Icons.keyboard_arrow_right),
-            onTap: () {
-              router.popDetailAndPush(child: ImportFgoSimuMaterialPage());
-            },
-          ),
+          if (1 > 2)
+            ListTile(
+              leading: const Icon(Icons.compare_arrows),
+              title: const Text('FGO Simulator-Material'),
+              subtitle: const Text('https://fgosim.github.io/Material/'),
+              trailing: const Icon(Icons.keyboard_arrow_right),
+              onTap: () {
+                router.popDetailAndPush(child: ImportFgoSimuMaterialPage());
+              },
+            ),
           ListTile(
             leading: const Icon(Icons.table_view),
             title: Text(S.current.import_csv_title),

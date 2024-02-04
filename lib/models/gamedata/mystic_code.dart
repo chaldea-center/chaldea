@@ -42,7 +42,7 @@ class MysticCode with GameCardMixin {
   String? get borderedIcon => icon;
 
   @override
-  @Deprecated("Mystic Code doesn't have rarity")
+  @protected
   int get rarity => 5;
 
   @override

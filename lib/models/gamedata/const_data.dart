@@ -1117,9 +1117,7 @@ enum BuffAction {
   functionWavestart(54),
   functionSelfturnend(55),
   giveGainHp(56),
-  // @Deprecated('use `functionCommandattackAfter`')
-  // functionCommandattack(57),
-  functionCommandattackAfter(57),
+  functionCommandattackAfter(57), // functionCommandattack
   functionDeadattack(58),
   functionEntry(59),
   chagetd(60),
@@ -1142,12 +1140,8 @@ enum BuffAction {
   donotActCommandtype(77),
   damageEventPoint(78),
   damageSpecial(79),
-  // @Deprecated('use `functionAttackAfter`')
-  // functionAttack(80),
-  functionAttackAfter(80),
-  // @Deprecated('use `functionCommandcodeattackBefore`')
-  // functionCommandcodeattack(81),
-  functionCommandcodeattackBefore(81),
+  functionAttackAfter(80), // functionAttack
+  functionCommandcodeattackBefore(81), // functionCommandcodeattack
   donotNobleCondMismatch(82),
   donotSelectCommandcard(83),
   donotReplace(84),

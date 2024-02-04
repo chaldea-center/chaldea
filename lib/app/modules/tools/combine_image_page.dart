@@ -397,7 +397,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
               dense: true,
               title: const Text('Alignment(Vertical)'),
               trailing: DropdownButton<CrossAxisAlignment>(
-                value: option.titleAlign,
+                value: option.imgAlign,
                 items: [
                   for (final align in [CrossAxisAlignment.start, CrossAxisAlignment.center, CrossAxisAlignment.end])
                     DropdownMenuItem(

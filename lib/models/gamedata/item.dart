@@ -417,16 +417,6 @@ class Items {
   static const int ember3 = 9770300;
   static const int ember4 = 9770400;
   static const int ember5 = 9770500;
-
-  @Deprecated('to be evaluated')
-  static bool isStatItem(int itemId) {
-    final item = _items[itemId];
-    if (item != null && item.category != ItemCategory.other) {
-      return true;
-    }
-    if (specialSvtMat.contains(itemId)) return true;
-    return false;
-  }
 }
 
 @JsonSerializable()

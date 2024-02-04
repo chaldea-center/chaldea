@@ -348,9 +348,7 @@ enum BuffType {
   damageFunction(86),
   upGivegainHp(87),
   downGivegainHp(88),
-  // @Deprecated('use `commandattackAfterFunction`')
-  // commandattackFunction(89),
-  commandattackAfterFunction(89),
+  commandattackAfterFunction(89), // commandattackFunction
   deadattackFunction(90),
   upSpecialdefence(91),
   downSpecialdefence(92),
@@ -389,12 +387,8 @@ enum BuffType {
   downFuncgainNp(125),
   upFuncHpReduce(126),
   downFuncHpReduce(127),
-  // @Deprecated('use `upDefenceCommanddamage`')
-  // upDefencecommanDamage(128),
-  upDefenceCommanddamage(128),
-  // @Deprecated('use `downDefenceCommanddamage`')
-  // downDefencecommanDamage(129),
-  downDefenceCommanddamage(129),
+  upDefenceCommanddamage(128), // upDefencecommanDamage
+  downDefenceCommanddamage(129), // downDefencecommanDamage
   npattackPrevBuff(130),
   fixCommandcard(131),
   donotGainnp(132),
@@ -402,12 +396,8 @@ enum BuffType {
   donotActCommandtype(134),
   upDamageEventPoint(135),
   upDamageSpecial(136),
-  // @Deprecated('use `attackAfterFunction`')
-  // attackFunction(137),
-  attackAfterFunction(137),
-  // @Deprecated('use `commandcodeattackBeforeFunction`')
-  // commandcodeattackFunction(138),
-  commandcodeattackBeforeFunction(138),
+  attackAfterFunction(137), // attackFunction
+  commandcodeattackBeforeFunction(138), // commandcodeattackFunction
   donotNobleCondMismatch(139),
   donotSelectCommandcard(140),
   donotReplace(141),
