@@ -24,32 +24,24 @@ class Language {
   static const ru = Language('ru', 'Русский', 'Russian', Locale('ru', ''));
   static const ar = Language('ar', '\u0639\u0631\u0628\u064a', 'Arabic', Locale('ar', ''));
 
-  // static List<Language> get supportLanguages => const [jp, chs, cht, en, ko];
-  static List<Language> get supportLanguages => const [jp, chs, cht, en, ko, es, ru, ar];
+  // static const List<Language> supportLanguages = [jp, chs, cht, en, ko];
+  static const List<Language> supportLanguages = [jp, chs, cht, en, ko, es, ru, ar];
 
-  static List<Language> get officialLanguages => const [jp, chs, cht, en, ko];
+  static const List<Language> officialLanguages = [jp, chs, cht, en, ko];
 
   static List<Language> getSortedSupportedLanguage(String? langCode) {
-    switch (getLanguage(langCode)) {
-      case jp:
-        return [jp, chs, cht, en, ko, es, ru, ar];
-      case chs:
-        return [chs, cht, jp, en, ko, es, ru, ar];
-      case cht:
-        return [cht, chs, jp, en, ko, es, ru, ar];
-      case en:
-        return [en, jp, chs, cht, ko, es, ru, ar];
-      case ko:
-        return [ko, jp, chs, cht, en, es, ru, ar];
-      case es:
-        return [es, en, jp, chs, cht, ko, ru, ar];
-      case ru:
-        return [ru, en, jp, chs, cht, ko, es, ar];
-      case ar:
-        return [ar, en, jp, chs, cht, ko, es, ru];
-      default:
-        return [en, jp, chs, cht, ko, es, ru, ar];
-    }
+    final langs = switch (getLanguage(langCode)) {
+      jp => [jp, chs, cht, en, ko, es, ru, ar],
+      chs => [chs, cht, jp, en, ko, es, ru, ar],
+      cht => [cht, chs, jp, en, ko, es, ru, ar],
+      en => [en, jp, chs, cht, ko, es, ru, ar],
+      ko => [ko, jp, chs, cht, en, es, ru, ar],
+      es => [es, en, jp, chs, cht, ko, ru, ar],
+      ru => [ru, en, jp, chs, cht, ko, es, ar],
+      ar => [ar, en, jp, chs, cht, ko, es, ru],
+      _ => [en, jp, chs, cht, ko, es, ru, ar],
+    };
+    return langs.where((lang) => supportLanguages.contains(lang)).toList();
   }
 
   /// warn that [Intl.canonicalizedLocale] cannot treat script code
