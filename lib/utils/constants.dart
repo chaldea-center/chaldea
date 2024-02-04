@@ -6,11 +6,13 @@ const String kAppName = 'Chaldea';
 const String kPackageName = 'cc.narumi.chaldea';
 const String kPackageNameFDroid = 'cc.narumi.chaldea.fdroid';
 const String kUserDataFilename = 'userdata.json';
-const String kGameDataFilename = 'dataset.json';
 const String kSupportTeamEmailAddress = 'support@chaldea.center';
 const String kAppStoreLink = 'itms-apps://itunes.apple.com/app/id1548713491';
 const String kAppStoreHttpLink = 'https://itunes.apple.com/app/id1548713491';
 const String kGooglePlayLink = 'https://play.google.com/store/apps/details?id=cc.narumi.chaldea';
+const String kICPFilingNumberWeb = '京ICP备17059472号-3';
+const String kICPFilingNumberApp = '京ICP备17059472号-4A';
+
 const String kProjectHomepage = 'https://github.com/chaldea-center/chaldea';
 const String kProjectDocRoot = 'https://docs.chaldea.center';
 const String kStaticHostRoot = 'https://static.chaldea.center';

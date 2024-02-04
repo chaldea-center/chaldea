@@ -267,7 +267,15 @@ class _AboutPageState extends State<AboutPage> {
                 },
               )
             ],
-          )
+          ),
+          ListTile(
+            dense: true,
+            title: Text(
+              kIsWeb ? kICPFilingNumberWeb : kICPFilingNumberApp,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ),
         ],
       ),
     );
