@@ -63,7 +63,7 @@ mixin RegionBasedState<V, T extends StatefulWidget> on State<T> {
 
   Future<V?> fetchData(Region? r, {Duration? expireAfter});
 
-  Future<void> doFetchData({Duration? expireAfter}) async {
+  Future<V?> doFetchData({Duration? expireAfter}) async {
     _loading = true;
     data = null;
     if (mounted) setState(() {});
@@ -72,11 +72,13 @@ mixin RegionBasedState<V, T extends StatefulWidget> on State<T> {
       final _data = await fetchData(regionBefore, expireAfter: expireAfter);
       if (regionBefore == region) {
         data = _data;
+        return _data;
       }
     } finally {
       _loading = false;
       if (mounted) setState(() {});
     }
+    return null;
   }
 
   Widget buildBody(BuildContext context) {

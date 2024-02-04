@@ -285,11 +285,53 @@ class ImageActions {
   }
 }
 
-class ImageLoader {
+typedef ImageLoaderBuilder = Widget Function(BuildContext context, ImageLoader loader);
+
+class ImageLoaderWidget extends StatefulWidget {
+  final ImageLoaderBuilder builder;
+  const ImageLoaderWidget({super.key, required this.builder});
+
+  @override
+  State<ImageLoaderWidget> createState() => _ImageLoaderWidgetState();
+}
+
+class _ImageLoaderWidgetState extends State<ImageLoaderWidget> {
+  final loader = ImageLoader();
+
+  void update() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loader.addListener(update);
+  }
+
+  @override
+  void dispose() {
+    loader.removeListener(update);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.builder(context, loader);
+  }
+}
+
+class ImageLoader extends ChangeNotifier {
   final Map<String, ui.Image> _cachedImages = {};
   final Map<String, Completer<ui.Image?>> _tasks = {};
 
   Map<String, ui.Image> get images => Map.of(_cachedImages);
+
+  ui.Image? getImage(String? url) {
+    final img = _cachedImages[url];
+    if (img != null) return img;
+    loadImage(url);
+    return null;
+  }
 
   Future<ui.Image?> loadImage(String? url) async {
     if (url == null || url.isEmpty) {
@@ -307,6 +349,7 @@ class ImageLoader {
     }
     task.complete(img);
     _tasks.remove(url);
+    notifyListeners();
     return img;
   }
 }

@@ -265,6 +265,9 @@ MasterMission _$MasterMissionFromJson(Map json) => MasterMission(
       missions: (json['missions'] as List<dynamic>)
           .map((e) => EventMission.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      completeMission: json['completeMission'] == null
+          ? null
+          : CompleteMission.fromJson(Map<String, dynamic>.from(json['completeMission'] as Map)),
       quests: (json['quests'] as List<dynamic>?)
               ?.map((e) => BasicQuest.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -277,7 +280,24 @@ Map<String, dynamic> _$MasterMissionToJson(MasterMission instance) => <String, d
       'endedAt': instance.endedAt,
       'closedAt': instance.closedAt,
       'missions': instance.missions.map((e) => e.toJson()).toList(),
+      'completeMission': instance.completeMission?.toJson(),
       'quests': instance.quests.map((e) => e.toJson()).toList(),
+    };
+
+CompleteMission _$CompleteMissionFromJson(Map json) => CompleteMission(
+      objectId: json['objectId'] as int,
+      presentMessageId: json['presentMessageId'] as int? ?? 0,
+      gifts:
+          (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
+              const [],
+      bgm: json['bgm'] == null ? null : Bgm.fromJson(Map<String, dynamic>.from(json['bgm'] as Map)),
+    );
+
+Map<String, dynamic> _$CompleteMissionToJson(CompleteMission instance) => <String, dynamic>{
+      'objectId': instance.objectId,
+      'presentMessageId': instance.presentMessageId,
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'bgm': instance.bgm?.toJson(),
     };
 
 ItemSet _$ItemSetFromJson(Map json) => ItemSet(

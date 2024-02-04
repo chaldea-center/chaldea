@@ -174,7 +174,8 @@ class AssetURL {
   late final String extractDir = 'https://static.atlasacademy.io/file/aa-fgo-extract-${region.name.toLowerCase()}';
 
   String pad(int id, [int width = 5]) => id.toString().padLeft(width, '0');
-
+  String extract(String path) => '$extractDir/$path';
+  //
   String back(dynamic bgId, bool fullscreen) => "$publicDir/Back/back$bgId${fullscreen ? "_1344_626" : ""}.png";
   String charaGraph(int ascension, int itemId) =>
       {

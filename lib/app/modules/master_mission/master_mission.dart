@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
 
+import 'package:just_audio/just_audio.dart';
+
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/audio.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -28,11 +31,23 @@ class MasterMissionPage extends StatefulWidget {
 class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedState<MasterMission, MasterMissionPage> {
   int get id => widget.masterMission?.id ?? widget.id ?? data?.id ?? -1;
   MasterMission get masterMission => data!;
+  final _audioPlayer = MyAudioPlayer<String>();
   @override
   void initState() {
     super.initState();
     region = widget.region ?? (widget.masterMission == null ? Region.jp : null);
-    doFetchData();
+    _audioPlayer.player.setLoopMode(LoopMode.all);
+    _audioPlayer.player.setVolume(0.5);
+    doFetchData().then((value) {
+      final bgmUrl = value?.completeMission?.bgm?.audioAsset;
+      if (bgmUrl != null) _audioPlayer.playUri(bgmUrl);
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _audioPlayer.stop();
   }
 
   @override
@@ -109,6 +124,18 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
               .map((e) => '${e.value} ${Transl.enums(e.key, (enums) => enums.missionType).l}')
               .join('\n')),
         ),
+        if (masterMission.completeMission != null) ...[
+          ListTile(
+            dense: true,
+            title: Text(masterMission.completeMission?.bgm?.tooltip ?? S.current.bgm),
+            trailing: SoundPlayButton(
+              player: _audioPlayer,
+              url: masterMission.completeMission!.bgm?.audioAsset,
+            ),
+            onTap: masterMission.completeMission?.bgm?.routeTo,
+          ),
+          buildPanel(masterMission.completeMission!),
+        ],
         DividerWithTitle(title: S.current.game_rewards),
         ListTile(
           dense: true,
@@ -121,6 +148,17 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
             ),
           ),
         ),
+        if (masterMission.completeMission?.gifts.isNotEmpty == true)
+          ListTile(
+            dense: true,
+            title: Center(
+              child: SharedBuilder.giftGrid(
+                context: context,
+                gifts: masterMission.completeMission!.gifts,
+                height: 36,
+              ),
+            ),
+          ),
         DividerWithTitle(title: S.current.mission),
         SwitchListTile(
           dense: true,
@@ -214,6 +252,117 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
           label: Text(S.current.drop_calc_solve),
         )
       ],
+    );
+  }
+
+  Widget buildPanel(CompleteMission completeMission) {
+    final assets = AssetURL(region ?? Region.jp);
+    final eventId = masterMission.id;
+    const center = Offset(1344 / 2, 576 / 2 + 45);
+    const double a = 108.3;
+    Widget child = Stack(
+      children: [
+        Positioned.fill(
+          child: db.getIconImage(
+            assets.eventUi("Prefabs/$eventId/mission_bg_$eventId"),
+            fit: BoxFit.fill,
+          ),
+        ),
+        Positioned.fromRect(
+          rect: Rect.fromCenter(
+            center: center + const Offset(1.5, -1.5),
+            width: 470,
+            height: 470,
+          ),
+          child: db.getIconImage(
+            assets.eventUi("Prefabs/$eventId/img_flame_$eventId"),
+            width: 470,
+            height: 470,
+          ),
+        ),
+        Positioned(
+          left: 32,
+          top: 150,
+          child: buildOneGrid(
+            idx: -999,
+            on: (context) => const SizedBox(width: 132, height: 138),
+            off: (context) => db.getIconImage(
+              assets.eventUi("Prefabs/$eventId/button_mission_$eventId"),
+              width: 132,
+              height: 138,
+            ),
+          ),
+        ),
+        for (int index = 0; index < 16; index++)
+          Positioned.fromRect(
+            rect: Rect.fromCenter(
+              center: center + Offset((index % 4 - 2 + 0.5) * 108, (index ~/ 4 - 2 + 0.5) * 108),
+              width: a,
+              height: a,
+            ),
+            child: buildOneGrid(
+              idx: index,
+              on: (context) => db.getIconImage(
+                assets.extract("CompleteMission/${completeMission.objectId}/$index/$index.png"),
+                errorWidget: (context, url, error) => Container(color: Colors.white),
+                fit: BoxFit.fill,
+                width: a,
+                height: a,
+              ),
+              off: (context) => db.getIconImage(
+                assets.eventUi("Prefabs/$eventId/mission_on_${eventId * 100 + index + 1}"),
+                fit: BoxFit.fill,
+                width: a,
+                height: a,
+              ),
+            ),
+          ),
+      ],
+    );
+    return Center(
+      child: AspectRatio(
+        aspectRatio: 1344 / 576,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 240),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: SizedBox(
+              width: 1344,
+              height: 576,
+              child: child,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  final Map<int, bool> _completeMissionStates = {};
+  Widget buildOneGrid({required int idx, required WidgetBuilder on, required WidgetBuilder off}) {
+    final state = _completeMissionStates[idx] ?? false;
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 800),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        key: Key('complete_item_${idx}_$state'),
+        onTap: () {
+          setState(() {
+            _completeMissionStates[idx] = !state;
+          });
+        },
+        onLongPress: idx >= 0
+            ? () async {
+                final value = !(_completeMissionStates.values.where((e) => e).length > 8);
+                for (int index = 0; index < 16; index++) {
+                  if ((_completeMissionStates[index] ?? false) == value) continue;
+                  _completeMissionStates[index] = value;
+                  if (mounted) setState(() {});
+                  await Future.delayed(const Duration(milliseconds: 150));
+                }
+              }
+            : null,
+        child: state ? on(context) : off(context),
+      ),
     );
   }
 }

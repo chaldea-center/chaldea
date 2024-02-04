@@ -565,6 +565,7 @@ class MasterMission extends MstMasterMission {
   static const int kExtraMasterMissionId = 10001;
 
   List<EventMission> missions;
+  CompleteMission? completeMission;
   List<BasicQuest> quests;
 
   @override
@@ -583,6 +584,7 @@ class MasterMission extends MstMasterMission {
     required super.endedAt,
     required super.closedAt,
     required this.missions,
+    this.completeMission,
     this.quests = const [],
   });
 
@@ -604,6 +606,24 @@ class MasterMission extends MstMasterMission {
 
   @override
   Map<String, dynamic> toJson() => _$MasterMissionToJson(this);
+}
+
+@JsonSerializable()
+class CompleteMission {
+  int objectId;
+  int presentMessageId;
+  List<Gift> gifts;
+  Bgm? bgm;
+
+  CompleteMission({
+    required this.objectId,
+    this.presentMessageId = 0,
+    this.gifts = const [],
+    this.bgm,
+  });
+  factory CompleteMission.fromJson(Map<String, dynamic> json) => _$CompleteMissionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CompleteMissionToJson(this);
 }
 
 @JsonSerializable()

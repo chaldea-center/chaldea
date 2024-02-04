@@ -29,7 +29,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
   final _allMissionTypes = const <MissionType?>[
     MissionType.weekly,
     MissionType.limited,
-    // MissionType.daily,
+    MissionType.daily,
     null,
   ];
 
@@ -188,7 +188,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
         ),
         ElevatedButton(
           onPressed: () => solveMultiple(mms),
-          child: Text(selected.isEmpty ? S.current.custom_mission : S.current.drop_calc_solve),
+          child: Text(selected.isEmpty ? S.current.general_custom : S.current.drop_calc_solve),
         )
       ],
     );
