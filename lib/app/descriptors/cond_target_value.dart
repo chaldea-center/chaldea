@@ -26,6 +26,8 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
   final List<EventMission> missions;
   @override
   final String? unknownMsg;
+  @override
+  final EdgeInsetsGeometry? padding;
 
   const CondTargetValueDescriptor({
     super.key,
@@ -39,6 +41,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
     this.missions = const [],
     this.useAnd,
     this.unknownMsg,
+    this.padding,
   });
   CondTargetValueDescriptor.commonRelease({
     super.key,
@@ -50,6 +53,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
     this.missions = const [],
     this.useAnd,
     this.unknownMsg,
+    this.padding,
   })  : condType = commonRelease.condType,
         target = commonRelease.condId,
         value = commonRelease.condNum;

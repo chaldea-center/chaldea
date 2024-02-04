@@ -21,6 +21,8 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
   final InlineSpan? leading;
   @override
   final String? unknownMsg;
+  @override
+  final EdgeInsetsGeometry? padding;
 
   const VoiceCondDescriptor({
     super.key,
@@ -32,6 +34,7 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
     this.leading,
     this.useAnd,
     this.unknownMsg,
+    this.padding,
   });
 
   @override

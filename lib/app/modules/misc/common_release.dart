@@ -96,12 +96,10 @@ class _CommonReleasesPageState extends State<CommonReleasesPage>
           minLeadingWidth: 28,
         ),
         for (final (index, release) in releases.indexed)
-          Padding(
+          CondTargetValueDescriptor.commonRelease(
+            commonRelease: release,
+            leading: TextSpan(text: '${index + 1}. '),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            child: CondTargetValueDescriptor.commonRelease(
-              commonRelease: release,
-              leading: TextSpan(text: '${index + 1}. '),
-            ),
           ),
       ],
     );

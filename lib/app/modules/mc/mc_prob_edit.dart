@@ -85,13 +85,11 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
           ]),
           for (final adjust in gacha.storyAdjusts) ...[
             DividerWithTitle(title: "Case ${adjust.idx}"),
-            Padding(
+            CondTargetValueDescriptor(
+              condType: adjust.condType,
+              target: adjust.targetId,
+              value: adjust.value,
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: CondTargetValueDescriptor(
-                condType: adjust.condType,
-                target: adjust.targetId,
-                value: adjust.value,
-              ),
             ),
             if (adjust.imageId != gacha.imageId)
               Padding(

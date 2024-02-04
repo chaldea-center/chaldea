@@ -584,13 +584,11 @@ class _BattleMessageDialog extends StatelessWidget {
           },
         ),
         for (final release in msg.releaseConditions)
-          Padding(
+          CondTargetValueDescriptor.commonRelease(
+            commonRelease: release,
+            leading: const TextSpan(text: '$kULLeading '),
+            style: Theme.of(context).textTheme.bodySmall,
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: CondTargetValueDescriptor.commonRelease(
-              commonRelease: release,
-              leading: const TextSpan(text: '$kULLeading '),
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
           ),
         if (msg.script.isNotEmpty)
           ListTile(

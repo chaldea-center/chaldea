@@ -28,6 +28,8 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
   final int? eventId;
   @override
   final String? unknownMsg;
+  @override
+  final EdgeInsetsGeometry? padding;
 
   const CondTargetNumDescriptor({
     super.key,
@@ -42,6 +44,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
     this.useAnd,
     this.eventId,
     this.unknownMsg,
+    this.padding,
   }) : details = details ?? const [];
 
   bool _isPlayableAll(List<int> clsIds) {

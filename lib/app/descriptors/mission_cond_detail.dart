@@ -18,6 +18,8 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
   final int? eventId;
   @override
   final String? unknownMsg;
+  @override
+  final EdgeInsetsGeometry? padding;
 
   MissionCondDetailDescriptor({
     super.key,
@@ -29,6 +31,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
     bool? useAnd,
     this.eventId,
     this.unknownMsg,
+    this.padding,
   }) : _useAnd = useAnd;
 
   @override

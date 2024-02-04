@@ -4,12 +4,13 @@ import 'package:chaldea/app/descriptors/multi_entry.dart';
 import 'package:chaldea/models/models.dart';
 
 mixin DescriptorBase {
-  TextStyle? get style;
-  double? get textScaleFactor;
   List<int> get targetIds;
-  InlineSpan? get leading;
   bool? get useAnd;
   String? get unknownMsg;
+  TextStyle? get style;
+  double? get textScaleFactor;
+  InlineSpan? get leading;
+  EdgeInsetsGeometry? get padding;
 
   List<InlineSpan> localized({
     required List<InlineSpan> Function()? jp,
@@ -25,7 +26,7 @@ mixin DescriptorBase {
   List<InlineSpan> buildContent(BuildContext context);
 
   Widget build(BuildContext context) {
-    return Text.rich(
+    Widget child = Text.rich(
       TextSpan(
         children: [
           if (leading != null) leading!,
@@ -37,6 +38,10 @@ mixin DescriptorBase {
       textScaler: textScaleFactor == null ? null : TextScaler.linear(textScaleFactor!),
       style: style,
     );
+    if (padding != null) {
+      child = Padding(padding: padding!, child: child);
+    }
+    return child;
   }
 
   List<InlineSpan> text(String data) {
