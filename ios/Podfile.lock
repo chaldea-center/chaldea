@@ -48,9 +48,6 @@ PODS:
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
-  - FMDB (2.7.5):
-    - FMDB/standard (= 2.7.5)
-  - FMDB/standard (2.7.5)
   - image_gallery_saver (2.0.2):
     - Flutter
   - just_audio (0.0.1):
@@ -75,7 +72,7 @@ PODS:
     - FlutterMacOS
   - sqflite (0.0.3):
     - Flutter
-    - FMDB (>= 2.7.5)
+    - FlutterMacOS
   - SwiftyGif (5.4.4)
   - Toast (4.1.0)
   - url_launcher_ios (0.0.1):
@@ -101,7 +98,7 @@ DEPENDENCIES:
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
-  - sqflite (from `.symlinks/plugins/sqflite/ios`)
+  - sqflite (from `.symlinks/plugins/sqflite/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
 
@@ -109,7 +106,6 @@ SPEC REPOS:
   trunk:
     - DKImagePickerController
     - DKPhotoGallery
-    - FMDB
     - ReachabilitySwift
     - SDWebImage
     - SwiftyGif
@@ -149,7 +145,7 @@ EXTERNAL SOURCES:
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   sqflite:
-    :path: ".symlinks/plugins/sqflite/ios"
+    :path: ".symlinks/plugins/sqflite/darwin"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
   video_player_avfoundation:
@@ -166,7 +162,6 @@ SPEC CHECKSUMS:
   flutter_js: 95929d4e146e8ceb1c8e1889d8c2065c5d840076
   flutter_mailer: 2ef5a67087bc8c6c4cefd04a178bf1ae2c94cd83
   fluttertoast: 31b00dabfa7fb7bacd9e7dbee580d7a2ff4bf265
-  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   image_gallery_saver: cb43cc43141711190510e92c460eb1655cd343cb
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
@@ -177,7 +172,7 @@ SPEC CHECKSUMS:
   SDWebImage: fc8f2d48bbfd72ef39d70e981bd24a3f3be53fec
   share_plus: c3fef564749587fc939ef86ffb283ceac0baf9f5
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
-  sqflite: 31f7eba61e3074736dff8807a9b41581e4f7f15a
+  sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
   SwiftyGif: 93a1cc87bf3a51916001cf8f3d63835fb64c819f
   Toast: ec33c32b8688982cecc6348adeae667c1b9938da
   url_launcher_ios: bbd758c6e7f9fd7b5b1d4cde34d2b95fcce5e812
