@@ -115,7 +115,10 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
         ListTile(
           dense: true,
           title: Text(S.current.time_close),
-          trailing: Text(masterMission.closedAt.toDateTimeString()),
+          trailing: Text(
+            masterMission.closedAt.toDateTimeString(),
+            style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
+          ),
         ),
         ListTile(
           dense: true,

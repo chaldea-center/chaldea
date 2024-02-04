@@ -245,9 +245,10 @@ class NiceSkill extends SkillOrTd implements BaseSkill {
     return _$NiceSkillFromJson(json);
   }
 
-  bool shouldActiveSvtEventSkill({required int eventId, required int? svtId, required bool includeZero}) {
+  bool shouldActiveSvtEventSkill(
+      {required int eventId, required int? svtId, required bool includeZero, bool includeHidden = false}) {
     final hidePassives = ConstData.getSvtLimitHides(svtId ?? 0, null).expand((e) => e.addPassives).toList();
-    if (hidePassives.contains(id)) return false;
+    if (!includeHidden && hidePassives.contains(id)) return false;
     if (extraPassive.isEmpty && includeZero) return true;
     for (final passive in extraPassive) {
       if (passive.eventId == 0) {

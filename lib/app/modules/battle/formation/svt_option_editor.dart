@@ -259,6 +259,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         ])),
         children: [
           for (int index = 0; index < playerSvtData.customPassives.length; index++) _buildAdditionalPassive(index),
+          ..._buildHiddenAddPassive(),
           Center(
             child: TextButton(
               onPressed: enableEdit
@@ -734,6 +735,48 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         );
       },
     );
+  }
+
+  List<Widget> _buildHiddenAddPassive() {
+    List<Widget> children = [];
+    int eventId = questPhase?.event?.id ?? 0;
+    if (eventId == 0) return children;
+    for (final skillId
+        in db.gameData.constData.getSvtLimitHides(svt.id, playerSvtData.limitCount).expand((e) => e.addPassives)) {
+      // 終局特異点
+      if (skillId >= 960502 && skillId <= 960507) continue;
+      final skill = playerSvtData.extraPassives.firstWhereOrNull((skill) => skill.id == skillId);
+      if (skill == null) continue;
+      if (!skill.shouldActiveSvtEventSkill(eventId: eventId, svtId: svt.id, includeZero: false, includeHidden: true)) {
+        continue;
+      }
+
+      if (playerSvtData.customPassives.any((e) => e.id == skillId)) continue;
+      children.add(ListTile(
+        dense: true,
+        enabled: false,
+        horizontalTitleGap: 0,
+        contentPadding: const EdgeInsetsDirectional.only(start: 16),
+        leading: db.getIconImage(skill.icon, width: 28, onTap: skill.routeTo),
+        title: Text('[${S.current.disabled}] ${skill.lName.l}'),
+        subtitle: Text(
+          skill.lDetail ?? "???",
+          textScaler: const TextScaler.linear(0.85),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
+        trailing: IconButton(
+          onPressed: () {
+            playerSvtData.addCustomPassive(skill, skill.maxLv);
+            setState(() {});
+          },
+          icon: const Icon(Icons.add_circle),
+          tooltip: S.current.enable,
+          color: Theme.of(context).buttonTheme.colorScheme?.primary,
+        ),
+      ));
+    }
+    return children;
   }
 
   Widget _buildExtraPassive(NiceSkill skill) {
