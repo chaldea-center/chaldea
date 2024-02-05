@@ -727,6 +727,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "obtain_time": MessageLookupByLibrary.simpleMessage("時間"),
         "ok": MessageLookupByLibrary.simpleMessage("確定"),
         "one_off_quest": MessageLookupByLibrary.simpleMessage("一次性關卡"),
+        "ongoing": MessageLookupByLibrary.simpleMessage("进行中"),
         "only_show_main_story_enemy": MessageLookupByLibrary.simpleMessage("僅顯示主線FQ敵人"),
         "only_usuable_for_aoe_np": MessageLookupByLibrary.simpleMessage("僅全體寶具實際可用"),
         "open": MessageLookupByLibrary.simpleMessage("打開"),

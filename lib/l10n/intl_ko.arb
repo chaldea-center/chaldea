@@ -626,6 +626,7 @@
   "obtain_time": "시간",
   "ok": "확인",
   "one_off_quest": "일회성 퀘스트",
+  "ongoing": null,
   "only_show_main_story_enemy": "프리 퀘스트 의 적인 표시 만",
   "only_usuable_for_aoe_np": null,
   "open": "열기",

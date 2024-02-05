@@ -6,14 +6,12 @@ import 'base.dart';
 class TimerEventTab extends StatelessWidget {
   final Region region;
   final List<Event> events;
-  const TimerEventTab({super.key, required this.region, required this.events});
+  final TimerFilterData filterData;
+  const TimerEventTab({super.key, required this.region, required this.events, required this.filterData});
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now().timestamp;
-    final events = this.events.toList();
-    final groups = TimerEventItem.group(events, region);
-    groups.sortByList((e) => [e.endedAt > now ? -1 : 1, (e.endedAt - now).abs()]);
+    final groups = filterData.getSorted(TimerEventItem.group(events, region));
     return ListView(
       children: [
         for (final group in groups) group.buildItem(context, expanded: true),
@@ -37,6 +35,8 @@ class TimerEventItem with TimerItem {
     return groups.values.map((e) => TimerEventItem(e, region)).toList();
   }
 
+  @override
+  int get startedAt => events.first.startedAt;
   @override
   int get endedAt => events.first.endedAt;
 

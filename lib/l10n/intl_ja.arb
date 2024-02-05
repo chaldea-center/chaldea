@@ -626,6 +626,7 @@
   "obtain_time": "タイム",
   "ok": "OK",
   "one_off_quest": null,
+  "ongoing": null,
   "only_show_main_story_enemy": null,
   "only_usuable_for_aoe_np": null,
   "open": "開く",

@@ -625,6 +625,7 @@
   "obtain_time": "時間",
   "ok": "確定",
   "one_off_quest": "一次性關卡",
+  "ongoing": null,
   "only_show_main_story_enemy": "僅顯示主線FQ敵人",
   "only_usuable_for_aoe_np": "僅全體寶具實際可用",
   "open": "打開",

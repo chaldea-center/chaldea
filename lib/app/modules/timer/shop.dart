@@ -7,12 +7,12 @@ import 'base.dart';
 class TimerShopTab extends StatelessWidget {
   final Region region;
   final List<NiceShop> shops;
-  const TimerShopTab({super.key, required this.region, required this.shops});
+  final TimerFilterData filterData;
+  const TimerShopTab({super.key, required this.region, required this.shops, required this.filterData});
 
   @override
   Widget build(BuildContext context) {
-    final groups = TimerShopItem.group(shops, region);
-
+    final groups = filterData.getSorted(TimerShopItem.group(shops, region));
     return ListView(children: [
       for (final group in groups) group.buildItem(context, expanded: true),
     ]);
@@ -35,6 +35,8 @@ class TimerShopItem with TimerItem {
     return groups.values.map((e) => TimerShopItem(e, region)).toList();
   }
 
+  @override
+  int get startedAt => shops.first.openedAt;
   @override
   int get endedAt => shops.first.closedAt;
 

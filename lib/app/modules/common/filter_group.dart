@@ -20,6 +20,7 @@ class FilterGroup<T> extends StatelessWidget {
   final EdgeInsetsGeometry padding;
   final bool showCollapse;
   final BoxConstraints? constraints;
+  final ButtonStyle? buttonStyle;
 
   const FilterGroup({
     super.key,
@@ -36,6 +37,7 @@ class FilterGroup<T> extends StatelessWidget {
     this.padding = const EdgeInsets.symmetric(horizontal: 12),
     this.showCollapse = false,
     this.constraints,
+    this.buttonStyle,
   });
 
   static FilterGroup display({required bool useGrid, required ValueChanged<bool?> onChanged}) {
@@ -80,6 +82,7 @@ class FilterGroup<T> extends StatelessWidget {
         value: key,
         shrinkWrap: shrinkWrap,
         constraints: constraints,
+        buttonStyle: buttonStyle,
         borderRadius: combined
             ? BorderRadius.horizontal(
                 left: Radius.circular(index == 0 ? 3 : 0),
@@ -190,6 +193,7 @@ class FilterOption<T> extends StatelessWidget {
   final BorderRadius borderRadius;
   final bool shrinkWrap;
   final BoxConstraints? constraints;
+  final ButtonStyle? buttonStyle;
 
   const FilterOption({
     super.key,
@@ -204,6 +208,7 @@ class FilterOption<T> extends StatelessWidget {
     this.borderRadius = const BorderRadius.all(Radius.circular(3)),
     this.shrinkWrap = false,
     this.constraints,
+    this.buttonStyle,
   });
 
   @override
@@ -230,7 +235,7 @@ class FilterOption<T> extends StatelessWidget {
           textStyle: const TextStyle(fontWeight: FontWeight.normal),
           tapTargetSize: shrinkWrap ? MaterialTapTargetSize.shrinkWrap : null,
           shape: ContinuousRectangleBorder(borderRadius: borderRadius),
-        ),
+        ).merge(buttonStyle),
         child: child ?? Text(value.toString()),
         // shape: ,
       ),

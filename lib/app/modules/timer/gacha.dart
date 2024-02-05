@@ -10,17 +10,16 @@ import 'base.dart';
 class TimerGachaTab extends StatelessWidget {
   final Region region;
   final List<NiceGacha> gachas;
-  const TimerGachaTab({super.key, required this.region, required this.gachas});
+  final TimerFilterData filterData;
+  const TimerGachaTab({super.key, required this.region, required this.gachas, required this.filterData});
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now().timestamp;
-    final gachas = this.gachas.toList();
-    gachas.sortByList((e) => [e.closedAt > now ? -1 : 1, (e.closedAt - now).abs()]);
+    final groups = filterData.getSorted(gachas.map((e) => TimerGachaItem(e, region)).toList());
     return ListView.separated(
-      itemBuilder: (context, index) => TimerGachaItem(gachas[index], region).buildItem(context, expanded: true),
+      itemBuilder: (context, index) => groups[index].buildItem(context, expanded: true),
       separatorBuilder: (_, __) => const SizedBox(height: 16),
-      itemCount: gachas.length,
+      itemCount: groups.length,
     );
   }
 }
@@ -30,6 +29,8 @@ class TimerGachaItem with TimerItem {
   final Region region;
   TimerGachaItem(this.gacha, this.region);
 
+  @override
+  int get startedAt => gacha.openedAt;
   @override
   int get endedAt => gacha.closedAt;
 

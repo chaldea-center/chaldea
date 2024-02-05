@@ -10,18 +10,19 @@ import 'base.dart';
 class TimerMissionTab extends StatelessWidget {
   final Region region;
   final List<MasterMission> mms;
-  const TimerMissionTab({super.key, required this.region, required this.mms});
+  final TimerFilterData filterData;
+  const TimerMissionTab({super.key, required this.region, required this.mms, required this.filterData});
 
   @override
   Widget build(BuildContext context) {
-    final mms = this.mms.toList();
-    final now = DateTime.now().timestamp;
-    mms.sortByList((e) => [e.closedAt > now ? -1 : 1, (e.closedAt - now).abs()]);
+    final groups = filterData.getSorted(mms.map((e) => TimerMissionItem(e, region)).toList());
     return ListView.separated(
-      itemBuilder: (context, index) =>
-          TimerMissionItem(mms[index], region).buildItem(context, expanded: mms[index].missions.length <= 10),
+      itemBuilder: (context, index) {
+        final group = groups[index];
+        return group.buildItem(context, expanded: group.mm.missions.length <= 10);
+      },
       separatorBuilder: (_, __) => const SizedBox(height: 0),
-      itemCount: mms.length,
+      itemCount: groups.length,
     );
   }
 }
@@ -31,6 +32,8 @@ class TimerMissionItem with TimerItem {
   final Region region;
   TimerMissionItem(this.mm, this.region);
 
+  @override
+  int get startedAt => mm.startedAt;
   @override
   int get endedAt => mm.endedAt;
 

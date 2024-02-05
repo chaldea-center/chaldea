@@ -760,6 +760,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "obtain_time": MessageLookupByLibrary.simpleMessage("Time"),
         "ok": MessageLookupByLibrary.simpleMessage("OK"),
         "one_off_quest": MessageLookupByLibrary.simpleMessage("One-off Quest"),
+        "ongoing": MessageLookupByLibrary.simpleMessage("Ongoing"),
         "only_show_main_story_enemy":
             MessageLookupByLibrary.simpleMessage("Only show enemies from main story\'s free quest"),
         "only_usuable_for_aoe_np": MessageLookupByLibrary.simpleMessage("Only used for AoE NP"),

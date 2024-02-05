@@ -102,7 +102,11 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
             spacing: 6,
             alignment: WrapAlignment.center,
             children: [
-              if (url != null) TextButton(onPressed: () => launch(url!), child: Text(S.current.open_in_browser)),
+              if (url != null)
+                TextButton(
+                  onPressed: gacha.openedAt < DateTime.now().timestamp ? () => launch(url!) : null,
+                  child: Text(S.current.open_in_browser),
+                ),
               FilledButton(
                 onPressed: result.isInvalid
                     ? null

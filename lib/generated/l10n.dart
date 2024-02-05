@@ -6954,6 +6954,17 @@ class S {
     );
   }
 
+  /// `Ongoing`
+  String get ongoing {
+    return Intl.message(
+      'Ongoing',
+      name: 'ongoing',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Only show enemies from main story's free quest`
   String get only_show_main_story_enemy {
     return Intl.message(

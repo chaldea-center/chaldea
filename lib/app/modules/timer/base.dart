@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/userdata/filter_data.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
@@ -9,8 +10,22 @@ String padInt(int v, [int width = 2]) {
 }
 
 mixin TimerItem {
+  int get startedAt;
   int get endedAt;
+  OngoingStatus get status {
+    final now = DateTime.now().timestamp;
+    return now > endedAt
+        ? OngoingStatus.ended
+        : now < startedAt
+            ? OngoingStatus.notStarted
+            : OngoingStatus.ongoing;
+  }
+
   Widget buildItem(BuildContext context, {bool expanded = false});
+
+  bool shouldShow(TimerFilterData filterData) {
+    return filterData.status.matchOne(status);
+  }
 
   String fmtDate(int v, {bool year = false, bool time = true, bool seconds = false}) {
     final date = v.sec2date();
@@ -20,6 +35,39 @@ mixin TimerItem {
       text += [date.hour, date.minute, if (seconds) date.second].map(padInt).join(":");
     }
     return text;
+  }
+}
+
+enum TimerSortType {
+  auto,
+  startTime,
+  endTime,
+}
+
+enum OngoingStatus {
+  ended,
+  ongoing,
+  notStarted,
+}
+
+class TimerFilterData {
+  final sortType = FilterRadioData.nonnull(TimerSortType.auto);
+  final status = FilterGroupData<OngoingStatus>();
+
+  List<T> getSorted<T extends TimerItem>(List<T> items) {
+    items = items.where((e) => e.shouldShow(this)).toList();
+    switch (sortType.radioValue!) {
+      case TimerSortType.auto:
+        items.sortByList((e) => [e.status == OngoingStatus.ended ? 1 : -1, e.endedAt, e.startedAt]);
+        break;
+      case TimerSortType.startTime:
+        items.sort2((e) => e.startedAt);
+        break;
+      case TimerSortType.endTime:
+        items.sort2((e) => e.endedAt);
+        break;
+    }
+    return items;
   }
 }
 
@@ -34,6 +82,7 @@ class CountDown extends StatelessWidget {
   final bool showSeconds;
   final TextAlign? textAlign;
   final bool fitted;
+  final bool showFutureStartedAt;
 
   const CountDown({
     super.key,
@@ -45,18 +94,28 @@ class CountDown extends StatelessWidget {
     this.showSeconds = true,
     this.textAlign,
     this.fitted = true,
+    this.showFutureStartedAt = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    DateTime endedAt = this.endedAt;
+    if (endedAt.minute == 59 && endedAt.second == 59) {
+      endedAt = endedAt.add(const Duration(seconds: 1));
+    }
     Widget child = OnTimer(
       duration: duration,
       builder: (context) {
         final _now = DateTime.now();
         return Text.rich(
           TextSpan(children: [
-            if (startedAt != null && startedAt!.isAfter(_now))
+            if (startedAt != null && startedAt!.isAfter(_now)) ...[
               TextSpan(text: '${S.current.not_started}\n', style: const TextStyle(fontSize: 12)),
+              if (showFutureStartedAt) ...[
+                buildOne(context, startedAt!, null, color: Colors.blue),
+                const TextSpan(text: '\n'),
+              ],
+            ],
             if (endedAt.isBefore(_now)) TextSpan(text: '${S.current.ended}\n', style: const TextStyle(fontSize: 12)),
             buildOne(context, endedAt, startedAt),
             if (endedAt2 != null) ...[
@@ -75,7 +134,7 @@ class CountDown extends StatelessWidget {
     return child;
   }
 
-  TextSpan buildOne(BuildContext context, DateTime _endedAt, DateTime? _startedAt) {
+  TextSpan buildOne(BuildContext context, DateTime _endedAt, DateTime? _startedAt, {Color? color}) {
     final now = DateTime.now();
     final left = _endedAt.difference(now);
     final outdated = left.isNegative;
@@ -93,20 +152,21 @@ class CountDown extends StatelessWidget {
     if (showSeconds) {
       text += ":${padInt(seconds)}";
     }
-    Color? color;
-    final themeData = Theme.of(context);
-    if (_startedAt != null && _startedAt.isAfter(now)) {
-      // start in future
-      color = Colors.blue;
-    } else if (outdated) {
-      // closed
-      color = themeData.disabledColor;
-    } else if (left < const Duration(hours: 24 * 2)) {
-      // close in 2 days
-      color = themeData.colorScheme.error;
-    } else {
-      // ongoing
-      color = Colors.green;
+    if (color == null) {
+      final themeData = Theme.of(context);
+      if (_startedAt != null && _startedAt.isAfter(now)) {
+        // start in future
+        color = Colors.blue;
+      } else if (outdated) {
+        // closed
+        color = themeData.disabledColor;
+      } else if (left < const Duration(hours: 24 * 2)) {
+        // close in 2 days
+        color = themeData.colorScheme.error;
+      } else {
+        // ongoing
+        color = Colors.green;
+      }
     }
     return TextSpan(
       text: text,
