@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.5.6
+
+- Add more campaign events
+- Add limited master missions rewards in item's event tab
+- Display setting: add option to disable edge-swipe pop gesture
+- Laplace
+  - Support manually removing buff by long press
+
 ## 2.5.5
 
 Happy New Year ヾ(^▽^ヾ)
