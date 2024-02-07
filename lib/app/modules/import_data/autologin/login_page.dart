@@ -307,8 +307,6 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
         final userGame = user.userGame;
         List<InlineSpan> spans = [];
         if (userGame != null) {
-          // final recoverAt = DateTime(2023, 10, 25, 2).timestamp;
-          // final maxAp = 140;
           final recoverAt = userGame.actRecoverAt;
           final maxAp = userGame.actMax;
           final leftDuration = Duration(seconds: max(0, recoverAt - time.timestamp));

@@ -283,26 +283,27 @@ class WaveInfoPage extends StatelessWidget {
   }
 
   Widget buildMasterImage(int battleMasterImageId) {
-    return FutureBuilder2(
-      id: battleMasterImageId,
-      loader: () => AtlasApi.battleMasterImage(battleMasterImageId, region: region ?? Region.jp),
-      builder: (context, images) {
-        List<Widget> trailings = [];
-        if (images == null || images.isEmpty) {
-          trailings.add(Text(battleMasterImageId.toString()));
-        } else {
-          for (final image in images) {
-            trailings.add(db.getIconImage(image.faceIcon, width: 36, height: 36));
+    return ListTile(
+      title: const Text("Master"),
+      trailing: FutureBuilder2(
+        id: battleMasterImageId,
+        loader: () => AtlasApi.battleMasterImage(battleMasterImageId, region: region ?? Region.jp),
+        onLoading: (context) => Text(battleMasterImageId.toString()),
+        builder: (context, images) {
+          List<Widget> trailings = [];
+          if (images == null || images.isEmpty) {
+            trailings.add(Text(battleMasterImageId.toString()));
+          } else {
+            for (final image in images) {
+              trailings.add(CachedImage(imageUrl: image.faceIcon, width: 36, height: 36, viewFullOnTap: true));
+            }
           }
-        }
-        return ListTile(
-          title: const Text("Master"),
-          trailing: Wrap(
+          return Wrap(
             spacing: 2,
             children: trailings,
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

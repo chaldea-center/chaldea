@@ -785,13 +785,14 @@ class _MCQuestConverter extends McConverter {
       for (final support in quest.supportServants) {
         // {{助战|从者名|显示名(省略时使用从者名)|等级|宝具等级|技能等级|装备礼装(省略时表示无礼装)|礼装等级(省略时为20级)}}
         buffer.write('{{助战');
-        final svt = db.gameData.servantsById[support.svt.id];
-        final svtName = svt?.extra.mcLink ?? support.svt.lName.l;
+        final svtName = getSvtWikiLink(support.svt);
         final dispName = support.lName.l;
-        buffer.write('|${svt?.extra.mcLink ?? support.svt.lName.l}|${dispName == svtName ? "" : dispName}');
+        buffer.write('|$svtName|${dispName == svtName ? "" : dispName}');
         buffer.write('|${support.lv}');
         buffer.write('|${support.noblePhantasm.lv ?? "-"}');
-        if ((support.noblePhantasm.noblePhantasm?.strengthStatus ?? 0) > 1) {
+        final tdStrengthStatus = support.noblePhantasm.noblePhantasm?.strengthStatus ?? 0;
+        if (tdStrengthStatus == 99) {
+          // only 1->99, cannot detect 1 inside 2->1->99
           buffer.write('▲');
         }
         String getSkillLv(NiceSkill? skill, int skillLv) {
@@ -834,7 +835,7 @@ class _MCQuestConverter extends McConverter {
   }
 
   String buildEnemyWithShift(QuestEnemy enemy, List<QuestEnemy> shiftEnemies) {
-    String svtName = enemy.svt.lName.maybeOf(Region.cn) ?? enemy.svt.name;
+    String svtName = getSvtWikiLink(enemy.svt);
     String displayName = trimEnemyName(enemy);
     final buffer = StringBuffer();
     buffer.write('{{敌人${enemy.roleType.index + 1}|$svtName|${displayName == svtName ? "" : displayName}');
@@ -855,6 +856,15 @@ class _MCQuestConverter extends McConverter {
     }
     buffer.write('}}');
     return buffer.toString();
+  }
+
+  String getSvtWikiLink(BasicServant svt) {
+    String? link;
+    if (svt.collectionNo > 0) {
+      link = db.gameData.servantsById[svt.id]?.extra.mcLink?.replaceAll('_', ' ');
+    }
+    link ??= svt.lName.maybeOf(Region.cn) ?? svt.name;
+    return link;
   }
 
   String trimEnemyName(QuestEnemy enemy) {
