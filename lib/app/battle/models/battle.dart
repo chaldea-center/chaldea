@@ -1244,14 +1244,13 @@ class BattleData {
     await withAction(() async {
       for (final svt in nonnullEnemies) {
         if (svt.hp <= 0) {
-          bool hasGuts = false;
-          await svt.activateGuts(this).then((value) => hasGuts = value);
+          bool hasGuts = await svt.activateGuts(this);
           if (!hasGuts) {
             await svt.shift(this);
             await initActorSkills([svt]);
+            await svt.svtAi.afterTurnPlayerEnd(this, svt);
           }
         }
-        await svt.svtAi.afterTurnPlayerEnd(this, svt);
         await svt.startOfMyTurn(this);
       }
     });
