@@ -121,7 +121,7 @@
       const uri = new URL(window.location.href);
       if (uri.pathname === "/discord") {
         window.location.href = "https://discord.gg/5M6w5faqjP";
-      } else if (uri.host === 'link.chaldea.center') {
+      } else if (uri.host === 'link.chaldea.center' || uri.host === 'www.chaldea.center') {
         uri.host = 'chaldea.center';
         setTimeout(() => {
           window.location.href = uri.toString();
