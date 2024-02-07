@@ -808,7 +808,10 @@ class ExtraPassive {
 
 @JsonSerializable(includeIfNull: false)
 class SkillScript with DataScriptBase {
-  // skill script, all are lv dependent
+  // mstSkill.script
+  // int? cutInId;
+
+  // mstSkillLv.script
   final List<int>? NP_HIGHER; // lv, 50->50%
   final List<int>? NP_LOWER;
   final List<int>? STAR_HIGHER;

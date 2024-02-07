@@ -218,9 +218,10 @@ class QuestWave extends StatelessWidget {
 }
 
 class WaveInfoPage extends StatelessWidget {
+  final QuestPhase? questPhase;
   final Stage stage;
   final Region? region;
-  const WaveInfoPage({super.key, required this.stage, this.region});
+  const WaveInfoPage({super.key, required this.questPhase, required this.stage, this.region});
 
   @override
   Widget build(BuildContext context) {
@@ -259,7 +260,9 @@ class WaveInfoPage extends StatelessWidget {
             ),
           if (stage.fieldAis.isNotEmpty) buildFieldAis(context, stage.fieldAis),
           if (originalScript['aiAllocations'] != null) buildAiAllocations(context, originalScript['aiAllocations']),
-          if ((stage.battleMasterImageId ?? 0) > 0) buildMasterImage(stage.battleMasterImageId!),
+          if ((questPhase?.extraDetail?.masterImageId ?? 0) > 0)
+            buildMasterImage(masterImageId: questPhase?.extraDetail?.masterImageId),
+          if ((stage.battleMasterImageId ?? 0) > 0) buildMasterImage(battleMasterImageId: stage.battleMasterImageId),
           for (final masterId in [
             if (stage.enemyMasterBattleId != null) stage.enemyMasterBattleId!,
             ...?stage.enemyMasterBattleIdByPlayerGender
@@ -282,10 +285,17 @@ class WaveInfoPage extends StatelessWidget {
     );
   }
 
-  Widget buildMasterImage(int battleMasterImageId) {
-    return ListTile(
-      title: const Text("Master"),
-      trailing: FutureBuilder2(
+  Widget buildMasterImage({int? battleMasterImageId, int? masterImageId}) {
+    Widget trailing;
+    if (masterImageId != null && masterImageId > 0) {
+      trailing = CachedImage(
+        imageUrl: AssetURL(region ?? Region.jp).masterFaceImage(questPhase?.extraDetail?.masterImageId ?? 231),
+        showSaveOnLongPress: true,
+        width: 36,
+        height: 36,
+      );
+    } else if (battleMasterImageId != null && battleMasterImageId > 0) {
+      trailing = FutureBuilder2(
         id: battleMasterImageId,
         loader: () => AtlasApi.battleMasterImage(battleMasterImageId, region: region ?? Region.jp),
         onLoading: (context) => Text(battleMasterImageId.toString()),
@@ -303,7 +313,13 @@ class WaveInfoPage extends StatelessWidget {
             children: trailings,
           );
         },
-      ),
+      );
+    } else {
+      trailing = const Text("???");
+    }
+    return ListTile(
+      title: const Text("Master"),
+      trailing: trailing,
     );
   }
 
