@@ -49,6 +49,7 @@ class ConstGameData {
   final List<int> excludeRewardQuests; // when counting war fixed drop and rewards
   final List<int> randomEnemyQuests;
   final Map<int, List<int>> svtFaceLimits;
+  final ConstDataConfig config;
 
   ConstGameData({
     this.cnReplace = const {},
@@ -70,6 +71,7 @@ class ConstGameData {
     this.excludeRewardQuests = const [],
     this.randomEnemyQuests = const [],
     this.svtFaceLimits = const {},
+    this.config = const ConstDataConfig(),
   }) : buffTypeActionMap = {} {
     for (final entry in buffActions.entries) {
       for (final type in [...entry.value.plusTypes, ...entry.value.minusTypes]) {
@@ -124,6 +126,21 @@ class ConstGameData {
   }
 
   Map<String, dynamic> toJson() => _$ConstGameDataToJson(this);
+}
+
+@JsonSerializable()
+class ConstDataConfig {
+  final String autoLoginMinVerJp;
+  final String autoLoginMinVerNa;
+
+  const ConstDataConfig({
+    this.autoLoginMinVerJp = '999.999.999',
+    this.autoLoginMinVerNa = '2.5.0',
+  });
+
+  factory ConstDataConfig.fromJson(Map<String, dynamic> json) => _$ConstDataConfigFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ConstDataConfigToJson(this);
 }
 
 @JsonSerializable(converters: [BuffTypeConverter()])

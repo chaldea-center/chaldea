@@ -97,6 +97,9 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
             (k, e) => MapEntry(int.parse(k as String), (e as List<dynamic>).map((e) => e as int).toList()),
           ) ??
           const {},
+      config: json['config'] == null
+          ? const ConstDataConfig()
+          : ConstDataConfig.fromJson(Map<String, dynamic>.from(json['config'] as Map)),
     );
 
 Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, dynamic>{
@@ -124,6 +127,7 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
       'excludeRewardQuests': instance.excludeRewardQuests,
       'randomEnemyQuests': instance.randomEnemyQuests,
       'svtFaceLimits': instance.svtFaceLimits.map((k, e) => MapEntry(k.toString(), e)),
+      'config': instance.config.toJson(),
     };
 
 const _$AttributeEnumMap = {
@@ -145,6 +149,16 @@ const _$CardTypeEnumMap = {
   CardType.weak: 'weak',
   CardType.strength: 'strength',
 };
+
+ConstDataConfig _$ConstDataConfigFromJson(Map json) => ConstDataConfig(
+      autoLoginMinVerJp: json['autoLoginMinVerJp'] as String? ?? '999.999.999',
+      autoLoginMinVerNa: json['autoLoginMinVerNa'] as String? ?? '2.5.0',
+    );
+
+Map<String, dynamic> _$ConstDataConfigToJson(ConstDataConfig instance) => <String, dynamic>{
+      'autoLoginMinVerJp': instance.autoLoginMinVerJp,
+      'autoLoginMinVerNa': instance.autoLoginMinVerNa,
+    };
 
 BuffActionDetail _$BuffActionDetailFromJson(Map json) => BuffActionDetail(
       limit: $enumDecode(_$BuffLimitEnumMap, json['limit']),

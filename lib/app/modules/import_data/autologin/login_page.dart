@@ -14,6 +14,9 @@ import 'package:chaldea/app/modules/import_data/import_https_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/faker/req/agent.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/models/userdata/version.dart';
+import 'package:chaldea/packages/app_info.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -68,6 +71,22 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
           warning,
           ...buildAccounts(),
           buildActions(),
+          if (args.region == Region.jp)
+            Card(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.errorContainer,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  Language.isZH ? "暂不支持日服，请勿使用!" : "JP is not supported! DO NOT USE!",
+                  style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onErrorContainer),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
           DividerWithTitle(height: 16, title: S.current.settings_tab_name),
           ListTile(
             dense: true,
@@ -386,6 +405,16 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
         const SizedBox(width: 8),
         ElevatedButton.icon(
           onPressed: () {
+            AppVersion? minVer = AppVersion.tryParse(switch (args.region) {
+              Region.jp => ConstData.config.autoLoginMinVerJp,
+              Region.na => ConstData.config.autoLoginMinVerNa,
+              _ => "",
+            });
+            if (minVer != null && AppInfo.version < minVer) {
+              EasyLoading.showError(S.current.error_required_app_version(minVer.versionString, AppInfo.versionString));
+              return;
+            }
+
             EasyThrottle.throttleAsync('auth_file_login', doLogin);
           },
           icon: const Icon(Icons.login),
