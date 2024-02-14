@@ -317,8 +317,8 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
           reversed: [true, false],
         ));
 
-    String svtNames = puSvts.map((e) => db.gameData.servantsNoDup[e]?.extra.mcLink ?? "未知从者$e").join(',');
-    String ceNames = puCEs.map((e) => db.gameData.craftEssences[e]?.extra.mcLink ?? "未知礼装$e").join(',');
+    String svtNames = puSvts.map((e) => db.gameData.servantsNoDup[e]?.extra.mcLink ?? "从者$e").join(',');
+    String ceNames = puCEs.map((e) => db.gameData.craftEssences[e]?.extra.mcLink ?? "礼装$e").join(',');
     if (anyNoResult) {
       const hint = '<!-- 部分卡池解析失败 -->';
       svtNames += hint;
