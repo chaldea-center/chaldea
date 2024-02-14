@@ -14,7 +14,9 @@ NiceWar _$NiceWarFromJson(Map json) => NiceWar(
       age: json['age'] as String,
       name: json['name'] as String,
       longName: json['longName'] as String,
-      flags: (json['flags'] as List<dynamic>?)?.map((e) => const WarFlagConverter().fromJson(e as String)).toList() ??
+      flags: (json['flags'] as List<dynamic>?)
+              ?.map((e) => $enumDecode(_$WarFlagEnumMap, e, unknownValue: WarFlag.none))
+              .toList() ??
           const [],
       banner: json['banner'] as String?,
       headerImage: json['headerImage'] as String?,
@@ -56,7 +58,7 @@ Map<String, dynamic> _$NiceWarToJson(NiceWar instance) => <String, dynamic>{
       'id': instance.id,
       'coordinates': instance.coordinates,
       'age': instance.age,
-      'flags': instance.flags.map(const WarFlagConverter().toJson).toList(),
+      'flags': instance.flags.map((e) => _$WarFlagEnumMap[e]!).toList(),
       'banner': instance.banner,
       'headerImage': instance.headerImage,
       'priority': instance.priority,
@@ -80,6 +82,33 @@ Map<String, dynamic> _$NiceWarToJson(NiceWar instance) => <String, dynamic>{
       'name': instance.name,
       'longName': instance.longName,
     };
+
+const _$WarFlagEnumMap = {
+  WarFlag.none: 'none',
+  WarFlag.withMap: 'withMap',
+  WarFlag.showOnMaterial: 'showOnMaterial',
+  WarFlag.folderSortPrior: 'folderSortPrior',
+  WarFlag.storyShortcut: 'storyShortcut',
+  WarFlag.isEvent: 'isEvent',
+  WarFlag.closeAfterClear: 'closeAfterClear',
+  WarFlag.mainScenario: 'mainScenario',
+  WarFlag.isWarIconLeft: 'isWarIconLeft',
+  WarFlag.clearedReturnToTitle: 'clearedReturnToTitle',
+  WarFlag.noClearMarkWithClear: 'noClearMarkWithClear',
+  WarFlag.noClearMarkWithComplete: 'noClearMarkWithComplete',
+  WarFlag.notEntryBannerActive: 'notEntryBannerActive',
+  WarFlag.shop: 'shop',
+  WarFlag.blackMarkWithClear: 'blackMarkWithClear',
+  WarFlag.dispFirstQuest: 'dispFirstQuest',
+  WarFlag.effectDisappearBanner: 'effectDisappearBanner',
+  WarFlag.whiteMarkWithClear: 'whiteMarkWithClear',
+  WarFlag.subFolder: 'subFolder',
+  WarFlag.dispEarthPointWithoutMap: 'dispEarthPointWithoutMap',
+  WarFlag.isWarIconFree: 'isWarIconFree',
+  WarFlag.isWarIconCenter: 'isWarIconCenter',
+  WarFlag.noticeBoard: 'noticeBoard',
+  WarFlag.changeDispClosedMessage: 'changeDispClosedMessage',
+};
 
 const _$WarStartTypeEnumMap = {
   WarStartType.none: 'none',
@@ -328,29 +357,3 @@ Map<String, dynamic> _$WarQuestSelectionToJson(WarQuestSelection instance) => <S
       'shortcutBanner': instance.shortcutBanner,
       'priority': instance.priority,
     };
-
-const _$WarFlagEnumMap = {
-  WarFlag.none: 'none',
-  WarFlag.withMap: 'withMap',
-  WarFlag.showOnMaterial: 'showOnMaterial',
-  WarFlag.folderSortPrior: 'folderSortPrior',
-  WarFlag.storyShortcut: 'storyShortcut',
-  WarFlag.isEvent: 'isEvent',
-  WarFlag.closeAfterClear: 'closeAfterClear',
-  WarFlag.mainScenario: 'mainScenario',
-  WarFlag.isWarIconLeft: 'isWarIconLeft',
-  WarFlag.clearedReturnToTitle: 'clearedReturnToTitle',
-  WarFlag.noClearMarkWithClear: 'noClearMarkWithClear',
-  WarFlag.noClearMarkWithComplete: 'noClearMarkWithComplete',
-  WarFlag.notEntryBannerActive: 'notEntryBannerActive',
-  WarFlag.shop: 'shop',
-  WarFlag.blackMarkWithClear: 'blackMarkWithClear',
-  WarFlag.dispFirstQuest: 'dispFirstQuest',
-  WarFlag.effectDisappearBanner: 'effectDisappearBanner',
-  WarFlag.whiteMarkWithClear: 'whiteMarkWithClear',
-  WarFlag.subFolder: 'subFolder',
-  WarFlag.dispEarthPointWithoutMap: 'dispEarthPointWithoutMap',
-  WarFlag.isWarIconFree: 'isWarIconFree',
-  WarFlag.isWarIconCenter: 'isWarIconCenter',
-  WarFlag.noticeBoard: 'noticeBoard',
-};

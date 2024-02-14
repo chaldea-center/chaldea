@@ -80,6 +80,10 @@ const _$SvtFlagEnumMap = {
   SvtFlag.ignoreCombineLimitSpecial: 'ignoreCombineLimitSpecial',
   SvtFlag.svtEquipExp: 'svtEquipExp',
   SvtFlag.svtEquipChocolate: 'svtEquipChocolate',
+  SvtFlag.svtEquipManaExchange: 'svtEquipManaExchange',
+  SvtFlag.svtEquipCampaign: 'svtEquipCampaign',
+  SvtFlag.svtEquipEvent: 'svtEquipEvent',
+  SvtFlag.svtEquipEventReward: 'svtEquipEventReward',
 };
 
 const _$AttributeEnumMap = {
@@ -275,7 +279,10 @@ BasicCraftEssence _$BasicCraftEssenceFromJson(Map json) => BasicCraftEssence(
       collectionNo: json['collectionNo'] as int? ?? 0,
       name: json['name'] as String,
       type: $enumDecodeNullable(_$SvtTypeEnumMap, json['type']) ?? SvtType.servantEquip,
-      flags: (json['flags'] as List<dynamic>?)?.map((e) => $enumDecode(_$SvtFlagEnumMap, e)).toList() ?? const [],
+      flags: (json['flags'] as List<dynamic>?)
+              ?.map((e) => $enumDecode(_$SvtFlagEnumMap, e, unknownValue: SvtFlag.unknown))
+              .toList() ??
+          const [],
       rarity: json['rarity'] as int,
       atkMax: json['atkMax'] as int? ?? 0,
       hpMax: json['hpMax'] as int? ?? 0,
@@ -301,7 +308,10 @@ CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
       name: json['name'] as String,
       ruby: json['ruby'] as String? ?? "",
       type: $enumDecodeNullable(_$SvtTypeEnumMap, json['type']) ?? SvtType.servantEquip,
-      flags: (json['flags'] as List<dynamic>?)?.map((e) => $enumDecode(_$SvtFlagEnumMap, e)).toList() ?? const [],
+      flags: (json['flags'] as List<dynamic>?)
+              ?.map((e) => $enumDecode(_$SvtFlagEnumMap, e, unknownValue: SvtFlag.unknown))
+              .toList() ??
+          const [],
       rarity: json['rarity'] as int,
       cost: json['cost'] as int,
       lvMax: json['lvMax'] as int,

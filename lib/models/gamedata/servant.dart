@@ -644,6 +644,7 @@ class BasicCraftEssence with GameCardMixin {
   @override
   String name;
   SvtType type;
+  @JsonKey(unknownEnumValue: SvtFlag.unknown)
   List<SvtFlag> flags;
   @override
   int rarity;
@@ -688,6 +689,7 @@ class CraftEssence with GameCardMixin {
   String name;
   String ruby;
   SvtType type;
+  @JsonKey(unknownEnumValue: SvtFlag.unknown)
   List<SvtFlag> flags;
   @override
   int rarity;
@@ -1534,6 +1536,10 @@ enum SvtFlag {
   ignoreCombineLimitSpecial,
   svtEquipExp,
   svtEquipChocolate,
+  svtEquipManaExchange,
+  svtEquipCampaign,
+  svtEquipEvent,
+  svtEquipEventReward,
 }
 
 enum Attribute {

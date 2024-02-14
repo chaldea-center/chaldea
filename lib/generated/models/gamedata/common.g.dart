@@ -391,4 +391,10 @@ const _$CondTypeEnumMap = {
   CondType.raidGroupOpenAbove: 'raidGroupOpenAbove',
   CondType.raidGroupOpenBelow: 'raidGroupOpenBelow',
   CondType.treasureDeviceAccelerate: 'treasureDeviceAccelerate',
+  CondType.playQuestPhase: 'playQuestPhase',
+  CondType.notPlayQuestPhase: 'notPlayQuestPhase',
+  CondType.eventStartToEnd: 'eventStartToEnd',
+  CondType.commonValueAbove: 'commonValueAbove',
+  CondType.commonValueBelow: 'commonValueBelow',
+  CondType.commonValueEqual: 'commonValueEqual',
 };

@@ -24,7 +24,7 @@ class NiceWar with RouteInfo {
   String age;
   String? _name;
   String? _longName;
-  @WarFlagConverter()
+  @JsonKey(unknownEnumValue: WarFlag.none)
   List<WarFlag> flags;
   String? banner;
   String? headerImage;
@@ -558,7 +558,6 @@ class WarFlagConverter extends JsonConverter<WarFlag, String> {
   String toJson(WarFlag obj) => _$WarFlagEnumMap[obj] ?? obj.name;
 }
 
-@JsonEnum(alwaysCreate: true)
 enum WarFlag {
   none, // added
   withMap,
@@ -583,6 +582,7 @@ enum WarFlag {
   isWarIconFree,
   isWarIconCenter,
   noticeBoard,
+  changeDispClosedMessage,
 }
 
 enum WarOverwriteType {
