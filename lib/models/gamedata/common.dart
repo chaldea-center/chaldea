@@ -1012,12 +1012,12 @@ enum CondType {
   raidGroupOpenAbove,
   raidGroupOpenBelow,
   treasureDeviceAccelerate,
-    playQuestPhase,
-    notPlayQuestPhase,
-    eventStartToEnd,
-    commonValueAbove,
-    commonValueBelow,
-    commonValueEqual,
+  playQuestPhase,
+  notPlayQuestPhase,
+  eventStartToEnd,
+  commonValueAbove,
+  commonValueBelow,
+  commonValueEqual,
 }
 
 @JsonSerializable()

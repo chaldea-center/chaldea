@@ -349,8 +349,15 @@ class CraftDetailBasePage extends StatelessWidget {
         CustomTableRow(children: [TableCellData(text: S.current.filter_category, isHeader: true)]),
         CustomTableRow(children: [
           TableCellData(
-            child: Text(Transl.ceObtain(ce.obtain).l, textAlign: TextAlign.center),
-          )
+            child: Text(
+              [
+                Transl.ceObtain(ce.obtain).l,
+                ce.flags.isEmpty ? '-' : ce.flags.map((e) => e.name).join(' / '),
+                // ce.extra.obtain.name,
+              ].join('\n'),
+              textAlign: TextAlign.center,
+            ),
+          ),
         ]),
         ..._relatedSvt(context),
         if (ce.valentineScript.isNotEmpty) ...[

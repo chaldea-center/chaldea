@@ -96,7 +96,7 @@ const _$CEObtainEnumMap = {
   CEObtain.story: 'story',
   CEObtain.eventReward: 'eventReward',
   CEObtain.limited: 'limited',
-  CEObtain.shop: 'shop',
+  CEObtain.manaShop: 'manaShop',
   CEObtain.bond: 'bond',
   CEObtain.valentine: 'valentine',
   CEObtain.exp: 'exp',

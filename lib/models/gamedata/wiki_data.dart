@@ -563,7 +563,7 @@ enum CEObtain {
   story,
   eventReward,
   limited,
-  shop,
+  manaShop,
   bond,
   valentine,
   exp,

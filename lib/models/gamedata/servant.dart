@@ -765,12 +765,25 @@ class CraftEssence with GameCardMixin {
   bool get isRegionSpecific => collectionNo > 100000 && (sortId ?? collectionNo) < 0;
 
   CEObtain get obtain {
+    // DO NOT change if-else order
     if (flags.contains(SvtFlag.svtEquipFriendShip)) {
       return CEObtain.bond;
     } else if (flags.contains(SvtFlag.svtEquipExp)) {
       return CEObtain.exp;
     } else if (flags.contains(SvtFlag.svtEquipChocolate)) {
+      // choco also has svtEquipEventReward
       return CEObtain.valentine;
+    } else if (flags.contains(SvtFlag.svtEquipManaExchange)) {
+      if (rarity == 4 && skills.expand((e) => e.functions).any((func) => func.funcType == FuncType.eventDropRateUp)) {
+        return CEObtain.drop;
+      }
+      return CEObtain.manaShop;
+    } else if (flags.contains(SvtFlag.svtEquipEventReward)) {
+      return CEObtain.eventReward;
+    } else if (flags.contains(SvtFlag.svtEquipCampaign)) {
+      return CEObtain.campaign;
+    } else if (flags.contains(SvtFlag.svtEquipEvent)) {
+      return CEObtain.limited;
     }
     return extra.obtain;
   }
