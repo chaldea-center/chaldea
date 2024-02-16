@@ -308,6 +308,7 @@ class _QuestCardState extends State<QuestCard> {
           condType: cond.type,
           target: cond.targetId,
           value: cond.value,
+          unknownMsg: cond.closedMessage,
         ),
       Text('${S.current.time_start}: ${quest.openedAt.sec2date().toStringShort(omitSec: true)}'),
       Text('${S.current.time_end}: ${quest.closedAt.sec2date().toStringShort(omitSec: true)}'),

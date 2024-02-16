@@ -372,6 +372,24 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           missions: missions,
           unknownMsg: unknownMsg,
         ).buildContent(context);
+      case CondType.commonValueAbove:
+      case CondType.commonValueBelow:
+      case CondType.commonValueEqual:
+        // UserGameCommonEntity
+        final arrow = {
+          CondType.commonValueAbove: "≥",
+          CondType.commonValueBelow: "≤",
+          CondType.commonValueEqual: "=",
+        }[condType]!;
+        String? closedMessage = unknownMsg?.replaceAll("\n", "");
+        return rich(
+          context,
+          "CommonValue$target $arrow$value",
+          [
+            if (closedMessage != null && closedMessage.isNotEmpty)
+              TextSpan(text: ' ($closedMessage)', style: Theme.of(context).textTheme.bodySmall),
+          ],
+        );
       default:
         break;
     }

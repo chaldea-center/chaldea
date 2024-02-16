@@ -806,6 +806,7 @@ enum Trait {
 
 @JsonEnum(alwaysCreate: true)
 enum CondType {
+  unknown,
   none,
   questClear,
   itemGet,

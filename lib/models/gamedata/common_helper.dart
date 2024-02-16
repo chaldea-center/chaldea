@@ -43,7 +43,8 @@ class RegionConverter extends JsonConverter<Region, String> {
 class CondTypeConverter extends JsonConverter<CondType, String> {
   const CondTypeConverter();
   @override
-  CondType fromJson(String? value) => decodeEnum(_$CondTypeEnumMap, value ?? "", CondType.none);
+  CondType fromJson(String? value) =>
+      value == null ? CondType.none : decodeEnum(_$CondTypeEnumMap, value, CondType.unknown);
   @override
   String toJson(CondType obj) => _$CondTypeEnumMap[obj] ?? obj.name;
 }
