@@ -71,19 +71,20 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
   }
 
   Region _resolveDefaultRegion() {
-    if (widget.region != null) return widget.region!;
-    final fixedRegion = db.settings.preferredQuestRegion;
-    if (fixedRegion == null || fixedRegion == Region.jp) {
-      return Region.jp;
-    }
-    final jpQuest = db.gameData.quests[widget.quest?.id ?? widget.id];
-    if (jpQuest == null) return Region.jp;
-    if (jpQuest.war?.eventReal == null) return Region.jp;
-    final released = db.gameData.mappingData.warRelease.ofRegion(fixedRegion)?.contains(jpQuest.warId);
-    if (released == true) {
-      return fixedRegion;
-    }
-    return Region.jp;
+    return widget.region ?? Region.jp;
+    // if (widget.region != null) return widget.region!;
+    // final fixedRegion = db.settings.preferredQuestRegion;
+    // if (fixedRegion == null || fixedRegion == Region.jp) {
+    //   return Region.jp;
+    // }
+    // final jpQuest = db.gameData.quests[widget.quest?.id ?? widget.id];
+    // if (jpQuest == null) return Region.jp;
+    // if (jpQuest.war?.eventReal == null) return Region.jp;
+    // final released = db.gameData.mappingData.warRelease.ofRegion(fixedRegion)?.contains(jpQuest.warId);
+    // if (released == true) {
+    //   return fixedRegion;
+    // }
+    // return Region.jp;
   }
 
   Future<void> _resolveQuest() async {
@@ -178,10 +179,11 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                         ),
                   mooncell: mcLink,
                 ),
-                PopupMenuItem(
-                  onTap: _showFixRegionDialog,
-                  child: Text(S.current.quest_prefer_region),
-                ),
+                if (1 > 2)
+                  PopupMenuItem(
+                    onTap: _showFixRegionDialog,
+                    child: Text(S.current.quest_prefer_region),
+                  ),
                 if (region == Region.jp && Language.isZH) ...[
                   const PopupMenuDivider(),
                   PopupMenuItem(

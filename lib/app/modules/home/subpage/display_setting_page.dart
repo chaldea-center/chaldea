@@ -232,38 +232,39 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               ),
             ],
           ),
-          TileGroup(
-            header: S.current.quest,
-            footer: S.current.quest_region_has_enemy_hint,
-            children: [
-              ListTile(
-                title: Text(S.current.quest_prefer_region),
-                subtitle: Text(
-                  S.current.quest_prefer_region_hint,
-                  textScaler: const TextScaler.linear(0.9),
-                ),
-                trailing: DropdownButton<Region?>(
-                  value: db.settings.preferredQuestRegion,
-                  items: [
-                    DropdownMenuItem(
-                      value: null,
-                      child: Text(S.current.general_default),
-                    ),
-                    for (final region in Region.values)
+          if (1 > 2)
+            TileGroup(
+              header: S.current.quest,
+              footer: S.current.quest_region_has_enemy_hint,
+              children: [
+                ListTile(
+                  title: Text(S.current.quest_prefer_region),
+                  subtitle: Text(
+                    S.current.quest_prefer_region_hint,
+                    textScaler: const TextScaler.linear(0.9),
+                  ),
+                  trailing: DropdownButton<Region?>(
+                    value: db.settings.preferredQuestRegion,
+                    items: [
                       DropdownMenuItem(
-                        value: region,
-                        child: Text(region.localName),
+                        value: null,
+                        child: Text(S.current.general_default),
                       ),
-                  ],
-                  onChanged: (v) {
-                    setState(() {
-                      db.settings.preferredQuestRegion = v;
-                    });
-                  },
+                      for (final region in Region.values)
+                        DropdownMenuItem(
+                          value: region,
+                          child: Text(region.localName),
+                        ),
+                    ],
+                    onChanged: (v) {
+                      setState(() {
+                        db.settings.preferredQuestRegion = v;
+                      });
+                    },
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
           TileGroup(
             header: 'App',
             footer: PlatformU.isDesktop
