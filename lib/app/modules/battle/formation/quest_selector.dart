@@ -155,18 +155,23 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
       isExpanded: true,
       value: quest,
       hint: Text(S.current.quest, style: const TextStyle(fontSize: 14)),
-      items: [
-        for (final quest in quests)
-          DropdownMenuItem(
-            value: quest,
-            child: Text(
-              quest.lDispName.setMaxLines(1).breakWord,
-              maxLines: 1,
-              style: TextStyle(fontSize: 12, color: quest.is90PlusFree ? Theme.of(context).colorScheme.primary : null),
-              overflow: TextOverflow.ellipsis,
-            ),
-          )
-      ],
+      items: quests.map((quest) {
+        List<InlineSpan> spans = [
+          if (quest.event != null || quest.is90PlusFree)
+            TextSpan(text: '${quest.recommendLv} ', style: const TextStyle(fontSize: 10)),
+          TextSpan(text: quest.lDispName.setMaxLines(1).breakWord),
+        ];
+        return DropdownMenuItem(
+          value: quest,
+          child: Text.rich(
+            TextSpan(children: spans),
+            maxLines: 1,
+            style: TextStyle(fontSize: 12, color: quest.is90PlusFree ? Theme.of(context).colorScheme.primary : null),
+            overflow: TextOverflow.ellipsis,
+          ),
+        );
+      }).toList(),
+
       onChanged: (v) {
         setState(() {
           quest = v;

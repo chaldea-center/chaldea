@@ -520,6 +520,8 @@ class _ProcessedData {
   Set<FuncType> get allFuncs => {...svtFuncs, ...ceFuncs, ...ccFuncs, ...mcFuncs};
   Set<BuffType> get allBuffs => {...svtBuffs, ...ceBuffs, ...ccBuffs, ...mcBuffs};
 
+  Map<int, Map<int, int>> spotMultiFrees = {}; // <warId, <spotId, fq count>>
+
   _ProcessedData(this.gameData) {
     for (final svt in gameData.servants.values) {
       for (final costume in svt.profile.costume.values) {
@@ -557,6 +559,22 @@ class _ProcessedData {
         eventTowerQuestGroups.putIfAbsent(quest.groupId, () => []).add(quest.questId);
       }
     }
+    for (final war in gameData.wars.values) {
+      final maps = {for (final map in war.maps) map.id: map};
+      final group = spotMultiFrees.putIfAbsent(war.id, () => {});
+      for (final spot in war.spots) {
+        final map = maps[spot.mapId];
+        if ((map != null && map.hasSize) || spot.blankEarth) {
+          for (final quest in spot.quests) {
+            if (quest.isAnyFree) {
+              group.addNum(spot.id, 1);
+            }
+          }
+        }
+      }
+      group.removeWhere((key, value) => value <= 1);
+    }
+    spotMultiFrees.removeWhere((key, value) => value.isEmpty);
     _initFuncBuff();
   }
 

@@ -280,10 +280,18 @@ class Quest with RouteInfo {
     // return Transl({m.jp!: m}, m.jp!, m.jp!);
   }
 
-  String get lDispName {
-    // 群島-10308, 裏山-20314
+  String get dispName {
     if (isMainStoryFree) {
-      return const [10308, 20314].contains(spotId) ? '${lSpot.l}(${lName.l})' : lSpot.l;
+      final count = db.gameData.others.spotMultiFrees[warId]?[spotId] ?? 0;
+      return count > 1 ? '$spotName($name)' : spotName;
+    }
+    return name;
+  }
+
+  String get lDispName {
+    if (isMainStoryFree) {
+      final count = db.gameData.others.spotMultiFrees[warId]?[spotId] ?? 0;
+      return count > 1 ? '${lSpot.l}(${lName.l})' : lSpot.l;
     }
     return lName.l;
   }
@@ -297,13 +305,6 @@ class Quest with RouteInfo {
       }
     }
     return '';
-  }
-
-  String get dispName {
-    if (isMainStoryFree) {
-      return const [10308, 20314].contains(spotId) ? '$spotName($name)' : spotName;
-    }
-    return name;
   }
 
   bool get isMainStoryFree =>
