@@ -157,8 +157,11 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                   enabled: widget.questPhase == null,
                   onTap: () {
                     final key = '/quest/$questId/';
-                    AtlasApi.cachedQuestPhases.removeWhere((key, value) => key.contains(key));
-                    AtlasApi.cacheManager.removeWhere((info) => info.url.contains(key));
+                    AtlasApi.cachedQuestPhases.removeWhere((k, v) => k.contains(key));
+                    AtlasApi.cacheManager
+                      ..removeWhere((info) => info.url.contains(key))
+                      ..clearMemoryCache()
+                      ..clearFailed();
                     if (questId != null) AtlasApi.cacheDisabledQuests.add(questId!);
                     uniqueKey = UniqueKey();
                     if (mounted) setState(() {});

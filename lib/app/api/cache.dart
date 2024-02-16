@@ -115,6 +115,10 @@ class ApiCacheManager {
 
   Completer? _initCompleter;
 
+  void clearMemoryCache() {
+    _memoryCache.clear();
+  }
+
   void clearFailed() {
     _failed.clear();
   }
