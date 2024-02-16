@@ -26,7 +26,9 @@ class IconCacheManagePage extends StatefulWidget {
 
 class _IconCacheManagePageState extends State<IconCacheManagePage> {
   final _loader = AtlasIconLoader.i;
-  final _limiter = RateLimiter(maxCalls: 20, period: const Duration(seconds: 2), raiseOnLimit: false);
+  final _limiter = PlatformU.isWindows
+      ? RateLimiter(maxCalls: 5, period: const Duration(seconds: 1), raiseOnLimit: false)
+      : RateLimiter(maxCalls: 20, period: const Duration(seconds: 2), raiseOnLimit: false);
   List<Future<String?>> tasks = [];
   bool canceled = false;
 
@@ -177,11 +179,48 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     })) {
       return path;
     }
-    final resp = await limiter.limited(() => DioE().get(url, options: Options(responseType: ResponseType.bytes)));
+    final resp = await _retry(
+        task: () => limiter.limited(() => DioE().get(url, options: Options(responseType: ResponseType.bytes))));
     file.parent.createSync(recursive: true);
     await file.writeAsBytes(List.from(resp.data));
     print('download file: $url');
     return path;
+  }
+
+  Future<Response<T>> _retry<T>({
+    required Future<Response<T>> Function() task,
+    int retryCount = 3,
+    Duration duration = const Duration(seconds: 5),
+  }) async {
+    int count = 0;
+    while (true) {
+      try {
+        return await task();
+      } on DioException catch (e) {
+        if (_shouldRetry(e)) {
+          count += 1;
+          if (count <= retryCount) {
+            await Future.delayed(duration);
+            continue;
+          }
+        }
+        rethrow;
+      }
+    }
+  }
+
+  bool _shouldRetry(DioException e) {
+    final resp = e.response;
+    if (resp != null) {
+      if (resp.statusCode == 429) return true;
+      return false;
+    } else {
+      final error = e.error;
+      if (e.type == DioExceptionType.connectionError) return true;
+      if (error is HandshakeException) return true;
+      if (error is HttpException) return true;
+      return false;
+    }
   }
 
   Future<String?> _webDownload(String url, String path, RateLimiter limiter) async {
@@ -194,7 +233,8 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     })) {
       return path;
     }
-    final resp = await limiter.limited(() => DioE().get(url, options: Options(responseType: ResponseType.bytes)));
+    final resp = await _retry(
+        task: () => limiter.limited(() => DioE().get(url, options: Options(responseType: ResponseType.bytes))));
     await file.writeAsBytes(List.from(resp.data));
     print('download file: $url');
     return path;
