@@ -393,13 +393,12 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
       default:
         break;
     }
-    if (unknownMsg != null) return text(unknownMsg!);
-    return localized(
+    return wrapMsg(localized(
       jp: () => text('不明な条件(${condType.name}): $value, $target'),
       cn: () => text('未知条件(${condType.name}): $value, $target'),
       tw: () => text('未知條件(${condType.name}): $value, $target'),
       na: () => text('Unknown Cond(${condType.name}): $value, $target'),
       kr: null,
-    );
+    ));
   }
 }

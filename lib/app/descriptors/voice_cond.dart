@@ -193,13 +193,12 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
       default:
         break;
     }
-    if (unknownMsg != null) return text(unknownMsg!);
-    return localized(
+    return wrapMsg(localized(
       jp: null,
       cn: () => text('未知条件(${condType.name}): $value'),
       tw: () => text('未知條件(${condType.name}): $value'),
       na: () => text('Unknown Cond(${condType.name}): $value'),
       kr: null,
-    );
+    ));
   }
 }

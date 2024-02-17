@@ -65,6 +65,19 @@ mixin DescriptorBase {
     ];
   }
 
+  List<InlineSpan> wrapMsg(List<InlineSpan> spans) {
+    if (unknownMsg != null && unknownMsg!.isNotEmpty) {
+      spans = [
+        ...spans,
+        TextSpan(
+          text: ' ($unknownMsg)',
+          style: TextStyle(fontSize: (style?.fontSize ?? 14.0) * (textScaleFactor ?? 1.0) * 0.8),
+        ),
+      ];
+    }
+    return spans;
+  }
+
   List<InlineSpan> emptyHint(List<InlineSpan> spans) {
     if (spans.isEmpty && targetIds.isEmpty) return [const TextSpan(text: '[]')];
     return spans;

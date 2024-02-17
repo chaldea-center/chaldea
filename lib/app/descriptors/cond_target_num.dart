@@ -738,14 +738,13 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
       default:
         break;
     }
-    if (unknownMsg != null) return text(unknownMsg!);
-    return localized(
+    return wrapMsg(localized(
       jp: () => text('不明な条件(${condType.name}): $targetNum, $targetIds'),
       cn: () => text('未知条件(${condType.name}): $targetNum, $targetIds'),
       tw: () => text('未知條件(${condType.name}): $targetNum, $targetIds'),
       na: () => text('Unknown Cond(${condType.name}): $targetNum, $targetIds'),
       kr: () => text('미확인 (${condType.name}): $targetNum, $targetIds'),
-    );
+    ));
   }
 
   (List<int>, List<int>) _splitTargets(List<int> vals) {

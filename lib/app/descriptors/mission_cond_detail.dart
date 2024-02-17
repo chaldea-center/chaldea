@@ -319,15 +319,14 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
       case null:
         break;
     }
-    if (unknownMsg != null) return text(unknownMsg!);
     final condTypeStr = condType?.name ?? detail.missionCondType;
-    return localized(
+    return wrapMsg(localized(
       jp: () => text('不明な条件($condTypeStr): $targetIds, $targetNum'),
       cn: () => text('未知条件($condTypeStr): $targetIds, $targetNum'),
       tw: () => text('未知條件($condTypeStr): $targetIds, $targetNum'),
       na: () => text('Unknown CondDetail($condTypeStr): $targetIds, $targetNum'),
       kr: () => text('알 수 없는 조건($condTypeStr): $targetIds, $targetNum'),
-    );
+    ));
   }
 
   @override
