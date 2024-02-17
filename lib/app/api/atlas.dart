@@ -63,7 +63,7 @@ class AtlasApi {
       if (questJP != null) {
         final dt = now - questJP.openedAt;
         if (dt > 0) {
-          expireAfter = Duration(seconds: (dt * 2).clamp(kSecsPerDay, 7 * kSecsPerDay));
+          expireAfter = Duration(seconds: (dt ~/ 4).clamp(1, 7 * kSecsPerDay));
         }
       }
     }

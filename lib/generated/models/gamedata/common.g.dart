@@ -185,6 +185,7 @@ const _$SvtClassEnumMap = {
 };
 
 const _$CondTypeEnumMap = {
+  CondType.unknown: 'unknown',
   CondType.none: 'none',
   CondType.questClear: 'questClear',
   CondType.itemGet: 'itemGet',

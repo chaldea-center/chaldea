@@ -511,8 +511,8 @@ class WarAdd {
   CondType condType;
   int targetId;
   int value;
-  // int startedAt;
-  // int endedAt;
+  int startedAt;
+  int endedAt;
 
   WarAdd({
     required this.warId,
@@ -524,8 +524,8 @@ class WarAdd {
     this.condType = CondType.none,
     this.targetId = 0,
     this.value = 0,
-    // required this.startedAt,
-    // required this.endedAt,
+    required this.startedAt,
+    required this.endedAt,
   });
 
   factory WarAdd.fromJson(Map<String, dynamic> json) => _$WarAddFromJson(json);

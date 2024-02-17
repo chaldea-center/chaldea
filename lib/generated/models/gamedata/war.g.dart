@@ -307,6 +307,8 @@ WarAdd _$WarAddFromJson(Map json) => WarAdd(
           json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
       targetId: json['targetId'] as int? ?? 0,
       value: json['value'] as int? ?? 0,
+      startedAt: json['startedAt'] as int,
+      endedAt: json['endedAt'] as int,
     );
 
 Map<String, dynamic> _$WarAddToJson(WarAdd instance) => <String, dynamic>{
@@ -319,6 +321,8 @@ Map<String, dynamic> _$WarAddToJson(WarAdd instance) => <String, dynamic>{
       'condType': const CondTypeConverter().toJson(instance.condType),
       'targetId': instance.targetId,
       'value': instance.value,
+      'startedAt': instance.startedAt,
+      'endedAt': instance.endedAt,
     };
 
 const _$WarOverwriteTypeEnumMap = {

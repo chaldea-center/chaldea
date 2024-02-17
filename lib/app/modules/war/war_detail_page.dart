@@ -83,7 +83,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
       );
     }
     final banners = war.extra.allBanners;
-    final warAdds = war.warAdds.toList();
+    final warAdds = war.warAdds.toList()..sort2((e) => -e.startedAt);
     final eventAdds = war.event?.eventAdds ?? [];
     List<String> warBanners = {
       for (final warAdd in warAdds) warAdd.overwriteBanner,
@@ -92,7 +92,7 @@ class _WarDetailPageState extends State<WarDetailPage> {
     warBanners = {
       war.shownBanner,
       war.banner,
-      ...warBanners.reversed.take(war.id == WarId.chaldeaGate ? 2 : 6).toList().reversed
+      ...warBanners.take(war.id == WarId.chaldeaGate ? 4 : 6).toList().reversed
     }.whereType<String>().toList();
 
     List<Widget> children = [
