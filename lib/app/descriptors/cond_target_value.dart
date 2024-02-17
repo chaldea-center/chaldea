@@ -71,126 +71,125 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.questClear:
         return localized(
-          jp: () => rich(context, null, quests(context), 'をクリアした'),
-          cn: () => rich(context, '通关', quests(context)),
-          tw: () => rich(context, '通關', quests(context)),
-          na: () => rich(context, 'Has cleared quest ', quests(context)),
+          jp: () => rich(null, quests(context), 'をクリアした'),
+          cn: () => rich('通关', quests(context)),
+          tw: () => rich('通關', quests(context)),
+          na: () => rich('Has cleared quest ', quests(context)),
           kr: null,
         );
       case CondType.questClearBeforeEventStart:
         return localized(
           jp: null,
-          cn: () => rich(context, '在活动', MultiDescriptor.events(context, [value]), '开始前通关', quests(context)),
-          tw: () => rich(context, '在活動', MultiDescriptor.events(context, [value]), '開始前通關', quests(context)),
-          na: () =>
-              rich(context, 'Clear ', quests(context), ' before event start', MultiDescriptor.events(context, [value])),
+          cn: () => rich('在活动', MultiDescriptor.events(context, [value]), '开始前通关', quests(context)),
+          tw: () => rich('在活動', MultiDescriptor.events(context, [value]), '開始前通關', quests(context)),
+          na: () => rich('Clear ', quests(context), ' before event start', MultiDescriptor.events(context, [value])),
           kr: null,
         );
       case CondType.notQuestClearBeforeEventStart:
         return localized(
           jp: null,
-          cn: () => rich(context, '在活动', MultiDescriptor.events(context, [value]), '开始前未通关', quests(context)),
-          tw: () => rich(context, '在活動', MultiDescriptor.events(context, [value]), '開始前未通關', quests(context)),
-          na: () => rich(context, 'Have not cleared ', quests(context), ' before event start',
-              MultiDescriptor.events(context, [value])),
+          cn: () => rich('在活动', MultiDescriptor.events(context, [value]), '开始前未通关', quests(context)),
+          tw: () => rich('在活動', MultiDescriptor.events(context, [value]), '開始前未通關', quests(context)),
+          na: () => rich(
+              'Have not cleared ', quests(context), ' before event start', MultiDescriptor.events(context, [value])),
           kr: null,
         );
       case CondType.questAvailable:
         return localized(
           jp: null,
-          cn: () => rich(context, '关卡可用中', quests(context)),
-          tw: () => rich(context, '關卡可用中', quests(context)),
-          na: () => rich(context, 'Quest', quests(context), "available"),
+          cn: () => rich('关卡可用中', quests(context)),
+          tw: () => rich('關卡可用中', quests(context)),
+          na: () => rich('Quest', quests(context), "available"),
           kr: null,
         );
       case CondType.svtLimit:
         return localized(
-          jp: () => rich(context, null, servants(context), 'の霊基再臨を$value段階目にする'),
-          cn: () => rich(context, null, servants(context), '达到灵基再临第$value阶段'),
-          tw: () => rich(context, null, servants(context), '達到靈基再臨第$value階段'),
-          na: () => rich(context, null, servants(context), ' at ascension $value'),
+          jp: () => rich(null, servants(context), 'の霊基再臨を$value段階目にする'),
+          cn: () => rich(null, servants(context), '达到灵基再临第$value阶段'),
+          tw: () => rich(null, servants(context), '達到靈基再臨第$value階段'),
+          na: () => rich(null, servants(context), ' at ascension $value'),
           kr: null,
         );
       case CondType.svtGet:
         return localized(
-          jp: () => rich(context, null, servants(context), 'は霊基一覧の中にいる'),
-          cn: () => rich(context, null, servants(context), '在灵基一览中'),
-          tw: () => rich(context, null, servants(context), '在靈基一覽中'),
-          na: () => rich(context, null, servants(context), ' in Spirit Origin Collection'),
+          jp: () => rich(null, servants(context), 'は霊基一覧の中にいる'),
+          cn: () => rich(null, servants(context), '在灵基一览中'),
+          tw: () => rich(null, servants(context), '在靈基一覽中'),
+          na: () => rich(null, servants(context), ' in Spirit Origin Collection'),
           kr: null,
         );
       case CondType.svtFriendship:
         return localized(
-          jp: () => rich(context, null, servants(context), 'の絆レベルが$valueになる'),
-          cn: () => rich(context, null, servants(context), '的羁绊等级达到$value'),
-          tw: () => rich(context, null, servants(context), '的羈絆等級達到$value'),
-          na: () => rich(context, null, servants(context), ' at bond level $value'),
+          jp: () => rich(null, servants(context), 'の絆レベルが$valueになる'),
+          cn: () => rich(null, servants(context), '的羁绊等级达到$value'),
+          tw: () => rich(null, servants(context), '的羈絆等級達到$value'),
+          na: () => rich(null, servants(context), ' at bond level $value'),
           kr: null,
         );
       case CondType.svtFriendshipBelow:
         return localized(
-          jp: () => rich(context, null, servants(context), 'の絆レベルは$value以下'),
-          cn: () => rich(context, null, servants(context), '的羁绊等级为$value或以下'),
-          tw: () => rich(context, null, servants(context), '的羈絆等級為$value或以下'),
-          na: () => rich(context, null, servants(context), ' at bond level $value or lower'),
+          jp: () => rich(null, servants(context), 'の絆レベルは$value以下'),
+          cn: () => rich(null, servants(context), '的羁绊等级为$value或以下'),
+          tw: () => rich(null, servants(context), '的羈絆等級為$value或以下'),
+          na: () => rich(null, servants(context), ' at bond level $value or lower'),
           kr: null,
         );
       case CondType.svtFriendshipAbove:
         return localized(
-          jp: () => rich(context, null, servants(context), 'の絆レベルは$value以上'),
-          cn: () => rich(context, null, servants(context), '的羁绊等级为$value或以上'),
-          tw: () => rich(context, null, servants(context), '的羈絆等級為$value或以上'),
-          na: () => rich(context, null, servants(context), ' at bond level $value'),
+          jp: () => rich(null, servants(context), 'の絆レベルは$value以上'),
+          cn: () => rich(null, servants(context), '的羁绊等级为$value或以上'),
+          tw: () => rich(null, servants(context), '的羈絆等級為$value或以上'),
+          na: () => rich(null, servants(context), ' at bond level $value'),
           kr: null,
         );
       case CondType.eventEnd:
         return localized(
-          jp: () => rich(context, 'イベント', events(context), 'は終了した'),
-          cn: () => rich(context, '活动', events(context), '结束'),
-          tw: () => rich(context, '活動', events(context), '結束'),
-          na: () => rich(context, 'Event ', events(context), ' has ended'),
+          jp: () => rich('イベント', events(context), 'は終了した'),
+          cn: () => rich('活动', events(context), '结束'),
+          tw: () => rich('活動', events(context), '結束'),
+          na: () => rich('Event ', events(context), ' has ended'),
           kr: null,
         );
       case CondType.questNotClear:
         return localized(
-          jp: () => rich(context, null, quests(context), 'をクリアされていません'),
-          cn: () => rich(context, '未通关', quests(context)),
-          tw: () => rich(context, '未通關', quests(context)),
-          na: () => rich(context, 'Has not cleared quest ', quests(context)),
+          jp: () => rich(null, quests(context), 'をクリアされていません'),
+          cn: () => rich('未通关', quests(context)),
+          tw: () => rich('未通關', quests(context)),
+          na: () => rich('Has not cleared quest ', quests(context)),
           kr: null,
         );
       case CondType.svtHaving:
         return localized(
-          jp: () => rich(context, 'サーヴァント', servants(context), 'を持っている'),
-          cn: () => rich(context, '持有从者', servants(context)),
-          tw: () => rich(context, '持有從者', servants(context)),
-          na: () => rich(context, 'Presence of Servant ', servants(context)),
+          jp: () => rich('サーヴァント', servants(context), 'を持っている'),
+          cn: () => rich('持有从者', servants(context)),
+          tw: () => rich('持有從者', servants(context)),
+          na: () => rich('Presence of Servant ', servants(context)),
           kr: null,
         );
       case CondType.questClearPhase:
         return localized(
-          jp: () => rich(context, null, quests(context), '進行度$valueをクリアした'),
-          cn: () => rich(context, '已通关', quests(context), '进度$value'),
-          tw: () => rich(context, '已通關', quests(context), '進度$value'),
-          na: () => rich(context, 'Has cleared arrow $value of quest', quests(context)),
+          jp: () => rich(null, quests(context), '進行度$valueをクリアした'),
+          cn: () => rich('已通关', quests(context), '进度$value'),
+          tw: () => rich('已通關', quests(context), '進度$value'),
+          na: () => rich('Has cleared arrow $value of quest', quests(context)),
           kr: null,
         );
       case CondType.notQuestClearPhase:
         return localized(
-          jp: () => rich(context, null, quests(context), '進行度$valueをクリアしていません'),
-          cn: () => rich(context, '未通关', quests(context), '进度$value'),
-          tw: () => rich(context, '未通關', quests(context), '進度$value'),
-          na: () => rich(context, 'Has not cleared arrow $value of quest', quests(context)),
+          jp: () => rich(null, quests(context), '進行度$valueをクリアしていません'),
+          cn: () => rich('未通关', quests(context), '进度$value'),
+          tw: () => rich('未通關', quests(context), '進度$value'),
+          na: () => rich('Has not cleared arrow $value of quest', quests(context)),
           kr: null,
         );
       case CondType.questGroupClear:
         final questIds = db.gameData.others.getQuestsOfGroup(QuestGroupType.questRelease, target);
         final questSpans = MultiDescriptor.quests(context, questIds, useAnd: useAnd);
         return localized(
-          jp: () => rich(context, 'クエストを$value種クリア', questSpans),
-          cn: () => rich(context, '通关$value个关卡', questSpans),
-          tw: () => rich(context, '通關$value個關卡', questSpans),
-          na: () => rich(context, 'Clear $value quests of ', questSpans),
+          jp: () => rich('クエストを$value種クリア', questSpans),
+          cn: () => rich('通关$value个关卡', questSpans),
+          tw: () => rich('通關$value個關卡', questSpans),
+          na: () => rich('Clear $value quests of ', questSpans),
           kr: null,
         );
       case CondType.notQuestGroupClear:
@@ -198,17 +197,17 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         final questSpans = MultiDescriptor.quests(context, questIds, useAnd: useAnd);
         return localized(
           jp: null,
-          cn: () => rich(context, '(?)未通关$value个关卡', questSpans),
-          tw: () => rich(context, '(?)未通關$value個關卡', questSpans),
-          na: () => rich(context, '(?)Have not cleared $value quests of ', questSpans),
+          cn: () => rich('(?)未通关$value个关卡', questSpans),
+          tw: () => rich('(?)未通關$value個關卡', questSpans),
+          na: () => rich('(?)Have not cleared $value quests of ', questSpans),
           kr: null,
         );
       case CondType.questResetAvailable:
         return localized(
           jp: null,
-          cn: () => rich(context, '关卡可重置', quests(context)),
+          cn: () => rich('关卡可重置', quests(context)),
           tw: null,
-          na: () => rich(context, 'Quest reset available', quests(context)),
+          na: () => rich('Quest reset available', quests(context)),
           kr: null,
         );
       case CondType.svtRecoverd:
@@ -221,10 +220,10 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.eventRewardDispCount:
         return localized(
-          jp: () => rich(context, null, events(context), ' のイベントボイス、および少なくとも${value - 1}の他のボイスが再生されました'),
-          cn: () => rich(context, null, events(context), ' 活动语音，且至少${value - 1}条其他语音已播放过'),
-          tw: () => rich(context, null, events(context), ' 活動語音，且至少${value - 1}條其他語音已播放過'),
-          na: () => rich(context, 'Event ', events(context),
+          jp: () => rich(null, events(context), ' のイベントボイス、および少なくとも${value - 1}の他のボイスが再生されました'),
+          cn: () => rich(null, events(context), ' 活动语音，且至少${value - 1}条其他语音已播放过'),
+          tw: () => rich(null, events(context), ' 活動語音，且至少${value - 1}條其他語音已播放過'),
+          na: () => rich('Event ', events(context),
               ' reward voice line and at least ${value - 1} other reward lines played before this one'),
           kr: null,
         );
@@ -248,18 +247,18 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.limitCountAbove:
         return localized(
-          jp: () => rich(context, null, servants(context), 'の霊基再臨を ≥ $value段階目にする'),
-          cn: () => rich(context, '从者', servants(context), '的灵基再临 ≥ $value'),
-          tw: () => rich(context, '從者', servants(context), '的靈基再臨 ≥ $value'),
-          na: () => rich(context, 'Servant', servants(context), ' at ascension ≥ $value'),
+          jp: () => rich(null, servants(context), 'の霊基再臨を ≥ $value段階目にする'),
+          cn: () => rich('从者', servants(context), '的灵基再临 ≥ $value'),
+          tw: () => rich('從者', servants(context), '的靈基再臨 ≥ $value'),
+          na: () => rich('Servant', servants(context), ' at ascension ≥ $value'),
           kr: null,
         );
       case CondType.limitCountBelow:
         return localized(
-          jp: () => rich(context, null, servants(context), 'の霊基再臨を ≤ $value段階目にする'),
-          cn: () => rich(context, '从者', servants(context), '的灵基再临 ≤ $value'),
-          tw: () => rich(context, '從者', servants(context), '的靈基再臨 ≤ $value'),
-          na: () => rich(context, 'Servant', servants(context), ' at ascension ≤ $value'),
+          jp: () => rich(null, servants(context), 'の霊基再臨を ≤ $value段階目にする'),
+          cn: () => rich('从者', servants(context), '的灵基再临 ≤ $value'),
+          tw: () => rich('從者', servants(context), '的靈基再臨 ≤ $value'),
+          na: () => rich('Servant', servants(context), ' at ascension ≤ $value'),
           kr: null,
         );
       case CondType.date:
@@ -274,18 +273,18 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.itemGet:
         return localized(
-          jp: () => rich(context, 'アイテム', items(context), '×$valueを持っている'),
-          cn: () => rich(context, '拥有', items(context), '×$value'),
-          tw: () => rich(context, '持有', items(context), '×$value'),
-          na: () => rich(context, 'Has ', items(context), '×$value'),
+          jp: () => rich('アイテム', items(context), '×$valueを持っている'),
+          cn: () => rich('拥有', items(context), '×$value'),
+          tw: () => rich('持有', items(context), '×$value'),
+          na: () => rich('Has ', items(context), '×$value'),
           kr: null,
         );
       case CondType.notItemGet:
         return localized(
-          jp: () => rich(context, 'アイテム', items(context), '×$valueを持っていません'),
-          cn: () => rich(context, '未拥有', items(context), '×$value'),
-          tw: () => rich(context, '未持有', items(context), '×$value'),
-          na: () => rich(context, "Doesn't have ", items(context), '×$value'),
+          jp: () => rich('アイテム', items(context), '×$valueを持っていません'),
+          cn: () => rich('未拥有', items(context), '×$value'),
+          tw: () => rich('未持有', items(context), '×$value'),
+          na: () => rich("Doesn't have ", items(context), '×$value'),
           kr: null,
         );
       case CondType.eventTotalPoint:
@@ -319,10 +318,10 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         );
       case CondType.exchangeSvt:
         return localized(
-          jp: () => rich(context, '交換したサーヴァント', events(context)),
-          cn: () => rich(context, '兑换的从者', events(context)),
+          jp: () => rich('交換したサーヴァント', events(context)),
+          cn: () => rich('兑换的从者', events(context)),
           tw: null,
-          na: () => rich(context, "Exchanged Servant", events(context)),
+          na: () => rich("Exchanged Servant", events(context)),
           kr: null,
         );
       case CondType.commonRelease:
@@ -330,7 +329,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           jp: null,
           cn: null,
           tw: null,
-          na: () => rich(context, 'Common Release', MultiDescriptor.commonRelease(context, [target])),
+          na: () => rich('Common Release', MultiDescriptor.commonRelease(context, [target])),
           kr: null,
         );
       case CondType.weekdays:
@@ -346,10 +345,10 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.notEventMissionAchieve:
         var missionMap = {for (final m in missions) m.id: m};
         return localized(
-          jp: () => rich(context, 'ミッションを達成しない(報酬を受け取り): ', missionList(context, missionMap)),
-          cn: () => rich(context, '未达成任务(领取奖励): ', missionList(context, missionMap)),
-          tw: () => rich(context, '未達成任務(領取獎勵): ', missionList(context, missionMap)),
-          na: () => rich(context, 'Have not achieved mission (claim rewards): ', missionList(context, missionMap)),
+          jp: () => rich('ミッションを達成しない(報酬を受け取り): ', missionList(context, missionMap)),
+          cn: () => rich('未达成任务(领取奖励): ', missionList(context, missionMap)),
+          tw: () => rich('未達成任務(領取獎勵): ', missionList(context, missionMap)),
+          na: () => rich('Have not achieved mission (claim rewards): ', missionList(context, missionMap)),
           kr: null,
         );
       // redirect to CondTargetNum
@@ -383,7 +382,6 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
         }[condType]!;
         String? closedMessage = unknownMsg?.replaceAll("\n", "");
         return rich(
-          context,
           "CommonValue$target $arrow$value",
           [
             if (closedMessage != null && closedMessage.isNotEmpty)

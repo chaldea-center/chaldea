@@ -161,33 +161,33 @@ class VoiceCondDescriptor extends StatelessWidget with DescriptorBase {
       case VoiceCondType.questClear:
         return localized(
           jp: null,
-          cn: () => rich(context, '已通关', quests(context)),
-          tw: () => rich(context, '已通關', quests(context)),
-          na: () => rich(context, 'Cleared ', quests(context)),
+          cn: () => rich('已通关', quests(context)),
+          tw: () => rich('已通關', quests(context)),
+          na: () => rich('Cleared ', quests(context)),
           kr: null,
         );
       case VoiceCondType.notQuestClear:
         return localized(
           jp: null,
-          cn: () => rich(context, '未通关', quests(context)),
-          tw: () => rich(context, '未通關', quests(context)),
-          na: () => rich(context, 'Hasn\'t cleared ', quests(context)),
+          cn: () => rich('未通关', quests(context)),
+          tw: () => rich('未通關', quests(context)),
+          na: () => rich('Hasn\'t cleared ', quests(context)),
           kr: null,
         );
       case VoiceCondType.svtGet:
         return localized(
           jp: null,
-          cn: () => rich(context, '持有', servants(context)),
-          tw: () => rich(context, '持有', servants(context)),
-          na: () => rich(context, 'Presence of ', servants(context)),
+          cn: () => rich('持有', servants(context)),
+          tw: () => rich('持有', servants(context)),
+          na: () => rich('Presence of ', servants(context)),
           kr: null,
         );
       case VoiceCondType.svtGroup:
         return localized(
           jp: null,
-          cn: () => rich(context, '持有任意一个: ', MultiDescriptor.servants(context, valueList)),
-          tw: () => rich(context, '持有任意一個: ', MultiDescriptor.servants(context, valueList)),
-          na: () => rich(context, 'Presence any of following: ', MultiDescriptor.servants(context, valueList)),
+          cn: () => rich('持有任意一个: ', MultiDescriptor.servants(context, valueList)),
+          tw: () => rich('持有任意一個: ', MultiDescriptor.servants(context, valueList)),
+          na: () => rich('Presence any of following: ', MultiDescriptor.servants(context, valueList)),
           kr: null,
         );
       default:

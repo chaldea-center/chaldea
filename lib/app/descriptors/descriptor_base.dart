@@ -49,7 +49,6 @@ mixin DescriptorBase {
   }
 
   List<InlineSpan> rich(
-    BuildContext? context,
     String? text1, [
     List<InlineSpan>? children2,
     String? text3,
