@@ -13,7 +13,7 @@ import 'package:logger/logger.dart';
 
 /// default logger
 Logger _logger = Logger(
-  filter: ProductionFilter(),
+  filter: ProductionFilter()..level = Level.verbose,
   printer: _CustomPrettyPrinter(methodCount: 2, colors: false, printEmojis: false, printTime: true),
 );
 
@@ -33,7 +33,7 @@ extension LoggerUtils on Logger {
       rollLogFiles(fp, 5, 10 * 1024 * 1024); //10MB
     }
     _logger = Logger(
-      filter: ProductionFilter(),
+      filter: ProductionFilter()..level = Level.verbose,
       printer: _CustomPrettyPrinter(
         methodCount: 2,
         colors: false,

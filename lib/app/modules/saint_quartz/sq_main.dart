@@ -2,6 +2,7 @@ import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import 'daily_bonus.dart';
 import 'setting_tab.dart';
 import 'table_tab.dart';
 
@@ -15,7 +16,7 @@ class SaintQuartzPlanning extends StatefulWidget {
 }
 
 class _SaintQuartzPlanningState extends State<SaintQuartzPlanning> with SingleTickerProviderStateMixin {
-  late final TabController _tabController = TabController(length: 2, vsync: this);
+  late final TabController _tabController = TabController(length: 3, vsync: this);
 
   @override
   void dispose() {
@@ -40,6 +41,7 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning> with SingleTi
             Tab(
               text: LocalizedText.of(chs: '攒石表(伪)', jpn: '結果表', eng: 'Table', kor: '결과표'),
             ),
+            const Tab(text: 'Daily Bonus'),
           ],
         )),
       ),
@@ -50,6 +52,7 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning> with SingleTi
           SQSettingTab(),
           // ExtraMissionTab(),
           SQTableTab(),
+          KeepAliveBuilder(builder: (context) => DailyBonusTab()),
         ],
       ),
     );
