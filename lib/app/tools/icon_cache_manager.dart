@@ -179,16 +179,16 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     })) {
       return path;
     }
-    final resp = await _retry(
-        task: () => limiter.limited(() => DioE().get(url, options: Options(responseType: ResponseType.bytes))));
+    final resp =
+        await limiter.limited(() => _retry(() => DioE().get(url, options: Options(responseType: ResponseType.bytes))));
     file.parent.createSync(recursive: true);
     await file.writeAsBytes(List.from(resp.data));
-    print('download file: $url');
+    logger.v('download file: $url');
     return path;
   }
 
-  Future<Response<T>> _retry<T>({
-    required Future<Response<T>> Function() task,
+  Future<Response<T>> _retry<T>(
+    Future<Response<T>> Function() task, {
     int retryCount = 3,
     Duration duration = const Duration(seconds: 5),
   }) async {
@@ -197,8 +197,10 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
       try {
         return await task();
       } on DioException catch (e) {
+        logger.v('download error: $e, resp=${e.response?.statusCode} ${e.response}, uri=${e.requestOptions.uri}');
         if (_shouldRetry(e)) {
           count += 1;
+          logger.v('retry download ($count/$retryCount): ${e.requestOptions.uri}');
           if (count <= retryCount) {
             await Future.delayed(duration);
             continue;
@@ -233,8 +235,8 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     })) {
       return path;
     }
-    final resp = await _retry(
-        task: () => limiter.limited(() => DioE().get(url, options: Options(responseType: ResponseType.bytes))));
+    final resp =
+        await limiter.limited(() => _retry(() => DioE().get(url, options: Options(responseType: ResponseType.bytes))));
     await file.writeAsBytes(List.from(resp.data));
     print('download file: $url');
     return path;
@@ -348,8 +350,8 @@ abstract class _CachedLoader<K, V> {
       }
       _cmpl.complete(value);
     }).catchError((e, s) {
-      if (e is RateLimitCancelError) return;
       _cmpl.complete(null);
+      if (e is RateLimitCancelError) return;
       if (e is DioException) {
         final code = e.response?.statusCode;
         if (code == 403 || code == 404) {
