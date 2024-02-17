@@ -26,9 +26,7 @@ class IconCacheManagePage extends StatefulWidget {
 
 class _IconCacheManagePageState extends State<IconCacheManagePage> {
   final _loader = AtlasIconLoader.i;
-  final _limiter = PlatformU.isWindows
-      ? RateLimiter(maxCalls: 5, period: const Duration(seconds: 1), raiseOnLimit: false)
-      : RateLimiter(maxCalls: 20, period: const Duration(seconds: 2), raiseOnLimit: false);
+  final _limiter = RateLimiter(maxCalls: 20, period: const Duration(seconds: 2), raiseOnLimit: false);
   List<Future<String?>> tasks = [];
   bool canceled = false;
 
@@ -189,7 +187,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
 
   Future<Response<T>> _retry<T>(
     Future<Response<T>> Function() task, {
-    int retryCount = 3,
+    int retryCount = 5,
     Duration duration = const Duration(seconds: 5),
   }) async {
     int count = 0;
@@ -197,13 +195,16 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
       try {
         return await task();
       } on DioException catch (e) {
-        logger.v('download error: $e, resp=${e.response?.statusCode} ${e.response}, uri=${e.requestOptions.uri}');
+        final uri = e.requestOptions.uri;
+        logger.v('download error: $e, resp=${e.response?.statusCode} ${e.response}, uri=$uri');
         if (_shouldRetry(e)) {
           count += 1;
-          logger.v('retry download ($count/$retryCount): ${e.requestOptions.uri}');
+          logger.v('retry download ($count/$retryCount): $uri');
           if (count <= retryCount) {
-            await Future.delayed(duration);
+            await Future.delayed(duration * count);
             continue;
+          } else {
+            logger.v('failed after $count retries: $uri');
           }
         }
         rethrow;
