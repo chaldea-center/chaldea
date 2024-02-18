@@ -320,6 +320,7 @@
   "event_rerun_replace_grail": "Grail to crystal: {n}/{total}",
   "event_shop": "Event Shop",
   "event_skill": "Event Skill",
+  "event_svt": "Event Servant",
   "event_svt_withdraw": "Withdrawn",
   "event_tower": "Tower",
   "event_treasure_box": "Treasure Box",

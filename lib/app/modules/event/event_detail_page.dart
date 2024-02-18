@@ -427,6 +427,50 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       children.add(addQuestCategoryTile(context: context, event: event, extraQuests: extraQuests));
     }
 
+    // event svt
+    List<Widget> svtTiles = [];
+    for (final eventSvt in event.svts) {
+      final svt = db.gameData.entities[eventSvt.svtId];
+      if (svt?.type == SvtType.svtMaterialTd) continue;
+      svtTiles.add(ListTile(
+        dense: true,
+        leading:
+            svt?.iconBuilder(context: context, overrideIcon: db.gameData.servantsById[eventSvt.svtId]?.borderedIcon),
+        title: Text(svt?.lName.l ?? "SVT ${eventSvt.svtId}"),
+        onTap: () {
+          router.push(url: Routes.servantI(eventSvt.svtId));
+        },
+        trailing: eventSvt.releaseConditions.isEmpty
+            ? null
+            : IconButton(
+                onPressed: () {
+                  SimpleCancelOkDialog(
+                    title: Text(S.current.condition),
+                    scrollable: true,
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (final release in eventSvt.releaseConditions)
+                          CondTargetValueDescriptor.commonRelease(
+                            commonRelease: release,
+                            textScaleFactor: 0.8,
+                          ),
+                      ],
+                    ),
+                  ).showDialog(context);
+                },
+                icon: const Icon(Icons.info_outline),
+              ),
+      ));
+    }
+    if (svtTiles.isNotEmpty) {
+      children.add(TileGroup(
+        header: S.current.event_svt,
+        children: svtTiles,
+      ));
+    }
+
     int grailToCrystalCount = event.statItemFixed[Items.grailToCrystalId] ?? 0;
     if (grailToCrystalCount > 0) {
       children.add(db.onUserData(

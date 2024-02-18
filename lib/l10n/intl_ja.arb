@@ -320,6 +320,7 @@
   "event_rerun_replace_grail": "聖杯は伝承結晶{n}/{total}個に置き換わります",
   "event_shop": null,
   "event_skill": null,
+  "event_svt": null,
   "event_svt_withdraw": null,
   "event_tower": "塔",
   "event_treasure_box": "宝箱",

@@ -319,6 +319,7 @@
   "event_rerun_replace_grail": "聖杯替換為傳承結晶 {n}/{total} 個",
   "event_shop": "活動商店",
   "event_skill": "活動技能",
+  "event_svt": null,
   "event_svt_withdraw": "已離隊",
   "event_tower": "塔",
   "event_treasure_box": "寶箱",

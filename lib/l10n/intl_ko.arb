@@ -320,6 +320,7 @@
   "event_rerun_replace_grail": "전승결정으로 대체되는 성배의 개수 : {n}/{total}",
   "event_shop": "이벤트 상점",
   "event_skill": "이벤트 스킬",
+  "event_svt": null,
   "event_svt_withdraw": "철수",
   "event_tower": "타워",
   "event_treasure_box": "보물 상자",

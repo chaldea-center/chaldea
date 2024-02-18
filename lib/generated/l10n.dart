@@ -3583,6 +3583,17 @@ class S {
     );
   }
 
+  /// `Event Servant`
+  String get event_svt {
+    return Intl.message(
+      'Event Servant',
+      name: 'event_svt',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Withdrawn`
   String get event_svt_withdraw {
     return Intl.message(

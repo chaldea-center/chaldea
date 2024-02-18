@@ -248,17 +248,32 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
       case CondType.limitCountAbove:
         return localized(
           jp: () => rich(null, servants(context), 'の霊基再臨を ≥ $value段階目にする'),
-          cn: () => rich('从者', servants(context), '的灵基再临 ≥ $value'),
-          tw: () => rich('從者', servants(context), '的靈基再臨 ≥ $value'),
-          na: () => rich('Servant', servants(context), ' at ascension ≥ $value'),
+          cn: () => rich(null, servants(context), '的灵基再临 ≥ $value'),
+          tw: () => rich(null, servants(context), '的靈基再臨 ≥ $value'),
+          na: () => rich(null, servants(context), ' at ascension ≥ $value'),
           kr: null,
         );
       case CondType.limitCountBelow:
         return localized(
           jp: () => rich(null, servants(context), 'の霊基再臨を ≤ $value段階目にする'),
-          cn: () => rich('从者', servants(context), '的灵基再临 ≤ $value'),
-          tw: () => rich('從者', servants(context), '的靈基再臨 ≤ $value'),
-          na: () => rich('Servant', servants(context), ' at ascension ≤ $value'),
+          cn: () => rich(null, servants(context), '的灵基再临 ≤ $value'),
+          tw: () => rich(null, servants(context), '的靈基再臨 ≤ $value'),
+          na: () => rich(null, servants(context), ' at ascension ≤ $value'),
+          kr: null,
+        );
+      case CondType.limitCountMaxAbove:
+      case CondType.limitCountMaxBelow:
+      case CondType.limitCountMaxEqual:
+        final arrow = {
+          CondType.limitCountMaxAbove: "≥",
+          CondType.limitCountMaxBelow: "≤",
+          CondType.limitCountMaxEqual: "=",
+        }[condType]!;
+        return localized(
+          jp: () => rich(null, servants(context), '最大の霊基再臨を $arrow $value段階目にする'),
+          cn: () => rich(null, servants(context), '的最高灵基再临 $arrow $value'),
+          tw: () => rich(null, servants(context), '的最高靈基再臨 $arrow $value'),
+          na: () => rich(null, servants(context), ' at max ascension $arrow $value'),
           kr: null,
         );
       case CondType.date:
