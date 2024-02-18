@@ -67,7 +67,11 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
   int getOpenAt(Quest quest, Region r) {
     if (r == Region.jp) return quest.openedAt;
     final releaseTime = db.gameData.mappingData.questRelease[quest.id]?.ofRegion(r);
-    if (releaseTime != null) return releaseTime;
+    if (releaseTime != null) {
+      if (r != Region.jp && releaseTime - DateTime.now().timestamp < 100 * kSecsPerDay) {
+        return releaseTime;
+      }
+    }
     return quest.openedAt * -1;
   }
 

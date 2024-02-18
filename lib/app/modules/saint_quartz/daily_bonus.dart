@@ -103,6 +103,7 @@ class _DailyBonusTabState extends State<DailyBonusTab> {
   }
 
   Widget buildPresent(UserPresentBox present, bool isDaily) {
+    final flags = present.flags;
     return ListTile(
       dense: true,
       tileColor: isDaily ? Theme.of(context).disabledColor.withOpacity(0.1) : null,
@@ -113,7 +114,20 @@ class _DailyBonusTabState extends State<DailyBonusTab> {
         num: present.num,
       ).iconBuilder(context: context, width: 32),
       title: Text('${GameCardMixin.anyCardItemName(present.objectId).l} ×${present.num}'),
-      subtitle: Text(present.message),
+      subtitle: Text.rich(TextSpan(children: [
+        if (flags.isNotEmpty)
+          TextSpan(children: [
+            ...divideList(
+              [
+                for (final flag in flags)
+                  TextSpan(text: flag.name, style: TextStyle(color: Theme.of(context).colorScheme.error))
+              ],
+              const TextSpan(text: ' / '),
+            ),
+            const TextSpan(text: '\n'),
+          ]),
+        TextSpan(text: present.message)
+      ])),
     );
   }
 }

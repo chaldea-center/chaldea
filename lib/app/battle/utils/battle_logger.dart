@@ -236,6 +236,9 @@ class BattleRecordManager {
     if (svtData.customPassives.isNotEmpty) {
       setIllegal('${S.current.extra_passive}(${S.current.general_custom})');
     }
+    if (svtData.disabledExtraSkills.isNotEmpty) {
+      setIllegal("${svtData.disabledExtraSkills.length} disabled extra skills");
+    }
     if (svtData.fixedAtk != null || svtData.fixedHp != null) {
       setIllegal('Fixed HP or ATK (mainly Guest Support). If you see this msg, tell me the bug.');
     }

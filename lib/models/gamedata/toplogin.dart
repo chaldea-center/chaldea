@@ -1145,6 +1145,13 @@ class UserClassBoardSquare {
   factory UserClassBoardSquare.fromJson(Map<String, dynamic> data) => _$UserClassBoardSquareFromJson(data);
 }
 
+enum UserPresentBoxFlag {
+  importantForEvent,
+  indefinitePeriod,
+  payTypeRarePri,
+  importantForLimit,
+}
+
 @JsonSerializable(createToJson: false)
 class UserPresentBox {
   int receiveUserId;
@@ -1161,6 +1168,11 @@ class UserPresentBox {
   int flag;
   int updatedAt;
   int createdAt;
+
+  List<UserPresentBoxFlag> get flags => [
+        for (final v in UserPresentBoxFlag.values)
+          if (flag & (1 << (v.index + 1)) != 0) v,
+      ];
 
   UserPresentBox({
     dynamic receiveUserId,

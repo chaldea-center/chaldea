@@ -96,18 +96,29 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
         status.favorite ? status.skills.getOrNull(skills.first.svt.num - 1) : -1,
       ));
     }
+
+    List<NiceSkill> extraPassiveFixed = [], extraPassiveEvent = [], extraPassiveMain = [];
+    final extraPassives = svt.extraPassive.toList();
+    extraPassives.sort2((e) => e.extraPassive.firstOrNull?.startedAt ?? 0, reversed: true);
+    for (final passive in extraPassives) {
+      final eventId = passive.extraPassive.firstOrNull?.eventId ?? 0;
+      if (eventId == 0) {
+        extraPassiveFixed.add(passive);
+      } else if (db.gameData.events[eventId]?.warIds.any((e) => e < 1000) == true) {
+        extraPassiveMain.add(passive);
+      } else {
+        extraPassiveEvent.add(passive);
+      }
+    }
+
     children.add(SHeader(S.current.passive_skill));
-    for (final skill in [
-      ...svt.classPassive,
-      ...svt.extraPassive.where((e) => e.shouldActiveSvtEventSkill(eventId: 0, svtId: svt.id, includeZero: true)),
-    ]) {
+    for (final skill in [...svt.classPassive, ...extraPassiveFixed]) {
       children.add(SkillDescriptor(
         skill: skill,
         showEnemy: !svt.isUserSvt,
       ));
     }
     if (svt.appendPassive.isNotEmpty) children.add(SHeader(S.current.append_skill));
-    svt.appendPassive.sort2((s) => s.num * 100 + s.priority);
     for (final appendSkill in svt.appendPassive) {
       children.add(SkillDescriptor(
         skill: appendSkill.skill,
@@ -115,20 +126,18 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
         level: status.favorite ? status.appendSkills.getOrNull(appendSkill.num - 100) : -1,
       ));
     }
-    final extraPassives = svt.extraPassive
-        .where((e) => !e.shouldActiveSvtEventSkill(eventId: 0, svtId: svt.id, includeZero: true))
-        .toList();
-    extraPassives.sort2((e) => e.extraPassive.firstOrNull?.startedAt ?? 0, reversed: true);
-    if (extraPassives.isNotEmpty) {
+
+    for (final (index, passives) in [extraPassiveEvent, extraPassiveMain].indexed) {
+      if (passives.isEmpty) continue;
       children.add(SimpleAccordion(
         headerBuilder: (context, expanded) {
-          return SHeader('${extraPassives.length} ${S.current.extra_passive}');
+          return SHeader('${passives.length} ${S.current.extra_passive}${index == 1 ? " *" : ""}');
         },
         contentBuilder: (context) {
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              for (final skill in extraPassives)
+              for (final skill in passives)
                 SkillDescriptor(
                   skill: skill,
                   showEnemy: !svt.isUserSvt,
@@ -138,6 +147,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
         },
       ));
     }
+
     children.add(const SafeArea(child: SizedBox()));
     return ListView.builder(
       itemCount: children.length,
