@@ -181,7 +181,11 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
         await limiter.limited(() => _retry(() => DioE().get(url, options: Options(responseType: ResponseType.bytes))));
     file.parent.createSync(recursive: true);
     await file.writeAsBytes(List.from(resp.data));
-    logger.v('download file: $url');
+    if (PlatformU.isWindows) {
+      logger.v('download file: $url');
+    } else {
+      print("download file: $url");
+    }
     return path;
   }
 

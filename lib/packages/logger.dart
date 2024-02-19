@@ -13,8 +13,9 @@ import 'package:logger/logger.dart';
 
 /// default logger
 Logger _logger = Logger(
-  filter: ProductionFilter()..level = Level.verbose,
+  filter: ProductionFilter(),
   printer: _CustomPrettyPrinter(methodCount: 2, colors: false, printEmojis: false, printTime: true),
+  level: Level.verbose,
 );
 
 Logger get logger => _logger;
@@ -33,7 +34,8 @@ extension LoggerUtils on Logger {
       rollLogFiles(fp, 5, 10 * 1024 * 1024); //10MB
     }
     _logger = Logger(
-      filter: ProductionFilter()..level = Level.verbose,
+      filter: ProductionFilter(),
+      level: Level.verbose,
       printer: _CustomPrettyPrinter(
         methodCount: 2,
         colors: false,
@@ -45,7 +47,6 @@ extension LoggerUtils on Logger {
         ConsoleOutput(),
         if (!kIsWeb && fp != null) FileOutput(file: File(fp)),
       ]),
-      level: kDebugMode ? null : Level.debug,
     );
   }
 
