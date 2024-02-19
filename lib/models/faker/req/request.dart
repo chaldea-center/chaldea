@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:chaldea/app/api/chaldea.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:crypto/crypto.dart';
@@ -35,23 +36,23 @@ class FRequestBase {
   int serverExecutionTime = 0;
 
   // int64/long, float, double should convert to string
-  void addFieldInt32(String fieldName, int data) {
-    assert(!paramInteger.containsKey(fieldName));
+  void addFieldInt32(String fieldName, int data, {bool replace = false}) {
+    if (!replace) assert(!paramInteger.containsKey(fieldName));
     paramInteger[fieldName] = data;
   }
 
-  void addFieldInt64(String fieldName, int data) {
-    assert(!paramString.containsKey(fieldName));
+  void addFieldInt64(String fieldName, int data, {bool replace = false}) {
+    if (!replace) assert(!paramString.containsKey(fieldName));
     paramString[fieldName] = data.toString();
   }
 
-  void addFieldFloat(String fieldName, double data) {
-    assert(!paramString.containsKey(fieldName));
+  void addFieldFloat(String fieldName, double data, {bool replace = false}) {
+    if (!replace) assert(!paramString.containsKey(fieldName));
     paramString[fieldName] = data.toString();
   }
 
-  void addFieldStr(String fieldName, String data) {
-    assert(!paramString.containsKey(fieldName));
+  void addFieldStr(String fieldName, String data, {bool replace = false}) {
+    if (!replace) assert(!paramString.containsKey(fieldName));
     paramString[fieldName] = data;
   }
 
@@ -62,6 +63,10 @@ class FRequestBase {
   /// Update lastAccessTime
   void replaceBaseField() {
     network.setBaseField(this);
+  }
+
+  Future<void> addSignatureField() {
+    return network.setSignatureField(this);
   }
 
   (WWWForm form, Map<String, String> authParams) getForm() {
@@ -120,6 +125,14 @@ class NetworkManager {
     request.addFieldInt64('lastAccessTime', _getNowTimestamp());
     request.addFieldStr('verCode', gameTop.verCode);
     request.addFieldStr('idempotencyKey', const Uuid().v4());
+  }
+
+  Future<void> setSignatureField(FRequestBase request) async {
+    final key = const Uuid().v4();
+    final signature = await ChaldeaWorkerApi.signData(key);
+    if (signature == null || signature.isEmpty) throw const FormatException("Invalid signature");
+    request.addFieldStr('idempotencyKey', key, replace: true);
+    request.addFieldStr('idempotencyKeySignature', signature);
   }
 
   String getAuthCode(Map<String, String> authParams) {
@@ -182,7 +195,7 @@ class NetworkManager {
     final Map<String, dynamic> headers = {};
     headers[HttpHeaders.userAgentHeader] = user.userAgent ?? UA.fallback;
     if (sessionId != null) {
-      headers['Cookie'] = sessionId!;
+      headers['Cookie'] = 'ASP.NET_SessionId=$sessionId;';
     }
     final authCode = getAuthCode(authParams);
     form.addField('authCode', authCode);

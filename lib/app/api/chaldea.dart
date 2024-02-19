@@ -439,6 +439,14 @@ class ChaldeaWorkerApi {
     );
   }
 
+  static Future<String?> signData(String data) {
+    return cacheManager.postModel(
+      '$apiV4/tool/sign-data',
+      fromJson: (data) => data['signature']!,
+      data: {"data": data},
+    );
+  }
+
   static GitHub get githubApiClient => GitHub(endpoint: '${HostsX.worker.cn}/proxy/github/api.github.com');
 
   static Future<Release?> githubRelease(

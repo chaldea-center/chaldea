@@ -410,7 +410,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
               Region.na => ConstData.config.autoLoginMinVerNa,
               _ => "",
             });
-            if (minVer != null && AppInfo.version < minVer) {
+            if (minVer != null && AppInfo.version < minVer && !AppInfo.isDebugOn) {
               EasyLoading.showError(S.current.error_required_app_version(minVer.versionString, AppInfo.versionString));
               return;
             }

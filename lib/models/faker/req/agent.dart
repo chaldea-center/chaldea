@@ -73,6 +73,9 @@ class FRequestAgent {
   Future<FResponse> loginTop() async {
     final request = FRequestBase(network: network, path: '/login/top');
     request.addBaseField();
+    if (network.gameTop.region == Region.jp) {
+      await request.addSignatureField();
+    }
     request.addFieldStr('deviceInfo', network.user.deviceInfo ?? UA.deviceinfo);
     final int lastAccessTime = int.parse(request.paramString['lastAccessTime']!);
     final int userId = int.parse(network.user.auth!.userId);
