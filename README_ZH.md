@@ -41,14 +41,14 @@ Chaldea 是为手游[Fate/Grand Order](https://game.bilibili.com/fgo/)打造的�
 
 ## 支持平台
 
-| 平台    | 最低版本需求                                       |
-| ------- | -------------------------------------------------- |
-| 安卓    | 安卓 6.0 (API level 23)                            |
-| iOS     | iOS 12.0                                           |
-| Windows | Windows 8 (64-bit), 64 位系统                      |
-| macOS   | macOS 10.14                                        |
-| Linux   | Debian 10 及以上                                   |
-| Web     | 所有现代浏览器（Chrome、Firefox、Safari、Edge 等） |
+| 平台    | 最低版本需求                          |
+| ------- | ------------------------------------- |
+| 安卓    | 安卓 6.0 (API level 23)               |
+| iOS     | iOS 12.0                              |
+| Windows | Windows 10, 64 位                     |
+| macOS   | macOS 10.14                           |
+| Linux   | Debian 10 及以上                      |
+| Web     | 现代浏览器（Chrome、Safari、Edge 等） |
 
 更多信息请参阅[支持平台](https://docs.flutter.dev/reference/supported-platforms)
 

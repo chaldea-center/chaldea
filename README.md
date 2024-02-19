@@ -43,14 +43,14 @@ For more details or usage, please check our document: [English](https://docs.cha
 
 ## Supported Platforms
 
-| Platform | Minimum Version                  |
-| -------- | -------------------------------- |
-| Android  | Android 6.0 (API level 23)       |
-| iOS      | iOS 12.0                         |
-| Windows  | Windows 8 (64-bit), 64-bit based |
-| macOS    | macOS 10.14                      |
-| Linux    | Debian 10 & above                |
-| Web      | Any modern browser               |
+| Platform | Minimum Version            |
+| -------- | -------------------------- |
+| Android  | Android 6.0 (API level 23) |
+| iOS      | iOS 12.0                   |
+| Windows  | Windows 10, x64            |
+| macOS    | macOS 10.14                |
+| Linux    | Debian 10 & above          |
+| Web      | Any modern browser         |
 
 More about [Supported Platforms](https://docs.flutter.dev/reference/supported-platforms)
 

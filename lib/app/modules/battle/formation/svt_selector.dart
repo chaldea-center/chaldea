@@ -145,8 +145,8 @@ class ServantSelector extends StatelessWidget {
         ));
         onChanged();
       },
-      onAccept: (data) {
-        onDragSvt?.call(data.svt);
+      onAccept: (detail) {
+        onDragSvt?.call(detail.data.svt);
       },
     );
 
@@ -233,8 +233,8 @@ class ServantSelector extends StatelessWidget {
         ));
         onChanged();
       },
-      onAccept: (data) {
-        onDragCE?.call(data.svt);
+      onAccept: (detail) {
+        onDragCE?.call(detail.data.svt);
       },
     );
 
@@ -335,7 +335,7 @@ class _DragHover<T extends Object> extends StatefulWidget {
   final Widget child;
   final Widget Function(BuildContext context, Widget child) hoveredBuilder;
   final VoidCallback onTap;
-  final DragTargetAccept<T> onAccept;
+  final DragTargetAcceptWithDetails<T> onAccept;
   final ValueNotifier<String?> hovered;
 
   const _DragHover({
@@ -379,7 +379,7 @@ class __DragHoverState<T extends Object> extends State<_DragHover<T>> {
       builder: (context, candidateData, rejectedData) {
         return base;
       },
-      onAccept: widget.onAccept,
+      onAcceptWithDetails: widget.onAccept,
     );
     child = Draggable<T>(
       data: widget.data,

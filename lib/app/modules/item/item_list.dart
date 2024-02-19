@@ -359,7 +359,7 @@ class _ItemListTabState extends State<ItemListTab> {
         data: id,
         focusNode: FocusNode(
           debugLabel: 'FocusNode_$id',
-          onKey: (node, event) {
+          onKeyEvent: (node, event) {
             if (event.character == '\n' || event.character == '\t') {
               print('${jsonEncode(event.character)} - ${node.debugLabel}');
               moveToNext(node);

@@ -112,9 +112,9 @@ class BattleServantData {
   int changeIndex = 0;
 
   bool attacked = false;
-  @Deprecated('actionHistory')
+  // @Deprecated('actionHistory')
   BattleServantData? lastHitBy;
-  @Deprecated('actionHistory')
+  // @Deprecated('actionHistory')
   CommandCardData? lastHitByCard;
   List<BattleServantActionHistory> actionHistory = [];
 

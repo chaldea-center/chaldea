@@ -38,7 +38,7 @@ class BattleSkillInfoData {
   })  : _provisionedSkills = provisionedSkills ?? [],
         _skillLv = skillLv {
     if (_baseSkill != null && !_provisionedSkills.contains(_baseSkill)) {
-      _provisionedSkills.add(_baseSkill!);
+      _provisionedSkills.add(_baseSkill);
     }
     skillScript = skill?.script;
   }

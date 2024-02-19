@@ -83,7 +83,7 @@ class UrlProxy {
 
   String of(bool proxy) {
     String url = proxy ? (_cn ?? kCN) : (_global ?? kGlobal);
-    if (_post != null) url = _post!(url);
+    if (_post != null) url = _post(url);
     return url;
   }
 

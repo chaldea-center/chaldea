@@ -139,8 +139,8 @@ class ApiCacheManager {
       if (kIsWeb) {
         _webBox = await Hive.openLazyBoxRetry('api_cache');
       }
-      if (_infoFile != null && _infoFile!.existsSync()) {
-        Map.from(jsonDecode(await _infoFile!.readAsString())).forEach((key, value) {
+      if (_infoFile != null && _infoFile.existsSync()) {
+        Map.from(jsonDecode(await _infoFile.readAsString())).forEach((key, value) {
           _data[key] = ApiCachedInfo.fromJson(value);
         });
       }
