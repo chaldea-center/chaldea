@@ -75,7 +75,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         title: Text(S.current.about_feedback),
         leading: BackButton(onPressed: () async {
           if (await _alertPopPage()) {
-            if (mounted) Navigator.of(context).pop();
+            if (context.mounted) Navigator.of(context).pop();
           }
         }),
       ),
@@ -139,7 +139,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   if (await canLaunch(uri.toString())) {
                     launch(uri.toString());
                   } else {
-                    if (mounted) {
+                    if (context.mounted) {
                       SimpleCancelOkDialog(
                         title: Text(S.current.send_email_to),
                         content: const Text(kSupportTeamEmailAddress),

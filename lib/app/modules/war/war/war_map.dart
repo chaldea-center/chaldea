@@ -104,7 +104,7 @@ class _WarMapPageState extends State<WarMapPage> {
                       EasyLoading.showError(S.current.error);
                       return;
                     }
-                    if (!mounted) return;
+                    if (!context.mounted) return;
                     ImageActions.showSaveShare(
                       context: context,
                       data: bytes,

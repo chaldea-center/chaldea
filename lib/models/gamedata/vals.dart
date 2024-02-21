@@ -30,11 +30,8 @@ class DataVals {
   }
 
   @override
-  operator ==(Object? other) {
-    if (other is! DataVals) {
-      return false;
-    }
-    return hashCode == other.hashCode;
+  bool operator ==(Object other) {
+    return other is DataVals && hashCode == other.hashCode;
   }
 
   void set(String key, dynamic value) {

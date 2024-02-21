@@ -189,7 +189,7 @@ class _UserDataPageState extends State<UserDataPage> {
     } else if (PlatformU.isMobile) {
       final fp = joinPaths(db.paths.tempDir, fn);
       await File(fp).writeAsString(content);
-      if (context.mounted) return ShareX.shareFile(fp, context: context);
+      if (mounted) return ShareX.shareFile(fp, context: context);
     }
   }
 
@@ -281,7 +281,7 @@ class _UserDataPageState extends State<UserDataPage> {
                 await showEasyLoading(() => _copyDirectory(from, to));
                 final sp = await SharedPreferences.getInstance();
                 sp.setBool('android_use_external', useExternal);
-                if (mounted) {
+                if (context.mounted) {
                   SimpleCancelOkDialog(
                     title: const Text('⚠️ Warning'),
                     content: Text(S.current.restart_to_apply_changes),
@@ -291,7 +291,7 @@ class _UserDataPageState extends State<UserDataPage> {
                 EasyLoading.dismiss();
               } catch (e, s) {
                 logger.e('migrate android data to external failed', e, s);
-                if (mounted) {
+                if (context.mounted) {
                   SimpleCancelOkDialog(
                     title: const Text('⚠️ ERROR'),
                     content: Text(e.toString()),

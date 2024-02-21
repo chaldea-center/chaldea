@@ -104,7 +104,7 @@ class _FfoCardState extends State<FfoCard> {
                   EasyLoading.showError(S.current.failed);
                   return;
                 }
-                if (mounted) {
+                if (context.mounted) {
                   FFOUtil.showSaveShare(context: context, params: widget.params, data: data);
                 }
               }

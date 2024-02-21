@@ -176,7 +176,7 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                         ? null
                         : () async {
                             await widget.battleData.activateCustomSkill(activator, skill!, skillLv, isAlly);
-                            if (mounted) Navigator.of(context).pop(skill);
+                            if (context.mounted) Navigator.of(context).pop(skill);
                           },
                     icon: const Icon(Icons.play_arrow_rounded),
                     label: Text(S.current.battle_activate_custom_skill),
