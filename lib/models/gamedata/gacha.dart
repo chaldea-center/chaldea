@@ -3,6 +3,7 @@ import 'package:chaldea/utils/extension.dart';
 import '_helper.dart';
 import 'common.dart';
 import 'item.dart';
+import 'mappings.dart';
 
 part '../../generated/models/gamedata/gacha.g.dart';
 
@@ -152,7 +153,42 @@ class NiceGacha {
   });
   factory NiceGacha.fromJson(Map<String, dynamic> json) => _$NiceGachaFromJson(json);
 
+  String get lName {
+    const pujp = 'ピックアップ召喚';
+    if (!name.endsWith(pujp) || Transl.current == Region.jp) return name;
+    if (Transl.summonNames(name).matched) return Transl.summonNames(name).l;
+    String name1 = name.substring(0, name.length - pujp.length).trim();
+    final spaceIndex = name1.lastIndexOf(RegExp(r'[\s\n]'));
+    if (spaceIndex > 0 && spaceIndex < name1.length - 1) {
+      String summonName = name1.substring(0, spaceIndex).trim().replaceAll('\n', '') + pujp;
+      String svtName = name1.substring(spaceIndex).trim();
+      final lSvtName = Transl.svtNames(svtName);
+      if (!lSvtName.matched) {
+        final match = RegExp(r'^(.+)\((.+?)\)$').firstMatch(svtName);
+        if (match != null) {
+          String baseSvtName = match.group(1)!.trim(), clsName = match.group(2)!.trim();
+          final lClsName = Transl.svtClassName(clsName);
+          if (lClsName.matched) {
+            return '${Transl.summonNames(summonName).l} ${Transl.svtNames(baseSvtName).l}(${lClsName.l})';
+          }
+          String svtName2 = clsName;
+          final lSvtName2 = Transl.svtNames(svtName2);
+          if (lSvtName2.matched) {
+            return '${Transl.summonNames(summonName).l} ${Transl.svtNames(baseSvtName).l}(${lSvtName2.l})';
+          }
+        }
+      }
+      return '${Transl.summonNames(summonName).l} ${lSvtName.l}';
+    }
+    return name;
+  }
+
   bool get isLuckyBag => type == GachaType.chargeStone;
+
+  String get detailUrlPrefix {
+    final match = RegExp(r'^(/.+/.+_)[a-z]\d?$').firstMatch(detailUrl);
+    return match?.group(1) ?? detailUrl;
+  }
 
   String? getHtmlUrl(Region region) {
     // final page = gacha?.detailUrl;

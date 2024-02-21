@@ -39,6 +39,8 @@ class Transl<K, V> {
 
   static get isEN => current == Region.na;
 
+  bool get matched => mappings.containsKey(key);
+
   V get l => maybeL ?? _default;
 
   V? get maybeL {
@@ -125,9 +127,12 @@ class Transl<K, V> {
   static Transl<String, String> ccNames(String jp) => Transl(md.ccNames, jp, jp);
 
   static Transl<String, String> svtNames(String jp) {
-    if (md.svtNames.containsKey(jp)) return Transl(md.svtNames, jp, jp);
-    if (md.entityNames.containsKey(jp)) return Transl(md.entityNames, jp, jp);
-    return Transl(md.ceNames, jp, jp);
+    for (final names in [md.svtNames, md.entityNames, md.ceNames]) {
+      if (names.containsKey(jp)) return Transl(names, jp, jp);
+      String jp2 = jp.replaceAll('･', '・');
+      if (names.containsKey(jp2)) return Transl(names, jp2, jp);
+    }
+    return Transl(md.svtNames, jp, jp);
   }
 
   static Transl<String, String> ceNames(String jp) => Transl(md.ceNames, jp, jp);
@@ -157,7 +162,13 @@ class Transl<K, V> {
 
   static Transl<String, String> bgmNames(String jp) => Transl(md.bgmNames, jp, jp);
 
-  static Transl<String, String> summonNames(String jp) => Transl(md.summonNames, jp, jp);
+  static Transl<String, String> summonNames(String jp) {
+    if (!md.summonNames.containsKey(jp)) {
+      final jp2 = jp.replaceAll('･', '・');
+      return Transl(md.summonNames, jp2, jp);
+    }
+    return Transl(md.summonNames, jp, jp);
+  }
 
   static Transl<String, String> charaNames(String cn) => Transl(md.charaNames, cn, cn);
 
@@ -208,6 +219,16 @@ class Transl<K, V> {
       dftName = null;
     }
     return Transl(md.enums.svtClass, id, dftName ?? kSvtClassIds[id]?.name ?? id.toString());
+  }
+
+  static Transl<String, String> svtClassName(String jpName) {
+    for (final clsId in kSvtClassIdsPlayableAll) {
+      final clsInfo = ConstData.classInfo[clsId];
+      if (clsInfo != null && clsInfo.name == jpName) {
+        return Transl({jpName: md.enums.svtClass[clsId] ?? MappingBase()}, jpName, jpName);
+      }
+    }
+    return Transl.string({}, jpName);
   }
 
   // enums
@@ -348,7 +369,6 @@ class MappingData {
     _updateRegion(entityNames, Region.jp);
     _updateRegion(tdTypes, Region.jp);
     _updateRegion(bgmNames, Region.jp);
-    _updateRegion(summonNames, Region.jp);
     _updateRegion(charaNames, Region.cn);
     _updateRegion(buffDetail, Region.jp);
     _updateRegion(skillNames, Region.jp);
@@ -360,6 +380,22 @@ class MappingData {
     final excludes = {...BuffType.values.map((e) => e.name), ...FuncType.values.map((e) => e.name)};
     _updateRegion(buffNames, Region.jp, excludes: excludes);
     _updateRegion(funcPopuptext, Region.jp, excludes: excludes);
+
+    final allSummonNames = Map.of(summonNames);
+    for (final (nameJp, names) in summonNames.items) {
+      final match = RegExp(r'ピックアップ(\d+)召喚$').firstMatch(nameJp);
+      if (match != null) {
+        final idx = match.group(1)!;
+        String jp2 = nameJp.replaceAll('ピックアップ$idx召喚', 'ピックアップ召喚');
+        if (allSummonNames.containsKey(jp2)) continue;
+        allSummonNames[jp2] = names
+            .convert((v, region) => v != null && v.endsWith(idx) ? v.substring(0, v.length - idx.length).trim() : null);
+      }
+    }
+    _updateRegion(allSummonNames, Region.jp);
+    summonNames
+      ..clear()
+      ..addAll(allSummonNames);
   }
 
   static void _updateRegion<T>(Map<T, MappingBase<T>> mapping, Region region, {Set<T>? excludes}) {

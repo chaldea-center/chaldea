@@ -470,7 +470,7 @@ extension SvtClassX on SvtClass {
 
 /// non-JP may not contains the last class
 const kSvtClassIdsPlayableAll = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25, 28, 33];
-const kSvtClassIdsPlayableAlways = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25];
+const kSvtClassIdsPlayableAlways = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25, 28];
 final kSvtClassIds = {for (final v in SvtClass.values) v.id: v};
 
 enum SvtClassSupportGroupType {

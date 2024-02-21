@@ -3,12 +3,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/modules/common/not_found.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../models/models.dart';
 import '../../app.dart';
 import '../common/builders.dart';
+import '../mc/mc_multi_gacha.dart';
+import '../mc/mc_prob_edit.dart';
+import 'gacha/gacha_banner.dart';
 import 'lucky_bag_expectation.dart';
 import 'summon_simulator_page.dart';
 import 'summon_util.dart';
@@ -125,7 +129,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
                 'JP: ${summon.startTime.jp?.toDateTimeString() ?? '?'} ~ ${summon.endTime.jp?.toDateTimeString() ?? '?'}',
             maxLines: 1,
             style: const TextStyle(fontSize: 14),
-            alignment: Alignment.centerLeft,
+            // alignment: Alignment.centerLeft,
             padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
           )
         ]),
@@ -136,7 +140,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
                   'CN: ${summon.startTime.cn?.toDateTimeString() ?? '?'} ~ ${summon.endTime.cn?.toDateTimeString() ?? '?'}',
               maxLines: 1,
               style: const TextStyle(fontSize: 14),
-              alignment: Alignment.centerLeft,
+              // alignment: Alignment.centerLeft,
               padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
             )
           ]),
@@ -183,6 +187,50 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         ),
       SFooter(S.current.summon_info_hint),
     ];
+
+    final startJp = summon.startTime.jp, endJp = summon.endTime.jp;
+    if (startJp != null && endJp != null) {
+      final gachaGroup = db.gameData.others.gachaGroups.values.firstWhereOrNull((group) {
+        if (group.isEmpty) return false;
+        return (Maths.min(group.map((e) => e.openedAt)) - startJp).abs() < 3601 &&
+            (Maths.max(group.map((e) => e.closedAt)) - endJp).abs() < 3601;
+      });
+      if (gachaGroup != null && gachaGroup.isNotEmpty) {
+        children.add(const Divider(height: 16));
+        children.add(TileGroup(
+          header: S.current.raw_gacha_data,
+          children: [
+            for (final gacha in gachaGroup)
+              ListTile(
+                dense: true,
+                title: Text(gacha.lName),
+                subtitle: Text([
+                  // gacha.detailUrl,
+                  [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
+                ].join('\n')),
+                trailing: GachaBanner(
+                  imageId: gacha.imageId,
+                  region: Region.jp,
+                  background: false,
+                ),
+                onTap: () {
+                  router.pushPage(MCGachaProbEditPage(gacha: gacha, region: Region.jp));
+                },
+              ),
+          ],
+        ));
+        if (Language.isZH && summon.subSummons.length != gachaGroup.length) {
+          children.add(Center(
+            child: ElevatedButton(
+              onPressed: () {
+                router.pushPage(MCSummonCreatePage(gachas: gachaGroup.toList()));
+              },
+              child: Text("创建Mooncell卡池(${gachaGroup.length})"),
+            ),
+          ));
+        }
+      }
+    }
     return ListView(children: children);
   }
 

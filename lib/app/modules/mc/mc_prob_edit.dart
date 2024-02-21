@@ -64,7 +64,7 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: AutoSizeText(gacha.name.setMaxLines(1), maxLines: 1, minFontSize: 14),
+        title: AutoSizeText(gacha.lName.setMaxLines(1), maxLines: 1, minFontSize: 14),
         // actions: [
         //   IconButton(onPressed: parseHtml, icon: const Icon(Icons.search)),
         // ],
@@ -74,10 +74,11 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
         children: [
           GachaBanner(imageId: gacha.imageId, region: widget.region),
           CustomTable(children: [
-            CustomTableRow.fromTexts(
-              texts: [gacha.name],
-              defaults: TableCellData(textAlign: TextAlign.center, color: TableCellData.resolveHeaderColor(context)),
-            ),
+            for (final name in {gacha.lName, gacha.name})
+              CustomTableRow.fromTexts(
+                texts: [name],
+                defaults: TableCellData(textAlign: TextAlign.center, color: TableCellData.resolveHeaderColor(context)),
+              ),
             CustomTableRow.fromTexts(texts: ['No.${gacha.id}', gacha.type.shownName]),
             CustomTableRow.fromTexts(texts: [
               [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ ')

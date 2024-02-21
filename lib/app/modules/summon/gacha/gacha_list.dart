@@ -160,12 +160,12 @@ class _GachaListPageState extends State<GachaListPage>
 
   @override
   Widget listItemBuilder(NiceGacha gacha) {
-    String title = gacha.name;
+    final String title = gacha.lName;
     String subtitle = '[${gacha.type.id}]${gacha.id}   ';
     subtitle += [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ ');
     final now = DateTime.now().timestamp;
     return SimpleAccordion(
-      key: Key('mstGacha-${gacha.id}-${filterData.showBanner}'),
+      key: Key('gacha-${gacha.id}-${filterData.showBanner}'),
       expanded: filterData.showBanner,
       headerBuilder: (context, _) {
         Widget? trailing;
@@ -177,14 +177,11 @@ class _GachaListPageState extends State<GachaListPage>
             onChanged: (v) {
               setState(() {
                 if (v != null && v && _selectedGachas.isEmpty && gacha.detailUrl.isNotEmpty) {
-                  final match = RegExp(r'(/.+/.+_)[a-z]\d?$').firstMatch(gacha.detailUrl);
-                  if (match != null) {
-                    final prefix = match.group(1)!;
-                    final related = wholeData.where((e) =>
-                        (e.openedAt - gacha.openedAt).abs() < kSecsPerDay * 30 && e.detailUrl.startsWith(prefix));
-                    _selectedGachas.addAll(related);
-                    return;
-                  }
+                  final prefix = gacha.detailUrlPrefix;
+                  final related = wholeData.where(
+                      (e) => (e.openedAt - gacha.openedAt).abs() < kSecsPerDay * 30 && e.detailUrl.startsWith(prefix));
+                  _selectedGachas.addAll(related);
+                  return;
                 }
                 _selectedGachas.toggle(gacha);
               });
@@ -289,6 +286,7 @@ class _GachaListPageState extends State<GachaListPage>
   Iterable<String?> getSummary(NiceGacha gacha) sync* {
     yield gacha.id.toString();
     yield gacha.name;
+    yield gacha.lName;
     yield switch (region) {
       Region.jp => SearchUtil.getJP(gacha.name),
       Region.cn => SearchUtil.getCN(gacha.name),

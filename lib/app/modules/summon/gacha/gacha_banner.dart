@@ -10,9 +10,12 @@ class GachaBanner extends StatelessWidget {
   final Region? region;
   final int? imageId;
   final String? url;
+  final bool background;
 
-  const GachaBanner({super.key, required Region this.region, required int this.imageId}) : url = null;
-  const GachaBanner.url({super.key, required String this.url})
+  const GachaBanner({super.key, required Region this.region, required int this.imageId, this.background = true})
+      : url = null;
+
+  const GachaBanner.url({super.key, required String this.url, this.background = true})
       : region = null,
         imageId = null;
 
@@ -21,13 +24,15 @@ class GachaBanner extends StatelessWidget {
     final url = this.url ?? AssetURL(region ?? Region.jp).summonBanner(imageId ?? 0);
     return Container(
       constraints: const BoxConstraints(maxHeight: 200),
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: CachedNetworkImageProvider("https://assets.chaldea.center/images/summon_bg.jpg"),
-          fit: BoxFit.cover,
-          alignment: Alignment(0.0, -0.6),
-        ),
-      ),
+      decoration: background
+          ? const BoxDecoration(
+              image: DecorationImage(
+                image: CachedNetworkImageProvider("https://assets.chaldea.center/images/summon_bg.jpg"),
+                fit: BoxFit.cover,
+                alignment: Alignment(0.0, -0.6),
+              ),
+            )
+          : null,
       child: CachedImage(
         imageUrl: url,
         showSaveOnLongPress: true,

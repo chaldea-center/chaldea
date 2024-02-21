@@ -521,6 +521,7 @@ class _ProcessedData {
   Set<BuffType> get allBuffs => {...svtBuffs, ...ceBuffs, ...ccBuffs, ...mcBuffs};
 
   Map<int, Map<int, int>> spotMultiFrees = {}; // <warId, <spotId, fq count>>
+  Map<String, List<NiceGacha>> gachaGroups = {};
 
   _ProcessedData(this.gameData) {
     for (final svt in gameData.servants.values) {
@@ -575,6 +576,14 @@ class _ProcessedData {
       group.removeWhere((key, value) => value <= 1);
     }
     spotMultiFrees.removeWhere((key, value) => value.isEmpty);
+
+    gachaGroups = {};
+    for (final gacha in gameData.gachas.values) {
+      gachaGroups.putIfAbsent(gacha.detailUrlPrefix, () => []).add(gacha);
+    }
+    for (final group in gachaGroups.values) {
+      group.sort2((e) => e.openedAt);
+    }
     _initFuncBuff();
   }
 

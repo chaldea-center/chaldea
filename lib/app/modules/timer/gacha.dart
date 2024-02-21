@@ -42,7 +42,7 @@ class TimerGachaItem with TimerItem {
         dense: true,
         contentPadding: const EdgeInsetsDirectional.only(start: 16),
         enabled: gacha.closedAt > DateTime.now().timestamp,
-        title: Text(gacha.name.setMaxLines(2)),
+        title: Text(gacha.lName.setMaxLines(2)),
         subtitle: Text([fmtDate(gacha.openedAt), fmtDate(gacha.closedAt)].join(' ~ ')),
         trailing: CountDown(
           endedAt: gacha.closedAt.sec2date(),
