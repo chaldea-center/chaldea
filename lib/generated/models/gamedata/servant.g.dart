@@ -31,10 +31,10 @@ BasicServant _$BasicServantFromJson(Map json) => BasicServant(
               .toList() ??
           const [],
       classId: json['classId'] as int? ?? 0,
-      attribute: $enumDecode(_$AttributeEnumMap, json['attribute']),
-      rarity: json['rarity'] as int,
-      atkMax: json['atkMax'] as int,
-      hpMax: json['hpMax'] as int,
+      attribute: $enumDecodeNullable(_$AttributeEnumMap, json['attribute']) ?? Attribute.void_,
+      rarity: json['rarity'] as int? ?? 0,
+      atkMax: json['atkMax'] as int? ?? 0,
+      hpMax: json['hpMax'] as int? ?? 0,
       face: json['face'] as String,
       costume: (json['costume'] as Map?)?.map(
             (k, e) => MapEntry(int.parse(k as String), BasicCostume.fromJson(Map<String, dynamic>.from(e as Map))),
@@ -107,32 +107,34 @@ Servant _$ServantFromJson(Map json) => Servant(
               ?.map((e) => $enumDecode(_$SvtFlagEnumMap, e, unknownValue: SvtFlag.unknown))
               .toList() ??
           const [],
-      rarity: json['rarity'] as int,
-      cost: json['cost'] as int,
-      lvMax: json['lvMax'] as int,
+      rarity: json['rarity'] as int? ?? 0,
+      cost: json['cost'] as int? ?? 0,
+      lvMax: json['lvMax'] as int? ?? 0,
       extraAssets: json['extraAssets'] == null
           ? null
           : ExtraAssets.fromJson(Map<String, dynamic>.from(json['extraAssets'] as Map)),
-      gender: $enumDecode(_$GenderEnumMap, json['gender']),
-      attribute: $enumDecode(_$AttributeEnumMap, json['attribute']),
+      gender: $enumDecodeNullable(_$GenderEnumMap, json['gender']) ?? Gender.unknown,
+      attribute: $enumDecodeNullable(_$AttributeEnumMap, json['attribute']) ?? Attribute.void_,
       traits: (json['traits'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      starAbsorb: json['starAbsorb'] as int,
-      starGen: json['starGen'] as int,
-      instantDeathChance: json['instantDeathChance'] as int,
-      cards: (json['cards'] as List<dynamic>).map((e) => $enumDecode(_$CardTypeEnumMap, e)).toList(),
-      cardDetails: (json['cardDetails'] as Map).map(
-        (k, e) => MapEntry($enumDecode(_$CardTypeEnumMap, k), CardDetail.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
-      atkBase: json['atkBase'] as int,
-      atkMax: json['atkMax'] as int,
-      hpBase: json['hpBase'] as int,
-      hpMax: json['hpMax'] as int,
+      starAbsorb: json['starAbsorb'] as int? ?? 0,
+      starGen: json['starGen'] as int? ?? 0,
+      instantDeathChance: json['instantDeathChance'] as int? ?? 0,
+      cards: (json['cards'] as List<dynamic>?)?.map((e) => $enumDecode(_$CardTypeEnumMap, e)).toList() ?? const [],
+      cardDetails: (json['cardDetails'] as Map?)?.map(
+            (k, e) =>
+                MapEntry($enumDecode(_$CardTypeEnumMap, k), CardDetail.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      atkBase: json['atkBase'] as int? ?? 0,
+      atkMax: json['atkMax'] as int? ?? 0,
+      hpBase: json['hpBase'] as int? ?? 0,
+      hpMax: json['hpMax'] as int? ?? 0,
       relateQuestIds: (json['relateQuestIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       trialQuestIds: (json['trialQuestIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
-      growthCurve: json['growthCurve'] as int,
+      growthCurve: json['growthCurve'] as int? ?? 0,
       bondGrowth: (json['bondGrowth'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       expFeed: (json['expFeed'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       bondEquip: json['bondEquip'] as int? ?? 0,
@@ -283,7 +285,7 @@ BasicCraftEssence _$BasicCraftEssenceFromJson(Map json) => BasicCraftEssence(
               ?.map((e) => $enumDecode(_$SvtFlagEnumMap, e, unknownValue: SvtFlag.unknown))
               .toList() ??
           const [],
-      rarity: json['rarity'] as int,
+      rarity: json['rarity'] as int? ?? 0,
       atkMax: json['atkMax'] as int? ?? 0,
       hpMax: json['hpMax'] as int? ?? 0,
       face: json['face'] as String,
@@ -312,9 +314,9 @@ CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
               ?.map((e) => $enumDecode(_$SvtFlagEnumMap, e, unknownValue: SvtFlag.unknown))
               .toList() ??
           const [],
-      rarity: json['rarity'] as int,
-      cost: json['cost'] as int,
-      lvMax: json['lvMax'] as int,
+      rarity: json['rarity'] as int? ?? 0,
+      cost: json['cost'] as int? ?? 0,
+      lvMax: json['lvMax'] as int? ?? 0,
       extraAssets: json['extraAssets'] == null
           ? null
           : ExtraAssets.fromJson(Map<String, dynamic>.from(json['extraAssets'] as Map)),
@@ -322,7 +324,7 @@ CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
       atkMax: json['atkMax'] as int? ?? 0,
       hpBase: json['hpBase'] as int? ?? 0,
       hpMax: json['hpMax'] as int? ?? 0,
-      growthCurve: json['growthCurve'] as int,
+      growthCurve: json['growthCurve'] as int? ?? 0,
       expFeed: (json['expFeed'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
       bondEquipOwner: json['bondEquipOwner'] as int?,
       valentineEquipOwner: json['valentineEquipOwner'] as int?,
@@ -334,9 +336,10 @@ CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
           ? null
           : AscensionAdd.fromJson(Map<String, dynamic>.from(json['ascensionAdd'] as Map)),
       script: json['script'] == null ? null : ServantScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
-      skills: (json['skills'] as List<dynamic>)
-          .map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+      skills: (json['skills'] as List<dynamic>?)
+              ?.map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       profile: json['profile'] == null ? null : NiceLore.fromJson(Map<String, dynamic>.from(json['profile'] as Map)),
     );
 
