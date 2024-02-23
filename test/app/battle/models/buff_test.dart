@@ -21,7 +21,8 @@ void main() async {
             NiceTrait(id: Trait.divine.id),
             NiceTrait(id: Trait.demon.id),
           ]),
-          DataVals({'UseRate': 1000}));
+          DataVals({'UseRate': 1000}),
+          1);
 
       expect(buff.shouldApplyBuff(battle, okuni, cba), isTrue);
       expect(buff.shouldApplyBuff(battle, cba, okuni), isFalse);
@@ -39,7 +40,8 @@ void main() async {
             ],
             script: BuffScript(checkIndvType: 1),
           ),
-          DataVals({'UseRate': 1000}));
+          DataVals({'UseRate': 1000}),
+          1);
 
       expect(buff.shouldApplyBuff(battle, okuni, cba), isTrue);
       expect(buff.shouldApplyBuff(battle, cba, okuni), isFalse);
@@ -59,13 +61,15 @@ void main() async {
           ),
           DataVals(
             {'UseRate': 1000},
-          ));
+          ),
+          1);
 
       final negativeBuff = BuffData(
           Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.buffNegativeEffect.id)]),
           DataVals(
             {'UseRate': 1000},
-          ));
+          ),
+          1);
 
       expect(buff.shouldApplyBuff(battle, okuni, cba), false);
 
@@ -77,7 +81,8 @@ void main() async {
           Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.buffPositiveEffect.id)]),
           DataVals(
             {'UseRate': 1000},
-          ));
+          ),
+          1);
       battle.withBuffSync(positiveBuff, () {
         cba.addBuff(negativeBuff); // make sure we are not checking servant's buffs' traits
         expect(buff.shouldApplyBuff(battle, okuni, cba), false);
@@ -87,7 +92,8 @@ void main() async {
     test('probability check', () async {
       final buff = BuffData(
           Buff(id: -1, name: '', detail: '', ckOpIndv: [NiceTrait(id: Trait.king.id), NiceTrait(id: Trait.divine.id)]),
-          DataVals({'UseRate': 500}));
+          DataVals({'UseRate': 500}),
+          1);
 
       expect(await buff.shouldActivateBuff(battle, okuni, cba), isFalse);
 
@@ -98,12 +104,12 @@ void main() async {
   });
 
   test('can stack', () {
-    final buff = BuffData(Buff(id: -1, name: '', detail: '', buffGroup: 500), DataVals());
+    final buff = BuffData(Buff(id: -1, name: '', detail: '', buffGroup: 500), DataVals(), 1);
     expect(buff.canStack(500), isFalse);
     expect(buff.canStack(300), isTrue);
     expect(buff.canStack(0), isTrue);
 
-    final stackable = BuffData(Buff(id: -1, name: '', detail: '', buffGroup: 0), DataVals());
+    final stackable = BuffData(Buff(id: -1, name: '', detail: '', buffGroup: 0), DataVals(), 1);
     expect(stackable.canStack(500), isTrue);
     expect(stackable.canStack(300), isTrue);
     expect(stackable.canStack(0), isTrue);

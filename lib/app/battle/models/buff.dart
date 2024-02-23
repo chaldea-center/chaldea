@@ -93,6 +93,7 @@ class BattleBuff {
 class BuffData {
   Buff buff;
   DataVals vals;
+  int addOrder;
 
   int buffRate = 1000;
   int count = -1;
@@ -126,7 +127,7 @@ class BuffData {
 
   bool get isOnField => vals.OnField == 1;
 
-  BuffData(this.buff, this.vals) {
+  BuffData(this.buff, this.vals, this.addOrder) {
     count = vals.Count ?? -1;
     logicTurn = vals.Turn == null ? -1 : vals.Turn! * 2;
     param = vals.Value ?? 0;
@@ -135,7 +136,7 @@ class BuffData {
     irremovable = vals.UnSubState == 1; // need more sample
   }
 
-  BuffData.makeCopy(this.buff, this.vals);
+  BuffData.makeCopy(this.buff, this.vals, this.addOrder);
 
   List<NiceTrait> get traits => buff.vals;
 
@@ -462,7 +463,7 @@ class BuffData {
   }
 
   BuffData copy() {
-    final BuffData copy = BuffData.makeCopy(buff, vals)
+    final BuffData copy = BuffData.makeCopy(buff, vals, addOrder)
       ..buffRate = buffRate
       ..count = count
       ..logicTurn = logicTurn

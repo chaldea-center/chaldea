@@ -28,7 +28,7 @@ class AddState {
     }
     for (int i = 0; i < targets.length; i += 1) {
       final target = targets[i];
-      final buffData = BuffData(buff, dataVals)
+      final buffData = BuffData(buff, dataVals, battleData.getNextAddOrder())
         ..actorUniqueId = activator?.uniqueId
         ..actorName = activator?.lBattleName
         ..notActorPassive = notActorPassive

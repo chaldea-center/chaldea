@@ -180,8 +180,8 @@ void main() async {
       expect(as1.length, 1);
       expect(as1.first, battle.onFieldAllyServants[0]);
 
-      battle.onFieldAllyServants[0]!.addBuff(
-          BuffData(Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.cantBeSacrificed.id)]), DataVals()));
+      battle.onFieldAllyServants[0]!.addBuff(BuffData(
+          Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.cantBeSacrificed.id)]), DataVals(), 1));
 
       final as1With0Unselectable = await FunctionExecutor.acquireFunctionTarget(
           battle, FuncTargetType.ptSelfAnotherFirst, battle.onFieldAllyServants[1]);

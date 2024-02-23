@@ -16,7 +16,7 @@ class AddFieldChangeToField {
     }
 
     final activator = battleData.activator;
-    final buffData = BuffData(buff, dataVals)
+    final buffData = BuffData(buff, dataVals, battleData.getNextAddOrder())
       ..actorUniqueId = activator?.uniqueId
       ..actorName = activator?.lBattleName;
     battleData.fieldBuffs.add(buffData);

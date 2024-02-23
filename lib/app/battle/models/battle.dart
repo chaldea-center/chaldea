@@ -113,6 +113,7 @@ class BattleData {
 
   double criticalStars = 0;
   int _uniqueIndex = 1;
+  int _addOrder = 1;
 
   // unused fields
   // int countEnemyAttack = 0;
@@ -466,6 +467,10 @@ class BattleData {
     for (final actor in allActors) {
       await actor?.activateAdditionalPassive(this);
     }
+  }
+
+  int getNextAddOrder() {
+    return _addOrder++;
   }
 
   int getNextUniqueId() {

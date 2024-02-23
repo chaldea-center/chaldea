@@ -1318,7 +1318,7 @@ void main() async {
         });
       });
 
-      final buff = BuffData(Buff(id: -1, name: '', detail: '', vals: divinityCheck), DataVals());
+      final buff = BuffData(Buff(id: -1, name: '', detail: '', vals: divinityCheck), DataVals(), 1);
       battle.withActivatorSync(okuni, () {
         battle.withBuffSync(buff, () {
           expect(
