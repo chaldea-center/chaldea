@@ -381,21 +381,18 @@ class MappingData {
     _updateRegion(buffNames, Region.jp, excludes: excludes);
     _updateRegion(funcPopuptext, Region.jp, excludes: excludes);
 
-    final allSummonNames = Map.of(summonNames);
-    for (final (nameJp, names) in summonNames.items) {
+    final baseSummonsName = Map.of(summonNames);
+    for (final (nameJp, names) in baseSummonsName.items) {
       final match = RegExp(r'ピックアップ(\d+)召喚$').firstMatch(nameJp);
       if (match != null) {
         final idx = match.group(1)!;
         String jp2 = nameJp.replaceAll('ピックアップ$idx召喚', 'ピックアップ召喚');
-        if (allSummonNames.containsKey(jp2)) continue;
-        allSummonNames[jp2] = names
+        if (baseSummonsName.containsKey(jp2)) continue;
+        summonNames[jp2] = names
             .convert((v, region) => v != null && v.endsWith(idx) ? v.substring(0, v.length - idx.length).trim() : null);
       }
     }
-    _updateRegion(allSummonNames, Region.jp);
-    summonNames
-      ..clear()
-      ..addAll(allSummonNames);
+    _updateRegion(summonNames, Region.jp);
   }
 
   static void _updateRegion<T>(Map<T, MappingBase<T>> mapping, Region region, {Set<T>? excludes}) {
