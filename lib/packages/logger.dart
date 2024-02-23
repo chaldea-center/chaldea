@@ -157,6 +157,7 @@ class _CustomPrettyPrinter extends PrettyPrinter {
       error = error.copyWith(
         error: '${error.error}$detail',
         stackTrace: StackTrace.fromString(lines.take(10).join('\n')),
+        message: error.response?.statusCode == 404 ? "" : null,
       );
     }
     String? errorStr = error?.toString();

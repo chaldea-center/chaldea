@@ -85,7 +85,7 @@ class _DailyBonusTabState extends State<DailyBonusTab> {
   Widget buildGroup(BuildContext context, String key, List<UserPresentBox> presents) {
     final List<UserPresentBox> dailyLogins = [], extraBonus = [];
     for (final present in presents) {
-      if (present.fromType == 2 && present.messageId == 21 && present.messageRefType == 3) {
+      if (present.fromType == PresentFromType.totalLogin.value || present.fromType == PresentFromType.seqLogin.value) {
         dailyLogins.add(present);
       } else {
         extraBonus.add(present);

@@ -1206,6 +1206,15 @@ class UserPresentBox {
   factory UserPresentBox.fromJson(Map<String, dynamic> data) => _$UserPresentBoxFromJson(data);
 }
 
+enum PresentFromType {
+  totalLogin(1),
+  seqLogin(2),
+  ;
+
+  const PresentFromType(this.value);
+  final int value;
+}
+
 @JsonSerializable(createToJson: false)
 class UserGacha {
   // int userId;

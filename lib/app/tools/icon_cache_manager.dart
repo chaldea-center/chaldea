@@ -200,7 +200,9 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
         return await task();
       } on DioException catch (e) {
         final uri = e.requestOptions.uri;
-        logger.v('download error: $e, resp=${e.response?.statusCode}, uri=$uri');
+        if (e.response?.statusCode != 404) {
+          logger.v('download error: ${e.type.name}(${e.response?.statusCode}) ${e.error}, uri=$uri');
+        }
         if (_shouldRetry(e)) {
           count += 1;
           logger.v('retry download ($count/$retryCount): $uri');
