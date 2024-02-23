@@ -1134,6 +1134,41 @@ void main() async {
     expect(enemy3.battleBuff.getAllBuffs().length, previousBuffCount3 + 4);
   });
 
+  test('AOE NP vs AttackTriggerFunc with added damage buffs', () async {
+    final List<PlayerSvtData> setting = [
+      PlayerSvtData.id(404800)
+        ..lv = 1
+        ..tdLv = 1,
+    ];
+    final battle = BattleData();
+    final quest = db.gameData.questPhases[9300040603]!;
+    await battle.init(quest, setting, null);
+
+    final maqin = battle.onFieldAllyServants[0]!;
+    await battle.activateSvtSkill(0, 2);
+    maqin.np = 10000;
+
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final enemy2 = battle.onFieldEnemies[1]!;
+    final enemy3 = battle.onFieldEnemies[2]!;
+    final previousHp1 = enemy1.hp;
+    final previousHp2 = enemy2.hp;
+    final previousHp3 = enemy3.hp;
+    await battle.playerTurn([CombatAction(maqin, maqin.getNPCard()!)]);
+    final afterHp1 = enemy1.hp;
+    final afterHp2 = enemy2.hp;
+    final afterHp3 = enemy3.hp;
+    expect(afterHp1, previousHp1 - 3689);
+    expect(afterHp2, previousHp2 - 7228);
+    expect(afterHp3, previousHp3 - 3689);
+
+    maqin.np = 10000;
+    await battle.playerTurn([CombatAction(maqin, maqin.getNPCard()!)]);
+    expect(enemy1.hp, afterHp1 - 3866);
+    expect(enemy2.hp, afterHp2 - 7582);
+    expect(enemy3.hp, afterHp3 - 3866);
+  });
+
   test('OC NP vs AttackTriggerFunc', () async {
     final List<PlayerSvtData> setting = [
       PlayerSvtData.id(305400)

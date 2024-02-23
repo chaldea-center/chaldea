@@ -49,16 +49,22 @@ class Damage {
     final checkHpRatioHigh = funcType == FuncType.damageNpHpratioHigh;
     final checkHpRatioLow = funcType == FuncType.damageNpHpratioLow;
     final checkHpRatio = checkHpRatioHigh || checkHpRatioLow;
-    for (final target in targets) {
-      await battleData.withTarget(target, () async {
-        final targetBefore = target.copy();
-        if (shouldTrigger) {
+
+    if (shouldTrigger) {
+      for (final target in targets) {
+        await battleData.withTarget(target, () async {
           await activator.activateBuffOnAction(battleData, BuffAction.functionCommandcodeattackBefore);
           await activator.activateBuffOnActions(battleData, [
             if (!currentCard.isTD) BuffAction.functionCommandattackBefore,
             BuffAction.functionAttackBefore,
           ]);
-        }
+        });
+      }
+    }
+
+    for (final target in targets) {
+      await battleData.withTarget(target, () async {
+        final targetBefore = target.copy();
 
         final classAdvantage = await getClassRelation(battleData, activator, target);
 
@@ -298,15 +304,19 @@ class Damage {
           minResult: minResult,
           maxResult: maxResult,
         ));
+      });
+    }
 
-        if (shouldTrigger) {
+    if (shouldTrigger) {
+      for (final target in targets) {
+        await battleData.withTarget(target, () async {
           await activator.activateBuffOnAction(battleData, BuffAction.functionCommandcodeattackAfter);
           await activator.activateBuffOnActions(battleData, [
             if (!currentCard.isTD) BuffAction.functionCommandattackAfter,
             BuffAction.functionAttackAfter,
           ]);
-        }
-      });
+        });
+      }
     }
 
     battleData.recorder.attack(
