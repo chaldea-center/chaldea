@@ -15,7 +15,7 @@ jobs:
   deploy-web:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Extract branch name
         id: extract-branch-name
@@ -40,7 +40,7 @@ jobs:
           dart ./scripts/patch_web_build.dart
 
       - name: Publish to app repo ${{ steps.extract-branch-name.outputs.BRANCH_NAME }} branch
-        uses: crazy-max/ghaction-github-pages@v3
+        uses: crazy-max/ghaction-github-pages@v4
         with:
           repo: chaldea-center/app
           target_branch: ${{ steps.extract-branch-name.outputs.BRANCH_NAME }}
@@ -48,10 +48,10 @@ jobs:
         env:
           GH_PAT: ${{ secrets.GH_PAGES_TOKEN }}
 
-      - uses: yizhoumo/setup-ossutil@v1
+      - uses: yizhoumo/setup-ossutil@v2
         if: github.ref == 'refs/heads/main'
         with:
-          ossutil-version: "1.7.9"
+          ossutil-version: "1.7.18"
           endpoint: ${{ secrets.OSS_ENDPOINT }}
           access-key-id: ${{ secrets.OSS_ACCESS_KEY_ID }}
           access-key-secret: ${{ secrets.OSS_ACCESS_KEY_SECRET }}

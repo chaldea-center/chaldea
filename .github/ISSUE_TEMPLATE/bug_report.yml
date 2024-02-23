@@ -57,6 +57,14 @@ body:
       placeholder: "2.2.2+918 31d7a1a"
     validations:
       required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist 
+      description: Check release history: 
+      options:
+        - label: Are you using latest app version? [Release History](https://github.com/chaldea-center/chaldea/releases)
+          required: true
   - type: textarea
     id: logs
     attributes:
