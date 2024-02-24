@@ -934,23 +934,22 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       ),
     );
     try {
+      List<int>? bytes;
       if (fromFile == true) {
         final result = await FilePickerU.pickFiles(clearCache: true);
-        final bytes = result?.files.first.bytes;
-        if (bytes == null) return;
-        parseResponseBody(bytes);
-        await FilePlus(tmpPath).create(recursive: true);
-        await FilePlus(tmpPath).writeAsBytes(bytes);
+        bytes = result?.files.first.bytes;
       } else if (fromFile == false) {
         String? text = (await Clipboard.getData(Clipboard.kTextPlain))?.text;
         if (text != null && text.isNotEmpty) {
-          parseResponseBody(utf8.encode(text));
-          await FilePlus(tmpPath).create(recursive: true);
-          await FilePlus(tmpPath).writeAsString(text);
+          bytes = utf8.encode(text);
         } else {
           EasyLoading.showError('Clipboard is empty!');
         }
       }
+      if (bytes == null) return;
+      parseResponseBody(bytes);
+      await FilePlus(tmpPath).create(recursive: true);
+      await FilePlus(tmpPath).writeAsBytes(bytes);
     } catch (e, s) {
       logger.e('fail to load http response', e, s);
       if (mounted) {

@@ -6,6 +6,7 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import '_helper.dart';
 import 'command_code.dart';
+import 'common.dart';
 import 'servant.dart';
 
 part '../../generated/models/gamedata/toplogin.g.dart';
@@ -61,6 +62,11 @@ List<int> _toIntList(dynamic v, [int? k = 0]) {
 
 @JsonSerializable(createToJson: false)
 class FateTopLogin {
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  Map? sourceData;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  Region? region;
+
   List<FateResponseDetail> response;
   UserMstCache cache;
   String sign;
@@ -71,7 +77,7 @@ class FateTopLogin {
       : cache = cache ?? UserMstCache(),
         sign = sign ?? '';
 
-  factory FateTopLogin.fromJson(Map<String, dynamic> data) => _$FateTopLoginFromJson(data);
+  factory FateTopLogin.fromJson(Map<String, dynamic> data) => _$FateTopLoginFromJson(data)..sourceData = Map.from(data);
 
   factory FateTopLogin.parseAny(dynamic data) => FateTopLogin.fromJson(parseToMap(data));
 
@@ -118,7 +124,14 @@ class FateTopLogin {
   /// base64 maybe url-encoded
   static FateTopLogin fromBase64(String encoded) {
     encoded = tryBase64Decode(encoded);
-    return FateTopLogin.fromJson(Map<String, dynamic>.from(jsonDecode(encoded)));
+    final json = Map<String, dynamic>.from(jsonDecode(encoded));
+    Region? region;
+    try {
+      region = guessRegion(json);
+    } catch (e) {
+      print(e);
+    }
+    return FateTopLogin.fromJson(json)..region = region;
   }
 
   // may be deflate, gzip
@@ -143,6 +156,22 @@ class FateTopLogin {
       throw const FormatException("Unknown byte format, gzip or raw deflate or plain utf8");
     }
     return fromBase64(contents);
+  }
+
+  static Region? guessRegion(Map? data) {
+    if (data == null) return null;
+    if ((data['cache']?['replaced'] as Map?)?.containsKey('globalUser') == true) {
+      return Region.na;
+    }
+    final Map? userGame = data['cache']?['replaced']?['userGame']?[0];
+    final String? friendCode = userGame?['friendCode']?.toString();
+    if (userGame == null) return null;
+    if (userGame.containsKey('appuid')) {
+      return Region.cn;
+    } else if (friendCode != null && friendCode.length >= 12) {
+      return Region.tw;
+    }
+    return Region.jp;
   }
 
   FateResponseDetail getResponse(String nid) {
