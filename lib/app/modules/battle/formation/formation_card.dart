@@ -49,34 +49,54 @@ class FormationCard extends StatelessWidget {
       }
     }
 
+    Widget svtIcon = GameCardMixin.cardIconBuilder(
+      context: context,
+      icon:
+          db.gameData.servantsById[storedData?.svtId]?.ascendIcon(storedData!.limitCount) ?? Atlas.common.emptySvtIcon,
+      // width: 80,
+      aspectRatio: 132 / 144,
+      text: svtInfo,
+      option: ImageWithTextOption(
+        textAlign: TextAlign.left,
+        fontSize: 14,
+        alignment: Alignment.bottomLeft,
+        // padding: const EdgeInsets.fromLTRB(22, 0, 2, 4),
+        errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
+      ),
+      onTap: () async {
+        final data = await PlayerSvtData.fromStoredData(storedData);
+        if (data.svt == null) return;
+        router.pushPage(ServantOptionEditPage(
+          playerSvtData: data,
+          questPhase: null,
+          playerRegion: null,
+          onChange: null,
+          svtFilterData: null,
+        ));
+      },
+    );
+    svtIcon = Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.topCenter,
+      children: [
+        svtIcon,
+        if (storedData?.supportType.isSupport == true)
+          Positioned(
+            top: -5,
+            right: -5,
+            child: db.getIconImage(AssetURL.i.items(12), width: 24, aspectRatio: 1),
+          ),
+        if (storedData?.customPassives.isNotEmpty == true)
+          Positioned(
+            top: -5,
+            child: db.getIconImage(AssetURL.i.buffIcon(302), width: 24, aspectRatio: 1),
+          )
+      ],
+    );
+
     Widget child = Column(
       children: [
-        GameCardMixin.cardIconBuilder(
-          context: context,
-          icon: db.gameData.servantsById[storedData?.svtId]?.ascendIcon(storedData!.limitCount) ??
-              Atlas.common.emptySvtIcon,
-          // width: 80,
-          aspectRatio: 132 / 144,
-          text: svtInfo,
-          option: ImageWithTextOption(
-            textAlign: TextAlign.left,
-            fontSize: 14,
-            alignment: Alignment.bottomLeft,
-            // padding: const EdgeInsets.fromLTRB(22, 0, 2, 4),
-            errorWidget: (context, url, error) => CachedImage(imageUrl: Atlas.common.unknownEnemyIcon),
-          ),
-          onTap: () async {
-            final data = await PlayerSvtData.fromStoredData(storedData);
-            if (data.svt == null) return;
-            router.pushPage(ServantOptionEditPage(
-              playerSvtData: data,
-              questPhase: null,
-              playerRegion: null,
-              onChange: null,
-              svtFilterData: null,
-            ));
-          },
-        ),
+        svtIcon,
         GameCardMixin.cardIconBuilder(
           context: context,
           icon: db.gameData.craftEssencesById[storedData?.ceId]?.extraAssets.equipFace.equip?[storedData!.ceId] ??
