@@ -1,6 +1,6 @@
 name: Bug Report
 description: File a bug report
-title: "[Bug]: "
+title: "[Bug] "
 labels: ["bug"]
 body:
   - type: markdown
@@ -61,7 +61,6 @@ body:
     id: checks
     attributes:
       label: Checklist 
-      description: Check release history: 
       options:
         - label: Are you using latest app version? [Release History](https://github.com/chaldea-center/chaldea/releases)
           required: true

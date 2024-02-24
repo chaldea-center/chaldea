@@ -206,8 +206,7 @@ jobs:
         with:
           delete_release: true
           tag_name: beta
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAGES_TOKEN }}
+          github_token: ${{ secrets.GH_PAGES_TOKEN }}
 
       - name: Publish Beta
         id: release-beta
