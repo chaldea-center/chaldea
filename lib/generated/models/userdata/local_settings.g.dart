@@ -375,7 +375,7 @@ CarouselItem _$CarouselItemFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = CarouselItem(
           type: $checkedConvert('type', (v) => v as int? ?? 0),
-          priority: $checkedConvert('priority', (v) => v as int? ?? 100),
+          priority: $checkedConvert('priority', (v) => v as int? ?? CarouselItem.defaultPriority),
           startTime: $checkedConvert('startTime', (v) => v == null ? null : DateTime.parse(v as String)),
           endTime: $checkedConvert('endTime', (v) => v == null ? null : DateTime.parse(v as String)),
           title: $checkedConvert('title', (v) => v as String?),

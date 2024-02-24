@@ -414,9 +414,11 @@ class CarouselItem {
   @JsonKey(includeFromJson: false, includeToJson: false)
   BoxFit? fit;
 
+  static const int defaultPriority = 99999;
+
   CarouselItem({
     this.type = 0,
-    this.priority = 100,
+    this.priority = CarouselItem.defaultPriority,
     DateTime? startTime,
     DateTime? endTime,
     this.title,
