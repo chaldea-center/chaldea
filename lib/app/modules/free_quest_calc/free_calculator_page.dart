@@ -4,6 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/analysis/analysis.dart';
 import 'package:chaldea/utils/url.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../war/wars_page.dart';
@@ -92,6 +93,7 @@ class _FreeQuestCalcPageState extends State<FreeQuestCalcPage> with SingleTicker
       setState(() {
         solution = s;
       });
+      AppAnalysis.instance.logEvent('free_calc');
       // if change tab index immediately, the second tab won't re-render
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         if (!mounted) return;

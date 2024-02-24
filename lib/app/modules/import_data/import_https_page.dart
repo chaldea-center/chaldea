@@ -13,6 +13,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/analysis/analysis.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -950,6 +951,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       parseResponseBody(bytes);
       await FilePlus(tmpPath).create(recursive: true);
       await FilePlus(tmpPath).writeAsBytes(bytes);
+      AppAnalysis.instance.logEvent("import_toplogin", {"region": topLogin?.region?.upper ?? "unknown"});
     } catch (e, s) {
       logger.e('fail to load http response', e, s);
       if (mounted) {

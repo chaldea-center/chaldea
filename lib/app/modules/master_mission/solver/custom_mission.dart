@@ -1,6 +1,7 @@
 import 'package:flutter/scheduler.dart';
 
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/packages/analysis/analysis.dart';
 import 'package:chaldea/utils/url.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'input_tab.dart';
@@ -78,6 +79,7 @@ class _CustomMissionPageState extends State<CustomMissionPage> with SingleTicker
       setState(() {
         solution = s;
       });
+      AppAnalysis.instance.logEvent('master_mission');
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         if (mounted) _tabController.index = 1;
       });

@@ -15,6 +15,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/faker/req/agent.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
+import 'package:chaldea/packages/analysis/analysis.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
@@ -622,6 +623,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
         EasyLoading.show(status: 'Login to home...');
         await agent.homeTop();
         EasyLoading.showSuccess(S.current.success);
+        AppAnalysis.instance.logEvent('simulate_login', {"region": top.region.upper});
       } else {
         EasyLoading.showError('Login failed');
       }

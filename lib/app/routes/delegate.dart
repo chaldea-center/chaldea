@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' as material;
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/models/gamedata/common.dart';
+import 'package:chaldea/packages/analysis/analysis.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../../packages/split_route/split_route.dart';
 import 'root_delegate.dart';
@@ -144,7 +145,7 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
     bool? detail,
     // bool popDetail = false,
     Region? region,
-  }) {
+  }) async {
     assert(url != null || child != null);
     // if (popDetail) popDetails();
     final page = RouteConfiguration(
@@ -160,7 +161,10 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
       urlHistory.add(url);
     }
     notifyListeners();
-    return completer.future;
+    final view = AppAnalysis.instance.startView(url ?? child?.runtimeType.toString());
+    final result = await completer.future;
+    AppAnalysis.instance.stopView(view);
+    return result;
   }
 
   Future<T?> pushPage<T extends Object?>(

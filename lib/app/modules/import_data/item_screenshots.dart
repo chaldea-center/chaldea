@@ -8,6 +8,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/api/recognizer.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/analysis/analysis.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -134,6 +135,7 @@ class ImportItemScreenshotPageState extends State<ImportItemScreenshotPage> with
       );
       result = ItemResult.fromJson(resp2.data);
       logger.i('received recognized: ${result?.details.length} items');
+      AppAnalysis.instance.logEvent('screenshot_recognizer', {"type": "item"});
       if (mounted) {
         setState(() {});
         SchedulerBinding.instance.addPostFrameCallback((timeStamp) {

@@ -113,6 +113,7 @@ dependencies:
     git:
       url: https://github.com/google/flutter-desktop-embedding
       path: plugins/window_size
+  flutter_baidu_mob_stat: ^1.2.6 # f-droid-rm
 
 dev_dependencies:
   flutter_test:

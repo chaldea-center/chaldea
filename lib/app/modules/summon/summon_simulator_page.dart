@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/analysis/analysis.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
@@ -39,6 +40,14 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   void initState() {
     super.initState();
     curIndex = widget.initIndex.clamp2(0, summon.subSummons.length - 1);
+  }
+
+  int _debugPullCount = 0;
+
+  @override
+  void dispose() {
+    super.dispose();
+    AppAnalysis.instance.logEvent('summon_simulator', {"count": _debugPullCount.toString()});
   }
 
   void reset() {
@@ -498,6 +507,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     totalPulls += times;
     totalQuartz += quartz;
     _curHistory = history.length - 1;
+    _debugPullCount += 1;
     setState(() {});
   }
 

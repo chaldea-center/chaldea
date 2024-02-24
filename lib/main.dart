@@ -14,6 +14,7 @@ import 'app/chaldea.dart';
 import 'app/modules/common/blank_page.dart';
 import 'app/modules/home/bootstrap/startup_failed_page.dart';
 import 'models/db.dart';
+import 'packages/analysis/analysis.dart';
 import 'packages/network.dart';
 import 'packages/packages.dart';
 import 'packages/split_route/split_route.dart';
@@ -31,6 +32,7 @@ void main() async {
     await _initiateCommon();
     await workerManager.init();
     await db.initiate();
+    await AppAnalysis.instance.initiate();
     catcherOptions = CatcherUtil.getOptions(
       logPath: db.paths.crashLog,
       feedbackHandler: ServerFeedbackHandler(

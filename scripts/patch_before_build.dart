@@ -7,7 +7,7 @@ void main(List<String> args) {
   _patchFlutter();
 
   final String target = args[0];
-  final String ref = args[1];
+  final String? ref = args.length >= 2 ? args[1] : null;
   if (target == 'windows') {
     // _patchWindows();
     return;
@@ -15,6 +15,8 @@ void main(List<String> args) {
     // _patchLinux();
   } else if (target == 'android' && ref == 'refs/heads/main') {
     // _patchAndroidPreview();
+  } else if (target == 'fdroid') {
+    patchFDroid();
   }
 }
 
@@ -23,8 +25,7 @@ void _patchFlutter() {
   return;
 }
 
-// ignore: unused_element
-void _replaceFlutterFile(String fp, String s1, String s2) {
+void replaceFlutterFile(String fp, String s1, String s2) {
   final dartFp = Uri.file(Platform.resolvedExecutable);
   final targetFp = dartFp
       .replace(pathSegments: [...dartFp.pathSegments.sublist(0, dartFp.pathSegments.length - 5), ...fp.split('/')]);
@@ -37,8 +38,7 @@ void _replaceFlutterFile(String fp, String s1, String s2) {
   return;
 }
 
-// ignore: unused_element
-void _patchAndroidPreview() {
+void patchAndroidPreview() {
   final buildFile = File('android/app/build.gradle');
   print('Patching ${buildFile.path}...');
   String contents = buildFile.readAsStringSync();
@@ -52,4 +52,18 @@ void _patchAndroidPreview() {
   }
   buildFile.writeAsStringSync(contents);
   print('set applicationIdSuffix=.preview and app_name=Chaldea Preview');
+}
+
+void patchFDroid() {
+  File('lib/packages/analysis/analysis_impl.dart').deleteSync();
+
+  void _removeLines(String fp, Pattern trailing) {
+    final file = File(fp);
+    List<String> lines = file.readAsLinesSync();
+    lines = lines.map((line) => trailing.allMatches(line.trim()).isEmpty ? line : '').toList();
+    file.writeAsStringSync(lines.join('\n'));
+  }
+
+  _removeLines('lib/packages/analysis/analysis.dart', RegExp(r'//\s*f-droid-rm$'));
+  _removeLines('pubspec.yaml', RegExp(r'#\s*f-droid-rm$'));
 }
