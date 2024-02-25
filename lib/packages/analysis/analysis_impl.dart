@@ -1,20 +1,28 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
+import 'package:countly_flutter_np/countly_flutter.dart';
 
-import 'package:flutter_baidu_mob_stat/fl_baidu_mob_stat_ys.dart';
-
+import 'package:chaldea/models/gamedata/gamedata.dart';
+import '../../models/db.dart';
+import '../language.dart';
 import 'analysis.dart';
 
 class AppAnalysisImpl implements AppAnalysis {
-  static const _iOSKey = 'bf8a02d588';
-  static const _androidKey = '714a13d204';
-
-  final instance = FlBaiduMobStatYs();
   @override
   Future<void> initiate() async {
-    await instance.setApiKey(androidKey: _androidKey, iosKey: _iOSKey);
-    if (kDebugMode) await instance.setDebug(true);
+    final isInitialized = await Countly.isInitialized();
+    if (!isInitialized) {
+      CountlyConfig config =
+          CountlyConfig("https://countly.chaldea.center", '46e56e032869aa7dc7e8627bfb6b00c4f0dc1b41');
+      // if (kDebugMode) config.setLoggingEnabled(true);
+      // after db init
+      config.setUserProperties({
+        "language": Language.current.code,
+        "region": db.settings.preferredQuestRegion?.upper,
+      });
+      await Countly.initWithConfig(config);
+      // print('Countly init: $msg');
+    }
   }
 
   @override
@@ -24,37 +32,32 @@ class AppAnalysisImpl implements AppAnalysis {
 
   @override
   Future<String?> startView(String? viewName) async {
-    if (viewName != null && viewName.isNotEmpty) {
-      for (final category in const ['buffAction', 'summon', 'script']) {
-        final route = '/$category/';
-        if (viewName!.startsWith(route)) {
-          viewName = route;
-          break;
-        }
-      }
-      final match = RegExp(r'^(/.+/)\d+$').firstMatch(viewName!);
-      viewName = match?.group(1) ?? viewName;
-      await instance.pageStart(viewName);
-      return viewName;
-    }
-    return null;
+    if (viewName == null) return null;
+    final (baseRoute, subpath) = AppAnalysis.splitViewName(viewName);
+    if (baseRoute.isEmpty) return null;
+    final viewId = await Countly.instance.views.startView(baseRoute, {if (subpath.isNotEmpty) "id": subpath});
+    return viewId;
   }
 
   @override
-  Future<void> stopView(FutureOr<String?> viewName) async {
-    String? _name;
-    if (viewName is Future) {
-      _name = await viewName;
+  Future<void> stopView(FutureOr<String?> viewId) async {
+    String? _viewId;
+    if (viewId is Future) {
+      _viewId = await viewId;
     } else {
-      _name = viewName;
+      _viewId = viewId;
     }
-    if (_name != null && _name.isNotEmpty) {
-      await instance.pageEnd(_name);
+    if (_viewId != null && _viewId.isNotEmpty) {
+      await Countly.instance.views.stopViewWithID(_viewId);
     }
   }
 
   @override
   Future<void> logEvent(String eventId, [Map<String, String>? attributes]) {
-    return instance.logEvent(eventId: eventId, attributes: attributes);
+    return Countly.recordEvent({
+      "key": eventId,
+      "count": 1,
+      if (attributes != null && attributes.isNotEmpty) "segmentation": attributes,
+    });
   }
 }

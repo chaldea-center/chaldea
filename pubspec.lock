@@ -242,6 +242,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.1"
+  countly_flutter_np:
+    dependency: "direct main"
+    description:
+      name: countly_flutter_np
+      sha256: "21278c906f3f78abd6616aaccc2fed74e811216b3ec71ad6e590cb0683c91389"
+      url: "https://pub.dev"
+    source: hosted
+    version: "24.1.1"
   crclib:
     dependency: "direct main"
     description:
@@ -415,14 +423,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_baidu_mob_stat:
-    dependency: "direct main"
-    description:
-      name: flutter_baidu_mob_stat
-      sha256: "495173dfebc0aa4e35f50a7e66e3dab3d08b2bd1aa7249ff4dd1f3d19c84dceb"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.6"
   flutter_cache_manager:
     dependency: "direct main"
     description:
@@ -969,6 +969,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
+  pedantic:
+    dependency: transitive
+    description:
+      name: pedantic
+      sha256: "67fc27ed9639506c856c840ccce7594d0bdcd91bc8d53d6e52359449a1d50602"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.11.1"
   permission_handler:
     dependency: "direct main"
     description:

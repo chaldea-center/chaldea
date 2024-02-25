@@ -1,10 +1,11 @@
 PODS:
   - audio_session (0.0.1):
     - Flutter
-  - BaiduMobStatCodeless (5.3.6)
   - connectivity_plus (0.0.1):
     - Flutter
     - ReachabilitySwift
+  - countly_flutter_np (24.1.1):
+    - Flutter
   - device_info_plus (0.0.1):
     - Flutter
   - DKImagePickerController/Core (4.3.4):
@@ -42,9 +43,6 @@ PODS:
     - DKImagePickerController/PhotoGallery
     - Flutter
   - Flutter (1.0.0)
-  - flutter_baidu_mob_stat (0.0.1):
-    - BaiduMobStatCodeless
-    - Flutter
   - flutter_js (0.1.0):
     - Flutter
   - flutter_mailer (0.0.1):
@@ -88,10 +86,10 @@ PODS:
 DEPENDENCIES:
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
+  - countly_flutter_np (from `.symlinks/plugins/countly_flutter_np/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
-  - flutter_baidu_mob_stat (from `.symlinks/plugins/flutter_baidu_mob_stat/ios`)
   - flutter_js (from `.symlinks/plugins/flutter_js/ios`)
   - flutter_mailer (from `.symlinks/plugins/flutter_mailer/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
@@ -109,7 +107,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - BaiduMobStatCodeless
     - DKImagePickerController
     - DKPhotoGallery
     - ReachabilitySwift
@@ -122,14 +119,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/audio_session/ios"
   connectivity_plus:
     :path: ".symlinks/plugins/connectivity_plus/ios"
+  countly_flutter_np:
+    :path: ".symlinks/plugins/countly_flutter_np/ios"
   device_info_plus:
     :path: ".symlinks/plugins/device_info_plus/ios"
   file_picker:
     :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
     :path: Flutter
-  flutter_baidu_mob_stat:
-    :path: ".symlinks/plugins/flutter_baidu_mob_stat/ios"
   flutter_js:
     :path: ".symlinks/plugins/flutter_js/ios"
   flutter_mailer:
@@ -161,14 +158,13 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
-  BaiduMobStatCodeless: b1029b96b02d54802049d280f2b1abb0c76f0e9e
   connectivity_plus: bf0076dd84a130856aa636df1c71ccaff908fa1d
+  countly_flutter_np: 2c3fbd57c2abe694b4cc2cbebcd64ffc0714dc1e
   device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   file_picker: 15fd9539e4eb735dc54bae8c0534a7a9511a03de
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_baidu_mob_stat: b38f17612a3e78d6a79ef9afb2de30e49e16b2b5
   flutter_js: 95929d4e146e8ceb1c8e1889d8c2065c5d840076
   flutter_mailer: 2ef5a67087bc8c6c4cefd04a178bf1ae2c94cd83
   fluttertoast: 31b00dabfa7fb7bacd9e7dbee580d7a2ff4bf265
