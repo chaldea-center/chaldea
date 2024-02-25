@@ -13,7 +13,6 @@ import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../common/filter_page_base.dart';
 import '../../mc/mc_multi_gacha.dart';
-import '../../mc/mc_prob_edit.dart';
 import '../filter_page.dart';
 import 'gacha_banner.dart';
 
@@ -237,7 +236,7 @@ class _GachaListPageState extends State<GachaListPage>
           ));
         }
         children.add(TextButton(
-          onPressed: () => router.pushPage(MCGachaProbEditPage(gacha: gacha, region: region!)),
+          onPressed: () => gacha.routeTo(region: region!),
           child: Text(S.current.details),
         ));
         return Column(

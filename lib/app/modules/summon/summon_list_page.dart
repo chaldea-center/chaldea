@@ -67,7 +67,7 @@ class _SummonListPageState extends State<SummonListPage>
                 tabs: [const Tab(text: "Mooncell"), Tab(text: S.current.raw_gacha_data)],
                 onTap: (index) {
                   if (index == 1) {
-                    router.pushPage(GachaListPage(region: db.curUser.region));
+                    router.push(url: Routes.gachas, child: GachaListPage(region: db.curUser.region));
                     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
                       if (mounted) _tabController.index = 0;
                     });

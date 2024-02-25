@@ -1,3 +1,7 @@
+import 'package:flutter/material.dart';
+
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/mc/mc_prob_edit.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/extension.dart';
 import '_helper.dart';
@@ -114,7 +118,7 @@ class MstGacha {
 }
 
 @JsonSerializable(createToJson: false)
-class NiceGacha {
+class NiceGacha with RouteInfo {
   int id;
   String name;
   int imageId;
@@ -213,6 +217,17 @@ class NiceGacha {
       case Region.kr:
         return null;
     }
+  }
+
+  @override
+  String get route => Routes.gachaI(id);
+
+  @override
+  void routeTo({Widget? child, bool popDetails = false, Region? region}) {
+    return super.routeTo(
+      child: child ?? MCGachaProbEditPage(gacha: this, region: region ?? Region.jp),
+      popDetails: popDetails,
+    );
   }
 }
 

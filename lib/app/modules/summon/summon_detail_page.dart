@@ -11,7 +11,6 @@ import '../../../models/models.dart';
 import '../../app.dart';
 import '../common/builders.dart';
 import '../mc/mc_multi_gacha.dart';
-import '../mc/mc_prob_edit.dart';
 import 'gacha/gacha_banner.dart';
 import 'lucky_bag_expectation.dart';
 import 'summon_simulator_page.dart';
@@ -214,7 +213,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
                   background: false,
                 ),
                 onTap: () {
-                  router.pushPage(MCGachaProbEditPage(gacha: gacha, region: Region.jp));
+                  gacha.routeTo(region: Region.jp);
                 },
               ),
           ],

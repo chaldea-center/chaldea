@@ -25,6 +25,15 @@ class AppAnalysisImpl implements AppAnalysis {
   @override
   Future<String?> startView(String? viewName) async {
     if (viewName != null && viewName.isNotEmpty) {
+      for (final category in const ['buffAction', 'summon', 'script']) {
+        final route = '/$category/';
+        if (viewName!.startsWith(route)) {
+          viewName = route;
+          break;
+        }
+      }
+      final match = RegExp(r'^(/.+/)\d+$').firstMatch(viewName!);
+      viewName = match?.group(1) ?? viewName;
       await instance.pageStart(viewName);
       return viewName;
     }

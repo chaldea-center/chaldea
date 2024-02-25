@@ -1,6 +1,5 @@
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/mc/converter.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -9,7 +8,6 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'gacha_parser.dart';
-import 'mc_prob_edit.dart';
 
 class MCSummonCreatePage extends StatefulWidget {
   final List<NiceGacha> gachas;
@@ -68,7 +66,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
                 : const Icon(Icons.check_circle, color: Colors.green, size: 18),
             title: Text('${index + 1} - ${gacha.gacha.name.setMaxLines(1)}'),
             onTap: () {
-              router.pushPage(MCGachaProbEditPage(gacha: gacha.gacha, region: Region.jp));
+              gacha.gacha.routeTo(region: Region.jp);
             },
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           ),

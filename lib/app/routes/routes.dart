@@ -113,7 +113,7 @@ class Routes {
   static const String summon = '/summon';
   static const String summons = '/summons';
 
-  static String gachaI(String id) => '/gacha/$id';
+  static String gachaI(int id) => '/gacha/$id';
   static const String gacha = '/gacha';
   static const String gachas = '/gachas';
 
