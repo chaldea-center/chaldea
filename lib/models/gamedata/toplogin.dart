@@ -166,10 +166,10 @@ class FateTopLogin {
     final Map? userGame = data['cache']?['replaced']?['userGame']?[0];
     final String? friendCode = userGame?['friendCode']?.toString();
     if (userGame == null) return null;
-    if (userGame.containsKey('appuid')) {
-      return Region.cn;
-    } else if (friendCode != null && friendCode.length >= 12) {
+    if (userGame['rkchannel']?.toString() == '1000') {
       return Region.tw;
+    } else if (friendCode != null && friendCode.length >= 12) {
+      return Region.cn;
     }
     return Region.jp;
   }
