@@ -79,7 +79,7 @@ class _CustomMissionPageState extends State<CustomMissionPage> with SingleTicker
       setState(() {
         solution = s;
       });
-      AppAnalysis.instance.logEvent('master_mission');
+      AppAnalysis.instance.logEvent('mission_solve');
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
         if (mounted) _tabController.index = 1;
       });

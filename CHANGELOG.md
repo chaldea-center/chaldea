@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.7
+
+- Add related gacha to mc summons
+- Fix Bakin's skill3 trigger effect
+- Upgrade framework version
+
 ## 2.5.6
 
 - Add more campaign events
@@ -7,11 +13,11 @@
 - Display setting: add option to disable edge-swipe pop gesture
 - Laplace
   - Support manually removing buff by long press
-  - 【Chaange Quest Related】Support breakGaugeUp
-  - 【Chaange Quest Related】Support gutsHp
-  - 【Chaange Quest Related】Max HP related buffs will no longer cause targets which hp are below 0 to gain hp (mainly affects gauge break)
-  - 【Chaange Quest Related】Enemy Melusine can now use her skill 3 to correctly transform
-  - 【Chaange Quest Related】Enemy skills can now be acted multiple times each turn
+  - 【Challenge Quest Related】Support breakGaugeUp
+  - 【Challenge Quest Related】Support gutsHp
+  - 【Challenge Quest Related】Max HP related buffs will no longer cause targets which hp are below 0 to gain hp (mainly affects gauge break)
+  - 【Challenge Quest Related】Enemy Melusine can now use her skill 3 to correctly transform
+  - 【Challenge Quest Related】Enemy skills can now be acted multiple times each turn
   - Support Aŋra Mainiiu NP
   - Guts will now clear accumulation damage (overkill bug related)
   - Fix a bug that will cause servants to always gain max HP when affected by percentMaxHp related buffs
