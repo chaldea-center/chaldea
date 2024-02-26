@@ -252,6 +252,7 @@ DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate(
           maxWindowWidth: $checkedConvert('maxWindowWidth', (v) => v as int?),
           splitMasterRatio: $checkedConvert('splitMasterRatio', (v) => v as int?),
           enableSplitView: $checkedConvert('enableSplitView', (v) => v as bool? ?? true),
+          hideAdsUntil: $checkedConvert('hideAdsUntil', (v) => v as int? ?? 0),
         );
         return val;
       },
@@ -275,6 +276,7 @@ Map<String, dynamic> _$DisplaySettingsToJson(DisplaySettings instance) => <Strin
       'maxWindowWidth': instance.maxWindowWidth,
       'splitMasterRatio': instance.splitMasterRatio,
       'enableSplitView': instance.enableSplitView,
+      'hideAdsUntil': instance.hideAdsUntil,
     };
 
 const _$SvtPlanInputModeEnumMap = {

@@ -271,6 +271,7 @@ class DisplaySettings {
   int? maxWindowWidth; // web only
   int? splitMasterRatio;
   bool enableSplitView;
+  int hideAdsUntil;
 
   DisplaySettings({
     this.showAccountAtHome = true,
@@ -290,6 +291,7 @@ class DisplaySettings {
     this.maxWindowWidth,
     this.splitMasterRatio,
     this.enableSplitView = true,
+    this.hideAdsUntil = 0,
   })  : sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ?? List.of(SvtTab.values),
         hideSvtPlanDetails = hideSvtPlanDetails?.whereType<SvtPlanDetail>().toList() ?? [] {
     validateSvtTabs();
@@ -341,6 +343,7 @@ class CarouselSetting {
     // KR is blocked in CN, thus disable it by default
     this.enableKR = false,
   }) : items = items ?? [] {
+    enabled = true;
     if (ver == null) {
       enableJP = enableCN = enableTW = enableNA = enableKR = enableMooncell = false;
       ver = 2;
@@ -412,6 +415,8 @@ class CarouselItem {
   List<int> warIds;
   List<String> summonIds;
   @JsonKey(includeFromJson: false, includeToJson: false)
+  Widget? child;
+  @JsonKey(includeFromJson: false, includeToJson: false)
   BoxFit? fit;
 
   static const int defaultPriority = 99999;
@@ -435,6 +440,7 @@ class CarouselItem {
     List<int>? eventIds,
     List<int>? warIds,
     List<String>? summonIds,
+    this.child,
     this.fit,
   })  : startTime = startTime ?? DateTime(2000),
         endTime = endTime ?? DateTime(2099),

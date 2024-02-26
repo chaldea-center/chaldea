@@ -20,6 +20,7 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
+import 'package:chaldea/packages/ads/banner_ad.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/packages/packages.dart';
@@ -488,6 +489,27 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
       if (item.verMax != null && item.verMax! < AppInfo.version) return true;
       return false;
     });
+    if (BannerAdWidget.shouldShowAds) {
+      items.addAll(List.generate(
+        items.length ~/ 4 + 1,
+        (index) => CarouselItem(
+          child: FittedBox(
+            fit: BoxFit.contain,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minWidth: 80, minHeight: 30, maxHeight: 300, maxWidth: 800),
+              child: BannerAdWidget(
+                options: AdOptions.homeCarousel,
+                placeholder: (_) => const CachedImage(
+                  imageUrl: 'https://docs.chaldea.center/images/banner.jpg',
+                  cachedOption: CachedImageOption(fit: BoxFit.cover),
+                ),
+              ),
+            ),
+          ),
+          priority: 12 + index * 4,
+        ),
+      ));
+    }
     items.sort((a, b) {
       if (a.priority != b.priority) return a.priority - b.priority;
       return a.startTime.compareTo(b.startTime);
@@ -497,7 +519,9 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
       Widget? child;
       final img = item.getImage();
       final content = item.getContent();
-      if (img != null && isURL(img)) {
+      if (item.child != null) {
+        child = item.child;
+      } else if (img != null && isURL(img)) {
         child = CachedImage(
           imageUrl: img,
           aspectRatio: aspectRatio,

@@ -88,6 +88,7 @@ class _GalleryPageState extends State<GalleryPage> {
             ConstrainedBox(
               constraints: BoxConstraints(minHeight: PlatformU.isDesktopOrWeb ? 0 : constraints.maxHeight),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   if (db.settings.carousel.enabled) AppNewsCarousel(maxWidth: constraints.maxWidth),
                   if (db.settings.carousel.enabled) const Divider(height: 0.5, thickness: 0.5),

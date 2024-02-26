@@ -21,17 +21,17 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
       appBar: AppBar(title: Text(S.current.carousel_setting)),
       body: ListView(
         children: [
-          SwitchListTile.adaptive(
-            value: carousel.enabled,
-            title: Text(S.current.show_carousel),
-            onChanged: (v) {
-              setState(() {
-                carousel.enabled = v;
-                carousel.needUpdate = true;
-                db.notifySettings();
-              });
-            },
-          ),
+          // SwitchListTile.adaptive(
+          //   value: carousel.enabled,
+          //   title: Text(S.current.show_carousel),
+          //   onChanged: (v) {
+          //     setState(() {
+          //       carousel.enabled = v;
+          //       carousel.needUpdate = true;
+          //       db.notifySettings();
+          //     });
+          //   },
+          // ),
           kIndentDivider,
           CheckboxListTile(
             value: carousel.enableChaldea,

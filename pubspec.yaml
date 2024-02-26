@@ -114,6 +114,8 @@ dependencies:
       url: https://github.com/google/flutter-desktop-embedding
       path: plugins/window_size
   countly_flutter_np: ^24.1.1
+  google_mobile_ads: ^4.0.0
+  admanager_web: ^0.0.4
 
 dev_dependencies:
   flutter_test:
