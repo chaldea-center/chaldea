@@ -18,7 +18,7 @@ class AppAnalysisImpl implements AppAnalysis {
       // after db init
       config.setUserProperties({
         "language": Language.current.code,
-        "region": db.settings.preferredQuestRegion?.upper,
+        "region": db.settings.resolvedPreferredRegions.firstOrNull?.upper,
       });
       await Countly.initWithConfig(config);
       // print('Countly init: $msg');

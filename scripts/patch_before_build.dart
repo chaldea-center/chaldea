@@ -55,15 +55,19 @@ void patchAndroidPreview() {
 }
 
 void patchFDroid() {
-  File('lib/packages/analysis/analysis_impl.dart').deleteSync();
+  File('lib/packages/ads/ad_mobile.dart').deleteSync();
 
+  File file = File('lib/packages/ads/banner_ad.dart');
+  file.writeAsStringSync(file.readAsStringSync().replaceAll('ad_mobile.dart', 'ad_stub.dart'));
+
+  file = File('pubspec.yaml');
+  file.writeAsStringSync(file.readAsLinesSync().where((e) => !e.trim().startsWith('google_mobile_ads:')).join('\n'));
+
+  // ignore: unused_element
   void _removeLines(String fp, Pattern trailing) {
     final file = File(fp);
     List<String> lines = file.readAsLinesSync();
     lines = lines.map((line) => trailing.allMatches(line.trim()).isEmpty ? line : '').toList();
     file.writeAsStringSync(lines.join('\n'));
   }
-
-  _removeLines('lib/packages/analysis/analysis.dart', RegExp(r'//\s*f-droid-rm$'));
-  _removeLines('pubspec.yaml', RegExp(r'#\s*f-droid-rm$'));
 }

@@ -1,15 +1,14 @@
 import 'dart:async';
 
 import '../platform/platform.dart';
-
-import './analysis_impl.dart'; // f-droid-rm
+import './analysis_impl.dart';
 
 class AppAnalysis {
   static AppAnalysis instance = AppAnalysis._instantiate();
   AppAnalysis._();
   factory AppAnalysis._instantiate() {
     if (PlatformU.isAndroid || PlatformU.isIOS) {
-      return AppAnalysisImpl(); // f-droid-rm
+      return AppAnalysisImpl();
     }
     return AppAnalysis._();
   }
