@@ -73,11 +73,6 @@ class ChaldeaWorkerApi {
     String? authHeader;
     if (secret.isNotEmpty) {
       authHeader = secret;
-    } else {
-      final username = db.legacySecurity.username ?? "", password = db.legacySecurity.userAuth ?? "";
-      if (username.isNotEmpty && password.isNotEmpty) {
-        authHeader = base64Encode(utf8.encode("$username:$password"));
-      }
     }
     if (authHeader == null) {
       return options;
@@ -131,27 +126,6 @@ class ChaldeaWorkerApi {
       expireAfter: Duration.zero,
       options: addAuth ? addAuthHeader(options: options) : options,
     );
-  }
-
-  /// users part
-
-  static Future<ChaldeaUser?> updateLegacyAuth() async {
-    final existUser = db.settings.secrets.user;
-    if (existUser != null && existUser.secret != null) return null;
-
-    final username = db.legacySecurity.username ?? "", secret = db.legacySecurity.userAuth ?? "";
-    if (username.isEmpty || secret.isEmpty) return null;
-    final user = await cacheManager.postModel(
-      '$apiV4/user/update-session',
-      fromJson: (data) => ChaldeaUser.fromJson(data),
-      options: addAuthHeader(),
-    );
-    if (user != null && user.secret != null) {
-      db.settings.secrets.user = user;
-      db.legacySecurity.deleteUserInfo();
-      db.saveSettings();
-    }
-    return user;
   }
 
   static Future<ChaldeaUser?> login({
