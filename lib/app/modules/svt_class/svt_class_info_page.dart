@@ -19,8 +19,6 @@ class SvtClassInfoPage extends StatefulWidget {
 }
 
 class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
-  bool showIcon = true;
-
   int get clsId => widget.clsId;
   late SvtClass? cls = kSvtClassIds[clsId];
 
@@ -61,7 +59,7 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text('${S.current.svt_class}: ${cls?.lName ?? clsId}'),
+        title: Text('${S.current.svt_class}: ${Transl.svtClassId(clsId).l}'),
       ),
       body: ListView(
         children: [
@@ -85,7 +83,7 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
             CustomTableRow.fromTexts(texts: const ['ID', 'Class'], isHeader: true),
             CustomTableRow(children: [
               TableCellData(text: clsId.toString()),
-              TableCellData(text: cls?.lName ?? Transl.svtClassId(clsId).l),
+              TableCellData(text: Transl.svtClassId(clsId).l),
             ]),
             CustomTableRow.fromTexts(texts: const ['Attack Rate', 'Trait'], isHeader: true),
             CustomTableRow(children: [
@@ -136,6 +134,8 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
       color = Theme.of(context).colorScheme.error;
     } else if (rate < 1000) {
       color = Theme.of(context).colorScheme.primaryContainer;
+    } else {
+      color = Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.5);
     }
     final text = _fmt(rate);
     Widget child = Text(
@@ -152,7 +152,7 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
   }
 
   Widget clsIcon(int _clsId) {
-    final cls = kSvtClassIds[_clsId];
+    final clsName = Transl.svtClassId(_clsId).l;
     final info = db.gameData.constData.classInfo[_clsId];
     return InkWell(
       onTap: () {
@@ -163,31 +163,36 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
       },
       child: Padding(
         padding: const EdgeInsets.all(2),
-        child: showIcon
-            ? Tooltip(
-                message: cls?.lName ?? 'Class $_clsId',
-                child: db.getIconImage(
-                  SvtClassX.clsIcon(clsId, 5, info?.iconImageId),
-                  height: 24,
-                  aspectRatio: 1,
-                  errorWidget: (context, url, error) => Text(_clsId.toString()),
-                ),
-              )
-            : Text(cls?.lName ?? '$_clsId'),
+        child: Tooltip(
+          message: clsName,
+          child: db.getIconImage(
+            SvtClassX.clsIcon(clsId, 5, info?.iconImageId),
+            height: 24,
+            aspectRatio: 1,
+            errorWidget: (context, url, error) => Text(_clsId.toString()),
+          ),
+        ),
       ),
     );
   }
 
   Widget clsAffinity() {
+    final clsInfos = db.gameData.constData.classInfo;
     final relations = db.gameData.constData.classRelation;
-    final attackRates = Map<int, int>.of(relations[clsId] ?? {});
+
+    final relationId = clsInfos[clsId]?.relationId;
+    final attackRates = Map<int, int>.of(relations[relationId] ?? {});
     final defenseRates = <int, int>{
       for (final key in relations.keys)
-        if (relations[key]![clsId] != null) key: relations[key]![clsId]!
+        if (relations[key]![relationId] != null) key: relations[key]![relationId]!
     };
-    final allClasses =
-        <int>{...attackRates.keys, ...defenseRates.keys, ...SvtClassX.regularAll.map((e) => e.id)}.toList();
+    final _allRelationIds = {...attackRates.keys, ...defenseRates.keys};
+    final allClasses = <int>{
+      ...clsInfos.values.where((e) => _allRelationIds.contains(e.relationId)).map((e) => e.id),
+      ...SvtClassX.regularAll.map((e) => e.id),
+    }.toList();
     allClasses.sort2((e) => -(db.gameData.constData.classInfo[e]?.priority ?? -1));
+    allClasses.sortByList((e) => [clsInfos[e]?.supportGroup ?? 999, -(clsInfos[e]?.priority ?? -1), e]);
     return LayoutBuilder(builder: (context, constraints) {
       int crossCount = constraints.maxWidth ~/ 42;
       if (crossCount < 8) crossCount = 8;
@@ -204,7 +209,8 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
           } else {
             final oppCls = allClasses.getOrNull(row * clsCountPerLine + col - 1);
             rows[0].add(oppCls == null ? null : clsIcon(oppCls));
-            final atk = attackRates[oppCls], def = defenseRates[oppCls];
+            final _oppRelationId = clsInfos[oppCls]?.relationId;
+            final atk = attackRates[_oppRelationId], def = defenseRates[_oppRelationId];
             rows[1].add(_fmtColor(atk, clsId, oppCls));
             rows[2].add(_fmtColor(def, oppCls, clsId));
           }

@@ -102,11 +102,11 @@ class ConstGameData {
   }
 
   int getClassRelation(SvtClass attacker, SvtClass defender) {
-    return classRelation[attacker.id]?[defender.id] ?? 1000;
+    return getClassIdRelation(attacker.id, defender.id);
   }
 
   int getClassIdRelation(final int attacker, final int defender) {
-    return classRelation[attacker]?[defender] ?? 1000;
+    return classRelation[classInfo[attacker]?.relationId]?[classInfo[defender]?.relationId] ?? 1000;
   }
 
   int getAttributeRelation(final Attribute attacker, final Attribute defender) {
