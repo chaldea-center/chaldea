@@ -9,7 +9,6 @@ import 'package:chaldea/app/modules/home/subpage/login_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/api/api.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/catcher/server_feedback_handler.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -454,7 +453,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       tooltip: S.current.favorite_teams,
     ));
 
-    if (mode == TeamQueryMode.user || record.userId == curUserId || AppInfo.isDebugDevice) {
+    if (mode == TeamQueryMode.user || record.userId == curUserId || secrets.user?.isAdmin == true) {
       actions.add(TextButton(
         onPressed: () {
           final isOthers = record.userId != curUserId;

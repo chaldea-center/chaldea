@@ -32,7 +32,7 @@ void main() async {
     await _initiateCommon();
     await workerManager.init();
     await db.initiate();
-    await AppAnalysis.instance.initiate();
+    AppAnalysis.instance.initiate();
     catcherOptions = CatcherUtil.getOptions(
       logPath: db.paths.crashLog,
       feedbackHandler: ServerFeedbackHandler(
