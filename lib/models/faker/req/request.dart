@@ -195,7 +195,7 @@ class NetworkManager {
     final Map<String, dynamic> headers = {};
     headers[HttpHeaders.userAgentHeader] = user.userAgent ?? UA.fallback;
     if (sessionId != null) {
-      headers['Cookie'] = 'ASP.NET_SessionId=$sessionId;';
+      headers['Cookie'] = sessionId!;
     }
     final authCode = getAuthCode(authParams);
     form.addField('authCode', authCode);
