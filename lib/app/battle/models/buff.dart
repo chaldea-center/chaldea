@@ -110,7 +110,8 @@ class BuffData {
   bool isUsed = false;
 
   bool passive = false;
-  bool irremovable = false;
+  bool get irremovable =>
+      passive || vals.UnSubState == 1 || vals.SetPassiveFrame == 1 || vals.UnSubStateWhileLinkedToOthers == 1;
 
   // ignore: unused_field
   // bool isDecide = false;
@@ -133,7 +134,6 @@ class BuffData {
     param = vals.Value ?? 0;
     additionalParam = vals.Value2 ?? 0;
     buffRate = vals.UseRate ?? 1000;
-    irremovable = vals.UnSubState == 1 || vals.SetPassiveFrame == 1; // need more sample
   }
 
   BuffData.makeCopy(this.buff, this.vals, this.addOrder);
@@ -473,7 +473,6 @@ class BuffData {
       ..actorUniqueId = actorUniqueId
       ..actorName = actorName
       ..isUsed = isUsed
-      ..irremovable = irremovable
       ..passive = passive
       .._state = _state;
     return copy;

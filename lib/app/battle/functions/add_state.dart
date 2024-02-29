@@ -31,8 +31,8 @@ class AddState {
       final buffData = BuffData(buff, dataVals, battleData.getNextAddOrder())
         ..actorUniqueId = activator?.uniqueId
         ..actorName = activator?.lBattleName
-        ..notActorPassive = notActorPassive
-        ..irremovable |= isPassive || notActorPassive;
+        ..passive = isPassive || notActorPassive
+        ..notActorPassive = notActorPassive;
       if (isShortBuff) {
         buffData.logicTurn -= 1;
       }
