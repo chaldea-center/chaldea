@@ -133,7 +133,7 @@ class BuffData {
     param = vals.Value ?? 0;
     additionalParam = vals.Value2 ?? 0;
     buffRate = vals.UseRate ?? 1000;
-    irremovable = vals.UnSubState == 1; // need more sample
+    irremovable = vals.UnSubState == 1 || vals.SetPassiveFrame == 1; // need more sample
   }
 
   BuffData.makeCopy(this.buff, this.vals, this.addOrder);
