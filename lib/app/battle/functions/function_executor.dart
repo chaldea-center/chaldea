@@ -60,13 +60,15 @@ class FunctionExecutor {
         }
       }
       int? selectedActSet;
-      if (battleData.delegate?.actWeight != null) {
-        selectedActSet = await battleData.delegate!.actWeight!(battleData.activator);
-      } else if (actSets.isNotEmpty && battleData.mounted) {
-        selectedActSet = await FuncActSetSelector.show(battleData, actSets);
-        battleData.replayDataRecord.actWeightSelections.add(selectedActSet);
-        if (selectedActSet != null && selectedActSet > 0) {
-          battleData.recorder.setIllegal("ActSetWeight: Must skip random effects");
+      if (actSets.isNotEmpty) {
+        if (battleData.delegate?.actWeight != null) {
+          selectedActSet = await battleData.delegate!.actWeight!(battleData.activator);
+        } else if (battleData.mounted) {
+          selectedActSet = await FuncActSetSelector.show(battleData, actSets);
+          battleData.replayDataRecord.actWeightSelections.add(selectedActSet);
+          if (selectedActSet != null && selectedActSet > 0) {
+            battleData.recorder.setIllegal("ActSetWeight: Must skip random effects");
+          }
         }
       }
       param?.actSet = selectedActSet;

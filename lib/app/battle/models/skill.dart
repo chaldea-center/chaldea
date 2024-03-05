@@ -169,8 +169,7 @@ class BattleSkillInfoData {
         curSkill.script!.SelectAddInfo!.isNotEmpty) {
       if (battleData.delegate?.skillActSelect != null) {
         selectedActionIndex = await battleData.delegate!.skillActSelect!(battleData.activator);
-      }
-      if (selectedActionIndex == null && battleData.mounted) {
+      } else if (battleData.mounted) {
         selectedActionIndex = await SkillActSelectDialog.show(battleData, curSkill, skillLv);
         battleData.replayDataRecord.skillActSelectSelections.add(selectedActionIndex);
       }
