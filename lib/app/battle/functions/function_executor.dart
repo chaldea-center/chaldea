@@ -370,8 +370,8 @@ class FunctionExecutor {
         case FuncType.movePosition:
         case FuncType.revival:
         case FuncType.changeBgmCostume:
-        case FuncType.func126:
-        case FuncType.func127:
+        case FuncType.lossCommandSpell:
+        case FuncType.gainCommandSpell:
         case FuncType.lastUsePlayerSkillCopy:
           battleData.battleLogger.debug('${S.current.not_implemented}: ${function.funcType}, '
               'Function ID: ${function.funcId}, '

@@ -460,10 +460,10 @@ class AiTable extends StatelessWidget {
       case NiceAiCond.checkOpponentHpLower:
       case NiceAiCond.checkPrecedingEnemy:
       case NiceAiCond.countLowerRemainTurn:
-      case NiceAiCond.countHigherAi171:
-      case NiceAiCond.countLowerAi172:
-      case NiceAiCond.countEqualAi173:
-      case NiceAiCond.checkAi174:
+      case NiceAiCond.countHigherPlayerCommandSpell:
+      case NiceAiCond.countLowerPlayerCommandSpell:
+      case NiceAiCond.countEqualPlayerCommandSpell:
+      case NiceAiCond.checkMasterSkillThisturn:
       case NiceAiCond.checkUseSkillThisturn:
       case NiceAiCond.countChainHigher:
       case NiceAiCond.countChainLower:

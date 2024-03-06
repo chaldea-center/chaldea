@@ -522,8 +522,8 @@ enum FuncType {
   friendPointUpDuplicate(123),
   moveState(124),
   changeBgmCostume(125),
-  func126(126), // decrease command spell
-  func127(127), // increase?
+  lossCommandSpell(126),
+  gainCommandSpell(127),
   updateEntryPositions(128),
   buddyPointUp(129),
   addFieldChangeToField(130),
