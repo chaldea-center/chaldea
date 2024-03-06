@@ -50,7 +50,7 @@ jobs:
             build_options: --flavor=play
       fail-fast: false
     steps:
-      - uses: subosito/flutter-action@v2
+      - uses: subosito/flutter-action@v2.12.0
         with:
           channel: "stable"
           flutter-version: ${{ env.FLUTTER_VERSION }}
