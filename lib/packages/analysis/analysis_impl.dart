@@ -16,10 +16,13 @@ class AppAnalysisImpl implements AppAnalysis {
           CountlyConfig("https://countly.chaldea.center", '46e56e032869aa7dc7e8627bfb6b00c4f0dc1b41');
       // if (kDebugMode) config.setLoggingEnabled(true);
       // after db init
-      config.setUserProperties({
-        "language": Language.current.code,
-        "region": db.settings.resolvedPreferredRegions.firstOrNull?.upper,
-      });
+      config
+        ..setUserProperties({
+          "language": Language.current.code,
+          "region": db.settings.resolvedPreferredRegions.firstOrNull?.upper,
+        })
+        ..setUpdateSessionTimerDelay(600)
+        ..setEventQueueSizeToSend(50);
       await Countly.initWithConfig(config);
       // print('Countly init: $msg');
     }

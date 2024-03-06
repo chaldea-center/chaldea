@@ -47,7 +47,9 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   @override
   void dispose() {
     super.dispose();
-    AppAnalysis.instance.logEvent('summon_simulator', {"count": _debugPullCount.toString()});
+    if (_debugPullCount > 0) {
+      AppAnalysis.instance.logEvent('summon_simulator', {"count": "1", "sum": _debugPullCount.toString()});
+    }
   }
 
   void reset() {

@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -58,7 +56,7 @@ class _CommonReleasesPageState extends State<CommonReleasesPage>
           ),
           actions: [
             if (useId) dropdownRegion(),
-            if (useId && kDebugMode) popupMenu,
+            if (useId) popupMenu,
           ],
         ),
         body: buildBody(context),

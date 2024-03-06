@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
@@ -775,7 +774,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       ),
       kIndentDivider,
       ...buildPointBuffs(),
-      if (kDebugMode) ...buildEnemyRateUp(),
+      ...buildEnemyRateUp(),
     ];
 
     return Column(
