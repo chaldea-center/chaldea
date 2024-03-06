@@ -64,7 +64,7 @@
         <!-- Google Ad Manager -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3179193938592077~1016429503"/>
+            android:value="ca-app-pub-1170355046794925~1201467614"/>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility?hl=en and

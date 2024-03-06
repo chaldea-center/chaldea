@@ -72,7 +72,7 @@ class _BannerAdWidgetState extends State<_BannerAdWidget> {
       return;
     }
     _bannerAd = BannerAd(
-      adUnitId: adUnitId!,
+      adUnitId: adId,
       request: const AdRequest(),
       size: AdSize(width: size.width, height: size.height),
       listener: BannerAdListener(

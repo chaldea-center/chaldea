@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/models/db.dart';
@@ -23,10 +22,8 @@ class BannerAdWidget extends StatelessWidget {
   }
 
   static bool get shouldShowAds =>
-      kDebugMode &&
-      instance.supported &&
-      instance.initialized &&
-      db.settings.display.hideAdsUntil < DateTime.now().timestamp;
+      // kDebugMode &&
+      instance.supported && instance.initialized && db.settings.display.hideAdsUntil < DateTime.now().timestamp;
 
   @override
   Widget build(BuildContext context) {

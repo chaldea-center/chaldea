@@ -33,10 +33,10 @@ class AdOptions {
 
   static const homeCarousel = AdOptions(
     size: AppAdSize(320, 120),
-    androidId: 'ca-app-pub-3940256099942544/6300978111',
-    iosId: 'ca-app-pub-3940256099942544/2934735716',
-    // androidId: 'ca-app-pub-3179193938592077/5027826704',
-    // iosId: 'ca-app-pub-3179193938592077/6340908370',
+    // androidId: 'ca-app-pub-3940256099942544/6300978111',
+    // iosId: 'ca-app-pub-3940256099942544/2934735716',
+    androidId: 'ca-app-pub-1170355046794925/8212269539',
+    iosId: 'ca-app-pub-1170355046794925/3228031006',
   );
 }
 
