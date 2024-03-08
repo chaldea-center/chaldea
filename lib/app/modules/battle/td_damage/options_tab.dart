@@ -310,6 +310,22 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
                 },
         ),
       ),
+      SliderWithPrefix(
+        titled: true,
+        label: S.current.foukun,
+        min: 0,
+        max: 2000,
+        division: 20,
+        value: options.fouHpAtk,
+        valueFormatter: (v) => options.usePlayerSvt.isNone ? v.toString() : '-',
+        onChange: (v) {
+          if (options.usePlayerSvt.isNone) {
+            options.fouHpAtk = v.round().clamp(0, 2000);
+            if (mounted) setState(() {});
+          }
+        },
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+      ),
       kIndentDivider,
       ListTile(
         dense: true,

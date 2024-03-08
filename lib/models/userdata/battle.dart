@@ -755,6 +755,7 @@ class TdDamageOptions {
   bool enableAppendSkills;
   // bool includeRefundAfterTd = true; // 重蓄力
   SvtLv svtLv;
+  int fouHpAtk;
   int tdR3;
   int tdR4;
   int tdR5;
@@ -793,6 +794,7 @@ class TdDamageOptions {
     this.twiceActiveSkill = false,
     this.enableAppendSkills = false,
     this.svtLv = SvtLv.maxLv,
+    this.fouHpAtk = 1000,
     this.tdR3 = 5,
     this.tdR4 = 2,
     this.tdR5 = 1,

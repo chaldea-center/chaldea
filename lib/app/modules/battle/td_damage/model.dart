@@ -262,6 +262,7 @@ class TdDmgSolver {
     data.extraPassives = svt.extraPassive.toList();
     if (options.usePlayerSvt == PreferPlayerSvtDataSource.none) {
       data.lv = options.svtLv == SvtLv.maxLv ? svt.lvMax : options.svtLv.lv!;
+      data.hpFou = data.atkFou = options.fouHpAtk;
 
       if (svt.rarity <= 3 || svt.extra.obtains.contains(SvtObtain.eventReward)) {
         data.tdLv = options.tdR3;
