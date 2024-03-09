@@ -39,7 +39,7 @@ dependencies:
   catcher_2: ^1.0.0
   connectivity_plus: ^5.0.1
   # cookie_jar: ^4.0.1
-  crclib: ^3.0.0
+  # crclib: ^3.0.0
   cross_file: ^0.3.3+5
   crypto: ^3.0.2
   csv: ^6.0.0

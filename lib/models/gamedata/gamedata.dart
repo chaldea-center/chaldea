@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 
-import 'package:crclib/catalog.dart';
+import 'package:archive/archive.dart';
 
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/utils/extension.dart';
@@ -466,7 +466,7 @@ class GameTop extends GameAppVerCode {
     return _host;
   }
 
-  int get folderCrc => Crc32().convert(utf8.encode(assetbundleFolder)).toBigInt().toInt();
+  int get folderCrc => getCrc32(utf8.encode(assetbundleFolder));
 
   factory GameTop.fromJson(Map<String, dynamic> json) => _$GameTopFromJson(json);
 

@@ -13,7 +13,6 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/extension.dart';
-import '../quiz/cat_mouse.dart';
 import 'request.dart';
 
 class FRequestAgent {
@@ -50,10 +49,16 @@ class FRequestAgent {
     if (resp.checkError()) {
       int dataVer = resp.success!['dataVer']!;
       int dateVer = resp.success!['dateVer']!;
-      // String assetbundle = resp.success!['assetbundle']!;
+      String assetbundle = resp.success!['assetbundle'] ?? "";
       // String assetbundleKey = resp.success!['assetbundleKey']!;
       if (dataVer > network.gameTop.dataVer) network.gameTop.dataVer = dataVer;
       if (dateVer > network.gameTop.dateVer) network.gameTop.dateVer = dateVer;
+      if (assetbundle.isNotEmpty) {
+        final assetbundleData = network.catMouseGame.mouseInfoMsgpack(base64Decode(assetbundle));
+        final String folderName = assetbundleData['folderName']!;
+        network.gameTop.assetbundleFolder = folderName;
+        // network.gameTop.assetbundle = assetbundle;
+      }
       return fresp;
     } else {
       final detail = resp.fail?['detail'] as String?;
@@ -239,7 +244,7 @@ class FRequestAgent {
     dictionary['usedTurnList'] = usedTurnArray;
     print(jsonEncode(dictionary));
     final List<int> packed = msgpack.serialize(dictionary);
-    final List<int> encryped = CatMouseGame(network.gameTop.region).catGame5Bytes(packed);
+    final List<int> encryped = network.catMouseGame.catGame5Bytes(packed);
     request.addFieldStr('result', base64Encode(encryped));
     return request.beginRequestAndCheckError();
   }

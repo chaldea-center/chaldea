@@ -14,6 +14,7 @@ import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/userdata/autologin.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
+import '../quiz/cat_mouse.dart';
 
 int _getNowTimestamp() => DateTime.now().timestamp;
 
@@ -99,10 +100,11 @@ class FRequestBase {
 class NetworkManager {
   final GameTop gameTop;
   final AutoLoginData user;
+  final CatMouseGame catMouseGame;
 
   FRequestBase? _runningTask;
 
-  NetworkManager({required this.gameTop, required this.user});
+  NetworkManager({required this.gameTop, required this.user}) : catMouseGame = CatMouseGame(gameTop.region);
 
   // long
   int _nowTime = -1;

@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:crclib/catalog.dart';
+import 'package:archive/archive.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
@@ -203,7 +203,7 @@ class ApiCacheManager {
     final bytes = response.data!;
     final file = _getCacheFile(key);
 
-    final crc = Crc32Xz().convert(bytes).toString();
+    final crc = getCrc32(bytes).toString();
     _memoryCache[key] = bytes;
 
     await file?.create(recursive: true);
@@ -298,7 +298,7 @@ class ApiCacheManager {
               }
             }
           }
-          if (bytes != null && Crc32Xz().convert(bytes).toString() == entry.crc) {
+          if (bytes != null && getCrc32(bytes).toString() == entry.crc) {
             return SynchronousFuture(bytes);
           }
         }

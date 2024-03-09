@@ -266,14 +266,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "24.1.1"
-  crclib:
-    dependency: "direct main"
-    description:
-      name: crclib
-      sha256: "800f2226cd90c900ddcaaccb79449eabe690627ee8c7046737458f1a2509043d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
   cross_file:
     dependency: "direct main"
     description:

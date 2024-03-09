@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:dart_des/dart_des.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/faker/quiz/cat_mouse.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -291,21 +291,8 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
       logger.e('invalid base64 string', e, s);
       throw ArgumentError('Invalid base64 string');
     }
-    const key = 'b5nHjsMrqaeNliSs3jyOzgpD'; // 24-byte
-    const iv = 'wuD6keVr';
 
-    DES3 des3CBC = DES3(
-      key: utf8.encode(key),
-      mode: DESMode.CBC,
-      iv: utf8.encode(iv),
-      paddingType: DESPaddingType.PKCS7,
-    );
-    var bytes = des3CBC.decrypt(base64.decode(code));
-    assert(bytes.first == 0x7b && bytes.last == 0x7d, bytes.map((e) => e.toRadixString(16).padLeft(2, '0')).join());
-    // '{'=0x7b, '}'=0x7d
-    bytes = bytes.sublist(bytes.indexOf(0x7b), bytes.lastIndexOf(0x7d) + 1);
-    final decrypted = utf8.decode(bytes);
-    final data = jsonDecode(decrypted);
+    final data = CatMouseGame(Region.jp).decryptAuthsave(utf8.encode(code));
     return auth = UserAuth(
       source: source == null ? null : base64Encode(source),
       code: code,
