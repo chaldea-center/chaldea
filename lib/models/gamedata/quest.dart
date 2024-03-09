@@ -439,6 +439,14 @@ class QuestPhase extends Quest {
         }
       }
     }
+    // ort
+    if (id == 3001325 && phase == 7) {
+      if (Maths.min(drops.map((e) => e.dropCount ~/ e.runs), 0) == 8) {
+        for (final drop in drops) {
+          drop.dropCount = drop.dropCount ~/ 8;
+        }
+      }
+    }
   }
 
   @override

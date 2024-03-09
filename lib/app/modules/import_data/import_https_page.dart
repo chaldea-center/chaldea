@@ -79,7 +79,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   Future<void> loadOrSave() async {
     try {
       if (widget.toploginText != null) {
-        parseResponseBody(utf8.encode(widget.toploginText!));
+        parseResponseBody(utf8.encode(widget.toploginText!), true);
         await FilePlus(tmpPath).create(recursive: true);
         await FilePlus(tmpPath).writeAsString(widget.toploginText!);
       } else {
@@ -87,7 +87,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         final oldFile = FilePlus(tmpPathOld);
         final f = !newFile.existsSync() && oldFile.existsSync() ? oldFile : newFile;
         if (f.existsSync()) {
-          parseResponseBody(await f.readAsBytes());
+          parseResponseBody(await f.readAsBytes(), false);
           if (mounted) setState(() {});
         }
       }
@@ -948,10 +948,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         }
       }
       if (bytes == null) return;
-      parseResponseBody(bytes);
+      parseResponseBody(bytes, true);
       await FilePlus(tmpPath).create(recursive: true);
       await FilePlus(tmpPath).writeAsBytes(bytes);
-      AppAnalysis.instance.logEvent("import_toplogin", {"region": topLogin?.region?.upper ?? "unknown"});
     } catch (e, s) {
       logger.e('fail to load http response', e, s);
       if (mounted) {
@@ -967,7 +966,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     }
   }
 
-  void parseResponseBody(List<int> bytes) {
+  void parseResponseBody(List<int> bytes, bool logEvent) {
     FateTopLogin _topLogin = FateTopLogin.fromBytes(bytes);
     if (!_topLogin.response.any((res) => res.nid == 'login')) {
       throw const FormatException('This is not login data');
@@ -1064,5 +1063,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
 
     // assign last
     topLogin = _topLogin;
+
+    if (logEvent) {
+      AppAnalysis.instance.logEvent("import_toplogin", {"region": _topLogin.region?.upper ?? "unknown"});
+    }
   }
 }
