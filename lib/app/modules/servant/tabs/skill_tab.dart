@@ -101,8 +101,9 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
     final extraPassives = svt.extraPassive.toList();
     extraPassives.sort2((e) => e.extraPassive.firstOrNull?.startedAt ?? 0, reversed: true);
     for (final passive in extraPassives) {
-      final eventId = passive.extraPassive.firstOrNull?.eventId ?? 0;
-      if (eventId == 0) {
+      final svtExtraPassive = passive.extraPassive.firstOrNull;
+      final eventId = svtExtraPassive?.eventId ?? 0;
+      if (eventId == 0 && (svtExtraPassive == null || !svtExtraPassive.isLimited)) {
         extraPassiveFixed.add(passive);
       } else if (db.gameData.events[eventId]?.warIds.any((e) => e < 1000) == true) {
         extraPassiveMain.add(passive);

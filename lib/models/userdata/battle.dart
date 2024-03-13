@@ -891,7 +891,7 @@ enum PreferClassBoardDataSource {
       PreferClassBoardDataSource.none => S.current.disabled,
       PreferClassBoardDataSource.current => S.current.current_,
       PreferClassBoardDataSource.target => S.current.target,
-      PreferClassBoardDataSource.full => "Full"
+      PreferClassBoardDataSource.full => "Max"
     };
   }
 }

@@ -220,7 +220,29 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
       }
       if (cond.eventId != 0) {
         final event = db.gameData.events[cond.eventId];
-        condDetails.add(Text(' ꔷ ${S.current.event} ${event?.lName.l ?? cond.eventId}', style: style));
+        condDetails.add(Text.rich(
+          TextSpan(
+            text: ' ꔷ ${S.current.event} ',
+            children: [
+              SharedBuilder.textButtonSpan(
+                context: context,
+                text: event?.lName.l ?? cond.eventId.toString(),
+                onTap: () => router.push(url: Routes.eventI(cond.eventId)),
+              )
+            ],
+          ),
+          style: style,
+        ));
+      } else if (cond.isLimited) {
+        condDetails.add(Text(' ꔷ ${[cond.startedAt, cond.endedAt].map((e) => e.sec2date().toDateString()).join(' ~ ')}',
+            style: style));
+      }
+      for (final release in cond.releaseConditions) {
+        condDetails.add(CondTargetValueDescriptor.commonRelease(
+          commonRelease: release,
+          leading: const TextSpan(text: ' ꔷ '),
+          style: style,
+        ));
       }
       children.add(Column(
         mainAxisSize: MainAxisSize.min,

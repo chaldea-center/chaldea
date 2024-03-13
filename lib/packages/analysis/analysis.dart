@@ -38,7 +38,7 @@ class AppAnalysis {
       }
     }
     baseRoute ??= viewName;
-    final match = RegExp(r'^(/.+?)(\d+/)*\d+$').firstMatch(baseRoute);
+    final match = RegExp(r'^(/.+?)(\-?\d+/)*\-?\d+$').firstMatch(baseRoute);
     baseRoute = match?.group(1) ?? baseRoute;
     assert(viewName.startsWith(baseRoute), '$viewName -> $baseRoute');
     String subpath = viewName.startsWith(baseRoute) ? viewName.substring(baseRoute.length) : "";

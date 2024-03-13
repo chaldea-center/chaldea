@@ -786,6 +786,8 @@ class ExtraPassive {
   int startedAt;
   int endedAt;
 
+  bool get isLimited => endedAt - startedAt < 700 * kSecsPerDay;
+
   ExtraPassive({
     required this.num,
     required this.priority,

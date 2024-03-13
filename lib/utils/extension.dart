@@ -310,6 +310,8 @@ extension StringX on String {
     return breakWord;
   }
 
+  List<int> get utf8Bytes => utf8.encode(this);
+
   Text toText({
     Key? key,
     TextStyle? style,

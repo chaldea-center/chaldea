@@ -255,6 +255,9 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
               onPressed: page == null || page.isEmpty
                   ? null
                   : () {
+                      if (wikitext != null && wikitext.isNotEmpty) {
+                        copyToClipboard(wikitext, toast: true);
+                      }
                       launch(Uri.parse('https://fgo.wiki/w/$page?action=edit').toString(), external: true);
                     },
               child: const Text('创建页面'),

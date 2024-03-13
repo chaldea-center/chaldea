@@ -7,7 +7,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:archive/archive_io.dart';
+import 'package:archive/archive.dart';
 import 'package:catcher_2/catcher_2.dart';
 import 'package:catcher_2/model/platform_type.dart';
 import 'package:dio/dio.dart';
