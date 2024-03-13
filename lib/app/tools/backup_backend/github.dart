@@ -64,19 +64,20 @@ class GithubBackup<T> extends BackupBackend<T> {
 
   Dio _createDio() {
     final d = DioE(BaseOptions(baseUrl: 'https://api.github.com', headers: {
-      'Accept': 'application/vnd.github.v3+json',
-      if (config.token.isNotEmpty) 'Authorization': 'token ${config.token}',
+      'Accept': 'application/vnd.github+json',
+      if (config.token.isNotEmpty) 'Authorization': 'Bearer ${config.token}',
       if (!kIsWeb) 'User-Agent': 'chaldea/2.0',
+      "X-GitHub-Api-Version": "2022-11-28",
     }));
     return d;
   }
 
   Future<List<int>> _getRawFile() async {
     final resp = await _createDio().get(
-      '/repos/${config.slug}/contents/${config.path}',
+      '/repos/${config.slug}/contents/${config.path}?buster=${DateTime.now().timestamp}',
       options: Options(
         headers: {
-          'Accept': 'application/vnd.github.v3.raw',
+          'Accept': 'application/vnd.github.raw+json',
         },
         responseType: ResponseType.bytes,
       ),
@@ -90,7 +91,7 @@ class GithubBackup<T> extends BackupBackend<T> {
   Future<GitHubFile?> _getFile() async {
     try {
       final response = await _createDio().get(
-        '/repos/${config.slug}/contents/${config.path}',
+        '/repos/${config.slug}/contents/${config.path}?buster=${DateTime.now().timestamp}',
         queryParameters: {
           if (config.branch.isNotEmpty) 'ref': config.branch,
         },

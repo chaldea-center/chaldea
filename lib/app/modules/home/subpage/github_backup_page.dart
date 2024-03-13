@@ -55,7 +55,11 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
   }
 
   UserData decodeUserdata(List<int> content) {
-    return db.userData = UserData.fromJson(jsonDecode(utf8.decode(content)));
+    final data = jsonDecode(utf8.decode(content)) as Map;
+    if (data['version'] == null) {
+      throw const FormatException("Not chaldea data format");
+    }
+    return db.userData = UserData.fromJson(Map.from(data));
   }
 
   Future<void> backup() async {
