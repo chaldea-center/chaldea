@@ -292,14 +292,14 @@ class BattleRecordManager {
       }
     }
     if (tailoredExecution) {
-      setIllegal('${S.current.options}: ${S.current.battle_tailored_execution}');
+      reasons.add('${S.current.options}: ${S.current.battle_tailored_execution}');
     }
 
     if (countLargeRng > 3) {
-      setIllegal('${S.current.battle_random}≥0.95: count $countLargeRng>3');
+      reasons.add('${S.current.battle_random}≥0.95: count $countLargeRng>3');
     }
     if (countProb > 3) {
-      setIllegal('${S.current.battle_probability_threshold}≤80: count $countProb>3');
+      reasons.add('${S.current.battle_probability_threshold}≤80: count $countProb>3');
     }
     return reasons;
   }
