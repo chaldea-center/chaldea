@@ -7,6 +7,7 @@ class AppAdSize {
 }
 
 class AdOptions {
+  final String name;
   final AppAdSize size;
   final String? webId;
   final String? iosId;
@@ -14,6 +15,7 @@ class AdOptions {
   final bool cached;
 
   const AdOptions({
+    required this.name,
     required this.size,
     this.webId,
     this.iosId,
@@ -21,8 +23,9 @@ class AdOptions {
     this.cached = true,
   });
 
-  AdOptions copyWith({AppAdSize? size, String? webId, String? iosId, String? androidId, bool? cached}) {
+  AdOptions copyWith({String? name, AppAdSize? size, String? webId, String? iosId, String? androidId, bool? cached}) {
     return AdOptions(
+      name: name ?? this.name,
       size: size ?? this.size,
       webId: webId ?? this.webId,
       iosId: iosId ?? this.iosId,
@@ -32,11 +35,13 @@ class AdOptions {
   }
 
   static const homeCarousel = AdOptions(
+    name: "home-carousel",
     size: AppAdSize(320, 120),
     // androidId: 'ca-app-pub-3940256099942544/6300978111',
     // iosId: 'ca-app-pub-3940256099942544/2934735716',
     androidId: 'ca-app-pub-1170355046794925/8212269539',
     iosId: 'ca-app-pub-1170355046794925/3228031006',
+    webId: '9573402336',
   );
 }
 
