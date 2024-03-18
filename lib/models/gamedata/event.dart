@@ -245,8 +245,8 @@ class Event with RouteInfo {
       _end = _start + const Duration(days: 30).inSeconds;
     }
     final months = db.curUser.region.eventDelayMonth;
-    final days = months * 31 + 3 * 31 + diff.inDays;
-    return _end.sec2date().isBefore(DateTime.now().subtract(Duration(days: days)));
+    final days = (months + (type == EventType.mcCampaign ? 0 : 3)) * 30.5 + diff.inDays;
+    return _end.sec2date().isBefore(DateTime.now().subtract(Duration(days: days.ceil())));
   }
 
   int? startTimeOf(Region? region) {

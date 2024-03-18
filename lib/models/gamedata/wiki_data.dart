@@ -494,7 +494,7 @@ class LimitedSummon with RouteInfo {
     }
     final jpDate = startTime.jp?.sec2date();
     if (jpDate == null) return false;
-    days = db.curUser.region.eventDelayMonth * 31;
+    days = (db.curUser.region.eventDelayMonth * 30.5).ceil();
     return jpDate.isBefore(DateTime.now().subtract(Duration(days: days + 30)));
   }
 }

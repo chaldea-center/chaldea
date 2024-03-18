@@ -142,14 +142,14 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
     for (final t in ts) {
       if (!filterData.showOutdated) {
         if (filterData.useApCampaign) {
-          if (t < now - 3600 * 24 * 31 * (filterData.region.eventDelayMonth + 1)) {
+          if (t < now - kSecsPerDay * 30.5 * (filterData.region.eventDelayMonth + 1)) {
             continue;
           }
         } else {
-          if (filterData.region == Region.jp && t < now - 3600 * 24 * 400) {
+          if (filterData.region == Region.jp && t < now - kSecsPerDay * 400) {
             continue;
           }
-          if (filterData.region != Region.jp && t > 0 && t < now - 3600 * 24 * 31) {
+          if (filterData.region != Region.jp && t > 0 && t < now - kSecsPerDay * 30.5) {
             continue;
           }
         }
