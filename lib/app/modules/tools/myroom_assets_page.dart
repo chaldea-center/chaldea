@@ -90,7 +90,7 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
       Map<String, List<MstMyRoomAdd>> grouped = {};
       for (final room in data) {
         if (room.type == type.id && room.overwriteId > 0) {
-          grouped.putIfAbsent('${room.startedAt}.${room.endedAt}', () => []).add(room);
+          grouped.putIfAbsent('${room.id}.${room.startedAt}.${room.endedAt}', () => []).add(room);
         }
       }
       grouped = sortDict(grouped, compare: (a, b) => b.value.first.startedAt.compareTo(a.value.first.startedAt));
@@ -99,44 +99,56 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
         itemCount: groupList.length,
         itemBuilder: (context, index) {
           final rooms = groupList[index];
+          bool checkTime(int? a, int b) {
+            if (a == null) return false;
+            return (a - b).abs() <= 3600 * 5;
+          }
+
           return SimpleAccordion(
             key: Key('room_group_${type.id}_${_t}_$index'),
             expanded: expanded,
             headerBuilder: (context, _) {
               final room = rooms.first;
               final wars = <NiceWar>{};
-              final events = db.gameData.events.values.where((event) {
-                return [EventType.eventQuest, EventType.warBoard].contains(event.type) &&
-                    (event.startTimeOf(region) == room.startedAt || event.endTimeOf(region) == room.endedAt);
-              }).toSet();
-              for (final room in rooms) {
-                bool isMain = false;
-                if (region == Region.cn || region == Region.tw) {
-                  isMain = room.endedAt > kNeverClosedTimestampCN;
-                } else {
-                  isMain = room.endedAt > kNeverClosedTimestamp;
+              final events = <Event>{};
+              final event = db.gameData.events[room.id];
+              if (room.id > 1000 && event != null) {
+                final start = event.startTimeOf(region), end = event.endTimeOf(region);
+                if (start != null &&
+                    end != null &&
+                    room.startedAt >= start - 3600 * 5 &&
+                    room.endedAt <= end + 3600 * 5) {
+                  events.add(event);
                 }
+              }
+              if (events.isEmpty) {
+                events.addAll(db.gameData.events.values.where((event) {
+                  return [EventType.eventQuest, EventType.warBoard, EventType.mcCampaign].contains(event.type) &&
+                      (checkTime(event.startTimeOf(region), room.startedAt) &&
+                          checkTime(event.endTimeOf(region), room.endedAt));
+                }));
+              }
+              for (final room in rooms) {
+                bool isMain = room.id < 1000;
                 if (room.condType == 1 || room.condType == 46) {
                   final war = db.gameData.quests[room.condValue]?.war;
                   final event = war?.eventReal;
                   if (isMain && event == null && war != null) {
                     wars.add(war);
-                  } else if (event != null) {
-                    events.add(event);
                   }
                 }
               }
 
+              final subtitles = <String>{
+                ...events.take(2).map((e) => e.lShortName.l.setMaxLines(1)),
+                ...wars.map((e) => e.lName.l.setMaxLines(1))
+              };
+
               return ListTile(
                 dense: true,
-                title: Text('${room.startedAt.sec2date().toDateString()}~${room.endedAt.sec2date().toDateString()}'),
-                subtitle: events.isNotEmpty || wars.isNotEmpty
-                    ? Text(<String>[
-                        ...events.take(2).map((e) => e.lShortName.l.setMaxLines(1)),
-                        ...wars.map((e) => e.lName.l.setMaxLines(1))
-                      ].join('\n'))
-                    : null,
-                isThreeLine: events.length > 1,
+                title: Text('${room.startedAt.sec2date().toStringShort()}~${room.endedAt.sec2date().toStringShort()}'),
+                subtitle: subtitles.isNotEmpty ? Text(subtitles.join('\n')) : null,
+                isThreeLine: subtitles.length > 1,
               );
             },
             contentBuilder: (context) {
