@@ -2,12 +2,14 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
+import 'package:chaldea/packages/svg.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
@@ -288,10 +290,19 @@ class _ApkListPageState extends State<ApkListPage> {
         ),
       ));
     }
+    final flag = SvgStrings.getFlag(data.region?.name ?? "");
     return TileGroup(
       headerWidget: Row(
         children: [
-          Expanded(child: SHeader(data.region?.localName ?? 'Chaldea App')),
+          Expanded(
+            child: SHeader.rich(TextSpan(children: [
+              if (flag != null) ...[
+                CenterWidgetSpan(child: SvgPicture.string(flag, width: 24)),
+                const TextSpan(text: ' '),
+              ],
+              TextSpan(text: data.region?.localName ?? 'Chaldea App'),
+            ])),
+          ),
           if (data.loading)
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 12),

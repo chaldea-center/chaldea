@@ -1,8 +1,28 @@
 // https://flagicons.lipis.dev/
+
 class SvgStrings {
   const SvgStrings._();
 
-  static String get cnFlag =>
+  static String? getFlag(String region) {
+    region = region.toLowerCase();
+    if (region.length > 2) {
+      region = region.substring(0, 2);
+    }
+    return countryFlags[region];
+  }
+
+  static const countryFlags = <String, String>{
+    "jp": jpFlag,
+    "jo": jpFlag,
+    "cn": cnFlag,
+    "tw": twFlag,
+    "na": usFlag,
+    "us": usFlag,
+    "kr": krFlag,
+    "ko": krFlag,
+  };
+
+  static const String cnFlag =
       """<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="flag-icons-cn" viewBox="0 0 640 480">
   <defs>
     <path id="cn-a" fill="#ff0" d="M-.6.8 0-1 .6.8-1-.3h2z"/>
@@ -15,7 +35,7 @@ class SvgStrings {
   <use xlink:href="#cn-a" width="30" height="20" transform="matrix(14.9991 -18.73557 18.73533 14.99929 240 216)"/>
 </svg>""";
 
-  static String get jpFlag => """<svg xmlns="http://www.w3.org/2000/svg" id="flag-icons-jp" viewBox="0 0 640 480">
+  static const String jpFlag = """<svg xmlns="http://www.w3.org/2000/svg" id="flag-icons-jp" viewBox="0 0 640 480">
   <defs>
     <clipPath id="jp-a">
       <path fill-opacity=".7" d="M-88 32h640v480H-88z"/>
@@ -27,7 +47,7 @@ class SvgStrings {
   </g>
 </svg>""";
 
-  static String get twFlag => """<svg xmlns="http://www.w3.org/2000/svg" id="flag-icons-tw" viewBox="0 0 640 480">
+  static const String twFlag = """<svg xmlns="http://www.w3.org/2000/svg" id="flag-icons-tw" viewBox="0 0 640 480">
   <clipPath id="tw-a">
     <path d="M0 0h640v480H0z"/>
   </clipPath>
@@ -63,7 +83,7 @@ class SvgStrings {
 </svg>""";
 
   // from aadb repo
-  static String get usFlag => """<svg xmlns="http://www.w3.org/2000/svg" id="flag-icon-css-us" viewBox="0 0 640 480">
+  static const String usFlag = """<svg xmlns="http://www.w3.org/2000/svg" id="flag-icon-css-us" viewBox="0 0 640 480">
   <g fill-rule="evenodd">
     <g stroke-width="1pt">
       <path fill="#bd3d44" d="M0 0h972.8v39.4H0zm0 78.8h972.8v39.4H0zm0 78.7h972.8V197H0zm0 78.8h972.8v39.4H0zm0 78.8h972.8v39.4H0zm0 78.7h972.8v39.4H0zm0 78.8h972.8V512H0z" transform="scale(.9375)"/>
@@ -74,7 +94,7 @@ class SvgStrings {
   </g>
 </svg>""";
 
-  static String get krFlag =>
+  static const String krFlag =
       """<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="flag-icons-kr" viewBox="0 0 640 480">
   <defs>
     <clipPath id="kr-a">

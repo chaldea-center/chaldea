@@ -328,24 +328,25 @@ class CraftDetailBasePage extends StatelessWidget {
             ),
           ],
         ),
-        CustomTableRow(
-          children: [
-            TableCellData(
-              child: CustomTile(
-                title: Center(child: Text(S.current.view_illustration)),
-                contentPadding: EdgeInsets.zero,
-                onTap: () {
-                  FullscreenImageViewer.show(
-                    context: context,
-                    urls: [ce.charaGraph],
-                    placeholder: cardBackPlaceholder,
-                  );
-                },
-              ),
-              isHeader: true,
-            ),
-          ],
+        TextButton(
+          onPressed: () {
+            FullscreenImageViewer.show(
+              context: context,
+              urls: [ce.charaGraph],
+              placeholder: cardBackPlaceholder,
+            );
+          },
+          style: kTextButtonDenseStyle,
+          child: Text(S.current.view_illustration),
         ),
+        if (ce.profile.cv.isNotEmpty)
+          TextButton(
+            onPressed: () {
+              router.push(url: Routes.servantI(ce.id));
+            },
+            style: kTextButtonDenseStyle,
+            child: Text(S.current.voice),
+          ),
         CustomTableRow(children: [TableCellData(text: S.current.filter_category, isHeader: true)]),
         CustomTableRow(children: [
           TableCellData(

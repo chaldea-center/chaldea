@@ -9,6 +9,7 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/app_info.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/catcher/server_feedback_handler.dart';
@@ -280,36 +281,39 @@ class _FeedbackPageState extends State<FeedbackPage> {
   }
 
   void sendEmail() async {
-    // print('pixelRatio=${MediaQuery.of(context).devicePixelRatio}');
-    if (bodyController.text.trim().isEmpty) {
+    final bodyText = bodyController.text.trim(),
+        contact = contactController.text.trim(),
+        subject = subjectController.text.trim();
+    if (bodyText.isEmpty) {
       EasyLoading.showInfo(S.current.add_feedback_details_warning);
       return;
     }
-    if (contactController.text.trim().isEmpty) {
+    if (contact.isEmpty) {
       EasyLoading.showInfo(S.current.contact_information_not_filled);
       return;
     }
-    if (subjectController.text.trim().isEmpty) {
+    if (contact.toLowerCase().contains('@chaldea.center')) {
+      EasyLoading.showInfo(Language.isZH ? "填写你自己的邮箱啊kora" : "Fill in your own email!!!");
+      return;
+    }
+    if (subject.isEmpty) {
       EasyLoading.showInfo('${S.current.feedback_subject}: ${S.current.empty_hint}');
       return;
     }
     try {
-      String subject = '[Feedback] ${subjectController.text.trim()}';
-
       final handler = ServerFeedbackHandler(
         attachments: [
           db.paths.crashLog,
           db.paths.appLog,
           db.paths.userDataPath,
         ],
-        emailTitle: subject,
+        emailTitle: '[Feedback] $subject',
         senderName: 'Chaldea Feedback',
         // screenshotController: db.runtimeData.screenshotController,
         extraAttachments: Map.of(attachFiles),
       );
 
-      final result = await showEasyLoading(
-          () => handler.handle(FeedbackReport(contactController.text, bodyController.text), null));
+      final result = await showEasyLoading(() => handler.handle(FeedbackReport(contact, bodyText), null));
       if (!result) {
         throw S.current.sending_failed;
       }
