@@ -489,7 +489,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
       if (item.verMax != null && item.verMax! < AppInfo.version) return true;
       return false;
     });
-    if (BannerAdWidget.shouldShowAds) {
+    if (BannerAdWidget.shouldShowAds(context)) {
       items.addAll(List.generate(
         items.length ~/ 4 + 1,
         (index) => CarouselItem(

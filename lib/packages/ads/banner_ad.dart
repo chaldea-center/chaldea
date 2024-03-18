@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'ad_stub.dart' if (dart.library.io) 'ad_mobile.dart' if (dart.library.js) 'ad_web.dart';
@@ -21,9 +22,13 @@ class BannerAdWidget extends StatelessWidget {
     _initiated = true;
   }
 
-  static bool get shouldShowAds =>
+  static bool get canShowAds =>
       // kDebugMode &&
       instance.supported && instance.initialized && db.settings.display.hideAdsUntil < DateTime.now().timestamp;
+
+  static bool shouldShowAds(BuildContext context) {
+    return canShowAds && AppRouter.of(context)?.index == 0;
+  }
 
   @override
   Widget build(BuildContext context) {

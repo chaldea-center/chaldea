@@ -54,6 +54,8 @@ class AppRouterDelegate extends RouterDelegate<RouteConfiguration>
 
   List<Page> get pages => List.unmodifiable(_history.map((e) => e.page));
 
+  int get index => _parent.appState.children.indexOf(this);
+
   @override
   RouteConfiguration? get currentConfiguration =>
       _history.isNotEmpty && _history.last.page.arguments is RouteConfiguration

@@ -389,7 +389,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                           endedAt: db.settings.display.hideAdsUntil.sec2date(),
                           fitted: false,
                         )
-                      : const Text("Closed"),
+                      : const Text("On"),
                   trailing: TextButton(
                     onPressed: () {
                       router.showDialog(
