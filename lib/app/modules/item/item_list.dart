@@ -383,7 +383,9 @@ class _ItemListTabState extends State<ItemListTab> {
     final sortedEntries = _allGroups.entries.toList();
     switch (widget.sortType) {
       case _ItemSortType.default_:
-        if (widget.category == ItemCategory.coin) {
+        if (widget.category == ItemCategory.normal) {
+          sortedEntries.sort((a, b) => -Item.compare2(a.key, b.key));
+        } else if (widget.category == ItemCategory.coin) {
           sortedEntries.sort2((e) => _coinSvtMap[e.key]?.collectionNo ?? -1);
         } else if (widget.category == ItemCategory.other) {
           sortedEntries.sort2((e) => e.key);
