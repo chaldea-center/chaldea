@@ -17,7 +17,7 @@ void main(List<String> args) {
 
   print('* ${Directory.current}');
   print('* Version: $version');
-  final en = getReleaseNote('CHANGELOG.md', version) ?? "", zh = getReleaseNote('CHANGELOG_ZH.md', version) ?? "";
+  final en = getReleaseNote('CHANGELOG.md', version) ?? "", zh = getReleaseNote('CHANGELOG.zh.md', version) ?? "";
   final buffer = StringBuffer();
 
   if (zh.isNotEmpty) {

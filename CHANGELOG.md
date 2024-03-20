@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.5.8
+
+- Fix incorrect class advantages against special enemy classes
+- Improve team check before uploading
+- Fix Gilgamesh S1 trait check
+- Fix Github backup failed on web
+
 ## 2.5.7
 
 - Add related gacha to mc summons
