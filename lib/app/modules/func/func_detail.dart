@@ -187,9 +187,7 @@ class _FuncDetailPageState extends State<FuncDetailPage>
       CustomTableRow(children: [
         TableCellData(text: "Target Traits", isHeader: true),
         TableCellData(
-          child: func.functvals.isEmpty
-              ? const Text('-')
-              : SharedBuilder.traitList(context: context, traits: func.functvals),
+          child: _buildTargetTraits(),
           flex: 3,
           alignment: AlignmentDirectional.centerEnd,
         )
@@ -242,6 +240,31 @@ class _FuncDetailPageState extends State<FuncDetailPage>
         ),
       ],
     ]);
+  }
+
+  Widget _buildTargetTraits() {
+    final overwriteTvalsList = func.getOverwriteTvalsList();
+    if (overwriteTvalsList.isNotEmpty) {
+      return Text.rich(TextSpan(
+        children: divideList(
+          [
+            for (final traits in overwriteTvalsList)
+              TextSpan(
+                children: SharedBuilder.traitSpans(
+                  context: context,
+                  traits: traits,
+                  useAndJoin: true,
+                ),
+              ),
+          ],
+          const TextSpan(text: '  /  '),
+        ),
+      ));
+    } else {
+      return func.functvals.isEmpty
+          ? const Text('-')
+          : SharedBuilder.traitList(context: context, traits: func.functvals);
+    }
   }
 }
 

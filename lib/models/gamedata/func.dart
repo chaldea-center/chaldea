@@ -418,6 +418,12 @@ extension BaseFunctionX on BaseFunction {
       (funcTargetTeam == FuncApplyTarget.enemy && funcTargetType.isAlly) ||
       (funcTargetTeam == FuncApplyTarget.player && funcTargetType.isEnemy);
   EffectTarget get effectTarget => EffectTarget.fromFunc(funcTargetType);
+
+  List<List<NiceTrait>> getOverwriteTvalsList() {
+    List<List<NiceTrait>>? tvals = script?.overwriteTvals;
+    if (tvals != null && tvals.isNotEmpty) return tvals;
+    return overWriteTvalsList;
+  }
 }
 
 @JsonSerializable()

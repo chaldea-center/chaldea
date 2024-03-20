@@ -731,9 +731,8 @@ class FunctionExecutor {
     final checkDead = dataVals.CheckDead != null && dataVals.CheckDead! > 0;
     targets.retainWhere((svt) => svt.isAlive(battleData) || checkDead);
 
-    final List<List<NiceTrait>>? overwriteTvals = function.script?.overwriteTvals;
-    final hasOverwriteTvals = overwriteTvals != null && overwriteTvals.isNotEmpty;
-    if (hasOverwriteTvals) {
+    final List<List<NiceTrait>> overwriteTvals = function.getOverwriteTvalsList();
+    if (overwriteTvals.isNotEmpty) {
       targets.retainWhere((svt) {
         for (final List<NiceTrait> requiredTraits in overwriteTvals) {
           // Currently assuming the first array is OR. Need more samples on this
@@ -752,8 +751,7 @@ class FunctionExecutor {
         return false;
       });
     } else {
-      targets.retainWhere((svt) =>
-          battleData.checkTraits(CheckTraitParameters(
+      targets.retainWhere((svt) => battleData.checkTraits(CheckTraitParameters(
             requiredTraits: function.functvals,
             actor: svt,
             checkActorTraits: true,

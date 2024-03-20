@@ -981,7 +981,7 @@ class FuncDescriptor extends StatelessWidget {
       }
     }
     if (func.funcType != FuncType.subState) {
-      final overwriteTvals = func.script?.overwriteTvals ?? func.overWriteTvalsList;
+      final overwriteTvals = func.getOverwriteTvalsList();
       if (overwriteTvals.isNotEmpty) {
         _condSpans.add([
           TextSpan(text: Transl.special.funcTargetVals),
