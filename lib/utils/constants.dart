@@ -49,5 +49,5 @@ String kReplaceDWChars(String s) {
 // 2027-01-15
 const int kNeverClosedTimestamp = 1800000000;
 // 2025-07-01, 1751299200
-const int kNeverClosedTimestampCN = 1751299000;
+const int kNeverClosedTimestampCN = kNeverClosedTimestamp;
 const int kSecsPerDay = 24 * 3600;

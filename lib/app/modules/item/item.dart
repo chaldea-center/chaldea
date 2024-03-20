@@ -175,9 +175,17 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
         }
     ];
 
+    String? icon = db.gameData.items[widget.itemId]?.icon ?? db.gameData.entities[widget.itemId]?.borderedIcon;
+
     return Scaffold(
       appBar: AppBar(
-        title: AutoSizeText(Item.getName(widget.itemId), maxLines: 1),
+        title: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (icon != null) db.getIconImage(icon, width: 28, height: 28),
+            Flexible(child: AutoSizeText(Item.getName(widget.itemId), maxLines: 1)),
+          ],
+        ),
         centerTitle: false,
         titleSpacing: 0,
         actions: tabs.getOrNull(curTab)?.actions ?? [],

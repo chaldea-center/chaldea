@@ -345,6 +345,11 @@ class SvtInfoTab extends StatelessWidget {
               ],
             ],
             ...relateEvents(),
+            if (svt.isUserSvt && svt.collectionNo > 1) ...[
+              CustomTableRow.fromTexts(texts: ['${S.current.time}(estimated)'], isHeader: true),
+              CustomTableRow.fromTexts(
+                  texts: [svt.extra.getReleasedAt()].map((e) => e == 0 ? '-' : e.sec2date().toDateString()).toList()),
+            ],
           ],
         ),
       ),

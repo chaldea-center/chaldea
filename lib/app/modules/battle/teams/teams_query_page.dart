@@ -322,17 +322,13 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
         ),
         const SizedBox(width: 4),
         InkWell(
-          onTap: record.userId == curUserId
-              ? null
-              : () {
-                  ReportTeamDialog(record: record).showDialog(context);
-                },
+          onTap: () {
+            ReportTeamDialog(record: record, isMyTeam: record.userId == curUserId).showDialog(context);
+          },
           child: Icon(
             Icons.report_outlined,
             size: 18,
-            color: record.userId == curUserId
-                ? Theme.of(context).disabledColor
-                : Theme.of(context).colorScheme.errorContainer.withOpacity(0.8),
+            color: Theme.of(context).colorScheme.errorContainer.withOpacity(0.8),
           ),
         ),
         const SizedBox(width: 24),
@@ -755,7 +751,8 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
 
 class ReportTeamDialog extends StatefulWidget {
   final UserBattleData record;
-  const ReportTeamDialog({super.key, required this.record});
+  final bool isMyTeam;
+  const ReportTeamDialog({super.key, required this.record, required this.isMyTeam});
 
   @override
   State<ReportTeamDialog> createState() => _ReportTeamDialogState();
@@ -790,25 +787,27 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
             ),
           ),
           const SizedBox(height: 8),
-          TextFormField(
-            controller: controller,
-            decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              labelText: S.current.delete_reason,
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              hintText: S.current.team_report_reason_hint,
+          if (!widget.isMyTeam)
+            TextFormField(
+              controller: controller,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                labelText: S.current.delete_reason,
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                hintText: S.current.team_report_reason_hint,
+              ),
+              style: const TextStyle(fontSize: 14),
+              maxLines: 5,
             ),
-            style: const TextStyle(fontSize: 14),
-            maxLines: 5,
-          ),
         ],
       ),
       hideOk: true,
       actions: [
-        TextButton(
-          onPressed: onSend,
-          child: Text(S.current.feedback_send),
-        ),
+        if (!widget.isMyTeam)
+          TextButton(
+            onPressed: onSend,
+            child: Text(S.current.feedback_send),
+          ),
       ],
     );
   }
