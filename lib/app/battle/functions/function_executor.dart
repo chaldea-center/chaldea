@@ -12,7 +12,7 @@ import 'package:chaldea/app/battle/functions/hasten_npturn.dart';
 import 'package:chaldea/app/battle/functions/instant_death.dart';
 import 'package:chaldea/app/battle/functions/move_state.dart';
 import 'package:chaldea/app/battle/functions/replace_member.dart';
-import 'package:chaldea/app/battle/functions/shorten_skill.dart';
+import 'package:chaldea/app/battle/functions/skill_charge_turn.dart';
 import 'package:chaldea/app/battle/functions/sub_state.dart';
 import 'package:chaldea/app/battle/functions/transform_servant.dart';
 import 'package:chaldea/app/battle/functions/update_entry_positions.dart';
@@ -256,10 +256,16 @@ class FunctionExecutor {
           GainStar.gainStar(battleData, dataVals, targets: targets, isNegative: function.funcType == FuncType.lossStar);
           break;
         case FuncType.shortenSkill:
-          ShortenSkill.shortenSkill(battleData, dataVals, targets);
+          SkillChargeTurn.shortenSkill(battleData, dataVals, targets);
           break;
         case FuncType.extendSkill:
-          ShortenSkill.extendSkill(battleData, dataVals, targets);
+          SkillChargeTurn.extendSkill(battleData, dataVals, targets);
+          break;
+        case FuncType.shortenUserEquipSkill:
+          SkillChargeTurn.updateUserEquipSkillChargeTurn(battleData, dataVals, true);
+          break;
+        case FuncType.extendUserEquipSkill:
+          SkillChargeTurn.updateUserEquipSkillChargeTurn(battleData, dataVals, false);
           break;
         case FuncType.damage:
         case FuncType.damageNp:
@@ -354,8 +360,6 @@ class FunctionExecutor {
         case FuncType.damageValueSafe:
         case FuncType.damageNpSafe:
         // ↑↑↑ should be implemented ↑↑↑
-        case FuncType.shortenUserEquipSkill:
-        case FuncType.extendUserEquipSkill:
         case FuncType.subFieldBuff:
         case FuncType.damageNpAndCheckIndividuality:
         case FuncType.damageNpStateIndividual:

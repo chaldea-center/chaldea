@@ -507,6 +507,10 @@ final Map<BuffType, BuffValueTriggerType Function(DataVals)> kBuffValueTriggerTy
   BuffType.attackBeforeFunction: (v) =>
       BuffValueTriggerType(BuffType.attackBeforeFunction, skill: v.Value, level: v.Value2),
   BuffType.entryFunction: (v) => BuffValueTriggerType(BuffType.entryFunction, skill: v.Value, level: v.Value2),
+  BuffType.skillAfterFunction: (v) =>
+      BuffValueTriggerType(BuffType.skillAfterFunction, skill: v.Value, level: v.Value2),
+  BuffType.treasureDeviceAfterFunction: (v) =>
+      BuffValueTriggerType(BuffType.treasureDeviceAfterFunction, skill: v.Value, level: v.Value2),
 };
 
 class BuffValueTriggerType {

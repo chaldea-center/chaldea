@@ -910,9 +910,14 @@ class FuncDescriptor extends StatelessWidget {
           },
         ));
       }
-    } else if (func.funcType == FuncType.shortenSkill || func.funcType == FuncType.extendSkill) {
-      final targetNum = vals?.Target;
-      if (targetNum != null) {
+    } else if (const [
+      FuncType.shortenSkill,
+      FuncType.extendSkill,
+      FuncType.shortenUserEquipSkill,
+      FuncType.extendUserEquipSkill,
+    ].contains(func.funcType)) {
+      final targetNum = vals?.Value2 ?? vals?.Target ?? 0;
+      if (targetNum > 0) {
         spans.insert(0, TextSpan(text: '(${S.current.skill} $targetNum)'));
       }
     }
