@@ -665,7 +665,7 @@ const Map<int, String> _warMCBanner = {
   8290: 'BATTLE_IN_NEWYORK_2018_关卡标题_jp.png',
   9048: 'Fate_Accel_Zero_Order复刻_关卡标题.png',
   9046: '从者·夏日·庆典！_关卡标题.png',
-  8273: 'https://fgo.wiki/images/4/46/复刻：All_The_States%27Men%21_～从漫画了解合众国开拓史～_关卡标题.png',
+  8273: 'https://media.fgo.wiki/4/46/复刻：All_The_States%27Men%21_～从漫画了解合众国开拓史～_关卡标题.png',
   9040: '夏日2018第二部复刻_关卡标题.png',
   9035: '夏日2018第一部复刻_关卡标题.png',
   9033: '唠唠叨叨帝都圣杯奇谭_关卡标题.png',
