@@ -584,6 +584,7 @@ enum WarFlag {
   isWarIconCenter,
   noticeBoard,
   changeDispClosedMessage,
+  chapterSubIdJapaneseNumeralsNormal,
 }
 
 enum WarOverwriteType {

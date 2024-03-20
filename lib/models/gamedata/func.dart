@@ -34,6 +34,8 @@ class NiceFunction with RouteInfo implements BaseFunction {
   @override
   List<NiceTrait> get functvals => _baseFunc.functvals;
   @override
+  List<List<NiceTrait>> get overWriteTvalsList => _baseFunc.overWriteTvalsList;
+  @override
   List<NiceTrait> get funcquestTvals => _baseFunc.funcquestTvals;
   @override
   List<FuncGroup> get funcGroup => _baseFunc.funcGroup;
@@ -41,6 +43,8 @@ class NiceFunction with RouteInfo implements BaseFunction {
   List<NiceTrait> get traitVals => _baseFunc.traitVals;
   @override
   List<Buff> get buffs => _baseFunc.buffs;
+  @override
+  FuncScript? get script => _baseFunc.script;
 
   List<DataVals> svals;
   List<DataVals>? svals2;
@@ -57,10 +61,12 @@ class NiceFunction with RouteInfo implements BaseFunction {
     String funcPopupText = '',
     String? funcPopupIcon,
     List<NiceTrait> functvals = const [],
+    List<List<NiceTrait>> overWriteTvalsList = const [],
     List<NiceTrait> funcquestTvals = const [],
     List<FuncGroup> funcGroup = const [],
     List<NiceTrait> traitVals = const [],
     List<Buff> buffs = const [],
+    FuncScript? script,
     List<DataVals>? svals,
     this.svals2,
     this.svals3,
@@ -75,10 +81,12 @@ class NiceFunction with RouteInfo implements BaseFunction {
           funcPopupText: funcPopupText,
           funcPopupIcon: funcPopupIcon,
           functvals: functvals,
+          overWriteTvalsList: overWriteTvalsList,
           funcquestTvals: funcquestTvals,
           funcGroup: funcGroup,
           traitVals: traitVals,
           buffs: buffs,
+          script: script,
         ),
         svals = svals ?? [];
 
@@ -195,29 +203,35 @@ class NiceFunction with RouteInfo implements BaseFunction {
       funcId: json['funcId'] as int,
       funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ?? FuncType.unknown,
       funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
-      funcTargetTeam: $enumDecode(_$FuncApplyTargetEnumMap, json['funcTargetTeam']),
+      funcTargetTeam:
+          $enumDecodeNullable(_$FuncApplyTargetEnumMap, json['funcTargetTeam']) ?? FuncApplyTarget.playerAndEnemy,
       funcPopupText: json['funcPopupText'] as String? ?? '',
       funcPopupIcon: json['funcPopupIcon'] as String?,
       functvals: (json['functvals'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList(growable: false) ??
+              .toList() ??
+          const [],
+      overWriteTvalsList: (json['overWriteTvalsList'] as List<dynamic>?)
+              ?.map((e) =>
+                  (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList())
+              .toList() ??
           const [],
       funcquestTvals: (json['funcquestTvals'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList(growable: false) ??
+              .toList() ??
           const [],
       funcGroup: (json['funcGroup'] as List<dynamic>?)
               ?.map((e) => FuncGroup.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList(growable: false) ??
+              .toList() ??
           const [],
       traitVals: (json['traitVals'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList(growable: false) ??
+              .toList() ??
           const [],
-      buffs: (json['buffs'] as List<dynamic>?)
-              ?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList(growable: false) ??
-          const [],
+      buffs:
+          (json['buffs'] as List<dynamic>?)?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
+              const [],
+      script: json['script'] == null ? null : FuncScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
       svals: (json['svals'] as List<dynamic>?)?.map(_toVals).toList(growable: false),
       svals2: (json['svals2'] as List<dynamic>?)?.map(_toVals).toList(growable: false),
       svals3: (json['svals3'] as List<dynamic>?)?.map(_toVals).toList(growable: false),
@@ -311,10 +325,12 @@ class BaseFunction with RouteInfo {
   final String funcPopupText;
   final String? funcPopupIcon;
   final List<NiceTrait> functvals;
+  final List<List<NiceTrait>> overWriteTvalsList;
   final List<NiceTrait> funcquestTvals;
   final List<FuncGroup> funcGroup;
   final List<NiceTrait> traitVals;
   final List<Buff> buffs;
+  final FuncScript? script;
 
   const BaseFunction.create({
     required this.funcId,
@@ -324,10 +340,12 @@ class BaseFunction with RouteInfo {
     this.funcPopupText = "",
     this.funcPopupIcon,
     this.functvals = const [],
+    this.overWriteTvalsList = const [],
     this.funcquestTvals = const [],
     this.funcGroup = const [],
     this.traitVals = const [],
     this.buffs = const [],
+    this.script,
   });
 
   factory BaseFunction({
@@ -338,10 +356,12 @@ class BaseFunction with RouteInfo {
     String funcPopupText = '',
     String? funcPopupIcon,
     List<NiceTrait> functvals = const [],
+    List<List<NiceTrait>> overWriteTvalsList = const [],
     List<NiceTrait> funcquestTvals = const [],
     List<FuncGroup> funcGroup = const [],
     List<NiceTrait> traitVals = const [],
     List<Buff> buffs = const [],
+    FuncScript? script,
   }) =>
       GameDataLoader.instance.tmp.getFunc(
           funcId,
@@ -353,10 +373,12 @@ class BaseFunction with RouteInfo {
                 funcPopupText: funcPopupText,
                 funcPopupIcon: funcPopupIcon,
                 functvals: functvals,
+                overWriteTvalsList: overWriteTvalsList,
                 funcquestTvals: funcquestTvals,
                 funcGroup: funcGroup,
                 traitVals: traitVals,
                 buffs: buffs,
+                script: script,
               ));
 
   factory BaseFunction.fromJson(Map<String, dynamic> json) => _$BaseFunctionFromJson(json);
@@ -421,6 +443,19 @@ class FuncGroup {
   factory FuncGroup.fromJson(Map<String, dynamic> json) => _$FuncGroupFromJson(json);
 
   Map<String, dynamic> toJson() => _$FuncGroupToJson(this);
+}
+
+@JsonSerializable()
+class FuncScript {
+  List<List<NiceTrait>>? overwriteTvals;
+
+  FuncScript({
+    this.overwriteTvals,
+  });
+
+  factory FuncScript.fromJson(Map<String, dynamic> json) => _$FuncScriptFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FuncScriptToJson(this);
 }
 
 const kEventFuncTypes = [

@@ -398,4 +398,5 @@ const _$CondTypeEnumMap = {
   CondType.commonValueAbove: 'commonValueAbove',
   CondType.commonValueBelow: 'commonValueBelow',
   CondType.commonValueEqual: 'commonValueEqual',
+  CondType.elapsedTimeAfterQuestClear: 'elapsedTimeAfterQuestClear',
 };

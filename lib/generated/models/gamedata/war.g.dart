@@ -108,6 +108,7 @@ const _$WarFlagEnumMap = {
   WarFlag.isWarIconCenter: 'isWarIconCenter',
   WarFlag.noticeBoard: 'noticeBoard',
   WarFlag.changeDispClosedMessage: 'changeDispClosedMessage',
+  WarFlag.chapterSubIdJapaneseNumeralsNormal: 'chapterSubIdJapaneseNumeralsNormal',
 };
 
 const _$WarStartTypeEnumMap = {

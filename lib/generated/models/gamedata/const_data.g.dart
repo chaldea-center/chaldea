@@ -598,6 +598,8 @@ const _$BuffTypeEnumMap = {
   BuffType.treasureDeviceAfterFunction: 'treasureDeviceAfterFunction',
   BuffType.skillAfterFunctionMainOnly: 'skillAfterFunctionMainOnly',
   BuffType.treasureDeviceAfterFunctionMainOnly: 'treasureDeviceAfterFunctionMainOnly',
+  BuffType.preventInvisibleWhenInstantDeath: 'preventInvisibleWhenInstantDeath',
+  BuffType.overwriteSubattribute: 'overwriteSubattribute',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
   BuffType.toFieldSubIndividualityField: 'toFieldSubIndividualityField',
@@ -1370,4 +1372,6 @@ const _$BuffActionEnumMap = {
   BuffAction.functionTreasureDeviceAfter: 'functionTreasureDeviceAfter',
   BuffAction.functionTreasureDeviceAfterMainOnly: 'functionTreasureDeviceAfterMainOnly',
   BuffAction.guts: 'guts',
+  BuffAction.preventInvisibleWhenInstantDeath: 'preventInvisibleWhenInstantDeath',
+  BuffAction.overwriteSubattribute: 'overwriteSubattribute',
 };

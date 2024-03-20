@@ -60,7 +60,17 @@ class DataVals {
   /// 3 Times/3回/3次
   int? get Count => _vals['Count'];
   int? get Value => _vals['Value'];
-  int? get Value2 => _vals['Value2'];
+  int? get Value2 {
+    final v = _vals['Value2'];
+    if (v is int) return v;
+    return null;
+  }
+
+  String? get Value2Str {
+    final v = _vals['Value2'];
+    if (v is String) return v;
+    return null;
+  }
 
   /// probability, 1000 -> 100%
   int? get UseRate => _vals['UseRate'];
@@ -223,6 +233,9 @@ class DataVals {
   int? get CheckTargetHaveDefeatPoint => _vals['CheckTargetHaveDefeatPoint'];
   int? get NPFixedDamageValue => _vals['NPFixedDamageValue'];
   int? get IgnoreShiftSafeDamage => _vals['IgnoreShiftSafeDamage'];
+  int? get ActAttackFunction => _vals['ActAttackFunction'];
+  int? get DelayRemoveBuffExpiredOnPlayerTurn => _vals['DelayRemoveBuffExpiredOnPlayerTurn'];
+
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];
   int? get EventId => _vals['EventId'];

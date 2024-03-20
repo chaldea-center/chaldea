@@ -1113,12 +1113,13 @@ Map<String, dynamic> _$QuestPhaseRestrictionToJson(QuestPhaseRestriction instanc
     };
 
 const _$FrequencyTypeEnumMap = {
+  FrequencyType.none: 'none',
   FrequencyType.once: 'once',
   FrequencyType.onceUntilReboot: 'onceUntilReboot',
   FrequencyType.everyTime: 'everyTime',
   FrequencyType.valentine: 'valentine',
   FrequencyType.everyTimeAfter: 'everyTimeAfter',
-  FrequencyType.none: 'none',
+  FrequencyType.everyTimeBefore: 'everyTimeBefore',
 };
 
 QuestGroup _$QuestGroupFromJson(Map json) => QuestGroup(
@@ -1178,7 +1179,7 @@ const _$QuestFlagEnumMap = {
   QuestFlag.noDisplayMissionNotify: 'noDisplayMissionNotify',
   QuestFlag.hideProgress: 'hideProgress',
   QuestFlag.dropFirstTimeOnly: 'dropFirstTimeOnly',
-  QuestFlag.chapterSubIdJapaneseNumerals: 'chapterSubIdJapaneseNumerals',
+  QuestFlag.chapterSubIdJapaneseNumeralsCalligraphy: 'chapterSubIdJapaneseNumeralsCalligraphy',
   QuestFlag.supportOnlyForceBattle: 'supportOnlyForceBattle',
   QuestFlag.eventDeckNoSupport: 'eventDeckNoSupport',
   QuestFlag.fatigueBattle: 'fatigueBattle',
@@ -1220,4 +1221,5 @@ const _$QuestFlagEnumMap = {
   QuestFlag.alloutBattle: 'alloutBattle',
   QuestFlag.recollection: 'recollection',
   QuestFlag.notSingleSupportOnly: 'notSingleSupportOnly',
+  QuestFlag.disableChapterSub: 'disableChapterSub',
 };

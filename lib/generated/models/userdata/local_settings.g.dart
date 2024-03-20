@@ -340,6 +340,7 @@ AdSetting _$AdSettingFromJson(Map json) => $checkedCreate(
           enabled: $checkedConvert('enabled', (v) => v as bool?),
           banner: $checkedConvert('banner', (v) => v as bool?),
           appOpen: $checkedConvert('appOpen', (v) => v as bool?),
+          lastAppOpen: $checkedConvert('lastAppOpen', (v) => v as int? ?? 0),
         );
         return val;
       },
@@ -349,6 +350,7 @@ Map<String, dynamic> _$AdSettingToJson(AdSetting instance) => <String, dynamic>{
       'enabled': instance.enabled,
       'banner': instance.banner,
       'appOpen': instance.appOpen,
+      'lastAppOpen': instance.lastAppOpen,
     };
 
 CarouselSetting _$CarouselSettingFromJson(Map json) => $checkedCreate(

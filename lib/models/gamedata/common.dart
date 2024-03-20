@@ -685,6 +685,7 @@ enum Trait {
   elementalsWrath(2880),
   groupServant(2881),
   fsnServant(2883),
+  fieldDarkness(2884),
   attackPhysical(3000),
   attackProjectile(3001),
   attackMagical(3002),
@@ -1019,6 +1020,7 @@ enum CondType {
   commonValueAbove,
   commonValueBelow,
   commonValueEqual,
+  elapsedTimeAfterQuestClear,
 }
 
 @JsonSerializable()

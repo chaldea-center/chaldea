@@ -18,6 +18,11 @@ NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      overWriteTvalsList: (json['overWriteTvalsList'] as List<dynamic>?)
+              ?.map((e) =>
+                  (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList())
+              .toList() ??
+          const [],
       funcquestTvals: (json['funcquestTvals'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -33,6 +38,7 @@ NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
       buffs:
           (json['buffs'] as List<dynamic>?)?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
               const [],
+      script: json['script'] == null ? null : FuncScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
       svals: (json['svals'] as List<dynamic>?)
           ?.map((e) => DataVals.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
@@ -61,10 +67,12 @@ Map<String, dynamic> _$NiceFunctionToJson(NiceFunction instance) => <String, dyn
       'funcPopupText': instance.funcPopupText,
       'funcPopupIcon': instance.funcPopupIcon,
       'functvals': instance.functvals.map((e) => e.toJson()).toList(),
+      'overWriteTvalsList': instance.overWriteTvalsList.map((e) => e.map((e) => e.toJson()).toList()).toList(),
       'funcquestTvals': instance.funcquestTvals.map((e) => e.toJson()).toList(),
       'funcGroup': instance.funcGroup.map((e) => e.toJson()).toList(),
       'traitVals': instance.traitVals.map((e) => e.toJson()).toList(),
       'buffs': instance.buffs.map((e) => e.toJson()).toList(),
+      'script': instance.script?.toJson(),
       'svals': instance.svals.map((e) => e.toJson()).toList(),
       'svals2': instance.svals2?.map((e) => e.toJson()).toList(),
       'svals3': instance.svals3?.map((e) => e.toJson()).toList(),
@@ -229,6 +237,11 @@ BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      overWriteTvalsList: (json['overWriteTvalsList'] as List<dynamic>?)
+              ?.map((e) =>
+                  (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList())
+              .toList() ??
+          const [],
       funcquestTvals: (json['funcquestTvals'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -244,6 +257,7 @@ BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
       buffs:
           (json['buffs'] as List<dynamic>?)?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
               const [],
+      script: json['script'] == null ? null : FuncScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
     );
 
 Map<String, dynamic> _$BaseFunctionToJson(BaseFunction instance) => <String, dynamic>{
@@ -254,10 +268,12 @@ Map<String, dynamic> _$BaseFunctionToJson(BaseFunction instance) => <String, dyn
       'funcPopupText': instance.funcPopupText,
       'funcPopupIcon': instance.funcPopupIcon,
       'functvals': instance.functvals.map((e) => e.toJson()).toList(),
+      'overWriteTvalsList': instance.overWriteTvalsList.map((e) => e.map((e) => e.toJson()).toList()).toList(),
       'funcquestTvals': instance.funcquestTvals.map((e) => e.toJson()).toList(),
       'funcGroup': instance.funcGroup.map((e) => e.toJson()).toList(),
       'traitVals': instance.traitVals.map((e) => e.toJson()).toList(),
       'buffs': instance.buffs.map((e) => e.toJson()).toList(),
+      'script': instance.script?.toJson(),
     };
 
 FuncGroup _$FuncGroupFromJson(Map json) => FuncGroup(
@@ -278,4 +294,15 @@ Map<String, dynamic> _$FuncGroupToJson(FuncGroup instance) => <String, dynamic>{
       'icon': instance.icon,
       'priority': instance.priority,
       'isDispValue': instance.isDispValue,
+    };
+
+FuncScript _$FuncScriptFromJson(Map json) => FuncScript(
+      overwriteTvals: (json['overwriteTvals'] as List<dynamic>?)
+          ?.map(
+              (e) => (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList())
+          .toList(),
+    );
+
+Map<String, dynamic> _$FuncScriptToJson(FuncScript instance) => <String, dynamic>{
+      'overwriteTvals': instance.overwriteTvals?.map((e) => e.map((e) => e.toJson()).toList()).toList(),
     };

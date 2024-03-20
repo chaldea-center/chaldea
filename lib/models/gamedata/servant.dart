@@ -92,7 +92,8 @@ class BasicServant with GameCardMixin {
 
   @override
   String get icon {
-    final match = RegExp(r'/(\d+)\.png').firstMatch(face);
+    if (collectionNo > 0) return face;
+    final match = RegExp(r'/(?:f_)?(\d+)\.png').firstMatch(face);
     if (match != null) {
       final imgId = int.parse(match.group(1)!);
       int svtId = imgId ~/ 10, limit = imgId % 10;

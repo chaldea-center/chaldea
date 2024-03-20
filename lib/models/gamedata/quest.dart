@@ -1929,7 +1929,7 @@ enum QuestFlag {
   noDisplayMissionNotify,
   hideProgress,
   dropFirstTimeOnly,
-  chapterSubIdJapaneseNumerals,
+  chapterSubIdJapaneseNumeralsCalligraphy,
   supportOnlyForceBattle,
   eventDeckNoSupport,
   fatigueBattle,
@@ -1971,6 +1971,7 @@ enum QuestFlag {
   alloutBattle,
   recollection,
   notSingleSupportOnly,
+  disableChapterSub,
 }
 
 enum GiftType {
@@ -2059,12 +2060,13 @@ enum RestrictionRangeType {
 }
 
 enum FrequencyType {
+  none,
   once,
   onceUntilReboot,
   everyTime,
   valentine,
   everyTimeAfter,
-  none,
+  everyTimeBefore,
 }
 
 enum StageLimitActType {

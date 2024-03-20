@@ -370,6 +370,8 @@ const _$BuffTypeEnumMap = {
   BuffType.treasureDeviceAfterFunction: 'treasureDeviceAfterFunction',
   BuffType.skillAfterFunctionMainOnly: 'skillAfterFunctionMainOnly',
   BuffType.treasureDeviceAfterFunctionMainOnly: 'treasureDeviceAfterFunctionMainOnly',
+  BuffType.preventInvisibleWhenInstantDeath: 'preventInvisibleWhenInstantDeath',
+  BuffType.overwriteSubattribute: 'overwriteSubattribute',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
   BuffType.toFieldSubIndividualityField: 'toFieldSubIndividualityField',

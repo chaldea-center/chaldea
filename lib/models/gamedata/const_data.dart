@@ -1204,6 +1204,8 @@ enum BuffAction {
   functionTreasureDeviceAfter(124),
   functionTreasureDeviceAfterMainOnly(125),
   guts(126),
+  preventInvisibleWhenInstantDeath(127),
+  overwriteSubattribute(128),
   ;
 
   final int id;

@@ -447,6 +447,8 @@ enum BuffType {
   treasureDeviceAfterFunction(186),
   skillAfterFunctionMainOnly(187),
   treasureDeviceAfterFunctionMainOnly(188),
+  preventInvisibleWhenInstantDeath(189),
+  overwriteSubattribute(190),
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),
   toFieldSubIndividualityField(10003),

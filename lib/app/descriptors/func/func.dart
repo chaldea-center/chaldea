@@ -952,7 +952,7 @@ class FuncDescriptor extends StatelessWidget {
     _addParamAddTrait(() => Transl.special.funcTraitPerBuff(isSelf: true), vals?.ParamAddFieldIndividuality);
 
     List<List<InlineSpan>> _condSpans = [];
-    void _addTraits(String? prefix, List<NiceTrait> traits, [bool useAnd = false]) {
+    void _addTraits(String? prefix, List<NiceTrait> traits, {bool useAnd = false}) {
       if ([BuffType.upCommandall, BuffType.downCommandall].contains(buff?.type)) {
         traits = traits
             .where((e) => ![Trait.cardQuick, Trait.cardArts, Trait.cardBuster, Trait.cardExtra].contains(e.name))
@@ -980,17 +980,41 @@ class FuncDescriptor extends StatelessWidget {
         _addTraits(Transl.special.buffCheckSelf, func.traitVals);
       }
     }
-    if (func.funcType != FuncType.subState ||
-        func.traitVals.map((e) => e.id).join(',') != func.functvals.map((e) => e.id).join(',')) {
-      _addTraits(Transl.special.funcTargetVals, func.functvals);
+    if (func.funcType != FuncType.subState) {
+      final overwriteTvals = func.script?.overwriteTvals ?? func.overWriteTvalsList;
+      if (overwriteTvals.isNotEmpty) {
+        _condSpans.add([
+          TextSpan(text: Transl.special.funcTargetVals),
+          ...divideList(
+            [
+              for (final traits in overwriteTvals)
+                TextSpan(
+                  children: SharedBuilder.traitSpans(
+                    context: context,
+                    traits: traits,
+                    useAndJoin: true,
+                  ),
+                ),
+            ],
+            const TextSpan(text: '  /  '),
+          ),
+          const TextSpan(text: ' '), // not let recognizer extends its width
+        ]);
+      } else if (func.traitVals.map((e) => e.id).join(',') != func.functvals.map((e) => e.id).join(',')) {
+        _addTraits(Transl.special.funcTargetVals, func.functvals);
+      }
     }
+    // if (func.funcType != FuncType.subState ||
+    //     func.traitVals.map((e) => e.id).join(',') != func.functvals.map((e) => e.id).join(',')) {
+    //   _addTraits(Transl.special.funcTargetVals, func.functvals);
+    // }
     if ([FuncType.extendBuffcount, FuncType.extendBuffturn, FuncType.shortenBuffcount, FuncType.shortenBuffturn]
         .contains(func.funcType)) {
       _addTraits(Transl.special.funcTargetVals, vals?.TargetList?.map((e) => NiceTrait(id: e)).toList() ?? []);
     }
 
     if (buff != null) {
-      _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv, buff.script.checkIndvTypeAnd == true);
+      _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv, useAnd: buff.script.checkIndvTypeAnd == true);
       if (buff.type == BuffType.upToleranceSubstate &&
           buff.ckOpIndv
               .map((e) => e.signedId)
@@ -1005,7 +1029,7 @@ class FuncDescriptor extends StatelessWidget {
           const TextSpan(text: ' '),
         ]);
       } else {
-        _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv, buff.script.checkIndvTypeAnd == true);
+        _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv, useAnd: buff.script.checkIndvTypeAnd == true);
       }
       final script = buff.script;
       if (script.TargetIndiv != null) {
