@@ -253,6 +253,36 @@ void main() async {
       expect(battle.checkDuplicateFuncData[1137]![kama.uniqueId], true);
     });
 
+    test('Function checks overwriteTvals target trait', () async {
+      final playerSettings = [
+        PlayerSvtData.id(200200) // Gil
+          ..setSkillStrengthenLvs([2, 1, 1])
+          ..tdLv = 1
+          ..lv = 90,
+        PlayerSvtData.id(200200) // Gil
+          ..tdLv = 2
+          ..lv = 80,
+        PlayerSvtData.id(204900) // Earth svt
+          ..tdLv = 5
+          ..lv = 120,
+      ];
+
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+      final gil1 = battle.onFieldAllyServants[0]!;
+      final gil2 = battle.onFieldAllyServants[1]!;
+      final earth = battle.onFieldAllyServants[2]!;
+      final buffCountGil1Before = gil1.battleBuff.originalActiveList.length;
+      final buffCountGil2Before = gil2.battleBuff.originalActiveList.length;
+      final buffCountEarthBefore = earth.battleBuff.originalActiveList.length;
+      await battle.activateSvtSkill(0, 0); // Gil skill 1, check Sky Servant with overwriteTvals
+      final buffCountGil1After = gil1.battleBuff.originalActiveList.length;
+      final buffCountGil2After = gil2.battleBuff.originalActiveList.length;
+      final buffCountEarthAfter = earth.battleBuff.originalActiveList.length;
+      expect(buffCountGil1After, buffCountGil1Before + 2);
+      expect(buffCountGil2After, buffCountGil2Before + 2);
+      expect(buffCountEarthAfter, buffCountEarthBefore + 1);
+    });
+
     test('Function checks target alive', () async {
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
       final kama = battle.onFieldAllyServants[2]!;

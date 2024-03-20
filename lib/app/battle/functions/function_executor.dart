@@ -729,15 +729,38 @@ class FunctionExecutor {
     final List<BattleServantData> targets,
   ) {
     final checkDead = dataVals.CheckDead != null && dataVals.CheckDead! > 0;
-    targets.retainWhere((svt) =>
-        (svt.isAlive(battleData) || checkDead) &&
-        battleData.checkTraits(CheckTraitParameters(
-          requiredTraits: function.functvals,
-          actor: svt,
-          checkActorTraits: true,
-          checkActorBuffTraits: true,
-          checkActiveBuffOnly: dataVals.IncludePassiveIndividuality != 1,
-        )));
+    targets.retainWhere((svt) => svt.isAlive(battleData) || checkDead);
+
+    final List<List<NiceTrait>>? overwriteTvals = function.script?.overwriteTvals;
+    final hasOverwriteTvals = overwriteTvals != null && overwriteTvals.isNotEmpty;
+    if (hasOverwriteTvals) {
+      targets.retainWhere((svt) {
+        for (final List<NiceTrait> requiredTraits in overwriteTvals) {
+          // Currently assuming the first array is OR. Need more samples on this
+          if (battleData.checkTraits(CheckTraitParameters(
+            requiredTraits: requiredTraits,
+            actor: svt,
+            checkActorTraits: true,
+            checkActorBuffTraits: true,
+            checkActiveBuffOnly: dataVals.IncludePassiveIndividuality != 1,
+            positiveMatchFunction: allMatch,
+            negativeMatchFunction: allMatch,
+          ))) {
+            return true;
+          }
+        }
+        return false;
+      });
+    } else {
+      targets.retainWhere((svt) =>
+          battleData.checkTraits(CheckTraitParameters(
+            requiredTraits: function.functvals,
+            actor: svt,
+            checkActorTraits: true,
+            checkActorBuffTraits: true,
+            checkActiveBuffOnly: dataVals.IncludePassiveIndividuality != 1,
+          )));
+    }
 
     final triggeredHpRateRange = dataVals.TriggeredTargetHpRateRange;
     if (triggeredHpRateRange != null && RegExp(r'(^<\d+$|^\d+<$)').hasMatch(triggeredHpRateRange)) {
