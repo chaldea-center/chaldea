@@ -10,13 +10,16 @@ class RemoteConfig {
   List<String> blockedCarousels;
   List<String> blockedErrors;
   ServerUrlConfig urls;
+  AdConfig ad;
 
   RemoteConfig({
     this.forceUpgradeVersion,
     this.blockedCarousels = const [],
     this.blockedErrors = const [],
     ServerUrlConfig? urls,
-  }) : urls = urls ?? ServerUrlConfig();
+    AdConfig? ad,
+  })  : urls = urls ?? ServerUrlConfig(),
+        ad = ad ?? AdConfig();
 
   factory RemoteConfig.fromJson(Map<String, dynamic> data) => _$RemoteConfigFromJson(data);
 
@@ -97,6 +100,19 @@ class UrlProxy {
   factory UrlProxy.fromJson(Map<String, dynamic> data) => _$UrlProxyFromJson(data);
 
   Map<String, dynamic> toJson() => _$UrlProxyToJson(this);
+}
+
+@JsonSerializable()
+class AdConfig {
+  bool enabled;
+
+  AdConfig({
+    this.enabled = false,
+  });
+
+  factory AdConfig.fromJson(Map<String, dynamic> data) => _$AdConfigFromJson(data);
+
+  Map<String, dynamic> toJson() => _$AdConfigToJson(this);
 }
 
 class HostsX {

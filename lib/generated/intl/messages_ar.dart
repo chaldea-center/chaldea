@@ -116,7 +116,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_info": MessageLookupByLibrary.simpleMessage("عن"),
         "card_name": MessageLookupByLibrary.simpleMessage("اسم البطاقة"),
         "card_status_owned": MessageLookupByLibrary.simpleMessage("مملوك"),
-        "carousel_setting": MessageLookupByLibrary.simpleMessage("اعدادات المكتبة"),
         "cc_equipped_svt": MessageLookupByLibrary.simpleMessage("الخدم المجهزين"),
         "chaldea_account": MessageLookupByLibrary.simpleMessage("حساب كاليديا"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(

@@ -118,7 +118,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_status_met": MessageLookupByLibrary.simpleMessage("Cumplido"),
         "card_status_not_met": MessageLookupByLibrary.simpleMessage("No Cumplido"),
         "card_status_owned": MessageLookupByLibrary.simpleMessage("Poseído"),
-        "carousel_setting": MessageLookupByLibrary.simpleMessage("Configuración del carrusel"),
+        "carousel": MessageLookupByLibrary.simpleMessage("Carrusel"),
         "chaldea_account": MessageLookupByLibrary.simpleMessage("Usuario de Chaldea"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(
             "Un sistema de cuenta simple para la copia de seguridad de los datos de usuario en el servidor y la sincronización de múltiples dispositivos\n  SIN garantía de seguridad, ¡POR FAVOR NO establezca contraseñas de uso frecuente!\n  No es necesario registrarse si no necesita estas dos funciones."),

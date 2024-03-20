@@ -18,6 +18,7 @@ RemoteConfig _$RemoteConfigFromJson(Map json) => $checkedCreate(
               'blockedErrors', (v) => (v as List<dynamic>?)?.map((e) => e as String).toList() ?? const []),
           urls: $checkedConvert(
               'urls', (v) => v == null ? null : ServerUrlConfig.fromJson(Map<String, dynamic>.from(v as Map))),
+          ad: $checkedConvert('ad', (v) => v == null ? null : AdConfig.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         return val;
       },
@@ -28,6 +29,7 @@ Map<String, dynamic> _$RemoteConfigToJson(RemoteConfig instance) => <String, dyn
       'blockedCarousels': instance.blockedCarousels,
       'blockedErrors': instance.blockedErrors,
       'urls': instance.urls.toJson(),
+      'ad': instance.ad.toJson(),
     };
 
 ServerUrlConfig _$ServerUrlConfigFromJson(Map json) => $checkedCreate(
@@ -72,4 +74,19 @@ UrlProxy _$UrlProxyFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$UrlProxyToJson(UrlProxy instance) => <String, dynamic>{
       'global': instance.global,
       'cn': instance.cn,
+    };
+
+AdConfig _$AdConfigFromJson(Map json) => $checkedCreate(
+      'AdConfig',
+      json,
+      ($checkedConvert) {
+        final val = AdConfig(
+          enabled: $checkedConvert('enabled', (v) => v as bool? ?? false),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$AdConfigToJson(AdConfig instance) => <String, dynamic>{
+      'enabled': instance.enabled,
     };

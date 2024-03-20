@@ -5,20 +5,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/modules/timer/base.dart';
 import 'package:chaldea/app/tools/system_tray.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/ads/banner_ad.dart';
+import 'package:chaldea/packages/ads/ads.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
-import 'package:chaldea/utils/constants.dart';
-import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import '../../root/global_fab.dart';
+import 'display_settings/ad_setting.dart';
 import 'display_settings/carousel_setting_page.dart';
 import 'display_settings/class_filter_style.dart';
 import 'display_settings/fav_option.dart';
@@ -49,7 +47,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
             header: S.current.gallery_tab_name,
             children: [
               ListTile(
-                title: Text(S.current.carousel_setting),
+                title: Text(S.current.carousel),
                 trailing: const Icon(Icons.keyboard_arrow_right),
                 onTap: () {
                   router.pushPage(const CarouselSettingPage());
@@ -381,68 +379,13 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   },
                 ),
               ],
-              if (BannerAdWidget.instance.supported || kDebugMode)
+              if (AppAds.instance.supported || kDebugMode)
                 ListTile(
-                  title: const Text("Hide Ads"),
-                  subtitle: db.settings.display.hideAdsUntil > DateTime.now().timestamp
-                      ? CountDown(
-                          endedAt: db.settings.display.hideAdsUntil.sec2date(),
-                          fitted: false,
-                        )
-                      : const Text("On"),
-                  trailing: TextButton(
-                    onPressed: () {
-                      router.showDialog(
-                        builder: (context) => SimpleDialog(
-                          title: const Text("Hide Ads"),
-                          children: [
-                            SimpleDialogOption(
-                              child: const Text("Always Turn On"),
-                              onPressed: () {
-                                db.settings.display.hideAdsUntil = 0;
-                                db.notifyAppUpdate();
-                                Navigator.pop(context);
-                              },
-                            ),
-                            SimpleDialogOption(
-                              child: const Text("2 Days"),
-                              onPressed: () {
-                                db.settings.display.hideAdsUntil = DateTime.now().timestamp + 2 * kSecsPerDay;
-                                db.notifyAppUpdate();
-                                Navigator.pop(context);
-                              },
-                            ),
-                            SimpleDialogOption(
-                              child: const Text("7 Days"),
-                              onPressed: () {
-                                db.settings.display.hideAdsUntil = DateTime.now().timestamp + 7 * kSecsPerDay;
-                                db.notifyAppUpdate();
-                                Navigator.pop(context);
-                              },
-                            ),
-                            SimpleDialogOption(
-                              child: const Text("31 Days"),
-                              onPressed: () {
-                                db.settings.display.hideAdsUntil = DateTime.now().timestamp + 31 * kSecsPerDay;
-                                db.notifyAppUpdate();
-                                Navigator.pop(context);
-                              },
-                            ),
-                            SimpleDialogOption(
-                              child: const Text("1 Year"),
-                              onPressed: () {
-                                db.settings.display.hideAdsUntil = DateTime.now().timestamp + 365 * kSecsPerDay;
-                                db.notifyAppUpdate();
-                                Navigator.pop(context);
-                              },
-                            ),
-                            const SFooter("Highly recommended to turn on Ads to cover expenditure."),
-                          ],
-                        ),
-                      );
-                    },
-                    child: const Text("Change"),
-                  ),
+                  title: Text(S.current.ad),
+                  trailing: const Icon(Icons.keyboard_arrow_right),
+                  onTap: () {
+                    router.pushPage(const AdSettingPage());
+                  },
                 ),
             ],
           ),

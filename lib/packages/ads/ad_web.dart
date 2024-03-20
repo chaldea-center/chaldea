@@ -13,6 +13,10 @@ import './interface.dart';
 class AppAdImpl implements AppAdInterface {
   @override
   final bool supported = kIsWeb && false;
+  @override
+  late final bool supportBannerAd = supported;
+  @override
+  late final bool supportAppOpenAd = false;
 
   bool _initialized = false;
   @override
@@ -29,7 +33,10 @@ class AppAdImpl implements AppAdInterface {
   }
 
   @override
-  Widget build(BuildContext context, AdOptions options, WidgetBuilder? placeholder) {
+  Future<void> initAppOpenAd() => Future.value();
+
+  @override
+  Widget buildBanner(BuildContext context, AdOptions options, WidgetBuilder? placeholder) {
     AdBlockSize adBlockSize = AdBlockSize(width: options.size.width, height: options.size.height);
     if (!_initialized) {
       return placeholder?.call(context) ?? const SizedBox.shrink();
@@ -58,5 +65,10 @@ class AppAdImpl implements AppAdInterface {
       height: adBlockSize.height.toDouble(),
       child: HtmlElementView(viewType: viewID),
     );
+  }
+
+  @override
+  Widget? buildAppOpen(BuildContext context, AdOptions options) {
+    return null;
   }
 }

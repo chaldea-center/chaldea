@@ -271,7 +271,7 @@ class DisplaySettings {
   int? maxWindowWidth; // web only
   int? splitMasterRatio;
   bool enableSplitView;
-  int hideAdsUntil;
+  AdSetting ad;
 
   DisplaySettings({
     this.showAccountAtHome = true,
@@ -291,9 +291,10 @@ class DisplaySettings {
     this.maxWindowWidth,
     this.splitMasterRatio,
     this.enableSplitView = true,
-    this.hideAdsUntil = 0,
+    AdSetting? ad,
   })  : sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ?? List.of(SvtTab.values),
-        hideSvtPlanDetails = hideSvtPlanDetails?.whereType<SvtPlanDetail>().toList() ?? [] {
+        hideSvtPlanDetails = hideSvtPlanDetails?.whereType<SvtPlanDetail>().toList() ?? [],
+        ad = ad ?? AdSetting() {
     validateSvtTabs();
   }
 
@@ -311,6 +312,31 @@ class DisplaySettings {
   factory DisplaySettings.fromJson(Map<String, dynamic> data) => _$DisplaySettingsFromJson(data);
 
   Map<String, dynamic> toJson() => _$DisplaySettingsToJson(this);
+}
+
+@JsonSerializable()
+class AdSetting {
+  bool? enabled;
+  bool? banner;
+  bool? appOpen;
+
+  int lastAppOpen; // update after loaded
+
+  bool get shouldShowBanner => banner ?? true;
+  bool get shouldShowAppOpen {
+    return (appOpen ?? true) && DateTime.now().timestamp - lastAppOpen > 2 * 3600;
+  }
+
+  AdSetting({
+    this.enabled,
+    this.banner,
+    this.appOpen,
+    this.lastAppOpen = 0,
+  });
+
+  factory AdSetting.fromJson(Map<String, dynamic> data) => _$AdSettingFromJson(data);
+
+  Map<String, dynamic> toJson() => _$AdSettingToJson(this);
 }
 
 @JsonSerializable()

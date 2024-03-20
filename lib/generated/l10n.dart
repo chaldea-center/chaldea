@@ -173,6 +173,17 @@ class S {
     );
   }
 
+  /// `Ad`
+  String get ad {
+    return Intl.message(
+      'Ad',
+      name: 'ad',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Add`
   String get add {
     return Intl.message(
@@ -1526,11 +1537,11 @@ class S {
     );
   }
 
-  /// `Carousel Setting`
-  String get carousel_setting {
+  /// `Carousel`
+  String get carousel {
     return Intl.message(
-      'Carousel Setting',
-      name: 'carousel_setting',
+      'Carousel',
+      name: 'carousel',
       desc: '',
       locale: localeName,
       args: [],

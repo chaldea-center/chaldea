@@ -175,7 +175,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_status_not_met": MessageLookupByLibrary.simpleMessage("未遭遇"),
         "card_status_owned": MessageLookupByLibrary.simpleMessage("所持"),
         "card_strengthen": MessageLookupByLibrary.simpleMessage("コマンドカード強化"),
-        "carousel_setting": MessageLookupByLibrary.simpleMessage("カルーセル設定"),
+        "carousel": MessageLookupByLibrary.simpleMessage("カルーセル"),
         "cc_equipped_svt": MessageLookupByLibrary.simpleMessage("装備されたサーヴァント"),
         "chaldea_account": MessageLookupByLibrary.simpleMessage("Chaldea アカウント"),
         "chaldea_account_system_hint": MessageLookupByLibrary.simpleMessage(

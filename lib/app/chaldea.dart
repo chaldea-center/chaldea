@@ -17,7 +17,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../generated/l10n.dart';
 import '../models/db.dart';
-import '../packages/ads/banner_ad.dart';
+import '../packages/ads/ads.dart';
 import '../packages/language.dart';
 import '../packages/method_channel/method_channel_chaldea.dart';
 import '../packages/network.dart';
@@ -147,7 +147,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
     if (PlatformU.isWindows) {
       MethodChannelChaldea.setWindowPos();
     }
-    BannerAdWidget.init();
+    AppAds.init();
 
     if (DateTime.now().timestamp - db.settings.lastBackup > 24 * 3600) {
       db.backupUserdata();

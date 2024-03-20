@@ -43,13 +43,28 @@ class AdOptions {
     iosId: 'ca-app-pub-1170355046794925/3228031006',
     webId: '9573402336',
   );
+
+  static AdOptions get appOpen => const AdOptions(
+        name: 'app-open',
+        size: AppAdSize(800, 800),
+        // androidId: 'ca-app-pub-3940256099942544/9257395921',
+        // iosId: 'ca-app-pub-3940256099942544/5575463023',
+        androidId: 'ca-app-pub-1170355046794925/9012265171',
+        iosId: 'ca-app-pub-1170355046794925/8214188824',
+      );
 }
 
 abstract class AppAdInterface {
   bool get supported;
+  bool get supportBannerAd;
+  bool get supportAppOpenAd;
   bool get initialized;
 
   Future<void> init();
 
-  Widget build(BuildContext context, AdOptions options, WidgetBuilder? placeholder);
+  Future<void> initAppOpenAd();
+
+  Widget buildBanner(BuildContext context, AdOptions options, WidgetBuilder? placeholder);
+
+  Widget? buildAppOpen(BuildContext context, AdOptions options);
 }

@@ -106,6 +106,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "account_title": MessageLookupByLibrary.simpleMessage("Account"),
         "active_skill": MessageLookupByLibrary.simpleMessage("Active Skill"),
         "active_skill_short": MessageLookupByLibrary.simpleMessage("Active"),
+        "ad": MessageLookupByLibrary.simpleMessage("Ad"),
         "add": MessageLookupByLibrary.simpleMessage("Add"),
         "add_condition": MessageLookupByLibrary.simpleMessage("Add Condition"),
         "add_feedback_details_warning": MessageLookupByLibrary.simpleMessage("Please add feedback details"),
@@ -234,7 +235,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_status_not_met": MessageLookupByLibrary.simpleMessage("Not Met"),
         "card_status_owned": MessageLookupByLibrary.simpleMessage("Owned"),
         "card_strengthen": MessageLookupByLibrary.simpleMessage("Card Strengthen"),
-        "carousel_setting": MessageLookupByLibrary.simpleMessage("Carousel Setting"),
+        "carousel": MessageLookupByLibrary.simpleMessage("Carousel"),
         "cc_equipped_svt": MessageLookupByLibrary.simpleMessage("Equipped Servants"),
         "ce_custom_skill_hint":
             MessageLookupByLibrary.simpleMessage("Please add custom skills/buffs through servant options"),

@@ -212,7 +212,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "card_status_not_met": MessageLookupByLibrary.simpleMessage("미조우"),
         "card_status_owned": MessageLookupByLibrary.simpleMessage("계약자"),
         "card_strengthen": MessageLookupByLibrary.simpleMessage("커맨드카드 강화"),
-        "carousel_setting": MessageLookupByLibrary.simpleMessage("배너 설정"),
         "cc_equipped_svt": MessageLookupByLibrary.simpleMessage("장착된 서번트"),
         "ce_custom_skill_hint": MessageLookupByLibrary.simpleMessage("서번트 옵션을 통해 커스텀 스킬/버프를 추가해주세요."),
         "chaldea_account": MessageLookupByLibrary.simpleMessage("Chaldea 계정"),

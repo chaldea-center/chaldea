@@ -18,7 +18,7 @@ class _CarouselSettingPageState extends State<CarouselSettingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(S.current.carousel_setting)),
+      appBar: AppBar(title: Text(S.current.carousel)),
       body: ListView(
         children: [
           // SwitchListTile.adaptive(

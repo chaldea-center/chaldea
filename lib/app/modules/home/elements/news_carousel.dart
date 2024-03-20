@@ -20,7 +20,7 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
-import 'package:chaldea/packages/ads/banner_ad.dart';
+import 'package:chaldea/packages/ads/ads.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/packages/packages.dart';
@@ -350,11 +350,11 @@ class AppNewsCarousel extends StatefulWidget {
         carouselSetting.items = result;
         carouselSetting.updateTime = DateTime.now().timestamp;
         if (showToast) {
-          EasyLoading.showSuccess(S.current.updated);
+          EasyLoading.showSuccess("${S.current.carousel} ${S.current.updated}");
         }
       } else {
         if (showToast) {
-          EasyLoading.showInfo(S.current.update_msg_no_update);
+          EasyLoading.showInfo('${S.current.carousel} ${S.current.update_msg_no_update}');
         }
       }
     } catch (e, s) {
@@ -489,7 +489,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
       if (item.verMax != null && item.verMax! < AppInfo.version) return true;
       return false;
     });
-    if (BannerAdWidget.shouldShowAds(context)) {
+    if (AppAds.shouldShowBannerAd(context)) {
       items.addAll(List.generate(
         items.length ~/ 4 + 1,
         (index) => CarouselItem(

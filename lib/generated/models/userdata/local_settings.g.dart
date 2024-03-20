@@ -252,7 +252,7 @@ DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate(
           maxWindowWidth: $checkedConvert('maxWindowWidth', (v) => v as int?),
           splitMasterRatio: $checkedConvert('splitMasterRatio', (v) => v as int?),
           enableSplitView: $checkedConvert('enableSplitView', (v) => v as bool? ?? true),
-          hideAdsUntil: $checkedConvert('hideAdsUntil', (v) => v as int? ?? 0),
+          ad: $checkedConvert('ad', (v) => v == null ? null : AdSetting.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         return val;
       },
@@ -276,7 +276,7 @@ Map<String, dynamic> _$DisplaySettingsToJson(DisplaySettings instance) => <Strin
       'maxWindowWidth': instance.maxWindowWidth,
       'splitMasterRatio': instance.splitMasterRatio,
       'enableSplitView': instance.enableSplitView,
-      'hideAdsUntil': instance.hideAdsUntil,
+      'ad': instance.ad.toJson(),
     };
 
 const _$SvtPlanInputModeEnumMap = {
@@ -331,6 +331,25 @@ const _$SvtPlanDetailEnumMap = {
   SvtPlanDetail.bondLimit: 'bondLimit',
   SvtPlanDetail.commandCode: 'commandCode',
 };
+
+AdSetting _$AdSettingFromJson(Map json) => $checkedCreate(
+      'AdSetting',
+      json,
+      ($checkedConvert) {
+        final val = AdSetting(
+          enabled: $checkedConvert('enabled', (v) => v as bool?),
+          banner: $checkedConvert('banner', (v) => v as bool?),
+          appOpen: $checkedConvert('appOpen', (v) => v as bool?),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$AdSettingToJson(AdSetting instance) => <String, dynamic>{
+      'enabled': instance.enabled,
+      'banner': instance.banner,
+      'appOpen': instance.appOpen,
+    };
 
 CarouselSetting _$CarouselSettingFromJson(Map json) => $checkedCreate(
       'CarouselSetting',
