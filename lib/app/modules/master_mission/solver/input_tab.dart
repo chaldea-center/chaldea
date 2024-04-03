@@ -546,6 +546,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
             quests.add(quest);
             countSuccess += 1;
           } else {
+            quests.add(quest);
             countNoEnemy += 1;
           }
           await Future.delayed(const Duration(milliseconds: 100));

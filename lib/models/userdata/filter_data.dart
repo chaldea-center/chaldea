@@ -367,7 +367,7 @@ class SvtFilterData with _FilterData {
   final effectTarget = FilterGroupData<EffectTarget>();
   final targetTrait = FilterGroupData<int>();
   final effectType = FilterGroupData<SkillEffect>();
-  final freeExchangeSvtEvent = FilterRadioData<int>();
+  final freeExchangeSvtEvent = FilterRadioData<Event>();
 
   SvtFilterData({
     this.useGrid = false,

@@ -145,6 +145,7 @@ class _CharaFigureMarkerState extends State<CharaFigureMarker> with SingleTicker
 
   Widget buildGrid(List<int> ids) {
     ids.sort();
+    ids = ids.reversed.toList();
     return GridView.builder(
       itemCount: ids.length,
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -155,6 +156,7 @@ class _CharaFigureMarkerState extends State<CharaFigureMarker> with SingleTicker
       ),
       itemBuilder: (context, index) {
         final id = ids[index];
+        final isNonSvt = db.settings.misc.nonSvtCharaFigureIds.contains(id);
         final svt = db.gameData.servantsById[db.settings.misc.markedCharaFigureSvtIds[id]];
         BasicServant? entity = db.gameData.entities[id] ?? db.gameData.entities[id ~/ 10 * 10];
         return Column(
@@ -201,7 +203,7 @@ class _CharaFigureMarkerState extends State<CharaFigureMarker> with SingleTicker
                     padding: EdgeInsets.zero,
                     icon: Icon(
                       Icons.no_accounts,
-                      color: Theme.of(context).hintColor,
+                      color: isNonSvt ? Theme.of(context).colorScheme.primary : Theme.of(context).hintColor,
                       size: 16,
                     ),
                   ),
