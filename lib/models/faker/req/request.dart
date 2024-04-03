@@ -293,7 +293,10 @@ class FResponse {
   }
 
   FateResponseDetail getResponse(String nid) {
-    return responses.firstWhere((e) => e.nid == nid);
+    for (final resp in responses) {
+      if (resp.nid == nid) return resp;
+    }
+    throw Exception('response nid="$nid" not found');
   }
 
   FResponse throwError() {

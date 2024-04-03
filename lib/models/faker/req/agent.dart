@@ -8,6 +8,7 @@ import 'package:archive/archive.dart' show getCrc32;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:msgpack_dart/msgpack_dart.dart' as msgpack;
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
@@ -45,6 +46,20 @@ class FRequestAgent {
   Future<FResponse> gamedataTop({bool checkAppUpdate = true}) async {
     final request = FRequestBase(network: network, path: '/gamedata/top');
     final fresp = await request.beginRequest();
+    if (fresp.responses.any((e) => e.fail?['action'] == 'app_version_up')) {
+      if (!checkAppUpdate) {
+        throw Exception('fgo version updated');
+      }
+      final newVer = await AtlasApi.gPlayVer(network.gameTop.region);
+      if (newVer == null) {
+        throw Exception('fgo version updated but resolve new version failed');
+      }
+      if (AppVersion.parse(newVer) <= AppVersion.parse(network.gameTop.appVer)) {
+        throw Exception('fgo version updated but no new version found');
+      }
+      network.gameTop.appVer = newVer;
+      return gamedataTop(checkAppUpdate: false);
+    }
     final resp = fresp.getResponse('gamedata');
     if (resp.checkError()) {
       int dataVer = resp.success!['dataVer']!;
@@ -61,16 +76,6 @@ class FRequestAgent {
       }
       return fresp;
     } else {
-      final detail = resp.fail?['detail'] as String?;
-      if (resp.fail?['action'] == 'app_version_up' && checkAppUpdate) {
-        final versions =
-            RegExp(r'\D(\d+\.\d+\.\d+)\D').allMatches(detail ?? '').map((e) => AppVersion.parse(e.group(1)!)).toList();
-        versions.sort((a, b) => b.compareTo(a));
-        if (versions.isNotEmpty && versions.first > AppVersion.parse(network.gameTop.appVer)) {
-          network.gameTop.appVer = versions.first.versionString;
-          return gamedataTop(checkAppUpdate: false);
-        }
-      }
       return fresp.throwError();
     }
   }
