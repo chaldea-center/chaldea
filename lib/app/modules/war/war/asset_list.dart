@@ -20,7 +20,7 @@ class WarAssetListPage extends StatefulWidget {
   State<WarAssetListPage> createState() => _WarAssetListPageState();
 }
 
-class _WarAssetListPageState extends State<WarAssetListPage> {
+class _WarAssetListPageState extends State<WarAssetListPage> with AfterLayoutMixin {
   Set<String> bgImages = {};
   Set<String> figures = {};
   Map<String, String> audios = {}; // <url,name>
@@ -33,9 +33,8 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
   int total = 0;
 
   @override
-  void initState() {
-    super.initState();
-    fetchData();
+  void afterFirstLayout(BuildContext context) {
+    fetchData(showConfirmCount: 30);
   }
 
   @override
@@ -44,7 +43,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
     audioPlayer.stop();
   }
 
-  void fetchData([bool force = false]) async {
+  void fetchData({int showConfirmCount = -1, bool force = false}) async {
     bgImages.clear();
     figures.clear();
     audios.clear();
@@ -72,6 +71,16 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
     }
 
     total = scripts.length;
+    if (showConfirmCount > 0 && total > showConfirmCount && mounted) {
+      final confirm = await SimpleCancelOkDialog(
+        title: Text(S.current.confirm),
+        content: Text("$total ${S.current.script_story}, ${S.current.download}?"),
+      ).showDialog(context);
+      if (confirm != true) {
+        if (mounted) Navigator.pop(context);
+        return;
+      }
+    }
 
     await Future.delayed(const Duration(milliseconds: 500));
     // war assets
@@ -275,7 +284,7 @@ class _WarAssetListPageState extends State<WarAssetListPage> {
               itemBuilder: (context) => [
                 PopupMenuItem(
                   child: Text(S.current.refresh),
-                  onTap: () => fetchData(true),
+                  onTap: () => fetchData(force: true),
                 )
               ],
             )
