@@ -907,6 +907,10 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
       case SvtCompare.hp:
         additionalText = '  HP ${svt.hpMax}';
         break;
+      case SvtCompare.bondLv:
+        if (svt.status.favorite) {
+          additionalText = '  ${S.current.bond} ${svt.status.bond}';
+        }
       default:
         break;
     }

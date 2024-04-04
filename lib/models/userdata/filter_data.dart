@@ -186,6 +186,7 @@ enum SvtCompare {
   hp,
   priority,
   tdLv,
+  bondLv,
   ;
 
   String get showName {
@@ -204,6 +205,8 @@ enum SvtCompare {
         return S.current.priority;
       case SvtCompare.tdLv:
         return '${S.current.np_short} Lv';
+      case SvtCompare.bondLv:
+        return '${S.current.bond} Lv';
     }
   }
 }
@@ -464,6 +467,10 @@ class SvtFilterData with _FilterData {
           break;
         case SvtCompare.tdLv:
           final aa = user.svtStatusOf(a.collectionNo).cur.npLv, bb = user.svtStatusOf(b.collectionNo).cur.npLv;
+          r = aa - bb;
+          break;
+        case SvtCompare.bondLv:
+          final aa = user.svtStatusOf(a.collectionNo).bond, bb = user.svtStatusOf(b.collectionNo).bond;
           r = aa - bb;
           break;
       }
