@@ -192,6 +192,9 @@ class BattleRecordManager {
     if (questPhase.id <= 0) {
       reasons.setReproduce('${S.current.general_custom}: ${S.current.quest} ${questPhase.id}');
     }
+    if (!questPhase.isLaplaceSharable) {
+      reasons.setUpload(S.current.quest_disallow_laplace_share_hint);
+    }
     if (options.pointBuffs.isNotEmpty) {
       // setIllegal(S.current.event_point);
     }
@@ -200,6 +203,10 @@ class BattleRecordManager {
     }
     if (options.simulateEnemy) {
       reasons.setUpload('${S.current.options}: ${S.current.simulate_enemy_actions}');
+    }
+    final shouldMightyChain = questPhase.shouldEnableMightyChain();
+    if (options.mightyChain != shouldMightyChain) {
+      reasons.setUpload("Mighty Chain(QAB Chain) should be ${shouldMightyChain ? 'ON' : 'OFF'}");
     }
     if (questPhase.isLaplaceNeedAi) {
       if (!options.simulateAi) {
@@ -280,6 +287,11 @@ class BattleRecordManager {
   }
 
   void checkExtraIllegalReason(BattleIllegalReasons reasons2, BattleRuntime runtime) {
+    final region = runtime.region;
+    if (region != null && region != Region.jp) {
+      reasons2.setUpload('Only JP quest supports team sharing. (current: ${region.localName})');
+    }
+
     const kMaxRNG = 950, kMinProb = 80;
     int countLargeRng = 0, countProb = 0;
     final delegate = runtime.battleData.replayDataRecord;

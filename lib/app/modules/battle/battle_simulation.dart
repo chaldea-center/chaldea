@@ -829,14 +829,6 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
 
   BattleIllegalReasons getReasons() {
     final reasons = battleData.recorder.reasons.copy();
-
-    final region = runtime.region;
-    if (region != null && region != Region.jp) {
-      reasons.setUpload('Only JP quest supports team sharing. (current: ${region.localName})');
-    }
-    if (!runtime.originalQuest.isLaplaceSharable) {
-      reasons.setUpload(S.current.quest_disallow_laplace_share_hint);
-    }
     battleData.recorder.checkExtraIllegalReason(reasons, runtime);
     return reasons;
   }
