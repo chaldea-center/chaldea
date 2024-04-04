@@ -453,7 +453,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
             title: Text(S.current.remove),
             content: Text(buffName),
             onTapOk: () {
-              recorder.setIllegal("Manual Remove Buff: ${svt.lBattleName}-$buffName");
+              recorder.reasons.setReproduce("Manual Remove Buff: ${svt.lBattleName}-$buffName");
               buffList.remove(buff);
               if (mounted) setState(() {});
             },

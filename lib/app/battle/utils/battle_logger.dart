@@ -57,15 +57,16 @@ enum BattleLogType { debug, function, action, error }
 
 class BattleRecordManager {
   List<BattleRecord> records = [];
-  Set<String> illegalReasons = {};
+
+  BattleIllegalReasons reasons = BattleIllegalReasons();
+
   BattleRecordManager();
 
-  bool get isUploadEligible => illegalReasons.isEmpty;
-  void setIllegal(String reason) => illegalReasons.add(reason);
+  bool get isUploadEligible => reasons.uploads.isEmpty;
 
   BattleRecordManager copy() {
     return BattleRecordManager()
-      ..illegalReasons = illegalReasons.toSet()
+      ..reasons = reasons.copy()
       ..records = records.toList()
       .._cardHistory = _cardHistory.toList();
   }
@@ -83,7 +84,7 @@ class BattleRecordManager {
   }
 
   void skipWave(int wave) {
-    setIllegal('Skip Wave $wave');
+    reasons.setReproduce('Skip Wave $wave');
     records.add(BattleSkipWaveRecord(wave));
   }
 
@@ -113,7 +114,7 @@ class BattleRecordManager {
     BattleSkillParams? param,
   }) {
     if (!uploadEligible) {
-      setIllegal('${S.current.skill} ${skill.type.name}: ${skill.lName}');
+      reasons.setUpload('${S.current.skill} ${skill.type.name}: ${skill.lName}');
     }
 
     records.add(BattleSkillRecord(
@@ -189,33 +190,33 @@ class BattleRecordManager {
   // move to somewhere else
   void determineUploadEligibility(final QuestPhase questPhase, final BattleOptions options) {
     if (questPhase.id <= 0) {
-      setIllegal('${S.current.general_custom}: ${S.current.quest} ${questPhase.id}');
+      reasons.setReproduce('${S.current.general_custom}: ${S.current.quest} ${questPhase.id}');
     }
     if (options.pointBuffs.isNotEmpty) {
       // setIllegal(S.current.event_point);
     }
     if (options.disableEvent) {
-      setIllegal('${S.current.options}: ${S.current.disable_event_effects}');
+      reasons.setUpload('${S.current.options}: ${S.current.disable_event_effects}');
     }
     if (options.simulateEnemy) {
-      setIllegal('${S.current.options}: ${S.current.simulate_enemy_actions}');
+      reasons.setUpload('${S.current.options}: ${S.current.simulate_enemy_actions}');
     }
     if (questPhase.isLaplaceNeedAi) {
       if (!options.simulateAi) {
-        setIllegal("${S.current.options}: ${S.current.simulate_simple_ai} must be enabled");
+        reasons.setUpload("${S.current.options}: ${S.current.simulate_simple_ai} must be enabled");
       }
     } else {
       if (options.simulateAi) {
-        setIllegal('${S.current.options}: ${S.current.simulate_simple_ai}');
+        reasons.setUpload('${S.current.options}: ${S.current.simulate_simple_ai}');
       }
     }
 
     if (options.formation.allSvts.where((e) => e.supportType != SupportSvtType.none).length > 1) {
-      setIllegal('${S.current.support_servant}: ＞1');
+      reasons.setUpload('${S.current.support_servant}: ＞1');
     }
     final maxCost = Maths.max(ConstData.userLevel.values.map((e) => e.maxCost), 115);
     if (options.formation.totalCost > maxCost) {
-      setIllegal('COST ${options.formation.totalCost}>$maxCost');
+      reasons.setUpload('COST ${options.formation.totalCost}>$maxCost');
     }
 
     for (final svtData in options.formation.allSvts) {
@@ -228,23 +229,23 @@ class BattleRecordManager {
     if (svt == null) return;
     final svtName = svt.lName.l;
     if (svtData.supportType == SupportSvtType.npc) {
-      setIllegal('Guest Support/NPC: $svtName');
+      reasons.setReproduce('Guest Support/NPC: $svtName');
     }
     if (!svt.isUserSvt) {
-      setIllegal('Not player servant: $svtName');
+      reasons.setUpload('Not player servant: $svtName');
     }
     if (svtData.customPassives.isNotEmpty) {
-      setIllegal('${S.current.extra_passive}(${S.current.general_custom})');
+      reasons.setUpload('${S.current.extra_passive}(${S.current.general_custom})');
     }
     if (svtData.disabledExtraSkills.isNotEmpty) {
-      setIllegal("${svtData.disabledExtraSkills.length} disabled extra skills");
+      reasons.setUpload("${svtData.disabledExtraSkills.length} disabled extra skills");
     }
     if (svtData.fixedAtk != null || svtData.fixedHp != null) {
-      setIllegal('Fixed HP or ATK (mainly Guest Support). If you see this msg, tell me the bug.');
+      reasons.setReproduce('Fixed HP or ATK (mainly Guest Support). If you see this msg, tell me the bug.');
     }
     final dbSvt = db.gameData.servantsById[svt.id];
     if (dbSvt == null) {
-      setIllegal('Servant not in database');
+      reasons.setReproduce('Servant not in database: ${svt.id}-${svt.lName.l}');
       return;
     }
     for (final skillNum in kActiveSkillNums) {
@@ -252,15 +253,16 @@ class BattleRecordManager {
       if (skillId == null) continue;
       final validSkills = BattleUtils.getShownSkills(dbSvt, svtData.limitCount, skillNum).map((e) => e.id).toSet();
       if (!validSkills.contains(skillId)) {
-        setIllegal('${S.current.custom_skill} $skillNum - ID $skillId, valid: $validSkills');
+        reasons.setUpload('${S.current.custom_skill} $skillNum - ID $skillId, valid: $validSkills');
       }
     }
     final validTds = BattleUtils.getShownTds(dbSvt, svtData.limitCount).map((e) => e.id).toSet();
     if (svtData.td != null && !validTds.contains(svtData.td?.id)) {
-      setIllegal('${S.current.general_custom} ${S.current.noble_phantasm}: ID ${svtData.td!.id}, valid: $validTds');
+      reasons
+          .setUpload('${S.current.general_custom} ${S.current.noble_phantasm}: ID ${svtData.td!.id}, valid: $validTds');
     }
     if (svtData.ce != null && svtData.ce!.collectionNo <= 0) {
-      setIllegal('${S.current.craft_essence}: ID ${svtData.ce!.id}, not player CE');
+      reasons.setUpload('${S.current.craft_essence}: ID ${svtData.ce!.id}, not player CE');
     }
 
     // coin
@@ -271,16 +273,16 @@ class BattleRecordManager {
       requiredCoins += max(((svtData.lv - 100) / 2).ceil() * 30, 0);
       requiredCoins += svtData.appendLvs.where((e) => e > 0).length * 120;
       if (requiredCoins > maxCoins) {
-        setIllegal('${S.current.servant_coin}(${svt.lName.l}): required $requiredCoins, '
+        reasons.setUpload('${S.current.servant_coin}(${svt.lName.l}): required $requiredCoins, '
             'but max $maxCoins at ${S.current.np_short}${svtData.tdLv} & ${S.current.bond}15 ');
       }
     }
   }
 
-  Set<String> checkExtraIllegalReason(BattleReplayDelegateData delegate) {
-    final reasons = <String>{};
+  void checkExtraIllegalReason(BattleIllegalReasons reasons2, BattleRuntime runtime) {
     const kMaxRNG = 950, kMinProb = 80;
     int countLargeRng = 0, countProb = 0;
+    final delegate = runtime.battleData.replayDataRecord;
     bool tailoredExecution = delegate.damageSelections.isNotEmpty || delegate.canActivateDecisions.isNotEmpty;
     for (final record in toUploadRecords()) {
       if (record.options.random >= kMaxRNG) {
@@ -292,16 +294,64 @@ class BattleRecordManager {
       }
     }
     if (tailoredExecution) {
-      reasons.add('${S.current.options}: ${S.current.battle_tailored_execution}');
+      reasons2.setUpload('${S.current.options}: ${S.current.battle_tailored_execution}');
     }
 
     if (countLargeRng > 3) {
-      reasons.add('${S.current.battle_random}≥0.95: count $countLargeRng>3');
+      reasons2.setUpload('${S.current.battle_random}≥0.95: count $countLargeRng>3');
     }
     if (countProb > 3) {
-      reasons.add('${S.current.battle_probability_threshold}≤80: count $countProb>3');
+      reasons2.setUpload('${S.current.battle_probability_threshold}≤80: count $countProb>3');
     }
-    return reasons;
+    //
+    final records = runtime.battleData.recorder.records;
+
+    final multiDmgFuncSvts = records
+        .whereType<BattleAttackRecord>()
+        .where((e) => e.card?.isTD == true && (e.card?.td?.dmgNpFuncCount ?? 0) > 1)
+        .map((e) => e.attacker.lBattleName)
+        .toSet();
+    if (multiDmgFuncSvts.isNotEmpty) {
+      reasons2.setWarning('${S.current.laplace_upload_td_multi_dmg_func_hint}: ${multiDmgFuncSvts.join(" / ")}');
+    }
+
+    List<String> unreleasedSvts = [];
+    int r5td5 = 0;
+    for (final svtData in runtime.originalOptions.formation.allSvts) {
+      final svt = svtData.svt;
+      if (svt == null) continue;
+      final releasedAt = svt.extra.getReleasedAt();
+      if (runtime.originalQuest.closedAt < releasedAt && releasedAt > 0) {
+        unreleasedSvts.add(svt.lName.l);
+      }
+
+      if (svt.rarity == 5 && svtData.tdLv >= 5) {
+        r5td5 += 1;
+      }
+    }
+    if (unreleasedSvts.isNotEmpty) {
+      reasons2.setWarning(
+          '$kStarChar2 ${S.current.svt_not_release_hint} $kStarChar2:\n   $kStarChar2 ${unreleasedSvts.join(" / ")}');
+    }
+    if (r5td5 >= 2) {
+      reasons2.setWarning(S.current.too_many_td5_svts_warning(r5td5));
+    }
+
+    int totalCards = 0, attackedCards = 0;
+    for (final record in records) {
+      if (record is BattleAttacksInitiationRecord) {
+        final selectedCards = record.attacks.where((e) => e.cardData.cardType != CardType.extra).toList();
+        totalCards += selectedCards.length;
+        // totalNormalCards += selectedCards.where((e) => !e.cardData.isTD).length;
+      } else if (record is BattleAttackRecord) {
+        if (record.card?.cardType != CardType.extra) {
+          attackedCards += 1;
+        }
+      }
+    }
+    if (totalCards > attackedCards) {
+      reasons2.setWarning(S.current.card_not_attack_warning(totalCards - attackedCards, totalCards));
+    }
   }
 
   List<BattleRecordData> toUploadRecords() {
@@ -313,6 +363,32 @@ class BattleRecordManager {
       }
     }
     return uploadRecords;
+  }
+}
+
+class BattleIllegalReasons {
+  final Set<String> reproduces;
+  final Set<String> uploads;
+  final Set<String> warnings;
+
+  BattleIllegalReasons({
+    Set<String>? reproduces,
+    Set<String>? uploads,
+    Set<String>? warnings,
+  })  : reproduces = reproduces ?? {},
+        uploads = uploads ?? {},
+        warnings = warnings ?? {};
+
+  void setReproduce(String msg) => reproduces.add(msg);
+  void setUpload(String msg) => uploads.add(msg);
+  void setWarning(String msg) => warnings.add(msg);
+
+  BattleIllegalReasons copy() {
+    return BattleIllegalReasons(
+      reproduces: reproduces.toSet(),
+      uploads: uploads.toSet(),
+      warnings: warnings.toSet(),
+    );
   }
 }
 

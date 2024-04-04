@@ -23,37 +23,6 @@ import 'simulation/custom_skill_activator.dart';
 import 'simulation/recorder.dart';
 import 'simulation/svt_detail.dart';
 
-class _BattleRuntime {
-  BattleData battleData;
-  Region? region;
-  BattleOptions originalOptions;
-  QuestPhase originalQuest;
-
-  _BattleRuntime({
-    required this.battleData,
-    required this.region,
-    required this.originalOptions,
-    required this.originalQuest,
-  });
-
-  BattleShareData getShareData({
-    bool allowNotWin = false,
-    bool isCritTeam = false,
-    bool includeReplayData = true,
-  }) {
-    assert(battleData.isBattleWin || allowNotWin);
-    return BattleShareData(
-      appBuild: AppInfo.buildNumber,
-      quest: BattleQuestInfo.quest(originalQuest),
-      formation: originalOptions.formation.toFormationData(),
-      delegate: includeReplayData ? battleData.replayDataRecord.copy() : null,
-      actions: includeReplayData ? battleData.recorder.toUploadRecords() : null,
-      options: originalOptions.toShareData(),
-      isCritTeam: isCritTeam,
-    );
-  }
-}
-
 class BattleSimulationPage extends StatefulWidget {
   final QuestPhase questPhase;
   final Region? region;
@@ -75,7 +44,7 @@ class BattleSimulationPage extends StatefulWidget {
 }
 
 class _BattleSimulationPageState extends State<BattleSimulationPage> {
-  late final _BattleRuntime runtime = _BattleRuntime(
+  late final BattleRuntime runtime = BattleRuntime(
     battleData: BattleData(),
     region: widget.region,
     originalOptions: widget.options.copy(),
@@ -604,7 +573,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         IconButton(
           onPressed: () async {
             await battleData.skipTurn();
-            battleData.recorder.setIllegal(S.current.skip_current_turn);
+            battleData.recorder.reasons.setReproduce(S.current.skip_current_turn);
             EasyLoading.showToast(S.current.skip_current_turn);
             if (mounted) setState(() {});
           },
@@ -843,7 +812,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
 }
 
 class _TeamUploadDialog extends StatefulWidget {
-  final _BattleRuntime runtime;
+  final BattleRuntime runtime;
   const _TeamUploadDialog(this.runtime);
 
   @override
@@ -858,123 +827,81 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
   static const int kMaxAttack = 5;
   bool isCritTeam = false;
 
-  List<String> getErrors() {
+  BattleIllegalReasons getReasons() {
+    final reasons = battleData.recorder.reasons.copy();
+
     final region = runtime.region;
-    List<String> errors = [
-      if (region != null && region != Region.jp) 'Only JP quest supports team sharing. (current: ${region.localName})',
-      if (!runtime.originalQuest.isLaplaceSharable) S.current.quest_disallow_laplace_share_hint,
-    ];
-
-    final reasons = battleData.recorder.illegalReasons.toSet();
-    reasons.addAll(battleData.recorder.checkExtraIllegalReason(battleData.replayDataRecord));
-    errors.addAll(reasons);
-    return errors;
-  }
-
-  List<String> getWarnings() {
-    final records = battleData.recorder.records;
-
-    final multiDmgFuncSvts = records
-        .whereType<BattleAttackRecord>()
-        .where((e) => e.card?.isTD == true && (e.card?.td?.dmgNpFuncCount ?? 0) > 1)
-        .map((e) => e.attacker.lBattleName)
-        .toSet();
-    List<String> warnings = [
-      if (multiDmgFuncSvts.isNotEmpty)
-        '${S.current.laplace_upload_td_multi_dmg_func_hint}: ${multiDmgFuncSvts.join(" / ")}',
-    ];
-
-    List<String> unreleasedSvts = [];
-    int r5td5 = 0;
-    for (final svtData in runtime.originalOptions.formation.allSvts) {
-      final svt = svtData.svt;
-      if (svt == null) continue;
-      final releasedAt = svt.extra.getReleasedAt();
-      if (questPhase.closedAt < releasedAt && releasedAt > 0) {
-        unreleasedSvts.add(svt.lName.l);
-      }
-
-      if (svt.rarity == 5 && svtData.tdLv >= 5) {
-        r5td5 += 1;
-      }
+    if (region != null && region != Region.jp) {
+      reasons.setUpload('Only JP quest supports team sharing. (current: ${region.localName})');
     }
-    if (unreleasedSvts.isNotEmpty) {
-      warnings.add(
-          '$kStarChar2 ${S.current.svt_not_release_hint} $kStarChar2:\n   $kStarChar2 ${unreleasedSvts.join(" / ")}');
+    if (!runtime.originalQuest.isLaplaceSharable) {
+      reasons.setUpload(S.current.quest_disallow_laplace_share_hint);
     }
-    if (r5td5 >= 2) {
-      warnings.add(S.current.too_many_td5_svts_warning(r5td5));
-    }
-    return warnings;
+    battleData.recorder.checkExtraIllegalReason(reasons, runtime);
+    return reasons;
   }
 
   @override
   Widget build(BuildContext context) {
-    const divider = Divider(height: 16);
     List<Widget> children = [];
-    final errors = getErrors();
-    if (errors.isNotEmpty) {
-      children.addAll([
-        Text(S.current.upload_not_eligible_hint),
-        Text(errors.map((e) => '- $e').join('\n')),
-      ]);
-      return buildDialog(children: children, canSave: false, canUpload: false);
+
+    void _addGroup(String title, Set<String> msgs) {
+      if (msgs.isEmpty) return;
+      children.add(TileGroup(
+        tileColor: Theme.of(context).canvasColor,
+        header: title,
+        children: [
+          ListTile(
+            dense: true,
+            title: Text(msgs.map((e) => '- $e').join('\n')),
+          )
+        ],
+      ));
     }
 
+    final reasons = getReasons();
+
+    _addGroup(S.current.battle_invalid, reasons.reproduces);
+    _addGroup(S.current.upload_not_eligible_hint, reasons.uploads);
+    _addGroup(S.current.warning, reasons.warnings);
+
     // check attacks
-    int totalCards = 0, totalNormalCards = 0, attackedCards = 0;
+    int totalNormalCards = 0;
     for (final record in battleData.recorder.records) {
       if (record is BattleAttacksInitiationRecord) {
         final selectedCards = record.attacks.where((e) => e.cardData.cardType != CardType.extra).toList();
-        totalCards += selectedCards.length;
         totalNormalCards += selectedCards.where((e) => !e.cardData.isTD).length;
-      } else if (record is BattleAttackRecord) {
-        if (record.card?.cardType != CardType.extra) {
-          attackedCards += 1;
-        }
       }
     }
-    final warnings = <String>[
-      if (totalCards > attackedCards) S.current.card_not_attack_warning(totalCards - attackedCards, totalCards),
-      ...getWarnings(),
-    ];
+    final bool tooManyNormalCards = totalNormalCards > kMaxAttack;
 
-    bool tooManyNormalCards = totalNormalCards > kMaxAttack;
-    final bool canUpload = !tooManyNormalCards || isCritTeam;
     if (tooManyNormalCards) {
-      children.addAll([
-        Text(S.current.upload_team_critical_team_warning),
-        CheckboxListTile(
-          dense: true,
-          contentPadding: EdgeInsets.zero,
-          value: isCritTeam,
-          title: Text('${S.current.critical_team} ($totalNormalCards ${S.current.normal_attack})'),
-          onChanged: (v) {
-            setState(() {
-              isCritTeam = v ?? isCritTeam;
-            });
-          },
-        ),
-        divider,
-      ]);
-    }
-
-    if (warnings.isNotEmpty) {
-      children.addAll([
-        Text(S.current.warning, style: const TextStyle(fontWeight: FontWeight.bold)),
-        Text(
-          warnings.map((e) => '- $e').join('\n'),
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.errorContainer,
+      children.add(TileGroup(
+        tileColor: Theme.of(context).canvasColor,
+        header: S.current.upload_team_critical_team_warning,
+        children: [
+          CheckboxListTile(
+            dense: true,
+            value: isCritTeam,
+            title: Text('${S.current.critical_team} ($totalNormalCards ${S.current.normal_attack})'),
+            onChanged: (v) {
+              setState(() {
+                isCritTeam = v ?? isCritTeam;
+              });
+            },
           ),
-        ),
-        divider,
-      ]);
+        ],
+      ));
     }
 
-    children.add(Text(S.current.upload_team_confirmation, style: Theme.of(context).textTheme.bodySmall));
+    final bool canSave = reasons.reproduces.isEmpty;
+    final bool canUpload = reasons.reproduces.isEmpty && reasons.uploads.isEmpty && (!tooManyNormalCards || isCritTeam);
 
-    return buildDialog(children: children, canSave: true, canUpload: canUpload, warnings: warnings);
+    if (canUpload) {
+      children.add(Text(S.current.upload_team_confirmation, style: Theme.of(context).textTheme.bodySmall));
+    }
+
+    return buildDialog(children: children, canSave: canSave, canUpload: canUpload, warnings: reasons.warnings.toList());
   }
 
   Widget buildDialog({
@@ -994,6 +921,7 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
           children: children,
         ),
       ),
+      contentPadding: const EdgeInsetsDirectional.fromSTEB(8, 10, 8, 12),
       hideOk: true,
       actions: [
         TextButton(

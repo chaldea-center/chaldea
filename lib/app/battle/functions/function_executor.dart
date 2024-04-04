@@ -67,7 +67,7 @@ class FunctionExecutor {
           selectedActSet = await FuncActSetSelector.show(battleData, actSets);
           battleData.replayDataRecord.actWeightSelections.add(selectedActSet);
           if (selectedActSet != null && selectedActSet > 0) {
-            battleData.recorder.setIllegal("ActSetWeight: Must skip random effects");
+            battleData.recorder.reasons.setUpload("ActSetWeight: Must skip random effects");
           }
         }
       }

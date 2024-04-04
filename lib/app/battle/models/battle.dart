@@ -13,6 +13,7 @@ import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -33,6 +34,37 @@ export 'craft_essence_entity.dart';
 export 'card_dmg.dart';
 export 'command_card.dart';
 export 'user.dart';
+
+class BattleRuntime {
+  BattleData battleData;
+  Region? region;
+  BattleOptions originalOptions;
+  QuestPhase originalQuest;
+
+  BattleRuntime({
+    required this.battleData,
+    required this.region,
+    required this.originalOptions,
+    required this.originalQuest,
+  });
+
+  BattleShareData getShareData({
+    bool allowNotWin = false,
+    bool isCritTeam = false,
+    bool includeReplayData = true,
+  }) {
+    assert(battleData.isBattleWin || allowNotWin);
+    return BattleShareData(
+      appBuild: AppInfo.buildNumber,
+      quest: BattleQuestInfo.quest(originalQuest),
+      formation: originalOptions.formation.toFormationData(),
+      delegate: includeReplayData ? battleData.replayDataRecord.copy() : null,
+      actions: includeReplayData ? battleData.recorder.toUploadRecords() : null,
+      options: originalOptions.toShareData(),
+      isCritTeam: isCritTeam,
+    );
+  }
+}
 
 class BattleData {
   static const kValidTotalStarMax = 99;
@@ -1413,7 +1445,7 @@ class BattleData {
       save: true,
       action: 'resetSkillCD',
       task: () async {
-        recorder.setIllegal(S.current.reset_skill_cd);
+        recorder.reasons.setReproduce(S.current.reset_skill_cd);
         if (isMysticCode) {
           for (final skill in masterSkillInfo) {
             skill.chargeTurn = 0;
@@ -1629,7 +1661,7 @@ class BattleData {
 
   // replay
   Future<void> replay(BattleShareData replayActions) async {
-    recorder.setIllegal('Replaying team');
+    recorder.reasons.setReproduce('Replaying team');
     options.manualAllySkillTarget = false;
     delegate = BattleReplayDelegate(replayActions.delegate ?? BattleReplayDelegateData());
     for (final action in replayActions.actions) {
