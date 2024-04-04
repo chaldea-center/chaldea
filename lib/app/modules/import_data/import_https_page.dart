@@ -616,7 +616,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                 _includeClassBoard = v ?? _includeClassBoard;
               }),
             ),
-            title: Text(S.current.class_score),
+            title: Text(S.current.class_board),
             trailing: ExpandIcon(onPressed: null, isExpanded: _showClassBoard),
             onTap: () {
               setState(() {
@@ -633,7 +633,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                 return ListTile(
                   dense: true,
                   leading: db.getIconImage(board?.uiIcon, width: 32),
-                  title: Text(board?.dispName ?? "${S.current.class_score} ${userBoard.classBoardBaseId}"),
+                  title: Text(board?.dispName ?? "${S.current.class_board} ${userBoard.classBoardBaseId}"),
                   subtitle: Text(
                       "${S.current.unlock}: ${userBoard.classBoardUnlockSquareIds.length}. ${S.current.enhance}: ${userBoard.classBoardSquareIds.length}"),
                 );
@@ -773,7 +773,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           onPressed: () {
             router.pushPage(ClassBoardMissionDemand(userSvtCollection: _mstData.userSvtCollection));
           },
-          child: Text(S.current.class_score),
+          child: Text(S.current.class_board),
         ),
         SimpleDialogOption(
           onPressed: () {

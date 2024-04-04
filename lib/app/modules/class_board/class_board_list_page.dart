@@ -35,7 +35,7 @@ class ClassBoardListPageState extends State<ClassBoardListPage>
       useGrid: false,
       appBar: AppBar(
         leading: const MasterBackButton(),
-        title: AutoSizeText(S.current.class_score, maxLines: 1),
+        title: AutoSizeText(S.current.class_board, maxLines: 1),
         bottom: showSearchBar ? searchBar : null,
         actions: [
           InkWell(

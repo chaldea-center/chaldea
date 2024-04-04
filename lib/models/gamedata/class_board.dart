@@ -106,7 +106,7 @@ class ClassBoard with RouteInfo {
     return NiceSkill(
       id: -(1000000 + DateTime.now().timestamp % 1000000),
       type: SkillType.passive,
-      name: "${S.current.class_score} $dispName",
+      name: "${S.current.class_board} $dispName",
       icon: btnIcon,
       num: 0,
       coolDown: [0],

@@ -1735,22 +1735,22 @@ class S {
     );
   }
 
-  /// `Sign`
-  String get class_board_square {
+  /// `Class Score`
+  String get class_board {
     return Intl.message(
-      'Sign',
-      name: 'class_board_square',
+      'Class Score',
+      name: 'class_board',
       desc: '',
       locale: localeName,
       args: [],
     );
   }
 
-  /// `Class Score`
-  String get class_score {
+  /// `Sign`
+  String get class_board_square {
     return Intl.message(
-      'Class Score',
-      name: 'class_score',
+      'Sign',
+      name: 'class_board_square',
       desc: '',
       locale: localeName,
       args: [],

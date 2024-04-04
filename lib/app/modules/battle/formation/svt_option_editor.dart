@@ -279,7 +279,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           Center(
             child: TextButton(
               onPressed: enableEdit ? onAddClassBoard : null,
-              child: Text('${S.current.custom_skill}-${S.current.class_score}'),
+              child: Text('${S.current.custom_skill}-${S.current.class_board}'),
             ),
           )
         ],
@@ -927,7 +927,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       useRootNavigator: false,
       builder: (context) {
         return SimpleDialog(
-          title: Text('${S.current.plan} (${S.current.class_score})'),
+          title: Text('${S.current.plan} (${S.current.class_board})'),
           children: [
             for (final source in [
               PreferClassBoardDataSource.current,

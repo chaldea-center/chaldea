@@ -408,7 +408,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       kIndentDivider,
       ListTile(
         dense: true,
-        title: Text(S.current.class_score),
+        title: Text(S.current.class_board),
         trailing: DropdownButton<PreferClassBoardDataSource>(
           isDense: true,
           value: options.classBoard,

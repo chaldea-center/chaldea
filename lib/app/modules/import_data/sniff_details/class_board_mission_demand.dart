@@ -41,7 +41,7 @@ class _ClassBoardMissionDemandState extends State<ClassBoardMissionDemand> {
     boards.sort2((e) => e.id);
     return Scaffold(
       appBar: AppBar(
-        title: Text(S.current.class_score),
+        title: Text(S.current.class_board),
       ),
       body: ListView.separated(
         itemBuilder: (context, index) => buildOne(context, boards[index]),

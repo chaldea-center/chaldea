@@ -44,14 +44,14 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
   Widget build(BuildContext context) {
     if (_board == null) {
       return NotFoundPage(
-        title: S.current.class_score,
+        title: S.current.class_board,
         url: Routes.commandCodeI(widget.id ?? 0),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('${S.current.class_score} ${board.dispName}'),
+        title: Text('${S.current.class_board} ${board.dispName}'),
         bottom: FixedHeight.tabBar(TabBar(controller: _tabController, tabs: [
           const Tab(text: 'Info'),
           Tab(text: S.current.class_board_square),

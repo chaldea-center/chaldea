@@ -122,7 +122,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
       ),
       if (classBoardDemand > 0)
         CustomTile(
-          title: Text(S.current.class_score),
+          title: Text(S.current.class_board),
           trailing: Text(num2str(classBoardDemand)),
         ),
     ];

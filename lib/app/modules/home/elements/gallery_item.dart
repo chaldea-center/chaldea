@@ -232,7 +232,7 @@ class GalleryItem {
   );
   static GalleryItem classBoards = GalleryItem(
     name: 'class_boards',
-    titleBuilder: () => S.current.class_score,
+    titleBuilder: () => S.current.class_board,
     icon: FontAwesomeIcons.starOfDavid,
     url: Routes.classBoards,
     page: ClassBoardListPage(),
