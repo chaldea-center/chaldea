@@ -121,6 +121,8 @@ class SkillEffect {
     qpUp,
     eventDropUp,
     triggerFunc,
+    shortenSkill,
+    fieldIndividuality,
   ];
 
   static List<SkillEffect> svtIgnores = [
@@ -134,6 +136,8 @@ class SkillEffect {
   static List<SkillEffect> ceIgnores = [
     SkillEffect.damageNpSP,
     SkillEffect.subStatePositive,
+    SkillEffect.shortenSkill,
+    SkillEffect.fieldIndividuality,
   ];
   static List<SkillEffect> ccIgnores = [
     SkillEffect.damageNpSP,
@@ -157,6 +161,8 @@ class SkillEffect {
     SkillEffect.upGrantInstantdeath,
     SkillEffect.avoidInstantdeath,
     SkillEffect.subStatePositive,
+    SkillEffect.shortenSkill,
+    SkillEffect.fieldIndividuality,
     ...svtIgnores,
   ];
 
@@ -316,6 +322,10 @@ class SkillEffect {
   static SkillEffect upGrantInstantdeath = SkillEffect._buff('upGrantInstantdeath', BuffType.upGrantInstantdeath);
   // 即死无效
   static SkillEffect avoidInstantdeath = SkillEffect._buff('avoidInstantdeath', BuffType.avoidInstantdeath);
+  // special
+  static SkillEffect shortenSkill = SkillEffect._func('shortenSkill', FuncType.shortenSkill);
+  static SkillEffect fieldIndividuality =
+      SkillEffect('fieldIndividuality', buffTypes: [BuffType.fieldIndividuality, BuffType.toFieldChangeField]);
 
   /// 辅助系
   static SkillEffect friendPointUp = SkillEffect(
