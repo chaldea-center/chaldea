@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/app.dart';
@@ -218,15 +220,16 @@ class Event with RouteInfo {
 
   bool isOutdated([Duration diff = const Duration(days: 10)]) {
     final region = db.curUser.region;
+    final now = DateTime.now();
     if (region == Region.jp) {
       final t = endedAt > kNeverClosedTimestamp || endedAt - startedAt > 30 * kSecsPerDay
           ? startedAt + 7 * kSecsPerDay
           : endedAt;
-      return DateTime.now().difference(t.sec2date()) > const Duration(days: 365);
+      return now.difference(t.sec2date()) > const Duration(days: 365);
     }
     int? _start = region == Region.jp ? startedAt : extra.startTime.ofRegion(region);
     int? _end = region == Region.jp ? endedAt : extra.endTime.ofRegion(region);
-    final neverClosed = DateTime.now().add(const Duration(days: 365)).timestamp;
+    final neverClosed = min(now.timestamp, _start ?? now.timestamp) + const Duration(days: 365).inSeconds;
     if (_end != null && _start != null) {
       if (_end > neverClosed) {
         _end = _start + const Duration(days: 30).inSeconds;
@@ -236,7 +239,7 @@ class Event with RouteInfo {
       _start = _end = null;
     }
     if (_end != null) {
-      return _end.sec2date().isBefore(DateTime.now().subtract(diff));
+      return _end.sec2date().isBefore(now.subtract(diff));
     }
     // if one event is delayed more than 3 months than expected, mark as outdated/will never open
     _start = startedAt;
@@ -246,7 +249,7 @@ class Event with RouteInfo {
     }
     final months = db.curUser.region.eventDelayMonth;
     final days = (months + (type == EventType.mcCampaign ? 0 : 3)) * 30.5 + diff.inDays;
-    return _end.sec2date().isBefore(DateTime.now().subtract(Duration(days: days.ceil())));
+    return _end.sec2date().isBefore(now.subtract(Duration(days: days.ceil())));
   }
 
   int? startTimeOf(Region? region) {
@@ -261,7 +264,8 @@ class Event with RouteInfo {
 
   bool isOnGoing(Region? region) {
     int now = DateTime.now().timestamp;
-    int neverEndTime = region == Region.cn || region == Region.tw ? kNeverClosedTimestampCN : kNeverClosedTimestamp;
+    int neverEndTime = min(region == Region.cn || region == Region.tw ? kNeverClosedTimestampCN : kNeverClosedTimestamp,
+        startedAt + const Duration(days: 365).inSeconds);
     final starts = region == null ? [startedAt, ...extra.startTime.values] : [startTimeOf(region)];
     final ends = region == null ? [endedAt, ...extra.endTime.values] : [endTimeOf(region)];
     for (int index = 0; index < starts.length; index++) {
