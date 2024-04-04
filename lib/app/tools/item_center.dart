@@ -51,7 +51,7 @@ class ItemCenter {
   Map<int, int> statSvtDemands = {};
   Map<int, int> _statSvtFull = {};
 
-  Map<int, int> statClassBoard = {};
+  Map<int, Map<int, int>> statClassBoard = {}; // <classBoardId, <itemId, count>>
 
   Map<int, int> _statEvent = {};
   Map<int, int> _statMainStory = {};
@@ -61,7 +61,10 @@ class ItemCenter {
   Map<int, int> itemLeft = {};
 
   int demandOf(int itemId) {
-    return (statSvtDemands[itemId] ?? 0) + (statClassBoard[itemId] ?? 0);
+    return Maths.sum([
+      statSvtDemands[itemId] ?? 0,
+      ...statClassBoard.values.map((e) => e[itemId] ?? 0),
+    ]);
   }
 
   void init() {
@@ -357,12 +360,20 @@ class ItemCenter {
     }
   }
 
-  Map<int, int> calcClassBoardCost(SvtMatCostDetailType type) {
-    Map<int, int> items = {};
+  Map<int, Map<int, int>> calcClassBoardCost(SvtMatCostDetailType type) {
+    Map<int, Map<int, int>> items = {};
     for (final board in db.gameData.classBoards.values) {
-      items.addDict(calcOneClassBoardCost(board, type));
+      items[board.id] = calcOneClassBoardCost(board, type);
     }
-    return items;
+    return sortDict(items);
+  }
+
+  Map<int, int> calcClassBoardCostAll(SvtMatCostDetailType type) {
+    Map<int, int> result = {};
+    for (final value in calcClassBoardCost(type).values) {
+      result.addDict(value);
+    }
+    return result;
   }
 
   Map<int, int> calcOneClassBoardCost(ClassBoard board, SvtMatCostDetailType type) {
@@ -402,8 +413,10 @@ class ItemCenter {
     itemLeft
       ..addDict(user.items)
       ..addDict(statObtain)
-      ..addDict(statSvtDemands.multiple(-1))
-      ..addDict(statClassBoard.multiple(-1));
+      ..addDict(statSvtDemands.multiple(-1));
+    for (final board in statClassBoard.values) {
+      itemLeft.addDict(board.multiple(-1));
+    }
     streamController.sink.add(this);
     db.notifyUserdata();
   }

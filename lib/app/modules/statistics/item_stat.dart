@@ -173,7 +173,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
       );
     });
     if (svtParts.contain(4)) {
-      shownItems.addDict(db.itemCenter.calcClassBoardCost(SvtMatCostDetailType.consumed));
+      shownItems.addDict(db.itemCenter.calcClassBoardCostAll(SvtMatCostDetailType.consumed));
     }
 
     Maths.sumDict([shownItems, if (includeOwnedItems) db.curUser.items], inPlace: true);
@@ -208,7 +208,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
       });
     }
     if (svtParts.contain(4)) {
-      shownItems.addDict(db.itemCenter.calcClassBoardCost(SvtMatCostDetailType.demands));
+      shownItems.addDict(db.itemCenter.calcClassBoardCostAll(SvtMatCostDetailType.demands));
     }
     Maths.sumDict([
       shownItems,

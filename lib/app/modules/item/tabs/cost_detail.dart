@@ -36,7 +36,17 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
     for (final svtDetail in details.values) {
       svtDemands.updateFrom<int>(svtDetail, (p1, p2) => p1 + p2);
     }
-    final classBoardDemand = stat.calcClassBoardCost(matType)[itemId] ?? 0;
+
+    final Map<int, int> classBoardDemands = {};
+    for (final (boardId, items) in stat.calcClassBoardCost(matType).items) {
+      final count = items[itemId] ?? 0;
+      if (count > 0) {
+        classBoardDemands[boardId] = count;
+      }
+    }
+    final int classBoardDemand = Maths.sum(classBoardDemands.values);
+
+    final int allDemand = svtDemands.all + classBoardDemand;
 
     final header = Column(
       mainAxisSize: MainAxisSize.min,
@@ -55,7 +65,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
             ),
             Expanded(
               child: Text(
-                '  ${S.current.demands} ${num2str(classBoardDemand + svtDemands.all)}',
+                '  ${S.current.demands} ${num2str(allDemand)}',
                 textAlign: TextAlign.end,
               ),
             ),
@@ -110,47 +120,75 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
           child: header,
         ),
       ),
-      CustomTile(
-        title: Text(S.current.class_score),
-        trailing: Text(num2str(classBoardDemand)),
-      ),
+      if (classBoardDemand > 0)
+        CustomTile(
+          title: Text(S.current.class_score),
+          trailing: Text(num2str(classBoardDemand)),
+        ),
     ];
-    if (db.settings.display.itemDetailViewType == ItemDetailViewType.separated) {
-      // 0 ascension 1 skill 2 dress 3 append 4 extra
-      final headers = [
-        S.current.ascension_up,
-        S.current.active_skill,
-        S.current.append_skill,
-        S.current.costume_unlock,
-        S.current.general_special
-      ];
-      for (int i = 0; i < headers.length; i++) {
-        Map<int, int> partDetail = {};
-        details.forEach((svtId, detail) {
-          if (detail.parts[i] > 0) {
-            partDetail[svtId] = detail.parts[i];
-          }
-        });
-        if (partDetail.isNotEmpty) {
-          children.add(Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              CustomTile(
-                title: Text(headers[i]),
-                trailing: Text(num2str(svtDemands.parts[i])),
-              ),
-              _buildSvtIconGrid(context, partDetail, highlight: matType == SvtMatCostDetailType.full),
-            ],
-          ));
-        }
-      }
-    } else if (db.settings.display.itemDetailViewType == ItemDetailViewType.grid) {
-      children.add(_buildSvtIconGrid(context, details.map((key, value) => MapEntry(key, value.all)),
-          highlight: matType == SvtMatCostDetailType.full));
-    } else {
-      children.addAll(buildSvtList(context, details));
+    if (classBoardDemands.isNotEmpty) {
+      children.add(GridView.extent(
+        maxCrossAxisExtent: 48,
+        childAspectRatio: 1,
+        crossAxisSpacing: 2,
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        padding: const EdgeInsetsDirectional.only(start: 16, top: 3, bottom: 3, end: 10),
+        children: [
+          for (final (boardId, count) in classBoardDemands.items)
+            GameCardMixin.cardIconBuilder(
+              context: context,
+              icon: db.gameData.classBoards[boardId]?.btnIcon,
+              text: num2str(count),
+              onTap: () {
+                router.push(url: Routes.classBoardI(boardId));
+              },
+            ),
+        ],
+      ));
     }
+    switch (db.settings.display.itemDetailViewType) {
+      case ItemDetailViewType.separated:
+        // 0 ascension 1 skill 2 dress 3 append 4 extra
+        final headers = [
+          S.current.ascension_up,
+          S.current.active_skill,
+          S.current.append_skill,
+          S.current.costume_unlock,
+          S.current.general_special
+        ];
+        for (int i = 0; i < headers.length; i++) {
+          Map<int, int> partDetail = {};
+          details.forEach((svtId, detail) {
+            if (detail.parts[i] > 0) {
+              partDetail[svtId] = detail.parts[i];
+            }
+          });
+          if (partDetail.isNotEmpty) {
+            children.add(Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                CustomTile(
+                  title: Text(headers[i]),
+                  trailing: Text(num2str(svtDemands.parts[i])),
+                ),
+                _buildSvtIconGrid(context, partDetail, highlight: matType == SvtMatCostDetailType.full),
+              ],
+            ));
+          }
+        }
+
+        break;
+      case ItemDetailViewType.grid:
+        children.add(_buildSvtIconGrid(context, details.map((key, value) => MapEntry(key, value.all)),
+            highlight: matType == SvtMatCostDetailType.full));
+        break;
+      case ItemDetailViewType.list:
+        children.addAll(buildSvtList(context, details));
+        break;
+    }
+
     return ListView.separated(
       itemBuilder: (context, index) => children[index],
       separatorBuilder: (context, index) => index == 0 ? const SizedBox() : kDefaultDivider,
