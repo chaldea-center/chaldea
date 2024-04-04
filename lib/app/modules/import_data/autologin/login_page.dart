@@ -619,9 +619,9 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
         args.lastLogin = serverTime?.timestamp ?? DateTime.now().timestamp;
       }
       if (args.response?.success == true) {
-        await Future.delayed(const Duration(seconds: 1));
-        EasyLoading.show(status: 'Login to home...');
-        await agent.homeTop();
+        // await Future.delayed(const Duration(seconds: 1));
+        // EasyLoading.show(status: 'Login to home...');
+        // await agent.homeTop();
         EasyLoading.showSuccess(S.current.success);
         AppAnalysis.instance.logEvent('simulate_login', {"region": top.region.upper});
       } else {
