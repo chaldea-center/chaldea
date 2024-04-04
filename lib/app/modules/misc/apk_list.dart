@@ -44,6 +44,7 @@ class _ApkListPageState extends State<ApkListPage> {
     _ApkData(Region.na, 'com.aniplex.fategrandorder.en', 1183802626, 'us'),
     _ApkData(Region.kr, 'com.netmarble.fgok', 1241893973, 'kr'),
   ];
+  static final Map<String, String> bfgoVersions = {};
 
   late final _hidden = db.settings.hideApple;
   late bool proxy = db.settings.proxy.worker;
@@ -58,8 +59,29 @@ class _ApkListPageState extends State<ApkListPage> {
   }
 
   void load() async {
-    await Future.wait(apks.map((e) => _load(e, apkHost)).toList());
+    List<Future> futures = [
+      ...apks.map((e) => _load(e, apkHost)),
+      for (final region in ['jp', 'na']) _loadRs(region),
+    ];
+    await Future.wait(futures);
     if (mounted) setState(() {});
+  }
+
+  Future<void> _loadRs(String region) async {
+    var resp = await Dio().get(
+      "https://rayshift.io/betterfgo/download/$region",
+      options: Options(
+        followRedirects: false,
+        validateStatus: (status) => status != null && status >= 200 && status < 400,
+      ),
+    );
+    final url = resp.headers.value('location');
+    print(resp.headers);
+    print([url, Uri.tryParse(url ?? "")?.pathSegments.lastOrNull]);
+    if (url == null) return;
+    final filename = Uri.tryParse(url)?.pathSegments.lastOrNull;
+    if (filename == null) return;
+    bfgoVersions[region] = filename;
   }
 
   Future<void> _load(_ApkData data, String host) async {
@@ -162,7 +184,7 @@ class _ApkListPageState extends State<ApkListPage> {
                       ListTile(
                         dense: true,
                         title: Text("BFGO ${r.toUpperCase()}"),
-                        subtitle: Text('io.rayshift.betterfgo${r == 'jp' ? '' : ".en"}'),
+                        subtitle: Text(bfgoVersions[r] ?? 'io.rayshift.betterfgo${r == 'jp' ? '' : ".en"}'),
                         trailing: const Icon(Icons.open_in_new, size: 18),
                         onTap: () {
                           launch('https://rayshift.io/betterfgo/download/$r', external: true);
