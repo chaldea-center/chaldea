@@ -62,8 +62,6 @@ class BattleRecordManager {
 
   BattleRecordManager();
 
-  bool get isUploadEligible => reasons.uploads.isEmpty;
-
   BattleRecordManager copy() {
     return BattleRecordManager()
       ..reasons = reasons.copy()
@@ -84,7 +82,7 @@ class BattleRecordManager {
   }
 
   void skipWave(int wave) {
-    reasons.setReproduce('Skip Wave $wave');
+    reasons.setReplay('Skip Wave $wave');
     records.add(BattleSkipWaveRecord(wave));
   }
 
@@ -190,7 +188,7 @@ class BattleRecordManager {
   // move to somewhere else
   void determineUploadEligibility(final QuestPhase questPhase, final BattleOptions options) {
     if (questPhase.id <= 0) {
-      reasons.setReproduce('${S.current.general_custom}: ${S.current.quest} ${questPhase.id}');
+      reasons.setReplay('${S.current.general_custom}: ${S.current.quest} ${questPhase.id}');
     }
     if (!questPhase.isLaplaceSharable) {
       reasons.setUpload(S.current.quest_disallow_laplace_share_hint);
@@ -236,7 +234,7 @@ class BattleRecordManager {
     if (svt == null) return;
     final svtName = svt.lName.l;
     if (svtData.supportType == SupportSvtType.npc) {
-      reasons.setReproduce('Guest Support/NPC: $svtName');
+      reasons.setReplay('Guest Support/NPC: $svtName');
     }
     if (!svt.isUserSvt) {
       reasons.setUpload('Not player servant: $svtName');
@@ -248,11 +246,11 @@ class BattleRecordManager {
       reasons.setUpload("${svtData.disabledExtraSkills.length} disabled extra skills");
     }
     if (svtData.fixedAtk != null || svtData.fixedHp != null) {
-      reasons.setReproduce('Fixed HP or ATK (mainly Guest Support). If you see this msg, tell me the bug.');
+      reasons.setReplay('Fixed HP or ATK (mainly Guest Support). If you see this msg, tell me the bug.');
     }
     final dbSvt = db.gameData.servantsById[svt.id];
     if (dbSvt == null) {
-      reasons.setReproduce('Servant not in database: ${svt.id}-${svt.lName.l}');
+      reasons.setReplay('Servant not in database: ${svt.id}-${svt.lName.l}');
       return;
     }
     for (final skillNum in kActiveSkillNums) {
@@ -379,26 +377,26 @@ class BattleRecordManager {
 }
 
 class BattleIllegalReasons {
-  final Set<String> reproduces;
-  final Set<String> uploads;
+  final Set<String> notReplayable;
+  final Set<String> notUploadable;
   final Set<String> warnings;
 
   BattleIllegalReasons({
     Set<String>? reproduces,
     Set<String>? uploads,
     Set<String>? warnings,
-  })  : reproduces = reproduces ?? {},
-        uploads = uploads ?? {},
+  })  : notReplayable = reproduces ?? {},
+        notUploadable = uploads ?? {},
         warnings = warnings ?? {};
 
-  void setReproduce(String msg) => reproduces.add(msg);
-  void setUpload(String msg) => uploads.add(msg);
+  void setReplay(String msg) => notReplayable.add(msg);
+  void setUpload(String msg) => notUploadable.add(msg);
   void setWarning(String msg) => warnings.add(msg);
 
   BattleIllegalReasons copy() {
     return BattleIllegalReasons(
-      reproduces: reproduces.toSet(),
-      uploads: uploads.toSet(),
+      reproduces: notReplayable.toSet(),
+      uploads: notUploadable.toSet(),
       warnings: warnings.toSet(),
     );
   }

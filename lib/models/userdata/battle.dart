@@ -1039,7 +1039,7 @@ class BattleRecordData {
   }
 
   int countNormalAttacks() {
-    return attacks?.where((e) => !e.isTD).length ?? 0;
+    return attacks?.where((e) => !e.isTD && e.cardType != CardType.extra).length ?? 0;
   }
 
   int countTdAttacks() {

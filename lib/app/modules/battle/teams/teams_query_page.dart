@@ -268,8 +268,8 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
                       },
                     ),
               TextSpan(text: ' [${record.id}]'),
-              if (widget.phaseInfo?.enemyHash == null)
-                TextSpan(text: '\n${S.current.version} ${record.enemyHash.substring2(2)}'),
+              // if (widget.phaseInfo?.enemyHash == null)
+              //   TextSpan(text: '\n${S.current.version} ${record.enemyHash.substring2(2)}'),
             ]),
             style: style,
           ),

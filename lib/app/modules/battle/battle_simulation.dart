@@ -573,7 +573,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
         IconButton(
           onPressed: () async {
             await battleData.skipTurn();
-            battleData.recorder.reasons.setReproduce(S.current.skip_current_turn);
+            battleData.recorder.reasons.setReplay(S.current.skip_current_turn);
             EasyLoading.showToast(S.current.skip_current_turn);
             if (mounted) setState(() {});
           },
@@ -853,8 +853,8 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
 
     final reasons = getReasons();
 
-    _addGroup(S.current.battle_invalid, reasons.reproduces);
-    _addGroup(S.current.upload_not_eligible_hint, reasons.uploads);
+    _addGroup(S.current.battle_invalid, reasons.notReplayable);
+    _addGroup(S.current.upload_not_eligible_hint, reasons.notUploadable);
     _addGroup(S.current.warning, reasons.warnings);
 
     // check attacks
@@ -886,8 +886,9 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
       ));
     }
 
-    final bool canSave = reasons.reproduces.isEmpty;
-    final bool canUpload = reasons.reproduces.isEmpty && reasons.uploads.isEmpty && (!tooManyNormalCards || isCritTeam);
+    final bool canSave = reasons.notReplayable.isEmpty;
+    final bool canUpload =
+        reasons.notReplayable.isEmpty && reasons.notUploadable.isEmpty && (!tooManyNormalCards || isCritTeam);
 
     if (canUpload) {
       children.add(Text(S.current.upload_team_confirmation, style: Theme.of(context).textTheme.bodySmall));

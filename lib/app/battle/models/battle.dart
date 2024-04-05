@@ -1445,7 +1445,7 @@ class BattleData {
       save: true,
       action: 'resetSkillCD',
       task: () async {
-        recorder.reasons.setReproduce(S.current.reset_skill_cd);
+        recorder.reasons.setReplay(S.current.reset_skill_cd);
         if (isMysticCode) {
           for (final skill in masterSkillInfo) {
             skill.chargeTurn = 0;
@@ -1661,7 +1661,7 @@ class BattleData {
 
   // replay
   Future<void> replay(BattleShareData replayActions) async {
-    recorder.reasons.setReproduce('Replaying team');
+    recorder.reasons.setReplay('Replaying team');
     options.manualAllySkillTarget = false;
     delegate = BattleReplayDelegate(replayActions.delegate ?? BattleReplayDelegateData());
     for (final action in replayActions.actions) {

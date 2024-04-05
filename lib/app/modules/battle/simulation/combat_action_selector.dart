@@ -301,7 +301,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
                     svt.npLineCount = svt.niceEnemy!.chargeTurn;
                   }
                   battleData.battleLogger.action(msg);
-                  battleData.recorder.reasons.setReproduce(msg);
+                  battleData.recorder.reasons.setReplay(msg);
                   battleData.recorder.message(S.current.charge_np_to(dispCount), target: svt);
                 },
               );
@@ -564,7 +564,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
                             battleData.pushSnapshot();
                             enemy.npLineCount = chargeTurn;
                             battleData.battleLogger.action(msg);
-                            battleData.recorder.reasons.setReproduce(msg);
+                            battleData.recorder.reasons.setReplay(msg);
                             battleData.recorder.message(S.current.charge_np_to(chargeTurn), target: enemy);
                           },
                         );
