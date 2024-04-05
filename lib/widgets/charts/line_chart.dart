@@ -70,8 +70,8 @@ class SimpleLineChart<T extends num> extends StatelessWidget {
         lineTouchData: LineTouchData(
           handleBuiltInTouches: true,
           touchTooltipData: LineTouchTooltipData(
-              tooltipBgColor: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.6),
-              // tooltipBgColor: Theme.of(context).hintColor.withOpacity(0.5),
+              getTooltipColor: (touchedSpot) => Theme.of(context).scaffoldBackgroundColor.withOpacity(0.6),
+              // getTooltipColor: (touchedSpot) => Theme.of(context).hintColor.withOpacity(0.5),
               fitInsideHorizontally: true,
               fitInsideVertically: true,
               getTooltipItems: (spots) {

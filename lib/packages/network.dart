@@ -5,20 +5,21 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import '../models/db.dart';
 
 class _NetworkStat {
-  ConnectivityResult? _connectivity;
-  ConnectivityResult? get connectivity => _connectivity;
+  List<ConnectivityResult>? _connectivity;
+  List<ConnectivityResult>? get connectivity => _connectivity;
 
-  bool get available => db.settings.forceOnline || (_connectivity != null && _connectivity != ConnectivityResult.none);
+  bool get available =>
+      db.settings.forceOnline || (_connectivity != null && _connectivity!.any((e) => e != ConnectivityResult.none));
 
   bool get unavailable => !available;
 
-  StreamSubscription<ConnectivityResult>? _subscription;
+  StreamSubscription<List<ConnectivityResult>>? _subscription;
 
   Future<void> init() async {
     await check();
     _subscription?.cancel();
     _subscription = Connectivity().onConnectivityChanged.asBroadcastStream().listen((result) {
-      _connectivity = result;
+      _connectivity = result.toList();
     });
   }
 
@@ -26,7 +27,7 @@ class _NetworkStat {
     _subscription?.cancel();
   }
 
-  Future<ConnectivityResult> check() async {
+  Future<List<ConnectivityResult>> check() async {
     return _connectivity = await Connectivity().checkConnectivity();
   }
 }

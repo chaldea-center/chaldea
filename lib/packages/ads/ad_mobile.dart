@@ -10,7 +10,7 @@ import './interface.dart';
 
 class AppAdImpl implements AppAdInterface {
   @override
-  final bool supported = (PlatformU.isAndroid || PlatformU.isIOS) && db.settings.launchTimes > 5;
+  final bool supported = (PlatformU.isAndroid || PlatformU.isIOS) && db.settings.launchTimes > 5 && false;
   @override
   late final bool supportBannerAd = supported;
   @override
@@ -67,7 +67,6 @@ class AppAdImpl implements AppAdInterface {
     print("loading app open ad $adUnitId...");
     AppOpenAd.load(
       adUnitId: adUnitId,
-      orientation: AppOpenAd.orientationPortrait,
       request: const AdRequest(),
       adLoadCallback: AppOpenAdLoadCallback(
         onAdLoaded: (ad) {

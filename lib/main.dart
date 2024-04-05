@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:catcher_2/catcher_2.dart';
-import 'package:window_size/window_size.dart';
 import 'package:worker_manager/worker_manager.dart';
 
+import 'package:chaldea/app/tools/system_tray.dart';
 import 'app/chaldea.dart';
 import 'app/modules/common/blank_page.dart';
 import 'app/modules/home/bootstrap/startup_failed_page.dart';
@@ -71,13 +71,7 @@ void main() async {
 }
 
 Future<void> _initiateCommon() async {
-  // Config min size of the window for desktops app
-  // (This is a prototype, and in the long term is expected to be replaced by functionality within the Flutter framework.)
-  if (PlatformU.isDesktop) {
-    setWindowTitle(kAppName);
-    setWindowMinSize(kDebugMode ? const Size(100, 100) : const Size(375, 568));
-    setWindowMaxSize(Size.infinite);
-  }
+  await AppWindowUtil.init();
 
   LicenseRegistry.addLicense(() async* {
     Map<String, String> licenses = {

@@ -8,6 +8,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:tray_manager/tray_manager.dart';
+import 'package:window_manager/window_manager.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/tools/app_update.dart';
@@ -33,7 +35,7 @@ class Chaldea extends StatefulWidget {
   _ChaldeaState createState() => _ChaldeaState();
 }
 
-class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
+class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener, TrayListener {
   final routeInformationParser = AppRouteInformationParser();
   final backButtonDispatcher = RootBackButtonDispatcher();
 
@@ -136,14 +138,13 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
       return null;
     });
 
-    SystemTrayUtil.setOnWindowClose();
+    windowManager.addListener(this);
+    trayManager.addListener(this);
   }
 
   @override
   void afterFirstLayout(BuildContext context) async {
-    if (PlatformU.isWindows || PlatformU.isMacOS) {
-      MethodChannelChaldea.setAlwaysOnTop();
-    }
+    AppWindowUtil.setAlwaysOnTop();
     if (PlatformU.isWindows) {
       MethodChannelChaldea.setWindowPos();
     }
@@ -157,7 +158,8 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
         SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
       }
     }
-    if (db.settings.showSystemTray) SystemTrayUtil.init();
+
+    if (db.settings.showSystemTray) AppWindowUtil.setTray();
 
     CachedApi.remoteConfig().then((value) {
       if (value != null) db.settings.remoteConfig = value;
@@ -177,6 +179,29 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin {
       }
     }
     FilePickerU.clearTemporaryFiles();
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    windowManager.removeListener(this);
+    trayManager.removeListener(this);
+    super.dispose();
+  }
+
+  @override
+  void onWindowClose() {
+    AppWindowUtil.onWindowClose();
+  }
+
+  @override
+  void onTrayIconMouseDown() {
+    AppWindowUtil.onTrayClick();
+  }
+
+  @override
+  void onTrayIconRightMouseDown() {
+    AppWindowUtil.onTrayRightClick();
   }
 }
 

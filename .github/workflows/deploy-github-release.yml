@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  FLUTTER_VERSION: "3.19.3"
+  FLUTTER_VERSION: "3.19.5"
 
 jobs:
   create-build:
@@ -56,6 +56,7 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           cache: true
           cache-key: flutter-${{ matrix.os }}-${{ matrix.target }}-${{ env.FLUTTER_VERSION }}
+
       - name: Get Version
         shell: bash
         run: |
@@ -78,11 +79,12 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin' 
-          java-version: '11'
+          java-version: '17'
 
       - name: Enable desktop support
         if: matrix.target != 'android'
         run: |
+          flutter config --no-cli-animations
           flutter config --enable-linux-desktop
           flutter config --enable-macos-desktop
           flutter config --enable-windows-desktop

@@ -33,9 +33,7 @@ class MethodChannelChaldea {
     }
   }
 
-  /// Set window always on top
-  ///
-  /// only available on macOS
+  @Deprecated('use [windowManager]')
   static Future<void> setAlwaysOnTop([bool? onTop]) async {
     if (PlatformU.isWindows || PlatformU.isMacOS) {
       onTop ??= db.settings.alwaysOnTop;

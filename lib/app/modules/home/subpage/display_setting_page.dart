@@ -10,7 +10,6 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/ads/ads.dart';
 import 'package:chaldea/packages/app_info.dart';
-import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
@@ -273,14 +272,14 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 ? 'If system tray crash, delete settings.json or change "showSystemTray" value from true to false.'
                 : null,
             children: [
-              if (PlatformU.isMacOS || PlatformU.isWindows)
+              if (PlatformU.isDesktop)
                 SwitchListTile.adaptive(
                   value: db.settings.alwaysOnTop,
                   title: Text(S.current.setting_always_on_top),
                   onChanged: (v) {
                     db.settings.alwaysOnTop = v;
                     db.saveSettings();
-                    MethodChannelChaldea.setAlwaysOnTop(v);
+                    AppWindowUtil.setAlwaysOnTop(v);
                     setState(() {});
                   },
                 ),
@@ -366,7 +365,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   db.notifyAppUpdate();
                 },
               ),
-              if (PlatformU.isDesktop && !PlatformU.isLinux) ...[
+              if (PlatformU.isDesktop) ...[
                 SwitchListTile.adaptive(
                   value: db.settings.showSystemTray,
                   title: Text(S.current.show_system_tray),
@@ -375,7 +374,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                     setState(() {
                       db.settings.showSystemTray = v;
                     });
-                    SystemTrayUtil.toggle(v);
+                    AppWindowUtil.toggleTray(v);
                   },
                 ),
               ],

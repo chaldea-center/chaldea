@@ -36,8 +36,7 @@ class _Group {
 }
 
 class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
-  ConnectivityResult? _connectivity;
-  late StreamSubscription<ConnectivityResult> _subscription;
+  late StreamSubscription<List<ConnectivityResult>> _subscription;
   Map<String, dynamic> testResults = {};
 
   List<_Group> get testGroups => [
@@ -88,7 +87,7 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    _connectivity = network.connectivity;
+    final _connectivity = network.connectivity ?? [];
     const serverHint = SHeader('对于大陆用户，若【Chaldea Data(应用数据)、Atlas Assets(图片等资源)】海外路线可正常使用，请尽量使用海外路线以节约流量费！');
     return Scaffold(
       appBar: AppBar(title: Text(S.current.network_settings)),
@@ -102,11 +101,16 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
               // footer: S.current.network_force_online_hint,
               children: [
                 ListTile(
-                  dense: true,
-                  title: Text(S.current.network_status),
-                  trailing: _textWithIndicator(
-                      _connectivity?.name ?? '?', _connectivity != null && _connectivity != ConnectivityResult.none),
-                ),
+                    dense: true,
+                    title: Text(S.current.network_status),
+                    trailing: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (final result in _connectivity)
+                          _textWithIndicator(result.name, result != ConnectivityResult.none),
+                      ],
+                    )),
                 SwitchListTile.adaptive(
                   value: db.settings.forceOnline,
                   title: Text(S.current.network_force_online),

@@ -8,10 +8,9 @@ The app requires `libappindicator` to enable the system tray feature. If it is n
 you have to install it manually first.
 
 ```sh
-# Debian
-sudo apt install libappindicator3-1
-# Ubuntu 22.04 or higher
 sudo apt-get install libayatana-appindicator3-dev
+# or
+sudo apt-get install appindicator3-0.1 libappindicator3-dev
 ```
 
 The system tray may crash app. To reset it to disabled state, removing the `"showSystemTray": true` from `userdata/user/settings.json`, or delete the entire `settings.json` file if you don't know json format.
@@ -28,9 +27,9 @@ Simply override old files with new extracted files.
 
 ```sh
 # Debian
-sudo apt install libappindicator3-1
-# Ubuntu 22.04 或更高
 sudo apt-get install libayatana-appindicator3-dev
+# or
+sudo apt-get install appindicator3-0.1 libappindicator3-dev
 ```
 
 系统托盘功能可能导致应用闪退崩溃，需在`userdata/user/settings.json`文件中删除`"showSystemTray": true`设置项以重置该设置。若不了解json格式，可直接删除整个`settings.json`文件。
