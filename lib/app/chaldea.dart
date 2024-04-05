@@ -26,7 +26,7 @@ import '../packages/network.dart';
 import '../packages/platform/platform.dart';
 import 'app.dart';
 import 'routes/parser.dart';
-import 'tools/system_tray.dart';
+import 'tools/app_window.dart';
 
 class Chaldea extends StatefulWidget {
   Chaldea({super.key});

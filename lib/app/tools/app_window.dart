@@ -126,10 +126,11 @@ class AppWindowUtil {
 
   static Future<void> onTrayClick() async {
     if (PlatformU.isWindows) {
-      windowManager.show();
+      return windowManager.show();
     } else if (PlatformU.isMacOS) {
-      trayManager.popUpContextMenu();
+      return trayManager.popUpContextMenu();
     } else if (PlatformU.isLinux) {
+      return windowManager.show();
       // not supported
       // trayManager.popUpContextMenu();
     }
@@ -137,22 +138,22 @@ class AppWindowUtil {
 
   static Future<void> onTrayRightClick() async {
     if (PlatformU.isWindows) {
-      trayManager.popUpContextMenu();
+      return trayManager.popUpContextMenu();
     } else if (PlatformU.isMacOS) {
-      windowManager.show();
+      return windowManager.show();
     } else if (PlatformU.isLinux) {
-      windowManager.show();
+      return windowManager.show();
     }
   }
 
   static Future<void> onWindowClose() async {
     await db.saveAll();
     if (db.settings.showSystemTray) {
-      windowManager.minimize();
+      await minimizeWindow();
       return;
     }
     if (await _shouldCloseCheckUpload()) {
-      destroyWindow();
+      await destroyWindow();
     }
   }
 
@@ -164,8 +165,12 @@ class AppWindowUtil {
       return true;
     }
 
+    final visible = await windowManager.isVisible();
+    if (!visible) await windowManager.show();
+
     final ctx = kAppKey.currentContext;
     if (ctx == null || !ctx.mounted) return true;
+
     final close = await showDialog(
       context: ctx,
       builder: (context) => AlertDialog(

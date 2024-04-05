@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:catcher_2/catcher_2.dart';
 import 'package:worker_manager/worker_manager.dart';
 
-import 'package:chaldea/app/tools/system_tray.dart';
+import 'package:chaldea/app/tools/app_window.dart';
 import 'app/chaldea.dart';
 import 'app/modules/common/blank_page.dart';
 import 'app/modules/home/bootstrap/startup_failed_page.dart';
