@@ -5,6 +5,7 @@ import 'package:archive/archive.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/packages/app_info.dart';
+import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/url.dart';
 import '../../utils/atlas.dart';
 import '../../utils/extension.dart';
@@ -261,9 +262,11 @@ class BattleShareData {
     return actions.any((action) => action.containsTdCardType(cardType));
   }
 
-  int get critsCount => actions.fold(0, (sum, action) => sum + action.countCrits());
+  int get critsCount => Maths.sum(actions.map((e) => e.countCrits()));
 
-  int get normalAttackCount => actions.fold(0, (sum, action) => sum + action.countNormalAttacks());
+  int get normalAttackCount => Maths.sum(actions.map((e) => e.countNormalAttacks()));
+
+  int get tdAttackCount => Maths.sum(actions.map((e) => e.countTdAttacks()));
 }
 
 @JsonSerializable()
@@ -1028,24 +1031,19 @@ class BattleRecordData {
   }
 
   bool containsTdCardType(final CardType cardType) {
-    if (attacks == null || attacks!.isEmpty) {
-      return false;
-    }
-    return attacks!.any((cardAction) => cardAction.isTD && cardAction.cardType == cardType);
+    return attacks?.any((cardAction) => cardAction.isTD && cardAction.cardType == cardType) ?? false;
   }
 
   int countCrits() {
-    if (attacks == null || attacks!.isEmpty) {
-      return 0;
-    }
-    return attacks!.fold(0, (sum, cardAction) => cardAction.critical ? sum + 1 : sum);
+    return attacks?.where((e) => e.critical).length ?? 0;
   }
 
   int countNormalAttacks() {
-    if (attacks == null || attacks!.isEmpty) {
-      return 0;
-    }
-    return attacks!.fold(0, (sum, cardAction) => !cardAction.isTD ? sum + 1 : sum);
+    return attacks?.where((e) => !e.isTD).length ?? 0;
+  }
+
+  int countTdAttacks() {
+    return attacks?.where((e) => e.isTD).length ?? 0;
   }
 }
 

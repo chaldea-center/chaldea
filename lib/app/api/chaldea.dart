@@ -276,7 +276,7 @@ class ChaldeaWorkerApi {
     List<int> teamIds = const [],
     int limit = 200,
     int offset = 0,
-    Duration? expireAfter = const Duration(minutes: 60),
+    Duration? expireAfter = const Duration(hours: 2),
   }) {
     if (questId == null && userId == null && ver == null && username == null && teamIds.isEmpty) return Future.value();
     final query = _encodeQuery({

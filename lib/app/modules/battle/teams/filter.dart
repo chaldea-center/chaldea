@@ -40,6 +40,7 @@ class TeamFilterData {
   final blockCEMLBOnly = <int, bool>{}; // true=block MLB only
   final normalAttackCount = FilterRadioData<int>.nonnull(-1);
   final criticalAttackCount = FilterRadioData<int>.nonnull(-1);
+  final tdAttackCount = FilterRadioData<int>.nonnull(-1);
   final mysticCode = FilterGroupData<int>();
   final miscOptions = FilterGroupData<TeamFilterMiscType>();
 
@@ -50,6 +51,7 @@ class TeamFilterData {
         blockCEs,
         normalAttackCount,
         criticalAttackCount,
+        tdAttackCount,
         mysticCode,
         miscOptions,
       ];
@@ -63,11 +65,11 @@ class TeamFilterData {
   }
 }
 
-class TeamFilter extends FilterPage<TeamFilterData> {
+class TeamFilterPage extends FilterPage<TeamFilterData> {
   final Set<int> availableSvts; // in fetched teams
   final Set<int> availableCEs;
   final Set<int> availableMCs;
-  const TeamFilter({
+  const TeamFilterPage({
     super.key,
     required super.filterData,
     super.onChanged,
@@ -77,10 +79,10 @@ class TeamFilter extends FilterPage<TeamFilterData> {
   });
 
   @override
-  _ShopFilterState createState() => _ShopFilterState();
+  _TeamFilterPageState createState() => _TeamFilterPageState();
 }
 
-class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
+class _TeamFilterPageState extends FilterPageState<TeamFilterData, TeamFilterPage> {
   @override
   Widget build(BuildContext context) {
     final availableSvts =
@@ -165,6 +167,26 @@ class _ShopFilterState extends FilterPageState<TeamFilterData, TeamFilter> {
               onChanged: (v) {
                 if (v != null) {
                   filterData.criticalAttackCount.set(v);
+                }
+                update();
+              },
+            ),
+            DropdownButton(
+              isDense: true,
+              value: filterData.tdAttackCount.radioValue,
+              items: [
+                for (int count in [-1, 2, 3, 4, 5])
+                  DropdownMenuItem(
+                    value: count,
+                    child: Text(
+                      "${S.current.np_short} ${count == -1 ? S.current.general_any : "≤$count"}",
+                      textScaler: const TextScaler.linear(0.8),
+                    ),
+                  ),
+              ],
+              onChanged: (v) {
+                if (v != null) {
+                  filterData.tdAttackCount.set(v);
                 }
                 update();
               },

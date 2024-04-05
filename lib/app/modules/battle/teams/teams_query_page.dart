@@ -96,7 +96,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
             }
             return FilterPage.show(
               context: context,
-              builder: (context) => TeamFilter(
+              builder: (context) => TeamFilterPage(
                 filterData: filterData,
                 availableSvts: svtIds,
                 availableCEs: ceIds,
@@ -560,17 +560,16 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
 
     int maxNormalAttackCount = filterData.normalAttackCount.radioValue!;
     int maxCriticalAttackCount = filterData.criticalAttackCount.radioValue!;
+    int maxTdCount = filterData.tdAttackCount.radioValue!;
 
-    if (maxNormalAttackCount >= 0 || maxCriticalAttackCount >= 0) {
-      int normalAttackCount = data.normalAttackCount;
-      if (maxNormalAttackCount >= 0 && normalAttackCount > maxNormalAttackCount) {
-        return false;
-      }
-
-      int criticalAttackCount = data.critsCount;
-      if (maxCriticalAttackCount >= 0 && criticalAttackCount > maxCriticalAttackCount) {
-        return false;
-      }
+    if (maxNormalAttackCount >= 0 && data.normalAttackCount > maxNormalAttackCount) {
+      return false;
+    }
+    if (maxCriticalAttackCount >= 0 && data.critsCount > maxCriticalAttackCount) {
+      return false;
+    }
+    if (maxTdCount > 0 && data.tdAttackCount > maxTdCount) {
+      return false;
     }
 
     if (filterData.mysticCode.isNotEmpty) {
