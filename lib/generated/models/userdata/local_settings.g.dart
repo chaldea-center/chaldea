@@ -568,6 +568,13 @@ _MiscSettings _$MiscSettingsFromJson(Map json) => $checkedCreate(
               (v) => (v as Map?)?.map(
                     (k, e) => MapEntry(int.parse(k as String), e as int),
                   )),
+          nonSvtCharaImageIds:
+              $checkedConvert('nonSvtCharaImageIds', (v) => (v as List<dynamic>?)?.map((e) => e as String).toSet()),
+          markedCharaImageSvtIds: $checkedConvert(
+              'markedCharaImageSvtIds',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(k as String, e as int),
+                  )),
         );
         return val;
       },
@@ -576,6 +583,8 @@ _MiscSettings _$MiscSettingsFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$MiscSettingsToJson(_MiscSettings instance) => <String, dynamic>{
       'nonSvtCharaFigureIds': instance.nonSvtCharaFigureIds.toList(),
       'markedCharaFigureSvtIds': instance.markedCharaFigureSvtIds.map((k, e) => MapEntry(k.toString(), e)),
+      'nonSvtCharaImageIds': instance.nonSvtCharaImageIds.toList(),
+      'markedCharaImageSvtIds': instance.markedCharaImageSvtIds,
     };
 
 _SecretsData _$SecretsDataFromJson(Map json) => $checkedCreate(

@@ -613,13 +613,22 @@ class MasterMissionOptions {
 
 @JsonSerializable()
 class _MiscSettings {
+  // CharaFigure
   Set<int> nonSvtCharaFigureIds;
   Map<int, int> markedCharaFigureSvtIds;
+  // Image
+  Set<String> nonSvtCharaImageIds;
+  Map<String, int> markedCharaImageSvtIds;
+
   _MiscSettings({
     Set<int>? nonSvtCharaFigureIds,
     Map<int, int>? markedCharaFigureSvtIds,
+    Set<String>? nonSvtCharaImageIds,
+    Map<String, int>? markedCharaImageSvtIds,
   })  : nonSvtCharaFigureIds = nonSvtCharaFigureIds ?? <int>{},
-        markedCharaFigureSvtIds = markedCharaFigureSvtIds ?? {};
+        markedCharaFigureSvtIds = markedCharaFigureSvtIds ?? {},
+        nonSvtCharaImageIds = nonSvtCharaImageIds ?? <String>{},
+        markedCharaImageSvtIds = markedCharaImageSvtIds ?? {};
 
   factory _MiscSettings.fromJson(Map<String, dynamic> json) => _$MiscSettingsFromJson(json);
 

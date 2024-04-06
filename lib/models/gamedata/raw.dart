@@ -25,10 +25,20 @@ class MstEvent {
   factory MstEvent.fromJson(Map<String, dynamic> json) => _$MstEventFromJson(json);
 }
 
+abstract class ExtraCharaImageBase<T> {
+  int get svtId;
+  List<T> get imageIds;
+}
+
 @JsonSerializable()
-class ExtraCharaFigure {
+class ExtraCharaFigure implements ExtraCharaImageBase<int> {
+  @override
   int svtId;
   List<int> charaFigureIds;
+
+  @override
+  List<int> get imageIds => charaFigureIds;
+
   ExtraCharaFigure({
     required this.svtId,
     List<int>? charaFigureIds,
@@ -39,15 +49,16 @@ class ExtraCharaFigure {
 }
 
 @JsonSerializable()
-class ExtraCharaImage {
+class ExtraCharaImage implements ExtraCharaImageBase<String> {
+  @override
   int svtId;
-  // int or string
-  List<dynamic> imageIds;
+  @override
+  List<String> imageIds;
 
   ExtraCharaImage({
     required this.svtId,
     List<dynamic>? imageIds,
-  }) : imageIds = imageIds ?? [];
+  }) : imageIds = imageIds?.map((e) => e.toString()).toList() ?? [];
 
   factory ExtraCharaImage.fromJson(Map<dynamic, dynamic> json) => _$ExtraCharaImageFromJson(json);
   Map<String, dynamic> toJson() => _$ExtraCharaImageToJson(this);
