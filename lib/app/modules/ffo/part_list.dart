@@ -39,9 +39,6 @@ class FfoPartListPageState extends State<FfoPartListPage> with SearchableListSta
     if (db.settings.autoResetFilter) {
       filterData.reset();
     }
-    if (db.settings.autoResetFilter) {
-      filterData.reset();
-    }
   }
 
   @override

@@ -152,3 +152,20 @@ Map<String, dynamic> _$TeamQueryResultToJson(TeamQueryResult instance) => <Strin
       'total': instance.total,
       'data': instance.data.map((e) => e.toJson()).toList(),
     };
+
+AAFileManifest _$AAFileManifestFromJson(Map json) => $checkedCreate(
+      'AAFileManifest',
+      json,
+      ($checkedConvert) {
+        final val = AAFileManifest(
+          fileName: $checkedConvert('fileName', (v) => v as String),
+          size: $checkedConvert('size', (v) => v as int),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$AAFileManifestToJson(AAFileManifest instance) => <String, dynamic>{
+      'fileName': instance.fileName,
+      'size': instance.size,
+    };

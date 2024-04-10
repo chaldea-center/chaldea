@@ -32,6 +32,7 @@ import '../../models/gamedata/ai.dart';
 import '../../models/gamedata/const_data.dart';
 import '../../packages/split_route/split_route.dart';
 import '../../utils/extension.dart';
+import '../modules/april_fool/april_fool_home.dart';
 import '../modules/battle/simulation_preview.dart';
 import '../modules/bgm/bgm.dart';
 import '../modules/bgm/bgm_list.dart';
@@ -194,6 +195,7 @@ class Routes {
   static const String stats = '/stats';
   static const String importData = '/import_data';
   static const String ffo = '/ffo';
+  static const String aprilFool = '/april-fool';
   static const String effectSearch = '/effect-search';
   static const String apk = '/apk';
 
@@ -488,6 +490,8 @@ class RouteConfiguration {
         return const SimulationPreview();
       case Routes.apk:
         return const ApkListPage();
+      case Routes.aprilFool:
+        return const AprilFoolHome();
       case Routes.routes:
         return const AppRouteEntrancePage();
       case Routes.discord:

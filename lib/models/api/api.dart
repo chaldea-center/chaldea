@@ -301,3 +301,26 @@ class TeamQueryResult extends PaginatedData<UserBattleData> {
 
   Map<String, dynamic> toJson() => _$TeamQueryResultToJson(this);
 }
+
+@JsonSerializable()
+class AAFileManifest {
+  String fileName;
+  int size;
+  // int uploadTimestamp;
+  // String contentType;
+  // String contentSHA1;
+  // String contentMD5;
+
+  AAFileManifest({
+    required this.fileName,
+    required this.size,
+    // required this.uploadTimestamp,
+    // required this.contentType,
+    // required this.contentSHA1,
+    // required this.contentMD5,
+  });
+
+  factory AAFileManifest.fromJson(Map<String, dynamic> json) => _$AAFileManifestFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AAFileManifestToJson(this);
+}

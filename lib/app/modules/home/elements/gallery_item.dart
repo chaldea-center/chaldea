@@ -18,6 +18,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/basic.dart';
+import '../../april_fool/april_fool_home.dart';
 import '../../bgm/bgm_list.dart';
 import '../../buff/buff_list.dart';
 import '../../charge/np_charge_page.dart';
@@ -140,7 +141,8 @@ class GalleryItem {
         shops,
         scriptHome,
         bgms,
-        ffo,
+        // ffo,
+        aprilFool,
         cvList,
         illustratorList,
         charaList,
@@ -375,6 +377,15 @@ class GalleryItem {
     icon: FontAwesomeIcons.layerGroup,
     url: Routes.ffo,
     page: FreedomOrderPage(),
+    isDetail: true,
+    shownDefault: false,
+  );
+  static GalleryItem aprilFool = GalleryItem(
+    name: 'april-fool',
+    titleBuilder: () => S.current.april_fool,
+    icon: FontAwesomeIcons.hatWizard,
+    url: Routes.aprilFool,
+    page: const AprilFoolHome(),
     isDetail: true,
     shownDefault: false,
   );
