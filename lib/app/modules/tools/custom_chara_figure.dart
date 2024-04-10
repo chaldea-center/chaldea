@@ -359,6 +359,7 @@ class CharaFigurePainter extends CustomPainter {
       offsetX = script.offsetX;
       offsetY = script.offsetY;
     }
+    canvas.saveLayer(Rect.largest, Paint());
     if (!faceOnly) {
       draw(
         canvas,
@@ -369,23 +370,27 @@ class CharaFigurePainter extends CustomPainter {
       );
     }
 
-    if (face == null) return;
     int colCount = width ~/ faceSize;
     int rowCount = (figure.height / figure.width * width - height) ~/ faceSize;
     // if (face > colCount * rowCount) {
     //   face = (face - 1) % (colCount * rowCount) + 1;
     // }
-    if (colCount <= 0 || rowCount <= 0 || face <= 0 || face >= colCount * rowCount) return;
+    if (face == null || colCount <= 0 || rowCount <= 0 || face <= 0 || face >= colCount * rowCount) {
+      canvas.restore();
+      return;
+    }
     int row = (face - 1) ~/ colCount;
     int col = (face - 1) % colCount;
     if (!faceOnly) {
+      final destRect = Rect.fromLTWH((script.faceX - offsetX) * dstScale, (script.faceY - offsetY) * dstScale,
+          faceSize * dstScale, faceSize * dstScale);
+      canvas.drawRect(destRect.deflate(dstScale), Paint()..blendMode = BlendMode.clear);
       draw(
         canvas,
         figure,
         Rect.fromLTWH((col * faceSize) * srcScale, (height + faceSize * row) * srcScale, faceSize * srcScale,
             faceSize * srcScale),
-        Rect.fromLTWH((script.faceX - offsetX) * dstScale, (script.faceY - offsetY) * dstScale, faceSize * dstScale,
-            faceSize * dstScale),
+        destRect,
         dstScale,
       );
     } else {
@@ -398,16 +403,17 @@ class CharaFigurePainter extends CustomPainter {
         dstScale,
       );
     }
+    canvas.restore();
   }
 
-  void draw(Canvas canvas, ui.Image image, Rect src, Rect dst, double? deflate) {
+  void draw(Canvas canvas, ui.Image image, Rect src, Rect dst, double? deflate, {Paint? paint}) {
     canvas.save();
     if (deflate != null) canvas.clipRect(dst.deflate(deflate));
     canvas.drawImageRect(
       image,
       src,
       dst,
-      Paint(),
+      paint ?? Paint(),
     );
     canvas.restore();
   }
