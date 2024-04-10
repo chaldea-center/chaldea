@@ -35,6 +35,7 @@ class ImageActions {
     String? destFp,
     bool share = true,
     String? shareText,
+    String? defaultFilename,
     List<Widget> extraHeaders = const [],
     Future<void> Function()? onClearCache,
   }) {
@@ -168,6 +169,29 @@ class ImageActions {
                     ),
                 ],
               ).showDialog(context);
+            },
+          ));
+        }
+        if ((data != null || srcFp != null) && !kIsWeb) {
+          if (defaultFilename == null) {
+            if (url != null) {
+              final urlfn = Uri.tryParse(url)?.pathSegments.lastOrNull;
+              if (urlfn != null && urlfn.isNotEmpty) {
+                defaultFilename = urlfn;
+              }
+            }
+            if (srcFp != null) {
+              defaultFilename ??= basename(srcFp);
+            }
+          }
+          children.add(ListTile(
+            leading: const Icon(Icons.save),
+            title: Text(S.current.save_as),
+            onTap: () {
+              FilePickerU.saveFile(
+                data: data ?? File(srcFp!).readAsBytesSync(),
+                filename: defaultFilename,
+              );
             },
           ));
         }
@@ -310,7 +334,7 @@ class _ImageLoaderWidgetState extends State<ImageLoaderWidget> {
 
   @override
   void dispose() {
-    loader.removeListener(update);
+    loader.dispose();
     super.dispose();
   }
 
@@ -325,6 +349,8 @@ class ImageLoader extends ChangeNotifier {
   final Map<String, Completer<ui.Image?>> _tasks = {};
 
   Map<String, ui.Image> get images => Map.of(_cachedImages);
+
+  int get cacheKey => Object.hashAll(_cachedImages.values);
 
   ui.Image? getImage(String? url) {
     final img = _cachedImages[url];

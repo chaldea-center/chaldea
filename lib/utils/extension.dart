@@ -579,7 +579,7 @@ Future<T> showEasyLoading<T>(
   }
 }
 
-Iterable<int> range(int a, [int? b, int c = 0]) sync* {
+Iterable<int> range(int a, [int? b, int? c]) sync* {
   if (c == 0) {
     throw ArgumentError.value(c, 'step', 'must not be 0');
   }
@@ -591,10 +591,9 @@ Iterable<int> range(int a, [int? b, int c = 0]) sync* {
   } else {
     start = a;
     end = b;
-    step = c;
+    step = c ?? (end > start ? 1 : -1);
   }
-  bool reverse = end < start;
-  for (int i = start; (reverse ? i > end : i < end); i += step) {
+  for (int i = start; (step > 0 ? i < end : i > end); i += step) {
     yield i;
   }
 }
