@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:photo_view/photo_view.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -75,15 +76,24 @@ class ExtraAssetsPage extends StatelessWidget {
         showMerge: true,
         placeholder: charaGraphPlaceholder,
       ),
-      if (aprilFoolAssets.isNotEmpty)
-        _oneGroup(
-          S.current.april_fool,
-          aprilFoolAssets,
-          300,
-          expanded: true,
-          showMerge: true,
-          placeholder: charaGraphPlaceholder,
-        ),
+      _oneGroup(
+        S.current.april_fool,
+        aprilFoolAssets,
+        300,
+        expanded: true,
+        showMerge: true,
+        placeholder: charaGraphPlaceholder,
+        actions: [
+          IconButton(
+            onPressed: () {
+              router.push(url: Routes.aprilFool);
+            },
+            icon: const FaIcon(FontAwesomeIcons.hatWizard),
+            iconSize: 20,
+            color: Theme.of(context).hintColor,
+          )
+        ],
+      ),
       _oneGroup(
         S.current.card_asset_face,
         bordered([
@@ -105,7 +115,13 @@ class ExtraAssetsPage extends StatelessWidget {
       ),
       _oneGroup(
         S.current.card_asset_chara_figure,
-        _getUrls(extraAssets?.charaFigure),
+        _getUrls(ExtraAssetsUrl(
+          ascension: extraAssets?.charaFigure.ascension,
+          // story: extraAssets?.charaFigure.story,
+          costume: extraAssets?.charaFigure.costume,
+          equip: extraAssets?.charaFigure.equip,
+          cc: extraAssets?.charaFigure.cc,
+        )),
         300,
       ),
       _oneGroup(
@@ -122,6 +138,16 @@ class ExtraAssetsPage extends StatelessWidget {
           if (extraAssets != null)
             for (final form in extraAssets.charaFigureMulti.values) ..._getUrls(form),
         ],
+        300,
+      ),
+      _oneGroup(
+        '${S.current.card_asset_chara_figure}(${S.current.script_story})',
+        _getUrls(ExtraAssetsUrl(story: extraAssets?.charaFigure.story)),
+        300,
+      ),
+      _oneGroup(
+        'Image(${S.current.script_story})',
+        _getUrls(extraAssets?.image),
         300,
       ),
       _oneGroup('equipFace', _getUrls(extraAssets?.equipFace), 50, expanded: true),
@@ -154,6 +180,7 @@ class ExtraAssetsPage extends StatelessWidget {
     bool expanded = false,
     bool showMerge = true,
     PlaceholderWidgetBuilder? placeholder,
+    List<Widget>? actions,
   }) =>
       oneGroup(
         title,
@@ -163,6 +190,7 @@ class ExtraAssetsPage extends StatelessWidget {
         showMerge: showMerge,
         placeholder: placeholder,
         onTapImage: onTapImage,
+        actions: actions,
       );
 
   static Widget? oneGroup(
@@ -174,6 +202,7 @@ class ExtraAssetsPage extends StatelessWidget {
     PlaceholderWidgetBuilder? placeholder,
     Function(String url)? onTapImage,
     Widget Function(Widget child, String url)? transform,
+    List<Widget>? actions,
   }) {
     final _urls = urls.toList();
     if (_urls.isEmpty) return null;
@@ -183,6 +212,7 @@ class ExtraAssetsPage extends StatelessWidget {
       headerBuilder: (context, expanded) => Row(
         children: [
           Expanded(child: Text(title)),
+          if (expanded) ...?actions,
           if (showMerge && expanded && _urls.length > 1)
             IconButton(
               onPressed: () {
