@@ -2,6 +2,7 @@
 
 ## 2.5.8
 
+- Add more April Fool Assets
 - Fix incorrect class advantages against special enemy classes
 - Improve team check before uploading
 - Fix Gilgamesh S1 trait check

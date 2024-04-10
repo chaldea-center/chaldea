@@ -4,8 +4,7 @@ PODS:
   - connectivity_plus (0.0.1):
     - Flutter
     - FlutterMacOS
-    - ReachabilitySwift
-  - countly_flutter_np (24.1.1):
+  - countly_flutter_np (24.4.0):
     - Flutter
   - device_info_plus (0.0.1):
     - Flutter
@@ -71,7 +70,6 @@ PODS:
     - FlutterMacOS
   - permission_handler_apple (9.3.0):
     - Flutter
-  - ReachabilitySwift (5.2.1)
   - SDWebImage (5.19.1):
     - SDWebImage/Core (= 5.19.1)
   - SDWebImage/Core (5.19.1)
@@ -84,7 +82,7 @@ PODS:
     - Flutter
     - FlutterMacOS
   - SwiftyGif (5.4.5)
-  - Toast (4.1.0)
+  - Toast (4.1.1)
   - url_launcher_ios (0.0.1):
     - Flutter
   - video_player_avfoundation (0.0.1):
@@ -123,7 +121,6 @@ SPEC REPOS:
     - DKPhotoGallery
     - Google-Mobile-Ads-SDK
     - GoogleUserMessagingPlatform
-    - ReachabilitySwift
     - SDWebImage
     - SwiftyGif
     - Toast
@@ -176,8 +173,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   audio_session: 088d2483ebd1dc43f51d253d4a1c517d9a2e7207
-  connectivity_plus: e2dad488011aeb593e219360e804c43cc1af5770
-  countly_flutter_np: 2c3fbd57c2abe694b4cc2cbebcd64ffc0714dc1e
+  connectivity_plus: ddd7f30999e1faaef5967c23d5b6d503d10434db
+  countly_flutter_np: e7e11c231def75b240da9225d048d809844872e4
   device_info_plus: 97af1d7e84681a90d0693e63169a5d50e0839a0d
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
@@ -195,13 +192,12 @@ SPEC CHECKSUMS:
   pasteboard: 982969ebaa7c78af3e6cc7761e8f5e77565d9ce0
   path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
-  ReachabilitySwift: 5ae15e16814b5f9ef568963fb2c87aeb49158c66
   SDWebImage: 40b0b4053e36c660a764958bff99eed16610acbb
   share_plus: 8875f4f2500512ea181eef553c3e27dba5135aad
   shared_preferences_foundation: b4c3b4cddf1c21f02770737f147a3f5da9d39695
   sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
-  Toast: ec33c32b8688982cecc6348adeae667c1b9938da
+  Toast: 1f5ea13423a1e6674c4abdac5be53587ae481c4e
   url_launcher_ios: 6116280ddcfe98ab8820085d8d76ae7449447586
   video_player_avfoundation: 02011213dab73ae3687df27ce441fbbcc82b5579
   webview_flutter_wkwebview: be0f0d33777f1bfd0c9fdcb594786704dbf65f36
