@@ -171,12 +171,12 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
             Wrap(
               // alignment: WrapAlignment.center,
               children: [
-                for (final entry in items.entries)
+                for (final itemId in items.keys.toList()..sort(Item.compare2))
                   Item.iconBuilder(
                     context: context,
                     item: null,
-                    itemId: entry.key,
-                    text: entry.value.format(),
+                    itemId: itemId,
+                    text: items[itemId]?.format(),
                     width: 32,
                   )
               ],
