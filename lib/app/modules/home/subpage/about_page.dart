@@ -23,7 +23,7 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPageState extends State<AboutPage> {
-  bool showDebugInfo = false;
+  int pressTimes = 0;
 
   Map<String, String> get references => {
         'TYPE-MOON/FGO PROJECT': 'https://www.fate-go.jp',
@@ -71,13 +71,15 @@ class _AboutPageState extends State<AboutPage> {
               debugInfo: 'UUID\n${AppInfo.uuid}\n'
                   'Size: ${size.width.toInt()}×${size.height.toInt()} [×$devicePixelRatio]',
               onDoubleTap: () {
-                setState(() {
-                  showDebugInfo = true;
-                });
+                pressTimes += 1;
+                if (pressTimes == 5) {
+                  pressTimes = 0;
+                  db.runtimeData.enableDebugTools = true;
+                  EasyLoading.showInfo("Enabled Test Mode!");
+                }
               },
               onLongPress: () async {
                 setState(() {
-                  showDebugInfo = true;
                   db.runtimeData.enableDebugTools = true;
                   Future.delayed(const Duration(seconds: 1), db.notifyAppUpdate);
                 });

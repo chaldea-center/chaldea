@@ -44,12 +44,6 @@ class RuntimeData {
 
   set enableDebugTools(bool v) => _enableDebugTools = v;
 
-  bool _showDebugFAB = true;
-
-  bool get showDebugFAB => _showDebugFAB && enableDebugTools;
-
-  set showDebugFAB(bool value) => _showDebugFAB = value;
-
   bool showWindowManager = false;
 
   /// Controller of [Screenshot] widget which set root [MaterialApp] as child
