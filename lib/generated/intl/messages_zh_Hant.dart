@@ -314,7 +314,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "debug_menu": MessageLookupByLibrary.simpleMessage("Debug Menu"),
         "def_np_gain_mod": MessageLookupByLibrary.simpleMessage("敵攻擊補正"),
         "default_lvs": MessageLookupByLibrary.simpleMessage("預設等級"),
-        "default_lvs_hint": MessageLookupByLibrary.simpleMessage("預設等級僅在未開啟\"優先使用玩家數據\"或從者/禮裝未關注時使用"),
+        "default_lvs_hint": MessageLookupByLibrary.simpleMessage("預設等級僅在\"玩家數據\"禁用或從者/禮裝未關注時使用"),
         "defense_np_rate": MessageLookupByLibrary.simpleMessage("受擊NP率"),
         "delete": MessageLookupByLibrary.simpleMessage("刪除"),
         "delete_reason": MessageLookupByLibrary.simpleMessage("刪除理由"),

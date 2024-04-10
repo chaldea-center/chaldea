@@ -881,6 +881,19 @@ enum PreferPlayerSvtDataSource {
   ;
 
   bool get isNone => this == PreferPlayerSvtDataSource.none;
+
+  PreferPlayerSvtDataSource resolve(bool favorite) => favorite && !isNone ? this : none;
+
+  String get shownName => switch (this) {
+        none => S.current.disabled,
+        current => S.current.current_,
+        target => S.current.target,
+      };
+  String get detailName => switch (this) {
+        none => S.current.default_lvs,
+        current => S.current.current_,
+        target => S.current.target,
+      };
 }
 
 enum PreferClassBoardDataSource {

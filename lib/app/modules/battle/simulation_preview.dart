@@ -593,33 +593,22 @@ class _SimulationPreviewState extends State<SimulationPreview> {
         DropdownButton<PreferPlayerSvtDataSource>(
           isDense: true,
           value: settings.playerDataSource,
-          items: PreferPlayerSvtDataSource.values.map((source) {
-            String text;
-            switch (source) {
-              case PreferPlayerSvtDataSource.none:
-                text = S.current.disabled;
-                break;
-              case PreferPlayerSvtDataSource.current:
-                text = S.current.current_;
-                break;
-              case PreferPlayerSvtDataSource.target:
-                text = S.current.target;
-                break;
-            }
-            return DropdownMenuItem(
-              value: source,
-              child: Text.rich(
-                TextSpan(children: [
-                  TextSpan(
-                    text: '${S.current.player_data}:',
-                    style: TextStyle(fontSize: 15, color: Theme.of(context).textTheme.bodySmall?.color),
-                  ),
-                  TextSpan(text: text),
-                ]),
-                textScaler: const TextScaler.linear(0.9),
-              ),
-            );
-          }).toList(),
+          items: [
+            for (final source in PreferPlayerSvtDataSource.values)
+              DropdownMenuItem(
+                value: source,
+                child: Text.rich(
+                  TextSpan(children: [
+                    TextSpan(
+                      text: '${S.current.player_data}:',
+                      style: TextStyle(fontSize: 15, color: Theme.of(context).textTheme.bodySmall?.color),
+                    ),
+                    TextSpan(text: source.shownName),
+                  ]),
+                  textScaler: const TextScaler.linear(0.9),
+                ),
+              )
+          ],
           onChanged: (v) {
             setState(() {
               if (v != null) settings.playerDataSource = v;

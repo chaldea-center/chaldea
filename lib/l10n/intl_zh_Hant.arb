@@ -220,7 +220,7 @@
   "debug_menu": "Debug Menu",
   "def_np_gain_mod": "敵攻擊補正",
   "default_lvs": "預設等級",
-  "default_lvs_hint": "預設等級僅在未開啟\"優先使用玩家數據\"或從者/禮裝未關注時使用",
+  "default_lvs_hint": "預設等級僅在\"玩家數據\"禁用或從者/禮裝未關注時使用",
   "defense_np_rate": "受擊NP率",
   "delete": "刪除",
   "delete_reason": "刪除理由",

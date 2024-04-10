@@ -1150,14 +1150,16 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     if (selectedSvt == null || playerSvtData.supportType.isSupport) {
       return;
     }
-    final favorite = db.curUser.svtStatusOf(selectedSvt.collectionNo).favorite;
     playerSvtData.onSelectServant(
       selectedSvt,
       region: widget.playerRegion,
       jpTime: questPhase?.jpOpenAt,
     );
+    final type = db.settings.battleSim.playerDataSource
+        .resolve(db.curUser.svtStatusOf(selectedSvt.collectionNo).favorite)
+        .detailName;
     if (mounted) setState(() {});
-    EasyLoading.showSuccess(S.current.updated + ('(${favorite ? S.current.favorite : S.current.default_lvs})'));
+    EasyLoading.showSuccess('${S.current.updated}($type)');
   }
 
   Future<void> _onSelectSupport(final SupportServant support) async {

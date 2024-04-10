@@ -260,24 +260,13 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
         trailing: DropdownButton<PreferPlayerSvtDataSource>(
           isDense: true,
           value: options.usePlayerSvt,
-          items: PreferPlayerSvtDataSource.values.map((source) {
-            String text;
-            switch (source) {
-              case PreferPlayerSvtDataSource.none:
-                text = S.current.disabled;
-                break;
-              case PreferPlayerSvtDataSource.current:
-                text = S.current.current_;
-                break;
-              case PreferPlayerSvtDataSource.target:
-                text = S.current.target;
-                break;
-            }
-            return DropdownMenuItem(
-              value: source,
-              child: Text(text, textScaler: const TextScaler.linear(0.9)),
-            );
-          }).toList(),
+          items: [
+            for (final source in PreferPlayerSvtDataSource.values)
+              DropdownMenuItem(
+                value: source,
+                child: Text(source.shownName, textScaler: const TextScaler.linear(0.9)),
+              )
+          ],
           onChanged: (v) {
             setState(() {
               if (v != null) options.usePlayerSvt = v;
