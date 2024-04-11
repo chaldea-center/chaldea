@@ -57,7 +57,7 @@ void patchAndroidPreview() {
 void patchFDroid() {
   File('lib/packages/ads/ad_mobile.dart').deleteSync();
 
-  File file = File('lib/packages/ads/banner_ad.dart');
+  File file = File('lib/packages/ads/ads.dart');
   file.writeAsStringSync(file.readAsStringSync().replaceAll('ad_mobile.dart', 'ad_stub.dart'));
 
   file = File('pubspec.yaml');
