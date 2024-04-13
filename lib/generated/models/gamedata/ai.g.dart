@@ -246,6 +246,14 @@ const _$NiceAiCondEnumMap = {
   NiceAiCond.totalTurnLower: 'totalTurnLower',
   NiceAiCond.totalTurnEqual: 'totalTurnEqual',
   NiceAiCond.checkWarBoardSquareIndividuality: 'checkWarBoardSquareIndividuality',
+  NiceAiCond.checkPtHigherNpgauge: 'checkPtHigherNpgauge',
+  NiceAiCond.checkSelfHigherNpgauge: 'checkSelfHigherNpgauge',
+  NiceAiCond.checkBattleValueAbove: 'checkBattleValueAbove',
+  NiceAiCond.checkBattleValueEqual: 'checkBattleValueEqual',
+  NiceAiCond.checkBattleValueNotEqual: 'checkBattleValueNotEqual',
+  NiceAiCond.checkBattleValueBelow: 'checkBattleValueBelow',
+  NiceAiCond.checkBattleValueBetween: 'checkBattleValueBetween',
+  NiceAiCond.checkBattleValueNotBetween: 'checkBattleValueNotBetween',
 };
 
 const _$AiTypeEnumMap = {

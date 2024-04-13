@@ -184,6 +184,8 @@ const _$FuncTypeEnumMap = {
   FuncType.lastUsePlayerSkillCopy: 'lastUsePlayerSkillCopy',
   FuncType.changeEnemyMasterFace: 'changeEnemyMasterFace',
   FuncType.damageValueSafeOnce: 'damageValueSafeOnce',
+  FuncType.addBattleValue: 'addBattleValue',
+  FuncType.setBattleValue: 'setBattleValue',
 };
 
 const _$FuncTargetTypeEnumMap = {

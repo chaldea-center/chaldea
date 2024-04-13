@@ -328,6 +328,7 @@ enum SvtClass {
   beastVI(34, '獸Ⅵ'),
   beastVIBoss(35, '獸Ⅵ'),
   uOlgaMarieFlare(36),
+  uOlgaMarieAqua(37),
   unknown(97),
   // 98
   // 99
@@ -343,6 +344,8 @@ enum SvtClass {
   EXTRA1(1004, 'EXTRA1'),
   // ignore: constant_identifier_names
   EXTRA2(1004, 'EXTRA2'),
+  uOlgaMarieFlareCollection(9001),
+  uOlgaMarieAquaCollection(9002),
   ;
 
   final int id;
@@ -447,9 +450,13 @@ extension SvtClassX on SvtClass {
     SvtClass.beastUnknown,
     SvtClass.uOlgaMarieAlienGod,
     // SvtClass.uOlgaMarie,
+    SvtClass.uOlgaMarieFlare,
+    SvtClass.uOlgaMarieAqua,
     SvtClass.beastILost,
     SvtClass.beastVI,
     SvtClass.beastVIBoss,
+    SvtClass.uOlgaMarieFlareCollection,
+    SvtClass.uOlgaMarieAquaCollection,
   ];
 
   static bool match(SvtClass value, SvtClass option) {
@@ -536,6 +543,7 @@ enum Trait {
   classBeastVI(125),
   classBeastVIBoss(126),
   classUOlgaMarieFlare(127),
+  classUOlgaMarieAqua(128),
   attributeSky(200),
   attributeEarth(201),
   attributeHuman(202),

@@ -13,9 +13,9 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
           const {},
       attributeRelation: (json['attributeRelation'] as Map?)?.map(
             (k, e) => MapEntry(
-                $enumDecode(_$AttributeEnumMap, k),
+                $enumDecode(_$ServantAttributeEnumMap, k),
                 (e as Map).map(
-                  (k, e) => MapEntry($enumDecode(_$AttributeEnumMap, k), e as int),
+                  (k, e) => MapEntry($enumDecode(_$ServantAttributeEnumMap, k), e as int),
                 )),
           ) ??
           const {},
@@ -104,8 +104,8 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
 
 Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, dynamic>{
       'cnReplace': instance.cnReplace,
-      'attributeRelation': instance.attributeRelation
-          .map((k, e) => MapEntry(_$AttributeEnumMap[k]!, e.map((k, e) => MapEntry(_$AttributeEnumMap[k]!, e)))),
+      'attributeRelation': instance.attributeRelation.map((k, e) =>
+          MapEntry(_$ServantAttributeEnumMap[k]!, e.map((k, e) => MapEntry(_$ServantAttributeEnumMap[k]!, e)))),
       'buffActions': instance.buffActions.map((k, e) => MapEntry(const BuffActionConverter().toJson(k), e.toJson())),
       'cardInfo': instance.cardInfo
           .map((k, e) => MapEntry(_$CardTypeEnumMap[k]!, e.map((k, e) => MapEntry(k.toString(), e.toJson())))),
@@ -130,13 +130,13 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
       'config': instance.config.toJson(),
     };
 
-const _$AttributeEnumMap = {
-  Attribute.human: 'human',
-  Attribute.sky: 'sky',
-  Attribute.earth: 'earth',
-  Attribute.star: 'star',
-  Attribute.beast: 'beast',
-  Attribute.void_: 'void',
+const _$ServantAttributeEnumMap = {
+  ServantAttribute.human: 'human',
+  ServantAttribute.sky: 'sky',
+  ServantAttribute.earth: 'earth',
+  ServantAttribute.star: 'star',
+  ServantAttribute.beast: 'beast',
+  ServantAttribute.void_: 'void',
 };
 
 const _$CardTypeEnumMap = {
@@ -411,6 +411,8 @@ const _$FuncTypeEnumMap = {
   FuncType.lastUsePlayerSkillCopy: 'lastUsePlayerSkillCopy',
   FuncType.changeEnemyMasterFace: 'changeEnemyMasterFace',
   FuncType.damageValueSafeOnce: 'damageValueSafeOnce',
+  FuncType.addBattleValue: 'addBattleValue',
+  FuncType.setBattleValue: 'setBattleValue',
 };
 
 BuffTypeDetail _$BuffTypeDetailFromJson(Map json) => BuffTypeDetail(

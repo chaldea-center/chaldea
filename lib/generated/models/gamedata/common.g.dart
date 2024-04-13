@@ -172,6 +172,7 @@ const _$SvtClassEnumMap = {
   SvtClass.beastVI: 'beastVI',
   SvtClass.beastVIBoss: 'beastVIBoss',
   SvtClass.uOlgaMarieFlare: 'uOlgaMarieFlare',
+  SvtClass.uOlgaMarieAqua: 'uOlgaMarieAqua',
   SvtClass.unknown: 'unknown',
   SvtClass.agarthaPenth: 'agarthaPenth',
   SvtClass.cccFinaleEmiyaAlter: 'cccFinaleEmiyaAlter',
@@ -182,6 +183,8 @@ const _$SvtClassEnumMap = {
   SvtClass.MIX: 'MIX',
   SvtClass.EXTRA1: 'EXTRA1',
   SvtClass.EXTRA2: 'EXTRA2',
+  SvtClass.uOlgaMarieFlareCollection: 'uOlgaMarieFlareCollection',
+  SvtClass.uOlgaMarieAquaCollection: 'uOlgaMarieAquaCollection',
 };
 
 const _$CondTypeEnumMap = {

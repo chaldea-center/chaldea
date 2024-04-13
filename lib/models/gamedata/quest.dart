@@ -514,13 +514,14 @@ class BaseGift {
       GiftType.eventPointBuff,
       GiftType.eventCommandAssist,
       GiftType.eventHeelPortrait,
+      GiftType.battleItem,
       GiftType.unknown,
     ].contains(type)) return false;
     return true;
   }
 
   Item? toItem() {
-    if (type == GiftType.item) return db.gameData.items[objectId];
+    if (const [GiftType.item, GiftType.battleItem].contains(type)) return db.gameData.items[objectId];
     return null;
   }
 
@@ -543,6 +544,7 @@ class BaseGift {
     switch (type) {
       case GiftType.servant:
       case GiftType.item:
+      case GiftType.battleItem:
       case GiftType.commandCode:
       case GiftType.eventSvtJoin:
       case GiftType.eventSvtGet:
@@ -621,6 +623,7 @@ class BaseGift {
     switch (type) {
       case GiftType.servant:
       case GiftType.item:
+      case GiftType.battleItem:
       case GiftType.commandCode:
       case GiftType.eventSvtJoin:
       case GiftType.eventSvtGet:
@@ -1363,7 +1366,7 @@ class QuestEnemy with GameCardMixin {
         type: SvtType.normal,
         flags: [],
         classId: SvtClass.ALL.id,
-        attribute: Attribute.void_,
+        attribute: ServantAttribute.void_,
         rarity: 3,
         atkMax: 1000,
         hpMax: 10000,
@@ -1991,6 +1994,7 @@ enum GiftType {
   eventBoardGameToken(13), // 80285047=eventId*1000+tokenId in mstEventBoardGameToken
   eventCommandAssist(14), // 80505
   eventHeelPortrait(15), // =svtId
+  battleItem(16),
   ;
 
   const GiftType(this.id);

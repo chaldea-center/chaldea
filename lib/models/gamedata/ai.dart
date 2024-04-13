@@ -292,6 +292,14 @@ enum NiceAiCond {
   totalTurnLower,
   totalTurnEqual,
   checkWarBoardSquareIndividuality,
+  checkPtHigherNpgauge,
+  checkSelfHigherNpgauge,
+  checkBattleValueAbove,
+  checkBattleValueEqual,
+  checkBattleValueNotEqual,
+  checkBattleValueBelow,
+  checkBattleValueBetween,
+  checkBattleValueNotBetween,
 }
 
 enum AiTiming {

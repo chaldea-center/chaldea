@@ -237,9 +237,9 @@ class Transl<K, V> {
     return Transl(mapping(db.gameData.mappingData.enums), value.name, value.name);
   }
 
-  static Transl<String, String> svtAttribute(Attribute key) {
+  static Transl<String, String> svtAttribute(ServantAttribute key) {
     String name = key.name;
-    if (key == Attribute.void_) name = 'void';
+    if (key == ServantAttribute.void_) name = 'void';
     return Transl(md.enums.attribute, name, name);
   }
 

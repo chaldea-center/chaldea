@@ -348,7 +348,7 @@ class SvtFilterData with _FilterData {
   //
   final svtClass = FilterGroupData<SvtClass>();
   final rarity = FilterGroupData<int>();
-  final attribute = FilterGroupData<Attribute>();
+  final attribute = FilterGroupData<ServantAttribute>();
 
   final svtDuplicated = FilterRadioData<bool>();
   final planCompletion = FilterGroupData<SvtPlanScope>();
@@ -922,7 +922,7 @@ class EnemyFilterData with _FilterData {
   // filter
   final region = FilterRadioData<Region>();
   final svtClass = FilterGroupData<SvtClass>();
-  final attribute = FilterGroupData<Attribute>();
+  final attribute = FilterGroupData<ServantAttribute>();
   final svtType = FilterGroupData<SvtType>();
   final trait = FilterGroupData<Trait>();
 

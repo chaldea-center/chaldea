@@ -51,7 +51,7 @@ class BasicServant with GameCardMixin {
   @JsonKey(unknownEnumValue: SvtFlag.unknown)
   List<SvtFlag> flags;
   int classId;
-  Attribute attribute;
+  ServantAttribute attribute;
   @override
   int rarity;
   int atkMax;
@@ -68,7 +68,7 @@ class BasicServant with GameCardMixin {
     this.type = SvtType.normal,
     this.flags = const [],
     this.classId = 0,
-    this.attribute = Attribute.void_,
+    this.attribute = ServantAttribute.void_,
     this.rarity = 0,
     this.atkMax = 0,
     this.hpMax = 0,
@@ -171,7 +171,7 @@ class Servant with GameCardMixin {
   int lvMax; // Mash is at Lv70
   ExtraAssets extraAssets;
   Gender gender;
-  Attribute attribute;
+  ServantAttribute attribute;
   List<NiceTrait> traits;
   int starAbsorb;
   int starGen;
@@ -236,7 +236,7 @@ class Servant with GameCardMixin {
     this.lvMax = 0,
     ExtraAssets? extraAssets,
     this.gender = Gender.unknown,
-    this.attribute = Attribute.void_,
+    this.attribute = ServantAttribute.void_,
     this.traits = const [],
     this.starAbsorb = 0,
     this.starGen = 0,
@@ -1556,38 +1556,51 @@ enum SvtFlag {
   svtEquipEventReward,
 }
 
-enum Attribute {
-  human(Trait.attributeHuman),
-  sky(Trait.attributeSky),
-  earth(Trait.attributeEarth),
-  star(Trait.attributeStar),
-  beast(Trait.attributeBeast),
+enum ServantAttribute {
+  human(1, Trait.attributeHuman),
+  sky(2, Trait.attributeSky),
+  earth(3, Trait.attributeEarth),
+  star(4, Trait.attributeStar),
+  beast(5, Trait.attributeBeast),
   @JsonValue('void')
-  void_(null),
+  void_(10, null),
   ;
 
-  const Attribute(this.trait);
+  const ServantAttribute(this.value, this.trait);
+  final int value;
   final Trait? trait;
 }
 
 enum ServantPolicy {
-  none,
-  neutral,
-  lawful,
-  chaotic,
-  unknown,
+  none(0),
+  neutral(1), // 中立
+  chaotic(2), // 混沌
+  lawful(3), // 秩序
+  // (4), // 中庸
+  // (5), // 秩序／混沌
+  // (6), // 空密
+  unknown(-1),
+  ;
+
+  const ServantPolicy(this.value);
+  final int value;
 }
 
 enum ServantPersonality {
-  none,
-  good,
-  madness,
-  balanced,
-  summer,
-  evil,
-  goodAndEvil,
-  bride,
-  unknown,
+  none(0),
+  good(1), // 善
+  evil(2), // 悪
+  // (3), // 中立
+  madness(4), // 狂
+  balanced(5), // 中庸
+  goodAndEvil(6), // 善／悪
+  bride(7), // 花嫁
+  summer(8), // 夏
+  unknown(-1),
+  ;
+
+  const ServantPersonality(this.value);
+  final int value;
 }
 
 enum VoiceCondType {

@@ -440,6 +440,7 @@ class AiTable extends StatelessWidget {
               ]
         };
       // unknown
+      case NiceAiCond.none:
       case NiceAiCond.checkSelfNotBuffIndividuality:
       case NiceAiCond.beforeActType:
       case NiceAiCond.beforeNotActType:
@@ -469,8 +470,15 @@ class AiTable extends StatelessWidget {
       case NiceAiCond.countChainLower:
       case NiceAiCond.countChainEqual:
       case NiceAiCond.checkSelectChain:
-      case NiceAiCond.none:
       case NiceAiCond.checkWarBoardSquareIndividuality:
+      case NiceAiCond.checkPtHigherNpgauge:
+      case NiceAiCond.checkSelfHigherNpgauge:
+      case NiceAiCond.checkBattleValueAbove:
+      case NiceAiCond.checkBattleValueEqual:
+      case NiceAiCond.checkBattleValueNotEqual:
+      case NiceAiCond.checkBattleValueBelow:
+      case NiceAiCond.checkBattleValueBetween:
+      case NiceAiCond.checkBattleValueNotBetween:
         return {};
     }
   }

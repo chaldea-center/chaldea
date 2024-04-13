@@ -228,6 +228,7 @@ class Item {
               ItemType.friendshipUpItem => 1,
               ItemType.continueItem => 2,
               ItemType.itemSelect => 3,
+              ItemType.battleItem => 4,
               _ => 0,
             },
       };
@@ -522,6 +523,7 @@ enum ItemType {
   tradeAp,
   ri,
   stormpod,
+  battleItem,
 }
 
 enum ItemBGType {

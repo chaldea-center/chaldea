@@ -238,7 +238,7 @@ class BattleServantData {
 
   int get classId => isPlayer ? niceSvt!.classId : niceEnemy!.svt.classId;
 
-  Attribute get attribute => isPlayer ? niceSvt!.attribute : niceEnemy!.svt.attribute;
+  ServantAttribute get attribute => isPlayer ? niceSvt!.attribute : niceEnemy!.svt.attribute;
 
   int get starGen => isPlayer ? niceSvt!.starGen : 0;
 

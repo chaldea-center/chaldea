@@ -575,6 +575,8 @@ enum FuncType {
   lastUsePlayerSkillCopy(135),
   changeEnemyMasterFace(136),
   damageValueSafeOnce(137),
+  addBattleValue(138),
+  setBattleValue(139),
   ;
 
   final int id;

@@ -148,10 +148,10 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
           updateTrait(niceSvt, null);
         },
       ),
-      enumTile<Attribute>(
+      enumTile<ServantAttribute>(
         title: Text(S.current.filter_attribute),
         value: enemy.svt.attribute,
-        values: Attribute.values,
+        values: ServantAttribute.values,
         itemBuilder: (v) => Text(Transl.svtAttribute(v).l, textScaler: const TextScaler.linear(0.9)),
         onChanged: (v) {
           enemy.svt.attribute = v;
@@ -395,6 +395,12 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       case SvtClass.beast:
         enemy.chargeTurn = 5;
         return;
+      case SvtClass.uOlgaMarieFlare:
+      case SvtClass.uOlgaMarieAqua:
+      case SvtClass.uOlgaMarieFlareCollection:
+      case SvtClass.uOlgaMarieAquaCollection:
+        enemy.chargeTurn = 4;
+        return;
       default:
         enemy.chargeTurn = 5;
         return;
@@ -428,7 +434,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
     }
     final removeTraits = <int?>{
       ...ConstData.classInfo.values.map((e) => e.individuality),
-      ...Attribute.values.map((e) => e.trait?.id),
+      ...ServantAttribute.values.map((e) => e.trait?.id),
     };
     enemy.traits.removeWhere((e) => removeTraits.any((t) => t == e.id));
     final traitId = ConstData.classInfo[enemy.svt.classId]?.individuality;

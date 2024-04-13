@@ -408,6 +408,8 @@ class FunctionExecutor {
         case FuncType.setSystemAliveFlag:
         case FuncType.changeEnemyMasterFace:
         case FuncType.damageValueSafeOnce:
+        case FuncType.addBattleValue:
+        case FuncType.setBattleValue:
           battleData.battleLogger.debug('${S.current.skip}: ${function.funcType}, '
               'Function ID: ${function.funcId}, '
               'Activator: ${activator?.lBattleName}');
