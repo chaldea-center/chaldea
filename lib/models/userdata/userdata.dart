@@ -529,7 +529,7 @@ class SvtPlan {
     bondLimit = bondLimit.clamp2(lower?.bondLimit ?? 10, 15);
 
     if (_npLv == null && svt != null) {
-      if (svt.rarity <= 3 || svt.extra.obtains.contains(SvtObtain.eventReward)) {
+      if (svt.rarity <= 3 || svt.obtains.contains(SvtObtain.eventReward)) {
         _npLv = 5;
       }
     }

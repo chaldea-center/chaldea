@@ -117,7 +117,7 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
       }
     }
 
-    if (!filterData.obtain.matchAny(svt.extra.obtains)) {
+    if (!filterData.obtain.matchAny(svt.obtains)) {
       return false;
     }
 

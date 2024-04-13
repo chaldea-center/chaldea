@@ -77,7 +77,7 @@ class _SvtIllustrationTabState extends State<SvtIllustrationTab> {
       idx = [1, 2, 3];
     } else if (svt.collectionNo == 315) {
       idx = [1];
-    } else if (svt.rarity == 4 && svt.extra.obtains.contains(SvtObtain.eventReward)) {
+    } else if (svt.rarity == 4 && svt.obtains.contains(SvtObtain.eventReward)) {
       idx = [1];
     } else {
       idx = [1, 2, 3];

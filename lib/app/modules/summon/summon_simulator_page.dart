@@ -544,8 +544,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
           newResults.addAll(randomSummon(svtProbs((r) => r == 5), 1));
         }
         if (summon.type == SummonType.gssrsr) {
-          final s4 = results
-              .firstWhereOrNull((e) => e is Servant && e.rarity >= 4 && e.extra.obtains.contains(SvtObtain.limited));
+          final s4 =
+              results.firstWhereOrNull((e) => e is Servant && e.rarity >= 4 && e.obtains.contains(SvtObtain.limited));
           if (s4 != null) {
             results.remove(s4);
             newResults.add(s4);

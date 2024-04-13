@@ -74,7 +74,7 @@ class PlayerSvtData {
       }
       if (defaults.useDefaultTdLv) {
         if (selectedSvt.rarity <= 3 ||
-            selectedSvt.extra.obtains.any((e) => const [SvtObtain.eventReward, SvtObtain.friendPoint].contains(e))) {
+            selectedSvt.obtains.any((e) => const [SvtObtain.eventReward, SvtObtain.friendPoint].contains(e))) {
           defaultTdLv = 5;
         } else if (selectedSvt.rarity == 4) {
           defaultTdLv = 2;

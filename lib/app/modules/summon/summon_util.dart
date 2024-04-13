@@ -134,7 +134,7 @@ class SummonUtil {
     }
     if (showCategory && card is Servant) {
       for (final obtain in [SvtObtain.limited, SvtObtain.story]) {
-        if (card.extra.obtains.contains(obtain)) {
+        if (card.obtains.contains(obtain)) {
           texts.add(Transl.svtObtain(obtain).l);
           break;
         }

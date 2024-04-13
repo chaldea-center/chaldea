@@ -387,7 +387,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
       if (rarity == 4) {
         if (svt.type == SvtType.heroine ||
             const [SvtObtain.eventReward, SvtObtain.friendPoint, SvtObtain.clearReward, SvtObtain.unavailable]
-                .any((e) => svt.extra.obtains.contains(e))) {
+                .any((e) => svt.obtains.contains(e))) {
           continue;
         }
       }
@@ -405,7 +405,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
       if (rarity == 4) {
         if (svt.type == SvtType.heroine ||
             const [SvtObtain.eventReward, SvtObtain.friendPoint, SvtObtain.clearReward, SvtObtain.unavailable]
-                .any((e) => svt.extra.obtains.contains(e))) {
+                .any((e) => svt.obtains.contains(e))) {
           continue;
         }
       }

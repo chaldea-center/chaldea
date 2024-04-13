@@ -565,6 +565,15 @@ class Servant with GameCardMixin {
     return ServantExtra(collectionNo: originalCollectionNo);
   }
 
+  List<SvtObtain> get obtains {
+    // ignore: invalid_use_of_protected_member
+    final _obtains = extra.obtains;
+    if (type == SvtType.enemyCollectionDetail && _obtains.length == 1 && _obtains.contains(SvtObtain.unknown)) {
+      return [SvtObtain.unavailable];
+    }
+    return _obtains;
+  }
+
   Set<int> get traitsAll {
     if (_traitsAll != null) return _traitsAll!;
     List<NiceTrait> _traits = [];

@@ -273,7 +273,7 @@ class BattleRecordManager {
     // coin
     int requiredCoins = 0, maxCoins = 0;
     int? summonCoin = svt.coin?.summonNum ?? 0;
-    if (summonCoin > 0 && svt.rarity >= 4 && svtData.tdLv < 5 && svt.extra.obtains.any((e) => e.isSummonable)) {
+    if (summonCoin > 0 && svt.rarity >= 4 && svtData.tdLv < 5) {
       maxCoins = summonCoin * svtData.tdLv + 180;
       requiredCoins += max(((svtData.lv - 100) / 2).ceil() * 30, 0);
       requiredCoins += svtData.appendLvs.where((e) => e > 0).length * 120;

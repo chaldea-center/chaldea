@@ -264,7 +264,7 @@ class TdDmgSolver {
       data.lv = options.svtLv == SvtLv.maxLv ? svt.lvMax : options.svtLv.lv!;
       data.hpFou = data.atkFou = options.fouHpAtk;
 
-      if (svt.rarity <= 3 || svt.extra.obtains.contains(SvtObtain.eventReward)) {
+      if (svt.rarity <= 3 || svt.obtains.contains(SvtObtain.eventReward)) {
         data.tdLv = options.tdR3;
       } else if (svt.rarity == 4) {
         data.tdLv = options.tdR4;

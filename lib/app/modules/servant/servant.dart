@@ -405,7 +405,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
       case SvtTab.summon:
         if (!svt.isUserSvt ||
             svt.type == SvtType.heroine ||
-            svt.extra.obtains.contains(SvtObtain.eventReward) ||
+            svt.obtains.contains(SvtObtain.eventReward) ||
             svt.rarity < 3) {
           return null;
         }
@@ -622,7 +622,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
       SvtObtain.friendPoint: Color(0xFFD19F76),
       SvtObtain.unavailable: Color(0xFFA6A6A6)
     };
-    return svt.extra.obtains.map((obtain) {
+    return svt.obtains.map((obtain) {
       final bgColor = badgeColors[obtain] ?? badgeColors[SvtObtain.unavailable]!;
       final String shownText = Transl.svtObtain(obtain).l;
       return DecoratedBox(

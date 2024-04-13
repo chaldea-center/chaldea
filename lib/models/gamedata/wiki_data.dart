@@ -43,6 +43,7 @@ class ServantExtra {
   MappingList<String> nicknames;
   @protected
   int releasedAt;
+  @protected
   List<SvtObtain> obtains;
   List<String> aprilFoolAssets;
   MappingBase<String> aprilFoolProfile;

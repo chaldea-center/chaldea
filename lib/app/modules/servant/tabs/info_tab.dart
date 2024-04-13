@@ -358,7 +358,7 @@ class SvtInfoTab extends StatelessWidget {
 
   List<Widget> relateEvents() {
     List<Widget> children = [];
-    if (svt.extra.obtains.contains(SvtObtain.eventReward) || svt.type == SvtType.svtMaterialTd) {
+    if (svt.obtains.contains(SvtObtain.eventReward) || svt.type == SvtType.svtMaterialTd) {
       for (final event in db.gameData.events.values) {
         if (event.statItemFixed.containsKey(svt.id)) {
           children.add(ListTile(
