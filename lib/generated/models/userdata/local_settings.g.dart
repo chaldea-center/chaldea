@@ -37,8 +37,6 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
           autoUpdateApp: $checkedConvert('autoUpdateApp', (v) => v as bool? ?? true),
           autoRotate: $checkedConvert('autoRotate', (v) => v as bool? ?? true),
           enableEdgeSwipePopGesture: $checkedConvert('enableEdgeSwipePopGesture', (v) => v as bool? ?? true),
-          autoResetFilter: $checkedConvert('autoResetFilter', (v) => v as bool? ?? true),
-          hideUnreleasedCard: $checkedConvert('hideUnreleasedCard', (v) => v as bool? ?? false),
           preferredFavorite:
               $checkedConvert('preferredFavorite', (v) => $enumDecodeNullable(_$FavoriteStateEnumMap, v)),
           preferApRate: $checkedConvert('preferApRate', (v) => v as bool? ?? true),
@@ -74,6 +72,9 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
                   )),
           spoilerRegion: $checkedConvert(
               'spoilerRegion', (v) => v == null ? Region.jp : const RegionConverter().fromJson(v as String)),
+          autoResetFilter: $checkedConvert('autoResetFilter', (v) => v as bool? ?? true),
+          hideUnreleasedCard: $checkedConvert('hideUnreleasedCard', (v) => v as bool? ?? false),
+          hideUnreleasedEnemyCollection: $checkedConvert('hideUnreleasedEnemyCollection', (v) => v as bool? ?? false),
           svtFilterData: $checkedConvert(
               'svtFilterData', (v) => v == null ? null : SvtFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
           craftFilterData: $checkedConvert('craftFilterData',
@@ -130,8 +131,6 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'proxy': instance.proxy.toJson(),
       'autoRotate': instance.autoRotate,
       'enableEdgeSwipePopGesture': instance.enableEdgeSwipePopGesture,
-      'autoResetFilter': instance.autoResetFilter,
-      'hideUnreleasedCard': instance.hideUnreleasedCard,
       'preferApRate': instance.preferApRate,
       'preferredQuestRegion':
           _$JsonConverterToJson<String, Region>(instance.preferredQuestRegion, const RegionConverter().toJson),
@@ -146,6 +145,9 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'battleSim': instance.battleSim.toJson(),
       'eventItemCalc': instance.eventItemCalc.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'spoilerRegion': const RegionConverter().toJson(instance.spoilerRegion),
+      'autoResetFilter': instance.autoResetFilter,
+      'hideUnreleasedCard': instance.hideUnreleasedCard,
+      'hideUnreleasedEnemyCollection': instance.hideUnreleasedEnemyCollection,
       'svtFilterData': instance.svtFilterData.toJson(),
       'craftFilterData': instance.craftFilterData.toJson(),
       'cmdCodeFilterData': instance.cmdCodeFilterData.toJson(),

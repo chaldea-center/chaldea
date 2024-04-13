@@ -193,7 +193,6 @@ class _GameDataPageState extends State<GameDataPage> {
                 subtitle: Text(S.current.filter),
                 onChanged: (v) {
                   db.settings.hideUnreleasedCard = v;
-                  db.saveSettings();
                   setState(() {});
                 },
               ),
@@ -212,11 +211,24 @@ class _GameDataPageState extends State<GameDataPage> {
                     setState(() {
                       if (v != null) {
                         db.settings.spoilerRegion = v;
-                        db.saveSettings();
                       }
                     });
                   },
                 ),
+              ),
+              SwitchListTile.adaptive(
+                value: db.settings.hideUnreleasedEnemyCollection,
+                // secondary: Icon(DirectionalIcons.of(context,
+                //     ltr: Icons.subdirectory_arrow_right, rtl: Icons.subdirectory_arrow_left)),
+                title: const Text("Hide All Enemy Collections"),
+                onChanged: (v) {
+                  db.settings.hideUnreleasedEnemyCollection = v;
+                  if (v) {
+                    db.settings.svtFilterData.obtain.options =
+                        SvtObtain.values.where((e) => e != SvtObtain.unavailable).toSet();
+                  }
+                  setState(() {});
+                },
               ),
             ],
           ),

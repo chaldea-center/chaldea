@@ -53,8 +53,6 @@ class LocalSettings {
   ProxySettings proxy;
   bool autoRotate;
   bool enableEdgeSwipePopGesture;
-  bool autoResetFilter;
-  bool hideUnreleasedCard;
   // ignore: unused_field
   FavoriteState? _preferredFavorite;
   bool preferApRate;
@@ -72,7 +70,10 @@ class LocalSettings {
   Map<int, EventItemCalcParams> eventItemCalc;
 
   // filters
-  Region spoilerRegion;
+  Region spoilerRegion; // delete unreleased
+  bool autoResetFilter;
+  bool hideUnreleasedCard;
+  bool hideUnreleasedEnemyCollection;
   SvtFilterData svtFilterData;
   CraftFilterData craftFilterData;
   CmdCodeFilterData cmdCodeFilterData;
@@ -113,8 +114,6 @@ class LocalSettings {
     this.autoUpdateApp = true,
     this.autoRotate = true,
     this.enableEdgeSwipePopGesture = true,
-    this.autoResetFilter = true,
-    this.hideUnreleasedCard = false,
     FavoriteState? preferredFavorite,
     this.preferApRate = true,
     this.preferredQuestRegion,
@@ -129,6 +128,9 @@ class LocalSettings {
     BattleSimSetting? battleSim,
     Map<int, EventItemCalcParams>? eventItemCalc,
     this.spoilerRegion = Region.jp,
+    this.autoResetFilter = true,
+    this.hideUnreleasedCard = false,
+    this.hideUnreleasedEnemyCollection = false,
     SvtFilterData? svtFilterData,
     CraftFilterData? craftFilterData,
     CmdCodeFilterData? cmdCodeFilterData,

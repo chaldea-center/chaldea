@@ -358,7 +358,9 @@ class SvtFilterData with _FilterData {
   });
   final bond = FilterGroupData<SvtBondStage>();
   final region = FilterRadioData<Region>();
-  final obtain = FilterGroupData<SvtObtain>();
+  late final obtain = FilterGroupData<SvtObtain>(
+    options: SvtObtain.values.where((e) => e != SvtObtain.unavailable).toSet(),
+  );
   final npColor = FilterGroupData<CardType>();
   final npType = FilterGroupData<TdEffectFlag>();
   final policy = FilterGroupData<ServantPolicy>(); //秩序 混沌 中庸
@@ -416,6 +418,11 @@ class SvtFilterData with _FilterData {
     if (db.settings.hideUnreleasedCard) {
       if (db.curUser.region != Region.jp) {
         region.set(db.curUser.region);
+      }
+    }
+    if (db.settings.hideUnreleasedEnemyCollection) {
+      if (db.curUser.region != Region.jp) {
+        obtain.options = SvtObtain.values.where((e) => e != SvtObtain.unavailable).toSet();
       }
     }
   }
