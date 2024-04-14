@@ -88,6 +88,7 @@ class LocalSettings {
   RemoteConfig remoteConfig;
 
   MasterMissionOptions masterMissionOptions;
+  BookmarkHistory bookmarks;
   _MiscSettings misc;
   _SecretsData secrets;
 
@@ -142,6 +143,7 @@ class LocalSettings {
     List<AutoLoginData>? autologins,
     RemoteConfig? remoteConfig,
     MasterMissionOptions? masterMissionOptions,
+    BookmarkHistory? bookmarks,
     _MiscSettings? misc,
     _SecretsData? secrets,
   })  : _language = language,
@@ -169,6 +171,7 @@ class LocalSettings {
         autologins = autologins ?? [],
         remoteConfig = remoteConfig ?? RemoteConfig(),
         masterMissionOptions = masterMissionOptions ?? MasterMissionOptions(),
+        bookmarks = bookmarks ?? BookmarkHistory(),
         misc = misc ?? _MiscSettings(),
         secrets = secrets ?? _SecretsData() {
     this.galleries.removeWhere((key, value) => GalleryItem.allItems.every((item) => item.name != key));
@@ -652,6 +655,36 @@ class _SecretsData {
   factory _SecretsData.fromJson(Map<String, dynamic> json) => _$SecretsDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$SecretsDataToJson(this);
+}
+
+@JsonSerializable()
+class BookmarkHistory {
+  List<BookmarkEntry> bookmarks;
+
+  BookmarkHistory({
+    List<BookmarkEntry>? bookmarks,
+  }) : bookmarks = bookmarks ?? [];
+
+  factory BookmarkHistory.fromJson(Map<String, dynamic> json) => _$BookmarkHistoryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BookmarkHistoryToJson(this);
+}
+
+@JsonSerializable()
+class BookmarkEntry {
+  String? name;
+  String url;
+  int createdAt;
+
+  BookmarkEntry({
+    this.name,
+    required this.url,
+    int? createdAt,
+  }) : createdAt = createdAt ?? DateTime.now().timestamp;
+
+  factory BookmarkEntry.fromJson(Map<String, dynamic> json) => _$BookmarkEntryFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BookmarkEntryToJson(this);
 }
 
 enum SvtListClassFilterStyle {

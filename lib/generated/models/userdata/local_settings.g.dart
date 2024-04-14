@@ -100,6 +100,8 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               'remoteConfig', (v) => v == null ? null : RemoteConfig.fromJson(Map<String, dynamic>.from(v as Map))),
           masterMissionOptions: $checkedConvert('masterMissionOptions',
               (v) => v == null ? null : MasterMissionOptions.fromJson(Map<String, dynamic>.from(v as Map))),
+          bookmarks: $checkedConvert(
+              'bookmarks', (v) => v == null ? null : BookmarkHistory.fromJson(Map<String, dynamic>.from(v as Map))),
           misc: $checkedConvert(
               'misc', (v) => v == null ? null : _MiscSettings.fromJson(Map<String, dynamic>.from(v as Map))),
           secrets: $checkedConvert(
@@ -159,6 +161,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'autologins': instance.autologins.map((e) => e.toJson()).toList(),
       'remoteConfig': instance.remoteConfig.toJson(),
       'masterMissionOptions': instance.masterMissionOptions.toJson(),
+      'bookmarks': instance.bookmarks.toJson(),
       'misc': instance.misc.toJson(),
       'secrets': instance.secrets.toJson(),
       'language': instance.language,
@@ -605,4 +608,42 @@ _SecretsData _$SecretsDataFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$SecretsDataToJson(_SecretsData instance) => <String, dynamic>{
       'user': instance.user?.toJson(),
       'explorerAuth': instance.explorerAuth,
+    };
+
+BookmarkHistory _$BookmarkHistoryFromJson(Map json) => $checkedCreate(
+      'BookmarkHistory',
+      json,
+      ($checkedConvert) {
+        final val = BookmarkHistory(
+          bookmarks: $checkedConvert(
+              'bookmarks',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => BookmarkEntry.fromJson(Map<String, dynamic>.from(e as Map)))
+                  .toList()),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$BookmarkHistoryToJson(BookmarkHistory instance) => <String, dynamic>{
+      'bookmarks': instance.bookmarks.map((e) => e.toJson()).toList(),
+    };
+
+BookmarkEntry _$BookmarkEntryFromJson(Map json) => $checkedCreate(
+      'BookmarkEntry',
+      json,
+      ($checkedConvert) {
+        final val = BookmarkEntry(
+          name: $checkedConvert('name', (v) => v as String?),
+          url: $checkedConvert('url', (v) => v as String),
+          createdAt: $checkedConvert('createdAt', (v) => v as int),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$BookmarkEntryToJson(BookmarkEntry instance) => <String, dynamic>{
+      'name': instance.name,
+      'url': instance.url,
+      'createdAt': instance.createdAt,
     };

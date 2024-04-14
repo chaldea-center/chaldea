@@ -96,7 +96,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
             return;
           }
           FocusScope.of(context).unfocus();
-          Navigator.pop(context);
+          Navigator.pop(context, v);
           if (widget.onSubmit != null) {
             widget.onSubmit!(v);
           }
@@ -117,7 +117,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
                       if (widget.onSubmit != null) {
                         widget.onSubmit!(_value);
                       }
-                      Navigator.pop(context);
+                      Navigator.pop(context, _value);
                     }
                   });
                 }

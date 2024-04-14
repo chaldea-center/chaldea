@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -14,7 +13,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/widgets/material.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import '../../routes/root_delegate.dart';
 import 'multi_screenshots.dart';
 
@@ -233,10 +232,8 @@ class MultipleWindow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final windowSize = MediaQuery.of(context).size;
-    int crossCount = windowSize.width ~/ 300;
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         backgroundColor: Theme.of(context).highlightColor.withOpacity(0.8),
         appBar: AppBar(
@@ -270,23 +267,16 @@ class MultipleWindow extends StatelessWidget {
               underline: const SizedBox(),
             ),
           ],
-          bottom: FixedHeight.tabBar(TabBar(tabs: [const Tab(text: 'Tabs'), Tab(text: S.current.history)])),
+          bottom: FixedHeight.tabBar(TabBar(tabs: [
+            const Tab(text: 'Tabs'),
+            Tab(text: S.current.history),
+            const Tab(text: "Bookmarks"),
+          ])),
         ),
         body: TabBarView(children: [
-          SafeArea(
-            child: GridView.count(
-              crossAxisCount: max(crossCount, 2),
-              childAspectRatio: windowSize.aspectRatio,
-              padding: const EdgeInsetsDirectional.fromSTEB(8, 8, 8, 72),
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-              children: List.generate(
-                root.appState.children.length,
-                (index) => WindowThumb(key: ObjectKey(root.appState.children[index]), root: root, index: index),
-              ),
-            ),
-          ),
-          buildHistory(context),
+          KeepAliveBuilder(builder: buildGrid),
+          KeepAliveBuilder(builder: buildHistory),
+          KeepAliveBuilder(builder: (context) => db.onUserData((context, snapshot) => buildBookmarks(context))),
         ]),
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
@@ -295,6 +285,24 @@ class MultipleWindow extends StatelessWidget {
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      ),
+    );
+  }
+
+  Widget buildGrid(BuildContext context) {
+    final windowSize = MediaQuery.of(context).size;
+    int crossCount = windowSize.width ~/ 300;
+    return SafeArea(
+      child: GridView.count(
+        crossAxisCount: max(crossCount, 2),
+        childAspectRatio: windowSize.aspectRatio,
+        padding: const EdgeInsetsDirectional.fromSTEB(8, 8, 8, 72),
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 8,
+        children: List.generate(
+          root.appState.children.length,
+          (index) => WindowThumb(key: ObjectKey(root.appState.children[index]), root: root, index: index),
+        ),
       ),
     );
   }
@@ -315,6 +323,45 @@ class MultipleWindow extends StatelessWidget {
           );
         },
         itemCount: AppRouterDelegate.urlHistory.length,
+      ),
+    );
+  }
+
+  Widget buildBookmarks(BuildContext context) {
+    final bookmarks = db.settings.bookmarks.bookmarks;
+    return Scaffold(
+      body: ReorderableListView.builder(
+        itemBuilder: (context, index) {
+          final bookmark = bookmarks[index];
+          return ListTile(
+            key: ObjectKey(bookmark),
+            title: Text(bookmark.name ?? bookmark.url),
+            subtitle: bookmark.name == null ? null : Text(bookmark.url),
+            onLongPress: () {
+              SimpleCancelOkDialog(
+                title: Text(S.current.delete),
+                content: Text(bookmark.url),
+                onTapOk: () {
+                  bookmarks.remove(bookmark);
+                  db.notifyUserdata();
+                },
+              ).showDialog(context);
+            },
+            onTap: () {
+              root.appState.activeRouter.push(url: bookmark.url);
+              root.appState.windowState = WindowStateEnum.single;
+            },
+          );
+        },
+        itemCount: bookmarks.length,
+        onReorder: (int oldIndex, int newIndex) {
+          if (oldIndex < newIndex) {
+            newIndex -= 1;
+          }
+          final item = bookmarks.removeAt(oldIndex);
+          bookmarks.insert(newIndex, item);
+          db.notifyUserdata();
+        },
       ),
     );
   }
@@ -354,69 +401,12 @@ class WindowThumb extends StatelessWidget {
       // alignment: Alignment.bottomLeft,
       children: [
         Positioned.fill(child: child),
-        showTitle
-            ? Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).secondaryHeaderColor.withOpacity(1),
-                      border: Border(
-                        top: BorderSide(
-                          width: 1,
-                          color: Theme.of(context).dividerColor,
-                        ),
-                        bottom: BorderSide(
-                          width: 3,
-                          color: index == root.appState.activeIndex
-                              ? Theme.of(context).colorScheme.secondary
-                              : Colors.transparent,
-                        ),
-                      ),
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                        root.appState.activeIndex = index;
-                      },
-                      child: Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 0, 4),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                "[$index] ${url ?? ""}".breakWord,
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                if (root.appState.children.length <= 1) return;
-                                root.appState.removeWindow(index);
-                              },
-                              icon: const Icon(Icons.clear),
-                              padding: const EdgeInsets.all(4),
-                              iconSize: 16,
-                              constraints: const BoxConstraints(minWidth: 24),
-                            )
-                          ],
-                        ),
-                      ),
-                    )),
-              )
-            : Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: GestureDetector(
-                  onTap: () {
-                    root.appState.activeIndex = index;
-                  },
-                  behavior: HitTestBehavior.opaque,
-                  child: const SizedBox(width: double.infinity, height: 8),
-                ),
-              ),
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: buildTitleBar(context, url),
+        ),
       ],
     );
 
@@ -439,5 +429,99 @@ class WindowThumb extends StatelessWidget {
     }
 
     return child;
+  }
+
+  Widget buildTitleBar(BuildContext context, String? url) {
+    if (!showTitle) {
+      return GestureDetector(
+        onTap: () {
+          root.appState.activeIndex = index;
+        },
+        behavior: HitTestBehavior.opaque,
+        child: const SizedBox(width: double.infinity, height: 8),
+      );
+    }
+
+    Widget bookmarkButton = db.onUserData((context, snapshot) {
+      final hasUrl = url != null && url != '/';
+      final inBookmark = hasUrl && db.settings.bookmarks.bookmarks.any((e) => e.url == url);
+      if (!hasUrl) return const SizedBox.shrink();
+      return IconButton(
+        onPressed: () async {
+          if (inBookmark) {
+            final index = db.settings.bookmarks.bookmarks.indexWhere((e) => e.url == url);
+            if (index >= 0) {
+              db.settings.bookmarks.bookmarks.removeAt(index);
+            }
+            EasyLoading.showInfo("Removed from Bookmark");
+          } else {
+            final name = await InputCancelOkDialog(
+              title: "Remark",
+              maxLines: 1,
+              helperText: "url: $url",
+            ).showDialog(context);
+            print([name, name.runtimeType]);
+            if (name is! String || name.trim().isEmpty) return;
+            final bookmark = BookmarkEntry(name: name.trim(), url: url);
+            db.settings.bookmarks.bookmarks.insert(0, bookmark);
+            EasyLoading.showInfo("Added to Bookmark");
+          }
+          db.notifyUserdata();
+        },
+        icon: Icon(inBookmark ? Icons.star : Icons.star_border),
+        color: Colors.yellowAccent,
+        padding: const EdgeInsets.all(4),
+        iconSize: 16,
+        constraints: const BoxConstraints(minWidth: 24),
+      );
+    });
+
+    Widget closeButton = IconButton(
+      onPressed: () {
+        if (root.appState.children.length <= 1) return;
+        root.appState.removeWindow(index);
+      },
+      icon: const Icon(Icons.clear),
+      padding: const EdgeInsets.all(4),
+      iconSize: 16,
+      constraints: const BoxConstraints(minWidth: 24),
+    );
+
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Theme.of(context).secondaryHeaderColor.withOpacity(1),
+        border: Border(
+          top: BorderSide(
+            width: 1,
+            color: Theme.of(context).dividerColor,
+          ),
+          bottom: BorderSide(
+            width: 3,
+            color: index == root.appState.activeIndex ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+          ),
+        ),
+      ),
+      child: GestureDetector(
+        onTap: () {
+          root.appState.activeIndex = index;
+        },
+        child: Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 0, 4),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Text(
+                  "[$index] ${url ?? ""}".breakWord,
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              ),
+              bookmarkButton,
+              closeButton,
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
