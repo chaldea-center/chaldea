@@ -221,12 +221,9 @@ class _GameDataPageState extends State<GameDataPage> {
                 // secondary: Icon(DirectionalIcons.of(context,
                 //     ltr: Icons.subdirectory_arrow_right, rtl: Icons.subdirectory_arrow_left)),
                 title: const Text("Hide All Enemy Collections"),
+                subtitle: const Text("Servant List"),
                 onChanged: (v) {
                   db.settings.hideUnreleasedEnemyCollection = v;
-                  if (v) {
-                    db.settings.svtFilterData.obtain.options =
-                        SvtObtain.values.where((e) => e != SvtObtain.unavailable).toSet();
-                  }
                   setState(() {});
                 },
               ),

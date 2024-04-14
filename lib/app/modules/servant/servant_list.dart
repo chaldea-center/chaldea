@@ -43,7 +43,13 @@ class ServantListPage extends StatefulWidget {
 
 class ServantListPageState extends State<ServantListPage> with SearchableListState<Servant, ServantListPage> {
   @override
-  Iterable<Servant> get wholeData => db.gameData.servantsWithDup.values;
+  Iterable<Servant> get wholeData {
+    if (db.settings.hideUnreleasedEnemyCollection) {
+      return db.gameData.servantsWithDup.values.where((e) => e.type != SvtType.enemyCollectionDetail);
+    } else {
+      return db.gameData.servantsWithDup.values;
+    }
+  }
 
   Set<Servant> hiddenPlanServants = {};
 

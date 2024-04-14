@@ -420,11 +420,6 @@ class SvtFilterData with _FilterData {
         region.set(db.curUser.region);
       }
     }
-    if (db.settings.hideUnreleasedEnemyCollection) {
-      if (db.curUser.region != Region.jp) {
-        obtain.options = SvtObtain.values.where((e) => e != SvtObtain.unavailable).toSet();
-      }
-    }
   }
 
   factory SvtFilterData.fromJson(Map<String, dynamic> data) => _$SvtFilterDataFromJson(data);
