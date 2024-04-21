@@ -62,12 +62,9 @@ class SubState {
       return false;
     }
 
-    if (dataVals.ForceSubState == 1) {
-      return true;
-    }
-
     final buff = battleData.currentBuff!;
-    if (buff.irremovable) {
+    final forceSubState = buff.vals.UnSubState == 1 && dataVals.ForceSubState == 1;
+    if (buff.irremovable && !forceSubState) {
       return false;
     }
 

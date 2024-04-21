@@ -111,7 +111,7 @@ class BuffData {
 
   bool passive = false;
   bool get irremovable =>
-      passive || vals.UnSubState == 1 || vals.SetPassiveFrame == 1 || vals.UnSubStateWhileLinkedToOthers == 1;
+      passive || vals.UnSubState == 1 || vals.IgnoreIndividuality == 1 || vals.UnSubStateWhileLinkedToOthers == 1;
 
   // ignore: unused_field
   // bool isDecide = false;
