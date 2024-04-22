@@ -29,7 +29,8 @@ class SubState {
           final buff = listToInspect[index];
 
           await battleData.withBuff(buff, () async {
-            if (buff.checkField() && await shouldSubState(battleData, affectTraits, dataVals, activator, target)) {
+            if (buff.checkField() &&
+                await shouldSubState(battleData, buff, affectTraits, dataVals, activator, target)) {
               listToInspect.removeAt(index);
               removeCount += 1;
             }
@@ -53,20 +54,20 @@ class SubState {
 
   static Future<bool> shouldSubState(
     final BattleData battleData,
+    final BuffData buff,
     final Iterable<NiceTrait> affectTraits,
     final DataVals dataVals,
     final BattleServantData? activator,
     final BattleServantData target,
   ) async {
+    // should check target on field first
+
     if (!battleData.checkTraits(CheckTraitParameters(requiredTraits: affectTraits, checkCurrentBuffTraits: true))) {
       return false;
     }
 
-    final buff = battleData.currentBuff!;
-    final forceSubState = buff.vals.UnSubState == 1 && dataVals.ForceSubState == 1;
-    if (buff.irremovable && !forceSubState) {
-      return false;
-    }
+    if (buff.vals.IgnoreIndividuality == 1 || buff.vals.UnSubStateWhileLinkedToOthers == 1) return false;
+    if (buff.vals.UnSubState == 1 && dataVals.ForceSubState != 1) return false;
 
     final toleranceSubState = await target.getBuffValueOnAction(battleData, BuffAction.toleranceSubstate);
     final grantSubState = await activator?.getBuffValueOnAction(battleData, BuffAction.grantSubstate) ?? 0;
