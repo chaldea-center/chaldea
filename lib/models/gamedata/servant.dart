@@ -108,7 +108,7 @@ class BasicServant with GameCardMixin {
 
   @override
   String get borderedIcon {
-    if (type == SvtType.combineMaterial || type == SvtType.statusUp) {
+    if (type == SvtType.combineMaterial || type == SvtType.statusUp || className == SvtClass.uOlgaMarie) {
       return super.borderedIcon!;
     }
     return icon;
@@ -402,7 +402,9 @@ class Servant with GameCardMixin {
   }
 
   @override
-  String? get borderedIcon => originalCollectionNo > 0 || (type == SvtType.combineMaterial || type == SvtType.statusUp)
+  String? get borderedIcon => originalCollectionNo > 0 ||
+          (type == SvtType.combineMaterial || type == SvtType.statusUp) ||
+          className == SvtClass.uOlgaMarie
       ? super.borderedIcon
       : icon;
 
