@@ -164,7 +164,9 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
     CachedApi.remoteConfig().then((value) {
       if (value != null) db.settings.remoteConfig = value;
     });
-    if (db.settings.autoUpdateApp && !kIsWeb && db.settings.launchTimes % 5 == 0) {
+    if (db.settings.autoUpdateApp &&
+        !kIsWeb &&
+        (DateTime.now().timestamp - db.settings.lastLaunchTime > 7 * kSecsPerDay || db.settings.launchTimes % 5 == 0)) {
       await Future.delayed(const Duration(seconds: 5));
       if (PlatformU.isIOS) {
         AppUpdater.checkAppStoreUpdate();
@@ -178,6 +180,8 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
         AppUpdater.backgroundUpdate();
       }
     }
+    db.settings.lastLaunchTime = DateTime.now().timestamp;
+
     FilePickerU.clearTemporaryFiles();
     if (mounted) setState(() {});
   }

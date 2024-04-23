@@ -36,6 +36,7 @@ class LocalSettings {
   List<int>? windowPosition;
   bool showSystemTray;
   int launchTimes;
+  int lastLaunchTime;
   int lastBackup;
   ThemeMode themeMode;
   bool useMaterial3;
@@ -99,6 +100,7 @@ class LocalSettings {
     this.windowPosition,
     this.showSystemTray = false,
     this.launchTimes = 0,
+    this.lastLaunchTime = 0,
     this.lastBackup = 0,
     this.themeMode = ThemeMode.system,
     this.useMaterial3 = false,

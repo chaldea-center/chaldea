@@ -18,6 +18,7 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
               $checkedConvert('windowPosition', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
           showSystemTray: $checkedConvert('showSystemTray', (v) => v as bool? ?? false),
           launchTimes: $checkedConvert('launchTimes', (v) => v as int? ?? 0),
+          lastLaunchTime: $checkedConvert('lastLaunchTime', (v) => v as int? ?? 0),
           lastBackup: $checkedConvert('lastBackup', (v) => v as int? ?? 0),
           themeMode:
               $checkedConvert('themeMode', (v) => $enumDecodeNullable(_$ThemeModeEnumMap, v) ?? ThemeMode.system),
@@ -118,6 +119,7 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
       'windowPosition': instance.windowPosition,
       'showSystemTray': instance.showSystemTray,
       'launchTimes': instance.launchTimes,
+      'lastLaunchTime': instance.lastLaunchTime,
       'lastBackup': instance.lastBackup,
       'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
       'useMaterial3': instance.useMaterial3,
@@ -636,7 +638,7 @@ BookmarkEntry _$BookmarkEntryFromJson(Map json) => $checkedCreate(
         final val = BookmarkEntry(
           name: $checkedConvert('name', (v) => v as String?),
           url: $checkedConvert('url', (v) => v as String),
-          createdAt: $checkedConvert('createdAt', (v) => v as int),
+          createdAt: $checkedConvert('createdAt', (v) => v as int?),
         );
         return val;
       },
