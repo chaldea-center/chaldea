@@ -477,9 +477,11 @@ class BattleRecorderPanelBase extends StatelessWidget {
             Text.rich(TextSpan(children: [
               TextSpan(text: S.current.battle_attack, style: const TextStyle(fontWeight: FontWeight.bold)),
               const TextSpan(text: ': '),
+              if (record.attacks.isEmpty) TextSpan(text: S.current.skip_current_turn),
               for (final attack in record.attacks) ...drawSvt(context, attack.actor, attack.cardData),
             ])),
             color: Colors.red,
+            top: record.attacks.isEmpty ? 8 : null,
           )
         ));
       } else if (record is BattleSkillActivationRecord) {
@@ -505,12 +507,12 @@ class BattleRecorderPanelBase extends StatelessWidget {
     );
   }
 
-  Widget prefixIndicator(BuildContext context, Widget child, {Color? color}) {
+  Widget prefixIndicator(BuildContext context, Widget child, {Color? color, double? top}) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 14),
+          padding: EdgeInsets.only(top: top ?? 14),
           child: Icon(Icons.circle, color: color ?? Colors.green, size: 8),
         ),
         const SizedBox(width: 4),

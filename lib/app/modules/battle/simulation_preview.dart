@@ -622,33 +622,36 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   Widget buildMysticCode() {
     final mcData = options.formation.mysticCodeData;
     final enabled = mcData.enabled;
+    final skills = mcData.mysticCode?.skills ?? [];
+    final skillRow = max(1, skills.length ~/ 3);
     Widget mcIcon = Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         mcData.mysticCode?.iconBuilder(context: context, height: 48, jumpToDetail: false) ??
             db.getIconImage(null, height: 48),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (mcData.mysticCode != null && enabled)
-              for (final skill in mcData.mysticCode!.skills)
-                db.getIconImage(
+        for (int row = 0; row < skillRow; row++)
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(3, (index) {
+              final skill = mcData.mysticCode?.skills.getOrNull(row * 3 + index);
+              if (skill != null && enabled) {
+                return db.getIconImage(
                   skill.icon,
                   width: 24,
                   aspectRatio: 1,
                   padding: const EdgeInsets.all(1),
-                )
-            else
-              for (final _ in kActiveSkillNums)
-                db.getIconImage(
+                );
+              } else {
+                return db.getIconImage(
                   Atlas.common.emptySkillIcon,
                   width: 24,
                   aspectRatio: 1,
                   padding: const EdgeInsets.all(1),
-                ),
-          ],
-        ),
+                );
+              }
+            }),
+          ),
       ],
     );
     if (!enabled) {

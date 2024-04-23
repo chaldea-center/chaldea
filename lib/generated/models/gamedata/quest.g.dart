@@ -378,12 +378,16 @@ Stage _$StageFromJson(Map json) => Stage(
         (k, e) => MapEntry(k as String, e),
       ),
       cutin: json['cutin'] == null ? null : StageCutin.fromJson(Map<String, dynamic>.from(json['cutin'] as Map)),
+      aiAllocations: (json['aiAllocations'] as List<dynamic>?)
+          ?.map((e) => AiAllocationInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
       enemies: (json['enemies'] as List<dynamic>?)
           ?.map((e) => QuestEnemy.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
     );
 
 Map<String, dynamic> _$StageToJson(Stage instance) => <String, dynamic>{
+      'originalScript': instance.originalScript,
       'wave': instance.wave,
       'bgm': instance.bgm?.toJson(),
       'startEffectId': instance.startEffectId,
@@ -396,8 +400,8 @@ Map<String, dynamic> _$StageToJson(Stage instance) => <String, dynamic>{
       'battleBg': instance.battleBg?.toJson(),
       'NoEntryIds': instance.NoEntryIds,
       'waveStartMovies': instance.waveStartMovies.map((e) => e.toJson()).toList(),
-      'originalScript': instance.originalScript,
       'cutin': instance.cutin?.toJson(),
+      'aiAllocations': instance.aiAllocations?.map((e) => e.toJson()).toList(),
       'enemies': instance.enemies.map((e) => e.toJson()).toList(),
     };
 
@@ -408,15 +412,29 @@ const _$StageLimitActTypeEnumMap = {
 
 AiAllocationInfo _$AiAllocationInfoFromJson(Map json) => AiAllocationInfo(
       aiIds: (json['aiIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
-      applySvtType: json['applySvtType'] as int? ?? 0,
-      individuality: json['individuality'] as int? ?? 0,
+      applySvtType: (json['applySvtType'] as List<dynamic>?)
+              ?.map((e) =>
+                  $enumDecode(_$AiAllocationApplySvtFlagEnumMap, e, unknownValue: AiAllocationApplySvtFlag.unknown))
+              .toList() ??
+          const [],
+      individuality: json['individuality'] == null
+          ? null
+          : NiceTrait.fromJson(Map<String, dynamic>.from(json['individuality'] as Map)),
     );
 
 Map<String, dynamic> _$AiAllocationInfoToJson(AiAllocationInfo instance) => <String, dynamic>{
       'aiIds': instance.aiIds,
-      'applySvtType': instance.applySvtType,
-      'individuality': instance.individuality,
+      'applySvtType': instance.applySvtType.map((e) => _$AiAllocationApplySvtFlagEnumMap[e]!).toList(),
+      'individuality': instance.individuality?.toJson(),
     };
+
+const _$AiAllocationApplySvtFlagEnumMap = {
+  AiAllocationApplySvtFlag.all: 'all',
+  AiAllocationApplySvtFlag.own: 'own',
+  AiAllocationApplySvtFlag.friend: 'friend',
+  AiAllocationApplySvtFlag.npc: 'npc',
+  AiAllocationApplySvtFlag.unknown: 'unknown',
+};
 
 StageCutin _$StageCutinFromJson(Map json) => StageCutin(
       runs: json['runs'] as int,
@@ -1023,9 +1041,12 @@ QuestPhaseExtraDetail _$QuestPhaseExtraDetailFromJson(Map json) => QuestPhaseExt
       overwriteEquipSkills: json['overwriteEquipSkills'] == null
           ? null
           : OverwriteEquipSkills.fromJson(Map<String, dynamic>.from(json['overwriteEquipSkills'] as Map)),
+      addEquipSkills: json['addEquipSkills'] == null
+          ? null
+          : OverwriteEquipSkills.fromJson(Map<String, dynamic>.from(json['addEquipSkills'] as Map)),
       waveSetup: json['waveSetup'] as int?,
       masterImageId: json['masterImageId'] as int?,
-    );
+    )..interruptibleQuest = json['interruptibleQuest'] as int?;
 
 Map<String, dynamic> _$QuestPhaseExtraDetailToJson(QuestPhaseExtraDetail instance) => <String, dynamic>{
       'questSelect': instance.questSelect,
@@ -1035,18 +1056,35 @@ Map<String, dynamic> _$QuestPhaseExtraDetailToJson(QuestPhaseExtraDetail instanc
       'aiNpc': instance.aiNpc?.toJson(),
       'aiMultiNpc': instance.aiMultiNpc?.map((e) => e.toJson()).toList(),
       'overwriteEquipSkills': instance.overwriteEquipSkills?.toJson(),
+      'addEquipSkills': instance.addEquipSkills?.toJson(),
       'waveSetup': instance.waveSetup,
+      'interruptibleQuest': instance.interruptibleQuest,
       'masterImageId': instance.masterImageId,
     };
 
 OverwriteEquipSkills _$OverwriteEquipSkillsFromJson(Map json) => OverwriteEquipSkills(
       iconId: json['iconId'] as int?,
-      skills: (json['skills'] as List<dynamic>?)?.map((e) => e as Map).toList() ?? const [],
+      skills: (json['skills'] as List<dynamic>?)
+              ?.map((e) => OverwriteEquipSkill.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$OverwriteEquipSkillsToJson(OverwriteEquipSkills instance) => <String, dynamic>{
       'iconId': instance.iconId,
-      'skills': instance.skills,
+      'skills': instance.skills.map((e) => e.toJson()).toList(),
+    };
+
+OverwriteEquipSkill _$OverwriteEquipSkillFromJson(Map json) => OverwriteEquipSkill(
+      id: json['id'] as int,
+      lv: json['lv'] as int? ?? 0,
+      condId: json['condId'] as int? ?? 0,
+    );
+
+Map<String, dynamic> _$OverwriteEquipSkillToJson(OverwriteEquipSkill instance) => <String, dynamic>{
+      'id': instance.id,
+      'lv': instance.lv,
+      'condId': instance.condId,
     };
 
 Restriction _$RestrictionFromJson(Map json) => Restriction(

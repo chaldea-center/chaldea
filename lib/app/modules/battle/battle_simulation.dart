@@ -479,37 +479,52 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
   }
 
   Widget buildMiscRow() {
+    Widget? mysticCodeWidget;
+    if (battleData.mysticCode != null) {
+      final rowCount = max(1, battleData.mysticCode!.skills.length ~/ 3);
+      mysticCodeWidget = Padding(
+        padding: const EdgeInsetsDirectional.only(end: 8),
+        child: Column(
+          children: [
+            battleData.mysticCode!.iconBuilder(context: context, height: 52, jumpToDetail: true),
+            const SizedBox(height: 2),
+            for (int row = 0; row < rowCount; row++)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(3, (index) {
+                  final skillIndex = row * 3 + index;
+                  final skillInfo = battleData.masterSkillInfo.getOrNull(row * 3 + index);
+                  if (skillInfo == null) {
+                    return db.getIconImage(
+                      Atlas.common.emptySkillIcon,
+                      width: 24,
+                      aspectRatio: 1,
+                      padding: const EdgeInsets.all(2),
+                    );
+                  }
+                  return buildSkillInfo(
+                    skillInfo: skillInfo,
+                    isSealed: false,
+                    donotSkillSelect: false,
+                    isCondFailed: !battleData.canUseMysticCodeSkillIgnoreCoolDown(skillIndex),
+                    onTap: () async {
+                      await battleData.activateMysticCodeSkill(skillIndex);
+                      if (mounted) setState(() {});
+                    },
+                  );
+                }),
+              )
+          ],
+        ),
+      );
+    }
+
     return Row(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(width: 8),
-        if (battleData.mysticCode != null)
-          Padding(
-            padding: const EdgeInsetsDirectional.only(end: 8),
-            child: Column(
-              children: [
-                battleData.mysticCode!.iconBuilder(context: context, height: 52, jumpToDetail: true),
-                const SizedBox(height: 4),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    for (int i = 0; i < battleData.masterSkillInfo.length; i += 1)
-                      buildSkillInfo(
-                        skillInfo: battleData.masterSkillInfo[i],
-                        isSealed: false,
-                        donotSkillSelect: false,
-                        isCondFailed: !battleData.canUseMysticCodeSkillIgnoreCoolDown(i),
-                        onTap: () async {
-                          await battleData.activateMysticCodeSkill(i);
-                          if (mounted) setState(() {});
-                        },
-                      ),
-                  ],
-                )
-              ],
-            ),
-          ),
+        if (mysticCodeWidget != null) mysticCodeWidget,
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -739,7 +754,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     final pskill = skillInfo.skill;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2),
+      padding: const EdgeInsets.all(2),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: isSealed || donotSkillSelect || isCondFailed || cd > 0

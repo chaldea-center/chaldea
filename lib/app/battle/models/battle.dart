@@ -379,8 +379,8 @@ class BattleData {
         .toList();
     await _fetchWaveEnemies();
 
-    final overwriteEquip = quest.extraDetail?.overwriteEquipSkills;
-    if (overwriteEquip != null && overwriteEquip.skillIds.isNotEmpty) {
+    final overwriteEquip = quest.extraDetail?.getMergedOverwriteEquipSkills();
+    if (overwriteEquip != null && overwriteEquip.skills.isNotEmpty) {
       mysticCode = await overwriteEquip.toMysticCode();
       mysticCodeLv = overwriteEquip.skillLv;
     } else {

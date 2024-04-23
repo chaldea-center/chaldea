@@ -259,7 +259,7 @@ class WaveInfoPage extends StatelessWidget {
               trailing: Text(stage.enemyActCount.toString()),
             ),
           if (stage.fieldAis.isNotEmpty) buildFieldAis(context, stage.fieldAis),
-          if (originalScript['aiAllocations'] != null) buildAiAllocations(context, originalScript['aiAllocations']),
+          if (stage.aiAllocations?.isNotEmpty == true) buildAiAllocations(context, stage.aiAllocations!),
           if ((questPhase?.extraDetail?.masterImageId ?? 0) > 0)
             buildMasterImage(masterImageId: questPhase?.extraDetail?.masterImageId),
           if ((stage.battleMasterImageId ?? 0) > 0) buildMasterImage(battleMasterImageId: stage.battleMasterImageId),
@@ -372,26 +372,23 @@ class WaveInfoPage extends StatelessWidget {
     );
   }
 
-  Widget buildAiAllocations(BuildContext context, List aiAllocations) {
+  Widget buildAiAllocations(BuildContext context, List<AiAllocationInfo> aiAllocations) {
     List<Widget> children = [];
-    for (final aiAllocation in aiAllocations) {
-      final allocation = AiAllocationInfo.tryParse(aiAllocation as Map);
-      if (allocation == null) {
-        children.add(ListTile(title: Text("Parse failed: $aiAllocation")));
-        continue;
-      }
+    for (final allocation in aiAllocations) {
       List<InlineSpan> titleSpans = [];
-      if (allocation.applySvtType == 0) {
+      if (allocation.applySvtType.isEmpty || allocation.applySvtType.contains(AiAllocationApplySvtFlag.all)) {
         titleSpans.add(TextSpan(text: S.current.general_all));
       } else {
         final String svtType = AiAllocationApplySvtFlag.values
-            .where((e) => e.value > 0 && allocation.applySvtType & e.value != 0)
+            .where((e) => allocation.applySvtType.contains(e))
             .map((e) => e.name)
             .join("/");
         titleSpans.add(TextSpan(text: svtType));
       }
       titleSpans.add(const TextSpan(text: ' '));
-      titleSpans.add(SharedBuilder.traitSpan(context: context, trait: NiceTrait(id: allocation.individuality)));
+      if (allocation.individuality != null) {
+        titleSpans.add(SharedBuilder.traitSpan(context: context, trait: allocation.individuality!));
+      }
 
       List<InlineSpan> trailings = [
         for (final aiId in allocation.aiIds)

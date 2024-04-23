@@ -781,6 +781,8 @@ class Gift extends BaseGift {
 
 @JsonSerializable()
 class Stage with DataScriptBase {
+  Map<String, dynamic> get originalScript => source;
+
   int wave;
   Bgm? bgm;
   int startEffectId;
@@ -795,9 +797,9 @@ class Stage with DataScriptBase {
   // ignore: non_constant_identifier_names
   List<int>? NoEntryIds;
   List<StageStartMovie> waveStartMovies;
-  Map<String, dynamic> get originalScript => source;
 
   StageCutin? cutin;
+  List<AiAllocationInfo>? aiAllocations;
   List<QuestEnemy> enemies;
 
   Stage({
@@ -816,6 +818,7 @@ class Stage with DataScriptBase {
     this.waveStartMovies = const [],
     Map<String, dynamic>? originalScript,
     this.cutin,
+    this.aiAllocations,
     List<QuestEnemy>? enemies,
   })  : fieldAis = fieldAis ?? [],
         call = call ?? [],
@@ -838,26 +841,19 @@ class Stage with DataScriptBase {
 @JsonSerializable()
 class AiAllocationInfo {
   List<int> aiIds;
-  int applySvtType;
-  int individuality;
+  @JsonKey(unknownEnumValue: AiAllocationApplySvtFlag.unknown)
+  List<AiAllocationApplySvtFlag> applySvtType;
+  NiceTrait? individuality;
 
   AiAllocationInfo({
     this.aiIds = const [],
-    this.applySvtType = 0,
-    this.individuality = 0,
+    this.applySvtType = const [],
+    this.individuality,
   });
 
   factory AiAllocationInfo.fromJson(Map<String, dynamic> json) => _$AiAllocationInfoFromJson(json);
 
   Map<String, dynamic> toJson() => _$AiAllocationInfoToJson(this);
-
-  static AiAllocationInfo? tryParse(Map json) {
-    try {
-      return AiAllocationInfo.fromJson(Map.from(json));
-    } catch (e) {
-      return null;
-    }
-  }
 }
 
 @JsonSerializable()
@@ -1688,7 +1684,9 @@ class QuestPhaseExtraDetail {
   QuestPhaseAiNpc? aiNpc;
   List<QuestPhaseAiNpc>? aiMultiNpc;
   OverwriteEquipSkills? overwriteEquipSkills;
+  OverwriteEquipSkills? addEquipSkills;
   int? waveSetup;
+  int? interruptibleQuest;
   int? masterImageId;
   // int? repeatReward;
   // List<int>? consumeItemBattleWin;
@@ -1700,21 +1698,33 @@ class QuestPhaseExtraDetail {
     this.hintMessage,
     this.aiNpc,
     this.aiMultiNpc,
-    OverwriteEquipSkills? overwriteEquipSkills,
+    this.overwriteEquipSkills,
+    this.addEquipSkills,
     this.waveSetup,
     this.masterImageId,
-  }) : overwriteEquipSkills = overwriteEquipSkills?.skills.isNotEmpty == true ? overwriteEquipSkills : null;
+  });
 
   factory QuestPhaseExtraDetail.fromJson(Map<String, dynamic> json) => _$QuestPhaseExtraDetailFromJson(json);
 
   Map<String, dynamic> toJson() => _$QuestPhaseExtraDetailToJson(this);
+
+  OverwriteEquipSkills? getMergedOverwriteEquipSkills() {
+    if (overwriteEquipSkills?.skills.isNotEmpty == true || addEquipSkills?.skills.isNotEmpty == true) {
+      return OverwriteEquipSkills(iconId: overwriteEquipSkills?.iconId ?? addEquipSkills?.iconId, skills: [
+        ...?overwriteEquipSkills?.skills,
+        ...?addEquipSkills?.skills,
+      ]);
+    }
+    return null;
+  }
 }
 
 @JsonSerializable()
 class OverwriteEquipSkills {
   int? iconId;
   // int? cutInView;
-  List<Map> skills; // id,lv
+  // int? notDispEquipSkillIconSplit;
+  List<OverwriteEquipSkill> skills;
 
   OverwriteEquipSkills({
     this.iconId,
@@ -1733,9 +1743,9 @@ class OverwriteEquipSkills {
     return url;
   }
 
-  List<int> get skillIds => skills.map((e) => e["id"] as int? ?? 0).toList();
+  List<int> get skillIds => skills.map((e) => e.id).toList();
 
-  int get skillLv => skills.firstOrNull?["lv"] ?? 1;
+  int get skillLv => skills.firstOrNull?.lv ?? 1;
 
   Future<MysticCode> toMysticCode() async {
     final icon = this.icon;
@@ -1748,7 +1758,7 @@ class OverwriteEquipSkills {
     }
     return MysticCode(
       id: 0,
-      name: "",
+      name: "OverwriteEquip",
       detail: "",
       extraAssets: ExtraMCAssets(
         item: MCAssets(male: icon, female: icon),
@@ -1763,6 +1773,23 @@ class OverwriteEquipSkills {
   factory OverwriteEquipSkills.fromJson(Map<String, dynamic> json) => _$OverwriteEquipSkillsFromJson(json);
 
   Map<String, dynamic> toJson() => _$OverwriteEquipSkillsToJson(this);
+}
+
+@JsonSerializable()
+class OverwriteEquipSkill {
+  int id;
+  int lv;
+  int condId; // common release id
+
+  OverwriteEquipSkill({
+    required this.id,
+    this.lv = 0,
+    this.condId = 0,
+  });
+
+  factory OverwriteEquipSkill.fromJson(Map<String, dynamic> json) => _$OverwriteEquipSkillFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OverwriteEquipSkillToJson(this);
 }
 
 @JsonSerializable()
@@ -2135,7 +2162,8 @@ enum AiAllocationApplySvtFlag {
   all(0),
   own(1),
   friend(2),
-  npc(4);
+  npc(4),
+  unknown(-1);
 
   const AiAllocationApplySvtFlag(this.value);
   final int value;
