@@ -170,11 +170,6 @@ class FunctionExecutor {
       dataVals = updateDataValsWithEffectiveness(function, dataVals, effectiveness);
     }
 
-    final funcQuestTvalsMatch = battleData.checkTraits(CheckTraitParameters(
-      requiredTraits: function.funcquestTvals,
-      checkQuestTraits: true,
-    ));
-
     final List<BattleServantData> targets = await acquireFunctionTarget(
       battleData,
       function.funcTargetType,
@@ -187,6 +182,11 @@ class FunctionExecutor {
       for (final target in targets) {
         battleData.setFuncResult(target.uniqueId, false);
       }
+
+      final funcQuestTvalsMatch = battleData.checkTraits(CheckTraitParameters(
+        requiredTraits: function.funcquestTvals,
+        checkQuestTraits: true,
+      ));
 
       if (!funcQuestTvalsMatch) {
         battleData.updateLastFuncResults(function.funcId, funcIndex);

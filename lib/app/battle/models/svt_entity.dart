@@ -750,6 +750,82 @@ class BattleServantData {
     });
   }
 
+  void transformAlly(final Servant targetSvt, final DataVals dataVals) {
+    final targetSvtId = dataVals.Value!;
+    niceSvt = targetSvt;
+    final limitCount = dataVals.SetLimitCount;
+    if (limitCount != null) {
+      playerSvtData!.limitCount = limitCount;
+    }
+
+    // build new skills
+    final List<BattleSkillInfoData> newSkillInfos = [];
+    for (final skillNum in kActiveSkillNums) {
+      final newSkills = (targetSvt.groupedActiveSkills[skillNum] ?? []).toList();
+      final hideActives =
+      ConstData.getSvtLimitHides(targetSvtId, limitCount).expand((e) => e.activeSkills[skillNum] ?? []).toList();
+      newSkills.removeWhere((niceSkill) => hideActives.contains(niceSkill.id));
+
+      final oldInfoData = skillInfoList.firstWhereOrNull((infoData) => infoData.skillNum == skillNum);
+      BaseSkill? baseSkill = newSkills.firstWhereOrNull((skill) => skill.id == oldInfoData?.skill?.id);
+      baseSkill ??=
+          newSkills.lastWhereOrNull((skill) => skill.strengthStatus == oldInfoData?.skill?.svt.strengthStatus);
+      baseSkill ??=
+          newSkills.fold(null, (prev, next) => prev == null || prev.svt.priority <= prev.svt.priority ? next : prev);
+
+      final newInfoData = BattleSkillInfoData(
+        baseSkill,
+        provisionedSkills: newSkills,
+        skillNum: skillNum,
+        type: SkillInfoType.svtSelf,
+        skillLv: playerSvtData!.skillLvs.length >= skillNum ? playerSvtData!.skillLvs[skillNum - 1] : 1,
+      );
+      if (oldInfoData != null) {
+        newInfoData.chargeTurn = oldInfoData.chargeTurn;
+      }
+      newSkillInfos.add(newInfoData);
+    }
+
+    skillInfoList = newSkillInfos;
+
+    // build new Td
+    final curTd = playerSvtData!.td;
+    final newTds = (targetSvt.groupedNoblePhantasms[curTd?.svt.num ?? 1] ?? []).toList();
+    final hideTds = ConstData.getSvtLimitHides(targetSvtId, limitCount).expand((e) => e.tds).toList();
+    newTds.removeWhere((niceTd) => hideTds.contains(niceTd.id));
+    NiceTd? newTd = newTds.firstWhereOrNull((td) => td.id == curTd?.id);
+    newTd ??= newTds.lastWhereOrNull((td) => td.strengthStatus == curTd?.strengthStatus);
+    newTd ??= newTds.fold(null, (prev, next) => prev == null || prev.priority <= next.priority ? next : prev);
+
+    playerSvtData!.td = newTd;
+
+    if (svtId == 600700) {
+      return;
+    }
+    baseAtk = (targetSvt.atkGrowth.getOrNull(playerSvtData!.lv - 1) ?? 0) + playerSvtData!.atkFou;
+    _maxHp = (targetSvt.hpGrowth.getOrNull(playerSvtData!.lv - 1) ?? 0) + playerSvtData!.hpFou + (equip?.hp ?? 0);
+    hp.clamp(1, maxHp);
+  }
+
+  void transformEnemy(final QuestEnemy targetEnemy) {
+    niceEnemy = targetEnemy;
+    skillInfoList = [
+      BattleSkillInfoData(targetEnemy.skills.skill1,
+          skillNum: 1, skillLv: targetEnemy.skills.skillLv1, type: SkillInfoType.svtSelf),
+      BattleSkillInfoData(targetEnemy.skills.skill2,
+          skillNum: 2, skillLv: targetEnemy.skills.skillLv2, type: SkillInfoType.svtSelf),
+      BattleSkillInfoData(targetEnemy.skills.skill3,
+          skillNum: 3, skillLv: targetEnemy.skills.skillLv3, type: SkillInfoType.svtSelf),
+    ];
+
+    if (svtId == 600700) {
+      return;
+    }
+    baseAtk = targetEnemy.atk;
+    _maxHp = targetEnemy.hp;
+    hp.clamp(1, maxHp);
+  }
+
   bool isAlive(final BattleData battleData) {
     if (hp > 0) {
       return true;
