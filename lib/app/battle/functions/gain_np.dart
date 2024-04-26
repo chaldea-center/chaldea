@@ -1,5 +1,6 @@
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 
 class GainNP {
@@ -20,6 +21,26 @@ class GainNP {
       battleData.withTargetSync(target, () {
         int change = isNegative ? -dataVals.Value! : dataVals.Value!;
         target.changeNP(change);
+        battleData.setFuncResult(target.uniqueId, true);
+      });
+    }
+  }
+
+  static void gainMultiplyNP(
+      final BattleData battleData,
+      final DataVals dataVals,
+      final Iterable<BattleServantData> targets, {
+        final bool isNegative = false,
+      }) {
+    final functionRate = dataVals.Rate ?? 1000;
+    if (functionRate < battleData.options.threshold) {
+      return;
+    }
+
+    for (final target in targets) {
+      battleData.withTargetSync(target, () {
+        int change = isNegative ? -dataVals.Value! : dataVals.Value!;
+        target.changeNP((target.np * toModifier(change)).toInt());
         battleData.setFuncResult(target.uniqueId, true);
       });
     }

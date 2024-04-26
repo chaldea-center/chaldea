@@ -241,6 +241,10 @@ class FunctionExecutor {
         case FuncType.lossNp:
           GainNP.gainNP(battleData, dataVals, targets, isNegative: function.funcType == FuncType.lossNp);
           break;
+        case FuncType.gainMultiplyNp:
+        case FuncType.lossMultiplyNp:
+          GainNP.gainMultiplyNP(battleData, dataVals, targets, isNegative: function.funcType == FuncType.lossMultiplyNp);
+          break;
         case FuncType.gainNpIndividualSum:
         case FuncType.gainNpBuffIndividualSum:
           await GainNP.gainNpPerIndividual(

@@ -648,9 +648,12 @@ class BattleServantData {
     gainHp(heal);
   }
 
+  void setHp(final int newHp) {
+    hp = newHp.clamp(1, maxHp);
+  }
+
   void gainHp(final int gain) {
-    hp += gain;
-    hp = hp.clamp(0, maxHp);
+    hp = (hp + gain).clamp(1, maxHp);
   }
 
   void lossHp(
@@ -804,7 +807,7 @@ class BattleServantData {
     }
     baseAtk = (targetSvt.atkGrowth.getOrNull(playerSvtData!.lv - 1) ?? 0) + playerSvtData!.atkFou;
     _maxHp = (targetSvt.hpGrowth.getOrNull(playerSvtData!.lv - 1) ?? 0) + playerSvtData!.hpFou + (equip?.hp ?? 0);
-    hp.clamp(1, maxHp);
+    hp = hp.clamp(1, maxHp);
   }
 
   void transformEnemy(final QuestEnemy targetEnemy) {
@@ -823,7 +826,7 @@ class BattleServantData {
     }
     baseAtk = targetEnemy.atk;
     _maxHp = targetEnemy.hp;
-    hp.clamp(1, maxHp);
+    hp = hp.clamp(1, maxHp);
   }
 
   bool isAlive(final BattleData battleData) {

@@ -212,7 +212,9 @@ class Damage {
                 : await target.getBuffValueOnAction(battleData, BuffAction.defence)
             ..specificDefenseBuff = await target.getBuffValueOnAction(battleData, BuffAction.selfdamage)
             ..percentDefenseBuff = await target.getBuffValueOnAction(battleData, BuffAction.specialdefence)
-            ..damageReceiveAdditionBuff = await target.getBuffValueOnAction(battleData, BuffAction.receiveDamage);
+            ..damageReceiveAdditionBuff = await activator.hasBuffOnAction(battleData, BuffAction.pierceSubdamage)
+                ? await target.getBuffValueOnAction(battleData, BuffAction.receiveDamagePierce)
+                : await target.getBuffValueOnAction(battleData, BuffAction.receiveDamage);
 
           atkNpParameters.cardResist = await target.getBuffValueOnAction(battleData, BuffAction.commandNpDef);
 
@@ -251,6 +253,7 @@ class Damage {
               skipDamage: skipDamage,
             );
 
+        final previousHp = target.hp;
         final result = await _calc(
           totalDamage: totalDamage,
           atkNpParameters: atkNpParameters,
@@ -262,6 +265,10 @@ class Damage {
           multiAttack: multiAttack,
           skipDamage: skipDamage,
         );
+
+        if (target.hp <= 0 && await target.hasBuffOnAction(battleData, BuffAction.avoidanceAttackDeathDamage)) {
+          target.setHp(previousHp);
+        }
 
         battleData.battleLogger.debug(damageParameters.toString());
         if (activator.isPlayer) {
