@@ -40,7 +40,7 @@ class TransformServant {
       return;
     }
 
-    target.transformAlly(targetSvt, dataVals);
+    await target.transformAlly(battleData, targetSvt, dataVals);
   }
 
   static Future<void> _transformEnemy(BattleData battleData, DataVals dataVals, BattleServantData target) async {
@@ -51,6 +51,6 @@ class TransformServant {
       return;
     }
 
-    target.transformEnemy(targetEnemy);
+    await target.transformEnemy(battleData, targetEnemy);
   }
 }

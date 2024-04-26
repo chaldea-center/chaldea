@@ -27,11 +27,11 @@ class GainNP {
   }
 
   static void gainMultiplyNP(
-      final BattleData battleData,
-      final DataVals dataVals,
-      final Iterable<BattleServantData> targets, {
-        final bool isNegative = false,
-      }) {
+    final BattleData battleData,
+    final DataVals dataVals,
+    final Iterable<BattleServantData> targets, {
+    final bool isNegative = false,
+  }) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
       return;

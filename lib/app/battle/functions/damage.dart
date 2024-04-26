@@ -324,7 +324,7 @@ class Damage {
         await battleData.withTarget(target, () async {
           await activator.activateBuffOnActions(battleData, [
             BuffAction.functionCommandcodeattackAfter,
-            BuffAction.functionCommandcodeattackAfterMainOnly
+            BuffAction.functionCommandcodeattackAfterMainOnly,
           ]);
           await activator.activateBuffOnActions(battleData, [
             if (!currentCard.isTD) BuffAction.functionCommandattackAfter,

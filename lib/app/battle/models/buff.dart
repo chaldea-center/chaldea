@@ -80,6 +80,10 @@ class BattleBuff {
     _passiveList.removeWhere((buff) => buff.actorUniqueId == uniqueId);
   }
 
+  void clearClassPassive() {
+    _passiveList.removeWhere((buff) => buff.classPassive);
+  }
+
   BattleBuff copy() {
     final copy = BattleBuff()
       .._passiveList = _passiveList.map((e) => e.copy()).toList()
@@ -110,6 +114,7 @@ class BuffData {
   bool isUsed = false;
 
   bool passive = false;
+  bool classPassive = false;
   bool get irremovable =>
       passive || vals.UnSubState == 1 || vals.IgnoreIndividuality == 1 || vals.UnSubStateWhileLinkedToOthers == 1;
 
@@ -474,6 +479,7 @@ class BuffData {
       ..actorName = actorName
       ..isUsed = isUsed
       ..passive = passive
+      ..classPassive = classPassive
       .._state = _state;
     return copy;
   }

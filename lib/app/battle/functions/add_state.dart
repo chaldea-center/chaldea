@@ -16,6 +16,7 @@ class AddState {
     final DataVals dataVals,
     final List<BattleServantData> targets, {
     bool isPassive = false,
+    final bool isClassPassive = false,
     final bool isShortBuff = false,
     final bool notActorPassive = false,
     final bool isCommandCode = false,
@@ -32,6 +33,7 @@ class AddState {
         ..actorUniqueId = activator?.uniqueId
         ..actorName = activator?.lBattleName
         ..passive = isPassive || notActorPassive
+        ..classPassive = isClassPassive
         ..notActorPassive = notActorPassive;
       if (isShortBuff) {
         buffData.logicTurn -= 1;

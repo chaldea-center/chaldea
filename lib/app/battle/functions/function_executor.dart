@@ -42,6 +42,7 @@ class FunctionExecutor {
     required final SkillScript? script,
     final int overchargeLvl = 1,
     final bool isPassive = false,
+    final bool isClassPassive = false,
     final bool notActorFunction = false,
     final bool isCommandCode = false,
     final int? selectedActionIndex,
@@ -92,6 +93,7 @@ class FunctionExecutor {
           shouldTrigger: !isDmgFuncType(functions.getOrNull(index - 1)?.funcType),
           shouldDamageRelease: !isDmgFuncType(functions.getOrNull(index + 1)?.funcType),
           isPassive: isPassive,
+          isClassPassive: isClassPassive,
           notActorFunction: notActorFunction,
           isCommandCode: isCommandCode,
           selectedActionIndex: selectedActionIndex,
@@ -125,6 +127,7 @@ class FunctionExecutor {
     final bool shouldTrigger = true,
     final bool shouldDamageRelease = true,
     final bool isPassive = false,
+    final bool isClassPassive = false,
     final bool notActorFunction = false,
     final bool isCommandCode = false,
     final int? selectedActionIndex,
@@ -223,6 +226,7 @@ class FunctionExecutor {
             dataVals,
             targets,
             isPassive: isPassive,
+            isClassPassive: isClassPassive,
             isShortBuff: function.funcType == FuncType.addStateShort,
             isCommandCode: isCommandCode,
             notActorPassive: notActorFunction,
@@ -243,7 +247,8 @@ class FunctionExecutor {
           break;
         case FuncType.gainMultiplyNp:
         case FuncType.lossMultiplyNp:
-          GainNP.gainMultiplyNP(battleData, dataVals, targets, isNegative: function.funcType == FuncType.lossMultiplyNp);
+          GainNP.gainMultiplyNP(battleData, dataVals, targets,
+              isNegative: function.funcType == FuncType.lossMultiplyNp);
           break;
         case FuncType.gainNpIndividualSum:
         case FuncType.gainNpBuffIndividualSum:

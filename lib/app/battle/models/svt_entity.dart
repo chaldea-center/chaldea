@@ -306,13 +306,13 @@ class BattleServantData {
 
     await battleData.withActivator(this, () async {
       for (final skill in passives) {
-        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtPassive);
+        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtClassPassive);
         await skillInfo.activate(battleData);
       }
       if (isEnemy) {
         for (final (index, skill) in niceEnemy!.classPassive.addPassive.indexed) {
           final skillInfo = BattleSkillInfoData(skill,
-              type: SkillInfoType.svtPassive,
+              type: SkillInfoType.svtOtherPassive,
               skillLv: niceEnemy!.classPassive.addPassiveLvs.getOrNull(index) ?? skill.maxLv);
           await skillInfo.activate(battleData);
         }
@@ -323,7 +323,7 @@ class BattleServantData {
           final appendLv = playerSvtData!.appendLvs.length > index ? playerSvtData!.appendLvs[index] : 0;
           if (appendLv > 0) {
             final skillInfo = BattleSkillInfoData(niceSvt!.appendPassive[index].skill,
-                type: SkillInfoType.svtPassive, skillLv: appendLv);
+                type: SkillInfoType.svtOtherPassive, skillLv: appendLv);
             await skillInfo.activate(battleData);
           }
         }
@@ -344,7 +344,7 @@ class BattleServantData {
           if (playerSvtData!.disabledExtraSkills.contains(skill.id)) continue;
           if (skill.shouldActiveSvtEventSkill(
               eventId: battleData.niceQuest?.war?.eventId ?? 0, svtId: svtId, includeZero: true)) {
-            final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtPassive);
+            final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtOtherPassive);
             await skillInfo.activate(battleData);
           }
         }
@@ -358,7 +358,7 @@ class BattleServantData {
         for (int index = 0; index < playerSvtData!.customPassives.length; index++) {
           final skill = playerSvtData!.customPassives[index];
           final skillLv = playerSvtData!.customPassiveLvs[index];
-          final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtPassive, skillLv: skillLv);
+          final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtOtherPassive, skillLv: skillLv);
           await skillInfo.activate(battleData);
         }
       });
@@ -753,7 +753,7 @@ class BattleServantData {
     });
   }
 
-  void transformAlly(final Servant targetSvt, final DataVals dataVals) {
+  Future<void> transformAlly(final BattleData battleData, final Servant targetSvt, final DataVals dataVals) async {
     final targetSvtId = dataVals.Value!;
     niceSvt = targetSvt;
     final limitCount = dataVals.SetLimitCount;
@@ -766,7 +766,7 @@ class BattleServantData {
     for (final skillNum in kActiveSkillNums) {
       final newSkills = (targetSvt.groupedActiveSkills[skillNum] ?? []).toList();
       final hideActives =
-      ConstData.getSvtLimitHides(targetSvtId, limitCount).expand((e) => e.activeSkills[skillNum] ?? []).toList();
+          ConstData.getSvtLimitHides(targetSvtId, limitCount).expand((e) => e.activeSkills[skillNum] ?? []).toList();
       newSkills.removeWhere((niceSkill) => hideActives.contains(niceSkill.id));
 
       final oldInfoData = skillInfoList.firstWhereOrNull((infoData) => infoData.skillNum == skillNum);
@@ -805,12 +805,23 @@ class BattleServantData {
     if (svtId == 600700) {
       return;
     }
+
     baseAtk = (targetSvt.atkGrowth.getOrNull(playerSvtData!.lv - 1) ?? 0) + playerSvtData!.atkFou;
     _maxHp = (targetSvt.hpGrowth.getOrNull(playerSvtData!.lv - 1) ?? 0) + playerSvtData!.hpFou + (equip?.hp ?? 0);
     hp = hp.clamp(1, maxHp);
+
+    battleBuff.clearClassPassive();
+    final List<NiceSkill> passives = [...targetSvt.classPassive];
+
+    await battleData.withActivator(this, () async {
+      for (final skill in passives) {
+        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtClassPassive);
+        await skillInfo.activate(battleData);
+      }
+    });
   }
 
-  void transformEnemy(final QuestEnemy targetEnemy) {
+  Future<void> transformEnemy(final BattleData battleData, final QuestEnemy targetEnemy) async {
     niceEnemy = targetEnemy;
     skillInfoList = [
       BattleSkillInfoData(targetEnemy.skills.skill1,
@@ -827,6 +838,16 @@ class BattleServantData {
     baseAtk = targetEnemy.atk;
     _maxHp = targetEnemy.hp;
     hp = hp.clamp(1, maxHp);
+
+    battleBuff.clearClassPassive();
+    final List<NiceSkill> passives = targetEnemy.classPassive.classPassive;
+
+    await battleData.withActivator(this, () async {
+      for (final skill in passives) {
+        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtClassPassive);
+        await skillInfo.activate(battleData);
+      }
+    });
   }
 
   bool isAlive(final BattleData battleData) {
