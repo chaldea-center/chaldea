@@ -246,8 +246,12 @@ class SkillEffect {
   static SkillEffect gainStar = SkillEffect._func('gainStar', FuncType.gainStar);
   static SkillEffect regainStar = SkillEffect._buff('regainStar', BuffType.regainStar);
   static SkillEffect upNpdamage = SkillEffect._buff('upNpdamage', BuffType.upNpdamage);
-  static SkillEffect gainNp =
-      SkillEffect('gainNp', funcTypes: [FuncType.gainNp, FuncType.gainNpFromTargets, FuncType.gainNpBuffIndividualSum]);
+  static SkillEffect gainNp = SkillEffect('gainNp', funcTypes: [
+    FuncType.gainNp,
+    FuncType.gainNpFromTargets,
+    FuncType.gainNpBuffIndividualSum,
+    FuncType.gainMultiplyNp
+  ]);
   static SkillEffect regainNp = SkillEffect._buff('regainNp', BuffType.regainNp);
   static SkillEffect upDropnp = SkillEffect._buff('upDropnp', BuffType.upDropnp);
   static SkillEffect upChagetd = SkillEffect._buff('upChagetd', BuffType.upChagetd);

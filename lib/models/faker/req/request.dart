@@ -131,7 +131,7 @@ class NetworkManager {
 
   Future<void> setSignatureField(FRequestBase request) async {
     final key = const Uuid().v4();
-    final signature = await ChaldeaWorkerApi.signData(key);
+    final signature = await ChaldeaWorkerApi.signData("${user.auth!.userId}$key");
     if (signature == null || signature.isEmpty) throw const FormatException("Invalid signature");
     request.addFieldStr('idempotencyKey', key, replace: true);
     request.addFieldStr('idempotencyKeySignature', signature);

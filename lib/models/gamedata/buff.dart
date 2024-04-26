@@ -483,44 +483,49 @@ enum BuffType {
       ].contains(this);
 }
 
-final Map<BuffType, BuffValueTriggerType Function(DataVals)> kBuffValueTriggerTypes = {
-  BuffType.reflectionFunction: (v) =>
-      BuffValueTriggerType(BuffType.reflectionFunction, skill: v.Value, level: v.Value2),
-  BuffType.attackAfterFunction: (v) =>
-      BuffValueTriggerType(BuffType.attackAfterFunction, skill: v.Value, level: v.Value2),
-  BuffType.commandattackAfterFunction: (v) =>
-      BuffValueTriggerType(BuffType.commandattackAfterFunction, skill: v.Value, level: v.Value2, rate: v.UseRate),
-  BuffType.commandattackBeforeFunction: (v) =>
-      BuffValueTriggerType(BuffType.commandattackBeforeFunction, skill: v.Value, level: v.Value2),
-  BuffType.damageFunction: (v) => BuffValueTriggerType(BuffType.damageFunction, skill: v.Value, level: v.Value2),
-  BuffType.deadFunction: (v) => BuffValueTriggerType(BuffType.deadFunction, skill: v.Value, level: v.Value2),
-  BuffType.deadattackFunction: (v) =>
-      BuffValueTriggerType(BuffType.deadattackFunction, skill: v.Value, level: v.Value2),
-  BuffType.delayFunction: (v) => BuffValueTriggerType(BuffType.delayFunction, skill: v.Value, level: v.Value2),
-  BuffType.npattackPrevBuff: (v) =>
-      BuffValueTriggerType(BuffType.npattackPrevBuff, skill: v.SkillID, level: v.SkillLV, position: v.Value),
-  BuffType.selfturnendFunction: (v) =>
-      BuffValueTriggerType(BuffType.selfturnendFunction, skill: v.Value, level: v.Value2, rate: v.UseRate),
-  BuffType.selfturnstartFunction: (v) =>
-      BuffValueTriggerType(BuffType.selfturnstartFunction, skill: v.Value, level: v.Value2, rate: v.UseRate),
-  BuffType.wavestartFunction: (v) =>
-      BuffValueTriggerType(BuffType.wavestartFunction, skill: v.Value, level: v.Value2, rate: v.UseRate),
-  BuffType.counterFunction: (v) =>
-      BuffValueTriggerType(BuffType.counterFunction, skill: v.CounterId, level: v.CounterLv),
-  // ?
-  BuffType.commandcodeattackBeforeFunction: (v) =>
-      BuffValueTriggerType(BuffType.commandcodeattackBeforeFunction, skill: v.Value, level: v.Value2),
-  BuffType.commandcodeattackAfterFunction: (v) =>
-      BuffValueTriggerType(BuffType.commandcodeattackAfterFunction, skill: v.Value, level: v.Value2),
-  BuffType.gutsFunction: (v) => BuffValueTriggerType(BuffType.gutsFunction, skill: v.Value, level: v.Value2),
-  BuffType.attackBeforeFunction: (v) =>
-      BuffValueTriggerType(BuffType.attackBeforeFunction, skill: v.Value, level: v.Value2),
-  BuffType.entryFunction: (v) => BuffValueTriggerType(BuffType.entryFunction, skill: v.Value, level: v.Value2),
-  BuffType.skillAfterFunction: (v) =>
-      BuffValueTriggerType(BuffType.skillAfterFunction, skill: v.Value, level: v.Value2),
-  BuffType.treasureDeviceAfterFunction: (v) =>
-      BuffValueTriggerType(BuffType.treasureDeviceAfterFunction, skill: v.Value, level: v.Value2),
-};
+final Map<BuffType, BuffValueTriggerType Function(DataVals)> kBuffValueTriggerTypes = () {
+  final types = <BuffType, BuffValueTriggerType Function(DataVals)>{
+    BuffType.counterFunction: (v) =>
+        BuffValueTriggerType(BuffType.counterFunction, skill: v.CounterId, level: v.CounterLv),
+    BuffType.npattackPrevBuff: (v) =>
+        BuffValueTriggerType(BuffType.npattackPrevBuff, skill: v.SkillID, level: v.SkillLV, position: v.Value),
+  };
+
+  for (final type in {
+    BuffType.delayFunction,
+    BuffType.deadFunction,
+    BuffType.battlestartFunction,
+    BuffType.wavestartFunction,
+    BuffType.selfturnendFunction,
+    BuffType.damageFunction,
+    BuffType.commandattackAfterFunction,
+    BuffType.deadattackFunction,
+    BuffType.entryFunction,
+    BuffType.reflectionFunction,
+    BuffType.attackAfterFunction,
+    BuffType.commandcodeattackBeforeFunction,
+    BuffType.commandattackBeforeFunction,
+    BuffType.gutsFunction,
+    BuffType.commandcodeattackAfterFunction,
+    BuffType.attackBeforeFunction,
+    BuffType.selfturnstartFunction,
+    BuffType.commandcodeattackBeforeFunctionMainOnly,
+    BuffType.commandcodeattackAfterFunctionMainOnly,
+    BuffType.commandattackBeforeFunctionMainOnly,
+    BuffType.commandattackAfterFunctionMainOnly,
+    BuffType.attackBeforeFunctionMainOnly,
+    BuffType.attackAfterFunctionMainOnly,
+    BuffType.skillAfterFunction,
+    BuffType.treasureDeviceAfterFunction,
+    BuffType.skillAfterFunctionMainOnly,
+    BuffType.treasureDeviceAfterFunctionMainOnly,
+    BuffType.continueFunction,
+  }) {
+    types[type] = (v) => BuffValueTriggerType(type, skill: v.Value, level: v.Value2, rate: v.UseRate);
+  }
+
+  return types;
+}();
 
 class BuffValueTriggerType {
   final BuffType buffType;
