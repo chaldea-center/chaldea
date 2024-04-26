@@ -66,6 +66,7 @@ class SubState {
 
     if (buff.vals.IgnoreIndividuality == 1 || buff.vals.UnSubStateWhileLinkedToOthers == 1) return false;
     if (buff.vals.UnSubState == 1 && dataVals.ForceSubState != 1) return false;
+    if (dataVals.ForceSubState == 1) return true;
 
     final toleranceSubState = await target.getBuffValueOnAction(battleData, BuffAction.toleranceSubstate);
     final grantSubState = await activator?.getBuffValueOnAction(battleData, BuffAction.grantSubstate) ?? 0;

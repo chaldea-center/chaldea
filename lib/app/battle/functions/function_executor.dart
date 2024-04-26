@@ -73,6 +73,9 @@ class FunctionExecutor {
       }
       param?.actSet = selectedActSet;
       for (int index = 0; index < functions.length; index += 1) {
+        if (battleData.checkDuplicateFuncData[index] == null) {
+          battleData.checkDuplicateFuncData[index] = {};
+        }
         NiceFunction func = functions[index];
         final dataVal = FunctionExecutor.getDataVals(func, skillLevel, overchargeLvl);
         if ((dataVal.ActSet ?? 0) != 0 && dataVal.ActSet != selectedActSet) {
@@ -83,6 +86,7 @@ class FunctionExecutor {
         final updatedResult = await FunctionExecutor.executeFunction(
           battleData,
           func,
+          index,
           skillLevel,
           overchargeLvl: overchargeLvl,
           shouldTrigger: !isDmgFuncType(functions.getOrNull(index - 1)?.funcType),
@@ -115,6 +119,7 @@ class FunctionExecutor {
   static Future<bool> executeFunction(
     final BattleData battleData,
     final NiceFunction function,
+    final int funcIndex,
     final int skillLevel, {
     final int overchargeLvl = 1,
     final bool shouldTrigger = true,
@@ -184,24 +189,24 @@ class FunctionExecutor {
       }
 
       if (!funcQuestTvalsMatch) {
-        battleData.updateLastFuncResults(function.funcId);
+        battleData.updateLastFuncResults(function.funcId, funcIndex);
         battleData.battleLogger.function('${S.current.battle_require_field_traits} ${S.current.failed}');
         return true;
       }
 
       if (dataVals.StarHigher != null && battleData.criticalStars < dataVals.StarHigher!) {
-        battleData.updateLastFuncResults(function.funcId);
+        battleData.updateLastFuncResults(function.funcId, funcIndex);
         battleData.battleLogger.function('${S.current.critical_star} ${battleData.criticalStars.toStringAsFixed(3)} < '
             '${dataVals.StarHigher}');
         return true;
       }
 
       if (!triggeredPositionCheck(battleData, dataVals) || !triggeredPositionAllCheck(battleData, dataVals)) {
-        battleData.updateLastFuncResults(function.funcId);
+        battleData.updateLastFuncResults(function.funcId, funcIndex);
         return true;
       }
 
-      updateTargets(battleData, function, dataVals, targets);
+      updateTargets(battleData, function, funcIndex, dataVals, targets);
 
       battleData.curFunc = function;
       switch (function.funcType) {
@@ -418,7 +423,7 @@ class FunctionExecutor {
           break;
       }
 
-      battleData.updateLastFuncResults(function.funcId);
+      battleData.updateLastFuncResults(function.funcId, funcIndex);
       battleData.checkActorStatus();
       return true;
     });
@@ -733,6 +738,7 @@ class FunctionExecutor {
   static void updateTargets(
     final BattleData battleData,
     final NiceFunction function,
+    final int funcIndex,
     final DataVals dataVals,
     final List<BattleServantData> targets,
   ) {
@@ -787,7 +793,7 @@ class FunctionExecutor {
     targets.retainWhere((target) => triggeredPositionTargetCheck(battleData, dataVals, target));
 
     if (dataVals.CheckDuplicate == 1) {
-      final Map<int, bool>? previousExecutionResults = battleData.checkDuplicateFuncData[function.funcId];
+      final Map<int, bool>? previousExecutionResults = battleData.checkDuplicateFuncData[funcIndex]?[function.funcId];
       if (previousExecutionResults != null) {
         for (final svt in targets) {
           final previousResult = previousExecutionResults[svt.uniqueId];

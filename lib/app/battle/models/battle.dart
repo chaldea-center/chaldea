@@ -179,9 +179,9 @@ class BattleData {
   // int lastActId = 0;
   // int prevTargetId = 0;
 
-  // used by checkDuplicate related checks. Map of (funcId of function, Map of (uniqueId of target, function result))
-  final Map<int, Map<int, bool>> checkDuplicateFuncData = {};
-  // representing functions results of a skill, used by triggerPosition checks. List of (uniqueId of target, function result),
+  // used by checkDuplicate related checks. Map<funcIndex, Map<funcId, Map<uniqueId, function result>>>
+  final Map<int, Map<int, Map<int, bool>>> checkDuplicateFuncData = {};
+  // representing functions results of a skill, used by triggerPosition checks. List<Map<uniqueId, function result>>,
   List<Map<int, bool>?> get functionResults => _functionResultsStack.last;
 
   // this is a list of list to prevent mismatch when a function executes another function
@@ -233,9 +233,12 @@ class BattleData {
   // this is for logging only
   NiceFunction? curFunc;
 
-  void updateLastFuncResults(final int funcId) {
+  void updateLastFuncResults(final int funcId, final int funcIndex) {
     functionResults.add(HashMap<int, bool>.from(_curFuncResults.last));
-    checkDuplicateFuncData[funcId] = HashMap<int, bool>.from(_curFuncResults.last);
+    if (checkDuplicateFuncData[funcIndex] == null) {
+      checkDuplicateFuncData[funcIndex] = {};
+    }
+    checkDuplicateFuncData[funcIndex]![funcId] = HashMap<int, bool>.from(_curFuncResults.last);
   }
 
   BuffData? get currentBuff => _currentBuff.isNotEmpty ? _currentBuff.last : null;
