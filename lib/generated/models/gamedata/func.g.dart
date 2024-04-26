@@ -7,7 +7,7 @@ part of '../../../models/gamedata/func.dart';
 // **************************************************************************
 
 NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
-      funcId: json['funcId'] as int,
+      funcId: (json['funcId'] as num).toInt(),
       funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ?? FuncType.unknown,
       funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
       funcTargetTeam:
@@ -229,7 +229,7 @@ const _$FuncApplyTargetEnumMap = {
 };
 
 BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
-      funcId: json['funcId'] as int,
+      funcId: (json['funcId'] as num).toInt(),
       funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ?? FuncType.unknown,
       funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
       funcTargetTeam: $enumDecode(_$FuncApplyTargetEnumMap, json['funcTargetTeam']),
@@ -279,12 +279,12 @@ Map<String, dynamic> _$BaseFunctionToJson(BaseFunction instance) => <String, dyn
     };
 
 FuncGroup _$FuncGroupFromJson(Map json) => FuncGroup(
-      eventId: json['eventId'] as int,
-      baseFuncId: json['baseFuncId'] as int,
+      eventId: (json['eventId'] as num).toInt(),
+      baseFuncId: (json['baseFuncId'] as num).toInt(),
       nameTotal: json['nameTotal'] as String,
       name: json['name'] as String,
       icon: json['icon'] as String?,
-      priority: json['priority'] as int,
+      priority: (json['priority'] as num).toInt(),
       isDispValue: json['isDispValue'] as bool,
     );
 

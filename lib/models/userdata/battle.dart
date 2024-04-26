@@ -119,7 +119,7 @@ class BattleSimSetting {
 
   BattleSimSetting({
     this.playerRegion,
-    this.playerDataSource = PreferPlayerSvtDataSource.none,
+    this.playerDataSource = PreferPlayerSvtDataSource.current,
     this.previousQuestPhase,
     PlayerSvtDefaultData? defaultLvs,
     BattleShareData? curTeam,

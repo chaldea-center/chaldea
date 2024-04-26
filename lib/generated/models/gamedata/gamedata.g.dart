@@ -93,16 +93,16 @@ Value? _$JsonConverterFromJson<Json, Value>(
     json == null ? null : fromJson(json as Json);
 
 GameDataAdd _$GameDataAddFromJson(Map json) => GameDataAdd(
-      svts: (json['svts'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
-      ces: (json['ces'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
-      ccs: (json['ccs'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
-      items: (json['items'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
-      events: (json['events'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
-      wars: (json['wars'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      svts: (json['svts'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+      ces: (json['ces'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+      ccs: (json['ccs'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+      items: (json['items'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+      events: (json['events'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+      wars: (json['wars'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
     );
 
 DataVersion _$DataVersionFromJson(Map json) => DataVersion(
-      timestamp: json['timestamp'] as int? ?? 0,
+      timestamp: (json['timestamp'] as num?)?.toInt() ?? 0,
       utc: json['utc'] as String? ?? "",
       minimalApp: json['minimalApp'] as String? ?? '1.0.0',
       files: (json['files'] as Map?)?.map(
@@ -121,10 +121,10 @@ Map<String, dynamic> _$DataVersionToJson(DataVersion instance) => <String, dynam
 FileVersion _$FileVersionFromJson(Map json) => FileVersion(
       key: json['key'] as String,
       filename: json['filename'] as String,
-      size: json['size'] as int,
-      timestamp: json['timestamp'] as int,
+      size: (json['size'] as num).toInt(),
+      timestamp: (json['timestamp'] as num).toInt(),
       hash: json['hash'] as String,
-      minSize: json['minSize'] as int,
+      minSize: (json['minSize'] as num).toInt(),
       minHash: json['minHash'] as String,
     );
 
@@ -163,8 +163,8 @@ GameTop _$GameTopFromJson(Map json) => GameTop(
       gameServer: json['gameServer'] as String,
       appVer: json['appVer'] as String,
       verCode: json['verCode'] as String,
-      dataVer: json['dataVer'] as int,
-      dateVer: json['dateVer'] as int,
+      dataVer: (json['dataVer'] as num).toInt(),
+      dateVer: (json['dateVer'] as num).toInt(),
       assetbundleFolder: json['assetbundleFolder'] as String,
     );
 
@@ -191,7 +191,7 @@ Map<String, dynamic> _$AssetBundleDecryptToJson(AssetBundleDecrypt instance) => 
     };
 
 GameTimerData _$GameTimerDataFromJson(Map json) => GameTimerData(
-      updatedAt: json['updatedAt'] as int?,
+      updatedAt: (json['updatedAt'] as num?)?.toInt(),
       events: (json['events'] as List<dynamic>?)
               ?.map((e) => Event.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??

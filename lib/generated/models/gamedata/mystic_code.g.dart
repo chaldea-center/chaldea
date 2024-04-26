@@ -7,14 +7,14 @@ part of '../../../models/gamedata/mystic_code.dart';
 // **************************************************************************
 
 MysticCode _$MysticCodeFromJson(Map json) => MysticCode(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       detail: json['detail'] as String,
       extraAssets: ExtraMCAssets.fromJson(Map<String, dynamic>.from(json['extraAssets'] as Map)),
       skills: (json['skills'] as List<dynamic>)
           .map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
-      expRequired: (json['expRequired'] as List<dynamic>).map((e) => e as int).toList(),
+      expRequired: (json['expRequired'] as List<dynamic>).map((e) => (e as num).toInt()).toList(),
       costumes: (json['costumes'] as List<dynamic>?)
               ?.map((e) => MysticCodeCostume.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -54,7 +54,7 @@ Map<String, dynamic> _$ExtraMCAssetsToJson(ExtraMCAssets instance) => <String, d
     };
 
 MysticCodeCostume _$MysticCodeCostumeFromJson(Map json) => MysticCodeCostume(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       releaseConditions: (json['releaseConditions'] as List<dynamic>?)
               ?.map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??

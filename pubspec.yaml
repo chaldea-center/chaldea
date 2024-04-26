@@ -71,7 +71,7 @@ dependencies:
     git:
       url: https://github.com/chaldea-center/image_gallery_saver.git
   intl: ^0.18.0
-  json_annotation: ^4.8.1
+  json_annotation: ^4.9.0
   just_audio: ^0.9.33
   just_audio_windows: ^0.2.0
   # just_audio_mpv: ^0.1.4  # manually install mpv on linux
@@ -82,7 +82,7 @@ dependencies:
   modal_bottom_sheet: ^3.0.0
   msgpack_dart: ^1.0.1
   octo_image: ^2.0.0
-  package_info_plus: ^7.0.0
+  package_info_plus: ^8.0.0
   pasteboard: # ^0.2.0
     git:
       url: https://github.com/MixinNetwork/flutter-plugins
@@ -93,7 +93,7 @@ dependencies:
   pool: ^1.5.0
   photo_view: ^0.15.0
   screenshot: ^2.3.0
-  share_plus: ^8.0.2
+  share_plus: ^9.0.0
   shared_preferences: ^2.2.0
   sliver_tools: ^0.2.12
   smooth_page_indicator: ^1.1.0
@@ -118,7 +118,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.3.3
   flutter_lints: ^3.0.0
-  json_serializable: ^6.7.0
+  json_serializable: ^6.8.0
   import_sorter: # ^4.6.0
     git:
       url: https://github.com/chaldea-center/import_sorter

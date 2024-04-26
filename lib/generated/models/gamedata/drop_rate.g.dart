@@ -7,7 +7,7 @@ part of '../../../models/gamedata/drop_rate.dart';
 // **************************************************************************
 
 DropData _$DropDataFromJson(Map json) => DropData(
-      domusVer: json['domusVer'] as int? ?? 0,
+      domusVer: (json['domusVer'] as num?)?.toInt() ?? 0,
       domusAurea: json['domusAurea'] == null
           ? null
           : DropRateSheet.fromJson(Map<String, dynamic>.from(json['domusAurea'] as Map)),
@@ -29,12 +29,12 @@ Map<String, dynamic> _$DropDataToJson(DropData instance) => <String, dynamic>{
     };
 
 DropRateSheet _$DropRateSheetFromJson(Map json) => DropRateSheet(
-      itemIds: (json['itemIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
-      questIds: (json['questIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
-      apCosts: (json['apCosts'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
-      runs: (json['runs'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
-      bonds: (json['bonds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
-      exps: (json['exps'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      itemIds: (json['itemIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+      questIds: (json['questIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+      apCosts: (json['apCosts'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+      runs: (json['runs'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+      bonds: (json['bonds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+      exps: (json['exps'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
       sparseMatrix: (json['sparseMatrix'] as Map?)?.map(
             (k, e) => MapEntry(
                 int.parse(k as String),
@@ -57,13 +57,13 @@ Map<String, dynamic> _$DropRateSheetToJson(DropRateSheet instance) => <String, d
     };
 
 QuestDropData _$QuestDropDataFromJson(Map json) => QuestDropData(
-      runs: json['runs'] as int? ?? 0,
+      runs: (json['runs'] as num?)?.toInt() ?? 0,
       items: (json['items'] as Map?)?.map(
-            (k, e) => MapEntry(int.parse(k as String), e as int),
+            (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
           ) ??
           const {},
       groups: (json['groups'] as Map?)?.map(
-            (k, e) => MapEntry(int.parse(k as String), e as int),
+            (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
           ) ??
           const {},
     );

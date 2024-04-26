@@ -8,7 +8,7 @@ part of '../../../models/gamedata/script.dart';
 
 NiceScript _$NiceScriptFromJson(Map json) => NiceScript(
       scriptId: json['scriptId'] as String,
-      scriptSizeBytes: json['scriptSizeBytes'] as int,
+      scriptSizeBytes: (json['scriptSizeBytes'] as num).toInt(),
       script: json['script'] as String,
       quests:
           (json['quests'] as List<dynamic>).map((e) => Quest.fromJson(Map<String, dynamic>.from(e as Map))).toList(),

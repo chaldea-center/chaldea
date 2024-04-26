@@ -7,7 +7,7 @@ part of '../../../models/gamedata/item.dart';
 // **************************************************************************
 
 Item _$ItemFromJson(Map json) => Item(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       type: $enumDecodeNullable(_$ItemTypeEnumMap, json['type']) ?? ItemType.none,
       uses: (json['uses'] as List<dynamic>?)?.map((e) => $enumDecode(_$ItemUseEnumMap, e)).toList() ?? const [],
@@ -18,11 +18,11 @@ Item _$ItemFromJson(Map json) => Item(
           const [],
       icon: json['icon'] as String,
       background: $enumDecodeNullable(_$ItemBGTypeEnumMap, json['background']) ?? ItemBGType.zero,
-      value: json['value'] as int? ?? 0,
-      priority: json['priority'] as int,
-      dropPriority: json['dropPriority'] as int,
-      startedAt: json['startedAt'] as int,
-      endedAt: json['endedAt'] as int,
+      value: (json['value'] as num?)?.toInt() ?? 0,
+      priority: (json['priority'] as num).toInt(),
+      dropPriority: (json['dropPriority'] as num).toInt(),
+      startedAt: (json['startedAt'] as num).toInt(),
+      endedAt: (json['endedAt'] as num).toInt(),
       itemSelects: (json['itemSelects'] as List<dynamic>?)
               ?.map((e) => ItemSelect.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -102,11 +102,11 @@ const _$ItemBGTypeEnumMap = {
 };
 
 ItemSelect _$ItemSelectFromJson(Map json) => ItemSelect(
-      idx: json['idx'] as int,
+      idx: (json['idx'] as num).toInt(),
       gifts:
           (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
               const [],
-      requireNum: json['requireNum'] as int? ?? 1,
+      requireNum: (json['requireNum'] as num?)?.toInt() ?? 1,
     );
 
 Map<String, dynamic> _$ItemSelectToJson(ItemSelect instance) => <String, dynamic>{
@@ -117,8 +117,8 @@ Map<String, dynamic> _$ItemSelectToJson(ItemSelect instance) => <String, dynamic
 
 ItemAmount _$ItemAmountFromJson(Map json) => ItemAmount(
       item: json['item'] == null ? null : Item.fromJson(Map<String, dynamic>.from(json['item'] as Map)),
-      itemId: json['itemId'] as int?,
-      amount: json['amount'] as int,
+      itemId: (json['itemId'] as num?)?.toInt(),
+      amount: (json['amount'] as num).toInt(),
     );
 
 Map<String, dynamic> _$ItemAmountToJson(ItemAmount instance) => <String, dynamic>{
@@ -131,7 +131,7 @@ LvlUpMaterial _$LvlUpMaterialFromJson(Map json) => LvlUpMaterial(
       items: (json['items'] as List<dynamic>)
           .map((e) => ItemAmount.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
-      qp: json['qp'] as int,
+      qp: (json['qp'] as num).toInt(),
     );
 
 Map<String, dynamic> _$LvlUpMaterialToJson(LvlUpMaterial instance) => <String, dynamic>{

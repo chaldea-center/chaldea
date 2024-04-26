@@ -315,8 +315,8 @@ Map<String, dynamic> _$MappingDictToJson<V>(
     };
 
 EventTraitMapping _$EventTraitMappingFromJson(Map json) => EventTraitMapping(
-      eventId: json['eventId'] as int?,
-      relatedTrait: json['relatedTrait'] as int?,
+      eventId: (json['eventId'] as num?)?.toInt(),
+      relatedTrait: (json['relatedTrait'] as num?)?.toInt(),
       jp: json['JP'] as String?,
       cn: json['CN'] as String?,
       tw: json['TW'] as String?,
@@ -335,7 +335,7 @@ Map<String, dynamic> _$EventTraitMappingToJson(EventTraitMapping instance) => <S
     };
 
 FieldTraitMapping _$FieldTraitMappingFromJson(Map json) => FieldTraitMapping(
-      warIds: (json['warIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      warIds: (json['warIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
       jp: json['JP'] as String?,
       cn: json['CN'] as String?,
       tw: json['TW'] as String?,

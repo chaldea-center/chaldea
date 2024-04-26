@@ -26,7 +26,7 @@ UserMstCache _$UserMstCacheFromJson(Map json) => UserMstCache(
       replaced:
           json['replaced'] == null ? null : UserMstData.fromJson(Map<String, dynamic>.from(json['replaced'] as Map)),
       updated: json['updated'] == null ? null : UserMstData.fromJson(Map<String, dynamic>.from(json['updated'] as Map)),
-      serverTime: json['serverTime'] as int?,
+      serverTime: (json['serverTime'] as num?)?.toInt(),
     );
 
 UserMstData _$UserMstDataFromJson(Map json) => UserMstData(
@@ -117,8 +117,8 @@ UserSvt _$UserSvtFromJson(Map json) => UserSvt(
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],
       isLock: json['isLock'],
-      hp: json['hp'] as int,
-      atk: json['atk'] as int,
+      hp: (json['hp'] as num).toInt(),
+      atk: (json['atk'] as num).toInt(),
     );
 
 UserSvtCollection _$UserSvtCollectionFromJson(Map json) => UserSvtCollection(
@@ -240,7 +240,7 @@ Map<String, dynamic> _$UserGameToJson(UserGame instance) => <String, dynamic>{
     };
 
 UserSvtAppendPassiveSkill _$UserSvtAppendPassiveSkillFromJson(Map json) => UserSvtAppendPassiveSkill(
-      unlockNums: (json['unlockNums'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      unlockNums: (json['unlockNums'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
       svtId: json['svtId'],
     );
 
@@ -251,8 +251,8 @@ UserSvtCoin _$UserSvtCoinFromJson(Map json) => UserSvtCoin(
 
 UserSvtAppendPassiveSkillLv _$UserSvtAppendPassiveSkillLvFromJson(Map json) => UserSvtAppendPassiveSkillLv(
       userSvtId: json['userSvtId'],
-      appendPassiveSkillNums: (json['appendPassiveSkillNums'] as List<dynamic>).map((e) => e as int).toList(),
-      appendPassiveSkillLvs: (json['appendPassiveSkillLvs'] as List<dynamic>).map((e) => e as int).toList(),
+      appendPassiveSkillNums: (json['appendPassiveSkillNums'] as List<dynamic>).map((e) => (e as num).toInt()).toList(),
+      appendPassiveSkillLvs: (json['appendPassiveSkillLvs'] as List<dynamic>).map((e) => (e as num).toInt()).toList(),
     );
 
 UserEquip _$UserEquipFromJson(Map json) => UserEquip(
@@ -433,8 +433,8 @@ FollowerInfo _$FollowerInfoFromJson(Map json) => FollowerInfo(
       tutorial1: json['tutorial1'],
       message: json['message'],
       pushUserSvtId: json['pushUserSvtId'],
-      mainSupportDeckIds: (json['mainSupportDeckIds'] as List<dynamic>?)?.map((e) => e as int).toList(),
-      eventSupportDeckIds: (json['eventSupportDeckIds'] as List<dynamic>?)?.map((e) => e as int).toList(),
+      mainSupportDeckIds: (json['mainSupportDeckIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
+      eventSupportDeckIds: (json['eventSupportDeckIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
     );
 
 ServantLeaderInfo _$ServantLeaderInfoFromJson(Map json) => ServantLeaderInfo(

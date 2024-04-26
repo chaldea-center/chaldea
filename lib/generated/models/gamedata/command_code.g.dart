@@ -7,11 +7,11 @@ part of '../../../models/gamedata/command_code.dart';
 // **************************************************************************
 
 CommandCode _$CommandCodeFromJson(Map json) => CommandCode(
-      id: json['id'] as int,
-      collectionNo: json['collectionNo'] as int,
+      id: (json['id'] as num).toInt(),
+      collectionNo: (json['collectionNo'] as num).toInt(),
       name: json['name'] as String,
       ruby: json['ruby'] as String? ?? "",
-      rarity: json['rarity'] as int,
+      rarity: (json['rarity'] as num).toInt(),
       extraAssets: ExtraCCAssets.fromJson(Map<String, dynamic>.from(json['extraAssets'] as Map)),
       skills: (json['skills'] as List<dynamic>)
           .map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -33,10 +33,10 @@ Map<String, dynamic> _$CommandCodeToJson(CommandCode instance) => <String, dynam
     };
 
 BasicCommandCode _$BasicCommandCodeFromJson(Map json) => BasicCommandCode(
-      id: json['id'] as int,
-      collectionNo: json['collectionNo'] as int,
+      id: (json['id'] as num).toInt(),
+      collectionNo: (json['collectionNo'] as num).toInt(),
       name: json['name'] as String,
-      rarity: json['rarity'] as int,
+      rarity: (json['rarity'] as num).toInt(),
       face: json['face'] as String,
     );
 

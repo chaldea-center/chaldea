@@ -7,7 +7,7 @@ part of '../../../models/gamedata/common.dart';
 // **************************************************************************
 
 NiceTrait _$NiceTraitFromJson(Map json) => NiceTrait(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       negative: json['negative'] as bool? ?? false,
     );
 
@@ -17,12 +17,12 @@ Map<String, dynamic> _$NiceTraitToJson(NiceTrait instance) => <String, dynamic>{
     };
 
 BgmRelease _$BgmReleaseFromJson(Map json) => BgmRelease(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       type: const CondTypeConverter().fromJson(json['type'] as String),
-      condGroup: json['condGroup'] as int? ?? 0,
-      targetIds: (json['targetIds'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
-      vals: (json['vals'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
-      priority: json['priority'] as int? ?? 0,
+      condGroup: (json['condGroup'] as num?)?.toInt() ?? 0,
+      targetIds: (json['targetIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+      vals: (json['vals'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+      priority: (json['priority'] as num?)?.toInt() ?? 0,
       closedMessage: json['closedMessage'] as String? ?? "",
     );
 
@@ -37,12 +37,12 @@ Map<String, dynamic> _$BgmReleaseToJson(BgmRelease instance) => <String, dynamic
     };
 
 BgmEntity _$BgmEntityFromJson(Map json) => BgmEntity(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       name: json['name'] as String? ?? '',
       fileName: json['fileName'] as String? ?? "",
       notReleased: json['notReleased'] as bool? ?? true,
       audioAsset: json['audioAsset'] as String?,
-      priority: json['priority'] as int? ?? 0,
+      priority: (json['priority'] as num?)?.toInt() ?? 0,
       detail: json['detail'] as String? ?? "",
       shop: json['shop'] == null ? null : NiceShop.fromJson(Map<String, dynamic>.from(json['shop'] as Map)),
       logo: json['logo'] as String?,
@@ -66,7 +66,7 @@ Map<String, dynamic> _$BgmEntityToJson(BgmEntity instance) => <String, dynamic>{
     };
 
 Bgm _$BgmFromJson(Map json) => Bgm(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       name: json['name'] as String? ?? '',
       fileName: json['fileName'] as String? ?? "",
       notReleased: json['notReleased'] as bool? ?? true,
@@ -82,9 +82,9 @@ Map<String, dynamic> _$BgmToJson(Bgm instance) => <String, dynamic>{
     };
 
 StageLink _$StageLinkFromJson(Map json) => StageLink(
-      questId: json['questId'] as int? ?? 0,
-      phase: json['phase'] as int? ?? 1,
-      stage: json['stage'] as int? ?? 1,
+      questId: (json['questId'] as num?)?.toInt() ?? 0,
+      phase: (json['phase'] as num?)?.toInt() ?? 1,
+      stage: (json['stage'] as num?)?.toInt() ?? 1,
     );
 
 Map<String, dynamic> _$StageLinkToJson(StageLink instance) => <String, dynamic>{
@@ -94,11 +94,11 @@ Map<String, dynamic> _$StageLinkToJson(StageLink instance) => <String, dynamic>{
     };
 
 CommonConsume _$CommonConsumeFromJson(Map json) => CommonConsume(
-      id: json['id'] as int,
-      priority: json['priority'] as int? ?? 0,
+      id: (json['id'] as num).toInt(),
+      priority: (json['priority'] as num?)?.toInt() ?? 0,
       type: $enumDecode(_$CommonConsumeTypeEnumMap, json['type']),
-      objectId: json['objectId'] as int,
-      num: json['num'] as int,
+      objectId: (json['objectId'] as num).toInt(),
+      num: (json['num'] as num).toInt(),
     );
 
 Map<String, dynamic> _$CommonConsumeToJson(CommonConsume instance) => <String, dynamic>{
@@ -115,12 +115,12 @@ const _$CommonConsumeTypeEnumMap = {
 };
 
 CommonRelease _$CommonReleaseFromJson(Map json) => CommonRelease(
-      id: json['id'] as int,
-      priority: json['priority'] as int? ?? 0,
-      condGroup: json['condGroup'] as int? ?? 0,
+      id: (json['id'] as num).toInt(),
+      priority: (json['priority'] as num?)?.toInt() ?? 0,
+      condGroup: (json['condGroup'] as num?)?.toInt() ?? 0,
       condType: const CondTypeConverter().fromJson(json['condType'] as String),
-      condId: json['condId'] as int? ?? 0,
-      condNum: json['condNum'] as int? ?? 0,
+      condId: (json['condId'] as num?)?.toInt() ?? 0,
+      condNum: (json['condNum'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$CommonReleaseToJson(CommonRelease instance) => <String, dynamic>{

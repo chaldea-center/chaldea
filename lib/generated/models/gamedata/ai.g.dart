@@ -28,23 +28,24 @@ Map<String, dynamic> _$NiceAiCollectionToJson(NiceAiCollection instance) => <Str
     };
 
 NiceAi _$NiceAiFromJson(Map json) => NiceAi(
-      id: json['id'] as int,
-      idx: json['idx'] as int,
-      actNumInt: json['actNumInt'] as int,
+      id: (json['id'] as num).toInt(),
+      idx: (json['idx'] as num).toInt(),
+      actNumInt: (json['actNumInt'] as num).toInt(),
       actNum: $enumDecodeNullable(_$NiceAiActNumEnumMap, json['actNum']) ?? NiceAiActNum.unknown,
-      priority: json['priority'] as int,
-      probability: json['probability'] as int,
+      priority: (json['priority'] as num).toInt(),
+      probability: (json['probability'] as num).toInt(),
       cond: $enumDecodeNullable(_$NiceAiCondEnumMap, json['cond']) ?? NiceAiCond.none,
       condNegative: json['condNegative'] as bool? ?? false,
-      vals: (json['vals'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      vals: (json['vals'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
       aiAct: NiceAiAct.fromJson(Map<String, dynamic>.from(json['aiAct'] as Map)),
-      avals: (json['avals'] as List<dynamic>?)?.map((e) => e as int).toList() ?? const [],
+      avals: (json['avals'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
       parentAis: (json['parentAis'] as Map?)?.map(
-            (k, e) => MapEntry($enumDecode(_$AiTypeEnumMap, k), (e as List<dynamic>).map((e) => e as int).toList()),
+            (k, e) =>
+                MapEntry($enumDecode(_$AiTypeEnumMap, k), (e as List<dynamic>).map((e) => (e as num).toInt()).toList()),
           ) ??
           const {},
       infoText: json['infoText'] as String? ?? '',
-      timing: json['timing'] as int?,
+      timing: (json['timing'] as num?)?.toInt(),
       timingDescription: $enumDecodeNullable(_$AiTimingEnumMap, json['timingDescription']),
     );
 
@@ -273,19 +274,19 @@ const _$AiTimingEnumMap = {
 };
 
 NiceAiAct _$NiceAiActFromJson(Map json) => NiceAiAct(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       type: $enumDecodeNullable(_$NiceAiActTypeEnumMap, json['type']) ?? NiceAiActType.none,
       target: $enumDecodeNullable(_$NiceAiActTargetEnumMap, json['target']) ?? NiceAiActTarget.none,
       targetIndividuality: (json['targetIndividuality'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      skillId: json['skillId'] as int?,
-      skillLv: json['skillLv'] as int?,
+      skillId: (json['skillId'] as num?)?.toInt(),
+      skillLv: (json['skillLv'] as num?)?.toInt(),
       skill: json['skill'] == null ? null : NiceSkill.fromJson(Map<String, dynamic>.from(json['skill'] as Map)),
-      noblePhantasmId: json['noblePhantasmId'] as int?,
-      noblePhantasmLv: json['noblePhantasmLv'] as int?,
-      noblePhantasmOc: json['noblePhantasmOc'] as int?,
+      noblePhantasmId: (json['noblePhantasmId'] as num?)?.toInt(),
+      noblePhantasmLv: (json['noblePhantasmLv'] as num?)?.toInt(),
+      noblePhantasmOc: (json['noblePhantasmOc'] as num?)?.toInt(),
       noblePhantasm: json['noblePhantasm'] == null
           ? null
           : NiceTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),

@@ -47,7 +47,7 @@ AutoLoginData _$AutoLoginDataFromJson(Map json) => $checkedCreate(
           country:
               $checkedConvert('country', (v) => $enumDecodeNullable(_$NACountryEnumMap, v) ?? NACountry.unitedStates),
           useThisDevice: $checkedConvert('useThisDevice', (v) => v as bool? ?? false),
-          lastLogin: $checkedConvert('lastLogin', (v) => v as int?),
+          lastLogin: $checkedConvert('lastLogin', (v) => (v as num?)?.toInt()),
           userGame: $checkedConvert(
               'userGame', (v) => v == null ? null : UserGame.fromJson(Map<String, dynamic>.from(v as Map))),
         );

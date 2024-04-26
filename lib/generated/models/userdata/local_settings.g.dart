@@ -15,11 +15,11 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate(
           showDebugFab: $checkedConvert('showDebugFab', (v) => v as bool? ?? false),
           alwaysOnTop: $checkedConvert('alwaysOnTop', (v) => v as bool? ?? false),
           windowPosition:
-              $checkedConvert('windowPosition', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+              $checkedConvert('windowPosition', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
           showSystemTray: $checkedConvert('showSystemTray', (v) => v as bool? ?? false),
-          launchTimes: $checkedConvert('launchTimes', (v) => v as int? ?? 0),
-          lastLaunchTime: $checkedConvert('lastLaunchTime', (v) => v as int? ?? 0),
-          lastBackup: $checkedConvert('lastBackup', (v) => v as int? ?? 0),
+          launchTimes: $checkedConvert('launchTimes', (v) => (v as num?)?.toInt() ?? 0),
+          lastLaunchTime: $checkedConvert('lastLaunchTime', (v) => (v as num?)?.toInt() ?? 0),
+          lastBackup: $checkedConvert('lastBackup', (v) => (v as num?)?.toInt() ?? 0),
           themeMode:
               $checkedConvert('themeMode', (v) => $enumDecodeNullable(_$ThemeModeEnumMap, v) ?? ThemeMode.system),
           useMaterial3: $checkedConvert('useMaterial3', (v) => v as bool? ?? false),
@@ -256,8 +256,8 @@ DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate(
           hideSvtPlanDetails: $checkedConvert('hideSvtPlanDetails',
               (v) => (v as List<dynamic>?)?.map((e) => $enumDecodeNullable(_$SvtPlanDetailEnumMap, e)).toList()),
           describeEventMission: $checkedConvert('describeEventMission', (v) => v as bool? ?? true),
-          maxWindowWidth: $checkedConvert('maxWindowWidth', (v) => v as int?),
-          splitMasterRatio: $checkedConvert('splitMasterRatio', (v) => v as int?),
+          maxWindowWidth: $checkedConvert('maxWindowWidth', (v) => (v as num?)?.toInt()),
+          splitMasterRatio: $checkedConvert('splitMasterRatio', (v) => (v as num?)?.toInt()),
           enableSplitView: $checkedConvert('enableSplitView', (v) => v as bool? ?? true),
           ad: $checkedConvert('ad', (v) => v == null ? null : AdSetting.fromJson(Map<String, dynamic>.from(v as Map))),
         );
@@ -347,7 +347,7 @@ AdSetting _$AdSettingFromJson(Map json) => $checkedCreate(
           enabled: $checkedConvert('enabled', (v) => v as bool?),
           banner: $checkedConvert('banner', (v) => v as bool?),
           appOpen: $checkedConvert('appOpen', (v) => v as bool?),
-          lastAppOpen: $checkedConvert('lastAppOpen', (v) => v as int? ?? 0),
+          lastAppOpen: $checkedConvert('lastAppOpen', (v) => (v as num?)?.toInt() ?? 0),
         );
         return val;
       },
@@ -365,8 +365,8 @@ CarouselSetting _$CarouselSettingFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = CarouselSetting(
-          ver: $checkedConvert('ver', (v) => v as int?),
-          updateTime: $checkedConvert('updateTime', (v) => v as int?),
+          ver: $checkedConvert('ver', (v) => (v as num?)?.toInt()),
+          updateTime: $checkedConvert('updateTime', (v) => (v as num?)?.toInt()),
           items: $checkedConvert(
               'items',
               (v) => (v as List<dynamic>?)
@@ -404,8 +404,8 @@ CarouselItem _$CarouselItemFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = CarouselItem(
-          type: $checkedConvert('type', (v) => v as int? ?? 0),
-          priority: $checkedConvert('priority', (v) => v as int? ?? CarouselItem.defaultPriority),
+          type: $checkedConvert('type', (v) => (v as num?)?.toInt() ?? 0),
+          priority: $checkedConvert('priority', (v) => (v as num?)?.toInt() ?? CarouselItem.defaultPriority),
           startTime: $checkedConvert('startTime', (v) => v == null ? null : DateTime.parse(v as String)),
           endTime: $checkedConvert('endTime', (v) => v == null ? null : DateTime.parse(v as String)),
           title: $checkedConvert('title', (v) => v as String?),
@@ -421,8 +421,8 @@ CarouselItem _$CarouselItemFromJson(Map json) => $checkedCreate(
               'verMin', (v) => _$JsonConverterFromJson<String, AppVersion>(v, const AppVersionConverter().fromJson)),
           verMax: $checkedConvert(
               'verMax', (v) => _$JsonConverterFromJson<String, AppVersion>(v, const AppVersionConverter().fromJson)),
-          eventIds: $checkedConvert('eventIds', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          warIds: $checkedConvert('warIds', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          eventIds: $checkedConvert('eventIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
+          warIds: $checkedConvert('warIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
           summonIds: $checkedConvert('summonIds', (v) => (v as List<dynamic>?)?.map((e) => e as String).toList()),
         );
         return val;
@@ -483,8 +483,8 @@ TipsSetting _$TipsSettingFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = TipsSetting(
           starter: $checkedConvert('starter', (v) => v as bool? ?? true),
-          servantList: $checkedConvert('servantList', (v) => v as int? ?? 2),
-          servantDetail: $checkedConvert('servantDetail', (v) => v as int? ?? 2),
+          servantList: $checkedConvert('servantList', (v) => (v as num?)?.toInt() ?? 2),
+          servantDetail: $checkedConvert('servantDetail', (v) => (v as num?)?.toInt() ?? 2),
         );
         return val;
       },
@@ -504,7 +504,7 @@ EventItemCalcParams _$EventItemCalcParamsFromJson(Map json) => $checkedCreate(
           itemCounts: $checkedConvert(
               'itemCounts',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                    (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
                   )),
           bonusPlans: $checkedConvert(
               'bonusPlans',
@@ -527,12 +527,12 @@ QuestBonusPlan _$QuestBonusPlanFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = QuestBonusPlan(
           enabled: $checkedConvert('enabled', (v) => v as bool? ?? true),
-          questId: $checkedConvert('questId', (v) => v as int? ?? 0),
-          index: $checkedConvert('index', (v) => v as int? ?? 0),
+          questId: $checkedConvert('questId', (v) => (v as num?)?.toInt() ?? 0),
+          index: $checkedConvert('index', (v) => (v as num?)?.toInt() ?? 0),
           bonus: $checkedConvert(
               'bonus',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                    (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
                   )),
         );
         return val;
@@ -551,7 +551,7 @@ MasterMissionOptions _$MasterMissionOptionsFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = MasterMissionOptions(
-          blacklist: $checkedConvert('blacklist', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
+          blacklist: $checkedConvert('blacklist', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
           excludeRandomEnemyQuests: $checkedConvert('excludeRandomEnemyQuests', (v) => v as bool? ?? false),
         );
         return val;
@@ -568,19 +568,19 @@ _MiscSettings _$MiscSettingsFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = _MiscSettings(
-          nonSvtCharaFigureIds:
-              $checkedConvert('nonSvtCharaFigureIds', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
+          nonSvtCharaFigureIds: $checkedConvert(
+              'nonSvtCharaFigureIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
           markedCharaFigureSvtIds: $checkedConvert(
               'markedCharaFigureSvtIds',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                    (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
                   )),
           nonSvtCharaImageIds:
               $checkedConvert('nonSvtCharaImageIds', (v) => (v as List<dynamic>?)?.map((e) => e as String).toSet()),
           markedCharaImageSvtIds: $checkedConvert(
               'markedCharaImageSvtIds',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(k as String, e as int),
+                    (k, e) => MapEntry(k as String, (e as num).toInt()),
                   )),
         );
         return val;
@@ -638,7 +638,7 @@ BookmarkEntry _$BookmarkEntryFromJson(Map json) => $checkedCreate(
         final val = BookmarkEntry(
           name: $checkedConvert('name', (v) => v as String?),
           url: $checkedConvert('url', (v) => v as String),
-          createdAt: $checkedConvert('createdAt', (v) => v as int?),
+          createdAt: $checkedConvert('createdAt', (v) => (v as num?)?.toInt()),
         );
         return val;
       },

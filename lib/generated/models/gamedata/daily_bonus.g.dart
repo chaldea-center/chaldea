@@ -19,11 +19,11 @@ DailyBonusData _$DailyBonusDataFromJson(Map json) => DailyBonusData(
     );
 
 DailyBonusAccountInfo _$DailyBonusAccountInfoFromJson(Map json) => DailyBonusAccountInfo(
-      userId: json['userId'] as int,
+      userId: (json['userId'] as num).toInt(),
       region: const RegionConverter().fromJson(json['region'] as String),
-      start: json['start'] as int,
-      startSeqLoginCount: json['startSeqLoginCount'] as int,
-      startTotalLoginCount: json['startTotalLoginCount'] as int,
+      start: (json['start'] as num).toInt(),
+      startSeqLoginCount: (json['startSeqLoginCount'] as num).toInt(),
+      startTotalLoginCount: (json['startTotalLoginCount'] as num).toInt(),
     );
 
 CampaignBonusData _$CampaignBonusDataFromJson(Map json) => CampaignBonusData(
@@ -33,6 +33,6 @@ CampaignBonusData _$CampaignBonusDataFromJson(Map json) => CampaignBonusData(
       isDeemedLogin: json['isDeemedLogin'] as bool,
       items: (json['items'] as List<dynamic>?)?.map((e) => e as Map).toList() ?? const [],
       script: Map<String, dynamic>.from(json['script'] as Map),
-      eventId: json['eventId'] as int,
-      day: json['day'] as int,
+      eventId: (json['eventId'] as num).toInt(),
+      day: (json['day'] as num).toInt(),
     );

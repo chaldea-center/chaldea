@@ -12,8 +12,8 @@ ItemResult _$ItemResultFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = ItemResult(
           key: $checkedConvert('key', (v) => v as String),
-          startAt: $checkedConvert('startAt', (v) => v as int),
-          endedAt: $checkedConvert('endedAt', (v) => v as int),
+          startAt: $checkedConvert('startAt', (v) => (v as num).toInt()),
+          endedAt: $checkedConvert('endedAt', (v) => (v as num).toInt()),
           details: $checkedConvert(
               'details',
               (v) =>
@@ -35,11 +35,11 @@ ItemDetail _$ItemDetailFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = ItemDetail(
-          itemId: $checkedConvert('itemId', (v) => v as int),
-          count: $checkedConvert('count', (v) => v as int),
+          itemId: $checkedConvert('itemId', (v) => (v as num).toInt()),
+          count: $checkedConvert('count', (v) => (v as num).toInt()),
           thumb: $checkedConvert('thumb', (v) => v as String),
           numberThumb: $checkedConvert('numberThumb', (v) => v as String),
-          imageId: $checkedConvert('imageId', (v) => v as int),
+          imageId: $checkedConvert('imageId', (v) => (v as num).toInt()),
           score: $checkedConvert('score', (v) => (v as num).toDouble()),
         );
         return val;
@@ -61,8 +61,8 @@ SkillResult _$SkillResultFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = SkillResult(
           key: $checkedConvert('key', (v) => v as String),
-          startAt: $checkedConvert('startAt', (v) => v as int),
-          endedAt: $checkedConvert('endedAt', (v) => v as int),
+          startAt: $checkedConvert('startAt', (v) => (v as num).toInt()),
+          endedAt: $checkedConvert('endedAt', (v) => (v as num).toInt()),
           details: $checkedConvert(
               'details',
               (v) =>
@@ -84,13 +84,13 @@ SkillDetail _$SkillDetailFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = SkillDetail(
-          svtId: $checkedConvert('svtId', (v) => v as int),
-          ascension: $checkedConvert('ascension', (v) => v as int? ?? 0),
-          skill1: $checkedConvert('skill1', (v) => v as int),
-          skill2: $checkedConvert('skill2', (v) => v as int),
-          skill3: $checkedConvert('skill3', (v) => v as int),
+          svtId: $checkedConvert('svtId', (v) => (v as num).toInt()),
+          ascension: $checkedConvert('ascension', (v) => (v as num?)?.toInt() ?? 0),
+          skill1: $checkedConvert('skill1', (v) => (v as num).toInt()),
+          skill2: $checkedConvert('skill2', (v) => (v as num).toInt()),
+          skill3: $checkedConvert('skill3', (v) => (v as num).toInt()),
           thumb: $checkedConvert('thumb', (v) => v as String),
-          imageId: $checkedConvert('imageId', (v) => v as int),
+          imageId: $checkedConvert('imageId', (v) => (v as num).toInt()),
           score: $checkedConvert('score', (v) => (v as num).toDouble()),
         );
         return val;

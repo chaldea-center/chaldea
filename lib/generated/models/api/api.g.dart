@@ -11,7 +11,7 @@ WorkerResponse _$WorkerResponseFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = WorkerResponse(
-          status: $checkedConvert('status', (v) => v as int?),
+          status: $checkedConvert('status', (v) => (v as num?)?.toInt()),
           error: $checkedConvert('error', (v) => v),
           message: $checkedConvert('message', (v) => v as String?),
           body: $checkedConvert('body', (v) => v),
@@ -32,9 +32,9 @@ ChaldeaUser _$ChaldeaUserFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = ChaldeaUser(
-          id: $checkedConvert('id', (v) => v as int),
+          id: $checkedConvert('id', (v) => (v as num).toInt()),
           name: $checkedConvert('name', (v) => v as String),
-          role: $checkedConvert('role', (v) => v as int? ?? ChaldeaUserRole.member),
+          role: $checkedConvert('role', (v) => (v as num?)?.toInt() ?? ChaldeaUserRole.member),
           secret: $checkedConvert('secret', (v) => v as String?),
         );
         return val;
@@ -53,11 +53,11 @@ UserBackupData _$UserBackupDataFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = UserBackupData(
-          id: $checkedConvert('id', (v) => v as int),
-          userId: $checkedConvert('userId', (v) => v as int),
+          id: $checkedConvert('id', (v) => (v as num).toInt()),
+          userId: $checkedConvert('userId', (v) => (v as num).toInt()),
           appVer: $checkedConvert('appVer', (v) => v as String?),
           os: $checkedConvert('os', (v) => v as String?),
-          createdAt: $checkedConvert('createdAt', (v) => v as int),
+          createdAt: $checkedConvert('createdAt', (v) => (v as num).toInt()),
           content: $checkedConvert('content', (v) => v as String),
         );
         return val;
@@ -78,9 +78,9 @@ TeamVoteData _$TeamVoteDataFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = TeamVoteData(
-          up: $checkedConvert('up', (v) => v as int? ?? 0),
-          down: $checkedConvert('down', (v) => v as int? ?? 0),
-          mine: $checkedConvert('mine', (v) => v as int? ?? 0),
+          up: $checkedConvert('up', (v) => (v as num?)?.toInt() ?? 0),
+          down: $checkedConvert('down', (v) => (v as num?)?.toInt() ?? 0),
+          mine: $checkedConvert('mine', (v) => (v as num?)?.toInt() ?? 0),
         );
         return val;
       },
@@ -97,14 +97,14 @@ UserBattleData _$UserBattleDataFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = UserBattleData(
-          id: $checkedConvert('id', (v) => v as int),
-          ver: $checkedConvert('ver', (v) => v as int),
+          id: $checkedConvert('id', (v) => (v as num).toInt()),
+          ver: $checkedConvert('ver', (v) => (v as num).toInt()),
           appVer: $checkedConvert('appVer', (v) => v as String?),
-          userId: $checkedConvert('userId', (v) => v as int),
-          questId: $checkedConvert('questId', (v) => v as int),
-          phase: $checkedConvert('phase', (v) => v as int),
+          userId: $checkedConvert('userId', (v) => (v as num).toInt()),
+          questId: $checkedConvert('questId', (v) => (v as num).toInt()),
+          phase: $checkedConvert('phase', (v) => (v as num).toInt()),
           enemyHash: $checkedConvert('enemyHash', (v) => v as String),
-          createdAt: $checkedConvert('createdAt', (v) => v as int),
+          createdAt: $checkedConvert('createdAt', (v) => (v as num).toInt()),
           content: $checkedConvert('content', (v) => v as String),
           username: $checkedConvert('username', (v) => v as String?),
           votes: $checkedConvert(
@@ -133,9 +133,9 @@ TeamQueryResult _$TeamQueryResultFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = TeamQueryResult(
-          offset: $checkedConvert('offset', (v) => v as int? ?? 0),
-          limit: $checkedConvert('limit', (v) => v as int? ?? 0),
-          total: $checkedConvert('total', (v) => v as int?),
+          offset: $checkedConvert('offset', (v) => (v as num?)?.toInt() ?? 0),
+          limit: $checkedConvert('limit', (v) => (v as num?)?.toInt() ?? 0),
+          total: $checkedConvert('total', (v) => (v as num?)?.toInt()),
           data: $checkedConvert(
               'data',
               (v) => (v as List<dynamic>)
@@ -159,7 +159,7 @@ AAFileManifest _$AAFileManifestFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = AAFileManifest(
           fileName: $checkedConvert('fileName', (v) => v as String),
-          size: $checkedConvert('size', (v) => v as int),
+          size: $checkedConvert('size', (v) => (v as num).toInt()),
         );
         return val;
       },

@@ -11,12 +11,14 @@ BattleSimUserData _$BattleSimUserDataFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = BattleSimUserData(
-          pingedCEs: $checkedConvert('pingedCEs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
-          pingedSvts: $checkedConvert('pingedSvts', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
+          pingedCEs: $checkedConvert('pingedCEs', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+          pingedSvts:
+              $checkedConvert('pingedSvts', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
           favoriteTeams: $checkedConvert(
               'favoriteTeams',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), (e as List<dynamic>).map((e) => e as int).toSet()),
+                    (k, e) =>
+                        MapEntry(int.parse(k as String), (e as List<dynamic>).map((e) => (e as num).toInt()).toSet()),
                   )),
           teams: $checkedConvert(
               'teams',
@@ -43,7 +45,7 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
           playerRegion: $checkedConvert(
               'playerRegion', (v) => _$JsonConverterFromJson<String, Region>(v, const RegionConverter().fromJson)),
           playerDataSource: $checkedConvert('playerDataSource',
-              (v) => $enumDecodeNullable(_$PreferPlayerSvtDataSourceEnumMap, v) ?? PreferPlayerSvtDataSource.none),
+              (v) => $enumDecodeNullable(_$PreferPlayerSvtDataSourceEnumMap, v) ?? PreferPlayerSvtDataSource.current),
           previousQuestPhase: $checkedConvert('previousQuestPhase', (v) => v as String?),
           defaultLvs: $checkedConvert('defaultLvs',
               (v) => v == null ? null : PlayerSvtDefaultData.fromJson(Map<String, dynamic>.from(v as Map))),
@@ -56,7 +58,7 @@ BattleSimSetting _$BattleSimSettingFromJson(Map json) => $checkedCreate(
           tdDmgOptions: $checkedConvert(
               'tdDmgOptions', (v) => v == null ? null : TdDamageOptions.fromJson(Map<String, dynamic>.from(v as Map))),
           recordScreenshotJpg: $checkedConvert('recordScreenshotJpg', (v) => v as bool? ?? false),
-          recordScreenshotRatio: $checkedConvert('recordScreenshotRatio', (v) => v as int? ?? 10),
+          recordScreenshotRatio: $checkedConvert('recordScreenshotRatio', (v) => (v as num?)?.toInt() ?? 10),
           recordShowTwoColumn: $checkedConvert('recordShowTwoColumn', (v) => v as bool? ?? false),
           manualAllySkillTarget: $checkedConvert('manualAllySkillTarget', (v) => v as bool? ?? false),
         );
@@ -102,8 +104,8 @@ BattleShareData _$BattleShareDataFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = BattleShareData(
-          minBuild: $checkedConvert('minBuild', (v) => v as int?),
-          appBuild: $checkedConvert('appBuild', (v) => v as int?),
+          minBuild: $checkedConvert('minBuild', (v) => (v as num?)?.toInt()),
+          appBuild: $checkedConvert('appBuild', (v) => (v as num?)?.toInt()),
           quest: $checkedConvert(
               'quest', (v) => v == null ? null : BattleQuestInfo.fromJson(Map<String, dynamic>.from(v as Map))),
           options: $checkedConvert(
@@ -153,10 +155,11 @@ BattleShareDataOption _$BattleShareDataOptionFromJson(Map json) => $checkedCreat
           pointBuffs: $checkedConvert(
               'pointBuffs',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                    (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
                   )),
           simulateAi: $checkedConvert('simulateAi', (v) => v as bool?),
-          enemyRateUp: $checkedConvert('enemyRateUp', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
+          enemyRateUp:
+              $checkedConvert('enemyRateUp', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
         );
         return val;
       },
@@ -175,8 +178,8 @@ BattleQuestInfo _$BattleQuestInfoFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = BattleQuestInfo(
-          id: $checkedConvert('id', (v) => v as int),
-          phase: $checkedConvert('phase', (v) => v as int),
+          id: $checkedConvert('id', (v) => (v as num).toInt()),
+          phase: $checkedConvert('phase', (v) => (v as num).toInt()),
           enemyHash: $checkedConvert('enemyHash', (v) => v as String?),
           region: $checkedConvert(
               'region', (v) => _$JsonConverterFromJson<String, Region>(v, const RegionConverter().fromJson)),
@@ -237,35 +240,37 @@ SvtSaveData _$SvtSaveDataFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = SvtSaveData(
-          svtId: $checkedConvert('svtId', (v) => v as int?),
-          limitCount: $checkedConvert('limitCount', (v) => v as int? ?? 4),
-          skillLvs: $checkedConvert('skillLvs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          skillIds: $checkedConvert('skillIds', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
-          appendLvs: $checkedConvert('appendLvs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          tdId: $checkedConvert('tdId', (v) => v as int? ?? 0),
-          tdLv: $checkedConvert('tdLv', (v) => v as int? ?? 5),
-          lv: $checkedConvert('lv', (v) => v as int? ?? 1),
-          atkFou: $checkedConvert('atkFou', (v) => v as int? ?? 1000),
-          hpFou: $checkedConvert('hpFou', (v) => v as int? ?? 1000),
-          fixedAtk: $checkedConvert('fixedAtk', (v) => v as int?),
-          fixedHp: $checkedConvert('fixedHp', (v) => v as int?),
-          ceId: $checkedConvert('ceId', (v) => v as int?),
+          svtId: $checkedConvert('svtId', (v) => (v as num?)?.toInt()),
+          limitCount: $checkedConvert('limitCount', (v) => (v as num?)?.toInt() ?? 4),
+          skillLvs: $checkedConvert('skillLvs', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
+          skillIds:
+              $checkedConvert('skillIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num?)?.toInt()).toList()),
+          appendLvs:
+              $checkedConvert('appendLvs', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
+          tdId: $checkedConvert('tdId', (v) => (v as num?)?.toInt() ?? 0),
+          tdLv: $checkedConvert('tdLv', (v) => (v as num?)?.toInt() ?? 5),
+          lv: $checkedConvert('lv', (v) => (v as num?)?.toInt() ?? 1),
+          atkFou: $checkedConvert('atkFou', (v) => (v as num?)?.toInt() ?? 1000),
+          hpFou: $checkedConvert('hpFou', (v) => (v as num?)?.toInt() ?? 1000),
+          fixedAtk: $checkedConvert('fixedAtk', (v) => (v as num?)?.toInt()),
+          fixedHp: $checkedConvert('fixedHp', (v) => (v as num?)?.toInt()),
+          ceId: $checkedConvert('ceId', (v) => (v as num?)?.toInt()),
           ceLimitBreak: $checkedConvert('ceLimitBreak', (v) => v as bool? ?? false),
-          ceLv: $checkedConvert('ceLv', (v) => v as int? ?? 0),
+          ceLv: $checkedConvert('ceLv', (v) => (v as num?)?.toInt() ?? 0),
           supportType: $checkedConvert(
               'supportType', (v) => $enumDecodeNullable(_$SupportSvtTypeEnumMap, v) ?? SupportSvtType.none),
           cardStrengthens:
-              $checkedConvert('cardStrengthens', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          commandCodeIds:
-              $checkedConvert('commandCodeIds', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
-          disabledExtraSkills:
-              $checkedConvert('disabledExtraSkills', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
+              $checkedConvert('cardStrengthens', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
+          commandCodeIds: $checkedConvert(
+              'commandCodeIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num?)?.toInt()).toList()),
+          disabledExtraSkills: $checkedConvert(
+              'disabledExtraSkills', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
           customPassives: $checkedConvert(
               'customPassives',
               (v) =>
                   (v as List<dynamic>?)?.map((e) => BaseSkill.fromJson(Map<String, dynamic>.from(e as Map))).toList()),
-          customPassiveLvs:
-              $checkedConvert('customPassiveLvs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          customPassiveLvs: $checkedConvert(
+              'customPassiveLvs', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
         );
         return val;
       },
@@ -315,8 +320,8 @@ MysticCodeSaveData _$MysticCodeSaveDataFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = MysticCodeSaveData(
-          mysticCodeId: $checkedConvert('mysticCodeId', (v) => v as int?),
-          level: $checkedConvert('level', (v) => v as int? ?? 0),
+          mysticCodeId: $checkedConvert('mysticCodeId', (v) => (v as num?)?.toInt()),
+          level: $checkedConvert('level', (v) => (v as num?)?.toInt() ?? 0),
         );
         return val;
       },
@@ -332,17 +337,18 @@ PlayerSvtDefaultData _$PlayerSvtDefaultDataFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = PlayerSvtDefaultData(
-          lv: $checkedConvert('lv', (v) => v as int? ?? 90),
+          lv: $checkedConvert('lv', (v) => (v as num?)?.toInt() ?? 90),
           useMaxLv: $checkedConvert('useMaxLv', (v) => v as bool? ?? true),
-          tdLv: $checkedConvert('tdLv', (v) => v as int? ?? 5),
+          tdLv: $checkedConvert('tdLv', (v) => (v as num?)?.toInt() ?? 5),
           useDefaultTdLv: $checkedConvert('useDefaultTdLv', (v) => v as bool? ?? true),
-          limitCount: $checkedConvert('limitCount', (v) => v as int? ?? 4),
-          activeSkillLv: $checkedConvert('activeSkillLv', (v) => v as int? ?? 10),
-          appendLvs: $checkedConvert('appendLvs', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          atkFou: $checkedConvert('atkFou', (v) => v as int? ?? 100),
-          hpFou: $checkedConvert('hpFou', (v) => v as int? ?? 100),
+          limitCount: $checkedConvert('limitCount', (v) => (v as num?)?.toInt() ?? 4),
+          activeSkillLv: $checkedConvert('activeSkillLv', (v) => (v as num?)?.toInt() ?? 10),
+          appendLvs:
+              $checkedConvert('appendLvs', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
+          atkFou: $checkedConvert('atkFou', (v) => (v as num?)?.toInt() ?? 100),
+          hpFou: $checkedConvert('hpFou', (v) => (v as num?)?.toInt() ?? 100),
           cardStrengthens:
-              $checkedConvert('cardStrengthens', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+              $checkedConvert('cardStrengthens', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
           ceMaxLimitBreak: $checkedConvert('ceMaxLimitBreak', (v) => v as bool? ?? false),
           ceMaxLv: $checkedConvert('ceMaxLv', (v) => v as bool? ?? false),
         );
@@ -370,9 +376,9 @@ CustomSkillData _$CustomSkillDataFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = CustomSkillData(
-          skillId: $checkedConvert('skillId', (v) => v as int?),
+          skillId: $checkedConvert('skillId', (v) => (v as num?)?.toInt()),
           name: $checkedConvert('name', (v) => v as String? ?? ''),
-          cd: $checkedConvert('cd', (v) => v as int? ?? 0),
+          cd: $checkedConvert('cd', (v) => (v as num?)?.toInt() ?? 0),
           skillType:
               $checkedConvert('skillType', (v) => $enumDecodeNullable(_$SkillTypeEnumMap, v) ?? SkillType.passive),
           effects: $checkedConvert(
@@ -407,12 +413,12 @@ CustomFuncData _$CustomFuncDataFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = CustomFuncData(
-          funcId: $checkedConvert('funcId', (v) => v as int?),
-          buffId: $checkedConvert('buffId', (v) => v as int?),
-          turn: $checkedConvert('turn', (v) => v as int? ?? -1),
-          count: $checkedConvert('count', (v) => v as int? ?? -1),
-          rate: $checkedConvert('rate', (v) => v as int? ?? 5000),
-          value: $checkedConvert('value', (v) => v as int? ?? 0),
+          funcId: $checkedConvert('funcId', (v) => (v as num?)?.toInt()),
+          buffId: $checkedConvert('buffId', (v) => (v as num?)?.toInt()),
+          turn: $checkedConvert('turn', (v) => (v as num?)?.toInt() ?? -1),
+          count: $checkedConvert('count', (v) => (v as num?)?.toInt() ?? -1),
+          rate: $checkedConvert('rate', (v) => (v as num?)?.toInt() ?? 5000),
+          value: $checkedConvert('value', (v) => (v as num?)?.toInt() ?? 0),
           enabled: $checkedConvert('enabled', (v) => v as bool? ?? false),
           useValue: $checkedConvert('useValue', (v) => v as bool? ?? true),
           target:
@@ -477,8 +483,8 @@ TdDamageOptions _$TdDamageOptionsFromJson(Map json) => $checkedCreate(
               'enemy',
               (v) =>
                   _$JsonConverterFromJson<Map<dynamic, dynamic>, QuestEnemy>(v, const _QuestEnemyConverter().fromJson)),
-          supports: $checkedConvert('supports', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          enemyCount: $checkedConvert('enemyCount', (v) => v as int? ?? 1),
+          supports: $checkedConvert('supports', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
+          enemyCount: $checkedConvert('enemyCount', (v) => (v as num?)?.toInt() ?? 1),
           usePlayerSvt: $checkedConvert('usePlayerSvt',
               (v) => $enumDecodeNullable(_$PreferPlayerSvtDataSourceEnumMap, v) ?? PreferPlayerSvtDataSource.none),
           classBoard: $checkedConvert('classBoard',
@@ -490,27 +496,28 @@ TdDamageOptions _$TdDamageOptionsFromJson(Map json) => $checkedCreate(
           twiceActiveSkill: $checkedConvert('twiceActiveSkill', (v) => v as bool? ?? false),
           enableAppendSkills: $checkedConvert('enableAppendSkills', (v) => v as bool? ?? false),
           svtLv: $checkedConvert('svtLv', (v) => $enumDecodeNullable(_$SvtLvEnumMap, v) ?? SvtLv.maxLv),
-          fouHpAtk: $checkedConvert('fouHpAtk', (v) => v as int? ?? 1000),
-          tdR3: $checkedConvert('tdR3', (v) => v as int? ?? 5),
-          tdR4: $checkedConvert('tdR4', (v) => v as int? ?? 2),
-          tdR5: $checkedConvert('tdR5', (v) => v as int? ?? 1),
-          oc: $checkedConvert('oc', (v) => v as int? ?? 1),
+          fouHpAtk: $checkedConvert('fouHpAtk', (v) => (v as num?)?.toInt() ?? 1000),
+          tdR3: $checkedConvert('tdR3', (v) => (v as num?)?.toInt() ?? 5),
+          tdR4: $checkedConvert('tdR4', (v) => (v as num?)?.toInt() ?? 2),
+          tdR5: $checkedConvert('tdR5', (v) => (v as num?)?.toInt() ?? 1),
+          oc: $checkedConvert('oc', (v) => (v as num?)?.toInt() ?? 1),
           fixedOC: $checkedConvert('fixedOC', (v) => v as bool? ?? true),
           region:
               $checkedConvert('region', (v) => v == null ? Region.jp : const RegionConverter().fromJson(v as String)),
-          ceId: $checkedConvert('ceId', (v) => v as int?),
-          ceLv: $checkedConvert('ceLv', (v) => v as int? ?? 0),
+          ceId: $checkedConvert('ceId', (v) => (v as num?)?.toInt()),
+          ceLv: $checkedConvert('ceLv', (v) => (v as num?)?.toInt() ?? 0),
           ceMLB: $checkedConvert('ceMLB', (v) => v as bool? ?? true),
-          mcId: $checkedConvert('mcId', (v) => v as int?),
-          mcLv: $checkedConvert('mcLv', (v) => v as int? ?? 10),
+          mcId: $checkedConvert('mcId', (v) => (v as num?)?.toInt()),
+          mcLv: $checkedConvert('mcLv', (v) => (v as num?)?.toInt() ?? 10),
           extraBuffs: $checkedConvert(
               'extraBuffs', (v) => v == null ? null : CustomSkillData.fromJson(Map<String, dynamic>.from(v as Map))),
-          fieldTraits: $checkedConvert('fieldTraits', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          warId: $checkedConvert('warId', (v) => v as int? ?? 0),
-          random: $checkedConvert('random', (v) => v as int? ?? 1000),
-          probabilityThreshold: $checkedConvert('probabilityThreshold', (v) => v as int? ?? 1000),
+          fieldTraits:
+              $checkedConvert('fieldTraits', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
+          warId: $checkedConvert('warId', (v) => (v as num?)?.toInt() ?? 0),
+          random: $checkedConvert('random', (v) => (v as num?)?.toInt() ?? 1000),
+          probabilityThreshold: $checkedConvert('probabilityThreshold', (v) => (v as num?)?.toInt() ?? 1000),
           forceDamageNpSe: $checkedConvert('forceDamageNpSe', (v) => v as bool? ?? false),
-          damageNpIndivSumCount: $checkedConvert('damageNpIndivSumCount', (v) => v as int?),
+          damageNpIndivSumCount: $checkedConvert('damageNpIndivSumCount', (v) => (v as num?)?.toInt()),
           damageNpHpRatioMax: $checkedConvert('damageNpHpRatioMax', (v) => v as bool? ?? false),
         );
         return val;
@@ -571,23 +578,26 @@ BattleReplayDelegateData _$BattleReplayDelegateDataFromJson(Map json) => $checke
       json,
       ($checkedConvert) {
         final val = BattleReplayDelegateData(
-          actWeightSelections:
-              $checkedConvert('actWeightSelections', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
-          skillActSelectSelections:
-              $checkedConvert('skillActSelectSelections', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
+          actWeightSelections: $checkedConvert(
+              'actWeightSelections', (v) => (v as List<dynamic>?)?.map((e) => (e as num?)?.toInt()).toList()),
+          skillActSelectSelections: $checkedConvert(
+              'skillActSelectSelections', (v) => (v as List<dynamic>?)?.map((e) => (e as num?)?.toInt()).toList()),
           tdTypeChanges: $checkedConvert(
               'tdTypeChanges',
               (v) => (v as List<dynamic>?)
                   ?.map((e) => $enumDecode(_$CardTypeEnumMap, e, unknownValue: CardType.none))
                   .toList()),
-          ptRandomIndexes:
-              $checkedConvert('ptRandomIndexes', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
+          ptRandomIndexes: $checkedConvert(
+              'ptRandomIndexes', (v) => (v as List<dynamic>?)?.map((e) => (e as num?)?.toInt()).toList()),
           canActivateDecisions:
               $checkedConvert('canActivateDecisions', (v) => (v as List<dynamic>?)?.map((e) => e as bool).toList()),
-          damageSelections:
-              $checkedConvert('damageSelections', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          replaceMemberIndexes: $checkedConvert('replaceMemberIndexes',
-              (v) => (v as List<dynamic>?)?.map((e) => (e as List<dynamic>).map((e) => e as int).toList()).toList()),
+          damageSelections: $checkedConvert(
+              'damageSelections', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
+          replaceMemberIndexes: $checkedConvert(
+              'replaceMemberIndexes',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => (e as List<dynamic>).map((e) => (e as num).toInt()).toList())
+                  .toList()),
         );
         return val;
       },
@@ -619,10 +629,10 @@ BattleActionOptions _$BattleActionOptionsFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = BattleActionOptions(
-          playerTarget: $checkedConvert('playerTarget', (v) => v as int? ?? 0),
-          enemyTarget: $checkedConvert('enemyTarget', (v) => v as int? ?? 0),
-          random: $checkedConvert('random', (v) => v as int? ?? 900),
-          threshold: $checkedConvert('threshold', (v) => v as int? ?? 1000),
+          playerTarget: $checkedConvert('playerTarget', (v) => (v as num?)?.toInt() ?? 0),
+          enemyTarget: $checkedConvert('enemyTarget', (v) => (v as num?)?.toInt() ?? 0),
+          random: $checkedConvert('random', (v) => (v as num?)?.toInt() ?? 900),
+          threshold: $checkedConvert('threshold', (v) => (v as num?)?.toInt() ?? 1000),
         );
         return val;
       },
@@ -644,8 +654,8 @@ BattleRecordData _$BattleRecordDataFromJson(Map json) => $checkedCreate(
               'options', (v) => v == null ? null : BattleActionOptions.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         $checkedConvert('type', (v) => val.type = $enumDecode(_$BattleRecordDataTypeEnumMap, v));
-        $checkedConvert('svt', (v) => val.svt = v as int?);
-        $checkedConvert('skill', (v) => val.skill = v as int?);
+        $checkedConvert('svt', (v) => val.svt = (v as num?)?.toInt());
+        $checkedConvert('skill', (v) => val.skill = (v as num?)?.toInt());
         $checkedConvert(
             'attacks',
             (v) => val.attacks = (v as List<dynamic>?)
@@ -684,8 +694,8 @@ BattleAttackRecordData _$BattleAttackRecordDataFromJson(Map json) => $checkedCre
       json,
       ($checkedConvert) {
         final val = BattleAttackRecordData(
-          svt: $checkedConvert('svt', (v) => v as int? ?? 0),
-          card: $checkedConvert('card', (v) => v as int?),
+          svt: $checkedConvert('svt', (v) => (v as num?)?.toInt() ?? 0),
+          card: $checkedConvert('card', (v) => (v as num?)?.toInt()),
           isTD: $checkedConvert('isTD', (v) => v as bool? ?? false),
           critical: $checkedConvert('critical', (v) => v as bool? ?? false),
           cardType: $checkedConvert('cardType', (v) => $enumDecodeNullable(_$CardTypeEnumMap, v) ?? CardType.none),

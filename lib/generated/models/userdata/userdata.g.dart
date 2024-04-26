@@ -11,14 +11,14 @@ UserData _$UserDataFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = UserData(
-          version: $checkedConvert('version', (v) => v as int?),
+          version: $checkedConvert('version', (v) => (v as num?)?.toInt()),
           appVer: $checkedConvert('appVer', (v) => v as String?),
-          curUserKey: $checkedConvert('curUserKey', (v) => v as int? ?? 0),
+          curUserKey: $checkedConvert('curUserKey', (v) => (v as num?)?.toInt() ?? 0),
           users: $checkedConvert('users',
               (v) => (v as List<dynamic>?)?.map((e) => User.fromJson(Map<String, dynamic>.from(e as Map))).toList()),
-          itemAbundantValue:
-              $checkedConvert('itemAbundantValue', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
-          svtAscensionIcon: $checkedConvert('svtAscensionIcon', (v) => v as int? ?? 1),
+          itemAbundantValue: $checkedConvert(
+              'itemAbundantValue', (v) => (v as List<dynamic>?)?.map((e) => (e as num?)?.toInt()).toList()),
+          svtAscensionIcon: $checkedConvert('svtAscensionIcon', (v) => (v as num?)?.toInt() ?? 1),
           preferAprilFoolIcon: $checkedConvert('preferAprilFoolIcon', (v) => v as bool? ?? false),
           customSvtIcon: $checkedConvert(
               'customSvtIcon',
@@ -59,18 +59,18 @@ User _$UserFromJson(Map json) => $checkedCreate(
           dupServantMapping: $checkedConvert(
               'dupServantMapping',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                    (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
                   )),
           plans: $checkedConvert(
               'plans',
               (v) =>
                   (v as List<dynamic>?)?.map((e) => UserPlan.fromJson(Map<String, dynamic>.from(e as Map))).toList()),
           sameEventPlan: $checkedConvert('sameEventPlan', (v) => v as bool? ?? true),
-          curSvtPlanNo: $checkedConvert('curSvtPlanNo', (v) => v as int? ?? 0),
+          curSvtPlanNo: $checkedConvert('curSvtPlanNo', (v) => (v as num?)?.toInt() ?? 0),
           items: $checkedConvert(
               'items',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                    (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
                   )),
           craftEssences: $checkedConvert(
               'craftEssences',
@@ -87,10 +87,11 @@ User _$UserFromJson(Map json) => $checkedCreate(
           mysticCodes: $checkedConvert(
               'mysticCodes',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                    (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
                   )),
           summons: $checkedConvert('summons', (v) => (v as List<dynamic>?)?.map((e) => e as String).toSet()),
-          myRoomMusic: $checkedConvert('myRoomMusic', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
+          myRoomMusic:
+              $checkedConvert('myRoomMusic', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
           classBoards: $checkedConvert(
               'classBoards',
               (v) => (v as Map?)?.map(
@@ -104,7 +105,7 @@ User _$UserFromJson(Map json) => $checkedCreate(
                     (k, e) => MapEntry(
                         k as String,
                         (e as Map).map(
-                          (k, e) => MapEntry(int.parse(k as String), e as int),
+                          (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
                         )),
                   )),
           saintQuartzPlan: $checkedConvert('saintQuartzPlan',
@@ -146,11 +147,12 @@ SvtStatus _$SvtStatusFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = SvtStatus(
           cur: $checkedConvert('cur', (v) => v == null ? null : SvtPlan.fromJson(Map<String, dynamic>.from(v as Map))),
-          priority: $checkedConvert('priority', (v) => v as int? ?? 1),
-          bond: $checkedConvert('bond', (v) => v as int? ?? 0),
-          equipCmdCodes: $checkedConvert('equipCmdCodes', (v) => (v as List<dynamic>?)?.map((e) => e as int?).toList()),
-          cmdCardStrengthen:
-              $checkedConvert('cmdCardStrengthen', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          priority: $checkedConvert('priority', (v) => (v as num?)?.toInt() ?? 1),
+          bond: $checkedConvert('bond', (v) => (v as num?)?.toInt() ?? 0),
+          equipCmdCodes:
+              $checkedConvert('equipCmdCodes', (v) => (v as List<dynamic>?)?.map((e) => (e as num?)?.toInt()).toList()),
+          cmdCardStrengthen: $checkedConvert(
+              'cmdCardStrengthen', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
         );
         return val;
       },
@@ -224,21 +226,22 @@ SvtPlan _$SvtPlanFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = SvtPlan(
           favorite: $checkedConvert('favorite', (v) => v as bool? ?? false),
-          ascension: $checkedConvert('ascension', (v) => v as int? ?? 0),
-          skills: $checkedConvert('skills', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
-          appendSkills: $checkedConvert('appendSkills', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          ascension: $checkedConvert('ascension', (v) => (v as num?)?.toInt() ?? 0),
+          skills: $checkedConvert('skills', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
+          appendSkills:
+              $checkedConvert('appendSkills', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
           costumes: $checkedConvert(
               'costumes',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                    (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
                   )),
-          grail: $checkedConvert('grail', (v) => v as int? ?? 0),
-          fouHp: $checkedConvert('fouHp', (v) => v as int? ?? 0),
-          fouAtk: $checkedConvert('fouAtk', (v) => v as int? ?? 0),
-          fouHp3: $checkedConvert('fouHp3', (v) => v as int? ?? 20),
-          fouAtk3: $checkedConvert('fouAtk3', (v) => v as int? ?? 20),
-          bondLimit: $checkedConvert('bondLimit', (v) => v as int? ?? 10),
-          npLv: $checkedConvert('npLv', (v) => v as int?),
+          grail: $checkedConvert('grail', (v) => (v as num?)?.toInt() ?? 0),
+          fouHp: $checkedConvert('fouHp', (v) => (v as num?)?.toInt() ?? 0),
+          fouAtk: $checkedConvert('fouAtk', (v) => (v as num?)?.toInt() ?? 0),
+          fouHp3: $checkedConvert('fouHp3', (v) => (v as num?)?.toInt() ?? 20),
+          fouAtk3: $checkedConvert('fouAtk3', (v) => (v as num?)?.toInt() ?? 20),
+          bondLimit: $checkedConvert('bondLimit', (v) => (v as num?)?.toInt() ?? 10),
+          npLv: $checkedConvert('npLv', (v) => (v as num?)?.toInt()),
         );
         return val;
       },
@@ -265,12 +268,12 @@ LimitEventPlan _$LimitEventPlanFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = LimitEventPlan(
           enabled: $checkedConvert('enabled', (v) => v as bool? ?? false),
-          rerunGrails: $checkedConvert('rerunGrails', (v) => v as int? ?? 0),
+          rerunGrails: $checkedConvert('rerunGrails', (v) => (v as num?)?.toInt() ?? 0),
           shop: $checkedConvert('shop', (v) => v as bool? ?? true),
           shopBuyCount: $checkedConvert(
               'shopBuyCount',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                    (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
                   )),
           point: $checkedConvert('point', (v) => v as bool? ?? true),
           mission: $checkedConvert('mission', (v) => v as bool? ?? true),
@@ -278,7 +281,7 @@ LimitEventPlan _$LimitEventPlanFromJson(Map json) => $checkedCreate(
           lotteries: $checkedConvert(
               'lotteries',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                    (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
                   )),
           treasureBoxItems: $checkedConvert(
               'treasureBoxItems',
@@ -286,7 +289,7 @@ LimitEventPlan _$LimitEventPlanFromJson(Map json) => $checkedCreate(
                     (k, e) => MapEntry(
                         int.parse(k as String),
                         (e as Map).map(
-                          (k, e) => MapEntry(int.parse(k as String), e as int),
+                          (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
                         )),
                   )),
           fixedDrop: $checkedConvert('fixedDrop', (v) => v as bool? ?? true),
@@ -303,13 +306,13 @@ LimitEventPlan _$LimitEventPlanFromJson(Map json) => $checkedCreate(
                     (k, e) => MapEntry(
                         int.parse(k as String),
                         (e as Map).map(
-                          (k, e) => MapEntry(int.parse(k as String), e as int),
+                          (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
                         )),
                   )),
           customItems: $checkedConvert(
               'customItems',
               (v) => (v as Map?)?.map(
-                    (k, e) => MapEntry(int.parse(k as String), e as int),
+                    (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
                   )),
         );
         return val;
@@ -358,7 +361,7 @@ ExchangeTicketPlan _$ExchangeTicketPlanFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = ExchangeTicketPlan(
-          counts: $checkedConvert('counts', (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
+          counts: $checkedConvert('counts', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
         );
         return val;
       },
@@ -373,9 +376,9 @@ CraftStatus _$CraftStatusFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = CraftStatus(
-          status: $checkedConvert('status', (v) => v as int? ?? CraftStatus.notMet),
-          lv: $checkedConvert('lv', (v) => v as int? ?? 1),
-          limitCount: $checkedConvert('limitCount', (v) => v as int? ?? 0),
+          status: $checkedConvert('status', (v) => (v as num?)?.toInt() ?? CraftStatus.notMet),
+          lv: $checkedConvert('lv', (v) => (v as num?)?.toInt() ?? 1),
+          limitCount: $checkedConvert('limitCount', (v) => (v as num?)?.toInt() ?? 0),
         );
         return val;
       },
@@ -392,8 +395,8 @@ CmdCodeStatus _$CmdCodeStatusFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = CmdCodeStatus(
-          status: $checkedConvert('status', (v) => v as int? ?? CmdCodeStatus.notMet),
-          count: $checkedConvert('count', (v) => v as int? ?? 0),
+          status: $checkedConvert('status', (v) => (v as num?)?.toInt() ?? CmdCodeStatus.notMet),
+          count: $checkedConvert('count', (v) => (v as num?)?.toInt() ?? 0),
         );
         return val;
       },
@@ -410,10 +413,10 @@ ClassBoardPlan _$ClassBoardPlanFromJson(Map json) => $checkedCreate(
       ($checkedConvert) {
         final val = ClassBoardPlan(
           enhancedSquares:
-              $checkedConvert('enhancedSquares', (v) => (v as List<dynamic>?)?.map((e) => e as int).toSet()),
+              $checkedConvert('enhancedSquares', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
         );
-        $checkedConvert(
-            'unlockedSquares', (v) => val.unlockedSquares = (v as List<dynamic>).map((e) => e as int).toSet());
+        $checkedConvert('unlockedSquares',
+            (v) => val.unlockedSquares = (v as List<dynamic>).map((e) => (e as num).toInt()).toSet());
         return val;
       },
     );
@@ -428,14 +431,14 @@ SaintQuartzPlan _$SaintQuartzPlanFromJson(Map json) => $checkedCreate(
       json,
       ($checkedConvert) {
         final val = SaintQuartzPlan(
-          curSQ: $checkedConvert('curSQ', (v) => v as int? ?? 0),
-          curTicket: $checkedConvert('curTicket', (v) => v as int? ?? 0),
-          curApple: $checkedConvert('curApple', (v) => v as int? ?? 0),
+          curSQ: $checkedConvert('curSQ', (v) => (v as num?)?.toInt() ?? 0),
+          curTicket: $checkedConvert('curTicket', (v) => (v as num?)?.toInt() ?? 0),
+          curApple: $checkedConvert('curApple', (v) => (v as num?)?.toInt() ?? 0),
           startDate: $checkedConvert('startDate', (v) => v == null ? null : DateTime.parse(v as String)),
           endDate: $checkedConvert('endDate', (v) => v == null ? null : DateTime.parse(v as String)),
-          accLogin: $checkedConvert('accLogin', (v) => v as int? ?? 1),
-          continuousLogin: $checkedConvert('continuousLogin', (v) => v as int? ?? 1),
-          eventDateDelta: $checkedConvert('eventDateDelta', (v) => v as int? ?? 365),
+          accLogin: $checkedConvert('accLogin', (v) => (v as num?)?.toInt() ?? 1),
+          continuousLogin: $checkedConvert('continuousLogin', (v) => (v as num?)?.toInt() ?? 1),
+          eventDateDelta: $checkedConvert('eventDateDelta', (v) => (v as num?)?.toInt() ?? 365),
           weeklyMission: $checkedConvert('weeklyMission', (v) => v as bool?),
           minusPlannedBanner: $checkedConvert('minusPlannedBanner', (v) => v as bool?),
           favoriteSummonOnly: $checkedConvert('favoriteSummonOnly', (v) => v as bool? ?? false),

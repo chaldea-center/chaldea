@@ -7,14 +7,14 @@ part of '../../../models/gamedata/message.dart';
 // **************************************************************************
 
 BattleMessage _$BattleMessageFromJson(Map json) => BattleMessage(
-      id: json['id'] as int,
-      idx: json['idx'] as int,
-      priority: json['priority'] as int,
+      id: (json['id'] as num).toInt(),
+      idx: (json['idx'] as num).toInt(),
+      priority: (json['priority'] as num).toInt(),
       releaseConditions: (json['releaseConditions'] as List<dynamic>?)
               ?.map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      motionId: json['motionId'] as int? ?? 0,
+      motionId: (json['motionId'] as num?)?.toInt() ?? 0,
       message: json['message'] as String? ?? '',
       script: (json['script'] as Map?)?.map(
             (k, e) => MapEntry(k as String, e),
@@ -33,8 +33,8 @@ Map<String, dynamic> _$BattleMessageToJson(BattleMessage instance) => <String, d
     };
 
 BattleMessageGroup _$BattleMessageGroupFromJson(Map json) => BattleMessageGroup(
-      groupId: json['groupId'] as int,
-      probability: json['probability'] as int,
+      groupId: (json['groupId'] as num).toInt(),
+      probability: (json['probability'] as num).toInt(),
       messages: (json['messages'] as List<dynamic>?)
               ?.map((e) => BattleMessage.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
