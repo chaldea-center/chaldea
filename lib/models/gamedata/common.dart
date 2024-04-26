@@ -1029,6 +1029,9 @@ enum CondType {
   commonValueBelow,
   commonValueEqual,
   elapsedTimeAfterQuestClear,
+  withStartingMember,
+  latestQuestPhaseEqual,
+  notLatestQuestPhaseEqual,
 }
 
 @JsonSerializable()

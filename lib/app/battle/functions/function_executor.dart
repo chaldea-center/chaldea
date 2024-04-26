@@ -359,6 +359,8 @@ class FunctionExecutor {
         case FuncType.damageValue:
         case FuncType.damageValueSafe:
         case FuncType.damageNpSafe:
+        case FuncType.gainMultiplyNp:
+        case FuncType.lossMultiplyNp:
         // ↑↑↑ should be implemented ↑↑↑
         case FuncType.subFieldBuff:
         case FuncType.damageNpAndCheckIndividuality:
@@ -448,7 +450,7 @@ class FunctionExecutor {
     final DataVals dataVals,
     final int effectiveness,
   ) {
-    if (dataVals.Value == null || effectiveness == 1000) {
+    if (dataVals.Value == null || effectiveness == 1000 || dataVals.IgnoreValueUp == 1) {
       return dataVals;
     }
 

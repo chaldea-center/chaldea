@@ -300,6 +300,14 @@ enum NiceAiCond {
   checkBattleValueBelow,
   checkBattleValueBetween,
   checkBattleValueNotBetween,
+  checkUseMasterSkillIndex,
+  checkUseMasterSkillIndexThisTurn,
+  countMasterSkillHigherThisTurn,
+  countMasterSkillLowerThisTurn,
+  countMasterSkillEqualThisTurn,
+  countMasterSkillHigherThisWave,
+  countMasterSkillLowerThisWave,
+  countMasterSkillEqualThisWave,
 }
 
 enum AiTiming {

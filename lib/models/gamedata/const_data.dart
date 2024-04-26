@@ -1206,6 +1206,14 @@ enum BuffAction {
   guts(126),
   preventInvisibleWhenInstantDeath(127),
   overwriteSubattribute(128),
+  avoidanceAttackDeathDamage(129),
+  avoidFunctionExecuteSelf(130),
+  functionContinue(131),
+  pierceSubdamage(132),
+  receiveDamagePierce(133),
+  specialReceiveDamage(134),
+  funcHpReduceValue(135),
+  changeBgm(136),
   ;
 
   final int id;

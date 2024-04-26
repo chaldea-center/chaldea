@@ -255,6 +255,14 @@ const _$NiceAiCondEnumMap = {
   NiceAiCond.checkBattleValueBelow: 'checkBattleValueBelow',
   NiceAiCond.checkBattleValueBetween: 'checkBattleValueBetween',
   NiceAiCond.checkBattleValueNotBetween: 'checkBattleValueNotBetween',
+  NiceAiCond.checkUseMasterSkillIndex: 'checkUseMasterSkillIndex',
+  NiceAiCond.checkUseMasterSkillIndexThisTurn: 'checkUseMasterSkillIndexThisTurn',
+  NiceAiCond.countMasterSkillHigherThisTurn: 'countMasterSkillHigherThisTurn',
+  NiceAiCond.countMasterSkillLowerThisTurn: 'countMasterSkillLowerThisTurn',
+  NiceAiCond.countMasterSkillEqualThisTurn: 'countMasterSkillEqualThisTurn',
+  NiceAiCond.countMasterSkillHigherThisWave: 'countMasterSkillHigherThisWave',
+  NiceAiCond.countMasterSkillLowerThisWave: 'countMasterSkillLowerThisWave',
+  NiceAiCond.countMasterSkillEqualThisWave: 'countMasterSkillEqualThisWave',
 };
 
 const _$AiTypeEnumMap = {

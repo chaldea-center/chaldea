@@ -172,7 +172,7 @@ class DataVals {
   int? get SkillReaction => _vals['SkillReaction'];
   int? get BehaveAsFamilyBuff => _vals['BehaveAsFamilyBuff'];
   int? get UnSubStateWhileLinkedToOthers => _vals['UnSubStateWhileLinkedToOthers'];
-  int? get AllowSubBgmPlaying => _vals['AllowSubBgmPlaying'];
+  // int? get AllowSubBgmPlaying => _vals['AllowSubBgmPlaying'];
   int? get NotAccompanyWhenLinkedTargetMoveState => _vals['NotAccompanyWhenLinkedTargetMoveState'];
   List<int>? get NotTargetSkillIdArray => _list('NotTargetSkillIdArray');
 
@@ -235,6 +235,21 @@ class DataVals {
   int? get IgnoreShiftSafeDamage => _vals['IgnoreShiftSafeDamage'];
   int? get ActAttackFunction => _vals['ActAttackFunction'];
   int? get DelayRemoveBuffExpiredOnPlayerTurn => _vals['DelayRemoveBuffExpiredOnPlayerTurn'];
+  int? get AllowRemoveBuff => _vals['AllowRemoveBuff'];
+  int? get NotExecFunctionIfKeepAliveOnWarBoard => _vals['NotExecFunctionIfKeepAliveOnWarBoard'];
+  List<int>? get SnapShotParamAddSelfIndv => _list('SnapShotParamAddSelfIndv');
+  List<int>? get SnapShotParamAddOpIndv => _list('SnapShotParamAddOpIndv');
+  List<int>? get SnapShotParamAddFieldIndv => _list('SnapShotParamAddFieldIndv');
+  int? get SnapShotParamAddValue => _vals['SnapShotParamAddValue'];
+  int? get SnapShotParamAddMaxValue => _vals['SnapShotParamAddMaxValue'];
+  int? get SnapShotParamAddMaxCount => _vals['SnapShotParamAddMaxCount'];
+  int? get NotExecOnTransform => _vals['NotExecOnTransform'];
+  int? get NotRemoveOnTransform => _vals['NotRemoveOnTransform'];
+  int? get PriorityBgm => _vals['PriorityBgm'];
+  int? get BgmAllowSubPlaying => _vals['BgmAllowSubPlaying'];
+  int? get BgPriority => _vals['BgPriority'];
+  int? get PriorityBg => _vals['PriorityBg'];
+  int? get ResetBgmPriorityAtWaveStart => _vals['ResetBgmPriorityAtWaveStart'];
 
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];

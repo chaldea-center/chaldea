@@ -577,6 +577,8 @@ enum FuncType {
   damageValueSafeOnce(137),
   addBattleValue(138),
   setBattleValue(139),
+  gainMultiplyNp(140),
+  lossMultiplyNp(141),
   ;
 
   final int id;

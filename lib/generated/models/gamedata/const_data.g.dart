@@ -415,6 +415,8 @@ const _$FuncTypeEnumMap = {
   FuncType.damageValueSafeOnce: 'damageValueSafeOnce',
   FuncType.addBattleValue: 'addBattleValue',
   FuncType.setBattleValue: 'setBattleValue',
+  FuncType.gainMultiplyNp: 'gainMultiplyNp',
+  FuncType.lossMultiplyNp: 'lossMultiplyNp',
 };
 
 BuffTypeDetail _$BuffTypeDetailFromJson(Map json) => BuffTypeDetail(
@@ -604,6 +606,15 @@ const _$BuffTypeEnumMap = {
   BuffType.treasureDeviceAfterFunctionMainOnly: 'treasureDeviceAfterFunctionMainOnly',
   BuffType.preventInvisibleWhenInstantDeath: 'preventInvisibleWhenInstantDeath',
   BuffType.overwriteSubattribute: 'overwriteSubattribute',
+  BuffType.avoidanceAttackDeathDamage: 'avoidanceAttackDeathDamage',
+  BuffType.avoidFunctionExecuteSelf: 'avoidFunctionExecuteSelf',
+  BuffType.pierceSubdamage: 'pierceSubdamage',
+  BuffType.continueFunction: 'continueFunction',
+  BuffType.addSpecialdamage: 'addSpecialdamage',
+  BuffType.subSpecialdamage: 'subSpecialdamage',
+  BuffType.addFuncHpReduce: 'addFuncHpReduce',
+  BuffType.subFuncHpReduce: 'subFuncHpReduce',
+  BuffType.changeBgm: 'changeBgm',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
   BuffType.toFieldSubIndividualityField: 'toFieldSubIndividualityField',
@@ -1380,4 +1391,12 @@ const _$BuffActionEnumMap = {
   BuffAction.guts: 'guts',
   BuffAction.preventInvisibleWhenInstantDeath: 'preventInvisibleWhenInstantDeath',
   BuffAction.overwriteSubattribute: 'overwriteSubattribute',
+  BuffAction.avoidanceAttackDeathDamage: 'avoidanceAttackDeathDamage',
+  BuffAction.avoidFunctionExecuteSelf: 'avoidFunctionExecuteSelf',
+  BuffAction.functionContinue: 'functionContinue',
+  BuffAction.pierceSubdamage: 'pierceSubdamage',
+  BuffAction.receiveDamagePierce: 'receiveDamagePierce',
+  BuffAction.specialReceiveDamage: 'specialReceiveDamage',
+  BuffAction.funcHpReduceValue: 'funcHpReduceValue',
+  BuffAction.changeBgm: 'changeBgm',
 };

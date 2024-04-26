@@ -60,8 +60,6 @@ class SubState {
     final BattleServantData? activator,
     final BattleServantData target,
   ) async {
-    // should check target on field first
-
     if (!battleData.checkTraits(CheckTraitParameters(requiredTraits: affectTraits, checkCurrentBuffTraits: true))) {
       return false;
     }

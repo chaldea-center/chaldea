@@ -186,6 +186,8 @@ const _$FuncTypeEnumMap = {
   FuncType.damageValueSafeOnce: 'damageValueSafeOnce',
   FuncType.addBattleValue: 'addBattleValue',
   FuncType.setBattleValue: 'setBattleValue',
+  FuncType.gainMultiplyNp: 'gainMultiplyNp',
+  FuncType.lossMultiplyNp: 'lossMultiplyNp',
 };
 
 const _$FuncTargetTypeEnumMap = {
