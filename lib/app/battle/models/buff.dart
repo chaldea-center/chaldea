@@ -240,6 +240,7 @@ class BuffData {
           checkActorNpTraits: checkActorNpTraits,
           checkCurrentBuffTraits: true,
           checkCurrentCardTraits: true,
+          checkCurrentFuncTraits: true,
         ));
 
         final opponentCheck = battleData.checkTraits(CheckTraitParameters(
@@ -254,6 +255,7 @@ class BuffData {
           checkActorNpTraits: checkActorNpTraits,
           checkCurrentBuffTraits: true,
           checkCurrentCardTraits: true,
+          checkCurrentFuncTraits: true,
         ));
 
         return selfCheck && opponentCheck;

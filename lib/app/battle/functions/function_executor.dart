@@ -181,7 +181,7 @@ class FunctionExecutor {
       defaultToPlayer: defaultToPlayer,
     );
 
-    return await battleData.withFunction(() async {
+    return await battleData.withFunction(function, () async {
       for (final target in targets) {
         battleData.setFuncResult(target.uniqueId, false);
       }
@@ -205,6 +205,11 @@ class FunctionExecutor {
       }
 
       if (!triggeredPositionCheck(battleData, dataVals) || !triggeredPositionAllCheck(battleData, dataVals)) {
+        battleData.updateLastFuncResults(function.funcId, funcIndex);
+        return true;
+      }
+
+      if (await activator?.hasBuffOnAction(battleData, BuffAction.avoidFunctionExecuteSelf) ?? false) {
         battleData.updateLastFuncResults(function.funcId, funcIndex);
         return true;
       }

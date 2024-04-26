@@ -204,14 +204,21 @@ class BattleData {
     }
   }
 
-  Future<T> withFunction<T>(final FutureOr<T> Function() onExecute) async {
-    final sanityCheck = _curFuncResults.length;
+  final List<NiceFunction?> _currentExecutingFunction = [];
+  NiceFunction? get currentExecutingFunction => _currentExecutingFunction.lastOrNull;
+
+  Future<T> withFunction<T>(final NiceFunction? function, final FutureOr<T> Function() onExecute) async {
+    final sanityCheckCurFuncResults = _curFuncResults.length;
+    final sanityCheckCurExecFunc = _currentExecutingFunction.length;
     final Map<int, bool> funcStacks = {};
     try {
+      _currentExecutingFunction.add(function);
       _curFuncResults.add(funcStacks);
       return await onExecute();
     } finally {
-      StackMismatchException.checkPopStack(_curFuncResults, funcStacks, sanityCheck);
+      StackMismatchException.checkPopStack(_curFuncResults, funcStacks, sanityCheckCurFuncResults);
+      StackMismatchException.checkPopStack(_currentExecutingFunction, function, sanityCheckCurExecFunc);
+      _currentExecutingFunction.removeLast();
       _curFuncResults.removeLast();
     }
   }
@@ -363,6 +370,7 @@ class BattleData {
 
     _functionResultsStack.clear();
     _curFuncResults.clear();
+    _currentExecutingFunction.clear();
     _currentCard.clear();
     _currentBuff.clear();
     _activator.clear();
@@ -760,6 +768,13 @@ class BattleData {
       currentTraits.addAll(currentCard!.traits);
       if (currentCard!.critical) {
         currentTraits.add(NiceTrait(id: Trait.criticalHit.id));
+      }
+    }
+
+    if (params.checkCurrentFuncTraits && currentExecutingFunction != null) {
+      final List<NiceTrait>? functionTraits = currentExecutingFunction!.script?.funcIndividuality;
+      if (functionTraits != null) {
+        currentTraits.addAll(functionTraits);
       }
     }
 
@@ -1330,7 +1345,7 @@ class BattleData {
     }
 
     await withFunctions(() async {
-      await withFunction(() async {
+      await withFunction(null, () async {
         final List<BattleServantData> targets = [];
         await withActivator(actor, () async {
           if (card.cardDetail.attackType == CommandCardAttackType.all) {
@@ -1359,7 +1374,7 @@ class BattleData {
   Future<void> _applyTypeChain(final CardType cardType, final List<CombatAction> actions) async {
     battleLogger.action('${cardType.name} Chain');
     await withFunctions(() async {
-      await withFunction(() async {
+      await withFunction(null, () async {
         if (cardType == CardType.quick) {
           final dataValToUse = options.mightyChain ? quickChainAfter7thAnni : quickChainBefore7thAnni;
           GainStar.gainStar(this, dataValToUse);

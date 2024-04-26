@@ -112,6 +112,7 @@ class CheckTraitParameters {
   bool checkActorNpTraits;
   bool checkCurrentBuffTraits;
   bool checkCurrentCardTraits;
+  bool checkCurrentFuncTraits;
   bool checkQuestTraits;
 
   CheckTraitParameters({
@@ -125,6 +126,7 @@ class CheckTraitParameters {
     this.checkActorNpTraits = false,
     this.checkCurrentBuffTraits = false,
     this.checkCurrentCardTraits = false,
+    this.checkCurrentFuncTraits = false,
     this.checkQuestTraits = false,
     this.positiveMatchFunction = partialMatch,
     this.negativeMatchFunction = partialMatch,

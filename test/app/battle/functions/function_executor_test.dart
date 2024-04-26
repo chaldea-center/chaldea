@@ -358,6 +358,34 @@ void main() async {
       expect(battle.checkDuplicateFuncData[3]![460]![cursedArm.uniqueId], true);
       expect(battle.checkDuplicateFuncData[4]![470], null);
     });
+
+    test('Function checks avoidFunctionExecuteSelf', () async {
+      await battle.init(
+        db.gameData.questPhases[9300040603]!,
+        [
+          PlayerSvtData.id(502800) // Illyasviel
+            ..tdLv = 5
+            ..setNpStrengthenLv(2)
+            ..lv = 90,
+          PlayerSvtData.id(2501400), // Aoko
+        ],
+        null,
+      );
+      final illya = battle.onFieldAllyServants[0]!;
+      illya.np = 10000;
+      final buffCountBefore = illya.battleBuff.originalActiveList.length;
+      final npCard = illya.getNPCard()!;
+      await battle.playerTurn([CombatAction(illya, npCard)]);
+      final buffCountAfter = illya.battleBuff.originalActiveList.length;
+      expect(buffCountAfter, buffCountBefore + 4);
+
+      illya.np = 10000;
+      await battle.activateSvtSkill(1, 2);
+      final buffCountBefore2 = illya.battleBuff.originalActiveList.length;
+      await battle.playerTurn([CombatAction(illya, npCard)]);
+      final buffCountAfter2 = illya.battleBuff.originalActiveList.length;
+      expect(buffCountAfter2, buffCountBefore2 + 2);
+    });
   });
 
   group('Individual function types', () {
