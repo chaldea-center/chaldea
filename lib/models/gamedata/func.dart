@@ -454,9 +454,11 @@ class FuncGroup {
 @JsonSerializable()
 class FuncScript {
   List<List<NiceTrait>>? overwriteTvals;
+  List<NiceTrait>? funcIndividuality;
 
   FuncScript({
     this.overwriteTvals,
+    this.funcIndividuality,
   });
 
   factory FuncScript.fromJson(Map<String, dynamic> json) => _$FuncScriptFromJson(json);

@@ -303,11 +303,16 @@ Map<String, dynamic> _$SvtExpCurveToJson(SvtExpCurve instance) => <String, dynam
 FuncTypeDetail _$FuncTypeDetailFromJson(Map json) => FuncTypeDetail(
       funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ?? FuncType.unknown,
       ignoreValueUp: json['ignoreValueUp'] as bool,
+      individuality: (json['individuality'] as List<dynamic>?)
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$FuncTypeDetailToJson(FuncTypeDetail instance) => <String, dynamic>{
       'funcType': _$FuncTypeEnumMap[instance.funcType]!,
       'ignoreValueUp': instance.ignoreValueUp,
+      'individuality': instance.individuality.map((e) => e.toJson()).toList(),
     };
 
 const _$FuncTypeEnumMap = {

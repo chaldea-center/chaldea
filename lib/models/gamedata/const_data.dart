@@ -294,10 +294,12 @@ class SvtExpCurve {
 class FuncTypeDetail {
   final FuncType funcType;
   final bool ignoreValueUp;
+  final List<NiceTrait> individuality;
 
   FuncTypeDetail({
     this.funcType = FuncType.unknown,
     required this.ignoreValueUp,
+    this.individuality = const [],
   });
 
   factory FuncTypeDetail.fromJson(Map<String, dynamic> json) => _$FuncTypeDetailFromJson(json);

@@ -305,8 +305,12 @@ FuncScript _$FuncScriptFromJson(Map json) => FuncScript(
           ?.map(
               (e) => (e as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList())
           .toList(),
+      funcIndividuality: (json['funcIndividuality'] as List<dynamic>?)
+          ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
     );
 
 Map<String, dynamic> _$FuncScriptToJson(FuncScript instance) => <String, dynamic>{
       'overwriteTvals': instance.overwriteTvals?.map((e) => e.map((e) => e.toJson()).toList()).toList(),
+      'funcIndividuality': instance.funcIndividuality?.map((e) => e.toJson()).toList(),
     };
