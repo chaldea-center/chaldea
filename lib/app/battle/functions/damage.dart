@@ -53,10 +53,15 @@ class Damage {
     if (shouldTrigger) {
       for (final target in targets) {
         await battleData.withTarget(target, () async {
-          await activator.activateBuffOnAction(battleData, BuffAction.functionCommandcodeattackBefore);
+          await activator.activateBuffOnActions(battleData, [
+            BuffAction.functionCommandcodeattackBefore,
+            BuffAction.functionCommandcodeattackBeforeMainOnly,
+          ]);
           await activator.activateBuffOnActions(battleData, [
             if (!currentCard.isTD) BuffAction.functionCommandattackBefore,
+            if (!currentCard.isTD) BuffAction.functionCommandattackBeforeMainOnly,
             BuffAction.functionAttackBefore,
+            BuffAction.functionAttackBeforeMainOnly
           ]);
         });
       }
@@ -310,10 +315,15 @@ class Damage {
     if (shouldTrigger) {
       for (final target in targets) {
         await battleData.withTarget(target, () async {
-          await activator.activateBuffOnAction(battleData, BuffAction.functionCommandcodeattackAfter);
+          await activator.activateBuffOnActions(battleData, [
+            BuffAction.functionCommandcodeattackAfter,
+            BuffAction.functionCommandcodeattackAfterMainOnly
+          ]);
           await activator.activateBuffOnActions(battleData, [
             if (!currentCard.isTD) BuffAction.functionCommandattackAfter,
+            if (!currentCard.isTD) BuffAction.functionCommandattackAfterMainOnly,
             BuffAction.functionAttackAfter,
+            BuffAction.functionAttackAfterMainOnly,
           ]);
         });
       }
