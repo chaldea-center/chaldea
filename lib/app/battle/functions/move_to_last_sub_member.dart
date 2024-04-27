@@ -24,7 +24,7 @@ class MoveToLastSubMember {
       }
 
       final onFieldList = target.isPlayer ? battleData.onFieldAllyServants : battleData.onFieldEnemies;
-      final backupList = target.isPlayer ? battleData.playerDataList : battleData.enemyDataList;
+      final backupList = target.isPlayer ? battleData.backupAllyServants : battleData.backupEnemies;
 
       final onFieldIndex = onFieldList.indexOf(target);
       final backupIndex = backupList.indexOf(target);

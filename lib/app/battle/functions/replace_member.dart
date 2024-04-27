@@ -26,7 +26,7 @@ class ReplaceMember {
     }
 
     final List<BattleServantData?> onFieldList = battleData.onFieldAllyServants;
-    final List<BattleServantData?> backupList = battleData.playerDataList;
+    final List<BattleServantData?> backupList = battleData.backupAllyServants;
 
     final Tuple2<BattleServantData, BattleServantData>? selections;
     if (battleData.delegate?.replaceMember != null) {

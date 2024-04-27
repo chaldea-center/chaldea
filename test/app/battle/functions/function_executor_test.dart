@@ -673,9 +673,9 @@ void main() async {
       final onField1 = battle.onFieldAllyServants[0]!;
       final onField2 = battle.onFieldAllyServants[1]!;
       final crane = battle.onFieldAllyServants[2]!;
-      final backup1 = battle.playerDataList[0]!;
-      final backup2 = battle.playerDataList[1]!;
-      final backup3 = battle.playerDataList[2]!;
+      final backup1 = battle.backupAllyServants[0]!;
+      final backup2 = battle.backupAllyServants[1]!;
+      final backup3 = battle.backupAllyServants[2]!;
       expect(onField1.fieldIndex, 0);
       expect(onField2.fieldIndex, 1);
       expect(crane.fieldIndex, 2);
@@ -686,8 +686,8 @@ void main() async {
 
       await battle.playerTurn([CombatAction(crane, crane.getNPCard()!)]);
 
-      expect(battle.playerDataList.length, 3);
-      expect(battle.playerDataList.last, crane);
+      expect(battle.backupAllyServants.length, 3);
+      expect(battle.backupAllyServants.last, crane);
       expect(onField1.fieldIndex, 0);
       expect(onField2.fieldIndex, 1);
       expect(backup1.fieldIndex, 2);
@@ -1038,14 +1038,14 @@ void main() async {
       final arash = battle.onFieldAllyServants[0]!;
       final onField2 = battle.onFieldAllyServants[1]!;
       final onField3 = battle.onFieldAllyServants[2]!;
-      final backup1 = battle.playerDataList[0]!;
-      final backup2 = battle.playerDataList[1]!;
+      final backup1 = battle.backupAllyServants[0]!;
+      final backup2 = battle.backupAllyServants[1]!;
       expect(arash.fieldIndex, 0);
       expect(onField2.fieldIndex, 1);
       expect(onField3.fieldIndex, 2);
       expect(backup1.fieldIndex, 3);
       expect(backup2.fieldIndex, 4);
-      expect(battle.playerDataList.length, 2);
+      expect(battle.backupAllyServants.length, 2);
       await battle.activateSvtSkill(1, 0);
       await battle.playerTurn([CombatAction(arash, arash.getNPCard()!)]);
 
@@ -1055,7 +1055,7 @@ void main() async {
       expect(onField2.fieldIndex, 1);
       expect(onField3.fieldIndex, 2);
       expect(backup2.fieldIndex, 3);
-      expect(battle.playerDataList.length, 1);
+      expect(battle.backupAllyServants.length, 1);
     });
 
     test('lossHpSafe & gainHp', () async {

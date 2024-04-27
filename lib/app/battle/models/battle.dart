@@ -98,8 +98,8 @@ class BattleData {
   FieldAiManager fieldAi = FieldAiManager();
 
   int enemyOnFieldCount = 3;
-  List<BattleServantData?> enemyDataList = [];
-  List<BattleServantData?> playerDataList = [];
+  List<BattleServantData?> backupEnemies = [];
+  List<BattleServantData?> backupAllyServants = [];
   List<bool> enemyValidAppear = [];
   List<BattleServantData?> onFieldEnemies = [];
   List<BattleServantData?> onFieldAllyServants = [];
@@ -122,16 +122,18 @@ class BattleData {
 
   List<BattleServantData> get nonnullActors => [...nonnullEnemies, ...nonnullPlayers];
 
-  List<BattleServantData> get nonnullBackupEnemies => _getNonnull(enemyDataList);
+  List<BattleServantData> get nonnullBackupEnemies => _getNonnull(backupEnemies);
 
-  List<BattleServantData> get nonnullBackupPlayers => _getNonnull(playerDataList);
+  List<BattleServantData> get nonnullBackupPlayers => _getNonnull(backupAllyServants);
 
   BattleServantData? getServantData(int uniqueId, {bool onFieldOnly = false}) {
-    final targets = onFieldOnly ? [...onFieldAllyServants, ...onFieldEnemies] : [...playerDataList, ...enemyDataList];
+    final targets = onFieldOnly
+        ? [...onFieldAllyServants, ...onFieldEnemies]
+        : [...onFieldAllyServants, ...onFieldEnemies, ...backupAllyServants, ...backupEnemies];
     return targets.firstWhereOrNull((e) => e?.uniqueId == uniqueId);
   }
 
-  bool get isWaveCleared => enemyDataList.isEmpty && nonnullEnemies.isEmpty;
+  bool get isWaveCleared => backupEnemies.isEmpty && nonnullEnemies.isEmpty;
 
   List<BuffData> fieldBuffs = [];
   MysticCode? mysticCode;
@@ -350,7 +352,7 @@ class BattleData {
 
   bool get isBattleWin {
     return waveCount >= Maths.max(niceQuest?.stages.map((e) => e.wave) ?? [], -1) &&
-        (curStage == null || (enemyDataList.isEmpty && onFieldEnemies.every((e) => e == null)));
+        (curStage == null || (backupEnemies.isEmpty && onFieldEnemies.every((e) => e == null)));
   }
 
   bool get isBattleFinished => nonnullEnemies.isEmpty || nonnullPlayers.isEmpty;
@@ -383,7 +385,7 @@ class BattleData {
 
     fieldBuffs.clear();
 
-    playerDataList = playerSettings
+    backupAllyServants = playerSettings
         .map((svtSetting) => svtSetting == null || svtSetting.svt == null
             ? null
             : BattleServantData.fromPlayerSvtData(svtSetting, getNextUniqueId()))
@@ -412,24 +414,24 @@ class BattleData {
     }
 
     onFieldAllyServants = List.filled(playerOnFieldCount, null);
-    while (playerDataList.isNotEmpty && onFieldAllyServants.contains(null)) {
-      final svt = playerDataList.removeAt(0);
+    while (backupAllyServants.isNotEmpty && onFieldAllyServants.contains(null)) {
+      final svt = backupAllyServants.removeAt(0);
       final nextIndex = onFieldAllyServants.indexOf(null);
       svt?.deckIndex = nextIndex + 1;
       onFieldAllyServants[nextIndex] = svt;
     }
 
     onFieldEnemies = List.filled(enemyOnFieldCount, null);
-    for (int index = 0; index < enemyDataList.length; index += 1) {
-      final enemy = enemyDataList[index];
+    for (int index = 0; index < backupEnemies.length; index += 1) {
+      final enemy = backupEnemies[index];
       if (enemy == null) {
-        enemyDataList.removeAt(index);
+        backupEnemies.removeAt(index);
         index -= 1;
         continue;
       }
 
       if (enemy.deckIndex <= onFieldEnemies.length) {
-        enemyDataList.removeAt(index);
+        backupEnemies.removeAt(index);
         index -= 1;
         onFieldEnemies[enemy.deckIndex - 1] = enemy;
       }
@@ -439,9 +441,9 @@ class BattleData {
 
     final List<BattleServantData?> allActors = [
       ...onFieldEnemies,
-      ...enemyDataList,
+      ...backupEnemies,
       ...onFieldAllyServants,
-      ...playerDataList,
+      ...backupAllyServants,
     ];
 
     for (final actor in allActors) {
@@ -558,16 +560,16 @@ class BattleData {
     await _fetchWaveEnemies();
 
     onFieldEnemies = List.filled(enemyOnFieldCount, null);
-    for (int index = 0; index < enemyDataList.length; index += 1) {
-      final enemy = enemyDataList[index];
+    for (int index = 0; index < backupEnemies.length; index += 1) {
+      final enemy = backupEnemies[index];
       if (enemy == null) {
-        enemyDataList.removeAt(index);
+        backupEnemies.removeAt(index);
         index -= 1;
         continue;
       }
 
       if (enemy.deckIndex <= onFieldEnemies.length) {
-        enemyDataList.removeAt(index);
+        backupEnemies.removeAt(index);
         index -= 1;
         onFieldEnemies[enemy.deckIndex - 1] = enemy;
       }
@@ -575,7 +577,7 @@ class BattleData {
 
     _updateTargetedIndex();
 
-    final List<BattleServantData?> newEnemies = [...onFieldEnemies, ...enemyDataList];
+    final List<BattleServantData?> newEnemies = [...onFieldEnemies, ...backupEnemies];
     for (final actor in newEnemies) {
       await actor?.initScript(this);
     }
@@ -602,10 +604,10 @@ class BattleData {
 
     if (replenishAlly) {
       for (int index = 0; index < onFieldAllyServants.length; index += 1) {
-        if (onFieldAllyServants[index] == null && playerDataList.isNotEmpty) {
+        if (onFieldAllyServants[index] == null && backupAllyServants.isNotEmpty) {
           BattleServantData? nextSvt;
-          while (playerDataList.isNotEmpty && nextSvt == null) {
-            nextSvt = playerDataList.removeAt(0);
+          while (backupAllyServants.isNotEmpty && nextSvt == null) {
+            nextSvt = backupAllyServants.removeAt(0);
           }
           if (nextSvt != null) {
             onFieldAllyServants[index] = nextSvt;
@@ -623,10 +625,10 @@ class BattleData {
           continue;
         }
 
-        if (onFieldEnemies[index] == null && enemyDataList.isNotEmpty) {
+        if (onFieldEnemies[index] == null && backupEnemies.isNotEmpty) {
           BattleServantData? nextSvt;
-          while (enemyDataList.isNotEmpty && nextSvt == null) {
-            nextSvt = enemyDataList.removeAt(0);
+          while (backupEnemies.isNotEmpty && nextSvt == null) {
+            nextSvt = backupEnemies.removeAt(0);
           }
           if (nextSvt != null) {
             onFieldEnemies[index] = nextSvt;
@@ -646,7 +648,7 @@ class BattleData {
   Future<void> _fetchWaveEnemies() async {
     curStage = niceQuest?.stages.firstWhereOrNull((s) => s.wave == waveCount);
     enemyOnFieldCount = curStage?.enemyFieldPosCount ?? 3;
-    enemyDataList = List.filled(enemyOnFieldCount, null, growable: true);
+    backupEnemies = List.filled(enemyOnFieldCount, null, growable: true);
     enemyValidAppear = List.filled(enemyOnFieldCount, true);
     final noEntryIds = curStage?.NoEntryIds;
     if (noEntryIds != null) {
@@ -661,11 +663,11 @@ class BattleData {
     if (curStage != null) {
       for (final enemy in curStage!.enemies) {
         if (enemy.deck == DeckType.enemy) {
-          if (enemy.deckId > enemyDataList.length) {
-            enemyDataList.length = enemy.deckId;
+          if (enemy.deckId > backupEnemies.length) {
+            backupEnemies.length = enemy.deckId;
           }
 
-          final actor = enemyDataList[enemy.deckId - 1] = BattleServantData.fromEnemy(enemy, getNextUniqueId());
+          final actor = backupEnemies[enemy.deckId - 1] = BattleServantData.fromEnemy(enemy, getNextUniqueId());
           if (options.simulateEnemy) {
             await actor.loadEnemySvtData(this);
           }
@@ -806,14 +808,14 @@ class BattleData {
     for (int index = 0; index < onFieldAllyServants.length; index += 1) {
       onFieldAllyServants[index]?.fieldIndex = index;
     }
-    for (int index = 0; index < playerDataList.length; index += 1) {
-      playerDataList[index]?.fieldIndex = onFieldAllyServants.length + index;
+    for (int index = 0; index < backupAllyServants.length; index += 1) {
+      backupAllyServants[index]?.fieldIndex = onFieldAllyServants.length + index;
     }
     for (int index = 0; index < onFieldEnemies.length; index += 1) {
       onFieldEnemies[index]?.fieldIndex = index;
     }
-    for (int index = 0; index < enemyDataList.length; index += 1) {
-      enemyDataList[index]?.fieldIndex = onFieldEnemies.length + index;
+    for (int index = 0; index < backupEnemies.length; index += 1) {
+      backupEnemies[index]?.fieldIndex = onFieldEnemies.length + index;
     }
   }
 
@@ -1259,7 +1261,7 @@ class BattleData {
         recorder.skipWave(waveCount);
 
         onFieldEnemies.fillRange(0, onFieldEnemies.length);
-        enemyDataList.clear();
+        backupEnemies.clear();
 
         await _endPlayerTurn();
 
@@ -1618,8 +1620,8 @@ class BattleData {
       ..fieldAi = fieldAi
       ..enemyOnFieldCount = enemyOnFieldCount
       ..enemyValidAppear = enemyValidAppear.toList()
-      ..enemyDataList = enemyDataList.map((e) => e?.copy()).toList()
-      ..playerDataList = playerDataList.map((e) => e?.copy()).toList()
+      ..backupEnemies = backupEnemies.map((e) => e?.copy()).toList()
+      ..backupAllyServants = backupAllyServants.map((e) => e?.copy()).toList()
       ..onFieldEnemies = onFieldEnemies.map((e) => e?.copy()).toList()
       ..onFieldAllyServants = onFieldAllyServants.map((e) => e?.copy()).toList()
       ..enemyDecks = enemyDecks
@@ -1654,8 +1656,8 @@ class BattleData {
       ..fieldAi = copy.fieldAi
       ..enemyOnFieldCount = copy.enemyOnFieldCount
       ..enemyValidAppear = copy.enemyValidAppear
-      ..enemyDataList = copy.enemyDataList
-      ..playerDataList = copy.playerDataList
+      ..backupEnemies = copy.backupEnemies
+      ..backupAllyServants = copy.backupAllyServants
       ..onFieldEnemies = copy.onFieldEnemies
       ..onFieldAllyServants = copy.onFieldAllyServants
       ..enemyDecks = copy.enemyDecks
