@@ -268,6 +268,26 @@ class BuffData {
     final BattleServantData self, [
     final BattleServantData? opponent,
   ]) async {
+    return shouldApplyBuff(battleData, self, opponent) && await probabilityCheck(battleData);
+  }
+
+  Future<bool> shouldActivateToleranceSubstate(
+      final BattleData battleData, final Iterable<NiceTrait> affectedTraits) async {
+    final bool shouldTolerate = checkTraitFunction(
+      affectedTraits,
+      buff.ckOpIndv,
+      getMatchFunc(buff.script.checkIndvType),
+      getMatchFunc(buff.script.checkIndvType),
+    );
+    return shouldTolerate && await probabilityCheck(battleData);
+  }
+
+  bool Function(Iterable<NiceTrait> myTraits, Iterable<NiceTrait> unsignedRequiredTraits) getMatchFunc(
+      final int? checkIndivType) {
+    return checkIndivType == null || checkIndivType == 0 || checkIndivType == 2 ? partialMatch : allMatch;
+  }
+
+  Future<bool> probabilityCheck(final BattleData battleData) async {
     final probabilityCheck = await battleData.canActivate(
         buffRate,
         '${battleData.activator?.lBattleName ?? S.current.battle_no_source}'
@@ -279,7 +299,7 @@ class BuffData {
           '${battleData.options.tailoredExecution ? '' : ' [$buffRate vs ${battleData.options.threshold}]'}');
     }
 
-    return probabilityCheck && shouldApplyBuff(battleData, self, opponent);
+    return probabilityCheck;
   }
 
   bool checkDataVals(final BattleData battleData) {

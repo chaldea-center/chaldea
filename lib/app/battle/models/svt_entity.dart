@@ -1140,6 +1140,39 @@ class BattleServantData {
     return capBuffValue(actionDetails, totalVal, maxRate);
   }
 
+  Future<int> getBuffValueForToleranceSubstate(
+    final BattleData battleData,
+    final Iterable<NiceTrait> affectTraits,
+    final BattleServantData? activator, //  tolerance substate so opponent is activator of function
+  ) async {
+    final actionDetails = ConstData.buffActions[BuffAction.toleranceSubstate];
+    if (actionDetails == null) {
+      return 0;
+    }
+
+    int totalVal = 0;
+    int? maxRate;
+
+    for (final buff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.toleranceSubstate)) {
+      if (await buff.shouldActivateToleranceSubstate(battleData, affectTraits)) {
+        buff.setUsed(this);
+        // should not have effectiveness on this
+        // final totalEffectiveness = await battleData.withBuff(buff, () async {
+        //   return await getEffectivenessOnAction(battleData, buffAction);
+        // });
+
+        final value = (buff.getValue(battleData, this, activator)).toInt();
+        if (actionDetails.plusTypes.contains(buff.buff.type)) {
+          totalVal += value;
+        } else if (actionDetails.minusTypes.contains(buff.buff.type)) {
+          totalVal -= value;
+        }
+        maxRate = maxRate == null ? buff.buff.maxRate : max(maxRate, buff.buff.maxRate);
+      }
+    }
+    return capBuffValue(actionDetails, totalVal, maxRate);
+  }
+
   Future<int> getTurnEndHpReduceValue(final BattleData battleData, {final bool forHeal = false}) async {
     final actionDetails = ConstData.buffActions[BuffAction.turnendHpReduce];
     if (actionDetails == null) {

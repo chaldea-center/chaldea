@@ -76,7 +76,7 @@ class SubState {
     if (buff.vals.UnSubState == 1 && dataVals.ForceSubState != 1) return false;
     if (dataVals.ForceSubState == 1) return true;
 
-    final toleranceSubState = await target.getBuffValueOnAction(battleData, BuffAction.toleranceSubstate);
+    final toleranceSubState = await target.getBuffValueForToleranceSubstate(battleData, affectTraits, activator);
     final grantSubState = await activator?.getBuffValueOnAction(battleData, BuffAction.grantSubstate) ?? 0;
 
     final functionRate = dataVals.Rate ?? 1000;
