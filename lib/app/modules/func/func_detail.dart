@@ -210,6 +210,7 @@ class _FuncDetailPageState extends State<FuncDetailPage>
             alignment: AlignmentDirectional.centerEnd,
           )
         ]),
+      ..._buildScript(),
       if (func.buffs.isNotEmpty) ...[
         CustomTableRow.fromTexts(texts: const ["Buff"], isHeader: true),
         SimpleAccordion(
@@ -265,6 +266,24 @@ class _FuncDetailPageState extends State<FuncDetailPage>
           ? const Text('-')
           : SharedBuilder.traitList(context: context, traits: func.functvals);
     }
+  }
+
+  List<Widget> _buildScript() {
+    List<Widget> children = [];
+    if (func.script?.funcIndividuality?.isNotEmpty == true) {
+      children.add(CustomTableRow(children: [
+        TableCellData(text: "funcIndividuality", isHeader: true),
+        TableCellData(
+          child: SharedBuilder.traitList(context: context, traits: func.script!.funcIndividuality!),
+          flex: 3,
+          alignment: AlignmentDirectional.centerEnd,
+        )
+      ]));
+    }
+    if (children.isNotEmpty) {
+      children.insert(0, CustomTableRow.fromTexts(texts: const ['Script'], isHeader: true));
+    }
+    return children;
   }
 }
 

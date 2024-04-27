@@ -9,6 +9,7 @@ enum _FuncCheckPos {
   tvals,
   questtvals,
   traitVals,
+  script,
 }
 
 class TraitFuncTab extends StatefulWidget {
@@ -32,9 +33,13 @@ class _TraitFuncTabState extends State<TraitFuncTab> {
 
     for (final func in funcs) {
       final positions = [
-        if (Individuality.containsAllAB(func.functvals, ids, signed: false)) _FuncCheckPos.tvals,
+        if (Individuality.containsAllAB(func.functvals, ids, signed: false) ||
+            Individuality.containsAllAB(func.script?.overwriteTvals?.expand((e) => e).toList() ?? [], ids,
+                signed: false))
+          _FuncCheckPos.tvals,
         if (Individuality.containsAllAB(func.funcquestTvals, ids, signed: false)) _FuncCheckPos.questtvals,
         if (Individuality.containsAllAB(func.traitVals, ids, signed: false)) _FuncCheckPos.traitVals,
+        if (Individuality.containsAllAB(func.script?.funcIndividuality ?? [], ids, signed: false)) _FuncCheckPos.script,
       ];
       if (positions.isNotEmpty && filter.matchAny(positions)) {
         children.add(buildFunc(func, positions));
@@ -71,6 +76,8 @@ class _TraitFuncTabState extends State<TraitFuncTab> {
             return const Text("questtvals");
           case _FuncCheckPos.traitVals:
             return const Text("traitVals");
+          case _FuncCheckPos.script:
+            return const Text("script");
         }
       },
       combined: true,
@@ -100,9 +107,11 @@ class _TraitFuncTabState extends State<TraitFuncTab> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('[${func.funcType.name}] ${Transl.funcType(func.funcType).l}'),
-          if (positions.contains(_FuncCheckPos.tvals)) _traits('functvals', func.functvals),
+          if (positions.contains(_FuncCheckPos.tvals))
+            _traits('functvals', [...func.functvals, ...?func.script?.overwriteTvals?.expand((e) => e)]),
           if (positions.contains(_FuncCheckPos.questtvals)) _traits('quest', func.funcquestTvals),
           if (positions.contains(_FuncCheckPos.traitVals)) _traits('traitVals', func.traitVals),
+          if (positions.contains(_FuncCheckPos.script)) _traits('script', func.script?.funcIndividuality ?? []),
         ],
       ),
     );
