@@ -13,6 +13,7 @@
   * Skills & NPs that transform servants now reapply passives & adjust atk & maxHp (except Jekyll, it's literally hardcoded in the game as a constant)
   * Fix certain command codes & attack trigger functions not working due to Aoko's AoE card update causing lots of type changes
   * Add support to linked buffs & behave as family buffs (Summer Chloe Skill 1). These buffs will share use count & will get removed at the same time
+  * Fix toleranceSubstate sometimes activate when shouldn't
 
 ## 2.5.8
 
