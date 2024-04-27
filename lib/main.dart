@@ -29,7 +29,7 @@ void main() async {
   Catcher2Options? catcherOptions;
   try {
     await _initiateCommon();
-    await workerManager.init();
+    workerManager.init();
     await db.initiate();
     AppAnalysis.instance.initiate();
     catcherOptions = CatcherUtil.getOptions(
