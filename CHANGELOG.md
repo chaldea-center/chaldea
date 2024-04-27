@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.5.9
+
+* Aoko Aozaki
+  * Fix incorrect checks on magic bullet buffs
+  * Support Protagonist Correction
+* Sizuki Soujyuro
+  * Support Avoid Lethal Attack Damage (Skill 1) 
+  * Support Np Multiply (Skill 2)
+  * Support Pierce Damage Cut (NP)
+* General
+  * Skills & NPs that transform servants now reapply passives & adjust atk & maxHp (except Jekyll, it's literally hardcoded in the game as a constant)
+  * Fix certain command codes & attack trigger functions not working due to Aoko's AoE card update causing lots of type changes
+  * Add support to linked buffs & behave as family buffs (Summer Chloe Skill 1). These buffs will share use count & will get removed at the same time
+
 ## 2.5.8
 
 - Add more April Fool Assets
