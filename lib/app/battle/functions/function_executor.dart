@@ -378,8 +378,6 @@ class FunctionExecutor {
         case FuncType.damageValue:
         case FuncType.damageValueSafe:
         case FuncType.damageNpSafe:
-        case FuncType.gainMultiplyNp:
-        case FuncType.lossMultiplyNp:
         // ↑↑↑ should be implemented ↑↑↑
         case FuncType.subFieldBuff:
         case FuncType.damageNpAndCheckIndividuality:

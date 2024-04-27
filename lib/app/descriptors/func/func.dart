@@ -845,6 +845,11 @@ class FuncDescriptor extends StatelessWidget {
                         (e.signedId >= 6000 && e.signedId < 7000))
                     .toList();
                 if (guessTraits.length == 1) guessTrait = guessTraits.first;
+                // directly show guessTrait for known ones
+                if (guessTrait != null && (const [5359, 5546, 5512, 5586].contains(buff.id))) {
+                  indiv = guessTrait.signedId;
+                  guessTrait = null;
+                }
               }
               spans.add(_replaceTrait(indiv, guessTrait: guessTrait));
               return;
@@ -886,6 +891,21 @@ class FuncDescriptor extends StatelessWidget {
     }
 
     _addFuncText();
+
+    if (buff != null && buff.type == BuffType.changeBgm) {
+      final bgm = db.gameData.bgms[vals?.BgmId];
+      if (bgm != null) {
+        spans.add(TextSpan(
+          children: [
+            SharedBuilder.textButtonSpan(
+              context: context,
+              text: '  ${bgm.tooltip}',
+              onTap: bgm.routeTo,
+            )
+          ],
+        ));
+      }
+    }
 
     if (func.funcType == FuncType.transformServant) {
       final transformId = vals?.Value, transformLimit = vals?.SetLimitCount;
