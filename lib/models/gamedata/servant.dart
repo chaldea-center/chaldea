@@ -404,7 +404,8 @@ class Servant with GameCardMixin {
   @override
   String? get borderedIcon => originalCollectionNo > 0 ||
           (type == SvtType.combineMaterial || type == SvtType.statusUp) ||
-          className == SvtClass.uOlgaMarie
+          className == SvtClass.uOlgaMarie ||
+          const [600710, 2501500].contains(id) // transform servants
       ? super.borderedIcon
       : icon;
 

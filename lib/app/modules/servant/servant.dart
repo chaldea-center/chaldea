@@ -12,6 +12,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/charts/growth_curve_page.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/not_found.dart';
+import 'tabs/_transform_tabber.dart';
 import 'tabs/illustration_tab.dart';
 import 'tabs/info_tab.dart';
 import 'tabs/plan_tab.dart';
@@ -353,20 +354,29 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.skill,
-          viewBuilder: (ctx) => SvtSkillTab(svt: svt),
+          viewBuilder: (ctx) => TransformSvtProfileTabber(
+            svt: svt,
+            builder: (context, svt) => SvtSkillTab(svt: svt),
+          ),
         );
       case SvtTab.np:
         if (svt.noblePhantasms.isEmpty) return null;
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.noble_phantasm,
-          viewBuilder: (ctx) => SvtTdTab(svt: svt),
+          viewBuilder: (ctx) => TransformSvtProfileTabber(
+            svt: svt,
+            builder: (context, svt) => SvtTdTab(svt: svt),
+          ),
         );
       case SvtTab.info:
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.svt_basic_info,
-          viewBuilder: (ctx) => SvtInfoTab(svt: svt),
+          viewBuilder: (ctx) => TransformSvtProfileTabber(
+            svt: svt,
+            builder: (context, svt) => SvtInfoTab(svt: svt),
+          ),
         );
       case SvtTab.spDmg:
         return _SubTabInfo(
