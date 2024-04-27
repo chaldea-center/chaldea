@@ -800,6 +800,12 @@ class BattleData {
     return nonnullActors.any((svt) => svt.uniqueId == actorUniqueId);
   }
 
+  bool isActorMainTarget(final BattleServantData target) {
+    return target.isPlayer
+        ? onFieldAllyServants[playerTargetIndex] == target
+        : onFieldEnemies[enemyTargetIndex] == target;
+  }
+
   void checkActorStatus() {
     for (final svt in nonnullActors) {
       svt.updateActState(this);

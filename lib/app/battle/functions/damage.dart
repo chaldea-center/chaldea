@@ -53,15 +53,16 @@ class Damage {
     if (shouldTrigger) {
       for (final target in targets) {
         await battleData.withTarget(target, () async {
+          final isMainTarget = battleData.isActorMainTarget(target);
           await activator.activateBuffOnActions(battleData, [
             BuffAction.functionCommandcodeattackBefore,
-            BuffAction.functionCommandcodeattackBeforeMainOnly,
+            if (isMainTarget) BuffAction.functionCommandcodeattackBeforeMainOnly,
           ]);
           await activator.activateBuffOnActions(battleData, [
             if (!currentCard.isTD) BuffAction.functionCommandattackBefore,
-            if (!currentCard.isTD) BuffAction.functionCommandattackBeforeMainOnly,
+            if (!currentCard.isTD && isMainTarget) BuffAction.functionCommandattackBeforeMainOnly,
             BuffAction.functionAttackBefore,
-            BuffAction.functionAttackBeforeMainOnly
+            if (isMainTarget) BuffAction.functionAttackBeforeMainOnly
           ]);
         });
       }
@@ -322,15 +323,16 @@ class Damage {
     if (shouldTrigger) {
       for (final target in targets) {
         await battleData.withTarget(target, () async {
+          final isMainTarget = battleData.isActorMainTarget(target);
           await activator.activateBuffOnActions(battleData, [
             BuffAction.functionCommandcodeattackAfter,
-            BuffAction.functionCommandcodeattackAfterMainOnly,
+            if (isMainTarget) BuffAction.functionCommandcodeattackAfterMainOnly,
           ]);
           await activator.activateBuffOnActions(battleData, [
             if (!currentCard.isTD) BuffAction.functionCommandattackAfter,
-            if (!currentCard.isTD) BuffAction.functionCommandattackAfterMainOnly,
+            if (!currentCard.isTD && isMainTarget) BuffAction.functionCommandattackAfterMainOnly,
             BuffAction.functionAttackAfter,
-            BuffAction.functionAttackAfterMainOnly,
+            if (isMainTarget) BuffAction.functionAttackAfterMainOnly,
           ]);
         });
       }
