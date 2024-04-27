@@ -213,9 +213,10 @@ class Damage {
                 : await target.getBuffValueOnAction(battleData, BuffAction.defence)
             ..specificDefenseBuff = await target.getBuffValueOnAction(battleData, BuffAction.selfdamage)
             ..percentDefenseBuff = await target.getBuffValueOnAction(battleData, BuffAction.specialdefence)
-            ..damageReceiveAdditionBuff = await activator.hasBuffOnAction(battleData, BuffAction.pierceSubdamage)
-                ? await target.getBuffValueOnAction(battleData, BuffAction.receiveDamagePierce)
-                : await target.getBuffValueOnAction(battleData, BuffAction.receiveDamage);
+            ..damageReceiveAdditionBuff = (await activator.hasBuffOnAction(battleData, BuffAction.pierceSubdamage)
+                    ? await target.getBuffValueOnAction(battleData, BuffAction.receiveDamagePierce)
+                    : await target.getBuffValueOnAction(battleData, BuffAction.receiveDamage)) +
+                await target.getBuffValueOnAction(battleData, BuffAction.specialReceiveDamage);
 
           atkNpParameters.cardResist = await target.getBuffValueOnAction(battleData, BuffAction.commandNpDef);
 
