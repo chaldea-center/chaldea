@@ -380,6 +380,7 @@ class GameConstants {
   final int beforeChangeFreeDrawNum; // 1
   final int bpExpression; // 1
   final int campaignResetAt; // 4
+  final int canSelectSvtMaterialFlag; // 4
   final int chainbonusArtsRate; // 200
   final int chainbonusBusterRate; // 200
   final int chainbonusQuick; // 20
@@ -396,7 +397,7 @@ class GameConstants {
   final int coinRoomMaxNum; // 2
   final int coinRoomReleaseQuestId; // 3001101
   final int combineLimitSpecialPrivilegeId; // 100
-  final int comebackTargetDay; // 1694768400
+  final int comebackTargetDay; // 1704027600
   final int commandArts; // 4001
   final int commandBuster; // 4002
   final int commandCardPrmUpMax; // 500
@@ -429,6 +430,7 @@ class GameConstants {
   final int eventIdRaid2; // 80022
   final int eventItemPanelType; // 1
   final int eventRewardMuteSvtId109820770; // 1
+  final int eventRewardMuteSvtId109823880; // 1
   final int eventTowerFadeoutPlayTime; // 1000
   final int eventTowerProgressQuest1; // 94020001
   final int eventTowerProgressQuest2; // 94020013
@@ -463,7 +465,7 @@ class GameConstants {
   final int friendpointBoostItemEffectId; // 3
   final int friendGachaAddLimit; // 100
   final int friendGachaCommandCodeAddLimit; // 100
-  final int friendNum; // 34
+  final int friendNum; // 37
   final int friendOfferedNum; // 20
   final int friendPoint; // 25
   final int fullTdPoint; // 10000
@@ -474,12 +476,13 @@ class GameConstants {
   final int heroineChangecardvoice; // 800104
   final int hydeSvtId; // 600710
   final int individualityIsSupport; // 7000
+  final int isEventPointMenu; // 1
   final int isIosExamination; // 0
   final int itemIdQp; // 1
   final int jekyllSvtId; // 600700
   final int largeSuccessMultExp; // 2000
   final int largeSuccessRate; // 100
-  final int lastWarId; // 402
+  final int lastWarId; // 403
   final int limitedPeriodVoiceChangeType; // 0
   final int limitedShopRemainDays; // 1000
   final int loginDay; // 1459436400
@@ -531,6 +534,7 @@ class GameConstants {
   final int mstBuffIndvAddBuffActive; // 1
   final int needRebootTime; // 86400
   final int nothinkAiactid; // 1002
+  final int notChangeBehaviorTransformSvtId; // 600700
   final int notFriendPoint; // 10
   final int npcFriendPoint; // 200
   final int npDoubleBurst; // 1000
@@ -588,7 +592,7 @@ class GameConstants {
   final int treasureDeviceDispStatusEffectFlag; // 0
   final int tutorialFavoriteQuestId; // 1000011
   final int tutorialGachaId; // 101
-  final int tutorialLabel1stAnniversarySvtKeepAdjust; // 125
+  final int tutorialLabel1StAnniversarySvtKeepAdjust; // 125
   final int tutorialLabelBattleResultWinLose; // 123
   final int tutorialLabelCaldeaGate; // 129
   final int tutorialLabelChapter2Prologue; // 204
@@ -675,6 +679,7 @@ class GameConstants {
     this.beforeChangeFreeDrawNum = 1,
     this.bpExpression = 1,
     this.campaignResetAt = 4,
+    this.canSelectSvtMaterialFlag = 4,
     this.chainbonusArtsRate = 200,
     this.chainbonusBusterRate = 200,
     this.chainbonusQuick = 20,
@@ -691,7 +696,7 @@ class GameConstants {
     this.coinRoomMaxNum = 2,
     this.coinRoomReleaseQuestId = 3001101,
     this.combineLimitSpecialPrivilegeId = 100,
-    this.comebackTargetDay = 1694768400,
+    this.comebackTargetDay = 1704027600,
     this.commandArts = 4001,
     this.commandBuster = 4002,
     this.commandCardPrmUpMax = 500,
@@ -724,6 +729,7 @@ class GameConstants {
     this.eventIdRaid2 = 80022,
     this.eventItemPanelType = 1,
     this.eventRewardMuteSvtId109820770 = 1,
+    this.eventRewardMuteSvtId109823880 = 1,
     this.eventTowerFadeoutPlayTime = 1000,
     this.eventTowerProgressQuest1 = 94020001,
     this.eventTowerProgressQuest2 = 94020013,
@@ -758,7 +764,7 @@ class GameConstants {
     this.friendpointBoostItemEffectId = 3,
     this.friendGachaAddLimit = 100,
     this.friendGachaCommandCodeAddLimit = 100,
-    this.friendNum = 34,
+    this.friendNum = 37,
     this.friendOfferedNum = 20,
     this.friendPoint = 25,
     this.fullTdPoint = 10000,
@@ -769,12 +775,13 @@ class GameConstants {
     this.heroineChangecardvoice = 800104,
     this.hydeSvtId = 600710,
     this.individualityIsSupport = 7000,
+    this.isEventPointMenu = 1,
     this.isIosExamination = 0,
     this.itemIdQp = 1,
     this.jekyllSvtId = 600700,
     this.largeSuccessMultExp = 2000,
     this.largeSuccessRate = 100,
-    this.lastWarId = 402,
+    this.lastWarId = 403,
     this.limitedPeriodVoiceChangeType = 0,
     this.limitedShopRemainDays = 1000,
     this.loginDay = 1459436400,
@@ -826,6 +833,7 @@ class GameConstants {
     this.mstBuffIndvAddBuffActive = 1,
     this.needRebootTime = 86400,
     this.nothinkAiactid = 1002,
+    this.notChangeBehaviorTransformSvtId = 600700,
     this.notFriendPoint = 10,
     this.npcFriendPoint = 200,
     this.npDoubleBurst = 1000,
@@ -883,7 +891,7 @@ class GameConstants {
     this.treasureDeviceDispStatusEffectFlag = 0,
     this.tutorialFavoriteQuestId = 1000011,
     this.tutorialGachaId = 101,
-    this.tutorialLabel1stAnniversarySvtKeepAdjust = 125,
+    this.tutorialLabel1StAnniversarySvtKeepAdjust = 125,
     this.tutorialLabelBattleResultWinLose = 123,
     this.tutorialLabelCaldeaGate = 129,
     this.tutorialLabelChapter2Prologue = 204,
@@ -997,7 +1005,7 @@ class GameConstantStr {
   final List<int> extendTurnBuffType; // 1,9,11,13,15,18,25,50,51,52,70,72,89,90,110,112,116,121,137,144,148,160,162
   final List<int> invalidSacrificeIndiv; // 3076
   // final int materialMainInterludeWarId; // 307
-  final List<int> notReduceCountWithNoDamageBuff;
+  final List<int> notReduceCountWithNoDamageBuff; // 42, 21, 23, 91, 105, 196
   final List<int> starRefreshBuffType; // 2,61
   final List<int> subPtBuffIndivi; // 3055
   final List<int> svtExitPtBuffIndivi; // 3069
@@ -1009,7 +1017,7 @@ class GameConstantStr {
     ],
     this.invalidSacrificeIndiv = const [3076],
     // this.materialMainInterludeWarId = 307,
-    this.notReduceCountWithNoDamageBuff = const [42, 21, 23, 91, 105],
+    this.notReduceCountWithNoDamageBuff = const [42, 21, 23, 91, 105, 196],
     this.starRefreshBuffType = const [2, 61],
     this.subPtBuffIndivi = const [3055],
     this.svtExitPtBuffIndivi = const [3069],
