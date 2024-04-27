@@ -24,6 +24,7 @@ class SubState {
         final List<BuffData> listToInspect = removeFromStart
             ? target.battleBuff.originalActiveList.reversed.toList()
             : target.battleBuff.originalActiveList.toList();
+        final List<int> removedFamilyBuff = [];
 
         for (int index = listToInspect.length - 1; index >= 0; index -= 1) {
           final buff = listToInspect[index];
@@ -33,6 +34,9 @@ class SubState {
                 await shouldSubState(battleData, buff, affectTraits, dataVals, activator, target)) {
               listToInspect.removeAt(index);
               removeCount += 1;
+              if (buff.vals.BehaveAsFamilyBuff == 1 && buff.vals.AddLinkageTargetIndividualty != null) {
+                removedFamilyBuff.add(buff.vals.AddLinkageTargetIndividualty!);
+              }
             }
           });
 
@@ -40,6 +44,10 @@ class SubState {
             break;
           }
         }
+
+        listToInspect.removeWhere(
+            (buff) => buff.vals.BehaveAsFamilyBuff == 1 && removedFamilyBuff.contains(buff.vals.AddIndividualty));
+
         target.battleBuff.setActiveList(removeFromStart ? listToInspect.reversed.toList() : listToInspect.toList());
         if (target.hp > 0) {
           target.hp = target.hp.clamp(1, target.maxHp);

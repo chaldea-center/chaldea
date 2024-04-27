@@ -906,6 +906,10 @@ void main() async {
       await battle.activateSvtSkill(0, 0);
       await battle.playerTurn([CombatAction(chloe, chloe.getNPCard()!)]);
       expect(prevHp1 - enemy1.hp, 67832);
+      final linkedBuffs = chloe.battleBuff.getActiveList().where((buff) => buff.vals.BehaveAsFamilyBuff == 1);
+      expect(linkedBuffs.length, 2);
+      expect(linkedBuffs.first.count, 4);
+      expect(linkedBuffs.last.count, 4);
 
       final enemy2 = battle.onFieldEnemies[1]!;
       final prevHp2 = enemy2.hp;
@@ -915,6 +919,8 @@ void main() async {
         CombatAction(chloe, chloe.getCards()[2]),
       ]);
       expect(prevHp2 - enemy2.hp, 3391 + 4069 + 4748 + 13489);
+      final linkedBuffsUsedUp = chloe.battleBuff.getActiveList().where((buff) => buff.vals.BehaveAsFamilyBuff == 1);
+      expect(linkedBuffsUsedUp.isEmpty, isTrue);
 
       final enemy3 = battle.onFieldEnemies[2]!;
 

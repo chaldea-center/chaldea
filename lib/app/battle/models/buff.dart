@@ -330,8 +330,20 @@ class BuffData {
     return buffGroup == 0 || buffGroup != buff.buffGroup;
   }
 
-  void setUsed() {
+  void setUsed(final BattleData battleData) {
     isUsed = true;
+
+    if (vals.BehaveAsFamilyBuff == 1 && vals.AddLinkageTargetIndividualty != null && actorUniqueId != null) {
+      final targetIndividuality = vals.AddLinkageTargetIndividualty;
+      final owner = battleData.getServantData(actorUniqueId!);
+      if (owner != null) {
+        for (final buff in owner.battleBuff.getAllBuffs()) {
+          if (buff.vals.AddIndividualty == targetIndividuality && buff.vals.BehaveAsFamilyBuff == 1) {
+            buff.isUsed = true;
+          }
+        }
+      }
+    }
   }
 
   void useOnce() {
