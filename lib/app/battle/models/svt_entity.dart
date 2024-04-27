@@ -1082,7 +1082,7 @@ class BattleServantData {
 
         updatedFunctions[buff.param] = updatedReplacementFunction;
 
-        buff.setUsed(battleData);
+        buff.setUsed(this);
       }
     }
 
@@ -1098,7 +1098,7 @@ class BattleServantData {
     final opponent = battleData.getOpponent(this);
     for (final buff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.multiattack)) {
       if (await buff.shouldActivateBuff(battleData, this, opponent)) {
-        buff.setUsed(battleData);
+        buff.setUsed(this);
         final value = buff.getValue(battleData, this, opponent);
         if (actionDetails.plusTypes.contains(buff.buff.type)) {
           return value;
@@ -1122,7 +1122,7 @@ class BattleServantData {
 
     for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
       if (await buff.shouldActivateBuff(battleData, this, opponent)) {
-        buff.setUsed(battleData);
+        buff.setUsed(this);
         final totalEffectiveness = await battleData.withBuff(buff, () async {
           return await getEffectivenessOnAction(battleData, buffAction);
         });
@@ -1161,7 +1161,7 @@ class BattleServantData {
           continue;
         }
 
-        buff.setUsed(battleData);
+        buff.setUsed(this);
         final totalEffectiveness = await battleData.withBuff(buff, () async {
           return await getEffectivenessOnAction(battleData, BuffAction.turnendHpReduce);
         });
@@ -1192,7 +1192,7 @@ class BattleServantData {
     if (!forHeal && hp <= finalValue && hp > nonPreventableValue && preventableValue > 0) {
       finalValue = hp - 1;
       for (final buff in activatedPreventDeaths) {
-        buff.setUsed(battleData);
+        buff.setUsed(this);
       }
     }
 
@@ -1210,7 +1210,7 @@ class BattleServantData {
   BuffData? getFirstBuffOnActions(final BattleData battleData, final List<BuffAction> buffActions) {
     for (final buff in collectBuffsPerActions(battleBuff.validBuffs, buffActions)) {
       if (buff.shouldApplyBuff(battleData, this, battleData.getOpponent(this))) {
-        buff.setUsed(battleData);
+        buff.setUsed(this);
         return buff;
       }
     }
@@ -1228,6 +1228,7 @@ class BattleServantData {
     int? maxRate;
 
     for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
+      buff.setUsed(this);
       final value = buff.param;
       if (actionDetails.plusTypes.contains(buff.buff.type)) {
         totalVal += value;
@@ -1246,7 +1247,7 @@ class BattleServantData {
   Future<bool> hasBuffOnActions(final BattleData battleData, final List<BuffAction> buffActions) async {
     for (final buff in collectBuffsPerActions(battleBuff.validBuffs, buffActions)) {
       if (await buff.shouldActivateBuff(battleData, this, battleData.getOpponent(this))) {
-        buff.setUsed(battleData);
+        buff.setUsed(this);
         return true;
       }
     }
@@ -1286,7 +1287,7 @@ class BattleServantData {
             script: skill.script,
             isPassive: false,
           );
-          buff.setUsed(battleData);
+          buff.setUsed(this);
           activated = true;
         }
       }
@@ -1337,7 +1338,7 @@ class BattleServantData {
     final List<BuffData> buffs = collectBuffsPerType(battleBuff.validBuffs, BuffType.overwriteClassRelation);
     for (final buff in buffs.reversed) {
       if (await buff.shouldActivateBuff(battleData, this, other)) {
-        buff.setUsed(battleData);
+        buff.setUsed(this);
         final relationOverwrite = buff.buff.script.relationId!;
         final overwrite = isTarget
             ? relationOverwrite.defSide2.containsKey(other.classId)
@@ -1545,7 +1546,7 @@ class BattleServantData {
     });
 
     if (gutsToApply != null) {
-      gutsToApply.setUsed(battleData);
+      gutsToApply.setUsed(this);
       final value = gutsToApply.getValue(battleData, this);
       final isRatio = gutsToApply.buff.type == BuffType.gutsRatio || gutsToApply.buff.type == BuffType.shiftGutsRatio;
       final baseGutsHp = isRatio ? (toModifier(value) * maxHp).floor() : value;
