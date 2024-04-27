@@ -1255,6 +1255,10 @@ class BattleServantData {
     return false;
   }
 
+  Future<bool> activateBuffOnActionActiveFirst(final BattleData battleData, final BuffAction buffAction) async {
+    return await activateBuffs(battleData, collectBuffsPerAction(battleBuff.validBuffsActiveFirst, buffAction));
+  }
+
   Future<bool> activateBuffOnAction(final BattleData battleData, final BuffAction buffAction) async {
     return await activateBuffOnActions(battleData, [buffAction]);
   }
@@ -1506,7 +1510,7 @@ class BattleServantData {
       });
     });
     final delayedFunctions = collectBuffsPerType(battleBuff.validBuffs, BuffType.delayFunction);
-    await activateBuffOnAction(battleData, BuffAction.functionSelfturnend);
+    await activateBuffOnActionActiveFirst(battleData, BuffAction.functionSelfturnend);
     await activateBuffs(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));
 
     battleBuff.turnPassParamAdd();

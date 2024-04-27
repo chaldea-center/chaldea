@@ -22,6 +22,7 @@ class BattleBuff {
 
   List<BuffData> getAllBuffs() => [..._passiveList, ..._activeList, ...commandCodeList];
   List<BuffData> get validBuffs => [...getPassiveList(), ...getActiveList(), ...getCommandCodeList()];
+  List<BuffData> get validBuffsActiveFirst => [...getActiveList(), ...getPassiveList(), ...getCommandCodeList()];
 
   void setPassiveList(List<BuffData> list) => _passiveList = list;
   void setActiveList(List<BuffData> list) => _activeList = list;
