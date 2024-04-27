@@ -537,7 +537,16 @@ Widget addQuestCategoryTile({
   _addTile(S.current.war_board, warBoardQuests);
   _addTile(S.current.event_quest, eventQuests);
   _addTile(S.current.one_off_quest, oneOffQuests);
-  _addTile(S.current.high_difficulty_quest, difficultQuests);
+  if (war?.id == WarId.advanced) {
+    difficultQuests.sortByList((e) => <Comparable>[
+          int.tryParse(RegExp(r'\d+').firstMatch(e.recommendLv)?.group(0) ?? "") ?? 999,
+          e.recommendLv,
+          -e.priority,
+        ]);
+    _addTile(S.current.high_difficulty_quest, difficultQuests, needSort: false);
+  } else {
+    _addTile(S.current.high_difficulty_quest, difficultQuests);
+  }
   _addTile(S.current.interlude, interludeQuests);
   _addTile('Selections', selectionQuests, needSort: false);
 
