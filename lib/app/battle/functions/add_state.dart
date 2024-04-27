@@ -1,5 +1,6 @@
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
@@ -57,15 +58,35 @@ class AddState {
       }
 
       await battleData.withBuff(buffData, () async {
-        final convertBuff = target
-            .getFirstBuffOnActions(battleData, [BuffAction.buffConvert])
-            ?.buff
-            .script
-            .convert
-            ?.convertBuffs
-            .firstOrNull;
-        if (convertBuff != null) {
-          buffData.buff = convertBuff;
+        for (final convertBuff in collectBuffsPerAction(target.battleBuff.validBuffs, BuffAction.buffConvert)) {
+          Buff? convertedBuff;
+          final convert = convertBuff.buff.script.convert;
+          if (convert != null) {
+            switch (convert.convertType) {
+              case BuffConvertType.none:
+                break;
+              case BuffConvertType.buff:
+                for (final (index, targetBuff) in convert.targetBuffs.indexed) {
+                  if (targetBuff.id == buff.id) {
+                    convertedBuff = convert.convertBuffs[index];
+                    break;
+                  }
+                }
+                break;
+              case BuffConvertType.individuality:
+                for (final (index, targetIndiv) in convert.targetIndividualities.indexed) {
+                  if (buff.vals.any((e) => e.signedId == targetIndiv.signedId)) {
+                    convertedBuff = convert.convertBuffs[index];
+                    break;
+                  }
+                }
+                break;
+            }
+            if (convertedBuff != null) {
+              buffData.buff = convertedBuff;
+              convertBuff.setUsed(target);
+            }
+          }
         }
 
         await battleData.withTarget(target, () async {

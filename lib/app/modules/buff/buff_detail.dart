@@ -426,7 +426,7 @@ class BuffInfoTable extends StatelessWidget {
           children.add(_describeBuff(context, target));
           break;
         case BuffConvertType.individuality:
-          final trait = convert.targetTraits.getOrNull(index);
+          final trait = convert.targetIndividualities.getOrNull(index);
           children.add(_describeTrait(context, trait));
           break;
       }

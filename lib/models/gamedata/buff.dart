@@ -188,36 +188,25 @@ class BuffConvert {
   BuffConvertLimitType targetLimit;
   BuffConvertType convertType;
   //  list[int] | list[NiceTrait] | list[dict[str, Any]=Buff]
+  @protected
   List<dynamic> targets;
+  List<Buff> targetBuffs;
   List<Buff> convertBuffs;
   BuffConvertScript? script;
   int effectId;
-
-  // parsed targets
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<NiceTrait> targetTraits = [];
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  List<Buff> targetBuffs = [];
+  List<NiceTrait> targetIndividualities = [];
 
   BuffConvert({
     this.targetLimit = BuffConvertLimitType.all,
     this.convertType = BuffConvertType.none,
     this.targets = const [],
+    this.targetBuffs = const [],
+    this.targetIndividualities = const [],
     this.convertBuffs = const [],
     this.script,
     this.effectId = 0,
-  }) {
-    for (final target in targets) {
-      if (target is Map) {
-        if (target['detail'] != null) {
-          // nice buff or basic buff
-          targetBuffs.add(Buff.fromJson(Map.from(target)));
-        } else if (target['id'] != null) {
-          targetTraits.add(NiceTrait.fromJson(Map.from(target)));
-        }
-      }
-    }
-  }
+  });
+
   factory BuffConvert.fromJson(Map<String, dynamic> json) => _$BuffConvertFromJson(json);
 
   Map<String, dynamic> toJson() => _$BuffConvertToJson(this);

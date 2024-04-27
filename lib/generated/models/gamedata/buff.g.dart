@@ -148,6 +148,14 @@ BuffConvert _$BuffConvertFromJson(Map json) => BuffConvert(
       targetLimit: $enumDecodeNullable(_$BuffConvertLimitTypeEnumMap, json['targetLimit']) ?? BuffConvertLimitType.all,
       convertType: $enumDecodeNullable(_$BuffConvertTypeEnumMap, json['convertType']) ?? BuffConvertType.none,
       targets: json['targets'] as List<dynamic>? ?? const [],
+      targetBuffs: (json['targetBuffs'] as List<dynamic>?)
+              ?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      targetIndividualities: (json['targetIndividualities'] as List<dynamic>?)
+              ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       convertBuffs: (json['convertBuffs'] as List<dynamic>?)
               ?.map((e) => Buff.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -162,6 +170,7 @@ Map<String, dynamic> _$BuffConvertToJson(BuffConvert instance) {
     'targetLimit': _$BuffConvertLimitTypeEnumMap[instance.targetLimit]!,
     'convertType': _$BuffConvertTypeEnumMap[instance.convertType]!,
     'targets': instance.targets,
+    'targetBuffs': instance.targetBuffs.map((e) => e.toJson()).toList(),
     'convertBuffs': instance.convertBuffs.map((e) => e.toJson()).toList(),
   };
 
@@ -173,6 +182,7 @@ Map<String, dynamic> _$BuffConvertToJson(BuffConvert instance) {
 
   writeNotNull('script', instance.script?.toJson());
   val['effectId'] = instance.effectId;
+  val['targetIndividualities'] = instance.targetIndividualities.map((e) => e.toJson()).toList();
   return val;
 }
 
