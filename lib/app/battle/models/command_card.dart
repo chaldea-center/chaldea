@@ -39,33 +39,32 @@ class CommandCardData {
   final int uniqueId;
   final CardType cardType;
   final CardDetail cardDetail;
+  final int cardIndex;
   int cardStrengthen = 0;
   int npGain = 0;
   List<NiceTrait> traits = [];
   bool isTD = false;
   int np = 0;
-  int cardIndex = -1;
   bool critical = false;
   CommandCode? commandCode;
   NiceTd? td;
   BuffData? counterBuff;
   int? oc;
 
-  CommandCardData._(this.svtId, this.svtLimit, this.uniqueId, this.cardType, this.cardDetail);
+  CommandCardData._(this.svtId, this.svtLimit, this.uniqueId, this.cardType, this.cardDetail, this.cardIndex);
 
-  CommandCardData(BattleServantData svt, this.cardType, this.cardDetail)
+  CommandCardData(BattleServantData svt, this.cardType, this.cardDetail, this.cardIndex)
       : svtId = svt.svtId,
         svtLimit = svt.limitCount,
         uniqueId = svt.uniqueId;
 
   CommandCardData copy() {
-    return CommandCardData._(svtId, svtLimit, uniqueId, cardType, cardDetail)
+    return CommandCardData._(svtId, svtLimit, uniqueId, cardType, cardDetail, cardIndex)
       ..cardStrengthen = cardStrengthen
       ..npGain = npGain
       ..traits = traits.toList()
       ..isTD = isTD
       ..np = np
-      ..cardIndex = cardIndex
       ..critical = critical
       ..commandCode = commandCode
       ..td = td

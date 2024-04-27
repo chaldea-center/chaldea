@@ -411,14 +411,13 @@ class BattleServantData {
     }
 
     final List<CommandCardData> builtCards = [];
-    for (int i = 0; i < cards.length; i += 1) {
-      final isCardInDeck = niceSvt!.cards.getOrNull(i) == cards[i];
+    for (int index = 0; index < cards.length; index += 1) {
+      final isCardInDeck = niceSvt!.cards.getOrNull(index) == cards[index];
 
-      final cardType = changeCardType ?? cards[i];
+      final cardType = changeCardType ?? cards[index];
       final detail = niceSvt!.cardDetails[cardType];
       if (detail == null) continue;
-      final card = CommandCardData(this, cardType, detail)
-        ..cardIndex = i
+      final card = CommandCardData(this, cardType, detail, index)
         ..isTD = false
         ..npGain = getNPGain(cardType)
         ..traits = ConstData.cardInfo[cardType]![1]!.individuality.toList();
@@ -426,8 +425,8 @@ class BattleServantData {
       if (isCardInDeck) {
         // enemy weak+strength 6 cards
         card
-          ..cardStrengthen = playerSvtData!.cardStrengthens.getOrNull(i) ?? 0
-          ..commandCode = playerSvtData!.commandCodes.getOrNull(i);
+          ..cardStrengthen = playerSvtData!.cardStrengthens.getOrNull(index) ?? 0
+          ..commandCode = playerSvtData!.commandCodes.getOrNull(index);
       }
       if (cardType == CardType.weak) {
         card.critical = false;
@@ -445,14 +444,16 @@ class BattleServantData {
       final _td = niceEnemy!.noblePhantasm.noblePhantasm;
       if (_td == null) return null;
       return CommandCardData(
-          this,
-          _td.card,
-          CardDetail(
-            attackIndividuality: _td.individuality.toList(),
-            hitsDistribution: _td.damage,
-            attackType:
-                _td.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
-          ))
+        this,
+        _td.card,
+        CardDetail(
+          attackIndividuality: _td.individuality.toList(),
+          hitsDistribution: _td.damage,
+          attackType:
+              _td.damageType == TdEffectFlag.attackEnemyAll ? CommandCardAttackType.all : CommandCardAttackType.one,
+        ),
+        -1,
+      )
         ..td = _td
         ..isTD = true
         ..npGain = 0
@@ -468,7 +469,7 @@ class BattleServantData {
       attackNpRate: currentNP?.npGain.np[playerSvtData!.tdLv - 1] ?? 0,
     );
 
-    return CommandCardData(this, currentNP?.svt.card ?? CardType.none, cardDetail)
+    return CommandCardData(this, currentNP?.svt.card ?? CardType.none, cardDetail, -1)
       ..isTD = true
       ..td = currentNP
       ..npGain = currentNP?.npGain.np[playerSvtData!.tdLv - 1] ?? 0
@@ -500,7 +501,7 @@ class BattleServantData {
       attackNpRate: td.npGain.np[tdLv - 1],
     );
 
-    return CommandCardData(this, td.svt.card, cardDetail)
+    return CommandCardData(this, td.svt.card, cardDetail, -1)
       ..isTD = true
       ..td = td
       ..counterBuff = buff
@@ -515,7 +516,7 @@ class BattleServantData {
     final detail = niceSvt!.cardDetails[CardType.extra];
     if (detail == null) return null;
 
-    return CommandCardData(this, CardType.extra, detail)
+    return CommandCardData(this, CardType.extra, detail, -1)
       ..isTD = false
       ..npGain = getNPGain(CardType.extra)
       ..traits = ConstData.cardInfo[CardType.extra]![1]!.individuality.toList();

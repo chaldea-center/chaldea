@@ -1080,19 +1080,29 @@ class BattleData {
           await withAction(() async {
             if (nonnullEnemies.isNotEmpty) {
               final action = actions[i];
-              await withCard(action.cardData, () async {
-                if (onFieldAllyServants.contains(action.actor) && action.isValid(this)) {
-                  recorder.startPlayerCard(action.actor, action.cardData);
+              final actor = action.actor;
 
-                  if (action.cardData.isTD) {
-                    action.cardData.np = action.actor.np;
-                    await action.actor.activateNP(this, action.cardData, extraOvercharge);
+              // need to sync card data because the actor might have transformed
+              final actualCard = (action.cardData.isTD
+                      ? actor.getNPCard()
+                      : action.cardData.cardType == CardType.extra
+                          ? actor.getExtraCard()
+                          : actor.getCards().getOrNull(action.cardData.cardIndex)) ??
+                  action.cardData;
+              actualCard.critical = action.cardData.critical;
+              await withCard(actualCard, () async {
+                if (onFieldAllyServants.contains(actor) && action.isValid(this)) {
+                  recorder.startPlayerCard(actor, actualCard);
+
+                  if (actualCard.isTD) {
+                    actualCard.np = actor.np;
+                    await actor.activateNP(this, actualCard, extraOvercharge);
                     extraOvercharge += 1;
                   } else {
                     extraOvercharge = 0;
                     await _executeCommandCard(
-                      actor: action.actor,
-                      card: action.cardData,
+                      actor: actor,
+                      card: actualCard,
                       chainPos: i + 1,
                       isTypeChain: isTypeChain,
                       isMightyChain: isMightyChain,
@@ -1102,13 +1112,13 @@ class BattleData {
                   }
                   for (final enemy in nonnullEnemies) {
                     if (enemy.attacked) {
-                      await withTarget(action.actor, () async {
+                      await withTarget(actor, () async {
                         await enemy.activateBuffOnAction(this, BuffAction.functionDamage);
                       });
                       enemy.attacked = false;
                     }
                   }
-                  recorder.endPlayerCard(action.actor, action.cardData);
+                  recorder.endPlayerCard(actor, actualCard);
                 }
 
                 if (shouldRemoveDeadActors(actions, i)) {
