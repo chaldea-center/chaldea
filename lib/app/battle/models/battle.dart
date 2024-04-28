@@ -231,6 +231,7 @@ class BattleData {
       return await onExecute();
     } finally {
       _useBuffOnce();
+      checkActorStatus();
     }
   }
 
@@ -827,7 +828,7 @@ class BattleData {
 
   void _useBuffOnce() {
     for (final svt in nonnullActors) {
-      svt.useBuffOnce(this);
+      svt.useBuffOnce();
     }
   }
 

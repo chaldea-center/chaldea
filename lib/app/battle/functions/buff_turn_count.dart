@@ -62,11 +62,12 @@ class BuffTurnCount {
           positiveMatchFunction: isAny ? partialMatch : allMatch,
           negativeMatchFunction: isAny ? partialMatch : allMatch,
         ))) {
+          final minValue = dataVals.AllowRemoveBuff == 1 ? 0 : 1;
           if (isTurn && buff.logicTurn > 0) {
-            buff.logicTurn = max(buff.logicTurn + changeValue, 1);
+            buff.logicTurn = max(buff.logicTurn + changeValue, minValue);
             changed = true;
           } else if (!isTurn && buff.count > 0) {
-            buff.count = max(buff.count + changeValue, 1);
+            buff.count = max(buff.count + changeValue, minValue);
             changed = true;
           }
         }
