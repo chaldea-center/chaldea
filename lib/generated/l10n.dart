@@ -2076,6 +2076,17 @@ class S {
     );
   }
 
+  /// `Create Mooncell Summon`
+  String get create_mooncell_summon {
+    return Intl.message(
+      'Create Mooncell Summon',
+      name: 'create_mooncell_summon',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Crit Star Mod`
   String get crit_star_mod {
     return Intl.message(

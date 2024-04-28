@@ -222,9 +222,13 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           children.add(Center(
             child: ElevatedButton(
               onPressed: () {
-                router.pushPage(MCSummonCreatePage(gachas: gachaGroup.toList()));
+                router.pushPage(MCSummonCreatePage(
+                  gachas: gachaGroup.toList(),
+                  nameJp: summon.name,
+                  nameZh: summon.mcLink?.replaceAll('_', ' '),
+                ));
               },
-              child: Text("创建Mooncell卡池(${gachaGroup.length})"),
+              child: Text("${S.current.create_mooncell_summon}(${gachaGroup.length})"),
             ),
           ));
         }

@@ -275,6 +275,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "create_account_textfield_helper": MessageLookupByLibrary.simpleMessage("稍后在设置中可以添加更多游戏账号"),
         "create_custom_skill": MessageLookupByLibrary.simpleMessage("创建自定义技能"),
         "create_duplicated_svt": MessageLookupByLibrary.simpleMessage("生成2号机"),
+        "create_mooncell_summon": MessageLookupByLibrary.simpleMessage("创建Mooncell卡池"),
         "crit_star_mod": MessageLookupByLibrary.simpleMessage("暴击星补正"),
         "critical_attack": MessageLookupByLibrary.simpleMessage("暴击"),
         "critical_star": MessageLookupByLibrary.simpleMessage("暴击星"),

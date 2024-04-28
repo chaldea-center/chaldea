@@ -11,7 +11,9 @@ import 'gacha_parser.dart';
 
 class MCSummonCreatePage extends StatefulWidget {
   final List<NiceGacha> gachas;
-  const MCSummonCreatePage({super.key, required this.gachas});
+  final String? nameJp;
+  final String? nameZh;
+  const MCSummonCreatePage({super.key, required this.gachas, this.nameZh, this.nameJp});
 
   @override
   State<MCSummonCreatePage> createState() => _MCSummonCreatePageState();
@@ -26,8 +28,8 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
 
   // -2=gacha page, -1=simulator page, 0/1/2/3=data{X+1}
   final curTab = FilterRadioData<int>.nonnull(-2);
-  late final _jpNameController = TextEditingController();
-  late final _cnNameController = TextEditingController();
+  late final _jpNameController = TextEditingController(text: widget.nameJp);
+  late final _cnNameController = TextEditingController(text: widget.nameZh);
   bool _isLuckyBagWithSR = false;
 
   String get bannerFnBase => _cnNameController.text.trim().replaceAll(RegExp(r'[:\/ ]'), '_');
@@ -44,7 +46,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
     return InheritSelectionArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("新建Mooncell卡池"),
+          title: Text(S.current.create_mooncell_summon),
         ),
         body: buildBody(),
       ),

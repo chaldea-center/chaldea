@@ -288,6 +288,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("You can add more accounts later in Settings"),
         "create_custom_skill": MessageLookupByLibrary.simpleMessage("Create Custom Skill"),
         "create_duplicated_svt": MessageLookupByLibrary.simpleMessage("Create duplicated"),
+        "create_mooncell_summon": MessageLookupByLibrary.simpleMessage("Create Mooncell Summon"),
         "crit_star_mod": MessageLookupByLibrary.simpleMessage("Crit Star Mod"),
         "critical_attack": MessageLookupByLibrary.simpleMessage("Critical"),
         "critical_star": MessageLookupByLibrary.simpleMessage("Critical Star"),

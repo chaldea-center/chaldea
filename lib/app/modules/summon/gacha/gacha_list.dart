@@ -262,7 +262,7 @@ class _GachaListPageState extends State<GachaListPage>
                 : () {
                     router.pushPage(MCSummonCreatePage(gachas: _selectedGachas.toList()));
                   },
-            child: Text("创建Mooncell卡池(${_selectedGachas.length})"),
+            child: Text("${S.current.create_mooncell_summon}(${_selectedGachas.length})"),
           ),
           IconButton(
             onPressed: () {

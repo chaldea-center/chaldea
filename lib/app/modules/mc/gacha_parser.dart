@@ -291,7 +291,9 @@ class JpGachaParser {
   }
 
   Future<JpGachaNotice?> _parseNoticeNode(Uri baseUri, htmldom.Element node) async {
-    assert(node.children.length == 3, node.children.length);
+    if (node.children.length < 3) {
+      return null;
+    }
     String lastUpdate = node.children[0].text;
 
     final fullTitle = node.children[1].text;
