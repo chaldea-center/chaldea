@@ -279,7 +279,7 @@ class BuffData {
     final probabilityCheck = await battleData.canActivate(
         buffRate,
         '${battleData.activator?.lBattleName ?? S.current.battle_no_source}'
-            ' - ${buff.lName.l}');
+        ' - ${buff.lName.l}');
 
     if (buffRate < 1000) {
       battleData.battleLogger.debug('${battleData.activator?.lBattleName ?? S.current.battle_no_source}'
@@ -315,7 +315,8 @@ class BuffData {
     final selfCheck = checkSelf(self.getTraits(battleData));
 
     final killedFuncDetail = ConstData.funcTypeDetail[self.lastHitByFunc?.id];
-    final oppoCheck = buff.ckOpIndv.isEmpty || (killedFuncDetail != null && checkOpponent(killedFuncDetail.individuality));
+    final oppoCheck =
+        buff.ckOpIndv.isEmpty || (killedFuncDetail != null && checkOpponent(killedFuncDetail.individuality));
     return selfCheck && oppoCheck && await probabilityCheck(battleData);
   }
 

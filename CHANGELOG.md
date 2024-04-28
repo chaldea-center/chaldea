@@ -9,6 +9,11 @@
   - Support Avoid Lethal Attack Damage (Skill 1)
   - Support Np Multiply (Skill 2)
   - Support Pierce Damage Cut (NP)
+- Alice Kuonji
+  - Support overwrite attribute
+  - Support guts on instant death
+  - Support DoT Value Up/Down
+  - Fix her passive can't reach 0
 - General
   - Skills & NPs that transform servants now reapply passives & adjust atk & maxHp (except Jekyll, it's literally hardcoded in the game as a constant)
   - Fix certain command codes & attack trigger functions not working due to Aoko's AoE card update causing lots of type changes

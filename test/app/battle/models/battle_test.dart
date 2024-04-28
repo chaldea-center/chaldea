@@ -1260,6 +1260,83 @@ void main() async {
     expect(battle.nonnullBackupPlayers[0].svtId, 1101600);
   });
 
+  test('aoko related tests', () async {
+    final battle = BattleData();
+    final playerSettings = [
+      PlayerSvtData.id(2501400)
+      ..lv = 90
+      ..tdLv = 5
+      ..commandCodes = [
+        null,
+        null,
+        null,
+        null,
+        db.gameData.commandCodesById[8400460]!, // Mage of Flowers on aoe buster card
+      ],
+      PlayerSvtData.id(2800100),
+    ];
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    final aoko = battle.onFieldAllyServants[0]!;
+    expect(aoko.hp, 15250);
+    expect(aoko.maxHp, 15250);
+    expect(aoko.atk, 12319);
+    aoko.np = 10000;
+    final npCard = aoko.getNPCard()!;
+    final aokoFixedBusterCard = aoko.getCards()[4];
+    final aokoBusterCardThatWillChangeToArts = aoko.getCards()[3];
+
+    final enemy1 = battle.onFieldEnemies[0]!;
+    final enemy2 = battle.onFieldEnemies[1]!;
+    final enemy3 = battle.onFieldEnemies[2]!;
+    await battle.playerTurn([
+      CombatAction(aoko, npCard),
+      CombatAction(aoko, aokoBusterCardThatWillChangeToArts)..cardData.critical = true,
+      CombatAction(aoko, aokoFixedBusterCard)..cardData.critical = true,
+    ]);
+    // test battle gets actual card for removeDeadActor and damage
+    expect(enemy1.hp, -368);
+    expect(enemy2.hp, 2603);
+    expect(enemy3.hp, 4363);
+
+    expect(aoko.np, 4121); // test AoE card with Mage of Flowers does not stack, also test transformSvt adds new passive
+    expect(aoko.hp, 14230); // transformSvt change hp & maxHp & atk
+    expect(aoko.maxHp, 14230);
+    expect(aoko.atk, 13584);
+
+    final magicBulletTrait = [NiceTrait(id: 2885)];
+    expect(aoko.getBuffsWithTraits(magicBulletTrait).length, 2);
+
+    await battle.skipWave();
+    await battle.activateSvtSkill(0, 0);
+    expect(aoko.getBuffsWithTraits(magicBulletTrait).length, 10);
+    final enemy4 = battle.onFieldEnemies[0]!;
+    final enemy5 = battle.onFieldEnemies[1]!;
+    final enemy6 = battle.onFieldEnemies[2]!;
+    await battle.playerTurn([
+      CombatAction(aoko, aoko.getCards()[0]),
+      CombatAction(aoko, aoko.getCards()[2]),
+      CombatAction(aoko, aoko.getCards()[4]),
+    ]);
+    expect(enemy4.hp, -21825);
+    expect(enemy5.hp, -4909);
+    expect(enemy6.hp, -7553);
+    expect(aoko.getBuffsWithTraits(magicBulletTrait).length, 2); // ex consumes all remaining
+
+    await battle.skipTurn();
+    await battle.skipTurn();
+    await battle.skipTurn();
+    expect(aoko.getBuffsWithTraits(magicBulletTrait).length, 8);
+    await battle.activateSvtSkill(0, 0);
+    expect(aoko.getBuffsWithTraits(magicBulletTrait).length, 14);
+    await battle.activateSvtSkill(1, 1); // verify oberon's selfTurnEnd is after aoko
+    final enemy7 = battle.onFieldEnemies[0]!;
+    await battle.playerTurn([CombatAction(aoko, aoko.getNPCard()!)]);
+    expect(enemy7.hp, 63007);
+    expect(aoko.getBuffsWithTraits(magicBulletTrait).length, 6);
+    expect(aoko.np, 1000);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,

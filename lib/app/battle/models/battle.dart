@@ -1084,12 +1084,7 @@ class BattleData {
               final actor = action.actor;
 
               // need to sync card data because the actor might have transformed
-              final actualCard = (action.cardData.isTD
-                      ? actor.getNPCard()
-                      : action.cardData.cardType == CardType.extra
-                          ? actor.getExtraCard()
-                          : actor.getCards().getOrNull(action.cardData.cardIndex)) ??
-                  action.cardData;
+              final actualCard = getActualCard(action);
               actualCard.critical = action.cardData.critical;
               await withCard(actualCard, () async {
                 if (onFieldAllyServants.contains(actor) && action.isValid(this)) {
@@ -1144,6 +1139,17 @@ class BattleData {
         _updateTargetedIndex();
       },
     );
+  }
+
+  CommandCardData getActualCard(final CombatAction combatAction) {
+    final cardData = combatAction.cardData;
+    final actor = combatAction.actor;
+    return (cardData.isTD
+            ? actor.getNPCard()
+            : cardData.cardType == CardType.extra
+                ? actor.getExtraCard()
+                : actor.getCards().getOrNull(cardData.cardIndex)) ??
+        cardData;
   }
 
   Future<void> activateCounter(BattleServantData svt) async {
@@ -1565,17 +1571,19 @@ class BattleData {
   }
 
   bool shouldRemoveDeadActors(final List<CombatAction> actions, final int index) {
-    final action = actions[index];
-    if (action.cardData.isTD ||
-        action.cardData.cardDetail.attackType == CommandCardAttackType.all ||
+    final currentAction = actions[index];
+    final currentActualCard = getActualCard(currentAction);
+    if (currentActualCard.isTD ||
+        currentActualCard.cardDetail.attackType == CommandCardAttackType.all ||
         index == actions.length - 1) {
       return true;
     }
 
     final nextAction = actions[index + 1];
-    return nextAction.cardData.isTD ||
-        nextAction.cardData.cardDetail.attackType == CommandCardAttackType.all ||
-        nextAction.actor != action.actor;
+    final nextActualCard = getActualCard(nextAction);
+    return nextActualCard.isTD ||
+        nextActualCard.cardDetail.attackType == CommandCardAttackType.all ||
+        nextAction.actor != currentAction.actor;
   }
 
   Future<bool> canActivate(final int activationRate, final String description) async {

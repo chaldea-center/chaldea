@@ -150,6 +150,7 @@ void main() async {
 
       await battle.activateSvtSkill(0, 0);
       expect(await mash.getBuffValueOnAction(battle, BuffAction.receiveDamage), -2000);
+      expect(await mash.getBuffValueOnAction(battle, BuffAction.pierceSubdamage), 1000);
     });
 
     test('instantDeath grant', () async {
@@ -922,6 +923,64 @@ void main() async {
       expect(enemy1.battleBuff.getAllBuffs().length, previousBuffCount4 + 1);
       expect(enemy2.battleBuff.getAllBuffs().length, previousBuffCount5 + 3);
       expect(enemy3.battleBuff.getAllBuffs().length, previousBuffCount6 + 1);
+    });
+
+    test('gainMultiplyNp', () async {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData.id(704900),
+        PlayerSvtData.id(704900),
+      ];
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      final soujyuro1 = battle.onFieldAllyServants[0]!;
+      final soujyuro2 = battle.onFieldAllyServants[1]!;
+      soujyuro1.np = 0;
+      await battle.activateSvtSkill(0, 1);
+      expect(soujyuro1.np, 0);
+
+      soujyuro2.np = 4950;
+      await battle.activateSvtSkill(1, 1);
+      expect(soujyuro2.np, 10000);
+    });
+
+    test('protagonist correction on activator should block', () async {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData.id(2501400),
+        PlayerSvtData.id(2800100),
+      ];
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      final aoko = battle.onFieldAllyServants[0]!;
+      aoko.np = 3000;
+      battle.playerTargetIndex = 1;
+      await battle.activateSvtSkill(0, 2);
+      battle.playerTargetIndex = 0;
+      await battle.activateSvtSkill(1, 1);
+      expect(aoko.np, 8000);
+
+      await battle.skipTurn();
+      expect(aoko.np, 8000);
+    });
+
+    test('protagonist correction on target should not block', () async {
+      final battle = BattleData();
+      final playerSettings = [
+        PlayerSvtData.id(2501400),
+        PlayerSvtData.id(2800100),
+      ];
+      await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+      final aoko = battle.onFieldAllyServants[0]!;
+      aoko.np = 3000;
+      battle.playerTargetIndex = 0;
+      await battle.activateSvtSkill(0, 2);
+      await battle.activateSvtSkill(1, 1);
+      expect(aoko.np, 8000);
+
+      await battle.skipTurn();
+      expect(aoko.np, 6000);
     });
   });
 }
