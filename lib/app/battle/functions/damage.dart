@@ -268,6 +268,10 @@ class Damage {
           skipDamage: skipDamage,
         );
 
+        target.lastHitBy = activator;
+        target.lastHitByCard = currentCard;
+        target.lastHitByFunc = funcType;
+
         if (target.hp <= 0 && await target.hasBuffOnAction(battleData, BuffAction.avoidanceAttackDeathDamage)) {
           target.setHp(previousHp);
         }
@@ -405,9 +409,6 @@ class Damage {
         targetUniqueId: activator.uniqueId,
         isOpponent: activator.isPlayer != target.isPlayer,
       ));
-
-      target.lastHitBy = activator;
-      target.lastHitByCard = currentCard;
 
       final isOverkill = target.hp < 0 || (!currentCard.isTD && target.isBuggedOverkill);
       result.overkillStates.add(isOverkill);

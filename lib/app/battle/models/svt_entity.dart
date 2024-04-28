@@ -116,6 +116,7 @@ class BattleServantData {
   BattleServantData? lastHitBy;
   // @Deprecated('actionHistory')
   CommandCardData? lastHitByCard;
+  FuncType? lastHitByFunc;
   List<BattleServantActionHistory> actionHistory = [];
 
   BattleServantData._({required this.isPlayer});
@@ -696,6 +697,12 @@ class BattleServantData {
     _accumulationDamage = _accumulationDamage.clamp(0, maxHp);
   }
 
+  void resetLastHits() {
+    lastHitBy = null;
+    lastHitByCard = null;
+    lastHitByFunc = null;
+  }
+
   void addReducedHp(final int damage) {
     reducedHp += damage;
   }
@@ -1163,14 +1170,14 @@ class BattleServantData {
     int? maxRate;
 
     for (final buff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.toleranceSubstate)) {
-      if (await buff.shouldActivateToleranceSubstate(battleData, affectTraits)) {
+      if (await buff.shouldActivateToleranceSubstate(battleData, this, affectTraits)) {
         buff.setUsed(this);
         // should not have effectiveness on this
         // final totalEffectiveness = await battleData.withBuff(buff, () async {
         //   return await getEffectivenessOnAction(battleData, buffAction);
         // });
 
-        final value = (buff.getValue(battleData, this, activator)).toInt();
+        final value = buff.getValue(battleData, this, activator);
         if (actionDetails.plusTypes.contains(buff.buff.type)) {
           totalVal += value;
         } else if (actionDetails.minusTypes.contains(buff.buff.type)) {
@@ -1562,6 +1569,7 @@ class BattleServantData {
         }
         usedNpThisTurn = false;
 
+        // processing turnEndHeal
         final currentHp = hp;
         final turnEndHeal = await getBuffValueOnAction(battleData, BuffAction.turnendHpRegain) +
             getBuffValueForTurnEndHpReduce(battleData, isValueForHeal: true);
@@ -1575,6 +1583,7 @@ class BattleServantData {
           turnEndLog += ' - ${S.current.battle_heal} HP: $finalHeal';
         }
 
+        // processing turnEndDamage
         int turnEndDamage = getBuffValueForTurnEndHpReduce(battleData);
         if (turnEndDamage != 0) {
           if (turnEndDamage > currentHp && battleData.isWaveCleared) {
@@ -1589,10 +1598,15 @@ class BattleServantData {
           turnEndLog += ' - dot ${S.current.battle_damage}: $turnEndDamage';
         }
 
-        if (hp <= 0 && hasNextShift(battleData)) {
-          hp = 1;
+        if (hp <= 0) {
+          if (hasNextShift(battleData)) {
+            hp = 1;
+          } else {
+            resetLastHits();
+          }
         }
 
+        // processing turnEndStar
         final turnEndStar = await getBuffValueOnAction(battleData, BuffAction.turnendStar);
         if (turnEndStar != 0) {
           battleData.changeStar(turnEndStar);
@@ -1600,6 +1614,7 @@ class BattleServantData {
           turnEndLog += ' - ${S.current.critical_star}: $turnEndStar';
         }
 
+        // processing turnEndNp
         if (isPlayer) {
           final turnEndNP = await getBuffValueOnAction(battleData, BuffAction.turnendNp);
           if (turnEndNP != 0) {
@@ -1648,7 +1663,7 @@ class BattleServantData {
       BuffData? gutsToApply;
       final BuffAction gutsActionToCheck = hasNextShift(battleData) ? BuffAction.shiftGuts : BuffAction.guts;
       for (final buff in collectBuffsPerAction(battleBuff.validBuffs, gutsActionToCheck)) {
-        if (await buff.shouldActivateBuff(battleData, this)) {
+        if (await buff.shouldActivateGuts(battleData, this)) {
           if (gutsToApply == null || (gutsToApply.irremovable && !buff.irremovable)) {
             gutsToApply = buff;
           }
@@ -1671,8 +1686,7 @@ class BattleServantData {
       battleData.battleLogger.action('$lBattleName - ${gutsToApply.buff.lName.l} - '
           '${!isRatio ? value : '${(value / 10).toStringAsFixed(1)}%'}');
 
-      lastHitByCard = null;
-      lastHitBy = null;
+      resetLastHits();
 
       if (await activateBuffOnAction(battleData, BuffAction.functionGuts)) {
         for (final svt in battleData.nonnullActors) {

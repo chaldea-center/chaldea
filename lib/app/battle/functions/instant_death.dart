@@ -10,10 +10,11 @@ class InstantDeath {
   static Future<void> instantDeath(
     final BattleData battleData,
     final DataVals dataVals,
+    final FuncType funcType,
     final List<BattleServantData> targets, {
-    final bool force = false,
     final bool defaultToPlayer = true,
   }) async {
+    final force = funcType == FuncType.forceInstantDeath;
     final activator = battleData.activator;
     final record = BattleInstantDeathRecord(forceInstantDeath: force, activator: activator, targets: []);
     for (final target in targets) {
@@ -25,6 +26,7 @@ class InstantDeath {
         if (await shouldInstantDeath(battleData, dataVals, activator, target, isForceInstantDeath, params)) {
           target.hp = 0;
           target.lastHitBy = activator;
+          target.lastHitByFunc = funcType;
           target.actionHistory.add(BattleServantActionHistory(
             actType: BattleServantActionHistoryType.instantDeath,
             targetUniqueId: activator?.uniqueId ?? -1,

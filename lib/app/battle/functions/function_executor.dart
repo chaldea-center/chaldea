@@ -309,8 +309,8 @@ class FunctionExecutor {
           await InstantDeath.instantDeath(
             battleData,
             dataVals,
+            function.funcType,
             targets,
-            force: function.funcType == FuncType.forceInstantDeath,
             defaultToPlayer: defaultToPlayer,
           );
           break;
