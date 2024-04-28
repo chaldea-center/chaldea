@@ -271,7 +271,7 @@ class GameDataLoader {
     _gameJson['gachas'] ??= _gameJson['mstGacha'] ?? {};
 
     await _addGameAdd(_gameJson);
-    _patchMappings(_gameJson);
+    await _patchMappings(_gameJson);
 
     if (_gameJson.isEmpty) {
       throw Exception('No data loaded');
@@ -343,8 +343,8 @@ class GameDataLoader {
     }
   }
 
-  void _patchMappings(Map<String, dynamic> gamedata) {
-    final Map? data = gamedata['mappingData'], patches = gamedata['mappingPatch'];
+  Future<void> _patchMappings(Map<String, dynamic> gamedata) async {
+    final Map? data = gamedata['mappingData'] ??= {}, patches = gamedata['mappingPatch'];
     if (data == null || patches == null) return;
 
     void _applyPatch(Map old, Map patch) {
@@ -361,6 +361,18 @@ class GameDataLoader {
     }
 
     _applyPatch(data, patches);
+
+    // local dev patch
+    if (kDebugMode && 1 > 2) {
+      const files = <String>['buff_names', 'enums', 'event_trait', 'trait'];
+      Map localPatches = {};
+      await Future.wait(files.map((fn) async {
+        final resp = await Dio()
+            .get('http://127.0.0.1:5500/mappings/$fn.json', options: Options(responseType: ResponseType.plain));
+        localPatches[fn] = jsonDecode(resp.data as String);
+      }).toList());
+      _applyPatch(data, localPatches);
+    }
   }
 
   static bool checkHash(List<int> bytes, String hash) {

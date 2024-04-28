@@ -403,6 +403,8 @@ class MappingData {
   }
 
   factory MappingData.fromJson(Map<String, dynamic> json) {
+    // _addStrMappingValues(json, 'buff_names', {
+    // });
     return _$MappingDataFromJson(json);
   }
 
@@ -421,6 +423,15 @@ class M {
 T _fromJsonT<T>(Object? obj) => obj as T;
 
 Object? _toJsonT<T>(T value) => value;
+
+// ignore: unused_element
+void _addStrMappingValues(Map<String, dynamic> json, String field, Map<String, Map<String, String?>> values) {
+  print('patching $field with ${values.length} values, ${json.keys.firstOrNull}, ${values.keys.firstOrNull}');
+  json[field] = {
+    ...?(json[field] as Map?),
+    ...values,
+  };
+}
 
 @JsonSerializable(genericArgumentFactories: true, createToJson: true, includeIfNull: false)
 class MappingBase<T> {
@@ -711,6 +722,8 @@ class EnumMapping {
   });
 
   factory EnumMapping.fromJson(Map<String, dynamic> json) {
+    // _addStrMappingValues(json, 'buff_type', {
+    // });
     return _$EnumMappingFromJson(json);
   }
 
