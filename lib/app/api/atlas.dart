@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 
 import 'package:chaldea/packages/rate_limiter.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -406,6 +409,9 @@ class AtlasApi {
       url,
       fromJson,
       expireAfter: expireAfter,
+      options: Options(headers: {
+        if (expireAfter == Duration.zero) HttpHeaders.cacheControlHeader: 'nocache',
+      }),
     );
   }
 

@@ -17,6 +17,7 @@ import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/not_found.dart';
 import '../item/item_select.dart';
+import 'detail/_bonus_enemy_cond.dart';
 import 'detail/bonus.dart';
 import 'detail/bulletin_board.dart';
 import 'detail/campaign.dart';
@@ -380,6 +381,21 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     children.add(CustomTable(selectable: true, children: rows));
     if (event.type == EventType.questCampaign) {
       children.add(SFooter(S.current.ap_campaign_time_mismatch_hint));
+    }
+
+    if (event.id == 80472) {
+      children.add(TileGroup(
+        header: 'Temp Data',
+        children: [
+          ListTile(
+            title: Text(M.of(cn: "追加怪物的条件", na: "Bonus Enemy & Requirements")),
+            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+            onTap: () {
+              router.pushPage(BonusEnemyCondPage(event: event));
+            },
+          )
+        ],
+      ));
     }
 
     List<Widget> warTiles = [];

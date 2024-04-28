@@ -613,7 +613,7 @@ class BuffActionInfoTable extends StatelessWidget {
       ]),
       CustomTableRow.fromChildren(children: [
         Text(
-          formula,
+          'v=$formula',
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodySmall,
         )
