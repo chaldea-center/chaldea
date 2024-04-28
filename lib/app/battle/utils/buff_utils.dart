@@ -36,19 +36,19 @@ int countAnyTraits(final Iterable<NiceTrait> myTraits, final Iterable<NiceTrait>
       .length;
 }
 
-bool checkTraitFunction(
-  final Iterable<NiceTrait> myTraits,
-  final Iterable<NiceTrait> requiredTraits,
-  final bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) positiveMatchFunction,
-  final bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) negativeMatchFunction,
-) {
+bool checkTraitFunction({
+  required final Iterable<NiceTrait> myTraits,
+  required final Iterable<NiceTrait> requiredTraits,
+  required final bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) positiveMatchFunc,
+  required final bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) negativeMatchFunc,
+}) {
   final positiveTargets = requiredTraits.where((trait) => trait.signedId > 0);
   final negativeTargets = requiredTraits.where((trait) => trait.signedId < 0);
 
   if (requiredTraits.isEmpty) return true;
-  if (positiveMatchFunction(myTraits, positiveTargets)) return true;
+  if (positiveMatchFunc(myTraits, positiveTargets)) return true;
   if (negativeTargets.isEmpty) return false;
-  return !negativeMatchFunction(myTraits, negativeTargets);
+  return !negativeMatchFunc(myTraits, negativeTargets);
 }
 
 bool partialMatch(final Iterable<NiceTrait> myTraits, final Iterable<NiceTrait> unsignedRequiredTraits) {

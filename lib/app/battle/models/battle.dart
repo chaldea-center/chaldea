@@ -788,10 +788,10 @@ class BattleData {
       return countAnyTraits(currentTraits, params.requiredTraits) >= params.requireAtLeast!;
     } else {
       return checkTraitFunction(
-        currentTraits,
-        params.requiredTraits,
-        params.positiveMatchFunction,
-        params.negativeMatchFunction,
+        myTraits: currentTraits,
+        requiredTraits: params.requiredTraits,
+        positiveMatchFunc: params.positiveMatchFunction,
+        negativeMatchFunc: params.negativeMatchFunction,
       );
     }
   }

@@ -1173,57 +1173,116 @@ class BattleServantData {
     return capBuffValue(actionDetails, totalVal, maxRate);
   }
 
-  Future<int> getTurnEndHpReduceValue(final BattleData battleData, {final bool forHeal = false}) async {
+  int getBuffValueForFuncHpReduce(final BattleData battleData, final BuffData turnEndHpReduce) {
+    final actionDetails = ConstData.buffActions[BuffAction.funcHpReduce];
+    if (actionDetails == null) {
+      return 0;
+    }
+
+    int totalVal = 0;
+    int? maxRate;
+
+    for (final buff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.funcHpReduce)) {
+      if (buff.shouldActivateFuncHpReduce(turnEndHpReduce)) {
+        buff.setUsed(this);
+        final value = buff.getValue(battleData, this);
+        if (actionDetails.plusTypes.contains(buff.buff.type)) {
+          totalVal += value;
+        } else {
+          totalVal -= value;
+        }
+        maxRate = maxRate == null ? buff.buff.maxRate : max(maxRate, buff.buff.maxRate);
+      }
+    }
+    return capBuffValue(actionDetails, totalVal, maxRate);
+  }
+
+  int getBuffValueForFuncHpReduceValue(final BattleData battleData, final BuffData turnEndHpReduce) {
+    final actionDetails = ConstData.buffActions[BuffAction.funcHpReduceValue];
+    if (actionDetails == null) {
+      return 0;
+    }
+
+    int totalVal = 0;
+    int? maxRate;
+
+    for (final buff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.funcHpReduceValue)) {
+      if (buff.shouldActivateFuncHpReduceValue(turnEndHpReduce)) {
+        buff.setUsed(this);
+        final value = buff.getValue(battleData, this);
+        if (actionDetails.plusTypes.contains(buff.buff.type)) {
+          totalVal += value;
+        } else {
+          totalVal -= value;
+        }
+        maxRate = maxRate == null ? buff.buff.maxRate : max(maxRate, buff.buff.maxRate);
+      }
+    }
+    return capBuffValue(actionDetails, totalVal, maxRate);
+  }
+
+  int getBuffValueForTurnEndHpReduce(final BattleData battleData, {final bool isValueForHeal = false}) {
     final actionDetails = ConstData.buffActions[BuffAction.turnendHpReduce];
     if (actionDetails == null) {
       return 0;
     }
 
-    final opponent = battleData.getOpponent(this);
     int nonPreventableValue = 0;
     int preventableValue = 0;
     int? maxRate;
-    final List<BuffData> preventDeaths = getBuffsOfType(BuffType.preventDeathByDamage);
+    final List<BuffData> preventDeaths = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.preventDeathByDamage);
     final List<BuffData> activatedPreventDeaths = [];
 
-    for (final buff in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.turnendHpReduce)) {
-      if (await buff.shouldActivateBuff(battleData, this, opponent)) {
-        final toHeal = await battleData.withBuff(buff, () async {
-          return await hasBuffOnAction(battleData, BuffAction.turnendHpReduceToRegain);
-        });
-        if (forHeal != toHeal) {
-          continue;
+    final List<BuffData> turnEndHpReduceToRegainBuffs =
+        collectBuffsPerAction(battleBuff.validBuffs, BuffAction.turnendHpReduceToRegain);
+
+    for (final turnEndHpReduce in collectBuffsPerAction(battleBuff.validBuffs, BuffAction.turnendHpReduce)) {
+      // making assumption that turnendHpReduce should always apply, not checking indivs
+
+      // check turnendHpReduceToRegain
+      final shouldConvertToHeal = turnEndHpReduceToRegainBuffs.any((turnEndHpReduceToRegain) {
+        final shouldActivate = turnEndHpReduceToRegain.shouldActivateTurnendHpReduceToRegain(turnEndHpReduce);
+        if (shouldActivate) {
+          turnEndHpReduceToRegain.setUsed(this);
         }
+        return shouldActivate;
+      });
 
-        buff.setUsed(this);
-        final totalEffectiveness = await battleData.withBuff(buff, () async {
-          return await getEffectivenessOnAction(battleData, BuffAction.turnendHpReduce);
-        });
-        final shouldPrevent = battleData.withBuffSync(buff, () {
-          return preventDeaths.any((buff) {
-            if (buff.shouldApplyBuff(battleData, this, this)) {
-              activatedPreventDeaths.add(buff);
-              return true;
-            }
-            return false;
-          });
-        });
-
-        final buffValue = (toModifier(totalEffectiveness) * buff.getValue(battleData, this, opponent)).toInt();
-
-        // turnendHpReduce has no minus type
-        if (shouldPrevent) {
-          preventableValue += buffValue;
-        } else {
-          nonPreventableValue += buffValue;
-        }
-
-        maxRate = maxRate == null ? buff.buff.maxRate : max(maxRate, buff.buff.maxRate);
+      if (isValueForHeal != shouldConvertToHeal) {
+        continue;
       }
+
+      turnEndHpReduce.setUsed(this);
+      final funcHpReduce = getBuffValueForFuncHpReduce(battleData, turnEndHpReduce);
+      final funcHpReduceValue = getBuffValueForFuncHpReduceValue(battleData, turnEndHpReduce);
+
+      final baseValue = (toModifier(funcHpReduce) * turnEndHpReduce.getValue(battleData, this)).toInt();
+      final finalValue = max(baseValue + funcHpReduceValue, 0);
+
+      // this is for scenario where funcHpReduceValue is applied before funcHpReduce kicks in
+      // final baseValue = max(turnEndHpReduce.getValue(battleData, this) + funcHpReduceValue, 0);
+      // final finalValue = (toModifier(funcHpReduce) * baseValue).toInt();
+
+      final shouldPreventDeath = preventDeaths.any((preventDeath) {
+        final shouldActivate = preventDeath.shouldActivatePreventDeath(turnEndHpReduce);
+        if (shouldActivate) {
+          activatedPreventDeaths.add(preventDeath);
+        }
+        return shouldActivate;
+      });
+
+      // turnendHpReduce has no minus type
+      if (shouldPreventDeath) {
+        preventableValue += finalValue;
+      } else {
+        nonPreventableValue += finalValue;
+      }
+
+      maxRate = maxRate == null ? turnEndHpReduce.buff.maxRate : max(maxRate, turnEndHpReduce.buff.maxRate);
     }
 
     int finalValue = preventableValue + nonPreventableValue;
-    if (!forHeal && hp <= finalValue && hp > nonPreventableValue && preventableValue > 0) {
+    if (!isValueForHeal && hp <= finalValue && hp > nonPreventableValue && preventableValue > 0) {
       finalValue = hp - 1;
       for (final buff in activatedPreventDeaths) {
         buff.setUsed(this);
@@ -1362,7 +1421,12 @@ class BattleServantData {
     return buffList.where((buff) {
       if (buff.vals.IgnoreIndividuality == 1 && !includeIgnoreIndiv) return false;
       if (excludeIndivUnreleaseable && buff.irremovable) return false;
-      return checkTraitFunction(buff.traits, traits, partialMatch, partialMatch);
+      return checkTraitFunction(
+        myTraits: buff.traits,
+        requiredTraits: traits,
+        positiveMatchFunc: partialMatch,
+        negativeMatchFunc: partialMatch,
+      );
     }).toList();
   }
 
@@ -1490,7 +1554,7 @@ class BattleServantData {
 
         final currentHp = hp;
         final turnEndHeal = await getBuffValueOnAction(battleData, BuffAction.turnendHpRegain) +
-            await getTurnEndHpReduceValue(battleData, forHeal: true);
+            getBuffValueForTurnEndHpReduce(battleData, isValueForHeal: true);
         if (turnEndHeal != 0) {
           final healGrantEff = toModifier(await getBuffValueOnAction(battleData, BuffAction.giveGainHp));
           final healReceiveEff = toModifier(await getBuffValueOnAction(battleData, BuffAction.gainHp));
@@ -1501,7 +1565,7 @@ class BattleServantData {
           turnEndLog += ' - ${S.current.battle_heal} HP: $finalHeal';
         }
 
-        int turnEndDamage = await getTurnEndHpReduceValue(battleData);
+        int turnEndDamage = getBuffValueForTurnEndHpReduce(battleData);
         if (turnEndDamage != 0) {
           if (turnEndDamage > currentHp && battleData.isWaveCleared) {
             turnEndDamage = currentHp - 1;

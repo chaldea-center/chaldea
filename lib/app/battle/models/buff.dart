@@ -61,7 +61,12 @@ class BattleBuff {
     _activeList.removeWhere((buff) =>
         (includeNoAct || !buff.checkState(BuffState.noAct)) &&
         (includeNoField || !buff.checkState(BuffState.noField)) &&
-        checkTraitFunction(buff.traits, [trait], partialMatch, partialMatch));
+        checkTraitFunction(
+          myTraits: buff.traits,
+          requiredTraits: [trait],
+          positiveMatchFunc: partialMatch,
+          negativeMatchFunc: partialMatch,
+        ));
   }
 
   void turnProgress() {
@@ -196,14 +201,11 @@ class BuffData {
   }
 
   bool shouldActivateDonotActCommandtype(final CommandCardData card) {
-    final checkIndvType = buff.script.checkIndvType ?? 0;
-    final positiveMatchFunction = checkIndvType == 1 || checkIndvType == 3 ? allMatch : partialMatch;
-    final negativeMatchFunction = checkIndvType == 1 || checkIndvType == 3 ? allMatch : partialMatch;
     return checkTraitFunction(
-      card.traits,
-      buff.ckSelfIndv,
-      positiveMatchFunction,
-      negativeMatchFunction,
+      myTraits: card.traits,
+      requiredTraits: buff.ckSelfIndv,
+      positiveMatchFunc: getMatchFunc(buff.script.checkIndvType),
+      negativeMatchFunc: getMatchFunc(buff.script.checkIndvType),
     );
   }
 
@@ -273,11 +275,12 @@ class BuffData {
 
   Future<bool> shouldActivateToleranceSubstate(
       final BattleData battleData, final Iterable<NiceTrait> affectedTraits) async {
+    // TODO: figure out what buff.ckSelfIndiv could be doing here
     final bool shouldTolerate = checkTraitFunction(
-      affectedTraits,
-      buff.ckOpIndv,
-      getMatchFunc(buff.script.checkIndvType),
-      getMatchFunc(buff.script.checkIndvType),
+      myTraits: affectedTraits,
+      requiredTraits: buff.ckOpIndv,
+      positiveMatchFunc: getMatchFunc(buff.script.checkIndvType),
+      negativeMatchFunc: getMatchFunc(buff.script.checkIndvType),
     );
     return shouldTolerate && await probabilityCheck(battleData);
   }
@@ -302,6 +305,46 @@ class BuffData {
     return probabilityCheck;
   }
 
+  bool shouldActivatePreventDeath(final BuffData turnEndHpReduce) {
+    return checkTraitFunction(
+      myTraits: turnEndHpReduce.traits,
+      requiredTraits: buff.ckOpIndv,
+      positiveMatchFunc: getMatchFunc(buff.script.checkIndvType),
+      negativeMatchFunc: getMatchFunc(buff.script.checkIndvType),
+    );
+  }
+
+  // making assumptions that these would never have vals.UseRate so no need to check probability
+  bool shouldActivateFuncHpReduce(final BuffData turnEndHpReduce) {
+    // should share logic so reusing here
+    return shouldActivateFuncHpReduceValue(turnEndHpReduce);
+  }
+
+  bool shouldActivateFuncHpReduceValue(final BuffData turnEndHpReduce) {
+    // TODO: figure out what buff.ckOpIndiv could be doing here
+    return checkTraitFunction(
+      myTraits: turnEndHpReduce.traits,
+      requiredTraits: buff.ckSelfIndv,
+      positiveMatchFunc: getMatchFunc(buff.script.checkIndvType),
+      negativeMatchFunc: getMatchFunc(buff.script.checkIndvType),
+    );
+  }
+
+  bool shouldActivateTurnendHpReduceToRegain(final BuffData turnEndHpReduce) {
+    final hpReduceToRegainIndiv = vals.HpReduceToRegainIndiv;
+    if (hpReduceToRegainIndiv == null) {
+      return false;
+    }
+
+    return checkTraitFunction(
+      myTraits: turnEndHpReduce.traits,
+      requiredTraits: [NiceTrait(id: hpReduceToRegainIndiv)],
+      positiveMatchFunc: getMatchFunc(buff.script.checkIndvType),
+      negativeMatchFunc: getMatchFunc(buff.script.checkIndvType),
+    );
+  }
+
+  @Deprecated("moved to shouldActivateTurnendHpReduceToRegain")
   bool checkDataVals(final BattleData battleData) {
     if (vals.HpReduceToRegainIndiv != null) {
       final currentBuffMatch = battleData.checkTraits(CheckTraitParameters(
