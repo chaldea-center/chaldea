@@ -5,7 +5,7 @@ class SkillChargeTurn {
   SkillChargeTurn._();
 
   static bool _ignoreSkill(DataVals dataVals, int skillIndex) {
-    final targetIndex = (dataVals.Value2 ?? dataVals.Target ?? 0) - 1;
+    final targetIndex = (dataVals.Value2 ?? 0) - 1;
     return targetIndex >= 0 && targetIndex != skillIndex;
   }
 

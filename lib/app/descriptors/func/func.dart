@@ -504,6 +504,8 @@ class FuncDescriptor extends StatelessWidget {
           BuffType.subFieldIndividuality,
           BuffType.toFieldChangeField,
           BuffType.toFieldSubIndividualityField,
+          BuffType.overwriteBattleclass,
+          BuffType.overwriteSubattribute,
         ].contains(buff.type)) {
           funcText.write(Transl.buffNames(buff.type.name).l);
         } else if (buff.type == BuffType.upDamage &&
@@ -846,7 +848,7 @@ class FuncDescriptor extends StatelessWidget {
                     .toList();
                 if (guessTraits.length == 1) guessTrait = guessTraits.first;
                 // directly show guessTrait for known ones
-                if (guessTrait != null && (const [5359, 5546, 5512, 5586].contains(buff.id))) {
+                if (guessTrait != null && (const [5359, 5546, 5512, 5586, 5561].contains(buff.id))) {
                   indiv = guessTrait.signedId;
                   guessTrait = null;
                 }
@@ -880,6 +882,42 @@ class FuncDescriptor extends StatelessWidget {
             List<int>? indivs = vals?.FieldIndividuality;
             if (indivs != null) {
               spans.add(_replaceTraits(indivs));
+              return;
+            }
+            break;
+          case BuffType.overwriteBattleclass:
+            final clsId = vals?.Value;
+            if (clsId != null) {
+              spans.add(TextSpan(
+                children: SharedBuilder.replaceSpan(
+                  text,
+                  '{0}',
+                  [
+                    SharedBuilder.textButtonSpan(
+                      context: context,
+                      text: Transl.svtClassId(clsId).l,
+                      onTap: () => router.push(url: Routes.svtClassI(clsId)),
+                    )
+                  ],
+                ),
+                style: style,
+              ));
+              return;
+            }
+            break;
+          case BuffType.overwriteSubattribute:
+            final attri = vals?.Value;
+            if (attri != null) {
+              final svtAttri = ServantAttribute.values.firstWhereOrNull((e) => e.value == attri);
+              final attriName = svtAttri == null ? attri.toString() : Transl.svtAttribute(svtAttri).l;
+              spans.add(TextSpan(
+                children: SharedBuilder.replaceSpan(
+                  text,
+                  '{0}',
+                  [TextSpan(text: attriName)],
+                ),
+                style: style,
+              ));
               return;
             }
             break;
@@ -936,7 +974,14 @@ class FuncDescriptor extends StatelessWidget {
       FuncType.shortenUserEquipSkill,
       FuncType.extendUserEquipSkill,
     ].contains(func.funcType)) {
-      final targetNum = vals?.Value2 ?? vals?.Target ?? 0;
+      final targetNum = vals?.Value2 ?? 0;
+      if (targetNum > 0) {
+        spans.insert(0, TextSpan(text: '(${S.current.skill} $targetNum)'));
+      }
+    }
+
+    if (buff?.type == BuffType.donotSkillSelect && vals?.Value != null) {
+      final targetNum = vals?.Value ?? 0;
       if (targetNum > 0) {
         spans.insert(0, TextSpan(text: '(${S.current.skill} $targetNum)'));
       }

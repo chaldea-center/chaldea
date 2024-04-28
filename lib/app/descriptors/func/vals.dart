@@ -379,6 +379,14 @@ class ValDsc extends StatelessWidget {
       parts.add('');
       return;
     } else if ([
+          BuffType.overwriteBattleclass,
+          BuffType.overwriteSubattribute,
+          BuffType.donotSkillSelect,
+        ].contains(buff.type) &&
+        vals.Value != null) {
+      parts.add('');
+      return;
+    } else if ([
           BuffType.toFieldChangeField,
           // BuffType.toFieldSubIndividualityField,  // may be in TargetList
         ].contains(buff.type) &&
