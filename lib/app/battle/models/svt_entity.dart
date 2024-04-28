@@ -238,7 +238,16 @@ class BattleServantData {
 
   int get classId => isPlayer ? niceSvt!.classId : niceEnemy!.svt.classId;
 
-  ServantAttribute get attribute => isPlayer ? niceSvt!.attribute : niceEnemy!.svt.attribute;
+  ServantAttribute get attribute {
+    final overwriteSubattributeBuff =
+        collectBuffsPerType(battleBuff.validBuffs, BuffType.overwriteSubattribute).firstOrNull;
+    final overwriteSubattribute =
+        ServantAttribute.values.firstWhereOrNull((attr) => attr.value == overwriteSubattributeBuff?.vals.Value);
+    if (overwriteSubattribute != null) {
+      return overwriteSubattribute;
+    }
+    return isPlayer ? niceSvt!.attribute : niceEnemy!.svt.attribute;
+  }
 
   int get starGen => isPlayer ? niceSvt!.starGen : 0;
 
