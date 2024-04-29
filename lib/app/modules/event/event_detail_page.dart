@@ -388,10 +388,12 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         header: 'Temp Data',
         children: [
           ListTile(
+            dense: true,
             title: Text(M.of(cn: "追加怪物的条件", na: "Bonus Enemy & Requirements")),
+            subtitle: Text(M.of(cn: "仅活动期间可用", na: "Only available during event")),
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
             onTap: () {
-              router.pushPage(BonusEnemyCondPage(event: event));
+              router.pushPage(BonusEnemyCondPage(event: event, region: widget.region));
             },
           )
         ],

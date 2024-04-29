@@ -8,7 +8,8 @@ import 'package:chaldea/widgets/widgets.dart';
 
 class BonusEnemyCondPage extends StatefulWidget {
   final Event event;
-  const BonusEnemyCondPage({super.key, required this.event});
+  final Region region;
+  const BonusEnemyCondPage({super.key, required this.event, required this.region});
 
   @override
   State<BonusEnemyCondPage> createState() => _BonusEnemyCondPageState();
@@ -30,7 +31,8 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
     final futures = [
       AtlasApi.mstData(
         'mstQuestHint',
-        (json) => List<MstQuestHint>.from(json),
+        (json) => (json as List).map((e) => MstQuestHint.fromJson(e)).toList(),
+        region: widget.region,
         expireAfter: expireAfter,
       ).then((value) {
         if (value != null) {
@@ -44,6 +46,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
       AtlasApi.mstData(
         'viewEnemy',
         (json) => (json as List).map((e) => MstViewEnemy.fromJson(e)).toList(),
+        region: widget.region,
         expireAfter: expireAfter,
       ).then((value) {
         if (value != null) {
@@ -57,6 +60,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
       AtlasApi.mstData(
         'mstUserDeckFormationCond',
         (json) => (json as List).map((e) => UserDeckFormationCond.fromJson(e)).toList(),
+        region: widget.region,
         expireAfter: expireAfter,
       ).then((value) {
         if (value != null) {
@@ -131,6 +135,19 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
         onTap: quest.routeTo,
       ),
     ];
+
+    String hint = mstQuestHints[quest.id]?.values.firstOrNull?.message ?? "";
+    hint = hint.trim().replaceAll('\n', ' ');
+    if (hint.isNotEmpty) {
+      children.add(Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        child: Text(
+          hint,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+      ));
+    }
+
     for (final enemy in enemies) {
       final condId = enemy.entryByUserDeckFormationCondId;
       assert(condId != null && condId != 0);
@@ -161,6 +178,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
   }
 
   Widget buildUnknownGroup(List<UserDeckFormationCond> conds) {
+    if (conds.isEmpty) return const SizedBox.shrink();
     List<Widget> children = [
       ListTile(
         dense: true,
