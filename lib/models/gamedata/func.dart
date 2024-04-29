@@ -419,6 +419,13 @@ extension BaseFunctionX on BaseFunction {
       (funcTargetTeam == FuncApplyTarget.player && funcTargetType.isEnemy);
   EffectTarget get effectTarget => EffectTarget.fromFunc(funcTargetType);
 
+  List<NiceTrait> getFuncIndividuality() {
+    return [
+      ...?ConstData.funcTypeDetail[funcType.id]?.individuality,
+      ...?script?.funcIndividuality,
+    ];
+  }
+
   List<List<NiceTrait>> getOverwriteTvalsList() {
     List<List<NiceTrait>>? tvals = script?.overwriteTvals;
     if (tvals != null && tvals.isNotEmpty) return tvals;

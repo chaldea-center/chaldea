@@ -270,7 +270,7 @@ class Damage {
 
         target.lastHitBy = activator;
         target.lastHitByCard = currentCard;
-        target.lastHitByFunc = funcType;
+        target.lastHitByFunc = damageFunction;
 
         if (target.hp <= 0 && await target.hasBuffOnAction(battleData, BuffAction.avoidanceAttackDeathDamage)) {
           target.setHp(previousHp);

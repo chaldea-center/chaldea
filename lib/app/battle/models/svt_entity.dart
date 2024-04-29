@@ -116,7 +116,7 @@ class BattleServantData {
   BattleServantData? lastHitBy;
   // @Deprecated('actionHistory')
   CommandCardData? lastHitByCard;
-  FuncType? lastHitByFunc;
+  NiceFunction? lastHitByFunc;
   List<BattleServantActionHistory> actionHistory = [];
 
   BattleServantData._({required this.isPlayer});

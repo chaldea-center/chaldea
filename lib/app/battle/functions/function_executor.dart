@@ -309,7 +309,7 @@ class FunctionExecutor {
           await InstantDeath.instantDeath(
             battleData,
             dataVals,
-            function.funcType,
+            function,
             targets,
             defaultToPlayer: defaultToPlayer,
           );

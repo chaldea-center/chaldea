@@ -314,9 +314,7 @@ class BuffData {
   ) async {
     final selfCheck = checkSelf(self.getTraits(battleData));
 
-    final killedFuncDetail = ConstData.funcTypeDetail[self.lastHitByFunc?.id];
-    final oppoCheck =
-        buff.ckOpIndv.isEmpty || (killedFuncDetail != null && checkOpponent(killedFuncDetail.individuality));
+    final oppoCheck = buff.ckOpIndv.isEmpty || checkOpponent(self.lastHitByFunc?.getFuncIndividuality() ?? []);
     return selfCheck && oppoCheck && await probabilityCheck(battleData);
   }
 

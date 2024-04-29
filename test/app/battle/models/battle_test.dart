@@ -1264,15 +1264,15 @@ void main() async {
     final battle = BattleData();
     final playerSettings = [
       PlayerSvtData.id(2501400)
-      ..lv = 90
-      ..tdLv = 5
-      ..commandCodes = [
-        null,
-        null,
-        null,
-        null,
-        db.gameData.commandCodesById[8400460]!, // Mage of Flowers on aoe buster card
-      ],
+        ..lv = 90
+        ..tdLv = 5
+        ..commandCodes = [
+          null,
+          null,
+          null,
+          null,
+          db.gameData.commandCodesById[8400460]!, // Mage of Flowers on aoe buster card
+        ],
       PlayerSvtData.id(2800100),
     ];
     await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
