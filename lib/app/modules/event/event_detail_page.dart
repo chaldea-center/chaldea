@@ -383,23 +383,6 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       children.add(SFooter(S.current.ap_campaign_time_mismatch_hint));
     }
 
-    if (event.id == 80472) {
-      children.add(TileGroup(
-        header: 'Temp Data',
-        children: [
-          ListTile(
-            dense: true,
-            title: Text(M.of(cn: "追加怪物的条件", na: "Bonus Enemy & Requirements")),
-            subtitle: Text(M.of(cn: "仅活动期间可用", na: "Only available during event")),
-            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-            onTap: () {
-              router.pushPage(BonusEnemyCondPage(event: event, region: widget.region));
-            },
-          )
-        ],
-      ));
-    }
-
     List<Widget> warTiles = [];
     for (final warId in event.warIds) {
       warTiles.add(LayoutBuilder(builder: (context, constraints) {
@@ -445,6 +428,23 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       children.add(addQuestCategoryTile(context: context, event: event, extraQuests: extraQuests));
     }
 
+    // Mahoyo bonus enemy
+    if (event.id == 80472) {
+      children.add(TileGroup(
+        header: 'Temp Data',
+        children: [
+          ListTile(
+            dense: true,
+            title: Text(M.of(cn: "追加怪物的条件", na: "Bonus Enemy & Requirements")),
+            subtitle: Text(M.of(cn: "仅活动期间可用", na: "Only available during event")),
+            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+            onTap: () {
+              router.pushPage(BonusEnemyCondPage(event: event, region: widget.region));
+            },
+          )
+        ],
+      ));
+    }
     // event svt
     List<Widget> svtTiles = [];
     for (final eventSvt in event.svts) {

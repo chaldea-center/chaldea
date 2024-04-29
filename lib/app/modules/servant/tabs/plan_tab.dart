@@ -63,23 +63,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     targetVal.validate(curVal);
     // ascension part
     List<Widget> children = [];
-    if (svt.collectionNo > 0) {
-      children.add(TileGroup(
-        header: kLaplaceName,
-        children: [
-          CheckboxListTile(
-            dense: true,
-            title: Text(S.current.pin_to_top),
-            value: db.curUser.battleSim.pingedSvts.contains(svt.collectionNo),
-            onChanged: (v) {
-              setState(() {
-                db.curUser.battleSim.pingedSvts.toggle(svt.collectionNo);
-              });
-            },
-          ),
-        ],
-      ));
-    }
+
     if (showDetail(SvtPlanDetail.ascension)) {
       children.add(TileGroup(
         header: S.current.ascension_up,
@@ -431,6 +415,24 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     }
     if (showDetail(SvtPlanDetail.commandCode)) {
       children.add(_buildCmdCodePlanner());
+    }
+
+    if (svt.collectionNo > 0) {
+      children.add(TileGroup(
+        header: kLaplaceName,
+        children: [
+          CheckboxListTile(
+            dense: true,
+            title: Text(S.current.pin_to_top),
+            value: db.curUser.battleSim.pingedSvts.contains(svt.collectionNo),
+            onChanged: (v) {
+              setState(() {
+                db.curUser.battleSim.pingedSvts.toggle(svt.collectionNo);
+              });
+            },
+          ),
+        ],
+      ));
     }
 
     return Column(

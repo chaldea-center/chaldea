@@ -382,7 +382,10 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.super_effective_damage,
-          viewBuilder: (ctx) => SvtSpDmgTab(svt: svt),
+          viewBuilder: (ctx) => TransformSvtProfileTabber(
+            svt: svt,
+            builder: (context, svt) => SvtSpDmgTab(svt: svt),
+          ),
         );
       case SvtTab.lore:
         if (svt.originalCollectionNo == 0 && svt.profile.comments.isEmpty) {

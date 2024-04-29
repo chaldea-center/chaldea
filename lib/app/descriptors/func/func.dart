@@ -245,18 +245,21 @@ class SkillScriptDescriptor extends StatelessWidget {
             ...SharedBuilder.replaceSpan(
               Transl.misc2('SkillScript', isSvt ? 'actIndividuality' : 'actIndividuality2'),
               '{0}',
-              actIndividuality.map((indiv) {
-                final svt = db.gameData.servantsById[indiv.id];
-                String name = indiv.shownName(addSvtId: false);
-                if (svt != null) {
-                  name += '(${Transl.svtClassId(svt.classId).l})';
-                }
-                return SharedBuilder.textButtonSpan(
-                  context: context,
-                  text: name,
-                  onTap: svt?.routeTo ?? indiv.routeTo,
-                );
-              }).toList(),
+              divideList(
+                actIndividuality.map((indiv) {
+                  final svt = db.gameData.servantsById[indiv.id];
+                  String name = indiv.shownName(addSvtId: false);
+                  if (svt != null) {
+                    name += '(${Transl.svtClassId(svt.classId).l})';
+                  }
+                  return SharedBuilder.textButtonSpan(
+                    context: context,
+                    text: name,
+                    onTap: svt?.routeTo ?? indiv.routeTo,
+                  );
+                }).toList(),
+                const TextSpan(text: '/'),
+              ),
             )
           ]),
           style: Theme.of(context).textTheme.bodySmall,
