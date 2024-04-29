@@ -188,8 +188,12 @@ class Transl<K, V> {
         return Transl.enums(type, (enums) => enums.funcType);
       }
     }
-    if (!md.funcPopuptext.containsKey(jp) && md.buffNames.containsKey(jp)) {
-      return Transl(md.buffNames, jp, jp);
+    if (!md.funcPopuptext.containsKey(jp)) {
+      if (md.buffNames.containsKey(jp)) {
+        return Transl(md.buffNames, jp, jp);
+      } else if (md.enums.buffType.containsKey(jp)) {
+        return Transl(md.enums.buffType, jp, jp);
+      }
     }
     return Transl(md.funcPopuptext, jp, jp);
   }

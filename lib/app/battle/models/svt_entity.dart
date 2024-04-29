@@ -241,7 +241,7 @@ class BattleServantData {
 
   ServantAttribute get attribute {
     final overwriteSubattributeBuff =
-        collectBuffsPerType(battleBuff.validBuffs, BuffType.overwriteSubattribute).firstOrNull;
+        collectBuffsPerType(battleBuff.validBuffsActiveFirst, BuffType.overwriteSubattribute).firstOrNull;
     final overwriteSubattribute =
         ServantAttribute.values.firstWhereOrNull((attr) => attr.value == overwriteSubattributeBuff?.vals.Value);
     if (overwriteSubattribute != null) {
