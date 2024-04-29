@@ -245,9 +245,14 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
                           title: 'Loop Count',
                           text: '3',
                           keyboardType: TextInputType.number,
-                          onSubmit: (s) {
+                          onSubmit: (s) async {
                             final count = int.parse(s);
-                            startLoopBattle(count);
+                            try {
+                              await startLoopBattle(count);
+                            } catch (e, s) {
+                              logger.e('loop battle failed', e, s);
+                              EasyLoading.showError(e.toString());
+                            }
                           },
                         ).showDialog(context);
                       },
@@ -670,6 +675,9 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       );
       results.addNum(battleResult, 1);
       battleCount++;
+
+      // 10AP=4,40AP=5,
+      await agent.itemRecover(recoverId: 5, num: 1);
       if (battleResult == 1) {
         winCount++;
         itemCount += drops[6549] ?? 0;

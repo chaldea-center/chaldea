@@ -120,6 +120,13 @@ class FRequestAgent {
     return request.beginRequest();
   }
 
+  Future<FResponse> itemRecover({required int32_t recoverId, required int32_t num}) async {
+    final request = FRequestBase(network: network, path: '/item/recover');
+    request.addFieldInt32('recoverId', recoverId);
+    request.addFieldInt32('num', num);
+    return request.beginRequest();
+  }
+
   Future<FResponse> battleSetup({
     required int32_t questId,
     required int32_t questPhase,
@@ -138,6 +145,7 @@ class FRequestAgent {
     int32_t followerSpoilerProtectionLimitCount = 4, //?
     required int32_t followerSupportDeckId,
     int32_t campaignItemId = 0,
+    int32_t restartWave = 0,
   }) {
     final request = FRequestBase(network: network, path: '/battle/setup');
     request.addFieldInt32("questId", questId);
@@ -157,6 +165,7 @@ class FRequestAgent {
     request.addFieldInt32("followerSpoilerProtectionLimitCount", followerSpoilerProtectionLimitCount);
     request.addFieldInt32("followerSupportDeckId", followerSupportDeckId);
     request.addFieldInt32("campaignItemId", campaignItemId);
+    request.addFieldInt32("restartWave", restartWave);
     return request.beginRequestAndCheckError();
   }
 
@@ -189,6 +198,7 @@ class FRequestAgent {
     List<int32_t> calledEnemyUniqueIdArray = const [],
     List<int32_t> routeSelectIdArray = const [],
     List<int32_t> dataLostUniqueIdArray = const [],
+    List waveInfos = const [],
   }) {
     final request = FRequestBase(network: network, path: '/battle/result');
 
@@ -247,6 +257,7 @@ class FRequestAgent {
     ]);
     dictionary['voicePlayedList'] = jsonEncode(voicePlayedArray);
     dictionary['usedTurnList'] = usedTurnArray;
+    dictionary['waveInfo'] = "[]";
     print(jsonEncode(dictionary));
     final List<int> packed = msgpack.serialize(dictionary);
     final List<int> encryped = network.catMouseGame.catGame5Bytes(packed);
