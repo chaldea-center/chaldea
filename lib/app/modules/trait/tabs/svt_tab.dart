@@ -114,6 +114,7 @@ class _TraitServantTabState extends State<TraitServantTab> {
       dense: true,
       leading: svt.iconBuilder(context: context),
       title: Text('No.${svt.collectionNo}-${svt.lName.l}'),
+      trailing: svt.status.cur.favorite ? Text('NP${svt.status.cur.npLv}', style: const TextStyle(fontSize: 12)) : null,
       subtitle: details.isEmpty ? null : Text(details.join(' / '), textScaler: const TextScaler.linear(0.9)),
       onTap: () => svt.routeTo(),
     );
@@ -140,7 +141,14 @@ class _TraitServantTabState extends State<TraitServantTab> {
       ),
       padding: const EdgeInsets.all(2),
       margin: const EdgeInsets.all(1),
-      child: svt.iconBuilder(context: context),
+      child: svt.iconBuilder(
+        context: context,
+        text: svt.status.cur.favorite ? 'NP${svt.status.cur.npLv}' : null,
+        option: ImageWithTextOption(
+          fontSize: 10,
+          padding: const EdgeInsets.fromLTRB(0, 0, 2, 12),
+        ),
+      ),
     );
   }
 }

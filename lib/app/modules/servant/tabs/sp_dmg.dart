@@ -363,7 +363,16 @@ class _SpDmgIndivTabState extends State<SpDmgIndivTab> {
                 spacing: 2,
                 runSpacing: 4,
                 children: [
-                  for (final card in cards) card.iconBuilder(context: context, width: 48),
+                  for (final card in cards)
+                    card.iconBuilder(
+                      context: context,
+                      width: 48,
+                      text: card is Servant && card.status.favorite ? 'NP${card.status.cur.npLv}' : null,
+                      option: ImageWithTextOption(
+                        fontSize: 12,
+                        padding: const EdgeInsets.fromLTRB(0, 0, 3, 12),
+                      ),
+                    ),
                 ],
               )
             ],

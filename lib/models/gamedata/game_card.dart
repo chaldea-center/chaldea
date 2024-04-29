@@ -100,7 +100,7 @@ mixin GameCardMixin implements RouteInfo {
     ImageWithTextOption? option,
   }) {
     final size = Maths.fitSize(width, height, aspectRatio);
-    EdgeInsets? textPadding;
+    EdgeInsets? textPadding = option?.padding;
     if (size != null) {
       textPadding ??= EdgeInsets.only(
           right: size.key == null ? 0 : size.key! / 22, bottom: size.value == null ? 0 : size.value! / 12);
