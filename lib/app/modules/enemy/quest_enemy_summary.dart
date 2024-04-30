@@ -25,7 +25,7 @@ class QuestEnemySummaryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final attributes = _getValues<ServantAttribute>((e) => e.svt.attribute, (v) => ServantAttribute.values.indexOf(v)),
+    final attributes = _getValues<ServantSubAttribute>((e) => e.svt.attribute, (v) => ServantSubAttribute.values.indexOf(v)),
         charges = _getValues((e) => e.chargeTurn),
         deathRates = _getValues((e) => e.deathRate),
         critRates = _getValues((e) => e.criticalRate),
@@ -88,7 +88,7 @@ class QuestEnemySummaryPage extends StatelessWidget {
               ]),
               CustomTableRow.fromTexts(
                 texts: [
-                  S.current.filter_attribute,
+                  S.current.svt_sub_attribute,
                   S.current.info_charge,
                   S.current.info_death_rate,
                   S.current.info_critical_rate,
@@ -97,7 +97,7 @@ class QuestEnemySummaryPage extends StatelessWidget {
               ),
               CustomTableRow.fromTexts(
                 texts: [
-                  attributes.map((e) => Transl.svtAttribute(e).l).join('/'),
+                  attributes.map((e) => Transl.svtSubAttribute(e).l).join('/'),
                   charges.join('/'),
                   deathRates.map((e) => e.format(base: 10, percent: true)).join('/'),
                   critRates.map((e) => e.format(base: 10, percent: true)).join('/'),

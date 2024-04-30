@@ -12,7 +12,7 @@ void main() async {
   group('calculateDamage', () {
     group('Altria (100100) vs Sky caster', () {
       const defenderClass = SvtClass.caster;
-      const defenderAttribute = ServantAttribute.sky;
+      const defenderAttribute = ServantSubAttribute.sky;
 
       final altria = db.gameData.servantsById[100100]!;
       const level = 90;
@@ -292,7 +292,7 @@ void main() async {
 
       test('vs Sky Lancer', () {
         const defenderClass = SvtClass.lancer;
-        const defenderAttribute = ServantAttribute.sky;
+        const defenderAttribute = ServantSubAttribute.sky;
         final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
         final damageParameters = baseParam.copy()
@@ -305,7 +305,7 @@ void main() async {
 
       test('vs Earth Ruler', () {
         const defenderClass = SvtClass.ruler;
-        const defenderAttribute = ServantAttribute.earth;
+        const defenderAttribute = ServantSubAttribute.earth;
         final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
         final damageParameters = baseParam.copy()
@@ -318,7 +318,7 @@ void main() async {
 
       test('vs Human Archer', () {
         const defenderClass = SvtClass.archer;
-        const defenderAttribute = ServantAttribute.human;
+        const defenderAttribute = ServantSubAttribute.human;
         final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
         final damageParameters = baseParam.copy()
@@ -332,7 +332,7 @@ void main() async {
       final extra = altria.cardDetails[CardType.extra]!;
       test('totalHits', () {
         const defenderClass = SvtClass.lancer;
-        const defenderAttribute = ServantAttribute.sky;
+        const defenderAttribute = ServantSubAttribute.sky;
         final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
         final damageParameters = baseParam.copy()
@@ -350,7 +350,7 @@ void main() async {
 
     group('Yang Guifei (2500400)', () {
       const defenderClass = SvtClass.caster;
-      const defenderAttribute = ServantAttribute.sky;
+      const defenderAttribute = ServantSubAttribute.sky;
 
       final yuyu = db.gameData.servantsById[2500400]!;
       const level = 90;
@@ -430,7 +430,7 @@ void main() async {
 
     test('Vald III vs Caenis 1.099', () {
       const defenderClass = SvtClass.lancer;
-      const defenderAttribute = ServantAttribute.earth;
+      const defenderAttribute = ServantSubAttribute.earth;
 
       final vald = db.gameData.servantsById[700700]!;
       const level = 120;

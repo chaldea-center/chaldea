@@ -79,7 +79,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
       ),
       title: Text(enemy.lShownName),
       subtitle: Text(
-          '$kStarChar2${enemy.svt.rarity} ${Transl.svtClassId(enemy.svt.classId).l}  ${Transl.svtAttribute(enemy.svt.attribute).l}  HP ${enemy.hp} '
+          '$kStarChar2${enemy.svt.rarity} ${Transl.svtClassId(enemy.svt.classId).l}  ${Transl.svtSubAttribute(enemy.svt.attribute).l}  HP ${enemy.hp} '
           '\n${S.current.info_death_rate} ${enemy.deathRate.format(percent: true, base: 10)}'
           ' ${S.current.defense_np_rate} ${enemy.serverMod.tdRate.format(percent: true, base: 10)}'),
       trailing: const Icon(Icons.edit),

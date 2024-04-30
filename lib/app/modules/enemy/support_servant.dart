@@ -88,8 +88,8 @@ class _SupportServantPageState extends State<SupportServantPage> {
                 texts: [
                   S.current.rarity,
                   svt.svt.rarity.toString(),
-                  S.current.filter_attribute,
-                  Transl.svtAttribute(svt.svt.attribute).l,
+                  S.current.svt_sub_attribute,
+                  Transl.svtSubAttribute(svt.svt.attribute).l,
                 ],
                 isHeaders: const [true, false, true, false],
                 defaults: TableCellData(maxLines: 1),

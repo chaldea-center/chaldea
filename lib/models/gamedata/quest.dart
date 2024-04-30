@@ -1362,7 +1362,7 @@ class QuestEnemy with GameCardMixin {
         type: SvtType.normal,
         flags: [],
         classId: SvtClass.ALL.id,
-        attribute: ServantAttribute.void_,
+        attribute: ServantSubAttribute.void_,
         rarity: 3,
         atkMax: 1000,
         hpMax: 10000,

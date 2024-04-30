@@ -239,11 +239,11 @@ class BattleServantData {
 
   int get classId => isPlayer ? niceSvt!.classId : niceEnemy!.svt.classId;
 
-  ServantAttribute get attribute {
+  ServantSubAttribute get attribute {
     final overwriteSubattributeBuff =
         collectBuffsPerType(battleBuff.validBuffsActiveFirst, BuffType.overwriteSubattribute).firstOrNull;
     final overwriteSubattribute =
-        ServantAttribute.values.firstWhereOrNull((attr) => attr.value == overwriteSubattributeBuff?.vals.Value);
+        ServantSubAttribute.values.firstWhereOrNull((attr) => attr.value == overwriteSubattributeBuff?.vals.Value);
     if (overwriteSubattribute != null) {
       return overwriteSubattribute;
     }

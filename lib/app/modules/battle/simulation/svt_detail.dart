@@ -119,7 +119,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         ' $kStarChar2${svt.rarity}'
         ' ${Transl.svtClassId(svt.classId).l}'
         '\nATK ${svt.atk}  HP ${svt.hp}'
-        '\n${Transl.svtAttribute(svt.attribute).l}  Pos ${svt.fieldIndex + 1}');
+        '\n${Transl.svtSubAttribute(svt.attribute).l}  Pos ${svt.fieldIndex + 1}');
     if (svt.isEnemy) {
       buffer.write('  ${S.current.info_charge} ');
     } else {
@@ -230,7 +230,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         CustomTableRow.fromTexts(
           texts: [
             S.current.ascension_stage,
-            S.current.info_alignment,
+            S.current.svt_attribute,
             S.current.info_death_rate,
             S.current.info_critical_rate,
           ],
@@ -239,7 +239,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         CustomTableRow.fromTexts(
           texts: [
             svt.limitCount.toString(),
-            Transl.svtAttribute(svt.attribute).l,
+            Transl.svtSubAttribute(svt.attribute).l,
             _dscPercent(svt.deathRate, 10),
             svt.isEnemy ? _dscPercent(svt.niceEnemy!.criticalRate, 10) : svt.niceSvt!.starAbsorb.toString(),
           ],

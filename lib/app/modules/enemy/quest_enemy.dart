@@ -117,8 +117,8 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
                 texts: [
                   S.current.rarity,
                   enemy.svt.rarity.toString(),
-                  S.current.filter_attribute,
-                  Transl.svtAttribute(enemy.svt.attribute).l,
+                  S.current.svt_sub_attribute,
+                  Transl.svtSubAttribute(enemy.svt.attribute).l,
                 ],
                 isHeaders: const [true, false, true, false],
                 defaults: TableCellData(maxLines: 1),

@@ -51,7 +51,7 @@ class BasicServant with GameCardMixin {
   @JsonKey(unknownEnumValue: SvtFlag.unknown)
   List<SvtFlag> flags;
   int classId;
-  ServantAttribute attribute;
+  ServantSubAttribute attribute;
   @override
   int rarity;
   int atkMax;
@@ -68,7 +68,7 @@ class BasicServant with GameCardMixin {
     this.type = SvtType.normal,
     this.flags = const [],
     this.classId = 0,
-    this.attribute = ServantAttribute.void_,
+    this.attribute = ServantSubAttribute.void_,
     this.rarity = 0,
     this.atkMax = 0,
     this.hpMax = 0,
@@ -171,7 +171,7 @@ class Servant with GameCardMixin {
   int lvMax; // Mash is at Lv70
   ExtraAssets extraAssets;
   Gender gender;
-  ServantAttribute attribute;
+  ServantSubAttribute attribute; // SubAttribute
   List<NiceTrait> traits;
   int starAbsorb;
   int starGen;
@@ -236,7 +236,7 @@ class Servant with GameCardMixin {
     this.lvMax = 0,
     ExtraAssets? extraAssets,
     this.gender = Gender.unknown,
-    this.attribute = ServantAttribute.void_,
+    this.attribute = ServantSubAttribute.void_,
     this.traits = const [],
     this.starAbsorb = 0,
     this.starGen = 0,
@@ -1568,7 +1568,7 @@ enum SvtFlag {
   svtEquipEventReward,
 }
 
-enum ServantAttribute {
+enum ServantSubAttribute {
   human(1, Trait.attributeHuman),
   sky(2, Trait.attributeSky),
   earth(3, Trait.attributeEarth),
@@ -1578,7 +1578,7 @@ enum ServantAttribute {
   void_(10, null),
   ;
 
-  const ServantAttribute(this.value, this.trait);
+  const ServantSubAttribute(this.value, this.trait);
   final int value;
   final Trait? trait;
 }

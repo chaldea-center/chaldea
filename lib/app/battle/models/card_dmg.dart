@@ -13,7 +13,7 @@ class EnemyData {
   int limitCount = 0;
   List<int> individuality = [];
   SvtClass svtClass = SvtClass.ALL;
-  ServantAttribute attribute = ServantAttribute.void_;
+  ServantSubAttribute attribute = ServantSubAttribute.void_;
   int rarity = 0;
   int hp = 0;
 }

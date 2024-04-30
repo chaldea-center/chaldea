@@ -13,9 +13,9 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
           const {},
       attributeRelation: (json['attributeRelation'] as Map?)?.map(
             (k, e) => MapEntry(
-                $enumDecode(_$ServantAttributeEnumMap, k),
+                $enumDecode(_$ServantSubAttributeEnumMap, k),
                 (e as Map).map(
-                  (k, e) => MapEntry($enumDecode(_$ServantAttributeEnumMap, k), (e as num).toInt()),
+                  (k, e) => MapEntry($enumDecode(_$ServantSubAttributeEnumMap, k), (e as num).toInt()),
                 )),
           ) ??
           const {},
@@ -107,7 +107,7 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
 Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, dynamic>{
       'cnReplace': instance.cnReplace,
       'attributeRelation': instance.attributeRelation.map((k, e) =>
-          MapEntry(_$ServantAttributeEnumMap[k]!, e.map((k, e) => MapEntry(_$ServantAttributeEnumMap[k]!, e)))),
+          MapEntry(_$ServantSubAttributeEnumMap[k]!, e.map((k, e) => MapEntry(_$ServantSubAttributeEnumMap[k]!, e)))),
       'buffActions': instance.buffActions.map((k, e) => MapEntry(const BuffActionConverter().toJson(k), e.toJson())),
       'cardInfo': instance.cardInfo
           .map((k, e) => MapEntry(_$CardTypeEnumMap[k]!, e.map((k, e) => MapEntry(k.toString(), e.toJson())))),
@@ -132,13 +132,13 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
       'config': instance.config.toJson(),
     };
 
-const _$ServantAttributeEnumMap = {
-  ServantAttribute.human: 'human',
-  ServantAttribute.sky: 'sky',
-  ServantAttribute.earth: 'earth',
-  ServantAttribute.star: 'star',
-  ServantAttribute.beast: 'beast',
-  ServantAttribute.void_: 'void',
+const _$ServantSubAttributeEnumMap = {
+  ServantSubAttribute.human: 'human',
+  ServantSubAttribute.sky: 'sky',
+  ServantSubAttribute.earth: 'earth',
+  ServantSubAttribute.star: 'star',
+  ServantSubAttribute.beast: 'beast',
+  ServantSubAttribute.void_: 'void',
 };
 
 const _$CardTypeEnumMap = {

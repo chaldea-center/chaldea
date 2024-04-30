@@ -4012,17 +4012,6 @@ class S {
     );
   }
 
-  /// `Attribute`
-  String get filter_attribute {
-    return Intl.message(
-      'Attribute',
-      name: 'filter_attribute',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Category`
   String get filter_category {
     return Intl.message(
@@ -5172,17 +5161,6 @@ class S {
     return Intl.message(
       'Agility',
       name: 'info_agility',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Alignment`
-  String get info_alignment {
-    return Intl.message(
-      'Alignment',
-      name: 'info_alignment',
       desc: '',
       locale: localeName,
       args: [],
@@ -9385,6 +9363,17 @@ class S {
     );
   }
 
+  /// `Alignment`
+  String get svt_attribute {
+    return Intl.message(
+      'Alignment',
+      name: 'svt_attribute',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Info`
   String get svt_basic_info {
     return Intl.message(
@@ -9643,6 +9632,17 @@ class S {
     return Intl.message(
       '(SkillMax) Owned/Total',
       name: 'svt_stat_own_total',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Sub Attribute`
+  String get svt_sub_attribute {
+    return Intl.message(
+      'Sub Attribute',
+      name: 'svt_sub_attribute',
       desc: '',
       locale: localeName,
       args: [],

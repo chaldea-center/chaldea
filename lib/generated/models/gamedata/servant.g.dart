@@ -31,7 +31,7 @@ BasicServant _$BasicServantFromJson(Map json) => BasicServant(
               .toList() ??
           const [],
       classId: (json['classId'] as num?)?.toInt() ?? 0,
-      attribute: $enumDecodeNullable(_$ServantAttributeEnumMap, json['attribute']) ?? ServantAttribute.void_,
+      attribute: $enumDecodeNullable(_$ServantSubAttributeEnumMap, json['attribute']) ?? ServantSubAttribute.void_,
       rarity: (json['rarity'] as num?)?.toInt() ?? 0,
       atkMax: (json['atkMax'] as num?)?.toInt() ?? 0,
       hpMax: (json['hpMax'] as num?)?.toInt() ?? 0,
@@ -50,7 +50,7 @@ Map<String, dynamic> _$BasicServantToJson(BasicServant instance) => <String, dyn
       'type': _$SvtTypeEnumMap[instance.type]!,
       'flags': instance.flags.map((e) => _$SvtFlagEnumMap[e]!).toList(),
       'classId': instance.classId,
-      'attribute': _$ServantAttributeEnumMap[instance.attribute]!,
+      'attribute': _$ServantSubAttributeEnumMap[instance.attribute]!,
       'rarity': instance.rarity,
       'atkMax': instance.atkMax,
       'hpMax': instance.hpMax,
@@ -86,13 +86,13 @@ const _$SvtFlagEnumMap = {
   SvtFlag.svtEquipEventReward: 'svtEquipEventReward',
 };
 
-const _$ServantAttributeEnumMap = {
-  ServantAttribute.human: 'human',
-  ServantAttribute.sky: 'sky',
-  ServantAttribute.earth: 'earth',
-  ServantAttribute.star: 'star',
-  ServantAttribute.beast: 'beast',
-  ServantAttribute.void_: 'void',
+const _$ServantSubAttributeEnumMap = {
+  ServantSubAttribute.human: 'human',
+  ServantSubAttribute.sky: 'sky',
+  ServantSubAttribute.earth: 'earth',
+  ServantSubAttribute.star: 'star',
+  ServantSubAttribute.beast: 'beast',
+  ServantSubAttribute.void_: 'void',
 };
 
 Servant _$ServantFromJson(Map json) => Servant(
@@ -114,7 +114,7 @@ Servant _$ServantFromJson(Map json) => Servant(
           ? null
           : ExtraAssets.fromJson(Map<String, dynamic>.from(json['extraAssets'] as Map)),
       gender: $enumDecodeNullable(_$GenderEnumMap, json['gender']) ?? Gender.unknown,
-      attribute: $enumDecodeNullable(_$ServantAttributeEnumMap, json['attribute']) ?? ServantAttribute.void_,
+      attribute: $enumDecodeNullable(_$ServantSubAttributeEnumMap, json['attribute']) ?? ServantSubAttribute.void_,
       traits: (json['traits'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -219,7 +219,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'lvMax': instance.lvMax,
       'extraAssets': instance.extraAssets.toJson(),
       'gender': _$GenderEnumMap[instance.gender]!,
-      'attribute': _$ServantAttributeEnumMap[instance.attribute]!,
+      'attribute': _$ServantSubAttributeEnumMap[instance.attribute]!,
       'traits': instance.traits.map((e) => e.toJson()).toList(),
       'starAbsorb': instance.starAbsorb,
       'starGen': instance.starGen,

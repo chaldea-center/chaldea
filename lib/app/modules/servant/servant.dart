@@ -199,7 +199,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
           Text(
             'No.${svt.collectionNo > 0 ? svt.collectionNo : svt.id}'
             ' $kStarChar2${svt.rarity}'
-            '  ${Transl.svtClassId(svt.classId).l} ${Transl.svtAttribute(svt.attribute).l}',
+            '  ${Transl.svtClassId(svt.classId).l} ${Transl.svtSubAttribute(svt.attribute).l}',
             style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
           ),
           if (db.gameData.constData.svtExp.containsKey(svt.growthCurve))

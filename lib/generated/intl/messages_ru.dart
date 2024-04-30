@@ -194,7 +194,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "feedback_send": MessageLookupByLibrary.simpleMessage("Отправить"),
         "filename": MessageLookupByLibrary.simpleMessage("имя файла"),
         "filter": MessageLookupByLibrary.simpleMessage("Фильтр"),
-        "filter_attribute": MessageLookupByLibrary.simpleMessage("Атрибут"),
         "filter_category": MessageLookupByLibrary.simpleMessage("Категория"),
         "filter_sort": MessageLookupByLibrary.simpleMessage("Сортировать"),
         "filter_sort_number": MessageLookupByLibrary.simpleMessage("№"),

@@ -13,7 +13,7 @@ part '../../generated/models/gamedata/const_data.g.dart';
 @JsonSerializable(converters: [BuffActionConverter()])
 class ConstGameData {
   final Map<String, String> cnReplace;
-  final Map<ServantAttribute, Map<ServantAttribute, int>> attributeRelation;
+  final Map<ServantSubAttribute, Map<ServantSubAttribute, int>> attributeRelation;
   final Map<BuffAction, BuffActionDetail> buffActions;
   final Map<CardType, Map<int, CardInfo>> cardInfo;
   final Map<int, SvtClassInfo> classInfo;
@@ -109,7 +109,7 @@ class ConstGameData {
     return classRelation[classInfo[attacker]?.relationId]?[classInfo[defender]?.relationId] ?? 1000;
   }
 
-  int getAttributeRelation(final ServantAttribute attacker, final ServantAttribute defender) {
+  int getAttributeRelation(final ServantSubAttribute attacker, final ServantSubAttribute defender) {
     return attributeRelation[attacker]?[defender] ?? 1000;
   }
 

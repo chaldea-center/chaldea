@@ -911,8 +911,8 @@ class FuncDescriptor extends StatelessWidget {
           case BuffType.overwriteSubattribute:
             final attri = vals?.Value;
             if (attri != null) {
-              final svtAttri = ServantAttribute.values.firstWhereOrNull((e) => e.value == attri);
-              final attriName = svtAttri == null ? attri.toString() : Transl.svtAttribute(svtAttri).l;
+              final svtAttri = ServantSubAttribute.values.firstWhereOrNull((e) => e.value == attri);
+              final attriName = svtAttri == null ? attri.toString() : Transl.svtSubAttribute(svtAttri).l;
               spans.add(TextSpan(
                 children: SharedBuilder.replaceSpan(
                   text,

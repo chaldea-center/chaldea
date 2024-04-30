@@ -153,12 +153,12 @@ class SvtInfoTab extends StatelessWidget {
               svt.profile.stats?.np ?? '-',
             ], defaults: contentData),
             CustomTableRow(children: [
-              TableCellData(text: S.current.filter_attribute, isHeader: true, flex: 2),
-              TableCellData(text: S.current.info_alignment, isHeader: true, flex: 2),
+              TableCellData(text: S.current.svt_sub_attribute, isHeader: true, flex: 2),
+              TableCellData(text: S.current.svt_attribute, isHeader: true, flex: 2),
               TableCellData(text: S.current.general_type, isHeader: true, flex: 2),
             ]),
             CustomTableRow(children: [
-              TableCellData(text: Transl.svtAttribute(svt.attribute).l),
+              TableCellData(text: Transl.svtSubAttribute(svt.attribute).l),
               TableCellData(
                 text: [
                   if (svt.profile.stats?.policy != null) Transl.servantPolicy(svt.profile.stats!.policy!).l,
