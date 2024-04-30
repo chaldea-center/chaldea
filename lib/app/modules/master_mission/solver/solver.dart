@@ -54,7 +54,7 @@ class MissionSolver extends BaseLPSolver {
   }
 
   static int countMissionTarget(CustomMission mission, QuestPhase quest,
-      {bool includeRare = true, required MissionSolverOptions? options}) {
+      {bool includeAdditional = true, required MissionSolverOptions? options}) {
     int count = 0;
     if (mission.conds.first.type.isQuestType) {
       List<bool> results = mission.conds.map((cond) {
@@ -79,7 +79,7 @@ class MissionSolver extends BaseLPSolver {
     } else {
       for (final enemy in quest.allEnemies) {
         if (enemy.deck != DeckType.enemy) continue;
-        if (!includeRare && enemy.enemyScript.isRare) {
+        if (!includeAdditional && enemy.isRareOrAddition) {
           continue;
         }
         final results = mission.conds.map((cond) {

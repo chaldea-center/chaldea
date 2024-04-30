@@ -1310,6 +1310,8 @@ class QuestEnemy with GameCardMixin {
   // not unique if summoned from call deck
   int get deckNpcId => npcId * 10 + deck.index;
 
+  bool get isRareOrAddition => infoScript.isAddition || enemyScript.isRare;
+
   QuestEnemy({
     this.deck = DeckType.enemy,
     required this.deckId,
@@ -1505,7 +1507,7 @@ class EnemyScript with DataScriptBase {
     this.shiftClear,
   });
 
-  bool get isRare => toInt('probability_type') == 1;
+  bool get isRare => (toInt('probability_type') ?? 0) != 0;
 
   int? get dispBreakShift => toInt('dispBreakShift');
   int? get shiftPosition => toInt('shiftPosition'); // default value -1

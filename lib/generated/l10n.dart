@@ -1999,11 +1999,11 @@ class S {
     );
   }
 
-  /// `Count Rare Enemy`
-  String get count_rare_enemy {
+  /// `Count Rare/Additional Enemy`
+  String get count_rare_addition_enemy {
     return Intl.message(
-      'Count Rare Enemy',
-      name: 'count_rare_enemy',
+      'Count Rare/Additional Enemy',
+      name: 'count_rare_addition_enemy',
       desc: '',
       locale: localeName,
       args: [],

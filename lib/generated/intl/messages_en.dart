@@ -280,7 +280,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cost": MessageLookupByLibrary.simpleMessage("Cost"),
         "costume": MessageLookupByLibrary.simpleMessage("Costume"),
         "costume_unlock": MessageLookupByLibrary.simpleMessage("Costume Unlock"),
-        "count_rare_enemy": MessageLookupByLibrary.simpleMessage("Count Rare Enemy"),
+        "count_rare_addition_enemy": MessageLookupByLibrary.simpleMessage("Count Rare/Additional Enemy"),
         "counts": MessageLookupByLibrary.simpleMessage("Counts"),
         "craft_essence": MessageLookupByLibrary.simpleMessage("Craft Essence"),
         "craft_essence_short": MessageLookupByLibrary.simpleMessage("CE"),

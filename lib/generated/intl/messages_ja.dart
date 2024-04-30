@@ -210,7 +210,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cost": MessageLookupByLibrary.simpleMessage("コスト"),
         "costume": MessageLookupByLibrary.simpleMessage("霊衣"),
         "costume_unlock": MessageLookupByLibrary.simpleMessage("霊衣開放"),
-        "count_rare_enemy": MessageLookupByLibrary.simpleMessage("レアエネミーを計算"),
+        "count_rare_addition_enemy": MessageLookupByLibrary.simpleMessage("レア/追加エネミーを計算"),
         "counts": MessageLookupByLibrary.simpleMessage("カウント"),
         "craft_essence": MessageLookupByLibrary.simpleMessage("概念礼装"),
         "create_account_textfield_helper": MessageLookupByLibrary.simpleMessage("より多くのアカウントを後設定で追加できます"),

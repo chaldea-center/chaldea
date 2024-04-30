@@ -250,7 +250,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "cost": MessageLookupByLibrary.simpleMessage("소비"),
         "costume": MessageLookupByLibrary.simpleMessage("영의"),
         "costume_unlock": MessageLookupByLibrary.simpleMessage("영의개방"),
-        "count_rare_enemy": MessageLookupByLibrary.simpleMessage("레어 에너미 계산"),
         "counts": MessageLookupByLibrary.simpleMessage("카운트"),
         "craft_essence": MessageLookupByLibrary.simpleMessage("개념예장"),
         "craft_essence_short": MessageLookupByLibrary.simpleMessage("예장"),

@@ -268,7 +268,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cost": MessageLookupByLibrary.simpleMessage("消耗"),
         "costume": MessageLookupByLibrary.simpleMessage("靈衣"),
         "costume_unlock": MessageLookupByLibrary.simpleMessage("靈衣開放"),
-        "count_rare_enemy": MessageLookupByLibrary.simpleMessage("計算稀有敵人"),
+        "count_rare_addition_enemy": MessageLookupByLibrary.simpleMessage("計算稀有/追加敵人"),
         "counts": MessageLookupByLibrary.simpleMessage("計數"),
         "craft_essence": MessageLookupByLibrary.simpleMessage("概念禮裝"),
         "craft_essence_short": MessageLookupByLibrary.simpleMessage("禮裝"),

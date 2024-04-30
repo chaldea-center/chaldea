@@ -170,7 +170,7 @@
   "cost": null,
   "costume": "Vestuario",
   "costume_unlock": "Desbloquear Vestuario",
-  "count_rare_enemy": null,
+  "count_rare_addition_enemy": null,
   "counts": "Cantidad",
   "craft_essence": "Craft Essences",
   "create_account_textfield_helper": "Puedes agregar más cuentas más tarde en Configuración",

@@ -146,7 +146,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "cost": MessageLookupByLibrary.simpleMessage("كِلفة"),
         "costume": MessageLookupByLibrary.simpleMessage("زي خاص"),
         "costume_unlock": MessageLookupByLibrary.simpleMessage("فتح زي خاص"),
-        "count_rare_enemy": MessageLookupByLibrary.simpleMessage("حساب ندرة العدو"),
         "counts": MessageLookupByLibrary.simpleMessage("عد"),
         "craft_essence": MessageLookupByLibrary.simpleMessage("الكرافتز"),
         "create_account_textfield_helper":

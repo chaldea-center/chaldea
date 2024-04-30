@@ -14,8 +14,8 @@ import '../../master_mission/solver/scheme.dart';
 
 class MissionTargetFilterData {
   final cond = FilterGroupData<CustomMissionCond>();
-  bool hasRare = false;
-  bool rareEnemy = true;
+  bool hasAdditional = false;
+  bool includeAdditional = true;
 }
 
 class EventMissionTargetPage extends StatefulWidget {
@@ -63,7 +63,7 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
     // List<QuestPhase> phases = [];
     setState(() {
       _loading = true;
-      filterData.hasRare = false;
+      filterData.hasAdditional = false;
     });
     await Future.wait(allQuestData.keys.map((quest) async {
       if (region == null) return null;
@@ -76,8 +76,8 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
       final phaseData = await AtlasApi.questPhase(quest.id, quest.phases.last, region: region);
       if (phaseData != null) {
         allQuestData[quest] = phaseData;
-        if (!filterData.hasRare && phaseData.allEnemies.any((e) => e.enemyScript.isRare)) {
-          filterData.hasRare = true;
+        if (!filterData.hasAdditional && phaseData.allEnemies.any((e) => e.isRareOrAddition)) {
+          filterData.hasAdditional = true;
         }
       }
 
@@ -122,16 +122,16 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
             },
           ),
         ),
-        if (filterData.hasRare)
+        if (filterData.hasAdditional)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Wrap(
               children: [
                 CheckboxWithLabel(
-                  value: filterData.rareEnemy,
-                  label: Text(S.current.count_rare_enemy),
+                  value: filterData.includeAdditional,
+                  label: Text(S.current.count_rare_addition_enemy),
                   onChanged: (v) {
-                    if (v != null) filterData.rareEnemy = v;
+                    if (v != null) filterData.includeAdditional = v;
                     setState(() {});
                   },
                 ),
@@ -205,7 +205,7 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
           int count = MissionSolver.countMissionTarget(
             CustomMission(count: 1, conds: [cond]),
             phase,
-            includeRare: filterData.rareEnemy,
+            includeAdditional: filterData.includeAdditional,
             options: null,
           );
           if (count > 0) counts[cond] = count;

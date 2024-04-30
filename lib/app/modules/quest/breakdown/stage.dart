@@ -433,6 +433,12 @@ class QuestEnemyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle? textStyle = this.textStyle;
+    if (enemy.isRareOrAddition) {
+      textStyle = (textStyle ?? const TextStyle()).copyWith(
+        color: Colors.amber.shade800,
+      );
+    }
     return EnemyThumbBase(
       icon: enemy.svt.icon,
       showFace: showFace,

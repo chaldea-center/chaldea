@@ -23,7 +23,7 @@ class _MissionSolverOptions {
   bool _isRegionNA = false;
   bool get isRegionNA => warId < 1000 ? false : _isRegionNA;
   set isRegionNA(bool v) => _isRegionNA = v;
-  bool addNotBasedOnSvtForTraum = false;
+  bool addNotBasedOnSvtForTraum = false; // remove in 2025.10
 
   MasterMissionOptions get preset => db.settings.masterMissionOptions;
 }

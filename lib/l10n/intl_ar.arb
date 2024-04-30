@@ -170,7 +170,7 @@
   "cost": "كِلفة",
   "costume": "زي خاص",
   "costume_unlock": "فتح زي خاص",
-  "count_rare_enemy": "حساب ندرة العدو",
+  "count_rare_addition_enemy": null,
   "counts": "عد",
   "craft_essence": "الكرافتز",
   "create_account_textfield_helper": "يمكنك إضافة المزيد من الحسابات لاحقا في الاعدادات",
