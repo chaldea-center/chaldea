@@ -712,6 +712,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       children: [
         SimpleDialogOption(
           onPressed: () {
+            Navigator.pop(context);
             router.push(
               child: SvtBondDetailPage(
                 friendCode: _mstData.firstUser?.friendCode,
@@ -727,6 +728,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         ),
         SimpleDialogOption(
           onPressed: () {
+            Navigator.pop(context);
             router.pushPage(SniffPresentBoxDetailPage(
               presents: _mstData.userPresentBox.toList(),
               missions: _mstData.userEventMission.toList(),
@@ -738,6 +740,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         ),
         SimpleDialogOption(
           onPressed: () {
+            Navigator.pop(context);
             final gachas = _mstData.userGacha;
             showDialog(
               context: context,
@@ -771,12 +774,14 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         ),
         SimpleDialogOption(
           onPressed: () {
+            Navigator.pop(context);
             router.pushPage(ClassBoardMissionDemand(userSvtCollection: _mstData.userSvtCollection));
           },
           child: Text(S.current.class_board),
         ),
         SimpleDialogOption(
           onPressed: () {
+            Navigator.pop(context);
             router.pushPage(UserQuestFarmingStatPage(userQuests: _mstData.userQuest));
           },
           child: Text(S.current.quest),

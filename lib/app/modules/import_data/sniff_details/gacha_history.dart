@@ -128,6 +128,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     final curAnonymous = widget.userItems.firstWhereOrNull((e) => e.itemId == Items.svtAnonymousId)?.num ?? 0;
     final anonymousShops = widget.userShops.where((e) => e.shopId ~/ 1000000 == 4).toList();
     final anonymousBuyCount = Maths.sum(anonymousShops.map((e) => e.num));
+    final (hasUnknownLuckyBag, luckyBagCount) = getLuckyBagCount();
 
     return Scaffold(
       appBar: AppBar(
@@ -175,6 +176,10 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
                   final countOwned = Maths.sum(countsOwned.values);
                   final countsAll = countServantTDAll(widget.userSvtCollection, rarity);
                   final countAll = Maths.sum(countsAll.values);
+                  int? countAllNoLucky;
+                  if (rarity == 5) {
+                    countAllNoLucky = countAll - luckyBagCount;
+                  }
 
                   return ListTile(
                     dense: true,
@@ -194,12 +199,16 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
                         ),
                         const SizedBox(width: 8),
                         Text.rich(
-                          TextSpan(text: '${S.current.obtain} $countAll\n', children: [
-                            TextSpan(
-                              text: '${(countAll / totalSummonCount * 100).toStringAsFixed(2)}%',
-                              style: Theme.of(context).textTheme.bodySmall,
-                            )
-                          ]),
+                          TextSpan(
+                              text:
+                                  '${S.current.obtain} $countAll${countAllNoLucky == null ? "" : "($countAllNoLucky)"}\n',
+                              children: [
+                                TextSpan(
+                                  text:
+                                      '${(countAll / totalSummonCount * 100).toStringAsFixed(2)}%${countAllNoLucky == null ? "" : "(${(countAllNoLucky / totalSummonCount * 100).toStringAsFixed(2)}%)"}',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                )
+                              ]),
                           textAlign: TextAlign.end,
                         ),
                         Icon(DirectionalIcons.keyboard_arrow_forward(context)),
@@ -217,7 +226,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
                 ListTile(
                   dense: true,
                   title: Text(S.current.lucky_bag),
-                  trailing: Text(getLuckyBagCount()),
+                  trailing: Text(hasUnknownLuckyBag ? '≥$luckyBagCount' : '=$luckyBagCount'),
                 ),
                 ListTile(
                   dense: true,
@@ -414,7 +423,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     return counts;
   }
 
-  String getLuckyBagCount() {
+  (bool, int) getLuckyBagCount() {
     bool hasUnknown = false;
     int count = 0;
     for (final record in records) {
@@ -425,7 +434,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
         count += 1;
       }
     }
-    return hasUnknown ? '≥$count' : '=$count';
+    return (hasUnknown, count);
   }
 }
 
