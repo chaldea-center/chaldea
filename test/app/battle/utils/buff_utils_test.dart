@@ -6,14 +6,14 @@ import 'package:chaldea/models/gamedata/const_data.dart';
 void main() {
   group('Test capBuffValue', () {
     const maxRate = 5000;
-    final actionDetail = BuffActionDetail(
+    final actionDetail = BuffActionInfo(
       limit: BuffLimit.normal,
       plusTypes: [],
       minusTypes: [],
       baseParam: 1500,
       baseValue: 25,
       isRec: false,
-      plusAction: 0,
+      plusAction: BuffAction.none,
       maxRate: [maxRate],
     );
 

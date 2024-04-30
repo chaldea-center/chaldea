@@ -551,7 +551,7 @@ class BuffActionInfoTable extends StatelessWidget {
       ]);
     }
 
-    final plusAction = BuffAction.values.firstWhereOrNull((e) => e.value == detail.plusAction);
+    final plusAction = detail.plusAction;
 
     int? valueBase = kBuffActionPercentTypes[action];
 
@@ -571,24 +571,15 @@ class BuffActionInfoTable extends StatelessWidget {
       limitText += ' ≤ ${detail.maxRate.map((e) => fmtBuffValue(e)).join(' or ')}';
       formula = 'min($formula, maxRate)';
     }
+    if (detail.plusAction.isNotNone) {
+      formula = '($formula)×(1+${detail.plusAction.name})';
+    }
 
     return CustomTable(selectable: true, children: [
       CustomTableRow.fromTexts(texts: const ['BuffAction'], isHeader: true),
       CustomTableRow.fromTexts(texts: ['${action.value} - ${action.name}']),
       ...buffTypes(context, 'Plus Buffs', detail.plusTypes),
       ...buffTypes(context, 'Minus Buffs', detail.minusTypes),
-      if (plusAction != null && plusAction != BuffAction.none && plusAction != BuffAction.unknown) ...[
-        CustomTableRow.fromTexts(texts: const ['Plus Buff Action'], isHeader: true),
-        CustomTableRow.fromChildren(children: [
-          Text.rich(SharedBuilder.textButtonSpan(
-            context: context,
-            text: '${plusAction.value} - ${plusAction.name}',
-            onTap: () {
-              router.push(url: Routes.buffActionI(plusAction));
-            },
-          ))
-        ])
-      ],
       CustomTableRow.fromTexts(
         texts: const ['Base Param', 'Base Value', 'Max Rates', "Limit Type"],
         isHeader: true,
@@ -611,6 +602,18 @@ class BuffActionInfoTable extends StatelessWidget {
         TableCellData(text: fmtBuffValue(detail.baseParam - detail.baseValue)),
         TableCellData(text: limitText, flex: 3),
       ]),
+      if (plusAction.isNotNone) ...[
+        CustomTableRow.fromTexts(texts: const ['Plus BuffAction'], isHeader: true),
+        CustomTableRow.fromChildren(children: [
+          Text.rich(SharedBuilder.textButtonSpan(
+            context: context,
+            text: '${plusAction.value} - ${plusAction.name}',
+            onTap: () {
+              router.push(url: Routes.buffActionI(plusAction));
+            },
+          ))
+        ])
+      ],
       CustomTableRow.fromChildren(children: [
         Text(
           'v=$formula',

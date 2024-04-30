@@ -20,8 +20,8 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
           ) ??
           const {},
       buffActions: (json['buffActions'] as Map?)?.map(
-            (k, e) => MapEntry(const BuffActionConverter().fromJson(k as String),
-                BuffActionDetail.fromJson(Map<String, dynamic>.from(e as Map))),
+            (k, e) => MapEntry(
+                const BuffActionConverter().fromJson(k), BuffActionInfo.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
       cardInfo: (json['cardInfo'] as Map?)?.map(
@@ -162,7 +162,7 @@ Map<String, dynamic> _$ConstDataConfigToJson(ConstDataConfig instance) => <Strin
       'autoLoginMinVerNa': instance.autoLoginMinVerNa,
     };
 
-BuffActionDetail _$BuffActionDetailFromJson(Map json) => BuffActionDetail(
+BuffActionInfo _$BuffActionInfoFromJson(Map json) => BuffActionInfo(
       limit: $enumDecode(_$BuffLimitEnumMap, json['limit']),
       plusTypes:
           (json['plusTypes'] as List<dynamic>).map((e) => const BuffTypeConverter().fromJson(e as String)).toList(),
@@ -171,18 +171,18 @@ BuffActionDetail _$BuffActionDetailFromJson(Map json) => BuffActionDetail(
       baseParam: (json['baseParam'] as num).toInt(),
       baseValue: (json['baseValue'] as num).toInt(),
       isRec: json['isRec'] as bool,
-      plusAction: (json['plusAction'] as num).toInt(),
+      plusAction: const BuffActionConverter().fromJson(json['plusAction']),
       maxRate: (json['maxRate'] as List<dynamic>).map((e) => (e as num).toInt()).toList(),
     );
 
-Map<String, dynamic> _$BuffActionDetailToJson(BuffActionDetail instance) => <String, dynamic>{
+Map<String, dynamic> _$BuffActionInfoToJson(BuffActionInfo instance) => <String, dynamic>{
       'limit': _$BuffLimitEnumMap[instance.limit]!,
       'plusTypes': instance.plusTypes.map(const BuffTypeConverter().toJson).toList(),
       'minusTypes': instance.minusTypes.map(const BuffTypeConverter().toJson).toList(),
       'baseParam': instance.baseParam,
       'baseValue': instance.baseValue,
       'isRec': instance.isRec,
-      'plusAction': instance.plusAction,
+      'plusAction': const BuffActionConverter().toJson(instance.plusAction),
       'maxRate': instance.maxRate,
     };
 

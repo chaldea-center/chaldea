@@ -14,7 +14,7 @@ part '../../generated/models/gamedata/const_data.g.dart';
 class ConstGameData {
   final Map<String, String> cnReplace;
   final Map<ServantSubAttribute, Map<ServantSubAttribute, int>> attributeRelation;
-  final Map<BuffAction, BuffActionDetail> buffActions;
+  final Map<BuffAction, BuffActionInfo> buffActions;
   final Map<CardType, Map<int, CardInfo>> cardInfo;
   final Map<int, SvtClassInfo> classInfo;
   final Map<int, Map<int, int>> classRelation;
@@ -143,18 +143,18 @@ class ConstDataConfig {
   Map<String, dynamic> toJson() => _$ConstDataConfigToJson(this);
 }
 
-@JsonSerializable(converters: [BuffTypeConverter()])
-class BuffActionDetail {
+@JsonSerializable(converters: [BuffTypeConverter(), BuffActionConverter()])
+class BuffActionInfo {
   BuffLimit limit;
   List<BuffType> plusTypes;
   List<BuffType> minusTypes;
   int baseParam;
   int baseValue;
   bool isRec;
-  int plusAction;
+  BuffAction plusAction; // check .isNotNone (not none or unknown) before using this field
   List<int> maxRate;
 
-  BuffActionDetail({
+  BuffActionInfo({
     required this.limit,
     required this.plusTypes,
     required this.minusTypes,
@@ -165,9 +165,9 @@ class BuffActionDetail {
     required this.maxRate,
   });
 
-  factory BuffActionDetail.fromJson(Map<String, dynamic> json) => _$BuffActionDetailFromJson(json);
+  factory BuffActionInfo.fromJson(Map<String, dynamic> json) => _$BuffActionInfoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$BuffActionDetailToJson(this);
+  Map<String, dynamic> toJson() => _$BuffActionInfoToJson(this);
 }
 
 @JsonSerializable()
@@ -1067,11 +1067,19 @@ enum SvtFrameType {
   frame0804,
 }
 
-class BuffActionConverter extends JsonConverter<BuffAction, String> {
+// String or int
+class BuffActionConverter extends JsonConverter<BuffAction, dynamic> {
   const BuffActionConverter();
   @override
-  BuffAction fromJson(String value) {
-    return deprecatedTypes[value] ?? decodeEnum(_$BuffActionEnumMap, value, BuffAction.unknown);
+  BuffAction fromJson(dynamic value) {
+    if (value == null) return BuffAction.none;
+    if (value is int) {
+      return BuffAction.values.firstWhere((e) => e.value == value, orElse: () => BuffAction.unknown);
+    } else if (value is String) {
+      return deprecatedTypes[value] ?? decodeEnum(_$BuffActionEnumMap, value, BuffAction.unknown);
+    } else {
+      throw UnsupportedError("BuffAction value must be int or string: ${value.runtimeType} $value");
+    }
   }
 
   @override
@@ -1228,6 +1236,8 @@ enum BuffAction {
 
   final int value;
   const BuffAction(this.value);
+
+  bool get isNotNone => this != none && this != unknown;
 }
 
 enum BuffLimit {

@@ -5,7 +5,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import '../models/svt_entity.dart';
 
-int capBuffValue(final BuffActionDetail buffAction, final int totalVal, final int? maxRate) {
+int capBuffValue(final BuffActionInfo buffAction, final int totalVal, final int? maxRate) {
   int adjustValue = buffAction.baseParam + totalVal;
 
   if (buffAction.limit == BuffLimit.normal || buffAction.limit == BuffLimit.lower) {
