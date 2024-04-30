@@ -74,7 +74,11 @@ class BasicServant with GameCardMixin {
     this.hpMax = 0,
     required this.face,
     this.costume = const {},
-  });
+  }) {
+    if (id == 2501500 && name == '蒼崎青子') {
+      name = 'スーパー青子';
+    }
+  }
 
   factory BasicServant.fromJson(Map<String, dynamic> json) {
     final id = json["id"] as int;
@@ -344,6 +348,9 @@ class Servant with GameCardMixin {
   Map<int, List<NiceTd>> groupedNoblePhantasms = {};
 
   void preprocess() {
+    if (id == 2501500 && name == '蒼崎青子') {
+      name = 'スーパー青子';
+    }
     appendPassive.sort2((e) => e.num * 100 + e.priority);
     // groupedActiveSkills
     groupedActiveSkills.clear();
