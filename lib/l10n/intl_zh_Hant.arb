@@ -10,7 +10,7 @@
   "account_title": "帳號",
   "active_skill": "主動技能",
   "active_skill_short": "主動",
-  "ad": null,
+  "ad": "廣告",
   "add": "添加",
   "add_condition": "添加條件",
   "add_feedback_details_warning": "請填寫回饋內容",
@@ -321,7 +321,7 @@
   "event_rerun_replace_grail": "聖杯替換為傳承結晶 {n}/{total} 個",
   "event_shop": "活動商店",
   "event_skill": "活動技能",
-  "event_svt": null,
+  "event_svt": "活動從者",
   "event_svt_withdraw": "已離隊",
   "event_tower": "塔",
   "event_treasure_box": "寶箱",
@@ -626,7 +626,7 @@
   "obtain_time": "時間",
   "ok": "確定",
   "one_off_quest": "一次性關卡",
-  "ongoing": null,
+  "ongoing": "進行中",
   "only_show_main_story_enemy": "僅顯示主線FQ敵人",
   "only_usuable_for_aoe_np": "僅全體寶具實際可用",
   "open": "打開",
@@ -962,5 +962,6 @@
   "warning": "警告",
   "web_domain_choice_hint": "大陸地區請選擇國內節點\n網頁版僅推薦PC用戶使用，手機版網頁性能較差且bug較多如無故刷新",
   "web_renderer": "Web渲染器",
-  "words_separate": "{a}{b}"
+  "words_separate": "{a}{b}",
+  "authfile_login_warning": "使用前請先閱讀使用方法、注意事項及風險！ "
 }
