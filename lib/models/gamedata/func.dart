@@ -421,7 +421,7 @@ extension BaseFunctionX on BaseFunction {
 
   List<NiceTrait> getFuncIndividuality() {
     return [
-      ...?ConstData.funcTypeDetail[funcType.id]?.individuality,
+      ...?ConstData.funcTypeDetail[funcType.value]?.individuality,
       ...?script?.funcIndividuality,
     ];
   }
@@ -590,8 +590,8 @@ enum FuncType {
   lossMultiplyNp(141),
   ;
 
-  final int id;
-  const FuncType(this.id);
+  final int value;
+  const FuncType(this.value);
 
   bool get isDamageNp => name.startsWith('damageNp');
 }

@@ -140,12 +140,12 @@ void main() async {
     final melusine = battle.onFieldAllyServants[0]!;
     final melusine2 = battle.onFieldAllyServants[1]!;
     final feihu = battle.onFieldAllyServants[2]!;
-    expect(melusine.getTraits(battle).map((e) => e.signedId).contains(Trait.fae.id), true);
-    expect(melusine2.getTraits(battle).map((e) => e.signedId).contains(Trait.fae.id), true);
-    expect(melusine.getTraits(battle).map((e) => e.signedId).contains(Trait.havingAnimalsCharacteristics.id), true);
-    expect(melusine2.getTraits(battle).map((e) => e.signedId).contains(Trait.havingAnimalsCharacteristics.id), true);
-    expect(melusine.getTraits(battle).map((e) => e.signedId).contains(Trait.knightsOfTheRound.id), true);
-    expect(melusine2.getTraits(battle).map((e) => e.signedId).contains(Trait.knightsOfTheRound.id), false);
+    expect(melusine.getTraits(battle).map((e) => e.signedId).contains(Trait.fae.value), true);
+    expect(melusine2.getTraits(battle).map((e) => e.signedId).contains(Trait.fae.value), true);
+    expect(melusine.getTraits(battle).map((e) => e.signedId).contains(Trait.havingAnimalsCharacteristics.value), true);
+    expect(melusine2.getTraits(battle).map((e) => e.signedId).contains(Trait.havingAnimalsCharacteristics.value), true);
+    expect(melusine.getTraits(battle).map((e) => e.signedId).contains(Trait.knightsOfTheRound.value), true);
+    expect(melusine2.getTraits(battle).map((e) => e.signedId).contains(Trait.knightsOfTheRound.value), false);
     expect(feihu.getTraits(battle).map((e) => e.signedId).contains(301), true);
     expect(feihu.getTraits(battle).map((e) => e.signedId).contains(300), false);
 

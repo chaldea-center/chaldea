@@ -1092,7 +1092,7 @@ class FuncDescriptor extends StatelessWidget {
           buff.ckOpIndv
               .map((e) => e.signedId)
               .toSet()
-              .equalTo(NiceTrait.upToleranceSubstateBuffTraits.map((e) => e.id).toSet())) {
+              .equalTo(NiceTrait.upToleranceSubstateBuffTraits.map((e) => e.value).toSet())) {
         _condSpans.add([
           TextSpan(text: Transl.special.buffCheckOpposite),
           SharedBuilder.textButtonSpan(

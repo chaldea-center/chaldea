@@ -101,7 +101,7 @@ class _EnemyFilterPageState extends FilterPageState<EnemyFilterData, EnemyFilter
           title: Text('${S.current.trait}*', style: textStyle),
           options: _traitsForFilter,
           values: filterData.trait,
-          optionBuilder: (v) => Text(Transl.trait(v.id).l),
+          optionBuilder: (v) => Text(Transl.trait(v.value).l),
           showMatchAll: true,
           showInvert: true,
           onFilterChanged: (value, _) {

@@ -17,9 +17,9 @@ void main() async {
     test('target check', () {
       final buff = BuffData(
           Buff(id: -1, name: '', detail: '', ckOpIndv: [
-            NiceTrait(id: Trait.king.id),
-            NiceTrait(id: Trait.divine.id),
-            NiceTrait(id: Trait.demon.id),
+            NiceTrait(id: Trait.king.value),
+            NiceTrait(id: Trait.divine.value),
+            NiceTrait(id: Trait.demon.value),
           ]),
           DataVals({'UseRate': 1000}),
           1);
@@ -35,8 +35,8 @@ void main() async {
             name: '',
             detail: '',
             ckOpIndv: [
-              NiceTrait(id: Trait.attributeSky.id),
-              NiceTrait(id: Trait.alignmentGood.id),
+              NiceTrait(id: Trait.attributeSky.value),
+              NiceTrait(id: Trait.alignmentGood.value),
             ],
             script: BuffScript(checkIndvType: 1),
           ),
@@ -54,8 +54,8 @@ void main() async {
             name: '',
             detail: '',
             ckOpIndv: [
-              NiceTrait(id: Trait.attributeSky.id),
-              NiceTrait(id: Trait.buffNegativeEffect.id),
+              NiceTrait(id: Trait.attributeSky.value),
+              NiceTrait(id: Trait.buffNegativeEffect.value),
             ],
             script: BuffScript(checkIndvType: 1),
           ),
@@ -65,7 +65,7 @@ void main() async {
           1);
 
       final negativeBuff = BuffData(
-          Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.buffNegativeEffect.id)]),
+          Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.buffNegativeEffect.value)]),
           DataVals(
             {'UseRate': 1000},
           ),
@@ -78,7 +78,7 @@ void main() async {
       });
 
       final positiveBuff = BuffData(
-          Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.buffPositiveEffect.id)]),
+          Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.buffPositiveEffect.value)]),
           DataVals(
             {'UseRate': 1000},
           ),
@@ -91,7 +91,11 @@ void main() async {
 
     test('probability check', () async {
       final buff = BuffData(
-          Buff(id: -1, name: '', detail: '', ckOpIndv: [NiceTrait(id: Trait.king.id), NiceTrait(id: Trait.divine.id)]),
+          Buff(
+              id: -1,
+              name: '',
+              detail: '',
+              ckOpIndv: [NiceTrait(id: Trait.king.value), NiceTrait(id: Trait.divine.value)]),
           DataVals({'UseRate': 500}),
           1);
 
@@ -649,35 +653,35 @@ void main() async {
 
       final kiara = battle.onFieldAllyServants[0]!;
       await battle.activateSvtSkill(0, 0);
-      expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 0);
+      expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.value)]), 0);
 
       await battle.playerTurn([CombatAction(kiara, kiara.getCards()[4])]);
-      expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 1);
+      expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.value)]), 1);
 
       await battle.playerTurn([CombatAction(kiara, kiara.getCards()[4])]);
-      expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 2);
+      expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.value)]), 2);
 
       await battle.playerTurn([CombatAction(kiara, kiara.getCards()[4])]);
-      expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 3);
+      expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.value)]), 3);
 
       await battle.playerTurn([CombatAction(kiara, kiara.getCards()[4])]);
-      expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 4);
+      expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.value)]), 4);
 
       await battle.activateSvtSkill(0, 1);
       expect(kiara.np, 15000);
-      expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 2);
+      expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.value)]), 2);
 
       await battle.playerTurn([CombatAction(kiara, kiara.getCards()[4])]);
-      expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 2);
+      expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.value)]), 2);
       await battle.activateSvtSkill(0, 2);
-      expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 0);
+      expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.value)]), 0);
       final enemy2 = battle.onFieldEnemies[1]!;
       final enemy3 = battle.onFieldEnemies[2]!;
 
       final prevHp2 = enemy2.hp;
       final prevHp3 = enemy3.hp;
       await battle.playerTurn([CombatAction(kiara, kiara.getNPCard()!)]);
-      expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]), 0);
+      expect(kiara.countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.value)]), 0);
       expect(prevHp2 - enemy2.hp, 65301);
       expect(prevHp3 - enemy3.hp, 65301);
     });

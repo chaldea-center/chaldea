@@ -389,7 +389,7 @@ class SvtInfoTab extends StatelessWidget {
     bool showMore = false;
     final baseTraitIds = baseTraits.map((e) => e.signedId).toSet();
     for (final trait in traits) {
-      if (trait.id == Trait.canBeInBattle.id) continue;
+      if (trait.id == Trait.canBeInBattle.value) continue;
       if (baseTraitIds.contains(trait.signedId)) {
         showMore = true;
         continue;

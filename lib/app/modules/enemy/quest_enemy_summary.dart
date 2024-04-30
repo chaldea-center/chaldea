@@ -25,7 +25,8 @@ class QuestEnemySummaryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final attributes = _getValues<ServantSubAttribute>((e) => e.svt.attribute, (v) => ServantSubAttribute.values.indexOf(v)),
+    final attributes =
+            _getValues<ServantSubAttribute>((e) => e.svt.attribute, (v) => ServantSubAttribute.values.indexOf(v)),
         charges = _getValues((e) => e.chargeTurn),
         deathRates = _getValues((e) => e.deathRate),
         critRates = _getValues((e) => e.criticalRate),

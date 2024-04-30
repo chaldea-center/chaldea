@@ -324,8 +324,8 @@ enum AiTiming {
   // 8
   ;
 
-  const AiTiming(this.id);
-  final int id;
+  const AiTiming(this.value);
+  final int value;
 }
 
 enum NiceAiActType {

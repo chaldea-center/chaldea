@@ -1348,7 +1348,7 @@ void main() async {
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
 
-      final divinityCheck = [NiceTrait(id: Trait.divine.id)];
+      final divinityCheck = [NiceTrait(id: Trait.divine.value)];
       expect(
         battle.checkTraits(CheckTraitParameters(
           requiredTraits: divinityCheck,
@@ -1408,7 +1408,7 @@ void main() async {
       await battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
       final okuni = battle.onFieldAllyServants[0]!;
       final cba = battle.onFieldAllyServants[1]!;
-      final divinityCheck = [NiceTrait(id: Trait.divine.id)];
+      final divinityCheck = [NiceTrait(id: Trait.divine.value)];
       battle.withActivatorSync(cba, () {
         battle.withTargetSync(okuni, () {
           expect(
@@ -1495,7 +1495,7 @@ void main() async {
 
         expect(
           battle.checkTraits(CheckTraitParameters(
-            requiredTraits: [NiceTrait(id: Trait.criticalHit.id)],
+            requiredTraits: [NiceTrait(id: Trait.criticalHit.value)],
             checkCurrentCardTraits: true,
           )),
           true,

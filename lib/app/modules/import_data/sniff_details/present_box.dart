@@ -32,7 +32,7 @@ class SniffPresentBoxDetailPage extends StatelessWidget {
         m.id: m,
     };
     for (final mission in missions) {
-      if (mission.missionProgressType != MissionProgressType.clear.id) continue;
+      if (mission.missionProgressType != MissionProgressType.clear.value) continue;
       final eventMission = extraMissions[mission.missionId];
       if (eventMission == null) continue;
       Gift.checkAddGifts(missionItems, eventMission.gifts);

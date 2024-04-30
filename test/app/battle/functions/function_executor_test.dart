@@ -181,7 +181,7 @@ void main() async {
       expect(as1.first, battle.onFieldAllyServants[0]);
 
       battle.onFieldAllyServants[0]!.addBuff(BuffData(
-          Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.cantBeSacrificed.id)]), DataVals(), 1));
+          Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.cantBeSacrificed.value)]), DataVals(), 1));
 
       final as1With0Unselectable = await FunctionExecutor.acquireFunctionTarget(
           battle, FuncTargetType.ptSelfAnotherFirst, battle.onFieldAllyServants[1]);
@@ -465,20 +465,20 @@ void main() async {
       final archType1 = battle.onFieldAllyServants[0]!;
       final archType2 = battle.onFieldAllyServants[1]!;
 
-      expect(battle.getFieldTraits().map((e) => e.id).contains(Trait.milleniumCastle.id), isFalse);
+      expect(battle.getFieldTraits().map((e) => e.id).contains(Trait.milleniumCastle.value), isFalse);
 
       await battle.playerTurn([CombatAction(archType1, archType1.getNPCard()!)]);
 
-      expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 1);
+      expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.value).length, 1);
 
       await battle.playerTurn([CombatAction(archType2, archType1.getNPCard()!)]);
 
-      expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 2);
+      expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.value).length, 2);
 
       await battle.activateSvtSkill(0, 1);
       await battle.playerTurn([CombatAction(archType1, archType1.getNPCard()!)]);
 
-      expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 2);
+      expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.value).length, 2);
 
       // kill one to remove buff
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
@@ -486,17 +486,17 @@ void main() async {
       final archType3 = battle.onFieldAllyServants[0]!;
       final archType4 = battle.onFieldAllyServants[1]!;
 
-      expect(battle.getFieldTraits().map((e) => e.id).contains(Trait.milleniumCastle.id), isFalse);
+      expect(battle.getFieldTraits().map((e) => e.id).contains(Trait.milleniumCastle.value), isFalse);
 
       await battle.playerTurn([CombatAction(archType3, archType3.getNPCard()!)]);
 
-      expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 1);
+      expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.value).length, 1);
 
       archType3.hp = 0;
 
       await battle.playerTurn([CombatAction(archType4, archType4.getNPCard()!)]);
 
-      expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.id).length, 1);
+      expect(battle.getFieldTraits().map((e) => e.id).where((e) => e == Trait.milleniumCastle.value).length, 1);
     });
 
     test('gainStar', () async {
@@ -1202,12 +1202,12 @@ void main() async {
       final henry = battle.onFieldAllyServants[0]!;
       await battle.activateSvtSkill(0, 0);
       henry.np = 10000;
-      expect(henry.classId, SvtClass.assassin.id);
+      expect(henry.classId, SvtClass.assassin.value);
       expect(henry.skillInfoList[0].chargeTurn, 5);
       expect(henry.skillInfoList[2].skill, isNotNull);
       expect(henry.skillInfoList[2].skill!.id, 71255);
       await battle.playerTurn([CombatAction(henry, henry.getNPCard()!)]);
-      expect(henry.classId, SvtClass.berserker.id);
+      expect(henry.classId, SvtClass.berserker.value);
       expect(henry.skillInfoList[0].chargeTurn, 5 - 1);
       expect(henry.skillInfoList[2].skill, isNotNull);
       expect(henry.skillInfoList[2].skill!.id, 71255);

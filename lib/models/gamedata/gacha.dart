@@ -87,9 +87,9 @@ class MstGacha {
 
   factory MstGacha.fromJson(Map<String, dynamic> json) => _$MstGachaFromJson(json);
 
-  GachaType get gachaType => GachaType.values.firstWhereOrNull((e) => e.id == type) ?? GachaType.unknown;
+  GachaType get gachaType => GachaType.values.firstWhereOrNull((e) => e.value == type) ?? GachaType.unknown;
 
-  bool get isLuckyBag => type == GachaType.chargeStone.id;
+  bool get isLuckyBag => type == GachaType.chargeStone.value;
 
   String? getHtmlUrl(Region region) {
     // final page = gacha?.detailUrl;
@@ -266,7 +266,7 @@ class GachaTypeConverter extends JsonConverter<GachaType, dynamic> {
   @override
   GachaType fromJson(dynamic value) {
     if (value == null) return GachaType.payGacha;
-    if (value is int) return GachaType.values.firstWhere((e) => e.id == value, orElse: () => GachaType.unknown);
+    if (value is int) return GachaType.values.firstWhere((e) => e.value == value, orElse: () => GachaType.unknown);
     return payTypeToGachaType[value] ?? decodeEnum(_$GachaTypeEnumMap, value, GachaType.unknown);
   }
 
@@ -284,8 +284,8 @@ enum GachaType {
   chargeStone(7),
   ;
 
-  const GachaType(this.id);
-  final int id;
+  const GachaType(this.value);
+  final int value;
 
   String get shownName {
     switch (this) {

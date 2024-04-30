@@ -25,7 +25,7 @@ void main() async {
       final baseParam = DamageParameters()
         ..attack = altria.atkGrowth[level - 1]
         ..attackerClass = altria.classId
-        ..defenderClass = defenderClass.id
+        ..defenderClass = defenderClass.value
         ..classAdvantage = classAdvantage
         ..attackerAttribute = altria.attribute
         ..defenderAttribute = defenderAttribute
@@ -296,7 +296,7 @@ void main() async {
         final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
         final damageParameters = baseParam.copy()
-          ..defenderClass = defenderClass.id
+          ..defenderClass = defenderClass.value
           ..classAdvantage = classAdvantage
           ..defenderAttribute = defenderAttribute;
 
@@ -309,7 +309,7 @@ void main() async {
         final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
         final damageParameters = baseParam.copy()
-          ..defenderClass = defenderClass.id
+          ..defenderClass = defenderClass.value
           ..classAdvantage = classAdvantage
           ..defenderAttribute = defenderAttribute;
 
@@ -322,7 +322,7 @@ void main() async {
         final classAdvantage = ConstData.getClassRelation(altria.className, defenderClass);
 
         final damageParameters = baseParam.copy()
-          ..defenderClass = defenderClass.id
+          ..defenderClass = defenderClass.value
           ..classAdvantage = classAdvantage
           ..defenderAttribute = defenderAttribute;
 
@@ -340,7 +340,7 @@ void main() async {
           ..chainPos = 4
           ..currentCardType = CardType.extra
           ..firstCardType = CardType.buster
-          ..defenderClass = defenderClass.id
+          ..defenderClass = defenderClass.value
           ..classAdvantage = classAdvantage
           ..defenderAttribute = defenderAttribute;
 
@@ -362,7 +362,7 @@ void main() async {
       final baseParam = DamageParameters()
         ..attack = yuyu.atkGrowth[level - 1] + 1000
         ..attackerClass = yuyu.classId
-        ..defenderClass = defenderClass.id
+        ..defenderClass = defenderClass.value
         ..classAdvantage = classAdvantage
         ..attackerAttribute = yuyu.attribute
         ..defenderAttribute = defenderAttribute
@@ -443,7 +443,7 @@ void main() async {
       final damageParameters = DamageParameters()
         ..attack = vald.atkGrowth[level - 1] + 1000 + 1000 + 2400
         ..attackerClass = vald.classId
-        ..defenderClass = defenderClass.id
+        ..defenderClass = defenderClass.value
         ..classAdvantage = classAdvantage
         ..attackerAttribute = vald.attribute
         ..defenderAttribute = defenderAttribute

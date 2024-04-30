@@ -87,8 +87,8 @@ class MissionSolver extends BaseLPSolver {
           if (quest.warId == 310 &&
               options != null &&
               options.addNotBasedOnSvtForTraum & MissionSolverOptions.kTraumClassEnemyIds.contains(enemy.svt.id)) {
-            if (enemyTraits.every((e) => e.id != Trait.notBasedOnServant.id)) {
-              enemyTraits.add(NiceTrait(id: Trait.notBasedOnServant.id));
+            if (enemyTraits.every((e) => e.id != Trait.notBasedOnServant.value)) {
+              enemyTraits.add(NiceTrait(id: Trait.notBasedOnServant.value));
             }
           }
           switch (cond.type) {

@@ -1361,7 +1361,7 @@ class QuestEnemy with GameCardMixin {
         name: 'BlankEnemy',
         type: SvtType.normal,
         flags: [],
-        classId: SvtClass.ALL.id,
+        classId: SvtClass.ALL.value,
         attribute: ServantSubAttribute.void_,
         rarity: 3,
         atkMax: 1000,
@@ -1895,8 +1895,8 @@ enum QuestType {
   warBoard(7),
   ;
 
-  final int id;
-  const QuestType(this.id);
+  final int value;
+  const QuestType(this.value);
   String get shownName {
     switch (this) {
       case QuestType.main:
@@ -1914,7 +1914,7 @@ enum QuestType {
   }
 }
 
-final kQuestTypeIds = {for (final t in QuestType.values) t.id: t};
+final kQuestTypeIds = {for (final t in QuestType.values) t.value: t};
 
 enum ConsumeType {
   none,
@@ -2024,11 +2024,11 @@ enum GiftType {
   battleItem(16),
   ;
 
-  const GiftType(this.id);
-  final int id;
+  const GiftType(this.value);
+  final int value;
 
   static GiftType fromId(int id) {
-    return GiftType.values.firstWhere((e) => e.id == id, orElse: () => GiftType.unknown);
+    return GiftType.values.firstWhere((e) => e.value == id, orElse: () => GiftType.unknown);
   }
 }
 
@@ -2142,11 +2142,11 @@ enum QuestGroupType {
   eventFortification(18),
   ;
 
-  const QuestGroupType(this.id);
-  final int id;
+  const QuestGroupType(this.value);
+  final int value;
 }
 
-final kQuestGroupTypeMapping = {for (final v in QuestGroupType.values) v.id: v};
+final kQuestGroupTypeMapping = {for (final v in QuestGroupType.values) v.value: v};
 
 enum BattleFieldEnvironmentGrantType {
   none(0),

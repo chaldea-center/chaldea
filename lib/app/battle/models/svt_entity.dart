@@ -408,8 +408,9 @@ class BattleServantData {
 
     // check for changeCardBuff
     final changeCardBuff = collectBuffsPerAction(battleBuff.validBuffs, BuffAction.changeCommandCardType).firstOrNull;
-    final changeCardType =
-        changeCardBuff == null ? null : CardType.values.firstWhere((cardType) => cardType.id == changeCardBuff.param);
+    final changeCardType = changeCardBuff == null
+        ? null
+        : CardType.values.firstWhere((cardType) => cardType.value == changeCardBuff.param);
 
     // fill in for enemy units
     if (cards.isEmpty) {
@@ -894,7 +895,7 @@ class BattleServantData {
     }
 
     final skillInfo = skillInfoList[skillIndex];
-    final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
+    final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.value)]);
     skillInfo.setRankUp(rankUp);
     return collectBuffsPerAction(battleBuff.validBuffs, BuffAction.donotSkill).isNotEmpty;
   }
@@ -910,7 +911,7 @@ class BattleServantData {
 
     final skillInfo = skillInfoList[skillIndex];
     return battleData.withActivatorSync(this, () {
-      final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
+      final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.value)]);
       skillInfo.setRankUp(rankUp);
       return !canAttack() || skillInfo.skill == null || !skillInfo.checkSkillScript(battleData);
     });
@@ -923,7 +924,7 @@ class BattleServantData {
 
     final skillInfo = skillInfoList[skillIndex];
     return battleData.withActivatorSync(this, () {
-      final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
+      final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.value)]);
       skillInfo.setRankUp(rankUp);
 
       return !isSkillSealed(skillIndex) && !isSkillCondFailed(battleData, skillIndex);
@@ -935,7 +936,7 @@ class BattleServantData {
     if (skillInfo == null || skillInfo.chargeTurn > 0) return false;
 
     return await battleData.withActivator(this, () async {
-      final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.id)]);
+      final rankUp = countBuffWithTrait([NiceTrait(id: Trait.buffSkillRankUp.value)]);
       skillInfo.setRankUp(rankUp);
 
       // in case transform svt changed self or skill

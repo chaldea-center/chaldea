@@ -68,7 +68,7 @@ class _FfoPartFilterPageState extends FilterPageState<FfoPartFilterData, FfoPart
             SvtClass.foreigner
           ],
           values: filterData.classType,
-          optionBuilder: (v) => Text(Transl.svtClassId(v.id).l),
+          optionBuilder: (v) => Text(Transl.svtClassId(v.value).l),
           onFilterChanged: (value, _) {
             update();
           },

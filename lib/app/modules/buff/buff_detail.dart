@@ -551,7 +551,7 @@ class BuffActionInfoTable extends StatelessWidget {
       ]);
     }
 
-    final plusAction = BuffAction.values.firstWhereOrNull((e) => e.id == detail.plusAction);
+    final plusAction = BuffAction.values.firstWhereOrNull((e) => e.value == detail.plusAction);
 
     int? valueBase = kBuffActionPercentTypes[action];
 
@@ -574,7 +574,7 @@ class BuffActionInfoTable extends StatelessWidget {
 
     return CustomTable(selectable: true, children: [
       CustomTableRow.fromTexts(texts: const ['BuffAction'], isHeader: true),
-      CustomTableRow.fromTexts(texts: ['${action.id} - ${action.name}']),
+      CustomTableRow.fromTexts(texts: ['${action.value} - ${action.name}']),
       ...buffTypes(context, 'Plus Buffs', detail.plusTypes),
       ...buffTypes(context, 'Minus Buffs', detail.minusTypes),
       if (plusAction != null && plusAction != BuffAction.none && plusAction != BuffAction.unknown) ...[
@@ -582,7 +582,7 @@ class BuffActionInfoTable extends StatelessWidget {
         CustomTableRow.fromChildren(children: [
           Text.rich(SharedBuilder.textButtonSpan(
             context: context,
-            text: '${plusAction.id} - ${plusAction.name}',
+            text: '${plusAction.value} - ${plusAction.name}',
             onTap: () {
               router.push(url: Routes.buffActionI(plusAction));
             },

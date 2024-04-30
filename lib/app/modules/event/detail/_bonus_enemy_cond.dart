@@ -234,7 +234,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
           child: Text(trait == 505500 ? '$names\n有珠?' : names, style: const TextStyle(fontSize: 12)),
         ),
       ));
-      if (trait == Trait.havingAnimalsCharacteristics.id) continue;
+      if (trait == Trait.havingAnimalsCharacteristics.value) continue;
       final svts = db.gameData.servantsById.values
           .where((svt) => svt.traitAdd.expand((e) => e.trait).map((e) => e.id).contains(trait))
           .toList();

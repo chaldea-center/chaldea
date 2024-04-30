@@ -40,6 +40,6 @@ enum MyRoomAddOverwriteType {
   bgImageMultiple(7),
   backObject(8);
 
-  final int id;
-  const MyRoomAddOverwriteType(this.id);
+  final int value;
+  const MyRoomAddOverwriteType(this.value);
 }

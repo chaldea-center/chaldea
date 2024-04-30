@@ -384,7 +384,7 @@ class _MCQuestConverter extends McConverter {
         case QuestType.main:
         case QuestType.free:
         case QuestType.event:
-          final prefix = msQBoardL3Names.getOrNull(quest.type.id);
+          final prefix = msQBoardL3Names.getOrNull(quest.type.value);
           if (prefix != null) {
             url = '${HostsX.atlasAssetHost}/JP/Banner/$prefix$bannerType.png';
           }

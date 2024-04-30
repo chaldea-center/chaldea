@@ -49,7 +49,7 @@ class EffectFilterUtil {
       Trait.buffBurn,
       ...?addTraits,
     ];
-    options.sort2((e) => e.id ~/ 1000 == 4 ? e.id - 5000 : e.id);
+    options.sort2((e) => e.value ~/ 1000 == 4 ? e.value - 5000 : e.value);
     return FilterGroup<int>(
       title: Text.rich(
         TextSpan(text: S.current.related_traits, children: const [
@@ -59,16 +59,16 @@ class EffectFilterUtil {
           )
         ]),
       ),
-      options: options.map((e) => e.id).toList(),
+      options: options.map((e) => e.value).toList(),
       values: data,
       showMatchAll: false,
       showInvert: false,
       optionBuilder: (v) {
         String text = {
-              Trait.cardQuick.id: 'Quick',
-              Trait.cardArts.id: 'Arts',
-              Trait.cardBuster.id: 'Buster',
-              Trait.cardExtra.id: 'Extra',
+              Trait.cardQuick.value: 'Quick',
+              Trait.cardArts.value: 'Arts',
+              Trait.cardBuster.value: 'Buster',
+              Trait.cardExtra.value: 'Extra',
             }[v] ??
             Transl.trait(v).l;
         if (text.startsWith('buff') && text.length > 4) {

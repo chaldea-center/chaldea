@@ -1287,7 +1287,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
 }
 
 bool isEnemy7Knights(QuestEnemy enemy) {
-  if (!enemy.traits.any((e) => e.signedId == Trait.servant.id)) return false;
+  if (!enemy.traits.any((e) => e.signedId == Trait.servant.value)) return false;
   return enemy.traits.any((e) => _k7KnigntsTraits.contains(e.name));
 }
 

@@ -189,7 +189,7 @@ class _SvtClassInfoPageState extends State<SvtClassInfoPage> {
     final _allRelationIds = {...attackRates.keys, ...defenseRates.keys};
     final allClasses = <int>{
       ...clsInfos.values.where((e) => _allRelationIds.contains(e.relationId)).map((e) => e.id),
-      ...SvtClassX.regularAll.map((e) => e.id),
+      ...SvtClassX.regularAll.map((e) => e.value),
     }.toList();
     allClasses.sort2((e) => -(db.gameData.constData.classInfo[e]?.priority ?? -1));
     allClasses.sortByList((e) => [clsInfos[e]?.supportGroup ?? 999, -(clsInfos[e]?.priority ?? -1), e]);

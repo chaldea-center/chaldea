@@ -281,13 +281,13 @@ enum CardType {
   strength(11),
   ;
 
-  final int id;
-  const CardType(this.id);
+  final int value;
+  const CardType(this.value);
 
   bool get isQAB => [CardType.quick, CardType.arts, CardType.buster].contains(this);
 }
 
-final kCardTypeMapping = {for (final card in CardType.values) card.id: card};
+final kCardTypeMapping = {for (final card in CardType.values) card.value: card};
 
 @JsonEnum(alwaysCreate: true)
 enum SvtClass {
@@ -348,9 +348,9 @@ enum SvtClass {
   uOlgaMarieAquaCollection(9002),
   ;
 
-  final int id;
+  final int value;
   final String shortName;
-  const SvtClass(this.id, [this.shortName = '?']);
+  const SvtClass(this.value, [this.shortName = '?']);
 }
 
 class SvtClassConverter implements JsonConverter<SvtClass, String> {
@@ -371,7 +371,7 @@ class SvtClassConverter implements JsonConverter<SvtClass, String> {
 
   static int? fromString(String value, Map<int, SvtClassMapping> mapping) {
     for (final cls in SvtClass.values) {
-      if (cls.name == value) return cls.id;
+      if (cls.name == value) return cls.value;
     }
     int? pureInt = int.tryParse(value);
     if (pureInt != null && pureInt > 0) return pureInt;
@@ -384,10 +384,10 @@ const _kSvtClassRarityMap = {0: 0, 1: 1, 2: 1, 3: 2, 4: 3, 5: 3};
 extension SvtClassX on SvtClass {
   static const beast = SvtClass.beast;
 
-  SvtClassInfo? get info => db.gameData.constData.classInfo[id];
+  SvtClassInfo? get info => db.gameData.constData.classInfo[value];
   int get iconId => info?.iconImageId ?? 12;
 
-  String icon(int svtRarity) => clsIcon(id, svtRarity, iconId);
+  String icon(int svtRarity) => clsIcon(value, svtRarity, iconId);
 
   static String clsIcon(int clsId, int svtRarity, [int? iconId]) {
     iconId ??= ConstData.classInfo[clsId]?.iconImageId;
@@ -404,7 +404,7 @@ extension SvtClassX on SvtClass {
     router.push(url: Routes.svtClassI(id));
   }
 
-  String get lName => Transl.svtClassId(id).l;
+  String get lName => Transl.svtClassId(value).l;
 
   static List<SvtClass> regularAll = [
     ...regular,
@@ -478,7 +478,7 @@ extension SvtClassX on SvtClass {
 /// non-JP may not contains the last class
 const kSvtClassIdsPlayableAll = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25, 28, 33];
 const kSvtClassIdsPlayableAlways = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 23, 25, 28];
-final kSvtClassIds = {for (final v in SvtClass.values) v.id: v};
+final kSvtClassIds = {for (final v in SvtClass.values) v.value: v};
 
 enum SvtClassSupportGroupType {
   all,
@@ -812,8 +812,8 @@ enum Trait {
   eventGuda5(94000108),
   ;
 
-  final int id;
-  const Trait(this.id);
+  final int value;
+  const Trait(this.value);
 
   static bool isEventField(int id) {
     final v = id ~/ 1000;

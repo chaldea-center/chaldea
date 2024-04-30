@@ -89,7 +89,7 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
     for (final type in [MyRoomAddOverwriteType.bgImage, MyRoomAddOverwriteType.bgm]) {
       Map<String, List<MstMyRoomAdd>> grouped = {};
       for (final room in data) {
-        if (room.type == type.id && room.overwriteId > 0) {
+        if (room.type == type.value && room.overwriteId > 0) {
           grouped.putIfAbsent('${room.id}.${room.startedAt}.${room.endedAt}', () => []).add(room);
         }
       }
@@ -105,7 +105,7 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
           }
 
           return SimpleAccordion(
-            key: Key('room_group_${type.id}_${_t}_$index'),
+            key: Key('room_group_${type.value}_${_t}_$index'),
             expanded: expanded,
             headerBuilder: (context, _) {
               final room = rooms.first;
@@ -154,7 +154,7 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
             contentBuilder: (context) {
               List<Widget> children = [];
               for (final room in rooms) {
-                if (room.type == MyRoomAddOverwriteType.bgImage.id && room.overwriteId > 0) {
+                if (room.type == MyRoomAddOverwriteType.bgImage.value && room.overwriteId > 0) {
                   final url = asset.back(room.overwriteId, useFullscreen);
                   children.add(ConstrainedBox(
                     constraints: const BoxConstraints(maxHeight: 300),
@@ -172,7 +172,7 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
                       ),
                     ),
                   ));
-                } else if (room.type == MyRoomAddOverwriteType.bgm.id && room.overwriteId > 0) {
+                } else if (room.type == MyRoomAddOverwriteType.bgm.value && room.overwriteId > 0) {
                   final bgm = db.gameData.bgms[room.overwriteId];
                   children.add(ListTile(
                     dense: true,

@@ -50,4 +50,4 @@ class CondTypeConverter extends JsonConverter<CondType, String> {
 }
 
 // utils
-final kTraitIdMapping = <int, Trait>{for (final v in Trait.values) v.id: v};
+final kTraitIdMapping = <int, Trait>{for (final v in Trait.values) v.value: v};

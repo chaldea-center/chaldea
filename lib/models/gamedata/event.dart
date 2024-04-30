@@ -1935,8 +1935,8 @@ enum MissionProgressType {
   achieve(5),
   ;
 
-  const MissionProgressType(this.id);
-  final int id;
+  const MissionProgressType(this.value);
+  final int value;
 }
 
 enum MissionType {
@@ -2009,8 +2009,8 @@ enum EventType {
   fortuneCampaign(27),
   mcCampaign(999); // some campaign events not in master data, use Mooncell data
 
-  const EventType(this.id);
-  final int id;
+  const EventType(this.value);
+  final int value;
 }
 
 enum DetailMissionCondLinkType {
@@ -2066,11 +2066,11 @@ enum EventMissionCondType {
   /// custom, only used in app
   questClearIndividuality(999);
 
-  final int id;
-  const EventMissionCondType(this.id);
+  final int value;
+  const EventMissionCondType(this.value);
 
   static EventMissionCondType? parseId(int id) {
-    return EventMissionCondType.values.firstWhereOrNull((type) => type.id == id);
+    return EventMissionCondType.values.firstWhereOrNull((type) => type.value == id);
   }
 }
 

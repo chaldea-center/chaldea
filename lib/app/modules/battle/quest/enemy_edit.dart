@@ -434,7 +434,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
     }
     final removeTraits = <int?>{
       ...ConstData.classInfo.values.map((e) => e.individuality),
-      ...ServantSubAttribute.values.map((e) => e.trait?.id),
+      ...ServantSubAttribute.values.map((e) => e.trait?.value),
     };
     enemy.traits.removeWhere((e) => removeTraits.any((t) => t == e.id));
     final traitId = ConstData.classInfo[enemy.svt.classId]?.individuality;
@@ -444,7 +444,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
 
     final attriTrait = enemy.svt.attribute.trait;
     if (attriTrait != null) {
-      enemy.traits.add(NiceTrait(id: attriTrait.id));
+      enemy.traits.add(NiceTrait(id: attriTrait.value));
     }
   }
 

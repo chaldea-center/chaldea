@@ -102,7 +102,7 @@ class ConstGameData {
   }
 
   int getClassRelation(SvtClass attacker, SvtClass defender) {
-    return getClassIdRelation(attacker.id, defender.id);
+    return getClassIdRelation(attacker.value, defender.value);
   }
 
   int getClassIdRelation(final int attacker, final int defender) {
@@ -114,11 +114,11 @@ class ConstGameData {
   }
 
   bool isIgnoreValueUpFuncType(FuncType funcType) {
-    return funcTypeDetail[funcType.id]?.ignoreValueUp ?? false;
+    return funcTypeDetail[funcType.value]?.ignoreValueUp ?? false;
   }
 
   bool isIgnoreValueUpBuffType(BuffType buffType) {
-    return funcTypeDetail[buffType.id]?.ignoreValueUp ?? false;
+    return funcTypeDetail[buffType.value]?.ignoreValueUp ?? false;
   }
 
   factory ConstGameData.fromJson(Map<String, dynamic> json) {
@@ -1226,8 +1226,8 @@ enum BuffAction {
   changeBgm(136),
   ;
 
-  final int id;
-  const BuffAction(this.id);
+  final int value;
+  const BuffAction(this.value);
 }
 
 enum BuffLimit {

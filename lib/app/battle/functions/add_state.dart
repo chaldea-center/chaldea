@@ -41,7 +41,7 @@ class AddState {
       }
       // enemy Bazett may not contains niceSvt
       if (target.niceSvt?.script?.svtBuffTurnExtend == true || target.svtId == 1001100) {
-        if (ConstData.constantStr.extendTurnBuffType.contains(buff.type.id)) {
+        if (ConstData.constantStr.extendTurnBuffType.contains(buff.type.value)) {
           buffData.logicTurn += 1;
         }
       }
@@ -169,10 +169,10 @@ class AddState {
     if (tdTypeChangeIDs == null || tdTypeChangeIDs.isEmpty) return null;
 
     final validCardTypes = <CardType>[CardType.arts, CardType.buster, CardType.quick];
-    final cardIdTypeMap = {for (final c in validCardTypes) c.id: c};
+    final cardIdTypeMap = {for (final c in validCardTypes) c.value: c};
 
     if (excludeTypes != null && excludeTypes.isNotEmpty) {
-      validCardTypes.removeWhere((e) => excludeTypes.contains(e.id));
+      validCardTypes.removeWhere((e) => excludeTypes.contains(e.value));
     }
     final tdExistTypes =
         cardIdTypeMap.entries.where((e) => e.key <= tdTypeChangeIDs.length).map((e) => e.value).toList();
@@ -200,7 +200,7 @@ class AddState {
     NiceTd? targetTd;
     if (targetType != null && validCardTypes.contains(targetType)) {
       // start from Q/A/B=1/2/3 -> index 0/1/2
-      final tdId = tdTypeChangeIDs.getOrNull(targetType.id - 1);
+      final tdId = tdTypeChangeIDs.getOrNull(targetType.value - 1);
       if (tdId == null) return null;
 
       final List<NiceTd?> tds = svt.isPlayer

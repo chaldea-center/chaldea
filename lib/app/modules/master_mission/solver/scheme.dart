@@ -85,9 +85,9 @@ class CustomMission {
         bool useAnd;
         switch (type) {
           case CustomMissionType.trait:
-            if (detail.missionCondType == EventMissionCondType.enemyIndividualityKillNum.id) {
+            if (detail.missionCondType == EventMissionCondType.enemyIndividualityKillNum.value) {
               useAnd = false;
-            } else if (detail.missionCondType == EventMissionCondType.allIndividualityInEnemyKillNum.id) {
+            } else if (detail.missionCondType == EventMissionCondType.allIndividualityInEnemyKillNum.value) {
               useAnd = true;
             } else {
               useAnd = true;
@@ -161,7 +161,7 @@ class CustomMission {
     EventMissionCondType.targetSvtEnemyClassKillNum: CustomMissionType.servantClass,
     EventMissionCondType.targetEnemyClassKillNum: CustomMissionType.enemyClass,
     EventMissionCondType.targetEnemyIndividualityClassKillNum: CustomMissionType.enemyNotServantClass,
-  }.map((key, value) => MapEntry(key.id, value));
+  }.map((key, value) => MapEntry(key.value, value));
 
   static final Map<CustomMissionType, int> kDetailCondMappingReverse = <CustomMissionType, EventMissionCondType>{
     CustomMissionType.quest: EventMissionCondType.questClearNum,
@@ -171,7 +171,7 @@ class CustomMission {
     CustomMissionType.enemyClass: EventMissionCondType.targetEnemyClassKillNum,
     CustomMissionType.enemyNotServantClass: EventMissionCondType.targetEnemyIndividualityClassKillNum,
     CustomMissionType.questTrait: EventMissionCondType.questClearIndividuality,
-  }.map((key, value) => MapEntry(key, value.id));
+  }.map((key, value) => MapEntry(key, value.value));
 }
 
 class MissionSolverOptions {

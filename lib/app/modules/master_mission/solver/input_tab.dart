@@ -839,9 +839,9 @@ class _SearchViewState extends State<_SearchView> {
       }
     }
     if (ids.length > 5) {
-      ids.insertAll(0, _preferredTraits.where((e) => ids.contains(e.id)).map((e) => e.id));
+      ids.insertAll(0, _preferredTraits.where((e) => ids.contains(e.value)).map((e) => e.value));
     }
-    ids.remove(Trait.unknown.id);
+    ids.remove(Trait.unknown.value);
     ids.sort();
     return ids;
   }
@@ -862,15 +862,16 @@ class _SearchViewState extends State<_SearchView> {
     List<int> ids = [];
     int? queryId = int.tryParse(query);
     if (queryId != null) {
-      ids = SvtClass.values.where((e) => e.id < 97 && e.id.toString().contains(query)).map((e) => e.id).toList();
+      ids =
+          SvtClass.values.where((e) => e.value < 97 && e.value.toString().contains(query)).map((e) => e.value).toList();
       if (!ids.contains(queryId)) ids.insert(0, queryId);
       return ids;
     }
     for (final cls in SvtClass.values) {
-      if (cls.id >= 97) continue;
+      if (cls.value >= 97) continue;
       for (final key in _getClassStrings(cls)) {
         if (key.contains(query)) {
-          ids.add(cls.id);
+          ids.add(cls.value);
           break;
         }
       }
@@ -880,7 +881,7 @@ class _SearchViewState extends State<_SearchView> {
 
   Iterable<String> _getClassStrings(SvtClass cls) sync* {
     yield cls.name.toLowerCase();
-    yield* SearchUtil.getAllKeys(Transl.svtClassId(cls.id)).whereType();
+    yield* SearchUtil.getAllKeys(Transl.svtClassId(cls.value)).whereType();
   }
 
   Widget _buildTile(int id, String title, String? subtitle) {

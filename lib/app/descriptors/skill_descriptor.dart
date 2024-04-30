@@ -468,9 +468,9 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
           SFooter([
             if (ref.contain('base')) '[${ref.add("base")}] ${S.current.td_base_hits_hint}',
             if (ref.contain("cardNP"))
-              '[${ref.add("cardNP")}] ${S.current.td_cardnp_hint(Transl.trait(Trait.cardNP.id).l)}',
+              '[${ref.add("cardNP")}] ${S.current.td_cardnp_hint(Transl.trait(Trait.cardNP.value).l)}',
             if (ref.contain("cardQAB"))
-              '[${ref.add("cardQAB")}] ${S.current.td_cardcolor_hint(td.svt.card.name.toTitle(), Transl.trait(cardMap[td.svt.card]!.id).l)}',
+              '[${ref.add("cardQAB")}] ${S.current.td_cardcolor_hint(td.svt.card.name.toTitle(), Transl.trait(cardMap[td.svt.card]!.value).l)}',
           ].join('\n')),
       ],
     );

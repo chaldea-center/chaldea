@@ -55,7 +55,7 @@ class BattleBuff {
       ];
 
   bool get isSelectable =>
-      validBuffs.every((buff) => !buff.traits.map((trait) => trait.id).contains(Trait.cantBeSacrificed.id));
+      validBuffs.every((buff) => !buff.traits.map((trait) => trait.id).contains(Trait.cantBeSacrificed.value));
 
   void removeBuffWithTrait(final NiceTrait trait, {bool includeNoAct = false, bool includeNoField = false}) {
     _activeList.removeWhere((buff) =>

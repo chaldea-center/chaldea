@@ -452,8 +452,8 @@ enum BuffType {
   toFieldSubIndividualityField(10003),
   ;
 
-  final int id;
-  const BuffType(this.id);
+  final int value;
+  const BuffType(this.value);
 
   List<BuffAction> get buffActions => db.gameData.constData.buffTypeActionMap[this] ?? [];
   int? get percentBase {

@@ -770,7 +770,7 @@ class BattleData {
     if (params.checkCurrentCardTraits && currentCard != null) {
       currentTraits.addAll(currentCard!.traits);
       if (currentCard!.critical) {
-        currentTraits.add(NiceTrait(id: Trait.criticalHit.id));
+        currentTraits.add(NiceTrait(id: Trait.criticalHit.value));
       }
     }
 
@@ -1537,7 +1537,7 @@ class BattleData {
         actor.fieldIndex = -1;
         if (actor.isPlayer) {
           for (final svt in nonnullPlayers) {
-            svt.battleBuff.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
+            svt.battleBuff.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.value));
           }
         }
       }

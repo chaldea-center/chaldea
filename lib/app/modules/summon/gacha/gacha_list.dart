@@ -160,7 +160,7 @@ class _GachaListPageState extends State<GachaListPage>
   @override
   Widget listItemBuilder(NiceGacha gacha) {
     final String title = gacha.lName;
-    String subtitle = '[${gacha.type.id}]${gacha.id}   ';
+    String subtitle = '[${gacha.type.value}]${gacha.id}   ';
     subtitle += [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ ');
     final now = DateTime.now().timestamp;
     return SimpleAccordion(

@@ -345,7 +345,7 @@ class FunctionExecutor {
           break;
         case FuncType.cardReset:
           for (final svt in battleData.nonnullPlayers) {
-            svt.battleBuff.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.id));
+            svt.battleBuff.removeBuffWithTrait(NiceTrait(id: Trait.buffLockCardsDeck.value));
           }
           for (final target in targets) {
             battleData.setFuncResult(target.uniqueId, true);
@@ -471,12 +471,12 @@ class FunctionExecutor {
       return dataVals;
     }
 
-    final funcDetail = ConstData.funcTypeDetail[function.funcType.id];
+    final funcDetail = ConstData.funcTypeDetail[function.funcType.value];
     if (funcDetail != null && funcDetail.ignoreValueUp) {
       return dataVals;
     }
 
-    final buffDetail = ConstData.buffTypeDetail[function.buff?.type.id];
+    final buffDetail = ConstData.buffTypeDetail[function.buff?.type.value];
     if (buffDetail != null && buffDetail.ignoreValueUp) {
       return dataVals;
     }

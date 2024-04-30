@@ -41,9 +41,9 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
     switch (type) {
       case CustomMissionType.trait:
         // https://github.com/atlasacademy/apps/commit/5f989cd9979a3f6313cc3e7eb349f7487bf607a7
-        if (detail.missionCondType == EventMissionCondType.enemyIndividualityKillNum.id) {
+        if (detail.missionCondType == EventMissionCondType.enemyIndividualityKillNum.value) {
           return false;
-        } else if (detail.missionCondType == EventMissionCondType.allIndividualityInEnemyKillNum.id) {
+        } else if (detail.missionCondType == EventMissionCondType.allIndividualityInEnemyKillNum.value) {
           return true;
         }
         return true;

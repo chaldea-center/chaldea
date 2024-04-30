@@ -24,7 +24,7 @@ class _TraitListPageState extends State<TraitListPage> with SearchableListState<
   @override
   Iterable<int> get wholeData {
     List<int> sortedIds = {
-      ...Trait.values.map((e) => e.id),
+      ...Trait.values.map((e) => e.value),
       ...db.gameData.mappingData.trait.keys,
       ...db.gameData.mappingData.eventTrait.keys,
       ...db.gameData.mappingData.fieldTrait.keys,
@@ -40,7 +40,7 @@ class _TraitListPageState extends State<TraitListPage> with SearchableListState<
       }
     }
     if (_searchInt != null && !sortedIds.contains(_searchInt)) sortedIds.insert(0, _searchInt);
-    sortedIds.remove(Trait.unknown.id);
+    sortedIds.remove(Trait.unknown.value);
     return sortedIds;
   }
 
