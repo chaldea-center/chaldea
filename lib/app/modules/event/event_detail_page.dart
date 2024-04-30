@@ -439,7 +439,18 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
             subtitle: Text(M.of(cn: "仅活动期间可用", na: "Only available during event")),
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
             onTap: () {
-              router.pushPage(BonusEnemyCondPage(event: event, region: widget.region));
+              if (widget.region == Region.jp && event.endedAt < DateTime.now().timestamp) {
+                SimpleCancelOkDialog(
+                  title: Text(S.current.hint),
+                  content: Text("${S.current.event}:\n- if ${S.current.ended}: "
+                      "${S.current.quest}→${S.current.additional_enemy}→${S.current.condition}🔍"),
+                  onTapOk: () {
+                    router.pushPage(BonusEnemyCondPage(event: event, region: widget.region));
+                  },
+                ).showDialog(context);
+              } else {
+                router.pushPage(BonusEnemyCondPage(event: event, region: widget.region));
+              }
             },
           )
         ],

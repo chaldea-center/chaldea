@@ -7,6 +7,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../battle/td_damage/td_damage_ranking.dart';
+import '../event/detail/_bonus_enemy_cond.dart';
 import '../servant/tabs/sp_dmg.dart';
 
 class QuestEnemyDetail extends StatefulWidget {
@@ -83,6 +84,35 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
             ? '${S.current.servant} No.${enemy.svt.collectionNo} - ${enemy.svt.lName.l}'
             : '${S.current.enemy} No.${enemy.svt.id} - ${enemy.svt.lName.l}'),
       ),
+      for (final rareType in [
+        if (enemy.enemyScript.isRare) S.current.rare_enemy,
+        if (enemy.infoScript.isAddition) S.current.additional_enemy
+      ])
+        CustomTableRow(children: [
+          TableCellData(
+            child: Text.rich(TextSpan(children: [
+              TextSpan(
+                text: rareType,
+                style: TextStyle(color: Colors.amber.shade800),
+              ),
+              if ((enemy.enemyScript.entryByUserDeckFormationCondId ?? 0) > 0)
+                TextSpan(children: [
+                  const TextSpan(text: ' ('),
+                  SharedBuilder.textButtonSpan(
+                    context: context,
+                    text: "${S.current.condition}🔍",
+                    onTap: () {
+                      router.pushPage(UserDeckFormationCondDetailPage(
+                        enemy: enemy,
+                        condId: enemy.enemyScript.entryByUserDeckFormationCondId,
+                      ));
+                    },
+                  ),
+                  const TextSpan(text: ')'),
+                ])
+            ])),
+          )
+        ]),
       CustomTableRow(children: [
         TableCellData(
           child: enemy.svt.iconBuilder(context: context, height: 64),
@@ -383,7 +413,6 @@ class _QuestEnemyDetailState extends State<QuestEnemyDetail> {
 
   List<Widget> enemyScriptInfo() {
     List<Widget> children = [
-      if (enemy.enemyScript.isRare) CustomTableRow.fromTexts(texts: [S.current.rare_enemy_hint]),
       if (enemy.enemyScript.leader == true) CustomTableRow.fromTexts(texts: [S.current.enemy_leader_hint]),
     ];
     if (children.isNotEmpty) {

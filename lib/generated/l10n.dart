@@ -250,6 +250,17 @@ class S {
     );
   }
 
+  /// `Additional Enemy`
+  String get additional_enemy {
+    return Intl.message(
+      'Additional Enemy',
+      name: 'additional_enemy',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Anniversary`
   String get anniversary {
     return Intl.message(
@@ -1993,17 +2004,6 @@ class S {
     return Intl.message(
       'Costume Unlock',
       name: 'costume_unlock',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
-  /// `Count Rare/Additional Enemy`
-  String get count_rare_addition_enemy {
-    return Intl.message(
-      'Count Rare/Additional Enemy',
-      name: 'count_rare_addition_enemy',
       desc: '',
       locale: localeName,
       args: [],
@@ -4754,6 +4754,17 @@ class S {
     return Intl.message(
       'High DIfficulty Quest',
       name: 'high_difficulty_quest',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Hint`
+  String get hint {
+    return Intl.message(
+      'Hint',
+      name: 'hint',
       desc: '',
       locale: localeName,
       args: [],
@@ -7724,11 +7735,11 @@ class S {
     );
   }
 
-  /// `Rare enemy, chance to appear`
-  String get rare_enemy_hint {
+  /// `Rare Enemy`
+  String get rare_enemy {
     return Intl.message(
-      'Rare enemy, chance to appear',
-      name: 'rare_enemy_hint',
+      'Rare Enemy',
+      name: 'rare_enemy',
       desc: '',
       locale: localeName,
       args: [],

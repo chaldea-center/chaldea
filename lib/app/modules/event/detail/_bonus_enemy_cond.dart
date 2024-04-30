@@ -166,7 +166,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
       if (cond == null) {
         children.add(ListTile(title: Text("Unknown UserDeckFormationCondId $condId")));
       } else {
-        children.add(buildTargetSvts(cond));
+        children.add(buildTargetSvts(context, cond));
       }
     }
 
@@ -189,7 +189,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
       ),
     ];
     for (final cond in conds) {
-      children.add(buildTargetSvts(cond));
+      children.add(buildTargetSvts(context, cond));
     }
 
     return Column(
@@ -199,7 +199,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
     );
   }
 
-  Widget buildTargetSvts(UserDeckFormationCond cond) {
+  static Widget buildTargetSvts(BuildContext context, UserDeckFormationCond cond) {
     List<Widget> cards = [
       Container(
         padding: const EdgeInsets.all(4),
@@ -252,6 +252,63 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
         crossAxisAlignment: WrapCrossAlignment.end,
         // runAlignment: ,
         children: cards,
+      ),
+    );
+  }
+}
+
+class UserDeckFormationCondDetailPage extends StatefulWidget {
+  final QuestEnemy? enemy;
+  final int? condId;
+  final UserDeckFormationCond? cond;
+
+  const UserDeckFormationCondDetailPage({super.key, this.enemy, this.condId, this.cond});
+
+  @override
+  State<UserDeckFormationCondDetailPage> createState() => _UserDeckFormationCondDetailPageState();
+}
+
+class _UserDeckFormationCondDetailPageState extends State<UserDeckFormationCondDetailPage> {
+  UserDeckFormationCond? cond;
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    cond = widget.cond;
+    final condId = widget.condId ?? 0;
+    if (cond == null && condId > 0) {
+      final conds = await showEasyLoading(() => AtlasApi.mstData(
+            'mstUserDeckFormationCond',
+            (json) => (json as List).map((e) => UserDeckFormationCond.fromJson(e)).toList(),
+          ));
+      cond = conds?.firstWhereOrNull((e) => e.id == condId);
+    }
+    if (mounted) setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final enemy = widget.enemy;
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Cond ${widget.cond?.id ?? widget.condId}"),
+      ),
+      body: ListView(
+        children: [
+          if (enemy != null)
+            ListTile(
+              dense: true,
+              leading: db.getIconImage(enemy.icon),
+              title: Text(enemy.name),
+              subtitle: Text(Transl.svtClassId(enemy.svt.classId).l),
+              onTap: enemy.routeTo,
+            ),
+          if (cond != null) _BonusEnemyCondPageState.buildTargetSvts(context, cond!),
+        ],
       ),
     );
   }

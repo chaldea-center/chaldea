@@ -15,7 +15,8 @@ import '../../master_mission/solver/scheme.dart';
 class MissionTargetFilterData {
   final cond = FilterGroupData<CustomMissionCond>();
   bool hasAdditional = false;
-  bool includeAdditional = true;
+  bool hasRare = true;
+  bool includeRareAdditional = true;
 }
 
 class EventMissionTargetPage extends StatefulWidget {
@@ -63,7 +64,7 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
     // List<QuestPhase> phases = [];
     setState(() {
       _loading = true;
-      filterData.hasAdditional = false;
+      filterData.hasRare = filterData.hasAdditional = false;
     });
     await Future.wait(allQuestData.keys.map((quest) async {
       if (region == null) return null;
@@ -76,7 +77,10 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
       final phaseData = await AtlasApi.questPhase(quest.id, quest.phases.last, region: region);
       if (phaseData != null) {
         allQuestData[quest] = phaseData;
-        if (!filterData.hasAdditional && phaseData.allEnemies.any((e) => e.isRareOrAddition)) {
+        if (!filterData.hasRare && phaseData.allEnemies.any((e) => e.enemyScript.isRare)) {
+          filterData.hasRare = true;
+        }
+        if (!filterData.hasAdditional && phaseData.allEnemies.any((e) => e.infoScript.isAddition)) {
           filterData.hasAdditional = true;
         }
       }
@@ -122,16 +126,19 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
             },
           ),
         ),
-        if (filterData.hasAdditional)
+        if (filterData.hasRare || filterData.hasAdditional)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Wrap(
               children: [
                 CheckboxWithLabel(
-                  value: filterData.includeAdditional,
-                  label: Text(S.current.count_rare_addition_enemy),
+                  value: filterData.includeRareAdditional,
+                  label: Text([
+                    if (filterData.hasRare) S.current.rare_enemy,
+                    if (filterData.hasAdditional) S.current.additional_enemy
+                  ].join(' / ')),
                   onChanged: (v) {
-                    if (v != null) filterData.includeAdditional = v;
+                    if (v != null) filterData.includeRareAdditional = v;
                     setState(() {});
                   },
                 ),
@@ -205,7 +212,7 @@ class _EventMissionTargetPageState extends State<EventMissionTargetPage> {
           int count = MissionSolver.countMissionTarget(
             CustomMission(count: 1, conds: [cond]),
             phase,
-            includeAdditional: filterData.includeAdditional,
+            includeAdditional: filterData.includeRareAdditional,
             options: null,
           );
           if (count > 0) counts[cond] = count;

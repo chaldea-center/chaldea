@@ -114,6 +114,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_not_svt_trait_to_traum_enemy":
             MessageLookupByLibrary.simpleMessage("Add [NotBasedOnServant] trait for Traum Enemies"),
         "add_to_blacklist": MessageLookupByLibrary.simpleMessage("Add to blacklist"),
+        "additional_enemy": MessageLookupByLibrary.simpleMessage("Additional Enemy"),
         "anniversary": MessageLookupByLibrary.simpleMessage("Anniversary"),
         "ap": MessageLookupByLibrary.simpleMessage("AP"),
         "ap_campaign_time_mismatch_hint":
@@ -280,7 +281,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "cost": MessageLookupByLibrary.simpleMessage("Cost"),
         "costume": MessageLookupByLibrary.simpleMessage("Costume"),
         "costume_unlock": MessageLookupByLibrary.simpleMessage("Costume Unlock"),
-        "count_rare_addition_enemy": MessageLookupByLibrary.simpleMessage("Count Rare/Additional Enemy"),
         "counts": MessageLookupByLibrary.simpleMessage("Counts"),
         "craft_essence": MessageLookupByLibrary.simpleMessage("Craft Essence"),
         "craft_essence_short": MessageLookupByLibrary.simpleMessage("CE"),
@@ -549,6 +549,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "It is only not displayed on plan tab, but it is actually still included in the material planning and statistics."),
         "hide_unreleased_card": MessageLookupByLibrary.simpleMessage("Hide Unreleased Cards"),
         "high_difficulty_quest": MessageLookupByLibrary.simpleMessage("High DIfficulty Quest"),
+        "hint": MessageLookupByLibrary.simpleMessage("Hint"),
         "history": MessageLookupByLibrary.simpleMessage("History"),
         "http_sniff_hint": MessageLookupByLibrary.simpleMessage("(JP/NA/CN/TW)Capture the data when logging in"),
         "https_sniff": MessageLookupByLibrary.simpleMessage("Https Sniffing"),
@@ -840,7 +841,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rankup_quest": MessageLookupByLibrary.simpleMessage("Rank Up"),
         "rankup_timeline_hint": MessageLookupByLibrary.simpleMessage(
             "Some quests\' start time is not correct.\nIf show by AP campaign time, only JP time is used."),
-        "rare_enemy_hint": MessageLookupByLibrary.simpleMessage("Rare enemy, chance to appear"),
+        "rare_enemy": MessageLookupByLibrary.simpleMessage("Rare Enemy"),
         "rarity": MessageLookupByLibrary.simpleMessage("Rarity"),
         "rate_app_store": MessageLookupByLibrary.simpleMessage("Rate on App Store"),
         "rate_play_store": MessageLookupByLibrary.simpleMessage("Rate on Google Play"),
