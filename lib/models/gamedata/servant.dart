@@ -20,25 +20,6 @@ import 'wiki_data.dart';
 part '../../generated/models/gamedata/servant.g.dart';
 
 @JsonSerializable()
-class BasicCostume {
-  int id;
-  int costumeCollectionNo;
-  int battleCharaId;
-  String shortName;
-
-  BasicCostume({
-    required this.id,
-    this.costumeCollectionNo = 0,
-    required this.battleCharaId,
-    this.shortName = "",
-  });
-
-  factory BasicCostume.fromJson(Map<String, dynamic> json) => _$BasicCostumeFromJson(json);
-
-  Map<String, dynamic> toJson() => _$BasicCostumeToJson(this);
-}
-
-@JsonSerializable()
 class BasicServant with GameCardMixin {
   @override
   int id;
@@ -56,6 +37,7 @@ class BasicServant with GameCardMixin {
   int rarity;
   int atkMax;
   int hpMax;
+
   @protected
   String face;
   Map<int, BasicCostume> costume;
@@ -91,11 +73,19 @@ class BasicServant with GameCardMixin {
 
   bool get isUserSvt => (type == SvtType.normal || type == SvtType.heroine) && collectionNo > 0;
 
+  bool get isServantType => const [
+        SvtType.normal,
+        SvtType.heroine,
+        SvtType.enemy,
+        SvtType.enemyCollection,
+        SvtType.enemyCollectionDetail,
+      ].contains(type);
+
   @override
   Transl<String, String> get lName => Transl.svtNames(name);
 
   @override
-  String get icon {
+  String? get icon {
     if (collectionNo > 0) return face;
     final match = RegExp(r'/(?:f_)?(\d+)\.png').firstMatch(face);
     if (match != null) {
@@ -110,19 +100,17 @@ class BasicServant with GameCardMixin {
     return face;
   }
 
+  bool get shouldBordered =>
+      type == SvtType.combineMaterial || type == SvtType.statusUp || className == SvtClass.uOlgaMarie;
+
   @override
-  String get borderedIcon {
-    if (type == SvtType.combineMaterial || type == SvtType.statusUp || className == SvtClass.uOlgaMarie) {
-      return super.borderedIcon!;
-    }
-    return icon;
-  }
+  String? get borderedIcon => shouldBordered ? bordered(icon) : icon;
 
   SvtClass get className => kSvtClassIds[classId] ?? SvtClass.none;
   String get clsIcon => SvtClassX.clsIcon(classId, rarity);
 
   @override
-  String get route => collectionNo > 0 ? Routes.servantI(id) : Routes.enemyI(id);
+  String get route => Routes.servantI(id);
 
   String get routeIfItem {
     if (Items.specialSvtMat.contains(id)) return Routes.itemI(id);
@@ -144,38 +132,17 @@ class BasicServant with GameCardMixin {
         atkMax = svt.atkMax,
         hpMax = svt.hpMax,
         face = svt.icon ?? Atlas.common.unknownEnemyIcon,
-        costume = svt.profile.costume.map((key, c) => MapEntry(
-              key,
-              BasicCostume(
-                id: c.id,
-                costumeCollectionNo: c.costumeCollectionNo,
-                battleCharaId: c.battleCharaId,
-                shortName: c.shortName,
-              ),
-            ));
+        costume = Map.of(svt.profile.costume);
 }
 
 @JsonSerializable()
-class Servant with GameCardMixin {
-  @override
-  int id;
-  @override
-  int collectionNo;
-  @override
-  String name;
+class Servant extends BasicServant {
   String ruby;
   String battleName;
-  int classId;
-  SvtType type;
-  @JsonKey(unknownEnumValue: SvtFlag.unknown)
-  List<SvtFlag> flags;
-  @override
-  int rarity;
   int cost;
   int lvMax; // Mash is at Lv70
   ExtraAssets extraAssets;
   Gender gender;
-  ServantSubAttribute attribute; // SubAttribute
   List<NiceTrait> traits;
   int starAbsorb;
   int starGen;
@@ -183,9 +150,9 @@ class Servant with GameCardMixin {
   List<CardType> cards;
   Map<CardType, CardDetail> cardDetails;
   int atkBase;
-  int atkMax;
+  // int atkMax;
   int hpBase;
-  int hpMax;
+  // int hpMax;
   List<int> relateQuestIds;
   List<int> trialQuestIds;
   int growthCurve;
@@ -216,6 +183,11 @@ class Servant with GameCardMixin {
   List<NiceTd> noblePhantasms;
   NiceLore profile;
 
+  @override
+  String get face => icon!;
+  @override
+  Map<int, NiceCostume> get costume => profile.costume;
+
   @JsonKey(includeFromJson: false, includeToJson: false)
   final int originalCollectionNo;
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -226,31 +198,31 @@ class Servant with GameCardMixin {
   List<int> get expGrowth => curveData.exp; // [0:]
 
   Servant({
-    required this.id,
-    required this.collectionNo,
+    required super.id,
+    required super.collectionNo,
     int? originalCollectionNo,
-    this.name = "",
+    super.name = "",
     this.ruby = "",
     this.battleName = "",
-    this.classId = 0,
-    this.type = SvtType.normal,
-    this.flags = const [],
-    this.rarity = 0,
+    super.classId = 0,
+    super.type = SvtType.normal,
+    super.flags = const [],
+    super.rarity = 0,
     this.cost = 0,
     this.lvMax = 0,
-    ExtraAssets? extraAssets,
     this.gender = Gender.unknown,
-    this.attribute = ServantSubAttribute.void_,
+    super.attribute = ServantSubAttribute.void_,
+    this.atkBase = 0,
+    super.atkMax = 0,
+    this.hpBase = 0,
+    super.hpMax = 0,
+    ExtraAssets? extraAssets,
     this.traits = const [],
     this.starAbsorb = 0,
     this.starGen = 0,
     this.instantDeathChance = 0,
     this.cards = const [],
     this.cardDetails = const {},
-    this.atkBase = 0,
-    this.atkMax = 0,
-    this.hpBase = 0,
-    this.hpMax = 0,
     this.relateQuestIds = const [],
     this.trialQuestIds = const [],
     this.growthCurve = 0,
@@ -278,6 +250,10 @@ class Servant with GameCardMixin {
     this.appendPassive = const [],
     this.noblePhantasms = const [],
     NiceLore? profile,
+    // basic, don't use
+    super.face = "",
+    super.overwriteName,
+    super.costume = const {},
   })  : originalCollectionNo = originalCollectionNo ?? collectionNo,
         extraAssets = extraAssets ?? ExtraAssets(),
         ascensionAdd = ascensionAdd ?? AscensionAdd(),
@@ -342,6 +318,7 @@ class Servant with GameCardMixin {
   }
 
   factory Servant.fromJson(Map<String, dynamic> json) => _$ServantFromJson(json);
+
   @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, List<NiceSkill>> groupedActiveSkills = {};
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -377,19 +354,6 @@ class Servant with GameCardMixin {
     groupedNoblePhantasms = sortDict(groupedNoblePhantasms);
   }
 
-  @override
-  String get route => Routes.servantI(collectionNo > 0 ? collectionNo : id);
-
-  bool get isUserSvt => (type == SvtType.normal || type == SvtType.heroine) && originalCollectionNo > 0;
-
-  bool get isNormalSvt => [
-        SvtType.normal,
-        SvtType.heroine,
-        SvtType.enemy,
-        SvtType.enemyCollection,
-        SvtType.enemyCollectionDetail,
-      ].contains(type);
-
   bool get isDupSvt => originalCollectionNo != collectionNo;
 
   @override
@@ -409,12 +373,13 @@ class Servant with GameCardMixin {
   }
 
   @override
-  String? get borderedIcon => originalCollectionNo > 0 ||
-          (type == SvtType.combineMaterial || type == SvtType.statusUp) ||
+  bool get shouldBordered =>
+      originalCollectionNo > 0 ||
+      (type == SvtType.combineMaterial ||
+          type == SvtType.statusUp ||
           className == SvtClass.uOlgaMarie ||
           const [600710, 2501500].contains(id) // transform servants
-      ? super.borderedIcon
-      : icon;
+      );
 
   String? get charaGraph => extraAssets.charaGraph.ascension?[1];
 
@@ -478,9 +443,6 @@ class Servant with GameCardMixin {
     if (bordered && collectionNo > 0) _icon = this.bordered(_icon);
     return _icon;
   }
-
-  SvtClass get className => kSvtClassIds[classId] ?? SvtClass.none;
-  String get clsIcon => SvtClassX.clsIcon(classId, rarity);
 
   String get classCard {
     int imageId = db.gameData.constData.svtClassCardImageIdRemap[collectionNo] ??
@@ -569,7 +531,7 @@ class Servant with GameCardMixin {
   }
 
   ServantExtra get extra {
-    if (isNormalSvt && collectionNo > 0) {
+    if (isServantType && collectionNo > 0) {
       return db.gameData.wiki.servants[originalCollectionNo] ??= ServantExtra(collectionNo: originalCollectionNo);
     }
     return ServantExtra(collectionNo: originalCollectionNo);
@@ -652,6 +614,7 @@ class Servant with GameCardMixin {
   SvtStatus get status => db.curUser.svtStatusOf(collectionNo);
   SvtPlan get curPlan => db.curUser.svtPlanOf(collectionNo);
 
+  @override
   Map<String, dynamic> toJson() => _$ServantToJson(this);
 }
 
@@ -670,7 +633,7 @@ class BasicCraftEssence with GameCardMixin {
   int rarity;
   int atkMax;
   int hpMax;
-  String face;
+  String? face;
 
   BasicCraftEssence({
     required this.id,
@@ -681,13 +644,13 @@ class BasicCraftEssence with GameCardMixin {
     this.rarity = 0,
     this.atkMax = 0,
     this.hpMax = 0,
-    required this.face,
+    this.face,
   });
 
   factory BasicCraftEssence.fromJson(Map<String, dynamic> json) => _$BasicCraftEssenceFromJson(json);
 
   @override
-  String get icon => face;
+  String? get icon => face;
 
   @override
   Transl<String, String> get lName => Transl.ceNames(name);
@@ -699,27 +662,16 @@ class BasicCraftEssence with GameCardMixin {
 }
 
 @JsonSerializable()
-class CraftEssence with GameCardMixin {
-  @override
-  int id;
-  double? sortId; // for CN CEs
-  @override
-  int collectionNo;
-  @override
-  String name;
+class CraftEssence extends BasicCraftEssence {
+  double? sortId; // for region specific CEs
   String ruby;
-  SvtType type;
-  @JsonKey(unknownEnumValue: SvtFlag.unknown)
-  List<SvtFlag> flags;
-  @override
-  int rarity;
   int cost;
   int lvMax;
   ExtraAssets extraAssets;
   int atkBase;
-  int atkMax;
+  // int atkMax;
   int hpBase;
-  int hpMax;
+  // int hpMax;
   int growthCurve;
   List<int> expFeed;
   int? bondEquipOwner;
@@ -730,6 +682,9 @@ class CraftEssence with GameCardMixin {
   List<NiceSkill> skills;
   NiceLore profile;
 
+  @override
+  String get face => icon!;
+
   @JsonKey(includeFromJson: false, includeToJson: false)
   late SvtExpData curveData =
       SvtExpData.from(type: growthCurve, atkBase: atkBase, atkMax: atkMax, hpBase: hpBase, hpMax: hpMax);
@@ -738,21 +693,21 @@ class CraftEssence with GameCardMixin {
   List<int> get expGrowth => curveData.exp;
 
   CraftEssence({
-    required this.id,
+    required super.id,
     this.sortId,
-    required this.collectionNo,
-    required this.name,
+    super.collectionNo = 0,
+    required super.name,
     this.ruby = "",
-    this.type = SvtType.servantEquip,
-    this.flags = const [],
-    this.rarity = 0,
+    super.type = SvtType.servantEquip,
+    super.flags = const [],
+    super.rarity = 0,
     this.cost = 0,
     this.lvMax = 0,
     ExtraAssets? extraAssets,
     this.atkBase = 0,
-    this.atkMax = 0,
+    super.atkMax = 0,
     this.hpBase = 0,
-    this.hpMax = 0,
+    super.hpMax = 0,
     this.growthCurve = 0,
     this.expFeed = const [],
     this.bondEquipOwner,
@@ -762,6 +717,7 @@ class CraftEssence with GameCardMixin {
     this.script,
     this.skills = const [],
     NiceLore? profile,
+    super.face = "",
   })  : extraAssets = extraAssets ?? ExtraAssets(),
         ascensionAdd = ascensionAdd ?? AscensionAdd(),
         profile = profile ?? NiceLore();
@@ -769,15 +725,15 @@ class CraftEssence with GameCardMixin {
   factory CraftEssence.fromJson(Map<String, dynamic> json) => _$CraftEssenceFromJson(json);
 
   @override
+  Map<String, dynamic> toJson() => _$CraftEssenceToJson(this);
+
+  @override
   String? get icon => extraAssets.faces.equip?[id];
 
   @override
-  String? get borderedIcon => collectionNo > 0 && !db.gameData.isJustAddedCard(id) ? super.borderedIcon : icon;
+  String? get borderedIcon => collectionNo > 0 && !db.gameData.isJustAddedCard(id) ? bordered(icon) : icon;
 
   String? get charaGraph => extraAssets.charaGraph.equip?[id];
-
-  @override
-  Transl<String, String> get lName => Transl.ceNames(name);
 
   CraftEssenceExtra get extra =>
       db.gameData.wiki.craftEssences[collectionNo] ??= CraftEssenceExtra(collectionNo: collectionNo);
@@ -823,12 +779,7 @@ class CraftEssence with GameCardMixin {
     return Atlas.asset('ClassCard/class_${color}_103.png');
   }
 
-  @override
-  String get route => Routes.craftEssenceI(id);
-
   CraftStatus get status => db.curUser.ceStatusOf(collectionNo);
-
-  Map<String, dynamic> toJson() => _$CraftEssenceToJson(this);
 
   Iterable<NiceSkill> eventSkills(int eventId) {
     return skills.where((skill) => skill.isCraftEventSkill(svtId: id, eventId: eventId));
@@ -1261,26 +1212,24 @@ class LoreStatus {
 }
 
 @JsonSerializable()
-class NiceCostume with RouteInfo {
+class BasicCostume with RouteInfo {
   int id;
   int costumeCollectionNo;
   int battleCharaId;
   String name;
   String shortName;
-  String detail;
-  int priority;
 
-  NiceCostume({
+  BasicCostume({
     required this.id,
-    required this.costumeCollectionNo,
+    this.costumeCollectionNo = 0,
     required this.battleCharaId,
-    required this.name,
-    required this.shortName,
-    required this.detail,
-    required this.priority,
+    this.name = "",
+    this.shortName = "",
   });
 
-  factory NiceCostume.fromJson(Map<String, dynamic> json) => _$NiceCostumeFromJson(json);
+  factory BasicCostume.fromJson(Map<String, dynamic> json) => _$BasicCostumeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BasicCostumeToJson(this);
 
   Transl<String, String> get lName => Transl.costumeNames(name);
   Transl<int, String> get lDetail => Transl.costumeDetail(costumeCollectionNo);
@@ -1297,7 +1246,26 @@ class NiceCostume with RouteInfo {
 
   @override
   String get route => Routes.costumeI(costumeCollectionNo);
+}
 
+@JsonSerializable()
+class NiceCostume extends BasicCostume {
+  String detail;
+  int priority;
+
+  NiceCostume({
+    required super.id,
+    super.costumeCollectionNo = 0,
+    required super.battleCharaId,
+    super.name = "",
+    super.shortName = "",
+    this.detail = "",
+    this.priority = 0,
+  });
+
+  factory NiceCostume.fromJson(Map<String, dynamic> json) => _$NiceCostumeFromJson(json);
+
+  @override
   Map<String, dynamic> toJson() => _$NiceCostumeToJson(this);
 }
 

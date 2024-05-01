@@ -6,20 +6,6 @@ part of '../../../models/gamedata/servant.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-BasicCostume _$BasicCostumeFromJson(Map json) => BasicCostume(
-      id: (json['id'] as num).toInt(),
-      costumeCollectionNo: (json['costumeCollectionNo'] as num?)?.toInt() ?? 0,
-      battleCharaId: (json['battleCharaId'] as num).toInt(),
-      shortName: json['shortName'] as String? ?? "",
-    );
-
-Map<String, dynamic> _$BasicCostumeToJson(BasicCostume instance) => <String, dynamic>{
-      'id': instance.id,
-      'costumeCollectionNo': instance.costumeCollectionNo,
-      'battleCharaId': instance.battleCharaId,
-      'shortName': instance.shortName,
-    };
-
 BasicServant _$BasicServantFromJson(Map json) => BasicServant(
       id: (json['id'] as num).toInt(),
       collectionNo: (json['collectionNo'] as num?)?.toInt() ?? 0,
@@ -97,7 +83,7 @@ const _$ServantSubAttributeEnumMap = {
 
 Servant _$ServantFromJson(Map json) => Servant(
       id: (json['id'] as num).toInt(),
-      collectionNo: (json['collectionNo'] as num).toInt(),
+      collectionNo: (json['collectionNo'] as num?)?.toInt() ?? 0,
       name: json['name'] as String? ?? "",
       ruby: json['ruby'] as String? ?? "",
       battleName: json['battleName'] as String? ?? "",
@@ -110,11 +96,15 @@ Servant _$ServantFromJson(Map json) => Servant(
       rarity: (json['rarity'] as num?)?.toInt() ?? 0,
       cost: (json['cost'] as num?)?.toInt() ?? 0,
       lvMax: (json['lvMax'] as num?)?.toInt() ?? 0,
+      gender: $enumDecodeNullable(_$GenderEnumMap, json['gender']) ?? Gender.unknown,
+      attribute: $enumDecodeNullable(_$ServantSubAttributeEnumMap, json['attribute']) ?? ServantSubAttribute.void_,
+      atkBase: (json['atkBase'] as num?)?.toInt() ?? 0,
+      atkMax: (json['atkMax'] as num?)?.toInt() ?? 0,
+      hpBase: (json['hpBase'] as num?)?.toInt() ?? 0,
+      hpMax: (json['hpMax'] as num?)?.toInt() ?? 0,
       extraAssets: json['extraAssets'] == null
           ? null
           : ExtraAssets.fromJson(Map<String, dynamic>.from(json['extraAssets'] as Map)),
-      gender: $enumDecodeNullable(_$GenderEnumMap, json['gender']) ?? Gender.unknown,
-      attribute: $enumDecodeNullable(_$ServantSubAttributeEnumMap, json['attribute']) ?? ServantSubAttribute.void_,
       traits: (json['traits'] as List<dynamic>?)
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -128,10 +118,6 @@ Servant _$ServantFromJson(Map json) => Servant(
                 MapEntry($enumDecode(_$CardTypeEnumMap, k), CardDetail.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
-      atkBase: (json['atkBase'] as num?)?.toInt() ?? 0,
-      atkMax: (json['atkMax'] as num?)?.toInt() ?? 0,
-      hpBase: (json['hpBase'] as num?)?.toInt() ?? 0,
-      hpMax: (json['hpMax'] as num?)?.toInt() ?? 0,
       relateQuestIds: (json['relateQuestIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
       trialQuestIds: (json['trialQuestIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
       growthCurve: (json['growthCurve'] as num?)?.toInt() ?? 0,
@@ -203,23 +189,32 @@ Servant _$ServantFromJson(Map json) => Servant(
               .toList() ??
           const [],
       profile: json['profile'] == null ? null : NiceLore.fromJson(Map<String, dynamic>.from(json['profile'] as Map)),
+      face: json['face'] as String? ?? "",
+      overwriteName: json['overwriteName'] as String?,
+      costume: (json['costume'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String), BasicCostume.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
     );
 
 Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'id': instance.id,
       'collectionNo': instance.collectionNo,
       'name': instance.name,
-      'ruby': instance.ruby,
-      'battleName': instance.battleName,
-      'classId': instance.classId,
+      'overwriteName': instance.overwriteName,
       'type': _$SvtTypeEnumMap[instance.type]!,
       'flags': instance.flags.map((e) => _$SvtFlagEnumMap[e]!).toList(),
+      'classId': instance.classId,
+      'attribute': _$ServantSubAttributeEnumMap[instance.attribute]!,
       'rarity': instance.rarity,
+      'atkMax': instance.atkMax,
+      'hpMax': instance.hpMax,
+      'ruby': instance.ruby,
+      'battleName': instance.battleName,
       'cost': instance.cost,
       'lvMax': instance.lvMax,
       'extraAssets': instance.extraAssets.toJson(),
       'gender': _$GenderEnumMap[instance.gender]!,
-      'attribute': _$ServantSubAttributeEnumMap[instance.attribute]!,
       'traits': instance.traits.map((e) => e.toJson()).toList(),
       'starAbsorb': instance.starAbsorb,
       'starGen': instance.starGen,
@@ -227,9 +222,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'cards': instance.cards.map((e) => _$CardTypeEnumMap[e]!).toList(),
       'cardDetails': instance.cardDetails.map((k, e) => MapEntry(_$CardTypeEnumMap[k]!, e.toJson())),
       'atkBase': instance.atkBase,
-      'atkMax': instance.atkMax,
       'hpBase': instance.hpBase,
-      'hpMax': instance.hpMax,
       'relateQuestIds': instance.relateQuestIds,
       'trialQuestIds': instance.trialQuestIds,
       'growthCurve': instance.growthCurve,
@@ -257,6 +250,8 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'appendPassive': instance.appendPassive.map((e) => e.toJson()).toList(),
       'noblePhantasms': instance.noblePhantasms.map((e) => e.toJson()).toList(),
       'profile': instance.profile.toJson(),
+      'face': instance.face,
+      'costume': instance.costume.map((k, e) => MapEntry(k.toString(), e.toJson())),
     };
 
 const _$GenderEnumMap = {
@@ -288,7 +283,7 @@ BasicCraftEssence _$BasicCraftEssenceFromJson(Map json) => BasicCraftEssence(
       rarity: (json['rarity'] as num?)?.toInt() ?? 0,
       atkMax: (json['atkMax'] as num?)?.toInt() ?? 0,
       hpMax: (json['hpMax'] as num?)?.toInt() ?? 0,
-      face: json['face'] as String,
+      face: json['face'] as String?,
     );
 
 Map<String, dynamic> _$BasicCraftEssenceToJson(BasicCraftEssence instance) => <String, dynamic>{
@@ -306,7 +301,7 @@ Map<String, dynamic> _$BasicCraftEssenceToJson(BasicCraftEssence instance) => <S
 CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
       id: (json['id'] as num).toInt(),
       sortId: (json['sortId'] as num?)?.toDouble(),
-      collectionNo: (json['collectionNo'] as num).toInt(),
+      collectionNo: (json['collectionNo'] as num?)?.toInt() ?? 0,
       name: json['name'] as String,
       ruby: json['ruby'] as String? ?? "",
       type: $enumDecodeNullable(_$SvtTypeEnumMap, json['type']) ?? SvtType.servantEquip,
@@ -341,24 +336,25 @@ CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
               .toList() ??
           const [],
       profile: json['profile'] == null ? null : NiceLore.fromJson(Map<String, dynamic>.from(json['profile'] as Map)),
+      face: json['face'] as String? ?? "",
     );
 
 Map<String, dynamic> _$CraftEssenceToJson(CraftEssence instance) => <String, dynamic>{
       'id': instance.id,
-      'sortId': instance.sortId,
       'collectionNo': instance.collectionNo,
       'name': instance.name,
-      'ruby': instance.ruby,
       'type': _$SvtTypeEnumMap[instance.type]!,
       'flags': instance.flags.map((e) => _$SvtFlagEnumMap[e]!).toList(),
       'rarity': instance.rarity,
+      'atkMax': instance.atkMax,
+      'hpMax': instance.hpMax,
+      'sortId': instance.sortId,
+      'ruby': instance.ruby,
       'cost': instance.cost,
       'lvMax': instance.lvMax,
       'extraAssets': instance.extraAssets.toJson(),
       'atkBase': instance.atkBase,
-      'atkMax': instance.atkMax,
       'hpBase': instance.hpBase,
-      'hpMax': instance.hpMax,
       'growthCurve': instance.growthCurve,
       'expFeed': instance.expFeed,
       'bondEquipOwner': instance.bondEquipOwner,
@@ -368,6 +364,7 @@ Map<String, dynamic> _$CraftEssenceToJson(CraftEssence instance) => <String, dyn
       'script': instance.script?.toJson(),
       'skills': instance.skills.map((e) => e.toJson()).toList(),
       'profile': instance.profile.toJson(),
+      'face': instance.face,
     };
 
 ExtraAssetsUrl _$ExtraAssetsUrlFromJson(Map json) => ExtraAssetsUrl(
@@ -784,14 +781,30 @@ const _$ServantPersonalityEnumMap = {
   ServantPersonality.unknown: 'unknown',
 };
 
+BasicCostume _$BasicCostumeFromJson(Map json) => BasicCostume(
+      id: (json['id'] as num).toInt(),
+      costumeCollectionNo: (json['costumeCollectionNo'] as num?)?.toInt() ?? 0,
+      battleCharaId: (json['battleCharaId'] as num).toInt(),
+      name: json['name'] as String? ?? "",
+      shortName: json['shortName'] as String? ?? "",
+    );
+
+Map<String, dynamic> _$BasicCostumeToJson(BasicCostume instance) => <String, dynamic>{
+      'id': instance.id,
+      'costumeCollectionNo': instance.costumeCollectionNo,
+      'battleCharaId': instance.battleCharaId,
+      'name': instance.name,
+      'shortName': instance.shortName,
+    };
+
 NiceCostume _$NiceCostumeFromJson(Map json) => NiceCostume(
       id: (json['id'] as num).toInt(),
-      costumeCollectionNo: (json['costumeCollectionNo'] as num).toInt(),
+      costumeCollectionNo: (json['costumeCollectionNo'] as num?)?.toInt() ?? 0,
       battleCharaId: (json['battleCharaId'] as num).toInt(),
-      name: json['name'] as String,
-      shortName: json['shortName'] as String,
-      detail: json['detail'] as String,
-      priority: (json['priority'] as num).toInt(),
+      name: json['name'] as String? ?? "",
+      shortName: json['shortName'] as String? ?? "",
+      detail: json['detail'] as String? ?? "",
+      priority: (json['priority'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$NiceCostumeToJson(NiceCostume instance) => <String, dynamic>{

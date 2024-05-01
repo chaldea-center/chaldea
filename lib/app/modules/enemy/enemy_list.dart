@@ -43,7 +43,7 @@ class EnemyListPageState extends State<EnemyListPage> with SearchableListState<B
     _allEnemies = ReverseGameData.questEnemies(
         (enemy) => !(enemy.svt.collectionNo > 0 && [SvtType.normal, SvtType.heroine].contains(enemy.svt.type)));
     for (final enemies in _allEnemies.values) {
-      enemies.sort2((e) => e.svt.icon);
+      enemies.sort2((e) => e.svt.icon ?? "");
     }
   }
 
