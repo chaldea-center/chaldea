@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/event/event_detail_page.dart';
+import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../../app/modules/master_mission/master_mission.dart';
@@ -893,8 +894,8 @@ class EventMissionConditionDetail {
     this.useAnd,
   });
 
-  factory EventMissionConditionDetail.fromJson(Map<String, dynamic> json) =>
-      _$EventMissionConditionDetailFromJson(json);
+  factory EventMissionConditionDetail.fromJson(Map<String, dynamic> json) => GameDataLoader.instance.tmp
+      .getMissionCondDetail(json['id'] as int, () => _$EventMissionConditionDetailFromJson(json));
 
   Map<String, dynamic> toJson() => _$EventMissionConditionDetailToJson(this);
 }

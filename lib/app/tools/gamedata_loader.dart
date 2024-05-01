@@ -440,15 +440,7 @@ class UpdateError extends Error {
 class _GameLoadingTempData {
   bool _enabled = false;
   Map<String, dynamic>? gameJson;
-  final Map<int, Item> _items = {};
-  final Map<int, BgmEntity> _bgms = {};
-  final Map<int, BasicServant> _basicSvts = {};
-  final Map<int, Buff> _buffs = {};
-  final Map<int, BaseFunction> _baseFuncs = {};
-  final Map<int, BaseSkill> _baseSkills = {};
-  final Map<int, BaseTd> _baseTds = {};
-  final Map<String, SkillSvt> _skillSvts = {};
-  final Map<String, TdSvt> _tdSvts = {};
+  final Map<Type, Map> _instances = {};
 
   bool get enabled => _enabled;
 
@@ -457,32 +449,27 @@ class _GameLoadingTempData {
     _enabled = false;
     gameJson?.clear();
     gameJson = null;
-    _items.clear();
-    _bgms.clear();
-    _basicSvts.clear();
-    _buffs.clear();
-    _baseFuncs.clear();
-    _baseSkills.clear();
-    _baseTds.clear();
-    _skillSvts.clear();
-    _tdSvts.clear();
+    _instances.clear();
   }
 
-  V _get<K, V>(Map<K, V> data, K key, V Function() ifAbsent) {
+  V _get<K, V>(K key, V Function() ifAbsent) {
     if (_enabled) {
-      return data.putIfAbsent(key, ifAbsent);
+      return _instances.putIfAbsent(V, () => <K, V>{}).putIfAbsent(key, ifAbsent);
+      // return data.putIfAbsent(key, ifAbsent);
     } else {
       return ifAbsent();
     }
   }
 
-  Item getItem(int id, Item Function() ifAbsent) => _get(_items, id, ifAbsent);
-  BgmEntity getBgm(int id, BgmEntity Function() ifAbsent) => _get(_bgms, id, ifAbsent);
-  BasicServant getBasicSvt(int id, BasicServant Function() ifAbsent) => _get(_basicSvts, id, ifAbsent);
-  Buff getBuff(int id, Buff Function() ifAbsent) => _get(_buffs, id, ifAbsent);
-  BaseFunction getFunc(int id, BaseFunction Function() ifAbsent) => _get(_baseFuncs, id, ifAbsent);
-  BaseSkill getBaseSkill(int id, BaseSkill Function() ifAbsent) => _get(_baseSkills, id, ifAbsent);
-  BaseTd getBaseTd(int id, BaseTd Function() ifAbsent) => _get(_baseTds, id, ifAbsent);
-  SkillSvt getSkillSvt(String key, SkillSvt Function() ifAbsent) => _get(_skillSvts, key, ifAbsent);
-  TdSvt getTdSvt(String key, TdSvt Function() ifAbsent) => _get(_tdSvts, key, ifAbsent);
+  Item getItem(int id, Item Function() ifAbsent) => _get(id, ifAbsent);
+  BgmEntity getBgm(int id, BgmEntity Function() ifAbsent) => _get(id, ifAbsent);
+  BasicServant getBasicSvt(int id, BasicServant Function() ifAbsent) => _get(id, ifAbsent);
+  Buff getBuff(int id, Buff Function() ifAbsent) => _get(id, ifAbsent);
+  BaseFunction getFunc(int id, BaseFunction Function() ifAbsent) => _get(id, ifAbsent);
+  BaseSkill getBaseSkill(int id, BaseSkill Function() ifAbsent) => _get(id, ifAbsent);
+  BaseTd getBaseTd(int id, BaseTd Function() ifAbsent) => _get(id, ifAbsent);
+  SkillSvt getSkillSvt(String key, SkillSvt Function() ifAbsent) => _get(key, ifAbsent);
+  TdSvt getTdSvt(String key, TdSvt Function() ifAbsent) => _get(key, ifAbsent);
+  EventMissionConditionDetail getMissionCondDetail(int id, EventMissionConditionDetail Function() ifAbsent) =>
+      _get(id, ifAbsent);
 }
