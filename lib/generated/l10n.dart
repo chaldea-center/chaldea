@@ -492,17 +492,6 @@ class S {
     );
   }
 
-  /// `Attribute Advantage`
-  String get attribute_advantage {
-    return Intl.message(
-      'Attribute Advantage',
-      name: 'attribute_advantage',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Hints:\n- userId here is not friend code you saw on login/friend page\n- DO NOT share above keys or screenshot to others!!!\n- choose one of following methods to import`
   String get auth_data_hints {
     return Intl.message(
@@ -9181,6 +9170,17 @@ class S {
     return Intl.message(
       'Strength Status',
       name: 'strength_status',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Sub Attribute Advantage`
+  String get sub_attribute_advantage {
+    return Intl.message(
+      'Sub Attribute Advantage',
+      name: 'sub_attribute_advantage',
       desc: '',
       locale: localeName,
       args: [],

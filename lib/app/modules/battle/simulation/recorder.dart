@@ -1450,7 +1450,7 @@ class DamageParamDialog extends StatelessWidget with _ParamDialogMixin {
           oneParam(S.current.np_sp_damage_rate, npSpecificAttackRate.format(percent: true, precision: 3)),
         if (params.totalHits != 100) oneParam('Hits', hitsPercent.format(percent: true, precision: 3)),
         oneParam(S.current.class_advantage, classAdvantage.format(precision: 3)),
-        oneParam(S.current.attribute_advantage, attributeAdvantage.format(precision: 3)),
+        oneParam(S.current.sub_attribute_advantage, attributeAdvantage.format(precision: 3)),
         if (firstCardBonus != 0) oneParam(S.current.battle_first_card_bonus, firstCardBonus.format(precision: 1)),
         if (busterChainMod != 0) oneParam(S.current.battle_buster_chain, busterChainMod.toString()),
         if (params.currentCardType == CardType.extra)

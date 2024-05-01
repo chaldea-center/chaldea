@@ -129,7 +129,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "attach_help": MessageLookupByLibrary.simpleMessage("如果图片模式存在问题，请使用文件模式"),
         "attachment": MessageLookupByLibrary.simpleMessage("附件"),
         "attack_np_rate": MessageLookupByLibrary.simpleMessage("攻击NP率"),
-        "attribute_advantage": MessageLookupByLibrary.simpleMessage("阵营克制"),
         "auth_data_hints": MessageLookupByLibrary.simpleMessage(
             "提醒:\n- 此处userId并非登陆/好友页看到的用户ID(py码)\n- 请勿分享上述密钥(keys)或截图给其他任何人!!!\n- 以下3种方法选择其一导入"),
         "authfile_login_warning": MessageLookupByLibrary.simpleMessage("使用前请先阅读使用方法、注意事项及风险！"),
@@ -931,6 +930,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "still_send": MessageLookupByLibrary.simpleMessage("仍然发送"),
         "story_ce": MessageLookupByLibrary.simpleMessage("剧情礼装"),
         "strength_status": MessageLookupByLibrary.simpleMessage("强化状态"),
+        "sub_attribute_advantage": MessageLookupByLibrary.simpleMessage("副属性克制"),
         "success": MessageLookupByLibrary.simpleMessage("成功"),
         "summon": MessageLookupByLibrary.simpleMessage("卡池"),
         "summon_daily": MessageLookupByLibrary.simpleMessage("日替"),

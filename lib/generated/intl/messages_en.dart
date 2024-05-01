@@ -137,7 +137,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "attach_help": MessageLookupByLibrary.simpleMessage("If you have trouble picking images, use files instead"),
         "attachment": MessageLookupByLibrary.simpleMessage("Attachment"),
         "attack_np_rate": MessageLookupByLibrary.simpleMessage("Attack NP Rate"),
-        "attribute_advantage": MessageLookupByLibrary.simpleMessage("Attribute Advantage"),
         "auth_data_hints": MessageLookupByLibrary.simpleMessage(
             "Hints:\n- userId here is not friend code you saw on login/friend page\n- DO NOT share above keys or screenshot to others!!!\n- choose one of following methods to import"),
         "authfile_login_warning": MessageLookupByLibrary.simpleMessage("Read usage and RISK first! "),
@@ -976,6 +975,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "still_send": MessageLookupByLibrary.simpleMessage("Still Send"),
         "story_ce": MessageLookupByLibrary.simpleMessage("Story CE"),
         "strength_status": MessageLookupByLibrary.simpleMessage("Strength Status"),
+        "sub_attribute_advantage": MessageLookupByLibrary.simpleMessage("Sub Attribute Advantage"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),
         "summon": MessageLookupByLibrary.simpleMessage("Summon"),
         "summon_daily": MessageLookupByLibrary.simpleMessage("Daily"),
