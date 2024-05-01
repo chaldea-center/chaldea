@@ -74,11 +74,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
 
   @override
   Widget build(BuildContext context) {
-    int cd0 = 0, cd1 = 0;
-    if (skill.coolDown.isNotEmpty) {
-      cd0 = skill.coolDown.first;
-      cd1 = skill.coolDown.last;
-    }
+    final cds = skill.coolDown.toSet().toList()..sort2((e) => -e);
 
     final header = CustomTile(
       contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 6, 16, 6),
@@ -118,11 +114,25 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
       subtitle: Transl.isJP || hideDetail || (skill.lName.l == skill.name && skill.lName.m?.ofRegion() == null)
           ? null
           : Text(skill.name),
-      trailing: cd0 <= 0 && cd1 <= 0
+      trailing: cds.isEmpty || (cds.length == 1 && cds.single <= 0)
           ? null
-          : cd0 == cd1
-              ? Text('   CD: $cd0')
-              : Text('   CD: $cd0→$cd1'),
+          : cds.length == 1
+              ? Text('   CD: ${cds.single}')
+              : Text.rich(TextSpan(
+                  text: '   CD: ',
+                  children: divideList(
+                    [
+                      for (final cd in cds)
+                        TextSpan(
+                          text: cd.toString(),
+                          style: skill.coolDown.getOrNull((level ?? 0) - 1) == cd
+                              ? TextStyle(color: Theme.of(context).colorScheme.secondary)
+                              : null,
+                        )
+                    ],
+                    const TextSpan(text: '→'),
+                  ),
+                )),
       onTap: jumpToDetail ? () => skill.routeTo(region: region) : null,
     );
     const divider = Divider(indent: 16, endIndent: 16, height: 2, thickness: 1);
