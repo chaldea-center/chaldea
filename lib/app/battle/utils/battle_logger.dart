@@ -433,7 +433,8 @@ class BattleMessageRecord extends BattleRecord {
   final TextStyle? style;
   final TextAlign? textAlign;
   final BattleServantData? target;
-  BattleMessageRecord(this.message, {this.target, this.alignment, this.style, this.textAlign});
+  BattleMessageRecord(this.message, {BattleServantData? target, this.alignment, this.style, this.textAlign})
+      : target = target?.copy();
 
   @override
   BattleMessageRecord copy() {

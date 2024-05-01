@@ -19,6 +19,11 @@ import 'wiki_data.dart';
 
 part '../../generated/models/gamedata/servant.g.dart';
 
+const int kSuperAokoSvtId = 2501500;
+const int kHydeSvtId = 600710;
+const String _kSuperAokoIcon = "https://static.wikia.nocookie.net/fategrandorder/images/1/15/S413NP1IconRaw.webp";
+const String _kSuperAokoBorderedIcon = "https://static.wikia.nocookie.net/fategrandorder/images/c/c2/S413NP1Icon.webp";
+
 @JsonSerializable()
 class BasicServant with GameCardMixin {
   @override
@@ -57,7 +62,7 @@ class BasicServant with GameCardMixin {
     required this.face,
     this.costume = const {},
   }) {
-    if (id == 2501500 && name == '蒼崎青子') {
+    if (id == kSuperAokoSvtId && name == '蒼崎青子') {
       name = 'スーパー青子';
     }
   }
@@ -86,6 +91,8 @@ class BasicServant with GameCardMixin {
 
   @override
   String? get icon {
+    if (id == kSuperAokoSvtId) return _kSuperAokoIcon;
+
     if (collectionNo > 0) return face;
     final match = RegExp(r'/(?:f_)?(\d+)\.png').firstMatch(face);
     if (match != null) {
@@ -104,7 +111,10 @@ class BasicServant with GameCardMixin {
       type == SvtType.combineMaterial || type == SvtType.statusUp || className == SvtClass.uOlgaMarie;
 
   @override
-  String? get borderedIcon => shouldBordered ? bordered(icon) : icon;
+  String? get borderedIcon {
+    if (id == kSuperAokoSvtId) return _kSuperAokoBorderedIcon;
+    return shouldBordered ? bordered(icon) : icon;
+  }
 
   SvtClass get className => kSvtClassIds[classId] ?? SvtClass.none;
   String get clsIcon => SvtClassX.clsIcon(classId, rarity);
@@ -325,7 +335,7 @@ class Servant extends BasicServant {
   Map<int, List<NiceTd>> groupedNoblePhantasms = {};
 
   void preprocess() {
-    if (id == 2501500 && name == '蒼崎青子') {
+    if (id == kSuperAokoSvtId && name == '蒼崎青子') {
       name = 'スーパー青子';
     }
     appendPassive.sort2((e) => e.num * 100 + e.priority);
@@ -358,6 +368,8 @@ class Servant extends BasicServant {
 
   @override
   String? get icon {
+    if (id == kSuperAokoSvtId) return _kSuperAokoIcon;
+
     final _icons = <String>[
       ...?extraAssets.faces.ascension?.values,
       ...?extraAssets.faces.equip?.values,
@@ -378,7 +390,7 @@ class Servant extends BasicServant {
       (type == SvtType.combineMaterial ||
           type == SvtType.statusUp ||
           className == SvtClass.uOlgaMarie ||
-          const [600710, 2501500].contains(id) // transform servants
+          const [kHydeSvtId, kSuperAokoSvtId].contains(id) // transform servants
       );
 
   String? get charaGraph => extraAssets.charaGraph.ascension?[1];
@@ -423,6 +435,9 @@ class Servant extends BasicServant {
 
   // not limitCount=0-4
   String? ascendIcon(int ascOrCostumeIdOrCharaId, [bool bordered = true]) {
+    if (id == kSuperAokoSvtId) {
+      return bordered ? _kSuperAokoBorderedIcon : _kSuperAokoIcon;
+    }
     final idx = ascOrCostumeIdOrCharaId;
     final ascs = extraAssets.faces.ascension ?? {};
     final costumes = extraAssets.faces.costume ?? {};
