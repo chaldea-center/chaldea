@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/modules/common/not_found.dart';
@@ -30,7 +31,10 @@ class SummonDetailPage extends StatefulWidget {
 class _SummonDetailPageState extends State<SummonDetailPage> {
   LimitedSummon? _summon;
   LimitedSummon get summon => _summon!;
+  List<NiceGacha> gachaGroup = [];
   int curIndex = 0;
+  final _rawGachaTileKey = GlobalKey();
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -41,6 +45,16 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
 
   void init() {
     curIndex = shouldShowOverview ? -1 : 0;
+
+    final startJp = summon.startTime.jp, endJp = summon.endTime.jp;
+    if (startJp != null && endJp != null) {
+      gachaGroup = db.gameData.others.gachaGroups.values.firstWhereOrNull((group) {
+            if (group.isEmpty) return false;
+            return (Maths.min(group.map((e) => e.openedAt)) - startJp).abs() < 3601 &&
+                (Maths.max(group.map((e) => e.closedAt)) - endJp).abs() < 3601;
+          }) ??
+          [];
+    }
   }
 
   @override
@@ -187,54 +201,55 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       SFooter(S.current.summon_info_hint),
     ];
 
-    final startJp = summon.startTime.jp, endJp = summon.endTime.jp;
-    if (startJp != null && endJp != null) {
-      final gachaGroup = db.gameData.others.gachaGroups.values.firstWhereOrNull((group) {
-        if (group.isEmpty) return false;
-        return (Maths.min(group.map((e) => e.openedAt)) - startJp).abs() < 3601 &&
-            (Maths.max(group.map((e) => e.closedAt)) - endJp).abs() < 3601;
-      });
-      if (gachaGroup != null && gachaGroup.isNotEmpty) {
-        children.add(const Divider(height: 16));
-        children.add(TileGroup(
-          header: S.current.raw_gacha_data,
-          children: [
-            for (final gacha in gachaGroup)
-              ListTile(
-                dense: true,
-                title: Text(gacha.lName),
-                subtitle: Text([
-                  // gacha.detailUrl,
-                  [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
-                ].join('\n')),
-                trailing: GachaBanner(
-                  imageId: gacha.imageId,
-                  region: Region.jp,
-                  background: false,
-                ),
-                onTap: () {
-                  gacha.routeTo(region: Region.jp);
-                },
+    // final startJp = summon.startTime.jp, endJp = summon.endTime.jp;
+    if (gachaGroup.isNotEmpty) {
+      children.add(const Divider(height: 16));
+      children.add(TileGroup(
+        key: _rawGachaTileKey,
+        header: S.current.raw_gacha_data,
+        children: [
+          for (final gacha in gachaGroup)
+            ListTile(
+              dense: true,
+              title: Text(gacha.lName),
+              subtitle: Text([
+                // gacha.detailUrl,
+                [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
+              ].join('\n')),
+              trailing: GachaBanner(
+                imageId: gacha.imageId,
+                region: Region.jp,
+                background: false,
               ),
-          ],
-        ));
-        if (Language.isZH && summon.subSummons.length != gachaGroup.length) {
-          children.add(Center(
-            child: ElevatedButton(
-              onPressed: () {
-                router.pushPage(MCSummonCreatePage(
-                  gachas: gachaGroup.toList(),
-                  nameJp: summon.name,
-                  nameZh: summon.mcLink?.replaceAll('_', ' '),
-                ));
+              onTap: () {
+                gacha.routeTo(region: Region.jp);
               },
-              child: Text("${S.current.create_mooncell_summon}(${gachaGroup.length})"),
             ),
-          ));
-        }
+        ],
+      ));
+      if (Language.isZH) {
+        children.add(Center(
+          child: ElevatedButton(
+            onPressed: () {
+              router.pushPage(MCSummonCreatePage(
+                gachas: gachaGroup.toList(),
+                nameJp: summon.name,
+                nameZh: summon.mcLink?.replaceAll('_', ' '),
+              ));
+            },
+            child: Text("${S.current.create_mooncell_summon}(${gachaGroup.length})"),
+          ),
+        ));
       }
     }
-    return ListView(children: children);
+
+    return SingleChildScrollView(
+      controller: _scrollController,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
+    );
   }
 
   Widget associateEvent(Event event) {
@@ -450,29 +465,36 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
   }
 
   Widget get buttonBar {
-    Widget centerBtn = ElevatedButton(
-      onPressed: summon.subSummons.isEmpty
+    Widget simulatorBtn = ElevatedButton(
+      onPressed: summon.subSummons.isEmpty && gachaGroup.isEmpty
           ? null
-          : () => router.push(child: SummonSimulatorPage(summon: summon, initIndex: curIndex)),
-      child: Text(S.current.simulator),
+          : () {
+              if (summon.subSummons.isNotEmpty) {
+                router.push(child: SummonSimulatorPage(summon: summon, initIndex: curIndex));
+              } else {
+                EasyLoading.showInfo("→ ${S.current.raw_gacha_data}");
+                final obj = _rawGachaTileKey.currentContext?.findRenderObject();
+                if (obj != null && _scrollController.hasClients && _scrollController.position.hasContentDimensions) {
+                  _scrollController.position.ensureVisible(obj);
+                }
+              }
+            },
+      child: Text(
+        S.current.simulator,
+        style: (summon.subSummons.isNotEmpty || gachaGroup.isNotEmpty) &&
+                (summon.subSummons.isEmpty || summon.subSummons.length != gachaGroup.length)
+            ? const TextStyle(decoration: TextDecoration.underline)
+            : null,
+      ),
     );
+    Widget? expBtn;
     if (summon.isLuckyBag && summon.subSummons.isNotEmpty) {
-      centerBtn = Flexible(
-        child: Wrap(
-          spacing: 6,
-          runSpacing: 6,
-          alignment: WrapAlignment.center,
-          children: [
-            centerBtn,
-            ElevatedButton(
-              onPressed: () => router.push(child: LuckyBagExpectation(summon: summon)),
-              child: Text(S.current.summon_expectation_btn),
-            ),
-          ],
-        ),
+      expBtn = ElevatedButton(
+        onPressed: () => router.push(child: LuckyBagExpectation(summon: summon)),
+        child: Text(S.current.summon_expectation_btn),
       );
     }
-    return Row(
+    Widget btnBar = Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
@@ -481,7 +503,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           tooltip: S.current.previous_card,
           onPressed: () => moveNext(true),
         ),
-        centerBtn,
+        simulatorBtn,
         IconButton(
           icon: const FaIcon(FontAwesomeIcons.circleChevronRight),
           color: Theme.of(context).colorScheme.primary,
@@ -490,6 +512,17 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
         )
       ],
     );
+    if (expBtn != null) {
+      btnBar = Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(padding: const EdgeInsets.only(top: 4), child: expBtn),
+          btnBar,
+        ],
+      );
+    }
+    return btnBar;
   }
 
   void moveNext([reversed = false]) {

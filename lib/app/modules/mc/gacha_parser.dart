@@ -9,6 +9,8 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'converter.dart';
 
+const int _kJpNoticePages = 4;
+
 class GachaProbData {
   final NiceGacha gacha;
   String htmlText = "";
@@ -268,7 +270,10 @@ class JpGachaParser {
   Future<List<JpGachaNotice>> parseNotices() async {
     List<JpGachaNotice> notices = [];
     List<Future> futures = [];
-    for (final baseUri in [Uri.parse('https://news.fate-go.jp/'), Uri.parse('https://news.fate-go.jp/page/2/')]) {
+    for (final baseUri in [
+      Uri.parse('https://news.fate-go.jp/'),
+      for (final pageId in range(2, _kJpNoticePages + 1)) Uri.parse('https://news.fate-go.jp/page/$pageId/'),
+    ]) {
       final htmlText = await CachedApi.cacheManager.getText(baseUri.toString());
       if (htmlText == null) continue;
 
