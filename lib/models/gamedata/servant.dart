@@ -21,6 +21,7 @@ part '../../generated/models/gamedata/servant.g.dart';
 
 const int kSuperAokoSvtId = 2501500;
 const int kHydeSvtId = 600710;
+const List<int> kPlayableTransformSvtIds = [kHydeSvtId, kSuperAokoSvtId];
 const String _kSuperAokoIcon = "https://static.wikia.nocookie.net/fategrandorder/images/1/15/S413NP1IconRaw.webp";
 const String _kSuperAokoBorderedIcon = "https://static.wikia.nocookie.net/fategrandorder/images/c/c2/S413NP1Icon.webp";
 
@@ -76,7 +77,9 @@ class BasicServant with GameCardMixin {
     return _$BasicServantFromJson(json);
   }
 
-  bool get isUserSvt => (type == SvtType.normal || type == SvtType.heroine) && collectionNo > 0;
+  bool get isUserSvt =>
+      ((type == SvtType.normal || type == SvtType.heroine) && collectionNo > 0) ||
+      (kPlayableTransformSvtIds.contains(id));
 
   bool get isServantType => const [
         SvtType.normal,
