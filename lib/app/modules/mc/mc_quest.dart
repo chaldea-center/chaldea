@@ -569,6 +569,9 @@ class _MCQuestConverter extends McConverter {
     if (quest.gifts.any((e) => e.giftAdds.isNotEmpty)) {
       extraInfo.add('部分通关奖励可能被替换');
     }
+    if (quest.phasePresents.isNotEmpty) {
+      extraInfo.add('进度${quest.phasePresents.map((e) => e.phase).join("&")}有单独的奖励！！！');
+    }
     if (quest.flags.contains(QuestFlag.branch)) {
       extraInfo.add('分支关卡，需要合并到默认关卡中');
     }

@@ -167,6 +167,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     children.addAll([
       getWarBoard(),
       getPhaseScript(phase),
+      getPhasePresent(phase),
     ]);
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -978,6 +979,34 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                     },
                   ))
               ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget? getPhasePresent(int phase) {
+    final present = (questPhase ?? quest).phasePresents.firstWhereOrNull((e) => e.phase == phase);
+    if (present == null) return null;
+    if (present.giftIcon == null && present.gifts.isEmpty) return null;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          _header(S.current.quest_reward_short),
+          Expanded(
+            child: Center(
+              child: Wrap(
+                spacing: 1,
+                runSpacing: 1,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  if (present.giftIcon != null) db.getIconImage(present.giftIcon, width: 36),
+                  ...Gift.listBuilder(context: context, gifts: present.gifts, size: 36),
+                ],
+              ),
             ),
           )
         ],

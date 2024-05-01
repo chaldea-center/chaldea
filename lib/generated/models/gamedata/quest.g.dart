@@ -91,6 +91,10 @@ Quest _$QuestFromJson(Map json) => Quest(
       gifts:
           (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
               const [],
+      phasePresents: (json['phasePresents'] as List<dynamic>?)
+              ?.map((e) => QuestPhasePresent.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       releaseConditions: (json['releaseConditions'] as List<dynamic>?)
               ?.map((e) => QuestRelease.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -130,6 +134,7 @@ Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
       'chapterSubStr': instance.chapterSubStr,
       'giftIcon': instance.giftIcon,
       'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'phasePresents': instance.phasePresents.map((e) => e.toJson()).toList(),
       'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
       'releaseOverwrites': instance.releaseOverwrites.map((e) => e.toJson()).toList(),
       'phases': instance.phases,
@@ -168,6 +173,10 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
       gifts:
           (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
               const [],
+      phasePresents: (json['phasePresents'] as List<dynamic>?)
+              ?.map((e) => QuestPhasePresent.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       giftIcon: json['giftIcon'] as String?,
       releaseConditions: (json['releaseConditions'] as List<dynamic>?)
               ?.map((e) => QuestRelease.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -252,6 +261,7 @@ Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic
       'chapterSubStr': instance.chapterSubStr,
       'giftIcon': instance.giftIcon,
       'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'phasePresents': instance.phasePresents.map((e) => e.toJson()).toList(),
       'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
       'releaseOverwrites': instance.releaseOverwrites.map((e) => e.toJson()).toList(),
       'phases': instance.phases,
@@ -551,6 +561,27 @@ Map<String, dynamic> _$QuestHintToJson(QuestHint instance) => <String, dynamic>{
       'title': instance.title,
       'message': instance.message,
       'leftIndent': instance.leftIndent,
+    };
+
+QuestPhasePresent _$QuestPhasePresentFromJson(Map json) => QuestPhasePresent(
+      phase: (json['phase'] as num?)?.toInt() ?? 0,
+      gifts:
+          (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
+              const [],
+      giftIcon: json['giftIcon'] as String?,
+      condType:
+          json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
+      condId: (json['condId'] as num?)?.toInt() ?? 0,
+      condNum: (json['condNum'] as num?)?.toInt() ?? 0,
+    );
+
+Map<String, dynamic> _$QuestPhasePresentToJson(QuestPhasePresent instance) => <String, dynamic>{
+      'phase': instance.phase,
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'giftIcon': instance.giftIcon,
+      'condType': const CondTypeConverter().toJson(instance.condType),
+      'condId': instance.condId,
+      'condNum': instance.condNum,
     };
 
 NpcServant _$NpcServantFromJson(Map json) => NpcServant(

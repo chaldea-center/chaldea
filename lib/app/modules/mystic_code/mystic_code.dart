@@ -270,7 +270,7 @@ class _MysticCodePageState extends State<MysticCodePage> {
       CustomTableRow.fromTexts(texts: [S.current.filter_obtain], isHeader: true)
     ];
     for (final quest in db.gameData.quests.values) {
-      if (quest.gifts.any((gift) => gift.type == GiftType.equip && gift.objectId == mysticCode.id)) {
+      if (quest.giftsWithPhasePresents.any((gift) => gift.type == GiftType.equip && gift.objectId == mysticCode.id)) {
         children.add(CustomTableRow.fromChildren(children: [
           CondTargetValueDescriptor(
             condType: CondType.questClear,

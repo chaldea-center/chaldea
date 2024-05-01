@@ -244,7 +244,7 @@ class NiceWar with RouteInfo {
           continue;
         }
 
-        Gift.checkAddGifts(itemReward, quest.gifts);
+        Gift.checkAddGifts(itemReward, quest.giftsWithPhasePresents);
         if (quest.type != QuestType.warBoard) {
           for (final phase in quest.phases) {
             final fixedDrop = gameData.dropData.fixedDrops[quest.id * 100 + phase];
@@ -260,7 +260,7 @@ class NiceWar with RouteInfo {
     for (final selection in questSelections) {
       final quest = selection.quest;
       if (quest.type == QuestType.friendship) continue;
-      Gift.checkAddGifts(itemReward, quest.gifts);
+      Gift.checkAddGifts(itemReward, quest.giftsWithPhasePresents);
       for (final phase in quest.phases) {
         final fixedDrop = gameData.dropData.fixedDrops[quest.id * 100 + phase];
         if (fixedDrop == null) continue;

@@ -82,6 +82,7 @@ class Quest with RouteInfo {
   String chapterSubStr;
   String? giftIcon;
   List<Gift> gifts;
+  List<QuestPhasePresent> phasePresents;
   List<QuestRelease> releaseConditions;
   List<QuestReleaseOverwrite> releaseOverwrites;
   List<int> phases;
@@ -113,6 +114,7 @@ class Quest with RouteInfo {
     this.chapterSubStr = "",
     String? giftIcon,
     this.gifts = const [],
+    this.phasePresents = const [],
     this.releaseConditions = const [],
     this.releaseOverwrites = const [],
     this.phases = const [],
@@ -127,6 +129,8 @@ class Quest with RouteInfo {
         _warLongName = warLongName,
         giftIcon = _isSQGiftIcon(giftIcon, gifts) ? null : giftIcon,
         consume = consumeType.useApOrBp ? consume : 0;
+
+  List<Gift> get giftsWithPhasePresents => [...gifts, ...phasePresents.expand((e) => e.gifts)];
 
   String get spotName {
     _spotName ??= db.gameData.spots[spotId]?.name;
@@ -382,14 +386,14 @@ class QuestPhase extends Quest {
   List<EnemyDrop> drops;
 
   QuestPhase({
-    super.id,
+    super.id = -1,
     super.name,
-    super.type,
+    super.type = QuestType.event,
     super.flags,
-    super.consumeType,
-    super.consume,
+    super.consumeType = ConsumeType.ap,
+    super.consume = 0,
     super.consumeItem,
-    super.afterClear,
+    super.afterClear = QuestAfterClearType.close,
     super.recommendLv,
     super.spotId,
     super.spotName,
@@ -399,6 +403,7 @@ class QuestPhase extends Quest {
     super.chapterSubId,
     super.chapterSubStr,
     super.gifts,
+    super.phasePresents,
     super.giftIcon,
     super.releaseConditions,
     super.releaseOverwrites,
@@ -999,6 +1004,34 @@ class QuestHint {
   factory QuestHint.fromJson(Map<String, dynamic> json) => _$QuestHintFromJson(json);
 
   Map<String, dynamic> toJson() => _$QuestHintToJson(this);
+}
+
+@JsonSerializable()
+class QuestPhasePresent {
+  // int questId;
+  int phase;
+  List<Gift> gifts;
+  String? giftIcon;
+  // String presentMessage;
+  @CondTypeConverter()
+  CondType condType;
+  int condId;
+  int condNum;
+  // Map<String, dynamic> script;
+
+  QuestPhasePresent({
+    this.phase = 0,
+    this.gifts = const [],
+    this.giftIcon,
+    this.condType = CondType.none,
+    this.condId = 0,
+    this.condNum = 0,
+    // this.script = const {},
+  });
+
+  factory QuestPhasePresent.fromJson(Map<String, dynamic> json) => _$QuestPhasePresentFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestPhasePresentToJson(this);
 }
 
 @JsonSerializable()

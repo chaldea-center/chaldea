@@ -48,7 +48,7 @@ class _ItemObtainInterludeTabState extends State<ItemObtainInterludeTab> {
         final quest = db.gameData.quests[questId];
         if (quest == null) continue;
         int itemCount = 0;
-        for (final gift in quest.gifts) {
+        for (final gift in quest.giftsWithPhasePresents) {
           if (gift.objectId == widget.itemId) {
             itemCount += gift.num;
           }
