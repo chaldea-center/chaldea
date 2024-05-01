@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:countly_flutter_np/countly_flutter.dart';
 
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/packages/platform/platform.dart';
 import '../../models/db.dart';
+import '../app_info.dart';
 import '../language.dart';
 import 'analysis.dart';
 
@@ -20,6 +22,11 @@ class AppAnalysisImpl implements AppAnalysis {
         ..setUserProperties({
           "language": Language.current.code,
           "region": db.settings.resolvedPreferredRegions.firstOrNull?.upper,
+          "channel": PlatformU.isAndroid
+              ? (AppInfo.isFDroid ? 'f-droid' : 'android')
+              : PlatformU.isIOS
+                  ? 'ios'
+                  : "unknown"
         })
         ..setUpdateSessionTimerDelay(600)
         ..setEventQueueSizeToSend(50);
