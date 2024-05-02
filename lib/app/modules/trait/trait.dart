@@ -6,6 +6,7 @@ import 'package:chaldea/widgets/widgets.dart';
 import 'tabs/buff_tab.dart';
 import 'tabs/enemy_tab.dart';
 import 'tabs/event.dart';
+import 'tabs/field_tab.dart';
 import 'tabs/func_tab.dart';
 import 'tabs/skill.dart';
 import 'tabs/sp_dmg.dart';
@@ -40,7 +41,7 @@ class _TraitDetailPageState extends State<TraitDetailPage> {
     bool isEventTrait =
         ids.length == 1 && (Transl.md.eventTrait.containsKey(_id) || Transl.md.fieldTrait.containsKey(_id));
     return DefaultTabController(
-      length: isEventTrait ? 7 : 6,
+      length: isEventTrait ? 8 : 7,
       child: Scaffold(
         appBar: AppBar(
           title: AutoSizeText(
@@ -54,6 +55,7 @@ class _TraitDetailPageState extends State<TraitDetailPage> {
             Tab(text: S.current.servant),
             Tab(text: S.current.enemy),
             Tab(text: S.current.super_effective_damage),
+            Tab(text: S.current.quest),
             const Tab(text: "Func"),
             const Tab(text: "Buff"),
             Tab(text: S.current.skill),
@@ -67,6 +69,7 @@ class _TraitDetailPageState extends State<TraitDetailPage> {
               TraitServantTab(ids),
               TraitEnemyTab(ids),
               TraitSPDMGTab(ids),
+              TraitFieldTab(ids),
               TraitFuncTab(ids),
               TraitBuffTab(ids),
               TraitSkillTab(ids),
