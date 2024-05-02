@@ -85,7 +85,12 @@ class _EventShopsPageState extends State<EventShopsPage> {
           length: views.length,
           child: Column(
             children: [
-              if (views.length > 1) FixedHeight.tabBar(TabBar(tabs: headers, isScrollable: true)),
+              if (views.length > 1)
+                FixedHeight.tabBar(TabBar(
+                  tabs: headers,
+                  isScrollable: true,
+                  tabAlignment: TabAlignment.center,
+                )),
               Expanded(
                 child: views.length == 1 ? views.single : TabBarView(children: views),
               ),

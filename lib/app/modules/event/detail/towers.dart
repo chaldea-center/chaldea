@@ -67,7 +67,6 @@ class EventTowerTab extends HookWidget {
     return ListTile(
       key: Key('event_tower_${reward.floor}'),
       leading: Text(reward.floor.toString()),
-      horizontalTitleGap: 0,
       title: Text.rich(
         TextSpan(children: titles),
       ),

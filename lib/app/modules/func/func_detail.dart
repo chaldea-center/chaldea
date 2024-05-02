@@ -311,7 +311,6 @@ class _SkillTab extends StatelessWidget {
             return ListTile(
               dense: true,
               leading: skill.icon == null ? const SizedBox() : db.getIconImage(skill.icon, width: 28),
-              horizontalTitleGap: 0,
               title: Text('${skill.id} ${skill.lName.l}'),
               trailing: cards.isEmpty
                   ? null

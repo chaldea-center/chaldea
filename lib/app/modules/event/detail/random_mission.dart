@@ -42,21 +42,23 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
             children: [
               Text(' ${S.current.detective_rank}: '),
               Expanded(
-                  child: TabBar(
-                isScrollable: true,
-                tabs: [
-                  for (final rank in ranks)
-                    Tab(
-                      child: Text.rich(
-                        TextSpan(children: [
-                          CenterWidgetSpan(child: rankIcon(rank, width: 24)),
-                          TextSpan(text: ' ${rankText(rank)}')
-                        ]),
-                        style: Theme.of(context).textTheme.bodyMedium,
+                child: TabBar(
+                  isScrollable: true,
+                  tabAlignment: TabAlignment.center,
+                  tabs: [
+                    for (final rank in ranks)
+                      Tab(
+                        child: Text.rich(
+                          TextSpan(children: [
+                            CenterWidgetSpan(child: rankIcon(rank, width: 24)),
+                            TextSpan(text: ' ${rankText(rank)}')
+                          ]),
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ),
-                    ),
-                ],
-              )),
+                  ],
+                ),
+              ),
             ],
           )),
           Expanded(

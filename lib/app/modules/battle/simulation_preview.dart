@@ -807,7 +807,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       rows.add(ListTile(
         dense: true,
         leading: icon == null ? null : db.getIconImage(icon, width: 24, aspectRatio: 1),
-        horizontalTitleGap: 0,
+        minLeadingWidth: 24,
         title: Text(Transl.itemNames(groupDetail?.name ?? S.current.event_point).l),
         trailing: DropdownButton<EventPointBuff?>(
           isDense: true,

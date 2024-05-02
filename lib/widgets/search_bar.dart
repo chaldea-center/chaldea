@@ -52,7 +52,7 @@ class _SearchBar2State extends State<SearchBar2> {
       color: textStyle.color ?? Theme.of(context).hintColor,
     );
     final colorScheme = Theme.of(context).colorScheme;
-    final iconColor = colorScheme.brightness == Brightness.dark ? colorScheme.onSurface : colorScheme.onPrimary;
+    final iconColor = colorScheme.onSurface;
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(
         16,
@@ -74,7 +74,7 @@ class _SearchBar2State extends State<SearchBar2> {
               // placeholder height will change
               placeholder: 'Search: A B -C',
               prefixInsets: const EdgeInsetsDirectional.fromSTEB(6, 0, 0, 0),
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              // backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               suffixIcon: const Icon(Icons.clear),
             ),
           ),
@@ -110,7 +110,6 @@ class _SearchBar2State extends State<SearchBar2> {
           ListTile(
             leading: const Icon(Icons.keyboard_arrow_down),
             title: Text(S.current.search_options),
-            horizontalTitleGap: 0,
             onTap: () {
               Navigator.pop(context);
             },

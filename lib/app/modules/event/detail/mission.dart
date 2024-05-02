@@ -103,7 +103,6 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
                 unknownMsg: mission.name,
               )
             : Text(mission.name, textScaler: const TextScaler.linear(0.8)),
-        horizontalTitleGap: 0,
         contentPadding: const EdgeInsetsDirectional.only(start: 16),
         minLeadingWidth: 32,
         trailing: customMission == null

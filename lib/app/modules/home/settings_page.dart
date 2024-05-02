@@ -401,7 +401,6 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget get userTile {
     return ListTile(
       leading: const Icon(Icons.person),
-      // horizontalTitleGap: 0,
       title: Text(S.current.login_username),
       trailing: db.onSettings((context, snapshot) {
         final user = db.settings.secrets.user;

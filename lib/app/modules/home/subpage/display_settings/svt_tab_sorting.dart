@@ -62,7 +62,6 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
             decoration: BoxDecoration(border: Border(bottom: Divider.createBorderSide(context))),
             child: ListTile(
               leading: Text((tabs.indexOf(tab) + 1).toString()),
-              horizontalTitleGap: 0,
               title: Text(tabName(tab)),
             ),
           ),

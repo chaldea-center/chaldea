@@ -34,6 +34,7 @@ class TransformSvtProfileTabber extends StatelessWidget {
                   height: 36,
                   child: TabBar(
                     isScrollable: true,
+                    tabAlignment: TabAlignment.center,
                     tabs: [
                       for (final e in transformVariants) buildHeader(context, e),
                     ],

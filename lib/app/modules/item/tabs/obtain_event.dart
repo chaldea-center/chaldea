@@ -274,7 +274,6 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
         leading: const Icon(Icons.event),
         title: title,
         trailing: trailing,
-        horizontalTitleGap: 0,
         contentPadding: const EdgeInsetsDirectional.only(start: 16),
       ),
       contentBuilder: (context) => ListView.separated(

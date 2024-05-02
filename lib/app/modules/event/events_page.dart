@@ -100,6 +100,7 @@ class EventListPageState extends State<EventListPage>
             : FixedHeight.tabBar(TabBar(
                 controller: _tabController,
                 isScrollable: true,
+                tabAlignment: TabAlignment.center,
                 tabs: tabNames.map((name) => Tab(text: name)).toList(),
               )),
         actions: actions,

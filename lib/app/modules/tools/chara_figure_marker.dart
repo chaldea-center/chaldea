@@ -187,6 +187,7 @@ class _CharaFigureMarkerState<T> extends State<CharaFigureMarker<T>> with Single
         bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
           isScrollable: true,
+          tabAlignment: TabAlignment.center,
           tabs: const [
             Tab(text: 'All'),
             Tab(text: 'Unknown'),

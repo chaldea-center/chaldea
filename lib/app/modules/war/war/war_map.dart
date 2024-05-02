@@ -234,7 +234,6 @@ class _WarMapPageState extends State<WarMapPage> {
             ListTile(
               dense: true,
               leading: const Icon(Icons.music_note),
-              horizontalTitleGap: 0,
               title: Text(map.bgm.tooltip.setMaxLines(1)),
               trailing: SoundPlayButton(
                 url: map.bgm.audioAsset,

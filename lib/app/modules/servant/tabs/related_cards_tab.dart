@@ -108,6 +108,7 @@ class SvtRelatedCardTab extends StatelessWidget {
     }
     final tabbar = TabBar(
       isScrollable: true,
+      tabAlignment: TabAlignment.center,
       tabs: tabs.map((e) => Tab(child: Text(e, style: Theme.of(context).textTheme.bodyMedium))).toList(),
     );
 

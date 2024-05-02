@@ -62,6 +62,7 @@ class _WarsPageState extends State<WarsPage> with SingleTickerProviderStateMixin
         ],
         bottom: FixedHeight.tabBar(TabBar(
           isScrollable: true,
+          tabAlignment: TabAlignment.center,
           controller: _tabController,
           tabs: [
             Tab(text: S.current.main_story),

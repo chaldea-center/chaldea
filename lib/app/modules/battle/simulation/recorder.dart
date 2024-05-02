@@ -216,7 +216,7 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
             StatefulBuilder(
               builder: (context, update) {
                 return ListTileTheme.merge(
-                  horizontalTitleGap: 0,
+                  minLeadingWidth: 24,
                   child: CheckboxListTile(
                     dense: true,
                     contentPadding: const EdgeInsets.symmetric(horizontal: 20),

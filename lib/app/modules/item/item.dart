@@ -192,6 +192,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
         bottom: tabs.length < 2
             ? null
             : FixedHeight.tabBar(TabBar(
+                tabAlignment: TabAlignment.center,
                 controller: _tabController,
                 isScrollable: true,
                 tabs: tabs.map((e) => e.header).toList(),

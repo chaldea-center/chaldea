@@ -556,7 +556,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         String subtitle = td == null ? Transl.tdTypes('なし').l : '${td.id} ${td.lName.l}';
         return ListTile(
           dense: true,
-          horizontalTitleGap: 0,
+          minLeadingWidth: 24,
           leading: td == null ? db.getIconImage(null, width: 24) : CommandCardWidget(card: td.svt.card, width: 28),
           title: Text(title),
           subtitle: Text(subtitle),
@@ -649,7 +649,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         String subtitle = skill == null ? Transl.tdTypes('なし').l : '${skill.id} ${skill.lName.l}';
         return ListTile(
           dense: true,
-          horizontalTitleGap: 0,
+          minLeadingWidth: 28,
           leading: db.getIconImage(skill?.icon ?? Atlas.common.emptySkillIcon, width: 28),
           title: Text(title),
           subtitle: Text(subtitle),
@@ -720,7 +720,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         String subtitle = skill == null ? Transl.tdTypes('なし').l : '${skill.id} ${skill.lName.l}';
         return ListTile(
           dense: true,
-          horizontalTitleGap: 0,
+          minLeadingWidth: 28,
           leading: db.getIconImage(skill?.icon ?? Atlas.common.emptySkillIcon, width: 28),
           title: Text(title),
           subtitle: Text(subtitle),
@@ -755,7 +755,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       children.add(ListTile(
         dense: true,
         enabled: false,
-        horizontalTitleGap: 0,
+        minLeadingWidth: 28,
         contentPadding: const EdgeInsetsDirectional.only(start: 16),
         leading: db.getIconImage(skill.icon, width: 28, onTap: skill.routeTo),
         title: Text('[${S.current.disabled}] ${skill.lName.l}'),
@@ -787,7 +787,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         String subtitle = skill.lDetail ?? '???';
         return ListTile(
           dense: true,
-          horizontalTitleGap: 0,
+          minLeadingWidth: 28,
           leading: db.getIconImage(skill.icon ?? Atlas.common.emptySkillIcon, width: 28),
           title: Text(title, style: disabled ? const TextStyle(decoration: TextDecoration.lineThrough) : null),
           subtitle: Text(
@@ -849,7 +849,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         String subtitle = skill.lDetail ?? '???';
         return ListTile(
           dense: true,
-          horizontalTitleGap: 0,
+          minLeadingWidth: 28,
           leading: db.getIconImage(skill.icon ?? Atlas.common.emptySkillIcon, width: 28),
           title: Text(title),
           subtitle:

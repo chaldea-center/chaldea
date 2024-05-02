@@ -465,7 +465,6 @@ class __QuestBonusEditDialogState extends State<_QuestBonusEditDialog> {
       ),
       title: Text(Item.getName(itemId), maxLines: 1),
       contentPadding: EdgeInsets.zero,
-      horizontalTitleGap: 0,
       subtitle: Text(percent ? '${_fmtNum(base)}×(1+$bonus%)' : '${_fmtNum(base)}+${_fmtNum(group)}×$bonus'),
       trailing: SizedBox(
         width: 50,

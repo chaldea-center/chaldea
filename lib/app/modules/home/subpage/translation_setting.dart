@@ -64,7 +64,6 @@ class _TranslationSettingState extends State<TranslationSetting> {
           decoration: BoxDecoration(border: Border(bottom: Divider.createBorderSide(context))),
           child: ListTile(
             leading: Text((index + 1).toString()),
-            horizontalTitleGap: 0,
             title: Text(region.localName),
             subtitle: Text(region.language.name),
           ),

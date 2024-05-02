@@ -586,7 +586,7 @@ class _EnemyCombatActionSelectorState extends State<EnemyCombatActionSelector> {
       title: Text(S.current.select),
       contentPadding: const EdgeInsetsDirectional.fromSTEB(0, 20.0, 0, 24.0),
       content: ListTileTheme.merge(
-        horizontalTitleGap: 0,
+        minLeadingWidth: 24,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: children,

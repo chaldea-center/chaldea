@@ -53,7 +53,6 @@ class BattleHomePage extends StatelessWidget {
               leading: const Icon(Icons.calculate),
               title: Text(S.current.battle_simulation),
               subtitle: const Text('3T Simulator'),
-              // horizontalTitleGap: 0,
               onTap: () {
                 router.push(url: Routes.laplace);
               },
@@ -61,7 +60,6 @@ class BattleHomePage extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.radar),
               title: Text(S.current.np_damage),
-              // horizontalTitleGap: 0,
               onTap: () {
                 router.push(url: Routes.laplaceNpDmg);
               },

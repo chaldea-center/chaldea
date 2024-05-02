@@ -48,6 +48,7 @@ class _FreeQuestCalcPageState extends State<FreeQuestCalcPage> with SingleTicker
         bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
           isScrollable: true,
+          tabAlignment: TabAlignment.center,
           tabs: [
             Tab(text: S.current.demands),
             Tab(text: S.current.plan),

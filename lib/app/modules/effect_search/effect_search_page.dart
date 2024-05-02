@@ -92,6 +92,7 @@ class _EffectSearchPageState extends State<EffectSearchPage>
   PreferredSizeWidget get tabBar => FixedHeight.tabBar(TabBar(
         controller: _tabController,
         isScrollable: true,
+        tabAlignment: TabAlignment.center,
         tabs: [
           Tab(text: S.current.servant),
           Tab(text: S.current.craft_essence),

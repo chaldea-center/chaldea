@@ -33,6 +33,7 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning> with SingleTi
         bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
           isScrollable: true,
+          tabAlignment: TabAlignment.center,
           tabs: [
             Tab(text: S.current.settings_tab_name),
             // Tab(

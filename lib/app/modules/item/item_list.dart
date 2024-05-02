@@ -136,6 +136,7 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
         bottom: FixedHeight.tabBar(TabBar(
           controller: _tabController,
           isScrollable: true,
+          tabAlignment: TabAlignment.center,
           tabs: [
             for (final category in shownCategories)
               Tab(

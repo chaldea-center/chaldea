@@ -164,7 +164,7 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
             leading:
                 Language.getLanguage(db.settings.language) == lang ? const Icon(Icons.done_rounded) : const SizedBox(),
             title: Text(lang.name),
-            horizontalTitleGap: 0,
+            minLeadingWidth: 24,
             onTap: () {
               db.settings.setLanguage(lang);
               db.saveSettings();
@@ -191,7 +191,7 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
         leading: selected ? const Icon(Icons.done_rounded) : const SizedBox(),
         title: Text(isCN ? S.current.chaldea_server_cn : S.current.chaldea_server_global),
         subtitle: Text(domain.toString()),
-        horizontalTitleGap: 0,
+        minLeadingWidth: 24,
         trailing: selected ? null : const Icon(Icons.open_in_new),
         onTap: selected
             ? null
@@ -212,7 +212,7 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
             leading: const SizedBox(),
             title: const Text('Native App'),
             subtitle: const Text('Android/iOS/Windows/macOS/Linux'),
-            horizontalTitleGap: 0,
+            minLeadingWidth: 24,
             trailing: const Icon(Icons.open_in_new),
             onTap: () {
               launch(ChaldeaUrl.doc('install'));
@@ -252,7 +252,7 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
           return ListTile(
             leading: db.settings.themeMode == mode ? const Icon(Icons.done_rounded) : const SizedBox(),
             title: Text(_themeModeName(mode)),
-            horizontalTitleGap: 0,
+            minLeadingWidth: 24,
             onTap: () {
               db.settings.themeMode = mode;
               db.saveSettings();
@@ -299,7 +299,7 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
               return ListTile(
                 leading: region == db.curUser.region ? const Icon(Icons.done) : const SizedBox(),
                 title: Text(region.localName),
-                horizontalTitleGap: 0,
+                minLeadingWidth: 24,
                 onTap: () {
                   setState(() {
                     db.curUser.region = region;
@@ -486,7 +486,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
           spacing: 16,
           alignment: WrapAlignment.center,
           children: [
-            ElevatedButton(
+            FilledButton(
               onPressed: () async {
                 try {
                   setState(() {

@@ -91,7 +91,6 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
               ListTile(
                 leading: Text((solution.missions.indexOf(mission) + 1).toString()),
                 title: mission.buildDescriptor(context),
-                horizontalTitleGap: 0,
                 dense: true,
               ),
           ],

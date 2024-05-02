@@ -87,6 +87,7 @@ class _TimerHomePageState extends State<TimerHomePage>
         ],
         bottom: FixedHeight.tabBar(TabBar(
           isScrollable: true,
+          tabAlignment: TabAlignment.center,
           controller: _tabController,
           tabs: [
             S.current.general_all,

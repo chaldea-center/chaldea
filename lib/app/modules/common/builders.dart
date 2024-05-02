@@ -431,7 +431,7 @@ class SharedBuilder {
         contentPadding: const EdgeInsets.fromLTRB(8.0, 12.0, 0.0, 16.0),
         children: [
           ListTile(
-            horizontalTitleGap: 0,
+            minLeadingWidth: 24,
             leading: const Icon(Icons.photo_library),
             title: Text(S.current.attach_from_photos),
             onTap: () {
@@ -440,7 +440,7 @@ class SharedBuilder {
             },
           ),
           ListTile(
-            horizontalTitleGap: 0,
+            minLeadingWidth: 24,
             leading: const Icon(Icons.file_copy),
             title: Text(S.current.attach_from_files),
             onTap: () {

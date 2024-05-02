@@ -104,6 +104,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
         titleSpacing: 0,
         toolbarHeight: 48, // kToolbarHeight=56,
       ),
+      listTileTheme: themeData.listTileTheme.copyWith(minLeadingWidth: 24),
     );
   }
 

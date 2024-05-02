@@ -263,7 +263,6 @@ class MultiDescriptor {
             return ListTile(
               leading: Text('${mission?.dispNo ?? id}'),
               title: Text(mission?.name ?? "???"),
-              horizontalTitleGap: 0,
               dense: true,
             );
           },
@@ -298,7 +297,6 @@ class MultiDescriptor {
             final war = db.gameData.wars[id];
             return ListTile(
               title: Text(war?.lLongName.l.setMaxLines(1) ?? 'War $id'),
-              horizontalTitleGap: 0,
               dense: true,
               onTap: () => router.push(url: Routes.warI(id)),
             );
@@ -334,7 +332,6 @@ class MultiDescriptor {
             final event = db.gameData.events[id];
             return ListTile(
               title: Text(event?.lName.l.setMaxLines(1) ?? 'Event $id'),
-              horizontalTitleGap: 0,
               dense: true,
               onTap: () => router.push(url: Routes.eventI(id)),
             );

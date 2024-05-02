@@ -113,7 +113,6 @@ class _EventLotteryTabState extends State<EventLotteryTab> {
       title: title,
       tileColor: box.isRare ? Colors.yellow.withAlpha(100) : null,
       trailing: Text('×${box.maxNum.format()}'),
-      // horizontalTitleGap: 0,
     );
   }
 }

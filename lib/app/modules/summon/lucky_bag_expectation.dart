@@ -110,10 +110,10 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTi
             children.add(ListTile(
               leading: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 2),
-                child:
-                    SummonUtil.svtAvatar(context: context, card: svt, category: false, favorite: svt.status.favorite),
+                child: SummonUtil.svtAvatar(
+                    context: context, card: svt, category: false, favorite: svt.status.favorite, width: 40),
               ),
-              horizontalTitleGap: 0,
+              minLeadingWidth: 24,
               title: Row(
                 children: List.generate(
                   _kScoreMax - _kScoreMin + 1,
@@ -140,7 +140,6 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTi
         ListTile(
           leading: db.getIconImage(null, width: 40),
           tileColor: Theme.of(context).highlightColor,
-          horizontalTitleGap: 0,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
           title: Row(
             children: List.generate(
