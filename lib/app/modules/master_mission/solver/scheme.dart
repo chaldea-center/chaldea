@@ -71,11 +71,11 @@ class CustomMission {
     for (final cond in eventMission.conds) {
       if (cond.missionProgressType != MissionProgressType.clear ||
           cond.condType != CondType.missionConditionDetail ||
-          cond.details?.isNotEmpty != true) {
+          cond.details.isEmpty) {
         continue;
       }
       List<CustomMissionCond> conds = [];
-      for (final detail in cond.details!) {
+      for (final detail in cond.details) {
         final type = kDetailCondMapping[detail.missionCondType];
         if (type == null) continue;
         if (type == CustomMissionType.quest && detail.targetIds.length == 1 && detail.targetIds.first == 0) {

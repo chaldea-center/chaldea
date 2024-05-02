@@ -84,7 +84,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
             Expanded(
               flex: 2,
               child: Text(
-                [classBoardDemand, ...svtDemands.parts.map((e) => num2str(e))].join('/'),
+                [classBoardDemand, ...svtDemands.parts].map((e) => num2str(e)).join('/'),
                 textAlign: TextAlign.end,
               ),
             ),

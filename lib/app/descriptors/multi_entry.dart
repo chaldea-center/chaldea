@@ -100,7 +100,10 @@ class MultiDescriptor {
         context,
         targetIds,
         (context, id) {
-          final svt = db.gameData.servantsById[id] ?? db.gameData.craftEssencesById[id] ?? db.gameData.entities[id];
+          final svt = db.gameData.servantsById[id] ??
+              db.gameData.craftEssencesById[id] ??
+              db.gameData.entities[id] ??
+              db.gameData.commandCodesById[id];
           return svt == null
               ? TextSpan(
                   text: 'SVT $id',

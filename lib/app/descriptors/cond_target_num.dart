@@ -120,6 +120,14 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           na: () => text('NONE'),
           kr: null,
         );
+      case CondType.forceFalse:
+        return localized(
+          jp: () => text('不可能です'),
+          cn: () => text('不可能'),
+          tw: () => text('不可能'),
+          na: () => text('Not Possible'),
+          kr: null,
+        );
       case CondType.questClear:
         bool all = targetNum == targetIds.length && targetNum != 1 && useAnd != false;
         bool onlyOne = targetNum == 1 && targetIds.length == 1;
@@ -243,6 +251,30 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           tw: () => rich(null, servants(context), '在靈基一覽中'),
           na: () => rich(null, servants(context), ' in Spirit Origin Collection'),
           kr: () => rich(null, servants(context), ' 정식가입'),
+        );
+      case CondType.notSvtGet:
+        return localized(
+          jp: null,
+          cn: () => rich(null, servants(context), '不在灵基一览中'),
+          tw: () => rich(null, servants(context), '不在靈基一覽中'),
+          na: () => rich(null, servants(context), 'not in Spirit Origin Collection'),
+          kr: null,
+        );
+      case CondType.commandCodeGet:
+        return localized(
+          jp: null,
+          cn: () => rich('获得过', servants(context)),
+          tw: null,
+          na: () => rich('Have got', servants(context)),
+          kr: null,
+        );
+      case CondType.notCommandCodeGet:
+        return localized(
+          jp: null,
+          cn: () => rich('未曾获得过', servants(context)),
+          tw: null,
+          na: () => rich('Have not got', servants(context)),
+          kr: null,
         );
       case CondType.eventEnd:
         return localized(
@@ -538,6 +570,16 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
         }
       case CondType.svtSkillLvClassNumAbove:
         break;
+      // case CondType.totalTdLevelAbove:
+      // case CondType.totalTdLevel:
+      case CondType.totalTdLevelBelow:
+        return localized(
+          jp: null,
+          cn: () => rich('总宝具等级≤$targetNum', servants(context)),
+          tw: null,
+          na: () => rich('Total NP levels ≤$targetNum', servants(context)),
+          kr: null,
+        );
       case CondType.notShopPurchase:
         final countText = targetNum == 1 ? "" : M.of(cn: "$targetNum次", na: '$targetNum times of ');
         return localized(
@@ -730,13 +772,19 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
       default:
         break;
     }
-    return wrapMsg(localized(
-      jp: () => text('不明な条件(${condType.name}): $targetNum, $targetIds'),
-      cn: () => text('未知条件(${condType.name}): $targetNum, $targetIds'),
-      tw: () => text('未知條件(${condType.name}): $targetNum, $targetIds'),
-      na: () => text('Unknown Cond(${condType.name}): $targetNum, $targetIds'),
-      kr: () => text('미확인 (${condType.name}): $targetNum, $targetIds'),
-    ));
+
+    return [
+      TextSpan(
+        children: wrapMsg(localized(
+          jp: () => text('不明な条件(${condType.name}): $targetNum, $targetIds'),
+          cn: () => text('未知条件(${condType.name}): $targetNum, $targetIds'),
+          tw: () => text('未知條件(${condType.name}): $targetNum, $targetIds'),
+          na: () => text('Unknown Cond(${condType.name}): $targetNum, $targetIds'),
+          kr: () => text('미확인 (${condType.name}): $targetNum, $targetIds'),
+        )),
+        // style: kDebugMode ? const TextStyle(color: Colors.red) : null,
+      )
+    ];
   }
 
   (List<int>, List<int>) _splitTargets(List<int> vals) {

@@ -916,7 +916,7 @@ class EventMissionCondition {
   String conditionMessage;
   String closedMessage;
   int flag;
-  List<EventMissionConditionDetail>? details;
+  List<EventMissionConditionDetail> details;
 
   EventMissionCondition({
     required this.id,
@@ -930,7 +930,7 @@ class EventMissionCondition {
     required this.conditionMessage,
     this.closedMessage = "",
     this.flag = 0,
-    this.details,
+    this.details = const [],
   });
 
   factory EventMissionCondition.fromJson(Map<String, dynamic> json) => _$EventMissionConditionFromJson(json);
@@ -2183,4 +2183,16 @@ enum EventSvtType {
   join,
   condJoin,
   directJoin,
+}
+
+enum UserShopFlag {
+  unknown(0),
+  receivedShopItem(2),
+  usedAddBuffItem(4),
+  returnExchangeItem(8),
+  returnRarePriShop(16),
+  ;
+
+  const UserShopFlag(this.value);
+  final int value;
 }

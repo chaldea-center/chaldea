@@ -604,8 +604,9 @@ EventMissionCondition _$EventMissionConditionFromJson(Map json) => EventMissionC
       closedMessage: json['closedMessage'] as String? ?? "",
       flag: (json['flag'] as num?)?.toInt() ?? 0,
       details: (json['details'] as List<dynamic>?)
-          ?.map((e) => EventMissionConditionDetail.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList(),
+              ?.map((e) => EventMissionConditionDetail.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$EventMissionConditionToJson(EventMissionCondition instance) => <String, dynamic>{
@@ -619,7 +620,7 @@ Map<String, dynamic> _$EventMissionConditionToJson(EventMissionCondition instanc
       'conditionMessage': instance.conditionMessage,
       'closedMessage': instance.closedMessage,
       'flag': instance.flag,
-      'details': instance.details?.map((e) => e.toJson()).toList(),
+      'details': instance.details.map((e) => e.toJson()).toList(),
     };
 
 const _$MissionProgressTypeEnumMap = {

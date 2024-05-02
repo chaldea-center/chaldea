@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
-
 import 'package:intl/intl.dart';
 
 import 'package:chaldea/app/descriptors/cond_target_num.dart';
+import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/widgets.dart';
 import 'descriptor_base.dart';
 import 'multi_entry.dart';
 
@@ -100,6 +100,14 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           cn: () => rich('关卡可用中', quests(context)),
           tw: () => rich('關卡可用中', quests(context)),
           na: () => rich('Quest', quests(context), "available"),
+          kr: null,
+        );
+      case CondType.svtLevel:
+        return localized(
+          jp: null,
+          cn: () => rich('从者等级达到Lv.$value', servants(context)),
+          tw: null,
+          na: () => rich('Servant level reaches Lv.$value', quests(context), ""),
           kr: null,
         );
       case CondType.svtLimit:
@@ -202,12 +210,65 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           na: () => rich('(?)Have not cleared $value quests of ', questSpans),
           kr: null,
         );
+      case CondType.latestQuestPhaseEqual:
+      case CondType.notLatestQuestPhaseEqual:
+        final relation = {
+          CondType.latestQuestPhaseEqual: '=',
+          CondType.notLatestQuestPhaseEqual: '!=',
+        }[condType]!;
+        return localized(
+          jp: null,
+          cn: () => rich(null, quests(context), '最新进度 $relation$value'),
+          tw: null,
+          na: () => rich(null, quests(context), 'latest quest arrow $relation$value'),
+          kr: null,
+        );
+      case CondType.questChallengeNum:
+      case CondType.questChallengeNumBelow:
+      case CondType.questChallengeNumEqual:
+        final relation = {
+          CondType.questChallengeNum: '≥',
+          CondType.questChallengeNumBelow: '<',
+          CondType.questChallengeNumEqual: '=',
+        }[condType]!;
+        return localized(
+          jp: null,
+          cn: () => rich('关卡挑战次数$relation$value', quests(context)),
+          tw: null,
+          na: () => rich('Quest challenge num $relation$value', quests(context)),
+          kr: null,
+        );
+      case CondType.playQuestPhase:
+        return localized(
+          jp: null,
+          cn: () => rich('正在挑战关卡', quests(context), '进度$value'),
+          tw: null,
+          na: () => rich('Playing quest', quests(context), 'arrow $value'),
+          kr: null,
+        );
+      case CondType.notPlayQuestPhase:
+        return localized(
+          jp: null,
+          cn: () => rich('未在挑战关卡', quests(context), '进度$value'),
+          tw: null,
+          na: () => rich('Not playing quest', quests(context), 'arrow $value'),
+          kr: null,
+        );
       case CondType.questResetAvailable:
         return localized(
           jp: null,
           cn: () => rich('关卡可重置', quests(context)),
           tw: null,
           na: () => rich('Quest reset available', quests(context)),
+          kr: null,
+        );
+      case CondType.elapsedTimeAfterQuestClear:
+        final duration = (value / 3600).format();
+        return localized(
+          jp: null,
+          cn: () => rich('关卡通关后经过$duration小时', quests(context)),
+          tw: null,
+          na: () => rich('Elapsed $duration hours after quest cleared', quests(context)),
           kr: null,
         );
       case CondType.svtRecoverd:
@@ -366,11 +427,48 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           na: () => rich('Have not achieved mission (claim rewards): ', missionList(context, missionMap)),
           kr: null,
         );
+      case CondType.eventMissionGroupAchieve:
+        final group = db.gameData.events.values.expand((e) => e.missionGroups).firstWhereOrNull((e) => e.id == target);
+        if (group == null) break;
+        final _missionList = MultiDescriptor.missions(context, group.missionIds, {}, useAnd: useAnd);
+        return localized(
+          jp: null,
+          cn: () => rich('达成其中$value个任务(领取奖励): ', _missionList),
+          tw: null,
+          na: () => rich('Have achieved $value missions (claim rewards): ', _missionList),
+          kr: null,
+        );
+      case CondType.equipWithTargetCostume:
+        final costume = db.gameData.servantsById[target]?.profile.costume.values.firstWhereOrNull((e) => e.id == value);
+        if (costume == null) {
+          return localized(
+            jp: null,
+            cn: () => rich('从者', servants(context), '使用灵基$value'),
+            tw: null,
+            na: () => rich('Servant', servants(context), 'using Ascension $value'),
+            kr: null,
+          );
+        } else {
+          final costumeSpans = [
+            CenterWidgetSpan(
+                child: GameCardMixin.cardIconBuilder(
+                    context: context, icon: costume.borderedIcon, onTap: costume.routeTo, width: 32)),
+            SharedBuilder.textButtonSpan(context: context, text: costume.lName.l, onTap: costume.routeTo),
+          ];
+          return localized(
+            jp: null,
+            cn: () => rich('从者', servants(context), '装备灵衣', costumeSpans),
+            tw: null,
+            na: () => rich('Servant', servants(context), 'equips costume', costumeSpans),
+            kr: null,
+          );
+        }
       // redirect to CondTargetNum
       case CondType.costumeGet:
       case CondType.notCostumeGet:
       case CondType.purchaseShop:
       case CondType.notShopPurchase:
+      case CondType.svtCostumeReleased:
         return CondTargetNumDescriptor(
           condType: condType,
           targetNum: value,
@@ -403,15 +501,52 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
               TextSpan(text: ' ($closedMessage)', style: Theme.of(context).textTheme.bodySmall),
           ],
         );
+      case CondType.warClear:
+        // value = 0/1 ?
+        return localized(
+          jp: () => rich(null, wars(context), 'をクリアした'),
+          cn: () => rich('通关', wars(context)),
+          tw: () => rich('通關', wars(context)),
+          na: () => rich('Has cleared war ', wars(context)),
+          kr: null,
+        );
+
+      case CondType.notWarClear:
+        return localized(
+          jp: () => rich(null, wars(context), 'をクリアされていません'),
+          cn: () => rich('未通关', wars(context)),
+          tw: () => rich('未通關', wars(context)),
+          na: () => rich('Has not cleared war ', wars(context)),
+          kr: null,
+        );
+      case CondType.shopFlagOn:
+      case CondType.shopFlagOff:
+        final status = {
+          CondType.shopFlagOn: 'On',
+          CondType.shopFlagOff: 'Off',
+        }[condType]!;
+        final flagName = UserShopFlag.values.where((e) => e.value & value != 0).map((e) => e.name).join('/');
+        return localized(
+          jp: null,
+          cn: () => rich('商店 flag $value($flagName) $status ', shops(context)),
+          tw: null,
+          na: () => rich('Shop flag $value($flagName) $status ', shops(context)),
+          kr: null,
+        );
       default:
         break;
     }
-    return wrapMsg(localized(
-      jp: () => text('不明な条件(${condType.name}): $value, $target'),
-      cn: () => text('未知条件(${condType.name}): $value, $target'),
-      tw: () => text('未知條件(${condType.name}): $value, $target'),
-      na: () => text('Unknown Cond(${condType.name}): $value, $target'),
-      kr: null,
-    ));
+    return [
+      TextSpan(
+        children: wrapMsg(localized(
+          jp: () => text('不明な条件(${condType.name}): $value, $target'),
+          cn: () => text('未知条件(${condType.name}): $value, $target'),
+          tw: () => text('未知條件(${condType.name}): $value, $target'),
+          na: () => text('Unknown Cond(${condType.name}): $value, $target'),
+          kr: null,
+        )),
+        // style: kDebugMode ? const TextStyle(color: Colors.red) : null,
+      )
+    ];
   }
 }
