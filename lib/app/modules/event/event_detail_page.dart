@@ -435,7 +435,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
         children: [
           ListTile(
             dense: true,
-            title: Text(M.of(cn: "追加怪物的条件", na: "Bonus Enemy & Requirements")),
+            title: Text(M.of(cn: "追加怪物的条件", na: "Bonus Enemy Conditions")),
             subtitle: Text(M.of(cn: "仅活动期间可用", na: "Only available during event")),
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
             onTap: () {

@@ -98,7 +98,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Bonus Enemy Requirements"),
+        title: const Text("Bonus Enemy Conditions"),
         actions: [
           IconButton(
             onPressed: () {
@@ -131,7 +131,7 @@ class _BonusEnemyCondPageState extends State<BonusEnemyCondPage> {
         selectedTileColor: Theme.of(context).secondaryHeaderColor,
         leading: db.getIconImage(quest.spot?.shownImage),
         title: Text(quest.lDispName),
-        subtitle: Text(quest.lSpot.l),
+        subtitle: Text('Lv.${quest.recommendLv} ${quest.lSpot.l}'),
         onTap: quest.routeTo,
       ),
     ];
