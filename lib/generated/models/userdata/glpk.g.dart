@@ -20,7 +20,8 @@ FreeLPParams _$FreeLPParamsFromJson(Map json) => $checkedCreate(
               $checkedConvert('extraCols', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
           integerResult: $checkedConvert('integerResult', (v) => v as bool? ?? false),
           useAP20: $checkedConvert('useAP20', (v) => v as bool? ?? true),
-          dailyCostHalf: $checkedConvert('dailyCostHalf', (v) => v as bool? ?? false),
+          apHalfDailyQuest: $checkedConvert('apHalfDailyQuest', (v) => v as bool? ?? false),
+          apHalfOrdealCall: $checkedConvert('apHalfOrdealCall', (v) => v as bool? ?? false),
           bondBonusPercent: $checkedConvert('bondBonusPercent', (v) => (v as num?)?.toInt() ?? 0),
           bondBonusCount: $checkedConvert('bondBonusCount', (v) => (v as num?)?.toInt() ?? 0),
           planItemCounts: $checkedConvert(
@@ -55,7 +56,8 @@ Map<String, dynamic> _$FreeLPParamsToJson(FreeLPParams instance) => <String, dyn
       'extraCols': instance.extraCols,
       'integerResult': instance.integerResult,
       'useAP20': instance.useAP20,
-      'dailyCostHalf': instance.dailyCostHalf,
+      'apHalfDailyQuest': instance.apHalfDailyQuest,
+      'apHalfOrdealCall': instance.apHalfOrdealCall,
       'bondBonusPercent': instance.bondBonusPercent,
       'bondBonusCount': instance.bondBonusCount,
     };

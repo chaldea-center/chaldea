@@ -90,13 +90,25 @@ class _FreeCalcFilterDialogState extends State<FreeCalcFilterDialog> {
         ),
         SwitchListTile.adaptive(
           dense: true,
-          value: params.dailyCostHalf,
+          value: params.apHalfDailyQuest,
           title: Text(S.current.event_ap_cost_half),
           subtitle: Text(Transl.warNames('曜日クエスト').l),
           controlAffinity: ListTileControlAffinity.trailing,
           onChanged: (v) {
             setState(() {
-              params.dailyCostHalf = v;
+              params.apHalfDailyQuest = v;
+            });
+          },
+        ),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: params.apHalfOrdealCall,
+          title: Text(S.current.event_ap_cost_half),
+          subtitle: Text(Transl.warNames('Ordeal Call').l),
+          controlAffinity: ListTileControlAffinity.trailing,
+          onChanged: (v) {
+            setState(() {
+              params.apHalfOrdealCall = v;
             });
           },
         ),

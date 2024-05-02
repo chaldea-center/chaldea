@@ -46,7 +46,8 @@ class FreeLPParams {
 
   bool useAP20;
 
-  bool dailyCostHalf;
+  bool apHalfDailyQuest;
+  bool apHalfOrdealCall;
 
   /// bond efficiency, percent*5, count*50
   int bondBonusPercent;
@@ -77,7 +78,8 @@ class FreeLPParams {
     List<int>? extraCols,
     this.integerResult = false,
     this.useAP20 = true,
-    this.dailyCostHalf = false,
+    this.apHalfDailyQuest = false,
+    this.apHalfOrdealCall = false,
     this.bondBonusPercent = 0,
     this.bondBonusCount = 0,
     Map<int, int>? planItemCounts,
@@ -99,7 +101,8 @@ class FreeLPParams {
         extraCols = List.of(other.extraCols),
         integerResult = other.integerResult,
         useAP20 = other.useAP20,
-        dailyCostHalf = other.dailyCostHalf,
+        apHalfDailyQuest = other.apHalfDailyQuest,
+        apHalfOrdealCall = other.apHalfOrdealCall,
         bondBonusPercent = other.bondBonusPercent,
         bondBonusCount = other.bondBonusCount,
         planItemCounts = Map.of(other.planItemCounts),

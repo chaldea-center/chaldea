@@ -268,7 +268,8 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
               color: params.minCost > 0 ||
                       db.gameData.mainStories[params.progress] != null ||
                       params.blacklist.isNotEmpty ||
-                      params.dailyCostHalf
+                      params.apHalfDailyQuest ||
+                      params.apHalfOrdealCall
                   ? Theme.of(context).colorScheme.error
                   : Theme.of(context).colorScheme.primary,
               tooltip: S.current.settings_tab_name,
