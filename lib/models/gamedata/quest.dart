@@ -82,7 +82,7 @@ class Quest with RouteInfo {
   String chapterSubStr;
   String? giftIcon;
   List<Gift> gifts;
-  List<QuestPhasePresent> phasePresents;
+  List<QuestPhasePresent> presents;
   List<QuestRelease> releaseConditions;
   List<QuestReleaseOverwrite> releaseOverwrites;
   List<int> phases;
@@ -114,7 +114,7 @@ class Quest with RouteInfo {
     this.chapterSubStr = "",
     String? giftIcon,
     this.gifts = const [],
-    this.phasePresents = const [],
+    this.presents = const [],
     this.releaseConditions = const [],
     this.releaseOverwrites = const [],
     this.phases = const [],
@@ -130,7 +130,7 @@ class Quest with RouteInfo {
         giftIcon = _isSQGiftIcon(giftIcon, gifts) ? null : giftIcon,
         consume = consumeType.useApOrBp ? consume : 0;
 
-  List<Gift> get giftsWithPhasePresents => [...gifts, ...phasePresents.expand((e) => e.gifts)];
+  List<Gift> get giftsWithPhasePresents => [...gifts, ...presents.expand((e) => e.gifts)];
 
   String get spotName {
     _spotName ??= db.gameData.spots[spotId]?.name;
@@ -403,7 +403,7 @@ class QuestPhase extends Quest {
     super.chapterSubId,
     super.chapterSubStr,
     super.gifts,
-    super.phasePresents,
+    super.presents,
     super.giftIcon,
     super.releaseConditions,
     super.releaseOverwrites,
@@ -1017,7 +1017,7 @@ class QuestPhasePresent {
   CondType condType;
   int condId;
   int condNum;
-  // Map<String, dynamic> script;
+  // Map<String, dynamic> originalScript;
 
   QuestPhasePresent({
     this.phase = 0,
@@ -1026,7 +1026,7 @@ class QuestPhasePresent {
     this.condType = CondType.none,
     this.condId = 0,
     this.condNum = 0,
-    // this.script = const {},
+    // this.originalScript = const {},
   });
 
   factory QuestPhasePresent.fromJson(Map<String, dynamic> json) => _$QuestPhasePresentFromJson(json);

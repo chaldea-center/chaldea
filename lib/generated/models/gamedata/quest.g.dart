@@ -91,7 +91,7 @@ Quest _$QuestFromJson(Map json) => Quest(
       gifts:
           (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
               const [],
-      phasePresents: (json['phasePresents'] as List<dynamic>?)
+      presents: (json['presents'] as List<dynamic>?)
               ?.map((e) => QuestPhasePresent.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
@@ -134,7 +134,7 @@ Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
       'chapterSubStr': instance.chapterSubStr,
       'giftIcon': instance.giftIcon,
       'gifts': instance.gifts.map((e) => e.toJson()).toList(),
-      'phasePresents': instance.phasePresents.map((e) => e.toJson()).toList(),
+      'presents': instance.presents.map((e) => e.toJson()).toList(),
       'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
       'releaseOverwrites': instance.releaseOverwrites.map((e) => e.toJson()).toList(),
       'phases': instance.phases,
@@ -173,7 +173,7 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
       gifts:
           (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
               const [],
-      phasePresents: (json['phasePresents'] as List<dynamic>?)
+      presents: (json['presents'] as List<dynamic>?)
               ?.map((e) => QuestPhasePresent.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
@@ -261,7 +261,7 @@ Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic
       'chapterSubStr': instance.chapterSubStr,
       'giftIcon': instance.giftIcon,
       'gifts': instance.gifts.map((e) => e.toJson()).toList(),
-      'phasePresents': instance.phasePresents.map((e) => e.toJson()).toList(),
+      'presents': instance.presents.map((e) => e.toJson()).toList(),
       'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
       'releaseOverwrites': instance.releaseOverwrites.map((e) => e.toJson()).toList(),
       'phases': instance.phases,

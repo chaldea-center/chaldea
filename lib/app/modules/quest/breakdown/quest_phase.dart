@@ -996,7 +996,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   }
 
   Widget? getPhasePresent(int phase) {
-    final present = quest.phasePresents.firstWhereOrNull((e) => e.phase == phase);
+    final present = quest.presents.firstWhereOrNull((e) => e.phase == phase);
     if (present == null) return null;
     if (present.giftIcon == null && present.gifts.isEmpty) return null;
     return Padding(
