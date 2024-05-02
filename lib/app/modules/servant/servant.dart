@@ -144,12 +144,15 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
               ),
               if (ascension != null)
                 Positioned.fill(
-                  child: CachedImage(
-                    imageUrl: ascension,
-                    placeholder: (context, url) => const SizedBox(),
-                    cachedOption: const CachedImageOption(
-                      fit: BoxFit.fitWidth,
-                      alignment: Alignment(0.0, -0.8),
+                  child: Opacity(
+                    opacity: 0.3,
+                    child: CachedImage(
+                      imageUrl: ascension,
+                      placeholder: (context, url) => const SizedBox(),
+                      cachedOption: const CachedImageOption(
+                        fit: BoxFit.fitWidth,
+                        alignment: Alignment(0.0, -0.8),
+                      ),
                     ),
                   ),
                 ),
@@ -158,7 +161,8 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 9, sigmaY: 9),
                     child: Container(
-                      color: Colors.grey[800]?.withOpacity(Theme.of(context).isDarkMode ? 0.75 : 0.65),
+                      color:
+                          (Theme.of(context).isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200).withOpacity(0.4),
                       child: const SizedBox.expand(),
                     ),
                   ),
@@ -200,7 +204,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
             'No.${svt.collectionNo > 0 ? svt.collectionNo : svt.id}'
             ' $kStarChar2${svt.rarity}'
             '  ${Transl.svtClassId(svt.classId).l} ${Transl.svtSubAttribute(svt.attribute).l}',
-            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+            style: TextStyle(color: Colors.white.withOpacity(0.9)),
           ),
           if (db.gameData.constData.svtExp.containsKey(svt.growthCurve))
             TextButton(
@@ -229,6 +233,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
                 'ATK ${svt.atkMax}  HP ${svt.hpMax}',
                 // style: Theme.of(context).textTheme.bodySmall,
                 textScaler: const TextScaler.linear(0.9),
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
               ),
             ),
           const SizedBox(height: 4),
@@ -317,17 +322,15 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
   }
 
   PreferredSizeWidget get tabBar {
-    return FixedHeight.tabBar(Align(
-      alignment: AlignmentDirectional.centerStart,
-      child: TabBar(
-        // labelColor: Theme.of(context).colorScheme.secondary,
-        indicatorSize: TabBarIndicatorSize.tab,
-        labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-        // unselectedLabelColor: Colors.grey,
-        isScrollable: true,
-        tabs: builders.map((e) => Tab(text: e.tabBuilder())).toList(),
-        indicatorColor: Theme.of(context).isDarkMode ? null : Colors.white.withAlpha(210),
-      ),
+    return FixedHeight.tabBar(TabBar(
+      tabAlignment: TabAlignment.center,
+      // labelColor: Theme.of(context).colorScheme.secondary,
+      indicatorSize: TabBarIndicatorSize.tab,
+      labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+      // unselectedLabelColor: Colors.grey,
+      isScrollable: true,
+      tabs: builders.map((e) => Tab(text: e.tabBuilder())).toList(),
+      indicatorColor: Theme.of(context).isDarkMode ? null : Colors.white.withAlpha(210),
     ));
   }
 

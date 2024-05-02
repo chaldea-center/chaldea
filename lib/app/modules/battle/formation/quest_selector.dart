@@ -129,7 +129,7 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
             maxLines: 2,
             style: const TextStyle(fontSize: 12).merge(TextStyle(
               color: ongoing
-                  ? Theme.of(context).colorScheme.primaryContainer
+                  ? Theme.of(context).colorScheme.primary
                   : outdated
                       ? Theme.of(context).textTheme.bodySmall?.color
                       : null,

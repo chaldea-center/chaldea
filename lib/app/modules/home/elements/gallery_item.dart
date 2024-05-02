@@ -81,7 +81,7 @@ class GalleryItem {
     var _iconColor = color ??
         (Theme.of(context).useMaterial3
             ? (Utility.isDarkMode(context)
-                ? Theme.of(context).colorScheme.primaryContainer
+                ? Theme.of(context).colorScheme.primary
                 : Theme.of(context).colorScheme.primary)
             : (Utility.isDarkMode(context)
                 ? Theme.of(context).colorScheme.secondaryContainer

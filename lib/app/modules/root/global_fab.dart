@@ -161,7 +161,6 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
         ListTile(
           leading: const Icon(Icons.dark_mode),
           title: Text(S.current.toggle_dark_mode),
-          horizontalTitleGap: 0,
           onTap: () {
             Navigator.pop(context);
             db.settings.themeMode = db.settings.isResolvedDarkMode ? ThemeMode.light : ThemeMode.dark;
@@ -171,7 +170,6 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
         ListTile(
           leading: const Icon(Icons.language),
           title: Text(S.current.settings_language),
-          horizontalTitleGap: 0,
           trailing: DropdownButton<Language>(
             underline: const Divider(thickness: 0, color: Colors.transparent),
             value: Language.getLanguage(db.settings.language),
@@ -185,7 +183,6 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           ),
         ),
         ListTile(
-          horizontalTitleGap: 0,
           leading: const Icon(Icons.color_lens_outlined),
           title: const Text('Palette'),
           onTap: () {
@@ -194,10 +191,17 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           },
         ),
         ListTile(
+          leading: const Icon(Icons.color_lens_outlined),
+          title: const Text('Switch M2/M3'),
+          onTap: () {
+            db.settings.useMaterial3 = !db.settings.useMaterial3;
+            db.notifyAppUpdate();
+          },
+        ),
+        ListTile(
           leading: const Icon(Icons.screenshot_monitor),
           title: Text(S.current.screenshots),
           subtitle: enableScreenshot ? null : const Text('Only available in canvaskit renderer'),
-          horizontalTitleGap: 0,
           enabled: enableScreenshot,
           onTap: () {
             Navigator.pop(context);
@@ -208,7 +212,6 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           },
         ),
         ListTile(
-          horizontalTitleGap: 0,
           leading: const Icon(Icons.timer),
           title: const Text('Hide 60s'),
           onTap: () {

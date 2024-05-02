@@ -87,10 +87,13 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
             ),
             if (icon != null)
               Positioned.fill(
-                child: CachedImage(
-                  imageUrl: icon,
-                  placeholder: (context, url) => const SizedBox(),
-                  cachedOption: const CachedImageOption(fit: BoxFit.fitWidth),
+                child: Opacity(
+                  opacity: 0.3,
+                  child: CachedImage(
+                    imageUrl: icon,
+                    placeholder: (context, url) => const SizedBox(),
+                    cachedOption: const CachedImageOption(fit: BoxFit.fitWidth),
+                  ),
                 ),
               ),
             if (icon != null)
@@ -98,7 +101,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
                   child: Container(
-                    color: Colors.grey[800]?.withOpacity(Theme.of(context).isDarkMode ? 0.75 : 0.65),
+                    color: Colors.grey.shade400.withOpacity(Theme.of(context).isDarkMode ? 0.1 : 0.1),
                     child: const SizedBox.expand(),
                   ),
                 ),
@@ -140,7 +143,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         children: [
           Text(
             buffer.toString(),
-            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+            style: TextStyle(color: Colors.white.withOpacity(0.9)),
           ),
           const SizedBox(height: 4),
         ],
@@ -159,17 +162,15 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
   }
 
   PreferredSizeWidget get tabBar {
-    return FixedHeight.tabBar(Align(
-      alignment: AlignmentDirectional.centerStart,
-      child: TabBar(
-        controller: _tabController,
-        // labelColor: Theme.of(context).colorScheme.secondary,
-        indicatorSize: TabBarIndicatorSize.tab,
-        labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-        // unselectedLabelColor: Colors.grey,
-        tabs: [const Tab(text: 'Buff'), Tab(text: S.current.card_info), if (showAiTab) const Tab(text: 'AI')],
-        indicatorColor: Theme.of(context).isDarkMode ? null : Colors.white.withAlpha(210),
-      ),
+    return FixedHeight.tabBar(TabBar(
+      // tabAlignment: TabAlignment.center,
+      controller: _tabController,
+      // labelColor: Theme.of(context).colorScheme.secondary,
+      indicatorSize: TabBarIndicatorSize.tab,
+      labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+      // unselectedLabelColor: Colors.grey,
+      tabs: [const Tab(text: 'Buff'), Tab(text: S.current.card_info), if (showAiTab) const Tab(text: 'AI')],
+      indicatorColor: Theme.of(context).isDarkMode ? null : Colors.white.withAlpha(210),
     ));
   }
 

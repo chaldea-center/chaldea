@@ -36,7 +36,7 @@ class SliderWithPrefix extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color? lableColor = enableInput ? Theme.of(context).colorScheme.primaryContainer : null;
+    Color? lableColor = enableInput ? Theme.of(context).colorScheme.primary : null;
     Widget header;
     final valueText = valueFormatter?.call(value) ?? value.toString();
     if (titled) {
