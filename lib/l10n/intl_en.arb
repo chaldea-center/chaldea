@@ -253,6 +253,7 @@
   "drop_calc_solve": "Solve",
   "drop_from_all_hashes_hint": "The quest enemies only show a certain version, but the drop data is collected from all versions.",
   "drop_rate": "Drop rate",
+  "drops_warning_has_rare_enemy": "There are rare or additional enemies in this quest. Please switch versions to get the correct drop information.",
   "duplicated_servant": "Duplicated Servant",
   "duplicated_servant_duplicated": "Duplicated",
   "duplicated_servant_primary": "Primary",

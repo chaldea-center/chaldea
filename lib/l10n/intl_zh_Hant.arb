@@ -253,6 +253,7 @@
   "drop_calc_solve": "求解",
   "drop_from_all_hashes_hint": "雖敵方配方配置僅顯示其中一個版本，但掉落數據統計自全部版本。",
   "drop_rate": "掉率",
+  "drops_warning_has_rare_enemy": null,
   "duplicated_servant": "2號機",
   "duplicated_servant_duplicated": "2號機",
   "duplicated_servant_primary": "初號機",

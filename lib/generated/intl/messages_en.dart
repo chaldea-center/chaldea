@@ -364,6 +364,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "drop_from_all_hashes_hint": MessageLookupByLibrary.simpleMessage(
             "The quest enemies only show a certain version, but the drop data is collected from all versions."),
         "drop_rate": MessageLookupByLibrary.simpleMessage("Drop rate"),
+        "drops_warning_has_rare_enemy": MessageLookupByLibrary.simpleMessage(
+            "There are rare or additional enemies in this quest. Please switch versions to get the correct drop information."),
         "duplicated_servant": MessageLookupByLibrary.simpleMessage("Duplicated Servant"),
         "duplicated_servant_duplicated": MessageLookupByLibrary.simpleMessage("Duplicated"),
         "duplicated_servant_primary": MessageLookupByLibrary.simpleMessage("Primary"),

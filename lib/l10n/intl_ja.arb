@@ -253,6 +253,7 @@
   "drop_calc_solve": "解答",
   "drop_from_all_hashes_hint": null,
   "drop_rate": "ドロップ率",
+  "drops_warning_has_rare_enemy": null,
   "duplicated_servant": null,
   "duplicated_servant_duplicated": null,
   "duplicated_servant_primary": null,

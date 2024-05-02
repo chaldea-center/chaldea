@@ -808,6 +808,15 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         children: [
           const SizedBox(height: 3),
           header,
+          if (_enemyHash == null && curPhase.allEnemies.any((e) => e.isRareOrAddition))
+            Text(
+              S.current.drops_warning_has_rare_enemy,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.amber.shade900,
+              ),
+            ),
           const SizedBox(height: 2),
           _getRayshiftDrops(curPhase.drops, hasMultiEventItem && _sumEventItem),
           const SizedBox(height: 3),
@@ -987,7 +996,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   }
 
   Widget? getPhasePresent(int phase) {
-    final present = (questPhase ?? quest).phasePresents.firstWhereOrNull((e) => e.phase == phase);
+    final present = quest.phasePresents.firstWhereOrNull((e) => e.phase == phase);
     if (present == null) return null;
     if (present.giftIcon == null && present.gifts.isEmpty) return null;
     return Padding(

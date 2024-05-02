@@ -513,7 +513,7 @@ class BaseGift {
   factory BaseGift.fromJson(Map<String, dynamic> json) => _$BaseGiftFromJson(json);
 
   bool get isStatItem {
-    if ([
+    if (const [
       GiftType.equip,
       GiftType.eventSvtJoin,
       GiftType.eventPointBuff,

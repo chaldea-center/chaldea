@@ -2846,6 +2846,17 @@ class S {
     );
   }
 
+  /// `There are rare or additional enemies in this quest. Please switch versions to get the correct drop information.`
+  String get drops_warning_has_rare_enemy {
+    return Intl.message(
+      'There are rare or additional enemies in this quest. Please switch versions to get the correct drop information.',
+      name: 'drops_warning_has_rare_enemy',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Duplicated Servant`
   String get duplicated_servant {
     return Intl.message(

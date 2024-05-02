@@ -346,6 +346,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "drop_calc_solve": MessageLookupByLibrary.simpleMessage("求解"),
         "drop_from_all_hashes_hint": MessageLookupByLibrary.simpleMessage("雖敵方配方配置僅顯示其中一個版本，但掉落數據統計自全部版本。"),
         "drop_rate": MessageLookupByLibrary.simpleMessage("掉率"),
+        "drops_warning_has_rare_enemy": MessageLookupByLibrary.simpleMessage("此关卡存在稀有或追加敌人，请切换版本以获取正确的掉落信息"),
         "duplicated_servant": MessageLookupByLibrary.simpleMessage("2號機"),
         "duplicated_servant_duplicated": MessageLookupByLibrary.simpleMessage("2號機"),
         "duplicated_servant_primary": MessageLookupByLibrary.simpleMessage("初號機"),
