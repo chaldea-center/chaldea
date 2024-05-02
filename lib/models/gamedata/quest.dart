@@ -130,6 +130,8 @@ class Quest with RouteInfo {
         giftIcon = _isSQGiftIcon(giftIcon, gifts) ? null : giftIcon,
         consume = consumeType.useApOrBp ? consume : 0;
 
+  int? get recommendLvInt => int.tryParse(recommendLv);
+
   List<Gift> get giftsWithPhasePresents => [...gifts, ...presents.expand((e) => e.gifts)];
 
   String get spotName {

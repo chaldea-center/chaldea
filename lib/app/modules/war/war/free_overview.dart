@@ -4,19 +4,32 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:data_table_2/data_table_2.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../common/builders.dart';
+
+enum _QuestLv {
+  all,
+  lv90,
+  lv90plus,
+  ;
+
+  String get shownName => switch (this) {
+        all => S.current.general_all,
+        lv90 => "Lv.90",
+        lv90plus => "Lv.90+",
+      };
+}
 
 class FreeQuestOverview extends StatefulWidget {
   final List<Quest> quests;
   final bool isMainStory;
-  final bool show90plusButton;
-  const FreeQuestOverview({super.key, required this.quests, required this.isMainStory, required this.show90plusButton});
+
+  const FreeQuestOverview({super.key, required this.quests, required this.isMainStory});
 
   @override
   State<FreeQuestOverview> createState() => _FreeQuestOverviewState();
@@ -28,11 +41,17 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
   Map<int, List<Quest>> spots = {};
   bool _loading = false;
   bool _fixFirstCol = false;
-  late bool _only90plus = widget.show90plusButton;
+  _QuestLv minLv = _QuestLv.all;
+  List<_QuestLv> validLvs = [_QuestLv.all];
 
   @override
   void initState() {
     super.initState();
+    if (widget.quests.where((q) => (q.recommendLvInt ?? 999) > 90).length > 3) {
+      minLv = _QuestLv.lv90plus;
+    } else if (widget.quests.where((q) => (q.recommendLvInt ?? 999) >= 90).length > 5) {
+      minLv = _QuestLv.lv90;
+    }
     loadData();
   }
 
@@ -41,16 +60,27 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     phases.clear();
     spots.clear();
     quests = widget.quests.toList();
-    if (_only90plus) {
-      quests.retainWhere((quest) => quest.is90PlusFree);
-      if (quests.any((quest) => quest.recommendLv != '90')) {
-        quests.retainWhere((quest) => quest.recommendLv != '90');
-      }
-    }
-    if (mounted) setState(() {});
+
     for (final quest in quests) {
       spots.putIfAbsent(quest.spotId, () => []).add(quest);
     }
+
+    bool has90 = quests.any((q) => q.recommendLv == '90');
+    bool has90plus = quests.any((q) => q.is90PlusFree);
+    validLvs = [
+      _QuestLv.all,
+      if (has90) _QuestLv.lv90,
+      if (has90plus) _QuestLv.lv90plus,
+    ];
+    if (!validLvs.contains(minLv)) minLv = validLvs.first;
+
+    if (minLv == _QuestLv.lv90) {
+      quests.removeWhere((quest) => (quest.recommendLvInt ?? 999) < 90);
+    } else if (minLv == _QuestLv.lv90plus) {
+      quests.removeWhere((quest) => (quest.recommendLvInt ?? 999) <= 90);
+    }
+
+    if (mounted) setState(() {});
     await Future.wait(quests.reversed.map((quest) async {
       if (quest.phases.isEmpty) return null;
       final phase = await AtlasApi.questPhase(quest.id, quest.phases.last);
@@ -67,23 +97,41 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     int maxCount = Maths.max(
         data.map((info) => Maths.max([info.domusItems.length, info.eventItems.length, info.normalItems.length])), 0);
     maxCount = maxCount.clamp(3, 8);
+    final hasEventItem = data.every((e) => e.phase == null || e.eventItems.isNotEmpty);
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.free_quest),
         actions: [
-          if (widget.show90plusButton)
-            IconButton(
-              onPressed: () {
+          if (validLvs.length > 1)
+            SharedBuilder.appBarDropdown<_QuestLv>(
+              context: context,
+              items: [
+                for (final lv in validLvs)
+                  DropdownMenuItem(
+                    value: lv,
+                    child: Text(lv.shownName),
+                  ),
+              ],
+              value: minLv,
+              onChanged: (v) {
                 setState(() {
-                  _only90plus = !_only90plus;
+                  minLv = v ?? minLv;
                 });
                 loadData();
-                EasyLoading.showToast('Only 90+: ${_only90plus ? 'On' : 'Off'}');
               },
-              icon: const Icon(Icons.filter_9_plus),
-              isSelected: _only90plus,
-              tooltip: 'Only show 90+',
             ),
+          // IconButton(
+          //   onPressed: () {
+          //     setState(() {
+          //       _only90plus = !_only90plus;
+          //     });
+          //     loadData();
+          //     EasyLoading.showToast('Only 90+: ${_only90plus ? 'On' : 'Off'}');
+          //   },
+          //   icon: const Icon(Icons.filter_9_plus),
+          //   isSelected: _only90plus,
+          //   tooltip: 'Only show 90+',
+          // ),
           IconButton(
             onPressed: () {
               setState(() {
@@ -131,11 +179,11 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                       DataColumn2(
                           label: Text(S.current.quest_runs("").trim(), textScaler: const TextScaler.linear(0.9)),
                           fixedWidth: 48),
-                      DataColumn2(label: Text(S.current.item), size: ColumnSize.L),
+                      if (hasEventItem) DataColumn2(label: Text(S.current.item), size: ColumnSize.L),
                       DataColumn2(label: Text(S.current.item), size: ColumnSize.L),
                     ],
                   ],
-                  rows: data.map((info) => buildRow(info, maxCount)).toList(),
+                  rows: data.map((info) => buildRow(info, maxCount, hasEventItem)).toList(),
                   fixedLeftColumns: _fixFirstCol ? 1 : 0,
                   fixedTopRows: 1,
                   minWidth: (maxCount * 2 * iconWidth) * 1.1 + 180 + 64 + 48 + 48 + 48,
@@ -154,7 +202,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     );
   }
 
-  DataRow buildRow(_DropInfo info, int countPerLine) {
+  DataRow buildRow(_DropInfo info, int countPerLine, bool hasEventItem) {
     List<DataCell> cells = [];
     final quest = info.quest, phase = info.phase;
     final effQuest = phase ?? quest;
@@ -234,7 +282,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
       lines = (max(info.domusItems.length, info.normalItems.length) / countPerLine).ceil();
     } else {
       _addRuns(info.rayshiftRuns);
-      _addItems(info.eventItems);
+      if (hasEventItem) _addItems(info.eventItems);
       _addItems(info.normalItems);
       lines = (max(info.eventItems.length, info.normalItems.length) / countPerLine).ceil();
     }

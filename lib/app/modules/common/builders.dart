@@ -50,6 +50,34 @@ class SharedBuilder {
     );
   }
 
+  static DropdownButton<T> appBarDropdown<T>({
+    required BuildContext context,
+    required List<DropdownMenuItem<T>> items,
+    required T? value,
+    required ValueChanged<T?> onChanged,
+  }) {
+    return DropdownButton<T>(
+      value: value,
+      items: items,
+      icon: Icon(
+        Icons.arrow_drop_down,
+        color: SharedBuilder.appBarForeground(context),
+      ),
+      selectedItemBuilder: (context) => [
+        for (final item in items)
+          DropdownMenuItem(
+            value: item.value,
+            child: DefaultTextStyle.merge(
+              child: item.child,
+              style: TextStyle(color: SharedBuilder.appBarForeground(context)),
+            ),
+          )
+      ],
+      onChanged: onChanged,
+      underline: const SizedBox(),
+    );
+  }
+
   static Color? appBarForeground(BuildContext context) {
     final theme = Theme.of(context);
     return theme.appBarTheme.foregroundColor ??

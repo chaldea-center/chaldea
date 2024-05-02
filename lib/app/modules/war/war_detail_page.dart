@@ -528,7 +528,6 @@ Widget addQuestCategoryTile({
           router.pushPage(FreeQuestOverview(
             quests: fqs,
             isMainStory: war?.isMainStory ?? false,
-            show90plusButton: fqs.where((q) => q.is90PlusFree).length > 3,
           ));
         },
       ));
