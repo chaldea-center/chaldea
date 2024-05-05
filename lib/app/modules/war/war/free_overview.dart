@@ -43,6 +43,8 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
   bool _fixFirstCol = false;
   _QuestLv minLv = _QuestLv.all;
   List<_QuestLv> validLvs = [_QuestLv.all];
+  bool hasDifferentEnemyCount = false;
+  bool useMaxEnemyCountHash = false;
 
   @override
   void initState() {
@@ -57,6 +59,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
 
   Future<void> loadData() async {
     _loading = true;
+    final prevPhases = Map.of(phases);
     phases.clear();
     spots.clear();
     quests = widget.quests.toList();
@@ -83,10 +86,17 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     if (mounted) setState(() {});
     await Future.wait(quests.reversed.map((quest) async {
       if (quest.phases.isEmpty) return null;
-      final phase = await AtlasApi.questPhase(quest.id, quest.phases.last);
+      final prevPhase = prevPhases[quest.id];
+      String? enemyHash;
+      if (useMaxEnemyCountHash && prevPhase != null && prevPhase.enemyHashes.length > 1) {
+        enemyHash = prevPhase.enemyHashes.last;
+      }
+      final phase = await AtlasApi.questPhase(quest.id, quest.phases.last, hash: enemyHash);
       if (phase != null) phases[quest.id] = phase;
       if (mounted) setState(() {});
     }).toList());
+    hasDifferentEnemyCount =
+        phases.values.any((phase) => phase.enemyHashes.map((e) => int.parse(e.substring(2, 4))).toSet().length > 1);
     _loading = false;
     if (mounted) setState(() {});
   }
@@ -102,6 +112,25 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
       appBar: AppBar(
         title: Text(S.current.free_quest),
         actions: [
+          if (hasDifferentEnemyCount)
+            IconButton(
+              onPressed: _loading
+                  ? null
+                  : () {
+                      setState(() {
+                        useMaxEnemyCountHash = !useMaxEnemyCountHash;
+                      });
+                      loadData();
+                    },
+              icon: Stack(
+                alignment: Alignment.center,
+                children: [
+                  db.getIconImage(AssetURL.i.buffIcon(1014), width: 24, height: 24),
+                  Icon(useMaxEnemyCountHash ? Icons.check : Icons.clear,
+                      color: Theme.of(context).colorScheme.error, size: 24),
+                ],
+              ),
+            ),
           if (validLvs.length > 1)
             SharedBuilder.appBarDropdown<_QuestLv>(
               context: context,
