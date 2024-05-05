@@ -194,7 +194,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                       fixedWidth: 150,
                     ),
                     const DataColumn2(label: Text('Lv/AP', textScaler: TextScaler.linear(0.9)), fixedWidth: 56),
-                    DataColumn2(label: Text(S.current.svt_class), fixedWidth: 64),
+                    DataColumn2(label: Text(S.current.svt_class), fixedWidth: 90),
                     if (widget.isMainStory) ...[
                       DataColumn2(
                           label: Text(S.current.quest_runs("").trim(), textScaler: const TextScaler.linear(0.9)),
@@ -215,7 +215,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                   rows: data.map((info) => buildRow(info, maxCount, hasEventItem)).toList(),
                   fixedLeftColumns: _fixFirstCol ? 1 : 0,
                   fixedTopRows: 1,
-                  minWidth: (maxCount * 2 * iconWidth) * 1.1 + 180 + 64 + 48 + 48 + 48,
+                  minWidth: (maxCount * 2 * iconWidth) * 1.1 + 180 + 90 + 48 + 48 + 48,
                   columnSpacing: 8,
                   headingRowHeight: 36,
                   horizontalMargin: 8,
@@ -270,7 +270,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
 
     Widget wrap(Iterable<Widget> children) {
       if (children.isEmpty) return const SizedBox.shrink();
-      return Wrap(children: children.toList());
+      return Wrap(crossAxisAlignment: WrapCrossAlignment.center, children: children.toList());
     }
 
     DataCell clsIcons;
@@ -280,8 +280,10 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
         placeholder: true,
       );
     } else {
-      clsIcons =
-          DataCell(wrap(phase.className.take(2).map((e) => db.getIconImage(e.icon(5), width: 26, aspectRatio: 1))));
+      clsIcons = DataCell(wrap([
+        ...phase.className.take(2).map((e) => db.getIconImage(e.icon(5), width: 26, aspectRatio: 1)),
+        Text(phase.stages.map((e) => e.enemies.length).join('-'), style: Theme.of(context).textTheme.bodySmall),
+      ]));
     }
     cells.add(clsIcons);
 
