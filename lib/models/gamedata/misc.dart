@@ -27,6 +27,9 @@ class MstMyRoomAdd {
     required this.endedAt,
   });
 
+  MyRoomAddOverwriteType get type2 =>
+      MyRoomAddOverwriteType.values.firstWhere((e) => e.value == type, orElse: () => MyRoomAddOverwriteType.unknown);
+
   factory MstMyRoomAdd.fromJson(Map<String, dynamic> json) => _$MstMyRoomAddFromJson(json);
 
   Map<String, dynamic> toJson() => _$MstMyRoomAddToJson(this);

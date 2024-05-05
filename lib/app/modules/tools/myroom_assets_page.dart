@@ -9,6 +9,21 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../../api/chaldea.dart';
 import '../common/filter_group.dart';
 
+enum _MyRoomChangeType {
+  bgImage(
+      [MyRoomAddOverwriteType.bgImage, MyRoomAddOverwriteType.servantOverlayObject, MyRoomAddOverwriteType.backObject]),
+  bgm([MyRoomAddOverwriteType.bgm]),
+  special([
+    MyRoomAddOverwriteType.servantOverlayObject,
+    MyRoomAddOverwriteType.backObject,
+    MyRoomAddOverwriteType.bgImageMultiple
+  ]),
+  ;
+
+  const _MyRoomChangeType(this.types);
+  final List<MyRoomAddOverwriteType> types;
+}
+
 class MyRoomAssetsPage extends StatefulWidget {
   const MyRoomAssetsPage({super.key});
 
@@ -19,13 +34,19 @@ class MyRoomAssetsPage extends StatefulWidget {
 class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
     with RegionBasedState<List<MstMyRoomAdd>, MyRoomAssetsPage>, SingleTickerProviderStateMixin {
   bool useFullscreen = true;
-  late final tabController = TabController(length: 2, vsync: this);
+  late final tabController = TabController(length: _MyRoomChangeType.values.length, vsync: this);
 
   @override
   void initState() {
     super.initState();
     region = Region.jp;
     doFetchData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    tabController.dispose();
   }
 
   @override
@@ -75,8 +96,10 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
             ];
           })
         ],
-        bottom: FixedHeight.tabBar(
-            TabBar(controller: tabController, tabs: [Tab(text: S.current.background), Tab(text: S.current.bgm)])),
+        bottom: FixedHeight.tabBar(TabBar(
+          controller: tabController,
+          tabs: [Tab(text: S.current.background), Tab(text: S.current.bgm), Tab(text: S.current.general_special)],
+        )),
       ),
       body: buildBody(context),
     );
@@ -84,158 +107,191 @@ class _MyRoomAssetsPageState extends State<MyRoomAssetsPage>
 
   @override
   Widget buildContent(BuildContext context, List<MstMyRoomAdd> data) {
-    final asset = AssetURL(region ?? Region.jp);
     List<Widget> views = [];
-    for (final type in [MyRoomAddOverwriteType.bgImage, MyRoomAddOverwriteType.bgm]) {
+    for (final changeType in _MyRoomChangeType.values) {
       Map<String, List<MstMyRoomAdd>> grouped = {};
       for (final room in data) {
-        if (room.type == type.value && room.overwriteId > 0) {
+        if (changeType.types.any((e) => e.value == room.type) && room.overwriteId > 0) {
           grouped.putIfAbsent('${room.id}.${room.startedAt}.${room.endedAt}', () => []).add(room);
         }
       }
-      grouped = sortDict(grouped, compare: (a, b) => b.value.first.startedAt.compareTo(a.value.first.startedAt));
       final groupList = grouped.values.toList();
+      groupList.sort2((e) => -e.first.startedAt);
       Widget view = ListView.builder(
         itemCount: groupList.length,
         itemBuilder: (context, index) {
           final rooms = groupList[index];
-          bool checkTime(int? a, int b) {
-            if (a == null) return false;
-            return (a - b).abs() <= 3600 * 5;
-          }
-
           return SimpleAccordion(
-            key: Key('room_group_${type.value}_${_t}_$index'),
+            key: Key('room_group_${changeType.name}_${_t}_$index'),
             expanded: expanded,
-            headerBuilder: (context, _) {
-              final room = rooms.first;
-              final wars = <NiceWar>{};
-              final events = <Event>{};
-              final event = db.gameData.events[room.id];
-              if (room.id > 1000 && event != null) {
-                final start = event.startTimeOf(region), end = event.endTimeOf(region);
-                if (start != null &&
-                    end != null &&
-                    room.startedAt >= start - 3600 * 5 &&
-                    room.endedAt <= end + 3600 * 5) {
-                  events.add(event);
-                }
-              }
-              if (events.isEmpty) {
-                events.addAll(db.gameData.events.values.where((event) {
-                  return [EventType.eventQuest, EventType.warBoard, EventType.mcCampaign].contains(event.type) &&
-                      (checkTime(event.startTimeOf(region), room.startedAt) &&
-                          checkTime(event.endTimeOf(region), room.endedAt));
-                }));
-              }
-              for (final room in rooms) {
-                bool isMain = room.id < 1000;
-                if (room.condType == 1 || room.condType == 46) {
-                  final war = db.gameData.quests[room.condValue]?.war;
-                  final event = war?.eventReal;
-                  if (isMain && event == null && war != null) {
-                    wars.add(war);
-                  }
-                }
-              }
-
-              final subtitles = <String>{
-                ...events.take(2).map((e) => e.lShortName.l.setMaxLines(1)),
-                ...wars.map((e) => e.lName.l.setMaxLines(1))
-              };
-
-              return ListTile(
-                dense: true,
-                title: Text('${room.startedAt.sec2date().toStringShort()}~${room.endedAt.sec2date().toStringShort()}'),
-                subtitle: subtitles.isNotEmpty ? Text(subtitles.join('\n')) : null,
-                isThreeLine: subtitles.length > 1,
-              );
-            },
+            headerBuilder: (context, _) => buildHeader(context, rooms),
             contentBuilder: (context) {
-              List<Widget> children = [];
-              for (final room in rooms) {
-                if (room.type == MyRoomAddOverwriteType.bgImage.value && room.overwriteId > 0) {
-                  final url = asset.back(room.overwriteId, useFullscreen);
-                  children.add(ConstrainedBox(
-                    constraints: const BoxConstraints(maxHeight: 300),
-                    child: CachedImage(
-                      imageUrl: url,
-                      placeholder: (_, __) => AspectRatio(
-                        aspectRatio: url.endsWith('_1344_626.png') ? 1344 / 626 : 1024 / 626,
-                      ),
-                      showSaveOnLongPress: true,
-                      viewFullOnTap: true,
-                      cachedOption: CachedImageOption(
-                        errorWidget: (context, url, error) => Center(
-                          child: Text(url.breakWord),
-                        ),
-                      ),
-                    ),
-                  ));
-                } else if (room.type == MyRoomAddOverwriteType.bgm.value && room.overwriteId > 0) {
-                  final bgm = db.gameData.bgms[room.overwriteId];
-                  children.add(ListTile(
-                    dense: true,
-                    minLeadingWidth: 0,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(4, 0, 4, 0),
-                    leading: db.getIconImage(
-                      bgm?.logo,
-                      aspectRatio: 124 / 60,
-                      width: 56,
-                      placeholder: (context) => const SizedBox.shrink(),
-                    ),
-                    horizontalTitleGap: 8,
-                    title: Text(bgm?.tooltip ?? '${S.current.bgm} ${room.overwriteId}'),
-                    selected: true,
-                    onTap: () {
-                      router.push(url: Routes.bgmI(room.overwriteId));
-                    },
-                  ));
-                }
-              }
               return Column(
                 mainAxisSize: MainAxisSize.min,
-                children: divideList(children, const SizedBox(height: 4)),
+                children: divideList(
+                  [for (final room in rooms) buildOneRoom(context, room)],
+                  const SizedBox(height: 4),
+                ),
               );
             },
           );
         },
       );
-      if (type == MyRoomAddOverwriteType.bgImage) {
-        view = Column(
-          children: [
-            Expanded(child: view),
-            kDefaultDivider,
-            SafeArea(
-              child: ButtonBar(
-                alignment: MainAxisAlignment.center,
-                children: [
-                  FilterGroup<bool>(
-                    options: const [false, true],
-                    values: FilterRadioData.nonnull(useFullscreen),
-                    combined: true,
-                    optionBuilder: (value) => Text(value ? '1344×626' : '1024×626'),
-                    onFilterChanged: (v, _) {
-                      setState(() {
-                        useFullscreen = v.radioValue!;
-                      });
-                    },
-                  )
-                ],
-              ),
-            )
-          ],
-        );
-      }
+      view = wrapButtonBar(context, changeType, view);
       views.add(view);
     }
 
     return TabBarView(controller: tabController, children: views);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    tabController.dispose();
+  bool checkTime(int? a, int b) {
+    if (a == null) return false;
+    return (a - b).abs() <= 3600 * 5;
+  }
+
+  Widget buildHeader(BuildContext context, List<MstMyRoomAdd> rooms) {
+    final room = rooms.first;
+    final wars = <NiceWar>{};
+    final events = <Event>{};
+    final event = db.gameData.events[room.id];
+    if (room.id > 1000 && event != null) {
+      final start = event.startTimeOf(region), end = event.endTimeOf(region);
+      if (start != null && end != null && room.startedAt >= start - 3600 * 5 && room.endedAt <= end + 3600 * 5) {
+        events.add(event);
+      }
+    }
+    if (events.isEmpty) {
+      const eventTypes = [EventType.eventQuest, EventType.warBoard, EventType.mcCampaign];
+      final candidateEvents = db.gameData.events.values.where((event) => eventTypes.contains(event.type)).toList();
+      events.addAll(candidateEvents.where((event) =>
+          (checkTime(event.startTimeOf(region), room.startedAt) && checkTime(event.endTime2Of(region), room.endedAt))));
+      if (events.isEmpty) {
+        final inRangeEvents = candidateEvents
+            .where((event) =>
+                (event.startTimeOf(region) ?? 0) <= room.startedAt && room.endedAt <= (event.endTime2Of(region) ?? 0))
+            .toList();
+        if (inRangeEvents.length == 1) {
+          events.add(inRangeEvents.single);
+        } else {
+          final sameStartEvents = candidateEvents
+              .where((event) =>
+                  (event.startTimeOf(region) == room.startedAt && room.endedAt <= (event.endTimeOf(region) ?? 0)))
+              .toList();
+          if (sameStartEvents.isNotEmpty) {
+            events.add(sameStartEvents.first);
+          }
+        }
+      }
+    }
+    for (final room in rooms) {
+      bool isMain = room.id < 1000;
+      if (room.condType == 1 || room.condType == 46) {
+        final war = db.gameData.quests[room.condValue]?.war;
+        final event = war?.eventReal;
+        if (isMain && event == null && war != null) {
+          wars.add(war);
+        }
+      }
+    }
+
+    final subtitles = <String>{
+      ...events.take(2).map((e) => e.lShortName.l.setMaxLines(1)),
+      ...wars.map((e) => e.lName.l.setMaxLines(1))
+    };
+
+    return ListTile(
+      dense: true,
+      title: Text('${room.startedAt.sec2date().toStringShort()}~${room.endedAt.sec2date().toStringShort()}'),
+      subtitle: subtitles.isNotEmpty ? Text(subtitles.join('\n')) : null,
+      isThreeLine: subtitles.length > 1,
+    );
+  }
+
+  Widget _buildImage(String url, double maxHeight, double? aspectRatio) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: maxHeight),
+      child: CachedImage(
+        imageUrl: url,
+        placeholder: (_, __) => AspectRatio(aspectRatio: aspectRatio ?? 1344 / 626),
+        showSaveOnLongPress: true,
+        viewFullOnTap: true,
+        cachedOption: CachedImageOption(
+          errorWidget: (context, url, error) => Center(
+            child: Text(url.breakWord),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildOneRoom(BuildContext context, MstMyRoomAdd room) {
+    final asset = AssetURL(region ?? Region.jp);
+    switch (room.type2) {
+      case MyRoomAddOverwriteType.bgImage:
+        return _buildImage(asset.back(room.overwriteId, useFullscreen), 300, useFullscreen ? 1344 / 626 : 1024 / 626);
+      case MyRoomAddOverwriteType.bgm:
+        final bgm = db.gameData.bgms[room.overwriteId];
+        return ListTile(
+          dense: true,
+          minLeadingWidth: 0,
+          contentPadding: const EdgeInsetsDirectional.fromSTEB(4, 0, 4, 0),
+          leading: db.getIconImage(
+            bgm?.logo,
+            aspectRatio: 124 / 60,
+            width: 56,
+            placeholder: (context) => const SizedBox.shrink(),
+          ),
+          horizontalTitleGap: 8,
+          title: Text(bgm?.tooltip ?? '${S.current.bgm} ${room.overwriteId}'),
+          selected: true,
+          onTap: () {
+            router.push(url: Routes.bgmI(room.overwriteId));
+          },
+        );
+      case MyRoomAddOverwriteType.servantOverlayObject:
+        return _buildImage('${asset.extractDir}/MyRoom/FrontObject/${room.overwriteId}/${room.overwriteId}.png',
+            300 * (useFullscreen ? 1344 / 626 : 1024 / 626), 1024 / 1024);
+      case MyRoomAddOverwriteType.backObject:
+        return _buildImage('${asset.extractDir}/MyRoom/BackObject/${room.overwriteId}/ef_MyRoomObj_at.png',
+            300 * (useFullscreen ? 1344 / 626 : 1024 / 626), 1024 / 1024);
+      case MyRoomAddOverwriteType.bgImageMultiple:
+      case MyRoomAddOverwriteType.unknown:
+        return ListTile(
+          dense: true,
+          minLeadingWidth: 0,
+          contentPadding: const EdgeInsetsDirectional.fromSTEB(4, 0, 4, 0),
+          title: Text('${S.current.unknown}: id ${room.id} type ${room.type}, overwriteId ${room.overwriteId}'),
+        );
+    }
+  }
+
+  Widget wrapButtonBar(BuildContext context, _MyRoomChangeType changeType, Widget child) {
+    if (changeType == _MyRoomChangeType.bgImage) {
+      return Column(
+        children: [
+          Expanded(child: child),
+          kDefaultDivider,
+          SafeArea(
+            child: ButtonBar(
+              alignment: MainAxisAlignment.center,
+              children: [
+                FilterGroup<bool>(
+                  options: const [false, true],
+                  values: FilterRadioData.nonnull(useFullscreen),
+                  combined: true,
+                  optionBuilder: (value) => Text(value ? '1344×626' : '1024×626'),
+                  onFilterChanged: (v, _) {
+                    setState(() {
+                      useFullscreen = v.radioValue!;
+                    });
+                  },
+                )
+              ],
+            ),
+          )
+        ],
+      );
+    }
+    return child;
   }
 }

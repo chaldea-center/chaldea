@@ -263,16 +263,27 @@ class Event with RouteInfo {
     return extra.endTime.ofRegion(region);
   }
 
+  int? endTime2Of(Region? region) {
+    int? time = region == Region.jp ? endedAt : extra.endTime.ofRegion(region);
+    if (time == null) return null;
+    if (time > kNeverClosedTimestamp) {
+      final start = startTimeOf(region);
+      if (start != null) {
+        time = start + 7 * kSecsPerDay;
+      }
+    }
+    return time;
+  }
+
   bool isOnGoing(Region? region) {
     int now = DateTime.now().timestamp;
-    int neverEndTime = min(region == Region.cn || region == Region.tw ? kNeverClosedTimestampCN : kNeverClosedTimestamp,
-        startedAt + const Duration(days: 365).inSeconds);
+    int neverEndTime = (region == Region.cn || region == Region.tw ? kNeverClosedTimestampCN : kNeverClosedTimestamp);
     final starts = region == null ? [startedAt, ...extra.startTime.values] : [startTimeOf(region)];
     final ends = region == null ? [endedAt, ...extra.endTime.values] : [endTimeOf(region)];
     for (int index = 0; index < starts.length; index++) {
       int? start = starts[index], end = ends[index];
       if (start != null && end != null) {
-        if (end > neverEndTime) {
+        if (end > min(neverEndTime, start + const Duration(days: 365).inSeconds)) {
           end = start + 10 * kSecsPerDay;
         }
         if (now > start && end > now) {
