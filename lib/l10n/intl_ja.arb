@@ -828,6 +828,7 @@
   "statistics_title": "統計",
   "still_send": "送信し続けます",
   "story_ce": null,
+  "story_figure_manual_add_hint": null,
   "strength_status": null,
   "sub_attribute_advantage": null,
   "success": "成功",

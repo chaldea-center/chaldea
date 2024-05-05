@@ -976,6 +976,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "statistics_title": MessageLookupByLibrary.simpleMessage("Statistics"),
         "still_send": MessageLookupByLibrary.simpleMessage("Still Send"),
         "story_ce": MessageLookupByLibrary.simpleMessage("Story CE"),
+        "story_figure_manual_add_hint":
+            MessageLookupByLibrary.simpleMessage("Manually added, please give feedback if anything wrong"),
         "strength_status": MessageLookupByLibrary.simpleMessage("Strength Status"),
         "sub_attribute_advantage": MessageLookupByLibrary.simpleMessage("Sub Attribute Advantage"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),

@@ -828,6 +828,7 @@
   "statistics_title": "통계",
   "still_send": "계속 보내기",
   "story_ce": "스토리 예장",
+  "story_figure_manual_add_hint": null,
   "strength_status": null,
   "sub_attribute_advantage": null,
   "success": "성공",

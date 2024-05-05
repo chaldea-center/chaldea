@@ -144,11 +144,13 @@ class ExtraAssetsPage extends StatelessWidget {
         '${S.current.card_asset_chara_figure}(${S.current.script_story})',
         _getUrls(ExtraAssetsUrl(story: extraAssets?.charaFigure.story)),
         300,
+        subtitle: S.current.story_figure_manual_add_hint,
       ),
       _oneGroup(
         'Image(${S.current.script_story})',
         _getUrls(extraAssets?.image),
         300,
+        subtitle: S.current.story_figure_manual_add_hint,
       ),
       _oneGroup('equipFace', _getUrls(extraAssets?.equipFace), 50, expanded: true),
       _oneGroup('${S.current.sprites} (Mooncell)', mcSprites.map(WikiTool.mcFileUrl), 300),
@@ -181,6 +183,7 @@ class ExtraAssetsPage extends StatelessWidget {
     bool showMerge = true,
     PlaceholderWidgetBuilder? placeholder,
     List<Widget>? actions,
+    String? subtitle,
   }) =>
       oneGroup(
         title,
@@ -191,6 +194,7 @@ class ExtraAssetsPage extends StatelessWidget {
         placeholder: placeholder,
         onTapImage: onTapImage,
         actions: actions,
+        subtitle: subtitle,
       );
 
   static Widget? oneGroup(
@@ -203,6 +207,7 @@ class ExtraAssetsPage extends StatelessWidget {
     Function(String url)? onTapImage,
     Widget Function(Widget child, String url)? transform,
     List<Widget>? actions,
+    String? subtitle,
   }) {
     final _urls = urls.toList();
     if (_urls.isEmpty) return null;
@@ -211,7 +216,18 @@ class ExtraAssetsPage extends StatelessWidget {
       expanded: expanded,
       headerBuilder: (context, expanded) => Row(
         children: [
-          Expanded(child: Text(title)),
+          Expanded(
+              child: expanded && subtitle != null
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(title),
+                        const SizedBox(height: 2),
+                        Text(subtitle, style: Theme.of(context).textTheme.bodySmall)
+                      ],
+                    )
+                  : Text(title)),
           if (expanded) ...?actions,
           if (showMerge && expanded && _urls.length > 1)
             IconButton(

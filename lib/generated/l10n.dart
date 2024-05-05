@@ -9176,6 +9176,17 @@ class S {
     );
   }
 
+  /// `Manually added, please give feedback if anything wrong`
+  String get story_figure_manual_add_hint {
+    return Intl.message(
+      'Manually added, please give feedback if anything wrong',
+      name: 'story_figure_manual_add_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Strength Status`
   String get strength_status {
     return Intl.message(

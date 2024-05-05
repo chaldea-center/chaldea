@@ -930,6 +930,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "statistics_title": MessageLookupByLibrary.simpleMessage("统计"),
         "still_send": MessageLookupByLibrary.simpleMessage("仍然发送"),
         "story_ce": MessageLookupByLibrary.simpleMessage("剧情礼装"),
+        "story_figure_manual_add_hint": MessageLookupByLibrary.simpleMessage("手动添加，若有错请反馈"),
         "strength_status": MessageLookupByLibrary.simpleMessage("强化状态"),
         "sub_attribute_advantage": MessageLookupByLibrary.simpleMessage("副属性克制"),
         "success": MessageLookupByLibrary.simpleMessage("成功"),
