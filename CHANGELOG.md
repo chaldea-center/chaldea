@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.5.10
+
+- count quest phase present
+- improve rare/additional enemy hints
+- trait - quest reverse lookup
+- improve theme color
+
 ## 2.5.9
 
 - Aoko Aozaki
