@@ -472,7 +472,7 @@ class WindowThumb extends StatelessWidget {
         color: Colors.yellowAccent,
         padding: const EdgeInsets.all(4),
         iconSize: 16,
-        constraints: const BoxConstraints(minWidth: 24),
+        constraints: const BoxConstraints(minWidth: 0),
       );
     });
 

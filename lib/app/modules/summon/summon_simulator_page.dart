@@ -48,7 +48,10 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   void dispose() {
     super.dispose();
     if (_debugPullCount > 0) {
-      AppAnalysis.instance.logEvent('summon_simulator', {"count": "1", "sum": _debugPullCount.toString()});
+      AppAnalysis.instance.logEvent('summon_simulator', {
+        "count": "1",
+        // "sum": _debugPullCount.toString(),
+      });
     }
   }
 

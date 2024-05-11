@@ -145,8 +145,8 @@ MapGimmick _$MapGimmickFromJson(Map json) => MapGimmick(
       image: json['image'] as String?,
       x: (json['x'] as num).toInt(),
       y: (json['y'] as num).toInt(),
-      depthOffset: (json['depthOffset'] as num).toInt(),
-      scale: (json['scale'] as num).toInt(),
+      depthOffset: (json['depthOffset'] as num?)?.toInt() ?? 0,
+      scale: (json['scale'] as num?)?.toInt() ?? 0,
       dispCondType: json['dispCondType'] == null
           ? CondType.none
           : const CondTypeConverter().fromJson(json['dispCondType'] as String),
@@ -157,6 +157,8 @@ MapGimmick _$MapGimmickFromJson(Map json) => MapGimmick(
           : const CondTypeConverter().fromJson(json['dispCondType2'] as String),
       dispTargetId2: (json['dispTargetId2'] as num?)?.toInt() ?? 0,
       dispTargetValue2: (json['dispTargetValue2'] as num?)?.toInt() ?? 0,
+      startedAt: (json['startedAt'] as num?)?.toInt() ?? 0,
+      endedAt: (json['endedAt'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$MapGimmickToJson(MapGimmick instance) => <String, dynamic>{
@@ -172,6 +174,8 @@ Map<String, dynamic> _$MapGimmickToJson(MapGimmick instance) => <String, dynamic
       'dispCondType2': const CondTypeConverter().toJson(instance.dispCondType2),
       'dispTargetId2': instance.dispTargetId2,
       'dispTargetValue2': instance.dispTargetValue2,
+      'startedAt': instance.startedAt,
+      'endedAt': instance.endedAt,
     };
 
 NiceSpot _$NiceSpotFromJson(Map json) => NiceSpot(

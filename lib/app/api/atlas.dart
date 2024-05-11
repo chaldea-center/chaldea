@@ -214,6 +214,14 @@ class AtlasApi {
     );
   }
 
+  static Future<List<Gift>?> gift(int giftId, {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$atlasApiHost/nice/${region.upper}/gift/$giftId',
+      (data) => (data as List).map((e) => Gift.fromJson(e)).toList(),
+      expireAfter: expireAfter,
+    );
+  }
+
   static Future<List<CommonRelease>?> commonRelease(int releaseId, {Region region = Region.jp, Duration? expireAfter}) {
     return cacheManager.getModel(
       '$atlasApiHost/nice/${region.upper}/common-release/$releaseId',

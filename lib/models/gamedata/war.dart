@@ -345,22 +345,24 @@ class MapGimmick {
   int dispTargetValue2;
   // int actionAnimTime;
   // int actionEffectId;
-  // int startedAt;
-  // int endedAt;
+  int startedAt;
+  int endedAt;
 
   MapGimmick({
     required this.id,
     this.image,
     required this.x,
     required this.y,
-    required this.depthOffset,
-    required this.scale,
+    this.depthOffset = 0,
+    this.scale = 0,
     this.dispCondType = CondType.none,
     this.dispTargetId = 0,
     this.dispTargetValue = 0,
     this.dispCondType2 = CondType.none,
     this.dispTargetId2 = 0,
     this.dispTargetValue2 = 0,
+    this.startedAt = 0,
+    this.endedAt = 0,
   });
 
   factory MapGimmick.fromJson(Map<String, dynamic> json) => _$MapGimmickFromJson(json);
