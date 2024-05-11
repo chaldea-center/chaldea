@@ -86,7 +86,7 @@ class _C {
 
   _C._() {
     // a_log
-    for (int _ = 0; _ < 255; _++) {
+    for (int i = 0; i < 255; i++) {
       int j = (a_log.last << 1) ^ a_log.last;
       if (j & 0x100 != 0) {
         j ^= 0x11B;
