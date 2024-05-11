@@ -15,7 +15,7 @@ class DarkLightThemePalette extends StatefulWidget {
 }
 
 class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
-  late bool useM3 = Theme.of(context).useMaterial3;
+  // late bool useM3 = Theme.of(context).useMaterial3;
 
   @override
   Widget build(BuildContext context) {
@@ -24,15 +24,15 @@ class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
         leading: const BackButton(),
         title: const Text('Palette'),
         actions: [
-          IconButton(
-            onPressed: () {
-              setState(() {
-                useM3 = !useM3;
-              });
-            },
-            icon: Icon(useM3 ? Icons.filter_3 : Icons.filter_2),
-            tooltip: "Material 2/3",
-          ),
+          // IconButton(
+          //   onPressed: () {
+          //     setState(() {
+          //       useM3 = !useM3;
+          //     });
+          //   },
+          //   icon: Icon(useM3 ? Icons.filter_3 : Icons.filter_2),
+          //   tooltip: "Material 2/3",
+          // ),
           IconButton(
             onPressed: () async {
               await router.pushPage(const ThemeColorPage());
@@ -47,25 +47,21 @@ class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Theme(
-                data: _getThemeData(dark: false),
-                child: Builder(builder: (context) => const _PaletteForTheme()),
-              ),
-            ),
-            Expanded(
-              child: Theme(
-                data: _getThemeData(dark: true),
-                child: Builder(builder: (context) => const _PaletteForTheme()),
-              ),
-            ),
+            for (final useM3 in [false, true])
+              for (final dark in [false, true])
+                Expanded(
+                  child: Theme(
+                    data: _getThemeData(dark: dark, useM3: useM3),
+                    child: Builder(builder: (context) => const _PaletteForTheme()),
+                  ),
+                ),
           ],
         ),
       ),
     );
   }
 
-  ThemeData _getThemeData({required bool dark}) {
+  ThemeData _getThemeData({required bool dark, required bool useM3}) {
     final themeData = ThemeData(
       brightness: dark ? Brightness.dark : Brightness.light,
       useMaterial3: useM3,
@@ -101,7 +97,7 @@ class _PaletteForThemeState extends State<_PaletteForTheme> {
               padding: const EdgeInsets.all(16),
               child: Center(
                 child: Text(
-                  themeData.brightness.name,
+                  '${themeData.brightness.name}(${themeData.useMaterial3 ? 3 : 2})',
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -111,36 +107,36 @@ class _PaletteForThemeState extends State<_PaletteForTheme> {
             ),
           ),
           const Divider(thickness: 2),
-          oneColor('scheme.primary', colorScheme.primary),
-          oneColor('scheme.onPrimary', colorScheme.onPrimary),
-          oneColor('scheme.primaryContainer', colorScheme.primaryContainer),
-          oneColor('scheme.onPrimaryContainer', colorScheme.onPrimaryContainer),
-          oneColor('scheme.secondary', colorScheme.secondary),
-          oneColor('scheme.onSecondary', colorScheme.onSecondary),
-          oneColor('scheme.secondaryContainer', colorScheme.secondaryContainer),
-          oneColor('scheme.onSecondaryContainer', colorScheme.onSecondaryContainer),
-          oneColor('scheme.tertiary', colorScheme.tertiary),
-          oneColor('scheme.onTertiary', colorScheme.onTertiary),
-          oneColor('scheme.tertiaryContainer', colorScheme.tertiaryContainer),
-          oneColor('scheme.onTertiaryContainer', colorScheme.onTertiaryContainer),
-          oneColor('scheme.error', colorScheme.error),
-          oneColor('scheme.onError', colorScheme.onError),
-          oneColor('scheme.errorContainer', colorScheme.errorContainer),
-          oneColor('scheme.onErrorContainer', colorScheme.onErrorContainer),
-          oneColor('scheme.background', colorScheme.background),
-          oneColor('scheme.onBackground', colorScheme.onBackground),
-          oneColor('scheme.surface', colorScheme.surface),
-          oneColor('scheme.onSurface', colorScheme.onSurface),
-          oneColor('scheme.surfaceVariant', colorScheme.surfaceVariant),
-          oneColor('scheme.onSurfaceVariant', colorScheme.onSurfaceVariant),
-          oneColor('scheme.outline', colorScheme.outline),
-          oneColor('scheme.outlineVariant', colorScheme.outlineVariant),
-          oneColor('scheme.shadow', colorScheme.shadow),
-          oneColor('scheme.scrim', colorScheme.scrim),
-          oneColor('scheme.inverseSurface', colorScheme.inverseSurface),
-          oneColor('scheme.onInverseSurface', colorScheme.onInverseSurface),
-          oneColor('scheme.inversePrimary', colorScheme.inversePrimary),
-          oneColor('scheme.surfaceTint', colorScheme.surfaceTint),
+          oneColor('s.primary', colorScheme.primary),
+          oneColor('s.onPrimary', colorScheme.onPrimary),
+          oneColor('s.primaryContainer', colorScheme.primaryContainer),
+          oneColor('s.onPrimaryContainer', colorScheme.onPrimaryContainer),
+          oneColor('s.secondary', colorScheme.secondary),
+          oneColor('s.onSecondary', colorScheme.onSecondary),
+          oneColor('s.secondaryContainer', colorScheme.secondaryContainer),
+          oneColor('s.onSecondaryContainer', colorScheme.onSecondaryContainer),
+          oneColor('s.tertiary', colorScheme.tertiary),
+          oneColor('s.onTertiary', colorScheme.onTertiary),
+          oneColor('s.tertiaryContainer', colorScheme.tertiaryContainer),
+          oneColor('s.onTertiaryContainer', colorScheme.onTertiaryContainer),
+          oneColor('s.error', colorScheme.error),
+          oneColor('s.onError', colorScheme.onError),
+          oneColor('s.errorContainer', colorScheme.errorContainer),
+          oneColor('s.onErrorContainer', colorScheme.onErrorContainer),
+          oneColor('s.background', colorScheme.background),
+          oneColor('s.onBackground', colorScheme.onBackground),
+          oneColor('s.surface', colorScheme.surface),
+          oneColor('s.onSurface', colorScheme.onSurface),
+          oneColor('s.surfaceVariant', colorScheme.surfaceVariant),
+          oneColor('s.onSurfaceVariant', colorScheme.onSurfaceVariant),
+          oneColor('s.outline', colorScheme.outline),
+          oneColor('s.outlineVariant', colorScheme.outlineVariant),
+          oneColor('s.shadow', colorScheme.shadow),
+          oneColor('s.scrim', colorScheme.scrim),
+          oneColor('s.inverseSurface', colorScheme.inverseSurface),
+          oneColor('s.onInverseSurface', colorScheme.onInverseSurface),
+          oneColor('s.inversePrimary', colorScheme.inversePrimary),
+          oneColor('s.surfaceTint', colorScheme.surfaceTint),
           const Divider(thickness: 2),
           oneColor('canvasColor', themeData.canvasColor),
           oneColor('cardColor', themeData.cardColor),
@@ -167,47 +163,49 @@ class _PaletteForThemeState extends State<_PaletteForTheme> {
 
   Widget oneColor(String text, Color? color) {
     return InkWell(
-        onTap: () {
-          setState(() {
-            bgColor = color;
-          });
-        },
-        onDoubleTap: () {
-          setState(() {
-            bgColor = null;
-          });
-        },
-        child: SizedBox(
-          height: 120,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ListTile(
-                title: Center(
-                  child: AutoSizeText(
-                    text,
-                    textAlign: TextAlign.center,
-                    maxLines: 2,
-                    style: const TextStyle(shadows: [Shadow(offset: Offset(0, 0), blurRadius: 2, color: Colors.grey)]),
-                  ),
-                ),
-                subtitle: Center(
-                  child: AutoSizeText(
-                    color == null ? 'null' : 'Color(0x${color.value.toRadixString(16).padLeft(8, '0')})',
-                    maxLines: 1,
-                    minFontSize: 2,
-                    style: kMonoStyle,
-                  ),
+      onTap: () {
+        setState(() {
+          bgColor = color;
+        });
+      },
+      onDoubleTap: () {
+        setState(() {
+          bgColor = null;
+        });
+      },
+      child: SizedBox(
+        height: 120,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            ListTile(
+              title: Center(
+                child: AutoSizeText(
+                  text,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  maxFontSize: 12,
+                  style: const TextStyle(shadows: [Shadow(offset: Offset(0, 0), blurRadius: 2, color: Colors.grey)]),
                 ),
               ),
-              Expanded(
-                child: Container(
-                  color: color,
-                  child: const SizedBox.expand(),
+              subtitle: Center(
+                child: AutoSizeText(
+                  color == null ? 'null' : 'Color(0x${color.value.toRadixString(16).padLeft(8, '0')})',
+                  maxLines: 1,
+                  minFontSize: 2,
+                  style: kMonoStyle,
                 ),
-              )
-            ],
-          ),
-        ));
+              ),
+            ),
+            Expanded(
+              child: Container(
+                color: color,
+                child: const SizedBox.expand(),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

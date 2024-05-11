@@ -145,7 +145,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
               if (ascension != null)
                 Positioned.fill(
                   child: Opacity(
-                    opacity: 0.3,
+                    opacity: 0.4,
                     child: CachedImage(
                       imageUrl: ascension,
                       placeholder: (context, url) => const SizedBox(),
@@ -162,7 +162,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
                     filter: ImageFilter.blur(sigmaX: 9, sigmaY: 9),
                     child: Container(
                       color:
-                          (Theme.of(context).isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200).withOpacity(0.4),
+                          (Theme.of(context).isDarkMode ? Colors.grey.shade800 : Colors.grey.shade600).withOpacity(0.3),
                       child: const SizedBox.expand(),
                     ),
                   ),
@@ -233,7 +233,8 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
                 'ATK ${svt.atkMax}  HP ${svt.hpMax}',
                 // style: Theme.of(context).textTheme.bodySmall,
                 textScaler: const TextScaler.linear(0.9),
-                style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                // style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                style: TextStyle(color: AppTheme(context).secondary),
               ),
             ),
           const SizedBox(height: 4),

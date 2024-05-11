@@ -333,7 +333,7 @@ class SharedBuilder {
     return TextSpan(
       text: text,
       children: children,
-      style: style ?? TextStyle(color: Theme.of(context).colorScheme.primary),
+      style: style ?? TextStyle(color: AppTheme(context).secondary),
       recognizer: recognizer ?? (onTap == null ? null : (TapGestureRecognizer()..onTap = onTap)),
     );
   }
@@ -353,7 +353,7 @@ class SharedBuilder {
         padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
         child: Text(
           format?.call(trait) ?? trait.shownName(),
-          style: style ?? TextStyle(color: Theme.of(context).colorScheme.primary),
+          style: style ?? TextStyle(color: AppTheme(context).secondary),
           textScaler: textScaleFactor == null ? null : TextScaler.linear(textScaleFactor),
         ),
       ),
@@ -369,7 +369,7 @@ class SharedBuilder {
     return textButtonSpan(
       context: context,
       text: format?.call(trait) ?? trait.shownName(),
-      style: style ?? TextStyle(color: Theme.of(context).colorScheme.primary),
+      style: style ?? TextStyle(color: AppTheme(context).secondary),
       onTap: () {
         router.push(url: Routes.traitI(trait.id));
       },

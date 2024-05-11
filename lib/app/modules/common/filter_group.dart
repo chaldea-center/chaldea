@@ -213,8 +213,10 @@ class FilterOption<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool darkMode = Theme.of(context).brightness == Brightness.dark;
-    final selectedColor = this.selectedColor ?? Colors.blue;
+    final themeData = Theme.of(context);
+    bool darkMode = themeData.brightness == Brightness.dark;
+    final selectedColor = this.selectedColor ??
+        (themeData.useMaterial3 && darkMode ? themeData.colorScheme.primaryContainer : themeData.colorScheme.primary);
     return ConstrainedBox(
       constraints: constraints ?? const BoxConstraints(maxHeight: 30),
       child: OutlinedButton(
@@ -235,6 +237,7 @@ class FilterOption<T> extends StatelessWidget {
           textStyle: const TextStyle(fontWeight: FontWeight.normal),
           tapTargetSize: shrinkWrap ? MaterialTapTargetSize.shrinkWrap : null,
           shape: ContinuousRectangleBorder(borderRadius: borderRadius),
+          side: themeData.useMaterial3 ? BorderSide(color: themeData.colorScheme.outline, width: 0.5) : null,
         ).merge(buttonStyle),
         child: child ?? Text(value.toString()),
         // shape: ,

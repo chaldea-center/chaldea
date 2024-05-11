@@ -237,8 +237,8 @@ class TableCellData {
 
   GlobalKey? key;
 
-  static const headerColorLight = Color.fromRGBO(234, 235, 238, 1);
-  static const headerColorDark = Color.fromRGBO(70, 70, 70, 1);
+  static const headerColorLight = Color.fromRGBO(234, 235, 238, 0.8);
+  static const headerColorDark = Color.fromRGBO(70, 70, 70, 0.8);
 
   static Color resolveHeaderColor(BuildContext context) {
     return Utility.isDarkMode(context) ? headerColorDark : headerColorLight;

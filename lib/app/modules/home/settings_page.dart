@@ -56,10 +56,10 @@ class _SettingsPageState extends State<SettingsPage> {
         titleSpacing: NavigationToolbar.kMiddleSpacing,
         toolbarHeight: kToolbarHeight,
       ),
-      body: CustomScrollView(
+      body: ListView(
         controller: _scrollController,
-        slivers: [
-          SliverTileGroup(
+        children: [
+          TileGroup(
             header: S.current.chaldea_account,
             children: [
               userTile,
@@ -73,7 +73,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ],
           ),
-          SliverTileGroup(
+          TileGroup(
             header: S.current.game_account,
             children: [
               ListTile(
@@ -92,7 +92,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ],
           ),
-          // SliverTileGroup(
+          // TileGroup(
           //   header: S.current.event_progress,
           //   footer:
           //       '${S.current.limited_event}/${S.current.main_story}/${S.current.summon}',
@@ -105,7 +105,7 @@ class _SettingsPageState extends State<SettingsPage> {
           //     ),
           //   ],
           // ),
-          SliverTileGroup(
+          TileGroup(
             header: S.current.settings_data,
             children: <Widget>[
               ListTile(
@@ -159,7 +159,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
             ],
           ),
-          SliverTileGroup(
+          TileGroup(
             header: S.current.settings_general,
             children: <Widget>[
               ListTile(
@@ -263,7 +263,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 )
             ],
           ),
-          SliverTileGroup(
+          TileGroup(
             header: S.current.about_app,
             children: <Widget>[
               ListTile(
@@ -322,7 +322,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ],
           ),
           if (db.runtimeData.enableDebugTools)
-            SliverTileGroup(
+            TileGroup(
               header: S.current.debug,
               children: <Widget>[
                 if (!kReleaseMode)

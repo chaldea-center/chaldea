@@ -224,8 +224,10 @@ class TileGroup extends StatelessWidget {
     }
     final _children = <Widget>[
       if (headerWidget != null) headerWidget,
-      Material(
-        color: tileColor ?? Theme.of(context).cardColor,
+      Card(
+        color: tileColor,
+        shape: const RoundedRectangleBorder(),
+        margin: const EdgeInsets.all(0),
         child: Column(
           crossAxisAlignment: crossAxisAlignment,
           mainAxisSize: MainAxisSize.min,
@@ -253,6 +255,7 @@ class TileGroup extends StatelessWidget {
   }
 }
 
+@Deprecated("TileGroup")
 class SliverTileGroup extends StatelessWidget {
   final List<Widget> children;
   final String? header;

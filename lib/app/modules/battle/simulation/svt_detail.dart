@@ -88,7 +88,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
             if (icon != null)
               Positioned.fill(
                 child: Opacity(
-                  opacity: 0.3,
+                  opacity: 0.4,
                   child: CachedImage(
                     imageUrl: icon,
                     placeholder: (context, url) => const SizedBox(),
@@ -101,7 +101,8 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
                   child: Container(
-                    color: Colors.grey.shade400.withOpacity(Theme.of(context).isDarkMode ? 0.1 : 0.1),
+                    color:
+                        (Theme.of(context).isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200).withOpacity(0.2),
                     child: const SizedBox.expand(),
                   ),
                 ),
@@ -392,7 +393,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
         : buff.buff.lName.l;
     return ListTile(
       dense: true,
-      horizontalTitleGap: 4,
+      minLeadingWidth: 24,
       leading: BattleBuffIcon(buff: buff, size: 24),
       title: Text(buffName),
       isThreeLine: showActor,

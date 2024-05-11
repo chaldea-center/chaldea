@@ -254,17 +254,17 @@ class CmdCodeDetailBasePage extends StatelessWidget {
             ),
           ],
         ),
-        TextButton(
-          onPressed: () {
-            FullscreenImageViewer.show(
-              context: context,
-              urls: [cc.charaGraph],
-              placeholder: placeholder,
-            );
-          },
-          style: kTextButtonDenseStyle,
-          child: Text(S.current.view_illustration),
-        ),
+        // TextButton(
+        //   onPressed: () {
+        //     FullscreenImageViewer.show(
+        //       context: context,
+        //       urls: [cc.charaGraph],
+        //       placeholder: placeholder,
+        //     );
+        //   },
+        //   style: kTextButtonDenseStyle,
+        //   child: Text(S.current.view_illustration),
+        // ),
         CustomTableRow(children: [TableCellData(text: S.current.skill, isHeader: true)]),
         for (final skill in cc.skills..sort2((e) => e.svt.num * 100 + e.svt.priority)) SkillDescriptor(skill: skill),
         CustomTableRow(children: [TableCellData(text: S.current.characters_in_card, isHeader: true)]),

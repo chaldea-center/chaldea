@@ -536,10 +536,9 @@ class _ItemListTabState extends State<ItemListTab> {
             ),
           Flexible(
             child: Center(
-              child: ElevatedButton.icon(
+              child: FilledButton.icon(
                 icon: const Icon(Icons.calculate_outlined),
                 label: Text(S.current.planning_free_quest_btn),
-                style: ElevatedButton.styleFrom(),
                 onPressed: () {
                   FocusScope.of(context).unfocus();
                   widget.onNavToCalculator();

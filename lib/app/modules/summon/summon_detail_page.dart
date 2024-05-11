@@ -499,14 +499,14 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
       children: [
         IconButton(
           icon: const FaIcon(FontAwesomeIcons.circleChevronLeft),
-          color: Theme.of(context).colorScheme.primaryContainer,
+          color: Theme.of(context).colorScheme.primary,
           tooltip: S.current.previous_card,
           onPressed: () => moveNext(true),
         ),
         simulatorBtn,
         IconButton(
           icon: const FaIcon(FontAwesomeIcons.circleChevronRight),
-          color: Theme.of(context).colorScheme.primaryContainer,
+          color: Theme.of(context).colorScheme.primary,
           tooltip: S.current.next_card,
           onPressed: () => moveNext(),
         )

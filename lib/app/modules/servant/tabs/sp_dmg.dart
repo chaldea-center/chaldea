@@ -144,13 +144,16 @@ class SpDmgSelfTab extends StatelessWidget {
         useAnd = false;
       }
       if (traits.isNotEmpty) {
-        parts.add(const Divider(indent: 16, endIndent: 16));
-        parts.add(FuncDescriptor(func: func));
+        parts.addAll([
+          const Divider(indent: 16, endIndent: 16, thickness: 0),
+          FuncDescriptor(func: func),
+          const Divider(indent: 16, endIndent: 16, thickness: 0.5),
+        ]);
         if (useAnd) {
           parts.add(ListTile(
             dense: true,
             selected: true,
-            selectedColor: Theme.of(context).colorScheme.secondary,
+            selectedColor: AppTheme(context).secondary,
             title: Text(traits.map((e) => e.shownName()).join(" & ")),
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
             onTap: () {
@@ -162,7 +165,7 @@ class SpDmgSelfTab extends StatelessWidget {
             parts.add(ListTile(
               dense: true,
               selected: true,
-              selectedColor: Theme.of(context).colorScheme.secondary,
+              selectedColor: AppTheme(context).secondary,
               title: Text(trait.shownName()),
               trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
               onTap: trait.routeTo,

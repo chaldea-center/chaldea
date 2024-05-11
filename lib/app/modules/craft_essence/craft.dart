@@ -328,17 +328,17 @@ class CraftDetailBasePage extends StatelessWidget {
             ),
           ],
         ),
-        TextButton(
-          onPressed: () {
-            FullscreenImageViewer.show(
-              context: context,
-              urls: [ce.charaGraph],
-              placeholder: cardBackPlaceholder,
-            );
-          },
-          style: kTextButtonDenseStyle,
-          child: Text(S.current.view_illustration),
-        ),
+        // TextButton(
+        //   onPressed: () {
+        //     FullscreenImageViewer.show(
+        //       context: context,
+        //       urls: [ce.charaGraph],
+        //       placeholder: cardBackPlaceholder,
+        //     );
+        //   },
+        //   style: kTextButtonDenseStyle,
+        //   child: Text(S.current.view_illustration),
+        // ),
         if (ce.profile.cv.isNotEmpty)
           TextButton(
             onPressed: () {
@@ -492,7 +492,7 @@ class CraftDetailBasePage extends StatelessWidget {
         children.add(InkWell(
           child: Text(
             svt.lName.l,
-            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            style: TextStyle(color: AppTheme(context).secondary),
           ),
           onTap: () => router.push(url: svt.route),
         ));
@@ -502,7 +502,7 @@ class CraftDetailBasePage extends StatelessWidget {
       children.add(InkWell(
         child: Text(
           Transl.charaNames(name).l,
-          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+          style: TextStyle(color: AppTheme(context).secondary, decoration: TextDecoration.underline),
         ),
         onTap: () => router.pushPage(CharaDetail(name: name)),
       ));

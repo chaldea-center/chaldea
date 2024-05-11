@@ -1,6 +1,7 @@
 export 'package:flutter/material.dart';
 export 'package:flutter_hooks/flutter_hooks.dart';
 export 'after_layout.dart';
+export 'theme.dart';
 export 'custom_dialogs.dart';
 export 'custom_table.dart';
 export 'custom_tile.dart';
