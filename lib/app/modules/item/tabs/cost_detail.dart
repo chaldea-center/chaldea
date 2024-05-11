@@ -75,8 +75,18 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: Text(
-                '${S.current.item_left} ${num2str(stat.itemLeft[itemId])}  ',
+              child: Text.rich(
+                TextSpan(
+                  text: '${S.current.item_left} ',
+                  children: [
+                    TextSpan(
+                      text: num2str(stat.itemLeft[itemId]),
+                      style: matType == SvtMatCostDetailType.demands && (stat.itemLeft[itemId] ?? 0) < 0
+                          ? TextStyle(color: Theme.of(context).colorScheme.error)
+                          : null,
+                    )
+                  ],
+                ),
                 style:
                     matType != SvtMatCostDetailType.demands ? TextStyle(color: Theme.of(context).disabledColor) : null,
               ),
