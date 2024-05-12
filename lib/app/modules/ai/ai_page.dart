@@ -220,7 +220,7 @@ class AiLink extends StatelessWidget {
       },
       child: Text(
         "${type.name}-$aiId",
-        style: TextStyle(color: Theme.of(context).colorScheme.secondaryContainer),
+        style: TextStyle(color: AppTheme(context).tertiaryContainer),
       ),
     );
   }

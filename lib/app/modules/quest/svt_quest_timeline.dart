@@ -300,7 +300,7 @@ class _SvtQuestTimelineState extends State<SvtQuestTimeline> {
       children.add(ListTile(
         title: Text(
           countText,
-          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+          style: TextStyle(color: AppTheme(context).tertiary),
           textScaler: const TextScaler.linear(0.8),
         ),
         onTap: () {

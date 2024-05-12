@@ -266,7 +266,7 @@ class _ItemCostSvtDetailTabState extends State<ItemCostSvtDetailTab> {
       final svt = db.gameData.servantsWithDup[svtNo];
       bool _planned = db.curUser.svtStatusOf(svtNo).cur.favorite;
       final textStyle = _planned && matType == SvtMatCostDetailType.full
-          ? TextStyle(color: Theme.of(context).colorScheme.secondary)
+          ? TextStyle(color: AppTheme(context).tertiary)
           : const TextStyle();
       String subtitle = '${detail.all.format()} (';
       subtitle += detail.parts.map((e) => e.format()).join('/');

@@ -861,7 +861,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
                       onPressed: () {
                         router.push(url: Routes.items);
                       },
-                      color: Theme.of(context).colorScheme.secondary,
+                      color: AppTheme(context).tertiary,
                       icon: const Icon(Icons.category),
                       tooltip: S.current.item,
                     ),

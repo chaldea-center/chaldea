@@ -236,7 +236,7 @@ class ScriptDialog extends ScriptTexts {
     List<InlineSpan> spans = [];
     if (!hideSpeaker) {
       state.push(
-        headerStyle.copyWith(color: Theme.of(context).colorScheme.secondaryContainer),
+        headerStyle.copyWith(color: AppTheme(context).tertiaryContainer),
         this,
         _CompType.none,
       );

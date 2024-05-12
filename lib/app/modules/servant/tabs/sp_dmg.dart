@@ -153,7 +153,7 @@ class SpDmgSelfTab extends StatelessWidget {
           parts.add(ListTile(
             dense: true,
             selected: true,
-            selectedColor: AppTheme(context).secondary,
+            selectedColor: AppTheme(context).tertiary,
             title: Text(traits.map((e) => e.shownName()).join(" & ")),
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
             onTap: () {
@@ -165,7 +165,7 @@ class SpDmgSelfTab extends StatelessWidget {
             parts.add(ListTile(
               dense: true,
               selected: true,
-              selectedColor: AppTheme(context).secondary,
+              selectedColor: AppTheme(context).tertiary,
               title: Text(trait.shownName()),
               trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
               onTap: trait.routeTo,

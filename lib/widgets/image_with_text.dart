@@ -143,8 +143,6 @@ class ImageWithText extends StatelessWidget {
     if (shadowSize == null) {
       return style;
     } else {
-      // [Impeller] stroke not implemented
-      // https://github.com/flutter/flutter/issues/126010
       return style.copyWith(
         foreground: style.foreground ?? Paint()
           ..style = PaintingStyle.stroke
@@ -152,6 +150,19 @@ class ImageWithText extends StatelessWidget {
           ..color = shadowColor ?? Colors.white,
       );
     }
+  }
+
+  static TextStyle toShadowStyle([TextStyle? style, double? shadowSize, Color? shadowColor]) {
+    style ??= const TextStyle();
+    if (style.shadows?.isNotEmpty == true) return style;
+    return style.copyWith(shadows: [
+      BoxShadow(
+        color: shadowColor ?? Colors.white,
+        offset: Offset.zero,
+        blurRadius: shadowSize ?? 3,
+        blurStyle: BlurStyle.normal,
+      ),
+    ]);
   }
 
   static Widget paintOutline({
@@ -165,11 +176,12 @@ class ImageWithText extends StatelessWidget {
     assert(text != null || builder != null);
     assert(text == null || builder == null);
     TextStyle _style = textStyle ?? const TextStyle();
+
     List<Widget> children;
     if (builder != null) {
       children = [
         builder(toGlowStyle(_style, shadowSize, shadowColor)),
-        builder(_style),
+        builder(toShadowStyle(textStyle, shadowSize, shadowColor)),
       ];
     } else {
       children = [
@@ -181,7 +193,7 @@ class ImageWithText extends StatelessWidget {
         Text(
           text,
           textAlign: textAlign,
-          style: _style.foreground == null ? _style : _style.copyWith(foreground: null),
+          style: toShadowStyle(textStyle, shadowSize, shadowColor),
         )
       ];
     }

@@ -9,6 +9,7 @@ class AppTheme {
   bool get isDark => themeData.brightness == Brightness.dark;
 
   Color get primary => useMaterial3 ? colorScheme.primary : colorScheme.primary;
-  Color get secondary => useMaterial3 ? colorScheme.surfaceTint : colorScheme.secondary;
+  Color get tertiary => useMaterial3 ? colorScheme.tertiary : colorScheme.tertiary;
+  Color get tertiaryContainer => useMaterial3 ? colorScheme.tertiaryContainer : colorScheme.tertiaryContainer;
   Color get color => isDark ? colorScheme.errorContainer : colorScheme.error;
 }

@@ -75,7 +75,7 @@ class _ItemObtainEventTabState extends State<ItemObtainEventTab> {
         continue;
       }
       int itemGot = db.itemCenter.calcOneEvent(event, plan)[widget.itemId] ?? 0;
-      TextStyle style = TextStyle(color: plan.enabled ? Theme.of(context).colorScheme.secondaryContainer : null);
+      TextStyle style = TextStyle(color: plan.enabled ? AppTheme(context).tertiaryContainer : null);
       int addNum = 0;
       if (widget.itemId == Items.grailId) {
         addNum =

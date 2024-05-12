@@ -55,7 +55,7 @@ class MultiDescriptor {
   }) {
     return TextSpan(
       text: ' $text ',
-      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+      style: TextStyle(color: AppTheme(context).tertiary),
       recognizer: onTap == null ? null : (TapGestureRecognizer()..onTap = onTap),
     );
   }

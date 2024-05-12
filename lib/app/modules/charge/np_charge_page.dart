@@ -82,7 +82,7 @@ class _NpChargePageState extends State<NpChargePage> {
         children: [
           DecoratedBox(
             decoration: BoxDecoration(
-              border: Border.all(color: Theme.of(context).colorScheme.secondary),
+              border: Border.all(color: AppTheme(context).tertiary),
               borderRadius: BorderRadius.circular(6),
             ),
             child: SizedBox(
@@ -213,7 +213,7 @@ class _NpChargePageState extends State<NpChargePage> {
         children: [
           DecoratedBox(
             decoration: BoxDecoration(
-              border: Border.all(color: Theme.of(context).colorScheme.secondary),
+              border: Border.all(color: AppTheme(context).tertiary),
               borderRadius: BorderRadius.circular(6),
             ),
             child: SizedBox(

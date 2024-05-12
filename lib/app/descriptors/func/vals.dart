@@ -36,7 +36,7 @@ class ValListDsc extends StatelessWidget {
               vals: vals,
               originVals: originVals.getOrNull(j),
               ignoreRate: false,
-              color: j == 5 || j == 9 ? Theme.of(context).colorScheme.secondary : null,
+              color: j == 5 || j == 9 ? AppTheme(context).tertiary : null,
               inList: true,
             );
           }
@@ -47,7 +47,7 @@ class ValListDsc extends StatelessWidget {
           if (selected != null && selected! - 1 == j) {
             child = DecoratedBox(
               decoration: BoxDecoration(
-                border: Border.all(color: Theme.of(context).colorScheme.secondaryContainer.withAlpha(180)),
+                border: Border.all(color: AppTheme(context).tertiaryContainer.withAlpha(180)),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: child,

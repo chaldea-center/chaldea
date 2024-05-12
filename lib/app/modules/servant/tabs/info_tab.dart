@@ -284,7 +284,7 @@ class SvtInfoTab extends StatelessWidget {
                             child: Icon(
                               Icons.info_outline,
                               size: 16,
-                              color: Theme.of(context).colorScheme.secondary,
+                              color: AppTheme(context).tertiary,
                             ),
                             onTap: () {
                               SimpleCancelOkDialog(

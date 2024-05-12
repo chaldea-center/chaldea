@@ -492,7 +492,7 @@ class CraftDetailBasePage extends StatelessWidget {
         children.add(InkWell(
           child: Text(
             svt.lName.l,
-            style: TextStyle(color: AppTheme(context).secondary),
+            style: TextStyle(color: AppTheme(context).tertiary),
           ),
           onTap: () => router.push(url: svt.route),
         ));
@@ -502,7 +502,7 @@ class CraftDetailBasePage extends StatelessWidget {
       children.add(InkWell(
         child: Text(
           Transl.charaNames(name).l,
-          style: TextStyle(color: AppTheme(context).secondary, decoration: TextDecoration.underline),
+          style: TextStyle(color: AppTheme(context).tertiary, decoration: TextDecoration.underline),
         ),
         onTap: () => router.pushPage(CharaDetail(name: name)),
       ));

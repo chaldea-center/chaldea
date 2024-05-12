@@ -79,9 +79,23 @@ class SharedBuilder {
   }
 
   static Color? appBarForeground(BuildContext context) {
-    final theme = Theme.of(context);
-    return theme.appBarTheme.foregroundColor ??
-        (theme.colorScheme.brightness == Brightness.dark ? theme.colorScheme.onSurface : theme.colorScheme.onPrimary);
+    final themeData = Theme.of(context);
+    return themeData.appBarTheme.foregroundColor ??
+        (themeData.useMaterial3
+            ? themeData.colorScheme.onSurface
+            : (themeData.colorScheme.brightness == Brightness.dark
+                ? themeData.colorScheme.onSurface
+                : themeData.colorScheme.onPrimary));
+  }
+
+  static Color? appBarBackground(BuildContext context) {
+    final themeData = Theme.of(context);
+    return themeData.appBarTheme.backgroundColor ??
+        (themeData.useMaterial3
+            ? themeData.colorScheme.surface
+            : (themeData.colorScheme.brightness == Brightness.dark
+                ? themeData.colorScheme.surface
+                : themeData.colorScheme.primary));
   }
 
   static Widget groupItems({
@@ -280,7 +294,6 @@ class SharedBuilder {
   }
 
   static Widget buildSwitchPlanButton({required BuildContext context, ValueChanged<int>? onChange}) {
-    final colorScheme = Theme.of(context).colorScheme;
     return IconButton(
       onPressed: () {
         FocusScope.of(context).unfocus();
@@ -295,7 +308,7 @@ class SharedBuilder {
             ImageWithText.paintOutline(
               text: (db.curUser.curSvtPlanNo + 1).toString(),
               shadowSize: 5,
-              shadowColor: colorScheme.brightness == Brightness.light ? colorScheme.primary : colorScheme.surface,
+              shadowColor: appBarBackground(context),
             )
           ],
         ),
@@ -333,7 +346,7 @@ class SharedBuilder {
     return TextSpan(
       text: text,
       children: children,
-      style: style ?? TextStyle(color: AppTheme(context).secondary),
+      style: style ?? TextStyle(color: AppTheme(context).tertiary),
       recognizer: recognizer ?? (onTap == null ? null : (TapGestureRecognizer()..onTap = onTap)),
     );
   }
@@ -353,7 +366,7 @@ class SharedBuilder {
         padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
         child: Text(
           format?.call(trait) ?? trait.shownName(),
-          style: style ?? TextStyle(color: AppTheme(context).secondary),
+          style: style ?? TextStyle(color: AppTheme(context).tertiary),
           textScaler: textScaleFactor == null ? null : TextScaler.linear(textScaleFactor),
         ),
       ),
@@ -369,7 +382,7 @@ class SharedBuilder {
     return textButtonSpan(
       context: context,
       text: format?.call(trait) ?? trait.shownName(),
-      style: style ?? TextStyle(color: AppTheme(context).secondary),
+      style: style ?? TextStyle(color: AppTheme(context).tertiary),
       onTap: () {
         router.push(url: Routes.traitI(trait.id));
       },

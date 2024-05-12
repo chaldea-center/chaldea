@@ -456,7 +456,7 @@ class BuffInfoTable extends StatelessWidget {
       onTap: buff?.routeTo,
       child: Text.rich(
         TextSpan(children: spans),
-        style: TextStyle(color: Theme.of(context).colorScheme.secondaryContainer),
+        style: TextStyle(color: AppTheme(context).tertiaryContainer),
       ),
     );
   }

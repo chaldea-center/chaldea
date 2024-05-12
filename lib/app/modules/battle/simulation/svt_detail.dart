@@ -166,7 +166,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
     return FixedHeight.tabBar(TabBar(
       // tabAlignment: TabAlignment.center,
       controller: _tabController,
-      // labelColor: Theme.of(context).colorScheme.secondary,
+      // labelColor: AppTheme(context).tertiary,
       indicatorSize: TabBarIndicatorSize.tab,
       labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
       // unselectedLabelColor: Colors.grey,

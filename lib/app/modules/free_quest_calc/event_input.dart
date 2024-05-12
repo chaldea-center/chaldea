@@ -206,7 +206,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     if (quest != null) {
       spans.add(TextSpan(text: 'Lv.${quest.recommendLv} ${quest.lSpot.l}\n'));
     }
-    final bonusStyle = TextStyle(color: Theme.of(context).colorScheme.secondary);
+    final bonusStyle = TextStyle(color: AppTheme(context).tertiary);
     for (final itemId in plan.drops.items.keys) {
       if (!eventItemIds.contains(itemId)) continue;
       final base = plan.drops.getBase(itemId);

@@ -314,7 +314,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTi
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: underline ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+              color: underline ? AppTheme(context).tertiary : Colors.transparent,
             ),
           ),
         ),

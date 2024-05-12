@@ -321,7 +321,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
                     },
                     icon: Icon(
                       Icons.add,
-                      color: Theme.of(context).colorScheme.secondary,
+                      color: AppTheme(context).tertiary,
                     ),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(minHeight: 36),

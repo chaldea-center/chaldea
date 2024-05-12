@@ -399,9 +399,9 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                           return _theme.disabledColor;
                         }
                         if (states.contains(MaterialState.selected)) {
-                          return _theme.colorScheme.secondary;
+                          return _theme.colorScheme.tertiary;
                         }
-                        return _theme.colorScheme.secondary;
+                        return _theme.colorScheme.tertiary;
                       })
                     : null,
               ),
@@ -577,7 +577,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                   TextSpan(
                     text: isPlayer ? 'Player Turn' : 'Enemy Turn',
                     style: isPlayer == battleData.isPlayerTurn
-                        ? TextStyle(color: Theme.of(context).colorScheme.secondary)
+                        ? TextStyle(color: AppTheme(context).tertiary)
                         : Theme.of(context).textTheme.bodySmall,
                   )
               ], const TextSpan(text: '\n')),
@@ -677,7 +677,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                   if (mounted) setState(() {});
                 },
           child: battleData.isBattleWin
-              ? Text('Win', style: TextStyle(color: Theme.of(context).colorScheme.secondary))
+              ? Text('Win', style: TextStyle(color: AppTheme(context).tertiary))
               : Text(S.current.battle_attack),
         ),
       ],

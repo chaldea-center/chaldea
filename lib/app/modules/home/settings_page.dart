@@ -10,6 +10,7 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/theme.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import '../root/global_fab.dart';
 import 'subpage/about_page.dart';
@@ -211,7 +212,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               if (!const [Language.chs, Language.cht, Language.en].contains(Language.current))
                 Card(
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: AppTheme(context).tertiary,
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),

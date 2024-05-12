@@ -153,7 +153,7 @@ class CustomTile extends StatelessWidget {
       case Brightness.light:
         return selected ? theme.primaryColor : Colors.black45;
       case Brightness.dark:
-        return selected ? theme.colorScheme.secondary : null; // null - use current icon theme color
+        return selected ? theme.colorScheme.tertiary : null; // null - use current icon theme color
     }
   }
 
@@ -171,7 +171,7 @@ class CustomTile extends StatelessWidget {
         case Brightness.light:
           return theme.primaryColor;
         case Brightness.dark:
-          return theme.colorScheme.secondary;
+          return theme.colorScheme.tertiary;
       }
     }
     return defaultColor;

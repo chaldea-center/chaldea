@@ -339,7 +339,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
         children.add(InkWell(
           child: Text(
             svt.lName.l,
-            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            style: TextStyle(color: AppTheme(context).tertiary),
           ),
           onTap: () => router.push(url: svt.route),
         ));
@@ -349,7 +349,7 @@ class CmdCodeDetailBasePage extends StatelessWidget {
       children.add(InkWell(
         child: Text(
           Transl.charaNames(name).l,
-          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+          style: TextStyle(color: AppTheme(context).tertiary),
         ),
         onTap: () => router.pushPage(CharaDetail(name: name)),
       ));

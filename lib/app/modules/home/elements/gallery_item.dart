@@ -17,7 +17,7 @@ import 'package:chaldea/app/routes/routes.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/platform/platform.dart';
-import 'package:chaldea/utils/basic.dart';
+import 'package:chaldea/widgets/theme.dart';
 import '../../april_fool/april_fool_home.dart';
 import '../../bgm/bgm_list.dart';
 import '../../buff/buff_list.dart';
@@ -78,14 +78,8 @@ class GalleryItem {
   Widget buildIcon(BuildContext context, {double size = 40, Color? color}) {
     if (child != null) return child!;
     bool fa = icon!.fontFamily?.toLowerCase().startsWith('fontawesome') == true;
-    var _iconColor = color ??
-        (Theme.of(context).useMaterial3
-            ? (Utility.isDarkMode(context)
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.primary)
-            : (Utility.isDarkMode(context)
-                ? Theme.of(context).colorScheme.secondaryContainer
-                : Theme.of(context).colorScheme.secondary));
+    var _iconColor =
+        color ?? (Theme.of(context).useMaterial3 ? Theme.of(context).colorScheme.primary : AppTheme(context).tertiary);
     return fa
         ? Padding(padding: EdgeInsets.all(size * 0.05), child: FaIcon(icon, size: size * 0.9, color: _iconColor))
         : Icon(icon, size: size, color: _iconColor);

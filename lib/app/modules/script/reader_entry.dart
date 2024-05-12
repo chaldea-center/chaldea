@@ -105,7 +105,7 @@ class _ScriptReaderEntryPageState extends State<ScriptReaderEntryPage> {
                 );
               },
               icon: const Icon(Icons.menu_book_rounded),
-              color: _textEditController.text.trim().isEmpty ? null : Theme.of(context).colorScheme.secondary,
+              color: _textEditController.text.trim().isEmpty ? null : AppTheme(context).tertiary,
             ),
           )
         ],

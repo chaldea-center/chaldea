@@ -497,7 +497,7 @@ class WindowThumb extends StatelessWidget {
           ),
           bottom: BorderSide(
             width: 3,
-            color: index == root.appState.activeIndex ? Theme.of(context).colorScheme.secondary : Colors.transparent,
+            color: index == root.appState.activeIndex ? AppTheme(context).tertiary : Colors.transparent,
           ),
         ),
       ),

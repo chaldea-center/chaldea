@@ -126,7 +126,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
                         TextSpan(
                           text: cd.toString(),
                           style: skill.coolDown.getOrNull((level ?? 0) - 1) == cd
-                              ? TextStyle(color: Theme.of(context).colorScheme.secondary)
+                              ? TextStyle(color: AppTheme(context).tertiary)
                               : null,
                         )
                     ],

@@ -122,7 +122,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     final plan = db.curUser.ticketOf(ticket.id);
     bool planned = plan.enabled;
     bool outdated = ticket.isOutdated();
-    Color? _plannedColor = Theme.of(context).colorScheme.secondary;
+    Color? _plannedColor = AppTheme(context).tertiary;
     Color? _outdatedColor = Theme.of(context).textTheme.bodySmall?.color;
     bool hasAnyReplaced = ticket.replaced.values.any((e) => e != null);
     bool isThisMonth = DateUtils.isSameMonth(ticket.date, DateTime.now());
@@ -173,7 +173,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                 TextSpan(
                   text: ' ×${ticket.multiplier}',
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
+                    color: AppTheme(context).tertiary,
                     fontWeight: FontWeight.bold,
                   ),
                 )

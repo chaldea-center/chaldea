@@ -325,7 +325,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
       icon: const Icon(Icons.search),
       label: Text(
         S.current.team_shared,
-        // style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+        // style: TextStyle(color: AppTheme(context).tertiary),
       ),
     );
   }
@@ -338,10 +338,10 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
             db.curUser.freeLPParams.blacklist.remove(quest.id);
           });
         },
-        icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.secondary),
+        icon: Icon(Icons.clear, color: AppTheme(context).tertiary),
         label: Text(
           S.current.remove_from_blacklist,
-          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+          style: TextStyle(color: AppTheme(context).tertiary),
         ),
       );
     }

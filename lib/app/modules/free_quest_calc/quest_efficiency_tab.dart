@@ -312,7 +312,7 @@ class _QuestEfficiencyTabState extends State<QuestEfficiencyTab> {
           children: [
             IconButton(
               icon: Icon(matchAll ? Icons.add_box : Icons.add_box_outlined),
-              color: Theme.of(context).buttonTheme.colorScheme?.secondary,
+              color: Theme.of(context).buttonTheme.colorScheme?.tertiary,
               tooltip: matchAll ? 'Contains All' : 'Contains Any',
               onPressed: () {
                 setState(() {

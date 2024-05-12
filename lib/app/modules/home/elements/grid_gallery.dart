@@ -7,6 +7,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
+import 'package:chaldea/widgets/theme.dart';
 import 'gallery_item.dart';
 
 class GridGallery extends StatefulWidget {
@@ -117,9 +118,11 @@ class _GridGalleryState extends State<GridGallery> {
 
       if (_editMode && !item.persist) {
         final editIcon = active
-            ? Icon(Icons.remove_circle,
-                color: themeData.isDarkMode ? themeData.disabledColor : themeData.colorScheme.secondary)
-            : Icon(Icons.add_circle, color: themeData.colorScheme.secondaryContainer);
+            ? Icon(Icons.remove_circle, color: themeData.disabledColor)
+            : Icon(Icons.add_circle,
+                color: (Theme.of(context).useMaterial3
+                    ? Theme.of(context).colorScheme.primary
+                    : AppTheme(context).tertiary));
         child = Stack(
           alignment: Alignment.topRight,
           children: [
