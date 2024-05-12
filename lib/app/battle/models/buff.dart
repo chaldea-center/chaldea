@@ -217,7 +217,7 @@ class BuffData {
   bool shouldApplyBuff(final BattleData battleData, final BattleServantData self, [final BattleServantData? opponent]) {
     // final onFieldCheck = !isOnField || actorUniqueId == null || battleData.isActorOnField(actorUniqueId!);
 
-    final scriptCheck = checkDataVals(battleData) && checkBuffScript(battleData);
+    final scriptCheck = checkBuffScript(battleData);
 
     if (!scriptCheck || !checkAct()) {
       return false;
@@ -352,21 +352,6 @@ class BuffData {
       positiveMatchFunc: matchFunc,
       negativeMatchFunc: matchFunc,
     );
-  }
-
-  @Deprecated("moved to shouldActivateTurnendHpReduceToRegain")
-  bool checkDataVals(final BattleData battleData) {
-    if (vals.HpReduceToRegainIndiv != null) {
-      final currentBuffMatch = battleData.checkTraits(CheckTraitParameters(
-        requiredTraits: [NiceTrait(id: vals.HpReduceToRegainIndiv!)],
-        checkCurrentBuffTraits: true,
-      ));
-      if (!currentBuffMatch) {
-        return false;
-      }
-    }
-
-    return true;
   }
 
   bool checkBuffScript(final BattleData battleData) {
