@@ -1045,7 +1045,7 @@ class FuncDescriptor extends StatelessWidget {
     if (func.traitVals.isNotEmpty) {
       if (func.funcType == FuncType.subState) {
         _addTraits(Transl.special.funcTraitRemoval, func.traitVals);
-      } else if (func.funcType == FuncType.gainNpBuffIndividualSum) {
+      } else if (func.funcType == FuncType.gainNpBuffIndividualSum || func.funcType == FuncType.gainNpIndividualSum) {
         spans.addAll(SharedBuilder.replaceSpan(Transl.special.funcTraitPerBuff(), '{0}',
             SharedBuilder.traitSpans(context: context, traits: func.traitVals)));
       } else if (func.funcType == FuncType.eventDropUp) {
@@ -1107,12 +1107,39 @@ class FuncDescriptor extends StatelessWidget {
       if (script.TargetIndiv != null) {
         _addTraits('Target Indiv: ', [script.TargetIndiv!]);
       }
+
+      List<NiceTrait> ownerIndivs = [];
+      bool ownerIndivAnd = false;
       if (buff.script.INDIVIDUALITIE != null) {
-        final indiv = buff.script.INDIVIDUALITIE!;
-        if ((buff.type == BuffType.guts || buff.type == BuffType.gutsRatio) && indiv.signedId == -3086) {
+        ownerIndivs.add(buff.script.INDIVIDUALITIE!);
+      } else if (buff.script.INDIVIDUALITIE_AND != null) {
+        ownerIndivs = buff.script.INDIVIDUALITIE_AND!;
+        ownerIndivAnd = true;
+      } else if (buff.script.INDIVIDUALITIE_OR != null) {
+        ownerIndivs = buff.script.INDIVIDUALITIE_OR!;
+      }
+      if (ownerIndivs.isNotEmpty) {
+        String? countCond;
+        if (buff.script.INDIVIDUALITIE_COUNT_ABOVE != null) {
+          countCond = '≥${buff.script.INDIVIDUALITIE_COUNT_ABOVE}';
+        } else if (buff.script.INDIVIDUALITIE_COUNT_BELOW != null) {
+          countCond = '≤${buff.script.INDIVIDUALITIE_COUNT_BELOW}';
+        }
+        if ((buff.type == BuffType.guts || buff.type == BuffType.gutsRatio) &&
+            ownerIndivs.length == 1 &&
+            ownerIndivs.first.signedId == -3086 &&
+            countCond == null) {
           // don't show gutsBlock
         } else {
-          _addTraits(Transl.special.buffCheckSelf, [buff.script.INDIVIDUALITIE!]);
+          final ownerIndivSpans = SharedBuilder.replaceSpan(
+            Transl.special.buffOwnerIndiv,
+            '{0}',
+            [
+              ...SharedBuilder.traitSpans(context: context, traits: ownerIndivs, useAndJoin: ownerIndivAnd),
+              if (countCond != null) TextSpan(text: countCond)
+            ],
+          );
+          _condSpans.add(ownerIndivSpans);
         }
       }
       if (script.HP_HIGHER != null) {

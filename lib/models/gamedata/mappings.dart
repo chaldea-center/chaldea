@@ -847,6 +847,13 @@ class _SpecialTransl {
         na: 'Buff Target: ',
         kr: '버프 목표: ',
       );
+  String get buffOwnerIndiv => M.of(
+        jp: '{0}を所持で有効',
+        cn: '拥有{0}时生效',
+        tw: null,
+        na: 'Active when having {0}',
+        kr: null,
+      );
   String get funcEventOnly => M.of(
         jp: '『{0}』イベント期間限定',
         cn: '『{0}』活动期间限定',

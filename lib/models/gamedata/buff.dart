@@ -138,7 +138,8 @@ class BuffScript with DataScriptBase {
   List<BuffType>? CheckOpponentBuffTypes;
   BuffRelationOverwrite? relationId;
   NiceTrait? INDIVIDUALITIE; // self indiv?
-  int? INDIVIDUALITIE_COUNT_ABOVE; // used together with INDIVIDUALITIE
+  int? INDIVIDUALITIE_COUNT_ABOVE; // "≥"
+  int? get INDIVIDUALITIE_COUNT_BELOW => toInt('INDIVIDUALITIE_COUNT_BELOW'); // "≤"
   List<NiceTrait>? INDIVIDUALITIE_AND;
   List<NiceTrait>? INDIVIDUALITIE_OR;
   List<NiceTrait>? UpBuffRateBuffIndiv; // Oberon

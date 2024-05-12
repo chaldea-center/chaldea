@@ -94,7 +94,7 @@ class _NpChargePageState extends State<NpChargePage> {
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                   maxLines: 1,
-                  minFontSize: 8,
+                  minFontSize: 6,
                   maxFontSize: 12,
                 ),
               ),
@@ -384,7 +384,7 @@ class _NpChargePageState extends State<NpChargePage> {
         children: [
           Icon(
             Icons.settings,
-            color: Theme.of(context).colorScheme.background,
+            color: Theme.of(context).colorScheme.primary,
           ),
           const SizedBox(width: 8),
           Expanded(child: child),
@@ -566,10 +566,16 @@ class _NpChargePageState extends State<NpChargePage> {
         value = '${_fmt(sortValue)}×N';
         type = NpChargeType.special;
       }
-    } else if (func.funcType == FuncType.gainNpBuffIndividualSum) {
+    } else if (func.funcType == FuncType.gainNpBuffIndividualSum || func.funcType == FuncType.gainNpIndividualSum) {
       if (sval.Value != null) {
         sortValue = sval.Value!;
         value = '${_fmt(sortValue)}×N';
+        type = NpChargeType.special;
+      }
+    } else if (func.funcType == FuncType.gainMultiplyNp) {
+      if (sval.Value != null) {
+        sortValue = 0;
+        value = '×(1+${sval.Value!.format(base: 10, percent: true)})';
         type = NpChargeType.special;
       }
     }

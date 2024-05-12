@@ -194,10 +194,10 @@ class ValDsc extends StatelessWidget {
         _addPercent(parts, vals.UseRate, 10, (v) => Transl.special.funcValActChance(v));
       }
     } else if (func.funcType == FuncType.gainHpFromTargets) {
-      _addInt(parts, vals.DependFuncVals?.Value);
+      _addInt(parts, vals.DependFuncVals?.Value, (s) => '$s×N');
     } else if (func.funcType == FuncType.gainNpFromTargets) {
       // Absorb Value, charge Value2
-      _addPercent(parts, vals.DependFuncVals?.Value2 ?? vals.DependFuncVals?.Value, 100);
+      _addPercent(parts, vals.DependFuncVals?.Value2 ?? vals.DependFuncVals?.Value, 100, (s) => '$s×N');
     } else if (func.funcType == FuncType.absorbNpturn) {
       final v2 = vals.DependFuncVals?.Value2 ?? vals.DependFuncVals?.Value;
       if (v2 != null) {
@@ -226,6 +226,10 @@ class ValDsc extends StatelessWidget {
             } else {
               parts.add(vals.Value.toString());
             }
+            break;
+          case FuncType.gainNpIndividualSum:
+          case FuncType.gainNpBuffIndividualSum:
+            _addPercent(parts, vals.Value, 100, (s) => '$s×N');
             break;
           case FuncType.transformServant:
             // already added in func text
