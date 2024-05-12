@@ -18,6 +18,8 @@ RemoteConfig _$RemoteConfigFromJson(Map json) => $checkedCreate(
               'blockedErrors', (v) => (v as List<dynamic>?)?.map((e) => e as String).toList() ?? const []),
           urls: $checkedConvert(
               'urls', (v) => v == null ? null : ServerUrlConfig.fromJson(Map<String, dynamic>.from(v as Map))),
+          silenceStart: $checkedConvert('silenceStart', (v) => (v as num?)?.toInt() ?? 0),
+          silenceEnd: $checkedConvert('silenceEnd', (v) => (v as num?)?.toInt() ?? 0),
           ad: $checkedConvert('ad', (v) => v == null ? null : AdConfig.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         return val;
@@ -29,6 +31,8 @@ Map<String, dynamic> _$RemoteConfigToJson(RemoteConfig instance) => <String, dyn
       'blockedCarousels': instance.blockedCarousels,
       'blockedErrors': instance.blockedErrors,
       'urls': instance.urls.toJson(),
+      'silenceStart': instance.silenceStart,
+      'silenceEnd': instance.silenceEnd,
       'ad': instance.ad.toJson(),
     };
 

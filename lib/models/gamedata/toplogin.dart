@@ -278,6 +278,9 @@ class UserMstData {
   // userQuestInfo,userEvent,
   // beforeBirthDay
 
+  // account
+  List<UserAccountLinkage> userAccountLinkage;
+
   // transformed
   @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, UserSvtCoin> coinMap = {};
@@ -308,6 +311,7 @@ class UserMstData {
     List<UserEventMission>? userEventMission,
     List<UserShop>? userShop,
     List<UserQuest>? userQuest,
+    List<UserAccountLinkage>? userAccountLinkage,
   })  : userGame = userGame ?? [],
         userSvtCollection = userSvtCollection ?? [],
         userSvt = userSvt ?? [],
@@ -328,7 +332,8 @@ class UserMstData {
         userGacha = userGacha ?? [],
         userEventMission = userEventMission ?? [],
         userShop = userShop ?? [],
-        userQuest = userQuest ?? [] {
+        userQuest = userQuest ?? [],
+        userAccountLinkage = userAccountLinkage ?? [] {
     for (final e in this.userSvtCoin) {
       coinMap[e.svtId] = e;
     }
@@ -1523,4 +1528,21 @@ class ServantLeaderInfo {
         eventSvtPoint = _toInt(eventSvtPoint);
 
   factory ServantLeaderInfo.fromJson(Map<String, dynamic> data) => _$ServantLeaderInfoFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserAccountLinkage {
+  int userId;
+  int type; // 1-aniplex, 2=0?
+  int linkedAt;
+
+  UserAccountLinkage({
+    dynamic userId,
+    dynamic type,
+    dynamic linkedAt,
+  })  : userId = _toInt(userId),
+        type = _toInt(type),
+        linkedAt = _toInt(linkedAt);
+
+  factory UserAccountLinkage.fromJson(Map<String, dynamic> data) => _$UserAccountLinkageFromJson(data);
 }

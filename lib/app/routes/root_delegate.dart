@@ -113,11 +113,22 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
 
   @override
   Widget build(BuildContext context) {
+    Widget child = WindowManager(delegate: this);
+    if (db.runtimeData.remoteConfig?.isSilence == true) {
+      child = ColorFiltered(
+        colorFilter: const ColorFilter.matrix(<double>[
+          // grey scale
+          0.2126, 0.7152, 0.0722, 0, 0,
+          0.2126, 0.7152, 0.0722, 0, 0,
+          0.2126, 0.7152, 0.0722, 0, 0,
+          0, 0, 0, 1, 0,
+        ]),
+        child: child,
+      );
+    }
     return Navigator(
       key: navigatorKey,
-      pages: [
-        MaterialPage(child: WindowManager(delegate: this)),
-      ],
+      pages: [MaterialPage(child: child)],
       onPopPage: (route, result) {
         if (!route.didPop(result)) return false;
         if (!appState.windowState.isSingle) {

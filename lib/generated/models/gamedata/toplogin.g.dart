@@ -93,6 +93,9 @@ UserMstData _$UserMstDataFromJson(Map json) => UserMstData(
       userQuest: (json['userQuest'] as List<dynamic>?)
           ?.map((e) => UserQuest.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      userAccountLinkage: (json['userAccountLinkage'] as List<dynamic>?)
+          ?.map((e) => UserAccountLinkage.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
     );
 
 UserItem _$UserItemFromJson(Map json) => UserItem(
@@ -474,4 +477,10 @@ ServantLeaderInfo _$ServantLeaderInfoFromJson(Map json) => ServantLeaderInfo(
       commandCardParam: json['commandCardParam'],
       appendPassiveSkill: (json['appendPassiveSkill'] as List<dynamic>?)?.map((e) => e as Map).toList(),
       eventSvtPoint: json['eventSvtPoint'],
+    );
+
+UserAccountLinkage _$UserAccountLinkageFromJson(Map json) => UserAccountLinkage(
+      userId: json['userId'],
+      type: json['type'],
+      linkedAt: json['linkedAt'],
     );

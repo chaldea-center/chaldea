@@ -1,3 +1,4 @@
+import 'package:chaldea/utils/utils.dart';
 import '../db.dart';
 import '_helper.dart';
 import 'local_settings.dart';
@@ -10,6 +11,8 @@ class RemoteConfig {
   List<String> blockedCarousels;
   List<String> blockedErrors;
   ServerUrlConfig urls;
+  int silenceStart;
+  int silenceEnd;
   AdConfig ad;
 
   RemoteConfig({
@@ -17,6 +20,8 @@ class RemoteConfig {
     this.blockedCarousels = const [],
     this.blockedErrors = const [],
     ServerUrlConfig? urls,
+    this.silenceStart = 0,
+    this.silenceEnd = 0,
     AdConfig? ad,
   })  : urls = urls ?? ServerUrlConfig(),
         ad = ad ?? AdConfig();
@@ -24,6 +29,11 @@ class RemoteConfig {
   factory RemoteConfig.fromJson(Map<String, dynamic> data) => _$RemoteConfigFromJson(data);
 
   Map<String, dynamic> toJson() => _$RemoteConfigToJson(this);
+
+  bool get isSilence {
+    final now = DateTime.now().timestamp;
+    return now >= silenceStart && now <= silenceEnd;
+  }
 }
 
 @JsonSerializable()
