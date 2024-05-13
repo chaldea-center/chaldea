@@ -379,7 +379,7 @@ class FixedDrop {
   factory FixedDrop.fromJson(Map<String, dynamic> json) => _$FixedDropFromJson(json);
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
 class LimitedSummon with RouteInfo {
   String id;
   String name;
@@ -419,8 +419,11 @@ class LimitedSummon with RouteInfo {
         endTime = endTime ?? MappingBase();
 
   factory LimitedSummon.fromJson(Map<String, dynamic> json) => _$LimitedSummonFromJson(json);
+  Map<String, dynamic> toJson() => _$LimitedSummonToJson(this);
 
-  bool get isLuckyBag => type == SummonType.gssr || type == SummonType.gssrsr;
+  bool get isLuckyBag => type.isLuckyBag;
+
+  bool get isDestiny => ConstData.destinyOrderSummons.contains(id);
 
   Transl<String, String> get lName => Transl.summonNames(name);
 
@@ -500,7 +503,7 @@ class LimitedSummon with RouteInfo {
   }
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
 class SubSummon {
   String title;
   List<ProbGroup> probs;
@@ -512,11 +515,13 @@ class SubSummon {
 
   factory SubSummon.fromJson(Map<String, dynamic> json) => _$SubSummonFromJson(json);
 
+  Map<String, dynamic> toJson() => _$SubSummonToJson(this);
+
   Iterable<ProbGroup> get svts => probs.where((e) => e.isSvt);
   Iterable<ProbGroup> get crafts => probs.where((e) => !e.isSvt);
 }
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable()
 class ProbGroup {
   bool isSvt;
   int rarity;
@@ -533,6 +538,7 @@ class ProbGroup {
   }) : assert(ids.isNotEmpty);
 
   factory ProbGroup.fromJson(Map<String, dynamic> json) => _$ProbGroupFromJson(json);
+  Map<String, dynamic> toJson() => _$ProbGroupToJson(this);
 }
 
 enum SummonType {
@@ -540,7 +546,9 @@ enum SummonType {
   limited,
   gssr,
   gssrsr,
-  unknown,
+  unknown;
+
+  bool get isLuckyBag => this == gssr || this == gssrsr;
 }
 
 enum SvtObtain {

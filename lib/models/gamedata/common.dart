@@ -431,6 +431,19 @@ extension SvtClassX on SvtClass {
     SvtClass.assassin,
     SvtClass.berserker,
   ];
+
+  static const extraI = <SvtClass>[
+    SvtClass.ruler,
+    SvtClass.avenger,
+    SvtClass.moonCancer,
+  ];
+
+  static const extraII = <SvtClass>[
+    SvtClass.alterEgo,
+    SvtClass.foreigner,
+    SvtClass.pretender,
+    SvtClass.beast,
+  ];
   static const extra = <SvtClass>[
     SvtClass.ruler,
     SvtClass.avenger,
@@ -438,6 +451,7 @@ extension SvtClassX on SvtClass {
     SvtClass.moonCancer,
     SvtClass.foreigner,
     SvtClass.pretender,
+    SvtClass.beast,
     SvtClass.shielder,
   ];
   static const beasts = <SvtClass>[

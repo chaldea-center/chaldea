@@ -25,6 +25,7 @@ class ConstGameData {
   final Map<int, SvtExpCurve> svtExp;
   final Map<int, FuncTypeDetail> funcTypeDetail;
   final Map<int, BuffTypeDetail> buffTypeDetail;
+  final List<String> destinyOrderSummons;
 
   final Map<int, int> bondLimitQp = {10: 10000000, 11: 12000000, 12: 14000000, 13: 16000000, 14: 18000000};
   final Map<BuffType, List<BuffAction>> buffTypeActionMap;
@@ -72,6 +73,7 @@ class ConstGameData {
     this.randomEnemyQuests = const [],
     this.svtFaceLimits = const {},
     this.config = const ConstDataConfig(),
+    this.destinyOrderSummons = const [],
   }) : buffTypeActionMap = {} {
     for (final entry in buffActions.entries) {
       for (final type in [...entry.value.plusTypes, ...entry.value.minusTypes]) {

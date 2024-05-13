@@ -12,6 +12,7 @@ class SummonUtil {
     bool showFavorite = true,
     bool showCategory = true,
     bool showNpLv = true,
+    String? title,
   }) {
     final grid = Wrap(
       spacing: 4,
@@ -48,7 +49,7 @@ class SummonUtil {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SHeader(
-            '$kStarChar${block.rarity}',
+            title ?? '$kStarChar${block.rarity}',
             padding: const EdgeInsets.only(left: 0, top: 4, bottom: 2),
           ),
           grid,

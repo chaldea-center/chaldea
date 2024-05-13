@@ -102,6 +102,8 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
       config: json['config'] == null
           ? const ConstDataConfig()
           : ConstDataConfig.fromJson(Map<String, dynamic>.from(json['config'] as Map)),
+      destinyOrderSummons:
+          (json['destinyOrderSummons'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
     );
 
 Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, dynamic>{
@@ -122,6 +124,7 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
       'svtExp': instance.svtExp.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'funcTypeDetail': instance.funcTypeDetail.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'buffTypeDetail': instance.buffTypeDetail.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'destinyOrderSummons': instance.destinyOrderSummons,
       'svtLimitHides': instance.svtLimitHides.map((k, e) => MapEntry(k.toString(), e.map((e) => e.toJson()).toList())),
       'eventPointBuffGroupSkillNumMap': instance.eventPointBuffGroupSkillNumMap
           .map((k, e) => MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),

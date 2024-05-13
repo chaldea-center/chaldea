@@ -249,6 +249,23 @@ LimitedSummon _$LimitedSummonFromJson(Map json) => LimitedSummon(
           const [],
     );
 
+Map<String, dynamic> _$LimitedSummonToJson(LimitedSummon instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'mcLink': instance.mcLink,
+      'fandomLink': instance.fandomLink,
+      'banner': instance.banner.toJson(),
+      'officialBanner': instance.officialBanner.toJson(),
+      'noticeLink': instance.noticeLink.toJson(),
+      'startTime': instance.startTime.toJson(),
+      'endTime': instance.endTime.toJson(),
+      'type': _$SummonTypeEnumMap[instance.type]!,
+      'rollCount': instance.rollCount,
+      'puSvt': instance.puSvt,
+      'puCE': instance.puCE,
+      'subSummons': instance.subSummons.map((e) => e.toJson()).toList(),
+    };
+
 const _$SummonTypeEnumMap = {
   SummonType.story: 'story',
   SummonType.limited: 'limited',
@@ -265,6 +282,11 @@ SubSummon _$SubSummonFromJson(Map json) => SubSummon(
           const [],
     );
 
+Map<String, dynamic> _$SubSummonToJson(SubSummon instance) => <String, dynamic>{
+      'title': instance.title,
+      'probs': instance.probs.map((e) => e.toJson()).toList(),
+    };
+
 ProbGroup _$ProbGroupFromJson(Map json) => ProbGroup(
       isSvt: json['isSvt'] as bool,
       rarity: (json['rarity'] as num).toInt(),
@@ -272,3 +294,11 @@ ProbGroup _$ProbGroupFromJson(Map json) => ProbGroup(
       display: json['display'] as bool,
       ids: (json['ids'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
     );
+
+Map<String, dynamic> _$ProbGroupToJson(ProbGroup instance) => <String, dynamic>{
+      'isSvt': instance.isSvt,
+      'rarity': instance.rarity,
+      'weight': instance.weight,
+      'display': instance.display,
+      'ids': instance.ids,
+    };

@@ -31,7 +31,7 @@ class SummonDetailPage extends StatefulWidget {
 class _SummonDetailPageState extends State<SummonDetailPage> {
   LimitedSummon? _summon;
   LimitedSummon get summon => _summon!;
-  List<NiceGacha> gachaGroup = [];
+  List<List<NiceGacha>> gachaGroups = [];
   int curIndex = 0;
   final _rawGachaTileKey = GlobalKey();
   final _scrollController = ScrollController();
@@ -48,12 +48,11 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
 
     final startJp = summon.startTime.jp, endJp = summon.endTime.jp;
     if (startJp != null && endJp != null) {
-      gachaGroup = db.gameData.others.gachaGroups.values.firstWhereOrNull((group) {
-            if (group.isEmpty) return false;
-            return (Maths.min(group.map((e) => e.openedAt)) - startJp).abs() < 3601 &&
-                (Maths.max(group.map((e) => e.closedAt)) - endJp).abs() < 3601;
-          }) ??
-          [];
+      gachaGroups = db.gameData.others.gachaGroups.values.where((group) {
+        if (group.isEmpty) return false;
+        return (Maths.min(group.map((e) => e.openedAt)) - startJp).abs() < 3601 &&
+            (Maths.max(group.map((e) => e.closedAt)) - endJp).abs() < 3601;
+      }).toList();
     }
   }
 
@@ -158,8 +157,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             )
           ]),
         if (summon.isLuckyBag)
-          CustomTableRow.fromTexts(
-              texts: ['${S.current.lucky_bag}(${summon.type == SummonType.gssrsr ? 'SSR+SR' : 'SSR'})'])
+          CustomTableRow.fromTexts(texts: [Transl.enums(summon.type, (enums) => enums.summonType).l])
       ]),
       if (summon.subSummons.isEmpty && (summon.puSvt.isNotEmpty || summon.puCE.isNotEmpty)) pickupOverviewOnDetail,
       if (summon.subSummons.isNotEmpty) ...[
@@ -202,44 +200,47 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     ];
 
     // final startJp = summon.startTime.jp, endJp = summon.endTime.jp;
-    if (gachaGroup.isNotEmpty) {
+    if (gachaGroups.isNotEmpty) {
       children.add(const Divider(height: 16));
-      children.add(TileGroup(
-        key: _rawGachaTileKey,
-        header: S.current.raw_gacha_data,
-        children: [
-          for (final gacha in gachaGroup)
-            ListTile(
-              dense: true,
-              title: Text(gacha.lName),
-              subtitle: Text([
-                // gacha.detailUrl,
-                [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
-              ].join('\n')),
-              trailing: GachaBanner(
-                imageId: gacha.imageId,
-                region: Region.jp,
-                background: false,
+      for (final (index, group) in gachaGroups.indexed) {
+        children.add(TileGroup(
+          key: index == 0 ? _rawGachaTileKey : null,
+          header: S.current.raw_gacha_data + (gachaGroups.length > 1 ? ' ${index + 1}' : ''),
+          children: [
+            for (final gacha in group)
+              ListTile(
+                dense: true,
+                title: Text(gacha.lName),
+                subtitle: Text([
+                  // gacha.detailUrl,
+                  [gacha.openedAt, gacha.closedAt].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
+                ].join('\n')),
+                trailing: GachaBanner(
+                  imageId: gacha.imageId,
+                  region: Region.jp,
+                  background: false,
+                ),
+                onTap: () {
+                  gacha.routeTo(region: Region.jp);
+                },
               ),
-              onTap: () {
-                gacha.routeTo(region: Region.jp);
-              },
-            ),
-        ],
-      ));
-      if (Language.isZH) {
-        children.add(Center(
-          child: ElevatedButton(
-            onPressed: () {
-              router.pushPage(MCSummonCreatePage(
-                gachas: gachaGroup.toList(),
-                nameJp: summon.name,
-                nameZh: summon.mcLink?.replaceAll('_', ' '),
-              ));
-            },
-            child: Text("${S.current.create_mooncell_summon}(${gachaGroup.length})"),
-          ),
+          ],
         ));
+
+        if (Language.isZH) {
+          children.add(Center(
+            child: ElevatedButton(
+              onPressed: () {
+                router.pushPage(MCSummonCreatePage(
+                  gachas: group.toList(),
+                  nameJp: summon.name,
+                  nameZh: summon.mcLink?.replaceAll('_', ' '),
+                ));
+              },
+              child: Text("${S.current.create_mooncell_summon}(${group.length})"),
+            ),
+          ));
+        }
       }
     }
 
@@ -325,16 +326,42 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     final data = summon.subSummons[curIndex];
 
     List<Widget> children = [];
-    for (final block in data.probs) {
-      if (!_expanded && !block.display) continue;
-      children.add(Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: SummonUtil.buildBlock(
-          context: context,
-          block: block,
-        ),
-      ));
+    if (summon.isDestiny) {
+      final svtIds = data.probs.where((e) => e.isSvt && e.rarity == 5).expand((e) => e.ids).toList();
+      if (svtIds.isNotEmpty) {
+        final groups = <(String, List<SvtClass>)>[
+          ...SvtClassX.regular.map((e) => (Transl.svtClassId(e.value).l, [e])),
+          ('Extra I', SvtClassX.extraI),
+          ('Extra II', SvtClassX.extraII),
+        ];
+        for (final (title, svtClasses) in groups) {
+          final ids = svtIds.where((e) => svtClasses.contains(db.gameData.servantsNoDup[e]?.className)).toList();
+          final favoriteIds = ids.where((e) => db.curUser.svtStatusOf(e).favorite).toList();
+          children.add(Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: SummonUtil.buildBlock(
+              context: context,
+              block: ProbGroup(isSvt: true, rarity: 5, weight: 0, display: true, ids: ids),
+              title: '$title (${favoriteIds.length}/${ids.length})',
+              showProb: false,
+              showStar: false,
+            ),
+          ));
+        }
+      }
+    } else {
+      for (final block in data.probs) {
+        if (!_expanded && !block.display) continue;
+        children.add(Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: SummonUtil.buildBlock(
+            context: context,
+            block: block,
+          ),
+        ));
+      }
     }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -466,7 +493,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
 
   Widget get buttonBar {
     Widget simulatorBtn = FilledButton(
-      onPressed: summon.subSummons.isEmpty && gachaGroup.isEmpty
+      onPressed: summon.subSummons.isEmpty && gachaGroups.isEmpty
           ? null
           : () {
               if (summon.subSummons.isNotEmpty) {
@@ -481,14 +508,16 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
             },
       child: Text(
         S.current.simulator,
-        style: (summon.subSummons.isNotEmpty || gachaGroup.isNotEmpty) &&
-                (summon.subSummons.isEmpty || summon.subSummons.length != gachaGroup.length)
+        style: (summon.subSummons.isNotEmpty || gachaGroups.isNotEmpty) &&
+                (summon.subSummons.isEmpty ||
+                    gachaGroups.length > 1 ||
+                    summon.subSummons.length != gachaGroups.firstOrNull?.length)
             ? const TextStyle(decoration: TextDecoration.underline)
             : null,
       ),
     );
     Widget? expBtn;
-    if (summon.isLuckyBag && summon.subSummons.isNotEmpty) {
+    if (summon.isLuckyBag && !summon.isDestiny && summon.subSummons.isNotEmpty) {
       expBtn = ElevatedButton(
         onPressed: () => router.push(child: LuckyBagExpectation(summon: summon)),
         child: Text(S.current.summon_expectation_btn),
