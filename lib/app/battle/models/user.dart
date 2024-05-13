@@ -51,20 +51,22 @@ class PlayerSvtData {
     td = svt!.groupedNoblePhantasms[1]?.first;
   }
 
-  void onSelectServant(Servant selectedSvt, {Region? region, int? jpTime}) {
+  PreferPlayerSvtDataSource onSelectServant(Servant selectedSvt,
+      {PreferPlayerSvtDataSource? source, Region? region, int? jpTime}) {
+    source ??= db.settings.battleSim.playerDataSource;
     svt = selectedSvt;
     if (supportType == SupportSvtType.npc) {
       supportType = SupportSvtType.none;
     }
     fixedAtk = fixedHp = null;
     final status = db.curUser.svtStatusOf(selectedSvt.collectionNo);
-    final plan = db.settings.battleSim.playerDataSource == PreferPlayerSvtDataSource.target
-        ? db.curUser.svtPlanOf(selectedSvt.collectionNo)
-        : status.cur;
+    final plan =
+        source == PreferPlayerSvtDataSource.target ? db.curUser.svtPlanOf(selectedSvt.collectionNo) : status.cur;
 
-    if (!db.settings.battleSim.playerDataSource.isNone && status.cur.favorite && selectedSvt.collectionNo > 0) {
+    if (!source.isNone && status.cur.favorite && selectedSvt.collectionNo > 0) {
       fromUserSvt(svt: selectedSvt, status: status, plan: plan);
     } else {
+      source = PreferPlayerSvtDataSource.none;
       final defaults = db.settings.battleSim.defaultLvs;
       int defaultLv, defaultTdLv;
       if (defaults.useMaxLv) {
@@ -99,6 +101,7 @@ class PlayerSvtData {
     extraPassives = selectedSvt.extraPassive.toList();
 
     updateRankUps(region: region, jpTime: jpTime);
+    return source;
   }
 
   void fromUserSvt({

@@ -353,46 +353,52 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   Widget get popupMenu {
     return PopupMenuButton<dynamic>(
       enabled: enableEdit,
-      itemBuilder: (context) => [
-        PopupMenuItem(
-          enabled: false,
-          height: 24,
-          child: Text(S.current.select, style: Theme.of(context).textTheme.bodySmall),
-        ),
-        const PopupMenuItem(
-          enabled: false,
-          height: 8,
-          padding: EdgeInsets.zero,
-          child: Divider(),
-        ),
-        PopupMenuItem(
-          onTap: () {
-            selectSvt();
-          },
-          child: Text(S.current.servant),
-        ),
-        PopupMenuItem(
-          onTap: () {
-            selectSvtEntity();
-          },
-          child: Text(S.current.enemy),
-        ),
-        if (questPhase?.supportServants.isNotEmpty == true)
+      itemBuilder: (context) {
+        return [
+          PopupMenuItem(
+            enabled: false,
+            height: 24,
+            child: Text(S.current.select, style: Theme.of(context).textTheme.bodySmall),
+          ),
+          const PopupMenuItem(
+            enabled: false,
+            height: 8,
+            padding: EdgeInsets.zero,
+            child: Divider(),
+          ),
           PopupMenuItem(
             onTap: () {
-              selectSupport();
+              selectSvt();
             },
-            child: Text(S.current.support_servant),
+            child: Text(S.current.servant),
           ),
-        const PopupMenuDivider(),
-        PopupMenuItem(
-          enabled: playerSvtData.svt != null && !playerSvtData.supportType.isSupport,
-          onTap: () {
-            resyncServantData();
-          },
-          child: Text(S.current.svt_option_resync),
-        ),
-      ],
+          PopupMenuItem(
+            onTap: () {
+              selectSvtEntity();
+            },
+            child: Text(S.current.enemy),
+          ),
+          if (questPhase?.supportServants.isNotEmpty == true)
+            PopupMenuItem(
+              onTap: () {
+                selectSupport();
+              },
+              child: Text(S.current.support_servant),
+            ),
+          const PopupMenuDivider(),
+          for (final source in PreferPlayerSvtDataSource.values)
+            PopupMenuItem(
+              enabled: playerSvtData.svt != null &&
+                  !playerSvtData.supportType.isSupport &&
+                  (source.isNone ||
+                      (playerSvtData.svt?.isUserSvt == true && playerSvtData.svt?.status.favorite == true)),
+              onTap: () {
+                resyncServantData(source);
+              },
+              child: Text('${S.current.svt_option_resync}(${source.detailName})'),
+            ),
+        ];
+      },
     );
   }
 
@@ -1145,21 +1151,20 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     );
   }
 
-  void resyncServantData() {
+  void resyncServantData(PreferPlayerSvtDataSource source) {
     final selectedSvt = playerSvtData.svt;
     if (selectedSvt == null || playerSvtData.supportType.isSupport) {
       return;
     }
-    playerSvtData.onSelectServant(
+    final resultSource = playerSvtData.onSelectServant(
       selectedSvt,
+      source: source,
       region: widget.playerRegion,
       jpTime: questPhase?.jpOpenAt,
     );
-    final type = db.settings.battleSim.playerDataSource
-        .resolve(db.curUser.svtStatusOf(selectedSvt.collectionNo).favorite)
-        .detailName;
+
     if (mounted) setState(() {});
-    EasyLoading.showSuccess('${S.current.updated}($type)');
+    EasyLoading.showSuccess('${S.current.updated}(${resultSource.detailName})');
   }
 
   Future<void> _onSelectSupport(final SupportServant support) async {
