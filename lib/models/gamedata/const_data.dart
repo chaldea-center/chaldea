@@ -26,6 +26,7 @@ class ConstGameData {
   final Map<int, FuncTypeDetail> funcTypeDetail;
   final Map<int, BuffTypeDetail> buffTypeDetail;
   final List<String> destinyOrderSummons;
+  final List<SvtClass> destinyOrderClasses = [...SvtClassX.regular, SvtClass.EXTRA1, SvtClass.EXTRA2];
 
   final Map<int, int> bondLimitQp = {10: 10000000, 11: 12000000, 12: 14000000, 13: 16000000, 14: 18000000};
   final Map<BuffType, List<BuffAction>> buffTypeActionMap;

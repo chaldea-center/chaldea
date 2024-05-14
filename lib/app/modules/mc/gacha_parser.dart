@@ -37,7 +37,7 @@ class GachaProbData {
 
   LimitedSummon toSummon() {
     return LimitedSummon(
-      id: '0',
+      id: gacha.id.toString(),
       name: gacha.lName.setMaxLines(1),
       officialBanner: MappingBase(jp: AssetURL.i.summonBanner(gacha.imageId)),
       type: gacha.isLuckyBag ? SummonType.gssr : SummonType.limited,

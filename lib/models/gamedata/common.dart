@@ -340,10 +340,8 @@ enum SvtClass {
   ALL(1001, 'ALL'), // ignore: constant_identifier_names
   EXTRA(1002, 'EXTRA'), // ignore: constant_identifier_names
   MIX(1003, 'MIX'), // ignore: constant_identifier_names
-  // ignore: constant_identifier_names
-  EXTRA1(1004, 'EXTRA1'),
-  // ignore: constant_identifier_names
-  EXTRA2(1004, 'EXTRA2'),
+  EXTRA1(1004, 'EXTRA1'), // ignore: constant_identifier_names
+  EXTRA2(1005, 'EXTRA2'), // ignore: constant_identifier_names
   uOlgaMarieFlareCollection(9001),
   uOlgaMarieAquaCollection(9002),
   ;
@@ -436,6 +434,7 @@ extension SvtClassX on SvtClass {
     SvtClass.ruler,
     SvtClass.avenger,
     SvtClass.moonCancer,
+    SvtClass.shielder,
   ];
 
   static const extraII = <SvtClass>[
@@ -445,14 +444,8 @@ extension SvtClassX on SvtClass {
     SvtClass.beast,
   ];
   static const extra = <SvtClass>[
-    SvtClass.ruler,
-    SvtClass.avenger,
-    SvtClass.alterEgo,
-    SvtClass.moonCancer,
-    SvtClass.foreigner,
-    SvtClass.pretender,
-    SvtClass.beast,
-    SvtClass.shielder,
+    ...extraI,
+    ...extraII,
   ];
   static const beasts = <SvtClass>[
     SvtClass.beast,
@@ -486,6 +479,22 @@ extension SvtClassX on SvtClass {
       return !SvtClassX.regularAllWithBeasts.contains(value);
     }
     return false;
+  }
+
+  static List<SvtClass> resolveClasses(SvtClass svtClass) {
+    if (svtClass == SvtClass.EXTRA1) {
+      return SvtClassX.extraI;
+    } else if (svtClass == SvtClass.EXTRA2) {
+      return SvtClassX.extraII;
+    } else if (svtClass == SvtClass.EXTRA) {
+      return SvtClassX.extra;
+    } else if (svtClass == SvtClass.ALL) {
+      return [...SvtClassX.regular, ...SvtClassX.extra];
+    } else if (svtClass == SvtClass.none) {
+      return const [];
+    } else {
+      return [svtClass];
+    }
   }
 }
 

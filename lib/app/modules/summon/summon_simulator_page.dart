@@ -1,7 +1,10 @@
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/analysis/analysis.dart';
@@ -80,7 +83,15 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
             icon: const Icon(Icons.replay),
             tooltip: S.current.reset,
             onPressed: reset,
-          )
+          ),
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                onTap: monteCarloTest,
+                child: const Text('Monte Carlo Test'),
+              ),
+            ],
+          ),
         ],
       ),
       body: customScrollView,
@@ -97,14 +108,15 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
               imageUrls: summon.resolvedBanner.values.toList(),
             ),
             if (summon.subSummons.length > 1) dropdownButton,
-            if (data.probs.isNotEmpty) details,
-            if (data.probs.isEmpty)
-              const Padding(
-                padding: EdgeInsets.all(16),
-                child: Center(
-                  child: Text('No data'),
-                ),
-              ),
+            data.probs.isEmpty
+                ? const Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Center(
+                      child: Text('No data'),
+                    ),
+                  )
+                : details,
+            if (summon.isDestiny) destinyOrderSelects,
           ]),
         ),
         if (data.probs.isNotEmpty) ...[
@@ -247,6 +259,8 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     );
   }
 
+  bool _expanded = false;
+
   Widget get details {
     List<Widget> svtRow = [];
     for (final block in data.svts) {
@@ -307,7 +321,73 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     );
   }
 
-  bool _expanded = false;
+  Widget get destinyOrderSelects {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          for (final svtClass in ConstData.destinyOrderClasses)
+            Flexible(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                constraints: const BoxConstraints(maxWidth: 56),
+                child: buildDestinyClassSelect(svtClass),
+              ),
+            )
+        ],
+      ),
+    );
+  }
+
+  Map<SvtClass, Servant> selectedDestinyOrderServants = {};
+  SvtFilterData destinyOrderSvtFilter = SvtFilterData();
+
+  Widget buildDestinyClassSelect(SvtClass svtClass) {
+    final svt = selectedDestinyOrderServants[svtClass];
+    Widget child = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        db.getIconImage(svtClass.icon(5), width: 32, height: 32, padding: const EdgeInsets.all(4)),
+        CachedImage(
+          imageUrl: svt?.customIcon ?? Atlas.common.emptySvtIcon,
+          aspectRatio: 132 / 144,
+        )
+      ],
+    );
+    child = InkWell(
+      onTap: () {
+        final validClasses = SvtClassX.resolveClasses(svtClass);
+        router.pushPage(ServantListPage(
+          filterData: destinyOrderSvtFilter
+            ..svtClass.options = validClasses.toSet()
+            ..rarity.options = {5},
+          onSelected: (selectedSvt) {
+            if (selectedSvt.type == SvtType.normal &&
+                selectedSvt.collectionNo > 0 &&
+                selectedSvt.rarity == 5 &&
+                validClasses.contains(selectedSvt.className) &&
+                data.svts.any((e) => e.ids.contains(selectedSvt.collectionNo))) {
+              if (mounted) {
+                setState(() {
+                  selectedDestinyOrderServants[svtClass] = selectedSvt;
+                });
+              }
+            } else {
+              EasyLoading.showError(S.current.invalid_input);
+            }
+          },
+        ));
+      },
+      onLongPress: () {
+        selectedDestinyOrderServants.remove(svtClass);
+        setState(() {});
+      },
+      child: child,
+    );
+    return child;
+  }
 
   Widget curResult() {
     if (history.isEmpty) return Container();
@@ -441,68 +521,11 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   }
 
   void startGacha(int times, int quartz) {
-    // // Monte Carlo test
-    // // 100(11000000) = 1.03640 + 3.11976 + 39.80255 + 4.15877 + 12.48025 + 39.40226
-    // // standards: 1+3+40+4+12+40
-    // int total = 0, s5 = 0, s4 = 0, s3 = 0, c5 = 0, c4 = 0, c3 = 0;
-    // for (int i = 0; i < 1000000; i++) {
-    //   final cards = summonWithGuarantee(11);
-    //   total += cards.length;
-    //   s5 += cards.where((e) => e is Servant && e.rarity == 5).length;
-    //   s4 += cards.where((e) => e is Servant && e.rarity == 4).length;
-    //   s3 += cards.where((e) => e is Servant && e.rarity == 3).length;
-    //   c5 += cards.where((e) => e is CraftEssence && e.rarity == 5).length;
-    //   c4 += cards.where((e) => e is CraftEssence && e.rarity == 4).length;
-    //   c3 += cards.where((e) => e is CraftEssence && e.rarity == 3).length;
-    //   if ((i + 1) % 1000 == 0) {
-    //     String _percent(int x) => (x / total * 100).toStringAsFixed(5);
-    //     print('${i + 1}: 100($total) ='
-    //         ' ${_percent(s5)} +'
-    //         ' ${_percent(s4)} +'
-    //         ' ${_percent(s3)} +'
-    //         ' ${_percent(c5)} +'
-    //         ' ${_percent(c4)} +'
-    //         ' ${_percent(c3)}');
-    //   }
-    // }
-    // Monte Carlo test
-    // 100(11000000) = 1.03640 + 3.11976 + 39.80255 + 4.15877 + 12.48025 + 39.40226
-    // standards: 1+3+40+4+12+40
-
-    // // SSR, SSR+SR
-    // Map<int, int> counts = {};
-    // int cycles = 1000000;
-    // StringBuffer buffer=StringBuffer('Statistics:\nTotal: $cycles x11\n');
-    // for (int i = 0; i < cycles; i++) {
-    //   final cards = summonWithGuarantee(11);
-    //   int s5 = cards.where((e) => e is Servant && e.rarity == 5).length;
-    //   int s4 = cards.where((e) => e is Servant && e.rarity == 4).length;
-    //   int key = s5 * 10 + s4;
-    //   counts[key] = (counts[key] ?? 0) + 1;
-    //   if ((i + 1) % 10000 == 0) {
-    //     print('progress: ${i + 1}/$cycles');
-    //   }
-    // }
-    // String _percent(int x) => (x / cycles * 100).toStringAsFixed(5);
-    // List<int> counts5 = List.generate(11, (index) {
-    //   int c = 0;
-    //   counts.forEach((key, value) {
-    //     if (key ~/ 10 == index) {
-    //       c += value;
-    //     }
-    //   });
-    //   return c;
-    // });
-    // buffer.writeln('R5:');
-    // for (int index = 0; index < counts5.length; index++) {
-    //   buffer.writeln('  $index:  ${_percent(counts5[index])} ${counts5[index]}');
-    // }
-    // buffer.writeln('R45');
-    // for (final key in counts.keys.toList()..sort()) {
-    //   buffer.writeln('  $key:  ${_percent(counts[key]!)} ${counts[key]}');
-    // }
-    // print(buffer.toString());
-    // return;
+    if (summon.isDestiny && !selectedDestinyOrderServants.keys.toSet().equalTo(ConstData.destinyOrderClasses.toSet())) {
+      EasyLoading.showInfo(
+          "Only ${selectedDestinyOrderServants.length}/${ConstData.destinyOrderClasses.length} selected!");
+      return;
+    }
     List<GameCardMixin> newAdded = summonWithGuarantee(times);
     newAdded.shuffle(random);
     for (final element in newAdded) {
@@ -516,75 +539,157 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     setState(() {});
   }
 
+  void monteCarloTest() async {
+    // standards: 1+3+40+4+12+40
+    // Monte Carlo test
+    // 1. before chaldea 2024.05.14:
+    //    100(11000000) =  1.03640 +  3.11976 + 39.80255 +  4.15877 + 12.48025 + 39.40226
+    // 2. start from 2024.05.14
+    //    100(1100000)  =  1.03155 +  2.97573 + 41.12909 +  4.00864 + 18.14609 + 32.70891
+
+    final String? _inputTenCount = await InputCancelOkDialog(
+      title: "Monte Carlo Test: N×${summon.rollCount}",
+      text: '100000',
+      validate: (s) => (int.tryParse(s) ?? -1) > 0,
+      keyboardType: TextInputType.number,
+    ).showDialog(context);
+    if (_inputTenCount == null) return;
+
+    final inputTenCount = int.parse(_inputTenCount);
+    int total = 0, s5 = 0, s4 = 0, s3 = 0, c5 = 0, c4 = 0, c3 = 0;
+
+    String _percent(int x) => (x / total * 100).toStringAsFixed(5).padLeft(8);
+
+    for (int i = 0; i < inputTenCount; i++) {
+      final cards = summonWithGuarantee(summon.rollCount);
+      total += cards.length;
+      s5 += cards.where((e) => e is Servant && e.rarity == 5).length;
+      s4 += cards.where((e) => e is Servant && e.rarity == 4).length;
+      s3 += cards.where((e) => e is Servant && e.rarity == 3).length;
+      c5 += cards.where((e) => e is CraftEssence && e.rarity == 5).length;
+      c4 += cards.where((e) => e is CraftEssence && e.rarity == 4).length;
+      c3 += cards.where((e) => e is CraftEssence && e.rarity == 3).length;
+      if ((i + 1) % (inputTenCount / 100) == 0 || i + 1 == inputTenCount) {
+        print('${i + 1}: 100($total) ='
+            ' ${_percent(s5)} +'
+            ' ${_percent(s4)} +'
+            ' ${_percent(s3)} +'
+            ' ${_percent(c5)} +'
+            ' ${_percent(c4)} +'
+            ' ${_percent(c3)}');
+      }
+    }
+    if (!mounted) return;
+    SimpleCancelOkDialog(
+      scrollable: true,
+      hideCancel: true,
+      title: const Text("Monte Carlo Test"),
+      content: Text.rich(TextSpan(children: [
+        TextSpan(
+          style: Theme.of(context).textTheme.bodySmall,
+          children: [
+            TextSpan(text: summon.lName.l),
+            TextSpan(
+                text:
+                    '\ntype=${Transl.enums(summon.type, (enums) => enums.summonType).l}, destiny=${summon.isDestiny}'),
+          ],
+        ),
+        TextSpan(
+          style: kMonoStyle,
+          children: [
+            TextSpan(
+                text:
+                    '\nCount: $inputTenCount×${summon.rollCount}=${total.format(compact: false, groupSeparator: ",")}'),
+            TextSpan(
+                text:
+                    '\nsvt : ${_percent(s5 + s4 + s3)}\n  5★ ${_percent(s5)}\n  4★ ${_percent(s4)}\n  3★ ${_percent(s3)}'),
+            TextSpan(
+                text:
+                    '\nce  : ${_percent(c5 + c4 + c3)}\n  5★ ${_percent(c5)}\n  4★ ${_percent(c4)}\n  3★ ${_percent(c3)}'),
+          ],
+        )
+      ])),
+    ).showDialog(context, barrierDismissible: false);
+  }
+
+  /// 保底:
+  /// - Destiny Order(SSR): 5★Destiny -> 4★卡牌 -> 3★从者 -> others
+  /// - 福袋(SSR): 5★从者 -> 4★卡牌 -> 3★从者 -> others
+  /// - 福袋(SSR+SR): 5★从者 -> 4★从者 -> 4★卡牌 -> 3★从者 -> others
+  /// - 普通: 4★卡牌 -> 3★从者 -> others
   List<GameCardMixin> summonWithGuarantee(int times) {
     List<GameCardMixin> results = [];
-    // 10or11连抽保底
-    //
-    // void _ensureCardR4() {
-    //   if (!results.any((e) => e.rarity >= 4)) {
-    //     results.addAll(randomSummon(cardProbs((r) => r >= 4), 1));
-    //   }
-    // }
-    //
-    // void _ensureSvtR(int r) {
-    //   if (results.any((e) => e is Servant && e.rarity >= r)) {
-    //     results.addAll(randomSummon(cardProbs(), 1));
-    //   } else {
-    //     results.addAll(randomSummon(svtProbs((_r) => _r >= r), 1));
-    //   }
-    // }
-    results.addAll(randomSummon(cardProbs(), times));
 
     if (times >= 10) {
-      // New
-      if (summon.isLuckyBag) {
-        List<GameCardMixin> newResults = [];
-        final s5 = results.firstWhereOrNull((e) => e is Servant && e.rarity == 5);
-        if (s5 != null) {
-          results.remove(s5);
-          newResults.add(s5);
-        } else {
-          newResults.addAll(randomSummon(svtProbs((r) => r == 5), 1));
-        }
-        if (summon.type == SummonType.gssrsr) {
-          final s4 =
-              results.firstWhereOrNull((e) => e is Servant && e.rarity >= 4 && e.obtains.contains(SvtObtain.limited));
-          if (s4 != null) {
-            results.remove(s4);
-            newResults.add(s4);
-          } else {
-            newResults.addAll(randomSummon(svtProbs((r) => r >= 4), 1));
-          }
-        }
-        newResults.addAll(results.sublist(0, times - newResults.length));
-        results = newResults;
-      } else {
-        final r4 = results.indexWhere((e) => e.rarity >= 4);
-        final s3 = results.indexWhere((e) => e is Servant && e.rarity >= 3);
-        if (r4 < 0) {
-          if (s3 < 0) {
-            // 4 svt
-            results.removeLast();
-            results.addAll(randomSummon(svtProbs((r) => r >= 4), 1));
-          } else {
-            // 4 card
-            results.removeAt(s3 == 0 ? 1 : 0);
-            results.addAll(randomSummon(cardProbs((r) => r >= 4), 1));
-          }
-        } else {
-          if (s3 < 0) {
-            // 3 svt
-            results.removeAt(r4 == 0 ? 1 : 0);
-            results.addAll(randomSummon(svtProbs((r) => r >= 3), 1));
-          } else {
-            //
-          }
-        }
+      int hasCe5Count = 0;
+
+      Map<GameCardMixin, double> _scaleProbs(Map<GameCardMixin, double> probs, double totalProb) {
+        final scale = totalProb / Maths.sum(probs.values);
+        return probs.map((key, value) => MapEntry(key, value * scale));
       }
-      assert(results.any((e) => e is Servant) && results.any((e) => e.rarity >= 4),
-          results.map((e) => '${e.runtimeType}-${e.rarity}').toList());
+
+      void _guarantee(Map<int, double> svtProbs, Map<int, double> ceProbs, int n) {
+        assert((Maths.sum([...svtProbs.values, ...ceProbs.values]) - 100).abs() < 0.001, "$svtProbs, $ceProbs");
+        if (ceProbs.containsKey(5) && ceProbs[5]! > 0) {
+          hasCe5Count += 1;
+        }
+        Map<GameCardMixin, double> _probs = {};
+        for (final (rarity, totalProb) in svtProbs.items) {
+          _probs.addAll(_scaleProbs(_cardProbs([rarity], true, false), totalProb));
+        }
+        for (final (rarity, totalProb) in ceProbs.items) {
+          _probs.addAll(_scaleProbs(_cardProbs([rarity], false, true), totalProb));
+        }
+        results.addAll(randomSummon(_probs, n));
+      }
+
+      void _gSvt5() {
+        _guarantee({5: 100}, {}, 1);
+      }
+
+      void _gSvt4() {
+        _guarantee({5: 1, 4: 99}, {}, 1);
+      }
+
+      void _gSvt3() {
+        _guarantee({5: 1, 4: 3, 3: 96}, {}, 1);
+      }
+
+      void _gCard4() {
+        _guarantee({5: 1, 4: 3}, {5: 4, 4: 92}, 1);
+      }
+
+      if (summon.isLuckyBag) {
+        if (summon.isDestiny) {
+          final destinyProbs = <Servant, double>{
+            for (final svt in selectedDestinyOrderServants.values)
+              svt: data.svts.firstWhere((e) => e.rarity == 5 && e.ids.contains(svt.collectionNo)).singleWeight,
+          };
+          results.addAll(randomSummon(destinyProbs, 1));
+          _gCard4();
+          _gSvt3();
+        } else if (summon.type == SummonType.gssr) {
+          _gSvt5();
+          _gCard4();
+          _gSvt3();
+        } else if (summon.type == SummonType.gssrsr) {
+          _gSvt5();
+          _gSvt4();
+          _gCard4();
+          _gSvt3();
+        }
+      } else {
+        _gCard4();
+        _gSvt3();
+      }
+      // 剩余7抽：五星从1：四星从3：五星礼5.71（40/7）：四星礼12：三星礼40：三星从38.29
+      // 五星礼4%*（总抽数-可以保底金礼装抽数）/（保底外的剩余抽数）
+      final leftPulls = times - results.length;
+      final ce5Prob = 4 * (times - hasCe5Count) / leftPulls;
+      _guarantee({5: 1, 4: 3, 3: 44 - ce5Prob}, {5: ce5Prob, 4: 12, 3: 40}, leftPulls);
     }
 
+    results.shuffle(random);
     return results;
   }
 
@@ -619,25 +724,17 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     return result;
   }
 
-  /// null-所有从者, 4/5-福袋4/5星从者
-  Map<GameCardMixin, double> svtProbs([bool Function(int r)? rarityTest]) {
+  Map<GameCardMixin, double> _cardProbs(List<int> rarities, bool svt, bool ce) {
     Map<GameCardMixin, double> probs = {};
-    data.svts.where((block) => rarityTest == null || rarityTest(block.rarity)).forEach((block) {
+    for (final block in data.probs) {
+      if (rarities.isNotEmpty && !rarities.contains(block.rarity)) continue;
+      if (!(block.isSvt ? svt : ce)) continue;
       _addProbMap(result: probs, ids: block.ids, totalWeight: block.weight, isSvt: block.isSvt);
-    });
+    }
     return probs;
   }
 
-  /// 从者+礼装
-  Map<GameCardMixin, double> cardProbs([bool Function(int r)? rarityTest]) {
-    Map<GameCardMixin, double> probs = {};
-    data.probs.where((block) => rarityTest == null || rarityTest(block.rarity)).forEach((block) {
-      _addProbMap(result: probs, ids: block.ids, totalWeight: block.weight, isSvt: block.isSvt);
-    });
-    _printMap(probs);
-    return probs;
-  }
-
+  // ignore: unused_element
   void _printMap(Map<GameCardMixin, double> probs) {
     // Map s = {};
     // probs.forEach((key, value) {

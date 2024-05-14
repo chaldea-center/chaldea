@@ -537,6 +537,8 @@ class ProbGroup {
     this.ids = const [],
   }) : assert(ids.isNotEmpty);
 
+  double get singleWeight => weight / ids.length;
+
   factory ProbGroup.fromJson(Map<String, dynamic> json) => _$ProbGroupFromJson(json);
   Map<String, dynamic> toJson() => _$ProbGroupToJson(this);
 }
