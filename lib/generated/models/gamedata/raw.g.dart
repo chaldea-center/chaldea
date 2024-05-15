@@ -99,3 +99,21 @@ Map<String, dynamic> _$MstQuestHintToJson(MstQuestHint instance) => <String, dyn
       'leftIndent': instance.leftIndent,
       'openType': instance.openType,
     };
+
+MstSvtFilter _$MstSvtFilterFromJson(Map json) => MstSvtFilter(
+      id: (json['id'] as num).toInt(),
+      name: json['name'] as String? ?? "",
+      svtIds: (json['svtIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+      priority: (json['priority'] as num?)?.toInt() ?? 0,
+      startedAt: (json['startedAt'] as num?)?.toInt() ?? 0,
+      endedAt: (json['endedAt'] as num?)?.toInt() ?? 0,
+    );
+
+Map<String, dynamic> _$MstSvtFilterToJson(MstSvtFilter instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'svtIds': instance.svtIds,
+      'priority': instance.priority,
+      'startedAt': instance.startedAt,
+      'endedAt': instance.endedAt,
+    };

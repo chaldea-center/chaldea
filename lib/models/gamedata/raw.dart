@@ -154,3 +154,25 @@ class MstQuestHint {
   factory MstQuestHint.fromJson(Map<dynamic, dynamic> json) => _$MstQuestHintFromJson(json);
   Map<String, dynamic> toJson() => _$MstQuestHintToJson(this);
 }
+
+@JsonSerializable()
+class MstSvtFilter {
+  int id;
+  String name;
+  List<int> svtIds;
+  int priority;
+  int startedAt;
+  int endedAt;
+
+  MstSvtFilter({
+    required this.id,
+    this.name = "",
+    this.svtIds = const [],
+    this.priority = 0,
+    this.startedAt = 0,
+    this.endedAt = 0,
+  });
+
+  factory MstSvtFilter.fromJson(Map<dynamic, dynamic> json) => _$MstSvtFilterFromJson(json);
+  Map<String, dynamic> toJson() => _$MstSvtFilterToJson(this);
+}

@@ -12,6 +12,7 @@ import 'bond_table.dart';
 import 'chara_figure_marker.dart';
 import 'combine_image_page.dart';
 import 'custom_chara_figure.dart';
+import 'realtime_svt_filter.dart';
 
 class ToolListPage extends StatelessWidget {
   const ToolListPage({super.key});
@@ -42,6 +43,7 @@ class ToolListPage extends StatelessWidget {
               buildOne('Combine Images', const CombineImagePage()),
               buildOne('Master Level', const MasterExpPage()),
               buildOne('${S.current.bond} (${S.current.total})', const BondTotalTable()),
+              buildOne('Event Servant Filter', const RealtimeSvtFilterPage()),
             ],
           ),
           TileGroup(
