@@ -229,7 +229,7 @@ abstract class FilterPageState<T, St extends FilterPage<T>> extends State<St> {
     bool showUnknown = false,
   }) {
     final shownClasses = [
-      ...SvtClassX.regularAllWithBeast,
+      ...SvtClassX.regularAll,
       if (showUnknown) SvtClass.unknown,
     ];
     int crossCount = (shownClasses.length / 2).ceil();

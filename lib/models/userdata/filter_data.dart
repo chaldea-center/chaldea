@@ -440,7 +440,7 @@ class SvtFilterData with _FilterData {
         return -(db.gameData.constData.classInfo[clsId]?.priority ?? 0);
       }
       int k = SvtClassX.regularAllWithBeasts.map((e) => e.value).toList().indexOf(clsId);
-      return k < 0 ? 999 : k;
+      return k < 0 ? 999 + clsId : k;
     }
 
     for (var i = 0; i < keys.length; i++) {

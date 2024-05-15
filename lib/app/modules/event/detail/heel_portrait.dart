@@ -45,7 +45,7 @@ class _EventHeelPortraitPageState extends State<EventHeelPortraitPage> {
               combined: true,
               padding: EdgeInsets.zero,
               shrinkWrap: true,
-              options: SvtClassX.regularAllWithBeast,
+              options: SvtClassX.regularAll,
               values: svtClass,
               optionBuilder: (v) => db.getIconImage(v.icon(3), width: 24, height: 24, padding: const EdgeInsets.all(2)),
               onFilterChanged: (_, __) {

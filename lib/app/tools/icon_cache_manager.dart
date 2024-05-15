@@ -83,7 +83,7 @@ class _IconCacheManagePageState extends State<IconCacheManagePage> {
       return;
     }
     Set<String?> urls = {
-      for (final svtClass in [...SvtClassX.regularAllWithBeast, SvtClass.ALL, SvtClass.EXTRA, SvtClass.MIX])
+      for (final svtClass in [...SvtClassX.regularAll, SvtClass.ALL, SvtClass.EXTRA, SvtClass.MIX])
         for (final rarity in [1, 3, 5]) svtClass.icon(rarity),
       for (final item in db.gameData.items.values) item.borderedIcon,
       for (final svt in db.gameData.servantsNoDup.values) svt.customIcon,

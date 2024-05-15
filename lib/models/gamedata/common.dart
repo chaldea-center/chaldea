@@ -409,16 +409,10 @@ extension SvtClassX on SvtClass {
     ...extra,
   ];
 
-  static List<SvtClass> regularAllWithBeast = [
-    ...regular,
-    ...extra,
-    SvtClassX.beast,
-  ];
-
-  static List<SvtClass> regularAllWithBeasts = [
+  static List<SvtClass> regularAllWithBeasts = <SvtClass>{
     ...regularAll,
     ...beasts,
-  ];
+  }.toList();
 
   static const regular = <SvtClass>[
     SvtClass.saber,
