@@ -323,6 +323,29 @@ const _funcEffectMapping = {
   FuncTargetType.enemyAll: EffectTarget.enemyAll,
 };
 
+enum CardDeckType {
+  q1a1b3(1, 1, 3),
+  q1a2b2(1, 2, 2),
+  q1a3b1(1, 3, 1),
+  q2a1b2(2, 1, 2),
+  q2a2b1(2, 2, 1),
+  q3a1b1(3, 1, 1),
+  others(-1, -1, -1),
+  ;
+
+  const CardDeckType(this.q, this.a, this.b);
+  final int q;
+  final int a;
+  final int b;
+
+  static CardDeckType resolve(List<CardType> cards) {
+    int q = cards.where((e) => e == CardType.quick).length;
+    int a = cards.where((e) => e == CardType.arts).length;
+    int b = cards.where((e) => e == CardType.buster).length;
+    return CardDeckType.values.firstWhere((e) => e.q == q && e.a == a && e.b == b, orElse: () => CardDeckType.others);
+  }
+}
+
 mixin _FilterData {
   List<FilterGroupData> get groups;
   void reset() {
@@ -367,6 +390,7 @@ class SvtFilterData with _FilterData {
   final personality = FilterGroupData<ServantPersonality>(); //善 恶 中立 夏 狂...
   final gender = FilterGroupData<Gender>();
   final trait = FilterGroupData<Trait>();
+  final cardDeck = FilterGroupData<CardDeckType>();
 
   final effectScope = FilterGroupData<SvtEffectScope>(options: {SvtEffectScope.active, SvtEffectScope.td});
   final effectTarget = FilterGroupData<EffectTarget>();
@@ -404,6 +428,7 @@ class SvtFilterData with _FilterData {
         personality,
         gender,
         trait,
+        cardDeck,
         effectScope,
         effectTarget,
         targetTrait,

@@ -88,6 +88,12 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
     if (!filterData.rarity.matchOne(svt.rarity)) {
       return false;
     }
+    if (filterData.cardDeck.isNotEmpty) {
+      final cardType = CardDeckType.resolve(svt.cards);
+      if (!filterData.cardDeck.matchOne(cardType)) {
+        return false;
+      }
+    }
 
     if (filterData.npColor.options.isNotEmpty && filterData.npType.options.isNotEmpty) {
       if (!svt.noblePhantasms
@@ -450,6 +456,24 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
           options: Gender.values.toList(),
           values: filterData.gender,
           optionBuilder: (v) => Text(Transl.gender(v).l),
+          onFilterChanged: (value, _) {
+            update();
+          },
+        ),
+        FilterGroup<CardDeckType>(
+          title: Text(S.current.info_cards, style: textStyle),
+          options: CardDeckType.values,
+          values: filterData.cardDeck,
+          optionBuilder: (v) => v == CardDeckType.others
+              ? Text(S.current.general_others)
+              : Text.rich(TextSpan(children: [
+                  for (final (card, count, color) in [
+                    ('Q', v.q, Colors.green.shade800),
+                    ('A', v.a, Colors.blue.shade800),
+                    ('B', v.b, Colors.red)
+                  ])
+                    TextSpan(text: card * count, style: TextStyle(color: color))
+                ])),
           onFilterChanged: (value, _) {
             update();
           },
