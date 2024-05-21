@@ -162,7 +162,8 @@ class ItemCenter {
     if (!cur.favorite) {
       return detail;
     }
-    if (priorityFiltered && !db.settings.svtFilterData.priority.matchOne(user.svtStatusOf(svt.collectionNo).priority)) {
+    if (priorityFiltered &&
+        !db.settings.filters.svtFilterData.priority.matchOne(user.svtStatusOf(svt.collectionNo).priority)) {
       return detail;
     }
     detail.ascension = _sumMat(svt.ascensionMaterials, [for (int lv = cur.ascension; lv < target.ascension; lv++) lv]);

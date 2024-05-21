@@ -28,7 +28,7 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
   @override
   Iterable<CraftEssence> get wholeData => db.gameData.allCraftEssences;
 
-  CraftFilterData get filterData => widget.filterData ?? db.settings.craftFilterData;
+  CraftFilterData get filterData => widget.filterData ?? db.settings.filters.craftFilterData;
 
   @override
   final bool prototypeExtent = true;

@@ -27,7 +27,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> with SearchableListSta
   @override
   Iterable<CommandCode> get wholeData => db.gameData.commandCodes.values;
 
-  CmdCodeFilterData get filterData => widget.filterData ?? db.settings.cmdCodeFilterData;
+  CmdCodeFilterData get filterData => widget.filterData ?? db.settings.filters.cmdCodeFilterData;
 
   @override
   final bool prototypeExtent = true;

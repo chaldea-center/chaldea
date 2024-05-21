@@ -345,7 +345,7 @@ class ScriptCommand extends ScriptComponent {
   String get arg2 => args[1];
   String? get arg1n => args.getOrNull(0);
   String? get arg2n => args.getOrNull(1);
-  ScriptReaderFilterData get filterData => db.settings.scriptReaderFilterData;
+  ScriptReaderFilterData get filterData => db.settings.filters.scriptReaderFilterData;
   @override
   List<InlineSpan> build(BuildContext context, ScriptState state, {bool showMore = false}) {
     // [#text:ruby], :ruby may not exist

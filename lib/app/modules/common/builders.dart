@@ -321,7 +321,8 @@ class SharedBuilder {
       (context, _) => IconButton(
         icon: Icon(
           Icons.low_priority,
-          color: db.settings.svtFilterData.priority.isEmptyOrContain([1, 2, 3, 4, 5]) ? null : Colors.yellowAccent,
+          color:
+              db.settings.filters.svtFilterData.priority.isEmptyOrContain([1, 2, 3, 4, 5]) ? null : Colors.yellowAccent,
         ),
         tooltip: S.current.priority,
         onPressed: () {

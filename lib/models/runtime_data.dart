@@ -6,6 +6,7 @@ import 'package:screenshot/screenshot.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/extension.dart';
+import '../app/routes/delegate.dart';
 import '../app/tools/app_update.dart';
 import '../packages/app_info.dart';
 import '../packages/platform/platform.dart';
@@ -66,11 +67,9 @@ class RuntimeData {
   }
 
   // filters
-  final svtFilters = _RouterValueMap<SvtFilterData>(() => SvtFilterData(
-        useGrid: true,
-        favorite: db.settings.battleSim.playerDataSource.isNone ? FavoriteState.all : FavoriteState.owned,
-      ));
-  final ceFilters = _RouterValueMap<CraftFilterData>(() => CraftFilterData(useGrid: true)
+  final svtFilters = _RouterValueMap<SvtFilterData>(
+      (r) => r.index == 0 ? db.settings.filters.laplaceSvtFilterData : SvtFilterData(useGrid: true));
+  final ceFilters = _RouterValueMap<CraftFilterData>((r) => CraftFilterData(useGrid: true)
     ..obtain.options = CEObtain.values.toSet().difference({CEObtain.valentine, CEObtain.exp, CEObtain.campaign}));
 }
 
@@ -82,16 +81,16 @@ class AppClipBoard {
 
 class _RouterValueMap<T> {
   final Map<int, T> _data = {};
-  final T Function() onAbsent;
+  final T Function(AppRouterDelegate r) onAbsent;
 
   _RouterValueMap(this.onAbsent);
 
   T get current {
-    return _data.putIfAbsent(router.hashCode, onAbsent);
+    return _data.putIfAbsent(router.hashCode, () => onAbsent(router));
   }
 
   T of(BuildContext context) {
-    final r = Router.maybeOf(context) ?? router;
-    return _data.putIfAbsent(r.hashCode, onAbsent);
+    final r = AppRouter.of(context) ?? router;
+    return _data.putIfAbsent(r.hashCode, () => onAbsent(r));
   }
 }

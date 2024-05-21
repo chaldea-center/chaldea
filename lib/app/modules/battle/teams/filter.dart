@@ -29,7 +29,7 @@ enum TeamFilterMiscType {
   }
 }
 
-class TeamFilterData {
+class TeamFilterData with FilterDataMixin {
   // static const List<int> _blockedSvtIds = [16, 258, 284, 307, 314, 316, 357];
 
   bool favorite = false;
@@ -44,6 +44,7 @@ class TeamFilterData {
   final mysticCode = FilterGroupData<int>();
   final miscOptions = FilterGroupData<TeamFilterMiscType>();
 
+  @override
   List<FilterGroupData> get groups => [
         attackerTdCardType,
         blockSvts,
@@ -56,11 +57,10 @@ class TeamFilterData {
         miscOptions,
       ];
 
+  @override
   void reset() {
+    super.reset();
     favorite = false;
-    for (final group in groups) {
-      group.reset();
-    }
     blockCEMLBOnly.clear();
   }
 }

@@ -53,7 +53,7 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
 
   Set<Servant> hiddenPlanServants = {};
 
-  SvtFilterData get filterData => widget.filterData ?? db.settings.svtFilterData;
+  SvtFilterData get filterData => widget.filterData ?? db.settings.filters.svtFilterData;
 
   FavoriteState get favoriteState => widget.planMode ? filterData.planFavorite : filterData.favorite;
 

@@ -31,7 +31,7 @@ class EventListPageState extends State<EventListPage>
   @override
   Iterable<Event> get wholeData => db.gameData.events.values;
 
-  final filterData = db.settings.eventFilterData;
+  final filterData = db.settings.filters.eventFilterData;
   List<String> get tabNames => [
         S.current.limited_event,
         S.current.main_story,

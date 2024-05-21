@@ -7,20 +7,15 @@ import 'package:chaldea/utils/utils.dart';
 import '../../../models/models.dart';
 import '../effect_search/util.dart';
 
-class BuffFilterData {
+class BuffFilterData with FilterDataMixin {
   final stackable = FilterGroupData<bool>();
   final buffType = FilterGroupData<BuffType>();
   final trait = FilterGroupData<int>();
 
   BuffFilterData();
 
+  @override
   List<FilterGroupData> get groups => [stackable, buffType, trait];
-
-  void reset() {
-    for (final group in groups) {
-      group.reset();
-    }
-  }
 }
 
 class BuffFilter extends FilterPage<BuffFilterData> {

@@ -26,7 +26,7 @@ enum NpChargeType {
   }
 }
 
-class NpFilterData {
+class NpFilterData with FilterDataMixin {
   int skillLv = 10; // -1-disable, 0-class passive, 1-10,
   int skillCD = 0;
   int tdLv = 0; // 0-disable, 1-5
@@ -50,27 +50,17 @@ class NpFilterData {
   List<CraftCompare> ceSortKeys = [CraftCompare.no, CraftCompare.no];
   List<bool> sortReversed = [false, false];
 
+  @override
+  List<FilterGroupData> get groups =>
+      [favorite, ceStatus, type, ceMax, ceAtkType, svtClass, rarity, effectTarget, region, tdColor, tdType, bond];
+
+  @override
   void reset() {
+    super.reset();
     skillLv = 10;
     skillCD = 0;
     tdLv = 0;
     tdOC = 1;
-    for (var v in <FilterGroupData>[
-      favorite,
-      ceStatus,
-      type,
-      ceMax,
-      ceAtkType,
-      svtClass,
-      rarity,
-      effectTarget,
-      region,
-      tdColor,
-      tdType,
-      bond,
-    ]) {
-      v.reset();
-    }
   }
 
   static String textSkillLv(int skillLv) {

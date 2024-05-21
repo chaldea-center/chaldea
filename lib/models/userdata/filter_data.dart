@@ -177,176 +177,7 @@ class FilterRadioData<T> extends FilterGroupData<T> {
   }
 }
 
-/// Servant
-enum SvtCompare {
-  no,
-  className,
-  rarity,
-  atk,
-  hp,
-  priority,
-  tdLv,
-  bondLv,
-  ;
-
-  String get showName {
-    switch (this) {
-      case SvtCompare.no:
-        return S.current.filter_sort_number;
-      case SvtCompare.className:
-        return S.current.svt_class;
-      case SvtCompare.rarity:
-        return S.current.filter_sort_rarity;
-      case SvtCompare.atk:
-        return 'ATK';
-      case SvtCompare.hp:
-        return 'HP';
-      case SvtCompare.priority:
-        return S.current.priority;
-      case SvtCompare.tdLv:
-        return '${S.current.np_short} Lv';
-      case SvtCompare.bondLv:
-        return '${S.current.bond} Lv';
-    }
-  }
-}
-
-enum SvtEffectScope {
-  active,
-  passive,
-  append,
-  td,
-  ;
-
-  String get shownName {
-    switch (this) {
-      case SvtEffectScope.active:
-        return S.current.active_skill_short;
-      case SvtEffectScope.passive:
-        return S.current.passive_skill_short;
-      case SvtEffectScope.append:
-        return S.current.append_skill_short;
-      case SvtEffectScope.td:
-        return S.current.np_short;
-    }
-  }
-}
-
-enum EffectTarget {
-  self,
-  ptAll, //ptFull
-  ptOne,
-  ptOther, //ptOtherFull
-  enemy,
-  enemyAll,
-  special,
-  ;
-
-  static EffectTarget fromFunc(FuncTargetType funcTarget) {
-    return _funcEffectMapping[funcTarget] ?? EffectTarget.special;
-  }
-
-  String get shownName {
-    for (final entry in _funcEffectMapping.entries) {
-      if (entry.value == this) {
-        return Transl.funcTargetType(entry.key).l;
-      }
-    }
-    return S.current.general_special;
-  }
-}
-
-enum SvtPlanScope {
-  all,
-  ascension,
-  active,
-  append,
-  costume,
-  misc, //fou, grail, bond
-}
-
-enum SvtStatusState {
-  asc3,
-  asc4,
-  active8,
-  active9,
-  active10,
-  appendTwo8,
-  appendTwo9,
-  // appendTwo10,
-  append8,
-  append9,
-  // append10
-  ;
-
-  String get shownName {
-    return switch (this) {
-      SvtStatusState.asc3 => '<4',
-      SvtStatusState.asc4 => '=4',
-      SvtStatusState.active8 => '<9/9/9',
-      SvtStatusState.active9 => '9/9/9',
-      SvtStatusState.active10 => '10/10/10',
-      SvtStatusState.appendTwo8 => 'A2|<9',
-      SvtStatusState.appendTwo9 => 'A2|≥9',
-      // SvtStatusState.appendTwo10 => 'A2|10',
-      SvtStatusState.append8 => 'A|<9',
-      SvtStatusState.append9 => 'A|≥9',
-      // SvtStatusState.append10 => 'A|≥10',
-    };
-  }
-}
-
-enum SvtBondStage {
-  lessThan5('<5'), // <5
-  lessThan10('<10'), // <10
-  greaterThan10('≤15'), // 10<=x<=15
-  ;
-
-  final String text;
-  const SvtBondStage(this.text);
-
-  static SvtBondStage fromBond(int bond) {
-    if (bond < 5) return lessThan5;
-    if (bond < 10) return lessThan10;
-    return greaterThan10;
-  }
-}
-
-const _funcEffectMapping = {
-  FuncTargetType.self: EffectTarget.self,
-  FuncTargetType.ptAll: EffectTarget.ptAll,
-  FuncTargetType.ptFull: EffectTarget.ptAll,
-  FuncTargetType.ptOne: EffectTarget.ptOne,
-  FuncTargetType.ptOther: EffectTarget.ptOther,
-  FuncTargetType.ptOtherFull: EffectTarget.ptOther,
-  FuncTargetType.enemy: EffectTarget.enemy,
-  FuncTargetType.enemyAll: EffectTarget.enemyAll,
-};
-
-enum CardDeckType {
-  q1a1b3(1, 1, 3),
-  q1a2b2(1, 2, 2),
-  q1a3b1(1, 3, 1),
-  q2a1b2(2, 1, 2),
-  q2a2b1(2, 2, 1),
-  q3a1b1(3, 1, 1),
-  others(-1, -1, -1),
-  ;
-
-  const CardDeckType(this.q, this.a, this.b);
-  final int q;
-  final int a;
-  final int b;
-
-  static CardDeckType resolve(List<CardType> cards) {
-    int q = cards.where((e) => e == CardType.quick).length;
-    int a = cards.where((e) => e == CardType.arts).length;
-    int b = cards.where((e) => e == CardType.buster).length;
-    return CardDeckType.values.firstWhere((e) => e.q == q && e.a == a && e.b == b, orElse: () => CardDeckType.others);
-  }
-}
-
-mixin _FilterData {
+mixin FilterDataMixin {
   List<FilterGroupData> get groups;
   void reset() {
     for (final group in groups) {
@@ -355,8 +186,45 @@ mixin _FilterData {
   }
 }
 
+@JsonSerializable()
+class LocalDataFilters {
+  SvtFilterData svtFilterData;
+  SvtFilterData laplaceSvtFilterData;
+  CraftFilterData craftFilterData;
+  CmdCodeFilterData cmdCodeFilterData;
+  MysticCodeFilterData mysticCodeFilterData;
+  EventFilterData eventFilterData;
+  SummonFilterData summonFilterData;
+  SummonFilterData gachaFilterData;
+  ScriptReaderFilterData scriptReaderFilterData;
+
+  LocalDataFilters({
+    SvtFilterData? svtFilterData,
+    SvtFilterData? laplaceSvtFilterData,
+    CraftFilterData? craftFilterData,
+    CmdCodeFilterData? cmdCodeFilterData,
+    MysticCodeFilterData? mysticCodeFilterData,
+    EventFilterData? eventFilterData,
+    SummonFilterData? summonFilterData,
+    SummonFilterData? gachaFilterData,
+    ScriptReaderFilterData? scriptReaderFilterData,
+  })  : svtFilterData = svtFilterData ?? SvtFilterData(),
+        laplaceSvtFilterData = laplaceSvtFilterData ?? SvtFilterData(useGrid: true),
+        craftFilterData = craftFilterData ?? CraftFilterData(),
+        cmdCodeFilterData = cmdCodeFilterData ?? CmdCodeFilterData(),
+        mysticCodeFilterData = mysticCodeFilterData ?? MysticCodeFilterData(),
+        eventFilterData = eventFilterData ?? EventFilterData(),
+        summonFilterData = summonFilterData ?? SummonFilterData(),
+        gachaFilterData = gachaFilterData ?? SummonFilterData(),
+        scriptReaderFilterData = scriptReaderFilterData ?? ScriptReaderFilterData();
+
+  factory LocalDataFilters.fromJson(Map<String, dynamic> data) => _$LocalDataFiltersFromJson(data);
+
+  Map<String, dynamic> toJson() => _$LocalDataFiltersToJson(this);
+}
+
 @JsonSerializable(ignoreUnannotated: true)
-class SvtFilterData with _FilterData {
+class SvtFilterData with FilterDataMixin {
   @JsonKey()
   bool useGrid;
   @JsonKey()
@@ -542,7 +410,7 @@ enum CraftATKType {
 }
 
 @JsonSerializable(ignoreUnannotated: true)
-class CraftFilterData with _FilterData {
+class CraftFilterData with FilterDataMixin {
   @JsonKey()
   bool useGrid;
   @JsonKey()
@@ -647,7 +515,7 @@ enum CmdCodeCompare {
 }
 
 @JsonSerializable(ignoreUnannotated: true)
-class CmdCodeFilterData with _FilterData {
+class CmdCodeFilterData with FilterDataMixin {
   @JsonKey()
   bool useGrid;
   @JsonKey()
@@ -724,7 +592,7 @@ class CmdCodeFilterData with _FilterData {
 }
 
 @JsonSerializable(ignoreUnannotated: true)
-class MysticCodeFilterData with _FilterData {
+class MysticCodeFilterData with FilterDataMixin {
   @JsonKey()
   bool useGrid;
   @JsonKey()
@@ -805,7 +673,7 @@ enum FavoriteState {
 
 // event
 @JsonSerializable()
-class EventFilterData with _FilterData {
+class EventFilterData with FilterDataMixin {
   bool reversed;
   bool showOutdated;
   bool showSpecialRewards;
@@ -871,7 +739,7 @@ enum EventCustomType {
 // summon
 
 @JsonSerializable(checked: true, ignoreUnannotated: true)
-class SummonFilterData with _FilterData {
+class SummonFilterData with FilterDataMixin {
   @JsonKey()
   bool favorite;
   @JsonKey()
@@ -938,7 +806,7 @@ class ScriptReaderFilterData {
   Map<String, dynamic> toJson() => _$ScriptReaderFilterDataToJson(this);
 }
 
-class EnemyFilterData with _FilterData {
+class EnemyFilterData with FilterDataMixin {
   bool useGrid;
   List<SvtCompare> sortKeys;
   List<bool> sortReversed;
@@ -1019,7 +887,7 @@ class EnemyFilterData with _FilterData {
   }
 }
 
-class FfoPartFilterData with _FilterData {
+class FfoPartFilterData with FilterDataMixin {
   static const kSortKeys = [SvtCompare.no, SvtCompare.className, SvtCompare.rarity];
 
   bool useGrid = false;
@@ -1064,5 +932,176 @@ class FfoPartFilterData with _FilterData {
       }
     }
     return 0;
+  }
+}
+
+// enums
+
+/// Servant
+enum SvtCompare {
+  no,
+  className,
+  rarity,
+  atk,
+  hp,
+  priority,
+  tdLv,
+  bondLv,
+  ;
+
+  String get showName {
+    switch (this) {
+      case SvtCompare.no:
+        return S.current.filter_sort_number;
+      case SvtCompare.className:
+        return S.current.svt_class;
+      case SvtCompare.rarity:
+        return S.current.filter_sort_rarity;
+      case SvtCompare.atk:
+        return 'ATK';
+      case SvtCompare.hp:
+        return 'HP';
+      case SvtCompare.priority:
+        return S.current.priority;
+      case SvtCompare.tdLv:
+        return '${S.current.np_short} Lv';
+      case SvtCompare.bondLv:
+        return '${S.current.bond} Lv';
+    }
+  }
+}
+
+enum SvtEffectScope {
+  active,
+  passive,
+  append,
+  td,
+  ;
+
+  String get shownName {
+    switch (this) {
+      case SvtEffectScope.active:
+        return S.current.active_skill_short;
+      case SvtEffectScope.passive:
+        return S.current.passive_skill_short;
+      case SvtEffectScope.append:
+        return S.current.append_skill_short;
+      case SvtEffectScope.td:
+        return S.current.np_short;
+    }
+  }
+}
+
+enum EffectTarget {
+  self,
+  ptAll, //ptFull
+  ptOne,
+  ptOther, //ptOtherFull
+  enemy,
+  enemyAll,
+  special,
+  ;
+
+  static EffectTarget fromFunc(FuncTargetType funcTarget) {
+    return _funcEffectMapping[funcTarget] ?? EffectTarget.special;
+  }
+
+  String get shownName {
+    for (final entry in _funcEffectMapping.entries) {
+      if (entry.value == this) {
+        return Transl.funcTargetType(entry.key).l;
+      }
+    }
+    return S.current.general_special;
+  }
+}
+
+enum SvtPlanScope {
+  all,
+  ascension,
+  active,
+  append,
+  costume,
+  misc, //fou, grail, bond
+}
+
+enum SvtStatusState {
+  asc3,
+  asc4,
+  active8,
+  active9,
+  active10,
+  appendTwo8,
+  appendTwo9,
+  // appendTwo10,
+  append8,
+  append9,
+  // append10
+  ;
+
+  String get shownName {
+    return switch (this) {
+      SvtStatusState.asc3 => '<4',
+      SvtStatusState.asc4 => '=4',
+      SvtStatusState.active8 => '<9/9/9',
+      SvtStatusState.active9 => '9/9/9',
+      SvtStatusState.active10 => '10/10/10',
+      SvtStatusState.appendTwo8 => 'A2|<9',
+      SvtStatusState.appendTwo9 => 'A2|≥9',
+      // SvtStatusState.appendTwo10 => 'A2|10',
+      SvtStatusState.append8 => 'A|<9',
+      SvtStatusState.append9 => 'A|≥9',
+      // SvtStatusState.append10 => 'A|≥10',
+    };
+  }
+}
+
+enum SvtBondStage {
+  lessThan5('<5'), // <5
+  lessThan10('<10'), // <10
+  greaterThan10('≤15'), // 10<=x<=15
+  ;
+
+  final String text;
+  const SvtBondStage(this.text);
+
+  static SvtBondStage fromBond(int bond) {
+    if (bond < 5) return lessThan5;
+    if (bond < 10) return lessThan10;
+    return greaterThan10;
+  }
+}
+
+const _funcEffectMapping = {
+  FuncTargetType.self: EffectTarget.self,
+  FuncTargetType.ptAll: EffectTarget.ptAll,
+  FuncTargetType.ptFull: EffectTarget.ptAll,
+  FuncTargetType.ptOne: EffectTarget.ptOne,
+  FuncTargetType.ptOther: EffectTarget.ptOther,
+  FuncTargetType.ptOtherFull: EffectTarget.ptOther,
+  FuncTargetType.enemy: EffectTarget.enemy,
+  FuncTargetType.enemyAll: EffectTarget.enemyAll,
+};
+
+enum CardDeckType {
+  q1a1b3(1, 1, 3),
+  q1a2b2(1, 2, 2),
+  q1a3b1(1, 3, 1),
+  q2a1b2(2, 1, 2),
+  q2a2b1(2, 2, 1),
+  q3a1b1(3, 1, 1),
+  others(-1, -1, -1),
+  ;
+
+  const CardDeckType(this.q, this.a, this.b);
+  final int q;
+  final int a;
+  final int b;
+
+  static CardDeckType resolve(List<CardType> cards) {
+    int q = cards.where((e) => e == CardType.quick).length;
+    int a = cards.where((e) => e == CardType.arts).length;
+    int b = cards.where((e) => e == CardType.buster).length;
+    return CardDeckType.values.firstWhere((e) => e.q == q && e.a == a && e.b == b, orElse: () => CardDeckType.others);
   }
 }

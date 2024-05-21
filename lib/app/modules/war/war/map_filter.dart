@@ -5,7 +5,7 @@ import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 
-class WarMapFilterData {
+class WarMapFilterData with FilterDataMixin {
   bool showSpots = true;
   bool freeSpotsOnly = true;
   bool showRoads = false;
@@ -14,10 +14,12 @@ class WarMapFilterData {
   final gimmick = FilterGroupData<int?>();
   final validGimmickIds = <int>{};
 
+  @override
+  List<FilterGroupData> get groups => [gimmick];
+
+  @override
   void reset() {
-    for (var v in <FilterGroupData>[gimmick]) {
-      v.reset();
-    }
+    super.reset();
     showRoads = showSpots = true;
     freeSpotsOnly = true;
     showHeader = true;

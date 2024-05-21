@@ -7,20 +7,15 @@ import 'package:chaldea/utils/utils.dart';
 import '../../../models/models.dart';
 import '../func/filter.dart';
 
-class TdFilterData {
+class TdFilterData with FilterDataMixin {
   final card = FilterGroupData<CardType>();
   final type = FilterGroupData<TdEffectFlag>();
   final funcTargetType = FilterGroupData<FuncTargetType>();
   final funcType = FilterGroupData<FuncType>();
   final buffType = FilterGroupData<BuffType>();
 
+  @override
   List<FilterGroupData> get groups => [card, type, funcTargetType, funcType, buffType];
-
-  void reset() {
-    for (final group in groups) {
-      group.reset();
-    }
-  }
 }
 
 class TdFilter extends FilterPage<TdFilterData> {

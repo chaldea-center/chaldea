@@ -22,7 +22,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
   List<int> rarity999 = List.filled(6, 0);
   List<bool> raritySelected = List.filled(6, true);
 
-  FilterGroupData<int> get priorityFilter => db.settings.svtFilterData.priority;
+  FilterGroupData<int> get priorityFilter => db.settings.filters.svtFilterData.priority;
 
   void _calcRarityCounts() {
     rarityTotal = List.filled(6, 0);
@@ -81,7 +81,7 @@ class _StatisticServantTabState extends State<StatisticServantTab> {
   @override
   Widget build(BuildContext context) {
     _calcRarityCounts();
-    final priority = db.settings.svtFilterData.priority;
+    final priority = db.settings.filters.svtFilterData.priority;
     List<Widget> children = [
       ListTile(
         title: Text(

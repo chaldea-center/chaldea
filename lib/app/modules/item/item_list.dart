@@ -260,7 +260,7 @@ class ItemFilterDialog extends StatefulWidget {
 class _ItemFilterDialogState extends State<ItemFilterDialog> {
   @override
   Widget build(BuildContext context) {
-    final priorityFilter = db.settings.svtFilterData.priority;
+    final priorityFilter = db.settings.filters.svtFilterData.priority;
     return AlertDialog(
       title: Text(S.current.priority),
       actions: [

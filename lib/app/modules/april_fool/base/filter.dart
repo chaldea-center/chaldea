@@ -5,18 +5,13 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-class AprilFoolSvtFilterData {
+class AprilFoolSvtFilterData with FilterDataMixin {
   bool useGrid = false;
   final rarity = FilterGroupData<int>();
   final classType = FilterGroupData<SvtClass>();
 
+  @override
   List<FilterGroupData> get groups => [rarity, classType];
-
-  void reset() {
-    for (final group in groups) {
-      group.reset();
-    }
-  }
 }
 
 class AprilFoolSvtFilterPage extends FilterPage<AprilFoolSvtFilterData> {

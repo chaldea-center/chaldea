@@ -24,7 +24,7 @@ class ScriptReaderPage extends StatefulWidget {
 class _ScriptReaderPageState extends State<ScriptReaderPage> {
   bool _loading = true;
   final data = ScriptParsedData();
-  final filterData = db.settings.scriptReaderFilterData;
+  final filterData = db.settings.filters.scriptReaderFilterData;
   List<Tuple2<NiceWar, Quest?>> relatedQuests = [];
   String? prevScript;
   String? nextScript;
@@ -174,7 +174,7 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
               FilterPage.show(
                 context: context,
                 builder: (context) => ScriptReaderFilterPage(
-                  filterData: db.settings.scriptReaderFilterData,
+                  filterData: db.settings.filters.scriptReaderFilterData,
                   onChanged: (v) {
                     if (mounted) setState(() {});
                   },

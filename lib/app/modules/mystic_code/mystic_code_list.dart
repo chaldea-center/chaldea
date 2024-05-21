@@ -31,7 +31,7 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
   @override
   Iterable<MysticCode> get wholeData => db.gameData.mysticCodes.values;
 
-  MysticCodeFilterData get filterData => widget.filterData ?? db.settings.mysticCodeFilterData;
+  MysticCodeFilterData get filterData => widget.filterData ?? db.settings.filters.mysticCodeFilterData;
 
   @override
   final bool prototypeExtent = true;

@@ -40,7 +40,7 @@ enum TimelineQuestType {
   }
 }
 
-class SvtQuestTimelineFilterData {
+class SvtQuestTimelineFilterData with FilterDataMixin {
   Region region = Region.jp;
   bool reversed = true;
   bool showOutdated = false;
@@ -49,11 +49,8 @@ class SvtQuestTimelineFilterData {
   final questType = FilterGroupData<TimelineQuestType>();
   final upgradeType = FilterGroupData<TimelineUpgradeType>();
 
-  void reset() {
-    for (final v in <FilterGroupData>[sortType, questType, upgradeType]) {
-      v.reset();
-    }
-  }
+  @override
+  List<FilterGroupData> get groups => [sortType, questType, upgradeType];
 
   bool get useApCampaign => sortType.radioValue == TimelineSortType.apCampaignTime;
 }

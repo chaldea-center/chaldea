@@ -7,7 +7,7 @@ import 'package:chaldea/utils/utils.dart';
 import '../../../models/models.dart';
 import '../effect_search/util.dart';
 
-class FuncFilterData {
+class FuncFilterData with FilterDataMixin {
   final funcTargetType = FilterGroupData<FuncTargetType>();
   final funcTargetTeam = FilterGroupData<FuncApplyTarget>();
   final funcType = FilterGroupData<FuncType>();
@@ -16,13 +16,8 @@ class FuncFilterData {
 
   FuncFilterData();
 
+  @override
   List<FilterGroupData> get groups => [funcTargetType, funcTargetTeam, funcType, buffType, targetTrait];
-
-  void reset() {
-    for (final group in groups) {
-      group.reset();
-    }
-  }
 }
 
 class FuncFilter extends FilterPage<FuncFilterData> {

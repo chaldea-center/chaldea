@@ -1001,7 +1001,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                           playerSvtData.commandCodes[index] = db.gameData.commandCodes[selectedCode.collectionNo];
                           _updateState(() {});
                         },
-                        filterData: db.settings.cmdCodeFilterData,
+                        filterData: db.settings.filters.cmdCodeFilterData,
                       ),
                       detail: false,
                     );

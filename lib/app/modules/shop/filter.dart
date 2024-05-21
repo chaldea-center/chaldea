@@ -11,7 +11,7 @@ enum ShopSort {
   openTime,
 }
 
-class ShopFilterData {
+class ShopFilterData with FilterDataMixin {
   final permanent = FilterGroupData<bool>();
   final opening = FilterGroupData<int>();
   final type = FilterGroupData<ShopType>();
@@ -21,13 +21,8 @@ class ShopFilterData {
   ShopSort sortType = ShopSort.openTime;
   bool reversed = false;
 
+  @override
   List<FilterGroupData> get groups => [type, permanent, opening, purchaseType, svtType];
-
-  void reset() {
-    for (final group in groups) {
-      group.reset();
-    }
-  }
 }
 
 class ShopFilter extends FilterPage<ShopFilterData> {

@@ -4,19 +4,20 @@ import '../../../models/models.dart';
 import '../common/filter_group.dart';
 import '../common/filter_page_base.dart';
 
-class BgmFilterData {
+class BgmFilterData with FilterDataMixin {
   bool reversed = false;
   final favorite = FilterGroupData<bool>();
   final sortByPriority = FilterRadioData<bool>.nonnull(true);
   final released = FilterRadioData<bool>();
   final needItem = FilterRadioData<bool>();
 
+  @override
+  List<FilterGroupData> get groups => [favorite, sortByPriority, released, needItem];
+
+  @override
   void reset() {
+    super.reset();
     reversed = false;
-    favorite.reset();
-    sortByPriority.reset();
-    released.reset();
-    needItem.reset();
   }
 }
 

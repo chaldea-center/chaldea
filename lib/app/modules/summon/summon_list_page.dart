@@ -28,7 +28,7 @@ class _SummonListPageState extends State<SummonListPage>
   @override
   Iterable<LimitedSummon> get wholeData => db.gameData.wiki.summons.values;
 
-  SummonFilterData get filterData => db.settings.summonFilterData;
+  SummonFilterData get filterData => db.settings.filters.summonFilterData;
 
   Set<String> get plans => db.curUser.summons;
 

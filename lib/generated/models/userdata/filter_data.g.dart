@@ -6,6 +6,46 @@ part of '../../../models/userdata/filter_data.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+LocalDataFilters _$LocalDataFiltersFromJson(Map json) => $checkedCreate(
+      'LocalDataFilters',
+      json,
+      ($checkedConvert) {
+        final val = LocalDataFilters(
+          svtFilterData: $checkedConvert(
+              'svtFilterData', (v) => v == null ? null : SvtFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
+          laplaceSvtFilterData: $checkedConvert('laplaceSvtFilterData',
+              (v) => v == null ? null : SvtFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
+          craftFilterData: $checkedConvert('craftFilterData',
+              (v) => v == null ? null : CraftFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
+          cmdCodeFilterData: $checkedConvert('cmdCodeFilterData',
+              (v) => v == null ? null : CmdCodeFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
+          mysticCodeFilterData: $checkedConvert('mysticCodeFilterData',
+              (v) => v == null ? null : MysticCodeFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
+          eventFilterData: $checkedConvert('eventFilterData',
+              (v) => v == null ? null : EventFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
+          summonFilterData: $checkedConvert('summonFilterData',
+              (v) => v == null ? null : SummonFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
+          gachaFilterData: $checkedConvert('gachaFilterData',
+              (v) => v == null ? null : SummonFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
+          scriptReaderFilterData: $checkedConvert('scriptReaderFilterData',
+              (v) => v == null ? null : ScriptReaderFilterData.fromJson(Map<String, dynamic>.from(v as Map))),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$LocalDataFiltersToJson(LocalDataFilters instance) => <String, dynamic>{
+      'svtFilterData': instance.svtFilterData.toJson(),
+      'laplaceSvtFilterData': instance.laplaceSvtFilterData.toJson(),
+      'craftFilterData': instance.craftFilterData.toJson(),
+      'cmdCodeFilterData': instance.cmdCodeFilterData.toJson(),
+      'mysticCodeFilterData': instance.mysticCodeFilterData.toJson(),
+      'eventFilterData': instance.eventFilterData.toJson(),
+      'summonFilterData': instance.summonFilterData.toJson(),
+      'gachaFilterData': instance.gachaFilterData.toJson(),
+      'scriptReaderFilterData': instance.scriptReaderFilterData.toJson(),
+    };
+
 SvtFilterData _$SvtFilterDataFromJson(Map json) => $checkedCreate(
       'SvtFilterData',
       json,

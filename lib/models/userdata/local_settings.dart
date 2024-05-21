@@ -75,14 +75,8 @@ class LocalSettings {
   bool autoResetFilter;
   bool hideUnreleasedCard;
   bool hideUnreleasedEnemyCollection;
-  SvtFilterData svtFilterData;
-  CraftFilterData craftFilterData;
-  CmdCodeFilterData cmdCodeFilterData;
-  MysticCodeFilterData mysticCodeFilterData;
-  EventFilterData eventFilterData;
-  SummonFilterData summonFilterData;
-  SummonFilterData gachaFilterData;
-  ScriptReaderFilterData scriptReaderFilterData;
+
+  LocalDataFilters filters;
 
   List<AutoLoginData> autologins;
 
@@ -134,14 +128,7 @@ class LocalSettings {
     this.autoResetFilter = true,
     this.hideUnreleasedCard = false,
     this.hideUnreleasedEnemyCollection = false,
-    SvtFilterData? svtFilterData,
-    CraftFilterData? craftFilterData,
-    CmdCodeFilterData? cmdCodeFilterData,
-    MysticCodeFilterData? mysticCodeFilterData,
-    EventFilterData? eventFilterData,
-    SummonFilterData? summonFilterData,
-    SummonFilterData? gachaFilterData,
-    ScriptReaderFilterData? scriptReaderFilterData,
+    LocalDataFilters? filters,
     List<AutoLoginData>? autologins,
     RemoteConfig? remoteConfig,
     MasterMissionOptions? masterMissionOptions,
@@ -162,14 +149,7 @@ class LocalSettings {
         tips = tips ?? TipsSetting(),
         battleSim = battleSim ?? BattleSimSetting(),
         eventItemCalc = eventItemCalc ?? {},
-        svtFilterData = svtFilterData ?? SvtFilterData(),
-        craftFilterData = craftFilterData ?? CraftFilterData(),
-        cmdCodeFilterData = cmdCodeFilterData ?? CmdCodeFilterData(),
-        mysticCodeFilterData = mysticCodeFilterData ?? MysticCodeFilterData(),
-        eventFilterData = eventFilterData ?? EventFilterData(),
-        summonFilterData = summonFilterData ?? SummonFilterData(),
-        gachaFilterData = gachaFilterData ?? SummonFilterData(),
-        scriptReaderFilterData = scriptReaderFilterData ?? ScriptReaderFilterData(),
+        filters = filters ?? LocalDataFilters(),
         autologins = autologins ?? [],
         remoteConfig = remoteConfig ?? RemoteConfig(),
         masterMissionOptions = masterMissionOptions ?? MasterMissionOptions(),

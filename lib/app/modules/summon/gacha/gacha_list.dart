@@ -33,7 +33,7 @@ class _GachaListPageState extends State<GachaListPage>
   final Set<NiceGacha> _selectedGachas = {};
   bool get shouldShowMultiChoice => region == Region.jp && Language.isZH;
 
-  SummonFilterData get filterData => db.settings.gachaFilterData;
+  SummonFilterData get filterData => db.settings.filters.gachaFilterData;
 
   @override
   void initState() {

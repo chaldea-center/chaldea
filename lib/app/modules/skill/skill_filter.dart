@@ -13,20 +13,15 @@ enum SkillSearchScope {
   mc,
 }
 
-class SkillFilterData {
+class SkillFilterData with FilterDataMixin {
   final type = FilterGroupData<SkillType>();
   final scope = FilterGroupData<SkillSearchScope>();
   final funcTargetType = FilterGroupData<FuncTargetType>();
   final funcType = FilterGroupData<FuncType>();
   final buffType = FilterGroupData<BuffType>();
 
+  @override
   List<FilterGroupData> get groups => [type, scope, funcTargetType, funcType, buffType];
-
-  void reset() {
-    for (final group in groups) {
-      group.reset();
-    }
-  }
 }
 
 class SkillFilter extends FilterPage<SkillFilterData> {

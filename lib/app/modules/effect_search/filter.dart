@@ -15,7 +15,7 @@ enum SearchCardType {
   mc,
 }
 
-class BuffFuncFilterData {
+class BuffFuncFilterData with FilterDataMixin {
   bool useGrid = false;
   final rarity = FilterGroupData<int>();
   final svtClass = FilterGroupData<SvtClass>();
@@ -29,13 +29,13 @@ class BuffFuncFilterData {
 
   BuffFuncFilterData();
 
+  @override
   List<FilterGroupData> get groups =>
       [rarity, svtClass, region, effectScope, effectTarget, funcType, buffType, funcAndBuff, targetTrait];
 
+  @override
   void reset() {
-    for (final group in groups) {
-      group.reset();
-    }
+    super.reset();
     effectScope.options = {SvtEffectScope.active, SvtEffectScope.td};
   }
 
