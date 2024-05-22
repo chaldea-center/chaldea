@@ -569,10 +569,11 @@ class BattleServantData {
       }
       // idx=1,2, or eventId01
       for (final add in niceSvt!.traitAdd) {
-        if (add.idx < 100 || (add.idx > 100 && (add.idx ~/ 100) == eventId)) {
+        if (add.eventId == 0 || add.eventId == eventId) {
           if (add.limitCount < 0 ||
               add.limitCount == limitCount ||
               add.limitCount == niceSvt?.profile.costume[limitCount]?.id) {
+            // check startedAt/endedAt too?
             traits.addAll(add.trait);
           }
         }

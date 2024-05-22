@@ -686,6 +686,9 @@ ServantTrait _$ServantTraitFromJson(Map json) => ServantTrait(
           json['condType'] == null ? CondType.none : const CondTypeConverter().fromJson(json['condType'] as String),
       condId: (json['condId'] as num?)?.toInt() ?? 0,
       condNum: (json['condNum'] as num?)?.toInt() ?? 0,
+      eventId: (json['eventId'] as num?)?.toInt() ?? 0,
+      startedAt: (json['startedAt'] as num?)?.toInt() ?? 0,
+      endedAt: (json['endedAt'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$ServantTraitToJson(ServantTrait instance) => <String, dynamic>{
@@ -695,6 +698,9 @@ Map<String, dynamic> _$ServantTraitToJson(ServantTrait instance) => <String, dyn
       'condType': const CondTypeConverter().toJson(instance.condType),
       'condId': instance.condId,
       'condNum': instance.condNum,
+      'eventId': instance.eventId,
+      'startedAt': instance.startedAt,
+      'endedAt': instance.endedAt,
     };
 
 LoreCommentAdd _$LoreCommentAddFromJson(Map json) => LoreCommentAdd(

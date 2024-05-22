@@ -275,7 +275,7 @@ class SvtInfoTab extends StatelessWidget {
               ..._addTraits(
                 context,
                 () {
-                  final event = db.gameData.events[traitAdd.idx ~/ 100];
+                  final eventIdStr = traitAdd.eventId.toString(), idxStr = traitAdd.idx.toString();
                   return TextSpan(
                     children: [
                       if (traitAdd.condType != CondType.none)
@@ -300,15 +300,17 @@ class SvtInfoTab extends StatelessWidget {
                         ),
                       if (traitAdd.limitCount != -1)
                         TextSpan(text: '(${S.current.ascension_stage_short}${traitAdd.limitCount})'),
-                      if (event != null) ...[
+                      if (traitAdd.eventId != 0) ...[
                         SharedBuilder.textButtonSpan(
                           context: context,
-                          text: event.id.toString(),
-                          onTap: event.routeTo,
+                          text: traitAdd.eventId.toString(),
+                          onTap: () {
+                            router.push(url: Routes.eventI(traitAdd.eventId));
+                          },
                         ),
-                        TextSpan(text: (traitAdd.idx % 100).toString().padLeft(2, '0'))
+                        TextSpan(text: (idxStr.startsWith(eventIdStr) ? idxStr.substring(eventIdStr.length) : idxStr)),
                       ],
-                      if (event == null) TextSpan(text: traitAdd.idx.toString()),
+                      if (traitAdd.eventId == 0) TextSpan(text: idxStr),
                       const TextSpan(text: ': ')
                     ],
                   );

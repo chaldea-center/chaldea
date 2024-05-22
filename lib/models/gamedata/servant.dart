@@ -1135,6 +1135,9 @@ class ServantTrait {
   CondType condType;
   int condId;
   int condNum;
+  int eventId;
+  int startedAt; // may be 0
+  int endedAt;
 
   ServantTrait({
     required this.idx,
@@ -1143,9 +1146,16 @@ class ServantTrait {
     this.condType = CondType.none,
     this.condId = 0,
     this.condNum = 0,
+    this.eventId = 0,
+    this.startedAt = 0,
+    this.endedAt = 0,
   });
 
-  bool get isAlwaysValid => idx < 100 && limitCount == -1 && condType == CondType.none;
+  bool get isAlwaysValid =>
+      eventId == 0 &&
+      limitCount == -1 &&
+      condType == CondType.none &&
+      (endedAt == 0 || endedAt > kNeverClosedTimestamp);
 
   factory ServantTrait.fromJson(Map<String, dynamic> json) => _$ServantTraitFromJson(json);
 
