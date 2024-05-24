@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_picker/flutter_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/app.dart';
@@ -631,32 +630,19 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
               }
               footWidget = InkWell(
                 onTap: () {
-                  Picker(
-                    title: Text(S.current.beast_footprint),
-                    itemExtent: 36,
-                    height: min(250, MediaQuery.of(context).size.height - 220),
-                    hideHeader: true,
-                    cancelText: S.current.cancel,
-                    confirmText: S.current.confirm,
-                    backgroundColor: null,
-                    textStyle: Theme.of(context).textTheme.titleLarge,
-                    adapter: NumberPickerAdapter(
-                      data: [
-                        NumberPickerColumn(
-                          items: List.generate(26, (i) => i),
-                          initValue: footprint,
-                          onFormatValue: (v) {
-                            return (v * 20).toString();
-                          },
-                        ),
-                      ],
+                  SingleCupertinoPicker.show(
+                    context,
+                    (context) => SingleCupertinoPicker(
+                      title: Text(S.current.beast_footprint),
+                      initialItem: footprint,
+                      builder: (context) => List.generate(26, (i) => Text((i * 20).toString())),
+                      itemExtent: 36,
+                      onSelected: (v) {
+                        status.setCmdCard(index, v);
+                        if (mounted) setState(() {});
+                      },
                     ),
-                    onConfirm: (picker, values) {
-                      final v = picker.getSelectedValues()[0] as int;
-                      status.setCmdCard(index, v);
-                      if (mounted) setState(() {});
-                    },
-                  ).showDialog(context);
+                  );
                 },
                 child: footWidget,
               );

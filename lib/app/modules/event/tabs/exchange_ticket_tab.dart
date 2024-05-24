@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_picker/flutter_picker.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -231,35 +230,28 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                 ],
               ),
               onPressed: () {
-                Picker(
-                  title: Text('${ticket.dateStr} ${item?.lName.l}'),
-                  itemExtent: 36,
-                  height: min(250, MediaQuery.of(context).size.height - 220),
-                  hideHeader: true,
-                  cancelText: S.current.cancel,
-                  confirmText: S.current.confirm,
-                  backgroundColor: null,
-                  textStyle: Theme.of(context).textTheme.titleLarge,
-                  adapter: NumberPickerAdapter(
-                    data: [
-                      NumberPickerColumn(
-                        items: List.generate(maxValue + 2, (i) => i == 0 ? 0 : maxValue + 1 - i),
-                        initValue: monthPlan[index],
-                        onFormatValue: (v) {
-                          return ticket.multiplier == 1 ? v.toString() : '$v×${ticket.multiplier}';
-                        },
-                      ),
+                final values = List.generate(maxValue + 2, (i) => i == 0 ? 0 : maxValue + 1 - i);
+                SingleCupertinoPicker.show(
+                  context,
+                  (context) => SingleCupertinoPicker(
+                    title: Text('${ticket.dateStr} ${item?.lName.l}'),
+                    initialItem: values.indexOf(monthPlan[index]).clamp2(0),
+                    builder: (context) => [
+                      for (final v in values)
+                        Center(child: Text(ticket.multiplier == 1 ? v.toString() : '$v×${ticket.multiplier}')),
                     ],
+                    itemExtent: 36,
+                    onSelected: (idx) {
+                      monthPlan[index] = values[idx];
+                      for (var j = 0; j < 3; j++) {
+                        final int v = min(monthPlan[j], ticket.days - Maths.sum(monthPlan.getRange(0, j)));
+                        monthPlan[j] = v;
+                      }
+                      db.itemCenter.updateExchangeTickets();
+                      if (mounted) setState(() {});
+                    },
                   ),
-                  onConfirm: (picker, values) {
-                    monthPlan[index] = picker.getSelectedValues()[0];
-                    for (var j = 0; j < 3; j++) {
-                      final int v = min(monthPlan[j], ticket.days - Maths.sum(monthPlan.getRange(0, j)));
-                      monthPlan[j] = v;
-                    }
-                    db.itemCenter.updateExchangeTickets();
-                  },
-                ).showDialog(context);
+                );
               },
             ),
           )
