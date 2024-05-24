@@ -575,7 +575,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                   child: CircularProgressIndicator(
                     value: progress ?? 0,
                     color: _loader.error != null ? Theme.of(context).colorScheme.error : null,
-                    backgroundColor: Theme.of(context).colorScheme.background,
+                    backgroundColor: Theme.of(context).colorScheme.surface,
                   ),
                 ),
               ),

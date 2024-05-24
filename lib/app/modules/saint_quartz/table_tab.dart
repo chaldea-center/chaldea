@@ -65,7 +65,7 @@ class _SQTableTabState extends State<SQTableTab> {
       availableRowsPerPage: const [30, 60, 120, 180],
       minWidth: 800,
       headingRowHeight: 36,
-      headingRowColor: MaterialStateColor.resolveWith((states) => Theme.of(context).highlightColor),
+      headingRowColor: WidgetStateColor.resolveWith((states) => Theme.of(context).highlightColor),
       fit: FlexFit.tight,
       border: TableBorder(
         bottom: BorderSide(color: Colors.grey[300]!, width: 0.5),
@@ -130,9 +130,8 @@ class _PlanDataSource extends DataTableSource {
     return DataRow2(
       specificRowHeight: height.toDouble(),
       cells: cells,
-      color: index.isOdd
-          ? MaterialStateColor.resolveWith((states) => Theme.of(context).highlightColor.withAlpha(32))
-          : null,
+      color:
+          index.isOdd ? WidgetStateColor.resolveWith((states) => Theme.of(context).highlightColor.withAlpha(32)) : null,
     );
   }
 

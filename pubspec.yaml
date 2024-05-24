@@ -18,8 +18,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 2.5.9+970
 
 environment:
-  sdk: ">=3.3.0 <4.0.0"
-  flutter: ">=3.19.0 <4.0.0"
+  sdk: ">=3.4.0 <4.0.0"
+  flutter: ">=3.22.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -57,7 +57,6 @@ dependencies:
   flutter_easyloading: ^3.0.5
   flutter_hooks: ^0.20.1
   flutter_markdown: ^0.7.1
-  flutter_picker: ^2.1.0
   # flutter_qjs: ^0.3.7
   flutter_js: ^0.8.0
   flutter_svg: ^2.0.7
@@ -70,7 +69,7 @@ dependencies:
   image_gallery_saver: # ^1.7.1
     git:
       url: https://github.com/chaldea-center/image_gallery_saver.git
-  intl: ^0.18.0
+  intl: ^0.19.0
   json_annotation: ^4.9.0
   just_audio: ^0.9.33
   just_audio_windows: ^0.2.0
@@ -92,7 +91,7 @@ dependencies:
   permission_handler: ^11.0.0
   pool: ^1.5.0
   photo_view: ^0.15.0
-  screenshot: ^2.3.0
+  screenshot: ^3.0.0
   share_plus: ^9.0.0
   shared_preferences: ^2.2.0
   sliver_tools: ^0.2.12

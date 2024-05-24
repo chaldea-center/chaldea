@@ -392,13 +392,13 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 visualDensity: VisualDensity.compact,
                 fillColor: svt.isPlayer && options.manualAllySkillTarget && battleData.playerTargetIndex == index
-                    ? MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+                    ? WidgetStateProperty.resolveWith((Set<WidgetState> states) {
                         // M2 style
                         final _theme = Theme.of(context);
-                        if (states.contains(MaterialState.disabled)) {
+                        if (states.contains(WidgetState.disabled)) {
                           return _theme.disabledColor;
                         }
-                        if (states.contains(MaterialState.selected)) {
+                        if (states.contains(WidgetState.selected)) {
                           return _theme.colorScheme.tertiary;
                         }
                         return _theme.colorScheme.tertiary;
