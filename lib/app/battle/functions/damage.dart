@@ -204,7 +204,7 @@ class Damage {
         }
 
         final hasPierceDefense = await activator.hasBuffOnAction(battleData, BuffAction.pierceDefence);
-        final skipDamage = await shouldSkipDamage(battleData, activator, target, currentCard);
+        final skipDamage = await shouldSkipDamage(battleData, activator, target);
         if (!skipDamage) {
           damageParameters
             ..cardResist = await target.getBuffValueOnAction(battleData, BuffAction.commandDef)
@@ -272,7 +272,7 @@ class Damage {
         target.lastHitByCard = currentCard;
         target.lastHitByFunc = damageFunction;
 
-        if (target.hp <= 0 && await target.hasBuffOnAction(battleData, BuffAction.avoidanceAttackDeathDamage)) {
+        if (await shouldSkipLethalDamage(battleData, activator, target)) {
           target.setHp(previousHp);
         }
 
@@ -448,8 +448,13 @@ class Damage {
     final BattleData battleData,
     final BattleServantData activator,
     final BattleServantData target,
-    final CommandCardData currentCard,
   ) async {
+    // this one is different as it ignores all pierce effects
+    if (await target.hasBuffOnAction(battleData, BuffAction.avoidanceIndividuality)) {
+      return true;
+    }
+
+    // ordered this way to ensure relevant buffs are still used regardless of damage being skipped or not
     final hasSpecialInvincible = await target.hasBuffOnAction(battleData, BuffAction.specialInvincible);
     final hasPierceInvincible = await activator.hasBuffOnAction(battleData, BuffAction.pierceInvincible);
     if (hasSpecialInvincible) {
@@ -466,6 +471,20 @@ class Damage {
     final hasAvoidance = await target.hasBuffOnAction(battleData, BuffAction.avoidance) ||
         await target.hasBuffOnAction(battleData, BuffAction.avoidanceIndividuality);
     return !hasBreakAvoidance && hasAvoidance;
+  }
+
+  static Future<bool> shouldSkipLethalDamage(
+    final BattleData battleData,
+    final BattleServantData activator,
+    final BattleServantData target,
+  ) async {
+    final hasPierceInvincible = await activator.hasBuffOnAction(battleData, BuffAction.pierceInvincible);
+    final hasBreakAvoidance = await activator.hasBuffOnAction(battleData, BuffAction.breakAvoidance);
+    final hasAvoidance = await target.hasBuffOnAction(battleData, BuffAction.avoidanceAttackDeathDamage);
+    if (hasPierceInvincible || hasBreakAvoidance) {
+      return false;
+    }
+    return target.hp <= 0 && hasAvoidance;
   }
 
   static Future<int> getClassRelation(
