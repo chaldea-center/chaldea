@@ -895,6 +895,7 @@
   "team_no_lv100": null,
   "team_no_order_change": null,
   "team_no_same_svt": null,
+  "team_rare_enemy_warning": null,
   "team_report_reason_hint": null,
   "team_shared": null,
   "team_starting_member": "スターティング",

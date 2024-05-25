@@ -362,6 +362,10 @@ class BattleRecordManager {
     if (totalCards > attackedCards) {
       reasons2.setWarning(S.current.card_not_attack_warning(totalCards - attackedCards, totalCards));
     }
+    if (runtime.originalQuest.enemyHashes.length > 1 &&
+        runtime.originalQuest.allEnemies.any((e) => e.isRareOrAddition)) {
+      reasons2.setWarning(S.current.team_rare_enemy_warning);
+    }
   }
 
   List<BattleRecordData> toUploadRecords() {

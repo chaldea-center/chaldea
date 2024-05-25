@@ -895,6 +895,7 @@
   "team_no_lv100": "無Lv.100+",
   "team_no_order_change": "禁止換人",
   "team_no_same_svt": "禁止相同從者",
+  "team_rare_enemy_warning": null,
   "team_report_reason_hint": "【詳細說明】使用未實裝從者xxx/操作發牌成功率低/無法通關 等等。\n為了通知管理員刪除隊伍而不是讓其修改隊伍配置。",
   "team_shared": "共享隊伍",
   "team_starting_member": "前排從者",

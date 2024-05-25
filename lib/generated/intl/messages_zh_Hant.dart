@@ -1000,6 +1000,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "team_no_lv100": MessageLookupByLibrary.simpleMessage("無Lv.100+"),
         "team_no_order_change": MessageLookupByLibrary.simpleMessage("禁止換人"),
         "team_no_same_svt": MessageLookupByLibrary.simpleMessage("禁止相同從者"),
+        "team_rare_enemy_warning":
+            MessageLookupByLibrary.simpleMessage("此关卡可能包含稀有或追加敌人，若为随机出现（无法100%保证出现），请确保此队伍可适用于所有可能的敌方配置。"),
         "team_report_reason_hint":
             MessageLookupByLibrary.simpleMessage("【詳細說明】使用未實裝從者xxx/操作發牌成功率低/無法通關 等等。\n為了通知管理員刪除隊伍而不是讓其修改隊伍配置。"),
         "team_shared": MessageLookupByLibrary.simpleMessage("共享隊伍"),

@@ -895,6 +895,7 @@
   "team_no_lv100": "100레벨 제외",
   "team_no_order_change": "오더 체인지 제외",
   "team_no_same_svt": "동일 서번트 제외",
+  "team_rare_enemy_warning": null,
   "team_report_reason_hint": null,
   "team_shared": null,
   "team_starting_member": "전열 서번트",

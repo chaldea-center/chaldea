@@ -860,6 +860,7 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
         children: [
           ListTile(
             dense: true,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 8),
             title: Text(msgs.map((e) => '- $e').join('\n')),
           )
         ],
@@ -929,7 +930,7 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
           children: children,
         ),
       ),
-      contentPadding: const EdgeInsetsDirectional.fromSTEB(8, 10, 8, 12),
+      contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 10, 16, 12),
       hideOk: true,
       actions: [
         TextButton(

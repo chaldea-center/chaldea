@@ -1049,6 +1049,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "team_no_lv100": MessageLookupByLibrary.simpleMessage("No Lv.100+"),
         "team_no_order_change": MessageLookupByLibrary.simpleMessage("No Order Change"),
         "team_no_same_svt": MessageLookupByLibrary.simpleMessage("No Same Svt"),
+        "team_rare_enemy_warning": MessageLookupByLibrary.simpleMessage(
+            "This quest may contain rare or additional enemies. If they appear randomly (appearance cannot be 100% guaranteed), please ensure that this team is suitable for all possible enemy versions."),
         "team_report_reason_hint": MessageLookupByLibrary.simpleMessage(
             "[With Details] Unreleased servant xxx/low success rate/cannot clear quest/etc.\nAsk admin to delete team rather to edit team."),
         "team_shared": MessageLookupByLibrary.simpleMessage("Shared Teams"),

@@ -9913,6 +9913,17 @@ class S {
     );
   }
 
+  /// `This quest may contain rare or additional enemies. If they appear randomly (appearance cannot be 100% guaranteed), please ensure that this team is suitable for all possible enemy versions.`
+  String get team_rare_enemy_warning {
+    return Intl.message(
+      'This quest may contain rare or additional enemies. If they appear randomly (appearance cannot be 100% guaranteed), please ensure that this team is suitable for all possible enemy versions.',
+      name: 'team_rare_enemy_warning',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `[With Details] Unreleased servant xxx/low success rate/cannot clear quest/etc.\nAsk admin to delete team rather to edit team.`
   String get team_report_reason_hint {
     return Intl.message(
