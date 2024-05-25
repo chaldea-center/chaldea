@@ -458,10 +458,11 @@ packages:
   flutter_js:
     dependency: "direct main"
     description:
-      name: flutter_js
-      sha256: "5bf5db354fe78fe24cb90a5fa6b4423d38712440c88e3445c3dc88bc134c452f"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "6ae2e13838cbc8f142e82180d1ea3dfa40e0b455"
+      url: "https://github.com/chaldea-center/flutter_js.git"
+    source: git
     version: "0.8.0"
   flutter_lints:
     dependency: "direct dev"
