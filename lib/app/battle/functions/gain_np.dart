@@ -49,11 +49,9 @@ class GainNP {
   static Future<void> gainNpPerIndividual(
     final BattleData battleData,
     final DataVals dataVals,
-    final Iterable<BattleServantData> targets, {
+    final Iterable<BattleServantData> targets,
     final List<NiceTrait>? targetTraits,
-    final bool onlyCheckBuff = false,
-    final bool isNegative = false,
-  }) async {
+  ) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
       return;
@@ -61,7 +59,7 @@ class GainNP {
 
     for (final target in targets) {
       await battleData.withTarget(target, () async {
-        int change = isNegative ? -dataVals.Value! : dataVals.Value!;
+        int change = dataVals.Value!;
         if (targetTraits != null) {
           final List<BattleServantData> countTargets = [];
           final targetType = dataVals.Value2 ?? 0;
@@ -77,14 +75,46 @@ class GainNP {
           }
 
           int count = 0;
-          final bool activeBuffOnly = onlyCheckBuff || (dataVals.GainNpTargetPassiveIndividuality ?? 0) < 1;
 
           for (final countTarget in countTargets) {
-            count += countTarget.countBuffWithTrait(targetTraits, activeOnly: activeBuffOnly);
-            if (!onlyCheckBuff) {
-              count += countTarget.countTrait(battleData, targetTraits);
-            }
+            count += countTarget.countBuffWithTrait(
+              targetTraits,
+              activeOnly: dataVals.GainNpTargetPassiveIndividuality != 1,
+              ignoreIndivUnreleaseable: false,
+              includeIgnoreIndiv: false,
+            );
+            count += countTarget.countTrait(battleData, targetTraits);
           }
+          change *= count;
+        }
+
+        target.changeNP(change);
+        battleData.setFuncResult(target.uniqueId, true);
+      });
+    }
+  }
+
+  static Future<void> gainNpPerBuffIndividual(
+    final BattleData battleData,
+    final DataVals dataVals,
+    final Iterable<BattleServantData> targets,
+    final List<NiceTrait> targetTraits,
+  ) async {
+    final functionRate = dataVals.Rate ?? 1000;
+    if (functionRate < battleData.options.threshold) {
+      return;
+    }
+
+    for (final target in targets) {
+      await battleData.withTarget(target, () async {
+        int change = dataVals.Value!;
+        if (targetTraits.isNotEmpty) {
+          int count = target.countBuffWithTrait(
+            targetTraits,
+            activeOnly: true,
+            ignoreIndivUnreleaseable: false,
+            includeIgnoreIndiv: false,
+          );
           change *= count;
         }
 

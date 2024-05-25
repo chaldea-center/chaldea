@@ -256,13 +256,19 @@ class FunctionExecutor {
               isNegative: function.funcType == FuncType.lossMultiplyNp);
           break;
         case FuncType.gainNpIndividualSum:
-        case FuncType.gainNpBuffIndividualSum:
           await GainNP.gainNpPerIndividual(
             battleData,
             dataVals,
             targets,
-            targetTraits: function.traitVals,
-            onlyCheckBuff: function.funcType == FuncType.gainNpBuffIndividualSum,
+            function.traitVals,
+          );
+          break;
+        case FuncType.gainNpBuffIndividualSum:
+          await GainNP.gainNpPerBuffIndividual(
+            battleData,
+            dataVals,
+            targets,
+            function.traitVals,
           );
           break;
         case FuncType.hastenNpturn:

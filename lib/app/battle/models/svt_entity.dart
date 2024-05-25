@@ -1419,12 +1419,12 @@ class BattleServantData {
   int countBuffWithTrait(
     final List<NiceTrait> traits, {
     final bool activeOnly = false,
-    final bool excludeIndivUnreleaseable = false,
+    final bool ignoreIndivUnreleaseable = false,
     final bool includeIgnoreIndiv = false,
   }) {
     return getBuffsWithTraits(traits,
             activeOnly: activeOnly,
-            excludeIndivUnreleaseable: excludeIndivUnreleaseable,
+            ignoreIndivUnreleaseable: ignoreIndivUnreleaseable,
             includeIgnoreIndiv: includeIgnoreIndiv)
         .length;
   }
@@ -1432,13 +1432,13 @@ class BattleServantData {
   List<BuffData> getBuffsWithTraits(
     final List<NiceTrait> traits, {
     final bool activeOnly = false,
-    final bool excludeIndivUnreleaseable = false,
+    final bool ignoreIndivUnreleaseable = false,
     final bool includeIgnoreIndiv = false,
   }) {
     final buffList = activeOnly ? battleBuff.getActiveList() : battleBuff.validBuffs;
     return buffList.where((buff) {
       if (buff.vals.IgnoreIndividuality == 1 && !includeIgnoreIndiv) return false;
-      if (excludeIndivUnreleaseable && buff.irremovable) return false;
+      if (ignoreIndivUnreleaseable && buff.irremovable) return false;
       return checkTraitFunction(
         myTraits: buff.traits,
         requiredTraits: traits,
