@@ -93,6 +93,9 @@ UserMstData _$UserMstDataFromJson(Map json) => UserMstData(
       userQuest: (json['userQuest'] as List<dynamic>?)
           ?.map((e) => UserQuest.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      userDeck: (json['userDeck'] as List<dynamic>?)
+          ?.map((e) => UserDeckEntity.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
       userAccountLinkage: (json['userAccountLinkage'] as List<dynamic>?)
           ?.map((e) => UserAccountLinkage.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
@@ -108,6 +111,9 @@ UserSvt _$UserSvtFromJson(Map json) => UserSvt(
       svtId: json['svtId'],
       status: json['status'],
       limitCount: json['limitCount'],
+      dispLimitCount: json['dispLimitCount'],
+      imageLimitCount: json['imageLimitCount'],
+      commandCardLimitCount: json['commandCardLimitCount'],
       lv: json['lv'],
       exp: json['exp'],
       adjustHp: json['adjustHp'],
@@ -483,4 +489,34 @@ UserAccountLinkage _$UserAccountLinkageFromJson(Map json) => UserAccountLinkage(
       userId: json['userId'],
       type: json['type'],
       linkedAt: json['linkedAt'],
+    );
+
+UserDeckEntity _$UserDeckEntityFromJson(Map json) => UserDeckEntity(
+      id: json['id'],
+      userId: json['userId'],
+      deckNo: json['deckNo'],
+      name: json['name'],
+      deckInfo: json['deckInfo'] == null
+          ? null
+          : DeckServantEntity.fromJson(Map<String, dynamic>.from(json['deckInfo'] as Map)),
+      cost: json['cost'],
+    );
+
+DeckServantEntity _$DeckServantEntityFromJson(Map json) => DeckServantEntity(
+      svts: (json['svts'] as List<dynamic>?)
+          ?.map((e) => DeckServantData.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      userEquipId: json['userEquipId'],
+    );
+
+DeckServantData _$DeckServantDataFromJson(Map json) => DeckServantData(
+      id: json['id'],
+      userSvtId: json['userSvtId'],
+      svtId: json['svtId'],
+      userSvtEquipIds: json['userSvtEquipIds'],
+      svtEquipIds: json['svtEquipIds'],
+      isFollowerSvt: json['isFollowerSvt'],
+      npcFollowerSvtId: json['npcFollowerSvtId'],
+      followerType: json['followerType'],
+      initPos: json['initPos'],
     );

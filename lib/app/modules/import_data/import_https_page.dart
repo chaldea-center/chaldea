@@ -22,6 +22,7 @@ import '../common/builders.dart';
 import 'autologin/login_page.dart';
 import 'sniff_details/bond_detail_page.dart';
 import 'sniff_details/class_board_mission_demand.dart';
+import 'sniff_details/formation_decks.dart';
 import 'sniff_details/gacha_history.dart';
 import 'sniff_details/present_box.dart';
 import 'sniff_details/quest_farming.dart';
@@ -785,6 +786,13 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             router.pushPage(UserQuestFarmingStatPage(userQuests: _mstData.userQuest));
           },
           child: Text(S.current.quest),
+        ),
+        SimpleDialogOption(
+          onPressed: () {
+            Navigator.pop(context);
+            router.pushPage(UserFormationDecksPage(mstData: _mstData));
+          },
+          child: const Text("Formation Decks"),
         ),
       ],
     );

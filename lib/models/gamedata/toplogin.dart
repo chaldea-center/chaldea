@@ -267,6 +267,9 @@ class UserMstData {
   List<UserShop> userShop;
   // event/quest
   List<UserQuest> userQuest;
+
+  List<UserDeckEntity> userDeck;
+
   // userEventPoint, userGachaExtraCount,
   // userEventSuperBoss, userSvtVoicePlayed, userQuest
   // userEventMissionFix,
@@ -311,6 +314,7 @@ class UserMstData {
     List<UserEventMission>? userEventMission,
     List<UserShop>? userShop,
     List<UserQuest>? userQuest,
+    List<UserDeckEntity>? userDeck,
     List<UserAccountLinkage>? userAccountLinkage,
   })  : userGame = userGame ?? [],
         userSvtCollection = userSvtCollection ?? [],
@@ -333,6 +337,7 @@ class UserMstData {
         userEventMission = userEventMission ?? [],
         userShop = userShop ?? [],
         userQuest = userQuest ?? [],
+        userDeck = userDeck ?? [],
         userAccountLinkage = userAccountLinkage ?? [] {
     for (final e in this.userSvtCoin) {
       coinMap[e.svtId] = e;
@@ -438,7 +443,9 @@ class UserSvt {
   //   ADD_FRIENDSHIP_HEROINE = 128;
   int? status;
   int limitCount; // ascension
-  // int dispLimitCount;
+  int dispLimitCount;
+  int imageLimitCount;
+  int commandCardLimitCount;
   int lv;
   int exp;
   int adjustHp; // adjustHp*10=FUFU
@@ -485,6 +492,9 @@ class UserSvt {
     required dynamic svtId,
     required dynamic status,
     required dynamic limitCount, // ascension
+    required dynamic dispLimitCount,
+    required dynamic imageLimitCount,
+    required dynamic commandCardLimitCount,
     required dynamic lv,
     required dynamic exp,
     required dynamic adjustHp,
@@ -504,6 +514,9 @@ class UserSvt {
         svtId = _toInt(svtId),
         status = _toInt(status),
         limitCount = _toInt(limitCount),
+        dispLimitCount = _toInt(dispLimitCount),
+        imageLimitCount = _toInt(imageLimitCount),
+        commandCardLimitCount = _toInt(commandCardLimitCount),
         lv = _toInt(lv),
         exp = _toInt(exp),
         adjustHp = _toInt(adjustHp),
@@ -1545,4 +1558,80 @@ class UserAccountLinkage {
         linkedAt = _toInt(linkedAt);
 
   factory UserAccountLinkage.fromJson(Map<String, dynamic> data) => _$UserAccountLinkageFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserDeckEntity {
+  int id;
+  int userId;
+  int deckNo;
+  String name;
+  DeckServantEntity? deckInfo;
+  int cost;
+
+  UserDeckEntity({
+    dynamic id,
+    dynamic userId,
+    dynamic deckNo,
+    dynamic name,
+    this.deckInfo,
+    dynamic cost,
+  })  : id = _toInt(id),
+        userId = _toInt(userId),
+        deckNo = _toInt(deckNo),
+        name = name.toString(),
+        cost = _toInt(cost);
+
+  factory UserDeckEntity.fromJson(Map<String, dynamic> data) => _$UserDeckEntityFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class DeckServantEntity {
+  List<DeckServantData> svts;
+  int userEquipId;
+  //  List<DeckWaveServantData> waveSvts;
+
+  DeckServantEntity({
+    List<DeckServantData>? svts,
+    dynamic userEquipId,
+  })  : svts = svts ?? [],
+        userEquipId = _toInt(userEquipId);
+  factory DeckServantEntity.fromJson(Map<String, dynamic> data) => _$DeckServantEntityFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class DeckServantData {
+  int id;
+  int userSvtId;
+  List<int> userSvtEquipIds;
+
+  // for non-user svt
+  int? svtId;
+  List<int>? svtEquipIds;
+
+  bool isFollowerSvt;
+  int npcFollowerSvtId;
+  int? followerType;
+  int? initPos;
+
+  DeckServantData({
+    dynamic id,
+    dynamic userSvtId,
+    dynamic svtId,
+    dynamic userSvtEquipIds,
+    dynamic svtEquipIds,
+    dynamic isFollowerSvt,
+    dynamic npcFollowerSvtId,
+    dynamic followerType,
+    dynamic initPos,
+  })  : id = _toInt(id),
+        userSvtId = _toInt(userSvtId),
+        svtId = _toIntNull(svtId),
+        userSvtEquipIds = _toIntList(userSvtEquipIds),
+        svtEquipIds = svtEquipIds == null ? null : _toIntList(svtEquipIds),
+        isFollowerSvt = isFollowerSvt as bool,
+        npcFollowerSvtId = _toInt(npcFollowerSvtId),
+        followerType = _toIntNull(followerType),
+        initPos = _toIntNull(initPos);
+  factory DeckServantData.fromJson(Map<String, dynamic> data) => _$DeckServantDataFromJson(data);
 }
