@@ -26,6 +26,7 @@ mixin FuncsDescriptor {
     bool showBuffDetail = false,
     SkillOrTd? owner,
     bool showEvent = true,
+    bool showActIndiv = true,
     LoopTargets? loops,
     Region? region,
   }) =>
@@ -41,6 +42,7 @@ mixin FuncsDescriptor {
         showBuffDetail: showBuffDetail,
         owner: owner,
         showEvent: showEvent,
+        showActIndiv: showActIndiv,
         loops: loops,
         region: region,
       );
@@ -57,6 +59,7 @@ mixin FuncsDescriptor {
     bool showBuffDetail = false,
     SkillOrTd? owner,
     bool showEvent = true,
+    bool showActIndiv = true,
     LoopTargets? loops,
     Region? region,
   }) {
@@ -70,7 +73,7 @@ mixin FuncsDescriptor {
       return true;
     }).toList();
     List<Widget> children = [];
-    final actIndiv = owner is BaseSkill ? owner.actIndividuality : <NiceTrait>[];
+    final actIndiv = (showActIndiv && owner is BaseSkill) ? owner.actIndividuality : <NiceTrait>[];
     if (script?.isNotEmpty == true || actIndiv.isNotEmpty) {
       children.add(SkillScriptDescriptor(script: script, actIndividuality: actIndiv));
     }
@@ -1449,6 +1452,7 @@ class __LazyTriggerState extends State<_LazyTrigger> with FuncsDescriptor {
             script: skill?.script,
             showPlayer: widget.showPlayer,
             showEnemy: widget.showEnemy,
+            showActIndiv: false,
             level: widget.trigger.level,
             padding: const EdgeInsetsDirectional.fromSTEB(8, 4, 2, 4),
             owner: skill,
