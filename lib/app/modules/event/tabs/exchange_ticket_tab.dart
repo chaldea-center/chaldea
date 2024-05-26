@@ -231,27 +231,24 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
               ),
               onPressed: () {
                 final values = List.generate(maxValue + 2, (i) => i == 0 ? 0 : maxValue + 1 - i);
-                SingleCupertinoPicker.show(
-                  context,
-                  (context) => SingleCupertinoPicker(
-                    title: Text('${ticket.dateStr} ${item?.lName.l}'),
-                    initialItem: values.indexOf(monthPlan[index]).clamp2(0),
-                    builder: (context) => [
-                      for (final v in values)
-                        Center(child: Text(ticket.multiplier == 1 ? v.toString() : '$v×${ticket.multiplier}')),
-                    ],
-                    itemExtent: 36,
-                    onSelected: (idx) {
-                      monthPlan[index] = values[idx];
-                      for (var j = 0; j < 3; j++) {
-                        final int v = min(monthPlan[j], ticket.days - Maths.sum(monthPlan.getRange(0, j)));
-                        monthPlan[j] = v;
-                      }
-                      db.itemCenter.updateExchangeTickets();
-                      if (mounted) setState(() {});
-                    },
-                  ),
-                );
+                SingleCupertinoPicker(
+                  title: Text('${ticket.dateStr} ${item?.lName.l}'),
+                  initialItem: values.indexOf(monthPlan[index]).clamp2(0),
+                  builder: (context) => [
+                    for (final v in values)
+                      Center(child: Text(ticket.multiplier == 1 ? v.toString() : '$v×${ticket.multiplier}')),
+                  ],
+                  itemExtent: 36,
+                  onSelected: (idx) {
+                    monthPlan[index] = values[idx];
+                    for (var j = 0; j < 3; j++) {
+                      final int v = min(monthPlan[j], ticket.days - Maths.sum(monthPlan.getRange(0, j)));
+                      monthPlan[j] = v;
+                    }
+                    db.itemCenter.updateExchangeTickets();
+                    if (mounted) setState(() {});
+                  },
+                ).showDialog(context);
               },
             ),
           )

@@ -630,19 +630,16 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
               }
               footWidget = InkWell(
                 onTap: () {
-                  SingleCupertinoPicker.show(
-                    context,
-                    (context) => SingleCupertinoPicker(
-                      title: Text(S.current.beast_footprint),
-                      initialItem: footprint,
-                      builder: (context) => List.generate(26, (i) => Text((i * 20).toString())),
-                      itemExtent: 36,
-                      onSelected: (v) {
-                        status.setCmdCard(index, v);
-                        if (mounted) setState(() {});
-                      },
-                    ),
-                  );
+                  SingleCupertinoPicker(
+                    title: Text(S.current.beast_footprint),
+                    initialItem: footprint,
+                    builder: (context) => List.generate(26, (i) => Text((i * 20).toString())),
+                    itemExtent: 36,
+                    onSelected: (v) {
+                      status.setCmdCard(index, v);
+                      if (mounted) setState(() {});
+                    },
+                  ).showDialog(context);
                 },
                 child: footWidget,
               );

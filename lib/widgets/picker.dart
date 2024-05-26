@@ -23,19 +23,6 @@ class SingleCupertinoPicker extends StatefulWidget {
 
   @override
   State<SingleCupertinoPicker> createState() => _SingleCupertinoPickerState();
-
-  static Future<int?> show(BuildContext context, WidgetBuilder builder) {
-    switch (Theme.of(context).platform) {
-      case TargetPlatform.android:
-      case TargetPlatform.fuchsia:
-      case TargetPlatform.iOS:
-        return showCupertinoModalPopup(context: context, useRootNavigator: false, builder: builder);
-      case TargetPlatform.linux:
-      case TargetPlatform.macOS:
-      case TargetPlatform.windows:
-        return showDialog(context: context, useRootNavigator: false, builder: builder);
-    }
-  }
 }
 
 class _SingleCupertinoPickerState extends State<SingleCupertinoPicker> {
@@ -53,43 +40,25 @@ class _SingleCupertinoPickerState extends State<SingleCupertinoPicker> {
       children: widget.builder(context),
     );
     final constraints = widget.maxHeight == null ? null : BoxConstraints(maxHeight: widget.maxHeight!);
-    Widget child;
-    switch (Theme.of(context).platform) {
-      case TargetPlatform.android:
-      case TargetPlatform.fuchsia:
-      case TargetPlatform.iOS:
-        child = Container(
-          constraints: constraints,
-          padding: const EdgeInsets.only(top: 6.0),
-          margin: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          color: CupertinoColors.systemBackground.resolveFrom(context),
-          child: SafeArea(top: false, child: picker),
-        );
-        break;
-      case TargetPlatform.linux:
-      case TargetPlatform.macOS:
-      case TargetPlatform.windows:
-        child = AlertDialog(
-          title: widget.title,
-          content: constraints == null ? picker : ConstrainedBox(constraints: constraints, child: picker),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text(S.current.cancel),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context, selected);
-                widget.onSelected?.call(controller.selectedItem);
-              },
-              child: Text(S.current.confirm),
-            ),
-          ],
-        );
-        break;
-    }
+    Widget child = AlertDialog(
+      title: widget.title,
+      content: constraints == null ? picker : ConstrainedBox(constraints: constraints, child: picker),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text(S.current.cancel),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context, selected);
+            widget.onSelected?.call(controller.selectedItem);
+          },
+          child: Text(S.current.confirm),
+        ),
+      ],
+    );
     return child;
   }
 }
