@@ -236,7 +236,7 @@ class Item {
         type = 500;
       }
 
-      rarity = item.background.index;
+      rarity = item.type == ItemType.eventItem ? 0 : item.background.index;
       priority = useDropPriority ? item.dropPriority : item.priority;
       priority = switch (category) {
         ItemCategory.ascension || ItemCategory.skill => priority,

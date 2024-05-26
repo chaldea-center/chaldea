@@ -1542,6 +1542,7 @@ class EnemyScript with DataScriptBase {
     this.shiftClear,
   });
 
+  // the enemy is one of possible versions or not appear
   bool get isRare => (toInt('probability_type') ?? 0) != 0;
 
   int? get dispBreakShift => toInt('dispBreakShift');

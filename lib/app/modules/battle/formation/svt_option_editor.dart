@@ -386,7 +386,11 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               child: Text(S.current.support_servant),
             ),
           const PopupMenuDivider(),
-          for (final source in PreferPlayerSvtDataSource.values)
+          for (final source in [
+            PreferPlayerSvtDataSource.current,
+            PreferPlayerSvtDataSource.target,
+            PreferPlayerSvtDataSource.none
+          ])
             PopupMenuItem(
               enabled: playerSvtData.svt != null &&
                   !playerSvtData.supportType.isSupport &&

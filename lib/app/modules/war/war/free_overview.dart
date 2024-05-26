@@ -280,10 +280,15 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
         placeholder: true,
       );
     } else {
-      clsIcons = DataCell(wrap([
-        ...phase.className.take(2).map((e) => db.getIconImage(e.icon(5), width: 26, aspectRatio: 1)),
-        Text(phase.stages.map((e) => e.enemies.length).join('-'), style: Theme.of(context).textTheme.bodySmall),
-      ]));
+      clsIcons = DataCell(Text.rich(TextSpan(children: [
+        for (final clsName in phase.className)
+          CenterWidgetSpan(child: db.getIconImage(clsName.icon(5), width: 24, aspectRatio: 1)),
+        const TextSpan(text: '\n'),
+        TextSpan(
+          text: phase.stages.map((e) => e.enemies.length).join('-'),
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+      ])));
     }
     cells.add(clsIcons);
 
