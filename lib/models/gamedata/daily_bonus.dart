@@ -7,7 +7,7 @@ part '../../generated/models/gamedata/daily_bonus.g.dart';
 @JsonSerializable(createToJson: false)
 class DailyBonusData {
   DailyBonusAccountInfo info;
-  List<UserPresentBox> userPresentBox;
+  List<UserPresentBoxEntity> userPresentBox;
   List<CampaignBonusData> campaignbonus;
 
   DailyBonusData({

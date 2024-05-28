@@ -19,8 +19,8 @@ import 'package:chaldea/widgets/widgets.dart';
 class SvtBondDetailPage extends StatefulWidget {
   final String? friendCode;
   // key=game id
-  final List<UserSvtCollection> userSvtCollections;
-  final List<UserSvt> userSvts;
+  final List<UserServantCollectionEntity> userSvtCollections;
+  final List<UserServantEntity> userSvts;
 
   const SvtBondDetailPage({super.key, this.friendCode, required this.userSvtCollections, required this.userSvts});
 
@@ -51,10 +51,10 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
   bool ceGrid = false;
   bool reversed = false;
 
-  Map<int, UserSvtCollection> userSvtCollections = {};
+  Map<int, UserServantCollectionEntity> userSvtCollections = {};
 
-  List<MapEntry<Servant, UserSvtCollection>> collections = [];
-  List<(CraftEssence, UserSvt?, UserSvtCollection)> bondCEs = [];
+  List<MapEntry<Servant, UserServantCollectionEntity>> collections = [];
+  List<(CraftEssence, UserServantEntity?, UserServantCollectionEntity)> bondCEs = [];
 
   @override
   void initState() {
@@ -67,7 +67,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
       for (final svt in widget.userSvtCollections) svt.svtId: svt,
     };
 
-    final userCEs = <int, UserSvt>{};
+    final userCEs = <int, UserServantEntity>{};
     for (final userSvt in widget.userSvts) {
       final ce = db.gameData.craftEssencesById[userSvt.svtId];
       if (ce != null && ce.flags.contains(SvtFlag.svtEquipFriendShip)) {
@@ -159,7 +159,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
     }
   }
 
-  int _getBondNext(Servant svt, UserSvtCollection collection) {
+  int _getBondNext(Servant svt, UserServantCollectionEntity collection) {
     int x = collection.friendship;
     for (int v in svt.bondGrowth) {
       if (x < v) {

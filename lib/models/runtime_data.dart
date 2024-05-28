@@ -75,7 +75,7 @@ class RuntimeData {
 
 class AppClipBoard {
   QuestEnemy? questEnemy;
-  List<UserShop>? userShops;
+  List<UserShopEntity>? userShops;
   UserBattleData? teamData;
 }
 

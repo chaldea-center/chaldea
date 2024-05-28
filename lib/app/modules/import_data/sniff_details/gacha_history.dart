@@ -12,12 +12,12 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../../summon/gacha/gacha_banner.dart';
 
 class SniffGachaHistory extends StatefulWidget {
-  final List<UserSvt> userSvt;
-  final List<UserSvt> userSvtStorage;
-  final List<UserSvtCollection> userSvtCollection;
-  final List<UserGacha> records;
-  final List<UserShop> userShops;
-  final List<UserItem> userItems;
+  final List<UserServantEntity> userSvt;
+  final List<UserServantEntity> userSvtStorage;
+  final List<UserServantCollectionEntity> userSvtCollection;
+  final List<UserGachaEntity> records;
+  final List<UserShopEntity> userShops;
+  final List<UserItemEntity> userItems;
   final Region region;
 
   const SniffGachaHistory({
@@ -36,7 +36,7 @@ class SniffGachaHistory extends StatefulWidget {
 }
 
 class _SniffGachaHistoryState extends State<SniffGachaHistory> {
-  late List<UserGacha> records = widget.records.toList();
+  late List<UserGachaEntity> records = widget.records.toList();
   final loading = ValueNotifier<bool>(false);
   final gachaType = FilterGroupData<GachaType>();
 
@@ -271,7 +271,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     );
   }
 
-  Widget buildGacha(BuildContext context, int index, UserGacha record) {
+  Widget buildGacha(BuildContext context, int index, UserGachaEntity record) {
     final gacha = gachas[record.gachaId];
     final cnGacha = cnGachas[record.gachaId];
     final url = getHtmlUrl(record.gachaId);
@@ -382,12 +382,12 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     }
   }
 
-  bool shouldIgnore(UserGacha record) {
+  bool shouldIgnore(UserGachaEntity record) {
     // 1-fp, 101-newbie
     return record.gachaId == 1;
   }
 
-  Map<int, int> countServantTDOwned(List<UserSvt> servants, int rarity) {
+  Map<int, int> countServantTDOwned(List<UserServantEntity> servants, int rarity) {
     assert(rarity == 4 || rarity == 5);
     Map<int, int> counts = {};
     for (final userSvt in servants) {
@@ -405,7 +405,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     return counts;
   }
 
-  Map<int, int> countServantTDAll(List<UserSvtCollection> servants, int rarity) {
+  Map<int, int> countServantTDAll(List<UserServantCollectionEntity> servants, int rarity) {
     Map<int, int> counts = {};
     for (final userSvt in servants) {
       final svt = db.gameData.servantsById[userSvt.svtId];
@@ -439,7 +439,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
 }
 
 class _UserShopList extends StatelessWidget {
-  final List<UserShop> userShops;
+  final List<UserShopEntity> userShops;
   final Region region;
   const _UserShopList({required this.userShops, required this.region});
 

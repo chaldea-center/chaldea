@@ -54,19 +54,19 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   bool _showCraft = false;
   bool _showCmdCode = false;
   bool _showClassBoard = false;
-  final Set<UserSvt> _validSvts = {};
+  final Set<UserServantEntity> _validSvts = {};
 
   // from response,key=game id
-  Map<int, UserSvtCollection> cardCollections = {};
+  Map<int, UserServantCollectionEntity> cardCollections = {};
 
   // data
   FateTopLogin? topLogin;
-  List<List<UserSvt>> servants = [];
-  List<UserItem> items = [];
+  List<List<UserServantEntity>> servants = [];
+  List<UserItemEntity> items = [];
   Map<int, CraftStatus> crafts = {}; // craft.no: status
   Map<int, CmdCodeStatus> cmdCodes = {}; // code.no: status
 
-  UserMstData? get mstData => topLogin?.mstData;
+  MasterDataManager? get mstData => topLogin?.mstData;
 
   String get tmpPath => joinPaths(db.paths.userDir, 'sniff', db.curUser.id);
   String tmpPathOld = joinPaths(db.paths.userDir, 'sniff', calcMd5(db.curUser.name));
@@ -196,7 +196,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   final double _height = 42 / (132 / 144);
 
   Widget get userInfoSliver {
-    final user = mstData?.firstUser;
+    final user = mstData?.user;
     if (user == null) {
       return MultiSliver(children: const [
         ListTile(
@@ -225,7 +225,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             child: MultiSliver(children: [
               ListTile(
                 title: Text(S.current.obtain_time),
-                trailing: Text(topLogin!.cache.serverTime?.toStringShort() ?? '?'),
+                trailing: Text(topLogin!.serverTime?.toStringShort() ?? '?'),
               ),
               ListTile(
                 title: Text(S.current.login_username),
@@ -327,7 +327,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           continue;
         }
 
-        int? coin = mstData?.coinMap[svt.svtId]?.num;
+        int? coin = mstData?.userSvtCoin[svt.svtId]?.num;
         Widget _wrapCellStyle(List<String> texts) {
           return CustomTableRow.fromTexts(
             texts: texts,
@@ -698,7 +698,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
               child: Text(S.current.statistics_title),
             ),
             FilledButton.tonal(
-              onPressed: mstData?.firstUser == null ? null : didImportData,
+              onPressed: mstData?.user == null ? null : didImportData,
               child: Text(S.current.import_data),
             ),
           ],
@@ -707,7 +707,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     );
   }
 
-  Widget buildStatDialog(BuildContext context, UserMstData _mstData) {
+  Widget buildStatDialog(BuildContext context, MasterDataManager _mstData) {
     return SimpleDialog(
       title: Text(S.current.statistics_title),
       children: [
@@ -716,7 +716,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
             Navigator.pop(context);
             router.push(
               child: SvtBondDetailPage(
-                friendCode: _mstData.firstUser?.friendCode,
+                friendCode: _mstData.user?.friendCode,
                 userSvtCollections: _mstData.userSvtCollection.toList(),
                 userSvts: [
                   ..._mstData.userSvt,
@@ -757,11 +757,11 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                           Navigator.pop(context);
                           router.pushPage(SniffGachaHistory(
                             records: gachas.toList(),
-                            userSvt: _mstData.userSvt,
-                            userSvtStorage: _mstData.userSvtStorage,
-                            userSvtCollection: _mstData.userSvtCollection,
-                            userShops: _mstData.userShop,
-                            userItems: _mstData.userItem,
+                            userSvt: _mstData.userSvt.list,
+                            userSvtStorage: _mstData.userSvtStorage.list,
+                            userSvtCollection: _mstData.userSvtCollection.list,
+                            userShops: _mstData.userShop.list,
+                            userItems: _mstData.userItem.list,
                             region: region,
                           ));
                         },
@@ -776,14 +776,14 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         SimpleDialogOption(
           onPressed: () {
             Navigator.pop(context);
-            router.pushPage(ClassBoardMissionDemand(userSvtCollection: _mstData.userSvtCollection));
+            router.pushPage(ClassBoardMissionDemand(userSvtCollection: _mstData.userSvtCollection.list));
           },
           child: Text(S.current.class_board),
         ),
         SimpleDialogOption(
           onPressed: () {
             Navigator.pop(context);
-            router.pushPage(UserQuestFarmingStatPage(userQuests: _mstData.userQuest));
+            router.pushPage(UserQuestFarmingStatPage(userQuests: _mstData.userQuest.list));
           },
           child: Text(S.current.quest),
         ),
@@ -817,7 +817,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     ).showDialog(context);
     if (confirmed != true) return;
     final user = db.curUser;
-    final userGame = mstData?.firstUser;
+    final userGame = mstData?.user;
     user.isGirl = userGame?.genderType == 2;
     if (_includeItem) {
       // user.items.clear();
@@ -881,7 +881,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
         if (dbSvt == null || !dbSvt.isUserSvt) continue;
 
         SvtStatus status = SvtStatus();
-        UserSvtCollection collection = cardCollections[svt.svtId]!;
+        UserServantCollectionEntity collection = cardCollections[svt.svtId]!;
         if (_alreadyAdded.contains(svt.svtId) && dbSvt.collectionNo > 0) {
           user.dupServantMapping[svt.id] = dbSvt.collectionNo;
           status = user.svtStatusOf(svt.id);
@@ -981,7 +981,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
 
   void parseResponseBody(List<int> bytes, bool logEvent) {
     FateTopLogin _topLogin = FateTopLogin.fromBytes(bytes);
-    if (!_topLogin.response.any((res) => res.nid == 'login')) {
+    if (!_topLogin.responses.any((res) => res.nid == 'login')) {
       throw const FormatException('This is not login data');
     }
     final body = _topLogin.mstData;

@@ -7,7 +7,7 @@ import 'package:chaldea/widgets/material.dart';
 import '../../battle/formation/formation_card.dart';
 
 class UserFormationDecksPage extends StatefulWidget {
-  final UserMstData mstData;
+  final MasterDataManager mstData;
   const UserFormationDecksPage({super.key, required this.mstData});
 
   @override
@@ -20,7 +20,7 @@ class UserFormationDecksPageState extends State<UserFormationDecksPage> {
 
   @override
   Widget build(BuildContext context) {
-    final decks = mstData.userDeck;
+    final decks = mstData.userDeck.list;
     return Scaffold(
       appBar: AppBar(
         title: const Text("User Formation Decks"),

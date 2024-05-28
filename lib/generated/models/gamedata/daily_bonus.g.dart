@@ -9,7 +9,7 @@ part of '../../../models/gamedata/daily_bonus.dart';
 DailyBonusData _$DailyBonusDataFromJson(Map json) => DailyBonusData(
       info: DailyBonusAccountInfo.fromJson(Map<String, dynamic>.from(json['info'] as Map)),
       userPresentBox: (json['userPresentBox'] as List<dynamic>?)
-              ?.map((e) => UserPresentBox.fromJson(Map<String, dynamic>.from(e as Map)))
+              ?.map((e) => UserPresentBoxEntity.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
       campaignbonus: (json['campaignbonus'] as List<dynamic>?)

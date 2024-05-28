@@ -49,7 +49,7 @@ AutoLoginData _$AutoLoginDataFromJson(Map json) => $checkedCreate(
           useThisDevice: $checkedConvert('useThisDevice', (v) => v as bool? ?? false),
           lastLogin: $checkedConvert('lastLogin', (v) => (v as num?)?.toInt()),
           userGame: $checkedConvert(
-              'userGame', (v) => v == null ? null : UserGame.fromJson(Map<String, dynamic>.from(v as Map))),
+              'userGame', (v) => v == null ? null : UserGameEntity.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         return val;
       },

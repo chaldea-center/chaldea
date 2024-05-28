@@ -5,10 +5,10 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class SniffPresentBoxDetailPage extends StatelessWidget {
-  final List<UserPresentBox> presents;
-  final List<UserEventMission> missions;
-  final List<UserItem> items;
-  final UserGame? userGame;
+  final List<UserPresentBoxEntity> presents;
+  final List<UserEventMissionEntity> missions;
+  final List<UserItemEntity> items;
+  final UserGameEntity? userGame;
   const SniffPresentBoxDetailPage(
       {super.key, required this.presents, required this.missions, required this.items, required this.userGame});
 
@@ -106,7 +106,7 @@ class SniffPresentBoxDetailPage extends StatelessWidget {
     );
   }
 
-  Widget buildPresent(BuildContext context, UserPresentBox present) {
+  Widget buildPresent(BuildContext context, UserPresentBoxEntity present) {
     final gift = BaseGift(id: 0, type: GiftType.fromId(present.giftType), objectId: present.objectId, num: present.num);
     return ListTile(
       dense: true,

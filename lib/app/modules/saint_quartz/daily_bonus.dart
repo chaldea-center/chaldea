@@ -33,7 +33,7 @@ class _DailyBonusTabState extends State<DailyBonusTab> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, List<UserPresentBox>> groups = {};
+    Map<String, List<UserPresentBoxEntity>> groups = {};
     final userPresents = _dailyBonusData?.userPresentBox ?? [];
     final startTime = _dailyBonusData?.info.start ?? 0;
     for (final present in userPresents) {
@@ -82,8 +82,8 @@ class _DailyBonusTabState extends State<DailyBonusTab> {
     );
   }
 
-  Widget buildGroup(BuildContext context, String key, List<UserPresentBox> presents) {
-    final List<UserPresentBox> dailyLogins = [], extraBonus = [];
+  Widget buildGroup(BuildContext context, String key, List<UserPresentBoxEntity> presents) {
+    final List<UserPresentBoxEntity> dailyLogins = [], extraBonus = [];
     for (final present in presents) {
       if (present.fromType == PresentFromType.totalLogin.value || present.fromType == PresentFromType.seqLogin.value) {
         dailyLogins.add(present);
@@ -102,7 +102,7 @@ class _DailyBonusTabState extends State<DailyBonusTab> {
     );
   }
 
-  Widget buildPresent(UserPresentBox present, bool isDaily) {
+  Widget buildPresent(UserPresentBoxEntity present, bool isDaily) {
     final flags = present.flags;
     return ListTile(
       dense: true,

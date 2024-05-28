@@ -98,7 +98,7 @@ class FateServerResponse {
     }
   }
 
-  UserGame? get userGame => toplogin?.cache.replaced.userGame.getOrNull(0);
+  UserGameEntity? get userGame => toplogin?.mstData.user;
 }
 
 class LoginAgent {

@@ -83,7 +83,7 @@ class AutoLoginData {
   bool useThisDevice;
   // result
   int? lastLogin;
-  UserGame? userGame;
+  UserGameEntity? userGame;
   @JsonKey(includeFromJson: false, includeToJson: false)
   FateServerResponse? response;
 

@@ -6,7 +6,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
 class ClassBoardMissionDemand extends StatefulWidget {
-  final List<UserSvtCollection> userSvtCollection;
+  final List<UserServantCollectionEntity> userSvtCollection;
   const ClassBoardMissionDemand({super.key, required this.userSvtCollection});
 
   @override
@@ -14,7 +14,7 @@ class ClassBoardMissionDemand extends StatefulWidget {
 }
 
 class _ClassBoardMissionDemandState extends State<ClassBoardMissionDemand> {
-  Map<int, List<UserSvtCollection>> groups = {};
+  Map<int, List<UserServantCollectionEntity>> groups = {};
   Map<int, int> clsIdToBoardId = {};
 
   @override

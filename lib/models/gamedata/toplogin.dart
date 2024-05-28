@@ -62,20 +62,25 @@ List<int> _toIntList(dynamic v, [int? k = 0]) {
 
 @JsonSerializable(createToJson: false)
 class FateTopLogin {
+  @JsonKey(name: 'response')
+  List<FateResponseDetail> responses;
+  Map<String, dynamic> cache;
+  String sign;
+
+  FateTopLogin({this.responses = const [], Map<String, dynamic>? cache, String? sign})
+      : cache = cache ?? {},
+        sign = sign ?? '' {
+    mstData.updateCache(this.cache);
+  }
+
   @JsonKey(includeFromJson: false, includeToJson: false)
   Map? sourceData;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Region? region;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final mstData = MasterDataManager();
 
-  List<FateResponseDetail> response;
-  UserMstCache cache;
-  String sign;
-
-  UserMstData get mstData => cache.replaced;
-
-  FateTopLogin({this.response = const [], UserMstCache? cache, String? sign})
-      : cache = cache ?? UserMstCache(),
-        sign = sign ?? '';
+  DateTime? get serverTime => (cache['serverTime'] as int?)?.sec2date();
 
   factory FateTopLogin.fromJson(Map<String, dynamic> data) => _$FateTopLoginFromJson(data)..sourceData = Map.from(data);
 
@@ -175,11 +180,11 @@ class FateTopLogin {
   }
 
   FateResponseDetail getResponse(String nid) {
-    return response.firstWhere((e) => e.nid == nid);
+    return responses.firstWhere((e) => e.nid == nid);
   }
 
   FateTopLogin throwError() {
-    for (final detail in response) {
+    for (final detail in responses) {
       if (!detail.checkError()) {
         throw Exception('[${detail.nid}] ${detail.resCode} ${detail.fail}');
       }
@@ -209,66 +214,214 @@ class FateResponseDetail {
   factory FateResponseDetail.fromJson(Map<String, dynamic> data) => _$FateResponseDetailFromJson(data);
 }
 
-@JsonSerializable(createToJson: false)
-class UserMstCache {
-  // deleted: {} // mostly empty
-  UserMstData replaced;
+final _$mstMasterSchemes = <String, (Type, DataMaster Function(String mstName))>{
+  "userGame": (UserGameEntity, (mstName) => DataMaster<int, UserGameEntity>(mstName, UserGameEntity.fromJson)),
+  "userSvtCollection": (
+    UserServantCollectionEntity,
+    (mstName) => DataMaster<_IntStr, UserServantCollectionEntity>(mstName, UserServantCollectionEntity.fromJson)
+  ),
+  "userSvtStorage": (
+    UserServantEntity,
+    (mstName) => DataMaster<int, UserServantEntity>(mstName, UserServantEntity.fromJson)
+  ),
+  "userSvt": (UserServantEntity, (mstName) => DataMaster<int, UserServantEntity>(mstName, UserServantEntity.fromJson)),
+  "userSvtAppendPassiveSkill": (
+    UserServantAppendPassiveSkillEntity,
+    (mstName) =>
+        DataMaster<_IntStr, UserServantAppendPassiveSkillEntity>(mstName, UserServantAppendPassiveSkillEntity.fromJson)
+  ),
+  "userSvtAppendPassiveSkillLv": (
+    UserServantAppendPassiveSkillLvEntity,
+    (mstName) =>
+        DataMaster<int, UserServantAppendPassiveSkillLvEntity>(mstName, UserServantAppendPassiveSkillLvEntity.fromJson)
+  ),
+  "userCommandCodeCollection": (
+    UserCommandCodeCollectionEntity,
+    (mstName) => DataMaster<_IntStr, UserCommandCodeCollectionEntity>(mstName, UserCommandCodeCollectionEntity.fromJson)
+  ),
+  "userCommandCode": (
+    UserCommandCodeEntity,
+    (mstName) => DataMaster<int, UserCommandCodeEntity>(mstName, UserCommandCodeEntity.fromJson)
+  ),
+  "userSvtCommandCode": (
+    UserServantCommandCodeEntity,
+    (mstName) => DataMaster<_IntStr, UserServantCommandCodeEntity>(mstName, UserServantCommandCodeEntity.fromJson)
+  ),
+  "userSvtCommandCard": (
+    UserServantCommandCardEntity,
+    (mstName) => DataMaster<_IntStr, UserServantCommandCardEntity>(mstName, UserServantCommandCardEntity.fromJson)
+  ),
+  "userItem": (UserItemEntity, (mstName) => DataMaster<_IntStr, UserItemEntity>(mstName, UserItemEntity.fromJson)),
+  "userSvtCoin": (
+    UserSvtCoinEntity,
+    (mstName) => DataMaster<_IntStr, UserSvtCoinEntity>(mstName, UserSvtCoinEntity.fromJson)
+  ),
+  "userEquip": (UserEquipEntity, (mstName) => DataMaster<int, UserEquipEntity>(mstName, UserEquipEntity.fromJson)),
+  "userSupportDeck": (
+    UserSupportDeckEntity,
+    (mstName) => DataMaster<_IntStr, UserSupportDeckEntity>(mstName, UserSupportDeckEntity.fromJson)
+  ),
+  "userSvtLeader": (
+    UserServantLeaderEntity,
+    (mstName) => DataMaster<String, UserServantLeaderEntity>(mstName, UserServantLeaderEntity.fromJson)
+  ),
+  "userClassBoardSquare": (
+    UserClassBoardSquareEntity,
+    (mstName) => DataMaster<_IntStr, UserClassBoardSquareEntity>(mstName, UserClassBoardSquareEntity.fromJson)
+  ),
+  "userPresentBox": (
+    UserPresentBoxEntity,
+    (mstName) => DataMaster<_IntStr, UserPresentBoxEntity>(mstName, UserPresentBoxEntity.fromJson)
+  ),
+  "userGacha": (UserGachaEntity, (mstName) => DataMaster<_IntStr, UserGachaEntity>(mstName, UserGachaEntity.fromJson)),
+  "userEventMission": (
+    UserEventMissionEntity,
+    (mstName) => DataMaster<_IntStr, UserEventMissionEntity>(mstName, UserEventMissionEntity.fromJson)
+  ),
+  "userShop": (UserShopEntity, (mstName) => DataMaster<_IntStr, UserShopEntity>(mstName, UserShopEntity.fromJson)),
+  "userQuest": (UserQuestEntity, (mstName) => DataMaster<_IntStr, UserQuestEntity>(mstName, UserQuestEntity.fromJson)),
+  "userDeck": (UserDeckEntity, (mstName) => DataMaster<int, UserDeckEntity>(mstName, UserDeckEntity.fromJson)),
+  "userAccountLinkage": (
+    UserAccountLinkageEntity,
+    (mstName) => DataMaster<int, UserAccountLinkageEntity>(mstName, UserAccountLinkageEntity.fromJson)
+  ),
+};
+
+final _$mstMasterSchemesByType = <Type, (String, DataMaster Function(String mstName))>{
+  for (final (key, value) in _$mstMasterSchemes.items) value.$1: (key, value.$2),
+};
+
+class DataMaster<K, V extends DataEntityBase<K>> with Iterable<V> {
+  final String mstName;
+  final V Function(Map<String, dynamic>) entityFromJson;
+
   @protected
-  UserMstData updated; // all data copied to replaced
-  DateTime? serverTime;
+  final Map<K, V> lookup = {};
 
-  UserMstCache({UserMstData? replaced, UserMstData? updated, int? serverTime})
-      : replaced = replaced ?? UserMstData(),
-        updated = updated ?? UserMstData(),
-        serverTime = serverTime == null ? null : DateTime.fromMillisecondsSinceEpoch(serverTime * 1000);
+  @override
+  Iterator<V> get iterator => lookup.values.iterator;
 
-  factory UserMstCache.fromJson(Map<String, dynamic> data) {
-    // some regions' data are in replaced, some are in updated
-    final Map replaced = data.putIfAbsent('replaced', () => <String, dynamic>{});
-    final Map updated = data.putIfAbsent('updated', () => <String, dynamic>{});
-    final dupKeys = replaced.keys.toSet().intersection(updated.keys.toSet());
-    if (dupKeys.isNotEmpty) {
-      print('keys in replaced: [${replaced.keys.join(",")}]');
-      print('keys in updated : [${updated.keys.join(",")}]');
-      print('keys in both    : [${dupKeys.join(",")}]');
+  V? operator [](Object? key) => lookup[key];
+
+  List<V> get list => lookup.values.toList();
+
+  DataMaster(this.mstName, this.entityFromJson);
+
+  void clear() {
+    lookup.clear();
+  }
+
+  void updated(List<Map<String, dynamic>> entities) {
+    for (final obj in entities) {
+      final entity = entityFromJson(obj);
+      lookup[entity.primaryKey] = entity;
     }
-    updated.addAll(Map<String, dynamic>.from(replaced));
-    replaced.addAll(Map<String, dynamic>.from(updated));
-    updated.clear();
-    return _$UserMstCacheFromJson(data);
+  }
+
+  void replaced(List<Map<String, dynamic>> entities) {
+    lookup.clear();
+    for (final obj in entities) {
+      final entity = entityFromJson(obj);
+      lookup[entity.primaryKey] = entity;
+    }
+  }
+
+  void deleted(List<Map<String, dynamic>> entities) {
+    for (final obj in entities) {
+      final entity = entityFromJson(obj);
+      lookup.remove(entity.primaryKey);
+    }
   }
 }
 
-@JsonSerializable(createToJson: false)
-class UserMstData {
-  List<UserGame> userGame;
-  // svt and ce
-  List<UserSvtCollection> userSvtCollection;
-  List<UserSvt> userSvt;
-  List<UserSvt> userSvtStorage;
-  List<UserSvtAppendPassiveSkill> userSvtAppendPassiveSkill;
-  List<UserSvtAppendPassiveSkillLv> userSvtAppendPassiveSkillLv;
-  // cc
-  List<UserCommandCodeCollection> userCommandCodeCollection;
-  List<UserCommandCode> userCommandCode;
-  List<UserSvtCommandCode> userSvtCommandCode;
-  List<UserSvtCommandCard> userSvtCommandCard;
-  // items
-  List<UserItem> userItem;
-  List<UserSvtCoin> userSvtCoin;
-  List<UserEquip> userEquip;
-  // support deck
-  List<UserSupportDeck> userSupportDeck;
-  List<UserSvtLeader> userSvtLeader;
-  List<UserClassBoardSquare> userClassBoardSquare;
-  List<UserPresentBox> userPresentBox;
-  List<UserGacha> userGacha;
-  List<UserEventMission> userEventMission;
-  List<UserShop> userShop;
-  // event/quest
-  List<UserQuest> userQuest;
+class MasterDataManager {
+  final Map<String, DataMaster> datalist = {};
 
-  List<UserDeckEntity> userDeck;
+  DataMaster<K, V> get<K, V extends DataEntityBase<K>>() {
+    assert(() {
+      if (V == UserServantEntity) {
+        throw ArgumentError('userSvt and userSvtStorage both use UserServantEntity');
+      }
+      return true;
+    }());
+    if (!_$mstMasterSchemesByType.containsKey(V)) {
+      throw UnimplementedError('DataMaster<$K,$V> not implemented');
+    }
+    final (mstName, ctor) = _$mstMasterSchemesByType[V]!;
+    return datalist.putIfAbsent(mstName, () => ctor(mstName)) as DataMaster<K, V>;
+  }
+
+  DataMaster<K, V>? getByName<K, V extends DataEntityBase<K>>(String mstName) {
+    if (datalist.containsKey(mstName)) return datalist[mstName]! as DataMaster<K, V>;
+    if (!_$mstMasterSchemes.containsKey(mstName)) {
+      // throw UnimplementedError('DataMaster $mstName not implemented');
+      return null;
+    }
+    final (_, ctor) = _$mstMasterSchemes[mstName]!;
+    return datalist.putIfAbsent(mstName, () => ctor(mstName)) as DataMaster<K, V>;
+  }
+
+  void updateCache(Map cache) {
+    Map _get(String act) => (cache[act] as Map?) ?? {};
+    for (final (mstName, list) in _get('deleted').items) {
+      getByName(mstName)?.deleted(List.from(list));
+    }
+    for (final (mstName, list) in _get('updated').items) {
+      getByName(mstName)?.updated(List.from(list));
+    }
+    for (final (mstName, list) in _get('replaced').items) {
+      getByName(mstName)?.replaced(List.from(list));
+    }
+  }
+
+  UserGameEntity? get user => userGame.firstOrNull;
+
+  List<int> getSvtAppendSkillLv(UserServantEntity svt) {
+    final Map<int, int> lvs =
+        Map.fromIterable(userSvtAppendPassiveSkill[svt.svtId]?.unlockNums ?? <int>[], value: (_) => 1);
+    final appendLv = userSvtAppendPassiveSkillLv[svt.id];
+    if (appendLv != null) {
+      lvs.addAll(Map.fromIterables(appendLv.appendPassiveSkillNums, appendLv.appendPassiveSkillLvs));
+    }
+    return List.generate(3, (index) => lvs[100 + index] ?? 0);
+  }
+
+  // mst schemes
+
+  DataMaster<int, UserGameEntity> get userGame => get<int, UserGameEntity>();
+  // svt and ce
+  DataMaster<_IntStr, UserServantCollectionEntity> get userSvtCollection => get<_IntStr, UserServantCollectionEntity>();
+  DataMaster<int, UserServantEntity> get userSvt => getByName('userSvt')!;
+  DataMaster<int, UserServantEntity> get userSvtStorage => getByName('userSvtStorage')!;
+  DataMaster<_IntStr, UserServantAppendPassiveSkillEntity> get userSvtAppendPassiveSkill =>
+      get<_IntStr, UserServantAppendPassiveSkillEntity>();
+  DataMaster<int, UserServantAppendPassiveSkillLvEntity> get userSvtAppendPassiveSkillLv =>
+      get<int, UserServantAppendPassiveSkillLvEntity>();
+  // cc
+  DataMaster<_IntStr, UserCommandCodeCollectionEntity> get userCommandCodeCollection =>
+      get<_IntStr, UserCommandCodeCollectionEntity>();
+  DataMaster<int, UserCommandCodeEntity> get userCommandCode => get<int, UserCommandCodeEntity>();
+  DataMaster<_IntStr, UserServantCommandCodeEntity> get userSvtCommandCode =>
+      get<_IntStr, UserServantCommandCodeEntity>();
+  DataMaster<_IntStr, UserServantCommandCardEntity> get userSvtCommandCard =>
+      get<_IntStr, UserServantCommandCardEntity>();
+  // items
+  DataMaster<_IntStr, UserItemEntity> get userItem => get<_IntStr, UserItemEntity>();
+  DataMaster<_IntStr, UserSvtCoinEntity> get userSvtCoin => get<_IntStr, UserSvtCoinEntity>();
+  DataMaster<int, UserEquipEntity> get userEquip => get<int, UserEquipEntity>();
+  // support deck
+  DataMaster<_IntStr, UserSupportDeckEntity> get userSupportDeck => get<_IntStr, UserSupportDeckEntity>();
+  DataMaster<String, UserServantLeaderEntity> get userSvtLeader => get<String, UserServantLeaderEntity>();
+  DataMaster<_IntStr, UserClassBoardSquareEntity> get userClassBoardSquare =>
+      get<_IntStr, UserClassBoardSquareEntity>();
+  DataMaster<_IntStr, UserPresentBoxEntity> get userPresentBox => get<_IntStr, UserPresentBoxEntity>();
+  DataMaster<_IntStr, UserGachaEntity> get userGacha => get<_IntStr, UserGachaEntity>();
+  DataMaster<_IntStr, UserEventMissionEntity> get userEventMission => get<_IntStr, UserEventMissionEntity>();
+  DataMaster<_IntStr, UserShopEntity> get userShop => get<_IntStr, UserShopEntity>();
+  // event/quest
+  DataMaster<_IntStr, UserQuestEntity> get userQuest => get<_IntStr, UserQuestEntity>();
+
+  DataMaster<int, UserDeckEntity> get userDeck => get<int, UserDeckEntity>();
 
   // userEventPoint, userGachaExtraCount,
   // userEventSuperBoss, userSvtVoicePlayed, userQuest
@@ -282,86 +435,18 @@ class UserMstData {
   // beforeBirthDay
 
   // account
-  List<UserAccountLinkage> userAccountLinkage;
+  DataMaster<int, UserAccountLinkageEntity> get userAccountLinkage => get<int, UserAccountLinkageEntity>();
+}
 
-  // transformed
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  Map<int, UserSvtCoin> coinMap = {};
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  Map<int, UserSvtAppendPassiveSkill> appendSkillMap = {};
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  Map<int, UserSvtAppendPassiveSkillLv> appendSkillLvMap = {};
+// dw use "userId:key" as primary key, here use int key directly
+typedef _IntStr = int;
 
-  UserMstData({
-    List<UserGame>? userGame,
-    List<UserSvtCollection>? userSvtCollection,
-    List<UserSvt>? userSvt,
-    List<UserSvt>? userSvtStorage,
-    List<UserSvtAppendPassiveSkill>? userSvtAppendPassiveSkill,
-    List<UserSvtAppendPassiveSkillLv>? userSvtAppendPassiveSkillLv,
-    List<UserCommandCodeCollection>? userCommandCodeCollection,
-    List<UserCommandCode>? userCommandCode,
-    List<UserSvtCommandCode>? userSvtCommandCode,
-    List<UserSvtCommandCard>? userSvtCommandCard,
-    List<UserItem>? userItem,
-    List<UserSvtCoin>? userSvtCoin,
-    List<UserEquip>? userEquip,
-    List<UserSupportDeck>? userSupportDeck,
-    List<UserSvtLeader>? userSvtLeader,
-    List<UserClassBoardSquare>? userClassBoardSquare,
-    List<UserPresentBox>? userPresentBox,
-    List<UserGacha>? userGacha,
-    List<UserEventMission>? userEventMission,
-    List<UserShop>? userShop,
-    List<UserQuest>? userQuest,
-    List<UserDeckEntity>? userDeck,
-    List<UserAccountLinkage>? userAccountLinkage,
-  })  : userGame = userGame ?? [],
-        userSvtCollection = userSvtCollection ?? [],
-        userSvt = userSvt ?? [],
-        userSvtStorage = userSvtStorage ?? [],
-        userSvtAppendPassiveSkill = userSvtAppendPassiveSkill ?? [],
-        userSvtAppendPassiveSkillLv = userSvtAppendPassiveSkillLv ?? [],
-        userCommandCodeCollection = userCommandCodeCollection ?? [],
-        userCommandCode = userCommandCode ?? [],
-        userSvtCommandCode = userSvtCommandCode ?? [],
-        userSvtCommandCard = userSvtCommandCard ?? [],
-        userItem = userItem ?? [],
-        userSvtCoin = userSvtCoin ?? [],
-        userEquip = userEquip ?? [],
-        userSupportDeck = userSupportDeck ?? [],
-        userSvtLeader = userSvtLeader ?? [],
-        userClassBoardSquare = userClassBoardSquare ?? [],
-        userPresentBox = userPresentBox ?? [],
-        userGacha = userGacha ?? [],
-        userEventMission = userEventMission ?? [],
-        userShop = userShop ?? [],
-        userQuest = userQuest ?? [],
-        userDeck = userDeck ?? [],
-        userAccountLinkage = userAccountLinkage ?? [] {
-    for (final e in this.userSvtCoin) {
-      coinMap[e.svtId] = e;
-    }
-    for (final e in this.userSvtAppendPassiveSkill) {
-      appendSkillMap[e.svtId] = e;
-    }
-    for (final e in this.userSvtAppendPassiveSkillLv) {
-      appendSkillLvMap[e.userSvtId] = e;
-    }
-  }
+String _createPK2(Object k1, Object k2) {
+  return '$k1:$k2';
+}
 
-  UserGame? get firstUser => userGame.getOrNull(0);
-
-  List<int> getSvtAppendSkillLv(UserSvt svt) {
-    final Map<int, int> lvs = Map.fromIterable(appendSkillMap[svt.svtId]?.unlockNums ?? <int>[], value: (_) => 1);
-    final appendLv = appendSkillLvMap[svt.id];
-    if (appendLv != null) {
-      lvs.addAll(Map.fromIterables(appendLv.appendPassiveSkillNums, appendLv.appendPassiveSkillLvs));
-    }
-    return List.generate(3, (index) => lvs[100 + index] ?? 0);
-  }
-
-  factory UserMstData.fromJson(Map<String, dynamic> data) => _$UserMstDataFromJson(data);
+abstract class DataEntityBase<T> {
+  T get primaryKey;
 }
 
 // Example:
@@ -371,7 +456,8 @@ class UserMstData {
 // "updatedAt": "1504378320",
 // "createdAt": "1504378320"
 @JsonSerializable(createToJson: false)
-class UserItem {
+class UserItemEntity extends DataEntityBase<_IntStr> {
+  // int userId;
   int itemId;
   int num;
 
@@ -381,13 +467,18 @@ class UserItem {
   // @JsonKey(includeFromJson: false, includeToJson: false)
   // String? indexKey;
 
-  UserItem({
+  @override
+  _IntStr get primaryKey => itemId;
+
+  static _IntStr createPK(int itemId) => itemId;
+
+  UserItemEntity({
     required dynamic itemId,
     required dynamic num,
   })  : itemId = _toInt(itemId),
         num = _toInt(num);
 
-  factory UserItem.fromJson(Map<String, dynamic> data) => _$UserItemFromJson(data);
+  factory UserItemEntity.fromJson(Map<String, dynamic> data) => _$UserItemEntityFromJson(data);
 }
 
 // Example:
@@ -426,7 +517,7 @@ class UserItem {
 // "hp": 10623,
 // "atk": 7726
 @JsonSerializable(createToJson: false)
-class UserSvt {
+class UserServantEntity extends DataEntityBase<int> {
   int id; // unique id for every card
   int svtId;
 
@@ -487,7 +578,12 @@ class UserSvt {
     return status != null && status! & 4 != 0;
   }
 
-  UserSvt({
+  @override
+  int get primaryKey => id;
+
+  static int createPK(int id) => id;
+
+  UserServantEntity({
     required dynamic id,
     required dynamic svtId,
     required dynamic status,
@@ -530,14 +626,15 @@ class UserSvt {
         updatedAt = _toInt(updatedAt, 0),
         isLock = _toIntNull(isLock);
 
-  factory UserSvt.fromJson(Map<String, dynamic> data) => _$UserSvtFromJson(data);
+  factory UserServantEntity.fromJson(Map<String, dynamic> data) => _$UserServantEntityFromJson(data);
 
   Servant? get dbSvt => db.gameData.servantsById[svtId];
   CraftEssence? get dbCE => db.gameData.craftEssencesById[svtId];
 }
 
 @JsonSerializable(createToJson: false)
-class UserSvtCollection {
+class UserServantCollectionEntity extends DataEntityBase<_IntStr> {
+  int userId;
   int svtId;
 
   /// 1-已遭遇, 2-已契约
@@ -571,8 +668,13 @@ class UserSvtCollection {
   // commandCodes: null // deprecated?
   // commandCardParams: null // deprecated?
   // dateTimeOfGachas: null // new in JP
+  @override
+  _IntStr get primaryKey => svtId;
 
-  UserSvtCollection({
+  static _IntStr createPK(int svtId) => svtId;
+
+  UserServantCollectionEntity({
+    required dynamic userId,
     required dynamic svtId,
     required dynamic status,
     required dynamic maxLv,
@@ -595,7 +697,8 @@ class UserSvtCollection {
     required dynamic updatedAt,
     required dynamic createdAt,
     // required List<int> releasedCostumeIds,
-  })  : svtId = _toInt(svtId),
+  })  : userId = _toInt(userId),
+        svtId = _toInt(svtId),
         status = _toInt(status),
         maxLv = _toInt(maxLv),
         maxHp = _toInt(maxHp),
@@ -631,11 +734,12 @@ class UserSvtCollection {
     return result;
   }
 
-  factory UserSvtCollection.fromJson(Map<String, dynamic> data) => _$UserSvtCollectionFromJson(data);
+  factory UserServantCollectionEntity.fromJson(Map<String, dynamic> data) =>
+      _$UserServantCollectionEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: true)
-class UserGame {
+class UserGameEntity extends DataEntityBase<int> {
   int userId;
   String name;
   int? birthDay;
@@ -687,7 +791,12 @@ class UserGame {
   String? appuid; // (int) bilibili uid, may exceed int64 for 渠道服
   String? appname; // bilibili username, not nickname/display name
 
-  UserGame({
+  @override
+  int get primaryKey => userId;
+
+  static int createPK(int userId) => userId;
+
+  UserGameEntity({
     required dynamic userId,
     required this.name,
     required dynamic birthDay,
@@ -773,9 +882,9 @@ class UserGame {
         id = _toIntNull(id),
         appuid = appuid?.toString();
 
-  factory UserGame.fromJson(Map<String, dynamic> data) => _$UserGameFromJson(data);
+  factory UserGameEntity.fromJson(Map<String, dynamic> data) => _$UserGameEntityFromJson(data);
 
-  Map<String, dynamic> toJson() => _$UserGameToJson(this);
+  Map<String, dynamic> toJson() => _$UserGameEntityToJson(this);
 }
 
 // {
@@ -788,17 +897,26 @@ class UserGame {
 //   "svtId": 100100
 // },
 @JsonSerializable(createToJson: false)
-class UserSvtAppendPassiveSkill {
+class UserServantAppendPassiveSkillEntity extends DataEntityBase<_IntStr> {
+  int userId;
   List<int> unlockNums;
   int svtId;
 
-  UserSvtAppendPassiveSkill({
+  @override
+  _IntStr get primaryKey => svtId;
+
+  static _IntStr createPK(int svtId) => svtId;
+
+  UserServantAppendPassiveSkillEntity({
+    dynamic userId,
     List<int>? unlockNums,
     dynamic svtId,
-  })  : unlockNums = unlockNums ?? [],
+  })  : userId = _toInt(userId),
+        unlockNums = unlockNums ?? [],
         svtId = _toInt(svtId);
 
-  factory UserSvtAppendPassiveSkill.fromJson(Map<String, dynamic> data) => _$UserSvtAppendPassiveSkillFromJson(data);
+  factory UserServantAppendPassiveSkillEntity.fromJson(Map<String, dynamic> data) =>
+      _$UserServantAppendPassiveSkillEntityFromJson(data);
 }
 
 // {
@@ -809,17 +927,25 @@ class UserSvtAppendPassiveSkill {
 //   "createdAt": 1627812677
 // }
 @JsonSerializable(createToJson: false)
-class UserSvtCoin {
+class UserSvtCoinEntity extends DataEntityBase<_IntStr> {
+  int userId;
   int svtId;
   int num;
 
-  UserSvtCoin({
+  @override
+  _IntStr get primaryKey => svtId;
+
+  static _IntStr createPK(int svtId) => svtId;
+
+  UserSvtCoinEntity({
+    dynamic userId,
     dynamic svtId,
     dynamic num,
-  })  : svtId = _toInt(svtId),
+  })  : userId = _toInt(userId),
+        svtId = _toInt(svtId),
         num = _toInt(num);
 
-  factory UserSvtCoin.fromJson(Map<String, dynamic> data) => _$UserSvtCoinFromJson(data);
+  factory UserSvtCoinEntity.fromJson(Map<String, dynamic> data) => _$UserSvtCoinEntityFromJson(data);
 }
 
 // unlock order, only contains svts has unlocked append skill
@@ -838,12 +964,17 @@ class UserSvtCoin {
 //   "userId": 8634742
 // },
 @JsonSerializable(createToJson: false)
-class UserSvtAppendPassiveSkillLv {
+class UserServantAppendPassiveSkillLvEntity extends DataEntityBase<int> {
   int userSvtId;
   List<int> appendPassiveSkillNums;
   List<int> appendPassiveSkillLvs;
 
-  UserSvtAppendPassiveSkillLv({
+  @override
+  int get primaryKey => userSvtId;
+
+  static int createPK(int userSvtId) => userSvtId;
+
+  UserServantAppendPassiveSkillLvEntity({
     dynamic userSvtId,
     required this.appendPassiveSkillNums,
     required this.appendPassiveSkillLvs,
@@ -859,19 +990,25 @@ class UserSvtAppendPassiveSkillLv {
   //   ];
   // }
 
-  factory UserSvtAppendPassiveSkillLv.fromJson(Map<String, dynamic> data) =>
-      _$UserSvtAppendPassiveSkillLvFromJson(data);
+  factory UserServantAppendPassiveSkillLvEntity.fromJson(Map<String, dynamic> data) =>
+      _$UserServantAppendPassiveSkillLvEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
-class UserEquip {
+class UserEquipEntity extends DataEntityBase<int> {
   int id;
   // int userId;
   int equipId;
   int lv;
   int exp;
   // updatedAt, createdAt
-  UserEquip({
+
+  @override
+  int get primaryKey => id;
+
+  static int createPK(int id) => id;
+
+  UserEquipEntity({
     dynamic id,
     dynamic equipId,
     dynamic lv,
@@ -881,36 +1018,51 @@ class UserEquip {
         lv = _toInt(lv),
         exp = _toInt(exp);
 
-  factory UserEquip.fromJson(Map<String, dynamic> data) => _$UserEquipFromJson(data);
+  factory UserEquipEntity.fromJson(Map<String, dynamic> data) => _$UserEquipEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
-class UserCommandCodeCollection {
-  // int userId;
+class UserCommandCodeCollectionEntity extends DataEntityBase<_IntStr> {
+  int userId;
   int commandCodeId;
   int status; // 0-find, 2-got
   int getNum;
   // updatedAt, createdAt
-  UserCommandCodeCollection({
+
+  @override
+  _IntStr get primaryKey => commandCodeId;
+
+  static _IntStr createPK(int commandCodeId) => commandCodeId;
+
+  UserCommandCodeCollectionEntity({
+    dynamic userId,
     dynamic commandCodeId,
     dynamic status,
     dynamic getNum,
-  })  : commandCodeId = _toInt(commandCodeId),
+  })  : userId = _toInt(userId),
+        commandCodeId = _toInt(commandCodeId),
         status = _toInt(status),
         getNum = _toInt(getNum);
-  factory UserCommandCodeCollection.fromJson(Map<String, dynamic> data) => _$UserCommandCodeCollectionFromJson(data);
+  factory UserCommandCodeCollectionEntity.fromJson(Map<String, dynamic> data) =>
+      _$UserCommandCodeCollectionEntityFromJson(data);
 
   CommandCode? get dbCC => db.gameData.commandCodesById[commandCodeId];
 }
 
 @JsonSerializable(createToJson: false)
-class UserCommandCode {
+class UserCommandCodeEntity extends DataEntityBase<int> {
   int id;
   // int userId;
   int commandCodeId;
   int status; // StatusFlag.LOCK=1,CHOICE=16
   // createdAt, updatedAt
-  UserCommandCode({
+
+  @override
+  int get primaryKey => id;
+
+  static int createPK(int id) => id;
+
+  UserCommandCodeEntity({
     dynamic id,
     dynamic commandCodeId,
     dynamic status,
@@ -918,56 +1070,82 @@ class UserCommandCode {
   })  : id = _toInt(id),
         commandCodeId = _toInt(commandCodeId),
         status = _toInt(status);
-  factory UserCommandCode.fromJson(Map<String, dynamic> data) => _$UserCommandCodeFromJson(data);
+  factory UserCommandCodeEntity.fromJson(Map<String, dynamic> data) => _$UserCommandCodeEntityFromJson(data);
 
   CommandCode? get dbCC => db.gameData.commandCodesById[commandCodeId];
 }
 
 @JsonSerializable(createToJson: false)
-class UserSvtCommandCode {
-  // int userId;
+class UserServantCommandCodeEntity extends DataEntityBase<_IntStr> {
+  int userId;
   List<int> userCommandCodeIds;
   int svtId;
   // createdAt
-  UserSvtCommandCode({
+
+  @override
+  _IntStr get primaryKey => svtId;
+
+  static _IntStr createPK(int svtId) => svtId;
+
+  UserServantCommandCodeEntity({
+    dynamic userId,
     dynamic userCommandCodeIds,
     dynamic svtId,
-  })  : userCommandCodeIds = _toIntList(userCommandCodeIds),
+  })  : userId = _toInt(userId),
+        userCommandCodeIds = _toIntList(userCommandCodeIds),
         svtId = _toInt(svtId);
-  factory UserSvtCommandCode.fromJson(Map<String, dynamic> data) => _$UserSvtCommandCodeFromJson(data);
+  factory UserServantCommandCodeEntity.fromJson(Map<String, dynamic> data) =>
+      _$UserServantCommandCodeEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
-class UserSvtCommandCard {
-  // int userId;
+class UserServantCommandCardEntity extends DataEntityBase<_IntStr> {
+  int userId;
   List<int> commandCardParam;
   int svtId;
   // createdAt
-  UserSvtCommandCard({
+
+  @override
+  _IntStr get primaryKey => svtId;
+
+  static _IntStr createPK(int svtId) => svtId;
+
+  UserServantCommandCardEntity({
+    dynamic userId,
     dynamic commandCardParam,
     dynamic svtId,
-  })  : commandCardParam = _toIntList(commandCardParam),
+  })  : userId = _toInt(userId),
+        commandCardParam = _toIntList(commandCardParam),
         svtId = _toInt(svtId);
-  factory UserSvtCommandCard.fromJson(Map<String, dynamic> data) => _$UserSvtCommandCardFromJson(data);
+  factory UserServantCommandCardEntity.fromJson(Map<String, dynamic> data) =>
+      _$UserServantCommandCardEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
-class UserSupportDeck {
-  // int userId;
+class UserSupportDeckEntity extends DataEntityBase<_IntStr> {
+  int userId;
   int supportDeckId;
   String name;
   // createdAt, updatedAt
-  UserSupportDeck({
+
+  @override
+  _IntStr get primaryKey => supportDeckId;
+
+  static _IntStr createPK(int supportDeckId) => supportDeckId;
+
+  UserSupportDeckEntity({
+    dynamic userId,
     dynamic supportDeckId,
     dynamic name,
-  })  : supportDeckId = _toInt(supportDeckId),
+  })  : userId = _toInt(userId),
+        supportDeckId = _toInt(supportDeckId),
         name = name.toString();
-  factory UserSupportDeck.fromJson(Map<String, dynamic> data) => _$UserSupportDeckFromJson(data);
+  factory UserSupportDeckEntity.fromJson(Map<String, dynamic> data) => _$UserSupportDeckEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
-class UserSvtLeader {
-  // int userId;
+class UserServantLeaderEntity extends DataEntityBase<String> {
+  int userId;
   int supportDeckId;
   int classId;
   int userSvtId;
@@ -1008,7 +1186,13 @@ class UserSvtLeader {
   // Map script;
   // int limitCountSupport;
 
-  UserSvtLeader({
+  @override
+  String get primaryKey => _createPK2(classId, supportDeckId);
+
+  static String createPK(int classId, int supportDeckId) => _createPK2(classId, supportDeckId);
+
+  UserServantLeaderEntity({
+    dynamic userId,
     dynamic supportDeckId,
     dynamic classId,
     dynamic userSvtId,
@@ -1045,7 +1229,8 @@ class UserSvtLeader {
     dynamic randomLimitCountSupport,
     // dynamic limitCountSupport,
     List<SvtLeaderAppendSkillStatus>? appendPassiveSkill,
-  })  : supportDeckId = _toInt(supportDeckId),
+  })  : userId = _toInt(userId),
+        supportDeckId = _toInt(supportDeckId),
         classId = _toInt(classId),
         userSvtId = _toInt(userSvtId),
         svtId = _toInt(svtId),
@@ -1081,7 +1266,7 @@ class UserSvtLeader {
         // limitCountSupport=_toInt(limitCountSupport);
         appendPassiveSkill = appendPassiveSkill ?? [];
 
-  factory UserSvtLeader.fromJson(Map<String, dynamic> data) => _$UserSvtLeaderFromJson(data);
+  factory UserServantLeaderEntity.fromJson(Map<String, dynamic> data) => _$UserServantLeaderEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
@@ -1174,22 +1359,30 @@ class SvtLeaderCommandCodeStatus {
 // public long createdAt;
 
 @JsonSerializable(createToJson: false)
-class UserClassBoardSquare {
+class UserClassBoardSquareEntity extends DataEntityBase<_IntStr> {
+  int userId;
   int classBoardBaseId;
   List<int> classBoardSquareIds;
   List<int> classBoardUnlockSquareIds;
   // int updatedAt;
   // int createdAt;
 
-  UserClassBoardSquare({
+  @override
+  _IntStr get primaryKey => classBoardBaseId;
+
+  static _IntStr createPK(int classBoardBaseId) => classBoardBaseId;
+
+  UserClassBoardSquareEntity({
+    dynamic userId,
     dynamic classBoardBaseId,
     dynamic classBoardSquareIds,
     dynamic classBoardUnlockSquareIds,
-  })  : classBoardBaseId = _toInt(classBoardBaseId),
+  })  : userId = _toInt(userId),
+        classBoardBaseId = _toInt(classBoardBaseId),
         classBoardSquareIds = _toIntList(classBoardSquareIds),
         classBoardUnlockSquareIds = _toIntList(classBoardUnlockSquareIds);
 
-  factory UserClassBoardSquare.fromJson(Map<String, dynamic> data) => _$UserClassBoardSquareFromJson(data);
+  factory UserClassBoardSquareEntity.fromJson(Map<String, dynamic> data) => _$UserClassBoardSquareEntityFromJson(data);
 }
 
 enum UserPresentBoxFlag {
@@ -1200,7 +1393,7 @@ enum UserPresentBoxFlag {
 }
 
 @JsonSerializable(createToJson: false)
-class UserPresentBox {
+class UserPresentBoxEntity extends DataEntityBase<_IntStr> {
   int receiveUserId;
   int presentId;
   int messageRefType;
@@ -1221,7 +1414,12 @@ class UserPresentBox {
           if (flag & (1 << (v.index + 1)) != 0) v,
       ];
 
-  UserPresentBox({
+  @override
+  _IntStr get primaryKey => presentId;
+
+  static _IntStr createPK(int presentId) => presentId;
+
+  UserPresentBoxEntity({
     dynamic receiveUserId,
     dynamic presentId,
     dynamic messageRefType,
@@ -1250,7 +1448,7 @@ class UserPresentBox {
         flag = _toInt(flag),
         updatedAt = _toInt(updatedAt),
         createdAt = _toInt(createdAt);
-  factory UserPresentBox.fromJson(Map<String, dynamic> data) => _$UserPresentBoxFromJson(data);
+  factory UserPresentBoxEntity.fromJson(Map<String, dynamic> data) => _$UserPresentBoxEntityFromJson(data);
 }
 
 enum PresentFromType {
@@ -1263,8 +1461,8 @@ enum PresentFromType {
 }
 
 @JsonSerializable(createToJson: false)
-class UserGacha {
-  // int userId;
+class UserGachaEntity extends DataEntityBase<_IntStr> {
+  int userId;
   int gachaId;
   int num;
   int freeDrawAt;
@@ -1272,22 +1470,29 @@ class UserGacha {
   // only in CN (and TW?)
   int? createdAt;
 
-  UserGacha({
+  @override
+  _IntStr get primaryKey => gachaId;
+
+  static _IntStr createPK(int gachaId) => gachaId;
+
+  UserGachaEntity({
+    dynamic userId,
     dynamic gachaId,
     dynamic num,
     dynamic freeDrawAt,
     dynamic status,
     dynamic createdAt,
-  })  : gachaId = _toInt(gachaId),
+  })  : userId = _toInt(userId),
+        gachaId = _toInt(gachaId),
         num = _toInt(num),
         freeDrawAt = _toInt(freeDrawAt),
         status = _toInt(status, 0),
         createdAt = _toIntNull(createdAt);
-  factory UserGacha.fromJson(Map<String, dynamic> data) => _$UserGachaFromJson(data);
+  factory UserGachaEntity.fromJson(Map<String, dynamic> data) => _$UserGachaEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
-class UserEventMission {
+class UserEventMissionEntity extends DataEntityBase<_IntStr> {
   int userId;
   int missionId;
   int missionTargetId;
@@ -1295,7 +1500,12 @@ class UserEventMission {
   int updatedAt;
   int createdAt;
 
-  UserEventMission({
+  @override
+  _IntStr get primaryKey => missionId;
+
+  static _IntStr createPK(int missionId) => missionId;
+
+  UserEventMissionEntity({
     dynamic userId,
     dynamic missionId,
     dynamic missionTargetId,
@@ -1308,35 +1518,43 @@ class UserEventMission {
         missionProgressType = _toInt(missionProgressType),
         updatedAt = _toInt(updatedAt),
         createdAt = _toInt(createdAt);
-  factory UserEventMission.fromJson(Map<String, dynamic> data) => _$UserEventMissionFromJson(data);
+  factory UserEventMissionEntity.fromJson(Map<String, dynamic> data) => _$UserEventMissionEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
-class UserShop {
-  // int userId;
+class UserShopEntity extends DataEntityBase<_IntStr> {
+  int userId;
   int shopId;
   int num;
   int flag;
   int updatedAt;
   int createdAt; // jp no createdAt
 
-  UserShop({
+  @override
+  _IntStr get primaryKey => shopId;
+
+  static _IntStr createPK(int shopId) => shopId;
+
+  UserShopEntity({
+    dynamic userId,
     dynamic shopId,
     dynamic num,
     dynamic flag,
     dynamic updatedAt,
     dynamic createdAt,
-  })  : shopId = _toInt(shopId),
+  })  : userId = _toInt(userId),
+        shopId = _toInt(shopId),
         num = _toInt(num),
         flag = _toInt(flag),
         updatedAt = _toInt(updatedAt ?? createdAt, 0),
         createdAt = _toInt(createdAt ?? updatedAt, 0);
 
-  factory UserShop.fromJson(Map<String, dynamic> data) => _$UserShopFromJson(data);
+  factory UserShopEntity.fromJson(Map<String, dynamic> data) => _$UserShopEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
-class UserQuest {
+class UserQuestEntity extends DataEntityBase<_IntStr> {
+  int userId;
   int questId;
   int questPhase;
   int clearNum;
@@ -1352,7 +1570,13 @@ class UserQuest {
   int updatedAt;
   int createdAt;
 
-  UserQuest({
+  @override
+  _IntStr get primaryKey => questId;
+
+  static _IntStr createPK(int questId) => questId;
+
+  UserQuestEntity({
+    dynamic userId,
     dynamic questId,
     dynamic questPhase,
     dynamic clearNum,
@@ -1364,7 +1588,8 @@ class UserQuest {
     dynamic status,
     dynamic updatedAt,
     dynamic createdAt,
-  })  : questId = _toInt(questId),
+  })  : userId = _toInt(userId),
+        questId = _toInt(questId),
         questPhase = _toInt(questPhase),
         clearNum = _toInt(clearNum),
         isEternalOpen = isEternalOpen as bool,
@@ -1376,7 +1601,7 @@ class UserQuest {
         updatedAt = _toInt(updatedAt),
         createdAt = _toInt(createdAt);
 
-  factory UserQuest.fromJson(Map<String, dynamic> data) => _$UserQuestFromJson(data);
+  factory UserQuestEntity.fromJson(Map<String, dynamic> data) => _$UserQuestEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
@@ -1410,8 +1635,8 @@ class FollowerInfo {
     required dynamic tutorial1,
     required dynamic message,
     required dynamic pushUserSvtId,
-    required List<int>? mainSupportDeckIds,
-    required List<int>? eventSupportDeckIds,
+    required dynamic mainSupportDeckIds,
+    required dynamic eventSupportDeckIds,
     // required dynamic userClassBoardInfo,
   })  : userId = _toInt(userId),
         userName = userName.toString(),
@@ -1544,12 +1769,17 @@ class ServantLeaderInfo {
 }
 
 @JsonSerializable(createToJson: false)
-class UserAccountLinkage {
+class UserAccountLinkageEntity extends DataEntityBase<int> {
   int userId;
   int type; // 1-aniplex, 2=0?
   int linkedAt;
 
-  UserAccountLinkage({
+  @override
+  int get primaryKey => userId;
+
+  static int createPK(int userId) => userId;
+
+  UserAccountLinkageEntity({
     dynamic userId,
     dynamic type,
     dynamic linkedAt,
@@ -1557,17 +1787,22 @@ class UserAccountLinkage {
         type = _toInt(type),
         linkedAt = _toInt(linkedAt);
 
-  factory UserAccountLinkage.fromJson(Map<String, dynamic> data) => _$UserAccountLinkageFromJson(data);
+  factory UserAccountLinkageEntity.fromJson(Map<String, dynamic> data) => _$UserAccountLinkageEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
-class UserDeckEntity {
+class UserDeckEntity extends DataEntityBase<int> {
   int id;
   int userId;
   int deckNo;
   String name;
   DeckServantEntity? deckInfo;
   int cost;
+
+  @override
+  int get primaryKey => id;
+
+  static int createPK(int id) => id;
 
   UserDeckEntity({
     dynamic id,

@@ -9,7 +9,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class UserQuestFarmingStatPage extends StatefulWidget {
-  final List<UserQuest> userQuests;
+  final List<UserQuestEntity> userQuests;
   const UserQuestFarmingStatPage({super.key, required this.userQuests});
 
   @override
@@ -17,7 +17,7 @@ class UserQuestFarmingStatPage extends StatefulWidget {
 }
 
 class _QuestInfo {
-  UserQuest userQuest;
+  UserQuestEntity userQuest;
   Quest? quest;
   int winNum;
   int loseNum;
