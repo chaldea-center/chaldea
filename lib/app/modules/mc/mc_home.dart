@@ -47,7 +47,7 @@ class MooncellToolsPage extends StatelessWidget {
             ],
           ),
           TileGroup(
-            header: S.current.summon,
+            header: S.current.summon_banner,
             children: [
               ListTile(
                 title: buildMardkown("""### 前言

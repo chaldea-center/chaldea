@@ -61,7 +61,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     if (_summon == null) {
       return NotFoundPage(
         url: Routes.summonI(widget.id ?? '0'),
-        title: S.current.summon,
+        title: S.current.summon_banner,
       );
     }
     return Scaffold(

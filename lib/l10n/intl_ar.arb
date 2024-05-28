@@ -793,7 +793,7 @@
   "strength_status": null,
   "sub_attribute_advantage": null,
   "success": "نجاح",
-  "summon": "استدعاء",
+  "summon_banner": "استدعاء",
   "summon_daily": "استدعاء",
   "summon_expectation_btn": "يومي",
   "summon_gacha_footer": null,

@@ -268,7 +268,7 @@ class GalleryItem {
   );
   static GalleryItem summons = GalleryItem(
     name: 'summons',
-    titleBuilder: () => S.current.summon,
+    titleBuilder: () => S.current.summon_banner,
     icon: FontAwesomeIcons.dice,
     url: Routes.summons,
     page: SummonListPage(),

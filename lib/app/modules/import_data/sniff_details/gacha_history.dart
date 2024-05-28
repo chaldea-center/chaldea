@@ -201,7 +201,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
                         Text.rich(
                           TextSpan(
                               text:
-                                  '${S.current.obtain} $countAll${countAllNoLucky == null ? "" : "($countAllNoLucky)"}\n',
+                                  '${S.current.summon} $countAll${countAllNoLucky == null ? "" : "($countAllNoLucky)"}\n',
                               children: [
                                 TextSpan(
                                   text:

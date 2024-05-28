@@ -982,6 +982,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sub_attribute_advantage": MessageLookupByLibrary.simpleMessage("Sub Attribute Advantage"),
         "success": MessageLookupByLibrary.simpleMessage("Success"),
         "summon": MessageLookupByLibrary.simpleMessage("Summon"),
+        "summon_banner": MessageLookupByLibrary.simpleMessage("Summon"),
         "summon_daily": MessageLookupByLibrary.simpleMessage("Daily"),
         "summon_expectation_btn": MessageLookupByLibrary.simpleMessage("Expectation"),
         "summon_gacha_footer": MessageLookupByLibrary.simpleMessage("Just for entertainment"),

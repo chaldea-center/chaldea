@@ -794,7 +794,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "still_send": MessageLookupByLibrary.simpleMessage("계속 보내기"),
         "story_ce": MessageLookupByLibrary.simpleMessage("스토리 예장"),
         "success": MessageLookupByLibrary.simpleMessage("성공"),
-        "summon": MessageLookupByLibrary.simpleMessage("가챠"),
+        "summon_banner": MessageLookupByLibrary.simpleMessage("가챠"),
         "summon_daily": MessageLookupByLibrary.simpleMessage("매일"),
         "summon_expectation_btn": MessageLookupByLibrary.simpleMessage("기대치 계산"),
         "summon_gacha_footer": MessageLookupByLibrary.simpleMessage("엔터테인먼트만"),

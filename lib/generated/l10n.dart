@@ -9231,6 +9231,17 @@ class S {
     );
   }
 
+  /// `Summon`
+  String get summon_banner {
+    return Intl.message(
+      'Summon',
+      name: 'summon_banner',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Daily`
   String get summon_daily {
     return Intl.message(

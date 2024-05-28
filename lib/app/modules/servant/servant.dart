@@ -428,7 +428,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
         }
         return _SubTabInfo(
           tab: tab,
-          tabBuilder: () => S.current.summon,
+          tabBuilder: () => S.current.summon_banner,
           viewBuilder: (ctx) => SvtSummonTab(svt: svt),
         );
       case SvtTab.voice:

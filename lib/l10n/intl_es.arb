@@ -793,7 +793,7 @@
   "strength_status": null,
   "sub_attribute_advantage": null,
   "success": "Éxito",
-  "summon": "Summon",
+  "summon_banner": "Summon",
   "summon_daily": "Diario",
   "summon_expectation_btn": "Expectativa",
   "summon_gacha_footer": "Solo para entretenimiento",

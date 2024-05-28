@@ -898,7 +898,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     }
 
     if (event.extra.relatedSummons.isNotEmpty) {
-      children.add(ListTile(title: Text(S.current.summon)));
+      children.add(ListTile(title: Text(S.current.summon_banner)));
       final summons = event.extra.relatedSummons;
       summons.sort2((key) => db.gameData.wiki.summons[key]?.startTime.l ?? 0);
       children.add(TileGroup(

@@ -439,7 +439,7 @@ class CraftDetailBasePage extends StatelessWidget {
           ),
         ],
         if (showExtra && summons.isNotEmpty) ...[
-          CustomTableRow(children: [TableCellData(text: S.current.summon, isHeader: true)]),
+          CustomTableRow(children: [TableCellData(text: S.current.summon_banner, isHeader: true)]),
           CustomTableRow(children: [
             TableCellData(
                 child: Column(

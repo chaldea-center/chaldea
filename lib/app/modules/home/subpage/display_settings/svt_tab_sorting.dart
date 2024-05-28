@@ -97,7 +97,7 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
       case SvtTab.relatedCards:
         return S.current.svt_related_ce;
       case SvtTab.summon:
-        return S.current.summon;
+        return S.current.summon_banner;
       case SvtTab.voice:
         return S.current.voice;
       case SvtTab.quest:

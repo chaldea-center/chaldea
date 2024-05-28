@@ -92,7 +92,7 @@ class _TimerHomePageState extends State<TimerHomePage>
           tabs: [
             S.current.general_all,
             S.current.event,
-            S.current.summon,
+            S.current.summon_banner,
             S.current.master_mission,
             S.current.shop,
             "Time",

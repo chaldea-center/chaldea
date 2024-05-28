@@ -49,7 +49,7 @@ class _AppRouteEntrancePageState extends State<AppRouteEntrancePage> {
           _int(S.current.war, Routes.war),
           _int(S.current.enemy, Routes.enemy),
           _int(S.current.item, Routes.item),
-          _int(S.current.summon, Routes.summon),
+          _int(S.current.summon_banner, Routes.summon),
           _int(S.current.costume, Routes.costume),
           _int(S.current.bgm, Routes.bgm),
           _int(S.current.trait, Routes.trait),

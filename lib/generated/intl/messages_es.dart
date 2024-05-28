@@ -541,7 +541,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "statistics_title": MessageLookupByLibrary.simpleMessage("Estadísticas"),
         "still_send": MessageLookupByLibrary.simpleMessage("Enviar de todas formas"),
         "success": MessageLookupByLibrary.simpleMessage("Éxito"),
-        "summon": MessageLookupByLibrary.simpleMessage("Summon"),
+        "summon_banner": MessageLookupByLibrary.simpleMessage("Summon"),
         "summon_daily": MessageLookupByLibrary.simpleMessage("Diario"),
         "summon_expectation_btn": MessageLookupByLibrary.simpleMessage("Expectativa"),
         "summon_gacha_footer": MessageLookupByLibrary.simpleMessage("Solo para entretenimiento"),

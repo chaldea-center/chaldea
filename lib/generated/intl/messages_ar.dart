@@ -497,7 +497,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "statistics_title": MessageLookupByLibrary.simpleMessage("احصائيات"),
         "still_send": MessageLookupByLibrary.simpleMessage("أرسل على اي حال"),
         "success": MessageLookupByLibrary.simpleMessage("نجاح"),
-        "summon": MessageLookupByLibrary.simpleMessage("استدعاء"),
+        "summon_banner": MessageLookupByLibrary.simpleMessage("استدعاء"),
         "summon_daily": MessageLookupByLibrary.simpleMessage("استدعاء"),
         "summon_expectation_btn": MessageLookupByLibrary.simpleMessage("يومي"),
         "summon_gacha_result": MessageLookupByLibrary.simpleMessage("النتائج"),
