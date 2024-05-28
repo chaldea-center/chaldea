@@ -182,7 +182,7 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
     file.parent.createSync(recursive: true);
     await file.writeAsBytes(List.from(resp.data));
     if (PlatformU.isWindows) {
-      logger.v('download file: $url');
+      logger.t('download file: $url');
     } else {
       print("download file: $url");
     }
@@ -201,16 +201,16 @@ class AtlasIconLoader extends _CachedLoader<String, String> {
       } on DioException catch (e) {
         final uri = e.requestOptions.uri;
         if (e.response?.statusCode != 404) {
-          logger.v('download error: ${e.type.name}(${e.response?.statusCode}) ${e.error}, uri=$uri');
+          logger.t('download error: ${e.type.name}(${e.response?.statusCode}) ${e.error}, uri=$uri');
         }
         if (_shouldRetry(e)) {
           count += 1;
-          logger.v('retry download ($count/$retryCount): $uri');
+          logger.t('retry download ($count/$retryCount): $uri');
           if (count <= retryCount) {
             await Future.delayed(duration * count);
             continue;
           } else {
-            logger.v('failed after $count retries: $uri');
+            logger.t('failed after $count retries: $uri');
           }
         }
         rethrow;

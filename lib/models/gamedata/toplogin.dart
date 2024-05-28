@@ -105,7 +105,7 @@ class FateTopLogin {
         try {
           bytes = ZLibCodec(raw: true).decode(bytes);
         } catch (e, s) {
-          logger.v('not deflate compressed: ${bytes.take(10).toList()}', e, s);
+          logger.t('not deflate compressed: ${bytes.take(10).toList()}', e, s);
         }
       }
       return Map.from(jsonDecode(tryBase64Decode(utf8.decode(bytes))));

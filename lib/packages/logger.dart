@@ -11,31 +11,62 @@ import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:logger/logger.dart';
 
-/// default logger
-Logger _logger = Logger(
-  filter: ProductionFilter(),
-  printer: _CustomPrettyPrinter(methodCount: 2, colors: false, printEmojis: false, printTime: true),
-  level: Level.verbose,
-);
+class _LoggerWrap {
+  final Logger _l;
+  _LoggerWrap(this._l);
 
-Logger get logger => _logger;
+  void t(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
+      _l.t(message, error: error, stackTrace: stackTrace);
 
-extension LoggerUtils on Logger {
+  void d(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
+      _l.d(message, error: error, stackTrace: stackTrace);
+
+  void i(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
+      _l.i(message, error: error, stackTrace: stackTrace);
+
+  void w(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
+      _l.w(message, error: error, stackTrace: stackTrace);
+
+  void e(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
+      _l.e(message, error: error, stackTrace: stackTrace);
+
+  void fetal(dynamic message, [dynamic error, StackTrace? stackTrace]) =>
+      _l.f(message, error: error, stackTrace: stackTrace);
+
+  void log(Level level, dynamic message, [dynamic error, StackTrace? stackTrace]) =>
+      _l.log(level, message, error: error, stackTrace: stackTrace);
+
+  bool isClosed() => _l.isClosed();
+
+  void close() => _l.close();
+
+  // extra
   void errorSkipDio(dynamic message, [dynamic error, StackTrace? stackTrace]) {
     if (e is DioException) {
-      v(message, error);
+      t(message, error);
     } else {
       e(message, error, stackTrace);
     }
   }
+}
 
+/// default logger
+_LoggerWrap _logger = _LoggerWrap(Logger(
+  filter: ProductionFilter(),
+  printer: _CustomPrettyPrinter(methodCount: 2, colors: false, printEmojis: false, printTime: true),
+  level: Level.trace,
+));
+
+_LoggerWrap get logger => _logger;
+
+extension LoggerUtils on Logger {
   static void initiateLoggerPath([String? fp]) {
     if (fp != null) {
       rollLogFiles(fp, 5, 10 * 1024 * 1024); //10MB
     }
-    _logger = Logger(
+    _logger = _LoggerWrap(Logger(
       filter: ProductionFilter(),
-      level: Level.verbose,
+      level: Level.trace,
       printer: _CustomPrettyPrinter(
         methodCount: 2,
         colors: false,
@@ -47,7 +78,7 @@ extension LoggerUtils on Logger {
         ConsoleOutput(),
         if (!kIsWeb && fp != null) FileOutput(file: File(fp)),
       ]),
-    );
+    ));
   }
 
   /// fp, fp.1,...,fp.[maxCount], [maxSize] in bytes
@@ -120,13 +151,13 @@ class _CustomPrettyPrinter extends PrettyPrinter {
     StackTrace? stackTrace = error is DioException ? error.stackTrace : event.stackTrace;
     String? stackTraceStr;
 
-    if (event.level == Level.verbose) {
+    if (event.level == Level.trace) {
       stackTraceStr = null;
     } else if (stackTrace == null) {
-      if (methodCount > 0) {
+      if ((methodCount ?? 0) > 0) {
         stackTraceStr = formatStackTrace(_fmtStackTrace(StackTrace.current), methodCount);
       }
-    } else if (errorMethodCount > 0) {
+    } else if ((errorMethodCount ?? 0) > 0) {
       stackTraceStr = formatStackTrace(_fmtStackTrace(stackTrace), errorMethodCount);
     }
     if (error is DioException && kReleaseMode) {
@@ -162,7 +193,7 @@ class _CustomPrettyPrinter extends PrettyPrinter {
     }
     String? errorStr = error?.toString();
     if (printEmojis && errorStr != null) {
-      errorStr = (PrettyPrinter.levelEmojis[event.level] ?? '') + errorStr;
+      errorStr = (PrettyPrinter.defaultLevelEmojis[event.level] ?? '') + errorStr;
     }
     String timeStr = DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch).toString();
 

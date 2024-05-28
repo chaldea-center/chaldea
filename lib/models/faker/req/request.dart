@@ -241,7 +241,7 @@ class NetworkManager {
               '${DateTime.now().toSafeFileName()}_${request.path.replaceAll('/', '_')}.json'))
           .writeAsString(jsonEncode(_jsonData));
     }
-    logger.v(buffer.toString());
+    logger.t(buffer.toString());
     final cookie = rawResp.headers['Set-Cookie']?.firstOrNull;
     if (cookie != null) {
       final match = RegExp(r'^(ASP.NET_SessionId=[^;]+);').firstMatch(cookie);

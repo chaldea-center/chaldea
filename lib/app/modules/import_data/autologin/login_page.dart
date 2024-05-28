@@ -649,7 +649,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
 
     while (winCount < count) {
       final idx = '$battleCount ($winCount/$count, $itemCount items)';
-      logger.v('battle $idx');
+      logger.t('battle $idx');
       EasyLoading.show(status: 'Starting battle $idx');
       final (battleResult, drops, _) = await agent.startBattle(
         msgPrefix: 'Battle $idx:',
@@ -682,11 +682,11 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
         winCount++;
         itemCount += drops[6549] ?? 0;
       }
-      logger.v('$battleCount ($winCount()/$count, $itemCount items): $results');
+      logger.t('$battleCount ($winCount()/$count, $itemCount items): $results');
       await Future.delayed(const Duration(seconds: 2));
     }
 
-    logger.v('All $count battles done!');
+    logger.t('All $count battles done!');
     EasyLoading.dismiss();
   }
 }

@@ -320,7 +320,7 @@ DropRateSheet _preProcess({required DropRateSheet data, required FreeLPParams pa
     }
   }
 
-  logger.v('processed data: ${data.itemIds.length} rows,'
+  logger.t('processed data: ${data.itemIds.length} rows,'
       ' ${data.questIds.length} columns');
   // print(const JsonEncoder.withIndent('  ').convert(params));
   return data;
