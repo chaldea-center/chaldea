@@ -5,6 +5,29 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/widgets/inherit_selection_area.dart';
 
+class JsonViewerPage extends StatelessWidget {
+  final dynamic jsonObj;
+  final bool defaultOpen;
+
+  const JsonViewerPage(this.jsonObj, {super.key, this.defaultOpen = false});
+
+  @override
+  Widget build(BuildContext context) {
+    final lightTheme = ThemeData.light();
+    return Scaffold(
+      appBar: AppBar(title: const Text("Json Viewer")),
+      backgroundColor: lightTheme.scaffoldBackgroundColor,
+      body: Theme(
+        data: lightTheme,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(8),
+          child: JsonViewer(jsonObj, defaultOpen: defaultOpen),
+        ),
+      ),
+    );
+  }
+}
+
 class JsonViewer extends StatelessWidget {
   final dynamic jsonObj;
   final bool defaultOpen;
@@ -181,7 +204,7 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
   InlineSpan getValueWidget(MapEntry entry) {
     if (entry.value == null) {
       return const TextSpan(
-        text: 'undefined',
+        text: 'null',
         style: TextStyle(color: Colors.grey),
       );
     } else if (entry.value is int) {
@@ -368,7 +391,7 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
     if (content == null) {
       return const Expanded(
         child: Text(
-          'undefined',
+          'null',
           style: TextStyle(color: Colors.grey),
         ),
       );

@@ -50,6 +50,8 @@ AutoLoginData _$AutoLoginDataFromJson(Map json) => $checkedCreate(
           lastLogin: $checkedConvert('lastLogin', (v) => (v as num?)?.toInt()),
           userGame: $checkedConvert(
               'userGame', (v) => v == null ? null : UserGameEntity.fromJson(Map<String, dynamic>.from(v as Map))),
+          battleOptions: $checkedConvert('battleOptions',
+              (v) => v == null ? null : AutoBattleOptions.fromJson(Map<String, dynamic>.from(v as Map))),
         );
         return val;
       },
@@ -64,6 +66,7 @@ Map<String, dynamic> _$AutoLoginDataToJson(AutoLoginData instance) => <String, d
       'useThisDevice': instance.useThisDevice,
       'lastLogin': instance.lastLogin,
       'userGame': instance.userGame?.toJson(),
+      'battleOptions': instance.battleOptions.toJson(),
     };
 
 const _$NACountryEnumMap = {
@@ -93,4 +96,76 @@ const _$NACountryEnumMap = {
   NACountry.norway: 'norway',
   NACountry.denmark: 'denmark',
   NACountry.portugal: 'portugal',
+};
+
+AutoBattleOptions _$AutoBattleOptionsFromJson(Map json) => $checkedCreate(
+      'AutoBattleOptions',
+      json,
+      ($checkedConvert) {
+        final val = AutoBattleOptions(
+          questId: $checkedConvert('questId', (v) => (v as num?)?.toInt() ?? 0),
+          questPhase: $checkedConvert('questPhase', (v) => (v as num?)?.toInt() ?? 0),
+          useEventDeck: $checkedConvert('useEventDeck', (v) => v as bool? ?? false),
+          deckId: $checkedConvert('deckId', (v) => (v as num?)?.toInt() ?? 0),
+          supportSvtIds:
+              $checkedConvert('supportSvtIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+          supportCeIds:
+              $checkedConvert('supportCeIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+          stopIfBondLimit: $checkedConvert('stopIfBondLimit', (v) => v as bool? ?? true),
+          resultType: $checkedConvert(
+              'resultType', (v) => $enumDecodeNullable(_$BattleResultTypeEnumMap, v) ?? BattleResultType.win),
+          winType: $checkedConvert(
+              'winType', (v) => $enumDecodeNullable(_$BattleWinResultTypeEnumMap, v) ?? BattleWinResultType.normal),
+          actionLogs: $checkedConvert('actionLogs', (v) => v as String? ?? '1B2B3B1B1D2C1B1C2B'),
+          usedTurnArray:
+              $checkedConvert('usedTurnArray', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
+          recoverIds:
+              $checkedConvert('recoverIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
+          loopCount: $checkedConvert('loopCount', (v) => (v as num?)?.toInt() ?? 0),
+          targetDrops: $checkedConvert(
+              'targetDrops',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
+                  )),
+          winTargetItemNum: $checkedConvert(
+              'winTargetItemNum',
+              (v) => (v as Map?)?.map(
+                    (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
+                  )),
+        );
+        return val;
+      },
+    );
+
+Map<String, dynamic> _$AutoBattleOptionsToJson(AutoBattleOptions instance) => <String, dynamic>{
+      'questId': instance.questId,
+      'questPhase': instance.questPhase,
+      'useEventDeck': instance.useEventDeck,
+      'deckId': instance.deckId,
+      'supportSvtIds': instance.supportSvtIds.toList(),
+      'supportCeIds': instance.supportCeIds.toList(),
+      'stopIfBondLimit': instance.stopIfBondLimit,
+      'resultType': _$BattleResultTypeEnumMap[instance.resultType]!,
+      'winType': _$BattleWinResultTypeEnumMap[instance.winType]!,
+      'actionLogs': instance.actionLogs,
+      'usedTurnArray': instance.usedTurnArray,
+      'recoverIds': instance.recoverIds,
+      'loopCount': instance.loopCount,
+      'targetDrops': instance.targetDrops.map((k, e) => MapEntry(k.toString(), e)),
+      'winTargetItemNum': instance.winTargetItemNum.map((k, e) => MapEntry(k.toString(), e)),
+    };
+
+const _$BattleResultTypeEnumMap = {
+  BattleResultType.none: 'none',
+  BattleResultType.win: 'win',
+  BattleResultType.lose: 'lose',
+  BattleResultType.cancel: 'cancel',
+  BattleResultType.interruption: 'interruption',
+};
+
+const _$BattleWinResultTypeEnumMap = {
+  BattleWinResultType.none: 'none',
+  BattleWinResultType.normal: 'normal',
+  BattleWinResultType.timeLimit: 'timeLimit',
+  BattleWinResultType.lose: 'lose',
 };

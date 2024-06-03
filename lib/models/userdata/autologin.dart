@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:chaldea/models/gamedata/_helper.dart';
 import 'package:chaldea/utils/extension.dart';
-import '../../app/modules/import_data/autologin/agent.dart';
+import '../faker/req/request.dart';
 import '../gamedata/common.dart';
 import '../gamedata/toplogin.dart';
 
@@ -84,8 +84,10 @@ class AutoLoginData {
   // result
   int? lastLogin;
   UserGameEntity? userGame;
+  AutoBattleOptions battleOptions;
+
   @JsonKey(includeFromJson: false, includeToJson: false)
-  FateServerResponse? response;
+  FResponse? response;
 
   AutoLoginData({
     this.region = Region.jp,
@@ -96,10 +98,61 @@ class AutoLoginData {
     this.useThisDevice = false,
     this.lastLogin,
     this.userGame,
-  });
+    AutoBattleOptions? battleOptions,
+  }) : battleOptions = battleOptions ?? AutoBattleOptions();
+
   factory AutoLoginData.fromJson(Map<String, dynamic> json) => _$AutoLoginDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$AutoLoginDataToJson(this);
+}
+
+@JsonSerializable()
+class AutoBattleOptions {
+  // setup
+  int questId;
+  int questPhase;
+  bool useEventDeck;
+  int deckId;
+  Set<int> supportSvtIds;
+  Set<int> supportCeIds;
+  bool stopIfBondLimit;
+  // result
+  BattleResultType resultType;
+  BattleWinResultType winType;
+  String actionLogs;
+  List<int> usedTurnArray;
+  // loop
+  List<int> recoverIds;
+  int loopCount;
+  Map<int, int> targetDrops; // any of target drop reaches
+  Map<int, int> winTargetItemNum; // win only if any target reaches, only for QuestFlag.actConsumeBattleWin
+
+  AutoBattleOptions({
+    this.questId = 0,
+    this.questPhase = 0,
+    this.useEventDeck = false,
+    this.deckId = 0,
+    Set<int>? supportSvtIds,
+    Set<int>? supportCeIds,
+    this.stopIfBondLimit = true,
+    this.resultType = BattleResultType.win,
+    this.winType = BattleWinResultType.normal,
+    this.actionLogs = '1B2B3B1B1D2C1B1C2B',
+    List<int>? usedTurnArray,
+    List<int>? recoverIds,
+    this.loopCount = 0,
+    Map<int, int>? targetDrops,
+    Map<int, int>? winTargetItemNum,
+  })  : supportSvtIds = supportSvtIds ?? {},
+        supportCeIds = supportCeIds ?? {},
+        usedTurnArray = usedTurnArray ?? [],
+        recoverIds = recoverIds ?? [],
+        targetDrops = targetDrops ?? {},
+        winTargetItemNum = winTargetItemNum ?? {};
+
+  factory AutoBattleOptions.fromJson(Map<String, dynamic> json) => _$AutoBattleOptionsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AutoBattleOptionsToJson(this);
 }
 
 enum NACountry {
@@ -136,4 +189,27 @@ enum NACountry {
   final int countryId;
 
   String get displayName => name.toTitle();
+}
+
+enum BattleResultType {
+  none(0),
+  win(1),
+  lose(2),
+  cancel(3),
+  interruption(4),
+  ;
+
+  const BattleResultType(this.value);
+  final int value;
+}
+
+enum BattleWinResultType {
+  none(0),
+  normal(1),
+  timeLimit(2),
+  lose(3),
+  ;
+
+  const BattleWinResultType(this.value);
+  final int value;
 }

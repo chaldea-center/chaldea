@@ -40,6 +40,7 @@ export 'mappings.dart';
 export 'message.dart';
 export 'mystic_code.dart';
 export 'quest.dart';
+export 'recover.dart';
 export 'script.dart';
 export 'servant.dart';
 export 'skill.dart';

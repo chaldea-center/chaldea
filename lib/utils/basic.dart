@@ -110,6 +110,12 @@ class Maths {
     return iterable.fold<T>(_convertNum(0), (p, c) => (p + (c ?? _convertNum<T>(0))) as T);
   }
 
+  static double mean<T extends num>(Iterable<T?> iterable) {
+    final list = iterable.toList();
+    if (list.isEmpty) return 0.0;
+    return sum(list) / list.length;
+  }
+
   static bool inRange<T extends Comparable>(T? value, T lower, T upper, [bool includeEnds = true]) {
     if (value == null) return false;
     if (includeEnds) {

@@ -27,7 +27,7 @@ class CatMouseGame {
     Region.na: 'nn33CYId2J1ggv0bYDMbYuZ60m4GZt5P',
   }[region]!);
 
-  CatMouseGame(this.region) {
+  CatMouseGame([this.region = Region.jp]) {
     if (region != Region.jp && region != Region.na) {
       throw ArgumentError.value(region, 'region', 'Only JP/NA supported');
     }
@@ -117,6 +117,12 @@ class CatMouseGame {
       text = text.substring(left, right + 1);
     }
     return Map<String, dynamic>.from(jsonDecode(text));
+  }
+
+  String encryptBattleResult(Map dictionary) {
+    final List<int> packed = msgpack.serialize(dictionary);
+    final List<int> encryped = catGame5Bytes(packed);
+    return base64Encode(encryped);
   }
 
   dynamic decryptBattleResult(String s) {

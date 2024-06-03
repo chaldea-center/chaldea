@@ -408,6 +408,7 @@ class Items {
     ember4,
     ember3,
   ];
+  static const apples = [goldAppleId, silverAppleId, blueAppleId, bronzeAppleId];
   static const fous = [hpFou3, hpFou4, atkFou3, atkFou4];
   static const int hpFou3 = 9570300;
   static const int hpFou4 = 9570400;

@@ -1,18 +1,17 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
-import 'package:chaldea/app/modules/import_data/autologin/agent.dart';
+import 'package:chaldea/app/modules/faker/faker.dart';
 import 'package:chaldea/app/modules/import_data/import_https_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/faker/req/agent.dart';
+import 'package:chaldea/models/faker/req/request.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/analysis/analysis.dart';
@@ -35,7 +34,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
   GameTops? gameTops;
   final allData = db.settings.autologins;
   AutoLoginData args = AutoLoginData();
-  FRequestAgent? agent;
+  FakerAgent? agent;
   dynamic _error;
 
   @override
@@ -72,6 +71,17 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
           warning,
           ...buildAccounts(),
           buildActions(),
+          if (AppInfo.isDebugDevice)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+              child: FilledButton(
+                onPressed: () {
+                  if (args.auth == null || top == null) return;
+                  router.pushPage(FakeGrandOrder(agent: FakerAgent.s(gameTop: top, user: args)));
+                },
+                child: const Text("Fake/Grand Order"),
+              ),
+            ),
           if (args.region == Region.jp)
             Card(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -179,15 +189,15 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
           ListTile(
             dense: true,
             title: const Text('User Agent'),
-            subtitle: Text(args.userAgent ?? UA.fallback),
+            subtitle: Text(args.userAgent ?? FakerUA.fallback),
             onLongPress: () {
-              copyToClipboard(args.userAgent ?? UA.fallback, toast: true);
+              copyToClipboard(args.userAgent ?? FakerUA.fallback, toast: true);
             },
             trailing: IconButton(
               onPressed: () {
                 onEditArg(
                   'User Agent',
-                  args.userAgent ?? UA.fallback,
+                  args.userAgent ?? FakerUA.fallback,
                   (s) {
                     if (s.trim().isNotEmpty) {
                       args.userAgent = s.trim();
@@ -195,7 +205,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
                       args.userAgent = null;
                     }
                   },
-                  (s) => s.isEmpty || UA.validate(s),
+                  (s) => s.isEmpty || FakerUA.validate(s),
                 );
               },
               icon: const Icon(Icons.edit_note_outlined),
@@ -205,15 +215,15 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
           ListTile(
             dense: true,
             title: const Text('Device Info'),
-            subtitle: Text(args.deviceInfo ?? UA.deviceinfo),
+            subtitle: Text(args.deviceInfo ?? FakerUA.deviceinfo),
             onLongPress: () {
-              copyToClipboard(args.deviceInfo ?? UA.deviceinfo, toast: true);
+              copyToClipboard(args.deviceInfo ?? FakerUA.deviceinfo, toast: true);
             },
             trailing: IconButton(
               onPressed: () {
                 onEditArg(
                   'Device Info',
-                  args.deviceInfo ?? UA.deviceinfo,
+                  args.deviceInfo ?? FakerUA.deviceinfo,
                   (s) {
                     if (s.trim().isNotEmpty) {
                       args.deviceInfo = s.trim();
@@ -235,30 +245,6 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
             ),
           ),
           const Divider(height: 16, indent: 16, endIndent: 16),
-          if (kDebugMode)
-            Center(
-              child: FilledButton(
-                onPressed: agent == null
-                    ? null
-                    : () async {
-                        InputCancelOkDialog(
-                          title: 'Loop Count',
-                          text: '3',
-                          keyboardType: TextInputType.number,
-                          onSubmit: (s) async {
-                            final count = int.parse(s);
-                            try {
-                              await startLoopBattle(count);
-                            } catch (e, s) {
-                              logger.e('loop battle failed', e, s);
-                              EasyLoading.showError(e.toString());
-                            }
-                          },
-                        ).showDialog(context);
-                      },
-                child: const Text("Loop battle"),
-              ),
-            ),
           if (args.response != null)
             Card(
               margin: const EdgeInsets.all(8),
@@ -428,7 +414,9 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
         ),
         const SizedBox(width: 8),
         ElevatedButton(
-          onPressed: args.response?.success == true ? () => _doImport(args.response!.text) : null,
+          onPressed: args.response?.data.isSuccess('login') == true && args.response?.data != null
+              ? () => _doImport(jsonEncode(args.response!.data.rawMap))
+              : null,
           child: Text(S.current.import_data),
         )
       ],
@@ -495,7 +483,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     if (_error != null) {
       buffer.writeln('Error:\n\n$_error');
     } else {
-      final src = args.response?.src;
+      final src = args.response?.rawResponse;
       if (src == null) return const Text('No response');
       if (src.statusCode != 200) {
         buffer.writeln('status: ${src.statusCode}');
@@ -503,16 +491,16 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       }
       final response = args.response;
       // buffer.writeln('data type: ${data.runtimeType}');
-      buffer.writeln('server time: ${response?.serverTime ?? "unknown"}');
+      buffer.writeln('server time: ${response?.data.serverTime ?? "unknown"}');
       buffer.writeln();
-      final userGame = response?.userGame;
-      buffer.writeln('server: ${response?.src.requestOptions.uri.host}');
+      final userGame = response?.data.mstData.user;
+      buffer.writeln('server: ${response?.rawResponse.requestOptions.uri.host}');
       buffer.writeln('userId: ${userGame?.userId}');
       buffer.writeln('friendCode: ${userGame?.friendCode}');
       buffer.writeln('player name: ${userGame?.name}');
       buffer.writeln();
 
-      dynamic data = response?.json?['response'];
+      dynamic data = response?.data.rawMap?['response'];
       if (data != null) data = jsonEncode(data);
       buffer.writeln((data ?? src.data).toString().substring2(0, 2000));
     }
@@ -554,48 +542,6 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     );
   }
 
-  Future doLogin2() async {
-    final args = this.args;
-    _error = null;
-    gameTops ??= await AtlasApi.gametops();
-    final top = gameTops?.of(args.region);
-    if (top == null) {
-      EasyLoading.showError('Failed to load Game Info');
-      return;
-    }
-    if (args.auth == null) {
-      EasyLoading.showError('Auth info not loaded');
-      return;
-    }
-    if (mounted) setState(() {});
-    final agent = LoginAgent(auth: args.auth!, gameTop: top, args: args);
-    try {
-      EasyLoading.show(status: 'Login...');
-      await agent.gamedata();
-      args.response = FateServerResponse(await agent.topLogin());
-      final userGame = args.response?.userGame;
-      final serverTime = args.response?.serverTime;
-      if (userGame != null) {
-        args.userGame = userGame;
-        args.lastLogin = serverTime?.timestamp ?? DateTime.now().timestamp;
-      }
-      if (args.response?.success == true) {
-        await Future.delayed(const Duration(seconds: 1));
-        EasyLoading.show(status: 'Login to home...');
-        await agent.topHome();
-        EasyLoading.showSuccess(S.current.success);
-      } else {
-        EasyLoading.showError('Login failed');
-      }
-    } catch (e, s) {
-      logger.e('toplogin failed', e, s);
-      _error = escapeDioException(e);
-      EasyLoading.showError('Login failed\n$_error');
-    } finally {
-      if (mounted) setState(() {});
-    }
-  }
-
   Future doLogin() async {
     final args = this.args;
     _error = null;
@@ -610,20 +556,20 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       return;
     }
     if (mounted) setState(() {});
-    final agent = FRequestAgent(gameTop: top, user: args);
+    final agent = FakerAgent.s(gameTop: top, user: args);
     this.agent = agent;
     try {
       EasyLoading.show(status: 'Login...');
       await agent.gamedataTop();
       final loginResp = await agent.loginTop();
-      args.response = FateServerResponse(loginResp.rawResponse);
-      final userGame = args.response?.userGame;
-      final serverTime = args.response?.serverTime;
+      args.response = FResponse(loginResp.rawResponse);
+      final userGame = args.response?.data.mstData.userGame.firstOrNull;
+      final serverTime = args.response?.data.serverTime;
       if (userGame != null) {
         args.userGame = userGame;
         args.lastLogin = serverTime?.timestamp ?? DateTime.now().timestamp;
       }
-      if (args.response?.success == true) {
+      if (args.response?.data.getResponse('login').isSuccess() == true) {
         // await Future.delayed(const Duration(seconds: 1));
         // EasyLoading.show(status: 'Login to home...');
         // await agent.homeTop();
@@ -639,54 +585,5 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
     } finally {
       if (mounted) setState(() {});
     }
-  }
-
-  Future<void> startLoopBattle(int count) async {
-    final agent = this.agent!;
-    Map<int, int> results = {1: 0, 2: 0, 3: 0};
-    EasyLoading.dismiss();
-    int winCount = 0, battleCount = 0, itemCount = 0;
-
-    while (winCount < count) {
-      final idx = '$battleCount ($winCount/$count, $itemCount items)';
-      logger.t('battle $idx');
-      EasyLoading.show(status: 'Starting battle $idx');
-      final (battleResult, drops, _) = await agent.startBattle(
-        msgPrefix: 'Battle $idx:',
-        questId: 94091101,
-        questPhase: 1,
-        activeDeckId: 91432036,
-        useEventDeck: true,
-        supportSvtIds: [],
-        supportEquipIds: [9403520],
-        targetDropItems: {6549: 2},
-        playerServantNoblePhantasmUsageData: [
-          PlayerServantNoblePhantasmUsageDataEntity(
-            svtId: 403500,
-            followerType: 0,
-            seqId: 403500,
-            addCount: 3,
-          )
-        ],
-        voicePlayedArray: [
-          [403500, 7],
-          [403500, 8]
-        ],
-      );
-      results.addNum(battleResult, 1);
-      battleCount++;
-
-      // 10AP=4,40AP=5,
-      await agent.itemRecover(recoverId: 5, num: 1);
-      if (battleResult == 1) {
-        winCount++;
-        itemCount += drops[6549] ?? 0;
-      }
-      logger.t('$battleCount ($winCount()/$count, $itemCount items): $results');
-      await Future.delayed(const Duration(seconds: 2));
-    }
-
-    logger.t('All $count battles done!');
-    EasyLoading.dismiss();
   }
 }

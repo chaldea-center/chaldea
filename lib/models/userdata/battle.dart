@@ -72,8 +72,8 @@ class BattleSimUserData {
     }
   }
 
-  Set<int> pingedCEsWithEventAndBond(final QuestPhase? questPhase, final Servant? svt) {
-    final event = questPhase?.war?.event;
+  Set<int> pingedCEsWithEventAndBond(final Quest? quest, final Servant? svt) {
+    final event = quest?.war?.event;
     Set<int> pinged = pingedCEs.toSet();
     if (event != null) {
       for (final ce in db.gameData.craftEssences.values) {
@@ -350,6 +350,17 @@ class BattleTeamFormation {
   })  : mysticCode = mysticCode ?? MysticCodeSaveData(),
         onFieldSvts = List.generate(3, (index) => onFieldSvts?.getOrNull(index)),
         backupSvts = List.generate(3, (index) => backupSvts?.getOrNull(index));
+
+  BattleTeamFormation.fromList({
+    String? name,
+    MysticCodeSaveData? mysticCode,
+    List<SvtSaveData?>? svts,
+  }) : this(
+          name: name,
+          mysticCode: mysticCode,
+          onFieldSvts: svts?.take(3).toList(),
+          backupSvts: svts?.skip(3).toList(),
+        );
 
   factory BattleTeamFormation.fromJson(Map<String, dynamic> json) => _$BattleTeamFormationFromJson(json);
 

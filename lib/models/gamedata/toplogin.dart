@@ -60,6 +60,45 @@ List<int> _toIntList(dynamic v, [int? k = 0]) {
   throw ArgumentError('${v.runtimeType}: $v cannot be converted to List<int>');
 }
 
+// ignore: unused_element
+bool _toBool(dynamic v, [bool? k]) {
+  if (v == null) {
+    if (k != null) return k;
+    assert(() {
+      throw ArgumentError.notNull('_toBool.v');
+    }());
+    return false;
+  }
+  if (v is bool) {
+    return v;
+  } else if (v is int) {
+    return v != 0;
+  } else if (v is String) {
+    v = v.toLowerCase();
+    if (v == 'true') {
+      return true;
+    } else if (v == 'false') {
+      return false;
+    }
+    final v2 = int.tryParse(v);
+    if (v2 != null) {
+      return v2 != 0;
+    }
+    assert(() {
+      throw ArgumentError('_toBool.v: unknown string: ${v.runtimeType} $v');
+    }());
+
+    return k ?? false;
+  } else {
+    throw ArgumentError('_toBool.v: ${v.runtimeType} $v');
+  }
+}
+
+bool? _toBoolNull(dynamic v, [bool? k]) {
+  if (v == null) return k;
+  return _toBool(v, k);
+}
+
 @JsonSerializable(createToJson: false)
 class FateTopLogin {
   @JsonKey(name: 'response')
@@ -74,7 +113,7 @@ class FateTopLogin {
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
-  Map? sourceData;
+  Map<String, dynamic>? rawMap;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Region? region;
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -82,7 +121,18 @@ class FateTopLogin {
 
   DateTime? get serverTime => (cache['serverTime'] as int?)?.sec2date();
 
-  factory FateTopLogin.fromJson(Map<String, dynamic> data) => _$FateTopLoginFromJson(data)..sourceData = Map.from(data);
+  FateResponseDetail getResponse(String nid) {
+    for (final resp in responses) {
+      if (resp.nid == nid) return resp;
+    }
+    throw Exception('response nid="$nid" not found');
+  }
+
+  bool isSuccess(String nid) {
+    return responses.any((e) => e.nid == nid && e.isSuccess());
+  }
+
+  factory FateTopLogin.fromJson(Map<String, dynamic> data) => _$FateTopLoginFromJson(data)..rawMap = Map.of(data);
 
   factory FateTopLogin.parseAny(dynamic data) => FateTopLogin.fromJson(parseToMap(data));
 
@@ -178,19 +228,6 @@ class FateTopLogin {
     }
     return Region.jp;
   }
-
-  FateResponseDetail getResponse(String nid) {
-    return responses.firstWhere((e) => e.nid == nid);
-  }
-
-  FateTopLogin throwError() {
-    for (final detail in responses) {
-      if (!detail.checkError()) {
-        throw Exception('[${detail.nid}] ${detail.resCode} ${detail.fail}');
-      }
-    }
-    return this;
-  }
 }
 
 @JsonSerializable(createToJson: false)
@@ -200,7 +237,7 @@ class FateResponseDetail {
   Map? fail;
   String? nid;
 
-  bool checkError() => resCode == '00';
+  bool isSuccess() => resCode == '00' || resCode == '0';
 
   int? get code => resCode == null ? null : int.tryParse(resCode!);
 
@@ -285,6 +322,11 @@ final _$mstMasterSchemes = <String, (Type, DataMaster Function(String mstName))>
     UserAccountLinkageEntity,
     (mstName) => DataMaster<int, UserAccountLinkageEntity>(mstName, UserAccountLinkageEntity.fromJson)
   ),
+  "battle": (BattleEntity, (mstName) => DataMaster<int, BattleEntity>(mstName, BattleEntity.fromJson)),
+  "userFollower": (
+    UserFollowerEntity,
+    (mstName) => DataMaster<int, UserFollowerEntity>(mstName, UserFollowerEntity.fromJson)
+  ),
 };
 
 final _$mstMasterSchemesByType = <Type, (String, DataMaster Function(String mstName))>{
@@ -311,26 +353,40 @@ class DataMaster<K, V extends DataEntityBase<K>> with Iterable<V> {
     lookup.clear();
   }
 
-  void updated(List<Map<String, dynamic>> entities) {
-    for (final obj in entities) {
-      final entity = entityFromJson(obj);
-      lookup[entity.primaryKey] = entity;
+  void _catchError(void Function() callback) {
+    try {
+      return callback();
+    } catch (e, s) {
+      logger.e('master scheme parse failed: $mstName $V', e, s);
     }
+  }
+
+  void updated(List<Map<String, dynamic>> entities) {
+    _catchError(() {
+      for (final obj in entities) {
+        final entity = entityFromJson(obj);
+        lookup[entity.primaryKey] = entity;
+      }
+    });
   }
 
   void replaced(List<Map<String, dynamic>> entities) {
-    lookup.clear();
-    for (final obj in entities) {
-      final entity = entityFromJson(obj);
-      lookup[entity.primaryKey] = entity;
-    }
+    _catchError(() {
+      lookup.clear();
+      for (final obj in entities) {
+        final entity = entityFromJson(obj);
+        lookup[entity.primaryKey] = entity;
+      }
+    });
   }
 
   void deleted(List<Map<String, dynamic>> entities) {
-    for (final obj in entities) {
-      final entity = entityFromJson(obj);
-      lookup.remove(entity.primaryKey);
-    }
+    _catchError(() {
+      for (final obj in entities) {
+        final entity = entityFromJson(obj);
+        lookup.remove(entity.primaryKey);
+      }
+    });
   }
 }
 
@@ -422,6 +478,9 @@ class MasterDataManager {
   DataMaster<_IntStr, UserQuestEntity> get userQuest => get<_IntStr, UserQuestEntity>();
 
   DataMaster<int, UserDeckEntity> get userDeck => get<int, UserDeckEntity>();
+
+  DataMaster<int, BattleEntity> get battles => get<int, BattleEntity>();
+  DataMaster<int, UserFollowerEntity> get userFollower => get<int, UserFollowerEntity>();
 
   // userEventPoint, userGachaExtraCount,
   // userEventSuperBoss, userSvtVoicePlayed, userQuest
@@ -885,6 +944,10 @@ class UserGameEntity extends DataEntityBase<int> {
   factory UserGameEntity.fromJson(Map<String, dynamic> data) => _$UserGameEntityFromJson(data);
 
   Map<String, dynamic> toJson() => _$UserGameEntityToJson(this);
+
+  int calCurAp() {
+    return (actMax - (actRecoverAt - DateTime.now().timestamp) / 300).floor().clamp(0, actMax) + carryOverActPoint;
+  }
 }
 
 // {
@@ -1592,16 +1655,37 @@ class UserQuestEntity extends DataEntityBase<_IntStr> {
         questId = _toInt(questId),
         questPhase = _toInt(questPhase),
         clearNum = _toInt(clearNum),
-        isEternalOpen = isEternalOpen as bool,
+        isEternalOpen = _toBool(isEternalOpen),
         expireAt = _toInt(expireAt),
         challengeNum = _toInt(challengeNum),
-        isNew = isNew as bool,
+        isNew = _toBool(isNew),
         lastStartedAt = _toInt(lastStartedAt),
         status = _toInt(status),
         updatedAt = _toInt(updatedAt),
         createdAt = _toInt(createdAt);
 
   factory UserQuestEntity.fromJson(Map<String, dynamic> data) => _$UserQuestEntityFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserFollowerEntity extends DataEntityBase<int> {
+  List<FollowerInfo> followerInfo;
+  int64_t userId;
+  int64_t expireAt;
+
+  @override
+  int get primaryKey => userId;
+
+  static int createPK(int userId) => userId;
+
+  UserFollowerEntity({
+    this.followerInfo = const [],
+    dynamic userId,
+    dynamic expireAt,
+  })  : userId = _toInt(userId),
+        expireAt = _toInt(expireAt);
+
+  factory UserFollowerEntity.fromJson(Map<String, dynamic> data) => _$UserFollowerEntityFromJson(data);
 }
 
 @JsonSerializable(createToJson: false)
@@ -1864,9 +1948,315 @@ class DeckServantData {
         svtId = _toIntNull(svtId),
         userSvtEquipIds = _toIntList(userSvtEquipIds),
         svtEquipIds = svtEquipIds == null ? null : _toIntList(svtEquipIds),
-        isFollowerSvt = isFollowerSvt as bool,
+        isFollowerSvt = _toBool(isFollowerSvt),
         npcFollowerSvtId = _toInt(npcFollowerSvtId),
         followerType = _toIntNull(followerType),
         initPos = _toIntNull(initPos);
   factory DeckServantData.fromJson(Map<String, dynamic> data) => _$DeckServantDataFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class BattleEntity extends DataEntityBase<int> {
+  BattleInfoData? battleInfo;
+  int64_t id;
+  int battleType;
+  int questId;
+  int questPhase;
+  int64_t userId;
+  int64_t? targetId;
+  int64_t? followerId;
+  int? followerType;
+
+  // int rankingId;
+  // int seed;
+  // int status;
+  // int commandSpellCnt;
+  // int commandSpellMax;
+  // int result;
+  // int eventId;
+  // int rankingEventId;
+  // int verifyMode;
+  // int questSelect;
+  //  List<CommandCodeInfo> userCommandCode;
+  int64_t createdAt;
+
+  @override
+  int get primaryKey => id;
+
+  static int createPK(int id) => id;
+
+  BattleEntity({
+    this.battleInfo,
+    dynamic id,
+    dynamic battleType,
+    dynamic questId,
+    dynamic questPhase,
+    dynamic userId,
+    dynamic targetId,
+    dynamic followerId,
+    dynamic followerType,
+    dynamic createdAt,
+  })  : id = _toInt(id),
+        battleType = _toInt(battleType),
+        questId = _toInt(questId),
+        questPhase = _toInt(questPhase),
+        userId = _toInt(userId),
+        targetId = _toIntNull(targetId),
+        followerId = _toIntNull(followerId),
+        followerType = _toIntNull(followerType),
+        createdAt = _toInt(createdAt, 0);
+
+  factory BattleEntity.fromJson(Map<String, dynamic> data) => _$BattleEntityFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class BattleInfoData {
+  int32_t dataVer;
+  String appVer;
+  int32_t userEquipId;
+  bool useEventEquip;
+  List<BattleUserServantData> userSvt;
+  DeckData? myDeck;
+  List<DeckData> enemyDeck;
+  // // userSvt: list[BattleUserServantData]
+  // myDeck: DeckData
+  // enemyDeck: list[DeckData]
+  BattleInfoData({
+    dynamic dataVer,
+    dynamic appVer,
+    dynamic userEquipId,
+    dynamic useEventEquip,
+    this.userSvt = const [],
+    this.myDeck,
+    this.enemyDeck = const [],
+  })  : dataVer = _toInt(dataVer),
+        appVer = appVer.toString(),
+        userEquipId = _toInt(userEquipId),
+        useEventEquip = _toBool(useEventEquip);
+
+  factory BattleInfoData.fromJson(Map<String, dynamic> data) => _$BattleInfoDataFromJson(data);
+
+  Map<int, int> getTotalDrops() {
+    final drops = enemyDeck.expand((e) => e.svts).expand((e) => e.dropInfos).toList();
+    Map<int, int> dropItems = {};
+    for (final drop in drops) {
+      dropItems.addNum(drop.objectId, drop.num);
+    }
+    return dropItems;
+  }
+}
+
+@JsonSerializable(createToJson: false)
+class DeckData {
+  List<BattleDeckServantData> svts;
+  int? followerType;
+  int? stageId;
+
+  DeckData({
+    this.svts = const [],
+    dynamic followerType,
+    dynamic stageId,
+  })  : followerType = _toIntNull(followerType),
+        stageId = _toIntNull(stageId);
+
+  factory DeckData.fromJson(Map<String, dynamic> data) => _$DeckDataFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class BattleDeckServantData {
+  int uniqueId;
+  String? name;
+  int? roleType;
+  List<DropInfo> dropInfos;
+  int npcId;
+  // Map? enemyScript;
+  // Map? infoScript;
+  int? index;
+  int id;
+  int userSvtId;
+  List<int>? userSvtEquipIds;
+  bool isFollowerSvt;
+  int? npcFollowerSvtId;
+  int? followerType;
+
+  BattleDeckServantData({
+    dynamic uniqueId,
+    dynamic name,
+    dynamic roleType,
+    this.dropInfos = const [],
+    dynamic npcId,
+    // this.enemyScript,
+    // this.infoScript,
+    dynamic index,
+    dynamic id,
+    dynamic userSvtId,
+    dynamic userSvtEquipIds,
+    dynamic isFollowerSvt,
+    dynamic npcFollowerSvtId,
+    dynamic followerType,
+  })  : uniqueId = _toInt(uniqueId),
+        name = name?.toString(),
+        roleType = _toIntNull(roleType),
+        npcId = _toInt(npcId, 0),
+        index = _toIntNull(index),
+        id = _toInt(id),
+        userSvtId = _toInt(userSvtId),
+        userSvtEquipIds = _toIntList(userSvtEquipIds),
+        isFollowerSvt = _toBool(isFollowerSvt),
+        npcFollowerSvtId = _toIntNull(npcFollowerSvtId),
+        followerType = _toIntNull(followerType);
+
+  factory BattleDeckServantData.fromJson(Map<String, dynamic> data) => _$BattleDeckServantDataFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class BattleUserServantData {
+  int id;
+  int? userId;
+  int svtId;
+
+  int lv;
+  // exp: int
+  // atk: int
+  // hp: int
+  int? adjustAtk;
+  int? adjustHp;
+  // recover: int | None = None
+  // chargeTurn: int | None = None
+  int skillId1;
+  int skillId2;
+  int skillId3;
+  int skillLv1;
+  int skillLv2;
+  int skillLv3;
+  int? treasureDeviceId;
+  int? treasureDeviceLv;
+  // tdRate: int | None = None
+  // tdAttackRate: int | None = None
+  // deathRate: int | None = None
+  // criticalRate: int | None = None
+  // starRate: int | None = None
+  // individuality: list[int]
+  // classPassive: list[int]
+  // addPassive: list[int] | None = None
+  // addPassiveLvs: list[int] | None = None
+  // aiId: int | None = None
+  // actPriority: int | None = None
+  // maxActNum: int | None = None
+  // minActNum: int | None = None
+  // displayType: int | None = None
+  // npcSvtType: int | None = None
+  // passiveSkill: list[int] | None = None
+  int? equipTargetId1;
+  List<int>? equipTargetIds;
+  // npcSvtClassId: int | None = None
+  // overwriteSvtId: int | None = None
+  // userCommandCodeIds: list[int] | None = None
+  // commandCardParam: list[int] | None = None
+  // afterLimitCount: list[int] | None = None
+  // afterIconLimitCount: list[int] | None = None
+  List<int>? appendPassiveSkillIds;
+  List<int>? appendPassiveSkillLvs;
+  int limitCount;
+  // imageLimitCount: int | None = None
+  int dispLimitCount;
+  // commandCardLimitCount: int
+  // iconLimitCount: int
+  // portraitLimitCount: int
+  // randomLimitCount: int | None = None
+  // randomLimitCountSupport: int | None = None
+  // limitCountSupport: int | None = None
+  // battleVoice: int
+  // treasureDeviceLv1: int | None = None
+  // treasureDeviceLv2: int | None = None
+  // treasureDeviceLv3: int | None = None
+  // exceedCount: int
+  // status: int | None = None
+  // condVal: int | None = None
+  // enemyScript: dict[str, Any] | None = None
+  // hpGaugeType: int | None = None
+  // imageSvtId: int | None = None
+  // createdAt: int | None = None
+
+  BattleUserServantData({
+    dynamic id,
+    dynamic userId,
+    dynamic svtId,
+    dynamic lv,
+    dynamic adjustAtk,
+    dynamic adjustHp,
+    dynamic skillId1,
+    dynamic skillId2,
+    dynamic skillId3,
+    dynamic skillLv1,
+    dynamic skillLv2,
+    dynamic skillLv3,
+    dynamic treasureDeviceId,
+    dynamic treasureDeviceLv,
+    dynamic equipTargetId1,
+    dynamic equipTargetIds,
+    dynamic appendPassiveSkillIds,
+    dynamic appendPassiveSkillLvs,
+    dynamic limitCount,
+    dynamic dispLimitCount,
+  })  : id = _toInt(id),
+        userId = _toIntNull(userId),
+        svtId = _toInt(svtId),
+        lv = _toInt(lv),
+        adjustAtk = _toIntNull(adjustAtk),
+        adjustHp = _toIntNull(adjustHp),
+        skillId1 = _toInt(skillId1, 0),
+        skillId2 = _toInt(skillId2, 0),
+        skillId3 = _toInt(skillId3, 0),
+        skillLv1 = _toInt(skillLv1, 0),
+        skillLv2 = _toInt(skillLv2, 0),
+        skillLv3 = _toInt(skillLv3, 0),
+        treasureDeviceId = _toIntNull(treasureDeviceId),
+        treasureDeviceLv = _toIntNull(treasureDeviceLv),
+        equipTargetId1 = _toIntNull(equipTargetId1),
+        equipTargetIds = _toIntList(equipTargetIds),
+        appendPassiveSkillIds = _toIntList(appendPassiveSkillIds),
+        appendPassiveSkillLvs = _toIntList(appendPassiveSkillLvs),
+        limitCount = _toInt(limitCount),
+        dispLimitCount = _toInt(dispLimitCount, 0);
+
+  factory BattleUserServantData.fromJson(Map<String, dynamic> data) => _$BattleUserServantDataFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class DropInfo {
+  int type;
+  int objectId;
+  int num;
+  int limitCount;
+  int lv;
+  int rarity;
+  bool? isRateUp;
+  int? originalNum;
+  int? effectType;
+  bool? isAdd;
+
+  DropInfo({
+    dynamic type,
+    dynamic objectId,
+    dynamic num,
+    dynamic limitCount,
+    dynamic lv,
+    dynamic rarity,
+    dynamic isRateUp,
+    dynamic originalNum,
+    dynamic effectType,
+    dynamic isAdd,
+  })  : type = _toInt(type),
+        objectId = _toInt(objectId),
+        num = _toInt(num),
+        limitCount = _toInt(limitCount),
+        lv = _toInt(lv),
+        rarity = _toInt(rarity),
+        isRateUp = _toBoolNull(isRateUp),
+        originalNum = _toIntNull(originalNum),
+        effectType = _toIntNull(effectType),
+        isAdd = _toBoolNull(isAdd);
+
+  factory DropInfo.fromJson(Map<String, dynamic> data) => _$DropInfoFromJson(data);
 }

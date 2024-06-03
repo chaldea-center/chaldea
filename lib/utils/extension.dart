@@ -384,6 +384,14 @@ extension DateTimeX on DateTime {
     return [year, month.toString().padLeft(2, '0'), day.toString().padLeft(2, '0')].join(sep);
   }
 
+  String toTimeString({bool seconds = true, bool milliseconds = false}) {
+    String output = [hour, minute, if (seconds) second].map((e) => e.toString().padLeft(2, '0')).join(":");
+    if (milliseconds) {
+      output += '.${millisecond.toString().padLeft(3, "0")}';
+    }
+    return output;
+  }
+
   String toCustomString({bool year = true, bool second = true, bool millisecond = false}) {
     String output = [
       if (year) this.year,

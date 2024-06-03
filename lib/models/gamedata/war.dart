@@ -417,6 +417,8 @@ class NiceSpot {
 
   factory NiceSpot.fromJson(Map<String, dynamic> json) => _$NiceSpotFromJson(json);
 
+  Transl<String, String> get lName => Transl.spotNames(name);
+
   WarMap? get map => db.gameData.maps[mapId];
 
   String? get shownImage {

@@ -19,7 +19,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../app.dart';
 import '../common/builders.dart';
-import 'autologin/login_page.dart';
+import 'autologin/autologin_page.dart';
 import 'sniff_details/bond_detail_page.dart';
 import 'sniff_details/class_board_mission_demand.dart';
 import 'sniff_details/formation_decks.dart';

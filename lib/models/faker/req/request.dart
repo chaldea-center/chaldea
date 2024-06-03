@@ -84,9 +84,9 @@ class FRequestBase {
     return (form, authParams);
   }
 
-  Future<FResponse> beginRequestAndCheckError({bool addBaseFields = true}) async {
+  Future<FResponse> beginRequestAndCheckError(String? nid, {bool addBaseFields = true}) async {
     final resp = await beginRequest(addBaseFields: addBaseFields);
-    return resp.throwError();
+    return resp.throwError(nid);
   }
 
   Future<FResponse> beginRequest({bool addBaseFields = true}) async {
@@ -97,10 +97,20 @@ class FRequestBase {
   }
 }
 
+class FRequestRecord {
+  FRequestBase? request;
+  FResponse? response;
+  DateTime? sendedAt;
+  DateTime? receivedAt;
+}
+
 class NetworkManager {
   final GameTop gameTop;
   final AutoLoginData user;
   final CatMouseGame catMouseGame;
+  final mstData = MasterDataManager();
+
+  List<FRequestRecord> history = [];
 
   FRequestBase? _runningTask;
 
@@ -162,10 +172,15 @@ class NetworkManager {
 
     if (_nowTime > 0) {
       final dt = _getNowTimestamp() - _nowTime;
-      if (dt < 5) {
-        await Future.delayed(Duration(seconds: 6 - dt));
+      if (dt < 2) {
+        await Future.delayed(const Duration(seconds: 2));
       }
     }
+
+    final record = FRequestRecord()
+      ..request = request
+      ..sendedAt = DateTime.now();
+    history.add(record);
 
     const int kMaxTries = 3;
     int tryCount = 0;
@@ -173,6 +188,7 @@ class NetworkManager {
       while (tryCount < kMaxTries) {
         try {
           final resp = await _requestStart(request);
+          record.response = resp;
           return resp;
         } on DioException catch (e, s) {
           logger.e('fgo request failed, retry after 5 seconds', e, s);
@@ -188,6 +204,7 @@ class NetworkManager {
     } finally {
       _runningTask = null;
       request._disposed = true;
+      record.receivedAt = DateTime.now();
     }
     throw Exception('Should not reach here');
   }
@@ -195,7 +212,7 @@ class NetworkManager {
   Future<FResponse> _requestStart(FRequestBase request) async {
     final (form, authParams) = request.getForm();
     final Map<String, dynamic> headers = {};
-    headers[HttpHeaders.userAgentHeader] = user.userAgent ?? UA.fallback;
+    headers[HttpHeaders.userAgentHeader] = user.userAgent ?? FakerUA.fallback;
     if (sessionId != null) {
       headers['Cookie'] = sessionId!;
     }
@@ -228,7 +245,7 @@ class NetworkManager {
     // buffer.writeln(rawResp.headers);
     final _jsonData = FateTopLogin.parseToMap(rawResp.data);
     // final _jsonData = jsonEncode();
-    buffer.writeln(jsonEncode(_jsonData['response'] ?? []));
+    buffer.writeln(jsonEncode(_jsonData['response'] ?? []).substring2(0, 2000));
     if (request.path.contains('login/top')) {
       // buffer.writeln(_jsonData.substring2(0, 000));
     } else {
@@ -261,80 +278,51 @@ class NetworkManager {
     request.receiveTime = _getNowTimestamp();
 
     final resp = FResponse(rawResp);
-    for (final detail in resp.responses) {
-      if (!detail.checkError()) {
+
+    for (final detail in resp.data.responses) {
+      if (!detail.isSuccess()) {
         logger.e('error in response: [${detail.nid}] ${detail.resCode} ${detail.fail}');
         // throw Exception('${detail.resCode}: ${detail.fail}');
+      } else {
+        logger.t('${detail.nid} ${detail.resCode}');
       }
     }
+    mstData.updateCache(resp.data.cache);
+
     return resp;
   }
 }
 
 class FResponse {
-  Response rawResponse;
-  late final Map<String, dynamic> raw;
-  late final FateTopLogin? data;
-  // add response here in case [data] parse failed
-  List<FateResponseDetail> responses = [];
+  final Response rawResponse;
+  final FateTopLogin data;
 
-  FResponse.raw(this.rawResponse);
+  FResponse.raw(this.rawResponse, this.data);
 
   factory FResponse(Response rawResponse) {
-    final resp = FResponse.raw(rawResponse);
-    resp.raw = FateTopLogin.parseToMap(rawResponse.data);
-    resp.responses = (resp.raw['response'] as List).map((e) => FateResponseDetail.fromJson(e)).toList();
     try {
-      resp.data = FateTopLogin.fromJson(jsonDecode(jsonEncode(resp.raw)));
+      final jsonData = FateTopLogin.parseToMap(rawResponse.data);
+      final resp = FResponse.raw(rawResponse, FateTopLogin.fromJson(jsonData));
+      return resp;
     } catch (e, s) {
       logger.e('decode response cache failed', e, s);
+      return FResponse.raw(rawResponse, FateTopLogin.fromJson({}));
     }
-    return resp;
   }
 
-  FateResponseDetail getResponse(String nid) {
-    for (final resp in responses) {
-      if (resp.nid == nid) return resp;
-    }
-    throw Exception('response nid="$nid" not found');
-  }
-
-  FResponse throwError() {
-    for (final detail in responses) {
-      if (!detail.checkError()) {
+  FResponse throwError(String? nid) {
+    for (final detail in data.responses) {
+      if (nid != null && nid == detail.nid && detail.isSuccess()) {
+        return this;
+      }
+      if ((nid == null || nid == detail.nid) && !detail.isSuccess()) {
         throw Exception('[${detail.nid}] ${detail.resCode} ${detail.fail}');
       }
     }
+    if (nid != null) {
+      throw Exception('response of nid $nid not found');
+    }
     return this;
-  }
-
-  FateTopLogin? toplogin;
-}
-
-class FResponseData {
-  String resCode;
-  Map<String, dynamic> success;
-  Map<String, dynamic> fail;
-  String nid;
-
-  FResponseData({
-    required this.resCode,
-    this.success = const {},
-    this.fail = const {},
-    required this.nid,
-  });
-
-  factory FResponseData.fromJson(Map<dynamic, dynamic> json) {
-    return FResponseData(
-      resCode: json['resCode'],
-      success: Map.from(json['success'] ?? {}),
-      fail: Map.from(json['fail'] ?? {}),
-      nid: json['nid'],
-    );
-  }
-
-  bool checkError() {
-    return resCode == '00';
   }
 }
 
@@ -353,7 +341,7 @@ class WWWForm {
   }
 }
 
-abstract class UA {
+abstract class FakerUA {
   static const fallback = android;
 
   static const android = 'Dalvik/2.1.0 (Linux; U; Android 8.1; SM-G9500 Build/V417IR)';

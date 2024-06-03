@@ -365,6 +365,15 @@ UserQuestEntity _$UserQuestEntityFromJson(Map json) => UserQuestEntity(
       createdAt: json['createdAt'],
     );
 
+UserFollowerEntity _$UserFollowerEntityFromJson(Map json) => UserFollowerEntity(
+      followerInfo: (json['followerInfo'] as List<dynamic>?)
+              ?.map((e) => FollowerInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      userId: json['userId'],
+      expireAt: json['expireAt'],
+    );
+
 FollowerInfo _$FollowerInfoFromJson(Map json) => FollowerInfo(
       userId: json['userId'],
       userName: json['userName'],
@@ -456,4 +465,98 @@ DeckServantData _$DeckServantDataFromJson(Map json) => DeckServantData(
       npcFollowerSvtId: json['npcFollowerSvtId'],
       followerType: json['followerType'],
       initPos: json['initPos'],
+    );
+
+BattleEntity _$BattleEntityFromJson(Map json) => BattleEntity(
+      battleInfo: json['battleInfo'] == null
+          ? null
+          : BattleInfoData.fromJson(Map<String, dynamic>.from(json['battleInfo'] as Map)),
+      id: json['id'],
+      battleType: json['battleType'],
+      questId: json['questId'],
+      questPhase: json['questPhase'],
+      userId: json['userId'],
+      targetId: json['targetId'],
+      followerId: json['followerId'],
+      followerType: json['followerType'],
+      createdAt: json['createdAt'],
+    );
+
+BattleInfoData _$BattleInfoDataFromJson(Map json) => BattleInfoData(
+      dataVer: json['dataVer'],
+      appVer: json['appVer'],
+      userEquipId: json['userEquipId'],
+      useEventEquip: json['useEventEquip'],
+      userSvt: (json['userSvt'] as List<dynamic>?)
+              ?.map((e) => BattleUserServantData.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      myDeck: json['myDeck'] == null ? null : DeckData.fromJson(Map<String, dynamic>.from(json['myDeck'] as Map)),
+      enemyDeck: (json['enemyDeck'] as List<dynamic>?)
+              ?.map((e) => DeckData.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+DeckData _$DeckDataFromJson(Map json) => DeckData(
+      svts: (json['svts'] as List<dynamic>?)
+              ?.map((e) => BattleDeckServantData.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      followerType: json['followerType'],
+      stageId: json['stageId'],
+    );
+
+BattleDeckServantData _$BattleDeckServantDataFromJson(Map json) => BattleDeckServantData(
+      uniqueId: json['uniqueId'],
+      name: json['name'],
+      roleType: json['roleType'],
+      dropInfos: (json['dropInfos'] as List<dynamic>?)
+              ?.map((e) => DropInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      npcId: json['npcId'],
+      index: json['index'],
+      id: json['id'],
+      userSvtId: json['userSvtId'],
+      userSvtEquipIds: json['userSvtEquipIds'],
+      isFollowerSvt: json['isFollowerSvt'],
+      npcFollowerSvtId: json['npcFollowerSvtId'],
+      followerType: json['followerType'],
+    );
+
+BattleUserServantData _$BattleUserServantDataFromJson(Map json) => BattleUserServantData(
+      id: json['id'],
+      userId: json['userId'],
+      svtId: json['svtId'],
+      lv: json['lv'],
+      adjustAtk: json['adjustAtk'],
+      adjustHp: json['adjustHp'],
+      skillId1: json['skillId1'],
+      skillId2: json['skillId2'],
+      skillId3: json['skillId3'],
+      skillLv1: json['skillLv1'],
+      skillLv2: json['skillLv2'],
+      skillLv3: json['skillLv3'],
+      treasureDeviceId: json['treasureDeviceId'],
+      treasureDeviceLv: json['treasureDeviceLv'],
+      equipTargetId1: json['equipTargetId1'],
+      equipTargetIds: json['equipTargetIds'],
+      appendPassiveSkillIds: json['appendPassiveSkillIds'],
+      appendPassiveSkillLvs: json['appendPassiveSkillLvs'],
+      limitCount: json['limitCount'],
+      dispLimitCount: json['dispLimitCount'],
+    );
+
+DropInfo _$DropInfoFromJson(Map json) => DropInfo(
+      type: json['type'],
+      objectId: json['objectId'],
+      num: json['num'],
+      limitCount: json['limitCount'],
+      lv: json['lv'],
+      rarity: json['rarity'],
+      isRateUp: json['isRateUp'],
+      originalNum: json['originalNum'],
+      effectType: json['effectType'],
+      isAdd: json['isAdd'],
     );
