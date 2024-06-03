@@ -709,8 +709,8 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
         if (targetIds.every((e) => e == 0)) {
           return localized(
             jp: () => text('クラススコアサインを$targetNum個解放せよ'),
-            cn: () => text('解放任意职阶刻痕的星宫$targetNum个'),
-            tw: () => text('解放任意職階刻痕的星宮$targetNum個'),
+            cn: () => text('解放任意职阶星图的星宫$targetNum个'),
+            tw: () => text('解放任意職階星圖的星宮$targetNum個'),
             na: () => text('Enhance $targetNum Class Score Signs'),
             kr: null,
           );
