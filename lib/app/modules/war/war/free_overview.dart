@@ -149,18 +149,6 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
                 loadData();
               },
             ),
-          // IconButton(
-          //   onPressed: () {
-          //     setState(() {
-          //       _only90plus = !_only90plus;
-          //     });
-          //     loadData();
-          //     EasyLoading.showToast('Only 90+: ${_only90plus ? 'On' : 'Off'}');
-          //   },
-          //   icon: const Icon(Icons.filter_9_plus),
-          //   isSelected: _only90plus,
-          //   tooltip: 'Only show 90+',
-          // ),
           IconButton(
             onPressed: () {
               setState(() {

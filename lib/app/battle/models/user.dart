@@ -351,15 +351,6 @@ class PlayerSvtData {
   }
 }
 
-// // Follower.Type
-// enum SupportSvtType {
-//   none,
-//   friend,
-//   notFriend,
-//   npc,
-//   npcNoTd,
-// }
-
 class MysticCodeData {
   MysticCode? mysticCode = db.gameData.mysticCodes[210];
   int level = 10;

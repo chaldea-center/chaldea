@@ -488,7 +488,6 @@ class MasterDataManager {
   // userPrivilege
   // userEventMissionConditionDetail, userGachaDrawLog,userQuestRoute,userNpcSvtRecord,userCoinRoom
   // userEventRaid
-  // userDeck; // 10个打本队伍
   // // userEvent.tutorial: int may exceed int64
   // userQuestInfo,userEvent,
   // beforeBirthDay
@@ -508,23 +507,11 @@ abstract class DataEntityBase<T> {
   T get primaryKey;
 }
 
-// Example:
-// "userId": "100114639326",
-// "itemId": "16",
-// "num": "2650",
-// "updatedAt": "1504378320",
-// "createdAt": "1504378320"
 @JsonSerializable(createToJson: false)
 class UserItemEntity extends DataEntityBase<_IntStr> {
   // int userId;
   int itemId;
   int num;
-
-  /// custom defined
-
-  /// name in dataset, not in api response
-  // @JsonKey(includeFromJson: false, includeToJson: false)
-  // String? indexKey;
 
   @override
   _IntStr get primaryKey => itemId;
@@ -540,41 +527,6 @@ class UserItemEntity extends DataEntityBase<_IntStr> {
   factory UserItemEntity.fromJson(Map<String, dynamic> data) => _$UserItemEntityFromJson(data);
 }
 
-// Example:
-// "id": "389441277",
-// "userId": "100114639326",
-// "svtId": "100300",
-// "limitCount": "4",
-// "dispLimitCount": 3,
-// "lv": "80",
-// "exp": "8532000",
-// "adjustHp": "0",
-// "adjustAtk": "0",
-// "status": "0",
-// "condVal": "0",
-// "skillLv1": "1",
-// "skillLv2": "1",
-// "skillLv3": "1",
-// "treasureDeviceLv1": "5",
-// "treasureDeviceLv2": "1",
-// "treasureDeviceLv3": "1",
-// "exceedCount": "0",
-// "selectTreasureDeviceIdx": "0",
-// "equipTargetId1": "0",
-// "displayInfo": "{\"img\":4,\"disp\":3,\"cmd\":3,\"icon\":4,\"ptr\":3}",
-// "createdAt": "1555501785",
-// "updatedAt": "1555501785",
-// "isLock": "1",
-// "imageLimitCount": 4,
-// "commandCardLimitCount": 3,
-// "iconLimitCount": 4,
-// "portraitLimitCount": 3,
-// "battleVoice": 0,
-// "randomLimitCount": 0,
-// "randomLimitCountSupport": 0,
-// "limitCountSupport": 0,
-// "hp": 10623,
-// "atk": 7726
 @JsonSerializable(createToJson: false)
 class UserServantEntity extends DataEntityBase<int> {
   int id; // unique id for every card
@@ -617,9 +569,6 @@ class UserServantEntity extends DataEntityBase<int> {
 
   /// custom defined
 
-  /// index key=collection id, in dataset
-  // @JsonKey(includeFromJson: false, includeToJson: false)
-  // int? indexKey;
   @JsonKey(includeFromJson: false, includeToJson: false)
   bool inStorage = false;
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -950,15 +899,6 @@ class UserGameEntity extends DataEntityBase<int> {
   }
 }
 
-// {
-//   "unlockNums": [
-//       100,
-//       101,
-//       102
-//   ],
-//   "userId": xxxxx,
-//   "svtId": 100100
-// },
 @JsonSerializable(createToJson: false)
 class UserServantAppendPassiveSkillEntity extends DataEntityBase<_IntStr> {
   int userId;
@@ -982,13 +922,6 @@ class UserServantAppendPassiveSkillEntity extends DataEntityBase<_IntStr> {
       _$UserServantAppendPassiveSkillEntityFromJson(data);
 }
 
-// {
-//   "userId": xxxxx,
-//   "svtId": 100100,
-//   "num": 50,
-//   "updatedAt": 1629921881,
-//   "createdAt": 1627812677
-// }
 @JsonSerializable(createToJson: false)
 class UserSvtCoinEntity extends DataEntityBase<_IntStr> {
   int userId;
@@ -1011,21 +944,6 @@ class UserSvtCoinEntity extends DataEntityBase<_IntStr> {
   factory UserSvtCoinEntity.fromJson(Map<String, dynamic> data) => _$UserSvtCoinEntityFromJson(data);
 }
 
-// unlock order, only contains svts has unlocked append skill
-// {
-//   "appendPassiveSkillNums": [
-//       101,
-//       102,
-//       100
-//   ],
-//   "appendPassiveSkillLvs": [
-//       8,
-//       7,
-//       7
-//   ],
-//   "userSvtId": 75957046446,
-//   "userId": 8634742
-// },
 @JsonSerializable(createToJson: false)
 class UserServantAppendPassiveSkillLvEntity extends DataEntityBase<int> {
   int userSvtId;
@@ -1042,16 +960,6 @@ class UserServantAppendPassiveSkillLvEntity extends DataEntityBase<int> {
     required this.appendPassiveSkillNums,
     required this.appendPassiveSkillLvs,
   }) : userSvtId = _toInt(userSvtId);
-
-  // List<int> toLvs() {
-  //   final lvs =
-  //       Map.fromIterables(appendPassiveSkillNums, appendPassiveSkillLvs);
-  //   return [
-  //     lvs[100] ?? 0,
-  //     lvs[101] ?? 0,
-  //     lvs[102] ?? 0,
-  //   ];
-  // }
 
   factory UserServantAppendPassiveSkillLvEntity.fromJson(Map<String, dynamic> data) =>
       _$UserServantAppendPassiveSkillLvEntityFromJson(data);
@@ -1414,13 +1322,6 @@ class SvtLeaderCommandCodeStatus {
   factory SvtLeaderCommandCodeStatus.fromJson(Map<String, dynamic> data) => _$SvtLeaderCommandCodeStatusFromJson(data);
 }
 
-// public long userId;
-// public int classBoardBaseId;
-// public int[] classBoardSquareIds;
-// public int[] classBoardUnlockSquareIds;
-// public long updatedAt;
-// public long createdAt;
-
 @JsonSerializable(createToJson: false)
 class UserClassBoardSquareEntity extends DataEntityBase<_IntStr> {
   int userId;
@@ -1775,10 +1676,6 @@ class ServantLeaderInfo {
   List<Map> appendPassiveSkill; //{int skillId; int skillLv;}
   int eventSvtPoint;
   // int battleVoice;
-  // private
-  // Map<int, int> limitChangeDic;
-  // String overwriteServantName;
-  // String overwriteServantDetailName;
 
   ServantLeaderInfo({
     required dynamic supportDeckId,
@@ -2018,9 +1915,7 @@ class BattleInfoData {
   List<BattleUserServantData> userSvt;
   DeckData? myDeck;
   List<DeckData> enemyDeck;
-  // // userSvt: list[BattleUserServantData]
-  // myDeck: DeckData
-  // enemyDeck: list[DeckData]
+
   BattleInfoData({
     dynamic dataVer,
     dynamic appVer,

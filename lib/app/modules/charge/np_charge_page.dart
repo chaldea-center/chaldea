@@ -654,12 +654,3 @@ class _ChargeData {
   bool get isSkill => skill is BaseSkill;
   bool get isPassive => skill is BaseSkill && (skill as BaseSkill).type == SkillType.passive;
 }
-
-// class _ChargeSkill{
-//   SkillOrTd skill;
-//   List<NiceFunction> funcs;
-//   _ChargeSkill({
-//     required this.skill,
-//     required this.func,
-//   });
-// }

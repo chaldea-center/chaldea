@@ -125,45 +125,7 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
         ),
         getValueWidget(entry)
       ])));
-      // list.add(Wrap(
-      //   crossAxisAlignment: WrapCrossAlignment.start,
-      //   children: <Widget>[
-      //     ex
-      //         ? ((openFlag[entry.key] ?? widget.defaultOpen)
-      //             ? Icon(Icons.arrow_drop_down,
-      //                 size: 14, color: Colors.grey[700])
-      //             : Icon(Icons.arrow_right, size: 14, color: Colors.grey[700]))
-      //         : const Icon(
-      //             Icons.arrow_right,
-      //             color: Color.fromARGB(0, 0, 0, 0),
-      //             size: 14,
-      //           ),
-      //     (ex && ink)
-      //         ? InkWell(
-      //             child: Text(entry.key,
-      //                 style: TextStyle(color: Colors.purple[900])),
-      //             onTap: () {
-      //               setState(() {
-      //                 openFlag[entry.key] =
-      //                     !(openFlag[entry.key] ?? widget.defaultOpen);
-      //               });
-      //             },
-      //           )
-      //         : Text(
-      //             entry.key,
-      //             style: TextStyle(
-      //               color:
-      //                   entry.value == null ? Colors.grey : Colors.purple[900],
-      //             ),
-      //           ),
-      //     const Text(
-      //       ':',
-      //       style: TextStyle(color: Colors.grey),
-      //     ),
-      //     const SizedBox(width: 3),
-      //     getValueWidget(entry)
-      //   ],
-      // ));
+
       list.add(const SizedBox(height: 4));
       if (ex && (openFlag[entry.key] ?? widget.defaultOpen)) {
         list.add(getContentWidget(entry.value, widget.defaultOpen));

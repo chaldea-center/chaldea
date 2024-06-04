@@ -88,23 +88,6 @@ class _FullscreenImageViewerState extends State<FullscreenImageViewer> {
   bool showAppBar = false;
 
   @override
-  void initState() {
-    super.initState();
-    // if (widget.fullscreen) {
-    //   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
-    // }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    // if (widget.fullscreen) {
-    //   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
-    //       overlays: SystemUiOverlay.values);
-    // }
-  }
-
-  @override
   Widget build(BuildContext context) {
     final bgColor =
         Theme.of(context).isDarkMode ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.primary;
