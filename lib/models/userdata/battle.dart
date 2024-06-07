@@ -692,6 +692,7 @@ class CustomFuncData {
   static CustomFuncData get upArts => _buff(-109, 101);
   static CustomFuncData get upBuster => _buff(-118, 102);
   static CustomFuncData get upNpDamage => _buff(-247, 138);
+  static CustomFuncData get addDamage => _buff(-265, 136);
   static CustomFuncData get upChargeTd => _buff(-753, 227);
   static CustomFuncData get upCriticaldamage => _buff(-199, 142);
   static CustomFuncData get upDropNp => _buff(-336, 140);
@@ -702,6 +703,7 @@ class CustomFuncData {
   static CustomFuncData get downQuick => _debuff(-1596, 504);
   static CustomFuncData get downArts => _debuff(-1602, 505);
   static CustomFuncData get downBuster => _debuff(-1608, 506);
+  static CustomFuncData get addSelfDamage => _debuff(-955, 150);
 
   static List<CustomFuncData> get allTypes => [
         gainNp,
@@ -712,6 +714,7 @@ class CustomFuncData {
         upArts,
         upBuster,
         upNpDamage,
+        addDamage,
         upChargeTd,
         upCriticaldamage,
         upDropNp,
@@ -722,6 +725,7 @@ class CustomFuncData {
         downQuick,
         downArts,
         downBuster,
+        addSelfDamage,
       ];
 
   static List<CustomFuncData> get tdDmgTypes => [
@@ -731,12 +735,14 @@ class CustomFuncData {
         upArts,
         upBuster,
         upNpDamage,
+        addDamage,
         upDropNp,
         upCriticalpoint,
         downDef,
         downQuick,
         downArts,
         downBuster,
+        addSelfDamage,
       ];
 }
 
