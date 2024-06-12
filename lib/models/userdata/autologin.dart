@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:chaldea/models/gamedata/_helper.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../faker/req/request.dart';
 import '../gamedata/common.dart';
 import '../gamedata/toplogin.dart';
+import '_helper.dart';
 
 part '../../generated/models/userdata/autologin.g.dart';
 
@@ -84,7 +84,15 @@ class AutoLoginData {
   // result
   int? lastLogin;
   UserGameEntity? userGame;
-  AutoBattleOptions battleOptions;
+
+  List<AutoBattleOptions> battleOptions;
+  int _curBattleOptionIndex;
+  int get curBattleOptionIndex => _curBattleOptionIndex.clamp2(0, battleOptions.length - 1);
+  set curBattleOptionIndex(int v) => _curBattleOptionIndex = v.clamp2(0, battleOptions.length - 1);
+  AutoBattleOptions get curBattleOption {
+    if (battleOptions.isEmpty) battleOptions.add(AutoBattleOptions());
+    return battleOptions[curBattleOptionIndex];
+  }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   FResponse? response;
@@ -98,8 +106,10 @@ class AutoLoginData {
     this.useThisDevice = false,
     this.lastLogin,
     this.userGame,
-    AutoBattleOptions? battleOptions,
-  }) : battleOptions = battleOptions ?? AutoBattleOptions();
+    List<AutoBattleOptions>? battleOptions,
+    int? curBattleOptionIndex,
+  })  : battleOptions = battleOptions ?? [AutoBattleOptions()],
+        _curBattleOptionIndex = curBattleOptionIndex ?? 0;
 
   factory AutoLoginData.fromJson(Map<String, dynamic> json) => _$AutoLoginDataFromJson(json);
 
@@ -111,8 +121,10 @@ class AutoBattleOptions {
   // setup
   int questId;
   int questPhase;
+  bool isHpHalf = false;
   bool useEventDeck;
   int deckId;
+  bool enfoceRefreshSupport;
   Set<int> supportSvtIds;
   Set<int> supportCeIds;
   bool stopIfBondLimit;
@@ -131,7 +143,9 @@ class AutoBattleOptions {
     this.questId = 0,
     this.questPhase = 0,
     this.useEventDeck = false,
+    this.isHpHalf = false,
     this.deckId = 0,
+    this.enfoceRefreshSupport = false,
     Set<int>? supportSvtIds,
     Set<int>? supportCeIds,
     this.stopIfBondLimit = true,

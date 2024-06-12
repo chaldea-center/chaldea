@@ -50,8 +50,12 @@ AutoLoginData _$AutoLoginDataFromJson(Map json) => $checkedCreate(
           lastLogin: $checkedConvert('lastLogin', (v) => (v as num?)?.toInt()),
           userGame: $checkedConvert(
               'userGame', (v) => v == null ? null : UserGameEntity.fromJson(Map<String, dynamic>.from(v as Map))),
-          battleOptions: $checkedConvert('battleOptions',
-              (v) => v == null ? null : AutoBattleOptions.fromJson(Map<String, dynamic>.from(v as Map))),
+          battleOptions: $checkedConvert(
+              'battleOptions',
+              (v) => (v as List<dynamic>?)
+                  ?.map((e) => AutoBattleOptions.fromJson(Map<String, dynamic>.from(e as Map)))
+                  .toList()),
+          curBattleOptionIndex: $checkedConvert('curBattleOptionIndex', (v) => (v as num?)?.toInt()),
         );
         return val;
       },
@@ -66,7 +70,8 @@ Map<String, dynamic> _$AutoLoginDataToJson(AutoLoginData instance) => <String, d
       'useThisDevice': instance.useThisDevice,
       'lastLogin': instance.lastLogin,
       'userGame': instance.userGame?.toJson(),
-      'battleOptions': instance.battleOptions.toJson(),
+      'battleOptions': instance.battleOptions.map((e) => e.toJson()).toList(),
+      'curBattleOptionIndex': instance.curBattleOptionIndex,
     };
 
 const _$NACountryEnumMap = {
@@ -106,7 +111,9 @@ AutoBattleOptions _$AutoBattleOptionsFromJson(Map json) => $checkedCreate(
           questId: $checkedConvert('questId', (v) => (v as num?)?.toInt() ?? 0),
           questPhase: $checkedConvert('questPhase', (v) => (v as num?)?.toInt() ?? 0),
           useEventDeck: $checkedConvert('useEventDeck', (v) => v as bool? ?? false),
+          isHpHalf: $checkedConvert('isHpHalf', (v) => v as bool? ?? false),
           deckId: $checkedConvert('deckId', (v) => (v as num?)?.toInt() ?? 0),
+          enfoceRefreshSupport: $checkedConvert('enfoceRefreshSupport', (v) => v as bool? ?? false),
           supportSvtIds:
               $checkedConvert('supportSvtIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
           supportCeIds:
@@ -140,8 +147,10 @@ AutoBattleOptions _$AutoBattleOptionsFromJson(Map json) => $checkedCreate(
 Map<String, dynamic> _$AutoBattleOptionsToJson(AutoBattleOptions instance) => <String, dynamic>{
       'questId': instance.questId,
       'questPhase': instance.questPhase,
+      'isHpHalf': instance.isHpHalf,
       'useEventDeck': instance.useEventDeck,
       'deckId': instance.deckId,
+      'enfoceRefreshSupport': instance.enfoceRefreshSupport,
       'supportSvtIds': instance.supportSvtIds.toList(),
       'supportCeIds': instance.supportCeIds.toList(),
       'stopIfBondLimit': instance.stopIfBondLimit,

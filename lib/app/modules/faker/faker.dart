@@ -33,6 +33,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   late final FakerAgent agent = widget.agent;
   late final mstData = agent.network.mstData;
   UserGameEntity? get userGame => mstData.user;
+  AutoBattleOptions get battleOptions => agent.network.user.curBattleOption;
 
   bool _runningTask = false;
 
@@ -41,7 +42,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       if (mounted) {
         SimpleCancelOkDialog(
           title: Text(S.current.error),
-          content: const Text("previous task is till running"),
+          content: const Text("task is till running"),
           hideCancel: true,
         ).showDialog(context);
       }
@@ -119,6 +120,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             Expanded(
               child: ListView(
                 children: [
+                  optionSelector,
+                  const Divider(height: 8),
                   gameInfoSection,
                   battleLoopOptionSection,
                   battleDetailSection,
@@ -137,22 +140,22 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
 
   Widget get headerInfo {
     List<Widget> children = [];
-    final user = userGame;
+    final userGame = this.userGame;
     final region = agent.network.user.region;
-    final userId = user?.userId ?? agent.network.user.auth?.userId;
-    final friendCode = user?.friendCode;
+    final userId = userGame?.userId ?? agent.network.user.auth?.userId;
+    final friendCode = userGame?.friendCode;
 
     children.add(ListTile(
       dense: true,
       minTileHeight: 48,
       visualDensity: VisualDensity.compact,
-      title: Text('[${region.upper}] ${user?.name ?? "not login"}'),
+      title: Text('[${region.upper}] ${userGame?.name ?? "not login"}'),
       subtitle: Text('${friendCode ?? ""} ($userId)'),
-      trailing: user == null
+      trailing: userGame == null
           ? null
           : TimerUpdate(builder: (context, time) {
               return Text(
-                '${user.calCurAp()}/${user.actMax}\n${Duration(seconds: (user.actRecoverAt - DateTime.now().timestamp)).toString().split('.').first}',
+                '${userGame.calCurAp()}/${userGame.actMax}\n${Duration(seconds: (userGame.actRecoverAt - DateTime.now().timestamp)).toString().split('.').first}',
                 textAlign: TextAlign.end,
                 style: const TextStyle(fontSize: 12),
               );
@@ -165,9 +168,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       child: Text.rich(TextSpan(children: [
         TextSpan(children: [
           CenterWidgetSpan(child: Item.iconBuilder(context: context, item: null, itemId: Items.stoneId, width: 20)),
-          TextSpan(text: '×${user?.stone ?? 0}  '),
+          TextSpan(text: '×${userGame?.stone ?? 0}  '),
         ]),
-        for (final itemId in Items.apples)
+        for (final itemId in <int>{
+          ...Items.apples,
+          Items.stormPodId,
+          ...?db.gameData.quests[battleOptions.questId]?.consumeItem.map((e) => e.itemId)
+        })
           TextSpan(children: [
             CenterWidgetSpan(child: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 20)),
             TextSpan(text: '×${mstData.userItem[itemId]?.num ?? 0}  '),
@@ -181,6 +188,54 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: children,
+      ),
+    );
+  }
+
+  Widget get optionSelector {
+    final dropDown = DropdownButton<int>(
+      isExpanded: true,
+      value: agent.network.user.curBattleOptionIndex,
+      items: [
+        for (final (index, options) in agent.network.user.battleOptions.indexed)
+          DropdownMenuItem(
+            value: index,
+            child: Text.rich(
+              TextSpan(children: [
+                TextSpan(text: 'No.${index + 1}  ${options.questId}/${options.questPhase}'),
+                if (db.gameData.quests.containsKey(options.questId))
+                  TextSpan(
+                    text: '\n${db.gameData.quests[options.questId]!.lDispName.setMaxLines(1)}'
+                        ' @${db.gameData.quests[options.questId]?.war?.lShortName.setMaxLines(1)}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+              ]),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 16),
+            ),
+          ),
+        const DropdownMenuItem(
+          value: null,
+          child: Text('Add new quest'),
+        ),
+      ],
+      onChanged: (v) {
+        if (v != null) {
+          agent.network.user.curBattleOptionIndex = v;
+        } else {
+          agent.network.user.battleOptions.add(AutoBattleOptions());
+        }
+        setState(() {});
+      },
+    );
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          const Text('Configs:  '),
+          Expanded(child: dropDown),
+        ],
       ),
     );
   }
@@ -322,7 +377,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   }
 
   Widget get battleLoopOptionSection {
-    final battleOptions = agent.network.user.battleOptions;
     return TileGroup(
       header: 'Loop Options',
       children: [
@@ -336,7 +390,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               for (final recoverId in battleOptions.recoverIds)
                 CachedImage(
                   imageUrl: apRecovers.firstWhereOrNull((e) => e.id == recoverId)?.icon,
-                  height: 36,
+                  width: 32,
+                  height: 32 * 144 / 132,
                   onTap: () {
                     battleOptions.recoverIds.remove(recoverId);
                     setState(() {});
@@ -518,7 +573,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   }
 
   Widget get battleSetupOptionSection {
-    final battleOptions = agent.network.user.battleOptions;
     final quest = db.gameData.quests[battleOptions.questId];
     final formation = mstData.userDeck[battleOptions.deckId];
     return TileGroup(
@@ -527,7 +581,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         ListTile(
           dense: true,
           title: const Text("Quest ID"),
-          subtitle: Text([quest?.lName.l ?? "Quest not selected", quest?.spot?.lName.l ?? "???"].join(' @')),
+          subtitle: quest == null
+              ? const Text('Quest not selected')
+              : Text([quest.lName.l, '@${quest.spot?.lName.l ?? "???"}', 'Lv.${quest.recommendLv}'].join(' ')),
           onLongPress: quest?.routeTo,
           trailing: TextButton(
               onPressed: () {
@@ -579,6 +635,16 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                       });
                     },
               child: Text(battleOptions.questPhase.toString())),
+        ),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: battleOptions.isHpHalf,
+          title: const Text("During AP Half Event"),
+          onChanged: (v) {
+            setState(() {
+              battleOptions.isHpHalf = v;
+            });
+          },
         ),
         ListTile(
           dense: true,
@@ -693,6 +759,19 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           },
           controlAffinity: ListTileControlAffinity.trailing,
         ),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: battleOptions.enfoceRefreshSupport,
+          title: const Text("Force Refresh Support"),
+          onChanged: (v) {
+            _lockTask(() {
+              setState(() {
+                battleOptions.enfoceRefreshSupport = v;
+              });
+            });
+          },
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
         ListTile(
           dense: true,
           title: Text(S.current.support_servant),
@@ -791,7 +870,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   }
 
   Widget get battleResultOptionSection {
-    final battleOptions = agent.network.user.battleOptions;
     return TileGroup(
       header: 'Battle Result Options',
       children: [
@@ -844,9 +922,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                   title: 'Action Logs',
                   text: battleOptions.actionLogs,
                   onSubmit: (s) {
-                    if (s.isNotEmpty) {
-                      battleOptions.actionLogs = s;
-                    }
+                    battleOptions.actionLogs = s;
                     if (mounted) setState(() {});
                   },
                 ).showDialog(context);
@@ -936,7 +1012,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           onPressed: agent.curBattle != null
               ? null
               : () async {
-                  _runTask(() => agent.battleSetupWithOptions(agent.network.user.battleOptions));
+                  _runTask(() => agent.battleSetupWithOptions(battleOptions));
                 },
           style: buttonStyle,
           child: const Text('battle setup'),
@@ -947,8 +1023,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               : () async {
                   _runTask(() => agent.battleResultWithOptions(
                         battleEntity: agent.curBattle!,
-                        resultType: agent.network.user.battleOptions.resultType,
-                        actionLogs: agent.network.user.battleOptions.actionLogs,
+                        resultType: battleOptions.resultType,
+                        actionLogs: battleOptions.actionLogs,
                       ));
                 },
           style: buttonStyle,
@@ -961,16 +1037,17 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             InputCancelOkDialog(
               title: 'Start Looping Battle',
               keyboardType: TextInputType.number,
-              text: agent.network.user.battleOptions.loopCount.toString(),
+              autofocus: battleOptions.loopCount <= 0,
+              text: battleOptions.loopCount.toString(),
               validate: (s) => (int.tryParse(s) ?? -1) > 0,
               onSubmit: (s) {
-                agent.network.user.battleOptions.loopCount = int.parse(s);
+                battleOptions.loopCount = int.parse(s);
                 _runTask(startLoop);
               },
             ).showDialog(context);
           },
           style: buttonStyle,
-          child: Text('Loop it ×${agent.network.user.battleOptions.loopCount}'),
+          child: Text('Loop it ×${battleOptions.loopCount}'),
         ),
         FilledButton.tonal(
           onPressed: () {
@@ -1010,7 +1087,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     if (agent.curBattle != null) {
       throw Exception('last battle not finished');
     }
-    final battleOptions = agent.network.user.battleOptions;
+    final battleOptions = this.battleOptions;
     if (battleOptions.loopCount <= 0) {
       throw Exception('loop count (${battleOptions.loopCount}) must >0');
     }
@@ -1028,20 +1105,17 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     if (battleOptions.winTargetItemNum.isNotEmpty && !questPhaseEntity.flags.contains(QuestFlag.actConsumeBattleWin)) {
       throw Exception('Win target drops should be used only if Quest has flag actConsumeBattleWin');
     }
+    if (battleOptions.useEventDeck != (questPhaseEntity.event != null)) {
+      throw Exception('This quest should "Use Event Deck"');
+    }
     int finishedCount = 0, totalCount = battleOptions.loopCount;
     List<int> elapseSeconds = [];
     curLoopDropStat.reset();
+    EasyLoading.showProgress(finishedCount / totalCount, status: 'Battle $finishedCount/$totalCount');
     while (finishedCount < totalCount) {
       if (_stopLoopFlag) {
         _stopLoopFlag = false;
-        logger.t('manual stop');
-        if (mounted) {
-          const SimpleCancelOkDialog(
-            title: Text('Manual Stop'),
-            hideCancel: true,
-          ).showDialog(context);
-        }
-        return;
+        throw Exception('Manual Stop');
       }
       final int startTime = DateTime.now().timestamp;
       final msg =
@@ -1049,7 +1123,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       logger.t(msg);
       EasyLoading.showProgress((finishedCount + 0.5) / totalCount, status: msg);
 
-      await _ensureEnoughApItem(battleOptions.recoverIds, questPhaseEntity);
+      await _ensureEnoughApItem(battleOptions.recoverIds, questPhaseEntity, battleOptions.isHpHalf);
       if (mounted) setState(() {});
 
       final setupResp = await agent.battleSetupWithOptions(battleOptions);
@@ -1136,8 +1210,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
     }
   }
 
-  Future<void> _ensureEnoughApItem(List<int> recoverIds, QuestPhase quest) async {
-    if (quest.consumeType == ConsumeType.item || quest.consumeType == ConsumeType.apAndItem) {
+  Future<void> _ensureEnoughApItem(List<int> recoverIds, QuestPhase quest, bool isApHalf) async {
+    if (quest.consumeType.useItem) {
       for (final item in quest.consumeItem) {
         final own = mstData.userItem[item.itemId]?.num ?? 0;
         if (own < item.amount) {
@@ -1145,8 +1219,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         }
       }
     }
-    if (quest.consumeType == ConsumeType.ap || quest.consumeType == ConsumeType.apAndItem) {
-      if (mstData.user!.calCurAp() >= quest.consume) {
+    if (quest.consumeType.useAp) {
+      final apConsume = isApHalf ? quest.consume ~/ 2 : quest.consume;
+      if (mstData.user!.calCurAp() >= apConsume) {
         return;
       }
       for (final recoverId in recoverIds) {
@@ -1159,14 +1234,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           final item = db.gameData.items[recover.targetId];
           if (item == null) continue;
           if (item.type == ItemType.apAdd) {
-            final count = ((quest.consume - mstData.user!.calCurAp()) / item.value).ceil();
+            final count = ((apConsume - mstData.user!.calCurAp()) / item.value).ceil();
             if (count > 0 && count < (mstData.userItem[item.id]?.num ?? 0)) {
               await agent.itemRecover(recoverId: recoverId, num: count);
               break;
             }
           } else if (item.type == ItemType.apRecover) {
             final count =
-                ((quest.consume - mstData.user!.calCurAp()) / (item.value / 1000 * mstData.user!.actMax).ceil()).ceil();
+                ((apConsume - mstData.user!.calCurAp()) / (item.value / 1000 * mstData.user!.actMax).ceil()).ceil();
             if (count > 0 && count < (mstData.userItem[item.id]?.num ?? 0)) {
               await agent.itemRecover(recoverId: recoverId, num: count);
               break;
@@ -1216,8 +1291,8 @@ class RecoverSelectDialog extends StatelessWidget {
   }
 
   Widget buildRecoverItem(BuildContext context, RecoverEntity recover) {
-    final user = mstData?.user;
-    if (mstData != null && user == null) {
+    final userGame = mstData?.user;
+    if (mstData != null && userGame == null) {
       return const SimpleCancelOkDialog(title: Text("No user data"));
     }
     switch (recover.recoverType) {
@@ -1227,9 +1302,9 @@ class RecoverSelectDialog extends StatelessWidget {
           enabled: false,
         );
       case RecoverType.stone:
-        final ownCount = user?.stone ?? 0;
-        bool enabled =
-            mstData == null || (user != null && user.stone > 0 && user.calCurAp() < user.actMax && ownCount > 0);
+        final ownCount = userGame?.stone ?? 0;
+        bool enabled = mstData == null ||
+            (userGame != null && userGame.stone > 0 && userGame.calCurAp() < userGame.actMax && ownCount > 0);
         return ListTile(
           leading: Item.iconBuilder(context: context, item: null, itemId: Items.stoneId),
           title: Text(Items.stone?.lName.l ?? "Saint Quartz"),
@@ -1240,7 +1315,7 @@ class RecoverSelectDialog extends StatelessWidget {
       case RecoverType.item:
         final item = db.gameData.items[recover.targetId];
         final ownCount = mstData?.userItem[recover.targetId]?.num ?? 0;
-        bool enabled = mstData == null || (user != null && ownCount > 0);
+        bool enabled = mstData == null || (userGame != null && ownCount > 0);
         return ListTile(
           leading: Item.iconBuilder(context: context, item: item, itemId: recover.targetId),
           title: Text(item?.lName.l ?? "No.${recover.targetId}"),

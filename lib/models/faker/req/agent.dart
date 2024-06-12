@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:archive/archive.dart' show getCrc32;
@@ -8,6 +9,7 @@ import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/logger.dart';
+import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'request.dart';
 
@@ -266,78 +268,64 @@ class FakerAgent {
 }
 
 extension FakerAgentX on FakerAgent {
-  Future<FResponse> battleSetupWithOptions(AutoBattleOptions info) async {
-    final quest = db.gameData.quests[info.questId];
+  Future<FResponse> battleSetupWithOptions(AutoBattleOptions options) async {
+    final quest = db.gameData.quests[options.questId];
     final mstData = network.mstData;
     if (quest == null) {
-      throw Exception('quest ${info.questId} not found');
+      throw Exception('quest ${options.questId} not found');
     }
-    if (!quest.phases.contains(info.questPhase)) {
-      throw Exception('Invalid phase ${info.questPhase}');
+    if (!quest.phases.contains(options.questPhase)) {
+      throw Exception('Invalid phase ${options.questPhase}');
     }
     final userQuest = mstData.userQuest[quest.id];
-    if (userQuest != null && userQuest.questPhase > info.questPhase) {
-      throw Exception('Latest phase: ${userQuest.questPhase}, cannot start phase ${info.questPhase}');
+    if (userQuest != null && userQuest.questPhase > options.questPhase) {
+      throw Exception('Latest phase: ${userQuest.questPhase}, cannot start phase ${options.questPhase}');
     }
-    if (mstData.userDeck[info.deckId] == null) {
-      throw Exception('Deck ${info.deckId} not found');
+    if (mstData.userDeck[options.deckId] == null) {
+      throw Exception('Deck ${options.deckId} not found');
     }
-    final questPhaseEntity = await AtlasApi.questPhase(info.questId, info.questPhase, region: network.user.region);
+    final questPhaseEntity =
+        await AtlasApi.questPhase(options.questId, options.questPhase, region: network.user.region);
     if (questPhaseEntity == null) {
-      throw Exception('Quest ${info.questId}/${info.questPhase} not found');
+      throw Exception('Quest ${options.questId}/${options.questPhase} not found');
     }
     final curAp = mstData.user!.calCurAp();
-    switch (questPhaseEntity.consumeType) {
-      case ConsumeType.none:
-        break;
-      case ConsumeType.ap:
-        if (curAp < questPhaseEntity.consume) {
-          throw Exception('AP not enough: $curAp<${questPhaseEntity.consume}');
+    if (questPhaseEntity.consumeType.useAp) {
+      final consume = options.isHpHalf ? quest.consume ~/ 2 : quest.consume;
+      if (curAp < consume) {
+        throw Exception('AP not enough: $curAp<${questPhaseEntity.consume}');
+      }
+    }
+    if (questPhaseEntity.consumeType.useItem) {
+      for (final item in questPhaseEntity.consumeItem) {
+        final itemNum = mstData.userItem[item.itemId]?.num ?? 0;
+        if (itemNum < item.amount) {
+          throw Exception('Item not enough: $itemNum<${item.amount}');
         }
-        break;
-      case ConsumeType.rp:
-        throw Exception('BP quest not supported');
-      case ConsumeType.item:
-        for (final item in questPhaseEntity.consumeItem) {
-          final itemNum = mstData.userItem[item.itemId]?.num ?? 0;
-          if (itemNum < item.amount) {
-            throw Exception('Item not enough: $itemNum<${item.amount}');
-          }
-        }
-        break;
-      case ConsumeType.apAndItem:
-        if (curAp < questPhaseEntity.consume) {
-          throw Exception('AP not enough: $curAp<${questPhaseEntity.consume}');
-        }
-        for (final item in questPhaseEntity.consumeItem) {
-          final itemNum = mstData.userItem[item.itemId]?.num ?? 0;
-          if (itemNum < item.amount) {
-            throw Exception('Item not enough: $itemNum<${item.amount}');
-          }
-        }
-        break;
+      }
     }
 
     final (follower, followerSvt) = await _getValidSupport(
-      questId: info.questId,
-      questPhase: info.questPhase,
-      useEventDeck: info.useEventDeck,
-      supportSvtIds: info.supportSvtIds.toList(),
-      supportEquipIds: info.supportCeIds.toList(),
+      questId: options.questId,
+      questPhase: options.questPhase,
+      useEventDeck: options.useEventDeck,
+      enforceRefreshSupport: options.enfoceRefreshSupport,
+      supportSvtIds: options.supportSvtIds.toList(),
+      supportEquipIds: options.supportCeIds.toList(),
     );
     print({
-      "questId": info.questId,
-      "questPhase": info.questPhase,
-      "activeDeckId": info.deckId,
+      "questId": options.questId,
+      "questPhase": options.questPhase,
+      "activeDeckId": options.deckId,
       "followerId": follower.userId,
       "followerClassId": followerSvt.classId,
       "followerType": follower.type,
       "followerSupportDeckId": followerSvt.supportDeckId,
     });
     return battleSetup(
-      questId: info.questId,
-      questPhase: info.questPhase,
-      activeDeckId: info.deckId,
+      questId: options.questId,
+      questPhase: options.questPhase,
+      activeDeckId: options.deckId,
       followerId: follower.userId,
       followerClassId: followerSvt.classId,
       followerType: follower.type,
@@ -349,13 +337,15 @@ extension FakerAgentX on FakerAgent {
     required int questId,
     required int questPhase,
     required bool useEventDeck,
+    required bool enforceRefreshSupport,
     required List<int> supportSvtIds,
     required List<int> supportEquipIds,
   }) async {
     int refreshCount = 0;
 
     while (true) {
-      final resp = await folowerList(questId: questId, questPhase: questPhase, isEnfoceRefresh: refreshCount > 0);
+      final resp = await folowerList(
+          questId: questId, questPhase: questPhase, isEnfoceRefresh: enforceRefreshSupport || refreshCount > 0);
       if (refreshCount > 0) {
         await Future.delayed(const Duration(seconds: 5));
       }
@@ -393,6 +383,14 @@ extension FakerAgentX on FakerAgent {
         aliveUniqueIds: battleEntity.battleInfo!.enemyDeck.expand((e) => e.svts).map((e) => e.uniqueId).toList(),
       );
     } else if (resultType == BattleResultType.win) {
+      final usedTurnArray = List.generate(stageCount, (i) => i == stageCount - 1 ? 1 : 0);
+      final totalTurns = Maths.sum(usedTurnArray.map((e) => max(1, e)));
+      if (actionLogs.isEmpty) {
+        actionLogs = List<String>.generate(totalTurns, (i) => const ['1B2B3B', '1B1D2C', '1B1C2B'][i % 3]).join('');
+      }
+      if (!RegExp(r'^' + (r'[123][BCD]' * totalTurns * 3) + r'$').hasMatch(actionLogs)) {
+        throw Exception('Invalid action logs or not match turn length: $usedTurnArray, $actionLogs');
+      }
       return battleResult(
         battleId: battleEntity.id,
         battleResult: BattleResultType.win,
@@ -401,7 +399,7 @@ extension FakerAgentX on FakerAgent {
           logs: actionLogs,
           dt: battleEntity.battleInfo!.enemyDeck.last.svts.map((e) => e.uniqueId).toList(),
         ),
-        usedTurnArray: List.generate(stageCount, (i) => i == stageCount - 1 ? 1 : 0),
+        usedTurnArray: usedTurnArray,
       );
     } else {
       throw Exception('resultType=$resultType not supported');

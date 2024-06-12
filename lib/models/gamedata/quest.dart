@@ -1964,6 +1964,7 @@ enum ConsumeType {
 
   bool get useAp => this == ap || this == apAndItem;
   bool get useApOrBp => this == ap || this == apAndItem || this == rp;
+  bool get useItem => this == item || this == apAndItem;
   String get unit => useAp ? 'AP' : (this == rp ? 'BP' : '');
 }
 

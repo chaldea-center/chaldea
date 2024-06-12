@@ -15,6 +15,7 @@ class InputCancelOkDialog extends StatefulWidget {
   final bool Function(String s)? validate;
   final ValueChanged<String>? onSubmit;
   final TextInputType? keyboardType;
+  final bool autofocus;
 
   const InputCancelOkDialog({
     super.key,
@@ -27,6 +28,7 @@ class InputCancelOkDialog extends StatefulWidget {
     this.validate,
     this.onSubmit,
     this.keyboardType,
+    this.autofocus = true,
   });
 
   @override
@@ -75,7 +77,7 @@ class _InputCancelOkDialogState extends State<InputCancelOkDialog> {
       title: widget.title == null ? null : Text(widget.title!),
       content: TextFormField(
         controller: _controller,
-        autofocus: true,
+        autofocus: widget.autofocus,
         autocorrect: false,
         keyboardType: widget.keyboardType,
         maxLines: widget.maxLines ?? 1,

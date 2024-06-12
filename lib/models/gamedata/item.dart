@@ -345,6 +345,7 @@ class Items {
   static const int rarePrismId = 18;
   static const int grailToCrystalId = 19;
   static const int evocationLeafId = 48;
+  static const int stormPodId = 49;
   static const int stellarSandId = 50;
   static const int torchNovaId = 51;
   static const int torchMorningStarId = 52;
