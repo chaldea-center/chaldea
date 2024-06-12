@@ -508,6 +508,7 @@ QuestBonusPlan _$QuestBonusPlanFromJson(Map json) => $checkedCreate(
           enabled: $checkedConvert('enabled', (v) => v as bool? ?? true),
           questId: $checkedConvert('questId', (v) => (v as num?)?.toInt() ?? 0),
           index: $checkedConvert('index', (v) => (v as num?)?.toInt() ?? 0),
+          name: $checkedConvert('name', (v) => v as String? ?? ""),
           bonus: $checkedConvert(
               'bonus',
               (v) => (v as Map?)?.map(
@@ -522,6 +523,7 @@ Map<String, dynamic> _$QuestBonusPlanToJson(QuestBonusPlan instance) => <String,
       'enabled': instance.enabled,
       'questId': instance.questId,
       'index': instance.index,
+      'name': instance.name,
       'bonus': instance.bonus.map((k, e) => MapEntry(k.toString(), e)),
     };
 

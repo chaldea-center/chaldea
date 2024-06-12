@@ -129,7 +129,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
         child: Row(children: [
           Text(S.current.item),
           const Spacer(),
-          Text('${S.current.demands}  /  ${S.current.item_own}  '),
+          Text('${S.current.demands}(${S.current.shop}) - ${S.current.item_own} = ${S.current.demands} '),
         ]),
       ),
       children: [
@@ -155,11 +155,12 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
   }
 
   Widget _buildItemDemand(int itemId) {
+    final int demands = params.getItemDemand(itemId), ownCount = db.curUser.items[itemId] ?? 0;
     return ListTile(
-      dense: true,
+      // dense: true,
       leading: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 36),
       title: Text(Item.getName(itemId)),
-      subtitle: Text(params.getItemDemand(itemId).toString()),
+      // subtitle: Text('${S.current.demands}: ${params.getItemDemand(itemId)}'),
       trailing: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -169,7 +170,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
               InputCancelOkDialog(
                 keyboardType: const TextInputType.numberWithOptions(signed: true),
                 title: '${S.current.demands}: ${Item.getName(itemId)}',
-                text: params.itemCounts[itemId]?.toString(),
+                text: demands.toString(),
                 validate: (s) => s.trim().isEmpty || int.tryParse(s) != null,
                 onSubmit: (s) {
                   params.itemCounts[itemId] = int.tryParse(s) ?? 0;
@@ -177,14 +178,15 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
                 },
               ).showDialog(context);
             },
-            child: Text((params.itemCounts[itemId] ?? 0).toString()),
+            child: Text(demands.toString()),
           ),
+          const Text('-'),
           TextButton(
             onPressed: () {
               InputCancelOkDialog(
                 keyboardType: const TextInputType.numberWithOptions(signed: true),
                 title: '${S.current.item_own}: ${Item.getName(itemId)}',
-                text: db.curUser.items[itemId]?.toString(),
+                text: ownCount.toString(),
                 validate: (s) => s.trim().isEmpty || int.tryParse(s) != null,
                 onSubmit: (s) {
                   db.curUser.items[itemId] = int.tryParse(s) ?? 0;
@@ -192,7 +194,13 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
                 },
               ).showDialog(context);
             },
-            child: Text((db.curUser.items[itemId] ?? 0).toString()),
+            child: Text(ownCount.toString()),
+          ),
+          const Text('='),
+          Container(
+            constraints: const BoxConstraints(minWidth: 48),
+            alignment: AlignmentDirectional.centerEnd,
+            child: Text('${demands - ownCount}'),
           ),
         ],
       ),
@@ -241,8 +249,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
         const TextSpan(text: '  ')
       ]));
     }
-    String questName = Quest.getName(plan.questId);
-    if (plan.index != 0) questName += ' @${plan.index}';
+    String questName = plan.getName();
     return ListTile(
       dense: true,
       leading: spotImage == null ? null : db.getIconImage(spotImage, width: 32),
@@ -360,7 +367,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
         }
         solution.countVars.add(LPVariable<int>(
           name: plan.questId,
-          displayName: plan.index == 0 ? null : '${Quest.getName(plan.questId)} @${plan.index}',
+          displayName: plan.index == 0 ? null : plan.getName(),
           value: count,
           cost: plan.ap,
           detail: _drops,
@@ -407,10 +414,31 @@ class __QuestBonusEditDialogState extends State<_QuestBonusEditDialog> {
           ListTile(
             dense: true,
             contentPadding: EdgeInsets.zero,
-            title: Text(Quest.getName(plan.questId)),
+            title: Text([
+              Quest.getName(plan.questId),
+              if (plan.index != 0) '@${plan.index}',
+            ].join('')),
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
             onTap: () => router.push(url: Routes.questI(plan.questId)),
           ),
+          if (plan.index != 0)
+            ListTile(
+              dense: true,
+              title: const Text("Note"),
+              contentPadding: EdgeInsets.zero,
+              trailing: TextButton(
+                onPressed: () {
+                  InputCancelOkDialog(
+                    title: 'Note',
+                    onSubmit: (s) {
+                      plan.name = s.trim();
+                      if (mounted) setState(() {});
+                    },
+                  ).showDialog(context);
+                },
+                child: Text(plan.name.isEmpty ? "unset" : plan.name),
+              ),
+            ),
           kDefaultDivider,
           SwitchListTile(
             dense: true,
@@ -430,14 +458,15 @@ class __QuestBonusEditDialogState extends State<_QuestBonusEditDialog> {
       actions: [
         if (plan.index != 0)
           TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                widget.onDelete();
-              },
-              child: Text(
-                S.current.remove,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              )),
+            onPressed: () {
+              Navigator.pop(context);
+              widget.onDelete();
+            },
+            child: Text(
+              S.current.remove,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ),
         TextButton(
           onPressed: () {
             Navigator.pop(context);

@@ -15,6 +15,7 @@ import '../../packages/language.dart';
 import '../api/api.dart';
 import '../gamedata/common.dart';
 import '../gamedata/drop_rate.dart';
+import '../gamedata/quest.dart';
 import '_helper.dart';
 import 'autologin.dart';
 import 'battle.dart';
@@ -551,6 +552,7 @@ class QuestBonusPlan {
   bool enabled = true;
   int questId;
   int index;
+  String name;
   Map<int, int> bonus = {};
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -562,6 +564,7 @@ class QuestBonusPlan {
     this.enabled = true,
     this.questId = 0,
     this.index = 0,
+    this.name = "",
     Map<int, int>? bonus,
   }) : bonus = bonus ?? {};
 
@@ -570,6 +573,14 @@ class QuestBonusPlan {
   factory QuestBonusPlan.fromJson(Map<String, dynamic> json) => _$QuestBonusPlanFromJson(json);
 
   Map<String, dynamic> toJson() => _$QuestBonusPlanToJson(this);
+
+  String getName({bool withName = true}) {
+    String s = Quest.getName(questId);
+    if (index == 0) return s;
+    s += ' @$index';
+    if (withName && name.isNotEmpty) s += ' ($name)';
+    return s;
+  }
 
   QuestBonusPlan copy(int index) {
     return QuestBonusPlan(
