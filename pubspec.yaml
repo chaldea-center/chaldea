@@ -27,7 +27,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  android_id: ^0.3.5
+  android_id: ^0.4.0
   archive: ^3.4.9
   args: ^2.3.1
   auto_size_text: ^3.0.0
@@ -58,9 +58,7 @@ dependencies:
   flutter_hooks: ^0.20.1
   flutter_markdown: ^0.7.1
   # flutter_qjs: ^0.3.7
-  flutter_js: # ^0.8.0
-    git:
-      url: https://github.com/chaldea-center/flutter_js.git
+  flutter_js: ^0.8.1
   flutter_svg: ^2.0.7
   font_awesome_flutter: ^10.6.0
   github: ^9.16.0
