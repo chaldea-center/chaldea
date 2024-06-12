@@ -2,10 +2,11 @@
 
 ## 2.5.10
 
-- count quest phase present
-- improve rare/additional enemy hints
-- trait - quest reverse lookup
-- improve theme color
+- Support Destiny Order Summon
+- Count quest phase present
+- Trait - quest reverse lookup
+- Improve Material 3 theme
+- Improve rare/additional enemy hints
 
 ## 2.5.9
 
