@@ -866,6 +866,36 @@ mixin MultiTargetsWrapper {
     );
   }
 
+  Widget buildCardInfo({
+    required BuildContext context,
+    required BattleServantData? actor,
+    required CommandCardData card,
+  }) {
+    if (actor == null) return _defaultPlaceholder(context);
+    return Text.rich(
+      TextSpan(
+        children: divideList([
+          if (card.isTD) TextSpan(text: '${S.current.np_short} Lv.${actor.tdLv}'),
+          if (actor.isPlayer && card.isTD) TextSpan(text: card.np.format(percent: true, base: 100)),
+          TextSpan(
+            text: card.cardType.name.toTitle(),
+            style: TextStyle(
+              color: {
+                CardType.quick: Colors.green,
+                CardType.arts: Colors.blue,
+                CardType.buster: Colors.red,
+              }[card.cardType],
+            ),
+          ),
+          if (card.critical) TextSpan(text: S.current.critical_attack)
+        ], const TextSpan(text: ' ')),
+      ),
+      style: const TextStyle(decoration: TextDecoration.underline),
+      textAlign: TextAlign.center,
+      textScaler: const TextScaler.linear(0.8),
+    );
+  }
+
   static Widget _defaultPlaceholder(BuildContext context) {
     Widget child = CachedImage(
       imageUrl: 'https://static.atlasacademy.io/JP/Enemys/0.png',
@@ -938,30 +968,7 @@ class _AttackDetailWidget extends StatelessWidget with MultiTargetsWrapper {
             style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.center,
           ),
-          if (record.card != null)
-            Text.rich(
-              TextSpan(
-                children: divideList([
-                  if (record.card?.isTD == true) TextSpan(text: '${S.current.np_short} Lv.${record.attacker.tdLv}'),
-                  if (record.attacker.isPlayer && record.card?.isTD == true)
-                    TextSpan(text: (record.card?.np ?? 0).format(percent: true, base: 100)),
-                  TextSpan(
-                    text: record.card!.cardType.name.toTitle(),
-                    style: TextStyle(
-                      color: {
-                        CardType.quick: Colors.green,
-                        CardType.arts: Colors.blue,
-                        CardType.buster: Colors.red,
-                      }[record.card!.cardType],
-                    ),
-                  ),
-                  if (record.card?.critical == true) TextSpan(text: S.current.critical_attack)
-                ], const TextSpan(text: ' ')),
-              ),
-              style: const TextStyle(decoration: TextDecoration.underline),
-              textAlign: TextAlign.center,
-              textScaler: const TextScaler.linear(0.8),
-            ),
+          if (record.card != null) buildCardInfo(context: context, actor: record.attacker, card: record.card!),
           if (record.targets.isNotEmpty || record.damage != 0) ...[
             record.targets.any((e) => e.damageParams.isNotMinRoll)
                 ? coloredText('DMG ${fmtHp(record.damage)}*', Colors.red)
@@ -1637,12 +1644,13 @@ class _InstantDeathDetailWidget extends StatelessWidget with MultiTargetsWrapper
           InkWell(
             onTap: () => router.pushPage(BattleSvtDetail(svt: actor, battleData: battleData)),
             child: Text(
-              actor.lBattleName,
+              '${actor.fieldIndex + 1}-${actor.lBattleName}',
               maxLines: 1,
               style: Theme.of(context).textTheme.bodySmall,
               textAlign: TextAlign.center,
             ),
           ),
+          if (record.card?.isTD == true) buildCardInfo(context: context, actor: actor, card: record.card!),
           coloredText(S.current.instant_death, null),
         ],
       ),
