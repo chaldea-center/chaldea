@@ -5,23 +5,49 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/widgets/inherit_selection_area.dart';
 
-class JsonViewerPage extends StatelessWidget {
+const double _kIndentWidth = 10.0;
+
+class JsonViewerPage extends StatefulWidget {
   final dynamic jsonObj;
   final bool defaultOpen;
 
   const JsonViewerPage(this.jsonObj, {super.key, this.defaultOpen = false});
 
   @override
+  State<JsonViewerPage> createState() => _JsonViewerPageState();
+}
+
+class _JsonViewerPageState extends State<JsonViewerPage> {
+  late bool defaultOpen = widget.defaultOpen;
+
+  @override
   Widget build(BuildContext context) {
     final lightTheme = ThemeData.light();
     return Scaffold(
-      appBar: AppBar(title: const Text("Json Viewer")),
+      appBar: AppBar(
+        title: const Text("Json Viewer"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                defaultOpen = !defaultOpen;
+              });
+            },
+            icon: const Icon(Icons.expand),
+            tooltip: 'Expand',
+          )
+        ],
+      ),
       backgroundColor: lightTheme.scaffoldBackgroundColor,
       body: Theme(
         data: lightTheme,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(8),
-          child: JsonViewer(jsonObj, defaultOpen: defaultOpen),
+          child: JsonViewer(
+            widget.jsonObj,
+            defaultOpen: defaultOpen,
+            key: Key('_json_viewer_key_$defaultOpen'),
+          ),
         ),
       ),
     );
@@ -76,7 +102,7 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
   Widget build(BuildContext context) {
     if (widget.notRoot) {
       return Container(
-        padding: const EdgeInsets.only(left: 14.0),
+        padding: const EdgeInsets.only(left: _kIndentWidth),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: _getList()),
       );
     }
@@ -89,11 +115,12 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
   List<Widget> _getList() {
     List<Widget> list = [];
     for (MapEntry entry in widget.jsonObj.entries) {
-      bool ex = isExtensible(entry.value);
-      bool ink = isInkWell(entry.value);
+      bool extensible = _isExtensible(entry.value);
+      bool ink = _isInkWell(entry.value);
+      bool isNullEmpty = _isNullOrEmpty(entry.value);
       list.add(Text.rich(TextSpan(children: [
         WidgetSpan(
-          child: ex
+          child: extensible
               ? ((openFlag[entry.key] ?? widget.defaultOpen)
                   ? Icon(Icons.arrow_drop_down, size: 14, color: Colors.grey[700])
                   : Icon(Icons.arrow_right, size: 14, color: Colors.grey[700]))
@@ -103,10 +130,10 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
                   size: 14,
                 ),
         ),
-        (ex && ink)
+        (extensible && ink)
             ? WidgetSpan(
                 child: InkWell(
-                child: Text(entry.key, style: TextStyle(color: Colors.purple[900])),
+                child: Text(entry.key, style: TextStyle(color: isNullEmpty ? Colors.grey : Colors.purple[900])),
                 onTap: () {
                   setState(() {
                     openFlag[entry.key] = !(openFlag[entry.key] ?? widget.defaultOpen);
@@ -116,7 +143,7 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
             : TextSpan(
                 text: entry.key,
                 style: TextStyle(
-                  color: entry.value == null ? Colors.grey : Colors.purple[900],
+                  color: isNullEmpty ? Colors.grey : Colors.purple[900],
                 ),
               ),
         const TextSpan(
@@ -127,7 +154,7 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
       ])));
 
       list.add(const SizedBox(height: 4));
-      if (ex && (openFlag[entry.key] ?? widget.defaultOpen)) {
+      if (extensible && (openFlag[entry.key] ?? widget.defaultOpen)) {
         list.add(getContentWidget(entry.value, widget.defaultOpen));
       }
     }
@@ -142,55 +169,35 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
     }
   }
 
-  static isInkWell(dynamic content) {
-    if (content == null) {
-      return false;
-    } else if (content is int) {
-      return false;
-    } else if (content is String) {
-      return false;
-    } else if (content is bool) {
-      return false;
-    } else if (content is double) {
-      return false;
-    } else if (content is List) {
-      if (content.isEmpty) {
-        return false;
-      } else {
-        return true;
-      }
-    }
-    return true;
-  }
-
   InlineSpan getValueWidget(MapEntry entry) {
-    if (entry.value == null) {
+    final value = entry.value;
+    if (value == null) {
       return const TextSpan(
         text: 'null',
         style: TextStyle(color: Colors.grey),
       );
-    } else if (entry.value is int) {
+    } else if (value is int) {
       return TextSpan(
-        text: entry.value.toString(),
+        text: value.toString(),
         style: const TextStyle(color: Colors.teal),
       );
-    } else if (entry.value is String) {
+    } else if (value is String) {
       return TextSpan(
-        text: '"${entry.value}"',
+        text: '"$value"',
         style: const TextStyle(color: Colors.redAccent),
       );
-    } else if (entry.value is bool) {
+    } else if (value is bool) {
       return TextSpan(
-        text: entry.value.toString(),
+        text: value.toString(),
         style: const TextStyle(color: Colors.purple),
       );
-    } else if (entry.value is double) {
+    } else if (value is double) {
       return TextSpan(
-        text: entry.value.toString(),
+        text: value.toString(),
         style: const TextStyle(color: Colors.teal),
       );
-    } else if (entry.value is List) {
-      if (entry.value.isEmpty) {
+    } else if (value is List) {
+      if (value.isEmpty) {
         return const TextSpan(
           text: 'Array[0]',
           style: TextStyle(color: Colors.grey),
@@ -199,7 +206,7 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
         return WidgetSpan(
           child: InkWell(
             child: Text(
-              '<${getTypeName(entry.value[0])}>[${entry.value.length}]',
+              '<${_getTypeName(value[0])}>[${value.length}]',
               style: const TextStyle(color: Colors.grey),
             ),
             onTap: () {
@@ -225,36 +232,6 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
       ),
     );
   }
-
-  static isExtensible(dynamic content) {
-    if (content == null) {
-      return false;
-    } else if (content is int) {
-      return false;
-    } else if (content is String) {
-      return false;
-    } else if (content is bool) {
-      return false;
-    } else if (content is double) {
-      return false;
-    }
-    return true;
-  }
-
-  static getTypeName(dynamic content) {
-    if (content is int) {
-      return 'int';
-    } else if (content is String) {
-      return 'String';
-    } else if (content is bool) {
-      return 'bool';
-    } else if (content is double) {
-      return 'double';
-    } else if (content is List) {
-      return 'List';
-    }
-    return 'Object';
-  }
 }
 
 class JsonArrayViewer extends StatefulWidget {
@@ -276,7 +253,7 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
   Widget build(BuildContext context) {
     if (widget.notRoot) {
       return Container(
-        padding: const EdgeInsets.only(left: 14.0),
+        padding: const EdgeInsets.only(left: _kIndentWidth),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: _getList(),
@@ -299,8 +276,8 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
     List<Widget> list = [];
     int i = 0;
     for (dynamic content in widget.jsonArray) {
-      bool ex = JsonObjectViewerState.isExtensible(content);
-      bool ink = JsonObjectViewerState.isInkWell(content);
+      bool ex = _isExtensible(content);
+      bool ink = _isInkWell(content);
       list.add(Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -338,7 +315,7 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
     return list;
   }
 
-  getInkWell(int index) {
+  Widget getInkWell(int index) {
     return InkWell(
       child: Text('[$index]', style: TextStyle(color: Colors.purple[900])),
       onTap: () {
@@ -349,7 +326,7 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
     );
   }
 
-  getValueWidget(dynamic content, int index) {
+  Widget getValueWidget(dynamic content, int index) {
     if (content == null) {
       return const Expanded(
         child: Text(
@@ -394,7 +371,7 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
       } else {
         return InkWell(
           child: Text(
-            'Array<${JsonObjectViewerState.getTypeName(content)}>[${content.length}]',
+            'Array<${_getTypeName(content)}>[${content.length}]',
             style: const TextStyle(color: Colors.grey),
           ),
           onTap: () {
@@ -417,4 +394,59 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
       },
     );
   }
+}
+
+bool _isExtensible(dynamic content) {
+  if (content == null) {
+    return false;
+  } else if (content is int) {
+    return false;
+  } else if (content is String) {
+    return false;
+  } else if (content is bool) {
+    return false;
+  } else if (content is double) {
+    return false;
+  }
+  return true;
+}
+
+bool _isNullOrEmpty(dynamic content) {
+  return content == null || (content is List && content.isEmpty) || (content is Map && content.isEmpty);
+}
+
+bool _isInkWell(dynamic content) {
+  if (content == null) {
+    return false;
+  } else if (content is int) {
+    return false;
+  } else if (content is String) {
+    return false;
+  } else if (content is bool) {
+    return false;
+  } else if (content is double) {
+    return false;
+  } else if (content is List) {
+    if (content.isEmpty) {
+      return true;
+    } else {
+      return true;
+    }
+  }
+  return true;
+}
+
+String _getTypeName(dynamic content) {
+  if (content is int) {
+    return 'int';
+  } else if (content is String) {
+    return 'String';
+  } else if (content is bool) {
+    return 'bool';
+  } else if (content is double) {
+    return 'double';
+  } else if (content is List) {
+    return 'List';
+  }
+  return 'Object';
 }

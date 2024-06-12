@@ -269,6 +269,15 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
               rootRouter.appState.windowState = WindowStateEnum.screenshot;
             },
           ),
+        ListTile(
+          title: const Text('Pop one page'),
+          onTap: () {
+            final ctx = router.navigatorKey.currentContext;
+            if (ctx != null && ctx.mounted) {
+              Navigator.pop(ctx);
+            }
+          },
+        ),
         Center(
           child: IconButton(
             icon: const Icon(Icons.clear),
