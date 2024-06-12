@@ -57,11 +57,59 @@ class _FavoriteTeamsPageState extends State<FavoriteTeamsPage> {
       ),
       title: Text('Lv.${quest.recommendLv} ${quest.lDispName}'),
       subtitle: Text(quest.war?.eventReal?.lName.l ?? quest.war?.lName.l ?? quest.event?.lName.l ?? 'Unknown Event'),
-      trailing: Text('${teamIds.length} ${S.current.team}'),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text('${teamIds.length} ${S.current.team}'),
+          IconButton(
+            onPressed: () {
+              showQuestListDialog(quest, teamIds);
+            },
+            icon: const Icon(Icons.more_vert),
+          ),
+        ],
+      ),
       onTap: () async {
         await router.pushPage(TeamsQueryPage(mode: TeamQueryMode.id, teamIds: teamIds));
         if (mounted) setState(() {});
       },
+      onLongPress: () {
+        showQuestListDialog(quest, teamIds);
+      },
     );
+  }
+
+  void showQuestListDialog(Quest quest, List<int> teamIds) async {
+    await router.showDialog(
+      builder: (context) {
+        return SimpleDialog(
+          title: Text(quest.lDispName),
+          children: [
+            for (final id in teamIds)
+              ListTile(
+                dense: true,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
+                title: Text(id.toString()),
+                trailing: IconButton(
+                  onPressed: () {
+                    SimpleCancelOkDialog(
+                      title: Text(S.current.delete),
+                      content: Text(id.toString()),
+                      onTapOk: () {
+                        favoriteTeams[quest.id]?.remove(id);
+                        if (mounted) Navigator.pop(context);
+                      },
+                    ).showDialog(context);
+                  },
+                  icon: const Icon(Icons.delete),
+                  tooltip: S.current.delete,
+                ),
+              ),
+          ],
+        );
+      },
+    );
+    if (mounted) setState(() {});
   }
 }
