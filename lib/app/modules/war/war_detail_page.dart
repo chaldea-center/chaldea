@@ -509,6 +509,9 @@ Widget addQuestCategoryTile({
   if (war?.id == 311) {
     freeQuests.sort((a, b) => Quest.compare(a, b, spotLayer: true));
     _addTile(S.current.free_quest, freeQuests, needSort: false);
+  } else if (war?.id == WarId.ordealCall) {
+    freeQuests.sort((a, b) => a.id - b.id);
+    _addTile(S.current.free_quest, freeQuests, needSort: false);
   } else {
     _addTile(S.current.free_quest, freeQuests);
   }

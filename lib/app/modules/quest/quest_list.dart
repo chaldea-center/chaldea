@@ -85,41 +85,50 @@ class _QuestListPageState extends State<QuestListPage> {
             );
           }
           bool isMainFree = quest.isMainStoryFree;
-          List<InlineSpan> trailings = [];
-          if (quest.consumeType.useApOrBp && quest.phases.length == 1) {
-            trailings.add(TextSpan(text: '${quest.consumeType.unit}${quest.consume} '));
-          }
-          for (final itemAmount in quest.consumeItem) {
-            trailings.add(WidgetSpan(
-              child: Item.iconBuilder(
-                context: context,
-                item: itemAmount.item,
-                text: itemAmount.amount.format(),
-                height: 18,
-                jumpToDetail: false,
+
+          List<InlineSpan> trailings = [
+            TextSpan(text: 'Lv.${quest.recommendLv}'),
+          ];
+
+          List<InlineSpan> consumes = [
+            if (quest.consumeType.useApOrBp && (quest.phases.length == 1 || isMainFree))
+              TextSpan(text: '${quest.consumeType.unit}${quest.consume}'),
+            for (final itemAmount in quest.consumeItem)
+              WidgetSpan(
+                child: Item.iconBuilder(
+                  context: context,
+                  item: itemAmount.item,
+                  text: itemAmount.amount.format(),
+                  height: 18,
+                  jumpToDetail: false,
+                ),
               ),
-            ));
-          }
+          ];
+
+          List<InlineSpan> clsIcons = [];
+
           QuestPhase? phase = db.gameData.questPhases[quest.getPhaseKey(3)];
           if (phase != null) {
-            trailings.add(const TextSpan(text: '\n'));
-            for (final cls in phase.className) {
-              trailings.add(WidgetSpan(child: db.getIconImage(cls.icon(3), height: 18)));
-            }
+            // consumes.add(TextSpan(text: '\n${S.current.bond} ${phase.bond}'));
+            clsIcons.addAll([
+              for (final cls in phase.className) WidgetSpan(child: db.getIconImage(cls.icon(3), height: 18)),
+            ]);
           }
-          Widget trailing = trailings.isEmpty
-              ? Text(
-                  'Lv.${quest.recommendLv}',
-                  style: Theme.of(context).textTheme.bodySmall,
-                )
-              : Text.rich(
-                  TextSpan(
-                    text: 'Lv.${quest.recommendLv}\n',
-                    children: trailings,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  textAlign: TextAlign.end,
-                );
+
+          if (consumes.isNotEmpty) {
+            trailings.add(TextSpan(children: consumes));
+          }
+          if (clsIcons.isNotEmpty) {
+            trailings.add(TextSpan(children: clsIcons));
+          }
+
+          Widget trailing = Text.rich(
+            TextSpan(
+              children: divideList(trailings, const TextSpan(text: '\n')),
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            textAlign: TextAlign.end,
+          );
           if (quest.gifts.isNotEmpty || quest.giftIcon != null) {
             trailing = Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,

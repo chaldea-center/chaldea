@@ -184,6 +184,12 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                     onTap: _showFixRegionDialog,
                     child: Text(S.current.quest_prefer_region),
                   ),
+                PopupMenuItem(
+                  onTap: () {
+                    copyToClipboard((_quest?.id ?? questId ?? widget.id ?? 0).toString(), toast: true);
+                  },
+                  child: Text('${S.current.copy} ID'),
+                ),
                 if (region == Region.jp && Language.isZH) ...[
                   const PopupMenuDivider(),
                   PopupMenuItem(
