@@ -452,6 +452,14 @@ class MappingBase<T> {
 
   List<T?> get values => [jp, cn, tw, na, kr];
 
+  Iterable<(Region, T?)> get indexed sync* {
+    yield (Region.jp, jp);
+    yield (Region.cn, cn);
+    yield (Region.tw, tw);
+    yield (Region.na, na);
+    yield (Region.kr, kr);
+  }
+
   MappingBase({
     this.jp,
     this.cn,

@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
@@ -11,8 +10,8 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
+import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../common/not_found.dart';
 import '../quest/quest_list.dart';
 import 'war/asset_list.dart';
 import 'war/chaldea_gate_quests.dart';
@@ -31,57 +30,47 @@ class WarDetailPage extends StatefulWidget {
   _WarDetailPageState createState() => _WarDetailPageState();
 }
 
-class _WarDetailPageState extends State<WarDetailPage> {
-  NiceWar? _war;
-  bool _loading = false;
-  int get id => widget.war?.id ?? widget.warId ?? _war?.id ?? 0;
-
-  NiceWar get war => _war!;
+class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<NiceWar, WarDetailPage> {
+  int get warId => widget.war?.id ?? widget.warId ?? data?.id ?? 0;
 
   @override
   void initState() {
     super.initState();
-    _war = widget.war ?? db.gameData.wars[widget.warId];
-    if (_war == null) fetchWar();
+    doFetchData();
   }
 
-  Future<void> fetchWar({bool force = false}) async {
-    _war = null;
-    _loading = true;
-    if (mounted) setState(() {});
-    if (!force) {
-      _war = widget.war ?? db.gameData.wars[widget.warId];
+  @override
+  Future<NiceWar?> fetchData(Region? r, {Duration? expireAfter}) async {
+    NiceWar? _war;
+    if (widget.war != null) return widget.war!;
+    r ??= Region.jp;
+    if (r == Region.jp && expireAfter == null) {
+      _war ??= db.gameData.wars[widget.warId];
     }
-    if (_war == null) {
-      EasyLoading.show();
-      _war = await AtlasApi.war(id, expireAfter: force ? Duration.zero : null);
-      EasyLoading.dismiss();
-    }
-    _loading = false;
+    _war ??= await AtlasApi.war(warId, region: r, expireAfter: expireAfter);
     _war?.calcItems(db.gameData);
-    if (mounted) setState(() {});
+    return _war;
   }
 
-  MainStoryPlan get plan => db.curUser.mainStoryOf(war.id);
+  MainStoryPlan get plan => db.curUser.mainStoryOf(warId);
+
   @override
   Widget build(BuildContext context) {
-    if (_war == null) {
-      return NotFoundPage(
-        title: 'War ${widget.warId}',
-        url: Routes.warI(widget.warId ?? 0),
-      );
-    }
-    if (_war == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('${S.current.war} $id'),
-          actions: [popupMenu],
+    return Scaffold(
+      appBar: AppBar(
+        title: AutoSizeText(
+          data?.lLongName.l.replaceAll('\n', ' ') ?? "War $warId",
+          maxLines: 1,
         ),
-        body: Center(
-          child: _loading ? const CircularProgressIndicator() : RefreshButton(onPressed: fetchWar),
-        ),
-      );
-    }
+        centerTitle: false,
+        actions: [popupMenu],
+      ),
+      body: buildBody(context),
+    );
+  }
+
+  @override
+  Widget buildContent(BuildContext context, NiceWar war) {
     final banners = war.extra.allBanners;
     final warAdds = war.warAdds.toList()..sort2((e) => -e.startedAt);
     final eventAdds = war.event?.eventAdds ?? [];
@@ -331,20 +320,11 @@ class _WarDetailPageState extends State<WarDetailPage> {
       ));
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: AutoSizeText(
-          war.lLongName.l.replaceAll('\n', ' '),
-          maxLines: 1,
-        ),
-        centerTitle: false,
-        actions: [popupMenu],
-      ),
-      body: ListView(children: children),
-    );
+    return ListView(children: children);
   }
 
   Widget get popupMenu {
+    final war = data;
     return PopupMenuButton<dynamic>(
       itemBuilder: (context) => [
         PopupMenuItem(
@@ -353,28 +333,36 @@ class _WarDetailPageState extends State<WarDetailPage> {
           child: Text('No.${widget.war?.id ?? widget.warId}', textScaler: const TextScaler.linear(0.9)),
         ),
         const PopupMenuDivider(),
-        if (_war != null)
+        if (war != null)
           ...SharedBuilder.websitesPopupMenuItems(
             atlas: Atlas.dbWar(war.id),
             mooncell: war.extra.mcLink ?? war.event?.extra.mcLink,
             fandom: war.extra.fandomLink ?? war.event?.extra.fandomLink,
           ),
-        if (_war != null)
+        if (war != null)
           ...SharedBuilder.noticeLinkPopupMenuItems(
             noticeLink: war.extra.noticeLink,
           ),
-        PopupMenuItem(
-          child: Text(S.current.refresh),
-          onTap: () {
-            fetchWar(force: true);
-          },
-        ),
+        if (warId > 0) ...[
+          PopupMenuItem(
+            child: Text(S.current.switch_region),
+            onTap: () {
+              _showSwitchRegion();
+            },
+          ),
+          PopupMenuItem(
+            child: Text(S.current.refresh),
+            onTap: () {
+              doFetchData(expireAfter: Duration.zero);
+            },
+          ),
+        ],
       ],
     );
   }
 
   Widget? getCondWar() {
-    NiceWar? condWar = war.releaseCondWar;
+    NiceWar? condWar = data?.releaseCondWar;
     if (condWar == null) return null;
     return CustomTableRow(children: [
       TableCellData(isHeader: true, text: S.current.open_condition),
@@ -407,6 +395,36 @@ class _WarDetailPageState extends State<WarDetailPage> {
             },
           )
       ],
+    );
+  }
+
+  void _showSwitchRegion() {
+    if (warId <= 0 || !mounted) return;
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) => SimpleDialog(
+        children: [
+          ...Region.values.map((region) {
+            final released = db.gameData.mappingData.warRelease.ofRegion(region);
+            return ListTile(
+              title: Text(region.localName),
+              enabled: released == null || released.isEmpty || released.contains(warId),
+              onTap: () async {
+                Navigator.pop(context);
+                this.region = region;
+                doFetchData();
+              },
+            );
+          }),
+          IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.clear),
+          )
+        ],
+      ),
     );
   }
 }

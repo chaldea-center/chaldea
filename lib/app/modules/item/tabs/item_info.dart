@@ -50,7 +50,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
             CustomTableRow(
               children: [
                 TableCellData(
-                  child: db.getIconImage(item.borderedIcon, height: 72),
+                  child: CachedImage(imageUrl: item.borderedIcon, height: 72, showSaveOnLongPress: true),
                   flex: 1,
                   padding: const EdgeInsets.all(3),
                 ),
