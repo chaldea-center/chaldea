@@ -384,7 +384,7 @@ class MultiDescriptor {
       (context, id) {
         return inkWell(
           context: context,
-          onTap: () => router.push(url: Routes.commonRelease(id)),
+          onTap: () => router.push(url: Routes.commonReleaseI(id)),
           text: '$id',
         );
       },

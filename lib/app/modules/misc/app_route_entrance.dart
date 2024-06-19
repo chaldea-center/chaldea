@@ -57,7 +57,8 @@ class _AppRouteEntrancePageState extends State<AppRouteEntrancePage> {
           _int("Field AI", Routes.fieldAi),
           // _int(S.current.master_mission, Routes.masterMission),
           _int(S.current.shop, Routes.shop),
-          _int('Common Release', Routes.commonReleasePrefix),
+          _int('gift', Routes.gift),
+          _int('Common Release', Routes.commonRelease),
         ],
       ),
     );

@@ -55,6 +55,7 @@ import '../modules/misc/apk_list.dart';
 import '../modules/misc/app_route_entrance.dart';
 import '../modules/misc/common_release.dart';
 import '../modules/misc/discord_page.dart';
+import '../modules/misc/gift_page.dart';
 import '../modules/script/reader_entry.dart';
 import '../modules/servant/servant_list.dart';
 import '../modules/shop/shop.dart';
@@ -177,12 +178,15 @@ class Routes {
   static String shopI(int id) => '/shop/$id';
   static const String shop = '/shop';
 
-  static String commonRelease(int id) => '/common-release/$id';
-  static const commonReleasePrefix = '/common-release';
+  static String commonReleaseI(int id) => '/common-release/$id';
+  static const commonRelease = '/common-release';
 
   static String svtClassI(int clsId) => '/class/$clsId';
   static const String svtClass = '/class';
   static const String svtClasses = '/classes';
+
+  static String giftI(int id) => '/gift/$id';
+  static const gift = '/gift';
 
   static const String cvs = '/cvs';
   static const String illustrators = '/illustrators';
@@ -414,8 +418,10 @@ class RouteConfiguration {
       case Routes.shopHome:
         final type = ShopType.values.firstWhereOrNull((e) => e.name == second);
         return type == null ? const ShopListHome() : ShopListPage(type: type, region: region);
-      case Routes.commonReleasePrefix:
+      case Routes.commonRelease:
         return CommonReleasesPage.id(id: _secondInt ?? 0, region: region);
+      case Routes.gift:
+        return MstGiftPage(id: _secondInt ?? 0, region: region);
       case Routes.svtClasses:
         return const SvtClassListPage();
       case Routes.svtClass:

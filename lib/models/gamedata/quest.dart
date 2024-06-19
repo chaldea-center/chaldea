@@ -570,6 +570,8 @@ class BaseGift {
         break;
       case GiftType.questRewardIcon:
         icon ??= Atlas.assetItem(objectId);
+        onTap = () {};
+        jumpToDetail = false;
         break;
       case GiftType.eventBoardGameToken:
         if (objectId ~/ 1000 == 80285) {

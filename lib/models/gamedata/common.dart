@@ -1114,7 +1114,7 @@ class CommonRelease with RouteInfo {
   factory CommonRelease.fromJson(Map<String, dynamic> json) => _$CommonReleaseFromJson(json);
 
   @override
-  String get route => Routes.commonRelease(id);
+  String get route => Routes.commonReleaseI(id);
 
   Map<String, dynamic> toJson() => _$CommonReleaseToJson(this);
 }
