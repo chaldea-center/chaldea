@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
-
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:uuid/uuid.dart';
@@ -12,6 +10,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/gamedata/toplogin.dart';
 import 'package:chaldea/models/userdata/autologin.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../quiz/cat_mouse.dart';
@@ -253,7 +252,7 @@ class NetworkManager {
     }
     buffer.write('============ end ============');
     // final s = buffer.toString();
-    if (kDebugMode) {
+    if (AppInfo.isDebugDevice) {
       await FilePlus(joinPaths(db.paths.tempDir, 'faker',
               '${DateTime.now().toSafeFileName()}_${request.path.replaceAll('/', '_')}.json'))
           .writeAsString(jsonEncode(_jsonData));

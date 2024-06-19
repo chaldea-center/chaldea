@@ -15,9 +15,9 @@ part '../../generated/models/gamedata/toplogin.g.dart';
 int _toInt(dynamic v, [int? k]) {
   if (v == null) {
     if (k != null) return k;
-    assert(() {
-      throw ArgumentError.notNull('_toInt.v');
-    }());
+    // assert(() {
+    //   throw ArgumentError.notNull('_toInt.v');
+    // }());
     return 0;
   }
   if (v is int) {
@@ -64,9 +64,9 @@ List<int> _toIntList(dynamic v, [int? k = 0]) {
 bool _toBool(dynamic v, [bool? k]) {
   if (v == null) {
     if (k != null) return k;
-    assert(() {
-      throw ArgumentError.notNull('_toBool.v');
-    }());
+    // assert(() {
+    //   throw ArgumentError.notNull('_toBool.v');
+    // }());
     return false;
   }
   if (v is bool) {
@@ -122,10 +122,16 @@ class FateTopLogin {
   DateTime? get serverTime => (cache['serverTime'] as int?)?.sec2date();
 
   FateResponseDetail getResponse(String nid) {
+    final result = getResponseNull(nid);
+    if (result != null) return result;
+    throw Exception('response nid="$nid" not found');
+  }
+
+  FateResponseDetail? getResponseNull(String nid) {
     for (final resp in responses) {
       if (resp.nid == nid) return resp;
     }
-    throw Exception('response nid="$nid" not found');
+    return null;
   }
 
   bool isSuccess(String nid) {
@@ -592,29 +598,28 @@ class UserServantEntity extends DataEntityBase<int> {
   static int createPK(int id) => id;
 
   UserServantEntity({
-    required dynamic id,
-    required dynamic svtId,
-    required dynamic status,
-    required dynamic limitCount, // ascension
-    required dynamic dispLimitCount,
-    required dynamic imageLimitCount,
-    required dynamic commandCardLimitCount,
-    required dynamic lv,
-    required dynamic exp,
-    required dynamic adjustHp,
-    required dynamic adjustAtk,
-    required dynamic skillLv1,
-    required dynamic skillLv2,
-    required dynamic skillLv3,
-    required dynamic treasureDeviceLv1,
-    required dynamic exceedCount,
-    required dynamic createdAt,
-    required dynamic updatedAt,
-    required dynamic isLock,
-    required this.hp,
-    required this.atk,
-  })  : assert(status != null || isLock != null),
-        id = _toInt(id),
+    dynamic id,
+    dynamic svtId,
+    dynamic status,
+    dynamic limitCount, // ascension
+    dynamic dispLimitCount,
+    dynamic imageLimitCount,
+    dynamic commandCardLimitCount,
+    dynamic lv,
+    dynamic exp,
+    dynamic adjustHp,
+    dynamic adjustAtk,
+    dynamic skillLv1,
+    dynamic skillLv2,
+    dynamic skillLv3,
+    dynamic treasureDeviceLv1,
+    dynamic exceedCount,
+    dynamic createdAt,
+    dynamic updatedAt,
+    dynamic isLock,
+    dynamic hp,
+    dynamic atk,
+  })  : id = _toInt(id),
         svtId = _toInt(svtId),
         status = _toInt(status),
         limitCount = _toInt(limitCount),
@@ -632,7 +637,9 @@ class UserServantEntity extends DataEntityBase<int> {
         exceedCount = _toInt(exceedCount),
         createdAt = _toInt(createdAt),
         updatedAt = _toInt(updatedAt, 0),
-        isLock = _toIntNull(isLock);
+        isLock = _toIntNull(isLock),
+        hp = _toInt(hp),
+        atk = _toInt(atk);
 
   factory UserServantEntity.fromJson(Map<String, dynamic> data) => _$UserServantEntityFromJson(data);
 
@@ -682,29 +689,29 @@ class UserServantCollectionEntity extends DataEntityBase<_IntStr> {
   static _IntStr createPK(int svtId) => svtId;
 
   UserServantCollectionEntity({
-    required dynamic userId,
-    required dynamic svtId,
-    required dynamic status,
-    required dynamic maxLv,
-    required dynamic maxHp,
-    required dynamic maxAtk,
-    required dynamic maxLimitCount,
-    required dynamic skillLv1,
-    required dynamic skillLv2,
-    required dynamic skillLv3,
-    required dynamic treasureDeviceLv1,
-    required dynamic svtCommonFlag,
-    required dynamic flag,
-    required dynamic friendship,
-    required dynamic friendshipRank,
-    required dynamic friendshipExceedCount,
-    required dynamic getNum,
-    required dynamic totalGetNum,
-    required dynamic costumeIds,
-    required dynamic releasedCostumeIds,
-    required dynamic updatedAt,
-    required dynamic createdAt,
-    // required List<int> releasedCostumeIds,
+    dynamic userId,
+    dynamic svtId,
+    dynamic status,
+    dynamic maxLv,
+    dynamic maxHp,
+    dynamic maxAtk,
+    dynamic maxLimitCount,
+    dynamic skillLv1,
+    dynamic skillLv2,
+    dynamic skillLv3,
+    dynamic treasureDeviceLv1,
+    dynamic svtCommonFlag,
+    dynamic flag,
+    dynamic friendship,
+    dynamic friendshipRank,
+    dynamic friendshipExceedCount,
+    dynamic getNum,
+    dynamic totalGetNum,
+    dynamic costumeIds,
+    dynamic releasedCostumeIds,
+    dynamic updatedAt,
+    dynamic createdAt,
+    // List<int> releasedCostumeIds,
   })  : userId = _toInt(userId),
         svtId = _toInt(svtId),
         status = _toInt(status),
@@ -805,50 +812,50 @@ class UserGameEntity extends DataEntityBase<int> {
   static int createPK(int userId) => userId;
 
   UserGameEntity({
-    required dynamic userId,
-    required this.name,
-    required dynamic birthDay,
-    required dynamic actMax,
-    required dynamic actRecoverAt,
-    required dynamic carryOverActPoint,
-    required dynamic rpRecoverAt,
-    required dynamic carryOverRaidPoint,
-    required dynamic genderType,
-    required dynamic lv,
-    required dynamic exp,
-    required dynamic qp,
-    required dynamic costMax,
-    required this.friendCode,
-    required dynamic favoriteUserSvtId,
-    required dynamic pushUserSvtId,
-    required dynamic grade,
-    required dynamic friendKeep,
-    required dynamic commandSpellRecoverAt,
-    required dynamic svtKeep,
-    required dynamic svtEquipKeep,
-    required dynamic svtStorageAdjust,
-    required dynamic svtEquipStorageAdjust,
-    required dynamic freeStone,
-    required dynamic chargeStone,
-    required dynamic stone,
-    required dynamic stoneVerifiAt,
-    required dynamic mana,
-    required dynamic rarePri,
-    required dynamic activeDeckId,
-    required dynamic mainSupportDeckId,
-    required dynamic eventSupportDeckId,
-    required dynamic fixMainSupportDeckIds,
-    required dynamic fixEventSupportDeckIds,
-    required dynamic tutorial1,
-    required dynamic tutorial2,
-    required this.message,
-    required dynamic flag,
-    required dynamic updatedAt,
-    required dynamic createdAt,
-    required dynamic userEquipId,
-    required dynamic id,
-    required dynamic appuid,
-    required this.appname,
+    dynamic userId,
+    this.name = "",
+    dynamic birthDay,
+    dynamic actMax,
+    dynamic actRecoverAt,
+    dynamic carryOverActPoint,
+    dynamic rpRecoverAt,
+    dynamic carryOverRaidPoint,
+    dynamic genderType,
+    dynamic lv,
+    dynamic exp,
+    dynamic qp,
+    dynamic costMax,
+    this.friendCode = "",
+    dynamic favoriteUserSvtId,
+    dynamic pushUserSvtId,
+    dynamic grade,
+    dynamic friendKeep,
+    dynamic commandSpellRecoverAt,
+    dynamic svtKeep,
+    dynamic svtEquipKeep,
+    dynamic svtStorageAdjust,
+    dynamic svtEquipStorageAdjust,
+    dynamic freeStone,
+    dynamic chargeStone,
+    dynamic stone,
+    dynamic stoneVerifiAt,
+    dynamic mana,
+    dynamic rarePri,
+    dynamic activeDeckId,
+    dynamic mainSupportDeckId,
+    dynamic eventSupportDeckId,
+    dynamic fixMainSupportDeckIds,
+    dynamic fixEventSupportDeckIds,
+    dynamic tutorial1,
+    dynamic tutorial2,
+    this.message = "",
+    dynamic flag,
+    dynamic updatedAt,
+    dynamic createdAt,
+    dynamic userEquipId,
+    dynamic id,
+    dynamic appuid,
+    this.appname,
   })  : userId = _toInt(userId),
         birthDay = _toIntNull(birthDay),
         actMax = _toInt(actMax),
@@ -2154,4 +2161,84 @@ class DropInfo {
         isAdd = _toBoolNull(isAdd);
 
   factory DropInfo.fromJson(Map<String, dynamic> data) => _$DropInfoFromJson(data);
+}
+
+// BattleResultComponent.resultData
+@JsonSerializable(createToJson: false)
+class BattleResultData {
+  int battleId;
+  int battleResult;
+  int eventId;
+
+  int followerId;
+  int followerClassId;
+  int followerSupportDeckId;
+  int followerType;
+  int followerStatus;
+
+  List<UserGameEntity> oldUserGame;
+  List<UserQuestEntity> oldUserQuest;
+  List<UserEquipEntity> oldUserEquip;
+  List<UserServantCollectionEntity> oldUserSvtCollection;
+  List<UserServantEntity> oldUserSvt; // usually empty
+
+  Map myDeck; // DeckData, id+userSvtId
+
+  int firstClearRewardQp;
+  int originalPhaseClearQp;
+  int phaseClearQp;
+  int friendshipExpBase;
+
+  List friendshipRewardInfos; // List<BattleFriendshipRewardInfo>
+  List warClearReward; // List<WarClearReward>
+  List<DropInfo> rewardInfos; // List<QuestRewardInfo>, 星光之砂
+  List<DropInfo> resultDropInfos;
+
+  BattleResultData({
+    dynamic battleId,
+    dynamic battleResult,
+    dynamic eventId,
+    dynamic followerId,
+    dynamic followerClassId,
+    dynamic followerSupportDeckId,
+    dynamic followerType,
+    dynamic followerStatus,
+    List<UserGameEntity>? oldUserGame,
+    List<UserQuestEntity>? oldUserQuest,
+    List<UserEquipEntity>? oldUserEquip,
+    List<UserServantCollectionEntity>? oldUserSvtCollection,
+    List<UserServantEntity>? oldUserSvt,
+    dynamic myDeck,
+    dynamic firstClearRewardQp,
+    dynamic originalPhaseClearQp,
+    dynamic phaseClearQp,
+    dynamic friendshipExpBase,
+    dynamic friendshipRewardInfos,
+    dynamic warClearReward,
+    List<DropInfo>? rewardInfos,
+    List<DropInfo>? resultDropInfos,
+  })  : battleId = _toInt(battleId),
+        battleResult = _toInt(battleResult),
+        eventId = _toInt(eventId, 0),
+        followerId = _toInt(followerId, 0),
+        followerClassId = _toInt(followerClassId, 0),
+        followerSupportDeckId = _toInt(followerSupportDeckId, 0),
+        followerType = _toInt(followerType, 0),
+        followerStatus = _toInt(followerStatus, 0),
+        oldUserGame = oldUserGame ?? [],
+        oldUserQuest = oldUserQuest ?? [],
+        oldUserEquip = oldUserEquip ?? [],
+        oldUserSvtCollection = oldUserSvtCollection ?? [],
+        oldUserSvt = oldUserSvt ?? [],
+        myDeck = myDeck as Map? ?? {},
+        firstClearRewardQp = _toInt(firstClearRewardQp, 0),
+        originalPhaseClearQp = _toInt(originalPhaseClearQp, 0),
+        phaseClearQp = _toInt(phaseClearQp, 0),
+        friendshipExpBase = _toInt(friendshipExpBase, 0),
+        friendshipRewardInfos = friendshipRewardInfos as List? ?? [],
+        warClearReward = warClearReward as List? ?? [],
+        rewardInfos = rewardInfos ?? [],
+        resultDropInfos = resultDropInfos ?? [];
+
+  factory BattleResultData.fromJson(Map<dynamic, dynamic> data) => _$BattleResultDataFromJson(data);
 }

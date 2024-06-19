@@ -129,7 +129,7 @@ class CatMouseGame {
     final key = [for (final v in battleKey) v ^ 4];
     final iv = [for (final v in battleIV) v ^ 8];
     final result = msgpack.deserialize(Uint8List.fromList(decryptRijndael(base64Decode(s), key, iv)));
-    print(jsonEncode(result));
+    // print(jsonEncode(result));
     return result;
   }
 }

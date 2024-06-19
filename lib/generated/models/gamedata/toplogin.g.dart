@@ -49,8 +49,8 @@ UserServantEntity _$UserServantEntityFromJson(Map json) => UserServantEntity(
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],
       isLock: json['isLock'],
-      hp: (json['hp'] as num).toInt(),
-      atk: (json['atk'] as num).toInt(),
+      hp: json['hp'],
+      atk: json['atk'],
     );
 
 UserServantCollectionEntity _$UserServantCollectionEntityFromJson(Map json) => UserServantCollectionEntity(
@@ -80,7 +80,7 @@ UserServantCollectionEntity _$UserServantCollectionEntityFromJson(Map json) => U
 
 UserGameEntity _$UserGameEntityFromJson(Map json) => UserGameEntity(
       userId: json['userId'],
-      name: json['name'] as String,
+      name: json['name'] as String? ?? "",
       birthDay: json['birthDay'],
       actMax: json['actMax'],
       actRecoverAt: json['actRecoverAt'],
@@ -92,7 +92,7 @@ UserGameEntity _$UserGameEntityFromJson(Map json) => UserGameEntity(
       exp: json['exp'],
       qp: json['qp'],
       costMax: json['costMax'],
-      friendCode: json['friendCode'] as String,
+      friendCode: json['friendCode'] as String? ?? "",
       favoriteUserSvtId: json['favoriteUserSvtId'],
       pushUserSvtId: json['pushUserSvtId'],
       grade: json['grade'],
@@ -115,7 +115,7 @@ UserGameEntity _$UserGameEntityFromJson(Map json) => UserGameEntity(
       fixEventSupportDeckIds: json['fixEventSupportDeckIds'],
       tutorial1: json['tutorial1'],
       tutorial2: json['tutorial2'],
-      message: json['message'] as String,
+      message: json['message'] as String? ?? "",
       flag: json['flag'],
       updatedAt: json['updatedAt'],
       createdAt: json['createdAt'],
@@ -559,4 +559,43 @@ DropInfo _$DropInfoFromJson(Map json) => DropInfo(
       originalNum: json['originalNum'],
       effectType: json['effectType'],
       isAdd: json['isAdd'],
+    );
+
+BattleResultData _$BattleResultDataFromJson(Map json) => BattleResultData(
+      battleId: json['battleId'],
+      battleResult: json['battleResult'],
+      eventId: json['eventId'],
+      followerId: json['followerId'],
+      followerClassId: json['followerClassId'],
+      followerSupportDeckId: json['followerSupportDeckId'],
+      followerType: json['followerType'],
+      followerStatus: json['followerStatus'],
+      oldUserGame: (json['oldUserGame'] as List<dynamic>?)
+          ?.map((e) => UserGameEntity.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      oldUserQuest: (json['oldUserQuest'] as List<dynamic>?)
+          ?.map((e) => UserQuestEntity.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      oldUserEquip: (json['oldUserEquip'] as List<dynamic>?)
+          ?.map((e) => UserEquipEntity.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      oldUserSvtCollection: (json['oldUserSvtCollection'] as List<dynamic>?)
+          ?.map((e) => UserServantCollectionEntity.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      oldUserSvt: (json['oldUserSvt'] as List<dynamic>?)
+          ?.map((e) => UserServantEntity.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      myDeck: json['myDeck'],
+      firstClearRewardQp: json['firstClearRewardQp'],
+      originalPhaseClearQp: json['originalPhaseClearQp'],
+      phaseClearQp: json['phaseClearQp'],
+      friendshipExpBase: json['friendshipExpBase'],
+      friendshipRewardInfos: json['friendshipRewardInfos'],
+      warClearReward: json['warClearReward'],
+      rewardInfos: (json['rewardInfos'] as List<dynamic>?)
+          ?.map((e) => DropInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+      resultDropInfos: (json['resultDropInfos'] as List<dynamic>?)
+          ?.map((e) => DropInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
     );

@@ -69,9 +69,9 @@ Map<String, dynamic> _$AutoLoginDataToJson(AutoLoginData instance) => <String, d
       'country': _$NACountryEnumMap[instance.country]!,
       'useThisDevice': instance.useThisDevice,
       'lastLogin': instance.lastLogin,
-      'userGame': instance.userGame?.toJson(),
-      'battleOptions': instance.battleOptions.map((e) => e.toJson()).toList(),
       'curBattleOptionIndex': instance.curBattleOptionIndex,
+      'battleOptions': instance.battleOptions.map((e) => e.toJson()).toList(),
+      'userGame': instance.userGame?.toJson(),
     };
 
 const _$NACountryEnumMap = {
@@ -118,6 +118,7 @@ AutoBattleOptions _$AutoBattleOptionsFromJson(Map json) => $checkedCreate(
               $checkedConvert('supportSvtIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
           supportCeIds:
               $checkedConvert('supportCeIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+          useCampaignItem: $checkedConvert('useCampaignItem', (v) => v as bool? ?? false),
           stopIfBondLimit: $checkedConvert('stopIfBondLimit', (v) => v as bool? ?? true),
           resultType: $checkedConvert(
               'resultType', (v) => $enumDecodeNullable(_$BattleResultTypeEnumMap, v) ?? BattleResultType.win),
@@ -153,6 +154,7 @@ Map<String, dynamic> _$AutoBattleOptionsToJson(AutoBattleOptions instance) => <S
       'enfoceRefreshSupport': instance.enfoceRefreshSupport,
       'supportSvtIds': instance.supportSvtIds.toList(),
       'supportCeIds': instance.supportCeIds.toList(),
+      'useCampaignItem': instance.useCampaignItem,
       'stopIfBondLimit': instance.stopIfBondLimit,
       'resultType': _$BattleResultTypeEnumMap[instance.resultType]!,
       'winType': _$BattleWinResultTypeEnumMap[instance.winType]!,

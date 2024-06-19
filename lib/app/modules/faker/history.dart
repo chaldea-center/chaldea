@@ -68,7 +68,10 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
         ...?record.response?.data.responses.map(buildFateResponse),
         const Divider(height: 2),
         ListTile(
-          title: const Text('master data'),
+          title: Container(
+            alignment: AlignmentDirectional.centerStart,
+            child: _buildBadge(label: 'master data', color: Colors.blue),
+          ),
           // trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           onTap: () {
             final cache = record.response?.data.cache;
@@ -114,17 +117,9 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
       title: Text.rich(
         TextSpan(children: [
           CenterWidgetSpan(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                border: Border.all(width: 0.5, color: detail.isSuccess() ? Colors.green : Colors.red),
-                borderRadius: BorderRadius.circular(10),
-                color: detail.isSuccess() ? Colors.green.shade700 : Colors.red,
-              ),
-              child: Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(8, 2, 8, 4),
-                child: Text([detail.nid, if (!detail.isSuccess()) detail.resCode].join(' | '),
-                    style: const TextStyle(color: Colors.white, fontSize: 12)),
-              ),
+            child: _buildBadge(
+              label: [detail.nid, if (!detail.isSuccess()) detail.resCode].join(' | '),
+              color: detail.isSuccess() ? Colors.green.shade700 : Colors.red,
             ),
           ),
           const TextSpan(text: '  '),
@@ -138,6 +133,23 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
           : () {
               router.pushPage(JsonViewerPage(data));
             },
+    );
+  }
+
+  Widget _buildBadge({required String label, required Color color}) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border.all(width: 0.5, color: color),
+        borderRadius: BorderRadius.circular(10),
+        color: color,
+      ),
+      child: Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(8, 2, 8, 4),
+        child: Text(
+          label,
+          style: const TextStyle(color: Colors.white, fontSize: 12),
+        ),
+      ),
     );
   }
 }

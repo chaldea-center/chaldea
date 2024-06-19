@@ -69,6 +69,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       EasyLoading.dismiss();
     } catch (e, s) {
       logger.e('task failed', e, s);
+      await Future.delayed(const Duration(milliseconds: 200));
       if (mounted) {
         EasyLoading.dismiss();
         SimpleCancelOkDialog(
@@ -76,7 +77,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           scrollable: true,
           content: Text(e.toString()),
           hideCancel: true,
-        ).showDialog(context);
+        ).showDialog(context, barrierDismissible: false);
       } else {
         EasyLoading.showError(e.toString());
       }
@@ -97,6 +98,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
       appBar: AppBar(
         leading: BackButton(
           onPressed: () async {
+            if (_runningTask) {
+              SimpleCancelOkDialog(
+                title: Text(S.current.warning),
+                content: const Text("Task is still running! Cannot exit!"),
+                hideCancel: true,
+              ).showDialog(context);
+              return;
+            }
             final confirm = await const SimpleCancelOkDialog(title: Text("Exit?")).showDialog(context);
             if (confirm == true && context.mounted) Navigator.pop(context);
           },
@@ -225,6 +234,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           agent.network.user.curBattleOptionIndex = v;
         } else {
           agent.network.user.battleOptions.add(AutoBattleOptions());
+          agent.network.user.curBattleOptionIndex = agent.network.user.battleOptions.length - 1;
         }
         setState(() {});
       },
@@ -241,19 +251,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
   }
 
   Widget get gameInfoSection {
+    final gameTop = agent.network.gameTop;
     return TileGroup(
       header: 'Game Info',
       children: [
         ListTile(
           dense: true,
-          title: const Text('DataVer\nDateVer'),
-          trailing: Text(
-            [
-              agent.network.gameTop.dataVer,
-              agent.network.gameTop.dateVer.sec2date().toStringShort(omitSec: true),
-            ].join('\n'),
-            textAlign: TextAlign.end,
-          ),
+          title: Text('AppVer=${gameTop.appVer}  DataVer=${gameTop.dataVer}'
+              '\nDateVer=${gameTop.dateVer.sec2date().toStringShort(omitSec: true)}'),
         ),
       ],
     );
@@ -696,19 +701,28 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
                         final bool reachBondLimit = collection.friendship >= curBondTotal;
                         final int bondA = collection.friendship - prevBondTotal,
                             bondB = curBondTotal - collection.friendship;
+
+                        String bondText =
+                            'Bond\nLv.${collection.friendshipRank}/${10 + collection.friendshipExceedCount}'
+                            // '\n${collection.friendship}'
+                            '\n${-bondB}';
+                        // battle result
+                        final oldCollection = agent.lastBattleResultData?.oldUserSvtCollection
+                            .firstWhereOrNull((e) => e.svtId == collection.svtId);
+                        if (oldCollection != null) {
+                          bondText += '\n+${collection.friendship - oldCollection.friendship}';
+                        }
                         return Expanded(
                           flex: 10,
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               AutoSizeText(
-                                'Bond\nLv.${collection.friendshipRank}/${10 + collection.friendshipExceedCount}'
-                                // '\n${collection.friendship}'
-                                '\n${-bondB}',
+                                bondText,
                                 textAlign: TextAlign.center,
                                 maxFontSize: 10,
                                 minFontSize: 6,
-                                maxLines: 3,
+                                maxLines: bondText.count('\n') + 1,
                                 style: reachBondLimit ? TextStyle(color: Theme.of(context).colorScheme.error) : null,
                               ),
                               Row(
@@ -731,6 +745,17 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             ),
           ),
         ],
+        SwitchListTile.adaptive(
+          dense: true,
+          value: battleOptions.useCampaignItem,
+          secondary: Item.iconBuilder(context: context, item: null, itemId: 94065901, jumpToDetail: false),
+          title: Text(Transl.itemNames('星見のティーポット').l),
+          onChanged: (v) {
+            setState(() {
+              battleOptions.useCampaignItem = v;
+            });
+          },
+        ),
         SwitchListTile.adaptive(
           dense: true,
           value: battleOptions.stopIfBondLimit,
@@ -930,7 +955,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             },
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 180),
-              child: Text(battleOptions.actionLogs),
+              child: Text(battleOptions.actionLogs.isEmpty ? 'empty' : battleOptions.actionLogs),
             ),
           ),
         ),
@@ -1206,7 +1231,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
         title: const Text('Finished'),
         content: Text('$finishedCount battles'),
         hideCancel: true,
-      ).showDialog(context);
+      ).showDialog(context, barrierDismissible: false);
     }
   }
 

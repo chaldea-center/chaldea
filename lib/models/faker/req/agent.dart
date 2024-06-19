@@ -23,6 +23,7 @@ class FakerAgent {
 
   BattleEntity? curBattle;
   BattleEntity? lastBattle;
+  BattleResultData? lastBattleResultData;
   FResponse? lastResp;
 
   Future<FResponse> gamedataTop({bool checkAppUpdate = true}) async {
@@ -257,11 +258,16 @@ class FakerAgent {
     dictionary['voicePlayedList'] = jsonEncode(voicePlayedArray);
     dictionary['usedTurnList'] = usedTurnArray;
     dictionary['waveInfo'] = "[]";
-    print('battle_result.result=${jsonEncode(dictionary)}');
+    logger.t('battle_result.result=${jsonEncode(dictionary)}');
     request.addFieldStr('result', network.catMouseGame.encryptBattleResult(dictionary));
     final resp = await request.beginRequestAndCheckError('battle_result');
     lastBattle = curBattle;
     curBattle = null;
+    try {
+      lastBattleResultData = BattleResultData.fromJson(resp.data.getResponse('battle_result').success!);
+    } catch (e, s) {
+      logger.e('parse battle result data failed', e, s);
+    }
     network.mstData.battles.clear();
     return resp;
   }
@@ -269,6 +275,7 @@ class FakerAgent {
 
 extension FakerAgentX on FakerAgent {
   Future<FResponse> battleSetupWithOptions(AutoBattleOptions options) async {
+    final region = network.user.region;
     final quest = db.gameData.quests[options.questId];
     final mstData = network.mstData;
     if (quest == null) {
@@ -284,8 +291,7 @@ extension FakerAgentX on FakerAgent {
     if (mstData.userDeck[options.deckId] == null) {
       throw Exception('Deck ${options.deckId} not found');
     }
-    final questPhaseEntity =
-        await AtlasApi.questPhase(options.questId, options.questPhase, region: network.user.region);
+    final questPhaseEntity = await AtlasApi.questPhase(options.questId, options.questPhase, region: region);
     if (questPhaseEntity == null) {
       throw Exception('Quest ${options.questId}/${options.questPhase} not found');
     }
@@ -305,6 +311,30 @@ extension FakerAgentX on FakerAgent {
       }
     }
 
+    int campaignItemId = 0;
+    if (options.useCampaignItem) {
+      List<UserItemEntity> campaignItems = [];
+      final now = DateTime.now().timestamp;
+      for (final userItem in mstData.userItem) {
+        if (userItem.num <= 0) continue;
+        final jpItem = db.gameData.items[userItem.itemId];
+        if (jpItem != null && jpItem.type != ItemType.friendshipUpItem) continue;
+        final item = region == Region.jp ? jpItem : await AtlasApi.item(userItem.itemId, region: region);
+        if (item == null || item.type != ItemType.friendshipUpItem) continue;
+        if (item.startedAt < now && item.endedAt > now) {
+          campaignItems.add(userItem);
+        }
+      }
+      if (campaignItems.isEmpty) {
+        throw Exception('no valid Teapot item found');
+      }
+      print("Teapot count: ${{for (final x in campaignItems) x.itemId: x.num}}");
+      if (campaignItems.length > 1) {
+        throw Exception('multiple Teapot items found, why??? (${campaignItems.map((e) => e.itemId).join("/")})');
+      }
+      campaignItemId = campaignItems.single.itemId;
+    }
+
     final (follower, followerSvt) = await _getValidSupport(
       questId: options.questId,
       questPhase: options.questPhase,
@@ -313,15 +343,16 @@ extension FakerAgentX on FakerAgent {
       supportSvtIds: options.supportSvtIds.toList(),
       supportEquipIds: options.supportCeIds.toList(),
     );
-    print({
-      "questId": options.questId,
-      "questPhase": options.questPhase,
-      "activeDeckId": options.deckId,
-      "followerId": follower.userId,
-      "followerClassId": followerSvt.classId,
-      "followerType": follower.type,
-      "followerSupportDeckId": followerSvt.supportDeckId,
-    });
+
+    // print({
+    //   "questId": options.questId,
+    //   "questPhase": options.questPhase,
+    //   "activeDeckId": options.deckId,
+    //   "followerId": follower.userId,
+    //   "followerClassId": followerSvt.classId,
+    //   "followerType": follower.type,
+    //   "followerSupportDeckId": followerSvt.supportDeckId,
+    // });
     return battleSetup(
       questId: options.questId,
       questPhase: options.questPhase,
@@ -330,6 +361,7 @@ extension FakerAgentX on FakerAgent {
       followerClassId: followerSvt.classId,
       followerType: follower.type,
       followerSupportDeckId: followerSvt.supportDeckId,
+      campaignItemId: campaignItemId,
     );
   }
 

@@ -83,16 +83,18 @@ class AutoLoginData {
   bool useThisDevice;
   // result
   int? lastLogin;
-  UserGameEntity? userGame;
 
-  List<AutoBattleOptions> battleOptions;
   int _curBattleOptionIndex;
   int get curBattleOptionIndex => _curBattleOptionIndex.clamp2(0, battleOptions.length - 1);
   set curBattleOptionIndex(int v) => _curBattleOptionIndex = v.clamp2(0, battleOptions.length - 1);
+
+  List<AutoBattleOptions> battleOptions;
   AutoBattleOptions get curBattleOption {
     if (battleOptions.isEmpty) battleOptions.add(AutoBattleOptions());
     return battleOptions[curBattleOptionIndex];
   }
+
+  UserGameEntity? userGame;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   FResponse? response;
@@ -127,8 +129,9 @@ class AutoBattleOptions {
   bool enfoceRefreshSupport;
   Set<int> supportSvtIds;
   Set<int> supportCeIds;
-  bool stopIfBondLimit;
+  bool useCampaignItem = false;
   // result
+  bool stopIfBondLimit;
   BattleResultType resultType;
   BattleWinResultType winType;
   String actionLogs;
@@ -148,6 +151,7 @@ class AutoBattleOptions {
     this.enfoceRefreshSupport = false,
     Set<int>? supportSvtIds,
     Set<int>? supportCeIds,
+    this.useCampaignItem = false,
     this.stopIfBondLimit = true,
     this.resultType = BattleResultType.win,
     this.winType = BattleWinResultType.normal,
