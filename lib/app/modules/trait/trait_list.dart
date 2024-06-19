@@ -4,17 +4,22 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import 'trait.dart';
 
 class TraitListPage extends StatefulWidget {
   final ValueChanged<int>? onSelected;
   final String? initSearchString;
-  const TraitListPage({super.key, this.onSelected, this.initSearchString});
+  final bool multipleMode;
+  TraitListPage({super.key, this.onSelected, this.initSearchString, bool? multipleMode})
+      : multipleMode = multipleMode ?? onSelected == null;
 
   @override
   _TraitListPageState createState() => _TraitListPageState();
 }
 
 class _TraitListPageState extends State<TraitListPage> with SearchableListState<int, TraitListPage> {
+  Set<int> selectedTraits = {};
+
   @override
   void initState() {
     super.initState();
@@ -119,6 +124,53 @@ class _TraitListPageState extends State<TraitListPage> with SearchableListState<
           router.popDetailAndPush(context: context, url: Routes.traitI(id));
         }
       },
+      trailing: widget.multipleMode
+          ? Checkbox(
+              value: selectedTraits.contains(id),
+              onChanged: (v) {
+                setState(() {
+                  selectedTraits.toggle(id);
+                });
+              },
+            )
+          : null,
+    );
+  }
+
+  @override
+  PreferredSizeWidget? get buttonBar {
+    if (!widget.multipleMode) return null;
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(48),
+      child: ButtonBar(
+        alignment: MainAxisAlignment.center,
+        children: [
+          FilledButton(
+            onPressed: selectedTraits.isEmpty
+                ? null
+                : () {
+                    router.popDetailAndPush(context: context, child: TraitDetailPage.ids(ids: selectedTraits.toList()));
+                  },
+            child: Text(
+              selectedTraits.isEmpty
+                  ? '0 ${S.current.trait}'
+                  : selectedTraits.map((e) => Transl.trait(e).l).join(' & '),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          IconButton(
+            onPressed: selectedTraits.isEmpty
+                ? null
+                : () {
+                    setState(() {
+                      selectedTraits.clear();
+                    });
+                  },
+            icon: const Icon(Icons.replay),
+            tooltip: S.current.clear,
+          ),
+        ],
+      ),
     );
   }
 

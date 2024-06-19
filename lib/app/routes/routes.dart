@@ -445,7 +445,7 @@ class RouteConfiguration {
       case Routes.stats:
         return GameStatisticsPage();
       case Routes.traits:
-        return const TraitListPage();
+        return TraitListPage();
       case Routes.trait:
         return TraitDetailPage(id: _secondInt ?? 0);
       case Routes.funcs:

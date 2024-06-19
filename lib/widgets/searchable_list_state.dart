@@ -286,13 +286,14 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
   }
 
   Widget _wrapButtonBar(Widget child) {
+    final buttonBar = this.buttonBar;
     if (buttonBar == null) {
       return child;
     } else {
       return Column(
         children: [
           Expanded(child: child),
-          SafeArea(child: buttonBar!),
+          SafeArea(child: buttonBar),
         ],
       );
     }

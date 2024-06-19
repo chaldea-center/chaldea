@@ -441,7 +441,7 @@ class GalleryItem {
     titleBuilder: () => S.current.trait,
     icon: FontAwesomeIcons.diceD20,
     url: Routes.traits,
-    page: const TraitListPage(),
+    page: TraitListPage(),
     isDetail: false,
     shownDefault: false,
   );
