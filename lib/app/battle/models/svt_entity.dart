@@ -662,11 +662,12 @@ class BattleServantData {
   }
 
   void setHp(final int newHp) {
-    hp = newHp.clamp(1, maxHp);
+    hp = maxHp < newHp ? maxHp : newHp;
   }
 
   void gainHp(final int gain) {
-    hp = (hp + gain).clamp(1, maxHp);
+    final newHp = hp + gain;
+    hp = maxHp < newHp ? maxHp : newHp;
   }
 
   void lossHp(
@@ -827,7 +828,7 @@ class BattleServantData {
 
     baseAtk = (targetSvt.atkGrowth.getOrNull(playerSvtData!.lv - 1) ?? 0) + playerSvtData!.atkFou;
     _maxHp = (targetSvt.hpGrowth.getOrNull(playerSvtData!.lv - 1) ?? 0) + playerSvtData!.hpFou + (equip?.hp ?? 0);
-    hp = hp.clamp(1, maxHp);
+    hp = hp > maxHp ? maxHp : hp;
 
     battleBuff.clearClassPassive();
     final List<NiceSkill> passives = [...targetSvt.classPassive];
@@ -856,7 +857,7 @@ class BattleServantData {
     }
     baseAtk = targetEnemy.atk;
     _maxHp = targetEnemy.hp;
-    hp = hp.clamp(1, maxHp);
+    hp = hp > maxHp ? maxHp : hp;
 
     battleBuff.clearClassPassive();
     final List<NiceSkill> passives = targetEnemy.classPassive.classPassive;
