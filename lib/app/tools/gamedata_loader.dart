@@ -132,12 +132,12 @@ class GameDataLoader {
       oldVersion ??= DataVersion();
       newVersion = DataVersion.fromJson((await _downFile('version.json', timeout: connectTimeout)).json());
     }
+    if (newVersion.appVersion > AppInfo.version) {
+      final String versionString = newVersion.appVersion.versionString;
+      db.runtimeData.dataRequiredAppVer = newVersion.appVersion;
+      throw UpdateError(S.current.error_required_app_version(versionString, AppInfo.versionString));
+    }
     if (!force) {
-      if (newVersion.appVersion > AppInfo.version) {
-        final String versionString = newVersion.appVersion.versionString;
-        db.runtimeData.dataRequiredAppVer = newVersion.appVersion;
-        throw UpdateError(S.current.error_required_app_version(versionString, AppInfo.versionString));
-      }
       if (newVersion.timestamp <= db.gameData.version.timestamp &&
           db.gameData.servantsById.isNotEmpty &&
           db.gameData.items.isNotEmpty) {
