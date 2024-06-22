@@ -155,7 +155,9 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
   }
 
   Widget _buildItemDemand(int itemId) {
-    final int demands = params.getItemDemand(itemId), ownCount = db.curUser.items[itemId] ?? 0;
+    final int demands = params.itemCounts[itemId] ?? 0,
+        finalDemands = params.getItemDemand(itemId),
+        ownCount = db.curUser.items[itemId] ?? 0;
     return ListTile(
       // dense: true,
       leading: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 36),
@@ -171,9 +173,9 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
                 keyboardType: const TextInputType.numberWithOptions(signed: true),
                 title: '${S.current.demands}: ${Item.getName(itemId)}',
                 text: demands.toString(),
-                validate: (s) => s.trim().isEmpty || int.tryParse(s) != null,
+                validate: (s) => int.tryParse(s) != null,
                 onSubmit: (s) {
-                  params.itemCounts[itemId] = int.tryParse(s) ?? 0;
+                  params.itemCounts[itemId] = int.parse(s);
                   if (mounted) setState(() {});
                 },
               ).showDialog(context);
@@ -200,7 +202,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
           Container(
             constraints: const BoxConstraints(minWidth: 48),
             alignment: AlignmentDirectional.centerEnd,
-            child: Text('${demands - ownCount}'),
+            child: Text(finalDemands.toString()),
           ),
         ],
       ),
