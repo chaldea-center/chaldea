@@ -52,7 +52,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
 
   int pageIndex = 0;
   TeamQueryResult queryResult = TeamQueryResult(data: []);
-  final filterData = TeamFilterData();
+  final filterData = TeamFilterData(true);
 
   @override
   Iterable<UserBattleData> get wholeData => queryResult.data;
@@ -85,13 +85,18 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           icon: const Icon(Icons.filter_alt),
           tooltip: S.current.filter,
           onPressed: () {
-            Set<int> svtIds = {}, ceIds = {}, mcIds = {};
+            Set<int> svtIds = {}, ceIds = {}, mcIds = {}, eventWarIds = {};
             for (final record in queryResult.data) {
-              final svts = record.decoded?.formation.allSvts ?? [];
+              final team = record.decoded;
+              final eventWarId = db.gameData.quests[team?.quest?.id ?? record.questId]?.eventIdPriorWarId;
+              if (eventWarId != null) eventWarIds.add(eventWarId);
+              if (team == null) continue;
+
+              final svts = team.formation.allSvts;
               svtIds.addAll(svts.map((e) => e?.svtId ?? 0).where((e) => e > 0));
               ceIds.addAll(svts.map((e) => e?.ceId ?? 0).where((e) => e > 0));
-              if (record.decoded?.hasUsedMCSkills() ?? false) {
-                mcIds.add(record.decoded?.formation.mysticCode.mysticCodeId ?? 0);
+              if (team.hasUsedMCSkills()) {
+                mcIds.add(team.formation.mysticCode.mysticCodeId ?? 0);
               }
             }
             return FilterPage.show(
@@ -101,6 +106,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
                 availableSvts: svtIds,
                 availableCEs: ceIds,
                 availableMCs: mcIds,
+                availableEventWarIds: eventWarIds,
                 onChanged: (_) {
                   if (mounted) {
                     setState(() {});
@@ -527,110 +533,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     if (filterData.favorite && !db.curUser.battleSim.isTeamFavorite(record.questId, record.id)) {
       return false;
     }
-    for (final svtId in filterData.blockSvts.options) {
-      if (data.formation.allSvts.any((svt) => svt?.svtId == svtId)) {
-        return false;
-      }
-    }
-    if (filterData.useSvts.options.isNotEmpty &&
-        !filterData.useSvts.options.every((svtId) => data.formation.allSvts.any((e) => e?.svtId == svtId))) {
-      return false;
-    }
-
-    bool _isCEMismatch(SvtSaveData? svt, int ceId) {
-      if (svt == null || (svt.svtId ?? 0) <= 0) return false;
-      if (svt.ceId != ceId) return false;
-      final mlbOnly = filterData.blockCEMLBOnly[ceId] ?? false;
-      return mlbOnly ? svt.ceLimitBreak : true;
-    }
-
-    for (final ceId in filterData.blockCEs.options) {
-      if (data.formation.allSvts.any((svt) => _isCEMismatch(svt, ceId))) {
-        return false;
-      }
-    }
-
-    final attackerTdCard = filterData.attackerTdCardType.radioValue;
-    if (attackerTdCard != null) {
-      final tdCheck = data.containsTdCardType(attackerTdCard);
-      if (tdCheck == false) {
-        return false;
-      }
-    }
-
-    int maxNormalAttackCount = filterData.normalAttackCount.radioValue!;
-    int maxCriticalAttackCount = filterData.criticalAttackCount.radioValue!;
-    int maxTdCount = filterData.tdAttackCount.radioValue!;
-
-    if (maxNormalAttackCount >= 0 && data.normalAttackCount > maxNormalAttackCount) {
-      return false;
-    }
-    if (maxCriticalAttackCount >= 0 && data.critsCount > maxCriticalAttackCount) {
-      return false;
-    }
-    if (maxTdCount > 0 && data.tdAttackCount > maxTdCount) {
-      return false;
-    }
-
-    if (filterData.mysticCode.isNotEmpty) {
-      final mcId = data.hasUsedMCSkills() ? data.formation.mysticCode.mysticCodeId ?? 0 : 0;
-      if (!filterData.mysticCode.matchOne(mcId)) {
-        return false;
-      }
-    }
-
-    for (final miscOption in filterData.miscOptions.options) {
-      switch (miscOption) {
-        case TeamFilterMiscType.noOrderChange:
-          if ([20, 210].contains(data.formation.mysticCode.mysticCodeId) && data.usedMysticCodeSkill(2) == true) {
-            return false;
-          }
-        case TeamFilterMiscType.noSameSvt:
-          final svtIds = data.formation.allSvts.map((e) => e?.svtId ?? 0).where((e) => e > 0).toList();
-          if (svtIds.length != svtIds.toSet().length) {
-            return false;
-          }
-        case TeamFilterMiscType.noAppendSkill:
-          for (final svt in data.formation.allSvts) {
-            final dbSvt = db.gameData.servantsById[svt?.svtId];
-            if (svt == null || dbSvt == null) continue;
-            if (svt.appendLvs.any((lv) => lv > 0)) {
-              return false;
-            }
-          }
-        case TeamFilterMiscType.noGrailFou:
-          for (final svt in data.formation.allSvts) {
-            final dbSvt = db.gameData.servantsById[svt?.svtId];
-            if (svt == null || dbSvt == null) continue;
-            if (dbSvt.type != SvtType.heroine && svt.lv > dbSvt.lvMax) {
-              return false;
-            }
-            if (svt.hpFou > 1000 || svt.atkFou > 1000) {
-              return false;
-            }
-          }
-        case TeamFilterMiscType.noLv100:
-          for (final svt in data.formation.allSvts) {
-            final dbSvt = db.gameData.servantsById[svt?.svtId];
-            if (svt == null || dbSvt == null) continue;
-            if (svt.lv > 100) {
-              return false;
-            }
-          }
-          break;
-        case TeamFilterMiscType.noDoubleCastoria:
-          if (data.formation.allSvts.where((e) => e?.svtId == 504500).length >= 2) {
-            return false;
-          }
-          break;
-        case TeamFilterMiscType.noDoubleKoyan:
-          if (data.formation.allSvts.where((e) => e?.svtId == 604200).length >= 2) {
-            return false;
-          }
-          break;
-      }
-    }
-    return true;
+    return filterData.filter(data);
   }
 
   Future<void> _queryTeams(final int page, {bool refresh = false}) async {

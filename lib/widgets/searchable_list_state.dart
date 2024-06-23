@@ -18,8 +18,9 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
   bool showOddBg = false;
 
   String? scrollRestorationId;
-  late ScrollController scrollController;
-  late TextEditingController searchEditingController;
+  late ScrollController scrollController = ScrollController(
+      initialScrollOffset: scrollRestorationId == null ? 0.0 : ScrollRestoration.get(scrollRestorationId!) ?? 0.0);
+  late TextEditingController searchEditingController = TextEditingController();
 
   /// String Search
   Query query = Query();
@@ -52,9 +53,6 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
   @override
   void initState() {
     super.initState();
-    scrollController = ScrollController(
-        initialScrollOffset: scrollRestorationId == null ? 0.0 : ScrollRestoration.get(scrollRestorationId!) ?? 0.0);
-    searchEditingController = TextEditingController();
   }
 
   @override

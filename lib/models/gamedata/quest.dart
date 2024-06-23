@@ -238,6 +238,8 @@ class Quest with RouteInfo {
     return null;
   }
 
+  int get eventIdPriorWarId => event?.id ?? warId;
+
   bool get is90PlusFree =>
       (isAnyFree || isRepeatRaid) &&
       ((recommendLv.startsWith('90') && recommendLv != '90') || recommendLv.startsWith('100'));
