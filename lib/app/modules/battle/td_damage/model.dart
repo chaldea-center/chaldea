@@ -187,9 +187,7 @@ class TdDmgSolver {
     battleData.criticalStars = BattleData.kValidStarMax.toDouble();
     actor.np = ConstData.constants.fullTdPoint;
     if (options.enableActiveSkills) {
-      await battleData.activateSvtSkill(0, 0);
-      await battleData.activateSvtSkill(0, 1);
-      await battleData.activateSvtSkill(0, 2);
+      await _activateActiveSkills(battleData, 0);
     }
     for (final svtId in options.supports) {
       final svt = db.gameData.servantsById[svtId];
@@ -198,10 +196,9 @@ class TdDmgSolver {
       sdata.updateRankUps(region: options.region);
       BattleServantData support = BattleServantData.fromPlayerSvtData(sdata, battleData.getNextUniqueId());
       battleData.onFieldAllyServants[1] = support;
+      battleData.initActorSkills([support]);
       // await support.enterField(battle);
-      await battleData.activateSvtSkill(1, 0);
-      await battleData.activateSvtSkill(1, 1);
-      await battleData.activateSvtSkill(1, 2);
+      await _activateActiveSkills(battleData, 1);
       battleData.onFieldAllyServants[1] = null;
     }
     for (int index = 0; index < battleData.masterSkillInfo.length; index++) {
@@ -212,10 +209,11 @@ class TdDmgSolver {
         final skill = actor.skillInfoList[index];
         skill.chargeTurn -= 2;
         if (skill.chargeTurn < 0) skill.chargeTurn = 0;
-        if (skill.chargeTurn == 0) {
-          await battleData.activateSvtSkill(0, index);
-        }
+        // if (skill.chargeTurn == 0) {
+        //   await battleData.activateSvtSkill(0, index);
+        // }
       }
+      await _activateActiveSkills(battleData, 0);
     }
     actor.np = ConstData.constants.fullTdPoint;
 
@@ -255,6 +253,30 @@ class TdDmgSolver {
     if (data.attacks.isEmpty) return null;
     // print('${svt.collectionNo}-${svt.lName.l}: DMG ${result.totalDamage}');
     return data;
+  }
+
+  static const _fixedSvtSkillOrders = <int, List<int>>{
+    100700: [2, 1, 3], // Gawain 高文
+    100500: [3, 2, 1], // Nero Claudius (No.5)
+    103900: [3, 2, 1], // Lakshmi Bai
+    200800: [2, 1, 3], // Tristan 崔斯坦
+    401200: [1, 3, 2], // Ozymandias 奥兹曼迪斯
+    600300: [1, 2], // 百貌のハサン
+    604700: [3, 1, 2], // Tezcatlipoca 烟雾镜
+    700300: [3, 1, 2], // 吕布奉先
+    703500: [3, 2, 1], // 森長可
+    2500700: [3, 2, 1], // Abigail Williams (Summer)
+    2501200: [2, 1, 3], // Cnoc na Riabh Yaraan-doo 诺克娜蕾
+  };
+  Future<void> _activateActiveSkills(BattleData battleData, int svtIndex) async {
+    final svt = battleData.onFieldAllyServants.getOrNull(svtIndex)?.niceSvt;
+    assert(svt != null);
+    if (svt == null) return;
+    List<int> skillNums = _fixedSvtSkillOrders[svt.id] ?? [1, 2, 3];
+    for (final skillNum in skillNums) {
+      // didn't check skill seal
+      await battleData.activateSvtSkill(svtIndex, skillNum - 1);
+    }
   }
 
   PlayerSvtData? getSvtData(Servant svt, int limitCount) {
