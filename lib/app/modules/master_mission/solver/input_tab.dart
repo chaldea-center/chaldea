@@ -45,7 +45,7 @@ class MissionInputTab extends StatefulWidget {
 }
 
 class _MissionInputTabState extends State<MissionInputTab> {
-  late ScrollController _scrollController;
+  late final _scrollController = ScrollController();
   final options = _MissionSolverOptions();
   // List<CustomMission> missions = [];
   final solver = MissionSolver();
@@ -56,7 +56,6 @@ class _MissionInputTabState extends State<MissionInputTab> {
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
     options.missions = List.of(widget.initMissions);
     options.warId = widget.initWarId ??
         Maths.max([
@@ -121,13 +120,33 @@ class _MissionInputTabState extends State<MissionInputTab> {
     return SimpleAccordion(
       key: Key('mission_input_${mission.hashCode}'),
       headerBuilder: (context, collapsed) => ListTile(
-        leading: Text(
-          (index + 1).toString(),
-          textAlign: TextAlign.center,
+        title: mission.buildDescriptor(
+          context,
+          textScaleFactor: 0.8,
+          leading: TextSpan(text: '${index + 1}. '),
         ),
-        title: mission.buildDescriptor(context, textScaleFactor: 0.8),
         minLeadingWidth: 32,
         contentPadding: const EdgeInsetsDirectional.only(start: 16),
+        trailing: SizedBox(
+          width: 48,
+          child: TextFormField(
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              isDense: true,
+              hintText: mission.count.toString(),
+              contentPadding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+            ),
+            textAlign: TextAlign.center,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            onChanged: (v) {
+              setState(() {
+                final count = v.isEmpty ? 0 : int.tryParse(v);
+                if (count != null) mission.count = count;
+              });
+            },
+          ),
+        ),
       ),
       contentBuilder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
@@ -139,30 +158,6 @@ class _MissionInputTabState extends State<MissionInputTab> {
               title: Text(S.current.custom_mission_source_mission),
               subtitle: Text(mission.originDetail!),
             ),
-          ListTile(
-            dense: true,
-            leading: Text(S.current.counts),
-            trailing: SizedBox(
-              width: 72,
-              child: TextFormField(
-                decoration: InputDecoration(
-                  border: const OutlineInputBorder(),
-                  isDense: true,
-                  hintText: mission.count.toString(),
-                  contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-                ),
-                textAlign: TextAlign.center,
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                onChanged: (v) {
-                  setState(() {
-                    final count = v.isEmpty ? 0 : int.tryParse(v);
-                    if (count != null) mission.count = count;
-                  });
-                },
-              ),
-            ),
-          ),
           if (mission.conds.length > 1)
             ListTile(
               dense: true,
