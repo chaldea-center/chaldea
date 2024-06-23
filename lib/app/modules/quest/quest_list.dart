@@ -90,9 +90,15 @@ class _QuestListPageState extends State<QuestListPage> {
             TextSpan(text: 'Lv.${quest.recommendLv}'),
           ];
 
-          List<InlineSpan> consumes = [
-            if (quest.consumeType.useApOrBp && (quest.phases.length == 1 || isMainFree))
-              TextSpan(text: '${quest.consumeType.unit}${quest.consume}'),
+          List<InlineSpan> consumes = [];
+          if (quest.phases.isNotEmpty &&
+              quest.consumeType.useApOrBp &&
+              (quest.afterClear.isRepeat || quest.phases.length == 1)) {
+            final int consume =
+                db.gameData.questPhaseDetails[quest.id * 100 + quest.phases.last]?.actConsume ?? quest.consume;
+            consumes.add(TextSpan(text: '${quest.consumeType.unit}$consume'));
+          }
+          consumes.addAll([
             for (final itemAmount in quest.consumeItem)
               WidgetSpan(
                 child: Item.iconBuilder(
@@ -103,15 +109,22 @@ class _QuestListPageState extends State<QuestListPage> {
                   jumpToDetail: false,
                 ),
               ),
-          ];
+          ]);
 
           List<InlineSpan> clsIcons = [];
 
-          QuestPhase? phase = db.gameData.questPhases[quest.getPhaseKey(3)];
-          if (phase != null) {
+          List<int> clsIconIds = [];
+          if (quest.phases.isNotEmpty && quest.afterClear.isRepeat) {
+            final key = quest.id * 100 + quest.phases.last;
+            clsIconIds = db.gameData.questPhases[key]?.className.map((e) => e.value).toList() ??
+                db.gameData.questPhaseDetails[key]?.classIds ??
+                [];
+          }
+          if (clsIconIds.isNotEmpty) {
             // consumes.add(TextSpan(text: '\n${S.current.bond} ${phase.bond}'));
             clsIcons.addAll([
-              for (final cls in phase.className) WidgetSpan(child: db.getIconImage(cls.icon(3), height: 18)),
+              for (final clsId in clsIconIds)
+                WidgetSpan(child: db.getIconImage(SvtClassX.clsIcon(clsId, 3), height: 18)),
             ]);
           }
 

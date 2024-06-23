@@ -56,7 +56,7 @@ part '../../generated/models/gamedata/gamedata.g.dart';
 
 @JsonSerializable(converters: [RegionConverter()], createToJson: false)
 class GameData with _GameDataExtra {
-  static final kMinCompatibleVer = DateTime.utc(2024, 5, 22, 16);
+  static final kMinCompatibleVer = DateTime.utc(2024, 6, 23, 16);
   DataVersion version;
   @protected
   Map<int, Servant> servants;
@@ -76,6 +76,7 @@ class GameData with _GameDataExtra {
   Map<int, MstMasterMission> masterMissions;
   Map<int, MasterMission> extraMasterMission;
   List<QuestGroup> questGroups;
+  Map<int, BasicQuestPhaseDetail> questPhaseDetails;
   Map<int, NiceGacha> gachas;
   WikiData wiki;
   MappingData mappingData;
@@ -123,6 +124,7 @@ class GameData with _GameDataExtra {
     Map<int, MstMasterMission>? masterMissions,
     Map<int, MasterMission>? extraMasterMission,
     List<QuestGroup>? questGroups,
+    List<BasicQuestPhaseDetail>? questPhaseDetails,
     Map<int, NiceGacha>? gachas,
     WikiData? wiki,
     MappingData? mappingData,
@@ -161,6 +163,9 @@ class GameData with _GameDataExtra {
         masterMissions = masterMissions ?? {},
         extraMasterMission = extraMasterMission ?? {},
         questGroups = questGroups ?? [],
+        questPhaseDetails = {
+          for (final phase in questPhaseDetails ?? <BasicQuestPhaseDetail>[]) phase.questId * 100 + phase.phase: phase,
+        },
         gachas = gachas ?? {},
         wiki = wiki ?? WikiData(),
         mappingData = mappingData ?? MappingData(),

@@ -71,6 +71,9 @@ GameData _$GameDataFromJson(Map json) => GameData(
       questGroups: (json['questGroups'] as List<dynamic>?)
           ?.map((e) => QuestGroup.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList(),
+      questPhaseDetails: (json['questPhaseDetails'] as List<dynamic>?)
+          ?.map((e) => BasicQuestPhaseDetail.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
       gachas: (json['gachas'] as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), NiceGacha.fromJson(Map<String, dynamic>.from(e as Map))),
       ),

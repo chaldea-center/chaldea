@@ -262,22 +262,22 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     }
 
     DataCell clsIcons;
-    if (phase == null) {
-      clsIcons = DataCell(
-        _loading ? const CupertinoActivityIndicator(radius: 8) : const Text(' - '),
-        placeholder: true,
-      );
-    } else {
-      clsIcons = DataCell(Text.rich(TextSpan(children: [
-        for (final clsName in phase.className)
-          CenterWidgetSpan(child: db.getIconImage(clsName.icon(5), width: 24, aspectRatio: 1)),
-        const TextSpan(text: '\n'),
-        TextSpan(
-          text: phase.stages.map((e) => e.enemies.length).join('-'),
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-      ])));
-    }
+    List<int> clsIconIds = phase?.className.map((e) => e.value).toList() ??
+        db.gameData.questPhaseDetails[quest.id * 100 + (quest.phases.lastOrNull ?? 0)]?.classIds ??
+        [];
+
+    clsIcons = DataCell(Text.rich(TextSpan(children: [
+      for (final clsId in clsIconIds)
+        CenterWidgetSpan(child: db.getIconImage(SvtClassX.clsIcon(clsId, 5), width: 24, aspectRatio: 1)),
+      const TextSpan(text: '\n'),
+      phase == null && _loading
+          ? const CenterWidgetSpan(child: CupertinoActivityIndicator(radius: 6))
+          : TextSpan(
+              text: phase?.stages.map((e) => e.enemies.length).join('-') ?? '-',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+    ])));
+
     cells.add(clsIcons);
 
     void _addItems(Map<int, Widget> items) {

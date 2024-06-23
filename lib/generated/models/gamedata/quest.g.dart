@@ -1232,6 +1232,36 @@ const _$BattleFieldEnvironmentGrantTypeEnumMap = {
   BattleFieldEnvironmentGrantType.function_: 'function',
 };
 
+BasicQuestPhaseDetail _$BasicQuestPhaseDetailFromJson(Map json) => BasicQuestPhaseDetail(
+      questId: (json['questId'] as num).toInt(),
+      phase: (json['phase'] as num).toInt(),
+      classIds: (json['classIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
+      qp: (json['qp'] as num?)?.toInt() ?? 0,
+      exp: (json['exp'] as num?)?.toInt() ?? 0,
+      bond: (json['bond'] as num?)?.toInt() ?? 0,
+      giftId: (json['giftId'] as num?)?.toInt() ?? 0,
+      gifts: (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
+      spotId: (json['spotId'] as num?)?.toInt(),
+      consumeType: (json['consumeType'] as num?)?.toInt(),
+      actConsume: (json['actConsume'] as num?)?.toInt(),
+      recommendLv: json['recommendLv'] as String?,
+    );
+
+Map<String, dynamic> _$BasicQuestPhaseDetailToJson(BasicQuestPhaseDetail instance) => <String, dynamic>{
+      'questId': instance.questId,
+      'phase': instance.phase,
+      'classIds': instance.classIds,
+      'qp': instance.qp,
+      'exp': instance.exp,
+      'bond': instance.bond,
+      'giftId': instance.giftId,
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'spotId': instance.spotId,
+      'consumeType': instance.consumeType,
+      'actConsume': instance.actConsume,
+      'recommendLv': instance.recommendLv,
+    };
+
 const _$QuestFlagEnumMap = {
   QuestFlag.none: 'none',
   QuestFlag.noBattle: 'noBattle',
