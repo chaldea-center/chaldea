@@ -155,7 +155,7 @@ class AutoBattleOptions {
     this.stopIfBondLimit = true,
     this.resultType = BattleResultType.win,
     this.winType = BattleWinResultType.normal,
-    this.actionLogs = '1B2B3B1B1D2C1B1C2B',
+    this.actionLogs = '',
     List<int>? usedTurnArray,
     List<int>? recoverIds,
     this.loopCount = 0,

@@ -751,8 +751,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           secondary: Item.iconBuilder(context: context, item: null, itemId: 94065901, jumpToDetail: false),
           title: Text(Transl.itemNames('星見のティーポット').l),
           onChanged: (v) {
-            setState(() {
-              battleOptions.useCampaignItem = v;
+            _lockTask(() {
+              setState(() {
+                battleOptions.useCampaignItem = v;
+              });
             });
           },
         ),

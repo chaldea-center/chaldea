@@ -69,7 +69,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
                       ]),
                       if (!Transl.isJP) CustomTableRow.fromTexts(texts: [item.name]),
                       if (!Transl.isEN) CustomTableRow.fromTexts(texts: [item.lName.na]),
-                      CustomTableRow.fromTexts(texts: ['No.${item.id}', item.type.name]),
+                      CustomTableRow.fromTexts(texts: [item.type.name, item.category.name]),
                     ],
                   ),
                 ),
@@ -86,8 +86,8 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
               CustomTableRow.fromChildren(
                   children: [SharedBuilder.traitList(context: context, traits: item.individuality)])
             ],
-            CustomTableRow.fromTexts(texts: const ['Priority', 'Drop Priority'], isHeader: true),
-            CustomTableRow.fromTexts(texts: ['${item.priority}', '${item.dropPriority}']),
+            CustomTableRow.fromTexts(texts: const ['ID', 'Priority', 'Drop Priority'], isHeader: true),
+            CustomTableRow.fromTexts(texts: ['${item.id}', '${item.priority}', '${item.dropPriority}']),
             CustomTableRow.fromTexts(texts: [S.current.card_description], isHeader: true),
             CustomTableRow(
               children: [

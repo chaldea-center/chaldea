@@ -124,7 +124,7 @@ AutoBattleOptions _$AutoBattleOptionsFromJson(Map json) => $checkedCreate(
               'resultType', (v) => $enumDecodeNullable(_$BattleResultTypeEnumMap, v) ?? BattleResultType.win),
           winType: $checkedConvert(
               'winType', (v) => $enumDecodeNullable(_$BattleWinResultTypeEnumMap, v) ?? BattleWinResultType.normal),
-          actionLogs: $checkedConvert('actionLogs', (v) => v as String? ?? '1B2B3B1B1D2C1B1C2B'),
+          actionLogs: $checkedConvert('actionLogs', (v) => v as String? ?? ''),
           usedTurnArray:
               $checkedConvert('usedTurnArray', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList()),
           recoverIds:
