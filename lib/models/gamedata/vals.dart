@@ -249,7 +249,13 @@ class DataVals {
   int? get BgmAllowSubPlaying => _vals['BgmAllowSubPlaying'];
   int? get BgPriority => _vals['BgPriority'];
   int? get PriorityBg => _vals['PriorityBg'];
-  int? get ResetBgmPriorityAtWaveStart => _vals['ResetBgmPriorityAtWaveStart'];
+  int? get ResetPriorityBgmAtWaveStart => _vals['ResetPriorityBgmAtWaveStart'];
+  int? get ControlOtherBgmAtOverStageBgm_Priority => _vals['ControlOtherBgmAtOverStageBgm_Priority'];
+  int? get ControlOtherBgmAtOverStageBgm_Target => _vals['ControlOtherBgmAtOverStageBgm_Target'];
+  int? get ExtendBuffHalfTurnInOpponentTurn => _vals['ExtendBuffHalfTurnInOpponentTurn'];
+  int? get ShortenBuffHalfTurnInOpponentTurn => _vals['ShortenBuffHalfTurnInOpponentTurn'];
+  int? get ExtendBuffHalfTurnInPartyTurn => _vals['ExtendBuffHalfTurnInPartyTurn'];
+  int? get ShortenBuffHalfTurnInPartyTurn => _vals['ShortenBuffHalfTurnInPartyTurn'];
 
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];
