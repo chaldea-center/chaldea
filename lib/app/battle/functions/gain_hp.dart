@@ -24,6 +24,10 @@ class GainHP {
     final isPercent = percentFuncTypes.contains(funcType);
 
     for (final target in targets) {
+      if (target.hp <= 0) {
+        continue;
+      }
+
       await battleData.withTarget(target, () async {
         final previousHp = target.hp;
         final baseValue = isPercent ? target.maxHp * toModifier(dataVals.Value!) : dataVals.Value!;
