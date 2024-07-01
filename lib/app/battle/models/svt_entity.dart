@@ -1386,7 +1386,7 @@ class BattleServantData {
     return await battleData.withActivator(this, () async {
       bool activated = false;
       for (final buff in buffs.toList()) {
-        if (await buff.shouldActivateBuff(battleData, this)) {
+        if (await buff.shouldActivateBuff(battleData, this, battleData.target)) {
           final skillId = buff.param;
           BaseSkill? skill = db.gameData.baseSkills[skillId];
           skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
