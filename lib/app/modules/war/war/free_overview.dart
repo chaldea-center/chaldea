@@ -107,7 +107,7 @@ class _FreeQuestOverviewState extends State<FreeQuestOverview> {
     int maxCount = Maths.max(
         data.map((info) => Maths.max([info.domusItems.length, info.eventItems.length, info.normalItems.length])), 0);
     maxCount = maxCount.clamp(3, 8);
-    final hasEventItem = data.every((e) => e.phase == null || e.eventItems.isNotEmpty);
+    final hasEventItem = data.any((e) => e.phase == null || e.eventItems.isNotEmpty);
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.free_quest),

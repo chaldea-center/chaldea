@@ -118,6 +118,7 @@ AutoBattleOptions _$AutoBattleOptionsFromJson(Map json) => $checkedCreate(
               $checkedConvert('supportSvtIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
           supportCeIds:
               $checkedConvert('supportCeIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+          supportCeMaxLimitBreak: $checkedConvert('supportCeMaxLimitBreak', (v) => v as bool? ?? true),
           useCampaignItem: $checkedConvert('useCampaignItem', (v) => v as bool? ?? false),
           stopIfBondLimit: $checkedConvert('stopIfBondLimit', (v) => v as bool? ?? true),
           resultType: $checkedConvert(
@@ -154,6 +155,7 @@ Map<String, dynamic> _$AutoBattleOptionsToJson(AutoBattleOptions instance) => <S
       'enfoceRefreshSupport': instance.enfoceRefreshSupport,
       'supportSvtIds': instance.supportSvtIds.toList(),
       'supportCeIds': instance.supportCeIds.toList(),
+      'supportCeMaxLimitBreak': instance.supportCeMaxLimitBreak,
       'useCampaignItem': instance.useCampaignItem,
       'stopIfBondLimit': instance.stopIfBondLimit,
       'resultType': _$BattleResultTypeEnumMap[instance.resultType]!,

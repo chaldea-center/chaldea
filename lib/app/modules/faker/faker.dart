@@ -371,9 +371,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
           // fixedAtk,
           // fixedHp,
           ceId: userCE?.svtId,
-          ceLimitBreak: userCE?.limitCount == 4,
+          ceLimitBreak: userCE?.limitCount == 4, // may be zero even if MLB for support svt
           ceLv: userCE?.lv ?? 1,
-          supportType: SupportSvtType.none,
+          supportType: SupportSvtType.fromFollowerType(svt?.followerType ?? 0),
           cardStrengthens: null,
           commandCodeIds: null,
         );
@@ -892,6 +892,19 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
             icon: const Icon(Icons.add_circle),
           ),
         ),
+        SwitchListTile.adaptive(
+          dense: true,
+          value: battleOptions.supportCeMaxLimitBreak,
+          title: Text('${S.current.support_servant} - ${S.current.craft_essence_short} ${S.current.max_limit_break}'),
+          onChanged: (v) {
+            _lockTask(() {
+              setState(() {
+                battleOptions.supportCeMaxLimitBreak = v;
+              });
+            });
+          },
+          controlAffinity: ListTileControlAffinity.trailing,
+        ),
       ],
     );
   }
@@ -1204,7 +1217,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> {
               battleOptions.targetDrops.keys.where((itemId) => battleOptions.targetDrops[itemId]! <= 0).toList();
           if (reachedItems.isNotEmpty) {
             throw Exception(
-                'Target drop reaches: ${reachedItems.map((e) => GameCardMixin.anyCardItemName(e)).join(', ')}');
+                'Target drop reaches: ${reachedItems.map((e) => GameCardMixin.anyCardItemName(e).l).join(', ')}');
           }
         }
       }

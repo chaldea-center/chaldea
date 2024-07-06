@@ -153,6 +153,13 @@ class QuestEnemySummaryPage extends StatelessWidget {
                   ]
                 ])),
               ]),
+              CustomTableRow.fromTexts(
+                texts: [S.current.quest],
+                isHeader: true,
+              ),
+              questTile(context),
+              kDefaultDivider,
+              ListTile(subtitle: Text(S.current.quest_enemy_summary_hint)),
               if (skillIds.isNotEmpty) ...[
                 CustomTableRow.fromTexts(
                   texts: [S.current.skill],
@@ -188,13 +195,6 @@ class QuestEnemySummaryPage extends StatelessWidget {
               ],
             ],
           ),
-          CustomTableRow.fromTexts(
-            texts: [S.current.quest],
-            isHeader: true,
-          ),
-          questTile(context),
-          kDefaultDivider,
-          ListTile(subtitle: Text(S.current.quest_enemy_summary_hint)),
         ],
       ),
     );

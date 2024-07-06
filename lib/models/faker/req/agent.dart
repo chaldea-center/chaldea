@@ -342,6 +342,7 @@ extension FakerAgentX on FakerAgent {
       enforceRefreshSupport: options.enfoceRefreshSupport,
       supportSvtIds: options.supportSvtIds.toList(),
       supportEquipIds: options.supportCeIds.toList(),
+      supportEquipMaxLimitBreak: options.supportCeMaxLimitBreak,
     );
 
     // print({
@@ -372,6 +373,7 @@ extension FakerAgentX on FakerAgent {
     required bool enforceRefreshSupport,
     required List<int> supportSvtIds,
     required List<int> supportEquipIds,
+    required bool supportEquipMaxLimitBreak,
   }) async {
     int refreshCount = 0;
 
@@ -395,6 +397,7 @@ extension FakerAgentX on FakerAgent {
           if (supportEquipIds.isNotEmpty && !supportEquipIds.contains(svt.equipTarget1?.svtId)) {
             continue;
           }
+          if (supportEquipMaxLimitBreak && svt.equipTarget1?.limitCount != 4) continue;
           return (follower, svt);
         }
       }

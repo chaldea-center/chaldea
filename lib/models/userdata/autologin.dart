@@ -129,7 +129,8 @@ class AutoBattleOptions {
   bool enfoceRefreshSupport;
   Set<int> supportSvtIds;
   Set<int> supportCeIds;
-  bool useCampaignItem = false;
+  bool supportCeMaxLimitBreak;
+  bool useCampaignItem;
   // result
   bool stopIfBondLimit;
   BattleResultType resultType;
@@ -151,6 +152,7 @@ class AutoBattleOptions {
     this.enfoceRefreshSupport = false,
     Set<int>? supportSvtIds,
     Set<int>? supportCeIds,
+    this.supportCeMaxLimitBreak = true,
     this.useCampaignItem = false,
     this.stopIfBondLimit = true,
     this.resultType = BattleResultType.win,
