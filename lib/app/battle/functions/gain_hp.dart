@@ -12,6 +12,7 @@ class GainHP {
   static Future<void> gainHP(
     final BattleData battleData,
     final DataVals dataVals,
+    final BattleServantData? activator,
     final Iterable<BattleServantData> targets,
     final FuncType funcType,
   ) async {
@@ -28,26 +29,23 @@ class GainHP {
         continue;
       }
 
-      await battleData.withTarget(target, () async {
-        final previousHp = target.hp;
-        final baseValue = isPercent ? target.maxHp * toModifier(dataVals.Value!) : dataVals.Value!;
-        if (isLoss) {
-          target.lossHp(baseValue.toInt(), lethal: isLethal);
-          target.actionHistory.add(BattleServantActionHistory(
-            actType: BattleServantActionHistoryType.hploss,
-            targetUniqueId: battleData.activator?.uniqueId ?? -1,
-            isOpponent: false,
-          ));
-        } else {
-          final healGrantEff =
-              toModifier(await battleData.activator?.getBuffValueOnAction(battleData, BuffAction.giveGainHp) ?? 1000);
-          final healReceiveEff = toModifier(await target.getBuffValueOnAction(battleData, BuffAction.gainHp));
-          final finalHeal = (baseValue * healReceiveEff * healGrantEff).toInt();
-          await target.heal(battleData, finalHeal);
-        }
-        target.procAccumulationDamage(previousHp);
-        battleData.setFuncResult(target.uniqueId, true);
-      });
+      final previousHp = target.hp;
+      final baseValue = isPercent ? target.maxHp * toModifier(dataVals.Value!) : dataVals.Value!;
+      if (isLoss) {
+        target.lossHp(baseValue.toInt(), lethal: isLethal);
+        target.actionHistory.add(BattleServantActionHistory(
+          actType: BattleServantActionHistoryType.hploss,
+          targetUniqueId: activator?.uniqueId ?? -1,
+          isOpponent: false,
+        ));
+      } else {
+        final healGrantEff = await activator?.getBuffValue(battleData, BuffAction.giveGainHp, other: target) ?? 1000;
+        final healReceiveEff = await target.getBuffValue(battleData, BuffAction.gainHp);
+        final finalHeal = (baseValue * toModifier(healReceiveEff) * toModifier(healGrantEff)).toInt();
+        await target.heal(battleData, finalHeal);
+      }
+      target.procAccumulationDamage(previousHp);
+      battleData.setFuncResult(target.uniqueId, true);
     }
   }
 }

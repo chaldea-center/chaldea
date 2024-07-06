@@ -20,13 +20,11 @@ class SkillChargeTurn {
     }
 
     for (final target in targets) {
-      battleData.withTargetSync(target, () {
-        for (final (index, skill) in target.skillInfoList.indexed) {
-          if (_ignoreSkill(dataVals, index)) continue;
-          skill.shortenSkill(dataVals.Value ?? 0);
-        }
-        battleData.setFuncResult(target.uniqueId, true);
-      });
+      for (final (index, skill) in target.skillInfoList.indexed) {
+        if (_ignoreSkill(dataVals, index)) continue;
+        skill.shortenSkill(dataVals.Value ?? 0);
+      }
+      battleData.setFuncResult(target.uniqueId, true);
     }
   }
 
@@ -41,13 +39,11 @@ class SkillChargeTurn {
     }
 
     for (final target in targets) {
-      battleData.withTargetSync(target, () {
-        for (final (index, skill) in target.skillInfoList.indexed) {
-          if (_ignoreSkill(dataVals, index)) continue;
-          skill.extendSkill(dataVals.Value ?? 0);
-        }
-        battleData.setFuncResult(target.uniqueId, true);
-      });
+      for (final (index, skill) in target.skillInfoList.indexed) {
+        if (_ignoreSkill(dataVals, index)) continue;
+        skill.extendSkill(dataVals.Value ?? 0);
+      }
+      battleData.setFuncResult(target.uniqueId, true);
     }
   }
 

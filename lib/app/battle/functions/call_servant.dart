@@ -27,7 +27,8 @@ class CallServant {
       for (int index = 0; index < battleData.enemyOnFieldCount; index++) {
         if (battleData.onFieldEnemies[index] == null && battleData.enemyValidAppear[index]) {
           // init & entry enemy
-          final actor = BattleServantData.fromEnemy(callSvt, battleData.getNextUniqueId());
+          final actor =
+              BattleServantData.fromEnemy(callSvt, battleData.getNextUniqueId(), battleData.niceQuest?.war?.eventId);
           if (battleData.options.simulateEnemy) {
             await actor.loadEnemySvtData(battleData);
           }

@@ -9,15 +9,22 @@ import '_dialog.dart';
 
 class SkillActSelectDialog extends StatelessWidget {
   final BattleData battleData;
+  final BattleServantData? activator;
   final BaseSkill skill;
   final int skillLevel;
   final Completer<int> completer;
 
   const SkillActSelectDialog(
-      {super.key, required this.battleData, required this.skill, required this.skillLevel, required this.completer});
+      {super.key,
+      required this.battleData,
+      required this.activator,
+      required this.skill,
+      required this.skillLevel,
+      required this.completer});
 
   static Future<int> show(
     final BattleData battleData,
+    final BattleServantData? activator,
     final BaseSkill skill,
     final int skillLevel,
   ) {
@@ -26,6 +33,7 @@ class SkillActSelectDialog extends StatelessWidget {
       context: battleData.context!,
       builder: (context, completer) => SkillActSelectDialog(
         battleData: battleData,
+        activator: activator,
         skill: skill,
         skillLevel: skillLevel,
         completer: completer,
@@ -63,8 +71,8 @@ class SkillActSelectDialog extends StatelessWidget {
               ),
             );
             return TextButton(
-              onPressed: button.conds
-                      .every((cond) => !BattleSkillInfoData.checkSkillScripCondition(battleData, cond.cond, cond.value))
+              onPressed: button.conds.every((cond) =>
+                      !BattleSkillInfoData.checkSkillScriptCondition(battleData, activator, cond.cond, cond.value))
                   ? null
                   : () {
                       Navigator.of(context).pop(index);

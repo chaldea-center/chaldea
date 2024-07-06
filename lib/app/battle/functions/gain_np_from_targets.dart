@@ -21,34 +21,33 @@ class GainNpFromTargets {
     final checkValue = dependVal.Value!;
 
     for (final receiver in targets) {
-      await battleData.withTarget(receiver, () async {
-        // denoting who should receive the absorbed np
-        int gainValue = 0;
-        for (final absorbTarget in await FunctionExecutor.acquireFunctionTarget(
-          battleData,
-          dependFunction.funcTargetType,
-          receiver,
-          funcId: dependFunction.funcId,
-        )) {
-          final targetNP = absorbTarget.isPlayer ? absorbTarget.np : absorbTarget.npLineCount;
-          // ignoring Value2 for enemy here as the only usage is in Yuyu (svt 275)'s skill 2
-          // which has value 100 (I assume that's a percentage? But doesn't make sense)
-          final baseGainValue = receiver.isEnemy ? 1 : dependVal.Value2 ?? checkValue;
+      // denoting who should receive the absorbed np
+      int gainValue = 0;
+      for (final absorbTarget in await FunctionExecutor.acquireFunctionTarget(
+        battleData,
+        dependFunction.funcTargetType,
+        receiver,
+        funcId: dependFunction.funcId,
+        target: receiver,
+      )) {
+        final targetNP = absorbTarget.isPlayer ? absorbTarget.np : absorbTarget.npLineCount;
+        // ignoring Value2 for enemy here as the only usage is in Yuyu (svt 275)'s skill 2
+        // which has value 100 (I assume that's a percentage? But doesn't make sense)
+        final baseGainValue = receiver.isEnemy ? 1 : dependVal.Value2 ?? checkValue;
 
-          if (targetNP >= checkValue) {
-            gainValue += baseGainValue;
-          } else if (receiver.isPlayer && absorbTarget.isPlayer) {
-            gainValue += targetNP;
-          }
+        if (targetNP >= checkValue) {
+          gainValue += baseGainValue;
+        } else if (receiver.isPlayer && absorbTarget.isPlayer) {
+          gainValue += targetNP;
         }
+      }
 
-        if (receiver.isEnemy) {
-          receiver.changeNPLineCount(gainValue);
-        } else {
-          receiver.changeNP(gainValue);
-        }
-        battleData.setFuncResult(receiver.uniqueId, true);
-      });
+      if (receiver.isEnemy) {
+        receiver.changeNPLineCount(gainValue);
+      } else {
+        receiver.changeNP(gainValue);
+      }
+      battleData.setFuncResult(receiver.uniqueId, true);
     }
 
     final NiceFunction niceFunction = NiceFunction(

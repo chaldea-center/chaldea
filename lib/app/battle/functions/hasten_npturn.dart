@@ -16,10 +16,8 @@ class HastenNpturn {
     }
 
     for (final target in targets) {
-      battleData.withTargetSync(target, () {
-        target.changeNPLineCount(isNegative ? -dataVals.Value! : dataVals.Value!);
-        battleData.setFuncResult(target.uniqueId, true);
-      });
+      target.changeNPLineCount(isNegative ? -dataVals.Value! : dataVals.Value!);
+      battleData.setFuncResult(target.uniqueId, true);
     }
   }
 }

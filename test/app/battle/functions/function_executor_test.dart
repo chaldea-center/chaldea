@@ -295,9 +295,7 @@ void main() async {
       final npCard = kama.getNPCard()!;
       battle.recorder.startPlayerCard(kama, npCard);
       await battle.withAction(() async {
-        await battle.withCard(npCard, () async {
-          await kama.activateNP(battle, npCard, 0);
-        });
+        await kama.activateNP(battle, npCard, 0);
       });
       final buffCountAfter = enemy2.battleBuff.originalActiveList.length;
       expect(buffCountAfter, buffCountBefore);
@@ -327,9 +325,7 @@ void main() async {
       cursedArm.np = 10000;
       battle.recorder.startPlayerCard(cursedArm, npCard);
       await battle.withAction(() async {
-        await battle.withCard(npCard, () async {
-          await cursedArm.activateNP(battle, npCard, 0);
-        });
+        await cursedArm.activateNP(battle, npCard, 0);
       });
       final buffCountAfter1 = cursedArm.battleBuff.originalActiveList.length;
       expect(buffCountAfter1, buffCountBefore1);
@@ -346,9 +342,7 @@ void main() async {
       battle.options.threshold = 10;
       battle.recorder.startPlayerCard(cursedArm, npCard);
       await battle.withAction(() async {
-        await battle.withCard(npCard, () async {
-          await cursedArm.activateNP(battle, npCard, 0);
-        });
+        await cursedArm.activateNP(battle, npCard, 0);
       });
       final buffCountAfter2 = cursedArm.battleBuff.originalActiveList.length;
       expect(buffCountAfter2, buffCountBefore2 + 1);
@@ -401,17 +395,17 @@ void main() async {
 
       final mash = battle.onFieldAllyServants[0]!;
       expect(mash.battleBuff.originalActiveList.length, 0);
-      expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1000);
+      expect(await mash.getBuffValue(battle, BuffAction.defence), 1000);
 
       await battle.activateSvtSkill(0, 0);
       expect(mash.battleBuff.originalActiveList.length, 1);
-      expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
+      expect(await mash.getBuffValue(battle, BuffAction.defence), 1150);
       expect(mash.battleBuff.originalActiveList.first.buff.type, BuffType.upDefence);
       expect(mash.battleBuff.originalActiveList.first.logicTurn, 6);
 
       await battle.playerTurn([CombatAction(mash, mash.getCards()[0])]);
       expect(mash.battleBuff.originalActiveList.length, 1);
-      expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
+      expect(await mash.getBuffValue(battle, BuffAction.defence), 1150);
       expect(mash.battleBuff.originalActiveList.first.buff.type, BuffType.upDefence);
       expect(mash.battleBuff.originalActiveList.first.logicTurn, 4);
     });
@@ -425,21 +419,21 @@ void main() async {
 
       final orion = battle.onFieldAllyServants[0]!;
       expect(orion.battleBuff.originalActiveList.length, 0);
-      expect(await orion.getBuffValueOnAction(battle, BuffAction.defence), 1000);
+      expect(await orion.getBuffValue(battle, BuffAction.defence), 1000);
 
       await battle.activateSvtSkill(0, 0);
       expect(orion.battleBuff.originalActiveList.length, 3);
-      expect(await orion.getBuffValueOnAction(battle, BuffAction.defence), 1500);
+      expect(await orion.getBuffValue(battle, BuffAction.defence), 1500);
       expect(orion.battleBuff.originalActiveList.first.buff.type, BuffType.upDefence);
       expect(orion.battleBuff.originalActiveList.first.logicTurn, 2);
-      expect(await orion.getBuffValueOnAction(battle, BuffAction.atk), 1200);
+      expect(await orion.getBuffValue(battle, BuffAction.atk), 1200);
       expect(orion.battleBuff.originalActiveList[1].buff.type, BuffType.upAtk);
       expect(orion.battleBuff.originalActiveList[1].logicTurn, 5);
 
       await battle.playerTurn([CombatAction(orion, orion.getCards()[0])]);
       expect(orion.battleBuff.originalActiveList.length, 2);
-      expect(await orion.getBuffValueOnAction(battle, BuffAction.defence), 1000);
-      expect(await orion.getBuffValueOnAction(battle, BuffAction.atk), 1200);
+      expect(await orion.getBuffValue(battle, BuffAction.defence), 1000);
+      expect(await orion.getBuffValue(battle, BuffAction.atk), 1200);
       expect(orion.battleBuff.originalActiveList[0].buff.type, BuffType.upAtk);
       expect(orion.battleBuff.originalActiveList[0].logicTurn, 3);
     });

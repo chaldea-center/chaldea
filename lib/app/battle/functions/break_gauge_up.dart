@@ -19,26 +19,24 @@ class BreakGaugeUp {
     }
 
     for (final target in targets) {
-      await battleData.withTarget(target, () async {
-        if (value != 0) {
-          target.shiftDeckIndex -= value;
-          target.shiftDeckIndex = target.shiftDeckIndex.clamp(-1, target.shiftNpcIds.length - 1);
-          if (changeMaxGauge) {
-            target.shiftLowLimit -= value;
-            target.shiftLowLimit = target.shiftLowLimit.clamp(0, target.shiftNpcIds.length - 1);
-          }
-
-          if (target.shiftLowLimit > target.shiftDeckIndex + 1) {
-            // number of shifts exceed current limit, bump
-            target.shiftLowLimit = target.shiftDeckIndex + 1;
-          }
-
-          target.shiftDeckIndex -= 1; // go to previous shift to shift to desired shift
-          await target.shift(battleData);
+      if (value != 0) {
+        target.shiftDeckIndex -= value;
+        target.shiftDeckIndex = target.shiftDeckIndex.clamp(-1, target.shiftNpcIds.length - 1);
+        if (changeMaxGauge) {
+          target.shiftLowLimit -= value;
+          target.shiftLowLimit = target.shiftLowLimit.clamp(0, target.shiftNpcIds.length - 1);
         }
 
-        battleData.setFuncResult(target.uniqueId, true);
-      });
+        if (target.shiftLowLimit > target.shiftDeckIndex + 1) {
+          // number of shifts exceed current limit, bump
+          target.shiftLowLimit = target.shiftDeckIndex + 1;
+        }
+
+        target.shiftDeckIndex -= 1; // go to previous shift to shift to desired shift
+        await target.shift(battleData);
+      }
+
+      battleData.setFuncResult(target.uniqueId, true);
     }
   }
 }

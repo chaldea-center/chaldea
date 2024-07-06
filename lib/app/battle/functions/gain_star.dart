@@ -4,7 +4,8 @@ import 'package:chaldea/models/gamedata/vals.dart';
 class GainStar {
   static void gainStar(
     final BattleData battleData,
-    final DataVals dataVals, {
+    final DataVals dataVals,
+    final BattleServantData? activator, {
     final List<BattleServantData>? targets,
     final bool isNegative = false,
   }) {
@@ -13,7 +14,7 @@ class GainStar {
       return;
     }
     final times = targets?.length ?? 0;
-    final gainTimes = battleData.activator == null && times == 0 ? 1 : times;
+    final gainTimes = activator == null && times == 0 ? 1 : times;
 
     for (int i = 0; i < gainTimes; i += 1) {
       battleData.changeStar(isNegative ? -dataVals.Value! : dataVals.Value!);

@@ -11,6 +11,7 @@ class GainHpFromTargets {
   static Future<void> gainHpFromTargets(
     final BattleData battleData,
     final DataVals dataVals,
+    final BattleServantData? activator,
     final Iterable<BattleServantData> targets,
   ) async {
     final functionRate = dataVals.Rate ?? 1000;
@@ -23,23 +24,22 @@ class GainHpFromTargets {
     final checkValue = dependVal.Value!;
 
     for (final receiver in targets) {
-      await battleData.withTarget(receiver, () async {
-        final previousHp = receiver.hp;
-        // denoting who should receive the absorbed hp
-        int gainValue = 0;
-        for (final absorbTarget in await FunctionExecutor.acquireFunctionTarget(
-          battleData,
-          dependFunction.funcTargetType,
-          receiver,
-          funcId: dependFunction.funcId,
-        )) {
-          gainValue += min(absorbTarget.hp - 1, checkValue);
-        }
+      final previousHp = receiver.hp;
+      // denoting who should receive the absorbed hp
+      int gainValue = 0;
+      for (final absorbTarget in await FunctionExecutor.acquireFunctionTarget(
+        battleData,
+        dependFunction.funcTargetType,
+        receiver,
+        funcId: dependFunction.funcId,
+        target: receiver,
+      )) {
+        gainValue += min(absorbTarget.hp - 1, checkValue);
+      }
 
-        await receiver.heal(battleData, gainValue);
-        receiver.procAccumulationDamage(previousHp);
-        battleData.setFuncResult(receiver.uniqueId, true);
-      });
+      await receiver.heal(battleData, gainValue);
+      receiver.procAccumulationDamage(previousHp);
+      battleData.setFuncResult(receiver.uniqueId, true);
     }
 
     final NiceFunction niceFunction = NiceFunction(
@@ -60,6 +60,6 @@ class GainHpFromTargets {
         ]);
 
     // we provisioned only one dataVal
-    await FunctionExecutor.executeFunctions(battleData, [niceFunction], 1, script: null);
+    await FunctionExecutor.executeFunctions(battleData, [niceFunction], 1, script: null, activator: activator);
   }
 }

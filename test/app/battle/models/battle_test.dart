@@ -578,13 +578,14 @@ void main() async {
     expect(tezcatlipoca.np, 1200);
     expect(battle.criticalStars, moreOrLessEquals(18, epsilon: 0.001));
 
-    await battle.withActivator(tezcatlipoca, () async {
-      await battle.withTarget(battle.onFieldEnemies[0]!, () async {
-        await battle.withCard(tezcatlipoca.getNPCard(), () async {
-          expect(await tezcatlipoca.getBuffValueOnAction(battle, BuffAction.npdamage), 420);
-        });
-      });
-    });
+    expect(
+        await tezcatlipoca.getBuffValue(
+          battle,
+          BuffAction.npdamage,
+          other: battle.onFieldEnemies[0]!,
+          addTraits: tezcatlipoca.getNPCard()?.traits,
+        ),
+        420);
   });
 
   test('deathEffect clear accumulation damage', () async {
@@ -1344,136 +1345,6 @@ void main() async {
       PlayerSvtData.id(503900)..lv = 90,
     ];
 
-    test('Test checkTrait with no provided traits or no required traits', () async {
-      final battle = BattleData();
-      await battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
-
-      final divinityCheck = [NiceTrait(id: Trait.divine.value)];
-      expect(
-        battle.checkTraits(CheckTraitParameters(
-          requiredTraits: divinityCheck,
-        )),
-        false,
-      );
-
-      expect(
-        battle.checkTraits(CheckTraitParameters(
-          requiredTraits: divinityCheck,
-          positiveMatchFunction: allMatch,
-          negativeMatchFunction: allMatch,
-        )),
-        false,
-      );
-
-      expect(
-        battle.checkTraits(CheckTraitParameters(
-          requiredTraits: [],
-        )),
-        true,
-      );
-
-      expect(
-        battle.checkTraits(CheckTraitParameters(
-          requiredTraits: [],
-          positiveMatchFunction: allMatch,
-          negativeMatchFunction: allMatch,
-        )),
-        true,
-      );
-
-      final okuni = battle.onFieldAllyServants[0]!;
-      expect(
-        battle.checkTraits(CheckTraitParameters(
-          requiredTraits: [],
-          actor: okuni,
-          checkActorTraits: true,
-        )),
-        true,
-      );
-
-      expect(
-        battle.checkTraits(CheckTraitParameters(
-          requiredTraits: [],
-          actor: okuni,
-          checkActorTraits: true,
-          positiveMatchFunction: allMatch,
-          negativeMatchFunction: allMatch,
-        )),
-        true,
-      );
-    });
-
-    test('Test checkTargetTraits & checkActivatorTraits', () async {
-      final battle = BattleData();
-      await battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
-      final okuni = battle.onFieldAllyServants[0]!;
-      final cba = battle.onFieldAllyServants[1]!;
-      final divinityCheck = [NiceTrait(id: Trait.divine.value)];
-      battle.withActivatorSync(cba, () {
-        battle.withTargetSync(okuni, () {
-          expect(
-            battle.checkTraits(CheckTraitParameters(
-              requiredTraits: divinityCheck,
-              actor: cba,
-              checkActorTraits: true,
-            )),
-            true,
-          );
-          expect(
-            battle.checkTraits(CheckTraitParameters(
-              requiredTraits: divinityCheck,
-              actor: okuni,
-              checkActorTraits: true,
-            )),
-            false,
-          );
-        });
-      });
-
-      final buff = BuffData(Buff(id: -1, name: '', detail: '', vals: divinityCheck), DataVals(), 1);
-      battle.withActivatorSync(okuni, () {
-        battle.withBuffSync(buff, () {
-          expect(
-            battle.checkTraits(CheckTraitParameters(
-              requiredTraits: divinityCheck,
-              actor: okuni,
-              checkActorTraits: true,
-              checkCurrentBuffTraits: true,
-            )),
-            true,
-          );
-          expect(
-            battle.checkTraits(CheckTraitParameters(
-              requiredTraits: divinityCheck,
-              actor: okuni,
-              checkActorTraits: true,
-              checkCurrentBuffTraits: true,
-            )),
-            true,
-          );
-        });
-
-        expect(
-          battle.checkTraits(CheckTraitParameters(
-            requiredTraits: divinityCheck,
-            actor: okuni,
-            checkActorTraits: true,
-            checkCurrentBuffTraits: true,
-          )),
-          false,
-        );
-        expect(
-          battle.checkTraits(CheckTraitParameters(
-            requiredTraits: divinityCheck,
-            actor: okuni,
-            checkActorTraits: true,
-            checkCurrentBuffTraits: true,
-          )),
-          false,
-        );
-      });
-    });
-
     test('Check isActorOnField', () async {
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
@@ -1490,17 +1361,9 @@ void main() async {
       final battle = BattleData();
       await battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
 
-      battle.withCardSync(battle.onFieldAllyServants[0]!.getCards()[0], () {
-        battle.currentCard!.critical = true;
-
-        expect(
-          battle.checkTraits(CheckTraitParameters(
-            requiredTraits: [NiceTrait(id: Trait.criticalHit.value)],
-            checkCurrentCardTraits: true,
-          )),
-          true,
-        );
-      });
+      final card = battle.onFieldAllyServants[0]!.getCards()[0];
+      card.critical = true;
+      expect(checkTraitFunction(myTraits: card.traits, requiredTraits: [NiceTrait(id: Trait.criticalHit.value)]), true);
     });
   });
 }

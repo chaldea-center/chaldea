@@ -22,19 +22,18 @@ class MoveState {
 
     for (final receiver in targets) {
       // denoting who should receive the absorbed hp
-      await battleData.withTarget(receiver, () async {
-        for (final absorbTarget in await FunctionExecutor.acquireFunctionTarget(
-          battleData,
-          dependFunction.funcTargetType,
-          receiver,
-          funcId: dependFunction.funcId,
-        )) {
-          for (final buff in absorbTarget.getBuffsWithTraits(affectTraits)) {
-            receiver.addBuff(buff.copy());
-          }
+      for (final absorbTarget in await FunctionExecutor.acquireFunctionTarget(
+        battleData,
+        dependFunction.funcTargetType,
+        receiver,
+        funcId: dependFunction.funcId,
+        target: receiver,
+      )) {
+        for (final buff in absorbTarget.getBuffsWithTraits(affectTraits)) {
+          receiver.addBuff(buff.copy());
         }
-        battleData.setFuncResult(receiver.uniqueId, true);
-      });
+      }
+      battleData.setFuncResult(receiver.uniqueId, true);
     }
 
     final NiceFunction niceFunction = NiceFunction(

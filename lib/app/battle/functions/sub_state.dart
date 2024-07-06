@@ -12,63 +12,58 @@ class SubState {
     final BattleData battleData,
     final List<NiceTrait> affectTraits,
     final DataVals dataVals,
+    final BattleServantData? activator,
     final List<BattleServantData> targets,
   ) async {
-    final activator = battleData.activator;
     for (final target in targets) {
-      await battleData.withTarget(target, () async {
-        final removeFromStart = dataVals.Value != null && dataVals.Value! > 0;
-        final removeTargetCount =
-            dataVals.Value != null && dataVals.Value2 != null ? max(dataVals.Value!, dataVals.Value2!) : null;
-        int removeCount = 0;
-        final List<BuffData> listToInspect = removeFromStart
-            ? target.battleBuff.originalActiveList.reversed.toList()
-            : target.battleBuff.originalActiveList.toList();
-        final List<int> removedFamilyBuff = [];
+      final removeFromStart = dataVals.Value != null && dataVals.Value! > 0;
+      final removeTargetCount =
+          dataVals.Value != null && dataVals.Value2 != null ? max(dataVals.Value!, dataVals.Value2!) : null;
+      int removeCount = 0;
+      final List<BuffData> listToInspect = removeFromStart
+          ? target.battleBuff.originalActiveList.reversed.toList()
+          : target.battleBuff.originalActiveList.toList();
+      final List<int> removedFamilyBuff = [];
 
-        for (int index = listToInspect.length - 1; index >= 0; index -= 1) {
-          final buff = listToInspect[index];
+      for (int index = listToInspect.length - 1; index >= 0; index -= 1) {
+        final buff = listToInspect[index];
 
-          await battleData.withBuff(buff, () async {
-            if (buff.checkField() &&
-                await shouldSubState(battleData, buff, affectTraits, dataVals, activator, target)) {
-              listToInspect.removeAt(index);
-              removeCount += 1;
-              if (buff.vals.BehaveAsFamilyBuff == 1 && buff.vals.AddLinkageTargetIndividualty != null) {
-                removedFamilyBuff.add(buff.vals.AddLinkageTargetIndividualty!);
-              }
-            }
-          });
-
-          if (removeTargetCount != null && removeCount == removeTargetCount) {
-            break;
+        if (buff.checkField() && await shouldSubState(battleData, buff, affectTraits, dataVals, activator, target)) {
+          listToInspect.removeAt(index);
+          removeCount += 1;
+          if (buff.vals.BehaveAsFamilyBuff == 1 && buff.vals.AddLinkageTargetIndividualty != null) {
+            removedFamilyBuff.add(buff.vals.AddLinkageTargetIndividualty!);
           }
         }
 
-        listToInspect.removeWhere(
-            (buff) => buff.vals.BehaveAsFamilyBuff == 1 && removedFamilyBuff.contains(buff.vals.AddIndividualty));
-
-        target.battleBuff.setActiveList(removeFromStart ? listToInspect.reversed.toList() : listToInspect.toList());
-        if (target.hp > 0) {
-          target.hp = target.hp.clamp(1, target.maxHp);
+        if (removeTargetCount != null && removeCount == removeTargetCount) {
+          break;
         }
+      }
 
-        if (removeCount > 0) {
-          battleData.setFuncResult(target.uniqueId, true);
-        }
-      });
+      listToInspect.removeWhere(
+          (buff) => buff.vals.BehaveAsFamilyBuff == 1 && removedFamilyBuff.contains(buff.vals.AddIndividualty));
+
+      target.battleBuff.setActiveList(removeFromStart ? listToInspect.reversed.toList() : listToInspect.toList());
+      if (target.hp > 0) {
+        target.hp = target.hp.clamp(1, target.maxHp);
+      }
+
+      if (removeCount > 0) {
+        battleData.setFuncResult(target.uniqueId, true);
+      }
     }
   }
 
   static Future<bool> shouldSubState(
     final BattleData battleData,
     final BuffData buff,
-    final Iterable<NiceTrait> affectTraits,
+    final List<NiceTrait> affectTraits,
     final DataVals dataVals,
     final BattleServantData? activator,
     final BattleServantData target,
   ) async {
-    if (!battleData.checkTraits(CheckTraitParameters(requiredTraits: affectTraits, checkCurrentBuffTraits: true))) {
+    if (!checkTraitFunction(myTraits: buff.traits, requiredTraits: affectTraits)) {
       return false;
     }
 
@@ -76,8 +71,21 @@ class SubState {
     if (buff.vals.UnSubState == 1 && dataVals.ForceSubState != 1) return false;
     if (dataVals.ForceSubState == 1) return true;
 
-    final toleranceSubState = await target.getBuffValueForToleranceSubstate(battleData, affectTraits, activator);
-    final grantSubState = await activator?.getBuffValueOnAction(battleData, BuffAction.grantSubstate) ?? 0;
+    final toleranceSubState = await target.getBuffValue(
+      battleData,
+      BuffAction.toleranceSubstate,
+      other: activator,
+      addTraits: target.getBuffTraits(activeOnly: true),
+      otherAddTraits: affectTraits,
+    );
+    final grantSubState = await activator?.getBuffValue(
+          battleData,
+          BuffAction.grantSubstate,
+          other: target,
+          addTraits: affectTraits,
+          otherAddTraits: target.getBuffTraits(activeOnly: true),
+        ) ??
+        0;
 
     final functionRate = dataVals.Rate ?? 1000;
     final activationRate = functionRate + grantSubState;

@@ -21,6 +21,8 @@ class BattleBuff {
   List<BuffData> getCommandCodeList() => commandCodeList.where((e) => e.checkAct()).toList();
 
   List<BuffData> getAllBuffs() => [..._passiveList, ..._activeList, ...commandCodeList];
+
+  // does any buffAction actually follow this passive first order?
   List<BuffData> get validBuffs => [...getPassiveList(), ...getActiveList(), ...getCommandCodeList()];
   List<BuffData> get validBuffsActiveFirst => [...getActiveList(), ...getPassiveList(), ...getCommandCodeList()];
 
@@ -161,7 +163,7 @@ class BuffData {
     BuffType.downDamageIndividualityActiveonly,
   ];
 
-  int getValue(final BattleData battleData, final BattleServantData self, [final BattleServantData? opponent]) {
+  int getValue(final BattleServantData self, [final BattleServantData? opponent]) {
     int addValue = 0;
     if (vals.ParamAddValue != null) {
       int addCount = 0;
@@ -169,11 +171,11 @@ class BuffData {
       final oppIndiv = vals.ParamAddOpIndividuality ?? vals.ParamAddFieldIndividuality;
       if (selfIndiv != null) {
         final targetTraits = NiceTrait.list(selfIndiv);
-        addCount += self.countTrait(battleData, targetTraits) + self.countBuffWithTrait(targetTraits);
+        addCount += self.countTrait(targetTraits) + self.countBuffWithTrait(targetTraits);
       }
       if (oppIndiv != null && opponent != null) {
         final targetTraits = NiceTrait.list(oppIndiv);
-        addCount += opponent.countTrait(battleData, targetTraits) + opponent.countBuffWithTrait(targetTraits);
+        addCount += opponent.countTrait(targetTraits) + opponent.countBuffWithTrait(targetTraits);
       }
 
       if (vals.ParamAddMaxCount != null) {
@@ -205,167 +207,70 @@ class BuffData {
     return baseParam + addValue;
   }
 
-  bool shouldActivateDonotActCommandtype(final CommandCardData card) {
-    return checkTraitFunction(
-      myTraits: card.traits,
-      requiredTraits: buff.ckSelfIndv,
-      positiveMatchFunc: matchFunc,
-      negativeMatchFunc: matchFunc,
-    );
-  }
-
-  bool shouldApplyBuff(final BattleData battleData, final BattleServantData self, [final BattleServantData? opponent]) {
-    // final onFieldCheck = !isOnField || actorUniqueId == null || battleData.isActorOnField(actorUniqueId!);
-
-    final scriptCheck = checkBuffScript(battleData);
-
-    if (!scriptCheck || !checkAct()) {
-      return false;
-    }
+  bool shouldActivateBuffNoProbabilityCheck(final List<NiceTrait> selfTraits, [final List<NiceTrait>? opponentTraits]) {
+    if (!checkAct()) return false;
+    if (!checkBuffScript(selfTraits)) return false;
+    if (!checkBuffDataVals(selfTraits)) return false;
 
     /// dw does not check self / op traits for svtTrait related types
-    switch (buff.type) {
-      case BuffType.addIndividuality:
-      case BuffType.subIndividuality:
-        return true;
-      default:
-        final activeOnly = activeOnlyTypes.contains(buff.type);
-        final ignoreIrremovable = vals.IgnoreIndivUnreleaseable == 1;
-        final checkActorNpTraits = buff.script.IncludeIgnoreIndividuality == 1;
-
-        final selfCheck = battleData.checkTraits(CheckTraitParameters(
-          requiredTraits: buff.ckSelfIndv,
-          actor: self,
-          positiveMatchFunction: matchFunc,
-          negativeMatchFunction: matchFunc,
-          checkActorTraits: true,
-          checkActorBuffTraits: battleData.currentBuff == null,
-          checkActiveBuffOnly: activeOnly,
-          ignoreIrremovableBuff: ignoreIrremovable,
-          checkActorNpTraits: checkActorNpTraits,
-          checkCurrentBuffTraits: true,
-          checkCurrentCardTraits: true,
-          checkCurrentFuncTraits: true,
-        ));
-
-        final opponentCheck = battleData.checkTraits(CheckTraitParameters(
-          requiredTraits: buff.ckOpIndv,
-          actor: opponent,
-          positiveMatchFunction: matchFunc,
-          negativeMatchFunction: matchFunc,
-          checkActorTraits: true,
-          checkActorBuffTraits: battleData.currentBuff == null,
-          checkActiveBuffOnly: activeOnly,
-          ignoreIrremovableBuff: ignoreIrremovable,
-          checkActorNpTraits: checkActorNpTraits,
-          checkCurrentBuffTraits: true,
-          checkCurrentCardTraits: true,
-          checkCurrentFuncTraits: true,
-        ));
-
-        return selfCheck && opponentCheck;
+    if (buff.type == BuffType.addIndividuality || buff.type == BuffType.subIndividuality) {
+      return true;
+    } else {
+      // TODO: figure out how IgnoreIndivUnreleaseable & IncludeIgnoreIndividuality works
+      // final ignoreIrremovable = vals.IgnoreIndivUnreleaseable == 1;
+      // final checkActorNpTraits = buff.script.IncludeIgnoreIndividuality == 1;
+      return checkTraitFunction(
+            myTraits: selfTraits,
+            requiredTraits: buff.ckSelfIndv,
+            positiveMatchFunc: matchFunc,
+            negativeMatchFunc: matchFunc,
+          ) &&
+          checkTraitFunction(
+            myTraits: opponentTraits ?? [],
+            requiredTraits: buff.ckOpIndv,
+            positiveMatchFunc: matchFunc,
+            negativeMatchFunc: matchFunc,
+          );
     }
   }
 
   Future<bool> shouldActivateBuff(
     final BattleData battleData,
-    final BattleServantData self, [
-    final BattleServantData? opponent,
+    final List<NiceTrait> selfTraits, [
+    final List<NiceTrait>? opponentTraits,
   ]) async {
-    return shouldApplyBuff(battleData, self, opponent) && await probabilityCheck(battleData);
+    return shouldActivateBuffNoProbabilityCheck(selfTraits, opponentTraits) && await probabilityCheck(battleData);
   }
 
   Future<bool> probabilityCheck(final BattleData battleData) async {
-    final probabilityCheck = await battleData.canActivate(
-        buffRate,
-        '${battleData.activator?.lBattleName ?? S.current.battle_no_source}'
-        ' - ${buff.lName.l}');
+    final probabilityCheck = await battleData.canActivate(buffRate, buff.lName.l);
 
     if (buffRate < 1000) {
-      battleData.battleLogger.debug('${battleData.activator?.lBattleName ?? S.current.battle_no_source}'
-          ' - ${buff.lName.l}: ${probabilityCheck ? S.current.success : S.current.failed}'
+      battleData.battleLogger.debug('${buff.lName.l}: ${probabilityCheck ? S.current.success : S.current.failed}'
           '${battleData.options.tailoredExecution ? '' : ' [$buffRate vs ${battleData.options.threshold}]'}');
     }
 
     return probabilityCheck;
   }
 
-  bool checkSelf(final Iterable<NiceTrait> myTraits) {
-    return checkTraitFunction(
-      myTraits: myTraits,
-      requiredTraits: buff.ckSelfIndv,
-      positiveMatchFunc: matchFunc,
-      negativeMatchFunc: matchFunc,
-    );
-  }
-
-  bool checkOpponent(final Iterable<NiceTrait> theirTraits) {
-    return checkTraitFunction(
-      myTraits: theirTraits,
-      requiredTraits: buff.ckOpIndv,
-      positiveMatchFunc: matchFunc,
-      negativeMatchFunc: matchFunc,
-    );
-  }
-
-  Future<bool> shouldActivateGuts(
-    final BattleData battleData,
-    final BattleServantData self,
-  ) async {
-    final selfCheck = checkSelf(self.getTraits(battleData));
-
-    final oppoCheck = buff.ckOpIndv.isEmpty || checkOpponent(self.lastHitByFunc?.getFuncIndividuality() ?? []);
-    return selfCheck && oppoCheck && await probabilityCheck(battleData);
-  }
-
-  Future<bool> shouldActivateToleranceSubstate(
-    final BattleData battleData,
-    final BattleServantData self,
-    final Iterable<NiceTrait> affectedTraits,
-  ) async {
-    return checkSelf(self.getTraits(battleData)) && checkOpponent(affectedTraits) && await probabilityCheck(battleData);
-  }
-
-  bool shouldActivatePreventDeath(final BuffData turnEndHpReduce) {
-    return checkOpponent(turnEndHpReduce.traits);
-  }
-
-  // making assumptions that these would never have vals.UseRate so no need to check probability
-  bool shouldActivateFuncHpReduce(final BuffData turnEndHpReduce) {
-    return checkSelf(turnEndHpReduce.traits);
-  }
-
-  bool shouldActivateFuncHpReduceValue(final BuffData turnEndHpReduce) {
-    // TODO: figure out what buff.ckOpIndiv could be doing here
-    return checkSelf(turnEndHpReduce.traits);
-  }
-
-  bool shouldActivateTurnendHpReduceToRegain(final BuffData turnEndHpReduce) {
+  bool checkBuffDataVals(final List<NiceTrait> selfTraits) {
     final hpReduceToRegainIndiv = vals.HpReduceToRegainIndiv;
-    if (hpReduceToRegainIndiv == null) {
-      return false;
+    if (hpReduceToRegainIndiv != null) {
+      return checkTraitFunction(myTraits: selfTraits, requiredTraits: [NiceTrait(id: hpReduceToRegainIndiv)]);
     }
 
-    return checkTraitFunction(
-      myTraits: turnEndHpReduce.traits,
-      requiredTraits: [NiceTrait(id: hpReduceToRegainIndiv)],
-      positiveMatchFunc: matchFunc,
-      negativeMatchFunc: matchFunc,
-    );
+    return true;
   }
 
-  bool checkBuffScript(final BattleData battleData) {
+  bool checkBuffScript(final List<NiceTrait> selfTraits) {
     if (buff.script.source.isEmpty) {
       return true;
     }
 
     final script = buff.script;
 
-    if (script.UpBuffRateBuffIndiv != null && battleData.currentBuff != null) {
-      final isCurrentBuffMatch = battleData.checkTraits(CheckTraitParameters(
-        requiredTraits: script.UpBuffRateBuffIndiv!,
-        checkCurrentBuffTraits: true,
-      ));
+    if (script.UpBuffRateBuffIndiv != null) {
+      final isCurrentBuffMatch = checkTraitFunction(myTraits: selfTraits, requiredTraits: script.UpBuffRateBuffIndiv!);
 
       if (!isCurrentBuffMatch) {
         return false;
@@ -421,53 +326,47 @@ class BuffData {
 
     List<NiceTrait>? requiredTraits;
     int? requireAtLeast;
-    bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) positiveMatchFunction = partialMatch;
-    bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) negativeMatchFunction = partialMatch;
+    bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) matchFunc = partialMatch;
 
     if (buff.script.INDIVIDUALITIE != null) {
       requiredTraits = [buff.script.INDIVIDUALITIE!];
       requireAtLeast = buff.script.INDIVIDUALITIE_COUNT_ABOVE;
     } else if (buff.script.INDIVIDUALITIE_AND != null) {
       requiredTraits = buff.script.INDIVIDUALITIE_AND!;
-      positiveMatchFunction = allMatch;
-      negativeMatchFunction = allMatch;
+      matchFunc = allMatch;
     } else if (buff.script.INDIVIDUALITIE_OR != null) {
       requiredTraits = buff.script.INDIVIDUALITIE_OR!;
     }
 
     if (requiredTraits != null) {
-      isAct &= battleData.checkTraits(CheckTraitParameters(
-        requiredTraits: requiredTraits,
-        actor: owner,
-        requireAtLeast: requireAtLeast,
-        positiveMatchFunction: positiveMatchFunction,
-        negativeMatchFunction: negativeMatchFunction,
-        checkActorTraits: true,
-        checkActorBuffTraits: true,
-        checkQuestTraits: true,
-      ));
+      final List<NiceTrait> currentTraits = [
+        ...owner.getTraits(addTraits: owner.getBuffTraits()),
+        ...battleData.getFieldTraits(),
+      ];
+
+      if (requireAtLeast != null) {
+        isAct &= countAnyTraits(currentTraits, requiredTraits) >= requireAtLeast;
+      } else {
+        isAct &= checkTraitFunction(
+          myTraits: currentTraits,
+          requiredTraits: requiredTraits,
+          positiveMatchFunc: matchFunc,
+          negativeMatchFunc: matchFunc,
+        );
+      }
     }
 
     // written based on Chen Gong np & passive. Right now only Chen Gong uses this
     if (vals.OnFieldCount == -1 && buff.script.TargetIndiv != null) {
-      isAct &= battleData.checkTraits(CheckTraitParameters(
-        requiredTraits: buff.ckSelfIndv,
-        actor: owner,
-        checkActorTraits: true,
-        checkActorNpTraits: true,
-      ));
-
       final List<BattleServantData> allies = owner.isPlayer ? battleData.nonnullPlayers : battleData.nonnullEnemies;
-
+      final includeIgnoreIndividuality = buff.script.IncludeIgnoreIndividuality == 1;
       isAct &= allies
           .where((svt) =>
               svt != owner &&
-              battleData.checkTraits(CheckTraitParameters(
+              checkTraitFunction(
+                myTraits: svt.getTraits(addTraits: svt.getBuffTraits(includeIgnoreIndiv: includeIgnoreIndividuality)),
                 requiredTraits: [buff.script.TargetIndiv!],
-                actor: svt,
-                checkActorTraits: true,
-                checkActorBuffTraits: true, // buff.script?.IncludeIgnoreIndividuality == 1,
-              )))
+              ))
           .isEmpty;
     }
 

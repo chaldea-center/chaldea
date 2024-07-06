@@ -19,15 +19,13 @@ class TransformServant {
     }
 
     for (final target in targets) {
-      await battleData.withTarget(target, () async {
-        if (target.isPlayer) {
-          await _transformAlly(battleData, dataVals, target);
-        } else {
-          await _transformEnemy(battleData, dataVals, target);
-        }
+      if (target.isPlayer) {
+        await _transformAlly(battleData, dataVals, target);
+      } else {
+        await _transformEnemy(battleData, dataVals, target);
+      }
 
-        battleData.setFuncResult(target.uniqueId, true);
-      });
+      battleData.setFuncResult(target.uniqueId, true);
     }
   }
 

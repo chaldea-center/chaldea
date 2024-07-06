@@ -14,18 +14,15 @@ class ShiftServant {
       if (target.isPlayer) {
         continue;
       }
-      await battleData.withTarget(target, () async {
-        final shiftNpcId = dataVals.ShiftNpcId ?? 0;
-        final skillShiftSvt =
-            battleData.enemyDecks[DeckType.skillShift]?.firstWhereOrNull((e) => e.npcId == shiftNpcId);
-        if (skillShiftSvt == null) {
-          battleData.battleLogger.error('SkillShift NpcId=$shiftNpcId not found');
-        } else {
-          await target.skillShift(battleData, skillShiftSvt);
-          await battleData.initActorSkills([target]);
-          battleData.setFuncResult(target.uniqueId, true);
-        }
-      });
+      final shiftNpcId = dataVals.ShiftNpcId ?? 0;
+      final skillShiftSvt = battleData.enemyDecks[DeckType.skillShift]?.firstWhereOrNull((e) => e.npcId == shiftNpcId);
+      if (skillShiftSvt == null) {
+        battleData.battleLogger.error('SkillShift NpcId=$shiftNpcId not found');
+      } else {
+        await target.skillShift(battleData, skillShiftSvt);
+        await battleData.initActorSkills([target]);
+        battleData.setFuncResult(target.uniqueId, true);
+      }
     }
   }
 
