@@ -192,6 +192,7 @@ class FunctionExecutor {
       targetedEnemy: targetedEnemy,
       funcId: function.funcId,
       defaultToPlayer: defaultToPlayer,
+      dataVals: dataVals,
     );
 
     return await battleData.withFunction(() async {
@@ -531,6 +532,7 @@ class FunctionExecutor {
     final int? funcId,
     final BattleServantData? targetedAlly,
     final BattleServantData? targetedEnemy,
+    final DataVals? dataVals,
     final bool defaultToPlayer = true,
   }) async {
     final List<BattleServantData> targets = [];
@@ -603,13 +605,31 @@ class FunctionExecutor {
         targets.remove(activator);
         break;
       case FuncTargetType.ptSelfAnotherFirst:
-        final firstOtherSelectable = aliveAllies.firstWhereOrNull((svt) => svt != activator);
+        final firstOtherSelectable = aliveAllies.firstWhereOrNull((svt) {
+          final targetIndiv = dataVals?.TargetIndiv;
+          final includeIgnoredIndiv = dataVals?.IncludeIgnoreIndividuality == 1;
+          final targetIndivCheck = targetIndiv == null ||
+              checkTraitFunction(
+                myTraits: svt.getTraits(addTraits: svt.getBuffTraits(includeIgnoreIndiv: includeIgnoredIndiv)),
+                requiredTraits: [NiceTrait(id: targetIndiv)],
+              );
+          return svt != activator && targetIndivCheck;
+        });
         if (firstOtherSelectable != null) {
           targets.add(firstOtherSelectable);
         }
         break;
       case FuncTargetType.ptSelfAnotherLast:
-        final lastOtherSelectable = aliveAllies.lastWhereOrNull((svt) => svt != activator);
+        final lastOtherSelectable = aliveAllies.lastWhereOrNull((svt) {
+          final targetIndiv = dataVals?.TargetIndiv;
+          final includeIgnoredIndiv = dataVals?.IncludeIgnoreIndividuality == 1;
+          final targetIndivCheck = targetIndiv == null ||
+              checkTraitFunction(
+                myTraits: svt.getTraits(addTraits: svt.getBuffTraits(includeIgnoreIndiv: includeIgnoredIndiv)),
+                requiredTraits: [NiceTrait(id: targetIndiv)],
+              );
+          return svt != activator && targetIndivCheck;
+        });
         if (lastOtherSelectable != null) {
           targets.add(lastOtherSelectable);
         }

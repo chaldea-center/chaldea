@@ -210,6 +210,23 @@ void main() async {
       expect(as1.length, 1);
       expect(as1.first, battle.onFieldAllyServants[0]);
 
+      battle.onFieldAllyServants[0]!.addBuff(BuffData(
+        Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.cantBeSacrificed.value)]),
+        DataVals(),
+        1,
+      ));
+
+      final as1With0Unselectable = await FunctionExecutor.acquireFunctionTarget(
+          battle, FuncTargetType.ptSelfAnotherFirst, battle.onFieldAllyServants[1],
+          dataVals: DataVals({
+            'TargetIndiv': -Trait.cantBeSacrificed.value,
+            "IncludeIgnoreIndividuality": 1,
+          }));
+      expect(as1With0Unselectable.length, 1);
+      expect(as1With0Unselectable.first, battle.onFieldAllyServants[2]);
+
+      battle.onFieldAllyServants[0]!.battleBuff.originalActiveList.removeLast();
+
       final as1AfterRemove = await FunctionExecutor.acquireFunctionTarget(
           battle, FuncTargetType.ptSelfAnotherFirst, battle.onFieldAllyServants[1]);
       expect(as1AfterRemove.length, 1);
