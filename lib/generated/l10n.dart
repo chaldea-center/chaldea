@@ -9891,6 +9891,17 @@ class S {
     );
   }
 
+  /// `No Double Oberon`
+  String get team_no_double_oberon {
+    return Intl.message(
+      'No Double Oberon',
+      name: 'team_no_double_oberon',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `No Grail/☆4 Fou`
   String get team_no_grail_fou {
     return Intl.message(

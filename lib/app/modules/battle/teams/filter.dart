@@ -14,6 +14,7 @@ enum TeamFilterMiscType {
   noSameSvt,
   noDoubleCastoria,
   noDoubleKoyan,
+  noDoubleOberon,
   ;
 
   String get shownName {
@@ -25,6 +26,7 @@ enum TeamFilterMiscType {
       noSameSvt => S.current.team_no_same_svt,
       noDoubleCastoria => S.current.team_no_double_castoria,
       noDoubleKoyan => S.current.team_no_double_koyan,
+      noDoubleOberon => S.current.team_no_double_oberon,
     };
   }
 }
@@ -174,6 +176,11 @@ class TeamFilterData with FilterDataMixin {
           break;
         case TeamFilterMiscType.noDoubleKoyan:
           if (data.formation.allSvts.where((e) => e?.svtId == 604200).length >= 2) {
+            return false;
+          }
+          break;
+        case TeamFilterMiscType.noDoubleOberon:
+          if (data.formation.allSvts.where((e) => e?.svtId == 2800100).length >= 2) {
             return false;
           }
           break;

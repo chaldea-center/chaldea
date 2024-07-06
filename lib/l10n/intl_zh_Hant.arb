@@ -893,6 +893,7 @@
   "team_no_append_skill": "禁止追加技能",
   "team_no_double_castoria": "禁止雙術傻",
   "team_no_double_koyan": "禁止雙殺狐",
+  "team_no_double_oberon": null,
   "team_no_grail_fou": "無聖杯/金芙芙",
   "team_no_lv100": "無Lv.100+",
   "team_no_order_change": "禁止換人",

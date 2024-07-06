@@ -996,6 +996,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "team_no_append_skill": MessageLookupByLibrary.simpleMessage("禁止追加技能"),
         "team_no_double_castoria": MessageLookupByLibrary.simpleMessage("禁止双C呆"),
         "team_no_double_koyan": MessageLookupByLibrary.simpleMessage("禁止双杀狐"),
+        "team_no_double_oberon": MessageLookupByLibrary.simpleMessage("禁止双奥伯龙"),
         "team_no_grail_fou": MessageLookupByLibrary.simpleMessage("无圣杯/金芙芙"),
         "team_no_lv100": MessageLookupByLibrary.simpleMessage("无Lv.100+"),
         "team_no_order_change": MessageLookupByLibrary.simpleMessage("禁止换人"),

@@ -893,6 +893,7 @@
   "team_no_append_skill": "어펜드 스킬 제외",
   "team_no_double_castoria": "더블 캐밥 제외",
   "team_no_double_koyan": "더블 코얀 제외",
+  "team_no_double_oberon": null,
   "team_no_grail_fou": "성배 및 4성 포우 제외",
   "team_no_lv100": "100레벨 제외",
   "team_no_order_change": "오더 체인지 제외",
