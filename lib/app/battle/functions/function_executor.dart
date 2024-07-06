@@ -215,7 +215,7 @@ class FunctionExecutor {
       final hasAvoidFunctionExecuteSelf = await activator?.hasBuff(
             battleData,
             BuffAction.avoidFunctionExecuteSelf,
-            addTraits: function.script?.funcIndividuality,
+            addTraits: function.getFuncIndividuality(),
           ) ??
           false;
       if (hasAvoidFunctionExecuteSelf) {
@@ -789,17 +789,12 @@ class FunctionExecutor {
 
     final List<List<NiceTrait>> overwriteTvals = function.getOverwriteTvalsList();
     final activeOnly = dataVals.IncludePassiveIndividuality != 1;
-    final ignoreIrremovable = dataVals.IgnoreIndivUnreleaseable == 1;
     final includeIgnoreIndividuality = dataVals.IncludeIgnoreIndividuality == 1;
 
     if (overwriteTvals.isNotEmpty) {
       targets.retainWhere((svt) {
         final List<NiceTrait> selfTraits = svt.getTraits(
-            addTraits: svt.getBuffTraits(
-          activeOnly: activeOnly,
-          ignoreIndivUnreleaseable: ignoreIrremovable,
-          includeIgnoreIndiv: includeIgnoreIndividuality,
-        ));
+            addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality));
         for (final List<NiceTrait> requiredTraits in overwriteTvals) {
           // Currently assuming the first array is OR. Need more samples on this
           final checkTrait = checkTraitFunction(
@@ -817,11 +812,7 @@ class FunctionExecutor {
     } else {
       targets.retainWhere((svt) => checkTraitFunction(
             myTraits: svt.getTraits(
-                addTraits: svt.getBuffTraits(
-              activeOnly: activeOnly,
-              ignoreIndivUnreleaseable: ignoreIrremovable,
-              includeIgnoreIndiv: includeIgnoreIndividuality,
-            )),
+                addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality)),
             requiredTraits: function.functvals,
           ));
     }

@@ -925,12 +925,7 @@ class BattleData {
                 }
                 for (final enemy in nonnullEnemies) {
                   if (enemy.attacked) {
-                    await enemy.activateBuff(
-                      this,
-                      BuffAction.functionDamage,
-                      other: actor,
-                      otherAddTraits: actualCard.traits,
-                    );
+                    await enemy.activateBuff(this, BuffAction.functionDamage, other: actor, card: actualCard);
                     enemy.attacked = false;
                   }
                 }
@@ -1001,12 +996,7 @@ class BattleData {
 
           for (final enemy in nonnullEnemies) {
             if (enemy.attacked) {
-              await enemy.activateBuff(
-                this,
-                BuffAction.functionDamage,
-                other: action.actor,
-                otherAddTraits: action.cardData.traits,
-              );
+              await enemy.activateBuff(this, BuffAction.functionDamage, other: action.actor, card: action.cardData);
               enemy.attacked = false;
             }
           }
@@ -1051,12 +1041,7 @@ class BattleData {
 
               for (final svt in nonnullPlayers) {
                 if (svt.attacked) {
-                  await svt.activateBuff(
-                    this,
-                    BuffAction.functionDamage,
-                    other: action.actor,
-                    otherAddTraits: action.cardData.traits,
-                  );
+                  await svt.activateBuff(this, BuffAction.functionDamage, other: action.actor, card: action.cardData);
                   svt.attacked = false;
                 }
               }

@@ -42,7 +42,7 @@ class GainHP {
         final healGrantEff = await activator?.getBuffValue(battleData, BuffAction.giveGainHp, other: target) ?? 1000;
         final healReceiveEff = await target.getBuffValue(battleData, BuffAction.gainHp);
         final finalHeal = (baseValue * toModifier(healReceiveEff) * toModifier(healGrantEff)).toInt();
-        await target.heal(battleData, finalHeal);
+        target.heal(finalHeal);
       }
       target.procAccumulationDamage(previousHp);
       battleData.setFuncResult(target.uniqueId, true);

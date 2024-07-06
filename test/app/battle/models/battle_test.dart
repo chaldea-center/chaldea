@@ -583,7 +583,7 @@ void main() async {
           battle,
           BuffAction.npdamage,
           other: battle.onFieldEnemies[0]!,
-          addTraits: tezcatlipoca.getNPCard()?.traits,
+          card: tezcatlipoca.getNPCard(),
         ),
         420);
   });

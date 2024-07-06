@@ -330,19 +330,19 @@ void main() async {
       final oberon = battle.onFieldAllyServants[0]!;
 
       final target = battle.onFieldEnemies[0]!;
-      final addTraits = oberon.getNPCard()?.traits;
-      expect(await oberon.getBuffValue(battle, BuffAction.commandAtk, other: target, addTraits: addTraits), 1000);
-      expect(await oberon.getBuffValue(battle, BuffAction.npdamage, other: target, addTraits: addTraits), 0);
+      final card = oberon.getNPCard();
+      expect(await oberon.getBuffValue(battle, BuffAction.commandAtk, other: target, card: card), 1000);
+      expect(await oberon.getBuffValue(battle, BuffAction.npdamage, other: target, card: card), 0);
 
       await battle.activateSvtSkill(0, 0);
 
-      expect(await oberon.getBuffValue(battle, BuffAction.commandAtk, other: target, addTraits: addTraits), 1000);
-      expect(await oberon.getBuffValue(battle, BuffAction.npdamage, other: target, addTraits: addTraits), 300);
+      expect(await oberon.getBuffValue(battle, BuffAction.commandAtk, other: target, card: card), 1000);
+      expect(await oberon.getBuffValue(battle, BuffAction.npdamage, other: target, card: card), 300);
 
       await battle.activateSvtSkill(0, 2);
 
-      expect(await oberon.getBuffValue(battle, BuffAction.commandAtk, other: target, addTraits: addTraits), 1500);
-      expect(await oberon.getBuffValue(battle, BuffAction.npdamage, other: target, addTraits: addTraits), 600);
+      expect(await oberon.getBuffValue(battle, BuffAction.commandAtk, other: target, card: card), 1500);
+      expect(await oberon.getBuffValue(battle, BuffAction.npdamage, other: target, card: card), 600);
     });
 
     test('changeCommandCardType', () async {
@@ -390,14 +390,14 @@ void main() async {
       await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
 
       final musashi = battle.onFieldAllyServants[0]!;
-      expect(await musashi.hasBuff(battle, BuffAction.multiattack, addTraits: musashi.getNPCard()?.traits), false);
-      expect(await musashi.hasBuff(battle, BuffAction.multiattack, addTraits: musashi.getCards()[0].traits), false);
-      expect(await musashi.hasBuff(battle, BuffAction.multiattack, addTraits: musashi.getCards()[1].traits), false);
+      expect(await musashi.hasBuff(battle, BuffAction.multiattack, card: musashi.getNPCard()), false);
+      expect(await musashi.hasBuff(battle, BuffAction.multiattack, card: musashi.getCards()[0]), false);
+      expect(await musashi.hasBuff(battle, BuffAction.multiattack, card: musashi.getCards()[1]), false);
 
       await battle.activateSvtSkill(0, 1);
-      expect(await musashi.hasBuff(battle, BuffAction.multiattack, addTraits: musashi.getNPCard()?.traits), false);
-      expect(await musashi.hasBuff(battle, BuffAction.multiattack, addTraits: musashi.getCards()[0].traits), false);
-      expect(await musashi.hasBuff(battle, BuffAction.multiattack, addTraits: musashi.getCards()[1].traits), true);
+      expect(await musashi.hasBuff(battle, BuffAction.multiattack, card: musashi.getNPCard()), false);
+      expect(await musashi.hasBuff(battle, BuffAction.multiattack, card: musashi.getCards()[0]), false);
+      expect(await musashi.hasBuff(battle, BuffAction.multiattack, card: musashi.getCards()[1]), true);
 
       await battle.playerTurn([CombatAction(musashi, musashi.getCards()[1])]);
       expect(musashi.np, 1836);
@@ -447,12 +447,11 @@ void main() async {
       battle.playerTargetIndex = 1;
 
       await battle.activateSvtSkill(0, 1);
-      final traits = murasama.getCards()[0].traits;
-      expect(await murasama.getBuffValue(battle, BuffAction.criticalDamage, other: castoria, addTraits: traits), 1050);
-
+      final card = murasama.getCards()[0];
+      expect(await murasama.getBuffValue(battle, BuffAction.criticalDamage, other: castoria, card: card), 1050);
 
       await battle.activateSvtSkill(1, 2);
-      expect(await murasama.getBuffValue(battle, BuffAction.criticalDamage, other: castoria, addTraits: traits), 2050);
+      expect(await murasama.getBuffValue(battle, BuffAction.criticalDamage, other: castoria, card: card), 2050);
     });
 
     test('overwriteClassRelation kama skill first', () async {

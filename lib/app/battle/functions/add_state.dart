@@ -130,35 +130,19 @@ class AddState {
     }
 
     functionRate = functionRate.abs();
-    final ignoreIrremovable = dataVals.IgnoreIndivUnreleaseable == 1;
 
-    final hasAvoidState = await target.hasBuff(
-      battleData,
-      BuffAction.avoidState,
-      other: activator,
-      addTraits: target.getBuffTraits(activeOnly: true, ignoreIndivUnreleaseable: ignoreIrremovable),
-      otherAddTraits: buffData.traits,
-    );
+    final hasAvoidState =
+        await target.hasBuff(battleData, BuffAction.avoidState, other: activator, addTraits: buffData.traits);
     if (hasAvoidState) {
       battleData.battleLogger.debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.battle_invalid}');
       return false;
     }
 
-    final buffReceiveChance = await target.getBuffValue(
-      battleData,
-      BuffAction.resistanceState,
-      other: activator,
-      addTraits: target.getBuffTraits(activeOnly: true, ignoreIndivUnreleaseable: ignoreIrremovable),
-      otherAddTraits: buffData.traits,
-    );
-    final buffChance = await activator?.getBuffValue(
-          battleData,
-          BuffAction.grantState,
-          other: target,
-          addTraits: buffData.traits,
-          otherAddTraits: target.getBuffTraits(activeOnly: true, ignoreIndivUnreleaseable: ignoreIrremovable),
-        ) ??
-        0;
+    final buffReceiveChance =
+        await target.getBuffValue(battleData, BuffAction.resistanceState, other: activator, addTraits: buffData.traits);
+    final buffChance =
+        await activator?.getBuffValue(battleData, BuffAction.grantState, other: target, addTraits: buffData.traits) ??
+            0;
 
     final activationRate = functionRate + buffChance;
     final resistRate = buffReceiveChance;

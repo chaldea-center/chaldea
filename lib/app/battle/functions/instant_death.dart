@@ -70,22 +70,11 @@ class InstantDeath {
       return false;
     }
 
-    final resistInstantDeath = await target.getBuffValue(
-      battleData,
-      BuffAction.resistInstantdeath,
-      other: activator,
-    );
-    final nonResistInstantDeath = await target.getBuffValue(
-      battleData,
-      BuffAction.nonresistInstantdeath,
-      other: activator,
-    );
-    final grantInstantDeath = await activator?.getBuffValue(
-          battleData,
-          BuffAction.grantInstantdeath,
-          other: target,
-        ) ??
-        0;
+    final resistInstantDeath = await target.getBuffValue(battleData, BuffAction.resistInstantdeath, other: activator);
+    final nonResistInstantDeath =
+        await target.getBuffValue(battleData, BuffAction.nonresistInstantdeath, other: activator);
+    final grantInstantDeath =
+        await activator?.getBuffValue(battleData, BuffAction.grantInstantdeath, other: target) ?? 0;
 
     final functionRate = dataVals.Rate ?? 1000;
     final resistRate = resistInstantDeath - nonResistInstantDeath;

@@ -71,21 +71,11 @@ class SubState {
     if (buff.vals.UnSubState == 1 && dataVals.ForceSubState != 1) return false;
     if (dataVals.ForceSubState == 1) return true;
 
-    final toleranceSubState = await target.getBuffValue(
-      battleData,
-      BuffAction.toleranceSubstate,
-      other: activator,
-      addTraits: target.getBuffTraits(activeOnly: true),
-      otherAddTraits: affectTraits,
-    );
-    final grantSubState = await activator?.getBuffValue(
-          battleData,
-          BuffAction.grantSubstate,
-          other: target,
-          addTraits: affectTraits,
-          otherAddTraits: target.getBuffTraits(activeOnly: true),
-        ) ??
-        0;
+    final toleranceSubState =
+        await target.getBuffValue(battleData, BuffAction.toleranceSubstate, other: activator, addTraits: affectTraits);
+    final grantSubState =
+        await activator?.getBuffValue(battleData, BuffAction.grantSubstate, other: target, addTraits: affectTraits) ??
+            0;
 
     final functionRate = dataVals.Rate ?? 1000;
     final activationRate = functionRate + grantSubState;

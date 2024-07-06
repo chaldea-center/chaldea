@@ -43,14 +43,14 @@ void main() async {
 
     expect(await okuni.getBuffValue(battle, BuffAction.commandAtk), 1000);
 
-    expect(await okuni.getBuffValue(battle, BuffAction.commandAtk, addTraits: okuni.getNPCard()?.traits), 1000);
+    expect(await okuni.getBuffValue(battle, BuffAction.commandAtk, card: okuni.getNPCard()), 1000);
 
     // arts
-    expect(await okuni.getBuffValue(battle, BuffAction.commandAtk, addTraits: okuni.getCards()[2].traits), 1040);
+    expect(await okuni.getBuffValue(battle, BuffAction.commandAtk, card: okuni.getCards()[2]), 1040);
     expect(await okuni.hasBuff(battle, BuffAction.avoidance), isFalse);
 
     await okuni.activateSkill(battle, 0);
-    expect(await okuni.getBuffValue(battle, BuffAction.commandAtk, addTraits: okuni.getNPCard()?.traits), 1300);
+    expect(await okuni.getBuffValue(battle, BuffAction.commandAtk, card: okuni.getNPCard()), 1300);
     expect(await okuni.hasBuff(battle, BuffAction.avoidance), isTrue);
   });
 
