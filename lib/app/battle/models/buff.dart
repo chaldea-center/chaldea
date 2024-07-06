@@ -216,9 +216,6 @@ class BuffData {
     if (buff.type == BuffType.addIndividuality || buff.type == BuffType.subIndividuality) {
       return true;
     } else {
-      // TODO: figure out how IgnoreIndivUnreleaseable & IncludeIgnoreIndividuality works
-      // final ignoreIrremovable = vals.IgnoreIndivUnreleaseable == 1;
-      // final checkActorNpTraits = buff.script.IncludeIgnoreIndividuality == 1;
       return checkTraitFunction(
             myTraits: selfTraits,
             requiredTraits: buff.ckSelfIndv,
