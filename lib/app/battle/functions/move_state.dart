@@ -9,7 +9,9 @@ class MoveState {
   static Future<void> moveState(
     final BattleData battleData,
     final DataVals dataVals,
-    final Iterable<BattleServantData> targets,
+    final BattleServantData receiver,
+    final BattleServantData? targetedAlly,
+    final BattleServantData? targetedEnemy,
   ) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
@@ -20,37 +22,44 @@ class MoveState {
     final dependVal = dataVals.DependFuncVals!;
     final affectTraits = dependFunction.traitVals;
 
-    for (final receiver in targets) {
-      // denoting who should receive the absorbed hp
-      for (final absorbTarget in await FunctionExecutor.acquireFunctionTarget(
-        battleData,
-        dependFunction.funcTargetType,
-        receiver,
-        funcId: dependFunction.funcId,
-        target: receiver,
-      )) {
-        for (final buff in absorbTarget.getBuffsWithTraits(affectTraits)) {
-          receiver.addBuff(buff.copy());
-        }
+    for (final absorbTarget in await FunctionExecutor.acquireFunctionTarget(
+      battleData,
+      dependFunction.funcTargetType,
+      receiver,
+      funcId: dependFunction.funcId,
+      targetedAlly: receiver,
+      targetedEnemy: battleData.targetedEnemy,
+    )) {
+      for (final buff in absorbTarget.getBuffsWithTraits(affectTraits)) {
+        receiver.addBuff(buff.copy());
       }
-      battleData.setFuncResult(receiver.uniqueId, true);
     }
+    battleData.setFuncResult(receiver.uniqueId, true);
 
     final NiceFunction niceFunction = NiceFunction(
-        funcId: dependFunction.funcId,
-        funcType: dependFunction.funcType,
-        funcTargetType: dependFunction.funcTargetType,
-        funcTargetTeam: dependFunction.funcTargetTeam,
-        funcPopupText: dependFunction.funcPopupText,
-        funcPopupIcon: dependFunction.funcPopupIcon,
-        functvals: dependFunction.functvals,
-        funcquestTvals: dependFunction.funcquestTvals,
-        funcGroup: dependFunction.funcGroup,
-        traitVals: dependFunction.traitVals,
-        buffs: dependFunction.buffs,
-        svals: [dependVal]);
+      funcId: dependFunction.funcId,
+      funcType: dependFunction.funcType,
+      funcTargetType: dependFunction.funcTargetType,
+      funcTargetTeam: dependFunction.funcTargetTeam,
+      funcPopupText: dependFunction.funcPopupText,
+      funcPopupIcon: dependFunction.funcPopupIcon,
+      functvals: dependFunction.functvals,
+      funcquestTvals: dependFunction.funcquestTvals,
+      funcGroup: dependFunction.funcGroup,
+      traitVals: dependFunction.traitVals,
+      buffs: dependFunction.buffs,
+      svals: [dependVal],
+    );
 
     // we provisioned only one dataVal
-    await FunctionExecutor.executeFunctions(battleData, [niceFunction], 1, script: null);
+    await FunctionExecutor.executeFunctions(
+      battleData,
+      [niceFunction],
+      1,
+      script: null,
+      activator: receiver,
+      targetedAlly: targetedAlly,
+      targetedEnemy: targetedEnemy,
+    );
   }
 }

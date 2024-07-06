@@ -115,6 +115,14 @@ class BattleData {
       ? onFieldAllyServants[playerTargetIndex]
       : null;
 
+  BattleServantData? getTargetedAlly(final BattleServantData? svt, {bool defaultToPlayer = true}) {
+    return svt?.isPlayer ?? defaultToPlayer ? targetedPlayer : targetedEnemy;
+  }
+
+  BattleServantData? getTargetedEnemy(final BattleServantData? svt, {bool defaultToPlayer = true}) {
+    return svt?.isPlayer ?? defaultToPlayer ? targetedEnemy : targetedPlayer;
+  }
+
   List<BattleServantData> get nonnullEnemies => _getNonnull(onFieldEnemies);
 
   List<BattleServantData> get nonnullPlayers => _getNonnull(onFieldAllyServants);
@@ -990,6 +998,8 @@ class BattleData {
             buff.vals.CounterLv ?? 1,
             script: td.script,
             activator: svt,
+            targetedAlly: targetedPlayer,
+            targetedEnemy: targetedEnemy,
             card: action.cardData,
             overchargeLvl: buff.vals.CounterOc ?? 1,
           );
@@ -1342,7 +1352,12 @@ class BattleData {
         await actor.death(this);
 
         if (actor.lastHitBy != null) {
-          await actor.lastHitBy!.activateBuff(this, BuffAction.functionDeadattack, other: actor);
+          await actor.lastHitBy!.activateBuff(
+            this,
+            BuffAction.functionDeadattack,
+            other: actor,
+            card: actor.lastHitByCard,
+          );
         }
         actorList[i] = null;
         actor.fieldIndex = -1;

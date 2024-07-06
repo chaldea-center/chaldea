@@ -586,58 +586,6 @@ class BattleServantData {
     final List<NiceTrait>? addTraits,
   }) {
     switch (buffAction) {
-      case BuffAction.avoidState:
-      case BuffAction.resistanceState:
-      case BuffAction.toleranceSubstate:
-        return self.getTraits(addTraits: self.getBuffTraits(activeOnly: true));
-      case BuffAction.functionCommandcodeattackBefore:
-      case BuffAction.functionCommandcodeattackBeforeMainOnly:
-      case BuffAction.functionCommandattackBefore:
-      case BuffAction.functionCommandattackBeforeMainOnly:
-      case BuffAction.functionAttackBefore:
-      case BuffAction.functionAttackBeforeMainOnly:
-      case BuffAction.functionCommandcodeattackAfter:
-      case BuffAction.functionCommandcodeattackAfterMainOnly:
-      case BuffAction.functionCommandattackAfter:
-      case BuffAction.functionCommandattackAfterMainOnly:
-      case BuffAction.functionAttackAfter:
-      case BuffAction.functionAttackAfterMainOnly:
-      case BuffAction.pierceDefence:
-      case BuffAction.pierceSubdamage:
-      case BuffAction.pierceInvincible:
-      case BuffAction.breakAvoidance:
-      case BuffAction.commandAtk:
-      case BuffAction.atk:
-      case BuffAction.criticalDamage:
-      case BuffAction.npdamage:
-      case BuffAction.damageSpecial:
-      case BuffAction.givenDamage:
-      case BuffAction.damage:
-      case BuffAction.damageIndividuality:
-      case BuffAction.damageIndividualityActiveonly:
-      case BuffAction.damageEventPoint:
-      case BuffAction.commandNpAtk:
-      case BuffAction.commandStarAtk:
-      case BuffAction.donotActCommandtype:
-      case BuffAction.donotNobleCondMismatch:
-      case BuffAction.multiattack:
-        return self.getTraits(addTraits: cardData?.traits);
-      case BuffAction.dropNp:
-      case BuffAction.criticalPoint:
-        return isAttack ? self.getTraits(addTraits: cardData?.traits) : self.getTraits();
-      case BuffAction.grantState:
-      case BuffAction.grantSubstate:
-      case BuffAction.avoidFunctionExecuteSelf:
-        return self.getTraits(addTraits: addTraits);
-      case BuffAction.functionDamage:
-      case BuffAction.functionReflection:
-      case BuffAction.functionGuts:
-      case BuffAction.functionDead:
-      case BuffAction.functionDeadattack:
-      case BuffAction.functionEntry:
-      case BuffAction.functionWavestart:
-      case BuffAction.functionSelfturnstart:
-      case BuffAction.functionSelfturnend:
       case BuffAction.avoidanceIndividuality:
       case BuffAction.specialInvincible:
       case BuffAction.invincible:
@@ -655,19 +603,72 @@ class BattleServantData {
       case BuffAction.commandNpDef:
       case BuffAction.commandStarDef:
       case BuffAction.criticalStarDamageTaken:
+      case BuffAction.avoidState:
+      case BuffAction.resistanceState:
+      case BuffAction.toleranceSubstate:
+      case BuffAction.chagetd:
+      case BuffAction.guts:
+      case BuffAction.functionGuts:
+        return self.getTraits(addTraits: self.getBuffTraits(activeOnly: true));
+      case BuffAction.functionCommandcodeattackBefore:
+      case BuffAction.functionCommandcodeattackBeforeMainOnly:
+      case BuffAction.functionCommandattackBefore:
+      case BuffAction.functionCommandattackBeforeMainOnly:
+      case BuffAction.functionAttackBefore:
+      case BuffAction.functionAttackBeforeMainOnly:
+      case BuffAction.functionCommandcodeattackAfter:
+      case BuffAction.functionCommandcodeattackAfterMainOnly:
+      case BuffAction.functionCommandattackAfter:
+      case BuffAction.functionCommandattackAfterMainOnly:
+      case BuffAction.functionAttackAfter:
+      case BuffAction.functionAttackAfterMainOnly:
+      case BuffAction.functionDeadattack:
+      case BuffAction.pierceDefence:
+      case BuffAction.pierceSubdamage:
+      case BuffAction.pierceInvincible:
+      case BuffAction.breakAvoidance:
+      case BuffAction.commandAtk:
+      case BuffAction.atk:
+      case BuffAction.criticalDamage:
+      case BuffAction.npdamage:
+      case BuffAction.damageSpecial:
+      case BuffAction.givenDamage:
+      case BuffAction.damage:
+      case BuffAction.damageIndividuality:
+      case BuffAction.damageIndividualityActiveonly:
+      case BuffAction.damageEventPoint:
+      case BuffAction.commandNpAtk:
+      case BuffAction.commandStarAtk:
+      case BuffAction.grantInstantdeath:
+      case BuffAction.multiattack:
+        return self.getTraits(addTraits: [...cardData?.traits ?? [], ...self.getBuffTraits(activeOnly: true)]);
+      case BuffAction.donotActCommandtype:
+      case BuffAction.donotNobleCondMismatch:
+        return self.getTraits(addTraits: cardData?.traits);
+      case BuffAction.dropNp:
+      case BuffAction.criticalPoint:
+        return isAttack ? self.getTraits(addTraits: cardData?.traits) : self.getTraits();
+      case BuffAction.grantState:
+      case BuffAction.grantSubstate:
+      case BuffAction.avoidFunctionExecuteSelf:
+        return self.getTraits(addTraits: addTraits);
+      case BuffAction.functionDamage:
+      case BuffAction.functionReflection:
+      case BuffAction.functionDead:
+      case BuffAction.functionEntry:
+      case BuffAction.functionWavestart:
+      case BuffAction.functionSelfturnstart:
+      case BuffAction.functionSelfturnend:
       case BuffAction.donotAct:
       case BuffAction.donotNoble:
       case BuffAction.donotSkill:
       case BuffAction.donotRecovery:
       case BuffAction.donotReplace:
-      case BuffAction.guts:
       case BuffAction.giveGainHp:
       case BuffAction.gainHp:
       case BuffAction.resistInstantdeath:
       case BuffAction.nonresistInstantdeath:
-      case BuffAction.grantInstantdeath:
       case BuffAction.masterSkillValueUp:
-      case BuffAction.chagetd:
       case BuffAction.turnvalNp:
       case BuffAction.turnendHpRegain:
       case BuffAction.turnendStar:
@@ -689,8 +690,41 @@ class BattleServantData {
     final List<NiceTrait>? addTraits,
   }) {
     switch (buffAction) {
+      case BuffAction.functionCommandcodeattackBefore:
+      case BuffAction.functionCommandcodeattackBeforeMainOnly:
+      case BuffAction.functionCommandattackBefore:
+      case BuffAction.functionCommandattackBeforeMainOnly:
+      case BuffAction.functionAttackBefore:
+      case BuffAction.functionAttackBeforeMainOnly:
+      case BuffAction.functionCommandcodeattackAfter:
+      case BuffAction.functionCommandcodeattackAfterMainOnly:
+      case BuffAction.functionCommandattackAfter:
+      case BuffAction.functionCommandattackAfterMainOnly:
+      case BuffAction.functionAttackAfter:
+      case BuffAction.functionAttackAfterMainOnly:
+      case BuffAction.functionDeadattack:
+      case BuffAction.commandAtk:
+      case BuffAction.atk:
+      case BuffAction.criticalDamage:
+      case BuffAction.npdamage:
+      case BuffAction.damageSpecial:
+      case BuffAction.givenDamage:
+      case BuffAction.damage:
+      case BuffAction.commandNpAtk:
+      case BuffAction.commandStarAtk:
+      case BuffAction.pierceDefence:
+      case BuffAction.pierceSubdamage:
+      case BuffAction.pierceInvincible:
+      case BuffAction.breakAvoidance:
+      case BuffAction.avoidInstantdeath:
+      case BuffAction.giveGainHp:
+      case BuffAction.resistInstantdeath:
+      case BuffAction.nonresistInstantdeath:
+      case BuffAction.grantInstantdeath:
       case BuffAction.grantState:
       case BuffAction.grantSubstate:
+      case BuffAction.multiattack:
+      case BuffAction.functionGuts:
         return other?.getTraits(addTraits: other.getBuffTraits(activeOnly: true));
       case BuffAction.damageIndividuality:
         return other?.getBuffTraits(activeOnly: false);
@@ -723,46 +757,8 @@ class BattleServantData {
       case BuffAction.commandNpDef:
       case BuffAction.commandStarDef:
       case BuffAction.criticalStarDamageTaken:
-        return other?.getTraits(addTraits: cardData?.traits) ?? cardData?.traits;
-      case BuffAction.functionCommandcodeattackBefore:
-      case BuffAction.functionCommandcodeattackBeforeMainOnly:
-      case BuffAction.functionCommandattackBefore:
-      case BuffAction.functionCommandattackBeforeMainOnly:
-      case BuffAction.functionAttackBefore:
-      case BuffAction.functionAttackBeforeMainOnly:
-      case BuffAction.functionCommandcodeattackAfter:
-      case BuffAction.functionCommandcodeattackAfterMainOnly:
-      case BuffAction.functionCommandattackAfter:
-      case BuffAction.functionCommandattackAfterMainOnly:
-      case BuffAction.functionAttackAfter:
-      case BuffAction.functionAttackAfterMainOnly:
-      case BuffAction.functionDeadattack:
-      case BuffAction.functionGuts:
-      case BuffAction.pierceDefence:
-      case BuffAction.pierceSubdamage:
-      case BuffAction.pierceInvincible:
-      case BuffAction.breakAvoidance:
-      case BuffAction.avoidInstantdeath:
-      case BuffAction.commandAtk:
-      case BuffAction.atk:
-      case BuffAction.criticalDamage:
-      case BuffAction.npdamage:
-      case BuffAction.damageSpecial:
-      case BuffAction.givenDamage:
-      case BuffAction.damage:
-      case BuffAction.commandNpAtk:
-      case BuffAction.commandStarAtk:
-      case BuffAction.giveGainHp:
-      case BuffAction.resistInstantdeath:
-      case BuffAction.nonresistInstantdeath:
-      case BuffAction.grantInstantdeath:
-      case BuffAction.multiattack:
-        // buff Id 3313
-        final checkOpponentBuffTypes = buff.buff.script.CheckOpponentBuffTypes;
-        if (checkOpponentBuffTypes != null && checkOpponentBuffTypes.isNotEmpty) {
-          return other?.getTraits(addTraits: other.getBuffTraits());
-        }
-        return other?.getTraits();
+        return other?.getTraits(addTraits: [...cardData?.traits ?? [], ...other.getBuffTraits(activeOnly: true)]) ??
+            cardData?.traits;
       case BuffAction.dropNp:
       case BuffAction.criticalPoint:
         return isAttack ? other?.getTraits(addTraits: cardData?.traits) : other?.getTraits();
@@ -1312,6 +1308,8 @@ class BattleServantData {
         tdLv,
         script: niceTD.script,
         activator: this,
+        targetedAlly: battleData.getTargetedAlly(this),
+        targetedEnemy: battleData.getTargetedEnemy(this),
         card: card,
         overchargeLvl: overchargeLvl,
       );
@@ -1685,6 +1683,8 @@ class BattleServantData {
             buff.additionalParam.clamp(1, skill.maxLv),
             script: skill.script,
             activator: this,
+            targetedAlly: battleData.getTargetedAlly(this),
+            targetedEnemy: other,
             isPassive: false,
           );
           buff.setUsed(this);
@@ -1719,6 +1719,8 @@ class BattleServantData {
           buff.additionalParam.clamp(1, skill.maxLv),
           script: skill.script,
           activator: this,
+          targetedAlly: battleData.getTargetedAlly(this),
+          targetedEnemy: battleData.getTargetedEnemy(this),
           isPassive: false,
         );
         buff.setUsed(this);

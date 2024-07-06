@@ -196,6 +196,8 @@ class BattleSkillInfoData {
       curSkill.functions,
       skillLv,
       activator: activator,
+      targetedAlly: battleData.getTargetedAlly(activator, defaultToPlayer: defaultToPlayer),
+      targetedEnemy: battleData.getTargetedEnemy(activator, defaultToPlayer: defaultToPlayer),
       card: card,
       script: curSkill.script,
       isPassive: curSkill.type == SkillType.passive,

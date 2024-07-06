@@ -41,6 +41,8 @@ class FunctionExecutor {
     final int skillLevel, {
     required final SkillScript? script,
     final BattleServantData? activator,
+    final BattleServantData? targetedAlly,
+    final BattleServantData? targetedEnemy,
     final CommandCardData? card,
     final int overchargeLvl = 1,
     final bool isPassive = false,
@@ -92,6 +94,8 @@ class FunctionExecutor {
           index,
           skillLevel,
           activator: activator,
+          targetedAlly: targetedAlly,
+          targetedEnemy: targetedEnemy,
           card: card,
           overchargeLvl: overchargeLvl,
           shouldTrigger: !isDmgFuncType(functions.getOrNull(index - 1)?.funcType),
@@ -128,6 +132,8 @@ class FunctionExecutor {
     final int funcIndex,
     final int skillLevel, {
     final BattleServantData? activator,
+    final BattleServantData? targetedAlly,
+    final BattleServantData? targetedEnemy,
     final CommandCardData? card,
     final int overchargeLvl = 1,
     final bool shouldTrigger = true,
@@ -182,6 +188,8 @@ class FunctionExecutor {
       battleData,
       function.funcTargetType,
       activator,
+      targetedAlly: targetedAlly,
+      targetedEnemy: targetedEnemy,
       funcId: function.funcId,
       defaultToPlayer: defaultToPlayer,
     );
@@ -229,7 +237,7 @@ class FunctionExecutor {
       switch (function.funcType) {
         case FuncType.absorbNpturn:
         case FuncType.gainNpFromTargets:
-          await GainNpFromTargets.gainNpFromTargets(battleData, dataVals, targets);
+          await GainNpFromTargets.gainNpFromTargets(battleData, dataVals, activator!, targetedAlly, targetedEnemy);
           break;
         case FuncType.addState:
         case FuncType.addStateShort:
@@ -251,7 +259,7 @@ class FunctionExecutor {
           await SubState.subState(battleData, function.traitVals, dataVals, activator, targets);
           break;
         case FuncType.moveState:
-          await MoveState.moveState(battleData, dataVals, targets);
+          await MoveState.moveState(battleData, dataVals, activator!, targetedAlly, targetedEnemy);
           break;
         case FuncType.addFieldChangeToField:
           AddFieldChangeToField.addFieldChangeToField(battleData, function.buff!, dataVals, activator, targets);
@@ -341,6 +349,7 @@ class FunctionExecutor {
             activator,
             targets,
             defaultToPlayer: defaultToPlayer,
+            card: card,
           );
           break;
         case FuncType.gainHp:
@@ -352,7 +361,7 @@ class FunctionExecutor {
           await GainHP.gainHP(battleData, dataVals, activator, targets, function.funcType);
           break;
         case FuncType.gainHpFromTargets:
-          await GainHpFromTargets.gainHpFromTargets(battleData, dataVals, activator, targets);
+          await GainHpFromTargets.gainHpFromTargets(battleData, dataVals, activator!, targetedAlly, targetedEnemy);
           break;
         case FuncType.transformServant:
           await TransformServant.transformServant(battleData, dataVals, targets);
@@ -520,7 +529,8 @@ class FunctionExecutor {
     final FuncTargetType funcTargetType,
     final BattleServantData? activator, {
     final int? funcId,
-    final BattleServantData? target,
+    final BattleServantData? targetedAlly,
+    final BattleServantData? targetedEnemy,
     final bool defaultToPlayer = true,
   }) async {
     final List<BattleServantData> targets = [];
@@ -529,24 +539,10 @@ class FunctionExecutor {
     final List<BattleServantData> backupAllies =
         isAlly ? battleData.nonnullBackupPlayers : battleData.nonnullBackupEnemies;
     final List<BattleServantData> aliveAllies = isAlly ? battleData.nonnullPlayers : battleData.nonnullEnemies;
-    final BattleServantData? targetedAlly = isAlly
-        ? target?.isPlayer == true
-            ? target
-            : battleData.targetedPlayer
-        : target?.isEnemy == true
-            ? target
-            : battleData.targetedEnemy;
 
     final List<BattleServantData> backupEnemies =
         isAlly ? battleData.nonnullBackupEnemies : battleData.nonnullBackupPlayers;
     final List<BattleServantData> aliveEnemies = isAlly ? battleData.nonnullEnemies : battleData.nonnullPlayers;
-    final BattleServantData? targetedEnemy = isAlly
-        ? target?.isEnemy == true
-            ? target
-            : battleData.targetedEnemy
-        : target?.isPlayer == true
-            ? target
-            : battleData.targetedPlayer;
 
     switch (funcTargetType) {
       case FuncTargetType.self:
@@ -607,13 +603,13 @@ class FunctionExecutor {
         targets.remove(activator);
         break;
       case FuncTargetType.ptSelfAnotherFirst:
-        final firstOtherSelectable = aliveAllies.firstWhereOrNull((svt) => svt != activator && svt.selectable);
+        final firstOtherSelectable = aliveAllies.firstWhereOrNull((svt) => svt != activator);
         if (firstOtherSelectable != null) {
           targets.add(firstOtherSelectable);
         }
         break;
       case FuncTargetType.ptSelfAnotherLast:
-        final lastOtherSelectable = aliveAllies.lastWhereOrNull((svt) => svt != activator && svt.selectable);
+        final lastOtherSelectable = aliveAllies.lastWhereOrNull((svt) => svt != activator);
         if (lastOtherSelectable != null) {
           targets.add(lastOtherSelectable);
         }

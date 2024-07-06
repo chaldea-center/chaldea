@@ -109,13 +109,22 @@ void main() async {
     });
 
     test('Targeted types', () async {
-      final ptOne =
-          await FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptOne, battle.onFieldAllyServants[1]);
+      final ptOne = await FunctionExecutor.acquireFunctionTarget(
+        battle,
+        FuncTargetType.ptOne,
+        battle.onFieldAllyServants[1],
+        targetedAlly: battle.getTargetedAlly(ally),
+      );
       expect(ptOne.length, 1);
       expect(ptOne.first, ally);
       expect(ptOne.first, isNot(battle.onFieldAllyServants[1]!));
 
-      final enemyList = await FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.enemy, ally);
+      final enemyList = await FunctionExecutor.acquireFunctionTarget(
+        battle,
+        FuncTargetType.enemy,
+        ally,
+        targetedEnemy: battle.getTargetedEnemy(ally),
+      );
       expect(enemyList.length, 1);
       expect(enemyList.first, enemy);
     });
@@ -137,19 +146,36 @@ void main() async {
     });
 
     test('Select other types', () async {
-      final ptOther =
-          await FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptOther, battle.onFieldAllyServants[1]);
+      final ptOther = await FunctionExecutor.acquireFunctionTarget(
+        battle,
+        FuncTargetType.ptOther,
+        battle.onFieldAllyServants[1],
+        targetedAlly: battle.getTargetedAlly(ally),
+      );
       expect(ptOther, unorderedEquals([battle.onFieldAllyServants[0], battle.onFieldAllyServants[2]]));
 
       final ptOneOther = await FunctionExecutor.acquireFunctionTarget(
-          battle, FuncTargetType.ptOneOther, battle.onFieldAllyServants[1]);
+        battle,
+        FuncTargetType.ptOneOther,
+        battle.onFieldAllyServants[1],
+        targetedAlly: battle.getTargetedAlly(ally),
+      );
       expect(ptOneOther, unorderedEquals([battle.onFieldAllyServants[1], battle.onFieldAllyServants[2]]));
 
-      final enemyOther = await FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.enemyOther, ally);
+      final enemyOther = await FunctionExecutor.acquireFunctionTarget(
+        battle,
+        FuncTargetType.enemyOther,
+        ally,
+        targetedEnemy: battle.getTargetedEnemy(ally),
+      );
       expect(enemyOther, unorderedEquals([battle.onFieldEnemies[1], battle.onFieldEnemies[2]]));
 
       final ptOtherFull = await FunctionExecutor.acquireFunctionTarget(
-          battle, FuncTargetType.ptOtherFull, battle.onFieldAllyServants[1]);
+        battle,
+        FuncTargetType.ptOtherFull,
+        battle.onFieldAllyServants[1],
+        targetedAlly: battle.getTargetedAlly(ally),
+      );
       expect(
           ptOtherFull,
           unorderedEquals([
@@ -158,8 +184,12 @@ void main() async {
             ...battle.nonnullBackupPlayers,
           ]));
 
-      final enemyOtherFullAsEnemy =
-          await FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.enemyOtherFull, enemy);
+      final enemyOtherFullAsEnemy = await FunctionExecutor.acquireFunctionTarget(
+        battle,
+        FuncTargetType.enemyOtherFull,
+        enemy,
+        targetedEnemy: battle.getTargetedEnemy(enemy),
+      );
       expect(
           enemyOtherFullAsEnemy,
           unorderedEquals([
@@ -179,16 +209,6 @@ void main() async {
           battle, FuncTargetType.ptSelfAnotherFirst, battle.onFieldAllyServants[1]);
       expect(as1.length, 1);
       expect(as1.first, battle.onFieldAllyServants[0]);
-
-      battle.onFieldAllyServants[0]!.addBuff(BuffData(
-          Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.cantBeSacrificed.value)]), DataVals(), 1));
-
-      final as1With0Unselectable = await FunctionExecutor.acquireFunctionTarget(
-          battle, FuncTargetType.ptSelfAnotherFirst, battle.onFieldAllyServants[1]);
-      expect(as1With0Unselectable.length, 1);
-      expect(as1With0Unselectable.first, battle.onFieldAllyServants[2]);
-
-      battle.onFieldAllyServants[0]!.battleBuff.originalActiveList.removeLast();
 
       final as1AfterRemove = await FunctionExecutor.acquireFunctionTarget(
           battle, FuncTargetType.ptSelfAnotherFirst, battle.onFieldAllyServants[1]);

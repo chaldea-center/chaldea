@@ -509,59 +509,33 @@ class Damage {
   ) async {
     // this one is different as it ignores all pierce effects
     // no corresponding code found, copying logic for avoidance
-    final hasAvoidanceIndividuality = await target.hasBuff(
-      battleData,
-      BuffAction.avoidanceIndividuality,
-      other: activator,
-      card: currentCard,
-    );
+    final hasAvoidanceIndividuality =
+        await target.hasBuff(battleData, BuffAction.avoidanceIndividuality, other: activator, card: currentCard);
     if (hasAvoidanceIndividuality) {
       return true;
     }
 
     // ordered this way to ensure relevant buffs are still used regardless of damage being skipped or not
-    final hasSpecialInvincible = await target.hasBuff(
-      battleData,
-      BuffAction.specialInvincible, // no corresponding code found, copying logic for avoidance
-      other: activator,
-      card: currentCard,
-    );
-    final hasPierceInvincible = await activator.hasBuff(
-      battleData,
-      BuffAction.pierceInvincible,
-      other: target,
-      card: currentCard,
-    );
+    final hasSpecialInvincible =
+        await target.hasBuff(battleData, BuffAction.specialInvincible, other: activator, card: currentCard);
+    final hasPierceInvincible =
+        await activator.hasBuff(battleData, BuffAction.pierceInvincible, other: target, card: currentCard);
     if (hasSpecialInvincible) {
       return true;
     }
 
-    final hasInvincible = await target.hasBuff(
-      battleData,
-      BuffAction.invincible,
-      other: activator,
-      card: currentCard,
-    );
+    final hasInvincible = await target.hasBuff(battleData, BuffAction.invincible, other: activator, card: currentCard);
     if (hasPierceInvincible) {
       return false;
     }
 
-    final hasBreakAvoidance = await activator.hasBuff(
-      battleData,
-      BuffAction.breakAvoidance,
-      other: target,
-      card: currentCard,
-    );
+    final hasBreakAvoidance =
+        await activator.hasBuff(battleData, BuffAction.breakAvoidance, other: target, card: currentCard);
     if (hasInvincible) {
       return true;
     }
 
-    final hasAvoidance = await target.hasBuff(
-      battleData,
-      BuffAction.avoidance,
-      other: activator,
-      card: currentCard,
-    );
+    final hasAvoidance = await target.hasBuff(battleData, BuffAction.avoidance, other: activator, card: currentCard);
     return !hasBreakAvoidance && hasAvoidance;
   }
 
@@ -571,24 +545,12 @@ class Damage {
     final BattleServantData target,
     final CommandCardData currentCard,
   ) async {
-    final hasPierceInvincible = await activator.hasBuff(
-      battleData,
-      BuffAction.pierceInvincible,
-      other: target,
-      card: currentCard,
-    );
-    final hasBreakAvoidance = await activator.hasBuff(
-      battleData,
-      BuffAction.breakAvoidance,
-      other: target,
-      card: currentCard,
-    );
-    final hasAvoidanceAttackDeathDamage = await target.hasBuff(
-      battleData,
-      BuffAction.avoidanceAttackDeathDamage,
-      other: activator,
-      card: currentCard,
-    );
+    final hasPierceInvincible =
+        await activator.hasBuff(battleData, BuffAction.pierceInvincible, other: target, card: currentCard);
+    final hasBreakAvoidance =
+        await activator.hasBuff(battleData, BuffAction.breakAvoidance, other: target, card: currentCard);
+    final hasAvoidanceAttackDeathDamage =
+        await target.hasBuff(battleData, BuffAction.avoidanceAttackDeathDamage, other: activator, card: currentCard);
     if (hasPierceInvincible || hasBreakAvoidance) {
       return false;
     }

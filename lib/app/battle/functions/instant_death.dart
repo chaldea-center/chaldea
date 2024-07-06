@@ -13,6 +13,7 @@ class InstantDeath {
     final NiceFunction func,
     final BattleServantData? activator,
     final List<BattleServantData> targets, {
+    final CommandCardData? card,
     final bool defaultToPlayer = true,
   }) async {
     final force = func.funcType == FuncType.forceInstantDeath;
@@ -22,7 +23,7 @@ class InstantDeath {
       final previousHp = target.hp;
       final isForceInstantDeath = force || (activator == target && dataVals.ForceSelfInstantDeath == 1);
 
-      if (await shouldInstantDeath(battleData, dataVals, activator, target, isForceInstantDeath, params)) {
+      if (await shouldInstantDeath(battleData, dataVals, activator, target, isForceInstantDeath, params, card: card)) {
         target.hp = 0;
         target.lastHitBy = activator;
         target.lastHitByFunc = func;
@@ -50,8 +51,9 @@ class InstantDeath {
     final BattleServantData? activator,
     final BattleServantData target,
     final bool isForceInstantDeath,
-    InstantDeathParameters? params,
-  ) async {
+    InstantDeathParameters? params, {
+    final CommandCardData? card,
+  }) async {
     params ??= InstantDeathParameters();
     params.isForce = isForceInstantDeath;
     if (params.isForce) {
@@ -74,7 +76,7 @@ class InstantDeath {
     final nonResistInstantDeath =
         await target.getBuffValue(battleData, BuffAction.nonresistInstantdeath, other: activator);
     final grantInstantDeath =
-        await activator?.getBuffValue(battleData, BuffAction.grantInstantdeath, other: target) ?? 0;
+        await activator?.getBuffValue(battleData, BuffAction.grantInstantdeath, other: target, card: card) ?? 0;
 
     final functionRate = dataVals.Rate ?? 1000;
     final resistRate = resistInstantDeath - nonResistInstantDeath;
