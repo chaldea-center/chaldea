@@ -6,6 +6,7 @@ import 'package:tuple/tuple.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/descriptors/cond_target_num.dart';
+import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -90,6 +91,31 @@ class _ShopDetailPageState extends State<ShopDetailPage> with RegionBasedState<N
             Text(shop.limitNum == 0 ? '∞' : shop.limitNum.toString()),
             Text.rich(TextSpan(children: ShopHelper.cost(context, shop, iconSize: 36)))
           ]),
+          if (shop.hasFreeCond) ...[
+            CustomTableRow.fromTexts(texts: [S.current.shop_free_condition], isHeader: true),
+            CustomTableRow.fromTexts(texts: [shop.freeShopReleaseDate.sec2date().toStringShort()]),
+            if (shop.freeShopCondMessage.isNotEmpty)
+              CustomTableRow.fromTexts(
+                texts: [shop.freeShopCondMessage],
+                defaults: TableCellData(
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
+                ),
+              ),
+            if (shop.freeShopConds.isNotEmpty)
+              CustomTableRow.fromChildren(children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    for (final cond in shop.freeShopConds)
+                      CondTargetValueDescriptor.commonRelease(
+                        commonRelease: cond,
+                        leading: const TextSpan(text: kULLeading),
+                      ),
+                  ],
+                )
+              ])
+          ],
           CustomTableRow.fromTexts(texts: [S.current.game_rewards], isHeader: true),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),

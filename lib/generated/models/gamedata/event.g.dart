@@ -363,6 +363,12 @@ NiceShop _$NiceShopFromJson(Map json) => NiceShop(
               ?.map((e) => CommonConsume.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      freeShopConds: (json['freeShopConds'] as List<dynamic>?)
+              ?.map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      freeShopCondMessage: json['freeShopCondMessage'] as String? ?? '',
+      freeShopReleaseDate: (json['freeShopReleaseDate'] as num?)?.toInt() ?? 0,
       purchaseType: $enumDecodeNullable(_$PurchaseTypeEnumMap, json['purchaseType']) ?? PurchaseType.none,
       targetIds: (json['targetIds'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [],
       itemSet: (json['itemSet'] as List<dynamic>?)
@@ -397,6 +403,9 @@ Map<String, dynamic> _$NiceShopToJson(NiceShop instance) => <String, dynamic>{
       'payType': _$PayTypeEnumMap[instance.payType]!,
       'cost': instance.cost?.toJson(),
       'consumes': instance.consumes.map((e) => e.toJson()).toList(),
+      'freeShopConds': instance.freeShopConds.map((e) => e.toJson()).toList(),
+      'freeShopReleaseDate': instance.freeShopReleaseDate,
+      'freeShopCondMessage': instance.freeShopCondMessage,
       'purchaseType': _$PurchaseTypeEnumMap[instance.purchaseType]!,
       'targetIds': instance.targetIds,
       'itemSet': instance.itemSet.map((e) => e.toJson()).toList(),

@@ -8758,6 +8758,17 @@ class S {
     );
   }
 
+  /// `Free Condition`
+  String get shop_free_condition {
+    return Intl.message(
+      'Free Condition',
+      name: 'shop_free_condition',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Show`
   String get show {
     return Intl.message(

@@ -790,6 +790,7 @@
   "settings_userdata_footer": "앱 업데이트 전에 유저 데이터를 백업하시고,앱 폴더외의 안전한 공간에 보관하십시오",
   "share": "공유",
   "shop": "상점",
+  "shop_free_condition": null,
   "show": "표시",
   "show_carousel": "배너 표시",
   "show_empty_event": null,

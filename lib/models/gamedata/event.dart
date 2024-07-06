@@ -681,6 +681,13 @@ class NiceShop with RouteInfo {
   PayType payType;
   ItemAmount? cost;
   List<CommonConsume> consumes;
+
+  List<CommonRelease> freeShopConds;
+  int freeShopReleaseDate;
+  String freeShopCondMessage;
+
+  bool get hasFreeCond => freeShopConds.isNotEmpty || freeShopReleaseDate > 0 || freeShopCondMessage.isNotEmpty;
+
   // purchase
   PurchaseType purchaseType;
   List<int> targetIds; // only kiaraPunisherReset and quest using more than 1
@@ -714,6 +721,9 @@ class NiceShop with RouteInfo {
     this.payType = PayType.eventItem,
     ItemAmount? cost,
     this.consumes = const [],
+    this.freeShopConds = const [],
+    this.freeShopCondMessage = '',
+    this.freeShopReleaseDate = 0,
     this.purchaseType = PurchaseType.none,
     this.targetIds = const [],
     this.itemSet = const [],

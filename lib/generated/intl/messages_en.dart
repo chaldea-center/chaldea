@@ -938,6 +938,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Backup userdata before upgrading application, and move backups to safe locations outside app\'s document folder"),
         "share": MessageLookupByLibrary.simpleMessage("Share"),
         "shop": MessageLookupByLibrary.simpleMessage("Shops"),
+        "shop_free_condition": MessageLookupByLibrary.simpleMessage("Free Condition"),
         "show": MessageLookupByLibrary.simpleMessage("Show"),
         "show_carousel": MessageLookupByLibrary.simpleMessage("Show Carousel"),
         "show_empty_event": MessageLookupByLibrary.simpleMessage("Show Empty Event"),

@@ -279,6 +279,9 @@ class ShopDescriptor extends StatelessWidget {
     }
 
     List<InlineSpan> costs = ShopHelper.cost(context, shop);
+    if (shop.hasFreeCond) {
+      costs.add(const TextSpan(text: ' (FREE!)'));
+    }
 
     Widget? trailing;
     final planCount = buyCount ?? shop.limitNum;

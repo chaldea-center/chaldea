@@ -790,6 +790,7 @@
   "settings_userdata_footer": "Backup userdata before upgrading application, and move backups to safe locations outside app's document folder",
   "share": "Share",
   "shop": "Shops",
+  "shop_free_condition": "Free Condition",
   "show": "Show",
   "show_carousel": "Show Carousel",
   "show_empty_event": "Show Empty Event",

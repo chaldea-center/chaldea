@@ -892,6 +892,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("更新数据/版本/bug较多时，建议提前备份数据，卸载应用将导致内部备份丢失，及时转移到可靠的储存位置"),
         "share": MessageLookupByLibrary.simpleMessage("分享"),
         "shop": MessageLookupByLibrary.simpleMessage("商店"),
+        "shop_free_condition": MessageLookupByLibrary.simpleMessage("免费条件"),
         "show": MessageLookupByLibrary.simpleMessage("显示"),
         "show_carousel": MessageLookupByLibrary.simpleMessage("显示轮播图"),
         "show_empty_event": MessageLookupByLibrary.simpleMessage("显示无内容活动"),

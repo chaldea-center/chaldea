@@ -790,6 +790,7 @@
   "settings_userdata_footer": "アップデート/バッグが大量あう時、お先にバックアップしてください。アプリのアンインストールで内部バックアップが失われることがありますから、頼りになった位置へ移動するようにしてください",
   "share": "シェア",
   "shop": "ショップ",
+  "shop_free_condition": null,
   "show": null,
   "show_carousel": "カルーセルを表示",
   "show_empty_event": null,

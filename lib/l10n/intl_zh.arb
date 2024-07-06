@@ -790,6 +790,7 @@
   "settings_userdata_footer": "更新数据/版本/bug较多时，建议提前备份数据，卸载应用将导致内部备份丢失，及时转移到可靠的储存位置",
   "share": "分享",
   "shop": "商店",
+  "shop_free_condition": "免费条件",
   "show": "显示",
   "show_carousel": "显示轮播图",
   "show_empty_event": "显示无内容活动",

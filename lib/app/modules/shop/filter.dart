@@ -17,12 +17,19 @@ class ShopFilterData with FilterDataMixin {
   final type = FilterGroupData<ShopType>();
   final purchaseType = FilterGroupData<PurchaseType>();
   final svtType = FilterGroupData<SvtType>();
+  bool hasFreeCond = false;
 
   ShopSort sortType = ShopSort.openTime;
   bool reversed = false;
 
   @override
   List<FilterGroupData> get groups => [type, permanent, opening, purchaseType, svtType];
+
+  @override
+  void reset() {
+    super.reset();
+    hasFreeCond = false;
+  }
 }
 
 class ShopFilter extends FilterPage<ShopFilterData> {
@@ -79,6 +86,15 @@ class _ShopFilterState extends FilterPageState<ShopFilterData, ShopFilter> {
           values: filterData.opening,
           optionBuilder: (v) => Text(["Closed", "Opening", "Future"].getOrNull(v) ?? v.toString()),
           onFilterChanged: (value, _) {
+            update();
+          },
+        ),
+        FilterGroup<bool>(
+          options: const [true],
+          values: FilterRadioData(filterData.hasFreeCond),
+          optionBuilder: (v) => Text(v ? S.current.shop_free_condition : v.toString()),
+          onFilterChanged: (value, _) {
+            filterData.hasFreeCond = value.radioValue == true;
             update();
           },
         ),
