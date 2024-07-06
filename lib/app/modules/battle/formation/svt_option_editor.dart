@@ -968,7 +968,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       EasyLoading.showInfo(S.current.empty_hint);
       return;
     }
-    skill.unmodifiedDetail = source.shownName;
+    skill.unmodifiedDetail = 'Levels: ${source.shownName}';
     playerSvtData.addCustomPassive(skill, skill.maxLv);
     if (mounted) setState(() {});
   }
