@@ -325,6 +325,7 @@
   "event_svt": null,
   "event_svt_withdraw": null,
   "event_tower": "塔",
+  "event_trade": "貿易",
   "event_treasure_box": "宝箱",
   "exchange_count": null,
   "exchange_ticket": "素材交換券",

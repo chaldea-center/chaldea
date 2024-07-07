@@ -325,6 +325,7 @@
   "event_svt": "Event Servant",
   "event_svt_withdraw": "Withdrawn",
   "event_tower": "Tower",
+  "event_trade": "Trade",
   "event_treasure_box": "Treasure Box",
   "exchange_count": "Exchange Count",
   "exchange_ticket": "Exchange Ticket",

@@ -325,6 +325,7 @@
   "event_svt": null,
   "event_svt_withdraw": "철수",
   "event_tower": "타워",
+  "event_trade": null,
   "event_treasure_box": "보물 상자",
   "exchange_count": "교환 가능 수량",
   "exchange_ticket": "교환 티켓",

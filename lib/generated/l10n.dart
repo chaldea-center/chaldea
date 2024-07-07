@@ -3638,6 +3638,17 @@ class S {
     );
   }
 
+  /// `Trade`
+  String get event_trade {
+    return Intl.message(
+      'Trade',
+      name: 'event_trade',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Treasure Box`
   String get event_treasure_box {
     return Intl.message(

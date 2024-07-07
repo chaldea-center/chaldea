@@ -97,6 +97,10 @@ Event _$EventFromJson(Map json) => Event(
               ?.map((e) => EventFortification.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      tradeGoods: (json['tradeGoods'] as List<dynamic>?)
+              ?.map((e) => EventTradeGoods.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       campaigns: (json['campaigns'] as List<dynamic>?)
               ?.map((e) => EventCampaign.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -160,6 +164,7 @@ Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
       'digging': instance.digging?.toJson(),
       'cooltime': instance.cooltime?.toJson(),
       'fortifications': instance.fortifications.map((e) => e.toJson()).toList(),
+      'tradeGoods': instance.tradeGoods.map((e) => e.toJson()).toList(),
       'campaigns': instance.campaigns.map((e) => e.toJson()).toList(),
       'campaignQuests': instance.campaignQuests.map((e) => e.toJson()).toList(),
       'commandAssists': instance.commandAssists.map((e) => e.toJson()).toList(),
@@ -1326,6 +1331,61 @@ const _$EventWorkTypeEnumMap = {
   EventWorkType.farmming: 'farmming',
   EventWorkType.unknown: 'unknown',
 };
+
+EventTradeGoods _$EventTradeGoodsFromJson(Map json) => EventTradeGoods(
+      id: (json['id'] as num).toInt(),
+      name: json['name'] as String? ?? "",
+      goodsIcon: json['goodsIcon'] as String,
+      gifts:
+          (json['gifts'] as List<dynamic>?)?.map((e) => Gift.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
+              const [],
+      consumes: (json['consumes'] as List<dynamic>?)
+              ?.map((e) => CommonConsume.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      eventPointNum: (json['eventPointNum'] as num?)?.toInt() ?? 0,
+      eventPointItem: Item.fromJson(Map<String, dynamic>.from(json['eventPointItem'] as Map)),
+      tradeTime: (json['tradeTime'] as num?)?.toInt() ?? 0,
+      maxNum: (json['maxNum'] as num?)?.toInt() ?? 0,
+      maxTradeTime: (json['maxTradeTime'] as num?)?.toInt() ?? 0,
+      releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+              ?.map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      closedMessage: json['closedMessage'] as String? ?? "",
+      pickups: (json['pickups'] as List<dynamic>?)
+              ?.map((e) => EventTradePickup.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+    );
+
+Map<String, dynamic> _$EventTradeGoodsToJson(EventTradeGoods instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'goodsIcon': instance.goodsIcon,
+      'gifts': instance.gifts.map((e) => e.toJson()).toList(),
+      'consumes': instance.consumes.map((e) => e.toJson()).toList(),
+      'eventPointNum': instance.eventPointNum,
+      'eventPointItem': instance.eventPointItem.toJson(),
+      'tradeTime': instance.tradeTime,
+      'maxNum': instance.maxNum,
+      'maxTradeTime': instance.maxTradeTime,
+      'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
+      'closedMessage': instance.closedMessage,
+      'pickups': instance.pickups.map((e) => e.toJson()).toList(),
+    };
+
+EventTradePickup _$EventTradePickupFromJson(Map json) => EventTradePickup(
+      startedAt: (json['startedAt'] as num).toInt(),
+      endedAt: (json['endedAt'] as num).toInt(),
+      tradeTimeRate: (json['tradeTimeRate'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$EventTradePickupToJson(EventTradePickup instance) => <String, dynamic>{
+      'startedAt': instance.startedAt,
+      'endedAt': instance.endedAt,
+      'tradeTimeRate': instance.tradeTimeRate,
+    };
 
 EventBulletinBoard _$EventBulletinBoardFromJson(Map json) => EventBulletinBoard(
       bulletinBoardId: (json['bulletinBoardId'] as num).toInt(),

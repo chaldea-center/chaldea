@@ -419,6 +419,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_svt": MessageLookupByLibrary.simpleMessage("活動從者"),
         "event_svt_withdraw": MessageLookupByLibrary.simpleMessage("已離隊"),
         "event_tower": MessageLookupByLibrary.simpleMessage("塔"),
+        "event_trade": MessageLookupByLibrary.simpleMessage("贸易"),
         "event_treasure_box": MessageLookupByLibrary.simpleMessage("寶箱"),
         "exchange_count": MessageLookupByLibrary.simpleMessage("可交換次數"),
         "exchange_ticket": MessageLookupByLibrary.simpleMessage("素材交換券"),

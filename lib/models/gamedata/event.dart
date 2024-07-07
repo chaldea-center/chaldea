@@ -53,6 +53,7 @@ class Event with RouteInfo {
   EventDigging? digging;
   EventCooltime? cooltime;
   List<EventFortification> fortifications;
+  List<EventTradeGoods> tradeGoods;
   List<EventCampaign> campaigns;
   List<EventQuest> campaignQuests;
   List<EventCommandAssist> commandAssists;
@@ -106,6 +107,7 @@ class Event with RouteInfo {
     this.digging,
     this.cooltime,
     this.fortifications = const [],
+    this.tradeGoods = const [],
     this.campaigns = const [],
     this.campaignQuests = const [],
     this.commandAssists = const [],
@@ -172,6 +174,7 @@ class Event with RouteInfo {
       cooltime == null &&
       recipes.isEmpty &&
       fortifications.isEmpty &&
+      tradeGoods.isEmpty &&
       // campaigns.isEmpty &&
       // campaignQuests.isEmpty &&
       // heelPortraits.isEmpty &&
@@ -1686,6 +1689,62 @@ class EventFortification {
   factory EventFortification.fromJson(Map<String, dynamic> json) => _$EventFortificationFromJson(json);
 
   Map<String, dynamic> toJson() => _$EventFortificationToJson(this);
+}
+
+@JsonSerializable()
+class EventTradeGoods {
+  int id;
+  String name;
+  String goodsIcon;
+  List<Gift> gifts;
+  List<CommonConsume> consumes;
+  int eventPointNum;
+  Item eventPointItem;
+  int tradeTime;
+  int maxNum;
+  int maxTradeTime;
+  List<CommonRelease> releaseConditions;
+  String closedMessage;
+  // # voiceData
+  List<EventTradePickup> pickups;
+
+  EventTradeGoods({
+    required this.id,
+    this.name = "",
+    required this.goodsIcon,
+    this.gifts = const [],
+    this.consumes = const [],
+    this.eventPointNum = 0,
+    required this.eventPointItem,
+    this.tradeTime = 0,
+    this.maxNum = 0,
+    this.maxTradeTime = 0,
+    this.releaseConditions = const [],
+    this.closedMessage = "",
+    this.pickups = const [],
+  });
+
+  factory EventTradeGoods.fromJson(Map<String, dynamic> json) => _$EventTradeGoodsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventTradeGoodsToJson(this);
+}
+
+@JsonSerializable()
+class EventTradePickup {
+  int startedAt;
+  int endedAt;
+//  int pickupIconId;
+  int tradeTimeRate;
+
+  EventTradePickup({
+    required this.startedAt,
+    required this.endedAt,
+    required this.tradeTimeRate,
+  });
+
+  factory EventTradePickup.fromJson(Map<String, dynamic> json) => _$EventTradePickupFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventTradePickupToJson(this);
 }
 
 @JsonSerializable()

@@ -440,6 +440,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_svt": MessageLookupByLibrary.simpleMessage("Event Servant"),
         "event_svt_withdraw": MessageLookupByLibrary.simpleMessage("Withdrawn"),
         "event_tower": MessageLookupByLibrary.simpleMessage("Tower"),
+        "event_trade": MessageLookupByLibrary.simpleMessage("Trade"),
         "event_treasure_box": MessageLookupByLibrary.simpleMessage("Treasure Box"),
         "exchange_count": MessageLookupByLibrary.simpleMessage("Exchange Count"),
         "exchange_ticket": MessageLookupByLibrary.simpleMessage("Exchange Ticket"),

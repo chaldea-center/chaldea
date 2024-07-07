@@ -325,6 +325,7 @@
   "event_svt": "活動從者",
   "event_svt_withdraw": "已離隊",
   "event_tower": "塔",
+  "event_trade": null,
   "event_treasure_box": "寶箱",
   "exchange_count": "可交換次數",
   "exchange_ticket": "素材交換券",
