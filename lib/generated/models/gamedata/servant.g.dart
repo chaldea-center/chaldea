@@ -111,7 +111,7 @@ Servant _$ServantFromJson(Map json) => Servant(
               ?.map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      starAbsorb: (json['starAbsorb'] as num?)?.toInt() ?? 0,
+      criticalWeight: (json['starAbsorb'] as num?)?.toInt() ?? 0,
       starGen: (json['starGen'] as num?)?.toInt() ?? 0,
       instantDeathChance: (json['instantDeathChance'] as num?)?.toInt() ?? 0,
       cards: (json['cards'] as List<dynamic>?)?.map((e) => $enumDecode(_$CardTypeEnumMap, e)).toList() ?? const [],
@@ -133,10 +133,9 @@ Servant _$ServantFromJson(Map json) => Servant(
           const [],
       bondEquipOwner: (json['bondEquipOwner'] as num?)?.toInt(),
       valentineEquipOwner: (json['valentineEquipOwner'] as num?)?.toInt(),
-      limits: (json['limits'] as List<dynamic>?)
-              ?.map((e) => SvtLimitEntity.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
+      limits: (Servant._readLimits(json, 'limits') as List<dynamic>?)
+          ?.map((e) => SvtLimitEntity.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
       ascensionAdd: json['ascensionAdd'] == null
           ? null
           : AscensionAdd.fromJson(Map<String, dynamic>.from(json['ascensionAdd'] as Map)),
@@ -222,7 +221,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'extraAssets': instance.extraAssets.toJson(),
       'gender': _$GenderEnumMap[instance.gender]!,
       'traits': instance.traits.map((e) => e.toJson()).toList(),
-      'starAbsorb': instance.starAbsorb,
+      'starAbsorb': instance.criticalWeight,
       'starGen': instance.starGen,
       'instantDeathChance': instance.instantDeathChance,
       'cards': instance.cards.map((e) => _$CardTypeEnumMap[e]!).toList(),
@@ -239,7 +238,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'valentineScript': instance.valentineScript.map((e) => e.toJson()).toList(),
       'bondEquipOwner': instance.bondEquipOwner,
       'valentineEquipOwner': instance.valentineEquipOwner,
-      'limits': instance.limits.map((e) => e.toJson()).toList(),
+      'limits': instance.limits.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'ascensionAdd': instance.ascensionAdd.toJson(),
       'traitAdd': instance.traitAdd.map((e) => e.toJson()).toList(),
       'svtChange': instance.svtChange.map((e) => e.toJson()).toList(),
@@ -639,9 +638,6 @@ AscensionAdd _$AscensionAddFromJson(Map json) => AscensionAdd(
       lvMax: json['lvMax'] == null
           ? const AscensionAddEntry()
           : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['lvMax'] as Map)),
-      rarity: json['rarity'] == null
-          ? const AscensionAddEntry()
-          : AscensionAddEntry<int>.fromJson(Map<String, dynamic>.from(json['rarity'] as Map)),
       charaGraphChange: json['charaGraphChange'] == null
           ? const AscensionAddEntry()
           : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['charaGraphChange'] as Map)),
@@ -670,7 +666,6 @@ Map<String, dynamic> _$AscensionAddToJson(AscensionAdd instance) => <String, dyn
       'overWriteTDRank': instance.overWriteTDRank.toJson(),
       'overWriteTDTypeText': instance.overWriteTDTypeText.toJson(),
       'lvMax': instance.lvMax.toJson(),
-      'rarity': instance.rarity.toJson(),
       'charaGraphChange': instance.charaGraphChange.toJson(),
       'faceChange': instance.faceChange.toJson(),
       'charaGraphChangeCommonRelease': instance.charaGraphChangeCommonRelease.toJson(),

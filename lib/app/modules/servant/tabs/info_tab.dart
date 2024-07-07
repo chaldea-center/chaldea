@@ -66,7 +66,7 @@ class SvtInfoTab extends StatelessWidget {
                 alignment: WrapAlignment.center,
                 spacing: 4,
                 children: [
-                  for (final rarity in {...svt.ascensionAdd.rarity.ascension.values, svt.rarity})
+                  for (final rarity in <int>{...svt.limits.values.map((e) => e.rarity ?? svt.rarity), svt.rarity})
                     if (rarity != 0)
                       CachedImage(
                         imageUrl:
@@ -145,12 +145,12 @@ class SvtInfoTab extends StatelessWidget {
               S.current.info_np
             ], defaults: headerData),
             CustomTableRow.fromTexts(texts: [
-              svt.profile.stats?.strength ?? '-',
-              svt.profile.stats?.endurance ?? '-',
-              svt.profile.stats?.agility ?? '-',
-              svt.profile.stats?.magic ?? '-',
-              svt.profile.stats?.luck ?? '-',
-              svt.profile.stats?.np ?? '-',
+              _infoWithLimits(svt.profile.stats?.strength ?? '-', svt.limits.values.map((e) => e.strength)),
+              _infoWithLimits(svt.profile.stats?.endurance ?? '-', svt.limits.values.map((e) => e.endurance)),
+              _infoWithLimits(svt.profile.stats?.agility ?? '-', svt.limits.values.map((e) => e.agility)),
+              _infoWithLimits(svt.profile.stats?.magic ?? '-', svt.limits.values.map((e) => e.magic)),
+              _infoWithLimits(svt.profile.stats?.luck ?? '-', svt.limits.values.map((e) => e.luck)),
+              _infoWithLimits(svt.profile.stats?.np ?? '-', svt.limits.values.map((e) => e.np)),
             ], defaults: contentData),
             CustomTableRow(children: [
               TableCellData(text: S.current.svt_sub_attribute, isHeader: true, flex: 2),
@@ -158,13 +158,17 @@ class SvtInfoTab extends StatelessWidget {
               TableCellData(text: S.current.general_type, isHeader: true, flex: 2),
             ]),
             CustomTableRow(children: [
-              TableCellData(text: Transl.svtSubAttribute(svt.attribute).l),
               TableCellData(
-                text: [
-                  if (svt.profile.stats?.policy != null) Transl.servantPolicy(svt.profile.stats!.policy!).l,
-                  if (svt.profile.stats?.personality != null)
-                    Transl.servantPersonality(svt.profile.stats!.personality!).l,
-                ].join('·'),
+                  text: _infoWithLimits(
+                      svt.attribute, svt.ascensionAdd.attribute.all.values, (v) => Transl.svtSubAttribute(v).l)),
+              TableCellData(
+                text: _infoWithLimits<(ServantPolicy?, ServantPersonality?)>(
+                    (svt.profile.stats?.policy, svt.profile.stats?.personality), svt.limits.values.map((e) {
+                  if (e.policy == null && e.personality == null) return null;
+                  return (e.policy ?? svt.profile.stats?.policy, e.personality ?? svt.profile.stats?.personality);
+                }),
+                    (v) =>
+                        '${Transl.servantPolicy(v.$1 ?? ServantPolicy.none).l}·${Transl.servantPersonality(v.$2 ?? ServantPersonality.none).l}'),
                 textAlign: TextAlign.center,
               ),
               TableCellData(text: Transl.enums(svt.type, (enums) => enums.svtType).l),
@@ -255,7 +259,7 @@ class SvtInfoTab extends StatelessWidget {
               texts: [
                 '${svt.starGen / 10}%',
                 '${svt.instantDeathChance / 10}%',
-                svt.starAbsorb.toString(),
+                _infoWithLimits(svt.criticalWeight, svt.limits.values.map((e) => e.criticalWeight)),
               ],
               defaults: contentData,
             ),
@@ -356,6 +360,10 @@ class SvtInfoTab extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _infoWithLimits<T>(T base, Iterable<T?> limits, [String Function(T v)? format]) {
+    return <T>{base, ...limits.whereType<T>()}.map((e) => format?.call(e) ?? e.toString()).join(' & ');
   }
 
   List<Widget> relateEvents() {

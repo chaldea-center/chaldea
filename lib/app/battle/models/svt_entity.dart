@@ -244,10 +244,10 @@ class BattleServantData {
         collectBuffsPerType(battleBuff.validBuffsActiveFirst, BuffType.overwriteSubattribute).firstOrNull;
     final overwriteSubattribute =
         ServantSubAttribute.values.firstWhereOrNull((attr) => attr.value == overwriteSubattributeBuff?.vals.Value);
-    if (overwriteSubattribute != null) {
+    if (overwriteSubattribute != null && overwriteSubattribute != ServantSubAttribute.default_) {
       return overwriteSubattribute;
     }
-    return isPlayer ? niceSvt!.attribute : niceEnemy!.svt.attribute;
+    return isPlayer ? niceSvt!.ascensionAdd.attribute.all[limitCount] ?? niceSvt!.attribute : niceEnemy!.svt.attribute;
   }
 
   int get starGen => isPlayer ? niceSvt!.starGen : 0;
@@ -576,6 +576,15 @@ class BattleServantData {
             // check startedAt/endedAt too?
             traits.addAll(add.trait);
           }
+        }
+      }
+    }
+    if (niceSvt != null) {
+      final attriAdd = niceSvt!.ascensionAdd.attribute.all[limitCount];
+      if (attriAdd != null && attriAdd != ServantSubAttribute.default_) {
+        traits.removeWhere((e) => e.id == niceSvt!.attribute.trait?.value);
+        if (attriAdd.trait != null) {
+          traits.add(NiceTrait(id: attriAdd.trait!.value));
         }
       }
     }

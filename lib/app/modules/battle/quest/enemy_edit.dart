@@ -422,7 +422,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       // ignore: invalid_use_of_protected_member
       enemy.svt.face = face;
     }
-    enemy.svt.rarity = svt.ascensionAdd.rarity.all[limitCount] ?? enemy.svt.rarity;
+    enemy.svt.rarity = svt.limits[limitCount]?.rarity ?? enemy.svt.rarity;
     updateTrait(svt, limitCount);
   }
 
