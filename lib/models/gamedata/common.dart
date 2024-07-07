@@ -1066,8 +1066,10 @@ enum CondType {
   latestQuestPhaseEqual(217),
   notLatestQuestPhaseEqual(218),
   purchaseShopNum(219),
-  missionAchieveNumBelow(220),
-  missionAchieveNumAbove(221),
+  eventTradeTotalNum(220),
+  limitedMissionAchieveNumBelow(221),
+  limitedMissionAchieveNumAbove(222),
+  notSvtVoicePlayed(223),
   ;
 
   const CondType(this.value);

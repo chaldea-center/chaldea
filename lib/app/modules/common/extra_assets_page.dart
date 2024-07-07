@@ -136,7 +136,12 @@ class ExtraAssetsPage extends StatelessWidget {
         'Characters',
         [
           if (extraAssets != null)
-            for (final form in extraAssets.charaFigureMulti.values) ..._getUrls(form),
+            for (final multi in [
+              extraAssets.charaFigureMulti,
+              extraAssets.charaFigureMultiCombine,
+              extraAssets.charaFigureMultiLimitUp
+            ])
+              for (final form in multi.values) ..._getUrls(form),
         ],
         300,
       ),

@@ -1427,6 +1427,7 @@ const _$CombineAdjustTargetEnumMap = {
   CombineAdjustTarget.largeSuccessByClass: 'largeSuccessByClass',
   CombineAdjustTarget.superSuccessByClass: 'superSuccessByClass',
   CombineAdjustTarget.exchangeSvt: 'exchangeSvt',
+  CombineAdjustTarget.questItemFirstTime: 'questItemFirstTime',
 };
 
 const _$EventCombineCalcEnumMap = {

@@ -1102,6 +1102,8 @@ class SupportServant {
   List<NiceTrait> traits;
   EnemySkill skills;
   SupportServantTd noblePhantasm;
+  @JsonKey(unknownEnumValue: NpcFollowerEntityFlag.none)
+  List<NpcFollowerEntityFlag> followerFlags;
   List<SupportServantEquip> equips;
   SupportServantScript? script;
   List<SupportServantRelease> releaseConditions;
@@ -1121,6 +1123,7 @@ class SupportServant {
     required this.traits,
     required this.skills,
     required this.noblePhantasm,
+    this.followerFlags = const [],
     this.equips = const [],
     this.script,
     this.releaseConditions = const [],
@@ -1418,7 +1421,7 @@ class QuestEnemy with GameCardMixin {
         type: SvtType.normal,
         flags: [],
         classId: SvtClass.ALL.value,
-        attribute: ServantSubAttribute.void_,
+        attribute: ServantSubAttribute.none,
         rarity: 3,
         atkMax: 1000,
         hpMax: 10000,
@@ -2202,6 +2205,7 @@ enum FrequencyType {
   valentine,
   everyTimeAfter,
   everyTimeBefore,
+  onceUntilRemind,
 }
 
 enum StageLimitActType {
@@ -2222,6 +2226,13 @@ enum NpcServantFollowerFlag {
   hideTreasureDeviceDetail,
   hideRarity,
   notClassBoard,
+}
+
+enum NpcFollowerEntityFlag {
+  none,
+  recommendedIcon,
+  isMySvtOrNpc,
+  fixedNpc,
 }
 
 enum QuestGroupType {

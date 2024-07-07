@@ -151,7 +151,10 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       enumTile<ServantSubAttribute>(
         title: Text(S.current.svt_sub_attribute),
         value: enemy.svt.attribute,
-        values: ServantSubAttribute.values,
+        values: [
+          for (final v in ServantSubAttribute.values)
+            if (v != ServantSubAttribute.default_) v
+        ],
         itemBuilder: (v) => Text(Transl.svtSubAttribute(v).l, textScaler: const TextScaler.linear(0.9)),
         onChanged: (v) {
           enemy.svt.attribute = v;

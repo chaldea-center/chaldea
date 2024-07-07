@@ -242,8 +242,7 @@ class Transl<K, V> {
   }
 
   static Transl<String, String> svtSubAttribute(ServantSubAttribute key) {
-    String name = key.name;
-    if (key == ServantSubAttribute.void_) name = 'void';
+    String name = key.name2;
     return Transl(md.enums.attribute, name, name);
   }
 

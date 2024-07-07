@@ -17,7 +17,7 @@ BasicServant _$BasicServantFromJson(Map json) => BasicServant(
               .toList() ??
           const [],
       classId: (json['classId'] as num?)?.toInt() ?? 0,
-      attribute: $enumDecodeNullable(_$ServantSubAttributeEnumMap, json['attribute']) ?? ServantSubAttribute.void_,
+      attribute: $enumDecodeNullable(_$ServantSubAttributeEnumMap, json['attribute']) ?? ServantSubAttribute.none,
       rarity: (json['rarity'] as num?)?.toInt() ?? 0,
       atkMax: (json['atkMax'] as num?)?.toInt() ?? 0,
       hpMax: (json['hpMax'] as num?)?.toInt() ?? 0,
@@ -73,6 +73,8 @@ const _$SvtFlagEnumMap = {
 };
 
 const _$ServantSubAttributeEnumMap = {
+  ServantSubAttribute.default_: 'default',
+  ServantSubAttribute.none: 'none',
   ServantSubAttribute.human: 'human',
   ServantSubAttribute.sky: 'sky',
   ServantSubAttribute.earth: 'earth',
@@ -97,7 +99,7 @@ Servant _$ServantFromJson(Map json) => Servant(
       cost: (json['cost'] as num?)?.toInt() ?? 0,
       lvMax: (json['lvMax'] as num?)?.toInt() ?? 0,
       gender: $enumDecodeNullable(_$GenderEnumMap, json['gender']) ?? Gender.unknown,
-      attribute: $enumDecodeNullable(_$ServantSubAttributeEnumMap, json['attribute']) ?? ServantSubAttribute.void_,
+      attribute: $enumDecodeNullable(_$ServantSubAttributeEnumMap, json['attribute']) ?? ServantSubAttribute.none,
       atkBase: (json['atkBase'] as num?)?.toInt() ?? 0,
       atkMax: (json['atkMax'] as num?)?.toInt() ?? 0,
       hpBase: (json['hpBase'] as num?)?.toInt() ?? 0,
@@ -131,6 +133,10 @@ Servant _$ServantFromJson(Map json) => Servant(
           const [],
       bondEquipOwner: (json['bondEquipOwner'] as num?)?.toInt(),
       valentineEquipOwner: (json['valentineEquipOwner'] as num?)?.toInt(),
+      limits: (json['limits'] as List<dynamic>?)
+              ?.map((e) => SvtLimitEntity.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
       ascensionAdd: json['ascensionAdd'] == null
           ? null
           : AscensionAdd.fromJson(Map<String, dynamic>.from(json['ascensionAdd'] as Map)),
@@ -233,6 +239,7 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
       'valentineScript': instance.valentineScript.map((e) => e.toJson()).toList(),
       'bondEquipOwner': instance.bondEquipOwner,
       'valentineEquipOwner': instance.valentineEquipOwner,
+      'limits': instance.limits.map((e) => e.toJson()).toList(),
       'ascensionAdd': instance.ascensionAdd.toJson(),
       'traitAdd': instance.traitAdd.map((e) => e.toJson()).toList(),
       'svtChange': instance.svtChange.map((e) => e.toJson()).toList(),
@@ -430,6 +437,14 @@ ExtraAssets _$ExtraAssetsFromJson(Map json) => ExtraAssets(
             (k, e) => MapEntry(int.parse(k as String), ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(e as Map))),
           ) ??
           const {},
+      charaFigureMultiCombine: (json['charaFigureMultiCombine'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String), ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
+      charaFigureMultiLimitUp: (json['charaFigureMultiLimitUp'] as Map?)?.map(
+            (k, e) => MapEntry(int.parse(k as String), ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(e as Map))),
+          ) ??
+          const {},
       commands: json['commands'] == null
           ? const ExtraAssetsUrl()
           : ExtraAssetsUrl.fromJson(Map<String, dynamic>.from(json['commands'] as Map)),
@@ -465,6 +480,8 @@ Map<String, dynamic> _$ExtraAssetsToJson(ExtraAssets instance) => <String, dynam
       'charaFigure': instance.charaFigure.toJson(),
       'charaFigureForm': instance.charaFigureForm.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'charaFigureMulti': instance.charaFigureMulti.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'charaFigureMultiCombine': instance.charaFigureMultiCombine.map((k, e) => MapEntry(k.toString(), e.toJson())),
+      'charaFigureMultiLimitUp': instance.charaFigureMultiLimitUp.map((k, e) => MapEntry(k.toString(), e.toJson())),
       'commands': instance.commands.toJson(),
       'status': instance.status.toJson(),
       'equipFace': instance.equipFace.toJson(),
@@ -504,6 +521,66 @@ const _$CommandCardAttackTypeEnumMap = {
   CommandCardAttackType.all: 'all',
 };
 
+SvtLimitEntity _$SvtLimitEntityFromJson(Map json) => SvtLimitEntity(
+      limitCount: (json['limitCount'] as num).toInt(),
+      rarity: (json['rarity'] as num?)?.toInt(),
+      lvMax: (json['lvMax'] as num?)?.toInt(),
+      hpBase: (json['hpBase'] as num?)?.toInt(),
+      hpMax: (json['hpMax'] as num?)?.toInt(),
+      atkBase: (json['atkBase'] as num?)?.toInt(),
+      atkMax: (json['atkMax'] as num?)?.toInt(),
+      criticalWeight: (json['criticalWeight'] as num?)?.toInt(),
+      strength: json['strength'] as String?,
+      endurance: json['endurance'] as String?,
+      agility: json['agility'] as String?,
+      magic: json['magic'] as String?,
+      luck: json['luck'] as String?,
+      np: json['np'] as String?,
+      deity: json['deity'] as String?,
+      policy: $enumDecodeNullable(_$ServantPolicyEnumMap, json['policy']),
+      personality: $enumDecodeNullable(_$ServantPersonalityEnumMap, json['personality']),
+    );
+
+Map<String, dynamic> _$SvtLimitEntityToJson(SvtLimitEntity instance) => <String, dynamic>{
+      'limitCount': instance.limitCount,
+      'rarity': instance.rarity,
+      'lvMax': instance.lvMax,
+      'hpBase': instance.hpBase,
+      'hpMax': instance.hpMax,
+      'atkBase': instance.atkBase,
+      'atkMax': instance.atkMax,
+      'criticalWeight': instance.criticalWeight,
+      'strength': instance.strength,
+      'endurance': instance.endurance,
+      'agility': instance.agility,
+      'magic': instance.magic,
+      'luck': instance.luck,
+      'np': instance.np,
+      'deity': instance.deity,
+      'policy': _$ServantPolicyEnumMap[instance.policy],
+      'personality': _$ServantPersonalityEnumMap[instance.personality],
+    };
+
+const _$ServantPolicyEnumMap = {
+  ServantPolicy.none: 'none',
+  ServantPolicy.neutral: 'neutral',
+  ServantPolicy.chaotic: 'chaotic',
+  ServantPolicy.lawful: 'lawful',
+  ServantPolicy.unknown: 'unknown',
+};
+
+const _$ServantPersonalityEnumMap = {
+  ServantPersonality.none: 'none',
+  ServantPersonality.good: 'good',
+  ServantPersonality.evil: 'evil',
+  ServantPersonality.madness: 'madness',
+  ServantPersonality.balanced: 'balanced',
+  ServantPersonality.goodAndEvil: 'goodAndEvil',
+  ServantPersonality.bride: 'bride',
+  ServantPersonality.summer: 'summer',
+  ServantPersonality.unknown: 'unknown',
+};
+
 AscensionAddEntry<T> _$AscensionAddEntryFromJson<T>(
   Map json,
   T Function(Object? json) fromJsonT,
@@ -529,6 +606,9 @@ Map<String, dynamic> _$AscensionAddEntryToJson<T>(
     };
 
 AscensionAdd _$AscensionAddFromJson(Map json) => AscensionAdd(
+      attribute: json['attribute'] == null
+          ? const AscensionAddEntry()
+          : AscensionAddEntry<ServantSubAttribute>.fromJson(Map<String, dynamic>.from(json['attribute'] as Map)),
       individuality: json['individuality'] == null
           ? const AscensionAddEntry()
           : AscensionAddEntry<List<NiceTrait>>.fromJson(Map<String, dynamic>.from(json['individuality'] as Map)),
@@ -579,6 +659,7 @@ AscensionAdd _$AscensionAddFromJson(Map json) => AscensionAdd(
     );
 
 Map<String, dynamic> _$AscensionAddToJson(AscensionAdd instance) => <String, dynamic>{
+      'attribute': instance.attribute.toJson(),
       'individuality': instance.individuality.toJson(),
       'voicePrefix': instance.voicePrefix.toJson(),
       'overWriteServantName': instance.overWriteServantName.toJson(),
@@ -767,26 +848,6 @@ Map<String, dynamic> _$LoreStatusToJson(LoreStatus instance) => <String, dynamic
       'deity': instance.deity,
     };
 
-const _$ServantPolicyEnumMap = {
-  ServantPolicy.none: 'none',
-  ServantPolicy.neutral: 'neutral',
-  ServantPolicy.chaotic: 'chaotic',
-  ServantPolicy.lawful: 'lawful',
-  ServantPolicy.unknown: 'unknown',
-};
-
-const _$ServantPersonalityEnumMap = {
-  ServantPersonality.none: 'none',
-  ServantPersonality.good: 'good',
-  ServantPersonality.evil: 'evil',
-  ServantPersonality.madness: 'madness',
-  ServantPersonality.balanced: 'balanced',
-  ServantPersonality.goodAndEvil: 'goodAndEvil',
-  ServantPersonality.bride: 'bride',
-  ServantPersonality.summer: 'summer',
-  ServantPersonality.unknown: 'unknown',
-};
-
 BasicCostume _$BasicCostumeFromJson(Map json) => BasicCostume(
       id: (json['id'] as num).toInt(),
       costumeCollectionNo: (json['costumeCollectionNo'] as num?)?.toInt() ?? 0,
@@ -955,6 +1016,7 @@ const _$SvtVoiceTypeEnumMap = {
   SvtVoiceType.eventExpedition: 'eventExpedition',
   SvtVoiceType.eventRecipe: 'eventRecipe',
   SvtVoiceType.eventFortification: 'eventFortification',
+  SvtVoiceType.eventTrade: 'eventTrade',
   SvtVoiceType.sum: 'sum',
 };
 

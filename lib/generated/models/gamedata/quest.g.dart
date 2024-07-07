@@ -650,6 +650,10 @@ SupportServant _$SupportServantFromJson(Map json) => SupportServant(
           .toList(),
       skills: EnemySkill.fromJson(Map<String, dynamic>.from(json['skills'] as Map)),
       noblePhantasm: SupportServantTd.fromJson(Map<String, dynamic>.from(json['noblePhantasm'] as Map)),
+      followerFlags: (json['followerFlags'] as List<dynamic>?)
+              ?.map((e) => $enumDecode(_$NpcFollowerEntityFlagEnumMap, e, unknownValue: NpcFollowerEntityFlag.none))
+              .toList() ??
+          const [],
       equips: (json['equips'] as List<dynamic>?)
               ?.map((e) => SupportServantEquip.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
@@ -677,12 +681,20 @@ Map<String, dynamic> _$SupportServantToJson(SupportServant instance) => <String,
       'traits': instance.traits.map((e) => e.toJson()).toList(),
       'skills': instance.skills.toJson(),
       'noblePhantasm': instance.noblePhantasm.toJson(),
+      'followerFlags': instance.followerFlags.map((e) => _$NpcFollowerEntityFlagEnumMap[e]!).toList(),
       'equips': instance.equips.map((e) => e.toJson()).toList(),
       'script': instance.script?.toJson(),
       'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
       'limit': instance.limit.toJson(),
       'detail': instance.detail?.toJson(),
     };
+
+const _$NpcFollowerEntityFlagEnumMap = {
+  NpcFollowerEntityFlag.none: 'none',
+  NpcFollowerEntityFlag.recommendedIcon: 'recommendedIcon',
+  NpcFollowerEntityFlag.isMySvtOrNpc: 'isMySvtOrNpc',
+  NpcFollowerEntityFlag.fixedNpc: 'fixedNpc',
+};
 
 SupportServantRelease _$SupportServantReleaseFromJson(Map json) => SupportServantRelease(
       type: json['type'] == null ? CondType.none : const CondTypeConverter().fromJson(json['type'] as String),
@@ -1192,6 +1204,7 @@ const _$FrequencyTypeEnumMap = {
   FrequencyType.valentine: 'valentine',
   FrequencyType.everyTimeAfter: 'everyTimeAfter',
   FrequencyType.everyTimeBefore: 'everyTimeBefore',
+  FrequencyType.onceUntilRemind: 'onceUntilRemind',
 };
 
 QuestGroup _$QuestGroupFromJson(Map json) => QuestGroup(

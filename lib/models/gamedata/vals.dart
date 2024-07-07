@@ -256,6 +256,7 @@ class DataVals {
   int? get ShortenBuffHalfTurnInOpponentTurn => _vals['ShortenBuffHalfTurnInOpponentTurn'];
   int? get ExtendBuffHalfTurnInPartyTurn => _vals['ExtendBuffHalfTurnInPartyTurn'];
   int? get ShortenBuffHalfTurnInPartyTurn => _vals['ShortenBuffHalfTurnInPartyTurn'];
+  int? get LinkageBuffGrantSuccessEvenIfOtherFailed => _vals['LinkageBuffGrantSuccessEvenIfOtherFailed'];
 
   int? get ApplySupportSvt => _vals['ApplySupportSvt'];
   int? get Individuality => _vals['Individuality'];
