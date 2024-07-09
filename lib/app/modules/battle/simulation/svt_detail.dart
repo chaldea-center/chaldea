@@ -268,7 +268,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
           isHeader: true,
         ),
         CustomTableRow.fromChildren(
-            children: [SharedBuilder.traitList(context: context, traits: svt.getBasicSvtTraits()..sort2((e) => e.id))]),
+            children: [SharedBuilder.traitList(context: context, traits: svt.getTraits()..sort2((e) => e.id))]),
       ])
     ];
 
