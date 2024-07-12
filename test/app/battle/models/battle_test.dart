@@ -1338,6 +1338,22 @@ void main() async {
     expect(aoko.np, 1000);
   });
 
+  test('Kiyohime skill upgrade vs Buff Burn', () async {
+    final battle = BattleData();
+    final playerSettings = [
+      PlayerSvtData.id(701300)..setSkillStrengthenLvs([2, 2, 1]), // Kiyohime
+      PlayerSvtData.id(502600), // caster Eliz
+    ];
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    await battle.activateSvtSkill(1, 1); // buff burn on all enemies
+    final kiyohime = battle.onFieldAllyServants[0]!;
+    await battle.activateSvtSkill(0, 1);
+    kiyohime.np = 10000;
+    await battle.playerTurn([CombatAction(kiyohime, kiyohime.getNPCard()!)]);
+    expect(kiyohime.np, 3000);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,
