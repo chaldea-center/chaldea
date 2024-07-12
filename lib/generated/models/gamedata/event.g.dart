@@ -252,6 +252,10 @@ MstMasterMission _$MstMasterMissionFromJson(Map json) => MstMasterMission(
             (k, e) => MapEntry(int.parse(k as String), (e as num).toInt()),
           ) ??
           const {},
+      script: (json['script'] as Map?)?.map(
+            (k, e) => MapEntry(k as String, e),
+          ) ??
+          const {},
     );
 
 Map<String, dynamic> _$MstMasterMissionToJson(MstMasterMission instance) => <String, dynamic>{
@@ -260,6 +264,7 @@ Map<String, dynamic> _$MstMasterMissionToJson(MstMasterMission instance) => <Str
       'endedAt': instance.endedAt,
       'closedAt': instance.closedAt,
       'gifts': instance.gifts.map((k, e) => MapEntry(k.toString(), e)),
+      'script': instance.script,
     };
 
 MasterMission _$MasterMissionFromJson(Map json) => MasterMission(
@@ -277,6 +282,10 @@ MasterMission _$MasterMissionFromJson(Map json) => MasterMission(
               ?.map((e) => BasicQuest.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
+      script: (json['script'] as Map?)?.map(
+            (k, e) => MapEntry(k as String, e),
+          ) ??
+          const {},
     );
 
 Map<String, dynamic> _$MasterMissionToJson(MasterMission instance) => <String, dynamic>{
@@ -284,6 +293,7 @@ Map<String, dynamic> _$MasterMissionToJson(MasterMission instance) => <String, d
       'startedAt': instance.startedAt,
       'endedAt': instance.endedAt,
       'closedAt': instance.closedAt,
+      'script': instance.script,
       'missions': instance.missions.map((e) => e.toJson()).toList(),
       'completeMission': instance.completeMission?.toJson(),
       'quests': instance.quests.map((e) => e.toJson()).toList(),

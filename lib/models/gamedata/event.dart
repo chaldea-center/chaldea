@@ -538,6 +538,9 @@ class MstMasterMission with RouteInfo {
   // int imageId;
   // String name;
   Map<int, int> gifts; // manually added
+  Map<String, dynamic> script;
+
+  String? get missionIconDetailText => script['missionIconDetailText'];
 
   MstMasterMission({
     required this.id,
@@ -545,6 +548,7 @@ class MstMasterMission with RouteInfo {
     required this.endedAt,
     required this.closedAt,
     this.gifts = const {},
+    this.script = const {},
   });
 
   MissionType get type {
@@ -605,6 +609,7 @@ class MasterMission extends MstMasterMission {
     required this.missions,
     this.completeMission,
     this.quests = const [],
+    super.script = const {},
   });
 
   @override

@@ -57,7 +57,10 @@ class TimerMissionItem with TimerItem {
         minLeadingWidth: 24,
         horizontalTitleGap: 8,
         enabled: mm.endedAt > DateTime.now().timestamp,
-        title: Text([fmtDate(mm.startedAt), fmtDate(mm.endedAt)].join(' ~ ')),
+        title: Text([
+          if (mm.missionIconDetailText != null) mm.missionIconDetailText,
+          [fmtDate(mm.startedAt), fmtDate(mm.endedAt)].join(' ~ '),
+        ].join('\n')),
         subtitle: Text.rich(TextSpan(
           // text: "No.${mm.id}, ",
           children: [
