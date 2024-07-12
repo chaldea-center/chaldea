@@ -176,3 +176,30 @@ class MstSvtFilter {
   factory MstSvtFilter.fromJson(Map<dynamic, dynamic> json) => _$MstSvtFilterFromJson(json);
   Map<String, dynamic> toJson() => _$MstSvtFilterToJson(this);
 }
+// {
+//     "eventId": 80273,
+//     "svtId": 401400,
+//     "priority": 0,
+//     "fatigueTime": 18000,
+//     "commonReleaseId": 0
+// }
+
+@JsonSerializable()
+class MstEventSvtFatigue {
+  int eventId;
+  int svtId;
+  int priority;
+  int fatigueTime;
+  int commonReleaseId;
+
+  MstEventSvtFatigue({
+    required this.eventId,
+    this.svtId = 0,
+    this.priority = 0,
+    this.fatigueTime = 0,
+    this.commonReleaseId = 0,
+  });
+
+  factory MstEventSvtFatigue.fromJson(Map<dynamic, dynamic> json) => _$MstEventSvtFatigueFromJson(json);
+  Map<String, dynamic> toJson() => _$MstEventSvtFatigueToJson(this);
+}

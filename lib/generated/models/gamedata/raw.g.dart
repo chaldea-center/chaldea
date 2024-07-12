@@ -117,3 +117,19 @@ Map<String, dynamic> _$MstSvtFilterToJson(MstSvtFilter instance) => <String, dyn
       'startedAt': instance.startedAt,
       'endedAt': instance.endedAt,
     };
+
+MstEventSvtFatigue _$MstEventSvtFatigueFromJson(Map json) => MstEventSvtFatigue(
+      eventId: (json['eventId'] as num).toInt(),
+      svtId: (json['svtId'] as num?)?.toInt() ?? 0,
+      priority: (json['priority'] as num?)?.toInt() ?? 0,
+      fatigueTime: (json['fatigueTime'] as num?)?.toInt() ?? 0,
+      commonReleaseId: (json['commonReleaseId'] as num?)?.toInt() ?? 0,
+    );
+
+Map<String, dynamic> _$MstEventSvtFatigueToJson(MstEventSvtFatigue instance) => <String, dynamic>{
+      'eventId': instance.eventId,
+      'svtId': instance.svtId,
+      'priority': instance.priority,
+      'fatigueTime': instance.fatigueTime,
+      'commonReleaseId': instance.commonReleaseId,
+    };
