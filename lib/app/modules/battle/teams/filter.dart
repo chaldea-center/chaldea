@@ -5,6 +5,7 @@ import 'package:chaldea/app/modules/common/filter_page_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/extension.dart';
+import 'package:chaldea/widgets/widget_builders.dart';
 
 enum TeamFilterMiscType {
   noOrderChange,
@@ -40,6 +41,7 @@ class TeamFilterData with FilterDataMixin {
   final attackerTdCardType = FilterRadioData<CardType>(); // attacker only
   final blockSvts = FilterGroupData<int>();
   final useSvts = FilterGroupData<int>();
+  int useSvtTdLv = 0;
   final blockCEs = FilterGroupData<int>();
   final blockCEMLBOnly = <int, bool>{}; // true=block MLB only
   final normalAttackCount = FilterRadioData<int>.nonnull(-1);
@@ -67,6 +69,7 @@ class TeamFilterData with FilterDataMixin {
   void reset() {
     super.reset();
     favorite = false;
+    useSvtTdLv = 0;
     blockCEMLBOnly.clear();
   }
 
@@ -86,6 +89,13 @@ class TeamFilterData with FilterDataMixin {
     if (filterData.useSvts.options.isNotEmpty &&
         !filterData.useSvts.options.every((svtId) => data.formation.allSvts.any((e) => e?.svtId == svtId))) {
       return false;
+    }
+    if (filterData.useSvts.options.length == 1 && filterData.useSvtTdLv > 0) {
+      final svtId = filterData.useSvts.options.single;
+      if (!data.formation.allSvts
+          .any((e) => e != null && e.svtId == svtId && (e.tdId ?? 0) != 0 && e.tdLv <= filterData.useSvtTdLv)) {
+        return false;
+      }
     }
 
     bool _isCEMismatch(SvtSaveData? svt, int ceId) {
@@ -395,6 +405,32 @@ class _TeamFilterPageState extends FilterPageState<TeamFilterData, TeamFilterPag
           onFilterChanged: (value, _) {
             update();
           },
+        ),
+        ListTile(
+          dense: true,
+          enabled: filterData.useSvts.options.length == 1,
+          title: Text(S.current.noble_phantasm_level),
+          subtitle: Text.rich(TextSpan(text: '${S.current.team_use_servant}: ', children: [
+            filterData.useSvts.options.length == 1
+                ? CenterWidgetSpan(
+                    child: GameCardMixin.anyCardItemBuilder(
+                        context: context, id: filterData.useSvts.options.single, width: 18))
+                : const TextSpan(text: "Select 1 servant"),
+          ])),
+          trailing: DropdownButton<int>(
+            isDense: true,
+            value: filterData.useSvtTdLv,
+            items: [
+              for (final tdLv in range(5))
+                DropdownMenuItem(value: tdLv, child: Text(tdLv == 0 ? S.current.general_any : '≤Lv$tdLv'))
+            ],
+            onChanged: filterData.useSvts.options.length == 1
+                ? (v) {
+                    if (v != null) filterData.useSvtTdLv = v;
+                    update();
+                  }
+                : null,
+          ),
         ),
         FilterGroup<int>(
           title: Text.rich(TextSpan(text: '${S.current.team_block_ce}  ( ', children: [
