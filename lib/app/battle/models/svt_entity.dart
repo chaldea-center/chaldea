@@ -247,7 +247,7 @@ class BattleServantData {
     if (overwriteSubattribute != null && overwriteSubattribute != ServantSubAttribute.default_) {
       return overwriteSubattribute;
     }
-    return isPlayer ? niceSvt!.ascensionAdd.attribute.all[limitCount] ?? niceSvt!.attribute : niceEnemy!.svt.attribute;
+    return isPlayer ? niceSvt!.getAttribute(limitCount) : niceEnemy!.svt.attribute;
   }
 
   int get starGen => isPlayer ? niceSvt!.starGen : 0;
@@ -562,8 +562,9 @@ class BattleServantData {
     if (niceEnemy != null) {
       traits.addAll(niceEnemy!.traits);
     } else if (niceSvt != null) {
-      if (niceSvt!.ascensionAdd.individuality.all.containsKey(limitCount)) {
-        traits.addAll(niceSvt!.ascensionAdd.individuality.all[limitCount]!);
+      final traitsAdd = niceSvt!.ascensionAdd.individuality.all[limitCount];
+      if (traitsAdd != null && traitsAdd.isNotEmpty) {
+        traits.addAll(traitsAdd);
       } else {
         traits.addAll(niceSvt!.traits);
       }

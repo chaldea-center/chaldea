@@ -467,7 +467,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           Text(
             'No.${svt.collectionNo > 0 ? svt.collectionNo : svt.id}'
             '  ${Transl.svtClassId(svt.classId).l}'
-            '  ${Transl.svtSubAttribute(svt.attribute).l}',
+            '  ${Transl.svtSubAttribute(svt.getAttribute(playerSvtData.limitCount)).l}',
           ),
           Text('ATK $atk  HP $hp'),
         ],

@@ -383,6 +383,12 @@ class Servant extends BasicServant {
 
   bool get isDupSvt => originalCollectionNo != collectionNo;
 
+  ServantSubAttribute getAttribute(int limitCount) {
+    final attriAdd = ascensionAdd.attribute.all[limitCount];
+    if (attriAdd != null && attriAdd != ServantSubAttribute.default_) return attriAdd;
+    return attribute;
+  }
+
   @override
   String? get icon {
     if (id == kSuperAokoSvtId) return _kSuperAokoIcon;
@@ -582,10 +588,7 @@ class Servant extends BasicServant {
     if (_traitsAll != null) return _traitsAll!;
     List<NiceTrait> _traits = [];
     _traits.addAll(traits);
-    for (var v in ascensionAdd.individuality.ascension.values) {
-      _traits.addAll(v);
-    }
-    for (var v in ascensionAdd.individuality.costume.values) {
+    for (var v in ascensionAdd.individuality.all.values) {
       _traits.addAll(v);
     }
     for (final t in traitAdd) {
