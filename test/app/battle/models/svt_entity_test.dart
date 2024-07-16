@@ -54,7 +54,7 @@ void main() async {
     });
 
     await okuni.activateSkill(battle, 0);
-    battle.withCard(okuni.getNPCard(), () async {
+    await battle.withCard(okuni.getNPCard(), () async {
       expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1300);
       expect(await okuni.hasBuffOnAction(battle, BuffAction.avoidance), isTrue);
     });

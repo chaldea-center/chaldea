@@ -27,12 +27,12 @@ class TdDmgResult {
   final Servant svt;
   BattleServantData? actor;
   List<BattleRecord> attacks = [];
-  List<BattleRecord> originalRecords = [];
+  BattleData battleData;
   int totalDamage = 0;
   int attackNp = 0;
   int totalNp = 0;
 
-  TdDmgResult(this.originalSvtData) : svt = originalSvtData.svt!;
+  TdDmgResult(this.originalSvtData, this.battleData) : svt = originalSvtData.svt!;
 
   bool get hasInstantDeath {
     return attacks.whereType<BattleInstantDeathRecord>().isNotEmpty;
@@ -116,7 +116,7 @@ class TdDmgSolver {
         }
         for (final svtData in variants) {
           if (svtData == null) continue;
-          final result = await calcOneSvt(TdDmgResult(svtData), quest, mcData, delegate);
+          final result = await calcOneSvt(svtData, quest, mcData, delegate);
           if (result == null) continue;
           results.add(result);
         }
@@ -162,9 +162,10 @@ class TdDmgSolver {
   );
 
   Future<TdDmgResult?> calcOneSvt(
-      TdDmgResult data, QuestPhase quest, MysticCodeData mcData, BattleDelegate delegate) async {
-    final attacker = data.originalSvtData.copy();
+      PlayerSvtData svtData, QuestPhase quest, MysticCodeData mcData, BattleDelegate delegate) async {
     final battleData = BattleData();
+    final data = TdDmgResult(svtData, battleData);
+    final attacker = data.originalSvtData.copy();
     battleData.delegate = delegate;
     battleData.options
       ..random = options.random
@@ -196,7 +197,7 @@ class TdDmgSolver {
       sdata.updateRankUps(region: options.region);
       BattleServantData support = BattleServantData.fromPlayerSvtData(sdata, battleData.getNextUniqueId());
       battleData.onFieldAllyServants[1] = support;
-      battleData.initActorSkills([support]);
+      await battleData.initActorSkills([support]);
       // await support.enterField(battle);
       await _activateActiveSkills(battleData, 1);
       battleData.onFieldAllyServants[1] = null;
@@ -247,7 +248,6 @@ class TdDmgSolver {
         }
       }
     }
-    data.originalRecords = battleData.recorder.records.toList();
     data.totalNp = actor.np;
 
     if (data.attacks.isEmpty) return null;

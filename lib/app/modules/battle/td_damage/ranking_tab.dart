@@ -1,4 +1,5 @@
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
@@ -7,6 +8,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../servant/filter.dart';
+import '../simulation/battle_log.dart';
 import '../simulation/recorder.dart';
 import 'model.dart';
 
@@ -303,9 +305,9 @@ class _ResultDetailState extends State<_ResultDetail> {
     }
     children.add(TextButton(
       onPressed: () {
-        router.pushPage(Scaffold(
-          appBar: AppBar(title: Text(widget.result.svt.lName.l)),
-          body: SingleChildScrollView(child: BattleRecorderPanel(records: widget.result.originalRecords)),
+        router.pushPage(_BattleLogDetails(
+          title: widget.result.svt.lName.l,
+          battleData: widget.result.battleData,
         ));
       },
       child: Text(S.current.details),
@@ -313,6 +315,30 @@ class _ResultDetailState extends State<_ResultDetail> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: children,
+    );
+  }
+}
+
+class _BattleLogDetails extends StatelessWidget {
+  final String title;
+  final BattleData battleData;
+  const _BattleLogDetails({required this.title, required this.battleData});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          IconButton(
+            onPressed: () {
+              router.pushPage(BattleLogPage(logger: battleData.battleLogger));
+            },
+            icon: const Icon(Icons.info_outline),
+          )
+        ],
+      ),
+      body: SingleChildScrollView(child: BattleRecorderPanel(records: battleData.recorder.records.toList())),
     );
   }
 }
