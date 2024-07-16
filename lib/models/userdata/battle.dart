@@ -959,6 +959,18 @@ enum SupportSvtType {
         return 'NPC';
     }
   }
+
+  static SupportSvtType fromFollowerType(int value) {
+    final type = FollowerType.values.firstWhereOrNull((e) => e.value == value);
+    switch (type) {
+      case FollowerType.none || null:
+        return none;
+      case FollowerType.friend || FollowerType.notFriend || FollowerType.follow:
+        return friend;
+      case FollowerType.npc || FollowerType.npcNoTd:
+        return npc;
+    }
+  }
 }
 
 @JsonSerializable()

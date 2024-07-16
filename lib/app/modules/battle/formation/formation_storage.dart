@@ -2,12 +2,13 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/battle/formation/formation_card.dart';
-import 'package:chaldea/app/modules/home/subpage/account_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/userdata/battle.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import '../../common/filter_page_base.dart';
+import '../teams/filter.dart';
 import '../utils.dart';
 
 /// DO NOT change any field directly except [name] of [BattleTeamFormation]
@@ -20,20 +21,40 @@ class FormationEditor extends StatefulWidget {
   State<FormationEditor> createState() => _FormationEditorState();
 }
 
-class _FormationEditorState extends State<FormationEditor> {
+class _FormationEditorState extends State<FormationEditor>
+    with SearchableListState<(int, BattleShareData), FormationEditor> {
   BattleSimSetting get settings => db.settings.battleSim;
   BattleSimUserData get userData => db.curUser.battleSim;
 
   bool sorting = false;
+  final filterData = TeamFilterData(false);
+
+  @override
+  Iterable<(int, BattleShareData)> get wholeData => userData.teams.indexed;
+
+  @override
+  bool filter((int, BattleShareData) record) {
+    return filterData.filter(record.$2);
+  }
+
+  @override
+  String get scrollRestorationId => 'formation_storage';
 
   @override
   Widget build(final BuildContext context) {
     settings.validate();
     userData.validate();
-
-    return Scaffold(
+    if (sorting) {
+      shownList
+        ..clear()
+        ..addAll(wholeData);
+    } else {
+      filterShownList();
+    }
+    return scrollListener(
+      useGrid: false,
       appBar: AppBar(
-        title: Text(S.current.team_local),
+        title: Text('${S.current.team_local} (${db.curUser.name})'),
         actions: [
           IconButton(
             onPressed: () {
@@ -44,23 +65,56 @@ class _FormationEditorState extends State<FormationEditor> {
             },
             icon: Icon(sorting ? Icons.done : Icons.sort),
             tooltip: S.current.sort_order,
-          )
+          ),
+          IconButton(
+            icon: const Icon(Icons.filter_alt),
+            tooltip: S.current.filter,
+            onPressed: () {
+              Set<int> svtIds = {}, ceIds = {}, mcIds = {}, eventWarIds = {};
+              for (final record in userData.teams) {
+                final eventWarId = db.gameData.quests[record.quest?.id]?.eventIdPriorWarId;
+                if (eventWarId != null) eventWarIds.add(eventWarId);
+                final svts = record.formation.allSvts;
+                svtIds.addAll(svts.map((e) => e?.svtId ?? 0).where((e) => e > 0));
+                ceIds.addAll(svts.map((e) => e?.ceId ?? 0).where((e) => e > 0));
+                if (record.hasUsedMCSkills()) {
+                  mcIds.add(record.formation.mysticCode.mysticCodeId ?? 0);
+                }
+              }
+
+              return FilterPage.show(
+                context: context,
+                builder: (context) => TeamFilterPage(
+                  filterData: filterData,
+                  availableSvts: svtIds,
+                  availableCEs: ceIds,
+                  availableMCs: mcIds,
+                  availableEventWarIds: eventWarIds,
+                  onChanged: (_) {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  },
+                ),
+              );
+            },
+          ),
         ],
       ),
-      body: buildBody(),
     );
   }
 
-  Widget buildBody() {
-    List<Widget> children = [
-      for (final (index, team) in userData.teams.indexed) buildFormation(index, team),
-    ];
-
+  @override
+  Widget buildListView({
+    Widget? topHint,
+    Widget? bottomHint,
+    Widget? separator,
+  }) {
     if (sorting) {
       return ReorderableListView(
         children: [
-          for (int index = 0; index < children.length; index++)
-            AbsorbPointer(key: Key('sort_$index'), child: children[index]),
+          for (final (index, team) in wholeData)
+            AbsorbPointer(key: Key('sort_$index'), child: listItemBuilder((index, team))),
         ],
         onReorder: (int oldIndex, int newIndex) {
           setState(() {
@@ -74,42 +128,12 @@ class _FormationEditorState extends State<FormationEditor> {
         },
       );
     }
-
-    final listView = ScrollRestoration(
-      restorationId: 'formation_storage',
-      builder: (context, controller) {
-        return Scrollbar(
-          controller: controller,
-          child: ListView(
-            controller: controller,
-            children: [
-              ListTile(
-                dense: true,
-                title: db.onUserData((context, snapshot) => Text(
-                      '${S.current.cur_account}: ${db.curUser.name}',
-                      textAlign: TextAlign.center,
-                    )),
-                onTap: () async {
-                  await router.pushPage(AccountPage());
-                  if (mounted) setState(() {});
-                },
-              ),
-              ...children,
-              const Divider(height: 16),
-            ],
-          ),
-        );
-      },
-    );
-    return Column(
-      children: [
-        Expanded(child: listView),
-        if (!sorting && widget.teamToSave != null) SafeArea(child: buildButtonBar()),
-      ],
-    );
+    return super.buildListView(topHint: topHint, bottomHint: bottomHint, separator: separator);
   }
 
-  Widget buildFormation(int index, BattleShareData team) {
+  @override
+  Widget listItemBuilder((int, BattleShareData) record) {
+    final (index, team) = record;
     final formation = team.formation;
     String title = formation.shownName(index);
     final titleStyle = Theme.of(context).textTheme.bodySmall;
@@ -166,6 +190,11 @@ class _FormationEditorState extends State<FormationEditor> {
       child = Padding(padding: const EdgeInsetsDirectional.only(end: 24), child: child);
     }
     return child;
+  }
+
+  @override
+  Widget gridItemBuilder((int, BattleShareData) record) {
+    throw UnimplementedError('GridView not supported');
   }
 
   Widget buildQuest(BattleQuestInfo questInfo) {
@@ -276,22 +305,27 @@ class _FormationEditorState extends State<FormationEditor> {
     );
   }
 
-  Widget buildButtonBar() {
-    return ButtonBar(
-      alignment: MainAxisAlignment.center,
-      children: [
-        FilledButton.tonalIcon(
-          onPressed: widget.teamToSave == null
-              ? null
-              : () {
-                  userData.teams.add(widget.teamToSave!.copy());
-                  EasyLoading.showSuccess('${S.current.saved}: ${S.current.team} ${userData.teams.length}');
-                  setState(() {});
-                },
-          icon: const Icon(Icons.person_add),
-          label: Text(S.current.save_current_team),
-        ),
-      ],
+  @override
+  PreferredSizeWidget? get buttonBar {
+    if (sorting || widget.teamToSave == null) return null;
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(48),
+      child: ButtonBar(
+        alignment: MainAxisAlignment.center,
+        children: [
+          FilledButton.tonalIcon(
+            onPressed: widget.teamToSave == null
+                ? null
+                : () {
+                    userData.teams.add(widget.teamToSave!.copy());
+                    EasyLoading.showSuccess('${S.current.saved}: ${S.current.team} ${userData.teams.length}');
+                    setState(() {});
+                  },
+            icon: const Icon(Icons.person_add),
+            label: Text(S.current.save_current_team),
+          ),
+        ],
+      ),
     );
   }
 }

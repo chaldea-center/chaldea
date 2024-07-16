@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/utils/wiki.dart';
@@ -252,9 +250,9 @@ class NiceWar with RouteInfo {
             itemDrop.addDict(fixedDrop.items);
           }
         }
-        int arrows = _countArrows(quest);
-        itemReward.addNum(Items.quartzFragmentId, arrows);
-        itemReward.addNum(Items.blueSaplingId, arrows);
+        for (final phase in quest.phases) {
+          Gift.checkAddGifts(itemReward, gameData.questPhaseDetails[quest.id * 100 + phase]?.gifts ?? []);
+        }
       }
     }
     for (final selection in questSelections) {
@@ -267,36 +265,6 @@ class NiceWar with RouteInfo {
         itemDrop.addDict(fixedDrop.items);
       }
     }
-  }
-
-  int _countArrows(Quest quest) {
-    if (!isMainStory || quest.type != QuestType.main) {
-      return 0;
-    }
-    if (quest.flags.contains(QuestFlag.branch)) {
-      return 0;
-    }
-    if (quest.id == targetId && startType == WarStartType.quest) {
-      if (flags.contains(WarFlag.dispFirstQuest)) {
-        return max(0, quest.phases.length - 1);
-      } else {
-        return 0;
-      }
-    }
-    // the first training quest for starter
-    if (quest.id == 1000000) return 0;
-    if ([
-      1000825, // 终局特异点 dup chapter 12
-      2000217, // 1.5.2
-      2000317, // 1.5.3
-      3000500,
-      3000501,
-      3000502,
-      3000503, // LB 2.5.1 intro.
-    ].contains(quest.id)) {
-      return 0;
-    }
-    return quest.phases.length;
   }
 
   Map<String, dynamic> toJson() => _$NiceWarToJson(this);

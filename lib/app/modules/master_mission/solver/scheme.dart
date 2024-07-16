@@ -128,7 +128,7 @@ class CustomMission {
     );
   }
 
-  Widget buildDescriptor(BuildContext context, {double? textScaleFactor}) {
+  Widget buildDescriptor(BuildContext context, {double? textScaleFactor, InlineSpan? leading}) {
     return CondTargetNumDescriptor(
       condType: CondType.missionConditionDetail,
       targetNum: count,
@@ -147,6 +147,7 @@ class CustomMission {
       }),
       textScaleFactor: textScaleFactor ?? 0.9,
       useAnd: condAnd,
+      leading: leading,
     );
   }
 

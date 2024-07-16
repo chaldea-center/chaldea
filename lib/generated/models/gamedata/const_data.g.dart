@@ -13,9 +13,9 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
           const {},
       attributeRelation: (json['attributeRelation'] as Map?)?.map(
             (k, e) => MapEntry(
-                $enumDecode(_$ServantSubAttributeEnumMap, k),
+                const ServantSubAttributeConverter().fromJson(k),
                 (e as Map).map(
-                  (k, e) => MapEntry($enumDecode(_$ServantSubAttributeEnumMap, k), (e as num).toInt()),
+                  (k, e) => MapEntry(const ServantSubAttributeConverter().fromJson(k), (e as num).toInt()),
                 )),
           ) ??
           const {},
@@ -108,8 +108,9 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
 
 Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, dynamic>{
       'cnReplace': instance.cnReplace,
-      'attributeRelation': instance.attributeRelation.map((k, e) =>
-          MapEntry(_$ServantSubAttributeEnumMap[k]!, e.map((k, e) => MapEntry(_$ServantSubAttributeEnumMap[k]!, e)))),
+      'attributeRelation': instance.attributeRelation.map((k, e) => MapEntry(
+          const ServantSubAttributeConverter().toJson(k),
+          e.map((k, e) => MapEntry(const ServantSubAttributeConverter().toJson(k), e)))),
       'buffActions': instance.buffActions.map((k, e) => MapEntry(const BuffActionConverter().toJson(k), e.toJson())),
       'cardInfo': instance.cardInfo
           .map((k, e) => MapEntry(_$CardTypeEnumMap[k]!, e.map((k, e) => MapEntry(k.toString(), e.toJson())))),
@@ -134,15 +135,6 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
       'svtFaceLimits': instance.svtFaceLimits.map((k, e) => MapEntry(k.toString(), e)),
       'config': instance.config.toJson(),
     };
-
-const _$ServantSubAttributeEnumMap = {
-  ServantSubAttribute.human: 'human',
-  ServantSubAttribute.sky: 'sky',
-  ServantSubAttribute.earth: 'earth',
-  ServantSubAttribute.star: 'star',
-  ServantSubAttribute.beast: 'beast',
-  ServantSubAttribute.void_: 'void',
-};
 
 const _$CardTypeEnumMap = {
   CardType.none: 'none',

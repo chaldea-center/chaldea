@@ -243,7 +243,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
             svt.limitCount.toString(),
             Transl.svtSubAttribute(svt.attribute).l,
             _dscPercent(svt.deathRate, 10),
-            svt.isEnemy ? _dscPercent(svt.niceEnemy!.criticalRate, 10) : svt.niceSvt!.starAbsorb.toString(),
+            svt.isEnemy ? _dscPercent(svt.niceEnemy!.criticalRate, 10) : svt.niceSvt!.criticalWeight.toString(),
           ],
         ),
         if (svt.isEnemy) ...[

@@ -25,7 +25,7 @@ class _FavoriteTeamsPageState extends State<FavoriteTeamsPage> {
           e.warId < 1000 ? -e.warId : -(e.war?.event?.startedAt ?? e.event?.startedAt ?? e.openedAt),
           e.priority,
         ]);
-    quests.sort((a, b) => Quest.compare(a, b, spotLayer: true));
+    quests.sort((a, b) => -Quest.compare(a, b, spotLayer: true));
     return quests;
   }
 
@@ -56,7 +56,7 @@ class _FavoriteTeamsPageState extends State<FavoriteTeamsPage> {
         placeholder: (context, url) => const SizedBox(),
       ),
       title: Text('Lv.${quest.recommendLv} ${quest.lDispName}'),
-      subtitle: Text(quest.war?.eventReal?.lName.l ?? quest.war?.lName.l ?? quest.event?.lName.l ?? 'Unknown Event'),
+      subtitle: Text(quest.event?.lName.l ?? quest.war?.lName.l ?? 'Unknown Event'),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -90,7 +90,7 @@ class _FavoriteTeamsPageState extends State<FavoriteTeamsPage> {
               ListTile(
                 dense: true,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 24.0),
-                title: Text(id.toString()),
+                title: Text('No.$id'),
                 trailing: IconButton(
                   onPressed: () {
                     SimpleCancelOkDialog(

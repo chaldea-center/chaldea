@@ -7,6 +7,11 @@
 - Trait - quest reverse lookup
 - Improve Material 3 theme
 - Improve rare/additional enemy hints
+- Trait list: support multiple traits mode
+- NP DMG Ranking: fixed part of servants' skill order
+- Support Hibiki & Chikagi different sub attribute
+- Support event sweets trade
+- Fix some bugs
 
 ## 2.5.9
 

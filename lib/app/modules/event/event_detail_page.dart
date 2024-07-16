@@ -37,6 +37,7 @@ import 'detail/recipe.dart';
 import 'detail/reward_scene.dart';
 import 'detail/shop.dart';
 import 'detail/towers.dart';
+import 'detail/trade.dart';
 import 'detail/treasure_box.dart';
 import 'detail/voice.dart';
 
@@ -152,6 +153,9 @@ class _EventDetailPageState extends State<EventDetailPage> {
     }
     if (event.fortifications.isNotEmpty) {
       _addTab(S.current.event_fortification, EventFortificationPage(event: event));
+    }
+    if (event.tradeGoods.isNotEmpty) {
+      _addTab(S.current.event_trade, EventTradePage(event: event));
     }
     // missions
     if (event.randomMissions.isNotEmpty) {

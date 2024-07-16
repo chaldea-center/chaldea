@@ -3638,6 +3638,17 @@ class S {
     );
   }
 
+  /// `Trade`
+  String get event_trade {
+    return Intl.message(
+      'Trade',
+      name: 'event_trade',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Treasure Box`
   String get event_treasure_box {
     return Intl.message(
@@ -8758,6 +8769,17 @@ class S {
     );
   }
 
+  /// `Free Condition`
+  String get shop_free_condition {
+    return Intl.message(
+      'Free Condition',
+      name: 'shop_free_condition',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Show`
   String get show {
     return Intl.message(
@@ -9874,6 +9896,17 @@ class S {
     return Intl.message(
       'No Double Koyan',
       name: 'team_no_double_koyan',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `No Double Oberon`
+  String get team_no_double_oberon {
+    return Intl.message(
+      'No Double Oberon',
+      name: 'team_no_double_oberon',
       desc: '',
       locale: localeName,
       args: [],

@@ -46,6 +46,15 @@ class AddState {
         }
       }
 
+      final isOpponentTurn = target.isPlayer != battleData.isPlayerTurn;
+      if (isOpponentTurn) {
+        if (dataVals.ExtendBuffHalfTurnInOpponentTurn == 1) buffData.logicTurn += 1;
+        if (dataVals.ShortenBuffHalfTurnInOpponentTurn == 1) buffData.logicTurn -= 1;
+      } else {
+        if (dataVals.ExtendBuffHalfTurnInPartyTurn == 1) buffData.logicTurn += 1;
+        if (dataVals.ShortenBuffHalfTurnInPartyTurn == 1) buffData.logicTurn -= 1;
+      }
+
       if (buff.type.isTdTypeChange) {
         buffData.tdTypeChange = await getTypeChangeTd(battleData, target, buff);
       } else if (buff.type == BuffType.upDamageEventPoint) {

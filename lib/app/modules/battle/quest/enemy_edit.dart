@@ -151,7 +151,10 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       enumTile<ServantSubAttribute>(
         title: Text(S.current.svt_sub_attribute),
         value: enemy.svt.attribute,
-        values: ServantSubAttribute.values,
+        values: [
+          for (final v in ServantSubAttribute.values)
+            if (v != ServantSubAttribute.default_) v
+        ],
         itemBuilder: (v) => Text(Transl.svtSubAttribute(v).l, textScaler: const TextScaler.linear(0.9)),
         onChanged: (v) {
           enemy.svt.attribute = v;
@@ -419,7 +422,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
       // ignore: invalid_use_of_protected_member
       enemy.svt.face = face;
     }
-    enemy.svt.rarity = svt.ascensionAdd.rarity.all[limitCount] ?? enemy.svt.rarity;
+    enemy.svt.rarity = svt.limits[limitCount]?.rarity ?? enemy.svt.rarity;
     updateTrait(svt, limitCount);
   }
 

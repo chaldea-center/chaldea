@@ -150,7 +150,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         children.add(buildStage(curPhase, stage));
         final stageCutin = stage.cutin;
         if (stageCutin != null && !widget.battleOnly) {
-          children.add(_buildStageCutin(context, stageCutin));
+          children.add(_buildStageCutin(context, curPhase, stageCutin));
         }
       }
       children.addAll([
@@ -244,9 +244,11 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     if (layer != null && quest.type == QuestType.free) {
       shownSpotName = '${S.current.map_layer_n(layer)} $shownSpotName';
     }
+    final phaseDetail = db.gameData.questPhaseDetails[quest.id * 100 + phase];
 
     bool noConsume = effPhase.flags.contains(QuestFlag.noBattle) ||
-        (effPhase.consumeType == ConsumeType.ap && effPhase.consume == 0);
+        ((phaseDetail?.consumeType2 ?? effPhase.consumeType) == ConsumeType.ap &&
+            (phaseDetail?.actConsume ?? effPhase.consume) == 0);
     final questSelects = curPhase?.extraDetail?.questSelect;
     List<Widget> headerRows = [
       Row(
@@ -293,21 +295,21 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
           ),
           Expanded(
             child: Text(
-              'Lv.${effPhase.recommendLv}',
+              'Lv.${curPhase?.recommendLv ?? phaseDetail?.recommendLv ?? quest.recommendLv}',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
           Expanded(
             child: Text(
-              '${S.current.bond} ${noConsume ? "-" : curPhase?.bond ?? "?"}',
+              '${S.current.bond} ${noConsume ? "-" : curPhase?.bond ?? phaseDetail?.bond ?? "?"}',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
           Expanded(
             child: Text(
-              'EXP ${noConsume ? "-" : curPhase?.exp ?? "?"}',
+              'EXP ${noConsume ? "-" : curPhase?.exp ?? phaseDetail?.exp ?? "?"}',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodySmall,
             ),
@@ -495,7 +497,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     );
   }
 
-  Widget _buildStageCutin(BuildContext context, StageCutin cutin) {
+  Widget _buildStageCutin(BuildContext context, QuestPhase curPhase, StageCutin cutin) {
     List<Widget> children = [];
     children.add(Text(
       'Stage Cutin (${S.current.quest_runs(cutin.runs)})',
@@ -539,7 +541,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       )));
     }
     if (cutin.drops.isNotEmpty) {
-      children.add(_getRayshiftDrops(cutin.drops, false));
+      children.add(_getRayshiftDrops(curPhase, cutin.drops, false));
     }
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -818,7 +820,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
               ),
             ),
           const SizedBox(height: 2),
-          _getRayshiftDrops(curPhase.drops, hasMultiEventItem && _sumEventItem),
+          _getRayshiftDrops(curPhase, curPhase.drops, hasMultiEventItem && _sumEventItem),
           const SizedBox(height: 3),
         ],
       ));
@@ -861,7 +863,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     );
   }
 
-  Widget _getRayshiftDrops(List<EnemyDrop> drops, bool sumEventItem) {
+  Widget _getRayshiftDrops(QuestPhase curPhase, List<EnemyDrop> drops, bool sumEventItem) {
     drops = List.of(drops);
     drops.sort((a, b) => Item.compare2(a.objectId, b.objectId));
     List<Widget> children = [];
@@ -870,8 +872,8 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
       if (drop.runs != 0) {
         double dropRate = drop.dropCount / drop.runs;
         if (preferApRate) {
-          if (quest.consume > 0 && dropRate != 0.0) {
-            double apRate = quest.consume / dropRate;
+          if (curPhase.consumeType.useAp && curPhase.consume > 0 && dropRate != 0.0) {
+            double apRate = curPhase.consume / dropRate;
             text = apRate >= 1000 ? apRate.toInt().toString() : apRate.format(precision: 3, maxDigits: 4);
           }
         } else {
@@ -997,8 +999,17 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
 
   Widget? getPhasePresent(int phase) {
     final present = quest.presents.firstWhereOrNull((e) => e.phase == phase);
-    if (present == null) return null;
-    if (present.giftIcon == null && present.gifts.isEmpty) return null;
+    final phaseGifts = db.gameData.questPhaseDetails[quest.id * 100 + phase]?.gifts ?? const [];
+    List<List<Widget>> giftsList = [
+      if (present != null)
+        [
+          if (present.giftIcon != null) db.getIconImage(present.giftIcon, width: 36),
+          ...Gift.listBuilder(context: context, gifts: present.gifts, size: 36),
+        ],
+      if (phaseGifts.isNotEmpty) Gift.listBuilder(context: context, gifts: phaseGifts, size: 36),
+    ];
+    giftsList.removeWhere((e) => e.isEmpty);
+    if (giftsList.isEmpty) return null;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
@@ -1006,16 +1017,17 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         children: <Widget>[
           _header(S.current.quest_reward_short),
           Expanded(
-            child: Center(
-              child: Wrap(
-                spacing: 1,
-                runSpacing: 1,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  if (present.giftIcon != null) db.getIconImage(present.giftIcon, width: 36),
-                  ...Gift.listBuilder(context: context, gifts: present.gifts, size: 36),
-                ],
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (final gifts in giftsList)
+                  Wrap(
+                    spacing: 1,
+                    runSpacing: 1,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: gifts,
+                  )
+              ],
             ),
           )
         ],

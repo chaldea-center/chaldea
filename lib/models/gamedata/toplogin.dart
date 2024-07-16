@@ -2059,7 +2059,7 @@ class BattleUserServantData {
   // afterIconLimitCount: list[int] | None = None
   List<int>? appendPassiveSkillIds;
   List<int>? appendPassiveSkillLvs;
-  int limitCount;
+  int limitCount; // for battle-setup ce, support ce's limitCounts may be zero
   // imageLimitCount: int | None = None
   int dispLimitCount;
   // commandCardLimitCount: int

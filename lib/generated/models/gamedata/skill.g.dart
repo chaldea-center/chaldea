@@ -395,6 +395,7 @@ SkillScript _$SkillScriptFromJson(Map json) => SkillScript(
           .toList(),
       tdTypeChangeIDs: (json['tdTypeChangeIDs'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
       excludeTdChangeTypes: (json['excludeTdChangeTypes'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
+      IgnoreValueUp: json['IgnoreValueUp'],
     );
 
 Map<String, dynamic> _$SkillScriptToJson(SkillScript instance) {
@@ -422,6 +423,7 @@ Map<String, dynamic> _$SkillScriptToJson(SkillScript instance) {
   writeNotNull('SelectAddInfo', instance.SelectAddInfo?.map((e) => e.toJson()).toList());
   writeNotNull('tdTypeChangeIDs', instance.tdTypeChangeIDs);
   writeNotNull('excludeTdChangeTypes', instance.excludeTdChangeTypes);
+  writeNotNull('IgnoreValueUp', instance.IgnoreValueUp);
   return val;
 }
 

@@ -211,8 +211,8 @@ class DamageParameters {
   int attackerClass = 0;
   int defenderClass = 0;
   int classAdvantage = 0;
-  ServantSubAttribute attackerAttribute = ServantSubAttribute.void_;
-  ServantSubAttribute defenderAttribute = ServantSubAttribute.void_;
+  ServantSubAttribute attackerAttribute = ServantSubAttribute.none;
+  ServantSubAttribute defenderAttribute = ServantSubAttribute.none;
   bool isNp = false;
   int chainPos = 1;
   CardType currentCardType = CardType.none;

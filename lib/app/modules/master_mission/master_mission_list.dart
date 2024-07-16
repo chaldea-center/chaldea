@@ -202,9 +202,16 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
     title += Transl.enums(mm.type, (enums) => enums.missionType).l;
 
     final now = DateTime.now().timestamp;
+    final detailText = mm.missionIconDetailText;
     return ListTile(
       key: Key('master_mission_${mm.id}'),
-      title: Text(title, textScaler: const TextScaler.linear(0.9)),
+      title: Text.rich(
+        TextSpan(text: title, children: [
+          if (detailText != null && detailText.isNotEmpty)
+            TextSpan(text: '\n$detailText', style: const TextStyle(fontSize: 14))
+        ]),
+        textScaler: const TextScaler.linear(0.9),
+      ),
       subtitle: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

@@ -60,7 +60,12 @@ class CharaFigureMarker<T> extends StatefulWidget {
       nonSvtImageIds: db.settings.misc.nonSvtCharaFigureIds,
       getExistUrls: (extraAssets) => [
         ...extraAssets.charaFigure.allUrls,
-        for (final x in extraAssets.charaFigureMulti.values) ...x.allUrls,
+        for (final multi in [
+          extraAssets.charaFigureMulti,
+          extraAssets.charaFigureMultiCombine,
+          extraAssets.charaFigureMultiLimitUp
+        ])
+          for (final x in multi.values) ...x.allUrls,
       ],
       toUrl: (imageId) => 'https://static.atlasacademy.io/JP/CharaFigure/$imageId/$imageId.png',
     ));

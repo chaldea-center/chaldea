@@ -205,6 +205,9 @@ class _ShopListPageState extends State<ShopListPage> with SearchableListState<Ni
     if (!filterData.permanent.matchOne(shop.closedAt > kNeverClosedTimestamp)) {
       return false;
     }
+    if (filterData.hasFreeCond && !shop.hasFreeCond) {
+      return false;
+    }
     if (!filterData.purchaseType.matchAny([shop.purchaseType, ...shop.itemSet.map((e) => e.purchaseType)])) {
       return false;
     }

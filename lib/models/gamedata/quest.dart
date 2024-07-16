@@ -238,6 +238,8 @@ class Quest with RouteInfo {
     return null;
   }
 
+  int get eventIdPriorWarId => event?.id ?? warId;
+
   bool get is90PlusFree =>
       (isAnyFree || isRepeatRaid) &&
       ((recommendLv.startsWith('90') && recommendLv != '90') || recommendLv.startsWith('100'));
@@ -706,6 +708,21 @@ class Gift extends BaseGift {
     this.giftAdds = const [],
   }) : super(type: type ?? GiftType.item);
 
+  static final kGift448 = <Gift>[
+    Gift(
+      id: 448,
+      type: GiftType.item,
+      objectId: 16,
+      num: 1,
+    ),
+    Gift(
+      id: 448,
+      type: GiftType.item,
+      objectId: 103,
+      num: 1,
+    )
+  ];
+
   factory Gift.fromJson(Map<String, dynamic> json) => _$GiftFromJson(json);
 
   static Map<int, List<Gift>> group(List<Gift> gifts) {
@@ -1085,6 +1102,8 @@ class SupportServant {
   List<NiceTrait> traits;
   EnemySkill skills;
   SupportServantTd noblePhantasm;
+  @JsonKey(unknownEnumValue: NpcFollowerEntityFlag.none)
+  List<NpcFollowerEntityFlag> followerFlags;
   List<SupportServantEquip> equips;
   SupportServantScript? script;
   List<SupportServantRelease> releaseConditions;
@@ -1104,6 +1123,7 @@ class SupportServant {
     required this.traits,
     required this.skills,
     required this.noblePhantasm,
+    this.followerFlags = const [],
     this.equips = const [],
     this.script,
     this.releaseConditions = const [],
@@ -1401,7 +1421,7 @@ class QuestEnemy with GameCardMixin {
         type: SvtType.normal,
         flags: [],
         classId: SvtClass.ALL.value,
-        attribute: ServantSubAttribute.void_,
+        attribute: ServantSubAttribute.none,
         rarity: 3,
         atkMax: 1000,
         hpMax: 10000,
@@ -1917,6 +1937,48 @@ class BattleBg {
   Map<String, dynamic> toJson() => _$BattleBgToJson(this);
 }
 
+@JsonSerializable()
+class BasicQuestPhaseDetail {
+  final int questId;
+  final int phase;
+  final List<int> classIds;
+  // final List<int> individuality;
+  final int qp;
+  final int exp;
+  final int bond;
+  final int giftId;
+  final List<Gift> gifts;
+  final int? spotId;
+  @protected
+  final int? consumeType;
+  final int? actConsume;
+  final String? recommendLv;
+
+  ConsumeType? get consumeType2 {
+    if (consumeType == null) return null;
+    return ConsumeType.values.firstWhereOrNull((e) => e.value == consumeType);
+  }
+
+  BasicQuestPhaseDetail({
+    required this.questId,
+    required this.phase,
+    this.classIds = const [],
+    this.qp = 0,
+    this.exp = 0,
+    this.bond = 0,
+    this.giftId = 0,
+    List<Gift>? gifts,
+    this.spotId,
+    this.consumeType,
+    this.actConsume,
+    this.recommendLv,
+  }) : gifts = gifts ?? (giftId == 448 ? Gift.kGift448 : []);
+
+  factory BasicQuestPhaseDetail.fromJson(Map<String, dynamic> json) => _$BasicQuestPhaseDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BasicQuestPhaseDetailToJson(this);
+}
+
 ///
 
 class QuestFlagConverter extends JsonConverter<QuestFlag, String> {
@@ -1958,11 +2020,14 @@ enum QuestType {
 final kQuestTypeIds = {for (final t in QuestType.values) t.value: t};
 
 enum ConsumeType {
-  none,
-  ap,
-  rp,
-  item,
-  apAndItem;
+  none(0),
+  ap(1),
+  rp(2),
+  item(3),
+  apAndItem(4);
+
+  const ConsumeType(this.value);
+  final int value;
 
   bool get useAp => this == ap || this == apAndItem;
   bool get useApOrBp => this == ap || this == apAndItem || this == rp;
@@ -2140,6 +2205,7 @@ enum FrequencyType {
   valentine,
   everyTimeAfter,
   everyTimeBefore,
+  onceUntilRemind,
 }
 
 enum StageLimitActType {
@@ -2160,6 +2226,13 @@ enum NpcServantFollowerFlag {
   hideTreasureDeviceDetail,
   hideRarity,
   notClassBoard,
+}
+
+enum NpcFollowerEntityFlag {
+  none,
+  recommendedIcon,
+  isMySvtOrNpc,
+  fixedNpc,
 }
 
 enum QuestGroupType {

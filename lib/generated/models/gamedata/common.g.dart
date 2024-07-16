@@ -405,4 +405,9 @@ const _$CondTypeEnumMap = {
   CondType.withStartingMember: 'withStartingMember',
   CondType.latestQuestPhaseEqual: 'latestQuestPhaseEqual',
   CondType.notLatestQuestPhaseEqual: 'notLatestQuestPhaseEqual',
+  CondType.purchaseShopNum: 'purchaseShopNum',
+  CondType.eventTradeTotalNum: 'eventTradeTotalNum',
+  CondType.limitedMissionAchieveNumBelow: 'limitedMissionAchieveNumBelow',
+  CondType.limitedMissionAchieveNumAbove: 'limitedMissionAchieveNumAbove',
+  CondType.notSvtVoicePlayed: 'notSvtVoicePlayed',
 };

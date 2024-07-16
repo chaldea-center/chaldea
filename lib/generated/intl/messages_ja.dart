@@ -306,6 +306,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "event_quest": MessageLookupByLibrary.simpleMessage("イベントクエスト"),
         "event_rerun_replace_grail": m2,
         "event_tower": MessageLookupByLibrary.simpleMessage("塔"),
+        "event_trade": MessageLookupByLibrary.simpleMessage("貿易"),
         "event_treasure_box": MessageLookupByLibrary.simpleMessage("宝箱"),
         "exchange_ticket": MessageLookupByLibrary.simpleMessage("素材交換券"),
         "exchange_ticket_short": MessageLookupByLibrary.simpleMessage("交換券"),

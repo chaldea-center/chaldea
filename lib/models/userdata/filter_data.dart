@@ -319,6 +319,12 @@ class SvtFilterData with FilterDataMixin {
 
   Map<String, dynamic> toJson() => _$SvtFilterDataToJson(this);
 
+  static int compareId(int a, int b, {List<SvtCompare>? keys, List<bool>? reversed, User? user}) {
+    final aa = db.gameData.servantsById[a], bb = db.gameData.servantsById[b];
+    if (aa == null && bb == null) return a.compareTo(b);
+    return compare(aa, bb, keys: keys, reversed: reversed, user: user);
+  }
+
   static int compare(Servant? a, Servant? b, {List<SvtCompare>? keys, List<bool>? reversed, User? user}) {
     if (a == null && b == null) return 0;
     if (a == null) return -1;

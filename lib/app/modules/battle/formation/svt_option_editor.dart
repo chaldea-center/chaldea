@@ -467,7 +467,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           Text(
             'No.${svt.collectionNo > 0 ? svt.collectionNo : svt.id}'
             '  ${Transl.svtClassId(svt.classId).l}'
-            '  ${Transl.svtSubAttribute(svt.attribute).l}',
+            '  ${Transl.svtSubAttribute(svt.getAttribute(playerSvtData.limitCount)).l}',
           ),
           Text('ATK $atk  HP $hp'),
         ],
@@ -968,7 +968,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       EasyLoading.showInfo(S.current.empty_hint);
       return;
     }
-    skill.unmodifiedDetail = source.shownName;
+    skill.unmodifiedDetail = 'Levels: ${source.shownName}';
     playerSvtData.addCustomPassive(skill, skill.maxLv);
     if (mounted) setState(() {});
   }

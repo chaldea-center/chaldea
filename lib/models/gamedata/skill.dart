@@ -833,6 +833,9 @@ class SkillScript with DataScriptBase {
   final List<int>? tdTypeChangeIDs;
   final List<int>? excludeTdChangeTypes;
 
+  // skill.script, not in skillLv.script
+  final bool? IgnoreValueUp;
+
   bool get isNotEmpty =>
       NP_HIGHER?.isNotEmpty == true ||
       NP_LOWER?.isNotEmpty == true ||
@@ -849,7 +852,8 @@ class SkillScript with DataScriptBase {
       additionalSkillActorType?.isNotEmpty == true ||
       SelectAddInfo?.isNotEmpty == true ||
       tdTypeChangeIDs?.isNotEmpty == true ||
-      excludeTdChangeTypes?.isNotEmpty == true;
+      excludeTdChangeTypes?.isNotEmpty == true ||
+      IgnoreValueUp != null;
 
   SkillScript({
     this.NP_HIGHER,
@@ -868,7 +872,23 @@ class SkillScript with DataScriptBase {
     this.SelectAddInfo,
     this.tdTypeChangeIDs,
     this.excludeTdChangeTypes,
-  });
+    dynamic IgnoreValueUp,
+  }) : IgnoreValueUp = _parse(IgnoreValueUp);
+
+  static T? _parse<T>(dynamic value) {
+    if (value == null) return null;
+    if (value is T) {
+      return value;
+    }
+    if (value is List) {
+      if (value.isEmpty) return null;
+      return value.first as T;
+    }
+    assert(() {
+      throw ArgumentError.value(value, 'type ${value.runtimeType} is not $T or List<$T>');
+    }());
+    return null;
+  }
 
   factory SkillScript.fromJson(Map<String, dynamic> json) => _$SkillScriptFromJson(json)..setSource(json);
 

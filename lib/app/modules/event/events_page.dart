@@ -274,6 +274,8 @@ class EventListPageState extends State<EventListPage>
         if (event.digging != null) EventCustomType.special,
         if (event.cooltime != null) EventCustomType.special,
         if (event.recipes.isNotEmpty) EventCustomType.special,
+        if (event.fortifications.isNotEmpty) EventCustomType.special,
+        if (event.tradeGoods.isNotEmpty) EventCustomType.special,
         if (event.bulletinBoards.isNotEmpty) EventCustomType.bulletinBoard,
         if (event.type == EventType.warBoard) EventCustomType.warBoard,
         if (event.isExchangeSvtEvent || event.id == 80335) EventCustomType.exchangeSvt, // plus 6th Anni SSR

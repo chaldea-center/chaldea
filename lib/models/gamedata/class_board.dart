@@ -111,6 +111,11 @@ class ClassBoard with RouteInfo {
       num: 0,
       coolDown: [0],
       functions: functions,
+      actIndividuality: classes
+          .map((e) => ConstData.classInfo[e.classId]?.individuality ?? 0)
+          .where((e) => e > 0)
+          .map((e) => NiceTrait(id: e))
+          .toList(),
     );
   }
 }

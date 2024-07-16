@@ -53,6 +53,7 @@ class Event with RouteInfo {
   EventDigging? digging;
   EventCooltime? cooltime;
   List<EventFortification> fortifications;
+  List<EventTradeGoods> tradeGoods;
   List<EventCampaign> campaigns;
   List<EventQuest> campaignQuests;
   List<EventCommandAssist> commandAssists;
@@ -106,6 +107,7 @@ class Event with RouteInfo {
     this.digging,
     this.cooltime,
     this.fortifications = const [],
+    this.tradeGoods = const [],
     this.campaigns = const [],
     this.campaignQuests = const [],
     this.commandAssists = const [],
@@ -172,6 +174,7 @@ class Event with RouteInfo {
       cooltime == null &&
       recipes.isEmpty &&
       fortifications.isEmpty &&
+      tradeGoods.isEmpty &&
       // campaigns.isEmpty &&
       // campaignQuests.isEmpty &&
       // heelPortraits.isEmpty &&
@@ -535,6 +538,9 @@ class MstMasterMission with RouteInfo {
   // int imageId;
   // String name;
   Map<int, int> gifts; // manually added
+  Map<String, dynamic> script;
+
+  String? get missionIconDetailText => script['missionIconDetailText'];
 
   MstMasterMission({
     required this.id,
@@ -542,6 +548,7 @@ class MstMasterMission with RouteInfo {
     required this.endedAt,
     required this.closedAt,
     this.gifts = const {},
+    this.script = const {},
   });
 
   MissionType get type {
@@ -602,6 +609,7 @@ class MasterMission extends MstMasterMission {
     required this.missions,
     this.completeMission,
     this.quests = const [],
+    super.script = const {},
   });
 
   @override
@@ -681,6 +689,13 @@ class NiceShop with RouteInfo {
   PayType payType;
   ItemAmount? cost;
   List<CommonConsume> consumes;
+
+  List<CommonRelease> freeShopConds;
+  int freeShopReleaseDate;
+  String freeShopCondMessage;
+
+  bool get hasFreeCond => freeShopConds.isNotEmpty || freeShopReleaseDate > 0 || freeShopCondMessage.isNotEmpty;
+
   // purchase
   PurchaseType purchaseType;
   List<int> targetIds; // only kiaraPunisherReset and quest using more than 1
@@ -714,6 +729,9 @@ class NiceShop with RouteInfo {
     this.payType = PayType.eventItem,
     ItemAmount? cost,
     this.consumes = const [],
+    this.freeShopConds = const [],
+    this.freeShopCondMessage = '',
+    this.freeShopReleaseDate = 0,
     this.purchaseType = PurchaseType.none,
     this.targetIds = const [],
     this.itemSet = const [],
@@ -1679,6 +1697,62 @@ class EventFortification {
 }
 
 @JsonSerializable()
+class EventTradeGoods {
+  int id;
+  String name;
+  String goodsIcon;
+  List<Gift> gifts;
+  List<CommonConsume> consumes;
+  int eventPointNum;
+  Item eventPointItem;
+  int tradeTime;
+  int maxNum;
+  int maxTradeTime;
+  List<CommonRelease> releaseConditions;
+  String closedMessage;
+  // # voiceData
+  List<EventTradePickup> pickups;
+
+  EventTradeGoods({
+    required this.id,
+    this.name = "",
+    required this.goodsIcon,
+    this.gifts = const [],
+    this.consumes = const [],
+    this.eventPointNum = 0,
+    required this.eventPointItem,
+    this.tradeTime = 0,
+    this.maxNum = 0,
+    this.maxTradeTime = 0,
+    this.releaseConditions = const [],
+    this.closedMessage = "",
+    this.pickups = const [],
+  });
+
+  factory EventTradeGoods.fromJson(Map<String, dynamic> json) => _$EventTradeGoodsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventTradeGoodsToJson(this);
+}
+
+@JsonSerializable()
+class EventTradePickup {
+  int startedAt;
+  int endedAt;
+//  int pickupIconId;
+  int tradeTimeRate;
+
+  EventTradePickup({
+    required this.startedAt,
+    required this.endedAt,
+    required this.tradeTimeRate,
+  });
+
+  factory EventTradePickup.fromJson(Map<String, dynamic> json) => _$EventTradePickupFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventTradePickupToJson(this);
+}
+
+@JsonSerializable()
 class EventBulletinBoard {
   int bulletinBoardId;
   String message;
@@ -2128,6 +2202,7 @@ enum CombineAdjustTarget {
   largeSuccessByClass,
   superSuccessByClass,
   exchangeSvt,
+  questItemFirstTime,
 }
 
 enum EventCombineCalc {

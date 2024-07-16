@@ -127,19 +127,25 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
       return false;
     }
 
-    if (!filterData.attribute.matchOne(svt.attribute)) {
+    if (!filterData.attribute.matchAny({svt.attribute, ...svt.ascensionAdd.attribute.all.values})) {
       return false;
     }
-    if (!filterData.policy.matchOne(svt.profile.stats?.policy ?? ServantPolicy.none)) {
+    final policy = svt.profile.stats?.policy ?? ServantPolicy.none,
+        personality = svt.profile.stats?.personality ?? ServantPersonality.none;
+    if (!filterData.policy.matchAny({policy, ...svt.limits.values.map((e) => e.policy ?? policy)})) {
       return false;
     }
-    if (!filterData.personality.matchOne(svt.profile.stats?.personality ?? ServantPersonality.none)) {
+    if (!filterData.personality
+        .matchAny({personality, ...svt.limits.values.map((e) => e.personality ?? personality)})) {
       return false;
     }
-    if (!filterData.gender.matchOne(svt.gender)) {
+
+    final traits = svt.traitsAll.map((e) => kTraitIdMapping[e] ?? Trait.unknown).toSet();
+    if (!filterData.gender.matchAny({svt.gender, ...Gender.values.where((e) => traits.contains(e.trait))})) {
       return false;
     }
-    if (!filterData.trait.matchAny(svt.traitsAll.map((e) => kTraitIdMapping[e] ?? Trait.unknown))) {
+
+    if (!filterData.trait.matchAny(traits)) {
       return false;
     }
     if (filterData.effectType.isNotEmpty || filterData.targetTrait.isNotEmpty || filterData.effectTarget.isNotEmpty) {
@@ -427,7 +433,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
         ),
         FilterGroup<ServantSubAttribute>(
           title: Text(S.current.svt_sub_attribute, style: textStyle),
-          options: ServantSubAttribute.values.sublist(0, 5),
+          options: ServantSubAttribute.values.where((e) => e.trait != null).toList(),
           values: filterData.attribute,
           optionBuilder: (v) => Text(Transl.svtSubAttribute(v).l),
           onFilterChanged: (value, _) {

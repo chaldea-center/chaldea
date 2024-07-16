@@ -56,7 +56,7 @@ class BasicServant with GameCardMixin {
     this.type = SvtType.normal,
     this.flags = const [],
     this.classId = 0,
-    this.attribute = ServantSubAttribute.void_,
+    this.attribute = ServantSubAttribute.none,
     this.rarity = 0,
     this.atkMax = 0,
     this.hpMax = 0,
@@ -157,9 +157,10 @@ class Servant extends BasicServant {
   ExtraAssets extraAssets;
   Gender gender;
   List<NiceTrait> traits;
-  int starAbsorb;
-  int starGen;
-  int instantDeathChance;
+  @JsonKey(name: 'starAbsorb')
+  int criticalWeight; // mstSvtLimit.criticalWeight
+  int starGen; // mstSvt.starRate
+  int instantDeathChance; // mstSvt.deathRate
   List<CardType> cards;
   Map<CardType, CardDetail> cardDetails;
   int atkBase;
@@ -176,6 +177,8 @@ class Servant extends BasicServant {
   List<ValentineScript> valentineScript;
   int? bondEquipOwner;
   int? valentineEquipOwner;
+  @JsonKey(readValue: Servant._readLimits)
+  Map<int, SvtLimitEntity> limits;
   AscensionAdd ascensionAdd;
   List<ServantTrait> traitAdd;
   List<ServantChange> svtChange;
@@ -210,6 +213,14 @@ class Servant extends BasicServant {
   List<int> get hpGrowth => curveData.hp; // [1:]
   List<int> get expGrowth => curveData.exp; // [0:]
 
+  static Object? _readLimits(Map data, String key) {
+    final value = data[key];
+    if (value is Map) {
+      return value.values.toList();
+    }
+    return value;
+  }
+
   Servant({
     required super.id,
     required super.collectionNo,
@@ -224,14 +235,14 @@ class Servant extends BasicServant {
     this.cost = 0,
     this.lvMax = 0,
     this.gender = Gender.unknown,
-    super.attribute = ServantSubAttribute.void_,
+    super.attribute = ServantSubAttribute.none,
     this.atkBase = 0,
     super.atkMax = 0,
     this.hpBase = 0,
     super.hpMax = 0,
     ExtraAssets? extraAssets,
     this.traits = const [],
-    this.starAbsorb = 0,
+    this.criticalWeight = 0,
     this.starGen = 0,
     this.instantDeathChance = 0,
     this.cards = const [],
@@ -246,6 +257,7 @@ class Servant extends BasicServant {
     this.valentineScript = const [],
     this.bondEquipOwner,
     this.valentineEquipOwner,
+    List<SvtLimitEntity>? limits,
     AscensionAdd? ascensionAdd,
     this.traitAdd = const [],
     this.svtChange = const [],
@@ -270,6 +282,7 @@ class Servant extends BasicServant {
   })  : originalCollectionNo = originalCollectionNo ?? collectionNo,
         extraAssets = extraAssets ?? ExtraAssets(),
         ascensionAdd = ascensionAdd ?? AscensionAdd(),
+        limits = {for (final limit in limits ?? <SvtLimitEntity>[]) limit.limitCount: limit},
         profile = profile ?? NiceLore() {
     preprocess();
   }
@@ -292,7 +305,7 @@ class Servant extends BasicServant {
       gender: gender,
       attribute: attribute,
       traits: traits,
-      starAbsorb: starAbsorb,
+      criticalWeight: criticalWeight,
       starGen: starGen,
       instantDeathChance: instantDeathChance,
       cards: cards,
@@ -311,6 +324,7 @@ class Servant extends BasicServant {
       valentineScript: valentineScript,
       bondEquipOwner: bondEquipOwner,
       valentineEquipOwner: valentineEquipOwner,
+      limits: limits.values.toList(),
       ascensionAdd: ascensionAdd,
       traitAdd: traitAdd,
       svtChange: svtChange,
@@ -368,6 +382,12 @@ class Servant extends BasicServant {
   }
 
   bool get isDupSvt => originalCollectionNo != collectionNo;
+
+  ServantSubAttribute getAttribute(int limitCount) {
+    final attriAdd = ascensionAdd.attribute.all[limitCount];
+    if (attriAdd != null && attriAdd != ServantSubAttribute.default_) return attriAdd;
+    return attribute;
+  }
 
   @override
   String? get icon {
@@ -568,10 +588,7 @@ class Servant extends BasicServant {
     if (_traitsAll != null) return _traitsAll!;
     List<NiceTrait> _traits = [];
     _traits.addAll(traits);
-    for (var v in ascensionAdd.individuality.ascension.values) {
-      _traits.addAll(v);
-    }
-    for (var v in ascensionAdd.individuality.costume.values) {
+    for (var v in ascensionAdd.individuality.all.values) {
       _traits.addAll(v);
     }
     for (final t in traitAdd) {
@@ -873,6 +890,8 @@ class ExtraAssets extends ExtraCCAssets {
   ExtraAssetsUrl charaFigure;
   Map<int, ExtraAssetsUrl> charaFigureForm;
   Map<int, ExtraAssetsUrl> charaFigureMulti;
+  Map<int, ExtraAssetsUrl> charaFigureMultiCombine;
+  Map<int, ExtraAssetsUrl> charaFigureMultiLimitUp;
   ExtraAssetsUrl commands;
   ExtraAssetsUrl status;
   ExtraAssetsUrl equipFace;
@@ -891,6 +910,8 @@ class ExtraAssets extends ExtraCCAssets {
     this.charaFigure = const ExtraAssetsUrl(),
     this.charaFigureForm = const {},
     this.charaFigureMulti = const {},
+    this.charaFigureMultiCombine = const {},
+    this.charaFigureMultiLimitUp = const {},
     this.commands = const ExtraAssetsUrl(),
     this.status = const ExtraAssetsUrl(),
     this.equipFace = const ExtraAssetsUrl(),
@@ -932,6 +953,53 @@ class CardDetail {
   Map<String, dynamic> toJson() => _$CardDetailToJson(this);
 }
 
+@JsonSerializable()
+class SvtLimitEntity {
+  // until 2024/7/7, only limit 0-4, no costume
+  int limitCount;
+  int? rarity;
+  @protected
+  int? lvMax; // use [Servant.ascensionAdd.lvMax], CE doesn't store limits
+  int? hpBase;
+  int? hpMax;
+  int? atkBase;
+  int? atkMax;
+  int? criticalWeight;
+  String? strength;
+  String? endurance;
+  String? agility;
+  String? magic;
+  String? luck;
+  String? np;
+  String? deity;
+  ServantPolicy? policy;
+  ServantPersonality? personality;
+
+  SvtLimitEntity({
+    required this.limitCount,
+    this.rarity,
+    this.lvMax,
+    this.hpBase,
+    this.hpMax,
+    this.atkBase,
+    this.atkMax,
+    this.criticalWeight,
+    this.strength,
+    this.endurance,
+    this.agility,
+    this.magic,
+    this.luck,
+    this.np,
+    this.deity,
+    this.policy,
+    this.personality,
+  });
+
+  factory SvtLimitEntity.fromJson(Map<String, dynamic> json) => _$SvtLimitEntityFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SvtLimitEntityToJson(this);
+}
+
 @JsonSerializable(genericArgumentFactories: true)
 class AscensionAddEntry<T> {
   final Map<int, T> ascension;
@@ -950,13 +1018,15 @@ class AscensionAddEntry<T> {
   static T _fromJsonT<T>(Object? obj) {
     if (obj == null) {
       return null as T;
-    } else if (obj is int || obj is double || obj is String) {
-      return obj as T;
     } else if (T == List<NiceTrait>) {
       return (obj as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList() as T;
     } else if (T == List<CommonRelease>) {
       return (obj as List<dynamic>).map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map))).toList()
           as T;
+    } else if (T == ServantSubAttribute) {
+      return const ServantSubAttributeConverter().fromJson(obj) as T;
+    } else if (obj is int || obj is double || obj is String) {
+      return obj as T;
     }
     throw FormatException('unknown type: ${obj.runtimeType}');
   }
@@ -970,6 +1040,8 @@ class AscensionAddEntry<T> {
       return value.map((e) => e.toJson()).toList();
     } else if (value is List<CommonRelease>) {
       return value.map((e) => e.toJson()).toList();
+    } else if (value is ServantSubAttribute) {
+      return const ServantSubAttributeConverter().toJson(value);
     }
     throw FormatException('unknown type: ${value.runtimeType} : $T');
   }
@@ -979,6 +1051,7 @@ class AscensionAddEntry<T> {
 
 @JsonSerializable()
 class AscensionAdd {
+  AscensionAddEntry<ServantSubAttribute> attribute;
   AscensionAddEntry<List<NiceTrait>> individuality;
   AscensionAddEntry<int> voicePrefix;
   AscensionAddEntry<String> overWriteServantName;
@@ -989,13 +1062,14 @@ class AscensionAdd {
   AscensionAddEntry<String> overWriteTDRank;
   AscensionAddEntry<String> overWriteTDTypeText;
   AscensionAddEntry<int> lvMax;
-  AscensionAddEntry<int> rarity;
+  // AscensionAddEntry<int> rarity;
   AscensionAddEntry<String> charaGraphChange;
   AscensionAddEntry<String> faceChange;
   AscensionAddEntry<List<CommonRelease>> charaGraphChangeCommonRelease;
   AscensionAddEntry<List<CommonRelease>> faceChangeCommonRelease;
 
   AscensionAdd({
+    this.attribute = const AscensionAddEntry(),
     this.individuality = const AscensionAddEntry(),
     this.voicePrefix = const AscensionAddEntry(),
     this.overWriteServantName = const AscensionAddEntry(),
@@ -1006,7 +1080,7 @@ class AscensionAdd {
     this.overWriteTDRank = const AscensionAddEntry(),
     this.overWriteTDTypeText = const AscensionAddEntry(),
     this.lvMax = const AscensionAddEntry(),
-    this.rarity = const AscensionAddEntry(),
+    // this.rarity = const AscensionAddEntry(),
     this.charaGraphChange = const AscensionAddEntry(),
     this.faceChange = const AscensionAddEntry(),
     this.charaGraphChangeCommonRelease = const AscensionAddEntry(),
@@ -1571,7 +1645,11 @@ enum SvtFlag {
   svtEquipEventReward,
 }
 
+@JsonEnum(alwaysCreate: true)
 enum ServantSubAttribute {
+  @JsonValue('default')
+  default_(-1, null),
+  none(0, null),
   human(1, Trait.attributeHuman),
   sky(2, Trait.attributeSky),
   earth(3, Trait.attributeEarth),
@@ -1584,6 +1662,31 @@ enum ServantSubAttribute {
   const ServantSubAttribute(this.value, this.trait);
   final int value;
   final Trait? trait;
+
+  String get name2 => const ServantSubAttributeConverter().toJson(this);
+}
+
+class ServantSubAttributeConverter extends JsonConverter<ServantSubAttribute, dynamic> {
+  const ServantSubAttributeConverter();
+  @override
+  ServantSubAttribute fromJson(dynamic value) {
+    if (value == null) return ServantSubAttribute.none;
+    if (value is int) {
+      return ServantSubAttribute.values.firstWhere((e) => e.value == value, orElse: () => ServantSubAttribute.none);
+    } else if (value is String) {
+      return deprecatedTypes[value] ?? decodeEnum(_$ServantSubAttributeEnumMap, value, ServantSubAttribute.none);
+    } else {
+      throw UnsupportedError("ServantSubAttribute value must be int or string: ${value.runtimeType} $value");
+    }
+  }
+
+  @override
+  String toJson(ServantSubAttribute obj) => _$ServantSubAttributeEnumMap[obj] ?? obj.name;
+
+  static Map<String, ServantSubAttribute> deprecatedTypes = {
+    "ground": ServantSubAttribute.earth,
+    "earth": ServantSubAttribute.earth,
+  };
 }
 
 enum ServantPolicy {
@@ -1673,13 +1776,19 @@ enum SvtVoiceType {
   eventExpedition,
   eventRecipe,
   eventFortification,
+  eventTrade,
   sum,
 }
 
 enum Gender {
-  male,
-  female,
-  unknown,
+  male(1, Trait.genderMale),
+  female(2, Trait.genderFemale),
+  unknown(3, Trait.genderUnknown),
+  ;
+
+  const Gender(this.value, this.trait);
+  final int value;
+  final Trait trait;
 }
 
 enum CommandCardAttackType {

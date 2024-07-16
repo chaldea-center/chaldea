@@ -219,7 +219,7 @@ class NetworkManager {
     form.addField('authCode', authCode);
     headers[HttpHeaders.contentTypeHeader] = Headers.formUrlEncodedContentType;
     if (user.region.isJP) {
-      headers['X-Unity-Version'] = '2020.3.34f1';
+      headers['X-Unity-Version'] = '2022.3.28f1';
     }
 
     request.sendTime = _getNowTimestamp();

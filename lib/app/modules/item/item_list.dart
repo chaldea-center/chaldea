@@ -23,6 +23,7 @@ enum _ItemSortType {
   id,
   owned,
   left,
+  demands,
   ;
 
   String get shownName {
@@ -35,6 +36,8 @@ enum _ItemSortType {
         return S.current.item_own;
       case _ItemSortType.left:
         return S.current.item_left;
+      case _ItemSortType.demands:
+        return S.current.demands;
     }
   }
 }
@@ -406,6 +409,9 @@ class _ItemListTabState extends State<ItemListTab> {
         break;
       case _ItemSortType.left:
         sortedEntries.sort2((e) => e.key == Items.qpId ? double.negativeInfinity : db.itemCenter.itemLeft[e.key] ?? 0);
+        break;
+      case _ItemSortType.demands:
+        sortedEntries.sort2((e) => e.key == Items.qpId ? double.negativeInfinity : -db.itemCenter.demandOf(e.key));
         break;
     }
     _allGroups = Map.fromEntries(sortedEntries);

@@ -264,7 +264,15 @@ class ImportHttpPageState extends State<ImportHttpPage> {
   Widget itemSliver(BoxConstraints constraints) {
     final shownItems = items.where((item) {
       final dbItem = db.gameData.items[item.itemId];
-      if (dbItem != null && dbItem.category == ItemCategory.event) return false;
+      if (dbItem != null) {
+        final category = dbItem.category;
+        if (category == ItemCategory.event) return false;
+        if (category == ItemCategory.eventAscension && item.num == 0) return false;
+        if (category == ItemCategory.other) {
+          if (item.num == 0) return false;
+          if (dbItem.type == ItemType.continueItem) return false;
+        }
+      }
       return true;
     }).toList();
     return MultiSliver(
@@ -990,12 +998,11 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     _validSvts.clear();
     cardCollections.clear();
     servants.clear();
-    items =
-        body.userItem.where((e) => e.num >= 0 && db.gameData.items[e.itemId]?.category != ItemCategory.other).toList();
+    items = body.userItem.toList();
     crafts.clear();
     cmdCodes.clear();
 
-    items.sort2((e) => db.gameData.items[e.itemId]?.priority ?? e.itemId);
+    items.sort((a, b) => Item.compare2(a.itemId, b.itemId));
 
     // collections
     cardCollections = Map.fromEntries(body.userSvtCollection.map((e) => MapEntry(e.svtId, e)));
