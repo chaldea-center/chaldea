@@ -490,7 +490,10 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
 
   Widget get gachaLucky {
     return _summonButton(
-        times: summon.rollCount, quartz: 15, fn: summon.rollCount == 11 ? 'gacha11_gssr.png' : 'gacha10_gssr.png');
+      times: summon.rollCount,
+      quartz: summon.isDestiny ? 30 : 15,
+      fn: summon.rollCount == 11 ? 'gacha11_gssr.png' : 'gacha10_gssr.png',
+    );
   }
 
   Widget _summonButton({required int times, required int quartz, required String fn}) {
