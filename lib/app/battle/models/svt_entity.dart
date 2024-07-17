@@ -1799,10 +1799,14 @@ class BattleServantData {
   }
 
   void updateActState(final BattleData battleData) {
-    // reversed due to passive of YouZhu (skill seal is added before the add indiv that enables the skill seal)
-    battleBuff.getAllBuffs().reversed.forEach((buff) {
-      buff.updateActState(battleData, this);
-    });
+    // always update indiv related buff first
+    battleBuff.getAllBuffs()
+        .where((buff) => BuffType.addIndividuality == buff.buff.type || BuffType.subIndividuality == buff.buff.type)
+        .forEach((buff) => buff.updateActState(battleData, this));
+
+    battleBuff.getAllBuffs()
+        .where((buff) => BuffType.addIndividuality != buff.buff.type && BuffType.subIndividuality != buff.buff.type)
+        .forEach((buff) => buff.updateActState(battleData, this));
   }
 
   void useBuffOnce() {

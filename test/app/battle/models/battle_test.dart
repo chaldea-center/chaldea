@@ -1354,6 +1354,21 @@ void main() async {
     expect(kiyohime.np, 3000);
   });
 
+  test('Alice Skill 3 seal after 13 uses', () async {
+    final battle = BattleData();
+    final playerSettings = [PlayerSvtData.id(505500)];
+    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
+
+    final alice = battle.onFieldAllyServants[0]!;
+    for (int idx = 1; idx <= 12; idx += 1) {
+      await battle.activateSvtSkill(0, 2);
+      expect(alice.isDonotSkillSelect(3), false);
+      await battle.resetPlayerSkillCD(isMysticCode: false, svt: alice);
+    }
+    await battle.activateSvtSkill(0, 2);
+    expect(alice.isDonotSkillSelect(3), true);
+  });
+
   group('Method tests', () {
     final List<PlayerSvtData> okuniWithDoubleCba = [
       PlayerSvtData.id(504900)..lv = 90,
