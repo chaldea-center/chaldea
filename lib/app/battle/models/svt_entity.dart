@@ -1800,11 +1800,13 @@ class BattleServantData {
 
   void updateActState(final BattleData battleData) {
     // always update indiv related buff first
-    battleBuff.getAllBuffs()
+    battleBuff
+        .getAllBuffs()
         .where((buff) => BuffType.addIndividuality == buff.buff.type || BuffType.subIndividuality == buff.buff.type)
         .forEach((buff) => buff.updateActState(battleData, this));
 
-    battleBuff.getAllBuffs()
+    battleBuff
+        .getAllBuffs()
         .where((buff) => BuffType.addIndividuality != buff.buff.type && BuffType.subIndividuality != buff.buff.type)
         .forEach((buff) => buff.updateActState(battleData, this));
   }

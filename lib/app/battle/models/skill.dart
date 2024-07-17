@@ -183,12 +183,9 @@ class BattleSkillInfoData {
     param?.selectAddIndex = selectedActionIndex;
     int effectiveness = 1000;
     if (type == SkillInfoType.masterEquip) {
-      // TODO: ignoreValueUp
-      // if (curSkill.script?.IgnoreValueUp != 1) {
       for (final svt in battleData.nonnullPlayers) {
         effectiveness += await svt.getBuffValue(battleData, BuffAction.masterSkillValueUp);
       }
-      // }
     }
 
     await FunctionExecutor.executeFunctions(

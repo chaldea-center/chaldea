@@ -93,6 +93,7 @@ class FunctionExecutor {
           func,
           index,
           skillLevel,
+          script: script,
           activator: activator,
           targetedAlly: targetedAlly,
           targetedEnemy: targetedEnemy,
@@ -131,6 +132,7 @@ class FunctionExecutor {
     final NiceFunction function,
     final int funcIndex,
     final int skillLevel, {
+    final SkillScript? script,
     final BattleServantData? activator,
     final BattleServantData? targetedAlly,
     final BattleServantData? targetedEnemy,
@@ -181,7 +183,7 @@ class FunctionExecutor {
     }
 
     if (effectiveness != null && effectiveness != 1000) {
-      dataVals = updateDataValsWithEffectiveness(function, dataVals, effectiveness);
+      dataVals = updateDataValsWithEffectiveness(function, script, dataVals, effectiveness);
     }
 
     final List<BattleServantData> targets = await acquireFunctionTarget(
@@ -503,10 +505,14 @@ class FunctionExecutor {
 
   static DataVals updateDataValsWithEffectiveness(
     final NiceFunction function,
+    final SkillScript? script,
     final DataVals dataVals,
     final int effectiveness,
   ) {
-    if (dataVals.Value == null || effectiveness == 1000 || dataVals.IgnoreValueUp == 1) {
+    if (dataVals.Value == null ||
+        effectiveness == 1000 ||
+        dataVals.IgnoreValueUp == 1 ||
+        script?.IgnoreValueUp == true) {
       return dataVals;
     }
 
