@@ -42,7 +42,7 @@ class CommandCardData {
   final int cardIndex;
   int cardStrengthen = 0;
   int npGain = 0;
-  List<NiceTrait> traits = [];
+  List<NiceTrait> _traits = [];
   bool isTD = false;
   int np = 0;
   bool critical = false;
@@ -50,6 +50,9 @@ class CommandCardData {
   NiceTd? td;
   BuffData? counterBuff;
   int? oc;
+
+  List<NiceTrait> get traits => [..._traits, if (critical) NiceTrait(id: Trait.criticalHit.value)];
+  set traits(List<NiceTrait> traits) => _traits = traits;
 
   CommandCardData._(this.svtId, this.svtLimit, this.uniqueId, this.cardType, this.cardDetail, this.cardIndex);
 
@@ -62,7 +65,7 @@ class CommandCardData {
     return CommandCardData._(svtId, svtLimit, uniqueId, cardType, cardDetail, cardIndex)
       ..cardStrengthen = cardStrengthen
       ..npGain = npGain
-      ..traits = traits.toList()
+      .._traits = _traits.toList()
       ..isTD = isTD
       ..np = np
       ..critical = critical

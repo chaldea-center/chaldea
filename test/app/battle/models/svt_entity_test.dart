@@ -41,23 +41,17 @@ void main() async {
     await battle.init(db.gameData.questPhases[9300040603]!, okuniWithDoubleCba, null);
     final okuni = battle.onFieldAllyServants[0]!;
 
-    expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
+    expect(await okuni.getBuffValue(battle, BuffAction.commandAtk), 1000);
 
-    await battle.withCard(okuni.getNPCard(), () async {
-      expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1000);
-    });
+    expect(await okuni.getBuffValue(battle, BuffAction.commandAtk, card: okuni.getNPCard()), 1000);
 
-    await battle.withCard(okuni.getCards()[2], () async {
-      // arts
-      expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1040);
-      expect(await okuni.hasBuffOnAction(battle, BuffAction.avoidance), isFalse);
-    });
+    // arts
+    expect(await okuni.getBuffValue(battle, BuffAction.commandAtk, card: okuni.getCards()[2]), 1040);
+    expect(await okuni.hasBuff(battle, BuffAction.avoidance), isFalse);
 
     await okuni.activateSkill(battle, 0);
-    await battle.withCard(okuni.getNPCard(), () async {
-      expect(await okuni.getBuffValueOnAction(battle, BuffAction.commandAtk), 1300);
-      expect(await okuni.hasBuffOnAction(battle, BuffAction.avoidance), isTrue);
-    });
+    expect(await okuni.getBuffValue(battle, BuffAction.commandAtk, card: okuni.getNPCard()), 1300);
+    expect(await okuni.hasBuff(battle, BuffAction.avoidance), isTrue);
   });
 
   test('Test commandCode CD', () async {
@@ -140,18 +134,18 @@ void main() async {
     final melusine = battle.onFieldAllyServants[0]!;
     final melusine2 = battle.onFieldAllyServants[1]!;
     final feihu = battle.onFieldAllyServants[2]!;
-    expect(melusine.getTraits(battle).map((e) => e.signedId).contains(Trait.fae.value), true);
-    expect(melusine2.getTraits(battle).map((e) => e.signedId).contains(Trait.fae.value), true);
-    expect(melusine.getTraits(battle).map((e) => e.signedId).contains(Trait.havingAnimalsCharacteristics.value), true);
-    expect(melusine2.getTraits(battle).map((e) => e.signedId).contains(Trait.havingAnimalsCharacteristics.value), true);
-    expect(melusine.getTraits(battle).map((e) => e.signedId).contains(Trait.knightsOfTheRound.value), true);
-    expect(melusine2.getTraits(battle).map((e) => e.signedId).contains(Trait.knightsOfTheRound.value), false);
-    expect(feihu.getTraits(battle).map((e) => e.signedId).contains(301), true);
-    expect(feihu.getTraits(battle).map((e) => e.signedId).contains(300), false);
+    expect(melusine.getTraits().map((e) => e.signedId).contains(Trait.fae.value), true);
+    expect(melusine2.getTraits().map((e) => e.signedId).contains(Trait.fae.value), true);
+    expect(melusine.getTraits().map((e) => e.signedId).contains(Trait.havingAnimalsCharacteristics.value), true);
+    expect(melusine2.getTraits().map((e) => e.signedId).contains(Trait.havingAnimalsCharacteristics.value), true);
+    expect(melusine.getTraits().map((e) => e.signedId).contains(Trait.knightsOfTheRound.value), true);
+    expect(melusine2.getTraits().map((e) => e.signedId).contains(Trait.knightsOfTheRound.value), false);
+    expect(feihu.getTraits().map((e) => e.signedId).contains(301), true);
+    expect(feihu.getTraits().map((e) => e.signedId).contains(300), false);
 
     await battle.activateSvtSkill(2, 0);
-    expect(feihu.getTraits(battle).map((e) => e.signedId).contains(301), false);
-    expect(feihu.getTraits(battle).map((e) => e.signedId).contains(300), true);
+    expect(feihu.getTraits().map((e) => e.signedId).contains(301), false);
+    expect(feihu.getTraits().map((e) => e.signedId).contains(300), true);
   });
 
   test('Test skill scripts', () async {
@@ -233,57 +227,5 @@ void main() async {
     await battle.skipWave();
 
     expect(battle.canUseNp(0), false);
-  });
-
-  test('UI method does not reset stack', () async {
-    final List<PlayerSvtData> playerSettings = [
-      PlayerSvtData.id(504400)
-        ..lv = 80
-        ..ce = db.gameData.craftEssencesById[9400340] // Kaleidoscope
-        ..ceLv = 100
-        ..ceLimitBreak = true,
-    ];
-
-    final battle = BattleData();
-    await battle.init(db.gameData.questPhases[9300040603]!, playerSettings, null);
-    final svt = battle.onFieldAllyServants[0]!;
-
-    expect(battle.activator, null);
-
-    svt.getTraits(battle);
-    expect(battle.activator, null);
-
-    svt.isAlive(battle);
-    expect(battle.activator, null);
-
-    svt.isSkillSealed(0);
-    expect(battle.activator, null);
-
-    svt.isSkillSealed(2);
-    expect(battle.activator, null);
-
-    svt.canUseSkillIgnoreCoolDown(battle, 0);
-    expect(battle.activator, null);
-
-    await svt.activateSkill(battle, 0);
-    expect(battle.activator, null);
-
-    svt.canNP();
-    expect(battle.activator, null);
-
-    svt.canAttack();
-    expect(battle.activator, null);
-
-    svt.canOrderChange();
-    expect(battle.activator, null);
-
-    svt.canSelectNP(battle);
-    expect(battle.activator, null);
-
-    svt.checkNPScript(battle);
-    expect(battle.activator, null);
-
-    svt.getCurrentNP();
-    expect(battle.activator, null);
   });
 }

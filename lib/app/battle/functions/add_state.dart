@@ -15,6 +15,7 @@ class AddState {
     final Buff buff,
     final int funcId,
     final DataVals dataVals,
+    final BattleServantData? activator,
     final List<BattleServantData> targets, {
     bool isPassive = false,
     final bool isClassPassive = false,
@@ -22,7 +23,6 @@ class AddState {
     final bool notActorPassive = false,
     final bool isCommandCode = false,
   }) async {
-    final activator = battleData.activator;
     if (dataVals.ProcActive == 1) {
       isPassive = false;
     } else if (dataVals.ProcPassive == 1) {
@@ -66,53 +66,49 @@ class AddState {
         buffData.param += pointBuff.value;
       }
 
-      await battleData.withBuff(buffData, () async {
-        for (final convertBuff in collectBuffsPerAction(target.battleBuff.validBuffs, BuffAction.buffConvert)) {
-          Buff? convertedBuff;
-          final convert = convertBuff.buff.script.convert;
-          if (convert != null) {
-            switch (convert.convertType) {
-              case BuffConvertType.none:
-                break;
-              case BuffConvertType.buff:
-                for (final (index, targetBuff) in convert.targetBuffs.indexed) {
-                  if (targetBuff.id == buff.id) {
-                    convertedBuff = convert.convertBuffs[index];
-                    break;
-                  }
+      for (final convertBuff in collectBuffsPerAction(target.battleBuff.validBuffs, BuffAction.buffConvert)) {
+        Buff? convertedBuff;
+        final convert = convertBuff.buff.script.convert;
+        if (convert != null) {
+          switch (convert.convertType) {
+            case BuffConvertType.none:
+              break;
+            case BuffConvertType.buff:
+              for (final (index, targetBuff) in convert.targetBuffs.indexed) {
+                if (targetBuff.id == buff.id) {
+                  convertedBuff = convert.convertBuffs[index];
+                  break;
                 }
-                break;
-              case BuffConvertType.individuality:
-                for (final (index, targetIndiv) in convert.targetIndividualities.indexed) {
-                  if (buff.vals.any((e) => e.signedId == targetIndiv.signedId)) {
-                    convertedBuff = convert.convertBuffs[index];
-                    break;
-                  }
+              }
+              break;
+            case BuffConvertType.individuality:
+              for (final (index, targetIndiv) in convert.targetIndividualities.indexed) {
+                if (buff.vals.any((e) => e.signedId == targetIndiv.signedId)) {
+                  convertedBuff = convert.convertBuffs[index];
+                  break;
                 }
-                break;
-            }
-            if (convertedBuff != null) {
-              buffData.buff = convertedBuff;
-              convertBuff.setUsed(target);
-            }
+              }
+              break;
+          }
+          if (convertedBuff != null) {
+            buffData.buff = convertedBuff;
+            convertBuff.setUsed(target);
           }
         }
+      }
 
-        await battleData.withTarget(target, () async {
-          if (await shouldAddState(battleData, dataVals, activator, target, isCommandCode) &&
-              target.isBuffStackable(buffData.buff.buffGroup) &&
-              checkSameBuffLimitNum(target, dataVals)) {
-            target.addBuff(
-              buffData,
-              isPassive: isPassive || notActorPassive,
-              isCommandCode: isCommandCode,
-            );
-            battleData.setFuncResult(target.uniqueId, true);
+      if (await shouldAddState(battleData, dataVals, activator, target, buffData, isCommandCode) &&
+          target.isBuffStackable(buffData.buff.buffGroup) &&
+          checkSameBuffLimitNum(target, dataVals)) {
+        target.addBuff(
+          buffData,
+          isPassive: isPassive || notActorPassive,
+          isCommandCode: isCommandCode,
+        );
+        battleData.setFuncResult(target.uniqueId, true);
 
-            target.postAddStateProcessing(buff, dataVals);
-          }
-        });
-      });
+        target.postAddStateProcessing(buff, dataVals);
+      }
     }
   }
 
@@ -130,6 +126,7 @@ class AddState {
     final DataVals dataVals,
     final BattleServantData? activator,
     final BattleServantData target,
+    final BuffData buffData,
     final bool isCommandCode,
   ) async {
     if (dataVals.ForceAddState == 1 || isCommandCode) {
@@ -143,13 +140,18 @@ class AddState {
 
     functionRate = functionRate.abs();
 
-    if (await target.hasBuffOnAction(battleData, BuffAction.avoidState)) {
+    final hasAvoidState =
+        await target.hasBuff(battleData, BuffAction.avoidState, other: activator, addTraits: buffData.traits);
+    if (hasAvoidState) {
       battleData.battleLogger.debug('${S.current.effect_target}: ${target.lBattleName} - ${S.current.battle_invalid}');
       return false;
     }
 
-    final buffReceiveChance = await target.getBuffValueOnAction(battleData, BuffAction.resistanceState);
-    final buffChance = await activator?.getBuffValueOnAction(battleData, BuffAction.grantState) ?? 0;
+    final buffReceiveChance =
+        await target.getBuffValue(battleData, BuffAction.resistanceState, other: activator, addTraits: buffData.traits);
+    final buffChance =
+        await activator?.getBuffValue(battleData, BuffAction.grantState, other: target, addTraits: buffData.traits) ??
+            0;
 
     final activationRate = functionRate + buffChance;
     final resistRate = buffReceiveChance;

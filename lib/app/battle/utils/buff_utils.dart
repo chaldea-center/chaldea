@@ -39,8 +39,8 @@ int countAnyTraits(final Iterable<NiceTrait> myTraits, final Iterable<NiceTrait>
 bool checkTraitFunction({
   required final Iterable<NiceTrait> myTraits,
   required final Iterable<NiceTrait> requiredTraits,
-  required final bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) positiveMatchFunc,
-  required final bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) negativeMatchFunc,
+  final bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) positiveMatchFunc = partialMatch,
+  final bool Function(Iterable<NiceTrait>, Iterable<NiceTrait>) negativeMatchFunc = partialMatch,
 }) {
   final positiveTargets = requiredTraits.where((trait) => trait.signedId > 0);
   final negativeTargets = requiredTraits.where((trait) => trait.signedId < 0);

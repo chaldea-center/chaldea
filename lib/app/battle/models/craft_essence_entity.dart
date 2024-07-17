@@ -17,7 +17,7 @@ class BattleCEData {
     }
   }
 
-  Future<void> activateCE(final BattleData battleData) async {
+  Future<void> activateCE(final BattleData battleData, final BattleServantData activator) async {
     final skillGroups = craftEssence.getActivatedSkills(isLimitBreak);
     final eventId = battleData.niceQuest?.war?.eventId;
     final event = battleData.niceQuest?.war?.event;
@@ -37,13 +37,13 @@ class BattleCEData {
           final targetSkill = eventSkills.getOrNull((lv - 1).clamp(0, eventSkills.length - 1));
           if (targetSkill != null) {
             final skillInfo = BattleSkillInfoData(targetSkill, type: SkillInfoType.svtEquip);
-            await skillInfo.activate(battleData);
+            await skillInfo.activate(battleData, activator: activator);
           }
         }
       } else {
         for (final skill in skills) {
           final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtEquip);
-          await skillInfo.activate(battleData);
+          await skillInfo.activate(battleData, activator: activator);
         }
       }
     }

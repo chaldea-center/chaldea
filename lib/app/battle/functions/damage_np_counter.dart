@@ -29,40 +29,38 @@ class DamageNpCounter {
     final List<AttackResultDetail> targetResults = [];
 
     for (final target in targets) {
-      battleData.withTargetSync(target, () {
-        final targetBefore = target.copy();
-        final previousHp = target.hp;
-        target.receiveDamage(damage);
-        if (target != activator) {
-          target.procAccumulationDamage(previousHp);
-        }
-        target.actionHistory.add(BattleServantActionHistory(
-          actType: BattleServantActionHistoryType.damageCommand,
-          targetUniqueId: activator.uniqueId,
-          isOpponent: activator.isPlayer != target.isPlayer,
-        ));
-        targetResults.add(AttackResultDetail(
-          target: target,
-          targetBefore: targetBefore,
-          damageParams: DamageParameters(),
-          attackNpParams: AttackNpGainParameters(),
-          defenseNpParams: DefendNpGainParameters(),
-          starParams: StarParameters(),
-          result: DamageResult()
-            ..damages = [damage]
-            ..cardHits = [100]
-            ..npGains = [0]
-            ..npMaxLimited = [false]
-            ..overkillStates = [false],
-          minResult: null,
-          maxResult: null,
-        ));
+      final targetBefore = target.copy();
+      final previousHp = target.hp;
+      target.receiveDamage(damage);
+      if (target != activator) {
+        target.procAccumulationDamage(previousHp);
+      }
+      target.actionHistory.add(BattleServantActionHistory(
+        actType: BattleServantActionHistoryType.damageCommand,
+        targetUniqueId: activator.uniqueId,
+        isOpponent: activator.isPlayer != target.isPlayer,
+      ));
+      targetResults.add(AttackResultDetail(
+        target: target,
+        targetBefore: targetBefore,
+        damageParams: DamageParameters(),
+        attackNpParams: AttackNpGainParameters(),
+        defenseNpParams: DefendNpGainParameters(),
+        starParams: StarParameters(),
+        result: DamageResult()
+          ..damages = [damage]
+          ..cardHits = [100]
+          ..npGains = [0]
+          ..npMaxLimited = [false]
+          ..overkillStates = [false],
+        minResult: null,
+        maxResult: null,
+      ));
 
-        battleData.battleLogger.action('${activator.lBattleName} - '
-            '${Transl.buffType(BuffType.reflectionFunction).l}: $damage -'
-            '${S.current.effect_target}: ${target.lBattleName}');
-        battleData.setFuncResult(target.uniqueId, true);
-      });
+      battleData.battleLogger.action('${activator.lBattleName} - '
+          '${Transl.buffType(BuffType.reflectionFunction).l}: $damage -'
+          '${S.current.effect_target}: ${target.lBattleName}');
+      battleData.setFuncResult(target.uniqueId, true);
     }
     battleData.recorder.attack(
       activator,

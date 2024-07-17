@@ -10,14 +10,27 @@ import '_dialog.dart';
 
 class DamageAdjustor extends StatefulWidget {
   final BattleData battleData;
+  final BattleServantData activator;
+  final BattleServantData target;
   final DamageParameters damageParameters;
 
-  const DamageAdjustor({super.key, required this.battleData, required this.damageParameters});
+  const DamageAdjustor({
+    super.key,
+    required this.battleData,
+    required this.activator,
+    required this.target,
+    required this.damageParameters,
+  });
 
   @override
   State<DamageAdjustor> createState() => _DamageAdjustorState();
 
-  static Future<int> show(final BattleData battleData, final DamageParameters damageParameters) async {
+  static Future<int> show(
+    final BattleData battleData,
+    final BattleServantData activator,
+    final BattleServantData target,
+    final DamageParameters damageParameters,
+  ) async {
     int damage = 0;
     try {
       damage = calculateDamage(damageParameters);
@@ -33,7 +46,8 @@ class DamageAdjustor extends StatefulWidget {
           context: battleData.context!,
           barrierDismissible: false,
           builder: (context, _) {
-            return DamageAdjustor(battleData: battleData, damageParameters: damageParameters);
+            return DamageAdjustor(
+                battleData: battleData, activator: activator, target: target, damageParameters: damageParameters);
           },
         );
         battleData.replayDataRecord.damageSelections.add(damage);
@@ -74,10 +88,10 @@ class _DamageAdjustorState extends State<DamageAdjustor> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '${widget.battleData.activator!.lBattleName} - '
+            '${widget.activator.lBattleName} - '
             '${widget.damageParameters.currentCardType.name.toTitle()} - '
             '${widget.damageParameters.isNp ? S.current.battle_np_card : S.current.battle_command_card}'
-            '\nvs ${widget.battleData.target!.lBattleName} (HP: ${widget.battleData.target!.hp})',
+            '\nvs ${widget.target.lBattleName} (HP: ${widget.target.hp})',
             style: Theme.of(context).textTheme.bodyMedium,
             textScaler: const TextScaler.linear(0.9),
           ),

@@ -11,35 +11,34 @@ class InstantDeath {
     final BattleData battleData,
     final DataVals dataVals,
     final NiceFunction func,
+    final BattleServantData? activator,
     final List<BattleServantData> targets, {
+    final CommandCardData? card,
     final bool defaultToPlayer = true,
   }) async {
     final force = func.funcType == FuncType.forceInstantDeath;
-    final activator = battleData.activator;
     final record = BattleInstantDeathRecord(forceInstantDeath: force, activator: activator, targets: []);
     for (final target in targets) {
-      await battleData.withTarget(target, () async {
-        final params = InstantDeathParameters();
-        final previousHp = target.hp;
-        final isForceInstantDeath = force || (activator == target && dataVals.ForceSelfInstantDeath == 1);
+      final params = InstantDeathParameters();
+      final previousHp = target.hp;
+      final isForceInstantDeath = force || (activator == target && dataVals.ForceSelfInstantDeath == 1);
 
-        if (await shouldInstantDeath(battleData, dataVals, activator, target, isForceInstantDeath, params)) {
-          target.hp = 0;
-          target.lastHitBy = activator;
-          target.lastHitByFunc = func;
-          target.actionHistory.add(BattleServantActionHistory(
-            actType: BattleServantActionHistoryType.instantDeath,
-            targetUniqueId: activator?.uniqueId ?? -1,
-            isOpponent: (activator?.isPlayer ?? defaultToPlayer) != target.isPlayer,
-          ));
+      if (await shouldInstantDeath(battleData, dataVals, activator, target, isForceInstantDeath, params, card: card)) {
+        target.hp = 0;
+        target.lastHitBy = activator;
+        target.lastHitByFunc = func;
+        target.actionHistory.add(BattleServantActionHistory(
+          actType: BattleServantActionHistoryType.instantDeath,
+          targetUniqueId: activator?.uniqueId ?? -1,
+          isOpponent: (activator?.isPlayer ?? defaultToPlayer) != target.isPlayer,
+        ));
 
-          if (!isForceInstantDeath && target != activator) {
-            target.procAccumulationDamage(previousHp);
-          }
-          battleData.setFuncResult(target.uniqueId, true);
+        if (!isForceInstantDeath && target != activator) {
+          target.procAccumulationDamage(previousHp);
         }
-        record.targets.add(InstantDeathResultDetail(target: target, params: params));
-      });
+        battleData.setFuncResult(target.uniqueId, true);
+      }
+      record.targets.add(InstantDeathResultDetail(target: target, params: params));
     }
     if (targets.isNotEmpty) {
       battleData.recorder.instantDeath(record);
@@ -52,8 +51,9 @@ class InstantDeath {
     final BattleServantData? activator,
     final BattleServantData target,
     final bool isForceInstantDeath,
-    InstantDeathParameters? params,
-  ) async {
+    InstantDeathParameters? params, {
+    final CommandCardData? card,
+  }) async {
     params ??= InstantDeathParameters();
     params.isForce = isForceInstantDeath;
     if (params.isForce) {
@@ -64,7 +64,7 @@ class InstantDeath {
       return true;
     }
 
-    if (await target.hasBuffOnAction(battleData, BuffAction.avoidInstantdeath)) {
+    if (await target.hasBuff(battleData, BuffAction.avoidInstantdeath, other: activator)) {
       params.immune = true;
       params.success = false;
       params.resultString = kBattleFuncNoEffect;
@@ -72,9 +72,11 @@ class InstantDeath {
       return false;
     }
 
-    final resistInstantDeath = await target.getBuffValueOnAction(battleData, BuffAction.resistInstantdeath);
-    final nonResistInstantDeath = await target.getBuffValueOnAction(battleData, BuffAction.nonresistInstantdeath);
-    final grantInstantDeath = await activator?.getBuffValueOnAction(battleData, BuffAction.grantInstantdeath) ?? 0;
+    final resistInstantDeath = await target.getBuffValue(battleData, BuffAction.resistInstantdeath, other: activator);
+    final nonResistInstantDeath =
+        await target.getBuffValue(battleData, BuffAction.nonresistInstantdeath, other: activator);
+    final grantInstantDeath =
+        await activator?.getBuffValue(battleData, BuffAction.grantInstantdeath, other: target, card: card) ?? 0;
 
     final functionRate = dataVals.Rate ?? 1000;
     final resistRate = resistInstantDeath - nonResistInstantDeath;

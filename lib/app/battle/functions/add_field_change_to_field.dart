@@ -8,6 +8,7 @@ class AddFieldChangeToField {
     final BattleData battleData,
     final Buff buff,
     final DataVals dataVals,
+    final BattleServantData? activator,
     final List<BattleServantData> targets,
   ) {
     final functionRate = dataVals.Rate ?? 1000;
@@ -15,7 +16,6 @@ class AddFieldChangeToField {
       return;
     }
 
-    final activator = battleData.activator;
     final buffData = BuffData(buff, dataVals, battleData.getNextAddOrder())
       ..actorUniqueId = activator?.uniqueId
       ..actorName = activator?.lBattleName;

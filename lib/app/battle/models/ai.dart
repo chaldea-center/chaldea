@@ -82,7 +82,7 @@ class SvtAiManager with _AiManagerBase {
         final skill = ai.aiAct.skill;
         if (skill == null) continue;
         final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtAi, skillLv: ai.aiAct.skillLv ?? 1);
-        await battleData.withActivator(actor, () => skillInfo.activate(battleData, defaultToPlayer: false));
+        await skillInfo.activate(battleData, activator: actor, defaultToPlayer: false);
         battleData.recorder.skill(
           prefix: 'SvtAI: ',
           battleData: battleData,
@@ -110,7 +110,7 @@ class SvtAiManager with _AiManagerBase {
         final skill = ai.aiAct.skill;
         if (skill == null) continue;
         final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtAi, skillLv: ai.aiAct.skillLv ?? 1);
-        await battleData.withActivator(actor, () => skillInfo.activate(battleData, defaultToPlayer: false));
+        await skillInfo.activate(battleData, activator: actor, defaultToPlayer: false);
         battleData.recorder.skill(
           prefix: 'SvtAI: ',
           battleData: battleData,
@@ -139,7 +139,7 @@ class SvtAiManager with _AiManagerBase {
         final skill = ai.aiAct.skill;
         if (skill == null) continue;
         final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtAi, skillLv: ai.aiAct.skillLv ?? 1);
-        await battleData.withActivator(actor, () => skillInfo.activate(battleData, defaultToPlayer: false));
+        await skillInfo.activate(battleData, activator: actor, defaultToPlayer: false);
         usedAiReactionTurnStart.add(ai.id);
         battleData.recorder.skill(
           prefix: 'SvtAI: ',

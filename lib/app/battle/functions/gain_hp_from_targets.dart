@@ -11,7 +11,9 @@ class GainHpFromTargets {
   static Future<void> gainHpFromTargets(
     final BattleData battleData,
     final DataVals dataVals,
-    final Iterable<BattleServantData> targets,
+    final BattleServantData receiver,
+    final BattleServantData? targetedAlly,
+    final BattleServantData? targetedEnemy,
   ) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
@@ -22,44 +24,48 @@ class GainHpFromTargets {
     final dependVal = dataVals.DependFuncVals!;
     final checkValue = dependVal.Value!;
 
-    for (final receiver in targets) {
-      await battleData.withTarget(receiver, () async {
-        final previousHp = receiver.hp;
-        // denoting who should receive the absorbed hp
-        int gainValue = 0;
-        for (final absorbTarget in await FunctionExecutor.acquireFunctionTarget(
-          battleData,
-          dependFunction.funcTargetType,
-          receiver,
-          funcId: dependFunction.funcId,
-        )) {
-          gainValue += min(absorbTarget.hp - 1, checkValue);
-        }
-
-        await receiver.heal(battleData, gainValue);
-        receiver.procAccumulationDamage(previousHp);
-        battleData.setFuncResult(receiver.uniqueId, true);
-      });
+    final previousHp = receiver.hp;
+    // denoting who should receive the absorbed hp
+    int gainValue = 0;
+    for (final absorbTarget in await FunctionExecutor.acquireFunctionTarget(
+      battleData,
+      dependFunction.funcTargetType,
+      receiver,
+      funcId: dependFunction.funcId,
+      targetedAlly: receiver,
+      targetedEnemy: battleData.targetedEnemy,
+    )) {
+      gainValue += min(absorbTarget.hp - 1, checkValue);
     }
 
+    receiver.heal(gainValue);
+    receiver.procAccumulationDamage(previousHp);
+    battleData.setFuncResult(receiver.uniqueId, true);
+
     final NiceFunction niceFunction = NiceFunction(
-        funcId: dependFunction.funcId,
-        funcType: dependFunction.funcType,
-        funcTargetType: dependFunction.funcTargetType,
-        funcTargetTeam: dependFunction.funcTargetTeam,
-        funcPopupText: dependFunction.funcPopupText,
-        funcPopupIcon: dependFunction.funcPopupIcon,
-        functvals: dependFunction.functvals,
-        funcquestTvals: dependFunction.funcquestTvals,
-        funcGroup: dependFunction.funcGroup,
-        traitVals: dependFunction.traitVals,
-        buffs: dependFunction.buffs,
-        // Rate of dataVals.DependFuncVals is always 0, not sure why, so substituting functionRate into it
-        svals: [
-          DataVals({'Rate': functionRate, 'Value': checkValue})
-        ]);
+      funcId: dependFunction.funcId,
+      funcType: dependFunction.funcType,
+      funcTargetType: dependFunction.funcTargetType,
+      funcTargetTeam: dependFunction.funcTargetTeam,
+      funcPopupText: dependFunction.funcPopupText,
+      funcPopupIcon: dependFunction.funcPopupIcon,
+      functvals: dependFunction.functvals,
+      funcquestTvals: dependFunction.funcquestTvals,
+      funcGroup: dependFunction.funcGroup,
+      traitVals: dependFunction.traitVals,
+      buffs: dependFunction.buffs,
+      svals: [dependVal],
+    );
 
     // we provisioned only one dataVal
-    await FunctionExecutor.executeFunctions(battleData, [niceFunction], 1, script: null);
+    await FunctionExecutor.executeFunctions(
+      battleData,
+      [niceFunction],
+      1,
+      script: null,
+      activator: receiver,
+      targetedAlly: targetedAlly,
+      targetedEnemy: targetedEnemy,
+    );
   }
 }

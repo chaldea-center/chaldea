@@ -40,6 +40,10 @@ class FunctionExecutor {
     final List<NiceFunction> functions,
     final int skillLevel, {
     required final SkillScript? script,
+    final BattleServantData? activator,
+    final BattleServantData? targetedAlly,
+    final BattleServantData? targetedEnemy,
+    final CommandCardData? card,
     final int overchargeLvl = 1,
     final bool isPassive = false,
     final bool isClassPassive = false,
@@ -53,7 +57,7 @@ class FunctionExecutor {
     return await battleData.withFunctions(() async {
       Map<int, List<NiceFunction>> actSets = {};
       for (final func in functions) {
-        if (!validateFunctionTargetTeam(func, battleData.activator?.isPlayer ?? defaultToPlayer)) continue;
+        if (!validateFunctionTargetTeam(func, activator?.isPlayer ?? defaultToPlayer)) continue;
 
         final dataVal = FunctionExecutor.getDataVals(func, skillLevel, overchargeLvl);
         if ((dataVal.ActSet ?? 0) != 0 && (dataVal.ActSetWeight ?? 0) > 0) {
@@ -63,7 +67,7 @@ class FunctionExecutor {
       int? selectedActSet;
       if (actSets.isNotEmpty) {
         if (battleData.delegate?.actWeight != null) {
-          selectedActSet = await battleData.delegate!.actWeight!(battleData.activator);
+          selectedActSet = await battleData.delegate!.actWeight!(activator);
         } else if (battleData.mounted) {
           selectedActSet = await FuncActSetSelector.show(battleData, actSets);
           battleData.replayDataRecord.actWeightSelections.add(selectedActSet);
@@ -89,6 +93,10 @@ class FunctionExecutor {
           func,
           index,
           skillLevel,
+          activator: activator,
+          targetedAlly: targetedAlly,
+          targetedEnemy: targetedEnemy,
+          card: card,
           overchargeLvl: overchargeLvl,
           shouldTrigger: !isDmgFuncType(functions.getOrNull(index - 1)?.funcType),
           shouldDamageRelease: !isDmgFuncType(functions.getOrNull(index + 1)?.funcType),
@@ -111,7 +119,7 @@ class FunctionExecutor {
           final askill =
               db.gameData.baseSkills[askillId] ?? await showEasyLoading(() => AtlasApi.skill(askillId), mask: true);
           final aSkillInfo = BattleSkillInfoData(askill, type: SkillInfoType.none, skillLv: askillLv);
-          await aSkillInfo.activate(battleData);
+          await aSkillInfo.activate(battleData, activator: activator);
         }
       }
     });
@@ -123,6 +131,10 @@ class FunctionExecutor {
     final NiceFunction function,
     final int funcIndex,
     final int skillLevel, {
+    final BattleServantData? activator,
+    final BattleServantData? targetedAlly,
+    final BattleServantData? targetedEnemy,
+    final CommandCardData? card,
     final int overchargeLvl = 1,
     final bool shouldTrigger = true,
     final bool shouldDamageRelease = true,
@@ -134,7 +146,6 @@ class FunctionExecutor {
     final int? effectiveness,
     final bool defaultToPlayer = true,
   }) async {
-    final BattleServantData? activator = battleData.activator;
     if (!validateFunctionTargetTeam(function, activator?.isPlayer ?? defaultToPlayer)) {
       return false;
     }
@@ -177,19 +188,20 @@ class FunctionExecutor {
       battleData,
       function.funcTargetType,
       activator,
+      targetedAlly: targetedAlly,
+      targetedEnemy: targetedEnemy,
       funcId: function.funcId,
       defaultToPlayer: defaultToPlayer,
+      dataVals: dataVals,
     );
 
-    return await battleData.withFunction(function, () async {
+    return await battleData.withFunction(() async {
       for (final target in targets) {
         battleData.setFuncResult(target.uniqueId, false);
       }
 
-      final funcQuestTvalsMatch = battleData.checkTraits(CheckTraitParameters(
-        requiredTraits: function.funcquestTvals,
-        checkQuestTraits: true,
-      ));
+      final funcQuestTvalsMatch =
+          checkTraitFunction(myTraits: battleData.getFieldTraits(), requiredTraits: function.funcquestTvals);
 
       if (!funcQuestTvalsMatch) {
         battleData.updateLastFuncResults(function.funcId, funcIndex);
@@ -209,7 +221,13 @@ class FunctionExecutor {
         return true;
       }
 
-      if (await activator?.hasBuffOnAction(battleData, BuffAction.avoidFunctionExecuteSelf) ?? false) {
+      final hasAvoidFunctionExecuteSelf = await activator?.hasBuff(
+            battleData,
+            BuffAction.avoidFunctionExecuteSelf,
+            addTraits: function.getFuncIndividuality(),
+          ) ??
+          false;
+      if (hasAvoidFunctionExecuteSelf) {
         battleData.updateLastFuncResults(function.funcId, funcIndex);
         return true;
       }
@@ -220,7 +238,7 @@ class FunctionExecutor {
       switch (function.funcType) {
         case FuncType.absorbNpturn:
         case FuncType.gainNpFromTargets:
-          await GainNpFromTargets.gainNpFromTargets(battleData, dataVals, targets);
+          await GainNpFromTargets.gainNpFromTargets(battleData, dataVals, activator!, targetedAlly, targetedEnemy);
           break;
         case FuncType.addState:
         case FuncType.addStateShort:
@@ -229,6 +247,7 @@ class FunctionExecutor {
             function.buff!,
             function.funcId,
             dataVals,
+            activator,
             targets,
             isPassive: isPassive,
             isClassPassive: isClassPassive,
@@ -238,13 +257,13 @@ class FunctionExecutor {
           );
           break;
         case FuncType.subState:
-          await SubState.subState(battleData, function.traitVals, dataVals, targets);
+          await SubState.subState(battleData, function.traitVals, dataVals, activator, targets);
           break;
         case FuncType.moveState:
-          await MoveState.moveState(battleData, dataVals, targets);
+          await MoveState.moveState(battleData, dataVals, activator!, targetedAlly, targetedEnemy);
           break;
         case FuncType.addFieldChangeToField:
-          AddFieldChangeToField.addFieldChangeToField(battleData, function.buff!, dataVals, targets);
+          AddFieldChangeToField.addFieldChangeToField(battleData, function.buff!, dataVals, activator, targets);
           break;
         case FuncType.gainNp:
         case FuncType.lossNp:
@@ -252,11 +271,15 @@ class FunctionExecutor {
           break;
         case FuncType.gainMultiplyNp:
         case FuncType.lossMultiplyNp:
-          GainNP.gainMultiplyNP(battleData, dataVals, targets,
-              isNegative: function.funcType == FuncType.lossMultiplyNp);
+          GainNP.gainMultiplyNP(
+            battleData,
+            dataVals,
+            targets,
+            isNegative: function.funcType == FuncType.lossMultiplyNp,
+          );
           break;
         case FuncType.gainNpIndividualSum:
-          await GainNP.gainNpPerIndividual(
+          GainNP.gainNpPerIndividual(
             battleData,
             dataVals,
             targets,
@@ -264,7 +287,7 @@ class FunctionExecutor {
           );
           break;
         case FuncType.gainNpBuffIndividualSum:
-          await GainNP.gainNpPerBuffIndividual(
+          GainNP.gainNpPerBuffIndividual(
             battleData,
             dataVals,
             targets,
@@ -278,7 +301,13 @@ class FunctionExecutor {
           break;
         case FuncType.gainStar:
         case FuncType.lossStar:
-          GainStar.gainStar(battleData, dataVals, targets: targets, isNegative: function.funcType == FuncType.lossStar);
+          GainStar.gainStar(
+            battleData,
+            dataVals,
+            activator,
+            targets: targets,
+            isNegative: function.funcType == FuncType.lossStar,
+          );
           break;
         case FuncType.shortenSkill:
           SkillChargeTurn.shortenSkill(battleData, dataVals, targets);
@@ -305,7 +334,9 @@ class FunctionExecutor {
             battleData,
             function,
             dataVals,
+            activator!,
             targets,
+            card!,
             shouldTrigger: shouldTrigger,
             shouldDamageRelease: shouldDamageRelease,
           );
@@ -316,8 +347,10 @@ class FunctionExecutor {
             battleData,
             dataVals,
             function,
+            activator,
             targets,
             defaultToPlayer: defaultToPlayer,
+            card: card,
           );
           break;
         case FuncType.gainHp:
@@ -326,10 +359,10 @@ class FunctionExecutor {
         case FuncType.lossHpSafe:
         case FuncType.lossHpPer:
         case FuncType.lossHpPerSafe:
-          await GainHP.gainHP(battleData, dataVals, targets, function.funcType);
+          await GainHP.gainHP(battleData, dataVals, activator, targets, function.funcType);
           break;
         case FuncType.gainHpFromTargets:
-          await GainHpFromTargets.gainHpFromTargets(battleData, dataVals, targets);
+          await GainHpFromTargets.gainHpFromTargets(battleData, dataVals, activator!, targetedAlly, targetedEnemy);
           break;
         case FuncType.transformServant:
           await TransformServant.transformServant(battleData, dataVals, targets);
@@ -497,6 +530,9 @@ class FunctionExecutor {
     final FuncTargetType funcTargetType,
     final BattleServantData? activator, {
     final int? funcId,
+    final BattleServantData? targetedAlly,
+    final BattleServantData? targetedEnemy,
+    final DataVals? dataVals,
     final bool defaultToPlayer = true,
   }) async {
     final List<BattleServantData> targets = [];
@@ -505,24 +541,10 @@ class FunctionExecutor {
     final List<BattleServantData> backupAllies =
         isAlly ? battleData.nonnullBackupPlayers : battleData.nonnullBackupEnemies;
     final List<BattleServantData> aliveAllies = isAlly ? battleData.nonnullPlayers : battleData.nonnullEnemies;
-    final BattleServantData? targetedAlly = isAlly
-        ? battleData.target?.isPlayer == true
-            ? battleData.target
-            : battleData.targetedPlayer
-        : battleData.target?.isEnemy == true
-            ? battleData.target
-            : battleData.targetedEnemy;
 
     final List<BattleServantData> backupEnemies =
         isAlly ? battleData.nonnullBackupEnemies : battleData.nonnullBackupPlayers;
     final List<BattleServantData> aliveEnemies = isAlly ? battleData.nonnullEnemies : battleData.nonnullPlayers;
-    final BattleServantData? targetedEnemy = isAlly
-        ? battleData.target?.isEnemy == true
-            ? battleData.target
-            : battleData.targetedEnemy
-        : battleData.target?.isPlayer == true
-            ? battleData.target
-            : battleData.targetedPlayer;
 
     switch (funcTargetType) {
       case FuncTargetType.self:
@@ -583,13 +605,31 @@ class FunctionExecutor {
         targets.remove(activator);
         break;
       case FuncTargetType.ptSelfAnotherFirst:
-        final firstOtherSelectable = aliveAllies.firstWhereOrNull((svt) => svt != activator && svt.selectable);
+        final firstOtherSelectable = aliveAllies.firstWhereOrNull((svt) {
+          final targetIndiv = dataVals?.TargetIndiv;
+          final includeIgnoredIndiv = dataVals?.IncludeIgnoreIndividuality == 1;
+          final targetIndivCheck = targetIndiv == null ||
+              checkTraitFunction(
+                myTraits: svt.getTraits(addTraits: svt.getBuffTraits(includeIgnoreIndiv: includeIgnoredIndiv)),
+                requiredTraits: [NiceTrait(id: targetIndiv)],
+              );
+          return svt != activator && targetIndivCheck;
+        });
         if (firstOtherSelectable != null) {
           targets.add(firstOtherSelectable);
         }
         break;
       case FuncTargetType.ptSelfAnotherLast:
-        final lastOtherSelectable = aliveAllies.lastWhereOrNull((svt) => svt != activator && svt.selectable);
+        final lastOtherSelectable = aliveAllies.lastWhereOrNull((svt) {
+          final targetIndiv = dataVals?.TargetIndiv;
+          final includeIgnoredIndiv = dataVals?.IncludeIgnoreIndividuality == 1;
+          final targetIndivCheck = targetIndiv == null ||
+              checkTraitFunction(
+                myTraits: svt.getTraits(addTraits: svt.getBuffTraits(includeIgnoreIndiv: includeIgnoredIndiv)),
+                requiredTraits: [NiceTrait(id: targetIndiv)],
+              );
+          return svt != activator && targetIndivCheck;
+        });
         if (lastOtherSelectable != null) {
           targets.add(lastOtherSelectable);
         }
@@ -761,35 +801,36 @@ class FunctionExecutor {
     final List<BattleServantData> targets,
   ) {
     final checkDead = dataVals.CheckDead != null && dataVals.CheckDead! > 0;
-    targets.retainWhere((svt) => svt.isAlive(battleData) || checkDead);
+    targets.retainWhere((svt) => svt.isAlive(battleData, function: function) || checkDead);
 
     final List<List<NiceTrait>> overwriteTvals = function.getOverwriteTvalsList();
+    final activeOnly = dataVals.IncludePassiveIndividuality != 1;
+    final includeIgnoreIndividuality = dataVals.IncludeIgnoreIndividuality == 1;
+
     if (overwriteTvals.isNotEmpty) {
       targets.retainWhere((svt) {
+        final List<NiceTrait> selfTraits = svt.getTraits(
+            addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality));
         for (final List<NiceTrait> requiredTraits in overwriteTvals) {
           // Currently assuming the first array is OR. Need more samples on this
-          if (battleData.checkTraits(CheckTraitParameters(
+          final checkTrait = checkTraitFunction(
+            myTraits: selfTraits,
             requiredTraits: requiredTraits,
-            actor: svt,
-            checkActorTraits: true,
-            checkActorBuffTraits: true,
-            checkActiveBuffOnly: dataVals.IncludePassiveIndividuality != 1,
-            positiveMatchFunction: allMatch,
-            negativeMatchFunction: allMatch,
-          ))) {
+            positiveMatchFunc: allMatch,
+            negativeMatchFunc: allMatch,
+          );
+          if (checkTrait) {
             return true;
           }
         }
         return false;
       });
     } else {
-      targets.retainWhere((svt) => battleData.checkTraits(CheckTraitParameters(
+      targets.retainWhere((svt) => checkTraitFunction(
+            myTraits: svt.getTraits(
+                addTraits: svt.getBuffTraits(activeOnly: activeOnly, includeIgnoreIndiv: includeIgnoreIndividuality)),
             requiredTraits: function.functvals,
-            actor: svt,
-            checkActorTraits: true,
-            checkActorBuffTraits: true,
-            checkActiveBuffOnly: dataVals.IncludePassiveIndividuality != 1,
-          )));
+          ));
     }
 
     final triggeredHpRateRange = dataVals.TriggeredTargetHpRateRange;

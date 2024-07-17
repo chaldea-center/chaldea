@@ -78,12 +78,9 @@ class BattleSkillInfoData {
     }
   }
 
-  bool checkSkillScript(final BattleData battleData) {
-    return skillScriptConditionCheck(battleData, skillScript, skillLv);
-  }
-
-  static bool skillScriptConditionCheck(
+  static bool checkSkillScript(
     final BattleData battleData,
+    final BattleServantData? activator,
     final SkillScript? skillScript,
     final int skillLv,
   ) {
@@ -92,73 +89,82 @@ class BattleSkillInfoData {
     }
 
     final actRarity = skillScript.actRarity?.getOrNull(skillLv - 1);
-    if (actRarity != null && !actRarity.contains(battleData.activator?.rarity)) {
+    if (actRarity != null && !actRarity.contains(activator?.rarity)) {
       return false;
     }
 
     final npHigher = skillScript.NP_HIGHER?.getOrNull(skillLv - 1);
-    if (npHigher != null && !checkSkillScripCondition(battleData, SkillScriptCond.npHigher, npHigher)) {
+    if (npHigher != null && !checkSkillScriptCondition(battleData, activator, SkillScriptCond.npHigher, npHigher)) {
       return false;
     }
 
     final npLower = skillScript.NP_LOWER?.getOrNull(skillLv - 1);
-    if (npLower != null && !checkSkillScripCondition(battleData, SkillScriptCond.npLower, npLower)) {
+    if (npLower != null && !checkSkillScriptCondition(battleData, activator, SkillScriptCond.npLower, npLower)) {
       return false;
     }
 
     final starHigher = skillScript.STAR_HIGHER?.getOrNull(skillLv - 1);
-    if (starHigher != null && !checkSkillScripCondition(battleData, SkillScriptCond.starHigher, starHigher)) {
+    if (starHigher != null &&
+        !checkSkillScriptCondition(battleData, activator, SkillScriptCond.starHigher, starHigher)) {
       return false;
     }
 
     final starLower = skillScript.STAR_LOWER?.getOrNull(skillLv - 1);
-    if (starLower != null && !checkSkillScripCondition(battleData, SkillScriptCond.starLower, starLower)) {
+    if (starLower != null && !checkSkillScriptCondition(battleData, activator, SkillScriptCond.starLower, starLower)) {
       return false;
     }
 
     final hpValHigher = skillScript.HP_VAL_HIGHER?.getOrNull(skillLv - 1);
-    if (hpValHigher != null && !checkSkillScripCondition(battleData, SkillScriptCond.hpValHigher, hpValHigher)) {
+    if (hpValHigher != null &&
+        !checkSkillScriptCondition(battleData, activator, SkillScriptCond.hpValHigher, hpValHigher)) {
       return false;
     }
 
     final hpValLower = skillScript.HP_VAL_LOWER?.getOrNull(skillLv - 1);
-    if (hpValLower != null && !checkSkillScripCondition(battleData, SkillScriptCond.hpValLower, hpValLower)) {
+    if (hpValLower != null &&
+        !checkSkillScriptCondition(battleData, activator, SkillScriptCond.hpValLower, hpValLower)) {
       return false;
     }
 
     final hpPerHigher = skillScript.HP_PER_HIGHER?.getOrNull(skillLv - 1);
-    if (hpPerHigher != null && !checkSkillScripCondition(battleData, SkillScriptCond.hpPerHigher, hpPerHigher)) {
+    if (hpPerHigher != null &&
+        !checkSkillScriptCondition(battleData, activator, SkillScriptCond.hpPerHigher, hpPerHigher)) {
       return false;
     }
 
     final hpPerLower = skillScript.HP_PER_LOWER?.getOrNull(skillLv - 1);
-    if (hpPerLower != null && !checkSkillScripCondition(battleData, SkillScriptCond.hpPerLower, hpPerLower)) {
+    if (hpPerLower != null &&
+        !checkSkillScriptCondition(battleData, activator, SkillScriptCond.hpPerLower, hpPerLower)) {
       return false;
     }
 
     return true;
   }
 
-  Future<bool> activate(final BattleData battleData, {bool defaultToPlayer = true, BattleSkillParams? param}) async {
+  Future<bool> activate(
+    final BattleData battleData, {
+    BattleServantData? activator,
+    CommandCardData? card,
+    bool defaultToPlayer = true,
+    BattleSkillParams? param,
+  }) async {
     final curSkill = skill;
     if (curSkill == null) {
       return false;
     }
-    if (battleData.activator?.isEnemy != true) {
+    if (activator?.isEnemy != true) {
       chargeTurn = curSkill.coolDown[skillLv - 1];
     }
     skillScript = curSkill.script;
 
-    final actorTraitMatch = battleData.checkTraits(CheckTraitParameters(
+    final actorTraitMatch = checkTraitFunction(
+      myTraits: activator?.getTraits() ?? [],
       requiredTraits: curSkill.actIndividuality,
-      actor: battleData.activator,
-      checkActorTraits: true,
-    ));
+    );
 
-    final scriptCheck = skillScriptConditionCheck(battleData, curSkill.script, skillLv);
+    final scriptCheck = checkSkillScript(battleData, activator, curSkill.script, skillLv);
 
-    bool canActSkill =
-        battleData.delegate?.whetherSkill?.call(battleData.activator, curSkill) ?? actorTraitMatch && scriptCheck;
+    bool canActSkill = battleData.delegate?.whetherSkill?.call(activator, curSkill) ?? actorTraitMatch && scriptCheck;
     if (!canActSkill) {
       return false;
     }
@@ -168,24 +174,31 @@ class BattleSkillInfoData {
         curSkill.script!.SelectAddInfo != null &&
         curSkill.script!.SelectAddInfo!.isNotEmpty) {
       if (battleData.delegate?.skillActSelect != null) {
-        selectedActionIndex = await battleData.delegate!.skillActSelect!(battleData.activator);
+        selectedActionIndex = await battleData.delegate!.skillActSelect!(activator);
       } else if (battleData.mounted) {
-        selectedActionIndex = await SkillActSelectDialog.show(battleData, curSkill, skillLv);
+        selectedActionIndex = await SkillActSelectDialog.show(battleData, activator, curSkill, skillLv);
         battleData.replayDataRecord.skillActSelectSelections.add(selectedActionIndex);
       }
     }
     param?.selectAddIndex = selectedActionIndex;
     int effectiveness = 1000;
     if (type == SkillInfoType.masterEquip) {
+      // TODO: ignoreValueUp
+      // if (curSkill.script?.IgnoreValueUp != 1) {
       for (final svt in battleData.nonnullPlayers) {
-        effectiveness += await svt.getBuffValueOnAction(battleData, BuffAction.masterSkillValueUp);
+        effectiveness += await svt.getBuffValue(battleData, BuffAction.masterSkillValueUp);
       }
+      // }
     }
 
     await FunctionExecutor.executeFunctions(
       battleData,
       curSkill.functions,
       skillLv,
+      activator: activator,
+      targetedAlly: battleData.getTargetedAlly(activator, defaultToPlayer: defaultToPlayer),
+      targetedEnemy: battleData.getTargetedEnemy(activator, defaultToPlayer: defaultToPlayer),
+      card: card,
       script: curSkill.script,
       isPassive: curSkill.type == SkillType.passive,
       isClassPassive: type == SkillInfoType.svtClassPassive,
@@ -213,8 +226,9 @@ class BattleSkillInfoData {
       ..chargeTurn = chargeTurn;
   }
 
-  static bool checkSkillScripCondition(
+  static bool checkSkillScriptCondition(
     final BattleData battleData,
+    final BattleServantData? activator,
     final SkillScriptCond cond,
     final int? value,
   ) {
@@ -226,21 +240,21 @@ class BattleSkillInfoData {
       case SkillScriptCond.none:
         return true;
       case SkillScriptCond.npHigher:
-        return battleData.activator!.np / 100 >= value;
+        return activator!.np / 100 >= value;
       case SkillScriptCond.npLower:
-        return battleData.activator!.np / 100 <= value;
+        return activator!.np / 100 <= value;
       case SkillScriptCond.starHigher:
         return battleData.criticalStars >= value;
       case SkillScriptCond.starLower:
         return battleData.criticalStars <= value;
       case SkillScriptCond.hpValHigher:
-        return battleData.activator!.hp >= value;
+        return activator!.hp >= value;
       case SkillScriptCond.hpValLower:
-        return battleData.activator!.hp >= value;
+        return activator!.hp >= value;
       case SkillScriptCond.hpPerHigher:
-        return battleData.activator!.hp / battleData.activator!.maxHp >= value / 1000;
+        return activator!.hp / activator.maxHp >= value / 1000;
       case SkillScriptCond.hpPerLower:
-        return battleData.activator!.hp / battleData.activator!.maxHp <= value / 1000;
+        return activator!.hp / activator.maxHp <= value / 1000;
     }
   }
 }

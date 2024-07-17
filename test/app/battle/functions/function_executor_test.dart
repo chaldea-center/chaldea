@@ -109,13 +109,22 @@ void main() async {
     });
 
     test('Targeted types', () async {
-      final ptOne =
-          await FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptOne, battle.onFieldAllyServants[1]);
+      final ptOne = await FunctionExecutor.acquireFunctionTarget(
+        battle,
+        FuncTargetType.ptOne,
+        battle.onFieldAllyServants[1],
+        targetedAlly: battle.getTargetedAlly(ally),
+      );
       expect(ptOne.length, 1);
       expect(ptOne.first, ally);
       expect(ptOne.first, isNot(battle.onFieldAllyServants[1]!));
 
-      final enemyList = await FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.enemy, ally);
+      final enemyList = await FunctionExecutor.acquireFunctionTarget(
+        battle,
+        FuncTargetType.enemy,
+        ally,
+        targetedEnemy: battle.getTargetedEnemy(ally),
+      );
       expect(enemyList.length, 1);
       expect(enemyList.first, enemy);
     });
@@ -137,19 +146,36 @@ void main() async {
     });
 
     test('Select other types', () async {
-      final ptOther =
-          await FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.ptOther, battle.onFieldAllyServants[1]);
+      final ptOther = await FunctionExecutor.acquireFunctionTarget(
+        battle,
+        FuncTargetType.ptOther,
+        battle.onFieldAllyServants[1],
+        targetedAlly: battle.getTargetedAlly(ally),
+      );
       expect(ptOther, unorderedEquals([battle.onFieldAllyServants[0], battle.onFieldAllyServants[2]]));
 
       final ptOneOther = await FunctionExecutor.acquireFunctionTarget(
-          battle, FuncTargetType.ptOneOther, battle.onFieldAllyServants[1]);
+        battle,
+        FuncTargetType.ptOneOther,
+        battle.onFieldAllyServants[1],
+        targetedAlly: battle.getTargetedAlly(ally),
+      );
       expect(ptOneOther, unorderedEquals([battle.onFieldAllyServants[1], battle.onFieldAllyServants[2]]));
 
-      final enemyOther = await FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.enemyOther, ally);
+      final enemyOther = await FunctionExecutor.acquireFunctionTarget(
+        battle,
+        FuncTargetType.enemyOther,
+        ally,
+        targetedEnemy: battle.getTargetedEnemy(ally),
+      );
       expect(enemyOther, unorderedEquals([battle.onFieldEnemies[1], battle.onFieldEnemies[2]]));
 
       final ptOtherFull = await FunctionExecutor.acquireFunctionTarget(
-          battle, FuncTargetType.ptOtherFull, battle.onFieldAllyServants[1]);
+        battle,
+        FuncTargetType.ptOtherFull,
+        battle.onFieldAllyServants[1],
+        targetedAlly: battle.getTargetedAlly(ally),
+      );
       expect(
           ptOtherFull,
           unorderedEquals([
@@ -158,8 +184,12 @@ void main() async {
             ...battle.nonnullBackupPlayers,
           ]));
 
-      final enemyOtherFullAsEnemy =
-          await FunctionExecutor.acquireFunctionTarget(battle, FuncTargetType.enemyOtherFull, enemy);
+      final enemyOtherFullAsEnemy = await FunctionExecutor.acquireFunctionTarget(
+        battle,
+        FuncTargetType.enemyOtherFull,
+        enemy,
+        targetedEnemy: battle.getTargetedEnemy(enemy),
+      );
       expect(
           enemyOtherFullAsEnemy,
           unorderedEquals([
@@ -181,10 +211,17 @@ void main() async {
       expect(as1.first, battle.onFieldAllyServants[0]);
 
       battle.onFieldAllyServants[0]!.addBuff(BuffData(
-          Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.cantBeSacrificed.value)]), DataVals(), 1));
+        Buff(id: -1, name: '', detail: '', vals: [NiceTrait(id: Trait.cantBeSacrificed.value)]),
+        DataVals(),
+        1,
+      ));
 
       final as1With0Unselectable = await FunctionExecutor.acquireFunctionTarget(
-          battle, FuncTargetType.ptSelfAnotherFirst, battle.onFieldAllyServants[1]);
+          battle, FuncTargetType.ptSelfAnotherFirst, battle.onFieldAllyServants[1],
+          dataVals: DataVals({
+            'TargetIndiv': -Trait.cantBeSacrificed.value,
+            "IncludeIgnoreIndividuality": 1,
+          }));
       expect(as1With0Unselectable.length, 1);
       expect(as1With0Unselectable.first, battle.onFieldAllyServants[2]);
 
@@ -295,9 +332,7 @@ void main() async {
       final npCard = kama.getNPCard()!;
       battle.recorder.startPlayerCard(kama, npCard);
       await battle.withAction(() async {
-        await battle.withCard(npCard, () async {
-          await kama.activateNP(battle, npCard, 0);
-        });
+        await kama.activateNP(battle, npCard, 0);
       });
       final buffCountAfter = enemy2.battleBuff.originalActiveList.length;
       expect(buffCountAfter, buffCountBefore);
@@ -327,9 +362,7 @@ void main() async {
       cursedArm.np = 10000;
       battle.recorder.startPlayerCard(cursedArm, npCard);
       await battle.withAction(() async {
-        await battle.withCard(npCard, () async {
-          await cursedArm.activateNP(battle, npCard, 0);
-        });
+        await cursedArm.activateNP(battle, npCard, 0);
       });
       final buffCountAfter1 = cursedArm.battleBuff.originalActiveList.length;
       expect(buffCountAfter1, buffCountBefore1);
@@ -346,9 +379,7 @@ void main() async {
       battle.options.threshold = 10;
       battle.recorder.startPlayerCard(cursedArm, npCard);
       await battle.withAction(() async {
-        await battle.withCard(npCard, () async {
-          await cursedArm.activateNP(battle, npCard, 0);
-        });
+        await cursedArm.activateNP(battle, npCard, 0);
       });
       final buffCountAfter2 = cursedArm.battleBuff.originalActiveList.length;
       expect(buffCountAfter2, buffCountBefore2 + 1);
@@ -401,17 +432,17 @@ void main() async {
 
       final mash = battle.onFieldAllyServants[0]!;
       expect(mash.battleBuff.originalActiveList.length, 0);
-      expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1000);
+      expect(await mash.getBuffValue(battle, BuffAction.defence), 1000);
 
       await battle.activateSvtSkill(0, 0);
       expect(mash.battleBuff.originalActiveList.length, 1);
-      expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
+      expect(await mash.getBuffValue(battle, BuffAction.defence), 1150);
       expect(mash.battleBuff.originalActiveList.first.buff.type, BuffType.upDefence);
       expect(mash.battleBuff.originalActiveList.first.logicTurn, 6);
 
       await battle.playerTurn([CombatAction(mash, mash.getCards()[0])]);
       expect(mash.battleBuff.originalActiveList.length, 1);
-      expect(await mash.getBuffValueOnAction(battle, BuffAction.defence), 1150);
+      expect(await mash.getBuffValue(battle, BuffAction.defence), 1150);
       expect(mash.battleBuff.originalActiveList.first.buff.type, BuffType.upDefence);
       expect(mash.battleBuff.originalActiveList.first.logicTurn, 4);
     });
@@ -425,21 +456,21 @@ void main() async {
 
       final orion = battle.onFieldAllyServants[0]!;
       expect(orion.battleBuff.originalActiveList.length, 0);
-      expect(await orion.getBuffValueOnAction(battle, BuffAction.defence), 1000);
+      expect(await orion.getBuffValue(battle, BuffAction.defence), 1000);
 
       await battle.activateSvtSkill(0, 0);
       expect(orion.battleBuff.originalActiveList.length, 3);
-      expect(await orion.getBuffValueOnAction(battle, BuffAction.defence), 1500);
+      expect(await orion.getBuffValue(battle, BuffAction.defence), 1500);
       expect(orion.battleBuff.originalActiveList.first.buff.type, BuffType.upDefence);
       expect(orion.battleBuff.originalActiveList.first.logicTurn, 2);
-      expect(await orion.getBuffValueOnAction(battle, BuffAction.atk), 1200);
+      expect(await orion.getBuffValue(battle, BuffAction.atk), 1200);
       expect(orion.battleBuff.originalActiveList[1].buff.type, BuffType.upAtk);
       expect(orion.battleBuff.originalActiveList[1].logicTurn, 5);
 
       await battle.playerTurn([CombatAction(orion, orion.getCards()[0])]);
       expect(orion.battleBuff.originalActiveList.length, 2);
-      expect(await orion.getBuffValueOnAction(battle, BuffAction.defence), 1000);
-      expect(await orion.getBuffValueOnAction(battle, BuffAction.atk), 1200);
+      expect(await orion.getBuffValue(battle, BuffAction.defence), 1000);
+      expect(await orion.getBuffValue(battle, BuffAction.atk), 1200);
       expect(orion.battleBuff.originalActiveList[0].buff.type, BuffType.upAtk);
       expect(orion.battleBuff.originalActiveList[0].logicTurn, 3);
     });

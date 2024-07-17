@@ -32,10 +32,8 @@ class BuffTurnCount {
       value *= 2;
     }
     for (final target in targets) {
-      battleData.withTargetSync(target, () {
-        final success = _changeBuffValue(battleData, target, value, dataVals, isTurn, true);
-        battleData.setFuncResult(target.uniqueId, success);
-      });
+      final success = _changeBuffValue(battleData, target, value, dataVals, isTurn);
+      battleData.setFuncResult(target.uniqueId, success);
     }
   }
 
@@ -45,7 +43,6 @@ class BuffTurnCount {
     final int changeValue,
     final DataVals dataVals,
     final bool isTurn,
-    final bool isAny,
   ) {
     final List<int> targetIndivi = dataVals.TargetList ?? [];
     if (targetIndivi.isEmpty) return false;
@@ -53,25 +50,17 @@ class BuffTurnCount {
     final List<NiceTrait> targetTraits = targetIndivi.map((targetIndiv) => NiceTrait(id: targetIndiv)).toList();
     bool changed = false;
 
-    for (final buff in svt.battleBuff.getActiveList()) {
-      battleData.withBuffSync(buff, () {
-        if (battleData.checkTraits(CheckTraitParameters(
-          requiredTraits: targetTraits,
-          checkCurrentBuffTraits: true,
-          ignoreIrremovableBuff: dataVals.IgnoreIndivUnreleaseable == 1,
-          positiveMatchFunction: isAny ? partialMatch : allMatch,
-          negativeMatchFunction: isAny ? partialMatch : allMatch,
-        ))) {
-          final minValue = dataVals.AllowRemoveBuff == 1 ? 0 : 1;
-          if (isTurn && buff.logicTurn > 0) {
-            buff.logicTurn = max(buff.logicTurn + changeValue, minValue);
-            changed = true;
-          } else if (!isTurn && buff.count > 0) {
-            buff.count = max(buff.count + changeValue, minValue);
-            changed = true;
-          }
-        }
-      });
+    final ignoreIndivUnreleaseable = dataVals.IgnoreIndivUnreleaseable == 1;
+    final buffs = svt.getBuffsWithTraits(targetTraits, ignoreIndivUnreleaseable: ignoreIndivUnreleaseable);
+    for (final buff in buffs) {
+      final minValue = dataVals.AllowRemoveBuff == 1 ? 0 : 1;
+      if (isTurn && buff.logicTurn > 0) {
+        buff.logicTurn = max(buff.logicTurn + changeValue, minValue);
+        changed = true;
+      } else if (!isTurn && buff.count > 0) {
+        buff.count = max(buff.count + changeValue, minValue);
+        changed = true;
+      }
     }
 
     return changed;
